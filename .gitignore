@@ -1,1 +1,10 @@
 *.vsidx
+*.vs
+.vs\*
+.vs/
+bin/
+obj/
+obj
+bin
+bin/Debug/
+obj/Debug/
