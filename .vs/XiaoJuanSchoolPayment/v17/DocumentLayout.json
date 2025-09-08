@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Work\\XiaoJuanSchoolPayment\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\data\\models\\school.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\data\\models\\school.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CD16EE78-5BA8-4CFD-A329-6CBD4153C311}|xiaojuanschoolpayment.client\\xiaojuanschoolpayment.client.esproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.client\\src\\app\\app.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{CD16EE78-5BA8-4CFD-A329-6CBD4153C311}|xiaojuanschoolpayment.client\\xiaojuanschoolpayment.client.esproj|solutionrelative:xiaojuanschoolpayment.client\\src\\app\\app.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\data\\models\\school.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\data\\models\\school.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\data\\models\\schoolroom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,7 +42,20 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
+              "Title": "app.component.ts",
+              "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\xiaojuanschoolpayment.client\\src\\app\\app.component.ts",
+              "RelativeDocumentMoniker": "xiaojuanschoolpayment.client\\src\\app\\app.component.ts",
+              "ToolTip": "C:\\Work\\XiaoJuanSchoolPayment\\xiaojuanschoolpayment.client\\src\\app\\app.component.ts",
+              "RelativeToolTip": "xiaojuanschoolpayment.client\\src\\app\\app.component.ts",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAQwBQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-09-08T18:51:42.407Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "SchoolFee.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolFee.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolFee.cs",
@@ -51,7 +68,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "SchoolNote.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolNote.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolNote.cs",
@@ -64,7 +81,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "SchoolLesson.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolLesson.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolLesson.cs",
@@ -77,7 +94,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SchoolRoom.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolRoom.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolRoom.cs",
@@ -90,26 +107,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\AppDbContext.cs",
               "ToolTip": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\AppDbContext.cs",
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA0AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-07T18:47:53.608Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "School.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\School.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\School.cs",
               "ToolTip": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\School.cs",
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\Models\\School.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-07T18:42:47.898Z",
               "EditorCaption": ""
