@@ -7,7 +7,7 @@ import { SchoolUserDTO } from '../interfaces/SchoolUser.dto';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7209/api/auth'; 
+  private apiUrl = '/auth'; 
 
   constructor(private http: HttpClient) {}
 
