@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XiaoJuanSchoolPayment.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67dc7c58807b0cbbcc84ace35790e3b6d966d78c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+377864aa0b8cb6a39e1eed1823d17efb0569f4d1")]
 [assembly: System.Reflection.AssemblyProductAttribute("XiaoJuanSchoolPayment.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XiaoJuanSchoolPayment.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

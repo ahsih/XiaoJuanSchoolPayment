@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
@@ -8,7 +10,7 @@ using XiaoJuanSchoolPayment.Server.Data.Models;
 namespace MyProject.Controllers
 {
   [ApiController]
-  [Route("api/auth")]
+  [Route("auth")]
   public class AuthController : ControllerBase
   {
     private readonly UserManager<SchoolUser> _userManager;
@@ -36,6 +38,7 @@ namespace MyProject.Controllers
         Email = schoolUser.Email,
         FirstName = schoolUser.FirstName,
         LastName = schoolUser.LastName,
+        UserName = schoolUser.Email
       };
 
       var result = await _userManager.CreateAsync(user, schoolUser.Password);
@@ -43,7 +46,7 @@ namespace MyProject.Controllers
       if (result.Succeeded)
       {
         await _userManager.AddToRoleAsync(user, "Admin");
-        return Ok("User registered successfully");
+        return Ok();
       }
       return BadRequest(result.Errors);
     }
@@ -62,16 +65,37 @@ namespace MyProject.Controllers
 
       var roles = await _userManager.GetRolesAsync(user);
       var claims = new List<Claim>
-      {
-          new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-          new Claim(ClaimTypes.Email, user.Email)
-      };
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
 
       foreach (var role in roles)
       {
         claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
       }
-      return Ok("Login successful");
+
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+      var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+      var expires = DateTime.Now.AddMinutes(double.Parse(_config["Jwt:ExpiresInMinutes"]));
+      var token = new JwtSecurityToken(
+          issuer: _config["Jwt:Issuer"],
+          audience: _config["Jwt:Audience"],
+          claims: claims,
+          expires: expires,
+          signingCredentials: creds
+      );
+
+      return Ok(new
+       JWTLoginTokenDTO {
+        Token = new JwtSecurityTokenHandler().WriteToken(token),
+        ExpiryDate = token.ValidTo,
+        Roles = roles,
+        Name = user.FirstName + " " + user.LastName,
+        Email = user.Email
+      });
     }
 
   }

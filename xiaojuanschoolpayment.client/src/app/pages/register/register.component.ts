@@ -16,6 +16,7 @@ export class RegisterComponent {
   successMessage = '';
   errorMessage = '';
   hidePassword = true;
+  loading = false;
 
   constructor(private fb: FormBuilder,
     private http: HttpClient,
@@ -32,14 +33,20 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    this.loading = true;
     if (this.registerForm.valid) {
       const user: SchoolUserDTO = this.registerForm.value;
 
       this.authService.register(user).subscribe({
-        next: (res) => this.snackBar.open(res, 'Close', { duration: 3000 }),
+        next: () => {
+          this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
+          this.registerForm.reset();
+          this.loading = false;
+        },
         error: (err) => {
           const msg = typeof err.error === 'string' ? err.error : 'Registration failed';
-          this.snackBar.open(msg, 'Close', { duration: 3000 });
+          this.snackBar.open(msg, 'Close', { duration: 5000 });
+          this.loading = false;
         }
       });
     }

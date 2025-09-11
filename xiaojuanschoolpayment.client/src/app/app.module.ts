@@ -12,13 +12,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
     HomeComponent,
-    AdminComponent
+    AdminComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,3 @@ import { AdminComponent } from './pages/admin/admin.component';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-function provideAnimationsAsync(): import("@angular/core").Provider | import("@angular/core").EnvironmentProviders {
-  throw new Error('Function not implemented.');
-}

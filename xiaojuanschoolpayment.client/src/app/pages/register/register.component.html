@@ -52,7 +52,7 @@
   </div>
 
   <!-- Submit Button -->
-  <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid">
+  <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid && loading">
     Register
   </button>
 
