@@ -1,1 +1,18 @@
-<p>admin works!</p>
+<div>设置学校</div>
+<form [formGroup]="schoolForm" (ngSubmit)="submit()" style="max-width: 400px; margin: 50px auto;">
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>学校名字</mat-label>
+        <input matInput placeholder="Enter school name" formControlName="school">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>价格日期</mat-label>
+        <input matInput [matDatepicker]="picker" placeholder="Select date" formControlName="date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="schoolForm.invalid">
+        Submit
+    </button>
+</form>

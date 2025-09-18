@@ -8,11 +8,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HomeComponent } from './pages/home/home.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +24,7 @@ import { LoginComponent } from './pages/login/login.component';
     HomeComponent,
     AdminComponent,
     LoginComponent,
+    AdminLayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +35,9 @@ import { LoginComponent } from './pages/login/login.component';
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]
