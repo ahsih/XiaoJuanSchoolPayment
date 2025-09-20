@@ -45,18 +45,48 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       return result;
     }
 
+    public async Task<bool> SaveSchoolLesson(SchoolLessonDTO lesson, CancellationToken cancellationToken)
+    {
+      if (lesson.Id == Guid.Empty)
+      {
+        _appDbContext.SchoolLessons.Add(new Data.Models.SchoolLesson
+        { 
+          Name = lesson.Name,
+          SchoolId = lesson.SchoolId,
+          Week = lesson.Week,
+          Price = lesson.Price,
+          Note = lesson.Note,
+          Description = lesson.Description,
+          CurrencyId = lesson.CurrencyId,
+          LastUpdated = DateTime.UtcNow,
+        });
+      }
+      else
+      {
+        var dbLesson = await _appDbContext.SchoolLessons.FirstOrDefaultAsync(x => x.Id == lesson.Id, cancellationToken);
+        if (dbLesson != null)
+        {
+          dbLesson.Name = lesson.Name;
+        }
+      }
+      await _appDbContext.SaveChangesAsync();
+      return true;
+    }
+
     public async Task<IList<SchoolLessonDTO>> GetSchoolLessons(CancellationToken ct)
     {
       var result = await _appDbContext.SchoolLessons.AsNoTracking()
+        .Include(x => x.School)
         .Select(x => new SchoolLessonDTO
         {
           Id = x.Id,
           SchoolId = x.SchoolId,
           Name = x.Name,
+          SchoolName = x.School.Name,
           Description = x.Description,
           Note = x.Note,
           Price = x.Price,
-          Week = x.Week
+          Week = x.Week,
         }).ToListAsync(ct);
       return result;
     }

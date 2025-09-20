@@ -6,4 +6,5 @@ export interface SchoolLessonDTO {
   description?: string;
   note?: string;
   schoolId: string;
+  currencyId: number;
 }

@@ -7,7 +7,10 @@
     public decimal Price { get; set; }
     public string? Description { get; set; }
     public string? Note { get; set; }
-    public required School School { get; set; }
+    public School? School { get; set; }
     public Guid SchoolId { get; set; }
+    public DateTime LastUpdated { get; set; }
+    public Currency? Currency { get; set; }
+    public int CurrencyId { get; set; }
   }
 }

@@ -8,6 +8,7 @@ using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Interface;
 using XiaoJuanSchoolPayment.Server.Services;
+using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,7 @@ builder.Services.AddIdentity<SchoolUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<ISchoolService, SchoolService>();
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 
 builder.Services.AddCors(options =>
 {
@@ -89,6 +91,7 @@ using (var scope = app.Services.CreateScope())
 {
   var services = scope.ServiceProvider;
   await UserRoleInitialize.Initialize(services);
+  await DataInitialize.SeedAsync(services);
 }
 
 app.UseHttpsRedirection();

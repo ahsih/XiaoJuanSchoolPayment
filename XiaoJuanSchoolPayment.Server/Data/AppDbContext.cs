@@ -14,5 +14,6 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<SchoolLesson> SchoolLessons { get; set; }
     public DbSet<SchoolNote> SchoolNotes { get; set; }
     public DbSet<SchoolFee> SchoolFees { get; set; }
+    public DbSet<Currency> SchoolCurrency { get; set; }
   }
 }

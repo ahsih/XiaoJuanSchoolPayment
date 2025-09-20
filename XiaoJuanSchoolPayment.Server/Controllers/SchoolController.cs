@@ -22,6 +22,14 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpPut("save-school-lesson")]
+    public async Task<IActionResult> SaveSchoolLesson([FromBody] SchoolLessonDTO lesson, CancellationToken ct)
+    {
+      var result = await _schoolService.SaveSchoolLesson(lesson, ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("get-schools")]
     public async Task<IActionResult> GetSchools(CancellationToken ct) { 
       var result = await _schoolService.GetSchools(ct);

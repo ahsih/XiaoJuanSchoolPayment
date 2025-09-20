@@ -1,4 +1,6 @@
-﻿namespace XiaoJuanSchoolPayment.Server.Data.DTO
+﻿using XiaoJuanSchoolPayment.Server.Data.Models;
+
+namespace XiaoJuanSchoolPayment.Server.Data.DTO
 {
   public class SchoolLessonDTO
   {
@@ -8,6 +10,9 @@
     public decimal Price { get; set; }
     public string? Description { get; set; }
     public string? Note { get; set; }
+    public required string SchoolName { get; set; }
+    public DateTime LastUpdated { get; set; }
+    public int CurrencyId { get; set; }
     public Guid SchoolId { get; set; }
   }
 }

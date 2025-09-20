@@ -45,6 +45,7 @@ export class AdminSchoolLessonsComponent {
       description: [''],
       note: [''],
       schoolId: [''],
+      currencyId: [''],
     });
 
     this.dataSource.filterPredicate = (
