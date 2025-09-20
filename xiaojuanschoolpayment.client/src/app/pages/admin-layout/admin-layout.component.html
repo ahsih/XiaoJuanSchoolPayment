@@ -1,14 +1,26 @@
 <div class="admin-container">
-    <nav class="sidebar">
-        <ul>
-            <li><a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">School</a>
-            </li>
-            <li><a routerLink="/admin/lessons" routerLinkActive="active">School Lessons</a></li>
-            <li><a routerLink="/admin/rooms" routerLinkActive="active">School Rooms</a></li>
-        </ul>
-    </nav>
+  <nav class="sidebar">
+    <ul>
+      <li>
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >School</a
+        >
+      </li>
+      <li>
+        <a routerLink="/admin/school-lessons" routerLinkActive="active"
+          >School Lessons</a
+        >
+      </li>
+      <li>
+        <a routerLink="/admin/rooms" routerLinkActive="active">School Rooms</a>
+      </li>
+    </ul>
+  </nav>
 
-    <main class="content">
-        <router-outlet></router-outlet>
-    </main>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
 </div>

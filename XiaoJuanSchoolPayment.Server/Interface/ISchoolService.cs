@@ -6,5 +6,6 @@ namespace XiaoJuanSchoolPayment.Server.Interface
   {
     public Task<bool> SaveSchool(SchoolDTO school, CancellationToken cancellationToken);
     public Task<IList<SchoolDTO>> GetSchools(CancellationToken cancellationToken);
+    public Task<IList<SchoolLessonDTO>> GetSchoolLessons(CancellationToken cancellationToken);
   }
 }

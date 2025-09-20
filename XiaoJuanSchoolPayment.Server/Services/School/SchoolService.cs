@@ -44,5 +44,21 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       .ToListAsync(cancellationToken);
       return result;
     }
+
+    public async Task<IList<SchoolLessonDTO>> GetSchoolLessons(CancellationToken ct)
+    {
+      var result = await _appDbContext.SchoolLessons.AsNoTracking()
+        .Select(x => new SchoolLessonDTO
+        {
+          Id = x.Id,
+          SchoolId = x.SchoolId,
+          Name = x.Name,
+          Description = x.Description,
+          Note = x.Note,
+          Price = x.Price,
+          Week = x.Week
+        }).ToListAsync(ct);
+      return result;
+    }
   }
 }

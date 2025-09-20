@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HomeComponent } from './pages/home/home.component';
@@ -22,6 +22,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit-school-dialog.component';
+import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-school-lessons.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit
     LoginComponent,
     AdminLayoutComponent,
     EditSchoolDialogComponent,
+    AdminSchoolLessonsComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,6 +53,8 @@ import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatOptionModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

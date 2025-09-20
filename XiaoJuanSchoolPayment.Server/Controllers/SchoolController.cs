@@ -27,5 +27,13 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       var result = await _schoolService.GetSchools(ct);
       return Ok(result);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-school-lessons")]
+    public async Task<IActionResult> GetSchoolLessons(CancellationToken ct)
+    {
+      var result = await _schoolService.GetSchoolLessons(ct);
+      return Ok(result);
+    }
   }
 }
