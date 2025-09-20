@@ -13,11 +13,18 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     public SchoolController(ISchoolService schoolService) { 
       _schoolService = schoolService;
     }
-    [Authorize(Roles = "test")]
+    [Authorize(Roles = "Admin")]
     [HttpPut("save")]
-    public IActionResult SaveSchool([FromBody]SchoolDTO school, CancellationToken ct)
+    public async Task<IActionResult> SaveSchool([FromBody]SchoolDTO school, CancellationToken ct)
     {
-      var result = _schoolService.SaveSchool(school,ct);
+      var result = await _schoolService.SaveSchool(school,ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-schools")]
+    public async Task<IActionResult> GetSchools(CancellationToken ct) { 
+      var result = await _schoolService.GetSchools(ct);
       return Ok(result);
     }
   }

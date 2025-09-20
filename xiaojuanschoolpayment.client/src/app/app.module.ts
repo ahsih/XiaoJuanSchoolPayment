@@ -16,6 +16,12 @@ import { HomeComponent } from './pages/home/home.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit-school-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +31,7 @@ import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.componen
     AdminComponent,
     LoginComponent,
     AdminLayoutComponent,
+    EditSchoolDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,9 +44,14 @@ import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.componen
     MatIconModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatDividerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

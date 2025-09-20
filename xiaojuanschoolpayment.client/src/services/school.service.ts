@@ -17,4 +17,13 @@ export class SchoolService {
             }
         }));
     }
+
+    getSchools(): Observable<SchoolDTO[]> {
+        const token = localStorage.getItem("token");
+        return this.http.get<SchoolDTO[]>(`${this.apiUrl}/get-schools`, {
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+    }
 }
