@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit-school-dialog.component';
 import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-school-lessons.component';
 import { MatSelectModule } from '@angular/material/select';
+import { EditSchoolLessonDialogComponent } from './pages/admin-school-lessons/edit-school-lesson-dialog/edit-school-lesson-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { MatSelectModule } from '@angular/material/select';
     AdminLayoutComponent,
     EditSchoolDialogComponent,
     AdminSchoolLessonsComponent,
+    EditSchoolLessonDialogComponent,
   ],
   imports: [
     BrowserModule,

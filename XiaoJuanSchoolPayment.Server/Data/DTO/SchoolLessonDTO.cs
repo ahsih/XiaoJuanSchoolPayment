@@ -11,6 +11,7 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string? Description { get; set; }
     public string? Note { get; set; }
     public string? SchoolName { get; set; }
+    public string? CurrencyCode { get; set; }
     public int CurrencyId { get; set; }
     public Guid SchoolId { get; set; }
   }

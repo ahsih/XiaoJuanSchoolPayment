@@ -7,4 +7,6 @@ export interface SchoolLessonDTO {
   note?: string;
   schoolId: string;
   currencyId: number;
+  currencyCode?: string;
+  schoolName?: string;
 }

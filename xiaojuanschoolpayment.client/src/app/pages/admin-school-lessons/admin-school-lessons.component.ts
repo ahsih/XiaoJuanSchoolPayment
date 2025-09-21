@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SchoolDTO } from '../../../interfaces/school.dto';
 import { CurrencyService } from '../../../services/currency.service';
 import { CurrencyDTO } from '../../../interfaces/currency.dto';
+import { EditSchoolLessonDialogComponent } from './edit-school-lesson-dialog/edit-school-lesson-dialog.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-admin-school-lessons',
@@ -20,12 +22,13 @@ export class AdminSchoolLessonsComponent {
   schoolLessonsForm: FormGroup;
 
   displayedColumns: string[] = [
+    'schoolName',
     'name',
     'week',
     'price',
+    'currencyCode',
     'description',
     'note',
-    'school',
     'actions',
   ];
   dataSource = new MatTableDataSource<SchoolLessonDTO>([]);
@@ -119,5 +122,23 @@ export class AdminSchoolLessonsComponent {
     });
   }
 
-  async edit(row: SchoolLessonDTO) {}
+  async edit(row: SchoolLessonDTO) {
+    const dialogRef = this.matDialog.open(EditSchoolLessonDialogComponent, {
+      width: '560px',
+      disableClose: true,
+      data: {
+        lesson: row,
+        schools: this.schoolDtos,
+        currencies: this.currencyDtos,
+      },
+    });
+    const updated = await firstValueFrom(dialogRef.afterClosed());
+    if (!updated) return;
+    try {
+      await this.schoolService.saveSchoolLesson(updated);
+      await this.loadSchoolLessons();
+    } catch (err) {
+      console.error('Failed to save lesson', err);
+    }
+  }
 }

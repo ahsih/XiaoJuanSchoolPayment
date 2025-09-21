@@ -67,6 +67,13 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         if (dbLesson != null)
         {
           dbLesson.Name = lesson.Name;
+          dbLesson.Week = lesson.Week;
+          dbLesson.Note = lesson.Note;
+          dbLesson.SchoolId = lesson.SchoolId;
+          dbLesson.Price = lesson.Price;
+          dbLesson.CurrencyId = lesson.CurrencyId;
+          dbLesson.Description = lesson.Description;
+          dbLesson.Note = lesson.Note;
         }
       }
       await _appDbContext.SaveChangesAsync();
@@ -77,12 +84,15 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
     {
       var result = await _appDbContext.SchoolLessons.AsNoTracking()
         .Include(x => x.School)
+        .Include(x => x.Currency)
         .Select(x => new SchoolLessonDTO
         {
           Id = x.Id,
           SchoolId = x.SchoolId,
           Name = x.Name,
           SchoolName = x.School.Name,
+          CurrencyCode = x.Currency.CurrencyCode,
+          CurrencyId = x.CurrencyId,
           Description = x.Description,
           Note = x.Note,
           Price = x.Price,
