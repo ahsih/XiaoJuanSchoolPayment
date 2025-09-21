@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Work\\XiaoJuanSchoolPayment\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\interface\\icurrencyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\interface\\icurrencyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\controllers\\currencycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\controllers\\currencycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -21,10 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\data\\dto\\currencydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\data\\dto\\currencydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\interface\\icurrencyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|solutionrelative:xiaojuanschoolpayment.server\\interface\\icurrencyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0541E26F-CDD4-4F84-B57B-63906806DD40}|XiaoJuanSchoolPayment.Server\\XiaoJuanSchoolPayment.Server.csproj|c:\\work\\xiaojuanschoolpayment\\xiaojuanschoolpayment.server\\services\\currency\\currencyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -78,30 +78,30 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "CurrencyController.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Controllers\\CurrencyController.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Controllers\\CurrencyController.cs",
               "ToolTip": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Controllers\\CurrencyController.cs",
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Controllers\\CurrencyController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABEAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAwAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-20T20:43:19.145Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 0,
               "Title": "ICurrencyService.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Interface\\ICurrencyService.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Interface\\ICurrencyService.cs",
               "ToolTip": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Interface\\ICurrencyService.cs",
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Interface\\ICurrencyService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAADAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-20T20:38:06.114Z",
               "EditorCaption": ""
@@ -116,12 +116,11 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Services\\Currency\\CurrencyService.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:37:48.639Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:37:48.639Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CurrencyDTO.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\DTO\\CurrencyDTO.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\DTO\\CurrencyDTO.cs",
@@ -129,12 +128,11 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\DTO\\CurrencyDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:32:37.962Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:32:37.962Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Currency.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Data\\Models\\Currency.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Data\\Models\\Currency.cs",
@@ -142,12 +140,11 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\Models\\Currency.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:25:07.039Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:25:07.039Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "DataInitialize.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Services\\DataInitialize.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Services\\DataInitialize.cs",
@@ -155,12 +152,11 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Services\\DataInitialize.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAkwCAAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:18:37.139Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:18:37.139Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "UserRoleInitialize.cs",
               "DocumentMoniker": "C:\\Work\\XiaoJuanSchoolPayment\\XiaoJuanSchoolPayment.Server\\Services\\UserRoleInitialize.cs",
               "RelativeDocumentMoniker": "XiaoJuanSchoolPayment.Server\\Services\\UserRoleInitialize.cs",
@@ -168,8 +164,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Services\\UserRoleInitialize.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:18:12.585Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:18:12.585Z"
             },
             {
               "$type": "Document",
@@ -181,8 +176,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAQwBAAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:16:52.423Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:16:52.423Z"
             },
             {
               "$type": "Document",
@@ -194,8 +188,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\Models\\SchoolLesson.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwA0AAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T20:04:24.792Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T20:04:24.792Z"
             },
             {
               "$type": "Document",
@@ -207,8 +200,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\DTO\\SchoolLessonDTO.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAA4wA0AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T17:00:24.067Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T17:00:24.067Z"
             },
             {
               "$type": "Document",
@@ -220,8 +212,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\Models\\School.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-20T09:31:40.363Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-20T09:31:40.363Z"
             },
             {
               "$type": "Document",
@@ -245,8 +236,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Data\\DTO\\SchoolDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T20:18:17.592Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T20:18:17.592Z"
             },
             {
               "$type": "Document",
@@ -258,8 +248,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Interface\\ISchoolService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T20:17:56.063Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T20:17:56.063Z"
             },
             {
               "$type": "Document",
@@ -271,8 +260,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Services\\School\\SchoolService.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAIwCQAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T20:17:41.276Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T20:17:41.276Z"
             },
             {
               "$type": "Document",
@@ -296,8 +284,7 @@
               "RelativeToolTip": "XiaoJuanSchoolPayment.Server\\Controllers\\SchoolController.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAgwBsAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T20:15:33.03Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-18T20:15:33.03Z"
             }
           ]
         }

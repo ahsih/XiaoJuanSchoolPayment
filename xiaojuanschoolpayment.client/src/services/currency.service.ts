@@ -9,7 +9,7 @@ import { CurrencyDTO } from '../interfaces/currency.dto';
 export class CurrencyService {
   private apiUrl = 'currency';
   constructor(private http: HttpClient) {}
-  getSchoolLessons(): Observable<CurrencyDTO[]> {
+  getCurrencies(): Observable<CurrencyDTO[]> {
     const token = localStorage.getItem('token');
     return this.http.get<CurrencyDTO[]>(`${this.apiUrl}/get-currencys`, {
       headers: {

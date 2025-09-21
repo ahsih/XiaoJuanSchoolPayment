@@ -7,6 +7,8 @@ import { MatSort } from '@angular/material/sort';
 import { SchoolService } from '../../../services/school.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SchoolDTO } from '../../../interfaces/school.dto';
+import { CurrencyService } from '../../../services/currency.service';
+import { CurrencyDTO } from '../../../interfaces/currency.dto';
 
 @Component({
   selector: 'app-admin-school-lessons',
@@ -29,6 +31,7 @@ export class AdminSchoolLessonsComponent {
   dataSource = new MatTableDataSource<SchoolLessonDTO>([]);
   schoolLessonDtos: SchoolLessonDTO[] = [];
   schoolDtos: SchoolDTO[] = [];
+  currencyDtos: CurrencyDTO[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -36,7 +39,8 @@ export class AdminSchoolLessonsComponent {
   constructor(
     private fb: FormBuilder,
     private schoolService: SchoolService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private currencyService: CurrencyService
   ) {
     this.schoolLessonsForm = this.fb.group({
       name: ['', Validators.required],
@@ -61,6 +65,7 @@ export class AdminSchoolLessonsComponent {
   ngOnInit(): void {
     this.loadSchools();
     this.loadSchoolLessons();
+    this.loadCurrencys();
   }
 
   ngAfterViewInit(): void {
@@ -92,6 +97,12 @@ export class AdminSchoolLessonsComponent {
       this.dataSource.paginator.firstPage();
     }
   }
+  private loadCurrencys() {
+    this.currencyService.getCurrencies().subscribe({
+      next: (rows) => (this.currencyDtos = rows ?? []),
+      error: (err) => console.error('Failed to load currencys', err),
+    });
+  }
 
   private loadSchools() {
     this.schoolService.getSchools().subscribe({
@@ -103,7 +114,7 @@ export class AdminSchoolLessonsComponent {
   private loadSchoolLessons() {
     this.schoolService.getSchoolLessons().subscribe({
       next: (rows) => (this.dataSource.data = rows ?? []),
-      error: (err) => console.error('Failed to load schools', err),
+      error: (err) => console.error('Failed to load lessons', err),
     });
   }
 

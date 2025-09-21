@@ -31,7 +31,7 @@
   <mat-form-field appearance="fill" style="width: 100%">
     <mat-label>价格单位</mat-label>
     <mat-select formControlName="currencyId">
-      <mat-option *ngFor="let currency of currencys" [value]="currency.id">
+      <mat-option *ngFor="let currency of currencyDtos" [value]="currency.id">
         {{ currency.symbol }} {{ currency.currencyCode }}
       </mat-option>
     </mat-select>
