@@ -22,7 +22,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut("save-school-lesson")]
+    [HttpPut("save-lesson")]
     public async Task<IActionResult> SaveSchoolLesson([FromBody] SchoolLessonDTO lesson, CancellationToken ct)
     {
       var result = await _schoolService.SaveSchoolLesson(lesson, ct);

@@ -82,6 +82,7 @@ export class AdminSchoolLessonsComponent {
         week: this.schoolLessonsForm.value.week,
         description: this.schoolLessonsForm.value.description,
         note: this.schoolLessonsForm.value.note,
+        currencyId: this.schoolLessonsForm.value.currencyId,
       } as SchoolLessonDTO;
       await this.schoolService.saveSchoolLesson(schoolLessonDTO);
       this.schoolLessonsForm.reset();

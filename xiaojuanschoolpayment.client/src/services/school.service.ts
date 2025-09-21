@@ -8,7 +8,7 @@ import { SchoolLessonDTO } from '../interfaces/school-lessons.dto';
   providedIn: 'root',
 })
 export class SchoolService {
-  private apiUrl = 'school';
+  private apiUrl = '/school';
   constructor(private http: HttpClient) {}
   saveSchool(school: SchoolDTO): Promise<any> {
     const token = localStorage.getItem('token');
@@ -18,21 +18,6 @@ export class SchoolService {
           Authorization: 'Bearer ' + token,
         },
       })
-    );
-  }
-
-  saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {
-    const token = localStorage.getItem('token');
-    return firstValueFrom(
-      this.http.put<SchoolLessonDTO>(
-        `${this.apiUrl}/save-school-lesson`,
-        schoolLesson,
-        {
-          headers: {
-            Authorization: 'Bearer ' + token,
-          },
-        }
-      )
     );
   }
 
@@ -55,5 +40,19 @@ export class SchoolService {
         },
       }
     );
+  }
+
+  saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {
+    const token = localStorage.getItem('token');
+    const body = { ...schoolLesson };
+
+    return firstValueFrom(
+      this.http.put<SchoolLessonDTO>(`/school/save-lesson`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    ).catch((err) => {
+      console.error('PUT /school/save-lesson failed:', err.status, err.error);
+      throw err;
+    });
   }
 }

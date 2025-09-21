@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;  
 using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Interface;
@@ -14,10 +14,13 @@ namespace XiaoJuanSchoolPayment.Server.Services.Currency
 
     public async Task<IList<CurrencyDTO>> GetCurrencyDTOs(CancellationToken cancellationToken)
     {
-      return await _appDbContext.SchoolCurrency.AsNoTracking().Select(x => new CurrencyDTO { 
+      var result = await _appDbContext.SchoolCurrency.AsNoTracking().Select(x => new CurrencyDTO
+      {
         Id = x.Id,
-        CurrencyCode  = x.CurrencyCode,
-        Symbol = x.Symbol }).ToListAsync(cancellationToken);
+        CurrencyCode = x.CurrencyCode,
+        Symbol = x.Symbol
+      }).ToListAsync(cancellationToken);
+      return result;
     }
   }
 }
