@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SchoolDTO } from '../interfaces/school.dto';
 import { firstValueFrom, Observable } from 'rxjs';
 import { SchoolLessonDTO } from '../interfaces/school-lessons.dto';
+import { SchoolRoomDTO } from '../interfaces/school-rooms.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,15 @@ export class SchoolService {
     );
   }
 
+  getSchoolRooms(): Observable<SchoolRoomDTO[]> {
+    const token = localStorage.getItem('token');
+    return this.http.get<SchoolRoomDTO[]>(`${this.apiUrl}/get-school-rooms`, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+  }
+
   saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {
     const token = localStorage.getItem('token');
     const body = { ...schoolLesson };
@@ -52,6 +62,20 @@ export class SchoolService {
       })
     ).catch((err) => {
       console.error('PUT /school/save-lesson failed:', err.status, err.error);
+      throw err;
+    });
+  }
+
+  saveSchoolRooms(schoolRoom: SchoolRoomDTO): Promise<any> {
+    const token = localStorage.getItem('token');
+    const body = { ...schoolRoom };
+
+    return firstValueFrom(
+      this.http.put<SchoolRoomDTO>(`/school/save-room`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    ).catch((err) => {
+      console.error('PUT /school/save-room failed:', err.status, err.error);
       throw err;
     });
   }

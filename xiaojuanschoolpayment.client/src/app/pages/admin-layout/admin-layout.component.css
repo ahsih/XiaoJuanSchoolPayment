@@ -9,7 +9,15 @@
   width: 220px;
   background: #2d3e50;
   color: #fff;
-  padding-top: 1rem; 
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.nav-links {
+  flex-grow: 1;
 }
 
 .sidebar ul {
@@ -37,4 +45,15 @@
 .content {
   flex: 1;
   padding: 1rem;
+}
+
+.logout a {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.logout a:hover {
+  background: #1a252f;
 }

@@ -1,6 +1,6 @@
 <div class="admin-container">
   <nav class="sidebar">
-    <ul>
+    <ul class="nav-links">
       <li>
         <a
           routerLink="/admin"
@@ -15,9 +15,14 @@
         >
       </li>
       <li>
-        <a routerLink="/admin/rooms" routerLinkActive="active">设置学校宿舍</a>
+        <a routerLink="/admin/school-rooms" routerLinkActive="active"
+          >设置学校宿舍</a
+        >
       </li>
     </ul>
+    <div class="logout">
+      <a (click)="logout()">退出登录</a>
+    </div>
   </nav>
 
   <main class="content">

@@ -74,6 +74,41 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
           dbLesson.CurrencyId = lesson.CurrencyId;
           dbLesson.Description = lesson.Description;
           dbLesson.Note = lesson.Note;
+          dbLesson.LastUpdated = DateTime.UtcNow;
+        }
+      }
+      await _appDbContext.SaveChangesAsync();
+      return true;
+    }
+
+
+    public async Task<bool> SaveSchoolRoom(SchoolRoomDTO room, CancellationToken cancellationToken)
+    {
+      if (room.Id == Guid.Empty)
+      {
+        _appDbContext.SchoolRooms.Add(new Data.Models.SchoolRoom
+        {
+          Name = room.Name,
+          SchoolId = room.SchoolId,
+          Price = room.Price,
+          CurrencyId = room.CurrencyId,
+          Description = room.Description,
+          LastUpdated = DateTime.UtcNow,
+          Week = room.Week,
+        });
+      }
+      else
+      {
+        var dbLesson = await _appDbContext.SchoolRooms.FirstOrDefaultAsync(x => x.Id == room.Id, cancellationToken);
+        if (dbLesson != null)
+        {
+          dbLesson.Name = room.Name;
+          dbLesson.Week = room.Week;
+          dbLesson.Description = room.Description;
+          dbLesson.SchoolId = room.SchoolId;
+          dbLesson.Price = room.Price;
+          dbLesson.CurrencyId = room.CurrencyId;
+          dbLesson.LastUpdated = DateTime.UtcNow;
         }
       }
       await _appDbContext.SaveChangesAsync();
@@ -98,6 +133,23 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
           Price = x.Price,
           Week = x.Week,
         }).ToListAsync(ct);
+      return result;
+    }
+
+    public async Task<IList<SchoolRoomDTO>> GetSchoolRooms(CancellationToken cancellationToken)
+    {
+      var result = await _appDbContext.SchoolRooms.AsNoTracking()
+        .Include(x => x.School)
+        .Include(x => x.Currency)
+        .Select(x => new SchoolRoomDTO
+        {
+          Id = x.Id,
+          Name = x.Name,
+          CurrencyId = x.CurrencyId,
+          Description = x.Description,
+          Price = x.Price,
+          SchoolId = x.SchoolId
+        }).ToListAsync(cancellationToken);
       return result;
     }
   }

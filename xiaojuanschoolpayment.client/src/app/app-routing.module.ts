@@ -7,6 +7,7 @@ import { RoleGuard } from '../guard/role.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.component';
 import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-school-lessons.component';
+import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-school-rooms.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
     children: [
       { path: '', component: AdminComponent },
       { path: 'school-lessons', component: AdminSchoolLessonsComponent },
+      { path: 'school-rooms', component: AdminSchoolRoomsComponent },
     ],
   },
   { path: 'register', component: RegisterComponent },

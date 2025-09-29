@@ -30,6 +30,14 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpPut("save-room")]
+    public async Task<IActionResult> SaveSchoolRoom([FromBody] SchoolRoomDTO lesson, CancellationToken ct)
+    {
+      var result = await _schoolService.SaveSchoolRoom(lesson, ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("get-schools")]
     public async Task<IActionResult> GetSchools(CancellationToken ct) { 
       var result = await _schoolService.GetSchools(ct);
@@ -41,6 +49,14 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     public async Task<IActionResult> GetSchoolLessons(CancellationToken ct)
     {
       var result = await _schoolService.GetSchoolLessons(ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-school-rooms")]
+    public async Task<IActionResult> GetSchoolRooms(CancellationToken ct)
+    {
+      var result = await _schoolService.GetSchoolRooms(ct);
       return Ok(result);
     }
   }
