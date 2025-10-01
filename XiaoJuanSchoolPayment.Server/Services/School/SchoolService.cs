@@ -99,16 +99,72 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       }
       else
       {
-        var dbLesson = await _appDbContext.SchoolRooms.FirstOrDefaultAsync(x => x.Id == room.Id, cancellationToken);
-        if (dbLesson != null)
+        var dbRoom = await _appDbContext.SchoolRooms.FirstOrDefaultAsync(x => x.Id == room.Id, cancellationToken);
+        if (dbRoom != null)
         {
-          dbLesson.Name = room.Name;
-          dbLesson.Week = room.Week;
-          dbLesson.Description = room.Description;
-          dbLesson.SchoolId = room.SchoolId;
-          dbLesson.Price = room.Price;
-          dbLesson.CurrencyId = room.CurrencyId;
-          dbLesson.LastUpdated = DateTime.UtcNow;
+          dbRoom.Name = room.Name;
+          dbRoom.Week = room.Week;
+          dbRoom.Description = room.Description;
+          dbRoom.SchoolId = room.SchoolId;
+          dbRoom.Price = room.Price;
+          dbRoom.CurrencyId = room.CurrencyId;
+          dbRoom.LastUpdated = DateTime.UtcNow;
+        }
+      }
+      await _appDbContext.SaveChangesAsync();
+      return true;
+    }
+
+    public async Task<bool> SaveSchoolFee(SchoolFeeDTO feeDTO, CancellationToken cancellationToken)
+    {
+      if (feeDTO.Id == Guid.Empty)
+      {
+        _appDbContext.SchoolFees.Add(new Data.Models.SchoolFee
+        {
+          Name = feeDTO.Name,
+          SchoolId = feeDTO.SchoolId,
+          Fee = feeDTO.Fee,
+          CurrencyId = feeDTO.CurrencyId,
+          Description = feeDTO.Description,
+          LastUpdated = DateTime.UtcNow,
+        });
+      }
+      else
+      {
+        var dbFee = await _appDbContext.SchoolFees.FirstOrDefaultAsync(x => x.Id == feeDTO.Id, cancellationToken);
+        if (dbFee != null)
+        {
+          dbFee.Name = feeDTO.Name;
+          dbFee.Description = feeDTO.Description;
+          dbFee.SchoolId = feeDTO.SchoolId;
+          dbFee.Fee = feeDTO.Fee;
+          dbFee.CurrencyId = feeDTO.CurrencyId;
+          dbFee.LastUpdated = DateTime.UtcNow;
+        }
+      }
+      await _appDbContext.SaveChangesAsync();
+      return true;
+    }
+
+    public async Task<bool> SaveSchoolNote(SchoolNoteDTO noteDto, CancellationToken cancellationToken)
+    {
+      if (noteDto.Id == Guid.Empty)
+      {
+        _appDbContext.SchoolNotes.Add(new Data.Models.SchoolNote
+        {
+          Notes = noteDto.Notes,
+          SchoolId = noteDto.SchoolId,
+          LastUpdated = DateTime.UtcNow,
+        });
+      }
+      else
+      {
+        var dbNote = await _appDbContext.SchoolNotes.FirstOrDefaultAsync(x => x.Id == noteDto.Id, cancellationToken);
+        if (dbNote != null)
+        {
+          dbNote.Notes = noteDto.Notes;
+          dbNote.SchoolId = noteDto.SchoolId;
+          dbNote.LastUpdated = DateTime.UtcNow;
         }
       }
       await _appDbContext.SaveChangesAsync();
@@ -148,7 +204,41 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
           CurrencyId = x.CurrencyId,
           Description = x.Description,
           Price = x.Price,
-          SchoolId = x.SchoolId
+          SchoolId = x.SchoolId,
+          Week = x.Week,
+          SchoolName = x.School != null ? x.School.Name : "",
+        }).ToListAsync(cancellationToken);
+      return result;
+    }
+
+    public async Task<IList<SchoolFeeDTO>> GetSchoolFees(CancellationToken cancellationToken)
+    {
+      var result = await _appDbContext.SchoolFees.AsNoTracking()
+        .Include(x => x.School)
+        .Include(x => x.Currency)
+        .Select(x => new SchoolFeeDTO
+        {
+          Id = x.Id,
+          Name = x.Name,
+          CurrencyId = x.CurrencyId,
+          Description = x.Description,
+          Fee = x.Fee,
+          SchoolId = x.SchoolId,
+          SchoolName = x.School != null ? x.School.Name : "",
+        }).ToListAsync(cancellationToken);
+      return result;
+    }
+
+    public async Task<IList<SchoolNoteDTO>> GetSchoolNotes(CancellationToken cancellationToken)
+    {
+      var result = await _appDbContext.SchoolNotes.AsNoTracking()
+        .Include(x => x.School)
+        .Select(x => new SchoolNoteDTO
+        {
+          Id = x.Id,
+          Notes = x.Notes,
+          SchoolId = x.SchoolId,
+          SchoolName = x.School != null ? x.School.Name : "",
         }).ToListAsync(cancellationToken);
       return result;
     }

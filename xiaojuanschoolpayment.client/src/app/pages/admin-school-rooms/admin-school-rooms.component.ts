@@ -121,7 +121,7 @@ export class AdminSchoolRoomsComponent {
       width: '560px',
       disableClose: true,
       data: {
-        lesson: row,
+        room: row,
         schools: this.schoolDtos,
         currencies: this.currencyDtos,
       },
@@ -129,7 +129,7 @@ export class AdminSchoolRoomsComponent {
     const updated = await firstValueFrom(dialogRef.afterClosed());
     if (!updated) return;
     try {
-      await this.schoolService.saveSchoolLesson(updated);
+      await this.schoolService.saveSchoolRooms(updated);
       await this.loadSchoolRooms();
     } catch (err) {
       console.error('Failed to save lesson', err);

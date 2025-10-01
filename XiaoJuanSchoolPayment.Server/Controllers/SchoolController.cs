@@ -38,6 +38,22 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpPut("save-school-fee")]
+    public async Task<IActionResult> SaveSchoolFee([FromBody] SchoolFeeDTO feeDTO, CancellationToken ct)
+    {
+      var result = await _schoolService.SaveSchoolFee(feeDTO, ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("save-school-note")]
+    public async Task<IActionResult> SaveSchoolNote([FromBody] SchoolNoteDTO noteDto, CancellationToken ct)
+    {
+      var result = await _schoolService.SaveSchoolNote(noteDto, ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("get-schools")]
     public async Task<IActionResult> GetSchools(CancellationToken ct) { 
       var result = await _schoolService.GetSchools(ct);
@@ -57,6 +73,22 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     public async Task<IActionResult> GetSchoolRooms(CancellationToken ct)
     {
       var result = await _schoolService.GetSchoolRooms(ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-school-fees")]
+    public async Task<IActionResult> GetSchoolFees(CancellationToken ct)
+    {
+      var result = await _schoolService.GetSchoolFees(ct);
+      return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("get-school-notes")]
+    public async Task<IActionResult> GetSchoolNotes(CancellationToken ct)
+    {
+      var result = await _schoolService.GetSchoolNotes(ct);
       return Ok(result);
     }
   }
