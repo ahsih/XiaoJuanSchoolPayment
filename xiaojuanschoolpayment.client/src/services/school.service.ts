@@ -4,6 +4,8 @@ import { SchoolDTO } from '../interfaces/school.dto';
 import { firstValueFrom, Observable } from 'rxjs';
 import { SchoolLessonDTO } from '../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../interfaces/school-rooms.dto';
+import { SchoolFeeDTO } from '../interfaces/school-fees.dto';
+import { SchoolNoteDTO } from '../interfaces/school-notes.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +54,24 @@ export class SchoolService {
     });
   }
 
+  getSchoolFees(): Observable<SchoolFeeDTO[]> {
+    const token = localStorage.getItem('token');
+    return this.http.get<SchoolFeeDTO[]>(`${this.apiUrl}/get-school-fees`, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+  }
+
+  getSchoolNotes(): Observable<SchoolNoteDTO[]> {
+    const token = localStorage.getItem('token');
+    return this.http.get<SchoolNoteDTO[]>(`${this.apiUrl}/get-school-notes`, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+  }
+
   saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {
     const token = localStorage.getItem('token');
     const body = { ...schoolLesson };
@@ -76,6 +96,42 @@ export class SchoolService {
       })
     ).catch((err) => {
       console.error('PUT /school/save-room failed:', err.status, err.error);
+      throw err;
+    });
+  }
+
+  saveSchoolFee(schoolFee: SchoolFeeDTO): Promise<any> {
+    const token = localStorage.getItem('token');
+    const body = { ...schoolFee };
+
+    return firstValueFrom(
+      this.http.put<SchoolFeeDTO>(`/school/save-school-fee`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    ).catch((err) => {
+      console.error(
+        'PUT /school/save-school-fee failed:',
+        err.status,
+        err.error
+      );
+      throw err;
+    });
+  }
+
+  saveSchoolNote(schoolNote: SchoolNoteDTO): Promise<any> {
+    const token = localStorage.getItem('token');
+    const body = { ...schoolNote };
+
+    return firstValueFrom(
+      this.http.put<SchoolNoteDTO>(`/school/save-school-note`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    ).catch((err) => {
+      console.error(
+        'PUT /school/save-school-note failed:',
+        err.status,
+        err.error
+      );
       throw err;
     });
   }

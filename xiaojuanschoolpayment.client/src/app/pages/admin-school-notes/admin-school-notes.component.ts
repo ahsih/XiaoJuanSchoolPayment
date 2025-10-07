@@ -1,37 +1,29 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SchoolRoomDTO } from '../../../interfaces/school-rooms.dto';
-import { MatTableDataSource } from '@angular/material/table';
+import { SchoolNoteDTO } from '../../../interfaces/school-notes.dto';
 import { SchoolDTO } from '../../../interfaces/school.dto';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
 import { CurrencyDTO } from '../../../interfaces/currency.dto';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SchoolService } from '../../../services/school.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CurrencyService } from '../../../services/currency.service';
+import { EditSchoolNoteDialogComponent } from './edit-school-note-dialog/edit-school-note-dialog.component';
 import { firstValueFrom } from 'rxjs';
-import { EditSchoolRoomDialogComponent } from './edit-school-room-dialog/edit-school-room-dialog.component';
 
 @Component({
-  selector: 'app-admin-school-rooms',
+  selector: 'app-admin-school-notes',
   standalone: false,
-  templateUrl: './admin-school-rooms.component.html',
-  styleUrl: './admin-school-rooms.component.css',
+  templateUrl: './admin-school-notes.component.html',
+  styleUrl: './admin-school-notes.component.css',
 })
-export class AdminSchoolRoomsComponent {
-  schoolRoomsForm: FormGroup;
+export class AdminSchoolNotesComponent {
+  schoolNotesForm: FormGroup;
 
-  displayedColumns: string[] = [
-    'schoolName',
-    'name',
-    'week',
-    'price',
-    'currencyCode',
-    'description',
-    'actions',
-  ];
-  dataSource = new MatTableDataSource<SchoolRoomDTO>([]);
-  schoolRoomDtos: SchoolRoomDTO[] = [];
+  displayedColumns: string[] = ['schoolName', 'note', 'actions'];
+  dataSource = new MatTableDataSource<SchoolNoteDTO>([]);
+  schoolFeetos: SchoolNoteDTO[] = [];
   schoolDtos: SchoolDTO[] = [];
   currencyDtos: CurrencyDTO[] = [];
 
@@ -44,25 +36,21 @@ export class AdminSchoolRoomsComponent {
     private matDialog: MatDialog,
     private currencyService: CurrencyService
   ) {
-    this.schoolRoomsForm = this.fb.group({
-      name: ['', Validators.required],
-      week: ['', Validators.required],
-      price: ['', Validators.required],
-      description: [''],
+    this.schoolNotesForm = this.fb.group({
+      note: ['', Validators.required],
       schoolId: [''],
-      currencyId: [''],
     });
 
-    this.dataSource.filterPredicate = (data: SchoolRoomDTO, filter: string) => {
+    this.dataSource.filterPredicate = (data: SchoolNoteDTO, filter: string) => {
       const term = filter.trim().toLowerCase();
-      const name = (data.name ?? '').toLowerCase();
+      const name = (data.notes ?? '').toLowerCase();
       return name.includes(term);
     };
   }
 
   ngOnInit(): void {
     this.loadSchools();
-    this.loadSchoolRooms();
+    this.loadSchoolNotes();
     this.loadCurrencys();
   }
 
@@ -72,18 +60,14 @@ export class AdminSchoolRoomsComponent {
   }
 
   async submit() {
-    if (this.schoolRoomsForm.valid) {
-      const schoolRoomDTO = {
-        name: this.schoolRoomsForm.value.name,
-        price: this.schoolRoomsForm.value.price,
-        schoolId: this.schoolRoomsForm.value.schoolId,
-        week: this.schoolRoomsForm.value.week,
-        description: this.schoolRoomsForm.value.description,
-        currencyId: this.schoolRoomsForm.value.currencyId,
-      } as SchoolRoomDTO;
-      await this.schoolService.saveSchoolRooms(schoolRoomDTO);
-      this.schoolRoomsForm.reset();
-      this.loadSchoolRooms();
+    if (this.schoolNotesForm.valid) {
+      const schoolNotesDTO = {
+        notes: this.schoolNotesForm.value.note,
+        schoolId: this.schoolNotesForm.value.schoolId,
+      } as SchoolNoteDTO;
+      await this.schoolService.saveSchoolNote(schoolNotesDTO);
+      this.schoolNotesForm.reset();
+      this.loadSchoolNotes();
     }
   }
 
@@ -109,19 +93,19 @@ export class AdminSchoolRoomsComponent {
     });
   }
 
-  private loadSchoolRooms() {
-    this.schoolService.getSchoolRooms().subscribe({
+  private loadSchoolNotes() {
+    this.schoolService.getSchoolNotes().subscribe({
       next: (rows) => (this.dataSource.data = rows ?? []),
-      error: (err) => console.error('Failed to load rooms', err),
+      error: (err) => console.error('Failed to load notes', err),
     });
   }
 
-  async edit(row: SchoolRoomDTO) {
-    const dialogRef = this.matDialog.open(EditSchoolRoomDialogComponent, {
+  async edit(row: SchoolNoteDTO) {
+    const dialogRef = this.matDialog.open(EditSchoolNoteDialogComponent, {
       width: '560px',
       disableClose: true,
       data: {
-        room: row,
+        note: row,
         schools: this.schoolDtos,
         currencies: this.currencyDtos,
       },
@@ -129,10 +113,10 @@ export class AdminSchoolRoomsComponent {
     const updated = await firstValueFrom(dialogRef.afterClosed());
     if (!updated) return;
     try {
-      await this.schoolService.saveSchoolRooms(updated);
-      await this.loadSchoolRooms();
+      await this.schoolService.saveSchoolNote(updated);
+      await this.loadSchoolNotes();
     } catch (err) {
-      console.error('Failed to save rooms', err);
+      console.error('Failed to save note', err);
     }
   }
 }

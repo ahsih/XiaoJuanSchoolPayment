@@ -9,6 +9,7 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public decimal Price { get; set; }
     public int CurrencyId { get; set; }
     public string? Description { get; set; }
+    public string? CurrencyCode { get; set; }
     public Guid SchoolId { get; set; }
     public int Week { get; set; }
     public string? SchoolName { get; set; }

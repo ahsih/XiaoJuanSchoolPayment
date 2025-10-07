@@ -8,6 +8,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { AdminLayoutComponent } from './pages/admin-layout/admin-layout.component';
 import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-school-lessons.component';
 import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-school-rooms.component';
+import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school-fees.component';
+import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +22,8 @@ const routes: Routes = [
       { path: '', component: AdminComponent },
       { path: 'school-lessons', component: AdminSchoolLessonsComponent },
       { path: 'school-rooms', component: AdminSchoolRoomsComponent },
+      { path: 'school-fees', component: AdminSchoolFeesComponent },
+      { path: 'school-notes', component: AdminSchoolNotesComponent },
     ],
   },
   { path: 'register', component: RegisterComponent },
