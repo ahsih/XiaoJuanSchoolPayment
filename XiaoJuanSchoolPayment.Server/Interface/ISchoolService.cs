@@ -1,4 +1,5 @@
 ﻿using XiaoJuanSchoolPayment.Server.Data.DTO;
+using XiaoJuanSchoolPayment.Server.Data.Filter;
 
 namespace XiaoJuanSchoolPayment.Server.Interface
 {
@@ -9,10 +10,10 @@ namespace XiaoJuanSchoolPayment.Server.Interface
     public Task<bool> SaveSchoolRoom(SchoolRoomDTO room, CancellationToken cancellationToken);
     public Task<bool> SaveSchoolFee(SchoolFeeDTO feeDto, CancellationToken cancellationToken);
     public Task<bool> SaveSchoolNote(SchoolNoteDTO note, CancellationToken cancellationToken);
-    public Task<IList<SchoolDTO>> GetSchools(CancellationToken cancellationToken);
-    public Task<IList<SchoolLessonDTO>> GetSchoolLessons(CancellationToken cancellationToken);
-    public Task<IList<SchoolRoomDTO>> GetSchoolRooms(CancellationToken cancellationToken);
-    public Task<IList<SchoolFeeDTO>> GetSchoolFees(CancellationToken cancellationToken);
-    public Task<IList<SchoolNoteDTO>> GetSchoolNotes(CancellationToken cancellationToken);
+    public Task<IList<SchoolDTO>> GetSchools(SchoolFilter filter,CancellationToken cancellationToken);
+    public Task<IList<SchoolLessonDTO>> GetSchoolLessons(LessonFilter filter,CancellationToken cancellationToken);
+    public Task<IList<SchoolRoomDTO>> GetSchoolRooms(SchoolRoomFilter filter,CancellationToken cancellationToken);
+    public Task<IList<SchoolFeeDTO>> GetSchoolFees(SchoolFeeFilter filter,CancellationToken cancellationToken);
+    public Task<IList<SchoolNoteDTO>> GetSchoolNotes(SchoolNoteFilter filter,CancellationToken cancellationToken);
   }
 }
