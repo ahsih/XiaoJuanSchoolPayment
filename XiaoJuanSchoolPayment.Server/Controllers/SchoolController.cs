@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
+using XiaoJuanSchoolPayment.Server.Data.Filter;
 using XiaoJuanSchoolPayment.Server.Interface;
 
 namespace XiaoJuanSchoolPayment.Server.Controllers
@@ -55,40 +56,40 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
 
     [Authorize(Roles = "Admin")]
     [HttpGet("get-schools")]
-    public async Task<IActionResult> GetSchools(CancellationToken ct) { 
-      var result = await _schoolService.GetSchools(ct);
+    public async Task<IActionResult> GetSchools([FromQuery]SchoolFilter filter,CancellationToken ct) { 
+      var result = await _schoolService.GetSchools(filter,ct);
       return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpGet("get-school-lessons")]
-    public async Task<IActionResult> GetSchoolLessons(CancellationToken ct)
+    public async Task<IActionResult> GetSchoolLessons([FromQuery] LessonFilter filter, CancellationToken ct)
     {
-      var result = await _schoolService.GetSchoolLessons(ct);
+      var result = await _schoolService.GetSchoolLessons(filter,ct);
       return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpGet("get-school-rooms")]
-    public async Task<IActionResult> GetSchoolRooms(CancellationToken ct)
+    public async Task<IActionResult> GetSchoolRooms([FromQuery] SchoolRoomFilter filter,CancellationToken ct)
     {
-      var result = await _schoolService.GetSchoolRooms(ct);
+      var result = await _schoolService.GetSchoolRooms(filter,ct);
       return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpGet("get-school-fees")]
-    public async Task<IActionResult> GetSchoolFees(CancellationToken ct)
+    public async Task<IActionResult> GetSchoolFees([FromQuery] SchoolFeeFilter filter,CancellationToken ct)
     {
-      var result = await _schoolService.GetSchoolFees(ct);
+      var result = await _schoolService.GetSchoolFees(filter,ct);
       return Ok(result);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpGet("get-school-notes")]
-    public async Task<IActionResult> GetSchoolNotes(CancellationToken ct)
+    public async Task<IActionResult> GetSchoolNotes([FromQuery] SchoolNoteFilter filter,CancellationToken ct)
     {
-      var result = await _schoolService.GetSchoolNotes(ct);
+      var result = await _schoolService.GetSchoolNotes(filter,ct);
       return Ok(result);
     }
   }
