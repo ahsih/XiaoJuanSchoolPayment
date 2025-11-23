@@ -1,7 +1,7 @@
 <div class="container">
   <h2>School Setup</h2>
 
-  <form [formGroup]="form" class="grid">
+  <form [formGroup]="schoolForm" class="grid">
     <!-- School -->
     <mat-form-field appearance="fill">
       <mat-label>School</mat-label>
@@ -16,11 +16,14 @@
     <!--Lessons-->
     <mat-form-field *ngIf="" appearance="fill">
       <mat-label>Lesson</mat-label>
-      <mat-select formControlName="lessonId" [disabled]="lessons.length === 0">
+      <mat-select
+        formControlName="lessonId"
+        [disabled]="schoolLessons.length === 0"
+      >
         <mat-option value="">Select a lesson</mat-option>
-        <mat-option *ngFor="let l of lessons" [value]="l.id">
-          {{ l.title }} <span *ngIf="l.time">— {{ l.time }}</span>
-          <span *ngIf="l.teacher"> ({{ l.teacher }})</span>
+        <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
+          {{ l.name }}
+          <span *ngIf="l.price"> ({{ l.price }})</span>
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -28,9 +31,12 @@
     <!-- Rooms -->
     <mat-form-field appearance="fill">
       <mat-label>School Room</mat-label>
-      <mat-select formControlName="roomId" [disabled]="rooms.length === 0">
+      <mat-select
+        formControlName="roomId"
+        [disabled]="schoolRooms.length === 0"
+      >
         <mat-option value="">Select a room</mat-option>
-        <mat-option *ngFor="let r of rooms" [value]="r.id">
+        <mat-option *ngFor="let r of schoolRooms" [value]="r.id">
           {{ r.name }}
         </mat-option>
       </mat-select>
@@ -39,10 +45,10 @@
     <!-- Fees -->
     <mat-form-field appearance="fill">
       <mat-label>School Fee</mat-label>
-      <mat-select formControlName="feeId" [disabled]="fees.length === 0">
+      <mat-select formControlName="feeId" [disabled]="schololFees.length === 0">
         <mat-option value="">Select a fee</mat-option>
-        <mat-option *ngFor="let f of fees" [value]="f.id">
-          {{ f.label }} — {{ f.amount | currency : "GBP" : "symbol" }}/term
+        <mat-option *ngFor="let f of schololFees" [value]="f.id">
+          {{ f.name }} — {{ f.fee | currency : "GBP" : "symbol" }}/term
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -50,10 +56,10 @@
     <!-- Notes -->
     <mat-form-field appearance="fill">
       <mat-label>School Note</mat-label>
-      <mat-select formControlName="note" [disabled]="notes.length === 0">
+      <mat-select formControlName="note" [disabled]="schoolNotes.length === 0">
         <mat-option value="">Select a note</mat-option>
-        <mat-option *ngFor="let n of notes" [value]="n">
-          {{ n }}
+        <mat-option *ngFor="let n of schoolNotes" [value]="n">
+          {{ n.notes }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -64,12 +70,12 @@
       mat-raised-button
       color="primary"
       (click)="submit()"
-      [disabled]="form.invalid"
+      [disabled]="schoolForm.invalid"
     >
       Save
     </button>
     <button mat-button (click)="reset()">Reset</button>
   </div>
 
-  <pre>{{ form.value | json }}</pre>
+  <pre>{{ schoolForm.value | json }}</pre>
 </div>
