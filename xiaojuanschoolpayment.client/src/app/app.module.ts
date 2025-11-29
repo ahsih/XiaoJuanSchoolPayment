@@ -32,6 +32,7 @@ import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school
 import { EditSchoolFeeDialogComponent } from './pages/admin-school-fees/edit-school-fee-dialog/edit-school-fee-dialog.component';
 import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
 import { EditSchoolNoteDialogComponent } from './pages/admin-school-notes/edit-school-note-dialog/edit-school-note-dialog.component';
+import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { EditSchoolNoteDialogComponent } from './pages/admin-school-notes/edit-s
     AdminSchoolRoomsComponent,
     AdminSchoolFeesComponent,
     AdminSchoolNotesComponent,
+    MainNavbarComponent,
   ],
   imports: [
     BrowserModule,

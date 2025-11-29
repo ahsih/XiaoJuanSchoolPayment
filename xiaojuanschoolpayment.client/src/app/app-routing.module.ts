@@ -10,9 +10,18 @@ import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-
 import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-school-rooms.component';
 import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school-fees.component';
 import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
+import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  {
+    path: '',
+    component: MainNavbarComponent,
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'register', component: RegisterComponent },
+      { path: 'login', component: LoginComponent },
+    ],
+  },
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -26,8 +35,6 @@ const routes: Routes = [
       { path: 'school-notes', component: AdminSchoolNotesComponent },
     ],
   },
-  { path: 'register', component: RegisterComponent },
-  { path: 'login', component: LoginComponent },
   { path: '**', redirectTo: '' },
 ];
 
