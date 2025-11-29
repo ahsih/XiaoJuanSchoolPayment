@@ -54,14 +54,12 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("get-schools")]
     public async Task<IActionResult> GetSchools([FromQuery]SchoolFilter filter,CancellationToken ct) { 
       var result = await _schoolService.GetSchools(filter,ct);
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("get-school-lessons")]
     public async Task<IActionResult> GetSchoolLessons([FromQuery] LessonFilter filter, CancellationToken ct)
     {
@@ -69,7 +67,6 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("get-school-rooms")]
     public async Task<IActionResult> GetSchoolRooms([FromQuery] SchoolRoomFilter filter,CancellationToken ct)
     {
@@ -77,7 +74,6 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("get-school-fees")]
     public async Task<IActionResult> GetSchoolFees([FromQuery] SchoolFeeFilter filter,CancellationToken ct)
     {
@@ -85,7 +81,6 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet("get-school-notes")]
     public async Task<IActionResult> GetSchoolNotes([FromQuery] SchoolNoteFilter filter,CancellationToken ct)
     {

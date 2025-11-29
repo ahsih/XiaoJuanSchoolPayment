@@ -1,0 +1,109 @@
+.page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Background image – set your own URL later */
+  /*background-image: url("/assets/images/school-background.jpg");*/
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.background-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); /* darken a bit so content is readable */
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+}
+
+.setup-card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.school-avatar {
+  background: radial-gradient(circle at 30% 30%, #ffffff, #1976d2);
+}
+
+/* Form layout */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Summary section */
+.summary-section {
+  margin-top: 24px;
+}
+
+.summary-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(25, 118, 210, 0.06);
+  border: 1px solid rgba(25, 118, 210, 0.2);
+}
+
+.summary-card--empty {
+  background: rgba(255, 255, 255, 0.06);
+  border-style: dashed;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.summary-amount {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.summary-period {
+  font-size: 0.9rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-left: 4px;
+}
+
+.summary-name {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.summary-helper {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px 20px;
+}
+
+/* Optional debug */
+.debug {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #777;
+}

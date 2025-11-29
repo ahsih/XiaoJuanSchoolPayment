@@ -125,4 +125,11 @@ export class HomeComponent implements OnInit {
     this.schololFees = [];
     this.schoolNotes = [];
   }
+
+  selectedFee: any | null = null;
+
+  onFeeChange(feeId: string) {
+    this.selectedFee =
+      this.schololFees.find((f: any) => f.id === feeId) || null;
+  }
 }

@@ -1,81 +1,132 @@
-<div class="container">
-  <h2>School Setup</h2>
-
-  <form [formGroup]="schoolForm" class="grid">
-    <!-- School -->
-    <mat-form-field appearance="fill">
-      <mat-label>School</mat-label>
-      <mat-select formControlName="schoolId">
-        <mat-option value="">Select a school</mat-option>
-        <mat-option *ngFor="let s of schools" [value]="s.id">
-          {{ s.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!--Lessons-->
-    <mat-form-field *ngIf="" appearance="fill">
-      <mat-label>Lesson</mat-label>
-      <mat-select
-        formControlName="lessonId"
-        [disabled]="schoolLessons.length === 0"
-      >
-        <mat-option value="">Select a lesson</mat-option>
-        <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
-          {{ l.name }}
-          <span *ngIf="l.price"> ({{ l.price }})</span>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Rooms -->
-    <mat-form-field appearance="fill">
-      <mat-label>School Room</mat-label>
-      <mat-select
-        formControlName="roomId"
-        [disabled]="schoolRooms.length === 0"
-      >
-        <mat-option value="">Select a room</mat-option>
-        <mat-option *ngFor="let r of schoolRooms" [value]="r.id">
-          {{ r.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Fees -->
-    <mat-form-field appearance="fill">
-      <mat-label>School Fee</mat-label>
-      <mat-select formControlName="feeId" [disabled]="schololFees.length === 0">
-        <mat-option value="">Select a fee</mat-option>
-        <mat-option *ngFor="let f of schololFees" [value]="f.id">
-          {{ f.name }} — {{ f.fee | currency : "GBP" : "symbol" }}/term
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <!-- Notes -->
-    <mat-form-field appearance="fill">
-      <mat-label>School Note</mat-label>
-      <mat-select formControlName="note" [disabled]="schoolNotes.length === 0">
-        <mat-option value="">Select a note</mat-option>
-        <mat-option *ngFor="let n of schoolNotes" [value]="n">
-          {{ n.notes }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-
-  <div class="actions">
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="submit()"
-      [disabled]="schoolForm.invalid"
-    >
-      Save
-    </button>
-    <button mat-button (click)="reset()">Reset</button>
+<div class="page-wrapper">
+  <div class="background-overlay">
+    <!-- This overlay sits on top of your background image for readability -->
   </div>
 
-  <pre>{{ schoolForm.value | json }}</pre>
+  <div class="content">
+    <mat-card class="setup-card mat-elevation-z8">
+      <mat-card-header>
+        <div mat-card-avatar class="school-avatar"></div>
+        <mat-card-title>School Setup</mat-card-title>
+        <mat-card-subtitle>
+          Choose a school, lesson, room and fee to configure the term.
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="schoolForm" class="form-grid">
+          <!-- School -->
+          <mat-form-field appearance="fill">
+            <mat-label>School</mat-label>
+            <mat-select formControlName="schoolId">
+              <mat-option value="">Select a school</mat-option>
+              <mat-option *ngFor="let s of schools" [value]="s.id">
+                {{ s.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Lessons -->
+          <mat-form-field appearance="fill" *ngIf="schoolLessons.length > 0">
+            <mat-label>Lesson</mat-label>
+            <mat-select
+              formControlName="lessonId"
+              [disabled]="schoolLessons.length === 0"
+            >
+              <mat-option value="">Select a lesson</mat-option>
+              <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
+                {{ l.name }}
+                <span *ngIf="l.price">
+                  ({{ l.price | currency : "GBP" : "symbol" }})</span
+                >
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Rooms -->
+          <mat-form-field appearance="fill">
+            <mat-label>School Room</mat-label>
+            <mat-select
+              formControlName="roomId"
+              [disabled]="schoolRooms.length === 0"
+            >
+              <mat-option value="">Select a room</mat-option>
+              <mat-option *ngFor="let r of schoolRooms" [value]="r.id">
+                {{ r.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Fees -->
+          <mat-form-field appearance="fill">
+            <mat-label>School Fee</mat-label>
+            <mat-select
+              formControlName="feeId"
+              [disabled]="schololFees.length === 0"
+              (selectionChange)="onFeeChange($event.value)"
+            >
+              <mat-option value="">Select a fee</mat-option>
+              <mat-option *ngFor="let f of schololFees" [value]="f.id">
+                {{ f.name }} — {{ f.fee | currency : "GBP" : "symbol" }}/term
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Notes -->
+          <mat-form-field appearance="fill">
+            <mat-label>School Note</mat-label>
+            <mat-select
+              formControlName="note"
+              [disabled]="schoolNotes.length === 0"
+            >
+              <mat-option value="">Select a note</mat-option>
+              <mat-option *ngFor="let n of schoolNotes" [value]="n">
+                {{ n.notes }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+
+        <!-- Fee summary -->
+        <div class="summary-section">
+          <div class="summary-card" *ngIf="selectedFee; else noFee">
+            <div class="summary-label">Selected Fee</div>
+            <div class="summary-amount">
+              {{ selectedFee.fee | currency : "GBP" : "symbol" }}
+              <span class="summary-period">/ term</span>
+            </div>
+            <div class="summary-name">
+              {{ selectedFee.name }}
+            </div>
+          </div>
+
+          <ng-template #noFee>
+            <div class="summary-card summary-card--empty">
+              <div class="summary-label">No fee selected</div>
+              <div class="summary-helper">
+                Choose a school and fee to see the term price here.
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="submit()"
+          [disabled]="schoolForm.invalid"
+        >
+          Save
+        </button>
+        <button mat-button type="button" (click)="reset()">Reset</button>
+      </mat-card-actions>
+
+      <!-- Debug output (optional - remove in production) -->
+      <mat-card-content class="debug" *ngIf="false">
+        <pre>{{ schoolForm.value | json }}</pre>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
