@@ -1,59 +1,105 @@
-<h2>Register</h2>
+<div class="register-container">
+  <h2>Register</h2>
 
-<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+  <form
+    [formGroup]="registerForm"
+    (ngSubmit)="onSubmit()"
+    class="register-form"
+  >
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" required />
+      <mat-error
+        *ngIf="
+          registerForm.get('email')?.invalid &&
+          registerForm.get('email')?.touched
+        "
+      >
+        Valid email is required.
+      </mat-error>
+    </mat-form-field>
 
-  <!-- Email -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Email</mat-label>
-    <input matInput type="email" formControlName="email" required>
-    <mat-error *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-      Valid email is required.
-    </mat-error>
-  </mat-form-field>
+    <!-- Password -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+        required
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hidePassword = !hidePassword"
+      >
+        <mat-icon>{{
+          hidePassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+      <mat-error
+        *ngIf="
+          registerForm.get('password')?.invalid &&
+          registerForm.get('password')?.touched
+        "
+      >
+        Password is required.
+      </mat-error>
+    </mat-form-field>
 
-  <!-- Password -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Password</mat-label>
-    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
-    <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-      <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+    <!-- Access Code -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Access Code</mat-label>
+      <input matInput type="email" formControlName="accessCode" required />
+      <mat-error
+        *ngIf="
+          registerForm.get('accessCode')?.invalid &&
+          registerForm.get('accessCode')?.touched
+        "
+      >
+        Access code is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- First & Last Name -->
+    <div class="name-fields">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" required />
+        <mat-error
+          *ngIf="
+            registerForm.get('firstName')?.invalid &&
+            registerForm.get('firstName')?.touched
+          "
+        >
+          First name is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" required />
+        <mat-error
+          *ngIf="
+            registerForm.get('lastName')?.invalid &&
+            registerForm.get('lastName')?.touched
+          "
+        >
+          Last name is required.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="registerForm.invalid && loading"
+    >
+      Register
     </button>
-    <mat-error *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-      Password is required.
-    </mat-error>
-  </mat-form-field>
-
-  <!-- Access Code -->
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Access Code</mat-label>
-    <input matInput type="email" formControlName="accessCode" required>
-    <mat-error *ngIf="registerForm.get('accessCode')?.invalid && registerForm.get('accessCode')?.touched">
-      Access code is required.
-    </mat-error>
-  </mat-form-field>
-
-  <!-- First & Last Name -->
-  <div class="name-fields">
-    <mat-form-field appearance="outline" class="half-width">
-      <mat-label>First Name</mat-label>
-      <input matInput formControlName="firstName" required>
-      <mat-error *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
-        First name is required.
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="half-width">
-      <mat-label>Last Name</mat-label>
-      <input matInput formControlName="lastName" required>
-      <mat-error *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
-        Last name is required.
-      </mat-error>
-    </mat-form-field>
-  </div>
-
-  <!-- Submit Button -->
-  <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid && loading">
-    Register
-  </button>
-
-</form>
+  </form>
+</div>

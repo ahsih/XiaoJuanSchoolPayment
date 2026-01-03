@@ -10,9 +10,13 @@
         <mat-card-content class="section-body">
           <div class="form-grid">
             <!-- School -->
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" *ngIf="schools.length > 0">
               <mat-label>School</mat-label>
-              <mat-select formControlName="schoolId">
+              <mat-select
+                formControlName="schoolId"
+                *ngIf="schools.length > 0"
+                [disabled]="schools.length === 0"
+              >
                 <mat-option value="">Select a school</mat-option>
                 <mat-option *ngFor="let s of schools" [value]="s.id">
                   {{ s.name }}
@@ -25,6 +29,7 @@
               <mat-label>Lesson</mat-label>
               <mat-select
                 formControlName="lessonId"
+                *ngIf="schoolLessons.length > 0"
                 [disabled]="schoolLessons.length === 0"
               >
                 <mat-option value="">Select a lesson</mat-option>
@@ -38,10 +43,11 @@
             </mat-form-field>
 
             <!-- Fees -->
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" *ngIf="schololFees.length > 0">
               <mat-label>School Fee</mat-label>
               <mat-select
                 formControlName="feeId"
+                *ngIf="schololFees.length > 0"
                 [disabled]="schololFees.length === 0"
               >
                 <mat-option value="">Select a fee</mat-option>
@@ -61,9 +67,10 @@
         <mat-card-content class="section-body">
           <div class="form-grid">
             <!-- Rooms -->
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" *ngIf="schoolRooms.length > 0">
               <mat-label>School Room</mat-label>
               <mat-select
+                *ngIf="schoolRooms.length > 0"
                 formControlName="roomId"
                 [disabled]="schoolRooms.length === 0"
               >
@@ -84,23 +91,16 @@
         <mat-card-content class="section-body">
           <div class="form-grid single-column">
             <!-- Notes -->
-            <mat-form-field appearance="fill" class="full-width">
-              <mat-label>School Note</mat-label>
-              <mat-select
-                formControlName="note"
-                [disabled]="schoolNotes.length === 0"
-              >
-                <mat-option value="">Select a note</mat-option>
-                <mat-option *ngFor="let n of schoolNotes" [value]="n">
-                  {{ n.notes }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <mat-label>School Note</mat-label>
+            <div *ngFor="let n of schoolNotes">
+              {{ n.notes }}
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
 
       <!-- ACTIONS -->
+      <!--
       <div class="actions actions--center">
         <button
           mat-raised-button
@@ -111,7 +111,7 @@
           Save
         </button>
         <button mat-button type="button" (click)="reset()">Reset</button>
-      </div>
+      </div>-->
 
       <!-- optional debug
       <pre>{{ schoolForm.value | json }}</pre>
