@@ -8,5 +8,6 @@ export interface SchoolLessonDTO {
   schoolId: string;
   currencyId: number;
   currencyCode?: string;
+  currencySymbol?: string;
   schoolName?: string;
 }

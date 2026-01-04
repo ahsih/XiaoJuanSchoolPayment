@@ -78,3 +78,56 @@
   justify-content: center;
   gap: 12px;
 }
+
+.price-card {
+  padding: 0; /* same as your section-card */
+  border-radius: 4px; /* consistent */
+  overflow: hidden;
+}
+
+/* keep using your .section-header + .section-body as-is */
+
+.price-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.price-row + .price-row {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.price-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.price-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.price-row.total {
+  margin-top: 6px;
+  padding-top: 12px;
+}
+
+.price-row.total .price-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.price-row.total .price-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0093ff;
+}

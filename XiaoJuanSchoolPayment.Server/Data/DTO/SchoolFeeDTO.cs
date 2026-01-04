@@ -13,5 +13,6 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public DateTime LastUpdated { get; set; }
     public string? SchoolName { get; set; }
     public string? CurrencyCode { get; set; }
+    public string? CurrencySymbol { get; set; }
   }
 }

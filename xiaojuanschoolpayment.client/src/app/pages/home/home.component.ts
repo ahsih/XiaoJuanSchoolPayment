@@ -132,4 +132,68 @@ export class HomeComponent implements OnInit {
     this.selectedFee =
       this.schololFees.find((f: any) => f.id === feeId) || null;
   }
+
+  getSchoolLessonCurrency() {
+    const lessonId = this.schoolForm.value.lessonId;
+    const schoolLesson = this.schoolLessons.find(
+      (lesson) => lesson.id === lessonId
+    );
+    return schoolLesson?.currencyCode;
+  }
+
+  getSchoolFeeCurrency() {
+    const feeId = this.schoolForm.value.feeId;
+    const schoolFee = this.schololFees.find((fee) => fee.id === feeId);
+    return schoolFee?.currencySymbol;
+  }
+
+  getSchoolLessonCurrencySymbol() {
+    const lessonId = this.schoolForm.value.lessonId;
+    const schoolLesson = this.schoolLessons.find(
+      (lesson) => lesson.id === lessonId
+    );
+    return schoolLesson?.currencySymbol;
+  }
+
+  getSchoolRoomCurrencySymbol() {
+    const roomId = this.schoolForm.value.roomId;
+    const schoolRoom = this.schoolRooms.find((room) => room.id === roomId);
+    return schoolRoom?.currencySymbol;
+  }
+
+  getSchoolLessonCost() {
+    const lessonId = this.schoolForm.value.lessonId;
+    const schoolLesson = this.schoolLessons.find(
+      (lesson) => lesson.id === lessonId
+    );
+    return schoolLesson?.price;
+  }
+
+  getSchoolFeeCost() {
+    const feeId = this.schoolForm.value.feeId;
+    const schoolFee = this.schololFees.find((fee) => fee.id === feeId);
+    return schoolFee?.fee;
+  }
+
+  getSchoolRoomCost() {
+    const roomId = this.schoolForm.value.roomId;
+    const schoolRoom = this.schoolRooms.find((room) => room.id === roomId);
+    return schoolRoom?.price;
+  }
+
+  getTotalCost() {
+    const lessonId = this.schoolForm.value.lessonId;
+    const schoolLesson = this.schoolLessons.find(
+      (lesson) => lesson.id === lessonId
+    ) ?? { price: 0 };
+    const feeId = this.schoolForm.value.feeId;
+    const schoolFee = this.schololFees.find((fee) => fee.id === feeId) ?? {
+      fee: 0,
+    };
+    const roomId = this.schoolForm.value.roomId;
+    const schoolRoom = this.schoolRooms.find((room) => room.id === roomId) ?? {
+      price: 0,
+    };
+    return schoolLesson.price + schoolFee.fee + schoolRoom.price;
+  }
 }

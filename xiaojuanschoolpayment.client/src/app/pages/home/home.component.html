@@ -99,6 +99,40 @@
         </mat-card-content>
       </mat-card>
 
+      <mat-card class="section-card mat-elevation-z4 price-card">
+        <div class="section-header">价格</div>
+
+        <mat-card-content class="section-body">
+          <div class="price-list">
+            <div class="price-row">
+              <div class="price-label">课程费</div>
+              <div class="price-value">
+                {{ getSchoolLessonCurrencySymbol() }}{{ getSchoolLessonCost() }}
+              </div>
+            </div>
+
+            <div class="price-row">
+              <div class="price-label">学费</div>
+              <div class="price-value">
+                {{ getSchoolFeeCurrency() }}{{ getSchoolFeeCost() }}
+              </div>
+            </div>
+
+            <div class="price-row">
+              <div class="price-label">宿舍费用</div>
+              <div class="price-value">
+                {{ getSchoolRoomCurrencySymbol() }}{{ getSchoolRoomCost() }}
+              </div>
+            </div>
+
+            <div class="price-row total">
+              <div class="price-label">总计</div>
+              <div class="price-value">{{ getTotalCost() }}</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
       <!-- ACTIONS -->
       <!--
       <div class="actions actions--center">

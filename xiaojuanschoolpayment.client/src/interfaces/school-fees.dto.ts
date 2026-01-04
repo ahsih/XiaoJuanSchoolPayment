@@ -5,6 +5,8 @@ export interface SchoolFeeDTO {
   fee: number;
   description?: string;
   currencyId: number;
+  currencyCode?: string;
+  currencySymbol?: string;
   lastUpdated: Date;
   schoolName?: string;
 }
