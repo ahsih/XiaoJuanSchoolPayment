@@ -5,7 +5,7 @@
     <form [formGroup]="schoolForm" (ngSubmit)="submit()" class="page-form">
       <!-- TOP SECTION: school / lesson / fee -->
       <mat-card class="section-card mat-elevation-z4">
-        <div class="section-header">School & Fee Information</div>
+        <div class="section-header">学校</div>
 
         <mat-card-content class="section-body">
           <div class="form-grid">
@@ -17,7 +17,7 @@
                 *ngIf="schools.length > 0"
                 [disabled]="schools.length === 0"
               >
-                <mat-option value="">Select a school</mat-option>
+                <mat-option value="">学校</mat-option>
                 <mat-option *ngFor="let s of schools" [value]="s.id">
                   {{ s.name }}
                 </mat-option>
@@ -26,13 +26,13 @@
 
             <!-- Lessons -->
             <mat-form-field appearance="fill" *ngIf="schoolLessons.length > 0">
-              <mat-label>Lesson</mat-label>
+              <mat-label>课程</mat-label>
               <mat-select
                 formControlName="lessonId"
                 *ngIf="schoolLessons.length > 0"
                 [disabled]="schoolLessons.length === 0"
               >
-                <mat-option value="">Select a lesson</mat-option>
+                <mat-option value="">课程选择</mat-option>
                 <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
                   {{ l.name }}
                   <span *ngIf="l.price">
@@ -44,13 +44,13 @@
 
             <!-- Fees -->
             <mat-form-field appearance="fill" *ngIf="schololFees.length > 0">
-              <mat-label>School Fee</mat-label>
+              <mat-label>其他费用</mat-label>
               <mat-select
                 formControlName="feeId"
                 *ngIf="schololFees.length > 0"
                 [disabled]="schololFees.length === 0"
               >
-                <mat-option value="">Select a fee</mat-option>
+                <mat-option value="">其他费用</mat-option>
                 <mat-option *ngFor="let f of schololFees" [value]="f.id">
                   {{ f.name }} — {{ f.fee | currency : "GBP" : "symbol" }}/term
                 </mat-option>
@@ -62,19 +62,19 @@
 
       <!-- ROOM SECTION -->
       <mat-card class="section-card mat-elevation-z4">
-        <div class="section-header">Room</div>
+        <div class="section-header">宿舍</div>
 
         <mat-card-content class="section-body">
           <div class="form-grid">
             <!-- Rooms -->
             <mat-form-field appearance="fill" *ngIf="schoolRooms.length > 0">
-              <mat-label>School Room</mat-label>
+              <mat-label>宿舍</mat-label>
               <mat-select
                 *ngIf="schoolRooms.length > 0"
                 formControlName="roomId"
                 [disabled]="schoolRooms.length === 0"
               >
-                <mat-option value="">Select a room</mat-option>
+                <mat-option value="">宿舍</mat-option>
                 <mat-option *ngFor="let r of schoolRooms" [value]="r.id">
                   {{ r.name }}
                 </mat-option>
