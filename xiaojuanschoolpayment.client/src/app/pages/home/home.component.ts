@@ -175,6 +175,12 @@ export class HomeComponent implements OnInit {
     return schoolFee?.fee;
   }
 
+  getSchoolRoom(): SchoolRoomDTO | undefined {
+    const roomId = this.schoolForm.value.roomId;
+    const schoolRoom = this.schoolRooms.find((room) => room.id === roomId);
+    return schoolRoom;
+  }
+
   getSchoolRoomCost() {
     const roomId = this.schoolForm.value.roomId;
     const schoolRoom = this.schoolRooms.find((room) => room.id === roomId);

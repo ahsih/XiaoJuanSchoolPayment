@@ -256,7 +256,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (filter?.SchoolId != null)
       {
-        query = query.Where(x => x.SchoolId != filter.SchoolId);
+        query = query.Where(x => x.SchoolId == filter.SchoolId);
       }
 
       if (filter?.Week != null)

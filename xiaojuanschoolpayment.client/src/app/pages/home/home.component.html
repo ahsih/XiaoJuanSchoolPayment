@@ -36,7 +36,7 @@
                 <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
                   {{ l.name }}
                   <span *ngIf="l.price">
-                    ({{ l.price | currency : "GBP" : "symbol" }})
+                    ({{ l.currencySymbol }}{{ l.price }})
                   </span>
                 </mat-option>
               </mat-select>
@@ -52,7 +52,7 @@
               >
                 <mat-option value="">其他费用</mat-option>
                 <mat-option *ngFor="let f of schololFees" [value]="f.id">
-                  {{ f.name }} — {{ f.fee | currency : "GBP" : "symbol" }}/term
+                  {{ f.name }} — {{ f.currencySymbol }}{{ f.fee }}/term
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -80,6 +80,15 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
+          </div>
+          <div
+            class="room-description"
+            *ngIf="getSchoolRoom()?.description as desc"
+          >
+            <div class="room-description_label">宿舍说明</div>
+            <div class="room-description_text">
+              {{ desc }}
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
