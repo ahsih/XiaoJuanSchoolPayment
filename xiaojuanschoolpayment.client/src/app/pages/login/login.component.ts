@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  errorMessage: string = '';
+  errorMessageKey = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -32,7 +32,7 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = 'Invalid email or password';
+        this.errorMessageKey = 'login.invalidCredentials';
       }
     });
   }

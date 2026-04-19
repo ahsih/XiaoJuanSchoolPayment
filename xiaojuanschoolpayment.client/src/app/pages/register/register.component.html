@@ -1,5 +1,5 @@
 <div class="register-container">
-  <h2>Register</h2>
+  <h2>{{ 'register.title' | t }}</h2>
 
   <form
     [formGroup]="registerForm"
@@ -8,7 +8,7 @@
   >
     <!-- Email -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Email</mat-label>
+      <mat-label>{{ 'common.email' | t }}</mat-label>
       <input matInput type="email" formControlName="email" required />
       <mat-error
         *ngIf="
@@ -16,13 +16,13 @@
           registerForm.get('email')?.touched
         "
       >
-        Valid email is required.
+        {{ 'register.validEmailRequired' | t }}
       </mat-error>
     </mat-form-field>
 
     <!-- Password -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Password</mat-label>
+      <mat-label>{{ 'common.password' | t }}</mat-label>
       <input
         matInput
         [type]="hidePassword ? 'password' : 'text'"
@@ -45,13 +45,13 @@
           registerForm.get('password')?.touched
         "
       >
-        Password is required.
+        {{ 'register.passwordRequired' | t }}
       </mat-error>
     </mat-form-field>
 
     <!-- Access Code -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Access Code</mat-label>
+      <mat-label>{{ 'common.accessCode' | t }}</mat-label>
       <input matInput type="email" formControlName="accessCode" required />
       <mat-error
         *ngIf="
@@ -59,14 +59,14 @@
           registerForm.get('accessCode')?.touched
         "
       >
-        Access code is required.
+        {{ 'register.accessCodeRequired' | t }}
       </mat-error>
     </mat-form-field>
 
     <!-- First & Last Name -->
     <div class="name-fields">
       <mat-form-field appearance="outline" class="half-width">
-        <mat-label>First Name</mat-label>
+        <mat-label>{{ 'common.firstName' | t }}</mat-label>
         <input matInput formControlName="firstName" required />
         <mat-error
           *ngIf="
@@ -74,12 +74,12 @@
             registerForm.get('firstName')?.touched
           "
         >
-          First name is required.
+          {{ 'register.firstNameRequired' | t }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="half-width">
-        <mat-label>Last Name</mat-label>
+        <mat-label>{{ 'common.lastName' | t }}</mat-label>
         <input matInput formControlName="lastName" required />
         <mat-error
           *ngIf="
@@ -87,7 +87,7 @@
             registerForm.get('lastName')?.touched
           "
         >
-          Last name is required.
+          {{ 'register.lastNameRequired' | t }}
         </mat-error>
       </mat-form-field>
     </div>
@@ -97,9 +97,9 @@
       mat-raised-button
       color="primary"
       type="submit"
-      [disabled]="registerForm.invalid && loading"
+      [disabled]="registerForm.invalid || loading"
     >
-      Register
+      {{ 'register.submit' | t }}
     </button>
   </form>
 </div>

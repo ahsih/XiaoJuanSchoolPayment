@@ -1,69 +1,81 @@
-<h2 mat-dialog-title>编辑课程</h2>
+<h2 mat-dialog-title>{{ 'dialog.editLessonTitle' | t }}</h2>
 
 <mat-dialog-content [formGroup]="form" style="display: block; max-width: 520px">
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>学校</mat-label>
+    <mat-label>{{ 'common.school' | t }}</mat-label>
     <mat-select formControlName="schoolId" required>
       <mat-option *ngFor="let s of schools" [value]="s.id">{{
         s.name
       }}</mat-option>
     </mat-select>
-    <mat-error *ngIf="form.get('schoolId')?.hasError('required')"
-      >必填</mat-error
-    >
+    <mat-error *ngIf="form.get('schoolId')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>课程名字</mat-label>
+    <mat-label>{{ 'common.lesson' | t }}</mat-label>
     <input matInput formControlName="name" required />
-    <mat-error *ngIf="form.get('name')?.hasError('required')">必填</mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>周期</mat-label>
+    <mat-label>{{ 'common.week' | t }}</mat-label>
     <input matInput type="number" formControlName="week" required />
-    <mat-error *ngIf="form.get('week')?.hasError('required')">必填</mat-error>
-    <mat-error *ngIf="form.get('week')?.hasError('min')">必须 ≥ 1</mat-error>
+    <mat-error *ngIf="form.get('week')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
+    <mat-error *ngIf="form.get('week')?.hasError('min')">{{
+      'common.minOne' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>价格</mat-label>
+    <mat-label>{{ 'common.price' | t }}</mat-label>
     <input matInput type="number" formControlName="price" required />
-    <mat-error *ngIf="form.get('price')?.hasError('required')">必填</mat-error>
-    <mat-error *ngIf="form.get('price')?.hasError('min')">不能为负数</mat-error>
+    <mat-error *ngIf="form.get('price')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
+    <mat-error *ngIf="form.get('price')?.hasError('min')">{{
+      'common.nonNegative' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>价格单位</mat-label>
+    <mat-label>{{ 'common.currencyUnit' | t }}</mat-label>
     <mat-select formControlName="currencyId" required>
       <mat-option *ngFor="let c of currencies" [value]="c.id">
         {{ c.symbol }} {{ c.currencyCode }}
       </mat-option>
     </mat-select>
-    <mat-error *ngIf="form.get('currencyId')?.hasError('required')"
-      >必填</mat-error
-    >
+    <mat-error *ngIf="form.get('currencyId')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>描述</mat-label>
+    <mat-label>{{ 'common.description' | t }}</mat-label>
     <textarea matInput rows="3" formControlName="description"></textarea>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>便条</mat-label>
+    <mat-label>{{ 'common.notes' | t }}</mat-label>
     <textarea matInput rows="3" formControlName="note"></textarea>
   </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()" [disabled]="saving">取消</button>
+  <button mat-button (click)="cancel()" [disabled]="saving">{{
+    'common.cancel' | t
+  }}</button>
   <button
     mat-flat-button
     color="primary"
     (click)="save()"
     [disabled]="saving || form.invalid"
   >
-    保存
+    {{ 'common.save' | t }}
   </button>
 </mat-dialog-actions>

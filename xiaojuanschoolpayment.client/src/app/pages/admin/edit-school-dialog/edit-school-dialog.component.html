@@ -1,33 +1,35 @@
-<h2 mat-dialog-title>编辑学校</h2>
+<h2 mat-dialog-title>{{ 'dialog.editSchoolTitle' | t }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="form" class="flex flex-col gap-4" style="min-width: 300px">
     <mat-form-field appearance="fill" style="width: 100%">
-      <mat-label>学校名字</mat-label>
+      <mat-label>{{ 'admin.school.schoolName' | t }}</mat-label>
       <input matInput formControlName="name" />
-      <mat-error *ngIf="form.get('name')?.hasError('required')">必填</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('required')">{{
+        'common.required' | t
+      }}</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" style="width: 100%">
-      <mat-label>价格日期</mat-label>
+      <mat-label>{{ 'common.updatedDate' | t }}</mat-label>
       <input matInput [matDatepicker]="picker" formControlName="createdDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
-      <mat-error *ngIf="form.get('createdDate')?.hasError('required')"
-        >必填</mat-error
-      >
+      <mat-error *ngIf="form.get('createdDate')?.hasError('required')">{{
+        'common.required' | t
+      }}</mat-error>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-button (click)="cancel()">取消</button>
+  <button mat-button (click)="cancel()">{{ 'common.cancel' | t }}</button>
   <button
     mat-raised-button
     color="primary"
     (click)="save()"
     [disabled]="form.invalid"
   >
-    保存
+    {{ 'common.save' | t }}
   </button>
 </mat-dialog-actions>

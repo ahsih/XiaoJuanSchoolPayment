@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth.service';
 import { SchoolUserDTO } from '../../../interfaces/SchoolUser.dto';
+import { TranslationService } from '../../../services/translation.service';
 
 @Component({
   selector: 'register',
@@ -21,7 +22,8 @@ export class RegisterComponent {
   constructor(private fb: FormBuilder,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    private authService: AuthService
+    private authService: AuthService,
+    private translationService: TranslationService
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -39,13 +41,22 @@ export class RegisterComponent {
 
       this.authService.register(user).subscribe({
         next: () => {
-          this.snackBar.open('Registration successful!', 'Close', { duration: 3000 });
+          this.snackBar.open(
+            this.translationService.instant('register.success'),
+            this.translationService.instant('common.close'),
+            { duration: 3000 }
+          );
           this.registerForm.reset();
           this.loading = false;
         },
         error: (err) => {
-          const msg = typeof err.error === 'string' ? err.error : 'Registration failed';
-          this.snackBar.open(msg, 'Close', { duration: 5000 });
+          const msg =
+            typeof err.error === 'string'
+              ? err.error
+              : this.translationService.instant('register.failed');
+          this.snackBar.open(msg, this.translationService.instant('common.close'), {
+            duration: 5000,
+          });
           this.loading = false;
         }
       });

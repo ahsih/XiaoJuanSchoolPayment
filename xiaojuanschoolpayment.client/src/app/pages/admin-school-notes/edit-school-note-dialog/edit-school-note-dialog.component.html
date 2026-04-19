@@ -1,33 +1,37 @@
-<h2 mat-dialog-title>编辑描述</h2>
+<h2 mat-dialog-title>{{ 'dialog.editNoteTitle' | t }}</h2>
 
 <mat-dialog-content [formGroup]="form" style="display: block; max-width: 520px">
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>学校</mat-label>
+    <mat-label>{{ 'common.school' | t }}</mat-label>
     <mat-select formControlName="schoolId" required>
       <mat-option *ngFor="let s of schools" [value]="s.id">{{
         s.name
       }}</mat-option>
     </mat-select>
-    <mat-error *ngIf="form.get('schoolId')?.hasError('required')"
-      >必填</mat-error
-    >
+    <mat-error *ngIf="form.get('schoolId')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>描述</mat-label>
+    <mat-label>{{ 'common.description' | t }}</mat-label>
     <input matInput formControlName="notes" required />
-    <mat-error *ngIf="form.get('notes')?.hasError('required')">必填</mat-error>
+    <mat-error *ngIf="form.get('notes')?.hasError('required')">{{
+      'common.required' | t
+    }}</mat-error>
   </mat-form-field>
 
   <mat-dialog-actions>
-    <button mat-button (click)="cancel()" [disabled]="saving">取消</button>
+    <button mat-button (click)="cancel()" [disabled]="saving">{{
+      'common.cancel' | t
+    }}</button>
     <button
       mat-flat-button
       color="primary"
       (click)="save()"
       [disabled]="saving || form.invalid"
     >
-      保存
+      {{ 'common.save' | t }}
     </button>
   </mat-dialog-actions>
 </mat-dialog-content>

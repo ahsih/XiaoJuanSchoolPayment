@@ -1,91 +1,236 @@
-.page-wrapper {
-  position: relative;
-  min-height: 100vh;
-  padding: 24px;
+.home-shell section + section {
+  margin-top: 2rem;
+}
+.home-shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.hero-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 1.5rem;
+}
+
+.hero-copy,
+.hero-panel__card,
+.feature-card,
+.section-card,
+.info-card {
+  box-shadow: 0 24px 60px rgba(34, 54, 92, 0.08);
+}
+
+.hero-copy {
+  overflow: hidden;
+  padding: 3rem;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 165, 96, 0.24), transparent 28%),
+    linear-gradient(135deg, #ffffff 0%, #fff8ef 100%);
+}
+
+.hero-copy h1,
+.section-heading h2,
+.hero-panel__card h2,
+.feature-card h3,
+.info-card h3 {
+  margin: 0;
+  font-family: Cambria, Georgia, serif;
+  color: #172033;
+}
+
+.hero-copy h1 {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.98;
+}
+
+.hero-copy p,
+.section-heading p,
+.feature-card p,
+.hero-panel__card p,
+.info-card p,
+.empty-state,
+.note-item {
+  color: #586176;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+  background: rgba(241, 109, 31, 0.1);
+  color: #f16d1f;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.hero-actions {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-
-  /* set your image path later */
-  background-image: url("/assets/images/school-background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin: 2rem 0;
 }
 
-.background-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.7); /* lighten overall look */
-  z-index: 0;
+.hero-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.content {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1100px;
+.hero-highlights article {
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
 }
 
+.hero-highlights strong,
+.hero-panel__stats strong,
+.price-value {
+  display: block;
+  color: #172033;
+  font-weight: 800;
+}
+
+.hero-highlights span,
+.hero-panel__stats span,
+.room-description_label,
+.info-card span {
+  color: #7b8498;
+  font-size: 0.92rem;
+}
+
+.hero-panel__card {
+  padding: 2rem;
+  border-radius: 36px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(242, 248, 255, 0.98) 100%);
+}
+
+.hero-panel__label {
+  color: #f16d1f;
+  font-weight: 800;
+}
+
+.hero-panel__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.hero-panel__stats div {
+  padding: 1rem;
+  border-radius: 22px;
+  background: #ffffff;
+}
+
+.section-heading {
+  margin-bottom: 1.25rem;
+}
+
+.section-heading h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature-card,
+.info-card {
+  padding: 1.5rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.planner-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+  gap: 1.25rem;
+}
+
+.planner-main,
+.info-stack,
 .page-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
-/* Section cards like in the screenshot */
 .section-card {
-  padding: 0; /* we’ll control padding via header/body */
-  border-radius: 4px;
   overflow: hidden;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .section-header {
-  background: #0093ff; /* bright blue */
-  color: #fff;
-  padding: 8px 16px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  background: linear-gradient(90deg, #22365c 0%, #31507e 100%);
+  color: #ffffff;
+}
+
+.section-header span {
+  font-weight: 800;
+}
+
+.section-header small {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .section-body {
-  background: #ffffff;
-  padding: 16px;
+  padding: 1.4rem;
 }
 
-/* Layout for the fields */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 12px 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
 }
 
-.form-grid.single-column {
-  grid-template-columns: 1fr;
+.room-description {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  background: #f5f8ff;
+  border-left: 4px solid #f16d1f;
 }
 
-.full-width {
-  grid-column: 1 / -1;
+.room-description_label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
 }
 
-/* Buttons at the bottom */
-.actions {
-  margin-top: 8px;
+.room-description_text {
+  color: #25324a;
 }
 
-.actions--center {
+.notes-list {
   display: flex;
-  justify-content: center;
-  gap: 12px;
+  flex-direction: column;
 }
 
-.price-card {
-  padding: 0; /* same as your section-card */
-  border-radius: 4px; /* consistent */
-  overflow: hidden;
+.note-item,
+.empty-state {
+  padding: 1rem 1.1rem;
+  border-radius: 20px;
+  background: #f8fafc;
 }
 
-/* keep using your .section-header + .section-body as-is */
+.summary-card {
+  position: sticky;
+  top: 160px;
+}
 
 .price-list {
   display: flex;
@@ -95,61 +240,71 @@
 .price-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
+  padding: 1rem 0;
 }
 
 .price-row + .price-row {
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(34, 54, 92, 0.09);
 }
 
 .price-label {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.7);
+  color: #627089;
+  font-weight: 700;
 }
 
 .price-value {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.85);
+  font-size: 1.02rem;
 }
 
-.price-row.total {
-  margin-top: 6px;
-  padding-top: 12px;
-}
-
-.price-row.total .price-label {
-  font-size: 1rem;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.9);
-}
-
+.price-row.total .price-label,
 .price-row.total .price-value {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #0093ff;
+  color: #f16d1f;
+  font-size: 1.1rem;
 }
 
-.room-description {
-  grid-column: 1 / -1; /* full width */
-  background: #f5f9ff;
-  border-left: 4px solid #0093ff;
-  padding: 12px 16px;
-  border-radius: 4px;
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
 }
 
-.room-description_label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
-  margin-bottom: 4px;
+::ng-deep .summary-actions .mdc-button,
+::ng-deep .hero-actions .mdc-button {
+  min-height: 46px;
+  border-radius: 999px;
+  font-weight: 700;
 }
 
-.room-description_text {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
-  line-height: 1.5;
+@media (max-width: 1024px) {
+  .hero-section,
+  .planner-grid,
+  .feature-grid,
+  .hero-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-shell {
+    width: min(100%, calc(100% - 20px));
+    padding-top: 1rem;
+  }
+
+  .hero-copy,
+  .hero-panel__card,
+  .section-body,
+  .feature-card,
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

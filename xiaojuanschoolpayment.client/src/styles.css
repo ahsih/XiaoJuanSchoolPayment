@@ -1,8 +1,43 @@
-/* You can add global styles to this file, and also import other style files */
 html,
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: Aptos, "Segoe UI Variable", "Segoe UI", sans-serif;
+  background: #f7fbff;
+  color: #172033;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+.mat-mdc-card {
+  --mdc-elevated-card-container-color: #ffffff;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.mat-mdc-text-field-wrapper {
+  border-radius: 18px !important;
+  background: #fbfcff;
+}
+
+.mat-mdc-select-value,
+.mat-mdc-form-field-infix,
+.mat-mdc-select-arrow {
+  color: #172033;
+}

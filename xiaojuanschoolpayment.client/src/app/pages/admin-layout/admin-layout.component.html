@@ -6,32 +6,32 @@
           routerLink="/admin"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >设置学校</a
+          >{{ 'admin.layout.schools' | t }}</a
         >
       </li>
       <li>
         <a routerLink="/admin/school-lessons" routerLinkActive="active"
-          >设置学校课程</a
+          >{{ 'admin.layout.lessons' | t }}</a
         >
       </li>
       <li>
         <a routerLink="/admin/school-rooms" routerLinkActive="active"
-          >设置学校宿舍</a
+          >{{ 'admin.layout.rooms' | t }}</a
         >
       </li>
       <li>
         <a routerLink="/admin/school-fees" routerLinkActive="active"
-          >设置学校学费</a
+          >{{ 'admin.layout.fees' | t }}</a
         >
       </li>
       <li>
         <a routerLink="/admin/school-notes" routerLinkActive="active"
-          >设置学校描述</a
+          >{{ 'admin.layout.notes' | t }}</a
         >
       </li>
     </ul>
     <div class="logout">
-      <a (click)="logout()">退出登录</a>
+      <a (click)="logout()">{{ 'admin.layout.logout' | t }}</a>
     </div>
   </nav>
 

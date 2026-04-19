@@ -1,11 +1,11 @@
-<div>设置学校宿舍</div>
+<div>{{ 'admin.rooms.title' | t }}</div>
 <form
   [formGroup]="schoolRoomsForm"
   (ngSubmit)="submit()"
   style="max-width: 400px; margin: 50px auto"
 >
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>学校（选一个链接到这课程）</mat-label>
+    <mat-label>{{ 'admin.linkSchoolHint' | t }}</mat-label>
     <mat-select formControlName="schoolId">
       <mat-option *ngFor="let school of schoolDtos" [value]="school.id">
         {{ school.name }}
@@ -14,22 +14,22 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>住宿名字</mat-label>
-    <input matInput placeholder="住宿名字" formControlName="name" />
+    <mat-label>{{ 'admin.rooms.roomName' | t }}</mat-label>
+    <input matInput [placeholder]="'admin.rooms.roomName' | t" formControlName="name" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>周期</mat-label>
-    <input matInput type="number" placeholder="周期" formControlName="week" />
+    <mat-label>{{ 'common.week' | t }}</mat-label>
+    <input matInput type="number" [placeholder]="'common.week' | t" formControlName="week" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>价格</mat-label>
-    <input matInput type="number" placeholder="价格" formControlName="price" />
+    <mat-label>{{ 'common.price' | t }}</mat-label>
+    <input matInput type="number" [placeholder]="'common.price' | t" formControlName="price" />
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>价格单位</mat-label>
+    <mat-label>{{ 'common.currencyUnit' | t }}</mat-label>
     <mat-select formControlName="currencyId">
       <mat-option *ngFor="let currency of currencyDtos" [value]="currency.id">
         {{ currency.symbol }} {{ currency.currencyCode }}
@@ -38,10 +38,10 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>描述</mat-label>
+    <mat-label>{{ 'common.description' | t }}</mat-label>
     <textarea
       matInput
-      placeholder="描述"
+      [placeholder]="'common.description' | t"
       formControlName="description"
       rows="3"
     ></textarea>
@@ -53,7 +53,7 @@
     type="submit"
     [disabled]="schoolRoomsForm.invalid"
   >
-    提交
+    {{ 'common.submit' | t }}
   </button>
 </form>
 
@@ -63,57 +63,61 @@
   <div
     style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px"
   >
-    <h3 style="margin: 0">住宿列表</h3>
+    <h3 style="margin: 0">{{ 'admin.rooms.listTitle' | t }}</h3>
 
     <mat-form-field
       appearance="outline"
       style="margin-left: auto; width: 260px"
     >
-      <mat-label>搜索住宿</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="输入住宿名…" />
+      <mat-label>{{ 'admin.rooms.searchLabel' | t }}</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        [placeholder]="'admin.rooms.searchPlaceholder' | t"
+      />
     </mat-form-field>
   </div>
 
   <div *ngIf="dataSource.data.length === 0; else roomsTable">
-    <p style="text-align: center; margin-top: 20px">暂无住宿数据</p>
+    <p style="text-align: center; margin-top: 20px">{{ 'admin.rooms.noData' | t }}</p>
   </div>
   <ng-template #roomsTable>
     <table mat-table [dataSource]="dataSource" matSort matSortDisableClear>
       <ng-container matColumnDef="schoolName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>学校</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.school' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.schoolName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>住宿名字</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'admin.rooms.roomName' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="week">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>周期</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.week' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.week }}</td>
       </ng-container>
 
       <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>价格</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.price' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.price }}</td>
       </ng-container>
 
       <ng-container matColumnDef="currencyCode">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>价格单位</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.currencyUnit' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.currencyCode }}</td>
       </ng-container>
 
       <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>描述</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.description' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.description }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>操作</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | t }}</th>
         <td mat-cell *matCellDef="let row">
           <button mat-stroked-button color="primary" (click)="edit(row)">
-            编辑
+            {{ 'common.edit' | t }}
           </button>
         </td>
       </ng-container>
@@ -127,6 +131,6 @@
       [pageSizeOptions]="[5, 10, 25, 50]"
       showFirstLastButtons
     >
-    </mat-paginator
-  ></ng-template>
+    </mat-paginator>
+  </ng-template>
 </div>

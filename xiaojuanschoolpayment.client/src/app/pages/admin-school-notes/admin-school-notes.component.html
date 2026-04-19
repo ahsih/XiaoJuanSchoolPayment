@@ -1,11 +1,11 @@
-<div>设置描述</div>
+<div>{{ 'admin.notes.title' | t }}</div>
 <form
   [formGroup]="schoolNotesForm"
   (ngSubmit)="submit()"
   style="max-width: 400px; margin: 50px auto"
 >
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>学校</mat-label>
+    <mat-label>{{ 'common.school' | t }}</mat-label>
     <mat-select formControlName="schoolId">
       <mat-option *ngFor="let school of schoolDtos" [value]="school.id">
         {{ school.name }}
@@ -14,10 +14,10 @@
   </mat-form-field>
 
   <mat-form-field appearance="fill" style="width: 100%">
-    <mat-label>描述</mat-label>
+    <mat-label>{{ 'common.description' | t }}</mat-label>
     <textarea
       matInput
-      placeholder="描述"
+      [placeholder]="'common.description' | t"
       formControlName="note"
       rows="3"
     ></textarea>
@@ -29,7 +29,7 @@
     type="submit"
     [disabled]="schoolNotesForm.invalid"
   >
-    提交
+    {{ 'common.submit' | t }}
   </button>
 </form>
 
@@ -39,37 +39,41 @@
   <div
     style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px"
   >
-    <h3 style="margin: 0">描述列表</h3>
+    <h3 style="margin: 0">{{ 'admin.notes.listTitle' | t }}</h3>
 
     <mat-form-field
       appearance="outline"
       style="margin-left: auto; width: 260px"
     >
-      <mat-label>搜索描述</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="输入学费名…" />
+      <mat-label>{{ 'admin.notes.searchLabel' | t }}</mat-label>
+      <input
+        matInput
+        (keyup)="applyFilter($event)"
+        [placeholder]="'admin.notes.searchPlaceholder' | t"
+      />
     </mat-form-field>
   </div>
 
-  <div *ngIf="dataSource.data.length === 0; else roomsTable">
-    <p style="text-align: center; margin-top: 20px">暂无描述数据</p>
+  <div *ngIf="dataSource.data.length === 0; else notesTable">
+    <p style="text-align: center; margin-top: 20px">{{ 'admin.notes.noData' | t }}</p>
   </div>
-  <ng-template #roomsTable>
+  <ng-template #notesTable>
     <table mat-table [dataSource]="dataSource" matSort matSortDisableClear>
       <ng-container matColumnDef="schoolName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>学校</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.school' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.schoolName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="note">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>描述</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'common.description' | t }}</th>
         <td mat-cell *matCellDef="let row">{{ row.notes }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>操作</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'common.actions' | t }}</th>
         <td mat-cell *matCellDef="let row">
           <button mat-stroked-button color="primary" (click)="edit(row)">
-            编辑
+            {{ 'common.edit' | t }}
           </button>
         </td>
       </ng-container>
@@ -83,6 +87,6 @@
       [pageSizeOptions]="[5, 10, 25, 50]"
       showFirstLastButtons
     >
-    </mat-paginator
-  ></ng-template>
+    </mat-paginator>
+  </ng-template>
 </div>

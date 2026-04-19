@@ -1,20 +1,88 @@
-<div class="main-container">
-  <nav class="sidebar">
-    <ul class="nav-links">
-      <li>
-        <a
-          routerLink="/"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          >Home</a
-        >
-      </li>
-      <li><a routerLink="/register" routerLinkActive="active">Register</a></li>
-      <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
-    </ul>
-  </nav>
+<div class="site-shell">
+  <div class="top-strip">
+    <div class="top-strip__inner">
+      <span>{{ 'nav.topStrip' | t }}</span>
+      <div class="top-strip__actions">
+        <div class="language-switch" aria-label="Language switch">
+          <button
+            type="button"
+            [class.active]="currentLanguage === 'en'"
+            (click)="setLanguage('en')"
+          >
+            {{ 'language.en' | t }}
+          </button>
+          <button
+            type="button"
+            [class.active]="currentLanguage === 'zh'"
+            (click)="setLanguage('zh')"
+          >
+            {{ 'language.zh' | t }}
+          </button>
+        </div>
+        <a routerLink="/register" (click)="closeMobileMenu()">{{
+          'nav.bookConsultation' | t
+        }}</a>
+      </div>
+    </div>
+  </div>
 
-  <main class="content">
+  <header class="main-header">
+    <div class="main-header__inner">
+      <a class="brand" routerLink="/" (click)="closeMobileMenu()">
+        <span class="brand__badge">XJ</span>
+        <span class="brand__copy">
+          <strong>{{ 'nav.brandName' | t }}</strong>
+          <small>{{ 'nav.brandTagline' | t }}</small>
+        </span>
+      </a>
+
+      <button
+        type="button"
+        class="mobile-toggle"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen"
+        [attr.aria-label]="'nav.toggleNavigation' | t"
+      >
+        <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+      </button>
+
+      <nav class="primary-nav" [class.primary-nav--open]="mobileMenuOpen">
+        <a
+          *ngFor="let item of navItems"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+          (click)="closeMobileMenu()"
+        >
+          {{ item.labelKey | t }}
+        </a>
+
+        <a class="nav-cta" routerLink="/register" (click)="closeMobileMenu()">
+          {{ 'nav.startPlanning' | t }}
+        </a>
+      </nav>
+    </div>
+
+    <div class="category-bar">
+      <div class="category-bar__inner">
+        <span>{{ 'nav.featuredPathways' | t }}</span>
+        <a routerLink="/" (click)="closeMobileMenu()">{{
+          'nav.languageCourses' | t
+        }}</a>
+        <a routerLink="/" (click)="closeMobileMenu()">{{
+          'nav.higherEducation' | t
+        }}</a>
+        <a routerLink="/" (click)="closeMobileMenu()">{{
+          'nav.accommodation' | t
+        }}</a>
+        <a routerLink="/" (click)="closeMobileMenu()">{{
+          'nav.budgetPlanning' | t
+        }}</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-content">
     <router-outlet></router-outlet>
   </main>
 </div>
