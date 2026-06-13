@@ -40,7 +40,9 @@
     <div class="section-heading">
       <span class="section-kicker">Why Cebu</span>
       <h2>为什么很多学生会先看宿务？</h2>
-      <p>宿务的优势不是单一“便宜”，而是学校密度、生活便利和课程类型都比较完整。</p>
+      <p>
+        宿务的优势不是单一“便宜”，而是学校密度、生活便利和课程类型都比较完整。
+      </p>
     </div>
 
     <div class="highlight-grid">
@@ -90,21 +92,6 @@
         <span role="cell">{{ row.cebu }}</span>
         <span role="cell">{{ row.baguio }}</span>
       </div>
-    </div>
-  </section>
-
-  <section class="source-section">
-    <div>
-      <span class="section-kicker">References</span>
-      <h2>资料参考</h2>
-      <p>本页参考公开游学网站对宿务城市、学校类型、课程选择和选校维度的整理，并重新编写为思达教育自己的页面内容。</p>
-    </div>
-
-    <div class="source-links">
-      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-        {{ source.label }}
-        <mat-icon>open_in_new</mat-icon>
-      </a>
     </div>
   </section>
 </div>
