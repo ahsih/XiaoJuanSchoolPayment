@@ -1,0 +1,110 @@
+<div class="cebu-page">
+  <section class="cebu-hero">
+    <div class="cebu-hero__copy">
+      <span class="section-kicker">Cebu English Study</span>
+      <h1>宿务游学</h1>
+      <p>
+        宿务是菲律宾最受欢迎的英语游学城市之一。这里语言学校集中、课程选择丰富，
+        既能安排一对一密集英语训练，也能兼顾海岛生活体验，适合第一次游学、亲子家庭、
+        成人口语提升和短期英语冲刺。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配宿务学校
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合学校类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="cebu-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>口语提升 / 亲子游学 / 短期体验 / 雅思基础提升</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>学校多、交通方便、海岛生活、课程选择丰富</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>课程比例、住宿环境、管理强度、校区位置和总费用</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Cebu</span>
+      <h2>为什么很多学生会先看宿务？</h2>
+      <p>宿务的优势不是单一“便宜”，而是学校密度、生活便利和课程类型都比较完整。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">School Types</span>
+      <h2>宿务学校怎么选？先看你的学习目标</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Cebu vs Baguio</span>
+      <h2>宿务和碧瑶，不是谁更好，而是谁更适合</h2>
+      <p>
+        宿务更适合重视便利、海岛生活和学校选择的人；碧瑶更适合考试冲刺和高强度管理。
+        如果你还不确定城市，建议先根据学习目标和预算做筛选。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="宿务与碧瑶游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">宿务</span>
+        <span role="columnheader">碧瑶</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="source-section">
+    <div>
+      <span class="section-kicker">References</span>
+      <h2>资料参考</h2>
+      <p>本页参考公开游学网站对宿务城市、学校类型、课程选择和选校维度的整理，并重新编写为思达教育自己的页面内容。</p>
+    </div>
+
+    <div class="source-links">
+      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+        {{ source.label }}
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
+  </section>
+</div>

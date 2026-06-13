@@ -11,6 +11,8 @@ import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-scho
 import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school-fees.component';
 import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
+import { WhyPhilippinesStudyComponent } from './pages/why-philippines-study/why-philippines-study.component';
+import { CebuStudyComponent } from './pages/cebu-study/cebu-study.component';
 
 const routes: Routes = [
   {
@@ -20,6 +22,11 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
+      {
+        path: 'philippines-study/why-philippines',
+        component: WhyPhilippinesStudyComponent,
+      },
+      { path: 'philippines-study/cebu', component: CebuStudyComponent },
     ],
   },
   {

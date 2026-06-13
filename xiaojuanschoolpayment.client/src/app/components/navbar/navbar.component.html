@@ -19,14 +19,44 @@
     <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
   </button>
 
-  <nav class="primary-nav" [class.primary-nav--open]="mobileMenuOpen">
-    <a
-      *ngFor="let item of navItems"
-      [routerLink]="item.route"
-      (click)="closeMobileMenu()"
-    >
-      {{ item.label }}
-    </a>
+  <nav class="primary-nav" [class.primary-nav--open]="mobileMenuOpen" aria-label="主导航">
+    <div class="nav-item" *ngFor="let item of navItems; trackBy: trackById">
+      <a class="nav-link" [routerLink]="item.route">
+        <span>{{ item.label }}</span>
+        <mat-icon *ngIf="item.children?.length">expand_more</mat-icon>
+      </a>
+
+      <div class="mega-menu" *ngIf="item.children?.length">
+        <div class="mega-menu__intro">
+          <span>STAR Education</span>
+          <strong>{{ item.label }}</strong>
+          <p>{{ item.note || '完整项目路径与申请资讯' }}</p>
+          <a routerLink="/register" (click)="closeMobileMenu()">
+            免费咨询
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+        </div>
+
+        <div class="mega-menu__columns">
+          <section class="mega-group" *ngFor="let child of item.children; trackBy: trackById">
+            <a class="mega-group__title" [routerLink]="child.route" (click)="closeMobileMenu()">
+              {{ child.label }}
+            </a>
+            <span class="mega-group__type" *ngIf="child.type">{{ child.type }}</span>
+
+            <div class="mega-subitems" *ngIf="child.children?.length">
+              <a
+                *ngFor="let subitem of child.children; trackBy: trackById"
+                [routerLink]="subitem.route"
+                (click)="closeMobileMenu()"
+              >
+                {{ subitem.label }}
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <a class="consult-button" routerLink="/register" (click)="closeMobileMenu()">

@@ -35,6 +35,8 @@ import { EditSchoolNoteDialogComponent } from './pages/admin-school-notes/edit-s
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 import { TranslatePipe } from './pipes/translate.pipe';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { WhyPhilippinesStudyComponent } from './pages/why-philippines-study/why-philippines-study.component';
+import { CebuStudyComponent } from './pages/cebu-study/cebu-study.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     AdminSchoolNotesComponent,
     MainNavbarComponent,
     NavbarComponent,
+    WhyPhilippinesStudyComponent,
+    CebuStudyComponent,
     TranslatePipe,
   ],
   imports: [

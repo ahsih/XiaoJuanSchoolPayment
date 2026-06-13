@@ -1,0 +1,88 @@
+<div class="why-page">
+  <section class="why-hero">
+    <div class="why-hero__copy">
+      <span class="section-kicker">Philippines English Study</span>
+      <h1>为什么选择菲律宾游学？</h1>
+      <p>
+        菲律宾游学的核心优势，是把高频英语练习、住宿生活、学习管理和费用预算整合在同一个校园环境里。
+        对想短期突破口语、备考雅思多益、或先为长期留学打基础的学生来说，它是一条性价比高、节奏清晰的英语提升路径。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费评估适合城市
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#city-fit">
+          查看城市怎么选
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="why-hero__panel">
+      <div class="metric">
+        <strong>1:1</strong>
+        <span>一对一课程是菲律宾游学的核心卖点</span>
+      </div>
+      <div class="metric">
+        <strong>3类</strong>
+        <span>斯巴达 / 半斯巴达 / 自律型学习管理</span>
+      </div>
+      <div class="metric">
+        <strong>多城市</strong>
+        <span>宿务、碧瑶、克拉克等城市各有定位</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="reason-section">
+    <div class="section-heading">
+      <span class="section-kicker">Key Reasons</span>
+      <h2>菲律宾游学适合什么样的学生？</h2>
+      <p>从参考资料整理后，最常见的优势可以归纳为六个方向。</p>
+    </div>
+
+    <div class="reason-grid">
+      <article class="reason-card" *ngFor="let reason of reasons">
+        <span class="reason-icon">
+          <mat-icon>{{ reason.icon }}</mat-icon>
+        </span>
+        <h3>{{ reason.title }}</h3>
+        <p>{{ reason.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="city-section" id="city-fit">
+    <div class="section-heading">
+      <span class="section-kicker">City Fit</span>
+      <h2>城市不是随便选，学习目标不同，适合的地点也不同</h2>
+    </div>
+
+    <div class="city-grid">
+      <article class="city-card" *ngFor="let city of cities">
+        <span>{{ city.tag }}</span>
+        <h3>{{ city.name }}</h3>
+        <p>{{ city.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="decision-section">
+    <div class="decision-copy">
+      <span class="section-kicker">How To Choose</span>
+      <h2>选择学校时，别只看“排名”或“价格”</h2>
+      <p>
+        菲律宾语言学校数量多，真正适合学生的学校要结合目标、预算、学习强度和生活偏好判断。
+        思达会先帮学生厘清目标，再筛选城市、学校、课程和住宿方案。
+      </p>
+    </div>
+
+    <div class="checklist">
+      <div class="check-item" *ngFor="let item of checklist">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ item }}</span>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-
-interface NavbarItem {
-  label: string;
-  route: string;
-}
+import { mainNavigation, NavigationItem } from '../../config/navigation.config';
 
 @Component({
   selector: 'app-navbar',
@@ -13,17 +9,7 @@ interface NavbarItem {
 })
 export class NavbarComponent {
   mobileMenuOpen = false;
-
-  readonly navItems: NavbarItem[] = [
-    { label: '爱尔兰留学', route: '/' },
-    { label: '菲律宾游学', route: '/' },
-    { label: '线上英语', route: '/' },
-    { label: '海外游学', route: '/' },
-    { label: '游学指南', route: '/' },
-    { label: '留学指南', route: '/' },
-    { label: '学员反馈', route: '/' },
-    { label: '关于思达', route: '/' },
-  ];
+  readonly navItems = mainNavigation;
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -31,5 +17,9 @@ export class NavbarComponent {
 
   closeMobileMenu(): void {
     this.mobileMenuOpen = false;
+  }
+
+  trackById(_: number, item: NavigationItem): string {
+    return item.id;
   }
 }
