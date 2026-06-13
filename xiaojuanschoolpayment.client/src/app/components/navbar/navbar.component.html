@@ -1,0 +1,36 @@
+<header class="site-header">
+  <a class="brand" routerLink="/" aria-label="思达教育 STAR Education" (click)="closeMobileMenu()">
+    <span class="brand-mark" aria-hidden="true">
+      <span class="brand-mark__leaf"></span>
+    </span>
+    <span class="brand-copy">
+      <strong>思达教育</strong>
+      <small>STAR Education</small>
+    </span>
+  </a>
+
+  <button
+    class="menu-toggle"
+    type="button"
+    [attr.aria-expanded]="mobileMenuOpen"
+    aria-label="切换导航"
+    (click)="toggleMobileMenu()"
+  >
+    <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+  </button>
+
+  <nav class="primary-nav" [class.primary-nav--open]="mobileMenuOpen">
+    <a
+      *ngFor="let item of navItems"
+      [routerLink]="item.route"
+      (click)="closeMobileMenu()"
+    >
+      {{ item.label }}
+    </a>
+  </nav>
+
+  <a class="consult-button" routerLink="/register" (click)="closeMobileMenu()">
+    <mat-icon>chat_bubble</mat-icon>
+    <span>免费咨询</span>
+  </a>
+</header>

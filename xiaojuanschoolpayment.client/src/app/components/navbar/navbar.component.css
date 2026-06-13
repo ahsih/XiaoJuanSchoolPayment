@@ -1,0 +1,206 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.98);
+  border-bottom: 1px solid #e7ebf0;
+  box-shadow: 0 2px 14px rgba(18, 32, 56, 0.06);
+}
+
+.site-header {
+  min-height: 72px;
+  width: min(1460px, calc(100% - 64px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #08183a;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  position: relative;
+  width: 48px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  clip-path: polygon(50% 0, 96% 14%, 86% 76%, 50% 100%, 14% 76%, 4% 14%);
+  background: #09193c;
+  box-shadow: inset 0 0 0 3px #f7fbff;
+}
+
+.brand-mark::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  clip-path: inherit;
+  background: linear-gradient(145deg, #1f9247, #0d5e33);
+}
+
+.brand-mark__leaf,
+.brand-mark__leaf::before,
+.brand-mark__leaf::after {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50% 50% 50% 4px;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.brand-mark__leaf {
+  transform: rotate(45deg);
+}
+
+.brand-mark__leaf::before,
+.brand-mark__leaf::after {
+  content: '';
+}
+
+.brand-mark__leaf::before {
+  transform: translate(-8px, 5px) rotate(-95deg);
+}
+
+.brand-mark__leaf::after {
+  transform: translate(5px, 8px) rotate(95deg);
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-copy strong {
+  font-size: 1.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.brand-copy small {
+  margin-top: 0.22rem;
+  color: #1b2f55;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.primary-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1rem, 2.3vw, 2.55rem);
+  min-width: 0;
+}
+
+.primary-nav a {
+  color: #09183a;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.primary-nav a:hover,
+.primary-nav a.active {
+  color: #138043;
+}
+
+.consult-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.35rem;
+  border-radius: 8px;
+  background: #ff5b00;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(255, 91, 0, 0.24);
+}
+
+.consult-button mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #dfe6ed;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #08183a;
+}
+
+@media (max-width: 1120px) {
+  .site-header {
+    grid-template-columns: auto auto auto;
+    justify-content: space-between;
+    width: min(100%, calc(100% - 32px));
+    gap: 1rem;
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .primary-nav {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.75rem 1rem 1rem;
+    background: #ffffff;
+    border-bottom: 1px solid #e7ebf0;
+    box-shadow: 0 18px 30px rgba(18, 32, 56, 0.1);
+  }
+
+  .primary-nav--open {
+    display: flex;
+  }
+
+  .primary-nav a {
+    padding: 0.8rem 0.4rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-header {
+    grid-template-columns: auto auto;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 45px;
+  }
+
+  .brand-copy strong {
+    font-size: 1.28rem;
+  }
+
+  .brand-copy small {
+    font-size: 0.78rem;
+  }
+
+  .consult-button {
+    display: none;
+  }
+}

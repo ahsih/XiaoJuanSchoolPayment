@@ -34,6 +34,7 @@ import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-scho
 import { EditSchoolNoteDialogComponent } from './pages/admin-school-notes/edit-school-note-dialog/edit-school-note-dialog.component';
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 import { TranslatePipe } from './pipes/translate.pipe';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { TranslatePipe } from './pipes/translate.pipe';
     AdminSchoolFeesComponent,
     AdminSchoolNotesComponent,
     MainNavbarComponent,
+    NavbarComponent,
     TranslatePipe,
   ],
   imports: [

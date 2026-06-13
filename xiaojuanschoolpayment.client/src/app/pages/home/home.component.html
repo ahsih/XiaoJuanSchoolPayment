@@ -1,273 +1,93 @@
-<div class="home-shell">
-  <section class="hero-section">
+<div class="home-page">
+  <section class="hero">
     <div class="hero-copy">
-      <span class="eyebrow">{{ 'home.eyebrow' | t }}</span>
-      <h1>{{ 'home.heroTitle' | t }}</h1>
-      <p>{{ 'home.heroText' | t }}</p>
+      <h1>
+        专注<span>爱尔兰</span>留学申请与<br />
+        英语学习规划
+      </h1>
+      <p>
+        从英语水平评估、雅思备考规划、菲律宾英语游学，
+        到爱尔兰本科、硕士与半工半读申请，思达为学生提供
+        一站式升学与语言提升方案。
+      </p>
 
       <div class="hero-actions">
-        <a mat-flat-button color="primary" routerLink="/register">{{
-          'home.applyNow' | t
-        }}</a>
-        <a mat-stroked-button routerLink="/login">{{
-          'home.memberLogin' | t
-        }}</a>
-      </div>
-
-      <div class="hero-highlights">
-        <article>
-          <strong>{{ 'home.highlight1Title' | t }}</strong>
-          <span>{{ 'home.highlight1Text' | t }}</span>
-        </article>
-        <article>
-          <strong>{{ 'home.highlight2Title' | t }}</strong>
-          <span>{{ 'home.highlight2Text' | t }}</span>
-        </article>
-        <article>
-          <strong>{{ 'home.highlight3Title' | t }}</strong>
-          <span>{{ 'home.highlight3Text' | t }}</span>
-        </article>
-      </div>
-    </div>
-
-    <aside class="hero-panel">
-      <div class="hero-panel__card">
-        <span class="hero-panel__label">{{ 'home.featuredService' | t }}</span>
-        <h2>{{ 'home.featuredTitle' | t }}</h2>
-        <p>{{ 'home.featuredText' | t }}</p>
-
-        <div class="hero-panel__stats">
+        <a class="primary-action" routerLink="/register">
+          免费评估方案
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" routerLink="/login">
+          查看语言规划路径
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <div class="scholarship-card">
+          <mat-icon>emoji_events</mat-icon>
           <div>
-            <strong>01</strong>
-            <span>{{ 'home.stepChooseSchool' | t }}</span>
-          </div>
-          <div>
-            <strong>02</strong>
-            <span>{{ 'home.stepSelectLesson' | t }}</span>
-          </div>
-          <div>
-            <strong>03</strong>
-            <span>{{ 'home.stepReviewBudget' | t }}</span>
+            <strong>思达升学奖学金</strong>
+            <span>最高 <b>8000</b> 元</span>
           </div>
         </div>
       </div>
-    </aside>
-  </section>
-
-  <section class="feature-section">
-    <div class="section-heading">
-      <span class="eyebrow">{{ 'home.whyEyebrow' | t }}</span>
-      <h2>{{ 'home.whyTitle' | t }}</h2>
     </div>
 
-    <div class="feature-grid">
-      <article class="feature-card">
-        <h3>{{ 'home.featureHeroTitle' | t }}</h3>
-        <p>{{ 'home.featureHeroText' | t }}</p>
-      </article>
-      <article class="feature-card">
-        <h3>{{ 'home.featureCardsTitle' | t }}</h3>
-        <p>{{ 'home.featureCardsText' | t }}</p>
-      </article>
-      <article class="feature-card">
-        <h3>{{ 'home.featureFlowTitle' | t }}</h3>
-        <p>{{ 'home.featureFlowText' | t }}</p>
-      </article>
+    <div class="hero-media">
+      <img src="/assets/study-hero-collage.png" alt="爱尔兰校园、英语学习与课堂场景" />
     </div>
   </section>
 
-  <section class="planner-section">
-    <div class="section-heading">
-      <span class="eyebrow">{{ 'home.plannerEyebrow' | t }}</span>
-      <h2>{{ 'home.plannerTitle' | t }}</h2>
-      <p>{{ 'home.plannerText' | t }}</p>
-    </div>
-
-    <form [formGroup]="schoolForm" (ngSubmit)="submit()" class="page-form">
-      <div class="planner-grid">
-        <div class="planner-main">
-          <mat-card class="section-card">
-            <div class="section-header">
-              <span>{{ 'home.schoolSelection' | t }}</span>
-              <small>{{ 'home.schoolSelectionHint' | t }}</small>
-            </div>
-
-            <mat-card-content class="section-body">
-              <div class="form-grid">
-                <mat-form-field appearance="outline" *ngIf="schools.length > 0">
-                  <mat-label>{{ 'common.school' | t }}</mat-label>
-                  <mat-select
-                    formControlName="schoolId"
-                    [disabled]="schools.length === 0"
-                  >
-                    <mat-option value="">{{ 'home.chooseSchool' | t }}</mat-option>
-                    <mat-option *ngFor="let s of schools" [value]="s.id">
-                      {{ s.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field
-                  appearance="outline"
-                  *ngIf="schoolLessons.length > 0"
-                >
-                  <mat-label>{{ 'common.lesson' | t }}</mat-label>
-                  <mat-select
-                    formControlName="lessonId"
-                    [disabled]="schoolLessons.length === 0"
-                  >
-                    <mat-option value="">{{ 'home.chooseLesson' | t }}</mat-option>
-                    <mat-option *ngFor="let l of schoolLessons" [value]="l.id">
-                      {{ l.name }}
-                      <span *ngIf="l.price">
-                        ({{ l.currencySymbol }}{{ l.price }})
-                      </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field
-                  appearance="outline"
-                  *ngIf="schololFees.length > 0"
-                >
-                  <mat-label>{{ 'common.additionalFee' | t }}</mat-label>
-                  <mat-select
-                    formControlName="feeId"
-                    [disabled]="schololFees.length === 0"
-                  >
-                    <mat-option value="">{{ 'home.chooseFee' | t }}</mat-option>
-                    <mat-option *ngFor="let f of schololFees" [value]="f.id">
-                      {{ f.name }} - {{ f.currencySymbol }}{{ f.fee }}/term
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="section-card">
-            <div class="section-header">
-              <span>{{ 'home.accommodationTitle' | t }}</span>
-              <small>{{ 'home.accommodationHint' | t }}</small>
-            </div>
-
-            <mat-card-content class="section-body">
-              <div class="form-grid">
-                <mat-form-field
-                  appearance="outline"
-                  *ngIf="schoolRooms.length > 0"
-                >
-                  <mat-label>{{ 'common.room' | t }}</mat-label>
-                  <mat-select
-                    formControlName="roomId"
-                    [disabled]="schoolRooms.length === 0"
-                  >
-                    <mat-option value="">{{ 'home.chooseRoom' | t }}</mat-option>
-                    <mat-option *ngFor="let r of schoolRooms" [value]="r.id">
-                      {{ r.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-
-              <div
-                class="room-description"
-                *ngIf="getSchoolRoom()?.description as desc"
-              >
-                <div class="room-description_label">{{ 'home.roomDescription' | t }}</div>
-                <div class="room-description_text">{{ desc }}</div>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="section-card">
-            <div class="section-header">
-              <span>{{ 'home.notesTitle' | t }}</span>
-              <small>{{ 'home.notesHint' | t }}</small>
-            </div>
-
-            <mat-card-content class="section-body">
-              <div class="notes-list" *ngIf="schoolNotes.length > 0; else emptyNotes">
-                <article *ngFor="let n of schoolNotes" class="note-item">
-                  {{ n.notes }}
-                </article>
-              </div>
-
-              <ng-template #emptyNotes>
-                <div class="empty-state">
-                  {{ 'home.emptyNotes' | t }}
-                </div>
-              </ng-template>
-            </mat-card-content>
-          </mat-card>
-        </div>
-
-        <aside class="planner-sidebar">
-          <mat-card class="section-card summary-card">
-            <div class="section-header">
-              <span>{{ 'home.summaryTitle' | t }}</span>
-              <small>{{ 'home.summaryHint' | t }}</small>
-            </div>
-
-            <mat-card-content class="section-body">
-              <div class="price-list">
-                <div class="price-row">
-                  <div class="price-label">{{ 'home.lessonFee' | t }}</div>
-                  <div class="price-value">
-                    {{ getSchoolLessonCurrencySymbol() || '' }}{{ getSchoolLessonCost() || 0 }}
-                  </div>
-                </div>
-
-                <div class="price-row">
-                  <div class="price-label">{{ 'home.additionalFeeLabel' | t }}</div>
-                  <div class="price-value">
-                    {{ getSchoolFeeCurrency() || '' }}{{ getSchoolFeeCost() || 0 }}
-                  </div>
-                </div>
-
-                <div class="price-row">
-                  <div class="price-label">{{ 'home.accommodationFee' | t }}</div>
-                  <div class="price-value">
-                    {{ getSchoolRoomCurrencySymbol() || '' }}{{ getSchoolRoomCost() || 0 }}
-                  </div>
-                </div>
-
-                <div class="price-row total">
-                  <div class="price-label">{{ 'common.total' | t }}</div>
-                  <div class="price-value">{{ getTotalCost() || 0 }}</div>
-                </div>
-              </div>
-
-              <div class="summary-actions">
-                <button
-                  mat-flat-button
-                  color="primary"
-                  type="submit"
-                  [disabled]="schoolForm.invalid"
-                >
-                  {{ 'home.saveSelection' | t }}
-                </button>
-                <button mat-stroked-button type="button" (click)="reset()">
-                  {{ 'home.reset' | t }}
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <div class="info-stack">
-            <article class="info-card">
-              <span>{{ 'home.templateBlock' | t }}</span>
-              <h3>{{ 'home.destinationHighlights' | t }}</h3>
-              <p>{{ 'home.destinationHighlightsText' | t }}</p>
-            </article>
-            <article class="info-card">
-              <span>{{ 'home.templateBlock' | t }}</span>
-              <h3>{{ 'home.faqTitle' | t }}</h3>
-              <p>{{ 'home.faqText' | t }}</p>
-            </article>
-          </div>
-        </aside>
+  <section class="services" aria-label="核心服务">
+    <article class="service-card" *ngFor="let service of services">
+      <span
+        class="service-icon"
+        [class.service-icon--green]="service.tone === 'green'"
+        [class.service-icon--teal]="service.tone === 'teal'"
+        [class.service-icon--blue]="service.tone === 'blue'"
+      >
+        <mat-icon>{{ service.icon }}</mat-icon>
+      </span>
+      <div>
+        <h2>{{ service.title }}</h2>
+        <p>{{ service.description }}</p>
+        <a routerLink="/register">
+          了解更多
+          <mat-icon>chevron_right</mat-icon>
+        </a>
       </div>
-    </form>
+    </article>
+  </section>
+
+  <section class="destinations">
+    <div class="section-heading">
+      <div>
+        <h2>多国家英语游学项目</h2>
+        <p>优质语言学校与丰富课程选择，满足不同学习目标</p>
+      </div>
+      <a routerLink="/register">
+        查看全部项目
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+
+    <div class="destination-layout">
+      <div class="destination-grid">
+        <article class="destination-card" *ngFor="let destination of destinations">
+          <div class="destination-image" [class]="destination.imageClass"></div>
+          <div class="destination-body">
+            <span class="flag-badge">{{ destination.code }}</span>
+            <h3>{{ destination.title }}</h3>
+            <p>{{ destination.description }}</p>
+          </div>
+        </article>
+      </div>
+
+      <aside class="recommend-card">
+        <span class="recommend-label">热门推荐</span>
+        <div class="recommend-image"></div>
+        <div class="recommend-body">
+          <h3>菲律宾游学</h3>
+          <p>英语快速提升首选地课程多样 · 费用亲民 · 效果显著</p>
+        </div>
+      </aside>
+    </div>
   </section>
 </div>
