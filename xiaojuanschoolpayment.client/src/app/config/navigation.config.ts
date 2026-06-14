@@ -277,25 +277,25 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'ielts-schools',
         label: '雅思备考学校推荐',
-        route: placeholderRoute,
+        route: '/philippines-study/recommendations/ielts-schools',
         type: '需求页',
       },
       {
         id: 'budget-schools',
         label: '性价比学校推荐',
-        route: placeholderRoute,
+        route: '/philippines-study/recommendations/budget-schools',
         type: '需求页',
       },
       {
         id: 'family-schools',
         label: '亲子学校推荐',
-        route: placeholderRoute,
+        route: '/philippines-study/recommendations/family-schools',
         type: '需求页',
       },
       {
         id: 'junior-camp',
         label: '青少年夏令营',
-        route: placeholderRoute,
+        route: '/philippines-study/recommendations/junior-camp',
         type: '项目页',
       },
       {

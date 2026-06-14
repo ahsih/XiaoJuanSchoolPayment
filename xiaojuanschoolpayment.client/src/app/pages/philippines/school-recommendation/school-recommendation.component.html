@@ -1,0 +1,81 @@
+<div class="recommendation-page" *ngIf="page$ | async as page">
+  <section class="recommendation-hero">
+    <div class="recommendation-hero__copy">
+      <span class="section-kicker">{{ page.englishTitle }}</span>
+      <h1>{{ page.title }}</h1>
+      <p>{{ page.intro }}</p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费获取学校匹配
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#recommended-schools">
+          查看推荐学校
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="recommendation-hero__panel">
+      <div>
+        <strong>入口定位</strong>
+        <span>{{ page.audience }}</span>
+      </div>
+      <div>
+        <strong>关键词</strong>
+        <span>{{ page.keywords }}</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>{{ page.selectionFocus }}</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">How To Choose</span>
+      <h2>先看这些关键点</h2>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of page.highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-section" id="recommended-schools">
+    <div class="section-heading">
+      <span class="section-kicker">Recommended Schools</span>
+      <h2>可优先了解的学校方向</h2>
+    </div>
+
+    <div class="school-grid">
+      <article class="school-card" *ngFor="let school of page.recommendedSchools">
+        <span>{{ school.city }}</span>
+        <h3>{{ school.name }}</h3>
+        <strong>{{ school.fit }}</strong>
+        <p>{{ school.reason }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="checklist-section">
+    <div class="checklist-copy">
+      <span class="section-kicker">Before Booking</span>
+      <h2>咨询前确认清单</h2>
+    </div>
+
+    <ul>
+      <li *ngFor="let item of page.checklist">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ item }}</span>
+      </li>
+    </ul>
+  </section>
+</div>

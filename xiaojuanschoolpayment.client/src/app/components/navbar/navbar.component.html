@@ -1,11 +1,16 @@
 <header class="site-header">
-  <a class="brand" routerLink="/" aria-label="思达教育 STAR Education" (click)="closeMobileMenu()">
+  <a
+    class="brand"
+    routerLink="/"
+    aria-label="思达教育 STAR Education"
+    (click)="closeMobileMenu()"
+  >
     <span class="brand-mark" aria-hidden="true">
       <span class="brand-mark__leaf"></span>
     </span>
     <span class="brand-copy">
       <strong>思达教育</strong>
-      <small>STAR Education</small>
+      <small>SIDA Education</small>
     </span>
   </a>
 
@@ -16,10 +21,14 @@
     aria-label="切换导航"
     (click)="toggleMobileMenu()"
   >
-    <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    <mat-icon>{{ mobileMenuOpen ? "close" : "menu" }}</mat-icon>
   </button>
 
-  <nav class="primary-nav" [class.primary-nav--open]="mobileMenuOpen" aria-label="主导航">
+  <nav
+    class="primary-nav"
+    [class.primary-nav--open]="mobileMenuOpen"
+    aria-label="主导航"
+  >
     <div class="nav-item" *ngFor="let item of navItems; trackBy: trackById">
       <a class="nav-link" [routerLink]="item.route">
         <span>{{ item.label }}</span>
@@ -30,7 +39,7 @@
         <div class="mega-menu__intro">
           <span>STAR Education</span>
           <strong>{{ item.label }}</strong>
-          <p>{{ item.note || '完整项目路径与申请资讯' }}</p>
+          <p>{{ item.note || "完整项目路径与申请资讯" }}</p>
           <a routerLink="/register" (click)="closeMobileMenu()">
             免费咨询
             <mat-icon>chevron_right</mat-icon>
@@ -38,11 +47,20 @@
         </div>
 
         <div class="mega-menu__columns">
-          <section class="mega-group" *ngFor="let child of item.children; trackBy: trackById">
-            <a class="mega-group__title" [routerLink]="child.route" (click)="closeMobileMenu()">
+          <section
+            class="mega-group"
+            *ngFor="let child of item.children; trackBy: trackById"
+          >
+            <a
+              class="mega-group__title"
+              [routerLink]="child.route"
+              (click)="closeMobileMenu()"
+            >
               {{ child.label }}
             </a>
-            <span class="mega-group__type" *ngIf="child.type">{{ child.type }}</span>
+            <span class="mega-group__type" *ngIf="child.type">{{
+              child.type
+            }}</span>
 
             <div class="mega-subitems" *ngIf="child.children?.length">
               <a

@@ -20,6 +20,7 @@ import { CitySchoolsComponent } from './pages/philippines/city-schools/city-scho
 import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay-study.component';
 import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
 import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
+import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
 
 const routes: Routes = [
   {
@@ -54,6 +55,26 @@ const routes: Routes = [
         path: 'philippines-study/subic',
         component: RegionalCityStudyComponent,
         data: { cityKey: 'subic' },
+      },
+      {
+        path: 'philippines-study/recommendations/ielts-schools',
+        component: SchoolRecommendationComponent,
+        data: { recommendationKey: 'ielts' },
+      },
+      {
+        path: 'philippines-study/recommendations/budget-schools',
+        component: SchoolRecommendationComponent,
+        data: { recommendationKey: 'budget' },
+      },
+      {
+        path: 'philippines-study/recommendations/family-schools',
+        component: SchoolRecommendationComponent,
+        data: { recommendationKey: 'family' },
+      },
+      {
+        path: 'philippines-study/recommendations/junior-camp',
+        component: SchoolRecommendationComponent,
+        data: { recommendationKey: 'juniorCamp' },
       },
     ],
   },
