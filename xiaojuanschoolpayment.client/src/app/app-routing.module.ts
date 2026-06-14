@@ -468,6 +468,90 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/study-tour-guide/tour-faq/tour-faq.component').then((m) => m.TourFaqComponent),
       },
+      {
+        path: 'study-abroad-guide/ireland-cost',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/ireland-study-cost/ireland-study-cost.component').then(
+            (m) => m.IrelandStudyCostComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/ireland-application-timeline',
+        loadComponent: () =>
+          import(
+            './pages/study-abroad-guide/ireland-application-timeline/ireland-application-timeline.component'
+          ).then((m) => m.IrelandApplicationTimelineComponent),
+      },
+      {
+        path: 'study-abroad-guide/ireland-school-selection',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/ireland-school-selection/ireland-school-selection.component').then(
+            (m) => m.IrelandSchoolSelectionComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/ireland-work-study',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/ireland-work-study-guide/ireland-work-study-guide.component').then(
+            (m) => m.IrelandWorkStudyGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/undergraduate',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/undergraduate-guide/undergraduate-guide.component').then(
+            (m) => m.UndergraduateGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/master',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/master-guide/master-guide.component').then(
+            (m) => m.MasterGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/foundation',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/foundation-guide/foundation-guide.component').then(
+            (m) => m.FoundationGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/major-selection',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/major-selection-guide/major-selection-guide.component').then(
+            (m) => m.MajorSelectionGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/application-materials',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/application-materials/application-materials.component').then(
+            (m) => m.ApplicationMaterialsComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/visa',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/study-visa-guide/study-visa-guide.component').then(
+            (m) => m.StudyVisaGuideComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/pre-departure',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/study-pre-departure/study-pre-departure.component').then(
+            (m) => m.StudyPreDepartureComponent,
+          ),
+      },
+      {
+        path: 'study-abroad-guide/faq',
+        loadComponent: () =>
+          import('./pages/study-abroad-guide/study-faq/study-faq.component').then(
+            (m) => m.StudyFaqComponent,
+          ),
+      },
     ],
   },
   {
