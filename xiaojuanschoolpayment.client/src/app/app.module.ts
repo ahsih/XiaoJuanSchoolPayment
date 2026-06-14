@@ -49,9 +49,6 @@ import { SchoolLibraryComponent } from './pages/philippines/school-library/schoo
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
 import { ScrollToDirective } from './directives/scroll-to.directive';
-import { UndergraduateApplicationComponent } from './pages/ireland/undergraduate-application/undergraduate-application.component';
-import { MasterApplicationComponent } from './pages/ireland/master-application/master-application.component';
-import { FoundationApplicationComponent } from './pages/ireland/foundation-application/foundation-application.component';
 import { IrelandPageContentComponent } from './pages/ireland/page-content/ireland-page-content.component';
 
 @NgModule({
@@ -86,9 +83,6 @@ import { IrelandPageContentComponent } from './pages/ireland/page-content/irelan
     SchoolLibraryComponent,
     PhilippinesInfoPageComponent,
     IrelandInfoPageComponent,
-    UndergraduateApplicationComponent,
-    MasterApplicationComponent,
-    FoundationApplicationComponent,
     TranslatePipe,
   ],
   imports: [

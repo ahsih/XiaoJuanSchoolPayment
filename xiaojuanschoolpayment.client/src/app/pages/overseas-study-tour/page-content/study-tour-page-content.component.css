@@ -1,0 +1,262 @@
+:host {
+  display: block;
+  background: #ffffff;
+}
+
+.tour-page {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 2.4rem 0 4rem;
+  text-align: left;
+}
+
+.tour-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.tour-hero__copy {
+  padding: 2.2rem 0;
+}
+
+.section-kicker {
+  display: inline-flex;
+  margin-bottom: 0.7rem;
+  color: #168246;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: #07173a;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: clamp(2.9rem, 5.5vw, 5rem);
+  line-height: 1.02;
+}
+
+p,
+li,
+.tour-panel span,
+.highlight-strip span {
+  color: #465469;
+  line-height: 1.72;
+}
+
+.tour-hero p {
+  max-width: 760px;
+  margin: 1.2rem 0 0;
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  border-radius: 8px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.primary-action {
+  background: #ff5b00;
+  color: #ffffff;
+}
+
+.secondary-action {
+  border: 1px solid #5a9b77;
+  color: #167144;
+  background: #ffffff;
+}
+
+mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.tour-hero__visual {
+  display: grid;
+  grid-template-rows: minmax(240px, 1fr) auto;
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(17, 32, 56, 0.08);
+}
+
+.tour-photo {
+  min-height: 260px;
+  background: center / cover no-repeat;
+}
+
+.tour-panel {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.1rem;
+  background: #fbfcfd;
+}
+
+.tour-panel strong {
+  color: #07173a;
+  font-weight: 950;
+}
+
+.highlight-strip,
+.tour-grid,
+.source-links {
+  display: grid;
+  gap: 1rem;
+}
+
+.highlight-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.6rem;
+}
+
+.highlight-strip div,
+.tour-card,
+.planning-section,
+.source-section {
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.highlight-strip div {
+  padding: 1rem;
+}
+
+.highlight-strip strong {
+  display: block;
+  color: #07173a;
+  font-size: 1.45rem;
+  font-weight: 950;
+}
+
+.tour-section,
+.planning-section,
+.source-section {
+  margin-top: 2.4rem;
+}
+
+.section-heading {
+  margin-bottom: 1.1rem;
+}
+
+.section-heading h2,
+.planning-section h2,
+.source-section h2 {
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+}
+
+.tour-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tour-card {
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(17, 32, 56, 0.06);
+}
+
+.tour-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef7f2;
+  color: #168246;
+}
+
+.tour-card h3 {
+  margin-top: 0.8rem;
+  font-size: 1.05rem;
+}
+
+.tour-card p {
+  margin: 0.45rem 0 0;
+}
+
+.planning-section,
+.source-section {
+  display: grid;
+  grid-template-columns: 0.45fr 1fr;
+  gap: 1.2rem;
+  padding: 1.3rem;
+  background: #fbfcfd;
+}
+
+.planning-section ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.planning-section li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 0.55rem;
+}
+
+.planning-section mat-icon {
+  color: #168246;
+}
+
+.source-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #167144;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+@media (max-width: 980px) {
+  .tour-hero,
+  .highlight-strip,
+  .tour-grid,
+  .planning-section,
+  .source-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .tour-page {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.4rem 14px 3rem;
+  }
+
+  h1 {
+    font-size: 2.55rem;
+  }
+
+  .primary-action,
+  .secondary-action {
+    justify-content: center;
+    width: 100%;
+  }
+}

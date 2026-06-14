@@ -1,0 +1,81 @@
+<div class="tour-page">
+  <section class="tour-hero">
+    <div class="tour-hero__copy">
+      <span class="section-kicker">{{ page.englishTitle }}</span>
+      <h1>{{ page.title }}</h1>
+      <p>{{ page.intro }}</p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#tour-details" appScrollTo="tour-details">
+          查看重点
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="tour-hero__visual">
+      <div class="tour-photo" [style.background-image]="'url(' + page.heroImage + ')'"></div>
+      <div class="tour-panel">
+        <strong>页面定位</strong>
+        <span>{{ page.positioning }}</span>
+        <strong>关键词</strong>
+        <span>{{ page.keywords }}</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-strip">
+    <div *ngFor="let item of page.highlights">
+      <strong>{{ item.value }}</strong>
+      <span>{{ item.label }}</span>
+    </div>
+  </section>
+
+  <section class="tour-section" id="tour-details">
+    <div class="section-heading">
+      <span class="section-kicker">Study Tour Focus</span>
+      <h2>{{ page.cardsTitle }}</h2>
+    </div>
+
+    <div class="tour-grid">
+      <article class="tour-card" *ngFor="let card of page.cards">
+        <span class="tour-icon">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </span>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="planning-section">
+    <div>
+      <span class="section-kicker">Planning</span>
+      <h2>{{ page.checklistTitle }}</h2>
+    </div>
+
+    <ul>
+      <li *ngFor="let item of page.checklist">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ item }}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="source-section">
+    <div>
+      <span class="section-kicker">Sources</span>
+      <h2>参考信息</h2>
+    </div>
+
+    <div class="source-links">
+      <a *ngFor="let source of page.sources" [href]="source.url" target="_blank" rel="noreferrer">
+        {{ source.label }}
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
+  </section>
+</div>

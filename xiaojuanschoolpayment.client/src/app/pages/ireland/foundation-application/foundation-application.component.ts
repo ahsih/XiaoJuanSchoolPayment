@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { IrelandPageContentComponent } from '../page-content/ireland-page-content.component';
 
 @Component({
   selector: 'app-foundation-application',
-  standalone: false,
+  standalone: true,
+  imports: [IrelandPageContentComponent],
   templateUrl: './foundation-application.component.html',
 })
 export class FoundationApplicationComponent {

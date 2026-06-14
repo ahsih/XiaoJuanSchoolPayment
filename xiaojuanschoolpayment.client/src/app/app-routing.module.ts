@@ -24,9 +24,6 @@ import { SchoolRecommendationComponent } from './pages/philippines/school-recomm
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
-import { UndergraduateApplicationComponent } from './pages/ireland/undergraduate-application/undergraduate-application.component';
-import { MasterApplicationComponent } from './pages/ireland/master-application/master-application.component';
-import { FoundationApplicationComponent } from './pages/ireland/foundation-application/foundation-application.component';
 
 const routes: Routes = [
   {
@@ -108,15 +105,24 @@ const routes: Routes = [
       },
       {
         path: 'ireland-study/undergraduate-application',
-        component: UndergraduateApplicationComponent,
+        loadComponent: () =>
+          import('./pages/ireland/undergraduate-application/undergraduate-application.component').then(
+            (m) => m.UndergraduateApplicationComponent,
+          ),
       },
       {
         path: 'ireland-study/master-application',
-        component: MasterApplicationComponent,
+        loadComponent: () =>
+          import('./pages/ireland/master-application/master-application.component').then(
+            (m) => m.MasterApplicationComponent,
+          ),
       },
       {
         path: 'ireland-study/foundation-application',
-        component: FoundationApplicationComponent,
+        loadComponent: () =>
+          import('./pages/ireland/foundation-application/foundation-application.component').then(
+            (m) => m.FoundationApplicationComponent,
+          ),
       },
       {
         path: 'ireland-study/application/undergraduate-course',
@@ -250,6 +256,62 @@ const routes: Routes = [
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },
+      },
+      {
+        path: 'online-english/free-english-test',
+        loadComponent: () =>
+          import('./pages/online-english/free-english-test/free-english-test.component').then(
+            (m) => m.FreeEnglishTestComponent,
+          ),
+      },
+      {
+        path: 'online-english/courses',
+        loadComponent: () =>
+          import('./pages/online-english/online-english-courses/online-english-courses.component').then(
+            (m) => m.OnlineEnglishCoursesComponent,
+          ),
+      },
+      {
+        path: 'online-english/filipino-teacher-1v1',
+        loadComponent: () =>
+          import('./pages/online-english/filipino-teacher-1v1/filipino-teacher-1v1.component').then(
+            (m) => m.FilipinoTeacher1v1Component,
+          ),
+      },
+      {
+        path: 'online-english/ielts-speaking-writing',
+        loadComponent: () =>
+          import('./pages/online-english/ielts-speaking-writing/ielts-speaking-writing.component').then(
+            (m) => m.IeltsSpeakingWritingComponent,
+          ),
+      },
+      {
+        path: 'online-english/junior-courses',
+        loadComponent: () =>
+          import('./pages/online-english/junior-online-english/junior-online-english.component').then(
+            (m) => m.JuniorOnlineEnglishComponent,
+          ),
+      },
+      {
+        path: 'online-english/adult-speaking',
+        loadComponent: () =>
+          import('./pages/online-english/adult-speaking/adult-speaking.component').then(
+            (m) => m.AdultSpeakingComponent,
+          ),
+      },
+      {
+        path: 'online-english/trial-booking',
+        loadComponent: () =>
+          import('./pages/online-english/trial-booking/trial-booking.component').then(
+            (m) => m.TrialBookingComponent,
+          ),
+      },
+      {
+        path: 'online-english/faq',
+        loadComponent: () =>
+          import('./pages/online-english/online-english-faq/online-english-faq.component').then(
+            (m) => m.OnlineEnglishFaqComponent,
+          ),
       },
     ],
   },
