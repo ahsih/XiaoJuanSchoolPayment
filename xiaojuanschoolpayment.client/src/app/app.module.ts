@@ -47,6 +47,7 @@ import { RegionalCityStudyComponent } from './pages/philippines/regional-city-st
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
+import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/phil
     SchoolRecommendationComponent,
     SchoolLibraryComponent,
     PhilippinesInfoPageComponent,
+    IrelandInfoPageComponent,
     TranslatePipe,
   ],
   imports: [

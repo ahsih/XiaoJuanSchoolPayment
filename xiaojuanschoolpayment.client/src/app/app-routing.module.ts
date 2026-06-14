@@ -23,6 +23,7 @@ import { RegionalCityStudyComponent } from './pages/philippines/regional-city-st
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
+import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,46 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
+      {
+        path: 'ireland-study/experience-ireland',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'experience' },
+      },
+      {
+        path: 'ireland-study/education-system',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'educationSystem' },
+      },
+      {
+        path: 'ireland-study/working-in-ireland',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'working' },
+      },
+      {
+        path: 'ireland-study/economy-careers',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'economyCareers' },
+      },
+      {
+        path: 'ireland-study/work-study',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'workStudy' },
+      },
+      {
+        path: 'ireland-study/schools/admission-info',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'admissionInfo' },
+      },
+      {
+        path: 'ireland-study/schools/scholarships',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'scholarships' },
+      },
+      {
+        path: 'ireland-study/schools/universities',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'universities' },
+      },
       {
         path: 'philippines-study/why-philippines',
         component: WhyPhilippinesStudyComponent,

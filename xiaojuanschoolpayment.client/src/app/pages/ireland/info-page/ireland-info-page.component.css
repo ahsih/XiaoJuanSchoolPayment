@@ -1,0 +1,316 @@
+:host {
+  display: block;
+  background: #ffffff;
+}
+
+.ireland-page {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 2.4rem 0 4rem;
+  text-align: left;
+}
+
+.ireland-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 430px;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.ireland-hero__copy {
+  padding: 2.4rem 0;
+}
+
+.section-kicker {
+  display: inline-flex;
+  margin-bottom: 0.7rem;
+  color: #168246;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.ireland-hero h1,
+.section-heading h2,
+.guide-section h2,
+.source-section h2 {
+  margin: 0;
+  color: #07173a;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.ireland-hero h1 {
+  max-width: 780px;
+  font-size: clamp(2.65rem, 5vw, 4.8rem);
+  line-height: 1.05;
+}
+
+.ireland-hero p,
+.info-card p,
+.guide-section p,
+.guide-section li,
+.source-section p {
+  color: #465469;
+  line-height: 1.75;
+}
+
+.ireland-hero p {
+  max-width: 780px;
+  margin: 1.2rem 0 0;
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.25rem;
+  border-radius: 8px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.primary-action {
+  background: #ff5b00;
+  color: #ffffff;
+  box-shadow: 0 12px 25px rgba(255, 91, 0, 0.2);
+}
+
+.secondary-action {
+  border: 1px solid #5a9b77;
+  color: #167144;
+  background: #ffffff;
+}
+
+.ireland-hero__visual {
+  display: grid;
+  grid-template-rows: minmax(250px, 1fr) auto;
+  overflow: hidden;
+  border: 1px solid #dfe7ee;
+  border-radius: 8px;
+  box-shadow: 0 14px 30px rgba(17, 32, 56, 0.08);
+}
+
+.hero-photo {
+  min-height: 270px;
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #dfe7ee;
+}
+
+.hero-panel div {
+  padding: 1rem;
+  background: #ffffff;
+}
+
+.hero-panel strong,
+.metric-strip strong {
+  display: block;
+  color: #07173a;
+  font-weight: 950;
+}
+
+.hero-panel span,
+.metric-strip span {
+  display: block;
+  margin-top: 0.35rem;
+  color: #586276;
+  line-height: 1.55;
+}
+
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.6rem;
+}
+
+.metric-strip div {
+  padding: 1rem;
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+  background: #fbfcfd;
+}
+
+.metric-strip strong {
+  color: #168246;
+  font-size: 1.6rem;
+}
+
+.ireland-section,
+.guide-section,
+.source-section {
+  margin-top: 2.5rem;
+}
+
+.section-heading {
+  margin-bottom: 1.2rem;
+}
+
+.section-heading h2,
+.guide-section h2,
+.source-section h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.18;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.info-card,
+.guide-section,
+.source-section {
+  border: 1px solid #e1e8ee;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(17, 32, 56, 0.06);
+}
+
+.info-card {
+  padding: 1.1rem;
+}
+
+.info-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef7f2;
+  color: #168246;
+}
+
+.info-icon mat-icon {
+  font-size: 26px;
+}
+
+.info-card h3 {
+  margin: 0.85rem 0 0.45rem;
+  color: #07173a;
+  font-size: 1.08rem;
+  font-weight: 950;
+}
+
+.info-card p,
+.guide-section p,
+.source-section p {
+  margin: 0;
+}
+
+.guide-section,
+.source-section {
+  display: grid;
+  grid-template-columns: 0.72fr 1fr;
+  gap: 1.4rem;
+  padding: 1.4rem;
+  background: #fbfcfd;
+}
+
+.guide-section p {
+  margin-top: 0.8rem;
+}
+
+.guide-section ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-section li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.guide-section li mat-icon {
+  color: #168246;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  margin-top: 0.1rem;
+}
+
+.source-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.source-links a {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0 0.85rem;
+  border: 1px solid #dfe7ee;
+  border-radius: 8px;
+  color: #0b244d;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.source-links a:hover {
+  border-color: #168246;
+  color: #168246;
+}
+
+@media (max-width: 1020px) {
+  .ireland-hero,
+  .info-grid,
+  .guide-section,
+  .source-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .ireland-page {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 1.4rem 14px 3rem;
+    overflow-x: hidden;
+  }
+
+  .ireland-hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .metric-strip,
+  .hero-panel,
+  .source-links {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-action,
+  .secondary-action {
+    justify-content: center;
+    width: 100%;
+  }
+}

@@ -19,35 +19,35 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'why-ireland',
         label: '为什么选择爱尔兰',
-        route: placeholderRoute,
+        route: '/ireland-study/experience-ireland',
         type: '内容页',
         children: [
           {
             id: 'experience-ireland',
             label: '体验爱尔兰',
-            route: placeholderRoute,
+            route: '/ireland-study/experience-ireland',
           },
           {
             id: 'ireland-education-system',
             label: '爱尔兰教育系统',
-            route: placeholderRoute,
+            route: '/ireland-study/education-system',
           },
           {
             id: 'working-in-ireland',
             label: '在爱尔兰工作',
-            route: placeholderRoute,
+            route: '/ireland-study/working-in-ireland',
           },
           {
             id: 'ireland-economy-jobs',
             label: '爱尔兰经济与就业',
-            route: placeholderRoute,
+            route: '/ireland-study/economy-careers',
           },
         ],
       },
       {
         id: 'ireland-work-study',
         label: '爱尔兰半工半读',
-        route: placeholderRoute,
+        route: '/ireland-study/work-study',
         type: '重点落地页',
       },
       {
@@ -59,17 +59,17 @@ export const mainNavigation: NavigationItem[] = [
           {
             id: 'ireland-admission-info',
             label: '院校招生信息',
-            route: placeholderRoute,
+            route: '/ireland-study/schools/admission-info',
           },
           {
             id: 'ireland-scholarships',
             label: '院校奖学金信息',
-            route: placeholderRoute,
+            route: '/ireland-study/schools/scholarships',
           },
           {
             id: 'ireland-universities',
             label: '综合性大学',
-            route: placeholderRoute,
+            route: '/ireland-study/schools/universities',
           },
           {
             id: 'ireland-technology-universities',
