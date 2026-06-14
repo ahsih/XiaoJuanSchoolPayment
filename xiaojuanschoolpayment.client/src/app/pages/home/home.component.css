@@ -12,7 +12,6 @@
 
 .hero {
   min-height: 365px;
-  height: 365px;
   display: grid;
   grid-template-columns: 40% 60%;
   align-items: stretch;
@@ -95,7 +94,7 @@
 
 .scholarship-card {
   gap: 0.8rem;
-  padding: 0.65rem 1rem;
+  padding: 0.72rem 1rem 0.95rem;
   background: #ffffff;
   color: #15213a;
   border: 1px solid #e8edf1;
@@ -121,12 +120,13 @@
 .scholarship-card span {
   color: #586276;
   font-size: 0.9rem;
+  line-height: 1.25;
 }
 
 .scholarship-card b {
   color: #ff5b00;
   font-size: 1.8rem;
-  line-height: 1;
+  line-height: 1.08;
 }
 
 .hero-media {
