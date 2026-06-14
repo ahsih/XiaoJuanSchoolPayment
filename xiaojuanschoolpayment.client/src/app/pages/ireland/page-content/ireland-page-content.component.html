@@ -70,18 +70,4 @@
     </ul>
   </section>
 
-  <section class="source-section">
-    <div>
-      <span class="section-kicker">Sources</span>
-      <h2>参考信息</h2>
-      <p>页面内容根据公开资料整理，并按思达教育网站的咨询场景重新组织。</p>
-    </div>
-
-    <div class="source-links">
-      <a *ngFor="let source of page.sources" [href]="source.url" target="_blank" rel="noreferrer">
-        {{ source.label }}
-        <mat-icon>open_in_new</mat-icon>
-      </a>
-    </div>
-  </section>
 </div>

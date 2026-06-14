@@ -13,7 +13,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'ireland-study',
     label: '爱尔兰留学',
-    route: placeholderRoute,
+    route: '/ireland-study/experience-ireland',
     note: '品牌升级与留学申请主入口',
     children: [
       {
@@ -186,7 +186,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'philippines-study',
     label: '菲律宾游学',
-    route: placeholderRoute,
+    route: '/philippines-study/why-philippines',
     note: '当前主要收入业务入口',
     children: [
       {
@@ -333,7 +333,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'online-english',
     label: '线上英语',
-    route: placeholderRoute,
+    route: '/online-english/free-english-test',
     note: '低门槛引流项目',
     children: [
       {
@@ -389,7 +389,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'overseas-study-tour',
     label: '海外游学',
-    route: placeholderRoute,
+    route: '/overseas-study-tour/offers',
     note: '其他国家游学项目入口',
     children: [
       {
@@ -463,7 +463,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'study-tour-guide',
     label: '游学指南',
-    route: placeholderRoute,
+    route: '/study-tour-guide/cost',
     note: '游学 SEO 与决策内容',
     children: [
       {
@@ -543,7 +543,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'study-abroad-guide',
     label: '留学指南',
-    route: placeholderRoute,
+    route: '/study-abroad-guide/ireland-cost',
     note: '爱尔兰留学 SEO 与申请内容',
     children: [
       {
@@ -623,7 +623,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'student-feedback',
     label: '学员反馈',
-    route: placeholderRoute,
+    route: '/student-feedback/study-tour',
     note: '信任背书',
     children: [
       {
@@ -643,7 +643,7 @@ export const mainNavigation: NavigationItem[] = [
   {
     id: 'about-sida',
     label: '关于思达',
-    route: placeholderRoute,
+    route: '/about-sida/about',
     note: '品牌与团队信息',
     children: [
       {
