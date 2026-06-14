@@ -16,9 +16,9 @@
           免费评估方案
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" routerLink="/login">
+        <a class="secondary-action" href="#services" appScrollTo="services">
           查看语言规划路径
-          <mat-icon>chevron_right</mat-icon>
+          <mat-icon>south</mat-icon>
         </a>
         <div class="scholarship-card">
           <mat-icon>emoji_events</mat-icon>
@@ -35,7 +35,7 @@
     </div>
   </section>
 
-  <section class="services" aria-label="核心服务">
+  <section class="services" id="services" aria-label="核心服务">
     <article class="service-card" *ngFor="let service of services">
       <span
         class="service-icon"

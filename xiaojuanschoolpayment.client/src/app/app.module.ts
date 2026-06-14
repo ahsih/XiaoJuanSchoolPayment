@@ -48,6 +48,7 @@ import { SchoolRecommendationComponent } from './pages/philippines/school-recomm
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
+import { ScrollToDirective } from './directives/scroll-to.directive';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info
     SchoolLibraryComponent,
     PhilippinesInfoPageComponent,
     IrelandInfoPageComponent,
+    ScrollToDirective,
     TranslatePipe,
   ],
   imports: [
