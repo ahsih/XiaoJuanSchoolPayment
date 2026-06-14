@@ -40,6 +40,7 @@ import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.co
 import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
 import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
 import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-study.component';
+import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-st
     BaguioStudyComponent,
     ClarkStudyComponent,
     ManilaStudyComponent,
+    CitySchoolsComponent,
     TranslatePipe,
   ],
   imports: [

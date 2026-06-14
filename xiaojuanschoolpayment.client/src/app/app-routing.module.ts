@@ -16,6 +16,7 @@ import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.co
 import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
 import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
 import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-study.component';
+import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: 'philippines-study/baguio', component: BaguioStudyComponent },
       { path: 'philippines-study/clark', component: ClarkStudyComponent },
       { path: 'philippines-study/manila', component: ManilaStudyComponent },
+      { path: 'philippines-study/schools/by-city', component: CitySchoolsComponent },
     ],
   },
   {

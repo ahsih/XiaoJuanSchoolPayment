@@ -1,0 +1,27 @@
+<div class="city-schools-page">
+  <section class="city-hero">
+    <div>
+      <span class="section-kicker">Philippines Schools By City</span>
+      <h1>按城市找菲律宾学校</h1>
+      <p>
+        不同城市适合不同学习目标。先选择你想了解的城市，再进入对应页面查看课程方向、
+        适合人群和选校重点。
+      </p>
+    </div>
+  </section>
+
+  <section class="city-list" aria-label="菲律宾游学城市列表">
+    <a class="city-card" *ngFor="let city of cities" [routerLink]="city.route">
+      <span class="city-card__icon">
+        <mat-icon>{{ city.icon }}</mat-icon>
+      </span>
+      <span class="city-card__content">
+        <span class="city-card__eyebrow">{{ city.englishName }} Study</span>
+        <strong>{{ city.name }}游学</strong>
+        <span class="city-card__summary">{{ city.summary }}</span>
+        <span class="city-card__best">适合：{{ city.bestFor }}</span>
+      </span>
+      <mat-icon class="city-card__arrow">chevron_right</mat-icon>
+    </a>
+  </section>
+</div>

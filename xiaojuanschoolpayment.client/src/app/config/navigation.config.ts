@@ -102,7 +102,7 @@ export const mainNavigation: NavigationItem[] = [
         route: placeholderRoute,
         type: '学校库筛选',
         children: [
-          { id: 'philippines-schools-by-city', label: '按城市找学校', route: placeholderRoute },
+          { id: 'philippines-schools-by-city', label: '按城市找学校', route: '/philippines-study/schools/by-city' },
           { id: 'philippines-schools-by-course', label: '按课程找学校', route: placeholderRoute },
           { id: 'philippines-schools-by-style', label: '按管理模式找学校', route: placeholderRoute },
           { id: 'philippines-popular-schools', label: '热门学校合集', route: placeholderRoute },
