@@ -21,6 +21,8 @@ import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay
 import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
 import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
+import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
+import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 
 const routes: Routes = [
   {
@@ -75,6 +77,36 @@ const routes: Routes = [
         path: 'philippines-study/recommendations/junior-camp',
         component: SchoolRecommendationComponent,
         data: { recommendationKey: 'juniorCamp' },
+      },
+      {
+        path: 'philippines-study/recommendations/sparta-schools',
+        component: SchoolRecommendationComponent,
+        data: { recommendationKey: 'sparta' },
+      },
+      {
+        path: 'philippines-study/schools/by-course',
+        component: SchoolLibraryComponent,
+        data: { libraryKey: 'course' },
+      },
+      {
+        path: 'philippines-study/schools/by-style',
+        component: SchoolLibraryComponent,
+        data: { libraryKey: 'style' },
+      },
+      {
+        path: 'philippines-study/schools/popular',
+        component: SchoolLibraryComponent,
+        data: { libraryKey: 'popular' },
+      },
+      {
+        path: 'philippines-study/offers',
+        component: PhilippinesInfoPageComponent,
+        data: { infoKey: 'offers' },
+      },
+      {
+        path: 'philippines-study/faq',
+        component: PhilippinesInfoPageComponent,
+        data: { infoKey: 'faq' },
       },
     ],
   },

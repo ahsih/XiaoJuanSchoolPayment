@@ -239,17 +239,6 @@
   color: #138043;
 }
 
-.mega-group__type {
-  display: inline-flex;
-  margin-top: 0.45rem;
-  padding: 0.18rem 0.48rem;
-  border-radius: 999px;
-  background: #eef7f2;
-  color: #157647;
-  font-size: 0.72rem;
-  font-weight: 800;
-}
-
 .mega-subitems {
   display: grid;
   gap: 0.38rem;

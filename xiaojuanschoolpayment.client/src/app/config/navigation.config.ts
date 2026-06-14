@@ -215,17 +215,17 @@ export const mainNavigation: NavigationItem[] = [
           {
             id: 'philippines-schools-by-course',
             label: '按课程找学校',
-            route: placeholderRoute,
+            route: '/philippines-study/schools/by-course',
           },
           {
             id: 'philippines-schools-by-style',
             label: '按管理模式找学校',
-            route: placeholderRoute,
+            route: '/philippines-study/schools/by-style',
           },
           {
             id: 'philippines-popular-schools',
             label: '热门学校合集',
-            route: placeholderRoute,
+            route: '/philippines-study/schools/popular',
           },
         ],
       },
@@ -269,9 +269,21 @@ export const mainNavigation: NavigationItem[] = [
             label: '巴科洛德游学',
             route: '/philippines-study/bacolod',
           },
-          { id: 'iloilo-study', label: '怡朗游学', route: '/philippines-study/iloilo' },
-          { id: 'davao-study', label: '达沃游学', route: '/philippines-study/davao' },
-          { id: 'subic-study', label: '苏比克游学', route: '/philippines-study/subic' },
+          {
+            id: 'iloilo-study',
+            label: '怡朗游学',
+            route: '/philippines-study/iloilo',
+          },
+          {
+            id: 'davao-study',
+            label: '达沃游学',
+            route: '/philippines-study/davao',
+          },
+          {
+            id: 'subic-study',
+            label: '苏比克游学',
+            route: '/philippines-study/subic',
+          },
         ],
       },
       {
@@ -301,19 +313,19 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'sparta-schools',
         label: '斯巴达学校推荐',
-        route: placeholderRoute,
+        route: '/philippines-study/recommendations/sparta-schools',
         type: '需求页',
       },
       {
         id: 'philippines-offers',
         label: '菲律宾游学最新优惠',
-        route: placeholderRoute,
+        route: '/philippines-study/offers',
         type: '活动页',
       },
       {
         id: 'philippines-faq',
         label: '菲律宾游学常见问题',
-        route: placeholderRoute,
+        route: '/philippines-study/faq',
         type: 'FAQ页',
       },
     ],
@@ -629,7 +641,7 @@ export const mainNavigation: NavigationItem[] = [
     ],
   },
   {
-    id: 'about-star',
+    id: 'about-sida',
     label: '关于思达',
     route: placeholderRoute,
     note: '品牌与团队信息',

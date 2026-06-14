@@ -45,6 +45,8 @@ import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay
 import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
 import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
+import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
+import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +77,8 @@ import { SchoolRecommendationComponent } from './pages/philippines/school-recomm
     BacolodStudyComponent,
     RegionalCityStudyComponent,
     SchoolRecommendationComponent,
+    SchoolLibraryComponent,
+    PhilippinesInfoPageComponent,
     TranslatePipe,
   ],
   imports: [

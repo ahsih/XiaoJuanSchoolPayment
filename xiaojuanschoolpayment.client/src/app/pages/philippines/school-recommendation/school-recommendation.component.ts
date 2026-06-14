@@ -217,6 +217,70 @@ const recommendationPages: Record<string, RecommendationPage> = {
       '寒暑假报名要提前规划，热门家庭房和营队名额会更紧张。',
     ],
   },
+  sparta: {
+    title: '斯巴达学校推荐',
+    englishTitle: 'Sparta School Recommendations',
+    route: '/philippines-study/recommendations/sparta-schools',
+    audience: '适合冲刺型、管理型需求',
+    intro:
+      '斯巴达学校适合目标明确、想用较强管理推动学习的学生。常见安排包括门禁、晚自习、单词测试、出勤规则和较密集课表，特别适合雅思、多益冲刺或自律较弱的人群。',
+    keywords: '斯巴达管理、半斯巴达、门禁、晚自习、考试冲刺',
+    selectionFocus: '门禁时间、晚自习规则、每日测试、缺勤扣分、模考体系和宿舍学习环境',
+    highlights: [
+      {
+        icon: 'lock_clock',
+        title: '管理强度更高',
+        text: '斯巴达学校通常会限制平日外出，搭配晚自习、单词测试和严格出勤要求。',
+      },
+      {
+        icon: 'assignment',
+        title: '适合考试冲刺',
+        text: '雅思、多益或升学英语目标明确的学生，更适合用斯巴达节奏集中训练。',
+      },
+      {
+        icon: 'psychology',
+        title: '帮助建立学习节奏',
+        text: '如果自律较弱、容易被城市生活分心，强管理学校能减少决策成本和干扰。',
+      },
+      {
+        icon: 'warning',
+        title: '先确认能否适应',
+        text: '斯巴达不适合所有人。报名之前要确认学生能接受门禁、晚自习和较高课程密度。',
+      },
+    ],
+    recommendedSchools: [
+      {
+        name: 'CG Sparta',
+        city: '宿务',
+        fit: '斯巴达雅思与ESL',
+        reason: '适合希望在宿务接受较强管理、密集课程和考试冲刺的学生。',
+      },
+      {
+        name: 'PINES',
+        city: '碧瑶',
+        fit: '碧瑶高强度学习',
+        reason: '适合想在安静城市中专心学习、接受严格学习氛围的学生。',
+      },
+      {
+        name: 'MONOL',
+        city: '碧瑶',
+        fit: '长期强化与规律学习',
+        reason: '适合长期ESL、雅思或多益准备，重视课程系统和规律作息的人群。',
+      },
+      {
+        name: 'JIC / CNS',
+        city: '碧瑶',
+        fit: '考试导向备考',
+        reason: '适合目标分数明确，想把学习时间集中投入考试训练的学生。',
+      },
+    ],
+    checklist: [
+      '确认学生能否接受平日门禁、晚自习和严格出勤要求。',
+      '问清楚违纪扣分、外出申请、请假和换课规则。',
+      '考试学生要比较模考频率、写作批改和口语反馈。',
+      '如果第一次游学且抗压较弱，可以先考虑半斯巴达。',
+    ],
+  },
   juniorCamp: {
     title: '青少年夏令营',
     englishTitle: 'Junior English Camp',

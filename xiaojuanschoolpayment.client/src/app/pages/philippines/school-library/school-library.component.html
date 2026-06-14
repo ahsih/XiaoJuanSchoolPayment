@@ -1,0 +1,73 @@
+<div class="library-page" *ngIf="page$ | async as page">
+  <section class="library-hero">
+    <div class="library-hero__copy">
+      <span class="section-kicker">{{ page.englishTitle }}</span>
+      <h1>{{ page.title }}</h1>
+      <p>{{ page.intro }}</p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费获取学校匹配
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#library-cards">
+          查看筛选方向
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="library-hero__panel">
+      <div>
+        <strong>入口定位</strong>
+        <span>{{ page.audience }}</span>
+      </div>
+      <div>
+        <strong>关键词</strong>
+        <span>{{ page.keywords }}</span>
+      </div>
+      <div>
+        <strong>筛选重点</strong>
+        <span>{{ page.selectionFocus }}</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="library-section" id="library-cards">
+    <div class="section-heading">
+      <span class="section-kicker">School Library</span>
+      <h2>{{ page.cardsTitle }}</h2>
+    </div>
+
+    <div class="library-grid">
+      <a
+        class="library-card"
+        *ngFor="let card of page.cards"
+        [routerLink]="card.route || '/register'"
+      >
+        <span class="library-icon">
+          <mat-icon>{{ card.icon }}</mat-icon>
+        </span>
+        <span class="library-card__content">
+          <span>{{ card.tag }}</span>
+          <strong>{{ card.title }}</strong>
+          <small>{{ card.text }}</small>
+        </span>
+        <mat-icon class="library-card__arrow">chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="checklist-section">
+    <div class="checklist-copy">
+      <span class="section-kicker">Before Filtering</span>
+      <h2>筛选前确认清单</h2>
+    </div>
+
+    <ul>
+      <li *ngFor="let item of page.checklist">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ item }}</span>
+      </li>
+    </ul>
+  </section>
+</div>
