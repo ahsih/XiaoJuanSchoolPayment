@@ -114,8 +114,18 @@ export const mainNavigation: NavigationItem[] = [
         route: '/philippines-study/cebu',
         type: '城市页',
       },
-      { id: 'baguio-study', label: '碧瑶游学', route: placeholderRoute, type: '城市页' },
-      { id: 'clark-study', label: '克拉克游学', route: placeholderRoute, type: '城市页' },
+      {
+        id: 'baguio-study',
+        label: '碧瑶游学',
+        route: '/philippines-study/baguio',
+        type: '城市页',
+      },
+      {
+        id: 'clark-study',
+        label: '克拉克游学',
+        route: '/philippines-study/clark',
+        type: '城市页',
+      },
       { id: 'manila-study', label: '马尼拉游学', route: placeholderRoute, type: '城市页' },
       {
         id: 'more-philippines-cities',

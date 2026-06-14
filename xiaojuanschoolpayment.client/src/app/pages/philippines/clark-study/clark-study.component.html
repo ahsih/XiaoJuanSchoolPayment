@@ -1,0 +1,96 @@
+<div class="clark-page">
+  <section class="clark-hero">
+    <div class="clark-hero__copy">
+      <span class="section-kicker">Clark English Study</span>
+      <h1>克拉克游学</h1>
+      <p>
+        克拉克适合重视外教资源、生活环境和亲子照顾的学生。这里城市规划较舒适，
+        国际社区氛围明显，适合希望在更轻松稳定的环境中提升口语、参加亲子游学或青少年英语项目的人群。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配克拉克学校
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合学校类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="clark-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>外教口语 / 亲子游学 / 青少年营队 / 舒适型英语强化</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>国际社区、环境舒适、外教资源、家庭友好</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>外教比例、住宿环境、课程安排、照顾服务和安全管理</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Clark</span>
+      <h2>为什么选择克拉克游学？</h2>
+      <p>克拉克不是最热闹的选择，但它适合重视外教、环境和家庭友好度的学生。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">School Types</span>
+      <h2>克拉克学校怎么选？先看你是否重视外教和生活环境</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Clark vs Cebu vs Baguio</span>
+      <h2>克拉克、宿务和碧瑶，适合不同学习性格</h2>
+      <p>
+        克拉克更偏舒适和外教沟通；宿务更均衡、选择更多；碧瑶更适合专心备考和高强度管理。
+        选城市前，最好先确认你的学习目标和能接受的生活节奏。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="克拉克、宿务与碧瑶游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">克拉克</span>
+        <span role="columnheader">宿务</span>
+        <span role="columnheader">碧瑶</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.clark }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+      </div>
+    </div>
+  </section>
+</div>

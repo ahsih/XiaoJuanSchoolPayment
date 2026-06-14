@@ -11,8 +11,10 @@ import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-scho
 import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school-fees.component';
 import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
-import { WhyPhilippinesStudyComponent } from './pages/why-philippines-study/why-philippines-study.component';
-import { CebuStudyComponent } from './pages/cebu-study/cebu-study.component';
+import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippines-study/why-philippines-study.component';
+import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.component';
+import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
+import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
 
 const routes: Routes = [
   {
@@ -27,6 +29,8 @@ const routes: Routes = [
         component: WhyPhilippinesStudyComponent,
       },
       { path: 'philippines-study/cebu', component: CebuStudyComponent },
+      { path: 'philippines-study/baguio', component: BaguioStudyComponent },
+      { path: 'philippines-study/clark', component: ClarkStudyComponent },
     ],
   },
   {

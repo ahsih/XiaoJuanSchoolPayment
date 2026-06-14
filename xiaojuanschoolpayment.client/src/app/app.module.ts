@@ -35,8 +35,10 @@ import { EditSchoolNoteDialogComponent } from './pages/admin-school-notes/edit-s
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 import { TranslatePipe } from './pipes/translate.pipe';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { WhyPhilippinesStudyComponent } from './pages/why-philippines-study/why-philippines-study.component';
-import { CebuStudyComponent } from './pages/cebu-study/cebu-study.component';
+import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippines-study/why-philippines-study.component';
+import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.component';
+import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
+import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { CebuStudyComponent } from './pages/cebu-study/cebu-study.component';
     NavbarComponent,
     WhyPhilippinesStudyComponent,
     CebuStudyComponent,
+    BaguioStudyComponent,
+    ClarkStudyComponent,
     TranslatePipe,
   ],
   imports: [

@@ -1,0 +1,94 @@
+<div class="baguio-page">
+  <section class="baguio-hero">
+    <div class="baguio-hero__copy">
+      <span class="section-kicker">Baguio English Study</span>
+      <h1>碧瑶游学</h1>
+      <p>
+        碧瑶是菲律宾著名的学习型游学城市。这里气候凉爽、生活节奏安静、斯巴达学校集中，
+        适合想认真备考雅思、多益，或希望在高强度管理下稳定提升英语能力的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配碧瑶学校
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合学校类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="baguio-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>雅思备考 / 多益冲刺 / 斯巴达管理 / 长期英语强化</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>气候凉爽、学习氛围强、干扰少、考试型学校集中</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>管理强度、模考体系、课程安排、自习制度和宿舍条件</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Baguio</span>
+      <h2>为什么认真备考的学生会选择碧瑶？</h2>
+      <p>碧瑶的核心价值，是用更安静的城市环境和更强的学习管理，帮助学生把注意力放回英语本身。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">School Types</span>
+      <h2>碧瑶学校怎么选？先看你能接受多强的学习管理</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Baguio vs Cebu</span>
+      <h2>碧瑶和宿务，不是同一种游学体验</h2>
+      <p>
+        如果你的目标是认真备考、减少干扰、接受高强度学习安排，碧瑶通常更适合。
+        如果你更重视便利、海岛生活和多样体验，宿务会更轻松。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="碧瑶与宿务游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">碧瑶</span>
+        <span role="columnheader">宿务</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+      </div>
+    </div>
+  </section>
+</div>
