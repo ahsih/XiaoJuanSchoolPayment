@@ -104,6 +104,11 @@ const routes: Routes = [
         data: { infoKey: 'offers' },
       },
       {
+        path: 'philippines-study/cost',
+        component: PhilippinesInfoPageComponent,
+        data: { infoKey: 'cost' },
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },

@@ -198,7 +198,7 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'philippines-cost',
         label: '菲律宾游学费用',
-        route: placeholderRoute,
+        route: '/philippines-study/cost',
         type: 'SEO/转化页',
       },
       {

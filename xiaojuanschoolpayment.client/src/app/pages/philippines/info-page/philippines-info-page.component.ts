@@ -20,6 +20,55 @@ interface InfoPage {
 }
 
 const infoPages: Record<string, InfoPage> = {
+  cost: {
+    title: '菲律宾游学费用',
+    englishTitle: 'Philippines Study Cost',
+    audience: 'SEO/转化入口',
+    intro:
+      '菲律宾游学费用要按总预算来看，不只是学费。完整预算通常包含课程、住宿、餐食、当地费用、签证延签、SSP/ACR、教材、水电、接机、机票和个人生活费。',
+    keywords: '学费、住宿、餐食、当地费用、签证、SSP、机票、生活费',
+    selectionFocus: '学习周数、城市、课程类型、房型、淡旺季、当地费用和机票',
+    cardsTitle: '费用组成',
+    cards: [
+      {
+        icon: 'school',
+        title: '学费与课程',
+        text: '一对一课时越多、雅思/商务/亲子等专项课程越完整，费用通常越高。ESL基础课程一般更灵活。',
+      },
+      {
+        icon: 'hotel',
+        title: '住宿与餐食',
+        text: '多数学校提供宿舍和三餐。单人房更舒适但费用高，多人房更适合预算敏感或长期学习。',
+      },
+      {
+        icon: 'receipt_long',
+        title: '当地费用',
+        text: '常见当地费用包括SSP、ACR、签证延签、教材、水电、管理费、押金和接机费，需按学校清单确认。',
+      },
+      {
+        icon: 'flight_takeoff',
+        title: '机票与保险',
+        text: '机票价格受出发地、季节和提前预订时间影响。建议同时准备旅游保险或海外医疗保障。',
+      },
+      {
+        icon: 'calendar_month',
+        title: '学习周期',
+        text: '4周适合体验，8-12周更适合明显提升。长期学习虽然总价更高，但固定费用会被摊薄。',
+      },
+      {
+        icon: 'savings',
+        title: '省预算方式',
+        text: '多人房、淡季入学、低成本城市、长期优惠和学校活动都可能降低总预算。',
+      },
+    ],
+    checklistTitle: '估算费用前先确认',
+    checklist: [
+      '先确认学习周数、课程类型和目标城市。',
+      '比较总费用，不要只看学费或宣传价。',
+      '问清楚当地费用是否包含SSP、ACR、签证延签、教材、水电和接机。',
+      '预算敏感时优先考虑多人房、淡季、碧瑶、巴科洛德或怡朗等城市。',
+    ],
+  },
   offers: {
     title: '菲律宾游学最新优惠',
     englishTitle: 'Philippines Study Offers',
