@@ -17,6 +17,9 @@ import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-st
 import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
 import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-study.component';
 import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
+import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay-study.component';
+import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
+import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
 
 const routes: Routes = [
   {
@@ -35,6 +38,23 @@ const routes: Routes = [
       { path: 'philippines-study/clark', component: ClarkStudyComponent },
       { path: 'philippines-study/manila', component: ManilaStudyComponent },
       { path: 'philippines-study/schools/by-city', component: CitySchoolsComponent },
+      { path: 'philippines-study/boracay', component: BoracayStudyComponent },
+      { path: 'philippines-study/bacolod', component: BacolodStudyComponent },
+      {
+        path: 'philippines-study/iloilo',
+        component: RegionalCityStudyComponent,
+        data: { cityKey: 'iloilo' },
+      },
+      {
+        path: 'philippines-study/davao',
+        component: RegionalCityStudyComponent,
+        data: { cityKey: 'davao' },
+      },
+      {
+        path: 'philippines-study/subic',
+        component: RegionalCityStudyComponent,
+        data: { cityKey: 'subic' },
+      },
     ],
   },
   {

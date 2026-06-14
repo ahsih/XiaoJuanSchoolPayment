@@ -1,0 +1,101 @@
+<div class="boracay-page">
+  <section class="boracay-hero">
+    <div class="boracay-hero__copy">
+      <span class="section-kicker">Boracay English Study</span>
+      <h1>长滩岛游学</h1>
+      <p>
+        长滩岛适合度假型、亲子型和短期体验型游学。这里更适合把英语口语、轻量课程和海岛活动结合起来，
+        让孩子或成人在更放松的环境中接触英语，而不是进行高压备考。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配长滩岛方案
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合项目类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="boracay-hero__media">
+      <img [src]="heroImage" alt="长滩岛 White Beach 白沙滩" />
+      <figcaption>White Beach, Boracay</figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-panel" aria-label="长滩岛游学重点">
+    <div>
+      <strong>适合</strong>
+      <span>度假游学 / 亲子陪读 / 短期体验 / 青少年营队</span>
+    </div>
+    <div>
+      <strong>城市关键词</strong>
+      <span>白沙滩、海岛活动、轻松口语、假期体验</span>
+    </div>
+    <div>
+      <strong>选校重点</strong>
+      <span>课程强度、住宿位置、活动安排、接送服务和安全管理</span>
+    </div>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Boracay</span>
+      <h2>为什么选择长滩岛游学？</h2>
+      <p>长滩岛更适合把英语学习做成假期体验，而不是单纯追求高强度提分。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">Program Types</span>
+      <h2>长滩岛项目怎么选？先确认学习强度和旅行比例</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Boracay vs Cebu vs Baguio</span>
+      <h2>长滩岛、宿务和碧瑶，适合不同游学目的</h2>
+      <p>
+        长滩岛偏度假、亲子和短期体验；宿务更均衡，学校选择更多；碧瑶更适合备考和高强度学习。
+        如果你想让游学更轻松、更像假期，长滩岛会更合适。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="长滩岛、宿务与碧瑶游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">长滩岛</span>
+        <span role="columnheader">宿务</span>
+        <span role="columnheader">碧瑶</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.boracay }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+      </div>
+    </div>
+  </section>
+</div>

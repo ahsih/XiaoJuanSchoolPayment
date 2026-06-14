@@ -1,0 +1,67 @@
+<div class="regional-page" *ngIf="page$ | async as page">
+  <section class="regional-hero">
+    <div class="regional-hero__copy">
+      <span class="section-kicker">{{ page.englishName }} English Study</span>
+      <h1>{{ page.cityName }}游学</h1>
+      <p>{{ page.intro }}</p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配{{ page.cityName }}方案
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#program-types">
+          查看适合项目类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="regional-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>{{ page.suitable }}</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>{{ page.keywords }}</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>{{ page.selectionFocus }}</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why {{ page.englishName }}</span>
+      <h2>为什么选择{{ page.cityName }}游学？</h2>
+      <p>{{ page.positioning }}</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of page.highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="program-types">
+    <div class="section-heading">
+      <span class="section-kicker">Program Types</span>
+      <h2>{{ page.cityName }}项目怎么选？</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of page.programTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+</div>

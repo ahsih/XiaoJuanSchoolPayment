@@ -1,0 +1,96 @@
+<div class="bacolod-page">
+  <section class="bacolod-hero">
+    <div class="bacolod-hero__copy">
+      <span class="section-kicker">Bacolod English Study</span>
+      <h1>巴科洛德游学</h1>
+      <p>
+        巴科洛德适合重视低成本、安静环境和长期基础提升的学生。这里生活节奏更平稳，
+        干扰相对少，适合想控制预算、稳定上课、慢慢建立英语口语信心的人群。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配巴科洛德学校
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合学校类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="bacolod-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>低预算ESL / 安静学习 / 长期基础强化 / 慢节奏适应</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>低成本、安静城市、生活便利、学习压力较低</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>费用结构、课程时数、住宿条件、生活便利度和学校管理</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Bacolod</span>
+      <h2>为什么选择巴科洛德游学？</h2>
+      <p>巴科洛德不追求热闹和景点密度，更适合想省预算、少干扰、稳定学习的学生。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">School Types</span>
+      <h2>巴科洛德学校怎么选？先看预算和学习周期</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Bacolod vs Cebu vs Baguio</span>
+      <h2>巴科洛德、宿务和碧瑶，适合不同预算和学习强度</h2>
+      <p>
+        巴科洛德偏低成本和安静学习；宿务更均衡，学校和生活选择更丰富；碧瑶更适合备考和高强度管理。
+        如果预算和长期稳定性是第一优先，巴科洛德值得考虑。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="巴科洛德、宿务与碧瑶游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">巴科洛德</span>
+        <span role="columnheader">宿务</span>
+        <span role="columnheader">碧瑶</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.bacolod }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+      </div>
+    </div>
+  </section>
+</div>
