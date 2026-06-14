@@ -313,6 +313,161 @@ const routes: Routes = [
             (m) => m.OnlineEnglishFaqComponent,
           ),
       },
+      {
+        path: 'overseas-study-tour/offers',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/exclusive-offers/exclusive-offers.component').then(
+            (m) => m.ExclusiveOffersComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/ireland',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/ireland-tour/ireland-tour.component').then(
+            (m) => m.IrelandTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/uk',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-tour/uk-tour.component').then((m) => m.UkTourComponent),
+      },
+      {
+        path: 'overseas-study-tour/singapore',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(
+            (m) => m.SingaporeTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/malaysia',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/malaysia-tour/malaysia-tour.component').then(
+            (m) => m.MalaysiaTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/canada',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/canada-tour/canada-tour.component').then(
+            (m) => m.CanadaTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/australia',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/australia-tour/australia-tour.component').then(
+            (m) => m.AustraliaTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/usa',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/usa-tour/usa-tour.component').then((m) => m.UsaTourComponent),
+      },
+      {
+        path: 'overseas-study-tour/france',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/france-tour/france-tour.component').then(
+            (m) => m.FranceTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/germany',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/germany-tour/germany-tour.component').then(
+            (m) => m.GermanyTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/vietnam',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/vietnam-tour/vietnam-tour.component').then(
+            (m) => m.VietnamTourComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/cost',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/tour-cost-guide/tour-cost-guide.component').then(
+            (m) => m.TourCostGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/choose-language-school',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/choose-language-school/choose-language-school.component').then(
+            (m) => m.ChooseLanguageSchoolComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/philippines',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/philippines-guide/philippines-guide.component').then(
+            (m) => m.PhilippinesGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/online-english',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/online-english-guide/online-english-guide.component').then(
+            (m) => m.OnlineEnglishGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/family',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/family-tour-guide/family-tour-guide.component').then(
+            (m) => m.FamilyTourGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/holiday',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/holiday-tour-guide/holiday-tour-guide.component').then(
+            (m) => m.HolidayTourGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/ielts',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/ielts-tour-guide/ielts-tour-guide.component').then(
+            (m) => m.IeltsTourGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/gap-year',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/gap-year-guide/gap-year-guide.component').then(
+            (m) => m.GapYearGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/accommodation',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/tour-accommodation-guide/tour-accommodation-guide.component').then(
+            (m) => m.TourAccommodationGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/visa',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/tour-visa-guide/tour-visa-guide.component').then(
+            (m) => m.TourVisaGuideComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/pre-departure',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/tour-pre-departure/tour-pre-departure.component').then(
+            (m) => m.TourPreDepartureComponent,
+          ),
+      },
+      {
+        path: 'study-tour-guide/faq',
+        loadComponent: () =>
+          import('./pages/study-tour-guide/tour-faq/tour-faq.component').then((m) => m.TourFaqComponent),
+      },
     ],
   },
   {
