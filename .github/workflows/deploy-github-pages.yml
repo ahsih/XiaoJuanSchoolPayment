@@ -36,7 +36,10 @@ jobs:
 
       - name: Build Angular app
         working-directory: xiaojuanschoolpayment.client
-        run: npm run build -- --base-href=/XiaoJuanSchoolPayment/
+        run: npm run build
+
+      - name: Configure GitHub Pages base path
+        run: sed -i 's|<base href="/">|<base href="/XiaoJuanSchoolPayment/">|' xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/index.html
 
       - name: Support direct links for Angular routes
         run: cp xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/index.html xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/404.html
