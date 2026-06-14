@@ -126,7 +126,7 @@ export const mainNavigation: NavigationItem[] = [
         route: '/philippines-study/clark',
         type: '城市页',
       },
-      { id: 'manila-study', label: '马尼拉游学', route: placeholderRoute, type: '城市页' },
+      { id: 'manila-study', label: '马尼拉游学', route: '/philippines-study/manila', type: '城市页' },
       {
         id: 'more-philippines-cities',
         label: '更多菲律宾城市',

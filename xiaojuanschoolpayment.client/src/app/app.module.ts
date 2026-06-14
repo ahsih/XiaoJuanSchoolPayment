@@ -39,6 +39,7 @@ import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippine
 import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.component';
 import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
 import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
+import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-study.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study
     CebuStudyComponent,
     BaguioStudyComponent,
     ClarkStudyComponent,
+    ManilaStudyComponent,
     TranslatePipe,
   ],
   imports: [

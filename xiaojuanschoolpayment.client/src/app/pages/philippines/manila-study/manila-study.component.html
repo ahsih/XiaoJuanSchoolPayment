@@ -1,0 +1,96 @@
+<div class="manila-page">
+  <section class="manila-hero">
+    <div class="manila-hero__copy">
+      <span class="section-kicker">Manila English Study</span>
+      <h1>马尼拉游学</h1>
+      <p>
+        马尼拉适合重视交通便利、城市资源和成人英语应用场景的学生。作为菲律宾首都圈，
+        这里更适合短期体验、商务英语、职场沟通训练，或作为宿务、碧瑶、克拉克等城市游学前后的组合站点。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费匹配马尼拉学校
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#school-types">
+          查看适合学校类型
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="manila-hero__panel">
+      <div>
+        <strong>适合</strong>
+        <span>成人口语 / 商务英语 / 短期体验 / 转机组合行程</span>
+      </div>
+      <div>
+        <strong>城市关键词</strong>
+        <span>首都圈、航班便利、城市资源、商务场景</span>
+      </div>
+      <div>
+        <strong>选校重点</strong>
+        <span>校区位置、通勤安全、课程实用度、住宿安排和生活便利度</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="highlight-section">
+    <div class="section-heading">
+      <span class="section-kicker">Why Manila</span>
+      <h2>为什么选择马尼拉游学？</h2>
+      <p>马尼拉不是最传统的封闭式学习城市，但它适合需要城市便利、商务场景和灵活行程的学生。</p>
+    </div>
+
+    <div class="highlight-grid">
+      <article class="highlight-card" *ngFor="let item of highlights">
+        <span class="highlight-icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="school-type-section" id="school-types">
+    <div class="section-heading">
+      <span class="section-kicker">School Types</span>
+      <h2>马尼拉学校怎么选？先确认你是否需要城市资源和实用英语场景</h2>
+    </div>
+
+    <div class="school-type-grid">
+      <article class="school-type-card" *ngFor="let type of schoolTypes">
+        <span>{{ type.tag }}</span>
+        <h3>{{ type.title }}</h3>
+        <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-section">
+    <div class="compare-copy">
+      <span class="section-kicker">Manila vs Cebu vs Baguio</span>
+      <h2>马尼拉、宿务和碧瑶，适合不同学习节奏</h2>
+      <p>
+        马尼拉更适合短期、商务和城市型学习；宿务更均衡，学校选择和生活体验都丰富；
+        碧瑶则更适合专心备考和高强度学习。
+      </p>
+    </div>
+
+    <div class="compare-table" role="table" aria-label="马尼拉、宿务与碧瑶游学比较">
+      <div class="compare-row compare-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">马尼拉</span>
+        <span role="columnheader">宿务</span>
+        <span role="columnheader">碧瑶</span>
+      </div>
+      <div class="compare-row" role="row" *ngFor="let row of compareRows">
+        <span role="cell">{{ row.label }}</span>
+        <span role="cell">{{ row.manila }}</span>
+        <span role="cell">{{ row.cebu }}</span>
+        <span role="cell">{{ row.baguio }}</span>
+      </div>
+    </div>
+  </section>
+</div>
