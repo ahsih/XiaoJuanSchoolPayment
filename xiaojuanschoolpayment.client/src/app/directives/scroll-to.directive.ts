@@ -2,7 +2,7 @@ import { Directive, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[appScrollTo]',
-  standalone: false,
+  standalone: true,
 })
 export class ScrollToDirective {
   @Input() appScrollTo = '';

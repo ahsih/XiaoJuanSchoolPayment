@@ -24,6 +24,9 @@ import { SchoolRecommendationComponent } from './pages/philippines/school-recomm
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
 import { PhilippinesInfoPageComponent } from './pages/philippines/info-page/philippines-info-page.component';
 import { IrelandInfoPageComponent } from './pages/ireland/info-page/ireland-info-page.component';
+import { UndergraduateApplicationComponent } from './pages/ireland/undergraduate-application/undergraduate-application.component';
+import { MasterApplicationComponent } from './pages/ireland/master-application/master-application.component';
+import { FoundationApplicationComponent } from './pages/ireland/foundation-application/foundation-application.component';
 
 const routes: Routes = [
   {
@@ -72,6 +75,100 @@ const routes: Routes = [
         path: 'ireland-study/schools/universities',
         component: IrelandInfoPageComponent,
         data: { infoKey: 'universities' },
+      },
+      {
+        path: 'ireland-study/schools/technology-universities',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'technologyUniversities' },
+      },
+      {
+        path: 'ireland-study/schools/private-colleges',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'privateSchools' },
+      },
+      {
+        path: 'ireland-study/schools/language-schools',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'languageSchools' },
+      },
+      {
+        path: 'ireland-study/schools/nci',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'nci' },
+      },
+      {
+        path: 'ireland-study/schools/schm',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'schm' },
+      },
+      {
+        path: 'ireland-study/schools/mic',
+        component: IrelandInfoPageComponent,
+        data: { infoKey: 'mic' },
+      },
+      {
+        path: 'ireland-study/undergraduate-application',
+        component: UndergraduateApplicationComponent,
+      },
+      {
+        path: 'ireland-study/master-application',
+        component: MasterApplicationComponent,
+      },
+      {
+        path: 'ireland-study/foundation-application',
+        component: FoundationApplicationComponent,
+      },
+      {
+        path: 'ireland-study/application/undergraduate-course',
+        loadComponent: () =>
+          import('./pages/ireland/undergraduate-process/undergraduate-process.component').then(
+            (m) => m.UndergraduateProcessComponent,
+          ),
+      },
+      {
+        path: 'ireland-study/application/postgraduate-course',
+        loadComponent: () =>
+          import('./pages/ireland/postgraduate-process/postgraduate-process.component').then(
+            (m) => m.PostgraduateProcessComponent,
+          ),
+      },
+      {
+        path: 'ireland-study/visa-guide',
+        loadComponent: () =>
+          import('./pages/ireland/visa-guide/visa-guide.component').then((m) => m.VisaGuideComponent),
+      },
+      {
+        path: 'ireland-study/accommodation-guide',
+        loadComponent: () =>
+          import('./pages/ireland/accommodation-guide/accommodation-guide.component').then(
+            (m) => m.AccommodationGuideComponent,
+          ),
+      },
+      {
+        path: 'ireland-study/living-in-ireland',
+        loadComponent: () =>
+          import('./pages/ireland/living-in-ireland/living-in-ireland.component').then(
+            (m) => m.LivingInIrelandComponent,
+          ),
+      },
+      {
+        path: 'ireland-study/banking',
+        loadComponent: () =>
+          import('./pages/ireland/banking/banking.component').then((m) => m.BankingComponent),
+      },
+      {
+        path: 'ireland-study/health-safety',
+        loadComponent: () =>
+          import('./pages/ireland/health-safety/health-safety.component').then(
+            (m) => m.HealthSafetyComponent,
+          ),
+      },
+      {
+        path: 'ireland-study/pre-departure',
+        loadComponent: () =>
+          import('./pages/ireland/pre-departure/pre-departure.component').then(
+            (m) => m.PreDepartureComponent,
+          ),
       },
       {
         path: 'philippines-study/why-philippines',

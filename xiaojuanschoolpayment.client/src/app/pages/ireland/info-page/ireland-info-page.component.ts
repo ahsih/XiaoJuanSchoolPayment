@@ -449,13 +449,348 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
       },
     ],
   },
+  technologyUniversities: {
+    title: '爱尔兰理工大学/理工学院',
+    englishTitle: 'Irish Technological Universities',
+    audience: '兼容爱尔兰院校名称变化',
+    keywords: '理工大学、理工学院、应用型课程、TUD、TUS、SETU、MTU、ATU',
+    heroImage:
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      '爱尔兰理工大学和理工学院适合重视应用型学习、实践项目和就业衔接的学生。随着院校整合升级，很多原理工学院已发展为Technological University，因此页面需要同时兼容“理工大学”和“理工学院”的叫法。',
+    metrics: [
+      { value: '应用型', label: '课程更强调项目、实验和职业能力' },
+      { value: '多校区', label: '不少理工大学覆盖多个城市校区' },
+      { value: '就业导向', label: '适合关注技能落地和行业连接的学生' },
+    ],
+    cardsTitle: '理工类院校怎么理解',
+    cards: [
+      {
+        icon: 'engineering',
+        title: '名称正在变化',
+        text: '爱尔兰院校体系中，一些原Institute of Technology已经整合或升级为Technological University，中文页面应同时保留理工大学和理工学院两种表达。',
+      },
+      {
+        icon: 'science',
+        title: '不只工程技术',
+        text: '理工类院校虽然强调应用，但专业并不只限工程，也常覆盖商科、计算机、设计、酒店、健康、人文和社会科学等方向。',
+      },
+      {
+        icon: 'work',
+        title: '实践比例更高',
+        text: '课程通常更注重项目、实验、行业案例和就业技能，适合希望把学习结果直接连接到岗位能力的学生。',
+      },
+      {
+        icon: 'map',
+        title: '城市选择更多',
+        text: '理工大学常分布在不同区域和城市，学生可以结合预算、住宿、专业资源和就业区域来筛选校区。',
+      },
+    ],
+    guideTitle: '适合什么学生',
+    guideText:
+      '如果学生预算敏感、成绩不是特别冲刺型，或者更重视实践能力和毕业就业，理工大学/理工学院通常比单纯追综合排名更值得认真比较。',
+    checklist: [
+      '确认学校当前英文名称和授予学位的机构，避免旧名称造成误解。',
+      '查看课程是否包含实习、行业项目、实验室、作品集或职业模块。',
+      '比较不同校区的城市成本、住宿资源和交通便利度。',
+      '不要只按“理工”判断专业范围，商科、计算机、设计和酒店等也可能很强。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: '爱尔兰高等教育机构 - IESC',
+        url: 'https://www.irelandeducation.cn/introduction-institutions/',
+      },
+    ],
+  },
+  privateSchools: {
+    title: '爱尔兰私立院校',
+    englishTitle: 'Irish Private Colleges',
+    audience: '比“私立学院”覆盖更宽',
+    keywords: '私立院校、独立学院、DBS、GCD、商科、会计、职业课程',
+    heroImage:
+      'https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      '爱尔兰私立院校适合需要更灵活课程选择、职业导向更明确或想关注特定专业领域的学生。页面使用“私立院校”比“私立学院”更包容，能覆盖商学院、专业学院、预科学院和职业导向机构。',
+    metrics: [
+      { value: '灵活', label: '课程设置和入学节奏通常更细分' },
+      { value: '职业', label: '商科、会计、法律、IT等方向常见' },
+      { value: '衔接', label: '部分院校适合背景转换或升学过渡' },
+    ],
+    cardsTitle: '私立院校页面重点',
+    cards: [
+      {
+        icon: 'business_center',
+        title: '专业方向集中',
+        text: '私立院校常在商科、会计、金融、法律、IT、媒体、心理、预科或职业课程上有更集中的产品线。',
+      },
+      {
+        icon: 'verified',
+        title: '资质要确认',
+        text: '需要确认课程认证、授予学位机构、专业豁免、升学路径和毕业后签证适配情况，避免只看学校名称。',
+      },
+      {
+        icon: 'event_available',
+        title: '入学可能更灵活',
+        text: '部分私立院校会有更灵活的开课时间、转专业路径或桥梁课程，适合背景需要补强的学生。',
+      },
+      {
+        icon: 'groups',
+        title: '服务导向明显',
+        text: '很多私立院校更强调就业办公室、职业指导、实践机会和小班支持，适合目标明确的申请者。',
+      },
+    ],
+    guideTitle: '怎么避免误选',
+    guideText:
+      '私立院校不是“低一档”的简单标签。关键是课程是否被认可、是否适合学生背景、是否能支持后续升学或就业，以及预算是否匹配。',
+    checklist: [
+      '确认课程授予学位的主体、认证机构和NFQ等级。',
+      '查看是否适合中国学生当前学历背景和英语水平。',
+      '比较课程内容、实习支持、就业服务和毕业生方向。',
+      '把学费、城市成本、住宿和奖学金机会一起算总预算。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: 'DBS 都柏林商学院 - IESC',
+        url: 'https://www.irelandeducation.cn/dublin-business-school/',
+      },
+    ],
+  },
+  languageSchools: {
+    title: '爱尔兰语言学校',
+    englishTitle: 'Ireland Language Schools',
+    audience: '连接爱尔兰游学和半工半读',
+    keywords: '语言学校、英语课程、短期游学、半工半读、住宿、活动',
+    heroImage:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      '爱尔兰语言学校页面可以承接短期英语提升、长期语言课程、半工半读和留学前语言衔接需求。它和菲律宾游学不同，更适合强调欧洲英语环境、签证合规、住宿选择和后续升学规划。',
+    metrics: [
+      { value: '短期', label: '适合体验英语环境和欧洲生活' },
+      { value: '长期', label: '可衔接半工半读或升学准备' },
+      { value: '住宿', label: '寄宿家庭、学生公寓和校外住宿需提前比较' },
+    ],
+    cardsTitle: '语言学校怎么选',
+    cards: [
+      {
+        icon: 'record_voice_over',
+        title: '课程目标',
+        text: '先区分一般英语、雅思备考、商务英语、升学英语或长期语言课程。目标不同，课程强度和学校选择会不同。',
+      },
+      {
+        icon: 'home_work',
+        title: '住宿安排',
+        text: '语言学校常涉及寄宿家庭、学生公寓或自理住宿。预算、通勤、安全和生活习惯都要提前确认。',
+      },
+      {
+        icon: 'event',
+        title: '活动与体验',
+        text: '短期语言项目可以结合城市探索、文化活动和社交练习，适合作为爱尔兰体验或留学前适应。',
+      },
+      {
+        icon: 'rule',
+        title: '签证与合规',
+        text: '长期语言课程、出勤要求、保险、续签和兼职安排需要严格按官方规则确认，尤其适合半工半读用户重点阅读。',
+      },
+    ],
+    guideTitle: '和菲律宾游学怎么区分',
+    guideText:
+      '菲律宾游学强调高密度一对一和性价比，爱尔兰语言学校更适合欧洲英语环境、长期适应、升学衔接和合法兼职规划。页面要把这两类需求清楚分开。',
+    checklist: [
+      '确认学习周期：2-4周体验、8-12周提升，还是半年以上长期课程。',
+      '确认学校资质、课程强度、班级人数、国籍比例和出勤要求。',
+      '同步比较住宿方式、通勤时间、生活费和当地支持服务。',
+      '如果计划半工半读，先确认课程和签证规则是否匹配。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: '爱尔兰语言学校 - IESC',
+        url: 'https://www.irelandeducation.cn/language-course/',
+      },
+    ],
+  },
+  nci: {
+    title: 'NCI 爱尔兰国家学院',
+    englishTitle: 'National College Of Ireland',
+    audience: '重点合作/推荐院校',
+    keywords: 'NCI、爱尔兰国家学院、都柏林、商科、计算机、金融服务、数据分析',
+    heroImage:
+      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      'NCI 爱尔兰国家学院适合作为重点合作/推荐院校页。它位于都柏林核心商业和金融区域，专业方向集中在商科、金融、人力资源、计算机、云计算、网络安全和数据分析等就业导向领域。',
+    metrics: [
+      { value: '1951', label: 'IESC资料显示学院成立年份' },
+      { value: '都柏林', label: '位于国际金融服务中心区域' },
+      { value: '商科+IT', label: '商学院与计算机方向适合就业导向学生' },
+    ],
+    cardsTitle: 'NCI 适合重点推荐的原因',
+    cards: [
+      {
+        icon: 'location_city',
+        title: '都柏林核心位置',
+        text: 'IESC资料显示，NCI位于都柏林国际金融服务中心区域，靠近多家跨国公司和金融服务机构，适合看重城市资源的学生。',
+      },
+      {
+        icon: 'business',
+        title: '商科方向集中',
+        text: '会计、商科、金融服务、人力资源管理、管理学和市场营销等方向适合希望连接商业岗位的学生。',
+      },
+      {
+        icon: 'computer',
+        title: '计算机与数据方向',
+        text: 'NCI相关课程包含云计算、移动技术、网络安全、数据分析、计算机科学和商务信息系统等应用型方向。',
+      },
+      {
+        icon: 'school',
+        title: '预科与衔接',
+        text: 'IESC页面提到NCI有本科预科和硕士预科安排，可帮助部分国际学生补足英语、商务、数学和信息技术等基础。',
+      },
+    ],
+    guideTitle: '适合什么申请者',
+    guideText:
+      'NCI更适合目标明确、希望留在都柏林、关注商科或计算机就业方向的学生。申请时要重点核对课程级别、开学季、英语要求、学费、住宿和实习/就业支持。',
+    checklist: [
+      '适合关注商科、金融、人力资源、管理、云计算、网络安全和数据分析的学生。',
+      '确认课程是否有9月或1月开学，以及本科、硕士或预科路径。',
+      '都柏林生活成本较高，住宿和生活费要提前纳入预算。',
+      '官方课程信息可能更新，最终以NCI和学校最新书面确认为准。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: 'NCI 爱尔兰国家学院 - IESC',
+        url: 'https://www.irelandeducation.cn/national-college-of-ireland/',
+      },
+      {
+        label: 'National College of Ireland',
+        url: 'https://www.ncirl.ie/',
+      },
+    ],
+  },
+  schm: {
+    title: 'SCHM 爱尔兰香农酒店管理学院',
+    englishTitle: 'Shannon College Of Hotel Management',
+    audience: '院校详情页，中英文并列',
+    keywords: 'SCHM、Shannon College、酒店管理、University of Galway、带薪实习、国际酒店',
+    heroImage:
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      'SCHM 爱尔兰香农酒店管理学院（Shannon College of Hotel Management）适合希望走酒店管理、全球服务业、奢华体验管理和国际商务方向的学生。页面重点应突出它与University of Galway的联系、酒店管理专精、实习安排和全球校友网络。',
+    metrics: [
+      { value: '1951', label: 'University of Galway资料显示学院创立年份' },
+      { value: '21个月', label: '本科阶段强调带薪实习与行业体验' },
+      { value: '3,000+', label: '官方页面提到全球校友网络持续增长' },
+    ],
+    cardsTitle: 'SCHM 页面重点',
+    cards: [
+      {
+        icon: 'hotel',
+        title: '酒店管理专精',
+        text: 'Shannon College定位为爱尔兰专门的酒店管理学院，适合对酒店、服务、旅游、奢华体验和国际运营有兴趣的学生。',
+      },
+      {
+        icon: 'school',
+        title: 'University of Galway体系',
+        text: '官方页面显示Shannon College作为University of Galway的一部分，课程和学生体验与大学资源相连接。',
+      },
+      {
+        icon: 'work',
+        title: '实习与就业导向',
+        text: '页面应强调工作实习、职业发展和国际酒店网络，帮助学生理解酒店管理不是单纯课堂专业，而是强实践路径。',
+      },
+      {
+        icon: 'public',
+        title: '全球化行业',
+        text: '酒店与奢华体验管理适合愿意跨文化沟通、具备服务意识，并希望未来进入国际酒店集团或旅游服务行业的学生。',
+      },
+    ],
+    guideTitle: '适合什么申请者',
+    guideText:
+      'SCHM适合目标明确、愿意接受实习强度、喜欢与人沟通并希望进入国际酒店或服务管理行业的学生。页面中英文并列更利于用户识别英文校名和后续申请材料。',
+    checklist: [
+      '确认目标课程是本科、硕士、预科还是短期/继续教育方向。',
+      '重点核对实习周期、实习地点、行业合作和就业支持。',
+      '酒店管理专业更看重沟通、服务意识、英语表达和职业形象。',
+      '最终课程、学费和录取要求以学校最新官方说明为准。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: 'SCHM 爱尔兰香农酒店管理学院 - IESC',
+        url: 'https://www.irelandeducation.cn/shannon-college-of-hotel-management/',
+      },
+      {
+        label: 'Shannon College of Hotel Management',
+        url: 'https://www.universityofgalway.ie/shannoncollege/',
+      },
+    ],
+  },
+  mic: {
+    title: 'MIC 爱尔兰伊玛克特教育学院',
+    englishTitle: 'Mary Immaculate College',
+    audience: '院校详情页，补充英文 Mary Immaculate College',
+    keywords: 'MIC、Mary Immaculate College、教育、Limerick、Thurles、文学、人文、教师教育',
+    heroImage:
+      'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
+    summary:
+      'MIC 爱尔兰伊玛克特教育学院（Mary Immaculate College）适合关注教育、教师培养、文学、人文社科和儿童/青少年发展方向的学生。页面需要明确补充英文校名 Mary Immaculate College，方便用户后续查校和准备申请材料。',
+    metrics: [
+      { value: '1898', label: '公开资料显示学院创立年份' },
+      { value: 'Limerick', label: '主校区位于利默里克' },
+      { value: 'Education', label: '教育与人文方向辨识度高' },
+    ],
+    cardsTitle: 'MIC 页面重点',
+    cards: [
+      {
+        icon: 'menu_book',
+        title: '教育方向鲜明',
+        text: 'Mary Immaculate College以教育和教师培养见长，适合未来考虑教育、儿童发展、教学或教育研究的学生。',
+      },
+      {
+        icon: 'history_edu',
+        title: '人文与文学基础',
+        text: '除教育外，MIC也覆盖文学、人文、社会科学和相关跨学科方向，适合希望在小而专的院校环境中学习的学生。',
+      },
+      {
+        icon: 'location_city',
+        title: 'Limerick 学习生活',
+        text: '利默里克是爱尔兰重要学生城市之一，相比都柏林通常更适合关注生活节奏、社区感和成本平衡的学生。',
+      },
+      {
+        icon: 'school',
+        title: 'University of Limerick联系',
+        text: '公开资料显示MIC与University of Limerick有学术联系，申请时要核对具体课程授予、校区和专业归属。',
+      },
+    ],
+    guideTitle: '适合什么申请者',
+    guideText:
+      'MIC适合目标专业集中在教育、文学、人文社科、心理或儿童相关方向的学生。它不是大而全的综合大学页面，更适合以“专业匹配”和“学习环境”作为核心卖点。',
+    checklist: [
+      '页面和申请材料中同时写清 MIC 与 Mary Immaculate College。',
+      '确认课程属于教育、文学、人文、心理还是Thurles校区相关方向。',
+      '教育类专业可能涉及实践、实习或职业资格路径，需逐项确认。',
+      '比较Limerick生活成本、住宿、交通和未来就业/升学路径。',
+    ],
+    sources: [
+      ...irelandSources,
+      {
+        label: 'MIC 爱尔兰伊玛克特教育学院 - IESC',
+        url: 'https://www.irelandeducation.cn/mary-immaculate-college/',
+      },
+      {
+        label: 'Mary Immaculate College',
+        url: 'https://www.mic.ul.ie/',
+      },
+    ],
+  },
 };
 
 @Component({
   selector: 'app-ireland-info-page',
   standalone: false,
   templateUrl: './ireland-info-page.component.html',
-  styleUrl: './ireland-info-page.component.css',
 })
 export class IrelandInfoPageComponent {
   private readonly route = inject(ActivatedRoute);
