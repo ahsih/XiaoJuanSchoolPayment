@@ -75,6 +75,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseStartup");
 
 app.UseCors("AllowAll");
 app.UseDefaultFiles();
@@ -87,11 +88,24 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
+for (var attempt = 1; attempt <= 5; attempt++)
 {
-  var services = scope.ServiceProvider;
-  await UserRoleInitialize.Initialize(services);
-  await DataInitialize.SeedAsync(services);
+  try
+  {
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+
+    await context.Database.MigrateAsync();
+    await UserRoleInitialize.Initialize(services);
+    await DataInitialize.SeedAsync(services);
+    break;
+  }
+  catch (Exception ex) when (attempt < 5)
+  {
+    startupLogger.LogWarning(ex, "Database startup failed on attempt {Attempt}. Retrying...", attempt);
+    await Task.Delay(TimeSpan.FromSeconds(5));
+  }
 }
 
 app.UseHttpsRedirection();
