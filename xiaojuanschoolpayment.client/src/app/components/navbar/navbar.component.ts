@@ -9,6 +9,7 @@ import { mainNavigation, NavigationItem } from '../../config/navigation.config';
 })
 export class NavbarComponent {
   mobileMenuOpen = false;
+  megaMenuSuppressed = false;
   readonly navItems = mainNavigation;
 
   toggleMobileMenu(): void {
@@ -17,6 +18,19 @@ export class NavbarComponent {
 
   closeMobileMenu(): void {
     this.mobileMenuOpen = false;
+  }
+
+  closeMenus(): void {
+    this.mobileMenuOpen = false;
+    this.megaMenuSuppressed = true;
+
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  allowMegaMenu(): void {
+    this.megaMenuSuppressed = false;
   }
 
   trackById(_: number, item: NavigationItem): string {

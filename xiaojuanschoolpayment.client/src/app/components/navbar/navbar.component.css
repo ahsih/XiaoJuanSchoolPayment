@@ -163,6 +163,14 @@
   transform: translateY(0);
 }
 
+.primary-nav--suppressed .mega-menu,
+.primary-nav--suppressed .nav-item:hover .mega-menu,
+.primary-nav--suppressed .nav-item:focus-within .mega-menu {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+
 .mega-menu__intro {
   padding: 1.1rem;
   border-radius: 8px;
@@ -324,6 +332,12 @@
 
   .primary-nav--open {
     display: flex;
+  }
+
+  .primary-nav--suppressed.primary-nav--open .mega-menu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
   }
 
   .nav-item {

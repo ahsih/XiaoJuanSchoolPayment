@@ -552,6 +552,49 @@ const routes: Routes = [
             (m) => m.StudyFaqComponent,
           ),
       },
+      {
+        path: 'student-feedback/study-tour',
+        loadComponent: () =>
+          import('./pages/student-feedback/study-tour-feedback/study-tour-feedback.component').then(
+            (m) => m.StudyTourFeedbackComponent,
+          ),
+      },
+      {
+        path: 'student-feedback/study-abroad',
+        loadComponent: () =>
+          import('./pages/student-feedback/study-abroad-feedback/study-abroad-feedback.component').then(
+            (m) => m.StudyAbroadFeedbackComponent,
+          ),
+      },
+      {
+        path: 'about-sida/about',
+        loadComponent: () => import('./pages/about-sida/about/about.component').then((m) => m.AboutComponent),
+      },
+      {
+        path: 'about-sida/services',
+        loadComponent: () =>
+          import('./pages/about-sida/services/services.component').then((m) => m.ServicesComponent),
+      },
+      {
+        path: 'about-sida/advantages',
+        loadComponent: () =>
+          import('./pages/about-sida/advantages/advantages.component').then((m) => m.AdvantagesComponent),
+      },
+      {
+        path: 'about-sida/consultants',
+        loadComponent: () =>
+          import('./pages/about-sida/consultants/consultants.component').then((m) => m.ConsultantsComponent),
+      },
+      {
+        path: 'about-sida/pricing',
+        loadComponent: () =>
+          import('./pages/about-sida/pricing/pricing.component').then((m) => m.PricingComponent),
+      },
+      {
+        path: 'about-sida/contact',
+        loadComponent: () =>
+          import('./pages/about-sida/contact/contact.component').then((m) => m.ContactComponent),
+      },
     ],
   },
   {

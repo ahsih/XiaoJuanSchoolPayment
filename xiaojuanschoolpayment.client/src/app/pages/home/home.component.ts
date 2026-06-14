@@ -12,6 +12,7 @@ interface DestinationCard {
   title: string;
   description: string;
   imageClass: string;
+  route: string;
 }
 
 @Component({
@@ -54,36 +55,42 @@ export class HomeComponent {
       title: '英国',
       description: '历史名校 · 纯正英音 · 文化体验',
       imageClass: 'destination-uk',
+      route: '/overseas-study-tour/uk',
     },
     {
       code: 'IE',
       title: '爱尔兰',
       description: '安全友好 · 高性价比 · 工签机会',
       imageClass: 'destination-ireland',
+      route: '/overseas-study-tour/ireland',
     },
     {
       code: 'SG',
       title: '新加坡',
       description: '双语环境 · 安全高效 · 交通便利',
       imageClass: 'destination-singapore',
+      route: '/overseas-study-tour/singapore',
     },
     {
       code: 'MY',
       title: '马来西亚',
       description: '高性价比 · 多元文化 · 热带风情',
       imageClass: 'destination-malaysia',
+      route: '/overseas-study-tour/malaysia',
     },
     {
       code: 'CA',
       title: '加拿大',
       description: '优质教育 · 自然环境 · 文化多元',
       imageClass: 'destination-canada',
+      route: '/overseas-study-tour/canada',
     },
     {
       code: 'AU',
       title: '澳大利亚',
       description: '阳光海岸 · 多元文化 · 实用英语',
       imageClass: 'destination-australia',
+      route: '/overseas-study-tour/australia',
     },
   ];
 }

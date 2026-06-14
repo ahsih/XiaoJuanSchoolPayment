@@ -27,10 +27,12 @@
   <nav
     class="primary-nav"
     [class.primary-nav--open]="mobileMenuOpen"
+    [class.primary-nav--suppressed]="megaMenuSuppressed"
+    (mouseleave)="allowMegaMenu()"
     aria-label="主导航"
   >
     <div class="nav-item" *ngFor="let item of navItems; trackBy: trackById">
-      <a class="nav-link" [routerLink]="item.route">
+      <a class="nav-link" [routerLink]="item.route" (click)="closeMenus()">
         <span>{{ item.label }}</span>
         <mat-icon *ngIf="item.children?.length">expand_more</mat-icon>
       </a>
@@ -40,7 +42,7 @@
           <span>STAR Education</span>
           <strong>{{ item.label }}</strong>
           <p>{{ item.note || "完整项目路径与申请资讯" }}</p>
-          <a routerLink="/register" (click)="closeMobileMenu()">
+          <a routerLink="/register" (click)="closeMenus()">
             免费咨询
             <mat-icon>chevron_right</mat-icon>
           </a>
@@ -54,7 +56,7 @@
             <a
               class="mega-group__title"
               [routerLink]="child.route"
-              (click)="closeMobileMenu()"
+              (click)="closeMenus()"
             >
               {{ child.label }}
             </a>
@@ -63,7 +65,7 @@
               <a
                 *ngFor="let subitem of child.children; trackBy: trackById"
                 [routerLink]="subitem.route"
-                (click)="closeMobileMenu()"
+                (click)="closeMenus()"
               >
                 {{ subitem.label }}
               </a>
@@ -74,7 +76,7 @@
     </div>
   </nav>
 
-  <a class="consult-button" routerLink="/register" (click)="closeMobileMenu()">
+  <a class="consult-button" routerLink="/register" (click)="closeMenus()">
     <mat-icon>chat_bubble</mat-icon>
     <span>免费咨询</span>
   </a>
