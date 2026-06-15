@@ -197,9 +197,24 @@ const routes: Routes = [
           import('./pages/philippines/cpils-school/cpils-school.component').then((m) => m.CpilsSchoolComponent),
       },
       {
+        path: 'philippines-study/cebu/english-fella',
+        loadComponent: () =>
+          import('./pages/philippines/fella-school/fella-school.component').then((m) => m.FellaSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/philinter-academy',
+        loadComponent: () =>
+          import('./pages/philippines/philinter-school/philinter-school.component').then((m) => m.PhilinterSchoolComponent),
+      },
+      {
         path: 'philippines-study/cebu',
         loadComponent: () =>
           import('./pages/philippines/cebu-study/cebu-study.component').then((m) => m.CebuStudyComponent),
+      },
+      {
+        path: 'philippines-study/baguio/pines-international-academy',
+        loadComponent: () =>
+          import('./pages/philippines/pines-school/pines-school.component').then((m) => m.PinesSchoolComponent),
       },
       {
         path: 'philippines-study/baguio',

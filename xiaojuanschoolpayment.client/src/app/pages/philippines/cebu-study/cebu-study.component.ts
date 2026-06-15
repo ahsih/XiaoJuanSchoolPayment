@@ -188,6 +188,8 @@ export class CebuStudyComponent {
       name: 'English Fella',
       location: 'Cebu City / Talamban',
       style: '斯巴达与半斯巴达校区',
+      route: '/philippines-study/cebu/english-fella',
+      startingPrice: 'USD 1,550 / 4周起',
       courses: [
         'ESL',
         'IELTS',
@@ -206,6 +208,8 @@ export class CebuStudyComponent {
       name: 'Philinter Academy',
       location: '麦克坦岛 / Lapu-Lapu City',
       style: '半斯巴达，老牌综合型学校',
+      route: '/philippines-study/cebu/philinter-academy',
+      startingPrice: 'USD 1,390 / 4周起',
       courses: [
         'General ESL',
         'Intensive Power Speaking',

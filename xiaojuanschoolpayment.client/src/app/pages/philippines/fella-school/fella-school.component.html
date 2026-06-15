@@ -1,0 +1,201 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>English Fella</h1>
+      <p>
+        English Fella 是宿务运营多年的老牌语言学校，以两校区管理选择、稳定师资、大校园、考试课程和亲子课程见长，适合想在宿务兼顾学习纪律和生活支持感的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询English Fella空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://www.ioutback.com/study-abroad/philippines/SCHOOL/fella_detail" target="_blank" rel="noopener">
+          参考费用来源
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>4周起价参考</strong>
+        <span>Guardian / 监护人课程三人房：USD 1,550 起；成人 PIC-4 三人房：USD 1,700 起</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>老牌大校园，学习纪律和生活照顾感都比较明显</h2>
+    </div>
+    <p>
+      English Fella 自2006年开始运营，是宿务较早以度假村型校区经营的语言学校之一。公开资料显示，学校有两个校区，第一校区偏斯巴达，第二校区可按自律或半斯巴达理解；课程覆盖一般英文、IELTS、TOEIC、TOEFL、商务英文、儿童和监护人课程。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>从口说强化到考试、商务和亲子同行</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>三人房、双人房、标准单人和豪华单人房</h2>
+      </div>
+      <p>
+        English Fella 公开资料列出单人房、标准单人、单人雅房、双人房和三人房等房型。房内常见配置包含床垫、冰箱、置物柜、桌椅、热水淋浴和衣柜；房间清扫与床单更换也有固定安排。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>Talamban, Cebu City</h2>
+      </div>
+      <p>
+        Talamban 一带相对适合大校园与校内生活。与市中心型学校相比，外出便利度要按校区、交通和门禁规则评估；但对想把学习和生活集中在校园内的人，反而更稳定。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>2026美金原价参考，课程+食宿 / 4周</h2>
+      <p>以下整理自公开页面费用表；注册费、当地披索费用、签证延签、教材、水电、押金、接送、监管费和优惠报价需另行确认。</p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="English Fella 4周课程与住宿费用">
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">课程</span>
+        <span role="columnheader">三人房</span>
+        <span role="columnheader">双人房</span>
+        <span role="columnheader">标准单人</span>
+        <span role="columnheader">豪华单人</span>
+      </div>
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.course }}</span>
+        <span role="cell">{{ row.triple }}</span>
+        <span role="cell">{{ row.twin }}</span>
+        <span role="cell">{{ row.single }}</span>
+        <span role="cell">{{ row.deluxeSingle }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>大校园、运动设施和校内生活资源</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看 English Fella</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先选校区强度，再确认课程和房型</h2>
+      </div>
+      <p>
+        English Fella 的关键不是只看价格，而是先确认第一校区还是第二校区、斯巴达还是半斯巴达、成人还是亲子，再核对课程强度与房型。若你重视考试目标，建议同时比较 Fella、CPILS、CIA 和 EV；若你重视校园空间和照顾感，Fella 会很值得放入候选。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做English Fella预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道 English Fella 当前空位、校区和报价？</h2>
+      <p>把入学日期、学习周数、目标、年龄、房型和管理强度偏好发给顾问，可以更快确认是否适合 Fella。</p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

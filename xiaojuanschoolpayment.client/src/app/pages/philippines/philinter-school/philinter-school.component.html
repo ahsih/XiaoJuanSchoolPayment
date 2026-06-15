@@ -1,0 +1,199 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>Philinter Academy</h1>
+      <p>
+        Philinter Academy 是位于麦克坦岛的宿务老牌语言学校，以师资、学习风气、IPS强化口说、IELTS资源和多国籍学生环境见长，适合想在稳定体系里提升口语或考试成绩的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询Philinter空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://www.ioutback.com/study-abroad/philippines/SCHOOL/philinter_detail" target="_blank" rel="noopener">
+          参考费用来源
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>4周起价参考</strong>
+        <span>比较表显示 USD 1,390 起；详细表中 Light ESL 校内三人房 USD 1,580 起</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>麦克坦岛老牌综合型学校，重视师资和学习风气</h2>
+    </div>
+    <p>
+      Philinter 创立于2003年，位于麦克坦岛，公开资料强调其距离机场较近、学习风气稳定、师资评价好，并通过多项菲律宾教育与移民相关机构认证。学校学生来自日本、韩国、台湾、越南、蒙古、泰国等地区，适合希望在多国籍环境中提升英文的学生。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>ESL、IPS口说、考试、商务和青少年课程完整</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>校内宿舍与校外公寓宿舍可选</h2>
+      </div>
+      <p>
+        校内宿舍提供单人、双人、三人房，均为套房型式，附桌椅和衣柜；资料显示每周有洗衣和打扫服务。校外公寓宿舍配有电视、冰箱、微波炉、吹风机、热水器和洗衣机等，更适合追求生活品质的成人或家庭。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>麦克坦岛 / Lapu-Lapu City</h2>
+      </div>
+      <p>
+        Philinter 位于麦克坦岛，距离宿务机场较近，适合重视抵达便利、短期课程衔接或希望住在机场与海岛资源附近的学生。若选择校外宿舍，要同时确认接送、门禁和生活机能。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>2026美金原价参考，课程+食宿 / 4周</h2>
+      <p>以下整理自公开页面费用表；注册费、接机、当地披索费用、签证延签、教材、水电、押金、管理费和校外住宿价差需另行确认。</p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="Philinter 4周课程与住宿费用">
+      <div class="fee-row fee-row--head fee-row--four" role="row">
+        <span role="columnheader">课程</span>
+        <span role="columnheader">校内三人房</span>
+        <span role="columnheader">校内双人房</span>
+        <span role="columnheader">校内单人房</span>
+      </div>
+      <div class="fee-row fee-row--four" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.course }}</span>
+        <span role="cell">{{ row.triple }}</span>
+        <span role="cell">{{ row.twin }}</span>
+        <span role="cell">{{ row.single }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>学习、生活和住宿选择比较平衡</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看 Philinter</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>口说、雅思、商务目标要分开比较</h2>
+      </div>
+      <p>
+        Philinter 不只是普通 ESL 学校。若你的目标是口说，重点看 IPS；若目标是 IELTS 或 TOEIC，重点看保证班门槛、模考和晚自习；若是成人工作需求，则比较商务和 Focus Industry。住宿也要同时确认校内或校外，因为这会影响预算、门禁和生活便利度。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做Philinter预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道 Philinter 当前空位、课程和报价？</h2>
+      <p>把入学日期、学习周数、口说/考试/商务目标、年龄和房型偏好发给顾问，可以更快确认是否适合 Philinter。</p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

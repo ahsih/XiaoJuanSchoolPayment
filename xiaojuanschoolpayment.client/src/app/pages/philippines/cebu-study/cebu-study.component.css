@@ -227,10 +227,14 @@
   font-weight: 850;
 }
 
-.school-type-card span,
-.course-tags span {
+.school-type-card span {
   background: #f3f6fa;
   color: #56647a;
+}
+
+.course-tags span {
+  background: #fff3ed;
+  color: #a3491c;
 }
 
 .school-type-card small {
@@ -263,25 +267,25 @@
 
 .profile-card--link:hover,
 .profile-card--link:focus-visible {
-  border-color: rgba(22, 130, 70, 0.35);
-  box-shadow: 0 14px 30px rgba(19, 35, 66, 0.12);
+  border-color: rgba(23, 118, 74, 0.35);
+  box-shadow: 0 16px 34px rgba(18, 43, 35, 0.13);
   outline: 0;
   transform: translateY(-2px);
 }
 
 .profile-card__head {
-  padding: 1.2rem 1.2rem 1rem;
-  background: #fbfcfd;
-  border-bottom: 1px solid #e7edf3;
+  padding: 1.1rem;
+  background: #0b253f;
 }
 
 .profile-card__head span {
-  background: #e9f6ef;
-  color: #126f41;
+  background: rgba(255, 255, 255, 0.12);
+  color: #d9efe4;
 }
 
 .profile-card__head h3 {
-  margin-top: 0.8rem;
+  margin: 0.65rem 0 0.3rem;
+  color: #ffffff;
   font-size: 1.28rem;
 }
 
@@ -289,7 +293,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: #07173a;
+  color: #ffffff;
   text-decoration: none;
 }
 
@@ -307,6 +311,7 @@
 
 .profile-card__head p {
   margin: 0;
+  color: rgba(255, 255, 255, 0.78);
   font-weight: 850;
 }
 
@@ -315,8 +320,8 @@
   margin-top: 0.75rem;
   padding: 0.35rem 0.65rem;
   border-radius: 8px;
-  background: #fff3e9;
-  color: #b44800;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffe6d4;
   font-size: 0.88rem;
   font-weight: 950;
 }
@@ -325,7 +330,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  padding: 1rem 1.2rem 0;
+  padding: 1rem 1.1rem 0;
 }
 
 .profile-list {

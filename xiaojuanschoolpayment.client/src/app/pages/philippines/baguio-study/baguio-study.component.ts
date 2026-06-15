@@ -26,6 +26,8 @@ interface SchoolProfile {
   name: string;
   location: string;
   style: string;
+  route?: string;
+  startingPrice?: string;
   courses: string[];
   accommodation: string;
   facilities: string;
@@ -123,6 +125,8 @@ export class BaguioStudyComponent {
       name: 'PINES International Academy',
       location: '碧瑶市 / 多校区体系',
       style: '斯巴达与考试导向',
+      route: '/philippines-study/baguio/pines-international-academy',
+      startingPrice: 'Main Campus 4周约USD 1,420起',
       courses: ['ESL', 'Power Speaking', 'IELTS', 'TOEIC', 'Junior / Family'],
       accommodation: '以学校宿舍为主，房型和校区安排需按入学日期确认。',
       facilities: '学习楼、宿舍、餐厅、自习空间和考试备考环境是主要核对点。',

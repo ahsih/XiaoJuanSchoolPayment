@@ -252,6 +252,10 @@
   grid-template-columns: 1fr 1fr 1.6fr;
 }
 
+.fee-row--four {
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+}
+
 .fee-row span {
   padding: 0.78rem 0.85rem;
   border-bottom: 1px solid #eef2f5;
@@ -412,6 +416,10 @@ mat-icon {
   }
 
   .fee-row--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .fee-row--four {
     grid-template-columns: 1fr;
   }
 

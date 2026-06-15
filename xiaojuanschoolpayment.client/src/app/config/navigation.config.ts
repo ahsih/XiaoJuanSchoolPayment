@@ -234,12 +234,51 @@ export const mainNavigation: NavigationItem[] = [
         label: '宿务游学',
         route: '/philippines-study/cebu',
         type: '城市页',
+        children: [
+          {
+            id: 'cia-cebu-international-academy',
+            label: 'CIA Cebu International Academy',
+            route: '/philippines-study/cebu/cia-cebu-international-academy',
+          },
+          {
+            id: 'ev-academy',
+            label: 'EV Academy',
+            route: '/philippines-study/cebu/ev-academy',
+          },
+          {
+            id: 'cpi-cebu-pelis-institute',
+            label: 'CPI Cebu Pelis Institute',
+            route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
+          },
+          {
+            id: 'cpils',
+            label: 'CPILS',
+            route: '/philippines-study/cebu/cpils',
+          },
+          {
+            id: 'english-fella',
+            label: 'English Fella',
+            route: '/philippines-study/cebu/english-fella',
+          },
+          {
+            id: 'philinter-academy',
+            label: 'Philinter Academy',
+            route: '/philippines-study/cebu/philinter-academy',
+          },
+        ],
       },
       {
         id: 'baguio-study',
         label: '碧瑶游学',
         route: '/philippines-study/baguio',
         type: '城市页',
+        children: [
+          {
+            id: 'pines-international-academy',
+            label: 'PINES International Academy',
+            route: '/philippines-study/baguio/pines-international-academy',
+          },
+        ],
       },
       {
         id: 'clark-study',
