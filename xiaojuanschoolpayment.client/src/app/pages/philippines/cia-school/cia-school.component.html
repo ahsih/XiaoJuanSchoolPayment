@@ -1,0 +1,201 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>CIA Cebu International Academy</h1>
+      <p>
+        CIA 是宿务麦克坦岛代表性的半斯巴达度假型英语学校，适合想把一对一课程、考试资源、校内住宿和生活便利集中在同一校区的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询CIA空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://www.cebucia.com/en/about_us/about_us.php" target="_blank" rel="noopener">
+          学校官网
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>起价参考</strong>
+        <span>ESL Regular 四人房：USD 660 / 1周起，4周 USD 1,650 起</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>适合把学习强度和校园舒适度一起考虑的宿务名校</h2>
+    </div>
+    <p>
+      CIA 创校于2003年，现麦克坦校区位于 Lapu-Lapu City，靠近宿务国际机场。学校采用半斯巴达管理，保留一定外出自由，同时通过每日测试、出勤、EOP和自习安排推动学生保持学习节奏。官网资料显示，校区提供校内宿舍、国际学生支持、三餐、学习楼、运动与休闲设施，并具备 IDP IELTS 官方考点资源。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>ESL、考试、商务英语都能覆盖</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>校内宿舍，房型决定预算差异</h2>
+      </div>
+      <p>
+        CIA 常见房型包括单人房、双人房、三人房、四人房及套房。宿舍与教学、餐厅、设施在同一校区，适合第一次出国学习或希望减少通勤压力的学生。热门档期建议优先确认单人房、双人房和家庭相关房型。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>麦克坦岛 Lapu-Lapu City</h2>
+      </div>
+      <p>
+        学校位于 CIA Building Vistamar Avenue, Sitio Dapdap, Barangay Mactan。麦克坦岛靠近机场，也方便安排周末海岛、商场、餐厅和生活采购。适合重视抵达便利度和海岛体验的学生。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>2026参考学费住宿费</h2>
+      <p>以下为 ESL Regular 参考价格，币种为美元；最终以学校当期报价、房型空位和优惠为准。</p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="CIA ESL Regular参考费用">
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">房型</span>
+        <span role="columnheader">1周</span>
+        <span role="columnheader">4周</span>
+        <span role="columnheader">12周</span>
+        <span role="columnheader">备注</span>
+      </div>
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.room }}</span>
+        <span role="cell">{{ row.oneWeek }}</span>
+        <span role="cell">{{ row.fourWeeks }}</span>
+        <span role="cell">{{ row.twelveWeeks }}</span>
+        <span role="cell">{{ row.note }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>度假型校园的核心卖点</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看CIA</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先确认目标，再确认房型</h2>
+      </div>
+      <p>
+        如果学生目标是IELTS分数，优先核对入学分数、模考安排、保证班要求和考试日期；如果目标是口语提升，重点比较一对一课时、老师更换规则和每天可承受的课程强度。CIA很适合“想认真学，但也希望环境舒服”的学生，不建议只因为校园漂亮就直接定校。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做CIA预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道CIA当前是否有空房和优惠？</h2>
+      <p>把入学日期、学习周数、课程方向和房型偏好发给顾问，可以更快得到准确报价。</p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

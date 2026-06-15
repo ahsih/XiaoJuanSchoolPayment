@@ -90,8 +90,17 @@
       <article class="profile-card" *ngFor="let school of schoolProfiles">
         <div class="profile-card__head">
           <span>{{ school.style }}</span>
-          <h3>{{ school.name }}</h3>
+          <h3>
+            <a *ngIf="school.route; else plainSchoolName" class="school-link" [routerLink]="school.route">
+              {{ school.name }}
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+            <ng-template #plainSchoolName>{{ school.name }}</ng-template>
+          </h3>
           <p>{{ school.location }}</p>
+          <strong *ngIf="school.startingPrice" class="starting-price">
+            学费住宿 {{ school.startingPrice }}
+          </strong>
         </div>
 
         <div class="course-tags" aria-label="课程类型">

@@ -31,51 +31,84 @@ const irelandSources = [
 
 const irelandInfoPages: Record<string, IrelandInfoPage> = {
   experience: {
-    title: '体验爱尔兰',
-    englishTitle: 'Experience Ireland',
-    audience: '建立兴趣和国家认知',
-    keywords: '英语环境、欧洲文化、安全友好、校园体验、城市生活',
+    title: '为什么选择爱尔兰留学',
+    englishTitle: 'Why Study In Ireland',
+    audience: '爱尔兰留学入口页，先判断国家与申请路径是否匹配',
+    keywords: '院校官网、官方招生、英语授课、欧盟背景、就业与生活',
     heroImage:
       'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1200&q=80',
     summary:
-      '爱尔兰适合先从“国家体验”建立留学兴趣：它是英语国家，也是欧盟成员国，学生可以在英语课堂、欧洲文化、自然景观和国际化城市之间形成比较完整的海外学习认知。',
+      '爱尔兰留学不能只看“英语国家”或“欧洲跳板”这一个标签。更适合从院校官网、官方招生要求、课程设置、城市生活和毕业后规划一起判断：它是否适合你的成绩、预算、专业方向和长期职业目标。',
     metrics: [
-      { value: '英语', label: '主要学习与生活语言' },
-      { value: '欧盟', label: '连接欧洲学习与职业机会' },
-      { value: '文化', label: '文学、音乐、历史与自然体验丰富' },
+      { value: '官网优先', label: '专业、截止日期、学费和语言要求以院校官方页面为准' },
+      { value: '英语+欧盟', label: '英语学习环境叠加欧洲学习、生活和职业视野' },
+      { value: '学业到就业', label: '选专业时同步看课程实践、城市产业和毕业后路径' },
     ],
-    cardsTitle: '为什么适合做留学认知入口',
+    cardsTitle: '为什么值得把爱尔兰放进选校方案',
     cards: [
       {
-        icon: 'language',
-        title: '英语环境自然',
-        text: '课堂、生活、社交和实习场景都以英语为主，适合希望把英语能力放进真实环境中提升的学生。',
+        icon: 'fact_check',
+        title: '院校信息可直接核验',
+        text: '爱尔兰高校通常会在官网列出课程介绍、入学要求、申请方式、截止日期、学费和奖学金信息。思达建议先核对官方页面，再做选校和申请节奏判断。',
       },
       {
         icon: 'public',
-        title: '欧洲视野清晰',
-        text: '爱尔兰连接英国、欧洲大陆和跨国企业网络，适合对欧洲学习、交流和未来就业有兴趣的家庭。',
+        title: '英语国家与欧盟背景',
+        text: '爱尔兰以英语学习和生活环境为主要优势，同时处在欧盟体系内，适合希望兼顾英语能力、欧洲视野和国际化经历的学生。',
       },
       {
-        icon: 'museum',
-        title: '文化辨识度高',
-        text: '文学、音乐、历史建筑和自然风景都很有代表性，能帮助学生更快形成对目的国的真实印象。',
+        icon: 'school',
+        title: '高等教育选择清晰',
+        text: '综合大学、理工大学、专业学院和私立院校各有定位。选校时不能只看学校名称，还要看课程模块、入学门槛、实践机会和后续升学或就业目标。',
+      },
+      {
+        icon: 'work',
+        title: '课程与产业连接度高',
+        text: '科技、数据、工程、商科、金融、制药、生命科学和酒店管理等方向常被学生关注。适合把专业选择、城市资源和职业准备放在一起规划。',
+      },
+      {
+        icon: 'home_work',
+        title: '生活适应需要提前规划',
+        text: '爱尔兰整体氛围友好，但住宿、保险、银行、交通和生活费都需要尽早确认。尤其是都柏林等热门城市，住宿安排不应等到临近开学再处理。',
       },
       {
         icon: 'groups',
-        title: '国际学生友好',
-        text: '高校和语言环境相对国际化，适合第一次考虑欧洲留学、希望先了解生活节奏和学习方式的学生。',
+        title: '国际学生支持体系完善',
+        text: '多数院校会提供国际学生办公室、迎新、学术支持、职业服务和住宿建议。申请前可把这些支持服务作为“能不能顺利落地”的重要参考。',
       },
     ],
-    guideTitle: '页面可以怎么承接咨询',
+    guideTitle: '思达教育怎么帮你判断适不适合',
     guideText:
-      '这一页更适合作为爱尔兰留学入口页，先回答“爱尔兰是什么样的国家、适不适合我”，再把用户引导到教育系统、工作机会、本科或硕士申请页面。',
+      '我们会先把爱尔兰的优势拆成可核验的问题：你能申请哪些院校和专业，语言与成绩是否达标，预算是否覆盖学费和住宿，目标城市是否适合生活，就业路径是否与专业选择一致。确认这些之后，再进入本科、硕士、预科或半工半读方案。',
     checklist: [
-      '适合放在“为何选择爱尔兰”菜单下，作为用户第一次了解爱尔兰的起点。',
-      '重点突出英语国家、欧盟背景、文化体验和安全友好，不需要一开始堆申请细节。',
-      '可以引导用户继续查看教育体系、毕业后工作和经济就业页面。',
+      '优先查看目标院校官网和官方招生页面，核对课程、入学要求、材料、截止日期、学费、奖学金和英语要求。',
+      '再参考 Education in Ireland 与爱尔兰教育服务中心的信息结构，理解教育体系、生活安排、工作政策和院校分类。',
+      '不要把其他网站的整段文案、图片或页面设计直接搬过来；页面表达应整理成思达教育自己的顾问式判断。',
+      '签证、工时、毕业后许可和申请截止日期可能变化，最终以爱尔兰官方、院校官网和最新招生通知为准。',
     ],
-    sources: irelandSources,
+    sources: [
+      {
+        label: 'Education in Ireland - Why Study in Ireland',
+        url: 'https://www.educationinireland.com/en/why-study-in-ireland/',
+      },
+      {
+        label: 'Education in Ireland - Where can I study',
+        url: 'https://www.educationinireland.com/en/where-can-i-study-in-ireland',
+      },
+      {
+        label: 'Education in Ireland - The Application Process',
+        url: 'https://www.educationinireland.com/en/plan-your-study-abroad/the-application-process/',
+      },
+      {
+        label: 'Trinity College Dublin - How To Apply',
+        url: 'https://www.tcd.ie/study/international/how-to-apply/',
+      },
+      {
+        label: 'UCD Global - Study at UCD',
+        url: 'https://www.ucd.ie/global/study-at-ucd/',
+      },
+      ...irelandSources,
+    ],
   },
   educationSystem: {
     title: '爱尔兰教育系统',

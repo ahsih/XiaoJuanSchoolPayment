@@ -267,9 +267,38 @@
   font-size: 1.28rem;
 }
 
+.school-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #07173a;
+  text-decoration: none;
+}
+
+.school-link:hover {
+  color: #168246;
+}
+
+.school-link mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
 .profile-card__head p {
   margin: 0;
   font-weight: 850;
+}
+
+.starting-price {
+  display: inline-flex;
+  margin-top: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  background: #fff3e9;
+  color: #b44800;
+  font-size: 0.88rem;
+  font-weight: 950;
 }
 
 .course-tags {

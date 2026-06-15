@@ -1,3 +1,37 @@
-<main>
-  <h1>即将上线</h1>
+<main class="free-test-page">
+  <section class="hero">
+    <div class="hero__copy">
+      <span class="section-kicker">Free English Test</span>
+      <h1>免费英语测评与线上英语资源</h1>
+      <p>
+        先通过思达教育线上英语资料了解课程和测评方式，再根据学习目标安排适合的试听、水平评估或一对一课程咨询。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          预约免费咨询
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="resource-section" aria-label="微信英语测试与线上英语资源">
+    <div class="section-heading">
+      <span class="section-kicker">WeChat Links</span>
+      <h2>微信入口</h2>
+      <p>以下链接会打开微信公众平台页面；如果浏览器无法完整显示，建议复制到微信内打开。</p>
+    </div>
+
+    <div class="resource-grid">
+      <article class="resource-card" *ngFor="let item of resources">
+        <span>{{ item.label }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <a [href]="item.url" target="_blank" rel="noopener noreferrer">
+          打开链接
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </article>
+    </div>
+  </section>
 </main>

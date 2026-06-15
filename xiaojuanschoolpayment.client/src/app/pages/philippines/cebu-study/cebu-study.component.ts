@@ -21,6 +21,8 @@ interface SchoolProfile {
   name: string;
   location: string;
   style: string;
+  route?: string;
+  startingPrice?: string;
   courses: string[];
   accommodation: string;
   facilities: string;
@@ -101,6 +103,8 @@ export class CebuStudyComponent {
       name: 'CIA Cebu International Academy',
       location: '麦克坦岛 / Lapu-Lapu City',
       style: '半斯巴达+，度假型新校区',
+      route: '/philippines-study/cebu/cia-cebu-international-academy',
+      startingPrice: 'USD 660 / 1周起',
       courses: ['Cambridge ESL', 'IELTS / IDP 考点', 'TOEIC', 'Business English', 'Immersion', 'Family & Junior'],
       accommodation: '校内宿舍，常见房型包括单人、双人、三人、四人和套房。',
       facilities: '泳池、餐厅、图书馆、健身房、医务室、迷你商店、篮球/排球场、祈祷室、卡拉 OK 和 IDP IELTS 考场。',
