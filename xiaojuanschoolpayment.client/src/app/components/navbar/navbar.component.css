@@ -22,76 +22,18 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  min-width: 0;
   color: #08183a;
   text-decoration: none;
   white-space: nowrap;
 }
 
-.brand-mark {
-  position: relative;
-  width: 48px;
-  height: 54px;
-  display: grid;
-  place-items: center;
-  clip-path: polygon(50% 0, 96% 14%, 86% 76%, 50% 100%, 14% 76%, 4% 14%);
-  background: #09193c;
-  box-shadow: inset 0 0 0 3px #f7fbff;
-}
-
-.brand-mark::before {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  clip-path: inherit;
-  background: linear-gradient(145deg, #1f9247, #0d5e33);
-}
-
-.brand-mark__leaf,
-.brand-mark__leaf::before,
-.brand-mark__leaf::after {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50% 50% 50% 4px;
-  background: #ffffff;
-  z-index: 1;
-}
-
-.brand-mark__leaf {
-  transform: rotate(45deg);
-}
-
-.brand-mark__leaf::before,
-.brand-mark__leaf::after {
-  content: '';
-}
-
-.brand-mark__leaf::before {
-  transform: translate(-8px, 5px) rotate(-95deg);
-}
-
-.brand-mark__leaf::after {
-  transform: translate(5px, 8px) rotate(95deg);
-}
-
-.brand-copy {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-
-.brand-copy strong {
-  font-size: 1.78rem;
-  font-weight: 900;
-  letter-spacing: 0;
-}
-
-.brand-copy small {
-  margin-top: 0.22rem;
-  color: #1b2f55;
-  font-size: 0.98rem;
-  font-weight: 700;
+.brand-logo {
+  display: block;
+  width: clamp(220px, 24vw, 330px);
+  max-width: 100%;
+  max-height: 55px;
+  object-fit: contain;
 }
 
 .primary-nav {
@@ -385,17 +327,9 @@
     grid-template-columns: auto auto;
   }
 
-  .brand-mark {
-    width: 40px;
-    height: 45px;
-  }
-
-  .brand-copy strong {
-    font-size: 1.28rem;
-  }
-
-  .brand-copy small {
-    font-size: 0.78rem;
+  .brand-logo {
+    width: min(220px, calc(100vw - 112px));
+    max-height: 42px;
   }
 
   .consult-button {

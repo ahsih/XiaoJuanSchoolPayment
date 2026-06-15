@@ -7,11 +7,12 @@ interface ServiceCard {
   tone: 'green' | 'teal' | 'blue';
 }
 
-interface DestinationCard {
-  code: string;
-  title: string;
+interface PhilippinesSchoolCard {
+  name: string;
+  city: string;
+  tag: string;
   description: string;
-  imageClass: string;
+  image: string;
   route: string;
 }
 
@@ -49,48 +50,54 @@ export class HomeComponent {
     },
   ];
 
-  readonly destinations: DestinationCard[] = [
+  readonly philippinesSchools: PhilippinesSchoolCard[] = [
     {
-      code: 'UK',
-      title: '英国',
-      description: '历史名校 · 纯正英音 · 文化体验',
-      imageClass: 'destination-uk',
-      route: '/overseas-study-tour/uk',
+      name: 'PINES International Academy',
+      city: 'Baguio',
+      tag: 'Sparta / IELTS / Speaking',
+      description: '碧瑶老牌高强度学校，适合目标明确、想被学习节奏推动的学生。',
+      image: '/assets/philippines/home-school-pines.jpg',
+      route: '/philippines-study/baguio/pines-international-academy',
     },
     {
-      code: 'IE',
-      title: '爱尔兰',
-      description: '安全友好 · 高性价比 · 工签机会',
-      imageClass: 'destination-ireland',
-      route: '/overseas-study-tour/ireland',
+      name: 'BECI International Language Academy',
+      city: 'Baguio',
+      tag: 'EOP / Sparta / City',
+      description: '多校区设计，适合按口说反馈、强度和生活节奏细分选择。',
+      image: '/assets/philippines/home-school-beci.jpg',
+      route: '/philippines-study/baguio/beci-international-language-academy',
     },
     {
-      code: 'SG',
-      title: '新加坡',
-      description: '双语环境 · 安全高效 · 交通便利',
-      imageClass: 'destination-singapore',
-      route: '/overseas-study-tour/singapore',
+      name: 'Baguio JIC Academy',
+      city: 'Baguio',
+      tag: 'IELTS / Speaking / Working Holiday',
+      description: 'Challenger 与 Premium 双校区，适合想在备考与生活舒适度之间取舍的人。',
+      image: '/assets/philippines/home-school-jic.jpg',
+      route: '/philippines-study/baguio/baguio-jic-academy',
     },
     {
-      code: 'MY',
-      title: '马来西亚',
-      description: '高性价比 · 多元文化 · 热带风情',
-      imageClass: 'destination-malaysia',
-      route: '/overseas-study-tour/malaysia',
+      name: 'MONOL',
+      city: 'Baguio',
+      tag: 'ESL / IELTS / Comfortable Stay',
+      description: '学习与住宿舒适度平衡，适合想稳定提升又重视生活品质的学生。',
+      image: '/assets/philippines/home-school-monol.png',
+      route: '/philippines-study/baguio/monol',
     },
     {
-      code: 'CA',
-      title: '加拿大',
-      description: '优质教育 · 自然环境 · 文化多元',
-      imageClass: 'destination-canada',
-      route: '/overseas-study-tour/canada',
+      name: 'WALES Academy',
+      city: 'Baguio',
+      tag: 'ESL / IELTS / Business',
+      description: '小规模市中心学校，适合喜欢安静管理、生活机能方便的成人学生。',
+      image: '/assets/philippines/home-school-wales.jpg',
+      route: '/philippines-study/baguio/wales-academy',
     },
     {
-      code: 'AU',
-      title: '澳大利亚',
-      description: '阳光海岸 · 多元文化 · 实用英语',
-      imageClass: 'destination-australia',
-      route: '/overseas-study-tour/australia',
+      name: 'EV Academy',
+      city: 'Cebu',
+      tag: 'Semi-Sparta / IELTS / Family',
+      description: '宿务现代校园，适合兼顾学习强度、校园设施和海岛城市体验的人。',
+      image: '/assets/philippines/home-school-ev.jpg',
+      route: '/philippines-study/cebu/ev-academy',
     },
   ];
 }

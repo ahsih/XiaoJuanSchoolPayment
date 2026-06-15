@@ -16,7 +16,12 @@
           免费复核外教型学校
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="https://www.ioutback.com/" target="_blank" rel="noopener">
+        <a
+          class="secondary-action"
+          href="https://www.ioutback.com/"
+          target="_blank"
+          rel="noopener"
+        >
           参考资料入口
           <mat-icon>open_in_new</mat-icon>
         </a>
@@ -24,10 +29,15 @@
     </div>
 
     <figure class="hero-visual">
-      <img src="assets/philippines/clark-study-hero.jpg" alt="Clark 外教口语和亲子英语学习环境" />
+      <img
+        src="assets/philippines/clark-study-hero.jpg"
+        alt="Clark 外教口语和亲子英语学习环境"
+      />
       <figcaption>
         <strong>费用提醒</strong>
-        <span>Native-focused课程费用需按具体学校、外教课比例、房型和入学日当期确认</span>
+        <span
+          >Native-focused课程费用需按具体学校、外教课比例、房型和入学日当期确认</span
+        >
       </figcaption>
     </figure>
   </section>
@@ -95,13 +105,21 @@
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="AELC Native-focused Clark Schools费用确认项目">
+    <div
+      class="fee-table"
+      role="table"
+      aria-label="AELC Native-focused Clark Schools费用确认项目"
+    >
       <div class="fee-row fee-row--compact fee-row--head" role="row">
         <span role="columnheader">项目</span>
         <span role="columnheader">金额</span>
         <span role="columnheader">说明</span>
       </div>
-      <div class="fee-row fee-row--compact" role="row" *ngFor="let row of priceRows">
+      <div
+        class="fee-row fee-row--compact"
+        role="row"
+        *ngFor="let row of priceRows"
+      >
         <span role="cell">{{ row.item }}</span>
         <span role="cell">{{ row.amount }}</span>
         <span role="cell">{{ row.note }}</span>
@@ -146,7 +164,8 @@
         <h2>先问清“谁来教”，再看课程名字</h2>
       </div>
       <p>
-        Native-focused最容易被误解。报名时要确认每一天到底有几节Native 1:1、几节菲律宾老师课、是否固定老师、是否能换老师，
+        Native-focused最容易被误解。报名时要确认每一天到底有几节Native
+        1:1、几节菲律宾老师课、是否固定老师、是否能换老师，
         以及孩子或成人是否真的适合高比例外教输入。基础弱的学生通常需要ESL打底，再搭配外教课更稳。
       </p>
       <a class="primary-action" routerLink="/register">
@@ -188,24 +207,13 @@
     </details>
   </section>
 
-  <section class="content-band faq-section">
-    <div class="section-heading">
-      <span class="section-kicker">Sources</span>
-      <h2>资料来源</h2>
-      <p>以下为本页整理时参考的公开入口；价格、空位和校规最终需以学校当期回函为准。</p>
-    </div>
-    <ul class="clean-list">
-      <li *ngFor="let source of sources">
-        <a [href]="source.url" target="_blank" rel="noopener">{{ source.label }}</a>
-      </li>
-    </ul>
-  </section>
-
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
       <h2>想确认AELC或Clark外教型学校现在能不能选？</h2>
-      <p>把入学日期、周数、年龄、英文程度、是否需要Native课、房型偏好和预算发给顾问，可以先帮你建立候选清单。</p>
+      <p>
+        把入学日期、周数、年龄、英文程度、是否需要Native课、房型偏好和预算发给顾问，可以先帮你建立候选清单。
+      </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询

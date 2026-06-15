@@ -8,7 +8,8 @@
       <span class="section-kicker">Manila School Detail</span>
       <h1>American English Skills Development Center</h1>
       <p>
-        American English Skills Development Center更适合成人口语、商务英语、一对一辅导、团体课和企业培训需求。
+        American English Skills Development
+        Center更适合成人口语、商务英语、一对一辅导、团体课和企业培训需求。
         它不是宿舍制菲律宾ESL学校，而是马尼拉城市型英语与沟通训练中心，适合把课程和工作、出差、短住或企业培训安排结合起来。
       </p>
       <div class="hero-actions">
@@ -16,7 +17,12 @@
           免费确认American English课程费用
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="https://americanenglish.ph/" target="_blank" rel="noopener">
+        <a
+          class="secondary-action"
+          href="https://americanenglish.ph/"
+          target="_blank"
+          rel="noopener"
+        >
           学校官网
           <mat-icon>open_in_new</mat-icon>
         </a>
@@ -24,10 +30,15 @@
     </div>
 
     <figure class="hero-visual">
-      <img src="assets/philippines/manila-study-hero.jpg" alt="马尼拉城市英语与商务沟通学习环境" />
+      <img
+        src="assets/philippines/manila-study-hero.jpg"
+        alt="马尼拉城市英语与商务沟通学习环境"
+      />
       <figcaption>
         <strong>费用参考</strong>
-        <span>公开课程页可见约₱24,000-₱98,000区间；最终需按课程、课时、线上/面授和优惠当期核价</span>
+        <span
+          >公开课程页可见约₱24,000-₱98,000区间；最终需按课程、课时、线上/面授和优惠当期核价</span
+        >
       </figcaption>
     </figure>
   </section>
@@ -45,7 +56,8 @@
       <h2>成人、职场和企业培训导向的马尼拉英语中心</h2>
     </div>
     <p>
-      American English强调真实沟通、职场表达和可定制训练。它适合已经在马尼拉生活、工作、出差或短住的人，
+      American
+      English强调真实沟通、职场表达和可定制训练。它适合已经在马尼拉生活、工作、出差或短住的人，
       也适合把英语学习安排成一对一、团体课或公司内训。报名之前需要先确认上课形式、课程小时数、开课日期、住宿和通勤。
     </p>
   </section>
@@ -71,8 +83,10 @@
         <h2>非寄宿制，住宿与通勤需要单独规划</h2>
       </div>
       <p>
-        American English不是校内宿舍制语言学校。学生通常需要自行安排酒店、公寓、亲友住宿或公司住宿。
-        如果选择面授，需要把Makati/Metro Manila通勤时间、交通费和安全感一起放入预算。
+        American
+        English不是校内宿舍制语言学校。学生通常需要自行安排酒店、公寓、亲友住宿或公司住宿。
+        如果选择面授，需要把Makati/Metro
+        Manila通勤时间、交通费和安全感一起放入预算。
       </p>
     </div>
 
@@ -92,18 +106,27 @@
       <span class="section-kicker">费用</span>
       <h2>以课程、课时、班型和当期优惠重新核价</h2>
       <p>
-        American English公开页面可看到部分课程价位区间，但不同课程、一对一/团体、线上/面授和企业定制差异很大。
+        American
+        English公开页面可看到部分课程价位区间，但不同课程、一对一/团体、线上/面授和企业定制差异很大。
         下表用于预算初筛，正式报名需以学校当期页面、购物车或回函为准。
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="American English费用确认项目">
+    <div
+      class="fee-table"
+      role="table"
+      aria-label="American English费用确认项目"
+    >
       <div class="fee-row fee-row--compact fee-row--head" role="row">
         <span role="columnheader">项目</span>
         <span role="columnheader">金额</span>
         <span role="columnheader">说明</span>
       </div>
-      <div class="fee-row fee-row--compact" role="row" *ngFor="let row of priceRows">
+      <div
+        class="fee-row fee-row--compact"
+        role="row"
+        *ngFor="let row of priceRows"
+      >
         <span role="cell">{{ row.item }}</span>
         <span role="cell">{{ row.amount }}</span>
         <span role="cell">{{ row.note }}</span>
@@ -148,7 +171,8 @@
         <h2>先确定学习场景，再选一对一、团体课或企业培训</h2>
       </div>
       <p>
-        如果学生目标是面试、商务写作、客户沟通、发音或会议表达，American English会比传统宿舍制ESL更贴近使用场景。
+        如果学生目标是面试、商务写作、客户沟通、发音或会议表达，American
+        English会比传统宿舍制ESL更贴近使用场景。
         但若目标是长期沉浸、每天多堂一对一和校内管理，则应转看宿务、碧瑶或Clark学校。
       </p>
       <a class="primary-action" routerLink="/register">
@@ -190,24 +214,13 @@
     </details>
   </section>
 
-  <section class="content-band faq-section">
-    <div class="section-heading">
-      <span class="section-kicker">Sources</span>
-      <h2>资料来源</h2>
-      <p>以下为本页整理时参考的公开入口；价格、空位、开课日期和优惠最终需以学校当期页面或回函为准。</p>
-    </div>
-    <ul class="clean-list">
-      <li *ngFor="let source of sources">
-        <a [href]="source.url" target="_blank" rel="noopener">{{ source.label }}</a>
-      </li>
-    </ul>
-  </section>
-
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
       <h2>想确认American English是否适合你的马尼拉计划？</h2>
-      <p>把入学时间、学习目标、想选一对一还是团体课、是否需要面授和住宿预算告诉顾问，可以先帮你确认当期课程与费用。</p>
+      <p>
+        把入学时间、学习目标、想选一对一还是团体课、是否需要面授和住宿预算告诉顾问，可以先帮你确认当期课程与费用。
+      </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询

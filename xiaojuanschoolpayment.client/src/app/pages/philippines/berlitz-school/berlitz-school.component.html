@@ -8,7 +8,8 @@
       <span class="section-kicker">Manila School Detail</span>
       <h1>Berlitz Philippines</h1>
       <p>
-        Berlitz Philippines适合把马尼拉语言学习安排成国际品牌培训中心模式：成人私教、小组课、儿童青少年课程、
+        Berlitz
+        Philippines适合把马尼拉语言学习安排成国际品牌培训中心模式：成人私教、小组课、儿童青少年课程、
         企业语言培训、商务沟通、测评和TELC相关服务。它不是传统宿舍制ESL学校，住宿、通勤和日常生活需要单独规划。
       </p>
       <div class="hero-actions">
@@ -16,7 +17,12 @@
           免费确认Berlitz课程与报价
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="https://www.berlitzph.com/" target="_blank" rel="noopener">
+        <a
+          class="secondary-action"
+          href="https://www.berlitzph.com/"
+          target="_blank"
+          rel="noopener"
+        >
           学校官网
           <mat-icon>open_in_new</mat-icon>
         </a>
@@ -24,10 +30,15 @@
     </div>
 
     <figure class="hero-visual">
-      <img src="assets/philippines/manila-study-hero.jpg" alt="马尼拉城市语言培训与商务沟通学习环境" />
+      <img
+        src="assets/philippines/manila-study-hero.jpg"
+        alt="马尼拉城市语言培训与商务沟通学习环境"
+      />
       <figcaption>
         <strong>费用提醒</strong>
-        <span>官网未公开固定完整价目表；私教、小组、少儿、企业培训、测评和TELC需按当期课程方案核价</span>
+        <span
+          >官网未公开固定完整价目表；私教、小组、少儿、企业培训、测评和TELC需按当期课程方案核价</span
+        >
       </figcaption>
     </figure>
   </section>
@@ -45,7 +56,8 @@
       <h2>国际品牌语言培训中心，适合城市型短课和企业服务</h2>
     </div>
     <p>
-      Berlitz Philippines官网列出成人、儿童青少年、企业语言培训、语言测评、TELC和商务沟通训练等方向。
+      Berlitz
+      Philippines官网列出成人、儿童青少年、企业语言培训、语言测评、TELC和商务沟通训练等方向。
       顾问会先确认学生是否需要住宿制管理；如果不需要，再根据目标语言、级别、课程形式和时间安排核算Berlitz是否合适。
     </p>
   </section>
@@ -71,7 +83,8 @@
         <h2>非寄宿制语言中心，住宿、餐食和接送另行安排</h2>
       </div>
       <p>
-        Berlitz Philippines不是校内宿舍制学校。学生需要自行或通过顾问安排酒店、公寓、亲友住宿或公司住宿。
+        Berlitz
+        Philippines不是校内宿舍制学校。学生需要自行或通过顾问安排酒店、公寓、亲友住宿或公司住宿。
         如果选择面授课，应把住宿点、Makati通勤时间、交通费用和上课时段一起核算。
       </p>
     </div>
@@ -82,7 +95,8 @@
         <h2>Berlitz Makati / The World Center</h2>
       </div>
       <p>
-        官网联系页列出Berlitz Makati位于The World Center, 330 Senator Gil Puyat Avenue, Makati。
+        官网联系页列出Berlitz Makati位于The World Center, 330 Senator Gil Puyat
+        Avenue, Makati。
         这个位置适合商务人士、公司派训和城市短课；如果学生想要全天沉浸式宿舍管理，建议比较宿务、碧瑶或Clark。
       </p>
     </div>
@@ -93,18 +107,27 @@
       <span class="section-kicker">费用</span>
       <h2>费用需按课程形式、级别、课时和当期排课确认</h2>
       <p>
-        Berlitz Philippines官网没有公开固定完整价目表。下面的费用表用于提醒需要核价的项目，
+        Berlitz
+        Philippines官网没有公开固定完整价目表。下面的费用表用于提醒需要核价的项目，
         正式报价需以学习中心、课程顾问或学校当期回函为准。
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="Berlitz Philippines费用确认项目">
+    <div
+      class="fee-table"
+      role="table"
+      aria-label="Berlitz Philippines费用确认项目"
+    >
       <div class="fee-row fee-row--compact fee-row--head" role="row">
         <span role="columnheader">项目</span>
         <span role="columnheader">金额</span>
         <span role="columnheader">说明</span>
       </div>
-      <div class="fee-row fee-row--compact" role="row" *ngFor="let row of priceRows">
+      <div
+        class="fee-row fee-row--compact"
+        role="row"
+        *ngFor="let row of priceRows"
+      >
         <span role="cell">{{ row.item }}</span>
         <span role="cell">{{ row.amount }}</span>
         <span role="cell">{{ row.note }}</span>
@@ -191,24 +214,13 @@
     </details>
   </section>
 
-  <section class="content-band faq-section">
-    <div class="section-heading">
-      <span class="section-kicker">Sources</span>
-      <h2>资料来源</h2>
-      <p>以下为本页整理时参考的公开入口；价格、排课、空位和考试日期最终需以学校当期回函为准。</p>
-    </div>
-    <ul class="clean-list">
-      <li *ngFor="let source of sources">
-        <a [href]="source.url" target="_blank" rel="noopener">{{ source.label }}</a>
-      </li>
-    </ul>
-  </section>
-
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
       <h2>想确认Berlitz是否适合你的马尼拉计划？</h2>
-      <p>把学习目标、语言、级别、想选私教还是小组、是否需要面授、住宿预算和时间发给顾问，可以先帮你确认当期方案与报价。</p>
+      <p>
+        把学习目标、语言、级别、想选私教还是小组、是否需要面授、住宿预算和时间发给顾问，可以先帮你确认当期方案与报价。
+      </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询

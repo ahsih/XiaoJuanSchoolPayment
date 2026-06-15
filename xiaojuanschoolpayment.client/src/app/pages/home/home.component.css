@@ -192,8 +192,7 @@
 }
 
 .service-card h2,
-.destination-card h3,
-.recommend-card h3,
+.school-showcase-card h3,
 .section-heading h2 {
   margin: 0;
   color: #07173a;
@@ -206,8 +205,7 @@
 }
 
 .service-card p,
-.destination-card p,
-.recommend-card p,
+.school-showcase-card p,
 .section-heading p {
   color: #485365;
   line-height: 1.55;
@@ -235,7 +233,7 @@
   font-size: 18px;
 }
 
-.destinations {
+.philippines-schools {
   margin-top: 1.8rem;
 }
 
@@ -263,21 +261,13 @@
   white-space: nowrap;
 }
 
-.destination-layout {
+.school-showcase-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
-  gap: 1.1rem;
-  align-items: start;
-}
-
-.destination-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.1rem;
 }
 
-.destination-card,
-.recommend-card {
+.school-showcase-card {
   overflow: hidden;
   border: 1px solid #e0e7ed;
   border-radius: 8px;
@@ -291,130 +281,73 @@
     transform 160ms ease;
 }
 
-.destination-card:hover,
-.recommend-card:hover {
+.school-showcase-card:hover {
   border-color: #168246;
   box-shadow: 0 10px 22px rgba(17, 32, 56, 0.12);
   transform: translateY(-2px);
 }
 
-.destination-image,
-.recommend-image {
-  min-height: 96px;
-  background-size: cover;
-  background-position: center;
-}
-
-.destination-uk {
-  background-image:
-    linear-gradient(180deg, rgba(78, 120, 170, 0.05), rgba(3, 23, 50, 0.2)),
-    linear-gradient(135deg, #d6e8f7 0 30%, #6d8ea8 31% 36%, #d9d0bd 37% 42%, #42556f 43% 49%, #f5f6f0 50%);
-}
-
-.destination-ireland {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(16, 55, 37, 0.18)),
-    linear-gradient(135deg, #b7d6ef 0 38%, #486d45 39% 46%, #83a75d 47% 60%, #e8efe1 61%);
-}
-
-.destination-singapore {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(20, 60, 85, 0.16)),
-    linear-gradient(135deg, #9ad1f2 0 42%, #375e72 43% 49%, #e8eef2 50% 56%, #c7b083 57%);
-}
-
-.destination-malaysia {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(27, 63, 99, 0.16)),
-    linear-gradient(135deg, #9bd1f1 0 38%, #d8e9f6 39% 44%, #637f9b 45% 52%, #e6ecef 53% 58%, #8bb270 59%);
-}
-
-.destination-canada {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(14, 52, 75, 0.2)),
-    linear-gradient(135deg, #8fc7ea 0 32%, #e9eef2 33% 40%, #526a79 41% 48%, #c3d7e4 49% 58%, #5b8d5d 59%);
-}
-
-.destination-australia {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(20, 50, 74, 0.16)),
-    linear-gradient(135deg, #89c7ec 0 45%, #e7e2d1 46% 55%, #536b7b 56% 62%, #d7d0b9 63%);
-}
-
-.destination-body {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 0.45rem;
+.school-city {
+  display: inline-flex;
   align-items: center;
-  padding: 0.68rem 0.75rem 0.82rem;
-}
-
-.flag-badge {
-  min-width: 27px;
-  min-height: 20px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 3px;
-  background: #f4f7fb;
-  color: #102246;
-  font-size: 0.65rem;
+  width: fit-content;
+  border-radius: 999px;
+  font-size: 0.72rem;
   font-weight: 950;
-  border: 1px solid #d9e2ea;
+  letter-spacing: 0;
 }
 
-.destination-card h3 {
-  font-size: 1.06rem;
+.school-showcase-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.destination-card p {
-  grid-column: 1 / -1;
-  margin: 0.35rem 0 0;
-  font-size: 0.78rem;
-  white-space: nowrap;
+.school-showcase-card img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: cover;
+  background: #eef4f8;
 }
 
-.recommend-card {
-  position: relative;
-  border-color: #218b55;
+.school-showcase-card__body {
+  min-width: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0.88rem 0.92rem 1rem;
 }
 
-.recommend-label {
-  position: absolute;
-  top: 0;
-  left: 0.8rem;
-  z-index: 1;
-  padding: 0.25rem 0.8rem;
-  border-radius: 0 0 6px 6px;
-  background: #168246;
-  color: #ffffff;
-  font-size: 0.75rem;
-  font-weight: 900;
+.school-city {
+  margin-bottom: 0.52rem;
+  padding: 0.22rem 0.62rem;
+  background: #eaf5ef;
+  color: #126a42;
+  border: 1px solid #cfe5d8;
 }
 
-.recommend-image {
-  min-height: 112px;
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(20, 83, 78, 0.18)),
-    radial-gradient(circle at 80% 20%, #ffe49d 0 8%, transparent 9%),
-    linear-gradient(135deg, #74c7ea 0 45%, #f1e6c5 46% 56%, #2d9d89 57% 64%, #edf6ef 65%);
+.school-showcase-card h3 {
+  font-size: 1.08rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
-.recommend-body {
-  padding: 0.82rem 0.95rem 1rem;
+.school-showcase-card strong {
+  margin-top: 0.45rem;
+  color: #ff5b00;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
 
-.recommend-card h3 {
-  font-size: 1.28rem;
-}
-
-.recommend-card p {
-  margin: 0.45rem 0 0;
-  font-size: 0.9rem;
+.school-showcase-card p {
+  margin: 0.48rem 0 0;
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 1180px) {
-  .hero,
-  .destination-layout {
+  .hero {
     grid-template-columns: 1fr;
     height: auto;
   }
@@ -424,17 +357,14 @@
   }
 
   .services,
-  .destination-grid {
+  .school-showcase-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .recommend-card {
-    max-width: 360px;
   }
 }
 
 @media (max-width: 720px) {
   .home-page {
+    box-sizing: border-box;
     width: 100%;
     padding: 0 14px 3rem;
     overflow-x: hidden;
@@ -449,6 +379,32 @@
   .hero-copy p {
     font-size: 0.98rem;
     overflow-wrap: anywhere;
+    word-break: break-all;
+  }
+
+  .hero,
+  .services,
+  .service-card,
+  .service-card > div,
+  .philippines-schools,
+  .section-heading,
+  .section-heading > div,
+  .school-showcase-grid,
+  .school-showcase-card,
+  .school-showcase-card__body {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .service-card h2,
+  .service-card p,
+  .school-showcase-card h3,
+  .school-showcase-card strong,
+  .school-showcase-card p,
+  .section-heading h2,
+  .section-heading p {
+    overflow-wrap: anywhere;
+    white-space: normal;
     word-break: break-all;
   }
 
@@ -467,7 +423,7 @@
   }
 
   .services,
-  .destination-grid {
+  .school-showcase-grid {
     grid-template-columns: 1fr;
   }
 
@@ -485,9 +441,5 @@
     width: 34px;
     height: 34px;
     font-size: 34px;
-  }
-
-  .destination-card p {
-    white-space: normal;
   }
 }

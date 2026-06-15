@@ -56,40 +56,30 @@
     </article>
   </section>
 
-  <section class="destinations">
+  <section class="philippines-schools">
     <div class="section-heading">
       <div>
-        <h2>多国家英语游学项目</h2>
-        <p>优质语言学校与丰富课程选择，满足不同学习目标</p>
+        <h2>菲律宾热门语言学校</h2>
+        <p>从碧瑶到宿务，按学习强度、住宿体验和课程目标筛选适合学校</p>
       </div>
-      <a routerLink="/overseas-study-tour/offers">
-        查看全部项目
+      <a routerLink="/philippines-study/schools/by-city">
+        查看菲律宾学校库
         <mat-icon>chevron_right</mat-icon>
       </a>
     </div>
 
-    <div class="destination-layout">
-      <div class="destination-grid">
-        <a
-          class="destination-card"
-          *ngFor="let destination of destinations"
-          [routerLink]="destination.route"
-        >
-          <div class="destination-image" [class]="destination.imageClass"></div>
-          <div class="destination-body">
-            <span class="flag-badge">{{ destination.code }}</span>
-            <h3>{{ destination.title }}</h3>
-            <p>{{ destination.description }}</p>
-          </div>
-        </a>
-      </div>
-
-      <a class="recommend-card" routerLink="/philippines-study/why-philippines">
-        <span class="recommend-label">热门推荐</span>
-        <div class="recommend-image"></div>
-        <div class="recommend-body">
-          <h3>菲律宾游学</h3>
-          <p>英语快速提升首选地课程多样 · 费用亲民 · 效果显著</p>
+    <div class="school-showcase-grid">
+      <a
+        class="school-showcase-card"
+        *ngFor="let school of philippinesSchools"
+        [routerLink]="school.route"
+      >
+        <img [src]="school.image" [alt]="school.name + ' campus image'" loading="lazy" />
+        <div class="school-showcase-card__body">
+          <span class="school-city">{{ school.city }}</span>
+          <h3>{{ school.name }}</h3>
+          <strong>{{ school.tag }}</strong>
+          <p>{{ school.description }}</p>
         </div>
       </a>
     </div>

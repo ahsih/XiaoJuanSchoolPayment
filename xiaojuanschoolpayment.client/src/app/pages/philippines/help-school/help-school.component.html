@@ -8,7 +8,8 @@
       <span class="section-kicker">Clark School Detail</span>
       <h1>HELP English Clark</h1>
       <p>
-        HELP English Clark 适合作为Clark老牌系统与考试路线候选校来复核。由于当前公开资料不足以稳定确认Clark校区价目表和开放状态，
+        HELP English Clark
+        适合作为Clark老牌系统与考试路线候选校来复核。由于当前公开资料不足以稳定确认Clark校区价目表和开放状态，
         本页重点帮助学生整理报名之前必须核对的课程、住宿、费用、校区和年龄规则。
       </p>
       <div class="hero-actions">
@@ -16,7 +17,12 @@
           免费复核HELP当前资料
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="https://helpenglish.net/" target="_blank" rel="noopener">
+        <a
+          class="secondary-action"
+          href="https://helpenglish.net/"
+          target="_blank"
+          rel="noopener"
+        >
           官方入口
           <mat-icon>open_in_new</mat-icon>
         </a>
@@ -24,10 +30,16 @@
     </div>
 
     <figure class="hero-visual">
-      <img src="assets/philippines/clark-study-hero.jpg" alt="Clark 英语学习与校园生活环境" />
+      <img
+        src="assets/philippines/clark-study-hero.jpg"
+        alt="Clark 英语学习与校园生活环境"
+      />
       <figcaption>
         <strong>费用提醒</strong>
-        <span>HELP English Clark费用、房型和开课状态需以学校当期回函确认；本页不使用旧价目表写死报价</span>
+        <span
+          >HELP English
+          Clark费用、房型和开课状态需以学校当期回函确认；本页不使用旧价目表写死报价</span
+        >
       </figcaption>
     </figure>
   </section>
@@ -71,7 +83,8 @@
         <h2>房型、宿舍规则和校区状态是第一优先复核项</h2>
       </div>
       <p>
-        HELP Clark的住宿信息不建议按旧资料直接判断。报名前需要确认当前开放房型、单人/双人/多人房、未成年住宿安排、清洁洗衣、网络、
+        HELP
+        Clark的住宿信息不建议按旧资料直接判断。报名前需要确认当前开放房型、单人/双人/多人房、未成年住宿安排、清洁洗衣、网络、
         门禁、自习和退房规则。
       </p>
     </div>
@@ -92,17 +105,26 @@
       <span class="section-kicker">费用</span>
       <h2>费用需以学校当期报价为准</h2>
       <p>
-        公开资料不足以可靠确认HELP English Clark当前完整价目表。为了避免误导，本页保留费用模块，但不写死旧价格。
+        公开资料不足以可靠确认HELP English
+        Clark当前完整价目表。为了避免误导，本页保留费用模块，但不写死旧价格。
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="HELP English Clark费用确认项目">
+    <div
+      class="fee-table"
+      role="table"
+      aria-label="HELP English Clark费用确认项目"
+    >
       <div class="fee-row fee-row--compact fee-row--head" role="row">
         <span role="columnheader">项目</span>
         <span role="columnheader">金额</span>
         <span role="columnheader">说明</span>
       </div>
-      <div class="fee-row fee-row--compact" role="row" *ngFor="let row of priceRows">
+      <div
+        class="fee-row fee-row--compact"
+        role="row"
+        *ngFor="let row of priceRows"
+      >
         <span role="cell">{{ row.item }}</span>
         <span role="cell">{{ row.amount }}</span>
         <span role="cell">{{ row.note }}</span>
@@ -189,24 +211,13 @@
     </details>
   </section>
 
-  <section class="content-band faq-section">
-    <div class="section-heading">
-      <span class="section-kicker">Sources</span>
-      <h2>资料来源</h2>
-      <p>以下为本页整理时参考的公开入口；价格、空位和校规最终需以学校当期回函为准。</p>
-    </div>
-    <ul class="clean-list">
-      <li *ngFor="let source of sources">
-        <a [href]="source.url" target="_blank" rel="noopener">{{ source.label }}</a>
-      </li>
-    </ul>
-  </section>
-
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
       <h2>想确认HELP Clark现在还能不能选？</h2>
-      <p>把入学日期、周数、课程目标、房型偏好、年龄和预算发给顾问，可以先帮你复核当前资料是否完整。</p>
+      <p>
+        把入学日期、周数、课程目标、房型偏好、年龄和预算发给顾问，可以先帮你复核当前资料是否完整。
+      </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询
