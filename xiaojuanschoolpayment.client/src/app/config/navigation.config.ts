@@ -293,6 +293,16 @@ export const mainNavigation: NavigationItem[] = [
             label: 'MONOL',
             route: '/philippines-study/baguio/monol',
           },
+          {
+            id: 'wales-academy',
+            label: 'WALES Academy',
+            route: '/philippines-study/baguio/wales-academy',
+          },
+          {
+            id: 'talk-academy',
+            label: 'TALK Academy',
+            route: '/philippines-study/baguio/talk-academy',
+          },
         ],
       },
       {
@@ -333,6 +343,28 @@ export const mainNavigation: NavigationItem[] = [
         label: '马尼拉游学',
         route: '/philippines-study/manila',
         type: '城市页',
+        children: [
+          {
+            id: 'enderun-extension',
+            label: 'Enderun Extension',
+            route: '/philippines-study/manila/enderun-extension',
+          },
+          {
+            id: 'american-english-skills-development-center',
+            label: 'American English Skills Development Center',
+            route: '/philippines-study/manila/american-english-skills-development-center',
+          },
+          {
+            id: 'berlitz-philippines',
+            label: 'Berlitz Philippines',
+            route: '/philippines-study/manila/berlitz-philippines',
+          },
+          {
+            id: 'manila-legacy-esl-candidates',
+            label: 'CNN / C21 / PICO 旧ESL候选',
+            route: '/philippines-study/manila/legacy-esl-candidates',
+          },
+        ],
       },
       {
         id: 'more-philippines-cities',

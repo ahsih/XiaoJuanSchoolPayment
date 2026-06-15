@@ -1,0 +1,243 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/manila">
+        <mat-icon>arrow_back</mat-icon>
+        返回马尼拉学校列表
+      </a>
+      <span class="section-kicker">Manila Legacy ESL Review</span>
+      <h1>CNN / C21 / PICO 等旧马尼拉 ESL 候选</h1>
+      <p>
+        这些名字更适合放进“旧资料复核池”，而不是直接写成当前可报名学校。CNN仍可查到第三方学校资料，
+        但C21与PICO当前公开线索不足；报名之前必须先确认运营状态、校区、课程、住宿、费用和付款主体。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          请顾问帮我复核马尼拉旧ESL
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://feifanstudy.com/schools/65-cnn" target="_blank" rel="noopener">
+          查看CNN第三方资料
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/philippines/manila-study-hero.jpg" alt="马尼拉首都圈城市英语学习与旧ESL学校复核场景" />
+      <figcaption>
+        <strong>顾问提醒</strong>
+        <span>
+          本页不是CNN、C21、PICO当前招生证明。它是为了把旧资料、第三方目录和复核动作整理清楚，避免学生凭过期页面直接付款。
+        </span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="旧马尼拉ESL候选基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>把CNN、C21、PICO当作待查证名单，而不是直接推荐名单</h2>
+    </div>
+    <p>
+      马尼拉早期曾出现过偏传统ESL、住宿制或半斯巴达定位的学校资料。现在公开可读信息已经不够均衡：
+      CNN仍在Feifan马尼拉分类和学校页中出现，C21与PICO则更像旧名单里的历史候选。
+      因此本页保留完整详情页模块，但所有费用、住宿和课程都必须先由顾问取得当期书面确认。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">候选状态</span>
+      <h2>三个名字的复核优先级不同</h2>
+    </div>
+    <div class="candidate-grid">
+      <article class="candidate-card" *ngFor="let candidate of candidates">
+        <span>{{ candidate.status }}</span>
+        <h3>{{ candidate.name }}</h3>
+        <p>{{ candidate.signal }}</p>
+        <strong>{{ candidate.check }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>课程只能作为旧资料方向，需按当前开课表核对</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>旧房型不能直接拿来报价</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of accommodation">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>Quezon City / Metro Manila，需要先确认实际校区</h2>
+      </div>
+      <p>
+        CNN第三方资料把地址指向Quezon City / Diliman一带，并提到从马尼拉机场前往学校约需车程。
+        但马尼拉首都圈很大，学校是否仍在原址、宿舍是否同区、接机时间和日常通勤，都必须重新核对。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>用核价清单代替旧价格承诺</h2>
+      <p>
+        旧候选学校最容易出错的是费用。这里不把旧价格写成正式报价，而是把顾问需要向学校或授权渠道确认的项目拆出来。
+      </p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="旧马尼拉ESL费用复核项目">
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">公开线索</span>
+        <span role="columnheader">需确认</span>
+        <span role="columnheader">说明</span>
+        <span role="columnheader">依据</span>
+      </div>
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.item }}</span>
+        <span role="cell">{{ row.publicSignal }}</span>
+        <span role="cell">{{ row.quoteCheck }}</span>
+        <span role="cell">{{ row.note }}</span>
+        <span role="cell">{{ row.basis }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>设施以“需确认清单”呈现</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>适合愿意先复核、再决定的人</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先查证，再把它们和当前马尼拉选项一起比较</h2>
+      </div>
+      <p>
+        思达教育会先核实学校是否仍运营、是否仍招国际学生、是否有可付款的正式invoice、宿舍是否真实开放，
+        再决定是否把CNN、C21或PICO放入最终推荐。若资料无法闭环，会优先建议学生选择更透明的学校。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做复核清单
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想确认这些旧马尼拉ESL候选是否还能用？</h2>
+      <p>
+        把入学月份、周数、预算、是否必须住宿、是否考试目标和可接受的城市范围告诉顾问。我们会先做资料闭环，再给你推荐。
+      </p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">Sources</span>
+      <h2>资料来源</h2>
+      <p>
+        以下为本页整理时参考或核对过的公开入口。正式报名仍需以学校或授权渠道的当期书面回复为准。
+      </p>
+    </div>
+    <div class="source-list">
+      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+        <span>{{ source.label }}</span>
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
+  </section>
+</div>

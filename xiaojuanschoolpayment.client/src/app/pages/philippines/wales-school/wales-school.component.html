@@ -1,25 +1,24 @@
 <div class="cia-page">
   <section class="cia-hero">
     <div class="hero-copy">
-      <a class="back-link" routerLink="/philippines-study/clark">
+      <a class="back-link" routerLink="/philippines-study/baguio">
         <mat-icon>arrow_back</mat-icon>
-        返回克拉克学校列表
+        返回碧瑶学校列表
       </a>
-      <span class="section-kicker">Clark School Detail</span>
-      <h1>Clark WE Academy</h1>
+      <span class="section-kicker">Baguio School Detail</span>
+      <h1>WALES Academy</h1>
       <p>
-        Clark WE Academy 是位于 Angeles City 的 farm resort
-        式英语学校，适合亲子家庭、低龄学生、想要Native Mix口语课，
-        以及希望把英语学习和游泳、高尔夫等活动体验结合的学生。
+        WALES是碧瑶Legarda Road一带的小型英语学校，官方名称为Widest Asian Learners English School Inc.。
+        它的特点不是高压管理，而是小校容量、市区便利、成人友好和更生活化的房型选择。
       </p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/register">
-          免费咨询WE空位与报价
+          免费咨询WALES空位与报价
           <mat-icon>chevron_right</mat-icon>
         </a>
         <a
           class="secondary-action"
-          href="https://clarkweacademy.com/"
+          href="https://walesph.com/"
           target="_blank"
           rel="noopener"
         >
@@ -31,15 +30,15 @@
 
     <figure class="hero-visual">
       <img
-        src="assets/philippines/clark-study-hero.jpg"
-        alt="Clark WE Academy 英语学习与度假式校园环境"
+        src="assets/philippines/baguio-study-hero.jpg"
+        alt="碧瑶山城英语学习环境"
       />
       <figcaption>
-        <strong>费用参考</strong>
-        <span
-          >英语课程与住宿需按当期报价确认；官网公开Golf私教 PHP 750 /
-          session，Swimming私教 PHP 700 / session</span
-        >
+        <strong>报价提醒</strong>
+        <span>
+          WALES官网公开页以课程、房型和报名流程为主；正式费用需按EEP/ESL/Business/IELTS、
+          房型、餐费、周数和当地费用向学校二次确认。
+        </span>
       </figcaption>
     </figure>
   </section>
@@ -54,20 +53,19 @@
   <section class="content-band intro-section">
     <div class="section-heading">
       <span class="section-kicker">学校简介</span>
-      <h2>适合家庭、低龄和想要舒适校园体验的Clark学校</h2>
+      <h2>WALES适合想要“小而便利”的碧瑶学习环境</h2>
     </div>
     <p>
-      WE Academy
-      官网说明学校2016年创校，疫情后于2022年6月在新管理团队下重启，并在2026年持续作为多国籍校园运营。
-      学校强调宽敞校园、自由舒适的生活环境、Native
-      Mix课程、亲子支持和校内活动资源，定位和高压备考型学校不同。
+      WALES官方资料显示，学校容量约80名学生，2006年从青少年课程起步，之后陆续发展ESL、
+      TOEIC、TOEFL、IELTS、工作假期和海外就业方向课程，并在2016年迁至Legarda Road现址。
+      它更适合成人、家庭、工作者或希望在市中心生活半径内学习的人，而不是追求极强斯巴达节奏的学生。
     </p>
   </section>
 
   <section class="content-band">
     <div class="section-heading">
       <span class="section-kicker">课程</span>
-      <h2>ESL、Native Mix、Junior、Guardian和活动课程组合</h2>
+      <h2>从生活口语到ESL、商务、IELTS和亲子课程</h2>
     </div>
     <div class="course-grid">
       <article class="info-card" *ngFor="let course of courses">
@@ -82,22 +80,22 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">住宿</span>
-        <h2>宿舍、教室、泳池和生活设施集中在校园内</h2>
+        <h2>Studio、Premium、Share、Condo按生活习惯选择</h2>
       </div>
-      <p>
-        官网强调校园内包含宿舍、教室、健身房、大型泳池和便利店，适合不想每天通勤的家庭和低龄学生。
-        报名前建议确认房型、家庭房、清洁、洗衣、餐食、网络、成人外出规则和未成年管理细则。
-      </p>
+      <ul class="clean-list">
+        <li *ngFor="let item of accommodation">{{ item }}</li>
+      </ul>
     </div>
 
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">位置</span>
-        <h2>Fil-Am Friendship Highway, Angeles City</h2>
+        <h2>Legarda Road生活半径，便利是WALES的明显优势</h2>
       </div>
       <p>
-        学校位于 Angeles City, Pampanga。官网写明从 Clark International Airport
-        到学校约25分钟，适合重视机场便利、亲子移动成本和安全舒适生活圈的家庭。
+        WALES位于#4 Bukaneg St., Legarda Rd.，官网列出周边有餐厅、咖啡店、酒吧、杂货店、ATM、
+        健身房、SM、TiongSan、Public Market、Burnham Park和车站等资源。顾问应确认学生是否喜欢市区便利，
+        以及是否能在外出选择多的环境中保持学习节奏。
       </p>
     </div>
   </section>
@@ -105,26 +103,27 @@
   <section class="content-band fee-section">
     <div class="section-heading">
       <span class="section-kicker">费用</span>
-      <h2>学费住宿需当期报价，活动附加费可先列入预算</h2>
+      <h2>WALES报价要按课程、房型、餐费和当地费用逐项核算</h2>
       <p>
-        WE官网公开页面没有直接列出完整英语课程与住宿价目表，所以本页不硬写学费数字。以下费用用于预算提醒，最终需按课程、房型、周数和入学日向学校确认。
+        WALES官网公开页没有完整当前价目表，因此本页不写未经确认的固定起价。以下整理的是报名时必须核价的项目，
+        适合顾问把正式invoice拆成学生看得懂的预算表。
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="Clark WE Academy参考费用">
-      <div class="fee-row fee-row--compact fee-row--head" role="row">
+    <div class="fee-table" role="table" aria-label="WALES费用核价项目">
+      <div class="fee-row fee-row--head" role="row">
         <span role="columnheader">项目</span>
-        <span role="columnheader">金额</span>
+        <span role="columnheader">公开参考</span>
+        <span role="columnheader">需确认</span>
         <span role="columnheader">说明</span>
+        <span role="columnheader">依据</span>
       </div>
-      <div
-        class="fee-row fee-row--compact"
-        role="row"
-        *ngFor="let row of priceRows"
-      >
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
         <span role="cell">{{ row.item }}</span>
-        <span role="cell">{{ row.amount }}</span>
+        <span role="cell">{{ row.reference }}</span>
+        <span role="cell">{{ row.quoteCheck }}</span>
         <span role="cell">{{ row.note }}</span>
+        <span role="cell">{{ row.basis }}</span>
       </div>
     </div>
 
@@ -139,7 +138,7 @@
   <section class="content-band">
     <div class="section-heading">
       <span class="section-kicker">设施</span>
-      <h2>更像家庭型度假校园，而不是封闭备考校区</h2>
+      <h2>校内资源不夸张，但生活半径很强</h2>
     </div>
     <div class="facility-grid">
       <div class="facility-item" *ngFor="let facility of facilities">
@@ -153,7 +152,7 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">适合人群</span>
-        <h2>这些学生可以优先看WE</h2>
+        <h2>这些学生可以优先看WALES</h2>
       </div>
       <ul class="clean-list">
         <li *ngFor="let item of audiences">{{ item }}</li>
@@ -163,14 +162,15 @@
     <div class="content-band advice-panel">
       <div class="section-heading">
         <span class="section-kicker">顾问建议</span>
-        <h2>先判断是否需要“亲子舒适型”，再谈课程强度</h2>
+        <h2>WALES要按“成人友好 + 市区便利 + 小校氛围”来推荐</h2>
       </div>
       <p>
-        WE适合学习和生活体验并重的人，尤其是低龄和家庭同行。如果学生目标是IELTS短期冲分或需要严格门禁自习，
-        应同时比较CIP、EG、碧瑶或更强Sparta学校。若选择WE，重点核对家庭房、Kinder/Junior安排、Native课比例和活动预算。
+        如果学生想要碧瑶气候和一对一课程，但又不想被大型学校或强斯巴达制度压得太紧，
+        WALES是很好的比较对象。推荐前要确认学生自律、预算、房型隐私、是否接受市区生活诱惑，
+        以及是否需要IELTS高强度冲刺。
       </p>
       <a class="primary-action" routerLink="/register">
-        让顾问帮我做WE预算
+        让顾问帮我比较WALES
         <mat-icon>chevron_right</mat-icon>
       </a>
     </div>
@@ -211,14 +211,36 @@
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
-      <h2>想知道WE现在适不适合你或孩子？</h2>
+      <h2>想知道WALES是否比MONOL、BECI或JIC更适合你？</h2>
       <p>
-        把入学日期、孩子年龄、是否陪读、目标课程、房型偏好和活动需求发给顾问，可以更快判断WE是否合适。
+        把入学月份、学习周数、年龄、英文程度、课程目标、房型偏好和生活节奏告诉顾问，
+        我们会把WALES和其他碧瑶学校放在同一张表里比较。
       </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询
       <mat-icon>chat</mat-icon>
     </a>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">Sources</span>
+      <h2>资料来源</h2>
+      <p>
+        以下为本页整理时参考的公开页面。费用、房型和规则会更新，正式报名仍需二次核价。
+      </p>
+    </div>
+    <div class="source-list">
+      <a
+        *ngFor="let source of sources"
+        [href]="source.url"
+        target="_blank"
+        rel="noopener"
+      >
+        <span>{{ source.label }}</span>
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
   </section>
 </div>

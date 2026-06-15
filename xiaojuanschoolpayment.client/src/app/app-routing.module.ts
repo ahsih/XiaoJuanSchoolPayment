@@ -232,6 +232,16 @@ const routes: Routes = [
           import('./pages/philippines/monol-school/monol-school.component').then((m) => m.MonolSchoolComponent),
       },
       {
+        path: 'philippines-study/baguio/wales-academy',
+        loadComponent: () =>
+          import('./pages/philippines/wales-school/wales-school.component').then((m) => m.WalesSchoolComponent),
+      },
+      {
+        path: 'philippines-study/baguio/talk-academy',
+        loadComponent: () =>
+          import('./pages/philippines/talk-school/talk-school.component').then((m) => m.TalkSchoolComponent),
+      },
+      {
         path: 'philippines-study/baguio',
         loadComponent: () =>
           import('./pages/philippines/baguio-study/baguio-study.component').then((m) => m.BaguioStudyComponent),
@@ -265,6 +275,32 @@ const routes: Routes = [
         path: 'philippines-study/clark',
         loadComponent: () =>
           import('./pages/philippines/clark-study/clark-study.component').then((m) => m.ClarkStudyComponent),
+      },
+      {
+        path: 'philippines-study/manila/enderun-extension',
+        loadComponent: () =>
+          import('./pages/philippines/enderun-school/enderun-school.component').then((m) => m.EnderunSchoolComponent),
+      },
+      {
+        path: 'philippines-study/manila/american-english-skills-development-center',
+        loadComponent: () =>
+          import('./pages/philippines/american-english-school/american-english-school.component').then(
+            (m) => m.AmericanEnglishSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/manila/berlitz-philippines',
+        loadComponent: () =>
+          import('./pages/philippines/berlitz-school/berlitz-school.component').then(
+            (m) => m.BerlitzSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/manila/legacy-esl-candidates',
+        loadComponent: () =>
+          import('./pages/philippines/manila-legacy-esl/manila-legacy-esl.component').then(
+            (m) => m.ManilaLegacyEslComponent,
+          ),
       },
       {
         path: 'philippines-study/manila',

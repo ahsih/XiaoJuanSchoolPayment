@@ -1,25 +1,24 @@
 <div class="cia-page">
   <section class="cia-hero">
     <div class="hero-copy">
-      <a class="back-link" routerLink="/philippines-study/clark">
+      <a class="back-link" routerLink="/philippines-study/baguio">
         <mat-icon>arrow_back</mat-icon>
-        返回克拉克学校列表
+        返回碧瑶学校列表
       </a>
-      <span class="section-kicker">Clark School Detail</span>
-      <h1>Clark WE Academy</h1>
+      <span class="section-kicker">Baguio School Detail</span>
+      <h1>TALK Academy</h1>
       <p>
-        Clark WE Academy 是位于 Angeles City 的 farm resort
-        式英语学校，适合亲子家庭、低龄学生、想要Native Mix口语课，
-        以及希望把英语学习和游泳、高尔夫等活动体验结合的学生。
+        TALK Academy常被顾问放进碧瑶考试型学校比较里，尤其是TOEIC、多益和实用英语方向。
+        但它当前公开资料较少，官网为登录页，报名以前必须先确认最新校区、课程、房型和价格。
       </p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/register">
-          免费咨询WE空位与报价
+          免费咨询TALK当前招生状态
           <mat-icon>chevron_right</mat-icon>
         </a>
         <a
           class="secondary-action"
-          href="https://clarkweacademy.com/"
+          href="https://talk-academy.com/"
           target="_blank"
           rel="noopener"
         >
@@ -31,15 +30,15 @@
 
     <figure class="hero-visual">
       <img
-        src="assets/philippines/clark-study-hero.jpg"
-        alt="Clark WE Academy 英语学习与度假式校园环境"
+        src="assets/philippines/baguio-study-hero.jpg"
+        alt="碧瑶山城英语学习环境"
       />
       <figcaption>
-        <strong>费用参考</strong>
-        <span
-          >英语课程与住宿需按当期报价确认；官网公开Golf私教 PHP 750 /
-          session，Swimming私教 PHP 700 / session</span
-        >
+        <strong>顾问提醒</strong>
+        <span>
+          TALK适合先作为TOEIC、考试和实用英文候选校；正式推荐前需确认当前是否按碧瑶校区招生，
+          以及当期课程、宿舍和当地费用明细。
+        </span>
       </figcaption>
     </figure>
   </section>
@@ -54,20 +53,19 @@
   <section class="content-band intro-section">
     <div class="section-heading">
       <span class="section-kicker">学校简介</span>
-      <h2>适合家庭、低龄和想要舒适校园体验的Clark学校</h2>
+      <h2>TALK适合做考试型候选，但必须先核对当前校区状态</h2>
     </div>
     <p>
-      WE Academy
-      官网说明学校2016年创校，疫情后于2022年6月在新管理团队下重启，并在2026年持续作为多国籍校园运营。
-      学校强调宽敞校园、自由舒适的生活环境、Native
-      Mix课程、亲子支持和校内活动资源，定位和高压备考型学校不同。
+      与PINES、BECI、MONOL、WALES等公开资料较完整的学校不同，TALK当前可直接读取的公开官网内容有限。
+      因此本页把TALK定位为“需二次确认的考试与实用英文候选校”：如果学生目标是TOEIC、多益、求职英文或实用英语，
+      TALK可以进入比较；但报价前必须先确认当前招生、校区、课程表、房型和当地费用。
     </p>
   </section>
 
   <section class="content-band">
     <div class="section-heading">
       <span class="section-kicker">课程</span>
-      <h2>ESL、Native Mix、Junior、Guardian和活动课程组合</h2>
+      <h2>重点看ESL、TOEIC、多益、IELTS和职场英文</h2>
     </div>
     <div class="course-grid">
       <article class="info-card" *ngFor="let course of courses">
@@ -82,22 +80,21 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">住宿</span>
-        <h2>宿舍、教室、泳池和生活设施集中在校园内</h2>
+        <h2>房型与校区不能用旧资料直接判断</h2>
       </div>
-      <p>
-        官网强调校园内包含宿舍、教室、健身房、大型泳池和便利店，适合不想每天通勤的家庭和低龄学生。
-        报名前建议确认房型、家庭房、清洁、洗衣、餐食、网络、成人外出规则和未成年管理细则。
-      </p>
+      <ul class="clean-list">
+        <li *ngFor="let item of accommodation">{{ item }}</li>
+      </ul>
     </div>
 
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">位置</span>
-        <h2>Fil-Am Friendship Highway, Angeles City</h2>
+        <h2>先确认当前校区，再规划机场接送和生活半径</h2>
       </div>
       <p>
-        学校位于 Angeles City, Pampanga。官网写明从 Clark International Airport
-        到学校约25分钟，适合重视机场便利、亲子移动成本和安全舒适生活圈的家庭。
+        TALK历史资料多与碧瑶学习路线相关，但当前公开目录中也能看到TALK被列入Clark分类。
+        因此顾问报价前应先确认学生实际入读校区，避免接送、住宿、市区距离和生活费用全部按错误城市预估。
       </p>
     </div>
   </section>
@@ -105,26 +102,27 @@
   <section class="content-band fee-section">
     <div class="section-heading">
       <span class="section-kicker">费用</span>
-      <h2>学费住宿需当期报价，活动附加费可先列入预算</h2>
+      <h2>TALK费用要等学校回传当期课程与房型后再填入</h2>
       <p>
-        WE官网公开页面没有直接列出完整英语课程与住宿价目表，所以本页不硬写学费数字。以下费用用于预算提醒，最终需按课程、房型、周数和入学日向学校确认。
+        这里不使用无法核验的旧价格。下面列出TALK报价必须核对的项目，适合顾问向学校拿到当期invoice后，
+        再转换成学生能理解的总预算表。
       </p>
     </div>
 
-    <div class="fee-table" role="table" aria-label="Clark WE Academy参考费用">
-      <div class="fee-row fee-row--compact fee-row--head" role="row">
+    <div class="fee-table" role="table" aria-label="TALK费用核价项目">
+      <div class="fee-row fee-row--head" role="row">
         <span role="columnheader">项目</span>
-        <span role="columnheader">金额</span>
+        <span role="columnheader">公开参考</span>
+        <span role="columnheader">需确认</span>
         <span role="columnheader">说明</span>
+        <span role="columnheader">依据</span>
       </div>
-      <div
-        class="fee-row fee-row--compact"
-        role="row"
-        *ngFor="let row of priceRows"
-      >
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
         <span role="cell">{{ row.item }}</span>
-        <span role="cell">{{ row.amount }}</span>
+        <span role="cell">{{ row.reference }}</span>
+        <span role="cell">{{ row.quoteCheck }}</span>
         <span role="cell">{{ row.note }}</span>
+        <span role="cell">{{ row.basis }}</span>
       </div>
     </div>
 
@@ -139,7 +137,7 @@
   <section class="content-band">
     <div class="section-heading">
       <span class="section-kicker">设施</span>
-      <h2>更像家庭型度假校园，而不是封闭备考校区</h2>
+      <h2>以考试学习支持、住宿和自习环境为主要核对点</h2>
     </div>
     <div class="facility-grid">
       <div class="facility-item" *ngFor="let facility of facilities">
@@ -153,7 +151,7 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">适合人群</span>
-        <h2>这些学生可以优先看WE</h2>
+        <h2>这些学生可以把TALK列入候选</h2>
       </div>
       <ul class="clean-list">
         <li *ngFor="let item of audiences">{{ item }}</li>
@@ -163,14 +161,14 @@
     <div class="content-band advice-panel">
       <div class="section-heading">
         <span class="section-kicker">顾问建议</span>
-        <h2>先判断是否需要“亲子舒适型”，再谈课程强度</h2>
+        <h2>先核状态，再看TALK是否真的比其他碧瑶学校更合适</h2>
       </div>
       <p>
-        WE适合学习和生活体验并重的人，尤其是低龄和家庭同行。如果学生目标是IELTS短期冲分或需要严格门禁自习，
-        应同时比较CIP、EG、碧瑶或更强Sparta学校。若选择WE，重点核对家庭房、Kinder/Junior安排、Native课比例和活动预算。
+        如果学生目标是TOEIC、多益或职场英文，TALK值得先问；如果学生目标是雅思保证班、强管理或清晰公开报价，
+        建议同步比较PINES、JIC、BECI和MONOL。TALK的推荐顺序应取决于当期校区、课程、房型和报价是否明确。
       </p>
       <a class="primary-action" routerLink="/register">
-        让顾问帮我做WE预算
+        让顾问帮我确认TALK
         <mat-icon>chevron_right</mat-icon>
       </a>
     </div>
@@ -211,14 +209,36 @@
   <section class="cta-band">
     <div>
       <span class="section-kicker">Consultation</span>
-      <h2>想知道WE现在适不适合你或孩子？</h2>
+      <h2>想知道TALK现在是否适合你的目标？</h2>
       <p>
-        把入学日期、孩子年龄、是否陪读、目标课程、房型偏好和活动需求发给顾问，可以更快判断WE是否合适。
+        把入学月份、周数、目标分数、当前英文程度、是否需要TOEIC/IELTS、房型偏好和预算发给顾问，
+        我们会先确认TALK当前招生状态，再和其他学校一起比较。
       </p>
     </div>
     <a class="primary-action" routerLink="/register">
       立即咨询
       <mat-icon>chat</mat-icon>
     </a>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">Sources</span>
+      <h2>资料来源</h2>
+      <p>
+        TALK当前公开资料有限，以下页面主要用于核对官网访问状态和学校目录归类。正式报名仍需学校当期确认。
+      </p>
+    </div>
+    <div class="source-list">
+      <a
+        *ngFor="let source of sources"
+        [href]="source.url"
+        target="_blank"
+        rel="noopener"
+      >
+        <span>{{ source.label }}</span>
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
   </section>
 </div>

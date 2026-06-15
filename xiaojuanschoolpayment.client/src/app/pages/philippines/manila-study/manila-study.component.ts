@@ -26,6 +26,8 @@ interface SchoolProfile {
   name: string;
   location: string;
   style: string;
+  route?: string;
+  startingPrice?: string;
   courses: string[];
   accommodation: string;
   facilities: string;
@@ -123,6 +125,8 @@ export class ManilaStudyComponent {
       name: 'Enderun Extension',
       location: 'Taguig / Enderun Colleges 体系',
       style: '学术英语、商务英语与短课型',
+      route: '/philippines-study/manila/enderun-extension',
+      startingPrice: '需当期确认',
       courses: [
         'Academic English',
         'Business English',
@@ -144,6 +148,8 @@ export class ManilaStudyComponent {
       name: 'American English Skills Development Center',
       location: 'Makati / Metro Manila',
       style: '成人口语与企业沟通训练',
+      route: '/philippines-study/manila/american-english-skills-development-center',
+      startingPrice: '₱24,000起，需核价',
       courses: [
         'Conversational English',
         'Business English',
@@ -163,8 +169,10 @@ export class ManilaStudyComponent {
     },
     {
       name: 'Berlitz Philippines',
-      location: 'Metro Manila / Ortigas、Greenhills、Makati 等城市点位',
+      location: 'Makati / Metro Manila',
       style: '国际语言培训与企业服务型',
+      route: '/philippines-study/manila/berlitz-philippines',
+      startingPrice: '报价需当期确认',
       courses: [
         'Adults',
         'Kids & Teens',
@@ -175,7 +183,7 @@ export class ManilaStudyComponent {
       ],
       accommodation: '非住宿制语言中心，适合自行安排城市住宿或公司派训。',
       facilities:
-        '官网列出成人、儿童青少年、企业语言培训、语言测评、TELC 备考和跨文化训练等方向。',
+        '官网列出成人、儿童青少年、企业语言培训、语言测评、TELC备考和商务沟通训练等方向。',
       bestFor: '商务人士、企业培训、家庭城市课程、需要国际品牌语言服务的人群。',
       consultantNote:
         '课程更偏培训中心逻辑，顾问会重点核对上课点、排课方式、授课语言和是否适合短期访客。',
@@ -203,6 +211,8 @@ export class ManilaStudyComponent {
       name: 'CNN / C21 / PICO 等旧马尼拉 ESL 候选',
       location: 'Quezon City / Metro Manila 历史候选',
       style: '传统 ESL 学校复核池',
+      route: '/philippines-study/manila/legacy-esl-candidates',
+      startingPrice: '旧价不可直接使用',
       courses: [
         'General ESL',
         'TOEIC / TOEFL / IELTS',
@@ -213,10 +223,10 @@ export class ManilaStudyComponent {
       accommodation:
         '旧资料常提到宿舍或校内管理，但当前官网解析和资料稳定性不足，需逐项复核。',
       facilities:
-        '不以本页作为当前运营证明，需确认学校是否仍招生、校区地址、课程表、宿舍和费用。',
+        'CNN仍可查到第三方资料；C21/PICO当前公开线索较弱。需确认学校是否仍招生、校区地址、课程表、宿舍和费用。',
       bestFor: '只适合作为顾问进一步查证的候选，不建议学生直接凭旧网文报名。',
       consultantNote:
-        '思达教育会先向学校或可靠合作方确认当期运营状态，再决定是否推荐。',
+        '思达教育会先向学校或可靠合作方确认当期运营状态，再决定是否推荐；详情页提供复核清单。',
     },
   ];
 
