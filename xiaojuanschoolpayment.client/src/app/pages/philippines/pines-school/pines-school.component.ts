@@ -41,7 +41,10 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './pines-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './pines-school.component.css'],
+  styleUrls: [
+    '../cia-school/cia-school.component.css',
+    './pines-school.component.css',
+  ],
 })
 export class PinesSchoolComponent {
   readonly quickFacts: QuickFact[] = [
@@ -126,7 +129,10 @@ export class PinesSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'Main Campus约USD 100；部分报价源显示USD 150，需按当期确认' },
+    {
+      item: '注册费',
+      amount: 'Main Campus约USD 100；部分报价源显示USD 150，需按当期确认',
+    },
     { item: 'SSP特别学习许可', amount: '约PHP 7,800' },
     { item: 'SSP E-card', amount: '约PHP 4,500' },
     { item: '教材费', amount: '约PHP 1,100-1,500起，按课程和教材购买' },
@@ -174,30 +180,23 @@ export class PinesSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: 'PINES适合零基础学生吗？',
-      answer: '适合先看Main Campus的ESL或口语方向。IELTS Campus更偏中高级和考试目标，不建议完全零基础直接进入保证班。',
+      answer:
+        '适合先看Main Campus的ESL或口语方向。IELTS Campus更偏中高级和考试目标，不建议完全零基础直接进入保证班。',
     },
     {
       question: 'Main Campus和IELTS Campus怎么选？',
-      answer: '想提升基础口语、听说读写和学习习惯，优先看Main Campus；已有雅思目标分或升学/移民分数压力，再看IELTS Campus。',
+      answer:
+        '想提升基础口语、听说读写和学习习惯，优先看Main Campus；已有雅思目标分或升学/移民分数压力，再看IELTS Campus。',
     },
     {
       question: '页面价格是最终价格吗？',
-      answer: '不是。这里是公开来源整理的参考价，最终仍要按入学日、课程、房型、周数、汇率、优惠和当地费用重新核算。',
+      answer:
+        '不是。这里是公开来源整理的参考价，最终仍要按入学日、课程、房型、周数、汇率、优惠和当地费用重新核算。',
     },
     {
       question: 'PINES和宿务学校相比，最大差别是什么？',
-      answer: 'PINES更偏学习集中和考试/口语强化；宿务学校通常生活体验和海岛活动更丰富。自律较弱或目标分明确的人更适合优先看PINES。',
+      answer:
+        'PINES更偏学习集中和考试/口语强化；宿务学校通常生活体验和海岛活动更丰富。自律较弱或目标分明确的人更适合优先看PINES。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'iOutback - PINES Main Campus', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/pines_detail' },
-    { label: 'iOutback - PINES IELTS Campus', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/pines_chapis_detail' },
-    { label: '非凡游学 - PINES Main Campus', url: 'https://feifanstudy.com/schools/38-pines-main-campus' },
-    { label: '非凡游学 - PINES IELTS Campus', url: 'https://feifanstudy.com/schools/55-pines-ielts-campus' },
-    { label: '玩美游学 - 碧瑶学校整理', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '南崎菲律宾游学 - PINES入口', url: 'https://www.nanqi.org/' },
-    { label: '格仲游学 - PINES Main Campus', url: 'https://gezhong.com.tw/schools/pines-main-campus-philippines-language-school' },
-    { label: '大洋游学', url: 'http://www.dayang101.com/' },
   ];
 }

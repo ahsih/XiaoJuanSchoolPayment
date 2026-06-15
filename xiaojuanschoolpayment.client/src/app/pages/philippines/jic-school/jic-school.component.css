@@ -1,0 +1,48 @@
+.back-link,
+.hero-copy .section-kicker {
+  display: flex;
+  width: fit-content;
+}
+
+.campus-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.source-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1rem;
+}
+
+.source-list a,
+.content-band a {
+  color: #167144;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.source-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  min-height: 44px;
+  padding: 0.65rem 0;
+  border-top: 1px solid #e7edf3;
+  line-height: 1.45;
+}
+
+.source-list a:hover,
+.source-list a:focus-visible,
+.content-band a:hover,
+.content-band a:focus-visible {
+  color: #ff5b00;
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .campus-grid,
+  .source-list {
+    grid-template-columns: 1fr;
+  }
+}

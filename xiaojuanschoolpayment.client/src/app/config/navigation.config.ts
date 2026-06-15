@@ -278,6 +278,21 @@ export const mainNavigation: NavigationItem[] = [
             label: 'PINES International Academy',
             route: '/philippines-study/baguio/pines-international-academy',
           },
+          {
+            id: 'beci-international-language-academy',
+            label: 'BECI International Language Academy',
+            route: '/philippines-study/baguio/beci-international-language-academy',
+          },
+          {
+            id: 'baguio-jic-academy',
+            label: 'Baguio JIC Academy',
+            route: '/philippines-study/baguio/baguio-jic-academy',
+          },
+          {
+            id: 'monol',
+            label: 'MONOL',
+            route: '/philippines-study/baguio/monol',
+          },
         ],
       },
       {
@@ -285,6 +300,33 @@ export const mainNavigation: NavigationItem[] = [
         label: '克拉克游学',
         route: '/philippines-study/clark',
         type: '城市页',
+        children: [
+          {
+            id: 'cip-english-kepos',
+            label: 'CIP English Kepos',
+            route: '/philippines-study/clark/cip-english-kepos',
+          },
+          {
+            id: 'eg-academy',
+            label: 'EG Academy',
+            route: '/philippines-study/clark/eg-academy',
+          },
+          {
+            id: 'clark-we-academy',
+            label: 'Clark WE Academy',
+            route: '/philippines-study/clark/clark-we-academy',
+          },
+          {
+            id: 'help-english-clark',
+            label: 'HELP English Clark',
+            route: '/philippines-study/clark/help-english-clark',
+          },
+          {
+            id: 'aelc-native-focused-clark-schools',
+            label: 'AELC / Native-focused Clark Schools',
+            route: '/philippines-study/clark/aelc-native-focused-clark-schools',
+          },
+        ],
       },
       {
         id: 'manila-study',

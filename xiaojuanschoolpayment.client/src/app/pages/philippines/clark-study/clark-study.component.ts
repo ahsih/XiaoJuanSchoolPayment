@@ -26,6 +26,8 @@ interface SchoolProfile {
   name: string;
   location: string;
   style: string;
+  route?: string;
+  startingPrice?: string;
   courses: string[];
   accommodation: string;
   facilities: string;
@@ -123,6 +125,8 @@ export class ClarkStudyComponent {
       name: 'CIP English Kepos',
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
+      route: '/philippines-study/clark/cip-english-kepos',
+      startingPrice: 'USD 1,420 / 4周起参考',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -145,6 +149,8 @@ export class ClarkStudyComponent {
       name: 'EG Academy',
       location: 'Lot 3 Friendship Highway, Cutcut, Angeles City',
       style: 'ESL、考试与活动体验型',
+      route: '/philippines-study/clark/eg-academy',
+      startingPrice: 'USD 1,390 / 4周起参考',
       courses: [
         'ESL General',
         'ESL Intensive',
@@ -166,6 +172,8 @@ export class ClarkStudyComponent {
       name: 'Clark WE Academy',
       location: 'Fil-Am Friendship Highway, Angeles City',
       style: '度假式校区与亲子友好型',
+      route: '/philippines-study/clark/clark-we-academy',
+      startingPrice: '4周费用需当期确认',
       courses: [
         'ESL',
         'Native Mix',
@@ -187,6 +195,8 @@ export class ClarkStudyComponent {
       name: 'HELP English Clark',
       location: 'Clark / Pampanga',
       style: '老牌系统与考试路线候选',
+      route: '/philippines-study/clark/help-english-clark',
+      startingPrice: '费用需当期确认',
       courses: ['ESL', 'IELTS', 'TOEIC', 'Business English', 'Junior'],
       accommodation:
         '官网当前页面为动态应用，房型、校区和开放状态需以学校当期文件或顾问回函确认。',
@@ -200,6 +210,8 @@ export class ClarkStudyComponent {
       name: 'AELC / Native-focused Clark Schools',
       location: 'Clark / Angeles 候选池',
       style: '外教口语与家庭项目候选',
+      route: '/philippines-study/clark/aelc-native-focused-clark-schools',
+      startingPrice: '费用需当期确认',
       courses: [
         'Native Speaking',
         'ESL',

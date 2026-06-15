@@ -217,9 +217,49 @@ const routes: Routes = [
           import('./pages/philippines/pines-school/pines-school.component').then((m) => m.PinesSchoolComponent),
       },
       {
+        path: 'philippines-study/baguio/beci-international-language-academy',
+        loadComponent: () =>
+          import('./pages/philippines/beci-school/beci-school.component').then((m) => m.BeciSchoolComponent),
+      },
+      {
+        path: 'philippines-study/baguio/baguio-jic-academy',
+        loadComponent: () =>
+          import('./pages/philippines/jic-school/jic-school.component').then((m) => m.JicSchoolComponent),
+      },
+      {
+        path: 'philippines-study/baguio/monol',
+        loadComponent: () =>
+          import('./pages/philippines/monol-school/monol-school.component').then((m) => m.MonolSchoolComponent),
+      },
+      {
         path: 'philippines-study/baguio',
         loadComponent: () =>
           import('./pages/philippines/baguio-study/baguio-study.component').then((m) => m.BaguioStudyComponent),
+      },
+      {
+        path: 'philippines-study/clark/cip-english-kepos',
+        loadComponent: () =>
+          import('./pages/philippines/cip-school/cip-school.component').then((m) => m.CipSchoolComponent),
+      },
+      {
+        path: 'philippines-study/clark/eg-academy',
+        loadComponent: () =>
+          import('./pages/philippines/eg-school/eg-school.component').then((m) => m.EgSchoolComponent),
+      },
+      {
+        path: 'philippines-study/clark/clark-we-academy',
+        loadComponent: () =>
+          import('./pages/philippines/we-school/we-school.component').then((m) => m.WeSchoolComponent),
+      },
+      {
+        path: 'philippines-study/clark/help-english-clark',
+        loadComponent: () =>
+          import('./pages/philippines/help-school/help-school.component').then((m) => m.HelpSchoolComponent),
+      },
+      {
+        path: 'philippines-study/clark/aelc-native-focused-clark-schools',
+        loadComponent: () =>
+          import('./pages/philippines/aelc-school/aelc-school.component').then((m) => m.AelcSchoolComponent),
       },
       {
         path: 'philippines-study/clark',
