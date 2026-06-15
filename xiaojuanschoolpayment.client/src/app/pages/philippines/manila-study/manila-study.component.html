@@ -1,69 +1,149 @@
 <div class="manila-page">
-  <section class="manila-hero">
-    <div class="manila-hero__copy">
+  <section class="hero">
+    <div class="hero__content">
       <span class="section-kicker">Manila English Study</span>
-      <h1>马尼拉游学</h1>
+      <h1>马尼拉英语游学学校库</h1>
       <p>
-        马尼拉适合重视交通便利、城市资源和成人英语应用场景的学生。作为菲律宾首都圈，
-        这里更适合短期体验、商务英语、职场沟通训练，或作为宿务、碧瑶、克拉克等城市游学前后的组合站点。
+        马尼拉更适合重视城市资源、商务英语、短期课程和转机组合的学生。它不是最典型的封闭式 ESL 城市，
+        但很适合把英语学习和职场沟通、面试、学术衔接、企业培训或首都圈生活体验结合起来。
       </p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/register">
           免费匹配马尼拉学校
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="#school-types" appScrollTo="school-types">
-          查看适合学校类型
+        <a class="secondary-action" href="#school-profiles" appScrollTo="school-profiles">
+          查看学校资料
           <mat-icon>south</mat-icon>
         </a>
       </div>
+      <div class="stat-row" aria-label="马尼拉游学快速信息">
+        <div *ngFor="let item of stats">
+          <strong>{{ item.value }}</strong>
+          <span>{{ item.label }}</span>
+        </div>
+      </div>
     </div>
 
-    <aside class="manila-hero__panel">
-      <div>
-        <strong>适合</strong>
-        <span>成人口语 / 商务英语 / 短期体验 / 转机组合行程</span>
-      </div>
-      <div>
-        <strong>城市关键词</strong>
-        <span>首都圈、航班便利、城市资源、商务场景</span>
-      </div>
-      <div>
-        <strong>选校重点</strong>
-        <span>校区位置、通勤安全、课程实用度、住宿安排和生活便利度</span>
-      </div>
-    </aside>
+    <figure class="hero__media">
+      <img src="/assets/philippines/manila-study-hero.jpg" alt="马尼拉城市英语学习环境示意图" />
+      <figcaption>思达教育原创视觉：马尼拉城市英语、商务沟通与短期学习场景</figcaption>
+    </figure>
+  </section>
+
+  <section class="intro-band" aria-label="思达教育资料采集原则">
+    <div>
+      <span class="section-kicker">Research Rule</span>
+      <h2>马尼拉资料要先区分“城市课程”和“寄宿游学”</h2>
+    </div>
+    <p>
+      本页优先参考学校和培训中心官网可确认的信息。对官网失效、旧校名或第三方资料较多的学校，只作为顾问复核候选，
+      不直接写成当前可报名的宿舍制语言学校。
+    </p>
   </section>
 
   <section class="highlight-section">
     <div class="section-heading">
       <span class="section-kicker">Why Manila</span>
-      <h2>为什么选择马尼拉游学？</h2>
-      <p>马尼拉不是最传统的封闭式学习城市，但它适合需要城市便利、商务场景和灵活行程的学生。</p>
+      <h2>为什么有些学生会选择马尼拉？</h2>
+      <p>马尼拉的优势不是封闭管理，而是航班、商务、大学、企业和城市生活资源集中。</p>
     </div>
 
     <div class="highlight-grid">
-      <article class="highlight-card" *ngFor="let item of highlights">
-        <span class="highlight-icon">
-          <mat-icon>{{ item.icon }}</mat-icon>
-        </span>
+      <article class="info-card" *ngFor="let item of highlights">
+        <span class="card-icon"><mat-icon>{{ item.icon }}</mat-icon></span>
         <h3>{{ item.title }}</h3>
         <p>{{ item.text }}</p>
       </article>
     </div>
   </section>
 
-  <section class="school-type-section" id="school-types">
+  <section class="type-section" id="school-types">
     <div class="section-heading">
       <span class="section-kicker">School Types</span>
-      <h2>马尼拉学校怎么选？先确认你是否需要城市资源和实用英语场景</h2>
+      <h2>按学习目的筛选马尼拉课程</h2>
+      <p>如果学生需要住宿制和全天管理，马尼拉通常不是第一选择；如果需要城市短课和商务场景，就值得比较。</p>
     </div>
 
-    <div class="school-type-grid">
-      <article class="school-type-card" *ngFor="let type of schoolTypes">
+    <div class="type-grid">
+      <article class="type-card" *ngFor="let type of schoolTypes">
         <span>{{ type.tag }}</span>
         <h3>{{ type.title }}</h3>
         <p>{{ type.text }}</p>
+        <small>参考方向：{{ type.examples }}</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="profile-section" id="school-profiles">
+    <div class="section-heading">
+      <span class="section-kicker">Manila Schools</span>
+      <h2>马尼拉与首都圈英语学习资料整理</h2>
+      <p>以下资料用于初筛。课程日期、上课点、住宿安排、费用和优惠会更新，报名之前需以学校当期官方回复为准。</p>
+    </div>
+
+    <div class="profile-grid">
+      <article class="profile-card" *ngFor="let school of schoolProfiles">
+        <div class="profile-card__head">
+          <span>{{ school.style }}</span>
+          <h3>{{ school.name }}</h3>
+          <p>{{ school.location }}</p>
+        </div>
+
+        <div class="course-tags" aria-label="课程类型">
+          <span *ngFor="let course of school.courses">{{ course }}</span>
+        </div>
+
+        <dl class="profile-list">
+          <div>
+            <dt>住宿类型</dt>
+            <dd>{{ school.accommodation }}</dd>
+          </div>
+          <div>
+            <dt>校园设施</dt>
+            <dd>{{ school.facilities }}</dd>
+          </div>
+          <div>
+            <dt>适合人群</dt>
+            <dd>{{ school.bestFor }}</dd>
+          </div>
+          <div>
+            <dt>顾问建议</dt>
+            <dd>{{ school.consultantNote }}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="decision-section">
+    <div class="section-heading">
+      <span class="section-kicker">Selection Checklist</span>
+      <h2>思达教育顾问核对清单</h2>
+    </div>
+
+    <div class="decision-grid">
+      <article class="decision-card" *ngFor="let point of decisionPoints">
+        <mat-icon>{{ point.icon }}</mat-icon>
+        <div>
+          <h3>{{ point.label }}</h3>
+          <p>{{ point.text }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="cost-section">
+    <div class="section-heading">
+      <span class="section-kicker">Cost & Offers</span>
+      <h2>马尼拉费用要把住宿和通勤单独算</h2>
+      <p>马尼拉课程常不是菲律宾语言学校的套餐报价，预算应把课程、住宿、餐食、交通和城市生活费拆开核算。</p>
+    </div>
+
+    <div class="cost-grid">
+      <article *ngFor="let item of costNotes">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
       </article>
     </div>
   </section>
@@ -73,8 +153,7 @@
       <span class="section-kicker">Manila vs Cebu vs Baguio</span>
       <h2>马尼拉、宿务和碧瑶，适合不同学习节奏</h2>
       <p>
-        马尼拉更适合短期、商务和城市型学习；宿务更均衡，学校选择和生活体验都丰富；
-        碧瑶则更适合专心备考和高强度学习。
+        马尼拉更适合短期、商务和城市型学习；宿务更均衡，学校选择和生活体验都丰富；碧瑶则更适合专心备考和高强度学习。
       </p>
     </div>
 
@@ -92,5 +171,28 @@
         <span role="cell">{{ row.baguio }}</span>
       </div>
     </div>
+  </section>
+
+  <section class="faq-source-section">
+    <div class="faq-panel">
+      <div class="section-heading">
+        <span class="section-kicker">FAQ</span>
+        <h2>马尼拉游学常见问题</h2>
+      </div>
+      <article *ngFor="let item of faqs">
+        <h3>{{ item.question }}</h3>
+        <p>{{ item.answer }}</p>
+      </article>
+    </div>
+
+    <aside class="source-panel" aria-label="资料来源">
+      <span class="section-kicker">Sources</span>
+      <h2>资料来源与更新方式</h2>
+      <p>马尼拉学校和培训中心变化较快，官网失效或资料不足的旧校名，会进入顾问二次复核清单。</p>
+      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+        {{ source.label }}
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </aside>
   </section>
 </div>

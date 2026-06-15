@@ -50,6 +50,9 @@
 .section-heading p,
 .highlight-card p,
 .school-type-card p,
+.profile-card p,
+.profile-list dd,
+.decision-card p,
 .compare-copy p,
 .source-section p,
 .compare-row {
@@ -133,13 +136,15 @@
 
 .highlight-section,
 .school-type-section,
+.profile-section,
+.decision-section,
 .compare-section,
 .source-section {
   margin-top: 2.5rem;
 }
 
 .section-heading {
-  max-width: 760px;
+  max-width: 780px;
   margin-bottom: 1.2rem;
 }
 
@@ -155,7 +160,8 @@
 }
 
 .highlight-grid,
-.school-type-grid {
+.school-type-grid,
+.decision-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
@@ -163,6 +169,8 @@
 
 .highlight-card,
 .school-type-card,
+.profile-card,
+.decision-card,
 .compare-section,
 .source-section {
   border: 1px solid #e1e8ee;
@@ -172,7 +180,8 @@
 }
 
 .highlight-card,
-.school-type-card {
+.school-type-card,
+.decision-card {
   padding: 1.15rem;
 }
 
@@ -193,7 +202,9 @@
 }
 
 .highlight-card h3,
-.school-type-card h3 {
+.school-type-card h3,
+.decision-card h3,
+.profile-card h3 {
   margin: 0.85rem 0 0.45rem;
   color: #07173a;
   font-size: 1.12rem;
@@ -201,18 +212,96 @@
 }
 
 .highlight-card p,
-.school-type-card p {
+.school-type-card p,
+.decision-card p {
   margin: 0;
 }
 
-.school-type-card span {
+.school-type-card span,
+.profile-card__head span,
+.course-tags span {
   display: inline-flex;
   padding: 0.22rem 0.55rem;
   border-radius: 999px;
-  background: #f3f6fa;
-  color: #56647a;
   font-size: 0.78rem;
   font-weight: 850;
+}
+
+.school-type-card span,
+.course-tags span {
+  background: #f3f6fa;
+  color: #56647a;
+}
+
+.school-type-card small {
+  display: block;
+  margin-top: 0.85rem;
+  color: #167144;
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.profile-card {
+  overflow: hidden;
+}
+
+.profile-card__head {
+  padding: 1.2rem 1.2rem 1rem;
+  background: #fbfcfd;
+  border-bottom: 1px solid #e7edf3;
+}
+
+.profile-card__head span {
+  background: #e9f6ef;
+  color: #126f41;
+}
+
+.profile-card__head h3 {
+  margin-top: 0.8rem;
+  font-size: 1.28rem;
+}
+
+.profile-card__head p {
+  margin: 0;
+  font-weight: 850;
+}
+
+.course-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 1rem 1.2rem 0;
+}
+
+.profile-list {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 1rem 1.2rem 1.2rem;
+}
+
+.profile-list div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.profile-list dt {
+  color: #07173a;
+  font-weight: 950;
+}
+
+.profile-list dd {
+  margin: 0;
+}
+
+.decision-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .compare-section {
@@ -301,6 +390,8 @@
   .cebu-hero,
   .highlight-grid,
   .school-type-grid,
+  .profile-grid,
+  .decision-grid,
   .compare-section,
   .source-section {
     grid-template-columns: 1fr;
@@ -324,6 +415,7 @@
 
   .hero-actions,
   .source-links {
+    display: grid;
     grid-template-columns: 1fr;
   }
 
@@ -331,6 +423,13 @@
   .secondary-action {
     justify-content: center;
     width: 100%;
+  }
+
+  .profile-card__head,
+  .course-tags,
+  .profile-list {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .compare-row {

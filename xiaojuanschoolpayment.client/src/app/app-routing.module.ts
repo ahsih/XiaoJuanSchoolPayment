@@ -12,10 +12,6 @@ import { AdminSchoolFeesComponent } from './pages/admin-school-fees/admin-school
 import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-school-notes.component';
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippines-study/why-philippines-study.component';
-import { CebuStudyComponent } from './pages/philippines/cebu-study/cebu-study.component';
-import { BaguioStudyComponent } from './pages/philippines/baguio-study/baguio-study.component';
-import { ClarkStudyComponent } from './pages/philippines/clark-study/clark-study.component';
-import { ManilaStudyComponent } from './pages/philippines/manila-study/manila-study.component';
 import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
 import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay-study.component';
 import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
@@ -180,10 +176,26 @@ const routes: Routes = [
         path: 'philippines-study/why-philippines',
         component: WhyPhilippinesStudyComponent,
       },
-      { path: 'philippines-study/cebu', component: CebuStudyComponent },
-      { path: 'philippines-study/baguio', component: BaguioStudyComponent },
-      { path: 'philippines-study/clark', component: ClarkStudyComponent },
-      { path: 'philippines-study/manila', component: ManilaStudyComponent },
+      {
+        path: 'philippines-study/cebu',
+        loadComponent: () =>
+          import('./pages/philippines/cebu-study/cebu-study.component').then((m) => m.CebuStudyComponent),
+      },
+      {
+        path: 'philippines-study/baguio',
+        loadComponent: () =>
+          import('./pages/philippines/baguio-study/baguio-study.component').then((m) => m.BaguioStudyComponent),
+      },
+      {
+        path: 'philippines-study/clark',
+        loadComponent: () =>
+          import('./pages/philippines/clark-study/clark-study.component').then((m) => m.ClarkStudyComponent),
+      },
+      {
+        path: 'philippines-study/manila',
+        loadComponent: () =>
+          import('./pages/philippines/manila-study/manila-study.component').then((m) => m.ManilaStudyComponent),
+      },
       { path: 'philippines-study/schools/by-city', component: CitySchoolsComponent },
       { path: 'philippines-study/boracay', component: BoracayStudyComponent },
       { path: 'philippines-study/bacolod', component: BacolodStudyComponent },

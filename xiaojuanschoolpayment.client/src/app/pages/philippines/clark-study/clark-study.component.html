@@ -1,69 +1,172 @@
 <div class="clark-page">
-  <section class="clark-hero">
-    <div class="clark-hero__copy">
+  <section class="hero">
+    <div class="hero__content">
       <span class="section-kicker">Clark English Study</span>
-      <h1>克拉克游学</h1>
+      <h1>克拉克英语游学学校库</h1>
       <p>
-        克拉克适合重视外教资源、生活环境和亲子照顾的学生。这里城市规划较舒适，
-        国际社区氛围明显，适合希望在更轻松稳定的环境中提升口语、参加亲子游学或青少年英语项目的人群。
+        Clark
+        适合重视外教沟通、亲子陪读、机场便利和生活舒适度的学生。这里不像宿务那样偏海岛体验，
+        也不像碧瑶那样偏高压备考，更适合在稳定、安全、国际化的环境里提升口语和安排家庭学习计划。
       </p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/register">
-          免费匹配克拉克学校
+          免费匹配 Clark 学校
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="#school-types" appScrollTo="school-types">
-          查看适合学校类型
+        <a
+          class="secondary-action"
+          href="#school-profiles"
+          appScrollTo="school-profiles"
+        >
+          查看学校资料
           <mat-icon>south</mat-icon>
         </a>
       </div>
+      <div class="stat-row" aria-label="Clark 游学快速信息">
+        <div *ngFor="let item of stats">
+          <strong>{{ item.value }}</strong>
+          <span>{{ item.label }}</span>
+        </div>
+      </div>
     </div>
 
-    <aside class="clark-hero__panel">
-      <div>
-        <strong>适合</strong>
-        <span>外教口语 / 亲子游学 / 青少年营队 / 舒适型英语强化</span>
-      </div>
-      <div>
-        <strong>城市关键词</strong>
-        <span>国际社区、环境舒适、外教资源、家庭友好</span>
-      </div>
-      <div>
-        <strong>选校重点</strong>
-        <span>外教比例、住宿环境、课程安排、照顾服务和安全管理</span>
-      </div>
-    </aside>
+    <figure class="hero__media">
+      <img
+        src="/assets/philippines/clark-study-hero.jpg"
+        alt="Clark 国际社区与英语学习环境示意图"
+      />
+      <figcaption>
+        思达教育原创视觉：Clark 校园、机场便利与家庭英语学习场景
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="intro-band" aria-label="思达教育资料采集原则">
+    <div>
+      <span class="section-kicker">Research Rule</span>
+      <h2>先核对学校官网，再给出顾问筛选建议</h2>
+    </div>
+    <p>
+      本页优先整理 Clark
+      学校官网可确认的信息，包括课程、住宿、校区环境、年龄规则、费用说明和近期公告；
+      中文游学网站只作为栏目结构参考，页面表达已改写成思达教育自己的选校逻辑。
+    </p>
   </section>
 
   <section class="highlight-section">
     <div class="section-heading">
       <span class="section-kicker">Why Clark</span>
-      <h2>为什么选择克拉克游学？</h2>
-      <p>克拉克不是最热闹的选择，但它适合重视外教、环境和家庭友好度的学生。</p>
+      <h2>为什么亲子和口语学生会先看 Clark？</h2>
+      <p>
+        Clark
+        的核心不是“最便宜”，而是外教沟通、舒适住宿、机场便利和家庭友好度之间的平衡。
+      </p>
     </div>
 
     <div class="highlight-grid">
-      <article class="highlight-card" *ngFor="let item of highlights">
-        <span class="highlight-icon">
-          <mat-icon>{{ item.icon }}</mat-icon>
-        </span>
+      <article class="info-card" *ngFor="let item of highlights">
+        <span class="card-icon"
+          ><mat-icon>{{ item.icon }}</mat-icon></span
+        >
         <h3>{{ item.title }}</h3>
         <p>{{ item.text }}</p>
       </article>
     </div>
   </section>
 
-  <section class="school-type-section" id="school-types">
+  <section class="type-section" id="school-types">
     <div class="section-heading">
       <span class="section-kicker">School Types</span>
-      <h2>克拉克学校怎么选？先看你是否重视外教和生活环境</h2>
+      <h2>按课程目标筛选 Clark 学校</h2>
+      <p>
+        Clark 选校要先看外教课比例、家庭照顾需求和住宿舒适度，再比较价格和优惠。
+      </p>
     </div>
 
-    <div class="school-type-grid">
-      <article class="school-type-card" *ngFor="let type of schoolTypes">
+    <div class="type-grid">
+      <article class="type-card" *ngFor="let type of schoolTypes">
         <span>{{ type.tag }}</span>
         <h3>{{ type.title }}</h3>
         <p>{{ type.text }}</p>
+        <small>参考学校：{{ type.examples }}</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="profile-section" id="school-profiles">
+    <div class="section-heading">
+      <span class="section-kicker">Clark Schools</span>
+      <h2>Clark 热门语言学校资料整理</h2>
+      <p>
+        以下资料用于初筛学校。课程、房型、年龄、费用和优惠会更新，报名之前必须以学校当期官方报价和回函为准。
+      </p>
+    </div>
+
+    <div class="profile-grid">
+      <article class="profile-card" *ngFor="let school of schoolProfiles">
+        <div class="profile-card__head">
+          <span>{{ school.style }}</span>
+          <h3>{{ school.name }}</h3>
+          <p>{{ school.location }}</p>
+        </div>
+
+        <div class="course-tags" aria-label="课程类型">
+          <span *ngFor="let course of school.courses">{{ course }}</span>
+        </div>
+
+        <dl class="profile-list">
+          <div>
+            <dt>住宿类型</dt>
+            <dd>{{ school.accommodation }}</dd>
+          </div>
+          <div>
+            <dt>校园设施</dt>
+            <dd>{{ school.facilities }}</dd>
+          </div>
+          <div>
+            <dt>适合人群</dt>
+            <dd>{{ school.bestFor }}</dd>
+          </div>
+          <div>
+            <dt>顾问建议</dt>
+            <dd>{{ school.consultantNote }}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="decision-section">
+    <div class="section-heading">
+      <span class="section-kicker">Selection Checklist</span>
+      <h2>思达教育顾问核对清单</h2>
+    </div>
+
+    <div class="decision-grid">
+      <article class="decision-card" *ngFor="let point of decisionPoints">
+        <mat-icon>{{ point.icon }}</mat-icon>
+        <div>
+          <h3>{{ point.label }}</h3>
+          <p>{{ point.text }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="cost-section">
+    <div class="section-heading">
+      <span class="section-kicker">Cost & Offers</span>
+      <h2>Clark 费用要重点看外教课、房型和家庭成本</h2>
+      <p>
+        同样是
+        Clark，外教课比例、房型、亲子照顾和活动安排不同，总费用和适合人群也会完全不同。
+      </p>
+    </div>
+
+    <div class="cost-grid">
+      <article *ngFor="let item of costNotes">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
       </article>
     </div>
   </section>
@@ -71,17 +174,21 @@
   <section class="compare-section">
     <div class="compare-copy">
       <span class="section-kicker">Clark vs Cebu vs Baguio</span>
-      <h2>克拉克、宿务和碧瑶，适合不同学习性格</h2>
+      <h2>Clark、宿务和碧瑶，适合不同学习性格</h2>
       <p>
-        克拉克更偏舒适和外教沟通；宿务更均衡、选择更多；碧瑶更适合专心备考和高强度管理。
-        选城市前，最好先确认你的学习目标和能接受的生活节奏。
+        Clark
+        偏舒适、外教和亲子；宿务更均衡，学校和生活选择更多；碧瑶更适合专心备考和高强度管理。
       </p>
     </div>
 
-    <div class="compare-table" role="table" aria-label="克拉克、宿务与碧瑶游学比较">
+    <div
+      class="compare-table"
+      role="table"
+      aria-label="Clark、宿务与碧瑶游学比较"
+    >
       <div class="compare-row compare-row--head" role="row">
         <span role="columnheader">项目</span>
-        <span role="columnheader">克拉克</span>
+        <span role="columnheader">Clark</span>
         <span role="columnheader">宿务</span>
         <span role="columnheader">碧瑶</span>
       </div>
@@ -91,6 +198,19 @@
         <span role="cell">{{ row.cebu }}</span>
         <span role="cell">{{ row.baguio }}</span>
       </div>
+    </div>
+  </section>
+
+  <section class="faq-source-section">
+    <div class="faq-panel">
+      <div class="section-heading">
+        <span class="section-kicker">FAQ</span>
+        <h2>Clark 游学常见问题</h2>
+      </div>
+      <article *ngFor="let item of faqs">
+        <h3>{{ item.question }}</h3>
+        <p>{{ item.answer }}</p>
+      </article>
     </div>
   </section>
 </div>

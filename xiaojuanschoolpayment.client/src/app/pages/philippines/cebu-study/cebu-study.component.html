@@ -2,36 +2,41 @@
   <section class="cebu-hero">
     <div class="cebu-hero__copy">
       <span class="section-kicker">Cebu English Study</span>
-      <h1>宿务游学</h1>
+      <h1>宿务英语游学</h1>
       <p>
-        宿务是菲律宾最受欢迎的英语游学城市之一。这里语言学校集中、课程选择丰富，
-        既能安排一对一密集英语训练，也能兼顾海岛生活体验，适合第一次游学、亲子家庭、
-        成人口语提升和短期英语冲刺。
+        宿务是菲律宾英语游学最成熟的城市之一。这里学校数量多、课程类型完整、机场衔接方便，
+        既能安排高密度一对一训练，也能兼顾海岛生活、亲子陪读和短期体验。
       </p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/register">
           免费匹配宿务学校
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="#school-types" appScrollTo="school-types">
-          查看适合学校类型
+        <a
+          class="secondary-action"
+          href="#school-profiles"
+          appScrollTo="school-profiles"
+        >
+          查看学校信息
           <mat-icon>south</mat-icon>
         </a>
       </div>
     </div>
 
-    <aside class="cebu-hero__panel">
+    <aside class="cebu-hero__panel" aria-label="宿务游学快速信息">
       <div>
         <strong>适合</strong>
-        <span>口语提升 / 亲子游学 / 短期体验 / 雅思基础提升</span>
+        <span
+          >成人口语 / 雅思多益 / 亲子陪读 / 青少年营队 / 第一次菲律宾游学</span
+        >
       </div>
       <div>
         <strong>城市关键词</strong>
-        <span>学校多、交通方便、海岛生活、课程选择丰富</span>
+        <span>学校集中、机场方便、海岛体验、课程选择丰富、房型差异明显</span>
       </div>
       <div>
         <strong>选校重点</strong>
-        <span>课程比例、住宿环境、管理强度、校区位置和总费用</span>
+        <span>课程比例、校区位置、住宿餐食、管理强度、年龄限制和当期优惠</span>
       </div>
     </aside>
   </section>
@@ -41,7 +46,7 @@
       <span class="section-kicker">Why Cebu</span>
       <h2>为什么很多学生会先看宿务？</h2>
       <p>
-        宿务的优势不是单一“便宜”，而是学校密度、生活便利和课程类型都比较完整。
+        宿务的优势不是单一“便宜”，而是学校密度、生活便利、课程完整度和周末体验都比较均衡。
       </p>
     </div>
 
@@ -59,7 +64,7 @@
   <section class="school-type-section" id="school-types">
     <div class="section-heading">
       <span class="section-kicker">School Types</span>
-      <h2>宿务学校怎么选？先看你的学习目标</h2>
+      <h2>宿务学校怎么选？先看学习目标</h2>
     </div>
 
     <div class="school-type-grid">
@@ -67,6 +72,64 @@
         <span>{{ type.tag }}</span>
         <h3>{{ type.title }}</h3>
         <p>{{ type.text }}</p>
+        <small>{{ type.examples }}</small>
+      </article>
+    </div>
+  </section>
+
+  <section class="profile-section" id="school-profiles">
+    <div class="section-heading">
+      <span class="section-kicker">Cebu Schools</span>
+      <h2>宿务热门语言学校信息整理</h2>
+      <p>
+        以下信息优先按学校官网可确认内容整理，并结合中文游学网站常见分类方式改写。课程、宿舍和优惠会更新，最终以学校当期报价与回信为准。
+      </p>
+    </div>
+
+    <div class="profile-grid">
+      <article class="profile-card" *ngFor="let school of schoolProfiles">
+        <div class="profile-card__head">
+          <span>{{ school.style }}</span>
+          <h3>{{ school.name }}</h3>
+          <p>{{ school.location }}</p>
+        </div>
+
+        <div class="course-tags" aria-label="课程类型">
+          <span *ngFor="let course of school.courses">{{ course }}</span>
+        </div>
+
+        <dl class="profile-list">
+          <div>
+            <dt>住宿类型</dt>
+            <dd>{{ school.accommodation }}</dd>
+          </div>
+          <div>
+            <dt>校园设施</dt>
+            <dd>{{ school.facilities }}</dd>
+          </div>
+          <div>
+            <dt>适合人群</dt>
+            <dd>{{ school.bestFor }}</dd>
+          </div>
+          <div>
+            <dt>报名提示</dt>
+            <dd>{{ school.note }}</dd>
+          </div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="decision-section">
+    <div class="section-heading">
+      <span class="section-kicker">Selection Checklist</span>
+      <h2>思达教育建议这样核对学校资料</h2>
+    </div>
+
+    <div class="decision-grid">
+      <article class="decision-card" *ngFor="let point of decisionPoints">
+        <h3>{{ point.label }}</h3>
+        <p>{{ point.text }}</p>
       </article>
     </div>
   </section>
@@ -77,7 +140,7 @@
       <h2>宿务和碧瑶，不是谁更好，而是谁更适合</h2>
       <p>
         宿务更适合重视便利、海岛生活和学校选择的人；碧瑶更适合考试冲刺和高强度管理。
-        如果你还不确定城市，建议先根据学习目标和预算做筛选。
+        如果还不确定城市，建议先根据学习目标、预算、住宿偏好和自律程度筛选。
       </p>
     </div>
 
