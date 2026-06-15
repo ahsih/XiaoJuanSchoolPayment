@@ -163,7 +163,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       {
         icon: 'record_voice_over',
         title: '适合外教口语',
-        text: '苏比克和克拉克一带常被定位为外籍人士较多、外教比例更有优势的学习选择。',
+        text: '苏比克和克拉克常被定位为外籍人士较多、外教比例更有优势的学习选择。',
       },
     ],
     programTypes: [

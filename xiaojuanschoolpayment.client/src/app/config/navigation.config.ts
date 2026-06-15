@@ -120,7 +120,7 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'ireland-application',
         label: '如何申请爱尔兰院校',
-        route: placeholderRoute,
+        route: '/ireland-study/application/undergraduate-course',
         type: '流程页',
         children: [
           {
@@ -138,7 +138,7 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'ireland-visa-accommodation',
         label: '爱尔兰签证与住宿',
-        route: placeholderRoute,
+        route: '/ireland-study/visa-guide',
         type: '指南页',
         children: [
           {
@@ -156,7 +156,7 @@ export const mainNavigation: NavigationItem[] = [
       {
         id: 'ireland-life',
         label: '爱尔兰生活指南',
-        route: placeholderRoute,
+        route: '/ireland-study/living-in-ireland',
         type: '指南页',
         children: [
           {

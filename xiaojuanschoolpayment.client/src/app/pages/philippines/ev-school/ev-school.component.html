@@ -1,0 +1,223 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>EV Academy</h1>
+      <p>
+        EV Academy 位于 Nasipit, Cebu City，是宿务代表性的斯巴达 /
+        半斯巴达双模式英语学校，适合想把学习纪律、校园设施和市区便利度一起考虑的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询EV空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a
+          class="secondary-action"
+          href="https://www.evenglish.net/"
+          target="_blank"
+          rel="noopener"
+        >
+          学校官网
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>起价参考</strong>
+        <span>ESL Classic 四人房：USD 752 / 1周起，4周 USD 1,880 起</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>宿务斯巴达管理与现代校园结合的代表学校</h2>
+    </div>
+    <p>
+      EV Academy 自2002年创校以来，是宿务较早发展 Intensive English Programs
+      的学校之一。学校在2017年迁入新校区，主打“school &
+      resort”校园体验，同时保留清晰的学习管理制度。学生可按目标选择 SP1 斯巴达或
+      SP2 半斯巴达，让课程强度和生活弹性更匹配。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>从ESL到Power Speaking和考试课程</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>校内宿舍，单人到四人房</h2>
+      </div>
+      <p>
+        EV提供单人、双人、三人和四人房。官方宿舍资料列出单人房约16平方米、双人房约24平方米、三人房约27平方米、四人房约32平方米；房内常见空调、冰箱、吹风机、个人保险箱、热水和浴室。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>Nasipit, Cebu City</h2>
+      </div>
+      <p>
+        EV位于宿务市 Nasipit
+        既保留校园式学习环境，也方便连接市区生活资源。适合想留在Cebu
+        City、同时又希望学校内部管理和设施完整的学生。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>2026参考学费住宿费</h2>
+      <p>
+        以下为 ESL Classic
+        参考价格，币种为美元；最终以学校当期报价、房型空位和优惠为准。
+      </p>
+    </div>
+
+    <div
+      class="fee-table"
+      role="table"
+      aria-label="EV Academy ESL Classic参考费用"
+    >
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">房型</span>
+        <span role="columnheader">1周</span>
+        <span role="columnheader">4周</span>
+        <span role="columnheader">12周</span>
+        <span role="columnheader">备注</span>
+      </div>
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.room }}</span>
+        <span role="cell">{{ row.oneWeek }}</span>
+        <span role="cell">{{ row.fourWeeks }}</span>
+        <span role="cell">{{ row.twelveWeeks }}</span>
+        <span role="cell">{{ row.note }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>学习、自习和运动设施完整</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看EV</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先选SP1/SP2，再看课程和房型</h2>
+      </div>
+      <p>
+        EV最需要先判断的是管理强度。想冲刺考试或自律较弱，可以优先看SP1；想兼顾学习和宿务生活，SP2或ESL
+        Classic更舒服。Power
+        Speaking适合口语目标非常明确的学生，但一对一课时高，报名时也要确认老师与空位。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做EV预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道EV当前是否有空房和优惠？</h2>
+      <p>
+        把入学日期、学习周数、SP1/SP2偏好、课程方向和房型发给顾问，可以更快得到准确报价。
+      </p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

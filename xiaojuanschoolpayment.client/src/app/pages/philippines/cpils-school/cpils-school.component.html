@@ -1,0 +1,201 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>CPILS</h1>
+      <p>
+        Cebu Pacific International Language School 是宿务老牌考试与强化型语言学校，适合希望用较清楚的管理节奏、定期模考和密集课程推进英语或考试分数的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询CPILS空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://www.ioutback.com/study-abroad/philippines/SCHOOL/cpils_detail" target="_blank" rel="noopener">
+          参考费用来源
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>4周起价参考</strong>
+        <span>General ESL / Intensive ESL 四人房：USD 1,590 起，未含当地披索费用</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>老牌师资、考试资源和斯巴达管理是核心卖点</h2>
+    </div>
+    <p>
+      CPILS 是宿务较早建立的语言学校之一，公开资料强调其长期办学经验、稳定课程架构、外籍教师资源，以及 IELTS / TOEIC 相关考试资源。现有校区由饭店改建，位于 Cebu City 旧城区，距离主要购物中心和便利店较近，适合想把学习强度、生活机能和考试目标放在同一套系统里管理的学生。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>从基础 ESL 到 IELTS、TOEIC、TOEFL 和商务口语</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>校内单人、双人、三人和四人房</h2>
+      </div>
+      <p>
+        CPILS 提供校内套房型住宿，公开资料列出单人、双人、三人和四人房，房内通常包含独立卫浴、个人桌椅、柜子、电视和镜子。房间每周打扫并更换床单，洗衣服务另按重量和衣物类型确认。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>Cebu City 市区生活机能</h2>
+      </div>
+      <p>
+        学校位于宿务市区，资料显示距离 SM、Ayala 等购物中心车程约10分钟，附近也有便利店和 Robinson Galleria 等生活资源。适合想要市区机能，但仍希望学校有门禁和学习管理的人。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>2026美金原价参考，课程+食宿 / 4周</h2>
+      <p>以下费用取自公开页面的 CPILS 2026 美金原价表；注册费、当地披索费用、签证延签、教材、水电、押金、接送和优惠需另行确认。</p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="CPILS 4周课程与住宿费用">
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">课程</span>
+        <span role="columnheader">四人房</span>
+        <span role="columnheader">三人房</span>
+        <span role="columnheader">双人房</span>
+        <span role="columnheader">单人房</span>
+      </div>
+      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.course }}</span>
+        <span role="cell">{{ row.quad }}</span>
+        <span role="cell">{{ row.triple }}</span>
+        <span role="cell">{{ row.twin }}</span>
+        <span role="cell">{{ row.single }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>学习、考试和基本生活设施完整</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看 CPILS</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先确认目标分数，再选择管理强度</h2>
+      </div>
+      <p>
+        CPILS 更适合目标导向学生。若你要 IELTS、TOEIC 或 TOEFL 分数，建议优先确认目前分数、目标分数、可读周数和能否接受保证班规则；若只是想提升口语，则比较 General ESL、Intensive ESL、Premier Sparta 与商务口语课程的课时差异。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做CPILS预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道 CPILS 当前空位、优惠和适合课程？</h2>
+      <p>把入学日期、学习周数、目标分数、预算和房型偏好发给顾问，可以更快确认是否适合 CPILS。</p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

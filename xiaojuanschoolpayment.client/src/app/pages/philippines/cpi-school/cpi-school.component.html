@@ -1,0 +1,213 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu">
+        <mat-icon>arrow_back</mat-icon>
+        返回宿务学校列表
+      </a>
+      <span class="section-kicker">Cebu School Detail</span>
+      <h1>CPI Cebu Pelis Institute</h1>
+      <p>
+        CPI 是宿务 Nivel Hills
+        度假村型半斯巴达学校，适合想兼顾英语强化、校园舒适度、住宿品质和活动体验的学生。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费咨询CPI空位与报价
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a
+          class="secondary-action"
+          href="https://feifanstudy.com/schools/25-cpi"
+          target="_blank"
+          rel="noopener"
+        >
+          参考资料
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+      <figcaption>
+        <strong>起价参考</strong>
+        <span>CPI列表起价：NTD 12,820 / 周起，完整报价需按课程和房型确认</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>把度假型校园和密集英语学习结合起来</h2>
+    </div>
+    <p>
+      Cebu Pelis Institute
+      于2015年启用新校区，由Pelis团队延续课程和教学体系。CPI主打半山度假村式校园、密集英文学习环境、晚间选修与自习安排。它不像高压斯巴达那样只强调封闭管理，更适合想认真学习，同时重视住宿和校园舒适度的学生。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>ESL、考试、商务、亲子方向都能覆盖</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>校内高级与豪华房型选择多</h2>
+      </div>
+      <p>
+        CPI公开资料列出校内高级单人、双人、三人、四人房，以及豪华双人、三人、家庭四人、女性六人等房型方向。常见房内设备包含Wi-Fi、吹风机、私人卫浴、空调、衣柜、书桌、冰箱、电视、保险箱、热水壶等。
+      </p>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>Nivel Hills / Lahug, Cebu</h2>
+      </div>
+      <p>
+        学校地址为 CPI corporation, Holy Family Road, Nivel Hills, Lahug,
+        Cebu。半山环境空气和校园感较好，也要同时评估外出、购物和市区活动便利度。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>公开起价与报价提醒</h2>
+      <p>
+        以下为公开页面可确认的CPI起价参考；完整费用需按课程、周数、房型和当期优惠确认。
+      </p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="CPI参考费用">
+      <div class="fee-row fee-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">参考</span>
+        <span role="columnheader">说明</span>
+      </div>
+      <div
+        class="fee-row fee-row--compact"
+        role="row"
+        *ngFor="let row of priceRows"
+      >
+        <span role="cell">{{ row.item }}</span>
+        <span role="cell">{{ row.reference }}</span>
+        <span role="cell">{{ row.note }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>度假村型校园的设施优势</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以优先看CPI</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先定房型，再核课程强度</h2>
+      </div>
+      <p>
+        CPI的环境和住宿是明显卖点，但预算也会被房型影响。建议先确认可接受房型，再比较一般英语、密集英语和考试课程。若是亲子或青少年，还要优先确认家庭房、监护、门禁和晚间活动安排。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我做CPI预算
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道CPI当前房型和报价？</h2>
+      <p>
+        把入学日期、学习周数、课程方向和房型偏好发给顾问，可以更快得到准确报价。
+      </p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

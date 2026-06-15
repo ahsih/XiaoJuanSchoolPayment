@@ -1,1 +1,99 @@
-<app-ireland-page-content [page]="page"></app-ireland-page-content>
+<div class="application-process-page">
+  <section class="process-hero">
+    <div class="process-hero__copy">
+      <span class="section-kicker">{{ hero.kicker }}</span>
+      <h1>{{ hero.title }}</h1>
+      <p>{{ hero.summary }}</p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费评估
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="#process">
+          查看流程
+          <mat-icon>south</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <aside class="process-hero__visual" aria-label="本科申请重点">
+      <img [src]="hero.image" [alt]="hero.imageAlt" />
+      <div class="hero-fact-panel">
+        <div *ngFor="let fact of facts">
+          <strong>{{ fact.value }}</strong>
+          <span>{{ fact.label }}</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="process-section" id="process">
+    <div class="section-heading">
+      <span class="section-kicker">Application Steps</span>
+      <h2>从路径判断到入学注册</h2>
+      <p>每一步都对应一个明确的顾问动作，适合把家长和学生的准备节奏拉到同一张表里。</p>
+    </div>
+
+    <div class="timeline-grid">
+      <article class="step-card" *ngFor="let item of steps">
+        <span class="step-number">{{ item.step }}</span>
+        <small>{{ item.tag }}</small>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+        <ul>
+          <li *ngFor="let check of item.checks">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ check }}</span>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="section-heading">
+      <span class="section-kicker">Documents</span>
+      <h2>材料准备清单</h2>
+      <p>材料不是一次性“凑齐”就好，还要根据院校系统、专业要求和补件节点持续更新。</p>
+    </div>
+
+    <div class="document-grid">
+      <article class="document-card" *ngFor="let group of documentGroups">
+        <span class="info-icon">
+          <mat-icon>{{ group.icon }}</mat-icon>
+        </span>
+        <h3>{{ group.title }}</h3>
+        <ul>
+          <li *ngFor="let item of group.items">{{ item }}</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="advisor-section">
+    <div class="section-heading">
+      <span class="section-kicker">SIDA Notes</span>
+      <h2>顾问提醒</h2>
+    </div>
+
+    <div class="note-grid">
+      <article class="note-card" *ngFor="let note of advisorNotes">
+        <mat-icon>{{ note.icon }}</mat-icon>
+        <h3>{{ note.title }}</h3>
+        <p>{{ note.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Start Planning</span>
+      <h2>先确认你适合哪条本科申请路径</h2>
+      <p>把成绩单、英语水平、目标专业和预算告诉我们，思达教育可以先帮你判断直入、预科、语言或转学分哪个更稳。</p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      预约咨询
+      <mat-icon>arrow_forward</mat-icon>
+    </a>
+  </section>
+</div>

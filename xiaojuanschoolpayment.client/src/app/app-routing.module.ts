@@ -182,6 +182,21 @@ const routes: Routes = [
           import('./pages/philippines/cia-school/cia-school.component').then((m) => m.CiaSchoolComponent),
       },
       {
+        path: 'philippines-study/cebu/ev-academy',
+        loadComponent: () =>
+          import('./pages/philippines/ev-school/ev-school.component').then((m) => m.EvSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/cpi-cebu-pelis-institute',
+        loadComponent: () =>
+          import('./pages/philippines/cpi-school/cpi-school.component').then((m) => m.CpiSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/cpils',
+        loadComponent: () =>
+          import('./pages/philippines/cpils-school/cpils-school.component').then((m) => m.CpilsSchoolComponent),
+      },
+      {
         path: 'philippines-study/cebu',
         loadComponent: () =>
           import('./pages/philippines/cebu-study/cebu-study.component').then((m) => m.CebuStudyComponent),
@@ -631,7 +646,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

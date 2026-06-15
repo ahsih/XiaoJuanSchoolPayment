@@ -87,14 +87,26 @@
     </div>
 
     <div class="profile-grid">
-      <article class="profile-card" *ngFor="let school of schoolProfiles">
+      <ng-container *ngFor="let school of schoolProfiles">
+        <a *ngIf="school.route; else plainProfileCard" class="profile-card profile-card--link" [routerLink]="school.route">
+          <ng-container *ngTemplateOutlet="profileCardContent; context: { $implicit: school }"></ng-container>
+        </a>
+
+        <ng-template #plainProfileCard>
+          <article class="profile-card">
+            <ng-container *ngTemplateOutlet="profileCardContent; context: { $implicit: school }"></ng-container>
+          </article>
+        </ng-template>
+      </ng-container>
+
+      <ng-template #profileCardContent let-school>
         <div class="profile-card__head">
           <span>{{ school.style }}</span>
           <h3>
-            <a *ngIf="school.route; else plainSchoolName" class="school-link" [routerLink]="school.route">
+            <span class="school-link" *ngIf="school.route; else plainSchoolName">
               {{ school.name }}
               <mat-icon>arrow_forward</mat-icon>
-            </a>
+            </span>
             <ng-template #plainSchoolName>{{ school.name }}</ng-template>
           </h3>
           <p>{{ school.location }}</p>
@@ -125,7 +137,7 @@
             <dd>{{ school.note }}</dd>
           </div>
         </dl>
-      </article>
+      </ng-template>
     </div>
   </section>
 

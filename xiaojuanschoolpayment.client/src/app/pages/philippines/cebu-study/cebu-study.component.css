@@ -249,6 +249,24 @@
 
 .profile-card {
   overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+}
+
+.profile-card--link {
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-card--link:hover,
+.profile-card--link:focus-visible {
+  border-color: rgba(22, 130, 70, 0.35);
+  box-shadow: 0 14px 30px rgba(19, 35, 66, 0.12);
+  outline: 0;
+  transform: translateY(-2px);
 }
 
 .profile-card__head {
@@ -275,7 +293,9 @@
   text-decoration: none;
 }
 
-.school-link:hover {
+.school-link:hover,
+.profile-card--link:hover .school-link,
+.profile-card--link:focus-visible .school-link {
   color: #168246;
 }
 
