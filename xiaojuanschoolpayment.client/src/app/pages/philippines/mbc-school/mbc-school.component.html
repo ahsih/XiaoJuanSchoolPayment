@@ -1,0 +1,219 @@
+<div class="cia-page">
+  <section class="cia-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/manila">
+        <mat-icon>arrow_back</mat-icon>
+        返回马尼拉学校列表
+      </a>
+      <span class="section-kicker">Manila School Detail</span>
+      <h1>Manila Business College</h1>
+      <p>
+        Manila Business College更适合被看作马尼拉学院型学习和国际学生衔接候选：商科、会计、酒店管理、
+        信息系统、夜间班/周末班与部分技能课程。它不是传统宿舍制ESL学校，英语、住宿和签证安排需要单独核对。
+      </p>
+      <div class="hero-actions">
+        <a class="primary-action" routerLink="/register">
+          免费确认MBC申请与费用
+          <mat-icon>chevron_right</mat-icon>
+        </a>
+        <a class="secondary-action" href="https://www.mbc.edu.ph/" target="_blank" rel="noopener">
+          学校官网
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <figure class="hero-visual">
+      <img src="assets/philippines/manila-study-hero.jpg" alt="马尼拉学院型商科与国际学生学习环境" />
+      <figcaption>
+        <strong>顾问提醒</strong>
+        <span>官网显示SY 2026-2027招生中；国际学生仍需确认入学资格、签证、住宿和当期费用。</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="quick-facts" aria-label="学校基本资料">
+    <div class="fact" *ngFor="let fact of quickFacts">
+      <span>{{ fact.label }}</span>
+      <strong>{{ fact.value }}</strong>
+    </div>
+  </section>
+
+  <section class="content-band intro-section">
+    <div class="section-heading">
+      <span class="section-kicker">学校简介</span>
+      <h2>马尼拉商科与职业应用导向学院，适合学历和城市学习路径</h2>
+    </div>
+    <p>
+      MBC官网说明学校成立于2000年，面向本地和外国学生，强调管理、商务、酒店和技能发展。
+      对游学学生来说，它更像“英语能力 + 商科/酒店/信息系统方向”的学院候选，而不是每天多堂一对一的ESL住宿学校。
+    </p>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">课程</span>
+      <h2>以商科、酒店、会计、信息系统和灵活班型为核心</h2>
+    </div>
+    <div class="course-grid">
+      <article class="info-card" *ngFor="let course of courses">
+        <h3>{{ course.title }}</h3>
+        <strong>{{ course.lessons }}</strong>
+        <p>{{ course.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">住宿</span>
+        <h2>官网提到dormitories，但需要逐项确认</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of accommodation">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">位置</span>
+        <h2>MBC Building, 1671 Alvarez Street, Sta. Cruz, Manila</h2>
+      </div>
+      <p>
+        学校位于Manila City的Sta. Cruz区域。选择MBC时，顾问会把上课地点、住宿点、机场交通、日常通勤、
+        周边安全感和生活便利度一起评估，而不是只看“马尼拉”城市名。
+      </p>
+    </div>
+  </section>
+
+  <section class="content-band fee-section">
+    <div class="section-heading">
+      <span class="section-kicker">费用</span>
+      <h2>学费、奖学金和国际学生费用都要当期核价</h2>
+      <p>
+        MBC官网公开了部分奖学金描述和联系方式，但没有完整国际学生价目表。下面用核价清单帮助学生避免低估总预算。
+      </p>
+    </div>
+
+    <div class="fee-table" role="table" aria-label="Manila Business College费用确认项目">
+      <div class="fee-row fee-row--compact fee-row--head" role="row">
+        <span role="columnheader">项目</span>
+        <span role="columnheader">金额</span>
+        <span role="columnheader">说明</span>
+      </div>
+      <div class="fee-row fee-row--compact" role="row" *ngFor="let row of priceRows">
+        <span role="cell">{{ row.item }}</span>
+        <span role="cell">{{ row.amount }}</span>
+        <span role="cell">{{ row.note }}</span>
+      </div>
+    </div>
+
+    <div class="local-fees">
+      <article class="fee-chip" *ngFor="let fee of localFees">
+        <span>{{ fee.item }}</span>
+        <strong>{{ fee.amount }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">设施</span>
+      <h2>学院设施和酒店管理实践空间是主要核对点</h2>
+    </div>
+    <div class="facility-grid">
+      <div class="facility-item" *ngFor="let facility of facilities">
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ facility }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="content-band">
+      <div class="section-heading">
+        <span class="section-kicker">适合人群</span>
+        <h2>这些学生可以把MBC放进比较表</h2>
+      </div>
+      <ul class="clean-list">
+        <li *ngFor="let item of audiences">{{ item }}</li>
+      </ul>
+    </div>
+
+    <div class="content-band advice-panel">
+      <div class="section-heading">
+        <span class="section-kicker">顾问建议</span>
+        <h2>先确认你要的是学院路径，还是语言学校路径</h2>
+      </div>
+      <p>
+        如果目标是商科、酒店、会计、信息系统或后续学历衔接，MBC值得进入马尼拉学院型候选。
+        如果目标是短期英语口语、住宿、三餐和每日学习管理，则应优先比较菲律宾语言学校。
+      </p>
+      <a class="primary-action" routerLink="/register">
+        让顾问帮我比较MBC
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">优缺点</span>
+      <h2>报名前建议这样看</h2>
+    </div>
+    <div class="pros-cons">
+      <div>
+        <h3>优点</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of pros">{{ item }}</li>
+        </ul>
+      </div>
+      <div>
+        <h3>需要注意</h3>
+        <ul class="clean-list">
+          <li *ngFor="let item of cons">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-band faq-section">
+    <div class="section-heading">
+      <span class="section-kicker">FAQ</span>
+      <h2>常见问题</h2>
+    </div>
+    <details *ngFor="let faq of faqs">
+      <summary>{{ faq.question }}</summary>
+      <p>{{ faq.answer }}</p>
+    </details>
+  </section>
+
+  <section class="content-band">
+    <div class="section-heading">
+      <span class="section-kicker">Sources</span>
+      <h2>资料来源</h2>
+      <p>以下为本页整理时参考的公开入口；课程、费用、奖学金、住宿和签证最终需以学校当期回函为准。</p>
+    </div>
+    <div class="source-list">
+      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+        <span>{{ source.label }}</span>
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <span class="section-kicker">Consultation</span>
+      <h2>想知道MBC是否适合你的马尼拉计划？</h2>
+      <p>
+        把学历背景、目标专业、入学时间、是否需要住宿、英语程度和预算告诉顾问，我们会先确认MBC当期申请要求和费用。
+      </p>
+    </div>
+    <a class="primary-action" routerLink="/register">
+      立即咨询
+      <mat-icon>chat</mat-icon>
+    </a>
+  </section>
+</div>

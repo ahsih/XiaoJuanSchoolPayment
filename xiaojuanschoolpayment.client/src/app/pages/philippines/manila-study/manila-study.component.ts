@@ -192,6 +192,8 @@ export class ManilaStudyComponent {
       name: 'Manila Business College',
       location: 'Manila City',
       style: '商科院校与国际学生衔接候选',
+      route: '/philippines-study/manila/manila-business-college',
+      startingPrice: '需当期确认',
       courses: [
         'Business / Management',
         'Finance',
@@ -200,12 +202,12 @@ export class ManilaStudyComponent {
         'Foreign Student Admission',
       ],
       accommodation:
-        '官网主要是学院型信息，不是 ESL 宿舍制学校；住宿、签证和语言补强需单独核对。',
+        '官网提到dormitories，但主要是学院型信息；房型、住宿费用、签证和语言补强需单独核对。',
       facilities:
-        '官网说明学校获 CHED、DepEd、TESDA 相关认可，并接收本地与外国学生。',
+        '官网说明学校获 CHED、DepEd、TESDA 相关认可，并接收本地与外国学生；详情页整理课程、设施和申请核对项。',
       bestFor: '想了解马尼拉商科院校环境、后续学历路径或城市型学习资源的学生。',
       consultantNote:
-        '适合作为“英语 + 商科/城市体验”的候选，不应与菲律宾语言学校宿舍套餐直接类比。',
+        '适合作为“英语 + 商科/城市体验”的候选，不应与菲律宾语言学校宿舍套餐直接类比；需先确认当期费用和国际学生要求。',
     },
     {
       name: 'CNN / C21 / PICO 等旧马尼拉 ESL 候选',

@@ -360,6 +360,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/manila/berlitz-philippines',
           },
           {
+            id: 'manila-business-college',
+            label: 'Manila Business College',
+            route: '/philippines-study/manila/manila-business-college',
+          },
+          {
             id: 'manila-legacy-esl-candidates',
             label: 'CNN / C21 / PICO 旧ESL候选',
             route: '/philippines-study/manila/legacy-esl-candidates',

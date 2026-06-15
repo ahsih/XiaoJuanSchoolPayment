@@ -296,6 +296,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/manila/manila-business-college',
+        loadComponent: () =>
+          import('./pages/philippines/mbc-school/mbc-school.component').then((m) => m.MbcSchoolComponent),
+      },
+      {
         path: 'philippines-study/manila/legacy-esl-candidates',
         loadComponent: () =>
           import('./pages/philippines/manila-legacy-esl/manila-legacy-esl.component').then(
