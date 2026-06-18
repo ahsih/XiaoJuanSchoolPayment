@@ -207,7 +207,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (filter?.MinPrice != null)
       {
-        query = query.Where(x => filter.MinPrice <= filter.MinPrice);
+        query = query.Where(x => filter.MinPrice <= x.Price);
       }
 
       if (filter?.MaxPrice != null)
@@ -222,7 +222,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (filter?.Week != null)
       { 
-        query = query.Where(x => x.Week != filter.Week);
+        query = query.Where(x => x.Week == filter.Week);
       }
 
       var result = await query.ToListAsync(ct);
@@ -261,7 +261,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (filter?.Week != null)
       { 
-        query = query.Where(x => x.Week != filter.Week);
+        query = query.Where(x => x.Week == filter.Week);
       }
 
       var result = await query.ToListAsync(cancellationToken);
@@ -283,6 +283,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
           CurrencySymbol = x.Currency.Symbol,
           Description = x.Description,
           Fee = x.Fee,
+          LastUpdated = x.LastUpdated,
           SchoolId = x.SchoolId,
           SchoolName = x.School != null ? x.School.Name : "",
         }).AsQueryable();

@@ -4,7 +4,7 @@
   {
     public Guid? SchoolId { get; set; }
     public string? Name { get; set; }
-    public int? MaxFee { get; set; }
-    public int? MinFee { get; set; }
+    public decimal? MaxFee { get; set; }
+    public decimal? MinFee { get; set; }
   }
 }

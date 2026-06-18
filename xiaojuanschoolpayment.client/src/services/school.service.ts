@@ -59,7 +59,7 @@ export class SchoolService {
       params = params.set('name', filter.name);
     }
     if (filter?.week) {
-      params = params.set('week', filter.week);
+      params = params.set('week', filter.week.toString());
     }
     return this.http.get<SchoolLessonDTO[]>(
       `${this.apiUrl}/get-school-lessons`,
@@ -67,6 +67,7 @@ export class SchoolService {
         headers: {
           Authorization: 'Bearer ' + token,
         },
+        params: params,
       }
     );
   }
@@ -81,7 +82,7 @@ export class SchoolService {
       params = params.set('name', filter.name);
     }
     if (filter?.week) {
-      params = params.set('week', filter.week);
+      params = params.set('week', filter.week.toString());
     }
     return this.http.get<SchoolRoomDTO[]>(`${this.apiUrl}/get-school-rooms`, {
       headers: {
