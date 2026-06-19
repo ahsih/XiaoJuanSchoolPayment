@@ -35,19 +35,9 @@
         </div>
 
         <div class="hero-media" aria-label="CIA校园图片展示">
-          <figure class="feature-video">
-            <iframe
-              [src]="schoolVideoEmbedUrl"
-              title="CIA Cebu International Academy 学校视频"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
-            <figcaption>
-              <a [href]="schoolVideoUrl" target="_blank" rel="noopener">
-                查看 CIA 官方视频详情
-                <mat-icon>open_in_new</mat-icon>
-              </a>
-            </figcaption>
+          <figure class="feature-photo">
+            <img [src]="galleryImages[0].src" [alt]="galleryImages[0].title" />
+            <figcaption>{{ galleryImages[0].title }}</figcaption>
           </figure>
           <div class="media-strip" aria-label="CIA校园缩略图">
             <figure *ngFor="let image of galleryImages.slice(2, 5)">
@@ -55,7 +45,7 @@
               <figcaption>{{ image.title }}</figcaption>
             </figure>
           </div>
-          <p class="photo-source">视频与图片来源：CIA 官方视频板块、校园与设施相册</p>
+          <p class="photo-source">图片来源：CIA 官方校园与设施相册</p>
         </div>
       </section>
 
@@ -78,7 +68,7 @@
 
       <section class="section-block" id="gallery">
         <div class="section-heading">
-          <span>图片 / 视频展示</span>
+          <span>图片展示</span>
           <h2>按区域查看 CIA 环境</h2>
           <p>先看住宿、教室、餐厅和设施，再判断这所学校的生活环境是否符合你的期待。</p>
         </div>
@@ -94,14 +84,22 @@
           </button>
         </div>
 
-        <div class="gallery-grid">
-          <figure *ngFor="let image of filteredGalleryImages">
-            <img [src]="image.src" [alt]="image.title" />
-            <figcaption>
-              <strong>{{ image.title }}</strong>
-              <span>{{ image.description }}</span>
-            </figcaption>
-          </figure>
+        <div class="gallery-slider">
+          <button type="button" class="gallery-nav prev" aria-label="上一张 CIA 图片" (click)="scrollGallery(-1)">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <div class="gallery-grid" #gallerySlider>
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+          <button type="button" class="gallery-nav next" aria-label="下一张 CIA 图片" (click)="scrollGallery(1)">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
         </div>
       </section>
 

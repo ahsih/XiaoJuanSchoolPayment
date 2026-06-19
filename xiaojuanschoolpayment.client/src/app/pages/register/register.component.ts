@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,7 +24,8 @@ export class RegisterComponent {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private authService: AuthService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private location: Location
   ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -32,6 +34,10 @@ export class RegisterComponent {
       lastName: ['', Validators.required],
       accessCode: ['', [Validators.required]]
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   onSubmit() {

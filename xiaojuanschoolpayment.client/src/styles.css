@@ -207,7 +207,7 @@ app-cia-school [id] {
   scroll-margin-top: 96px;
 }
 
-app-cia-school .feature-video,
+app-cia-school .feature-photo,
 app-cia-school .media-strip figure,
 app-cia-school .gallery-grid figure {
   position: relative;
@@ -218,38 +218,23 @@ app-cia-school .gallery-grid figure {
   background: #eef3f6;
 }
 
-app-cia-school .feature-video iframe {
+app-cia-school .feature-photo img {
   display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border: 0;
+  object-fit: cover;
 }
 
-app-cia-school .feature-video figcaption {
+app-cia-school .feature-photo figcaption {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-}
-
-app-cia-school .feature-video figcaption a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 0 10px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.68);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 38px 14px 14px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
   color: #ffffff;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 900;
-  text-decoration: none;
-}
-
-app-cia-school .feature-video figcaption mat-icon {
-  width: 17px;
-  height: 17px;
-  font-size: 17px;
 }
 
 app-cia-school .media-strip {
@@ -409,10 +394,27 @@ app-cia-school .gallery-tabs button.active {
   color: #ffffff;
 }
 
+app-cia-school .gallery-slider {
+  position: relative;
+}
+
 app-cia-school .gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
+  padding: 0 2px 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+app-cia-school .gallery-grid::-webkit-scrollbar {
+  display: none;
+}
+
+app-cia-school .gallery-grid figure {
+  flex: 0 0 clamp(260px, 34%, 390px);
+  scroll-snap-align: start;
 }
 
 app-cia-school .gallery-grid img {
@@ -437,6 +439,38 @@ app-cia-school .gallery-grid figcaption span {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.45;
+}
+
+app-cia-school .gallery-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(8, 115, 67, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #087343;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(11, 29, 56, 0.14);
+  transform: translateY(-50%);
+}
+
+app-cia-school .gallery-nav.prev {
+  left: 10px;
+}
+
+app-cia-school .gallery-nav.next {
+  right: 10px;
+}
+
+app-cia-school .gallery-nav mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
 }
 
 app-cia-school .info-trio {

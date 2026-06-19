@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
@@ -100,16 +99,14 @@ interface SideNavItem {
   styleUrl: './cia-school.component.css',
 })
 export class CiaSchoolComponent implements OnInit {
-  private readonly sanitizer = inject(DomSanitizer);
+  @ViewChild('gallerySlider') private gallerySlider?: ElementRef<HTMLElement>;
+
   private readonly schoolService = inject(SchoolService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
   private readonly courseFeeOrder = ['regular-esl', 'intensive-esl', 'power-intensive', 'ielts-regular', 'toeic-regular', 'business'];
   private readonly roomFeeOrder = ['p1', 's1', 'd2', 'd3', 'd4'];
+  private readonly featuredGalleryCategories: ReadonlyArray<Exclude<GalleryCategory, '全部'>> = ['校园', '教室', '设施'];
 
-  readonly schoolVideoUrl = 'https://www.cebucia.com/en/bbs/board.php?bo_table=video_en&wr_id=444';
-  readonly schoolVideoEmbedUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-    'https://www.youtube.com/embed/Hz4ucmvNNXg?si=CUV3rSQpG_bwEfPS',
-  );
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
@@ -588,6 +585,23 @@ export class CiaSchoolComponent implements OnInit {
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
+    window.setTimeout(() => this.gallerySlider?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' }));
+  }
+
+  scrollGallery(direction: -1 | 1): void {
+    const slider = this.gallerySlider?.nativeElement;
+
+    if (!slider) {
+      return;
+    }
+
+    const firstSlide = slider.querySelector('figure');
+    const slideWidth = firstSlide?.getBoundingClientRect().width ?? slider.clientWidth;
+
+    slider.scrollBy({
+      left: direction * (slideWidth + 12),
+      behavior: 'smooth',
+    });
   }
 
   calculateQuote(): void {
@@ -616,7 +630,7 @@ export class CiaSchoolComponent implements OnInit {
 
   get filteredGalleryImages(): GalleryImage[] {
     if (this.selectedGalleryCategory === '全部') {
-      return this.galleryImages;
+      return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category));
     }
 
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
