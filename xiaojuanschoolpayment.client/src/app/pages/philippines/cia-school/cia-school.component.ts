@@ -46,6 +46,7 @@ interface CourseItem {
   type: string;
   lessons: string;
   suitable: string;
+  icon: string;
 }
 
 interface CourseFee {
@@ -53,6 +54,9 @@ interface CourseFee {
   name: string;
   tuition: number;
   suitable: string;
+  schedule: string;
+  note: string;
+  highlightNote?: boolean;
 }
 
 interface ScheduleItem {
@@ -103,9 +107,109 @@ export class CiaSchoolComponent implements OnInit {
 
   private readonly schoolService = inject(SchoolService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
-  private readonly courseFeeOrder = ['regular-esl', 'intensive-esl', 'power-intensive', 'ielts-regular', 'toeic-regular', 'business'];
+  private readonly courseFeeOrder = [
+    'regular-esl',
+    'intensive-esl',
+    'power-intensive',
+    'pre-toeic',
+    'toeic-regular',
+    'toeic-guarantee',
+    'pre-ielts',
+    'ielts-regular',
+    'ielts-guarantee',
+    'business',
+    'working-holiday',
+    'certified-university',
+    'callan',
+    'junior',
+    'guardian',
+    'immersion',
+  ];
   private readonly roomFeeOrder = ['p1', 's1', 'd2', 'd3', 'd4'];
   private readonly featuredGalleryCategories: ReadonlyArray<Exclude<GalleryCategory, '全部'>> = ['校园', '教室', '设施'];
+  private readonly courseFeeDetails: Record<string, Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>> = {
+    'regular-esl': {
+      suitable: '基础综合提升',
+      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
+      note: 'ESL 可在报名时提前申请不参加晨测。',
+    },
+    'intensive-esl': {
+      suitable: '想增加一对一课时',
+      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
+      note: '更适合短期加强口语和老师纠音。',
+    },
+    'power-intensive': {
+      suitable: '短期高强度口语突破',
+      schedule: '一对一6课时 + 团体1课时（小1）+ 选修课1节',
+      note: '课时强度最高，建议能接受密集学习。',
+    },
+    'pre-toeic': {
+      suitable: '托业预备',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
+      note: '托业方向需参加晨考词汇测试。',
+    },
+    'toeic-regular': {
+      suitable: '托业常规备考',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
+      note: '必须参加晨考词汇测试，不参加当天不可以出校。',
+    },
+    'toeic-guarantee': {
+      suitable: '托业保分',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
+      note: '保分班通常有入学分数、出勤和模考要求。',
+    },
+    'pre-ielts': {
+      suitable: '雅思预备',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
+      note: '适合还需要先打基础的雅思学生。',
+    },
+    'ielts-regular': {
+      suitable: '雅思常规备考',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
+      note: '适合已有目标分数，至少学习4周。',
+    },
+    'ielts-guarantee': {
+      suitable: '雅思保分',
+      schedule: '一对一4课时 + 团体3课时（小1、中2）',
+      note: '保分班需确认入学分数、出勤率和官方考试安排。',
+    },
+    business: {
+      suitable: '商务沟通与面试表达',
+      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
+      note: '适合职场沟通、邮件、会议和面试场景。',
+    },
+    'working-holiday': {
+      suitable: '海外生活与面试沟通',
+      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
+      note: '适合准备打工度假或长期海外生活。',
+    },
+    'certified-university': {
+      suitable: '大学衔接英语',
+      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
+      note: '建议先确认合作大学和证书要求。',
+    },
+    callan: {
+      suitable: '快速口语反应训练',
+      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
+      note: '适合想用高频问答提升口语反应的学生。',
+    },
+    junior: {
+      suitable: '15岁以下青少年',
+      schedule: '青少年：6节一对一',
+      note: '满15周岁可选择 ESL，未满15周岁通常选择青少年课程。',
+      highlightNote: true,
+    },
+    guardian: {
+      suitable: '亲子监护人',
+      schedule: '监护人：4节一对一 + 团体2课时（小1、中1）',
+      note: '适合陪读家长同步学习。',
+    },
+    immersion: {
+      suitable: '大学沉浸体验',
+      schedule: '一对一4课时 + 团体3课时 + 每4周6小时大学旁听课程',
+      note: 'IAU大学需单独再付注册金50美元，航校另计。',
+    },
+  };
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -296,64 +400,83 @@ export class CiaSchoolComponent implements OnInit {
       type: '基础综合英语',
       lessons: '4节一对一 + 小组课 + 选修/自习',
       suitable: '适合第一次游学、希望稳步提升听说读写的学生。',
+      icon: 'school',
     },
     {
       name: 'Intensive ESL',
       type: '强化英语',
       lessons: '增加一对一比例，搭配小组课',
       suitable: '适合短期想加强口语表达和老师纠音的学生。',
+      icon: 'menu_book',
     },
     {
       name: 'Power Intensive',
       type: '高强度一对一',
       lessons: '更多一对一课程，学习节奏更紧',
       suitable: '适合4周左右集中突破口语、听力和表达的学生。',
+      icon: 'psychology',
     },
     {
       name: 'IELTS Regular',
       type: '雅思备考',
       lessons: '听说读写专项 + 模考 + 语法词汇',
       suitable: '适合已有分数目标，至少学习4周的学生。',
+      icon: 'edit_note',
     },
     {
       name: 'IELTS Guarantee',
       type: '雅思保证班',
       lessons: '12周起，需达到入学分数与出勤要求',
       suitable: '适合目标明确、能接受严格出勤和模考要求的学生。',
+      icon: 'workspace_premium',
     },
     {
       name: 'TOEIC Regular',
       type: '托业备考',
       lessons: '听力、阅读、语法和考试技巧',
       suitable: '适合求职、升学或企业英语能力证明需求。',
+      icon: 'verified',
     },
     {
-      name: 'Business English',
+      name: 'Business',
       type: '商务英语',
       lessons: '会议、演示、邮件、面试与商务表达',
       suitable: '适合职场人士或准备英文工作场景的学生。',
+      icon: 'business_center',
     },
     {
       name: 'Working Holiday',
       type: '打工度假英语',
       lessons: '生活英语、面试表达和场景沟通',
       suitable: '适合准备海外生活、打工度假或长线旅行的人群。',
+      icon: 'travel_explore',
     },
     {
       name: 'Immersion',
       type: '沉浸体验',
       lessons: '校内课程搭配校外或大学相关体验',
       suitable: '适合想把学习和当地文化体验结合的学生。',
+      icon: 'forum',
     },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'regular-esl', name: 'Regular ESL', tuition: 900, suitable: '预算优先、基础综合提升' },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1000, suitable: '想增加一对一课时' },
-    { id: 'power-intensive', name: 'Power Intensive', tuition: 1100, suitable: '短期高强度口语突破' },
-    { id: 'ielts-regular', name: 'IELTS Regular', tuition: 1050, suitable: '雅思专项备考' },
-    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1000, suitable: '托业专项备考' },
-    { id: 'business', name: 'Business', tuition: 1050, suitable: '商务沟通与面试表达' },
+    { id: 'regular-esl', name: 'Regular ESL', tuition: 900, ...this.courseFeeDetails['regular-esl'] },
+    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1000, ...this.courseFeeDetails['intensive-esl'] },
+    { id: 'power-intensive', name: 'Power Intensive', tuition: 1100, ...this.courseFeeDetails['power-intensive'] },
+    { id: 'pre-toeic', name: 'Pre-TOEIC', tuition: 1000, ...this.courseFeeDetails['pre-toeic'] },
+    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1000, ...this.courseFeeDetails['toeic-regular'] },
+    { id: 'toeic-guarantee', name: 'TOEIC Guarantee', tuition: 1000, ...this.courseFeeDetails['toeic-guarantee'] },
+    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1050, ...this.courseFeeDetails['pre-ielts'] },
+    { id: 'ielts-regular', name: 'IELTS Regular', tuition: 1050, ...this.courseFeeDetails['ielts-regular'] },
+    { id: 'ielts-guarantee', name: 'IELTS Guarantee', tuition: 1050, ...this.courseFeeDetails['ielts-guarantee'] },
+    { id: 'business', name: 'Business', tuition: 1050, ...this.courseFeeDetails['business'] },
+    { id: 'working-holiday', name: 'Working Holiday', tuition: 950, ...this.courseFeeDetails['working-holiday'] },
+    { id: 'certified-university', name: 'CERTIFIED UNIVERSITY', tuition: 1000, ...this.courseFeeDetails['certified-university'] },
+    { id: 'callan', name: 'CALLAN', tuition: 1050, ...this.courseFeeDetails['callan'] },
+    { id: 'junior', name: '亲子青少年', tuition: 1300, ...this.courseFeeDetails['junior'] },
+    { id: 'guardian', name: '亲子监护人', tuition: 1300, ...this.courseFeeDetails['guardian'] },
+    { id: 'immersion', name: 'Immersion 大学沉浸式课程', tuition: 1000, ...this.courseFeeDetails['immersion'] },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -528,16 +651,40 @@ export class CiaSchoolComponent implements OnInit {
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({
-        id: this.slugifyPriceKey(lesson.name),
-        name: lesson.name,
-        tuition: lesson.price,
-        suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
-      }))
+      .map((lesson) => {
+        const id = this.slugifyPriceKey(lesson.name);
+        const details = this.courseFeeDetails[id];
+
+        return {
+          id,
+          name: lesson.name,
+          tuition: lesson.price,
+          suitable: lesson.description || details?.suitable || lesson.note || '请联系顾问确认适合人群',
+          schedule: details?.schedule || lesson.note || '请联系顾问确认课表安排',
+          note: details?.note || '最终以学校当期报价和课程安排为准。',
+          highlightNote: details?.highlightNote,
+        };
+      })
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
 
     if (databaseCourseFees.length > 0) {
-      this.courseFees = databaseCourseFees;
+      const mergedCourseFees = this.courseFees.map((course) => {
+        const databaseCourse = databaseCourseFees.find((item) => item.id === course.id);
+
+        return databaseCourse
+          ? {
+              ...course,
+              name: databaseCourse.name,
+              tuition: databaseCourse.tuition,
+              suitable: databaseCourse.suitable || course.suitable,
+            }
+          : course;
+      });
+      const extraDatabaseCourseFees = databaseCourseFees.filter((course) => !this.courseFees.some((item) => item.id === course.id));
+
+      this.courseFees = [...mergedCourseFees, ...extraDatabaseCourseFees].sort(
+        (a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id)
+      );
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
         this.selectedCourseId = this.courseFees[0].id;
       }
@@ -604,6 +751,11 @@ export class CiaSchoolComponent implements OnInit {
     });
   }
 
+  openGalleryFromPreview(event?: Event): void {
+    this.setGalleryCategory('全部');
+    this.scrollToSection('gallery', event);
+  }
+
   calculateQuote(): void {
     this.quoteCalculated = true;
   }
@@ -634,6 +786,10 @@ export class CiaSchoolComponent implements OnInit {
     }
 
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
+  }
+
+  get heroGalleryPreviewImages(): GalleryImage[] {
+    return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category)).slice(0, 4);
   }
 
   get selectedCourse(): CourseFee {

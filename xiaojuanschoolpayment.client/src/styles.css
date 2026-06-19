@@ -72,8 +72,8 @@ app-cia-school .page-main {
 
 app-cia-school .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.72fr);
+  gap: 24px;
   align-items: start;
   padding-top: 6px;
 }
@@ -200,7 +200,9 @@ app-cia-school .trust-note mat-icon {
 }
 
 app-cia-school .hero-media {
+  width: min(100%, 520px);
   min-width: 0;
+  justify-self: end;
 }
 
 app-cia-school [id] {
@@ -221,8 +223,9 @@ app-cia-school .gallery-grid figure {
 app-cia-school .feature-photo img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1.95;
   object-fit: cover;
+  transition: transform 0.2s ease;
 }
 
 app-cia-school .feature-photo figcaption {
@@ -230,25 +233,26 @@ app-cia-school .feature-photo figcaption {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 38px 14px 14px;
+  padding: 30px 12px 12px;
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 900;
 }
 
 app-cia-school .media-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 app-cia-school .media-strip img {
   display: block;
   width: 100%;
-  aspect-ratio: 1.75;
+  aspect-ratio: 2.05;
   object-fit: cover;
+  transition: transform 0.2s ease;
 }
 
 app-cia-school .media-strip figcaption,
@@ -257,11 +261,24 @@ app-cia-school .gallery-grid figcaption {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 22px 10px 10px;
+  padding: 18px 8px 8px;
   color: #ffffff;
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
+}
+
+app-cia-school .hero-gallery-link {
+  cursor: pointer;
+}
+
+app-cia-school .hero-gallery-link:hover img {
+  transform: scale(1.025);
+}
+
+app-cia-school .hero-gallery-link:focus-visible {
+  outline: 3px solid rgba(8, 115, 67, 0.28);
+  outline-offset: 3px;
 }
 
 app-cia-school .photo-source {
@@ -624,8 +641,14 @@ app-cia-school .activity-columns {
 
 app-cia-school .fit-grid > div {
   padding: 16px;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: #f8fbfa;
+}
+
+app-cia-school .fit-grid > div:nth-child(2) {
+  border-color: #f8b4ad;
+  background: #fff5f4;
 }
 
 app-cia-school .fit-grid h3,
@@ -642,9 +665,18 @@ app-cia-school .fit-grid h3 mat-icon {
   color: #087343;
 }
 
+app-cia-school .fit-grid > div:nth-child(2) h3,
+app-cia-school .fit-grid > div:nth-child(2) h3 mat-icon {
+  color: #d92d20;
+}
+
 app-cia-school .fit-grid article {
   padding: 12px 0;
   border-top: 1px solid #e3ece8;
+}
+
+app-cia-school .fit-grid > div:nth-child(2) article {
+  border-top-color: #f3c7c2;
 }
 
 app-cia-school .fit-grid strong {
@@ -660,37 +692,155 @@ app-cia-school .course-card p {
 
 app-cia-school .course-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(9, minmax(112px, 1fr));
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+app-cia-school .course-grid::-webkit-scrollbar {
+  display: none;
 }
 
 app-cia-school .course-card {
-  min-height: 176px;
-  padding: 16px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 132px;
+  padding: 12px 10px;
   border: 1px solid #dfe8ef;
   border-radius: 8px;
   background: #ffffff;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(17, 34, 58, 0.04);
+  scroll-snap-align: start;
 }
 
 app-cia-school .course-card h3 {
-  margin: 5px 0 0;
+  min-height: 31px;
+  margin: 0;
   color: #071a3d;
-  font-size: 18px;
-  line-height: 1.28;
+  font-size: 13px;
+  line-height: 1.18;
 }
 
-app-cia-school .course-lessons {
-  color: #0a7d4b !important;
-  font-weight: 850;
+app-cia-school #courses .section-heading {
+  margin-bottom: 10px;
+}
+
+app-cia-school #courses .section-heading h2 {
+  font-size: 20px;
+}
+
+app-cia-school #courses .section-heading p {
+  display: none;
+}
+
+app-cia-school .course-card__icon {
+  justify-self: center;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #a8d9bf;
+  border-radius: 999px;
+  background: #f5fbf8;
+  color: #0a7d4b;
+  font-size: 15px;
+  line-height: 1;
+}
+
+app-cia-school .course-card__details {
+  display: grid;
+  gap: 4px;
+}
+
+app-cia-school .course-card__details p {
+  display: grid;
+  grid-template-columns: 13px minmax(0, 1fr);
+  gap: 4px;
+  align-items: start;
+  margin: 0;
+  color: #5b6a80;
+  font-size: 10px;
+  line-height: 1.3;
+  text-align: left;
+}
+
+app-cia-school .course-card__details mat-icon {
+  width: 12px;
+  height: 12px;
+  color: #7c8ba0;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+app-cia-school .course-card__details span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #5b6a80;
+  font-size: inherit;
+  font-weight: 650;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 app-cia-school .split-layout {
   margin-top: 18px;
 }
 
+app-cia-school #course-fees {
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 0.7fr);
+  align-items: stretch;
+}
+
 app-cia-school .split-layout > .section-block,
 app-cia-school .split-layout > .quote-panel {
   margin-top: 0;
+}
+
+app-cia-school .pricing-panel {
+  overflow: hidden;
+}
+
+app-cia-school .pricing-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+app-cia-school .pricing-summary div {
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid #d8e7df;
+  border-radius: 8px;
+  background: #f8fbfa;
+}
+
+app-cia-school .pricing-summary span {
+  display: block;
+  color: #087343;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+app-cia-school .pricing-summary strong {
+  display: block;
+  margin-top: 2px;
+  color: #071a3d;
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+app-cia-school .pricing-summary p {
+  margin: 2px 0 0;
+  color: #637086;
+  font-size: 11px;
+  line-height: 1.25;
 }
 
 app-cia-school .data-table {
@@ -711,17 +861,21 @@ app-cia-school .room-fee-table .table-row {
   grid-template-columns: 1.1fr 0.85fr 1.45fr;
 }
 
-app-cia-school .table-row span {
+app-cia-school .course-fee-table .table-row {
+  grid-template-columns: minmax(120px, 0.95fr) 96px minmax(190px, 1.45fr) minmax(120px, 0.95fr);
+}
+
+app-cia-school .table-row > span {
   padding: 10px 12px;
   border-bottom: 1px solid #edf2f5;
   font-size: 13px;
 }
 
-app-cia-school .table-row span + span {
+app-cia-school .table-row > span + span {
   border-left: 1px solid #edf2f5;
 }
 
-app-cia-school .table-row:last-child span {
+app-cia-school .table-row:last-child > span {
   border-bottom: 0;
 }
 
@@ -735,9 +889,101 @@ app-cia-school .table-head span {
   color: #ffffff;
 }
 
+app-cia-school .pricing-table {
+  border-color: #dfe8ef;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+app-cia-school .pricing-table .table-head {
+  min-height: 36px;
+  background: #08204a;
+  color: #ffffff;
+}
+
+app-cia-school .pricing-table .table-head span {
+  border-bottom-color: #08204a;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+app-cia-school .pricing-table .table-row:not(.table-head) {
+  min-height: 36px;
+}
+
+app-cia-school .pricing-table .table-row > span {
+  padding: 7px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+app-cia-school .pricing-table .table-row:not(.table-head):nth-child(odd) {
+  background: #fbfcfd;
+}
+
+app-cia-school .pricing-table .table-row:not(.table-head):hover {
+  background: #f5faf7;
+}
+
+app-cia-school .pricing-table .course-cell {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+}
+
+app-cia-school .pricing-table .course-cell strong {
+  color: #071a3d;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+app-cia-school .pricing-table .course-cell small {
+  color: #087343;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+app-cia-school .pricing-table .price-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: #f8fbfa;
+}
+
+app-cia-school .pricing-table .price-cell strong {
+  color: #087343;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+app-cia-school .pricing-table .note-cell {
+  color: #40506a;
+}
+
+app-cia-school .pricing-table .note-cell--highlight {
+  background: #eef7f2;
+  color: #087343;
+  font-weight: 900;
+}
+
 app-cia-school .timeline {
   display: grid;
   gap: 10px;
+}
+
+app-cia-school #daily-schedule {
+  display: flex;
+  flex-direction: column;
+}
+
+app-cia-school #daily-schedule .timeline {
+  flex: 1;
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+}
+
+app-cia-school #daily-schedule .timeline article {
+  align-content: center;
 }
 
 app-cia-school .timeline article {
@@ -1232,9 +1478,17 @@ app-cia-school .mobile-only {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  app-cia-school .course-grid {
+    grid-template-columns: repeat(9, minmax(112px, 1fr));
+  }
+
   app-cia-school .materials-panel {
     display: grid;
     align-items: stretch;
+  }
+
+  app-cia-school #course-fees {
+    grid-template-columns: 1fr;
   }
 
   app-cia-school .materials-panel .primary-action {
@@ -1397,6 +1651,10 @@ app-cia-school .mobile-only {
     grid-template-columns: 1fr;
   }
 
+  app-cia-school .course-grid {
+    grid-template-columns: repeat(9, minmax(112px, 1fr));
+  }
+
   app-cia-school .media-strip,
   app-cia-school .gallery-grid {
     display: flex;
@@ -1425,6 +1683,21 @@ app-cia-school .mobile-only {
   app-cia-school .media-strip img,
   app-cia-school .gallery-grid img {
     min-height: 172px;
+  }
+
+  app-cia-school .hero-media .media-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    overflow: visible;
+  }
+
+  app-cia-school .hero-media .media-strip figure {
+    flex: initial;
+  }
+
+  app-cia-school .hero-media .media-strip img {
+    min-height: 0;
   }
 
   app-cia-school .gallery-tabs {
@@ -1528,11 +1801,51 @@ app-cia-school .mobile-only {
     font-size: 18px;
   }
 
+  app-cia-school .mobile-course-fees b {
+    color: #087343;
+  }
+
   app-cia-school .mobile-card-list p {
     margin: 0;
     color: #53647a;
     font-size: 15px;
     line-height: 1.6;
+  }
+
+  app-cia-school .pricing-summary {
+    grid-template-columns: 1fr;
+  }
+
+  app-cia-school .mobile-card-list .mobile-course-note {
+    padding-top: 6px;
+    border-top: 1px solid #edf2f5;
+    color: #6a7585;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  app-cia-school .mobile-card-list .mobile-course-note--highlight {
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: #eef7f2;
+    color: #087343;
+    font-weight: 900;
+  }
+
+  app-cia-school .mobile-course-fees article {
+    gap: 6px;
+    min-height: auto;
+    padding: 12px;
+  }
+
+  app-cia-school .mobile-course-fees div {
+    padding: 8px 10px;
+  }
+
+  app-cia-school .mobile-course-fees p {
+    font-size: 14px;
+    line-height: 1.45;
   }
 
   app-cia-school #room-fees {

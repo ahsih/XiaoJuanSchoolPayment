@@ -35,12 +35,28 @@
         </div>
 
         <div class="hero-media" aria-label="CIA校园图片展示">
-          <figure class="feature-photo">
-            <img [src]="galleryImages[0].src" [alt]="galleryImages[0].title" />
-            <figcaption>{{ galleryImages[0].title }}</figcaption>
+          <figure
+            class="feature-photo hero-gallery-link"
+            role="button"
+            tabindex="0"
+            *ngIf="heroGalleryPreviewImages[0] as heroImage"
+            (click)="openGalleryFromPreview()"
+            (keydown.enter)="openGalleryFromPreview($event)"
+            (keydown.space)="openGalleryFromPreview($event)"
+          >
+            <img [src]="heroImage.src" [alt]="heroImage.title" />
+            <figcaption>{{ heroImage.title }}</figcaption>
           </figure>
           <div class="media-strip" aria-label="CIA校园缩略图">
-            <figure *ngFor="let image of galleryImages.slice(2, 5)">
+            <figure
+              class="hero-gallery-link"
+              role="button"
+              tabindex="0"
+              *ngFor="let image of heroGalleryPreviewImages.slice(1)"
+              (click)="openGalleryFromPreview()"
+              (keydown.enter)="openGalleryFromPreview($event)"
+              (keydown.space)="openGalleryFromPreview($event)"
+            >
               <img [src]="image.src" [alt]="image.title" />
               <figcaption>{{ image.title }}</figcaption>
             </figure>
@@ -187,42 +203,76 @@
         </div>
         <div class="course-grid">
           <article class="course-card" *ngFor="let course of courses">
-            <span>{{ course.type }}</span>
+            <mat-icon class="course-card__icon">{{ course.icon }}</mat-icon>
             <h3>{{ course.name }}</h3>
-            <p class="course-lessons">{{ course.lessons }}</p>
-            <p>{{ course.suitable }}</p>
+            <div class="course-card__details">
+              <p>
+                <mat-icon>person_outline</mat-icon>
+                <span>{{ course.type }}</span>
+              </p>
+              <p>
+                <mat-icon>track_changes</mat-icon>
+                <span>{{ course.suitable }}</span>
+              </p>
+            </div>
           </article>
         </div>
       </section>
 
       <section class="split-layout" id="course-fees">
-        <div class="section-block">
+        <div class="section-block pricing-panel">
           <div class="section-heading">
             <span>CIA 2026 年 4 周课程费</span>
             <h2>先看课程费，再叠加住宿费</h2>
             <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
           </div>
-          <div class="data-table course-fee-table" role="table" aria-label="CIA 2026年4周课程费">
+
+          <div class="pricing-summary" aria-label="CIA 课程费用摘要">
+            <div>
+              <span>注册费</span>
+              <strong>USD {{ registrationFee }}</strong>
+              <p>报名时一次性收取</p>
+            </div>
+            <div>
+              <span>课程费基准</span>
+              <strong>4 周 / 美元</strong>
+              <p>住宿费与当地费用另计</p>
+            </div>
+          </div>
+
+          <div class="data-table course-fee-table pricing-table" role="table" aria-label="CIA 2026年4周课程费">
             <div class="table-row table-head" role="row">
-              <span role="columnheader">课程</span>
+              <span role="columnheader">课程名称</span>
               <span role="columnheader">4周课程费</span>
-              <span role="columnheader">适合人群</span>
+              <span role="columnheader">课程安排</span>
+              <span role="columnheader">备注</span>
             </div>
             <div class="table-row" role="row" *ngFor="let fee of courseFees">
-              <span role="cell">{{ fee.name }}</span>
-              <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-              <span role="cell">{{ fee.suitable }}</span>
+              <span class="course-cell" role="cell">
+                <strong>{{ fee.name }}</strong>
+                <small>{{ fee.suitable }}</small>
+              </span>
+              <span class="price-cell" role="cell">
+                <strong>USD {{ formatUsd(fee.tuition) }}</strong>
+              </span>
+              <span role="cell">{{ fee.schedule }}</span>
+              <span class="note-cell" [class.note-cell--highlight]="fee.highlightNote" role="cell">
+                {{ fee.note }}
+              </span>
             </div>
           </div>
           <div class="mobile-card-list mobile-course-fees" aria-label="CIA 2026年4周课程费手机卡片">
             <article *ngFor="let fee of courseFees">
-              <span>课程</span>
+              <span>{{ fee.suitable }}</span>
               <strong>{{ fee.name }}</strong>
               <div>
                 <em>4周课程费</em>
                 <b>USD {{ formatUsd(fee.tuition) }}</b>
               </div>
-              <p>{{ fee.suitable }}</p>
+              <p>{{ fee.schedule }}</p>
+              <p class="mobile-course-note" [class.mobile-course-note--highlight]="fee.highlightNote">
+                {{ fee.note }}
+              </p>
             </article>
           </div>
         </div>
