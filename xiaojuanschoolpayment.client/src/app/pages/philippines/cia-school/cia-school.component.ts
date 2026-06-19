@@ -125,7 +125,7 @@ export class CiaSchoolComponent implements OnInit {
     'guardian',
     'immersion',
   ];
-  private readonly roomFeeOrder = ['p1', 's1', 'd2', 'd3', 'd4'];
+  private readonly roomFeeOrder = ['p1', 's1', 'pn1', 'd2', 'd3', 'd4', 'sr1', 'sr2', 'sr3', 'sr4'];
   private readonly featuredGalleryCategories: ReadonlyArray<Exclude<GalleryCategory, '全部'>> = ['校园', '教室', '设施'];
   private readonly courseFeeDetails: Record<string, Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>> = {
     'regular-esl': {
@@ -489,11 +489,16 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'p1', name: '单人间 P-1', fee: 1350, note: '隐私最好，旺季最容易满房' },
-    { id: 's1', name: '单人间 S-1', fee: 1150, note: '适合重视安静和独立空间' },
-    { id: 'd2', name: '双人间 D-2', fee: 950, note: '朋友同行或预算舒适平衡' },
+    { id: 'p1', name: '豪华单人间 P-1', fee: 1700, note: '豪华单人间多了一个电磁炉，可以简单加热食物' },
+    { id: 's1', name: '标准单人间 S-1', fee: 1500, note: '标准单人间，适合重视独立空间的学生' },
+    { id: 'pn1', name: '校外单人间 PN-1', fee: 1700, note: '在学校对面的4号楼' },
+    { id: 'd2', name: '双人间 D-2', fee: 1100, note: '双人间，适合朋友同行或希望平衡预算' },
     { id: 'd3', name: '三人间 D-3', fee: 850, note: '预算比双人间更低' },
     { id: 'd4', name: '四人间 D-4', fee: 750, note: '默认报价参考，预算压力较低' },
+    { id: 'sr1', name: '单人套房 SR-1', fee: 2500, note: '套房房型，空间更完整' },
+    { id: 'sr2', name: '双人套房 SR-2', fee: 1400, note: '套房房型，适合两人入住' },
+    { id: 'sr3', name: '三人套房 SR-3', fee: 1200, note: '套房房型，适合小组同行' },
+    { id: 'sr4', name: '四人套房 SR-4', fee: 1100, note: '套房房型，预算和空间较平衡' },
   ];
 
   localFees: LocalFee[] = [
@@ -701,7 +706,27 @@ export class CiaSchoolComponent implements OnInit {
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
 
     if (databaseRoomFees.length > 0) {
-      this.roomFees = databaseRoomFees;
+      const hasCompleteDatabaseRoomFees = this.roomFeeOrder.every((roomId) => databaseRoomFees.some((room) => room.id === roomId));
+      const mergedRoomFees = this.roomFees.map((room) => {
+        const databaseRoom = hasCompleteDatabaseRoomFees
+          ? databaseRoomFees.find((item) => item.id === room.id && item.name === room.name) ??
+            databaseRoomFees.find((item) => item.id === room.id)
+          : undefined;
+
+        return databaseRoom
+          ? {
+              ...room,
+              name: databaseRoom.name,
+              fee: databaseRoom.fee,
+              note: databaseRoom.note || room.note,
+            }
+          : room;
+      });
+      const extraDatabaseRoomFees = databaseRoomFees.filter((room) => !this.roomFees.some((item) => item.id === room.id));
+
+      this.roomFees = [...mergedRoomFees, ...extraDatabaseRoomFees].sort(
+        (a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id)
+      );
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
         this.selectedRoomId = this.roomFees[this.roomFees.length - 1].id;
       }
@@ -860,7 +885,7 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   private createRoomId(name: string): string {
-    const roomCode = name.match(/\b([psd])\s*-?\s*(\d)\b/i);
+    const roomCode = name.match(/\b((?:pn|sr)|[psd])\s*-?\s*(\d)\b/i);
 
     if (roomCode) {
       return `${roomCode[1].toLowerCase()}${roomCode[2]}`;

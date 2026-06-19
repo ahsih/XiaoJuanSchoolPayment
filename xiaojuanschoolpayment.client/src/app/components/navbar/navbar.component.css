@@ -11,8 +11,9 @@
 .site-header {
   position: relative;
   min-height: 72px;
-  width: min(1460px, calc(100% - 64px));
-  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -235,7 +236,7 @@
 
 @media (max-width: 1260px) {
   .site-header {
-    width: min(100%, calc(100% - 32px));
+    padding-inline: 16px;
     gap: 1rem;
   }
 
@@ -325,7 +326,7 @@
 @media (max-width: 620px) {
   .site-header {
     min-height: 64px;
-    width: min(100%, calc(100% - 24px));
+    padding-inline: 12px;
     grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 0.55rem;
   }

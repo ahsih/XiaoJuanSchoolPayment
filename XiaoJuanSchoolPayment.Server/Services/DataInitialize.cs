@@ -79,11 +79,18 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "TOEIC Regular", 4, 1000m, "托业专项备考", now);
       UpsertLesson(context, schoolId, "Business", 4, 1050m, "商务沟通与面试表达", now);
 
-      UpsertRoom(context, schoolId, "单人间 P-1", 4, 1350m, "隐私最好，旺季最容易满房", now);
-      UpsertRoom(context, schoolId, "单人间 S-1", 4, 1150m, "适合重视安静和独立空间", now);
-      UpsertRoom(context, schoolId, "双人间 D-2", 4, 950m, "朋友同行或预算舒适平衡", now);
+      RemoveRoom(context, schoolId, "单人间 P-1", 4);
+      RemoveRoom(context, schoolId, "单人间 S-1", 4);
+      UpsertRoom(context, schoolId, "豪华单人间 P-1", 4, 1700m, "豪华单人间多了一个电磁炉，可以简单加热食物", now);
+      UpsertRoom(context, schoolId, "标准单人间 S-1", 4, 1500m, "标准单人间，适合重视独立空间的学生", now);
+      UpsertRoom(context, schoolId, "校外单人间 PN-1", 4, 1700m, "在学校对面的4号楼", now);
+      UpsertRoom(context, schoolId, "双人间 D-2", 4, 1100m, "双人间，适合朋友同行或希望平衡预算", now);
       UpsertRoom(context, schoolId, "三人间 D-3", 4, 850m, "预算比双人间更低", now);
       UpsertRoom(context, schoolId, "四人间 D-4", 4, 750m, "默认报价参考，预算压力较低", now);
+      UpsertRoom(context, schoolId, "单人套房 SR-1", 4, 2500m, "套房房型，空间更完整", now);
+      UpsertRoom(context, schoolId, "双人套房 SR-2", 4, 1400m, "套房房型，适合两人入住", now);
+      UpsertRoom(context, schoolId, "三人套房 SR-3", 4, 1200m, "套房房型，适合小组同行", now);
+      UpsertRoom(context, schoolId, "四人套房 SR-4", 4, 1100m, "套房房型，预算和空间较平衡", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
       UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/14-8/8、2027/1/17-2/14期间按 USD 40 / 周计算", now);
@@ -166,6 +173,16 @@ namespace XiaoJuanSchoolPayment.Server.Services
       room.CurrencyId = UsdCurrencyId;
       room.Description = description;
       room.LastUpdated = lastUpdated;
+    }
+
+    private static void RemoveRoom(AppDbContext context, Guid schoolId, string name, int week)
+    {
+      var room = context.SchoolRooms.FirstOrDefault(x => x.SchoolId == schoolId && x.Name == name && x.Week == week);
+
+      if (room != null)
+      {
+        context.SchoolRooms.Remove(room);
+      }
     }
 
     private static void UpsertFee(

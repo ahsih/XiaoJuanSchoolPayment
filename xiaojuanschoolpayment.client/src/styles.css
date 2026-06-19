@@ -1317,7 +1317,7 @@ app-cia-school .side-panel {
   position: sticky;
   top: 88px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 app-cia-school .current-card,
@@ -1329,7 +1329,7 @@ app-cia-school .section-nav {
 }
 
 app-cia-school .current-card {
-  padding: 14px;
+  padding: 16px 14px;
 }
 
 app-cia-school .current-card strong {
@@ -1370,14 +1370,14 @@ app-cia-school .current-card .secondary-action {
 
 app-cia-school .section-nav {
   display: grid;
-  padding: 10px;
+  padding: 12px 10px;
 }
 
 app-cia-school .section-nav a {
   display: flex;
   gap: 8px;
   align-items: center;
-  min-height: 36px;
+  min-height: 39px;
   color: #33455e;
   text-decoration: none;
   font-size: 13px;
