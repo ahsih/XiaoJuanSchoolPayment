@@ -189,7 +189,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cpi-cebu-pelis-institute',
         loadComponent: () =>
-          import('./pages/philippines/cpi-school/cpi-school.component').then((m) => m.CpiSchoolComponent),
+          import('./pages/philippines/cpi-school/cpi-school-detail.component').then((m) => m.CpiSchoolDetailComponent),
       },
       {
         path: 'philippines-study/cebu/cpils',
