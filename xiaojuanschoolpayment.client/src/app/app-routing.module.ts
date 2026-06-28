@@ -184,7 +184,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ev-academy',
         loadComponent: () =>
-          import('./pages/philippines/ev-school/ev-school.component').then((m) => m.EvSchoolComponent),
+          import('./pages/philippines/ev-school/ev-school-detail.component').then((m) => m.EvSchoolDetailComponent),
       },
       {
         path: 'philippines-study/cebu/cpi-cebu-pelis-institute',

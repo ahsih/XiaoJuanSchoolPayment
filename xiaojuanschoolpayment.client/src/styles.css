@@ -1497,8 +1497,25 @@ app-cia-school .mobile-only {
 }
 
 @media (max-width: 680px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  app-cia-school,
+  app-cia-school .cia-page,
+  app-cia-school .page-grid,
+  app-cia-school .page-main,
+  app-cia-school .hero-section,
+  app-cia-school .hero-copy,
+  app-cia-school .hero-media,
+  app-cia-school .feature-photo {
+    max-width: 100%;
+    min-width: 0;
+  }
+
   app-cia-school .cia-page {
-    width: 100%;
+    width: auto;
     padding: 16px 14px calc(112px + env(safe-area-inset-bottom));
     overflow-x: clip;
   }
@@ -1971,6 +1988,8 @@ app-cia-school .mobile-only {
     bottom: 0;
     left: 0;
     z-index: 70;
+    width: 100%;
+    max-width: 100vw;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
@@ -1981,6 +2000,7 @@ app-cia-school .mobile-only {
   }
 
   app-cia-school .mobile-bottom-actions a {
+    min-width: 0;
     min-height: 52px;
     display: inline-flex;
     align-items: center;

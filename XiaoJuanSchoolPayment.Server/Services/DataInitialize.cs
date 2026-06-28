@@ -9,7 +9,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const int UsdCurrencyId = 1;
     private const int PhpCurrencyId = 5;
     private static readonly Guid CiaSchoolId = Guid.Parse("2f6a6d78-b2f1-4b84-9ac4-1d3b3bd10c1a");
+    private static readonly Guid EvSchoolId = Guid.Parse("d48cd1f9-d76b-4b52-9960-e9db057f577d");
     private const string CiaSchoolName = "CIA Cebu International Academy";
+    private const string EvSchoolName = "EV Academy";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -19,6 +21,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       await SeedCurrenciesAsync(context);
       await SeedCiaPricingAsync(context);
+      await SeedEvPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -107,6 +110,62 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedEvPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x => x.Id == EvSchoolId || x.Name == EvSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = EvSchoolId,
+          Name = EvSchoolName,
+          CreatedDate = new DateTime(2002, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = EvSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2002, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+
+      const string evLessonNote = "EV 2026年4周课程费参考；最终以学校正式报价为准";
+      UpsertLesson(context, schoolId, "ESL Classic", 4, 780m, "半斯巴达综合英语，适合学习与生活平衡", now, evLessonNote);
+      UpsertLesson(context, schoolId, "Intensive ESL", 4, 900m, "斯巴达强度更高，适合想被学习节奏推动的学生", now, evLessonNote);
+      UpsertLesson(context, schoolId, "Power Speaking 6", 4, 980m, "每天更多一对一口语训练，适合短期口语突破", now, evLessonNote);
+      UpsertLesson(context, schoolId, "Power Speaking 8", 4, 1080m, "高一对一比例，适合明确口语冲刺目标", now, evLessonNote);
+      UpsertLesson(context, schoolId, "IELTS", 4, 1000m, "雅思备考与模考训练，适合目标分数学生", now, evLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC", 4, 950m, "托业备考，适合升学、求职或企业英语需求", now, evLessonNote);
+      UpsertLesson(context, schoolId, "Business", 4, 950m, "商务沟通、会议、演示和职场表达", now, evLessonNote);
+
+      UpsertRoom(context, schoolId, "单人房", 4, 1600m, "隐私最好，预算较高，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "双人房", 4, 1230m, "适合朋友同行或希望兼顾预算与舒适度", now);
+      UpsertRoom(context, schoolId, "三人房", 4, 1150m, "多人房中预算较平衡", now);
+      UpsertRoom(context, schoolId, "四人房", 4, 1100m, "默认报价参考，预算压力较低", now);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
+      UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
+      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；按实际购买教材调整", now);
+      UpsertFee(context, schoolId, "水电费", 3200m, PhpCurrencyId, "到校支付费用；4周参考，按实际或学校规则调整", now);
+      UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "学生证", 500m, PhpCurrencyId, "到校支付费用；一次性费用参考", now);
+      UpsertFee(context, schoolId, "设施维护费", 2000m, PhpCurrencyId, "到校支付费用；4周参考", now);
+      UpsertFee(context, schoolId, "接机费", 1200m, PhpCurrencyId, "到校支付费用；宿务机场接机参考", now);
+      UpsertFee(context, schoolId, "保证金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
+      UpsertFee(context, schoolId, "洗衣费", 600m, PhpCurrencyId, "到校支付费用；约 PHP 150 / 5kg / 次，按实际使用调整", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static void UpsertLesson(
       AppDbContext context,
       Guid schoolId,
@@ -114,7 +173,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       int week,
       decimal price,
       string description,
-      DateTime lastUpdated)
+      DateTime lastUpdated,
+      string note = "CIA 2026年4周课程费参考；最终以学校正式报价为准")
     {
       var lesson = context.SchoolLessons.FirstOrDefault(x => x.SchoolId == schoolId && x.Name == name && x.Week == week);
 
@@ -129,7 +189,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
           Price = price,
           CurrencyId = UsdCurrencyId,
           Description = description,
-          Note = "CIA 2026年4周课程费参考；最终以学校正式报价为准",
+          Note = note,
           LastUpdated = lastUpdated,
         });
         return;
@@ -138,7 +198,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       lesson.Price = price;
       lesson.CurrencyId = UsdCurrencyId;
       lesson.Description = description;
-      lesson.Note = "CIA 2026年4周课程费参考；最终以学校正式报价为准";
+      lesson.Note = note;
       lesson.LastUpdated = lastUpdated;
     }
 
