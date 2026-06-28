@@ -199,7 +199,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/english-fella',
         loadComponent: () =>
-          import('./pages/philippines/fella-school/fella-school.component').then((m) => m.FellaSchoolComponent),
+          import('./pages/philippines/fella-school/fella-school-detail.component').then((m) => m.FellaSchoolDetailComponent),
       },
       {
         path: 'philippines-study/cebu/philinter-academy',

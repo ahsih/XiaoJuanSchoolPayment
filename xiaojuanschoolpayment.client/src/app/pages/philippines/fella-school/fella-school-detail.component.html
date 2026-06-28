@@ -1,0 +1,408 @@
+<app-cia-school>
+  <div class="cia-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / English Fella</p>
+            <h1>English Fella Cebu</h1>
+            <p class="hero-lead">
+              宿务2006年创立的老牌大校园学校，适合想比较斯巴达/半斯巴达管理、ESL、考试、商务、亲子和长期学习方案的学生。
+            </p>
+            <div class="hero-tags" aria-label="English Fella特点">
+              <span>大校园</span>
+              <span>两校区选择</span>
+              <span>课程完整</span>
+              <span>亲子可咨询</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/register">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的课程目标、校区偏好、管理强度、房型和入学日期，思达会帮你确认English Fella空房、优惠和正式报价。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="English Fella校园图片展示">
+            <figure class="feature-photo">
+              <img src="assets/fella/campus-main.jpg" alt="English Fella校园" />
+              <figcaption>English Fella 大校园环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="English Fella校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(3, 6)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <p class="photo-source">图片来源：English Fella官方网站公开图片；课程、住宿、设施与当地费用信息参考English Fella官方网站资料。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="English Fella手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="English Fella快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 视频展示</span>
+            <h2>按区域查看 English Fella 环境</h2>
+            <p>先看校园、教室、住宿、餐厅和设施，再判断Fella的学习与生活环境是否适合你。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="English Fella图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>English Fella 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先选校区强度，再确认课程和房型</h2>
+            </div>
+            <p>
+              English Fella的关键不是只看价格，而是先确认第一校区还是第二校区、斯巴达还是半斯巴达、成人还是亲子，再核对课程强度与房型。若你重视考试目标，可以同时比较Fella、CPILS、CIA和EV；若你重视校园空间和照顾感，Fella很值得放入候选。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>先核校区、管理模式和当地费用，再判断Fella是否适合你的预算。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/register">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>English Fella 核心亮点</span>
+              <h2>为什么很多学生会把 Fella 放进候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 English Fella 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 English Fella</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>PIC适合综合英语，IELTS/TOEIC/TOEFL适合考试目标，Business、Junior、Guardian和Silver Speaking则要按年龄和目的细分。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>English Fella 2026 年 4 周课程费</span>
+              <h2>先看课程费，再叠加住宿费</h2>
+              <p>以下为4周课程费拆分参考，币种为美元。最终以学校当期报价、校区、空房和优惠为准。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="English Fella 2026年4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="English Fella 2026年4周课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>English Fella 一天学习生活安排</span>
+              <h2>校区和课程不同，晚间规则也不同</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>English Fella 2026 年 4 周住宿费</span>
+              <h2>房型、校区和管理模式要一起确认</h2>
+              <p>默认报价使用三人房。标准单人、豪华单人、亲子和青少年房型建议先让顾问确认空房。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="English Fella 2026年4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="English Fella 2026年4周住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>English Fella 费用快速报价</span>
+              <h2>默认参考：4周 PIC-4 + 三人房</h2>
+              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
+            </div>
+            <div class="quote-form" aria-label="English Fella费用快速报价选项">
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
+              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房和优惠。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/register">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、水电费、空调费、教材费、宿舍押金、接机费、签证延签、ACR I-card等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
+            <p class="season-note">English Fella旺季附加费、校区规则、亲子/青少年监管费用、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>前期支付之外，还要准备当地费用</h2>
+            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数、校区和学校政策会影响最终金额。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页价格更新时间：2026年6月28日。学校环境、课程、住宿和设施信息参考English Fella官方网站公开资料；课程费与住宿费参考公开费用表并由思达顾问按当前页面报价逻辑拆分整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 English Fella 完整资料与报价单</span>
+              <h2>让顾问把课程、校区、房型、空房和费用一次核清</h2>
+              <p>通过思达报名 English Fella，思达顾问会免费协助确认课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。学生只需按顾问指引准备个人资料。</p>
+            </div>
+            <ul class="check-list"><li>校区与管理模式建议</li><li>亲子/青少年规则确认</li><li>课程和房型空房确认</li><li>前期支付与到校支付费用清单</li></ul>
+          </div>
+          <a class="primary-action" routerLink="/register">获取完整报价单<mat-icon>description</mat-icon></a>
+        </section>
+
+        <section class="section-block" id="service-process">
+          <div class="section-heading">
+            <span>通过思达报名 English Fella 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。思达在宿务有工作人员驻点，可为学生提供当地支持，直到学生完成学习并顺利回国。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading"><span>到校后的学校服务</span><h2>校内生活支持和活动资源比较完整</h2></div>
+            <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
+            <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验宿务生活</h2></div>
+            <div class="activity-columns desktop-activity-columns">
+              <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+              <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周末生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+                <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 English Fella 前，建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名 English Fella 前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="English Fella页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>4周</strong>
+          <p>PIC-4<br />三人房</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/register">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道 English Fella 当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、校区偏好、课程方向、房型和年龄情况发给顾问，可以更快得到准确报价。</p>
+        <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/register">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="English Fella手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/register"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+    </div>
+  </div>
+</app-cia-school>
