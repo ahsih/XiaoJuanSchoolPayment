@@ -194,7 +194,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cpils',
         loadComponent: () =>
-          import('./pages/philippines/cpils-school/cpils-school.component').then((m) => m.CpilsSchoolComponent),
+          import('./pages/philippines/cpils-school/cpils-school-detail.component').then((m) => m.CpilsSchoolDetailComponent),
       },
       {
         path: 'philippines-study/cebu/english-fella',

@@ -11,9 +11,11 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid CiaSchoolId = Guid.Parse("2f6a6d78-b2f1-4b84-9ac4-1d3b3bd10c1a");
     private static readonly Guid EvSchoolId = Guid.Parse("d48cd1f9-d76b-4b52-9960-e9db057f577d");
     private static readonly Guid CpiSchoolId = Guid.Parse("8c5d52f6-cfe1-45d9-9b66-1c5c0cdb2a6d");
+    private static readonly Guid CpilsSchoolId = Guid.Parse("6d0bcf03-e6d7-41b3-b14f-1467e762747d");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "CPI Cebu Pelis Institute";
+    private const string CpilsSchoolName = "CPILS";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -25,6 +27,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedCiaPricingAsync(context);
       await SeedEvPricingAsync(context);
       await SeedCpiPricingAsync(context);
+      await SeedCpilsPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -231,6 +234,65 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "接机费", 1000m, PhpCurrencyId, "到校支付费用；团体接机参考，个人接机可能不同", now);
       UpsertFee(context, schoolId, "保证金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
       UpsertFee(context, schoolId, "ACR I-card", 3500m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedCpilsPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x => x.Id == CpilsSchoolId || x.Name == CpilsSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = CpilsSchoolId,
+          Name = CpilsSchoolName,
+          CreatedDate = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = CpilsSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string cpilsLessonNote = "CPILS 2026年4周费用拆分参考；最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "General ESL", 4, 1060m, "基础综合英语，适合第一次游学和稳步提升", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "General ESL Plus", 4, 1060m, "综合英语加强方向，适合想增加输出训练的学生", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "General ESL Light", 4, 980m, "较轻量综合英语，适合想保留生活弹性的学生", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Premier Sparta", 4, 1160m, "斯巴达学习强度，适合需要纪律推动的学生", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Course", 4, 1215m, "雅思备考与目标分数训练", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Course", 4, 1160m, "托业备考，适合求职、升学或企业英语需求", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "TOEFL Course", 4, 1160m, "托福备考，适合北美升学或考试目标学生", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Business English", 4, 1160m, "商务沟通、会议、演示和职场表达", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Power Speaking and Modern Communication", 4, 1160m, "口语表达、沟通自信和现代沟通训练", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Parent-Child Program", 4, 1160m, "亲子课程方向，需按年龄、监护和房型确认", now, cpilsLessonNote);
+
+      UpsertRoom(context, schoolId, "四人房", 4, 530m, "默认报价参考，预算压力较低", now);
+      UpsertRoom(context, schoolId, "三人房", 4, 605m, "多人房中预算较平衡", now);
+      UpsertRoom(context, schoolId, "双人房", 4, 670m, "适合朋友同行或希望兼顾预算与舒适度", now);
+      UpsertRoom(context, schoolId, "单人房", 4, 825m, "隐私最好，预算较高，热门档期需早确认", now);
+
+      UpsertFee(context, schoolId, "注册费", 125m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
+      UpsertFee(context, schoolId, "SSP", 6800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
+      UpsertFee(context, schoolId, "SSP E-card", 4000m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
+      UpsertFee(context, schoolId, "水电费", 2000m, PhpCurrencyId, "到校支付费用；公开资料示例为每周预收 PHP 500，4周 PHP 2,000，多退少补", now);
+      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；按课程和实际购买教材调整", now);
+      UpsertFee(context, schoolId, "管理费", 1000m, PhpCurrencyId, "到校支付费用；4周参考，最终以学校现场收费为准", now);
+      UpsertFee(context, schoolId, "学生证", 300m, PhpCurrencyId, "到校支付费用；一次性费用参考", now);
+      UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
+      UpsertFee(context, schoolId, "接机费", 1200m, PhpCurrencyId, "到校支付费用；宿务机场接机参考", now);
+      UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "洗衣费", 500m, PhpCurrencyId, "到校支付费用；按实际使用和衣物重量调整", now);
 
       await context.SaveChangesAsync();
     }
