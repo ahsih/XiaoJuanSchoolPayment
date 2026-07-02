@@ -40,7 +40,7 @@
           <span>STAR Education</span>
           <strong>{{ item.label }}</strong>
           <p>{{ item.note || "完整项目路径与申请资讯" }}</p>
-          <a routerLink="/register" (click)="closeMenus()">
+          <a routerLink="/about-sida/contact" (click)="closeMenus()">
             免费咨询
             <mat-icon>chevron_right</mat-icon>
           </a>
@@ -74,7 +74,7 @@
     </div>
   </nav>
 
-  <a class="consult-button" routerLink="/register" (click)="closeMenus()">
+  <a class="consult-button" routerLink="/about-sida/contact" (click)="closeMenus()">
     <mat-icon>chat_bubble</mat-icon>
     <span>免费咨询</span>
   </a>
