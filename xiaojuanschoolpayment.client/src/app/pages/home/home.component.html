@@ -1,26 +1,34 @@
-<div class="home-page">
-  <section class="hero">
-    <div class="hero-copy">
-      <h1>
-        专注<span>爱尔兰</span>留学申请与<br />
-        英语学习规划
-      </h1>
-      <p>
-        从英语水平评估、雅思备考规划、菲律宾英语游学，
-        到爱尔兰本科、硕士与半工半读申请，思达为学生提供
-        一站式升学与语言提升方案。
-      </p>
+<link rel="stylesheet" href="/assets/home-page.css" />
 
-      <div class="hero-actions">
-        <a class="primary-action" routerLink="/register">
-          免费评估方案
-          <mat-icon>chevron_right</mat-icon>
-        </a>
-        <a class="secondary-action" href="#services" appScrollTo="services">
-          查看语言规划路径
-          <mat-icon>south</mat-icon>
-        </a>
-        <div class="scholarship-card">
+<div class="home-page">
+  <section class="hero-section">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">
+          <mat-icon>auto_awesome</mat-icon>
+          专注爱尔兰留学申请与英语学习规划
+        </p>
+        <h1>
+          爱尔兰留学申请<br />
+          英语学习<span>规划</span>专家
+        </h1>
+        <p class="hero-lead">
+          从英语水平评估、雅思备考规划、菲律宾英语游学，到爱尔兰本科、
+          硕士与半工半读申请，思达为学生提供一站式升学与语言能力方案。
+        </p>
+
+        <div class="hero-actions">
+          <a class="primary-action" routerLink="about-sida/contact">
+            免费评估方案
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
+          <a class="secondary-action" href="#services" appScrollTo="services">
+            查看语言规划路径
+            <mat-icon>south</mat-icon>
+          </a>
+        </div>
+
+        <div class="hero-proof">
           <mat-icon>emoji_events</mat-icon>
           <div>
             <strong>思达升学奖学金</strong>
@@ -28,60 +36,238 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="hero-media">
-      <img src="/assets/study-hero-collage.png" alt="爱尔兰校园、英语学习与课堂场景" />
+      <div class="hero-media" aria-label="爱尔兰校园与英语学习场景">
+        <img
+          src="/assets/study-hero-collage.png"
+          alt="爱尔兰校园、学生自习与英语课堂"
+        />
+        <div class="hero-badge">
+          <mat-icon>verified</mat-icon>
+          <div>
+            <strong>全程护航 · 录取无忧</strong>
+            <span>院校申请成功率高达 <b>98%</b></span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="services" id="services" aria-label="核心服务">
-    <article class="service-card" *ngFor="let service of services">
-      <span
-        class="service-icon"
-        [class.service-icon--green]="service.tone === 'green'"
-        [class.service-icon--teal]="service.tone === 'teal'"
-        [class.service-icon--blue]="service.tone === 'blue'"
-      >
+  <section class="services-section" id="services" aria-label="核心服务">
+    <a
+      class="service-card"
+      *ngFor="let service of services"
+      [routerLink]="service.route"
+      [class.service-card--orange]="service.tone === 'orange'"
+      [class.service-card--purple]="service.tone === 'purple'"
+      [class.service-card--gold]="service.tone === 'gold'"
+      [class.service-card--green]="service.tone === 'green'"
+    >
+      <span class="service-icon">
         <mat-icon>{{ service.icon }}</mat-icon>
       </span>
-      <div>
-        <h2>{{ service.title }}</h2>
-        <p>{{ service.description }}</p>
-        <a routerLink="/register">
+      <span class="service-copy">
+        <strong>{{ service.title }}</strong>
+        <span>{{ service.description }}</span>
+        <em>
           了解更多
-          <mat-icon>chevron_right</mat-icon>
-        </a>
-      </div>
-    </article>
+          <mat-icon>arrow_forward</mat-icon>
+        </em>
+      </span>
+    </a>
   </section>
 
-  <section class="philippines-schools">
+  <section class="school-section">
     <div class="section-heading">
       <div>
-        <h2>菲律宾热门语言学校</h2>
-        <p>从碧瑶到宿务，按学习强度、住宿体验和课程目标筛选适合学校</p>
+        <h2>
+          热门语言学校 / 推荐院校 <mat-icon>local_fire_department</mat-icon>
+        </h2>
+        <p>从语言到升学，优质院校助力你的留学之路</p>
       </div>
-      <a routerLink="/philippines-study/schools/by-city">
-        查看菲律宾学校库
-        <mat-icon>chevron_right</mat-icon>
+      <a class="outline-link" routerLink="/philippines-study/schools/by-city">
+        查看全部学校
+        <mat-icon>arrow_forward</mat-icon>
       </a>
     </div>
 
-    <div class="school-showcase-grid">
+    <div class="recommended-schools">
       <a
-        class="school-showcase-card"
-        *ngFor="let school of philippinesSchools"
+        class="recommended-card"
+        *ngFor="let school of recommendedSchools"
         [routerLink]="school.route"
       >
-        <img [src]="school.image" [alt]="school.name + ' campus image'" loading="lazy" />
-        <div class="school-showcase-card__body">
-          <span class="school-city">{{ school.city }}</span>
+        <img
+          [src]="school.image"
+          [alt]="school.name + ' 校园照片'"
+          loading="lazy"
+        />
+        <div>
+          <span class="city-pill">{{ school.city }}</span>
           <h3>{{ school.name }}</h3>
           <strong>{{ school.tag }}</strong>
           <p>{{ school.description }}</p>
+          <em>
+            查看详情
+            <mat-icon>arrow_forward</mat-icon>
+          </em>
         </div>
       </a>
     </div>
   </section>
+
+  <section class="trust-grid" aria-label="服务优势、流程与反馈">
+    <article class="trust-card why-card">
+      <h2>
+        <mat-icon>workspace_premium</mat-icon>
+        为什么选择思达启航
+      </h2>
+      <ul>
+        <li *ngFor="let point of whyPoints">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ point }}</span>
+        </li>
+      </ul>
+    </article>
+
+    <article class="trust-card process-card">
+      <h2>服务流程</h2>
+      <div class="mini-process">
+        <div class="mini-step" *ngFor="let step of processSteps">
+          <span>{{ step.marker }}</span>
+          <strong>{{ step.title }}</strong>
+          <p>{{ step.description }}</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="trust-card feedback-card">
+      <mat-icon class="quote-icon">format_quote</mat-icon>
+      <h2>学员真实反馈</h2>
+      <p>
+        在思达顾问的帮助下，我成功申请到了理想的爱尔兰硕士课程。
+        从选校、文书到签证，老师都非常专业负责，整个过程很安心。
+      </p>
+      <div class="student">
+        <span>张同学</span>
+        <small>商科硕士录取</small>
+      </div>
+    </article>
+  </section>
+
+  <section class="stats-band" aria-label="数据实力">
+    <div class="stats-inner">
+      <div class="stats-heading">
+        <h2>用数据见证实力</h2>
+        <p>多年专注，只为更好的结果</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item" *ngFor="let stat of stats">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects-section">
+    <div class="section-heading section-heading--stacked">
+      <h2>我们的项目</h2>
+      <p>多元化留学与服务，满足不同阶段的需求</p>
+    </div>
+
+    <div class="project-grid">
+      <a
+        class="project-card"
+        *ngFor="let project of projects"
+        [routerLink]="project.route"
+      >
+        <img [src]="project.image" [alt]="project.title" loading="lazy" />
+        <div>
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.description }}</p>
+          <em>
+            了解更多
+            <mat-icon>arrow_forward</mat-icon>
+          </em>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="journey-section">
+    <div class="section-heading section-heading--stacked">
+      <h2>五步开启你的留学之旅</h2>
+      <p>科学规划每一步，让留学更简单</p>
+    </div>
+
+    <div class="journey-track">
+      <article class="journey-step" *ngFor="let step of journeySteps">
+        <span class="journey-icon">
+          <mat-icon>{{ step.icon }}</mat-icon>
+        </span>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="partners-section">
+    <div class="section-heading section-heading--stacked">
+      <h2>他们已从思达启航，走向世界</h2>
+      <p>学生遍布全球名校，成就更好的自己</p>
+    </div>
+
+    <div class="partner-grid" aria-label="合作与录取院校">
+      <div class="partner-item" *ngFor="let partner of partners">
+        <span [style.background-color]="partner.color">{{
+          partner.initials
+        }}</span>
+        <strong>{{ partner.name }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div>
+      <h2>你的未来，从今天的选择开始</h2>
+      <p>思达启航，陪你走向更广阔的世界</p>
+      <a class="primary-action" routerLink="about-sida/contact">
+        免费咨询，开启留学规划
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+  </section>
+
+  <footer class="home-footer">
+    <div class="footer-brand">
+      <img
+        src="/assets/sida-qihang-education-logo-rectangle.png"
+        alt="思达启航教育"
+        loading="lazy"
+      />
+      <p>从思达启航，走向更美好的未来</p>
+      <div class="social-dots" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <nav class="footer-links" aria-label="页脚导航">
+      <div *ngFor="let column of footerColumns">
+        <h3>{{ column.title }}</h3>
+        <a *ngFor="let link of column.links" routerLink="/about-sida/contact">{{
+          link
+        }}</a>
+      </div>
+    </nav>
+
+    <div class="footer-contact">
+      <h3>联系我们</h3>
+      <p><mat-icon>phone</mat-icon> +63 917 123 4567</p>
+      <p><mat-icon>email</mat-icon> info&#64;sidaqihang.com</p>
+      <p><mat-icon>location_on</mat-icon> Philippines · Baguio City</p>
+    </div>
+  </footer>
 </div>

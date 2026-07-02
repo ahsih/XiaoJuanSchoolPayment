@@ -6,6 +6,5 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [MatIconModule],
   templateUrl: './contact.component.html',
-  styleUrl: './contact.component.css',
 })
 export class ContactComponent {}
