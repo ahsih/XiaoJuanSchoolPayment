@@ -1,0 +1,427 @@
+:host {
+  display: block;
+}
+
+.school-detail-page {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 26px clamp(16px, 3vw, 34px) 48px;
+  color: #102033;
+}
+
+.cia-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.78fr);
+  gap: clamp(22px, 4vw, 48px);
+  align-items: stretch;
+  padding: 18px 0 30px;
+}
+
+.hero-copy,
+.section-heading,
+.info-card,
+.fact {
+  min-width: 0;
+}
+
+.back-link,
+.primary-action,
+.secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.back-link {
+  margin-bottom: 18px;
+  color: #13724a;
+  font-size: 14px;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #c8e5d8;
+  border-radius: 8px;
+  background: #effaf4;
+  color: #167144;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.hero-copy h1 {
+  max-width: 720px;
+  margin: 18px 0 0;
+  color: #071a3d;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.02;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.hero-copy p,
+.content-band p {
+  margin: 14px 0 0;
+  color: #40506a;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.primary-action {
+  background: #ff5a1f;
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(255, 90, 31, 0.2);
+}
+
+.secondary-action {
+  background: #fff;
+  color: #13724a;
+  border-color: #8fc5a8;
+}
+
+.hero-visual {
+  align-self: stretch;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid #d9e7ee;
+  border-radius: 8px;
+  background: #edf5f8;
+  box-shadow: 0 22px 60px rgba(25, 47, 71, 0.12);
+}
+
+.hero-visual img {
+  display: block;
+  width: 100%;
+  height: clamp(260px, 34vw, 420px);
+  object-fit: cover;
+}
+
+.hero-visual figcaption {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 18px;
+  background: #fff;
+  color: #526176;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.hero-visual strong {
+  color: #071a3d;
+  font-weight: 950;
+}
+
+.quick-facts,
+.course-grid,
+.facility-grid,
+.local-fees,
+.pros-cons {
+  display: grid;
+  gap: 14px;
+}
+
+.quick-facts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 26px;
+}
+
+.fact,
+.info-card,
+.fee-chip,
+.pros-cons > div {
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(20, 43, 68, 0.06);
+}
+
+.fact,
+.fee-chip {
+  padding: 14px 16px;
+}
+
+.fact span,
+.fee-chip span {
+  display: block;
+  color: #66758a;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.fact strong,
+.fee-chip strong {
+  display: block;
+  margin-top: 6px;
+  color: #102033;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.content-band {
+  margin-top: 22px;
+  padding: clamp(20px, 3vw, 30px) 0;
+  border-top: 1px solid #e2ebef;
+}
+
+.intro-section {
+  border-top: 0;
+}
+
+.section-heading {
+  max-width: 860px;
+}
+
+.section-heading h2,
+.cta-band h2 {
+  margin: 12px 0 0;
+  color: #071a3d;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.16;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.course-grid,
+.facility-grid,
+.local-fees,
+.pros-cons {
+  margin-top: 18px;
+}
+
+.course-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.info-card {
+  padding: 18px;
+}
+
+.info-card h3,
+.pros-cons h3 {
+  margin: 0;
+  color: #102033;
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 950;
+}
+
+.info-card strong {
+  display: block;
+  margin-top: 10px;
+  color: #167144;
+  line-height: 1.45;
+}
+
+.split-section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 30px);
+}
+
+.split-section > .content-band {
+  margin-top: 22px;
+}
+
+.advice-panel {
+  padding: 24px;
+  border: 1px solid #ffd2bd;
+  border-radius: 8px;
+  background: #fff6f1;
+}
+
+.facility-grid,
+.local-fees {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.facility-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 52px;
+  padding: 12px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #f8fbfd;
+  color: #314158;
+  line-height: 1.45;
+}
+
+.facility-item mat-icon {
+  flex: 0 0 auto;
+  color: #167144;
+}
+
+.fee-table {
+  overflow-x: auto;
+  margin-top: 18px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.fee-row {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr 1fr 1.35fr 0.7fr;
+  min-width: 900px;
+}
+
+.fee-row--four {
+  grid-template-columns: 1.1fr 0.9fr 1fr 1.45fr;
+  min-width: 760px;
+}
+
+.fee-row--compact {
+  grid-template-columns: 1fr 0.75fr 1.55fr;
+  min-width: 660px;
+}
+
+.fee-row > span {
+  padding: 13px 14px;
+  border-top: 1px solid #e7edf3;
+  color: #40506a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.fee-row--head > span {
+  border-top: 0;
+  background: #102033;
+  color: #fff;
+  font-weight: 900;
+}
+
+.clean-list {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clean-list li {
+  position: relative;
+  padding-left: 22px;
+  color: #40506a;
+  line-height: 1.65;
+}
+
+.clean-list li::before {
+  position: absolute;
+  top: 0.72em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff5a1f;
+  content: "";
+}
+
+.pros-cons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pros-cons > div {
+  padding: 20px;
+}
+
+.faq-section details {
+  border-top: 1px solid #e2ebef;
+}
+
+.faq-section summary {
+  cursor: pointer;
+  padding: 17px 0;
+  color: #102033;
+  font-weight: 900;
+}
+
+.cta-band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin-top: 26px;
+  padding: clamp(24px, 4vw, 34px);
+  border-radius: 8px;
+  background: #102033;
+  color: #fff;
+}
+
+.cta-band h2,
+.cta-band p {
+  color: #fff;
+}
+
+.cta-band .section-kicker {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+@media (max-width: 980px) {
+  .cia-hero,
+  .split-section,
+  .pros-cons,
+  .cta-band {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-facts,
+  .course-grid,
+  .facility-grid,
+  .local-fees {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .school-detail-page {
+    padding: 16px 14px 34px;
+  }
+
+  .quick-facts,
+  .course-grid,
+  .facility-grid,
+  .local-fees,
+  .fee-row,
+  .fee-row--four,
+  .fee-row--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions,
+  .primary-action,
+  .secondary-action {
+    width: 100%;
+  }
+
+  .fee-row,
+  .fee-row--four,
+  .fee-row--compact {
+    min-width: 0;
+  }
+}

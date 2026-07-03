@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './eg-school.component.html',
-  styleUrl: '../cia-school/cia-school.component.css',
+  styleUrls: ['../school-detail-layout.css', './eg-school.component.css'],
 })
 export class EgSchoolComponent {
   readonly quickFacts: QuickFact[] = [

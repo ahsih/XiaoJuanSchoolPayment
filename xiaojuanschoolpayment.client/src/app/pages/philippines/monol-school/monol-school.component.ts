@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './monol-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './monol-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './monol-school.component.css'],
 })
 export class MonolSchoolComponent {
   readonly quickFacts: QuickFact[] = [

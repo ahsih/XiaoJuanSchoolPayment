@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './wales-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './wales-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './wales-school.component.css'],
 })
 export class WalesSchoolComponent {
   readonly quickFacts: QuickFact[] = [

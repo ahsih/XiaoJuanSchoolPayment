@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './jic-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './jic-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './jic-school.component.css'],
 })
 export class JicSchoolComponent {
   readonly quickFacts: QuickFact[] = [

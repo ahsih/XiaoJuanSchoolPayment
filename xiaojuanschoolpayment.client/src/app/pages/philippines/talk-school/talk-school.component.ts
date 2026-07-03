@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './talk-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './talk-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './talk-school.component.css'],
 })
 export class TalkSchoolComponent {
   readonly quickFacts: QuickFact[] = [

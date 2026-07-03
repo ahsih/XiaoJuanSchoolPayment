@@ -42,7 +42,7 @@ interface SourceLink {
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './pines-school.component.html',
   styleUrls: [
-    '../cia-school/cia-school.component.css',
+    '../school-detail-layout.css',
     './pines-school.component.css',
   ],
 })

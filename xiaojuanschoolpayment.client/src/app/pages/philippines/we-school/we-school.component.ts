@@ -40,7 +40,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './we-school.component.html',
-  styleUrl: '../cia-school/cia-school.component.css',
+  styleUrls: ['../school-detail-layout.css', './we-school.component.css'],
 })
 export class WeSchoolComponent {
   readonly quickFacts: QuickFact[] = [

@@ -42,6 +42,9 @@ a {
   color: #172033;
 }
 
+/* Baguio and Clark school detail styles live in src/app/pages/philippines/school-detail-layout.css. */
+
+
 /* CIA school page styles start */
 app-cia-school {
   display: block;

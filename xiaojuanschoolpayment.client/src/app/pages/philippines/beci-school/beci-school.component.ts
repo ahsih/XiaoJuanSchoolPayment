@@ -42,7 +42,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './beci-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './beci-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './beci-school.component.css'],
 })
 export class BeciSchoolComponent {
   readonly quickFacts: QuickFact[] = [
