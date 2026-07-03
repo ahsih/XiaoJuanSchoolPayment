@@ -92,28 +92,28 @@ export class HomeComponent {
 
   readonly recommendedSchools: SchoolCard[] = [
     {
-      name: 'PINES International Academy',
-      city: '菲律宾 · 碧瑶',
+      name: 'CIA Cebu',
+      city: '菲律宾 · 宿务',
+      tag: 'IELTS / TOEIC / Family',
+      description: 'Mactan 度假型新校区，适合雅思、亲子和第一次菲律宾游学。',
+      image: '/assets/cia/campus-building.png',
+      route: '/philippines-study/cebu/cia-cebu-international-academy',
+    },
+    {
+      name: 'EV Academy',
+      city: '菲律宾 · 宿务',
       tag: 'Sparta / IELTS / Speaking',
-      description: '老牌高强度学校，适合目标明确、希望被学习节奏推动的学生。',
-      image: '/assets/philippines/home-school-pines.jpg',
-      route: '/philippines-study/baguio/pines-international-academy',
+      description: '宿务市区现代校园，斯巴达和半斯巴达强度可选。',
+      image: '/assets/ev/campus-exterior.jpg',
+      route: '/philippines-study/cebu/ev-academy',
     },
     {
-      name: 'BECI International Language Academy',
-      city: '菲律宾 · 碧瑶',
-      tag: 'EOP / Sparta / CCTV',
-      description: '多校区与口语反馈体系，适合按强度、生活节奏细分选择。',
-      image: '/assets/philippines/home-school-beci.jpg',
-      route: '/philippines-study/baguio/beci-international-language-academy',
-    },
-    {
-      name: 'Baguio JIC Academy',
-      city: '菲律宾 · 碧瑶',
-      tag: 'IELTS / Speaking / Working Holiday',
-      description: 'Challenger 与 Premium 双校区，兼顾备考强度和住宿舒适度。',
-      image: '/assets/philippines/home-school-jic.jpg',
-      route: '/philippines-study/baguio/baguio-jic-academy',
+      name: 'CPI Cebu Pelis Institute',
+      city: '菲律宾 · 宿务',
+      tag: 'Resort / ESL / Family',
+      description: 'Nivel Hills 度假村式校园，适合重视住宿、设施和舒适度的学生。',
+      image: '/assets/cpi/campus-pool.jpg',
+      route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
     },
   ];
 
