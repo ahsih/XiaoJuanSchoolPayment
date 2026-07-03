@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using XiaoJuanSchoolPayment.Server.Data;
+using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Interface;
 using XiaoJuanSchoolPayment.Server.Services;
@@ -61,6 +62,7 @@ builder.Services.AddIdentity<SchoolUser, IdentityRole>()
 
 builder.Services.AddScoped<ISchoolService, SchoolService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+builder.Services.Configure<ContactFormOptions>(builder.Configuration.GetSection("ContactForm"));
 
 builder.Services.AddCors(options =>
 {

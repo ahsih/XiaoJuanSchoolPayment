@@ -256,11 +256,31 @@
         </label>
         <label>
           邮箱
-          <input name="email" type="email" placeholder="example@email.com" autocomplete="email" required />
+          <input
+            name="email"
+            type="email"
+            placeholder="example@email.com"
+            autocomplete="email"
+            title="请输入有效邮箱"
+            required
+          />
         </label>
         <label>
           电话号码
-          <input name="phone" type="tel" placeholder="请输入联系电话" autocomplete="tel" required />
+          <input
+            name="phone"
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]+"
+            placeholder="请输入联系电话"
+            autocomplete="tel"
+            title="电话号码只能包含数字"
+            required
+          />
+        </label>
+        <label>
+          微信号
+          <input name="wechat" type="text" placeholder="请输入微信号" autocomplete="off" required />
         </label>
         <label class="message-field">
           留言内容
@@ -271,12 +291,15 @@
             required
           ></textarea>
         </label>
-        <p class="form-note"><mat-icon>lock</mat-icon>提交后页面会先确认收到，后续可接入后台或邮件发送。</p>
-        <button class="form-submit" type="submit">
-          提交需求<mat-icon>send</mat-icon>
+        <p class="form-note"><mat-icon>lock</mat-icon>提交后会发送到思达启航顾问邮箱，我们会尽快联系你。</p>
+        <button class="form-submit" type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? '正在提交...' : '提交需求' }}<mat-icon>send</mat-icon>
         </button>
         <p class="form-confirmation" [class.is-visible]="formSubmitted">
           已收到你的需求信息，我们会尽快联系你。
+        </p>
+        <p class="form-confirmation form-confirmation--error" [class.is-visible]="!!submitError">
+          {{ submitError }}
         </p>
       </form>
     </div>

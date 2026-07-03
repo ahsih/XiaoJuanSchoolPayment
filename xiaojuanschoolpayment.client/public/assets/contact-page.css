@@ -586,6 +586,11 @@
   background: #ed5100;
 }
 
+.contact-page .form-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .contact-page .form-confirmation {
   display: none;
   gap: 8px;
@@ -599,6 +604,11 @@
 
 .contact-page .form-confirmation.is-visible {
   display: flex;
+}
+
+.contact-page .form-confirmation--error {
+  background: #fff0eb;
+  color: #b22d00;
 }
 
 .contact-page .faq-grid {
