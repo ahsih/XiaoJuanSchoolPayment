@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/assets/contact-page.css" />
+
 <section class="contact-page">
   <section class="hero">
     <div class="hero__copy">
@@ -9,10 +11,16 @@
         选择你想咨询的方向，扫码添加顾问或预约电话咨询，思达启航会为你匹配合适的顾问老师。
       </p>
       <div class="hero__actions">
-        <a class="btn btn--primary" href="#consult-options"
+        <a
+          class="btn btn--primary"
+          href="/about-sida/contact#consult-options"
+          (click)="scrollToSection($event, 'consult-options')"
           ><mat-icon>near_me</mat-icon>选择咨询方向</a
         >
-        <a class="btn btn--ghost" href="#faq"
+        <a
+          class="btn btn--ghost"
+          href="/about-sida/contact#faq"
+          (click)="scrollToSection($event, 'faq')"
           ><mat-icon>edit_note</mat-icon>填写需求表单</a
         >
       </div>
@@ -227,6 +235,54 @@
   </section>
 
   <section id="faq" class="section">
+    <div class="request-panel">
+      <div class="request-copy">
+        <p class="request-kicker"><mat-icon>edit_note</mat-icon>填写需求表单</p>
+        <h2>告诉我们你的目标，顾问帮你做初步规划</h2>
+        <p>
+          留下基础信息和想咨询的问题，我们会根据你的情况匹配合适顾问，尽快与你联系。
+        </p>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>适合留学申请、语言提升、菲律宾游学咨询</li>
+          <li><mat-icon>check_circle</mat-icon>可备注目标国家、预算、入学时间或当前英语水平</li>
+          <li><mat-icon>check_circle</mat-icon>信息仅用于顾问联系与方案沟通</li>
+        </ul>
+      </div>
+
+      <form class="request-form" (submit)="submitRequest($event)" novalidate>
+        <label>
+          姓名
+          <input name="name" type="text" placeholder="请输入你的姓名" autocomplete="name" required />
+        </label>
+        <label>
+          邮箱
+          <input name="email" type="email" placeholder="example@email.com" autocomplete="email" required />
+        </label>
+        <label>
+          电话号码
+          <input name="phone" type="tel" placeholder="请输入联系电话" autocomplete="tel" required />
+        </label>
+        <label class="message-field">
+          留言内容
+          <textarea
+            name="message"
+            rows="5"
+            placeholder="例如：想咨询爱尔兰硕士申请，计划明年入学，目前雅思还没考。"
+            required
+          ></textarea>
+        </label>
+        <p class="form-note"><mat-icon>lock</mat-icon>提交后页面会先确认收到，后续可接入后台或邮件发送。</p>
+        <button class="form-submit" type="submit">
+          提交需求<mat-icon>send</mat-icon>
+        </button>
+        <p class="form-confirmation" [class.is-visible]="formSubmitted">
+          已收到你的需求信息，我们会尽快联系你。
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <section id="contact-questions" class="section">
     <div class="section-title compact">
       <span></span>
       <h2>常见问题</h2>
@@ -293,7 +349,10 @@
       <h2>现在就开始你的留学与语言提升之旅</h2>
       <p>添加顾问或预约电话，获取专属你的留学/语言规划方案。</p>
     </div>
-    <a class="btn btn--primary" href="#consult-options"
+    <a
+      class="btn btn--primary"
+      href="/about-sida/contact#consult-options"
+      (click)="scrollToSection($event, 'consult-options')"
       ><mat-icon>qr_code_2</mat-icon>添加顾问微信</a
     >
     <a class="btn btn--ghost dark" href="tel:13249827686"
@@ -303,11 +362,23 @@
 
   <footer id="contact-footer" class="contact-footer">
     <div class="footer-brand">
-      <img
-        src="/assets/sida-qihang-education-logo-rectangle.png"
-        alt="思达启航"
-      />
+      <div class="footer-logo-lockup">
+        <img
+          src="/assets/sida-qihang-favicon.png"
+          alt="思达启航"
+          loading="lazy"
+        />
+        <div>
+          <strong>思达启航教育</strong>
+          <span>SIDA QIHANG EDUCATION</span>
+        </div>
+      </div>
       <p>专注留学规划与语言提升，帮助每一位学员实现留学梦想与人生目标。</p>
+      <div class="footer-tags" aria-label="核心服务">
+        <span>留学规划</span>
+        <span>语言提升</span>
+        <span>游学咨询</span>
+      </div>
     </div>
     <nav>
       <h3>留学服务</h3>
@@ -321,18 +392,20 @@
       <a href="/online-english/ielts-speaking-writing">雅思培训</a>
       <a href="/online-english/free-english-test">语言评估</a>
     </nav>
-    <address>
-      <h3>联系我们</h3>
-      <a href="tel:13249827686"><mat-icon>phone</mat-icon>132-4982-7686</a>
-      <span><mat-icon>mail</mat-icon>jennyi7686&#64;163.com</span>
-      <span
-        ><mat-icon>location_on</mat-icon
-        >深圳市宝安区西乡街道固兴社区田心工业区第二栋109</span
-      >
-    </address>
-    <figure>
-      <img src="/assets/contact/jenny-wechat-qr.png" alt="顾问微信二维码" />
-      <figcaption>扫码添加顾问微信</figcaption>
-    </figure>
+    <div class="footer-contact-card">
+      <address>
+        <h3>联系我们</h3>
+        <a href="tel:13249827686"><mat-icon>phone</mat-icon>132-4982-7686</a>
+        <span><mat-icon>mail</mat-icon>jennyi7686&#64;163.com</span>
+        <span
+          ><mat-icon>location_on</mat-icon
+          >深圳市宝安区西乡街道固兴社区田心工业区第二栋109</span
+        >
+      </address>
+      <figure>
+        <img src="/assets/contact/jenny-wechat-qr.png" alt="顾问微信二维码" />
+        <figcaption>扫码添加顾问微信</figcaption>
+      </figure>
+    </div>
   </footer>
 </section>
