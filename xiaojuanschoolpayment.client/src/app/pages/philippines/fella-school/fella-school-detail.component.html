@@ -24,7 +24,7 @@
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
               </a>
-              <a class="secondary-action" routerLink="/register">
+              <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价
                 <mat-icon>support_agent</mat-icon>
               </a>
@@ -119,7 +119,7 @@
                 <span>先核校区、管理模式和当地费用，再判断Fella是否适合你的预算。</span>
               </div>
             </div>
-            <a class="primary-action full-action" routerLink="/register">
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
               让顾问判断是否适合我
               <mat-icon>chat</mat-icon>
             </a>
@@ -280,7 +280,7 @@
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
-              <a class="secondary-action" routerLink="/register">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、水电费、空调费、教材费、宿舍押金、接机费、签证延签、ACR I-card等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
             <p class="season-note">English Fella旺季附加费、校区规则、亲子/青少年监管费用、优惠和正式报价需由顾问按入学档期向学校确认。</p>
@@ -321,7 +321,7 @@
             </div>
             <ul class="check-list"><li>校区与管理模式建议</li><li>亲子/青少年规则确认</li><li>课程和房型空房确认</li><li>前期支付与到校支付费用清单</li></ul>
           </div>
-          <a class="primary-action" routerLink="/register">获取完整报价单<mat-icon>description</mat-icon></a>
+          <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
 
         <section class="section-block" id="service-process">
@@ -382,7 +382,7 @@
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
-          <a class="secondary-action" routerLink="/register">咨询顾问<mat-icon>chat</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>
         <nav class="section-nav" aria-label="页面目录">
           <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
@@ -397,12 +397,12 @@
         <p>把入学日期、学习周数、校区偏好、课程方向、房型和年龄情况发给顾问，可以更快得到准确报价。</p>
         <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
       </div>
-      <a class="primary-action" routerLink="/register">立即咨询顾问<mat-icon>chat</mat-icon></a>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
     </section>
 
     <div class="mobile-bottom-actions" aria-label="English Fella手机端固定操作">
       <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
-      <a routerLink="/register"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
     </div>
   </div>
 </app-cia-school>

@@ -5,7 +5,7 @@
       <h1>{{ page.title }}</h1>
       <p>{{ page.intro }}</p>
       <div class="hero-actions">
-        <a class="primary-action" routerLink="/register">
+        <a class="primary-action" routerLink="/about-sida/contact">
           免费获取学校匹配
           <mat-icon>chevron_right</mat-icon>
         </a>
@@ -42,7 +42,7 @@
       <a
         class="library-card"
         *ngFor="let card of page.cards"
-        [routerLink]="card.route || '/register'"
+        [routerLink]="card.route || '/about-sida/contact'"
       >
         <span class="library-icon">
           <mat-icon>{{ card.icon }}</mat-icon>
