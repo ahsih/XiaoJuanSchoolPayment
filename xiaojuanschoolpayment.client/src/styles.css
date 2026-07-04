@@ -223,6 +223,12 @@ app-cia-school .gallery-grid figure {
   background: #eef3f6;
 }
 
+app-cia-school .feature-photo {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 app-cia-school .feature-photo img {
   display: block;
   width: 100%;
@@ -231,16 +237,45 @@ app-cia-school .feature-photo img {
   transition: transform 0.2s ease;
 }
 
-app-cia-school .feature-photo figcaption {
+app-cia-school .feature-photo figcaption,
+app-cia-school .feature-photo-caption {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
+  display: block;
   padding: 30px 12px 12px;
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
   color: #ffffff;
   font-size: 14px;
   font-weight: 900;
+}
+
+app-cia-school .hero-virtual-tour-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(6, 18, 31, 0.18), rgba(6, 18, 31, 0.48));
+  pointer-events: none;
+}
+
+app-cia-school .virtual-tour-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 1;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.72);
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 app-cia-school .media-strip {
@@ -1718,6 +1753,10 @@ app-cia-school .mobile-only {
 
   app-cia-school .hero-media .media-strip img {
     min-height: 0;
+  }
+
+  app-cia-school .virtual-tour-text {
+    font-size: 22px;
   }
 
   app-cia-school .gallery-tabs {

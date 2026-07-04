@@ -35,18 +35,18 @@
         </div>
 
         <div class="hero-media" aria-label="CIA校园图片展示">
-          <figure
-            class="feature-photo hero-gallery-link"
-            role="button"
-            tabindex="0"
+          <a
+            class="feature-photo hero-gallery-link hero-virtual-tour-link"
+            href="https://www.720yun.com/vr/ac9j5puysw4"
+            target="_blank"
+            rel="noopener noreferrer"
             *ngIf="heroGalleryPreviewImages[0] as heroImage"
-            (click)="openGalleryFromPreview()"
-            (keydown.enter)="openGalleryFromPreview($event)"
-            (keydown.space)="openGalleryFromPreview($event)"
+            aria-label="Open CIA virtual tour"
           >
             <img [src]="heroImage.src" [alt]="heroImage.title" />
-            <figcaption>{{ heroImage.title }}</figcaption>
-          </figure>
+            <span class="virtual-tour-text">Virtual Tour</span>
+            <span class="feature-photo-caption">{{ heroImage.title }}</span>
+          </a>
           <div class="media-strip" aria-label="CIA校园缩略图">
             <figure
               class="hero-gallery-link"
