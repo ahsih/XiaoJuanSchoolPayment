@@ -232,7 +232,7 @@ export class CiaSchoolComponent implements OnInit {
   selectedCourseId = 'regular-esl';
   selectedRoomId = 'd4';
   selectedWeeks = 4;
-  selectedStartDate = '2026-05-18';
+  selectedStartDate = '2026-07-05';
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -626,12 +626,305 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly mobileAnchors: SideNavItem[] = [
     { label: '概览', target: 'top', icon: 'dashboard' },
+    { label: '亮点', target: 'highlights', icon: 'star' },
+    { label: '视频', target: 'videos', icon: 'play_circle' },
     { label: '环境', target: 'gallery', icon: 'image' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
+
+  readonly snapshotCards = [
+    {
+      icon: 'apartment',
+      title: '学校定位',
+      text: '宿务麦克坦岛半斯巴达英语学校',
+    },
+    {
+      icon: 'workspace_premium',
+      title: '考试资源',
+      text: 'IDP IELTS 官方考场，定期考试，成绩更快',
+    },
+    {
+      icon: 'menu_book',
+      title: '课程覆盖',
+      text: 'ESL / IELTS / TOEIC / Business / Working Holiday',
+    },
+    {
+      icon: 'bed',
+      title: '住宿生活',
+      text: '校内宿舍、餐厅、泳池、健身房等',
+    },
+    {
+      icon: 'person',
+      title: '适合人群',
+      text: '成人英语、雅思备考、职场提升、亲子营',
+    },
+    {
+      icon: 'support_agent',
+      title: '顾问提醒',
+      text: '更适合看重综合体验、课程和生活便利的学生',
+    },
+  ];
+
+  readonly coreHighlights = [
+    {
+      icon: 'domain',
+      image: 'assets/cia/campus-building.png',
+      title: '新麦克坦校区',
+      text: '校区空间较新，学习、住宿、餐厅和设施集中，生活更便利。',
+    },
+    {
+      icon: 'fact_check',
+      image: 'assets/cia/one-to-one-class.png',
+      title: 'IDP IELTS 官方考场',
+      text: '拥有 IDP IELTS 官方考点，适合雅思目标学生熟悉考试环境。',
+    },
+    {
+      icon: 'auto_stories',
+      image: 'assets/cia/small-group-class.jpg',
+      title: '课程体系完整',
+      text: 'ESL、IELTS、TOEIC、Business、Working Holiday、CALLAN 等方向可选。',
+    },
+    {
+      icon: 'shield',
+      image: 'assets/cia/quad-room.jpg',
+      title: '半斯巴达管理',
+      text: '有学习节奏与监督，也保留一定自由度，适合多数学生。',
+    },
+    {
+      icon: 'favorite',
+      image: 'assets/cia/campus-pool.jpg',
+      title: '校园设施丰富',
+      text: '泳池、健身房、自习室、餐厅等一体配套，课后生活更完整。',
+    },
+    {
+      icon: 'groups',
+      image: 'assets/cia/dining-hall.jpg',
+      title: '国际学生氛围',
+      text: '来自韩国、日本、台湾、越南、中国等国家和地区的学生较多。',
+    },
+  ];
+
+  readonly videoCards = [
+    {
+      title: '一般英语小组课程视频',
+      text: '剑桥英语资格课程',
+      videoSrc: 'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
+      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+    },
+    {
+      title: '雅思小组课程视频',
+      text: '雅思官方考试中心',
+      videoSrc: 'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
+      details: ['1 对 1 课程 4 节', '雅思专项辅导课 2 节', '雅思语法课 1 节', '雅思词汇课 1 节'],
+    },
+    {
+      title: '托业小组课程视频',
+      text: '托业备考课程',
+      videoSrc: 'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
+      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+    },
+    {
+      title: '商务英语小组课程视频',
+      text: '剑桥商务英语课程',
+      videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
+      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+    },
+  ];
+
+  readonly courseChoiceCards = [
+    {
+      icon: 'chat_bubble_outline',
+      label: '第一次游学',
+      title: 'Regular ESL',
+      text: '均衡提升英语听说读写，适合打基础的学生。',
+    },
+    {
+      icon: 'person_add',
+      label: '想多上一对一',
+      title: 'Intensive / Power Intensive',
+      text: '增加一对一课时，适合短期快速提升英语能力。',
+    },
+    {
+      icon: 'track_changes',
+      label: '雅思目标',
+      title: 'Pre-IELTS / IELTS Regular / IELTS Guarantee',
+      text: '备考全套体系，可参加模考与官方考试资源。',
+    },
+    {
+      icon: 'scoreboard',
+      label: '托业目标',
+      title: 'TOEIC Regular / TOEIC Guarantee',
+      text: '听力、阅读强化，适合求职或升学分数目标。',
+    },
+    {
+      icon: 'business_center',
+      label: '职场英语',
+      title: 'Business English',
+      text: '商务沟通、会议、邮件和面试实用训练。',
+    },
+    {
+      icon: 'flight_takeoff',
+      label: '特色项目',
+      title: 'Working Holiday / CALLAN / Immersion',
+      text: '适合打工度假、口语训练或大学深度体验项目。',
+    },
+  ];
+
+  readonly feeStructureCards = [
+    {
+      icon: 'account_balance_wallet',
+      title: '前期支付费用（到校前）',
+      rows: [
+        { label: '注册费', value: 'USD 100' },
+        { label: '课程费（含折扣）', value: 'USD 855' },
+        { label: '住宿费（含折扣）', value: 'USD 712.5' },
+        { label: '旺季附加费', value: 'USD 160' },
+      ],
+      note: '合计约 USD 1,827.5',
+    },
+    {
+      icon: 'celebration',
+      title: '到校支付学杂费（到校后）',
+      rows: [
+        { label: 'SSP 特殊学习许可证', value: 'PHP 8,000' },
+        { label: 'SSP E-card', value: 'PHP 4,500' },
+        { label: '水电费（预估）', value: 'PHP 3,000' },
+        { label: '教材费（预估）', value: 'PHP 2,000' },
+      ],
+      note: '预计人民币 2,500+',
+    },
+    {
+      icon: 'receipt_long',
+      title: '可能产生费用（按需支付）',
+      rows: [
+        { label: 'ACR I-card 外国人身份证', value: 'PHP 4,500' },
+        { label: '签证延期（按月）', value: 'PHP 5,130+' },
+        { label: '换机票（周日接机）', value: 'PHP 1,000' },
+        { label: '额外考试费', value: 'USD 250' },
+      ],
+      note: '按实际发生金额支付',
+    },
+  ];
+
+  readonly lifeCards = [
+    {
+      icon: 'home',
+      image: 'assets/cia/campus-building.png',
+      title: '宿舍',
+      text: '多种房型可选，独立卫浴、空调、热水、WiFi 全覆盖。',
+    },
+    {
+      icon: 'restaurant',
+      image: 'assets/cia/dining-hall.jpg',
+      title: '餐食',
+      text: '三餐营养搭配，兼顾亚洲口味与不同学生需求。',
+    },
+    {
+      icon: 'local_laundry_service',
+      image: 'assets/cia/twin-room.jpg',
+      title: '洗衣打扫',
+      text: '定期打扫公共区域，学生可使用校内洗衣服务。',
+    },
+    {
+      icon: 'fitness_center',
+      image: 'assets/cia/fitness-center.jpg',
+      title: '校园设施',
+      text: '泳池、健身房、篮球场、自习室和休闲空间齐全。',
+    },
+    {
+      icon: 'location_on',
+      image: 'assets/cia/campus-pool.jpg',
+      title: '周边生活',
+      text: '超市、餐厅、商场、银行和机场等生活资源较便利。',
+    },
+  ];
+
+  readonly studentTracks = [
+    {
+      icon: 'business',
+      title: '成人主校区',
+      text: '通常15岁以上，以 ESL / IELTS / TOEIC / Business 等课程为主，适合独立学习的学生或成人。',
+    },
+    {
+      icon: 'family_restroom',
+      title: '亲子 / 青少年营',
+      text: '通常7岁起参加，按假期档期开放，可随在校外照顾或独立营地进行。',
+    },
+    {
+      icon: 'assignment',
+      title: '报名提醒',
+      text: '报名确认前先确认年龄要求、营地地点、开课日期、房型和监护支持与费用明细。',
+    },
+  ];
+
+  readonly serviceCards = [
+    {
+      icon: 'card_travel',
+      title: '免费协助办理菲律宾签证',
+      text: '资深团队指导，材料清单清晰，出签更高效。',
+    },
+    {
+      icon: 'public',
+      title: '菲律宾及多国驻点支持',
+      text: '当地团队7×24小时响应，遇到问题第一时间解决。',
+    },
+    {
+      icon: 'apartment',
+      title: '真实确认空房优惠和入学档期',
+      text: '实时核查学校可用名额，帮你锁定合适档期。',
+    },
+    {
+      icon: 'price_check',
+      title: '费用拆分透明无隐形消费',
+      text: '学费、住宿、杂费清晰拆分，每一项都明白自由。',
+    },
+    {
+      icon: 'inventory',
+      title: '行前学习资料与准备清单',
+      text: '提供英语预习资料、行前指南和生活须知，让你更快适应。',
+    },
+    {
+      icon: 'support_agent',
+      title: '到校后继续协助',
+      text: '接机、入学协助、生活支持、课程与学习跟进。',
+    },
+    {
+      icon: 'school',
+      title: '游学 + 留学一起规划',
+      text: '未来升学、转校、续读，我们为你提前布局。',
+    },
+    {
+      icon: 'redeem',
+      title: '老学员后续专属优惠',
+      text: '续学、转课程、推荐好友，可享受思达专属回馈。',
+    },
+  ];
+
+  readonly processTimeline = [
+    { icon: 'chat', title: '告诉顾问目标 / 周数 / 预算', text: '明确需求与期望' },
+    { icon: 'fact_check', title: '确认课程和房型', text: '匹配最优方案' },
+    { icon: 'apartment', title: '查询空房和优惠', text: '锁定档期名额' },
+    { icon: 'description', title: '获取正式报价', text: '费用透明无隐藏' },
+    { icon: 'check_circle', title: '完成报名付款', text: '保留名额' },
+    { icon: 'badge', title: '免费协助签证和行前资料', text: '材料指导更省心' },
+    { icon: 'flight_takeoff', title: '抵达菲律宾并入学', text: '接机入学无忧' },
+    { icon: 'school', title: '学习期间持续协助至完成学习回国', text: '全程陪伴更安心' },
+  ];
+
+  readonly enrollmentChecks = [
+    { icon: 'flag', title: '目标课程', text: 'ESL / IELTS / TOEIC / Business 或其他课程' },
+    { icon: 'event', title: '入学日期', text: '确定计划入学的具体日期' },
+    { icon: 'bed', title: '房型', text: '选择适合的房型（单人 / 双人 / 多人 / 套房）' },
+    { icon: 'trending_up', title: '是否旺季', text: '旺季名额紧张，建议提前报名' },
+    { icon: 'quiz', title: '是否需要雅思官方考试', text: '如需确认考试日期与考位安排' },
+    { icon: 'payments', title: '到校学杂费预算', text: '确认额外费用预算（学杂费 / 电费等）' },
+    { icon: 'sync_alt', title: '是否考虑续读或转校', text: '如有长期规划，建议提前准备' },
+  ];
+
+  readonly ctaBadges = ['正规签约保障', '费用透明无隐形消费', '7×24小时在地支持', '你的学习，我们全程守护'];
 
   ngOnInit(): void {
     this.loadPricingFromDatabase();
