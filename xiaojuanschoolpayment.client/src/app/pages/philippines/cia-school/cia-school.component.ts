@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ExpandableImageComponent } from '../../../components/expandable-image.component';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
@@ -24,6 +25,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  details?: string[];
 }
 
 interface BasicInfoRow {
@@ -85,6 +87,17 @@ interface ProcessStep {
   text: string;
 }
 
+interface StudentCareService {
+  icon: string;
+  number: string;
+  title: string;
+  subtitle: string;
+  text: string;
+  location: string;
+  schedule: string;
+  points: string[];
+}
+
 interface FaqItem {
   question: string;
   answer: string;
@@ -99,7 +112,7 @@ interface SideNavItem {
 @Component({
   selector: 'app-cia-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent],
   templateUrl: './cia-school.component.html',
   styleUrl: './cia-school.component.css',
 })
@@ -278,56 +291,142 @@ export class CiaSchoolComponent implements OnInit {
     {
       category: '校园',
       title: '校园泳池与主楼',
-      description: '麦克坦校区主楼、宿舍楼和泳池区域。',
+      description: '麦克坦校区第二栋于2022年完成，整体是度假型校园氛围，学习、住宿和生活设施集中。',
       src: 'assets/cia/campus-building.png',
+      details: ['半斯巴达 Plus 校区', '周末可前往周边餐厅和景点'],
+    },
+    {
+      category: '校园',
+      title: '校园地图',
+      description: '校区分为 Building 1、Building 2 和 Building 3，餐厅、CRO、诊所、健身房、图书馆、宿舍和篮球场等分布在不同楼栋。',
+      src: 'assets/cia/campus-map.png',
+      details: ['Building 2：餐厅、CRO、健身房、图书馆', 'Building 3：宿舍、泳池平台、篮球场'],
     },
     {
       category: '校园',
       title: '户外泳池',
-      description: '课后休息和校园活动常用区域。',
+      description: '主泳池位于校园中心，约50米宽，度假感强，是课后休息和校园活动常用区域。',
       src: 'assets/cia/campus-pool.jpg',
+      details: ['平日 19:00-21:00', '周末 07:00-21:00'],
     },
     {
       category: '教室',
       title: '一对一教室',
-      description: '适合口语纠音、写作反馈和考试专项训练。',
+      description: '一对一教室配备白板和桌面空间，适合口语纠音、写作反馈和考试专项训练。',
       src: 'assets/cia/one-to-one-class.png',
+      details: ['253间一对一教室', '更容易集中注意力'],
     },
     {
       category: '教室',
       title: '小组课教室',
       description: '用于团体讨论、听说训练和课程互动。',
       src: 'assets/cia/small-group-class.jpg',
+      details: ['17间小组教室', '适合互动练习'],
+    },
+    {
+      category: '教室',
+      title: '中组课教室',
+      description: '中组课堂适合听说互动、主题讨论和课堂发表。',
+      src: 'assets/cia/medium-group-class.jpg',
+      details: ['24间中组教室', '练习讨论与表达'],
+    },
+    {
+      category: '教室',
+      title: '大组课教室',
+      description: '大组课堂适合发表、演讲、辩论和更大型的课堂活动。',
+      src: 'assets/cia/big-group-class.jpg',
+      details: ['7间大组教室', '适合演讲与辩论训练'],
+    },
+    {
+      category: '教室',
+      title: '教室楼层环境',
+      description: 'CIA 教室配备多用途教学设备，课程包含一对一、小组、中组和大组不同形式。',
+      src: 'assets/cia/classroom-overview.png',
+      details: ['多屏幕教学环境', '按课程目标安排不同班型'],
+    },
+    {
+      category: '住宿',
+      title: '校内宿舍概览',
+      description: '宿舍紧邻 Building 2，减少通勤时间，方便学生把更多时间留给学习和休息。',
+      src: 'assets/cia/dormitory-overview.jpg',
+      details: ['单人、双人、三人、四人间可选', '每周清洁一次，洗衣每周两次'],
     },
     {
       category: '住宿',
       title: '单人间',
-      description: '预算较高但隐私和安静度更好。',
+      description: '适合希望专注学习、重视个人空间和安静度的学生。',
       src: 'assets/cia/single-room.jpg',
+      details: ['床、桌子、衣柜、保险箱', '洗手盆、热水淋浴、冰箱、Wi-Fi'],
     },
     {
       category: '住宿',
       title: '双人间',
-      description: '适合朋友同行或希望兼顾预算与隐私的学生。',
+      description: '适合朋友同行，或希望有室友交流又保留一定生活空间的学生。',
       src: 'assets/cia/twin-room.jpg',
+      details: ['床、桌子、衣柜、保险箱', '空调、冰箱、独立卫浴、Wi-Fi'],
+    },
+    {
+      category: '住宿',
+      title: '三人间',
+      description: '适合希望控制预算，同时多和不同国籍室友练习英语的学生。',
+      src: 'assets/cia/triple-room.jpg',
+      details: ['更容易练习日常英语', '清洁每周一次，洗衣每周两次'],
     },
     {
       category: '住宿',
       title: '四人间 D-4',
-      description: '默认报价参考房型，预算压力相对低。',
+      description: '预算压力相对低，适合愿意和多位室友共同生活、增加英语使用机会的学生。',
       src: 'assets/cia/quad-room.jpg',
+      details: ['默认报价常用参考房型', '适合预算优先学生'],
     },
     {
       category: '餐厅',
       title: '学生餐厅',
-      description: '三餐与自助餐台，适合关注日常饮食的学生查看。',
+      description: '位于 Building 2 一楼，空间宽敞并配有空调，学校厨房每天提供不同餐食。',
       src: 'assets/cia/dining-hall.jpg',
+      details: ['早餐、午餐、晚餐在校内餐厅', '周末也有用餐时段'],
+    },
+    {
+      category: '餐厅',
+      title: 'Cafe Bar',
+      description: '咖啡吧提供饮品、轻食和点心，适合课后休息或和同学聊天。',
+      src: 'assets/cia/cafe-bar.jpg',
+      details: ['Building 2 一楼', '咖啡、蛋糕、松饼等轻食'],
     },
     {
       category: '设施',
       title: '健身房',
-      description: '课后运动、体能恢复和休闲区域。',
+      description: '位于 Building 2 四楼，提供现代化健身器材，适合课后运动和保持体能。',
       src: 'assets/cia/fitness-center.jpg',
+      details: ['平日 19:00-23:00', '周末 07:00-23:00'],
+    },
+    {
+      category: '设施',
+      title: 'IDP IELTS 官方考场',
+      description: '校内设有雅思官方考试场地，空间安静宽敞，方便雅思学生熟悉考试环境。',
+      src: 'assets/cia/idp-testing-venue.jpg',
+      details: ['Building 1 一楼和二楼', '适合雅思备考学生'],
+    },
+    {
+      category: '设施',
+      title: 'Recreation Room',
+      description: '休闲娱乐室可用于活动、游戏和学生休息，帮助学生在学习之外放松。',
+      src: 'assets/cia/recreation-room.jpg',
+      details: ['Building 2 四楼', '平日课后和周末开放'],
+    },
+    {
+      category: '设施',
+      title: '图书馆 / 自习室',
+      description: '图书馆空间宽敞，提供 ESL 教材和不同类型读物，适合自习和课后复习。',
+      src: 'assets/cia/library.jpg',
+      details: ['Building 2 四楼', '每天 06:00-23:00'],
+    },
+    {
+      category: '设施',
+      title: '校内诊所',
+      description: '诊所可处理轻微不适和基础医疗咨询，校内有护士，并可按需要联系医生。',
+      src: 'assets/cia/clinic.jpg',
+      details: ['Building 2 三楼', '平日 08:00-18:00'],
     },
   ];
 
@@ -773,6 +872,79 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
+  readonly studentCareServices: StudentCareService[] = [
+    {
+      icon: 'support_agent',
+      number: '01',
+      title: 'CRO 客户关系办公室',
+      subtitle: '24小时学生支援',
+      text: '学生在校期间遇到生活不便、突发状况或一般咨询时，可由 CRO 团队协调处理；紧急情况可联系对应国家经理并协助安排救护车等支援。',
+      location: '2号楼前台区域',
+      schedule: '每天',
+      points: ['一般学生服务', '邮局快递协助'],
+    },
+    {
+      icon: 'school',
+      number: '02',
+      title: 'AA 学业顾问',
+      subtitle: '课程与生活咨询',
+      text: '新生会安排 Academic Advisor，协助课程、课表、学习规划和学校生活适应，也可提供保密的学习与生活咨询。',
+      location: '线上 / 线下',
+      schedule: '每天',
+      points: ['课程、课表与课程体系建议', '学习与生活咨询'],
+    },
+    {
+      icon: 'forum',
+      number: '03',
+      title: 'SNS 线上沟通服务',
+      subtitle: '公告与经理联络',
+      text: '学校会通过线上渠道发布校内活动、生活提醒和重要公告；学生出发前及到校后，也可通过对应国家常用通讯软件联系国际经理。',
+      location: '线上 SNS',
+      schedule: '每天',
+      points: ['校内信息通知', '国际经理沟通'],
+    },
+    {
+      icon: 'record_voice_over',
+      number: '04',
+      title: 'EOP 英语使用规则',
+      subtitle: '鼓励多说英语',
+      text: '教室和指定英语区域鼓励使用英语。校内会有 EOP 巡查，违规罚款会用于每月活动及公益捐赠，帮助学生增加英语输出机会。',
+      location: 'A楼及指定英语区域',
+      schedule: '每天',
+      points: ['提高英语使用频率', '营造英语学习环境'],
+    },
+    {
+      icon: 'airport_shuttle',
+      number: '05',
+      title: '接机服务与迎新包',
+      subtitle: '从机场到校园',
+      text: '新生抵达机场后，CIA 工作人员会在到达区迎接并安排校车前往校园；到校后会说明设施、安全须知，并提供临时学生证和迎新资料。',
+      location: '机场到达区 / 校园内',
+      schedule: '抵达当天',
+      points: ['机场接机至宿舍', '到校基础说明与迎新资料'],
+    },
+    {
+      icon: 'edit_note',
+      number: '06',
+      title: 'Daily Test 每日测试',
+      subtitle: '词汇、语法与写作节奏',
+      text: '新生入学说明时会收到每日测试资料。周一至周四早上安排基础词汇、语法测试，并配合自习写作练习，由一对一写作老师检查。',
+      location: 'SSR / C楼',
+      schedule: '周一至周四 07:20-07:54',
+      points: ['低于要求分数会影响外出权限', '迟到、带手机或未写姓名可能记零分'],
+    },
+    {
+      icon: 'medical_services',
+      number: '07',
+      title: '医疗服务',
+      subtitle: '护士与校医支援',
+      text: '学校护士会照顾学生健康，校医每周到校一次，可提供医疗建议、处方建议，必要时建议就医，并在紧急情况中及时协助。',
+      location: 'A楼诊所',
+      schedule: '护士每天 / 医生每周一次',
+      points: ['如需校医检查，早上登记申请', '紧急情况及时响应'],
+    },
+  ];
+
   readonly feeStructureCards = [
     {
       icon: 'account_balance_wallet',
@@ -1152,11 +1324,7 @@ export class CiaSchoolComponent implements OnInit {
 
   get filteredGalleryImages(): GalleryImage[] {
     if (this.selectedGalleryCategory === this.galleryCategories[0]) {
-      if (this.usingUploadedGallery) {
-        return this.galleryImages;
-      }
-
-      return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category));
+      return this.galleryImages;
     }
 
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);

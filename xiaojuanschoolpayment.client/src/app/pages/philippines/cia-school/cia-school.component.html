@@ -15,19 +15,33 @@
           <span><mat-icon>location_on</mat-icon>宿务麦克坦岛</span>
           <span><mat-icon>verified</mat-icon>半斯巴达管理</span>
           <span><mat-icon>fact_check</mat-icon>IDP IELTS 官方考场</span>
-          <span><mat-icon>family_restroom</mat-icon>成人英语 / 雅思 / 亲子营</span>
+          <span
+            ><mat-icon>family_restroom</mat-icon>成人英语 / 雅思 / 亲子营</span
+          >
         </div>
 
         <div class="hero-actions">
-          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+          <a
+            class="primary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+          >
             获取 CIA 最新报价
             <mat-icon>chevron_right</mat-icon>
           </a>
-          <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">
+          <a
+            class="secondary-action"
+            href="#fee-structure"
+            (click)="scrollToSection('fee-structure', $event)"
+          >
             查看费用明细
             <mat-icon>receipt_long</mat-icon>
           </a>
-          <a class="secondary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+          <a
+            class="secondary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+          >
             计算我的费用
             <mat-icon>calculate</mat-icon>
           </a>
@@ -45,7 +59,10 @@
           <strong>USD 1668 <small>起</small></strong>
           <p>Regular ESL + 四人间</p>
           <ul>
-            <li><mat-icon>check_circle</mat-icon>已含注册费、折扣后课程费和住宿费估算</li>
+            <li>
+              <mat-icon>check_circle</mat-icon
+              >已含注册费、折扣后课程费和住宿费估算
+            </li>
             <li><mat-icon>info</mat-icon>到校费用和旺季附加费需另行确认</li>
           </ul>
         </aside>
@@ -53,7 +70,11 @@
     </section>
 
     <nav class="section-tabs" aria-label="CIA 页面导航">
-      <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+      <a
+        *ngFor="let item of mobileAnchors"
+        [href]="'#' + item.target"
+        (click)="scrollToSection(item.target, $event)"
+      >
         <mat-icon>{{ item.icon }}</mat-icon>
         <span>{{ item.label }}</span>
       </a>
@@ -80,26 +101,37 @@
         <label>
           周数
           <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option>
+            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+              {{ weeks }}周
+            </option>
           </select>
         </label>
         <label>
           课程
           <select [(ngModel)]="selectedCourseId">
-            <option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option>
+            <option *ngFor="let course of courseFees" [value]="course.id">
+              {{ course.name }}
+            </option>
           </select>
         </label>
         <label>
           房型
           <select [(ngModel)]="selectedRoomId">
-            <option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option>
+            <option *ngFor="let room of roomFees" [value]="room.id">
+              {{ room.name }}
+            </option>
           </select>
         </label>
         <label>
           入学日期
           <input type="date" [(ngModel)]="selectedStartDate" />
         </label>
-        <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即计算我的费用</a>
+        <a
+          class="primary-action"
+          href="#quote"
+          (click)="scrollToSection('quote', $event)"
+          >立即计算我的费用</a
+        >
         <p>费用为预估参考，最终以学校当期报价为准</p>
       </aside>
     </section>
@@ -107,7 +139,9 @@
     <section class="advisor-review" id="advisor-review">
       <h2>思达启航顾问点评</h2>
       <p>
-        CIA 适合想要设施舒适、学习有强度、考试资源完善的学生。第一次去菲律宾游学，希望学习和生活都在同一校园的人，可以优先看 CIA。
+        CIA
+        适合想要设施舒适、学习有强度、考试资源完善的学生。第一次去菲律宾游学，希望学习和生活都在同一校园的人，可以优先看
+        CIA。
       </p>
       <div class="fit-columns">
         <div>
@@ -133,7 +167,9 @@
       <div class="feature-card-grid">
         <article *ngFor="let item of coreHighlights">
           <img [src]="item.image" [alt]="item.title" />
-          <span><mat-icon>{{ item.icon }}</mat-icon></span>
+          <span
+            ><mat-icon>{{ item.icon }}</mat-icon></span
+          >
           <h3>{{ item.title }}</h3>
           <p>{{ item.text }}</p>
         </article>
@@ -146,7 +182,9 @@
           <h2>CIA 课程视频介绍</h2>
           <p>可在线播放一般英语、雅思、托业和商务英语课程介绍视频。</p>
         </div>
-        <span class="wechat-note"><mat-icon>smart_display</mat-icon>课程视频可播放</span>
+        <span class="wechat-note"
+          ><mat-icon>smart_display</mat-icon>课程视频可播放</span
+        >
       </div>
       <div class="video-grid">
         <article *ngFor="let item of videoCards">
@@ -180,9 +218,22 @@
         </button>
       </div>
       <div class="environment-grid">
-        <figure *ngFor="let image of filteredGalleryImages.slice(0, 6)">
-          <img [src]="image.src" [alt]="image.title" />
-          <figcaption>{{ image.title }}</figcaption>
+        <figure *ngFor="let image of filteredGalleryImages">
+          <app-expandable-image
+            [src]="image.src"
+            [alt]="image.title"
+            [title]="image.title"
+            [caption]="image.description"
+            previewHeight="220px"
+          ></app-expandable-image>
+          <figcaption>
+            <span>{{ image.category }}</span>
+            <strong>{{ image.title }}</strong>
+            <p>{{ image.description }}</p>
+            <ul *ngIf="image.details?.length">
+              <li *ngFor="let detail of image.details">{{ detail }}</li>
+            </ul>
+          </figcaption>
         </figure>
       </div>
     </section>
@@ -190,7 +241,9 @@
     <section class="cia-section" id="courses">
       <div class="section-heading">
         <h2>CIA 课程怎么选？</h2>
-        <p>根据你的目标和时间，选择最适合的课程组合，让学习更高效、成果更明显。</p>
+        <p>
+          根据你的目标和时间，选择最适合的课程组合，让学习更高效、成果更明显。
+        </p>
       </div>
       <div class="course-choice-grid">
         <article *ngFor="let item of courseChoiceCards">
@@ -216,19 +269,25 @@
         <label>
           学习周数
           <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option>
+            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+              {{ weeks }}周
+            </option>
           </select>
         </label>
         <label>
           课程
           <select [(ngModel)]="selectedCourseId">
-            <option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option>
+            <option *ngFor="let course of courseFees" [value]="course.id">
+              {{ course.name }}
+            </option>
           </select>
         </label>
         <label>
           房型
           <select [(ngModel)]="selectedRoomId">
-            <option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option>
+            <option *ngFor="let room of roomFees" [value]="room.id">
+              {{ room.name }}
+            </option>
           </select>
         </label>
         <label>
@@ -237,25 +296,54 @@
         </label>
         <div class="radio-row">
           <span>是否旺季</span>
-          <strong>{{ isPeakSeason ? '是' : '否' }}</strong>
+          <strong>{{ isPeakSeason ? "是" : "否" }}</strong>
         </div>
-        <button class="primary-action" type="button" (click)="calculateQuote()">重新计算</button>
+        <button class="primary-action" type="button" (click)="calculateQuote()">
+          重新计算
+        </button>
       </div>
 
       <div class="quote-result-card">
         <div class="quote-result-head">
           <div>
             <h2>报价结果 <small>示例</small></h2>
-            <p>{{ selectedCourse.name }} + {{ selectedRoom.name }} + {{ selectedWeeks }}周</p>
+            <p>
+              {{ selectedCourse.name }} + {{ selectedRoom.name }} +
+              {{ selectedWeeks }}周
+            </p>
           </div>
-          <strong>入学日期：{{ selectedStartDate | date: 'yyyy/MM/dd' }}</strong>
+          <strong
+            >入学日期：{{ selectedStartDate | date: "yyyy/MM/dd" }}</strong
+          >
         </div>
         <div class="result-lines">
-          <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-          <div><span>课程费（{{ selectedWeeks }}周）</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-          <div><span>住宿费（{{ selectedWeeks }}周）</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-          <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
-          <div class="discount-line"><span>思达折扣（{{ discountText }}，仅课程费和住宿费）</span><strong>- USD {{ formatUsd((tuitionForSelectedWeeks + roomFeeForSelectedWeeks) * (1 - discount)) }}</strong></div>
+          <div>
+            <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+          </div>
+          <div>
+            <span>课程费（{{ selectedWeeks }}周）</span
+            ><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+          </div>
+          <div>
+            <span>住宿费（{{ selectedWeeks }}周）</span
+            ><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+          </div>
+          <div>
+            <span>旺季附加费</span
+            ><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
+          </div>
+          <div class="discount-line">
+            <span>思达折扣（{{ discountText }}，仅课程费和住宿费）</span
+            ><strong
+              >- USD
+              {{
+                formatUsd(
+                  (tuitionForSelectedWeeks + roomFeeForSelectedWeeks) *
+                    (1 - discount)
+                )
+              }}</strong
+            >
+          </div>
         </div>
         <div class="quote-total">
           <span>前期支付参考合计</span>
@@ -263,9 +351,15 @@
           <em>{{ quoteCnyText }}</em>
         </div>
         <div class="quote-tool-row">
-          <button type="button" class="secondary-action"><mat-icon>image</mat-icon>保存报价单图片</button>
-          <button type="button" class="secondary-action"><mat-icon>mail</mat-icon>发送到邮箱</button>
-          <a class="primary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
+          <button type="button" class="secondary-action">
+            <mat-icon>image</mat-icon>保存报价单图片
+          </button>
+          <button type="button" class="secondary-action">
+            <mat-icon>mail</mat-icon>发送到邮箱
+          </button>
+          <a class="primary-action" routerLink="/about-sida/contact"
+            ><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a
+          >
         </div>
       </div>
     </section>
@@ -276,7 +370,10 @@
       </div>
       <div class="fee-structure-grid">
         <article *ngFor="let group of feeStructureCards">
-          <h3><mat-icon>{{ group.icon }}</mat-icon>{{ group.title }}</h3>
+          <h3>
+            <mat-icon>{{ group.icon }}</mat-icon
+            >{{ group.title }}
+          </h3>
           <dl>
             <div *ngFor="let row of group.rows">
               <dt>{{ row.label }}</dt>
@@ -291,7 +388,11 @@
     <section class="tables-section" id="course-fees">
       <div class="course-table-block">
         <h2><mat-icon>menu_book</mat-icon>2026 课程费参考 / 4周</h2>
-        <div class="data-table course-fee-table" role="table" aria-label="CIA 2026年4周课程费">
+        <div
+          class="data-table course-fee-table"
+          role="table"
+          aria-label="CIA 2026年4周课程费"
+        >
           <div class="table-row table-head" role="row">
             <span role="columnheader">课程方向</span>
             <span role="columnheader">课程名称</span>
@@ -301,7 +402,9 @@
           </div>
           <div class="table-row" role="row" *ngFor="let fee of courseFees">
             <span role="cell">{{ fee.suitable }}</span>
-            <span role="cell"><strong>{{ fee.name }}</strong></span>
+            <span role="cell"
+              ><strong>{{ fee.name }}</strong></span
+            >
             <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
             <span role="cell">{{ fee.schedule }}</span>
             <span role="cell">{{ fee.note }}</span>
@@ -311,7 +414,11 @@
 
       <div class="room-table-block" id="room-fees">
         <h2><mat-icon>bed</mat-icon>2026 住宿费参考 / 4周</h2>
-        <div class="data-table room-fee-table" role="table" aria-label="CIA 2026年4周住宿费">
+        <div
+          class="data-table room-fee-table"
+          role="table"
+          aria-label="CIA 2026年4周住宿费"
+        >
           <div class="table-row table-head" role="row">
             <span role="columnheader">房型</span>
             <span role="columnheader">房型代码</span>
@@ -334,17 +441,12 @@
       <div class="life-grid">
         <article *ngFor="let item of lifeCards">
           <img [src]="item.image" [alt]="item.title" />
-          <h3><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</h3>
+          <h3>
+            <mat-icon>{{ item.icon }}</mat-icon
+            >{{ item.title }}
+          </h3>
           <p>{{ item.text }}</p>
         </article>
-      </div>
-      <div class="blue-cta compact">
-        <mat-icon>headset_mic</mat-icon>
-        <div>
-          <h2>想了解更多？咨询顾问为您定制最佳方案</h2>
-          <p>课程规划 / 费用计算 / 住宿安排 / 行前指导</p>
-        </div>
-        <strong>132 4982 7686</strong>
       </div>
       <div class="price-note">
         <h3>价格说明</h3>
@@ -356,9 +458,48 @@
       </div>
     </section>
 
+    <section
+      class="cia-section student-care-section"
+      id="student-care-services"
+    >
+      <div class="section-heading">
+        <h2>STUDENT CARE SERVICES 学生关怀服务</h2>
+        <p>
+          CIA
+          校内设有学习、生活、沟通、接机、测试和医疗等学生支援，帮助学生更快适应菲律宾校园生活。
+        </p>
+      </div>
+      <div class="student-care-grid">
+        <article *ngFor="let service of studentCareServices">
+          <div class="care-card-head">
+            <span>{{ service.number }}</span>
+            <mat-icon>{{ service.icon }}</mat-icon>
+          </div>
+          <h3>{{ service.title }}</h3>
+          <strong>{{ service.subtitle }}</strong>
+          <p>{{ service.text }}</p>
+          <dl>
+            <div>
+              <dt>地点</dt>
+              <dd>{{ service.location }}</dd>
+            </div>
+            <div>
+              <dt>时间</dt>
+              <dd>{{ service.schedule }}</dd>
+            </div>
+          </dl>
+          <ul>
+            <li *ngFor="let point of service.points">{{ point }}</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
     <section class="student-track-section">
       <div class="section-heading">
-        <h2><mat-icon>groups</mat-icon>成人主校区与亲子 / 青少年营怎么区分？</h2>
+        <h2>
+          <mat-icon>groups</mat-icon>成人主校区与亲子 / 青少年营怎么区分？
+        </h2>
       </div>
       <div class="student-track-grid">
         <article *ngFor="let item of studentTracks">
@@ -377,7 +518,9 @@
 
     <section class="cia-section" id="service-process">
       <div class="section-heading">
-        <h2><mat-icon>verified_user</mat-icon>通过思达启航报名，不只是拿报价</h2>
+        <h2>
+          <mat-icon>verified_user</mat-icon>通过思达启航报名，不只是拿报价
+        </h2>
       </div>
       <div class="service-grid">
         <article *ngFor="let item of serviceCards">
@@ -390,9 +533,10 @@
       <div class="process-area">
         <h2>从咨询到完成学习回国，我们这样协助你</h2>
         <div class="process-line">
-          <article *ngFor="let step of processTimeline; index as i">
-            <span>{{ i + 1 }}</span>
-            <div><mat-icon>{{ step.icon }}</mat-icon></div>
+          <article *ngFor="let step of processTimeline">
+            <div>
+              <mat-icon>{{ step.icon }}</mat-icon>
+            </div>
             <h3>{{ step.title }}</h3>
             <p>{{ step.text }}</p>
           </article>
@@ -426,16 +570,24 @@
     <section class="final-cta">
       <div>
         <h2>想知道 CIA 当前是否有空房和优惠？</h2>
-        <p>把入学日期、学习周数、课程方向和房型偏好发给顾问，我们正式报价与入学建议。</p>
+        <p>
+          把入学日期、学习周数、课程方向和房型偏好发给顾问，我们正式报价与入学建议。
+        </p>
         <strong><mat-icon>call</mat-icon>132 4982 7686</strong>
       </div>
       <div class="qr-box">QR</div>
       <div class="final-actions">
-        <a class="primary-action" routerLink="/about-sida/contact">获取 CIA 完整报价单 <mat-icon>chevron_right</mat-icon></a>
-        <a class="secondary-action" routerLink="/about-sida/contact">咨询当前空房与优惠</a>
+        <a class="primary-action" routerLink="/about-sida/contact"
+          >获取 CIA 完整报价单 <mat-icon>chevron_right</mat-icon></a
+        >
+        <a class="secondary-action" routerLink="/about-sida/contact"
+          >咨询当前空房与优惠</a
+        >
       </div>
       <ul>
-        <li *ngFor="let badge of ctaBadges"><mat-icon>check_circle</mat-icon>{{ badge }}</li>
+        <li *ngFor="let badge of ctaBadges">
+          <mat-icon>check_circle</mat-icon>{{ badge }}
+        </li>
       </ul>
     </section>
 
@@ -451,4 +603,3 @@
     </div>
   </main>
 </div>
-

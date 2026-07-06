@@ -736,23 +736,70 @@ app-cia-school .environment-grid {
 }
 
 app-cia-school .environment-grid figure {
-  position: relative;
-  min-height: 210px;
+  display: grid;
+  align-content: start;
+  min-height: 0;
   margin: 0;
   overflow: hidden;
-  background: #e8eef2;
+  border: 1px solid #e1e8ef;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(29, 43, 59, 0.05);
+}
+
+app-cia-school .environment-grid app-expandable-image {
+  --expandable-image-radius: 8px 8px 0 0;
 }
 
 app-cia-school .environment-grid figcaption {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 42px 18px 16px;
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
-  color: #ffffff;
-  font-size: 18px;
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px 18px;
+  background: #ffffff;
+  color: #526176;
+}
+
+app-cia-school .environment-grid figcaption > span {
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #ecf7f1;
+  color: #087343;
+  font-size: 12px;
   font-weight: 950;
+}
+
+app-cia-school .environment-grid figcaption strong {
+  color: #08204a;
+  font-size: 19px;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+app-cia-school .environment-grid figcaption p {
+  margin: 0;
+  color: #526176;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+app-cia-school .environment-grid figcaption ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+app-cia-school .environment-grid figcaption li {
+  padding: 6px 9px;
+  border: 1px solid #dce8e1;
+  border-radius: 8px;
+  color: #34445a;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
 }
 
 app-cia-school .course-choice-grid {
@@ -829,6 +876,110 @@ app-cia-school .blue-cta strong {
   color: #1db65a;
   font-size: 30px;
   white-space: nowrap;
+}
+
+app-cia-school .student-care-section {
+  margin-top: 18px;
+}
+
+app-cia-school .student-care-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+
+app-cia-school .student-care-grid article {
+  display: grid;
+  align-content: start;
+  min-height: 360px;
+  padding: 24px;
+  border: 1px solid #dfe8ef;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(29, 43, 59, 0.05);
+}
+
+app-cia-school .care-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+app-cia-school .care-card-head span {
+  color: #ff5a1f;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+app-cia-school .care-card-head mat-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ecf7f1;
+  color: #087343;
+  font-size: 28px;
+}
+
+app-cia-school .student-care-grid h3 {
+  margin: 18px 0 0;
+  color: #08204a;
+  font-size: 20px;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+app-cia-school .student-care-grid article > strong {
+  margin-top: 8px;
+  color: #087343;
+  font-size: 15px;
+}
+
+app-cia-school .student-care-grid p {
+  margin: 14px 0 18px;
+  color: #536176;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+app-cia-school .student-care-grid dl {
+  display: grid;
+  gap: 8px;
+  margin: auto 0 16px;
+}
+
+app-cia-school .student-care-grid dl div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 11px;
+  background: #f6faf8;
+}
+
+app-cia-school .student-care-grid dt {
+  color: #087343;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+app-cia-school .student-care-grid dd {
+  margin: 0;
+  color: #34445a;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+app-cia-school .student-care-grid ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #35445a;
+}
+
+app-cia-school .student-care-grid li {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 app-cia-school .quote-results-section {
@@ -1211,19 +1362,6 @@ app-cia-school .process-line article {
   text-align: center;
 }
 
-app-cia-school .process-line article > span {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  margin: 0 auto -8px;
-  border-radius: 50%;
-  background: #087343;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 950;
-}
-
 app-cia-school .process-line article > div {
   display: grid;
   place-items: center;
@@ -1435,6 +1573,7 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   }
 
   app-cia-school .course-choice-grid,
+  app-cia-school .student-care-grid,
   app-cia-school .check-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1455,6 +1594,7 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .student-track-grid,
   app-cia-school .service-grid,
   app-cia-school .life-grid,
+  app-cia-school .student-care-grid,
   app-cia-school .video-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1563,6 +1703,7 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .video-grid,
   app-cia-school .environment-grid,
   app-cia-school .course-choice-grid,
+  app-cia-school .student-care-grid,
   app-cia-school .fee-structure-grid,
   app-cia-school .life-grid,
   app-cia-school .service-grid,
@@ -1575,6 +1716,11 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .snapshot-grid article {
     min-height: auto;
     padding: 20px;
+  }
+
+  app-cia-school .student-care-grid article {
+    min-height: auto;
+    padding: 22px 18px;
   }
 
   app-cia-school .advisor-review,

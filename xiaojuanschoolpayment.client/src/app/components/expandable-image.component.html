@@ -1,0 +1,41 @@
+<button
+  type="button"
+  class="expandable-image__trigger"
+  [class.expandable-image__trigger--disabled]="disabled"
+  [attr.aria-label]="'查看大图：' + (alt || title || '图片')"
+  [disabled]="disabled"
+  (click)="open()"
+>
+  <img
+    [src]="src"
+    [alt]="alt || title"
+    [style.height]="previewHeight || null"
+    [style.min-height]="previewMinHeight || null"
+    [style.object-fit]="previewFit || null"
+    loading="lazy"
+  />
+  <span class="expandable-image__zoom" aria-hidden="true">
+    <mat-icon>zoom_in</mat-icon>
+  </span>
+</button>
+
+<div
+  *ngIf="isOpen"
+  class="expandable-image__overlay"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title || alt || '图片预览'"
+  (click)="close()"
+>
+  <button type="button" class="expandable-image__close" aria-label="关闭图片预览" (click)="close($event)">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <figure class="expandable-image__figure" (click)="stopClose($event)">
+    <img [src]="src" [alt]="alt || title" />
+    <figcaption *ngIf="title || caption">
+      <strong *ngIf="title">{{ title }}</strong>
+      <span *ngIf="caption">{{ caption }}</span>
+    </figcaption>
+  </figure>
+</div>
