@@ -10,5 +10,6 @@ namespace XiaoJuanSchoolPayment.Server.Data.Models
     public ICollection<SchoolLesson> SchoolLessons { get; set; } = new Collection<SchoolLesson>();
     public ICollection<SchoolNote> SchoolNotes { get; set; } = new Collection<SchoolNote>();
     public ICollection<SchoolFee> SchoolFees { get; set; } = new Collection<SchoolFee>();
+    public ICollection<SchoolPhoto> SchoolPhotos { get; set; } = new Collection<SchoolPhoto>();
   }
 }

@@ -54,6 +54,38 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpPost("upload-photo")]
+    [RequestSizeLimit(12 * 1024 * 1024)]
+    public async Task<IActionResult> UploadSchoolPhoto([FromForm] SchoolPhotoUploadDTO photo, CancellationToken ct)
+    {
+      try
+      {
+        var result = await _schoolService.UploadSchoolPhoto(photo, ct);
+        return Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("save-photo")]
+    public async Task<IActionResult> SaveSchoolPhoto([FromBody] SchoolPhotoDTO photo, CancellationToken ct)
+    {
+      var result = await _schoolService.SaveSchoolPhoto(photo, ct);
+      return result ? Ok(result) : NotFound();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("delete-photo/{id:guid}")]
+    public async Task<IActionResult> DeleteSchoolPhoto(Guid id, CancellationToken ct)
+    {
+      var result = await _schoolService.DeleteSchoolPhoto(id, ct);
+      return result ? Ok(result) : NotFound();
+    }
+
     [HttpGet("get-schools")]
     public async Task<IActionResult> GetSchools([FromQuery]SchoolFilter filter,CancellationToken ct) { 
       var result = await _schoolService.GetSchools(filter,ct);
@@ -85,6 +117,13 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     public async Task<IActionResult> GetSchoolNotes([FromQuery] SchoolNoteFilter filter,CancellationToken ct)
     {
       var result = await _schoolService.GetSchoolNotes(filter,ct);
+      return Ok(result);
+    }
+
+    [HttpGet("get-school-photos")]
+    public async Task<IActionResult> GetSchoolPhotos([FromQuery] SchoolPhotoFilter filter, CancellationToken ct)
+    {
+      var result = await _schoolService.GetSchoolPhotos(filter, ct);
       return Ok(result);
     }
   }

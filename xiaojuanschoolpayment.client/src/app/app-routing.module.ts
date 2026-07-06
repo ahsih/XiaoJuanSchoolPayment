@@ -736,6 +736,13 @@ const routes: Routes = [
       { path: 'school-rooms', component: AdminSchoolRoomsComponent },
       { path: 'school-fees', component: AdminSchoolFeesComponent },
       { path: 'school-notes', component: AdminSchoolNotesComponent },
+      {
+        path: 'school-photos',
+        loadComponent: () =>
+          import('./pages/admin-school-photos/admin-school-photos.component').then(
+            (m) => m.AdminSchoolPhotosComponent,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -3,15 +3,36 @@ using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Data.Filter;
 using XiaoJuanSchoolPayment.Server.Interface;
+using Microsoft.AspNetCore.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace XiaoJuanSchoolPayment.Server.Services.School
 {
   public class SchoolService : ISchoolService
   {
+    private const long MaxPhotoSizeBytes = 10 * 1024 * 1024;
+    private static readonly HashSet<string> AllowedPhotoExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".webp",
+      ".gif",
+    };
+    private static readonly HashSet<string> AllowedPhotoContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+    };
+
     private readonly AppDbContext _appDbContext;
-    public SchoolService(AppDbContext context) {
+    private readonly IWebHostEnvironment _environment;
+
+    public SchoolService(AppDbContext context, IWebHostEnvironment environment) {
       _appDbContext = context;
+      _environment = environment;
     }
     public async Task<bool> SaveSchool(SchoolDTO school, CancellationToken cancellationToken)
     {
@@ -156,6 +177,124 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         }
       }
       await _appDbContext.SaveChangesAsync();
+      return true;
+    }
+
+    public async Task<SchoolPhotoDTO> UploadSchoolPhoto(SchoolPhotoUploadDTO photo, CancellationToken cancellationToken)
+    {
+      if (photo.SchoolId == Guid.Empty)
+      {
+        throw new ArgumentException("Please select a school.");
+      }
+
+      var school = await _appDbContext.Schools
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Id == photo.SchoolId, cancellationToken);
+
+      if (school == null)
+      {
+        throw new ArgumentException("The selected school was not found.");
+      }
+
+      if (photo.File == null || photo.File.Length == 0)
+      {
+        throw new ArgumentException("Please upload an image file.");
+      }
+
+      if (photo.File.Length > MaxPhotoSizeBytes)
+      {
+        throw new ArgumentException("Image files must be 10MB or smaller.");
+      }
+
+      var extension = Path.GetExtension(photo.File.FileName);
+      if (string.IsNullOrWhiteSpace(extension) || !AllowedPhotoExtensions.Contains(extension))
+      {
+        throw new ArgumentException("Only jpg, jpeg, png, webp, and gif images are allowed.");
+      }
+
+      if (!AllowedPhotoContentTypes.Contains(photo.File.ContentType))
+      {
+        throw new ArgumentException("Only jpg, jpeg, png, webp, and gif images are allowed.");
+      }
+
+      var webRootPath = GetWebRootPath();
+      var schoolFolderName = photo.SchoolId.ToString("N");
+      var uploadFolder = Path.Combine(webRootPath, "uploads", "schools", schoolFolderName);
+      Directory.CreateDirectory(uploadFolder);
+
+      var storedFileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
+      var physicalFilePath = Path.Combine(uploadFolder, storedFileName);
+
+      await using (var stream = new FileStream(physicalFilePath, FileMode.CreateNew))
+      {
+        await photo.File.CopyToAsync(stream, cancellationToken);
+      }
+
+      var relativePath = Path.Combine("uploads", "schools", schoolFolderName, storedFileName)
+        .Replace(Path.DirectorySeparatorChar, '/');
+      var now = DateTime.UtcNow;
+      var schoolPhoto = new Data.Models.SchoolPhoto
+      {
+        SchoolId = photo.SchoolId,
+        OriginalFileName = Path.GetFileName(photo.File.FileName),
+        StoredFileName = storedFileName,
+        FilePath = relativePath,
+        Url = $"/{relativePath}",
+        ContentType = photo.File.ContentType,
+        SizeBytes = photo.File.Length,
+        Category = TrimToNull(photo.Category),
+        Caption = TrimToNull(photo.Caption),
+        AltText = TrimToNull(photo.AltText),
+        DisplayOrder = photo.DisplayOrder,
+        IsActive = photo.IsActive,
+        CreatedAt = now,
+        LastUpdated = now,
+      };
+
+      try
+      {
+        _appDbContext.SchoolPhotos.Add(schoolPhoto);
+        await _appDbContext.SaveChangesAsync(cancellationToken);
+      }
+      catch
+      {
+        DeletePhysicalPhotoFile(relativePath);
+        throw;
+      }
+
+      return ToSchoolPhotoDTO(schoolPhoto, school.Name);
+    }
+
+    public async Task<bool> SaveSchoolPhoto(SchoolPhotoDTO photo, CancellationToken cancellationToken)
+    {
+      var dbPhoto = await _appDbContext.SchoolPhotos.FirstOrDefaultAsync(x => x.Id == photo.Id, cancellationToken);
+      if (dbPhoto == null)
+      {
+        return false;
+      }
+
+      dbPhoto.Category = TrimToNull(photo.Category);
+      dbPhoto.Caption = TrimToNull(photo.Caption);
+      dbPhoto.AltText = TrimToNull(photo.AltText);
+      dbPhoto.DisplayOrder = photo.DisplayOrder;
+      dbPhoto.IsActive = photo.IsActive;
+      dbPhoto.LastUpdated = DateTime.UtcNow;
+
+      await _appDbContext.SaveChangesAsync(cancellationToken);
+      return true;
+    }
+
+    public async Task<bool> DeleteSchoolPhoto(Guid id, CancellationToken cancellationToken)
+    {
+      var dbPhoto = await _appDbContext.SchoolPhotos.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+      if (dbPhoto == null)
+      {
+        return false;
+      }
+
+      _appDbContext.SchoolPhotos.Remove(dbPhoto);
+      await _appDbContext.SaveChangesAsync(cancellationToken);
+      DeletePhysicalPhotoFile(dbPhoto.FilePath);
       return true;
     }
 
@@ -339,6 +478,125 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       var result = await query.ToListAsync(cancellationToken);
 
       return result;
+    }
+
+    public async Task<IList<SchoolPhotoDTO>> GetSchoolPhotos(SchoolPhotoFilter filter, CancellationToken cancellationToken)
+    {
+      var query = _appDbContext.SchoolPhotos.AsNoTracking()
+        .Include(x => x.School)
+        .Select(x => new SchoolPhotoDTO
+        {
+          Id = x.Id,
+          SchoolId = x.SchoolId,
+          SchoolName = x.School != null ? x.School.Name : "",
+          OriginalFileName = x.OriginalFileName,
+          StoredFileName = x.StoredFileName,
+          Url = x.Url,
+          ContentType = x.ContentType,
+          SizeBytes = x.SizeBytes,
+          Category = x.Category,
+          Caption = x.Caption,
+          AltText = x.AltText,
+          DisplayOrder = x.DisplayOrder,
+          IsActive = x.IsActive,
+          CreatedAt = x.CreatedAt,
+          LastUpdated = x.LastUpdated,
+        }).AsQueryable();
+
+      if (filter?.SchoolId != null)
+      {
+        query = query.Where(x => x.SchoolId == filter.SchoolId);
+      }
+
+      if (filter?.SchoolName != null)
+      {
+        query = query.Where(x => (x.SchoolName ?? "").ToLower().Contains(filter.SchoolName.ToLower()));
+      }
+
+      if (filter?.IsActive != null)
+      {
+        query = query.Where(x => x.IsActive == filter.IsActive);
+      }
+
+      var result = await query
+        .OrderBy(x => x.DisplayOrder)
+        .ThenByDescending(x => x.CreatedAt)
+        .ToListAsync(cancellationToken);
+
+      return result;
+    }
+
+    private string GetWebRootPath()
+    {
+      var webRootPath = _environment.WebRootPath;
+
+      if (string.IsNullOrWhiteSpace(webRootPath))
+      {
+        webRootPath = Path.Combine(_environment.ContentRootPath, "wwwroot");
+      }
+
+      Directory.CreateDirectory(webRootPath);
+      return webRootPath;
+    }
+
+    private void DeletePhysicalPhotoFile(string relativePath)
+    {
+      if (string.IsNullOrWhiteSpace(relativePath))
+      {
+        return;
+      }
+
+      var webRootPath = Path.GetFullPath(GetWebRootPath())
+        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+      var candidatePath = Path.GetFullPath(Path.Combine(webRootPath, relativePath.Replace('/', Path.DirectorySeparatorChar)));
+
+      var isInsideWebRoot =
+        candidatePath.Equals(webRootPath, StringComparison.OrdinalIgnoreCase) ||
+        candidatePath.StartsWith($"{webRootPath}{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
+
+      if (!isInsideWebRoot || !System.IO.File.Exists(candidatePath))
+      {
+        return;
+      }
+
+      try
+      {
+        System.IO.File.Delete(candidatePath);
+      }
+      catch (IOException)
+      {
+      }
+      catch (UnauthorizedAccessException)
+      {
+      }
+    }
+
+    private static string? TrimToNull(string? value)
+    {
+      var trimmed = value?.Trim();
+      return string.IsNullOrWhiteSpace(trimmed) ? null : trimmed;
+    }
+
+    private static SchoolPhotoDTO ToSchoolPhotoDTO(Data.Models.SchoolPhoto photo, string? schoolName)
+    {
+      return new SchoolPhotoDTO
+      {
+        Id = photo.Id,
+        SchoolId = photo.SchoolId,
+        SchoolName = schoolName,
+        OriginalFileName = photo.OriginalFileName,
+        StoredFileName = photo.StoredFileName,
+        Url = photo.Url,
+        ContentType = photo.ContentType,
+        SizeBytes = photo.SizeBytes,
+        Category = photo.Category,
+        Caption = photo.Caption,
+        AltText = photo.AltText,
+        DisplayOrder = photo.DisplayOrder,
+        IsActive = photo.IsActive,
+        CreatedAt = photo.CreatedAt,
+        LastUpdated = photo.LastUpdated,
+      };
     }
   }
 }

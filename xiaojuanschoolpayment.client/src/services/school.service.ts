@@ -11,6 +11,8 @@ import { SchoolFeeFilter } from '../interfaces/filter/school-fee-filter.dto';
 import { SchoolRoomFilter } from '../interfaces/filter/school-room-filter.dto';
 import { SchoolFilter } from '../interfaces/filter/school-filter.dto';
 import { SchoolLessonFilter } from '../interfaces/filter/school-lesson-filter.dto';
+import { SchoolPhotoFilter } from '../interfaces/filter/school-photo-filter.dto';
+import { SchoolPhotoDTO } from '../interfaces/school-photo.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +135,83 @@ export class SchoolService {
       },
       params: params,
     });
+  }
+
+  getSchoolPhotos(filter?: SchoolPhotoFilter): Observable<SchoolPhotoDTO[]> {
+    const token = localStorage.getItem('token');
+    let params = new HttpParams();
+    if (filter?.schoolId) {
+      params = params.set('schoolId', filter.schoolId);
+    }
+    if (filter?.schoolName) {
+      params = params.set('schoolName', filter.schoolName);
+    }
+    if (filter?.isActive !== undefined) {
+      params = params.set('isActive', String(filter.isActive));
+    }
+    return this.http.get<SchoolPhotoDTO[]>(`${this.apiUrl}/get-school-photos`, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      params: params,
+    });
+  }
+
+  uploadSchoolPhoto(
+    schoolId: string,
+    file: File,
+    category?: string,
+    caption?: string,
+    altText?: string,
+    displayOrder = 0,
+    isActive = true
+  ): Promise<SchoolPhotoDTO> {
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('schoolId', schoolId);
+    formData.append('file', file);
+    formData.append('displayOrder', String(displayOrder));
+    formData.append('isActive', String(isActive));
+
+    if (category) {
+      formData.append('category', category);
+    }
+    if (caption) {
+      formData.append('caption', caption);
+    }
+    if (altText) {
+      formData.append('altText', altText);
+    }
+
+    return firstValueFrom(
+      this.http.post<SchoolPhotoDTO>(`${this.apiUrl}/upload-photo`, formData, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+    );
+  }
+
+  saveSchoolPhoto(photo: SchoolPhotoDTO): Promise<any> {
+    const token = localStorage.getItem('token');
+    return firstValueFrom(
+      this.http.put<SchoolPhotoDTO>(`${this.apiUrl}/save-photo`, photo, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+    );
+  }
+
+  deleteSchoolPhoto(id: string): Promise<any> {
+    const token = localStorage.getItem('token');
+    return firstValueFrom(
+      this.http.delete(`${this.apiUrl}/delete-photo/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      })
+    );
   }
 
   saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {

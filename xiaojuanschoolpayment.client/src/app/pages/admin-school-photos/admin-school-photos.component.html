@@ -1,0 +1,90 @@
+<section class="photo-admin-page">
+  <div class="page-heading">
+    <div>
+      <span>School media</span>
+      <h2>Manage CIA Cebu Photos</h2>
+    </div>
+  </div>
+
+  <form class="upload-form" [formGroup]="photoForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill">
+      <mat-label>School</mat-label>
+      <mat-select formControlName="schoolId">
+        <mat-option *ngFor="let school of schoolDtos" [value]="school.id">
+          {{ school.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of categoryOptions" [value]="category.value">
+          {{ category.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Caption</mat-label>
+      <input matInput formControlName="caption" placeholder="Short display title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Alt text</mat-label>
+      <input matInput formControlName="altText" placeholder="Describe the photo" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Display order</mat-label>
+      <input matInput type="number" formControlName="displayOrder" />
+    </mat-form-field>
+
+    <label class="active-toggle">
+      <input type="checkbox" formControlName="isActive" />
+      Show on website
+    </label>
+
+    <label class="file-picker">
+      <span>Image file</span>
+      <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onFileSelected($event)" />
+    </label>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="photoForm.invalid || !selectedFile || isUploading">
+      {{ isUploading ? 'Uploading...' : 'Upload Photo' }}
+    </button>
+  </form>
+
+  <mat-divider></mat-divider>
+
+  <div class="photo-list-heading">
+    <h3>Uploaded photos</h3>
+    <span *ngIf="isLoading">Loading...</span>
+    <span *ngIf="!isLoading">{{ photos.length }} photo{{ photos.length === 1 ? '' : 's' }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && photos.length === 0" class="empty-state">
+    No uploaded photos for this school yet.
+  </div>
+
+  <div class="photo-grid" *ngIf="photos.length > 0">
+    <article class="photo-item" *ngFor="let photo of photos">
+      <img *ngIf="photo.url" [src]="photo.url" [alt]="photo.altText || photo.caption || photo.originalFileName || 'School photo'" />
+      <div class="photo-meta">
+        <div>
+          <strong>{{ photo.caption || photo.originalFileName }}</strong>
+          <span>{{ photo.category || 'Campus' }} - Order {{ photo.displayOrder }}</span>
+          <span>{{ photo.isActive ? 'Visible on website' : 'Hidden from website' }}</span>
+        </div>
+        <div class="photo-actions">
+          <button mat-stroked-button color="primary" type="button" (click)="toggleActive(photo)">
+            {{ photo.isActive ? 'Hide' : 'Show' }}
+          </button>
+          <button mat-stroked-button color="warn" type="button" (click)="deletePhoto(photo)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

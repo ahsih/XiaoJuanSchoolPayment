@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { SchoolService } from '../../../../services/school.service';
 
@@ -127,6 +128,13 @@ export class CiaSchoolComponent implements OnInit {
   ];
   private readonly roomFeeOrder = ['p1', 's1', 'pn1', 'd2', 'd3', 'd4', 'sr1', 'sr2', 'sr3', 'sr4'];
   private readonly featuredGalleryCategories: ReadonlyArray<Exclude<GalleryCategory, '全部'>> = ['校园', '教室', '设施'];
+  private readonly uploadedPhotoCategoryIndexes: Record<string, number> = {
+    campus: 1,
+    classroom: 2,
+    accommodation: 3,
+    dining: 4,
+    facility: 5,
+  };
   private readonly courseFeeDetails: Record<string, Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>> = {
     'regular-esl': {
       suitable: '基础综合提升',
@@ -213,6 +221,7 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
+  usingUploadedGallery = false;
 
   registrationFee = 100;
   readonly discount = 0.95;
@@ -265,7 +274,7 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: '校园泳池与主楼',
@@ -626,6 +635,7 @@ export class CiaSchoolComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPricingFromDatabase();
+    this.loadGalleryFromDatabase();
   }
 
   private loadPricingFromDatabase(): void {
@@ -651,6 +661,48 @@ export class CiaSchoolComponent implements OnInit {
         catchError(() => EMPTY),
       )
       .subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+  }
+
+  private loadGalleryFromDatabase(): void {
+    this.schoolService
+      .getSchools({ name: this.ciaPricingSchoolName })
+      .pipe(
+        switchMap((schools) => {
+          const ciaSchool =
+            schools.find((school) => school.name === this.ciaPricingSchoolName) ??
+            schools.find((school) => school.name.toLowerCase().includes('cia')) ??
+            schools[0];
+
+          if (!ciaSchool?.id) {
+            return EMPTY;
+          }
+
+          return this.schoolService.getSchoolPhotos({ schoolId: ciaSchool.id, isActive: true });
+        }),
+        catchError(() => EMPTY),
+      )
+      .subscribe((photos) => this.applyGalleryPhotos(photos));
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const uploadedPhotos = (photos ?? [])
+      .filter((photo) => Boolean(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
+    if (uploadedPhotos.length === 0) {
+      return;
+    }
+
+    const existingSources = new Set(this.galleryImages.map((image) => image.src));
+    const uploadedGalleryImages = uploadedPhotos.map((photo) => ({
+      category: this.resolveUploadedPhotoCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'CIA Cebu photo',
+      description: photo.altText || photo.caption || 'CIA Cebu school photo',
+      src: photo.url ?? '',
+    })).filter((image) => !existingSources.has(image.src));
+
+    this.usingUploadedGallery = true;
+    this.galleryImages = [...this.galleryImages, ...uploadedGalleryImages];
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -777,7 +829,7 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   openGalleryFromPreview(event?: Event): void {
-    this.setGalleryCategory('全部');
+    this.setGalleryCategory(this.galleryCategories[0]);
     this.scrollToSection('gallery', event);
   }
 
@@ -806,7 +858,11 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get filteredGalleryImages(): GalleryImage[] {
-    if (this.selectedGalleryCategory === '全部') {
+    if (this.selectedGalleryCategory === this.galleryCategories[0]) {
+      if (this.usingUploadedGallery) {
+        return this.galleryImages;
+      }
+
       return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category));
     }
 
@@ -814,6 +870,10 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get heroGalleryPreviewImages(): GalleryImage[] {
+    if (this.usingUploadedGallery) {
+      return this.galleryImages.slice(0, 4);
+    }
+
     return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category)).slice(0, 4);
   }
 
@@ -868,6 +928,13 @@ export class CiaSchoolComponent implements OnInit {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
+  }
+
+  private resolveUploadedPhotoCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const normalizedCategory = (category ?? '').trim().toLowerCase();
+    const categoryIndex = this.uploadedPhotoCategoryIndexes[normalizedCategory] ?? 1;
+
+    return this.galleryCategories[categoryIndex] as Exclude<GalleryCategory, '全部'>;
   }
 
   private slugifyPriceKey(value: string): string {
