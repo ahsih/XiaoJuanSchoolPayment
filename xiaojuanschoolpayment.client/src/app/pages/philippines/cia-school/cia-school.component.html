@@ -351,9 +351,10 @@
           <em>{{ quoteCnyText }}</em>
         </div>
         <div class="quote-tool-row">
-          <button type="button" class="secondary-action">
-            <mat-icon>image</mat-icon>保存报价单图片
-          </button>
+          <app-quote-image-download-button
+            [quote]="quoteImageData"
+            buttonClass="secondary-action"
+          ></app-quote-image-download-button>
           <button type="button" class="secondary-action">
             <mat-icon>mail</mat-icon>发送到邮箱
           </button>

@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
+import { QuoteImageCardData, QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
@@ -112,7 +113,7 @@ interface SideNavItem {
 @Component({
   selector: 'app-cia-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent, QuoteImageDownloadButtonComponent],
   templateUrl: './cia-school.component.html',
   styleUrl: './cia-school.component.css',
 })
@@ -121,6 +122,16 @@ export class CiaSchoolComponent implements OnInit {
 
   private readonly schoolService = inject(SchoolService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
+  private readonly quoteImageAssets = {
+    logo: '/assets/sida-qihang-education-logo-rectangle.png',
+    hero: '/assets/cia/campus-building.png',
+    jennyAvatar: '/assets/contact/jenny-avatar.jpg',
+    jennyQr: '/assets/contact/jenny-wechat-qr.png',
+    lemonAvatar: '/assets/contact/lemon-avatar.jpg',
+    lemonQr: '/assets/contact/lemon-wechat-qr.png',
+    peninAvatar: '/assets/contact/penin-avatar.jpg',
+    peninQr: '/assets/contact/penin-wechat-qr.png',
+  };
   private readonly courseFeeOrder = [
     'regular-esl',
     'intensive-esl',
@@ -1389,6 +1400,106 @@ export class CiaSchoolComponent implements OnInit {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
+  }
+
+  get quoteImageData(): QuoteImageCardData {
+    const now = new Date();
+    const quoteMonth = `${now.getFullYear()}年${now.getMonth() + 1}月`;
+    const quoteCnyAmount = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const discountUsd = (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.discount);
+    const roomCapacityMatch = this.selectedRoom.name.match(/([1-9])\s*人/) ?? this.selectedRoom.id.match(/(\d)/);
+    const roomCapacity = roomCapacityMatch?.[1] ? `${roomCapacityMatch[1]}人` : '按房型确认';
+    const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
+
+    return {
+      fileName: `CIA-${this.selectedWeeks}周报价单-${fileDate}.png`,
+      logoSrc: this.quoteImageAssets.logo,
+      heroSrc: this.quoteImageAssets.hero,
+      schoolCode: 'CIA',
+      title: `${this.selectedWeeks}周菲律宾游学`,
+      subtitle: 'Cebu International Academy / 宿务麦克坦岛 / 半斯巴达英语学校',
+      quoteDateText: quoteMonth,
+      updatedAtText: quoteMonth,
+      studentItems: [
+        { icon: '周', label: '学习周数', value: `${this.selectedWeeks}周` },
+        { icon: '日', label: '入学日期', value: this.selectedStartDate.replace(/-/g, '/') },
+        { icon: '课', label: '课程', value: this.selectedCourse.name },
+        { icon: '排', label: '课程安排', value: this.selectedCourse.schedule },
+        { icon: '房', label: '房型', value: this.selectedRoom.name },
+        { icon: '人', label: '入住人数', value: roomCapacity },
+      ],
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `USD ${this.formatUsd(this.registrationFee)}` },
+        {
+          icon: '课',
+          label: `课程费（${this.selectedCourse.name} ${this.selectedWeeks}周）`,
+          amount: `USD ${this.formatUsd(this.tuitionForSelectedWeeks)}`,
+        },
+        {
+          icon: '宿',
+          label: `住宿费（${this.selectedRoom.name} ${this.selectedWeeks}周）`,
+          amount: `USD ${this.formatUsd(this.roomFeeForSelectedWeeks)}`,
+        },
+        {
+          icon: '旺',
+          label: '旺季附加费',
+          note: `USD ${this.formatUsd(this.seasonalFeePerWeek)}/周 x ${this.selectedWeeks}周`,
+          amount: `USD ${this.formatUsd(this.seasonalSurcharge)}`,
+        },
+        {
+          icon: '折',
+          label: '思达折扣',
+          note: `(${this.discountText}，仅课程费和住宿费)`,
+          amount: `- USD ${this.formatUsd(discountUsd)}`,
+          accent: true,
+        },
+      ],
+      totalLabel: '前期支付参考合计',
+      totalUsd: `USD ${this.formatUsd(this.quoteUsd)}`,
+      totalCny: `约 RMB ${quoteCnyAmount.toLocaleString('zh-CN')}`,
+      totalNote: '（按参考汇率估算）',
+      localFeeAmount: '人民币 2500+',
+      localFeeDescription: '包括 SSP、SSP E-card、水电费、管理费、教材费、学生证、房间押金等。',
+      localFeeNote: '实际以到校后学校收取为准。',
+      note: '本报价为参考估算，最终以 CIA 学校最新报价、空房、优惠及思达启航顾问确认为准。',
+      contact: {
+        name: 'Jenny',
+        phone: '132 4982 7686',
+        avatarSrc: this.quoteImageAssets.jennyAvatar,
+        qrSrc: this.quoteImageAssets.jennyQr,
+        wechatLabel: '微信二维码占位',
+        footerText: '获取正式报价与空房确认',
+      },
+      consultants: [
+        {
+          title: '英爱留学',
+          name: 'Jenny',
+          description: '爱尔兰/英国本科、硕士、预科、半工半读',
+          phone: '132 4982 7686',
+          avatarSrc: this.quoteImageAssets.jennyAvatar,
+          qrSrc: this.quoteImageAssets.jennyQr,
+          buttonLabel: '咨询英爱留学',
+        },
+        {
+          title: '多国方案',
+          name: 'Lemon',
+          description: '还没确定国家、想比较费用/时间/路径',
+          phone: '132 9852 9856',
+          avatarSrc: this.quoteImageAssets.lemonAvatar,
+          qrSrc: this.quoteImageAssets.lemonQr,
+          buttonLabel: '咨询多国方案',
+        },
+        {
+          title: '菲律宾与东南亚',
+          name: 'Penin',
+          description: '菲律宾游学、马来/新加坡/越南短期英语',
+          phone: '153 6765 9331',
+          avatarSrc: this.quoteImageAssets.peninAvatar,
+          qrSrc: this.quoteImageAssets.peninQr,
+          buttonLabel: '咨询游学方案',
+        },
+      ],
+    };
   }
 
   private resolveUploadedPhotoCategory(category?: string): Exclude<GalleryCategory, '全部'> {
