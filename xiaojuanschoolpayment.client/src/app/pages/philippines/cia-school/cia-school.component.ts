@@ -123,7 +123,7 @@ export class CiaSchoolComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
   private readonly quoteImageAssets = {
-    logo: '/assets/sida-qihang-education-logo-rectangle.png',
+    logo: '/assets/sida-qihang-quote-header-logo-transparent.png',
     hero: '/assets/cia/campus-building.png',
     jennyAvatar: '/assets/contact/jenny-avatar.jpg',
     jennyQr: '/assets/contact/jenny-wechat-qr.png',

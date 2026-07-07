@@ -470,17 +470,7 @@ export class QuoteImageDownloadButtonComponent {
     context.fillStyle = background;
     context.fillRect(0, 0, width, height);
 
-    this.drawImageContain(context, assets.logo, 36, 26, 250, 68);
-    context.strokeStyle = '#b9c2bc';
-    context.lineWidth = 1.2;
-    context.beginPath();
-    context.moveTo(305, 27);
-    context.lineTo(305, 84);
-    context.stroke();
-    context.font = '700 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillStyle = '#15243d';
-    context.fillText('留学规划 · 语言提升', 328, 48);
-    context.fillText('从思达启航，走向更美好的未来', 328, 76);
+    this.drawImageContain(context, assets.logo, 36, 24, 520, 70);
     this.drawHeaderLine(context, '报价日期：', this.quote.quoteDateText, 755, 47, '日');
     this.drawHeaderLine(context, '资料更新时间：', this.quote.updatedAtText, 755, 82, '时');
 
@@ -533,8 +523,12 @@ export class QuoteImageDownloadButtonComponent {
 
     this.quote.studentItems.slice(0, 6).forEach((item, index) => {
       const [x, y] = positions[index];
-      this.drawRoundedRect(context, x, y, 450, 76, 8, 'rgba(255, 255, 255, 0.86)', '#e1ded8', 1);
-      this.drawInfoItem(context, item.icon, item.label, item.value, x + 20, y + 17, 400);
+      const isScheduleItem = item.label === '课程安排';
+      const cardY = isScheduleItem ? y - 4 : y;
+      const cardHeight = isScheduleItem ? 86 : 76;
+
+      this.drawRoundedRect(context, x, cardY, 450, cardHeight, 8, 'rgba(255, 255, 255, 0.86)', '#e1ded8', 1);
+      this.drawInfoItem(context, item.icon, item.label, item.value, x + 20, cardY + 17, 400);
     });
   }
 
@@ -543,14 +537,15 @@ export class QuoteImageDownloadButtonComponent {
     this.drawSectionTitle(context, 58, 786, this.quote.paymentSectionTitle ?? '前期支付参考', '¥');
 
     this.quote.paymentItems.slice(0, 5).forEach((row, index) => {
-      const y = 840 + index * 49;
+      const y = 830 + index * 48;
       this.drawPaymentRow(context, row, 70, y, 850);
       if (index < Math.min(this.quote.paymentItems.length, 5) - 1) {
-        this.drawSolidLine(context, 70, y + 25, 920, y + 25, '#e7e3dc');
+        const dividerY = row.note ? y + 36 : y + 25;
+        this.drawSolidLine(context, 70, dividerY, 920, dividerY, '#e7e3dc');
       }
     });
 
-    this.drawRoundedRect(context, 54, 1058, 924, 92, 10, '#f2f6ef');
+    this.drawRoundedRect(context, 54, 1068, 924, 78, 10, '#f2f6ef');
     context.font = '900 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#00422d';
     context.fillText(this.quote.totalLabel, 78, 1115);
@@ -559,7 +554,7 @@ export class QuoteImageDownloadButtonComponent {
     context.fillText(this.quote.totalUsd, 940, 1099);
     context.font = '900 21px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#e9560c';
-    context.fillText(this.quote.totalCny, 790, 1129);
+    context.fillText(this.quote.totalCny, 740, 1129);
     context.fillStyle = '#00422d';
     context.fillText(this.quote.totalNote ?? '（按参考汇率估算）', 940, 1129);
     context.textAlign = 'left';
@@ -571,22 +566,19 @@ export class QuoteImageDownloadButtonComponent {
     context.fillStyle = '#e9560c';
     context.fillText('到校学杂费提醒', 100, 1208);
     context.fillText('!', 62, 1208);
-    this.drawRoundedRect(context, 62, 1232, 80, 56, 9, '#fff1e6');
-    context.font = '900 30px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillText('¥', 91, 1269);
     context.font = '800 20px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#15243d';
-    context.fillText('预计准备', 160, 1249);
+    context.fillText('预计准备', 76, 1249);
     context.font = '900 35px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#e9560c';
-    context.fillText(this.quote.localFeeAmount, 160, 1288);
-    this.drawSolidLine(context, 425, 1225, 425, 1286, '#f1bc9d');
+    context.fillText(this.quote.localFeeAmount, 76, 1288);
+    this.drawSolidLine(context, 352, 1225, 352, 1286, '#f1bc9d');
     this.drawWrappedText(
       context,
       this.quote.localFeeDescription,
-      480,
+      405,
       1227,
-      410,
+      500,
       28,
       '700 22px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
       '#15243d',
@@ -595,9 +587,9 @@ export class QuoteImageDownloadButtonComponent {
     this.drawWrappedText(
       context,
       this.quote.localFeeNote,
-      480,
+      405,
       1290,
-      410,
+      500,
       24,
       '800 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
       '#e9560c',
@@ -766,14 +758,16 @@ export class QuoteImageDownloadButtonComponent {
     context.font = '900 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#00422d';
     context.fillText(label, x + 72, y + 18);
+    const isLongInfoValue = label === '课程安排' || value.length > 22;
+
     this.drawWrappedText(
       context,
       value,
       x + 72,
-      y + 47,
+      isLongInfoValue ? y + 39 : y + 43,
       maxWidth - 72,
-      22,
-      '500 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+      isLongInfoValue ? 18 : 20,
+      `${isLongInfoValue ? '500 14px' : '500 16px'} "Microsoft YaHei", "PingFang SC", Arial, sans-serif`,
       '#15243d',
       2,
     );
@@ -786,22 +780,25 @@ export class QuoteImageDownloadButtonComponent {
     y: number,
     width: number,
   ): void {
+    const labelX = row.accent ? x + 70 : x + 52;
+    const textY = row.accent ? y + 6 : y;
+
     context.font = '900 21px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = row.accent ? '#f05a12' : '#00422d';
-    context.fillText(row.icon, x, y);
+    context.fillText(row.icon, x, textY);
     context.fillStyle = row.accent ? '#f05a12' : '#111827';
-    context.fillText(row.label, x + 52, y);
+    context.fillText(row.label, labelX, textY);
 
     if (row.note) {
       context.font = '500 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = row.accent ? '#f05a12' : '#34445a';
-      context.fillText(row.note, x + 52, y + 28);
+      context.fillText(row.note, labelX, textY + 25);
     }
 
     context.textAlign = 'right';
     context.font = `900 ${row.accent ? 21 : 22}px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`;
     context.fillStyle = row.accent ? '#f05a12' : '#111827';
-    context.fillText(row.amount, x + width, y + 5);
+    context.fillText(row.amount, x + width, textY + 5);
     context.textAlign = 'left';
   }
 
