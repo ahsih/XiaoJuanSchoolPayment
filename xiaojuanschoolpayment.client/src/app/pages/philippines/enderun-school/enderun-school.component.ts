@@ -40,7 +40,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './enderun-school.component.html',
-  styleUrl: '../cia-school/cia-school.component.css',
+  styleUrl: '../school-detail-layout.css',
 })
 export class EnderunSchoolComponent {
   readonly quickFacts: QuickFact[] = [

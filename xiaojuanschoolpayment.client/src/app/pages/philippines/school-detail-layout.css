@@ -18,9 +18,13 @@
 }
 
 .hero-copy,
+.hero-actions,
+.hero-visual,
 .section-heading,
 .info-card,
-.fact {
+.fact,
+.fee-table,
+.cta-band {
   min-width: 0;
 }
 
@@ -88,6 +92,7 @@
   border: 1px solid transparent;
   font-size: 15px;
   line-height: 1.2;
+  text-align: center;
 }
 
 .primary-action {
@@ -106,6 +111,7 @@
   align-self: stretch;
   overflow: hidden;
   margin: 0;
+  max-width: 100%;
   border: 1px solid #d9e7ee;
   border-radius: 8px;
   background: #edf5f8;
@@ -115,6 +121,7 @@
 .hero-visual img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: clamp(260px, 34vw, 420px);
   object-fit: cover;
 }
@@ -400,7 +407,10 @@
 
 @media (max-width: 620px) {
   .school-detail-page {
+    width: 100%;
+    max-width: 100%;
     padding: 16px 14px 34px;
+    overflow-x: hidden;
   }
 
   .quick-facts,
@@ -417,6 +427,12 @@
   .primary-action,
   .secondary-action {
     width: 100%;
+  }
+
+  .primary-action,
+  .secondary-action {
+    min-width: 0;
+    white-space: normal;
   }
 
   .fee-row,

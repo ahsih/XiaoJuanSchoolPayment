@@ -6,6 +6,7 @@
 }
 
 .home-page {
+  --home-edge: clamp(14px, 2.1vw, 56px);
   min-width: 0;
   color: #392717;
   text-align: left;
@@ -18,8 +19,10 @@
 .projects-section,
 .journey-section,
 .partners-section {
-  width: min(1180px, calc(100% - 56px));
-  margin-inline: auto;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: var(--home-edge);
 }
 
 .hero-section {
@@ -664,14 +667,15 @@
 }
 
 .stats-inner {
-  width: min(1180px, calc(100% - 56px));
+  width: auto;
+  max-width: none;
   display: grid;
   grid-template-columns: 0.82fr 1.18fr;
   gap: 36px;
   align-items: center;
   min-height: 210px;
-  margin-inline: auto;
-  padding: 34px 0;
+  margin-inline: 0;
+  padding: 34px var(--home-edge);
 }
 
 .stats-heading h2 {
@@ -862,8 +866,10 @@
 }
 
 .final-cta > div {
-  width: min(1180px, calc(100% - 56px));
-  margin-inline: auto;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: var(--home-edge);
 }
 
 .final-cta h2 {
@@ -884,9 +890,10 @@
   display: grid;
   grid-template-columns: minmax(250px, 0.92fr) minmax(0, 1.8fr) minmax(230px, 0.76fr);
   gap: 34px;
-  width: min(1180px, calc(100% - 56px));
-  margin: 0 auto;
-  padding: 44px 0 34px;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 44px var(--home-edge) 34px;
   color: #655442;
 }
 
@@ -984,17 +991,8 @@
 }
 
 @media (max-width: 760px) {
-  .hero-inner,
-  .services-section,
-  .school-section,
-  .trust-grid,
-  .projects-section,
-  .journey-section,
-  .partners-section,
-  .stats-inner,
-  .final-cta > div,
-  .home-footer {
-    width: min(100% - 28px, 1180px);
+  .home-page {
+    --home-edge: 14px;
   }
 
   .hero-section {

@@ -40,7 +40,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './mbc-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './mbc-school.component.css'],
+  styleUrls: ['../school-detail-layout.css', './mbc-school.component.css'],
 })
 export class MbcSchoolComponent {
   readonly quickFacts: QuickFact[] = [

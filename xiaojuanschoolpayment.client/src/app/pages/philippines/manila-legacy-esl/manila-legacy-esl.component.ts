@@ -49,7 +49,7 @@ interface SourceLink {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './manila-legacy-esl.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', './manila-legacy-esl.component.css'],
+  styleUrls: ['../school-detail-layout.css', './manila-legacy-esl.component.css'],
 })
 export class ManilaLegacyEslComponent {
   readonly quickFacts: QuickFact[] = [
