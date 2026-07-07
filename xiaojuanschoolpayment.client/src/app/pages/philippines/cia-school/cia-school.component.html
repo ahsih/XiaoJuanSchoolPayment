@@ -355,9 +355,14 @@
             [quote]="quoteImageData"
             buttonClass="secondary-action"
           ></app-quote-image-download-button>
-          <button type="button" class="secondary-action">
-            <mat-icon>mail</mat-icon>发送到邮箱
-          </button>
+          <app-quote-image-download-button
+            [quote]="quoteImageData"
+            mode="email"
+            label="发送到邮箱"
+            savingLabel="发送中..."
+            icon="mail"
+            buttonClass="secondary-action"
+          ></app-quote-image-download-button>
           <a class="primary-action" routerLink="/about-sida/contact"
             ><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a
           >

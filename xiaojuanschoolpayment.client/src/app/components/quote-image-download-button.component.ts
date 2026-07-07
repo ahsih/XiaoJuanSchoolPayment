@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+
+export type QuoteImageActionMode = 'download' | 'email';
 
 export interface QuoteImageInfoItem {
   icon: string;
@@ -58,16 +61,213 @@ export interface QuoteImageCardData {
 @Component({
   selector: 'app-quote-image-download-button',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   template: `
-    <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving" (click)="saveQuoteImage()">
+    <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving" (click)="handleButtonClick()">
       <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ isSaving ? savingLabel : label }}
     </button>
+
+    <div
+      *ngIf="isEmailDialogOpen"
+      class="quote-email-backdrop"
+      role="presentation"
+      (click)="closeEmailDialog()"
+    >
+      <form
+        class="quote-email-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quote-email-title"
+        (submit)="sendQuoteEmail($event)"
+        (click)="$event.stopPropagation()"
+      >
+        <button
+          type="button"
+          class="quote-email-close"
+          aria-label="关闭"
+          [disabled]="isSaving"
+          (click)="closeEmailDialog()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <h3 id="quote-email-title">发送报价单到邮箱</h3>
+        <p>请输入接收邮箱，我们会把当前报价单图片作为附件发送给你。</p>
+
+        <label class="quote-email-field">
+          邮箱地址
+          <input
+            type="email"
+            name="quoteRecipientEmail"
+            autocomplete="email"
+            required
+            [(ngModel)]="recipientEmail"
+            [disabled]="isSaving"
+            placeholder="name@example.com"
+          />
+        </label>
+
+        <p *ngIf="emailError" class="quote-email-message error">{{ emailError }}</p>
+        <p *ngIf="emailSuccess" class="quote-email-message success">{{ emailSuccess }}</p>
+
+        <div class="quote-email-actions">
+          <button type="button" class="quote-email-secondary" [disabled]="isSaving" (click)="closeEmailDialog()">
+            取消
+          </button>
+          <button type="submit" class="quote-email-primary" [disabled]="isSaving">
+            <mat-icon>mail</mat-icon>{{ isSaving ? '发送中...' : '发送报价单' }}
+          </button>
+        </div>
+      </form>
+    </div>
   `,
   styles: [
     `
       :host {
         display: contents;
+      }
+
+      .quote-email-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(6px);
+      }
+
+      .quote-email-dialog {
+        position: relative;
+        width: min(440px, 100%);
+        border: 1px solid rgba(0, 66, 45, 0.12);
+        border-radius: 8px;
+        padding: 26px;
+        background: #fffdf8;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
+        color: #15243d;
+      }
+
+      .quote-email-dialog h3 {
+        margin: 0 44px 8px 0;
+        color: #00422d;
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 1.25;
+      }
+
+      .quote-email-dialog p {
+        margin: 0 0 18px;
+        color: #4b5870;
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      .quote-email-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: inline-grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid #dfe6df;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #15243d;
+        cursor: pointer;
+      }
+
+      .quote-email-close mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .quote-email-field {
+        display: grid;
+        gap: 8px;
+        color: #00422d;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .quote-email-field input {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid #d8e0d9;
+        border-radius: 8px;
+        padding: 0 14px;
+        background: #ffffff;
+        color: #111827;
+        font: inherit;
+        outline: none;
+      }
+
+      .quote-email-field input:focus {
+        border-color: #00643e;
+        box-shadow: 0 0 0 3px rgba(0, 100, 62, 0.13);
+      }
+
+      .quote-email-message {
+        margin: 12px 0 0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .quote-email-message.error {
+        background: #fff1ed;
+        color: #c2410c;
+      }
+
+      .quote-email-message.success {
+        background: #edf7f0;
+        color: #00643e;
+      }
+
+      .quote-email-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .quote-email-actions button {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 8px;
+        padding: 0 16px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .quote-email-actions button:disabled {
+        cursor: not-allowed;
+        opacity: 0.72;
+      }
+
+      .quote-email-secondary {
+        border: 1px solid #d8e0d9;
+        background: #ffffff;
+        color: #34445a;
+      }
+
+      .quote-email-primary {
+        border: 1px solid #00643e;
+        background: #00643e;
+        color: #ffffff;
+      }
+
+      .quote-email-primary mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
     `,
   ],
@@ -79,8 +279,94 @@ export class QuoteImageDownloadButtonComponent {
   @Input() buttonClass = 'secondary-action';
   @Input() icon = 'image';
   @Input() disabled = false;
+  @Input() mode: QuoteImageActionMode = 'download';
+  @Input() emailEndpoint = '/quote-email/send';
 
   protected isSaving = false;
+  protected isEmailDialogOpen = false;
+  protected recipientEmail = '';
+  protected emailError = '';
+  protected emailSuccess = '';
+
+  protected handleButtonClick(): void {
+    if (this.mode === 'email') {
+      this.openEmailDialog();
+      return;
+    }
+
+    void this.saveQuoteImage();
+  }
+
+  protected openEmailDialog(): void {
+    if (this.disabled || this.isSaving) {
+      return;
+    }
+
+    this.emailError = '';
+    this.emailSuccess = '';
+    this.isEmailDialogOpen = true;
+  }
+
+  protected closeEmailDialog(): void {
+    if (this.isSaving) {
+      return;
+    }
+
+    this.isEmailDialogOpen = false;
+    this.emailError = '';
+    this.emailSuccess = '';
+  }
+
+  protected async sendQuoteEmail(event: SubmitEvent): Promise<void> {
+    event.preventDefault();
+
+    if (this.isSaving || !this.quote) {
+      return;
+    }
+
+    const email = this.recipientEmail.trim();
+
+    if (!this.isValidEmail(email)) {
+      this.emailError = '请输入有效的邮箱地址。';
+      this.emailSuccess = '';
+      return;
+    }
+
+    this.isSaving = true;
+    this.emailError = '';
+    this.emailSuccess = '';
+
+    try {
+      const blob = await this.createQuoteImageBlob(1);
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('fileName', this.quote.fileName || 'quote-image.png');
+      formData.append('schoolName', `${this.quote.schoolCode} ${this.quote.title}`);
+      formData.append('summary', `${this.quote.subtitle} | ${this.quote.totalUsd}`);
+      formData.append('image', blob, this.quote.fileName || 'quote-image.png');
+
+      const response = await fetch(this.emailEndpoint, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(await this.getResponseMessage(response));
+      }
+
+      this.emailSuccess = '报价单图片已发送，请查看邮箱。';
+    } catch (error) {
+      console.error('Failed to email quote image', error);
+      this.emailError =
+        error instanceof TypeError
+          ? '邮件服务暂时无法连接，请确认后端服务正在运行后再试。'
+          : error instanceof Error && error.message
+            ? error.message
+            : '报价单邮件发送失败，请稍后重试。';
+    } finally {
+      this.isSaving = false;
+    }
+  }
 
   async saveQuoteImage(): Promise<void> {
     if (this.isSaving || !this.quote) {
@@ -90,42 +376,7 @@ export class QuoteImageDownloadButtonComponent {
     this.isSaving = true;
 
     try {
-      const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
-      const [logo, hero, consultantAssets] = await Promise.all([
-        this.loadCanvasImage(this.quote.logoSrc),
-        this.loadCanvasImage(this.quote.heroSrc),
-        Promise.all(
-          consultants.map(async (consultant) => ({
-            consultant,
-            avatar: await this.loadCanvasImage(consultant.avatarSrc),
-            qr: await this.loadCanvasImage(consultant.qrSrc),
-          })),
-        ),
-      ]);
-      const width = 1032;
-      const height = 1848;
-      const scale = Math.max(2, Math.min(window.devicePixelRatio || 2, 3));
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-
-      if (!context) {
-        throw new Error('Canvas is not available');
-      }
-
-      canvas.width = width * scale;
-      canvas.height = height * scale;
-      context.scale(scale, scale);
-      context.imageSmoothingEnabled = true;
-      context.imageSmoothingQuality = 'high';
-
-      this.drawQuoteImage(context, { logo, hero, consultants: consultantAssets.slice(0, 3) }, width, height);
-
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png', 0.98));
-
-      if (!blob) {
-        throw new Error('Quote image could not be created');
-      }
-
+      const blob = await this.createQuoteImageBlob();
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = objectUrl;
@@ -140,6 +391,59 @@ export class QuoteImageDownloadButtonComponent {
     } finally {
       this.isSaving = false;
     }
+  }
+
+  private async createQuoteImageBlob(scaleOverride?: number): Promise<Blob> {
+    const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
+    const [logo, hero, consultantAssets] = await Promise.all([
+      this.loadCanvasImage(this.quote.logoSrc),
+      this.loadCanvasImage(this.quote.heroSrc),
+      Promise.all(
+        consultants.map(async (consultant) => ({
+          consultant,
+          avatar: await this.loadCanvasImage(consultant.avatarSrc),
+          qr: await this.loadCanvasImage(consultant.qrSrc),
+        })),
+      ),
+    ]);
+    const width = 1032;
+    const height = 1848;
+    const scale = scaleOverride ?? Math.max(2, Math.min(window.devicePixelRatio || 2, 3));
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error('Canvas is not available');
+    }
+
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    context.scale(scale, scale);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
+
+    this.drawQuoteImage(context, { logo, hero, consultants: consultantAssets.slice(0, 3) }, width, height);
+
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png', 0.98));
+
+    if (!blob) {
+      throw new Error('Quote image could not be created');
+    }
+
+    return blob;
+  }
+
+  private async getResponseMessage(response: Response): Promise<string> {
+    try {
+      const body = (await response.json()) as { message?: string };
+      return body.message || '报价单邮件发送失败，请稍后重试。';
+    } catch {
+      return '报价单邮件发送失败，请稍后重试。';
+    }
+  }
+
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   private drawQuoteImage(
