@@ -31,7 +31,11 @@ interface SideNavItem { label: string; target: string; icon: string; }
   imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './philinter-school-detail.component.html',
-  styleUrl: '../cia-school/cia-school.component.css',
+  styleUrls: [
+    '../cebu-school-detail-layout.css',
+    '../cebu-school-detail-content.css',
+    '../cebu-school-detail-responsive.css',
+  ],
 })
 export class PhilinterSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
