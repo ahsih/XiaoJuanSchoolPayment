@@ -837,45 +837,149 @@ app-cia-school .course-choice-grid h3 {
   font-size: 18px;
 }
 
-app-cia-school .blue-cta {
+app-cia-school .course-match-cta {
   display: grid;
-  grid-template-columns: 70px minmax(0, 1fr) auto;
-  gap: 22px;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(500px, 1.45fr) 220px;
+  gap: 18px;
   align-items: center;
   margin-top: 36px;
-  padding: 28px 44px;
+  padding: 22px 28px 14px;
+  border: 1px solid #e0e8ec;
   border-radius: 8px;
-  background: #071d44;
-  color: #ffffff;
+  background: #ffffff;
+  box-shadow: 0 16px 34px rgba(12, 42, 36, 0.08);
 }
 
-app-cia-school .blue-cta > mat-icon {
+app-cia-school .course-match-intro {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+app-cia-school .course-match-intro > mat-icon {
   display: grid;
   place-items: center;
-  width: 70px;
-  height: 70px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: #ffffff;
-  color: #08613f;
-  font-size: 38px;
+  color: #0b5d41;
+  font-size: 58px;
 }
 
-app-cia-school .blue-cta h2,
+app-cia-school .course-match-intro h2 {
+  color: #043f2d;
+  font-size: 24px;
+}
+
 app-cia-school .final-cta h2 {
   color: #ffffff;
   font-size: 28px;
 }
 
-app-cia-school .blue-cta p {
-  margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.6;
+app-cia-school .course-match-intro p {
+  margin: 10px 0 0;
+  color: #516173;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
-app-cia-school .blue-cta strong {
-  color: #1db65a;
-  font-size: 30px;
+app-cia-school .course-match-advisor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+app-cia-school .course-match-advisor {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-height: 118px;
+  padding: 14px 12px;
+  border: 1px solid #dfe7eb;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff 0, #fbfdfc 100%);
+}
+
+app-cia-school .course-match-advisor mat-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #cfe1d8;
+  border-radius: 50%;
+  background: #f0f8f4;
+  color: #07543d;
+  font-size: 25px;
+}
+
+app-cia-school .course-match-advisor h3 {
+  margin: 0;
+  color: #18304a;
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+app-cia-school .course-match-advisor strong {
+  display: block;
+  margin-top: 3px;
+  color: #ff5a1f;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+app-cia-school .course-match-advisor p {
+  margin: 10px 0 0;
+  color: #566679;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+app-cia-school .course-match-action {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+}
+
+app-cia-school .course-match-action .primary-action {
+  width: 100%;
+  min-height: 50px;
+  padding-inline: 12px;
+  font-size: 15px;
   white-space: nowrap;
+}
+
+app-cia-school .course-match-action small {
+  color: #617085;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.45;
+  text-align: center;
+}
+
+app-cia-school .course-match-note {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 34px;
+  margin: 0;
+  border-radius: 8px;
+  background: #f2f7f3;
+  color: #4f6172;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+app-cia-school .course-match-note mat-icon {
+  width: 18px;
+  height: 18px;
+  color: #0b5d41;
+  font-size: 18px;
 }
 
 app-cia-school .student-care-section {
@@ -1259,10 +1363,6 @@ app-cia-school .life-grid p {
   padding: 0 18px 20px;
 }
 
-app-cia-school .blue-cta.compact {
-  margin-top: 36px;
-}
-
 app-cia-school .price-note {
   margin-top: 26px;
   color: #536176;
@@ -1469,76 +1569,187 @@ app-cia-school .faq-section p {
 
 app-cia-school .final-cta {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px 320px;
-  gap: 34px;
-  align-items: center;
-  padding: 48px 58px 28px;
+  gap: 24px;
+  padding: 28px 28px 24px;
   border-radius: 8px;
-  background: #061d44;
+  background: #005337;
+  color: #ffffff;
+  box-shadow: 0 18px 36px rgba(0, 65, 44, 0.14);
+}
+
+app-cia-school .final-cta-head {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 340px;
+  gap: 22px;
+  align-items: center;
+}
+
+app-cia-school .final-cta-icon {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
   color: #ffffff;
 }
 
+app-cia-school .final-cta-icon mat-icon {
+  width: 54px;
+  height: 54px;
+  font-size: 54px;
+}
+
 app-cia-school .final-cta p {
-  max-width: 720px;
-  margin: 14px 0 24px;
+  max-width: 780px;
+  margin: 12px 0 0;
   color: rgba(255, 255, 255, 0.84);
   line-height: 1.7;
 }
 
-app-cia-school .final-cta strong {
-  display: inline-flex;
-  gap: 12px;
-  align-items: center;
-  color: #ffffff;
-  font-size: 34px;
-  font-weight: 950;
-}
-
-app-cia-school .final-cta strong mat-icon {
-  width: 54px;
-  height: 54px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #061d44;
-  font-size: 34px;
-}
-
-app-cia-school .qr-box {
-  display: grid;
-  place-items: center;
-  width: 150px;
-  height: 150px;
-  border: 10px solid #ffffff;
-  border-radius: 8px;
-  background:
-    linear-gradient(90deg, #071d44 8px, transparent 8px) 0 0 / 18px 18px,
-    linear-gradient(#071d44 8px, transparent 8px) 0 0 / 18px 18px,
-    #ffffff;
-  color: #061d44;
-  font-weight: 950;
-}
-
 app-cia-school .final-actions {
   display: grid;
-  gap: 14px;
+  gap: 12px;
+}
+
+app-cia-school .final-actions .primary-action,
+app-cia-school .final-actions .secondary-action {
+  min-height: 56px;
 }
 
 app-cia-school .final-actions .secondary-action {
   background: transparent;
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.62);
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+app-cia-school .final-consultant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 8px;
+}
+
+app-cia-school .final-consultant-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) 84px;
+  gap: 12px;
+  align-items: center;
+  min-height: 200px;
+  padding: 18px 14px 16px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0a2431;
+}
+
+app-cia-school .final-consultant-avatar {
+  width: 78px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+app-cia-school .final-consultant-copy {
+  min-width: 0;
+}
+
+app-cia-school .final-consultant-copy h3 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  margin: 0;
+  color: #18304a;
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+app-cia-school .final-consultant-copy h3 span {
+  color: #ff5a1f;
+  font-size: 21px;
+}
+
+app-cia-school .final-consultant-copy p {
+  margin: 10px 0 12px;
+  color: #4c5c6d;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+app-cia-school .final-consultant-phone {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  color: #073d2d;
+  font-size: 20px;
+  font-weight: 950;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+app-cia-school .final-consultant-phone mat-icon {
+  width: 21px;
+  height: 21px;
+  color: #006246;
+  font-size: 21px;
+}
+
+app-cia-school .final-consultant-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: #ff5a1f;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1.15;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+app-cia-school .final-consultant-button mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+app-cia-school .final-consultant-qr {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+app-cia-school .final-consultant-qr img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+app-cia-school .final-consultant-qr figcaption {
+  color: #253548;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
 app-cia-school .final-cta ul {
-  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
-  margin-top: 22px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  margin-top: 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 app-cia-school .final-cta li {
@@ -1549,7 +1760,7 @@ app-cia-school .final-cta li {
 }
 
 app-cia-school .final-cta li mat-icon {
-  color: #8ad8a6;
+  color: #d5ec54;
 }
 
 app-cia-school .cia-shell > .mobile-bottom-actions {
@@ -1578,6 +1789,20 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  app-cia-school .course-match-cta {
+    grid-template-columns: 1fr;
+  }
+
+  app-cia-school .course-match-action {
+    width: min(100%, 270px);
+    justify-items: stretch;
+  }
+
+  app-cia-school .course-match-note {
+    justify-content: flex-start;
+    padding-inline: 16px;
+  }
+
   app-cia-school .mini-quote-card {
     position: static;
   }
@@ -1604,13 +1829,16 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   }
 
   app-cia-school .quote-tool-row,
-  app-cia-school .final-cta {
+  app-cia-school .final-cta-head {
     grid-template-columns: 1fr;
   }
 
-  app-cia-school .qr-box {
-    width: 132px;
-    height: 132px;
+  app-cia-school .final-cta-icon {
+    display: none;
+  }
+
+  app-cia-school .final-actions {
+    max-width: 360px;
   }
 
   app-cia-school .final-cta ul {
@@ -1644,7 +1872,8 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .hero-media,
   app-cia-school .fit-columns,
   app-cia-school .student-track-grid article,
-  app-cia-school .blue-cta {
+  app-cia-school .course-match-cta,
+  app-cia-school .course-match-intro {
     grid-template-columns: 1fr;
   }
 
@@ -1703,12 +1932,14 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .video-grid,
   app-cia-school .environment-grid,
   app-cia-school .course-choice-grid,
+  app-cia-school .course-match-advisor-grid,
   app-cia-school .student-care-grid,
   app-cia-school .fee-structure-grid,
   app-cia-school .life-grid,
   app-cia-school .service-grid,
   app-cia-school .check-grid,
   app-cia-school .process-line,
+  app-cia-school .final-consultant-grid,
   app-cia-school .final-cta ul {
     grid-template-columns: 1fr;
   }
@@ -1814,13 +2045,20 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
     font-size: 20px;
   }
 
-  app-cia-school .blue-cta {
+  app-cia-school .course-match-cta {
     padding: 24px 18px;
   }
 
-  app-cia-school .blue-cta strong,
-  app-cia-school .final-cta strong {
-    font-size: 26px;
+  app-cia-school .course-match-intro {
+    text-align: center;
+  }
+
+  app-cia-school .course-match-intro > mat-icon {
+    justify-self: center;
+  }
+
+  app-cia-school .course-match-action {
+    width: 100%;
   }
 
   app-cia-school .faq-section {
@@ -1828,7 +2066,44 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   }
 
   app-cia-school .final-actions {
+    max-width: none;
     width: 100%;
+  }
+
+  app-cia-school .final-consultant-card {
+    grid-template-columns: 74px minmax(0, 1fr);
+    min-height: auto;
+    align-items: start;
+    padding: 16px;
+  }
+
+  app-cia-school .final-consultant-avatar {
+    width: 68px;
+  }
+
+  app-cia-school .final-consultant-copy h3 {
+    font-size: 17px;
+  }
+
+  app-cia-school .final-consultant-copy h3 span {
+    font-size: 20px;
+  }
+
+  app-cia-school .final-consultant-phone {
+    font-size: 18px;
+  }
+
+  app-cia-school .final-consultant-qr {
+    grid-column: 1 / -1;
+    padding-top: 4px;
+  }
+
+  app-cia-school .final-consultant-qr img {
+    width: 168px;
+    height: 168px;
+    padding: 6px;
+    border: 1px solid #dbe7df;
+    border-radius: 8px;
   }
 
   app-cia-school .cia-shell > .mobile-bottom-actions {

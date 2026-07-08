@@ -253,13 +253,43 @@
           <p>{{ item.text }}</p>
         </article>
       </div>
-      <div class="blue-cta">
-        <mat-icon>support_agent</mat-icon>
-        <div>
-          <h2>想了解课程与费用，获取专属规划方案？</h2>
-          <p>添加顾问，获取 CIA 最新课程表与费用详情，开启你的留学之旅。</p>
+      <div class="course-match-cta" aria-label="CIA 课程顾问匹配">
+        <div class="course-match-intro">
+          <mat-icon>support_agent</mat-icon>
+          <div>
+            <h2>不确定选哪种 CIA 课程？</h2>
+            <p>
+              把你的英语基础、学习周数和目标告诉我们，思达启航会帮你匹配课程、房型和预算方案。
+            </p>
+          </div>
         </div>
-        <strong>132 4982 7686</strong>
+
+        <div class="course-match-advisor-grid">
+          <article
+            class="course-match-advisor"
+            *ngFor="let advisor of courseMatchAdvisors"
+          >
+            <mat-icon>{{ advisor.icon }}</mat-icon>
+            <div>
+              <h3>{{ advisor.title }}</h3>
+              <strong>{{ advisor.name }}</strong>
+              <p>{{ advisor.text }}</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="course-match-action">
+          <a class="primary-action" routerLink="/about-sida/contact">
+            帮我匹配课程和费用
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+          <small>点击后选择顾问，添加微信或电话咨询</small>
+        </div>
+
+        <p class="course-match-note">
+          <mat-icon>verified_user</mat-icon>
+          添加后请备注「CIA」，顾问会根据你的目标、周数和预算给你课程建议。
+        </p>
       </div>
     </section>
 
@@ -574,22 +604,60 @@
     </section>
 
     <section class="final-cta">
-      <div>
-        <h2>想知道 CIA 当前是否有空房和优惠？</h2>
-        <p>
-          把入学日期、学习周数、课程方向和房型偏好发给顾问，我们正式报价与入学建议。
-        </p>
-        <strong><mat-icon>call</mat-icon>132 4982 7686</strong>
+      <div class="final-cta-head">
+        <div class="final-cta-icon" aria-hidden="true">
+          <mat-icon>headset_mic</mat-icon>
+        </div>
+        <div class="final-cta-copy">
+          <h2>想知道 CIA 当前是否有空房和优惠？</h2>
+          <p>
+            把入学日期、学习周数、课程方向和房型偏好发给顾问，我们帮你确认正式报价、空房和入学建议。
+          </p>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact"
+            ><mat-icon>description</mat-icon>获取 CIA 完整报价单
+            <mat-icon>chevron_right</mat-icon></a
+          >
+          <a class="secondary-action" routerLink="/about-sida/contact"
+            ><mat-icon>chat</mat-icon>咨询当前空房与优惠</a
+          >
+        </div>
       </div>
-      <div class="qr-box">QR</div>
-      <div class="final-actions">
-        <a class="primary-action" routerLink="/about-sida/contact"
-          >获取 CIA 完整报价单 <mat-icon>chevron_right</mat-icon></a
+
+      <div class="final-consultant-grid">
+        <article
+          class="final-consultant-card"
+          *ngFor="let consultant of ctaConsultants"
         >
-        <a class="secondary-action" routerLink="/about-sida/contact"
-          >咨询当前空房与优惠</a
-        >
+          <img
+            class="final-consultant-avatar"
+            [src]="consultant.avatarSrc"
+            [alt]="consultant.name + ' 顾问头像'"
+          />
+          <div class="final-consultant-copy">
+            <h3>
+              <span>{{ consultant.name }}</span>{{ consultant.title }}
+            </h3>
+            <p>{{ consultant.description }}</p>
+            <a class="final-consultant-phone" [href]="consultant.phoneHref">
+              <mat-icon>phone</mat-icon>{{ consultant.phone }}
+            </a>
+            <a class="final-consultant-button" [href]="consultant.phoneHref">
+              <mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}
+              <mat-icon>chevron_right</mat-icon>
+            </a>
+          </div>
+          <figure class="final-consultant-qr">
+            <img
+              [src]="consultant.qrSrc"
+              [alt]="consultant.name + ' 微信二维码'"
+            />
+            <figcaption>扫码加微信</figcaption>
+          </figure>
+        </article>
       </div>
+
       <ul>
         <li *ngFor="let badge of ctaBadges">
           <mat-icon>check_circle</mat-icon>{{ badge }}
