@@ -128,6 +128,19 @@ interface CourseMatchAdvisor {
   text: string;
 }
 
+interface SidaCiaReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+
+interface SidaCiaTrustBadge {
+  icon: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-cia-school',
   standalone: true,
@@ -1061,58 +1074,56 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly serviceCards = [
+  readonly sidaCiaReasons: SidaCiaReason[] = [
     {
-      icon: 'card_travel',
-      title: '免费协助办理菲律宾签证',
-      text: '资深团队指导，材料清单清晰，出签更高效。',
+      number: '01',
+      title: '正式合同与官方授权',
+      text: '国内公司签约，学校报价、录取文件及收费凭证均可核验。',
+      image: 'assets/cia/sida-why-contract.jpg',
+      alt: 'CIA报名合同与授权文件',
     },
     {
-      icon: 'public',
-      title: '菲律宾及多国驻点支持',
-      text: '当地团队7×24小时响应，遇到问题第一时间解决。',
+      number: '02',
+      title: '费用提前算清，同条件保价',
+      text: '0中介服务费，学费、住宿费及当地费用提前说明。',
+      image: 'assets/cia/sida-why-fees.jpg',
+      alt: 'CIA费用清单与计算器',
     },
     {
-      icon: 'apartment',
-      title: '真实确认空房优惠和入学档期',
-      text: '实时核查学校可用名额，帮你锁定合适档期。',
+      number: '03',
+      title: '从所有适合的学校中帮你筛选',
+      text: '根据目标、预算、基础和管理偏好，分析各校优缺点与价格。',
+      image: 'assets/cia/sida-why-selection.jpg',
+      alt: '思达启航顾问协助筛选CIA方案',
     },
     {
-      icon: 'price_check',
-      title: '费用拆分透明无隐形消费',
-      text: '学费、住宿、杂费清晰拆分，每一项都明白自由。',
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、机票、保险及接机逐项提醒。',
+      image: 'assets/cia/sida-why-departure.jpg',
+      alt: '菲律宾游学出发资料与手机提醒',
     },
     {
-      icon: 'inventory',
-      title: '行前学习资料与准备清单',
-      text: '提供英语预习资料、行前指南和生活须知，让你更快适应。',
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、课程、住宿、账单、续读或转校问题继续协助。',
+      image: 'assets/cia/sida-why-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习',
     },
     {
-      icon: 'support_agent',
-      title: '到校后继续协助',
-      text: '接机、入学协助、生活支持、课程与学习跟进。',
-    },
-    {
-      icon: 'school',
-      title: '游学 + 留学一起规划',
-      text: '未来升学、转校、续读，我们为你提前布局。',
-    },
-    {
-      icon: 'redeem',
-      title: '老学员后续专属优惠',
-      text: '续学、转课程、推荐好友，可享受思达专属回馈。',
+      number: '06',
+      title: '深圳总部 + 菲律宾·欧洲驻点支持',
+      text: '国内统筹与境外工作人员协作，重要情况有人跟进。',
+      image: 'assets/cia/sida-why-team.jpg',
+      alt: '思达启航菲律宾和欧洲驻点团队',
     },
   ];
 
-  readonly processTimeline = [
-    { icon: 'chat', title: '告诉顾问目标 / 周数 / 预算', text: '明确需求与期望' },
-    { icon: 'fact_check', title: '确认课程和房型', text: '匹配最优方案' },
-    { icon: 'apartment', title: '查询空房和优惠', text: '锁定档期名额' },
-    { icon: 'description', title: '获取正式报价', text: '费用透明无隐藏' },
-    { icon: 'check_circle', title: '完成报名付款', text: '保留名额' },
-    { icon: 'badge', title: '免费协助签证和行前资料', text: '材料指导更省心' },
-    { icon: 'flight_takeoff', title: '抵达菲律宾并入学', text: '接机入学无忧' },
-    { icon: 'school', title: '学习期间持续协助至完成学习回国', text: '全程陪伴更安心' },
+  readonly sidaCiaTrustBadges: SidaCiaTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '官方授权合作' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 菲律宾·欧洲驻点' },
   ];
 
   readonly enrollmentChecks = [

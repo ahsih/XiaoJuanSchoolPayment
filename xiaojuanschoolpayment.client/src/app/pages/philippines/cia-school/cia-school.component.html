@@ -552,31 +552,35 @@
       </a>
     </section>
 
-    <section class="cia-section" id="service-process">
-      <div class="section-heading">
-        <h2>
-          <mat-icon>verified_user</mat-icon>通过思达启航报名，不只是拿报价
-        </h2>
-      </div>
-      <div class="service-grid">
-        <article *ngFor="let item of serviceCards">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
+    <section class="cia-section sida-cia-section" id="service-process">
+      <div class="sida-cia-heading">
+        <span>WHY SIDA QIHANG</span>
+        <h2>为什么通过思达启航报名CIA？</h2>
+        <p>不只是提交报名，更重要的是帮你选对学校、算清费用，并持续协助到完成学习回国。</p>
       </div>
 
-      <div class="process-area">
-        <h2>从咨询到完成学习回国，我们这样协助你</h2>
-        <div class="process-line">
-          <article *ngFor="let step of processTimeline">
+      <div class="sida-cia-panel">
+        <figure class="sida-cia-main-photo">
+          <img src="assets/cia/sida-why-main.jpg" alt="思达启航顾问为CIA学生讲解报名方案" />
+        </figure>
+
+        <div class="sida-cia-reason-grid">
+          <article *ngFor="let item of sidaCiaReasons">
+            <img [src]="item.image" [alt]="item.alt" />
             <div>
-              <mat-icon>{{ step.icon }}</mat-icon>
+              <span>{{ item.number }}</span>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.text }}</p>
             </div>
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.text }}</p>
           </article>
         </div>
+      </div>
+
+      <div class="sida-cia-trust-bar" aria-label="思达启航报名保障">
+        <article *ngFor="let item of sidaCiaTrustBadges">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <strong>{{ item.label }}</strong>
+        </article>
       </div>
     </section>
 

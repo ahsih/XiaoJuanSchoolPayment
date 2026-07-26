@@ -211,7 +211,6 @@ app-cia-school .course-choice-grid article,
 app-cia-school .fee-structure-grid article,
 app-cia-school .life-grid article,
 app-cia-school .student-track-grid article,
-app-cia-school .service-grid article,
 app-cia-school .check-grid article,
 app-cia-school .snapshot-grid article {
   border-radius: 8px;
@@ -360,7 +359,6 @@ app-cia-school .mini-quote-card h2,
 app-cia-school .quote-form-card h2,
 app-cia-school .quote-result-card h2,
 app-cia-school .tables-section h2,
-app-cia-school .process-area h2,
 app-cia-school .final-cta h2 {
   margin: 0;
   color: #043f2d;
@@ -407,7 +405,6 @@ app-cia-school .course-choice-grid h3,
 app-cia-school .fee-structure-grid h3,
 app-cia-school .life-grid h3,
 app-cia-school .student-track-grid h3,
-app-cia-school .service-grid h3,
 app-cia-school .check-grid h3 {
   display: block;
   margin: 0;
@@ -423,7 +420,6 @@ app-cia-school .video-grid p,
 app-cia-school .course-choice-grid p,
 app-cia-school .life-grid p,
 app-cia-school .student-track-grid p,
-app-cia-school .service-grid p,
 app-cia-school .check-grid p {
   margin: 9px 0 0;
   color: #526176;
@@ -1417,83 +1413,6 @@ app-cia-school .center-action {
   margin: 28px auto 0;
 }
 
-app-cia-school .service-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
-}
-
-app-cia-school .service-grid article {
-  min-height: 190px;
-  padding: 26px;
-  border: 1px solid #dfe7ed;
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(29, 43, 59, 0.04);
-}
-
-app-cia-school .service-grid article > mat-icon {
-  width: 46px;
-  height: 46px;
-  color: #087343;
-  font-size: 46px;
-}
-
-app-cia-school .service-grid h3 {
-  margin-top: 16px;
-}
-
-app-cia-school .process-area {
-  margin-top: 38px;
-}
-
-app-cia-school .process-area h2 {
-  margin-bottom: 30px;
-  font-size: 28px;
-}
-
-app-cia-school .process-line {
-  display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 14px;
-}
-
-app-cia-school .process-line article {
-  position: relative;
-  text-align: center;
-}
-
-app-cia-school .process-line article > div {
-  display: grid;
-  place-items: center;
-  width: 82px;
-  height: 82px;
-  margin: 0 auto 14px;
-  border: 1px solid #cfe4d6;
-  border-radius: 50%;
-  background: #edf8f1;
-}
-
-app-cia-school .process-line mat-icon {
-  width: 36px;
-  height: 36px;
-  color: #087343;
-  font-size: 36px;
-}
-
-app-cia-school .process-line h3 {
-  margin: 0;
-  color: #08204a;
-  font-size: 15px;
-  line-height: 1.35;
-}
-
-app-cia-school .process-line p {
-  margin: 6px 0 0;
-  color: #536176;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
 app-cia-school .check-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -1817,15 +1736,10 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .environment-grid,
   app-cia-school .fee-structure-grid,
   app-cia-school .student-track-grid,
-  app-cia-school .service-grid,
   app-cia-school .life-grid,
   app-cia-school .student-care-grid,
   app-cia-school .video-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  app-cia-school .process-line {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   app-cia-school .quote-tool-row,
@@ -1844,6 +1758,7 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .final-cta ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
 }
 
 @media (max-width: 760px) {
@@ -1936,9 +1851,7 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .student-care-grid,
   app-cia-school .fee-structure-grid,
   app-cia-school .life-grid,
-  app-cia-school .service-grid,
   app-cia-school .check-grid,
-  app-cia-school .process-line,
   app-cia-school .final-consultant-grid,
   app-cia-school .final-cta ul {
     grid-template-columns: 1fr;
@@ -2027,7 +1940,6 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
   app-cia-school .quote-form-card h2,
   app-cia-school .quote-result-card h2,
   app-cia-school .tables-section h2,
-  app-cia-school .process-area h2,
   app-cia-school .final-cta h2 {
     font-size: 25px;
   }
@@ -2134,5 +2046,6 @@ app-cia-school .cia-shell > .mobile-bottom-actions {
     background: #087343;
   }
 }
+
 /* CIA 2026 redesign overrides end */
 
