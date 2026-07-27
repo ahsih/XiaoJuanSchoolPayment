@@ -1,4 +1,3 @@
-/* Most CIA page styles stay in src/styles.css; this lazy-only section lives here to keep the initial bundle under budget. */
 .sida-cia-heading {
   max-width: 860px;
   margin: 0 auto 24px;
