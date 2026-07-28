@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  constructor() {}
+  constructor(private readonly injector: Injector) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    const { SeoService } = await import('../services/seo.service');
+    this.injector.get(SeoService).init();
   }
 
   title = 'xiaojuanschoolpayment.client';

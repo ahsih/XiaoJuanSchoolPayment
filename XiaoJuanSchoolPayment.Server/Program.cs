@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Xml.Linq;
 using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.Models;
@@ -115,8 +116,101 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[]
+{
+  ("/", "weekly", "1.0"),
+  ("/philippines-study/why-philippines", "monthly", "0.9"),
+  ("/philippines-study/schools/by-city", "weekly", "0.95"),
+  ("/philippines-study/cebu", "weekly", "0.95"),
+  ("/philippines-study/baguio", "weekly", "0.95"),
+  ("/philippines-study/clark", "weekly", "0.95"),
+  ("/philippines-study/manila", "monthly", "0.85"),
+  ("/philippines-study/boracay", "monthly", "0.75"),
+  ("/philippines-study/bacolod", "monthly", "0.75"),
+  ("/philippines-study/iloilo", "monthly", "0.75"),
+  ("/philippines-study/davao", "monthly", "0.75"),
+  ("/philippines-study/subic", "monthly", "0.75"),
+  ("/philippines-study/cost", "monthly", "0.9"),
+  ("/philippines-study/faq", "monthly", "0.85"),
+  ("/philippines-study/offers", "weekly", "0.85"),
+  ("/philippines-study/recommendations/ielts-schools", "monthly", "0.85"),
+  ("/philippines-study/recommendations/budget-schools", "monthly", "0.85"),
+  ("/philippines-study/recommendations/family-schools", "monthly", "0.85"),
+  ("/philippines-study/recommendations/junior-camp", "monthly", "0.85"),
+  ("/philippines-study/recommendations/sparta-schools", "monthly", "0.85"),
+  ("/philippines-study/schools/by-course", "monthly", "0.85"),
+  ("/philippines-study/schools/by-style", "monthly", "0.85"),
+  ("/philippines-study/schools/popular", "monthly", "0.85"),
+  ("/study-tour-guide/philippines", "monthly", "0.85"),
+  ("/philippines-study/cebu/cia-cebu-international-academy", "monthly", "0.8"),
+  ("/philippines-study/cebu/ev-academy", "monthly", "0.8"),
+  ("/philippines-study/cebu/cpi-cebu-pelis-institute", "monthly", "0.8"),
+  ("/philippines-study/cebu/cpils", "monthly", "0.8"),
+  ("/philippines-study/cebu/english-fella", "monthly", "0.8"),
+  ("/philippines-study/cebu/philinter-academy", "monthly", "0.8"),
+  ("/philippines-study/baguio/pines-international-academy", "monthly", "0.8"),
+  ("/philippines-study/baguio/beci-international-language-academy", "monthly", "0.8"),
+  ("/philippines-study/baguio/baguio-jic-academy", "monthly", "0.8"),
+  ("/philippines-study/baguio/monol", "monthly", "0.8"),
+  ("/philippines-study/baguio/wales-academy", "monthly", "0.8"),
+  ("/philippines-study/baguio/talk-academy", "monthly", "0.8"),
+  ("/philippines-study/clark/cip-english-kepos", "monthly", "0.8"),
+  ("/philippines-study/clark/eg-academy", "monthly", "0.8"),
+  ("/philippines-study/clark/clark-we-academy", "monthly", "0.8"),
+  ("/philippines-study/clark/help-english-clark", "monthly", "0.8"),
+  ("/philippines-study/clark/aelc-native-focused-clark-schools", "monthly", "0.8"),
+  ("/philippines-study/manila/enderun-extension", "monthly", "0.75"),
+  ("/philippines-study/manila/american-english-skills-development-center", "monthly", "0.75"),
+  ("/philippines-study/manila/berlitz-philippines", "monthly", "0.75"),
+  ("/philippines-study/manila/manila-business-college", "monthly", "0.75"),
+  ("/philippines-study/manila/legacy-esl-candidates", "monthly", "0.75"),
+  ("/about-sida/contact", "monthly", "0.8"),
+};
+
+app.MapGet("/robots.txt", (HttpRequest request) =>
+{
+  var origin = GetPublicOrigin(request);
+  var robots = string.Join('\n', new[]
+  {
+    "User-agent: *",
+    "Allow: /",
+    "Disallow: /admin",
+    "Disallow: /login",
+    $"Sitemap: {origin}/sitemap.xml",
+    string.Empty,
+  });
+
+  return Results.Text(robots, "text/plain; charset=utf-8");
+});
+
+app.MapGet("/sitemap.xml", (HttpRequest request) =>
+{
+  var origin = GetPublicOrigin(request);
+  XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
+  var urls = sitemapEntries.Select(entry =>
+    new XElement(
+      ns + "url",
+      new XElement(ns + "loc", $"{origin}{entry.Path}"),
+      new XElement(ns + "changefreq", entry.ChangeFrequency),
+      new XElement(ns + "priority", entry.Priority)));
+  var document = new XDocument(new XDeclaration("1.0", "utf-8", null), new XElement(ns + "urlset", urls));
+
+  return Results.Text(document.ToString(SaveOptions.DisableFormatting), "application/xml; charset=utf-8");
+});
+
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
 app.Run();
+
+static string GetPublicOrigin(HttpRequest request)
+{
+  var forwardedProto = request.Headers["X-Forwarded-Proto"].FirstOrDefault();
+  var scheme = string.IsNullOrWhiteSpace(forwardedProto) ? request.Scheme : forwardedProto.Split(',')[0].Trim();
+
+  var forwardedHost = request.Headers["X-Forwarded-Host"].FirstOrDefault();
+  var host = string.IsNullOrWhiteSpace(forwardedHost) ? request.Host.Value : forwardedHost.Split(',')[0].Trim();
+
+  return $"{scheme}://{host}".TrimEnd('/');
+}
