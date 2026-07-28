@@ -35,6 +35,7 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
+    './ev-school-detail.component.css',
   ],
 })
 export class EvSchoolDetailComponent implements OnInit {
@@ -60,9 +61,9 @@ export class EvSchoolDetailComponent implements OnInit {
     { icon: 'apartment', label: '学校类型', value: '宿务斯巴达 / 半斯巴达', note: 'SP1 / SP2 双模式' },
     { icon: 'groups', label: '适合人群', value: '7岁以上学生', note: '15岁以下通常需父母陪同' },
     { icon: 'verified_user', label: '管理模式', value: '斯巴达或半斯巴达', note: '按学习目标选择强度' },
-    { icon: 'school', label: '课程选项', value: 'ESL / IELTS / TOEIC', note: '另有Power Speaking与商务英语' },
+    { icon: 'school', label: '课程选项', value: 'ESL / Power Speaking / IELTS', note: '另有TOEIC、Business、Family、Digital与EV Talk' },
     { icon: 'bed', label: '住宿房型', value: '单人到四人房', note: '校内住宿，热门房型需早确认' },
-    { icon: 'event_available', label: '校区位置', value: 'Nasipit, Cebu City', note: '宿务市区校园型学校' },
+    { icon: 'event_available', label: '校区位置', value: 'Nasipit, Cebu City', note: '宿务市区校园型学校，生活机能方便' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -79,19 +80,19 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: 'EV Academy' },
     { label: '所在地区', value: 'Nasipit, Cebu City, Cebu' },
-    { label: '创校时间', value: '2002年创校，2017年迁入新校区' },
+    { label: '创校时间', value: '2004年起办学，2017年迁入新校区' },
     { label: '学生容量', value: '约300名学生' },
     { label: '管理模式', value: 'SP1斯巴达 / SP2半斯巴达，可按学习目标选择' },
     { label: '年龄要求', value: '7岁以上；15岁以下通常需要父母陪同' },
     { label: '住宿房型', value: '校内单人房、双人房、三人房、四人房' },
-    { label: '核心资源', value: 'IDP IELTS官方考试教室、24小时自习室、校内泳池与运动设施' },
+    { label: '核心资源', value: 'IDP IELTS官方考点、24小时自习室、校内泳池与运动设施' },
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/ev/campus-exterior.jpg', title: '宿务代表性现代校园', text: '教学、住宿、自习和运动设施集中在同一校园。' },
-    { image: 'assets/ev/mtm-classroom.jpg', title: 'SP1 / SP2 强度可选', text: '想冲刺可选斯巴达，想保留生活弹性可选半斯巴达。' },
-    { image: 'assets/ev/swimming-pool.jpg', title: '学习与生活平衡', text: '校园环境比传统市区学校更完整，适合重视舒适度的学生。' },
-    { image: 'assets/ev/quad-room.jpg', title: '房型预算清楚', text: '默认四人房适合先估算总预算，单人房需尽早确认。' },
+    { image: 'assets/ev/campus-exterior.jpg', title: '2004年起深耕宿务英语教育', text: 'EV长期服务亚洲学生，官方介绍中强调其Intensive English Program与学生导向课程研发。' },
+    { image: 'assets/ev/mtm-classroom.jpg', title: 'SP1 / SP2 学习计划可选', text: 'SP1偏斯巴达冲刺，SP2偏半斯巴达平衡，适合先按自律程度和学习目标做选择。' },
+    { image: 'assets/ev/swimming-pool.jpg', title: 'School & Resort 校园定位', text: 'EV强调现代化设施、开放式环境和校园生活完整度，不只是单纯上课。' },
+    { image: 'assets/ev/quad-room.jpg', title: 'IDP IELTS官方考点资源', text: '雅思学生可把课程、模考和正式考试环境一起纳入考虑，减少考试场地陌生感。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -116,6 +117,9 @@ export class EvSchoolDetailComponent implements OnInit {
     { name: 'IELTS', type: '雅思备考', lessons: '考试专项、模考和学习管理', suitable: '适合有目标分数、希望被制度推动的学生。' },
     { name: 'TOEIC', type: '托业备考', lessons: '听力、阅读、语法和考试技巧', suitable: '适合求职、升学或企业英语能力证明需求。' },
     { name: 'Business', type: '商务英语', lessons: '会议、演示、邮件、面试与商务表达', suitable: '适合职场人士或准备英文工作场景的学生。' },
+    { name: 'Family Course', type: '亲子 / 家庭课程', lessons: '学生与监护人课程按年龄和陪同规则确认', suitable: '适合家庭同行，需提前确认未成年管理、住宿和陪读安排。' },
+    { name: 'Digital English', type: '数字英语延伸', lessons: '以学校当期课程表为准', suitable: '适合希望把英语学习和数字沟通场景结合的学生。' },
+    { name: 'EV Talk', type: 'Online class', lessons: '线上课程衔接', suitable: '适合想在入学前后继续保持英语练习节奏的学生。' },
   ];
 
   courseFees: CourseFee[] = [

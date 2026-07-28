@@ -1,11 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
-import { QuoteImageCardData, QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import {
+  QuoteImageCardData,
+  QuoteImageDownloadButtonComponent,
+} from '../../../components/quote-image-download-button.component';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
@@ -144,7 +153,14 @@ interface SidaCiaTrustBadge {
 @Component({
   selector: 'app-cia-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent, QuoteImageDownloadButtonComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    MatIconModule,
+    ExpandableImageComponent,
+    QuoteImageDownloadButtonComponent,
+  ],
   templateUrl: './cia-school.component.html',
   styleUrl: './cia-school.component.css',
 })
@@ -181,8 +197,21 @@ export class CiaSchoolComponent implements OnInit {
     'guardian',
     'immersion',
   ];
-  private readonly roomFeeOrder = ['p1', 's1', 'pn1', 'd2', 'd3', 'd4', 'sr1', 'sr2', 'sr3', 'sr4'];
-  private readonly featuredGalleryCategories: ReadonlyArray<Exclude<GalleryCategory, '全部'>> = ['校园', '教室', '设施'];
+  private readonly roomFeeOrder = [
+    'p1',
+    's1',
+    'pn1',
+    'd2',
+    'd3',
+    'd4',
+    'sr1',
+    'sr2',
+    'sr3',
+    'sr4',
+  ];
+  private readonly featuredGalleryCategories: ReadonlyArray<
+    Exclude<GalleryCategory, '全部'>
+  > = ['校园', '教室', '设施'];
   private readonly uploadedPhotoCategoryIndexes: Record<string, number> = {
     campus: 1,
     classroom: 2,
@@ -190,7 +219,10 @@ export class CiaSchoolComponent implements OnInit {
     dining: 4,
     facility: 5,
   };
-  private readonly courseFeeDetails: Record<string, Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>> = {
+  private readonly courseFeeDetails: Record<
+    string,
+    Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>
+  > = {
     'regular-esl': {
       suitable: '基础综合提升',
       schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
@@ -274,7 +306,14 @@ export class CiaSchoolComponent implements OnInit {
     },
   };
 
-  readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
+  readonly galleryCategories: GalleryCategory[] = [
+    '全部',
+    '校园',
+    '教室',
+    '住宿',
+    '餐厅',
+    '设施',
+  ];
   selectedGalleryCategory: GalleryCategory = '全部';
   usingUploadedGallery = false;
 
@@ -333,28 +372,35 @@ export class CiaSchoolComponent implements OnInit {
     {
       category: '校园',
       title: '校园泳池与主楼',
-      description: '麦克坦校区第二栋于2022年完成，整体是度假型校园氛围，学习、住宿和生活设施集中。',
+      description:
+        '麦克坦校区第二栋于2022年完成，整体是度假型校园氛围，学习、住宿和生活设施集中。',
       src: 'assets/cia/campus-building.png',
       details: ['半斯巴达 Plus 校区', '周末可前往周边餐厅和景点'],
     },
     {
       category: '校园',
       title: '校园地图',
-      description: '校区分为 Building 1、Building 2 和 Building 3，餐厅、CRO、诊所、健身房、图书馆、宿舍和篮球场等分布在不同楼栋。',
+      description:
+        '校区分为 Building 1、Building 2 和 Building 3，餐厅、CRO、诊所、健身房、图书馆、宿舍和篮球场等分布在不同楼栋。',
       src: 'assets/cia/campus-map.png',
-      details: ['Building 2：餐厅、CRO、健身房、图书馆', 'Building 3：宿舍、泳池平台、篮球场'],
+      details: [
+        'Building 2：餐厅、CRO、健身房、图书馆',
+        'Building 3：宿舍、泳池平台、篮球场',
+      ],
     },
     {
       category: '校园',
       title: '户外泳池',
-      description: '主泳池位于校园中心，约50米宽，度假感强，是课后休息和校园活动常用区域。',
+      description:
+        '主泳池位于校园中心，约50米宽，度假感强，是课后休息和校园活动常用区域。',
       src: 'assets/cia/campus-pool.jpg',
       details: ['平日 19:00-21:00', '周末 07:00-21:00'],
     },
     {
       category: '教室',
       title: '一对一教室',
-      description: '一对一教室配备白板和桌面空间，适合口语纠音、写作反馈和考试专项训练。',
+      description:
+        '一对一教室配备白板和桌面空间，适合口语纠音、写作反馈和考试专项训练。',
       src: 'assets/cia/one-to-one-class.png',
       details: ['253间一对一教室', '更容易集中注意力'],
     },
@@ -382,14 +428,16 @@ export class CiaSchoolComponent implements OnInit {
     {
       category: '教室',
       title: '教室楼层环境',
-      description: 'CIA 教室配备多用途教学设备，课程包含一对一、小组、中组和大组不同形式。',
+      description:
+        'CIA 教室配备多用途教学设备，课程包含一对一、小组、中组和大组不同形式。',
       src: 'assets/cia/classroom-overview.png',
       details: ['多屏幕教学环境', '按课程目标安排不同班型'],
     },
     {
       category: '住宿',
       title: '校内宿舍概览',
-      description: '宿舍紧邻 Building 2，减少通勤时间，方便学生把更多时间留给学习和休息。',
+      description:
+        '宿舍紧邻 Building 2，减少通勤时间，方便学生把更多时间留给学习和休息。',
       src: 'assets/cia/dormitory-overview.jpg',
       details: ['单人、双人、三人、四人间可选', '每周清洁一次，洗衣每周两次'],
     },
@@ -417,14 +465,16 @@ export class CiaSchoolComponent implements OnInit {
     {
       category: '住宿',
       title: '四人间 D-4',
-      description: '预算压力相对低，适合愿意和多位室友共同生活、增加英语使用机会的学生。',
+      description:
+        '预算压力相对低，适合愿意和多位室友共同生活、增加英语使用机会的学生。',
       src: 'assets/cia/quad-room.jpg',
       details: ['默认报价常用参考房型', '适合预算优先学生'],
     },
     {
       category: '餐厅',
       title: '学生餐厅',
-      description: '位于 Building 2 一楼，空间宽敞并配有空调，学校厨房每天提供不同餐食。',
+      description:
+        '位于 Building 2 一楼，空间宽敞并配有空调，学校厨房每天提供不同餐食。',
       src: 'assets/cia/dining-hall.jpg',
       details: ['早餐、午餐、晚餐在校内餐厅', '周末也有用餐时段'],
     },
@@ -438,49 +488,57 @@ export class CiaSchoolComponent implements OnInit {
     {
       category: '设施',
       title: '健身房',
-      description: '位于 Building 2 四楼，提供现代化健身器材，适合课后运动和保持体能。',
+      description:
+        '位于 Building 2 四楼，提供现代化健身器材，适合课后运动和保持体能。',
       src: 'assets/cia/fitness-center.jpg',
       details: ['平日 19:00-23:00', '周末 07:00-23:00'],
     },
     {
       category: '设施',
       title: 'IDP IELTS 官方考场',
-      description: '校内设有雅思官方考试场地，空间安静宽敞，方便雅思学生熟悉考试环境。',
+      description:
+        '校内设有雅思官方考试场地，空间安静宽敞，方便雅思学生熟悉考试环境。',
       src: 'assets/cia/idp-testing-venue.jpg',
       details: ['Building 1 一楼和二楼', '适合雅思备考学生'],
     },
     {
       category: '设施',
       title: 'Recreation Room',
-      description: '休闲娱乐室可用于活动、游戏和学生休息，帮助学生在学习之外放松。',
+      description:
+        '休闲娱乐室可用于活动、游戏和学生休息，帮助学生在学习之外放松。',
       src: 'assets/cia/recreation-room.jpg',
       details: ['Building 2 四楼', '平日课后和周末开放'],
     },
     {
       category: '设施',
       title: '图书馆 / 自习室',
-      description: '图书馆空间宽敞，提供 ESL 教材和不同类型读物，适合自习和课后复习。',
+      description:
+        '图书馆空间宽敞，提供 ESL 教材和不同类型读物，适合自习和课后复习。',
       src: 'assets/cia/library.jpg',
       details: ['Building 2 四楼', '每天 06:00-23:00'],
     },
     {
       category: '设施',
       title: '校内诊所',
-      description: '诊所可处理轻微不适和基础医疗咨询，校内有护士，并可按需要联系医生。',
+      description:
+        '诊所可处理轻微不适和基础医疗咨询，校内有护士，并可按需要联系医生。',
       src: 'assets/cia/clinic.jpg',
       details: ['Building 2 三楼', '平日 08:00-18:00'],
     },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'CIA Cebu International Academy' },
+    { label: '学校名称', value: '菲律宾宿务 CIA 语言学校' },
     { label: '所在地区', value: 'Lapu-Lapu City, Mactan, Cebu' },
     { label: '创校时间', value: '2003年创校，麦克坦校区2020年启用' },
     { label: '学生容量', value: '约600名学生' },
     { label: '教师规模', value: '约300名教师' },
     { label: '管理模式', value: '半斯巴达：每日测试、出勤、门禁和EOP管理' },
     { label: '住宿房型', value: '校内单人间、双人间、三人间、四人间、套房' },
-    { label: '核心资源', value: 'IDP IELTS官方考点、Cambridge认证、校内餐厅与设施' },
+    {
+      label: '核心资源',
+      value: 'IDP IELTS官方考点、Cambridge认证、校内餐厅与设施',
+    },
   ];
 
   readonly highlights: Highlight[] = [
@@ -611,44 +669,193 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'regular-esl', name: 'Regular ESL', tuition: 900, ...this.courseFeeDetails['regular-esl'] },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1000, ...this.courseFeeDetails['intensive-esl'] },
-    { id: 'power-intensive', name: 'Power Intensive', tuition: 1100, ...this.courseFeeDetails['power-intensive'] },
-    { id: 'pre-toeic', name: 'Pre-TOEIC', tuition: 1000, ...this.courseFeeDetails['pre-toeic'] },
-    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1000, ...this.courseFeeDetails['toeic-regular'] },
-    { id: 'toeic-guarantee', name: 'TOEIC Guarantee', tuition: 1000, ...this.courseFeeDetails['toeic-guarantee'] },
-    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1050, ...this.courseFeeDetails['pre-ielts'] },
-    { id: 'ielts-regular', name: 'IELTS Regular', tuition: 1050, ...this.courseFeeDetails['ielts-regular'] },
-    { id: 'ielts-guarantee', name: 'IELTS Guarantee', tuition: 1050, ...this.courseFeeDetails['ielts-guarantee'] },
-    { id: 'business', name: 'Business', tuition: 1050, ...this.courseFeeDetails['business'] },
-    { id: 'working-holiday', name: 'Working Holiday', tuition: 950, ...this.courseFeeDetails['working-holiday'] },
-    { id: 'certified-university', name: 'CERTIFIED UNIVERSITY', tuition: 1000, ...this.courseFeeDetails['certified-university'] },
-    { id: 'callan', name: 'CALLAN', tuition: 1050, ...this.courseFeeDetails['callan'] },
-    { id: 'junior', name: '亲子青少年', tuition: 1300, ...this.courseFeeDetails['junior'] },
-    { id: 'guardian', name: '亲子监护人', tuition: 1300, ...this.courseFeeDetails['guardian'] },
-    { id: 'immersion', name: 'Immersion 大学沉浸式课程', tuition: 1000, ...this.courseFeeDetails['immersion'] },
+    {
+      id: 'regular-esl',
+      name: 'Regular ESL',
+      tuition: 900,
+      ...this.courseFeeDetails['regular-esl'],
+    },
+    {
+      id: 'intensive-esl',
+      name: 'Intensive ESL',
+      tuition: 1000,
+      ...this.courseFeeDetails['intensive-esl'],
+    },
+    {
+      id: 'power-intensive',
+      name: 'Power Intensive',
+      tuition: 1100,
+      ...this.courseFeeDetails['power-intensive'],
+    },
+    {
+      id: 'pre-toeic',
+      name: 'Pre-TOEIC',
+      tuition: 1000,
+      ...this.courseFeeDetails['pre-toeic'],
+    },
+    {
+      id: 'toeic-regular',
+      name: 'TOEIC Regular',
+      tuition: 1000,
+      ...this.courseFeeDetails['toeic-regular'],
+    },
+    {
+      id: 'toeic-guarantee',
+      name: 'TOEIC Guarantee',
+      tuition: 1000,
+      ...this.courseFeeDetails['toeic-guarantee'],
+    },
+    {
+      id: 'pre-ielts',
+      name: 'Pre-IELTS',
+      tuition: 1050,
+      ...this.courseFeeDetails['pre-ielts'],
+    },
+    {
+      id: 'ielts-regular',
+      name: 'IELTS Regular',
+      tuition: 1050,
+      ...this.courseFeeDetails['ielts-regular'],
+    },
+    {
+      id: 'ielts-guarantee',
+      name: 'IELTS Guarantee',
+      tuition: 1050,
+      ...this.courseFeeDetails['ielts-guarantee'],
+    },
+    {
+      id: 'business',
+      name: 'Business',
+      tuition: 1050,
+      ...this.courseFeeDetails['business'],
+    },
+    {
+      id: 'working-holiday',
+      name: 'Working Holiday',
+      tuition: 950,
+      ...this.courseFeeDetails['working-holiday'],
+    },
+    {
+      id: 'certified-university',
+      name: 'CERTIFIED UNIVERSITY',
+      tuition: 1000,
+      ...this.courseFeeDetails['certified-university'],
+    },
+    {
+      id: 'callan',
+      name: 'CALLAN',
+      tuition: 1050,
+      ...this.courseFeeDetails['callan'],
+    },
+    {
+      id: 'junior',
+      name: '亲子青少年',
+      tuition: 1300,
+      ...this.courseFeeDetails['junior'],
+    },
+    {
+      id: 'guardian',
+      name: '亲子监护人',
+      tuition: 1300,
+      ...this.courseFeeDetails['guardian'],
+    },
+    {
+      id: 'immersion',
+      name: 'Immersion 大学沉浸式课程',
+      tuition: 1000,
+      ...this.courseFeeDetails['immersion'],
+    },
   ];
 
   readonly schedule: ScheduleItem[] = [
-    { time: '07:20 - 08:00', title: '每日测试', text: '词汇或课程相关测试，影响当天外出资格。' },
-    { time: '08:00 - 12:05', title: '上午课程', text: '一对一、小组课或考试专项课，按课程表安排。' },
-    { time: '12:05 - 13:05', title: '午餐与休息', text: '校内餐厅用餐，下午课程前整理学习资料。' },
-    { time: '13:05 - 15:30', title: '下午课程', text: '小组课、专项训练、口语或语法词汇课程。' },
-    { time: '15:35 - 17:10', title: '自习 / 阅读 / 写作', text: '用于完成作业、复盘一对一反馈或准备模考。' },
-    { time: '17:15 - 20:10', title: '选修或晚间课程', text: '按课程和个人选择安排，具体以到校课表为准。' },
+    {
+      time: '07:20 - 08:00',
+      title: '每日测试',
+      text: '词汇或课程相关测试，影响当天外出资格。',
+    },
+    {
+      time: '08:00 - 12:05',
+      title: '上午课程',
+      text: '一对一、小组课或考试专项课，按课程表安排。',
+    },
+    {
+      time: '12:05 - 13:05',
+      title: '午餐与休息',
+      text: '校内餐厅用餐，下午课程前整理学习资料。',
+    },
+    {
+      time: '13:05 - 15:30',
+      title: '下午课程',
+      text: '小组课、专项训练、口语或语法词汇课程。',
+    },
+    {
+      time: '15:35 - 17:10',
+      title: '自习 / 阅读 / 写作',
+      text: '用于完成作业、复盘一对一反馈或准备模考。',
+    },
+    {
+      time: '17:15 - 20:10',
+      title: '选修或晚间课程',
+      text: '按课程和个人选择安排，具体以到校课表为准。',
+    },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'p1', name: '豪华单人间 P-1', fee: 1700, note: '豪华单人间多了一个电磁炉，可以简单加热食物' },
-    { id: 's1', name: '标准单人间 S-1', fee: 1500, note: '标准单人间，适合重视独立空间的学生' },
-    { id: 'pn1', name: '校外单人间 PN-1', fee: 1700, note: '在学校对面的4号楼' },
-    { id: 'd2', name: '双人间 D-2', fee: 1100, note: '双人间，适合朋友同行或希望平衡预算' },
+    {
+      id: 'p1',
+      name: '豪华单人间 P-1',
+      fee: 1700,
+      note: '豪华单人间多了一个电磁炉，可以简单加热食物',
+    },
+    {
+      id: 's1',
+      name: '标准单人间 S-1',
+      fee: 1500,
+      note: '标准单人间，适合重视独立空间的学生',
+    },
+    {
+      id: 'pn1',
+      name: '校外单人间 PN-1',
+      fee: 1700,
+      note: '在学校对面的4号楼',
+    },
+    {
+      id: 'd2',
+      name: '双人间 D-2',
+      fee: 1100,
+      note: '双人间，适合朋友同行或希望平衡预算',
+    },
     { id: 'd3', name: '三人间 D-3', fee: 850, note: '预算比双人间更低' },
-    { id: 'd4', name: '四人间 D-4', fee: 750, note: '默认报价参考，预算压力较低' },
-    { id: 'sr1', name: '单人套房 SR-1', fee: 2500, note: '套房房型，空间更完整' },
-    { id: 'sr2', name: '双人套房 SR-2', fee: 1400, note: '套房房型，适合两人入住' },
-    { id: 'sr3', name: '三人套房 SR-3', fee: 1200, note: '套房房型，适合小组同行' },
-    { id: 'sr4', name: '四人套房 SR-4', fee: 1100, note: '套房房型，预算和空间较平衡' },
+    {
+      id: 'd4',
+      name: '四人间 D-4',
+      fee: 750,
+      note: '默认报价参考，预算压力较低',
+    },
+    {
+      id: 'sr1',
+      name: '单人套房 SR-1',
+      fee: 2500,
+      note: '套房房型，空间更完整',
+    },
+    {
+      id: 'sr2',
+      name: '双人套房 SR-2',
+      fee: 1400,
+      note: '套房房型，适合两人入住',
+    },
+    {
+      id: 'sr3',
+      name: '三人套房 SR-3',
+      fee: 1200,
+      note: '套房房型，适合小组同行',
+    },
+    {
+      id: 'sr4',
+      name: '四人套房 SR-4',
+      fee: 1100,
+      note: '套房房型，预算和空间较平衡',
+    },
   ];
 
   localFees: LocalFee[] = [
@@ -660,7 +867,11 @@ export class CiaSchoolComponent implements OnInit {
     { item: '学生证', amount: 'PHP 200', note: '一次性费用参考' },
     { item: '押金', amount: 'PHP 2,500', note: '退房检查后按学校规则退还' },
     { item: '接机费', amount: 'PHP 1,000', note: '宿务机场接机参考' },
-    { item: 'ACR I-card', amount: 'PHP 4,500', note: '长期学习或延签时可能需要' },
+    {
+      item: 'ACR I-card',
+      amount: 'PHP 4,500',
+      note: '长期学习或延签时可能需要',
+    },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -736,23 +947,28 @@ export class CiaSchoolComponent implements OnInit {
   readonly faqs: FaqItem[] = [
     {
       question: 'CIA 适合零基础学生吗？',
-      answer: '适合。Regular ESL 可以从基础开始，但如果目标是短期快速开口，建议让顾问比较 Intensive 或 Power Intensive 是否更合适。',
+      answer:
+        '适合。Regular ESL 可以从基础开始，但如果目标是短期快速开口，建议让顾问比较 Intensive 或 Power Intensive 是否更合适。',
     },
     {
       question: '页面上的 USD 1,667.5 是全部费用吗？',
-      answer: '不是。它是默认4周 Regular ESL + 四人间 D-4 的前期支付参考，不包含到校后通常需要支付的 SSP、SSP E-card、管理费、水电费、教材费、学生证、押金等当地费用。',
+      answer:
+        '不是。它是默认4周 Regular ESL + 四人间 D-4 的前期支付参考，不包含到校后通常需要支付的 SSP、SSP E-card、管理费、水电费、教材费、学生证、押金等当地费用。',
     },
     {
       question: 'CIA 是不是斯巴达学校？',
-      answer: 'CIA 更适合按半斯巴达理解。它有每日测试、出勤和门禁管理，但不是完全封闭式学校，适合想被学习节奏推动又希望保留一定生活空间的学生。',
+      answer:
+        'CIA 更适合按半斯巴达理解。它有每日测试、出勤和门禁管理，但不是完全封闭式学校，适合想被学习节奏推动又希望保留一定生活空间的学生。',
     },
     {
       question: '为什么要找顾问确认报价？',
-      answer: 'CIA 的空房、优惠、旺季附加费和当地费用会随时间变化。顾问可以把课程、房型、入学日期和最新优惠一起核对，给学生正式报价。',
+      answer:
+        'CIA 的空房、优惠、旺季附加费和当地费用会随时间变化。顾问可以把课程、房型、入学日期和最新优惠一起核对，给学生正式报价。',
     },
     {
       question: '思达会协助签证和入境吗？',
-      answer: '会。通过思达报名 CIA，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。',
+      answer:
+        '会。通过思达报名 CIA，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。',
     },
   ];
 
@@ -852,26 +1068,49 @@ export class CiaSchoolComponent implements OnInit {
     {
       title: '一般英语小组课程视频',
       text: '剑桥英语资格课程',
-      videoSrc: 'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
-      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+      videoSrc:
+        'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
+      details: [
+        '1 对 1 课程 4 节',
+        '小组课程 2 节',
+        '中组课程 1 节',
+        '大组课程 1 节',
+      ],
     },
     {
       title: '雅思小组课程视频',
       text: '雅思官方考试中心',
-      videoSrc: 'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
-      details: ['1 对 1 课程 4 节', '雅思专项辅导课 2 节', '雅思语法课 1 节', '雅思词汇课 1 节'],
+      videoSrc:
+        'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
+      details: [
+        '1 对 1 课程 4 节',
+        '雅思专项辅导课 2 节',
+        '雅思语法课 1 节',
+        '雅思词汇课 1 节',
+      ],
     },
     {
       title: '托业小组课程视频',
       text: '托业备考课程',
-      videoSrc: 'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
-      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+      videoSrc:
+        'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
+      details: [
+        '1 对 1 课程 4 节',
+        '小组课程 2 节',
+        '中组课程 1 节',
+        '大组课程 1 节',
+      ],
     },
     {
       title: '商务英语小组课程视频',
       text: '剑桥商务英语课程',
       videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
-      details: ['1 对 1 课程 4 节', '小组课程 2 节', '中组课程 1 节', '大组课程 1 节'],
+      details: [
+        '1 对 1 课程 4 节',
+        '小组课程 2 节',
+        '中组课程 1 节',
+        '大组课程 1 节',
+      ],
     },
   ];
 
@@ -973,7 +1212,10 @@ export class CiaSchoolComponent implements OnInit {
       text: '新生入学说明时会收到每日测试资料。周一至周四早上安排基础词汇、语法测试，并配合自习写作练习，由一对一写作老师检查。',
       location: 'SSR / C楼',
       schedule: '周一至周四 07:20-07:54',
-      points: ['低于要求分数会影响外出权限', '迟到、带手机或未写姓名可能记零分'],
+      points: [
+        '低于要求分数会影响外出权限',
+        '迟到、带手机或未写姓名可能记零分',
+      ],
     },
     {
       icon: 'medical_services',
@@ -1127,16 +1369,45 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   readonly enrollmentChecks = [
-    { icon: 'flag', title: '目标课程', text: 'ESL / IELTS / TOEIC / Business 或其他课程' },
+    {
+      icon: 'flag',
+      title: '目标课程',
+      text: 'ESL / IELTS / TOEIC / Business 或其他课程',
+    },
     { icon: 'event', title: '入学日期', text: '确定计划入学的具体日期' },
-    { icon: 'bed', title: '房型', text: '选择适合的房型（单人 / 双人 / 多人 / 套房）' },
-    { icon: 'trending_up', title: '是否旺季', text: '旺季名额紧张，建议提前报名' },
-    { icon: 'quiz', title: '是否需要雅思官方考试', text: '如需确认考试日期与考位安排' },
-    { icon: 'payments', title: '到校学杂费预算', text: '确认额外费用预算（学杂费 / 电费等）' },
-    { icon: 'sync_alt', title: '是否考虑续读或转校', text: '如有长期规划，建议提前准备' },
+    {
+      icon: 'bed',
+      title: '房型',
+      text: '选择适合的房型（单人 / 双人 / 多人 / 套房）',
+    },
+    {
+      icon: 'trending_up',
+      title: '是否旺季',
+      text: '旺季名额紧张，建议提前报名',
+    },
+    {
+      icon: 'quiz',
+      title: '是否需要雅思官方考试',
+      text: '如需确认考试日期与考位安排',
+    },
+    {
+      icon: 'payments',
+      title: '到校学杂费预算',
+      text: '确认额外费用预算（学杂费 / 电费等）',
+    },
+    {
+      icon: 'sync_alt',
+      title: '是否考虑续读或转校',
+      text: '如有长期规划，建议提前准备',
+    },
   ];
 
-  readonly ctaBadges = ['正规签约保障', '费用透明无隐形消费', '菲律宾及多国驻点支持', '学习期间持续协助'];
+  readonly ctaBadges = [
+    '正规签约保障',
+    '费用透明无隐形消费',
+    '菲律宾及多国驻点支持',
+    '学习期间持续协助',
+  ];
 
   readonly courseMatchAdvisors: CourseMatchAdvisor[] = [
     {
@@ -1163,7 +1434,8 @@ export class CiaSchoolComponent implements OnInit {
     {
       title: '英爱留学规划',
       name: 'Jenny',
-      description: '适合爱尔兰/英国本科、硕士、预科、半工半读，以及后续升学规划。',
+      description:
+        '适合爱尔兰/英国本科、硕士、预科、半工半读，以及后续升学规划。',
       phone: '132 4982 7686',
       phoneHref: 'tel:13249827686',
       avatarSrc: this.quoteImageAssets.jennyAvatar,
@@ -1203,8 +1475,12 @@ export class CiaSchoolComponent implements OnInit {
       .pipe(
         switchMap((schools) => {
           const ciaSchool =
-            schools.find((school) => school.name === this.ciaPricingSchoolName) ??
-            schools.find((school) => school.name.toLowerCase().includes('cia')) ??
+            schools.find(
+              (school) => school.name === this.ciaPricingSchoolName,
+            ) ??
+            schools.find((school) =>
+              school.name.toLowerCase().includes('cia'),
+            ) ??
             schools[0];
 
           if (!ciaSchool?.id) {
@@ -1212,14 +1488,22 @@ export class CiaSchoolComponent implements OnInit {
           }
 
           return forkJoin({
-            lessons: this.schoolService.getSchoolLessons({ schoolId: ciaSchool.id, week: 4 }),
-            rooms: this.schoolService.getSchoolRooms({ schoolId: ciaSchool.id, week: 4 }),
+            lessons: this.schoolService.getSchoolLessons({
+              schoolId: ciaSchool.id,
+              week: 4,
+            }),
+            rooms: this.schoolService.getSchoolRooms({
+              schoolId: ciaSchool.id,
+              week: 4,
+            }),
             fees: this.schoolService.getSchoolFees({ schoolId: ciaSchool.id }),
           });
         }),
         catchError(() => EMPTY),
       )
-      .subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+      .subscribe(({ lessons, rooms, fees }) =>
+        this.applyPricingData(lessons, rooms, fees),
+      );
   }
 
   private loadGalleryFromDatabase(): void {
@@ -1228,15 +1512,22 @@ export class CiaSchoolComponent implements OnInit {
       .pipe(
         switchMap((schools) => {
           const ciaSchool =
-            schools.find((school) => school.name === this.ciaPricingSchoolName) ??
-            schools.find((school) => school.name.toLowerCase().includes('cia')) ??
+            schools.find(
+              (school) => school.name === this.ciaPricingSchoolName,
+            ) ??
+            schools.find((school) =>
+              school.name.toLowerCase().includes('cia'),
+            ) ??
             schools[0];
 
           if (!ciaSchool?.id) {
             return EMPTY;
           }
 
-          return this.schoolService.getSchoolPhotos({ schoolId: ciaSchool.id, isActive: true });
+          return this.schoolService.getSchoolPhotos({
+            schoolId: ciaSchool.id,
+            isActive: true,
+          });
         }),
         catchError(() => EMPTY),
       )
@@ -1252,19 +1543,31 @@ export class CiaSchoolComponent implements OnInit {
       return;
     }
 
-    const existingSources = new Set(this.galleryImages.map((image) => image.src));
-    const uploadedGalleryImages = uploadedPhotos.map((photo) => ({
-      category: this.resolveUploadedPhotoCategory(photo.category),
-      title: photo.caption || photo.altText || photo.originalFileName || 'CIA Cebu photo',
-      description: photo.altText || photo.caption || 'CIA Cebu school photo',
-      src: photo.url ?? '',
-    })).filter((image) => !existingSources.has(image.src));
+    const existingSources = new Set(
+      this.galleryImages.map((image) => image.src),
+    );
+    const uploadedGalleryImages = uploadedPhotos
+      .map((photo) => ({
+        category: this.resolveUploadedPhotoCategory(photo.category),
+        title:
+          photo.caption ||
+          photo.altText ||
+          photo.originalFileName ||
+          'CIA Cebu photo',
+        description: photo.altText || photo.caption || 'CIA Cebu school photo',
+        src: photo.url ?? '',
+      }))
+      .filter((image) => !existingSources.has(image.src));
 
     this.usingUploadedGallery = true;
     this.galleryImages = [...this.galleryImages, ...uploadedGalleryImages];
   }
 
-  private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
+  private applyPricingData(
+    lessons: SchoolLessonDTO[],
+    rooms: SchoolRoomDTO[],
+    fees: SchoolFeeDTO[],
+  ): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
       .map((lesson) => {
@@ -1275,17 +1578,28 @@ export class CiaSchoolComponent implements OnInit {
           id,
           name: lesson.name,
           tuition: lesson.price,
-          suitable: lesson.description || details?.suitable || lesson.note || '请联系顾问确认适合人群',
-          schedule: details?.schedule || lesson.note || '请联系顾问确认课表安排',
+          suitable:
+            lesson.description ||
+            details?.suitable ||
+            lesson.note ||
+            '请联系顾问确认适合人群',
+          schedule:
+            details?.schedule || lesson.note || '请联系顾问确认课表安排',
           note: details?.note || '最终以学校当期报价和课程安排为准。',
           highlightNote: details?.highlightNote,
         };
       })
-      .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
+      .sort(
+        (a, b) =>
+          this.orderIndex(this.courseFeeOrder, a.id) -
+          this.orderIndex(this.courseFeeOrder, b.id),
+      );
 
     if (databaseCourseFees.length > 0) {
       const mergedCourseFees = this.courseFees.map((course) => {
-        const databaseCourse = databaseCourseFees.find((item) => item.id === course.id);
+        const databaseCourse = databaseCourseFees.find(
+          (item) => item.id === course.id,
+        );
 
         return databaseCourse
           ? {
@@ -1296,12 +1610,18 @@ export class CiaSchoolComponent implements OnInit {
             }
           : course;
       });
-      const extraDatabaseCourseFees = databaseCourseFees.filter((course) => !this.courseFees.some((item) => item.id === course.id));
+      const extraDatabaseCourseFees = databaseCourseFees.filter(
+        (course) => !this.courseFees.some((item) => item.id === course.id),
+      );
 
       this.courseFees = [...mergedCourseFees, ...extraDatabaseCourseFees].sort(
-        (a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id)
+        (a, b) =>
+          this.orderIndex(this.courseFeeOrder, a.id) -
+          this.orderIndex(this.courseFeeOrder, b.id),
       );
-      if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
+      if (
+        !this.courseFees.some((course) => course.id === this.selectedCourseId)
+      ) {
         this.selectedCourseId = this.courseFees[0].id;
       }
     }
@@ -1314,14 +1634,21 @@ export class CiaSchoolComponent implements OnInit {
         fee: room.price,
         note: room.description || '请联系顾问确认空房',
       }))
-      .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
+      .sort(
+        (a, b) =>
+          this.orderIndex(this.roomFeeOrder, a.id) -
+          this.orderIndex(this.roomFeeOrder, b.id),
+      );
 
     if (databaseRoomFees.length > 0) {
-      const hasCompleteDatabaseRoomFees = this.roomFeeOrder.every((roomId) => databaseRoomFees.some((room) => room.id === roomId));
+      const hasCompleteDatabaseRoomFees = this.roomFeeOrder.every((roomId) =>
+        databaseRoomFees.some((room) => room.id === roomId),
+      );
       const mergedRoomFees = this.roomFees.map((room) => {
         const databaseRoom = hasCompleteDatabaseRoomFees
-          ? databaseRoomFees.find((item) => item.id === room.id && item.name === room.name) ??
-            databaseRoomFees.find((item) => item.id === room.id)
+          ? (databaseRoomFees.find(
+              (item) => item.id === room.id && item.name === room.name,
+            ) ?? databaseRoomFees.find((item) => item.id === room.id))
           : undefined;
 
         return databaseRoom
@@ -1333,10 +1660,14 @@ export class CiaSchoolComponent implements OnInit {
             }
           : room;
       });
-      const extraDatabaseRoomFees = databaseRoomFees.filter((room) => !this.roomFees.some((item) => item.id === room.id));
+      const extraDatabaseRoomFees = databaseRoomFees.filter(
+        (room) => !this.roomFees.some((item) => item.id === room.id),
+      );
 
       this.roomFees = [...mergedRoomFees, ...extraDatabaseRoomFees].sort(
-        (a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id)
+        (a, b) =>
+          this.orderIndex(this.roomFeeOrder, a.id) -
+          this.orderIndex(this.roomFeeOrder, b.id),
       );
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
         this.selectedRoomId = this.roomFees[this.roomFees.length - 1].id;
@@ -1368,7 +1699,12 @@ export class CiaSchoolComponent implements OnInit {
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
-    window.setTimeout(() => this.gallerySlider?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' }));
+    window.setTimeout(() =>
+      this.gallerySlider?.nativeElement.scrollTo({
+        left: 0,
+        behavior: 'smooth',
+      }),
+    );
   }
 
   scrollGallery(direction: -1 | 1): void {
@@ -1379,7 +1715,8 @@ export class CiaSchoolComponent implements OnInit {
     }
 
     const firstSlide = slider.querySelector('figure');
-    const slideWidth = firstSlide?.getBoundingClientRect().width ?? slider.clientWidth;
+    const slideWidth =
+      firstSlide?.getBoundingClientRect().width ?? slider.clientWidth;
 
     slider.scrollBy({
       left: direction * (slideWidth + 12),
@@ -1406,14 +1743,19 @@ export class CiaSchoolComponent implements OnInit {
     }
 
     const headerOffset = window.innerWidth <= 680 ? 132 : 92;
-    const targetTop = targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
+    const targetTop =
+      targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 
     window.scrollTo({
       top: Math.max(targetTop, 0),
       behavior: 'smooth',
     });
 
-    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`);
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${window.location.search}#${target}`,
+    );
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -1421,7 +1763,9 @@ export class CiaSchoolComponent implements OnInit {
       return this.galleryImages;
     }
 
-    return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
+    return this.galleryImages.filter(
+      (image) => image.category === this.selectedGalleryCategory,
+    );
   }
 
   get heroGalleryPreviewImages(): GalleryImage[] {
@@ -1429,15 +1773,25 @@ export class CiaSchoolComponent implements OnInit {
       return this.galleryImages.slice(0, 4);
     }
 
-    return this.galleryImages.filter((image) => this.featuredGalleryCategories.includes(image.category)).slice(0, 4);
+    return this.galleryImages
+      .filter((image) =>
+        this.featuredGalleryCategories.includes(image.category),
+      )
+      .slice(0, 4);
   }
 
   get selectedCourse(): CourseFee {
-    return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0];
+    return (
+      this.courseFees.find((course) => course.id === this.selectedCourseId) ??
+      this.courseFees[0]
+    );
   }
 
   get selectedRoom(): RoomFee {
-    return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[this.roomFees.length - 1];
+    return (
+      this.roomFees.find((room) => room.id === this.selectedRoomId) ??
+      this.roomFees[this.roomFees.length - 1]
+    );
   }
 
   get tuitionForSelectedWeeks(): number {
@@ -1454,7 +1808,10 @@ export class CiaSchoolComponent implements OnInit {
     return [
       ['2026-06-14', '2026-08-08'],
       ['2027-01-17', '2027-02-14'],
-    ].some(([start, end]) => startDate >= this.parseDate(start) && startDate <= this.parseDate(end));
+    ].some(
+      ([start, end]) =>
+        startDate >= this.parseDate(start) && startDate <= this.parseDate(end),
+    );
   }
 
   get seasonalSurcharge(): number {
@@ -1462,7 +1819,12 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get quoteUsd(): number {
-    return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge;
+    return (
+      this.registrationFee +
+      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
+        this.discount +
+      this.seasonalSurcharge
+    );
   }
 
   get quoteUsdText(): string {
@@ -1488,10 +1850,17 @@ export class CiaSchoolComponent implements OnInit {
   get quoteImageData(): QuoteImageCardData {
     const now = new Date();
     const quoteMonth = `${now.getFullYear()}年${now.getMonth() + 1}月`;
-    const quoteCnyAmount = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    const discountUsd = (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.discount);
-    const roomCapacityMatch = this.selectedRoom.name.match(/([1-9])\s*人/) ?? this.selectedRoom.id.match(/(\d)/);
-    const roomCapacity = roomCapacityMatch?.[1] ? `${roomCapacityMatch[1]}人` : '按房型确认';
+    const quoteCnyAmount =
+      Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const discountUsd =
+      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
+      (1 - this.discount);
+    const roomCapacityMatch =
+      this.selectedRoom.name.match(/([1-9])\s*人/) ??
+      this.selectedRoom.id.match(/(\d)/);
+    const roomCapacity = roomCapacityMatch?.[1]
+      ? `${roomCapacityMatch[1]}人`
+      : '按房型确认';
     const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
 
     return {
@@ -1505,14 +1874,22 @@ export class CiaSchoolComponent implements OnInit {
       updatedAtText: quoteMonth,
       studentItems: [
         { icon: '周', label: '学习周数', value: `${this.selectedWeeks}周` },
-        { icon: '日', label: '入学日期', value: this.selectedStartDate.replace(/-/g, '/') },
+        {
+          icon: '日',
+          label: '入学日期',
+          value: this.selectedStartDate.replace(/-/g, '/'),
+        },
         { icon: '课', label: '课程', value: this.selectedCourse.name },
         { icon: '排', label: '课程安排', value: this.selectedCourse.schedule },
         { icon: '房', label: '房型', value: this.selectedRoom.name },
         { icon: '人', label: '入住人数', value: roomCapacity },
       ],
       paymentItems: [
-        { icon: '注', label: '注册费', amount: `USD ${this.formatUsd(this.registrationFee)}` },
+        {
+          icon: '注',
+          label: '注册费',
+          amount: `USD ${this.formatUsd(this.registrationFee)}`,
+        },
         {
           icon: '课',
           label: `课程费（${this.selectedCourse.name} ${this.selectedWeeks}周）`,
@@ -1542,7 +1919,8 @@ export class CiaSchoolComponent implements OnInit {
       totalCny: `约 RMB ${quoteCnyAmount.toLocaleString('zh-CN')}`,
       totalNote: '（按参考汇率估算）',
       localFeeAmount: '人民币 2500+',
-      localFeeDescription: '包括 SSP、SSP E-card、水电费、管理费、教材费、学生证、房间押金等。',
+      localFeeDescription:
+        '包括 SSP、SSP E-card、水电费、管理费、教材费、学生证、房间押金等。',
       localFeeNote: '实际以到校后学校收取为准。',
       note: '本报价为参考估算，最终以 CIA 学校最新报价、空房、优惠及思达启航顾问确认为准。',
       contact: {
@@ -1585,11 +1963,17 @@ export class CiaSchoolComponent implements OnInit {
     };
   }
 
-  private resolveUploadedPhotoCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+  private resolveUploadedPhotoCategory(
+    category?: string,
+  ): Exclude<GalleryCategory, '全部'> {
     const normalizedCategory = (category ?? '').trim().toLowerCase();
-    const categoryIndex = this.uploadedPhotoCategoryIndexes[normalizedCategory] ?? 1;
+    const categoryIndex =
+      this.uploadedPhotoCategoryIndexes[normalizedCategory] ?? 1;
 
-    return this.galleryCategories[categoryIndex] as Exclude<GalleryCategory, '全部'>;
+    return this.galleryCategories[categoryIndex] as Exclude<
+      GalleryCategory,
+      '全部'
+    >;
   }
 
   private slugifyPriceKey(value: string): string {
@@ -1638,7 +2022,9 @@ export class CiaSchoolComponent implements OnInit {
       return '以学校现场收费为准';
     }
 
-    return description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '');
+    return description
+      .replace(/^到校支付费用；/, '')
+      .replace(/^前期支付费用；/, '');
   }
 
   private parseDate(value: string): Date {

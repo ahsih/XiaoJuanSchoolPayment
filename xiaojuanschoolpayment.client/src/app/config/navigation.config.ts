@@ -86,7 +86,11 @@ export const mainNavigation: NavigationItem[] = [
             label: '爱尔兰语言学校',
             route: '/ireland-study/schools/language-schools',
           },
-          { id: 'nci', label: 'NCI 爱尔兰国家学院', route: '/ireland-study/schools/nci' },
+          {
+            id: 'nci',
+            label: 'NCI 爱尔兰国家学院',
+            route: '/ireland-study/schools/nci',
+          },
           {
             id: 'schm',
             label: 'SCHM 爱尔兰香农酒店管理学院',
@@ -237,7 +241,7 @@ export const mainNavigation: NavigationItem[] = [
         children: [
           {
             id: 'cia-cebu-international-academy',
-            label: 'CIA Cebu International Academy',
+            label: '菲律宾宿务 CIA 语言学校',
             route: '/philippines-study/cebu/cia-cebu-international-academy',
           },
           {
@@ -281,7 +285,8 @@ export const mainNavigation: NavigationItem[] = [
           {
             id: 'beci-international-language-academy',
             label: 'BECI International Language Academy',
-            route: '/philippines-study/baguio/beci-international-language-academy',
+            route:
+              '/philippines-study/baguio/beci-international-language-academy',
           },
           {
             id: 'baguio-jic-academy',
@@ -352,7 +357,8 @@ export const mainNavigation: NavigationItem[] = [
           {
             id: 'american-english-skills-development-center',
             label: 'American English Skills Development Center',
-            route: '/philippines-study/manila/american-english-skills-development-center',
+            route:
+              '/philippines-study/manila/american-english-skills-development-center',
           },
           {
             id: 'berlitz-philippines',

@@ -100,7 +100,7 @@ export class CebuStudyComponent {
 
   readonly schoolProfiles: SchoolProfile[] = [
     {
-      name: 'CIA Cebu International Academy',
+      name: '菲律宾宿务 CIA 语言学校',
       location: '麦克坦岛 / Lapu-Lapu City',
       style: '半斯巴达+，度假型新校区',
       route: '/philippines-study/cebu/cia-cebu-international-academy',
