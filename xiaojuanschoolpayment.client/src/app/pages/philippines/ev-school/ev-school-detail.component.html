@@ -50,6 +50,21 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <p>ESL Classic + 四人间</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  已含注册费、折扣后课程费和住宿费估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  到校费用和旺季附加费需另行确认
+                </li>
+              </ul>
+            </aside>
             <p class="photo-source">图片来源：EV Academy 官方网站校园、宿舍、教室与设施页面</p>
           </div>
         </section>
@@ -329,7 +344,44 @@
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
 
-        <section class="section-block" id="service-process">
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 EV?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断EV是否适合、算清费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为EV Academy学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaEvReasons">
+                <img [src]="item.image" [alt]="item.alt" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名EV保障">
+            <article *ngFor="let item of sidaEvTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
           <div class="section-heading">
             <span>通过思达报名 EV 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>

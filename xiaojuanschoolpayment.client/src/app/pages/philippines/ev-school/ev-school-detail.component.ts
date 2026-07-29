@@ -24,6 +24,14 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
+interface SidaEvReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+interface SidaEvTrustBadge { icon: string; label: string; }
 
 @Component({
   selector: 'app-ev-school-detail',
@@ -168,6 +176,58 @@ export class EvSchoolDetailComponent implements OnInit {
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前免费发送学习资料、行李清单、费用清单和到校注意事项。' },
     { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。' },
     { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
+  ];
+
+  readonly sidaEvReasons: SidaEvReason[] = [
+    {
+      number: '01',
+      title: '正式合同与官方授权',
+      text: '国内公司签约，EV报价、录取文件及收费凭证均可核验。',
+      image: 'assets/cia/sida-why-contract.jpg',
+      alt: '思达启航正式合同与学校文件核验',
+    },
+    {
+      number: '02',
+      title: '费用提前算清，同条件保价',
+      text: '0中介服务费，学费、住宿费及EV到校费用逐项说明。',
+      image: 'assets/cia/sida-why-fees.jpg',
+      alt: '思达启航顾问为学生核算菲律宾游学费用',
+    },
+    {
+      number: '03',
+      title: '先判断SP1/SP2是否适合',
+      text: '根据目标、预算、自律程度和房型偏好，帮你判断EV是否匹配。',
+      image: 'assets/cia/sida-why-selection.jpg',
+      alt: '思达启航顾问帮助学生选择适合的英语学校',
+    },
+    {
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
+      image: 'assets/cia/sida-why-departure.jpg',
+      alt: '菲律宾游学出发前文件和行李准备',
+    },
+    {
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、课程、住宿、账单、续读或转校问题继续协助。',
+      image: 'assets/cia/sida-why-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习情况',
+    },
+    {
+      number: '06',
+      title: '深圳总部 + 菲律宾驻点服务',
+      text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
+      image: 'assets/cia/sida-why-team.jpg',
+      alt: '思达启航菲律宾和深圳服务团队',
+    },
+  ];
+
+  readonly sidaEvTrustBadges: SidaEvTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '学校合作与文件核验' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 菲律宾驻点' },
   ];
 
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', '24小时自习室', '宿舍清洁', '洗衣服务', '医护室', '校内保安', '证件协助'];
