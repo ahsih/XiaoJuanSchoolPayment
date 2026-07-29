@@ -86,7 +86,7 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'EV Academy' },
+    { label: '学校名称', value: '菲律宾宿务EV语言学校' },
     { label: '所在地区', value: 'Nasipit, Cebu City, Cebu' },
     { label: '创校时间', value: '2004年起办学，2017年迁入新校区' },
     { label: '学生容量', value: '约300名学生' },
@@ -235,7 +235,7 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly weekendActivities = ['市区商场', '咖啡厅与餐厅', '跳岛游', '海边活动', '学生自发聚会'];
   readonly notes = ['SP1和SP2管理强度不同，报名之前要先确认自己能接受的学习纪律。', '热门房型、暑假和寒假档期建议尽早确认空房。', '未成年学生、亲子学生和长期学习学生，需要提前确认额外管理规则。', '到校支付费用会随学校政策、汇率和个人情况变化。', '最终报名以学校正式录取、付款节点和顾问确认报价为准。'];
   readonly faqs: FaqItem[] = [
-    { question: 'EV Academy适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或ESL Classic。' },
+    { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或ESL Classic。' },
     { question: 'EV的SP1和SP2怎么选？', answer: 'SP1更适合冲刺型学生，日程和自习要求更强；SP2适合想学习但也希望保留一定外出和生活弹性的学生。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后仍需支付SSP、SSP E-card、教材、水电、设施费、接机、保证金等当地费用。' },
     { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同，未满18岁可能有额外管理费和更严格门禁，报名之前要按年龄和课程逐项确认。' },

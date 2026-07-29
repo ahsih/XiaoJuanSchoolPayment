@@ -76,13 +76,13 @@ export class CebuStudyComponent {
       title: '口语强化型',
       tag: 'ESL / Power Speaking',
       text: '适合想增加一对一开口时间、改善听说基础、建立英语表达信心的学生。',
-      examples: 'EV Academy、CPI、Philinter、I.Breeze',
+      examples: '菲律宾宿务EV语言学校、CPI、Philinter、I.Breeze',
     },
     {
       title: '考试备考型',
       tag: 'IELTS / TOEIC / TOEFL',
       text: '适合有明确分数目标，需要模考、写作批改、口语反馈和保证班规则的学生。',
-      examples: 'CIA、EV Academy、CPILS、English Fella',
+      examples: 'CIA、菲律宾宿务EV语言学校、CPILS、English Fella',
     },
     {
       title: '亲子青少年型',
@@ -120,7 +120,7 @@ export class CebuStudyComponent {
       note: '适合第一次宿务游学、雅思备考、亲子/青少年项目，但旺季房型和入学日要提前确认。',
     },
     {
-      name: 'EV Academy',
+      name: '菲律宾宿务EV语言学校',
       location: 'Nasipit, Cebu City',
       style: 'SP1 斯巴达 / SP2 半斯巴达',
       route: '/philippines-study/cebu/ev-academy',
@@ -281,7 +281,7 @@ export class CebuStudyComponent {
       url: 'https://www.cebucia.com/en/about_us/about_us.php',
     },
     {
-      label: 'EV Academy 官方课程',
+      label: '菲律宾宿务EV语言学校官方课程',
       url: 'https://www.evenglish.net/page/page36',
     },
     {

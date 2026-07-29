@@ -128,7 +128,7 @@ export class EvSchoolComponent {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'EV Academy适合第一次菲律宾游学吗？',
+      question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？',
       answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或ESL Classic。',
     },
     {

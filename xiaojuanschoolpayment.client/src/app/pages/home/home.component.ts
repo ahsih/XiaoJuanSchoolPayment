@@ -100,7 +100,7 @@ export class HomeComponent {
       route: '/philippines-study/cebu/cia-cebu-international-academy',
     },
     {
-      name: 'EV Academy',
+      name: '菲律宾宿务EV语言学校',
       city: '菲律宾 · 宿务',
       tag: 'Sparta / IELTS / Speaking',
       description: '宿务市区现代校园，斯巴达和半斯巴达强度可选。',

@@ -246,7 +246,7 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'ev-academy',
-            label: 'EV Academy',
+            label: '菲律宾宿务EV语言学校',
             route: '/philippines-study/cebu/ev-academy',
           },
           {
