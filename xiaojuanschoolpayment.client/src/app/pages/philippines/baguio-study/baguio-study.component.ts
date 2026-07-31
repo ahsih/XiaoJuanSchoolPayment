@@ -122,11 +122,11 @@ export class BaguioStudyComponent {
 
   readonly schoolProfiles: SchoolProfile[] = [
     {
-      name: 'PINES International Academy',
+      name: '菲律宾碧瑶PINES语言学校',
       location: '碧瑶市 / 多校区体系',
       style: '斯巴达与考试导向',
       route: '/philippines-study/baguio/pines-international-academy',
-      startingPrice: 'Main Campus 4周约USD 1,420起',
+      startingPrice: '课程+住宿4周USD 1,420起',
       courses: ['ESL', 'Power Speaking', 'IELTS', 'TOEIC', 'Junior / Family'],
       accommodation: '以学校宿舍为主，房型和校区安排需按入学日期确认。',
       facilities: '学习楼、宿舍、餐厅、自习空间和考试备考环境是主要核对点。',
@@ -270,7 +270,7 @@ export class BaguioStudyComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: 'PINES International Academy 官方网站', url: 'https://pinesacademy.com/' },
+    { label: '菲律宾碧瑶PINES语言学校 官方网站', url: 'https://pinesacademy.com/' },
     { label: 'BECI International Language Academy 官方网站', url: 'https://beci.edu.ph/' },
     { label: 'Baguio JIC Academy 官方网站', url: 'https://baguio-jic.com/' },
     { label: 'MONOL 官方网站', url: 'https://mymonol.com/' },

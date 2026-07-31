@@ -208,22 +208,40 @@
 }
 
 :host .pricing-subheading {
-  margin-top: 30px;
-  padding-top: 26px;
-  border-top: 1px solid #e3edf3;
+  margin-top: 0;
 }
 
-:host .pricing-reference .data-table {
+:host .pricing-table-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+:host .pricing-table-grid .data-table {
+  margin-top: 0;
+}
+
+:host .pricing-table-grid .table-row span {
+  padding: 12px 10px;
+  overflow-wrap: anywhere;
+}
+
+:host .pricing-table-grid .course-fee-table .table-row {
+  grid-template-columns: minmax(122px, 0.9fr) minmax(104px, 0.54fr) minmax(0, 1.46fr);
+}
+
+:host .pricing-table-grid .room-fee-table .table-row {
+  grid-template-columns: minmax(118px, 0.9fr) minmax(112px, 0.7fr) minmax(0, 1.2fr);
+}
+
+:host .pricing-note {
   margin-top: 16px;
-}
-
-:host .quote-and-schedule {
-  align-items: stretch;
-}
-
-:host .quote-and-schedule > .section-block,
-:host .quote-and-schedule > .quote-panel {
-  height: 100%;
+  color: #d42020;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.65;
 }
 
 :host .sida-ev-section {
@@ -394,6 +412,10 @@
 @media (max-width: 1040px) {
   :host .hero-media {
     grid-template-columns: minmax(0, 1fr) 220px;
+  }
+
+  :host .pricing-table-grid {
+    grid-template-columns: 1fr;
   }
 
   :host .media-strip {

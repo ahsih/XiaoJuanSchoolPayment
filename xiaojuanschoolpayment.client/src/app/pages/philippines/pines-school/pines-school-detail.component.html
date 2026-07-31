@@ -4,20 +4,20 @@
       <main class="page-main">
         <section class="hero-section" id="top">
           <div class="hero-copy">
-            <a class="back-link" routerLink="/philippines-study/cebu">
+            <a class="back-link" routerLink="/philippines-study/baguio">
               <mat-icon>arrow_back</mat-icon>
-              返回宿务学校列表
+              返回碧瑶学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 宿务学校 / 菲律宾宿务EV语言学校</p>
-            <h1>菲律宾宿务EV语言学校</h1>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶PINES语言学校</p>
+            <h1>菲律宾碧瑶PINES语言学校</h1>
             <p class="hero-lead">
-              宿务市区代表性的斯巴达 / 半斯巴达双模式英语学校，官方定位为 School & Resort，适合想把学习纪律、现代校园、校内住宿和课程强度一起考虑的学生。
+              碧瑶2001年创立的老牌学习型语言学校，Main Campus适合ESL、口语、TOEIC和亲子方向，IELTS Campus适合雅思与保证班目标。
             </p>
-            <div class="hero-tags" aria-label="EV特点">
-              <span><mat-icon>location_on</mat-icon>宿务市区</span>
-              <span><mat-icon>speed</mat-icon>SP1 / SP2双模式</span>
-              <span><mat-icon>fact_check</mat-icon>IDP IELTS官方考点</span>
-              <span><mat-icon>villa</mat-icon>School & Resort校园</span>
+            <div class="hero-tags" aria-label="PINES特点">
+              <span><mat-icon>terrain</mat-icon>碧瑶学习型山城</span>
+              <span><mat-icon>apartment</mat-icon>Main / IELTS校区</span>
+              <span><mat-icon>menu_book</mat-icon>ESL / IELTS / TOEIC</span>
+              <span><mat-icon>verified_user</mat-icon>强化管理可选</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -25,7 +25,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看SP1/SP2怎么选
+                查看PINES课程和校区
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -35,16 +35,16 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              提交SP1/SP2偏好、课程、房型和入学日期后，思达顾问会帮你确认空房、优惠和正式报价。
+              提交英语基础、目标分数、校区偏好、房型和入学日期后，思达顾问会帮你确认空房、优惠和正式报价。
             </p>
           </div>
 
-          <div class="hero-media" aria-label="EV校园图片展示">
+          <div class="hero-media" aria-label="PINES校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/ev/campus-exterior.jpg" alt="菲律宾宿务EV语言学校校园外观" />
-              <figcaption>菲律宾宿务EV语言学校官方校园图</figcaption>
+              <img src="assets/philippines/home-school-pines.jpg" alt="菲律宾碧瑶PINES语言学校校园环境" />
+              <figcaption>菲律宾碧瑶PINES语言学校学习型校园</figcaption>
             </figure>
-            <div class="media-strip" aria-label="EV校园缩略图">
+            <div class="media-strip" aria-label="PINES校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(1, 4)">
                 <img [src]="image.src" [alt]="image.title" />
                 <figcaption>{{ image.title }}</figcaption>
@@ -53,30 +53,30 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>半斯巴达 ESL + 四人间（上下铺）</p>
+              <p>Light ESL 4 + 六人房</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和食宿费估算
+                  已含注册费、课程费和住宿费估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用和旺季附加费需另行确认
+                  到校费用、旺季附加费和保证班规则需另行确认
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：菲律宾宿务EV语言学校官方网站校园、宿舍、教室与设施页面</p>
+            <p class="photo-source">图片来源：PINES官方资料与项目现有碧瑶学校素材；费用参考公开2026年费用表并由思达顾问整理</p>
           </div>
         </section>
 
-        <nav class="mobile-anchor-nav" aria-label="EV手机端快捷导航">
+        <nav class="mobile-anchor-nav" aria-label="PINES手机端快捷导航">
           <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
             <mat-icon>{{ item.icon }}</mat-icon>
-            <span>{{ item.label }}</span>
+            {{ item.label }}
           </a>
         </nav>
 
-        <section class="quick-info" aria-label="EV快速信息卡">
+        <section class="quick-info" aria-label="PINES快速信息卡">
           <article class="quick-card" *ngFor="let item of quickInfo">
             <mat-icon>{{ item.icon }}</mat-icon>
             <div>
@@ -89,11 +89,11 @@
 
         <section class="section-block" id="gallery">
           <div class="section-heading">
-            <span>图片 / 视频展示</span>
-            <h2>按区域查看 EV 环境</h2>
-            <p>先看校园、教室、住宿和设施，再判断EV的学习与生活环境是否适合你。</p>
+            <span>图片 / 环境展示</span>
+            <h2>按区域查看 PINES 环境</h2>
+            <p>先看校区、教室、住宿、餐厅和学习资源，再判断PINES的碧瑶学习节奏是否适合你。</p>
           </div>
-          <div class="gallery-tabs" role="tablist" aria-label="EV图片分类">
+          <div class="gallery-tabs" role="tablist" aria-label="PINES图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
               {{ category }}
             </button>
@@ -113,7 +113,7 @@
           <section class="panel basic-panel" id="basic-info">
             <div class="compact-heading">
               <span>学校基本信息</span>
-              <h2>EV 基本资料</h2>
+              <h2>PINES 基本资料</h2>
             </div>
             <dl class="info-list">
               <div *ngFor="let row of basicInfo">
@@ -127,16 +127,16 @@
             <div class="quote-mark">“</div>
             <div class="compact-heading">
               <span>思达顾问点评</span>
-              <h2>先选管理强度，再选课程和房型</h2>
+              <h2>先分校区，再谈课程和费用</h2>
             </div>
             <p>
-              EV最重要的不是只看价格，而是先判断SP1斯巴达还是SP2半斯巴达。想冲刺考试、自律较弱或希望被学习节奏推动，优先看SP1；想兼顾学习和宿务生活，半斯巴达ESL或SP2会更舒服。顾问会同时帮你核对课程强度、房型、到校费用和未成年规则。
+              PINES不能只看学校名。基础口语、ESL、TOEIC和亲子学生优先看Main Campus；雅思目标明确、能接受模考和晚自习要求的学生再看IELTS Campus。报价前也要同时确认房型、入学日、5B Solo开放情况和旺季附加费。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
               <div>
                 <strong>Ivy 顾问建议</strong>
-                <span>先确认SP1/SP2，再算课程、房型和当地费用。</span>
+                <span>先定Main或IELTS校区，再按课程、房型和周数核总价。</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -147,8 +147,8 @@
 
           <section class="panel highlight-panel" id="highlights">
             <div class="compact-heading">
-              <span>EV 核心亮点</span>
-              <h2>为什么很多学生会把 EV 放进候选</h2>
+              <span>PINES 核心亮点</span>
+              <h2>为什么很多学生会把 PINES 放进候选</h2>
             </div>
             <div class="highlight-list">
               <article *ngFor="let item of highlights">
@@ -165,11 +165,11 @@
         <section class="fit-section" id="fit">
           <div class="section-heading">
             <span>适合 / 不太适合</span>
-            <h2>先判断 EV 是否适合你</h2>
+            <h2>先判断 PINES 是否适合你</h2>
           </div>
           <div class="fit-grid">
             <div>
-              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 EV</h3>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 PINES</h3>
               <article *ngFor="let item of suitableFor">
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.text }}</p>
@@ -188,8 +188,8 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程类型介绍</span>
-            <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>半斯巴达ESL适合平衡型学生，斯巴达Intensive ESL和雅思保证班适合冲刺，强化口说6/8适合口语目标明确的人。</p>
+            <h2>不知道选哪种课程？先按校区和学习目标看</h2>
+            <p>Main Campus更偏ESL、口语、TOEIC、商务和亲子；IELTS Campus更偏雅思、雅思强化和保证班。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -201,72 +201,39 @@
           </div>
         </section>
 
-        <section class="section-block pricing-reference" id="course-fees">
-          <div class="section-heading">
-            <span>EV 2026 年 4 周课程费</span>
-            <h2>先看课程费，再叠加食宿费</h2>
-            <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
-          </div>
-          <div class="pricing-table-grid">
-            <div>
-              <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
-                <div class="table-row table-head" role="row">
-                  <span role="columnheader">课程</span>
-                  <span role="columnheader">4周课程费</span>
-                  <span role="columnheader">课程安排</span>
-                </div>
-                <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                  <span role="cell">{{ fee.name }}</span>
-                  <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                  <span role="cell">{{ fee.suitable }}</span>
-                </div>
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>PINES 2026 年 4 周课程费</span>
+              <h2>先看课程费，再叠加住宿费</h2>
+              <p>以下为4周课程费参考，币种为美元。IELTS Guarantee为长周期课程，页面按4周等值展示用于快速估算。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="PINES 2026年4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
               </div>
-              <p class="pricing-note">以上单价均为4周费用，短周期以4周为单位换算：1周40%、2周65%、3周85%。</p>
-              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
-                <article *ngFor="let fee of courseFees">
-                  <span>课程</span>
-                  <strong>{{ fee.name }}</strong>
-                  <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                  <p>{{ fee.suitable }}</p>
-                </article>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
-
-            <div>
-              <div class="section-heading pricing-subheading" id="room-fees">
-                <span>EV 2026 年 4 周食宿费</span>
-                <h2>房型会明显影响总预算</h2>
-                <p>默认报价使用四人间（上下铺）。热门房型和校外公寓建议先让顾问确认空房。</p>
-              </div>
-              <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周食宿费">
-                <div class="table-row table-head" role="row">
-                  <span role="columnheader">房型</span>
-                  <span role="columnheader">4周食宿费</span>
-                  <span role="columnheader">备注</span>
-                </div>
-                <div class="table-row" role="row" *ngFor="let room of roomFees">
-                  <span role="cell">{{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                  <span role="cell">{{ room.note }}</span>
-                </div>
-              </div>
-              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周食宿费手机卡片">
-                <article *ngFor="let room of roomFees">
-                  <span>房型</span>
-                  <strong>{{ room.name }}</strong>
-                  <div><em>4周食宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                  <p>{{ room.note }}</p>
-                </article>
-              </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="PINES 2026年4周课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
             </div>
           </div>
-        </section>
 
-        <section class="split-layout quote-and-schedule">
           <div class="section-block" id="daily-schedule">
             <div class="section-heading">
-              <span>EV 一天学习生活安排</span>
-              <h2>SP1和SP2强度不同，到校课表需再次确认</h2>
+              <span>PINES 一天学习生活安排</span>
+              <h2>课程和校区不同，晚间强度会明显不同</h2>
             </div>
             <div class="timeline">
               <article *ngFor="let item of schedule">
@@ -275,14 +242,44 @@
               </article>
             </div>
           </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>PINES 2026 年 4 周住宿费</span>
+              <h2>房型会明显影响总预算</h2>
+              <p>默认报价使用六人房。单人房、5B Solo和IELTS校区可选房型建议先让顾问确认空房。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="PINES 2026年4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="PINES 2026年4周住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <span>EV 费用快速报价</span>
-              <h2>默认参考：4周 半斯巴达 ESL + 四人间（上下铺）</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 食宿费）× 优惠折扣 + 旺季附加费</p>
+              <span>PINES 费用快速报价</span>
+              <h2>默认参考：4周 Light ESL 4 + 六人房</h2>
+              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
             </div>
-            <div class="quote-form" aria-label="EV费用快速报价选项">
+            <div class="quote-form" aria-label="PINES费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
               <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
@@ -291,22 +288,22 @@
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>食宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 食宿费</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
               <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房和优惠。</p>
+              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房、校区和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、教材费、水电费、学生证、设施维护费、接机费、保证金等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">EV旺季附加费、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP I-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
+            <p class="season-note">PINES旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周；最终需由顾问按入学档期确认。</p>
           </section>
         </section>
 
@@ -331,18 +328,18 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年6月28日。学校环境、课程和设施信息参考菲律宾宿务EV语言学校官方网站学校资料、Study Plans、课程、宿舍、校园与设施页面；费用参考思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年7月31日。课程、校区、入学日、宿舍和雅思保证班规则参考PINES官方英文与中文页面；费用参考公开2026年费用表并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
         <section class="materials-panel" id="materials">
           <div>
             <div class="section-heading">
-              <span>获取 EV 完整资料与报价单</span>
-              <h2>让顾问把SP1/SP2、空房、优惠和费用一次核清</h2>
-              <p>通过思达报名 EV，思达顾问会免费协助确认课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。学生只需按顾问指引准备个人资料。</p>
+              <span>获取 PINES 完整资料与报价单</span>
+              <h2>让顾问把校区、课程、房型、空房和费用一次核清</h2>
+              <p>通过思达报名 PINES，思达顾问会免费协助确认Main或IELTS校区、课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。</p>
             </div>
-            <ul class="check-list"><li>SP1/SP2建议</li><li>课程与房型建议</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
+            <ul class="check-list"><li>Main / IELTS校区建议</li><li>课程与房型建议</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
           </div>
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
@@ -350,9 +347,9 @@
         <section class="sida-ev-section" id="service-process">
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
-            <h2>为什么通过思达启航报名 EV?</h2>
+            <h2>为什么通过思达启航报名 PINES?</h2>
             <p>
-              不只是提交报名，更重要的是帮你判断EV是否适合、算清费用，并持续协助到完成学习回国。
+              不只是提交报名，更重要的是帮你判断PINES是否适合、选对校区、算清费用，并持续协助到完成学习回国。
             </p>
           </div>
 
@@ -360,12 +357,12 @@
             <figure class="sida-ev-main-photo">
               <img
                 src="assets/cia/sida-why-main-branded.jpg"
-                alt="思达启航顾问为菲律宾宿务EV语言学校学生讲解报名方案"
+                alt="思达启航顾问为菲律宾碧瑶PINES语言学校学生讲解报名方案"
               />
             </figure>
 
             <div class="sida-ev-reason-grid">
-              <article *ngFor="let item of sidaEvReasons">
+              <article *ngFor="let item of sidaPinesReasons">
                 <img [src]="item.image" [alt]="item.alt" />
                 <div>
                   <span>{{ item.number }}</span>
@@ -376,8 +373,8 @@
             </div>
           </div>
 
-          <div class="sida-ev-trust-bar" aria-label="思达启航报名EV保障">
-            <article *ngFor="let item of sidaEvTrustBadges">
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名PINES保障">
+            <article *ngFor="let item of sidaPinesTrustBadges">
               <mat-icon>{{ item.icon }}</mat-icon>
               <strong>{{ item.label }}</strong>
             </article>
@@ -386,9 +383,9 @@
 
         <section class="section-block" id="service-flow">
           <div class="section-heading">
-            <span>通过思达报名 EV 的免费协助流程</span>
+            <span>通过思达报名 PINES 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>
-            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。思达在宿务有工作人员驻点，可为学生提供当地支持，直到学生完成学习并顺利回国。</p>
+            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。国内顾问与菲律宾当地工作人员协作，重要节点会持续跟进。</p>
           </div>
           <div class="process-grid desktop-process-grid">
             <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
@@ -403,12 +400,12 @@
 
         <section class="split-layout" id="campus-life">
           <div class="section-block">
-            <div class="section-heading"><span>到校后的学校服务</span><h2>日常学习与生活支持比较完整</h2></div>
+            <div class="section-heading"><span>到校后的学校服务</span><h2>学习和生活支持集中在校区内</h2></div>
             <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
             <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
           </div>
           <div class="section-block">
-            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验宿务生活</h2></div>
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验碧瑶生活</h2></div>
             <div class="activity-columns desktop-activity-columns">
               <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
               <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
@@ -424,21 +421,21 @@
         </section>
 
         <section class="section-block" id="enrollment-notes">
-          <div class="section-heading"><span>报名注意事项</span><h2>确认 EV 前，建议先核对这些信息</h2></div>
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 PINES 前，建议先核对这些信息</h2></div>
           <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
         </section>
 
         <section class="faq-section" id="faq">
-          <div class="section-heading"><span>常见问题</span><h2>报名 EV 前常被问到的问题</h2></div>
+          <div class="section-heading"><span>常见问题</span><h2>报名 PINES 前常被问到的问题</h2></div>
           <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
         </section>
       </main>
 
-      <aside class="side-panel" aria-label="EV页面快捷导航">
+      <aside class="side-panel" aria-label="PINES页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>半斯巴达 ESL<br />四人间（上下铺）</p>
+          <p>Light ESL 4<br />六人房</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
@@ -453,14 +450,14 @@
 
     <section class="bottom-cta">
       <div>
-        <h2>想知道 EV 当前是否有空房和优惠？</h2>
-        <p>把入学日期、学习周数、SP1/SP2偏好、课程方向和房型发给顾问，可以更快得到准确报价。</p>
+        <h2>想知道 PINES 当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英语基础、目标分数、校区偏好和房型发给顾问，可以更快得到准确报价。</p>
         <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
       </div>
       <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
     </section>
 
-    <div class="mobile-bottom-actions" aria-label="EV手机端固定操作">
+    <div class="mobile-bottom-actions" aria-label="PINES手机端固定操作">
       <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
       <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
     </div>

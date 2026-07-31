@@ -48,7 +48,7 @@ interface SourceLink {
 })
 export class PinesSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'PINES International Academy' },
+    { label: '学校名称', value: '菲律宾碧瑶PINES语言学校' },
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '创校时间', value: '2001年' },
     { label: '校区', value: 'Main Campus / IELTS Campus' },

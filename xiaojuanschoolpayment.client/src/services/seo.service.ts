@@ -48,9 +48,16 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio': {
     title: '碧瑶菲律宾留学与英语游学 | 斯巴达语言学校推荐',
     description:
-      '碧瑶菲律宾留学和英语游学指南，比较 Pines、BECI、JIC、MONOL、WALES、TALK 等学校，适合自律强化和雅思备考。',
-    keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, Pines, BECI, Baguio JIC, MONOL',
+      '碧瑶菲律宾留学和英语游学指南，比较 菲律宾碧瑶PINES语言学校、BECI、JIC、MONOL、WALES、TALK 等学校，适合自律强化和雅思备考。',
+    keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, 菲律宾碧瑶PINES语言学校, Pines, BECI, Baguio JIC, MONOL',
     image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/baguio/pines-international-academy': {
+    title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
+    description:
+      '菲律宾碧瑶PINES语言学校页面，整理Main Campus、IELTS Campus、ESL、Power Speaking、IELTS、TOEIC、住宿房型、2026费用和报名注意事项。',
+    keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
+    image: '/assets/philippines/home-school-pines.jpg',
   },
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
@@ -174,7 +181,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/schools/popular': {
     title: '菲律宾热门语言学校 | 宿务碧瑶克拉克学校推荐',
     description:
-      '菲律宾热门语言学校整理，覆盖 CIA、EV、菲律宾宿务CPI语言学校、菲律宾宿务Philinter语言学校、Pines、BECI、JIC 等学校的课程和适合人群。',
+      '菲律宾热门语言学校整理，覆盖 CIA、EV、菲律宾宿务CPI语言学校、菲律宾宿务Philinter语言学校、菲律宾碧瑶PINES语言学校、BECI、JIC 等学校的课程和适合人群。',
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
     image: '/assets/philippines/home-school-beci.jpg',
   },

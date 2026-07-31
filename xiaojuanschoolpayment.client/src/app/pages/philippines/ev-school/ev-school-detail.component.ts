@@ -49,8 +49,23 @@ interface SidaEvTrustBadge { icon: string; label: string; }
 export class EvSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolName = 'EV Academy';
-  private readonly courseFeeOrder = ['esl-classic', 'intensive-esl', 'power-speaking-6', 'power-speaking-8', 'ielts', 'toeic', 'business'];
-  private readonly roomFeeOrder = ['single', 'double', 'triple', 'quad'];
+  private readonly courseFeeOrder = [
+    'sparta-intensive-esl',
+    'sparta-power-speaking-6',
+    'sparta-power-speaking-8',
+    'sparta-ielts-regular',
+    'sparta-ielts-guarantee',
+    'sparta-toeic',
+    'sparta-social-media-english',
+    'sparta-business',
+    'semi-sparta-esl',
+    'semi-sparta-power-speaking-6',
+    'semi-sparta-power-speaking-8',
+    'semi-sparta-toeic',
+    'semi-sparta-business',
+    'semi-sparta-social-media-english',
+  ];
+  private readonly roomFeeOrder = ['single', 'double', 'triple', 'quad', 'off-campus-single', 'off-campus-double'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -59,7 +74,7 @@ export class EvSchoolDetailComponent implements OnInit {
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
-  selectedCourseId = 'esl-classic';
+  selectedCourseId = 'semi-sparta-esl';
   selectedRoomId = 'quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-05-18';
@@ -69,8 +84,8 @@ export class EvSchoolDetailComponent implements OnInit {
     { icon: 'apartment', label: '学校类型', value: '宿务斯巴达 / 半斯巴达', note: 'SP1 / SP2 双模式' },
     { icon: 'groups', label: '适合人群', value: '7岁以上学生', note: '15岁以下通常需父母陪同' },
     { icon: 'verified_user', label: '管理模式', value: '斯巴达或半斯巴达', note: '按学习目标选择强度' },
-    { icon: 'school', label: '课程选项', value: 'ESL / Power Speaking / IELTS', note: '另有TOEIC、Business、Family、Digital与EV Talk' },
-    { icon: 'bed', label: '住宿房型', value: '单人到四人房', note: '校内住宿，热门房型需早确认' },
+    { icon: 'school', label: '课程选项', value: '斯巴达 / 半斯巴达', note: '含ESL、口语、雅思、多益、商务与社交媒体英语' },
+    { icon: 'bed', label: '食宿房型', value: '校内房 / 校外公寓', note: '热门房型建议提前确认' },
     { icon: 'event_available', label: '校区位置', value: 'Nasipit, Cebu City', note: '宿务市区校园型学校，生活机能方便' },
   ];
 
@@ -92,7 +107,7 @@ export class EvSchoolDetailComponent implements OnInit {
     { label: '学生容量', value: '约300名学生' },
     { label: '管理模式', value: 'SP1斯巴达 / SP2半斯巴达，可按学习目标选择' },
     { label: '年龄要求', value: '7岁以上；15岁以下通常需要父母陪同' },
-    { label: '住宿房型', value: '校内单人房、双人房、三人房、四人房' },
+    { label: '食宿房型', value: '校内单人间、双人间、三人间、四人间；校外公寓需确认' },
     { label: '核心资源', value: 'IDP IELTS官方考点、24小时自习室、校内泳池与运动设施' },
   ];
 
@@ -118,8 +133,8 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'ESL Classic', type: '半斯巴达综合英语', lessons: '4节一对一 + 4节团体 + 2节选修/天', suitable: '适合希望学习与宿务生活保持平衡的学生。' },
-    { name: 'Intensive ESL', type: '斯巴达强化英语', lessons: '4节一对一 + 4节团体 + 2节选修/天', suitable: '适合想用更强纪律快速进入学习状态的学生。' },
+    { name: '半斯巴达 ESL', type: '半斯巴达综合英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 选修课', suitable: '适合希望学习与宿务生活保持平衡的学生。' },
+    { name: '斯巴达 Intensive ESL', type: '斯巴达强化英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 选修课', suitable: '适合想用更强纪律快速进入学习状态的学生。' },
     { name: 'Power Speaking 6', type: '口语强化', lessons: '每天6节一对一口语训练', suitable: '适合短期集中提升开口量、纠音和表达反应。' },
     { name: 'Power Speaking 8', type: '高强度口语', lessons: '每天8节一对一口语训练', suitable: '适合目标非常明确、能承受高一对一强度的学生。' },
     { name: 'IELTS', type: '雅思备考', lessons: '考试专项、模考和学习管理', suitable: '适合有目标分数、希望被制度推动的学生。' },
@@ -131,13 +146,20 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'esl-classic', name: 'ESL Classic', tuition: 780, suitable: '半斯巴达综合英语，适合学习与生活平衡' },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 900, suitable: '斯巴达强度更高，适合学习冲刺' },
-    { id: 'power-speaking-6', name: 'Power Speaking 6', tuition: 980, suitable: '每天更多一对一口语训练' },
-    { id: 'power-speaking-8', name: 'Power Speaking 8', tuition: 1080, suitable: '高一对一比例，适合口语冲刺' },
-    { id: 'ielts', name: 'IELTS', tuition: 1000, suitable: '雅思专项备考' },
-    { id: 'toeic', name: 'TOEIC', tuition: 950, suitable: '托业专项备考' },
-    { id: 'business', name: 'Business', tuition: 950, suitable: '商务沟通与职场表达' },
+    { id: 'sparta-intensive-esl', name: '斯巴达 Intensive ESL', tuition: 1030, suitable: '4节一对一 + 2小团体 + 2大团体 + 选修课' },
+    { id: 'sparta-power-speaking-6', name: '强化口说6（斯巴达）', tuition: 1230, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
+    { id: 'sparta-power-speaking-8', name: '强化口说8（斯巴达）', tuition: 1410, suitable: '8节一对一 + 自习 + 选修课' },
+    { id: 'sparta-ielts-regular', name: '常规雅思（斯巴达）', tuition: 1150, suitable: '4节一对一 + 2节小团体 + 2节大团体 + 选修课' },
+    { id: 'sparta-ielts-guarantee', name: '雅思保证班（斯巴达）', tuition: 1290, suitable: '1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 选修课' },
+    { id: 'sparta-toeic', name: '多益（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
+    { id: 'sparta-social-media-english', name: '社交媒体英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
+    { id: 'sparta-business', name: '商务英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
+    { id: 'semi-sparta-esl', name: '半斯巴达 ESL', tuition: 980, suitable: '4节一对一 + 2小团体 + 2节大团体 + 选修课' },
+    { id: 'semi-sparta-power-speaking-6', name: '强化口说6（半斯巴达）', tuition: 1180, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
+    { id: 'semi-sparta-power-speaking-8', name: '强化口说8（半斯巴达）', tuition: 1360, suitable: '8节一对一 + 选修课' },
+    { id: 'semi-sparta-toeic', name: '多益（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
+    { id: 'semi-sparta-business', name: '商务英语（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
+    { id: 'semi-sparta-social-media-english', name: '社交媒体英语（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -150,10 +172,12 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'single', name: '单人房', fee: 1600, note: '隐私最好，预算较高，热门档期需早确认' },
-    { id: 'double', name: '双人房', fee: 1230, note: '适合朋友同行或兼顾预算与舒适度' },
-    { id: 'triple', name: '三人房', fee: 1150, note: '多人房中预算较平衡' },
-    { id: 'quad', name: '四人房', fee: 1100, note: '默认报价参考，预算压力较低' },
+    { id: 'single', name: '单人间', fee: 1400, note: '热门房型建议提前6个月预定' },
+    { id: 'double', name: '双人间', fee: 1030, note: '热门房型建议提前6个月预定' },
+    { id: 'triple', name: '三人间', fee: 950, note: '热门房型建议提前6个月预定' },
+    { id: 'quad', name: '四人间（上下铺）', fee: 900, note: '热门房型建议提前6个月预定' },
+    { id: 'off-campus-single', name: '校外公寓单间', fee: 1550, note: '校外公寓房型，建议提前确认空房' },
+    { id: 'off-campus-double', name: '校外公寓双人间', fee: 1150, note: '仅限于两人同时预定' },
   ];
 
   localFees: LocalFee[] = [
@@ -189,7 +213,7 @@ export class EvSchoolDetailComponent implements OnInit {
     {
       number: '02',
       title: '费用提前算清，同条件保价',
-      text: '0中介服务费，学费、住宿费及EV到校费用逐项说明。',
+      text: '0中介服务费，学费、食宿费及EV到校费用逐项说明。',
       image: 'assets/cia/sida-why-action-fees.jpg',
       alt: '思达启航顾问为学生核算菲律宾游学费用',
     },
@@ -235,9 +259,9 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly weekendActivities = ['市区商场', '咖啡厅与餐厅', '跳岛游', '海边活动', '学生自发聚会'];
   readonly notes = ['SP1和SP2管理强度不同，报名之前要先确认自己能接受的学习纪律。', '热门房型、暑假和寒假档期建议尽早确认空房。', '未成年学生、亲子学生和长期学习学生，需要提前确认额外管理规则。', '到校支付费用会随学校政策、汇率和个人情况变化。', '最终报名以学校正式录取、付款节点和顾问确认报价为准。'];
   readonly faqs: FaqItem[] = [
-    { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或ESL Classic。' },
+    { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或半斯巴达ESL。' },
     { question: 'EV的SP1和SP2怎么选？', answer: 'SP1更适合冲刺型学生，日程和自习要求更强；SP2适合想学习但也希望保留一定外出和生活弹性的学生。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后仍需支付SSP、SSP E-card、教材、水电、设施费、接机、保证金等当地费用。' },
+    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和食宿费；到校后仍需支付SSP、SSP E-card、教材、水电、设施费、接机、保证金等当地费用。' },
     { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同，未满18岁可能有额外管理费和更严格门禁，报名之前要按年龄和课程逐项确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名EV，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -276,10 +300,10 @@ export class EvSchoolDetailComponent implements OnInit {
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
-    const databaseCourseFees = lessons.filter((lesson) => lesson.week === 4).map((lesson) => ({ id: this.slugifyPriceKey(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认适合人群' })).sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
+    const databaseCourseFees = lessons.filter((lesson) => lesson.week === 4).map((lesson) => ({ id: this.createCourseId(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认课程安排' })).filter((lesson) => this.courseFeeOrder.includes(lesson.id)).sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
     if (databaseCourseFees.length > 0) { this.courseFees = databaseCourseFees; if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees[0].id; }
     const databaseRoomFees = rooms.filter((room) => room.week === 4).map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' })).sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.length > 0) { this.roomFees = databaseRoomFees; if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees[this.roomFees.length - 1].id; }
+    if (databaseRoomFees.some((room) => room.name.includes('上下铺') || room.id.startsWith('off-campus'))) { this.roomFees = databaseRoomFees; if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad')?.id ?? this.roomFees[this.roomFees.length - 1].id; }
     const registrationFee = fees.find((fee) => fee.name === '注册费'); if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费'); if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
     const databaseLocalFees = fees.filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP').map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
@@ -292,8 +316,8 @@ export class EvSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[this.roomFees.length - 1]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
+  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.durationPriceMultiplier(this.selectedWeeks); }
+  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.durationPriceMultiplier(this.selectedWeeks); }
   get isPeakSeason(): boolean { return false; }
   get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
   get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
@@ -301,9 +325,31 @@ export class EvSchoolDetailComponent implements OnInit {
   get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
   get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
+  private createCourseId(name: string): string {
+    if (name.includes('半斯巴达')) {
+      if (name.includes('强化口说6')) return 'semi-sparta-power-speaking-6';
+      if (name.includes('强化口说8')) return 'semi-sparta-power-speaking-8';
+      if (name.includes('多益') || name.toLowerCase().includes('toeic')) return 'semi-sparta-toeic';
+      if (name.includes('商务') || name.toLowerCase().includes('business')) return 'semi-sparta-business';
+      if (name.includes('社交媒体')) return 'semi-sparta-social-media-english';
+      if (name.toLowerCase().includes('esl')) return 'semi-sparta-esl';
+    }
+    if (name.includes('斯巴达') || name.toLowerCase().includes('sparta')) {
+      if (name.includes('Intensive ESL') || name.includes('强化英语')) return 'sparta-intensive-esl';
+      if (name.includes('强化口说6') || name.includes('Power Speaking 6')) return 'sparta-power-speaking-6';
+      if (name.includes('强化口说8') || name.includes('Power Speaking 8')) return 'sparta-power-speaking-8';
+      if (name.includes('雅思保证')) return 'sparta-ielts-guarantee';
+      if (name.includes('雅思') || name.toLowerCase().includes('ielts')) return 'sparta-ielts-regular';
+      if (name.includes('多益') || name.toLowerCase().includes('toeic')) return 'sparta-toeic';
+      if (name.includes('社交媒体')) return 'sparta-social-media-english';
+      if (name.includes('商务') || name.toLowerCase().includes('business')) return 'sparta-business';
+    }
+    return this.slugifyPriceKey(name);
+  }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
-  private createRoomId(name: string): string { if (name.includes('单人')) return 'single'; if (name.includes('双人')) return 'double'; if (name.includes('三人')) return 'triple'; if (name.includes('四人')) return 'quad'; return this.slugifyPriceKey(name); }
+  private createRoomId(name: string): string { if (name.includes('校外公寓单')) return 'off-campus-single'; if (name.includes('校外公寓双')) return 'off-campus-double'; if (name.includes('单人') || name.includes('单间')) return 'single'; if (name.includes('双人')) return 'double'; if (name.includes('三人')) return 'triple'; if (name.includes('四人')) return 'quad'; return this.slugifyPriceKey(name); }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
   private formatCurrencyAmount(fee: SchoolFeeDTO): string { return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`; }
   private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }

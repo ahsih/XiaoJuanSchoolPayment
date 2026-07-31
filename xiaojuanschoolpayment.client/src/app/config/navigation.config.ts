@@ -279,7 +279,7 @@ export const mainNavigation: NavigationItem[] = [
         children: [
           {
             id: 'pines-international-academy',
-            label: 'PINES International Academy',
+            label: '菲律宾碧瑶PINES语言学校',
             route: '/philippines-study/baguio/pines-international-academy',
           },
           {

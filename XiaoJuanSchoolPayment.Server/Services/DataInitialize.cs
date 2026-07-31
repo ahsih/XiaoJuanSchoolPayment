@@ -14,6 +14,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid CpilsSchoolId = Guid.Parse("6d0bcf03-e6d7-41b3-b14f-1467e762747d");
     private static readonly Guid FellaSchoolId = Guid.Parse("ec6d3456-b310-46b8-9f4c-f7173c2a4e7c");
     private static readonly Guid PhilinterSchoolId = Guid.Parse("7a2e4b6c-8d51-42e7-9f3b-0a2d9f4c5b31");
+    private static readonly Guid PinesSchoolId = Guid.Parse("3e72d4cb-9f12-4f21-9d7b-6b356a99f019");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -24,6 +25,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyFellaSchoolName = "English Fella";
     private const string PhilinterSchoolName = "菲律宾宿务Philinter语言学校";
     private const string LegacyPhilinterSchoolName = "Philinter Academy";
+    private const string PinesSchoolName = "菲律宾碧瑶PINES语言学校";
+    private const string LegacyPinesSchoolName = "PINES International Academy";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -38,6 +41,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedCpilsPricingAsync(context);
       await SeedFellaPricingAsync(context);
       await SeedPhilinterPricingAsync(context);
+      await SeedPinesPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -153,18 +157,40 @@ namespace XiaoJuanSchoolPayment.Server.Services
       var schoolId = school.Id;
 
       const string evLessonNote = "EV 2026年4周课程费参考；最终以学校正式报价为准";
-      UpsertLesson(context, schoolId, "ESL Classic", 4, 780m, "半斯巴达综合英语，适合学习与生活平衡", now, evLessonNote);
-      UpsertLesson(context, schoolId, "Intensive ESL", 4, 900m, "斯巴达强度更高，适合想被学习节奏推动的学生", now, evLessonNote);
-      UpsertLesson(context, schoolId, "Power Speaking 6", 4, 980m, "每天更多一对一口语训练，适合短期口语突破", now, evLessonNote);
-      UpsertLesson(context, schoolId, "Power Speaking 8", 4, 1080m, "高一对一比例，适合明确口语冲刺目标", now, evLessonNote);
-      UpsertLesson(context, schoolId, "IELTS", 4, 1000m, "雅思备考与模考训练，适合目标分数学生", now, evLessonNote);
-      UpsertLesson(context, schoolId, "TOEIC", 4, 950m, "托业备考，适合升学、求职或企业英语需求", now, evLessonNote);
-      UpsertLesson(context, schoolId, "Business", 4, 950m, "商务沟通、会议、演示和职场表达", now, evLessonNote);
+      RemoveLesson(context, schoolId, "ESL Classic", 4);
+      RemoveLesson(context, schoolId, "Intensive ESL", 4);
+      RemoveLesson(context, schoolId, "Power Speaking 6", 4);
+      RemoveLesson(context, schoolId, "Power Speaking 8", 4);
+      RemoveLesson(context, schoolId, "IELTS", 4);
+      RemoveLesson(context, schoolId, "TOEIC", 4);
+      RemoveLesson(context, schoolId, "Business", 4);
 
-      UpsertRoom(context, schoolId, "单人房", 4, 1600m, "隐私最好，预算较高，热门档期需早确认", now);
-      UpsertRoom(context, schoolId, "双人房", 4, 1230m, "适合朋友同行或希望兼顾预算与舒适度", now);
-      UpsertRoom(context, schoolId, "三人房", 4, 1150m, "多人房中预算较平衡", now);
-      UpsertRoom(context, schoolId, "四人房", 4, 1100m, "默认报价参考，预算压力较低", now);
+      UpsertLesson(context, schoolId, "斯巴达 Intensive ESL", 4, 1030m, "4节一对一 + 2小团体 + 2大团体 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说6（斯巴达）", 4, 1230m, "6节一对一 + 1节小团体 + 1节大团体 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说8（斯巴达）", 4, 1410m, "8节一对一 + 自习 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "常规雅思（斯巴达）", 4, 1150m, "4节一对一 + 2节小团体 + 2节大团体 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "雅思保证班（斯巴达）", 4, 1290m, "1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "多益（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "社交媒体英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "商务英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "半斯巴达 ESL", 4, 980m, "4节一对一 + 2小团体 + 2节大团体 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说6（半斯巴达）", 4, 1180m, "6节一对一 + 1节小团体 + 1节大团体 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说8（半斯巴达）", 4, 1360m, "8节一对一 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "多益（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "商务英语（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "社交媒体英语（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
+
+      RemoveRoom(context, schoolId, "单人房", 4);
+      RemoveRoom(context, schoolId, "双人房", 4);
+      RemoveRoom(context, schoolId, "三人房", 4);
+      RemoveRoom(context, schoolId, "四人房", 4);
+
+      UpsertRoom(context, schoolId, "单人间", 4, 1400m, "热门房型建议提前6个月预定", now);
+      UpsertRoom(context, schoolId, "双人间", 4, 1030m, "热门房型建议提前6个月预定", now);
+      UpsertRoom(context, schoolId, "三人间", 4, 950m, "热门房型建议提前6个月预定", now);
+      UpsertRoom(context, schoolId, "四人间（上下铺）", 4, 900m, "热门房型建议提前6个月预定", now);
+      UpsertRoom(context, schoolId, "校外公寓单间", 4, 1550m, "校外公寓房型，建议提前确认空房", now);
+      UpsertRoom(context, schoolId, "校外公寓双人间", 4, 1150m, "仅限于两人同时预定", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
       UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
@@ -432,6 +458,74 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedPinesPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x => x.Id == PinesSchoolId || x.Name == PinesSchoolName || x.Name == LegacyPinesSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = PinesSchoolId,
+          Name = PinesSchoolName,
+          CreatedDate = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = PinesSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string pinesLessonNote = "PINES 2026年4周USD费用参考；课程、校区、房型和优惠以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "Light ESL 4", 4, 850m, "轻量一对一ESL，适合预算优先和基础提升", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Power Speaking", 4, 930m, "口语强化，适合开口量和表达训练", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Intensive ESL", 4, 1020m, "5节一对一，短期强化更合适", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Power ESL 5", 4, 980m, "一对一比例更高，适合目标明确学生", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Power ESL 7", 4, 1220m, "高强度一对一，适合集中突破", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC / TOEIC Speaking", 4, 980m, "多益方向，适合求职或升学需求", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Business English Practical", 4, 1080m, "商务沟通实践方向", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Business English Executive", 4, 1080m, "商务高阶沟通方向", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Parents Course", 4, 750m, "亲子同行家长课程", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Junior Family Course", 4, 1500m, "青少年亲子课程，规则需提前确认", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "Pre-IELTS", 4, 1100m, "雅思入门，适合还未直接进入Regular的学生", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Regular", 4, 1100m, "雅思常规备考", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Speaking & Writing Intensive", 4, 1200m, "雅思口写强化", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1450m, "8周USD 2,900折算4周；需符合入学与出勤规则", now, pinesLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1350m, "12周USD 4,050折算4周；需符合入学与出勤规则", now, pinesLessonNote);
+
+      UpsertRoom(context, schoolId, "六人房", 4, 570m, "Main Campus可选，预算压力最低，需确认空房", now);
+      UpsertRoom(context, schoolId, "5B Solo", 4, 650m, "2026年8月23日起Main可选，兼顾预算和相对私密", now);
+      UpsertRoom(context, schoolId, "四人房", 4, 700m, "多人房中预算与舒适度较平衡", now);
+      UpsertRoom(context, schoolId, "双人房B", 4, 840m, "适合同伴同行或希望更少室友", now);
+      UpsertRoom(context, schoolId, "双人房A", 4, 870m, "双人房更舒适，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "单人房C", 4, 970m, "单人房入门选择，适合重视隐私", now);
+      UpsertRoom(context, schoolId, "单人房B", 4, 1150m, "男性限定资料较常见，需按校区和档期确认", now);
+      UpsertRoom(context, schoolId, "单人房A", 4, 1250m, "隐私和舒适度最高，预算较高", now);
+
+      UpsertFee(context, schoolId, "注册费", 130m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22、2027/6/27-8/22期间按 USD 40 / 周计算", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
+      UpsertFee(context, schoolId, "SSP I-Card", 4500m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
+      UpsertFee(context, schoolId, "ACR I-Card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "签证延签", 4940m, PhpCurrencyId, "到校支付费用；8周首次延签参考，周数越长金额越高", now);
+      UpsertFee(context, schoolId, "教材费", 1100m, PhpCurrencyId, "到校支付费用；4周5本以下参考", now);
+      UpsertFee(context, schoolId, "教材费（6册以上）", 1500m, PhpCurrencyId, "到校支付费用；4周6本以上参考", now);
+      UpsertFee(context, schoolId, "水电费", 3000m, PhpCurrencyId, "到校支付费用；4周参考，按学校规则调整", now);
+      UpsertFee(context, schoolId, "宿舍保证金", 4000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
+      UpsertFee(context, schoolId, "洗衣费", 150m, PhpCurrencyId, "到校支付费用；单次7kg以内参考", now);
+      UpsertFee(context, schoolId, "指定接机", 3000m, PhpCurrencyId, "到校支付费用；马尼拉或克拉克指定接机日参考", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static void UpsertLesson(
       AppDbContext context,
       Guid schoolId,
@@ -508,6 +602,16 @@ namespace XiaoJuanSchoolPayment.Server.Services
       if (room != null)
       {
         context.SchoolRooms.Remove(room);
+      }
+    }
+
+    private static void RemoveLesson(AppDbContext context, Guid schoolId, string name, int week)
+    {
+      var lesson = context.SchoolLessons.FirstOrDefault(x => x.SchoolId == schoolId && x.Name == name && x.Week == week);
+
+      if (lesson != null)
+      {
+        context.SchoolLessons.Remove(lesson);
       }
     }
 

@@ -1,0 +1,12 @@
+:host .hero-media .feature-photo img {
+  object-position: center;
+}
+
+:host .gallery-grid figure img,
+:host .highlight-list img {
+  object-fit: cover;
+}
+
+:host .photo-source {
+  line-height: 1.6;
+}
