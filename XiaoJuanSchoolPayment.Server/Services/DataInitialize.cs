@@ -16,8 +16,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid PhilinterSchoolId = Guid.Parse("7a2e4b6c-8d51-42e7-9f3b-0a2d9f4c5b31");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
-    private const string CpiSchoolName = "CPI Cebu Pelis Institute";
-    private const string CpilsSchoolName = "CPILS";
+    private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
+    private const string LegacyCpiSchoolName = "CPI Cebu Pelis Institute";
+    private const string CpilsSchoolName = "菲律宾宿务CPILS语言学校";
+    private const string LegacyCpilsSchoolName = "CPILS";
     private const string FellaSchoolName = "English Fella";
     private const string PhilinterSchoolName = "Philinter Academy";
 
@@ -181,7 +183,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static async Task SeedCpiPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
-      var school = context.Schools.FirstOrDefault(x => x.Id == CpiSchoolId || x.Name == CpiSchoolName);
+      var school = context.Schools.FirstOrDefault(x => x.Id == CpiSchoolId || x.Name == CpiSchoolName || x.Name == LegacyCpiSchoolName);
 
       if (school == null)
       {
@@ -247,7 +249,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static async Task SeedCpilsPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
-      var school = context.Schools.FirstOrDefault(x => x.Id == CpilsSchoolId || x.Name == CpilsSchoolName);
+      var school = context.Schools.FirstOrDefault(x => x.Id == CpilsSchoolId || x.Name == CpilsSchoolName || x.Name == LegacyCpilsSchoolName);
 
       if (school == null)
       {

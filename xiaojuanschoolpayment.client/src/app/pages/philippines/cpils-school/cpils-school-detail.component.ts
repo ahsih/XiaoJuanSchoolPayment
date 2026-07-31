@@ -24,6 +24,14 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
+interface SidaCpilsReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+interface SidaCpilsTrustBadge { icon: string; label: string; }
 
 @Component({
   selector: 'app-cpils-school-detail',
@@ -35,11 +43,13 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
+    '../ev-school/ev-school-detail.component.css',
   ],
 })
 export class CpilsSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
-  private readonly pricingSchoolName = 'CPILS';
+  private readonly pricingSchoolSearchName = 'CPILS';
+  private readonly pricingSchoolNames = ['菲律宾宿务CPILS语言学校', 'CPILS'];
   private readonly courseFeeOrder = ['general-esl', 'general-esl-plus', 'general-esl-light', 'premier-sparta', 'ielts-course', 'toeic-course', 'toefl-course', 'business-english', 'power-speaking-and-modern-communication', 'parent-child-program'];
   private readonly roomFeeOrder = ['quad', 'triple', 'twin', 'single'];
 
@@ -62,7 +72,7 @@ export class CpilsSchoolDetailComponent implements OnInit {
     { icon: 'verified_user', label: '管理模式', value: '半斯巴达 / 斯巴达选择', note: '课程强度和校规需按项目确认' },
     { icon: 'school', label: '课程选项', value: 'ESL / IELTS / TOEIC / TOEFL', note: '另有商务、口语和亲子课程' },
     { icon: 'bed', label: '住宿房型', value: '单人 / 双人 / 三人 / 四人', note: '校内宿舍，Premium房型需另核' },
-    { icon: 'workspace_premium', label: '考试资源', value: 'IELTS / TOEIC', note: '官方历史资料显示考试资源突出' },
+    { icon: 'workspace_premium', label: '考试资源', value: 'IELTS / TOEIC官方资源', note: '官方资料列出IELTS与TOEIC考点资源' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -80,7 +90,7 @@ export class CpilsSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'Center for Premier International Language Studies (CPILS)' },
+    { label: '学校名称', value: '菲律宾宿务CPILS语言学校（Center for Premier International Language Studies）' },
     { label: '所在地区', value: 'Benedicto Bldg., M.J. Cuenco Ave., Cebu City' },
     { label: '创立时间', value: '2001年，官方资料称为宿务第一所ESL Center' },
     { label: '学校定位', value: '老牌ESL、考试英语、斯巴达/半斯巴达管理型学校' },
@@ -172,6 +182,58 @@ export class CpilsSchoolDetailComponent implements OnInit {
     { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
   ];
 
+  readonly sidaCpilsReasons: SidaCpilsReason[] = [
+    {
+      number: '01',
+      title: '正式合同与学校文件可核验',
+      text: '国内公司签约，CPILS报价、录取文件及收费凭证均可逐项核对。',
+      image: 'assets/cia/sida-why-action-contract.jpg',
+      alt: '思达启航正式合同与学校文件核验',
+    },
+    {
+      number: '02',
+      title: '考试目标和费用提前算清',
+      text: '0中介服务费，课程费、住宿费、考试课程规则及CPILS到校费用逐项说明。',
+      image: 'assets/cia/sida-why-action-fees.jpg',
+      alt: '思达启航顾问为学生核算菲律宾宿务CPILS语言学校费用',
+    },
+    {
+      number: '03',
+      title: '先判断CPILS是否适合',
+      text: '根据目标分数、管理强度、预算、房型和入学档期，帮你判断CPILS是否匹配。',
+      image: 'assets/cia/sida-why-action-selection.jpg',
+      alt: '思达启航顾问帮助学生选择适合的英语学校',
+    },
+    {
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
+      image: 'assets/cia/sida-why-action-departure.jpg',
+      alt: '菲律宾游学出发前文件和行李准备',
+    },
+    {
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
+      image: 'assets/cia/sida-why-action-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习情况',
+    },
+    {
+      number: '06',
+      title: '深圳总部 + 宿务驻点服务',
+      text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
+      image: 'assets/cia/sida-why-action-team.jpg',
+      alt: '思达启航宿务和深圳服务团队',
+    },
+  ];
+
+  readonly sidaCpilsTrustBadges: SidaCpilsTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '学校合作与文件核验' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
+  ];
+
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', 'Dining Area', 'Snack Bar', '洗衣服务', 'Housekeeping', 'School Clinic', 'Security', '学习室', '学生服务窗口'];
   readonly campusActivities = ['新生说明会', '英语交流', '泳池休闲', '健身房运动', '咖啡娱乐区', 'Mezzanine Lounge休息'];
   readonly weekendActivities = ['宿务市区生活', '商场与餐厅', '咖啡厅', '跳岛游', '海边活动', '学生自发聚会'];
@@ -209,9 +271,12 @@ export class CpilsSchoolDetailComponent implements OnInit {
   ngOnInit(): void { this.loadPricingFromDatabase(); }
 
   private loadPricingFromDatabase(): void {
-    this.schoolService.getSchools({ name: this.pricingSchoolName }).pipe(
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
-        const school = schools.find((item) => item.name === this.pricingSchoolName) ?? schools[0];
+        const school =
+          this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
+          schools.find((item) => item.name.includes('CPILS')) ??
+          schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),

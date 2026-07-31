@@ -24,6 +24,14 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
+interface SidaCpiReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+interface SidaCpiTrustBadge { icon: string; label: string; }
 
 @Component({
   selector: 'app-cpi-school-detail',
@@ -35,11 +43,13 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
+    '../ev-school/ev-school-detail.component.css',
   ],
 })
 export class CpiSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
-  private readonly pricingSchoolName = 'CPI Cebu Pelis Institute';
+  private readonly pricingSchoolSearchName = 'CPI';
+  private readonly pricingSchoolNames = ['菲律宾宿务CPI语言学校', 'CPI Cebu Pelis Institute'];
   private readonly courseFeeOrder = ['general-english', 'intensive-english', 'rapid-30', 'rapid-60', 'toeic-regular', 'ielts-regular', 'ielts-guarantee', 'speaking-master', 'business-english', 'junior-program', 'guardian-program'];
   private readonly roomFeeOrder = ['superior-single', 'superior-double', 'superior-triple', 'superior-quad', 'superior-six', 'executive-single', 'executive-double', 'executive-triple', 'family-double', 'family-triple'];
 
@@ -78,7 +88,7 @@ export class CpiSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'CPI Cebu Pelis Institute' },
+    { label: '学校名称', value: '菲律宾宿务CPI语言学校' },
     { label: '所在地区', value: 'Holy Family Road, Nivel Hills, Lahug, Cebu City' },
     { label: '校区时间', value: '2015年启用Nivel Hills新校区' },
     { label: '学生容量', value: '约250名学生' },
@@ -177,6 +187,58 @@ export class CpiSchoolDetailComponent implements OnInit {
     { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
   ];
 
+  readonly sidaCpiReasons: SidaCpiReason[] = [
+    {
+      number: '01',
+      title: '正式合同与学校文件可核验',
+      text: '国内公司签约，CPI报价、录取文件及收费凭证均可逐项核对。',
+      image: 'assets/cia/sida-why-action-contract.jpg',
+      alt: '思达启航正式合同与学校文件核验',
+    },
+    {
+      number: '02',
+      title: '房型和费用提前算清',
+      text: '0中介服务费，课程费、住宿费、旺季附加费及CPI到校费用逐项说明。',
+      image: 'assets/cia/sida-why-action-fees.jpg',
+      alt: '思达启航顾问为学生核算菲律宾宿务CPI语言学校费用',
+    },
+    {
+      number: '03',
+      title: '先判断CPI是否适合',
+      text: '根据预算、房型偏好、亲子需求、课程目标和入学档期，帮你判断CPI是否匹配。',
+      image: 'assets/cia/sida-why-action-selection.jpg',
+      alt: '思达启航顾问帮助学生选择适合的英语学校',
+    },
+    {
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
+      image: 'assets/cia/sida-why-action-departure.jpg',
+      alt: '菲律宾游学出发前文件和行李准备',
+    },
+    {
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
+      image: 'assets/cia/sida-why-action-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习情况',
+    },
+    {
+      number: '06',
+      title: '深圳总部 + 宿务驻点服务',
+      text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
+      image: 'assets/cia/sida-why-action-team.jpg',
+      alt: '思达启航宿务和深圳服务团队',
+    },
+  ];
+
+  readonly sidaCpiTrustBadges: SidaCpiTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '学校合作与文件核验' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
+  ];
+
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', '自习安排', '宿舍清洁', '洗衣服务', '医护室', '校内保安', '证件协助'];
   readonly campusActivities = ['新生说明会', '文化交流', '体育活动', '泳池休闲', '校内活动'];
   readonly weekendActivities = ['市区商场', '咖啡厅与餐厅', '跳岛游', '海边活动', '学生自发聚会'];
@@ -214,9 +276,12 @@ export class CpiSchoolDetailComponent implements OnInit {
   ngOnInit(): void { this.loadPricingFromDatabase(); }
 
   private loadPricingFromDatabase(): void {
-    this.schoolService.getSchools({ name: this.pricingSchoolName }).pipe(
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
-        const school = schools.find((item) => item.name === this.pricingSchoolName) ?? schools[0];
+        const school =
+          this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
+          schools.find((item) => item.name.includes('CPI')) ??
+          schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),

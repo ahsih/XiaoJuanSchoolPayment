@@ -76,25 +76,25 @@ export class CebuStudyComponent {
       title: '口语强化型',
       tag: 'ESL / Power Speaking',
       text: '适合想增加一对一开口时间、改善听说基础、建立英语表达信心的学生。',
-      examples: '菲律宾宿务EV语言学校、CPI、Philinter、I.Breeze',
+      examples: '菲律宾宿务EV语言学校、菲律宾宿务CPI语言学校、Philinter、I.Breeze',
     },
     {
       title: '考试备考型',
       tag: 'IELTS / TOEIC / TOEFL',
       text: '适合有明确分数目标，需要模考、写作批改、口语反馈和保证班规则的学生。',
-      examples: 'CIA、菲律宾宿务EV语言学校、CPILS、English Fella',
+      examples: 'CIA、菲律宾宿务EV语言学校、菲律宾宿务CPILS语言学校、English Fella',
     },
     {
       title: '亲子青少年型',
       tag: 'Family / Junior Camp',
       text: '适合家长陪读、寒暑假短期体验、孩子先适应英语环境和海外课堂的家庭。',
-      examples: 'CIA、CPI、CBOA、EV Academy La Mer',
+      examples: 'CIA、菲律宾宿务CPI语言学校、CBOA、EV Academy La Mer',
     },
     {
       title: '度假舒适型',
       tag: 'Resort / Balanced',
       text: '适合重视住宿、餐食、泳池、校园环境和周末体验，同时希望保持稳定课程强度的人群。',
-      examples: 'CIA Mactan、CPI、Cebu Blue Ocean Academy',
+      examples: 'CIA Mactan、菲律宾宿务CPI语言学校、Cebu Blue Ocean Academy',
     },
   ];
 
@@ -142,7 +142,7 @@ export class CebuStudyComponent {
       note: 'SP1 更适合强目标和自律需求；SP2 适合想保留部分宿务生活体验的学生。',
     },
     {
-      name: 'CPI Cebu Pelis Institute',
+      name: '菲律宾宿务CPI语言学校',
       location: 'Cebu City / Nivel Hills',
       style: '半斯巴达，度假村式校园',
       route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
@@ -164,7 +164,7 @@ export class CebuStudyComponent {
       note: '校区位置相对安静，通勤和外出便利度需要结合个人生活习惯评估。',
     },
     {
-      name: 'CPILS',
+      name: '菲律宾宿务CPILS语言学校',
       location: 'Cebu City',
       style: '斯巴达 / 半斯巴达，老牌考试型学校',
       route: '/philippines-study/cebu/cpils',

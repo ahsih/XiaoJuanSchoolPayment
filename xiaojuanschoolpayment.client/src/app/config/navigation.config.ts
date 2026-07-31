@@ -251,12 +251,12 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'cpi-cebu-pelis-institute',
-            label: 'CPI Cebu Pelis Institute',
+            label: '菲律宾宿务CPI语言学校',
             route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
           },
           {
             id: 'cpils',
-            label: 'CPILS',
+            label: '菲律宾宿务CPILS语言学校',
             route: '/philippines-study/cebu/cpils',
           },
           {

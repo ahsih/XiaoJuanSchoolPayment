@@ -41,7 +41,7 @@ interface FaqItem {
 })
 export class CpilsSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校全名', value: 'Cebu Pacific International Language School' },
+    { label: '学校名称', value: '菲律宾宿务CPILS语言学校' },
     { label: '学校类型', value: '斯巴达 / 半斯巴达，考试与强化型老牌学校' },
     { label: '位置', value: 'Cebu City 旧城区，近 SM、Ayala 与 Robinson Galleria' },
     { label: '学生容量', value: '约350-400名学生' },

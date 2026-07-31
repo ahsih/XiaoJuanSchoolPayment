@@ -41,8 +41,8 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/cebu': {
     title: '宿务菲律宾留学与英语游学 | 宿务语言学校推荐',
     description:
-      '宿务菲律宾留学和英语游学指南，比较 CIA、EV、CPI、CPILS、English Fella、Philinter 等语言学校课程、住宿和费用。',
-    keywords: '宿务留学, 宿务游学, 宿务语言学校, 菲律宾宿务英语学校, CIA Cebu, EV Academy, CPI Cebu',
+      '宿务菲律宾留学和英语游学指南，比较 CIA、EV、菲律宾宿务CPI语言学校、菲律宾宿务CPILS语言学校、English Fella、Philinter 等语言学校课程、住宿和费用。',
+    keywords: '宿务留学, 宿务游学, 宿务语言学校, 菲律宾宿务英语学校, CIA Cebu, EV Academy, 菲律宾宿务CPI语言学校, 菲律宾宿务CPILS语言学校',
     image: '/assets/cia/campus-building.png',
   },
   '/philippines-study/baguio': {
@@ -174,7 +174,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/schools/popular': {
     title: '菲律宾热门语言学校 | 宿务碧瑶克拉克学校推荐',
     description:
-      '菲律宾热门语言学校整理，覆盖 CIA、EV、CPI、Pines、BECI、JIC、Philinter 等学校的课程和适合人群。',
+      '菲律宾热门语言学校整理，覆盖 CIA、EV、菲律宾宿务CPI语言学校、Pines、BECI、JIC、Philinter 等学校的课程和适合人群。',
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
     image: '/assets/philippines/home-school-beci.jpg',
   },

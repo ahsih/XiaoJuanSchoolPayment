@@ -108,7 +108,7 @@ export class HomeComponent {
       route: '/philippines-study/cebu/ev-academy',
     },
     {
-      name: 'CPI Cebu Pelis Institute',
+      name: '菲律宾宿务CPI语言学校',
       city: '菲律宾 · 宿务',
       tag: 'Resort / ESL / Family',
       description: 'Nivel Hills 度假村式校园，适合重视住宿、设施和舒适度的学生。',
