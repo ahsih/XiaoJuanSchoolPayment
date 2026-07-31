@@ -76,13 +76,13 @@ export class CebuStudyComponent {
       title: '口语强化型',
       tag: 'ESL / Power Speaking',
       text: '适合想增加一对一开口时间、改善听说基础、建立英语表达信心的学生。',
-      examples: '菲律宾宿务EV语言学校、菲律宾宿务CPI语言学校、Philinter、I.Breeze',
+      examples: '菲律宾宿务EV语言学校、菲律宾宿务CPI语言学校、菲律宾宿务Philinter语言学校、I.Breeze',
     },
     {
       title: '考试备考型',
       tag: 'IELTS / TOEIC / TOEFL',
       text: '适合有明确分数目标，需要模考、写作批改、口语反馈和保证班规则的学生。',
-      examples: 'CIA、菲律宾宿务EV语言学校、菲律宾宿务CPILS语言学校、English Fella',
+      examples: 'CIA、菲律宾宿务EV语言学校、菲律宾宿务CPILS语言学校、菲律宾宿务English Fella语言学校',
     },
     {
       title: '亲子青少年型',
@@ -185,7 +185,7 @@ export class CebuStudyComponent {
       note: '课程强度和校规较明确，报名前应确认当前宿舍状态、门禁和保证班细则。',
     },
     {
-      name: 'English Fella',
+      name: '菲律宾宿务English Fella语言学校',
       location: 'Cebu City / Talamban',
       style: '斯巴达与半斯巴达校区',
       route: '/philippines-study/cebu/english-fella',
@@ -205,7 +205,7 @@ export class CebuStudyComponent {
       note: '不同校区管理强度不同，需要按目标分数、外出自由度和预算分开比较。',
     },
     {
-      name: 'Philinter Academy',
+      name: '菲律宾宿务Philinter语言学校',
       location: '麦克坦岛 / Lapu-Lapu City',
       style: '半斯巴达，老牌综合型学校',
       route: '/philippines-study/cebu/philinter-academy',

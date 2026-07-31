@@ -8,21 +8,25 @@
               <mat-icon>arrow_back</mat-icon>
               返回宿务学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 宿务学校 / Philinter Academy</p>
-            <h1>Philinter Academy Cebu</h1>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / 菲律宾宿务Philinter语言学校</p>
+            <h1>菲律宾宿务Philinter语言学校</h1>
             <p class="hero-lead">
               麦克坦岛老牌半斯巴达学校，适合重视师资、Buddy Teacher学习跟进、口语强化、IELTS考试资源和多国籍学习环境的学生。
             </p>
             <div class="hero-tags" aria-label="Philinter特点">
-              <span>2003年成立</span>
-              <span>半斯巴达</span>
-              <span>口语与IELTS</span>
-              <span>近宿务机场</span>
+              <span><mat-icon>history_edu</mat-icon>2003年成立</span>
+              <span><mat-icon>verified_user</mat-icon>半斯巴达</span>
+              <span><mat-icon>record_voice_over</mat-icon>口语与IELTS</span>
+              <span><mat-icon>flight_land</mat-icon>近宿务机场</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看Philinter课程和房型
+                <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价
@@ -37,8 +41,8 @@
 
           <div class="hero-media" aria-label="Philinter校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/philinter/campus-main.jpeg" alt="Philinter校园楼体" />
-              <figcaption>Philinter Academy 校园环境</figcaption>
+              <img src="assets/philinter/campus-main.jpeg" alt="菲律宾宿务Philinter语言学校校园楼体" />
+              <figcaption>菲律宾宿务Philinter语言学校麦克坦校园环境</figcaption>
             </figure>
             <div class="media-strip" aria-label="Philinter环境缩略图">
               <figure *ngFor="let image of galleryImages.slice(3, 6)">
@@ -46,12 +50,28 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <p>Light ESL + 校内三人房</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  已含注册费、折扣后课程费和住宿费估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  校外住宿、考试规则和到校费用需另行确认
+                </li>
+              </ul>
+            </aside>
             <p class="photo-source">图片来源：Philinter Academy官方网站公开图片；学校、课程、设施信息参考Philinter官方网站公开资料。</p>
           </div>
         </section>
 
         <nav class="mobile-anchor-nav" aria-label="Philinter手机端快捷导航">
           <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
             {{ item.label }}
           </a>
         </nav>
@@ -324,7 +344,44 @@
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
 
-        <section class="section-block" id="service-process">
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 Philinter?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断Philinter是否适合、算清课程和房型费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾宿务Philinter语言学校学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaPhilinterReasons">
+                <img [src]="item.image" [alt]="item.alt" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名Philinter保障">
+            <article *ngFor="let item of sidaPhilinterTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
           <div class="section-heading">
             <span>通过思达报名 Philinter 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>

@@ -40,7 +40,7 @@ interface FaqItem {
 })
 export class PhilinterSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校全名', value: 'Philinter Center for English Language' },
+    { label: '学校名称', value: '菲律宾宿务Philinter语言学校' },
     { label: '创校年份', value: '2003年' },
     { label: '学校类型', value: '半斯巴达 / 斯巴达管理模式' },
     { label: '位置', value: '麦克坦岛 / Lapu-Lapu City，距离机场较近' },
@@ -136,7 +136,7 @@ export class PhilinterSchoolComponent {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'Philinter Academy 的起价是多少？',
+      question: '菲律宾宿务Philinter语言学校的起价是多少？',
       answer: 'iOutback比较表显示 Philinter 为 USD 1,390 起；详细2026费用表中，Light ESL 校内三人房4周为 USD 1,580，General ESL 校内三人房4周为 USD 1,680。',
     },
     {

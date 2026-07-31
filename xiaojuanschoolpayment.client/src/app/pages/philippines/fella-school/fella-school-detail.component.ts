@@ -24,6 +24,14 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
+interface SidaFellaReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+interface SidaFellaTrustBadge { icon: string; label: string; }
 
 @Component({
   selector: 'app-fella-school-detail',
@@ -35,11 +43,13 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
+    '../ev-school/ev-school-detail.component.css',
   ],
 })
 export class FellaSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
-  private readonly pricingSchoolName = 'English Fella';
+  private readonly pricingSchoolSearchName = 'English Fella';
+  private readonly pricingSchoolNames = ['菲律宾宿务English Fella语言学校', 'English Fella'];
   private readonly courseFeeOrder = ['guardian-gec', 'pic-4', 'pic-5', 'pic-6', 'ielts-pirc', 'toeic-esl-toeic', 'toefl', 'business-english', 'junior-jec', 'silver-speaking-course'];
   private readonly roomFeeOrder = ['triple', 'twin', 'standard-single', 'deluxe-single'];
 
@@ -80,7 +90,7 @@ export class FellaSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'English Fella' },
+    { label: '学校名称', value: '菲律宾宿务English Fella语言学校' },
     { label: '所在地区', value: 'Talamban, Cebu City；第一校区与第二校区' },
     { label: '创立时间', value: '2006年，官方资料称为菲律宾第一批建有专属校园的学校之一' },
     { label: '学校定位', value: '大校园、课程选择多、校区管理模式可选的老牌学校' },
@@ -172,6 +182,58 @@ export class FellaSchoolDetailComponent implements OnInit {
     { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
   ];
 
+  readonly sidaFellaReasons: SidaFellaReason[] = [
+    {
+      number: '01',
+      title: '正式合同与学校文件可核验',
+      text: '国内公司签约，English Fella报价、录取文件及收费凭证均可逐项核对。',
+      image: 'assets/cia/sida-why-action-contract.jpg',
+      alt: '思达启航正式合同与学校文件核验',
+    },
+    {
+      number: '02',
+      title: '校区、课程和费用提前算清',
+      text: '0中介服务费，课程费、住宿费、校区规则及English Fella到校费用逐项说明。',
+      image: 'assets/cia/sida-why-action-fees.jpg',
+      alt: '思达启航顾问为学生核算菲律宾宿务English Fella语言学校费用',
+    },
+    {
+      number: '03',
+      title: '先判断Fella是否适合',
+      text: '根据学习目标、校区偏好、管理强度、预算、房型和入学档期，帮你判断Fella是否匹配。',
+      image: 'assets/cia/sida-why-action-selection.jpg',
+      alt: '思达启航顾问帮助学生选择适合的英语学校',
+    },
+    {
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
+      image: 'assets/cia/sida-why-action-departure.jpg',
+      alt: '菲律宾游学出发前文件和行李准备',
+    },
+    {
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
+      image: 'assets/cia/sida-why-action-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习情况',
+    },
+    {
+      number: '06',
+      title: '深圳总部 + 宿务驻点服务',
+      text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
+      image: 'assets/cia/sida-why-action-team.jpg',
+      alt: '思达启航宿务和深圳服务团队',
+    },
+  ];
+
+  readonly sidaFellaTrustBadges: SidaFellaTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '学校合作与文件核验' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
+  ];
+
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', '校内餐厅', 'CAFELLA', '宿舍清洁', '洗衣服务', '医护与转诊', '校内保安', '运动设施', '华语顾问沟通'];
   readonly campusActivities = ['Sports Competition', 'Fun Friday', 'Fella Day', '英语展示', '校内运动', '校园交流'];
   readonly weekendActivities = ['跳岛活动', 'Cebu City Tour', 'Safari Park Tour', '志愿活动', '商场与餐厅', '学生自发聚会'];
@@ -209,9 +271,12 @@ export class FellaSchoolDetailComponent implements OnInit {
   ngOnInit(): void { this.loadPricingFromDatabase(); }
 
   private loadPricingFromDatabase(): void {
-    this.schoolService.getSchools({ name: this.pricingSchoolName }).pipe(
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
-        const school = schools.find((item) => item.name === this.pricingSchoolName) ?? schools[0];
+        const school =
+          this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
+          schools.find((item) => item.name.includes('English Fella')) ??
+          schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),

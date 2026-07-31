@@ -24,6 +24,14 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
+interface SidaPhilinterReason {
+  number: string;
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+}
+interface SidaPhilinterTrustBadge { icon: string; label: string; }
 
 @Component({
   selector: 'app-philinter-school-detail',
@@ -35,11 +43,13 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
+    '../ev-school/ev-school-detail.component.css',
   ],
 })
 export class PhilinterSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
-  private readonly pricingSchoolName = 'Philinter Academy';
+  private readonly pricingSchoolSearchName = 'Philinter';
+  private readonly pricingSchoolNames = ['菲律宾宿务Philinter语言学校', 'Philinter Academy'];
   private readonly courseFeeOrder = ['light-esl', 'general-esl', 'intensive-esl', 'intensive-power-speaking', 'ielts-intensive', 'toefl', 'toeic-regular', 'advanced-business', 'basic-business', 'focused-industry', 'primary-english', 'junior-esl', 'junior-ielts', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks'];
   private readonly roomFeeOrder = ['in-campus-triple', 'in-campus-twin', 'in-campus-single', 'azon-single', 'azon-twin'];
 
@@ -83,7 +93,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'Philinter Academy / Philinter Center for English Language' },
+    { label: '学校名称', value: '菲律宾宿务Philinter语言学校（Philinter Center for English Language）' },
     { label: '所在地区', value: 'Lapu-Lapu City, Mactan Island, Cebu，距离宿务机场较近' },
     { label: '创立时间', value: '2003年' },
     { label: '学校定位', value: '老牌半斯巴达语言学校，重视师资、学习系统和多国籍环境' },
@@ -175,6 +185,58 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可为学生提供当地支持，直到完成学习并顺利回国。' },
   ];
 
+  readonly sidaPhilinterReasons: SidaPhilinterReason[] = [
+    {
+      number: '01',
+      title: '正式合同与学校文件可核验',
+      text: '国内公司签约，Philinter报价、录取文件及收费凭证均可逐项核对。',
+      image: 'assets/cia/sida-why-action-contract.jpg',
+      alt: '思达启航正式合同与学校文件核验',
+    },
+    {
+      number: '02',
+      title: '课程、住宿和费用提前算清',
+      text: '0中介服务费，课程费、校内/校外住宿费、考试规则及Philinter到校费用逐项说明。',
+      image: 'assets/cia/sida-why-action-fees.jpg',
+      alt: '思达启航顾问为学生核算菲律宾宿务Philinter语言学校费用',
+    },
+    {
+      number: '03',
+      title: '先判断Philinter是否适合',
+      text: '根据口语、IELTS、TOEIC、商务、青少年目标和预算，帮你判断Philinter是否匹配。',
+      image: 'assets/cia/sida-why-action-selection.jpg',
+      alt: '思达启航顾问帮助学生选择适合的英语学校',
+    },
+    {
+      number: '04',
+      title: '出发前每一步有人提醒',
+      text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
+      image: 'assets/cia/sida-why-action-departure.jpg',
+      alt: '菲律宾游学出发前文件和行李准备',
+    },
+    {
+      number: '05',
+      title: '服务持续到完成学习回国',
+      text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
+      image: 'assets/cia/sida-why-action-followup.jpg',
+      alt: '思达启航顾问持续跟进学生学习情况',
+    },
+    {
+      number: '06',
+      title: '深圳总部 + 宿务驻点服务',
+      text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
+      image: 'assets/cia/sida-why-action-team.jpg',
+      alt: '思达启航宿务和深圳服务团队',
+    },
+  ];
+
+  readonly sidaPhilinterTrustBadges: SidaPhilinterTrustBadge[] = [
+    { icon: 'description', label: '国内正式公司合同' },
+    { icon: 'verified_user', label: '学校合作与文件核验' },
+    { icon: 'local_offer', label: '费用透明与同条件保价' },
+    { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
+  ];
+
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', 'Buddy Teacher', '学习进度跟进', 'IELTS模考', '学生餐厅', '洗衣服务', '宿舍清洁', '学习大厅', '医护协助', '校内保安'];
   readonly campusActivities = ['新生说明会', '毕业典礼', '商务发表', '校内交流', '泳池与运动', '学习成果展示'];
   readonly weekendActivities = ['麦克坦海岛活动', '宿务市区生活', '商场与餐厅', '度假村周末体验', '同学自发聚会', '顾问可协助确认安全建议'];
@@ -215,9 +277,12 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   ngOnInit(): void { this.loadPricingFromDatabase(); }
 
   private loadPricingFromDatabase(): void {
-    this.schoolService.getSchools({ name: this.pricingSchoolName }).pipe(
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
-        const school = schools.find((item) => item.name === this.pricingSchoolName) ?? schools[0];
+        const school =
+          this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
+          schools.find((item) => item.name.includes('Philinter')) ??
+          schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),

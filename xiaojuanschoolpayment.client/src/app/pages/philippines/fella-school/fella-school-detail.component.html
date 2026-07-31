@@ -8,21 +8,25 @@
               <mat-icon>arrow_back</mat-icon>
               返回宿务学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 宿务学校 / English Fella</p>
-            <h1>English Fella Cebu</h1>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / 菲律宾宿务English Fella语言学校</p>
+            <h1>菲律宾宿务English Fella语言学校</h1>
             <p class="hero-lead">
               宿务2006年创立的老牌大校园学校，适合想比较斯巴达/半斯巴达管理、ESL、考试、商务、亲子和长期学习方案的学生。
             </p>
             <div class="hero-tags" aria-label="English Fella特点">
-              <span>大校园</span>
-              <span>两校区选择</span>
-              <span>课程完整</span>
-              <span>亲子可咨询</span>
+              <span><mat-icon>park</mat-icon>大校园</span>
+              <span><mat-icon>apartment</mat-icon>两校区选择</span>
+              <span><mat-icon>menu_book</mat-icon>课程完整</span>
+              <span><mat-icon>family_restroom</mat-icon>亲子可咨询</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看English Fella课程和房型
+                <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价
@@ -37,8 +41,8 @@
 
           <div class="hero-media" aria-label="English Fella校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/fella/campus-main.jpg" alt="English Fella校园" />
-              <figcaption>English Fella 大校园环境</figcaption>
+              <img src="assets/fella/campus-main.jpg" alt="菲律宾宿务English Fella语言学校校园" />
+              <figcaption>菲律宾宿务English Fella语言学校大校园环境</figcaption>
             </figure>
             <div class="media-strip" aria-label="English Fella校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(3, 6)">
@@ -46,12 +50,28 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <p>PIC-4 + 三人房</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  已含注册费、折扣后课程费和住宿费估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  校区规则、到校费用和亲子/青少年费用需另行确认
+                </li>
+              </ul>
+            </aside>
             <p class="photo-source">图片来源：English Fella官方网站公开图片；课程、住宿、设施与当地费用信息参考English Fella官方网站资料。</p>
           </div>
         </section>
 
         <nav class="mobile-anchor-nav" aria-label="English Fella手机端快捷导航">
           <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
             {{ item.label }}
           </a>
         </nav>
@@ -324,7 +344,44 @@
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
 
-        <section class="section-block" id="service-process">
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 English Fella?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断English Fella是否适合、算清课程和房型费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾宿务English Fella语言学校学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaFellaReasons">
+                <img [src]="item.image" [alt]="item.alt" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名English Fella保障">
+            <article *ngFor="let item of sidaFellaTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
           <div class="section-heading">
             <span>通过思达报名 English Fella 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>

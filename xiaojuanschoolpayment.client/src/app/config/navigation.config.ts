@@ -261,12 +261,12 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'english-fella',
-            label: 'English Fella',
+            label: '菲律宾宿务English Fella语言学校',
             route: '/philippines-study/cebu/english-fella',
           },
           {
             id: 'philinter-academy',
-            label: 'Philinter Academy',
+            label: '菲律宾宿务Philinter语言学校',
             route: '/philippines-study/cebu/philinter-academy',
           },
         ],

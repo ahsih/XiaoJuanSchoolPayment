@@ -20,8 +20,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyCpiSchoolName = "CPI Cebu Pelis Institute";
     private const string CpilsSchoolName = "菲律宾宿务CPILS语言学校";
     private const string LegacyCpilsSchoolName = "CPILS";
-    private const string FellaSchoolName = "English Fella";
-    private const string PhilinterSchoolName = "Philinter Academy";
+    private const string FellaSchoolName = "菲律宾宿务English Fella语言学校";
+    private const string LegacyFellaSchoolName = "English Fella";
+    private const string PhilinterSchoolName = "菲律宾宿务Philinter语言学校";
+    private const string LegacyPhilinterSchoolName = "Philinter Academy";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -308,7 +310,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static async Task SeedFellaPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
-      var school = context.Schools.FirstOrDefault(x => x.Id == FellaSchoolId || x.Name == FellaSchoolName);
+      var school = context.Schools.FirstOrDefault(x => x.Id == FellaSchoolId || x.Name == FellaSchoolName || x.Name == LegacyFellaSchoolName);
 
       if (school == null)
       {
@@ -367,7 +369,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static async Task SeedPhilinterPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
-      var school = context.Schools.FirstOrDefault(x => x.Id == PhilinterSchoolId || x.Name == PhilinterSchoolName);
+      var school = context.Schools.FirstOrDefault(x => x.Id == PhilinterSchoolId || x.Name == PhilinterSchoolName || x.Name == LegacyPhilinterSchoolName);
 
       if (school == null)
       {

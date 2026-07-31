@@ -41,7 +41,7 @@ interface FaqItem {
 })
 export class FellaSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'English Fella' },
+    { label: '学校名称', value: '菲律宾宿务English Fella语言学校' },
     { label: '创校 / 运营', value: '2006年开始运营' },
     { label: '学校类型', value: '第一校区斯巴达；第二校区自律 / 半斯巴达' },
     { label: '位置', value: 'Talamban, Cebu City' },
