@@ -201,35 +201,61 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>EV 2026 年 4 周课程费</span>
-              <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
+        <section class="section-block pricing-reference" id="course-fees">
+          <div class="section-heading">
+            <span>EV 2026 年 4 周课程费</span>
+            <h2>先看课程费，再叠加住宿费</h2>
+            <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
+          </div>
+          <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周课程费</span>
+              <span role="columnheader">适合人群</span>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
-              <article *ngFor="let fee of courseFees">
-                <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                <p>{{ fee.suitable }}</p>
-              </article>
+            <div class="table-row" role="row" *ngFor="let fee of courseFees">
+              <span role="cell">{{ fee.name }}</span>
+              <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+              <span role="cell">{{ fee.suitable }}</span>
             </div>
           </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
+            <article *ngFor="let fee of courseFees">
+              <span>课程</span>
+              <strong>{{ fee.name }}</strong>
+              <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+              <p>{{ fee.suitable }}</p>
+            </article>
+          </div>
 
+          <div class="section-heading pricing-subheading" id="room-fees">
+            <span>EV 2026 年 4 周住宿费</span>
+            <h2>房型会明显影响总预算</h2>
+            <p>默认报价使用四人房。单人房和热门房型建议先让顾问确认空房。</p>
+          </div>
+          <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周住宿费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">4周住宿费</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomFees">
+              <span role="cell">{{ room.name }}</span>
+              <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+              <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周住宿费手机卡片">
+            <article *ngFor="let room of roomFees">
+              <span>房型</span>
+              <strong>{{ room.name }}</strong>
+              <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout quote-and-schedule">
           <div class="section-block" id="daily-schedule">
             <div class="section-heading">
               <span>EV 一天学习生活安排</span>
@@ -239,36 +265,6 @@
               <article *ngFor="let item of schedule">
                 <time>{{ item.time }}</time>
                 <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section class="split-layout" id="room-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>EV 2026 年 4 周住宿费</span>
-              <h2>房型会明显影响总预算</h2>
-              <p>默认报价使用四人房。单人房和热门房型建议先让顾问确认空房。</p>
-            </div>
-            <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周住宿费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">4周住宿费</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周住宿费手机卡片">
-              <article *ngFor="let room of roomFees">
-                <span>房型</span>
-                <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                <p>{{ room.note }}</p>
               </article>
             </div>
           </div>
