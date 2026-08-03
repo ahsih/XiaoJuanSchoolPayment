@@ -46,7 +46,7 @@ interface SourceLink {
 })
 export class WalesSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'WALES Academy / Widest Asian Learners English School Inc.' },
+    { label: '学校名称', value: '菲律宾碧瑶WALES语言学校 / WALES Academy' },
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '创校时间', value: '2006年' },
     { label: '地址', value: '#4 Bukaneg St., Legarda Rd., Baguio City' },
@@ -221,7 +221,7 @@ export class WalesSchoolComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: 'WALES官方网站', url: 'https://walesph.com/' },
+    { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
     { label: 'WALES School Profile', url: 'https://walesph.com/aboutus/school-profile/' },
     { label: 'WALES Why WALES', url: 'https://walesph.com/aboutus/choose/' },
     { label: 'WALES Program', url: 'https://walesph.com/curriculum/' },

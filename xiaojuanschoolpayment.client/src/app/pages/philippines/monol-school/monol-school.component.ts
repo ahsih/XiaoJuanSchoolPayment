@@ -46,7 +46,7 @@ interface SourceLink {
 })
 export class MonolSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'MONOL / Models of Nonpareil and Outstanding Learning' },
+    { label: '学校名称', value: '菲律宾碧瑶MONOL语言学校 / MONOL' },
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '创校时间', value: '2003年' },
     { label: '地址', value: '20-B Purok 9, Tacay Road, Pinsao Proper' },
@@ -220,7 +220,7 @@ export class MonolSchoolComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: 'MONOL官方网站', url: 'https://mymonol.com/en/' },
+    { label: '菲律宾碧瑶MONOL语言学校 官方网站', url: 'https://mymonol.com/en/' },
     { label: 'MONOL About', url: 'https://mymonol.com/en/about-monol/' },
     { label: 'MONOL Why MONOL', url: 'https://mymonol.com/en/why-monol-2/' },
     { label: 'MONOL Program', url: 'https://mymonol.com/en/program/' },

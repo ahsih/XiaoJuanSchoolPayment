@@ -1,0 +1,467 @@
+<app-cia-school>
+  <div class="cia-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/baguio">
+              <mat-icon>arrow_back</mat-icon>
+              返回碧瑶学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶WALES语言学校</p>
+            <h1><span>菲律宾碧瑶</span><span>WALES语言学校</span></h1>
+            <p class="hero-lead">
+              <span>碧瑶Legarda市区生活圈的小型语言学校。</span>
+              <span>EEP适合生活沟通，Infinity适合综合强化。</span>
+              <span>IELTS、Business和Junior方向适合目标明确的学生。</span>
+            </p>
+            <div class="hero-tags" aria-label="WALES特点">
+              <span><mat-icon>terrain</mat-icon>碧瑶市区</span>
+              <span><mat-icon>groups</mat-icon>约80名学生</span>
+              <span><mat-icon>school</mat-icon>EEP/Infinity</span>
+              <span><mat-icon>bed</mat-icon>Studio/Condo住宿</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看WALES课程
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              提交英语基础、入学日期、课程、房型和餐食需求后，思达顾问会帮你确认WALES空房、优惠、meal fee、到校PHP费用和正式账单。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="WALES校园图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/home-school-wales.jpg" alt="菲律宾碧瑶WALES语言学校校园环境" />
+              <figcaption>菲律宾碧瑶WALES语言学校学习环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="WALES校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <p>EEP Lite + Condo Twin Share</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  已含课程费和住宿费估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  报名费、餐费、到校费用和空房需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">图片来源：WALES官方资料与项目现有碧瑶学校素材；费用参考2026公开价目资料并由思达顾问整理。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="WALES手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="WALES快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>按学习和生活空间查看 WALES 环境</h2>
+            <p>WALES要把课程、房型、餐费和市区生活便利放在一起看，尤其适合成人、家庭和想要小校氛围的学生。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="WALES图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>WALES 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>WALES的关键是小校、市区和房型</h2>
+            </div>
+            <p>
+              WALES适合想认真学英文，但不想进入过强斯巴达节奏的学生。它的优势在小校照顾、市区便利和更生活化的房型，报价时要把课程费、住宿费、meal fee、到校PHP费用和报名费确认清楚。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>成人、工作者、家庭同行或重视房型隐私，可以优先看WALES；需要高压推动则同步比较PINES、JIC或BECI Sparta。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>WALES 核心亮点</span>
+              <h2>为什么很多成人和家庭会考虑 WALES？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 WALES 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 WALES</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>从 EEP 到 Infinity、IELTS 与 Junior 课程</h2>
+            <p>WALES课程选择的重点是先判断学习强度，再按目标决定生活英文、综合强化、商务、雅思或青少年方向。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>WALES 2026 年 4 周课程费</span>
+              <h2>课程费按EEP、Infinity、IELTS和Junior方向拆分</h2>
+              <p>以下为4周课程费参考，币种为美元。IELTS Guarantee通常为8周以上，需另行确认保证班规则。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="WALES 2026年4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="WALES 2026年4周课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>WALES 一天学习生活安排</span>
+              <h2>小校弹性更高，晚间更看学生自律</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>WALES 2026 年 4 周住宿费</span>
+              <h2>房型会明显影响总预算和生活体验</h2>
+              <p>默认报价使用Condo Twin Share。Studio、Premium Studio和Condo房型空房变化快，建议先让顾问确认可用房型。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="WALES 2026年4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="WALES 2026年4周住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>WALES 费用快速报价</span>
+              <h2>默认参考：4周 EEP Lite + Condo Twin Share</h2>
+              <p>前期支付参考 = 已确认报名费 +（课程费 + 住宿费）x 优惠折扣 + 额外附加费。报名费公开金额暂不计入。</p>
+            </div>
+            <div class="quote-form" aria-label="WALES费用快速报价选项">
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>报名/注册费</span><strong>{{ registrationFee > 0 ? 'USD ' + formatUsd(registrationFee) : '待学校确认' }}</strong></div>
+              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
+              <div><span>额外附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认报名费、餐费、房型、空房、当地费用和优惠。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付SSP、ACR I-Card、签证延签、水电、维护、宿舍保证金、学生证、餐费和个人生活费等。实际金额以学校现场收费和个人情况为准。</p>
+            <p class="season-note">WALES公开2026资料显示8周以上可能有淡季周数优惠，优惠日期、房型空位和适用条件需由顾问向学校确认。</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>前期支付之外，还要准备当地PHP费用和餐费</h2>
+            <p>以下费用多以PHP计价，按学习周数不同而变化。4周本地费用公开参考约PHP 22,100，长期学习需叠加延签和ACR I-Card。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页价格更新时间：2026年8月3日。学校信息参考WALES官方网站的School Profile、Curriculum、EEP、ESL、Business、IELTS、Room和Admissions页面；课程费、住宿费和当地费用参考WALES 2026公开价目资料，并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 WALES 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、餐费、空房和当地费用一次核清</h2>
+              <p>通过思达报名 WALES，思达顾问会免费协助确认EEP、Infinity、IELTS、Junior课程、房型空位、meal fee、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。</p>
+            </div>
+            <ul class="check-list"><li>课程与房型建议</li><li>餐食与当地费用预算</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 WALES?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断WALES是否适合、算清房型与餐费，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾碧瑶WALES语言学校学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaWalesReasons">
+                <img [src]="item.image" [alt]="item.alt" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名WALES保障">
+            <article *ngFor="let item of sidaWalesTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 WALES 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、住宿生活或学校沟通问题，也可以继续联系思达协助。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading"><span>到校后的学校服务</span><h2>小校环境更适合及时沟通</h2></div>
+            <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
+            <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验碧瑶市区生活</h2></div>
+            <div class="activity-columns desktop-activity-columns">
+              <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+              <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周末生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+                <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 WALES 前，建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名 WALES 前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="WALES页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>4周</strong>
+          <p>EEP Lite<br />Condo Twin Share</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道 WALES 当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英文基础、目标课程、房型和餐食需求发给顾问，可以更快得到准确报价。</p>
+        <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="WALES手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

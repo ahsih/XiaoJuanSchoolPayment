@@ -66,6 +66,27 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶BECI语言学校, BECI International Language Academy, API BECI, 碧瑶BECI, BECI EOP, BECI Sparta, BECI City',
     image: '/assets/philippines/home-school-beci.jpg',
   },
+  '/philippines-study/baguio/baguio-jic-academy': {
+    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
+    description:
+      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Academy的Challenger、Premium校区、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
+    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC Academy, JIC Academy Baguio, JIC Challenger, JIC Premium, 碧瑶雅思学校, 碧瑶语言学校',
+    image: '/assets/philippines/home-school-jic.jpg',
+  },
+  '/philippines-study/baguio/monol': {
+    title: '菲律宾碧瑶MONOL语言学校 | 课程费用住宿与报名咨询',
+    description:
+      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的General ESL、IELTS、LEAP课程、Hotel-style住宿房型、官方费用、餐费说明和当地费用。',
+    keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
+    image: '/assets/philippines/home-school-monol.png',
+  },
+  '/philippines-study/baguio/wales-academy': {
+    title: '菲律宾碧瑶WALES语言学校 | 课程费用住宿与报名咨询',
+    description:
+      '菲律宾碧瑶WALES语言学校页面，整理WALES Academy的EEP、Infinity、IELTS、Junior课程、小校环境、Legarda位置、Studio/Premium/Condo住宿、2026费用和到校费用。',
+    keywords: '菲律宾碧瑶WALES语言学校, WALES Academy, Widest Asian Learners English School, 碧瑶WALES, 碧瑶语言学校, 菲律宾IELTS学校',
+    image: '/assets/philippines/home-school-wales.jpg',
+  },
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
     description:

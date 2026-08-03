@@ -290,17 +290,17 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'baguio-jic-academy',
-            label: 'Baguio JIC Academy',
+            label: '菲律宾碧瑶JIC语言学校',
             route: '/philippines-study/baguio/baguio-jic-academy',
           },
           {
             id: 'monol',
-            label: 'MONOL',
+            label: '菲律宾碧瑶MONOL语言学校',
             route: '/philippines-study/baguio/monol',
           },
           {
             id: 'wales-academy',
-            label: 'WALES Academy',
+            label: '菲律宾碧瑶WALES语言学校',
             route: '/philippines-study/baguio/wales-academy',
           },
           {

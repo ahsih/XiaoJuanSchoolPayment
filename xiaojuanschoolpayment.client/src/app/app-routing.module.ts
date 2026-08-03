@@ -224,17 +224,17 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/baguio-jic-academy',
         loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school.component').then((m) => m.JicSchoolComponent),
+          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
       },
       {
         path: 'philippines-study/baguio/monol',
         loadComponent: () =>
-          import('./pages/philippines/monol-school/monol-school.component').then((m) => m.MonolSchoolComponent),
+          import('./pages/philippines/monol-school/monol-school-detail.component').then((m) => m.MonolSchoolDetailComponent),
       },
       {
         path: 'philippines-study/baguio/wales-academy',
         loadComponent: () =>
-          import('./pages/philippines/wales-school/wales-school.component').then((m) => m.WalesSchoolComponent),
+          import('./pages/philippines/wales-school/wales-school-detail.component').then((m) => m.WalesSchoolDetailComponent),
       },
       {
         path: 'philippines-study/baguio/talk-academy',
