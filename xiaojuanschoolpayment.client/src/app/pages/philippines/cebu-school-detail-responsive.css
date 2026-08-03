@@ -13,7 +13,9 @@
   .info-trio,
   .split-layout,
   .materials-panel,
-  .bottom-cta {
+  .bottom-cta,
+  .study-plan-cards,
+  .study-day-grid {
     grid-template-columns: 1fr;
   }
 
@@ -237,5 +239,28 @@
 
   .mobile-bottom-actions a:last-child {
     background: #087343;
+  }
+
+  .study-plan-cards article,
+  .elective-panel {
+    padding: 15px;
+  }
+
+  .plan-title strong {
+    min-height: 42px;
+    font-size: 28px;
+  }
+
+  .plan-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .study-plan-cards dl div,
+  .study-day-table article {
+    grid-template-columns: 1fr;
+  }
+
+  .study-day-table em {
+    text-align: left;
   }
 }

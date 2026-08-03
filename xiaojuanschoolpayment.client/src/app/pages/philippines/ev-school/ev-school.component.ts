@@ -51,29 +51,29 @@ export class EvSchoolComponent {
 
   readonly courses: CourseItem[] = [
     {
-      title: 'Intensive ESL',
+      title: '斯巴达强化英语',
       lessons: '4节一对一 + 4节团体 + 2节选修/天',
       text: 'EV的经典斯巴达强度课程，适合想在短时间内把学习节奏拉满的学生。',
     },
     {
-      title: 'ESL Classic',
+      title: '半斯巴达综合英语',
       lessons: '4节一对一 + 4节团体 + 2节选修/天',
       text: '适合想平衡学习与宿务生活体验的学生，是页面起价参考使用的课程。',
     },
     {
-      title: 'Power Speaking 6 / 8',
+      title: '强化口说6 / 8',
       lessons: '每天6或8节一对一口语训练',
       text: '适合明确想加强开口、表达流利度、纠音和口语反应速度的学生。',
     },
     {
-      title: 'IELTS / TOEIC / Business',
+      title: '雅思 / 托业 / 商务英语',
       lessons: '考试或特定目的英语课程，搭配斯巴达或半斯巴达制度',
       text: '适合有分数目标、职场英语目标，或需要更清晰学习管理的学生。',
     },
   ];
 
   readonly priceRows: PriceRow[] = [
-    { room: '四人房', oneWeek: 'USD 752', fourWeeks: 'USD 1,880', twelveWeeks: 'USD 5,640', note: 'ESL Classic最低价房型' },
+    { room: '四人房', oneWeek: 'USD 752', fourWeeks: 'USD 1,880', twelveWeeks: 'USD 5,640', note: '半斯巴达综合英语最低价房型' },
     { room: '三人房', oneWeek: 'USD 772', fourWeeks: 'USD 1,930', twelveWeeks: 'USD 5,790', note: '多人房中较平衡' },
     { room: '双人房', oneWeek: 'USD 804', fourWeeks: 'USD 2,010', twelveWeeks: 'USD 6,030', note: '适合朋友同行' },
     { room: '单人房', oneWeek: 'USD 952', fourWeeks: 'USD 2,380', twelveWeeks: 'USD 7,140', note: '隐私最好，预算较高' },
@@ -96,7 +96,7 @@ export class EvSchoolComponent {
   readonly facilities = [
     '游泳池与大草坪校园',
     '24小时自习室',
-    'IDP IELTS官方考试教室',
+    'IDP雅思官方考试教室',
     '健身房、桌球、乒乓球、室内篮球',
     '医护室、图书馆、学生餐厅',
     '咖啡厅、贩卖部、无线网络',
@@ -107,16 +107,16 @@ export class EvSchoolComponent {
   readonly audiences = [
     '目标清楚、希望用斯巴达节奏推动自己的学生',
     '想在宿务市区学习，同时住在设施完整校园里的学生',
-    '准备IELTS、TOEIC、TOEFL或商务英语的成人学生',
-    '希望加强口语，愿意选择Power Speaking高一对一课时的人群',
+    '准备雅思、托业、托福或商务英语的成人学生',
+    '希望加强口语，愿意选择强化口说高一对一课时的人群',
     '亲子或未成年学生，但需要先确认年龄、陪同和管理规则',
   ];
 
   readonly pros = [
     '宿务较早导入斯巴达管理模式的学校之一，学习纪律清晰',
-    'SP1斯巴达与SP2半斯巴达可按学习目标选择',
+    '斯巴达与半斯巴达可按学习目标选择',
     '新校区环境现代，住宿、课程、设施都在同一校园内',
-    '课程覆盖ESL、Power Speaking、IELTS、TOEIC、商务与家庭课程',
+    '课程覆盖综合英语、强化口说、雅思、托业、商务与家庭课程',
   ];
 
   readonly cons = [
@@ -129,11 +129,11 @@ export class EvSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？',
-      answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或ESL Classic。',
+      answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑半斯巴达或半斯巴达综合英语。',
     },
     {
-      question: 'EV的SP1和SP2怎么选？',
-      answer: 'SP1更适合冲刺型学生，日程和自习要求更强；SP2适合想学习但也希望保留一定外出和生活弹性的学生。',
+      question: 'EV的斯巴达和半斯巴达怎么选？',
+      answer: '斯巴达更适合冲刺型学生，日程和自习要求更强；半斯巴达适合想学习但也希望保留一定外出和生活弹性的学生。',
     },
     {
       question: '页面费用包含所有支出吗？',

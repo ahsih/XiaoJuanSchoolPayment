@@ -155,6 +155,275 @@
   font-weight: 950;
 }
 
+.study-plan-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.study-plan-cards article,
+.elective-panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.plan-title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.plan-title strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #f05a22;
+  color: #ffffff;
+  font-size: 34px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.study-plan-cards article:nth-child(2) .plan-title strong {
+  background: #f59a18;
+}
+
+.plan-title span {
+  color: #102033;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.study-plan-cards h3 {
+  margin: 0;
+  color: #102033;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.plan-time-blocks {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #ffb28d;
+  border-radius: 8px;
+  background: #fff4ee;
+}
+
+.plan-time-blocks > b {
+  display: block;
+  color: #bd3100;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.plan-time-blocks.relaxed {
+  border-color: #b8dfca;
+  background: #eefaf4;
+}
+
+.plan-time-blocks.relaxed > b {
+  color: #087343;
+}
+
+.plan-time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.plan-time-grid div {
+  padding: 11px 10px;
+  border-left: 4px solid #ff5a1f;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.plan-time-blocks.relaxed .plan-time-grid div {
+  border-left-color: #087343;
+}
+
+.plan-time-grid span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #bd3100;
+  font-weight: 950;
+}
+
+.plan-time-blocks.relaxed .plan-time-grid span {
+  color: #087343;
+}
+
+.plan-time-grid strong {
+  display: block;
+  margin-top: 7px;
+  color: #071a3d;
+  font-size: 19px;
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.plan-time-grid em {
+  display: block;
+  margin-top: 5px;
+  color: #526176;
+  font-style: normal;
+}
+
+.study-plan-cards p {
+  margin: 10px 0 0;
+  color: #40506a;
+  line-height: 1.65;
+}
+
+.plan-routine {
+  font-weight: 850;
+}
+
+.study-plan-cards dl {
+  display: grid;
+  margin: 16px 0 0;
+}
+
+.study-plan-cards dl div {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.8fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid #e8eef3;
+}
+
+.study-plan-cards dt {
+  color: #66758a;
+  font-weight: 850;
+}
+
+.study-plan-cards dd {
+  margin: 0;
+  color: #102033;
+  font-weight: 900;
+}
+
+.study-plan-subheading {
+  margin-top: 26px;
+}
+
+.study-day-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.38fr);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.study-day-table {
+  display: grid;
+  gap: 8px;
+}
+
+.study-day-table article {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 96px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #e8eef3;
+  border-radius: 8px;
+  background: #f8fbfd;
+}
+
+.study-day-table article.highlighted {
+  border-color: #ff6a3a;
+  border-left-width: 5px;
+  background: #fff7f2;
+}
+
+.study-day-table time {
+  color: #087343;
+  font-weight: 950;
+}
+
+.study-day-table strong,
+.elective-panel h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #102033;
+}
+
+.study-day-table mat-icon,
+.elective-panel mat-icon {
+  width: 18px;
+  height: 18px;
+  color: #102033;
+  font-size: 18px;
+}
+
+.study-day-table span {
+  display: block;
+  margin-top: 4px;
+  color: #526176;
+  line-height: 1.5;
+}
+
+.study-day-table em {
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #bd3100;
+  font-style: normal;
+  font-weight: 900;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.study-day-table article.highlighted em {
+  background: #ff5a1f;
+  color: #ffffff;
+}
+
+.elective-panel h3 {
+  margin: 0 0 14px;
+  font-size: 22px;
+}
+
+.elective-panel div + div {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e8eef3;
+}
+
+.elective-panel strong,
+.elective-panel span {
+  display: block;
+  color: #f28b13;
+}
+
+.elective-panel strong {
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.elective-panel span {
+  font-weight: 900;
+}
+
+.elective-panel ul {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: #40506a;
+}
+
 .quote-panel {
   background: #fff7f2;
   border-color: #ffd1bd;
@@ -370,4 +639,3 @@
 .mobile-bottom-actions {
   display: none;
 }
-

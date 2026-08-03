@@ -134,7 +134,7 @@ export class BaguioStudyComponent {
       consultantNote: '优先确认校区、课程强度和门禁制度；如果目标是短期体验，需评估能否适应密集日程。',
     },
     {
-      name: 'BECI International Language Academy',
+      name: '菲律宾碧瑶BECI语言学校',
       location: '碧瑶市 / 多校区',
       style: '口语诊断与多样管理模式',
       route: '/philippines-study/baguio/beci-international-language-academy',
@@ -271,7 +271,7 @@ export class BaguioStudyComponent {
 
   readonly sources: SourceLink[] = [
     { label: '菲律宾碧瑶PINES语言学校 官方网站', url: 'https://pinesacademy.com/' },
-    { label: 'BECI International Language Academy 官方网站', url: 'https://beci.edu.ph/' },
+    { label: '菲律宾碧瑶BECI语言学校 官方网站', url: 'https://beciedu.com/' },
     { label: 'Baguio JIC Academy 官方网站', url: 'https://baguio-jic.com/' },
     { label: 'MONOL 官方网站', url: 'https://mymonol.com/' },
     { label: 'WALES Academy 官方网站', url: 'https://walesph.com/' },

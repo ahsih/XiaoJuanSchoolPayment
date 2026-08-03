@@ -219,7 +219,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/beci-international-language-academy',
         loadComponent: () =>
-          import('./pages/philippines/beci-school/beci-school.component').then((m) => m.BeciSchoolComponent),
+          import('./pages/philippines/beci-school/beci-school-detail.component').then((m) => m.BeciSchoolDetailComponent),
       },
       {
         path: 'philippines-study/baguio/baguio-jic-academy',

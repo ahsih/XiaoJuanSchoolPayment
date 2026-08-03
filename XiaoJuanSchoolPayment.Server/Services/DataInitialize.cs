@@ -15,6 +15,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid FellaSchoolId = Guid.Parse("ec6d3456-b310-46b8-9f4c-f7173c2a4e7c");
     private static readonly Guid PhilinterSchoolId = Guid.Parse("7a2e4b6c-8d51-42e7-9f3b-0a2d9f4c5b31");
     private static readonly Guid PinesSchoolId = Guid.Parse("3e72d4cb-9f12-4f21-9d7b-6b356a99f019");
+    private static readonly Guid BeciSchoolId = Guid.Parse("8fa41c8c-0bb4-4bf3-a0c2-e28f07fd0c62");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -27,6 +28,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyPhilinterSchoolName = "Philinter Academy";
     private const string PinesSchoolName = "菲律宾碧瑶PINES语言学校";
     private const string LegacyPinesSchoolName = "PINES International Academy";
+    private const string BeciSchoolName = "菲律宾碧瑶BECI语言学校";
+    private const string LegacyBeciSchoolName = "BECI International Language Academy";
+    private const string ApiBeciSchoolName = "API BECI";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -42,6 +46,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedFellaPricingAsync(context);
       await SeedPhilinterPricingAsync(context);
       await SeedPinesPricingAsync(context);
+      await SeedBeciPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -522,6 +527,89 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "宿舍保证金", 4000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
       UpsertFee(context, schoolId, "洗衣费", 150m, PhpCurrencyId, "到校支付费用；单次7kg以内参考", now);
       UpsertFee(context, schoolId, "指定接机", 3000m, PhpCurrencyId, "到校支付费用；马尼拉或克拉克指定接机日参考", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedBeciPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x => x.Id == BeciSchoolId || x.Name == BeciSchoolName || x.Name == LegacyBeciSchoolName || x.Name == ApiBeciSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = BeciSchoolId,
+          Name = BeciSchoolName,
+          CreatedDate = new DateTime(2002, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = BeciSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2002, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string beciLessonNote = "API BECI 2026年4周USD费用参考；EOP、Sparta、City校区、房型、优惠以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "EOP Lite ESL", 4, 670m, "EOP轻量课程，适合基础弱、想保留复习时间", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP SPEED ESL", 4, 870m, "EOP半斯巴达旗舰课程，适合多数综合提升学生", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP Sparta ESL", 4, 900m, "EOP强度更高，含SP和晚间学习", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP Working Holiday", 4, 1000m, "工作假期准备方向，适合海外打工度假规划", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta 24 ESL", 4, 900m, "Sparta强管理口语冲刺，含晚间义务学习与测试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta TOEIC", 4, 850m, "多益基础与刷题方向，适合考试目标学生", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta IELTS", 4, 900m, "雅思基础与考试策略，适合强管理备考", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City LITE ESL", 4, 670m, "City轻量成人ESL，适合弹性学习", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City SPEED ESL", 4, 870m, "City综合ESL，适合成人系统提升", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City FLEXI LITE ESL", 4, 670m, "夜间一对一加团体，适合工作者", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City FLEXI SPEED ESL", 4, 870m, "夜间课时更多，适合边工作边学习", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City BizSpeak", 4, 800m, "商务表达、演示和职场沟通方向", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City Native ESL", 4, 950m, "含外教方向，适合发音与表达反馈", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City Unlimited ESL", 4, 950m, "最多8节一对一，科目组合弹性高", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City IELTS", 4, 900m, "City成人雅思方向，适合弹性备考", now, beciLessonNote);
+
+      UpsertRoom(context, schoolId, "EOP 校内四人房", 4, 570m, "默认预算参考，适合控制总价", now);
+      UpsertRoom(context, schoolId, "EOP 校内三人房", 4, 670m, "预算与室友数量较平衡", now);
+      UpsertRoom(context, schoolId, "EOP 校内双人房", 4, 750m, "公开表标注男性房型，需按档期确认", now);
+      UpsertRoom(context, schoolId, "EOP 校内单人房", 4, 950m, "公开表标注女性房型，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "EOP Mansion Regular Single", 4, 950m, "Mansion房型，公开表标注男性方向", now);
+      UpsertRoom(context, schoolId, "EOP Mansion Master Single", 4, 1100m, "Mansion更高规格单人房，需确认性别与空房", now);
+      UpsertRoom(context, schoolId, "Sparta 四人房", 4, 700m, "Sparta预算入口，仍需遵守校区强管理规则", now);
+      UpsertRoom(context, schoolId, "Sparta 3+1 Buddy 房", 4, 800m, "3名学生 + 1名老师同住，英语环境更强", now);
+      UpsertRoom(context, schoolId, "City Studio 四人房", 4, 600m, "City预算入口，适合成人弹性学习", now);
+      UpsertRoom(context, schoolId, "City Studio 双人房", 4, 800m, "仅限兄弟姐妹、同性朋友或夫妻等条件使用", now);
+      UpsertRoom(context, schoolId, "City Semi Single", 4, 900m, "兼顾隐私与预算的City房型", now);
+      UpsertRoom(context, schoolId, "City Semi Master Single", 4, 1050m, "City更高规格单人方向", now);
+      UpsertRoom(context, schoolId, "City Studio 单人房", 4, 1250m, "City独立空间最高，预算较高", now);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22、2027/6/27-8/22期间按 USD 40 / 周计算", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
+      UpsertFee(context, schoolId, "SSP E-Card", 4500m, PhpCurrencyId, "到校支付费用；与SSP相关的电子卡申请费用", now);
+      UpsertFee(context, schoolId, "ACR I-Card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "签证延签", 4940m, PhpCurrencyId, "到校支付费用；8周首次延签参考，周数越长金额越高", now);
+      UpsertFee(context, schoolId, "签证延签第二次", 11150m, PhpCurrencyId, "到校支付费用；12周第二次延签参考", now);
+      UpsertFee(context, schoolId, "签证延签第三次", 15390m, PhpCurrencyId, "到校支付费用；16周第三次延签参考", now);
+      UpsertFee(context, schoolId, "签证延签第四次", 19630m, PhpCurrencyId, "到校支付费用；20周第四次延签参考", now);
+      UpsertFee(context, schoolId, "签证延签第五次", 23870m, PhpCurrencyId, "到校支付费用；24周第五次延签参考", now);
+      UpsertFee(context, schoolId, "ID Card", 200m, PhpCurrencyId, "到校支付费用；学生证或校内识别费用参考", now);
+      UpsertFee(context, schoolId, "教材费（Lite/BizSpeak）", 1000m, PhpCurrencyId, "到校支付费用；Lite ESL、BizSpeak每4周参考", now);
+      UpsertFee(context, schoolId, "教材费（Speed/Working Holiday/Native）", 1500m, PhpCurrencyId, "到校支付费用；SPEED ESL、Working Holiday、Native ESL每4周参考", now);
+      UpsertFee(context, schoolId, "教材费（Sparta/IELTS/TOEIC/Unlimited）", 2000m, PhpCurrencyId, "到校支付费用；SPARTA ESL、24 ESL、Unlimited ESL、IELTS、TOEIC每4周参考", now);
+      UpsertFee(context, schoolId, "宿舍保证金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
+      UpsertFee(context, schoolId, "水电费", 3000m, PhpCurrencyId, "到校支付费用；4周参考，按学校规则调整", now);
+      UpsertFee(context, schoolId, "维护费", 1000m, PhpCurrencyId, "到校支付费用；4周参考", now);
+      UpsertFee(context, schoolId, "洗衣费（EOP/Sparta）", 1500m, PhpCurrencyId, "到校支付费用；EOP与Sparta每4周参考", now);
+      UpsertFee(context, schoolId, "洗衣费（City）", 1600m, PhpCurrencyId, "到校支付费用；City每4周参考", now);
+      UpsertFee(context, schoolId, "指定接机", 3000m, PhpCurrencyId, "到校支付费用；马尼拉或克拉克指定接机日参考", now);
+      UpsertFee(context, schoolId, "个别接机", 12000m, PhpCurrencyId, "到校支付费用；非指定日或个人接机费用起点，最终以学校确认为准", now);
+      UpsertFee(context, schoolId, "送机到克拉克", 1500m, PhpCurrencyId, "到校支付费用；BESA送机到克拉克参考", now);
 
       await context.SaveChangesAsync();
     }

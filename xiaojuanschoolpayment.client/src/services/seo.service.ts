@@ -59,6 +59,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/home-school-pines.jpg',
   },
+  '/philippines-study/baguio/beci-international-language-academy': {
+    title: '菲律宾碧瑶BECI语言学校 | 校区课程费用住宿与报名咨询',
+    description:
+      '菲律宾碧瑶BECI语言学校页面，整理APIBECI的EOP、Sparta、City校区、ESL、24 ESL、IELTS、TOEIC、ESP、住宿房型、2026费用和报名注意事项。',
+    keywords: '菲律宾碧瑶BECI语言学校, BECI International Language Academy, API BECI, 碧瑶BECI, BECI EOP, BECI Sparta, BECI City',
+    image: '/assets/philippines/home-school-beci.jpg',
+  },
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
     description:

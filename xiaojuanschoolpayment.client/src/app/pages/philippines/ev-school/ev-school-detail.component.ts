@@ -18,7 +18,11 @@ interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
 interface CourseItem { name: string; type: string; lessons: string; suitable: string; }
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
-interface ScheduleItem { time: string; title: string; text: string; }
+interface StudyPlanCurfew { day: string; time: string; }
+interface StudyPlanTimeBlock { label: string; time: string; text: string; icon: string; type: 'required' | 'flexible'; }
+interface StudyPlan { code: string; name: string; title: string; text: string; routine: string; contrastTitle: string; timeBlocks: StudyPlanTimeBlock[]; curfew: StudyPlanCurfew[]; }
+interface ScheduleItem { time: string; title: string; text: string; appliesTo: string; icon: string; highlighted?: boolean; }
+interface ElectiveCourseGroup { period: string; level: string; courses: string[]; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
@@ -70,7 +74,7 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly discount = 1;
+  readonly discount = 0.95;
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
@@ -81,18 +85,18 @@ export class EvSchoolDetailComponent implements OnInit {
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'apartment', label: '学校类型', value: '宿务斯巴达 / 半斯巴达', note: 'SP1 / SP2 双模式' },
+    { icon: 'apartment', label: '学校类型', value: '宿务斯巴达 / 半斯巴达', note: '可选择严格或弹性管理模式' },
     { icon: 'groups', label: '适合人群', value: '7岁以上学生', note: '15岁以下通常需父母陪同' },
     { icon: 'verified_user', label: '管理模式', value: '斯巴达或半斯巴达', note: '按学习目标选择强度' },
-    { icon: 'school', label: '课程选项', value: '斯巴达 / 半斯巴达', note: '含ESL、口语、雅思、多益、商务与社交媒体英语' },
+    { icon: 'school', label: '课程选项', value: '斯巴达 / 半斯巴达', note: '含综合英语、口语、雅思、多益、商务与社交媒体英语' },
     { icon: 'bed', label: '食宿房型', value: '校内房 / 校外公寓', note: '热门房型建议提前确认' },
     { icon: 'event_available', label: '校区位置', value: 'Nasipit, Cebu City', note: '宿务市区校园型学校，生活机能方便' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'EV校园外观', description: '2017年迁入的新校区，主打school & resort校园体验。', src: 'assets/ev/campus-exterior.jpg' },
+    { category: '校园', title: 'EV校园外观', description: '2017年迁入的新校区，主打度假村式校园体验。', src: 'assets/ev/campus-exterior.jpg' },
     { category: '校园', title: '校园草坪', description: '开放式校园空间，适合课后活动和学生交流。', src: 'assets/ev/campus-lawn.jpg' },
-    { category: '教室', title: '一对一教室', description: '用于口语、写作、考试专项和Power Speaking课程。', src: 'assets/ev/mtm-classroom.jpg' },
+    { category: '教室', title: '一对一教室', description: '用于口语、写作、考试专项和强化口说课程。', src: 'assets/ev/mtm-classroom.jpg' },
     { category: '住宿', title: '单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/ev/single-room.jpg' },
     { category: '住宿', title: '双人房', description: '适合朋友同行或希望兼顾预算与舒适度。', src: 'assets/ev/double-room.jpg' },
     { category: '住宿', title: '四人房', description: '默认报价参考房型，预算压力相对低。', src: 'assets/ev/quad-room.jpg' },
@@ -105,48 +109,48 @@ export class EvSchoolDetailComponent implements OnInit {
     { label: '所在地区', value: 'Nasipit, Cebu City, Cebu' },
     { label: '创校时间', value: '2004年起办学，2017年迁入新校区' },
     { label: '学生容量', value: '约300名学生' },
-    { label: '管理模式', value: 'SP1斯巴达 / SP2半斯巴达，可按学习目标选择' },
+    { label: '管理模式', value: '斯巴达 / 半斯巴达，可按学习目标选择' },
     { label: '年龄要求', value: '7岁以上；15岁以下通常需要父母陪同' },
     { label: '食宿房型', value: '校内单人间、双人间、三人间、四人间；校外公寓需确认' },
-    { label: '核心资源', value: 'IDP IELTS官方考点、24小时自习室、校内泳池与运动设施' },
+    { label: '核心资源', value: 'IDP雅思官方考点、24小时自习室、校内泳池与运动设施' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/ev/campus-exterior.jpg', title: '2004年起深耕宿务英语教育', text: 'EV长期服务亚洲学生，官方介绍中强调其Intensive English Program与学生导向课程研发。' },
-    { image: 'assets/ev/mtm-classroom.jpg', title: 'SP1 / SP2 学习计划可选', text: 'SP1偏斯巴达冲刺，SP2偏半斯巴达平衡，适合先按自律程度和学习目标做选择。' },
-    { image: 'assets/ev/swimming-pool.jpg', title: 'School & Resort 校园定位', text: 'EV强调现代化设施、开放式环境和校园生活完整度，不只是单纯上课。' },
-    { image: 'assets/ev/quad-room.jpg', title: 'IDP IELTS官方考点资源', text: '雅思学生可把课程、模考和正式考试环境一起纳入考虑，减少考试场地陌生感。' },
+    { image: 'assets/ev/mtm-classroom.jpg', title: '斯巴达 / 半斯巴达管理模式可选', text: '斯巴达偏冲刺和严格管理，半斯巴达偏学习与生活平衡，适合先按自律程度和学习目标做选择。' },
+    { image: 'assets/ev/swimming-pool.jpg', title: '度假村式校园定位', text: 'EV强调现代化设施、开放式环境和校园生活完整度，不只是单纯上课。' },
+    { image: 'assets/ev/quad-room.jpg', title: 'IDP雅思官方考点资源', text: '雅思学生可把课程、模考和正式考试环境一起纳入考虑，减少考试场地陌生感。' },
   ];
 
   readonly suitableFor: FitItem[] = [
-    { title: '目标清楚、想被学习节奏推动', text: 'SP1斯巴达适合想提高自律、冲刺考试或短期高强度学习的学生。' },
+    { title: '目标清楚、想被学习节奏推动', text: '斯巴达管理模式适合想提高自律、冲刺考试或短期高强度学习的学生。' },
     { title: '想留在宿务市区校园', text: 'EV在Cebu City，适合希望兼顾校园环境和市区便利度的人。' },
-    { title: '重视一对一口语训练', text: 'Power Speaking 6 / 8 适合口语目标明确、想提高开口量的学生。' },
-    { title: '准备IELTS、TOEIC或商务英语', text: '课程覆盖综合英语、考试英语和特定目的英语，方便按目标选择。' },
+    { title: '重视一对一口语训练', text: '强化口说6 / 8适合口语目标明确、想提高开口量的学生。' },
+    { title: '准备雅思、托业或商务英语', text: '课程覆盖综合英语、考试英语和特定目的英语，方便按目标选择。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '只想轻松度假式游学', text: 'EV仍有清晰管理制度，尤其SP1不适合只想自由体验宿务生活的学生。' },
+    { title: '只想轻松度假式游学', text: 'EV仍有清晰管理制度，尤其斯巴达模式不适合只想自由体验宿务生活的学生。' },
     { title: '预算非常紧', text: '现代校园、设施和热门房型会拉高预算，到校费用也需要单独准备。' },
     { title: '临近旺季才决定', text: 'EV热门房型和课程容易满位，暑假、寒假建议提前确认空房。' },
     { title: '未成年学生未确认陪同规则', text: '15岁以下、亲子或未成年学生要先确认年龄、陪同、门禁和管理费。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: '半斯巴达 ESL', type: '半斯巴达综合英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 选修课', suitable: '适合希望学习与宿务生活保持平衡的学生。' },
-    { name: '斯巴达 Intensive ESL', type: '斯巴达强化英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 选修课', suitable: '适合想用更强纪律快速进入学习状态的学生。' },
-    { name: 'Power Speaking 6', type: '口语强化', lessons: '每天6节一对一口语训练', suitable: '适合短期集中提升开口量、纠音和表达反应。' },
-    { name: 'Power Speaking 8', type: '高强度口语', lessons: '每天8节一对一口语训练', suitable: '适合目标非常明确、能承受高一对一强度的学生。' },
-    { name: 'IELTS', type: '雅思备考', lessons: '考试专项、模考和学习管理', suitable: '适合有目标分数、希望被制度推动的学生。' },
-    { name: 'TOEIC', type: '托业备考', lessons: '听力、阅读、语法和考试技巧', suitable: '适合求职、升学或企业英语能力证明需求。' },
-    { name: 'Business', type: '商务英语', lessons: '会议、演示、邮件、面试与商务表达', suitable: '适合职场人士或准备英文工作场景的学生。' },
-    { name: 'Family Course', type: '亲子 / 家庭课程', lessons: '学生与监护人课程按年龄和陪同规则确认', suitable: '适合家庭同行，需提前确认未成年管理、住宿和陪读安排。' },
-    { name: 'Digital English', type: '数字英语延伸', lessons: '以学校当期课程表为准', suitable: '适合希望把英语学习和数字沟通场景结合的学生。' },
-    { name: 'EV Talk', type: 'Online class', lessons: '线上课程衔接', suitable: '适合想在入学前后继续保持英语练习节奏的学生。' },
+    { name: '半斯巴达综合英语', type: '半斯巴达综合英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 免费选修课', suitable: '适合希望学习与宿务生活保持平衡的学生。' },
+    { name: '斯巴达强化英语', type: '斯巴达强化英语', lessons: '4节一对一 + 2小团体 + 2节大团体 + 免费选修课', suitable: '适合想用更强纪律快速进入学习状态的学生。' },
+    { name: '强化口说6', type: '口语强化', lessons: '每天6节一对一口语训练', suitable: '适合短期集中提升开口量、纠音和表达反应。' },
+    { name: '强化口说8', type: '高强度口语', lessons: '每天8节一对一口语训练', suitable: '适合目标非常明确、能承受高一对一强度的学生。' },
+    { name: '雅思备考', type: '雅思备考', lessons: '考试专项、模考和学习管理', suitable: '适合有目标分数、希望被制度推动的学生。' },
+    { name: '托业备考', type: '托业备考', lessons: '听力、阅读、语法和考试技巧', suitable: '适合求职、升学或企业英语能力证明需求。' },
+    { name: '商务英语', type: '商务英语', lessons: '会议、演示、邮件、面试与商务表达', suitable: '适合职场人士或准备英文工作场景的学生。' },
+    { name: '亲子家庭课程', type: '亲子 / 家庭课程', lessons: '学生与监护人课程按年龄和陪同规则确认', suitable: '适合家庭同行，需提前确认未成年管理、住宿和陪读安排。' },
+    { name: '数字英语课程', type: '数字英语延伸', lessons: '以学校当期课程表为准', suitable: '适合希望把英语学习和数字沟通场景结合的学生。' },
+    { name: '线上英语衔接课', type: '线上课程', lessons: '线上课程衔接', suitable: '适合想在入学前后继续保持英语练习节奏的学生。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'sparta-intensive-esl', name: '斯巴达 Intensive ESL', tuition: 1030, suitable: '4节一对一 + 2小团体 + 2大团体 + 选修课' },
+    { id: 'sparta-intensive-esl', name: '斯巴达强化英语', tuition: 1030, suitable: '4节一对一 + 2小团体 + 2大团体 + 选修课' },
     { id: 'sparta-power-speaking-6', name: '强化口说6（斯巴达）', tuition: 1230, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
     { id: 'sparta-power-speaking-8', name: '强化口说8（斯巴达）', tuition: 1410, suitable: '8节一对一 + 自习 + 选修课' },
     { id: 'sparta-ielts-regular', name: '常规雅思（斯巴达）', tuition: 1150, suitable: '4节一对一 + 2节小团体 + 2节大团体 + 选修课' },
@@ -154,7 +158,7 @@ export class EvSchoolDetailComponent implements OnInit {
     { id: 'sparta-toeic', name: '多益（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
     { id: 'sparta-social-media-english', name: '社交媒体英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
     { id: 'sparta-business', name: '商务英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
-    { id: 'semi-sparta-esl', name: '半斯巴达 ESL', tuition: 980, suitable: '4节一对一 + 2小团体 + 2节大团体 + 选修课' },
+    { id: 'semi-sparta-esl', name: '半斯巴达综合英语', tuition: 980, suitable: '4节一对一 + 2小团体 + 2节大团体 + 选修课' },
     { id: 'semi-sparta-power-speaking-6', name: '强化口说6（半斯巴达）', tuition: 1180, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
     { id: 'semi-sparta-power-speaking-8', name: '强化口说8（半斯巴达）', tuition: 1360, suitable: '8节一对一 + 选修课' },
     { id: 'semi-sparta-toeic', name: '多益（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
@@ -162,13 +166,62 @@ export class EvSchoolDetailComponent implements OnInit {
     { id: 'semi-sparta-social-media-english', name: '社交媒体英语（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
   ];
 
+  readonly studyPlans: StudyPlan[] = [
+    {
+      code: '斯巴达',
+      name: '严格管理',
+      title: '适合目标明确、想被学习节奏督促的学生',
+      text: '每天有词汇早课和句型晚课（每节约25分钟）以及晚间自习。早课会占用早餐时段中的约25分钟，用制度帮助学生保持学习进度。',
+      routine: '周一至周四不可外出，晚间安排更固定。',
+      contrastTitle: '斯巴达多出的强制学习时段',
+      timeBlocks: [
+        { label: '强制早课', time: '07:00-08:00内25分钟', text: '词汇课程，占用早餐时段一部分', icon: 'wb_sunny', type: 'required' },
+        { label: '强制晚课', time: '19:00-20:00内25分钟', text: '句型课程，晚饭后执行', icon: 'school', type: 'required' },
+        { label: '强制自习', time: '20:00 - 22:00', text: '晚间自习，按制度完成', icon: 'edit_note', type: 'required' },
+      ],
+      curfew: [
+        { day: '周一 - 周四', time: '不可外出' },
+        { day: '周五', time: '17:00 - 24:00' },
+        { day: '周六', time: '05:00 - 24:00' },
+        { day: '周日', time: '05:00 - 22:00' },
+      ],
+    },
+    {
+      code: '半斯巴达',
+      name: '弹性管理',
+      title: '适合想学习英语，同时享受宿务生活的学生',
+      text: '不强制每日词汇早课、句型晚课和晚间自习，学习之外保留更多外出和生活弹性。',
+      routine: '周一至周四17:00后可外出，仍需遵守门禁时间。',
+      contrastTitle: '半斯巴达不强制这些早晚时段',
+      timeBlocks: [
+        { label: '早上安排', time: '无强制早课', text: '正常早餐与晨间准备', icon: 'free_breakfast', type: 'flexible' },
+        { label: '晚间安排', time: '无强制晚课', text: '晚饭后时间更弹性', icon: 'event_available', type: 'flexible' },
+        { label: '外出规则', time: '17:00 后可外出', text: '周一至周四仍需22:00前返校', icon: 'directions_walk', type: 'flexible' },
+      ],
+      curfew: [
+        { day: '周一 - 周四', time: '17:00 - 22:00' },
+        { day: '周五', time: '17:00 - 24:00' },
+        { day: '周六', time: '05:00 - 24:00' },
+        { day: '周日', time: '05:00 - 22:00' },
+      ],
+    },
+  ];
+
   readonly schedule: ScheduleItem[] = [
-    { time: '07:00 - 08:00', title: '早餐与晨间准备', text: '按课程强度准备当天学习，SP1学生通常更强调准时和纪律。' },
-    { time: '08:00 - 12:00', title: '上午课程', text: '一对一、小组课、考试专项或口语训练，按课程类型安排。' },
-    { time: '12:00 - 13:00', title: '午餐与休息', text: '校内餐厅用餐，下午课程前整理学习资料。' },
-    { time: '13:00 - 17:00', title: '下午课程', text: '继续一对一、小组课、选修课或考试训练。' },
-    { time: '17:00 - 19:00', title: '晚餐与休息', text: 'SP2学生生活弹性较高，SP1学生按学校规定执行。' },
-    { time: '19:00 - 21:00', title: '自习 / 作业 / 晚间安排', text: '具体强度以SP1/SP2制度和到校课表为准。' },
+    { time: '06:30 - 07:30', title: '免费选修课', text: '斯巴达和半斯巴达学生都可以按兴趣参加。', appliesTo: '所有学生', icon: 'edit' },
+    { time: '07:00 - 08:00', title: '斯巴达强制早课 / 词汇课程', text: '早课约25分钟，会占用早餐时段的一部分；半斯巴达学生正常早餐。', appliesTo: '斯巴达学生', icon: 'wb_sunny', highlighted: true },
+    { time: '08:00 - 12:05', title: '上午课程', text: '一对一、小组课和团体课，共5节。', appliesTo: '所有学生', icon: 'menu_book' },
+    { time: '12:05 - 13:05', title: '午餐', text: '校内餐厅用餐。', appliesTo: '所有学生', icon: 'restaurant' },
+    { time: '13:05 - 17:10', title: '下午课程', text: '继续一对一、小组课和团体课，共5节。', appliesTo: '所有学生', icon: 'menu_book' },
+    { time: '17:10 - 18:00', title: '自由时间 / 免费选修课', text: '可休息、运动或参加学校开放的免费选修课。', appliesTo: '所有学生', icon: 'self_improvement' },
+    { time: '18:00 - 19:00', title: '晚饭 / 晚间活动', text: '晚间活动常见为健身、瑜伽等，具体以学校安排为准。', appliesTo: '所有学生', icon: 'nightlife' },
+    { time: '19:00 - 20:00', title: '斯巴达强制晚课 / 句型课程', text: '句型课程约25分钟，安排在晚饭后；半斯巴达不强制。', appliesTo: '斯巴达学生', icon: 'school', highlighted: true },
+    { time: '20:00 - 22:00', title: '斯巴达强制晚间自习', text: '斯巴达学生按要求完成晚间自习。', appliesTo: '斯巴达学生', icon: 'edit_note', highlighted: true },
+  ];
+
+  readonly electiveCourseGroups: ElectiveCourseGroup[] = [
+    { period: '上午课程', level: '初级学生', courses: ['语法课程', '流利发音课', '成语&短语动词'] },
+    { period: '下午课程', level: '中级学生', courses: ['CNN听力', '电影课', '讨论与辩论', '健身课', '瑜伽课', '商务演讲口语课', '外教口语课'] },
   ];
 
   roomFees: RoomFee[] = [
@@ -194,7 +247,7 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   readonly serviceSteps: ProcessStep[] = [
-    { icon: 'person_search', title: '判断SP1 / SP2是否适合', text: '先了解学习目标、自律程度、预算、年龄和入学时间，判断EV制度是否匹配。' },
+    { icon: 'person_search', title: '判断斯巴达 / 半斯巴达是否适合', text: '先了解学习目标、自律程度、预算、年龄和入学时间，判断EV制度是否匹配。' },
     { icon: 'fact_check', title: '确认课程、空房和优惠', text: '免费协助确认课程、房型、空房、优惠和正式报价，避免只按网页价格做决定。' },
     { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前免费发送学习资料、行李清单、费用清单和到校注意事项。' },
@@ -219,7 +272,7 @@ export class EvSchoolDetailComponent implements OnInit {
     },
     {
       number: '03',
-      title: '先判断SP1/SP2是否适合',
+      title: '先判断斯巴达或半斯巴达是否适合',
       text: '根据目标、预算、自律程度和房型偏好，帮你判断EV是否匹配。',
       image: 'assets/cia/sida-why-action-selection.jpg',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
@@ -257,10 +310,10 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', '24小时自习室', '宿舍清洁', '洗衣服务', '医护室', '校内保安', '证件协助'];
   readonly campusActivities = ['新生说明会', '文化交流', '体育活动', '校内比赛', '校园休闲活动'];
   readonly weekendActivities = ['市区商场', '咖啡厅与餐厅', '跳岛游', '海边活动', '学生自发聚会'];
-  readonly notes = ['SP1和SP2管理强度不同，报名之前要先确认自己能接受的学习纪律。', '热门房型、暑假和寒假档期建议尽早确认空房。', '未成年学生、亲子学生和长期学习学生，需要提前确认额外管理规则。', '到校支付费用会随学校政策、汇率和个人情况变化。', '最终报名以学校正式录取、付款节点和顾问确认报价为准。'];
+  readonly notes = ['斯巴达和半斯巴达管理强度不同，报名之前要先确认自己能接受的学习纪律。', '热门房型、暑假和寒假档期建议尽早确认空房。', '未成年学生、亲子学生和长期学习学生，需要提前确认额外管理规则。', '到校支付费用会随学校政策、汇率和个人情况变化。', '最终报名以学校正式录取、付款节点和顾问确认报价为准。'];
   readonly faqs: FaqItem[] = [
-    { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑SP2半斯巴达或半斯巴达ESL。' },
-    { question: 'EV的SP1和SP2怎么选？', answer: 'SP1更适合冲刺型学生，日程和自习要求更强；SP2适合想学习但也希望保留一定外出和生活弹性的学生。' },
+    { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑半斯巴达或半斯巴达综合英语。' },
+    { question: 'EV的斯巴达和半斯巴达怎么选？', answer: '斯巴达更适合冲刺型学生，日程、自习和门禁要求更强；半斯巴达适合想学习但也希望保留一定外出和生活弹性的学生。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和食宿费；到校后仍需支付SSP、SSP E-card、教材、水电、设施费、接机、保证金等当地费用。' },
     { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同，未满18岁可能有额外管理费和更严格门禁，报名之前要按年龄和课程逐项确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名EV，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
@@ -323,7 +376,7 @@ export class EvSchoolDetailComponent implements OnInit {
   get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
   get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
-  get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
+  get discountText(): string { return '课程费和食宿费95折，注册费不打折'; }
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
   private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
   private createCourseId(name: string): string {
@@ -333,7 +386,7 @@ export class EvSchoolDetailComponent implements OnInit {
       if (name.includes('多益') || name.toLowerCase().includes('toeic')) return 'semi-sparta-toeic';
       if (name.includes('商务') || name.toLowerCase().includes('business')) return 'semi-sparta-business';
       if (name.includes('社交媒体')) return 'semi-sparta-social-media-english';
-      if (name.toLowerCase().includes('esl')) return 'semi-sparta-esl';
+      if (name.includes('综合英语') || name.toLowerCase().includes('esl')) return 'semi-sparta-esl';
     }
     if (name.includes('斯巴达') || name.toLowerCase().includes('sparta')) {
       if (name.includes('Intensive ESL') || name.includes('强化英语')) return 'sparta-intensive-esl';

@@ -46,7 +46,7 @@ interface SourceLink {
 })
 export class BeciSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'BECI International Language Academy / API BECI' },
+    { label: '学校名称', value: '菲律宾碧瑶BECI语言学校 / API BECI' },
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '创校时间', value: '约2002-2003年开始运营' },
     { label: '主要校区', value: 'EOP Campus / Sparta Campus / City Campus' },
@@ -202,9 +202,9 @@ export class BeciSchoolComponent {
     { label: 'APIBECI EOP Campus', url: 'https://beciedu.com/eop-campus/' },
     { label: 'APIBECI Sparta Campus', url: 'https://beciedu.com/sparta-campus/' },
     { label: 'APIBECI City Campus', url: 'https://beciedu.com/city-campus/' },
-    { label: 'iOutback - BECI EOP/Cafe', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/beci_cafe_detail' },
-    { label: 'iOutback - BECI Sparta', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/beci_sparta_detail' },
-    { label: 'iOutback - BECI City', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/beci_city_detail' },
+    { label: 'Fujiyama - API BECI EOP Campus', url: 'https://www.fujiyama-international.com/philippines/beci-the-cafe.html' },
+    { label: 'Fujiyama - API BECI Sparta Campus', url: 'https://www.fujiyama-international.com/philippines/beci-sparta.html' },
+    { label: 'Fujiyama - API BECI City Campus', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
     { label: '大洋游学', url: 'http://www.dayang101.com/' },
   ];
 }

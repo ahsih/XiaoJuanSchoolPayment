@@ -284,7 +284,7 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'beci-international-language-academy',
-            label: 'BECI International Language Academy',
+            label: '菲律宾碧瑶BECI语言学校',
             route:
               '/philippines-study/baguio/beci-international-language-academy',
           },

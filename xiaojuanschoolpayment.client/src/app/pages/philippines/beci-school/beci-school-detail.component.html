@@ -4,20 +4,22 @@
       <main class="page-main">
         <section class="hero-section" id="top">
           <div class="hero-copy">
-            <a class="back-link" routerLink="/philippines-study/cebu">
+            <a class="back-link" routerLink="/philippines-study/baguio">
               <mat-icon>arrow_back</mat-icon>
-              返回宿务学校列表
+              返回碧瑶学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 宿务学校 / 菲律宾宿务EV语言学校</p>
-            <h1>菲律宾宿务EV语言学校</h1>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶BECI语言学校</p>
+            <h1>菲律宾碧瑶BECI语言学校</h1>
             <p class="hero-lead">
-              宿务市区代表性的斯巴达 / 半斯巴达双管理模式英语学校，拥有度假村式校园环境，适合想把学习纪律、现代校园、校内住宿和课程强度一起考虑的学生。
+              <span>碧瑶多校区老牌语言学校。</span>
+              <span>EOP适合英语沉浸，Sparta适合强管理。</span>
+              <span>City适合成人、工作者和弹性学习。</span>
             </p>
-            <div class="hero-tags" aria-label="EV特点">
-              <span><mat-icon>location_on</mat-icon>宿务市区</span>
-              <span><mat-icon>speed</mat-icon>斯巴达 / 半斯巴达双管理模式</span>
-              <span><mat-icon>fact_check</mat-icon>IDP雅思官方考点</span>
-              <span><mat-icon>villa</mat-icon>度假村式校园</span>
+            <div class="hero-tags" aria-label="BECI特点">
+              <span><mat-icon>terrain</mat-icon>碧瑶三校区</span>
+              <span><mat-icon>record_voice_over</mat-icon>Speaking Prescription</span>
+              <span><mat-icon>verified_user</mat-icon>EOP / Sparta</span>
+              <span><mat-icon>work</mat-icon>成人City校区</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -25,7 +27,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看管理模式怎么选
+                查看BECI校区和课程
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -35,16 +37,16 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              提交斯巴达或半斯巴达偏好、课程、房型和入学日期后，思达顾问会帮你确认空房、优惠和正式报价。
+              提交英语基础、目标课程、校区偏好、房型和入学日期后，思达顾问会帮你确认空房、校区规则、优惠和正式报价。
             </p>
           </div>
 
-          <div class="hero-media" aria-label="EV校园图片展示">
+          <div class="hero-media" aria-label="BECI校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/ev/campus-exterior.jpg" alt="菲律宾宿务EV语言学校校园外观" />
-              <figcaption>菲律宾宿务EV语言学校官方校园图</figcaption>
+              <img src="assets/philippines/home-school-beci.jpg" alt="菲律宾碧瑶BECI语言学校校园环境" />
+              <figcaption>菲律宾碧瑶BECI语言学校多校区学习环境</figcaption>
             </figure>
-            <div class="media-strip" aria-label="EV校园缩略图">
+            <div class="media-strip" aria-label="BECI校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(1, 4)">
                 <img [src]="image.src" [alt]="image.title" />
                 <figcaption>{{ image.title }}</figcaption>
@@ -53,30 +55,30 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>半斯巴达综合英语 + 四人间（上下铺）</p>
+              <p>EOP Lite ESL + EOP 校内四人房</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和食宿费估算
+                  已含注册费、课程费和住宿费估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用和旺季附加费需另行确认
+                  到校费用、旺季附加费和校区规则需另行确认
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：菲律宾宿务EV语言学校官方网站校园、宿舍、教室与设施页面</p>
+            <p class="photo-source">图片来源：APIBECI官方资料与项目现有碧瑶学校素材；费用参考公开2026年费用表并由思达顾问整理</p>
           </div>
         </section>
 
-        <nav class="mobile-anchor-nav" aria-label="EV手机端快捷导航">
+        <nav class="mobile-anchor-nav" aria-label="BECI手机端快捷导航">
           <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
             <mat-icon>{{ item.icon }}</mat-icon>
-            <span>{{ item.label }}</span>
+            {{ item.label }}
           </a>
         </nav>
 
-        <section class="quick-info" aria-label="EV快速信息卡">
+        <section class="quick-info" aria-label="BECI快速信息卡">
           <article class="quick-card" *ngFor="let item of quickInfo">
             <mat-icon>{{ item.icon }}</mat-icon>
             <div>
@@ -89,11 +91,11 @@
 
         <section class="section-block" id="gallery">
           <div class="section-heading">
-            <span>图片 / 视频展示</span>
-            <h2>按区域查看 EV 环境</h2>
-            <p>先看校园、教室、住宿和设施，再判断EV的学习与生活环境是否适合你。</p>
+            <span>图片 / 环境展示</span>
+            <h2>按校区和空间查看 BECI 环境</h2>
+            <p>先看校区、教室、住宿、餐厅和学习资源，再判断EOP、Sparta或City哪一种节奏适合你。</p>
           </div>
-          <div class="gallery-tabs" role="tablist" aria-label="EV图片分类">
+          <div class="gallery-tabs" role="tablist" aria-label="BECI图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
               {{ category }}
             </button>
@@ -113,7 +115,7 @@
           <section class="panel basic-panel" id="basic-info">
             <div class="compact-heading">
               <span>学校基本信息</span>
-              <h2>EV 基本资料</h2>
+              <h2>BECI 基本资料</h2>
             </div>
             <dl class="info-list">
               <div *ngFor="let row of basicInfo">
@@ -127,16 +129,16 @@
             <div class="quote-mark">“</div>
             <div class="compact-heading">
               <span>思达顾问点评</span>
-              <h2>先选管理强度，再选课程和房型</h2>
+              <h2>先分校区，再看课程和费用</h2>
             </div>
             <p>
-              EV最重要的不是只看价格，而是先判断斯巴达还是半斯巴达。想冲刺考试、自律较弱或希望被学习节奏推动，优先看斯巴达；想兼顾学习和宿务生活，半斯巴达综合英语会更舒服。顾问会同时帮你核对课程强度、房型、到校费用和未成年规则。
+              BECI不能只看学校名。EOP、Sparta、City的学习强度、年龄层、住宿房型和生活规则差异明显。报价前要先确认校区，再按课程、房型、周数和旺季档期核总价。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
               <div>
                 <strong>Ivy 顾问建议</strong>
-                <span>先确认斯巴达或半斯巴达，再算课程、房型和当地费用。</span>
+                <span>怕开口看EOP，自律弱看Sparta，成人和工作者先看City。</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -147,8 +149,8 @@
 
           <section class="panel highlight-panel" id="highlights">
             <div class="compact-heading">
-              <span>EV 核心亮点</span>
-              <h2>为什么很多学生会把 EV 放进候选</h2>
+              <span>BECI 核心亮点</span>
+              <h2>为什么很多学生会把 BECI 放进候选</h2>
             </div>
             <div class="highlight-list">
               <article *ngFor="let item of highlights">
@@ -165,11 +167,11 @@
         <section class="fit-section" id="fit">
           <div class="section-heading">
             <span>适合 / 不太适合</span>
-            <h2>先判断 EV 是否适合你</h2>
+            <h2>先判断 BECI 是否适合你</h2>
           </div>
           <div class="fit-grid">
             <div>
-              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 EV</h3>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 BECI</h3>
               <article *ngFor="let item of suitableFor">
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.text }}</p>
@@ -188,8 +190,8 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程类型介绍</span>
-            <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>半斯巴达综合英语适合平衡型学生，斯巴达强化英语和雅思保证班适合冲刺，强化口说6/8适合口语目标明确的人。</p>
+            <h2>不知道选哪种课程？先按校区和学习目标看</h2>
+            <p>EOP偏沉浸口语，Sparta偏强管理冲刺，City偏成人、工作者和弹性英文应用。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -201,141 +203,85 @@
           </div>
         </section>
 
-        <section class="section-block pricing-reference" id="course-fees">
-          <div class="section-heading">
-            <span>EV 2026 年 4 周课程费</span>
-            <h2>先看课程费，再叠加食宿费</h2>
-            <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
-          </div>
-          <div class="pricing-table-grid">
-            <div>
-              <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
-                <div class="table-row table-head" role="row">
-                  <span role="columnheader">课程</span>
-                  <span role="columnheader">4周课程费</span>
-                  <span role="columnheader">课程安排</span>
-                </div>
-                <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                  <span role="cell">{{ fee.name }}</span>
-                  <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                  <span role="cell">{{ fee.suitable }}</span>
-                </div>
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>BECI 2026 年 4 周课程费</span>
+              <h2>先看课程费，再叠加住宿费</h2>
+              <p>以下为4周课程费参考，币种为美元。不同校区课程可选项不同，最终需由顾问按档期向学校确认。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="BECI 2026年4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
               </div>
-              <p class="pricing-note">以上单价均为4周费用；1周按40%、2周按65%、3周按85%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。网页估算已按课程费和食宿费95折计算，注册费不打折。</p>
-              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
-                <article *ngFor="let fee of courseFees">
-                  <span>课程</span>
-                  <strong>{{ fee.name }}</strong>
-                  <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                  <p>{{ fee.suitable }}</p>
-                </article>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
-
-            <div>
-              <div class="section-heading pricing-subheading" id="room-fees">
-                <span>EV 2026 年 4 周食宿费</span>
-                <h2>房型会明显影响总预算</h2>
-                <p>默认报价使用四人间（上下铺）。热门房型和校外公寓建议先让顾问确认空房。</p>
-              </div>
-              <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周食宿费">
-                <div class="table-row table-head" role="row">
-                  <span role="columnheader">房型</span>
-                  <span role="columnheader">4周食宿费</span>
-                  <span role="columnheader">备注</span>
-                </div>
-                <div class="table-row" role="row" *ngFor="let room of roomFees">
-                  <span role="cell">{{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                  <span role="cell">{{ room.note }}</span>
-                </div>
-              </div>
-              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周食宿费手机卡片">
-                <article *ngFor="let room of roomFees">
-                  <span>房型</span>
-                  <strong>{{ room.name }}</strong>
-                  <div><em>4周食宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                  <p>{{ room.note }}</p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="section-block study-plan-section" id="daily-schedule">
-          <div class="section-heading">
-            <span>EV 斯巴达 / 半斯巴达管理模式</span>
-            <h2 style="font-size: clamp(30px, 4vw, 46px);">菲律宾游学宿务EV语言学校斯巴达和半斯巴达管理模式的区别</h2>
-            <p>重点区别：斯巴达有早餐时段内约25分钟强制早课、晚饭后约25分钟强制晚课，以及20:00 - 22:00强制自习；半斯巴达不强制早晚课，周一至周四17:00后可外出。</p>
-          </div>
-
-          <div class="study-plan-cards" aria-label="EV斯巴达和半斯巴达管理模式对比">
-            <article *ngFor="let plan of studyPlans">
-              <div class="plan-title">
-                <strong>{{ plan.code }}</strong>
-                <span>{{ plan.name }}</span>
-              </div>
-              <h3>{{ plan.title }}</h3>
-              <div class="plan-time-blocks" [class.relaxed]="plan.code === '半斯巴达'">
-                <b>{{ plan.contrastTitle }}</b>
-                <div class="plan-time-grid">
-                  <div *ngFor="let block of plan.timeBlocks" [class.required]="block.type === 'required'" [class.flexible]="block.type === 'flexible'">
-                    <span><mat-icon>{{ block.icon }}</mat-icon>{{ block.label }}</span>
-                    <strong>{{ block.time }}</strong>
-                    <em>{{ block.text }}</em>
-                  </div>
-                </div>
-              </div>
-              <p>{{ plan.text }}</p>
-              <p class="plan-routine">{{ plan.routine }}</p>
-              <dl>
-                <div *ngFor="let curfew of plan.curfew">
-                  <dt>{{ curfew.day }}</dt>
-                  <dd>{{ curfew.time }}</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
-
-          <div class="section-heading study-plan-subheading">
-            <span>EV一天学习生活安排</span>
-            <h2>白天行程与免费选修课</h2>
-            <p>每节正式课程45分钟。斯巴达和半斯巴达学生都可以参加免费选修课，具体开放课程和人数条件以学校当期安排为准。</p>
-          </div>
-
-          <div class="study-day-grid">
-            <div class="study-day-table" aria-label="EV白天行程">
-              <article *ngFor="let item of schedule" [class.highlighted]="item.highlighted">
-                <time>{{ item.time }}</time>
-                <div>
-                  <strong><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</strong>
-                  <span>{{ item.text }}</span>
-                </div>
-                <em>{{ item.appliesTo }}</em>
+            <div class="mobile-card-list mobile-course-fees" aria-label="BECI 2026年4周课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <p>{{ fee.suitable }}</p>
               </article>
             </div>
+          </div>
 
-            <aside class="elective-panel" aria-label="EV选修课程">
-              <h3><mat-icon>edit</mat-icon>选修课程</h3>
-              <p class="minor-note">以下为常见免费选修课方向，实际开放课程会随学校师资、人数和当期课表调整。</p>
-              <div *ngFor="let group of electiveCourseGroups">
-                <strong>{{ group.period }}</strong>
-                <span>{{ group.level }}</span>
-                <ul>
-                  <li *ngFor="let course of group.courses">{{ course }}</li>
-                </ul>
-              </div>
-            </aside>
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>BECI 一天学习生活安排</span>
+              <h2>校区不同，晚间强度和生活规则会明显不同</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
           </div>
         </section>
 
-        <section class="quote-panel" id="quote">
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
             <div class="section-heading">
-              <span>EV 费用快速报价</span>
-              <h2>默认参考：4周 半斯巴达综合英语 + 四人间（上下铺）</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 食宿费）× 95折 + 旺季附加费。注册费不参与折扣。</p>
+              <span>BECI 2026 年 4 周住宿费</span>
+              <h2>房型和校区会明显影响总预算</h2>
+              <p>默认报价使用EOP校内四人房。单人房、Sparta 3+1和City Studio房型建议先让顾问确认空房。</p>
             </div>
-            <div class="quote-form" aria-label="EV费用快速报价选项">
+            <div class="data-table room-fee-table" role="table" aria-label="BECI 2026年4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="BECI 2026年4周住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>BECI 费用快速报价</span>
+              <h2>默认参考：4周 EOP Lite ESL + EOP 校内四人房</h2>
+              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）x 优惠折扣 + 旺季附加费</p>
+            </div>
+            <div class="quote-form" aria-label="BECI费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
               <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
@@ -344,22 +290,23 @@
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>食宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>仅课程费和食宿费</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
               <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房和优惠。</p>
+              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、教材费、水电费、学生证、设施维护费、接机费、保证金等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">EV旺季附加费、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、维护费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
+            <p class="season-note">BECI旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周；最终需由顾问按入学档期确认。</p>
+          </section>
         </section>
 
         <section class="section-block" id="local-fees">
@@ -383,18 +330,18 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年6月28日。学校环境、课程和设施信息参考菲律宾宿务EV语言学校官方网站学校资料、Study Plans、课程、宿舍、校园与设施页面；费用参考思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年8月3日。校区、课程和特色参考APIBECI官方页面；课程费、住宿费和当地费用参考公开2026年费用表并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
         <section class="materials-panel" id="materials">
           <div>
             <div class="section-heading">
-              <span>获取 EV 完整资料与报价单</span>
-              <h2>让顾问把斯巴达 / 半斯巴达、空房、优惠和费用一次核清</h2>
-              <p>通过思达报名 EV，思达顾问会免费协助确认课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。学生只需按顾问指引准备个人资料。</p>
+              <span>获取 BECI 完整资料与报价单</span>
+              <h2>让顾问把校区、课程、房型、空房和费用一次核清</h2>
+              <p>通过思达报名 BECI，思达顾问会免费协助确认EOP、Sparta或City校区、课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。</p>
             </div>
-            <ul class="check-list"><li>斯巴达 / 半斯巴达建议</li><li>课程与房型建议</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
+            <ul class="check-list"><li>EOP / Sparta / City校区建议</li><li>课程与房型建议</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
           </div>
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
@@ -402,9 +349,9 @@
         <section class="sida-ev-section" id="service-process">
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
-            <h2>为什么通过思达启航报名 EV?</h2>
+            <h2>为什么通过思达启航报名 BECI?</h2>
             <p>
-              不只是提交报名，更重要的是帮你判断EV是否适合、算清费用，并持续协助到完成学习回国。
+              不只是提交报名，更重要的是帮你判断BECI哪一个校区适合、算清费用，并持续协助到完成学习回国。
             </p>
           </div>
 
@@ -412,12 +359,12 @@
             <figure class="sida-ev-main-photo">
               <img
                 src="assets/cia/sida-why-main-branded.jpg"
-                alt="思达启航顾问为菲律宾宿务EV语言学校学生讲解报名方案"
+                alt="思达启航顾问为菲律宾碧瑶BECI语言学校学生讲解报名方案"
               />
             </figure>
 
             <div class="sida-ev-reason-grid">
-              <article *ngFor="let item of sidaEvReasons">
+              <article *ngFor="let item of sidaBeciReasons">
                 <img [src]="item.image" [alt]="item.alt" />
                 <div>
                   <span>{{ item.number }}</span>
@@ -428,8 +375,8 @@
             </div>
           </div>
 
-          <div class="sida-ev-trust-bar" aria-label="思达启航报名EV保障">
-            <article *ngFor="let item of sidaEvTrustBadges">
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名BECI保障">
+            <article *ngFor="let item of sidaBeciTrustBadges">
               <mat-icon>{{ item.icon }}</mat-icon>
               <strong>{{ item.label }}</strong>
             </article>
@@ -438,9 +385,9 @@
 
         <section class="section-block" id="service-flow">
           <div class="section-heading">
-            <span>通过思达报名 EV 的免费协助流程</span>
+            <span>通过思达报名 BECI 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>
-            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。思达在宿务有工作人员驻点，可为学生提供当地支持，直到学生完成学习并顺利回国。</p>
+            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。</p>
           </div>
           <div class="process-grid desktop-process-grid">
             <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
@@ -455,12 +402,12 @@
 
         <section class="split-layout" id="campus-life">
           <div class="section-block">
-            <div class="section-heading"><span>到校后的学校服务</span><h2>日常学习与生活支持比较完整</h2></div>
+            <div class="section-heading"><span>到校后的学校服务</span><h2>学习和生活支持集中在校区内</h2></div>
             <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
             <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
           </div>
           <div class="section-block">
-            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验宿务生活</h2></div>
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验碧瑶生活</h2></div>
             <div class="activity-columns desktop-activity-columns">
               <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
               <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
@@ -476,21 +423,21 @@
         </section>
 
         <section class="section-block" id="enrollment-notes">
-          <div class="section-heading"><span>报名注意事项</span><h2>确认 EV 前，建议先核对这些信息</h2></div>
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 BECI 前，建议先核对这些信息</h2></div>
           <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
         </section>
 
         <section class="faq-section" id="faq">
-          <div class="section-heading"><span>常见问题</span><h2>报名 EV 前常被问到的问题</h2></div>
+          <div class="section-heading"><span>常见问题</span><h2>报名 BECI 前常被问到的问题</h2></div>
           <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
         </section>
       </main>
 
-      <aside class="side-panel" aria-label="EV页面快捷导航">
+      <aside class="side-panel" aria-label="BECI页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>半斯巴达综合英语<br />四人间（上下铺）</p>
+          <p>EOP Lite ESL<br />EOP 校内四人房</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
@@ -505,16 +452,16 @@
 
     <section class="bottom-cta">
       <div>
-        <h2>想知道 EV 当前是否有空房和优惠？</h2>
-        <p>把入学日期、学习周数、斯巴达或半斯巴达偏好、课程方向和房型发给顾问，可以更快得到准确报价。</p>
+        <h2>想知道 BECI 当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英语基础、目标课程、校区偏好和房型发给顾问，可以更快得到准确报价。</p>
         <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
       </div>
       <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
     </section>
 
-    <div class="mobile-bottom-actions" aria-label="EV手机端固定操作">
+    <div class="mobile-bottom-actions" aria-label="BECI手机端固定操作">
       <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
-      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
     </div>
   </div>
 </app-cia-school>
