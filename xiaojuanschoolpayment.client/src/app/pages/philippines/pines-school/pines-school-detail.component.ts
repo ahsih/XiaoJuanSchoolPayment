@@ -87,15 +87,15 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'PINES校园环境', description: '碧瑶学习型语言学校代表，Main与IELTS校区分流。', src: 'assets/philippines/home-school-pines.jpg' },
-    { category: '校园', title: '碧瑶山城环境', description: '凉爽、安静、娱乐干扰较少，适合长期学习和备考。', src: 'assets/philippines/baguio-study-hero.jpg' },
-    { category: '教室', title: '一对一学习场景', description: '用于口语、写作、考试专项和个别纠错。', src: 'assets/cia/one-to-one-class.png' },
-    { category: '教室', title: '小团体课程', description: '讨论、表达、听力和考试综合训练使用。', src: 'assets/cia/small-group-class.jpg' },
-    { category: '住宿', title: '校内住宿参考', description: 'PINES房型从多人房到单人房，预算差异明显。', src: 'assets/cia/dormitory-overview.jpg' },
-    { category: '住宿', title: '多人房参考', description: '六人房和5B Solo适合控制预算，需确认可选校区和开放日期。', src: 'assets/cia/quad-room.jpg' },
-    { category: '餐厅', title: '学生餐厅参考', description: '学习生活集中在校区内，餐食安排以学校当期规则为准。', src: 'assets/cia/dining-hall.jpg' },
-    { category: '设施', title: '自习与学习资源', description: '雅思校区强调模考、咨询和晚间监督学习。', src: 'assets/cia/library.jpg' },
-    { category: '设施', title: '学生支持空间', description: '医护、证件、生活和学习沟通可由顾问协助确认。', src: 'assets/cia/clinic.jpg' },
+    { category: '校园', title: 'PINES Main Campus外观', description: 'PINES官方Facilities页面展示的Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.jpg' },
+    { category: '校园', title: 'PINES主校区楼体', description: '官方首页设施区展示的Main Campus Building，适合先判断校区环境。', src: 'assets/philippines/pines-campus-building.jpg' },
+    { category: '教室', title: '一对一教室', description: 'PINES官方Main Campus Facilities页面展示的一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.jpg' },
+    { category: '教室', title: '4:1小团体教室', description: '官方教室照片展示的小团体课程空间，适合讨论、表达和综合训练。', src: 'assets/philippines/pines-group-classroom.jpg' },
+    { category: '住宿', title: 'Main Campus单人房', description: 'PINES官方住宿页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/pines-dormitory-single.jpg' },
+    { category: '住宿', title: 'Main Campus六人房', description: '官方多人房照片展示六人房空间，适合控制预算但需提前确认空房。', src: 'assets/philippines/pines-dormitory-sextuple.jpg' },
+    { category: '餐厅', title: 'PINES Cafeteria', description: 'PINES官方2026餐厅照片，展示校内自助取餐和厨房区域。', src: 'assets/philippines/pines-cafeteria.jpg' },
+    { category: '设施', title: 'Library Main', description: '官方Facilities页面展示的图书与学习资源空间。', src: 'assets/philippines/pines-library.jpg' },
+    { category: '设施', title: 'Front Desk', description: '官方Facilities页面展示的前台与学生支持空间。', src: 'assets/philippines/pines-front-desk.jpg' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -110,10 +110,10 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/home-school-pines.jpg', title: '碧瑶老牌学习型学校', text: 'PINES自2001年创立，是碧瑶代表性英语学校之一，适合把学习放在第一位的学生。' },
-    { image: 'assets/philippines/baguio-study-hero.jpg', title: 'Main与IELTS校区分流', text: 'Main Campus更适合ESL、口语、TOEIC和亲子方向；IELTS Campus更适合雅思目标和保证班。' },
-    { image: 'assets/cia/one-to-one-class.png', title: '课程强度选择细', text: '从Light ESL 4到Power ESL 7、Intensive ESL和EB PRO，可按自律程度和目标调整强度。' },
-    { image: 'assets/cia/library.jpg', title: '雅思保证班规则清晰', text: '官方雅思保证班强调每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
+    { image: 'assets/philippines/pines-campus-hero.jpg', title: '碧瑶老牌学习型学校', text: 'PINES自2001年创立，是碧瑶代表性英语学校之一，适合把学习放在第一位的学生。' },
+    { image: 'assets/philippines/pines-campus-building.jpg', title: 'Main与IELTS校区分流', text: 'Main Campus更适合ESL、口语、TOEIC和亲子方向；IELTS Campus更适合雅思目标和保证班。' },
+    { image: 'assets/philippines/pines-one-to-one-classroom.jpg', title: '课程强度选择细', text: '从Light ESL 4到Power ESL 7、Intensive ESL和EB PRO，可按自律程度和目标调整强度。' },
+    { image: 'assets/philippines/pines-library.jpg', title: '雅思保证班规则清晰', text: '官方雅思保证班强调每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
   ];
 
   readonly suitableFor: FitItem[] = [

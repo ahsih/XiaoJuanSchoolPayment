@@ -101,15 +101,17 @@ export class BeciSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: 'BECI碧瑶校区环境', description: 'API BECI在碧瑶运营EOP、Sparta、City三个差异化校区。', src: 'assets/philippines/home-school-beci.jpg' },
-    { category: '校区', title: '碧瑶山城学习环境', description: '气候凉爽、生活节奏安静，适合把学习作为主要目的。', src: 'assets/philippines/baguio-study-hero.jpg' },
-    { category: '教室', title: '一对一课堂参考', description: '用于口语纠错、发音、考试科目和ESP定制训练。', src: 'assets/cia/one-to-one-class.png' },
-    { category: '教室', title: '小团体互动课参考', description: '适合讨论、听力、表达和跨国籍交流练习。', src: 'assets/cia/small-group-class.jpg' },
-    { category: '住宿', title: 'BECI住宿参考', description: 'EOP、Sparta、City房型不同，预算和生活方式差异明显。', src: 'assets/cia/dormitory-overview.jpg' },
-    { category: '住宿', title: '多人房参考', description: 'EOP四人房、Sparta四人房和City Studio四人房是常见预算入口。', src: 'assets/cia/quad-room.jpg' },
-    { category: '餐厅', title: '学生餐厅参考', description: '三餐与校区生活紧密相关，City校区更强调成人学生节奏。', src: 'assets/cia/dining-hall.jpg' },
-    { category: '设施', title: '自习与学习资源', description: 'Sparta晚间学习更密集，City也有24小时可用学习空间。', src: 'assets/cia/library.jpg' },
-    { category: '设施', title: '休息与交流空间', description: '不同校区会搭配活动、学习系统和生活支持服务。', src: 'assets/cia/cafe-bar.jpg' },
+    { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'APIBECI官网展示的EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.jpg' },
+    { category: '校区', title: 'BECI校区建筑外观', description: '官方首页展示的BECI碧瑶校区建筑，用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.png' },
+    { category: '校区', title: 'BECI碧瑶校区大楼', description: '官方首页展示的碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.png' },
+    { category: '教室', title: 'EOP户外一对一学习区', description: 'EOP Campus页面展示的户外学习空间，体现English Only环境。', src: 'assets/philippines/beci-eop-outdoor-class.jpg' },
+    { category: '教室', title: 'Sparta一对一课堂', description: 'Sparta Campus页面展示的一对一课堂，用于口语、考试和SP反馈训练。', src: 'assets/philippines/beci-one-to-one-class.jpg' },
+    { category: '教室', title: 'Speaking Prescription辅导场景', description: '官方Sparta照片展示老师与学生进行针对性口语反馈。', src: 'assets/philippines/beci-speaking-prescription.jpg' },
+    { category: '住宿', title: 'EOP Mansion单人房', description: 'EOP Campus Mansion页面展示的单人房型，适合重视隐私的学生。', src: 'assets/philippines/beci-eop-single-room.png' },
+    { category: '住宿', title: 'EOP Mansion多人房', description: '官方Mansion房型照片展示多人房空间，报名需同步确认性别与空房。', src: 'assets/philippines/beci-eop-shared-room.png' },
+    { category: '餐厅', title: 'EOP户外交流桌区', description: '官方EOP照片中的户外桌区，餐饮和活动安排以当期校区说明为准。', src: 'assets/philippines/beci-eop-outdoor-study.jpg' },
+    { category: '设施', title: 'City Campus学习休息区', description: 'City Campus页面展示的成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.png' },
+    { category: '设施', title: 'City Campus自习工作区', description: '官方City Campus页面展示的安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.png' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -124,10 +126,10 @@ export class BeciSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/home-school-beci.jpg', title: '三个校区定位清楚', text: 'EOP适合英语沉浸和口语输出，Sparta适合强管理冲刺，City适合成人、工作者和更弹性的学习节奏。' },
-    { image: 'assets/cia/one-to-one-class.png', title: '口语处方反馈机制', text: 'Speaking Prescription会用录影和维度评估追踪发音、语调、词汇和语法等口语弱点。' },
-    { image: 'assets/cia/library.jpg', title: 'Sparta冲刺型学习', text: '24 ESL包含白天密集课堂、晚间学习和每周SP测试，适合需要制度推动的学生。' },
-    { image: 'assets/cia/cafe-bar.jpg', title: 'City成人弹性学习', text: 'City Campus面向成人和工作者，主打弹性、无宵禁、商务和ESP方向，也有Unlimited ESL选择。' },
+    { image: 'assets/philippines/beci-eop-campus.jpg', title: '三个校区定位清楚', text: 'EOP适合英语沉浸和口语输出，Sparta适合强管理冲刺，City适合成人、工作者和更弹性的学习节奏。' },
+    { image: 'assets/philippines/beci-speaking-prescription.jpg', title: '口语处方反馈机制', text: 'Speaking Prescription会用录影和维度评估追踪发音、语调、词汇和语法等口语弱点。' },
+    { image: 'assets/philippines/beci-one-to-one-class.jpg', title: 'Sparta冲刺型学习', text: '24 ESL包含白天密集课堂、晚间学习和每周SP测试，适合需要制度推动的学生。' },
+    { image: 'assets/philippines/beci-city-study-lounge.png', title: 'City成人弹性学习', text: 'City Campus面向成人和工作者，主打弹性、无宵禁、商务和ESP方向，也有Unlimited ESL选择。' },
   ];
 
   readonly suitableFor: FitItem[] = [

@@ -91,15 +91,15 @@ export class WalesSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: '菲律宾碧瑶WALES语言学校', description: 'WALES是碧瑶Legarda Road一带的小型语言学校，适合想要市区便利和弹性节奏的学生。', src: 'assets/philippines/home-school-wales.jpg' },
-    { category: '校区', title: '碧瑶市区学习环境', description: '学校位于市中心附近，生活便利度是WALES的重要卖点。', src: 'assets/philippines/baguio-study-hero.jpg' },
-    { category: '教室', title: '一对一课堂参考', description: 'EEP、Infinity、IELTS和Junior课程都需要按目标配置一对一与团体课。', src: 'assets/cia/one-to-one-class.png' },
-    { category: '教室', title: '团体互动课堂参考', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/cia/small-group-class.jpg' },
-    { category: '住宿', title: 'Studio与Condo住宿参考', description: 'WALES房型包含Studio、Premium Studio、Share和Condo，空房变化快，建议先锁定可接受房型。', src: 'assets/cia/single-room.jpg' },
-    { category: '住宿', title: 'Twin Share房型参考', description: '双人或共享房型适合朋友、家庭或预算优先的学生，具体规则需按当期房型确认。', src: 'assets/cia/twin-room.jpg' },
-    { category: '餐厅', title: '餐厅与用餐参考', description: '正式报价时需把餐费、个人饮食习惯和周边用餐便利一起考虑。', src: 'assets/cia/dining-hall.jpg' },
-    { category: '设施', title: '自习与休息空间参考', description: '小校更重视日常沟通和生活适应，适合能主动安排复习的学生。', src: 'assets/cia/library.jpg' },
-    { category: '设施', title: '市区生活半径', description: 'WALES官方资料强调周边公共设施便利，最近的生活点约步行5分钟。', src: 'assets/cia/cafe-bar.jpg' },
+    { category: '校区', title: '菲律宾碧瑶WALES语言学校', description: 'WALES是碧瑶Legarda Road一带的小型语言学校，适合想要市区便利和弹性节奏的学生。', src: 'assets/philippines/wales-school-building.jpg' },
+    { category: '设施', title: 'WALES校内设施', description: '官方Facility页面展示的校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.jpg' },
+    { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES官方Classrooms页面展示的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.jpg' },
+    { category: '教室', title: '团体与功能教室', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/philippines/wales-classroom-group.jpg' },
+    { category: '住宿', title: 'Studio房型', description: 'WALES官方Studio Type页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/wales-studio-room.jpg' },
+    { category: '住宿', title: 'Premium Studio房型', description: 'Premium Studio配有更完整的生活设备，适合成人、家庭或长期学习需求。', src: 'assets/philippines/wales-premium-studio-room.jpg' },
+    { category: '住宿', title: 'Condo房型', description: 'Condo Type适合希望有公寓式生活空间、厨房设备和更强生活机能的学生。', src: 'assets/philippines/wales-condo-room.jpg' },
+    { category: '住宿', title: 'Share Type房型', description: 'Share Type适合想兼顾预算、室友互动和生活设备的学生。', src: 'assets/philippines/wales-share-room.jpg' },
+    { category: '餐厅', title: 'WALES Cafeteria', description: '官方Facility页面展示的餐厅空间，正式报价时需把餐费和饮食需求一起确认。', src: 'assets/philippines/wales-cafeteria.jpg' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -114,10 +114,10 @@ export class WalesSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/home-school-wales.jpg', title: '小校容量，照顾更细', text: 'WALES容量约80名学生，适合希望学校人员更容易认识学生、学习和生活问题能快速沟通的人。' },
-    { image: 'assets/cia/cafe-bar.jpg', title: 'Legarda市区生活圈', text: '学校靠近碧瑶市中心，周边餐厅、ATM、商场和公共设施较方便，适合成人与长期生活型学生。' },
-    { image: 'assets/cia/one-to-one-class.png', title: '课程从轻量到强化', text: 'EEP适合生活沟通，Infinity系列适合综合强化，IELTS和Junior路线适合更明确的升学、考试或亲子需求。' },
-    { image: 'assets/cia/single-room.jpg', title: '房型选择生活化', text: 'Studio、Premium Studio和Condo房型让WALES更适合重视隐私、厨房设备、网络和生活机能的学生。' },
+    { image: 'assets/philippines/wales-school-building.jpg', title: '小校容量，照顾更细', text: 'WALES容量约80名学生，适合希望学校人员更容易认识学生、学习和生活问题能快速沟通的人。' },
+    { image: 'assets/philippines/wales-classroom.jpg', title: '一对一隔间教室', text: '官方Classrooms页面展示的一对一玻璃隔间，让学生能在较安静的环境里集中练习与纠错。' },
+    { image: 'assets/philippines/wales-cafeteria.jpg', title: '餐厅空间清楚可见', text: '报名时要把meal fee和饮食需求一起确认，官方餐厅照片能帮助学生先判断日常用餐环境。' },
+    { image: 'assets/philippines/wales-condo-room.jpg', title: '房型选择生活化', text: 'Studio、Premium Studio、Share和Condo房型让WALES更适合重视隐私、厨房设备、网络和生活机能的学生。' },
   ];
 
   readonly suitableFor: FitItem[] = [

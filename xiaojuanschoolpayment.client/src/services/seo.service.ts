@@ -57,21 +57,21 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾碧瑶PINES语言学校页面，整理Main Campus、IELTS Campus、ESL、Power Speaking、IELTS、TOEIC、住宿房型、2026费用和报名注意事项。',
     keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/home-school-pines.jpg',
+    image: '/assets/philippines/pines-campus-hero.jpg',
   },
   '/philippines-study/baguio/beci-international-language-academy': {
     title: '菲律宾碧瑶BECI语言学校 | 校区课程费用住宿与报名咨询',
     description:
       '菲律宾碧瑶BECI语言学校页面，整理APIBECI的EOP、Sparta、City校区、ESL、24 ESL、IELTS、TOEIC、ESP、住宿房型、2026费用和报名注意事项。',
     keywords: '菲律宾碧瑶BECI语言学校, BECI International Language Academy, API BECI, 碧瑶BECI, BECI EOP, BECI Sparta, BECI City',
-    image: '/assets/philippines/home-school-beci.jpg',
+    image: '/assets/philippines/beci-eop-campus.jpg',
   },
   '/philippines-study/baguio/baguio-jic-academy': {
     title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
     description:
       '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Academy的Challenger、Premium校区、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
     keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC Academy, JIC Academy Baguio, JIC Challenger, JIC Premium, 碧瑶雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/home-school-jic.jpg',
+    image: '/assets/philippines/jic-campus-hero.jpg',
   },
   '/philippines-study/baguio/monol': {
     title: '菲律宾碧瑶MONOL语言学校 | 课程费用住宿与报名咨询',
@@ -85,7 +85,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾碧瑶WALES语言学校页面，整理WALES Academy的EEP、Infinity、IELTS、Junior课程、小校环境、Legarda位置、Studio/Premium/Condo住宿、2026费用和到校费用。',
     keywords: '菲律宾碧瑶WALES语言学校, WALES Academy, Widest Asian Learners English School, 碧瑶WALES, 碧瑶语言学校, 菲律宾IELTS学校',
-    image: '/assets/philippines/home-school-wales.jpg',
+    image: '/assets/philippines/wales-school-building.jpg',
   },
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
@@ -148,14 +148,14 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾留学和英语游学常见问题，覆盖课程选择、报名时间、住宿、签证、接机、费用和行前准备。',
     keywords: '菲律宾留学常见问题, 菲律宾游学FAQ, 菲律宾英语游学报名, 菲律宾游学签证',
-    image: '/assets/philippines/home-school-pines.jpg',
+    image: '/assets/philippines/pines-campus-hero.jpg',
   },
   '/philippines-study/offers': {
     title: '菲律宾语言学校优惠 | 英语游学最新报名方案',
     description:
       '查看菲律宾语言学校优惠和报名方案，结合开课时间、住宿房型、课程类型和预算获取适合的英语游学报价。',
     keywords: '菲律宾语言学校优惠, 菲律宾游学优惠, 菲律宾留学报价, 菲律宾英语学校报名',
-    image: '/assets/philippines/home-school-jic.jpg',
+    image: '/assets/philippines/jic-campus-hero.jpg',
   },
   '/philippines-study/recommendations/ielts-schools': {
     title: '菲律宾雅思学校推荐 | IELTS英语游学选校',
@@ -183,7 +183,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾青少年夏令营和暑假英语游学营规划，覆盖课程强度、住宿管理、活动安排、安全照顾和报名建议。',
     keywords: '菲律宾夏令营, 菲律宾青少年游学, 菲律宾英语夏令营, 菲律宾暑假游学',
-    image: '/assets/philippines/home-school-pines.jpg',
+    image: '/assets/philippines/pines-campus-hero.jpg',
   },
   '/philippines-study/recommendations/sparta-schools': {
     title: '菲律宾斯巴达语言学校推荐 | 强化英语游学',
@@ -211,14 +211,14 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾热门语言学校整理，覆盖 CIA、EV、菲律宾宿务CPI语言学校、菲律宾宿务Philinter语言学校、菲律宾碧瑶PINES语言学校、BECI、JIC 等学校的课程和适合人群。',
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
-    image: '/assets/philippines/home-school-beci.jpg',
+    image: '/assets/philippines/beci-eop-campus.jpg',
   },
   '/study-tour-guide/philippines': {
     title: '菲律宾游学攻略 | 英语课程选校费用与行前准备',
     description:
       '菲律宾游学攻略，帮助学生和家长了解英语课程、学校选择、城市差异、费用预算、报名流程和行前准备。',
     keywords: '菲律宾游学攻略, 菲律宾留学攻略, 菲律宾英语游学攻略, 菲律宾语言学校怎么选',
-    image: '/assets/philippines/home-school-wales.jpg',
+    image: '/assets/philippines/wales-school-building.jpg',
   },
   '/about-sida/contact': {
     title: '联系思达启航 | 菲律宾留学英语游学咨询',

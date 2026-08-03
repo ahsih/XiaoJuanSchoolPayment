@@ -100,15 +100,17 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: '菲律宾碧瑶JIC语言学校', description: 'Baguio JIC Academy在碧瑶运营Challenger与Premium两条学习路线。', src: 'assets/philippines/home-school-jic.jpg' },
-    { category: '校区', title: '碧瑶山城学习环境', description: '凉爽、安静、节奏稳定，是碧瑶学校适合备考和长期学习的核心原因。', src: 'assets/philippines/baguio-study-hero.jpg' },
-    { category: '教室', title: '一对一课堂参考', description: 'JIC多数课程以一对一课为核心，按ESL、IELTS、Speaking或Career目标配置。', src: 'assets/cia/one-to-one-class.png' },
-    { category: '教室', title: '小团体互动课堂参考', description: '团体课用于表达、讨论、听力、阅读与跨国学生互动。', src: 'assets/cia/small-group-class.jpg' },
-    { category: '住宿', title: '校内住宿参考', description: 'Challenger与Premium房型价格差异明显，报价前必须确认校区与房型。', src: 'assets/cia/dormitory-overview.jpg' },
-    { category: '住宿', title: '四人房参考', description: 'Challenger四人Studio与Premium四人房通常是控制预算时优先比较的房型。', src: 'assets/cia/quad-room.jpg' },
-    { category: '餐厅', title: '学生餐厅参考', description: 'JIC官网说明平日三餐、周末早午餐等生活配套，具体以当期学校安排为准。', src: 'assets/cia/dining-hall.jpg' },
-    { category: '设施', title: '自习与备考资源参考', description: 'Challenger更适合把自习、测验和备考节奏放在每日生活中心。', src: 'assets/cia/library.jpg' },
-    { category: '设施', title: '休息与交流空间参考', description: 'Premium更强调Active Learning、舒适设施和成人学习生活节奏。', src: 'assets/cia/cafe-bar.jpg' },
+    { category: '校区', title: 'JIC Challenger校园航拍', description: 'Baguio JIC官方首页展示的碧瑶Challenger / Main校区环境。', src: 'assets/philippines/jic-campus-hero.jpg' },
+    { category: '校区', title: 'JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.png' },
+    { category: '校区', title: 'JIC Premium Campus环境', description: 'Premium Photos页面展示的Premium校区学习生活环境。', src: 'assets/philippines/jic-premium-campus-overview.jpg' },
+    { category: '教室', title: 'Challenger IELTS一对一课堂', description: 'Main Campus Classes照片展示的IELTS备考与一对一辅导场景。', src: 'assets/philippines/jic-main-ielts-class.png' },
+    { category: '教室', title: 'Premium小组互动课堂', description: 'Premium Campus Classes照片展示的Active Learning小组课堂。', src: 'assets/philippines/jic-premium-group-class.png' },
+    { category: '住宿', title: 'Challenger Loft房型', description: 'Main Campus Rooms照片展示的loft住宿空间，适合先比较预算与生活习惯。', src: 'assets/philippines/jic-main-room-loft.jpg' },
+    { category: '住宿', title: 'Premium四人房', description: 'Premium Campus Rooms照片展示的四人房，报名需同步确认校区、性别与空房。', src: 'assets/philippines/jic-premium-quad-room.png' },
+    { category: '餐厅', title: 'Premium校区餐食', description: 'Premium Photos的Cafeteria & Meals照片展示学校餐食，菜单以当期安排为准。', src: 'assets/philippines/jic-premium-meal.png' },
+    { category: '餐厅', title: 'Premium Cafe', description: 'Premium Photos展示的校内Cafe空间，适合课后休息和交流。', src: 'assets/philippines/jic-premium-cafe.png' },
+    { category: '设施', title: 'Main Campus自习与Library', description: 'Main Photos页面展示的Library学习空间，适合IELTS与长期备考学生。', src: 'assets/philippines/jic-main-library.jpg' },
+    { category: '设施', title: 'Premium Student Center', description: 'Premium Photos展示的学生中心与休息空间，体现更舒适的生活配套。', src: 'assets/philippines/jic-premium-student-center.png' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -123,10 +125,10 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/home-school-jic.jpg', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
-    { image: 'assets/cia/idp-testing-venue.jpg', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
-    { image: 'assets/cia/small-group-class.jpg', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
-    { image: 'assets/cia/dormitory-overview.jpg', title: '房型差异直接影响预算', text: '从Challenger四人Studio到Premium单人阳台房，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
+    { image: 'assets/philippines/jic-campus-hero.jpg', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
+    { image: 'assets/philippines/jic-main-ielts-class.png', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
+    { image: 'assets/philippines/jic-premium-group-class.png', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
+    { image: 'assets/philippines/jic-premium-quad-room.png', title: '房型差异直接影响预算', text: '从Challenger四人Studio到Premium单人阳台房，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
   ];
 
   readonly suitableFor: FitItem[] = [
