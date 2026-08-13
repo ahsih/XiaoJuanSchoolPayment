@@ -1,0 +1,335 @@
+<app-cia-school>
+  <div class="cia-page berlitz-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/manila">
+              <mat-icon>arrow_back</mat-icon>
+              返回马尼拉学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 马尼拉学校 / 菲律宾马尼拉Berlitz语言学校</p>
+            <h1><span>菲律宾马尼拉</span><span>Berlitz语言学校</span></h1>
+            <p class="hero-lead">
+              <span>Berlitz Philippines 是位于 Makati 的国际语言培训品牌，适合成人、少儿、企业培训和语言测评。</span>
+              <span>课程包含一对一、小组课、自学平台、商务沟通、企业语言培训、TELC和公开课排期。</span>
+              <span>它不是传统寄宿制 ESL 学校，住宿、餐食、通勤和个人停留费用需要单独规划。</span>
+            </p>
+            <div class="hero-tags" aria-label="Berlitz特点">
+              <span><mat-icon>location_on</mat-icon>Makati / The World Center</span>
+              <span><mat-icon>language</mat-icon>Berlitz Method</span>
+              <span><mat-icon>groups</mat-icon>Private / Group / Corporate</span>
+              <span><mat-icon>hotel</mat-icon>住宿自理</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即确认Berlitz报价
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看费用项目
+                <mat-icon>payments</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认方案
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              本页根据 Berlitz Philippines 官网公开课程、Makati 地址、公开课排期、Starter Course公告和企业/测评服务整理；常规课程最终报价以学校正式回函为准。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="Berlitz官方图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/berlitz-hero.webp" alt="菲律宾马尼拉Berlitz语言学校官方语言学习图片" />
+              <figcaption>Berlitz Philippines 官网主视觉：语言学习、商务沟通和小组互动场景</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="Berlitz课程图片">
+              <figure *ngFor="let image of galleryImages.slice(2, 5)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>费用参考</span>
+              <strong>{{ quoteText }}</strong>
+              <p>{{ selectedProgram.name }}</p>
+              <ul>
+                <li><mat-icon>check_circle</mat-icon>Starter Course有官网公开PHP公告价</li>
+                <li><mat-icon>info</mat-icon>常规私教、小组、企业和测评需当期报价</li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片来源：Berlitz Philippines官网公开品牌图、首页图片、成人/少儿/企业/测评课程图片；费用参考官网Starter Course公告和公开课程/服务页面。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="Berlitz手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="Berlitz快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>官方图片</span>
+            <h2>使用Berlitz官网图片呈现国际语言培训定位</h2>
+            <p>Berlitz不是宿舍制ESL学校，因此页面重点展示官网品牌、课堂、成人/少儿课程、企业文化培训和语言测评相关图片。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="Berlitz图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading"><span>学校基本信息</span><h2>Berlitz 基本资料</h2></div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading"><span>思达顾问点评</span><h2>把Berlitz当作城市语言培训中心来评估</h2></div>
+            <p>Berlitz适合对品牌、课程体系、线上/面授灵活度、商务沟通、少儿课程、测评或企业培训有要求的人。它不适合直接套用宿务、碧瑶那种“学费+宿舍+三餐+校内管理”的报价逻辑。</p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Sida</div>
+              <div><strong>顾问建议</strong><span>先确认你是否需要寄宿制管理；如果不需要，再按语言、级别、私教/小组/企业方案、Makati通勤和预算核算Berlitz。</span></div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问帮我判断Berlitz是否适合
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading"><span>核心亮点</span><h2>Berlitz适合放进马尼拉候选清单的原因</h2></div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading"><span>适合 / 不适合</span><h2>Berlitz更像国际语言培训中心，先看学习方式是否匹配</h2></div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑Berlitz</h3>
+              <article *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程方向</span>
+            <h2>成人私教、小组课、自学平台、企业培训、商务沟通和测评</h2>
+            <p>Berlitz Philippines官网列出成人、Kids & Teens、Business Services、Testing and Assessment、TELC和公开课排期，本页按马尼拉学生最常比较的方向整理。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>官方费用参考</span>
+              <h2>仅公开Starter Course单项费用，常规课程以学校报价为准</h2>
+              <p>官网公开Berlitz Starter Course为Php 3,200；私教、小组、企业、测评和TELC等多数项目需按语言、级别、课时和当期排课确认。</p>
+            </div>
+            <div class="data-table berlitz-fee-table" role="table" aria-label="Berlitz课程费用">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">费用</span>
+                <span role="columnheader">说明</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of programFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">{{ displayProgramFee(fee) }} / {{ fee.unit }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="Berlitz课程费用手机卡片">
+              <article *ngFor="let fee of programFees">
+                <span>项目</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>费用</em><b>{{ displayProgramFee(fee) }} / {{ fee.unit }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>Berlitz费用快速判断</span>
+              <h2>默认参考：Berlitz Starter Course</h2>
+              <p>估算只展示已公开费用或提示需核价；住宿、通勤、餐食、签证停留、保险和个人费用另算。</p>
+            </div>
+            <div class="quote-form" aria-label="Berlitz费用估算选项">
+              <label>项目<select [(ngModel)]="selectedProgramId"><option *ngFor="let program of programFees" [value]="program.id">{{ program.name }}</option></select></label>
+              <label>预计开始日期<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>课程费</span><strong>{{ displayProgramFee(selectedProgram) }}</strong></div>
+              <div><span>费用单位</span><strong>{{ selectedProgram.unit }}</strong></div>
+              <div><span>住宿</span><strong>自理，未计入</strong></div>
+              <div><span>通勤生活费</span><strong>按个人安排另算</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>PHP参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>{{ quoteNote }}</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认语言、级别、线上或面授、课时包、最低人数、企业需求和学校回函。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">Berlitz官网多数常规课程为询价制。页面保留“需当期确认”是为了避免用旧价或非官方价格误导报名预算。</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="room-fees">
+          <div class="section-heading">
+            <span>住宿说明</span>
+            <h2>Berlitz页面不应写成宿舍制ESL套餐</h2>
+            <p>学校位于Makati城市办公区，本页保留“住宿自理”作为数据库和页面提示，避免用户误以为包含宿舍、三餐和校内管理。</p>
+          </div>
+          <div class="local-fee-grid">
+            <article *ngFor="let room of roomFees">
+              <span>{{ room.name }}</span>
+              <strong>{{ room.fee > 0 ? formatMoney(room.fee, room.currencyCode) : '自理' }}</strong>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>额外费用</span>
+            <h2>课程费之外要单独确认的项目</h2>
+            <p>以下为官网说明和顾问预算拆分项目，最终金额以学校回函、课程选择和个人行程为准。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看额外费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页参考Berlitz Philippines官网公开课程页面、Class Schedules、Starter Course公告、Business English公告、Corporate Language Training、Testing and Assessment和Contact页面。价格、开课日、名额和企业报价可能调整，报名以学校正式报价为准。</p>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>通过思达启航咨询Berlitz，我们会先帮你确认城市语言培训是否合适</h2>
+            <p>Berlitz要重点看课程目标、上课地点或线上形式、住宿自理、通勤和企业/测评需求。顾问会把这些项目拆开，而不是套用寄宿制ESL学校报价方式。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看咨询协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认Berlitz前建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading"><span>资料来源</span><h2>Berlitz官方参考链接</h2></div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>{{ source.label }}</a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名Berlitz前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="Berlitz页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedProgram.unit }}</strong>
+          <p>{{ selectedProgram.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>住宿、通勤和停留费用另计</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">确认费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道Berlitz是否适合你的马尼拉学习计划？</h2>
+        <p>把学习目标、语言、级别、是否在马尼拉有住宿、想线上还是面授、是否需要企业培训或测评告诉顾问，我们可以先帮你确认当期课程和正式报价。</p>
+        <ul><li>0中介服务费</li><li>课程费用拆分</li><li>住宿通勤建议</li><li>测评/TELC提醒</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="Berlitz手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>确认费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

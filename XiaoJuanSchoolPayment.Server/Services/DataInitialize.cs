@@ -21,6 +21,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid MonolSchoolId = Guid.Parse("2d7c4bd9-0f3b-4b2d-9fb7-d53c2d6a90df");
     private static readonly Guid WalesSchoolId = Guid.Parse("6b825ff8-4f79-4b65-9447-2f4e7abef0a1");
     private static readonly Guid EgSchoolId = Guid.Parse("82cbcbad-1162-4088-823d-ea100bfee689");
+    private static readonly Guid EnderunSchoolId = Guid.Parse("d63f8a4e-27e2-45e9-b1cc-a5223e5d118f");
+    private static readonly Guid AmericanEnglishSchoolId = Guid.Parse("4f0709fe-2a93-4dd5-8d0f-2819115f0288");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -49,6 +51,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string EgSchoolName = "菲律宾克拉克EG语言学校";
     private const string LegacyEgSchoolName = "EG Academy";
     private const string EgFullSchoolName = "Education Group Granma INC";
+    private const string EnderunSchoolName = "菲律宾马尼拉Enderun语言学校";
+    private const string LegacyEnderunSchoolName = "Enderun Extension";
+    private const string AmericanEnglishSchoolName = "菲律宾马尼拉American-English-Skill语言学校";
+    private const string LegacyAmericanEnglishSchoolName = "American English Skills Development Center";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -69,6 +75,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedMonolPricingAsync(context);
       await SeedWalesPricingAsync(context);
       await SeedEgPricingAsync(context);
+      await SeedEnderunPricingAsync(context);
+      await SeedAmericanEnglishPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -922,6 +930,117 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "Golf追加课（每周3次）", 6000m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出每周3次课程参考", now);
       UpsertFee(context, schoolId, "Golf练习球", 60m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出50颗球一盒参考", now);
       UpsertFee(context, schoolId, "Golf月票（EG学生）", 4500m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出EG学生月票参考", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedEnderunPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == EnderunSchoolId ||
+        x.Name == EnderunSchoolName ||
+        x.Name == LegacyEnderunSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = EnderunSchoolId,
+          Name = EnderunSchoolName,
+          CreatedDate = new DateTime(2005, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = EnderunSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2005, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string enderunLessonNote = "Enderun Extension官网英语项目PHP费用参考；General/Business按月费，Academic为4个月项目，IELTS为30小时线上密集课程，最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "General English 1-2 Months", 4, 40000m, "月费；BLP混合学习，适合日常英语和社交表达", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "General English 3-5 Months", 4, 30000m, "月费；较长报名周期月费降低", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "General English 6-8 Months", 4, 25000m, "月费；适合中长期城市英语补强", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "General English 9-12 Months", 4, 20000m, "月费；长期报名月费参考", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English 1-2 Months", 4, 40000m, "月费；商务沟通、邮件、跨文化和演示表达", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English 3-5 Months", 4, 30000m, "月费；适合职场英语持续训练", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English 6-8 Months", 4, 25000m, "月费；适合企业或成人中长期目标", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English 9-12 Months", 4, 20000m, "月费；长期报名月费参考", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Academic English 4-Month Program", 16, 120000m, "4个月项目；适合大学或研究生学习准备", now, enderunLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS Test Preparation 30 Hours", 4, 6499m, "30小时线上密集雅思备考，需按当期开课日期确认", now, enderunLessonNote, PhpCurrencyId);
+
+      UpsertRoom(context, schoolId, "住宿自理", 4, 0m, "Enderun Extension不是传统寄宿制ESL学校；酒店、公寓或亲友住宿需另行安排", now, PhpCurrencyId);
+
+      UpsertFee(context, schoolId, "Book Fee参考低值", 6000m, PhpCurrencyId, "官网说明Book fee通常不包含在课程费内，约PHP6,000-8,700，按课程确认", now);
+      UpsertFee(context, schoolId, "Book Fee参考高值", 8700m, PhpCurrencyId, "官网说明Book fee通常不包含在课程费内，约PHP6,000-8,700，按课程确认", now);
+      UpsertFee(context, schoolId, "One-on-One Top-Up 1-2 Months", 1400m, PhpCurrencyId, "额外一对一课每小时参考；官网Top-Up Packages页面", now);
+      UpsertFee(context, schoolId, "One-on-One Top-Up 3-5 Months", 1200m, PhpCurrencyId, "额外一对一课每小时参考；官网Top-Up Packages页面", now);
+      UpsertFee(context, schoolId, "One-on-One Top-Up 6-8 Months", 1000m, PhpCurrencyId, "额外一对一课每小时参考；官网Top-Up Packages页面", now);
+      UpsertFee(context, schoolId, "One-on-One Top-Up 9-12 Months", 850m, PhpCurrencyId, "额外一对一课每小时参考；官网Top-Up Packages页面", now);
+      UpsertFee(context, schoolId, "SSP / Visa Review", 0m, PhpCurrencyId, "官网FAQ说明入学后由Visa Team按护照和签证状态判断是否需要SSP，金额需当期确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedAmericanEnglishPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == AmericanEnglishSchoolId ||
+        x.Name == AmericanEnglishSchoolName ||
+        x.Name == LegacyAmericanEnglishSchoolName ||
+        x.Name == "American English Skills Development Center Inc." ||
+        x.Name == "American English");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = AmericanEnglishSchoolId,
+          Name = AmericanEnglishSchoolName,
+          CreatedDate = new DateTime(2006, 3, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = AmericanEnglishSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2006, 3, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string americanEnglishLessonNote = "American English官网PHP费用参考；课程按团体课、一对一、40小时项目或企业定制区分，最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "Online Business Conversational English 40 Hours", 4, 14800m, "40小时线上团体课；最大10人，需确认当期开班", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Basic Conversational English Low", 4, 19700m, "官网Programs页公开Basic Conversational English价格区间低值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Basic Conversational English High", 4, 29500m, "官网Programs页公开Basic Conversational English价格区间高值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business Conversational English Low", 4, 19700m, "官网公开Business Conversational English团体课价格区间低值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business Conversational English High", 4, 48000m, "官网公开Business Conversational English团体课价格区间高值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Assertive Communication Low", 4, 19700m, "官网公开Assertive Communication团体课价格区间低值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Assertive Communication High", 4, 48000m, "官网公开Assertive Communication团体课价格区间高值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Excellence in English Communication Low", 4, 12800m, "官网公开一对一Excellence in English Communication价格区间低值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Excellence in English Communication High", 4, 98800m, "官网公开一对一Excellence in English Communication价格区间高值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Excellence in Business Writing Low", 4, 12800m, "官网公开Excellence in Business Writing价格区间低值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Excellence in Business Writing High", 4, 98800m, "官网公开Excellence in Business Writing价格区间高值", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English One-on-One 40 Hours", 4, 48000m, "官网Business English产品页公开40小时一对一起价参考", now, americanEnglishLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English One-on-One 120 Hours", 12, 155904m, "官网Business English产品页公开120小时高值参考", now, americanEnglishLessonNote, PhpCurrencyId);
+
+      UpsertRoom(context, schoolId, "住宿自理", 4, 0m, "American English不是传统寄宿制ESL学校；酒店、公寓或亲友住宿需另行安排", now, PhpCurrencyId);
+
+      UpsertFee(context, schoolId, "Pre-assessment / Needs Assessment", 0m, PhpCurrencyId, "入学前或企业培训前的英语水平/需求评估，费用和形式需按课程确认", now);
+      UpsertFee(context, schoolId, "教材 / 课程资料", 0m, PhpCurrencyId, "按实际课程、小时数和定制内容确认", now);
+      UpsertFee(context, schoolId, "Corporate Training Quote", 0m, PhpCurrencyId, "企业课程需先做Training Needs Analysis，再按人数、模块和交付方式报价", now);
+      UpsertFee(context, schoolId, "住宿 / 餐食 / 通勤", 0m, PhpCurrencyId, "城市课程不含宿舍和三餐，Makati住宿与通勤需自行规划", now);
+      UpsertFee(context, schoolId, "签证 / 保险 / 停留", 0m, PhpCurrencyId, "国际学生按停留时间、护照和行程另行确认", now);
 
       await context.SaveChangesAsync();
     }

@@ -1,0 +1,335 @@
+<app-cia-school>
+  <div class="cia-page american-english-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/manila">
+              <mat-icon>arrow_back</mat-icon>
+              返回马尼拉学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 马尼拉学校 / 菲律宾马尼拉American-English-Skill语言学校</p>
+            <h1><span>菲律宾马尼拉</span><span>American-English-Skill语言学校</span></h1>
+            <p class="hero-lead">
+              <span>American English Skills Development Center 是位于 Makati 的商务英语与沟通训练中心。</span>
+              <span>课程适合成人、职场人士、企业团队、一对一私教、线上团体课和短期城市学习安排。</span>
+              <span>它不是传统寄宿制 ESL 学校，住宿、餐食、通勤、签证和保险需要单独规划。</span>
+            </p>
+            <div class="hero-tags" aria-label="American English特点">
+              <span><mat-icon>location_on</mat-icon>Makati / Ayala Avenue</span>
+              <span><mat-icon>business_center</mat-icon>Business English</span>
+              <span><mat-icon>groups</mat-icon>Group / 1:1 / Corporate</span>
+              <span><mat-icon>hotel</mat-icon>住宿自理</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即估算American English费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看课程价格
+                <mat-icon>payments</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              本页根据 American English 官网公开课程、费用、Makati 地址、在线与面授说明整理；最终课程、开班、优惠和企业报价以学校正式回函为准。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="American English官方图片展示">
+            <figure class="feature-photo brand-photo">
+              <img src="assets/philippines/american-english-brand.png" alt="菲律宾马尼拉American-English-Skill语言学校官方品牌图" />
+              <figcaption>American English 官方品牌图：Makati 商务英语与沟通训练中心</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="American English课程图片">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>费用参考</span>
+              <strong>{{ quoteText }}</strong>
+              <p>{{ selectedProgram.name }}</p>
+              <ul>
+                <li><mat-icon>check_circle</mat-icon>官网公开 PHP 课程费用已按项目拆分</li>
+                <li><mat-icon>info</mat-icon>住宿、餐食、通勤和停留费用需另行安排</li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片来源：American English 官网公开品牌图、课堂图和课程图；费用参考官网 Programs、Online Business Conversational English、Business English 与 Corporate Training 页面。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="American English手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="American English快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>官方图片</span>
+            <h2>使用 American English 官方图片呈现学校定位</h2>
+            <p>American English 更偏 Makati 城市型商务英语、成人沟通训练、一对一和企业培训，因此图片以官方品牌、课堂现场和课程方向为主。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="American English图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading"><span>学校基本信息</span><h2>American English 基本资料</h2></div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading"><span>思达顾问点评</span><h2>先确认是否接受城市型上课，再比较课程费用</h2></div>
+            <p>American English 适合已经能安排马尼拉住宿和通勤、并且学习目标明确的人。它的优势是商务英语、发音、写作、演讲、一对一和企业培训；如果想要宿舍三餐和全天候校内管理，就要优先比较宿务、碧瑶或 Clark 的寄宿制 ESL 学校。</p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Sida</div>
+              <div><strong>顾问建议</strong><span>短期商务英语、在马尼拉出差期间补课、企业内训和一对一目标课可以重点看；预算表要把课程费和住宿生活费分开。</span></div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问帮我判断American English是否适合
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading"><span>核心亮点</span><h2>American English 适合放进马尼拉候选清单的原因</h2></div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading"><span>适合 / 不适合</span><h2>American English 不是传统 ESL 套餐校，先看学习场景是否匹配</h2></div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 American English</h3>
+              <article *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程方向</span>
+            <h2>Business Conversation、Basic Conversation、Business Writing、一对一与企业培训</h2>
+            <p>American English 官网把课程分为团体课、一对一、企业培训、Kids & Teens 和线上/面授选项，本页重点整理成人和商务英语相关方向。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>官方PHP费用参考</span>
+              <h2>课程费用按团体课、一对一、40小时项目和企业定制拆分</h2>
+              <p>官网公开价格会因课程类型、线上或面授、小时数、班级人数、优惠和当期开班而不同；下面作为初步预算参考。</p>
+            </div>
+            <div class="data-table american-fee-table" role="table" aria-label="American English课程费用">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">费用</span>
+                <span role="columnheader">说明</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of programFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">{{ formatMoney(fee.tuition, fee.currencyCode) }} / {{ fee.unit }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="American English课程费用手机卡片">
+              <article *ngFor="let fee of programFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>费用</em><b>{{ formatMoney(fee.tuition, fee.currencyCode) }} / {{ fee.unit }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>American English费用快速估算</span>
+              <h2>默认参考：Online Business Conversational English 40 Hours</h2>
+              <p>估算只包含已选课程费用；住宿、通勤、餐食、签证停留、保险和个人费用另算。</p>
+            </div>
+            <div class="quote-form" aria-label="American English费用估算选项">
+              <label>课程<select [(ngModel)]="selectedProgramId"><option *ngFor="let program of programFees" [value]="program.id">{{ program.name }}</option></select></label>
+              <label>预计开始日期<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>课程费</span><strong>{{ formatMoney(selectedProgram.tuition, selectedProgram.currencyCode) }}</strong></div>
+              <div><span>费用单位</span><strong>{{ selectedProgram.unit }}</strong></div>
+              <div><span>住宿</span><strong>自理，未计入</strong></div>
+              <div><span>通勤生活费</span><strong>按个人安排另算</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>PHP参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>{{ quoteNote }}</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认开班日期、线上或面授、小时数、优惠、企业需求和学校回函。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">American English 官网公开价格适合做预算初筛，不应直接视为最终缴费金额；企业培训需先做需求分析后再按方案报价。</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="room-fees">
+          <div class="section-heading">
+            <span>住宿说明</span>
+            <h2>American English 页面不应写成宿舍制 ESL 套餐</h2>
+            <p>学校位于 Makati 城市办公楼，本页保留“住宿自理”作为数据库和页面提示，避免用户误以为包含宿舍、三餐和校内管理。</p>
+          </div>
+          <div class="local-fee-grid">
+            <article *ngFor="let room of roomFees">
+              <span>{{ room.name }}</span>
+              <strong>{{ room.fee > 0 ? formatMoney(room.fee, room.currencyCode) : '自理' }}</strong>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>额外费用</span>
+            <h2>课程费之外要单独确认的项目</h2>
+            <p>以下为官网说明和顾问预算拆分项目，最终金额以学校回函、课程选择和个人行程为准。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看额外费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页参考 American English 官网公开 Programs、Online Business Conversational English、Business English 和 Corporate Training 资料。价格、开课日、名额、优惠和企业报价可能调整，报名以学校正式报价为准。</p>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>通过思达启航报名 American English，我们会先帮你确认城市型英语训练是否合适</h2>
+            <p>American English 要重点看课程目标、上课地点或线上形式、住宿自理、通勤和企业需求。顾问会把这些项目拆开，而不是套用寄宿制 ESL 学校报价方式。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 American English 前建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading"><span>资料来源</span><h2>American English 官方参考链接</h2></div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>{{ source.label }}</a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名 American English 前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="American English页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedProgram.unit }}</strong>
+          <p>{{ selectedProgram.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>住宿、通勤和停留费用另计</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道 American English 是否适合你的马尼拉学习计划？</h2>
+        <p>把学习目标、入学时间、是否在马尼拉有住宿、想线上还是面授、是否需要企业培训告诉顾问，我们可以先帮你确认当期课程和正式报价。</p>
+        <ul><li>0中介服务费</li><li>课程费用拆分</li><li>住宿通勤建议</li><li>签证停留提醒</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="American English手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

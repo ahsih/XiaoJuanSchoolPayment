@@ -111,9 +111,23 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
     description:
-      '马尼拉菲律宾留学和英语游学指南，整理马尼拉语言学校、商务英语、城市生活、课程选择和咨询规划重点。',
-    keywords: '马尼拉留学, 马尼拉游学, 马尼拉语言学校, 菲律宾商务英语, Enderun, Berlitz Philippines',
+      '马尼拉菲律宾留学和英语游学指南，整理菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、马尼拉语言学校、商务英语、城市生活、课程选择和咨询规划重点。',
+    keywords: '马尼拉留学, 马尼拉游学, 马尼拉语言学校, 菲律宾马尼拉Enderun语言学校, 菲律宾马尼拉American-English-Skill语言学校, 菲律宾商务英语, Enderun Extension, American English Skills Development Center, Berlitz Philippines',
     image: '/assets/philippines/manila-study-hero.jpg',
+  },
+  '/philippines-study/manila/enderun-extension': {
+    title: '菲律宾马尼拉Enderun语言学校 | 课程费用与报名咨询',
+    description:
+      '菲律宾马尼拉Enderun语言学校页面，整理Enderun Extension的General English、Business English、Academic English、IELTS Test Preparation、One-on-One Top-Up、PHP课程费用、Book Fee和住宿自理说明。',
+    keywords: '菲律宾马尼拉Enderun语言学校, Enderun Extension, Enderun Colleges, 马尼拉英语学校, Manila English, Business English Manila, Academic English Manila',
+    image: '/assets/philippines/enderun-extension-socials.jpg',
+  },
+  '/philippines-study/manila/american-english-skills-development-center': {
+    title: '菲律宾马尼拉American-English-Skill语言学校 | 课程费用与报名咨询',
+    description:
+      '菲律宾马尼拉American-English-Skill语言学校页面，整理American English Skills Development Center的团体课、一对一、商务英语、商务写作、发音、演讲、企业培训、PHP课程费用和住宿自理说明。',
+    keywords: '菲律宾马尼拉American-English-Skill语言学校, American English Skills Development Center, American English Makati, 马尼拉商务英语, Makati英语培训, Business English Philippines',
+    image: '/assets/philippines/american-english-brand.png',
   },
   '/philippines-study/boracay': {
     title: '长滩岛菲律宾游学 | 海岛英语课程与语言学校',
@@ -417,6 +431,8 @@ export class SeoService {
       clark: '克拉克',
       'eg-academy': '菲律宾克拉克EG语言学校',
       manila: '马尼拉',
+      'enderun-extension': '菲律宾马尼拉Enderun语言学校',
+      'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',
       cost: '费用',
       faq: '常见问题',
       offers: '优惠',

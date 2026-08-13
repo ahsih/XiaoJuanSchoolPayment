@@ -279,13 +279,15 @@ const routes: Routes = [
       {
         path: 'philippines-study/manila/enderun-extension',
         loadComponent: () =>
-          import('./pages/philippines/enderun-school/enderun-school.component').then((m) => m.EnderunSchoolComponent),
+          import('./pages/philippines/enderun-school/enderun-school-detail.component').then(
+            (m) => m.EnderunSchoolDetailComponent,
+          ),
       },
       {
         path: 'philippines-study/manila/american-english-skills-development-center',
         loadComponent: () =>
-          import('./pages/philippines/american-english-school/american-english-school.component').then(
-            (m) => m.AmericanEnglishSchoolComponent,
+          import('./pages/philippines/american-english-school/american-english-school-detail.component').then(
+            (m) => m.AmericanEnglishSchoolDetailComponent,
           ),
       },
       {

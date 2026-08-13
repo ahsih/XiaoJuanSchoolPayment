@@ -98,19 +98,19 @@ export class ManilaStudyComponent {
       title: '成人口语型',
       tag: 'Adult / Speaking',
       text: '适合提升日常沟通、社交表达、发音、演讲和城市生活英语的成人学生。',
-      examples: 'American English、Berlitz Philippines、Enderun Extension',
+      examples: '菲律宾马尼拉American-English-Skill语言学校、Berlitz Philippines、菲律宾马尼拉Enderun语言学校',
     },
     {
       title: '商务职场型',
       tag: 'Business / Corporate',
       text: '适合会议表达、商务写作、客户沟通、领导力表达、跨文化沟通和企业内训需求。',
-      examples: 'Enderun Extension、American English、Berlitz Philippines',
+      examples: '菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、Berlitz Philippines',
     },
     {
       title: '学术英语与升学衔接',
       tag: 'Academic / Pathway',
       text: '适合想在首都圈体验大学或学院环境，并考虑商务、酒店、管理等后续学习的人群。',
-      examples: 'Enderun Colleges、Manila Business College',
+      examples: '菲律宾马尼拉Enderun语言学校、Manila Business College',
     },
     {
       title: '短期转机组合型',
@@ -122,50 +122,50 @@ export class ManilaStudyComponent {
 
   readonly schoolProfiles: SchoolProfile[] = [
     {
-      name: 'Enderun Extension',
+      name: '菲律宾马尼拉Enderun语言学校',
       location: 'Taguig / Enderun Colleges 体系',
       style: '学术英语、商务英语与短课型',
       route: '/philippines-study/manila/enderun-extension',
-      startingPrice: '需当期确认',
+      startingPrice: 'PHP 40,000 / 月起参考',
       courses: [
-        'Academic English',
-        'Business English',
         'General English',
-        'Camps',
-        'Foreign Languages',
-        'Corporate / Pearson VUE',
+        'Business English',
+        'Academic English',
+        'IELTS Test Preparation',
+        'One-on-One Top-Up',
+        'Corporate / Short Courses',
       ],
       accommodation:
-        '不是传统寄宿制 ESL 学校，住宿通常需要另行安排酒店、公寓或亲友住宿。',
+        '非寄宿制城市课程，酒店、公寓、亲友住宿或公司住宿需自行安排，并提前核对通勤时间。',
       facilities:
-        '官网列有语言课程、短课、证书课程、企业培训和 Pearson Vue 等资源，适合城市型学习。',
+        '官网BLP说明包含社交团体课、每周一对一Validation、线上coursework；较长周期可核对额外一对一、gym与合作餐厅/酒店折扣。',
       bestFor:
         '成人、职场人士、学术英语衔接、短期课程，以及希望结合城市资源的人群。',
       consultantNote:
-        'Enderun 更像“城市学院短课/英语能力补强”，不是碧瑶或宿务那种高密度宿舍制游学。',
+        '官方公开General/Business月费为PHP40,000/30,000/25,000/20,000档，Book Fee约PHP6,000-8,700；SSP由学校Visa Team按护照和签证状态确认。',
     },
     {
-      name: 'American English Skills Development Center',
+      name: '菲律宾马尼拉American-English-Skill语言学校',
       location: 'Makati / Metro Manila',
       style: '成人口语与企业沟通训练',
       route: '/philippines-study/manila/american-english-skills-development-center',
-      startingPrice: '₱24,000起，需核价',
+      startingPrice: 'PHP 14,800 / 40小时起参考',
       courses: [
-        'Conversational English',
-        'Business English',
-        'IELTS Prep',
+        'Online Business Conversational English',
+        'Basic Conversational English',
+        'Business Conversational English',
+        'One-on-One Training',
         'Business Writing',
-        'Assertive Communication',
-        'One-on-One / Group / Corporate',
+        'Corporate Training',
       ],
       accommodation:
-        '官网定位为线上或线下面授培训中心，住宿和接送需学生自行安排。',
+        '非寄宿制城市培训中心；酒店、公寓、亲友住宿、餐食、通勤、签证停留和保险需学生自行安排。',
       facilities:
-        '官网强调线上与面对面课程、团体课、一对一、企业培训、沟通表达和真实场景练习。',
+        '官网强调线上与面对面课程、团体课、一对一、企业培训、TNA需求分析、沟通表达和真实场景练习；上课点位于Makati。',
       bestFor:
-        '在职人士、面试准备、商务写作、客服沟通、公开表达和短期口语强化。',
+        '成人、职场人士、商务英语、短期马尼拉停留、企业培训、面试准备、商务写作、客服沟通和公开表达。',
       consultantNote:
-        '适合已经在马尼拉或计划短住的人；如果需要校内宿舍和每日管理，应转看宿务、碧瑶或 Clark。',
+        '官网公开Online Business Conversational English为PHP14,800/40小时；团体课常见区间PHP19,700-48,000，一对一公开区间PHP12,800-98,800。适合已能自行安排马尼拉住宿和通勤的人。',
     },
     {
       name: 'Berlitz Philippines',

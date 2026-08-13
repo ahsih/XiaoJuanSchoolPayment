@@ -346,12 +346,12 @@ export const mainNavigation: NavigationItem[] = [
         children: [
           {
             id: 'enderun-extension',
-            label: 'Enderun Extension',
+            label: '菲律宾马尼拉Enderun语言学校',
             route: '/philippines-study/manila/enderun-extension',
           },
           {
             id: 'american-english-skills-development-center',
-            label: 'American English Skills Development Center',
+            label: '菲律宾马尼拉American-English-Skill语言学校',
             route:
               '/philippines-study/manila/american-english-skills-development-center',
           },
