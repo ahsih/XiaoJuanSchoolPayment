@@ -78,7 +78,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾碧瑶MONOL语言学校页面，整理MONOL的General ESL、IELTS、LEAP课程、Hotel-style住宿房型、官方费用、餐费说明和当地费用。',
     keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
-    image: '/assets/philippines/home-school-monol.png',
+    image: '/assets/philippines/monol-campus-building.jpg',
   },
   '/philippines-study/baguio/wales-academy': {
     title: '菲律宾碧瑶WALES语言学校 | 课程费用住宿与报名咨询',
@@ -169,7 +169,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
     description:
       '菲律宾低预算语言学校推荐，从学费、住宿、当地费用和城市生活成本比较适合长期英语游学的方案。',
     keywords: '菲律宾便宜语言学校, 菲律宾低预算游学, 菲律宾游学性价比, 菲律宾英语学校费用',
-    image: '/assets/philippines/home-school-monol.png',
+    image: '/assets/philippines/monol-campus-building.jpg',
   },
   '/philippines-study/recommendations/family-schools': {
     title: '菲律宾亲子游学学校推荐 | 家庭英语课程规划',

@@ -71,15 +71,19 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: '菲律宾碧瑶MONOL语言学校', description: 'MONOL是碧瑶老牌语言学校，适合稳定学习、住宿舒适度和长期规划。', src: 'assets/philippines/home-school-monol.png' },
-    { category: '校区', title: '碧瑶山城学习环境', description: '碧瑶凉爽安静，适合长期学习和生活节奏稳定的学生。', src: 'assets/philippines/baguio-study-hero.jpg' },
-    { category: '教室', title: '一对一课堂参考', description: 'General ESL、IELTS和LEAP都重视一对一课与个别化反馈。', src: 'assets/cia/one-to-one-class.png' },
-    { category: '教室', title: '团体互动课堂参考', description: '团体课用于沟通、讨论、听力和输出训练。', src: 'assets/cia/small-group-class.jpg' },
-    { category: '住宿', title: 'Hotel-style住宿参考', description: '房型、房务、设备和生活稳定度是MONOL选校时必须重点比较的部分。', src: 'assets/cia/dormitory-overview.jpg' },
-    { category: '住宿', title: '单人房参考', description: 'Single和Premium Single适合重视隐私、长期学习和成人生活节奏的人。', src: 'assets/cia/single-room.jpg' },
-    { category: '餐厅', title: '餐食与咖啡空间参考', description: 'MONOL餐食另计，学生可按生活习惯规划餐盒、咖啡厅、外送或自炊预算。', src: 'assets/cia/dining-hall.jpg' },
-    { category: '设施', title: '自习空间参考', description: '半斯巴达节奏更依赖学生自律，适合能主动安排复习的人。', src: 'assets/cia/library.jpg' },
-    { category: '设施', title: '健身休闲设施参考', description: '官方资料强调屋顶健身房、桑拿、高尔夫练习区、Lounge和Aqua Garden Cafe。', src: 'assets/cia/fitness-center.jpg' },
+    { category: '校区', title: 'MONOL校舍外观', description: 'MONOL官网首页展示的Baguio校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.jpg' },
+    { category: '教室', title: 'MONOL官方课堂品牌照', description: '官网首页展示的MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.png' },
+    { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.jpg' },
+    { category: '教室', title: 'MONOL独立教室区', description: 'Facility页面展示的玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.jpg' },
+    { category: '住宿', title: 'Single Room私密房型', description: '官方房型照片展示的单人房，含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.jpg' },
+    { category: '住宿', title: 'Deluxe / Family房型', description: '官方照片展示的带厨房住宿空间，适合家庭、同行者或重视生活舒适度的学生。', src: 'assets/philippines/monol-dormitory-room.jpg' },
+    { category: '住宿', title: 'Triple Room多人房', description: '官方照片展示的多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.jpg' },
+    { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Facility页面Aqua Garden Cafe照片展示的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.jpg' },
+    { category: '餐厅', title: 'MONOL餐点参考', description: '官方照片展示的餐点，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.jpg' },
+    { category: '设施', title: 'Lounge学习休息区', description: 'Facility页面Lounge照片展示的自习、工作与交流空间。', src: 'assets/philippines/monol-lounge.jpg' },
+    { category: '设施', title: 'Rooftop Gym', description: 'Facility页面Rooftop Gym照片展示可看山景的健身空间。', src: 'assets/philippines/monol-rooftop-gym.jpg' },
+    { category: '设施', title: 'Golf Driving Range', description: 'Facility页面Golf Driving Range照片展示的校内高尔夫练习区。', src: 'assets/philippines/monol-golf-range.jpg' },
+    { category: '设施', title: 'Rooftop Lounge', description: 'Facility页面屋顶休息区照片展示的夜间开放空间。', src: 'assets/philippines/monol-rooftop-lounge.jpg' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -94,10 +98,10 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/home-school-monol.png', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
-    { image: 'assets/cia/dormitory-overview.jpg', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
-    { image: 'assets/cia/one-to-one-class.png', title: '课程线清楚', text: 'General ESL补基础，IELTS面向升学就业目标，LEAP用学习者画像和客制课程做更精细的目标匹配。' },
-    { image: 'assets/cia/fitness-center.jpg', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
+    { image: 'assets/philippines/monol-campus-building.jpg', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
+    { image: 'assets/philippines/monol-private-room.jpg', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
+    { image: 'assets/philippines/monol-classroom.jpg', title: '课程线清楚', text: 'General ESL补基础，IELTS面向升学就业目标，LEAP用学习者画像和客制课程做更精细的目标匹配。' },
+    { image: 'assets/philippines/monol-rooftop-gym.jpg', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
   ];
 
   readonly suitableFor: FitItem[] = [

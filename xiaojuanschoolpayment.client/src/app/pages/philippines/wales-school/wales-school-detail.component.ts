@@ -91,7 +91,7 @@ export class WalesSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: '菲律宾碧瑶WALES语言学校', description: 'WALES是碧瑶Legarda Road一带的小型语言学校，适合想要市区便利和弹性节奏的学生。', src: 'assets/philippines/wales-school-building.jpg' },
+    { category: '校区', title: 'WALES校舍外观', description: 'WALES官方网站展示的Baguio校舍，学校位于Legarda Road生活圈。', src: 'assets/philippines/wales-school-building.jpg' },
     { category: '设施', title: 'WALES校内设施', description: '官方Facility页面展示的校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.jpg' },
     { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES官方Classrooms页面展示的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.jpg' },
     { category: '教室', title: '团体与功能教室', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/philippines/wales-classroom-group.jpg' },
