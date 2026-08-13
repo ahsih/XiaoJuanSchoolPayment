@@ -1,0 +1,335 @@
+<app-cia-school>
+  <div class="cia-page mbc-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/manila">
+              <mat-icon>arrow_back</mat-icon>
+              返回马尼拉学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 马尼拉学校 / 菲律宾马尼拉Business College学校</p>
+            <h1><span>菲律宾马尼拉</span><span>Business College学校</span></h1>
+            <p class="hero-lead">
+              <span>Manila Business College 是位于 Sta. Cruz, Manila 的学院型学校，官网显示 SY 2026-2027 招生中。</span>
+              <span>页面重点整理商科、会计、酒店管理、信息系统、高中ABM、夜间班、周末班、TESDA课程和国际学生申请材料。</span>
+              <span>它不是传统寄宿制 ESL 语言学校，费用、宿舍、签证协助和国际学生资格都需要按当期学校回复确认。</span>
+            </p>
+            <div class="hero-tags" aria-label="MBC特点">
+              <span><mat-icon>location_on</mat-icon>Sta. Cruz, Manila</span>
+              <span><mat-icon>verified</mat-icon>CHED / DepEd / TESDA</span>
+              <span><mat-icon>school</mat-icon>Business / Accountancy / Hospitality</span>
+              <span><mat-icon>payments</mat-icon>费用需当期确认</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                确认MBC费用和申请
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看课程项目
+                <mat-icon>payments</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问核价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              本页根据 Manila Business College 官网首页、Admission 页、Programs offered、Facilities、Scholarship 和 Contact 信息整理；未公开的费用不做虚构报价。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="MBC官方图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/mbc-about.jpg" alt="菲律宾马尼拉Business College学校官方校舍外观" />
+              <figcaption>MBC 官网图片：Manila Business College 校舍外观</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="MBC课程和设施图片">
+              <figure *ngFor="let image of galleryImages.slice(2, 5)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>费用参考</span>
+              <strong>{{ quoteText }}</strong>
+              <p>{{ selectedProgram.name }}</p>
+              <ul>
+                <li><mat-icon>info</mat-icon>官网未公开完整国际学生学费表</li>
+                <li><mat-icon>check_circle</mat-icon>奖学金金额仅作官方公开信息备注</li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片来源：Manila Business College 官网公开校徽、首页轮播、About、Programs offered 和 Facilities 图片。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="MBC手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="MBC快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>官方图片</span>
+            <h2>使用 MBC 官网图片呈现学院、课程和设施</h2>
+            <p>MBC 页面重点展示校舍、校徽、本科课程、高中ABM、教室、图书馆和酒店管理模拟空间，避免使用通用马尼拉图片。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="MBC图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading"><span>学校基本信息</span><h2>MBC 基本资料</h2></div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading"><span>思达顾问点评</span><h2>把 MBC 当作马尼拉学院型路线来评估</h2></div>
+            <p>MBC 更像“英语能力 + 商科/学院/城市学习”的候选，不适合直接套用菲律宾语言学校的宿舍三餐和每日课表报价。申请前要先确认国际学生资格、费用、住宿和签证协助。</p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Sida</div>
+              <div><strong>顾问建议</strong><span>如果学生想读短期英语口语，优先比较语言学校；如果目标是商科、会计、酒店管理、信息系统或学历衔接，再把MBC放入候选清单。</span></div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断MBC是否适合
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading"><span>核心亮点</span><h2>为什么可以把 MBC 放进马尼拉候选</h2></div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading"><span>适合 / 不适合</span><h2>MBC 适合学院路线，不适合直接当作ESL寄宿学校</h2></div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑MBC</h3>
+              <article *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程方向</span>
+            <h2>ABM、本科商科、会计、酒店管理、信息系统、夜间班、周末班和TESDA</h2>
+            <p>以下按官网 Programs offered 区块和课程文字整理，正式开放课程、入学批次和国际学生资格以学校回复为准。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>费用设置</span>
+              <h2>常规课程保留为需当期确认，奖学金金额仅作公开参考</h2>
+              <p>MBC 官网没有完整国际学生学费表，所以课程数据库不写虚构价格；公开奖学金金额会在额外费用区作为备注展示。</p>
+            </div>
+            <div class="data-table mbc-fee-table" role="table" aria-label="MBC课程费用">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">费用</span>
+                <span role="columnheader">说明</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of programFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">{{ displayProgramFee(fee) }} / {{ fee.unit }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="MBC课程费用手机卡片">
+              <article *ngFor="let fee of programFees">
+                <span>项目</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>费用</em><b>{{ displayProgramFee(fee) }} / {{ fee.unit }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>MBC费用快速判断</span>
+              <h2>默认参考：BSBA Major in Management</h2>
+              <p>此处只提示是否需要核价，不把未公开的国际学生学费写成固定金额。</p>
+            </div>
+            <div class="quote-form" aria-label="MBC费用确认选项">
+              <label>项目<select [(ngModel)]="selectedProgramId"><option *ngFor="let program of programFees" [value]="program.id">{{ program.name }}</option></select></label>
+              <label>预计开始日期<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>课程费用</span><strong>{{ displayProgramFee(selectedProgram) }}</strong></div>
+              <div><span>费用单位</span><strong>{{ selectedProgram.unit }}</strong></div>
+              <div><span>住宿</span><strong>需单独确认</strong></div>
+              <div><span>签证/材料</span><strong>按学生背景确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>PHP参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>{{ quoteNote }}</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式预算仍需要确认学费、杂费、注册费、住宿、签证协助、教材、制服和付款节点。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">确认核价项目<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">让顾问询价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">官网奖学金金额不等于国际学生学费。页面保留“需当期确认”，是为了避免用本地奖学金或旧资料误导报名预算。</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="room-fees">
+          <div class="section-heading">
+            <span>住宿说明</span>
+            <h2>官网提到 dormitories，但房型和费用必须单独核对</h2>
+            <p>MBC 不是典型ESL寄宿校，页面不会把宿舍、三餐、接送和校内管理自动并入课程报价。</p>
+          </div>
+          <div class="local-fee-grid">
+            <article *ngFor="let room of roomFees">
+              <span>{{ room.name }}</span>
+              <strong>{{ room.fee > 0 ? formatMoney(room.fee, room.currencyCode) : '需确认' }}</strong>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>额外费用和公开金额</span>
+            <h2>申请前要分开确认的预算项目</h2>
+            <p>以下结合官网 Admission 和 Scholarship 信息整理，最终以 MBC 当期书面回复为准。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看额外费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页参考 MBC 官网首页、Admission Requirements、Programs offered、Facilities、Scholarship Programs 和 Contact 信息。官网未公开的国际学生价格、住宿费和签证费用均标记为需确认。</p>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>咨询MBC时，我们会先确认学生要的是学院路线还是语言学校路线</h2>
+            <p>MBC 的关键不是套价格表，而是确认课程开放、国际学生资格、材料、签证协助、住宿和当期费用。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看咨询协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认MBC前建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading"><span>资料来源</span><h2>MBC官方参考链接</h2></div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>{{ source.label }}</a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名MBC前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="MBC页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedProgram.unit }}</strong>
+          <p>{{ selectedProgram.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>住宿、签证和材料费用需另行确认</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">确认费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道MBC是否适合你的马尼拉学习计划？</h2>
+        <p>把学历背景、目标专业、预算、是否需要住宿、计划入学时间和签证情况告诉顾问，我们会先帮你确认MBC当期要求和正式费用。</p>
+        <ul><li>0中介服务费</li><li>国际学生材料核对</li><li>住宿和通勤提醒</li><li>费用和奖学金资格拆分</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="MBC手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>确认费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

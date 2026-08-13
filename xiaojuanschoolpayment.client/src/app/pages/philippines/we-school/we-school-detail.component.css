@@ -1,0 +1,238 @@
+:host .we-page {
+  --we-accent: #157a69;
+  --we-accent-deep: #0d5d58;
+  --we-accent-soft: rgba(21, 122, 105, 0.1);
+  --we-sun: #f2b84b;
+  --we-ink: #102033;
+}
+
+:host .we-page,
+:host .we-page * {
+  box-sizing: border-box;
+}
+
+:host .gallery-grid figure img,
+:host .highlight-list img {
+  object-fit: cover;
+}
+
+:host .hero-copy h1 span {
+  display: block;
+}
+
+:host .hero-copy h1 {
+  font-size: clamp(42px, 5.2vw, 72px);
+}
+
+:host .hero-lead span {
+  display: block;
+}
+
+:host .breadcrumb,
+:host .hero-lead span,
+:host .quote-breakdown strong,
+:host .hero-price-card strong,
+:host .hero-price-card p {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: break-word;
+}
+
+:host .hero-lead,
+:host .photo-source,
+:host .fee-alert,
+:host .trust-note {
+  line-height: 1.68;
+}
+
+:host .hero-tags span mat-icon,
+:host .section-nav a mat-icon,
+:host .mobile-anchor-nav a mat-icon,
+:host .source-list mat-icon {
+  color: var(--we-accent);
+}
+
+:host .back-link,
+:host .secondary-action,
+:host .course-card > span,
+:host .course-lessons,
+:host .timeline time {
+  color: var(--we-accent-deep);
+}
+
+:host .hero-tags span,
+:host .section-heading > span,
+:host .compact-heading > span {
+  border-color: rgba(21, 122, 105, 0.22);
+  background: rgba(21, 122, 105, 0.09);
+  color: var(--we-accent-deep);
+}
+
+:host .primary-action {
+  background: #ee6b2f;
+  box-shadow: 0 14px 28px rgba(238, 107, 47, 0.18);
+}
+
+:host .secondary-action {
+  border-color: rgba(21, 122, 105, 0.34);
+}
+
+:host .advisor-avatar {
+  background: var(--we-sun);
+  color: #18394a;
+}
+
+:host .course-fee-table .table-row,
+:host .room-fee-table .table-row {
+  grid-template-columns: minmax(150px, 1fr) minmax(140px, 0.65fr) minmax(240px, 1.35fr);
+}
+
+:host .quote-breakdown {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:host .source-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:host .source-list a {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(21, 122, 105, 0.16);
+  border-radius: 8px;
+  color: var(--we-ink);
+  display: inline-flex;
+  font-weight: 800;
+  gap: 8px;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+:host .source-list a:hover {
+  background: var(--we-accent-soft);
+}
+
+:host .local-fee-grid article:nth-child(5),
+:host .local-fee-grid article:nth-child(6),
+:host .local-fee-grid article:nth-child(7),
+:host .local-fee-grid article:nth-child(8) {
+  border-color: rgba(28, 117, 188, 0.2);
+  background: rgba(28, 117, 188, 0.07);
+}
+
+@media (max-width: 760px) {
+  :host .course-fee-table,
+  :host .room-fee-table {
+    display: none;
+  }
+
+  :host .source-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  :host,
+  :host app-cia-school,
+  :host .cia-page {
+    display: block;
+    max-width: 100vw;
+    overflow-x: hidden;
+    width: 100vw;
+  }
+
+  :host .we-page {
+    max-width: 100vw !important;
+    width: 100vw !important;
+  }
+
+  :host .we-page,
+  :host .page-grid,
+  :host .page-main,
+  :host .hero-section,
+  :host .hero-copy,
+  :host .hero-lead,
+  :host .breadcrumb,
+  :host .quick-info,
+  :host .hero-tags {
+    box-sizing: border-box;
+    max-width: calc(100vw - 28px);
+    min-width: 0;
+    width: calc(100vw - 28px);
+  }
+
+  :host .hero-section,
+  :host .hero-media,
+  :host .hero-actions,
+  :host .quote-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :host .hero-copy h1 {
+    font-size: 29px;
+    line-height: 1.08;
+    max-width: calc(100vw - 28px);
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  :host .hero-lead {
+    font-size: 16px;
+    line-height: 1.76;
+    max-width: calc(100vw - 28px);
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  :host .hero-lead span,
+  :host .breadcrumb {
+    display: block !important;
+    max-width: calc(100vw - 28px) !important;
+    min-width: 0 !important;
+    width: calc(100vw - 28px) !important;
+  }
+
+  :host .hero-tags {
+    display: grid !important;
+    gap: 10px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :host .hero-tags span,
+  :host .primary-action,
+  :host .secondary-action {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  :host .quote-breakdown {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .mobile-bottom-actions {
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+
+  :host .mobile-bottom-actions a {
+    box-sizing: border-box;
+    font-size: 15px;
+    min-width: 0;
+    padding-inline: 6px;
+    white-space: normal;
+    width: 100%;
+  }
+}

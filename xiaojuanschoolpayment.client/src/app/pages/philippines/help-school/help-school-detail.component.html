@@ -1,0 +1,436 @@
+<app-cia-school>
+  <div class="cia-page help-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/clark">
+              <mat-icon>arrow_back</mat-icon>
+              返回克拉克学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 克拉克 / HELP English</p>
+            <h1><span>菲律宾克拉克</span><span>HELP English语言学校</span></h1>
+            <p class="hero-lead">
+              <span>位于Clark Freeport Zone的老牌HELP体系。</span>
+              <span>主打Sparta管理、ESL、IELTS、TOEIC和Business。</span>
+              <span>适合需要强管理节奏和考试路线的学生。</span>
+              <span>本页按HELP官网Clark校区、</span>
+              <span>USD价目表与PHP当地费用整理。</span>
+            </p>
+            <div class="hero-tags" aria-label="HELP Clark特点">
+              <span><mat-icon>location_on</mat-icon>Clark Freeport Zone</span>
+              <span><mat-icon>history_edu</mat-icon>Sparta + EOP</span>
+              <span><mat-icon>school</mat-icon>ESL / IELTS / TOEIC</span>
+              <span><mat-icon>payments</mat-icon>USD 1,500 / 4周起</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算HELP费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看官方课程价格
+                <mat-icon>payments</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              HELP官方课程住宿按USD计算，当地费用按PHP另列；正式报名仍需以学校回函、空房、签证规则和当期价目表为准。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="HELP Clark校园图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/help-clark-main-building.jpg" alt="菲律宾克拉克HELP English语言学校主楼" />
+              <figcaption>HELP官网图片：Clark Campus主楼</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="HELP Clark图片缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteText }}</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  按官方USD课程费 + 宿舍费公式估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  4周PHP当地费用表参考总额为PHP20,800
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用来源：HELP English官网Clark Campus页面与HELP官方费用页面。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="HELP Clark手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="HELP Clark快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>校园图片</span>
+            <h2>使用HELP官方图片核对Clark校区和费用资料</h2>
+            <p>HELP官网公开的Clark实景图片不多，因此本页只使用官方主楼图和官方费用图，不混入第三方学校图片。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="HELP Clark图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>HELP Clark Campus 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>HELP Clark更像“纪律型+考试型”的Clark候选</h2>
+            </div>
+            <p>
+              HELP适合希望用Sparta节奏约束自己的学生。选校时不要只看USD 1,500起价，还要把当地费用、EOP规则、晚自习、考试目标和房型空位一起核对。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Sida</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你需要强管理、ESL打底后转IELTS/TOEIC，HELP值得看；如果想要更自由亲子或Native Mix，也要同步比较WE、EG和CIP。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问帮我判断HELP是否适合
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>核心亮点</span>
+              <h2>为什么会把HELP放进Clark候选清单</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不适合</span>
+            <h2>先判断HELP是不是你的路线</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑HELP</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型</span>
+            <h2>ESL、IELTS、TOEIC、Business、Family和Junior方向</h2>
+            <p>HELP Clark的重点是按级别和目标进入Sparta日程，报价前要先确认入学分数、课程级别、开课日和晚间规则。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>HELP官方4周课程费</span>
+              <h2>课程费按USD列示，不含宿舍与当地费用</h2>
+              <p>以下为HELP官网Tuition and Fees页面公开的4周课程费，正式报价以学校当期文件为准。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="HELP官方4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">{{ formatMoney(fee.tuition, fee.currencyCode) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="HELP课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>{{ formatMoney(fee.tuition, fee.currencyCode) }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>学习节奏</span>
+              <h2>Sparta日程适合更专注的学生</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>HELP官方4周住宿费</span>
+              <h2>宿舍费含餐食和校内饮用水</h2>
+              <p>以下为HELP官网公开的4周Dormitory Fee，房型空位要按入学日确认。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="HELP官方4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">{{ formatMoney(room.fee, room.currencyCode) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="HELP住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>{{ formatMoney(room.fee, room.currencyCode) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>HELP费用快速估算</span>
+              <h2>默认参考：4周 ESL + Quadra四人房</h2>
+              <p>估算公式：课程费 + 宿舍费，再按周数 / 4计算；PHP当地费用不并入USD总额。</p>
+            </div>
+            <div class="quote-form" aria-label="HELP费用估算选项">
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费</span><strong>{{ registrationFeeText }}</strong></div>
+              <div><span>课程费</span><strong>{{ formatMoney(tuitionForSelectedWeeks, quoteCurrencyCode) }}</strong></div>
+              <div><span>住宿费</span><strong>{{ formatMoney(roomFeeForSelectedWeeks, quoteCurrencyCode) }}</strong></div>
+              <div><span>公式</span><strong>{{ formulaText }}</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期USD参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>当地PHP费用、机票、保险、个人消费另算</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放、优惠和学校回函。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">
+              注意：HELP官网当地费用表显示Clark 4周本地费用参考总额PHP20,800；签证延签、ACR、教材和长期停留费用会随周数变化。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用</span>
+            <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
+            <p>以下按HELP官方Clark当地费用表整理，金额可能随菲律宾政府规则和学校政策调整。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页费用参考HELP English官网Tuition and Fees、Local Fee、Clark Campus、ESL、IELTS、TOEIC、Business English和About页面。学校价格、当地费用、房型空位、考试安排和接机可能调整，报名以学校正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>通过思达启航报名HELP，我们会帮你把Sparta规则和费用拆清楚</h2>
+            <p>顾问会把课程级别、房型、USD课程住宿、PHP当地费用、EOP规则、接机机场和考试目标分开核对。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认HELP前建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
+          </ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>HELP官方参考链接</h2>
+          </div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名HELP Clark前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="HELP Clark页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>4周Clark当地费用表参考PHP20,800</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道HELP Clark当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英语基础、目标课程、房型和是否接受Sparta规则告诉顾问，我们可以帮你向学校确认正式报价。</p>
+        <ul><li>0中介服务费</li><li>课程级别建议</li><li>USD与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="HELP Clark手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

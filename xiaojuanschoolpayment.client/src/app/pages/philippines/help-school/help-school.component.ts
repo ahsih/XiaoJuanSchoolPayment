@@ -44,7 +44,7 @@ interface SourceLink {
 })
 export class HelpSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'HELP English Clark' },
+    { label: '学校名称', value: '菲律宾克拉克HELP English语言学校' },
     { label: '城市', value: 'Clark / Pampanga' },
     { label: '学校定位', value: '老牌HELP体系、ESL、IELTS、TOEIC、Business、Junior候选' },
     { label: '资料状态', value: 'Clark校区当前资料、价目表和开放状态需当期确认' },
@@ -138,7 +138,7 @@ export class HelpSchoolComponent {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'HELP English Clark现在可以直接报名吗？',
+      question: '菲律宾克拉克HELP English语言学校现在可以直接报名吗？',
       answer:
         '不建议只看旧资料直接报名。应先确认当前Clark校区开放状态、价目表、课程、房型、接机和年龄规则，再决定是否报名。',
     },
@@ -160,7 +160,7 @@ export class HelpSchoolComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: 'HELP English 官方入口', url: 'https://helpenglish.net/' },
+    { label: 'HELP English 官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
     { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
     { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
     { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },

@@ -21,8 +21,12 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid MonolSchoolId = Guid.Parse("2d7c4bd9-0f3b-4b2d-9fb7-d53c2d6a90df");
     private static readonly Guid WalesSchoolId = Guid.Parse("6b825ff8-4f79-4b65-9447-2f4e7abef0a1");
     private static readonly Guid EgSchoolId = Guid.Parse("82cbcbad-1162-4088-823d-ea100bfee689");
+    private static readonly Guid WeSchoolId = Guid.Parse("783171c4-90e8-448c-91a4-2caf09e65c03");
+    private static readonly Guid HelpSchoolId = Guid.Parse("a4c3183e-b569-4b1f-b854-fcdd019b4d1a");
     private static readonly Guid EnderunSchoolId = Guid.Parse("d63f8a4e-27e2-45e9-b1cc-a5223e5d118f");
     private static readonly Guid AmericanEnglishSchoolId = Guid.Parse("4f0709fe-2a93-4dd5-8d0f-2819115f0288");
+    private static readonly Guid BerlitzSchoolId = Guid.Parse("f5635f19-41a2-4d23-99ab-9cb2c05af112");
+    private static readonly Guid MbcSchoolId = Guid.Parse("51f7d253-0f88-4a2b-bd68-640253ef8cbc");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -51,10 +55,20 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string EgSchoolName = "菲律宾克拉克EG语言学校";
     private const string LegacyEgSchoolName = "EG Academy";
     private const string EgFullSchoolName = "Education Group Granma INC";
+    private const string WeSchoolName = "菲律宾克拉克WE Academy语言学校";
+    private const string LegacyWeSchoolName = "Clark WE Academy";
+    private const string WeShortSchoolName = "WE Academy";
+    private const string HelpSchoolName = "菲律宾克拉克HELP English语言学校";
+    private const string LegacyHelpSchoolName = "HELP English Clark";
+    private const string HelpClarkSchoolName = "HELP Clark";
     private const string EnderunSchoolName = "菲律宾马尼拉Enderun语言学校";
     private const string LegacyEnderunSchoolName = "Enderun Extension";
     private const string AmericanEnglishSchoolName = "菲律宾马尼拉American-English-Skill语言学校";
     private const string LegacyAmericanEnglishSchoolName = "American English Skills Development Center";
+    private const string BerlitzSchoolName = "菲律宾马尼拉Berlitz语言学校";
+    private const string LegacyBerlitzSchoolName = "Berlitz Philippines";
+    private const string MbcSchoolName = "菲律宾马尼拉Business College学校";
+    private const string LegacyMbcSchoolName = "Manila Business College";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -75,8 +89,12 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedMonolPricingAsync(context);
       await SeedWalesPricingAsync(context);
       await SeedEgPricingAsync(context);
+      await SeedWePricingAsync(context);
+      await SeedHelpPricingAsync(context);
       await SeedEnderunPricingAsync(context);
       await SeedAmericanEnglishPricingAsync(context);
+      await SeedBerlitzPricingAsync(context);
+      await SeedMbcPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -934,6 +952,135 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedWePricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == WeSchoolId ||
+        x.Name == WeSchoolName ||
+        x.Name == LegacyWeSchoolName ||
+        x.Name == WeShortSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = WeSchoolId,
+          Name = WeSchoolName,
+          CreatedDate = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = WeSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2016, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string weLessonNote = "WE Academy官网课程结构参考；官网公开页面未直接列出完整学费住宿表，课程和住宿费用需按入学日、周数、房型、年龄和学校正式回函确认";
+
+      UpsertLesson(context, schoolId, "ESL Course", 4, 0m, "基础综合英语；完整费用需按周数、房型和入学日确认", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Native Mix 1 Class", 4, 0m, "每日1节Native一对一，适合先加入外教反馈", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Native Mix 2 Classes", 4, 0m, "每日2节Native一对一，适合发音和自然表达强化", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Native Mix 3 Classes", 4, 0m, "每日3节Native一对一，适合短期高口语目标", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Junior ESL Course", 4, 0m, "小学到初中学生基础英语，需确认年龄和监护", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Junior ESL Native Course", 4, 0m, "青少年课程中含Native一对一，适合重视发音", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Guardian ESL Course", 4, 0m, "陪读家长课程，官网说明每日3节菲律宾老师一对一", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "WE Kindergarten", 4, 0m, "4岁到学龄前，英语、数学、艺术和活动课程", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Solo Junior High Support", 4, 0m, "13-15岁独自留学支持，需逐项确认规则", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "English + Golf Practice Course", 4, 0m, "英语课 + 校内高尔夫练习，课程包需报价", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "English + Golf Round Course", 4, 0m, "练习课 + 每周球场field lesson，green fee、caddie fee和cart rental现场另付", now, weLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Swimming Lessons", 4, 0m, "游泳课按单次或小组人数另计", now, weLessonNote, PhpCurrencyId);
+
+      UpsertRoom(context, schoolId, "Campus Dormitory / 校内宿舍", 4, 0m, "官网说明宿舍在校园内，房型和价格需按空房确认", now, PhpCurrencyId);
+      UpsertRoom(context, schoolId, "Family Room / 家庭房", 4, 0m, "亲子同行常用方向，需确认人数、床型、餐食和卫浴", now, PhpCurrencyId);
+      UpsertRoom(context, schoolId, "New Residence / 新宿舍", 4, 0m, "官网Notice有New Residence信息，开放状态和价格需当期确认", now, PhpCurrencyId);
+      UpsertRoom(context, schoolId, "Accommodation To Confirm", 4, 0m, "用于先建预算清单，正式报价前不写死金额", now, PhpCurrencyId);
+
+      UpsertFee(context, schoolId, "Registration Fee", 0m, PhpCurrencyId, "前期支付费用；一次性报名注册费，官网公开页未直接列出金额", now);
+      UpsertFee(context, schoolId, "SSP / SSP E-Card", 0m, PhpCurrencyId, "到校支付费用；菲律宾特别学习许可及相关卡费，按周数和学校规则确认", now);
+      UpsertFee(context, schoolId, "Textbook / Materials", 0m, PhpCurrencyId, "到校支付费用；按课程、级别和实际教材收取", now);
+      UpsertFee(context, schoolId, "Dormitory Deposit / Utilities", 0m, PhpCurrencyId, "到校支付费用；住宿押金、水电、维护或清洁费用需按房型和周数确认", now);
+      UpsertFee(context, schoolId, "Golf Private Class", 750m, PhpCurrencyId, "官网Golf页公开：Private Class 1人 PHP750/次", now);
+      UpsertFee(context, schoolId, "Swimming Private Class", 700m, PhpCurrencyId, "官网Swimming页公开：Private Class 1人 PHP700/次", now);
+      UpsertFee(context, schoolId, "Swimming Small Group", 600m, PhpCurrencyId, "官网Swimming页公开：Small Group PHP600/次", now);
+      UpsertFee(context, schoolId, "Swimming Big Group", 500m, PhpCurrencyId, "官网Swimming页公开：3-5人 Big Group PHP500/次", now);
+      UpsertFee(context, schoolId, "Green / Caddie / Cart Fees", 0m, PhpCurrencyId, "Golf Round Course的green fee、caddie fee和cart rental现场另付", now);
+      UpsertFee(context, schoolId, "Pickup / Activities", 0m, PhpCurrencyId, "Clark或Manila接机、周末活动与亲子外出按当期安排确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedHelpPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == HelpSchoolId ||
+        x.Name == HelpSchoolName ||
+        x.Name == LegacyHelpSchoolName ||
+        x.Name == HelpClarkSchoolName ||
+        x.Name == "HELP Clark Campus" ||
+        x.Name == "HELP English Academy");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = HelpSchoolId,
+          Name = HelpSchoolName,
+          CreatedDate = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = HelpSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string helpLessonNote = "HELP English官网Tuition and Fees页面4周USD课程费参考；最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "ESL", 4, 900m, "Communication English；4周基础沟通英语课程费", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "ESL Intensive", 4, 1040m, "Intensive Communication English；一对一课时更密集", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "Business English", 4, 1050m, "商务沟通、演讲、邮件和职场场景英语", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "Family Program", 4, 1000m, "Family Communication English；亲子同行需确认年龄、房型和监护规则", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC Basic", 4, 1050m, "官方级别参考IELTS 3.0-4.5或TOEIC基础段", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC Intermediate", 4, 1050m, "官方级别参考IELTS 4.5-5.5或TOEIC中级段", now, helpLessonNote);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC Advanced", 4, 1150m, "官方级别参考IELTS 5.5以上或TOEIC进阶段", now, helpLessonNote);
+
+      UpsertRoom(context, schoolId, "Quadra Room / 四人房", 4, 600m, "4周宿舍费；官方说明含校内餐食和饮用水", now);
+      UpsertRoom(context, schoolId, "Triple Room / 三人房", 4, 680m, "4周宿舍费；空房需按入学日确认", now);
+      UpsertRoom(context, schoolId, "Double Room / 双人房", 4, 780m, "4周宿舍费；适合朋友同行或兼顾舒适度", now);
+      UpsertRoom(context, schoolId, "Single Room / 单人房", 4, 1030m, "4周宿舍费；隐私最好，热门档期需提前确认", now);
+
+      UpsertFee(context, schoolId, "Registration Fee", 0m, UsdCurrencyId, "前期支付费用；HELP通用课程住宿表未单独列出注册费，若学校回函列出则以当期文件为准", now);
+      UpsertFee(context, schoolId, "Deposit", 3000m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周参考，退房后按罚款、损坏、电费或超额洗衣扣除后退还", now);
+      UpsertFee(context, schoolId, "Visa Extension / 4 weeks", 0m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周参考，6周及以上会产生延签费用", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，Clark当地费用表参考", now);
+      UpsertFee(context, schoolId, "Water", 600m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周水费参考", now);
+      UpsertFee(context, schoolId, "Electricity Deposit", 1000m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周用电押金参考，按学校规则扣除", now);
+      UpsertFee(context, schoolId, "Maintenance", 1000m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周维护费参考", now);
+      UpsertFee(context, schoolId, "Laundry", 1000m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周洗衣参考，超过16kg另收PHP35/kg", now);
+      UpsertFee(context, schoolId, "ACR I-Card / 4 weeks", 0m, PhpCurrencyId, "到校支付费用；4周参考为0，长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "E I Card / SSP E-Card", 4500m, PhpCurrencyId, "到校支付费用；Clark当地费用表列示项目", now);
+      UpsertFee(context, schoolId, "Learning Materials", 1700m, PhpCurrencyId, "到校支付费用；Clark当地费用表4周教材/学习材料参考", now);
+      UpsertFee(context, schoolId, "ID", 200m, PhpCurrencyId, "到校支付费用；学生证办理参考", now);
+      UpsertFee(context, schoolId, "Local Fee Total / 4 weeks", 20800m, PhpCurrencyId, "到校支付费用；HELP Clark官方当地费用表4周总额", now);
+      UpsertFee(context, schoolId, "CRTV", 1410m, PhpCurrencyId, "到校支付费用；长期停留许可参考，适用于超过6个月停留时按规则确认", now);
+      UpsertFee(context, schoolId, "ECC", 500m, PhpCurrencyId, "到校支付费用；离境清关参考，适用条件需按停留时间确认", now);
+      UpsertFee(context, schoolId, "Airport Pickup", 0m, PhpCurrencyId, "到校支付费用；按Clark或Manila机场、指定接机日和学校LOA确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static async Task SeedEnderunPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
@@ -1041,6 +1188,114 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "Corporate Training Quote", 0m, PhpCurrencyId, "企业课程需先做Training Needs Analysis，再按人数、模块和交付方式报价", now);
       UpsertFee(context, schoolId, "住宿 / 餐食 / 通勤", 0m, PhpCurrencyId, "城市课程不含宿舍和三餐，Makati住宿与通勤需自行规划", now);
       UpsertFee(context, schoolId, "签证 / 保险 / 停留", 0m, PhpCurrencyId, "国际学生按停留时间、护照和行程另行确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedBerlitzPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == BerlitzSchoolId ||
+        x.Name == BerlitzSchoolName ||
+        x.Name == LegacyBerlitzSchoolName ||
+        x.Name == "Berlitzph" ||
+        x.Name == "Berlitz");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = BerlitzSchoolId,
+          Name = BerlitzSchoolName,
+          CreatedDate = new DateTime(2020, 6, 9, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = BerlitzSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2020, 6, 9, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string berlitzLessonNote = "Berlitz Philippines官网费用参考；Starter Course有公开PHP公告价，常规私教、小组、企业、测评和TELC项目以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "Berlitz Starter Course", 1, 3200m, "官网2025 Starter Course公告公开费用，A1绝对初学者入门课，含学习材料；当前是否开放需当期确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Public English Group Class", 4, 0m, "官网Class Schedules列出English线上/面授公开课时段，最低人数开班；费用需当期确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Private Language Classes", 4, 0m, "一对一课程可线上或Makati面授，按语言、级别、目标和课时包报价", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Group Language Classes", 4, 0m, "小组课按语言、级别、人数、固定课表和学习中心安排报价", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Business English Short Courses", 1, 0m, "官网Business English公告列出Negotiations、Email and Business Writing、Presentation、Customer Service、English in the Workplace等模块；费用需确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Corporate Language Training", 4, 0m, "企业语言培训按员工人数、行业词汇、岗位目标、交付方式和预算定制报价", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Berlitz Connect 6 Months", 24, 0m, "官网Self-paced页列出6个月订阅，含24/7材料、10次实时口语练习和30+练习主题；费用需确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Berlitz Connect 12 Months", 48, 0m, "官网Self-paced页列出12个月订阅，含24/7材料、25次实时口语练习和30+练习主题；费用需确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Language Testing and Assessment", 1, 0m, "官网说明测评可覆盖口语、写作、听读、SOPI和企业评估；费用按项目确认", now, berlitzLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "TELC Exam Preparation and Testing", 1, 0m, "TELC备考、考试日期、报名费和名额需按当期考试安排确认", now, berlitzLessonNote, PhpCurrencyId);
+
+      UpsertRoom(context, schoolId, "住宿自理", 4, 0m, "Berlitz Philippines不是传统寄宿制ESL学校；酒店、公寓或亲友住宿需另行安排", now, PhpCurrencyId);
+
+      UpsertFee(context, schoolId, "Placement / Proficiency Check", 0m, PhpCurrencyId, "Learning Cycle会先了解学习目标、水平和需求；费用和形式需按课程确认", now);
+      UpsertFee(context, schoolId, "教材 / Student Portal", 0m, PhpCurrencyId, "按课程材料、学生门户、自学平台和练习资源规则确认", now);
+      UpsertFee(context, schoolId, "Corporate Customization", 0m, PhpCurrencyId, "企业课程按员工人数、岗位、行业词汇、交付方式和预算报价", now);
+      UpsertFee(context, schoolId, "Testing / TELC", 0m, PhpCurrencyId, "语言测评、TELC报名、证书和备考费用需按考试月份和项目确认", now);
+      UpsertFee(context, schoolId, "住宿 / 餐食 / 通勤", 0m, PhpCurrencyId, "Makati城市课程不含宿舍、三餐和接送，需自行规划", now);
+      UpsertFee(context, schoolId, "签证 / 保险 / 停留", 0m, PhpCurrencyId, "国际学生按停留时间、护照和行程另行确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedMbcPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == MbcSchoolId ||
+        x.Name == MbcSchoolName ||
+        x.Name == LegacyMbcSchoolName ||
+        x.Name == "MBC" ||
+        x.Name == "Manila Business College Foundation");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = MbcSchoolId,
+          Name = MbcSchoolName,
+          CreatedDate = new DateTime(2000, 9, 15, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = MbcSchoolName;
+      }
+
+      var schoolId = school.Id;
+      const string mbcLessonNote = "Manila Business College官网资料参考；官网未公开完整国际学生学费表，常规课程、杂费、住宿和签证协助需以学校当期书面回复为准";
+
+      UpsertLesson(context, schoolId, "Senior High School ABM Track", 4, 0m, "官网列出Grade 11 ABM Track；学费、杂费、年级资格和国际学生材料需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "BSBA Major in Marketing", 16, 0m, "官网本科方向；Marketing覆盖产品、品牌、销售、市场规划和公关，费用需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "BSBA Major in Management", 16, 0m, "官网本科方向；Management覆盖Accounting、Finance、Management、Marketing等商科领域，费用需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "B.S. Accountancy", 16, 0m, "官网本科方向；会计、审计、行业和政府财务路线，费用和入学门槛需确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "B.S. Hospitality Management", 16, 0m, "官网本科方向；酒店运营、旅游、餐饮和服务业管理，费用需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "B.S. Information Systems", 16, 0m, "官网本科方向；ICT应用设计、开发、测试、实施和维护，费用需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Night Class - BSBA Management", 4, 0m, "官网列出Tuesday-Friday 6-9pm，Modular 1 Subject at a Time；是否仍开放和费用需确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Weekend Class - BS Hospitality Management", 4, 0m, "官网列出Saturday-Sunday，Modular 1 Subject at a Time；是否仍开放和费用需确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "TESDA Courses", 4, 0m, "官网列出TESDA Courses入口；具体项目、证书、名额、实习和费用需当期确认", now, mbcLessonNote, PhpCurrencyId);
+      UpsertLesson(context, schoolId, "Scholarship Programs", 4, 0m, "官网列出USP、KEI、YEP；公开金额多附本地学生资格条件，国际学生需单独确认", now, mbcLessonNote, PhpCurrencyId);
+
+      UpsertRoom(context, schoolId, "Dormitory / 住宿需确认", 4, 0m, "官网介绍提到dormitories，但未公开房型、价格、餐食、门禁、押金和空位；申请前需单独核对", now, PhpCurrencyId);
+
+      UpsertFee(context, schoolId, "Tuition and Miscellaneous Fees", 0m, PhpCurrencyId, "常规学费和杂费未公开完整国际学生价目表；按学年、课程、学生身份和付款节点核价", now);
+      UpsertFee(context, schoolId, "International Student Documents", 0m, PhpCurrencyId, "Admission页列出认证学历、无犯罪证明、个人历史陈述、护照/签证、资金证明、良民证明和照片等", now);
+      UpsertFee(context, schoolId, "Passport / Visa Assistance", 0m, PhpCurrencyId, "Admission页说明Passport/Visa可由MBC协助处理；费用和责任范围需书面确认", now);
+      UpsertFee(context, schoolId, "Dormitory / Meals / Commute", 0m, PhpCurrencyId, "住宿、餐食、通勤和押金不能只凭官网dormitories描述估算", now);
+      UpsertFee(context, schoolId, "USP Chairman Registration Fee Reference", 500m, PhpCurrencyId, "官网奖学金页公开：Free Tuition & Fees = Php 0/term，To Pay Php 500 Registration Fee；含本地资格条件", now);
+      UpsertFee(context, schoolId, "USP Freshmen Fixed Term Reference", 12000m, PhpCurrencyId, "官网奖学金页公开：USP Freshmen Fixed Php 12k/term；国际学生不可自动套用", now);
+      UpsertFee(context, schoolId, "USP Freshmen Down Payment Reference", 3000m, PhpCurrencyId, "官网奖学金页公开：DP = Php 3k + Php 500 Registration Fee；国际学生不可自动套用", now);
+      UpsertFee(context, schoolId, "Scholarship Registration Fee Reference", 500m, PhpCurrencyId, "官网奖学金页公开的注册费参考；奖学金资格需按学校规则确认", now);
 
       await context.SaveChangesAsync();
     }

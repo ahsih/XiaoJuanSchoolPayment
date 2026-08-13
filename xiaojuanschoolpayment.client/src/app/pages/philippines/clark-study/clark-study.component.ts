@@ -98,25 +98,25 @@ export class ClarkStudyComponent {
       title: '外教口语强化型',
       tag: 'Native / Speaking',
       text: '适合希望提高发音、自然表达、面试沟通和欧美课堂适应度的成人或青少年学生。',
-      examples: 'CIP、AELC、WE Academy',
+      examples: 'CIP、AELC、菲律宾克拉克WE Academy语言学校',
     },
     {
       title: '亲子陪读与低龄型',
       tag: 'Family / Junior',
       text: '适合家长同行、4-15 岁阶段学生、寒暑假短期体验，以及需要学习和照顾同步安排的家庭。',
-      examples: 'WE Academy、CIP、菲律宾克拉克EG语言学校',
+      examples: '菲律宾克拉克WE Academy语言学校、CIP、菲律宾克拉克EG语言学校',
     },
     {
       title: '综合 ESL 舒适型',
       tag: 'ESL / Comfort',
       text: '适合想稳步提升英语，但不想进入碧瑶高压斯巴达节奏的人群。',
-      examples: '菲律宾克拉克EG语言学校、WE Academy、CIP',
+      examples: '菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、CIP',
     },
     {
       title: '考试与商务沟通型',
       tag: 'IELTS / TOEIC / Business',
       text: '适合需要雅思、多益、商务英语或求职英语路径的人，需要特别核对模考、保证班和外教课比例。',
-      examples: 'CIP、菲律宾克拉克EG语言学校、HELP Clark',
+      examples: 'CIP、菲律宾克拉克EG语言学校、菲律宾克拉克HELP English语言学校',
     },
   ];
 
@@ -170,11 +170,11 @@ export class ClarkStudyComponent {
         'EG官方2025价目表以KRW列出课程和住宿，注册费KRW100,000另计；教材、SSP、接机、延签和Golf追加费用多以PHP到校支付。',
     },
     {
-      name: 'Clark WE Academy',
+      name: '菲律宾克拉克WE Academy语言学校',
       location: 'Fil-Am Friendship Highway, Angeles City',
       style: '度假式校区与亲子友好型',
       route: '/philippines-study/clark/clark-we-academy',
-      startingPrice: '4周费用需当期确认',
+      startingPrice: '课程住宿需核价；Golf PHP750，Swimming PHP500-700/次',
       courses: [
         'ESL',
         'Native Mix',
@@ -190,22 +190,22 @@ export class ClarkStudyComponent {
       bestFor:
         '亲子家庭、低龄学生、希望学习节奏较自由、也看重校内活动和生活舒适度的人群。',
       consultantNote:
-        'WE Academy 适合“学习 + 陪读 + 生活体验”组合，但如果目标是强制备考冲刺，需要和 CIP、EG 或碧瑶学校一起比较。',
+        '菲律宾克拉克WE Academy语言学校适合“学习 + 陪读 + 生活体验”组合，但如果目标是强制备考冲刺，需要和 CIP、EG 或碧瑶学校一起比较。',
     },
     {
-      name: 'HELP English Clark',
+      name: '菲律宾克拉克HELP English语言学校',
       location: 'Clark / Pampanga',
-      style: '老牌系统与考试路线候选',
+      style: 'Sparta强管理与考试路线候选',
       route: '/philippines-study/clark/help-english-clark',
-      startingPrice: '费用需当期确认',
-      courses: ['ESL', 'IELTS', 'TOEIC', 'Business English', 'Junior'],
+      startingPrice: 'USD 1,500 / 4周起参考',
+      courses: ['ESL', 'ESL Intensive', 'IELTS / TOEIC', 'Business English', 'Family / Junior'],
       accommodation:
-        '官网当前页面为动态应用，房型、校区和开放状态需以学校当期文件或顾问回函确认。',
-      facilities: '适合把课程强度、校区管理、宿舍规则和接送方式作为重点复核。',
+        '官方价目表列出Quadra、Triple、Double、Single房型；宿舍费按4周计算，含校内餐食和饮用水，空房需按入学日确认。',
+      facilities: '官方Clark页面列出1:1教室、小组教室、大讲堂、宿舍、泳池、运动场、餐厅、便利店和Clinic等设施。',
       bestFor:
-        '偏好老牌学校体系、希望比较 Clark 与碧瑶 HELP 系列管理风格的学生。',
+        '偏好老牌HELP体系、Sparta节奏、EOP、IELTS/TOEIC考试路线和Clark机场便利的学生。',
       consultantNote:
-        '本页不把 HELP 的细节写死。报名时应二次确认当前 Clark 校区资料、价目表、开课课程和年龄规则。',
+        'HELP Clark公开了USD课程住宿价目和PHP当地费用表，报价时要把课程住宿、当地费用、EOP规则、晚自习和接机分开核对。',
     },
     {
       name: 'AELC / Native-focused Clark Schools',
@@ -274,7 +274,7 @@ export class ClarkStudyComponent {
     },
     {
       title: '最新优惠和活动',
-      text: 'CIP、菲律宾克拉克EG语言学校、WE 等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价和回函为准。',
+      text: 'CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价和回函为准。',
     },
   ];
 
@@ -348,8 +348,8 @@ export class ClarkStudyComponent {
       label: 'EG Academy 官方Golf页面',
       url: 'https://www.egesl.com/study/golf/',
     },
-    { label: 'Clark WE Academy 官方网站', url: 'https://clarkweacademy.com/' },
-    { label: 'HELP English 官方入口', url: 'https://helpenglish.net/' },
+    { label: '菲律宾克拉克WE Academy语言学校官方网站', url: 'https://clarkweacademy.com/' },
+    { label: '菲律宾克拉克HELP English语言学校官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
     { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
     {
       label: 'StudyTourA 菲律宾学校分类参考',

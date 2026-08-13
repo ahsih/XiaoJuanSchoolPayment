@@ -323,12 +323,12 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'clark-we-academy',
-            label: 'Clark WE Academy',
+            label: '菲律宾克拉克WE Academy语言学校',
             route: '/philippines-study/clark/clark-we-academy',
           },
           {
             id: 'help-english-clark',
-            label: 'HELP English Clark',
+            label: '菲律宾克拉克HELP English语言学校',
             route: '/philippines-study/clark/help-english-clark',
           },
           {
@@ -357,18 +357,13 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'berlitz-philippines',
-            label: 'Berlitz Philippines',
+            label: '菲律宾马尼拉Berlitz语言学校',
             route: '/philippines-study/manila/berlitz-philippines',
           },
           {
             id: 'manila-business-college',
-            label: 'Manila Business College',
+            label: '菲律宾马尼拉Business College学校',
             route: '/philippines-study/manila/manila-business-college',
-          },
-          {
-            id: 'manila-legacy-esl-candidates',
-            label: 'CNN / C21 / PICO 旧ESL候选',
-            route: '/philippines-study/manila/legacy-esl-candidates',
           },
         ],
       },

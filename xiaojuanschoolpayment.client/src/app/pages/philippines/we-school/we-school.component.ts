@@ -44,7 +44,7 @@ interface SourceLink {
 })
 export class WeSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: 'Clark WE Academy' },
+    { label: '学校名称', value: '菲律宾克拉克WE Academy语言学校' },
     { label: '城市', value: 'Clark / Angeles City, Pampanga' },
     { label: '地址', value: 'Block 7 Lot 8 Fil-Am Friendship Highway, Angeles City' },
     { label: '创校与重启', value: '2016年创校，2022年6月新管理团队重启' },
@@ -153,7 +153,7 @@ export class WeSchoolComponent {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'Clark WE Academy适合亲子吗？',
+      question: '菲律宾克拉克WE Academy语言学校适合亲子吗？',
       answer:
         '适合列入重点候选。官网特别强调Family Program、校内Kindergarten、家长课程和儿童安全支持，适合希望学习与生活体验结合的家庭。',
     },
@@ -175,11 +175,11 @@ export class WeSchoolComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: 'Clark WE Academy 官方网站', url: 'https://clarkweacademy.com/' },
-    { label: 'Clark WE Academy Program', url: 'https://clarkweacademy.com/program.php' },
-    { label: 'Clark WE Academy Curriculum', url: 'https://clarkweacademy.com/curriculum.php' },
-    { label: 'Clark WE Academy Golf', url: 'https://clarkweacademy.com/golf.php' },
-    { label: 'Clark WE Academy Swimming', url: 'https://clarkweacademy.com/swimming.php' },
+    { label: '菲律宾克拉克WE Academy语言学校 官方网站', url: 'https://clarkweacademy.com/' },
+    { label: '菲律宾克拉克WE Academy语言学校 Program', url: 'https://clarkweacademy.com/program.php' },
+    { label: '菲律宾克拉克WE Academy语言学校 Curriculum', url: 'https://clarkweacademy.com/curriculum.php' },
+    { label: '菲律宾克拉克WE Academy语言学校 Golf', url: 'https://clarkweacademy.com/golf.php' },
+    { label: '菲律宾克拉克WE Academy语言学校 Swimming', url: 'https://clarkweacademy.com/swimming.php' },
     { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
     { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
   ];

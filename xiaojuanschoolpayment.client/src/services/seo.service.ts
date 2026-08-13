@@ -90,8 +90,8 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
     description:
-      '克拉克菲律宾留学和英语游学指南，比较 CIP、菲律宾克拉克EG语言学校、WE、HELP、AELC 等学校，适合亲子、外师比例和舒适生活需求。',
-    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, 菲律宾克拉克EG语言学校, EG Academy, AELC',
+      '克拉克菲律宾留学和英语游学指南，比较 CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、菲律宾克拉克HELP English语言学校、AELC 等学校，适合亲子、外师比例、Sparta考试路线和舒适生活需求。',
+    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, 菲律宾克拉克EG语言学校, 菲律宾克拉克WE Academy语言学校, 菲律宾克拉克HELP English语言学校, EG Academy, WE Academy Clark, HELP Clark, AELC',
     image: '/assets/philippines/clark-study-hero.jpg',
   },
   '/philippines-study/clark/cip-english-kepos': {
@@ -108,11 +108,25 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾克拉克EG语言学校, EG Academy, Education Group Granma, 克拉克EG, Clark EG, Golf ESL, 菲律宾亲子游学',
     image: '/assets/philippines/eg-facility-001.jpg',
   },
+  '/philippines-study/clark/clark-we-academy': {
+    title: '菲律宾克拉克WE Academy语言学校 | 亲子Native Mix与活动费用咨询',
+    description:
+      '菲律宾克拉克WE Academy语言学校页面，整理Clark WE Academy的ESL、Native Mix、Junior ESL、Junior Native、Guardian ESL、WE Kindergarten、solo junior high support、Golf、Swimming、校内宿舍和公开PHP活动费用说明。',
+    keywords: '菲律宾克拉克WE Academy语言学校, Clark WE Academy, WE Academy Clark, WE English Clark, 克拉克亲子游学, Native Mix, WE Kindergarten, Clark golf English',
+    image: '/assets/philippines/we-hero.jpg',
+  },
+  '/philippines-study/clark/help-english-clark': {
+    title: '菲律宾克拉克HELP English语言学校 | Sparta课程费用住宿与报名咨询',
+    description:
+      '菲律宾克拉克HELP English语言学校页面，整理HELP Clark Campus的Sparta管理、EOP、ESL、IELTS、TOEIC、Business、Family课程、宿舍、4周USD课程住宿费用、PHP当地费用和报名注意事项。',
+    keywords: '菲律宾克拉克HELP English语言学校, HELP Clark Campus, HELP English Academy, Clark Sparta school, 菲律宾IELTS学校, 克拉克语言学校',
+    image: '/assets/philippines/help-clark-main-building.jpg',
+  },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
     description:
-      '马尼拉菲律宾留学和英语游学指南，整理菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、马尼拉语言学校、商务英语、城市生活、课程选择和咨询规划重点。',
-    keywords: '马尼拉留学, 马尼拉游学, 马尼拉语言学校, 菲律宾马尼拉Enderun语言学校, 菲律宾马尼拉American-English-Skill语言学校, 菲律宾商务英语, Enderun Extension, American English Skills Development Center, Berlitz Philippines',
+      '马尼拉菲律宾留学和英语游学指南，整理菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、菲律宾马尼拉Berlitz语言学校、菲律宾马尼拉Business College学校、马尼拉语言学校、商务英语、城市生活、课程选择和咨询规划重点。',
+    keywords: '马尼拉留学, 马尼拉游学, 马尼拉语言学校, 菲律宾马尼拉Enderun语言学校, 菲律宾马尼拉American-English-Skill语言学校, 菲律宾马尼拉Berlitz语言学校, 菲律宾马尼拉Business College学校, 菲律宾商务英语, Enderun Extension, American English Skills Development Center, Berlitz Philippines, Manila Business College',
     image: '/assets/philippines/manila-study-hero.jpg',
   },
   '/philippines-study/manila/enderun-extension': {
@@ -128,6 +142,20 @@ const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾马尼拉American-English-Skill语言学校页面，整理American English Skills Development Center的团体课、一对一、商务英语、商务写作、发音、演讲、企业培训、PHP课程费用和住宿自理说明。',
     keywords: '菲律宾马尼拉American-English-Skill语言学校, American English Skills Development Center, American English Makati, 马尼拉商务英语, Makati英语培训, Business English Philippines',
     image: '/assets/philippines/american-english-brand.png',
+  },
+  '/philippines-study/manila/berlitz-philippines': {
+    title: '菲律宾马尼拉Berlitz语言学校 | 课程费用与报名咨询',
+    description:
+      '菲律宾马尼拉Berlitz语言学校页面，整理Berlitz Philippines的成人私教、小组课、Self-paced、Kids & Teens、企业语言培训、商务沟通、语言测评、TELC、公开课排期、PHP费用和住宿自理说明。',
+    keywords: '菲律宾马尼拉Berlitz语言学校, Berlitz Philippines, Berlitz Makati, 马尼拉语言培训, Manila language center, TELC Philippines, Business Communication Training',
+    image: '/assets/philippines/berlitz-hero.webp',
+  },
+  '/philippines-study/manila/manila-business-college': {
+    title: '菲律宾马尼拉Business College学校 | 课程费用与国际学生申请',
+    description:
+      '菲律宾马尼拉Business College学校页面，整理Manila Business College的ABM、BSBA、Accountancy、Hospitality Management、Information Systems、夜间班、周末班、TESDA、国际学生材料、奖学金公开金额和住宿需确认说明。',
+    keywords: '菲律宾马尼拉Business College学校, Manila Business College, MBC Manila, 马尼拉商科学院, 菲律宾商科留学, Manila college, Sta Cruz Manila school',
+    image: '/assets/philippines/mbc-about.jpg',
   },
   '/philippines-study/boracay': {
     title: '长滩岛菲律宾游学 | 海岛英语课程与语言学校',
@@ -430,9 +458,13 @@ export class SeoService {
       baguio: '碧瑶',
       clark: '克拉克',
       'eg-academy': '菲律宾克拉克EG语言学校',
+      'clark-we-academy': '菲律宾克拉克WE Academy语言学校',
+      'help-english-clark': '菲律宾克拉克HELP English语言学校',
       manila: '马尼拉',
       'enderun-extension': '菲律宾马尼拉Enderun语言学校',
       'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',
+      'berlitz-philippines': '菲律宾马尼拉Berlitz语言学校',
+      'manila-business-college': '菲律宾马尼拉Business College学校',
       cost: '费用',
       faq: '常见问题',
       offers: '优惠',

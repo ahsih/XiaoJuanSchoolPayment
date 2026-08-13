@@ -98,19 +98,19 @@ export class ManilaStudyComponent {
       title: '成人口语型',
       tag: 'Adult / Speaking',
       text: '适合提升日常沟通、社交表达、发音、演讲和城市生活英语的成人学生。',
-      examples: '菲律宾马尼拉American-English-Skill语言学校、Berlitz Philippines、菲律宾马尼拉Enderun语言学校',
+      examples: '菲律宾马尼拉American-English-Skill语言学校、菲律宾马尼拉Berlitz语言学校、菲律宾马尼拉Enderun语言学校',
     },
     {
       title: '商务职场型',
       tag: 'Business / Corporate',
       text: '适合会议表达、商务写作、客户沟通、领导力表达、跨文化沟通和企业内训需求。',
-      examples: '菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、Berlitz Philippines',
+      examples: '菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、菲律宾马尼拉Berlitz语言学校',
     },
     {
       title: '学术英语与升学衔接',
       tag: 'Academic / Pathway',
       text: '适合想在首都圈体验大学或学院环境，并考虑商务、酒店、管理等后续学习的人群。',
-      examples: '菲律宾马尼拉Enderun语言学校、Manila Business College',
+      examples: '菲律宾马尼拉Enderun语言学校、菲律宾马尼拉Business College学校',
     },
     {
       title: '短期转机组合型',
@@ -168,67 +168,48 @@ export class ManilaStudyComponent {
         '官网公开Online Business Conversational English为PHP14,800/40小时；团体课常见区间PHP19,700-48,000，一对一公开区间PHP12,800-98,800。适合已能自行安排马尼拉住宿和通勤的人。',
     },
     {
-      name: 'Berlitz Philippines',
+      name: '菲律宾马尼拉Berlitz语言学校',
       location: 'Makati / Metro Manila',
       style: '国际语言培训与企业服务型',
       route: '/philippines-study/manila/berlitz-philippines',
-      startingPrice: '报价需当期确认',
+      startingPrice: 'PHP 3,200 Starter Course公告价；常规课需核价',
       courses: [
-        'Adults',
+        'Private Language Classes',
+        'Group Language Classes',
+        'Self-paced Berlitz Connect',
         'Kids & Teens',
-        'Private / Groups',
         'Corporate Language Training',
         'Business Communication',
-        'Language Testing',
+        'Language Testing / TELC',
       ],
-      accommodation: '非住宿制语言中心，适合自行安排城市住宿或公司派训。',
+      accommodation: '非住校制语言中心；酒店、公寓、亲友住宿、餐食、通勤、签证停留和保险需学生自行安排。',
       facilities:
-        '官网列出成人、儿童青少年、企业语言培训、语言测评、TELC备考和商务沟通训练等方向。',
-      bestFor: '商务人士、企业培训、家庭城市课程、需要国际品牌语言服务的人群。',
+        '官网列出成人私教、小组课、自学平台、儿童青少年、企业语言培训、商务沟通、语言测评、TELC和Makati学习中心。',
+      bestFor: '商务人士、企业培训、家庭城市课程、需要国际品牌、多语言、测评或TELC服务的人群。',
       consultantNote:
-        '课程更偏培训中心逻辑，顾问会重点核对上课点、排课方式、授课语言和是否适合短期访客。',
+        '官网2025 Starter Course公告公开Php 3,200；常规私教、小组、企业、测评和TELC多为询价制。顾问会重点核对语言、级别、排课、Makati通勤和是否适合短期访客。',
     },
     {
-      name: 'Manila Business College',
+      name: '菲律宾马尼拉Business College学校',
       location: 'Manila City',
       style: '商科院校与国际学生衔接候选',
       route: '/philippines-study/manila/manila-business-college',
-      startingPrice: '需当期确认',
+      startingPrice: '常规学费需当期确认；奖学金金额仅作官方公开参考',
       courses: [
-        'Business / Management',
-        'Finance',
-        'Economics',
-        'Hospitality',
-        'Foreign Student Admission',
+        'Senior High School ABM',
+        'BSBA Marketing / Management',
+        'B.S. Accountancy',
+        'B.S. Hospitality Management',
+        'B.S. Information Systems',
+        'Night / Weekend / TESDA Courses',
       ],
       accommodation:
-        '官网提到dormitories，但主要是学院型信息；房型、住宿费用、签证和语言补强需单独核对。',
+        '官网介绍提到 dormitories，但未公开房型、费用、餐食、押金、门禁和空位；需要按国际学生身份单独确认。',
       facilities:
-        '官网说明学校获 CHED、DepEd、TESDA 相关认可，并接收本地与外国学生；详情页整理课程、设施和申请核对项。',
+        '官网说明学校获得 CHED、DepEd、TESDA 相关认可，并展示 classroom、library、mock hotel、laboratories、canteens 和 dormitories 等设施线索。',
       bestFor: '想了解马尼拉商科院校环境、后续学历路径或城市型学习资源的学生。',
       consultantNote:
-        '适合作为“英语 + 商科/城市体验”的候选，不应与菲律宾语言学校宿舍套餐直接类比；需先确认当期费用和国际学生要求。',
-    },
-    {
-      name: 'CNN / C21 / PICO 等旧马尼拉 ESL 候选',
-      location: 'Quezon City / Metro Manila 历史候选',
-      style: '传统 ESL 学校复核池',
-      route: '/philippines-study/manila/legacy-esl-candidates',
-      startingPrice: '旧价不可直接使用',
-      courses: [
-        'General ESL',
-        'TOEIC / TOEFL / IELTS',
-        'Business English',
-        'Junior',
-        'Dormitory',
-      ],
-      accommodation:
-        '旧资料常提到宿舍或校内管理，但当前官网解析和资料稳定性不足，需逐项复核。',
-      facilities:
-        'CNN仍可查到第三方资料；C21/PICO当前公开线索较弱。需确认学校是否仍招生、校区地址、课程表、宿舍和费用。',
-      bestFor: '只适合作为顾问进一步查证的候选，不建议学生直接凭旧网文报名。',
-      consultantNote:
-        '思达教育会先向学校或可靠合作方确认当期运营状态，再决定是否推荐；详情页提供复核清单。',
+        '适合作为“英语能力 + 商科/学院/城市体验”的候选，不应与菲律宾语言学校寄宿套餐直接类比；需先确认当期费用、国际学生材料、签证协助和住宿条件。',
     },
   ];
 
@@ -257,11 +238,6 @@ export class ManilaStudyComponent {
       icon: 'receipt_long',
       label: '费用不能只看学费',
       text: '城市住宿、通勤、餐食、保险、教材、签证停留和个人生活费都要一起算。',
-    },
-    {
-      icon: 'fact_check',
-      label: '旧校名必须复核',
-      text: 'CNN、C21、PICO 等旧资料里的学校，需要确认官网、校区、课程和宿舍是否仍有效。',
     },
   ];
 

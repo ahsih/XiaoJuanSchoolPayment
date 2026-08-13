@@ -259,12 +259,12 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/clark-we-academy',
         loadComponent: () =>
-          import('./pages/philippines/we-school/we-school.component').then((m) => m.WeSchoolComponent),
+          import('./pages/philippines/we-school/we-school-detail.component').then((m) => m.WeSchoolDetailComponent),
       },
       {
         path: 'philippines-study/clark/help-english-clark',
         loadComponent: () =>
-          import('./pages/philippines/help-school/help-school.component').then((m) => m.HelpSchoolComponent),
+          import('./pages/philippines/help-school/help-school-detail.component').then((m) => m.HelpSchoolDetailComponent),
       },
       {
         path: 'philippines-study/clark/aelc-native-focused-clark-schools',
@@ -293,21 +293,21 @@ const routes: Routes = [
       {
         path: 'philippines-study/manila/berlitz-philippines',
         loadComponent: () =>
-          import('./pages/philippines/berlitz-school/berlitz-school.component').then(
-            (m) => m.BerlitzSchoolComponent,
+          import('./pages/philippines/berlitz-school/berlitz-school-detail.component').then(
+            (m) => m.BerlitzSchoolDetailComponent,
           ),
       },
       {
         path: 'philippines-study/manila/manila-business-college',
         loadComponent: () =>
-          import('./pages/philippines/mbc-school/mbc-school.component').then((m) => m.MbcSchoolComponent),
+          import('./pages/philippines/mbc-school/mbc-school-detail.component').then(
+            (m) => m.MbcSchoolDetailComponent,
+          ),
       },
       {
         path: 'philippines-study/manila/legacy-esl-candidates',
-        loadComponent: () =>
-          import('./pages/philippines/manila-legacy-esl/manila-legacy-esl.component').then(
-            (m) => m.ManilaLegacyEslComponent,
-          ),
+        redirectTo: '/philippines-study/manila',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/manila',
