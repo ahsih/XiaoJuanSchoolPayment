@@ -1,17 +1,91 @@
-.back-link,
-.hero-copy .section-kicker {
-  display: flex;
-  width: fit-content;
+:host {
+  display: block;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-.content-band a {
-  color: #167144;
-  font-weight: 850;
-  text-decoration: none;
+.cip-page {
+  box-sizing: border-box;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-.content-band a:hover,
-.content-band a:focus-visible {
-  color: #ff5b00;
-  text-decoration: underline;
+.cip-page .hero-collage figure:first-child {
+  grid-row: span 2;
+}
+
+.cip-page .hero-copy h1 span {
+  display: inline-block;
+}
+
+.cip-price-warning {
+  display: inline-flex;
+  align-items: center;
+  color: #8a4b14;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.cip-page .price-note {
+  border-color: #f0d7b8;
+  background: #fff8ef;
+}
+
+.cip-page .price-note h3,
+.cip-page .price-note li::marker {
+  color: #8a4b14;
+}
+
+@media (max-width: 760px) {
+  .cip-page .cia-hero,
+  .cip-page .hero-copy,
+  .cip-page .hero-media {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .cip-page .hero-copy,
+  .cip-page .hero-media {
+    width: calc(100vw - 28px);
+  }
+
+  .cip-page .hero-copy {
+    width: min(100%, 330px);
+  }
+
+  .cip-page .hero-copy h1 {
+    font-size: 38px;
+    line-height: 1.12;
+  }
+
+  .cip-page .hero-lead {
+    width: 100%;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .cip-page .hero-copy h1 span {
+    display: block;
+  }
+
+  .cip-page .hero-tags {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .cip-page .hero-tags span {
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .cip-price-warning {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .cip-page .hero-copy h1 {
+    font-size: 35px;
+  }
 }

@@ -8,6 +8,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
   {
     private const int UsdCurrencyId = 1;
     private const int PhpCurrencyId = 5;
+    private const int KrwCurrencyId = 6;
     private static readonly Guid CiaSchoolId = Guid.Parse("2f6a6d78-b2f1-4b84-9ac4-1d3b3bd10c1a");
     private static readonly Guid EvSchoolId = Guid.Parse("d48cd1f9-d76b-4b52-9960-e9db057f577d");
     private static readonly Guid CpiSchoolId = Guid.Parse("8c5d52f6-cfe1-45d9-9b66-1c5c0cdb2a6d");
@@ -19,6 +20,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid JicSchoolId = Guid.Parse("b9eb0a1e-1b2a-4e9f-8f63-0bd6f0c4417a");
     private static readonly Guid MonolSchoolId = Guid.Parse("2d7c4bd9-0f3b-4b2d-9fb7-d53c2d6a90df");
     private static readonly Guid WalesSchoolId = Guid.Parse("6b825ff8-4f79-4b65-9447-2f4e7abef0a1");
+    private static readonly Guid EgSchoolId = Guid.Parse("82cbcbad-1162-4088-823d-ea100bfee689");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -44,6 +46,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyWalesSchoolName = "WALES Academy";
     private const string WalesFullSchoolName = "Widest Asian Learners English School Inc.";
     private const string WalesShortSchoolName = "WALES";
+    private const string EgSchoolName = "菲律宾克拉克EG语言学校";
+    private const string LegacyEgSchoolName = "EG Academy";
+    private const string EgFullSchoolName = "Education Group Granma INC";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -63,6 +68,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedJicPricingAsync(context);
       await SeedMonolPricingAsync(context);
       await SeedWalesPricingAsync(context);
+      await SeedEgPricingAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -72,6 +78,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertCurrency(context, 3, "CNY", "¥");
       UpsertCurrency(context, 4, "EUR", "€");
       UpsertCurrency(context, PhpCurrencyId, "PHP", "₱");
+      UpsertCurrency(context, KrwCurrencyId, "KRW", "₩");
 
       await context.SaveChangesAsync();
     }
@@ -839,6 +846,86 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedEgPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == EgSchoolId ||
+        x.Name == EgSchoolName ||
+        x.Name == LegacyEgSchoolName ||
+        x.Name == EgFullSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = EgSchoolId,
+          Name = EgSchoolName,
+          CreatedDate = new DateTime(2013, 4, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = EgSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2013, 4, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string egLessonNote = "EG Academy官网2025-01-01韩文价目表KRW参考；注册费KRW100,000另计，1/2/3周按4周课程+住宿总额40%/65%/85%计算，最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "ESL 4", 4, 950000m, "4节一对一 + 2节团体课，适合预算优先和基础口语提升", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "ESL 6", 4, 1270000m, "6节一对一 + 2节团体课，适合短期强化输出", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "ESL Native Plus", 4, 1370000m, "ESL搭配Native课程，适合发音、自然表达和外教互动", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "ESL Native Complete", 4, 1520000m, "Native比例更高，适合重视欧美表达和口语反馈的学生", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Pre-IELTS", 4, 1220000m, "雅思入门方向，适合还需要先补英语基础的人", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS + Native", 4, 1320000m, "雅思备考搭配Native课程，需确认目标分和模考安排", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS Score Guarantee", 4, 1370000m, "雅思保证班方向，通常需按保证班周数和入学门槛确认", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "TOEIC + Native", 4, 1320000m, "多益与Native表达训练，适合求职或升学需求", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "TOEFL + Native", 4, 1320000m, "托福与Native表达训练，适合北美升学或考试目标", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Business + Native", 4, 1320000m, "商务英语与Native沟通训练，适合职场表达、会议和面试", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Golf + ESL", 4, 1350000m, "英语课程搭配高尔夫练习，适合Clark特色体验", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Golf Special", 4, 1950000m, "高尔夫课时更重的组合方向，需同步确认球场和教练安排", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Junior ESL", 4, 1280000m, "青少年ESL，需确认年龄、监护与家庭同行规则", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Junior Native", 4, 1480000m, "青少年Native课程，适合重视发音和外教互动的家庭", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Junior IELTS", 4, 1400000m, "青少年雅思方向，需确认基础、目标分和学习强度", now, egLessonNote, KrwCurrencyId);
+      UpsertLesson(context, schoolId, "Guardian ESL", 4, 780000m, "家长陪读课程，适合亲子同行时一起学习", now, egLessonNote, KrwCurrencyId);
+
+      UpsertRoom(context, schoolId, "一人房", 4, 1000000m, "官网韩文价目表4周宿舍费参考，隐私最高，热门档期需提前确认", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "二人房", 4, 800000m, "官网韩文价目表4周宿舍费参考，兼顾预算和舒适度", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "四人房", 4, 600000m, "官网韩文价目表4周宿舍费参考，默认低预算估算房型", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "家庭三人房", 4, 700000m, "家庭/青少年方向常用参考房型，需按同行人数和空房确认", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "特别四人房", 4, 1100000m, "特别房型方向，适合家庭同行或需要更大生活空间的人", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "特别五人房", 4, 950000m, "特别房型方向，需确认开放状态和家庭人数", now, KrwCurrencyId);
+      UpsertRoom(context, schoolId, "特别六人房", 4, 800000m, "特别房型方向，适合家庭或团体预算估算", now, KrwCurrencyId);
+
+      UpsertFee(context, schoolId, "注册费", 100000m, KrwCurrencyId, "前期支付费用；EG Academy官网韩文价目表列为KRW100,000，且表格说明不包含注册费", now);
+      UpsertFee(context, schoolId, "教材费（4周）", 2000m, PhpCurrencyId, "到校支付费用；官网价目表4周参考，按课程和实际教材调整", now);
+      UpsertFee(context, schoolId, "School ID", 200m, PhpCurrencyId, "到校支付费用；学生证参考", now);
+      UpsertFee(context, schoolId, "宿舍保证金", 5000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还，家庭方向通常需另行确认", now);
+      UpsertFee(context, schoolId, "Clark / Mabalacat接机", 1000m, PhpCurrencyId, "到校支付费用；官网价目表个人接机参考", now);
+      UpsertFee(context, schoolId, "马尼拉接机", 5000m, PhpCurrencyId, "到校支付费用；官网价目表个人接机参考，家庭接机通常PHP6,000", now);
+      UpsertFee(context, schoolId, "家庭接机（Clark）", 1500m, PhpCurrencyId, "到校支付费用；官网价目表家庭接机参考，4人以上每增加1人加PHP200", now);
+      UpsertFee(context, schoolId, "SSP", 6800m, PhpCurrencyId, "到校支付费用；特别学习许可参考，有效规则以学校现场为准", now);
+      UpsertFee(context, schoolId, "SSP E-Card", 3500m, PhpCurrencyId, "到校支付费用；与SSP相关的E-Card费用参考", now);
+      UpsertFee(context, schoolId, "ACR I-Card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+      UpsertFee(context, schoolId, "ECC Clearance", 2000m, PhpCurrencyId, "到校支付费用；长期停留离境清关费用参考", now);
+      UpsertFee(context, schoolId, "签证延签8周", 3830m, PhpCurrencyId, "到校支付费用；官网价目表8周延签参考", now);
+      UpsertFee(context, schoolId, "签证延签12周", 8830m, PhpCurrencyId, "到校支付费用；官网价目表12周延签参考", now);
+      UpsertFee(context, schoolId, "签证延签16周", 12360m, PhpCurrencyId, "到校支付费用；官网价目表16周延签参考", now);
+      UpsertFee(context, schoolId, "签证延签20周", 15890m, PhpCurrencyId, "到校支付费用；官网价目表20周延签参考", now);
+      UpsertFee(context, schoolId, "签证延签24周", 19420m, PhpCurrencyId, "到校支付费用；官网价目表24周延签参考", now);
+      UpsertFee(context, schoolId, "Golf追加课（每周5次）", 10000m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出每周5次课程参考", now);
+      UpsertFee(context, schoolId, "Golf追加课（每周3次）", 6000m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出每周3次课程参考", now);
+      UpsertFee(context, schoolId, "Golf练习球", 60m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出50颗球一盒参考", now);
+      UpsertFee(context, schoolId, "Golf月票（EG学生）", 4500m, PhpCurrencyId, "到校支付费用；EG Golf官方页列出EG学生月票参考", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static void UpsertLesson(
       AppDbContext context,
       Guid schoolId,
@@ -847,7 +934,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       decimal price,
       string description,
       DateTime lastUpdated,
-      string note = "CIA 2026年4周课程费参考；最终以学校正式报价为准")
+      string note = "CIA 2026年4周课程费参考；最终以学校正式报价为准",
+      int currencyId = UsdCurrencyId)
     {
       var lesson = context.SchoolLessons.FirstOrDefault(x => x.SchoolId == schoolId && x.Name == name && x.Week == week);
 
@@ -860,7 +948,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
           Name = name,
           Week = week,
           Price = price,
-          CurrencyId = UsdCurrencyId,
+          CurrencyId = currencyId,
           Description = description,
           Note = note,
           LastUpdated = lastUpdated,
@@ -869,7 +957,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       lesson.Price = price;
-      lesson.CurrencyId = UsdCurrencyId;
+      lesson.CurrencyId = currencyId;
       lesson.Description = description;
       lesson.Note = note;
       lesson.LastUpdated = lastUpdated;
@@ -882,7 +970,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       int week,
       decimal price,
       string description,
-      DateTime lastUpdated)
+      DateTime lastUpdated,
+      int currencyId = UsdCurrencyId)
     {
       var room = context.SchoolRooms.FirstOrDefault(x => x.SchoolId == schoolId && x.Name == name && x.Week == week);
 
@@ -895,7 +984,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
           Name = name,
           Week = week,
           Price = price,
-          CurrencyId = UsdCurrencyId,
+          CurrencyId = currencyId,
           Description = description,
           LastUpdated = lastUpdated,
         });
@@ -903,7 +992,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       room.Price = price;
-      room.CurrencyId = UsdCurrencyId;
+      room.CurrencyId = currencyId;
       room.Description = description;
       room.LastUpdated = lastUpdated;
     }

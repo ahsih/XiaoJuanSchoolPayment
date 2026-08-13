@@ -1,225 +1,505 @@
-<div class="cia-page school-detail-page">
-  <section class="cia-hero">
-    <div class="hero-copy">
-      <a class="back-link" routerLink="/philippines-study/clark">
-        <mat-icon>arrow_back</mat-icon>
-        返回克拉克学校列表
+<div class="cia-page cip-page">
+  <main class="cia-shell">
+    <section class="cia-hero" id="top">
+      <div class="hero-copy">
+        <p class="breadcrumb">
+          <mat-icon>home</mat-icon>
+          菲律宾游学 / 克拉克学校 / CIP
+        </p>
+        <h1>菲律宾克拉克 <span>CIP语言学校</span></h1>
+        <p class="hero-lead">
+          CIP English Kepos 位于Clark / Angeles，主打外教一对一、ESL、IELTS、TOEIC、商务英语和亲子青少年课程。
+        </p>
+
+        <div class="hero-tags" aria-label="CIP 关键词">
+          <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
+          <span><mat-icon>record_voice_over</mat-icon>Native 1:1</span>
+          <span><mat-icon>calendar_month</mat-icon>6天课程</span>
+          <span><mat-icon>hotel</mat-icon>宿舍 / Hotel住宿</span>
+        </div>
+
+        <div class="hero-actions">
+          <a
+            class="primary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+          >
+            获取 CIP 最新报价
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+          <a
+            class="secondary-action"
+            href="#fee-structure"
+            (click)="scrollToSection('fee-structure', $event)"
+          >
+            查看费用明细
+            <mat-icon>receipt_long</mat-icon>
+          </a>
+          <a
+            class="secondary-action"
+            href="https://cipenglish.com/"
+            target="_blank"
+            rel="noopener"
+          >
+            学校官网
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-media" aria-label="CIP 校园图片">
+        <div class="hero-collage">
+          <figure *ngFor="let image of heroGalleryPreviewImages">
+            <img [src]="image.src" [alt]="image.title" />
+          </figure>
+        </div>
+        <aside class="hero-price-card">
+          <span>4周参考</span>
+          <strong>USD 1668 <small>起</small></strong>
+          <p>Regular ESL + 校内四人间</p>
+          <ul>
+            <li>
+              <mat-icon>check_circle</mat-icon>
+              暂时沿用CIA课程费、住宿费和注册费数值
+            </li>
+            <li>
+              <mat-icon>info</mat-icon>
+              CIP正式价目表更新后可直接替换
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <nav class="section-tabs" aria-label="CIP 页面导航">
+      <a
+        *ngFor="let item of mobileAnchors"
+        [href]="'#' + item.target"
+        (click)="scrollToSection(item.target, $event)"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
       </a>
-      <span class="section-kicker">Clark School Detail</span>
-      <h1>CIP English Kepos</h1>
-      <p>
-        CIP English Kepos 是 Clark / Angeles 区域以 Native speaker
-        1:1、ESL、IELTS、TOEIC、商务英语和亲子青少年课程见长的综合型语言学校。
-        它适合想把外教口语、课程弹性和住宿舒适度一起比较的学生。
-      </p>
-      <div class="hero-actions">
-        <a class="primary-action" routerLink="/about-sida/contact">
-          免费咨询CIP空位与报价
-          <mat-icon>chevron_right</mat-icon>
-        </a>
+    </nav>
+
+    <section class="overview-grid" aria-label="30 秒看懂 CIP">
+      <div class="overview-main">
+        <div class="section-heading">
+          <h2>30 秒看懂 CIP</h2>
+        </div>
+        <div class="snapshot-grid">
+          <article *ngFor="let item of snapshotCards">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.text }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <aside class="mini-quote-card">
+        <h2>CIP费用快速报价</h2>
+        <label>
+          周数
+          <select [(ngModel)]="selectedWeeks">
+            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+              {{ weeks }}周
+            </option>
+          </select>
+        </label>
+        <label>
+          课程
+          <select [(ngModel)]="selectedCourseId">
+            <option *ngFor="let course of courseFees" [value]="course.id">
+              {{ course.name }}
+            </option>
+          </select>
+        </label>
+        <label>
+          房型
+          <select [(ngModel)]="selectedRoomId">
+            <option *ngFor="let room of roomFees" [value]="room.id">
+              {{ room.name }}
+            </option>
+          </select>
+        </label>
+        <label>
+          入学日期
+          <input type="date" [(ngModel)]="selectedStartDate" />
+        </label>
         <a
-          class="secondary-action"
-          href="https://cipenglish.com/"
-          target="_blank"
-          rel="noopener"
+          class="primary-action"
+          href="#quote"
+          (click)="scrollToSection('quote', $event)"
+          >立即计算我的费用</a
         >
-          学校官网
-          <mat-icon>open_in_new</mat-icon>
-        </a>
-      </div>
-    </div>
+        <p>当前费用为CIA临时参考值，最终以CIP正式报价为准</p>
+      </aside>
+    </section>
 
-    <figure class="hero-visual">
-      <img
-        src="assets/philippines/clark-study-hero.jpg"
-        alt="Clark 英语学习与校园生活环境"
-      />
-      <figcaption>
-        <strong>费用参考</strong>
-        <span
-          >Light ESL 共享宿舍约 USD 1,420 / 4周起；最终以CIP
-          2026-2027当期价目表、房型和优惠为准</span
+    <section class="advisor-review" id="advisor-review">
+      <h2>思达启航顾问点评</h2>
+      <p>
+        CIP适合把Native speaker一对一、口语纠音和Clark舒适生活放在重点的学生。它不是最新大型度假型校区，但官方强调Kepos花园式、安静、自然的学习氛围，适合想认真提升表达的人。
+      </p>
+      <div class="fit-columns">
+        <div>
+          <h3><mat-icon>check_circle</mat-icon>适合优先看 CIP</h3>
+          <ul>
+            <li *ngFor="let item of suitableFor">{{ item.title }}</li>
+          </ul>
+        </div>
+        <div>
+          <h3><mat-icon>cancel</mat-icon>不太适合的情况</h3>
+          <ul>
+            <li *ngFor="let item of notSuitableFor">{{ item.title }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="cia-section" id="highlights">
+      <div class="section-heading">
+        <h2>CIP 核心亮点</h2>
+        <p>选CIP重点看Native课程比例、学习连续性、住宿选择和Clark生活节奏。</p>
+      </div>
+      <div class="feature-card-grid">
+        <article *ngFor="let item of coreHighlights">
+          <img [src]="item.image" [alt]="item.title" />
+          <span><mat-icon>{{ item.icon }}</mat-icon></span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cia-section" id="gallery">
+      <div class="section-heading">
+        <h2>按区域查看 CIP 环境</h2>
+        <p>以下图片来自CIP官方School、Dormitory、Hotel、Features和Programs页面。</p>
+      </div>
+      <div class="gallery-tabs" role="tablist" aria-label="CIP 环境分类">
+        <button
+          type="button"
+          *ngFor="let category of galleryCategories"
+          [class.active]="selectedGalleryCategory === category"
+          (click)="setGalleryCategory(category)"
         >
-      </figcaption>
-    </figure>
-  </section>
+          {{ category }}
+        </button>
+      </div>
+      <div class="environment-grid">
+        <figure *ngFor="let image of filteredGalleryImages">
+          <app-expandable-image
+            [src]="image.src"
+            [alt]="image.title"
+            [title]="image.title"
+            [caption]="image.description"
+            previewHeight="220px"
+          ></app-expandable-image>
+          <figcaption>
+            <span>{{ image.category }}</span>
+            <strong>{{ image.title }}</strong>
+            <p>{{ image.description }}</p>
+            <ul *ngIf="image.details?.length">
+              <li *ngFor="let detail of image.details">{{ detail }}</li>
+            </ul>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
 
-  <section class="quick-facts" aria-label="学校基本资料">
-    <div class="fact" *ngFor="let fact of quickFacts">
-      <span>{{ fact.label }}</span>
-      <strong>{{ fact.value }}</strong>
-    </div>
-  </section>
-
-  <section class="content-band intro-section">
-    <div class="section-heading">
-      <span class="section-kicker">学校简介</span>
-      <h2>适合重视外教一对一、口语自然度和Clark生活便利度的学生</h2>
-    </div>
-    <p>
-      CIP官方资料把学校定位在实用英语和Native
-      speaker课程优势上，并在2026-2027资料区提供综合手册、住宿指南、IELTS、Business-TOEIC、Family
-      & Junior以及不同国籍价目表。
-      页面整理时将费用作为参考区间处理，因为实际报价会随国籍、房型、周数、优惠和当地费用变化。
-    </p>
-  </section>
-
-  <section class="content-band">
-    <div class="section-heading">
-      <span class="section-kicker">课程</span>
-      <h2>从轻量ESL到考试、商务和亲子课程都能覆盖</h2>
-    </div>
-    <div class="course-grid">
-      <article class="info-card" *ngFor="let course of courses">
-        <h3>{{ course.title }}</h3>
-        <strong>{{ course.lessons }}</strong>
-        <p>{{ course.text }}</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="split-section">
-    <div class="content-band">
+    <section class="cia-section" id="courses">
       <div class="section-heading">
-        <span class="section-kicker">住宿</span>
-        <h2>校内宿舍与校外Hotel双选项</h2>
+        <h2>CIP 课程怎么选？</h2>
+        <p>
+          先判断你是否需要Native 1:1，再按轻量ESL、强化ESL、考试、商务或亲子路线匹配课程。
+        </p>
       </div>
-      <p>
-        CIP官方资料列出Dormitory与Hotel住宿说明。校内宿舍适合希望学习、用餐、生活管理集中完成的学生；校外Hotel更适合重视隐私、陪读或希望住宿规则更弹性的家庭。
-        报名前建议确认单人、双人、多人房、家庭房、接驳、清洁、洗衣和网络条件。
-      </p>
-    </div>
+      <div class="course-choice-grid">
+        <article *ngFor="let item of courseChoiceCards">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+      <div class="course-match-cta" aria-label="CIP 课程顾问匹配">
+        <div class="course-match-intro">
+          <mat-icon>support_agent</mat-icon>
+          <div>
+            <h2>不确定选哪种 CIP 课程？</h2>
+            <p>
+              把英文基础、学习周数、年龄、是否需要Native课和住宿偏好发给顾问，我们会帮你确认CIP是否比EG、WE或碧瑶学校更适合。
+            </p>
+          </div>
+        </div>
 
-    <div class="content-band">
+        <div class="course-match-action">
+          <a class="primary-action" routerLink="/about-sida/contact">
+            帮我匹配课程和费用
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+          <small>备注“CIP”，顾问会按目标课程、房型和预算给建议</small>
+        </div>
+
+        <p class="course-match-note">
+          <mat-icon>verified_user</mat-icon>
+          当前费用为CIA临时硬编码值，正式报名之前必须替换为CIP当期报价。
+        </p>
+      </div>
+    </section>
+
+    <section class="quote-results-section" id="quote">
+      <div class="quote-form-card">
+        <h2><mat-icon>calculate</mat-icon>CIP 费用快速报价</h2>
+        <label>
+          学习周数
+          <select [(ngModel)]="selectedWeeks">
+            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+              {{ weeks }}周
+            </option>
+          </select>
+        </label>
+        <label>
+          课程
+          <select [(ngModel)]="selectedCourseId">
+            <option *ngFor="let course of courseFees" [value]="course.id">
+              {{ course.name }}
+            </option>
+          </select>
+        </label>
+        <label>
+          房型
+          <select [(ngModel)]="selectedRoomId">
+            <option *ngFor="let room of roomFees" [value]="room.id">
+              {{ room.name }}
+            </option>
+          </select>
+        </label>
+        <label>
+          入学日期
+          <input type="date" [(ngModel)]="selectedStartDate" />
+        </label>
+        <div class="radio-row">
+          <span>是否旺季</span>
+          <strong>{{ isPeakSeason ? "是" : "否" }}</strong>
+        </div>
+      </div>
+
+      <div class="quote-result-card">
+        <div class="quote-result-head">
+          <div>
+            <h2>报价结果 <small>临时示例</small></h2>
+            <p>
+              {{ selectedCourse.name }} + {{ selectedRoom.name }} +
+              {{ selectedWeeks }}周
+            </p>
+          </div>
+          <strong
+            >入学日期：{{ selectedStartDate | date: "yyyy/MM/dd" }}</strong
+          >
+        </div>
+        <div class="result-lines">
+          <div>
+            <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+          </div>
+          <div>
+            <span>课程费（{{ selectedWeeks }}周）</span>
+            <strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+          </div>
+          <div>
+            <span>住宿费（{{ selectedWeeks }}周）</span>
+            <strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+          </div>
+          <div>
+            <span>旺季附加费</span>
+            <strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
+          </div>
+          <div class="discount-line">
+            <span>思达折扣（{{ discountText }}，仅课程费和住宿费）</span>
+            <strong>
+              - USD
+              {{
+                formatUsd(
+                  (tuitionForSelectedWeeks + roomFeeForSelectedWeeks) *
+                    (1 - discount)
+                )
+              }}
+            </strong>
+          </div>
+        </div>
+        <div class="quote-total">
+          <span>前期支付参考合计</span>
+          <strong>{{ quoteUsdText }}</strong>
+          <em>{{ quoteCnyText }}</em>
+        </div>
+        <div class="quote-tool-row">
+          <a class="primary-action" routerLink="/about-sida/contact">
+            <mat-icon>headset_mic</mat-icon>获取顾问确认报价
+          </a>
+          <small class="cip-price-warning">
+            价格暂时硬编码沿用CIA，之后请替换为CIP正式价目表。
+          </small>
+        </div>
+      </div>
+    </section>
+
+    <section class="cia-section" id="fee-structure">
       <div class="section-heading">
-        <span class="section-kicker">位置</span>
-        <h2>Clark / Angeles, Pampanga</h2>
+        <h2>费用结构更清楚</h2>
+        <p>本页先按CIA价格值建立结构，方便之后直接换成CIP正式课程费和住宿费。</p>
       </div>
-      <p>
-        Clark适合重视机场便利、城市安静度和亲子生活环境的人。与宿务相比，Clark没有海岛度假感那么强，但更适合把外教口语、生活舒适度和家庭行程安排放在优先级前面。
-      </p>
-    </div>
-  </section>
-
-  <section class="content-band fee-section">
-    <div class="section-heading">
-      <span class="section-kicker">费用</span>
-      <h2>参考学费住宿费，最终以当期官方报价为准</h2>
-      <p>
-        下表用于页面起价和预算判断。CIP官网列有2026-2027 Tuition
-        Table下载入口，但具体成交价仍需按国籍价目表、课程、房型、周数、入学日和优惠重新核算。
-      </p>
-    </div>
-
-    <div class="fee-table" role="table" aria-label="CIP English Kepos参考费用">
-      <div class="fee-row fee-row--head" role="row">
-        <span role="columnheader">课程/房型</span>
-        <span role="columnheader">1周</span>
-        <span role="columnheader">4周</span>
-        <span role="columnheader">12周</span>
-        <span role="columnheader">说明</span>
+      <div class="fee-structure-grid">
+        <article *ngFor="let group of feeStructureCards">
+          <h3>
+            <mat-icon>{{ group.icon }}</mat-icon>
+            {{ group.title }}
+          </h3>
+          <dl>
+            <div *ngFor="let row of group.rows">
+              <dt>{{ row.label }}</dt>
+              <dd>{{ row.value }}</dd>
+            </div>
+          </dl>
+          <strong>{{ group.note }}</strong>
+        </article>
       </div>
-      <div class="fee-row" role="row" *ngFor="let row of priceRows">
-        <span role="cell">{{ row.room }}</span>
-        <span role="cell">{{ row.oneWeek }}</span>
-        <span role="cell">{{ row.fourWeeks }}</span>
-        <span role="cell">{{ row.twelveWeeks }}</span>
-        <span role="cell">{{ row.note }}</span>
+    </section>
+
+    <section class="tables-section" id="course-fees">
+      <div class="course-table-block">
+        <h2><mat-icon>menu_book</mat-icon>CIP 临时课程费参考 / 4周</h2>
+        <div
+          class="data-table course-fee-table"
+          role="table"
+          aria-label="CIP 临时课程费参考"
+        >
+          <div class="table-row table-head" role="row">
+            <span role="columnheader">课程方向</span>
+            <span role="columnheader">课程名称</span>
+            <span role="columnheader">4周课程费</span>
+            <span role="columnheader">说明</span>
+            <span role="columnheader">备注</span>
+          </div>
+          <div class="table-row" role="row" *ngFor="let fee of courseFees">
+            <span role="cell">{{ fee.suitable }}</span>
+            <span role="cell"><strong>{{ fee.name }}</strong></span>
+            <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+            <span role="cell">{{ fee.schedule }}</span>
+            <span role="cell">{{ fee.note }}</span>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="local-fees">
-      <article class="fee-chip" *ngFor="let fee of localFees">
-        <span>{{ fee.item }}</span>
-        <strong>{{ fee.amount }}</strong>
-      </article>
-    </div>
-  </section>
-
-  <section class="content-band">
-    <div class="section-heading">
-      <span class="section-kicker">设施</span>
-      <h2>学习、住宿、餐食和学生支持集中配置</h2>
-    </div>
-    <div class="facility-grid">
-      <div class="facility-item" *ngFor="let facility of facilities">
-        <mat-icon>check_circle</mat-icon>
-        <span>{{ facility }}</span>
+      <div class="room-table-block" id="room-fees">
+        <h2><mat-icon>bed</mat-icon>CIP 临时住宿费参考 / 4周</h2>
+        <div
+          class="data-table room-fee-table"
+          role="table"
+          aria-label="CIP 临时住宿费参考"
+        >
+          <div class="table-row table-head" role="row">
+            <span role="columnheader">房型</span>
+            <span role="columnheader">代码</span>
+            <span role="columnheader">4周住宿费</span>
+          </div>
+          <div class="table-row" role="row" *ngFor="let room of roomFees">
+            <span role="cell">{{ room.name }}</span>
+            <span role="cell">{{ room.id | uppercase }}</span>
+            <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+          </div>
+        </div>
+        <p>说明：住宿费数值临时沿用CIA页面，CIP正式房型价格之后手动替换。</p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="split-section">
-    <div class="content-band">
+    <section class="cia-section" id="campus-life">
       <div class="section-heading">
-        <span class="section-kicker">适合人群</span>
-        <h2>这些学生可以优先看CIP</h2>
+        <h2>住宿与生活</h2>
       </div>
-      <ul class="clean-list">
-        <li *ngFor="let item of audiences">{{ item }}</li>
+      <div class="life-grid">
+        <article *ngFor="let item of lifeCards">
+          <img [src]="item.image" [alt]="item.title" />
+          <h3>
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.title }}
+          </h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+      <div class="price-note">
+        <h3>价格说明</h3>
+        <ol>
+          <li>当前费用为页面结构占位，数值按CIA页面硬编码。</li>
+          <li>CIP官网提供2026-2027资料与按国籍区分的Tuition Table入口。</li>
+          <li>最终报价需按CIP当期价目表、空房、优惠和当地费用重新确认。</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="cia-section" id="enrollment-notes">
+      <div class="section-heading">
+        <h2><mat-icon>assignment_turned_in</mat-icon>报名 CIP 前建议确认</h2>
+      </div>
+      <div class="check-grid">
+        <article *ngFor="let item of enrollmentChecks">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+      <div class="section-heading">
+        <h2><mat-icon>help</mat-icon>常见问题 FAQ</h2>
+      </div>
+      <details *ngFor="let faq of faqs">
+        <summary>{{ faq.question }}</summary>
+        <p>{{ faq.answer }}</p>
+      </details>
+    </section>
+
+    <section class="final-cta">
+      <div class="final-cta-head">
+        <div class="final-cta-icon" aria-hidden="true">
+          <mat-icon>headset_mic</mat-icon>
+        </div>
+        <div class="final-cta-copy">
+          <h2>想知道 CIP 现在是否适合你？</h2>
+          <p>
+            把入学日期、学习周数、英文程度、是否需要Native课、房型偏好和预算发给顾问，我们帮你确认CIP是否值得优先申请。
+          </p>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact">
+            <mat-icon>description</mat-icon>获取 CIP 报价确认
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+          <a class="secondary-action" routerLink="/philippines-study/clark">
+            <mat-icon>arrow_back</mat-icon>返回克拉克学校
+          </a>
+        </div>
+      </div>
+
+      <ul>
+        <li *ngFor="let badge of ctaBadges">
+          <mat-icon>check_circle</mat-icon>{{ badge }}
+        </li>
       </ul>
-    </div>
+    </section>
 
-    <div class="content-band advice-panel">
-      <div class="section-heading">
-        <span class="section-kicker">顾问建议</span>
-        <h2>先确认Native课程比例，再确认房型和总预算</h2>
-      </div>
-      <p>
-        CIP的关键词不是单纯“外教多”，而是学生是否真的需要Native
-        1:1纠音、表达训练和更自然的口语输入。
-        如果学生基础较弱，可以先用ESL建立表达框架；如果目标是考试，则要确认IELTS或TOEIC课程强度、模考、保证班条件和老师配置。
-      </p>
-      <a class="primary-action" routerLink="/about-sida/contact">
-        让顾问帮我做CIP预算
-        <mat-icon>chevron_right</mat-icon>
+    <div class="mobile-bottom-actions" aria-label="CIP 手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        咨询顾问
       </a>
     </div>
-  </section>
-
-  <section class="content-band">
-    <div class="section-heading">
-      <span class="section-kicker">优缺点</span>
-      <h2>报名前建议这样看</h2>
-    </div>
-    <div class="pros-cons">
-      <div>
-        <h3>优点</h3>
-        <ul class="clean-list">
-          <li *ngFor="let item of pros">{{ item }}</li>
-        </ul>
-      </div>
-      <div>
-        <h3>需要注意</h3>
-        <ul class="clean-list">
-          <li *ngFor="let item of cons">{{ item }}</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="content-band faq-section">
-    <div class="section-heading">
-      <span class="section-kicker">FAQ</span>
-      <h2>常见问题</h2>
-    </div>
-    <details *ngFor="let faq of faqs">
-      <summary>{{ faq.question }}</summary>
-      <p>{{ faq.answer }}</p>
-    </details>
-  </section>
-
-  <section class="cta-band">
-    <div>
-      <span class="section-kicker">Consultation</span>
-      <h2>想知道CIP现在适不适合你？</h2>
-      <p>
-        把入学日期、周数、英文程度、目标课程、房型偏好和预算发给顾问，可以更快判断CIP是否合适。
-      </p>
-    </div>
-    <a class="primary-action" routerLink="/about-sida/contact">
-      立即咨询
-      <mat-icon>chat</mat-icon>
-    </a>
-  </section>
+  </main>
 </div>

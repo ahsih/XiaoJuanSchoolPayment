@@ -48,7 +48,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio': {
     title: '碧瑶菲律宾留学与英语游学 | 斯巴达语言学校推荐',
     description:
-      '碧瑶菲律宾留学和英语游学指南，比较 菲律宾碧瑶PINES语言学校、BECI、JIC、MONOL、WALES、TALK 等学校，适合自律强化和雅思备考。',
+      '碧瑶菲律宾留学和英语游学指南，比较 菲律宾碧瑶PINES语言学校、BECI、JIC、MONOL、WALES 等学校，适合自律强化和雅思备考。',
     keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, 菲律宾碧瑶PINES语言学校, Pines, BECI, Baguio JIC, MONOL',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
@@ -90,9 +90,23 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
     description:
-      '克拉克菲律宾留学和英语游学指南，比较 CIP、EG、WE、HELP、AELC 等学校，适合亲子、外师比例和舒适生活需求。',
-    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, EG Academy, AELC',
+      '克拉克菲律宾留学和英语游学指南，比较 CIP、菲律宾克拉克EG语言学校、WE、HELP、AELC 等学校，适合亲子、外师比例和舒适生活需求。',
+    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, 菲律宾克拉克EG语言学校, EG Academy, AELC',
     image: '/assets/philippines/clark-study-hero.jpg',
+  },
+  '/philippines-study/clark/cip-english-kepos': {
+    title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
+    description:
+      '菲律宾克拉克 CIP语言学校页面，整理CIP English Kepos的Native speaker一对一、ESL、IELTS、TOEIC、Business、亲子青少年课程、宿舍与Hotel住宿、临时CIA参考费用和报名注意事项。',
+    keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
+    image: '/assets/philippines/cip-campus-intro.jpg',
+  },
+  '/philippines-study/clark/eg-academy': {
+    title: '菲律宾克拉克EG语言学校 | 课程费用住宿与报名咨询',
+    description:
+      '菲律宾克拉克EG语言学校页面，整理EG Academy的ESL、Native、IELTS、TOEIC、TOEFL、Business、Golf + ESL、Junior与Guardian课程、官方KRW费用和PHP到校费用。',
+    keywords: '菲律宾克拉克EG语言学校, EG Academy, Education Group Granma, 克拉克EG, Clark EG, Golf ESL, 菲律宾亲子游学',
+    image: '/assets/philippines/eg-facility-001.jpg',
   },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
@@ -401,6 +415,7 @@ export class SeoService {
       cebu: '宿务',
       baguio: '碧瑶',
       clark: '克拉克',
+      'eg-academy': '菲律宾克拉克EG语言学校',
       manila: '马尼拉',
       cost: '费用',
       faq: '常见问题',

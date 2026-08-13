@@ -1,0 +1,434 @@
+<app-cia-school>
+  <div class="cia-page eg-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/clark">
+              <mat-icon>arrow_back</mat-icon>
+              返回克拉克学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 克拉克学校 / 菲律宾克拉克EG语言学校</p>
+            <h1><span>菲律宾克拉克</span><span>EG语言学校</span></h1>
+            <p class="hero-lead">
+              <span>位于Angeles City Friendship Highway生活圈的综合型语言学校。</span>
+              <span>ESL、Native、IELTS、TOEIC、TOEFL、Business、Junior与Golf英语都能一起比较。</span>
+              <span>本页按EG官方2025年KRW价目表和官网校园资料整理。</span>
+            </p>
+            <div class="hero-tags" aria-label="EG Academy特点">
+              <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
+              <span><mat-icon>groups</mat-icon>约110名学生</span>
+              <span><mat-icon>school</mat-icon>ESL / Native / IELTS</span>
+              <span><mat-icon>sports_golf</mat-icon>Golf + ESL</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算EG费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看官方课程价格
+                <mat-icon>payments</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              EG官方价目表以KRW列出课程与住宿，注册费和到校PHP费用需另计；正式报名仍以学校回函、空房和付款日汇率为准。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="EG Academy校园图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/eg-facility-001.jpg" alt="菲律宾克拉克EG语言学校校园与泳池环境" />
+              <figcaption>EG官方校园图片：校区、泳池、运动场与公共空间</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="EG Academy校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(2, 5)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteText }}</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  已含课程费、住宿费和注册费估算
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  教材、SSP、接机、延签等PHP到校费用另列
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片来源：EG Academy官网Campus、Facilities与Golf页面；费用参考EG Academy 2025-01-01官方KRW价目PDF。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="EG Academy手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="EG Academy快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>校园图片</span>
+            <h2>使用EG官方图片核对学习、住宿和Golf环境</h2>
+            <p>EG适合把克拉克生活便利、校内住宿、Native课程、考试课程和Golf体验放在同一张清单里比较。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="EG Academy图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>EG Academy 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>EG的重点是课程选择宽、Clark生活方便、Golf特色明显</h2>
+            </div>
+            <p>
+              EG不是单一考试冲刺校，而是更适合综合比较：基础ESL、Native口语、考试课、亲子和Golf都能覆盖。报价时要把KRW课程住宿、KRW注册费、PHP到校费用和接机机场拆开看。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Sida</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你想要克拉克舒适型环境和多课程方向，EG值得放进候选；如果目标是超高压雅思冲刺，也建议同步比较碧瑶强管理学校。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问帮我判断EG是否适合
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>核心亮点</span>
+              <h2>为什么会把EG放进Clark候选清单</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不适合</span>
+            <h2>先判断EG是不是你的路线</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑EG</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型</span>
+            <h2>从ESL到Native、考试、Junior和Golf英语</h2>
+            <p>EG的选课关键不是只看价格，而是先确认学习目标，再决定课程密度、Native比例、考试方向和是否加入Golf安排。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>EG 2025官方4周课程费</span>
+              <h2>官方PDF以KRW列出课程费用</h2>
+              <p>以下为4周课程费，不含住宿与注册费；1/2/3周短期按课程+住宿总额40%/65%/85%估算。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="EG 2025官方4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">适合人群</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">{{ formatMoney(fee.tuition, fee.currencyCode) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="EG 2025课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div><em>4周课程费</em><b>{{ formatMoney(fee.tuition, fee.currencyCode) }}</b></div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>学习节奏</span>
+              <h2>一天安排要按课程方向确认</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>EG 2025官方4周住宿费</span>
+              <h2>房型会直接影响总价和空房难度</h2>
+              <p>以下为官方PDF的4周住宿费参考；家庭与特别房型要按同行人数、性别、入学日和空房确认。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="EG 2025官方4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">{{ formatMoney(room.fee, room.currencyCode) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="EG 2025住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div><em>4周住宿费</em><b>{{ formatMoney(room.fee, room.currencyCode) }}</b></div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>EG费用快速估算</span>
+              <h2>默认参考：4周 ESL 4 + 四人房</h2>
+              <p>估算公式：注册费 +（课程费 + 住宿费）x 周数比例。到校PHP费用不并入KRW总额。</p>
+            </div>
+            <div class="quote-form" aria-label="EG费用估算选项">
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费</span><strong>{{ registrationFeeText }}</strong></div>
+              <div><span>课程费</span><strong>{{ formatMoney(tuitionForSelectedWeeks, quoteCurrencyCode) }}</strong></div>
+              <div><span>住宿费</span><strong>{{ formatMoney(roomFeeForSelectedWeeks, quoteCurrencyCode) }}</strong></div>
+              <div><span>周数规则</span><strong>{{ shortCourseRuleText }}</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期KRW参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>人民币换算请按付款日汇率确认</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放、优惠和学校回函。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="fee-alert">
+              注意：EG官方PDF说明注册费KRW100,000不包含在表格内；教材费、SSP、SSP E-Card、ACR I-Card、接机、延签、保证金和Golf追加费用多以PHP到校支付。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用</span>
+            <h2>KRW课程住宿之外，还要准备PHP当地费用</h2>
+            <p>以下按EG官方费用PDF和Golf页面整理，金额会随周数、课程、签证规则和学校现场政策调整。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页费用参考EG Academy官方2025-01-01韩文KRW价目表，并结合EG官网Overview、Campus、Golf和FAQ页面整理。学校价格、优惠、房型空位、接机和到校费用可能调整，报名以学校正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>通过思达启航报名EG，我们会帮你把费用拆清楚</h2>
+            <p>顾问会把课程、房型、KRW前期费用、PHP到校费用、接机机场和Golf追加费用分开核对，避免只看一个“总价”造成误解。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认EG前建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
+          </ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>EG官方参考链接</h2>
+          </div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名EG前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="EG Academy页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>到校PHP费用另计</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道EG当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英语基础、目标课程、房型和是否需要Golf告诉顾问，我们可以帮你向学校确认正式报价。</p>
+        <ul><li>0中介服务费</li><li>课程房型建议</li><li>KRW与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="EG Academy手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

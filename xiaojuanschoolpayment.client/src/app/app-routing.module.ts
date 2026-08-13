@@ -238,8 +238,8 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/baguio/talk-academy',
-        loadComponent: () =>
-          import('./pages/philippines/talk-school/talk-school.component').then((m) => m.TalkSchoolComponent),
+        redirectTo: '/philippines-study/baguio',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/baguio',
@@ -254,7 +254,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/eg-academy',
         loadComponent: () =>
-          import('./pages/philippines/eg-school/eg-school.component').then((m) => m.EgSchoolComponent),
+          import('./pages/philippines/eg-school/eg-school-detail.component').then((m) => m.EgSchoolDetailComponent),
       },
       {
         path: 'philippines-study/clark/clark-we-academy',

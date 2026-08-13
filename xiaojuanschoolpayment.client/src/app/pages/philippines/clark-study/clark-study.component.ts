@@ -104,29 +104,29 @@ export class ClarkStudyComponent {
       title: '亲子陪读与低龄型',
       tag: 'Family / Junior',
       text: '适合家长同行、4-15 岁阶段学生、寒暑假短期体验，以及需要学习和照顾同步安排的家庭。',
-      examples: 'WE Academy、CIP、EG Academy',
+      examples: 'WE Academy、CIP、菲律宾克拉克EG语言学校',
     },
     {
       title: '综合 ESL 舒适型',
       tag: 'ESL / Comfort',
       text: '适合想稳步提升英语，但不想进入碧瑶高压斯巴达节奏的人群。',
-      examples: 'EG Academy、WE Academy、CIP',
+      examples: '菲律宾克拉克EG语言学校、WE Academy、CIP',
     },
     {
       title: '考试与商务沟通型',
       tag: 'IELTS / TOEIC / Business',
       text: '适合需要雅思、多益、商务英语或求职英语路径的人，需要特别核对模考、保证班和外教课比例。',
-      examples: 'CIP、EG Academy、HELP Clark',
+      examples: 'CIP、菲律宾克拉克EG语言学校、HELP Clark',
     },
   ];
 
   readonly schoolProfiles: SchoolProfile[] = [
     {
-      name: 'CIP English Kepos',
+      name: '菲律宾克拉克 CIP语言学校',
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
-      startingPrice: 'USD 1,420 / 4周起参考',
+      startingPrice: 'USD 1,668 / 4周起参考',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -146,27 +146,28 @@ export class ClarkStudyComponent {
         'CIP 是 Clark 选校时优先核对的综合型学校。低龄学生可关注官网列出的 Primary English 7-11 岁与 Junior 12-15 岁课程。',
     },
     {
-      name: 'EG Academy',
-      location: 'Lot 3 Friendship Highway, Cutcut, Angeles City',
-      style: 'ESL、考试与活动体验型',
+      name: '菲律宾克拉克EG语言学校',
+      location: 'Lot 2-B Friendship Highway, Cutcut, Angeles City',
+      style: 'ESL、Native、考试与Golf体验型',
       route: '/philippines-study/clark/eg-academy',
-      startingPrice: 'USD 1,390 / 4周起参考',
+      startingPrice: 'KRW 1,550,000 + 注册费 / 4周起参考',
       courses: [
-        'ESL General',
-        'ESL Intensive',
-        'ESL Sparta',
-        'TOEIC / TOEFL / IELTS + ESL',
-        'Native Course',
-        'Golf & ESL',
+        'ESL 4 / ESL 6',
+        'ESL Native Plus / Complete',
+        'Pre-IELTS / IELTS + Native',
+        'TOEIC / TOEFL + Native',
+        'Business + Native',
+        'Golf + ESL / Golf Special',
+        'Junior / Guardian',
       ],
       accommodation:
-        '住宿和费用需按学校当期价目表确认，尤其是旺季、家庭同行和短期项目。',
+        '官方价目表列出一人房、二人房、四人房、家庭三人房和特别四至六人房；空房需按入学日与同行人数确认。',
       facilities:
-        '官网列有校园介绍、周边环境、EG Golf、日程、费用和学校规则等栏目，适合做生活便利度核对。',
+        '官网概况列出1:1教室50间、团体教室20间、TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅和旅行社。',
       bestFor:
-        '想在 Clark 做一般英语、考试基础、外教口语或高尔夫英语组合的人群。',
+        '想在Clark做一般英语、Native口语、考试基础、商务英语、亲子陪读或高尔夫英语组合的人群。',
       consultantNote:
-        'EG 官网持续更新学生比例和学校新闻，报名前建议同步确认国籍比例、接机费、房型和课程是否按计划开放。',
+        'EG官方2025价目表以KRW列出课程和住宿，注册费KRW100,000另计；教材、SSP、接机、延签和Golf追加费用多以PHP到校支付。',
     },
     {
       name: 'Clark WE Academy',
@@ -273,7 +274,7 @@ export class ClarkStudyComponent {
     },
     {
       title: '最新优惠和活动',
-      text: 'CIP、EG、WE 等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价和回函为准。',
+      text: 'CIP、菲律宾克拉克EG语言学校、WE 等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价和回函为准。',
     },
   ];
 
@@ -318,7 +319,7 @@ export class ClarkStudyComponent {
     {
       question: 'Clark 适合雅思冲刺吗？',
       answer:
-        '可以看 CIP、EG 等有考试课程的学校，但如果目标是高强度模考和自习制度，碧瑶学校也应一起比较。',
+        '可以看 CIP、菲律宾克拉克EG语言学校 等有考试课程的学校，但如果目标是高强度模考和自习制度，碧瑶学校也应一起比较。',
     },
     {
       question: '报名 Clark 学校前最该确认什么？',
@@ -336,8 +337,16 @@ export class ClarkStudyComponent {
     { label: 'CIP Hotel 官方说明', url: 'https://cipenglish.com/hotel/' },
     { label: 'EG Academy 官方网站', url: 'https://egesl.com/' },
     {
-      label: 'EG Academy 课程页面',
-      url: 'https://egesl.com/curriculum/course/',
+      label: 'EG Academy 官方概况',
+      url: 'https://egesl.com/bbs/board.php?bo_table=overview',
+    },
+    {
+      label: 'EG Academy 官方费用PDF',
+      url: 'https://www.egesl.com/study/cost/cost_2025.pdf',
+    },
+    {
+      label: 'EG Academy 官方Golf页面',
+      url: 'https://www.egesl.com/study/golf/',
     },
     { label: 'Clark WE Academy 官方网站', url: 'https://clarkweacademy.com/' },
     { label: 'HELP English 官方入口', url: 'https://helpenglish.net/' },

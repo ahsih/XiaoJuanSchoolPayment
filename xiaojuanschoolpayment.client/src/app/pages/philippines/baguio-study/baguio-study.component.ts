@@ -104,7 +104,7 @@ export class BaguioStudyComponent {
       title: '雅思多益备考型',
       tag: 'IELTS / TOEIC',
       text: '适合有明确分数目标，需要模考、写作批改、口说反馈和阶段复盘的人群。',
-      examples: 'PINES、JIC、TALK、MONOL、WALES',
+      examples: 'PINES、JIC、MONOL、WALES',
     },
     {
       title: '口语基础强化型',
@@ -180,18 +180,6 @@ export class BaguioStudyComponent {
       facilities: '一对一/团体教室、商务中心、餐厅、学生休息区，以及步行可达的餐厅、ATM和商场。',
       bestFor: '想要小校容量、成人学习氛围、市区便利和相对灵活节奏的人群。',
       consultantNote: 'WALES适合不想进入过强斯巴达节奏的学生；亲子或成人商务需求可优先核对房型和餐费。',
-    },
-    {
-      name: 'TALK Academy',
-      location: '碧瑶市',
-      style: '多益与实用英语老牌路线',
-      route: '/philippines-study/baguio/talk-academy',
-      startingPrice: '需确认当前校区/报价',
-      courses: ['ESL', 'TOEIC', 'IELTS', 'Business English'],
-      accommodation: '住宿、房型和校区需以学校当期回复确认，不建议沿用旧资料直接报价。',
-      facilities: '重点核对一对一/团体教室、自习、模考、宿舍、餐食、门禁和机场接送安排。',
-      bestFor: '多益目标明确、想短期集中提升听读分数或求职英语能力，并能等待当前状态确认的学生。',
-      consultantNote: 'TALK 信息更新需以学校当期回复为准；建议和 PINES、JIC、MONOL、WALES 一起比较。',
     },
   ];
 
@@ -275,7 +263,6 @@ export class BaguioStudyComponent {
     { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
     { label: '菲律宾碧瑶MONOL语言学校 官方网站', url: 'https://mymonol.com/en/' },
     { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
-    { label: 'TALK Academy 官方网站', url: 'https://talk-academy.com/' },
     { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
     { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
     { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },

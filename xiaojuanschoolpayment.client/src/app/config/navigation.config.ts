@@ -303,11 +303,6 @@ export const mainNavigation: NavigationItem[] = [
             label: '菲律宾碧瑶WALES语言学校',
             route: '/philippines-study/baguio/wales-academy',
           },
-          {
-            id: 'talk-academy',
-            label: 'TALK Academy',
-            route: '/philippines-study/baguio/talk-academy',
-          },
         ],
       },
       {
@@ -318,12 +313,12 @@ export const mainNavigation: NavigationItem[] = [
         children: [
           {
             id: 'cip-english-kepos',
-            label: 'CIP English Kepos',
+            label: '菲律宾克拉克 CIP语言学校',
             route: '/philippines-study/clark/cip-english-kepos',
           },
           {
             id: 'eg-academy',
-            label: 'EG Academy',
+            label: '菲律宾克拉克EG语言学校',
             route: '/philippines-study/clark/eg-academy',
           },
           {

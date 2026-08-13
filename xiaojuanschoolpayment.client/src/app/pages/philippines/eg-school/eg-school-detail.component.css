@@ -1,0 +1,161 @@
+:host .eg-page {
+  --eg-accent: #0f766e;
+  --eg-accent-soft: rgba(15, 118, 110, 0.1);
+  --eg-ink: #10201d;
+}
+
+:host .hero-media .feature-photo img {
+  object-position: center;
+}
+
+:host .gallery-grid figure img,
+:host .highlight-list img {
+  object-fit: cover;
+}
+
+:host .hero-lead span,
+:host .photo-source,
+:host .fee-alert,
+:host .trust-note {
+  line-height: 1.65;
+}
+
+:host .hero-copy h1 span {
+  display: block;
+}
+
+:host .hero-copy h1 {
+  font-size: clamp(46px, 5vw, 76px);
+}
+
+:host .hero-tags span mat-icon,
+:host .section-nav a mat-icon,
+:host .mobile-anchor-nav a mat-icon {
+  color: var(--eg-accent);
+}
+
+:host .course-fee-table .table-row,
+:host .room-fee-table .table-row {
+  grid-template-columns: minmax(150px, 1.05fr) minmax(140px, 0.65fr) minmax(230px, 1.35fr);
+}
+
+:host .source-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:host .source-list a {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(15, 118, 110, 0.16);
+  border-radius: 8px;
+  color: var(--eg-ink);
+  display: inline-flex;
+  font-weight: 700;
+  gap: 8px;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+:host .source-list a:hover {
+  background: var(--eg-accent-soft);
+}
+
+:host .source-list mat-icon {
+  color: var(--eg-accent);
+}
+
+@media (max-width: 760px) {
+  :host .course-fee-table,
+  :host .room-fee-table {
+    display: none;
+  }
+
+  :host .source-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  :host app-cia-school,
+  :host .cia-page {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  :host .hero-section,
+  :host .hero-copy,
+  :host .hero-media,
+  :host .feature-photo,
+  :host .media-strip,
+  :host .hero-price-card {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+
+  :host .hero-section,
+  :host .hero-media,
+  :host .hero-actions,
+  :host .quote-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :host .hero-copy h1 {
+    font-size: 30px;
+    line-height: 1.08;
+    max-width: calc(100vw - 28px);
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  :host .hero-lead {
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: calc(100vw - 28px);
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  :host .hero-tags {
+    display: grid !important;
+    gap: 10px !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :host .hero-tags span,
+  :host .primary-action,
+  :host .secondary-action {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  :host .mobile-bottom-actions {
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+
+  :host .mobile-bottom-actions a {
+    font-size: 15px;
+    min-width: 0;
+    padding-inline: 6px;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 420px) {
+  :host .hero-copy h1 {
+    font-size: 28px;
+  }
+}
