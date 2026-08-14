@@ -76,25 +76,25 @@ export class CebuStudyComponent {
       title: '口语强化型',
       tag: 'ESL / Power Speaking',
       text: '适合想增加一对一开口时间、改善听说基础、建立英语表达信心的学生。',
-      examples: '菲律宾宿务EV语言学校、菲律宾宿务CPI语言学校、菲律宾宿务Philinter语言学校、I.Breeze',
+      examples: '菲律宾宿务EV语言学校、菲律宾宿务CPI语言学校、菲律宾宿务I.BREEZE语言学校、菲律宾宿务IU English Academy、菲律宾宿务Philinter语言学校、Howdy English Academy、Genius English Academy',
     },
     {
       title: '考试备考型',
       tag: 'IELTS / TOEIC / TOEFL',
       text: '适合有明确分数目标，需要模考、写作批改、口语反馈和保证班规则的学生。',
-      examples: 'CIA、菲律宾宿务EV语言学校、菲律宾宿务CPILS语言学校、菲律宾宿务English Fella语言学校',
+      examples: 'CIA、SMEAG Capital、菲律宾宿务EV语言学校、菲律宾宿务CPILS语言学校、菲律宾宿务English Fella语言学校',
     },
     {
       title: '亲子青少年型',
       tag: 'Family / Junior Camp',
       text: '适合家长陪读、寒暑假短期体验、孩子先适应英语环境和海外课堂的家庭。',
-      examples: 'CIA、菲律宾宿务CPI语言学校、CBOA、EV Academy La Mer',
+      examples: 'CIA、菲律宾宿务IU English Academy、Howdy English Academy、Genius English Academy、菲律宾宿务CPI语言学校、CBOA、EV Academy La Mer',
     },
     {
       title: '度假舒适型',
       tag: 'Resort / Balanced',
       text: '适合重视住宿、餐食、泳池、校园环境和周末体验，同时希望保持稳定课程强度的人群。',
-      examples: 'CIA Mactan、菲律宾宿务CPI语言学校、Cebu Blue Ocean Academy',
+      examples: 'CIA Mactan、菲律宾宿务I.BREEZE语言学校、Howdy English Academy、Genius English Academy、菲律宾宿务CPI语言学校、Cebu Blue Ocean Academy',
     },
   ];
 
@@ -118,6 +118,187 @@ export class CebuStudyComponent {
         '泳池、餐厅、图书馆、健身房、医务室、迷你商店、篮球/排球场、祈祷室、卡拉 OK 和 IDP IELTS 考场。',
       bestFor: '想兼顾校园设施、考试资源、生活便利和国际学生氛围的学生。',
       note: '适合第一次宿务游学、雅思备考、亲子/青少年项目，但旺季房型和入学日要提前确认。',
+    },
+    {
+      name: '菲律宾宿务First English Global College语言学校',
+      location: '麦克坦新城 / Lapu-Lapu City',
+      style: '日系运营，高比例一对一与亲子友好',
+      route: '/philippines-study/cebu/first-english-global-college',
+      startingPrice: 'USD 488 / 1周起',
+      courses: [
+        'GENERAL ESL',
+        '6 Man-to-Man',
+        '7 Man-to-Man',
+        'Perfect Man to Man',
+        'Kids ESL / Eiken',
+        'Business / TOEIC / IELTS',
+        '通学课程',
+      ],
+      accommodation: '麦克坦新城公寓或车程约5分钟的Share House；亲子家庭通常使用公寓方案。',
+      facilities:
+        '一对一教室、小组课教室、儿童空间、自习座位、Wi-Fi；周边有咖啡厅、麦当劳、便利店和餐厅。',
+      bestFor:
+        '亲子游学、第一次宿务游学、想住在麦克坦并提高一对一口语课比例的学生。',
+      note: '官网基础费用已按参考汇率换算为美元；入学金、当地费用、餐食、机票和保险需要另行确认。',
+    },
+    {
+      name: '菲律宾宿务GLANT English Academy语言学校',
+      location: 'Kasambagan / Old Banilad, Cebu City',
+      style: '小规模自由型，Native Speaker课程',
+      route: '/philippines-study/cebu/glant',
+      startingPrice: 'USD 303 / 1周起',
+      courses: [
+        'Mini ESL',
+        'Regular ESL',
+        'Intensive ESL',
+        'Premium ESL',
+        'IELTS',
+        'Native Speaker Class',
+      ],
+      accommodation: '校内或同楼住宿，公开费用表按单人、双人、三人房区分，三人房预算最低。',
+      facilities:
+        '一对一教室、办公室、餐厅、公共休息区、宿舍；周边有商场、咖啡厅、餐厅、银行和日常生活设施。',
+      bestFor:
+        '预算敏感、喜欢自由度、不需要斯巴达管理、想在宿务市区小规模学校学习的成人学生。',
+      note: '课程食宿费以美元公布；注册费、接机费、SSP、教材、水电、押金、洗衣和签证延长等另计。',
+    },
+    {
+      name: '菲律宾宿务ICL English Academy',
+      location: '110 Gorordo Avenue, Cebu City',
+      style: '市区半斯巴达，Power Speaking与考试课程',
+      route: '/philippines-study/cebu/icl',
+      startingPrice: 'USD 1,350 / 4周起',
+      courses: [
+        'Light Speaking',
+        'Power Speaking 4 / 6 / 8',
+        'IELTS / IELTS Guarantee',
+        'TOEIC',
+        'Junior',
+        'Parents Course',
+      ],
+      accommodation:
+        '校内1/2/3/4人房，另有步行约2分钟的Goldberry Suites外部宿舍选择，费用按课程和房型分开公布。',
+      facilities:
+        '一对一教室、小组教室、食堂、健身房、桌球/台球、儿童活动区、Wi-Fi、洗衣区、饮水机和校内医务室。',
+      bestFor:
+        '想在宿务市区读半斯巴达、提高一对一口语课时，或选择雅思、多益、亲子/青少年课程的学生。',
+      note: '课程食宿费以美元公布；入学金、SSP、签证、教材、水电维护、押金、洗衣、接机和个人生活费另计。',
+    },
+    {
+      name: '菲律宾宿务SMEAG Capital语言学校',
+      location: 'Guadalupe, Cebu City',
+      style: 'Sparta / Semi-Sparta，市区考试型校区',
+      route: '/philippines-study/cebu/smeag-capital',
+      startingPrice: 'USD 1,580 / 4周起',
+      courses: [
+        'ESL by Cambridge',
+        'Speaking Master',
+        'IELTS / IELTS Guarantee',
+        'TOEIC',
+        'TOEFL',
+        'Business English',
+        'Family Program',
+      ],
+      accommodation:
+        '宿舍与教室集中在同一校区，公开参考房型包括单人、双人、三人和四人房。',
+      facilities:
+        '餐厅、自习空间、咖啡区、健身设施、学生服务窗口和考试/模考相关资源，适合市区集中学习。',
+      bestFor:
+        '想在宿务市区读ESL、雅思、多益、托福或商务英语，并能接受学习管理规则的学生。',
+      note: '前4周早晚Sparta课程、门禁、保证班规则、当地费用和房型空位建议报名前逐项确认。',
+    },
+    {
+      name: '菲律宾宿务Genius English Academy语言学校',
+      location: 'Maribago, Lapu-Lapu City / Mactan',
+      style: '海边度假型，多国籍，Non-Sparta / Semi-Sparta / Sparta',
+      route: '/philippines-study/cebu/genius-english-academy',
+      startingPrice: 'USD 1,400 / 4周起',
+      courses: [
+        'General English A/B',
+        'Power Speaking',
+        'Survival English',
+        'IELTS / IELTS Guarantee',
+        'TOEIC',
+        'TOEFL',
+        'Business English',
+        'Family Program',
+      ],
+      accommodation:
+        'EGI酒店式宿舍，常见单人、双人、三人和家庭安排，另有Regular、Sea View、Deluxe等房型。',
+      facilities:
+        '泳池、海边、健身房、餐厅、24小时前台、学习室、咖啡/酒吧、便利店和酒店式公共设施。',
+      bestFor:
+        '想兼顾海边生活、国际学生环境、Native group class、成人口语、商务/考试或亲子课程的学生。',
+      note: '旺季、Sea View/Deluxe房型、Sparta附加费和当地费用需报名前确认。',
+    },
+    {
+      name: '菲律宾宿务Howdy English Academy语言学校',
+      location: 'Mandaue City / Maayo Hotel',
+      style: '日系酒店型，一对一课程为主，亲子与成人短期友好',
+      route: '/philippines-study/cebu/howdy-english-academy',
+      startingPrice: 'USD 874 / 1周起',
+      courses: [
+        'General Course - 5',
+        'General Course - 7',
+        'Family Course',
+        'Online Lessons',
+        'STEP',
+      ],
+      accommodation:
+        'Maayo Hotel 4星酒店住宿为主，公开资料也列出公寓型住宿方案；房型需按单人、双人、亲子和同行规则确认。',
+      facilities:
+        '酒店住宿、早餐、午餐、Wi-Fi、学习空间、健身房、泳池、餐厅、咖啡厅、近医院和周边商场生活配套。',
+      bestFor:
+        '想要安全舒适酒店环境、日系支持、大量一对一口语课、第一次游学或亲子短期项目的学生。',
+      note: '晚餐、SSP、签证延长、公寓水电、亲子/未成年规则和正式空房需报名前确认。',
+    },
+    {
+      name: '菲律宾宿务I.BREEZE语言学校',
+      location: 'Mabolo, Cebu City',
+      style: '市区度假式综合校区，口语强化，多国籍',
+      route: '/philippines-study/cebu/ibreeze',
+      startingPrice: 'USD 620 / 1周起',
+      courses: [
+        'Power ESL',
+        'Intensive Beginner',
+        'Light ESL',
+        'Intensive Speaking',
+        'IELTS Target',
+        'TOEIC Target',
+        'General Business & BEC',
+        'Junior ESL & YLE',
+      ],
+      accommodation:
+        'IB1 / IB2校内宿舍，公开房型包括单人、双人、三人和四人房；IB2 Prime价格通常略高。',
+      facilities:
+        '泳池、餐厅、宿舍、自习空间、活动课、洗衣和市区生活配套，适合学习与生活平衡。',
+      bestFor:
+        '想在宿务市区兼顾口语课量、多国籍环境、校区舒适度、商务/考试或Junior课程的学生。',
+      note: '注册费、接机费、SSP、E-Card、押金、教材、水电、签证延长和房型空位需报名前确认。',
+    },
+    {
+      name: '菲律宾宿务IU English Academy',
+      location: 'General Maxilom Ave, Cebu City',
+      style: '市区独立校区，Power Speaking / Fitness / IELTS / TOEIC / 亲子',
+      route: '/philippines-study/cebu/iu-english-academy',
+      startingPrice: 'USD 1,350 / 4周起',
+      courses: [
+        'Light Speaking',
+        'Beginner 4 / 6',
+        'Power Speaking 4 / 6 / 8',
+        'IELTS / IELTS Guarantee',
+        'TOEIC',
+        'Business English',
+        'Fitness English',
+        'Kids / Teenagers / Parents',
+      ],
+      accommodation:
+        '校内单人、双人、三人、四人房，另有Soleil Suites外部宿舍参考；房型和促销价需按日期确认。',
+      facilities:
+        '70间一对一教室、15间小组教室、餐厅、咖啡区、自习室、屋顶泳池、健身房、台球、儿童游戏区和球场。',
+      bestFor:
+        '想在宿务市区兼顾口语、考试、商务、Fitness、亲子课程和运动设施的学生。',
+      note: '促销价、注册费、SSP/E-Card、押金、水电、维护费、洗衣、签证延长和房型空位需报名前确认。',
     },
     {
       name: '菲律宾宿务EV语言学校',
@@ -279,6 +460,22 @@ export class CebuStudyComponent {
     {
       label: 'CIA 官方学校信息',
       url: 'https://www.cebucia.com/en/about_us/about_us.php',
+    },
+    {
+      label: 'First English Global College官方学校与费用信息',
+      url: 'https://www.firstcebu.com/',
+    },
+    {
+      label: 'GLANT English Academy官方学校信息',
+      url: 'https://eduglantcebu.wixsite.com/language-school',
+    },
+    {
+      label: 'ICL English Academy官方学校与课程信息',
+      url: 'https://icrazy-english.com.tw/en/',
+    },
+    {
+      label: 'ICL English Academy公开费用表',
+      url: 'https://cebu-english.com/school/icrazy/',
     },
     {
       label: '菲律宾宿务EV语言学校官方课程',

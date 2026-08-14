@@ -1,0 +1,673 @@
+<app-cia-school>
+  <div class="cia-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / IU English Academy</p>
+            <h1>菲律宾宿务IU English Academy</h1>
+            <p class="hero-lead">
+              位于宿务市区General Maxilom Ave的独立校区，适合想兼顾Power Speaking、IELTS、TOEIC、
+              Business、Fitness English、亲子课程和市区生活便利度的学生。
+            </p>
+            <div class="hero-tags" aria-label="IU English Academy特点">
+              <span><mat-icon>location_city</mat-icon>Cebu City市区</span>
+              <span><mat-icon>school</mat-icon>70间一对一教室</span>
+              <span><mat-icon>sports_gymnastics</mat-icon>Fitness English</span>
+              <span><mat-icon>workspace_premium</mat-icon>IELTS / TOEIC</span>
+            </div>
+            <div class="hero-actions">
+              <a
+                class="primary-action"
+                href="#quote"
+                (click)="scrollToSection('quote', $event)"
+              >
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a
+                class="secondary-action"
+                href="#courses"
+                (click)="scrollToSection('courses', $event)"
+              >
+                查看IU课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的课程目标、学习周数、房型、是否要Fitness/IELTS/亲子路线和入学日期，
+              思达会帮你确认IU空房、促销、当地费用和正式报价。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="IU English Academy校园图片展示">
+            <figure class="feature-photo">
+              <img
+                [src]="galleryImages[0].src"
+                alt="菲律宾宿务IU English Academy校区外观"
+              />
+              <figcaption>IU English Academy Cebu City独立市区校区</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="IU English Academy校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>Power Speaking 4 + 校内三人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  使用公开参考价：学费USD 850 + 三人房USD 700 + 注册费参考USD 100
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、E-Card、押金、水电、维护费、洗衣和签证延长需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自IU官方资料及公开留学代理页面；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="IU English Academy手机端快捷导航">
+          <a
+            *ngFor="let item of mobileAnchors"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+          >
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="IU English Academy快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 IU 的市区校区、宿舍、教室和运动设施</h2>
+            <p>
+              IU不是海边学校，它更像市区独立校园：课程、宿舍、餐厅、健身、泳池和儿童活动空间集中在同一套校区里。
+            </p>
+          </div>
+          <div
+            class="gallery-tabs"
+            role="tablist"
+            aria-label="IU English Academy图片分类"
+          >
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>IU English Academy 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你要市区便利，还是海边度假感</h2>
+            </div>
+            <p>
+              IU和CIA都适合想要综合课程的人，但定位不同。CIA更偏Mactan半斯巴达新校区和考试资源；
+              IU更偏Cebu City市区独立校园、运动设施、Fitness English、亲子和多路线课程。
+              如果你想周边生活便利，又希望学校内有宿舍、餐厅和运动空间，IU值得列入候选。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>先确认课程路线和校内/外宿舍，再看是否有促销价；IELTS保证班和亲子课程要额外核规则。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>IU 核心亮点</span>
+              <h2>为什么会把IU列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 IU 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 IU</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>
+              IU课程覆盖Light Speaking、Beginner、Power Speaking、IELTS、TOEIC、Business、Fitness和亲子家庭方向。
+              建议先确认学习目标，再让顾问核对最新课表、开课和规则。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>IU 2026公开参考价</span>
+              <h2>先看4周课程费，再叠加住宿房型</h2>
+              <p>
+                以下为公开4周参考价，币种为美元。部分代理会提供促销套餐，正式价格需按入学日期、名额、住宿和学校确认。
+              </p>
+            </div>
+            <div
+              class="data-table course-fee-table"
+              role="table"
+              aria-label="IU English Academy 2026课程费用"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周学费</span>
+                <span role="columnheader">适合人群</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span>
+                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div
+              class="mobile-card-list mobile-course-fees"
+              aria-label="IU English Academy 2026课程费用手机卡片"
+            >
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span>
+                <strong>{{ fee.name }}</strong>
+                <div>
+                  <em>4周学费</em><b>USD {{ formatUsd(fee.tuition) }}</b>
+                </div>
+                <p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>IU 一天学习生活安排</span>
+              <h2>课堂、运动、自习和考试训练可组合</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>IU 2026住宿费用参考</span>
+              <h2>校内宿舍预算更稳，外部宿舍需另行确认</h2>
+              <p>
+                公开资料列出校内宿舍和Soleil Suites外部宿舍。校内四人房预算最低，单人房和外部单人房价格更高。
+              </p>
+            </div>
+            <div
+              class="data-table room-fee-table"
+              role="table"
+              aria-label="IU English Academy 2026住宿费用"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>校内宿舍配置含空调、浴室、Wi-Fi、冰箱、桌子和感应门锁。</li>
+              <li>部分促销可能按课程+三人房套餐报价，是否适用需确认月份和名额。</li>
+              <li>外部宿舍需确认交通、餐食和服务口径。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>IU费用快速报价</span>
+              <h2>默认参考：4周Power Speaking 4 + 校内三人房</h2>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="IU English Academy费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+                    {{ weeks }} 周
+                  </option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseFees" [value]="course.id">
+                    {{ course.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomFees" [value]="room.id">
+                    {{ room.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div>
+                <span>注册费参考</span><strong>USD {{ registrationFee }}</strong>
+              </div>
+              <div>
+                <span>课程费</span
+                ><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+              </div>
+              <div>
+                <span>住宿费</span
+                ><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+              </div>
+              <div>
+                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
+              </div>
+              <div>
+                <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
+              </div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认促销、房型、入学日、校内/外住宿和当地费用。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button
+                type="button"
+                class="primary-action"
+                (click)="calculateQuote()"
+              >
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除课程和住宿外，到校后通常还需确认SSP、SSP E-Card、ACR I-Card、教材、押金、电费、维护费、
+              洗衣、接机和签证延长等费用。实际金额以学校当期规则为准。
+            </p>
+            <p class="season-note">
+              公开促销价通常有月份、名额和房型限制；暑假、寒假、单人房和亲子档期建议尽早确认。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>课程住宿之外，还要准备当地费用</h2>
+            <p>
+              以下费用来自IU官方报名页和公开代理资料，不同周数、签证时长、住宿和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考IU官方报名页、官方课程/校区说明和公开代理2026费用表。
+              学校价格、促销、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 IU 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、促销和当地费用一次核清</h2>
+              <p>
+                通过思达报名IU，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>Power Speaking、IELTS、TOEIC、Business、Fitness和亲子课程匹配</li>
+              <li>校内/外部宿舍、单人、双人、三人、四人房空房确认</li>
+              <li>IELTS保证班、Kids、Teenagers和Parents规则确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 IU?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断IU是否适合、算清课程住宿和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾宿务IU English Academy学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaReasons">
+                <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名IU保障">
+            <article *ngFor="let item of sidaTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 IU 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>
+              入学前整理学习目标、报价和行前清单；到校后如遇到课程、老师、宿舍或账单沟通问题，也可以继续联系思达协助。
+            </p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>市区独立校园兼顾学习和运动</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周边生活</span>
+              <h2>学习之外也能体验Cebu City生活</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周边生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div>
+                  <h3>校内节奏</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of campusActivities">{{ item }}</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>周边生活</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 IU 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 IU 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="IU English Academy页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a
+            class="primary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+            >计算费用<mat-icon>calculate</mat-icon></a
+          >
+          <a class="secondary-action" routerLink="/about-sida/contact"
+            >咨询顾问<mat-icon>chat</mat-icon></a
+          >
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a
+            *ngFor="let item of sideNav"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+            ><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a
+          >
+          <a href="#top" (click)="scrollToSection('top', $event)"
+            ><mat-icon>arrow_upward</mat-icon>返回顶部</a
+          >
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道IU当前是否有空房和优惠？</h2>
+        <p>
+          把入学日期、学习周数、课程方向、房型、是否亲子或Fitness/IELTS路线发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="IU English Academy手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

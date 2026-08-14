@@ -1,0 +1,287 @@
+<app-cia-school>
+  <div class="cia-page glant-page">
+    <main class="cia-shell">
+      <section class="cia-hero" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/philippines-study/cebu">
+            <mat-icon>arrow_back</mat-icon>
+            返回宿务学校列表
+          </a>
+          <p class="breadcrumb">
+            <mat-icon>home</mat-icon>
+            菲律宾游学 / 宿务学校 / GLANT English Academy
+          </p>
+          <h1>菲律宾宿务GLANT English Academy语言学校</h1>
+          <p class="hero-lead">
+            宿务市区小规模家庭式英语学校，主打自由管理、低预算、Native Speaker课程和一对一口语训练，适合自律、喜欢灵活生活节奏的成人学生。
+          </p>
+          <div class="hero-tags" aria-label="GLANT关键词">
+            <span><mat-icon>location_on</mat-icon>Kasambagan / Old Banilad</span>
+            <span><mat-icon>nightlife</mat-icon>无门禁自由型</span>
+            <span><mat-icon>public</mat-icon>Native Speaker课程</span>
+            <span><mat-icon>home_work</mat-icon>小规模家庭氛围</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算GLANT费用<mat-icon>calculate</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看美元费用表<mat-icon>receipt_long</mat-icon></a>
+            <a class="secondary-action" routerLink="/about-sida/contact">咨询空房与入学日<mat-icon>support_agent</mat-icon></a>
+          </div>
+        </div>
+        <div class="hero-media" aria-label="GLANT学校图片">
+          <div class="hero-collage">
+            <figure *ngFor="let image of galleryImages.slice(0, 4)">
+              <img [src]="image.src" [alt]="image.title" />
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>4周参考</span>
+            <strong>USD 1,430 <small>起</small></strong>
+            <p>Regular ESL + 3人房，已含注册费和接机参考</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>课程、住宿、餐食打包价</li>
+              <li><mat-icon>info</mat-icon>SSP、教材、水电、签证等到校费用另计</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="section-tabs" aria-label="GLANT页面导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <section class="overview-grid" id="overview" aria-label="30秒看懂GLANT">
+        <div class="overview-main">
+          <div class="section-heading">
+            <h2>30秒看懂 GLANT</h2>
+            <p>GLANT不是度假村校园，也不是斯巴达学校。它更适合预算敏感、想住在市区、能自律管理课后时间的成人学生。</p>
+          </div>
+          <div class="snapshot-grid">
+            <article *ngFor="let item of snapshotCards">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </div>
+        <aside class="mini-quote-card">
+          <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
+          <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
+          <p>{{ quoteUsdText }}，最终需以学校空房、优惠和到校费用确认为准。</p>
+        </aside>
+      </section>
+
+      <section class="advisor-review">
+        <h2>思达顾问点评：先确认你能不能接受“自由型学校”</h2>
+        <p>
+          GLANT的优势是小规模、价格低、自由度高和Native Speaker课程；但自由也意味着它不适合需要强制自习、严格门禁和大型校园资源的人。选GLANT前，建议先判断自己的自律程度、预算、房型接受度，以及是否更需要宿务市区生活便利。
+        </p>
+        <div class="fit-columns">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <ul><li *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+          <div>
+            <h3><mat-icon>warning</mat-icon>这些情况要谨慎</h3>
+            <ul><li *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="cia-section" id="environment">
+        <div class="section-heading">
+          <h2>学校环境与住宿图片</h2>
+          <p>先看校区、教室、住宿和生活区，再判断小规模自由型学校是否适合你。</p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="GLANT图片分类">
+          <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button>
+        </div>
+        <div class="environment-grid">
+          <figure *ngFor="let image of filteredGalleryImages">
+            <img [src]="image.src" [alt]="image.title" />
+            <figcaption><span>{{ image.category }}</span><strong>{{ image.title }}</strong><p>{{ image.text }}</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="cia-section" id="courses">
+        <div class="section-heading">
+          <h2>课程怎么选</h2>
+          <p>GLANT课程选择不复杂：预算优先看Mini，标准成人游学看Regular，想加一对一看Intensive或Premium，雅思方向看IELTS。</p>
+        </div>
+        <div class="course-choice-grid">
+          <article *ngFor="let course of courses">
+            <mat-icon>{{ course.icon }}</mat-icon>
+            <span>{{ course.lessons }}</span>
+            <h3>{{ course.name }}</h3>
+            <p>{{ course.suitable }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="quote-results-section" id="quote">
+        <div class="quote-form-card">
+          <h2><mat-icon>calculate</mat-icon>GLANT费用快速报价</h2>
+          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+          <p>报价器按公开美元费用表计算课程、住宿、餐食，并加入注册费和接机参考；到校PHP费用另计。</p>
+        </div>
+        <div class="quote-result-card">
+          <div class="quote-result-head">
+            <h2>{{ selectedPackage.course }}</h2>
+            <small>{{ selectedPackage.category }}</small>
+            <p>{{ selectedPackage.lessons }} / {{ selectedPackage.room }}</p>
+            <strong>{{ selectedWeeks }}周</strong>
+          </div>
+          <div class="result-lines">
+            <div><span>课程食宿费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>注册费</span><strong>USD {{ registrationFeeUsd }}</strong></div>
+            <div><span>接机参考</span><strong>USD {{ airportPickupUsd }}</strong></div>
+            <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
+            <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
+          </div>
+          <div class="quote-total">
+            <span>前期支付参考</span>
+            <strong>{{ quoteUsdText }}</strong>
+            <em *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房、优惠和学校政策。</em>
+          </div>
+          <div class="quote-tool-row">
+            <a class="primary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看4周费用表<mat-icon>table_chart</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tables-section" id="fee-structure">
+        <div>
+          <h2><mat-icon>receipt_long</mat-icon>GLANT公开美元费用参考</h2>
+          <p class="table-intro">以下为常用课程与房型的4周课程食宿费用，不含注册费、接机费和到校PHP费用。最终以学校当期报价和空房为准。</p>
+          <div class="data-table glant-fee-table" role="table" aria-label="GLANT 4周公开费用参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周费用</span>
+              <span role="columnheader">房型 / 备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of feeSummaryRows">
+              <span role="cell">{{ row.course }}<small>{{ row.lessons }}</small></span>
+              <span role="cell">USD {{ formatUsd(row.price4Weeks) }}</span>
+              <span role="cell">{{ row.room }}<small>{{ row.note }}</small></span>
+            </div>
+          </div>
+        </div>
+        <aside class="price-note">
+          <h3>费用阅读重点</h3>
+          <ul>
+            <li>课程食宿费已经包含课程、住宿和餐食。</li>
+            <li>注册费USD 100和接机费USD 20已在报价器中单独加入。</li>
+            <li>SSP、SSP E-Card、教材、水电、洗衣、押金和签证延长通常到校后另付。</li>
+            <li>公开费用来自2026年GLANT相关费用表，报名时仍需确认学校最新报价与空房。</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="cia-section" id="life">
+        <div class="section-heading">
+          <h2>住宿与生活安排</h2>
+          <p>GLANT适合想住在市区、课后自己安排生活的人。它的自由度是优点，也要求学生更自律。</p>
+        </div>
+        <div class="life-grid">
+          <article>
+            <img [src]="galleryImages[0].src" alt="GLANT English Academy校区外观" />
+            <h3><mat-icon>location_on</mat-icon>宿务市区生活圈</h3>
+            <p>学校周边有商场、餐厅、咖啡厅和生活设施，适合希望保持城市便利度的人。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[5].src" alt="GLANT English Academy宿舍多人房" />
+            <h3><mat-icon>bed</mat-icon>1/2/3人房</h3>
+            <p>三人房预算最低，单人房适合重视隐私和睡眠的人，热门档期建议提前确认。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[6].src" alt="GLANT English Academy餐厅" />
+            <h3><mat-icon>restaurant</mat-icon>课程食宿打包</h3>
+            <p>公开费用表为课程、住宿和餐食打包价；餐食内容、清洁、洗衣等以学校当期安排为准。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section" id="local-fees">
+        <div class="section-heading">
+          <h2>到校与额外费用</h2>
+          <p>正式预算不能只看课程食宿费，还要预留菲律宾当地费用和个人生活支出。</p>
+        </div>
+        <div class="check-grid glant-local-grid">
+          <article *ngFor="let fee of localFees">
+            <mat-icon>payments</mat-icon>
+            <h3>{{ fee.item }}</h3>
+            <strong>{{ fee.amount }}</strong>
+            <p>{{ fee.note }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section source-section">
+        <div class="section-heading">
+          <h2>资料来源</h2>
+          <p>本页学校定位参考GLANT官方公开页面，费用参考公开GLANT费用表。学校价格、空房和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
+        </div>
+        <div class="source-links">
+          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
+            <mat-icon>open_in_new</mat-icon>
+            {{ source.label }}
+          </a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="section-heading"><h2>常见问题</h2></div>
+        <details>
+          <summary>GLANT适合第一次菲律宾游学吗？</summary>
+          <p>适合自律、预算敏感、喜欢自由度的成人学生。如果第一次出国且需要强管理和大型校园设施，建议同时比较CIA、EV、CPI或碧瑶学校。</p>
+        </details>
+        <details>
+          <summary>GLANT费用表里的价格包含什么？</summary>
+          <p>公开费用表主要是课程、住宿和餐食打包价。注册费、接机、SSP、教材、水电、押金、洗衣和签证延长等需要另行准备。</p>
+        </details>
+        <details>
+          <summary>Regular、Intensive、Premium怎么选？</summary>
+          <p>Regular适合多数学生；Intensive多一节一对一，适合想加大口语训练；Premium是7节一对一，适合短期高强度个人训练。</p>
+        </details>
+        <details>
+          <summary>GLANT没有门禁会不会不安全？</summary>
+          <p>自由度高代表更依赖学生自律。顾问会建议学生先确认年龄、生活习惯、外出安全意识和住宿偏好，再决定是否适合GLANT。</p>
+        </details>
+      </section>
+
+      <section class="final-cta">
+        <div class="final-cta-head">
+          <div class="final-cta-icon"><mat-icon>support_agent</mat-icon></div>
+          <div>
+            <h2>想确认GLANT当前空房和正式报价？</h2>
+            <p>把入学日期、周数、课程强度、房型和是否需要自由型学校发给顾问，我们会帮你核对学校当期价格与空房。</p>
+          </div>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+          <a class="secondary-action" href="#quote" (click)="scrollToSection('quote', $event)">再算一次费用<mat-icon>calculate</mat-icon></a>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>课程和房型建议</li>
+          <li><mat-icon>check_circle</mat-icon>空房和入学日确认</li>
+          <li><mat-icon>check_circle</mat-icon>前期美元费用与到校PHP费用拆分</li>
+          <li><mat-icon>check_circle</mat-icon>自由型学校适配度判断</li>
+        </ul>
+      </section>
+
+      <div class="mobile-bottom-actions" aria-label="GLANT手机端固定操作">
+        <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+        <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      </div>
+    </main>
+  </div>
+</app-cia-school>

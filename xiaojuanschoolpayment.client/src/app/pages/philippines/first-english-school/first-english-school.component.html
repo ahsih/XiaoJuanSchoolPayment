@@ -1,0 +1,287 @@
+<app-cia-school>
+  <div class="cia-page first-english-page">
+    <main class="cia-shell">
+      <section class="cia-hero" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/philippines-study/cebu">
+            <mat-icon>arrow_back</mat-icon>
+            返回宿务学校列表
+          </a>
+          <p class="breadcrumb">
+            <mat-icon>home</mat-icon>
+            菲律宾游学 / 宿务学校 / First English Global College
+          </p>
+          <h1>菲律宾宿务First English Global College语言学校</h1>
+          <p class="hero-lead">
+            位于麦克坦新城的日系英语学校，主打高比例一对一、亲子游学、儿童英语和灵活住宿方案，适合想在宿务兼顾学习、生活便利与家庭同行安排的学生。
+          </p>
+          <div class="hero-tags" aria-label="First English关键词">
+            <span><mat-icon>location_on</mat-icon>宿务麦克坦新城</span>
+            <span><mat-icon>record_voice_over</mat-icon>6-8节一对一可选</span>
+            <span><mat-icon>family_restroom</mat-icon>亲子 / 儿童课程</span>
+            <span><mat-icon>apartment</mat-icon>公寓或Share House</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算First English费用<mat-icon>calculate</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看美元费用参考<mat-icon>receipt_long</mat-icon></a>
+            <a class="secondary-action" routerLink="/about-sida/contact">咨询空房与入学日<mat-icon>support_agent</mat-icon></a>
+          </div>
+        </div>
+        <div class="hero-media" aria-label="First English学校图片">
+          <div class="hero-collage">
+            <figure *ngFor="let image of galleryImages.slice(0, 4)">
+              <img [src]="image.src" [alt]="image.title" />
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>1周参考</span>
+            <strong>USD 598 <small>起</small></strong>
+            <p>GENERAL + 6人Share House，已加官方入学金约USD 110</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>4周同方案为USD 1,318起</li>
+              <li><mat-icon>info</mat-icon>当地费用、餐食、机票和保险另计</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="section-tabs" aria-label="First English页面导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <section class="overview-grid" id="overview" aria-label="30秒看懂First English">
+        <div class="overview-main">
+          <div class="section-heading">
+            <h2>30秒看懂 First English</h2>
+            <p>这所学校的关键词不是大型校园，而是麦克坦新城、日系支持、高一对一比例和亲子友好。</p>
+          </div>
+          <div class="snapshot-grid">
+            <article *ngFor="let item of snapshotCards">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </div>
+        <aside class="mini-quote-card">
+          <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
+          <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
+          <p>{{ quoteUsdText }}，最终需以学校空房、档期和当地费用确认。</p>
+        </aside>
+      </section>
+
+      <section class="advisor-review">
+        <h2>思达顾问点评：亲子与成人一对一，都要先看住宿逻辑</h2>
+        <p>
+          First English适合目标比较清楚、想把一对一课时拉高的学生，尤其适合亲子家庭和第一次去宿务的家庭。选校时要先确认你是亲子公寓、成人Share House、通学还是陪读不课，因为房型会直接改变预算、生活动线和是否适合低龄儿童。
+        </p>
+        <div class="fit-columns">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <ul><li *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+          <div>
+            <h3><mat-icon>warning</mat-icon>这些情况要谨慎</h3>
+            <ul><li *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="cia-section" id="environment">
+        <div class="section-heading">
+          <h2>学校环境与住宿图片</h2>
+          <p>图片来自First English官方教室与住宿页面，先看教室、儿童空间、Share House和Mactan Newtown公寓的真实风格。</p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="First English图片分类">
+          <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button>
+        </div>
+        <div class="environment-grid">
+          <figure *ngFor="let image of filteredGalleryImages">
+            <img [src]="image.src" [alt]="image.title" />
+            <figcaption><span>{{ image.category }}</span><strong>{{ image.title }}</strong><p>{{ image.text }}</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="cia-section" id="courses">
+        <div class="section-heading">
+          <h2>课程怎么选</h2>
+          <p>First English课程以一对一为核心。成人一般从GENERAL、6 Man-to-Man、7/8节一对一之间选；亲子家庭重点看Kids ESL / Eiken和家长课程安排。</p>
+        </div>
+        <div class="course-choice-grid">
+          <article *ngFor="let course of courses">
+            <mat-icon>{{ course.icon }}</mat-icon>
+            <span>{{ course.lessons }}</span>
+            <h3>{{ course.name }}</h3>
+            <p>{{ course.suitable }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="quote-results-section" id="quote">
+        <div class="quote-form-card">
+          <h2><mat-icon>calculate</mat-icon>First English费用快速报价</h2>
+          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+          <p>这里已换算为美元，先按官方基础费用+入学金做前期参考，不含机票、保险、当地PHP费用和个人消费。</p>
+        </div>
+        <div class="quote-result-card">
+          <div class="quote-result-head">
+            <h2>{{ selectedPackage.course }}</h2>
+            <small>{{ selectedPackage.category }}</small>
+            <p>{{ selectedPackage.lessons }} / {{ selectedPackage.room }}</p>
+            <strong>{{ selectedWeeks }}周</strong>
+          </div>
+          <div class="result-lines">
+            <div><span>官方基础费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>入学金</span><strong>{{ entranceFeeText }}</strong></div>
+            <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
+            <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
+          </div>
+          <div class="quote-total">
+            <span>前期支付参考</span>
+            <strong>{{ quoteUsdText }}</strong>
+            <em *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房与学校政策。</em>
+          </div>
+          <div class="quote-tool-row">
+            <a class="primary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看4周费用表<mat-icon>table_chart</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tables-section" id="fee-structure">
+        <div>
+          <h2><mat-icon>receipt_long</mat-icon>2025年11月后费用美元参考</h2>
+          <p class="table-intro">以下摘取官网公开费用中常用组合的4周价格，并按参考汇率换算为美元。基础费用通常包含课程、住宿和清扫；入学金、当地费用、机票保险等另计。</p>
+          <div class="data-table first-fee-table" role="table" aria-label="First English 4周官方费用参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周费用</span>
+              <span role="columnheader">房型 / 备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of feeSummaryRows">
+              <span role="cell">{{ row.course }}<small>{{ row.lessons }}</small></span>
+              <span role="cell">USD {{ formatUsdFromJpy(row.price4Weeks) }}</span>
+              <span role="cell">{{ row.room }}<small>{{ row.note }}</small></span>
+            </div>
+          </div>
+        </div>
+        <aside class="price-note">
+          <h3>费用阅读重点</h3>
+          <ul>
+            <li>官方费用页列有1、2、3、4、8、12、16、20、24周价格，本页报价器按原表录入并换算为美元。</li>
+            <li>入学金约USD 110，已在报价器中单独加入。</li>
+            <li>亲子家庭通常使用Mactan Newtown公寓，Share House更偏成人学生。</li>
+            <li>当地费用、餐食、接机、签证和保险要按入学日期与学校当期规则确认。</li>
+            <li>{{ exchangeRateNote }}</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="cia-section" id="life">
+        <div class="section-heading">
+          <h2>住宿与生活安排</h2>
+          <p>First English不是封闭式大型校园，优势在于Mactan Newtown生活机能和住宿组合。选方案时要先确定家庭人数、孩子年龄、是否需要看护以及是否接受Share House通勤。</p>
+        </div>
+        <div class="life-grid">
+          <article>
+            <img [src]="galleryImages[6].src" alt="Mactan Newtown公寓房间" />
+            <h3><mat-icon>apartment</mat-icon>Mactan Newtown公寓</h3>
+            <p>亲子家庭优先使用公寓方案，步行可到教室，周边有餐厅、咖啡厅、便利店和购物设施。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[4].src" alt="First English Share House房间" />
+            <h3><mat-icon>groups</mat-icon>Share House宿舍</h3>
+            <p>成人学生可选1、2、4、6人间，学校说明车程约5分钟到教室，部分教师同住，交流机会更多。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[2].src" alt="First English儿童学习空间" />
+            <h3><mat-icon>family_restroom</mat-icon>亲子与看护</h3>
+            <p>官方介绍有0岁起看护服务和儿童英语课程，低龄儿童席位与看护安排建议提前确认。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section" id="local-fees">
+        <div class="section-heading">
+          <h2>费用之外还要确认什么</h2>
+          <p>官网费用表是基础费用入口，正式预算还要把当地支付项目、餐食、机票保险和个人消费补齐。</p>
+        </div>
+        <div class="check-grid first-local-grid">
+          <article *ngFor="let fee of localFees">
+            <mat-icon>payments</mat-icon>
+            <h3>{{ fee.item }}</h3>
+            <strong>{{ fee.amount }}</strong>
+            <p>{{ fee.note }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section source-section">
+        <div class="section-heading">
+          <h2>资料来源</h2>
+          <p>本页学校定位、课程、住宿和费用参考First English官方公开页面。学校政策可能更新，报名前以顾问向学校确认的正式报价和空房为准。</p>
+        </div>
+        <div class="source-links">
+          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
+            <mat-icon>open_in_new</mat-icon>
+            {{ source.label }}
+          </a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="section-heading"><h2>常见问题</h2></div>
+        <details>
+          <summary>First English适合第一次菲律宾游学吗？</summary>
+          <p>适合，尤其适合想住在麦克坦、重视一对一课时和日式支持的学生。若你想要大型校园和非常严格的管理，建议同时比较CIA、EV、CPI或碧瑶学校。</p>
+        </details>
+        <details>
+          <summary>亲子游学费用怎么判断？</summary>
+          <p>先确认孩子年龄、家庭人数、家长是否上课、是否需要看护和公寓房型。官网亲子常见4周参考折合约USD 1,830起，入学金和当地费用另计。</p>
+        </details>
+        <details>
+          <summary>官网价格是不是总价？</summary>
+          <p>不是完整总价。官网基础费用包含课程、住宿和清扫等项目，但入学金、当地费用、机票保险、餐食和个人消费仍需另行准备。</p>
+        </details>
+        <details>
+          <summary>成人学生应该选Share House还是公寓？</summary>
+          <p>预算优先看Share House，便利和私人空间优先看公寓。Share House到教室约5分钟车程，公寓在Mactan Newtown生活动线更短。</p>
+        </details>
+      </section>
+
+      <section class="final-cta">
+        <div class="final-cta-head">
+          <div class="final-cta-icon"><mat-icon>support_agent</mat-icon></div>
+          <div>
+            <h2>想确认First English当前空房和正式报价？</h2>
+            <p>把入学日期、周数、成人/亲子人数、孩子年龄、课程强度和住宿偏好发给顾问，我们会按学校当期规则核对。</p>
+          </div>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+          <a class="secondary-action" href="#quote" (click)="scrollToSection('quote', $event)">再算一次费用<mat-icon>calculate</mat-icon></a>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>课程与房型建议</li>
+          <li><mat-icon>check_circle</mat-icon>空房和入学日确认</li>
+          <li><mat-icon>check_circle</mat-icon>美元费用与当地费用拆分</li>
+          <li><mat-icon>check_circle</mat-icon>亲子/未成年规则核对</li>
+        </ul>
+      </section>
+
+      <div class="mobile-bottom-actions" aria-label="First English手机端固定操作">
+        <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+        <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      </div>
+    </main>
+  </div>
+</app-cia-school>

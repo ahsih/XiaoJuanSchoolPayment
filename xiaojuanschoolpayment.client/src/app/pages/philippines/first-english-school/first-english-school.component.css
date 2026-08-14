@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+:host app-cia-school {
+  display: block;
+  background:
+    linear-gradient(180deg, #fff8f0 0, #ffffff 660px),
+    #ffffff;
+}
+
+:host .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: #064b37;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+:host .first-english-page .hero-collage figure:first-child {
+  grid-row: span 2;
+}
+
+:host .first-english-page .hero-price-card strong {
+  font-size: clamp(32px, 4vw, 48px);
+}
+
+:host .first-english-page .mini-quote-card option,
+:host .first-english-page .quote-form-card option {
+  font-size: 14px;
+}
+
+:host .quote-result-head small {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #fff2e8;
+  color: #c24613;
+  font-weight: 950;
+}
+
+:host .quote-result-head p {
+  margin-top: 12px;
+}
+
+:host .first-fee-table .table-row {
+  grid-template-columns: minmax(128px, 0.85fr) minmax(126px, 0.55fr) minmax(0, 1.15fr);
+}
+
+:host .first-fee-table small {
+  display: block;
+  margin-top: 4px;
+  color: #7a8798;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+:host .table-intro {
+  margin: 0 0 16px;
+  color: #526176;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+:host .first-local-grid strong {
+  display: block;
+  margin-top: 12px;
+  color: #ff5a1f;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+:host .source-section {
+  padding: 34px;
+  border: 1px solid #e2e8ee;
+  border-radius: 8px;
+  background: #f8fbfd;
+}
+
+:host .source-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:host .source-links a {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 16px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #064b37;
+  font-weight: 900;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+:host .source-links mat-icon {
+  flex: 0 0 auto;
+  color: #ff5a1f;
+}
+
+@media (max-width: 920px) {
+  :host .source-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .first-fee-table .table-row {
+    grid-template-columns: 1fr;
+  }
+
+  :host .source-section {
+    padding: 22px;
+  }
+}

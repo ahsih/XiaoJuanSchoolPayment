@@ -182,6 +182,58 @@ const routes: Routes = [
           import('./pages/philippines/cia-school/cia-school.component').then((m) => m.CiaSchoolComponent),
       },
       {
+        path: 'philippines-study/cebu/first-english-global-college',
+        loadComponent: () =>
+          import('./pages/philippines/first-english-school/first-english-school.component').then(
+            (m) => m.FirstEnglishSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/cebu/glant',
+        loadComponent: () =>
+          import('./pages/philippines/glant-school/glant-school.component').then((m) => m.GlantSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/icl',
+        loadComponent: () =>
+          import('./pages/philippines/icl-school/icl-school.component').then((m) => m.IclSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/smeag-capital',
+        loadComponent: () =>
+          import('./pages/philippines/smeag-capital-school/smeag-capital-school.component').then(
+            (m) => m.SmeagCapitalSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/cebu/genius-english-academy',
+        loadComponent: () =>
+          import('./pages/philippines/genius-school/genius-school.component').then(
+            (m) => m.GeniusSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/cebu/howdy-english-academy',
+        loadComponent: () =>
+          import('./pages/philippines/howdy-school/howdy-school.component').then(
+            (m) => m.HowdySchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/cebu/ibreeze',
+        loadComponent: () =>
+          import('./pages/philippines/ibreeze-school/ibreeze-school.component').then(
+            (m) => m.IbreezeSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/cebu/iu-english-academy',
+        loadComponent: () =>
+          import('./pages/philippines/iu-school/iu-school.component').then(
+            (m) => m.IuSchoolComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/ev-academy',
         loadComponent: () =>
           import('./pages/philippines/ev-school/ev-school-detail.component').then((m) => m.EvSchoolDetailComponent),

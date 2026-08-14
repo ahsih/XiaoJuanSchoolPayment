@@ -1,0 +1,677 @@
+<app-cia-school>
+  <div class="cia-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / Genius English Academy</p>
+            <h1>菲律宾宿务Genius English Academy语言学校</h1>
+            <p class="hero-lead">
+              位于Mactan海边EGI Hotel区域的多国籍度假型语言学校，适合想把海边生活、Native group class、
+              一对一课程、亲子与成人学习弹性放在一起比较的学生。
+            </p>
+            <div class="hero-tags" aria-label="Genius English Academy特点">
+              <span><mat-icon>beach_access</mat-icon>Mactan海边度假型</span>
+              <span><mat-icon>public</mat-icon>多国籍学生环境</span>
+              <span><mat-icon>record_voice_over</mat-icon>Native group class</span>
+              <span><mat-icon>rule</mat-icon>Non-Sparta / Semi-Sparta / Sparta</span>
+            </div>
+            <div class="hero-actions">
+              <a
+                class="primary-action"
+                href="#quote"
+                (click)="scrollToSection('quote', $event)"
+              >
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a
+                class="secondary-action"
+                href="#courses"
+                (click)="scrollToSection('courses', $event)"
+              >
+                查看Genius课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的学习目标、课程强度、预算、房型、是否需要海景房和入学日期，思达会帮你确认Genius的空房、
+              旺淡季价格、Sparta规则和正式报价。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="Genius English Academy校园图片展示">
+            <figure class="feature-photo">
+              <img
+                [src]="galleryImages[0].src"
+                alt="菲律宾宿务Genius English Academy语言学校EGI度假区泳池"
+              />
+              <figcaption>Genius English Academy Mactan海边度假区学习生活环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="Genius English Academy校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>General English A + 三人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  使用公开2026淡季参考价：套餐USD 1,400 + 注册费USD 125
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  旺季、海景房、Sparta附加费和当地费用需顾问另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自Genius官方资料和公开留学代理页面；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="Genius English Academy手机端快捷导航">
+          <a
+            *ngFor="let item of mobileAnchors"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+          >
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="Genius English Academy快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 Genius 的海边住宿、教室和公共设施</h2>
+            <p>
+              Genius的优势不只是课程数量，而是把课程、住宿、泳池、海边和多国籍生活放在同一个学习环境里。
+            </p>
+          </div>
+          <div
+            class="gallery-tabs"
+            role="tablist"
+            aria-label="Genius English Academy图片分类"
+          >
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>Genius English Academy 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你要舒适体验，还是高压备考</h2>
+            </div>
+            <p>
+              Genius适合想在宿务Mactan海边住得舒服、又希望有一对一课和外籍老师小组课的学生。它和CIA一样适合学习生活平衡型人群，
+              但Genius更突出海边度假区、多国籍和房间舒适度；如果目标是更强考试管理，则建议同时比较CIA、SMEAG、EV和CPILS。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>先确认房型和管理模式，再看课程A/B强度；海景房和旺季档期要早一点锁定。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>Genius 核心亮点</span>
+              <h2>为什么会把Genius列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 Genius 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 Genius</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>
+              Genius课程覆盖综合英语、口语、生活场景英语、IELTS、TOEIC、TOEFL、Business和Family，建议先按目标筛选，
+              再让顾问核对最新课时、规则和开课情况。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>Genius 2026淡季4周套餐参考</span>
+              <h2>课程住宿套餐价：先看课程强度，再看房型</h2>
+              <p>
+                以下为公开2026淡季参考价，币种为美元，包含课程、住宿和餐食口径。旺季、优惠、房型空位和学校更新会影响正式报价。
+              </p>
+            </div>
+            <div
+              class="data-table course-fee-table"
+              role="table"
+              aria-label="Genius English Academy 2026淡季4周课程住宿套餐"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">单人房</span>
+                <span role="columnheader">双人房</span>
+                <span role="columnheader">三人房</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                <span role="cell">{{ course.name }}</span>
+                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'single')) }}</span>
+                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'twin')) }}</span>
+                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'triple')) }}</span>
+              </div>
+            </div>
+            <div
+              class="mobile-card-list mobile-course-fees"
+              aria-label="Genius English Academy 2026淡季4周套餐手机卡片"
+            >
+              <article *ngFor="let course of courseOptions">
+                <span>课程</span>
+                <strong>{{ course.name }}</strong>
+                <div>
+                  <em>单人房</em><b>USD {{ formatUsd(feeFor(course.id, 'single')) }}</b>
+                </div>
+                <div>
+                  <em>双人房</em><b>USD {{ formatUsd(feeFor(course.id, 'twin')) }}</b>
+                </div>
+                <div>
+                  <em>三人房</em><b>USD {{ formatUsd(feeFor(course.id, 'triple')) }}</b>
+                </div>
+                <p>{{ course.lessons }}。{{ course.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>Genius 一天学习生活安排</span>
+              <h2>不同管理模式会改变晚间节奏</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>房型选择重点</span>
+              <h2>三人房预算低，海景和单人房要早确认</h2>
+              <p>
+                Genius住宿是页面核心卖点之一。Regular、Sea View、Deluxe和家庭安排会影响预算与空房，正式报名前建议逐项确认。
+              </p>
+            </div>
+            <div
+              class="data-table room-fee-table"
+              role="table"
+              aria-label="Genius English Academy房型说明"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">说明</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>房间通常带私人厨房、冰箱、空调、Wi-Fi、阳台和冷热水淋浴。</li>
+              <li>Sea View / Deluxe公开参考加价为USD 125 / 4周。</li>
+              <li>亲子家庭房、旺季和热门入学日需优先确认空房。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>Genius费用快速报价</span>
+              <h2>默认参考：4周General English A + 三人房</h2>
+              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="Genius English Academy费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+                    {{ weeks }} 周
+                  </option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">
+                    {{ course.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">
+                    {{ room.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div>
+                <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+              </div>
+              <div>
+                <span>课程住宿套餐</span
+                ><strong>USD {{ formatUsd(packageFeeForSelectedWeeks) }}</strong>
+              </div>
+              <div>
+                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
+              </div>
+              <div>
+                <span>当前房型</span><strong>{{ selectedRoom.name }}</strong>
+              </div>
+              <div>
+                <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
+              </div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。{{ seasonNote }}
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button
+                type="button"
+                class="primary-action"
+                (click)="calculateQuote()"
+              >
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除前期支付费用外，到校后通常还需支付SSP、SSP E-Card、ACR I-Card、教材费、管理费、宿舍押金、
+              电费、接机费、洗衣费、签证延长和可能的Sea View / Sparta附加费。实际金额以学校当期规则为准。
+            </p>
+            <p class="season-note">
+              公开资料将1-2月、6-8月列为旺季月份，旺季价格可能不同；请以顾问向学校确认后的正式报价为准。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>前期套餐之外，还要准备当地费用</h2>
+            <p>
+              以下费用通常按PHP或USD另计，不同课程、周数、房型、签证时长和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考公开2026 Genius English Academy费用表，并交叉参考Genius官方课程、
+              住宿和设施说明。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 Genius 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、空房、旺季和当地费用一次核清</h2>
+              <p>
+                通过思达报名Genius，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>General、Power Speaking、Survival、IELTS、TOEIC、TOEFL、Business和Family课程匹配</li>
+              <li>Non-Sparta / Semi-Sparta / Sparta规则确认</li>
+              <li>Regular、Sea View、Deluxe、家庭房和空房确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 Genius?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断Genius是否适合、算清课程住宿和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾宿务Genius English Academy语言学校学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaReasons">
+                <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名Genius保障">
+            <article *ngFor="let item of sidaTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 Genius 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>
+              入学前整理学习目标、报价和行前清单；到校后如遇到课程、老师、宿舍或账单沟通问题，也可以继续联系思达协助。
+            </p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>海边度假型学校更重视生活体验</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周末生活</span>
+              <h2>学习之外也能体验Mactan海边生活</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周末生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周末生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div>
+                  <h3>校内节奏</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of campusActivities">{{ item }}</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>周末生活</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 Genius 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 Genius 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="Genius English Academy页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a
+            class="primary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+            >计算费用<mat-icon>calculate</mat-icon></a
+          >
+          <a class="secondary-action" routerLink="/about-sida/contact"
+            >咨询顾问<mat-icon>chat</mat-icon></a
+          >
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a
+            *ngFor="let item of sideNav"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+            ><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a
+          >
+          <a href="#top" (click)="scrollToSection('top', $event)"
+            ><mat-icon>arrow_upward</mat-icon>返回顶部</a
+          >
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道Genius当前是否有空房和优惠？</h2>
+        <p>
+          把入学日期、学习周数、课程方向、房型、是否要Sea View或Sparta规则发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="Genius English Academy手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

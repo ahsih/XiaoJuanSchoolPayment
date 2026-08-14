@@ -245,6 +245,46 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/cia-cebu-international-academy',
           },
           {
+            id: 'first-english-global-college',
+            label: '菲律宾宿务First English Global College语言学校',
+            route: '/philippines-study/cebu/first-english-global-college',
+          },
+          {
+            id: 'glant',
+            label: '菲律宾宿务GLANT语言学校',
+            route: '/philippines-study/cebu/glant',
+          },
+          {
+            id: 'icl',
+            label: '菲律宾宿务ICL语言学校',
+            route: '/philippines-study/cebu/icl',
+          },
+          {
+            id: 'smeag-capital',
+            label: '菲律宾宿务SMEAG Capital语言学校',
+            route: '/philippines-study/cebu/smeag-capital',
+          },
+          {
+            id: 'genius-english-academy',
+            label: '菲律宾宿务Genius English Academy语言学校',
+            route: '/philippines-study/cebu/genius-english-academy',
+          },
+          {
+            id: 'howdy-english-academy',
+            label: '菲律宾宿务Howdy English Academy语言学校',
+            route: '/philippines-study/cebu/howdy-english-academy',
+          },
+          {
+            id: 'ibreeze',
+            label: '菲律宾宿务I.BREEZE语言学校',
+            route: '/philippines-study/cebu/ibreeze',
+          },
+          {
+            id: 'iu-english-academy',
+            label: '菲律宾宿务IU English Academy',
+            route: '/philippines-study/cebu/iu-english-academy',
+          },
+          {
             id: 'ev-academy',
             label: '菲律宾宿务EV语言学校',
             route: '/philippines-study/cebu/ev-academy',
