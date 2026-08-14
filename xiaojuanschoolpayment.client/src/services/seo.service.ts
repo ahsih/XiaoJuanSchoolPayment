@@ -90,8 +90,8 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
     description:
-      '克拉克菲律宾留学和英语游学指南，比较 CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、菲律宾克拉克HELP English语言学校、AELC 等学校，适合亲子、外师比例、Sparta考试路线和舒适生活需求。',
-    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, 菲律宾克拉克EG语言学校, 菲律宾克拉克WE Academy语言学校, 菲律宾克拉克HELP English语言学校, EG Academy, WE Academy Clark, HELP Clark, AELC',
+      '克拉克菲律宾留学和英语游学指南，比较 CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、菲律宾克拉克HELP English语言学校、菲律宾克拉克AELC语言学校等学校，适合亲子、外师比例、Sparta考试路线和舒适生活需求。',
+    keywords: '克拉克留学, 克拉克游学, 克拉克语言学校, 菲律宾亲子游学, CIP English, 菲律宾克拉克EG语言学校, 菲律宾克拉克WE Academy语言学校, 菲律宾克拉克HELP English语言学校, 菲律宾克拉克AELC语言学校, EG Academy, WE Academy Clark, HELP Clark, AELC',
     image: '/assets/philippines/clark-study-hero.jpg',
   },
   '/philippines-study/clark/cip-english-kepos': {
@@ -121,6 +121,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾克拉克HELP English语言学校页面，整理HELP Clark Campus的Sparta管理、EOP、ESL、IELTS、TOEIC、Business、Family课程、宿舍、4周USD课程住宿费用、PHP当地费用和报名注意事项。',
     keywords: '菲律宾克拉克HELP English语言学校, HELP Clark Campus, HELP English Academy, Clark Sparta school, 菲律宾IELTS学校, 克拉克语言学校',
     image: '/assets/philippines/help-clark-main-building.jpg',
+  },
+  '/philippines-study/clark/aelc-native-focused-clark-schools': {
+    title: '菲律宾克拉克AELC语言学校 | Native口语课程费用住宿与报名咨询',
+    description:
+      '菲律宾克拉克AELC语言学校页面，整理American English Learning Center的Native口语、ESL、TOEIC、IELTS、Business、Family方向、AELC照片、4周USD课程住宿参考费用和报名注意事项。',
+    keywords: '菲律宾克拉克AELC语言学校, AELC, American English Learning Center, Clark AELC, 菲律宾外教口语学校, 克拉克语言学校, Native English Clark',
+    image: '/assets/philippines/aelc-main.jpg',
   },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
@@ -460,6 +467,7 @@ export class SeoService {
       'eg-academy': '菲律宾克拉克EG语言学校',
       'clark-we-academy': '菲律宾克拉克WE Academy语言学校',
       'help-english-clark': '菲律宾克拉克HELP English语言学校',
+      'aelc-native-focused-clark-schools': '菲律宾克拉克AELC语言学校',
       manila: '马尼拉',
       'enderun-extension': '菲律宾马尼拉Enderun语言学校',
       'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',

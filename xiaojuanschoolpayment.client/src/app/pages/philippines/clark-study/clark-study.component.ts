@@ -98,7 +98,7 @@ export class ClarkStudyComponent {
       title: '外教口语强化型',
       tag: 'Native / Speaking',
       text: '适合希望提高发音、自然表达、面试沟通和欧美课堂适应度的成人或青少年学生。',
-      examples: 'CIP、AELC、菲律宾克拉克WE Academy语言学校',
+      examples: 'CIP、菲律宾克拉克AELC语言学校、菲律宾克拉克WE Academy语言学校',
     },
     {
       title: '亲子陪读与低龄型',
@@ -208,25 +208,27 @@ export class ClarkStudyComponent {
         'HELP Clark公开了USD课程住宿价目和PHP当地费用表，报价时要把课程住宿、当地费用、EOP规则、晚自习和接机分开核对。',
     },
     {
-      name: 'AELC / Native-focused Clark Schools',
-      location: 'Clark / Angeles 候选池',
-      style: '外教口语与家庭项目候选',
+      name: '菲律宾克拉克AELC语言学校',
+      location: 'Clark / Angeles City',
+      style: 'Native口语、TOEIC与IELTS候选',
       route: '/philippines-study/clark/aelc-native-focused-clark-schools',
-      startingPrice: '费用需当期确认',
+      startingPrice: 'USD 1,387 / 4周起历史参考',
       courses: [
-        'Native Speaking',
-        'ESL',
-        'Family',
-        'Junior',
+        'LITE / ESL',
+        'Native Speaking / AELC Intensive',
+        'TOEIC',
+        'IELTS',
         'Business English',
+        'Family / Junior',
       ],
       accommodation:
-        '官网域名和招生资料需当期复核，先作为外教偏好学生的候选方向。',
+        '公开资料按Center 1二人房、Center 2四人房列出课程住宿套餐；单人、双人、三人房差额和空房需当期确认。',
       facilities:
-        '重点核对外教比例、实际授课老师、宿舍距离、门禁、餐食和医疗支援。',
-      bestFor: '明确想要更多欧美外教沟通机会，但还没锁定具体学校的人群。',
+        '资料页列出TOEIC考试中心、食堂、泳池、宿舍和生活设施；旧官方域名目前无法解析，当前招生需复核。',
+      bestFor:
+        '明确想要更多Native外教口语、发音纠正、TOEIC/IELTS或商务表达训练，同时接受先复核学校当前状态的人群。',
       consultantNote:
-        '适合进入顾问复核清单，不建议只凭旧资料或第三方介绍直接报名。',
+        '菲律宾克拉克AELC语言学校适合放入Clark外教型候选清单，但不建议只凭旧资料直接报名；需先确认校区、招生、房型、课表和最新报价。',
     },
   ];
 
@@ -350,6 +352,8 @@ export class ClarkStudyComponent {
     },
     { label: '菲律宾克拉克WE Academy语言学校官方网站', url: 'https://clarkweacademy.com/' },
     { label: '菲律宾克拉克HELP English语言学校官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
+    { label: '菲律宾克拉克AELC语言学校资料页', url: 'https://philippine-english.jp/clark/aelc.php' },
+    { label: 'AELC旧域名与位置记录', url: 'https://philippines.worldplaces.me/view-place/42879050-aelc-american-english-learning-center.html' },
     { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
     {
       label: 'StudyTourA 菲律宾学校分类参考',

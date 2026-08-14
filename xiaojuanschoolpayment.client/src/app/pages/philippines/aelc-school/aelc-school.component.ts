@@ -44,7 +44,7 @@ interface SourceLink {
 })
 export class AelcSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '页面定位', value: 'AELC / Native-focused Clark Schools 候选池' },
+    { label: '页面定位', value: '菲律宾克拉克AELC语言学校 兼容页面' },
     { label: '城市', value: 'Clark / Angeles, Pampanga' },
     { label: '适合方向', value: 'Native口语、发音、家庭项目、商务沟通候选' },
     { label: '资料状态', value: 'AELC与同类外教型学校需逐校复核当前招生资料' },
@@ -138,7 +138,7 @@ export class AelcSchoolComponent {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'AELC / Native-focused Clark Schools 是一所学校还是候选池？',
+      question: '菲律宾克拉克AELC语言学校现在可以直接报名吗？',
       answer:
         '这里按候选池处理。由于AELC和同类Clark外教型学校的公开资料不够稳定，建议先作为“外教口语方向”候选，再由顾问逐校确认当前招生状态。',
     },

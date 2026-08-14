@@ -23,6 +23,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid EgSchoolId = Guid.Parse("82cbcbad-1162-4088-823d-ea100bfee689");
     private static readonly Guid WeSchoolId = Guid.Parse("783171c4-90e8-448c-91a4-2caf09e65c03");
     private static readonly Guid HelpSchoolId = Guid.Parse("a4c3183e-b569-4b1f-b854-fcdd019b4d1a");
+    private static readonly Guid AelcSchoolId = Guid.Parse("65762fe8-70e4-4491-abfc-c636a0e707f9");
     private static readonly Guid EnderunSchoolId = Guid.Parse("d63f8a4e-27e2-45e9-b1cc-a5223e5d118f");
     private static readonly Guid AmericanEnglishSchoolId = Guid.Parse("4f0709fe-2a93-4dd5-8d0f-2819115f0288");
     private static readonly Guid BerlitzSchoolId = Guid.Parse("f5635f19-41a2-4d23-99ab-9cb2c05af112");
@@ -61,6 +62,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string HelpSchoolName = "菲律宾克拉克HELP English语言学校";
     private const string LegacyHelpSchoolName = "HELP English Clark";
     private const string HelpClarkSchoolName = "HELP Clark";
+    private const string AelcSchoolName = "菲律宾克拉克AELC语言学校";
+    private const string LegacyAelcSchoolName = "AELC / Native-focused Clark Schools";
+    private const string AelcFullSchoolName = "American English Learning Center";
     private const string EnderunSchoolName = "菲律宾马尼拉Enderun语言学校";
     private const string LegacyEnderunSchoolName = "Enderun Extension";
     private const string AmericanEnglishSchoolName = "菲律宾马尼拉American-English-Skill语言学校";
@@ -91,6 +95,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedEgPricingAsync(context);
       await SeedWePricingAsync(context);
       await SeedHelpPricingAsync(context);
+      await SeedAelcPricingAsync(context);
       await SeedEnderunPricingAsync(context);
       await SeedAmericanEnglishPricingAsync(context);
       await SeedBerlitzPricingAsync(context);
@@ -1077,6 +1082,77 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "CRTV", 1410m, PhpCurrencyId, "到校支付费用；长期停留许可参考，适用于超过6个月停留时按规则确认", now);
       UpsertFee(context, schoolId, "ECC", 500m, PhpCurrencyId, "到校支付费用；离境清关参考，适用条件需按停留时间确认", now);
       UpsertFee(context, schoolId, "Airport Pickup", 0m, PhpCurrencyId, "到校支付费用；按Clark或Manila机场、指定接机日和学校LOA确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedAelcPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == AelcSchoolId ||
+        x.Name == AelcSchoolName ||
+        x.Name == LegacyAelcSchoolName ||
+        x.Name == AelcFullSchoolName ||
+        x.Name == "AELC");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = AelcSchoolId,
+          Name = AelcSchoolName,
+          CreatedDate = new DateTime(2007, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = AelcSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2007, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string aelcLessonNote = "AELC公开学校资料页历史4周USD课程住宿套餐参考；AELC旧官方域名目前无法解析，当前招生、校区、房型和最新报价必须以学校回函确认";
+
+      UpsertLesson(context, schoolId, "Center 1 LITE / 2人房基准套餐", 4, 1288m, "4周课程住宿参考；Native与菲律宾老师混合课表", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 ESL / 2人房基准套餐", 4, 1486m, "4周课程住宿参考；综合ESL与Native课搭配", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 Semi Intensive / 2人房基准套餐", 4, 1535m, "4周课程住宿参考；ESL或Business方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 TOEIC一般 / 2人房基准套餐", 4, 1387m, "4周课程住宿参考；TOEIC考试方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 TOEIC 800+ / 2人房基准套餐", 4, 1486m, "4周课程住宿参考；LC/RC 800 + Speaking Lv.6方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 TOEIC 900+ / 2人房基准套餐", 4, 1486m, "4周课程住宿参考；LC/RC 900 + Speaking Lv.7方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 AELC Intensive A / 2人房基准套餐", 4, 1682m, "4周课程住宿参考；Native课比例更高", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 1 AELC Intensive B / 2人房基准套餐", 4, 1865m, "4周课程住宿参考；更高Native一对一强度", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 LITE / 4人房基准套餐", 4, 1292m, "4周课程住宿参考；亲子或长期规划校区方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 ESL / 4人房基准套餐", 4, 1490m, "4周课程住宿参考；综合ESL", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 Semi Intensive / 4人房基准套餐", 4, 1540m, "4周课程住宿参考；ESL或Business方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 IELTS 5.5/6.0 / 4人房基准套餐", 4, 1490m, "4周课程住宿参考；需确认保证班门槛", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 IELTS 6.5/7.0 / 4人房基准套餐", 4, 1637m, "4周课程住宿参考；高分目标需确认入学分数", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 Intensive A / 4人房基准套餐", 4, 1688m, "4周课程住宿参考；Native强化方向", now, aelcLessonNote);
+      UpsertLesson(context, schoolId, "Center 2 Intensive B / 4人房基准套餐", 4, 1871m, "4周课程住宿参考；Native比例更高，价格需复核", now, aelcLessonNote);
+
+      UpsertRoom(context, schoolId, "基准多人房已含", 4, 0m, "Center 1为2人房基准，Center 2为4人房基准；报价时需按校区选择房型", now);
+      UpsertRoom(context, schoolId, "Center 1 单人房加价", 4, 198m, "多数Center 1课程单人房与2人房差额约USD198-203，正式以学校报价为准", now);
+      UpsertRoom(context, schoolId, "Center 2 三人房加价", 4, 99m, "多数Center 2课程三人房与4人房差额约USD99-102，正式以学校报价为准", now);
+      UpsertRoom(context, schoolId, "Center 2 双人房加价", 4, 198m, "多数Center 2课程双人房与4人房差额约USD198-204，正式以学校报价为准", now);
+
+      UpsertFee(context, schoolId, "Registration Fee", 100m, UsdCurrencyId, "前期支付费用；公开资料页列出入学金USD100，不退还", now);
+      UpsertFee(context, schoolId, "SSP", 6000m, PhpCurrencyId, "到校支付费用；Special Study Permit公开资料参考", now);
+      UpsertFee(context, schoolId, "ACR I-Card", 3000m, PhpCurrencyId, "到校支付费用；长期停留或延签时通常需要，规则以学校和菲律宾当地政策为准", now);
+      UpsertFee(context, schoolId, "Visa Extension / 4 weeks", 0m, PhpCurrencyId, "到校支付费用；公开资料页列出4周以内为PHP0", now);
+      UpsertFee(context, schoolId, "Visa Extension / 8 weeks", 3630m, PhpCurrencyId, "到校支付费用；公开资料页8周参考", now);
+      UpsertFee(context, schoolId, "Visa Extension / 12 weeks", 8530m, PhpCurrencyId, "到校支付费用；公开资料页12周参考", now);
+      UpsertFee(context, schoolId, "Visa Extension / 16 weeks", 11660m, PhpCurrencyId, "到校支付费用；公开资料页16周参考", now);
+      UpsertFee(context, schoolId, "Visa Extension / 20 weeks", 14790m, PhpCurrencyId, "到校支付费用；公开资料页20周参考", now);
+      UpsertFee(context, schoolId, "Visa Extension / 24 weeks", 17920m, PhpCurrencyId, "到校支付费用；公开资料页24周参考", now);
+      UpsertFee(context, schoolId, "Textbook / Materials", 0m, PhpCurrencyId, "到校支付费用；公开资料页列出PHP250-400/本，按课程和实际教材确认", now);
+      UpsertFee(context, schoolId, "Electricity", 15m, PhpCurrencyId, "到校支付费用；公开资料页列出PHP15/kWh，按用量支付", now);
+      UpsertFee(context, schoolId, "Student Management Fee", 0m, PhpCurrencyId, "到校支付费用；公开资料页列出约PHP375-500/周，按房型和学校规则确认", now);
+      UpsertFee(context, schoolId, "Dormitory Deposit", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按损坏或欠费扣除后退还", now);
+      UpsertFee(context, schoolId, "Airport Pickup", 0m, PhpCurrencyId, "到校支付费用；Clark或Manila机场、指定接机日和同行人数需当期确认", now);
 
       await context.SaveChangesAsync();
     }

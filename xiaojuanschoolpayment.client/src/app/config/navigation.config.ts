@@ -333,7 +333,7 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'aelc-native-focused-clark-schools',
-            label: 'AELC / Native-focused Clark Schools',
+            label: '菲律宾克拉克AELC语言学校',
             route: '/philippines-study/clark/aelc-native-focused-clark-schools',
           },
         ],

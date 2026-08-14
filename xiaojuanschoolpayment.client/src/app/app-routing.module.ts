@@ -269,7 +269,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/aelc-native-focused-clark-schools',
         loadComponent: () =>
-          import('./pages/philippines/aelc-school/aelc-school.component').then((m) => m.AelcSchoolComponent),
+          import('./pages/philippines/aelc-school/aelc-school-detail.component').then((m) => m.AelcSchoolDetailComponent),
       },
       {
         path: 'philippines-study/clark',
