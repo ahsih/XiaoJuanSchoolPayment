@@ -3,6 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '教室' | '住宿' | '亲子' | '生活';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -36,7 +37,7 @@ interface FeeSummaryRow {
 @Component({
   selector: 'app-first-english-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './first-english-school.component.html',
   styleUrl: './first-english-school.component.css',

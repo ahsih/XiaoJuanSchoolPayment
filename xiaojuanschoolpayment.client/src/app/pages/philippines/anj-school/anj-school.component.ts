@@ -3,6 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿';
 type WeekOption = 4 | 8 | 12 | 16 | 20 | 24;
@@ -90,7 +91,7 @@ interface SourceLink {
 @Component({
   selector: 'app-anj-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './anj-school.component.html',
   styleUrls: [

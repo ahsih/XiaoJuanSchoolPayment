@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
+import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -51,6 +52,7 @@ interface FaqItem {
     RouterModule,
     MatIconModule,
     ExpandableImageComponent,
+    SidaWhySectionComponent,
   ],
   templateUrl: './cip-school.component.html',
   styleUrls: ['../cia-school/cia-school.component.css', './cip-school.component.css'],

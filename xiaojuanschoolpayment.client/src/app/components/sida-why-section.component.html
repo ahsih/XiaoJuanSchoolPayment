@@ -1,0 +1,31 @@
+<section class="sida-why-section" id="service-process">
+  <div class="sida-why-heading">
+    <span>WHY SIDA QIHANG</span>
+    <h2>为什么通过思达启航报名{{ schoolName }}？</h2>
+    <p>不只是提交报名，更重要的是帮你选对学校、算清费用，并持续协助到完成学习回国。</p>
+  </div>
+
+  <div class="sida-why-panel">
+    <figure class="sida-why-main-photo">
+      <img [src]="mainImage" [alt]="'思达启航顾问为' + schoolName + '学生讲解报名方案'" />
+    </figure>
+
+    <div class="sida-why-reason-grid">
+      <article *ngFor="let item of reasons">
+        <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+        <div>
+          <span>{{ item.number }}</span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="sida-why-trust-bar" aria-label="思达启航报名保障">
+    <article *ngFor="let item of trustBadges">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <strong>{{ item.label }}</strong>
+    </article>
+  </div>
+</section>
