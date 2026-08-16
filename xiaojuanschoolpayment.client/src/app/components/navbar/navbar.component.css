@@ -221,6 +221,39 @@
   color: #138043;
 }
 
+.mega-group__header-toggle {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #dfe7ee;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #506078;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.mega-group__header-toggle:hover,
+.mega-group__header-toggle:focus-visible {
+  border-color: #c7dfd0;
+  background: #f1fbf5;
+  color: #138043;
+}
+
+.mega-group__header-toggle:focus-visible {
+  outline: 2px solid rgba(19, 128, 67, 0.22);
+  outline-offset: 2px;
+}
+
+.mega-group__header-toggle mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
 .mega-subitems {
   display: grid;
   gap: 0.38rem;

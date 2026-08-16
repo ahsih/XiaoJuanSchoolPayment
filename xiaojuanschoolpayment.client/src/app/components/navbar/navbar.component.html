@@ -65,6 +65,32 @@
               >
                 {{ child.label }}
               </a>
+              <button
+                class="mega-group__header-toggle"
+                type="button"
+                *ngIf="canCollapseThirdLevel(item, child)"
+                [attr.aria-expanded]="isThirdLevelExpanded(item, child)"
+                [attr.aria-controls]="getThirdLevelMenuId(item, child)"
+                [attr.aria-label]="
+                  (isThirdLevelExpanded(item, child) ? '收起' : '展开') +
+                  child.label +
+                  '学校列表'
+                "
+                [attr.title]="
+                  (isThirdLevelExpanded(item, child) ? '收起' : '展开') +
+                  child.label +
+                  '学校列表'
+                "
+                (click)="toggleThirdLevel(item, child, $event)"
+              >
+                <mat-icon>
+                  {{
+                    isThirdLevelExpanded(item, child)
+                      ? "expand_less"
+                      : "expand_more"
+                  }}
+                </mat-icon>
+              </button>
             </div>
 
             <div
