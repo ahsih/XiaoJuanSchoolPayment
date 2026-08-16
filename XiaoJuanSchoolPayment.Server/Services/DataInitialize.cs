@@ -9,6 +9,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const int UsdCurrencyId = 1;
     private const int PhpCurrencyId = 5;
     private const int KrwCurrencyId = 6;
+    private const int JpyCurrencyId = 7;
+    private const int NtdCurrencyId = 8;
     private static readonly Guid CiaSchoolId = Guid.Parse("2f6a6d78-b2f1-4b84-9ac4-1d3b3bd10c1a");
     private static readonly Guid EvSchoolId = Guid.Parse("d48cd1f9-d76b-4b52-9960-e9db057f577d");
     private static readonly Guid CpiSchoolId = Guid.Parse("8c5d52f6-cfe1-45d9-9b66-1c5c0cdb2a6d");
@@ -100,6 +102,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedAmericanEnglishPricingAsync(context);
       await SeedBerlitzPricingAsync(context);
       await SeedMbcPricingAsync(context);
+      await SeedRegionalStartingPricesAsync(context);
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -110,6 +113,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertCurrency(context, 4, "EUR", "€");
       UpsertCurrency(context, PhpCurrencyId, "PHP", "₱");
       UpsertCurrency(context, KrwCurrencyId, "KRW", "₩");
+      UpsertCurrency(context, JpyCurrencyId, "JPY", "¥");
+      UpsertCurrency(context, NtdCurrencyId, "NTD", "NT$");
 
       await context.SaveChangesAsync();
     }
@@ -1375,6 +1380,130 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       await context.SaveChangesAsync();
     }
+
+    private static async Task SeedRegionalStartingPricesAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      static DateTime Established(int year) => new(year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+      var startingPrices = new[]
+      {
+        new RegionalStartingPriceSeed("菲律宾宿务 CIA 语言学校", 660m, UsdCurrencyId, "USD 660 / 1周起", Established(2003), new[] { CiaSchoolName, "菲律宾宿务CIA语言学校" }),
+        new RegionalStartingPriceSeed("菲律宾宿务First English Global College", 198000m, JpyCurrencyId, "JPY 198,000 / 4周起", Established(2013), new[] { "First English Global College", "First English" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CIEC", 1650m, UsdCurrencyId, "USD 1,650 / 4周起", Established(2012), new[] { "CIEC", "CIEC Global" }),
+        new RegionalStartingPriceSeed("菲律宾宿务ELSA International Language School", 334800m, JpyCurrencyId, "JPY 334,800 / 4周起", Established(2004), new[] { "ELSA International Language School", "ELSA" }),
+        new RegionalStartingPriceSeed("菲律宾宿务ETHOS Language School", 1438m, UsdCurrencyId, "USD 1,438 / 4周起", Established(2013), new[] { "ETHOS Language School", "ETHOS" }),
+        new RegionalStartingPriceSeed("菲律宾宿务IMS Academy", 1500m, UsdCurrencyId, "USD 1,500 / 4周起", Established(2015), new[] { "IMS Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务TARGET Global English Academy", 1490m, UsdCurrencyId, "USD 1,490 / 4周起", Established(2013), new[] { "TARGET Global English Academy", "TARGET" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CIJ Academy（Premium Campus）", 1300m, UsdCurrencyId, "USD 1,300 / 4周起", Established(2003), new[] { "CIJ Academy Premium Campus", "CIJ Premium Campus" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Curious World Academy", 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2022), new[] { "Curious World Academy", "CWA" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Global Language Cebu", 1720m, UsdCurrencyId, "USD 1,720 / 4周起", Established(2011), new[] { "Global Language Cebu", "GLC" }),
+        new RegionalStartingPriceSeed("菲律宾宿务QQEnglish（Beachfront Campus）", 1395m, UsdCurrencyId, "USD 1,395 / 4周起（胶囊学生寮+餐食套餐）", Established(2009), new[] { "QQEnglish Beachfront Campus", "QQEnglish" }),
+        new RegionalStartingPriceSeed("菲律宾宿务STARGATE Global Education", 1350m, UsdCurrencyId, "USD 1,350 / 4周起", Established(2017), new[] { "STARGATE Global Education", "STARGATE" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Winning English Academy", 1095m, UsdCurrencyId, "USD 1,095 / 4周起（Ocean Cambridge ESL2 Backpacker 8人房）", Established(2015), new[] { "Winning English Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务GLANT English Academy语言学校", 303m, UsdCurrencyId, "USD 303 / 1周起", Established(2023), new[] { "GLANT English Academy", "GLANT" }),
+        new RegionalStartingPriceSeed("菲律宾宿务ICL English Academy", 1350m, UsdCurrencyId, "USD 1,350 / 4周起", Established(2022), new[] { "ICL English Academy", "I Crazy Learning Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务3D Academy", 1156m, UsdCurrencyId, "USD 1,156 / 4周起（食宿主价）", Established(2002), new[] { "3D Academy", "3D Universal English Institute" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CELLA Uni Sparta Campus", 1630m, UsdCurrencyId, "USD 1,630 / 4周起（食宿主价）", Established(2006), new[] { "CELLA Uni Sparta Campus", "CELLA Uni" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Sparta Campus）", 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2004), new[] { "CG Academy Sparta Campus", "CG Sparta" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Banilad Campus）", 1650000m, KrwCurrencyId, "KRW 1,650,000 / 4周起", Established(2004), new[] { "CG Academy Banilad Campus", "CG Banilad" }),
+        new RegionalStartingPriceSeed("菲律宾宿务SMEAG Capital语言学校", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "SMEAG Capital", "SMEAG Capital Campus" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Genius English Academy语言学校", 1400m, UsdCurrencyId, "USD 1,400 / 4周起", Established(2013), new[] { "Genius English Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Howdy English Academy语言学校", 874m, UsdCurrencyId, "USD 874 / 1周起", Established(2014), new[] { "Howdy English Academy", "Howdy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务I.BREEZE语言学校", 620m, UsdCurrencyId, "USD 620 / 1周起", Established(2012), new[] { "I.BREEZE", "I.BREEZE International Language Center", "IBREEZE" }),
+        new RegionalStartingPriceSeed("菲律宾宿务IU English Academy", 1350m, UsdCurrencyId, "USD 1,350 / 4周起", Established(2024), new[] { "IU English Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Lapulapu", 2080m, UsdCurrencyId, "USD 2,080 / 4周起", Established(2024), new[] { "Lapulapu", "LCIC" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1850m, UsdCurrencyId, "USD 1,850 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CELLA Premium Campus", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
+        new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 752m, UsdCurrencyId, "USD 752 / 1周起", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
+        new RegionalStartingPriceSeed(CpiSchoolName, 12820m, NtdCurrencyId, "NTD 12,820 / 周起", Established(2015), new[] { LegacyCpiSchoolName }),
+        new RegionalStartingPriceSeed(CpilsSchoolName, 1590m, UsdCurrencyId, "USD 1,590 / 4周起", Established(2001), new[] { LegacyCpilsSchoolName }),
+        new RegionalStartingPriceSeed(FellaSchoolName, 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2006), new[] { LegacyFellaSchoolName }),
+        new RegionalStartingPriceSeed(PhilinterSchoolName, 1390m, UsdCurrencyId, "USD 1,390 / 4周起", Established(2003), new[] { LegacyPhilinterSchoolName }),
+
+        new RegionalStartingPriceSeed(PinesSchoolName, 1420m, UsdCurrencyId, "课程+住宿4周USD 1,420起", Established(2001), new[] { LegacyPinesSchoolName }),
+        new RegionalStartingPriceSeed(BeciSchoolName, 1170m, UsdCurrencyId, "EOP 4周约USD 1,170起", Established(2002), new[] { LegacyBeciSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾碧瑶API BECI（City Campus）", 1270m, UsdCurrencyId, "USD 1,270 / 4周起（Light ESL + Studio Quad）", Established(2022), new[] { "API BECI City Campus", "APIBECI City Campus" }),
+        new RegionalStartingPriceSeed(JicSchoolName, 1460m, UsdCurrencyId, "Challenger 4周约USD 1,460起", Established(2002), new[] { LegacyJicSchoolName, JicAcademyBaguioName }),
+        new RegionalStartingPriceSeed(MonolSchoolName, 1300m, UsdCurrencyId, "4周约USD 1,300起", Established(2003), new[] { LegacyMonolSchoolName, MonolFullSchoolName }),
+        new RegionalStartingPriceSeed(WalesSchoolName, 1400m, UsdCurrencyId, "4周约USD 1,400起", Established(2006), new[] { LegacyWalesSchoolName, WalesFullSchoolName, WalesShortSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾碧瑶A&J e-Edu English Academy", 1450m, UsdCurrencyId, "4周约USD 1,450起", Established(2008), new[] { "A&J e-Edu English Academy", "A&J" }),
+        new RegionalStartingPriceSeed("HELP English（Longlong Campus）", 1500m, UsdCurrencyId, "4周USD 1,500起", Established(1996), new[] { "HELP English Longlong Campus", "HELP Longlong" }),
+
+        new RegionalStartingPriceSeed("菲律宾克拉克 CIP语言学校", 1668m, UsdCurrencyId, "USD 1,668 / 4周起参考", Established(2007), new[] { "CIP", "CIP English", "CIP English Kepos" }),
+        new RegionalStartingPriceSeed(EgSchoolName, 1550000m, KrwCurrencyId, "KRW 1,550,000 + 注册费 / 4周起参考", Established(2013), new[] { LegacyEgSchoolName, EgFullSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾克拉克TALK Academy语言学校", 1280m, UsdCurrencyId, "USD 1,280 / 4周主费起参考", Established(2022), new[] { "TALK Academy Clark", "Clark TALK Academy" }),
+        new RegionalStartingPriceSeed(HelpSchoolName, 1500m, UsdCurrencyId, "USD 1,500 / 4周起参考", Established(1996), new[] { LegacyHelpSchoolName, HelpClarkSchoolName }),
+        new RegionalStartingPriceSeed(AelcSchoolName, 1387m, UsdCurrencyId, "USD 1,387 / 4周起历史参考", Established(2008), new[] { LegacyAelcSchoolName, AelcFullSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾克拉克HANA Academy", 1470m, UsdCurrencyId, "USD 1,470 + 注册费 / 4周起参考", Established(2016), new[] { "HANA Academy", "Clark HANA Academy" }),
+
+        new RegionalStartingPriceSeed(EnderunSchoolName, 40000m, PhpCurrencyId, "PHP 40,000 / 月起参考", Established(2005), new[] { LegacyEnderunSchoolName }),
+        new RegionalStartingPriceSeed(AmericanEnglishSchoolName, 14800m, PhpCurrencyId, "PHP 14,800 / 40小时起参考", Established(2006), new[] { LegacyAmericanEnglishSchoolName }),
+        new RegionalStartingPriceSeed(BerlitzSchoolName, 3200m, PhpCurrencyId, "PHP 3,200 Starter Course公告价；常规课需核价", Established(2020), new[] { LegacyBerlitzSchoolName }),
+
+        new RegionalStartingPriceSeed("菲律宾伊洛伊洛WE Academy", 1100m, UsdCurrencyId, "USD 1,100起 + 注册费", Established(2003), new[] { "WE Academy Iloilo", "We Academy Iloilo" }),
+        new RegionalStartingPriceSeed("菲律宾伊洛伊洛MK Language Training Center", 1210m, UsdCurrencyId, "USD 1,210 + PHP当地费起", Established(2002), new[] { "MK Language Training Center", "MK Education", "Metro Korea Language Training Center" }),
+        new RegionalStartingPriceSeed("菲律宾怡朗GITC College International Language Center", 930m, UsdCurrencyId, "USD 930起 + 注册费", Established(2003), new[] { "GITC College International Language Center", "Green International Technological College Language Center" }),
+
+        new RegionalStartingPriceSeed("菲律宾长滩岛Boracay Coco English Academy", 1300m, UsdCurrencyId, "USD 1,300起含注册费", Established(2018), new[] { "Boracay Coco English Academy" }),
+        new RegionalStartingPriceSeed("菲律宾长滩岛Paradise English Boracay Language Institute", 1072m, UsdCurrencyId, "USD 1,072起含注册费", Established(2005), new[] { "Paradise English Boracay Language Institute", "Paradise English Language Institute", "Paradise English Boracay" }),
+      };
+
+      var knownSchools = context.Schools.ToList();
+
+      foreach (var startingPrice in startingPrices)
+      {
+        var school = FindSchoolByNames(knownSchools, startingPrice);
+
+        if (school == null)
+        {
+          school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+          {
+            Id = Guid.NewGuid(),
+            Name = startingPrice.SchoolName,
+            CreatedDate = startingPrice.CreatedDate,
+          };
+          context.Schools.Add(school);
+          knownSchools.Add(school);
+        }
+        else if (school.CreatedDate == default)
+        {
+          school.CreatedDate = startingPrice.CreatedDate;
+        }
+
+        UpsertFee(
+          context,
+          school.Id,
+          "页面起始价",
+          startingPrice.Amount,
+          startingPrice.CurrencyId,
+          $"城市或学校页面显示的起始价格：{startingPrice.PriceText}；用于后台维护页面参考价，正式报价仍需按学校当期invoice确认",
+          now);
+      }
+
+      await context.SaveChangesAsync();
+    }
+
+    private static XiaoJuanSchoolPayment.Server.Data.Models.School? FindSchoolByNames(
+      IEnumerable<XiaoJuanSchoolPayment.Server.Data.Models.School> schools,
+      RegionalStartingPriceSeed startingPrice)
+    {
+      var names = new[] { startingPrice.SchoolName }
+        .Concat(startingPrice.Aliases)
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
+      return schools.FirstOrDefault(school => names.Contains(school.Name, StringComparer.OrdinalIgnoreCase));
+    }
+
+    private sealed record RegionalStartingPriceSeed(
+      string SchoolName,
+      decimal Amount,
+      int CurrencyId,
+      string PriceText,
+      DateTime CreatedDate,
+      string[] Aliases);
 
     private static void UpsertLesson(
       AppDbContext context,
