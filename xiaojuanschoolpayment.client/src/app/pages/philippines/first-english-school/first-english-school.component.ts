@@ -230,12 +230,18 @@ export class FirstEnglishSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 110', note: '由官方入学金按参考汇率换算，本页报价已单独加入。' },
-    { item: '当地费用', amount: '到校以PHP支付', note: 'SSP、教材、签证延长、水电、押金等项目需按学校当期规则确认。' },
+    { item: '入学金', amount: 'JPY 18,000', note: '官方费用页列基础费用之外另付，本页报价器已按参考汇率折算加入。' },
+    { item: 'SSP', amount: 'PHP 7,800', note: '官方费用页列2025年7月后SSP费用，实际以学校请款为准。' },
+    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '官方费用页列2025年7月后SSP I-Card申请费用。' },
+    { item: '教材费', amount: 'PHP 2,000起', note: '按课程、级别和学习周数变化。' },
+    { item: '电费', amount: 'PHP 1,000起', note: '按住宿、周数和实际用电规则确认。' },
+    { item: '宿舍押金', amount: 'PHP 2,000', note: '退房结算损坏、超额费用或杂费后处理。' },
+    { item: '洗衣费', amount: 'PHP 35-65 / kg', note: '按实际使用量计算。' },
+    { item: '午餐 / 晚餐', amount: '各PHP 2,500 / 周', note: '官方说明为周一至周五餐食追加参考，需按当期餐食政策确认。' },
+    { item: '设施管理费', amount: 'PHP 1,000 / 周', note: '官方费用页列每周设施管理费参考。' },
+    { item: '签证延长', amount: '按周数确认', note: '5周以上通常需要确认延签费用；长周期还需核对ACR I-Card。' },
     { item: '机票与保险', amount: '另行准备', note: '官方费用页说明机票、海外旅行保险不包含在基础费用中。' },
-    { item: '餐食', amount: '需按方案确认', note: '基础费用含住宿与清扫，餐食政策和可加购项目以学校当前说明为准。' },
     { item: '接送机', amount: '需确认', note: '家庭、未成年和夜间抵达建议提前安排并确认费用。' },
-    { item: '洗衣与清洁', amount: '部分需另付', note: '住宿页列有清扫，洗衣和生活杂费建议按实际使用预留。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -257,6 +263,8 @@ export class FirstEnglishSchoolComponent {
     { label: 'First English教室介绍', url: 'https://www.firstcebu.com/classroom/' },
     { label: 'First English住宿介绍', url: 'https://www.firstcebu.com/room/' },
     { label: 'First English亲子游学说明', url: 'https://www.firstcebu.com/cebu-con/' },
+    { label: 'First English 2026公开学校信息', url: 'https://matchingenglish.com/ph/first-english' },
+    { label: 'Study Philippines费用参考', url: 'https://www.study-philippines.com/school/13.html' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [

@@ -1,0 +1,268 @@
+:host .ethos-page {
+  background:
+    linear-gradient(180deg, #fff8ef 0, rgba(255, 255, 255, 0) 660px),
+    #ffffff;
+}
+
+:host .ethos-page .back-link,
+:host .ethos-page .hero-tags span,
+:host .ethos-page .section-heading > span,
+:host .ethos-page .compact-heading > span,
+:host .ethos-page .course-card > span,
+:host .ethos-page .timeline time,
+:host .ethos-page .trust-note mat-icon,
+:host .ethos-page .quick-card mat-icon,
+:host .ethos-page .highlight-list mat-icon {
+  color: #8f241e;
+}
+
+:host .ethos-page .hero-tags span,
+:host .ethos-page .section-heading > span,
+:host .ethos-page .compact-heading > span {
+  border-color: #f0d0a2;
+  background: #fff6e8;
+}
+
+:host .ethos-page .primary-action {
+  background: #8f241e;
+  box-shadow: 0 14px 28px rgba(143, 36, 30, 0.18);
+}
+
+:host .ethos-page .secondary-action {
+  border-color: #e5bf89;
+  color: #8f241e;
+}
+
+:host .ethos-page .advisor-panel {
+  background:
+    linear-gradient(145deg, rgba(91, 23, 19, 0.96), rgba(58, 85, 54, 0.96)),
+    #5b1713;
+}
+
+:host .ethos-page .advisor-avatar {
+  background: #efb52f;
+  color: #102033;
+}
+
+:host .ethos-page .hero-media {
+  border-color: #f0d0a2;
+  background: linear-gradient(180deg, #ffffff 0%, #fff6e8 100%);
+}
+
+:host .ethos-page .hero-price-card strong,
+:host .ethos-page .side-price {
+  color: #8f241e;
+}
+
+:host .ethos-page .course-lessons {
+  color: #3f6a37;
+}
+
+:host .ethos-page .fit-grid > div,
+:host .ethos-page .timeline article {
+  background: #fff9f0;
+}
+
+:host .ethos-page .gallery-tabs button.active {
+  border-color: #8f241e;
+  background: #8f241e;
+  color: #ffffff;
+}
+
+:host .ethos-page .ethos-course-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .ethos-page .course-card strong {
+  display: block;
+  margin-top: 12px;
+  color: #102033;
+  font-size: 14px;
+}
+
+:host .ethos-page .ethos-course-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.75fr)
+    minmax(112px, 0.55fr)
+    minmax(112px, 0.55fr)
+    minmax(260px, 1.45fr);
+}
+
+:host .ethos-page .ethos-course-table .table-row span:nth-child(2),
+:host .ethos-page .ethos-course-table .table-row span:nth-child(3) {
+  font-weight: 850;
+}
+
+:host .ethos-page .ethos-local-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .ethos-page .toggle-row {
+  display: flex;
+  grid-column: span 2;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d6e3ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102033;
+  font-weight: 850;
+}
+
+:host .ethos-page .toggle-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+:host .ethos-page .ethos-quote-breakdown {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:host .ethos-page .quote-breakdown article,
+:host .ethos-page .side-card {
+  padding: 16px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .ethos-page .quote-breakdown article span,
+:host .ethos-page .side-card span {
+  display: block;
+  color: #66758a;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+:host .ethos-page .quote-breakdown article strong {
+  display: block;
+  margin-top: 6px;
+  color: #102033;
+  line-height: 1.25;
+}
+
+:host .ethos-page .quote-status {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #f0d0a2;
+  border-radius: 8px;
+  background: #fff6e8;
+  color: #76201b;
+  font-weight: 850;
+}
+
+:host .ethos-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #f0d0a2;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .ethos-page .source-grid,
+:host .ethos-page .faq-list,
+:host .ethos-page .side-nav {
+  display: grid;
+  gap: 12px;
+}
+
+:host .ethos-page .source-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+:host .ethos-page .source-grid a,
+:host .ethos-page .side-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #f0d0a2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #76201b;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .ethos-page .source-grid mat-icon {
+  color: #3f6a37;
+}
+
+:host .ethos-page .faq-list {
+  margin-top: 18px;
+}
+
+:host .ethos-page .faq-list article {
+  padding: 16px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .ethos-page .faq-list h3 {
+  margin: 0 0 8px;
+  color: #102033;
+  font-size: 18px;
+}
+
+:host .ethos-page .faq-list p,
+:host .ethos-page .side-card p,
+:host .ethos-page .mobile-course-fees p {
+  margin: 0;
+  color: #40506a;
+  line-height: 1.65;
+}
+
+:host .ethos-page .mobile-bottom-actions a:first-child {
+  background: #8f241e;
+}
+
+:host .ethos-page .mobile-bottom-actions a:last-child {
+  background: #3f6a37;
+}
+
+@media (max-width: 1180px) {
+  :host .ethos-page .ethos-course-grid,
+  :host .ethos-page .ethos-local-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  :host .ethos-page .ethos-course-grid,
+  :host .ethos-page .ethos-local-grid,
+  :host .ethos-page .ethos-quote-breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  :host .ethos-page .ethos-course-table {
+    display: none;
+  }
+
+  :host .ethos-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .ethos-page .hero-copy h1 {
+    font-size: 36px;
+  }
+
+  :host .ethos-page .ethos-course-grid,
+  :host .ethos-page .ethos-local-grid,
+  :host .ethos-page .ethos-quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .ethos-page .toggle-row {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,695 @@
+<app-cia-school>
+  <div class="cia-page blue-ocean-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / Cebu Blue Ocean Academy</p>
+            <h1>菲律宾宿务Cebu Blue Ocean Academy</h1>
+            <p class="hero-lead">
+              Cebu Blue Ocean Academy位于Mactan岛EGI Hotel & Resort，是PINES体系下的海边度假型英语学校。
+              它适合想要一对一口语、三餐住宿、泳池海景环境，同时保留IELTS、TOEIC、Business和亲子路线的学生。
+            </p>
+            <div class="hero-tags" aria-label="Cebu Blue Ocean Academy特点">
+              <span><mat-icon>beach_access</mat-icon>Mactan海边度假环境</span>
+              <span><mat-icon>school</mat-icon>PINES姊妹校</span>
+              <span><mat-icon>record_voice_over</mat-icon>高比例1:1课程</span>
+              <span><mat-icon>family_restroom</mat-icon>Junior / Family可比较</span>
+            </div>
+            <div class="hero-actions">
+              <a
+                class="primary-action"
+                href="#quote"
+                (click)="scrollToSection('quote', $event)"
+              >
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a
+                class="secondary-action"
+                href="#courses"
+                (click)="scrollToSection('courses', $event)"
+              >
+                查看CBOA课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的学习目标、周数、房型、是否亲子/考试、是否想住海景或Ocean Suites，思达会帮你确认CBOA空房、
+              旺季规则、正式报价和当地费用。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="Cebu Blue Ocean Academy校园图片展示">
+            <figure class="feature-photo">
+              <img
+                [src]="galleryImages[0].src"
+                alt="菲律宾宿务Cebu Blue Ocean Academy EGI海边校区"
+              />
+              <figcaption>CBOA Mactan EGI海边学习生活环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="CBOA校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>Light ESL + EGI海景三人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  使用2026公开参考价：学费USD 870 + 住宿USD 850 + 注册费USD 130
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、押金、教材、水电、管理费、洗衣和旺季加价需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自CBOA官方页面及公开留学代理资料；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="CBOA手机端快捷导航">
+          <a
+            *ngFor="let item of mobileAnchors"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+          >
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="CBOA快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 CBOA 的Mactan海边校区、宿舍和学习空间</h2>
+            <p>
+              CBOA最适合放进“海边度假型 + 一对一课程 + PINES教学体系”的比较清单。它和CIA同在Mactan，但CBOA更强调EGI海边度假环境。
+            </p>
+          </div>
+          <div
+            class="gallery-tabs"
+            role="tablist"
+            aria-label="CBOA图片分类"
+          >
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>CBOA 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你要“Mactan海边生活”，还是“市区便利”</h2>
+            </div>
+            <p>
+              CBOA和CIA都适合想要Mactan学习生活环境的人。CIA更像大型新校区半斯巴达综合体；
+              CBOA更偏EGI海边度假、PINES教学体系和高比例一对一课。报名时要特别把学费、住宿、注册费和当地费用拆开算。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Jenny</div>
+              <div>
+                <strong>Jenny 顾问建议</strong>
+                <span>如果你在CIA、Genius和CBOA之间纠结，先确认“海边感、课程强度、房型预算、是否亲子”四件事。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>CBOA 核心亮点</span>
+              <h2>为什么会把CBOA列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 Cebu Blue Ocean Academy 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 CBOA</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>
+              CBOA课程覆盖轻量ESL、标准ESL、一对一强化、考试、商务、青少年和家长课程。建议先确认目标，再让顾问核对最新课表与报名规则。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions.slice(0, 8)">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>CBOA 2026公开学费参考</span>
+              <h2>先看课程学费，再加住宿和注册费</h2>
+              <p>
+                以下为公开2026学费参考，币种为美元。CBOA的住宿费单独计算，报价器会自动加上所选房型。
+              </p>
+            </div>
+            <div
+              class="data-table course-fee-table"
+              role="table"
+              aria-label="CBOA 2026课程学费参考"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">1周</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                <span role="cell">{{ course.name }}</span>
+                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 1)) }}</span>
+                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 4)) }}</span>
+                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 8)) }}</span>
+                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 12)) }}</span>
+              </div>
+            </div>
+            <div
+              class="mobile-card-list mobile-course-fees"
+              aria-label="CBOA 2026课程学费手机卡片"
+            >
+              <article *ngFor="let course of courseOptions">
+                <span>{{ course.type }}</span>
+                <strong>{{ course.name }}</strong>
+                <div><em>1周</em><b>USD {{ formatUsd(tuitionFor(course.id, 1)) }}</b></div>
+                <div><em>4周</em><b>USD {{ formatUsd(tuitionFor(course.id, 4)) }}</b></div>
+                <div><em>8周</em><b>USD {{ formatUsd(tuitionFor(course.id, 8)) }}</b></div>
+                <div><em>12周</em><b>USD {{ formatUsd(tuitionFor(course.id, 12)) }}</b></div>
+                <p>{{ course.lessons }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>CBOA 一天学习生活安排</span>
+              <h2>一对一课、小组课、Option和海边生活组合</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="room-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>住宿费用参考</span>
+              <h2>EGI与Ocean Suites房型差异会明显影响预算</h2>
+              <p>
+                公开表列住宿费为4周价格。3周以下通常按4周价的比例估算，长周数按4周倍数估算，正式仍以学校报价为准。
+              </p>
+            </div>
+            <div
+              class="data-table room-fee-table"
+              role="table"
+              aria-label="CBOA住宿费用参考"
+            >
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of dormOptions">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(dormFeeFor(room.id, 4)) }}</span>
+                <span role="cell">USD {{ formatUsd(dormFeeFor(room.id, 8)) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>Ocean Suites公开资料提示18岁以上可入住，60岁以上学生需从Ocean Suites选择。</li>
+              <li>EGI双人房有海景/市景差异，海景通常更贵且更热门。</li>
+              <li>亲子、Junior和旺季Family Camp房型规则需要按当期确认。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>CBOA费用快速报价</span>
+              <h2>默认参考：4周Light ESL + EGI海景三人房</h2>
+              <p>前期支付参考 = 注册费 + 课程学费 + 住宿费。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="CBOA费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+                    {{ weeks }} 周
+                  </option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">
+                    {{ course.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of dormOptions" [value]="room.id">
+                    {{ room.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div>
+                <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+              </div>
+              <div>
+                <span>课程学费</span
+                ><strong>USD {{ formatUsd(selectedTuitionFee) }}</strong>
+              </div>
+              <div>
+                <span>住宿费</span
+                ><strong>USD {{ formatUsd(selectedDormFee) }}</strong>
+              </div>
+              <div>
+                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
+              </div>
+              <div>
+                <span>当前房型</span><strong>{{ selectedRoom.name }}</strong>
+              </div>
+              <div>
+                <span>旺季提醒</span><strong>需另行确认</strong>
+              </div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认海景/市景、Ocean Suites、性别、入学日、旺季和当地费用。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button
+                type="button"
+                class="primary-action"
+                (click)="calculateQuote()"
+              >
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除注册费、学费和住宿费外，到校后通常还需确认SSP、SSP I-Card、ACR、签证延长、押金、教材、
+              管理费、水电、ID卡、洗衣、接机和旺季加价等费用。
+            </p>
+            <p class="season-note">{{ seasonalNote }}</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>学费住宿之外，还要准备当地费用</h2>
+            <p>
+              以下费用来自公开费用表，不同周数、签证时长、房型和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考公开2026学费、住宿和当地费用表，并结合CBOA官方课程、宿舍、
+              校区设施和地址信息整理。学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 CBOA 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、旺季和当地费用一次核清</h2>
+              <p>
+                通过思达报名CBOA，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>Light ESL、Power ESL、IELTS、TOEIC、Business、Junior和Parents课程匹配</li>
+              <li>EGI海景/市景、Ocean Suites单人房和亲子房型确认</li>
+              <li>暑假旺季、Family Camp和高峰附加费用确认</li>
+              <li>前期美元支付与到校披索费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>CBOA页面公开资料来源</h2>
+            <p>
+              本页用于咨询参考，价格和规则会更新，正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 CBOA?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断CBOA是否适合、算清学费住宿和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img
+                src="assets/cia/sida-why-main-branded.jpg"
+                alt="思达启航顾问为菲律宾宿务Cebu Blue Ocean Academy学生讲解报名方案"
+              />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaReasons">
+                <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名CBOA保障">
+            <article *ngFor="let item of sidaTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 CBOA 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>
+              入学前整理学习目标、报价和行前清单；到校后如遇到课程、老师、宿舍或账单沟通问题，也可以继续联系思达协助。
+            </p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>海边校区兼顾学习、餐食和住宿</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周边生活</span>
+              <h2>Mactan适合学习之外的海边体验</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周边生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div>
+                  <h3>校内节奏</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of campusActivities">{{ item }}</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>周边生活</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 CBOA 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 CBOA 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="CBOA页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a
+            class="primary-action"
+            href="#quote"
+            (click)="scrollToSection('quote', $event)"
+            >计算费用<mat-icon>calculate</mat-icon></a
+          >
+          <a class="secondary-action" routerLink="/about-sida/contact"
+            >咨询顾问<mat-icon>chat</mat-icon></a
+          >
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a
+            *ngFor="let item of sideNav"
+            [href]="'#' + item.target"
+            (click)="scrollToSection(item.target, $event)"
+            ><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a
+          >
+          <a href="#top" (click)="scrollToSection('top', $event)"
+            ><mat-icon>arrow_upward</mat-icon>返回顶部</a
+          >
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道CBOA当前是否有空房和优惠？</h2>
+        <p>
+          把入学日期、学习周数、课程方向、房型、性别、是否亲子或考试项目发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="CBOA手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

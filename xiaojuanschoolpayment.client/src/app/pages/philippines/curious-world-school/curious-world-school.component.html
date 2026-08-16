@@ -1,0 +1,587 @@
+<app-cia-school>
+  <div class="cia-page curious-world-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / Curious World Academy</p>
+            <h1>菲律宾宿务Curious World Academy</h1>
+            <p class="hero-lead">
+              Curious World Academy（CWA）是宿务Mabolo市区的日系运营语言学校，主打高性价比一对一课程、
+              出发前程度诊断与学习咨询、ESL/考试/商务/Working Holiday方向，以及原酒店改造的同楼学习住宿环境。
+            </p>
+            <div class="hero-tags" aria-label="Curious World Academy特点">
+              <span><mat-icon>location_city</mat-icon>Mabolo市区校区</span>
+              <span><mat-icon>record_voice_over</mat-icon>1:1四至七节</span>
+              <span><mat-icon>psychology</mat-icon>出发前学习规划</span>
+              <span><mat-icon>assignment</mat-icon>IELTS / TOEIC / Business</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看CWA课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的学习目标、周数、房型、是否考试/商务/Workcation，思达会帮你确认CWA当期空房、
+              正式报价、注册费口径、餐食和到校费用。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="Curious World Academy校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务Curious World Academy校区外观" />
+              <figcaption>Curious World Academy 宿务市区高性价比学习生活环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="CWA校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>ESL Standard + 4人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  使用2026公开参考价：套餐USD 1,400 + 注册费USD 150
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、SSP E-Card、签证、押金、水电、教材、接机和注册费口径需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自CWA官方页面及公开留学代理资料；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="CWA手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="Curious World Academy快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 CWA 的校区、教室、宿舍和公共设施</h2>
+            <p>
+              CWA适合想住在Cebu City生活圈、把一对一课量和预算放在优先级前面的学生。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="CWA图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>Curious World Academy 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你要“市区高性价比”，还是“度假型校区”</h2>
+            </div>
+            <p>
+              CWA和CIA都能做宿务综合型比较。CIA更偏Mactan大型半斯巴达新校区；
+              CWA更偏Cebu City市区便利、日系运营、预习规划和一对一课量弹性。
+              报名时最容易漏算的是注册费口径、SSP E-Card、签证延长和旺季加价。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">S</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你重视预算、SM City周边生活和一对一课量，CWA值得看；如果想要海边新校区，可同步比较CIA、Genius、CBOA。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>CWA 核心亮点</span>
+              <h2>为什么会把CWA列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 Curious World Academy 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 CWA</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>
+              CWA课程覆盖ESL、TEST、Business English、Working Holiday准备和淡季Workcation Light。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>CWA 2026公开参考价</span>
+              <h2>课程住宿套餐价：按课程、房型和周数看</h2>
+              <p>
+                以下按公开2026美元套餐表整理，通常含授课、住宿和餐食；注册费、SSP、签证、押金、水电、教材和接机需另外确认。
+              </p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="CWA 2026课程住宿套餐">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程 / 房型</span>
+                <span role="columnheader">1周</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+              </div>
+              <ng-container *ngFor="let course of courseOptions.slice(0, 6)">
+                <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="CWA 2026套餐手机卡片">
+              <ng-container *ngFor="let course of courseOptions.slice(0, 6)">
+                <article *ngFor="let room of roomOptions">
+                  <span>{{ course.name }}</span>
+                  <strong>{{ room.name }}</strong>
+                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
+                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
+                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
+                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                </article>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>CWA 一天学习生活安排</span>
+              <h2>课程强度从标准到超密集都能选</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="special-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>可选 / 特殊费用参考</span>
+              <h2>Workcation、周末加课和追加一对一要单独确认</h2>
+              <p>
+                这些费用来自公开资料，不一定每个档期都开放，报名时要逐项核对。
+              </p>
+            </div>
+            <div class="data-table special-fee-table" role="table" aria-label="CWA特殊课程参考">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">课时</span>
+                <span role="columnheader">参考价</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of specialFees">
+                <span role="cell">{{ fee.label }}</span>
+                <span role="cell">{{ fee.lessons }}</span>
+                <span role="cell">{{ fee.four }}</span>
+                <span role="cell">{{ fee.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>Workcation Light只适合淡季和轻量学习，不建议当作全年常规ESL最低价。</li>
+              <li>考试、商务、英检和Working Holiday方向需按教材、老师和级别确认。</li>
+              <li>周末活动、SDGs Fieldwork和校外活动以成团和现场安排为准。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>CWA费用快速报价</span>
+              <h2>默认参考：4周ESL Standard + 4人房</h2>
+              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="CWA费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费参考</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
+              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>旺季提醒</span><strong>需另行确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认房型、性别、入学日、旺季、注册费口径、优惠和当地费用。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除课程住宿套餐外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、水电、教材、ID、接机和个人生活费。
+            </p>
+            <p class="season-note">{{ seasonalNote }}</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>套餐之外，还要准备当地费用</h2>
+            <p>
+              以下费用来自公开费用表，不同周数、签证时长、房型和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考CWA官方公开信息和可公开访问的2026代理费用表整理。
+              学校价格、注册费口径、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 CWA 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、注册费和当地费用一次核清</h2>
+              <p>
+                通过思达报名Curious World Academy，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>ESL、TEST、Business、Working Holiday和Workcation路线匹配</li>
+              <li>1人房、2人房、3人房、4人房空房确认</li>
+              <li>注册费、旺季、餐食、周末加课和追加一对一规则确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>CWA页面公开资料来源</h2>
+            <p>
+              本页以CWA官方英文网站为学校定位来源，并参考近期公开代理页面整理2026课程、住宿和费用。
+              正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 Curious World Academy?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断CWA是否适合、算清套餐和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名CWA保障">
+            <article *ngFor="let item of trustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>市区校区兼顾学习和生活便利</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周边生活</span>
+              <h2>学习之外也能体验Cebu City生活</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 CWA 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 CWA 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="CWA页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道CWA当前是否有空房和优惠？</h2>
+        <p>
+          把入学日期、学习周数、课程方向、房型、性别、是否考试/商务/Workcation发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="CWA手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

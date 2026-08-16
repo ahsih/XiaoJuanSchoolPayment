@@ -1,0 +1,588 @@
+<app-cia-school>
+  <div class="cia-page qqenglish-beachfront-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / QQEnglish Beachfront Campus</p>
+            <h1>菲律宾宿务QQEnglish（Beachfront Campus）</h1>
+            <p class="hero-lead">
+              QQEnglish Beach Front Campus 是位于麦克坦岛 Mactan Newtown 的海滨新校区，主打一对一菲律宾外教课程、
+              弹性课量选择、胶囊学生寮和海边学习生活环境，适合短期口语、成人游学和想自理住宿的学生。
+            </p>
+            <div class="hero-tags" aria-label="QQEnglish Beachfront Campus特点">
+              <span><mat-icon>beach_access</mat-icon>Mactan Newtown海边</span>
+              <span><mat-icon>record_voice_over</mat-icon>4/6/8节一对一</span>
+              <span><mat-icon>hotel</mat-icon>胶囊学生寮</span>
+              <span><mat-icon>menu_book</mat-icon>Callan / R.E.M.S. / Business</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看QQEnglish课程和方案
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的学习周数、每日课量、是否住宿/含餐、是否亲子或自理住宿，思达会帮你确认QQEnglish当期价格、
+              空位、接机、假日费和到校支付费用。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="QQEnglish Beachfront Campus校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务QQEnglish Beachfront Campus校区环境" />
+              <figcaption>QQEnglish Beachfront Campus 麦克坦Mactan Newtown海边新校区</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="QQEnglish校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周套餐参考</span>
+              <strong>{{ packageFeeText }}</strong>
+              <p>4节一对一 + 2节小组 + 胶囊学生寮 + 餐食</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  可选择含学生寮餐食套餐，也可选择只上课并自理住宿
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  注册费、SSP、签证、教材、宿舍电费、接机和假日费需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自QQEnglish官方页面；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="QQEnglish手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="QQEnglish Beachfront Campus快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 QQEnglish Beachfront 的校区、教室、住宿和公共设施</h2>
+            <p>
+              QQEnglish Beachfront适合想在Mactan Newtown海边学习，同时重视一对一课量和住宿弹性的学生。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="QQEnglish图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>QQEnglish Beachfront Campus 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你能不能接受胶囊宿舍和弹性管理</h2>
+            </div>
+            <p>
+              QQEnglish和CIA都在麦克坦方向，但风格不同。CIA更像综合型半斯巴达校园；
+              QQEnglish Beachfront更适合想住Mactan Newtown、重视一对一课量和短期弹性的学生。
+              如果你想要普通宿舍房型，要先确认是否用只上课方案自理住宿。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">S</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你想海边、短期、一对一多，QQEnglish值得看；如果你想传统宿舍、管理更强，可同步比较CIA、CBOA、EV。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>QQEnglish 核心亮点</span>
+              <h2>为什么会把QQEnglish列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 QQEnglish Beachfront 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 QQEnglish</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按每日一对一节数看</h2>
+            <p>
+              QQEnglish公开课程以一对一课量为核心，再选择是否加入Group Class，并可搭配Callan、R.E.M.S.、Business、TOEIC、IELTS或Kids方向。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>QQEnglish官方公开价格</span>
+              <h2>按课程、方案和周数看主费用</h2>
+              <p>
+                以下按QQEnglish官方公开美元价格整理。含学生寮餐食套餐通常含课程、胶囊学生寮和餐食；
+                只上课方案不含住宿、餐食、接机和当地费用。
+              </p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="QQEnglish官方公开价格">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程 / 方案</span>
+                <span role="columnheader">1周</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+              </div>
+              <ng-container *ngFor="let course of courseOptions">
+                <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="QQEnglish官方价格手机卡片">
+              <ng-container *ngFor="let course of courseOptions">
+                <article *ngFor="let room of roomOptions">
+                  <span>{{ course.name }}</span>
+                  <strong>{{ room.name }}</strong>
+                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
+                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
+                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
+                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                </article>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>QQEnglish 一天学习生活安排</span>
+              <h2>课程强度从4节到8节一对一都能选</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="special-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>住宿餐食 / 可选费用参考</span>
+              <h2>只上课方案尤其要把住宿、餐食和接机拆清</h2>
+              <p>
+                以下费用来自QQEnglish公开费用说明，是否适用取决于你选含学生寮餐食套餐，还是只上课并自理住宿。
+              </p>
+            </div>
+            <div class="data-table special-fee-table" role="table" aria-label="QQEnglish可选费用参考">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">口径</span>
+                <span role="columnheader">参考价</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of specialFees">
+                <span role="cell">{{ fee.label }}</span>
+                <span role="cell">{{ fee.lessons }}</span>
+                <span role="cell">{{ fee.four }}</span>
+                <span role="cell">{{ fee.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>只上课方案适合自理酒店、公寓或家庭同行，但要把通勤和餐食一起算。</li>
+              <li>含学生寮餐食套餐更省心，但要先确认胶囊宿舍空位和能否接受住宿形式。</li>
+              <li>节假日、周末加课、教材和课程方向都可能影响最终报价。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>QQEnglish费用快速报价</span>
+              <h2>默认参考：4周4节一对一 + 2节小组 + 胶囊学生寮餐食</h2>
+              <p>前期支付参考 = 注册费 + 当前课程方案主费。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="QQEnglish费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                方案
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费参考</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>当前主费</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
+              <div><span>当前方案</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>假日/当地费</span><strong>需另行确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认校区空位、住宿餐食、入学日、假日费、接机和当地费用。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除主费和注册费外，到校后通常还需确认SSP、签证、ACR、学生证、教材、宿舍电费、接机、假日开课和个人生活费。
+            </p>
+            <p class="season-note">{{ seasonalNote }}</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>主费用之外，还要准备这些费用</h2>
+            <p>
+              以下费用来自QQEnglish公开费用说明，不同周数、签证时长、方案和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考QQEnglish官方英文课程费用页和日文Beachfront费用表整理。
+              学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 QQEnglish 完整资料与报价单</span>
+              <h2>让顾问把课程、住宿餐食和当地费用一次核清</h2>
+              <p>
+                通过思达报名QQEnglish Beachfront Campus，顾问会免费协助确认课程、方案、空位、正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>4/6/8节一对一与Group Class课程匹配</li>
+              <li>含胶囊学生寮餐食套餐或只上课方案确认</li>
+              <li>注册费、SSP、签证、教材、电费、假日开课和接机规则确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>QQEnglish页面公开资料来源</h2>
+            <p>
+              本页以QQEnglish官方英文网站、课程费用页和Beachfront官方费用资料为主要来源。
+              正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 QQEnglish Beachfront?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断QQEnglish是否适合、算清主费和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名QQEnglish保障">
+            <article *ngFor="let item of trustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>海边校区兼顾一对一学习和生活体验</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周边生活</span>
+              <h2>学习之外也能体验Mactan海边生活</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 QQEnglish 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 QQEnglish Beachfront 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="QQEnglish页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道QQEnglish当前是否有空位和优惠？</h2>
+        <p>
+          把入学日期、学习周数、每日课量、是否住宿/含餐、是否自理住宿发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="QQEnglish手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

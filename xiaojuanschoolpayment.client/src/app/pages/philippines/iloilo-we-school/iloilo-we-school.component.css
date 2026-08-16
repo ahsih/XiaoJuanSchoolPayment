@@ -1,0 +1,110 @@
+:host .iloilo-we-page .back-link,
+:host .iloilo-we-page .hero-tags span,
+:host .iloilo-we-page .section-heading > span,
+:host .iloilo-we-page .compact-heading > span,
+:host .iloilo-we-page .course-card > span,
+:host .iloilo-we-page .timeline time,
+:host .iloilo-we-page .trust-note mat-icon,
+:host .iloilo-we-page .quick-card mat-icon,
+:host .iloilo-we-page .note-list mat-icon,
+:host .iloilo-we-page .service-icon-grid mat-icon,
+:host .iloilo-we-page .process-grid mat-icon {
+  color: #147061;
+}
+
+:host .iloilo-we-page .hero-tags span,
+:host .iloilo-we-page .section-heading > span,
+:host .iloilo-we-page .compact-heading > span {
+  border-color: #b6dbd2;
+  background: #effaf7;
+}
+
+:host .iloilo-we-page .primary-action {
+  background: #147061;
+  box-shadow: 0 14px 28px rgba(20, 112, 97, 0.18);
+}
+
+:host .iloilo-we-page .secondary-action {
+  border-color: #a8d2c8;
+  color: #147061;
+}
+
+:host .iloilo-we-page .advisor-avatar {
+  background: #d99e22;
+}
+
+:host .iloilo-we-page .hero-media {
+  border-color: #c8e2db;
+  background: linear-gradient(180deg, #ffffff 0%, #f0faf7 100%);
+}
+
+:host .iloilo-we-page .hero-price-card strong,
+:host .iloilo-we-page .side-price {
+  color: #147061;
+}
+
+:host .iloilo-we-page .course-lessons {
+  color: #147061;
+}
+
+:host .iloilo-we-page .fit-grid > div,
+:host .iloilo-we-page .timeline article {
+  background: #f0faf7;
+}
+
+:host .iloilo-we-page .we-fee-table .table-row {
+  grid-template-columns:
+    minmax(230px, 1.35fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .iloilo-we-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(170px, 0.95fr)
+    minmax(170px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .iloilo-we-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #c8e2db;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .iloilo-we-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .iloilo-we-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #c8e2db;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .iloilo-we-page .source-grid mat-icon {
+  color: #147061;
+}
+
+@media (max-width: 860px) {
+  :host .iloilo-we-page .we-fee-table {
+    display: none;
+  }
+
+  :host .iloilo-we-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

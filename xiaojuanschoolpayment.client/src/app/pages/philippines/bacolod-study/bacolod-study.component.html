@@ -68,6 +68,32 @@
     </div>
   </section>
 
+  <section class="featured-school-section" id="featured-schools">
+    <div class="section-heading">
+      <span class="section-kicker">Featured School</span>
+      <h2>巴科洛德学校页面</h2>
+      <p>目前已整理E-Room和LSLC，适合先按课程、房型、USD/KRW套餐和PHP当地费用做预算初筛。</p>
+    </div>
+
+    <div class="featured-school-grid">
+      <article class="featured-school-card" *ngFor="let school of featuredSchools">
+        <img [src]="school.image" [alt]="school.title" loading="lazy" />
+        <div>
+          <span class="school-tag">{{ school.tag }}</span>
+          <h3>{{ school.title }}</h3>
+          <p>{{ school.text }}</p>
+          <div class="school-highlights" aria-label="学校亮点">
+            <span *ngFor="let item of school.highlights">{{ item }}</span>
+          </div>
+          <a class="primary-action" [routerLink]="school.route">
+            查看学校详情
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section class="compare-section">
     <div class="compare-copy">
       <span class="section-kicker">Bacolod vs Cebu vs Baguio</span>

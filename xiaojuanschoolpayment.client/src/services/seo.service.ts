@@ -34,7 +34,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/schools/by-city': {
     title: '菲律宾语言学校城市选择 | 宿务碧瑶克拉克马尼拉',
     description:
-      '按城市比较菲律宾语言学校，覆盖宿务、碧瑶、克拉克、马尼拉、怡朗、达沃、苏比克等地区，帮助学生按预算和目标选校。',
+      '按城市比较菲律宾语言学校，覆盖宿务、碧瑶、克拉克、马尼拉、伊洛伊洛、达沃、苏比克等地区，帮助学生按预算和目标选校。',
     keywords: '菲律宾语言学校, 菲律宾游学城市, 宿务语言学校, 碧瑶语言学校, 克拉克语言学校, 马尼拉语言学校',
     image: '/assets/philippines/clark-study-hero.jpg',
   },
@@ -66,11 +66,11 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶BECI语言学校, BECI International Language Academy, API BECI, 碧瑶BECI, BECI EOP, BECI Sparta, BECI City',
     image: '/assets/philippines/beci-eop-campus.jpg',
   },
-  '/philippines-study/baguio/baguio-jic-academy': {
-    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
+  '/philippines-study/baguio/baguio-jic': {
+    title: 'Baguio JIC | Challenger与Premium校区课程费用住宿',
     description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Academy的Challenger、Premium校区、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
-    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC Academy, JIC Academy Baguio, JIC Challenger, JIC Premium, 碧瑶雅思学校, 碧瑶语言学校',
+      'Baguio JIC页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
+    keywords: 'Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.jpg',
   },
   '/philippines-study/baguio/monol': {
@@ -86,6 +86,22 @@ const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾碧瑶WALES语言学校页面，整理WALES Academy的EEP、Infinity、IELTS、Junior课程、小校环境、Legarda位置、Studio/Premium/Condo住宿、2026费用和到校费用。',
     keywords: '菲律宾碧瑶WALES语言学校, WALES Academy, Widest Asian Learners English School, 碧瑶WALES, 碧瑶语言学校, 菲律宾IELTS学校',
     image: '/assets/philippines/wales-school-building.jpg',
+  },
+  '/philippines-study/baguio/anj-e-edu-english-academy': {
+    title: '菲律宾碧瑶A&J e-Edu语言学校 | 课程费用住宿与报名咨询',
+    description:
+      '菲律宾碧瑶A&J e-Edu English Academy页面，整理A&J ECO Campus、Eco Relax Lite/Plus、Eco Hub、Eco Sparta、IELTS/TOEIC、Junior课程、Deluxe/Premium/Eco Villa住宿、2026费用和当地费用。',
+    keywords:
+      '菲律宾碧瑶A&J e-Edu语言学校, A&J e-Edu Academy, A&J ECO Campus, 碧瑶A&J, 菲律宾碧瑶语言学校, 菲律宾ESL学校, 菲律宾IELTS学校',
+    image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/baguio/help-english-longlong-campus': {
+    title: 'HELP English（Longlong Campus） | 碧瑶Sparta课程费用住宿',
+    description:
+      'HELP English Longlong Campus页面，整理HELP Baguio Longlong校区、Sparta学习制度、ESL、IELTS/TOEIC、Business、Family课程、4周USD课程住宿费、Baguio当地费用和当前开放状态确认提醒。',
+    keywords:
+      'HELP English Longlong Campus, HELP Baguio, HELP Longlong, 菲律宾碧瑶HELP English语言学校, 碧瑶Sparta学校, 菲律宾IELTS学校, HELP English费用',
+    image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/clark': {
     title: '克拉克菲律宾留学与英语游学 | 克拉克语言学校推荐',
@@ -128,6 +144,14 @@ const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾克拉克AELC语言学校页面，整理American English Learning Center的Native口语、ESL、TOEIC、IELTS、Business、Family方向、AELC照片、4周USD课程住宿参考费用和报名注意事项。',
     keywords: '菲律宾克拉克AELC语言学校, AELC, American English Learning Center, Clark AELC, 菲律宾外教口语学校, 克拉克语言学校, Native English Clark',
     image: '/assets/philippines/aelc-main.jpg',
+  },
+  '/philippines-study/clark/hana-academy': {
+    title: '菲律宾克拉克HANA Academy | Native亲子Golf课程费用住宿',
+    description:
+      '菲律宾克拉克HANA Academy页面，整理HANA Academy的Light ESL、General ESL、Native ESL、IELTS、TOEIC、Junior、Kindergarten、Golf、Senior课程、住宿房型、4周USD课程住宿费和PHP当地费用。',
+    keywords:
+      '菲律宾克拉克HANA Academy, HANA Academy Clark, Clark HANA, HARA AND HANAH INTERNATIONAL ACADEMY, 克拉克亲子游学, 菲律宾Native口语学校, Clark Golf English',
+    image: '/assets/philippines/clark-study-hero.jpg',
   },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
@@ -174,15 +198,39 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/bacolod': {
     title: '巴科洛德菲律宾留学与英语游学 | 语言学校选择',
     description:
-      '巴科洛德菲律宾留学和英语游学指南，适合关注生活成本、学习环境和长期英语提升的学生。',
-    keywords: '巴科洛德留学, 巴科洛德游学, Bacolod语言学校, 菲律宾低预算游学',
+      '巴科洛德菲律宾留学和英语游学指南，适合关注生活成本、安静学习环境、长期英语提升、E-Room Language Center和LSLC语言学校等学校选择的学生。',
+    keywords: '巴科洛德留学, 巴科洛德游学, Bacolod语言学校, 菲律宾低预算游学, E-Room Language Center, LSLC语言学校',
+    image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/bacolod/e-room-language-center': {
+    title: '菲律宾巴科洛德E-Room Language Center | ESL雅思多益课程费用',
+    description:
+      '菲律宾巴科洛德E-Room Language Center页面，整理E-Room官方ESL/Business、IELTS/TOEIC、Classic/Semi-Sparta、Guardian、Junior课程、KRW课程住宿费、PHP当地费用和报名注意事项。',
+    keywords:
+      '菲律宾巴科洛德E-Room Language Center, E-Room Bacolod, EROOM, 巴科洛德语言学校, 菲律宾ESL学校, 菲律宾低预算游学, Bacolod English school',
+    image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/bacolod/lslc-language-skills-learning-center': {
+    title: '菲律宾巴科洛德LSLC语言学校 | ESL雅思多益商务课程费用',
+    description:
+      '菲律宾巴科洛德LSLC语言学校页面，整理LSLC Language Skills Learning Center、University of St. La Salle校园、Regular ESL、Intensive ESL、TOEIC/TOEFL/IELTS/Business课程、2026 USD套餐费用、Hotel One住宿和PHP当地费用。',
+    keywords:
+      '菲律宾巴科洛德LSLC语言学校, LSLC Language Skills Learning Center, LSLC Bacolod, University of St La Salle, 巴科洛德语言学校, 菲律宾ESL学校, 菲律宾IELTS学校',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/iloilo': {
-    title: '怡朗菲律宾留学与英语游学 | Iloilo语言学校',
+    title: '伊洛伊洛菲律宾留学与英语游学 | Iloilo语言学校',
     description:
-      '怡朗菲律宾留学和英语游学城市指南，帮助学生了解安全环境、学习氛围、生活成本和课程选择。',
-    keywords: '怡朗留学, 怡朗游学, Iloilo语言学校, 菲律宾英语游学',
+      '伊洛伊洛菲律宾留学和英语游学城市指南，帮助学生了解安全环境、学习氛围、生活成本、GITC和MK Language Training Center等课程选择。',
+    keywords: '伊洛伊洛留学, 伊洛伊洛游学, Iloilo语言学校, 菲律宾英语游学, MK Language Training Center, GITC Iloilo',
+    image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/iloilo/mk-language-training-center': {
+    title: '菲律宾伊洛伊洛MK Language Training Center | ESL雅思亲子课程费用',
+    description:
+      '菲律宾伊洛伊洛MK Language Training Center页面，整理MK Iloilo的ESL 1-7、ESL Intensive、IELTS、TESOL、Internship、Family课程、4周USD课程住宿费、PHP当地费用和报名注意事项。',
+    keywords:
+      '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, 伊洛伊洛语言学校, 菲律宾ESL学校, 菲律宾亲子游学, 菲律宾IELTS学校',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/davao': {
@@ -371,6 +419,24 @@ export class SeoService {
       };
     }
 
+    if (path.startsWith('/philippines-study/iloilo/')) {
+      return {
+        title: '伊洛伊洛菲律宾语言学校详情 | ESL课程费用住宿咨询',
+        description: '查看伊洛伊洛菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
+        keywords: '伊洛伊洛语言学校详情, Iloilo英语学校, 菲律宾ESL学校, 菲律宾英语游学',
+        image: '/assets/philippines/baguio-study-hero.jpg',
+      };
+    }
+
+    if (path.startsWith('/philippines-study/bacolod/')) {
+      return {
+        title: '巴科洛德菲律宾语言学校详情 | 低预算ESL课程咨询',
+        description: '查看巴科洛德菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
+        keywords: '巴科洛德语言学校详情, Bacolod英语学校, 菲律宾低预算ESL学校, 菲律宾英语游学',
+        image: '/assets/philippines/baguio-study-hero.jpg',
+      };
+    }
+
     return undefined;
   }
 
@@ -464,15 +530,23 @@ export class SeoService {
       cebu: '宿务',
       baguio: '碧瑶',
       clark: '克拉克',
+      iloilo: '伊洛伊洛',
+      bacolod: '巴科洛德',
       'eg-academy': '菲律宾克拉克EG语言学校',
       'clark-we-academy': '菲律宾克拉克WE Academy语言学校',
       'help-english-clark': '菲律宾克拉克HELP English语言学校',
+      'help-english-longlong-campus': 'HELP English Longlong Campus',
       'aelc-native-focused-clark-schools': '菲律宾克拉克AELC语言学校',
+      'hana-academy': '菲律宾克拉克HANA Academy',
       manila: '马尼拉',
       'enderun-extension': '菲律宾马尼拉Enderun语言学校',
       'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',
       'berlitz-philippines': '菲律宾马尼拉Berlitz语言学校',
       'manila-business-college': '菲律宾马尼拉Business College学校',
+      'mk-language-training-center': '菲律宾伊洛伊洛MK Language Training Center',
+      'gitc-college-international-language-center': '菲律宾伊洛伊洛GITC College语言学校',
+      'e-room-language-center': '菲律宾巴科洛德E-Room Language Center',
+      'lslc-language-skills-learning-center': '菲律宾巴科洛德LSLC语言学校',
       cost: '费用',
       faq: '常见问题',
       offers: '优惠',

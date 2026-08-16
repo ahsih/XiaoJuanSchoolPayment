@@ -1,0 +1,235 @@
+:host .lslc-page {
+  --lslc-accent: #255f9a;
+  background:
+    linear-gradient(180deg, #eef6fb 0, rgba(255, 255, 255, 0) 690px),
+    #ffffff;
+}
+
+:host .hero-copy h1 span,
+:host .hero-lead span {
+  display: block;
+}
+
+:host .breadcrumb,
+:host .hero-lead span,
+:host .quote-breakdown strong,
+:host .hero-price-card strong,
+:host .hero-price-card p,
+:host .side-price {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: break-word;
+}
+
+:host .hero-lead span,
+:host .photo-source,
+:host .trust-note {
+  line-height: 1.66;
+}
+
+:host .back-link,
+:host .hero-tags span mat-icon,
+:host .section-nav a mat-icon,
+:host .mobile-anchor-nav a mat-icon,
+:host .source-list mat-icon,
+:host .course-card > span,
+:host .section-heading > span,
+:host .compact-heading > span,
+:host .trust-note mat-icon,
+:host .quick-card mat-icon {
+  color: var(--lslc-accent);
+}
+
+:host .hero-tags span,
+:host .section-heading > span,
+:host .compact-heading > span {
+  border-color: rgba(37, 95, 154, 0.2);
+  background: #e8f2fb;
+}
+
+:host .primary-action {
+  background: var(--lslc-accent);
+  box-shadow: 0 14px 28px rgba(37, 95, 154, 0.18);
+}
+
+:host .secondary-action {
+  border-color: rgba(37, 95, 154, 0.28);
+  color: var(--lslc-accent);
+}
+
+:host .hero-media {
+  border-color: rgba(37, 95, 154, 0.2);
+  background: linear-gradient(180deg, #ffffff 0%, #e8f2fb 100%);
+}
+
+:host .feature-photo img,
+:host .gallery-grid figure img,
+:host .highlight-list img {
+  object-fit: cover;
+}
+
+:host .hero-price-card strong,
+:host .side-price {
+  color: var(--lslc-accent);
+}
+
+:host .advisor-panel {
+  background:
+    linear-gradient(145deg, rgba(37, 95, 154, 0.96), rgba(15, 118, 110, 0.92)),
+    #255f9a;
+}
+
+:host .advisor-avatar {
+  background: #f2c94c;
+  color: #102033;
+}
+
+:host .fit-grid > div,
+:host .timeline article {
+  background: #f6fbff;
+}
+
+:host .gallery-tabs button.active {
+  border-color: var(--lslc-accent);
+  background: var(--lslc-accent);
+  color: #fff;
+}
+
+:host .lslc-course-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:host .included-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+:host .included-strip span {
+  border-radius: 999px;
+  background: #e8f2fb;
+  color: var(--lslc-accent);
+  font-size: 13px;
+  font-weight: 850;
+  padding: 8px 12px;
+}
+
+:host .local-summary-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 18px;
+}
+
+:host .local-summary-grid article {
+  border: 1px solid rgba(37, 95, 154, 0.16);
+  border-radius: 8px;
+  background: #fff;
+  padding: 15px;
+}
+
+:host .local-summary-grid span {
+  display: block;
+  color: #607086;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+:host .local-summary-grid strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--lslc-accent);
+  font-size: 19px;
+  font-weight: 950;
+}
+
+:host .local-summary-grid p {
+  margin: 7px 0 0;
+  color: #40506a;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+:host .lslc-fee-table .table-row {
+  grid-template-columns: minmax(142px, 0.8fr) repeat(5, minmax(104px, 0.52fr)) minmax(230px, 1.1fr);
+}
+
+:host .lslc-fee-table .table-row span:nth-child(n + 2):nth-child(-n + 6) {
+  font-weight: 850;
+}
+
+:host .lslc-quote-breakdown {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:host .source-list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:host .source-list a {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(37, 95, 154, 0.16);
+  border-radius: 8px;
+  color: #102033;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 8px;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+:host .mobile-bottom-actions a:first-child {
+  background: var(--lslc-accent);
+}
+
+:host .mobile-bottom-actions a:last-child {
+  background: #0f766e;
+}
+
+@media (max-width: 980px) {
+  :host .lslc-course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .lslc-quote-breakdown,
+  :host .local-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  :host .lslc-fee-table {
+    display: none;
+  }
+
+  :host .source-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  :host .hero-copy h1 {
+    font-size: 28px;
+    line-height: 1.08;
+  }
+
+  :host .hero-tags,
+  :host .lslc-course-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .mobile-bottom-actions a {
+    font-size: 15px;
+    min-width: 0;
+    padding-inline: 6px;
+    white-space: normal;
+  }
+}

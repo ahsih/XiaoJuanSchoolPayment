@@ -1,0 +1,461 @@
+<app-cia-school>
+  <div class="cia-page cg-banilad-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / CG Academy Banilad Campus</p>
+            <h1>菲律宾宿务CG Academy（Banilad Campus）</h1>
+            <p class="hero-lead">
+              CG Academy Banilad Campus位于宿务市区Banilad生活圈，是CG系统里更偏半斯巴达与城市便利平衡的校区。
+              课程覆盖ESL、IELTS、TOEIC、Business和Family，适合想住市区、但仍希望被学习节奏推动的学生。
+            </p>
+            <div class="hero-tags" aria-label="CG Banilad Campus特点">
+              <span><mat-icon>location_city</mat-icon>宿务市区Banilad</span>
+              <span><mat-icon>record_voice_over</mat-icon>1:1 + 1:4小班</span>
+              <span><mat-icon>family_restroom</mat-icon>Family课程</span>
+              <span><mat-icon>pool</mat-icon>泳池与自习室</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看课程与房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              页面费用按CG Banilad公开2026韩元价目表和2025菲律宾当地费用表整理。
+              正式报名仍需按入学日、房型空位、汇率和学校当期报价确认。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="CG Academy Banilad Campus校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务CG Academy Banilad Campus校区" />
+              <figcaption>CG Academy Banilad Campus，宿务市区半斯巴达校区</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="CG Banilad校区缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ fourWeekLightQuadText }}</strong>
+              <p>Light ESL + 4人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  4周主费用起价来自CG Banilad 2026官方价目表
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、押金、水电、教材、接机和个人消费等菲律宾当地费用另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自CG官方资料及公开留学代理页面；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="CG Banilad手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="CG Banilad快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看CG Banilad的校区、教室、住宿和生活空间</h2>
+            <p>
+              Banilad Campus不是海边度假路线，而是更靠近宿务市区生活资源的学习型校区。
+              如果你想要便利、课程选择和适度管理，它会比纯自由学校更有推动力，也比Sparta校区更灵活。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="CG Banilad图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>CG Academy Banilad Campus 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>适合想住市区，但又怕自己太松的人</h2>
+            </div>
+            <p>
+              CG Banilad和CIA都可以放进宿务半斯巴达候选，但气质不同。
+              CIA更像大型综合新校区，Banilad更像市区学习生活一体化校区。
+              如果你在意周边便利、预算结构清楚、课程选择多，又希望有一点制度推着学，Banilad值得比较。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>如果你担心Sparta太紧，但又不想完全自由放飞，可以先把CG Banilad、CIA、I.BREEZE一起比较。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>CG Banilad 核心亮点</span>
+              <h2>为什么会把CG Banilad列入宿务候选？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断CG Banilad是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 CG Banilad</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+              <article *ngFor="let item of lessSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程 / 公开参考费用</span>
+            <h2>CG Banilad 2026课程与4周主费用</h2>
+            <p>
+              下方按官方2026 Banilad价目表整理，显示注册费、4周学费和4周住宿费合计。
+              菲律宾当地费用、机票、保险、汇率波动和个人消费没有包含在主费用内。
+            </p>
+          </div>
+
+          <div class="course-grid cg-course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+              <strong>{{ formatKrw(course.tuitionKrw) }} / 4周学费</strong>
+            </article>
+          </div>
+
+          <div class="data-table cg-course-table" role="table" aria-label="CG Banilad 2026课程住宿套餐">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4人房</span>
+              <span role="columnheader">3人房</span>
+              <span role="columnheader">2人房</span>
+              <span role="columnheader">1人房</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.quad }}</span>
+              <span role="cell">{{ row.triple }}</span>
+              <span role="cell">{{ row.twin }}</span>
+              <span role="cell">{{ row.single }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-course-fees" aria-label="CG Banilad 2026套餐手机卡片">
+            <article *ngFor="let row of courseFeeRows">
+              <span>{{ row.course }}</span>
+              <div>
+                <em>4人房</em>
+                <strong>{{ row.quad }}</strong>
+              </div>
+              <div>
+                <em>2人房</em>
+                <strong>{{ row.twin }}</strong>
+              </div>
+              <div>
+                <em>1人房</em>
+                <strong>{{ row.single }}</strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="study-life">
+          <div class="section-heading">
+            <span>学习生活节奏</span>
+            <h2>Banilad更像“市区半斯巴达”，不是纯度假</h2>
+          </div>
+          <div class="timeline">
+            <article *ngFor="let item of scheduleItems">
+              <time>{{ item.time }}</time>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading">
+            <span>费用快速报价</span>
+            <h2>用公开价目表先估算CG Banilad主费用</h2>
+            <p>
+              这个计算器用于快速比较课程、房型和周数。正式报价还需要确认入学日期、空房、汇率、优惠和学校最新费用。
+            </p>
+          </div>
+          <div class="quote-form" aria-label="CG Banilad费用快速报价选项">
+            <label>
+              课程
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label>
+              房型
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+              </select>
+            </label>
+            <label>
+              周数
+              <select [(ngModel)]="selectedWeeks">
+                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
+              </select>
+            </label>
+            <label>
+              预计入学日
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+          </div>
+
+          <div class="quote-breakdown">
+            <article>
+              <span>预计主费用</span>
+              <strong>{{ quoteKrwText }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeksText }}</p>
+            </article>
+            <article>
+              <span>平均每周</span>
+              <strong>{{ weeklyAverageText }}</strong>
+              <p>{{ quoteNote }}</p>
+            </article>
+            <article>
+              <span>房型备注</span>
+              <strong>{{ selectedRoom.note }}</strong>
+              <p>注册费 {{ formatKrw(registrationFeeKrw) }} 已计入；当地PHP费用另计。</p>
+            </article>
+          </div>
+
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              标记为已估算
+              <mat-icon>done</mat-icon>
+            </button>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              发送给顾问复核
+              <mat-icon>send</mat-icon>
+            </a>
+          </div>
+          <p class="quote-status" *ngIf="quoteCalculated">
+            已按当前选择完成估算。下一步建议确认空房、入学日、优惠和PHP当地费用。
+          </p>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>菲律宾当地费用</span>
+            <h2>到校后还要准备的PHP费用</h2>
+            <p>
+              以下按CG Academy公开2025当地费用表整理。不同周数、签证政策和学校更新可能影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid cg-local-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <div class="mobile-card-list mobile-only">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-heading">
+            <span>报名协助流程</span>
+            <h2>通过思达启航报名CG Banilad，我们会帮你核对这些点</h2>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of processSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <div class="mobile-card-list mobile-only">
+            <article *ngFor="let step of processSteps">
+              <span>{{ step.title }}</span>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block source-panel" id="sources">
+          <div class="section-heading">
+            <span>公开资料来源</span>
+            <h2>CG Banilad页面公开资料来源</h2>
+            <p>费用、课程、设施和地址信息优先参考CG Academy官方页面与官方PDF；图片为公开页面引用。</p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="section-block" id="faq">
+          <div class="section-heading">
+            <span>报名前常见问题</span>
+            <h2>确认CG Banilad前，建议先核对这些信息</h2>
+          </div>
+          <div class="faq-list">
+            <article *ngFor="let item of faqs">
+              <h3>{{ item.question }}</h3>
+              <p>{{ item.answer }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="bottom-cta">
+          <div>
+            <span>获取 CG Banilad 完整资料与报价单</span>
+            <h2>把你的目标、周数和房型发给思达，我们帮你核对正式费用</h2>
+            <p>
+              顾问会协助确认课程、房型空位、入学日、当地费用、汇率和当期优惠，让你不用在多个PDF和不同币种之间来回换算。
+            </p>
+          </div>
+          <ul>
+            <li><mat-icon>check_circle</mat-icon> 免费确认空房与正式报价</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分KRW主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CG Sparta、I.BREEZE等宿务学校</li>
+          </ul>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            联系思达顾问
+            <mat-icon>support_agent</mat-icon>
+          </a>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="CG Banilad页面快捷导航">
+        <div class="side-card">
+          <span>CG Banilad</span>
+          <strong class="side-price">{{ fourWeekLightQuadText }}</strong>
+          <p>Light ESL + 4人房 + 注册费，菲律宾当地费用另计。</p>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            估算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+        </div>
+        <nav class="side-nav">
+          <a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <div class="mobile-bottom-actions" aria-label="CG Banilad手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        估算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        联系顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

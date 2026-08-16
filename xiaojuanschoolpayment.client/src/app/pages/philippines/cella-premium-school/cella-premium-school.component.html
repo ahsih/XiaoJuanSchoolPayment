@@ -1,0 +1,629 @@
+<app-cia-school>
+  <div class="cia-page cella-premium-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / CELLA Premium Campus</p>
+            <h1>菲律宾宿务CELLA Premium Campus</h1>
+            <p class="hero-lead">
+              CELLA Premium Campus位于宿务市区Banilad / A.S. Fortuna生活圈，是一所强调口语一对一、短期密集、
+              商务英语、亲子课程和酒店式住宿舒适度的Premium型语言学校。
+            </p>
+            <div class="hero-tags" aria-label="CELLA Premium Campus特点">
+              <span><mat-icon>apartment</mat-icon>市区Premium校区</span>
+              <span><mat-icon>record_voice_over</mat-icon>高比例1:1口语</span>
+              <span><mat-icon>work</mat-icon>商务 / Working Holiday</span>
+              <span><mat-icon>bolt</mat-icon>1-2周Expresser</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看CELLA课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              先告诉顾问你的学习目标、周数、房型、是否短期密集/商务/亲子，思达会帮你确认CELLA Premium空房、
+              正式报价、当地费用和最新校规。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="CELLA Premium Campus校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务CELLA Premium Campus校区外观" />
+              <figcaption>CELLA Premium Campus 宿务市区酒店式学习生活环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="CELLA Premium校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>Light ESL + 6人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  使用2026公开参考价：套餐USD 1,430 + 注册费USD 150
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、押金、水电、教材、管理费、接机和旺季加价需另行确认
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片与费用参考自CELLA公开学校资料及留学代理页面；最终以学校当期正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="CELLA Premium手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="CELLA Premium快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看 CELLA Premium 的校区、泳池、教室和住宿</h2>
+            <p>
+              CELLA Premium适合想住在宿务市区便利地段、又希望学校宿舍和公共空间比传统宿舍更舒服的学生。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="CELLA Premium图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>CELLA Premium 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先看你要“市区舒适”，还是“海边度假”</h2>
+            </div>
+            <p>
+              CELLA Premium和CIA都可以做宿务综合型学校比较。CIA更偏Mactan半斯巴达大型新校区；
+              CELLA Premium更偏宿务市区便利、住宿舒适、口语一对一、商务和短期密集课程。
+              报名时最容易漏算的是注册费、旺季加价和到校当地费用。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>如果你是社会人短期、商务英语或想住舒服一点，CELLA值得看；如果要海边环境，可同步比较CIA、Genius、CBOA。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>CELLA Premium 核心亮点</span>
+              <h2>为什么会把CELLA列入宿务候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 CELLA Premium 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 CELLA Premium</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>不知道选哪种课程？先按学习目标看</h2>
+            <p>
+              CELLA Premium课程覆盖轻量ESL、口语强化、商务英语、Working Holiday、航空服务英语、短期Expresser和Family Package。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>CELLA Premium 2026公开参考价</span>
+              <h2>课程住宿套餐价：按课程、房型和周数看</h2>
+              <p>
+                以下为公开2026套餐参考价，通常含授课、住宿、餐食、清扫和洗衣；注册费、旺季费和当地费用需另外确认。
+              </p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="CELLA Premium 2026课程住宿套餐">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程 / 房型</span>
+                <span role="columnheader">1周</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+              </div>
+              <ng-container *ngFor="let course of courseOptions.slice(0, 5)">
+                <div class="table-row" role="row" *ngFor="let room of roomOptions.slice(0, 5)">
+                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="CELLA Premium 2026套餐手机卡片">
+              <ng-container *ngFor="let course of courseOptions.slice(0, 5)">
+                <article *ngFor="let room of roomOptions.slice(0, 5)">
+                  <span>{{ course.name }}</span>
+                  <strong>{{ room.name }}</strong>
+                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
+                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
+                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
+                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                </article>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>CELLA Premium 一天学习生活安排</span>
+              <h2>课程强度从轻量到高密度都能选</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="special-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>短期 / 亲子 / 特殊课程参考</span>
+              <h2>Expresser和Family路线要单独确认规则</h2>
+              <p>
+                1-2周短期课程、亲子课程和ACE航空服务英语的报名条件、房型、年龄和开课规则需要报名前逐项确认。
+              </p>
+            </div>
+            <div class="data-table special-fee-table" role="table" aria-label="CELLA Premium特殊课程参考">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">课时</span>
+                <span role="columnheader">参考价</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of expresserFees">
+                <span role="cell">{{ fee.label }}</span>
+                <span role="cell">{{ fee.lessons }}</span>
+                <span role="cell">{{ fee.four }}</span>
+                <span role="cell">{{ fee.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>Expresser强调短期密集和初日开始上课，适合假期很短的学生。</li>
+              <li>Family Package需要按家长/儿童课程、年龄、房型和档期确认。</li>
+              <li>Alicia外部寮房型与校内宿舍不同，需同步确认通勤和空房。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>CELLA费用快速报价</span>
+              <h2>默认参考：4周Light ESL + 6人房</h2>
+              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="CELLA Premium费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
+              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>旺季提醒</span><strong>需另行确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认房型、性别、入学日、旺季、优惠和当地费用。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除课程住宿套餐外，到校后通常还需确认SSP、签证、ACR、押金、教材、水电、管理费、ID、接机和个人生活费。
+            </p>
+            <p class="season-note">{{ seasonalNote }}</p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>套餐之外，还要准备当地费用</h2>
+            <p>
+              以下费用来自公开费用表，不同周数、签证时长、房型和学校政策会影响最终金额。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>
+              本页价格更新时间：2026年8月。费用参考公开2026套餐价、CELLA Premium学校资料和当地费用说明整理。
+              学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 CELLA Premium 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、旺季和当地费用一次核清</h2>
+              <p>
+                通过思达报名CELLA Premium，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                接机和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>Light ESL、Power Speaking、BPE、Working Holiday、ACE、Expresser和Family课程匹配</li>
+              <li>校内1人/半单/2人/4人/6人房与Alicia外部寮空房确认</li>
+              <li>旺季加价、短期密集和亲子规则确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>CELLA Premium页面公开资料来源</h2>
+            <p>
+              CELLA官网当前需要真人验证，本页主要参考可公开访问的近期代理资料和2026费用表；正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名 CELLA Premium?</h2>
+            <p>
+              不只是提交报名，更重要的是帮你判断CELLA是否适合、算清套餐和当地费用，并持续协助到完成学习回国。
+            </p>
+          </div>
+
+          <div class="sida-ev-panel">
+            <figure class="sida-ev-main-photo">
+              <img src="assets/cia/sida-why-main-branded.jpg" alt="思达启航顾问为菲律宾宿务CELLA Premium学生讲解报名方案" />
+            </figure>
+
+            <div class="sida-ev-reason-grid">
+              <article *ngFor="let item of sidaReasons">
+                <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+                <div>
+                  <span>{{ item.number }}</span>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名CELLA Premium保障">
+            <article *ngFor="let item of sidaTrustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 CELLA Premium 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>
+              入学前整理学习目标、报价和行前清单；到校后如遇到课程、老师、宿舍或账单沟通问题，也可以继续联系思达协助。
+            </p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>到校后的学校服务</span>
+              <h2>市区校区兼顾学习和生活便利</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校园活动与周边生活</span>
+              <h2>学习之外也能体验Banilad城市生活</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周边生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div>
+                  <h3>校内节奏</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of campusActivities">{{ item }}</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>周边生活</h3>
+                  <ul class="check-list">
+                    <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                  </ul>
+                </div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认 CELLA Premium 前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名 CELLA Premium 前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="CELLA Premium页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道CELLA Premium当前是否有空房和优惠？</h2>
+        <p>
+          把入学日期、学习周数、课程方向、房型、性别、是否短期/商务/亲子发给顾问，可以更快得到准确报价。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="CELLA Premium手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>咨询顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

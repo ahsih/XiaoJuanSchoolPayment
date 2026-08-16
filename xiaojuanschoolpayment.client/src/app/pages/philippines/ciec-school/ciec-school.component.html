@@ -1,0 +1,437 @@
+<app-cia-school>
+  <div class="cia-page ciec-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / CIEC Global Education Center</p>
+            <h1>菲律宾宿务CIEC</h1>
+            <p class="hero-lead">
+              CIEC Global Education Center，也常写作 Cebu Ivy Education Center，是宿务Talamban地区的亲子与青少年英文学校。
+              页面以亲子游学、Junior Sparta、国际学校准备和陪读家长课程为主轴，适合需要学习管理、住宿照顾和学术英文规划的家庭。
+            </p>
+            <div class="hero-tags" aria-label="CIEC特点">
+              <span><mat-icon>family_restroom</mat-icon>亲子与青少年专门校</span>
+              <span><mat-icon>school</mat-icon>国际学校准备</span>
+              <span><mat-icon>record_voice_over</mat-icon>一对一+小班</span>
+              <span><mat-icon>pool</mat-icon>泳池与学生宿舍</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              费用按公开2026 CIEC学费、住宿费和当地费用资料整理。正式报名仍需按入学日、是否旺季、孩子年龄、房型空位和学校当期报价确认。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="CIEC校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务CIEC校园入口" />
+              <figcaption>CIEC Global Education Center，宿务Talamban亲子与青少年英文学校</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="CIEC缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ fourWeekJuniorTripleText }}</strong>
+              <p>Kindergarten + 3人房 + 注册费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  儿童课程4周主费通常从USD 2,000起
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、押金、水电、教材、活动、保险和机票另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">图片与费用参考自CIEC官方页面和公开留学资料页；最终以学校正式报价为准。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="CIEC手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="CIEC快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看CIEC的校区、宿舍和学习生活空间</h2>
+            <p>
+              CIEC的优势不是海边度假感，而是低龄和青少年学生的集中管理、宿舍照顾、课程规划和家长陪读安排。
+              如果孩子需要更多生活支持与学术准备，CIEC会比普通成人ESL学校更贴合。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="CIEC图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>CIEC Global Education Center 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先确认孩子年龄和目标，再看CIEC是否合适</h2>
+            </div>
+            <p>
+              CIEC和CIA都可以放在宿务候选里，但CIEC更像“孩子学习管理型学校”。
+              如果目标是亲子陪读、低龄英文、青少年学术英文、国际学校入学准备或单独青少年游学，CIEC值得重点比较。
+              如果是成人短期练口语，可能会有更轻松、更高性价比的选择。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>把孩子年龄、是否家长陪读、可接受管理强度和目标学校告诉顾问，比只看价格更重要。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>CIEC 核心亮点</span>
+              <h2>为什么会把CIEC列入宿务亲子候选？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <mat-icon>check_circle</mat-icon>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断CIEC是不是你的优先学校</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 CIEC</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+              <article *ngFor="let item of lessSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程 / 公开参考费用</span>
+            <h2>CIEC 2026课程与4周主费用</h2>
+            <p>
+              下方按公开2026学费和住宿费整理，显示注册费、4周课程费和4周住宿费合计。
+              菲律宾当地费用、活动费、机票、保险和个人消费没有包含在主费用内。
+            </p>
+          </div>
+
+          <div class="course-grid ciec-course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+              <strong>{{ formatUsd(course.tuitionUsd) }} / 4周课程费</strong>
+            </article>
+          </div>
+
+          <div class="data-table ciec-course-table" role="table" aria-label="CIEC 2026课程住宿套餐">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">课节结构</span>
+              <span role="columnheader">3人房</span>
+              <span role="columnheader">2人房</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.lessons }}</span>
+              <span role="cell">{{ row.triple }}</span>
+              <span role="cell">{{ row.twin }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-course-fees" aria-label="CIEC 2026套餐手机卡片">
+            <article *ngFor="let row of courseFeeRows">
+              <span>{{ row.course }}</span>
+              <strong>{{ row.lessons }}</strong>
+              <div>
+                <em>3人房</em>
+                <strong>{{ row.triple }}</strong>
+              </div>
+              <div>
+                <em>2人房</em>
+                <strong>{{ row.twin }}</strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="study-life">
+          <div class="section-heading">
+            <span>学习生活节奏</span>
+            <h2>CIEC的一天更像孩子的住校学习管理</h2>
+          </div>
+          <div class="timeline">
+            <article *ngFor="let item of scheduleItems">
+              <time>{{ item.time }}</time>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading">
+            <span>费用快速报价</span>
+            <h2>用公开价目表先估算CIEC主费用</h2>
+            <p>
+              这个计算器用于快速比较课程、房型、周数和旺季短期比例。正式报价还需要确认孩子年龄、入学日期、空房和学校最新规则。
+            </p>
+          </div>
+          <div class="quote-form" aria-label="CIEC费用快速报价选项">
+            <label>
+              课程
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label>
+              房型
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+              </select>
+            </label>
+            <label>
+              周数
+              <select [(ngModel)]="selectedWeeks">
+                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
+              </select>
+            </label>
+            <label>
+              预计入学日
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" [(ngModel)]="isPeakSeason" />
+              <span>按旺季短期比例估算（1、2、7、8月）</span>
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" [(ngModel)]="includeGuardianCare" />
+              <span>加入Guardian Care USD 300 / 4周</span>
+            </label>
+          </div>
+
+          <div class="quote-breakdown ciec-quote-breakdown">
+            <article>
+              <span>预计主费用</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
+            </article>
+            <article>
+              <span>平均每周</span>
+              <strong>{{ weeklyAverageText }}</strong>
+              <p>{{ quoteNote }}</p>
+            </article>
+            <article>
+              <span>房型备注</span>
+              <strong>{{ selectedRoom.note }}</strong>
+              <p>已含注册费USD 100和单程接机USD 20；PHP当地费用另计。</p>
+            </article>
+          </div>
+
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              标记为已估算
+              <mat-icon>done</mat-icon>
+            </button>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              发送给顾问复核
+              <mat-icon>send</mat-icon>
+            </a>
+          </div>
+          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认孩子年龄、课程资格、空房和当地PHP费用。</p>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>菲律宾当地费用</span>
+            <h2>到校后还要准备的费用</h2>
+            <p>以下按公开CIEC当地费用资料整理。不同周数、签证政策、教材数量和用电情况会影响最终金额。</p>
+          </div>
+          <div class="local-fee-grid ciec-local-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <div class="mobile-card-list mobile-only">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block source-panel" id="sources">
+          <div class="section-heading">
+            <span>公开资料来源</span>
+            <h2>CIEC页面公开资料来源</h2>
+            <p>课程、地址、FAQ和费用信息优先参考CIEC官方页面和近期公开费用资料。</p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="section-block" id="faq">
+          <div class="section-heading">
+            <span>报名前常见问题</span>
+            <h2>确认CIEC前，建议先核对这些信息</h2>
+          </div>
+          <div class="faq-list">
+            <article *ngFor="let item of faqs">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.text }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="bottom-cta">
+          <div>
+            <span>获取 CIEC 完整资料与报价单</span>
+            <h2>把孩子年龄、周数、是否陪读和目标告诉思达，我们帮你核对正式费用</h2>
+            <p>
+              顾问会协助确认课程资格、房型空位、Guardian Care、菲律宾当地费用、旺季规则和可替代学校。
+            </p>
+          </div>
+          <ul>
+            <li><mat-icon>check_circle</mat-icon> 免费确认CIEC空房与正式报价</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分USD主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、First English、Howdy等亲子学校</li>
+          </ul>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            联系思达顾问
+            <mat-icon>support_agent</mat-icon>
+          </a>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="CIEC页面快捷导航">
+        <div class="side-card">
+          <span>CIEC</span>
+          <strong class="side-price">{{ fourWeekJuniorTripleText }}</strong>
+          <p>Kindergarten + 3人房 + 注册费，菲律宾当地费用另计。</p>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            估算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+        </div>
+        <nav class="side-nav">
+          <a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <div class="mobile-bottom-actions" aria-label="CIEC手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        估算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        联系顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

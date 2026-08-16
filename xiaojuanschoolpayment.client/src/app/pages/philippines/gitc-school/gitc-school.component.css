@@ -1,0 +1,116 @@
+:host .gitc-page .back-link,
+:host .gitc-page .hero-tags span,
+:host .gitc-page .section-heading > span,
+:host .gitc-page .compact-heading > span,
+:host .gitc-page .course-card > span,
+:host .gitc-page .timeline time,
+:host .gitc-page .trust-note mat-icon,
+:host .gitc-page .quick-card mat-icon,
+:host .gitc-page .note-list mat-icon,
+:host .gitc-page .service-icon-grid mat-icon,
+:host .gitc-page .process-grid mat-icon {
+  color: #17714f;
+}
+
+:host .gitc-page .hero-tags span,
+:host .gitc-page .section-heading > span,
+:host .gitc-page .compact-heading > span {
+  border-color: #b9ddca;
+  background: #f0fbf4;
+}
+
+:host .gitc-page .primary-action {
+  background: #17714f;
+  box-shadow: 0 14px 28px rgba(23, 113, 79, 0.18);
+}
+
+:host .gitc-page .secondary-action {
+  border-color: #a8d5bb;
+  color: #17714f;
+}
+
+:host .gitc-page .advisor-avatar {
+  background: #d7a11f;
+}
+
+:host .gitc-page .hero-media {
+  border-color: #c8e3d3;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fbf4 100%);
+}
+
+:host .gitc-page .hero-price-card strong,
+:host .gitc-page .side-price {
+  color: #17714f;
+}
+
+:host .gitc-page .course-lessons {
+  color: #17714f;
+}
+
+:host .gitc-page .fit-grid > div,
+:host .gitc-page .timeline article {
+  background: #f0fbf4;
+}
+
+:host .gitc-page .city-correction {
+  margin: 8px 0 22px;
+  border-color: #b9ddca;
+  background: #f7fcf8;
+}
+
+:host .gitc-page .gitc-fee-table .table-row {
+  grid-template-columns:
+    minmax(230px, 1.35fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .gitc-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(170px, 0.95fr)
+    minmax(170px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .gitc-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #c8e3d3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .gitc-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .gitc-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #c8e3d3;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .gitc-page .source-grid mat-icon {
+  color: #17714f;
+}
+
+@media (max-width: 860px) {
+  :host .gitc-page .gitc-fee-table {
+    display: none;
+  }
+
+  :host .gitc-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

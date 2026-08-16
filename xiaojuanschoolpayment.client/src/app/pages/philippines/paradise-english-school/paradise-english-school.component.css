@@ -1,0 +1,112 @@
+:host .paradise-page .back-link,
+:host .paradise-page .hero-tags span,
+:host .paradise-page .section-heading > span,
+:host .paradise-page .compact-heading > span,
+:host .paradise-page .course-card > span,
+:host .paradise-page .timeline time,
+:host .paradise-page .trust-note mat-icon,
+:host .paradise-page .quick-card mat-icon,
+:host .paradise-page .note-list mat-icon,
+:host .paradise-page .service-icon-grid mat-icon,
+:host .paradise-page .process-grid mat-icon {
+  color: #b95a1d;
+}
+
+:host .paradise-page .hero-tags span,
+:host .paradise-page .section-heading > span,
+:host .paradise-page .compact-heading > span {
+  border-color: #f2d3bf;
+  background: #fff7f0;
+}
+
+:host .paradise-page .primary-action {
+  background: #b95a1d;
+  box-shadow: 0 14px 28px rgba(185, 90, 29, 0.18);
+}
+
+:host .paradise-page .secondary-action {
+  border-color: #efc7ad;
+  color: #b95a1d;
+}
+
+:host .paradise-page .advisor-avatar {
+  background: #0f7c8a;
+}
+
+:host .paradise-page .hero-media {
+  border-color: #efd4c2;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7f0 100%);
+}
+
+:host .paradise-page .hero-price-card strong,
+:host .paradise-page .side-price {
+  color: #b95a1d;
+}
+
+:host .paradise-page .fit-grid > div,
+:host .paradise-page .timeline article {
+  background: #fff7f0;
+}
+
+:host .paradise-page .paradise-course-table .table-row {
+  grid-template-columns:
+    minmax(190px, 1fr)
+    minmax(250px, 1.25fr)
+    minmax(105px, 0.58fr)
+    minmax(105px, 0.58fr)
+    minmax(180px, 1fr);
+}
+
+:host .paradise-page .paradise-room-table .table-row {
+  grid-template-columns:
+    minmax(190px, 1fr)
+    minmax(115px, 0.62fr)
+    minmax(190px, 1fr)
+    minmax(105px, 0.58fr)
+    minmax(105px, 0.58fr)
+    minmax(180px, 1fr);
+}
+
+:host .paradise-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #efd4c2;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .paradise-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .paradise-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #efd4c2;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .paradise-page .source-grid mat-icon {
+  color: #b95a1d;
+}
+
+@media (max-width: 980px) {
+  :host .paradise-page .paradise-course-table,
+  :host .paradise-page .paradise-room-table {
+    display: none;
+  }
+
+  :host .paradise-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

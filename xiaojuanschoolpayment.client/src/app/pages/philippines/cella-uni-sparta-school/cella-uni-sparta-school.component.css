@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+:host app-cia-school {
+  display: block;
+  background:
+    linear-gradient(180deg, #f1fbff 0, #ffffff 660px),
+    #ffffff;
+}
+
+:host .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: #064c5d;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+:host .cella-uni-sparta-page .hero-collage figure:first-child {
+  grid-row: span 2;
+}
+
+:host .cella-uni-sparta-page .hero-price-card strong {
+  font-size: clamp(32px, 4vw, 48px);
+}
+
+:host .cella-uni-sparta-page .mini-quote-card option,
+:host .cella-uni-sparta-page .quote-form-card option {
+  font-size: 14px;
+}
+
+:host .quote-result-head small {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #e8f8fb;
+  color: #087083;
+  font-weight: 950;
+}
+
+:host .quote-result-head p {
+  margin-top: 12px;
+}
+
+:host .cella-fee-table .table-row {
+  grid-template-columns: minmax(138px, 0.9fr) minmax(132px, 0.58fr) minmax(0, 1.12fr);
+}
+
+:host .cella-fee-table small {
+  display: block;
+  margin-top: 4px;
+  color: #7a8798;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+:host .table-intro {
+  margin: 0 0 16px;
+  color: #526176;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+:host .cella-local-grid strong {
+  display: block;
+  margin-top: 12px;
+  color: #087083;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+:host .source-section {
+  padding: 34px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #f8fbfd;
+}
+
+:host .source-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:host .source-links a {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 16px;
+  border: 1px solid #dce8ee;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #064c5d;
+  font-weight: 900;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+:host .source-links mat-icon {
+  flex: 0 0 auto;
+  color: #087083;
+}
+
+@media (max-width: 920px) {
+  :host .source-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .cella-fee-table .table-row {
+    grid-template-columns: 1fr;
+  }
+
+  :host .source-section {
+    padding: 22px;
+  }
+}

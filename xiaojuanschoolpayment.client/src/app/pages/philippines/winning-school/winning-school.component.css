@@ -1,0 +1,110 @@
+:host .winning-page .back-link,
+:host .winning-page .hero-tags span,
+:host .winning-page .section-heading > span,
+:host .winning-page .compact-heading > span,
+:host .winning-page .course-card > span,
+:host .winning-page .timeline time,
+:host .winning-page .trust-note mat-icon,
+:host .winning-page .quick-card mat-icon,
+:host .winning-page .note-list mat-icon,
+:host .winning-page .service-icon-grid mat-icon,
+:host .winning-page .process-grid mat-icon {
+  color: #155fa8;
+}
+
+:host .winning-page .hero-tags span,
+:host .winning-page .section-heading > span,
+:host .winning-page .compact-heading > span {
+  border-color: #b7d5ee;
+  background: #eef7ff;
+}
+
+:host .winning-page .primary-action {
+  background: #155fa8;
+  box-shadow: 0 14px 28px rgba(21, 95, 168, 0.18);
+}
+
+:host .winning-page .secondary-action {
+  border-color: #a9cce9;
+  color: #155fa8;
+}
+
+:host .winning-page .advisor-avatar {
+  background: #e0a219;
+}
+
+:host .winning-page .hero-media {
+  border-color: #cae0f3;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f8ff 100%);
+}
+
+:host .winning-page .hero-price-card strong,
+:host .winning-page .side-price {
+  color: #155fa8;
+}
+
+:host .winning-page .course-lessons {
+  color: #155fa8;
+}
+
+:host .winning-page .fit-grid > div,
+:host .winning-page .timeline article {
+  background: #f1f8ff;
+}
+
+:host .winning-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(230px, 1.35fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .winning-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(170px, 0.95fr)
+    minmax(170px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .winning-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cae0f3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .winning-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .winning-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cae0f3;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .winning-page .source-grid mat-icon {
+  color: #155fa8;
+}
+
+@media (max-width: 860px) {
+  :host .winning-page .course-fee-table {
+    display: none;
+  }
+
+  :host .winning-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

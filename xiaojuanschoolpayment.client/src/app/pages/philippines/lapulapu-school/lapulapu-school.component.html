@@ -1,0 +1,295 @@
+<app-cia-school>
+  <div class="cia-page lapulapu-page">
+    <main class="cia-shell">
+      <section class="cia-hero" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/philippines-study/cebu">
+            <mat-icon>arrow_back</mat-icon>
+            返回宿务学校列表
+          </a>
+          <p class="breadcrumb">
+            <mat-icon>home</mat-icon>
+            菲律宾游学 / 宿务学校 / Lapulapu
+          </p>
+          <h1>菲律宾宿务Lapulapu</h1>
+          <p class="hero-lead">
+            Lapulapu-Cebu International College（LCIC）是位于麦克坦岛Lapu-Lapu City的大学型英语项目。它更像“大学校园短中期交换 + CELS英语学习”，适合想要固定档期、私人房宿舍、Buddy交流和校园体验的学生。
+          </p>
+          <div class="hero-tags" aria-label="Lapulapu LCIC关键字">
+            <span><mat-icon>account_balance</mat-icon>College型英语项目</span>
+            <span><mat-icon>location_on</mat-icon>Lapu-Lapu City</span>
+            <span><mat-icon>bedroom_parent</mat-icon>国际生私人房</span>
+            <span><mat-icon>groups</mat-icon>Buddy System</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算LCIC费用<mat-icon>calculate</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看2026档期<mat-icon>event</mat-icon></a>
+            <a class="secondary-action" routerLink="/about-sida/contact">咨询可报档期<mat-icon>support_agent</mat-icon></a>
+          </div>
+        </div>
+        <div class="hero-media" aria-label="LCIC校园图片">
+          <div class="hero-collage">
+            <figure *ngFor="let image of galleryImages.slice(0, 4)">
+              <img [src]="image.src" [alt]="image.title" />
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>4周参考</span>
+            <strong>USD 2,280 <small>起</small></strong>
+            <p>4周短期项目USD 2,080 + 入学金USD 200。主费用含课程、宿舍、三餐和水电。</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>大学型校园和宿舍生活</li>
+              <li><mat-icon>info</mat-icon>教材、机票、保险、可选一对一等另计</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="section-tabs" aria-label="LCIC页面导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <section class="overview-grid" id="overview" aria-label="30秒看懂LCIC">
+        <div class="overview-main">
+          <div class="section-heading">
+            <h2>30秒看懂Lapulapu / LCIC</h2>
+            <p>LCIC的重点不是传统语言学校的一对一课量，而是大学校园、固定短中期档期、英语小班课程、Buddy System、私人房宿舍和跨文化体验。</p>
+          </div>
+          <div class="snapshot-grid">
+            <article *ngFor="let item of snapshotCards">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </div>
+        <aside class="mini-quote-card">
+          <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
+          <label>项目<select [(ngModel)]="selectedProgramId" (ngModelChange)="selectProgram($event)"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.duration }}</option></select></label>
+          <label>周数<input type="text" [value]="selectedProgramWeeks + '周'" readonly /></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
+          <p>{{ quoteUsdText }}，最终需以LCIC当期档期、名额、报名截止日和费用更新为准。</p>
+        </aside>
+      </section>
+
+      <section class="advisor-review">
+        <h2>思达顾问点评：Lapulapu更像“大学校园游学”，不是普通ESL语言学校</h2>
+        <p>
+          如果你拿它和CIA比较，最大区别是定位。CIA是宿务传统语言学校路线，课程和房型组合更灵活；LCIC则是College场景，有固定开课日、校园宿舍、Buddy System、学分认可可能性和文化课程。适合想体验大学校园生活的人，未必适合只追求全天一对一的人。
+        </p>
+        <div class="fit-columns">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <ul><li *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+          <div>
+            <h3><mat-icon>warning</mat-icon>这些情况要谨慎</h3>
+            <ul><li *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="cia-section" id="environment">
+        <div class="section-heading">
+          <h2>校园与住宿图片</h2>
+          <p>LCIC的卖点是大学型校园、国际学生宿舍和课后交流场景，先看环境再判断是否适合你的游学目标。</p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="LCIC图片分类">
+          <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button>
+        </div>
+        <div class="environment-grid">
+          <figure *ngFor="let image of filteredGalleryImages">
+            <img [src]="image.src" [alt]="image.title" />
+            <figcaption><span>{{ image.category }}</span><strong>{{ image.title }}</strong><p>{{ image.text }}</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="cia-section" id="courses">
+        <div class="section-heading">
+          <h2>课程怎么理解？</h2>
+          <p>LCIC公开课表包含英语技能、Presentation、Hospitality、TOEIC S&W、SDGs、菲律宾文化和多语言选修；教师一对一是额外付费选项，Buddy System免费。</p>
+        </div>
+        <div class="course-choice-grid">
+          <article *ngFor="let course of courses">
+            <mat-icon>{{ course.icon }}</mat-icon>
+            <span>{{ course.lessons }}</span>
+            <h3>{{ course.name }}</h3>
+            <p>{{ course.suitable }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="quote-results-section" id="quote">
+        <div class="quote-form-card">
+          <h2><mat-icon>calculate</mat-icon>LCIC费用快速报价</h2>
+          <label>选择项目<select [(ngModel)]="selectedProgramId" (ngModelChange)="selectProgram($event)"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.duration }}</option></select></label>
+          <label>学习周数<input type="text" [value]="selectedProgramWeeks + '周'" readonly /></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+          <p>报价器按LCIC公开2026费用计算主项目费，并加入一次性入学金USD 200；教材、机票、保险和可选1:1另计。</p>
+        </div>
+        <div class="quote-result-card">
+          <div class="quote-result-head">
+            <h2>{{ selectedProgram.name }}</h2>
+            <small>{{ selectedProgram.duration }}</small>
+            <p>{{ selectedProgram.note }}</p>
+            <strong>{{ selectedProgramWeeks }}周</strong>
+          </div>
+          <div class="result-lines">
+            <div><span>项目主费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>入学金</span><strong>USD {{ admissionFeeUsd }}</strong></div>
+            <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
+            <div><span>可选教师1:1</span><strong>PHP {{ oneOnOneFeePhp }} / 50分钟</strong></div>
+          </div>
+          <div class="quote-total">
+            <span>前期支付参考</span>
+            <strong>{{ quoteUsdText }}</strong>
+            <em *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需确认档期、名额、报名截止日和学校当期费用。</em>
+          </div>
+          <div class="quote-tool-row">
+            <a class="primary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看费用表<mat-icon>table_chart</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tables-section" id="fee-structure">
+        <div>
+          <h2><mat-icon>receipt_long</mat-icon>LCIC 2026公开档期与费用</h2>
+          <p class="table-intro">LCIC费用不同于普通语言学校按课程和房型拆价，官方公开为项目打包价。主费用包含课程、宿舍、三餐和水电，另需一次性入学金USD 200。</p>
+          <div class="data-table lapulapu-fee-table" role="table" aria-label="LCIC 2026公开费用参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">项目</span>
+              <span role="columnheader">周数</span>
+              <span role="columnheader">主费用</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of feePackages">
+              <span role="cell">{{ row.name }}<small>{{ row.duration }}</small></span>
+              <span role="cell">{{ row.weeks }}周</span>
+              <span role="cell">USD {{ formatUsd(row.tuition) }}</span>
+              <span role="cell">{{ row.note }}</span>
+            </div>
+          </div>
+        </div>
+        <aside class="price-note">
+          <h3>费用阅读重点</h3>
+          <ul>
+            <li>4周短期项目公开价为USD 2,080，14周为USD 7,280，18周为USD 9,360。</li>
+            <li>入学金USD 200另计，官方说明包含机场校车、学生签证、ACR I-Card和SSP。</li>
+            <li>教材、机票、保险、个人消费和额外一对一课程不含在主费用内。</li>
+            <li>2027费用公开为TBD，当前页面按2026公开费用呈现。</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="cia-section" id="life">
+        <div class="section-heading">
+          <h2>住宿与一天生活</h2>
+          <p>LCIC住宿是它和普通语言学校差异最大的部分之一，国际学生有私人房间，并和不同国籍学生共享生活空间。</p>
+        </div>
+        <div class="life-grid">
+          <article>
+            <img [src]="galleryImages[3].src" alt="LCIC国际学生私人房" />
+            <h3><mat-icon>bed</mat-icon>私人房 + 共享客厅</h3>
+            <p>宿舍单元采用share-house式配置，国际学生可保留私人空间，也能在公共区域和本地、国际学生交流。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[0].src" alt="LCIC校园生活" />
+            <h3><mat-icon>security</mat-icon>24小时宿舍支持</h3>
+            <p>官方宿舍页列出House Parents、安保、CCTV、ID access、24小时医护支持和宿舍服务柜台。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[5].src" alt="LCIC宿舍交流空间" />
+            <h3><mat-icon>hot_tub</mat-icon>浴场、桑拿与学习室</h3>
+            <p>公开资料列有大浴场、露天浴、桑拿、学习室、活动室、洗衣区和宿舍内小商店。</p>
+          </article>
+        </div>
+        <div class="daily-flow">
+          <article *ngFor="let item of schedule">
+            <span>{{ item.time }}</span>
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.text }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section" id="local-fees">
+        <div class="section-heading">
+          <h2>额外费用与报名提醒</h2>
+          <p>LCIC主费用已经比较集中，但正式预算仍要把教材、机票保险、可选1:1、额外住宿和个人生活费列出来。</p>
+        </div>
+        <div class="check-grid lapulapu-local-grid">
+          <article *ngFor="let fee of localFees">
+            <mat-icon>payments</mat-icon>
+            <h3>{{ fee.item }}</h3>
+            <strong>{{ fee.amount }}</strong>
+            <p>{{ fee.note }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section source-section">
+        <div class="section-heading">
+          <h2>资料来源</h2>
+          <p>本页根据LCIC官方学校网站、官方宿舍页、LCIC-CELS信息页、LCIC Japan英文档期费用页和Q&A整理。价格、档期、入学名额和规则可能更新，报名前以学校最新确认为准。</p>
+        </div>
+        <div class="source-links">
+          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
+            <mat-icon>open_in_new</mat-icon>
+            {{ source.label }}
+          </a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="section-heading"><h2>常见问题</h2></div>
+        <details>
+          <summary>Lapulapu / LCIC和CIA最大的区别是什么？</summary>
+          <p>CIA是传统宿务语言学校，课程和房型更灵活；LCIC是College型项目，固定档期、大学校园、Buddy System、私人房宿舍和学分体验更突出。</p>
+        </details>
+        <details>
+          <summary>LCIC适合想全天一对一的学生吗？</summary>
+          <p>不算最适合。LCIC主课是小班和大学型课程，可额外购买教师一对一课程；如果目标是全天一对一口语，建议同时比较CIA、ICL、IU或其他语言学校。</p>
+        </details>
+        <details>
+          <summary>费用是否包含SSP和签证？</summary>
+          <p>公开说明写明一次性入学金USD 200包含机场校车、学生签证、ACR I-Card和SSP。实际政策可能随移民局和学校规则调整，报名前需要再次确认。</p>
+        </details>
+        <details>
+          <summary>可以住校外酒店吗？</summary>
+          <p>公开Q&A说明国际学生需要住在LCIC校内宿舍，与菲律宾本地学生和其他国际学生共同生活。若有特殊情况，需要提前和学校确认。</p>
+        </details>
+      </section>
+
+      <section class="final-cta">
+        <div class="final-cta-head">
+          <div class="final-cta-icon"><mat-icon>support_agent</mat-icon></div>
+          <div>
+            <h2>想确认LCIC当前档期和是否适合你？</h2>
+            <p>把你的可出发时间、是否需要大学学分、想读4周还是14/18周、是否接受固定档期和校内宿舍告诉顾问，我们会帮你和CIA、ICL、IU等学校一起比较。</p>
+          </div>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+          <a class="secondary-action" href="#quote" (click)="scrollToSection('quote', $event)">再算一次费用<mat-icon>calculate</mat-icon></a>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>确认2026固定档期和报名截止日</li>
+          <li><mat-icon>check_circle</mat-icon>拆分主费用、入学金和额外费用</li>
+          <li><mat-icon>check_circle</mat-icon>判断是否适合大学型校园游学</li>
+          <li><mat-icon>check_circle</mat-icon>与CIA、ICL、IU、Genius等学校横向比较</li>
+        </ul>
+      </section>
+
+      <div class="mobile-bottom-actions" aria-label="LCIC手机端固定操作">
+        <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+        <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      </div>
+    </main>
+  </div>
+</app-cia-school>

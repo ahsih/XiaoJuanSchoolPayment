@@ -12,6 +12,14 @@ interface SchoolType {
   text: string;
 }
 
+interface FeaturedSchool {
+  icon: string;
+  title: string;
+  tag: string;
+  text: string;
+  route: string;
+}
+
 @Component({
   selector: 'app-boracay-study',
   standalone: false,
@@ -65,6 +73,24 @@ export class BoracayStudyComponent {
       title: '轻松口语型',
       tag: 'Easy Speaking',
       text: '适合想练开口表达，但不希望采用斯巴达式高强度管理的学生。',
+    },
+  ];
+
+  readonly featuredSchools: FeaturedSchool[] = [
+    {
+      icon: 'pool',
+      title: 'Boracay Coco English Academy',
+      tag: 'Resort-style / Family / ESL',
+      text: '适合想在长滩岛度假型校园中学习ESL、IELTS、亲子和低龄儿童课程，并清楚比较2026费用的学生。',
+      route: '/philippines-study/boracay/boracay-coco-english-academy',
+    },
+    {
+      icon: 'record_voice_over',
+      title: 'Paradise English Boracay Language Institute',
+      tag: 'Canadian-owned / Multi-national ESL',
+      text: '适合想在长滩岛多国籍环境中学习Budget、General、Intensive、True Beginner或IELTS/TOEIC/Business课程的学生。',
+      route:
+        '/philippines-study/boracay/paradise-english-boracay-language-institute',
     },
   ];
 

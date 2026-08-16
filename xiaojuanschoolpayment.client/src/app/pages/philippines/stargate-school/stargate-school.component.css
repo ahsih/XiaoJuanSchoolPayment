@@ -1,0 +1,110 @@
+:host .stargate-page .back-link,
+:host .stargate-page .hero-tags span,
+:host .stargate-page .section-heading > span,
+:host .stargate-page .compact-heading > span,
+:host .stargate-page .course-card > span,
+:host .stargate-page .timeline time,
+:host .stargate-page .trust-note mat-icon,
+:host .stargate-page .quick-card mat-icon,
+:host .stargate-page .note-list mat-icon,
+:host .stargate-page .service-icon-grid mat-icon,
+:host .stargate-page .process-grid mat-icon {
+  color: #16815c;
+}
+
+:host .stargate-page .hero-tags span,
+:host .stargate-page .section-heading > span,
+:host .stargate-page .compact-heading > span {
+  border-color: #b9dfcc;
+  background: #effaf4;
+}
+
+:host .stargate-page .primary-action {
+  background: #16815c;
+  box-shadow: 0 14px 28px rgba(22, 129, 92, 0.18);
+}
+
+:host .stargate-page .secondary-action {
+  border-color: #a8d9c0;
+  color: #16815c;
+}
+
+:host .stargate-page .advisor-avatar {
+  background: #d6a318;
+}
+
+:host .stargate-page .hero-media {
+  border-color: #cfe9dc;
+  background: linear-gradient(180deg, #ffffff 0%, #f2fbf6 100%);
+}
+
+:host .stargate-page .hero-price-card strong,
+:host .stargate-page .side-price {
+  color: #16815c;
+}
+
+:host .stargate-page .course-lessons {
+  color: #16815c;
+}
+
+:host .stargate-page .fit-grid > div,
+:host .stargate-page .timeline article {
+  background: #f2fbf6;
+}
+
+:host .stargate-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(210px, 1.25fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .stargate-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(160px, 0.95fr)
+    minmax(160px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .stargate-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cfe9dc;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .stargate-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .stargate-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cfe9dc;
+  border-radius: 8px;
+  color: #173f30;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .stargate-page .source-grid mat-icon {
+  color: #16815c;
+}
+
+@media (max-width: 860px) {
+  :host .stargate-page .course-fee-table {
+    display: none;
+  }
+
+  :host .stargate-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

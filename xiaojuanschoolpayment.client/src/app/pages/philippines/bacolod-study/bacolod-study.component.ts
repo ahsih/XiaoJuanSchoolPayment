@@ -12,6 +12,15 @@ interface SchoolType {
   text: string;
 }
 
+interface SchoolCard {
+  image: string;
+  title: string;
+  tag: string;
+  text: string;
+  route: string;
+  highlights: string[];
+}
+
 @Component({
   selector: 'app-bacolod-study',
   standalone: false,
@@ -62,6 +71,25 @@ export class BacolodStudyComponent {
       title: '生活适应型',
       tag: 'Easy Living',
       text: '适合第一次出国游学，想要城市便利、生活压力较低和性价比更高的选择。',
+    },
+  ];
+
+  readonly featuredSchools: SchoolCard[] = [
+    {
+      image: 'https://www.cebu-55.com/common/img/detail/eroom/04.jpg',
+      title: '菲律宾巴科洛德E-Room Language Center',
+      tag: 'Classic / Semi-Sparta / ESL / IELTS / TOEIC',
+      text: '适合想在Bacolod控制预算、选择校内住宿生活一体，并比较ESL、考试、Guardian和Junior路线的学生。',
+      route: '/philippines-study/bacolod/e-room-language-center',
+      highlights: ['KRW课程住宿费', 'PHP当地费用', '校内住宿三餐', '半斯巴达可选'],
+    },
+    {
+      image: 'https://cebu21.jp/2017/assets/img/school/lslc/5-06b.jpg',
+      title: '菲律宾巴科洛德LSLC语言学校',
+      tag: 'University Campus / ESL / IELTS / TOEIC / Business',
+      text: '适合想在University of St. La Salle校园内学习，并比较Regular、Intensive、考试和Business套餐费用的学生。',
+      route: '/philippines-study/bacolod/lslc-language-skills-learning-center',
+      highlights: ['USD套餐费', '大学校园环境', '学生宿舍/Hotel One', '2026年45分钟课'],
     },
   ];
 

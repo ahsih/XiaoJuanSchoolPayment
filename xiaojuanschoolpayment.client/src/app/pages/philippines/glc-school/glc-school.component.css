@@ -1,0 +1,110 @@
+:host .glc-page .back-link,
+:host .glc-page .hero-tags span,
+:host .glc-page .section-heading > span,
+:host .glc-page .compact-heading > span,
+:host .glc-page .course-card > span,
+:host .glc-page .timeline time,
+:host .glc-page .trust-note mat-icon,
+:host .glc-page .quick-card mat-icon,
+:host .glc-page .note-list mat-icon,
+:host .glc-page .service-icon-grid mat-icon,
+:host .glc-page .process-grid mat-icon {
+  color: #0f6f8f;
+}
+
+:host .glc-page .hero-tags span,
+:host .glc-page .section-heading > span,
+:host .glc-page .compact-heading > span {
+  border-color: #b8ddea;
+  background: #eef9fc;
+}
+
+:host .glc-page .primary-action {
+  background: #0f6f8f;
+  box-shadow: 0 14px 28px rgba(15, 111, 143, 0.18);
+}
+
+:host .glc-page .secondary-action {
+  border-color: #abd7e6;
+  color: #0f6f8f;
+}
+
+:host .glc-page .advisor-avatar {
+  background: #d99719;
+}
+
+:host .glc-page .hero-media {
+  border-color: #cde6ee;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f9fc 100%);
+}
+
+:host .glc-page .hero-price-card strong,
+:host .glc-page .side-price {
+  color: #0f6f8f;
+}
+
+:host .glc-page .course-lessons {
+  color: #0f6f8f;
+}
+
+:host .glc-page .fit-grid > div,
+:host .glc-page .timeline article {
+  background: #f1f9fc;
+}
+
+:host .glc-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(200px, 1.2fr)
+    repeat(5, minmax(88px, 0.58fr));
+}
+
+:host .glc-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(170px, 1fr)
+    minmax(156px, 0.95fr)
+    minmax(0, 1.2fr);
+}
+
+:host .glc-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cde6ee;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .glc-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .glc-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cde6ee;
+  border-radius: 8px;
+  color: #123d4a;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .glc-page .source-grid mat-icon {
+  color: #0f6f8f;
+}
+
+@media (max-width: 860px) {
+  :host .glc-page .course-fee-table {
+    display: none;
+  }
+
+  :host .glc-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

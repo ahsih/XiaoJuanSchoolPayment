@@ -1,0 +1,582 @@
+<app-cia-school>
+  <div class="cia-page gitc-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/iloilo">
+              <mat-icon>arrow_back</mat-icon>
+              返回怡朗学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 怡朗学校 / GITC</p>
+            <h1>菲律宾怡朗GITC College International Language Center</h1>
+            <p class="hero-lead">
+              GITC（Green International Technological College Language Center）是Iloilo大学附属型语言中心，
+              课程覆盖Basic、Regular、Power Speaking、Junior、TOEIC/IELTS入门和点数保证。
+              公开资料显示GITC位于Iloilo，并有Cebu Mactan新校区；未找到Clark校区资料。
+            </p>
+            <div class="hero-tags" aria-label="GITC特点">
+              <span><mat-icon>location_on</mat-icon>Iloilo校区</span>
+              <span><mat-icon>account_balance</mat-icon>大学附属</span>
+              <span><mat-icon>assignment</mat-icon>TOEIC / IELTS</span>
+              <span><mat-icon>groups</mat-icon>大学交流 / SDGs</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/philippines-study/clark">
+                查看Clark学校
+                <mat-icon>location_searching</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              {{ cityNote }} 本页按GITC官方学校概要和费用页整理，避免把Iloilo学校误放成Clark学校。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="GITC校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾怡朗GITC College校舍入口" />
+              <figcaption>GITC / Green International Technological College Language Center</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="GITC校园缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周主费参考</span>
+              <strong>USD 930 <small>起</small></strong>
+              <p>Basic + 学生寮3人房，注册费和当地费另算</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  官方费用页列课程、住宿和学校往返移动费用
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  入学金、SSP、教材、押金、光热费和个人生活费另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片参考GITC官方图库和公开学校资料；费用参考GITC官方费用页，最终以学校正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="GITC手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="GITC快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="notice-panel city-correction" id="city-correction">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>关于“克拉克GITC”的城市校正</h2>
+            <p>
+              我查到的公开资料都把GITC列为Iloilo学校，官方页面列出Iloilo校址和One Spatial Iloilo学生寮，
+              另有Cebu Mactan新校区信息。为了避免误导用户，本页放在怡朗游学下；如果学生想找Clark学校，可以返回Clark学校列表比较。
+            </p>
+          </div>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看GITC的Iloilo校园和大学附属环境</h2>
+            <p>
+              GITC更适合放在Iloilo小众城市和大学附属路线里比较，而不是Clark外教/机场便利路线。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="GITC图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>GITC College 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>适合“大学氛围 + 考试/ESL + 小众城市”的学生</h2>
+            </div>
+            <p>
+              GITC和Clark学校定位不同。Clark更适合机场便利、外教口语和亲子舒适路线；
+              GITC则更适合Iloilo安静城市、大学交流、SDGs体验和TOEIC/IELTS课程。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">S</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你的目标其实是Clark，请不要直接按GITC报名；应先和CIP、EG、WE、TALK、HELP、HANA比较。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>GITC 核心亮点</span>
+              <h2>为什么会把GITC列入Iloilo候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断GITC是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑GITC</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>按一般英语、口语强化、Junior和考试方向选择</h2>
+            <p>
+              GITC官方费用页列出每个课程的一对一和小组课数量，1课时为45分钟。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>GITC官方公开价格</span>
+              <h2>按课程、房型和周数看Program费用</h2>
+              <p>
+                以下按GITC官方费用页整理。Program费用通常含授课费、住宿费和学校往返移动费用；入学金和当地PHP费用另算。
+              </p>
+            </div>
+            <div class="data-table gitc-fee-table" role="table" aria-label="GITC官方公开价格">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程 / 房型</span>
+                <span role="columnheader">1周</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+              </div>
+              <ng-container *ngFor="let course of courseOptions">
+                <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                  <span role="cell">{{ course.name }} / {{ room.shortName }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="GITC官方公开价格手机卡片">
+              <ng-container *ngFor="let course of courseOptions">
+                <article *ngFor="let room of roomOptions">
+                  <span>{{ course.name }}</span>
+                  <strong>{{ room.name }}</strong>
+                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
+                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
+                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
+                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                </article>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>GITC一天学习生活安排</span>
+              <h2>实际课表按课程和等级确认</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="special-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>亲子 / 监护 / 额外课程</span>
+              <h2>低龄和考试路线要把附加费用一起看</h2>
+            </div>
+            <div class="data-table special-fee-table" role="table" aria-label="GITC特色费用参考">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">课时 / 口径</span>
+                <span role="columnheader">参考价</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of specialFees">
+                <span role="cell">{{ fee.label }}</span>
+                <span role="cell">{{ fee.lessons }}</span>
+                <span role="cell">{{ fee.reference }}</span>
+                <span role="cell">{{ fee.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>高中以下单独渡航、亲子、Junior和陪读安排必须确认监护规则。</li>
+              <li>TOEIC/IELTS保证班要确认入学分数、目标分数和保证条件。</li>
+              <li>Cebu新校区不能直接套用Iloilo费用表。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>GITC费用快速报价</span>
+              <h2>默认参考：4周Regular + 学生寮3人房</h2>
+              <p>前期支付参考 = 入学金 + 当前Program费用。到校PHP费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="GITC费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>入学金参考</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>当前Program费用</span><strong>{{ packageFeeText }}</strong></div>
+              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
+              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>当地费用</span><strong>需另行确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认城市、校区、住宿空房、当地费用、课程开放和汇率。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除Program费用和入学金外，到校后通常还需确认SSP、SSP I-Card、ACR、设施管理费、教材、学生证、光热费、押金、洗衣和清扫。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>主费用之外，还要准备当地费用</h2>
+            <p>
+              以下按GITC官方费用页整理，金额可能随菲律宾政策和学校账单更新。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取GITC完整资料与报价单</span>
+              <h2>让顾问把城市、校区、课程和住宿一次核清</h2>
+              <p>
+                通过思达报名GITC，顾问会免费协助确认Iloilo/Cebu校区、课程开放、宿舍空房、当地费用、接机和入境资料。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>Iloilo / Cebu校区与学生目标匹配</li>
+              <li>Basic / Regular / Power Speaking / Junior / TOEIC / IELTS课程确认</li>
+              <li>One Spatial Iloilo房型、校车、餐食和当地费用确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>GITC页面公开资料来源</h2>
+            <p>
+              本页以GITC官方首页、学校概要、官方费用页和公开城市资料为主要来源。正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名GITC?</h2>
+            <p>
+              先把城市、校区和费用口径核准，再判断GITC是否真的比Clark学校更适合。
+            </p>
+          </div>
+
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名GITC保障">
+            <article *ngFor="let item of trustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>学校服务</span>
+              <h2>大学附属路线，课程和交流体验一起看</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校内与周边生活</span>
+              <h2>Iloilo更适合低干扰学习节奏</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认GITC前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名GITC前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="GITC页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想确认GITC是否比Clark学校更适合？</h2>
+        <p>
+          把入学日期、学习周数、目标分数、同行人数、房型、年龄和是否坚持Clark发给顾问，可以更快得到准确方案。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="GITC手机端固定操作">
+      <a class="secondary-action" routerLink="/philippines-study/iloilo">
+        <mat-icon>arrow_back</mat-icon>
+        怡朗列表
+      </a>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        <mat-icon>chat</mat-icon>
+        咨询报价
+      </a>
+    </div>
+  </div>
+</app-cia-school>

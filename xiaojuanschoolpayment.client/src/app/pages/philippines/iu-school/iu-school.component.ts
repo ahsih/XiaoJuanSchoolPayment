@@ -99,6 +99,11 @@ interface SidaTrustBadge {
   label: string;
 }
 
+interface SourceLink {
+  label: string;
+  url: string;
+}
+
 @Component({
   selector: 'app-iu-school',
   standalone: true,
@@ -410,9 +415,9 @@ export class IuSchoolComponent {
     { item: '签证延长', amount: 'PHP 5,500起', note: '5-8周参考，后续按月增加' },
     { item: '宿舍押金', amount: 'PHP 3,000', note: '可退押金，退房检查后按规则返还' },
     { item: '教材费', amount: '约PHP 2,000 / 4周', note: '按课程和教材数量变化' },
-    { item: '电费', amount: 'PHP 500 / 周', note: '公开估算，实际以用量和学校规则为准' },
-    { item: '维护费', amount: 'PHP 375-400 / 周', note: '按周计算' },
-    { item: '洗衣费', amount: 'PHP 300 / 周', note: '公开参考为每周两次' },
+    { item: '电费', amount: 'PHP 625 / 周', note: 'IU官方报名页当前列示金额，实际按学校规则确认' },
+    { item: '维护费', amount: 'PHP 375 / 周', note: 'IU官方报名页列示为按周计算' },
+    { item: '洗衣费', amount: 'PHP 300 / 周', note: 'IU官方报名页列示为每周两次' },
     { item: '水电/生活用品', amount: '按实际', note: '根据房型、周数和个人习惯变化' },
     { item: '正式考试费', amount: '按考试', note: 'IELTS/TOEIC正式考试报名需另行确认' },
   ];
@@ -440,6 +445,19 @@ export class IuSchoolComponent {
     { icon: 'verified_user', label: '课程规则提前确认' },
     { icon: 'payments', label: '费用透明无隐藏项' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
+  ];
+
+  readonly sourceLinks: SourceLink[] = [
+    { label: 'IU English Academy官方首页', url: 'https://iuenglishacademy.org/' },
+    { label: 'IU官方About / 校区信息', url: 'https://iuenglishacademy.org/about/' },
+    { label: 'IU官方Campus设施页', url: 'https://iuenglishacademy.org/campus/' },
+    { label: 'IU官方Accommodation住宿页', url: 'https://iuenglishacademy.org/campus/accommodation/' },
+    { label: 'IU官方General / Power Speaking课程', url: 'https://iuenglishacademy.org/course/power-speaking/' },
+    { label: 'IU官方Academic / IELTS / TOEIC课程', url: 'https://iuenglishacademy.org/course/academy-courses/' },
+    { label: 'IU官方Kids / Teenagers / Parents课程', url: 'https://iuenglishacademy.org/course/kids-teenagers-parents-courses/' },
+    { label: 'IU官方报名与当地费用页', url: 'https://iuenglishacademy.org/enroll/' },
+    { label: 'IU 2026公开价格参考', url: 'https://asiabysaudi.com/en/packages/iu' },
+    { label: 'CEBU English IU公开费用资料', url: 'https://cebu-english.com/school/iu/' },
   ];
 
   readonly schoolServices = [
@@ -511,6 +529,7 @@ export class IuSchoolComponent {
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
+    { label: '资料来源', target: 'sources', icon: 'link' },
     { label: '报名流程', target: 'service-process', icon: 'task_alt' },
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];

@@ -1,0 +1,496 @@
+<app-cia-school>
+  <div class="cia-page help-longlong-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/baguio">
+              <mat-icon>arrow_back</mat-icon>
+              返回碧瑶学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / HELP English（Longlong Campus）</p>
+            <h1><span>HELP English</span><span>Longlong Campus</span></h1>
+            <p class="hero-lead">
+              <span>HELP English（Longlong Campus）是HELP在碧瑶Benguet山城区域的老牌Sparta校区。</span>
+              <span>本页按HELP官网Baguio、Tuition and Fees与Student Regulations公开资料整理。</span>
+              <span>重点是先了解课程费用结构，并在报名前确认Longlong当前开放与Clark承接安排。</span>
+            </p>
+            <div class="hero-tags" aria-label="HELP Longlong特点">
+              <span><mat-icon>terrain</mat-icon>Longlong / La Trinidad</span>
+              <span><mat-icon>history_edu</mat-icon>HELP Sparta体系</span>
+              <span><mat-icon>school</mat-icon>ESL / IELTS / TOEIC</span>
+              <span><mat-icon>payments</mat-icon>{{ fourWeekStartingText }} / 4周起</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算HELP费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#current-status" (click)="scrollToSection('current-status', $event)">
+                查看校区状态
+                <mat-icon>notification_important</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              HELP官方费用公式为课程费加宿舍费后按周数折算；Baguio当地费用以PHP另计。正式报名仍需以学校回函、空房和当期开放状态为准。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="HELP Longlong校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="HELP English Longlong Campus校区外观" />
+              <figcaption>HELP Baguio Longlong Campus，碧瑶山城Sparta学习环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="HELP Longlong图片缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ fourWeekStartingText }}</strong>
+              <p>ESL + Quad四人房；Baguio当地费用另计</p>
+              <ul>
+                <li><mat-icon>check_circle</mat-icon>官方房费说明含餐食与饮用水</li>
+                <li><mat-icon>info</mat-icon>Baguio 4周Local Fee参考 {{ selectedLocalFeeText }}</li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片来源：HELP English公开页面与Baguio公开素材；正式环境、房型和开放状态以学校当期资料为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="HELP Longlong手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="notice-panel status-panel" id="current-status">
+          <mat-icon>notification_important</mat-icon>
+          <div>
+            <span>报名前必须确认</span>
+            <h2>官网提示Longlong升级期间，Sparta课程与资深教师目前整合在HELP Clark</h2>
+            <p>
+              所以这页不能当作“Longlong一定正在开放招生”的承诺。实际报名时，需要先让学校确认：
+              Longlong当前是否开放、是否可入住、课程是否在Longlong上课，或是否由HELP Clark承接。
+            </p>
+          </div>
+        </section>
+
+        <section class="quick-info" aria-label="HELP Longlong快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>校园图片</span>
+            <h2>先看HELP Longlong的山城校区与学习环境</h2>
+            <p>
+              Longlong的核心卖点是碧瑶安静环境、HELP老牌Sparta体系和集中学习生活。图片仅作公开资料参考，
+              实际楼栋、房型和当前开放情况要以学校最新资料为准。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="HELP Longlong图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>HELP English Longlong Campus 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>HELP Longlong适合放进“碧瑶强管理”候选，但要先查状态</h2>
+            </div>
+            <p>
+              如果Longlong当期开放，它适合想要HELP老牌Sparta、碧瑶安静环境和考试路线的学生。
+              但官网已有Clark整合提示，所以第一步不是报价，而是确认校区是否能接收当期学生。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">HELP</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>先确认Longlong开放状态，再和PINES、JIC Challenger、BECI Sparta、MONOL一起比较学习强度和预算。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问帮我确认HELP状态
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>核心亮点</span>
+              <h2>为什么会把HELP Longlong列入碧瑶候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不适合</span>
+            <h2>先判断HELP Longlong是不是你的路线</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑HELP Longlong</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型</span>
+            <h2>ESL、Business、Family、IELTS与TOEIC方向</h2>
+            <p>HELP公开费用表按4周课程费列示，报价前需要确认实际开课校区、课程级别、入学测试和当前教师安排。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="course-fees">
+          <div class="section-heading">
+            <span>HELP官方4周课程住宿费</span>
+            <h2>课程费与房型费分开看，组合后才是USD预算</h2>
+            <p>下表按HELP官网Tuition and Fees页面整理。套餐参考为4周课程费 + 4周房型费，不包含Baguio当地PHP费用。</p>
+          </div>
+
+          <div class="data-table help-longlong-tuition-table" role="table" aria-label="HELP Longlong 4周课程住宿套餐参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周课程费</span>
+              <span role="columnheader">Quad套餐</span>
+              <span role="columnheader">Triple套餐</span>
+              <span role="columnheader">Double套餐</span>
+              <span role="columnheader">Single套餐</span>
+              <span role="columnheader">适合人群</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.tuition }}</span>
+              <span role="cell">{{ row.quad }}</span>
+              <span role="cell">{{ row.triple }}</span>
+              <span role="cell">{{ row.double }}</span>
+              <span role="cell">{{ row.single }}</span>
+              <span role="cell">{{ row.suitable }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-course-fees" aria-label="HELP课程费用手机卡片">
+            <article *ngFor="let row of courseFeeRows">
+              <span>{{ row.course }}</span>
+              <div><em>课程费</em><strong>{{ row.tuition }}</strong></div>
+              <div><em>Quad套餐</em><strong>{{ row.quad }}</strong></div>
+              <div><em>Single套餐</em><strong>{{ row.single }}</strong></div>
+              <p>{{ row.suitable }}</p>
+            </article>
+          </div>
+
+          <div class="pricing-subheading">
+            <span>住宿费用</span>
+            <h3>HELP 4周Dormitory Fee</h3>
+          </div>
+          <div class="data-table help-longlong-room-table" role="table" aria-label="HELP Longlong 4周住宿费用">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">4周住宿费</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span role="cell">{{ room.name }}</span>
+              <span role="cell">{{ formatMoney(room.fee4w, 'USD') }}</span>
+              <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="quote">
+          <section class="quote-panel">
+            <div class="section-heading">
+              <span>HELP费用快速估算</span>
+              <h2>用官方USD公式先算课程住宿费</h2>
+              <p>估算公式：课程费 + 宿舍费，再按周数 / 4计算；Baguio当地PHP费用不并入USD总额。</p>
+            </div>
+            <div class="quote-form" aria-label="HELP Longlong费用估算选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courses" [ngValue]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [ngValue]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown help-longlong-quote-breakdown">
+              <div><span>课程费</span><strong>{{ formatMoney(tuitionForSelectedWeeks, 'USD') }}</strong></div>
+              <div><span>住宿费</span><strong>{{ formatMoney(roomFeeForSelectedWeeks, 'USD') }}</strong></div>
+              <div><span>Baguio当地费参考</span><strong>{{ selectedLocalFeeText }}</strong></div>
+              <div><span>公式</span><strong>{{ formulaText }}</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期USD参考</span>
+              <strong>{{ quoteText }}</strong>
+              <em>当地PHP费用、机票、保险、接机和个人消费另算</em>
+              <p *ngIf="quoteCalculated">已按当前选择更新。下一步建议确认Longlong当前开放状态、课程实际校区、房型空位和学校正式invoice。</p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算费用
+                <mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+          </section>
+
+          <section class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>学习节奏</span>
+              <h2>HELP Longlong官方日程偏典型Sparta</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用</span>
+            <h2>USD课程住宿之外，还要准备Baguio当地PHP费用</h2>
+            <p>以下按HELP官方Tuition and Fees页面的Baguio Local Fee表和Student Regulations整理，金额可能随政府规则和学校政策调整。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>通过思达启航确认HELP，我们会先把“校区状态”和费用拆清楚</h2>
+            <p>HELP Longlong最重要的是先确认当前是否开放，然后再核课程、房型、USD费用、PHP当地费和接机交通。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名协助流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认HELP Longlong前建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon>
+              <span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>HELP官方参考链接</h2>
+          </div>
+          <div class="source-list">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名HELP Longlong前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="HELP Longlong页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>Baguio当地费用参考 {{ selectedLocalFeeText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            计算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+          <a class="secondary-action" routerLink="/about-sida/contact">
+            咨询顾问
+            <mat-icon>chat</mat-icon>
+          </a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)">
+            <mat-icon>arrow_upward</mat-icon>
+            返回顶部
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想确认HELP Longlong当前是否开放和可入住？</h2>
+        <p>把入学月份、学习周数、目标课程、英文程度、房型偏好和是否接受Sparta规则告诉顾问，我们可以帮你向学校核实当期安排。</p>
+        <ul>
+          <li>0中介服务费</li>
+          <li>Longlong / Clark状态确认</li>
+          <li>USD与PHP费用拆分</li>
+          <li>从申请到入学持续协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问
+        <mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="HELP Longlong手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        计算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        咨询
+      </a>
+    </div>
+  </div>
+</app-cia-school>

@@ -1,0 +1,474 @@
+<app-cia-school>
+  <div class="cia-page anj-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/baguio">
+              <mat-icon>arrow_back</mat-icon>
+              返回碧瑶学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / A&amp;J e-Edu English Academy</p>
+            <h1>菲律宾碧瑶A&amp;J e-Edu English Academy</h1>
+            <p class="hero-lead">
+              A&amp;J e-Edu Academy位于碧瑶Irisan的ECO Campus，主打一体式自然校园、校内住宿、
+              一对一课程和弹性ESL/考试/Junior路线。它适合想在碧瑶安静学习，同时又重视住宿和生活配套的学生。
+            </p>
+            <div class="hero-tags" aria-label="A&J e-Edu Academy特点">
+              <span><mat-icon>terrain</mat-icon>碧瑶ECO Campus</span>
+              <span><mat-icon>record_voice_over</mat-icon>3-6节一对一选择</span>
+              <span><mat-icon>forest</mat-icon>自然型一体校园</span>
+              <span><mat-icon>paid</mat-icon>2026公开USD费用</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看公开价格
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              课程和校区信息参考A&amp;J官方页面；费用按公开2026年A&amp;J ECO Campus资料整理。
+              正式报名仍需按开课日、房型空位、旺季附加费和学校invoice确认。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="A&J e-Edu Academy校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾碧瑶A&J e-Edu Academy Admin Building" />
+              <figcaption>A&amp;J e-Edu Academy，Baguio ECO Campus自然型一体校园</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="A&J e-Edu Academy缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ fourWeekStartingText }}</strong>
+              <p>Eco Relax Lite + Deluxe Triple + 入学金USD 100</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  Eco Hub + Premium Twin 4周参考 {{ ecoHubPremiumTwinText }}
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、教材、水电、维护费、押金、接机、机票和保险另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">图片来源：A&amp;J e-Edu Academy官网；正式环境以学校当期实景、房型和空房资料为准。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="A&J手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="A&J快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看A&amp;J的校园、教室、宿舍和生活空间</h2>
+            <p>
+              A&amp;J的公开资料强调“Everything in one place”：上课、住宿、餐厅、自习和休闲设施集中在同一个碧瑶校园。
+              选校时建议把它放进“自然型校园 + 碧瑶学习氛围 + 住宿舒适度”的比较组。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="A&J图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>A&amp;J e-Edu English Academy 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>A&amp;J适合“想在碧瑶安静校园长期学”的学生</h2>
+            </div>
+            <p>
+              A&amp;J的强项不是市中心便利，而是ECO Campus、住宿选择和课程强度跨度。轻量学习可看Eco Relax，
+              想冲强度可看Eco Sparta或考试方向。预算上要特别注意Deluxe和Premium房型差价。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">AJ</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>先确认你想要自然校园还是市区便利，再按ESL强度、房型和总预算筛选。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>A&amp;J 核心亮点</span>
+              <h2>为什么会把A&amp;J列入碧瑶候选？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <mat-icon>check_circle</mat-icon>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断A&amp;J是不是你的优先学校</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 A&amp;J</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+              <article *ngFor="let item of lessSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程 / 公开参考费用</span>
+            <h2>A&amp;J 2026年公开4周课程费与住宿费</h2>
+            <p>
+              下方以USD整理公开4周费用。课程费和住宿费分开列示，套餐估算为“课程费 + 房型费”，不含入学金USD 100、
+              旺季附加费和菲律宾当地PHP费用。
+            </p>
+          </div>
+
+          <div class="course-grid anj-course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+
+          <div class="data-table anj-tuition-table" role="table" aria-label="A&J 2026年4周课程与住宿套餐参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周课程费</span>
+              <span role="columnheader">Deluxe Triple套餐</span>
+              <span role="columnheader">Deluxe Twin套餐</span>
+              <span role="columnheader">Deluxe Single套餐</span>
+              <span role="columnheader">Premium Twin套餐</span>
+              <span role="columnheader">课程结构</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.tuition }}</span>
+              <span role="cell">{{ row.deluxeTriple }}</span>
+              <span role="cell">{{ row.deluxeTwin }}</span>
+              <span role="cell">{{ row.deluxeSingle }}</span>
+              <span role="cell">{{ row.premiumTwin }}</span>
+              <span role="cell">{{ row.lessons }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-course-fees" aria-label="A&J 4周课程费用手机卡片">
+            <article *ngFor="let row of courseFeeRows">
+              <span>{{ row.course }}</span>
+              <div>
+                <em>课程费</em>
+                <strong>{{ row.tuition }}</strong>
+              </div>
+              <div>
+                <em>Deluxe Triple套餐</em>
+                <strong>{{ row.deluxeTriple }}</strong>
+              </div>
+              <div>
+                <em>Premium Twin套餐</em>
+                <strong>{{ row.premiumTwin }}</strong>
+              </div>
+              <p>{{ row.lessons }}</p>
+            </article>
+          </div>
+
+          <div class="pricing-subheading">
+            <span>住宿费用</span>
+            <h3>A&amp;J 4周住宿费参考</h3>
+          </div>
+          <div class="data-table anj-room-table" role="table" aria-label="A&J 2026年4周住宿费用">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">4周住宿费</span>
+              <span role="columnheader">适合人群</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span role="cell">{{ room.name }}</span>
+              <span role="cell">{{ formatUsd(room.fee4w) }}</span>
+              <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-room-fees" aria-label="A&J 4周住宿费用手机卡片">
+            <article *ngFor="let room of roomOptions">
+              <span>{{ room.name }}</span>
+              <strong>{{ formatUsd(room.fee4w) }}</strong>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="study-life">
+          <div class="section-heading">
+            <span>学习生活节奏</span>
+            <h2>A&amp;J的一天：一对一、团体课、夜课与碧瑶周末</h2>
+          </div>
+          <div class="timeline">
+            <article *ngFor="let item of scheduleItems">
+              <time>{{ item.time }}</time>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading">
+            <span>费用快速报价</span>
+            <h2>用A&amp;J公开价格先估算课程住宿费</h2>
+            <p>
+              报价器按4周公开价格倍数估算课程费+住宿费+入学金。旺季附加费可打开参考；
+              SSP、签证、教材、水电、维护费、押金和接机仍需另行准备PHP预算。
+            </p>
+          </div>
+          <div class="quote-form" aria-label="A&J费用快速报价选项">
+            <label>
+              课程
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label>
+              房型
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+              </select>
+            </label>
+            <label>
+              周数
+              <select [(ngModel)]="selectedWeeks">
+                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
+              </select>
+            </label>
+            <label>
+              预计入学日
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" [(ngModel)]="includePeakSurcharge" />
+              <span>加入旺季附加费USD 40/周</span>
+            </label>
+          </div>
+
+          <div class="quote-breakdown anj-quote-breakdown">
+            <div>
+              <span>课程+住宿</span>
+              <strong>{{ packageUsdText }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
+            </div>
+            <div>
+              <span>入学金</span>
+              <strong>USD 100</strong>
+              <p>SSP、签证、教材、水电、维护费和押金另计。</p>
+            </div>
+            <div>
+              <span>旺季附加费</span>
+              <strong>{{ peakSurchargeText }}</strong>
+              <p>是否适用需按入学日期与学校账单确认。</p>
+            </div>
+            <div>
+              <span>预计USD合计</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>平均每周约 {{ weeklyAverageText }}，不含菲律宾当地费用和机票保险。</p>
+            </div>
+          </div>
+
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              标记为已估算
+              <mat-icon>done</mat-icon>
+            </button>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              发送给顾问复核
+              <mat-icon>send</mat-icon>
+            </a>
+          </div>
+          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认A&amp;J正式报价、房型空位、入学日、旺季附加费和当地PHP费用。</p>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>菲律宾当地费用</span>
+            <h2>A&amp;J报价外还要准备的费用</h2>
+            <p>以下按公开费用资料与学校规则整理。菲律宾政府费用、学校当地费用和宿舍规则可能调整，报名时需再次确认。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <div class="mobile-card-list mobile-only">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block source-panel" id="sources">
+          <div class="section-heading">
+            <span>公开资料来源</span>
+            <h2>A&amp;J页面公开资料来源</h2>
+            <p>学校定位、课程结构、校园设施、规则、公开费用和当地费用参考A&amp;J官方页面与近期公开费用资料。</p>
+          </div>
+          <nav class="section-nav anj-source-grid" aria-label="A&J公开资料来源">
+            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </nav>
+        </section>
+
+        <section class="section-block" id="faq">
+          <div class="section-heading">
+            <span>报名前常见问题</span>
+            <h2>确认A&amp;J前，建议先核对这些信息</h2>
+          </div>
+          <div class="faq-section">
+            <details *ngFor="let item of faqs">
+              <summary>{{ item.title }}</summary>
+              <p>{{ item.text }}</p>
+            </details>
+          </div>
+        </section>
+
+        <section class="bottom-cta">
+          <div>
+            <span>获取 A&amp;J 完整资料与报价单</span>
+            <h2>把课程、周数、房型和入学日期告诉思达，我们帮你核对正式报价</h2>
+            <p>
+              顾问会协助确认A&amp;J当期房型空位、旺季附加费、当地费用、接机日期和入学规则，
+              也可以同步比较PINES、JIC、MONOL、WALES和BECI。
+            </p>
+          </div>
+          <ul>
+            <li><mat-icon>check_circle</mat-icon> 免费确认A&amp;J空位与正式报价</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分USD课程住宿费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 可同步比较碧瑶自然校园与斯巴达学校</li>
+          </ul>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            联系思达顾问
+            <mat-icon>support_agent</mat-icon>
+          </a>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="A&J页面快捷导航">
+        <div class="current-card">
+          <span>A&amp;J ECO Campus</span>
+          <strong class="side-price">{{ fourWeekStartingText }}</strong>
+          <p>Eco Relax Lite + Deluxe Triple + 入学金，SSP、签证、教材、水电、维护费、押金等另计。</p>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            估算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+        </div>
+        <nav class="section-nav">
+          <a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <div class="mobile-bottom-actions" aria-label="A&J手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        估算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        联系顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

@@ -131,6 +131,7 @@
 
 .highlight-section,
 .school-type-section,
+.featured-school-section,
 .compare-section {
   margin-top: 2.5rem;
 }
@@ -165,6 +166,7 @@
 
 .highlight-card,
 .school-type-card,
+.featured-school-card,
 .compare-section {
   border: 1px solid #e1e8ee;
   border-radius: 8px;
@@ -209,6 +211,69 @@
   color: #56647a;
   font-size: 0.78rem;
   font-weight: 850;
+}
+
+.featured-school-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.featured-school-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.featured-school-card img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.featured-school-card > div {
+  padding: 1.3rem;
+}
+
+.featured-school-card h3 {
+  margin: 0.75rem 0 0.45rem;
+  color: #07173a;
+  font-size: 1.75rem;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.featured-school-card p {
+  margin: 0 0 0.85rem;
+  color: #465469;
+  line-height: 1.7;
+}
+
+.school-tag,
+.school-highlights span {
+  display: inline-flex;
+  border-radius: 999px;
+  font-weight: 850;
+}
+
+.school-tag {
+  padding: 0.3rem 0.65rem;
+  background: #eef7f2;
+  color: #167144;
+}
+
+.school-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.95rem;
+}
+
+.school-highlights span {
+  padding: 0.24rem 0.58rem;
+  background: #f4f7fb;
+  color: #56647a;
+  font-size: 0.78rem;
 }
 
 .compare-section {
@@ -258,6 +323,8 @@
   .bacolod-hero,
   .highlight-grid,
   .school-type-grid,
+  .featured-school-grid,
+  .featured-school-card,
   .compare-section {
     grid-template-columns: 1fr;
   }

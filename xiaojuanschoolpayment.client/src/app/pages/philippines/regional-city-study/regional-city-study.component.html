@@ -9,7 +9,7 @@
           免费匹配{{ page.cityName }}方案
           <mat-icon>chevron_right</mat-icon>
         </a>
-      <a class="secondary-action" href="#program-types" appScrollTo="program-types">
+        <a class="secondary-action" href="#program-types" appScrollTo="program-types">
           查看适合项目类型
           <mat-icon>south</mat-icon>
         </a>
@@ -61,6 +61,31 @@
         <span>{{ type.tag }}</span>
         <h3>{{ type.title }}</h3>
         <p>{{ type.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="featured-school-section" *ngIf="page.schoolCards?.length">
+    <div class="section-heading">
+      <span class="section-kicker">Featured Schools</span>
+      <h2>{{ page.cityName }}学校资料</h2>
+      <p>先看适合放进候选清单的具体学校，再按课程、费用、住宿和入学日期确认。</p>
+    </div>
+
+    <div class="featured-school-grid">
+      <article class="featured-school-card" *ngFor="let school of page.schoolCards">
+        <span class="highlight-icon">
+          <mat-icon>{{ school.icon }}</mat-icon>
+        </span>
+        <div>
+          <span class="school-tag">{{ school.tag }}</span>
+          <h3>{{ school.title }}</h3>
+          <p>{{ school.text }}</p>
+          <a [routerLink]="school.route">
+            查看学校详情
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+        </div>
       </article>
     </div>
   </section>

@@ -1,0 +1,110 @@
+:host .qqenglish-beachfront-page .back-link,
+:host .qqenglish-beachfront-page .hero-tags span,
+:host .qqenglish-beachfront-page .section-heading > span,
+:host .qqenglish-beachfront-page .compact-heading > span,
+:host .qqenglish-beachfront-page .course-card > span,
+:host .qqenglish-beachfront-page .timeline time,
+:host .qqenglish-beachfront-page .trust-note mat-icon,
+:host .qqenglish-beachfront-page .quick-card mat-icon,
+:host .qqenglish-beachfront-page .note-list mat-icon,
+:host .qqenglish-beachfront-page .service-icon-grid mat-icon,
+:host .qqenglish-beachfront-page .process-grid mat-icon {
+  color: #0a6fa6;
+}
+
+:host .qqenglish-beachfront-page .hero-tags span,
+:host .qqenglish-beachfront-page .section-heading > span,
+:host .qqenglish-beachfront-page .compact-heading > span {
+  border-color: #b9dff0;
+  background: #eef9fd;
+}
+
+:host .qqenglish-beachfront-page .primary-action {
+  background: #0a6fa6;
+  box-shadow: 0 14px 28px rgba(10, 111, 166, 0.18);
+}
+
+:host .qqenglish-beachfront-page .secondary-action {
+  border-color: #aad8ed;
+  color: #0a6fa6;
+}
+
+:host .qqenglish-beachfront-page .advisor-avatar {
+  background: #e0a219;
+}
+
+:host .qqenglish-beachfront-page .hero-media {
+  border-color: #cae5f1;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9fd 100%);
+}
+
+:host .qqenglish-beachfront-page .hero-price-card strong,
+:host .qqenglish-beachfront-page .side-price {
+  color: #0a6fa6;
+}
+
+:host .qqenglish-beachfront-page .course-lessons {
+  color: #0a6fa6;
+}
+
+:host .qqenglish-beachfront-page .fit-grid > div,
+:host .qqenglish-beachfront-page .timeline article {
+  background: #f0f9fd;
+}
+
+:host .qqenglish-beachfront-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(210px, 1.25fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .qqenglish-beachfront-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(150px, 0.9fr)
+    minmax(160px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .qqenglish-beachfront-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cae5f1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .qqenglish-beachfront-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .qqenglish-beachfront-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cae5f1;
+  border-radius: 8px;
+  color: #103d55;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .qqenglish-beachfront-page .source-grid mat-icon {
+  color: #0a6fa6;
+}
+
+@media (max-width: 860px) {
+  :host .qqenglish-beachfront-page .course-fee-table {
+    display: none;
+  }
+
+  :host .qqenglish-beachfront-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

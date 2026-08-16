@@ -1,0 +1,446 @@
+<app-cia-school>
+  <div class="cia-page elsa-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu">
+              <mat-icon>arrow_back</mat-icon>
+              返回宿务学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / ELSA International Language School</p>
+            <h1>菲律宾宿务ELSA International Language School</h1>
+            <p class="hero-lead">
+              ELSA位于宿务北部Compostela，是自然度假型英语学校，主打亲子、Junior、Kindergarten、Schooling和陪读家长课程。
+              如果你想让孩子在更大的户外空间里学习和生活，而不是每天待在市中心高楼校区，ELSA会是很有辨识度的宿务候选。
+            </p>
+            <div class="hero-tags" aria-label="ELSA特点">
+              <span><mat-icon>park</mat-icon>自然度假型校区</span>
+              <span><mat-icon>family_restroom</mat-icon>亲子与Junior强项</span>
+              <span><mat-icon>child_care</mat-icon>Kindergarten / Schooling</span>
+              <span><mat-icon>pool</mat-icon>泳池与户外空间</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看2026课程费用
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              费用按公开2026 ELSA课程住宿费、当地费用和学校资料整理。正式报名仍需按入学日、孩子年龄、房型空位、主费币种和学校当期报价确认。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="ELSA校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾宿务ELSA International Language School泳池校区" />
+              <figcaption>ELSA International Language School，宿务Compostela自然度假型亲子英语学校</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="ELSA缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周参考</span>
+              <strong>{{ fourWeekStartingText }}</strong>
+              <p>Super Basic ESL + 5人向房 + 入学金 + 海外送金手续费</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  Junior ESL 4周参考 {{ fourWeekJuniorFiveText }} 起
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、签证、押金、设施费、空调、教材、接送、保姆和机票另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">图片与费用参考自ELSA官方站、2026电子手册和公开留学资料页；最终以学校正式报价为准。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="ELSA手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="ELSA快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看ELSA的自然校区、泳池、宿舍和亲子氛围</h2>
+            <p>
+              ELSA和CIA最大的差异在“环境感”。CIA更现代综合，ELSA更像把英文课、住宿、三餐、幼儿园和户外活动放进一个自然型校园。
+              对带孩子的家庭来说，这个差异会直接影响每天的生活体验。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="ELSA图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>ELSA International Language School 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>先确认你想要“自然亲子感”，还是“市区综合便利”</h2>
+            </div>
+            <p>
+              ELSA很适合低龄孩子、亲子陪读和希望孩子有户外空间的家庭；它的核心卖点不是新式城市生活，而是自然校区、亲子课程和低龄接待经验。
+              如果你正在比较CIA，建议把“校区环境、孩子年龄、家长是否上课、房型和交通距离”放在价格前面一起看。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">EL</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>ELSA最好按家庭人数和孩子年龄做报价，单人成人和亲子家庭的房型逻辑差异很大。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>ELSA 核心亮点</span>
+              <h2>为什么亲子家庭会把ELSA列入宿务候选？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <mat-icon>check_circle</mat-icon>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断ELSA是不是你的优先学校</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 ELSA</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+              <article *ngFor="let item of lessSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程 / 公开参考费用</span>
+            <h2>ELSA 2026课程与4周主费用</h2>
+            <p>
+              下方按公开2026课程住宿费整理，并加入入学金JPY 15,000和海外送金手续费JPY 3,000。
+              菲律宾当地费用、活动、保险、机票和个人消费没有包含在主费用内。
+            </p>
+          </div>
+
+          <div class="course-grid elsa-course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+              <strong>{{ formatJpy(course.fourWeekFeesJpy.five) }} / 4周课程住宿费起</strong>
+            </article>
+          </div>
+
+          <div class="data-table elsa-course-table" role="table" aria-label="ELSA 2026课程住宿套餐">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">课节结构</span>
+              <span role="columnheader">5人向</span>
+              <span role="columnheader">4人向</span>
+              <span role="columnheader">3人向</span>
+              <span role="columnheader">2人向</span>
+              <span role="columnheader">1人向</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.lessons }}</span>
+              <span role="cell">{{ row.five }}</span>
+              <span role="cell">{{ row.quad }}</span>
+              <span role="cell">{{ row.triple }}</span>
+              <span role="cell">{{ row.twin }}</span>
+              <span role="cell">{{ row.single }}</span>
+            </div>
+          </div>
+
+          <div class="mobile-card-list mobile-course-fees" aria-label="ELSA 2026套餐手机卡片">
+            <article *ngFor="let row of courseFeeRows">
+              <span>{{ row.course }}</span>
+              <strong>{{ row.lessons }}</strong>
+              <div>
+                <em>5人向</em>
+                <strong>{{ row.five }}</strong>
+              </div>
+              <div>
+                <em>3人向</em>
+                <strong>{{ row.triple }}</strong>
+              </div>
+              <div>
+                <em>2人向</em>
+                <strong>{{ row.twin }}</strong>
+              </div>
+              <div>
+                <em>1人向</em>
+                <strong>{{ row.single }}</strong>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="study-life">
+          <div class="section-heading">
+            <span>学习生活节奏</span>
+            <h2>ELSA的一天更偏家庭式校园生活</h2>
+          </div>
+          <div class="timeline">
+            <article *ngFor="let item of scheduleItems">
+              <time>{{ item.time }}</time>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading">
+            <span>费用快速报价</span>
+            <h2>用公开价目表先估算ELSA主费用</h2>
+            <p>
+              这个计算器用于快速比较课程、房型和周数。正式报价还需要确认孩子年龄、家庭人数、入学日期、空房和学校最新规则。
+            </p>
+          </div>
+          <div class="quote-form" aria-label="ELSA费用快速报价选项">
+            <label>
+              课程
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label>
+              房型
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+              </select>
+            </label>
+            <label>
+              周数
+              <select [(ngModel)]="selectedWeeks">
+                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
+              </select>
+            </label>
+            <label>
+              预计入学日
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" [(ngModel)]="includeTransferFee" />
+              <span>加入海外送金手续费 JPY 3,000 / family</span>
+            </label>
+          </div>
+
+          <div class="quote-breakdown elsa-quote-breakdown">
+            <article>
+              <span>预计主费用</span>
+              <strong>{{ quoteJpyText }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
+            </article>
+            <article>
+              <span>平均每周</span>
+              <strong>{{ weeklyAverageText }}</strong>
+              <p>{{ quoteNote }}</p>
+            </article>
+            <article>
+              <span>房型备注</span>
+              <strong>{{ selectedRoom.note }}</strong>
+              <p>已含入学金JPY 15,000；PHP当地费用另计。</p>
+            </article>
+          </div>
+
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              标记为已估算
+              <mat-icon>done</mat-icon>
+            </button>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              发送给顾问复核
+              <mat-icon>send</mat-icon>
+            </a>
+          </div>
+          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认家庭人数、孩子年龄、房型资格、空房和PHP当地费用。</p>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>菲律宾当地费用</span>
+            <h2>到校后还要准备的费用</h2>
+            <p>以下按ELSA 2026电子手册和公开费用资料整理。不同周数、签证政策、教材数量、用电和保姆安排会影响最终金额。</p>
+          </div>
+          <div class="local-fee-grid elsa-local-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <div class="mobile-card-list mobile-only">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block source-panel" id="sources">
+          <div class="section-heading">
+            <span>公开资料来源</span>
+            <h2>ELSA页面公开资料来源</h2>
+            <p>课程、地址、设施、房型和费用信息优先参考ELSA官方站、2026电子手册和近期公开费用资料。</p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="section-block" id="faq">
+          <div class="section-heading">
+            <span>报名前常见问题</span>
+            <h2>确认ELSA前，建议先核对这些信息</h2>
+          </div>
+          <div class="faq-list">
+            <article *ngFor="let item of faqs">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.text }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="bottom-cta">
+          <div>
+            <span>获取 ELSA 完整资料与报价单</span>
+            <h2>把孩子年龄、家庭人数、周数和课程目标告诉思达，我们帮你核对正式费用</h2>
+            <p>
+              顾问会协助确认房型资格、空房、JPY主费、PHP当地费用、幼儿园/Junior规则、保姆和可替代学校。
+            </p>
+          </div>
+          <ul>
+            <li><mat-icon>check_circle</mat-icon> 免费确认ELSA空房与正式报价</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分JPY主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CIEC、First English等亲子学校</li>
+          </ul>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            联系思达顾问
+            <mat-icon>support_agent</mat-icon>
+          </a>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="ELSA页面快捷导航">
+        <div class="side-card">
+          <span>ELSA</span>
+          <strong class="side-price">{{ fourWeekStartingText }}</strong>
+          <p>Super Basic ESL + 5人向房 + 入学金 + 海外送金手续费，PHP当地费用另计。</p>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            估算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+        </div>
+        <nav class="side-nav">
+          <a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <div class="mobile-bottom-actions" aria-label="ELSA手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        估算费用
+      </a>
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        联系顾问
+      </a>
+    </div>
+  </div>
+</app-cia-school>

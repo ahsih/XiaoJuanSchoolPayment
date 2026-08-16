@@ -1,0 +1,111 @@
+:host .blue-ocean-page .back-link,
+:host .blue-ocean-page .hero-tags span,
+:host .blue-ocean-page .section-heading > span,
+:host .blue-ocean-page .compact-heading > span,
+:host .blue-ocean-page .course-card > span,
+:host .blue-ocean-page .timeline time,
+:host .blue-ocean-page .trust-note mat-icon,
+:host .blue-ocean-page .quick-card mat-icon,
+:host .blue-ocean-page .note-list mat-icon,
+:host .blue-ocean-page .service-icon-grid mat-icon,
+:host .blue-ocean-page .process-grid mat-icon {
+  color: #006b8f;
+}
+
+:host .blue-ocean-page .hero-tags span,
+:host .blue-ocean-page .section-heading > span,
+:host .blue-ocean-page .compact-heading > span {
+  border-color: #b7ddec;
+  background: #eef9fc;
+}
+
+:host .blue-ocean-page .primary-action {
+  background: #007fa8;
+  box-shadow: 0 14px 28px rgba(0, 127, 168, 0.18);
+}
+
+:host .blue-ocean-page .secondary-action {
+  border-color: #8bc8dc;
+  color: #006b8f;
+}
+
+:host .blue-ocean-page .advisor-avatar {
+  background: #0aa6c2;
+}
+
+:host .blue-ocean-page .hero-media {
+  border-color: #cce7ef;
+  background: linear-gradient(180deg, #ffffff 0%, #f4fbfd 100%);
+}
+
+:host .blue-ocean-page .hero-price-card strong,
+:host .blue-ocean-page .side-price {
+  color: #007fa8;
+}
+
+:host .blue-ocean-page .course-lessons {
+  color: #006b8f;
+}
+
+:host .blue-ocean-page .fit-grid > div,
+:host .blue-ocean-page .timeline article {
+  background: #f3fbfd;
+}
+
+:host .blue-ocean-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(148px, 1.1fr)
+    repeat(4, minmax(92px, 0.7fr));
+}
+
+:host .blue-ocean-page .room-fee-table .table-row {
+  grid-template-columns:
+    minmax(160px, 1fr)
+    minmax(92px, 0.55fr)
+    minmax(92px, 0.55fr)
+    minmax(0, 1.35fr);
+}
+
+:host .blue-ocean-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #d5eaf1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .blue-ocean-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .blue-ocean-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d5eaf1;
+  border-radius: 8px;
+  color: #174259;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .blue-ocean-page .source-grid mat-icon {
+  color: #007fa8;
+}
+
+@media (max-width: 860px) {
+  :host .blue-ocean-page .course-fee-table,
+  :host .blue-ocean-page .room-fee-table {
+    display: none;
+  }
+
+  :host .blue-ocean-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

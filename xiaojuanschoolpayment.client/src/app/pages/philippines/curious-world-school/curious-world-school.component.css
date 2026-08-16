@@ -1,0 +1,110 @@
+:host .curious-world-page .back-link,
+:host .curious-world-page .hero-tags span,
+:host .curious-world-page .section-heading > span,
+:host .curious-world-page .compact-heading > span,
+:host .curious-world-page .course-card > span,
+:host .curious-world-page .timeline time,
+:host .curious-world-page .trust-note mat-icon,
+:host .curious-world-page .quick-card mat-icon,
+:host .curious-world-page .note-list mat-icon,
+:host .curious-world-page .service-icon-grid mat-icon,
+:host .curious-world-page .process-grid mat-icon {
+  color: #167766;
+}
+
+:host .curious-world-page .hero-tags span,
+:host .curious-world-page .section-heading > span,
+:host .curious-world-page .compact-heading > span {
+  border-color: #b7dfd5;
+  background: #effbf7;
+}
+
+:host .curious-world-page .primary-action {
+  background: #167766;
+  box-shadow: 0 14px 28px rgba(22, 119, 102, 0.18);
+}
+
+:host .curious-world-page .secondary-action {
+  border-color: #a6d8cd;
+  color: #167766;
+}
+
+:host .curious-world-page .advisor-avatar {
+  background: #e0a319;
+}
+
+:host .curious-world-page .hero-media {
+  border-color: #cfe8df;
+  background: linear-gradient(180deg, #ffffff 0%, #f3fbf8 100%);
+}
+
+:host .curious-world-page .hero-price-card strong,
+:host .curious-world-page .side-price {
+  color: #167766;
+}
+
+:host .curious-world-page .course-lessons {
+  color: #167766;
+}
+
+:host .curious-world-page .fit-grid > div,
+:host .curious-world-page .timeline article {
+  background: #f3faf7;
+}
+
+:host .curious-world-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(180px, 1.15fr)
+    repeat(4, minmax(92px, 0.68fr));
+}
+
+:host .curious-world-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(136px, 0.8fr)
+    minmax(150px, 0.9fr)
+    minmax(0, 1.2fr);
+}
+
+:host .curious-world-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cfe8df;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .curious-world-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .curious-world-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cfe8df;
+  border-radius: 8px;
+  color: #163f38;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .curious-world-page .source-grid mat-icon {
+  color: #167766;
+}
+
+@media (max-width: 860px) {
+  :host .curious-world-page .course-fee-table {
+    display: none;
+  }
+
+  :host .curious-world-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

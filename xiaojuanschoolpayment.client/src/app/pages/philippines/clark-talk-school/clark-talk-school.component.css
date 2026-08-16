@@ -1,0 +1,110 @@
+:host .clark-talk-page .back-link,
+:host .clark-talk-page .hero-tags span,
+:host .clark-talk-page .section-heading > span,
+:host .clark-talk-page .compact-heading > span,
+:host .clark-talk-page .course-card > span,
+:host .clark-talk-page .timeline time,
+:host .clark-talk-page .trust-note mat-icon,
+:host .clark-talk-page .quick-card mat-icon,
+:host .clark-talk-page .note-list mat-icon,
+:host .clark-talk-page .service-icon-grid mat-icon,
+:host .clark-talk-page .process-grid mat-icon {
+  color: #166a78;
+}
+
+:host .clark-talk-page .hero-tags span,
+:host .clark-talk-page .section-heading > span,
+:host .clark-talk-page .compact-heading > span {
+  border-color: #b8dce0;
+  background: #effafb;
+}
+
+:host .clark-talk-page .primary-action {
+  background: #166a78;
+  box-shadow: 0 14px 28px rgba(22, 106, 120, 0.18);
+}
+
+:host .clark-talk-page .secondary-action {
+  border-color: #a8d2d8;
+  color: #166a78;
+}
+
+:host .clark-talk-page .advisor-avatar {
+  background: #d89922;
+}
+
+:host .clark-talk-page .hero-media {
+  border-color: #c8e2e6;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fafb 100%);
+}
+
+:host .clark-talk-page .hero-price-card strong,
+:host .clark-talk-page .side-price {
+  color: #166a78;
+}
+
+:host .clark-talk-page .course-lessons {
+  color: #166a78;
+}
+
+:host .clark-talk-page .fit-grid > div,
+:host .clark-talk-page .timeline article {
+  background: #f0fafb;
+}
+
+:host .clark-talk-page .talk-fee-table .table-row {
+  grid-template-columns:
+    minmax(230px, 1.35fr)
+    repeat(4, minmax(92px, 0.6fr));
+}
+
+:host .clark-talk-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(170px, 0.95fr)
+    minmax(170px, 0.95fr)
+    minmax(0, 1.25fr);
+}
+
+:host .clark-talk-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #c8e2e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .clark-talk-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .clark-talk-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #c8e2e6;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .clark-talk-page .source-grid mat-icon {
+  color: #166a78;
+}
+
+@media (max-width: 860px) {
+  :host .clark-talk-page .talk-fee-table {
+    display: none;
+  }
+
+  :host .clark-talk-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

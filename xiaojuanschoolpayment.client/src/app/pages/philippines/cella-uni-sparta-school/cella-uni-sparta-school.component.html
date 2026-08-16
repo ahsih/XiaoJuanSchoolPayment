@@ -1,0 +1,287 @@
+<app-cia-school>
+  <div class="cia-page cella-uni-sparta-page">
+    <main class="cia-shell">
+      <section class="cia-hero" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/philippines-study/cebu">
+            <mat-icon>arrow_back</mat-icon>
+            返回宿务学校列表
+          </a>
+          <p class="breadcrumb">
+            <mat-icon>home</mat-icon>
+            菲律宾游学 / 宿务学校 / CELLA Uni Sparta Campus
+          </p>
+          <h1>菲律宾宿务CELLA Uni Sparta Campus</h1>
+          <p class="hero-lead">
+            宿务Talamban区域的斯巴达型语言学校，主打Power Speaking、TOEIC、IELTS、TESOL和1-2周Expresser短期密集课程。适合想要被学习节奏推着走、又希望校内生活设施完整的学生。
+          </p>
+          <div class="hero-tags" aria-label="CELLA Uni Sparta关键字">
+            <span><mat-icon>location_on</mat-icon>Talamban / Cebu City</span>
+            <span><mat-icon>verified</mat-icon>Uni Sparta</span>
+            <span><mat-icon>record_voice_over</mat-icon>Power Speaking</span>
+            <span><mat-icon>task_alt</mat-icon>IELTS / TOEIC</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算CELLA费用<mat-icon>calculate</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看美元费用表<mat-icon>receipt_long</mat-icon></a>
+            <a class="secondary-action" routerLink="/about-sida/contact">咨询空房与入学日<mat-icon>support_agent</mat-icon></a>
+          </div>
+        </div>
+        <div class="hero-media" aria-label="CELLA Uni Sparta学校图片">
+          <div class="hero-collage">
+            <figure *ngFor="let image of galleryImages.slice(0, 4)">
+              <img [src]="image.src" [alt]="image.title" />
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>4周参考</span>
+            <strong>USD 1,780 <small>起</small></strong>
+            <p>Power Speaking 1 + 4人房，已含入学金USD 150参考。</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>课程学费、宿舍、餐食为主价，按公开美元费用整理</li>
+              <li><mat-icon>info</mat-icon>SSP、签证、教材、水电管理、押金和接机等PHP费用另计</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="section-tabs" aria-label="CELLA Uni Sparta页面导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <section class="overview-grid" id="overview" aria-label="30秒看懂CELLA Uni Sparta">
+        <div class="overview-main">
+          <div class="section-heading">
+            <h2>30秒看懂CELLA Uni Sparta</h2>
+            <p>CELLA Uni Sparta更适合目标明确、能接受晨间课和晚间学习的人。它不像海边度假型学校那样主打放松感，优势在课程密度、考试路线、TESOL特色课程，以及校内住宿与学习管理集中。</p>
+          </div>
+          <div class="snapshot-grid">
+            <article *ngFor="let item of snapshotCards">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </div>
+        <aside class="mini-quote-card">
+          <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
+          <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
+          <p>{{ quoteUsdText }}，{{ peakSeasonStatusText }} 最终以学校空房、优惠和当期到校费用为准。</p>
+        </aside>
+      </section>
+
+      <section class="advisor-review">
+        <h2>思达顾问点评：CELLA Uni Sparta是“强管理 + 口语/考试/TESOL”的组合</h2>
+        <p>
+          如果你喜欢CIA那种信息清楚的学校页面，但实际选校时更想要斯巴达学习节奏，CELLA Uni Sparta值得比较。它的强项是每日学习安排紧凑、Power Speaking一对一比例清楚、IELTS/TOEIC和TESOL路线完整；需要注意的是，公开费用只覆盖课程与住宿主价，菲律宾当地费用和旺季附加费要单独预留。
+        </p>
+        <div class="fit-columns">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <ul><li *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+          <div>
+            <h3><mat-icon>warning</mat-icon>这些情况要谨慎</h3>
+            <ul><li *ngFor="let item of notSuitableFor"><strong>{{ item.title }}</strong><span>{{ item.text }}</span></li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="cia-section" id="environment">
+        <div class="section-heading">
+          <h2>学校环境与住宿图片</h2>
+          <p>先看泳池、入口、教室、宿舍和食堂，再判断这种中小型斯巴达校区是否符合你的学习和生活偏好。</p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="CELLA Uni Sparta图片分类">
+          <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button>
+        </div>
+        <div class="environment-grid">
+          <figure *ngFor="let image of filteredGalleryImages">
+            <img [src]="image.src" [alt]="image.title" />
+            <figcaption><span>{{ image.category }}</span><strong>{{ image.title }}</strong><p>{{ image.text }}</p></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="cia-section" id="courses">
+        <div class="section-heading">
+          <h2>课程怎么选？</h2>
+          <p>成人口语先看Power Speaking 1；想增加一对一看Power Speaking 2；考试目标看TOEIC或IELTS；教育背景和教师方向看TESOL；只有1-2周假期则看Expresser。</p>
+        </div>
+        <div class="course-choice-grid">
+          <article *ngFor="let course of courses">
+            <mat-icon>{{ course.icon }}</mat-icon>
+            <span>{{ course.lessons }}</span>
+            <h3>{{ course.name }}</h3>
+            <p>{{ course.suitable }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="quote-results-section" id="quote">
+        <div class="quote-form-card">
+          <h2><mat-icon>calculate</mat-icon>CELLA费用快速报价</h2>
+          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+          <p>报价器按2026公开美元费用计算课程学费与宿舍费，加入入学金USD 150，并按入学日估算公开旺季附加费；到校PHP费用、机票、保险和个人生活费另计。</p>
+        </div>
+        <div class="quote-result-card">
+          <div class="quote-result-head">
+            <h2>{{ selectedPackage.course }}</h2>
+            <small>{{ selectedPackage.category }}</small>
+            <p>{{ selectedPackage.lessons }} / {{ selectedPackage.room }}</p>
+            <strong>{{ selectedWeeks }}周</strong>
+          </div>
+          <div class="result-lines">
+            <div><span>课程与住宿主价</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>入学金</span><strong>USD {{ registrationFeeUsd }}</strong></div>
+            <div><span>旺季附加费</span><strong>{{ peakSeasonChargeText }}</strong></div>
+            <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
+            <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
+          </div>
+          <div class="quote-total">
+            <span>前期支付参考</span>
+            <strong>{{ quoteUsdText }}</strong>
+            <em *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房、优惠、JDN外部寮安排和学校当期政策。</em>
+          </div>
+          <div class="quote-tool-row">
+            <a class="primary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
+            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看费用表<mat-icon>table_chart</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tables-section" id="fee-structure">
+        <div>
+          <h2><mat-icon>receipt_long</mat-icon>CELLA Uni Sparta公开美元费用参考</h2>
+          <p class="table-intro">以下为2026公开费用中的常用课程与房型参考。普通课程以4周学费+宿舍费呈现，3周以下按公开比例折算；不含入学金、SSP、签证、教材、水电管理、押金、接机和个人支出。</p>
+          <div class="data-table cella-fee-table" role="table" aria-label="CELLA Uni Sparta公开费用参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">公开费用</span>
+              <span role="columnheader">房型 / 备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of feeSummaryRows">
+              <span role="cell">{{ row.course }}<small>{{ row.lessons }}</small></span>
+              <span role="cell">{{ row.price }}</span>
+              <span role="cell">{{ row.room }}<small>{{ row.note }}</small></span>
+            </div>
+          </div>
+        </div>
+        <aside class="price-note">
+          <h3>费用阅读重点</h3>
+          <ul>
+            <li>Power Speaking 1四人房4周主价为USD 1,630，加入入学金后为USD 1,780起。</li>
+            <li>公开资料列2026/7/5-8/29旺季加价USD 40/周，入学日期接近暑期时要提前核价。</li>
+            <li>JDN外部寮有1/2/3人房，公开价格与Uni校内同房型一致，但空房和接驳需确认。</li>
+            <li>TESOL、IELTS Guarantee、Expresser有指定周期或入学日，适合单独向学校核对。</li>
+          </ul>
+        </aside>
+      </section>
+
+      <section class="cia-section" id="life">
+        <div class="section-heading">
+          <h2>住宿与生活安排</h2>
+          <p>CELLA Uni Sparta适合想把课程、住宿、餐食、自习和活动集中在一套管理系统里的人；外部寮路线则适合希望在严格学习和住宿舒适度之间多一点弹性的学生。</p>
+        </div>
+        <div class="life-grid">
+          <article>
+            <img [src]="galleryImages[0].src" alt="CELLA Uni Sparta Campus泳池" />
+            <h3><mat-icon>pool</mat-icon>泳池与课后放松</h3>
+            <p>Uni校区公开资料展示泳池、食堂、咖啡和健身设施，适合在高强度学习之余保留基础生活舒适度。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[3].src" alt="CELLA Uni Sparta Campus学生宿舍" />
+            <h3><mat-icon>bed</mat-icon>校内1/2/3/4人房</h3>
+            <p>宿舍按单人、双人、三人、四人房区分，公开资料提到房间有空调、床、桌椅、柜子、热水淋浴和基础设备。</p>
+          </article>
+          <article>
+            <img [src]="galleryImages[4].src" alt="CELLA Uni Sparta Campus食堂" />
+            <h3><mat-icon>restaurant</mat-icon>餐食与生活支持</h3>
+            <p>公开资料列平日三餐、周末两餐；校内有学生支持、诊所、自习空间和活动安排，适合想减少生活杂务的人。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section" id="local-fees">
+        <div class="section-heading">
+          <h2>到校与额外费用</h2>
+          <p>正式预算不能只看课程学费和宿舍费，还要预留菲律宾当地费用、机票保险和个人生活支出。</p>
+        </div>
+        <div class="check-grid cella-local-grid">
+          <article *ngFor="let fee of localFees">
+            <mat-icon>payments</mat-icon>
+            <h3>{{ fee.item }}</h3>
+            <strong>{{ fee.amount }}</strong>
+            <p>{{ fee.note }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cia-section source-section">
+        <div class="section-heading">
+          <h2>资料来源</h2>
+          <p>本页学校定位和费用参考CELLA官方Facebook、公开Facebook内容镜像、公开2026费用资料与CELLA Uni学校介绍。学校价格、空房、国籍比例、管理规则和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
+        </div>
+        <div class="source-links">
+          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
+            <mat-icon>open_in_new</mat-icon>
+            {{ source.label }}
+          </a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="section-heading"><h2>常见问题</h2></div>
+        <details>
+          <summary>CELLA Uni Sparta适合第一次宿务游学吗？</summary>
+          <p>如果学生想要被学习节奏推动、能接受晨间和晚间安排，适合。若第一次游学更想轻松适应，可以同时比较CIA、I.BREEZE、3D Academy等管理较弹性的学校。</p>
+        </details>
+        <details>
+          <summary>页面费用是美元吗？</summary>
+          <p>是。课程学费、宿舍费、入学金和旺季附加费以USD呈现；SSP、签证、水电管理、教材、押金和接机等到校费用以PHP另计。</p>
+        </details>
+        <details>
+          <summary>Power Speaking 1和2怎么选？</summary>
+          <p>Power Speaking 1是一对一4节的标准路线；Power Speaking 2增加到一对一6节，更适合短期冲刺或需要更多个别纠音、口语输出的人。</p>
+        </details>
+        <details>
+          <summary>Uni校区和JDN外部寮有什么区别？</summary>
+          <p>Uni校内住宿学习动线更集中；JDN外部寮适合想住外部宿舍但仍到Uni上课的人。价格公开资料显示同房型一致，但空房、接驳和校规执行要报名时确认。</p>
+        </details>
+      </section>
+
+      <section class="final-cta">
+        <div class="final-cta-head">
+          <div class="final-cta-icon"><mat-icon>support_agent</mat-icon></div>
+          <div>
+            <h2>想确认CELLA Uni Sparta当前空房和正式报价？</h2>
+            <p>把入学日期、周数、课程目标、房型、是否接受斯巴达管理和预算发给顾问，我们会帮你核对学校当期价格、空房和到校费用。</p>
+          </div>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+          <a class="secondary-action" href="#quote" (click)="scrollToSection('quote', $event)">再算一次费用<mat-icon>calculate</mat-icon></a>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>Power Speaking / IELTS / TOEIC / TESOL课程建议</li>
+          <li><mat-icon>check_circle</mat-icon>校内宿舍和JDN外部寮空房确认</li>
+          <li><mat-icon>check_circle</mat-icon>前期USD费用与到校PHP费用拆分</li>
+          <li><mat-icon>check_circle</mat-icon>与CIA、SMEAG、EV、3D等学校横向比较</li>
+        </ul>
+      </section>
+
+      <div class="mobile-bottom-actions" aria-label="CELLA Uni Sparta手机端固定操作">
+        <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+        <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询顾问</a>
+      </div>
+    </main>
+  </div>
+</app-cia-school>

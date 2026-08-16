@@ -46,7 +46,7 @@ interface SourceLink {
 })
 export class JicSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '学校名称', value: '菲律宾碧瑶JIC语言学校 / Baguio JIC Academy' },
+    { label: '学校名称', value: 'Baguio JIC' },
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '品牌历史', value: 'English Academy since 2002' },
     { label: '主要校区', value: 'Main / Challenger Campus 与 Premium Campus' },
@@ -210,11 +210,11 @@ export class JicSchoolComponent {
   ];
 
   readonly sources: SourceLink[] = [
-    { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
+    { label: 'Baguio JIC 官方网站', url: 'https://baguio-jic.com/' },
     { label: 'Baguio JIC 关于 JIC', url: 'https://baguio-jic.com/about/' },
     { label: 'Baguio JIC 课程列表', url: 'https://baguio-jic.com/course/' },
-    { label: 'Baguio JIC Challenger Campus', url: 'https://baguio-jic.com/main-campus/' },
-    { label: 'Baguio JIC Premium Campus', url: 'https://baguio-jic.com/premium-campus/' },
+    { label: 'Baguio JIC Challenger Campus', url: 'https://baguio-jic.com/campuses/main-campus/' },
+    { label: 'Baguio JIC Premium Campus', url: 'https://baguio-jic.com/campuses/premium-campus/' },
     { label: 'Baguio JIC 2026价格页', url: 'https://baguio-jic.com/ja/price/' },
     { label: 'Fujiyama - JIC Challenger Campus', url: 'https://www.fujiyama-international.com/philippines/jic-baguio.html' },
     { label: 'Fujiyama - JIC Premium Campus', url: 'https://www.fujiyama-international.com/philippines/baguiojic-premium.html' },

@@ -53,24 +53,61 @@
         <div class="mega-menu__columns">
           <section
             class="mega-group"
+            [class.mega-group--collapsible]="canCollapseThirdLevel(item, child)"
+            [class.mega-group--expanded]="isThirdLevelExpanded(item, child)"
             *ngFor="let child of item.children; trackBy: trackById"
           >
-            <a
-              class="mega-group__title"
-              [routerLink]="child.route"
-              (click)="closeMenus()"
-            >
-              {{ child.label }}
-            </a>
-
-            <div class="mega-subitems" *ngIf="child.children?.length">
+            <div class="mega-group__header">
               <a
-                *ngFor="let subitem of child.children; trackBy: trackById"
+                class="mega-group__title"
+                [routerLink]="child.route"
+                (click)="closeMenus()"
+              >
+                {{ child.label }}
+              </a>
+            </div>
+
+            <div
+              class="mega-subitems"
+              *ngIf="child.children?.length"
+              [id]="getThirdLevelMenuId(item, child)"
+            >
+              <a
+                *ngFor="
+                  let subitem of getVisibleThirdLevelItems(item, child);
+                  trackBy: trackById
+                "
                 [routerLink]="subitem.route"
                 (click)="closeMenus()"
               >
                 {{ subitem.label }}
               </a>
+
+              <button
+                class="mega-subitems__toggle"
+                type="button"
+                *ngIf="canCollapseThirdLevel(item, child)"
+                [attr.aria-expanded]="isThirdLevelExpanded(item, child)"
+                [attr.aria-controls]="getThirdLevelMenuId(item, child)"
+                (click)="toggleThirdLevel(item, child, $event)"
+              >
+                <span>
+                  {{
+                    isThirdLevelExpanded(item, child)
+                      ? "收起学校列表"
+                      : "展开全部 " +
+                        getHiddenThirdLevelCount(item, child) +
+                        " 所学校"
+                  }}
+                </span>
+                <mat-icon>
+                  {{
+                    isThirdLevelExpanded(item, child)
+                      ? "expand_less"
+                      : "expand_more"
+                  }}
+                </mat-icon>
+              </button>
             </div>
           </section>
         </div>

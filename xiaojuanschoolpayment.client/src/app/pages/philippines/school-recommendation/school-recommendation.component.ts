@@ -203,12 +203,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
         fit: '城市便利亲子选择',
         reason: '适合第一次亲子游学，希望课程、生活和交通都相对稳定的家庭。',
       },
-      {
-        name: 'Joyful Education',
-        city: '宿务',
-        fit: '低龄与家庭友好',
-        reason: '适合重视孩子适应、家庭陪读和轻松英语体验的用户。',
-      },
     ],
     checklist: [
       '先确认孩子年龄和是否需要家长陪读。',
@@ -326,7 +320,7 @@ const recommendationPages: Record<string, RecommendationPage> = {
         reason: '适合希望兼顾英语课程、住宿管理和周末活动体验的青少年。',
       },
       {
-        name: 'B Cebu / Joyful Education',
+        name: 'B Cebu',
         city: '宿务',
         fit: '低龄与亲子衔接',
         reason: '适合低龄学生、第一次海外营队或需要更温和适应节奏的家庭。',

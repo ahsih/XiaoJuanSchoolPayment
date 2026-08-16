@@ -440,10 +440,10 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>
-              本页价格更新时间：2026年8月。费用参考IU官方报名页、官方课程/校区说明和公开代理2026费用表。
-              学校价格、促销、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              <h2>价格更新时间与资料说明</h2>
+              <p>
+                本页价格更新时间：2026年8月。费用参考IU官方报名页、官方课程/校区说明和公开代理2026费用表。
+                学校价格、促销、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>
@@ -468,6 +468,21 @@
           <a class="primary-action" routerLink="/about-sida/contact">
             获取完整报价单<mat-icon>description</mat-icon>
           </a>
+        </section>
+
+        <section class="section-block" id="sources">
+          <div class="section-heading">
+            <span>公开资料来源</span>
+            <h2>IU页面公开资料来源</h2>
+            <p>
+              校区、住宿、课程、当地费用和公开费用参考IU官方页面与公开费用资料。正式报名仍需以学校当期报价单为准。
+            </p>
+          </div>
+          <nav class="section-nav" aria-label="IU English Academy公开资料来源">
+            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>{{ source.label }}
+            </a>
+          </nav>
         </section>
 
         <section class="sida-ev-section" id="service-process">

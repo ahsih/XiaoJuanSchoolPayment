@@ -1,0 +1,193 @@
+:host .ims-page {
+  background:
+    linear-gradient(180deg, #f3fbf8 0, rgba(255, 255, 255, 0) 660px),
+    #ffffff;
+}
+
+:host .ims-page .back-link,
+:host .ims-page .hero-tags span,
+:host .ims-page .section-heading > span,
+:host .ims-page .compact-heading > span,
+:host .ims-page .course-card > span,
+:host .ims-page .timeline time,
+:host .ims-page .trust-note mat-icon,
+:host .ims-page .quick-card mat-icon,
+:host .ims-page .highlight-list mat-icon {
+  color: #1d5f97;
+}
+
+:host .ims-page .hero-tags span,
+:host .ims-page .section-heading > span,
+:host .ims-page .compact-heading > span {
+  border-color: #c5dfd8;
+  background: #eefaf5;
+}
+
+:host .ims-page .primary-action {
+  background: #1d5f97;
+  box-shadow: 0 14px 28px rgba(29, 95, 151, 0.18);
+}
+
+:host .ims-page .secondary-action {
+  border-color: #a8d1c5;
+  color: #1d5f97;
+}
+
+:host .ims-page .advisor-panel {
+  background:
+    linear-gradient(145deg, rgba(24, 72, 118, 0.96), rgba(35, 107, 77, 0.96)),
+    #184876;
+}
+
+:host .ims-page .advisor-avatar {
+  background: #f1c84b;
+  color: #102033;
+}
+
+:host .ims-page .hero-media {
+  border-color: #c5dfd8;
+  background: linear-gradient(180deg, #ffffff 0%, #eefaf5 100%);
+}
+
+:host .ims-page .hero-price-card strong,
+:host .ims-page .side-price {
+  color: #1d5f97;
+}
+
+:host .ims-page .course-lessons {
+  color: #26734d;
+}
+
+:host .ims-page .fit-grid > div,
+:host .ims-page .timeline article {
+  background: #f6fbf8;
+}
+
+:host .ims-page .gallery-tabs button.active {
+  border-color: #1d5f97;
+  background: #1d5f97;
+  color: #ffffff;
+}
+
+:host .ims-page .ims-course-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .ims-page .ims-course-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.95fr)
+    minmax(92px, 0.45fr)
+    minmax(92px, 0.45fr)
+    minmax(92px, 0.45fr)
+    minmax(92px, 0.45fr)
+    minmax(260px, 1.5fr);
+}
+
+:host .ims-page .ims-course-table .table-row span:nth-child(2),
+:host .ims-page .ims-course-table .table-row span:nth-child(3),
+:host .ims-page .ims-course-table .table-row span:nth-child(4),
+:host .ims-page .ims-course-table .table-row span:nth-child(5) {
+  font-weight: 850;
+}
+
+:host .ims-page .mobile-course-fees p {
+  margin: 8px 0 0;
+  color: #40506a;
+  line-height: 1.65;
+}
+
+:host .ims-page .toggle-row {
+  display: flex;
+  grid-column: span 2;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d6e3ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102033;
+  font-weight: 850;
+}
+
+:host .ims-page .toggle-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+:host .ims-page .ims-quote-breakdown {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .ims-page .quote-status {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #c5dfd8;
+  border-radius: 8px;
+  background: #eefaf5;
+  color: #174f7e;
+  font-weight: 850;
+}
+
+:host .ims-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #c5dfd8;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .ims-page .source-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+:host .ims-page .source-grid mat-icon {
+  color: #26734d;
+}
+
+:host .ims-page .mobile-bottom-actions a:first-child {
+  background: #1d5f97;
+}
+
+:host .ims-page .mobile-bottom-actions a:last-child {
+  background: #26734d;
+}
+
+@media (max-width: 1180px) {
+  :host .ims-page .ims-course-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  :host .ims-page .ims-course-grid,
+  :host .ims-page .ims-quote-breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  :host .ims-page .ims-course-table {
+    display: none;
+  }
+
+  :host .ims-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .ims-page .hero-copy h1 {
+    font-size: 36px;
+  }
+
+  :host .ims-page .ims-course-grid,
+  :host .ims-page .ims-quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .ims-page .toggle-row {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,571 @@
+<app-cia-school>
+  <div class="cia-page iloilo-we-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/iloilo">
+              <mat-icon>arrow_back</mat-icon>
+              返回伊洛伊洛学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 伊洛伊洛学校 / WE Academy</p>
+            <h1>菲律宾伊洛伊洛WE Academy</h1>
+            <p class="hero-lead">
+              WE Academy 位于 Iloilo City Jaro，2003年创立，主打低干扰城市环境、ESL、TOEIC、Business、
+              IELTS、Junior和Guardian课程。官网公开列出课程、宿舍和当地费用，适合想清楚控预算又需要学习推动的学生。
+            </p>
+            <div class="hero-tags" aria-label="WE Academy Iloilo特点">
+              <span><mat-icon>location_on</mat-icon>Iloilo / Jaro</span>
+              <span><mat-icon>verified</mat-icon>IDP IELTS官方考点</span>
+              <span><mat-icon>menu_book</mat-icon>ESL / TOEIC / Business</span>
+              <span><mat-icon>hotel</mat-icon>1-3人房 / Family</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看课程和房型
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              本页按WE Academy官方英文课程费用页整理。正式报名仍需确认入学日期、房型空位、促销、签证和到校PHP费用。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="WE Academy Iloilo校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾伊洛伊洛WE Academy校区建筑" />
+              <figcaption>WE Academy Iloilo 公寓型校园与宿舍环境</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="WE Academy Iloilo图片缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周主费参考</span>
+              <strong>USD 1,100 <small>起</small></strong>
+              <p>ESL A + Triple room，注册费和当地费另算</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  官方表列课程住宿套餐价，三餐和住宿服务另有说明
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、SSP E-Card、押金、水电、教材和签证延长需另行预算
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片参考WE Academy官方图库及公开学校图库；费用参考WE Academy官方英文费用页，最终以学校正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="WE Academy Iloilo手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="WE Academy Iloilo快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看WE Academy的校园、住宿、自习和生活环境</h2>
+            <p>
+              WE Academy适合把Iloilo安静学习环境、课程密度、住宿房型和当地费用一起比较。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="WE Academy Iloilo图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>WE Academy Iloilo 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>适合“伊洛伊洛安静 + 费用透明 + 半斯巴达推动”</h2>
+            </div>
+            <p>
+              WE和MK、GITC都属于Iloilo候选，但WE的优势是官网费用透明、课程和房型直接可算，
+              同时有IDP IELTS官方考点资源，适合想要低干扰学习和考试路线的人。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">S</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>如果你要便宜、安静和课程密度，WE值得看；如果你要海边生活或Native外教，建议同步比较宿务、克拉克或苏比克。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>WE核心亮点</span>
+              <h2>为什么会把WE Academy列入Iloilo候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断WE Academy是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑WE</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>按ESL强度、考试目标和亲子路线选课程</h2>
+            <p>
+              官方费用页列1节课50分钟，另有周一至周四免费晚间课。不同课程一对一和小组课比例不同。
+            </p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>WE Academy官方公开价格</span>
+              <h2>按课程、房型和周数看课程住宿套餐价</h2>
+              <p>
+                以下按WE Academy官方英文费用页整理。表内为课程住宿套餐价；注册费和到校PHP费用另计。
+              </p>
+            </div>
+            <div class="data-table we-fee-table" role="table" aria-label="WE Academy官方公开价格">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程 / 房型</span>
+                <span role="columnheader">4周</span>
+                <span role="columnheader">8周</span>
+                <span role="columnheader">12周</span>
+                <span role="columnheader">24周</span>
+              </div>
+              <ng-container *ngFor="let course of courseOptions">
+                <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                  <span role="cell">{{ course.name }} / {{ room.shortName }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 24)) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="WE Academy官方公开价格手机卡片">
+              <ng-container *ngFor="let course of courseOptions">
+                <article *ngFor="let room of roomOptions">
+                  <span>{{ course.name }}</span>
+                  <strong>{{ room.name }}</strong>
+                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
+                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
+                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
+                  <div><em>24周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 24)) }}</b></div>
+                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                </article>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="section-block" id="daily-schedule">
+            <div class="section-heading">
+              <span>WE Academy一天学习生活安排</span>
+              <h2>课程、晚间课和自习衔接清楚</h2>
+            </div>
+            <div class="timeline">
+              <article *ngFor="let item of schedule">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="split-layout" id="special-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>Guardian / IELTS / 额外课程</span>
+              <h2>亲子和考试路线要把附加费用一起看</h2>
+            </div>
+            <div class="data-table special-fee-table" role="table" aria-label="WE Academy特色费用参考">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">项目</span>
+                <span role="columnheader">课时 / 口径</span>
+                <span role="columnheader">参考价</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of specialFees">
+                <span role="cell">{{ fee.label }}</span>
+                <span role="cell">{{ fee.lessons }}</span>
+                <span role="cell">{{ fee.reference }}</span>
+                <span role="cell">{{ fee.note }}</span>
+              </div>
+            </div>
+            <ul class="check-list">
+              <li>IELTS、Junior和Guardian课程必须确认入学水平、年龄、房型和考试安排。</li>
+              <li>额外课程以当地PHP支付，是否能加课取决于老师和课表。</li>
+              <li>官网价格清楚，但促销、房型和当地费用仍需正式报价确认。</li>
+            </ul>
+          </div>
+
+          <section class="quote-panel" id="quote">
+            <div class="section-heading">
+              <span>WE Academy费用快速报价</span>
+              <h2>默认参考：4周ESL A + 三人房</h2>
+              <p>前期支付参考 = 注册费 + 当前课程住宿套餐价。到校PHP费用需另行准备。</p>
+            </div>
+            <div class="quote-form" aria-label="WE Academy费用快速报价选项">
+              <label>
+                学习周数
+                <select [(ngModel)]="selectedWeeks">
+                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                </select>
+              </label>
+              <label>
+                课程
+                <select [(ngModel)]="selectedCourseId">
+                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
+                </select>
+              </label>
+              <label>
+                房型
+                <select [(ngModel)]="selectedRoomId">
+                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                </select>
+              </label>
+              <label>
+                预计入学日
+                <input type="date" [(ngModel)]="selectedStartDate" />
+              </label>
+            </div>
+            <div class="quote-breakdown">
+              <div><span>注册费参考</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>当前套餐价</span><strong>{{ packageFeeText }}</strong></div>
+              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
+              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>当地费用</span><strong>需另行确认</strong></div>
+            </div>
+            <div class="quote-result">
+              <span>前期支付参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <em>{{ quoteCnyText }}</em>
+              <p *ngIf="quoteCalculated">
+                已按当前选择更新。正式报价仍需确认房型、入学日、当地费用、签证、接机和促销。
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()">
+                立即计算我的费用<mat-icon>calculate</mat-icon>
+              </button>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价<mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="fee-alert">
+              除套餐价和注册费外，到校后通常还需确认SSP、SSP E-Card、教材、押金、水电、维护费、洗衣、签证延长和个人生活费。
+            </p>
+          </section>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校支付费用参考</span>
+            <h2>主费用之外，还要准备当地费用</h2>
+            <p>
+              以下按WE Academy官方英文费用页整理，金额可能随菲律宾政策和学校账单更新。
+            </p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校支付费用全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }}</strong>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
+          </details>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取WE完整资料与报价单</span>
+              <h2>让顾问把课程、房型、考试和当地费用一次核清</h2>
+              <p>
+                通过思达报名WE，顾问会免费协助确认课程开放、宿舍空房、正式报价、接机、签证、考试安排和到校费用清单。
+              </p>
+            </div>
+            <ul class="check-list">
+              <li>ESL A-D / TOEIC / Business / IELTS / Junior / Guardian匹配</li>
+              <li>Single / Double / Triple / Family房型空位确认</li>
+              <li>注册费、SSP、SSP E-Card、教材、押金、水电、签证延长和接机规则确认</li>
+              <li>前期支付与到校支付费用清单</li>
+            </ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">
+            获取完整报价单<mat-icon>description</mat-icon>
+          </a>
+        </section>
+
+        <section class="source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>WE Academy页面公开资料来源</h2>
+            <p>
+              本页以WE Academy官方英文课程费用页、官方Iloilo介绍、官方Dormitory图库和公开学校资料为主要来源。
+              正式报名以前请以学校确认书和最新报价单为准。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="sida-ev-section" id="service-process">
+          <div class="sida-ev-heading">
+            <span>WHY SIDA QIHANG</span>
+            <h2>为什么通过思达启航报名WE Academy?</h2>
+            <p>
+              不只是看低价，更要判断Iloilo城市、半斯巴达节奏、考试资源和房型是否真的适合。
+            </p>
+          </div>
+
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps">
+                <mat-icon>{{ step.icon }}</mat-icon>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.text }}</p>
+              </article>
+            </div>
+          </details>
+
+          <div class="sida-ev-trust-bar" aria-label="思达启航报名WE Academy保障">
+            <article *ngFor="let item of trustBadges">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <strong>{{ item.label }}</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>学校服务</span>
+              <h2>课程、住宿和考试资源一起看</h2>
+            </div>
+            <div class="service-icon-grid">
+              <article *ngFor="let service of schoolServices">
+                <mat-icon>check_circle</mat-icon><span>{{ service }}</span>
+              </article>
+            </div>
+            <p class="minor-note">
+              具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。
+            </p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading">
+              <span>校内与周边生活</span>
+              <h2>Iloilo安静，适合规律学习和短途体验</h2>
+            </div>
+            <div class="activity-columns desktop-activity-columns">
+              <div>
+                <h3>校内节奏</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of campusActivities">{{ item }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3>周边生活</h3>
+                <ul class="check-list">
+                  <li *ngFor="let item of weekendActivities">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading">
+            <span>报名注意事项</span>
+            <h2>确认WE Academy前，建议先核对这些信息</h2>
+          </div>
+          <ul class="note-list">
+            <li *ngFor="let note of notes">
+              <mat-icon>check</mat-icon><span>{{ note }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading">
+            <span>常见问题</span>
+            <h2>报名WE Academy前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let faq of faqs">
+            <summary>{{ faq.question }}</summary>
+            <p>{{ faq.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="WE Academy页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+          </a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想确认WE、MK和GITC哪所更适合？</h2>
+        <p>
+          把入学日期、学习周数、课程目标、房型、预算和英语基础发给顾问，可以更快得到准确方案。
+        </p>
+        <ul>
+          <li>快速响应</li>
+          <li>专业顾问一对一</li>
+          <li>方案与报价免费</li>
+          <li>从申请到入学全程协助</li>
+        </ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        立即咨询顾问<mat-icon>chat</mat-icon>
+      </a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="WE Academy手机端固定操作">
+      <a class="secondary-action" routerLink="/philippines-study/iloilo">
+        <mat-icon>arrow_back</mat-icon>
+        伊洛伊洛列表
+      </a>
+      <a class="primary-action" routerLink="/about-sida/contact">
+        <mat-icon>chat</mat-icon>
+        咨询报价
+      </a>
+    </div>
+  </div>
+</app-cia-school>

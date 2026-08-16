@@ -11,7 +11,7 @@
             <mat-icon>home</mat-icon>
             菲律宾游学 / 宿务学校 / First English Global College
           </p>
-          <h1>菲律宾宿务First English Global College语言学校</h1>
+          <h1>菲律宾宿务First English Global College</h1>
           <p class="hero-lead">
             位于麦克坦新城的日系英语学校，主打高比例一对一、亲子游学、儿童英语和灵活住宿方案，适合想在宿务兼顾学习、生活便利与家庭同行安排的学生。
           </p>
@@ -130,7 +130,7 @@
           <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-          <p>这里已换算为美元，先按官方基础费用+入学金做前期参考，不含机票、保险、当地PHP费用和个人消费。</p>
+            <p>这里已换算为美元，先按官方2025年11月后基础费用+入学金做前期参考，不含机票、保险、当地PHP费用和个人消费。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
@@ -160,7 +160,7 @@
       <section class="tables-section" id="fee-structure">
         <div>
           <h2><mat-icon>receipt_long</mat-icon>2025年11月后费用美元参考</h2>
-          <p class="table-intro">以下摘取官网公开费用中常用组合的4周价格，并按参考汇率换算为美元。基础费用通常包含课程、住宿和清扫；入学金、当地费用、机票保险等另计。</p>
+          <p class="table-intro">以下摘取官网2025年11月后公开费用中常用组合的4周价格，并按参考汇率换算为美元。基础费用通常包含课程、住宿和清扫；入学金、当地费用、机票保险等另计。</p>
           <div class="data-table first-fee-table" role="table" aria-label="First English 4周官方费用参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
@@ -180,7 +180,7 @@
             <li>官方费用页列有1、2、3、4、8、12、16、20、24周价格，本页报价器按原表录入并换算为美元。</li>
             <li>入学金约USD 110，已在报价器中单独加入。</li>
             <li>亲子家庭通常使用Mactan Newtown公寓，Share House更偏成人学生。</li>
-            <li>当地费用、餐食、接机、签证和保险要按入学日期与学校当期规则确认。</li>
+            <li>当地费用、餐食、接机、签证、旺季规则和保险要按入学日期与学校当期规则确认。</li>
             <li>{{ exchangeRateNote }}</li>
           </ul>
         </aside>

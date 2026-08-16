@@ -161,6 +161,7 @@
 
 .highlight-section,
 .school-type-section,
+.featured-school-section,
 .compare-section {
   margin-top: 2.5rem;
 }
@@ -207,6 +208,12 @@
   padding: 1.15rem;
 }
 
+.featured-school-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .highlight-icon {
   width: 48px;
   height: 48px;
@@ -231,7 +238,7 @@
   font-weight: 950;
 }
 
-.school-type-card span {
+.school-type-card > span:not(.highlight-icon) {
   display: inline-flex;
   padding: 0.22rem 0.55rem;
   border-radius: 999px;
@@ -239,6 +246,22 @@
   color: #56647a;
   font-size: 0.78rem;
   font-weight: 850;
+}
+
+.featured-school-card strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  color: #ff5b00;
+  font-size: 0.94rem;
+  font-weight: 950;
+}
+
+.featured-school-card strong mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
 }
 
 .compare-section {

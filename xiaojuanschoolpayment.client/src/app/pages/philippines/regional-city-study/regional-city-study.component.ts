@@ -21,16 +21,23 @@ interface RegionalCityStudyPage {
     tag: string;
     text: string;
   }[];
+  schoolCards?: {
+    icon: string;
+    title: string;
+    tag: string;
+    text: string;
+    route: string;
+  }[];
 }
 
 const cityPages: Record<string, RegionalCityStudyPage> = {
   iloilo: {
-    cityName: '怡朗',
+    cityName: '伊洛伊洛',
     englishName: 'Iloilo',
     route: '/philippines-study/iloilo',
     positioning: '小众、安静、成本友好',
     intro:
-      '怡朗适合想避开热门城市、控制预算、在更安静环境中学习英语的学生。这里节奏相对平稳，适合长期基础提升、口语练习和低压力适应。',
+      '伊洛伊洛适合想避开热门城市、控制预算、在更安静环境中学习英语的学生。这里节奏相对平稳，适合长期基础提升、口语练习和低压力适应。',
     suitable: '小众城市 / 安静学习 / 成本友好 / 长期ESL',
     keywords: '安静、小众、生活成本友好、学习干扰少',
     selectionFocus: '费用结构、课程时数、住宿便利度、学校管理和生活适应',
@@ -38,7 +45,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       {
         icon: 'spa',
         title: '学习环境更安静',
-        text: '怡朗不像宿务或马尼拉那么热闹，更适合希望减少干扰、稳定上课的学生。',
+        text: '伊洛伊洛不像宿务或马尼拉那么热闹，更适合希望减少干扰、稳定上课的学生。',
       },
       {
         icon: 'savings',
@@ -76,6 +83,29 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
         title: '轻压力适应型',
         tag: 'Easy Pace',
         text: '适合第一次出国学习，想先适应英语环境和海外生活节奏的人群。',
+      },
+    ],
+    schoolCards: [
+      {
+        icon: 'verified',
+        title: 'WE Academy',
+        tag: 'Semi-Sparta / IDP IELTS',
+        text: '适合想在Iloilo安静城市里比较ESL、TOEIC、Business、IELTS、Junior和住宿套餐费用的学生。',
+        route: '/philippines-study/iloilo/we-academy',
+      },
+      {
+        icon: 'school',
+        title: 'MK Language Training Center',
+        tag: 'Semi-Sparta / ESL / Family',
+        text: '适合想在Iloilo安静城市里控制预算，比较ESL、IELTS、TESOL、Internship和Family课程的学生。',
+        route: '/philippines-study/iloilo/mk-language-training-center',
+      },
+      {
+        icon: 'account_balance',
+        title: 'GITC College International Language Center',
+        tag: '大学附属 / TOEIC / IELTS',
+        text: '适合想在Iloilo安静环境中结合ESL、考试备考、大学交流和SDGs体验的学生。',
+        route: '/philippines-study/iloilo/gitc-college-international-language-center',
       },
     ],
   },

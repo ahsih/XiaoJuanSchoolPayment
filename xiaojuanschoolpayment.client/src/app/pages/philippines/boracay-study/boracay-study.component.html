@@ -73,6 +73,29 @@
     </div>
   </section>
 
+  <section class="featured-school-section" id="featured-schools">
+    <div class="section-heading">
+      <span class="section-kicker">Boracay Schools</span>
+      <h2>长滩岛学校推荐</h2>
+      <p>目前先收录长滩岛最适合亲子、短期和度假型英语体验的学校页面。</p>
+    </div>
+
+    <div class="school-type-grid">
+      <a class="school-type-card featured-school-card" *ngFor="let school of featuredSchools" [routerLink]="school.route">
+        <span class="highlight-icon">
+          <mat-icon>{{ school.icon }}</mat-icon>
+        </span>
+        <span>{{ school.tag }}</span>
+        <h3>{{ school.title }}</h3>
+        <p>{{ school.text }}</p>
+        <strong>
+          查看学校详情
+          <mat-icon>chevron_right</mat-icon>
+        </strong>
+      </a>
+    </div>
+  </section>
+
   <section class="compare-section">
     <div class="compare-copy">
       <span class="section-kicker">Boracay vs Cebu vs Baguio</span>

@@ -1,0 +1,112 @@
+:host .boracay-coco-page .back-link,
+:host .boracay-coco-page .hero-tags span,
+:host .boracay-coco-page .section-heading > span,
+:host .boracay-coco-page .compact-heading > span,
+:host .boracay-coco-page .course-card > span,
+:host .boracay-coco-page .timeline time,
+:host .boracay-coco-page .trust-note mat-icon,
+:host .boracay-coco-page .quick-card mat-icon,
+:host .boracay-coco-page .note-list mat-icon,
+:host .boracay-coco-page .service-icon-grid mat-icon,
+:host .boracay-coco-page .process-grid mat-icon {
+  color: #0e7c86;
+}
+
+:host .boracay-coco-page .hero-tags span,
+:host .boracay-coco-page .section-heading > span,
+:host .boracay-coco-page .compact-heading > span {
+  border-color: #b9e0e5;
+  background: #eefbfc;
+}
+
+:host .boracay-coco-page .primary-action {
+  background: #0e7c86;
+  box-shadow: 0 14px 28px rgba(14, 124, 134, 0.18);
+}
+
+:host .boracay-coco-page .secondary-action {
+  border-color: #9bd5dc;
+  color: #0e7c86;
+}
+
+:host .boracay-coco-page .advisor-avatar {
+  background: #f08a24;
+}
+
+:host .boracay-coco-page .hero-media {
+  border-color: #c5e5e8;
+  background: linear-gradient(180deg, #ffffff 0%, #effbfc 100%);
+}
+
+:host .boracay-coco-page .hero-price-card strong,
+:host .boracay-coco-page .side-price {
+  color: #0e7c86;
+}
+
+:host .boracay-coco-page .fit-grid > div,
+:host .boracay-coco-page .timeline article {
+  background: #effbfc;
+}
+
+:host .boracay-coco-page .coco-course-table .table-row {
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(240px, 1.35fr)
+    minmax(95px, 0.58fr)
+    minmax(105px, 0.62fr)
+    minmax(120px, 0.7fr);
+}
+
+:host .boracay-coco-page .coco-room-table .table-row {
+  grid-template-columns:
+    minmax(190px, 1.15fr)
+    minmax(115px, 0.68fr)
+    minmax(130px, 0.72fr)
+    minmax(105px, 0.58fr)
+    minmax(120px, 0.64fr)
+    minmax(180px, 1fr);
+}
+
+:host .boracay-coco-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #c5e5e8;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .boracay-coco-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .boracay-coco-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #c5e5e8;
+  border-radius: 8px;
+  color: #17324f;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .boracay-coco-page .source-grid mat-icon {
+  color: #0e7c86;
+}
+
+@media (max-width: 980px) {
+  :host .boracay-coco-page .coco-course-table,
+  :host .boracay-coco-page .coco-room-table {
+    display: none;
+  }
+
+  :host .boracay-coco-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

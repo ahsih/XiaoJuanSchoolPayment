@@ -246,8 +246,63 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'first-english-global-college',
-            label: '菲律宾宿务First English Global College语言学校',
+            label: '菲律宾宿务First English Global College',
             route: '/philippines-study/cebu/first-english-global-college',
+          },
+          {
+            id: 'ciec',
+            label: '菲律宾宿务CIEC',
+            route: '/philippines-study/cebu/ciec',
+          },
+          {
+            id: 'elsa-international-language-school',
+            label: '菲律宾宿务ELSA International Language School',
+            route: '/philippines-study/cebu/elsa-international-language-school',
+          },
+          {
+            id: 'ethos-language-school',
+            label: '菲律宾宿务ETHOS Language School',
+            route: '/philippines-study/cebu/ethos-language-school',
+          },
+          {
+            id: 'ims-academy',
+            label: '菲律宾宿务IMS Academy',
+            route: '/philippines-study/cebu/ims-academy',
+          },
+          {
+            id: 'target-global-english-academy',
+            label: '菲律宾宿务TARGET Global English Academy',
+            route: '/philippines-study/cebu/target-global-english-academy',
+          },
+          {
+            id: 'cij-academy-premium-campus',
+            label: '菲律宾宿务CIJ Academy（Premium Campus）',
+            route: '/philippines-study/cebu/cij-academy-premium-campus',
+          },
+          {
+            id: 'curious-world-academy',
+            label: '菲律宾宿务Curious World Academy',
+            route: '/philippines-study/cebu/curious-world-academy',
+          },
+          {
+            id: 'global-language-cebu',
+            label: '菲律宾宿务Global Language Cebu',
+            route: '/philippines-study/cebu/global-language-cebu',
+          },
+          {
+            id: 'qqenglish-beachfront-campus',
+            label: '菲律宾宿务QQEnglish（Beachfront Campus）',
+            route: '/philippines-study/cebu/qqenglish-beachfront-campus',
+          },
+          {
+            id: 'stargate-global-education',
+            label: '菲律宾宿务STARGATE Global Education',
+            route: '/philippines-study/cebu/stargate-global-education',
+          },
+          {
+            id: 'winning-english-academy',
+            label: '菲律宾宿务Winning English Academy',
+            route: '/philippines-study/cebu/winning-english-academy',
           },
           {
             id: 'glant',
@@ -258,6 +313,26 @@ export const mainNavigation: NavigationItem[] = [
             id: 'icl',
             label: '菲律宾宿务ICL语言学校',
             route: '/philippines-study/cebu/icl',
+          },
+          {
+            id: '3d-academy',
+            label: '菲律宾宿务3D Academy语言学校',
+            route: '/philippines-study/cebu/3d-academy',
+          },
+          {
+            id: 'cella-uni-sparta-campus',
+            label: '菲律宾宿务CELLA Uni Sparta Campus',
+            route: '/philippines-study/cebu/cella-uni-sparta-campus',
+          },
+          {
+            id: 'cg-academy-sparta-campus',
+            label: '菲律宾宿务CG Academy（Sparta Campus）',
+            route: '/philippines-study/cebu/cg-academy-sparta-campus',
+          },
+          {
+            id: 'cg-academy-banilad-campus',
+            label: '菲律宾宿务CG Academy（Banilad Campus）',
+            route: '/philippines-study/cebu/cg-academy-banilad-campus',
           },
           {
             id: 'smeag-capital',
@@ -283,6 +358,21 @@ export const mainNavigation: NavigationItem[] = [
             id: 'iu-english-academy',
             label: '菲律宾宿务IU English Academy',
             route: '/philippines-study/cebu/iu-english-academy',
+          },
+          {
+            id: 'lapulapu',
+            label: '菲律宾宿务Lapulapu',
+            route: '/philippines-study/cebu/lapulapu',
+          },
+          {
+            id: 'cebu-blue-ocean-academy',
+            label: '菲律宾宿务Cebu Blue Ocean Academy',
+            route: '/philippines-study/cebu/cebu-blue-ocean-academy',
+          },
+          {
+            id: 'cella-premium-campus',
+            label: '菲律宾宿务CELLA Premium Campus',
+            route: '/philippines-study/cebu/cella-premium-campus',
           },
           {
             id: 'ev-academy',
@@ -329,9 +419,14 @@ export const mainNavigation: NavigationItem[] = [
               '/philippines-study/baguio/beci-international-language-academy',
           },
           {
-            id: 'baguio-jic-academy',
-            label: '菲律宾碧瑶JIC语言学校',
-            route: '/philippines-study/baguio/baguio-jic-academy',
+            id: 'api-beci-city-campus',
+            label: '菲律宾碧瑶API BECI（City Campus）',
+            route: '/philippines-study/baguio/api-beci-city-campus',
+          },
+          {
+            id: 'baguio-jic',
+            label: 'Baguio JIC',
+            route: '/philippines-study/baguio/baguio-jic',
           },
           {
             id: 'monol',
@@ -342,6 +437,16 @@ export const mainNavigation: NavigationItem[] = [
             id: 'wales-academy',
             label: '菲律宾碧瑶WALES语言学校',
             route: '/philippines-study/baguio/wales-academy',
+          },
+          {
+            id: 'anj-e-edu-english-academy',
+            label: '菲律宾碧瑶A&J e-Edu语言学校',
+            route: '/philippines-study/baguio/anj-e-edu-english-academy',
+          },
+          {
+            id: 'help-english-longlong-campus',
+            label: 'HELP English（Longlong Campus）',
+            route: '/philippines-study/baguio/help-english-longlong-campus',
           },
         ],
       },
@@ -367,6 +472,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/clark/clark-we-academy',
           },
           {
+            id: 'talk-academy-clark',
+            label: '菲律宾克拉克TALK Academy语言学校',
+            route: '/philippines-study/clark/talk-academy',
+          },
+          {
             id: 'help-english-clark',
             label: '菲律宾克拉克HELP English语言学校',
             route: '/philippines-study/clark/help-english-clark',
@@ -375,6 +485,11 @@ export const mainNavigation: NavigationItem[] = [
             id: 'aelc-native-focused-clark-schools',
             label: '菲律宾克拉克AELC语言学校',
             route: '/philippines-study/clark/aelc-native-focused-clark-schools',
+          },
+          {
+            id: 'hana-academy',
+            label: '菲律宾克拉克HANA Academy',
+            route: '/philippines-study/clark/hana-academy',
           },
         ],
       },
@@ -408,26 +523,72 @@ export const mainNavigation: NavigationItem[] = [
         ],
       },
       {
+        id: 'iloilo-study',
+        label: '伊洛伊洛游学',
+        route: '/philippines-study/iloilo',
+        type: '城市页',
+        children: [
+          {
+            id: 'we-academy-iloilo',
+            label: '菲律宾伊洛伊洛WE Academy',
+            route: '/philippines-study/iloilo/we-academy',
+          },
+          {
+            id: 'gitc-college-international-language-center',
+            label: '菲律宾伊洛伊洛GITC College语言学校',
+            route:
+              '/philippines-study/iloilo/gitc-college-international-language-center',
+          },
+          {
+            id: 'mk-language-training-center',
+            label: '菲律宾伊洛伊洛MK Language Training Center',
+            route: '/philippines-study/iloilo/mk-language-training-center',
+          },
+        ],
+      },
+      {
+        id: 'boracay-study',
+        label: '长滩岛游学',
+        route: '/philippines-study/boracay',
+        type: '城市页',
+        children: [
+          {
+            id: 'boracay-coco-english-academy',
+            label: '菲律宾长滩岛Boracay Coco English Academy',
+            route: '/philippines-study/boracay/boracay-coco-english-academy',
+          },
+          {
+            id: 'paradise-english-boracay-language-institute',
+            label: '菲律宾长滩岛Paradise English Boracay Language Institute',
+            route:
+              '/philippines-study/boracay/paradise-english-boracay-language-institute',
+          },
+        ],
+      },
+      {
+        id: 'bacolod-study',
+        label: '巴科洛德游学',
+        route: '/philippines-study/bacolod',
+        type: '城市页',
+        children: [
+          {
+            id: 'e-room-language-center',
+            label: '菲律宾巴科洛德E-Room Language Center',
+            route: '/philippines-study/bacolod/e-room-language-center',
+          },
+          {
+            id: 'lslc-language-skills-learning-center',
+            label: '菲律宾巴科洛德LSLC语言学校',
+            route: '/philippines-study/bacolod/lslc-language-skills-learning-center',
+          },
+        ],
+      },
+      {
         id: 'more-philippines-cities',
         label: '更多菲律宾城市',
         route: placeholderRoute,
         type: '城市页',
         children: [
-          {
-            id: 'boracay-study',
-            label: '长滩岛游学',
-            route: '/philippines-study/boracay',
-          },
-          {
-            id: 'bacolod-study',
-            label: '巴科洛德游学',
-            route: '/philippines-study/bacolod',
-          },
-          {
-            id: 'iloilo-study',
-            label: '怡朗游学',
-            route: '/philippines-study/iloilo',
-          },
           {
             id: 'davao-study',
             label: '达沃游学',

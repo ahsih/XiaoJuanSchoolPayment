@@ -1,0 +1,110 @@
+:host .cella-premium-page .back-link,
+:host .cella-premium-page .hero-tags span,
+:host .cella-premium-page .section-heading > span,
+:host .cella-premium-page .compact-heading > span,
+:host .cella-premium-page .course-card > span,
+:host .cella-premium-page .timeline time,
+:host .cella-premium-page .trust-note mat-icon,
+:host .cella-premium-page .quick-card mat-icon,
+:host .cella-premium-page .note-list mat-icon,
+:host .cella-premium-page .service-icon-grid mat-icon,
+:host .cella-premium-page .process-grid mat-icon {
+  color: #1f6ca8;
+}
+
+:host .cella-premium-page .hero-tags span,
+:host .cella-premium-page .section-heading > span,
+:host .cella-premium-page .compact-heading > span {
+  border-color: #b7d8ee;
+  background: #eef8ff;
+}
+
+:host .cella-premium-page .primary-action {
+  background: #1f74b5;
+  box-shadow: 0 14px 28px rgba(31, 116, 181, 0.18);
+}
+
+:host .cella-premium-page .secondary-action {
+  border-color: #9fcce8;
+  color: #1f6ca8;
+}
+
+:host .cella-premium-page .advisor-avatar {
+  background: #e0a319;
+}
+
+:host .cella-premium-page .hero-media {
+  border-color: #cfe5f2;
+  background: linear-gradient(180deg, #ffffff 0%, #f5fbff 100%);
+}
+
+:host .cella-premium-page .hero-price-card strong,
+:host .cella-premium-page .side-price {
+  color: #1f74b5;
+}
+
+:host .cella-premium-page .course-lessons {
+  color: #1f6ca8;
+}
+
+:host .cella-premium-page .fit-grid > div,
+:host .cella-premium-page .timeline article {
+  background: #f4f9fd;
+}
+
+:host .cella-premium-page .course-fee-table .table-row {
+  grid-template-columns:
+    minmax(170px, 1.15fr)
+    repeat(4, minmax(92px, 0.68fr));
+}
+
+:host .cella-premium-page .special-fee-table .table-row {
+  grid-template-columns:
+    minmax(150px, 0.9fr)
+    minmax(138px, 0.8fr)
+    minmax(150px, 0.9fr)
+    minmax(0, 1.2fr);
+}
+
+:host .cella-premium-page .source-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #cfe5f2;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .cella-premium-page .source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .cella-premium-page .source-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cfe5f2;
+  border-radius: 8px;
+  color: #163a5a;
+  font-weight: 850;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+:host .cella-premium-page .source-grid mat-icon {
+  color: #1f74b5;
+}
+
+@media (max-width: 860px) {
+  :host .cella-premium-page .course-fee-table {
+    display: none;
+  }
+
+  :host .cella-premium-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

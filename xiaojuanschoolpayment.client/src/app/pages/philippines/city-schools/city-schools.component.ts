@@ -97,7 +97,7 @@ export class CitySchoolsComponent {
       group: 'quiet',
     },
     {
-      name: '怡朗',
+      name: '伊洛伊洛',
       englishName: 'Iloilo',
       route: '/philippines-study/iloilo',
       summary: '小众安静、成本友好，适合长期ESL和低压力学习。',

@@ -1,0 +1,210 @@
+:host .anj-page {
+  background:
+    linear-gradient(180deg, #f5fbf7 0, rgba(255, 255, 255, 0) 660px),
+    #ffffff;
+}
+
+:host .anj-page .back-link,
+:host .anj-page .hero-tags span,
+:host .anj-page .section-heading > span,
+:host .anj-page .compact-heading > span,
+:host .anj-page .course-card > span,
+:host .anj-page .timeline time,
+:host .anj-page .trust-note mat-icon,
+:host .anj-page .quick-card mat-icon,
+:host .anj-page .highlight-list mat-icon {
+  color: #12664f;
+}
+
+:host .anj-page .hero-tags span,
+:host .anj-page .section-heading > span,
+:host .anj-page .compact-heading > span {
+  border-color: #cbe3d7;
+  background: #eef8f2;
+}
+
+:host .anj-page .primary-action {
+  background: #12664f;
+  box-shadow: 0 14px 28px rgba(18, 102, 79, 0.18);
+}
+
+:host .anj-page .secondary-action {
+  border-color: #9fcbbd;
+  color: #12664f;
+}
+
+:host .anj-page .advisor-panel {
+  background:
+    linear-gradient(145deg, rgba(18, 91, 77, 0.96), rgba(28, 86, 121, 0.96)),
+    #125b4d;
+}
+
+:host .anj-page .advisor-avatar {
+  background: #e0b746;
+  color: #102033;
+}
+
+:host .anj-page .hero-media {
+  border-color: #cbe3d7;
+  background: linear-gradient(180deg, #ffffff 0%, #eef8f2 100%);
+}
+
+:host .anj-page .hero-price-card strong,
+:host .anj-page .side-price {
+  color: #12664f;
+}
+
+:host .anj-page .course-lessons {
+  color: #1c5679;
+}
+
+:host .anj-page .fit-grid > div,
+:host .anj-page .timeline article {
+  background: #f6fbf8;
+}
+
+:host .anj-page .gallery-tabs button.active {
+  border-color: #12664f;
+  background: #12664f;
+  color: #ffffff;
+}
+
+:host .anj-page .anj-course-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:host .anj-page .anj-tuition-table .table-row {
+  grid-template-columns:
+    minmax(148px, 0.9fr)
+    minmax(96px, 0.45fr)
+    minmax(108px, 0.5fr)
+    minmax(108px, 0.5fr)
+    minmax(108px, 0.5fr)
+    minmax(108px, 0.5fr)
+    minmax(250px, 1.35fr);
+}
+
+:host .anj-page .anj-room-table .table-row {
+  grid-template-columns: minmax(170px, 0.8fr) minmax(120px, 0.45fr) minmax(0, 1.55fr);
+}
+
+:host .anj-page .anj-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 6),
+:host .anj-page .anj-room-table .table-row span:nth-child(2) {
+  font-weight: 850;
+}
+
+:host .anj-page .pricing-subheading {
+  margin-top: 26px;
+}
+
+:host .anj-page .pricing-subheading span {
+  display: inline-flex;
+  padding: 7px 10px;
+  border: 1px solid #cbe3d7;
+  border-radius: 999px;
+  background: #eef8f2;
+  color: #12664f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+:host .anj-page .pricing-subheading h3 {
+  margin: 10px 0 14px;
+  color: #102033;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+:host .anj-page .anj-quote-breakdown {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .anj-page .toggle-row {
+  display: flex;
+  grid-column: span 2;
+  gap: 10px;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d6e3da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102033;
+  font-weight: 850;
+}
+
+:host .anj-page .toggle-row input {
+  width: 18px;
+  min-height: 18px;
+}
+
+:host .anj-page .quote-status {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #cbe3d7;
+  border-radius: 8px;
+  background: #eef8f2;
+  color: #125b4d;
+  font-weight: 850;
+}
+
+:host .anj-page .source-panel {
+  border-color: #cbe3d7;
+}
+
+:host .anj-page .anj-source-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+:host .anj-page .anj-source-grid mat-icon {
+  color: #1c5679;
+}
+
+:host .anj-page .mobile-course-fees p,
+:host .anj-page .mobile-room-fees p {
+  margin: 8px 0 0;
+  color: #40506a;
+  line-height: 1.65;
+}
+
+:host .anj-page .mobile-bottom-actions a:first-child {
+  background: #12664f;
+}
+
+:host .anj-page .mobile-bottom-actions a:last-child {
+  background: #1c5679;
+}
+
+@media (max-width: 980px) {
+  :host .anj-page .anj-course-grid,
+  :host .anj-page .anj-quote-breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  :host .anj-page .anj-tuition-table,
+  :host .anj-page .anj-room-table {
+    display: none;
+  }
+
+  :host .anj-page .anj-source-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .anj-page .hero-copy h1 {
+    font-size: 34px;
+  }
+
+  :host .anj-page .anj-course-grid,
+  :host .anj-page .anj-quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .anj-page .toggle-row {
+    grid-column: span 1;
+  }
+}

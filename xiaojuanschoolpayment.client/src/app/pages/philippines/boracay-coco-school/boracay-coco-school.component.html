@@ -1,0 +1,468 @@
+<app-cia-school>
+  <div class="cia-page boracay-coco-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/boracay">
+              <mat-icon>arrow_back</mat-icon>
+              返回长滩岛游学
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 长滩岛学校 / Boracay Coco English Academy</p>
+            <h1>菲律宾长滩岛Boracay Coco English Academy</h1>
+            <p class="hero-lead">
+              Boracay Coco English Academy位于长滩岛Manoc-Manoc，2018年创立，主打度假型校园、
+              成人ESL、IELTS、亲子和低龄儿童课程。官网公开2026低季和Regular费用，适合想把英语学习、
+              海岛生活和住宿体验一起规划的学生。
+            </p>
+            <div class="hero-tags" aria-label="Boracay Coco English Academy特点">
+              <span><mat-icon>beach_access</mat-icon>Boracay Island</span>
+              <span><mat-icon>pool</mat-icon>Resort-style Campus</span>
+              <span><mat-icon>family_restroom</mat-icon>Family / Junior</span>
+              <span><mat-icon>verified</mat-icon>TESDA / BI / IDP</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
+                查看课程价格
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              本页按学校官网2026价格、课程、住宿和当地费用整理。正式报名仍需确认入学日期、季节、房型空位和学校invoice。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="Boracay Coco English Academy校园图片展示">
+            <figure class="feature-photo">
+              <img [src]="galleryImages[0].src" alt="菲律宾长滩岛Boracay Coco English Academy校园" />
+              <figcaption>Boracay Coco English Academy 度假型校园</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="Boracay Coco English Academy图片缩略图">
+              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <aside class="hero-price-card">
+              <span>4周成人参考</span>
+              <strong>USD 1,300 <small>起</small></strong>
+              <p>低季Lite ESL + 校内Deluxe Twin + 注册费估算</p>
+              <ul>
+                <li>
+                  <mat-icon>check_circle</mat-icon>
+                  官网公开2026低季与Regular课程、住宿和当地费用
+                </li>
+                <li>
+                  <mat-icon>info</mat-icon>
+                  SSP、SSP E-Card、水电服务费、教材和签证延长另计
+                </li>
+              </ul>
+            </aside>
+            <p class="photo-source">
+              图片参考官方图库及公开学校图库；费用参考Boracay Coco English Academy官网2026价格表，最终以学校正式报价为准。
+            </p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="Boracay Coco English Academy手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="Boracay Coco English Academy快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>先看Boracay Coco的校园、教室、住宿和费用资料</h2>
+            <p>
+              这所学校的卖点不是高压备考，而是把长滩岛环境、课程密度、家庭住宿和度假型校园结合起来。
+            </p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="Boracay Coco English Academy图片分类">
+            <button
+              type="button"
+              *ngFor="let category of galleryCategories"
+              [class.active]="selectedGalleryCategory === category"
+              (click)="setGalleryCategory(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+          <div class="gallery-grid">
+            <figure *ngFor="let image of filteredGalleryImages">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>
+                <strong>{{ image.title }}</strong>
+                <span>{{ image.description }}</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>Boracay Coco 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">"</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>适合“长滩岛度假感 + 英语体验 + 亲子住宿”</h2>
+            </div>
+            <p>
+              如果学生期待的是每天学习后还能游泳、去海边、安排亲子活动，Boracay Coco会比传统城市学校更有吸引力。
+              但如果目标是雅思高压冲分或最低预算，建议同步比较碧瑶、伊洛伊洛和巴科洛德。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">S</div>
+              <div>
+                <strong>顾问建议</strong>
+                <span>亲子家庭先确认孩子年龄、同行人数、房型和季节；成人学生先确认课程密度和是否接受指定住宿。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>学校亮点</span>
+              <h2>为什么会把Boracay Coco列入长滩岛候选</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" loading="lazy" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断Boracay Coco是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合这类学生</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>cancel</mat-icon>不太适合这类学生</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="course-fees">
+          <div class="section-heading">
+            <span>2026课程费用</span>
+            <h2>官方公开4周课程费：低季和Regular分开看</h2>
+            <p>
+              以下为官网2026价格图中的课程费，不含住宿、注册费和到校PHP费用。低季促销为Regular价格的75%口径。
+            </p>
+          </div>
+          <div class="data-table coco-course-table" role="table" aria-label="Boracay Coco官方2026课程费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">课时</span>
+              <span role="columnheader">年龄</span>
+              <span role="columnheader">低季4周</span>
+              <span role="columnheader">Regular 4周</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let course of courseOptions">
+              <span role="cell">
+                <strong>{{ course.name }}</strong>
+                <small>{{ course.type }}</small>
+              </span>
+              <span role="cell">{{ course.lessons }}</span>
+              <span role="cell">{{ course.age }}</span>
+              <span role="cell">USD {{ formatUsd(course.tuition.low) }}</span>
+              <span role="cell">USD {{ formatUsd(course.tuition.regular) }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="Boracay Coco课程费手机卡片">
+            <article *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p>{{ course.lessons }}</p>
+              <dl>
+                <div>
+                  <dt>低季4周</dt>
+                  <dd>USD {{ formatUsd(course.tuition.low) }}</dd>
+                </div>
+                <div>
+                  <dt>Regular 4周</dt>
+                  <dd>USD {{ formatUsd(course.tuition.regular) }}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="room-fees">
+          <div class="section-heading">
+            <span>2026住宿费用</span>
+            <h2>住宿按每人4周计价，家庭房要按同行人数确认</h2>
+            <p>
+              官网住宿表列校内宿舍、校外宿舍、合作酒店和合作度假村。住宿费包含平日三餐、周末brunch，
+              但到校服务费、水电、押金和洗衣另计。
+            </p>
+          </div>
+          <div class="data-table coco-room-table" role="table" aria-label="Boracay Coco官方2026住宿费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">住宿</span>
+              <span role="columnheader">类型</span>
+              <span role="columnheader">适合人数</span>
+              <span role="columnheader">低季4周</span>
+              <span role="columnheader">Regular 4周</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span role="cell">
+                <strong>{{ room.shortName }}</strong>
+                <small>{{ room.name }}</small>
+              </span>
+              <span role="cell">{{ room.category }}</span>
+              <span role="cell">{{ room.occupancy }}</span>
+              <span role="cell">USD {{ formatUsd(room.rates.low) }}</span>
+              <span role="cell">USD {{ formatUsd(room.rates.regular) }}</span>
+              <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block quote-section" id="quote">
+          <div class="section-heading">
+            <span>费用快速报价</span>
+            <h2>选择课程、季节、房型和周数，先估主费用</h2>
+            <p>报价器按课程费 + 住宿费 + USD100注册费估算；PHP当地费用另列在下方。</p>
+          </div>
+          <div class="quote-form" aria-label="Boracay Coco费用快速报价选项">
+            <label>
+              <span>季节</span>
+              <select [(ngModel)]="selectedSeasonId">
+                <option *ngFor="let season of seasons" [ngValue]="season.id">{{ season.label }}</option>
+              </select>
+            </label>
+            <label>
+              <span>课程</span>
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courseOptions" [ngValue]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label>
+              <span>住宿</span>
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [ngValue]="room.id">{{ room.shortName }}</option>
+              </select>
+            </label>
+            <label>
+              <span>周数</span>
+              <select [(ngModel)]="selectedWeeks">
+                <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option>
+              </select>
+            </label>
+            <label>
+              <span>计划入学日</span>
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              计算参考费用
+              <mat-icon>calculate</mat-icon>
+            </button>
+          </div>
+
+          <div class="quote-result" [class.active]="quoteCalculated">
+            <div>
+              <span>参考总额</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>{{ quoteCnyText }}，按USD:CNY {{ usdToCny }} 粗估</p>
+            </div>
+            <ul>
+              <li><mat-icon>event</mat-icon>{{ selectedSeason.label }}：{{ selectedSeason.note }}</li>
+              <li><mat-icon>menu_book</mat-icon>{{ selectedCourse.name }}：课程费USD {{ formatUsd(selectedTuition) }}</li>
+              <li><mat-icon>hotel</mat-icon>{{ selectedRoom.shortName }}：住宿费USD {{ formatUsd(selectedAccommodation) }}</li>
+              <li><mat-icon>payments</mat-icon>注册费USD {{ registrationFee }}；当地PHP费用、机票保险和生活费另计</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校费用</span>
+            <h2>SSP、服务费、水电、签证和接送要另做预算</h2>
+            <p>
+              以下按官网2026 Local Fees整理，金额可能随菲律宾政策、汇率和学校规则更新。
+            </p>
+          </div>
+          <div class="fee-grid">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="service-process" id="service-process">
+          <div class="section-heading">
+            <span>报名支持</span>
+            <h2>思达启航会帮你把长滩岛游学拆成可确认事项</h2>
+          </div>
+          <div class="process-grid">
+            <article *ngFor="let step of serviceSteps">
+              <mat-icon>{{ step.icon }}</mat-icon>
+              <strong>{{ step.title }}</strong>
+              <p>{{ step.text }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block source-panel" id="sources">
+          <div class="section-heading">
+            <span>资料来源</span>
+            <h2>Boracay Coco页面公开资料来源</h2>
+            <p>
+              本页以学校官网首页、2026价格页、课程页、About页、住宿/校园图库和报名页为主要来源。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
+              <mat-icon>open_in_new</mat-icon>
+              {{ source.label }}
+            </a>
+          </div>
+        </section>
+
+        <section class="service-section" id="service">
+          <div class="service-copy">
+            <span>思达启航服务</span>
+            <h2>为什么通过思达启航报名Boracay Coco?</h2>
+            <p>
+              长滩岛亲子和短期项目最容易在季节、房型、接送、低龄安排和当地费用上产生误差。
+              我们会帮你把课程、住宿、年龄、航班和预算拆清楚，再提交给学校确认。
+            </p>
+            <div class="service-icon-grid">
+              <span *ngFor="let badge of trustBadges">
+                <mat-icon>{{ badge.icon }}</mat-icon>
+                {{ badge.label }}
+              </span>
+            </div>
+            <a class="primary-action" routerLink="/about-sida/contact">
+              获取长滩岛游学方案
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <div class="service-list-panel">
+            <h3>可协助确认</h3>
+            <div class="pill-list">
+              <span *ngFor="let service of schoolServices">{{ service }}</span>
+            </div>
+            <h3>校园与周边体验</h3>
+            <div class="pill-list">
+              <span *ngFor="let item of campusActivities">{{ item }}</span>
+              <span *ngFor="let item of weekendActivities">{{ item }}</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block note-section" id="notes">
+          <div class="section-heading">
+            <span>报名前注意</span>
+            <h2>确认Boracay Coco前，建议先核对这些信息</h2>
+          </div>
+          <div class="note-list">
+            <p *ngFor="let note of notes">
+              <mat-icon>info</mat-icon>
+              {{ note }}
+            </p>
+          </div>
+        </section>
+
+        <section class="section-block faq-section" id="faq">
+          <div class="section-heading">
+            <span>FAQ</span>
+            <h2>报名Boracay Coco前常被问到的问题</h2>
+          </div>
+          <details *ngFor="let item of faqs">
+            <summary>{{ item.question }}</summary>
+            <p>{{ item.answer }}</p>
+          </details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="Boracay Coco English Academy页面快捷导航">
+        <div class="side-card">
+          <span>4周参考</span>
+          <strong class="side-price">USD 1,300起</strong>
+          <p>低季Lite ESL + 校内Deluxe Twin + 注册费</p>
+          <a class="primary-action full-action" href="#quote" (click)="scrollToSection('quote', $event)">
+            试算费用
+            <mat-icon>calculate</mat-icon>
+          </a>
+        </div>
+        <nav class="side-nav">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+      </aside>
+    </div>
+
+    <div class="mobile-bottom-actions" aria-label="Boracay Coco手机端固定操作">
+      <a routerLink="/about-sida/contact">
+        <mat-icon>support_agent</mat-icon>
+        咨询顾问
+      </a>
+      <a href="#quote" (click)="scrollToSection('quote', $event)">
+        <mat-icon>calculate</mat-icon>
+        费用试算
+      </a>
+    </div>
+  </div>
+</app-cia-school>
