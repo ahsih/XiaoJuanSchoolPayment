@@ -49,7 +49,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
     title: '碧瑶菲律宾留学与英语游学 | 斯巴达语言学校推荐',
     description:
       '碧瑶菲律宾留学和英语游学指南，比较 菲律宾碧瑶PINES语言学校、BECI、JIC、MONOL、WALES 等学校，适合自律强化和雅思备考。',
-    keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, 菲律宾碧瑶PINES语言学校, Pines, BECI, Baguio JIC, MONOL',
+    keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, 菲律宾碧瑶PINES语言学校, Pines, BECI, 菲律宾碧瑶JIC语言学校, MONOL',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/baguio/pines-international-academy': {
@@ -67,10 +67,10 @@ const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/beci-eop-campus.jpg',
   },
   '/philippines-study/baguio/baguio-jic': {
-    title: 'Baguio JIC | Challenger与Premium校区课程费用住宿',
+    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
     description:
-      'Baguio JIC页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
-    keywords: 'Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
+      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP ESL、Speaking、Business、Working Holiday课程、住宿房型、2026费用和报名注意事项。',
+    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.jpg',
   },
   '/philippines-study/baguio/monol': {

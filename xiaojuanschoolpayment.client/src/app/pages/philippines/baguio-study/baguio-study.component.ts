@@ -171,7 +171,7 @@ export class BaguioStudyComponent {
         '先确认学生要的是API BECI City Campus、BECI EOP/Sparta，还是宿务B Cebu；这三类学习节奏和城市体验不同。',
     },
     {
-      name: 'Baguio JIC',
+      name: '菲律宾碧瑶JIC语言学校',
       location: 'Challenger / Premium Campus',
       style: '考试、口语与生活舒适度分校区',
       route: '/philippines-study/baguio/baguio-jic',
@@ -312,7 +312,7 @@ export class BaguioStudyComponent {
     { label: 'APIBECI City Campus官方介绍', url: 'https://beciedu.com/city-campus/' },
     { label: 'API BECI City Campus公开费用与学校资料', url: 'https://global-click.jp/contents/school/api-beci-city-campus/' },
     { label: 'API BECI City Campus 2026学校资料', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
-    { label: 'Baguio JIC 官方网站', url: 'https://baguio-jic.com/' },
+    { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
     { label: '菲律宾碧瑶MONOL语言学校 官方网站', url: 'https://mymonol.com/en/' },
     { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
     { label: '菲律宾碧瑶A&J e-Edu语言学校 官方网站', url: 'https://www.anjedudc.com/' },

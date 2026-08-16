@@ -101,7 +101,7 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: 'Baguio JIC Challenger校园航拍', description: 'Baguio JIC官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.jpg' },
+    { category: '校区', title: '菲律宾碧瑶JIC语言学校Challenger校园航拍', description: '菲律宾碧瑶JIC语言学校官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.jpg' },
     { category: '校区', title: 'Baguio JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.png' },
     { category: '校区', title: 'JIC Premium Campus环境', description: 'Premium Photos页面展示的Premium校区学习生活环境。', src: 'assets/philippines/jic-premium-campus-overview.jpg' },
     { category: '教室', title: 'Challenger IELTS一对一课堂', description: 'Main Campus Classes照片展示的IELTS备考与一对一辅导场景。', src: 'assets/philippines/jic-main-ielts-class.png' },
@@ -115,7 +115,7 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: 'Baguio JIC' },
+    { label: '学校名称', value: '菲律宾碧瑶JIC语言学校' },
     { label: '英文名称', value: 'Baguio JIC / Baguio JIC Challenger Campus / JIC Premium Campus' },
     { label: '所在城市', value: '菲律宾碧瑶 Baguio City' },
     { label: 'Challenger地址', value: '73 Del Nacia Apt, Upper West Camp 7, Baguio City, Philippines' },
@@ -225,8 +225,8 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly sidaJicReasons: SidaJicReason[] = [
-    { number: '01', title: '先判断Baguio JIC哪个校区适合', text: '不会只按学校名推荐，会把Challenger和Premium的学习强度、课程目标、生活舒适度和预算拆开比较。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择Baguio JIC校区' },
-    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费、保证班费用和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算Baguio JIC费用' },
+    { number: '01', title: '先判断菲律宾碧瑶JIC语言学校哪个校区适合', text: '不会只按学校名推荐，会把Challenger和Premium的学习强度、课程目标、生活舒适度和预算拆开比较。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择菲律宾碧瑶JIC语言学校校区' },
+    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费、保证班费用和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶JIC语言学校费用' },
     { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
     { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
     { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
@@ -244,19 +244,19 @@ export class JicSchoolDetailComponent implements OnInit {
   readonly campusActivities = ['新生说明会', '英语口语活动', 'IELTS模拟考试', '职业主题活动', '跨国学生交流'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Mines View Park', 'Camp John Hay'];
   readonly notes = [
-    'Baguio JIC必须先分Challenger和Premium校区，再决定课程、房型和费用。',
+    '菲律宾碧瑶JIC语言学校必须先分Challenger和Premium校区，再决定课程、房型和费用。',
     'Challenger ESL / IELTS更适合需要测试、自习和明确学习制度的学生。',
     'Premium更适合口语、职业英文、成人学习和更舒适住宿需求。',
     '页面价格为2026年公开费用参考，最终会随学校政策、优惠、房型空位和汇率变化。',
-    '旺季附加费按Baguio JIC公开JPY 5,000/周折算为USD 34.5/周，正式报价需按学校当期账单确认。',
+    '旺季附加费按菲律宾碧瑶JIC语言学校公开JPY 5,000/周折算为USD 34.5/周，正式报价需按学校当期账单确认。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
-    { question: 'Baguio JIC的Challenger和Premium怎么选？', answer: '目标是ESL基础强化、IELTS备考或需要更强制度，优先看Challenger；目标是口语、职场英文、打工度假、多益或更舒适生活，优先看Premium。' },
-    { question: 'Baguio JIC适合零基础学生吗？', answer: '可以。Challenger ESL Flex / Lite适合基础弱的学生，Premium Speaking Starter也适合初学者；具体要按自律程度和生活偏好判断校区。' },
+    { question: '菲律宾碧瑶JIC语言学校的Challenger和Premium怎么选？', answer: '目标是ESL基础强化、IELTS备考或需要更强制度，优先看Challenger；目标是口语、职场英文、打工度假、多益或更舒适生活，优先看Premium。' },
+    { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Flex / Lite适合基础弱的学生，Premium Speaking Starter也适合初学者；具体要按自律程度和生活偏好判断校区。' },
     { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后还需准备SSP、SSP I-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'IELTS Guarantee是不是只付课程费就可以？', answer: '不是。IELTS Guarantee除4周课程费外，还需确认保证班参加费、出勤和分数保证规则，页面按公开资料列出PHP 18,000参加费参考。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名Baguio JIC，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
+    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名菲律宾碧瑶JIC语言学校，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
@@ -277,10 +277,10 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly sourceLinks: SourceLink[] = [
-    { label: 'Baguio JIC 官方首页', url: 'https://baguio-jic.com/' },
+    { label: '菲律宾碧瑶JIC语言学校 官方首页', url: 'https://baguio-jic.com/' },
     { label: 'Baguio JIC Challenger Campus 官方页', url: 'https://baguio-jic.com/campuses/main-campus/' },
     { label: 'Baguio JIC Premium Campus 官方页', url: 'https://baguio-jic.com/campuses/premium-campus/' },
-    { label: 'Baguio JIC 2026费用页', url: 'https://baguio-jic.com/ja/price/' },
+    { label: '菲律宾碧瑶JIC语言学校 2026费用页', url: 'https://baguio-jic.com/ja/price/' },
     { label: 'Fujiyama JIC Challenger Campus费用参考', url: 'https://www.fujiyama-international.com/philippines/jic-baguio.html' },
   ];
 

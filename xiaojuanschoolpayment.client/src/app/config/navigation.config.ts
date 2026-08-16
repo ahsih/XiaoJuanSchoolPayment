@@ -425,7 +425,7 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'baguio-jic',
-            label: 'Baguio JIC',
+            label: '菲律宾碧瑶JIC语言学校',
             route: '/philippines-study/baguio/baguio-jic',
           },
           {
