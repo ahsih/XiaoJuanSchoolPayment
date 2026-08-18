@@ -37,7 +37,15 @@
   color: #8a4b14;
 }
 
+.cip-page .tables-section .room-fee-table .table-row {
+  grid-template-columns: 1.1fr 0.95fr 0.85fr 1.3fr;
+}
+
 @media (max-width: 760px) {
+  .cip-page .tables-section .room-fee-table .table-row {
+    min-width: 760px;
+  }
+
   .cip-page .cia-hero,
   .cip-page .hero-copy,
   .cip-page .hero-media {

@@ -23,11 +23,13 @@ interface CourseFee {
   suitable: string;
   schedule: string;
   note: string;
+  maxWeeks?: number;
 }
 
 interface RoomFee {
   id: string;
   name: string;
+  englishName: string;
   fee: number;
   note: string;
 }
@@ -66,17 +68,15 @@ export class CipSchoolComponent {
     '餐厅',
     '设施',
   ];
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
-  readonly discount = 0.95;
-  readonly usdToCny = 7.2;
+  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
 
   selectedGalleryCategory: GalleryCategory = '全部';
   selectedCourseId = 'regular-esl';
   selectedRoomId = 'd4';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
-  registrationFee = 100;
-  seasonalFeePerWeek = 40;
+  readonly courseRegistrationFee = 600;
+  readonly accommodationRegistrationFee = 500;
 
   readonly mobileAnchors = [
     { label: '概览', target: 'advisor-review', icon: 'dashboard' },
@@ -234,7 +234,7 @@ export class CipSchoolComponent {
     {
       icon: 'bolt',
       label: '强化',
-      title: 'Power / Intensive ESL',
+      title: 'Speaking Master / Intensive ESL',
       text: '适合短期冲刺、希望增加一对一比例和学习推动力的学生。',
     },
     {
@@ -253,110 +253,242 @@ export class CipSchoolComponent {
 
   courseFees: CourseFee[] = [
     {
+      id: 'light-esl',
+      name: '自由 Light ESL',
+      tuition: 4320,
+      suitable: '自由型轻量综合英语',
+      schedule: '4节菲师一对一 + 1节大团体课（1:12）',
+      note: '小团体课最多6人，大团体课最多15人。',
+    },
+    {
+      id: 'native-light',
+      name: '自由外教 NL-Premium Native Light',
+      tuition: 8220,
+      suitable: '自由型外教口语',
+      schedule: '4节外教一对一 + 1节大团体课（1:12）',
+      note: '适合希望提高Native一对一比例的学生。',
+    },
+    {
       id: 'regular-esl',
-      name: 'Regular ESL',
-      tuition: 900,
-      suitable: '基础综合提升',
-      schedule: 'CIP课程名，价格临时沿用CIA Regular ESL 4周课程费',
-      note: '临时价格，之后请替换为CIP正式价目表。',
+      name: '半斯巴达 Regular ESL',
+      tuition: 4920,
+      suitable: '半斯巴达综合英语',
+      schedule: '3节菲师一对一 + 3节小团体（1:5）+ 2节大团体（1:12）',
+      note: '综合课程与团体表达并重。',
     },
     {
       id: 'native-esl',
-      name: 'Native ESL',
-      tuition: 1000,
-      suitable: 'Native口语强化',
-      schedule: '价格临时沿用CIA Intensive ESL 4周课程费',
+      name: '半斯巴达外教 Native ESL',
+      tuition: 6420,
+      suitable: '半斯巴达Native口语',
+      schedule: '3节菲师一对一 + 1节外教一对一 + 3节小团体（1:5）+ 1节大团体（1:12）',
       note: '适合重视外教口语与发音纠正的学生。',
     },
     {
-      id: 'power-esl',
-      name: 'Power ESL',
-      tuition: 1100,
-      suitable: '高强度口语',
-      schedule: '价格临时沿用CIA Power Intensive 4周课程费',
-      note: '最终需按CIP课程表与Native课比例确认。',
+      id: 'speaking-master',
+      name: '半斯巴达 Speaking Master',
+      tuition: 7200,
+      suitable: '口语强化',
+      schedule: '5节菲师一对一 + 1节外教一对一 + 1节小团体（1:5）+ 1节大团体（1:12）',
+      note: '最多报名8周。',
+      maxWeeks: 8,
     },
     {
-      id: 'toeic-regular',
-      name: 'TOEIC Regular',
-      tuition: 1000,
-      suitable: '托业备考',
-      schedule: '价格临时沿用CIA TOEIC Regular 4周课程费',
-      note: '需确认模考、教材和入学程度要求。',
-    },
-    {
-      id: 'ielts-intensive',
-      name: 'IELTS Intensive',
-      tuition: 1050,
-      suitable: '雅思强化',
-      schedule: '价格临时沿用CIA IELTS Regular 4周课程费',
-      note: '保证班需另行确认入学分数、规则和官方考试安排。',
+      id: 'native-master',
+      name: '半斯巴达 Native Master',
+      tuition: 8200,
+      suitable: 'Native高密度口语',
+      schedule: '4节菲师一对一 + 2节外教一对一 + 1节小团体（1:5）+ 1节大团体（1:12）',
+      note: '最多报名8周。',
+      maxWeeks: 8,
     },
     {
       id: 'advanced-business',
-      name: 'Advanced Business',
-      tuition: 1050,
+      name: '半斯巴达商务英语 Advanced Business',
+      tuition: 6960,
       suitable: '商务与职场沟通',
-      schedule: '价格临时沿用CIA Business 4周课程费',
+      schedule: '3节菲师一对一 + 1节外教一对一 + 2节小团体（1:5）+ 1节大团体（1:12）',
       note: '适合面试、工作表达和商务场景训练。',
     },
     {
-      id: 'junior',
-      name: 'Primary / Junior',
-      tuition: 1300,
-      suitable: '亲子青少年',
-      schedule: '价格临时沿用CIA Junior 4周课程费',
+      id: 'toeic-regular',
+      name: '半斯巴达 TOEIC Regular',
+      tuition: 5280,
+      suitable: '托业备考',
+      schedule: '5节菲师一对一 + 2节小团体（1:5）+ 1节大团体（1:12）',
+      note: '需确认模考、教材和入学程度要求。',
+    },
+    {
+      id: 'intensive-esl',
+      name: '斯巴达 Intensive ESL',
+      tuition: 5640,
+      suitable: '斯巴达综合英语',
+      schedule: '5节菲师一对一 + 2节小团体（1:5）+ 1节大团体（1:12）+ 2节晚课',
+      note: '周一至周四晚课1小时，另有咨询或自学安排；每周三下午约5点安排单词和文法小考，每4周等级测试。',
+    },
+    {
+      id: 'ielts-intensive',
+      name: '斯巴达 IELTS Intensive',
+      tuition: 6180,
+      suitable: '雅思强化',
+      schedule: '4节菲师一对一 + 4节小团体（1:5）+ 3节晚课',
+      note: '入学雅思3.5分；周一至周四每天3小时晚课（雅思课2小时、自学1小时），每周三下午口语测试。',
+    },
+    {
+      id: 'ielts-basic',
+      name: '斯巴达 IELTS Basic',
+      tuition: 5820,
+      suitable: '雅思基础',
+      schedule: '4节菲师一对一 + 3节小团体（1:5）+ 1节大团体（1:12）+ 3节晚课',
+      note: '入学雅思2.5至3分；周一至周四每天3小时晚课，每周三下午口语测试。',
+    },
+    {
+      id: 'ielts-native',
+      name: '斯巴达 IELTS Native',
+      tuition: 7200,
+      suitable: 'Native雅思强化',
+      schedule: '3节菲师一对一 + 1节外教一对一 + 4节小团体（1:5）+ 3节晚课',
+      note: '入学雅思3.5分；周一至周四每天3小时晚课，每周三下午口语测试。',
+    },
+    {
+      id: 'ielts-guarantee-8',
+      name: '斯巴达雅思8周保分班 IELTS Score Guarantee',
+      tuition: 7920,
+      suitable: '8周雅思保分',
+      schedule: '4节菲师一对一 + 4节小团体（1:5）+ 3节晚课',
+      note: '注册后需通过线上测试；周一至周四每天3小时晚课，每周三下午口语测试，成绩下降可能触发管理规定。',
+    },
+    {
+      id: 'ielts-guarantee-12',
+      name: '斯巴达雅思12周保分班 IELTS Score Guarantee',
+      tuition: 7200,
+      suitable: '12周雅思保分',
+      schedule: '4节菲师一对一 + 4节小团体（1:5）+ 3节晚课',
+      note: '注册后需通过线上测试；周一至周四每天3小时晚课，每周三下午口语测试，成绩下降可能触发管理规定。',
+    },
+    {
+      id: 'primary-english',
+      name: '半斯巴达7–11岁 Primary English',
+      tuition: 7380,
+      suitable: '7–11岁儿童英语',
+      schedule: '5节菲师一对一 + 1节小团体（1:5）+ 2节晚课（选修）',
+      note: '晚课为晚班学生辅导家庭作业或补课时间，不是强制安排。',
+    },
+    {
+      id: 'junior-esl',
+      name: '半斯巴达12–15岁 Junior ESL',
+      tuition: 7920,
+      suitable: '12–15岁青少年英语',
+      schedule: '5节菲师一对一 + 2节小团体（1:5）+ 2节晚课（选修）',
       note: '年龄、监护和住宿规则需报名前确认。',
     },
     {
-      id: 'guardian',
-      name: 'Parent / Guardian',
-      tuition: 1300,
-      suitable: '陪读家长',
-      schedule: '价格临时沿用CIA Guardian 4周课程费',
-      note: '家长是否上课、课程数量和房型需单独确认。',
+      id: 'junior-native',
+      name: '半斯巴达12–15岁外教 Junior Native',
+      tuition: 8940,
+      suitable: '12–15岁Native英语',
+      schedule: '4节菲师一对一 + 1节外教一对一 + 2节小团体（1:5）+ 2节晚课（选修）',
+      note: '年龄、监护和住宿规则需报名前确认。',
+    },
+    {
+      id: 'speak-up',
+      name: '短期训练 Speak Up',
+      tuition: 7620,
+      suitable: '1–2周短期口语冲刺',
+      schedule: '7节菲师一对一 + 1节外教一对一',
+      note: '最多报名2周。',
+      maxWeeks: 2,
     },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 's1', name: '校内单人间', fee: 1500, note: '价格临时沿用CIA S-1。' },
-    { id: 'p1', name: '校内高级单人间', fee: 1700, note: '价格临时沿用CIA P-1。' },
-    { id: 'd2', name: '校内双人间', fee: 1100, note: '价格临时沿用CIA D-2。' },
-    { id: 'd3', name: '校内三人间', fee: 850, note: '价格临时沿用CIA D-3。' },
+    {
+      id: 'in-campus-single-a',
+      name: '校内单人间A',
+      englishName: 'Single A',
+      fee: 6480,
+      note: '分离式冷气，房内空间较大。',
+    },
+    {
+      id: 'in-campus-single-b',
+      name: '校内单人间B',
+      englishName: 'Single B',
+      fee: 5580,
+      note: '窗型冷气，房内空间较小。',
+    },
+    {
+      id: 'in-campus-double',
+      name: '校内双人间',
+      englishName: 'Double',
+      fee: 4680,
+      note: '适合同伴同行。',
+    },
+    {
+      id: 'in-campus-triple',
+      name: '校内三人间',
+      englishName: 'Triple',
+      fee: 4020,
+      note: '适合兼顾预算与入住人数。',
+    },
     {
       id: 'd4',
-      name: '校内四人间',
-      fee: 750,
-      note: '价格临时沿用CIA D-4，默认报价参考。',
+      name: '校内四人间（有1床在地板）',
+      englishName: 'Quadruple',
+      fee: 3420,
+      note: '仅限亲子；默认报价参考。',
     },
     {
-      id: 'hotel4',
-      name: '校外Hotel四人间',
-      fee: 1100,
-      note: '临时沿用CIA SR-4价格，之后请替换为CIP Hotel报价。',
+      id: 'deluxe-king-single',
+      name: '校外豪华大床房（单人）',
+      englishName: 'Deluxe King (Single)',
+      fee: 11564,
+      note: '1张大号床，适合单人、情侣或1–2人家庭。',
     },
     {
-      id: 'family',
-      name: '家庭/陪读房',
-      fee: 1400,
-      note: '临时沿用CIA SR-2价格，需按CIP空房确认。',
+      id: 'deluxe-king-double',
+      name: '校外豪华大床房（双人）',
+      englishName: 'Deluxe King (Double)',
+      fee: 6874,
+      note: '1张大号床，适合情侣或2人家庭。',
+    },
+    {
+      id: 'deluxe-twin-double',
+      name: '校外豪华双人间',
+      englishName: 'Deluxe Twin (Double)',
+      fee: 7571,
+      note: '1张大床 + 1张单人床，适合家庭或情侣2–3人。',
+    },
+    {
+      id: 'deluxe-twin-triple',
+      name: '校外豪华三人间',
+      englishName: 'Deluxe Twin (Triple)',
+      fee: 5688,
+      note: '1张大床 + 1张单人床，适合家庭或朋友2–3人。',
+    },
+    {
+      id: 'executive-suite-triple',
+      name: '校外行政套房三人',
+      englishName: 'Executive Suite (Triple)',
+      fee: 8275,
+      note: '2个卧室大床 + 客厅沙发床，适合朋友或家庭3–5人。',
+    },
+    {
+      id: 'executive-suite-quad',
+      name: '校外行政套房四人',
+      englishName: 'Executive Suite (Quad)',
+      fee: 6626,
+      note: '2个卧室大床 + 客厅沙发床，适合朋友或家庭3–5人。',
     },
   ];
 
   localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 8,000', note: '临时沿用CIA当地费用参考' },
-    { item: 'SSP E-card', amount: 'PHP 4,000', note: '以学校现场收费为准' },
-    { item: '管理费', amount: 'PHP 4,000', note: '4周参考' },
-    { item: '水电费', amount: 'PHP 2,000', note: '按周期或实际使用调整' },
-    { item: '教材费', amount: 'PHP 2,000', note: '按课程和实际购买教材调整' },
-    { item: '学生证', amount: 'PHP 200', note: '一次性费用参考' },
-    { item: '押金', amount: 'PHP 2,500', note: '退房检查后按学校规则退还' },
-    {
-      item: '接机费',
-      amount: 'PHP 1,000',
-      note: '临时沿用CIA参考，CIP需重新确认Clark/Manila接机',
-    },
-    { item: 'ACR I-card', amount: 'PHP 4,500', note: '长期学习或延签时可能需要' },
+    { item: 'SSP / SSP E-card', amount: '报名时确认', note: '未列在本次课程与住宿价目截图中' },
+    { item: '管理费', amount: '报名时确认', note: '按学习周数和学校当期收费确认' },
+    { item: '水电费', amount: '报名时确认', note: '按周期或实际使用调整' },
+    { item: '教材费', amount: '报名时确认', note: '按课程和实际购买教材调整' },
+    { item: '押金', amount: '报名时确认', note: '退房检查后按学校规则退还' },
+    { item: '接机费', amount: '报名时确认', note: '需区分Clark或Manila机场及同行人数' },
+    { item: '签证延签 / ACR I-card', amount: '按周数确认', note: '长期学习时可能需要' },
   ];
 
   readonly feeStructureCards = [
@@ -364,11 +496,12 @@ export class CipSchoolComponent {
       icon: 'school',
       title: '前期学费',
       rows: [
-        { label: '课程费', value: '按所选CIP课程，价格临时沿用CIA数值' },
-        { label: '住宿费', value: '按校内宿舍或Hotel房型，价格临时沿用CIA数值' },
-        { label: '注册费', value: 'USD 100 临时参考' },
+        { label: '课程费', value: '按所选CIP课程，以人民币4周价为基准' },
+        { label: '住宿费', value: '按校内宿舍或校外房型，以人民币4周价为基准' },
+        { label: '课程注册费', value: 'RMB 600' },
+        { label: '住宿注册费', value: 'RMB 500' },
       ],
-      note: '用户后续可手动替换为CIP正式报价。',
+      note: '两项注册费合计RMB 1,100，为一次性费用。',
     },
     {
       icon: 'payments',
@@ -377,7 +510,7 @@ export class CipSchoolComponent {
         label: fee.item,
         value: fee.amount,
       })),
-      note: '当地费用暂按CIA页面一致处理。',
+      note: '当地费用不在本次课程与住宿价目截图中，需报名时确认。',
     },
     {
       icon: 'hotel',
@@ -387,7 +520,7 @@ export class CipSchoolComponent {
         { label: '校外Hotel', value: '官方说明为距离学校约5分钟车程' },
         { label: '家庭报名', value: '需额外核对年龄、监护、餐食和接送' },
       ],
-      note: 'CIP实际房型和收费之后请以当期价目表替换。',
+      note: '房型空位、入住人数和亲子限制需以学校确认结果为准。',
     },
   ];
 
@@ -430,8 +563,8 @@ export class CipSchoolComponent {
     },
     {
       icon: 'payments',
-      title: '替换正式价格',
-      text: '当前页面费用按CIA硬编码临时值展示，后续需要替换为CIP价目表。',
+      title: '确认价格适用期',
+      text: '本页已按提供的2026 CIP人民币价目表更新，报名时仍需确认价格适用期、空房和优惠。',
     },
   ];
 
@@ -444,7 +577,7 @@ export class CipSchoolComponent {
     {
       question: '页面价格是CIP最终报价吗？',
       answer:
-        '不是。你要求先沿用CIA价格，所以本页课程费、住宿费和到校费用都是临时参考。正式报价需要之后按CIP当期价目表、房型、周数和优惠替换。',
+        '本页已按提供的2026 CIP人民币价目表更新课程费、住宿费和注册费；学校价格、空房、入住规则和当地费用仍需在报名时确认。',
     },
     {
       question: 'CIP适合亲子或未成年学生吗？',
@@ -460,8 +593,8 @@ export class CipSchoolComponent {
 
   readonly ctaBadges = [
     '免费确认CIP空房和课程',
-    '价格当前为CIA临时参考',
-    '可协助替换正式CIP价目表',
+    '2026人民币课程与住宿价已更新',
+    '1/2/3周按40%/65%/85%计算',
     '按成人、考试、亲子目标重新匹配',
   ];
 
@@ -521,61 +654,69 @@ export class CipSchoolComponent {
     );
   }
 
+  get availableWeekOptions(): number[] {
+    const maxWeeks = this.selectedCourse.maxWeeks;
+    return maxWeeks
+      ? this.weekOptions.filter((weeks) => weeks <= maxWeeks)
+      : this.weekOptions;
+  }
+
+  ensureValidWeeks(): void {
+    if (!this.availableWeekOptions.includes(this.selectedWeeks)) {
+      this.selectedWeeks = this.availableWeekOptions[this.availableWeekOptions.length - 1];
+    }
+  }
+
+  get selectedWeekMultiplier(): number {
+    if (this.selectedWeeks === 1) return 0.4;
+    if (this.selectedWeeks === 2) return 0.65;
+    if (this.selectedWeeks === 3) return 0.85;
+    return this.selectedWeeks / 4;
+  }
+
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition * (this.selectedWeeks / 4);
+    return this.selectedCourse.tuition * this.selectedWeekMultiplier;
   }
 
   get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee * (this.selectedWeeks / 4);
+    return this.selectedRoom.fee * this.selectedWeekMultiplier;
   }
 
-  get isPeakSeason(): boolean {
-    const startDate = this.parseDate(this.selectedStartDate);
-
-    return [
-      ['2026-06-14', '2026-08-08'],
-      ['2027-01-17', '2027-02-14'],
-    ].some(
-      ([start, end]) =>
-        startDate >= this.parseDate(start) && startDate <= this.parseDate(end),
-    );
+  get registrationFee(): number {
+    return this.courseRegistrationFee + this.accommodationRegistrationFee;
   }
 
-  get seasonalSurcharge(): number {
-    return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0;
+  get longTermDiscount(): number {
+    return ({ 16: 300, 20: 600, 24: 900 } as Record<number, number>)[
+      this.selectedWeeks
+    ] ?? 0;
   }
 
-  get quoteUsd(): number {
+  get quoteCny(): number {
     return (
       this.registrationFee +
-      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
-        this.discount +
-      this.seasonalSurcharge
+      this.tuitionForSelectedWeeks +
+      this.roomFeeForSelectedWeeks -
+      this.longTermDiscount
     );
-  }
-
-  get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)} 起`;
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `RMB ${this.formatCny(this.quoteCny)} 起`;
   }
 
-  get discountText(): string {
-    return `${Math.round(this.discount * 100)} 折`;
+  get durationRuleText(): string {
+    if (this.selectedWeeks === 1) return '4周价的40%';
+    if (this.selectedWeeks === 2) return '4周价的65%';
+    if (this.selectedWeeks === 3) return '4周价的85%';
+    if (this.longTermDiscount > 0) return `长期优惠RMB ${this.longTermDiscount}`;
+    return '按4周价格成倍计算';
   }
 
-  formatUsd(value: number): string {
+  formatCny(value: number): string {
     return value.toLocaleString('en-US', {
-      minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
-      maximumFractionDigits: 1,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
     });
-  }
-
-  private parseDate(value: string): Date {
-    return new Date(`${value}T00:00:00`);
   }
 }

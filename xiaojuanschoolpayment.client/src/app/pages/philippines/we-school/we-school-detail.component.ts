@@ -45,30 +45,43 @@ export class WeSchoolDetailComponent implements OnInit {
   private readonly pricingSchoolSearchName = 'WE Academy';
   private readonly pricingSchoolNames = ['菲律宾克拉克WE Academy语言学校', 'Clark WE Academy', 'WE Academy'];
   private readonly courseFeeOrder = [
-    'esl-course',
-    'native-mix-1-class',
-    'native-mix-2-classes',
-    'native-mix-3-classes',
-    'junior-esl-course',
-    'junior-esl-native-course',
-    'guardian-esl-course',
-    'we-kindergarten',
-    'solo-junior-high-support',
-    'english-golf-practice-course',
-    'english-golf-round-course',
-    'swimming-lessons',
+    'esl-3-guardian',
+    'esl-4',
+    'esl-5',
+    'esl-6',
+    'native-mix-light',
+    'native-mix-general',
+    'native-mix-intensive',
+    'toeic',
+    'toefl',
+    'ielts',
+    'junior-esl',
+    'junior-native-esl',
+    'kinder-esl',
+    'esl-golf',
+    'esl-golf-round',
   ];
-  private readonly roomFeeOrder = ['campus-dormitory', 'family-room', 'new-residence', 'accommodation-to-confirm'];
+  private readonly roomFeeOrder = [
+    'single-room',
+    'double-room',
+    'triple-room',
+    'quad-room',
+    'apartment-single-1',
+    'apartment-single-2',
+    'apartment-double-2',
+    'apartment-double-3',
+    'apartment-double-4',
+  ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '课堂', '亲子', '活动'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  selectedCourseId = 'native-mix-2-classes';
-  selectedRoomId = 'campus-dormitory';
+  selectedCourseId = 'native-mix-general';
+  selectedRoomId = 'quad-room';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
-  registrationFee = 0;
-  registrationCurrencyCode = 'PHP';
+  registrationFee = 100;
+  registrationCurrencyCode = 'USD';
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
 
   readonly quickInfo: QuickInfo[] = [
@@ -101,7 +114,7 @@ export class WeSchoolDetailComponent implements OnInit {
     { label: '机场距离', value: '官网说明从Clark International Airport到学校约25分钟' },
     { label: '校园设施', value: '宿舍、教室、健身房、大型泳池、便利店、高速Wi-Fi、校内高尔夫练习资源' },
     { label: '成人规则', value: '官网说明18岁以上成人课后无宵禁，适合偏自由舒适的学习生活' },
-    { label: '费用状态', value: '完整学费住宿需当期报价；Golf/Swimming课程有公开PHP单次价格' },
+    { label: '费用状态', value: '2026年4周课程与住宿以USD列价；注册费USD100' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -120,43 +133,51 @@ export class WeSchoolDetailComponent implements OnInit {
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '只想要完整公开价目表', text: '官网未直接公开完整学费住宿表，课程、房型和周数必须由顾问向学校核价。' },
+    { title: '只看标价、不核对到校费用', text: '2026价目表列出4周课程和住宿，但SSP、教材、押金、水电和接机等仍需另行确认。' },
     { title: '目标是高压雅思冲刺', text: 'WE更偏舒适、亲子和口语体验；强制模考和晚自习应同步比较碧瑶或考试型学校。' },
     { title: '需要严格门禁管理', text: '官网强调成人18岁以上无宵禁，若学生需要强管理，应谨慎选择。' },
     { title: '只看英语课不看活动预算', text: 'Golf、Swimming、外出活动、接机和本地费用要另列，不能只看课程名称。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'ESL Course', type: '一般英语', lessons: '菲律宾老师一对一与综合课程组合', suitable: '适合基础口语、听力、阅读、写作和第一次菲律宾游学。' },
-    { name: 'Native Mix', type: 'Native口语强化', lessons: '每日1-3节美国/加拿大等Native老师一对一', suitable: '适合发音、语调、自然表达、working holiday或欧美学习准备。' },
-    { name: 'Junior ESL Course', type: '青少年ESL', lessons: '经验菲律宾老师一对一，建立英文基础', suitable: '适合小学到初中阶段，需确认年龄、程度和同行监护。' },
-    { name: 'Junior ESL Native Course', type: '青少年Native', lessons: 'Junior课程中含2节Native一对一', suitable: '适合希望孩子接触自然发音和外教沟通的家庭。' },
-    { name: 'Guardian ESL', type: '陪读家长', lessons: '官网说明每日3节菲律宾老师一对一', suitable: '适合家长陪读时一起学习，也方便和孩子作息同步。' },
-    { name: 'WE Kindergarten', type: '低龄儿童', lessons: '英语、数学、艺术、游戏、故事、音乐和午休照顾', suitable: '适合4岁到学龄前儿童，需确认班级人数和照顾安排。' },
-    { name: 'English + Golf', type: '英语 + 高尔夫', lessons: '每日英语课搭配校内练习或每周球场field lesson', suitable: '适合成人、家庭或希望把运动体验加入游学的人。' },
+    { name: 'ESL 3-6', type: '一般英语', lessons: '每日3-6节菲教一对一；ESL 4-6加2节小组课和1节选修', suitable: 'ESL 3仅限监护人；ESL 4-6按希望的一对一强度选择。' },
+    { name: 'Native Mix', type: 'Native口语强化', lessons: '3节菲教一对一 + 每日1-3节外教一对一 + 2节小组课 + 1节选修', suitable: '适合发音、语调、自然表达、working holiday或欧美学习准备。' },
+    { name: 'TOEIC / TOEFL / IELTS', type: '考试英语', lessons: '6节外教一对一 + 1节菲教小组课 + 1节选修', suitable: '适合需要托业、托福或雅思专项课程的学生。' },
+    { name: 'Junior ESL', type: '青少年ESL', lessons: '5节菲教一对一 + 1节菲教小组课', suitable: '适合小学到初中阶段，需确认年龄、程度和同行监护。' },
+    { name: 'Junior Native ESL', type: '青少年Native', lessons: '3节菲教一对一 + 1节菲教小组课 + 2节外教一对一', suitable: '适合希望孩子接触自然发音和外教沟通的家庭。' },
+    { name: 'Kinder ESL', type: '低龄儿童', lessons: '8节菲教团体课', suitable: '适合低龄儿童，需确认年龄、班级人数和照顾安排。' },
+    { name: 'ESL + GOLF', type: '英语 + 高尔夫', lessons: '3节菲教一对一 + 1节高尔夫 + 1节选修；ROUND课程每周加1次实地课', suitable: '适合成人、家庭或希望把运动体验加入游学的人。' },
     { name: 'Swimming Lesson', type: '活动课程', lessons: '私教、小组或3-5人大组课程', suitable: '适合亲子家庭和想使用校内泳池资源的学生。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'esl-course', name: 'ESL Course', tuition: 0, currencyCode: 'PHP', suitable: '基础综合英语；完整费用需按周数、房型和入学日确认' },
-    { id: 'native-mix-1-class', name: 'Native Mix 1 Class', tuition: 0, currencyCode: 'PHP', suitable: '每日1节Native一对一，适合先加入外教反馈' },
-    { id: 'native-mix-2-classes', name: 'Native Mix 2 Classes', tuition: 0, currencyCode: 'PHP', suitable: '每日2节Native一对一，适合发音和自然表达强化' },
-    { id: 'native-mix-3-classes', name: 'Native Mix 3 Classes', tuition: 0, currencyCode: 'PHP', suitable: '每日3节Native一对一，适合短期高口语目标' },
-    { id: 'junior-esl-course', name: 'Junior ESL Course', tuition: 0, currencyCode: 'PHP', suitable: '小学到初中学生基础英语，需确认年龄和监护' },
-    { id: 'junior-esl-native-course', name: 'Junior ESL Native Course', tuition: 0, currencyCode: 'PHP', suitable: '青少年课程中含Native一对一，适合重视发音' },
-    { id: 'guardian-esl-course', name: 'Guardian ESL Course', tuition: 0, currencyCode: 'PHP', suitable: '陪读家长课程，官网说明每日3节菲律宾老师一对一' },
-    { id: 'we-kindergarten', name: 'WE Kindergarten', tuition: 0, currencyCode: 'PHP', suitable: '4岁到学龄前，英语、数学、艺术和活动课程' },
-    { id: 'solo-junior-high-support', name: 'Solo Junior High Support', tuition: 0, currencyCode: 'PHP', suitable: '13-15岁独自留学支持，需逐项确认规则' },
-    { id: 'english-golf-practice-course', name: 'English + Golf Practice Course', tuition: 0, currencyCode: 'PHP', suitable: '英语课 + 校内高尔夫练习，课程包需报价' },
-    { id: 'english-golf-round-course', name: 'English + Golf Round Course', tuition: 0, currencyCode: 'PHP', suitable: '练习课 + 每周球场field lesson，现场费用另付' },
-    { id: 'swimming-lessons', name: 'Swimming Lessons', tuition: 0, currencyCode: 'PHP', suitable: '游泳课按单次或小组人数另计' },
+    { id: 'esl-3-guardian', name: 'ESL 3（监护人）', tuition: 650, currencyCode: 'USD', suitable: '3节菲教一对一；仅限监护人' },
+    { id: 'esl-4', name: 'ESL 4', tuition: 750, currencyCode: 'USD', suitable: '4节菲教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'esl-5', name: 'ESL 5', tuition: 850, currencyCode: 'USD', suitable: '5节菲教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'esl-6', name: 'ESL 6', tuition: 950, currencyCode: 'USD', suitable: '6节菲教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'native-mix-light', name: 'NATIVE MIX LIGHT', tuition: 900, currencyCode: 'USD', suitable: '3节菲教一对一 + 1节外教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'native-mix-general', name: 'NATIVE MIX GENERAL', tuition: 1100, currencyCode: 'USD', suitable: '3节菲教一对一 + 2节外教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'native-mix-intensive', name: 'NATIVE MIX INTENSIVE', tuition: 1300, currencyCode: 'USD', suitable: '3节菲教一对一 + 3节外教一对一 + 2节菲教小组课 + 1节选修' },
+    { id: 'toeic', name: 'TOEIC / 托业', tuition: 1050, currencyCode: 'USD', suitable: '6节外教一对一 + 1节菲教小组课 + 1节选修' },
+    { id: 'toefl', name: 'TOEFL / 托福', tuition: 1050, currencyCode: 'USD', suitable: '6节外教一对一 + 1节菲教小组课 + 1节选修' },
+    { id: 'ielts', name: 'IELTS / 雅思', tuition: 1050, currencyCode: 'USD', suitable: '6节外教一对一 + 1节菲教小组课 + 1节选修' },
+    { id: 'junior-esl', name: 'Junior ESL', tuition: 950, currencyCode: 'USD', suitable: '5节菲教一对一 + 1节菲教小组课' },
+    { id: 'junior-native-esl', name: 'Junior Native ESL', tuition: 1250, currencyCode: 'USD', suitable: '3节菲教一对一 + 1节菲教小组课 + 2节外教一对一' },
+    { id: 'kinder-esl', name: 'Kinder ESL', tuition: 1150, currencyCode: 'USD', suitable: '8节菲教团体课' },
+    { id: 'esl-golf', name: 'ESL + GOLF', tuition: 1100, currencyCode: 'USD', suitable: '3节菲教一对一 + 1节高尔夫 + 1节选修' },
+    { id: 'esl-golf-round', name: 'ESL + GOLF & ROUND', tuition: 1700, currencyCode: 'USD', suitable: '3节菲教一对一 + 1节高尔夫 + 1节选修 + 每周1次实地课程' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'campus-dormitory', name: 'Campus Dormitory / 校内宿舍', fee: 0, currencyCode: 'PHP', note: '官网说明宿舍在校园内，房型和价格需按空房确认' },
-    { id: 'family-room', name: 'Family Room / 家庭房', fee: 0, currencyCode: 'PHP', note: '亲子同行常用方向，需确认人数、床型、餐食和卫浴' },
-    { id: 'new-residence', name: 'New Residence / 新宿舍', fee: 0, currencyCode: 'PHP', note: '官网Notice有New Residence信息，开放状态和价格需当期确认' },
-    { id: 'accommodation-to-confirm', name: 'Accommodation To Confirm', fee: 0, currencyCode: 'PHP', note: '用于先建预算清单，正式报价前不写死金额' },
+    { id: 'single-room', name: '单人间', fee: 1100, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'double-room', name: '双人间', fee: 850, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'triple-room', name: '三人间', fee: 750, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'quad-room', name: '四人间', fee: 650, currencyCode: 'USD', note: '2026年4周住宿费；普通房型中最低预算选项' },
+    { id: 'apartment-single-1', name: '公寓单人间（1人入住）', fee: 1700, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'apartment-single-2', name: '公寓单人间（2人入住）', fee: 1150, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'apartment-double-2', name: '公寓双人间（2人入住）', fee: 1400, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'apartment-double-3', name: '公寓双人间（3人入住）', fee: 1000, currencyCode: 'USD', note: '2026年4周住宿费' },
+    { id: 'apartment-double-4', name: '公寓双人间（4人入住）', fee: 850, currencyCode: 'USD', note: '2026年4周住宿费' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -169,7 +190,7 @@ export class WeSchoolDetailComponent implements OnInit {
   ];
 
   localFees: LocalFee[] = [
-    { item: 'Registration Fee', amount: '需当期确认', note: '一次性报名注册费，官网公开页未直接列出金额' },
+    { item: 'Registration Fee', amount: 'USD 100', note: '2026年价目表列出的一次性报名注册费' },
     { item: 'SSP / SSP E-Card', amount: '需当期确认', note: '菲律宾特别学习许可及相关卡费，按周数和学校规则确认' },
     { item: 'Textbook / Materials', amount: '需当期确认', note: '按课程、级别和实际教材收取' },
     { item: 'Dormitory Deposit / Utilities', amount: '需当期确认', note: '住宿押金、水电、维护或清洁费用需按房型和周数确认' },
@@ -184,13 +205,13 @@ export class WeSchoolDetailComponent implements OnInit {
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'family_restroom', title: '先确认学生结构', text: '成人、亲子、低龄、13-15岁独自入学的规则不同，先核对年龄和监护。' },
     { icon: 'record_voice_over', title: '选择课程比例', text: '在ESL、Native Mix 1-3节、Junior、Guardian、Kindergarten和Golf之间确认组合。' },
-    { icon: 'king_bed', title: '核对房型空位', text: 'WE费用必须和宿舍、家庭房、新宿舍开放状态一起确认，不能只看课程名称。' },
-    { icon: 'payments', title: '拆分公开费用和核价费用', text: 'Golf/Swimming单次价格可先列预算，学费住宿和本地费用由顾问向学校确认。' },
+    { icon: 'king_bed', title: '核对房型空位', text: '在单人间、双人间、三人间、四人间和公寓房型中选择，并按入学日确认空位。' },
+    { icon: 'payments', title: '拆分4周主费和到校费用', text: '课程、住宿和注册费可按2026价目表先算；SSP、教材、押金、水电、接机和活动需另行确认。' },
     { icon: 'support_agent', title: '正式报名与到校跟进', text: '确认学校回函、付款节点、航班接机、行前提醒和到校后的调课沟通。' },
   ];
 
   readonly notes = [
-    'WE官网公开页面没有直接列出完整学费和住宿价目表，本页不凭非官方资料硬写课程住宿价格。',
+    '2026年价目表列出4周USD课程费、住宿费和USD100注册费；其他周数的计价规则需由学校确认。',
     '官网公开活动价：Golf Private Class PHP750/次；Swimming Private PHP700/次，Small Group PHP600/次，Big Group 3-5人 PHP500/次。',
     'Golf Round Course包含交通和课程费用，但green fee、caddie fee和cart rental需要现场另付。',
     'Native Mix、Junior Native、Guardian ESL、Kindergarten和13-15岁solo junior支持都要按年龄、英文程度、周数和房型确认。',
@@ -199,7 +220,7 @@ export class WeSchoolDetailComponent implements OnInit {
 
   readonly faqs: FaqItem[] = [
     { question: '菲律宾克拉克WE Academy语言学校适合亲子吗？', answer: '适合重点比较。官网强调Family Program、校内WE Kindergarten、Junior ESL / Junior Native、Guardian ESL和校内泳池活动，适合低龄与家庭同行。' },
-    { question: '为什么本页不直接写学费住宿金额？', answer: '因为WE官网公开页面没有直接列出完整学费和宿舍价目表。为避免误导，本页只写官网可确认的活动价格，课程住宿由顾问按当期回函核价。' },
+    { question: 'WE 2026年4周课程和住宿怎么计算？', answer: '按选定的4周课程费 + 4周住宿费 + 一次性注册费USD100计算。SSP、教材、押金、水电、接机和活动等到校费用需另行确认。' },
     { question: 'WE和EG、CIP怎么选？', answer: 'WE更偏亲子、自由舒适和活动体验；CIP更强调Native一对一与口语纠音；EG课程价目公开度更高，也可比较ESL、考试、Native和Golf组合。' },
     { question: 'WE适合雅思冲刺吗？', answer: '如果目标是短期高压雅思冲分，WE通常不是第一优先。建议同步看EG、CIP或碧瑶强管理学校，并确认模考和自习制度。' },
     { question: 'WE的Golf和Swimming怎么收费？', answer: '官网Golf页列出Golf Private Class PHP750/次；Swimming页列出私教PHP700/次，小组PHP600/次，3-5人大组PHP500/次。Golf Round现场费用另付。' },
@@ -208,7 +229,7 @@ export class WeSchoolDetailComponent implements OnInit {
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
     { label: '课程方向', target: 'courses', icon: 'menu_book' },
-    { label: '费用核价', target: 'quote', icon: 'request_quote' },
+    { label: '费用报价', target: 'quote', icon: 'request_quote' },
     { label: '公开费用', target: 'local-fees', icon: 'payments' },
     { label: '服务流程', target: 'service-process', icon: 'task_alt' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
@@ -268,7 +289,7 @@ export class WeSchoolDetailComponent implements OnInit {
     if (databaseCourseFees.length > 0) {
       this.courseFees = databaseCourseFees;
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
-        this.selectedCourseId = this.courseFees.find((course) => course.id === 'native-mix-2-classes')?.id ?? this.courseFees[0].id;
+        this.selectedCourseId = this.courseFees.find((course) => course.id === 'native-mix-general')?.id ?? this.courseFees[0].id;
       }
     }
 
@@ -285,7 +306,7 @@ export class WeSchoolDetailComponent implements OnInit {
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'campus-dormitory')?.id ?? this.roomFees[0].id;
+        this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad-room')?.id ?? this.roomFees[0].id;
       }
     }
 
@@ -326,7 +347,19 @@ export class WeSchoolDetailComponent implements OnInit {
 
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get quoteText(): string { return '需顾问按当期价目表确认'; }
+  get quoteText(): string {
+    const sameCurrency =
+      this.selectedCourse.currencyCode === 'USD' &&
+      this.selectedRoom.currencyCode === 'USD' &&
+      this.registrationCurrencyCode === 'USD';
+    if (!sameCurrency || !this.selectedCourse.tuition || !this.selectedRoom.fee) return '需顾问确认';
+
+    const fourWeekTotal = this.selectedCourse.tuition + this.selectedRoom.fee + this.registrationFee;
+    const totalText = this.formatMoney(fourWeekTotal, 'USD');
+    return this.selectedWeeks === 4
+      ? `4周参考合计 ${totalText}（含注册费）`
+      : `4周参考合计 ${totalText}；${this.selectedWeeks}周价格需学校确认`;
+  }
   get registrationFeeText(): string { return this.formatMoney(this.registrationFee, this.registrationCurrencyCode); }
   get quoteSummary(): string {
     return `${this.selectedWeeks}周 ${this.selectedCourse.name} + ${this.selectedRoom.name}`;
@@ -340,22 +373,30 @@ export class WeSchoolDetailComponent implements OnInit {
 
   private priceKey(value: string): string {
     const knownKeys: Record<string, string> = {
-      'ESL Course': 'esl-course',
-      'Native Mix 1 Class': 'native-mix-1-class',
-      'Native Mix 2 Classes': 'native-mix-2-classes',
-      'Native Mix 3 Classes': 'native-mix-3-classes',
-      'Junior ESL Course': 'junior-esl-course',
-      'Junior ESL Native Course': 'junior-esl-native-course',
-      'Guardian ESL Course': 'guardian-esl-course',
-      'WE Kindergarten': 'we-kindergarten',
-      'Solo Junior High Support': 'solo-junior-high-support',
-      'English + Golf Practice Course': 'english-golf-practice-course',
-      'English + Golf Round Course': 'english-golf-round-course',
-      'Swimming Lessons': 'swimming-lessons',
-      'Campus Dormitory / 校内宿舍': 'campus-dormitory',
-      'Family Room / 家庭房': 'family-room',
-      'New Residence / 新宿舍': 'new-residence',
-      'Accommodation To Confirm': 'accommodation-to-confirm',
+      'ESL 3（监护人）': 'esl-3-guardian',
+      'ESL 4': 'esl-4',
+      'ESL 5': 'esl-5',
+      'ESL 6': 'esl-6',
+      'NATIVE MIX LIGHT': 'native-mix-light',
+      'NATIVE MIX GENERAL': 'native-mix-general',
+      'NATIVE MIX INTENSIVE': 'native-mix-intensive',
+      'TOEIC / 托业': 'toeic',
+      'TOEFL / 托福': 'toefl',
+      'IELTS / 雅思': 'ielts',
+      'Junior ESL': 'junior-esl',
+      'Junior Native ESL': 'junior-native-esl',
+      'Kinder ESL': 'kinder-esl',
+      'ESL + GOLF': 'esl-golf',
+      'ESL + GOLF & ROUND': 'esl-golf-round',
+      '单人间': 'single-room',
+      '双人间': 'double-room',
+      '三人间': 'triple-room',
+      '四人间': 'quad-room',
+      '公寓单人间（1人入住）': 'apartment-single-1',
+      '公寓单人间（2人入住）': 'apartment-single-2',
+      '公寓双人间（2人入住）': 'apartment-double-2',
+      '公寓双人间（3人入住）': 'apartment-double-3',
+      '公寓双人间（4人入住）': 'apartment-double-4',
     };
     if (knownKeys[value]) return knownKeys[value];
     const slug = value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

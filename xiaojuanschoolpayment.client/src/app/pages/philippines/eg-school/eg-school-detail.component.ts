@@ -62,15 +62,24 @@ export class EgSchoolDetailComponent implements OnInit {
     'junior-ielts',
     'guardian-esl',
   ];
-  private readonly roomFeeOrder = ['quad', 'double', 'single', 'family-triple', 'special-six', 'special-five', 'special-four'];
+  private readonly roomFeeOrder = [
+    'dorm-1-2-single',
+    'dorm-1-2-double',
+    'dorm-1-2-triple',
+    'dorm-1-2-quad',
+    'dorm-3-single',
+    'dorm-3-double',
+    'dorm-3-triple',
+    'dorm-3-quad',
+  ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '运动', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100000;
-  registrationCurrencyCode = 'KRW';
+  registrationFee = 100;
+  registrationCurrencyCode = 'USD';
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'esl-4';
-  selectedRoomId = 'quad';
+  selectedRoomId = 'dorm-1-2-quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
@@ -81,7 +90,7 @@ export class EgSchoolDetailComponent implements OnInit {
     { icon: 'record_voice_over', label: '师资方向', value: '菲律宾 / 美国 / 加拿大等', note: '适合想把一对一训练和Native表达反馈一起比较的人。' },
     { icon: 'school', label: '课程', value: 'ESL / IELTS / TOEIC / TOEFL / Business', note: '另有Junior、Guardian和Golf英语组合方向。' },
     { icon: 'sports_golf', label: '特色资源', value: '250码高尔夫练习场', note: '官网概况和Golf页均列出高尔夫练习资源。' },
-    { icon: 'payments', label: '官方价目', value: '2025-01-01 KRW价目表', note: '注册费KRW100,000另计，短期周数按官方比例计算。' },
+    { icon: 'payments', label: '费用参考', value: '2025年USD价目表', note: '4周课程与住宿以USD列示，注册费USD100另计。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -104,7 +113,7 @@ export class EgSchoolDetailComponent implements OnInit {
     { label: '学生容量', value: '约110名学生' },
     { label: '教室配置', value: '1:1教室50间、团体教室20间' },
     { label: '设施', value: 'TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅、旅行社等' },
-    { label: '费用币种', value: '官方韩文价目表以KRW列示，菲律宾到校费用多以PHP支付' },
+    { label: '费用币种', value: '课程、住宿与注册费以USD列示，菲律宾到校费用多以PHP支付' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -125,7 +134,7 @@ export class EgSchoolDetailComponent implements OnInit {
   readonly notSuitableFor: FitItem[] = [
     { title: '只想找最低总价', text: 'EG官方表以课程费和宿舍费叠加，短期比例、注册费、当地费用和接机费都要一起算。' },
     { title: '短期高压雅思冲刺', text: '可以看IELTS路线，但若需要严格晚自习和密集模考，也应同步比较碧瑶强管理学校。' },
-    { title: '必须全程美元报价', text: 'EG官网公开价目表为KRW，正式报价和人民币换算需按学校回函与付款日汇率确认。' },
+    { title: '只预留USD主费用', text: '课程、住宿与注册费以USD计算，但教材、许可、接机和签证等PHP到校费用仍需另列。' },
     { title: '只看Golf不看学习安排', text: 'Golf课程要把练习时间、额外课程费、球具、交通和英语课表一起核对。' },
   ];
 
@@ -139,32 +148,33 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'esl-4', name: 'ESL 4', tuition: 950000, currencyCode: 'KRW', suitable: '4节一对一 + 2节团体课，基础口语和综合提升' },
-    { id: 'esl-6', name: 'ESL 6', tuition: 1270000, currencyCode: 'KRW', suitable: '一对一课时更多，适合短期强化输出' },
-    { id: 'esl-native-plus', name: 'ESL Native Plus', tuition: 1370000, currencyCode: 'KRW', suitable: 'ESL搭配Native表达反馈' },
-    { id: 'esl-native-complete', name: 'ESL Native Complete', tuition: 1520000, currencyCode: 'KRW', suitable: 'Native比例更高，适合口语和发音目标' },
-    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1220000, currencyCode: 'KRW', suitable: '雅思入门与基础建立' },
-    { id: 'ielts-native', name: 'IELTS + Native', tuition: 1320000, currencyCode: 'KRW', suitable: '雅思备考搭配Native课程' },
-    { id: 'ielts-score-guarantee', name: 'IELTS Score Guarantee', tuition: 1370000, currencyCode: 'KRW', suitable: '保证班方向，需确认入学门槛和周数' },
-    { id: 'toeic-native', name: 'TOEIC + Native', tuition: 1320000, currencyCode: 'KRW', suitable: '多益与职场考试方向' },
-    { id: 'toefl-native', name: 'TOEFL + Native', tuition: 1320000, currencyCode: 'KRW', suitable: '托福和北美升学方向' },
-    { id: 'business-native', name: 'Business + Native', tuition: 1320000, currencyCode: 'KRW', suitable: '商务会议、面试和职场表达' },
-    { id: 'golf-esl', name: 'Golf + ESL', tuition: 1350000, currencyCode: 'KRW', suitable: '英语课程搭配高尔夫练习' },
-    { id: 'golf-special', name: 'Golf Special', tuition: 1950000, currencyCode: 'KRW', suitable: '高尔夫比重更高，需确认教练和场地' },
-    { id: 'junior-esl', name: 'Junior ESL', tuition: 1280000, currencyCode: 'KRW', suitable: '青少年ESL，需确认年龄和监护' },
-    { id: 'junior-native', name: 'Junior Native', tuition: 1480000, currencyCode: 'KRW', suitable: '青少年Native口语方向' },
-    { id: 'junior-ielts', name: 'Junior IELTS', tuition: 1400000, currencyCode: 'KRW', suitable: '青少年雅思方向' },
-    { id: 'guardian-esl', name: 'Guardian ESL', tuition: 780000, currencyCode: 'KRW', suitable: '家长陪读课程' },
+    { id: 'esl-4', name: 'ESL 4', tuition: 910, currencyCode: 'USD', suitable: '4节菲教一对一 + 1节外教团体课 + 1节菲教团体课' },
+    { id: 'esl-6', name: 'ESL 6', tuition: 1190, currencyCode: 'USD', suitable: '一对一课时更多，适合短期强化输出' },
+    { id: 'esl-native-plus', name: 'ESL Native Plus', tuition: 1290, currencyCode: 'USD', suitable: 'ESL搭配Native表达反馈' },
+    { id: 'esl-native-complete', name: 'ESL Native Complete', tuition: 1530, currencyCode: 'USD', suitable: 'Native比例更高，适合口语和发音目标' },
+    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1090, currencyCode: 'USD', suitable: '雅思入门与基础建立' },
+    { id: 'ielts-native', name: 'IELTS + Native', tuition: 1290, currencyCode: 'USD', suitable: '雅思备考搭配Native课程' },
+    { id: 'ielts-score-guarantee', name: 'IELTS Score Guarantee', tuition: 1340, currencyCode: 'USD', suitable: '保证班方向，需确认入学门槛和周数' },
+    { id: 'toeic-native', name: 'TOEIC + Native', tuition: 1290, currencyCode: 'USD', suitable: '多益与职场考试方向' },
+    { id: 'toefl-native', name: 'TOEFL + Native', tuition: 1290, currencyCode: 'USD', suitable: '托福和北美升学方向' },
+    { id: 'business-native', name: 'Business + Native', tuition: 1290, currencyCode: 'USD', suitable: '商务会议、面试和职场表达' },
+    { id: 'golf-esl', name: 'Golf + ESL', tuition: 1290, currencyCode: 'USD', suitable: '英语课程搭配高尔夫练习' },
+    { id: 'golf-special', name: 'Golf Special', tuition: 1800, currencyCode: 'USD', suitable: '高尔夫比重更高，需确认教练和场地' },
+    { id: 'junior-esl', name: 'Junior ESL', tuition: 1120, currencyCode: 'USD', suitable: '青少年ESL，需确认年龄和监护' },
+    { id: 'junior-native', name: 'Junior Native', tuition: 1350, currencyCode: 'USD', suitable: '青少年Native口语方向' },
+    { id: 'junior-ielts', name: 'Junior IELTS', tuition: 1290, currencyCode: 'USD', suitable: '青少年雅思方向' },
+    { id: 'guardian-esl', name: 'Guardian ESL', tuition: 720, currencyCode: 'USD', suitable: '家长陪读课程' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'quad', name: '四人房', fee: 600000, currencyCode: 'KRW', note: '默认低预算估算房型，需确认空房' },
-    { id: 'double', name: '二人房', fee: 800000, currencyCode: 'KRW', note: '兼顾预算和舒适度' },
-    { id: 'single', name: '一人房', fee: 1000000, currencyCode: 'KRW', note: '隐私最高，热门档期需提前确认' },
-    { id: 'family-triple', name: '家庭三人房', fee: 700000, currencyCode: 'KRW', note: '家庭/青少年方向参考房型' },
-    { id: 'special-six', name: '特别六人房', fee: 800000, currencyCode: 'KRW', note: '特别房型，适合家庭或团体估算' },
-    { id: 'special-five', name: '特别五人房', fee: 950000, currencyCode: 'KRW', note: '特别房型，需确认开放状态' },
-    { id: 'special-four', name: '特别四人房', fee: 1100000, currencyCode: 'KRW', note: '特别房型，生活空间更大' },
+    { id: 'dorm-1-2-single', name: '宿舍1&2-单人间', fee: 950, currencyCode: 'USD', note: '隐私最高，热门档期需提前确认' },
+    { id: 'dorm-1-2-double', name: '宿舍1&2-双人间', fee: 730, currencyCode: 'USD', note: '兼顾预算和舒适度' },
+    { id: 'dorm-1-2-triple', name: '宿舍1&2-三人间', fee: 630, currencyCode: 'USD', note: '仅限家庭' },
+    { id: 'dorm-1-2-quad', name: '宿舍1&2-四人间', fee: 530, currencyCode: 'USD', note: '默认低预算估算房型' },
+    { id: 'dorm-3-single', name: '宿舍3-单人间', fee: 1150, currencyCode: 'USD', note: '隐私最高，热门档期需提前确认' },
+    { id: 'dorm-3-double', name: '宿舍3-双人间', fee: 930, currencyCode: 'USD', note: '宿舍3双人房' },
+    { id: 'dorm-3-triple', name: '宿舍3-三人间', fee: 830, currencyCode: 'USD', note: '仅限家庭' },
+    { id: 'dorm-3-quad', name: '宿舍3-四人间', fee: 730, currencyCode: 'USD', note: '宿舍3四人房' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -193,14 +203,14 @@ export class EgSchoolDetailComponent implements OnInit {
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先判断EG是否适合', text: '确认学生是要ESL、Native、考试、亲子还是Golf组合，再进入报价。' },
     { icon: 'fact_check', title: '核对课程和房型', text: '按入学日确认课程开放、房型空位、接机机场、短期比例和优惠。' },
-    { icon: 'payments', title: '拆分KRW与PHP费用', text: '前期课程住宿以KRW表估算，到校费用和签证项目以PHP另列。' },
+    { icon: 'payments', title: '拆分USD与PHP费用', text: '前期课程、住宿和注册费以USD估算，到校费用和签证项目以PHP另列。' },
     { icon: 'assignment_turned_in', title: '准备报名资料', text: '协助整理护照、入学日期、课程、房型、航班和付款节点。' },
     { icon: 'support_agent', title: '到校后继续跟进', text: '如遇调课、换老师、宿舍或费用问题，可继续联系顾问协助沟通。' },
   ];
 
   readonly notes = [
-    'EG官网公开的费用PDF为2025年1月1日韩文KRW价目表，注册费KRW100,000不包含在表格总额中。',
-    '1周、2周、3周短期课程按4周课程+住宿总额的40%、65%、85%计算，4周以上按4周单位递增。',
+    '2025年USD价目表列出4周课程费和住宿费，注册费USD100另计。',
+    '1周、2周、3周暂沿用4周课程+住宿总额的40%、65%、85%估算规则，正式短期报价需由学校确认。',
     '到校费用多以PHP支付，教材、SSP、SSP E-Card、ACR I-Card、接机、签证延签和Golf追加费用需另列。',
     'Golf + ESL和Golf Special需要额外确认练习场、教练、练习球、开放时间和个人装备。',
     '最终报名以学校正式回函、空房、优惠有效期、汇率和顾问确认报价为准。',
@@ -208,8 +218,8 @@ export class EgSchoolDetailComponent implements OnInit {
 
   readonly faqs: FaqItem[] = [
     { question: '菲律宾克拉克EG语言学校适合第一次游学吗？', answer: '适合进入候选。EG课程选择较完整，Clark生活环境相对舒适，尤其适合ESL、Native口语、亲子和高尔夫英语组合需求。' },
-    { question: 'EG的价格为什么用KRW显示？', answer: '因为EG官网公开价目表是韩文KRW表。页面保留原始币种，避免把学校价格误写成美元；人民币换算建议按付款日汇率由顾问确认。' },
-    { question: '短期1-3周怎么计算？', answer: '官网价目表写明注册费不包含，1周、2周、3周分别按4周课程+住宿总额的40%、65%、85%计算。' },
+    { question: 'EG的价格为什么用USD显示？', answer: '本页已按2025年USD价目表更新课程、住宿与注册费。PHP当地费用仍需分开准备，人民币换算建议按付款日汇率由顾问确认。' },
+    { question: '短期1-3周怎么计算？', answer: '页面暂沿用1周、2周、3周分别按4周课程+住宿总额40%、65%、85%的规则估算；由于新价目表仅列4周价格，正式短期报价需由学校确认。' },
     { question: 'EG和CIP怎么选？', answer: '如果核心是外教一对一和口语纠音，可以优先比较CIP；如果想要ESL、考试、Native、亲子和Golf一起比较，EG更值得放进候选。' },
     { question: 'EG适合雅思冲刺吗？', answer: '可以看Pre-IELTS、IELTS + Native或Score Guarantee，但短期高压冲分还应比较碧瑶强管理学校，并确认模考和保证班规则。' },
   ];
@@ -235,7 +245,7 @@ export class EgSchoolDetailComponent implements OnInit {
   readonly sources: SourceLink[] = [
     { label: 'EG Academy官方概况', url: 'https://egesl.com/bbs/board.php?bo_table=overview' },
     { label: 'EG Academy官方校园页', url: 'https://www.egesl.com/study/campus/' },
-    { label: 'EG Academy官方费用PDF', url: 'https://www.egesl.com/study/cost/cost_2025.pdf' },
+    { label: 'EG Academy官方费用PDF（课程规则参考）', url: 'https://www.egesl.com/study/cost/cost_2025.pdf' },
     { label: 'EG Academy官方Golf页', url: 'https://www.egesl.com/study/golf/' },
     { label: 'EG Academy官方FAQ', url: 'https://egesl.com/faq/' },
   ];
@@ -293,7 +303,7 @@ export class EgSchoolDetailComponent implements OnInit {
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad')?.id ?? this.roomFees[0].id;
+        this.selectedRoomId = this.roomFees.find((room) => room.id === 'dorm-1-2-quad')?.id ?? this.roomFees[0].id;
       }
     }
 
@@ -304,7 +314,7 @@ export class EgSchoolDetailComponent implements OnInit {
     }
 
     const databaseLocalFees = fees
-      .filter((fee) => fee.name !== '注册费')
+      .filter((fee) => fee.name !== '注册费' && fee.name !== '页面起始价')
       .map((fee) => ({
         item: fee.name,
         amount: this.formatMoney(fee.fee, this.currencyCodeForDisplay(fee.currencyCode)),
@@ -342,7 +352,7 @@ export class EgSchoolDetailComponent implements OnInit {
   }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.billingMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.billingMultiplier; }
-  get quoteCurrencyCode(): string { return this.selectedCourse.currencyCode || this.selectedRoom.currencyCode || 'KRW'; }
+  get quoteCurrencyCode(): string { return this.selectedCourse.currencyCode || this.selectedRoom.currencyCode || 'USD'; }
   get registrationForQuote(): number { return this.registrationCurrencyCode === this.quoteCurrencyCode ? this.registrationFee : 0; }
   get quoteAmount(): number { return this.registrationForQuote + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get quoteText(): string { return `${this.formatMoney(this.quoteAmount, this.quoteCurrencyCode)} 起`; }
@@ -351,7 +361,7 @@ export class EgSchoolDetailComponent implements OnInit {
     return this.selectedWeeks <= 3 ? `${this.selectedWeeks}周按4周课程+住宿总额的${Math.round(this.billingMultiplier * 100)}%计算` : '4周以上按4周单位估算';
   }
 
-  formatMoney(value: number, currencyCode = 'KRW'): string {
+  formatMoney(value: number, currencyCode = 'USD'): string {
     const decimals = ['KRW', 'PHP'].includes(currencyCode) ? 0 : 1;
     return `${currencyCode} ${value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: decimals })}`;
   }
@@ -374,13 +384,14 @@ export class EgSchoolDetailComponent implements OnInit {
       'Junior Native': 'junior-native',
       'Junior IELTS': 'junior-ielts',
       'Guardian ESL': 'guardian-esl',
-      '一人房': 'single',
-      '二人房': 'double',
-      '四人房': 'quad',
-      '家庭三人房': 'family-triple',
-      '特别四人房': 'special-four',
-      '特别五人房': 'special-five',
-      '特别六人房': 'special-six',
+      '宿舍1&2-单人间': 'dorm-1-2-single',
+      '宿舍1&2-双人间': 'dorm-1-2-double',
+      '宿舍1&2-三人间': 'dorm-1-2-triple',
+      '宿舍1&2-四人间': 'dorm-1-2-quad',
+      '宿舍3-单人间': 'dorm-3-single',
+      '宿舍3-双人间': 'dorm-3-double',
+      '宿舍3-三人间': 'dorm-3-triple',
+      '宿舍3-四人间': 'dorm-3-quad',
     };
     if (knownKeys[value]) return knownKeys[value];
     const slug = value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -393,7 +404,7 @@ export class EgSchoolDetailComponent implements OnInit {
   }
 
   private currencyCodeForDisplay(code?: string): string {
-    return !code ? 'KRW' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
+    return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
   }
 
   private cleanFeeDescription(description?: string): string {

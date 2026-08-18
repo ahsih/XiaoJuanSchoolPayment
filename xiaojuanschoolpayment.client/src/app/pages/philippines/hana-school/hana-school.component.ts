@@ -16,13 +16,10 @@ type CourseId =
   | 'guardian'
   | 'junior-a'
   | 'junior-b'
-  | 'junior-c'
   | 'kindergarten-half'
   | 'kindergarten-full'
-  | 'golf-intensive'
-  | 'golf-leisure'
-  | 'senior';
-type RoomId = 'one-bed' | 'two-bed' | 'three-bed' | 'family-four';
+  | 'summer-camp';
+type RoomId = 'one-bed' | 'two-bed' | 'three-bed';
 
 interface QuickInfo {
   icon: string;
@@ -127,7 +124,7 @@ export class HanaSchoolComponent {
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
 
-  readonly registrationFeeUsd = 100;
+  readonly registrationFeeUsd = 0;
   readonly weekOptions: WeekOption[] = [4, 8, 12, 16, 20, 24];
 
   readonly quickInfo: QuickInfo[] = [
@@ -164,8 +161,8 @@ export class HanaSchoolComponent {
     {
       icon: 'payments',
       label: '4周起价',
-      value: 'USD 1,470 + 注册费起',
-      note: 'Light ESL + 2人房4周课程住宿参考USD1,470，注册费USD100另计。',
+      value: 'USD 1,430 / 4周起',
+      note: '2026价目表：Light ESL + 双人房4周课程住宿USD1,430，原注册费USD100当前减免。',
     },
   ];
 
@@ -207,7 +204,7 @@ export class HanaSchoolComponent {
     { label: '公司名称', value: 'HARA AND HANAH INTERNATIONAL ACADEMY INC' },
     { label: '地址', value: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City, Pampanga, Philippines' },
     { label: '官方定位', value: 'Clark-Angeles City英语学校，主打Native teachers、1-on-1 classes、family和senior友好路线。' },
-    { label: '课程方向', value: 'Light ESL、General ESL、Native ESL、Native Only、TOEIC、IELTS、Guardian、Junior、Kindergarten、Golf、Senior。' },
+    { label: '课程方向', value: 'Light ESL、General ESL、Native ESL、Native Only、TOEIC、IELTS、Guardian、Junior、Kindergarten、夏令营、Golf、Senior。' },
     { label: '认证参考', value: '官网About页列DepEd、TESDA、DOT、Immigration Permit等；多语言页也提到CAESA正式会员。' },
     { label: '位置与交通', value: '官网写Clark International Airport约25分钟，SM Telabastagan约10分钟车程。' },
     { label: '设施', value: '宿舍、Hotel Dormitory、1:1教室、自习空间、餐厅、泳池、50米内Golf/Badminton、1km内健身房、周边咖啡餐厅超市。' },
@@ -257,7 +254,7 @@ export class HanaSchoolComponent {
       type: 'Adult ESL',
       lessons: '4P 1:1 + 1PH Group + 1Native Group',
       suitable: '适合成人初学、轻量学习和想保留更多自由时间的学生。',
-      tuition4w: 770,
+      tuition4w: 730,
     },
     {
       id: 'general-esl',
@@ -265,7 +262,7 @@ export class HanaSchoolComponent {
       type: 'Adult ESL',
       lessons: '5P 1:1 + 1PH Group + 1Native Group',
       suitable: '官网标注为Most Popular，适合想提高一对一课时和稳定输出的人。',
-      tuition4w: 910,
+      tuition4w: 860,
     },
     {
       id: 'native-esl',
@@ -273,7 +270,7 @@ export class HanaSchoolComponent {
       type: 'Native Speaking',
       lessons: '2P 1:1 + 2Native 1:1 + 1PH Group + 1Native Group',
       suitable: '适合已有基础、想提升自然表达、发音和英文思维的人。',
-      tuition4w: 1050,
+      tuition4w: 1030,
     },
     {
       id: 'native-only',
@@ -281,23 +278,23 @@ export class HanaSchoolComponent {
       type: 'Native Intensive',
       lessons: '4Native 1:1 + 1Native Group',
       suitable: '适合中高级学生、外教适应、面试口语和自然表达强化。',
-      tuition4w: 1260,
+      tuition4w: 1300,
     },
     {
       id: 'toeic',
       name: 'TOEIC',
       type: 'Exam Prep',
-      lessons: '3P 1:1 + 1Native 1:1 + 2Group + weekly mock test',
+      lessons: '3P 1:1 + 1Native 1:1 + 1PH Group + 1Native Group + weekly mock test',
       suitable: '适合求职、升学或企业英语能力证明需求。',
-      tuition4w: 1050,
+      tuition4w: 1025,
     },
     {
       id: 'ielts',
       name: 'IELTS',
       type: 'Exam Prep',
-      lessons: '3P 1:1 + 1Native 1:1 + 2Group + weekly mock test',
+      lessons: '3P 1:1 + 1Native 1:1 + 1PH Group + 1Native Group + weekly mock test',
       suitable: '适合雅思听说读写备考，官网提到8周以上可关注保证项目。',
-      tuition4w: 1050,
+      tuition4w: 1025,
     },
     {
       id: 'guardian',
@@ -305,7 +302,7 @@ export class HanaSchoolComponent {
       type: 'Parent Course',
       lessons: '3P 1:1 + 1PH Group',
       suitable: '适合陪读家长轻量学习，也可和孩子课程组合报价。',
-      tuition4w: 600,
+      tuition4w: 570,
     },
     {
       id: 'junior-a',
@@ -324,18 +321,10 @@ export class HanaSchoolComponent {
       tuition4w: 1200,
     },
     {
-      id: 'junior-c',
-      name: 'Junior Course C',
-      type: 'Junior Intensive',
-      lessons: '8P 1:1',
-      suitable: '适合短期集中补强、需要高比例一对一的青少年。',
-      tuition4w: 1280,
-    },
-    {
       id: 'kindergarten-half',
       name: 'Kindergarten Half Day',
       type: 'Kindergarten',
-      lessons: '08:30 - 12:35',
+      lessons: '08:30 - 12:30 or 13:30 - 16:45',
       suitable: '适合3-6岁低龄儿童半日英语沉浸，住宿餐食另计。',
       tuition4w: 600,
     },
@@ -343,45 +332,28 @@ export class HanaSchoolComponent {
       id: 'kindergarten-full',
       name: 'Kindergarten Full Day',
       type: 'Kindergarten',
-      lessons: '08:30 - 16:45',
+      lessons: '08:30 - 12:30 / 13:30 - 16:45',
       suitable: '适合3-6岁低龄儿童全天活动、英文和蒙特梭利理念课程。',
       tuition4w: 1100,
     },
     {
-      id: 'golf-intensive',
-      name: 'Golf Intensive',
-      type: 'English + Golf',
-      lessons: '3P 1:1 + 1PH Group + 16 golf 1:1 lessons',
-      suitable: '适合想把英语课程与系统高尔夫训练结合的人。',
-      tuition4w: 1000,
-    },
-    {
-      id: 'golf-leisure',
-      name: 'Golf Leisure',
-      type: 'English + Golf',
-      lessons: '3P 1:1 + 1PH Group + unlimited practice balls',
-      suitable: '适合更轻松地把英语、练习场和自由时间结合。',
-      tuition4w: 700,
-    },
-    {
-      id: 'senior',
-      name: 'Senior Course',
-      type: 'Senior',
-      lessons: '3P 1:1 + senior program',
-      suitable: '适合50+成人、慢节奏英语、生活体验和文化活动。',
-      tuition4w: 900,
+      id: 'summer-camp',
+      name: 'Summer Camp (7-17 years)',
+      type: 'Summer Camp',
+      lessons: '7-17岁夏令营，含游泳课',
+      suitable: '适合7-17岁暑期集中学习与活动体验，具体营期需按学校当期安排确认。',
+      tuition4w: 2800,
     },
   ];
 
   readonly roomOptions: RoomOption[] = [
     { id: 'one-bed', name: '1 bed / 单人房', fee4w: 900, note: '普通房型4周住宿参考，隐私最高。' },
     { id: 'two-bed', name: '2 beds / 双人房', fee4w: 700, note: '多数成人课程常用预算房型，费用较平衡。' },
-    { id: 'three-bed', name: '3 beds / 三人房', fee4w: 600, note: '适合预算控制或家庭/朋友同行，需确认是否适用课程。' },
-    { id: 'family-four', name: 'Family of 4 / 家庭四人', fee4w: 600, note: '官网家庭房率列Family of 4为每人USD600/4周。' },
+    { id: 'three-bed', name: '3 beds / 三人房', fee4w: 600, note: '2026价目表备注为家庭房，需按同行人数和空房确认。' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'Registration Fee', amount: 'USD 100 / person', note: '官网Admission页面列注册费，确认报名和保留房间/课表。' },
+    { item: 'Registration Fee', amount: 'USD 100 / person（当前减免）', note: '2026价目表列标准注册费USD100，并注明注册费减免；最终以学校invoice为准。' },
     { item: 'Visa Extension', amount: 'PHP 4,630 起', note: '1st extension到8周；之后2nd PHP5,900，后续每次PHP4,130参考。' },
     { item: 'SSP', amount: 'PHP 7,500', note: '特别学习许可；官网表说明无ACR有效2个月，有ACR有效6个月。' },
     { item: 'SSP E-Card', amount: 'PHP 4,000', note: '官网当地费用表列示，有效期1年。' },
@@ -414,8 +386,8 @@ export class HanaSchoolComponent {
   ];
 
   readonly notes = [
-    'HANA官网课程页说明价格为USD，Tuition + Dormitory套餐包含room和meals；当地PHP费用另计。',
-    'Admission页面说明注册费USD100用于保留座位、房间和课表，学费住宿通常需在出发前至少1个月支付。',
+    'HANA 2026价目表价格为USD；课程费与住宿费分列，当地PHP费用另计。',
+    '2026价目表列标准注册费USD100，并注明注册费减免；本页估算器按减免后的USD0计算，最终以学校invoice为准。',
     'Clark与Manila接机费不同；如自行前往，官网建议Grab搜索HARA AND HANAH INTERNATIONAL ACADEMY。',
     'Kindergarten、Junior和Senior课程有各自规则，年龄、监护、活动、接送和医疗支持要按当期确认。',
     '官网列低季优惠、早鸟、团报和长期优惠，但是否适用要按入学日期、房型和学校回函确认。',
@@ -430,7 +402,7 @@ export class HanaSchoolComponent {
     {
       question: 'HANA 4周最低大概多少钱？',
       answer:
-        '按官网课程表，Light ESL课程费USD770，2人房住宿USD700，4周课程住宿合计USD1,470；注册费USD100和PHP当地费用另算。',
+        '按2026价目表，Light ESL课程费USD730，双人房住宿USD700，4周课程住宿合计USD1,430；价目表注明原注册费USD100当前减免，PHP当地费用另算。',
     },
     {
       question: 'HANA适合亲子吗？',
@@ -445,7 +417,7 @@ export class HanaSchoolComponent {
     {
       question: '页面报价包含所有费用吗？',
       answer:
-        '不包含全部。报价器只估算USD课程费、住宿费和注册费；SSP、签证、SSP E-Card、ACR、教材、电费、Utility、押金、接机、机票、保险和个人消费另算。',
+        '不包含全部。报价器只估算USD课程费和住宿费，并按2026价目表应用注册费减免；SSP、签证、SSP E-Card、ACR、教材、电费、Utility、押金、接机、机票、保险和个人消费另算。',
     },
   ];
 
@@ -511,11 +483,11 @@ export class HanaSchoolComponent {
   }
 
   get fourWeekStartingText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[0].tuition4w + this.roomOptions[1].fee4w);
+    return this.formatUsd(this.courses[0].tuition4w + this.roomOptions[1].fee4w);
   }
 
   get formulaText(): string {
-    return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4 + 注册费`;
+    return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4（2026注册费减免）`;
   }
 
   get courseFeeRows() {

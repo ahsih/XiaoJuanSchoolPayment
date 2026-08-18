@@ -24,7 +24,7 @@
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
-                获取WE当期报价
+                查看WE 2026报价
                 <mat-icon>request_quote</mat-icon>
               </a>
               <a class="secondary-action" href="#local-fees" (click)="scrollToSection('local-fees', $event)">
@@ -38,7 +38,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              WE官网未直接公开完整学费住宿表；页面只写官方可确认的课程结构和Golf / Swimming公开价格，正式报价以学校回函为准。
+              页面已按2026年价目表更新4周USD课程费、住宿费和USD100注册费；其他周数及到校费用以学校回函为准。
             </p>
           </div>
 
@@ -55,12 +55,12 @@
             </div>
             <aside class="hero-price-card">
               <span>费用状态</span>
-              <strong>课程住宿需核价</strong>
-              <p>Golf PHP750/次；Swimming PHP500-700/次</p>
+              <strong>4周USD价格已更新</strong>
+              <p>ESL 4 + 四人间 + 注册费：USD1,500起</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  Native Mix、Junior、Guardian、Kindergarten可按学生情况核价
+                  15个课程方案与9个房型可直接比较
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -209,15 +209,15 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>课程核价清单</span>
-              <h2>学费需按WE当期价目表确认</h2>
-              <p>以下课程用于报价系统和顾问核价，不把未公开的学费写成固定金额。</p>
+              <span>2026课程费</span>
+              <h2>WE 4周课程费用</h2>
+              <p>以下为2026年价目表中的4周USD课程费，注册费和住宿费另计。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="WE Academy课程核价清单">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周费用</span>
-                <span role="columnheader">适合人群</span>
+                <span role="columnheader">课程安排</span>
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
@@ -252,9 +252,9 @@
         <section class="split-layout" id="room-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>住宿核价清单</span>
-              <h2>校内宿舍和家庭房要和空房一起确认</h2>
-              <p>WE官网说明宿舍位于校园内，并有New Residence消息；具体房型、价格、押金、餐食和开放状态需当期确认。</p>
+              <span>2026住宿费</span>
+              <h2>普通宿舍与公寓房型</h2>
+              <p>以下为2026年价目表中的4周USD住宿费；房间空位、押金、餐食和入住人数仍需按入学日确认。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="WE Academy住宿核价清单">
               <div class="table-row table-head" role="row">
@@ -280,9 +280,9 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <span>WE费用核价</span>
-              <h2>默认参考：4周 Native Mix 2 + 校内宿舍</h2>
-              <p>选择目标课程和住宿后，顾问可按入学日、年龄、周数、房型和活动项目向WE确认正式报价。</p>
+              <span>WE费用报价</span>
+              <h2>默认参考：4周 NATIVE MIX GENERAL + 四人间</h2>
+              <p>选择课程和住宿后，页面会计算4周课程费、住宿费和一次性注册费的参考合计。</p>
             </div>
             <div class="quote-form" aria-label="WE费用核价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -292,22 +292,22 @@
             </div>
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>{{ registrationFeeText }}</strong></div>
-              <div><span>课程</span><strong>{{ selectedCourse.name }}</strong></div>
-              <div><span>住宿</span><strong>{{ selectedRoom.name }}</strong></div>
+              <div><span>课程</span><strong>{{ selectedCourse.name }} · {{ formatMoney(selectedCourse.tuition, selectedCourse.currencyCode) }}</strong></div>
+              <div><span>住宿</span><strong>{{ selectedRoom.name }} · {{ formatMoney(selectedRoom.fee, selectedRoom.currencyCode) }}</strong></div>
               <div><span>公开活动价</span><strong>Golf PHP750；Swimming PHP500-700/次</strong></div>
             </div>
             <div class="quote-result">
               <span>当前选择</span>
               <strong>{{ quoteSummary }}</strong>
               <em>{{ quoteText }}</em>
-              <p *ngIf="quoteCalculated">已记录当前选择。正式报价仍需确认WE当期价目表、房型、年龄规则、航班接机和学校回函。</p>
+              <p *ngIf="quoteCalculated">已根据2026年4周价目表生成参考。正式报价仍需确认房型空位、年龄规则、到校费用、航班接机和学校回函。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="requestQuote()">生成核价清单<mat-icon>request_quote</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">
-              注意：WE公开页没有完整学费住宿表，页面中的课程和住宿金额显示为“需当期确认”是刻意保留，不建议用非官方价格替代学校回函。
+              注意：附件仅提供4周价格，因此页面不自行推算1、2、3、8周等其他周数；正式付款以学校账单为准。
             </p>
           </section>
         </section>
@@ -342,7 +342,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页资料参考WE Academy官网首页、Program、Curriculum、Golf、Swimming和Teachers页面。官网未公开完整学费住宿表，因此数据库中课程与住宿以“需当期确认”保留，公开活动价按官网页面记录。
+              课程、住宿和注册费已按WE Academy 2026年价目表更新；官网首页、Program、Curriculum、Golf、Swimming和Teachers页面继续用于课程与活动资料参考。最终以学校正式账单为准。
             </p>
           </div>
         </section>
@@ -406,8 +406,8 @@
           <span>当前参考</span>
           <strong>{{ selectedWeeks }}周</strong>
           <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
-          <div class="side-price">需核价</div>
-          <small>Golf / Swimming公开价格可先列入预算</small>
+          <div class="side-price">{{ quoteText }}</div>
+          <small>2026年4周价目表参考；其他周数需确认</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">生成清单<mat-icon>request_quote</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>

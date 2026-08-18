@@ -13,7 +13,7 @@
             <p class="hero-lead">
               <span>位于Angeles City Friendship Highway生活圈的综合型语言学校。</span>
               <span>ESL、Native、IELTS、TOEIC、TOEFL、Business、Junior与Golf英语都能一起比较。</span>
-              <span>本页按EG官方2025年KRW价目表和官网校园资料整理。</span>
+              <span>本页按EG 2025年USD价目表和官网校园资料整理。</span>
             </p>
             <div class="hero-tags" aria-label="EG Academy特点">
               <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
@@ -37,7 +37,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              EG官方价目表以KRW列出课程与住宿，注册费和到校PHP费用需另计；正式报名仍以学校回函、空房和付款日汇率为准。
+              2025年价目表以USD列出课程与住宿，注册费和到校PHP费用需另计；正式报名仍以学校回函、空房和付款日汇率为准。
             </p>
           </div>
 
@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源：EG Academy官网Campus、Facilities与Golf页面；费用参考EG Academy 2025-01-01官方KRW价目PDF。
+              图片来源：EG Academy官网Campus、Facilities与Golf页面；费用参考EG Academy 2025年USD价目表。
             </p>
           </div>
         </section>
@@ -134,7 +134,7 @@
               <h2>EG的重点是课程选择宽、Clark生活方便、Golf特色明显</h2>
             </div>
             <p>
-              EG不是单一考试冲刺校，而是更适合综合比较：基础ESL、Native口语、考试课、亲子和Golf都能覆盖。报价时要把KRW课程住宿、KRW注册费、PHP到校费用和接机机场拆开看。
+              EG不是单一考试冲刺校，而是更适合综合比较：基础ESL、Native口语、考试课、亲子和Golf都能覆盖。报价时要把USD课程住宿、USD注册费、PHP到校费用和接机机场拆开看。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Sida</div>
@@ -208,11 +208,11 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>EG 2025官方4周课程费</span>
-              <h2>官方PDF以KRW列出课程费用</h2>
-              <p>以下为4周课程费，不含住宿与注册费；1/2/3周短期按课程+住宿总额40%/65%/85%估算。</p>
+              <span>EG 2025年4周课程费</span>
+              <h2>2025年价目表以USD列出课程费用</h2>
+              <p>以下为4周课程费，不含住宿与注册费；短期暂沿用1/2/3周40%/65%/85%规则估算，正式报价需确认。</p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="EG 2025官方4周课程费">
+            <div class="data-table course-fee-table" role="table" aria-label="EG 2025年4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
@@ -251,11 +251,11 @@
         <section class="split-layout" id="room-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>EG 2025官方4周住宿费</span>
+              <span>EG 2025年4周住宿费</span>
               <h2>房型会直接影响总价和空房难度</h2>
               <p>以下为官方PDF的4周住宿费参考；家庭与特别房型要按同行人数、性别、入学日和空房确认。</p>
             </div>
-            <div class="data-table room-fee-table" role="table" aria-label="EG 2025官方4周住宿费">
+            <div class="data-table room-fee-table" role="table" aria-label="EG 2025年4周住宿费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">房型</span>
                 <span role="columnheader">4周住宿费</span>
@@ -280,8 +280,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>EG费用快速估算</span>
-              <h2>默认参考：4周 ESL 4 + 四人房</h2>
-              <p>估算公式：注册费 +（课程费 + 住宿费）x 周数比例。到校PHP费用不并入KRW总额。</p>
+              <h2>默认参考：4周 ESL 4 + 宿舍1&amp;2四人房</h2>
+              <p>估算公式：注册费 +（课程费 + 住宿费）x 周数比例。到校PHP费用不并入USD总额。</p>
             </div>
             <div class="quote-form" aria-label="EG费用估算选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -296,7 +296,7 @@
               <div><span>周数规则</span><strong>{{ shortCourseRuleText }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期KRW参考</span>
+              <span>前期USD参考</span>
               <strong>{{ quoteText }}</strong>
               <em>人民币换算请按付款日汇率确认</em>
               <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放、优惠和学校回函。</p>
@@ -306,7 +306,7 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">
-              注意：EG官方PDF说明注册费KRW100,000不包含在表格内；教材费、SSP、SSP E-Card、ACR I-Card、接机、延签、保证金和Golf追加费用多以PHP到校支付。
+              注意：2025年USD价目表列出注册费USD100；教材费、SSP、SSP E-Card、ACR I-Card、接机、延签、保证金和Golf追加费用多以PHP到校支付。
             </p>
           </section>
         </section>
@@ -314,8 +314,8 @@
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>到校支付费用</span>
-            <h2>KRW课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按EG官方费用PDF和Golf页面整理，金额会随周数、课程、签证规则和学校现场政策调整。</p>
+            <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
+            <p>以下按EG费用资料和Golf页面整理，金额会随周数、课程、签证规则和学校现场政策调整。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -341,7 +341,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页费用参考EG Academy官方2025-01-01韩文KRW价目表，并结合EG官网Overview、Campus、Golf和FAQ页面整理。学校价格、优惠、房型空位、接机和到校费用可能调整，报名以学校正式报价为准。
+              本页课程、住宿与注册费参考EG Academy 2025年USD价目表，并结合EG官网Overview、Campus、Golf和FAQ页面整理。学校价格、优惠、房型空位、接机和到校费用可能调整，报名以学校正式报价为准。
             </p>
           </div>
         </section>
@@ -350,7 +350,7 @@
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
             <h2>通过思达启航报名EG，我们会帮你把费用拆清楚</h2>
-            <p>顾问会把课程、房型、KRW前期费用、PHP到校费用、接机机场和Golf追加费用分开核对，避免只看一个“总价”造成误解。</p>
+            <p>顾问会把课程、房型、USD前期费用、PHP到校费用、接机机场和Golf追加费用分开核对，避免只看一个“总价”造成误解。</p>
           </div>
           <div class="process-grid desktop-process-grid">
             <article *ngFor="let step of serviceSteps">
@@ -421,7 +421,7 @@
       <div>
         <h2>想知道EG当前是否有空房和优惠？</h2>
         <p>把入学日期、学习周数、英语基础、目标课程、房型和是否需要Golf告诉顾问，我们可以帮你向学校确认正式报价。</p>
-        <ul><li>0中介服务费</li><li>课程房型建议</li><li>KRW与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
+        <ul><li>0中介服务费</li><li>课程房型建议</li><li>USD与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
       </div>
       <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
     </section>

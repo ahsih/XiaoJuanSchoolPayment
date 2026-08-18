@@ -87,9 +87,39 @@ export class WeSchoolComponent {
 
   readonly priceRows: PriceRow[] = [
     {
-      item: '英语课程 + 住宿',
-      amount: '需按当期价目表确认',
-      note: '官网公开页面未直接列出完整学费住宿表，建议按入学日、周数、房型和课程询价。',
+      item: 'ESL 3-6',
+      amount: 'USD 650-950 / 4周',
+      note: 'ESL 3仅限监护人；ESL 4-6按一对一课时递增。',
+    },
+    {
+      item: 'Native Mix',
+      amount: 'USD 900-1,300 / 4周',
+      note: 'LIGHT、GENERAL、INTENSIVE分别含1、2、3节外教一对一。',
+    },
+    {
+      item: '托业 / 托福 / 雅思',
+      amount: 'USD 1,050 / 4周',
+      note: '2026年价目表课程费，住宿和注册费另计。',
+    },
+    {
+      item: 'Junior / Kinder ESL',
+      amount: 'USD 950-1,250 / 4周',
+      note: 'Junior ESL、Junior Native ESL与Kinder ESL。',
+    },
+    {
+      item: 'ESL + Golf',
+      amount: 'USD 1,100-1,700 / 4周',
+      note: 'ROUND课程每周含1次实地课程。',
+    },
+    {
+      item: '普通宿舍',
+      amount: 'USD 650-1,100 / 4周',
+      note: '单人间、双人间、三人间与四人间。',
+    },
+    {
+      item: '公寓房型',
+      amount: 'USD 850-1,700 / 4周',
+      note: '按公寓房型与1-4人入住方案计价。',
     },
     {
       item: 'Golf私教课',
@@ -109,7 +139,7 @@ export class WeSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: '需按当期报价确认' },
+    { item: '注册费', amount: 'USD 100' },
     { item: 'SSP / SSP E-card', amount: '菲律宾当地学习许可费用，按学校当期说明缴纳' },
     { item: '教材费', amount: '按课程和实际教材收取' },
     { item: '水电 / 设施 / 押金', amount: '按房型、周数和学校规则确认' },
@@ -145,7 +175,7 @@ export class WeSchoolComponent {
   ];
 
   readonly cons = [
-    '官网公开页面未直接列出完整学费住宿表，必须以当期报价确认',
+    '2026年价目表仅列出4周课程与住宿费，其他周数和到校费用需确认',
     '成人自由度较高，不适合需要强制门禁和高压自习管理的学生',
     '亲子课程要逐项确认年龄、监护、房型、餐食、接送和医疗支持',
     'Golf和Swimming等活动费用需单独列预算，不能只看英语课程价',
@@ -168,9 +198,9 @@ export class WeSchoolComponent {
         '如果目标是短期高压IELTS冲分，WE不是第一优先。它更适合亲子、口语、轻中强度学习和活动型体验。',
     },
     {
-      question: '为什么费用表没有直接写学费？',
+      question: 'WE 2026年4周费用怎么计算？',
       answer:
-        '因为官网公开页面没有直接露出完整学费住宿表。为避免误导，页面只列公开可确认的活动附加价，并提示英语课程和住宿需按当期报价核算。',
+        '用选定的4周课程费加4周住宿费，再加一次性注册费USD100。SSP、教材、押金、水电、接机和活动费用另计。',
     },
   ];
 

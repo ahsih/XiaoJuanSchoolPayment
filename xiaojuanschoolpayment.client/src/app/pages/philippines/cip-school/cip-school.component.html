@@ -55,16 +55,16 @@
         </div>
         <aside class="hero-price-card">
           <span>4周参考</span>
-          <strong>USD 1668 <small>起</small></strong>
-          <p>Regular ESL + 校内四人间</p>
+          <strong>RMB 7,740 <small>起</small></strong>
+          <p>Light ESL + 校内四人间</p>
           <ul>
             <li>
               <mat-icon>check_circle</mat-icon>
-              暂时沿用CIA课程费、住宿费和注册费数值
+              课程注册费RMB 600、住宿注册费RMB 500另计
             </li>
             <li>
               <mat-icon>info</mat-icon>
-              CIP正式价目表更新后可直接替换
+              1/2/3周按4周价的40%/65%/85%计算
             </li>
           </ul>
         </aside>
@@ -103,14 +103,14 @@
         <label>
           周数
           <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+            <option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">
               {{ weeks }}周
             </option>
           </select>
         </label>
         <label>
           课程
-          <select [(ngModel)]="selectedCourseId">
+          <select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidWeeks()">
             <option *ngFor="let course of courseFees" [value]="course.id">
               {{ course.name }}
             </option>
@@ -134,7 +134,7 @@
           (click)="scrollToSection('quote', $event)"
           >立即计算我的费用</a
         >
-        <p>当前费用为CIA临时参考值，最终以CIP正式报价为准</p>
+        <p>课程与住宿为人民币4周价；短期比例和两项注册费已纳入报价</p>
       </aside>
     </section>
 
@@ -246,7 +246,7 @@
 
         <p class="course-match-note">
           <mat-icon>verified_user</mat-icon>
-          当前费用为CIA临时硬编码值，正式报名之前必须替换为CIP当期报价。
+          本页已按提供的2026 CIP人民币价目表更新；正式报名仍需确认价格适用期、空房和当地费用。
         </p>
       </div>
     </section>
@@ -257,14 +257,14 @@
         <label>
           学习周数
           <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
+            <option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">
               {{ weeks }}周
             </option>
           </select>
         </label>
         <label>
           课程
-          <select [(ngModel)]="selectedCourseId">
+          <select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidWeeks()">
             <option *ngFor="let course of courseFees" [value]="course.id">
               {{ course.name }}
             </option>
@@ -283,15 +283,15 @@
           <input type="date" [(ngModel)]="selectedStartDate" />
         </label>
         <div class="radio-row">
-          <span>是否旺季</span>
-          <strong>{{ isPeakSeason ? "是" : "否" }}</strong>
+          <span>周数计价规则</span>
+          <strong>{{ durationRuleText }}</strong>
         </div>
       </div>
 
       <div class="quote-result-card">
         <div class="quote-result-head">
           <div>
-            <h2>报价结果 <small>临时示例</small></h2>
+            <h2>报价结果 <small>价格参考</small></h2>
             <p>
               {{ selectedCourse.name }} + {{ selectedRoom.name }} +
               {{ selectedWeeks }}周
@@ -303,44 +303,33 @@
         </div>
         <div class="result-lines">
           <div>
-            <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+            <span>注册费（课程RMB 600 + 住宿RMB 500）</span>
+            <strong>RMB {{ formatCny(registrationFee) }}</strong>
           </div>
           <div>
             <span>课程费（{{ selectedWeeks }}周）</span>
-            <strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+            <strong>RMB {{ formatCny(tuitionForSelectedWeeks) }}</strong>
           </div>
           <div>
             <span>住宿费（{{ selectedWeeks }}周）</span>
-            <strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+            <strong>RMB {{ formatCny(roomFeeForSelectedWeeks) }}</strong>
           </div>
-          <div>
-            <span>旺季附加费</span>
-            <strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
-          </div>
-          <div class="discount-line">
-            <span>思达折扣（{{ discountText }}，仅课程费和住宿费）</span>
-            <strong>
-              - USD
-              {{
-                formatUsd(
-                  (tuitionForSelectedWeeks + roomFeeForSelectedWeeks) *
-                    (1 - discount)
-                )
-              }}
-            </strong>
+          <div class="discount-line" *ngIf="longTermDiscount > 0">
+            <span>长期优惠（16周RMB 300 / 20周RMB 600 / 24周RMB 900）</span>
+            <strong>- RMB {{ formatCny(longTermDiscount) }}</strong>
           </div>
         </div>
         <div class="quote-total">
           <span>前期支付参考合计</span>
-          <strong>{{ quoteUsdText }}</strong>
-          <em>{{ quoteCnyText }}</em>
+          <strong>{{ quoteCnyText }}</strong>
+          <em>已包含课程与住宿注册费RMB 1,100</em>
         </div>
         <div class="quote-tool-row">
           <a class="primary-action" routerLink="/about-sida/contact">
             <mat-icon>headset_mic</mat-icon>获取顾问确认报价
           </a>
           <small class="cip-price-warning">
-            价格暂时硬编码沿用CIA，之后请替换为CIP正式价目表。
+            学校价格、空房、入住限制和当地费用可能调整，报名以确认报价为准。
           </small>
         </div>
       </div>
@@ -349,7 +338,7 @@
     <section class="cia-section" id="fee-structure">
       <div class="section-heading">
         <h2>费用结构更清楚</h2>
-        <p>本页先按CIA价格值建立结构，方便之后直接换成CIP正式课程费和住宿费。</p>
+        <p>课程费与住宿费均以人民币4周价为基准；1/2/3周分别按40%/65%/85%计算。</p>
       </div>
       <div class="fee-structure-grid">
         <article *ngFor="let group of feeStructureCards">
@@ -370,23 +359,23 @@
 
     <section class="tables-section" id="course-fees">
       <div class="course-table-block">
-        <h2><mat-icon>menu_book</mat-icon>CIP 临时课程费参考 / 4周</h2>
+        <h2><mat-icon>menu_book</mat-icon>CIP 2026课程费 / 4周</h2>
         <div
           class="data-table course-fee-table"
           role="table"
-          aria-label="CIP 临时课程费参考"
+          aria-label="CIP 2026年人民币课程费"
         >
           <div class="table-row table-head" role="row">
             <span role="columnheader">课程方向</span>
             <span role="columnheader">课程名称</span>
-            <span role="columnheader">4周课程费</span>
+            <span role="columnheader">4周课程费（RMB）</span>
             <span role="columnheader">说明</span>
             <span role="columnheader">备注</span>
           </div>
           <div class="table-row" role="row" *ngFor="let fee of courseFees">
             <span role="cell">{{ fee.suitable }}</span>
             <span role="cell"><strong>{{ fee.name }}</strong></span>
-            <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+            <span role="cell">RMB {{ formatCny(fee.tuition) }}</span>
             <span role="cell">{{ fee.schedule }}</span>
             <span role="cell">{{ fee.note }}</span>
           </div>
@@ -394,24 +383,26 @@
       </div>
 
       <div class="room-table-block" id="room-fees">
-        <h2><mat-icon>bed</mat-icon>CIP 临时住宿费参考 / 4周</h2>
+        <h2><mat-icon>bed</mat-icon>CIP 2026住宿费 / 4周</h2>
         <div
           class="data-table room-fee-table"
           role="table"
-          aria-label="CIP 临时住宿费参考"
+          aria-label="CIP 2026年人民币住宿费"
         >
           <div class="table-row table-head" role="row">
             <span role="columnheader">房型</span>
-            <span role="columnheader">代码</span>
-            <span role="columnheader">4周住宿费</span>
+            <span role="columnheader">英文</span>
+            <span role="columnheader">4周住宿费（RMB）</span>
+            <span role="columnheader">备注</span>
           </div>
           <div class="table-row" role="row" *ngFor="let room of roomFees">
             <span role="cell">{{ room.name }}</span>
-            <span role="cell">{{ room.id | uppercase }}</span>
-            <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+            <span role="cell">{{ room.englishName }}</span>
+            <span role="cell">RMB {{ formatCny(room.fee) }}</span>
+            <span role="cell">{{ room.note }}</span>
           </div>
         </div>
-        <p>说明：住宿费数值临时沿用CIA页面，CIP正式房型价格之后手动替换。</p>
+        <p>住宿注册费RMB 500另计；房型空位、人数限制和校外住宿安排需报名时确认。</p>
       </div>
     </section>
 
@@ -432,9 +423,10 @@
       <div class="price-note">
         <h3>价格说明</h3>
         <ol>
-          <li>当前费用为页面结构占位，数值按CIA页面硬编码。</li>
-          <li>CIP官网提供2026-2027资料与按国籍区分的Tuition Table入口。</li>
-          <li>最终报价需按CIP当期价目表、空房、优惠和当地费用重新确认。</li>
+          <li>本页课程费、住宿费和注册费已按提供的2026 CIP人民币价目表更新。</li>
+          <li>1周按4周价40%、2周按65%、3周按85%；4周以上按4周价格成倍计算。</li>
+          <li>长期优惠：16周减RMB 300、20周减RMB 600、24周减RMB 900。</li>
+          <li>最终报价仍需按价格适用期、房型空位、入住限制和当地费用确认。</li>
         </ol>
       </div>
     </section>

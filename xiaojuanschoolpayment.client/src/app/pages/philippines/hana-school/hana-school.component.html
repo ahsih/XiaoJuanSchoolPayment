@@ -55,7 +55,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ fourWeekStartingText }}</strong>
-              <p>Light ESL + 2 beds + 注册费USD100</p>
+              <p>Light ESL + 2 beds，2026注册费减免</p>
               <ul>
                 <li><mat-icon>check_circle</mat-icon>课程住宿套餐含room和meals</li>
                 <li><mat-icon>info</mat-icon>SSP、签证、电费、教材、接机等PHP费用另计</li>
@@ -185,7 +185,7 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程类型</span>
-            <h2>成人ESL、Native、考试、Junior、Kindergarten、Golf和Senior</h2>
+            <h2>成人ESL、Native、考试、Junior、Kindergarten和夏令营</h2>
             <p>HANA课程覆盖面很宽，选校时要先按学生年龄、Native比例、学习强度和活动需求筛选，而不是只看课程名。</p>
           </div>
           <div class="course-grid hana-course-grid">
@@ -200,9 +200,9 @@
 
         <section class="section-block" id="course-fees">
           <div class="section-heading">
-            <span>HANA官方4周课程住宿参考</span>
+            <span>HANA 2026年4周课程住宿参考</span>
             <h2>课程费和住宿费分开列，套餐价才是USD预算</h2>
-            <p>下表按官网课程页整理。套餐参考为4周课程费 + 4周房型费，不含注册费和菲律宾当地PHP费用。</p>
+            <p>下表按2026价目表整理。套餐参考为4周课程费 + 4周房型费；价目表注明原注册费USD100当前减免，菲律宾当地PHP费用另计。</p>
           </div>
 
           <div class="data-table hana-tuition-table" role="table" aria-label="HANA Academy 4周课程住宿套餐参考">
@@ -257,7 +257,7 @@
             <div class="section-heading">
               <span>HANA费用快速估算</span>
               <h2>默认参考：4周 Light ESL + 2 beds</h2>
-              <p>估算公式：课程费 + 宿舍费 + 注册费；PHP当地费用不并入USD总额。</p>
+              <p>估算公式：课程费 + 宿舍费；2026价目表注明注册费减免，PHP当地费用不并入USD总额。</p>
             </div>
             <div class="quote-form" aria-label="HANA费用估算选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -266,7 +266,7 @@
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
             </div>
             <div class="quote-breakdown hana-quote-breakdown">
-              <div><span>注册费</span><strong>USD 100</strong></div>
+              <div><span>注册费</span><strong>USD 0（原USD 100，当前减免）</strong></div>
               <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
               <div><span>公式</span><strong>{{ formulaText }}</strong></div>

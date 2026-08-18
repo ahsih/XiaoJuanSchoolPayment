@@ -127,14 +127,14 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark/cip-english-kepos': {
     title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
     description:
-      '菲律宾克拉克 CIP语言学校页面，整理CIP English Kepos的Native speaker一对一、ESL、IELTS、TOEIC、Business、亲子青少年课程、宿舍与Hotel住宿、临时CIA参考费用和报名注意事项。',
+      '菲律宾克拉克 CIP语言学校页面，整理CIP English Kepos的Native speaker一对一、ESL、IELTS、TOEIC、Business、亲子青少年课程、2026人民币课程住宿费用和报名注意事项。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
     image: '/assets/philippines/cip-campus-intro.jpg',
   },
   '/philippines-study/clark/eg-academy': {
     title: '菲律宾克拉克EG语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾克拉克EG语言学校页面，整理EG Academy的ESL、Native、IELTS、TOEIC、TOEFL、Business、Golf + ESL、Junior与Guardian课程、官方KRW费用和PHP到校费用。',
+      '菲律宾克拉克EG语言学校页面，整理EG Academy的ESL、Native、IELTS、TOEIC、TOEFL、Business、Golf + ESL、Junior与Guardian课程、2025年USD课程住宿费和PHP到校费用。',
     keywords: '菲律宾克拉克EG语言学校, EG Academy, Education Group Granma, 克拉克EG, Clark EG, Golf ESL, 菲律宾亲子游学',
     image: '/assets/philippines/eg-facility-001.jpg',
   },

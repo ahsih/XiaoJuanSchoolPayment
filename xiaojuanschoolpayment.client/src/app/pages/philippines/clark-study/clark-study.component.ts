@@ -126,7 +126,7 @@ export class ClarkStudyComponent {
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
-      startingPrice: 'USD 1,668 / 4周起参考',
+      startingPrice: 'RMB 7,740 + 注册费 / 4周起参考',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -150,7 +150,7 @@ export class ClarkStudyComponent {
       location: 'Lot 2-B Friendship Highway, Cutcut, Angeles City',
       style: 'ESL、Native、考试与Golf体验型',
       route: '/philippines-study/clark/eg-academy',
-      startingPrice: 'KRW 1,550,000 + 注册费 / 4周起参考',
+      startingPrice: 'USD 1,540 / 4周起（ESL 4 + 宿舍1&2四人间 + 注册费）',
       courses: [
         'ESL 4 / ESL 6',
         'ESL Native Plus / Complete',
@@ -161,20 +161,20 @@ export class ClarkStudyComponent {
         'Junior / Guardian',
       ],
       accommodation:
-        '官方价目表列出一人房、二人房、四人房、家庭三人房和特别四至六人房；空房需按入学日与同行人数确认。',
+        '2025年价目表列出宿舍1&2及宿舍3的单人、双人、三人和四人房；三人房仅限家庭，空房需按入学日确认。',
       facilities:
         '官网概况列出1:1教室50间、团体教室20间、TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅和旅行社。',
       bestFor:
         '想在Clark做一般英语、Native口语、考试基础、商务英语、亲子陪读或高尔夫英语组合的人群。',
       consultantNote:
-        'EG官方2025价目表以KRW列出课程和住宿，注册费KRW100,000另计；教材、SSP、接机、延签和Golf追加费用多以PHP到校支付。',
+        'EG 2025年价目表以USD列出课程和住宿，注册费USD100另计；教材、SSP、接机、延签和Golf追加费用多以PHP到校支付。',
     },
     {
       name: '菲律宾克拉克WE Academy语言学校',
       location: 'Fil-Am Friendship Highway, Angeles City',
       style: '度假式校区与亲子友好型',
       route: '/philippines-study/clark/clark-we-academy',
-      startingPrice: '课程住宿需核价；Golf PHP750，Swimming PHP500-700/次',
+      startingPrice: 'USD 1,500 / 4周起（ESL 4 + 四人间 + 注册费）',
       courses: [
         'ESL',
         'Native Mix',
@@ -190,7 +190,7 @@ export class ClarkStudyComponent {
       bestFor:
         '亲子家庭、低龄学生、希望学习节奏较自由、也看重校内活动和生活舒适度的人群。',
       consultantNote:
-        '菲律宾克拉克WE Academy语言学校适合“学习 + 陪读 + 生活体验”组合，但如果目标是强制备考冲刺，需要和 CIP、EG 或碧瑶学校一起比较。',
+        '2026年价目表已列出4周USD课程与住宿费，注册费USD100另计。学校适合“学习 + 陪读 + 生活体验”组合；到校费用和其他周数仍需确认。',
     },
     {
       name: '菲律宾克拉克TALK Academy语言学校',
@@ -222,10 +222,10 @@ export class ClarkStudyComponent {
       location: 'Clark / Pampanga',
       style: 'Sparta强管理与考试路线候选',
       route: '/philippines-study/clark/help-english-clark',
-      startingPrice: 'USD 1,500 / 4周起参考',
+      startingPrice: 'USD 1,500 / 4周课程住宿起，注册费USD 100另计',
       courses: ['ESL', 'ESL Intensive', 'IELTS / TOEIC', 'Business English', 'Family / Junior'],
       accommodation:
-        '官方价目表列出Quadra、Triple、Double、Single房型；宿舍费按4周计算，含校内餐食和饮用水，空房需按入学日确认。',
+        '2026年价目表列出Quadra、Triple、Double、Single房型；宿舍费按4周计算，含校内餐食和饮用水，空房需按入学日确认。',
       facilities: '官方Clark页面列出1:1教室、小组教室、大讲堂、宿舍、泳池、运动场、餐厅、便利店和Clinic等设施。',
       bestFor:
         '偏好老牌HELP体系、Sparta节奏、EOP、IELTS/TOEIC考试路线和Clark机场便利的学生。',
@@ -260,7 +260,7 @@ export class ClarkStudyComponent {
       location: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City',
       style: 'Native口语、亲子、Golf与Senior舒适型',
       route: '/philippines-study/clark/hana-academy',
-      startingPrice: 'USD 1,470 + 注册费 / 4周起参考',
+      startingPrice: 'USD 1,430 / 4周起（Light ESL + 双人房，2026注册费减免）',
       courses: [
         'Light ESL / General ESL',
         'Native ESL / Native Only',
@@ -277,7 +277,7 @@ export class ClarkStudyComponent {
       bestFor:
         '想在Clark兼顾Native口语、亲子低龄、Senior、Golf English和生活便利的学生或家庭。',
       consultantNote:
-        'HANA不是高压Sparta路线，适合舒适生活和多年龄课程组合；报价时要把Native课比例、房型、注册费和PHP当地费用拆开核对。',
+        'HANA不是高压Sparta路线，适合舒适生活和多年龄课程组合；2026价目表注明注册费减免，报价时仍要把Native课比例、房型和PHP当地费用拆开核对。',
     },
   ];
 

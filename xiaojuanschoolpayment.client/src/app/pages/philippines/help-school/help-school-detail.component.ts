@@ -48,10 +48,14 @@ export class HelpSchoolDetailComponent implements OnInit {
     'esl',
     'esl-intensive',
     'business-english',
-    'family-program',
-    'ielts-toeic-basic',
-    'ielts-toeic-intermediate',
-    'ielts-toeic-advanced',
+    'toeic-basic-intermediate',
+    'toeic-advanced',
+    'ielts-basic-intermediate',
+    'ielts-advanced',
+    'family-camp-guardian',
+    'family-camp-kindergarten',
+    'family-camp-kid-1',
+    'family-camp-kid-2',
   ];
   private readonly roomFeeOrder = ['quadra-room', 'triple-room', 'double-room', 'single-room'];
 
@@ -62,7 +66,7 @@ export class HelpSchoolDetailComponent implements OnInit {
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
-  registrationFee = 0;
+  registrationFee = 100;
   registrationCurrencyCode = 'USD';
   readonly weekOptions = [4, 6, 8, 10, 12, 16, 20, 24];
 
@@ -72,7 +76,7 @@ export class HelpSchoolDetailComponent implements OnInit {
     { icon: 'flight_takeoff', label: '机场距离', value: 'Clark约15分钟', note: '从马尼拉机场约1.5-2小时，适合重视抵达效率的学生。' },
     { icon: 'school', label: '课程', value: 'ESL / IELTS / TOEIC / Business', note: '另有Family、Junior和线上一对一课程方向。' },
     { icon: 'history_edu', label: '学习制度', value: 'Sparta + EOP', note: 'EOP时间为07:00-18:00，平日外出受限，晚自习和词汇测试更严格。' },
-    { icon: 'payments', label: '4周起价', value: 'USD 1,500 起', note: 'ESL USD900 + 四人房USD600；当地PHP费用另算。' },
+    { icon: 'payments', label: '4周起价', value: 'USD 1,500 起', note: 'ESL USD900 + 四人房USD600；注册费USD100及当地PHP费用另算。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -104,7 +108,7 @@ export class HelpSchoolDetailComponent implements OnInit {
     { title: '想要强管理学习节奏', text: 'HELP Clark有Sparta、EOP、晚自习和词汇测试，更适合需要外部纪律的人。' },
     { title: '目标是ESL打底后转考试', text: 'ESL可衔接IELTS、TOEIC或Business，适合8-12周以上逐步规划。' },
     { title: '重视Clark机场和园区安全', text: 'Clark校区离机场近，周边医院、商场和生活资源更好安排。' },
-    { title: '需要官方USD价目表', text: 'HELP公开了4周课程和宿舍USD表，便于先做基础预算。' },
+    { title: '需要2026年USD价目表', text: '所附价目表列出4周课程和宿舍USD价格，便于先做基础预算。' },
     { title: '想比较碧瑶与克拉克HELP体系', text: '同一HELP品牌下，Clark偏交通便利和现代设施，碧瑶偏安静山城学习环境。' },
   ];
 
@@ -116,22 +120,26 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'ESL / ESL Intensive', type: '一般英语', lessons: 'Regular ESL 4节1:1；Intensive ESL增加1节个人听力课', suitable: '适合基础打底、口语自信和第一次菲律宾游学。' },
-    { name: 'IELTS Basic / Intermediate / Advanced', type: '雅思备考', lessons: 'IELTS Speaking/Writing一对一 + Reading/Listening小组 + 模考', suitable: '适合升学、移民或工作目标，需按入学分数选择级别。' },
-    { name: 'TOEIC Basic / Intermediate / Advanced', type: '多益备考', lessons: '每日4节1:1搭配听读训练、词汇测试和定期模考', suitable: '适合求职、毕业门槛和职场英语证书目标。' },
-    { name: 'Business English', type: '商务英语', lessons: '会议、邮件、演讲、谈判和商务沟通场景训练', suitable: '适合已有中级基础的职场人士或转商务路线学生。' },
-    { name: 'Family Program', type: '亲子课程', lessons: '父母与孩子同住，孩子课程可按能力和年龄调整', suitable: '适合亲子同行，但监护、房型、活动名额需提前确认。' },
+    { name: 'ESL / ESL Intensive', type: '一般英语', lessons: 'ESL每日4节一对一，Intensive每日5节；另含小团体、大团体、词汇考试和晚自习', suitable: '适合基础打底、口语自信和第一次菲律宾游学。' },
+    { name: 'IELTS Basic & Intermediate / Advanced', type: '雅思备考', lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合升学、移民或工作目标；价目表另列定期模拟考。' },
+    { name: 'TOEIC Basic & Intermediate / Advanced', type: '多益备考', lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合求职、毕业门槛和职场英语证书目标。' },
+    { name: 'Business English', type: '商务英语', lessons: '每日5节一对一 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合已有中级基础的职场人士或转商务路线学生。' },
+    { name: 'Family Camp', type: '亲子课程', lessons: '监护人、幼儿园、Kid 1和Kid 2按年龄与课表分别计价', suitable: '适合亲子同行；Kid 1须满7岁，Kid 2须满10岁。' },
     { name: 'Junior / Online 1:1', type: '青少年与线上', lessons: 'Junior Camp与线上课程按当期开放和年龄规则确认', suitable: '适合假期或无法长期到校的学生作为补充方案。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'esl', name: 'ESL', tuition: 900, currencyCode: 'USD', suitable: '4周基础沟通英语，适合初次游学和口语打底' },
-    { id: 'esl-intensive', name: 'ESL Intensive', tuition: 1040, currencyCode: 'USD', suitable: '4周强化沟通英语，适合想增加一对一课时' },
-    { id: 'business-english', name: 'Business English', tuition: 1050, currencyCode: 'USD', suitable: '4周商务沟通、演示和邮件写作方向' },
-    { id: 'family-program', name: 'Family Program', tuition: 1000, currencyCode: 'USD', suitable: '4周亲子课程，需确认儿童年龄和家长责任' },
-    { id: 'ielts-toeic-basic', name: 'IELTS / TOEIC Basic', tuition: 1050, currencyCode: 'USD', suitable: '4周考试基础，官方级别参考IELTS 3.0-4.5' },
-    { id: 'ielts-toeic-intermediate', name: 'IELTS / TOEIC Intermediate', tuition: 1050, currencyCode: 'USD', suitable: '4周考试中级，官方级别参考IELTS 4.5-5.5' },
-    { id: 'ielts-toeic-advanced', name: 'IELTS / TOEIC Advanced', tuition: 1150, currencyCode: 'USD', suitable: '4周考试进阶，官方级别参考IELTS 5.5以上' },
+    { id: 'esl', name: 'ESL', tuition: 900, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习' },
+    { id: 'esl-intensive', name: 'ESL Intensive', tuition: 1050, currencyCode: 'USD', suitable: '每日5节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习' },
+    { id: 'business-english', name: 'Business English', tuition: 1050, currencyCode: 'USD', suitable: '每日5节一对一 + 2节大团体 + 词汇考试 + 晚自习' },
+    { id: 'toeic-basic-intermediate', name: 'TOEIC Basic & Intermediate', tuition: 1050, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习' },
+    { id: 'toeic-advanced', name: 'TOEIC Advanced', tuition: 1150, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习' },
+    { id: 'ielts-basic-intermediate', name: 'IELTS Basic & Intermediate', tuition: 1050, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习；每4周一次模拟考，5分以上每2周一次' },
+    { id: 'ielts-advanced', name: 'IELTS Advanced', tuition: 1150, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习；每4周一次模拟考，5分以上每2周一次' },
+    { id: 'family-camp-guardian', name: 'Family Camp - Guardian / 监护人', tuition: 1000, currencyCode: 'USD', suitable: '每日5节一对一；家长最多可转让3节课' },
+    { id: 'family-camp-kindergarten', name: 'Family Camp - Kindergarten / 幼儿园', tuition: 1000, currencyCode: 'USD', suitable: '每日08:30-14:00；GIS' },
+    { id: 'family-camp-kid-1', name: 'Family Camp - Kid 1', tuition: 1000, currencyCode: 'USD', suitable: '每日5节一对一；满7岁以上' },
+    { id: 'family-camp-kid-2', name: 'Family Camp - Kid 2', tuition: 1400, currencyCode: 'USD', suitable: '每日4节一对一 + 2节小团体课 + 2节活动课 + 2节晚课；满10岁以上' },
   ];
 
   roomFees: RoomFee[] = [
@@ -174,7 +182,7 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly notes = [
-    'HELP官方费用公式为（课程费 + 宿舍费）x 学习周数 / 4；当地费用、签证、材料和接机不包含在USD课程住宿费中。',
+    'HELP 2026年价目表注册费为USD100；课程住宿按（课程费 + 宿舍费）x 学习周数 / 4估算，当地费用、签证、材料和接机另计。',
     'Dormitory fee按4周计算，官方说明包含校内餐食和饮用水。',
     'Clark当地费用4周总额为PHP20,800；6周、8周及以上会随签证、水电、维护、洗衣和教材递增。',
     'EOP时间为07:00-18:00，平日外出限制、晚自习和词汇测试对学生自律要求更高。',
@@ -182,7 +190,7 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly faqs: FaqItem[] = [
-    { question: '菲律宾克拉克HELP English语言学校4周最低多少钱？', answer: '按官方USD表，ESL课程USD900 + Quadra四人房USD600，4周课程住宿合计USD1,500起。PHP当地费用另算，4周Clark当地费用表总额为PHP20,800。' },
+    { question: '菲律宾克拉克HELP English语言学校4周最低多少钱？', answer: '按2026年价目表，ESL课程USD900 + Quadra四人房USD600，4周课程住宿合计USD1,500起；加USD100注册费后，前期USD参考为USD1,600。PHP当地费用另算，4周Clark当地费用表总额为PHP20,800。' },
     { question: 'HELP Clark适合雅思或多益吗？', answer: '适合放进候选。官方IELTS和TOEIC页面列出Basic、Intermediate、Advanced结构、1:1课程、模考和Sparta日程；最终仍需按入学成绩和开课档期确认。' },
     { question: 'HELP Clark管理严格吗？', answer: '相对严格。官方Clark页面列出Sparta系统、EOP 07:00-18:00、平日外出限制、晚自习和词汇测试，更适合需要集中学习的人。' },
     { question: 'HELP Clark和WE Academy怎么选？', answer: 'HELP更偏老牌Sparta和考试路线，WE更偏亲子、Native Mix和度假式校园。若学生需要纪律和考试目标，HELP更值得看；若想自由舒适和低龄亲子，WE也应比较。' },
@@ -321,7 +329,9 @@ export class HelpSchoolDetailComponent implements OnInit {
   get quoteAmount(): number { return this.registrationForQuote + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get quoteText(): string { return `${this.formatMoney(this.quoteAmount, this.quoteCurrencyCode)} 起`; }
   get registrationFeeText(): string { return this.registrationFee > 0 ? this.formatMoney(this.registrationFee, this.registrationCurrencyCode) : '未列入公开USD表'; }
-  get formulaText(): string { return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4`; }
+  get formulaText(): string {
+    return `${this.registrationFeeText} 注册费 + (${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4`;
+  }
 
   formatMoney(value: number, currencyCode = 'USD'): string {
     if (value < 0) return '需当期确认';
@@ -334,10 +344,14 @@ export class HelpSchoolDetailComponent implements OnInit {
       ESL: 'esl',
       'ESL Intensive': 'esl-intensive',
       'Business English': 'business-english',
-      'Family Program': 'family-program',
-      'IELTS / TOEIC Basic': 'ielts-toeic-basic',
-      'IELTS / TOEIC Intermediate': 'ielts-toeic-intermediate',
-      'IELTS / TOEIC Advanced': 'ielts-toeic-advanced',
+      'TOEIC Basic & Intermediate': 'toeic-basic-intermediate',
+      'TOEIC Advanced': 'toeic-advanced',
+      'IELTS Basic & Intermediate': 'ielts-basic-intermediate',
+      'IELTS Advanced': 'ielts-advanced',
+      'Family Camp - Guardian / 监护人': 'family-camp-guardian',
+      'Family Camp - Kindergarten / 幼儿园': 'family-camp-kindergarten',
+      'Family Camp - Kid 1': 'family-camp-kid-1',
+      'Family Camp - Kid 2': 'family-camp-kid-2',
       'Quadra Room / 四人房': 'quadra-room',
       'Triple Room / 三人房': 'triple-room',
       'Double Room / 双人房': 'double-room',
