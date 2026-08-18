@@ -699,7 +699,7 @@ export class CebuStudyComponent {
       location: 'EGI Hotel Bldg 5, Looc Maribago, Lapu-Lapu City',
       style: 'Mactan海边度假型，PINES姊妹校，ESL / IELTS / TOEIC / Business / Junior',
       route: '/philippines-study/cebu/cebu-blue-ocean-academy',
-      startingPrice: 'USD 1,850 / 4周起',
+      startingPrice: 'USD 1,820 / 4周起',
       courses: [
         'Light ESL 4',
         'Intensive ESL',
@@ -707,7 +707,7 @@ export class CebuStudyComponent {
         'Power ESL 5 / 7',
         'Business English',
         'TOEIC / IELTS',
-        'Junior / Parents 3H',
+        'Junior / Parents 3H / Senior Course',
       ],
       accommodation:
         'EGI Hotel海景/市景双人房、海景三人房，以及Ocean Suites单人房；公开价格中学费和住宿费分开计算。',
@@ -849,7 +849,7 @@ export class CebuStudyComponent {
       location: '麦克坦岛 / Lapu-Lapu City',
       style: '半斯巴达，老牌综合型学校',
       route: '/philippines-study/cebu/philinter-academy',
-      startingPrice: 'USD 1,390 / 4周起',
+      startingPrice: 'USD 1,600 / 4周主费起（注册费另计）',
       courses: [
         'General ESL',
         'Intensive Power Speaking',

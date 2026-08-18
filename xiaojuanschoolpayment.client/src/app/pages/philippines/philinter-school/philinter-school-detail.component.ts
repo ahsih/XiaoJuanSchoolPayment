@@ -50,12 +50,12 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolSearchName = 'Philinter';
   private readonly pricingSchoolNames = ['菲律宾宿务Philinter语言学校', 'Philinter Academy'];
-  private readonly courseFeeOrder = ['light-esl', 'general-esl', 'intensive-esl', 'intensive-power-speaking', 'ielts-intensive', 'toefl', 'toeic-regular', 'advanced-business', 'basic-business', 'focused-industry', 'primary-english', 'junior-esl', 'junior-ielts', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks'];
-  private readonly roomFeeOrder = ['in-campus-triple', 'in-campus-twin', 'in-campus-single', 'azon-single', 'azon-twin'];
+  private readonly courseFeeOrder = ['light-esl', 'general-esl', 'intensive-esl', 'intensive-power-speaking', 'ielts-intensive', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toeic-regular', 'focus-industry', 'basic-business', 'advanced-business', 'speaking', 'junior-speaking'];
+  private readonly roomFeeOrder = ['in-campus-triple', 'in-campus-twin', 'in-campus-single', 'azon-triple', 'azon-twin', 'azon-single'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100;
+  registrationFee = 220;
   readonly discount = 1;
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
@@ -135,22 +135,28 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'light-esl', name: 'Light ESL', tuition: 1060, suitable: '轻量综合英语，适合短期体验或希望保留生活弹性的学生' },
-    { id: 'general-esl', name: 'General ESL', tuition: 1160, suitable: '半斯巴达综合英语，适合第一次游学和稳步提升' },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1280, suitable: '斯巴达强度更高，适合想加快综合英文提升的学生' },
-    { id: 'intensive-power-speaking', name: 'Intensive Power Speaking', tuition: 1410, suitable: '强化口说与表达流利度，适合短期口语突破' },
-    { id: 'ielts-intensive', name: 'IELTS Intensive', tuition: 1370, suitable: '雅思专项备考，适合目标分数学生' },
-    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1280, suitable: '托业备考，适合升学、求职或企业英语需求' },
-    { id: 'advanced-business', name: 'Advanced Business', tuition: 1410, suitable: '商务沟通、演示、会议和职场表达' },
-    { id: 'junior-esl', name: 'Junior ESL', tuition: 1610, suitable: '12-17岁青少年综合英文，年龄和监护规则需确认' },
+    { id: 'light-esl', name: 'Light ESL', tuition: 790, suitable: '轻量综合英语，适合短期体验或希望保留生活弹性的学生' },
+    { id: 'general-esl', name: 'General ESL', tuition: 900, suitable: '综合英语，适合第一次游学和稳步提升' },
+    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1030, suitable: '高强度综合英语，适合想加快英文提升的学生' },
+    { id: 'intensive-power-speaking', name: 'Intensive Power Speaking', tuition: 1170, suitable: '强化口说与表达流利度，适合短期口语突破' },
+    { id: 'ielts-intensive', name: 'IELTS Intensive', tuition: 1200, suitable: '雅思专项备考，适合目标分数学生' },
+    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1580, suitable: '8周保证班方向，需确认入学分数、出勤、模考和校规' },
+    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1420, suitable: '12周保证班方向，需确认入学分数、出勤、模考和校规' },
+    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1100, suitable: '托业备考，适合升学、求职或企业英语需求' },
+    { id: 'focus-industry', name: 'Focus Industry（可定制）', tuition: 1280, suitable: '行业主题英文，需按目标行业和开课档期确认' },
+    { id: 'basic-business', name: 'Basic Business', tuition: 1150, suitable: '商务基础英文，入学要求雅思3分' },
+    { id: 'advanced-business', name: 'Advanced Business', tuition: 1200, suitable: '进阶商务英语，入学要求雅思3.5至4分' },
+    { id: 'speaking', name: 'Speaking', tuition: 1400, suitable: '口语强化课程，最长报名8周' },
+    { id: 'junior-speaking', name: 'Junior Speaking', tuition: 1400, suitable: '青少年口语强化课程，最长报名8周' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'in-campus-triple', name: '校内三人房', fee: 520, note: '默认报价参考，预算压力较低' },
-    { id: 'in-campus-twin', name: '校内双人房', fee: 630, note: '适合朋友同行或希望兼顾预算与舒适度' },
-    { id: 'in-campus-single', name: '校内单人房', fee: 960, note: '隐私最好，预算较高，热门档期需早确认' },
-    { id: 'azon-single', name: '校外公寓单人房', fee: 1160, note: 'Azon Condo方向，接送、门禁和空房需顾问确认' },
-    { id: 'azon-twin', name: '校外公寓双人房', fee: 780, note: '校外公寓方向，适合重视生活品质的成人或家庭' },
+    { id: 'in-campus-triple', name: '校内三人房', fee: 810, note: '上下铺三人房；默认报价参考，预算压力较低' },
+    { id: 'in-campus-twin', name: '校内双人房', fee: 970, note: '适合朋友同行或希望兼顾预算与舒适度' },
+    { id: 'in-campus-single', name: '校内单人房', fee: 1400, note: '隐私最好，预算较高，热门档期需早确认' },
+    { id: 'azon-triple', name: '校外公寓三人房', fee: 890, note: 'Azon Condo三人房；接送、门禁和空房需顾问确认' },
+    { id: 'azon-twin', name: '校外公寓双人房', fee: 1100, note: 'Azon Condo双人房；适合重视生活品质的成人或家庭' },
+    { id: 'azon-single', name: '校外公寓单人房', fee: 1690, note: 'Azon Condo单人房；接送、门禁和空房需顾问确认' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -172,6 +178,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { item: '管理费', amount: 'PHP 1,000', note: '4周参考，最终以学校现场收费为准' },
     { item: '宿舍押金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
     { item: '学生证', amount: 'PHP 300', note: '一次性费用参考' },
+    { item: '额外住宿', amount: 'PHP 3,000 / 晚', note: '按实际额外入住晚数计算' },
     { item: 'ACR I-card', amount: '按周期确认', note: '长期学习或延签时通常需要' },
     { item: '签证延签', amount: '按周数确认', note: '按学习周数和菲律宾签证规则调整' },
   ];
@@ -244,7 +251,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     'Philinter报名前建议先确认General、Intensive、IPS、IELTS或Business方向，课程强度差异明显。',
     '校内宿舍和校外公寓在门禁、接送、生活便利度和预算上不同，报名时要一起确认。',
     '儿童和青少年课程需先确认年龄、陪同家长、监护规则、开课档期和房型。',
-    '本页课程费与住宿费为4周拆分参考，正式报价仍需按学校费用表、优惠和房型空位确认。',
+    '本页课程费与住宿费为4周参考；1周、2周、3周分别按4周价格的40%、65%、85%计算。',
     '到校支付费用会随学校政策、汇率和个人情况变化，最终以学校现场收费为准。',
   ];
 
@@ -253,6 +260,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { question: 'Philinter是斯巴达学校吗？', answer: 'Philinter整体更常被理解为半斯巴达学校，但Intensive、IELTS和保证班方向会有更强的学习安排和规则。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后通常还需支付SSP、SSP E-card、水电、教材、押金、接机、延签等当地费用。' },
     { question: 'Philinter适合口说强化吗？', answer: '适合。Intensive Power Speaking是Philinter常被关注的口说方向，适合想提升流利度、准确度和表达自信的学生。' },
+    { question: 'Philinter短期1至3周怎么计算？', answer: '课程费和住宿费均以4周价格为基准：1周按40%、2周按65%、3周按85%计算；课程与住宿注册费另计。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名Philinter，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
 
@@ -339,8 +347,14 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
+  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.selectedWeekMultiplier; }
+  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.selectedWeekMultiplier; }
+  get selectedWeekMultiplier(): number {
+    if (this.selectedWeeks === 1) return 0.4;
+    if (this.selectedWeeks === 2) return 0.65;
+    if (this.selectedWeeks === 3) return 0.85;
+    return this.selectedWeeks / 4;
+  }
   get seasonalSurcharge(): number { return this.seasonalFeePerWeek > 0 ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
   get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
@@ -353,6 +367,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   private createRoomId(name: string): string {
     if (name.includes('校外') && name.includes('单人')) return 'azon-single';
     if (name.includes('校外') && name.includes('双人')) return 'azon-twin';
+    if (name.includes('校外') && name.includes('三人')) return 'azon-triple';
     if (name.includes('三人')) return 'in-campus-triple';
     if (name.includes('双人')) return 'in-campus-twin';
     if (name.includes('单人')) return 'in-campus-single';

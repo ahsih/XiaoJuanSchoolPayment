@@ -130,7 +130,7 @@ export class CebuBlueOceanSchoolComponent {
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFee = 130;
+  readonly registrationFee = 100;
   readonly usdToCny = 7.2;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12];
 
@@ -239,9 +239,9 @@ export class CebuBlueOceanSchoolComponent {
       value: 'EGI Hotel Bldg 5, Looc Maribago, Lapu-Lapu City, Cebu 6015, Philippines',
     },
     { label: '学校定位', value: 'Mactan岛海边度假型英语学校，PINES姊妹校，强调教学稳定和度假设施' },
-    { label: '课程方向', value: 'Light ESL、Intensive ESL、Survival ESL、Power ESL 5/7、Business、TOEIC、IELTS、Junior、Parents 3H' },
+    { label: '课程方向', value: 'Light ESL、Intensive ESL、Survival ESL、Power ESL 5/7、Business、TOEIC、IELTS、Junior、Parents 3H、Senior Course' },
     { label: '住宿房型', value: 'Ocean Suites单人房；EGI Hotel海景/市景双人房、海景三人房' },
-    { label: '4周起价', value: 'USD 1,850起：Light ESL学费 + EGI三人海景住宿 + 注册费' },
+    { label: '4周起价', value: 'USD 1,820起：Light ESL学费 + EGI三人海景住宿 + 注册费' },
     { label: '当地费用', value: 'SSP、SSP I-Card、ACR、签证延长、押金、教材、水电、管理费、洗衣和接机另算' },
   ];
 
@@ -381,6 +381,13 @@ export class CebuBlueOceanSchoolComponent {
       lessons: '公开表：1:1 3节',
       suitable: '适合亲子同行家长保留较多陪伴和休息时间。',
     },
+    {
+      id: 'senior',
+      name: 'Senior Course',
+      type: '40岁以上特色课程',
+      lessons: '公开表：1:1 4节 + 特色小组课',
+      suitable: '适合40岁以上、希望兼顾一对一学习与特色小组互动的学生。',
+    },
   ];
 
   readonly dormOptions: DormOption[] = [
@@ -423,66 +430,39 @@ export class CebuBlueOceanSchoolComponent {
   ];
 
   readonly tuitionFees: TuitionFee[] = [
-    { courseId: 'light-esl', weeks: 1, fee: 348 },
-    { courseId: 'light-esl', weeks: 2, fee: 566 },
-    { courseId: 'light-esl', weeks: 3, fee: 740 },
     { courseId: 'light-esl', weeks: 4, fee: 870 },
     { courseId: 'light-esl', weeks: 8, fee: 1740 },
     { courseId: 'light-esl', weeks: 12, fee: 2510 },
-    { courseId: 'intensive-esl', weeks: 1, fee: 388 },
-    { courseId: 'intensive-esl', weeks: 2, fee: 631 },
-    { courseId: 'intensive-esl', weeks: 3, fee: 825 },
     { courseId: 'intensive-esl', weeks: 4, fee: 970 },
     { courseId: 'intensive-esl', weeks: 8, fee: 1940 },
     { courseId: 'intensive-esl', weeks: 12, fee: 2810 },
-    { courseId: 'survival-esl', weeks: 1, fee: 420 },
-    { courseId: 'survival-esl', weeks: 2, fee: 683 },
-    { courseId: 'survival-esl', weeks: 3, fee: 893 },
     { courseId: 'survival-esl', weeks: 4, fee: 1050 },
     { courseId: 'survival-esl', weeks: 8, fee: 2100 },
     { courseId: 'survival-esl', weeks: 12, fee: 3050 },
-    { courseId: 'power-esl-5', weeks: 1, fee: 372 },
-    { courseId: 'power-esl-5', weeks: 2, fee: 605 },
-    { courseId: 'power-esl-5', weeks: 3, fee: 791 },
     { courseId: 'power-esl-5', weeks: 4, fee: 930 },
     { courseId: 'power-esl-5', weeks: 8, fee: 1860 },
     { courseId: 'power-esl-5', weeks: 12, fee: 2690 },
-    { courseId: 'power-esl-7', weeks: 1, fee: 468 },
-    { courseId: 'power-esl-7', weeks: 2, fee: 760 },
-    { courseId: 'power-esl-7', weeks: 3, fee: 994 },
     { courseId: 'power-esl-7', weeks: 4, fee: 1170 },
     { courseId: 'power-esl-7', weeks: 8, fee: 2340 },
     { courseId: 'power-esl-7', weeks: 12, fee: 3410 },
-    { courseId: 'business', weeks: 1, fee: 480 },
-    { courseId: 'business', weeks: 2, fee: 780 },
-    { courseId: 'business', weeks: 3, fee: 1020 },
     { courseId: 'business', weeks: 4, fee: 1200 },
     { courseId: 'business', weeks: 8, fee: 2400 },
     { courseId: 'business', weeks: 12, fee: 3500 },
-    { courseId: 'toeic', weeks: 1, fee: 420 },
-    { courseId: 'toeic', weeks: 2, fee: 683 },
-    { courseId: 'toeic', weeks: 3, fee: 893 },
     { courseId: 'toeic', weeks: 4, fee: 1050 },
     { courseId: 'toeic', weeks: 8, fee: 2100 },
     { courseId: 'toeic', weeks: 12, fee: 3050 },
-    { courseId: 'ielts', weeks: 1, fee: 452 },
-    { courseId: 'ielts', weeks: 2, fee: 735 },
-    { courseId: 'ielts', weeks: 3, fee: 961 },
     { courseId: 'ielts', weeks: 4, fee: 1130 },
     { courseId: 'ielts', weeks: 8, fee: 2260 },
     { courseId: 'ielts', weeks: 12, fee: 3290 },
-    { courseId: 'junior', weeks: 1, fee: 600 },
-    { courseId: 'junior', weeks: 2, fee: 975 },
-    { courseId: 'junior', weeks: 3, fee: 1275 },
     { courseId: 'junior', weeks: 4, fee: 1500 },
     { courseId: 'junior', weeks: 8, fee: 3000 },
     { courseId: 'junior', weeks: 12, fee: 4400 },
-    { courseId: 'parents', weeks: 1, fee: 300 },
-    { courseId: 'parents', weeks: 2, fee: 488 },
-    { courseId: 'parents', weeks: 3, fee: 638 },
     { courseId: 'parents', weeks: 4, fee: 750 },
     { courseId: 'parents', weeks: 8, fee: 1500 },
     { courseId: 'parents', weeks: 12, fee: 2150 },
+    { courseId: 'senior', weeks: 4, fee: 1050 },
+    { courseId: 'senior', weeks: 8, fee: 2100 },
+    { courseId: 'senior', weeks: 12, fee: 3050 },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -519,7 +499,7 @@ export class CebuBlueOceanSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 130', note: '出发前支付，不含在学费和住宿费中' },
+    { item: '注册费', amount: 'USD 100', note: '出发前支付，不含在学费和住宿费中' },
     { item: '高峰期加价', amount: 'USD 40 / 周', note: '公开表列2026/6/28-8/22高峰季加价；正式以学校报价为准' },
     { item: '机场接机', amount: 'PHP 1,200 / 1,500', note: '指定时间团体接机PHP 1,200，个别接机通常PHP 1,500' },
     { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，金额可能按政策更新' },
@@ -649,9 +629,9 @@ export class CebuBlueOceanSchoolComponent {
     '按摩和咖啡厅',
   ];
   readonly notes = [
-    '本页费用使用2026公开美元参考价；实际金额会按学校当期报价、汇率和政策调整。',
+    '4周课程与住宿基准使用学校2025美元价目表；实际金额会按学校当期报价、汇率和政策调整。',
     'CBOA公开价格中，学费和住宿费分开列出，报价器会把注册费、学费、住宿费相加。',
-    '3周以下公开规则通常按4周价的85%/65%/40%估算住宿，长周数按4周价倍数估算。',
+    '课程与住宿的1周、2周、3周费用分别按4周价格的40%、65%、85%计算。',
     '暑假旺季、Family Camp、海景房和Ocean Suites单人房需要提前确认空房和规则。',
     '到校后SSP、签证、押金、教材、水电、管理费和洗衣等费用需以学校Orientation说明为准。',
   ];
@@ -739,11 +719,21 @@ export class CebuBlueOceanSchoolComponent {
   }
 
   tuitionFor(courseId: string, weeks: WeekOption = this.selectedWeeks): number {
-    return (
-      this.tuitionFees.find(
-        (item) => item.courseId === courseId && item.weeks === weeks,
-      )?.fee ?? 0
-    );
+    const listedFee = this.tuitionFees.find(
+      (item) => item.courseId === courseId && item.weeks === weeks,
+    )?.fee;
+
+    if (listedFee !== undefined) {
+      return listedFee;
+    }
+
+    const fourWeekFee = this.tuitionFees.find(
+      (item) => item.courseId === courseId && item.weeks === 4,
+    )?.fee;
+
+    return fourWeekFee && weeks < 4
+      ? fourWeekFee * this.durationMultiplier(weeks)
+      : 0;
   }
 
   dormFeeFor(roomId: string, weeks: WeekOption = this.selectedWeeks): number {

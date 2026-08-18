@@ -77,18 +77,19 @@ export class PhilinterSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { course: 'Light ESL', triple: 'USD 1,580', twin: 'USD 1,690', single: 'USD 2,020' },
-    { course: 'General ESL', triple: 'USD 1,680', twin: 'USD 1,790', single: 'USD 2,120' },
-    { course: 'Intensive ESL', triple: 'USD 1,800', twin: 'USD 1,910', single: 'USD 2,240' },
-    { course: 'IPS / Advanced Business', triple: 'USD 1,930', twin: 'USD 2,040', single: 'USD 2,370' },
-    { course: 'IELTS / TOEFL', triple: 'USD 1,890', twin: 'USD 2,000', single: 'USD 2,330' },
-    { course: 'IELTS Guarantee 8周', triple: 'USD 4,480', twin: 'USD 4,700', single: 'USD 5,360' },
-    { course: 'IELTS Guarantee 12周', triple: 'USD 6,120', twin: 'USD 6,450', single: 'USD 7,440' },
-    { course: 'Junior ESL / Junior IELTS', triple: 'USD 2,130 / 2,190', twin: 'USD 2,240 / 2,300', single: 'USD 2,570 / 2,630' },
+    { course: 'Light ESL', triple: 'USD 1,600', twin: 'USD 1,760', single: 'USD 2,190' },
+    { course: 'General ESL', triple: 'USD 1,710', twin: 'USD 1,870', single: 'USD 2,300' },
+    { course: 'Intensive ESL', triple: 'USD 1,840', twin: 'USD 2,000', single: 'USD 2,430' },
+    { course: 'Intensive Power Speaking', triple: 'USD 1,980', twin: 'USD 2,140', single: 'USD 2,570' },
+    { course: 'IELTS Intensive / Advanced Business', triple: 'USD 2,010', twin: 'USD 2,170', single: 'USD 2,600' },
+    { course: 'IELTS Guarantee 8周', triple: 'USD 4,780', twin: 'USD 5,100', single: 'USD 5,960' },
+    { course: 'IELTS Guarantee 12周', triple: 'USD 6,690', twin: 'USD 7,170', single: 'USD 8,460' },
+    { course: 'Speaking / Junior Speaking', triple: 'USD 2,210', twin: 'USD 2,370', single: 'USD 2,800' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 100' },
+    { item: '课程注册费', amount: 'USD 120' },
+    { item: '住宿注册费', amount: 'USD 100' },
     { item: '周末接机', amount: 'PHP 1,200' },
     { item: '平日接机', amount: 'PHP 1,500' },
     { item: 'SSP学习许可', amount: '当地披索缴费，按学校最新标准确认' },
@@ -137,7 +138,7 @@ export class PhilinterSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: '菲律宾宿务Philinter语言学校的起价是多少？',
-      answer: 'iOutback比较表显示 Philinter 为 USD 1,390 起；详细2026费用表中，Light ESL 校内三人房4周为 USD 1,580，General ESL 校内三人房4周为 USD 1,680。',
+      answer: '2026费用表中，Light ESL加校内三人房4周主费为USD 1,600，General ESL加校内三人房为USD 1,710；另加课程注册费USD 120和住宿注册费USD 100。',
     },
     {
       question: 'Philinter 适合口说强化吗？',

@@ -602,31 +602,36 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string philinterLessonNote = "Philinter 2026年4周费用拆分参考；最终以学校正式报价为准";
+      const string philinterLessonNote = "Philinter 2026年4周课程费参考；1/2/3周分别按4周课程费和住宿费的40%/65%/85%计算；最终以学校正式报价为准";
 
-      UpsertLesson(context, schoolId, "Light ESL", 4, 1060m, "轻量综合英语，适合短期体验或希望保留生活弹性的学生", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "General ESL", 4, 1160m, "半斯巴达综合英语，适合第一次游学和稳步提升", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Intensive ESL", 4, 1280m, "斯巴达强度更高，适合想加快综合英文提升的学生", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Intensive Power Speaking", 4, 1410m, "强化口说与表达流利度，适合短期口语突破", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Intensive", 4, 1370m, "雅思专项备考，适合目标分数学生", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "TOEFL", 4, 1370m, "托福备考，适合北美升学或考试目标学生", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "TOEIC Regular", 4, 1280m, "托业备考，适合升学、求职或企业英语需求", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Advanced Business", 4, 1410m, "商务沟通、演示、会议和职场表达", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Basic Business", 4, 1280m, "商务基础英文，适合职场入门或转职准备", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Focused Industry", 4, 1410m, "行业主题英文，需按目标行业和开课档期确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Primary English", 4, 1510m, "7-11岁儿童英文，需家长陪同和规则确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Junior ESL", 4, 1610m, "12-17岁青少年综合英文，年龄和监护规则需确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Junior IELTS", 4, 1670m, "12-17岁青少年雅思方向，需按水平和目标确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1680m, "雅思保证班方向，需按入学分数、周数和规则确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1520m, "雅思保证班方向，需按入学分数、周数和规则确认", now, philinterLessonNote);
+      RemoveLesson(context, schoolId, "TOEFL", 4);
+      RemoveLesson(context, schoolId, "Focused Industry", 4);
+      RemoveLesson(context, schoolId, "Primary English", 4);
+      RemoveLesson(context, schoolId, "Junior ESL", 4);
+      RemoveLesson(context, schoolId, "Junior IELTS", 4);
 
-      UpsertRoom(context, schoolId, "校内三人房", 4, 520m, "默认报价参考，预算压力较低", now);
-      UpsertRoom(context, schoolId, "校内双人房", 4, 630m, "适合朋友同行或希望兼顾预算与舒适度", now);
-      UpsertRoom(context, schoolId, "校内单人房", 4, 960m, "隐私最好，预算较高，热门档期需早确认", now);
-      UpsertRoom(context, schoolId, "校外公寓单人房", 4, 1160m, "校外Azon Condo方向，接送、门禁和空房需顾问确认", now);
-      UpsertRoom(context, schoolId, "校外公寓双人房", 4, 780m, "校外公寓方向，适合重视生活品质的成人或家庭", now);
+      UpsertLesson(context, schoolId, "Light ESL", 4, 790m, "2节一对一 + 2节小团体 + 2节大团体选修 + 选修活动", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "General ESL", 4, 900m, "3节一对一 + 1节小团体 + 2节小团体 + 2节大团体选修 + 选修活动", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Intensive ESL", 4, 1030m, "4节一对一 + 1节小团体 + 2节精品团体 + 1节大团体 + 2节选修夜间辅导 + 选修活动", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Intensive Power Speaking", 4, 1170m, "4节一对一 + 2节小团体 + 2节精品小团体 + 2节选修夜间自习 + 选修活动", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Intensive", 4, 1200m, "4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模拟测试", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1580m, "雅思保证班8周方向；需按入学分数、出勤、模考和校规确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1420m, "雅思保证班12周方向；需按入学分数、出勤、模考和校规确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Regular", 4, 1100m, "4节一对一 + 2节小团体 + 2节大团体 + 选修活动 + 每周五模拟测试", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Focus Industry（可定制）", 4, 1280m, "行业主题英文，需按目标行业和开课档期确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Basic Business", 4, 1150m, "商务基础英文；入学要求雅思3分", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Advanced Business", 4, 1200m, "商务沟通、演示、会议和职场表达；入学要求雅思3.5至4分", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Speaking", 4, 1400m, "8节口语团体课 + 2节晚课 + 2节选修课；最长8周", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Junior Speaking", 4, 1400m, "7节口语团体课 + 2节晚课 + 2节选修课；最长8周", now, philinterLessonNote);
 
-      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      UpsertRoom(context, schoolId, "校内三人房", 4, 810m, "上下铺三人房；默认报价参考，预算压力较低", now);
+      UpsertRoom(context, schoolId, "校内双人房", 4, 970m, "适合朋友同行或希望兼顾预算与舒适度", now);
+      UpsertRoom(context, schoolId, "校内单人房", 4, 1400m, "隐私最好，预算较高，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "校外公寓单人房", 4, 1690m, "Azon Condo单人房；接送、门禁和空房需顾问确认", now);
+      UpsertRoom(context, schoolId, "校外公寓双人房", 4, 1100m, "Azon Condo双人房；适合重视生活品质的成人或家庭", now);
+      UpsertRoom(context, schoolId, "校外公寓三人房", 4, 890m, "Azon Condo三人房；接送、门禁和空房需顾问确认", now);
+
+      UpsertFee(context, schoolId, "注册费", 220m, UsdCurrencyId, "前期支付费用；课程注册费USD 120 + 住宿注册费USD 100", now);
       UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
       UpsertFee(context, schoolId, "SSP", 6800m, PhpCurrencyId, "到校支付费用；特别学习许可，最终以学校现场收费为准", now);
       UpsertFee(context, schoolId, "SSP E-card", 4000m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
@@ -637,6 +642,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "管理费", 1000m, PhpCurrencyId, "到校支付费用；4周参考，最终以学校现场收费为准", now);
       UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
       UpsertFee(context, schoolId, "学生证", 300m, PhpCurrencyId, "到校支付费用；一次性费用参考", now);
+      UpsertFee(context, schoolId, "额外住宿", 3000m, PhpCurrencyId, "到校支付费用；每晚 PHP 3,000，按实际额外入住晚数计算", now);
       UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
       UpsertFee(context, schoolId, "签证延签", 4140m, PhpCurrencyId, "到校支付费用；按学习周数和菲律宾签证规则调整", now);
 
@@ -1534,14 +1540,14 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务I.BREEZE语言学校", 1490m, UsdCurrencyId, "USD 1,490 / 4周起", Established(2012), new[] { "I.BREEZE", "I.BREEZE International Language Center", "IBREEZE" }),
         new RegionalStartingPriceSeed("菲律宾宿务IU English Academy", 1350m, UsdCurrencyId, "USD 1,350 / 4周起", Established(2024), new[] { "IU English Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务Lapulapu", 2080m, UsdCurrencyId, "USD 2,080 / 4周起", Established(2024), new[] { "Lapulapu", "LCIC" }),
-        new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1850m, UsdCurrencyId, "USD 1,850 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
+        new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1820m, UsdCurrencyId, "USD 1,820 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
         new RegionalStartingPriceSeed("菲律宾宿务CELLA Premium Campus", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
         new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 752m, UsdCurrencyId, "USD 752 / 1周起", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
         new RegionalStartingPriceSeed(CpiSchoolName, 1670m, UsdCurrencyId, "USD 1,670 / 4周起（ESL GENERAL + A栋四人间）", Established(2015), new[] { LegacyCpiSchoolName }),
         new RegionalStartingPriceSeed(BCebuSchoolName, 1650m, UsdCurrencyId, "USD 1,650 / 4周起（Speed ESL + 三人间）", Established(2026), new[] { LegacyBCebuSchoolName, "B'Cebu" }),
         new RegionalStartingPriceSeed(CpilsSchoolName, 1635m, UsdCurrencyId, "USD 1,635 / 4周起", Established(2001), new[] { LegacyCpilsSchoolName }),
         new RegionalStartingPriceSeed(FellaSchoolName, 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2006), new[] { LegacyFellaSchoolName }),
-        new RegionalStartingPriceSeed(PhilinterSchoolName, 1390m, UsdCurrencyId, "USD 1,390 / 4周起", Established(2003), new[] { LegacyPhilinterSchoolName }),
+        new RegionalStartingPriceSeed(PhilinterSchoolName, 1600m, UsdCurrencyId, "USD 1,600 / 4周主费起（注册费另计）", Established(2003), new[] { LegacyPhilinterSchoolName }),
 
         new RegionalStartingPriceSeed(PinesSchoolName, 1420m, UsdCurrencyId, "课程+住宿4周USD 1,420起", Established(2001), new[] { LegacyPinesSchoolName }),
         new RegionalStartingPriceSeed(BeciSchoolName, 1170m, UsdCurrencyId, "EOP 4周约USD 1,170起", Established(2002), new[] { LegacyBeciSchoolName }),
