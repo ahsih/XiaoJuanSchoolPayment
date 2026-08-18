@@ -66,20 +66,20 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>General English A + 三人房 + 注册费</p>
+              <p>ESL Course A + 三人房 + 注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  使用公开2026淡季参考价：套餐USD 1,400 + 注册费USD 125
+                  使用Genius 2025价目表淡季价：套餐USD 1,400 + 注册费USD 125
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  旺季、海景房、Sparta附加费和当地费用需顾问另行确认
+                  旺季、海景/豪华房、Sparta附加费和当地费用需顾问另行确认
                 </li>
               </ul>
             </aside>
             <p class="photo-source">
-              图片与费用参考自Genius官方资料和公开留学代理页面；最终以学校当期正式报价为准。
+              课程住宿费用按提供的Genius 2025价目表录入；最终以学校当期正式报价为准。
             </p>
           </div>
         </section>
@@ -235,68 +235,146 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>Genius 2026淡季4周套餐参考</span>
-              <h2>课程住宿套餐价：先看课程强度，再看房型</h2>
-              <p>
-                以下为公开2026淡季参考价，币种为美元，包含课程、住宿和餐食口径。旺季、优惠、房型空位和学校更新会影响正式报价。
-              </p>
-            </div>
-            <div
-              class="data-table course-fee-table"
-              role="table"
-              aria-label="Genius English Academy 2026淡季4周课程住宿套餐"
-            >
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">单人房</span>
-                <span role="columnheader">双人房</span>
-                <span role="columnheader">三人房</span>
+        <section class="section-block" id="course-fees">
+          <div class="section-heading">
+            <span>Genius 2025年4周课程 + 食宿费</span>
+            <h2>淡旺季、课程强度和房型分开看</h2>
+            <p>
+              以下金额按提供的Genius 2025价目表录入，币种为美元，包含注册以外的课程、住宿和餐食。
+              旺季为1月5日至2月1日及6月1日至8月30日；其余日期按淡季价格显示。
+            </p>
+          </div>
+
+          <div class="genius-pricing-grid">
+            <div>
+              <h3 class="pricing-subheading">淡季价格（寒暑假以外）</h3>
+              <div
+                class="data-table course-fee-table"
+                role="table"
+                aria-label="Genius English Academy 2025淡季4周课程住宿套餐"
+              >
+                <div class="table-row table-head" role="row">
+                  <span role="columnheader">课程</span>
+                  <span role="columnheader">单人房</span>
+                  <span role="columnheader">双人房</span>
+                  <span role="columnheader">三人房</span>
+                </div>
+                <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                  <span role="cell">{{ course.name }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'single', 'off-peak')) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'twin', 'off-peak')) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'triple', 'off-peak')) }}</span>
+                </div>
               </div>
-              <div class="table-row" role="row" *ngFor="let course of courseOptions">
-                <span role="cell">{{ course.name }}</span>
-                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'single')) }}</span>
-                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'twin')) }}</span>
-                <span role="cell">USD {{ formatUsd(feeFor(course.id, 'triple')) }}</span>
-              </div>
             </div>
-            <div
-              class="mobile-card-list mobile-course-fees"
-              aria-label="Genius English Academy 2026淡季4周套餐手机卡片"
-            >
-              <article *ngFor="let course of courseOptions">
-                <span>课程</span>
-                <strong>{{ course.name }}</strong>
-                <div>
-                  <em>单人房</em><b>USD {{ formatUsd(feeFor(course.id, 'single')) }}</b>
+
+            <div>
+              <h3 class="pricing-subheading">旺季价格（1月5日–2月1日、6月1日–8月30日）</h3>
+              <div
+                class="data-table course-fee-table"
+                role="table"
+                aria-label="Genius English Academy 2025旺季4周课程住宿套餐"
+              >
+                <div class="table-row table-head" role="row">
+                  <span role="columnheader">课程</span>
+                  <span role="columnheader">单人房</span>
+                  <span role="columnheader">双人房</span>
+                  <span role="columnheader">三人房</span>
                 </div>
-                <div>
-                  <em>双人房</em><b>USD {{ formatUsd(feeFor(course.id, 'twin')) }}</b>
+                <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                  <span role="cell">{{ course.name }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'single', 'peak')) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'twin', 'peak')) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, 'triple', 'peak')) }}</span>
                 </div>
-                <div>
-                  <em>三人房</em><b>USD {{ formatUsd(feeFor(course.id, 'triple')) }}</b>
-                </div>
-                <p>{{ course.lessons }}。{{ course.suitable }}</p>
-              </article>
+              </div>
             </div>
           </div>
 
-          <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>Genius 一天学习生活安排</span>
-              <h2>不同管理模式会改变晚间节奏</h2>
+          <div
+            class="mobile-card-list mobile-course-fees"
+            aria-label="Genius English Academy 2025淡旺季4周套餐手机卡片"
+          >
+            <article *ngFor="let course of courseOptions">
+              <span>课程</span>
+              <strong>{{ course.name }}</strong>
+              <p>{{ course.lessons }}。{{ course.suitable }}</p>
+              <div><em>淡季单人房</em><b>USD {{ formatUsd(feeFor(course.id, 'single', 'off-peak')) }}</b></div>
+              <div><em>淡季双人房</em><b>USD {{ formatUsd(feeFor(course.id, 'twin', 'off-peak')) }}</b></div>
+              <div><em>淡季三人房</em><b>USD {{ formatUsd(feeFor(course.id, 'triple', 'off-peak')) }}</b></div>
+              <div><em>旺季单人房</em><b>USD {{ formatUsd(feeFor(course.id, 'single', 'peak')) }}</b></div>
+              <div><em>旺季双人房</em><b>USD {{ formatUsd(feeFor(course.id, 'twin', 'peak')) }}</b></div>
+              <div><em>旺季三人房</em><b>USD {{ formatUsd(feeFor(course.id, 'triple', 'peak')) }}</b></div>
+            </article>
+          </div>
+
+          <h3 class="pricing-subheading">IELTS保证班（固定报名12周，表中金额为4周价格）</h3>
+          <div
+            class="data-table course-fee-table"
+            role="table"
+            aria-label="Genius English Academy IELTS保证班价格"
+          >
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">单人房</span>
+              <span role="columnheader">双人房</span>
+              <span role="columnheader">三人房</span>
             </div>
-            <div class="timeline">
-              <article *ngFor="let item of schedule">
-                <time>{{ item.time }}</time>
-                <div>
-                  <strong>{{ item.title }}</strong>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
+            <div class="table-row" role="row" *ngFor="let course of guaranteeCourseOptions">
+              <span role="cell">{{ course.name }}</span>
+              <span role="cell">USD {{ formatUsd(feeFor(course.id, 'single')) }}</span>
+              <span role="cell">USD {{ formatUsd(feeFor(course.id, 'twin')) }}</span>
+              <span role="cell">USD {{ formatUsd(feeFor(course.id, 'triple')) }}</span>
             </div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="Genius IELTS保证班手机卡片">
+            <article *ngFor="let course of guaranteeCourseOptions">
+              <span>固定报名12周</span>
+              <strong>{{ course.name }}</strong>
+              <p>{{ course.lessons }}</p>
+              <div><em>单人房</em><b>USD {{ formatUsd(feeFor(course.id, 'single')) }}</b></div>
+              <div><em>双人房</em><b>USD {{ formatUsd(feeFor(course.id, 'twin')) }}</b></div>
+              <div><em>三人房</em><b>USD {{ formatUsd(feeFor(course.id, 'triple')) }}</b></div>
+            </article>
+          </div>
+
+          <h3 class="pricing-subheading">青少年与监护人4周套餐</h3>
+          <div class="data-table fixed-fee-table" role="table" aria-label="Genius青少年与监护人4周套餐">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">价格</span>
+              <span role="columnheader">课程安排</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let item of fixedPackageFees">
+              <span role="cell">{{ item.name }}</span>
+              <span role="cell">USD {{ formatUsd(item.fee) }}</span>
+              <span role="cell">{{ item.lessons }}</span>
+              <span role="cell">{{ item.note }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="Genius青少年与监护人套餐手机卡片">
+            <article *ngFor="let item of fixedPackageFees">
+              <span>4周套餐</span>
+              <strong>{{ item.name }} · USD {{ formatUsd(item.fee) }}</strong>
+              <p>{{ item.lessons }}。{{ item.note }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading">
+            <span>Genius 一天学习生活安排</span>
+            <h2>不同管理模式会改变晚间节奏</h2>
+          </div>
+          <div class="timeline">
+            <article *ngFor="let item of schedule">
+              <time>{{ item.time }}</time>
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -325,7 +403,8 @@
             </div>
             <ul class="check-list">
               <li>房间通常带私人厨房、冰箱、空调、Wi-Fi、阳台和冷热水淋浴。</li>
-              <li>Sea View / Deluxe公开参考加价为USD 125 / 4周。</li>
+              <li>海景房在基础套餐上加收USD 125 / 4周。</li>
+              <li>豪华房在基础套餐上加收USD 200 / 4周。</li>
               <li>亲子家庭房、旺季和热门入学日需优先确认空房。</li>
             </ul>
           </div>
@@ -333,8 +412,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>Genius费用快速报价</span>
-              <h2>默认参考：4周General English A + 三人房</h2>
-              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+              <h2>默认参考：4周ESL Course A + 三人房</h2>
+              <p>前期支付参考 = 注册费 + 课程住宿套餐 + 房型升级费。入学日会自动切换淡旺季价格。</p>
             </div>
             <div class="quote-form" aria-label="Genius English Academy费用快速报价选项">
               <label>
@@ -362,6 +441,14 @@
                 </select>
               </label>
               <label>
+                住宿升级
+                <select [(ngModel)]="selectedAccommodationUpgradeId">
+                  <option *ngFor="let upgrade of accommodationUpgrades" [value]="upgrade.id">
+                    {{ upgrade.name }}
+                  </option>
+                </select>
+              </label>
+              <label>
                 预计入学日
                 <input type="date" [(ngModel)]="selectedStartDate" />
               </label>
@@ -375,10 +462,20 @@
                 ><strong>USD {{ formatUsd(packageFeeForSelectedWeeks) }}</strong>
               </div>
               <div>
+                <span>适用价格</span><strong>{{ pricingSeasonLabel }}</strong>
+              </div>
+              <div>
+                <span>住宿升级费</span
+                ><strong>USD {{ formatUsd(accommodationUpgradeFeeForSelectedWeeks) }}</strong>
+              </div>
+              <div>
                 <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
               </div>
               <div>
                 <span>当前房型</span><strong>{{ selectedRoom.name }}</strong>
+              </div>
+              <div>
+                <span>住宿级别</span><strong>{{ selectedAccommodationUpgrade.name }}</strong>
               </div>
               <div>
                 <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
@@ -406,10 +503,11 @@
             </div>
             <p class="fee-alert">
               除前期支付费用外，到校后通常还需支付SSP、SSP E-Card、ACR I-Card、教材费、管理费、宿舍押金、
-              电费、接机费、洗衣费、签证延长和可能的Sea View / Sparta附加费。实际金额以学校当期规则为准。
+              电费、接机费、洗衣费、签证延长和可能的Sparta附加费。实际金额以学校当期规则为准。
             </p>
             <p class="season-note">
-              公开资料将1-2月、6-8月列为旺季月份，旺季价格可能不同；请以顾问向学校确认后的正式报价为准。
+              2025价目表的旺季区间为1月5日至2月1日及6月1日至8月30日；报价器按相同月日区间判断。
+              请以顾问向学校确认后的当期正式报价为准。
             </p>
           </section>
         </section>
@@ -446,8 +544,9 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考公开2026 Genius English Academy费用表，并交叉参考Genius官方课程、
-              住宿和设施说明。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              本页价格更新时间：2026年8月。课程住宿费用按提供的Genius 2025价目表录入；页面已分别列出淡季、旺季、
+              IELTS保证班、青少年、监护人以及海景/豪华房加价。学校价格、优惠、房型空位、当地费用和汇率可能调整，
+              报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>

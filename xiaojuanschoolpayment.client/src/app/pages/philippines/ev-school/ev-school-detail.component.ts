@@ -53,23 +53,8 @@ interface SidaEvTrustBadge { icon: string; label: string; }
 export class EvSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolName = 'EV Academy';
-  private readonly courseFeeOrder = [
-    'sparta-intensive-esl',
-    'sparta-power-speaking-6',
-    'sparta-power-speaking-8',
-    'sparta-ielts-regular',
-    'sparta-ielts-guarantee',
-    'sparta-toeic',
-    'sparta-social-media-english',
-    'sparta-business',
-    'semi-sparta-esl',
-    'semi-sparta-power-speaking-6',
-    'semi-sparta-power-speaking-8',
-    'semi-sparta-toeic',
-    'semi-sparta-business',
-    'semi-sparta-social-media-english',
-  ];
-  private readonly roomFeeOrder = ['single', 'double', 'triple', 'quad', 'off-campus-single', 'off-campus-double'];
+  private readonly courseFeeOrder = ['esl-classic', 'senior-esl', 'power-speaking-6', 'power-speaking-8'];
+  private readonly roomFeeOrder = ['single', 'double-a', 'double-b', 'triple', 'quad'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -78,7 +63,7 @@ export class EvSchoolDetailComponent implements OnInit {
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
-  selectedCourseId = 'semi-sparta-esl';
+  selectedCourseId = 'esl-classic';
   selectedRoomId = 'quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-05-18';
@@ -150,20 +135,10 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'sparta-intensive-esl', name: '斯巴达强化英语', tuition: 1030, suitable: '4节一对一 + 2小团体 + 2大团体 + 选修课' },
-    { id: 'sparta-power-speaking-6', name: '强化口说6（斯巴达）', tuition: 1230, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
-    { id: 'sparta-power-speaking-8', name: '强化口说8（斯巴达）', tuition: 1410, suitable: '8节一对一 + 自习 + 选修课' },
-    { id: 'sparta-ielts-regular', name: '常规雅思（斯巴达）', tuition: 1150, suitable: '4节一对一 + 2节小团体 + 2节大团体 + 选修课' },
-    { id: 'sparta-ielts-guarantee', name: '雅思保证班（斯巴达）', tuition: 1290, suitable: '1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 选修课' },
-    { id: 'sparta-toeic', name: '多益（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
-    { id: 'sparta-social-media-english', name: '社交媒体英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
-    { id: 'sparta-business', name: '商务英语（斯巴达）', tuition: 1150, suitable: '4节一对一 + 4节团体课 + 自习 + 选修课' },
-    { id: 'semi-sparta-esl', name: '半斯巴达综合英语', tuition: 980, suitable: '4节一对一 + 2小团体 + 2节大团体 + 选修课' },
-    { id: 'semi-sparta-power-speaking-6', name: '强化口说6（半斯巴达）', tuition: 1180, suitable: '6节一对一 + 1节小团体 + 1节大团体 + 选修课' },
-    { id: 'semi-sparta-power-speaking-8', name: '强化口说8（半斯巴达）', tuition: 1360, suitable: '8节一对一 + 选修课' },
-    { id: 'semi-sparta-toeic', name: '多益（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
-    { id: 'semi-sparta-business', name: '商务英语（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
-    { id: 'semi-sparta-social-media-english', name: '社交媒体英语（半斯巴达）', tuition: 1100, suitable: '4节一对一 + 4节团体课 + 选修课' },
+    { id: 'esl-classic', name: 'ESL Classic', tuition: 930, suitable: '4节一对一 + 2节小团体课 + 2节大团体课' },
+    { id: 'senior-esl', name: 'Senior ESL', tuition: 1120, suitable: '4节一对一 + 2节小团体课 + 2节大团体课' },
+    { id: 'power-speaking-6', name: '强化口说6', tuition: 1120, suitable: '6节一对一 + 1节小团体课 + 1节大团体课' },
+    { id: 'power-speaking-8', name: '强化口说8', tuition: 1300, suitable: '8节一对一' },
   ];
 
   readonly studyPlans: StudyPlan[] = [
@@ -225,12 +200,11 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'single', name: '单人间', fee: 1400, note: '热门房型建议提前6个月预定' },
-    { id: 'double', name: '双人间', fee: 1030, note: '热门房型建议提前6个月预定' },
-    { id: 'triple', name: '三人间', fee: 950, note: '热门房型建议提前6个月预定' },
-    { id: 'quad', name: '四人间（上下铺）', fee: 900, note: '热门房型建议提前6个月预定' },
-    { id: 'off-campus-single', name: '校外公寓单间', fee: 1550, note: '校外公寓房型，建议提前确认空房' },
-    { id: 'off-campus-double', name: '校外公寓双人间', fee: 1150, note: '仅限于两人同时预定' },
+    { id: 'single', name: '单人间', fee: 1750, note: '热门房型建议提前6个月预定' },
+    { id: 'double-a', name: '双人间A（面对泳池）', fee: 1150, note: '热门房型建议提前6个月预定' },
+    { id: 'double-b', name: '双人间B', fee: 1050, note: '热门房型建议提前6个月预定' },
+    { id: 'triple', name: '三人间', fee: 910, note: '热门房型建议提前6个月预定' },
+    { id: 'quad', name: '四人间', fee: 860, note: '热门房型建议提前6个月预定' },
   ];
 
   localFees: LocalFee[] = [
@@ -354,9 +328,9 @@ export class EvSchoolDetailComponent implements OnInit {
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons.filter((lesson) => lesson.week === 4).map((lesson) => ({ id: this.createCourseId(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认课程安排' })).filter((lesson) => this.courseFeeOrder.includes(lesson.id)).sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
-    if (databaseCourseFees.length > 0) { this.courseFees = databaseCourseFees; if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees[0].id; }
-    const databaseRoomFees = rooms.filter((room) => room.week === 4).map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' })).sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.some((room) => room.name.includes('上下铺') || room.id.startsWith('off-campus'))) { this.roomFees = databaseRoomFees; if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad')?.id ?? this.roomFees[this.roomFees.length - 1].id; }
+    if (databaseCourseFees.length === this.courseFeeOrder.length) { this.courseFees = databaseCourseFees; if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees[0].id; }
+    const databaseRoomFees = rooms.filter((room) => room.week === 4).map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' })).filter((room) => this.roomFeeOrder.includes(room.id)).sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
+    if (databaseRoomFees.length === this.roomFeeOrder.length) { this.roomFees = databaseRoomFees; if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad')?.id ?? this.roomFees[this.roomFees.length - 1].id; }
     const registrationFee = fees.find((fee) => fee.name === '注册费'); if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费'); if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
     const databaseLocalFees = fees.filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP').map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
@@ -380,6 +354,11 @@ export class EvSchoolDetailComponent implements OnInit {
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
   private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
   private createCourseId(name: string): string {
+    const normalizedName = name.toLowerCase();
+    if (normalizedName.includes('esl classic')) return 'esl-classic';
+    if (normalizedName.includes('senior esl')) return 'senior-esl';
+    if (name === '强化口说6' || normalizedName === 'power speaking 6') return 'power-speaking-6';
+    if (name === '强化口说8' || normalizedName === 'power speaking 8') return 'power-speaking-8';
     if (name.includes('半斯巴达')) {
       if (name.includes('强化口说6')) return 'semi-sparta-power-speaking-6';
       if (name.includes('强化口说8')) return 'semi-sparta-power-speaking-8';
@@ -402,7 +381,7 @@ export class EvSchoolDetailComponent implements OnInit {
   }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
-  private createRoomId(name: string): string { if (name.includes('校外公寓单')) return 'off-campus-single'; if (name.includes('校外公寓双')) return 'off-campus-double'; if (name.includes('单人') || name.includes('单间')) return 'single'; if (name.includes('双人')) return 'double'; if (name.includes('三人')) return 'triple'; if (name.includes('四人')) return 'quad'; return this.slugifyPriceKey(name); }
+  private createRoomId(name: string): string { if (name.includes('双人间A')) return 'double-a'; if (name.includes('双人间B')) return 'double-b'; if (name.includes('四人间（上下铺）')) return 'quad-bunk'; if (name.includes('校外公寓单')) return 'off-campus-single'; if (name.includes('校外公寓双')) return 'off-campus-double'; if (name.includes('单人') || name.includes('单间')) return 'single'; if (name.includes('双人')) return 'double'; if (name.includes('三人')) return 'triple'; if (name.includes('四人')) return 'quad'; return this.slugifyPriceKey(name); }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
   private formatCurrencyAmount(fee: SchoolFeeDTO): string { return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`; }
   private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }

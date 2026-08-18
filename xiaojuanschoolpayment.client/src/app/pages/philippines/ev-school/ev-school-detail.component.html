@@ -53,7 +53,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>半斯巴达综合英语 + 四人间（上下铺）</p>
+              <p>ESL Classic + 四人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -203,13 +203,13 @@
 
         <section class="section-block pricing-reference" id="course-fees">
           <div class="section-heading">
-            <span>EV 2026 年 4 周课程费</span>
+            <span>EV 2025 年 4 周课程费</span>
             <h2>先看课程费，再叠加食宿费</h2>
             <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
           </div>
           <div class="pricing-table-grid">
             <div>
-              <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
+              <div class="data-table course-fee-table" role="table" aria-label="EV 2025年4周课程费">
                 <div class="table-row table-head" role="row">
                   <span role="columnheader">课程</span>
                   <span role="columnheader">4周课程费</span>
@@ -222,7 +222,7 @@
                 </div>
               </div>
               <p class="pricing-note">以上单价均为4周费用；1周按40%、2周按65%、3周按85%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。网页估算已按课程费和食宿费95折计算，注册费不打折。</p>
-              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
+              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2025年4周课程费手机卡片">
                 <article *ngFor="let fee of courseFees">
                   <span>课程</span>
                   <strong>{{ fee.name }}</strong>
@@ -234,11 +234,11 @@
 
             <div>
               <div class="section-heading pricing-subheading" id="room-fees">
-                <span>EV 2026 年 4 周食宿费</span>
+                <span>EV 2025 年 4 周食宿费</span>
                 <h2>房型会明显影响总预算</h2>
-                <p>默认报价使用四人间（上下铺）。热门房型和校外公寓建议先让顾问确认空房。</p>
+                <p>默认报价使用四人间。热门房型建议提前确认空房。</p>
               </div>
-              <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周食宿费">
+              <div class="data-table room-fee-table" role="table" aria-label="EV 2025年4周食宿费">
                 <div class="table-row table-head" role="row">
                   <span role="columnheader">房型</span>
                   <span role="columnheader">4周食宿费</span>
@@ -250,7 +250,7 @@
                   <span role="cell">{{ room.note }}</span>
                 </div>
               </div>
-              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周食宿费手机卡片">
+              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2025年4周食宿费手机卡片">
                 <article *ngFor="let room of roomFees">
                   <span>房型</span>
                   <strong>{{ room.name }}</strong>
@@ -332,7 +332,7 @@
         <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>EV 费用快速报价</span>
-              <h2>默认参考：4周 半斯巴达综合英语 + 四人间（上下铺）</h2>
+              <h2>默认参考：4周 ESL Classic + 四人间</h2>
               <p>前期支付参考 = 注册费 +（课程费 + 食宿费）× 95折 + 旺季附加费。注册费不参与折扣。</p>
             </div>
             <div class="quote-form" aria-label="EV费用快速报价选项">
@@ -383,7 +383,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年6月28日。学校环境、课程和设施信息参考菲律宾宿务EV语言学校官方网站学校资料、Study Plans、课程、宿舍、校园与设施页面；费用参考思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年8月18日。学校环境、课程和设施信息参考菲律宾宿务EV语言学校官方网站学校资料、Study Plans、课程、宿舍、校园与设施页面；费用参考EV 2025年价目表及思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -490,7 +490,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>半斯巴达综合英语<br />四人间（上下铺）</p>
+          <p>ESL Classic<br />四人间</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

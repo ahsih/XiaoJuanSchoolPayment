@@ -224,41 +224,18 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       var schoolId = school.Id;
 
-      const string evLessonNote = "EV 2026年4周课程费参考；最终以学校正式报价为准";
-      RemoveLesson(context, schoolId, "ESL Classic", 4);
-      RemoveLesson(context, schoolId, "Intensive ESL", 4);
-      RemoveLesson(context, schoolId, "Power Speaking 6", 4);
-      RemoveLesson(context, schoolId, "Power Speaking 8", 4);
-      RemoveLesson(context, schoolId, "IELTS", 4);
-      RemoveLesson(context, schoolId, "TOEIC", 4);
-      RemoveLesson(context, schoolId, "Business", 4);
+      const string evLessonNote = "EV 2025年4周课程费参考；1周40%、2周65%、3周85%；最终以学校正式报价为准";
+      UpsertLesson(context, schoolId, "ESL Classic", 4, 930m, "4节一对一 + 2节小团体课 + 2节大团体课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "Senior ESL", 4, 1120m, "4节一对一 + 2节小团体课 + 2节大团体课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说6", 4, 1120m, "6节一对一 + 1节小团体课 + 1节大团体课", now, evLessonNote);
+      UpsertLesson(context, schoolId, "强化口说8", 4, 1300m, "8节一对一", now, evLessonNote);
 
-      UpsertLesson(context, schoolId, "斯巴达 Intensive ESL", 4, 1030m, "4节一对一 + 2小团体 + 2大团体 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "强化口说6（斯巴达）", 4, 1230m, "6节一对一 + 1节小团体 + 1节大团体 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "强化口说8（斯巴达）", 4, 1410m, "8节一对一 + 自习 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "常规雅思（斯巴达）", 4, 1150m, "4节一对一 + 2节小团体 + 2节大团体 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "雅思保证班（斯巴达）", 4, 1290m, "1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "多益（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "社交媒体英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "商务英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "半斯巴达 ESL", 4, 980m, "4节一对一 + 2小团体 + 2节大团体 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "强化口说6（半斯巴达）", 4, 1180m, "6节一对一 + 1节小团体 + 1节大团体 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "强化口说8（半斯巴达）", 4, 1360m, "8节一对一 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "多益（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "商务英语（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "社交媒体英语（半斯巴达）", 4, 1100m, "4节一对一 + 4节团体课 + 选修课", now, evLessonNote);
-
-      RemoveRoom(context, schoolId, "单人房", 4);
-      RemoveRoom(context, schoolId, "双人房", 4);
-      RemoveRoom(context, schoolId, "三人房", 4);
-      RemoveRoom(context, schoolId, "四人房", 4);
-
-      UpsertRoom(context, schoolId, "单人间", 4, 1400m, "热门房型建议提前6个月预定", now);
-      UpsertRoom(context, schoolId, "双人间", 4, 1030m, "热门房型建议提前6个月预定", now);
-      UpsertRoom(context, schoolId, "三人间", 4, 950m, "热门房型建议提前6个月预定", now);
-      UpsertRoom(context, schoolId, "四人间（上下铺）", 4, 900m, "热门房型建议提前6个月预定", now);
-      UpsertRoom(context, schoolId, "校外公寓单间", 4, 1550m, "校外公寓房型，建议提前确认空房", now);
-      UpsertRoom(context, schoolId, "校外公寓双人间", 4, 1150m, "仅限于两人同时预定", now);
+      const string evRoomNote = "热门房型建议提前6个月预定";
+      UpsertRoom(context, schoolId, "单人间", 4, 1750m, evRoomNote, now);
+      UpsertRoom(context, schoolId, "双人间A（面对泳池）", 4, 1150m, evRoomNote, now);
+      UpsertRoom(context, schoolId, "双人间B", 4, 1050m, evRoomNote, now);
+      UpsertRoom(context, schoolId, "三人间", 4, 910m, evRoomNote, now);
+      UpsertRoom(context, schoolId, "四人间", 4, 860m, evRoomNote, now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
       UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
@@ -1542,7 +1519,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务Lapulapu", 2080m, UsdCurrencyId, "USD 2,080 / 4周起", Established(2024), new[] { "Lapulapu", "LCIC" }),
         new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1820m, UsdCurrencyId, "USD 1,820 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
         new RegionalStartingPriceSeed("菲律宾宿务CELLA Premium Campus", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
-        new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 752m, UsdCurrencyId, "USD 752 / 1周起", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
+        new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 716m, UsdCurrencyId, "USD 716 / 1周起", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
         new RegionalStartingPriceSeed(CpiSchoolName, 1670m, UsdCurrencyId, "USD 1,670 / 4周起（ESL GENERAL + A栋四人间）", Established(2015), new[] { LegacyCpiSchoolName }),
         new RegionalStartingPriceSeed(BCebuSchoolName, 1650m, UsdCurrencyId, "USD 1,650 / 4周起（Speed ESL + 三人间）", Established(2026), new[] { LegacyBCebuSchoolName, "B'Cebu" }),
         new RegionalStartingPriceSeed(CpilsSchoolName, 1635m, UsdCurrencyId, "USD 1,635 / 4周起", Established(2001), new[] { LegacyCpilsSchoolName }),

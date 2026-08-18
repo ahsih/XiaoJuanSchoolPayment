@@ -746,7 +746,7 @@ export class CebuStudyComponent {
       location: 'Nasipit, Cebu City',
       style: 'SP1 斯巴达 / SP2 半斯巴达',
       route: '/philippines-study/cebu/ev-academy',
-      startingPrice: 'USD 752 / 1周起',
+      startingPrice: 'USD 716 / 1周起',
       courses: [
         'ESL',
         'Power Speaking',

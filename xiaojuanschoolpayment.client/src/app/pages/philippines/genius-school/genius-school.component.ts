@@ -56,10 +56,27 @@ interface RoomOption {
   note: string;
 }
 
+type PricingSeason = 'off-peak' | 'peak';
+
 interface PackageFee {
   courseId: string;
   roomId: string;
+  offPeakFee: number;
+  peakFee: number;
+}
+
+interface FixedPackageFee {
+  name: string;
   fee: number;
+  lessons: string;
+  note: string;
+}
+
+interface AccommodationUpgrade {
+  id: string;
+  name: string;
+  feePerFourWeeks: number;
+  note: string;
 }
 
 interface ScheduleItem {
@@ -115,6 +132,7 @@ interface SidaTrustBadge {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    './genius-school.component.css',
   ],
 })
 export class GeniusSchoolComponent {
@@ -135,6 +153,7 @@ export class GeniusSchoolComponent {
 
   selectedCourseId = 'general-english-a';
   selectedRoomId = 'triple';
+  selectedAccommodationUpgradeId = 'standard';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
@@ -259,7 +278,7 @@ export class GeniusSchoolComponent {
     },
     {
       label: '费用参考',
-      value: '2026公开淡季参考：General English A三人房USD 1,400/4周起，注册费USD 125',
+      value: '2025价目表淡季参考：ESL Course A三人房USD 1,400/4周，注册费USD 125',
     },
   ];
 
@@ -376,38 +395,26 @@ export class GeniusSchoolComponent {
   readonly courseOptions: CourseOption[] = [
     {
       id: 'general-english-a',
-      name: 'General English A / Power Speaking A',
+      name: 'ESL Course A',
       lessons: '4节1:1 + 2节小组课',
-      suitable: '淡季公开参考价最低的主线课程，适合稳步提升。',
+      suitable: '价目表中的基础主线课程，适合稳步提升。',
     },
     {
       id: 'general-english-b',
-      name: 'General English B / Power Speaking B',
+      name: 'ESL Course B',
       lessons: '6节1:1 + 2节小组课',
       suitable: '适合短期想增加一对一课量的学生。',
     },
     {
-      id: 'survival-english-a',
-      name: 'Survival English A',
-      lessons: '场景英语A强度',
-      suitable: '适合旅行、生活和真实场景表达。',
-    },
-    {
-      id: 'survival-english-b',
-      name: 'Survival English B',
-      lessons: '场景英语B强度',
-      suitable: '适合想把场景练习和高课量结合的人。',
-    },
-    {
       id: 'business-exam-a',
-      name: 'Business / IELTS / TOEIC / TOEFL A',
-      lessons: '考试或商务A强度',
+      name: '商务 / TOEIC / TOEFL / IELTS A',
+      lessons: '4节1:1 + 2节小组课',
       suitable: '适合考试入门、商务英语和目标导向学习。',
     },
     {
       id: 'business-exam-b',
-      name: 'Business / IELTS / TOEIC / TOEFL B',
-      lessons: '考试或商务B强度',
+      name: '商务 / TOEIC / TOEFL / IELTS B',
+      lessons: '6节1:1 + 2节小组课',
       suitable: '适合更高强度考试或商务训练。',
     },
   ];
@@ -431,24 +438,90 @@ export class GeniusSchoolComponent {
   ];
 
   readonly packageFees: PackageFee[] = [
-    { courseId: 'general-english-a', roomId: 'single', fee: 1750 },
-    { courseId: 'general-english-a', roomId: 'twin', fee: 1550 },
-    { courseId: 'general-english-a', roomId: 'triple', fee: 1400 },
-    { courseId: 'general-english-b', roomId: 'single', fee: 2000 },
-    { courseId: 'general-english-b', roomId: 'twin', fee: 1800 },
-    { courseId: 'general-english-b', roomId: 'triple', fee: 1650 },
-    { courseId: 'survival-english-a', roomId: 'single', fee: 1800 },
-    { courseId: 'survival-english-a', roomId: 'twin', fee: 1600 },
-    { courseId: 'survival-english-a', roomId: 'triple', fee: 1450 },
-    { courseId: 'survival-english-b', roomId: 'single', fee: 2050 },
-    { courseId: 'survival-english-b', roomId: 'twin', fee: 1850 },
-    { courseId: 'survival-english-b', roomId: 'triple', fee: 1700 },
-    { courseId: 'business-exam-a', roomId: 'single', fee: 2050 },
-    { courseId: 'business-exam-a', roomId: 'twin', fee: 1850 },
-    { courseId: 'business-exam-a', roomId: 'triple', fee: 1700 },
-    { courseId: 'business-exam-b', roomId: 'single', fee: 2300 },
-    { courseId: 'business-exam-b', roomId: 'twin', fee: 2100 },
-    { courseId: 'business-exam-b', roomId: 'triple', fee: 1950 },
+    { courseId: 'general-english-a', roomId: 'single', offPeakFee: 1750, peakFee: 2050 },
+    { courseId: 'general-english-a', roomId: 'twin', offPeakFee: 1550, peakFee: 1800 },
+    { courseId: 'general-english-a', roomId: 'triple', offPeakFee: 1400, peakFee: 1600 },
+    { courseId: 'general-english-b', roomId: 'single', offPeakFee: 2000, peakFee: 2300 },
+    { courseId: 'general-english-b', roomId: 'twin', offPeakFee: 1800, peakFee: 2050 },
+    { courseId: 'general-english-b', roomId: 'triple', offPeakFee: 1600, peakFee: 1750 },
+    { courseId: 'business-exam-a', roomId: 'single', offPeakFee: 2150, peakFee: 2250 },
+    { courseId: 'business-exam-a', roomId: 'twin', offPeakFee: 1900, peakFee: 2000 },
+    { courseId: 'business-exam-a', roomId: 'triple', offPeakFee: 1550, peakFee: 1650 },
+    { courseId: 'business-exam-b', roomId: 'single', offPeakFee: 2400, peakFee: 2500 },
+    { courseId: 'business-exam-b', roomId: 'twin', offPeakFee: 2100, peakFee: 2200 },
+    { courseId: 'business-exam-b', roomId: 'triple', offPeakFee: 1650, peakFee: 1800 },
+  ];
+
+  readonly guaranteeCourseOptions: CourseOption[] = [
+    {
+      id: 'ielts-guarantee-a',
+      name: 'IELTS保证班 A',
+      lessons: '5节1:1 + 1节小组课',
+      suitable: '固定报名12周。',
+    },
+    {
+      id: 'ielts-guarantee-b',
+      name: 'IELTS保证班 B',
+      lessons: '7节1:1 + 1节小组课',
+      suitable: '固定报名12周。',
+    },
+  ];
+
+  readonly guaranteePackageFees: PackageFee[] = [
+    { courseId: 'ielts-guarantee-a', roomId: 'single', offPeakFee: 2350, peakFee: 2350 },
+    { courseId: 'ielts-guarantee-a', roomId: 'twin', offPeakFee: 2100, peakFee: 2100 },
+    { courseId: 'ielts-guarantee-a', roomId: 'triple', offPeakFee: 1750, peakFee: 1750 },
+    { courseId: 'ielts-guarantee-b', roomId: 'single', offPeakFee: 2650, peakFee: 2650 },
+    { courseId: 'ielts-guarantee-b', roomId: 'twin', offPeakFee: 2350, peakFee: 2350 },
+    { courseId: 'ielts-guarantee-b', roomId: 'triple', offPeakFee: 1950, peakFee: 1950 },
+  ];
+
+  readonly fixedPackageFees: FixedPackageFee[] = [
+    {
+      name: '青少年（1位）',
+      fee: 2100,
+      lessons: '4节1:1 + 2节小组课 + 2节选修课（音乐、美术）',
+      note: '一位学生报名',
+    },
+    {
+      name: '青少年（同时报名2位）',
+      fee: 1900,
+      lessons: '4节1:1 + 2节小组课 + 2节选修课（音乐、美术）',
+      note: '两位学生同时报名适用',
+    },
+    {
+      name: '监护人（上课）',
+      fee: 1400,
+      lessons: '2节1:1 + 2节小组课',
+      note: '包含课程、住宿和餐食',
+    },
+    {
+      name: '监护人（不上课）',
+      fee: 900,
+      lessons: '不上课，只住宿',
+      note: '包含住宿和餐食',
+    },
+  ];
+
+  readonly accommodationUpgrades: AccommodationUpgrade[] = [
+    {
+      id: 'standard',
+      name: '标准房（无附加费）',
+      feePerFourWeeks: 0,
+      note: '按所选单人、双人或三人房套餐计算。',
+    },
+    {
+      id: 'sea-view',
+      name: '海景房',
+      feePerFourWeeks: 125,
+      note: '在基础套餐上每4周加收USD 125。',
+    },
+    {
+      id: 'deluxe',
+      name: '豪华房',
+      feePerFourWeeks: 200,
+      note: '在基础套餐上每4周加收USD 200。',
+    },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -491,7 +564,8 @@ export class GeniusSchoolComponent {
     { item: 'ACR I-Card', amount: 'PHP 4,000', note: '超过8周等长周期学习通常需要确认' },
     { item: '管理费', amount: 'USD 40 / 4周', note: '按学习周数计算' },
     { item: '教材费', amount: 'USD 40 / 4周', note: '实际教材以课程和级别为准' },
-    { item: 'Sea View / Deluxe加价', amount: 'USD 125 / 4周', note: '仅选择对应房型时适用' },
+    { item: '海景房加价', amount: 'USD 125 / 4周', note: '在基础单人、双人或三人房套餐上加收' },
+    { item: '豪华房加价', amount: 'USD 200 / 4周', note: '在基础单人、双人或三人房套餐上加收' },
     { item: 'Semi-Sparta附加费', amount: 'USD 50 / 4周', note: '选择Semi-Sparta规则时适用' },
     { item: 'Sparta附加费', amount: 'USD 70 / 4周', note: '选择Sparta规则时适用' },
     { item: '机场接机', amount: 'PHP 1,000', note: '宿务机场接机参考' },
@@ -617,7 +691,7 @@ export class GeniusSchoolComponent {
     '宿务城市短途旅行',
   ];
   readonly notes = [
-    '本页费用使用2026公开淡季参考价，旺季、促销、房型和汇率可能改变最终报价。',
+    '本页课程住宿价格按提供的Genius 2025价目表录入；旺季、促销、房型和汇率可能改变最终报价。',
     'General / Power Speaking / Survival / Business / IELTS / TOEIC / TOEFL的A/B强度不同，报名前需确认每天课程数量。',
     'Semi-Sparta与Sparta会影响平日外出、晚间自习、测试和门禁，建议按自律程度选择。',
     'Sea View、Deluxe、单人房和家庭房需要提前确认空位及附加费。',
@@ -647,7 +721,7 @@ export class GeniusSchoolComponent {
     {
       question: '为什么不同网站的Genius价格不一样？',
       answer:
-        '不同市场、币种、旺季、淡季、优惠、更新时间和房型口径都会造成差异。本页使用公开2026参考价搭建页面，正式报名仍以学校当期确认报价为准。',
+        '不同市场、币种、旺季、淡季、优惠、更新时间和房型口径都会造成差异。本页课程住宿价使用Genius 2025价目表，正式报名仍以学校当期确认报价为准。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -695,12 +769,18 @@ export class GeniusSchoolComponent {
     );
   }
 
-  feeFor(courseId: string, roomId: string): number {
-    return (
-      this.packageFees.find(
-        (item) => item.courseId === courseId && item.roomId === roomId,
-      )?.fee ?? 0
+  feeFor(
+    courseId: string,
+    roomId: string,
+    season: PricingSeason = 'off-peak',
+  ): number {
+    const packageFee = [...this.packageFees, ...this.guaranteePackageFees].find(
+      (item) => item.courseId === courseId && item.roomId === roomId,
     );
+
+    return season === 'peak'
+      ? (packageFee?.peakFee ?? 0)
+      : (packageFee?.offPeakFee ?? 0);
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -725,6 +805,14 @@ export class GeniusSchoolComponent {
     );
   }
 
+  get selectedAccommodationUpgrade(): AccommodationUpgrade {
+    return (
+      this.accommodationUpgrades.find(
+        (upgrade) => upgrade.id === this.selectedAccommodationUpgradeId,
+      ) ?? this.accommodationUpgrades[0]
+    );
+  }
+
   get selectedPackage(): PackageFee {
     return (
       this.packageFees.find(
@@ -736,17 +824,52 @@ export class GeniusSchoolComponent {
   }
 
   get packageFeeForSelectedWeeks(): number {
-    return this.selectedPackage.fee * (this.selectedWeeks / 4);
+    return (
+      this.feeFor(
+        this.selectedPackage.courseId,
+        this.selectedPackage.roomId,
+        this.pricingSeason,
+      ) *
+      (this.selectedWeeks / 4)
+    );
+  }
+
+  get accommodationUpgradeFeeForSelectedWeeks(): number {
+    return (
+      this.selectedAccommodationUpgrade.feePerFourWeeks *
+      (this.selectedWeeks / 4)
+    );
   }
 
   get isPeakSeason(): boolean {
-    const month = new Date(this.selectedStartDate).getMonth() + 1;
+    const [, monthText, dayText] = this.selectedStartDate.split('-');
+    const monthDay = Number(monthText) * 100 + Number(dayText);
 
-    return [1, 2, 6, 7, 8].includes(month);
+    if (!Number.isFinite(monthDay)) {
+      return false;
+    }
+
+    return (
+      (monthDay >= 105 && monthDay <= 201) ||
+      (monthDay >= 601 && monthDay <= 830)
+    );
+  }
+
+  get pricingSeason(): PricingSeason {
+    return this.isPeakSeason ? 'peak' : 'off-peak';
+  }
+
+  get pricingSeasonLabel(): string {
+    return this.isPeakSeason ? '旺季价' : '淡季价';
   }
 
   get quoteUsd(): number {
-    return this.registrationFee + this.packageFeeForSelectedWeeks * this.discount;
+    return (
+      this.registrationFee +
+      (this.packageFeeForSelectedWeeks +
+        this.accommodationUpgradeFeeForSelectedWeeks) *
+        this.discount
+    );
   }
 
   get quoteUsdText(): string {
@@ -767,8 +890,8 @@ export class GeniusSchoolComponent {
 
   get seasonNote(): string {
     return this.isPeakSeason
-      ? '当前日期落在公开资料定义的旺季月份，正式报价可能需要按旺季表重新确认。'
-      : '当前日期按淡季公开参考价估算，正式报价仍需确认优惠和空房。';
+      ? '入学日落在价目表旺季区间（1月5日至2月1日，或6月1日至8月30日），已自动使用旺季价。'
+      : '入学日不在价目表旺季区间内，已使用淡季价。正式报价仍需确认优惠和空房。';
   }
 
   formatUsd(value: number): string {

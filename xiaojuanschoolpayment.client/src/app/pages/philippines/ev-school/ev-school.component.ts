@@ -73,10 +73,11 @@ export class EvSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { room: '四人房', oneWeek: 'USD 752', fourWeeks: 'USD 1,880', twelveWeeks: 'USD 5,640', note: '半斯巴达综合英语最低价房型' },
-    { room: '三人房', oneWeek: 'USD 772', fourWeeks: 'USD 1,930', twelveWeeks: 'USD 5,790', note: '多人房中较平衡' },
-    { room: '双人房', oneWeek: 'USD 804', fourWeeks: 'USD 2,010', twelveWeeks: 'USD 6,030', note: '适合朋友同行' },
-    { room: '单人房', oneWeek: 'USD 952', fourWeeks: 'USD 2,380', twelveWeeks: 'USD 7,140', note: '隐私最好，预算较高' },
+    { room: '四人间', oneWeek: 'USD 716', fourWeeks: 'USD 1,790', twelveWeeks: 'USD 5,370', note: 'ESL Classic最低价房型' },
+    { room: '三人间', oneWeek: 'USD 736', fourWeeks: 'USD 1,840', twelveWeeks: 'USD 5,520', note: '多人房中较平衡' },
+    { room: '双人间B', oneWeek: 'USD 792', fourWeeks: 'USD 1,980', twelveWeeks: 'USD 5,940', note: '适合朋友同行' },
+    { room: '双人间A（面对泳池）', oneWeek: 'USD 832', fourWeeks: 'USD 2,080', twelveWeeks: 'USD 6,240', note: '面对泳池' },
+    { room: '单人间', oneWeek: 'USD 1,072', fourWeeks: 'USD 2,680', twelveWeeks: 'USD 8,040', note: '隐私最好，预算较高' },
   ];
 
   readonly localFees: LocalFee[] = [
