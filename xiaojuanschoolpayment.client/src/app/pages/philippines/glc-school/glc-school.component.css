@@ -58,6 +58,20 @@
     repeat(5, minmax(88px, 0.58fr));
 }
 
+:host .glc-page .weekly-rate-table .table-row {
+  grid-template-columns: minmax(160px, 0.8fr) minmax(260px, 1.5fr) minmax(130px, 0.65fr);
+}
+
+:host .glc-page .accommodation-rate-table .table-row {
+  grid-template-columns: minmax(160px, 0.8fr) minmax(150px, 0.65fr) minmax(260px, 1.4fr);
+}
+
+:host .glc-page .price-matrix-heading {
+  margin: 24px 0 0;
+  color: #102033;
+  font-size: 18px;
+}
+
 :host .glc-page .special-fee-table .table-row {
   grid-template-columns:
     minmax(150px, 0.9fr)

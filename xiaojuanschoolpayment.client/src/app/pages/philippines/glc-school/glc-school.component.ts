@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
+import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -41,6 +46,7 @@ interface RoomOption {
   id: string;
   name: string;
   note: string;
+  weeklyAccommodation: number;
 }
 
 interface CourseOption {
@@ -49,7 +55,7 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  pricesByRoom: Record<string, Record<WeekOption, number>>;
+  weeklyTuition: number;
 }
 
 interface ScheduleItem {
@@ -89,7 +95,7 @@ interface SourceLink {
 interface SpecialCourseFee {
   label: string;
   lessons: string;
-  four: string;
+  weeklyTuition: number;
   note: string;
 }
 
@@ -107,7 +113,36 @@ interface SpecialCourseFee {
     './glc-school.component.css',
   ],
 })
-export class GlcSchoolComponent {
+export class GlcSchoolComponent implements OnInit {
+  private readonly schoolService = inject(SchoolService);
+  private readonly pricingSchoolName = '菲律宾宿务Global Language Cebu';
+  private readonly specialFeeOrder = [
+    'Light Power Speaking',
+    'Ultra Sparta ESL',
+    'Family Package 2',
+    'Family Package 3',
+    'Family Package 4',
+    'Kids English 6',
+    'Kids English 7',
+    'Kids English 8',
+    'Junior Power Speaking 6',
+    'Junior Power Speaking 7',
+    'Junior Power Speaking 8',
+    'General IELTS',
+    'Intensive IELTS',
+    'Ultra8 IELTS',
+    'Ultra IELTS斯巴达',
+    'Business course',
+    'Ultra7 Business',
+  ];
+  private readonly roomOrder = [
+    '主楼豪华单人间',
+    '主楼单人间',
+    '主楼双人间',
+    '主楼三人间',
+    '副楼双人间',
+    '副楼单人间',
+  ];
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -118,7 +153,7 @@ export class GlcSchoolComponent {
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFee = 120;
+  registrationFee = 120;
   readonly usdToCny = 7.2;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
 
@@ -144,8 +179,8 @@ export class GlcSchoolComponent {
     {
       icon: 'hotel',
       label: '住宿选择',
-      value: 'Main / Annex2校内宿舍',
-      note: '公开价格按Main与Annex2单人、双人、三人等房型列示，酒店住宿需另行确认。',
+      value: '主楼 / 副楼校内宿舍',
+      note: '2026年价目表列主楼豪华单人、单人、双人、三人房及副楼单人、双人房。',
     },
     {
       icon: 'groups',
@@ -205,9 +240,9 @@ export class GlcSchoolComponent {
     },
     {
       category: '住宿',
-      title: 'Main / Annex2宿舍参考',
+      title: '主楼 / 副楼宿舍参考',
       description:
-        'Main与Annex2校内宿舍通常按单人、双人、三人房报价，热门档期需提前查房。',
+        '校内宿舍按房型列每周住宿费，斯巴达管理学生只能选择副楼住宿。',
       src: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b8b2c9416ac1b74d3789_DSC03460.webp',
     },
   ];
@@ -220,7 +255,7 @@ export class GlcSchoolComponent {
     { label: '学校规模', value: '公开资料列定员约400人' },
     { label: '学校定位', value: '日系运营、Mabolo市区大型综合型、半斯巴达/自律平衡' },
     { label: '主要课程', value: 'Power Speaking、IELTS、TOEIC、Business、Family、Kids / Junior、English + Internship' },
-    { label: '房型', value: 'Main / Annex2校内宿舍单人、双人、三人房；酒店住宿需另行确认' },
+    { label: '房型', value: '主楼豪华单人、单人、双人、三人房；副楼单人、双人房' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -271,93 +306,148 @@ export class GlcSchoolComponent {
     },
     {
       title: '只看最低总价',
-      text: '短期加价、注册费、SSP、签证、管理费、教材、水电和接送都会影响最终预算。',
+      text: '注册费、SSP、签证、管理费、教材、水电和接送都会影响最终预算。',
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
-    { id: 'main-triple', name: 'Main学生寮3人房', note: '官方Power Speaking公开4周USD 1,600起，适合控制预算。' },
-    { id: 'main-double', name: 'Main学生寮2人房', note: '比3人房更安静，热门档期需提前查房。' },
-    { id: 'main-single', name: 'Main学生寮1人房', note: '隐私最好，预算最高，通常最需要提前锁房。' },
-    { id: 'annex-double', name: 'Annex2学生寮2人房', note: '本页默认报价房型，公开4周Power Speaking为USD 1,720。' },
-    { id: 'annex-single', name: 'Annex2学生寮1人房', note: '兼顾独立空间和Annex2房型，需按性别与日期确认。' },
+  roomOptions: RoomOption[] = [
+    { id: 'main-deluxe-single', name: '主楼豪华单人间', note: '2026年住宿费为USD 645 / 周。', weeklyAccommodation: 645 },
+    { id: 'main-single', name: '主楼单人间', note: '2026年住宿费为USD 385 / 周。', weeklyAccommodation: 385 },
+    { id: 'main-double', name: '主楼双人间', note: '2026年住宿费为USD 270 / 周。', weeklyAccommodation: 270 },
+    { id: 'main-triple', name: '主楼三人间', note: '2026年住宿费为USD 220 / 周，适合控制预算。', weeklyAccommodation: 220 },
+    { id: 'annex-double', name: '副楼双人间', note: '2026年住宿费为USD 250 / 周；斯巴达管理学生只能选择副楼住宿。', weeklyAccommodation: 250 },
+    { id: 'annex-single', name: '副楼单人间', note: '2026年住宿费为USD 360 / 周；斯巴达管理学生只能选择副楼住宿。', weeklyAccommodation: 360 },
   ];
 
-  readonly courseOptions: CourseOption[] = [
+  courseOptions: CourseOption[] = [
     {
       id: 'power-speaking',
       name: 'Power Speaking',
       type: '一般英语',
-      lessons: '1:1四节 + 小组两节',
+      lessons: '1:1四节 + 小组两节（选修课）',
       suitable: '适合第一次游学、基础听说训练和想平衡学习与自由时间的学生。',
-      pricesByRoom: {
-        'main-triple': { 1: 460, 2: 920, 3: 1380, 4: 1600, 8: 3080, 12: 4560, 16: 6040, 20: 7520, 24: 9000 },
-        'main-double': { 1: 510, 2: 1020, 3: 1530, 4: 1800, 8: 3480, 12: 5160, 16: 6840, 20: 8520, 24: 10200 },
-        'main-single': { 1: 610, 2: 1220, 3: 1830, 4: 2200, 8: 4280, 12: 6360, 16: 8440, 20: 10520, 24: 12600 },
-        'annex-double': { 1: 490, 2: 980, 3: 1470, 4: 1720, 8: 3320, 12: 4920, 16: 6520, 20: 8120, 24: 9720 },
-        'annex-single': { 1: 590, 2: 1180, 3: 1770, 4: 2120, 8: 4120, 12: 6120, 16: 8120, 20: 10120, 24: 12120 },
-      },
+      weeklyTuition: 215,
     },
     {
       id: 'intensive-power-speaking',
       name: 'Intensive Power Speaking',
       type: '口语强化',
-      lessons: '1:1五节 + 小组两节',
+      lessons: '1:1五节 + 小组两节（选修课）',
       suitable: '适合想增加一对一比例、短期集中补弱项和提高输出频率的学生。',
-      pricesByRoom: {
-        'main-triple': { 1: 510, 2: 1020, 3: 1530, 4: 1800, 8: 3480, 12: 5160, 16: 6840, 20: 8520, 24: 10200 },
-        'main-double': { 1: 560, 2: 1120, 3: 1680, 4: 2000, 8: 3880, 12: 5760, 16: 7640, 20: 9520, 24: 11400 },
-        'main-single': { 1: 660, 2: 1320, 3: 1980, 4: 2400, 8: 4680, 12: 6960, 16: 9240, 20: 11520, 24: 13800 },
-        'annex-double': { 1: 540, 2: 1080, 3: 1620, 4: 1920, 8: 3720, 12: 5520, 16: 7320, 20: 9120, 24: 10920 },
-        'annex-single': { 1: 640, 2: 1280, 3: 1920, 4: 2320, 8: 4520, 12: 6720, 16: 8920, 20: 11120, 24: 13320 },
-      },
+      weeklyTuition: 270,
     },
     {
       id: 'ultra7-power-speaking',
       name: 'Ultra7 Power Speaking',
       type: '高密度一对一',
-      lessons: '1:1七节',
+      lessons: '1:1七节 + 小组一节（选修课）',
       suitable: '适合时间有限、想让课程几乎全部围绕个人弱点安排的学生。',
-      pricesByRoom: {
-        'main-triple': { 1: 610, 2: 1220, 3: 1830, 4: 2200, 8: 4280, 12: 6360, 16: 8440, 20: 10520, 24: 12600 },
-        'main-double': { 1: 660, 2: 1320, 3: 1980, 4: 2400, 8: 4680, 12: 6960, 16: 9240, 20: 11520, 24: 13800 },
-        'main-single': { 1: 760, 2: 1520, 3: 2280, 4: 2800, 8: 5480, 12: 8160, 16: 10840, 20: 13520, 24: 16200 },
-        'annex-double': { 1: 640, 2: 1280, 3: 1920, 4: 2320, 8: 4520, 12: 6720, 16: 8920, 20: 11120, 24: 13320 },
-        'annex-single': { 1: 740, 2: 1480, 3: 2220, 4: 2720, 8: 5320, 12: 7920, 16: 10520, 20: 13120, 24: 15720 },
-      },
+      weeklyTuition: 375,
     },
   ];
 
-  readonly specialFees: SpecialCourseFee[] = [
+  specialFees: SpecialCourseFee[] = [
     {
       label: 'Light Power Speaking',
-      lessons: '公开资料列USD 165 / 周学费',
-      four: '住宿费另加，适合轻量学习',
-      note: '正式套餐需按房型、周数和短期附加费确认。',
+      lessons: '1:1三节 + 小组两节（选修课）',
+      weeklyTuition: 165,
+      note: '15岁以上；住宿费另加。',
     },
     {
-      label: 'Family Package',
-      lessons: 'Package 2 / 3 / 4',
-      four: 'USD 410 / 590 / 775 每周学费参考',
-      note: '亲子家庭需确认儿童年龄、家长课程、房型和保姆/监护规则。',
+      label: 'Ultra Sparta ESL',
+      lessons: '1:1五节 + 小组三节 + 词汇/写作测试 + 晚课两节 + 自习一节',
+      weeklyTuition: 280,
+      note: '含周六上午课程；斯巴达管理学生只能选择副楼住宿。',
     },
     {
-      label: 'Kids / Junior English',
-      lessons: 'Kids 6/7/8 或 Junior 6/7/8',
-      four: 'USD 325-465 / 周学费参考',
-      note: '适合儿童青少年路线，正式费用要加住宿与当地费用。',
+      label: 'Family Package 2',
+      lessons: '1:1八节（青少年与监护人共享）+ 监护人小组两节',
+      weeklyTuition: 410,
+      note: '小孩5-11岁，青少年12-14岁。',
     },
     {
-      label: 'TOEIC / IELTS',
-      lessons: 'General / Intensive / Ultra 8',
-      four: 'USD 240-430 / 周学费参考',
-      note: '考试路线需确认英文程度、教材、模考和开课安排。',
+      label: 'Family Package 3',
+      lessons: '1:1十二节（青少年与监护人共享）+ 监护人小组两节',
+      weeklyTuition: 590,
+      note: '小孩5-11岁，青少年12-14岁。',
     },
     {
-      label: 'Business / Internship',
-      lessons: 'Business English / English + Internship',
-      four: '按当期课程表核价',
-      note: '商务和实习方向报名条件、周期与名额需提前确认。',
+      label: 'Family Package 4',
+      lessons: '1:1十六节（青少年与监护人共享）+ 监护人小组两节',
+      weeklyTuition: 775,
+      note: '小孩5-11岁，青少年12-14岁。',
+    },
+    {
+      label: 'Kids English 6',
+      lessons: '1:1六节',
+      weeklyTuition: 335,
+      note: '适合5-11岁儿童。',
+    },
+    {
+      label: 'Kids English 7',
+      lessons: '1:1七节',
+      weeklyTuition: 400,
+      note: '适合5-11岁儿童。',
+    },
+    {
+      label: 'Kids English 8',
+      lessons: '1:1八节',
+      weeklyTuition: 465,
+      note: '适合5-11岁儿童。',
+    },
+    {
+      label: 'Junior Power Speaking 6',
+      lessons: '1:1六节',
+      weeklyTuition: 325,
+      note: '适合12-14岁青少年。',
+    },
+    {
+      label: 'Junior Power Speaking 7',
+      lessons: '1:1七节',
+      weeklyTuition: 375,
+      note: '适合12-14岁青少年。',
+    },
+    {
+      label: 'Junior Power Speaking 8',
+      lessons: '1:1八节',
+      weeklyTuition: 430,
+      note: '适合12-14岁青少年。',
+    },
+    {
+      label: 'General IELTS',
+      lessons: '1:1四节 + 小组两节 + 选修课',
+      weeklyTuition: 240,
+      note: '需确认英文程度、教材和开课安排。',
+    },
+    {
+      label: 'Intensive IELTS',
+      lessons: '1:1五节 + 小组两节 + 选修课',
+      weeklyTuition: 300,
+      note: '需确认英文程度、教材和开课安排。',
+    },
+    {
+      label: 'Ultra8 IELTS',
+      lessons: '1:1八节 + 选修课',
+      weeklyTuition: 430,
+      note: '需确认英文程度、教材和开课安排。',
+    },
+    {
+      label: 'Ultra IELTS斯巴达',
+      lessons: '1:1五节 + 强制小组三节 + 测试、晚课与自习',
+      weeklyTuition: 355,
+      note: '含周六上午模考；斯巴达管理学生只能选择副楼住宿。',
+    },
+    {
+      label: 'Business course',
+      lessons: '1:1四节 + 小组两节（选修课）',
+      weeklyTuition: 300,
+      note: '住宿费与当地费用另加。',
+    },
+    {
+      label: 'Ultra7 Business',
+      lessons: '1:1七节 + 小组一节（选修课）',
+      weeklyTuition: 465,
+      note: '住宿费与当地费用另加。',
     },
   ];
 
@@ -418,7 +508,7 @@ export class GlcSchoolComponent {
     {
       icon: 'fact_check',
       title: '确认课程与房型',
-      text: '核对Power Speaking、考试、Family/Kids路线、Main/Annex2空房和入学日。',
+      text: '核对Power Speaking、考试、Family/Kids路线、主楼/副楼空房和入学日。',
     },
     {
       icon: 'payments',
@@ -482,10 +572,9 @@ export class GlcSchoolComponent {
     'Mactan周末行程',
   ];
   readonly notes = [
-    '本页Power Speaking费用按GLC官方公开美元套餐价整理，通常含学费、住宿和每日三餐。',
-    '1-3周短期课程公开资料说明有USD 60 / 周短期附加费，官方套餐价页面通常已列出短期价；正式报价仍需核对。',
-    '8周以上公开资料列长期优惠，学校报价单口径可能会把优惠独立显示或合并显示。',
-    '酒店住宿、亲子、Kids/Junior、TOEIC、IELTS、Business和Internship路线需要按当期报价单另核。',
+    '本页2026年课程和住宿价格按GLC美元周价表整理，报价器按“每周学费 + 每周住宿费”乘以周数计算。',
+    '价格表未列短期附加费或长期优惠，因此报价器不自行增加或扣减；正式报价仍需按入学日期与学校确认。',
+    '亲子、Kids/Junior、IELTS、Business和斯巴达路线的年龄、入学条件、宿舍限制与开课安排需另行确认。',
     'SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机和押金通常不包含在课程住宿套餐内。',
   ];
   readonly faqs: FaqItem[] = [
@@ -512,7 +601,7 @@ export class GlcSchoolComponent {
     {
       question: 'GLC住宿有什么要确认？',
       answer:
-        '需确认Main/Annex2/酒店房型、性别空位、同住规则、清扫洗衣、Wi-Fi、门禁、餐食和前后泊安排。',
+        '需确认主楼/副楼房型、性别空位、同住规则、清扫洗衣、Wi-Fi、门禁、餐食和前后泊安排；斯巴达管理学生只能选择副楼住宿。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -535,9 +624,123 @@ export class GlcSchoolComponent {
   readonly sources: SourceLink[] = [
     { label: 'Global Language Cebu官方英文网站', url: 'https://www.glcenglish.com/' },
     { label: 'GLC官方学校资料', url: 'https://www.glcenglish.com/about/school' },
-    { label: 'GLC Power Speaking官方费用', url: 'https://www.glcenglish.com/program/power-speaking' },
-    { label: 'GLC 2026费用与当地费用参考', url: 'https://www.fujiyama-international.com/philippines/idea-cebu.html' },
+    { label: 'GLC Power Speaking官方课程资料', url: 'https://www.glcenglish.com/program/power-speaking' },
   ];
+
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+  }
+
+  private loadPricingFromDatabase(): void {
+    this.schoolService.getSchools({ name: 'Global Language Cebu' }).pipe(
+      switchMap((schools) => {
+        const school =
+          schools.find((item) => item.name === this.pricingSchoolName) ??
+          schools.find((item) => item.name.includes('Global Language Cebu')) ??
+          schools[0];
+
+        if (!school?.id) {
+          return EMPTY;
+        }
+
+        return forkJoin({
+          lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 1 }),
+          rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 1 }),
+          fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ lessons, rooms, fees }) => {
+      this.applyPricingData(lessons, rooms, fees);
+    });
+  }
+
+  private applyPricingData(
+    lessons: SchoolLessonDTO[],
+    rooms: SchoolRoomDTO[],
+    fees: SchoolFeeDTO[],
+  ): void {
+    const weeklyLessons = lessons.filter((lesson) => lesson.week === 1);
+    const primaryCourseNames = new Set(this.courseOptions.map((course) => course.name));
+
+    this.courseOptions = this.courseOptions.map((course) => {
+      const databaseLesson = weeklyLessons.find((lesson) => lesson.name === course.name);
+
+      return databaseLesson
+        ? {
+            ...course,
+            lessons: databaseLesson.description || course.lessons,
+            suitable: databaseLesson.note || course.suitable,
+            weeklyTuition: databaseLesson.price,
+          }
+        : course;
+    });
+
+    const databaseSpecialFees = weeklyLessons
+      .filter((lesson) => !primaryCourseNames.has(lesson.name))
+      .map((lesson) => ({
+        label: lesson.name,
+        lessons: lesson.description || '课程安排请向学校确认',
+        weeklyTuition: lesson.price,
+        note: lesson.note || '住宿费与当地费用另加。',
+      }))
+      .sort(
+        (left, right) =>
+          this.orderIndex(this.specialFeeOrder, left.label) -
+          this.orderIndex(this.specialFeeOrder, right.label),
+      );
+
+    if (databaseSpecialFees.length > 0) {
+      this.specialFees = databaseSpecialFees;
+    }
+
+    const databaseRooms = rooms
+      .filter((room) => room.week === 1)
+      .map((room) => ({
+        id: this.createRoomId(room),
+        name: room.name,
+        note: room.description || '请联系顾问确认空房和住宿规则。',
+        weeklyAccommodation: room.price,
+      }))
+      .sort(
+        (left, right) =>
+          this.orderIndex(this.roomOrder, left.name) -
+          this.orderIndex(this.roomOrder, right.name),
+      );
+
+    if (databaseRooms.length > 0) {
+      this.roomOptions = databaseRooms;
+      if (!this.roomOptions.some((room) => room.id === this.selectedRoomId)) {
+        this.selectedRoomId =
+          this.roomOptions.find((room) => room.id === 'annex-double')?.id ??
+          this.roomOptions[0].id;
+      }
+    }
+
+    const registrationFee = fees.find((fee) => fee.name === '注册费');
+    if (registrationFee) {
+      this.registrationFee = registrationFee.fee;
+      const localRegistrationFee = this.localFees.find((fee) => fee.item === '入学金');
+      if (localRegistrationFee) {
+        localRegistrationFee.amount = `USD ${this.formatUsd(registrationFee.fee)}`;
+      }
+    }
+  }
+
+  private createRoomId(room: SchoolRoomDTO): string {
+    if (room.name === '主楼豪华单人间') return 'main-deluxe-single';
+    if (room.name === '主楼单人间') return 'main-single';
+    if (room.name === '主楼双人间') return 'main-double';
+    if (room.name === '主楼三人间') return 'main-triple';
+    if (room.name === '副楼双人间') return 'annex-double';
+    if (room.name === '副楼单人间') return 'annex-single';
+    return `database-${room.id}`;
+  }
+
+  private orderIndex(order: string[], value: string): number {
+    const index = order.indexOf(value);
+    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+  }
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
@@ -569,8 +772,11 @@ export class GlcSchoolComponent {
 
   feeFor(courseId: string, roomId: string, weeks: WeekOption = 4): number {
     const course = this.courseOptions.find((item) => item.id === courseId);
+    const room = this.roomOptions.find((item) => item.id === roomId);
 
-    return course?.pricesByRoom[roomId]?.[weeks] ?? 0;
+    return course && room
+      ? (course.weeklyTuition + room.weeklyAccommodation) * weeks
+      : 0;
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -621,12 +827,12 @@ export class GlcSchoolComponent {
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
 
     if (Number.isNaN(start.getTime())) {
-      return '入学日期需要和学校确认，短期附加费、长期优惠、房型空位和当地费用会影响最终报价。';
+      return '入学日期需要和学校确认，房型空位、学校优惠和当地费用会影响最终报价。';
     }
 
     return this.selectedWeeks <= 3
-      ? '当前选择为1-3周短期课程，需确认官方短期附加费是否已包含在学校正式报价中。'
-      : 'GLC公开资料列有长期周数优惠与短期附加费口径，最终仍需按学校当期报价单确认。';
+      ? '当前选择为1-3周课程，报价器按2026年周价直接计算；是否另有短期规则需向学校确认。'
+      : '报价器按2026年周价直接计算，未自行加入长期优惠；最终仍需按学校当期报价单确认。';
   }
 
   formatUsd(amount: number): string {

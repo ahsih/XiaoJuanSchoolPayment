@@ -53,13 +53,13 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周套餐参考</span>
+              <span>2026年4周学费 + 住宿费参考</span>
               <strong>{{ packageFeeText }}</strong>
-              <p>Power Speaking + Annex2学生寮2人房</p>
+              <p>Power Speaking + 副楼双人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  官方公开套餐价通常含学费、住宿和每日三餐
+                  按每周课程USD 215 + 每周住宿USD 250计算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -218,14 +218,39 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>GLC官方公开套餐价</span>
-              <h2>Power Speaking：按课程、房型和周数看</h2>
+              <span>GLC 2026年课程与住宿价格</span>
+              <h2>先看每周单价，再按课程、房型和周数计算</h2>
               <p>
-                以下按GLC官方Power Speaking公开美元套餐价整理，通常含授课、住宿和每日三餐；
+                以下按2026年GLC美元周价表整理。组合价 =（每周课程费 + 每周住宿费）× 周数；
                 入学金、SSP、签证、押金、电费、管理费、教材和接送需另外确认。
               </p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="GLC Power Speaking官方公开套餐价">
+            <div class="data-table weekly-rate-table" role="table" aria-label="GLC 2026年主要课程周价">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span>
+                <span role="columnheader">课程安排</span>
+                <span role="columnheader">课程价格 / 周</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                <span role="cell">{{ course.name }}</span>
+                <span role="cell">{{ course.lessons }}</span>
+                <span role="cell">USD {{ formatUsd(course.weeklyTuition) }}</span>
+              </div>
+            </div>
+            <div class="data-table weekly-rate-table accommodation-rate-table" role="table" aria-label="GLC 2026年住宿周价">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span>
+                <span role="columnheader">住宿价格 / 周</span>
+                <span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.weeklyAccommodation) }}</span>
+                <span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <h3 class="price-matrix-heading">Power Speaking课程住宿组合价</h3>
+            <div class="data-table course-fee-table" role="table" aria-label="GLC Power Speaking课程住宿组合价">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
                 <span role="columnheader">1周</span>
@@ -245,7 +270,7 @@
                 </div>
               </ng-container>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="GLC Power Speaking官方套餐手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="GLC Power Speaking课程住宿组合价手机卡片">
               <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
@@ -254,7 +279,7 @@
                   <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
                   <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
                   <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
-                  <p>{{ course.lessons }}。{{ room.note }}</p>
+                  <p>每周课程USD {{ formatUsd(course.weeklyTuition) }} + 每周住宿USD {{ formatUsd(room.weeklyAccommodation) }}。{{ course.lessons }}。{{ room.note }}</p>
                 </article>
               </ng-container>
             </div>
@@ -280,10 +305,10 @@
         <section class="split-layout" id="special-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>其他课程费用参考</span>
-              <h2>亲子、考试、Business和Internship要单独核价</h2>
+              <span>其他课程2026年周价</span>
+              <h2>轻量、斯巴达、亲子、青少年、IELTS与Business课程</h2>
               <p>
-                这些费用来自公开2026费用资料，通常是周学费或课程费口径，正式报价还要加住宿和当地费用。
+                以下为课程周价，正式报价还要按房型和周数加上住宿费，并另计注册费与当地费用。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="GLC其他课程费用参考">
@@ -296,22 +321,31 @@
               <div class="table-row" role="row" *ngFor="let fee of specialFees">
                 <span role="cell">{{ fee.label }}</span>
                 <span role="cell">{{ fee.lessons }}</span>
-                <span role="cell">{{ fee.four }}</span>
+                <span role="cell">USD {{ formatUsd(fee.weeklyTuition) }} / 周</span>
                 <span role="cell">{{ fee.note }}</span>
               </div>
             </div>
+            <div class="mobile-card-list mobile-special-fees" aria-label="GLC其他课程2026年周价手机卡片">
+              <article *ngFor="let fee of specialFees">
+                <span>课程周价</span>
+                <strong>{{ fee.label }}</strong>
+                <div><em>课程安排</em><b>{{ fee.lessons }}</b></div>
+                <div><em>课程价格</em><b>USD {{ formatUsd(fee.weeklyTuition) }} / 周</b></div>
+                <p>{{ fee.note }}</p>
+              </article>
+            </div>
             <ul class="check-list">
               <li>Family、Kids、Junior路线要确认年龄、同行家长、房型和监护规则。</li>
-              <li>TOEIC、IELTS和Business方向需确认开课、教材、老师和程度要求。</li>
-              <li>English + Internship需单独确认周期、名额和报名条件。</li>
+              <li>IELTS和Business方向需确认开课、教材、老师和程度要求。</li>
+              <li>Ultra Sparta ESL与Ultra IELTS斯巴达学生只能选择副楼住宿。</li>
             </ul>
           </div>
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>GLC费用快速报价</span>
-              <h2>默认参考：4周Power Speaking + Annex2学生寮2人房</h2>
-              <p>前期支付参考 = 入学金 + 课程住宿套餐。到校费用需另行准备。</p>
+              <h2>默认参考：4周Power Speaking + 副楼双人间</h2>
+              <p>前期支付参考 = 入学金 +（每周课程费 + 每周住宿费）× 周数。到校费用需另行准备。</p>
             </div>
             <div class="quote-form" aria-label="GLC费用快速报价选项">
               <label>
@@ -339,6 +373,8 @@
             </div>
             <div class="quote-breakdown">
               <div><span>入学金参考</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>课程价格 / 周</span><strong>USD {{ formatUsd(selectedCourse.weeklyTuition) }}</strong></div>
+              <div><span>住宿价格 / 周</span><strong>USD {{ formatUsd(selectedRoom.weeklyAccommodation) }}</strong></div>
               <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
               <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
               <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
@@ -349,7 +385,7 @@
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
               <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认房型、性别、入学日、短期附加费、长期优惠和当地费用。
+                已按当前选择和2026年周价更新。正式报价仍需确认房型、性别、入学日、学校优惠和当地费用。
               </p>
             </div>
             <div class="quote-actions">
@@ -399,7 +435,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考GLC官方公开Power Speaking价格和可公开访问的2026费用资料整理。
+              本页价格更新时间：2026年8月。课程费、住宿费与注册费按GLC 2026年价目表整理。
               学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
@@ -417,8 +453,8 @@
             </div>
             <ul class="check-list">
               <li>Power Speaking、TOEIC、IELTS、Business、Family和Kids/Junior路线匹配</li>
-              <li>Main / Annex2单人、双人、三人房空房确认</li>
-              <li>短期附加费、长期优惠、餐食、特殊餐和酒店住宿规则确认</li>
+              <li>主楼豪华单人、单人、双人、三人房及副楼单人、双人房空房确认</li>
+              <li>短期/长期规则、学校优惠、餐食和特殊餐规则确认</li>
               <li>前期支付与到校支付费用清单</li>
             </ul>
           </div>
@@ -432,7 +468,7 @@
             <span>资料来源</span>
             <h2>GLC页面公开资料来源</h2>
             <p>
-              本页以GLC官方英文网站和官方Power Speaking价格页为主要来源，并参考公开2026费用资料整理当地费用。
+              学校与课程资料参考GLC官方英文网站；本页2026年课程、住宿和注册价格按GLC 2026年价目表整理。
               正式报名以前请以学校确认书和最新报价单为准。
             </p>
           </div>

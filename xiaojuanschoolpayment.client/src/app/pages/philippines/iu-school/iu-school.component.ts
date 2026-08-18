@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
+import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -47,7 +52,7 @@ interface CourseFee {
   id: string;
   name: string;
   tuition: number;
-  suitable: string;
+  schedule: string;
 }
 
 interface RoomFee {
@@ -117,7 +122,34 @@ interface SourceLink {
     '../ev-school/ev-school-detail.component.css',
   ],
 })
-export class IuSchoolComponent {
+export class IuSchoolComponent implements OnInit {
+  private readonly schoolService = inject(SchoolService);
+  private readonly pricingSchoolName = '菲律宾宿务IU English Academy';
+  private readonly courseFeeOrder = [
+    'Light ESL',
+    'Power Speaking 4',
+    'Power Speaking 6',
+    'Power Speaking 8',
+    'TOEIC',
+    'IELTS',
+    '6周 IELTS保证班',
+    '12周 IELTS保证班',
+    '商务英语4',
+    '商务英语6',
+    '儿童（7~12岁）',
+    '青少年（13~15岁）',
+    '健身英文',
+    '监护人',
+  ];
+  private readonly roomFeeOrder = [
+    '校内单人房',
+    '校内双人房',
+    '校内三人房',
+    '校内四人房',
+    '校外单人房',
+    '校外双人房',
+  ];
+
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -128,10 +160,10 @@ export class IuSchoolComponent {
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFee = 100;
+  registrationFee = 100;
   readonly discount = 1;
   readonly usdToCny = 7.2;
-  readonly weekOptions = [4, 8, 12, 16, 20, 24];
+  readonly weekOptions = [3, 4, 6, 8, 12, 16, 20, 24];
 
   selectedCourseId = 'power-speaking-4';
   selectedRoomId = 'triple-campus';
@@ -245,11 +277,11 @@ export class IuSchoolComponent {
     { label: '教学空间', value: '70间一对一教室，15间小组教室，另有自习室和阅览室' },
     {
       label: '课程定位',
-      value: 'Power Speaking、Beginner、Light Speaking、IELTS、TOEIC、Business、Fitness、Kids/Teenagers/Parents',
+      value: 'Light ESL、Power Speaking、IELTS、TOEIC、Business、Fitness、Kids/Teenagers/Parents',
     },
     {
       label: '住宿房型',
-      value: '校内单人、双人、三人、四人房；另有Soleil Suites外部宿舍参考',
+      value: '校内单人、双人、三人、四人房；另有校外单人和双人房',
     },
     {
       label: '费用参考',
@@ -324,16 +356,10 @@ export class IuSchoolComponent {
 
   readonly courses: CourseItem[] = [
     {
-      name: 'Light Speaking',
+      name: 'Light ESL',
       type: '轻量口语',
-      lessons: '4节1:1 + 2节晚间运动课',
+      lessons: '4节一对一',
       suitable: '适合想保留更多自习和生活体验，同时提升基础口语的学生。',
-    },
-    {
-      name: 'Beginner 4 / Beginner 6',
-      type: '初学者强化',
-      lessons: '4或6节1:1 + 小组课 + 晚间运动课',
-      suitable: '适合基础较弱、需要从听说读写和语法词汇重新建立的人。',
     },
     {
       name: 'Power Speaking 4 / 6 / 8',
@@ -373,29 +399,30 @@ export class IuSchoolComponent {
     },
   ];
 
-  readonly courseFees: CourseFee[] = [
-    { id: 'light-speaking', name: 'Light Speaking', tuition: 750, suitable: '轻量口语，4节1:1 + 晚间运动课' },
-    { id: 'beginner-4', name: 'Beginner 4', tuition: 850, suitable: '初学者4节1:1路线' },
-    { id: 'beginner-6', name: 'Beginner 6', tuition: 1000, suitable: '初学者6节1:1路线' },
-    { id: 'power-speaking-4', name: 'Power Speaking 4', tuition: 850, suitable: '4节1:1 + 4节小组 + 运动课' },
-    { id: 'power-speaking-6', name: 'Power Speaking 6', tuition: 1000, suitable: '6节1:1，适合短期强化' },
-    { id: 'power-speaking-8', name: 'Power Speaking 8', tuition: 1150, suitable: '8节1:1，课程量最高' },
-    { id: 'toeic', name: 'TOEIC', tuition: 950, suitable: '多益听力阅读与策略训练' },
-    { id: 'ielts', name: 'IELTS', tuition: 1000, suitable: '雅思常规备考' },
-    { id: 'business-4', name: 'Business 4', tuition: 950, suitable: '商务英语4节1:1路线' },
-    { id: 'business-6', name: 'Business 6', tuition: 1100, suitable: '商务英语6节1:1路线' },
-    { id: 'fitness', name: 'Fitness English', tuition: 1050, suitable: '英语 + 健身特色课程' },
-    { id: 'junior', name: 'Kids / Junior', tuition: 900, suitable: '7-15岁亲子/青少年课程' },
+  courseFees: CourseFee[] = [
+    { id: 'light-esl', name: 'Light ESL', tuition: 750, schedule: '一对一4课时' },
+    { id: 'power-speaking-4', name: 'Power Speaking 4', tuition: 850, schedule: '一对一4课时 + 团体课4课时' },
+    { id: 'power-speaking-6', name: 'Power Speaking 6', tuition: 1000, schedule: '一对一6课时 + 团体课2课时' },
+    { id: 'power-speaking-8', name: 'Power Speaking 8', tuition: 1150, schedule: '一对一8课时' },
+    { id: 'toeic', name: 'TOEIC', tuition: 950, schedule: '一对一4课时 + 团体课4课时 + 自习课1课时 + 晚课2课时' },
+    { id: 'ielts', name: 'IELTS', tuition: 1000, schedule: '一对一4课时 + 团体课4课时 + 自习课1课时 + 晚课2课时' },
+    { id: 'ielts-guarantee-6', name: '6周 IELTS保证班', tuition: 1200, schedule: '一对一6课时 + 团体课2课时 + 自习课1课时 + 晚课2课时' },
+    { id: 'ielts-guarantee-12', name: '12周 IELTS保证班', tuition: 1133, schedule: '一对一6课时 + 团体课2课时 + 自习课1课时 + 晚课2课时' },
+    { id: 'business-4', name: '商务英语4', tuition: 950, schedule: '一对一4课时 + 团体课4课时' },
+    { id: 'business-6', name: '商务英语6', tuition: 1100, schedule: '一对一6课时 + 团体课2课时' },
+    { id: 'children', name: '儿童（7~12岁）', tuition: 900, schedule: '一对一4课时 + 团体课2课时 + 活动课2课时' },
+    { id: 'teenagers', name: '青少年（13~15岁）', tuition: 900, schedule: '一对一4课时 + 团体课4课时' },
+    { id: 'fitness', name: '健身英文', tuition: 1050, schedule: '一对一4课时 + 健身课3课时' },
+    { id: 'guardian', name: '监护人', tuition: 0, schedule: '仅预订住宿，家长不上课' },
   ];
 
-  readonly roomFees: RoomFee[] = [
-    { id: 'quad-campus', name: '校内四人房', fee: 600, note: '预算最低，适合控制费用' },
-    { id: 'triple-campus', name: '校内三人房', fee: 700, note: '预算和生活空间比较平衡' },
-    { id: 'twin-campus', name: '校内双人房', fee: 800, note: '适合同伴同行或想减少室友人数' },
+  roomFees: RoomFee[] = [
     { id: 'single-campus', name: '校内单人房', fee: 950, note: '隐私最好，热门档期需尽早确认' },
-    { id: 'triple-offcampus', name: 'Soleil Suites三人房', fee: 750, note: '外部宿舍参考，需确认交通和空房' },
-    { id: 'twin-offcampus', name: 'Soleil Suites双人房', fee: 950, note: '外部宿舍双人方案' },
-    { id: 'single-offcampus', name: 'Soleil Suites单人房', fee: 1100, note: '外部宿舍单人方案，预算最高' },
+    { id: 'twin-campus', name: '校内双人房', fee: 800, note: '适合同伴同行或想减少室友人数' },
+    { id: 'triple-campus', name: '校内三人房', fee: 700, note: '预算和生活空间比较平衡' },
+    { id: 'quad-campus', name: '校内四人房', fee: 600, note: '仅限家庭' },
+    { id: 'single-offcampus', name: '校外单人房', fee: 1400, note: '校外宿舍单人方案，预算最高' },
+    { id: 'twin-offcampus', name: '校外双人房', fee: 950, note: '需确认交通、餐食和空房' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -492,6 +519,7 @@ export class IuSchoolComponent {
   ];
   readonly notes = [
     '本页费用使用2026公开参考价，正式报价仍需按入学日期、房型、校内/外宿舍和学校空房确认。',
+    'IU最短接受3周报名；3周课程费和住宿费均按4周价格的80%计算，不提供1-2周方案。',
     '部分代理会有2026促销价，例如ESL4三人房套餐；促销名额、适用月份和包含项目需要顾问确认。',
     'IELTS保证班有入学门槛、出勤、作业和Mock test规则，低龄课程需确认年龄和监护要求。',
     '当地费用通常包含SSP、E-Card、押金、电费、维护费、洗衣、教材和签证延长，不应只看课程住宿价。',
@@ -506,7 +534,7 @@ export class IuSchoolComponent {
     {
       question: '页面上的报价包含全部费用吗？',
       answer:
-        '不包含全部。报价器主要估算4周课程费、住宿费和注册费；到校后还要准备SSP、SSP E-Card、ACR I-Card、教材、押金、电费、维护费、洗衣、接机和签证延长等费用。',
+        '不包含全部。报价器主要估算所选周数的课程费、住宿费和注册费；到校后还要准备SSP、SSP E-Card、ACR I-Card、教材、押金、电费、维护费、洗衣、接机和签证延长等费用。',
     },
     {
       question: 'IU适合雅思学生吗？',
@@ -541,6 +569,134 @@ export class IuSchoolComponent {
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
+
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+  }
+
+  private loadPricingFromDatabase(): void {
+    this.schoolService.getSchools({ name: 'IU English Academy' }).pipe(
+      switchMap((schools) => {
+        const school =
+          schools.find((item) => item.name === this.pricingSchoolName) ??
+          schools.find((item) => item.name.includes('IU English Academy')) ??
+          schools[0];
+
+        if (!school?.id) {
+          return EMPTY;
+        }
+
+        return forkJoin({
+          lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
+          rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
+          fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ lessons, rooms, fees }) => {
+      this.applyPricingData(lessons, rooms, fees);
+    });
+  }
+
+  private applyPricingData(
+    lessons: SchoolLessonDTO[],
+    rooms: SchoolRoomDTO[],
+    fees: SchoolFeeDTO[],
+  ): void {
+    const databaseCourseFees = lessons
+      .filter((lesson) => lesson.week === 4)
+      .map((lesson) => ({
+        id: this.createCourseId(lesson),
+        name: lesson.name,
+        tuition: lesson.price,
+        schedule: lesson.description || lesson.note || '课程安排请向学校确认',
+      }))
+      .sort(
+        (left, right) =>
+          this.orderIndex(this.courseFeeOrder, left.name) -
+          this.orderIndex(this.courseFeeOrder, right.name),
+      );
+
+    if (databaseCourseFees.length > 0) {
+      this.courseFees = databaseCourseFees;
+      if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
+        this.selectedCourseId =
+          this.courseFees.find((course) => course.id === 'power-speaking-4')?.id ??
+          this.courseFees[0].id;
+      }
+    }
+
+    const databaseRoomFees = rooms
+      .filter((room) => room.week === 4)
+      .map((room) => ({
+        id: this.createRoomId(room),
+        name: room.name,
+        fee: room.price,
+        note: room.description || '请联系顾问确认空房和住宿规则',
+      }))
+      .sort(
+        (left, right) =>
+          this.orderIndex(this.roomFeeOrder, left.name) -
+          this.orderIndex(this.roomFeeOrder, right.name),
+      );
+
+    if (databaseRoomFees.length > 0) {
+      this.roomFees = databaseRoomFees;
+      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
+        this.selectedRoomId =
+          this.roomFees.find((room) => room.id === 'triple-campus')?.id ??
+          this.roomFees[0].id;
+      }
+    }
+
+    const databaseRegistrationFee = fees.find((fee) => fee.name === '注册费');
+    if (databaseRegistrationFee) {
+      this.registrationFee = databaseRegistrationFee.fee;
+      const localRegistrationFee = this.localFees.find((fee) => fee.item === '注册费');
+      if (localRegistrationFee) {
+        localRegistrationFee.amount = `约USD ${this.formatUsd(this.registrationFee)}`;
+      }
+    }
+  }
+
+  private createCourseId(lesson: SchoolLessonDTO): string {
+    const idsByName: Record<string, string> = {
+      'Light ESL': 'light-esl',
+      'Power Speaking 4': 'power-speaking-4',
+      'Power Speaking 6': 'power-speaking-6',
+      'Power Speaking 8': 'power-speaking-8',
+      TOEIC: 'toeic',
+      IELTS: 'ielts',
+      '6周 IELTS保证班': 'ielts-guarantee-6',
+      '12周 IELTS保证班': 'ielts-guarantee-12',
+      '商务英语4': 'business-4',
+      '商务英语6': 'business-6',
+      '儿童（7~12岁）': 'children',
+      '青少年（13~15岁）': 'teenagers',
+      '健身英文': 'fitness',
+      '监护人': 'guardian',
+    };
+
+    return idsByName[lesson.name] ?? `database-${lesson.id}`;
+  }
+
+  private createRoomId(room: SchoolRoomDTO): string {
+    const idsByName: Record<string, string> = {
+      '校内单人房': 'single-campus',
+      '校内双人房': 'twin-campus',
+      '校内三人房': 'triple-campus',
+      '校内四人房': 'quad-campus',
+      '校外单人房': 'single-offcampus',
+      '校外双人房': 'twin-offcampus',
+    };
+
+    return idsByName[room.name] ?? `database-${room.id}`;
+  }
+
+  private orderIndex(order: string[], value: string): number {
+    const index = order.indexOf(value);
+    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+  }
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
@@ -593,11 +749,15 @@ export class IuSchoolComponent {
   }
 
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition * (this.selectedWeeks / 4);
+    return this.selectedCourse.tuition * this.durationMultiplier;
   }
 
   get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee * (this.selectedWeeks / 4);
+    return this.selectedRoom.fee * this.durationMultiplier;
+  }
+
+  get durationMultiplier(): number {
+    return this.selectedWeeks === 3 ? 0.8 : this.selectedWeeks / 4;
   }
 
   get quoteUsd(): number {

@@ -56,7 +56,8 @@ export class AdminSchoolRoomsComponent {
     this.dataSource.filterPredicate = (data: SchoolRoomDTO, filter: string) => {
       const term = filter.trim().toLowerCase();
       const name = (data.name ?? '').toLowerCase();
-      return name.includes(term);
+      const schoolName = (data.schoolName ?? '').toLowerCase();
+      return name.includes(term) || schoolName.includes(term);
     };
   }
 

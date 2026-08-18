@@ -8,4 +8,5 @@ export interface SchoolRoomDTO {
   description?: string;
   schoolId: string;
   week: number;
+  schoolName?: string;
 }

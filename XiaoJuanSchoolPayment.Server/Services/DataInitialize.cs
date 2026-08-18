@@ -31,6 +31,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid AmericanEnglishSchoolId = Guid.Parse("4f0709fe-2a93-4dd5-8d0f-2819115f0288");
     private static readonly Guid BerlitzSchoolId = Guid.Parse("f5635f19-41a2-4d23-99ab-9cb2c05af112");
     private static readonly Guid MbcSchoolId = Guid.Parse("51f7d253-0f88-4a2b-bd68-640253ef8cbc");
+    private static readonly Guid GlcSchoolId = Guid.Parse("f16a6538-19a2-46c5-a93e-5cd0f19c60f7");
+    private static readonly Guid IuSchoolId = Guid.Parse("bc2606e1-7dc1-4f15-8a47-6424ea15936f");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -78,6 +80,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyBerlitzSchoolName = "Berlitz Philippines";
     private const string MbcSchoolName = "菲律宾马尼拉Business College学校";
     private const string LegacyMbcSchoolName = "Manila Business College";
+    private const string GlcSchoolName = "菲律宾宿务Global Language Cebu";
+    private const string IuSchoolName = "菲律宾宿务IU English Academy";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -106,7 +110,112 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedAmericanEnglishPricingAsync(context);
       await SeedBerlitzPricingAsync(context);
       await SeedMbcPricingAsync(context);
+      await SeedGlcPricingAsync(context);
+      await SeedIuPricingAsync(context);
       await SeedRegionalStartingPricesAsync(context);
+    }
+
+    private static async Task SeedIuPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == IuSchoolId ||
+        x.Name == IuSchoolName ||
+        x.Name == "IU English Academy");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = IuSchoolId,
+          Name = IuSchoolName,
+          CreatedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+
+      var schoolId = school.Id;
+      const string lessonNote = "IU 2026年4周课程费参考；最短接受3周报名，3周按4周价格的80%计算；不提供1-2周方案";
+
+      AddLessonIfMissing(context, schoolId, "Light ESL", 750m, "一对一4课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "Power Speaking 4", 850m, "一对一4课时 + 团体课4课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "Power Speaking 6", 1000m, "一对一6课时 + 团体课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "Power Speaking 8", 1150m, "一对一8课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "TOEIC", 950m, "一对一4课时 + 团体课4课时 + 自习课1课时 + 晚课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "IELTS", 1000m, "一对一4课时 + 团体课4课时 + 自习课1课时 + 晚课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "6周 IELTS保证班", 1200m, "一对一6课时 + 团体课2课时 + 自习课1课时 + 晚课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "12周 IELTS保证班", 1133m, "一对一6课时 + 团体课2课时 + 自习课1课时 + 晚课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "商务英语4", 950m, "一对一4课时 + 团体课4课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "商务英语6", 1100m, "一对一6课时 + 团体课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "儿童（7~12岁）", 900m, "一对一4课时 + 团体课2课时 + 活动课2课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "青少年（13~15岁）", 900m, "一对一4课时 + 团体课4课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "健身英文", 1050m, "一对一4课时 + 健身课3课时", lessonNote, now, 4);
+      AddLessonIfMissing(context, schoolId, "监护人", 0m, "仅预订住宿，家长不上课", lessonNote, now, 4);
+
+      AddRoomIfMissing(context, schoolId, "校内单人房", 950m, "隐私最好，热门档期需尽早确认", now, 4);
+      AddRoomIfMissing(context, schoolId, "校内双人房", 800m, "适合同伴同行或想减少室友人数", now, 4);
+      AddRoomIfMissing(context, schoolId, "校内三人房", 700m, "预算和生活空间比较平衡", now, 4);
+      AddRoomIfMissing(context, schoolId, "校内四人房", 600m, "仅限家庭", now, 4);
+      AddRoomIfMissing(context, schoolId, "校外单人房", 1400m, "校外宿舍单人方案，预算最高", now, 4);
+      AddRoomIfMissing(context, schoolId, "校外双人房", 950m, "需确认交通、餐食和空房", now, 4);
+
+      AddFeeIfMissing(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedGlcPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == GlcSchoolId ||
+        x.Name == GlcSchoolName ||
+        x.Name == "Global Language Cebu" ||
+        x.Name == "GLC");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = GlcSchoolId,
+          Name = GlcSchoolName,
+          CreatedDate = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+
+      var schoolId = school.Id;
+      AddLessonIfMissing(context, schoolId, "Light Power Speaking", 165m, "1:1三节 + 小组两节（选修课）", "15岁以上；住宿费另加。", now);
+      AddLessonIfMissing(context, schoolId, "Power Speaking", 215m, "1:1四节 + 小组两节（选修课）", "适合第一次游学、基础听说训练和想平衡学习与自由时间的学生。", now);
+      AddLessonIfMissing(context, schoolId, "Intensive Power Speaking", 270m, "1:1五节 + 小组两节（选修课）", "适合想增加一对一比例、短期集中补弱项和提高输出频率的学生。", now);
+      AddLessonIfMissing(context, schoolId, "Ultra7 Power Speaking", 375m, "1:1七节 + 小组一节（选修课）", "适合时间有限、想让课程几乎全部围绕个人弱点安排的学生。", now);
+      AddLessonIfMissing(context, schoolId, "Ultra Sparta ESL", 280m, "1:1五节 + 小组三节 + 词汇/写作测试 + 晚课两节 + 自习一节", "含周六上午课程；斯巴达管理学生只能选择副楼住宿。", now);
+      AddLessonIfMissing(context, schoolId, "Family Package 2", 410m, "1:1八节（青少年与监护人共享）+ 监护人小组两节", "小孩5-11岁，青少年12-14岁。", now);
+      AddLessonIfMissing(context, schoolId, "Family Package 3", 590m, "1:1十二节（青少年与监护人共享）+ 监护人小组两节", "小孩5-11岁，青少年12-14岁。", now);
+      AddLessonIfMissing(context, schoolId, "Family Package 4", 775m, "1:1十六节（青少年与监护人共享）+ 监护人小组两节", "小孩5-11岁，青少年12-14岁。", now);
+      AddLessonIfMissing(context, schoolId, "Kids English 6", 335m, "1:1六节", "适合5-11岁儿童。", now);
+      AddLessonIfMissing(context, schoolId, "Kids English 7", 400m, "1:1七节", "适合5-11岁儿童。", now);
+      AddLessonIfMissing(context, schoolId, "Kids English 8", 465m, "1:1八节", "适合5-11岁儿童。", now);
+      AddLessonIfMissing(context, schoolId, "Junior Power Speaking 6", 325m, "1:1六节", "适合12-14岁青少年。", now);
+      AddLessonIfMissing(context, schoolId, "Junior Power Speaking 7", 375m, "1:1七节", "适合12-14岁青少年。", now);
+      AddLessonIfMissing(context, schoolId, "Junior Power Speaking 8", 430m, "1:1八节", "适合12-14岁青少年。", now);
+      AddLessonIfMissing(context, schoolId, "General IELTS", 240m, "1:1四节 + 小组两节 + 选修课", "需确认英文程度、教材和开课安排。", now);
+      AddLessonIfMissing(context, schoolId, "Intensive IELTS", 300m, "1:1五节 + 小组两节 + 选修课", "需确认英文程度、教材和开课安排。", now);
+      AddLessonIfMissing(context, schoolId, "Ultra8 IELTS", 430m, "1:1八节 + 选修课", "需确认英文程度、教材和开课安排。", now);
+      AddLessonIfMissing(context, schoolId, "Ultra IELTS斯巴达", 355m, "1:1五节 + 强制小组三节 + 测试、晚课与自习", "含周六上午模考；斯巴达管理学生只能选择副楼住宿。", now);
+      AddLessonIfMissing(context, schoolId, "Business course", 300m, "1:1四节 + 小组两节（选修课）", "住宿费与当地费用另加。", now);
+      AddLessonIfMissing(context, schoolId, "Ultra7 Business", 465m, "1:1七节 + 小组一节（选修课）", "住宿费与当地费用另加。", now);
+
+      AddRoomIfMissing(context, schoolId, "主楼豪华单人间", 645m, "斯巴达管理学生不能选择主楼住宿。", now);
+      AddRoomIfMissing(context, schoolId, "主楼单人间", 385m, "斯巴达管理学生不能选择主楼住宿。", now);
+      AddRoomIfMissing(context, schoolId, "主楼双人间", 270m, "斯巴达管理学生不能选择主楼住宿。", now);
+      AddRoomIfMissing(context, schoolId, "主楼三人间", 220m, "适合控制预算；斯巴达管理学生不能选择主楼住宿。", now);
+      AddRoomIfMissing(context, schoolId, "副楼双人间", 250m, "斯巴达管理学生只能选择副楼住宿。", now);
+      AddRoomIfMissing(context, schoolId, "副楼单人间", 360m, "斯巴达管理学生只能选择副楼住宿。", now);
+
+      AddFeeIfMissing(context, schoolId, "注册费", 120m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+
+      await context.SaveChangesAsync();
     }
 
     private static async Task SeedCurrenciesAsync(AppDbContext context)
@@ -1609,6 +1718,142 @@ namespace XiaoJuanSchoolPayment.Server.Services
       string PriceText,
       DateTime CreatedDate,
       string[] Aliases);
+
+    private static void AddLessonIfMissing(
+      AppDbContext context,
+      Guid schoolId,
+      string name,
+      decimal price,
+      string description,
+      string note,
+      DateTime lastUpdated)
+    {
+      if (context.SchoolLessons.Any(x => x.SchoolId == schoolId && x.Name == name && x.Week == 1))
+      {
+        return;
+      }
+
+      context.SchoolLessons.Add(new SchoolLesson
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = schoolId,
+        Name = name,
+        Week = 1,
+        Price = price,
+        CurrencyId = UsdCurrencyId,
+        Description = description,
+        Note = note,
+        LastUpdated = lastUpdated,
+      });
+    }
+
+    private static void AddLessonIfMissing(
+      AppDbContext context,
+      Guid schoolId,
+      string name,
+      decimal price,
+      string description,
+      string note,
+      DateTime lastUpdated,
+      int week)
+    {
+      if (context.SchoolLessons.Any(x => x.SchoolId == schoolId && x.Name == name && x.Week == week))
+      {
+        return;
+      }
+
+      context.SchoolLessons.Add(new SchoolLesson
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = schoolId,
+        Name = name,
+        Week = week,
+        Price = price,
+        CurrencyId = UsdCurrencyId,
+        Description = description,
+        Note = note,
+        LastUpdated = lastUpdated,
+      });
+    }
+
+    private static void AddRoomIfMissing(
+      AppDbContext context,
+      Guid schoolId,
+      string name,
+      decimal price,
+      string description,
+      DateTime lastUpdated)
+    {
+      if (context.SchoolRooms.Any(x => x.SchoolId == schoolId && x.Name == name && x.Week == 1))
+      {
+        return;
+      }
+
+      context.SchoolRooms.Add(new SchoolRoom
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = schoolId,
+        Name = name,
+        Week = 1,
+        Price = price,
+        CurrencyId = UsdCurrencyId,
+        Description = description,
+        LastUpdated = lastUpdated,
+      });
+    }
+
+    private static void AddRoomIfMissing(
+      AppDbContext context,
+      Guid schoolId,
+      string name,
+      decimal price,
+      string description,
+      DateTime lastUpdated,
+      int week)
+    {
+      if (context.SchoolRooms.Any(x => x.SchoolId == schoolId && x.Name == name && x.Week == week))
+      {
+        return;
+      }
+
+      context.SchoolRooms.Add(new SchoolRoom
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = schoolId,
+        Name = name,
+        Week = week,
+        Price = price,
+        CurrencyId = UsdCurrencyId,
+        Description = description,
+        LastUpdated = lastUpdated,
+      });
+    }
+
+    private static void AddFeeIfMissing(
+      AppDbContext context,
+      Guid schoolId,
+      string name,
+      decimal fee,
+      int currencyId,
+      string description,
+      DateTime lastUpdated)
+    {
+      if (context.SchoolFees.Any(x => x.SchoolId == schoolId && x.Name == name))
+      {
+        return;
+      }
+
+      context.SchoolFees.Add(new SchoolFee
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = schoolId,
+        Name = name,
+        Fee = fee,
+        CurrencyId = currencyId,
+        Description = description,
+        LastUpdated = lastUpdated,
+      });
+    }
 
     private static void UpsertLesson(
       AppDbContext context,

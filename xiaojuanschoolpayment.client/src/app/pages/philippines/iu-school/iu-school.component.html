@@ -222,7 +222,7 @@
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
             <p>
-              IU课程覆盖Light Speaking、Beginner、Power Speaking、IELTS、TOEIC、Business、Fitness和亲子家庭方向。
+              IU课程覆盖Light ESL、Power Speaking、IELTS、TOEIC、Business、Fitness和亲子家庭方向。
               建议先确认学习目标，再让顾问核对最新课表、开课和规则。
             </p>
           </div>
@@ -243,6 +243,7 @@
               <h2>先看4周课程费，再叠加住宿房型</h2>
               <p>
                 以下为公开4周参考价，币种为美元。部分代理会提供促销套餐，正式价格需按入学日期、名额、住宿和学校确认。
+                IU最短接受3周报名，3周课程费和住宿费均按4周价的80%计算，不提供1-2周方案。
               </p>
             </div>
             <div
@@ -253,12 +254,12 @@
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周学费</span>
-                <span role="columnheader">适合人群</span>
+                <span role="columnheader">课程安排</span>
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
                 <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
+                <span role="cell">{{ fee.schedule }}</span>
               </div>
             </div>
             <div
@@ -271,7 +272,7 @@
                 <div>
                   <em>4周学费</em><b>USD {{ formatUsd(fee.tuition) }}</b>
                 </div>
-                <p>{{ fee.suitable }}</p>
+                <p>{{ fee.schedule }}</p>
               </article>
             </div>
           </div>
@@ -299,7 +300,7 @@
               <span>IU 2026住宿费用参考</span>
               <h2>校内宿舍预算更稳，外部宿舍需另行确认</h2>
               <p>
-                公开资料列出校内宿舍和Soleil Suites外部宿舍。校内四人房预算最低，单人房和外部单人房价格更高。
+                2026价格表列出校内单人、双人、三人和四人房，以及校外单人和双人房。校内四人房仅限家庭。
               </p>
             </div>
             <div
@@ -329,7 +330,7 @@
             <div class="section-heading">
               <span>IU费用快速报价</span>
               <h2>默认参考：4周Power Speaking 4 + 校内三人房</h2>
-              <p>前期支付参考 = 注册费 + 课程费 + 住宿费。到校费用需另行准备。</p>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费。3周按4周价的80%计算；IU不提供1-2周方案。</p>
             </div>
             <div class="quote-form" aria-label="IU English Academy费用快速报价选项">
               <label>
