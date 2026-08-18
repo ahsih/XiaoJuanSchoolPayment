@@ -132,7 +132,9 @@
           (click)="scrollToSection('quote', $event)"
           >立即计算我的费用</a
         >
-        <p>费用为预估参考，最终以学校当期报价为准</p>
+        <p>
+          1周 / 2周 / 3周按4周课程费和住宿费的40% / 60% / 80%计算；注册费另计。
+        </p>
       </aside>
     </section>
 
@@ -331,6 +333,9 @@
         <button class="primary-action" type="button" (click)="calculateQuote()">
           重新计算
         </button>
+        <p>
+          短期比例：1周40%、2周60%、3周80%，均以4周课程费和住宿费为基准；USD 100注册费不按比例折算。
+        </p>
       </div>
 
       <div class="quote-result-card">
@@ -487,8 +492,9 @@
       <div class="price-note">
         <h3>价格说明</h3>
         <ol>
-          <li>资料更新时间：2026年7月</li>
+          <li>资料更新时间：2026年8月</li>
           <li>费用参考：CIA 2026年价目表、学校官网和思达启航顾问整理</li>
+          <li>1周、2周、3周分别按4周课程费和住宿费的40%、60%、80%计算，注册费另计</li>
           <li>最终以学校最新报价、空房和优惠为准，思达启航保留最终解释权</li>
         </ol>
       </div>

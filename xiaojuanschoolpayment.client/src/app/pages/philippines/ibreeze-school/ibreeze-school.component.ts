@@ -46,6 +46,7 @@ interface CourseItem {
 interface CourseOption {
   id: string;
   name: string;
+  tuition: number;
   lessons: string;
   suitable: string;
 }
@@ -53,14 +54,8 @@ interface CourseOption {
 interface RoomOption {
   id: string;
   name: string;
-  note: string;
-}
-
-interface PackageFee {
-  courseId: string;
-  roomId: string;
-  weeks: number;
   fee: number;
+  note: string;
 }
 
 interface ScheduleItem {
@@ -132,7 +127,7 @@ export class IbreezeSchoolComponent {
   readonly registrationFee = 150;
   readonly discount = 1;
   readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
+  readonly weekOptions = [4, 8, 12, 16, 20, 24];
 
   selectedCourseId = 'intensive-speaking';
   selectedRoomId = 'quad-main';
@@ -168,8 +163,8 @@ export class IbreezeSchoolComponent {
     {
       icon: 'bed',
       label: '住宿房型',
-      value: 'IB1 / IB2 单人、双人、三人、四人',
-      note: 'IB2 Prime价格略高，三人房主要以IB1为主',
+      value: 'IB1 / IB2宿舍 + 校外公寓',
+      note: '校内单人至四人房，另有校外单人、双人和3-5人家庭房',
     },
     {
       icon: 'pool',
@@ -253,7 +248,7 @@ export class IbreezeSchoolComponent {
     },
     {
       label: '住宿房型',
-      value: 'IB1 / IB2单人、双人、三人、四人房；IB2 Prime部分房型价格略高',
+      value: 'IB1 / IB2单人、双人、三人、四人房；另有校外公寓单人、双人及3-5人家庭房',
     },
     {
       label: '费用参考',
@@ -277,7 +272,7 @@ export class IbreezeSchoolComponent {
       image:
         'https://cebu-navi.com/photo/school/120/bd1d469c7d8ac0071df7bfb491420f43.jpg',
       title: '预算可按房型拉开',
-      text: '四人房适合控制预算，单人房和IB2 Prime更舒适但价格更高，报名前要确认性别和空房。',
+      text: '四人房适合控制预算，单人房、IB2和校外公寓选择更丰富，报名前要确认性别和空房。',
     },
     {
       image:
@@ -365,14 +360,14 @@ export class IbreezeSchoolComponent {
     {
       name: 'General Business & BEC',
       type: '商务英语',
-      lessons: '4节1:1 + 2节小组 + 1节Special',
+      lessons: '4节1:1 + 2节小组 + 1节Activity',
       suitable: '适合商务邮件、演示、会议、职场沟通和BEC方向学习。',
     },
     {
       name: 'Junior ESL & YLE',
       type: '青少年英语',
       lessons: '4节1:1 + 2节小组 + 1节Activity',
-      suitable: '适合5岁以上并有监护人同行的亲子/青少年学生。',
+      suitable: '适合5-14岁并与家长同行的亲子/青少年学生。',
     },
   ];
 
@@ -380,26 +375,65 @@ export class IbreezeSchoolComponent {
     {
       id: 'intensive-speaking',
       name: 'Intensive Speaking',
+      tuition: 770,
       lessons: '4节1:1 + 1节Activity',
       suitable: '费用较低，适合口语输出和轻量学习。',
     },
     {
       id: 'light-esl',
       name: 'Light ESL',
+      tuition: 840,
       lessons: '4节1:1 + 2节小组 + 1节Activity',
       suitable: '适合综合提升，同时保留较多自习和生活时间。',
     },
     {
       id: 'business',
       name: 'General Business & BEC',
-      lessons: '4节1:1 + 2节小组 + 1节Special',
+      tuition: 890,
+      lessons: '4节1:1 + 2节小组 + 1节Activity',
       suitable: '适合职场英语和商务沟通。',
     },
     {
       id: 'power-esl',
       name: 'Power ESL',
+      tuition: 990,
       lessons: '5节1:1 + 2节小组 + Special + Activity',
       suitable: '课程量更满，适合短期集中强化。',
+    },
+    {
+      id: 'intensive-beginner',
+      name: 'Intensive Beginner',
+      tuition: 990,
+      lessons: '5节1:1 + 3节小组 + 1节Activity',
+      suitable: '适合英语基础较弱、需要强化入门的学生。',
+    },
+    {
+      id: 'ielts-starter',
+      name: 'IELTS Starter',
+      tuition: 990,
+      lessons: '4节1:1 + 3节小组 + 1节Activity',
+      suitable: '雅思初学者路线，入学条件与模拟测试安排需确认。',
+    },
+    {
+      id: 'ielts-target',
+      name: 'IELTS Target',
+      tuition: 1190,
+      lessons: '5节1:1 + 3节小组 + 2节晚课',
+      suitable: '适合有明确目标分数并能配合晚课和模考的学生。',
+    },
+    {
+      id: 'toeic-target',
+      name: 'TOEIC Target',
+      tuition: 1020,
+      lessons: '5节1:1 + 2节小组 + 1节Activity',
+      suitable: '适合求职、毕业门槛或职业英语成绩需求。',
+    },
+    {
+      id: 'junior-english',
+      name: 'Junior English',
+      tuition: 1290,
+      lessons: '4节1:1 + 2节小组 + 1节Activity',
+      suitable: '适合5-14岁且与家长同行的青少年学生。',
     },
   ];
 
@@ -407,128 +441,75 @@ export class IbreezeSchoolComponent {
     {
       id: 'quad-main',
       name: '四人房 IB1',
+      fee: 720,
       note: '预算最低，适合控制费用。',
     },
     {
       id: 'triple-main',
       name: '三人房 IB1',
+      fee: 790,
       note: '生活空间比四人房更好，IB2无三人房公开报价。',
     },
     {
       id: 'twin-main',
       name: '双人房 IB1',
+      fee: 900,
       note: '预算和生活空间比较平衡。',
     },
     {
       id: 'single-main',
       name: '单人房 IB1',
+      fee: 1270,
       note: '隐私最好，热门档期需尽早确认。',
     },
-  ];
-
-  readonly packageFees: PackageFee[] = [
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 1, fee: 870 },
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 2, fee: 1370 },
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 3, fee: 1740 },
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 4, fee: 2040 },
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 8, fee: 4080 },
-    { courseId: 'intensive-speaking', roomId: 'single-main', weeks: 12, fee: 6120 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 1, fee: 690 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 2, fee: 1115 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 3, fee: 1420 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 4, fee: 1670 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 8, fee: 3340 },
-    { courseId: 'intensive-speaking', roomId: 'twin-main', weeks: 12, fee: 5010 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 1, fee: 650 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 2, fee: 1030 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 3, fee: 1330 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 4, fee: 1560 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 8, fee: 3120 },
-    { courseId: 'intensive-speaking', roomId: 'triple-main', weeks: 12, fee: 4680 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 1, fee: 620 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 2, fee: 1000 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 3, fee: 1270 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 4, fee: 1490 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 8, fee: 2980 },
-    { courseId: 'intensive-speaking', roomId: 'quad-main', weeks: 12, fee: 4470 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 1, fee: 890 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 2, fee: 1400 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 3, fee: 1810 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 4, fee: 2110 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 8, fee: 4220 },
-    { courseId: 'light-esl', roomId: 'single-main', weeks: 12, fee: 6330 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 1, fee: 710 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 2, fee: 1145 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 3, fee: 1490 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 4, fee: 1740 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 8, fee: 3480 },
-    { courseId: 'light-esl', roomId: 'twin-main', weeks: 12, fee: 5220 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 1, fee: 670 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 2, fee: 1060 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 3, fee: 1400 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 4, fee: 1630 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 8, fee: 3260 },
-    { courseId: 'light-esl', roomId: 'triple-main', weeks: 12, fee: 4890 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 1, fee: 640 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 2, fee: 1030 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 3, fee: 1340 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 4, fee: 1560 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 8, fee: 3120 },
-    { courseId: 'light-esl', roomId: 'quad-main', weeks: 12, fee: 4680 },
-    { courseId: 'business', roomId: 'single-main', weeks: 1, fee: 920 },
-    { courseId: 'business', roomId: 'single-main', weeks: 2, fee: 1420 },
-    { courseId: 'business', roomId: 'single-main', weeks: 3, fee: 1840 },
-    { courseId: 'business', roomId: 'single-main', weeks: 4, fee: 2160 },
-    { courseId: 'business', roomId: 'single-main', weeks: 8, fee: 4320 },
-    { courseId: 'business', roomId: 'single-main', weeks: 12, fee: 6480 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 1, fee: 740 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 2, fee: 1165 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 3, fee: 1520 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 4, fee: 1790 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 8, fee: 3580 },
-    { courseId: 'business', roomId: 'twin-main', weeks: 12, fee: 5370 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 1, fee: 700 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 2, fee: 1080 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 3, fee: 1430 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 4, fee: 1680 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 8, fee: 3360 },
-    { courseId: 'business', roomId: 'triple-main', weeks: 12, fee: 5040 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 1, fee: 670 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 2, fee: 1050 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 3, fee: 1370 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 4, fee: 1610 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 8, fee: 3220 },
-    { courseId: 'business', roomId: 'quad-main', weeks: 12, fee: 4830 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 1, fee: 950 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 2, fee: 1500 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 3, fee: 1950 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 4, fee: 2260 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 8, fee: 4520 },
-    { courseId: 'power-esl', roomId: 'single-main', weeks: 12, fee: 6780 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 1, fee: 770 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 2, fee: 1245 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 3, fee: 1630 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 4, fee: 1890 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 8, fee: 3780 },
-    { courseId: 'power-esl', roomId: 'twin-main', weeks: 12, fee: 5670 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 1, fee: 730 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 2, fee: 1160 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 3, fee: 1540 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 4, fee: 1780 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 8, fee: 3560 },
-    { courseId: 'power-esl', roomId: 'triple-main', weeks: 12, fee: 5340 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 1, fee: 700 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 2, fee: 1130 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 3, fee: 1480 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 4, fee: 1710 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 8, fee: 3420 },
-    { courseId: 'power-esl', roomId: 'quad-main', weeks: 12, fee: 5130 },
-  ];
-
-  readonly specialFees = [
-    { label: 'Junior ESL & YLE', lessons: '4节1:1 + 2节小组 + Activity', four: 'USD 2,010起 / 四人房IB1', note: '5岁以上并有监护人，至少4周' },
-    { label: 'IELTS Target', lessons: '5节1:1 + 3节小组 + Activity', four: 'USD 1,710起 / 四人房IB1', note: '目标分数路线，短周数限制需确认' },
-    { label: 'TOEIC Target', lessons: '5节1:1 + 2节小组 + Activity', four: 'USD 1,740起 / 四人房IB1', note: '公开表从4周起列价' },
+    {
+      id: 'quad-ib2',
+      name: '四人房 IB2',
+      fee: 750,
+      note: 'IB2四人房，适合兼顾住宿环境与预算。',
+    },
+    {
+      id: 'twin-ib2',
+      name: '双人房 IB2',
+      fee: 950,
+      note: 'IB2双人房，房型和性别需按入学日确认。',
+    },
+    {
+      id: 'single-ib2',
+      name: '单人房 IB2',
+      fee: 1320,
+      note: 'IB2单人房，热门档期需尽早确认。',
+    },
+    {
+      id: 'off-campus-superior-single',
+      name: '校外公寓超级单人间',
+      fee: 1420,
+      note: '一张大床，含卧室及客厅；含水电、Wi-Fi、厨房和平日接送。',
+    },
+    {
+      id: 'off-campus-standard-single',
+      name: '校外公寓标准单人间',
+      fee: 1390,
+      note: '配有2张单人床；含水电、Wi-Fi、厨房和平日接送。',
+    },
+    {
+      id: 'off-campus-standard-twin',
+      name: '校外公寓标准双人间',
+      fee: 1050,
+      note: '校外双人房；含水电、Wi-Fi、厨房和平日接送。',
+    },
+    {
+      id: 'off-campus-superior-twin',
+      name: '校外公寓超级双人间',
+      fee: 1070,
+      note: '校外升级双人房；含水电、Wi-Fi、厨房和平日接送。',
+    },
+    {
+      id: 'off-campus-family',
+      name: '校外公寓家庭房（3-5人）',
+      fee: 890,
+      note: '3-5人同行参考价；含水电、Wi-Fi、厨房和平日接送。',
+    },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -696,8 +677,8 @@ export class IbreezeSchoolComponent {
   ];
   readonly notes = [
     '本页费用使用I.BREEZE官方2026公开参考价，正式报价仍需按入学日期、性别、房型和校区确认。',
-    'IB2 Prime房型通常比IB1主校区价格略高；三人房公开表主要列IB1价格。',
-    'IELTS、TOEIC和Junior课程对周数、年龄或目标可能有额外要求，报名之前要逐项确认。',
+    'IB2房型包含单人、双人和四人房；校外公寓另有单人、双人和3-5人家庭房。',
+    'IELTS、TOEIC和Junior课程对周数、年龄或目标可能有额外要求；Junior适用于5-14岁并与家长同行的学生。',
     '当地费用通常在第一天Orientation后一次性支付，官方也提示金额可能按情况调整。',
     '如果目标是极强斯巴达备考，可同时比较SMEAG、EV、CPILS；如果想平衡环境和口语，I.BREEZE值得看。',
   ];
@@ -720,12 +701,12 @@ export class IbreezeSchoolComponent {
     {
       question: 'I.BREEZE适合亲子或青少年吗？',
       answer:
-        'Junior ESL & YLE可比较，官方要求5岁以上并有监护人，且至少4周。亲子、未成年和15岁以上学生的课程/费用规则需要报名前确认。',
+        'Junior English可比较，本次提供的价目表注明适用于5-14岁并与家长同行的学生，家长需从成人常规课程中选择课程。亲子、未成年和15岁以上学生的课程/费用规则需要报名前确认。',
     },
     {
       question: '为什么IB1和IB2价格不同？',
       answer:
-        '官方费用表按Single/Twin/Triple/Quad列出IB1 / IB2两个价格，IB2 Prime通常略高。三人房公开表主要列IB1价格，最终要按空房和校区确认。',
+        '2026价目表分别列出IB1和IB2房价：IB1有单人、双人、三人和四人房，IB2有单人、双人和四人房。两者住宿楼和房型不同，最终要按空房和校区确认。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -774,14 +755,10 @@ export class IbreezeSchoolComponent {
   }
 
   feeFor(courseId: string, roomId: string, weeks = 4): number {
-    return (
-      this.packageFees.find(
-        (item) =>
-          item.courseId === courseId &&
-          item.roomId === roomId &&
-          item.weeks === weeks,
-      )?.fee ?? 0
-    );
+    const course = this.courseOptions.find((item) => item.id === courseId);
+    const room = this.roomOptions.find((item) => item.id === roomId);
+
+    return ((course?.tuition ?? 0) + (room?.fee ?? 0)) * (weeks / 4);
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -812,6 +789,18 @@ export class IbreezeSchoolComponent {
       this.selectedRoomId,
       this.selectedWeeks,
     );
+  }
+
+  get tuitionForSelectedWeeks(): number {
+    return this.selectedCourse.tuition * (this.selectedWeeks / 4);
+  }
+
+  get roomFeeForSelectedWeeks(): number {
+    return this.selectedRoom.fee * (this.selectedWeeks / 4);
+  }
+
+  get billingRuleText(): string {
+    return `${this.selectedWeeks}周按4周价格的${this.selectedWeeks / 4}倍计算`;
   }
 
   get quoteUsd(): number {

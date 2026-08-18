@@ -169,6 +169,11 @@ export class CiaSchoolComponent implements OnInit {
 
   private readonly schoolService = inject(SchoolService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
+  private readonly shortTermPriceRatios: Readonly<Record<number, number>> = {
+    1: 0.4,
+    2: 0.6,
+    3: 0.8,
+  };
   private readonly quoteImageAssets = {
     logo: '/assets/sida-qihang-quote-header-logo-transparent.png',
     hero: '/assets/cia/campus-building.png',
@@ -1795,11 +1800,17 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition * (this.selectedWeeks / 4);
+    return this.selectedCourse.tuition * this.priceRatioForSelectedWeeks;
   }
 
   get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee * (this.selectedWeeks / 4);
+    return this.selectedRoom.fee * this.priceRatioForSelectedWeeks;
+  }
+
+  private get priceRatioForSelectedWeeks(): number {
+    return (
+      this.shortTermPriceRatios[this.selectedWeeks] ?? this.selectedWeeks / 4
+    );
   }
 
   get isPeakSeason(): boolean {

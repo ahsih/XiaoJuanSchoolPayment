@@ -44,7 +44,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              先告诉顾问你的学习目标、周数、房型、是否要IB2 Prime、是否亲子或考试课程，思达会帮你确认I.BREEZE空房、
+              先告诉顾问你的学习目标、周数、房型、是否要IB2或校外公寓、是否亲子或考试课程，思达会帮你确认I.BREEZE空房、
               正式报价、当地费用和最新校规。
             </p>
           </div>
@@ -238,58 +238,42 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>I.BREEZE 2026公开参考价</span>
-              <h2>课程住宿套餐价：按课程、房型和周数看</h2>
+              <span>I.BREEZE 2026年课程费</span>
+              <h2>先按学习目标选择课程</h2>
               <p>
-                以下使用官方2026公开参考价中的IB1主校区房型，币种为美元。IB2 Prime通常略高，正式价格需按空房和校区确认。
+                以下为用户提供的2026价目表所列4周课程费，币种为美元。注册费和住宿费另计。
               </p>
             </div>
             <div
               class="data-table course-fee-table"
               role="table"
-              aria-label="I.BREEZE 2026成人课程住宿套餐"
+              aria-label="I.BREEZE 2026年4周课程费"
             >
               <div class="table-row table-head" role="row">
-                <span role="columnheader">课程 / 房型</span>
-                <span role="columnheader">1周</span>
-                <span role="columnheader">4周</span>
-                <span role="columnheader">8周</span>
-                <span role="columnheader">12周</span>
+                <span role="columnheader">课程</span>
+                <span role="columnheader">4周课程费</span>
+                <span role="columnheader">课程安排 / 适合人群</span>
               </div>
-              <ng-container *ngFor="let course of courseOptions">
-                <div class="table-row" role="row" *ngFor="let room of roomOptions">
-                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
-                </div>
-              </ng-container>
+              <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                <span role="cell">{{ course.name }}</span>
+                <span role="cell">USD {{ formatUsd(course.tuition) }}</span>
+                <span role="cell">{{ course.lessons }}。{{ course.suitable }}</span>
+              </div>
             </div>
             <div
               class="mobile-card-list mobile-course-fees"
-              aria-label="I.BREEZE 2026成人套餐手机卡片"
+              aria-label="I.BREEZE 2026年4周课程费手机卡片"
             >
-              <ng-container *ngFor="let course of courseOptions">
-                <article *ngFor="let room of roomOptions">
-                  <span>{{ course.name }}</span>
-                  <strong>{{ room.name }}</strong>
-                  <div>
-                    <em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b>
-                  </div>
-                  <div>
-                    <em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b>
-                  </div>
-                  <div>
-                    <em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b>
-                  </div>
-                  <div>
-                    <em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b>
-                  </div>
-                  <p>{{ course.lessons }}。{{ room.note }}</p>
-                </article>
-              </ng-container>
+              <article *ngFor="let course of courseOptions">
+                <span>课程</span>
+                <strong>{{ course.name }}</strong>
+                <div>
+                  <em>4周课程费</em><b>USD {{ formatUsd(course.tuition) }}</b>
+                </div>
+                <p>{{ course.lessons }}。{{ course.suitable }}</p>
+              </article>
             </div>
+            <p class="pricing-note">更换课程费：USD 100 / 4周；适用条件和实际收取金额需由顾问确认。</p>
           </div>
 
           <div class="section-block" id="daily-schedule">
@@ -312,34 +296,45 @@
         <section class="split-layout" id="room-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>考试 / Junior课程参考</span>
-              <h2>特殊课程要额外确认周数和报名条件</h2>
+              <span>I.BREEZE 2026年住宿费</span>
+              <h2>IB1、IB2和校外公寓房型</h2>
               <p>
-                IELTS、TOEIC和Junior公开表有周数、年龄或最低报名条件，适合先列为候选，再让顾问按日期核对。
+                以下为4周住宿费。校外公寓价目表注明含水电、有线电视、Wi-Fi、厨房及周一至周五固定时段接送。
               </p>
             </div>
             <div
               class="data-table room-fee-table"
               role="table"
-              aria-label="I.BREEZE特殊课程参考"
+              aria-label="I.BREEZE 2026年4周住宿费"
             >
               <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">课时</span>
-                <span role="columnheader">4周参考</span>
+                <span role="columnheader">房型</span>
+                <span role="columnheader">4周住宿费</span>
                 <span role="columnheader">备注</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let fee of specialFees">
-                <span role="cell">{{ fee.label }}</span>
-                <span role="cell">{{ fee.lessons }}</span>
-                <span role="cell">{{ fee.four }}</span>
-                <span role="cell">{{ fee.note }}</span>
+              <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                <span role="cell">{{ room.name }}</span>
+                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ room.note }}</span>
               </div>
             </div>
+            <div
+              class="mobile-card-list mobile-room-fees"
+              aria-label="I.BREEZE 2026年4周住宿费手机卡片"
+            >
+              <article *ngFor="let room of roomOptions">
+                <span>房型</span>
+                <strong>{{ room.name }}</strong>
+                <div>
+                  <em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b>
+                </div>
+                <p>{{ room.note }}</p>
+              </article>
+            </div>
             <ul class="check-list">
-              <li>IB2 Prime单人/双人/四人房价格通常比IB1略高。</li>
-              <li>Junior ESL & YLE要求5岁以上并有监护人，且至少4周。</li>
-              <li>TOEIC Target公开表从4周起列价，短周数需确认。</li>
+              <li>IB2房型包含单人、双人和四人房，价目表未列IB2三人房。</li>
+              <li>校外公寓距离学校步行约5分钟，家具家电配置以实际房间为准。</li>
+              <li>Junior English适用于5-14岁并与家长同行的学生。</li>
             </ul>
           </div>
 
@@ -347,7 +342,7 @@
             <div class="section-heading">
               <span>I.BREEZE费用快速报价</span>
               <h2>默认参考：4周Intensive Speaking + 四人房IB1</h2>
-              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费。到校费用需另行准备。</p>
             </div>
             <div class="quote-form" aria-label="I.BREEZE费用快速报价选项">
               <label>
@@ -384,17 +379,13 @@
                 <span>注册费</span><strong>USD {{ registrationFee }}</strong>
               </div>
               <div>
-                <span>课程住宿套餐</span
-                ><strong>USD {{ formatUsd(selectedPackageFee) }}</strong>
+                <span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
               </div>
               <div>
-                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
+                <span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
               </div>
               <div>
-                <span>当前房型</span><strong>{{ selectedRoom.name }}</strong>
-              </div>
-              <div>
-                <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
+                <span>计算规则</span><strong>{{ billingRuleText }}</strong>
               </div>
             </div>
             <div class="quote-result">
@@ -402,7 +393,7 @@
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
               <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认IB1/IB2空房、房型、性别、入学日和当地费用。
+                已按当前选择更新。正式报价仍需确认IB1、IB2或校外公寓空房、性别、入学日和当地费用。
               </p>
             </div>
             <div class="quote-actions">
@@ -418,8 +409,8 @@
               </a>
             </div>
             <p class="fee-alert">
-              除课程住宿套餐外，到校后通常还需确认SSP、SSP E-Card、ACR、签证延长、接机、押金、教材、
-              综合费、水电、ID卡和洗衣等费用。实际金额以学校当期规则为准。
+              除课程费和住宿费外，到校后通常还需确认SSP、SSP E-Card、ACR、签证延长、接机、押金、教材、
+              综合费、ID卡和洗衣等费用；校内宿舍水电费另计，校外公寓价目表注明水电已包含。
             </p>
             <p class="season-note">
               官方空房表按校区、性别、房型和日期列出，热门房型与暑假/寒假档期建议尽早确认。
@@ -459,8 +450,8 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考I.BREEZE官方2026 Tuition Fee表，并结合官方课程、设施、
-              国籍比例和校区说明整理。学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              本页价格更新时间：2026年8月18日。课程费和住宿费按用户提供的I.BREEZE 2026价目表整理，并结合公开课程、设施、
+              国籍比例和校区说明。学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>
@@ -664,7 +655,7 @@
       <div>
         <h2>想知道I.BREEZE当前是否有空房和优惠？</h2>
         <p>
-          把入学日期、学习周数、课程方向、房型、性别、是否要IB2 Prime或Junior项目发给顾问，可以更快得到准确报价。
+          把入学日期、学习周数、课程方向、房型、性别、是否要IB2、校外公寓或Junior项目发给顾问，可以更快得到准确报价。
         </p>
         <ul>
           <li>快速响应</li>

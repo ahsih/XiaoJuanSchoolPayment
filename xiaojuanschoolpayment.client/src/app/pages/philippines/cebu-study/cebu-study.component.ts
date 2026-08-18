@@ -627,7 +627,7 @@ export class CebuStudyComponent {
       location: 'Mabolo, Cebu City',
       style: '市区度假式综合校区，口语强化，多国籍',
       route: '/philippines-study/cebu/ibreeze',
-      startingPrice: 'USD 620 / 1周起',
+      startingPrice: 'USD 1,490 / 4周起',
       courses: [
         'Power ESL',
         'Intensive Beginner',
@@ -639,7 +639,7 @@ export class CebuStudyComponent {
         'Junior ESL & YLE',
       ],
       accommodation:
-        'IB1 / IB2校内宿舍，公开房型包括单人、双人、三人和四人房；IB2 Prime价格通常略高。',
+        'IB1 / IB2校内宿舍提供单人、双人、三人和四人房；另有校外公寓单人、双人及3-5人家庭房。',
       facilities:
         '泳池、餐厅、宿舍、自习空间、活动课、洗衣和市区生活配套，适合学习与生活平衡。',
       bestFor:

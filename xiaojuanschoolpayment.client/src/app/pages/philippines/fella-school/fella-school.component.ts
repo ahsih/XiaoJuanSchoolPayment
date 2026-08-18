@@ -16,10 +16,11 @@ interface CourseItem {
 
 interface PriceRow {
   course: string;
-  triple: string;
-  twin: string;
-  single: string;
-  deluxeSingle: string;
+  room3a: string;
+  room2a: string;
+  room1b: string;
+  room1a: string;
+  premium1p: string;
 }
 
 interface LocalFee {
@@ -78,12 +79,11 @@ export class FellaSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { course: 'Guardian / 监护人课程', triple: 'USD 1,550', twin: 'USD 1,650', single: 'USD 1,850', deluxeSingle: 'USD 1,950' },
-    { course: 'PIC-4', triple: 'USD 1,700', twin: 'USD 1,800', single: 'USD 2,000', deluxeSingle: 'USD 2,100' },
-    { course: 'PIC-5 / TOEIC / TOEFL / Junior', triple: 'USD 1,800', twin: 'USD 1,900', single: 'USD 2,100', deluxeSingle: 'USD 2,200' },
-    { course: 'PIC-6 / Business', triple: 'USD 1,900', twin: 'USD 2,000', single: 'USD 2,200', deluxeSingle: 'USD 2,300' },
-    { course: 'IELTS / TOEIC Guarantee 12周', triple: 'USD 5,700', twin: 'USD 6,000', single: 'USD 6,600', deluxeSingle: 'USD 6,900' },
-    { course: 'IELTS Guarantee 12周', triple: 'USD 6,000', twin: 'USD 6,300', single: 'USD 6,900', deluxeSingle: 'USD 7,200' },
+    { course: 'GEC 家长课程', room3a: 'USD 1,550', room2a: 'USD 1,650', room1b: 'USD 1,750', room1a: 'USD 1,800', premium1p: 'USD 2,000' },
+    { course: 'PIC-4', room3a: 'USD 1,700', room2a: 'USD 1,800', room1b: 'USD 1,900', room1a: 'USD 1,950', premium1p: 'USD 2,150' },
+    { course: 'PIC-5', room3a: 'USD 1,750', room2a: 'USD 1,850', room1b: 'USD 1,950', room1a: 'USD 2,000', premium1p: 'USD 2,200' },
+    { course: 'PIC-6 / TOEIC入门与实战 / PIFT-E / PIFT / PPT / PTFT / EBC', room3a: 'USD 1,800', room2a: 'USD 1,900', room1b: 'USD 2,000', room1a: 'USD 2,050', premium1p: 'USD 2,250' },
+    { course: 'TOEIC保证 / PIRC / PIGI / SSC / P-JEC / JEC', room3a: 'USD 1,850', room2a: 'USD 1,950', room1b: 'USD 2,050', room1a: 'USD 2,100', premium1p: 'USD 2,300' },
   ];
 
   readonly localFees: LocalFee[] = [
@@ -136,7 +136,7 @@ export class FellaSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: 'English Fella 的起价是多少？',
-      answer: 'iOutback列表显示 FELLA 为 USD 1,550 起。详细表中 Guardian / 监护人课程三人房4周为 USD 1,550；成人 PIC-4 三人房4周为 USD 1,700 起。',
+      answer: '所附费用表显示，GEC家长课程搭配3A三人间为 USD 1,550 / 4周；成人 PIC-4 搭配3A三人间为 USD 1,700 / 4周。以上均未计一次性注册费。',
     },
     {
       question: 'English Fella 是斯巴达学校吗？',

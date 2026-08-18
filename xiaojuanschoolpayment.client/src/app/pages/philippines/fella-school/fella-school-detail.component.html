@@ -53,7 +53,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>PIC-4 + 三人房</p>
+              <p>PIC-4 + 3A 三人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -189,7 +189,7 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>PIC适合综合英语，IELTS/TOEIC/TOEFL适合考试目标，Business、Junior、Guardian和Silver Speaking则要按年龄和目的细分。</p>
+            <p>PIC适合综合英语，PIFT/PIRC/PIGI、TOEIC、PPT/PTFT适合考试目标，EBC、P-JEC/JEC、GEC和SSC则要按年龄和目的细分。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -204,11 +204,11 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>English Fella 2026 年 4 周课程费</span>
+              <span>English Fella 4 周课程费</span>
               <h2>先看课程费，再叠加住宿费</h2>
               <p>以下为4周课程费拆分参考，币种为美元。最终以学校当期报价、校区、空房和优惠为准。</p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="English Fella 2026年4周课程费">
+            <div class="data-table course-fee-table" role="table" aria-label="English Fella 4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
@@ -220,7 +220,7 @@
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="English Fella 2026年4周课程费手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="English Fella 4周课程费手机卡片">
               <article *ngFor="let fee of courseFees">
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
@@ -249,7 +249,7 @@
             <div class="section-heading">
               <span>English Fella 2026 年 4 周住宿费</span>
               <h2>房型、校区和管理模式要一起确认</h2>
-              <p>默认报价使用三人房。标准单人、豪华单人、亲子和青少年房型建议先让顾问确认空房。</p>
+              <p>默认报价使用3A三人间。Premium 1P、1A、1B’单人间及亲子、青少年房型建议先让顾问确认校区与空房。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="English Fella 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -276,7 +276,7 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>English Fella 费用快速报价</span>
-              <h2>默认参考：4周 PIC-4 + 三人房</h2>
+              <h2>默认参考：4周 PIC-4 + 3A三人间</h2>
               <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
             </div>
             <div class="quote-form" aria-label="English Fella费用快速报价选项">
@@ -328,7 +328,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年6月28日。学校环境、课程、住宿和设施信息参考English Fella官方网站公开资料；课程费与住宿费参考公开费用表并由思达顾问按当前页面报价逻辑拆分整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年8月18日。学校环境、课程、住宿和设施信息参考English Fella官方网站公开资料；课程费参考所附课程费用表，住宿费参考所附2026住宿费用表，并由思达顾问按当前页面报价逻辑拆分整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -435,7 +435,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>PIC-4<br />三人房</p>
+          <p>PIC-4<br />3A三人间</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

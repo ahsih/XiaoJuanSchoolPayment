@@ -50,8 +50,8 @@ export class FellaSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolSearchName = 'English Fella';
   private readonly pricingSchoolNames = ['菲律宾宿务English Fella语言学校', 'English Fella'];
-  private readonly courseFeeOrder = ['guardian-gec', 'pic-4', 'pic-5', 'pic-6', 'ielts-pirc', 'toeic-esl-toeic', 'toefl', 'business-english', 'junior-jec', 'silver-speaking-course'];
-  private readonly roomFeeOrder = ['triple', 'twin', 'standard-single', 'deluxe-single'];
+  private readonly courseFeeOrder = ['pic-4', 'pic-5', 'pic-6', 'toeic-esl', 'toeic-practice', 'toeic-guarantee', 'pift-e', 'pift', 'pirc', 'pigi', 'ppt', 'ptft', 'ssc', 'p-jec', 'jec', 'gec', 'ebc'];
+  private readonly roomFeeOrder = ['premium-1p', 'single-1a', 'single-1b', 'twin-2a', 'triple-3a'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -61,7 +61,7 @@ export class FellaSchoolDetailComponent implements OnInit {
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
   selectedCourseId = 'pic-4';
-  selectedRoomId = 'triple';
+  selectedRoomId = 'triple-3a';
   selectedWeeks = 4;
   selectedStartDate = '2026-05-18';
   quoteCalculated = false;
@@ -70,8 +70,8 @@ export class FellaSchoolDetailComponent implements OnInit {
     { icon: 'park', label: '学校类型', value: '宿务老牌大校园', note: '2006年创立，官方称建有专属校园' },
     { icon: 'groups', label: '适合人群', value: '成人 / 考试 / 亲子 / 长期', note: '从5岁儿童到成人和银发课程都有方向' },
     { icon: 'verified_user', label: '管理模式', value: '斯巴达 / 半斯巴达 / 自律', note: '校区和课程不同，规则要先确认' },
-    { icon: 'school', label: '课程选项', value: 'PIC / IELTS / TOEIC / TOEFL', note: '另有商务、Junior、Guardian和Silver Speaking' },
-    { icon: 'bed', label: '住宿房型', value: '三人 / 双人 / 单人', note: '标准单人和豪华单人需核校区与空房' },
+    { icon: 'school', label: '课程选项', value: 'PIC / IELTS / TOEIC / TOEFL', note: '另有EBC商务、JEC儿童、GEC家长和SSC乐龄课程' },
+    { icon: 'bed', label: '住宿房型', value: '3A三人 / 2A双人 / 三种单人房', note: '1B、1A和Premium 1P单人间需核空房' },
     { icon: 'local_activity', label: '校园资源', value: '泳池 / 运动 / CAFELLA', note: '官方设施页展示校园、餐厅、运动和休闲空间' },
   ];
 
@@ -82,7 +82,7 @@ export class FellaSchoolDetailComponent implements OnInit {
     { category: '教室', title: '一对一教室', description: 'PIC、考试、商务和口语课程都会使用一对一训练。', src: 'assets/fella/classroom-1.jpg' },
     { category: '教室', title: '团体教室', description: '小团体、大团体和选修课程用于讨论、表达和综合训练。', src: 'assets/fella/classroom-2.jpg' },
     { category: '住宿', title: '宿舍房间', description: '房间通常配有床、桌椅、收纳和空调，具体以校区房型为准。', src: 'assets/fella/dorm-1.jpg' },
-    { category: '住宿', title: '住宿空间参考', description: '三人房、双人房和单人房会明显影响总预算。', src: 'assets/fella/dorm-2.jpg' },
+    { category: '住宿', title: '住宿空间参考', description: '3A三人间、2A双人间和三种单人间会明显影响总预算。', src: 'assets/fella/dorm-2.jpg' },
     { category: '餐厅', title: '学生餐厅', description: '校内餐厅适合希望学习生活集中管理的学生。', src: 'assets/fella/cafeteria-2.jpg' },
     { category: '设施', title: '运动设施', description: '官方设施页展示运动空间，适合课后活动和校园交流。', src: 'assets/fella/sports-1.jpg' },
     { category: '设施', title: '篮球与运动区', description: '课后运动和月度校园活动会用到这些公共空间。', src: 'assets/fella/sports-2.jpg' },
@@ -94,7 +94,7 @@ export class FellaSchoolDetailComponent implements OnInit {
     { label: '所在地区', value: 'Talamban, Cebu City；第一校区与第二校区' },
     { label: '创立时间', value: '2006年，官方资料称为菲律宾第一批建有专属校园的学校之一' },
     { label: '学校定位', value: '大校园、课程选择多、校区管理模式可选的老牌学校' },
-    { label: '课程资源', value: 'PIC、IELTS、TOEIC、TOEFL、Business、Junior、Guardian、Silver Speaking' },
+    { label: '课程资源', value: 'PIC、PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC、GEC、SSC' },
     { label: '年龄要求', value: 'Junior课程5岁起；15岁以上课程需按项目和校区规则确认' },
     { label: '管理模式', value: '1st Campus偏斯巴达；2nd Campus可按普通/半斯巴达方向确认' },
     { label: '设施资源', value: '校园、宿舍、教室、餐厅、办公室、运动设施、其他公共空间' },
@@ -102,8 +102,8 @@ export class FellaSchoolDetailComponent implements OnInit {
 
   readonly highlights: Highlight[] = [
     { image: 'assets/fella/campus-main.jpg', title: '大校园与生活支持感', text: 'Fella适合希望学校空间更完整、学习和生活都在校内解决的学生。' },
-    { image: 'assets/fella/classroom-1.jpg', title: '课程方向很完整', text: '从PIC综合英语到IELTS、TOEIC、TOEFL、商务、Junior和Guardian都可比较。' },
-    { image: 'assets/fella/dorm-1.jpg', title: '房型和校区要先确认', text: '三人房起预算较低，单人和豪华单人需提前确认校区和空房。' },
+    { image: 'assets/fella/classroom-1.jpg', title: '课程方向很完整', text: '从PIC综合英语到PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC和GEC都可比较。' },
+    { image: 'assets/fella/dorm-1.jpg', title: '房型和校区要先确认', text: '3A三人间住宿预算最低，Premium 1P、1A和1B’单人间需提前确认校区和空房。' },
     { image: 'assets/fella/sports-1.jpg', title: '活动和运动资源多', text: '官方资料列出体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
   ];
 
@@ -111,7 +111,7 @@ export class FellaSchoolDetailComponent implements OnInit {
     { title: '想在宿务找老牌大校园学校', text: 'Fella比很多市区型学校更有校园空间和生活支持感。' },
     { title: '想按管理强度选择校区', text: '如果你想比较斯巴达、半斯巴达或自律型管理，Fella很适合先让顾问核校区。' },
     { title: 'ESL、考试、商务、亲子都想比较', text: '课程覆盖面广，适合目标还在细分阶段的学生。' },
-    { title: '亲子、青少年或长期学习', text: 'Junior和Guardian方向可考虑，但年龄、监护费、校区和房型必须提前确认。' },
+    { title: '亲子、青少年或长期学习', text: 'P-JEC、JEC和GEC方向可考虑，但年龄、监护费、校区和房型必须提前确认。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
@@ -123,32 +123,40 @@ export class FellaSchoolDetailComponent implements OnInit {
 
   readonly courses: CourseItem[] = [
     { name: 'PIC-4 / PIC-5 / PIC-6', type: '综合英语', lessons: '4-6节一对一 + 团体课 + 选修课', suitable: '适合口语、听力、阅读、文法和综合英语基础提升。' },
-    { name: 'IELTS / PIRC / PIFT / PIGI', type: '雅思备考', lessons: '听说读写 + 文法词汇 + 模考与自习', suitable: '适合英联邦升学、移民或明确雅思分数目标学生。' },
-    { name: 'TOEIC / ESL+TOEIC', type: '托业备考', lessons: 'TOEIC专项 + ESL基础 + 模考', suitable: '适合求职、毕业门槛或企业英语目标。' },
-    { name: 'TOEFL', type: '托福备考', lessons: 'TOEFL听说读写 + ESL团体课', suitable: '适合北美升学、交换项目或考试目标学生。' },
-    { name: 'Business English', type: '商务英语', lessons: '会议、简报、面试、备忘录和商务沟通', suitable: '适合职场人士和准备英文工作场景的人。' },
-    { name: 'Junior / Guardian', type: '亲子与青少年', lessons: '儿童一对一、团体课和监护人课程', suitable: '适合亲子同行，年龄、监护和房型需提前确认。' },
-    { name: 'Silver Speaking Course', type: '银发口语', lessons: '50岁以上口语强化课程', suitable: '适合银发成人提升口语信心和交流能力。' },
+    { name: 'PIFT-E / PIFT / PIRC / PIGI', type: '雅思备考', lessons: '听说读写 + 文法词汇 + 模考与自习', suitable: '适合英联邦升学、移民或明确雅思分数目标学生。' },
+    { name: 'TOEIC ESL / 实战 / 保证', type: '托业备考', lessons: 'TOEIC专项 + ESL基础 + 模考', suitable: '适合求职、毕业门槛或企业英语目标。' },
+    { name: 'PPT / PTFT', type: '托福备考', lessons: 'TOEFL听说读写 + ESL团体课', suitable: '适合北美升学、交换项目或考试目标学生。' },
+    { name: 'EBC', type: '商务英语', lessons: '商务一对一5节 + 四人团体2节 + 选修课', suitable: '适合职场人士和准备英文工作场景的人。' },
+    { name: 'P-JEC / JEC / GEC', type: '亲子与青少年', lessons: '儿童一对一、团体课和家长课程', suitable: '适合亲子同行，年龄、监护和房型需提前确认。' },
+    { name: 'SSC', type: '乐龄会话', lessons: '一对一6节 + 选修课', suitable: '适合银发成人提升口语信心和交流能力。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'guardian-gec', name: 'Guardian / GEC', tuition: 1000, suitable: '监护人课程，适合亲子同行家长或监护人' },
-    { id: 'pic-4', name: 'PIC-4', tuition: 1150, suitable: '基础综合英语，适合第一次游学和稳步提升' },
-    { id: 'pic-5', name: 'PIC-5', tuition: 1250, suitable: '一对一课时更多，适合想增加输出训练的学生' },
-    { id: 'pic-6', name: 'PIC-6', tuition: 1350, suitable: '更高一对一比例，适合短期口语强化' },
-    { id: 'ielts-pirc', name: 'IELTS / PIRC', tuition: 1350, suitable: '雅思备考与目标分数训练' },
-    { id: 'toeic-esl-toeic', name: 'TOEIC / ESL+TOEIC', tuition: 1250, suitable: '托业备考或ESL+TOEIC混合课程' },
-    { id: 'toefl', name: 'TOEFL', tuition: 1250, suitable: '托福备考，适合北美升学或考试目标学生' },
-    { id: 'business-english', name: 'Business English', tuition: 1350, suitable: '商务沟通与职场表达' },
-    { id: 'junior-jec', name: 'Junior / JEC', tuition: 1250, suitable: '儿童和青少年课程，年龄、监护和校区需确认' },
-    { id: 'silver-speaking-course', name: 'Silver Speaking Course', tuition: 1250, suitable: '50岁以上口语强化课程，适合银发成人学习者' },
+    { id: 'pic-4', name: 'PIC-4 一般英语课程', tuition: 950, suitable: '第一、第二校区；一对一4节 + 四人团体2节 + 八人团体1节 + 选修课' },
+    { id: 'pic-5', name: 'PIC-5 一般英语课程', tuition: 1000, suitable: '第一、第二校区；一对一5节 + 四人团体1节 + 八人团体1节 + 选修课' },
+    { id: 'pic-6', name: 'PIC-6 Power Speaking', tuition: 1050, suitable: '第一、第二校区；一对一6节 + 八人团体1节 + 选修课' },
+    { id: 'toeic-esl', name: 'TOEIC ESL 托业入门班', tuition: 1050, suitable: '第一、第二校区；托业一对一2节 + ESL一对一2节 + 团体课 + 选修课' },
+    { id: 'toeic-practice', name: 'TOEIC 托业实战班', tuition: 1050, suitable: '第一、第二校区；一对一4节 + 四人团体2节 + 八人团体1节 + 选修课' },
+    { id: 'toeic-guarantee', name: 'TOEIC 托业保证班', tuition: 1100, suitable: '第一校区；一对一4节 + 四人团体2节 + 八人团体1节 + 强制晚自习及词汇测试' },
+    { id: 'pift-e', name: 'PIFT-E 雅思实战班', tuition: 1050, suitable: '第一、第二校区；入学参考1–2分' },
+    { id: 'pift', name: 'PIFT 雅思实战班', tuition: 1050, suitable: '第一、第二校区；入学参考2.5分以上' },
+    { id: 'pirc', name: 'PIRC 雅思培训班', tuition: 1100, suitable: '第一、第二校区；一对一5节 + 四人团体2节 + 选修课，入学参考2.5分以上' },
+    { id: 'pigi', name: 'PIGI 雅思保证班', tuition: 1100, suitable: '第一校区；一对一4节 + 四人团体2节 + 八人团体1节 + 强制晚自习及词汇测试' },
+    { id: 'ppt', name: 'PPT 托福入门班', tuition: 1050, suitable: '第一、第二校区；托福一对一2节 + ESL一对一2节 + 团体课 + 选修课' },
+    { id: 'ptft', name: 'PTFT 托福实战班', tuition: 1050, suitable: '第一、第二校区；托福一对一4节 + ESL团体课 + 选修课' },
+    { id: 'ssc', name: 'SSC 乐龄会话课', tuition: 1100, suitable: '第二校区自律型；一对一6节 + 选修课' },
+    { id: 'p-jec', name: 'P-JEC 儿童课程', tuition: 1100, suitable: '第二校区；5–6岁，一对一4节 + 选修课' },
+    { id: 'jec', name: 'JEC 儿童课程', tuition: 1100, suitable: '第二校区；7–15岁，一对一4节 + 四人团体2节 + 选修课' },
+    { id: 'gec', name: 'GEC 家长课程', tuition: 800, suitable: '第二校区；一对一3节 + 选修课' },
+    { id: 'ebc', name: 'EBC 商业英文课程', tuition: 1050, suitable: '第二校区；一对一5节 + 四人团体2节 + 选修课' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'triple', name: '三人房', fee: 550, note: '默认报价参考，预算压力较低' },
-    { id: 'twin', name: '双人房', fee: 650, note: '适合朋友同行或希望兼顾预算与舒适度' },
-    { id: 'standard-single', name: '标准单人房', fee: 850, note: '隐私较好，预算较高，热门档期需早确认' },
-    { id: 'deluxe-single', name: '豪华单人房', fee: 950, note: '更高住宿规格，空房和校区需单独确认' },
+    { id: 'premium-1p', name: 'Premium 1P 单人间', fee: 1200, note: '最高规格单人房；适用校区和空房需确认' },
+    { id: 'single-1a', name: '1A 单人间', fee: 1000, note: '单人房；适用校区和空房需确认' },
+    { id: 'single-1b', name: '1B’ 单人间', fee: 950, note: '单人房；适用校区和空房需确认' },
+    { id: 'twin-2a', name: '2A 双人间', fee: 850, note: '适合朋友同行或希望兼顾预算与舒适度' },
+    { id: 'triple-3a', name: '3A 三人间', fee: 750, note: '默认报价参考，住宿预算最低' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -239,7 +247,7 @@ export class FellaSchoolDetailComponent implements OnInit {
   readonly weekendActivities = ['跳岛活动', 'Cebu City Tour', 'Safari Park Tour', '志愿活动', '商场与餐厅', '学生自发聚会'];
   readonly notes = [
     'English Fella报名前必须确认第一校区或第二校区，以及对应管理模式。',
-    '亲子、青少年、Silver Speaking和考试课程要先核对年龄、校区、周数和入学规则。',
+    '亲子、青少年、SSC乐龄会话和考试课程要先核对年龄、校区、周数和入学规则。',
     '本页课程费与住宿费拆分用于报价逻辑，正式报价仍需按学校费用表、优惠和房型确认。',
     '到校支付费用会随学校政策、汇率和个人情况变化。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
@@ -248,7 +256,7 @@ export class FellaSchoolDetailComponent implements OnInit {
     { question: 'English Fella适合第一次菲律宾游学吗？', answer: '适合，但要先确认校区和管理强度。若你希望有校园空间、生活支持和比较完整的课程选择，Fella值得放入候选。' },
     { question: 'English Fella是斯巴达学校吗？', answer: 'Fella有不同校区和管理模式。一般会按第一校区偏斯巴达、第二校区较弹性来理解，实际规则需按课程和空房确认。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和可能的旺季附加费；到校后仍需支付SSP、SSP E-card、水电费、空调费、教材费、押金等当地费用。' },
-    { question: 'English Fella适合亲子吗？', answer: '可以考虑。官方课程包含Junior和Guardian方向，但要先确认孩子年龄、陪同家长、监护规则、房型和校区。' },
+    { question: 'English Fella适合亲子吗？', answer: '可以考虑。课程表包含P-JEC、JEC儿童课程和GEC家长课程，但要先确认孩子年龄、陪同家长、监护规则、房型和校区。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名English Fella，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -291,7 +299,7 @@ export class FellaSchoolDetailComponent implements OnInit {
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({ id: this.slugifyPriceKey(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认适合人群' }))
+      .map((lesson) => ({ id: this.createCourseId(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认适合人群' }))
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
     if (databaseCourseFees.length > 0) {
       this.courseFees = databaseCourseFees;
@@ -304,7 +312,7 @@ export class FellaSchoolDetailComponent implements OnInit {
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'triple')?.id ?? this.roomFees[0].id;
+      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'triple-3a')?.id ?? this.roomFees[0].id;
     }
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
@@ -343,10 +351,22 @@ export class FellaSchoolDetailComponent implements OnInit {
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  private createCourseId(name: string): string {
+    if (name.startsWith('PIC-6')) return 'pic-6';
+    if (name.startsWith('TOEIC ESL')) return 'toeic-esl';
+    if (name.startsWith('TOEIC 托业实战')) return 'toeic-practice';
+    if (name.startsWith('TOEIC 托业保证')) return 'toeic-guarantee';
+    return this.slugifyPriceKey(name);
+  }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string {
-    if (name.includes('三人')) return 'triple';
-    if (name.includes('双人')) return 'twin';
+    if (name.includes('Premium 1P')) return 'premium-1p';
+    if (name.includes('1A')) return 'single-1a';
+    if (name.includes('1B')) return 'single-1b';
+    if (name.includes('2A')) return 'twin-2a';
+    if (name.includes('3A')) return 'triple-3a';
+    if (name.includes('三人')) return 'triple-3a';
+    if (name.includes('双人')) return 'twin-2a';
     if (name.includes('豪华')) return 'deluxe-single';
     if (name.includes('标准单人')) return 'standard-single';
     if (name.includes('单人')) return 'standard-single';

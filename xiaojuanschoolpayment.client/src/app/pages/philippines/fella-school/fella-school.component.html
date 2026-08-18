@@ -26,7 +26,7 @@
       <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
       <figcaption>
         <strong>4周起价参考</strong>
-        <span>Guardian / 监护人课程三人房：USD 1,550 起；成人 PIC-4 三人房：USD 1,700 起</span>
+        <span>GEC 家长课程 + 3A三人间：USD 1,550 起；成人 PIC-4 + 3A三人间：USD 1,700 起</span>
       </figcaption>
     </figure>
   </section>
@@ -66,10 +66,10 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">住宿</span>
-        <h2>三人房、双人房、标准单人和豪华单人房</h2>
+        <h2>3A三人间、2A双人间与三种单人间</h2>
       </div>
       <p>
-        English Fella 公开资料列出单人房、标准单人、单人雅房、双人房和三人房等房型。房内常见配置包含床垫、冰箱、置物柜、桌椅、热水淋浴和衣柜；房间清扫与床单更换也有固定安排。
+        所附2026住宿费用表列出3A三人间、2A双人间、1B’单人间、1A单人间和Premium 1P单人间。具体校区、房间配置与空房需按入学日期确认。
       </p>
     </div>
 
@@ -87,24 +87,26 @@
   <section class="content-band fee-section">
     <div class="section-heading">
       <span class="section-kicker">费用</span>
-      <h2>2026美金原价参考，课程+食宿 / 4周</h2>
+      <h2>美金原价参考，课程+住宿 / 4周</h2>
       <p>以下整理自公开页面费用表；注册费、当地披索费用、签证延签、教材、水电、押金、接送、监管费和优惠报价需另行确认。</p>
     </div>
 
     <div class="fee-table" role="table" aria-label="English Fella 4周课程与住宿费用">
       <div class="fee-row fee-row--head" role="row">
         <span role="columnheader">课程</span>
-        <span role="columnheader">三人房</span>
-        <span role="columnheader">双人房</span>
-        <span role="columnheader">标准单人</span>
-        <span role="columnheader">豪华单人</span>
+        <span role="columnheader">3A三人间</span>
+        <span role="columnheader">2A双人间</span>
+        <span role="columnheader">1B’单人间</span>
+        <span role="columnheader">1A单人间</span>
+        <span role="columnheader">Premium 1P</span>
       </div>
       <div class="fee-row" role="row" *ngFor="let row of priceRows">
         <span role="cell">{{ row.course }}</span>
-        <span role="cell">{{ row.triple }}</span>
-        <span role="cell">{{ row.twin }}</span>
-        <span role="cell">{{ row.single }}</span>
-        <span role="cell">{{ row.deluxeSingle }}</span>
+        <span role="cell">{{ row.room3a }}</span>
+        <span role="cell">{{ row.room2a }}</span>
+        <span role="cell">{{ row.room1b }}</span>
+        <span role="cell">{{ row.room1a }}</span>
+        <span role="cell">{{ row.premium1p }}</span>
       </div>
     </div>
 
