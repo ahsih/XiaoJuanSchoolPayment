@@ -50,8 +50,9 @@ export class CpiSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolSearchName = 'CPI';
   private readonly pricingSchoolNames = ['菲律宾宿务CPI语言学校', 'CPI Cebu Pelis Institute'];
-  private readonly courseFeeOrder = ['general-english', 'intensive-english', 'rapid-30', 'rapid-60', 'toeic-regular', 'ielts-regular', 'ielts-guarantee', 'speaking-master', 'business-english', 'junior-program', 'guardian-program'];
-  private readonly roomFeeOrder = ['superior-single', 'superior-double', 'superior-triple', 'superior-quad', 'superior-six', 'executive-single', 'executive-double', 'executive-triple', 'family-double', 'family-triple'];
+  private readonly courseFeeOrder = ['esl-general-15', 'esl-intensive', 'toeic-preparatory', 'toefl-preparatory', 'ielts-preparatory', 'toeic-general', 'toefl-general', 'ielts-general', 'toeic-intensive', 'toefl-intensive', 'ielts-intensive', 'ielts-guarantee', 'toefl-guarantee', 'toeic-guarantee', 'junior-6-15', 'parents', 'esp-bridge', 'esp-general'];
+  private readonly roomFeeOrder = ['building-a-single', 'building-a-double', 'building-a-triple', 'building-a-quad', 'building-b-single', 'building-b-double-a', 'building-b-double-b', 'building-b-triple', 'building-b-quad', 'building-b-six'];
+  private readonly shortTermRatios: Record<number, number> = { 1: 0.375, 2: 0.65, 3: 0.9 };
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -60,8 +61,8 @@ export class CpiSchoolDetailComponent implements OnInit {
   seasonalFeePerWeek = 30;
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
-  selectedCourseId = 'general-english';
-  selectedRoomId = 'superior-quad';
+  selectedCourseId = 'esl-general-15';
+  selectedRoomId = 'building-a-quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-05-18';
   quoteCalculated = false;
@@ -71,7 +72,7 @@ export class CpiSchoolDetailComponent implements OnInit {
     { icon: 'groups', label: '适合人群', value: '成人 / 青少年 / 亲子', note: '低龄和亲子需提前确认规则' },
     { icon: 'verified_user', label: '管理模式', value: '半斯巴达管理', note: '学习管理与生活舒适度并重' },
     { icon: 'school', label: '课程选项', value: 'ESL / IELTS / TOEIC', note: '另有口语、商务、青少年和家长课程' },
-    { icon: 'bed', label: '住宿房型', value: 'Superior / Executive / Family', note: '热门房型和家庭房需早确认' },
+    { icon: 'bed', label: '住宿房型', value: 'A栋 / B栋', note: '热门房型和家庭房需早确认' },
     { icon: 'event_available', label: '校区位置', value: 'Nivel Hills, Lahug', note: '宿务半山安静校园环境' },
   ];
 
@@ -94,14 +95,14 @@ export class CpiSchoolDetailComponent implements OnInit {
     { label: '学生容量', value: '约250名学生' },
     { label: '管理模式', value: '半斯巴达，结合晚间学习、选修和校园管理' },
     { label: '年龄要求', value: '成人、青少年和亲子可考虑；低龄学生需按课程规则确认' },
-    { label: '住宿房型', value: 'Superior、Executive、Family等校内房型' },
+    { label: '住宿房型', value: 'A栋、B栋单人至多人校内房型' },
     { label: '核心资源', value: '泳池、健身房、餐厅、咖啡区、自习空间、运动设施' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/cpi/campus-pool.jpg', title: '度假村式校园环境', text: 'CPI适合重视住宿、餐厅、泳池和校内生活舒适度的学生。' },
     { image: 'assets/cpi/classroom.jpg', title: '课程方向覆盖广', text: 'ESL、考试、口语、商务、青少年和家长课程都可以纳入比较。' },
-    { image: 'assets/cpi/dorm-room.jpg', title: '房型选择影响预算', text: 'Superior四人房适合先估算预算，Executive和Family房型需单独核房。' },
+    { image: 'assets/cpi/dorm-room.jpg', title: '房型选择影响预算', text: 'A栋四人间适合先估算预算，B栋和家庭房型需单独核房。' },
     { image: 'assets/cpi/dining-hall.jpg', title: '学习生活集中管理', text: '适合第一次游学、亲子或想降低适应成本的学生。' },
   ];
 
@@ -113,47 +114,54 @@ export class CpiSchoolDetailComponent implements OnInit {
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '预算非常紧，只追求最低总价', text: 'CPI的环境和房型会影响总预算，Executive、Family房型会明显拉高费用。' },
+    { title: '预算非常紧，只追求最低总价', text: 'CPI的环境和房型会影响总预算，单人房和B栋高阶房型会明显拉高费用。' },
     { title: '只想要强制高压斯巴达', text: 'CPI更偏半斯巴达和舒适校园，若要更强纪律，可同时比较CIA、EV或CPILS。' },
     { title: '临近旺季才确认房型', text: '暑假、寒假、亲子档期和热门房型容易紧张，建议提前核空房。' },
     { title: '只看前期学费，不准备当地费用', text: 'CPI到校后仍需支付SSP、管理费、水电、教材、押金等当地费用。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'General English', type: '基础综合英语', lessons: '一对一 + 小团体 + 大团体', suitable: '适合第一次游学、基础口语提升和稳步学习。' },
-    { name: 'Intensive English', type: '密集综合英语', lessons: '更多一对一课时', suitable: '适合短期强化，希望增加开口和纠错时间的学生。' },
-    { name: 'Rapid 30 / 60', type: '短期密集课程', lessons: '短期集中课时安排', suitable: '适合时间有限、希望快速补强的学生。' },
-    { name: 'IELTS / TOEIC', type: '考试英语', lessons: '考试专项 + 模考 + 学习管理', suitable: '适合有分数目标、升学或求职需求的学生。' },
-    { name: 'Speaking Master', type: '口语强化', lessons: '口语表达、纠音和反应训练', suitable: '适合开口量不足、想明显提升表达流畅度的学生。' },
-    { name: 'Business English', type: '商务英语', lessons: '会议、演示、面试与职场表达', suitable: '适合职场人士或准备英文工作场景的学生。' },
-    { name: 'Junior / Guardian', type: '青少年与家长课程', lessons: '按年龄、同行和房型确认', suitable: '适合亲子同行，但需提前核对监护和住宿规则。' },
+    { name: 'ESL GENERAL', type: '基础综合英语', lessons: '4节一对一 + 2节小组课 + 1节小团体课', suitable: '适合15岁以上、第一次游学和稳步提升的学生。' },
+    { name: 'ESL INTENSIVE', type: '密集综合英语', lessons: '5节一对一 + 2节小组课 + 1节小团体课', suitable: '适合短期强化，希望增加开口和纠错时间的学生。' },
+    { name: 'PREPARATORY', type: '考试预备英语', lessons: 'TOEIC / TOEFL / IELTS预备课程', suitable: '适合先建立考试基础和题型认识的学生。' },
+    { name: 'GENERAL / INTENSIVE', type: '考试英语', lessons: '考试专项 + 模考 + 学习管理', suitable: '适合有TOEIC、TOEFL或IELTS分数目标的学生。' },
+    { name: 'GUARANTEE', type: '考试保证班', lessons: '强化课表 + 入学门槛与最低周数', suitable: '适合目标明确并符合保证班要求的学生。' },
+    { name: 'ESP BRIDGE / GENERAL', type: '商务英语', lessons: 'ESL与商务英语衔接或常规商务课', suitable: '适合职场人士或准备英文工作场景的学生。' },
+    { name: 'JUNIOR / PARENTS', type: '青少年与家长课程', lessons: '按年龄、同行和房型确认', suitable: '适合6–15岁学生和亲子同行家庭。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'general-english', name: 'General English', tuition: 716, suitable: '基础综合英语，适合第一次游学和稳步提升' },
-    { id: 'intensive-english', name: 'Intensive English', tuition: 876, suitable: '一对一课时更多，适合短期强化' },
-    { id: 'rapid-30', name: 'Rapid 30', tuition: 604, suitable: '短期密集课程，适合时间有限的学生' },
-    { id: 'rapid-60', name: 'Rapid 60', tuition: 1208, suitable: '更高强度短期密集课程' },
-    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 960, suitable: '托业备考，适合求职、升学或企业英语需求' },
-    { id: 'ielts-regular', name: 'IELTS Regular', tuition: 960, suitable: '雅思备考，适合目标分数学生' },
-    { id: 'ielts-guarantee', name: 'IELTS Guarantee', tuition: 1096, suitable: '保证班方向，需按入学门槛和周数确认' },
-    { id: 'speaking-master', name: 'Speaking Master', tuition: 960, suitable: '口语强化，适合提升开口量和表达反应' },
-    { id: 'business-english', name: 'Business English', tuition: 960, suitable: '商务沟通与职场表达' },
-    { id: 'junior-program', name: 'Junior Program', tuition: 960, suitable: '青少年课程，年龄和监护规则需提前确认' },
-    { id: 'guardian-program', name: 'Guardian Program', tuition: 696, suitable: '家长课程，适合亲子同行家长' },
+    { id: 'esl-general-15', name: 'ESL GENERAL（15岁以上）', tuition: 900, suitable: '4节一对一 + 2节小组课 + 1节小团体课' },
+    { id: 'esl-intensive', name: 'ESL INTENSIVE', tuition: 1020, suitable: '5节一对一 + 2节小组课 + 1节小团体课' },
+    { id: 'toeic-preparatory', name: 'TOEIC PREPARATORY', tuition: 950, suitable: '托业预备课程' },
+    { id: 'toefl-preparatory', name: 'TOEFL PREPARATORY', tuition: 950, suitable: '托福预备课程' },
+    { id: 'ielts-preparatory', name: 'IELTS PREPARATORY', tuition: 950, suitable: '雅思预备课程' },
+    { id: 'toeic-general', name: 'TOEIC GENERAL', tuition: 1020, suitable: '托业常规课程' },
+    { id: 'toefl-general', name: 'TOEFL GENERAL', tuition: 1020, suitable: '托福常规课程' },
+    { id: 'ielts-general', name: 'IELTS GENERAL', tuition: 1020, suitable: '雅思常规课程' },
+    { id: 'toeic-intensive', name: 'TOEIC INTENSIVE', tuition: 1070, suitable: '托业强化课程' },
+    { id: 'toefl-intensive', name: 'TOEFL INTENSIVE', tuition: 1070, suitable: '托福强化课程' },
+    { id: 'ielts-intensive', name: 'IELTS INTENSIVE', tuition: 1070, suitable: '雅思强化课程' },
+    { id: 'ielts-guarantee', name: 'IELTS GUARANTEE', tuition: 1120, suitable: '雅思保证班；门槛和最低周数需确认' },
+    { id: 'toefl-guarantee', name: 'TOEFL GUARANTEE', tuition: 1120, suitable: '托福保证班；门槛和最低周数需确认' },
+    { id: 'toeic-guarantee', name: 'TOEIC GUARANTEE', tuition: 1120, suitable: '托业保证班；门槛和最低周数需确认' },
+    { id: 'junior-6-15', name: 'JUNIOR（6-15岁）', tuition: 1320, suitable: '青少年课程；可申请将1节一对一转给家长' },
+    { id: 'parents', name: 'PARENTS', tuition: 780, suitable: '亲子同行家长课程' },
+    { id: 'esp-bridge', name: 'ESP BRIDGE', tuition: 950, suitable: 'ESL与商务英语衔接课程' },
+    { id: 'esp-general', name: 'ESP GENERAL', tuition: 1020, suitable: '商务英语常规课程' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'superior-single', name: 'Superior 单人房', fee: 1240, note: '隐私最好，预算较高，热门档期需早确认' },
-    { id: 'superior-double', name: 'Superior 双人房', fee: 720, note: '适合朋友同行或希望兼顾预算与舒适度' },
-    { id: 'superior-triple', name: 'Superior 三人房', fee: 600, note: '多人房中预算较平衡' },
-    { id: 'superior-quad', name: 'Superior 四人房', fee: 520, note: '默认报价参考，预算压力较低' },
-    { id: 'superior-six', name: 'Superior 六人房', fee: 520, note: '女性六人房方向，空房需单独确认' },
-    { id: 'executive-single', name: 'Executive 单人房', fee: 1400, note: '更高住宿规格，预算较高' },
-    { id: 'executive-double', name: 'Executive 双人房', fee: 1000, note: '高规格双人房，适合重视住宿舒适度' },
-    { id: 'executive-triple', name: 'Executive 三人房', fee: 880, note: '高规格多人房，预算和舒适度较平衡' },
-    { id: 'family-double', name: 'Family 双人房', fee: 800, note: '亲子或同行家庭房方向，规则需确认' },
-    { id: 'family-triple', name: 'Family 三人房', fee: 680, note: '家庭同行参考房型，热门档期需早确认' },
+    { id: 'building-a-single', name: 'A栋单人间', fee: 1445, note: '隐私较高，热门档期需尽早确认' },
+    { id: 'building-a-double', name: 'A栋双人间', fee: 960, note: '适合朋友同行或兼顾预算与舒适度' },
+    { id: 'building-a-triple', name: 'A栋三人间', fee: 840, note: '多人房中预算较平衡' },
+    { id: 'building-a-quad', name: 'A栋四人间（上下铺）', fee: 770, note: '默认报价参考房型' },
+    { id: 'building-b-single', name: 'B栋单人间', fee: 1595, note: '隐私较高，热门档期需尽早确认' },
+    { id: 'building-b-double-a', name: 'B栋双人间A', fee: 1160, note: 'B栋双人房A' },
+    { id: 'building-b-double-b', name: 'B栋双人间B', fee: 1110, note: 'B栋双人房B' },
+    { id: 'building-b-triple', name: 'B栋三人间', fee: 950, note: 'B栋三人房' },
+    { id: 'building-b-quad', name: 'B栋四人间（3张床）', fee: 890, note: '家庭房型；四人入住、3张床' },
+    { id: 'building-b-six', name: 'B栋六人间', fee: 770, note: '仅限女生' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -309,7 +317,7 @@ export class CpiSchoolDetailComponent implements OnInit {
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'superior-quad')?.id ?? this.roomFees[0].id;
+      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'building-a-quad')?.id ?? this.roomFees[0].id;
     }
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
@@ -337,8 +345,15 @@ export class CpiSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
+  get billingMultiplier(): number { return this.shortTermRatios[this.selectedWeeks] ?? (this.selectedWeeks / 4); }
+  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.billingMultiplier; }
+  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.billingMultiplier; }
+  get billingRuleText(): string {
+    const percentage = this.shortTermRatios[this.selectedWeeks];
+    return percentage
+      ? `${this.selectedWeeks}周按4周课程费和住宿费的${percentage * 100}%计算`
+      : `${this.selectedWeeks}周按4周价格的${this.billingMultiplier}倍计算`;
+  }
   get isPeakSeason(): boolean {
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
     const ranges = [
@@ -353,20 +368,20 @@ export class CpiSchoolDetailComponent implements OnInit {
   get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
   get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string {
-    if (name.includes('Superior 单人')) return 'superior-single';
-    if (name.includes('Superior 双人')) return 'superior-double';
-    if (name.includes('Superior 三人')) return 'superior-triple';
-    if (name.includes('Superior 四人')) return 'superior-quad';
-    if (name.includes('Superior 六人')) return 'superior-six';
-    if (name.includes('Executive 单人')) return 'executive-single';
-    if (name.includes('Executive 双人')) return 'executive-double';
-    if (name.includes('Executive 三人')) return 'executive-triple';
-    if (name.includes('Family 双人')) return 'family-double';
-    if (name.includes('Family 三人')) return 'family-triple';
+    if (name.includes('A栋单人')) return 'building-a-single';
+    if (name.includes('A栋双人')) return 'building-a-double';
+    if (name.includes('A栋三人')) return 'building-a-triple';
+    if (name.includes('A栋四人')) return 'building-a-quad';
+    if (name.includes('B栋单人')) return 'building-b-single';
+    if (name.includes('B栋双人间A')) return 'building-b-double-a';
+    if (name.includes('B栋双人间B')) return 'building-b-double-b';
+    if (name.includes('B栋三人')) return 'building-b-triple';
+    if (name.includes('B栋四人')) return 'building-b-quad';
+    if (name.includes('B栋六人')) return 'building-b-six';
     return this.slugifyPriceKey(name);
   }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }

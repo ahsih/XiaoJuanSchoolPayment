@@ -71,9 +71,9 @@ export class CpiSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { item: '页面起价参考', reference: 'NTD 12,820 / 周起', note: '非凡游学宿务学校列表显示的CPI起价' },
-    { item: '4周预算', reference: '需按课程与房型报价', note: 'CPI公开页未给出完整房型价目表，建议以当期报价单为准' },
-    { item: '12周预算', reference: '需按课程与房型报价', note: '考试保证班、家庭房、豪华房型会明显影响总价' },
+    { item: '注册费', reference: 'USD 100', note: '一次性报名注册费' },
+    { item: '4周起价参考', reference: 'USD 1,670', note: 'ESL GENERAL + A栋四人间，注册费另计' },
+    { item: '1–3周比例', reference: '37.5% / 65% / 90%', note: '分别按4周课程费和住宿费计算' },
     { item: '额外费用', reference: '当地费用另计', note: 'SSP、教材、水电、押金、接送、签证延签等通常不含在起价内' },
   ];
 
@@ -132,7 +132,7 @@ export class CpiSchoolComponent {
     },
     {
       question: '为什么费用页没有完整房型表？',
-      answer: '我能查到的公开页显示CPI起价为NTD 12,820/周起，但完整房型和课程价目需按学校当期报价单确认，避免把不确定价格写死。',
+      answer: '2026价目表列出了课程与房型的4周美元价格；1周、2周、3周分别按4周课程费和住宿费的37.5%、65%、90%计算，注册费USD 100另计。',
     },
     {
       question: 'CPI适合亲子吗？',

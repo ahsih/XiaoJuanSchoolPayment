@@ -78,11 +78,13 @@ export class CpilsSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { course: 'General ESL / Intensive ESL', quad: 'USD 1,590', triple: 'USD 1,665', twin: 'USD 1,730', single: 'USD 1,885' },
-    { course: 'Premier Sparta / Business / TOEIC / TOEFL', quad: 'USD 1,690', triple: 'USD 1,765', twin: 'USD 1,830', single: 'USD 1,985' },
-    { course: 'IELTS', quad: 'USD 1,745', triple: 'USD 1,820', twin: 'USD 1,885', single: 'USD 2,040' },
-    { course: 'TOEIC Guarantee 12周', quad: 'USD 3,934', triple: 'USD 4,009', twin: 'USD 4,074', single: 'USD 4,229' },
-    { course: 'IELTS Guarantee 12周', quad: 'USD 4,099', triple: 'USD 4,174', twin: 'USD 4,239', single: 'USD 4,394' },
+    { course: 'General ESL / General ESL Plus', quad: 'USD 1,635', triple: 'USD 1,710', twin: 'USD 1,775', single: 'USD 1,930' },
+    { course: 'General ESL Light', quad: 'USD 1,300', triple: 'USD 1,375', twin: 'USD 1,440', single: 'USD 1,595' },
+    { course: 'Premier Sparta / Business / TOEIC / TOEFL / PMC', quad: 'USD 1,740', triple: 'USD 1,815', twin: 'USD 1,880', single: 'USD 2,035' },
+    { course: 'TOEIC Guarantee', quad: 'USD 1,832', triple: 'USD 1,907', twin: 'USD 1,972', single: 'USD 2,127' },
+    { course: 'Pre-IELTS / IELTS', quad: 'USD 1,797', triple: 'USD 1,872', twin: 'USD 1,937', single: 'USD 2,092' },
+    { course: 'IELTS Guarantee 8 Weeks（4周费率）', quad: 'USD 1,947.5', triple: 'USD 2,022.5', twin: 'USD 2,087.5', single: 'USD 2,242.5' },
+    { course: 'IELTS Guarantee 12 Weeks（4周费率）', quad: 'USD 1,889.7', triple: 'USD 1,964.7', twin: 'USD 2,029.7', single: 'USD 2,184.7' },
   ];
 
   readonly localFees: LocalFee[] = [
@@ -139,7 +141,7 @@ export class CpilsSchoolComponent {
     },
     {
       question: 'CPILS 的起价是多少？',
-      answer: '公开2026美金原价表显示，General ESL / Intensive ESL 四人房4周为 USD 1,590 起；iOutback 列表也显示约 NTD 49,249 起。最终价格要按汇率、优惠、课程和房型确认。',
+      answer: '2026费用表显示，General ESL 四人房4周的课程费与住宿费合计为 USD 1,635，另收 USD 125 注册费。最终价格要按优惠、课程和房型确认。',
     },
     {
       question: 'CPILS 的 IELTS / TOEIC 优势是什么？',

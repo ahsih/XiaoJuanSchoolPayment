@@ -50,8 +50,8 @@ export class CpilsSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolSearchName = 'CPILS';
   private readonly pricingSchoolNames = ['菲律宾宿务CPILS语言学校', 'CPILS'];
-  private readonly courseFeeOrder = ['general-esl', 'general-esl-plus', 'general-esl-light', 'premier-sparta', 'ielts-course', 'toeic-course', 'toefl-course', 'business-english', 'power-speaking-and-modern-communication', 'parent-child-program'];
-  private readonly roomFeeOrder = ['quad', 'triple', 'twin', 'single'];
+  private readonly courseFeeOrder = ['general-esl', 'general-esl-light', 'general-esl-plus', 'premier-sparta', 'toeic-course', 'toeic-guarantee', 'pre-ielts-course', 'ielts-course', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toefl-course', 'business-english', 'power-speaking-and-modern-communication'];
+  private readonly roomFeeOrder = ['regular-single', 'regular-twin', 'regular-triple', 'regular-quad', 'no-window-single', 'no-window-twin', 'premium-single', 'premium-twin', 'premium-triple', 'premium-quad'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -61,7 +61,7 @@ export class CpilsSchoolDetailComponent implements OnInit {
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12];
   selectedCourseId = 'general-esl';
-  selectedRoomId = 'quad';
+  selectedRoomId = 'regular-quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-05-18';
   quoteCalculated = false;
@@ -132,23 +132,32 @@ export class CpilsSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'general-esl', name: 'General ESL', tuition: 1060, suitable: '基础综合英语，适合第一次游学和稳步提升' },
-    { id: 'general-esl-plus', name: 'General ESL Plus', tuition: 1060, suitable: '综合英语加强方向，适合想增加输出训练的学生' },
-    { id: 'general-esl-light', name: 'General ESL Light', tuition: 980, suitable: '较轻量综合英语，适合想保留生活弹性的学生' },
-    { id: 'premier-sparta', name: 'Premier Sparta', tuition: 1160, suitable: '斯巴达学习强度，适合需要纪律推动的学生' },
-    { id: 'ielts-course', name: 'IELTS Course', tuition: 1215, suitable: '雅思备考与目标分数训练' },
-    { id: 'toeic-course', name: 'TOEIC Course', tuition: 1160, suitable: '托业备考，适合求职、升学或企业英语需求' },
-    { id: 'toefl-course', name: 'TOEFL Course', tuition: 1160, suitable: '托福备考，适合北美升学或考试目标学生' },
-    { id: 'business-english', name: 'Business English', tuition: 1160, suitable: '商务沟通与职场表达' },
-    { id: 'power-speaking-and-modern-communication', name: 'Power Speaking and Modern Communication', tuition: 1160, suitable: '口语表达、沟通自信和现代沟通训练' },
-    { id: 'parent-child-program', name: 'Parent-Child Program', tuition: 1160, suitable: '亲子课程方向，需按年龄、监护和房型确认' },
+    { id: 'general-esl', name: 'General ESL', tuition: 935, suitable: '基础综合英语，适合第一次游学和稳步提升' },
+    { id: 'general-esl-light', name: 'General ESL Light', tuition: 600, suitable: '较轻量综合英语，适合想保留生活弹性的学生' },
+    { id: 'general-esl-plus', name: 'General ESL Plus', tuition: 935, suitable: '综合英语加强方向，适合想增加输出训练的学生' },
+    { id: 'premier-sparta', name: 'Premier Sparta', tuition: 1040, suitable: '斯巴达学习强度，适合需要纪律推动的学生' },
+    { id: 'toeic-course', name: 'TOEIC Course', tuition: 1040, suitable: '托业备考，适合求职、升学或企业英语需求' },
+    { id: 'toeic-guarantee', name: 'TOEIC Guarantee', tuition: 1132, suitable: '托业保证班；听力和阅读每月安排2次模拟考试' },
+    { id: 'pre-ielts-course', name: 'Pre-IELTS Course', tuition: 1097, suitable: '雅思3分以下学生的预备课程，最少报名4周' },
+    { id: 'ielts-course', name: 'IELTS Course', tuition: 1097, suitable: '雅思备考与目标分数训练，最少报名4周' },
+    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1247.5, suitable: '雅思保证班8周方案；8周起报并赠送机考' },
+    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1189.7, suitable: '雅思保证班12周方案；12周起报' },
+    { id: 'toefl-course', name: 'TOEFL Course', tuition: 1040, suitable: '托福备考，适合北美升学或考试目标学生' },
+    { id: 'business-english', name: 'Business English', tuition: 1040, suitable: '商务沟通、会议、演示和职场表达；4周起报' },
+    { id: 'power-speaking-and-modern-communication', name: 'Power Speaking and Modern Communication', tuition: 1040, suitable: 'PMC演讲与现代沟通训练；4周起报' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'quad', name: '四人房', fee: 530, note: '默认报价参考，预算压力较低' },
-    { id: 'triple', name: '三人房', fee: 605, note: '多人房中预算较平衡' },
-    { id: 'twin', name: '双人房', fee: 670, note: '适合朋友同行或希望兼顾预算与舒适度' },
-    { id: 'single', name: '单人房', fee: 825, note: '隐私最好，预算较高，热门档期需早确认' },
+    { id: 'regular-single', name: '单人房', fee: 995, note: '隐私最好，预算较高，热门档期需早确认' },
+    { id: 'regular-twin', name: '双人房', fee: 840, note: '适合朋友同行或希望兼顾预算与舒适度' },
+    { id: 'regular-triple', name: '三人房', fee: 775, note: '多人房中预算较平衡' },
+    { id: 'regular-quad', name: '四人房', fee: 700, note: '默认报价参考，预算压力较低' },
+    { id: 'no-window-single', name: '无对外窗单人房', fee: 995, note: '无对外窗房型，空房和采光条件需提前确认' },
+    { id: 'no-window-twin', name: '无对外窗双人房', fee: 840, note: '无对外窗房型，适合两人同行' },
+    { id: 'premium-single', name: '高级单人房', fee: 1085, note: '高级房型，隐私和住宿规格更高' },
+    { id: 'premium-twin', name: '高级双人房', fee: 910, note: '高级双人房，适合重视住宿舒适度的学生' },
+    { id: 'premium-triple', name: '高级三人房', fee: 850, note: '高级多人房，兼顾预算与住宿规格' },
+    { id: 'premium-quad', name: '高级四人房', fee: 780, note: '高级多人房中预算压力较低' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -304,7 +313,7 @@ export class CpilsSchoolDetailComponent implements OnInit {
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad')?.id ?? this.roomFees[0].id;
+      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'regular-quad')?.id ?? this.roomFees[0].id;
     }
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
@@ -345,10 +354,11 @@ export class CpilsSchoolDetailComponent implements OnInit {
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string {
-    if (name.includes('四人')) return 'quad';
-    if (name.includes('三人')) return 'triple';
-    if (name.includes('双人')) return 'twin';
-    if (name.includes('单人')) return 'single';
+    const roomType = name.includes('高级') ? 'premium' : name.includes('无对外窗') ? 'no-window' : 'regular';
+    if (name.includes('四人')) return `${roomType}-quad`;
+    if (name.includes('三人')) return `${roomType}-triple`;
+    if (name.includes('双人')) return `${roomType}-twin`;
+    if (name.includes('单人')) return `${roomType}-single`;
     return this.slugifyPriceKey(name);
   }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }

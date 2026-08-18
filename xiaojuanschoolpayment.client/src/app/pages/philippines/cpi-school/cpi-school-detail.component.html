@@ -53,7 +53,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>General English + Superior 四人房</p>
+              <p>ESL GENERAL + A栋四人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -130,7 +130,7 @@
               <h2>先定房型和预算，再选课程强度</h2>
             </div>
             <p>
-              CPI的环境和住宿是明显卖点，但预算也很容易被房型影响。建议先确认你能接受Superior、Executive还是Family房型，再比较General English、Intensive English、考试课程和亲子方案。若是青少年或亲子，顾问会额外核对年龄、监护、门禁和晚间安排。
+              CPI的环境和住宿是明显卖点，但预算也很容易被房型影响。建议先确认你能接受A栋还是B栋、单人还是多人房，再比较ESL GENERAL、ESL INTENSIVE、考试课程和亲子方案。若是青少年或亲子，顾问会额外核对年龄、监护、门禁和晚间安排。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
@@ -249,7 +249,7 @@
             <div class="section-heading">
               <span>CPI 2026 年 4 周住宿费</span>
               <h2>房型会明显影响总预算</h2>
-              <p>默认报价使用Superior四人房。Executive和Family房型建议先让顾问确认空房。</p>
+              <p>默认报价使用A栋四人间。B栋、单人房和家庭房型建议先让顾问确认空房。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="CPI 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -271,13 +271,14 @@
                 <p>{{ room.note }}</p>
               </article>
             </div>
+            <p class="fee-alert">特别房型：B区304套房（适合四人）为 PHP 5,000 / 晚，按实际入住晚数计算，不参与4周USD宿舍估算。</p>
           </div>
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>CPI 费用快速报价</span>
-              <h2>默认参考：4周 General English + Superior 四人房</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
+              <h2>默认参考：4周 ESL GENERAL + A栋四人间</h2>
+              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 周数比例 × 优惠折扣 + 旺季附加费</p>
             </div>
             <div class="quote-form" aria-label="CPI费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -289,6 +290,7 @@
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>短期 / 长期计算规则</span><strong>{{ billingRuleText }}</strong></div>
               <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
               <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
@@ -328,7 +330,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年6月28日。学校环境、课程、住宿和设施信息参考CPI学校公开资料页，费用参考资料页公布的4周课程、住宿和当地费用并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年8月18日。课程与住宿费按CPI 2026价目表整理；1周、2周、3周分别按4周价格的37.5%、65%、90%计算。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -435,7 +437,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>General English<br />Superior 四人房</p>
+          <p>ESL GENERAL<br />A栋四人间</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

@@ -767,7 +767,7 @@ export class CebuStudyComponent {
       location: 'Cebu City / Nivel Hills',
       style: '半斯巴达，度假村式校园',
       route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
-      startingPrice: 'NTD 12,820 / 周起',
+      startingPrice: 'USD 1,670 / 4周起（ESL GENERAL + A栋四人间）',
       courses: [
         'General ESL',
         'Intensive ESL',
