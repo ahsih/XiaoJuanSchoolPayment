@@ -52,6 +52,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '碧瑶留学, 碧瑶游学, 碧瑶语言学校, 菲律宾斯巴达学校, 菲律宾碧瑶PINES语言学校, Pines, BECI, 菲律宾碧瑶JIC语言学校, MONOL',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
+  '/philippines-study/cebu/bcebu': {
+    title: "菲律宾宿务B'Cebu语言学校 | 2026课程住宿费用",
+    description:
+      "菲律宾宿务B'Cebu语言学校2026费用页面，整理Speed ESL、Intensive ESL、IELTS、B'SPARTA、商务英语、Junior、幼儿园课程、住宿房型与1至3周短期比例。",
+    keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
+    image: '/assets/study-hero-collage.png',
+  },
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
     description:

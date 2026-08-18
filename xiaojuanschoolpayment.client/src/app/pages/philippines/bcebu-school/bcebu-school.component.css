@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+:host .bcebu-page {
+  background: linear-gradient(180deg, #fff9e8 0, #ffffff 620px);
+}
+
+:host .generic-study-photo img {
+  object-position: center;
+}
+
+:host .ratio-notice {
+  border-color: #f0cf72;
+  background: #fff8dc;
+}
+
+:host .full-width-quote {
+  margin-top: 26px;
+}
+
+@media (max-width: 680px) {
+  :host .full-width-quote {
+    margin-top: 18px;
+  }
+}

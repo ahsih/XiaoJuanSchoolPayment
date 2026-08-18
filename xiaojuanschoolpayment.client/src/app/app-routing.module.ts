@@ -367,6 +367,11 @@ const routes: Routes = [
           import('./pages/philippines/cpi-school/cpi-school-detail.component').then((m) => m.CpiSchoolDetailComponent),
       },
       {
+        path: 'philippines-study/cebu/bcebu',
+        loadComponent: () =>
+          import('./pages/philippines/bcebu-school/bcebu-school.component').then((m) => m.BCebuSchoolComponent),
+      },
+      {
         path: 'philippines-study/cebu/cpils',
         loadComponent: () =>
           import('./pages/philippines/cpils-school/cpils-school-detail.component').then((m) => m.CpilsSchoolDetailComponent),

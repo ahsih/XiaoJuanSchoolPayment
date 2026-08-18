@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面费用按CG Banilad公开2026韩元价目表和2025菲律宾当地费用表整理。
+              页面费用按CG Banilad 2026美元价目表和2025菲律宾当地费用表整理。
               正式报名仍需按入学日、房型空位、汇率和学校当期报价确认。
             </p>
           </div>
@@ -215,7 +215,7 @@
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.suitable }}</p>
-              <strong>{{ formatKrw(course.tuitionKrw) }} / 4周学费</strong>
+              <strong>{{ formatUsd(course.tuitionUsd) }} / 4周学费</strong>
             </article>
           </div>
 
@@ -253,6 +253,32 @@
               </div>
             </article>
           </div>
+
+          <div class="section-heading">
+            <span>住宿费 / 4周</span>
+            <h2>校内、Alicia与88th Avenue住宿价格</h2>
+            <p>以下住宿费为4周美元价格。Alicia距离校区步行约3分钟；88th Avenue邻近生活区并提供接送服务。</p>
+          </div>
+          <div class="data-table cg-room-table" role="table" aria-label="CG Banilad 2026住宿费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">4周住宿费</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span role="cell">{{ room.name }}</span>
+              <span role="cell">{{ formatUsd(room.feeUsd) }}</span>
+              <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="CG Banilad 2026住宿费手机卡片">
+            <article *ngFor="let room of roomOptions">
+              <span>{{ room.name }}</span>
+              <div><em>4周住宿费</em><strong>{{ formatUsd(room.feeUsd) }}</strong></div>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+          <p class="fee-alert">Short-Term ESL学费：1周USD 370，2周USD 640；注册费、住宿费和当地费用另计。普通课程3周按4周课程费与住宿费合计的85%计算。</p>
         </section>
 
         <section class="section-block" id="study-life">
@@ -307,7 +333,7 @@
           <div class="quote-breakdown">
             <article>
               <span>预计主费用</span>
-              <strong>{{ quoteKrwText }}</strong>
+              <strong>{{ quoteUsdText }}</strong>
               <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeksText }}</p>
             </article>
             <article>
@@ -318,7 +344,7 @@
             <article>
               <span>房型备注</span>
               <strong>{{ selectedRoom.note }}</strong>
-              <p>注册费 {{ formatKrw(registrationFeeKrw) }} 已计入；当地PHP费用另计。</p>
+              <p>注册费 {{ formatUsd(registrationFeeUsd) }} 已计入；当地PHP费用另计。</p>
             </article>
           </div>
 
@@ -419,12 +445,12 @@
             <span>获取 CG Banilad 完整资料与报价单</span>
             <h2>把你的目标、周数和房型发给思达，我们帮你核对正式费用</h2>
             <p>
-              顾问会协助确认课程、房型空位、入学日、当地费用、汇率和当期优惠，让你不用在多个PDF和不同币种之间来回换算。
+            顾问会协助确认课程、房型空位、入学日、当地费用和当期优惠，让你不用在多个PDF和费用项目之间来回核对。
             </p>
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认空房与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分KRW主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分USD主费与PHP当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CG Sparta、I.BREEZE等宿务学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">

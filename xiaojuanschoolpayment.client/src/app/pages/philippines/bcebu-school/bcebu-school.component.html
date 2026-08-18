@@ -1,0 +1,156 @@
+<app-cia-school>
+  <div class="cia-page bcebu-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
+            <p class="breadcrumb">菲律宾游学 / 宿务学校 / B'Cebu</p>
+            <h1>菲律宾宿务B'Cebu语言学校</h1>
+            <p class="hero-lead">
+              2026课程覆盖成人ESL、IELTS、斯巴达、商务英语、青少年、40岁以上轻量课程与幼儿园；住宿从单人房到亲子和多人房均有不同选择。
+            </p>
+            <div class="hero-tags" aria-label="B'Cebu特点">
+              <span><mat-icon>location_on</mat-icon>宿务 / 麦克坦</span>
+              <span><mat-icon>school</mat-icon>ESL / IELTS</span>
+              <span><mat-icon>rule</mat-icon>Sparta可选</span>
+              <span><mat-icon>family_restroom</mat-icon>亲子 / Junior</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即计算费用<mat-icon>calculate</mat-icon></a>
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">查看2026价目表<mat-icon>table_chart</mat-icon></a>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+          </div>
+
+          <div class="hero-media">
+            <figure class="feature-photo generic-study-photo">
+              <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
+              <figcaption>B'Cebu 2026课程与住宿费用参考</figcaption>
+            </figure>
+            <aside class="hero-price-card">
+              <span>4周标准课程参考</span>
+              <strong>USD 1,750 <small>起</small></strong>
+              <p>Speed ESL + 三人间，已含USD 100注册费</p>
+              <ul>
+                <li><mat-icon>check_circle</mat-icon>1/2/3周按40%/60%/80%计算</li>
+                <li><mat-icon>info</mat-icon>当地费用与特殊入住资格需另行确认</li>
+              </ul>
+            </aside>
+          </div>
+        </section>
+
+        <section class="quick-info" aria-label="B'Cebu快速信息">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon><span>{{ item.label }}</span><strong>{{ item.value }}</strong><p>{{ item.note }}</p>
+          </article>
+        </section>
+
+        <section class="notice-panel ratio-notice">
+          <mat-icon>percent</mat-icon>
+          <div><h2>短期课程计算规则</h2><p>1周按4周课程费和住宿费的40%计算，2周按60%计算，3周按80%计算；USD 100注册费为一次性费用，不按比例折算。</p></div>
+        </section>
+
+        <section class="split-layout" id="course-fees">
+          <div class="section-block">
+            <div class="section-heading">
+              <span>B'Cebu 2026年4周课程费</span><h2>按学习目标选择课程</h2><p>以下课程费以美元计价，注册费和住宿费另计。</p>
+            </div>
+            <div class="data-table course-fee-table" role="table" aria-label="B'Cebu 2026年4周课程费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">安排 / 备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+                <span role="cell">{{ fee.name }}</span><span role="cell">USD {{ formatUsd(fee.tuition) }}</span><span role="cell">{{ fee.suitable }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-course-fees" aria-label="B'Cebu 2026年4周课程费手机卡片">
+              <article *ngFor="let fee of courseFees">
+                <span>课程</span><strong>{{ fee.name }}</strong><div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div><p>{{ fee.suitable }}</p>
+              </article>
+            </div>
+          </div>
+
+          <div class="section-block" id="room-fees">
+            <div class="section-heading">
+              <span>B'Cebu 2026年4周住宿费</span><h2>房型与入住资格要一起确认</h2><p>以下住宿费以美元计价。50岁以上、亲子、同行关系和淡季开放条件会影响可选房型。</p>
+            </div>
+            <div class="data-table room-fee-table" role="table" aria-label="B'Cebu 2026年4周住宿费">
+              <div class="table-row table-head" role="row">
+                <span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span>
+              </div>
+              <div class="table-row" role="row" *ngFor="let room of roomFees">
+                <span role="cell">{{ room.name }}</span><span role="cell">USD {{ formatUsd(room.fee) }}</span><span role="cell">{{ room.note }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="B'Cebu 2026年4周住宿费手机卡片">
+              <article *ngFor="let room of roomFees">
+                <span>房型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div><p>{{ room.note }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="quote-panel full-width-quote" id="quote">
+          <div class="section-heading">
+            <span>B'Cebu费用快速报价</span><h2>选择周数、课程和房型</h2><p>前期支付参考 = USD 100注册费 + 课程费 × 周数比例 + 住宿费 × 周数比例。</p>
+          </div>
+          <div class="quote-form">
+            <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+            <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+            <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+            <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+          </div>
+          <div class="quote-breakdown">
+            <div><span>注册费</span><strong>USD {{ formatUsd(registrationFee) }}</strong></div>
+            <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+            <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+            <div><span>计算规则</span><strong>{{ billingRuleText }}</strong></div>
+          </div>
+          <div class="quote-result">
+            <span>前期支付参考</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
+            <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认课程资格、房型空位和学校政策。</p>
+          </div>
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+            <a class="secondary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
+          </div>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与说明</h2>
+            <p>本页价格更新时间：2026年8月18日。课程、住宿和短期比例按用户提供的B'Cebu 2026价目表整理；未提供的当地PHP费用、优惠、亲子订金、房型空位和其他学校收费需由顾问另行确认。</p>
+          </div>
+        </section>
+
+        <section class="materials-panel">
+          <div>
+            <div class="section-heading">
+              <span>获取B'Cebu正式报价</span><h2>让顾问确认课程资格、房型和入学日</h2><p>40岁以上课程、50岁以上房型、亲子套房、女生2+1宿舍和IELTS保证班都有额外条件，正式报名需逐项确认。</p>
+            </div>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">咨询B'Cebu<mat-icon>chat</mat-icon></a>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="B'Cebu页面快捷导航">
+        <div class="current-card">
+          <span>当前选择</span><strong>{{ selectedWeeks }}周</strong><p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div><small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div><h2>想确认B'Cebu当前空房和正式费用？</h2><p>把学习周数、课程、房型、年龄和同行关系发给顾问，可以更快核对完整报价。</p></div>
+      <a class="primary-action" routerLink="/about-sida/contact">免费咨询<mat-icon>arrow_forward</mat-icon></a>
+    </section>
+  </div>
+</app-cia-school>

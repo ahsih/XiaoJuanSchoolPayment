@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12;
+type WeekOption = 3 | 4 | 8 | 12;
 
 interface QuickInfo {
   icon: string;
@@ -133,7 +133,7 @@ export class CgSpartaSchoolComponent {
 
   readonly registrationFee = 100;
   readonly usdToCny = 7.2;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12];
+  readonly weekOptions: WeekOption[] = [3, 4, 8, 12];
 
   selectedCourseId = 'sparta';
   selectedRoomId = 'quad';
@@ -163,8 +163,8 @@ export class CgSpartaSchoolComponent {
     {
       icon: 'menu_book',
       label: '课程方向',
-      value: 'ESL / TOEIC / IELTS / Business / Booster',
-      note: '普通口语强化、考试备考和1-2周Booster短期密集都可比较',
+      value: 'ESL / TOEIC / IELTS / Business / Short-Term',
+      note: '普通口语强化、考试备考和1-2周Short-Term ESL都可比较',
     },
     {
       icon: 'bed',
@@ -241,9 +241,9 @@ export class CgSpartaSchoolComponent {
     },
     { label: '学校定位', value: '宿务斯巴达型英语学校，主打高强度ESL、TOEIC、IELTS和商务英语' },
     { label: '学生规模', value: '公开资料显示约150-152名学生容量，国籍比例按月份变化' },
-    { label: '课程方向', value: 'Sparta、Premier Sparta、TOEIC、IELTS Basic / Intensive / Guarantee、Business、Booster ESL' },
+    { label: '课程方向', value: 'Sparta、Premier Sparta、TOEIC、IELTS Basic / Intensive / Guarantee、Business、Short-Term ESL' },
     { label: '住宿房型', value: '校内1人房、2人房、3人房、4人房；另有M&J Pension外部寮1人房参考' },
-    { label: '4周起价', value: 'USD 1,550起：Sparta Course + 校内4人房 + 注册费' },
+    { label: '4周起价', value: 'USD 1,550起：Sparta Course + 校内4人房 + 注册费；3周按4周主费的85%计算' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -361,6 +361,14 @@ export class CgSpartaSchoolComponent {
       fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
     },
     {
+      id: 'ielts-guarantee',
+      name: 'IELTS Guarantee',
+      type: 'IELTS保证班',
+      lessons: 'IELTS 1:1四节 + IELTS小组四节 + IELTS思维课 + 词汇 + 自习',
+      suitable: '适合达到入学门槛、需要保证班学习规则推动的学生。',
+      fourWeekFees: { quad: 1750, triple: 1800, twin: 1850, single: 2000, 'external-single': 2300 },
+    },
+    {
       id: 'ielts-intensive',
       name: 'IELTS Intensive Course',
       type: 'IELTS密集',
@@ -368,13 +376,18 @@ export class CgSpartaSchoolComponent {
       suitable: '适合有明确IELTS分数需求、想集中冲刺听说读写的人。',
       fourWeekFees: { quad: 1600, triple: 1650, twin: 1700, single: 1850, 'external-single': 2150 },
     },
+    {
+      id: 'business-english',
+      name: 'Business English',
+      type: '商务英语',
+      lessons: '1:1四节 + 1:4四节 + 夜间课/自习 + 单词测试 + 自习',
+      suitable: '适合需要会议、简报、面试和职场沟通英语的学生，4周起报。',
+      fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
+    },
   ];
 
   readonly specialFees: SpecialCourseFee[] = [
-    { label: 'Business English', lessons: '商务1:1二节 + ESL 1:1二节 + Native/ESL小组四节', four: 'USD 1,500起 / 4周校内4人房', note: '通常4周课程，适合面试、履历、会议和商务表达' },
-    { label: 'IELTS Guarantee', lessons: 'IELTS 1:1四节 + IELTS小组四节 + 每周模考', four: '12周课程：学费USD 3,300 + 住宿费', note: '需达到入学分数门槛，官方考试支持按学校规则确认' },
-    { label: 'Booster ESL 1周', lessons: '1:1八节 + 夜间课 + 单词作文 + 强制自习', four: 'USD 650起 / 校内4人房', note: '1周限定短期密集，适合假期很短的人' },
-    { label: 'Booster ESL 2周', lessons: '1:1八节 + 夜间课 + 单词作文 + 强制自习', four: 'USD 1,060起 / 校内4人房', note: '2周限定短期密集，假日授课规则需报名前确认' },
+    { label: 'Short-Term ESL', lessons: 'Sparta与Banilad两校区均适用，短期课表需按校区确认', four: '1周学费USD 370 / 2周学费USD 640', note: '注册费、住宿费和当地费用另计；普通课程3周按4周主费的85%计算' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -434,7 +447,7 @@ export class CgSpartaSchoolComponent {
     {
       icon: 'school',
       title: '匹配课程和周期',
-      text: '根据ESL、TOEIC、IELTS、Business或Booster目标，确认适合的课程和最短周期。',
+      text: '根据ESL、TOEIC、IELTS、Business或Short-Term目标，确认适合的课程和最短周期。',
     },
     {
       icon: 'bed',
@@ -469,7 +482,7 @@ export class CgSpartaSchoolComponent {
     {
       number: '02',
       title: '课程差异逐项讲清',
-      text: 'Sparta、Premier、TOEIC、IELTS、Business和Booster的课表不同，不能只看价格。',
+      text: 'Sparta、Premier、TOEIC、IELTS、Business和Short-Term ESL的课表不同，不能只看价格。',
       image: 'assets/cia/sida-why-action-fees.jpg',
       alt: '思达启航顾问核算菲律宾语言学校费用',
     },
@@ -548,7 +561,7 @@ export class CgSpartaSchoolComponent {
     '本页费用使用2026公开参考价；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
     '课程住宿套餐通常不含注册费、旺季费、SSP、签证、押金、教材、水电、接机和个人生活费。',
     'Sparta Campus平日外出限制严格，报名之前一定要确认自己是否能接受校规。',
-    'IELTS Guarantee、Business和Booster ESL有周期、入学门槛或开课规则限制，需要单独确认。',
+    'IELTS Guarantee、Business和Short-Term ESL有周期、入学门槛或开课规则限制，需要单独确认。',
     '如果想要市区自由生活，可同步比较CG Banilad、CELLA Premium、I.BREEZE或其他半斯巴达学校。',
   ];
   readonly faqs: FaqItem[] = [
@@ -565,7 +578,7 @@ export class CgSpartaSchoolComponent {
     {
       question: 'CG Sparta适合短期一两周吗？',
       answer:
-        '可以考虑Booster ESL 1-2周课程，课量很密集，适合假期很短但想快速进入英语环境的人；开课规则和假日安排要报名前确认。',
+        '可以考虑Short-Term ESL：1周学费USD 370，2周学费USD 640；注册费、住宿、开课规则和假日安排要报名前确认。',
     },
     {
       question: 'CG Sparta适合IELTS吗？',
@@ -636,7 +649,7 @@ export class CgSpartaSchoolComponent {
     const course = this.courseOptions.find((item) => item.id === courseId);
     const fourWeekFee = course?.fourWeekFees[roomId] ?? 0;
 
-    return Math.round(fourWeekFee * this.durationMultiplier(weeks));
+    return fourWeekFee * this.durationMultiplier(weeks);
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -692,8 +705,6 @@ export class CgSpartaSchoolComponent {
 
   private durationMultiplier(weeks: WeekOption): number {
     const multiplier: Record<WeekOption, number> = {
-      1: 0.4,
-      2: 0.6,
       3: 0.85,
       4: 1,
       8: 2,

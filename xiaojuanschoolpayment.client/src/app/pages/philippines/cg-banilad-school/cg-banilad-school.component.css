@@ -95,6 +95,14 @@
   font-weight: 850;
 }
 
+:host .cg-banilad-page .cg-room-table .table-row {
+  grid-template-columns: minmax(176px, 1fr) minmax(140px, 0.7fr) minmax(240px, 1.5fr);
+}
+
+:host .cg-banilad-page .cg-room-table .table-row span:nth-child(2) {
+  font-weight: 850;
+}
+
 :host .cg-banilad-page .cg-local-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -241,7 +249,8 @@
 }
 
 @media (max-width: 860px) {
-  :host .cg-banilad-page .cg-course-table {
+  :host .cg-banilad-page .cg-course-table,
+  :host .cg-banilad-page .cg-room-table {
     display: none;
   }
 

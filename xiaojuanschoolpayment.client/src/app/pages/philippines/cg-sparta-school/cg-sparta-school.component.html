@@ -204,7 +204,7 @@
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
             <p>
-              CG Sparta课程覆盖标准Sparta ESL、Premier Sparta、TOEIC、IELTS、Business和1-2周Booster ESL。
+              CG Sparta课程覆盖标准Sparta ESL、Premier Sparta、TOEIC、IELTS、Business和1-2周Short-Term ESL。
               大多数课程都围绕“正课 + 晚间训练 + 自习管理”来设计。
             </p>
           </div>
@@ -230,15 +230,15 @@
             <div class="data-table course-fee-table" role="table" aria-label="CG Sparta 2026课程住宿套餐">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
-                <span role="columnheader">1周</span>
+                <span role="columnheader">3周（4周价85%）</span>
                 <span role="columnheader">4周</span>
                 <span role="columnheader">8周</span>
                 <span role="columnheader">12周</span>
               </div>
-              <ng-container *ngFor="let course of courseOptions.slice(0, 6)">
+              <ng-container *ngFor="let course of courseOptions">
                 <div class="table-row" role="row" *ngFor="let room of roomOptions">
                   <span role="cell">{{ course.name }} / {{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</span>
                   <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
                   <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
                   <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
@@ -246,11 +246,11 @@
               </ng-container>
             </div>
             <div class="mobile-card-list mobile-course-fees" aria-label="CG Sparta 2026套餐手机卡片">
-              <ng-container *ngFor="let course of courseOptions.slice(0, 6)">
+              <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
                   <strong>{{ room.name }}</strong>
-                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>3周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</b></div>
                   <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
                   <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
                   <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
@@ -280,10 +280,10 @@
         <section class="split-layout" id="special-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>特殊课程参考</span>
-              <h2>Business、IELTS Guarantee和Booster要单独确认规则</h2>
+              <span>短期课程参考</span>
+              <h2>1-2周Short-Term ESL与普通课程分开报价</h2>
               <p>
-                商务英语、IELTS保证班和1-2周Booster ESL有周期、门槛或开课规则限制，报名之前要逐项核对。
+                1-2周使用Short-Term ESL固定学费；普通课程报名3周时，课程与住宿主费按4周价格的85%计算。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="CG Sparta特殊课程参考">
@@ -301,9 +301,9 @@
               </div>
             </div>
             <ul class="check-list">
-              <li>IELTS Guarantee通常为12周课程，并需达到学校规定入学门槛。</li>
-              <li>Booster ESL主打1-2周短期密集，假日授课选择和初日课表需提前确认。</li>
-              <li>Business English多为4周规划，适合面试、履历、会议、演示和商务沟通。</li>
+              <li>Short-Term ESL：1周学费USD 370，2周学费USD 640，注册费与住宿费另计。</li>
+              <li>普通课程3周主费 = 4周课程费与住宿费合计 × 85%。</li>
+              <li>IELTS Guarantee与Business English已纳入上方课程表和报价器。</li>
             </ul>
           </div>
 
@@ -399,7 +399,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考CG Academy官网、2026英文宣传册、官方价格表、
+              本页价格更新时间：2026年8月18日。费用参考CG Academy官网、2026英文宣传册、2026价格表、
               官方当地费用表及公开代理页面整理。学校价格、住宿空位、当地费用和汇率可能调整，
               报名以顾问向学校确认后的正式报价为准。
             </p>
@@ -417,7 +417,7 @@
               </p>
             </div>
             <ul class="check-list">
-              <li>Sparta、Premier、TOEIC、IELTS、Business、Booster课程匹配</li>
+              <li>Sparta、Premier、TOEIC、IELTS、Business、Short-Term课程匹配</li>
               <li>校内1人/2人/3人/4人房与外部寮空房确认</li>
               <li>平日外出、门禁、EOP、晚间测试和自习规则说明</li>
               <li>前期支付与到校支付费用清单</li>

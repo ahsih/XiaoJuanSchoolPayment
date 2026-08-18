@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
+type WeekOption = 3 | 4 | 8 | 12 | 16 | 20 | 24;
 
 interface QuickInfo {
   icon: string;
@@ -44,13 +44,13 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  tuitionKrw: number;
+  tuitionUsd: number;
 }
 
 interface RoomOption {
   id: string;
   name: string;
-  feeKrw: number;
+  feeUsd: number;
   note: string;
 }
 
@@ -106,18 +106,10 @@ export class CgBaniladSchoolComponent {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFeeKrw = 100000;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
+  readonly registrationFeeUsd = 100;
+  readonly weekOptions: WeekOption[] = [3, 4, 8, 12, 16, 20, 24];
   readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
-    1: 0.4,
-    2: 0.6,
     3: 0.85,
-  };
-  readonly longTermDiscounts: Partial<Record<WeekOption, number>> = {
-    12: 50000,
-    16: 100000,
-    20: 150000,
-    24: 200000,
   };
 
   selectedCourseId = 'general-esl';
@@ -149,7 +141,7 @@ export class CgBaniladSchoolComponent {
       icon: 'bed',
       label: '住宿房型',
       value: '校内1/2/3/4人房',
-      note: '官方2026价目表按房型公布4周住宿费用，费用以韩元列示。',
+      note: '2026价目表按房型公布4周美元住宿费用。',
     },
     {
       icon: 'pool',
@@ -228,7 +220,7 @@ export class CgBaniladSchoolComponent {
     },
     {
       label: '4周起价',
-      value: 'KRW 1,650,000起：Light ESL + 4人房 + 注册费；菲律宾当地费用另计。',
+      value: 'USD 1,400起：Light ESL + Banilad 4人房 + 注册费；菲律宾当地费用另计。',
     },
   ];
 
@@ -246,8 +238,8 @@ export class CgBaniladSchoolComponent {
     },
     {
       image: 'https://images.wegoedu.com.tw/2026/01/CG2-Banilad%E8%8F%B2%E5%BE%8B%E8%B3%93%E8%AA%9E%E8%A8%80%E5%AD%B8%E6%A0%A1-Cafeteria-2.jpg',
-      title: '费用以韩元公开，结构清楚',
-      text: '2026价目表将注册费、4周学费、住宿费、短期比例和长期折扣分开列示，适合提前做预算。',
+      title: '美元费用结构清楚',
+      text: '2026价目表将注册费、4周学费、住宿费和3周短期比例分开列示，适合提前做预算。',
     },
   ];
 
@@ -276,8 +268,8 @@ export class CgBaniladSchoolComponent {
       text: 'Semi-Sparta课程有单词测试、作文和选修课节奏；若想纯自由，可比较GLANT或3D Academy。',
     },
     {
-      title: '预算只看美元报价',
-      text: 'CG Banilad官方2026主价目表以韩元公布，当地费用以菲律宾比索支付，需要换汇后看总预算。',
+      title: '预算只看课程住宿主费',
+      text: '课程、住宿与注册费以美元计算，当地费用以菲律宾比索支付，需要把两部分一起纳入预算。',
     },
   ];
 
@@ -288,7 +280,7 @@ export class CgBaniladSchoolComponent {
       type: '轻量口语',
       lessons: '1:1 4节',
       suitable: '想保留自习、工作或陪读时间的成人学生。',
-      tuitionKrw: 800000,
+      tuitionUsd: 650,
     },
     {
       id: 'general-esl',
@@ -296,7 +288,7 @@ export class CgBaniladSchoolComponent {
       type: '标准ESL',
       lessons: '1:1 4节 + 1:4 2节',
       suitable: '第一次菲律宾游学、想平衡口语和小班互动的学生。',
-      tuitionKrw: 850000,
+      tuitionUsd: 700,
     },
     {
       id: 'intensive-esl',
@@ -304,7 +296,7 @@ export class CgBaniladSchoolComponent {
       type: '强化ESL',
       lessons: '1:1 5节 + 1:4 1节',
       suitable: '想提高一对一比例、短期冲刺口语输出的学生。',
-      tuitionKrw: 900000,
+      tuitionUsd: 750,
     },
     {
       id: 'power-esl',
@@ -312,7 +304,7 @@ export class CgBaniladSchoolComponent {
       type: '高一对一',
       lessons: '1:1 6节',
       suitable: '想把每天主要时间都放在一对一纠错和输出的人。',
-      tuitionKrw: 950000,
+      tuitionUsd: 800,
     },
     {
       id: 'semi-sparta',
@@ -320,7 +312,7 @@ export class CgBaniladSchoolComponent {
       type: '半斯巴达',
       lessons: '1:1 4节 + 1:4 4节 + 单词/作文/选修',
       suitable: '希望学习节奏更紧、但仍保留市区生活弹性的学生。',
-      tuitionKrw: 950000,
+      tuitionUsd: 800,
     },
     {
       id: 'premier-semi-sparta',
@@ -328,7 +320,7 @@ export class CgBaniladSchoolComponent {
       type: '高阶半斯巴达',
       lessons: '1:1 5节 + 1:4 3节 + 单词/作文/选修',
       suitable: '想提高一对一比例，同时保留半斯巴达管理的人。',
-      tuitionKrw: 1000000,
+      tuitionUsd: 850,
     },
     {
       id: 'ielts-basic',
@@ -336,15 +328,15 @@ export class CgBaniladSchoolComponent {
       type: '雅思基础',
       lessons: '1:1 + 1:4雅思/ESL组合',
       suitable: '准备进入雅思学习，但还需要基础英文支撑的学生。',
-      tuitionKrw: 1000000,
+      tuitionUsd: 850,
     },
     {
       id: 'toeic',
-      name: 'TOEIC Course',
+      name: 'TOEIC Basic',
       type: '多益备考',
       lessons: '1:1 + 1:4考试技能训练',
       suitable: '以多益分数、求职或升学要求为目标的学生。',
-      tuitionKrw: 1000000,
+      tuitionUsd: 850,
     },
     {
       id: 'business',
@@ -352,31 +344,39 @@ export class CgBaniladSchoolComponent {
       type: '商务英文',
       lessons: '1:1 + 1:4商务主题训练',
       suitable: '需要会议、简报、邮件和职场沟通英文的成人学生。',
-      tuitionKrw: 1000000,
+      tuitionUsd: 850,
     },
     {
       id: 'guardian',
-      name: 'Family Guardian',
+      name: 'Family ESL (Guardian)',
       type: '亲子陪读',
       lessons: '监护人课程',
       suitable: '陪同孩子游学，同时想安排轻量英文学习的家长。',
-      tuitionKrw: 850000,
+      tuitionUsd: 750,
     },
     {
       id: 'junior',
-      name: 'Family Junior',
+      name: 'Family ESL (Junior)',
       type: '青少年亲子',
       lessons: 'Junior课程',
       suitable: '小学、初中、高中学生配合监护人同行。',
-      tuitionKrw: 1350000,
+      tuitionUsd: 1150,
     },
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: '4人房', feeKrw: 750000, note: '预算最低，适合想压低4周总价的学生。' },
-    { id: 'triple', name: '3人房', feeKrw: 800000, note: '预算和舒适度折中，4周比4人房高KRW 50,000。' },
-    { id: 'twin', name: '2人房', feeKrw: 900000, note: '更安静，适合重视休息质量的人。' },
-    { id: 'single', name: '1人房', feeKrw: 1150000, note: '隐私最高，但旺季通常更需要提前确认空房。' },
+    { id: 'quad', name: 'Banilad 4人房', feeUsd: 650, note: '校内预算最低房型。' },
+    { id: 'triple', name: 'Banilad 3人房', feeUsd: 700, note: '校内多人房，兼顾预算与舒适度。' },
+    { id: 'twin', name: 'Banilad 2人房', feeUsd: 750, note: '校内双人房，适合朋友同行。' },
+    { id: 'single', name: 'Banilad 1人房', feeUsd: 1000, note: '校内隐私最高，旺季建议提前确认。' },
+    { id: 'alicia-quad', name: 'Alicia校外4人房', feeUsd: 850, note: '校外住宿，距离校区步行约3分钟。' },
+    { id: 'alicia-triple', name: 'Alicia校外3人房', feeUsd: 900, note: '校外住宿，距离校区步行约3分钟。' },
+    { id: 'alicia-twin', name: 'Alicia校外2人房', feeUsd: 1000, note: '校外住宿，距离校区步行约3分钟。' },
+    { id: 'alicia-single', name: 'Alicia校外1人房', feeUsd: 1500, note: '校外单人房，距离校区步行约3分钟。' },
+    { id: '88th-quad', name: '88th Avenue 4人房', feeUsd: 1000, note: '邻近88th Avenue，生活便利并提供接送服务。' },
+    { id: '88th-triple', name: '88th Avenue 3人房', feeUsd: 1100, note: '邻近88th Avenue，生活便利并提供接送服务。' },
+    { id: '88th-twin', name: '88th Avenue 2人房', feeUsd: 1200, note: '邻近88th Avenue，生活便利并提供接送服务。' },
+    { id: '88th-single', name: '88th Avenue 1人房', feeUsd: 1700, note: '邻近88th Avenue，生活便利并提供接送服务。' },
   ];
 
   readonly scheduleItems: ScheduleItem[] = [
@@ -423,7 +423,7 @@ export class CgBaniladSchoolComponent {
     {
       icon: 'receipt_long',
       title: '拆分海外主费与当地费用',
-      text: '主价目表用KRW，当地费用用PHP，思达会帮你做成一张更直观的总预算。',
+      text: '课程、住宿与注册费用USD，当地费用用PHP，思达会帮你做成一张更直观的总预算。',
     },
     {
       icon: 'flight_land',
@@ -441,7 +441,7 @@ export class CgBaniladSchoolComponent {
     {
       question: '页面上的费用是否已经包含所有支出？',
       answer:
-        '不是。页面报价器只计算官方2026韩元主价目表里的注册费、学费和住宿费；SSP、签证、水电、押金、教材、接机和个人消费等菲律宾当地费用另计。',
+        '不是。页面报价器只计算2026美元价目表里的注册费、学费和住宿费；SSP、签证、水电、押金、教材、接机和个人消费等菲律宾当地费用另计。',
     },
     {
       question: '亲子家庭可以选择Banilad Campus吗？',
@@ -451,7 +451,7 @@ export class CgBaniladSchoolComponent {
     {
       question: '短期1-3周怎么计算？',
       answer:
-        '官方Banilad 2026价目表列出短期比例：1周为4周学费住宿的40%，2周为60%，3周为85%，另加注册费。',
+        '普通课程3周按4周课程费与住宿费合计的85%计算，另加注册费。1周Short-Term ESL学费USD 370，2周学费USD 640，住宿与注册费另计。',
     },
   ];
 
@@ -495,33 +495,33 @@ export class CgBaniladSchoolComponent {
     return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
   }
 
-  get fourWeekStudyStayKrw(): number {
-    return this.selectedCourse.tuitionKrw + this.selectedRoom.feeKrw;
+  get fourWeekStudyStayUsd(): number {
+    return this.selectedCourse.tuitionUsd + this.selectedRoom.feeUsd;
   }
 
-  get studyStayKrw(): number {
+  get studyStayUsd(): number {
     if (this.selectedWeeks < 4) {
-      return Math.round(this.fourWeekStudyStayKrw * (this.shortTermRatios[this.selectedWeeks] ?? 1));
+      return this.fourWeekStudyStayUsd * (this.shortTermRatios[this.selectedWeeks] ?? 1);
     }
 
     const cycles = this.selectedWeeks / 4;
-    return this.fourWeekStudyStayKrw * cycles - (this.longTermDiscounts[this.selectedWeeks] ?? 0);
+    return this.fourWeekStudyStayUsd * cycles;
   }
 
-  get quoteKrw(): number {
-    return this.registrationFeeKrw + this.studyStayKrw;
+  get quoteUsd(): number {
+    return this.registrationFeeUsd + this.studyStayUsd;
   }
 
-  get quoteKrwText(): string {
-    return this.formatKrw(this.quoteKrw);
+  get quoteUsdText(): string {
+    return this.formatUsd(this.quoteUsd);
   }
 
   get fourWeekLightQuadText(): string {
-    return this.formatKrw(this.registrationFeeKrw + 800000 + 750000);
+    return this.formatUsd(this.registrationFeeUsd + 650 + 650);
   }
 
   get weeklyAverageText(): string {
-    return this.formatKrw(Math.round(this.quoteKrw / this.selectedWeeks));
+    return this.formatUsd(this.quoteUsd / this.selectedWeeks);
   }
 
   get selectedWeeksText(): string {
@@ -530,25 +530,20 @@ export class CgBaniladSchoolComponent {
 
   get quoteNote(): string {
     if (this.selectedWeeks < 4) {
-      return '短期1-3周按官方短期比例计算，另加注册费；实际开课日和空房需再确认。';
+      return '普通课程3周按4周课程费与住宿费合计的85%计算，另加注册费；实际开课日和空房需再确认。';
     }
 
-    const discount = this.longTermDiscounts[this.selectedWeeks] ?? 0;
-    if (discount > 0) {
-      return `已套用官方长期优惠 ${this.formatKrw(discount)}；当地PHP费用另计。`;
-    }
-
-    return '4周与8周按4周单价倍数估算；当地PHP费用、机票、保险和个人消费另计。';
+    return '4周以上按4周单价倍数估算；当地PHP费用、机票、保险和个人消费另计。';
   }
 
   get courseFeeRows() {
     return this.courses.map((course) => ({
       course: course.name,
       lessons: course.lessons,
-      quad: this.formatKrw(this.registrationFeeKrw + course.tuitionKrw + this.roomOptions[0].feeKrw),
-      triple: this.formatKrw(this.registrationFeeKrw + course.tuitionKrw + this.roomOptions[1].feeKrw),
-      twin: this.formatKrw(this.registrationFeeKrw + course.tuitionKrw + this.roomOptions[2].feeKrw),
-      single: this.formatKrw(this.registrationFeeKrw + course.tuitionKrw + this.roomOptions[3].feeKrw),
+      quad: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[0].feeUsd),
+      triple: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[1].feeUsd),
+      twin: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[2].feeUsd),
+      single: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[3].feeUsd),
     }));
   }
 
@@ -565,7 +560,10 @@ export class CgBaniladSchoolComponent {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  formatKrw(value: number): string {
-    return `KRW ${value.toLocaleString('ko-KR')}`;
+  formatUsd(value: number): string {
+    return `USD ${value.toLocaleString('en-US', {
+      minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
+      maximumFractionDigits: 1,
+    })}`;
   }
 }

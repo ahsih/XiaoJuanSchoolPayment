@@ -508,7 +508,7 @@ export class CebuStudyComponent {
     {
       name: '菲律宾宿务CG Academy（Sparta Campus）',
       location: '1951-A-1 Uldog, Cansojong, Talisay City, Cebu',
-      style: '宿务斯巴达专门校，ESL / TOEIC / IELTS / Business / Booster ESL',
+      style: '宿务斯巴达专门校，ESL / TOEIC / IELTS / Business / Short-Term ESL',
       route: '/philippines-study/cebu/cg-academy-sparta-campus',
       startingPrice: 'USD 1,550 / 4周起',
       courses: [
@@ -518,7 +518,7 @@ export class CebuStudyComponent {
         'IELTS Basic / Intensive',
         'IELTS Guarantee',
         'Business English',
-        'Booster ESL 1 / 2 weeks',
+        'Short-Term ESL 1 / 2 weeks',
       ],
       accommodation:
         '校内1人房、2人房、3人房、4人房，以及M&J Pension外部寮1人房参考；课程、住宿和三餐集中在校区内完成。',
@@ -533,7 +533,7 @@ export class CebuStudyComponent {
       location: 'Base Camp, Maria Luisa Road, Banilad, Cebu City',
       style: '市区半斯巴达，ESL / IELTS / TOEIC / Business / Family',
       route: '/philippines-study/cebu/cg-academy-banilad-campus',
-      startingPrice: 'KRW 1,650,000 / 4周起',
+      startingPrice: 'USD 1,400 / 4周起（含注册费）',
       courses: [
         'Light ESL',
         'General ESL',
@@ -541,18 +541,18 @@ export class CebuStudyComponent {
         'Power ESL',
         'Semi-Sparta',
         'IELTS Basic',
-        'TOEIC',
+        'TOEIC Basic',
         'Business English',
         'Family Junior / Guardian',
       ],
       accommodation:
-        '校内1/2/3/4人房；官方2026价目表按4周住宿费KRW 1,150,000 / 900,000 / 800,000 / 750,000计算。',
+        'Banilad校内1/2/3/4人房，以及Alicia和88th Avenue校外1/2/3/4人房；4周住宿费USD 650-1,700。',
       facilities:
         '泳池、自习室、Dining Area、Cafe、Gym、办公室和Banilad生活圈；官方资料提到餐厅、超市、按摩等生活资源便利。',
       bestFor:
         '想在宿务市区兼顾半斯巴达学习推动、生活便利、预算控制和亲子/ESL/考试路线的学生。',
       note:
-        '官方Banilad价目表以KRW公布；SSP、SSP E-Card、签证、教材、水电、管理费、押金和接机等PHP当地费用另计。',
+        'Banilad 2026课程与住宿主费以USD公布；SSP、SSP E-Card、签证、教材、水电、管理费、押金和接机等PHP当地费用另计。',
     },
     {
       name: '菲律宾宿务SMEAG Capital语言学校',
@@ -783,6 +783,25 @@ export class CebuStudyComponent {
       bestFor:
         '口语提升、亲子家庭、短期强化，以及想降低第一次游学不适感的人群。',
       note: '校区位置相对安静，通勤和外出便利度需要结合个人生活习惯评估。',
+    },
+    {
+      name: "菲律宾宿务B'Cebu语言学校",
+      location: '宿务 / 麦克坦生活圈',
+      style: 'ESL / IELTS / Sparta / 亲子与青少年',
+      route: '/philippines-study/cebu/bcebu',
+      startingPrice: 'USD 1,650 / 4周起（Speed ESL + 三人间）',
+      courses: [
+        'Speed ESL',
+        'Intensive ESL',
+        'IELTS / IELTS Guarantee',
+        "B'SPARTA",
+        'Business English',
+        'Junior / Kindergarten',
+      ],
+      accommodation: '单人、双人、双人客厅套房、亲子加床、2+1与三人上下铺房型。',
+      facilities: '课程与住宿集中安排，部分房型位于马克坦新城或面向校内花园。',
+      bestFor: '成人ESL、雅思备考、需要斯巴达管理、40岁以上轻量课程或亲子青少年学生。',
+      note: '1/2/3周按4周课程与住宿价格的40%/60%/80%计算；特殊房型需确认入住资格和淡旺季。',
     },
     {
       name: '菲律宾宿务CPILS语言学校',

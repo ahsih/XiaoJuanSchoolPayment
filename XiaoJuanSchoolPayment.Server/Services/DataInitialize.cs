@@ -14,6 +14,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid CiaSchoolId = Guid.Parse("2f6a6d78-b2f1-4b84-9ac4-1d3b3bd10c1a");
     private static readonly Guid EvSchoolId = Guid.Parse("d48cd1f9-d76b-4b52-9960-e9db057f577d");
     private static readonly Guid CpiSchoolId = Guid.Parse("8c5d52f6-cfe1-45d9-9b66-1c5c0cdb2a6d");
+    private static readonly Guid BCebuSchoolId = Guid.Parse("f7d8a312-4c91-46e9-87a1-2d63c89b0e54");
     private static readonly Guid CpilsSchoolId = Guid.Parse("6d0bcf03-e6d7-41b3-b14f-1467e762747d");
     private static readonly Guid FellaSchoolId = Guid.Parse("ec6d3456-b310-46b8-9f4c-f7173c2a4e7c");
     private static readonly Guid PhilinterSchoolId = Guid.Parse("7a2e4b6c-8d51-42e7-9f3b-0a2d9f4c5b31");
@@ -34,6 +35,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
     private const string LegacyCpiSchoolName = "CPI Cebu Pelis Institute";
+    private const string BCebuSchoolName = "菲律宾宿务B'Cebu语言学校";
+    private const string LegacyBCebuSchoolName = "BECI B'Cebu";
     private const string CpilsSchoolName = "菲律宾宿务CPILS语言学校";
     private const string LegacyCpilsSchoolName = "CPILS";
     private const string FellaSchoolName = "菲律宾宿务English Fella语言学校";
@@ -86,6 +89,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedCiaPricingAsync(context);
       await SeedEvPricingAsync(context);
       await SeedCpiPricingAsync(context);
+      await SeedBCebuPricingAsync(context);
       await SeedCpilsPricingAsync(context);
       await SeedFellaPricingAsync(context);
       await SeedPhilinterPricingAsync(context);
@@ -365,6 +369,58 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "接机费", 1000m, PhpCurrencyId, "到校支付费用；团体接机参考，个人接机可能不同", now);
       UpsertFee(context, schoolId, "保证金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
       UpsertFee(context, schoolId, "ACR I-card", 3500m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedBCebuPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x => x.Id == BCebuSchoolId || x.Name == BCebuSchoolName || x.Name == LegacyBCebuSchoolName || x.Name == "B'Cebu");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = BCebuSchoolId,
+          Name = BCebuSchoolName,
+          CreatedDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = BCebuSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string bCebuLessonNote = "B'Cebu 2026年4周课程费参考；1/2/3周分别按4周价格的40%/60%/80%计算；最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "Speed ESL", 4, 900m, "4节一对一 + 2节小组课 + 2节晚课（选修）；适合初级到高级学生", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "Intensive ESL", 4, 1050m, "6节一对一 + 2节晚课（选修）；适合希望增加一对一课程的学生", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "IELTS", 4, 1000m, "4节一对一 + 2节团体课 + 1节选修早课 + 2节模拟测试（选修）", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Sparta", 4, 1050m, "4节一对一 + 2节团体课 + 1节早课 + 2节模拟测试 + 自习；22:00结束", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "IELTS GUARANTEE", 4, 1150m, "4节一对一 + 2节团体课 + 1节选修早课 + 2节模拟测试；入学需雅思成绩，12周起报", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "B'SPARTA", 4, 1050m, "5节一对一 + 2节小组课 + 3节强制晚课 + 2节强制自习；斯巴达模式", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "商务英语", 4, 1050m, "4节一对一 + 2节小组课 + 2节必修课", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "Junior ESL", 4, 1250m, "6节一对一；适合6-16岁青少年学生", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "Lite ESL4", 4, 750m, "4节一对一；适合喜欢慢节奏学习方式的学生", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "Lite ESL2（40岁以上）", 4, 400m, "2节一对一；仅适用于40岁以上学生", now, bCebuLessonNote);
+      UpsertLesson(context, schoolId, "幼儿园", 4, 950m, "08:30-12:20 / 13:30-17:00；适合3-6岁儿童", now, bCebuLessonNote);
+
+      UpsertRoom(context, schoolId, "单人间外景（马克坦新城）", 4, 1400m, "50岁以上学生只能选择单人间", now);
+      UpsertRoom(context, schoolId, "单人间内景（校内花园）", 4, 1350m, "50岁以上学生只能选择单人间", now);
+      UpsertRoom(context, schoolId, "双人间", 4, 950m, "标准双人房", now);
+      UpsertRoom(context, schoolId, "双人间+客厅", 4, 1250m, "仅限夫妻、兄弟姐妹或同行朋友共同报名，不接受个人入住", now);
+      UpsertRoom(context, schoolId, "双人间+客厅（加床亲子3人）", 4, 1000m, "亲子三人入住参考房型", now);
+      UpsertRoom(context, schoolId, "2+1宿舍（上下铺）", 4, 900m, "只限女生，仅在淡季开放", now);
+      UpsertRoom(context, schoolId, "三人间（上下铺）", 4, 750m, "上下铺多人房；周六下午4点后可免费入住", now);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
 
       await context.SaveChangesAsync();
     }
@@ -1447,7 +1503,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务3D Academy", 1156m, UsdCurrencyId, "USD 1,156 / 4周起（食宿主价）", Established(2002), new[] { "3D Academy", "3D Universal English Institute" }),
         new RegionalStartingPriceSeed("菲律宾宿务CELLA Uni Sparta Campus", 1630m, UsdCurrencyId, "USD 1,630 / 4周起（食宿主价）", Established(2006), new[] { "CELLA Uni Sparta Campus", "CELLA Uni" }),
         new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Sparta Campus）", 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2004), new[] { "CG Academy Sparta Campus", "CG Sparta" }),
-        new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Banilad Campus）", 1650000m, KrwCurrencyId, "KRW 1,650,000 / 4周起", Established(2004), new[] { "CG Academy Banilad Campus", "CG Banilad" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Banilad Campus）", 1400m, UsdCurrencyId, "USD 1,400 / 4周起（含注册费）", Established(2004), new[] { "CG Academy Banilad Campus", "CG Banilad" }),
         new RegionalStartingPriceSeed("菲律宾宿务SMEAG Capital语言学校", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "SMEAG Capital", "SMEAG Capital Campus" }),
         new RegionalStartingPriceSeed("菲律宾宿务Genius English Academy语言学校", 1400m, UsdCurrencyId, "USD 1,400 / 4周起", Established(2013), new[] { "Genius English Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务Howdy English Academy语言学校", 874m, UsdCurrencyId, "USD 874 / 1周起", Established(2014), new[] { "Howdy English Academy", "Howdy" }),
@@ -1458,6 +1514,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务CELLA Premium Campus", 1580m, UsdCurrencyId, "USD 1,580 / 4周起", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
         new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 752m, UsdCurrencyId, "USD 752 / 1周起", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
         new RegionalStartingPriceSeed(CpiSchoolName, 1670m, UsdCurrencyId, "USD 1,670 / 4周起（ESL GENERAL + A栋四人间）", Established(2015), new[] { LegacyCpiSchoolName }),
+        new RegionalStartingPriceSeed(BCebuSchoolName, 1650m, UsdCurrencyId, "USD 1,650 / 4周起（Speed ESL + 三人间）", Established(2026), new[] { LegacyBCebuSchoolName, "B'Cebu" }),
         new RegionalStartingPriceSeed(CpilsSchoolName, 1635m, UsdCurrencyId, "USD 1,635 / 4周起", Established(2001), new[] { LegacyCpilsSchoolName }),
         new RegionalStartingPriceSeed(FellaSchoolName, 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2006), new[] { LegacyFellaSchoolName }),
         new RegionalStartingPriceSeed(PhilinterSchoolName, 1390m, UsdCurrencyId, "USD 1,390 / 4周起", Established(2003), new[] { LegacyPhilinterSchoolName }),

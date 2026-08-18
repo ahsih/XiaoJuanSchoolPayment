@@ -385,6 +385,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
           },
           {
+            id: 'bcebu',
+            label: "菲律宾宿务B'Cebu语言学校",
+            route: '/philippines-study/cebu/bcebu',
+          },
+          {
             id: 'cpils',
             label: '菲律宾宿务CPILS语言学校',
             route: '/philippines-study/cebu/cpils',
