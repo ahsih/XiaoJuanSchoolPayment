@@ -59,6 +59,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
     image: '/assets/study-hero-collage.png',
   },
+  '/philippines-study/cebu/elsa-international-language-school': {
+    title: '菲律宾宿务ELSA语言学校 | 2026-2027课程食宿费用',
+    description:
+      '菲律宾宿务ELSA语言学校2026-2027费用页面，整理Guardian、成人ESL、青少年、全天/半天学校、幼儿园课程、2至5人间和单人间附加费。',
+    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用',
+    image: '/assets/study-hero-collage.png',
+  },
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
     description:

@@ -171,25 +171,25 @@ export class CebuStudyComponent {
       location: 'Compostela / Cebu',
       style: '自然度假型亲子校，Kindergarten / Junior / Guardian / Adult ESL',
       route: '/philippines-study/cebu/elsa-international-language-school',
-      startingPrice: 'JPY 334,800 / 4周起',
+      startingPrice: 'USD 1,850 / 4周起（Super Basic ESL + 五人间 + 注册费）',
       courses: [
         'Super Basic ESL',
+        'Basic / General / Intensive ESL',
         'Super Intensive ESL',
-        'Guardian Relax',
-        'Guardian ESL',
-        'Junior ESL',
-        'Kindergarten',
-        'Golf ESL',
-        'Schooling Program',
+        'Guardian / Guardian ESL / Guardian Golf',
+        'Junior ESL（7-14岁）',
+        '全天 / 半天学校（7-14岁）',
+        'Kindergarten（3-6岁）',
+        '幼儿园保姆托管',
       ],
       accommodation:
-        '校内A/B/C宿舍，公开资料列1/2/3/4/5人向房；单独留学通常按1人或2人房确认，3-5人向房更偏家庭或多人同行。',
+        '2026-2027价目表列2/3/4/5人间套餐；单人间在双人间价格上加USD 500。监护人不上课只公布3/4/5人间价格。',
       facilities:
         '大型自然校区、泳池、草地、操场、散步路线、食堂、JC Mart、教室、幼儿园和校内护士等亲子支持。',
       bestFor:
         '想让孩子在自然环境中学习、亲子陪读、幼儿园或Junior ESL、家长也想轻量学习英文的家庭。',
       note:
-        '2026公开主费以JPY计价；SSP、签证、押金、设施费、空调、教材、接送、保姆和活动等PHP当地费用另计。',
+        '2026-2027课程食宿主费以USD计价，注册费USD 100另计；SSP、签证、押金、设施费、空调、教材、接送和活动等PHP当地费用另计。',
     },
     {
       name: '菲律宾宿务ETHOS Language School',

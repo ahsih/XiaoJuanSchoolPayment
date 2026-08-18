@@ -26,7 +26,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看2026课程费用
+                查看2026-2027课程费用
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按公开2026 ELSA课程住宿费、当地费用和学校资料整理。正式报名仍需按入学日、孩子年龄、房型空位、主费币种和学校当期报价确认。
+              费用按ELSA 2026-2027课程、食宿价目表和公开学校资料整理。正式报名仍需按入学日、孩子年龄、房型空位和学校当期报价确认。
             </p>
           </div>
 
@@ -54,7 +54,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ fourWeekStartingText }}</strong>
-              <p>Super Basic ESL + 5人向房 + 入学金 + 海外送金手续费</p>
+              <p>Super Basic ESL + 五人间 + USD 100注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片与费用参考自ELSA官方站、2026电子手册和公开留学资料页；最终以学校正式报价为准。</p>
+            <p class="photo-source">费用按ELSA 2026-2027价目表更新；图片与学校资料参考官方站和公开资料页，最终以学校正式报价为准。</p>
           </div>
         </section>
 
@@ -198,10 +198,10 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程 / 公开参考费用</span>
-            <h2>ELSA 2026课程与4周主费用</h2>
+            <h2>ELSA 2026-2027课程、食宿4周费用</h2>
             <p>
-              下方按公开2026课程住宿费整理，并加入入学金JPY 15,000和海外送金手续费JPY 3,000。
-              菲律宾当地费用、活动、保险、机票和个人消费没有包含在主费用内。
+              下方金额是价目表中的4周课程、餐食和住宿费，USD 100注册费另计；监护人不上课套餐例外，已含注册费和旺季附加费。
+              单人间按对应双人间价格额外加USD 500。菲律宾当地费用、活动、保险、机票和个人消费没有包含在内。
             </p>
           </div>
 
@@ -211,11 +211,11 @@
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.suitable }}</p>
-              <strong>{{ formatJpy(course.fourWeekFeesJpy.five) }} / 4周课程住宿费起</strong>
+              <strong>{{ formatOptionalUsd(course.fourWeekFeesUsd.five) }} / 4周课程食宿费起</strong>
             </article>
           </div>
 
-          <div class="data-table elsa-course-table" role="table" aria-label="ELSA 2026课程住宿套餐">
+          <div class="data-table elsa-course-table" role="table" aria-label="ELSA 2026-2027课程食宿套餐">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">课节结构</span>
@@ -236,13 +236,17 @@
             </div>
           </div>
 
-          <div class="mobile-card-list mobile-course-fees" aria-label="ELSA 2026套餐手机卡片">
+          <div class="mobile-card-list mobile-course-fees" aria-label="ELSA 2026-2027套餐手机卡片">
             <article *ngFor="let row of courseFeeRows">
               <span>{{ row.course }}</span>
               <strong>{{ row.lessons }}</strong>
               <div>
                 <em>5人向</em>
                 <strong>{{ row.five }}</strong>
+              </div>
+              <div>
+                <em>4人向</em>
+                <strong>{{ row.quad }}</strong>
               </div>
               <div>
                 <em>3人向</em>
@@ -281,20 +285,20 @@
             <span>费用快速报价</span>
             <h2>用公开价目表先估算ELSA主费用</h2>
             <p>
-              这个计算器用于快速比较课程、房型和周数。正式报价还需要确认孩子年龄、家庭人数、入学日期、空房和学校最新规则。
+              这个计算器用于比较价目表公布的4周课程与房型。正式报价还需要确认孩子年龄、家庭人数、入学日期、空房和学校最新规则。
             </p>
           </div>
           <div class="quote-form" aria-label="ELSA费用快速报价选项">
             <label>
               课程
-              <select [(ngModel)]="selectedCourseId">
+              <select [(ngModel)]="selectedCourseId" (ngModelChange)="normalizeSelectedRoom()">
                 <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
               </select>
             </label>
             <label>
               房型
               <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                <option *ngFor="let room of availableRoomOptions" [value]="room.id">{{ room.name }}</option>
               </select>
             </label>
             <label>
@@ -307,16 +311,12 @@
               预计入学日
               <input type="date" [(ngModel)]="selectedStartDate" />
             </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="includeTransferFee" />
-              <span>加入海外送金手续费 JPY 3,000 / family</span>
-            </label>
           </div>
 
           <div class="quote-breakdown elsa-quote-breakdown">
             <article>
               <span>预计主费用</span>
-              <strong>{{ quoteJpyText }}</strong>
+              <strong>{{ quoteUsdText }}</strong>
               <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
             </article>
             <article>
@@ -327,7 +327,8 @@
             <article>
               <span>房型备注</span>
               <strong>{{ selectedRoom.note }}</strong>
-              <p>已含入学金JPY 15,000；PHP当地费用另计。</p>
+              <p *ngIf="!selectedCourse.priceIncludesRegistration">已含USD 100注册费；PHP当地费用另计。</p>
+              <p *ngIf="selectedCourse.priceIncludesRegistration">套餐价已含注册费和旺季附加费；PHP当地费用另计。</p>
             </article>
           </div>
 
@@ -348,7 +349,7 @@
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>到校后还要准备的费用</h2>
-            <p>以下按ELSA 2026电子手册和公开费用资料整理。不同周数、签证政策、教材数量、用电和保姆安排会影响最终金额。</p>
+            <p>以下菲律宾当地费用沿用ELSA公开资料作预算参考。签证政策、教材数量、用电和服务安排会影响最终金额。</p>
           </div>
           <div class="local-fee-grid elsa-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -370,7 +371,7 @@
           <div class="section-heading">
             <span>公开资料来源</span>
             <h2>ELSA页面公开资料来源</h2>
-            <p>课程、地址、设施、房型和费用信息优先参考ELSA官方站、2026电子手册和近期公开费用资料。</p>
+            <p>课程和主费用按最新提供的ELSA 2026-2027价目表更新；地址、设施与校园信息参考ELSA官方站、电子手册和公开资料。</p>
           </div>
           <div class="source-grid">
             <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
@@ -404,12 +405,12 @@
             <span>获取 ELSA 完整资料与报价单</span>
             <h2>把孩子年龄、家庭人数、周数和课程目标告诉思达，我们帮你核对正式费用</h2>
             <p>
-              顾问会协助确认房型资格、空房、JPY主费、PHP当地费用、幼儿园/Junior规则、保姆和可替代学校。
+              顾问会协助确认房型资格、空房、USD主费、PHP当地费用、幼儿园/Junior规则、保姆和可替代学校。
             </p>
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认ELSA空房与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分JPY主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分USD主费与PHP当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CIEC、First English等亲子学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">
@@ -423,7 +424,7 @@
         <div class="side-card">
           <span>ELSA</span>
           <strong class="side-price">{{ fourWeekStartingText }}</strong>
-          <p>Super Basic ESL + 5人向房 + 入学金 + 海外送金手续费，PHP当地费用另计。</p>
+          <p>Super Basic ESL + 五人间 + USD 100注册费，PHP当地费用另计。</p>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
             估算费用
             <mat-icon>calculate</mat-icon>

@@ -1604,7 +1604,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务 CIA 语言学校", 660m, UsdCurrencyId, "USD 660 / 1周起", Established(2003), new[] { CiaSchoolName, "菲律宾宿务CIA语言学校" }),
         new RegionalStartingPriceSeed("菲律宾宿务First English Global College", 198000m, JpyCurrencyId, "JPY 198,000 / 4周起", Established(2013), new[] { "First English Global College", "First English" }),
         new RegionalStartingPriceSeed("菲律宾宿务CIEC", 1650m, UsdCurrencyId, "USD 1,650 / 4周起", Established(2012), new[] { "CIEC", "CIEC Global" }),
-        new RegionalStartingPriceSeed("菲律宾宿务ELSA International Language School", 334800m, JpyCurrencyId, "JPY 334,800 / 4周起", Established(2004), new[] { "ELSA International Language School", "ELSA" }),
+        new RegionalStartingPriceSeed("菲律宾宿务ELSA International Language School", 1850m, UsdCurrencyId, "USD 1,850 / 4周起（Super Basic ESL + 五人间 + 注册费）", Established(2004), new[] { "ELSA International Language School", "ELSA" }),
         new RegionalStartingPriceSeed("菲律宾宿务ETHOS Language School", 1438m, UsdCurrencyId, "USD 1,438 / 4周起", Established(2013), new[] { "ETHOS Language School", "ETHOS" }),
         new RegionalStartingPriceSeed("菲律宾宿务IMS Academy", 1500m, UsdCurrencyId, "USD 1,500 / 4周起", Established(2015), new[] { "IMS Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务TARGET Global English Academy", 1430m, UsdCurrencyId, "USD 1,430 / 4周起", Established(2013), new[] { "TARGET Global English Academy", "TARGET" }),

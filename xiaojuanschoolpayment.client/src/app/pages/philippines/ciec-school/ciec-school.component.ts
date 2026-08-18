@@ -95,13 +95,13 @@ export class CiecSchoolComponent {
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
     1: 0.35,
-    2: 0.5,
-    3: 0.75,
+    2: 0.65,
+    3: 0.85,
   };
   readonly peakShortTermRatios: Partial<Record<WeekOption, number>> = {
     1: 0.4,
-    2: 0.6,
-    3: 0.75,
+    2: 0.65,
+    3: 0.85,
   };
 
   selectedCourseId = 'junior-academic';
@@ -359,7 +359,7 @@ export class CiecSchoolComponent {
     },
     {
       title: '1-3周短期怎么计算？',
-      text: '公开价目表显示淡季按4周费用的35%/50%/75%计算1/2/3周，旺季1月、2月、7月、8月按40%/60%/75%计算。',
+      text: '1周淡季按4周费用的35%计算，旺季1月、2月、7月、8月按40%计算；2周和3周分别按4周费用的65%和85%计算。注册费另计。',
     },
     {
       title: 'CIEC和CIA怎么选？',

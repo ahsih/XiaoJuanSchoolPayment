@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
+type WeekOption = 4;
 type RoomId = 'five' | 'quad' | 'triple' | 'twin' | 'single';
 
 interface QuickInfo {
@@ -39,7 +39,8 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  fourWeekFeesJpy: Record<RoomId, number>;
+  fourWeekFeesUsd: Partial<Record<RoomId, number>>;
+  priceIncludesRegistration?: boolean;
 }
 
 interface RoomOption {
@@ -89,20 +90,13 @@ export class ElsaSchoolComponent {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFeeJpy = 15000;
-  readonly transferFeeJpy = 3000;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
-    1: 0.25,
-    2: 0.5,
-    3: 0.75,
-  };
+  readonly registrationFeeUsd = 100;
+  readonly weekOptions: WeekOption[] = [4];
 
   selectedCourseId = 'super-basic';
   selectedRoomId: RoomId = 'five';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
-  includeTransferFee = true;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -115,8 +109,8 @@ export class ElsaSchoolComponent {
     {
       icon: 'family_restroom',
       label: '亲子优势',
-      value: '0岁起亲子，幼儿园4岁起',
-      note: '公开资料显示有Nursery、Kindergarten、Junior ESL、Schooling和陪读家长课程。',
+      value: '幼儿园3-6岁，青少年7-14岁',
+      note: '2026-2027价目表列出Kindergarten、Junior ESL、全天/半天学校和陪读家长课程。',
     },
     {
       icon: 'groups',
@@ -128,7 +122,7 @@ export class ElsaSchoolComponent {
       icon: 'menu_book',
       label: '课程结构',
       value: '45-50分钟课节，一对一+小班',
-      note: '2026公开课程包含Super Basic、Super Intensive、Guardian、Junior、Kindergarten和Golf ESL。',
+      note: '2026-2027价目表包含Guardian、成人ESL、青少年、学校衔接、幼儿园和Golf课程。',
     },
     {
       icon: 'bed',
@@ -195,10 +189,10 @@ export class ElsaSchoolComponent {
       value: '宿务郊区自然度假型英语学校，亲子、Junior、Kindergarten、Adult ESL和Golf ESL路线明显。',
     },
     { label: '公开资料', value: '2004年设立，公开容量约170名，韩国资本，校内有A/B/C宿舍和三餐。' },
-    { label: '主费币种', value: '2026公开课程住宿费以日元JPY列示，当地费用以菲律宾比索PHP支付。' },
+    { label: '主费币种', value: '2026-2027课程、食宿套餐费以美元USD列示，当地费用以菲律宾比索PHP支付。' },
     {
       label: '4周起价',
-      value: 'JPY 334,800起：Super Basic ESL + 5人向房 + 入学金 + 海外送金手续费；PHP当地费用另计。',
+      value: 'USD 1,850起：Super Basic ESL + 五人间 + USD 100注册费；PHP当地费用另计。',
     },
   ];
 
@@ -249,74 +243,138 @@ export class ElsaSchoolComponent {
 
   readonly courses: CourseOption[] = [
     {
+      id: 'guardian-companion',
+      name: '监护人陪同课',
+      type: '监护人课程',
+      lessons: '团体课3节',
+      suitable: '陪读家长希望参加轻量团体课，并保留较多照顾孩子和休息时间。',
+      fourWeekFeesUsd: { single: 2000, twin: 1500, triple: 1450, quad: 1400, five: 1350 },
+    },
+    {
+      id: 'guardian-relax',
+      name: '监护人轻松课程',
+      type: '监护人课程',
+      lessons: '一对一2节',
+      suitable: '陪读家长想用较轻的课量练习英文，同时兼顾孩子日程。',
+      fourWeekFeesUsd: { single: 2100, twin: 1600, triple: 1550, quad: 1500, five: 1450 },
+    },
+    {
+      id: 'guardian-esl',
+      name: '监护人 ESL',
+      type: '监护人课程',
+      lessons: '一对一2节 + 团体课2节',
+      suitable: '陪读家长想兼顾一对一输出与团体互动。',
+      fourWeekFeesUsd: { single: 2150, twin: 1650, triple: 1600, quad: 1550, five: 1500 },
+    },
+    {
+      id: 'guardian-golf',
+      name: '监护人高尔夫课程',
+      type: '监护人课程',
+      lessons: '团体课3节 + 每周2次高尔夫实地操作',
+      suitable: '希望把轻量英文课和每周高尔夫实地练习结合的陪读家长。',
+      fourWeekFeesUsd: { single: 2800, twin: 2300, triple: 2250, quad: 2200, five: 2150 },
+    },
+    {
       id: 'super-basic',
       name: 'Super Basic ESL',
       type: '成人基础ESL',
       lessons: '1:1 5节',
       suitable: '想把学习重心放在一对一输出、基础口语和语法纠错的成人或家长。',
-      fourWeekFeesJpy: { single: 465600, twin: 345600, triple: 336000, quad: 326400, five: 316800 },
+      fourWeekFeesUsd: { single: 2400, twin: 1900, triple: 1850, quad: 1800, five: 1750 },
+    },
+    {
+      id: 'basic',
+      name: 'Basic ESL',
+      type: '成人基础ESL',
+      lessons: '一对一3节 + 团体课3节',
+      suitable: '想平衡一对一训练和团体互动的成人学生。',
+      fourWeekFeesUsd: { single: 2300, twin: 1800, triple: 1750, quad: 1700, five: 1650 },
+    },
+    {
+      id: 'general',
+      name: 'General ESL',
+      type: '成人综合ESL',
+      lessons: '一对一4节 + 团体课3节',
+      suitable: '希望增加一对一课量，同时保留团体会话和互动练习的成人学生。',
+      fourWeekFeesUsd: { single: 2400, twin: 1900, triple: 1850, quad: 1800, five: 1750 },
+    },
+    {
+      id: 'intensive',
+      name: 'Intensive ESL',
+      type: '成人强化ESL',
+      lessons: '一对一5节 + 团体课2节',
+      suitable: '短期想提高一对一输出密度和综合英文训练强度的成人学生。',
+      fourWeekFeesUsd: { single: 2500, twin: 2000, triple: 1950, quad: 1900, five: 1850 },
     },
     {
       id: 'super-intensive',
       name: 'Super Intensive ESL',
       type: '成人强化ESL',
-      lessons: '1:1 6节 + Group 2节',
-      suitable: '短期想提高课节密度、口语输出和综合英文训练的成人或家长。',
-      fourWeekFeesJpy: { single: 523200, twin: 403200, triple: 393600, quad: 384000, five: 374400 },
-    },
-    {
-      id: 'guardian-relax',
-      name: 'Guardian Relax',
-      type: '陪读轻量',
-      lessons: '1:1 2节',
-      suitable: '陪读家长想保留照顾孩子、休息或外出时间，只安排轻量英文课。',
-      fourWeekFeesJpy: { single: 408000, twin: 288000, triple: 278400, quad: 268800, five: 259200 },
-    },
-    {
-      id: 'guardian-esl',
-      name: 'Guardian ESL',
-      type: '陪读标准',
-      lessons: '1:1 2节 + Group 2节',
-      suitable: '陪读家长想稳定学习，同时和孩子保持类似的校园生活节奏。',
-      fourWeekFeesJpy: { single: 436800, twin: 316800, triple: 307200, quad: 297600, five: 288000 },
+      lessons: '一对一6节 + 团体课1节',
+      suitable: '希望把每天大部分学习时间集中在高密度一对一训练的成人学生。',
+      fourWeekFeesUsd: { single: 2600, twin: 2100, triple: 2050, quad: 2000, five: 1950 },
     },
     {
       id: 'junior-esl',
-      name: 'Junior ESL',
+      name: '青少年 ESL（7-14岁）',
       type: '青少年英文',
-      lessons: '1:1 5节 + Group 3节',
+      lessons: '一对一4节 + 团体课3节',
       suitable: '7-14岁左右孩子建立口语、阅读、写作和课堂互动能力。',
-      fourWeekFeesJpy: { single: 504000, twin: 384000, triple: 374400, quad: 364800, five: 355200 },
+      fourWeekFeesUsd: { single: 2500, twin: 2000, triple: 1950, quad: 1900, five: 1850 },
+    },
+    {
+      id: 'full-day-school',
+      name: '全天学校（7-14岁）',
+      type: '青少年学校课程',
+      lessons: '一对一1节 + 团体课6&7节',
+      suitable: '7-14岁孩子需要全天学校式英文学习与集体课堂安排。',
+      fourWeekFeesUsd: { single: 2500, twin: 2000, triple: 1950, quad: 1900, five: 1850 },
+    },
+    {
+      id: 'half-day-school',
+      name: '半天学校（7-14岁）',
+      type: '青少年学校课程',
+      lessons: '一对一3节 + 团体课4节',
+      suitable: '7-14岁孩子希望把半天英文学习与家庭活动时间结合。',
+      fourWeekFeesUsd: { single: 2500, twin: 2000, triple: 1950, quad: 1900, five: 1850 },
     },
     {
       id: 'kindergarten',
-      name: 'Kindergarten',
+      name: '幼儿园课程（3-6岁）',
       type: '幼儿园英文',
-      lessons: '1:1 4节 + Group 4节',
-      suitable: '4-6岁低龄孩子，通过幼儿园式课堂和活动建立英文接触。',
-      fourWeekFeesJpy: { single: 523200, twin: 403200, triple: 393600, quad: 384000, five: 374400 },
+      lessons: '一对一3节 + 团体课4节',
+      suitable: '3-6岁低龄孩子通过一对一和幼儿园式团体课堂建立英文接触。',
+      fourWeekFeesUsd: { single: 2600, twin: 2100, triple: 2050, quad: 2000, five: 1950 },
     },
     {
-      id: 'golf-esl',
-      name: 'Golf ESL',
-      type: '英文+高尔夫',
-      lessons: 'Group 2-3节 + Golf',
-      suitable: '陪读家长或成人学生希望把英文和高尔夫活动结合。',
-      fourWeekFeesJpy: { single: 561600, twin: 441600, triple: 432000, quad: 422400, five: 412800 },
+      id: 'kindergarten-childcare',
+      name: '幼儿园保姆托管（3-6岁）',
+      type: '幼儿园托管',
+      lessons: '保姆照顾4课时',
+      suitable: '3-6岁孩子需要以保姆照顾为主的四课时托管安排。',
+      fourWeekFeesUsd: { single: 2000, twin: 1500, triple: 1450, quad: 1400, five: 1350 },
+    },
+    {
+      id: 'guardian-no-class',
+      name: '监护人不上课',
+      type: '监护人住宿',
+      lessons: '不上课',
+      suitable: '仅陪同孩子、不参加课程；价格含注册费和旺季附加费，不打折。',
+      fourWeekFeesUsd: { triple: 950, quad: 900, five: 850 },
+      priceIncludesRegistration: true,
     },
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'five', name: '5人向房', note: '4周价格最低，通常更适合家庭或多人同行；单独留学需确认不可选。' },
-    { id: 'quad', name: '4人向房', note: '预算型家庭房参考，适合可接受共享空间的亲子或多人组合。' },
-    { id: 'triple', name: '3人向房', note: '家庭常用预算房型；单独留学公开资料显示通常不能选择。' },
-    { id: 'twin', name: '2人向房', note: '单独留学和小家庭都较常见，价格与舒适度平衡。' },
-    { id: 'single', name: '1人向房', note: '隐私最高，主费也最高，旺季建议尽早确认空房。' },
+    { id: 'five', name: '五人间', note: '价目表中的最低房型价格，适合家庭或多人同行，需确认房型资格和空房。' },
+    { id: 'quad', name: '四人间', note: '预算型多人房，适合可接受共享空间的亲子或多人组合。' },
+    { id: 'triple', name: '三人间', note: '亲子家庭常用房型，需按家庭人数和空房确认。' },
+    { id: 'twin', name: '双人间', note: '适合两人同行或部分单独留学安排，需确认当期空房。' },
+    { id: 'single', name: '单人间', note: '2026-2027价目表注明：在双人间价格基础上额外加USD 500。' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'JPY 15,000', note: '日本/海外主费中一次性收取。' },
-    { item: '海外送金手续费', amount: 'JPY 3,000 / family', note: '本页报价器可选择是否加入。' },
+    { item: '注册费', amount: 'USD 100', note: '2026-2027价目表列示的一次性注册费。监护人不上课套餐已含此费用。' },
     { item: 'SSP学习许可', amount: 'PHP 7,800', note: 'ESL学习许可，公开资料列示6个月内适用。' },
     { item: 'SSP E-Card', amount: 'PHP 4,500', note: '菲律宾学习许可相关卡证费用。' },
     { item: 'Facility Usage Fee', amount: 'PHP 1,500 / 人 / 周', note: '公开手册说明包含水电与维护等基础费用。' },
@@ -354,15 +412,15 @@ export class ElsaSchoolComponent {
     },
     {
       title: '页面报价是否包含菲律宾当地费用？',
-      text: '不包含。报价器估算JPY课程住宿主费、入学金和可选海外送金手续费；SSP、签证、押金、设施费、空调、教材、接送和保姆等PHP另计。',
+      text: '不包含。报价器估算USD课程、食宿套餐和注册费；SSP、签证、押金、设施费、空调、教材、接送和其他PHP当地费用另计。',
     },
     {
-      title: '1-3周短期怎么计算？',
-      text: '公开资料显示1/2/3周按4周课程住宿费的25%/50%/75%计算，再加一次性入学金和可能的海外送金手续费。',
+      title: '为什么报价器只显示4周？',
+      text: '本次2026-2027价目表只提供4周USD价格，没有给出短期或长期折扣规则，因此本页不自行推算其他周数。',
     },
     {
-      title: '单独留学可以选3-5人向房吗？',
-      text: '公开资料显示单独留学通常以1人房或2人房计算，3-5人向房更偏家庭或多人同行；正式报名需要按学校当期规则确认。',
+      title: '单人间如何计算？',
+      text: '价目表注明单人间在对应双人间价格上额外加USD 500；监护人不上课只公布三人间、四人间和五人间价格。',
     },
   ];
 
@@ -409,58 +467,56 @@ export class ElsaSchoolComponent {
   }
 
   get selectedRoom(): RoomOption {
-    return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
+    return this.availableRoomOptions.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomOptions[0];
   }
 
-  get fourWeekStudyStayJpy(): number {
-    return this.selectedCourse.fourWeekFeesJpy[this.selectedRoomId];
+  get availableRoomOptions(): RoomOption[] {
+    return this.roomOptions.filter((room) => this.selectedCourse.fourWeekFeesUsd[room.id] !== undefined);
   }
 
-  get studyStayJpy(): number {
-    if (this.selectedWeeks < 4) {
-      return Math.round(this.fourWeekStudyStayJpy * (this.shortTermRatios[this.selectedWeeks] ?? 1));
-    }
-
-    return this.fourWeekStudyStayJpy * (this.selectedWeeks / 4);
+  get fourWeekStudyStayUsd(): number {
+    return this.selectedCourse.fourWeekFeesUsd[this.selectedRoom.id] ?? 0;
   }
 
-  get quoteJpy(): number {
-    return this.registrationFeeJpy + this.studyStayJpy + (this.includeTransferFee ? this.transferFeeJpy : 0);
+  get registrationFeeForQuoteUsd(): number {
+    return this.selectedCourse.priceIncludesRegistration ? 0 : this.registrationFeeUsd;
   }
 
-  get quoteJpyText(): string {
-    return this.formatJpy(this.quoteJpy);
+  get quoteUsd(): number {
+    return this.fourWeekStudyStayUsd + this.registrationFeeForQuoteUsd;
+  }
+
+  get quoteUsdText(): string {
+    return this.formatUsd(this.quoteUsd);
   }
 
   get fourWeekStartingText(): string {
-    return this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + 316800);
+    return this.formatUsd(this.registrationFeeUsd + 1750);
   }
 
   get fourWeekJuniorFiveText(): string {
-    return this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + 355200);
+    return this.formatUsd(this.registrationFeeUsd + 1850);
   }
 
   get weeklyAverageText(): string {
-    return this.formatJpy(Math.round(this.quoteJpy / this.selectedWeeks));
+    return this.formatUsd(Math.round(this.quoteUsd / this.selectedWeeks));
   }
 
   get quoteNote(): string {
-    if (this.selectedWeeks < 4) {
-      return '已按公开短期比例估算；PHP当地费用仍需另计。';
-    }
-
-    return '4周以上按4周课程住宿费倍数估算；SSP、签证、押金、设施费、空调、教材、接送、保姆等PHP另计。';
+    return this.selectedCourse.priceIncludesRegistration
+      ? '监护人不上课价格已含注册费和旺季附加费，不打折；PHP当地费用仍需另计。'
+      : '按2026-2027价目表的4周价格加USD 100注册费；PHP当地费用另计。';
   }
 
   get courseFeeRows() {
     return this.courses.map((course) => ({
       course: course.name,
       lessons: course.lessons,
-      five: this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + course.fourWeekFeesJpy.five),
-      quad: this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + course.fourWeekFeesJpy.quad),
-      triple: this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + course.fourWeekFeesJpy.triple),
-      twin: this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + course.fourWeekFeesJpy.twin),
-      single: this.formatJpy(this.registrationFeeJpy + this.transferFeeJpy + course.fourWeekFeesJpy.single),
+      five: this.formatOptionalUsd(course.fourWeekFeesUsd.five),
+      quad: this.formatOptionalUsd(course.fourWeekFeesUsd.quad),
+      triple: this.formatOptionalUsd(course.fourWeekFeesUsd.triple),
+      twin: this.formatOptionalUsd(course.fourWeekFeesUsd.twin),
+      single: this.formatOptionalUsd(course.fourWeekFeesUsd.single),
     }));
   }
 
@@ -472,12 +528,22 @@ export class ElsaSchoolComponent {
     this.quoteCalculated = true;
   }
 
+  normalizeSelectedRoom(): void {
+    if (this.selectedCourse.fourWeekFeesUsd[this.selectedRoomId] === undefined) {
+      this.selectedRoomId = this.availableRoomOptions[0].id;
+    }
+  }
+
   scrollToSection(id: string, event?: Event): void {
     event?.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  formatJpy(value: number): string {
-    return `JPY ${value.toLocaleString('ja-JP')}`;
+  formatUsd(value: number): string {
+    return `USD ${value.toLocaleString('en-US')}`;
+  }
+
+  formatOptionalUsd(value: number | undefined): string {
+    return value === undefined ? '—' : this.formatUsd(value);
   }
 }

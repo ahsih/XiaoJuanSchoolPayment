@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
+type ShortStayWeek = 1 | 2 | 3;
 
 interface QuickInfo {
   icon: string;
@@ -121,6 +122,11 @@ export class WinningSchoolComponent {
   readonly registrationFee = 100;
   readonly usdToCny = 7.2;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
+  readonly shortStayMultipliers: Record<ShortStayWeek, number> = {
+    1: 0.4,
+    2: 0.6,
+    3: 0.8,
+  };
 
   selectedCourseId = 'cambridge-esl4';
   selectedRoomId = 'standard-double';
@@ -622,8 +628,19 @@ export class WinningSchoolComponent {
 
   feeFor(courseId: string, roomId: string, weeks: WeekOption = 4): number {
     const course = this.courseOptions.find((item) => item.id === courseId);
+    const prices = course?.pricesByRoom[roomId];
 
-    return course?.pricesByRoom[roomId]?.[weeks] ?? 0;
+    if (!prices) {
+      return 0;
+    }
+
+    const shortStayMultiplier = this.shortStayMultipliers[weeks as ShortStayWeek];
+
+    if (shortStayMultiplier) {
+      return Math.round(prices[4] * shortStayMultiplier);
+    }
+
+    return prices[weeks] ?? 0;
   }
 
   get filteredGalleryImages(): GalleryImage[] {

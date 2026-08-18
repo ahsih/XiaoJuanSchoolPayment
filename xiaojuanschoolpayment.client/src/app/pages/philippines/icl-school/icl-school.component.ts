@@ -11,8 +11,8 @@ type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
 interface SnapshotCard { icon: string; title: string; text: string; }
 interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; text: string; src: string; }
 interface CourseItem { icon: string; name: string; lessons: string; suitable: string; }
-interface FeePackage { id: string; category: string; course: string; room: string; lessons: string; prices: Record<WeekOption, number>; note: string; }
-interface FeeSummaryRow { course: string; lessons: string; room: string; price4Weeks: number; note: string; }
+interface CourseFee { id: string; category: string; name: string; tuition4Weeks: number; lessons: string; note: string; minimumWeeks?: 8 | 12; }
+interface RoomFee { id: string; name: string; fee4Weeks: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
 interface SourceLink { label: string; url: string; }
@@ -30,7 +30,8 @@ export class IclSchoolComponent {
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   readonly registrationFeeUsd = 100;
   selectedWeeks: WeekOption = 4;
-  selectedPackageId = 'power4-quad';
+  selectedCourseId = 'power-speaking-4';
+  selectedRoomId = 'campus-quad';
   selectedStartDate = '2026-09-07';
   selectedGalleryCategory: GalleryCategory = '全部';
   quoteCalculated = false;
@@ -92,36 +93,38 @@ export class IclSchoolComponent {
   ];
 
   readonly courses: CourseItem[] = [
-    { icon: 'light_mode', name: 'Light Speaking', lessons: '一对一4', suitable: '预算优先、想保留较多课后时间，或短期先体验宿务游学的学生。' },
-    { icon: 'record_voice_over', name: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修2', suitable: 'ICL标准口语路线，适合多数成人学生和第一次宿务游学。' },
-    { icon: 'bolt', name: 'Power Speaking 6 / 8', lessons: '一对一6或8 + 团体/选修', suitable: '想明显增加一对一练习量、短期集中开口的学生。' },
-    { icon: 'task_alt', name: 'IELTS / IELTS保证班', lessons: '雅思一对一 + 小组 + 自习/模拟', suitable: '有目标分数、需要听说读写拆分训练与规律模拟测验的学生。' },
-    { icon: 'fact_check', name: 'TOEIC', lessons: '一对一4 + 团体4 + 自习', suitable: '需要多益听读提分、职场英文证照或就业准备的学生。' },
-    { icon: 'family_restroom', name: 'Junior / Parents', lessons: 'Junior一对一4 + 团体2 + 运动2；家长一对一4', suitable: '7-15岁青少年、亲子短期方案，以及希望孩子边学边适应海外环境的家庭。' },
+    { icon: 'light_mode', name: 'Light Speaking', lessons: '一对一4 + 选修课或自习', suitable: '预算优先、想保留较多课后时间，或短期先体验宿务游学的学生。' },
+    { icon: 'record_voice_over', name: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修课或自习', suitable: 'ICL标准口语路线，适合多数成人学生和第一次宿务游学。' },
+    { icon: 'bolt', name: 'Power Speaking 6 / 8', lessons: '一对一6 + 团体2，或一对一8 + 选修课/自习', suitable: '想明显增加一对一练习量、短期集中开口的学生。' },
+    { icon: 'task_alt', name: 'IELTS / IELTS保证班', lessons: '一对一4或6 + 团体4或2 + 选修/自习/模考', suitable: '有目标分数、需要听说读写拆分训练与规律模拟测验的学生。' },
+    { icon: 'fact_check', name: 'TOEIC', lessons: '一对一4 + 团体4', suitable: '需要多益听读提分、职场英文证照或就业准备的学生。' },
+    { icon: 'business_center', name: '商务英语 4 / 6', lessons: '一对一4 + 团体4，或一对一6 + 团体2', suitable: '需要职场沟通、商务会议和专业表达训练的学生。' },
+    { icon: 'family_restroom', name: '青少年 7–15岁', lessons: '一对一4 + 团体2或4 + 科学数学/体育活动', suitable: '7-15岁青少年和亲子短期方案，年龄不同时课程组合不同。' },
   ];
 
-  readonly feePackages: FeePackage[] = [
-    { id: 'light-quad', category: '最低预算', course: 'Light Speaking', room: '4人房', lessons: '一对一4', prices: { 1: 540, 2: 810, 3: 1148, 4: 1350, 8: 2700, 12: 4050, 16: 5400, 20: 6750, 24: 8100 }, note: '课程强度较轻，适合预算优先或想保留较多自由时间。' },
-    { id: 'power4-quad', category: '标准推荐', course: 'Power Speaking 4', room: '4人房', lessons: '一对一4 + 团体4 + 选修2', prices: { 1: 580, 2: 870, 3: 1233, 4: 1450, 8: 2900, 12: 4350, 16: 5800, 20: 7250, 24: 8700 }, note: '口语课时、费用和半斯巴达节奏较平衡，适合多数成人学生。' },
-    { id: 'power4-triple', category: '舒适预算', course: 'Power Speaking 4', room: '3人房', lessons: '一对一4 + 团体4 + 选修2', prices: { 1: 620, 2: 930, 3: 1318, 4: 1550, 8: 3100, 12: 4650, 16: 6200, 20: 7750, 24: 9300 }, note: '比4人房更少室友，仍能控制预算。' },
-    { id: 'power4-single', category: '单人房', course: 'Power Speaking 4', room: '1人房', lessons: '一对一4 + 团体4 + 选修2', prices: { 1: 680, 2: 1020, 3: 1445, 4: 1700, 8: 3400, 12: 5100, 16: 6800, 20: 8500, 24: 10200 }, note: '适合重视隐私、睡眠质量和独立学习空间的学生。' },
-    { id: 'power8-quad', category: '高一对一', course: 'Power Speaking 8', room: '4人房', lessons: '一对一8 + 选修2', prices: { 1: 700, 2: 1050, 3: 1488, 4: 1750, 8: 3500, 12: 5250, 16: 7000, 20: 8750, 24: 10500 }, note: '一对一比例高，适合短期冲刺口语输出。' },
-    { id: 'ielts-quad', category: '雅思方向', course: 'IELTS', room: '4人房', lessons: '一对一4 + 团体4 + 自习1', prices: { 1: 640, 2: 960, 3: 1360, 4: 1600, 8: 3200, 12: 4800, 16: 6400, 20: 8000, 24: 9600 }, note: '适合雅思基础备考；保证班有独立8/12周价格。' },
-    { id: 'toeic-quad', category: '多益方向', course: 'TOEIC', room: '4人房', lessons: '一对一4 + 团体4 + 自习1', prices: { 1: 620, 2: 930, 3: 1318, 4: 1550, 8: 3100, 12: 4650, 16: 6200, 20: 7750, 24: 9300 }, note: '适合多益听读、职场英文和证照准备。' },
-    { id: 'junior-quad', category: '青少年', course: 'Junior', room: '4人房', lessons: '一对一4 + 团体2 + 运动2', prices: { 1: 600, 2: 900, 3: 1275, 4: 1500, 8: 3000, 12: 4500, 16: 6000, 20: 7500, 24: 9000 }, note: '适合7-15岁青少年；亲子出行需按年龄和监护安排确认。' },
-    { id: 'power4-external-double', category: '外部酒店', course: 'Power Speaking 4', room: '外部寮2人房', lessons: '一对一4 + 团体4 + 选修2', prices: { 1: 760, 2: 1140, 3: 1615, 4: 1900, 8: 3800, 12: 5700, 16: 7600, 20: 9500, 24: 11400 }, note: '使用步行约2分钟的Goldberry Suites外部宿舍，预算会更高。' },
+  readonly courseFees: CourseFee[] = [
+    { id: 'power-speaking-4', category: '标准口语', name: 'Power Speaking 4', tuition4Weeks: 850, lessons: '一对一4课时 + 团体4课时 + 选修课或自习', note: '每周二或周四需参加口语训练。' },
+    { id: 'power-speaking-6', category: '强化口语', name: 'Power Speaking 6', tuition4Weeks: 1000, lessons: '一对一6课时 + 团体2课时 + 选修课或自习', note: '每周二或周四需参加口语训练。' },
+    { id: 'power-speaking-8', category: '高一对一', name: 'Power Speaking 8', tuition4Weeks: 1150, lessons: '一对一8课时 + 选修课或自习', note: '每周二或周四需参加口语训练。' },
+    { id: 'toeic', category: '多益方向', name: 'TOEIC', tuition4Weeks: 950, lessons: '一对一4课时 + 团体4课时', note: '多益备考与职场英语方向。' },
+    { id: 'ielts', category: '雅思方向', name: 'IELTS', tuition4Weeks: 1000, lessons: '一对一4课时 + 团体4课时 + 选修课或自习', note: '入学雅思3分以上；每周二或周四模拟考。' },
+    { id: 'ielts-guarantee-8', category: '雅思保证班', name: '8周 IELTS保证班', tuition4Weeks: 1200, lessons: '一对一6课时 + 团体2课时 + 选修课或自习', note: '入学雅思3分以上；每周二或周四模拟考。', minimumWeeks: 8 },
+    { id: 'ielts-guarantee-12', category: '雅思保证班', name: '12周 IELTS保证班', tuition4Weeks: 1133, lessons: '一对一6课时 + 团体2课时 + 选修课或自习', note: '入学雅思3分以上；每周二或周四模拟考。', minimumWeeks: 12 },
+    { id: 'business-4', category: '商务英语', name: '商务英语 4', tuition4Weeks: 950, lessons: '一对一4课时 + 团体4课时 + 选修课或自习', note: '适合职场沟通与商务表达训练。' },
+    { id: 'business-6', category: '商务英语', name: '商务英语 6', tuition4Weeks: 1100, lessons: '一对一6课时 + 团体2课时 + 选修课或自习', note: '适合需要更多一对一商务训练的学生。' },
+    { id: 'junior-7-12', category: '青少年', name: '青少年 7–12岁', tuition4Weeks: 900, lessons: '一对一4课时 + 团体2课时 + 2节活动课（科学与数学）+ 选修体育活动', note: '亲子出行需按年龄和监护安排确认。' },
+    { id: 'junior-13-15', category: '青少年', name: '青少年 13–15岁', tuition4Weeks: 900, lessons: '一对一4课时 + 团体4课时 + 选修体育活动', note: '每周四需参加口语训练。' },
+    { id: 'light-speaking', category: '最低预算', name: 'Light Speaking', tuition4Weeks: 750, lessons: '一对一4课时 + 选修课或自习', note: '课程强度较轻，适合预算优先或想保留较多自由时间。' },
   ];
 
-  readonly feeSummaryRows: FeeSummaryRow[] = [
-    { course: 'Light Speaking', lessons: '一对一4', room: '4人房', price4Weeks: 1350, note: '最低预算课程食宿费' },
-    { course: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修2', room: '4人房', price4Weeks: 1450, note: '标准推荐' },
-    { course: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修2', room: '3人房', price4Weeks: 1550, note: '减少室友人数' },
-    { course: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修2', room: '1人房', price4Weeks: 1700, note: '单人房' },
-    { course: 'Power Speaking 8', lessons: '一对一8 + 选修2', room: '4人房', price4Weeks: 1750, note: '高一对一强度' },
-    { course: 'IELTS', lessons: '一对一4 + 团体4 + 自习1', room: '4人房', price4Weeks: 1600, note: '雅思方向' },
-    { course: 'TOEIC', lessons: '一对一4 + 团体4 + 自习1', room: '4人房', price4Weeks: 1550, note: '多益方向' },
-    { course: 'Junior', lessons: '一对一4 + 团体2 + 运动2', room: '4人房', price4Weeks: 1500, note: '7-15岁青少年' },
-    { course: 'Power Speaking 4', lessons: '一对一4 + 团体4 + 选修2', room: '外部寮2人房', price4Weeks: 1900, note: 'Goldberry Suites参考' },
+  readonly roomFees: RoomFee[] = [
+    { id: 'campus-single', name: '校内单人间', fee4Weeks: 850, note: '隐私最好，热门档期需尽早确认。' },
+    { id: 'campus-double', name: '校内双人间', fee4Weeks: 750, note: '适合同伴同行或想减少室友人数。' },
+    { id: 'campus-triple', name: '校内三人间', fee4Weeks: 700, note: '预算和生活空间较平衡。' },
+    { id: 'campus-quad', name: '校内四人间', fee4Weeks: 600, note: '校内宿舍最低预算房型。' },
+    { id: 'off-campus-single', name: '校外单人间', fee4Weeks: 1450, note: '校外宿舍单人方案，预算最高。' },
+    { id: 'off-campus-double', name: '校外双人间', fee4Weeks: 1050, note: '需确认交通、餐食和空房。' },
+    { id: 'off-campus-triple', name: '校外三人间', fee4Weeks: 950, note: '校外宿舍中预算较低的房型。' },
   ];
 
   readonly localFees: LocalFee[] = [
@@ -172,12 +175,21 @@ export class IclSchoolComponent {
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
 
-  get selectedPackage(): FeePackage {
-    return this.feePackages.find((item) => item.id === this.selectedPackageId) ?? this.feePackages[0];
+  get selectedCourse(): CourseFee {
+    return this.courseFees.find((item) => item.id === this.selectedCourseId) ?? this.courseFees[0];
+  }
+
+  get selectedRoom(): RoomFee {
+    return this.roomFees.find((item) => item.id === this.selectedRoomId) ?? this.roomFees[0];
+  }
+
+  get availableWeekOptions(): WeekOption[] {
+    const minimumWeeks = this.selectedCourse.minimumWeeks ?? 1;
+    return this.weekOptions.filter((weeks) => weeks >= minimumWeeks);
   }
 
   get baseFeeUsd(): number {
-    return this.selectedPackage.prices[this.selectedWeeks];
+    return Math.round((this.selectedCourse.tuition4Weeks + this.selectedRoom.fee4Weeks) * this.studyLengthFactor);
   }
 
   get estimatedTotalUsd(): number {
@@ -190,6 +202,26 @@ export class IclSchoolComponent {
 
   get baseFeeText(): string {
     return `USD ${this.formatUsd(this.baseFeeUsd)}`;
+  }
+
+  get courseFeeText(): string {
+    return `USD ${this.formatUsd(Math.round(this.selectedCourse.tuition4Weeks * this.studyLengthFactor))}`;
+  }
+
+  get roomFeeText(): string {
+    return `USD ${this.formatUsd(Math.round(this.selectedRoom.fee4Weeks * this.studyLengthFactor))}`;
+  }
+
+  get studyLengthFactor(): number {
+    if (this.selectedWeeks === 1) return 0.4;
+    if (this.selectedWeeks === 2) return 0.6;
+    if (this.selectedWeeks === 3) return 0.85;
+    return this.selectedWeeks / 4;
+  }
+
+  ensureValidStudyLength(): void {
+    const minimumWeeks = this.selectedCourse.minimumWeeks ?? 1;
+    if (this.selectedWeeks < minimumWeeks) this.selectedWeeks = minimumWeeks;
   }
 
   setGalleryCategory(category: GalleryCategory): void {

@@ -226,22 +226,25 @@
                 以下按Winning Ocean Campus 2026公开美元表整理。主费通常含课程、住宿和餐食；
                 入学金、SSP、签证、押金、水电、教材、管理费、旺季费和接机另计。
               </p>
+              <p>
+                1至3周的短期主费按4周主费计算：1周40%、2周60%、3周80%，金额四舍五入至整数美元。
+              </p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="Winning Ocean 2026公开价格">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
                 <span role="columnheader">1周</span>
+                <span role="columnheader">2周</span>
+                <span role="columnheader">3周</span>
                 <span role="columnheader">4周</span>
-                <span role="columnheader">8周</span>
-                <span role="columnheader">12周</span>
               </div>
               <ng-container *ngFor="let course of courseOptions">
                 <div class="table-row" role="row" *ngFor="let room of roomOptions">
                   <span role="cell">{{ course.name }} / {{ room.name }}</span>
                   <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 2)) }}</span>
+                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</span>
                   <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
                 </div>
               </ng-container>
             </div>
@@ -251,9 +254,9 @@
                   <span>{{ course.name }}</span>
                   <strong>{{ room.name }}</strong>
                   <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
+                  <div><em>2周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 2)) }}</b></div>
+                  <div><em>3周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</b></div>
                   <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
-                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
-                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
                   <p>{{ course.lessons }}。{{ room.note }}</p>
                 </article>
               </ng-container>

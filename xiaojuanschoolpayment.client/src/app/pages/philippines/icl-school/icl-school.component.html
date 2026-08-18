@@ -67,8 +67,9 @@
         </div>
         <aside class="mini-quote-card">
           <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
-          <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程 / 房型<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidStudyLength()"><option *ngFor="let item of courseFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.tuition4Weeks) }}/4周</option></select></label>
+          <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.fee4Weeks) }}/4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
           <p>{{ quoteUsdText }}，最终需以学校空房、优惠和当期到校费用确认为准。</p>
@@ -126,24 +127,27 @@
       <section class="quote-results-section" id="quote">
         <div class="quote-form-card">
           <h2><mat-icon>calculate</mat-icon>ICL费用快速报价</h2>
-          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+          <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidStudyLength()"><option *ngFor="let item of courseFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.tuition4Weeks) }}/4周</option></select></label>
+          <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.fee4Weeks) }}/4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
           <p>报价器按公开美元费用表计算课程、住宿、餐食，并加入入学金USD 100；到校PHP费用、机票、保险和个人生活费另计。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
-            <h2>{{ selectedPackage.course }}</h2>
-            <small>{{ selectedPackage.category }}</small>
-            <p>{{ selectedPackage.lessons }} / {{ selectedPackage.room }}</p>
+            <h2>{{ selectedCourse.name }}</h2>
+            <small>{{ selectedCourse.category }}</small>
+            <p>{{ selectedCourse.lessons }} / {{ selectedRoom.name }}</p>
             <strong>{{ selectedWeeks }}周</strong>
           </div>
           <div class="result-lines">
-            <div><span>课程食宿费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>课程费</span><strong>{{ courseFeeText }}</strong></div>
+            <div><span>住宿费</span><strong>{{ roomFeeText }}</strong></div>
+            <div><span>课程 + 住宿</span><strong>{{ baseFeeText }}</strong></div>
             <div><span>入学金</span><strong>USD {{ registrationFeeUsd }}</strong></div>
             <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
-            <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
+            <div><span>课程说明</span><strong>{{ selectedCourse.note }}</strong></div>
           </div>
           <div class="quote-total">
             <span>前期支付参考</span>
@@ -160,25 +164,40 @@
       <section class="tables-section" id="fee-structure">
         <div>
           <h2><mat-icon>receipt_long</mat-icon>ICL公开美元费用参考</h2>
-          <p class="table-intro">以下为常用课程与房型的4周课程食宿费用，不含入学金、SSP、签证、教材、水电维护、洗衣、押金、接机和个人支出。最终以学校当期报价和空房为准。</p>
-          <div class="data-table icl-fee-table" role="table" aria-label="ICL 4周公开费用参考">
+          <p class="table-intro">以下为截图所列的ICL 2025年4周美元课程费与住宿费，课程和房型需相加计算；不含入学金、SSP、签证、教材、水电维护、洗衣、押金、接机和个人支出。</p>
+          <h3>课程费</h3>
+          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2025年4周课程费参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
-              <span role="columnheader">4周费用</span>
-              <span role="columnheader">房型 / 备注</span>
+              <span role="columnheader">4周课程费</span>
+              <span role="columnheader">课程安排 / 备注</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let row of feeSummaryRows">
-              <span role="cell">{{ row.course }}<small>{{ row.lessons }}</small></span>
-              <span role="cell">USD {{ formatUsd(row.price4Weeks) }}</span>
-              <span role="cell">{{ row.room }}<small>{{ row.note }}</small></span>
+            <div class="table-row" role="row" *ngFor="let course of courseFees">
+              <span role="cell">{{ course.name }}<small>{{ course.category }}</small></span>
+              <span role="cell">USD {{ formatUsd(course.tuition4Weeks) }}</span>
+              <span role="cell">{{ course.lessons }}<small>{{ course.note }}</small></span>
+            </div>
+          </div>
+          <h3 class="fee-subheading">住宿费</h3>
+          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2025年4周住宿费参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">住宿类型</span>
+              <span role="columnheader">4周住宿费</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomFees">
+              <span role="cell">{{ room.name }}</span>
+              <span role="cell">USD {{ formatUsd(room.fee4Weeks) }}</span>
+              <span role="cell">{{ room.note }}</span>
             </div>
           </div>
         </div>
         <aside class="price-note">
           <h3>费用阅读重点</h3>
           <ul>
-            <li>课程食宿费已包含课程、住宿和每日三餐。</li>
+            <li>课程费和住宿费分开列示：先选课程，再加所选房型。</li>
             <li>本页报价器只额外加入入学金USD 100，接机和当地费用以PHP另列。</li>
+            <li>1/2/3周报价沿用页面原有的40%/60%/85%短期换算；4周以上按每4周价格计算。</li>
             <li>SSP、SSP E-Card、签证延长、教材、水电维护、洗衣和押金通常到校后支付。</li>
             <li>公开费用来自ICL 2025年1月后相关费用资料，报名前仍需确认学校最新报价与空房。</li>
           </ul>
