@@ -79,7 +79,7 @@ const libraryPages: Record<string, LibraryPage> = {
         icon: 'record_voice_over',
         title: 'TARGET Global English Academy',
         tag: '宿务 / 日系高性价比1:1',
-        text: '适合成人初学者、预算控制、TARGET 4/5/6一对一口语、TOEIC、IELTS和Working Holiday准备。',
+        text: '适合成人初学者、预算控制、Lite 4及TARGET 4/5/6一对一口语、TOEIC、IELTS和Working Holiday准备。',
         route: '/philippines-study/cebu/target-global-english-academy',
       },
       {

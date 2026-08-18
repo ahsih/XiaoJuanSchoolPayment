@@ -242,10 +242,11 @@ export class CebuStudyComponent {
     {
       name: '菲律宾宿务TARGET Global English Academy',
       location: 'Tigbao / Talamban, Cebu City',
-      style: '日系成人友好，高性价比1:1 / TARGET 4 / 5 / 6 / IELTS',
+      style: '日系成人友好，高性价比1:1 / Lite 4 / TARGET 4 / 5 / 6 / IELTS',
       route: '/philippines-study/cebu/target-global-english-academy',
-      startingPrice: 'USD 1,490 / 4周起',
+      startingPrice: 'USD 1,430 / 4周起',
       courses: [
+        'Lite 4',
         'TARGET 4',
         'TARGET 5',
         'TARGET 6',
@@ -255,13 +256,13 @@ export class CebuStudyComponent {
         'TOEIC / Business elective',
       ],
       accommodation:
-        '校内1/2/3/4/6人房；官方2026年7月后价格表中TARGET 4 + 6人房4周USD 1,340起，入学金USD 150另计。',
+        '校内1/2/3/4/6人房；官方2026年价格表中Lite 4 + 6人房4周USD 1,280起，入学金USD 150另计。',
       facilities:
         '一对一教室、小组教室、自习室、多功能室、餐厅、泳池、户外休息区、篮球、台球、乒乓、Wi-Fi、饮水机和24小时警卫。',
       bestFor:
         '想控制预算、提高一对一课量、喜欢日系支持和安静Talamban学习环境的成人、初学者、TOEIC或打工度假准备学生。',
       note:
-        '官方2026年7月10日后费用以USD公布；活动折扣有申请时间和旺季限制，SSP、签证、教材、水电、共益费、押金、接机和洗衣等另计。',
+        '当前活动折扣参考为3周减USD 60、4周减USD 120、6周减USD 180、12周减USD 420；申请时间和旺季限制需确认，SSP、签证、教材、水电、共益费、押金、接机和洗衣等另计。',
     },
     {
       name: '菲律宾宿务CIJ Academy（Premium Campus）',
@@ -465,18 +466,18 @@ export class CebuStudyComponent {
       location: 'JY Square, Lahug / Cebu City',
       style: '日系老牌高性价比，市中心生活便利',
       route: '/philippines-study/cebu/3d-academy',
-      startingPrice: 'USD 1,156 / 4周起（食宿主价）',
+      startingPrice: 'USD 1,189 / 4周起（课程 + 住宿）',
       courses: [
-        'Practical ESL',
+        'General ESL',
         'Intensive ESL',
-        'Platinum ESL / Power MTM',
-        'TOEIC / IELTS / TOEFL',
+        'Power MTM',
+        'TOEFL / TOEIC / IELTS及预备课程',
         'Business English',
-        'Kids & Parents',
-        'Walk-in Course',
+        'Junior ESL',
+        'Sparta Management / Guardian',
       ],
       accommodation:
-        'JY Square校内宿舍/酒店房，常见1/2/3/4/6人房；也可选择Walk-in通学课程，自行安排酒店或公寓住宿。',
+        '校内1/2/3/4/6人房，另有MIT / Yello Hotel校外酒店房及Prestigio单人、双人和亲子房。',
       facilities:
         '一对一教室、小组教室、自习室、EOP Room、餐厅、校内诊所、儿童房、祈祷室、Wi-Fi、JY Square健身房使用、24小时商业楼保安。',
       bestFor:

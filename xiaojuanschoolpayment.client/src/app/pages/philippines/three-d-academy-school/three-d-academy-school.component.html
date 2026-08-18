@@ -13,7 +13,7 @@
           </p>
           <h1>菲律宾宿务3D Academy</h1>
           <p class="hero-lead">
-            位于宿务Lahug JY Square的日系老牌高性价比语言学校，主打Practical ESL、Intensive ESL、Power MTM、考试、商务、亲子和Walk-in通学课程。适合想把预算、生活便利和一对一课时放在一起比较的学生。
+            位于宿务Lahug JY Square的日系老牌高性价比语言学校，主打General ESL、Intensive ESL、Power MTM、考试、商务和青少年课程。适合想把预算、生活便利和一对一课时放在一起比较的学生。
           </p>
           <div class="hero-tags" aria-label="3D Academy关键字">
             <span><mat-icon>location_on</mat-icon>JY Square / Lahug</span>
@@ -35,8 +35,8 @@
           </div>
           <aside class="hero-price-card">
             <span>4周参考</span>
-            <strong>USD 1,256 <small>起</small></strong>
-            <p>Practical ESL + 6人房，已含入学金USD 100参考。</p>
+            <strong>USD 1,289 <small>起</small></strong>
+            <p>General ESL + 校内六人房，已含入学金USD 100参考。</p>
             <ul>
               <li><mat-icon>check_circle</mat-icon>课程、住宿、三餐、洗衣、清洁、Wi-Fi打包</li>
               <li><mat-icon>info</mat-icon>SSP、签证、教材、电费、维护费、押金等PHP费用另计</li>
@@ -68,7 +68,8 @@
         <aside class="mini-quote-card">
           <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
           <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程 / 房型<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let item of tuitionOptions" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.price4Weeks) }} / 4周</option></select></label>
+          <label>房型<select [(ngModel)]="selectedAccommodationId"><option *ngFor="let item of accommodationOptions" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.price4Weeks) }} / 4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
           <p>{{ quoteUsdText }}，最终需以学校空房、优惠、校区状态和当期到校费用确认为准。</p>
@@ -111,7 +112,7 @@
       <section class="cia-section" id="courses">
         <div class="section-heading">
           <h2>课程怎么选？</h2>
-          <p>第一次游学看Practical ESL；想多一对一看Intensive；短期冲刺看Platinum或Power MTM；考试看TOEIC / IELTS / TOEFL；职场目标看Business；亲子家庭看Kids & Parents；自理住宿看Walk-in。</p>
+          <p>第一次游学看General ESL；想多一对一看Intensive；高强度一对一看Power MTM；考试看TOEFL / TOEIC / IELTS或预备课程；职场目标看Business；12-17岁学生看Junior ESL。</p>
         </div>
         <div class="course-choice-grid">
           <article *ngFor="let course of courses">
@@ -127,23 +128,26 @@
         <div class="quote-form-card">
           <h2><mat-icon>calculate</mat-icon>3D Academy费用快速报价</h2>
           <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
+          <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let item of tuitionOptions" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.price4Weeks) }} / 4周</option></select></label>
+          <label>住宿<select [(ngModel)]="selectedAccommodationId"><option *ngFor="let item of accommodationOptions" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.price4Weeks) }} / 4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-          <p>报价器按官方美元费用表计算课程食宿主价，并加入入学金USD 100；SSP、签证、教材、电费、维护费、押金、机票保险和个人生活费另计。</p>
+          <p>报价器按4周课程费与住宿费计算，并加入入学金USD 100；12-15周减USD 100，16-19周减USD 150，20周减USD 200。SSP、签证、教材、电费、维护费、押金、机票保险和个人生活费另计。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
-            <h2>{{ selectedPackage.course }}</h2>
-            <small>{{ selectedPackage.category }}</small>
-            <p>{{ selectedPackage.lessons }} / {{ selectedPackage.room }}</p>
+            <h2>{{ selectedCourse.name }}</h2>
+            <small>{{ selectedCourse.note }}</small>
+            <p>{{ selectedCourse.lessons }} / {{ selectedAccommodation.name }}</p>
             <strong>{{ selectedWeeks }}周</strong>
           </div>
           <div class="result-lines">
-            <div><span>课程食宿费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>课程费用</span><strong>USD {{ formatUsd(tuitionFeeUsd) }}</strong></div>
+            <div><span>住宿费用</span><strong>USD {{ formatUsd(accommodationFeeUsd) }}</strong></div>
+            <div *ngIf="longTermDiscountUsd > 0"><span>长期优惠</span><strong>- USD {{ formatUsd(longTermDiscountUsd) }}</strong></div>
             <div><span>入学金</span><strong>USD {{ registrationFeeUsd }}</strong></div>
             <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
-            <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
+            <div><span>住宿说明</span><strong>{{ selectedAccommodation.note }}</strong></div>
           </div>
           <div class="quote-total">
             <span>前期支付参考</span>
@@ -159,18 +163,31 @@
 
       <section class="tables-section" id="fee-structure">
         <div>
-          <h2><mat-icon>receipt_long</mat-icon>3D Academy公开美元费用参考</h2>
-          <p class="table-intro">以下为官方公开费用表中的常用4周课程食宿主价，不含入学金USD 100、接机、SSP、签证、教材、电费、维护费、押金和个人支出。Walk-in价格不含住宿。</p>
-          <div class="data-table three-d-fee-table" role="table" aria-label="3D Academy 4周公开费用参考">
+          <h2><mat-icon>receipt_long</mat-icon>3D Academy美元费用参考</h2>
+          <p class="table-intro">以下课程费与住宿费均按4周列示，选择课程后还需加上所选房型费用。未含入学金USD 100、接机、SSP、签证、教材、电费、维护费、押金和个人支出。</p>
+          <div class="data-table three-d-fee-table" role="table" aria-label="3D Academy 4周课程费参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
-              <span role="columnheader">4周费用</span>
-              <span role="columnheader">房型 / 备注</span>
+              <span role="columnheader">课程安排</span>
+              <span role="columnheader">4周课程费</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let row of feeSummaryRows">
-              <span role="cell">{{ row.course }}<small>{{ row.lessons }}</small></span>
+            <div class="table-row" role="row" *ngFor="let row of tuitionOptions">
+              <span role="cell">{{ row.name }}<small>{{ row.note }}</small></span>
+              <span role="cell">{{ row.lessons }}</span>
               <span role="cell">USD {{ formatUsd(row.price4Weeks) }}</span>
-              <span role="cell">{{ row.room }}<small>{{ row.note }}</small></span>
+            </div>
+          </div>
+          <h3>4周住宿费</h3>
+          <div class="data-table three-d-fee-table" role="table" aria-label="3D Academy 4周住宿费参考">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">住宿楼</span>
+              <span role="columnheader">4周住宿费</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of accommodationOptions">
+              <span role="cell">{{ row.name }}</span>
+              <span role="cell">{{ row.note }}</span>
+              <span role="cell">USD {{ formatUsd(row.price4Weeks) }}</span>
             </div>
           </div>
         </div>
@@ -178,7 +195,8 @@
           <h3>费用阅读重点</h3>
           <ul>
             <li>食宿方案通常包含课程、住宿、三餐、洗衣、清洁、健身房使用和Wi-Fi。</li>
-            <li>Walk-in通学方案不含住宿，官方说明含平日午餐和学校设施使用。</li>
+            <li>长期优惠：12-15周减USD 100；16-19周减USD 150；20周减USD 200。</li>
+            <li>MIT / Yello Hotel与Prestigio为校外酒店房，报价前需确认对应酒店和空房。</li>
             <li>SSP、ACR I-Card、教材、电费、维护费、押金和签证延长为PHP到校费用。</li>
             <li>2026年10月校区搬迁计划需报名时确认，尤其是入学日、住宿楼和房型。</li>
           </ul>
@@ -227,7 +245,7 @@
       <section class="cia-section source-section">
         <div class="section-heading">
           <h2>资料来源</h2>
-          <p>本页学校定位和费用参考3D Academy官方英文网站、课程费用页、住宿页、官方Facebook，以及公开Facebook内容镜像。学校价格、房型、国籍比例、校区搬迁安排和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
+          <p>本页课程费、住宿费和长期优惠按当前费用表更新；学校定位另参考3D Academy官方英文网站、住宿页、官方Facebook，以及公开Facebook内容镜像。学校价格、房型、国籍比例、校区搬迁安排和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
         </div>
         <div class="source-links">
           <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
@@ -254,8 +272,8 @@
           <p>是。官方英文课程页以USD公布课程食宿费用；SSP、签证、教材、电费、维护费、押金等到校费用以PHP支付。</p>
         </details>
         <details>
-          <summary>Practical ESL和Intensive ESL怎么选？</summary>
-          <p>Practical ESL是标准高性价比路线；Intensive ESL每天多一节一对一，适合想更快开口或短期提高的人。</p>
+          <summary>General ESL和Intensive ESL怎么选？</summary>
+          <p>General ESL是标准高性价比路线；Intensive ESL每天多一节一对一，适合想更快开口或短期提高的人。</p>
         </details>
         <details>
           <summary>Walk-in课程适合谁？</summary>

@@ -6,9 +6,9 @@ import { RouterModule } from '@angular/router';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
+type WeekOption = 1 | 2 | 3 | 4 | 6 | 8 | 12 | 16 | 20 | 24;
 type RoomId = 'six' | 'quad' | 'triple' | 'twin' | 'single';
-type CourseId = 'target4' | 'target5' | 'target6' | 'ultimate8' | 'ielts' | 'working-holiday';
+type CourseId = 'lite4' | 'target4' | 'target5' | 'target6' | 'ultimate8' | 'ielts' | 'working-holiday';
 
 interface QuickInfo {
   icon: string;
@@ -90,7 +90,7 @@ export class TargetSchoolComponent {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
+  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
   selectedCourseId: CourseId = 'target4';
   selectedRoomId: RoomId = 'six';
   selectedWeeks: WeekOption = 4;
@@ -104,11 +104,12 @@ export class TargetSchoolComponent {
     2: 0,
     3: 60,
     4: 120,
-    8: 240,
+    6: 180,
+    8: 0,
     12: 420,
-    16: 560,
-    20: 700,
-    24: 840,
+    16: 0,
+    20: 0,
+    24: 0,
   };
 
   readonly quickInfo: QuickInfo[] = [
@@ -133,7 +134,7 @@ export class TargetSchoolComponent {
     {
       icon: 'menu_book',
       label: '主力课程',
-      value: 'TARGET 4 / 5 / 6 / ULTIMATE 8',
+      value: 'Lite 4 / TARGET 4 / 5 / 6 / ULTIMATE 8',
       note: '课程按一对一课量区分，也有IELTS和Working Holiday方向。',
     },
     {
@@ -208,13 +209,13 @@ export class TargetSchoolComponent {
     { label: '认证', value: 'TESDA认证校；SSP发给申请认可校 AAFS No. SBM-2013-004。' },
     { label: '学校规模', value: '最大容量约140名学生，约100名老师。' },
     { label: '设施', value: '一对一教室、小组教室、自习室、餐厅、泳池、篮球、台球、乒乓、Wi-Fi、警卫室。' },
-    { label: '4周起价', value: 'USD 1,490起：TARGET 4 + 6人房 + 入学金USD 150。' },
+    { label: '4周起价', value: 'USD 1,430起：Lite 4 + 6人房 + 入学金USD 150。' },
   ];
 
   readonly highlights: TextCard[] = [
     {
       title: '一对一课量清楚，适合按体力选择',
-      text: 'TARGET 4、5、6和ULTIMATE 8按一对一课数递增，学生可以在预算、体力和学习密度之间做清楚取舍。',
+      text: 'Lite 4、TARGET 4、5、6和ULTIMATE 8按课程结构与一对一课数区分，学生可以在预算、体力和学习密度之间做清楚取舍。',
     },
     {
       title: '初学者和成人支持较完整',
@@ -229,7 +230,7 @@ export class TargetSchoolComponent {
   readonly suitableFor: TextCard[] = [
     {
       title: '预算敏感但想保证一对一课量',
-      text: '6人房或4人房搭配TARGET 4/5，可以把总价压得比较稳，同时保留足够一对一课。',
+      text: '6人房或4人房搭配Lite 4、TARGET 4/5，可以把总价压得比较稳，同时保留足够一对一课。',
     },
     {
       title: '英语基础弱或多年没开口',
@@ -266,17 +267,31 @@ export class TargetSchoolComponent {
 
   readonly courses: CourseOption[] = [
     {
+      id: 'lite4',
+      name: 'Lite 4',
+      type: 'ESL / 亲子监护人',
+      lessons: '1:1 x 4',
+      suitable: '适合想控制预算、以一对一课为主，或参加亲子游学的监护人。',
+      prices: this.makePrices(
+        [512, 768, 1024, 1280, 1920, 2560, 3840, 5120, 6400, 7680],
+        [544, 816, 1088, 1360, 2040, 2720, 4080, 5440, 6800, 8160],
+        [568, 852, 1136, 1420, 2130, 2840, 4260, 5680, 7100, 8520],
+        [608, 912, 1216, 1520, 2280, 3040, 4560, 6080, 7600, 9120],
+        [712, 1068, 1424, 1780, 2670, 3560, 5340, 7120, 8900, 10680],
+      ),
+    },
+    {
       id: 'target4',
       name: 'TARGET 4',
       type: 'ESL / 平衡预算',
       lessons: '1:1 x 4 + Group x 3 + 自习 x 1 + Night Class x 2',
       suitable: '适合1个月以上、想保留自习时间、预算也要稳的人。',
       prices: this.makePrices(
-        [536, 804, 1072, 1340, 2680, 4020, 5360, 6700, 8040],
-        [568, 852, 1136, 1420, 2840, 4260, 5680, 7100, 8520],
-        [592, 888, 1184, 1480, 2960, 4440, 5920, 7400, 8880],
-        [632, 948, 1264, 1580, 3160, 4740, 6320, 7900, 9480],
-        [736, 1104, 1472, 1840, 3680, 5520, 7360, 9200, 11040],
+        [536, 804, 1072, 1340, 2010, 2680, 4020, 5360, 6700, 8040],
+        [568, 852, 1136, 1420, 2130, 2840, 4260, 5680, 7100, 8520],
+        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
+        [632, 948, 1264, 1580, 2370, 3160, 4740, 6320, 7900, 9480],
+        [736, 1104, 1472, 1840, 2760, 3680, 5520, 7360, 9200, 11040],
       ),
     },
     {
@@ -286,11 +301,11 @@ export class TargetSchoolComponent {
       lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
       suitable: '适合想增加一对一课量，同时保留小组输出的人。',
       prices: this.makePrices(
-        [560, 840, 1120, 1400, 2800, 4200, 5600, 7000, 8400],
-        [592, 888, 1184, 1480, 2960, 4440, 5920, 7400, 8880],
-        [616, 924, 1232, 1540, 3080, 4620, 6160, 7700, 9240],
-        [656, 984, 1312, 1640, 3280, 4920, 6560, 8200, 9840],
-        [760, 1140, 1520, 1900, 3800, 5700, 7600, 9500, 11400],
+        [560, 840, 1120, 1400, 2100, 2800, 4200, 5600, 7000, 8400],
+        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
+        [616, 924, 1232, 1540, 2310, 3080, 4620, 6160, 7700, 9240],
+        [656, 984, 1312, 1640, 2460, 3280, 4920, 6560, 8200, 9840],
+        [760, 1140, 1520, 1900, 2850, 3800, 5700, 7600, 9500, 11400],
       ),
     },
     {
@@ -300,11 +315,11 @@ export class TargetSchoolComponent {
       lessons: '1:1 x 6 + Group x 2 + Night Class x 2',
       suitable: '适合短期、体力较好、想提高一对一密度的人。',
       prices: this.makePrices(
-        [608, 912, 1216, 1520, 3040, 4560, 6080, 7600, 9120],
-        [640, 960, 1280, 1600, 3200, 4800, 6400, 8000, 9600],
-        [664, 996, 1328, 1660, 3320, 4980, 6640, 8300, 9960],
-        [704, 1056, 1408, 1760, 3520, 5280, 7040, 8800, 10560],
-        [808, 1212, 1616, 2020, 4040, 6060, 8080, 10100, 12120],
+        [608, 912, 1216, 1520, 2280, 3040, 4560, 6080, 7600, 9120],
+        [640, 960, 1280, 1600, 2400, 3200, 4800, 6400, 8000, 9600],
+        [664, 996, 1328, 1660, 2490, 3320, 4980, 6640, 8300, 9960],
+        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
+        [808, 1212, 1616, 2020, 3030, 4040, 6060, 8080, 10100, 12120],
       ),
     },
     {
@@ -314,11 +329,11 @@ export class TargetSchoolComponent {
       lessons: '1:1 x 8 + Night Class x 2',
       suitable: '适合2周以内短期冲刺、基础较好、想最大化一对一的人。',
       prices: this.makePrices(
-        [672, 1008, 1344, 1680, 3360, 5040, 6720, 8400, 10080],
-        [704, 1056, 1408, 1760, 3520, 5280, 7040, 8800, 10560],
-        [728, 1092, 1456, 1820, 3640, 5460, 7280, 9100, 10920],
-        [768, 1152, 1536, 1920, 3840, 5760, 7680, 9600, 11520],
-        [872, 1308, 1744, 2180, 4360, 6540, 8720, 10900, 13080],
+        [672, 1008, 1344, 1680, 2520, 3360, 5040, 6720, 8400, 10080],
+        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
+        [728, 1092, 1456, 1820, 2730, 3640, 5460, 7280, 9100, 10920],
+        [768, 1152, 1536, 1920, 2880, 3840, 5760, 7680, 9600, 11520],
+        [872, 1308, 1744, 2180, 3270, 4360, 6540, 8720, 10900, 13080],
       ),
     },
     {
@@ -328,11 +343,11 @@ export class TargetSchoolComponent {
       lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
       suitable: '适合需要雅思提分或12周保证班方向的人。',
       prices: this.makePrices(
-        [672, 1008, 1344, 1680, 3360, 5040, 6720, 8400, 10080],
-        [704, 1056, 1408, 1760, 3520, 5280, 7040, 8800, 10560],
-        [728, 1092, 1456, 1820, 3640, 5460, 7280, 9100, 10920],
-        [768, 1152, 1536, 1920, 3840, 5760, 7680, 9600, 11520],
-        [872, 1308, 1744, 2180, 4360, 6540, 8720, 10900, 13080],
+        [672, 1008, 1344, 1680, 2520, 3360, 5040, 6720, 8400, 10080],
+        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
+        [728, 1092, 1456, 1820, 2730, 3640, 5460, 7280, 9100, 10920],
+        [768, 1152, 1536, 1920, 2880, 3840, 5760, 7680, 9600, 11520],
+        [872, 1308, 1744, 2180, 3270, 4360, 6540, 8720, 10900, 13080],
       ),
     },
     {
@@ -342,11 +357,11 @@ export class TargetSchoolComponent {
       lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
       suitable: '适合准备澳洲等英语圈打工度假、面试和履历英文的人。',
       prices: this.makePrices(
-        [560, 840, 1120, 1400, 2800, 4200, 5600, 7000, 8400],
-        [592, 888, 1184, 1480, 2960, 4440, 5920, 7400, 8880],
-        [616, 924, 1232, 1540, 3080, 4620, 6160, 7700, 9240],
-        [656, 984, 1312, 1640, 3280, 4920, 6560, 8200, 9840],
-        [760, 1140, 1520, 1900, 3800, 5700, 7600, 9500, 11400],
+        [560, 840, 1120, 1400, 2100, 2800, 4200, 5600, 7000, 8400],
+        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
+        [616, 924, 1232, 1540, 2310, 3080, 4620, 6160, 7700, 9240],
+        [656, 984, 1312, 1640, 2460, 3280, 4920, 6560, 8200, 9840],
+        [760, 1140, 1520, 1900, 2850, 3800, 5700, 7600, 9500, 11400],
       ),
     },
   ];
@@ -467,7 +482,13 @@ export class TargetSchoolComponent {
   }
 
   get campaignDiscountText(): string {
-    return this.includeCampaignDiscount ? `-${this.formatUsd(this.campaignDiscountUsd)}` : '未加入';
+    if (!this.includeCampaignDiscount) {
+      return '未加入';
+    }
+
+    return this.campaignDiscountUsd > 0
+      ? `-${this.formatUsd(this.campaignDiscountUsd)}`
+      : '当前周数无列明折扣';
   }
 
   get quoteUsdText(): string {
@@ -475,11 +496,13 @@ export class TargetSchoolComponent {
   }
 
   get fourWeekStartingText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[0].prices.six[4]);
+    const lowestPackageUsd = Math.min(...this.courses.map((course) => course.prices.six[4]));
+    return this.formatUsd(this.registrationFeeUsd + lowestPackageUsd);
   }
 
   get targetFiveFourWeekText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[1].prices.six[4]);
+    const targetFive = this.courses.find((course) => course.id === 'target5') ?? this.courses[0];
+    return this.formatUsd(this.registrationFeeUsd + targetFive.prices.six[4]);
   }
 
   get weeklyAverageText(): string {
