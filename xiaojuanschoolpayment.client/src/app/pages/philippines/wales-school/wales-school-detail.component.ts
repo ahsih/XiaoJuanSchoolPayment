@@ -19,7 +19,7 @@ interface FitItem { title: string; text: string; }
 interface CourseItem { name: string; type: string; lessons: string; suitable: string; }
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
-interface RoomFee { id: string; name: string; fee: number; note: string; }
+interface RoomFee { id: string; name: string; fee: number; note: string; addOn?: boolean; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
@@ -59,24 +59,31 @@ export class WalesSchoolDetailComponent implements OnInit {
   ];
   private readonly roomFeeOrder = [
     'lower-studio-single',
+    'lower-studio-extra-bed',
     'upper-studio-single',
+    'upper-studio-extra-bed',
     'premium-studio-single',
     'premium-studio-twin-share',
-    'condo-semi-single',
-    'condo-single-with-window',
-    'condo-single',
-    'condo-twin-share',
+    'premium-studio-extra-bed',
+    'upper-premium-studio-single',
+    'upper-premium-studio-twin',
+    'upper-premium-studio-parent-and-child-triple',
+    'share-type-single-with-window',
+    'share-type-single-without-window',
+    'share-type-twin',
+    'condo-type-small-single',
+    'condo-type-parent-and-child-twin',
   ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 0;
+  registrationFee = 100;
   readonly discount = 1;
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
   readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'eep-lite';
-  selectedRoomId = 'condo-twin-share';
+  selectedRoomId = 'share-type-twin';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
@@ -85,9 +92,9 @@ export class WalesSchoolDetailComponent implements OnInit {
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: 'Legarda Road市区生活圈，步行可到餐厅、商场、ATM等生活机能。' },
     { icon: 'groups', label: '学校规模', value: '约80名学生', note: '小校容量让老师与学校人员更容易照顾个别需求。' },
     { icon: 'school', label: '课程方向', value: 'EEP / Infinity / IELTS / Junior', note: '从轻量生活英文到综合强化、雅思与青少年课程都有对应路线。' },
-    { icon: 'bed', label: '住宿', value: 'Studio / Premium / Condo', note: '房型选择比一般宿舍更生活化，适合成人、亲子或重视隐私的学生。' },
+    { icon: 'bed', label: '住宿', value: 'Studio / Premium / Share / Condo', note: '房型选择比一般宿舍更生活化，适合成人、亲子或重视隐私的学生。' },
     { icon: 'restaurant', label: '餐食', value: '餐费需确认', note: '报名报价要把meal fee、房型空位和当地PHP费用一起核算。' },
-    { icon: 'payments', label: '2026费用', value: '课程+住宿拆分', note: '本页以4周USD课程费和住宿费为主，报名费金额需由顾问向学校确认。' },
+    { icon: 'payments', label: '费用参考', value: '课程+住宿拆分', note: '4周USD课程费与住宿费分开列示，附件价目表列示报名费USD 100。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -110,7 +117,7 @@ export class WalesSchoolDetailComponent implements OnInit {
     { label: '学校容量', value: '约80名学生' },
     { label: '课程方向', value: 'EEP、ESL/Infinity、Business English、IELTS、Junior ESL、Junior IELTS、Family方向' },
     { label: '房型方向', value: 'Lower/Upper Studio、Premium Studio、Share、Condo等' },
-    { label: '报价说明', value: '本页列出2026年4周课程费、住宿费和到校PHP费用；公开注册/报名费金额需另行确认' },
+    { label: '报价说明', value: '课程费采用2026年4周公开参考；住宿费与USD 100报名费按用户提供的2025价目表更新' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -157,14 +164,21 @@ export class WalesSchoolDetailComponent implements OnInit {
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'lower-studio-single', name: 'Lower Studio Single', fee: 1000, note: 'Studio单人房，生活设备完整，适合重视隐私的人' },
-    { id: 'upper-studio-single', name: 'Upper Studio Single', fee: 1100, note: '楼层/房型不同，空房需提前确认' },
-    { id: 'premium-studio-single', name: 'Premium Studio Single', fee: 1400, note: 'Premium单人房，设备更完整，预算较高' },
-    { id: 'premium-studio-twin-share', name: 'Premium Studio Twin Share', fee: 1000, note: 'Premium双人共享，适合同行或希望平衡预算的人' },
-    { id: 'condo-semi-single', name: 'Condo Semi Single', fee: 1200, note: 'Condo半单人，兼顾隐私与公寓型生活' },
-    { id: 'condo-single-with-window', name: 'Condo Single with Window', fee: 950, note: '带窗Condo单人房，适合重视采光的人' },
-    { id: 'condo-single', name: 'Condo Single', fee: 850, note: 'Condo单人房，2026公开价格表常用比较参考' },
-    { id: 'condo-twin-share', name: 'Condo Twin Share', fee: 750, note: '默认预算参考，适合先估算4周最低总价' },
+    { id: 'lower-studio-single', name: 'Lower Studio Single（单人套房）', fee: 1200, note: '房内有书桌、椅子、柜子、冰箱、保险箱和完整卫浴；无厨房且禁止烹饪' },
+    { id: 'lower-studio-extra-bed', name: 'Lower Studio Extra Bed（额外加床）', fee: 600, note: '加床补充费用，须与Lower Studio主房搭配', addOn: true },
+    { id: 'upper-studio-single', name: 'Upper Studio Single（单人套房）', fee: 1300, note: '房内有书桌、椅子、柜子、冰箱、保险箱和完整卫浴；无厨房且禁止烹饪' },
+    { id: 'upper-studio-extra-bed', name: 'Upper Studio Extra Bed（额外加床）', fee: 700, note: '加床补充费用，须与Upper Studio主房搭配', addOn: true },
+    { id: 'premium-studio-single', name: 'Premium Studio Single（高级单人套房）', fee: 1600, note: '两间房（卧室与客厅），配简易厨房、基本餐具、小冰箱、微波炉和热水壶' },
+    { id: 'premium-studio-twin-share', name: 'Premium Studio Twin Share（高级双人套房）', fee: 1100, note: '两间房（卧室与客厅），配简易厨房、基本餐具、小冰箱、微波炉和热水壶' },
+    { id: 'premium-studio-extra-bed', name: 'Premium Studio Extra Bed（额外加床）', fee: 600, note: '加床补充费用，须与Premium Studio主房搭配', addOn: true },
+    { id: 'upper-premium-studio-single', name: 'Upper Premium Studio Single（单人间）', fee: 1700, note: 'Upper Premium Studio单人间' },
+    { id: 'upper-premium-studio-twin', name: 'Upper Premium Studio Twin（双人间）', fee: 1200, note: 'Upper Premium Studio双人间' },
+    { id: 'upper-premium-studio-parent-and-child-triple', name: 'Upper Premium Studio Parent & Child Triple（亲子三人间）', fee: 1030, note: 'Upper Premium Studio亲子三人间' },
+    { id: 'share-type-single-with-window', name: 'Share Type Single with Window（单人间有窗）', fee: 1150, note: '顶层复式共享住宅，共4至5间卧室、2间卫浴，并共用餐厅、客厅和厨房' },
+    { id: 'share-type-single-without-window', name: 'Share Type Single without Window（单人间无窗）', fee: 1050, note: '顶层复式共享住宅，共4至5间卧室、2间卫浴，并共用餐厅、客厅和厨房' },
+    { id: 'share-type-twin', name: 'Share Type Twin（双人间）', fee: 950, note: '顶层复式共享住宅，共4至5间卧室、2间卫浴，并共用餐厅、客厅和厨房' },
+    { id: 'condo-type-small-single', name: 'Condo Type Small Single（小单人间）', fee: 1300, note: 'Condo Type小单人间' },
+    { id: 'condo-type-parent-and-child-twin', name: 'Condo Type Parent & Child Twin（亲子双人间）', fee: 1000, note: 'Condo Type亲子双人间' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -219,18 +233,18 @@ export class WalesSchoolDetailComponent implements OnInit {
   readonly campusActivities = ['新生说明会', '英语口语活动', 'IELTS阶段训练', '生活英文实践', '学生交流活动'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Session Road咖啡厅', 'Camp John Hay'];
   readonly notes = [
-    'WALES 2026费用以课程费和住宿费分开列示，本页默认4周 EEP Lite + Condo Twin Share 估算。',
-    '官方报名流程提到需要支付enrollment fee以保留注册和房间，但公开金额需向学校确认，本页报价暂不计入。',
+    'WALES课程费和住宿费分开列示，本页默认按4周 EEP Lite + Share Type Twin估算。',
+    '用户提供的WALES 2025价目表列示USD 100报名费，本页已计入快速报价。',
     'IELTS Guarantee通常为8周以上方向，本页4周课程费表只列可用于4周估算的公开项目。',
     '到校费用多以PHP支付，SSP、水电、维护、保证金、学生证、签证延签和ACR I-Card按学习周数不同而变化。',
-    'WALES住宿空房变化快，Studio、Premium Studio和Condo需要先确认入学日可用房型。',
+    'WALES住宿空房变化快，Studio、Premium Studio、Share和Condo都需要先确认入学日可用房型。',
     '最终报名以学校正式录取、付款节点、优惠有效期和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶WALES语言学校是斯巴达学校吗？', answer: '不是典型高压斯巴达。WALES更适合小校、市区便利、成人友好和相对弹性的学习节奏；如果需要强制自习和严格门禁，应同步比较PINES、JIC Challenger或BECI Sparta。' },
     { question: 'WALES适合零基础学生吗？', answer: '可以优先看EEP、EEP Lite或Infinity Lite。报名时建议先说明英文基础、学习周数和目标，顾问会帮你判断是否需要更高课时的Infinity路线。' },
-    { question: '页面报价包含报名费和餐费吗？', answer: '不包含。公开资料显示报名流程会收取enrollment fee，但金额需确认；餐费也需要按当期方案核价。本页快速报价只估算课程费和住宿费，另列到校PHP费用。' },
-    { question: 'WALES的房型怎么选？', answer: '预算优先可先看Condo Twin Share或Condo Single；重视隐私和设备可看Studio或Premium Studio。热门档期建议尽早确认空房。' },
+    { question: '页面报价包含报名费和餐费吗？', answer: '快速报价已计入用户提供价目表中的USD 100报名费，但不含餐费。餐费仍需按当期方案核价；到校PHP费用另列。' },
+    { question: 'WALES的房型怎么选？', answer: '预算优先可先看Share Type Twin或Condo Type Parent & Child Twin；重视隐私和设备可看Studio或Premium Studio。热门档期建议尽早确认空房。' },
     { question: 'WALES适合亲子吗？', answer: '可以进入候选，尤其是重视房型和市区便利的家庭。但要先确认儿童年龄、家长课程、监护规则、房型和餐费。' },
     { question: '思达会怎么建议WALES？', answer: '如果学生是成人、工作者、家庭或想在市中心附近轻松但认真地学英文，WALES值得比较；若目标是短期高压冲刺分数，则建议同时看更强管理的碧瑶学校。' },
   ];
@@ -295,16 +309,17 @@ export class WalesSchoolDetailComponent implements OnInit {
         name: room.name,
         fee: room.price,
         note: room.description || '请联系顾问确认空房',
+        addOn: room.name.toLowerCase().includes('extra bed'),
       }))
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'condo-twin-share')?.id ?? this.roomFees[0].id;
+        this.selectedRoomId = this.roomFees.find((room) => room.id === 'share-type-twin')?.id ?? this.quoteRoomFees[0]?.id ?? this.roomFees[0].id;
       }
     }
 
-    const registrationFee = fees.find((fee) => fee.name === '注册费' && fee.fee > 0);
+    const registrationFee = fees.find((fee) => (fee.name === '注册费' || fee.name === '报名费') && fee.fee > 0);
     if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费' && fee.fee > 0);
     if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
@@ -333,6 +348,7 @@ export class WalesSchoolDetailComponent implements OnInit {
   }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
+  get quoteRoomFees(): RoomFee[] { return this.roomFees.filter((room) => !room.addOn); }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
   get isPeakSeason(): boolean { return false; }

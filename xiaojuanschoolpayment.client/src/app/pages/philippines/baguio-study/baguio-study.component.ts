@@ -211,7 +211,7 @@ export class BaguioStudyComponent {
       location: 'Irisan, Baguio / ECO Campus',
       style: '自然型一体校园与弹性ESL',
       route: '/philippines-study/baguio/anj-e-edu-english-academy',
-      startingPrice: '4周约USD 1,450起',
+      startingPrice: '4周USD 1,550起（Eco Relax Lite + Deluxe Triple + 入学金）',
       courses: ['Eco Relax Lite', 'Eco Relax Plus', 'Eco Hub ESL', 'Eco Sparta', 'IELTS / TOEIC', 'Junior'],
       accommodation: 'Deluxe、Premium、Premium Studio、Suite、Eco Villa等住宿线，房型差价明显，需按预算确认。',
       facilities: 'Admin/Main Building、Dining Hall、Cafe、Eco Mart、Fitness Gym、Golf Driving Range、Indoor Gymnasium、BBQ/Camping Zone。',

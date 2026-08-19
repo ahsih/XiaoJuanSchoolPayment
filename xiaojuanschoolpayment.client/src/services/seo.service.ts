@@ -97,7 +97,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/wales-academy': {
     title: '菲律宾碧瑶WALES语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶WALES语言学校页面，整理WALES Academy的EEP、Infinity、IELTS、Junior课程、小校环境、Legarda位置、Studio/Premium/Condo住宿、2026费用和到校费用。',
+      '菲律宾碧瑶WALES语言学校页面，整理WALES Academy的EEP、Infinity、IELTS、Junior课程、小校环境、Legarda位置、Studio/Premium/Share/Condo住宿、课程住宿费用和到校费用。',
     keywords: '菲律宾碧瑶WALES语言学校, WALES Academy, Widest Asian Learners English School, 碧瑶WALES, 碧瑶语言学校, 菲律宾IELTS学校',
     image: '/assets/philippines/wales-school-building.jpg',
   },

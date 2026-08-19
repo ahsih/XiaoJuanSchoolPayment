@@ -267,7 +267,7 @@
             </div>
             <div class="table-row" role="row" *ngFor="let room of roomOptions">
               <span role="cell">{{ room.name }}</span>
-              <span role="cell">{{ formatUsd(room.fee4w) }}</span>
+              <span role="cell">{{ formatRoomFee(room) }}</span>
               <span role="cell">{{ room.note }}</span>
             </div>
           </div>
@@ -275,7 +275,7 @@
           <div class="mobile-card-list mobile-room-fees" aria-label="A&J 4周住宿费用手机卡片">
             <article *ngFor="let room of roomOptions">
               <span>{{ room.name }}</span>
-              <strong>{{ formatUsd(room.fee4w) }}</strong>
+              <strong>{{ formatRoomFee(room) }}</strong>
               <p>{{ room.note }}</p>
             </article>
           </div>
@@ -316,7 +316,7 @@
             <label>
               房型
               <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                <option *ngFor="let room of quoteRoomOptions" [value]="room.id">{{ room.name }}</option>
               </select>
             </label>
             <label>

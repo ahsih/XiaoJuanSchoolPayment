@@ -13,14 +13,20 @@ type RoomId =
   | 'deluxe-single'
   | 'premium-twin'
   | 'premium-single'
-  | 'premium-suite';
+  | 'premium-suite'
+  | 'premium-studio-twin'
+  | 'premium-studio-single'
+  | 'premium-studio-triple-use'
+  | 'premium-studio-quad-use'
+  | 'eco-villa-single'
+  | 'eco-villa-exclusive-twin'
+  | 'eco-villa-exclusive-triple';
 type CourseId =
   | 'eco-relax-lite'
   | 'eco-relax-plus'
   | 'eco-hub'
   | 'eco-sparta'
   | 'test-course'
-  | 'working-holiday'
   | 'junior-lite'
   | 'junior-esl'
   | 'junior-test';
@@ -63,6 +69,7 @@ interface RoomOption {
   name: string;
   note: string;
   fee4w: number;
+  isTotalPrice?: boolean;
 }
 
 interface FeeRow {
@@ -263,7 +270,7 @@ export class AnjSchoolComponent {
       id: 'eco-relax-plus',
       name: 'Eco Relax Plus',
       type: 'ESL / 标准平衡',
-      lessons: '1:1 x 3 + Group x 2 + Optional Night Class',
+      lessons: '1:1 x 3 + Group x 2 + Vocabulary Test + Optional Class',
       suitable: '适合想兼顾一对一纠正和团体输出，强度不要太高但要有稳定学习节奏的人。',
       tuition4w: 750,
     },
@@ -271,7 +278,7 @@ export class AnjSchoolComponent {
       id: 'eco-hub',
       name: 'Eco Hub ESL',
       type: 'ESL / 目标轨道',
-      lessons: '1:1 x 4 + Group x 2',
+      lessons: '1:1 x 4 + Group x 2 + Vocabulary Test + Optional Class',
       suitable: '可按Speaking Accelerator、Business Booster、Navigator方向选课，适合有明确使用场景的人。',
       tuition4w: 850,
     },
@@ -287,23 +294,15 @@ export class AnjSchoolComponent {
       id: 'test-course',
       name: 'Test Course',
       type: 'IELTS / TOEIC / TOEFL / PTE',
-      lessons: '考试科目一对一与团体训练，按目标测试安排',
+      lessons: '1:1 x 4 + Group x 2 + Vocabulary Test + Optional Class + Monthly Mock Test',
       suitable: '适合已有分数目标，想在碧瑶做阶段性备考、模考和弱项训练的人。',
       tuition4w: 950,
-    },
-    {
-      id: 'working-holiday',
-      name: 'Working Holiday',
-      type: '求职 / 生活英语',
-      lessons: '实用英语、面试、履历和海外生活场景训练',
-      suitable: '适合准备澳洲、加拿大等英语圈打工度假，想补面试和职场表达的人。',
-      tuition4w: 900,
     },
     {
       id: 'junior-lite',
       name: 'Junior Lite',
       type: 'Junior / 轻量',
-      lessons: '青少年基础英语与活动型学习',
+      lessons: '1:1 x 3 + Optional Class',
       suitable: '适合低龄学生先适应英文环境，课程强度相对轻。',
       tuition4w: 900,
     },
@@ -311,7 +310,7 @@ export class AnjSchoolComponent {
       id: 'junior-esl',
       name: 'Junior ESL',
       type: 'Junior / 标准',
-      lessons: '青少年ESL强化课程',
+      lessons: '1:1 x 4 + Group x 2 + Mandatory Vocabulary Test + Optional Class',
       suitable: '适合寒暑假或中长期青少年英语强化，需同步确认监护、房型和活动安排。',
       tuition4w: 1300,
     },
@@ -319,7 +318,7 @@ export class AnjSchoolComponent {
       id: 'junior-test',
       name: 'Junior Test',
       type: 'Junior / 考试',
-      lessons: '青少年考试方向课程',
+      lessons: '1:1 x 4 + Group x 2 + Mandatory Vocabulary Test + Optional Class',
       suitable: '适合有考试基础目标的青少年学生，报名时需确认当前开班与年龄要求。',
       tuition4w: 1350,
     },
@@ -331,7 +330,14 @@ export class AnjSchoolComponent {
     { id: 'deluxe-single', name: 'Deluxe Single', note: 'Deluxe系统中的单人房，隐私更高但费用明显上升。', fee4w: 1450 },
     { id: 'premium-twin', name: 'Premium Twin', note: 'Premium住宿线，适合对房间质感和舒适度要求更高的人。', fee4w: 1150 },
     { id: 'premium-single', name: 'Premium Single', note: '适合长期成人学生或需要安静恢复空间的人，旺季要早查空房。', fee4w: 1650 },
-    { id: 'premium-suite', name: 'Premium Suite', note: '预算最高的舒适型选择之一，适合重视住宿体验的学生或家庭。', fee4w: 2100 },
+    { id: 'premium-suite', name: 'Premium Suite', note: '可住1-2人，限同性居住；公开资料列有空调、浴缸和吹风机等设施。', fee4w: 2100 },
+    { id: 'premium-studio-twin', name: 'Premium Studio Twin', note: 'Premium Studio双人房，适合同行或希望平衡预算与舒适度的人。', fee4w: 1150 },
+    { id: 'premium-studio-single', name: 'Premium Studio Single', note: 'Premium Studio单人房，适合重视隐私和独立空间的人。', fee4w: 1650 },
+    { id: 'premium-studio-triple-use', name: 'Premium Studio（三人入住）', note: '三人共同入住的4周房间总价；报价需按实际入住人数另行核算课程费。', fee4w: 3700, isTotalPrice: true },
+    { id: 'premium-studio-quad-use', name: 'Premium Studio（四人入住）', note: '四人共同入住的4周房间总价；报价需按实际入住人数另行核算课程费。', fee4w: 4600, isTotalPrice: true },
+    { id: 'eco-villa-single', name: 'Eco Villa Single', note: '独栋别墅单人房，适合重视独立性和自然住宿体验的人。', fee4w: 2300 },
+    { id: 'eco-villa-exclusive-twin', name: 'Eco Villa整栋（双人入住）', note: '双人独享整栋别墅的4周总价。', fee4w: 2700, isTotalPrice: true },
+    { id: 'eco-villa-exclusive-triple', name: 'Eco Villa整栋（三人入住）', note: '三人独享整栋别墅的4周总价。', fee4w: 3700, isTotalPrice: true },
   ];
 
   readonly localFees: FeeRow[] = [
@@ -429,7 +435,11 @@ export class AnjSchoolComponent {
   }
 
   get selectedRoom(): RoomOption {
-    return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
+    return this.quoteRoomOptions.find((room) => room.id === this.selectedRoomId) ?? this.quoteRoomOptions[0];
+  }
+
+  get quoteRoomOptions(): RoomOption[] {
+    return this.roomOptions.filter((room) => !room.isTotalPrice);
   }
 
   get packageUsd(): number {
@@ -509,5 +519,9 @@ export class AnjSchoolComponent {
 
   formatUsd(value: number): string {
     return `USD ${value.toLocaleString('en-US')}`;
+  }
+
+  formatRoomFee(room: RoomOption): string {
+    return `${this.formatUsd(room.fee4w)}${room.isTotalPrice ? '（总价）' : ''}`;
   }
 }
