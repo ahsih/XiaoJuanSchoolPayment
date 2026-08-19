@@ -55,11 +55,11 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>EOP Lite ESL + EOP 校内四人房</p>
+              <p>EOP Lite ESL + EOP 四人房（女生）</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、课程费和住宿费估算
+                  已按中介优惠免注册费，并计入课程费和住宿费
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -251,7 +251,7 @@
             <div class="section-heading">
               <span>BECI 2026 年 4 周住宿费</span>
               <h2>房型和校区会明显影响总预算</h2>
-              <p>默认报价使用EOP校内四人房。单人房、Sparta 3+1和City Studio房型建议先让顾问确认空房。</p>
+              <p>默认报价使用EOP四人房（女生）。单人房、Sparta 3+1和City Studio房型建议先让顾问确认空房。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="BECI 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -278,8 +278,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>BECI 费用快速报价</span>
-              <h2>默认参考：4周 EOP Lite ESL + EOP 校内四人房</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）x 优惠折扣 + 旺季附加费</p>
+              <h2>默认参考：4周 EOP Lite ESL + EOP 四人房（女生）</h2>
+              <p>前期支付参考 = 优惠后课程费 + 按周折算住宿费 - 长期折扣 + 旺季附加费；中介优惠免注册费。</p>
             </div>
             <div class="quote-form" aria-label="BECI费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -288,10 +288,10 @@
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
             </div>
             <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
+              <div><span>注册费（中介优惠免收）</span><strong>USD {{ payableRegistrationFee }}（原价 USD {{ registrationFee }}）</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
+              <div><span>{{ discountText }}</span><strong *ngIf="selectedWeeks <= 3">已应用</strong><strong *ngIf="longStayDiscount > 0">- USD {{ formatUsd(longStayDiscount) }}</strong><strong *ngIf="selectedWeeks === 4">无额外折扣</strong></div>
               <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
@@ -305,7 +305,7 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、维护费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">BECI旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周；最终需由顾问按入学档期确认。</p>
+            <p class="season-note">中介优惠免USD 100注册费；1/2/3周课程费按4周价的40%/60%/80%计算；8/12/16/20/24周长期折扣为USD 50/100/200/300/400，可与常规优惠叠加。City Studio双人间夫妻同行时每人USD 750/4周。旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周。</p>
           </section>
         </section>
 
@@ -330,7 +330,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月3日。校区、课程和特色参考APIBECI官方页面；课程费、住宿费和当地费用参考公开2026年费用表并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年8月19日。课程费、住宿费、注册费优惠、短期比例和长期折扣按所附BECI 2026费用表更新；校区、课程和特色参考APIBECI官方页面。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -437,7 +437,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>EOP Lite ESL<br />EOP 校内四人房</p>
+          <p>EOP Lite ESL<br />EOP 四人房（女生）</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

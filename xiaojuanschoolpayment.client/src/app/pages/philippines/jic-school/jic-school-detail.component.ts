@@ -47,7 +47,6 @@ export class JicSchoolDetailComponent implements OnInit {
   private readonly pricingSchoolSearchName = 'JIC';
   private readonly pricingSchoolNames = ['Baguio JIC', '菲律宾碧瑶JIC语言学校', 'Baguio JIC Academy', 'JIC Academy Baguio'];
   private readonly courseFeeOrder = [
-    'challenger-esl-flex',
     'challenger-esl-lite',
     'challenger-esl-core',
     'challenger-esl-standard',
@@ -55,27 +54,31 @@ export class JicSchoolDetailComponent implements OnInit {
     'challenger-ielts-core',
     'challenger-ielts-standard',
     'challenger-ielts-guarantee',
-    'premium-speaking-starter',
-    'premium-speaking-pro',
-    'premium-speaking-master',
-    'premium-tep-esl-8',
-    'premium-tep-esl-9',
-    'premium-tep-esl-10',
-    'premium-working-holiday',
+    'premium-speaking-starter-7',
+    'premium-speaking-pro-8',
+    'premium-speaking-master-8',
+    'premium-tep-8',
+    'premium-tep-9',
+    'premium-tep-10',
+    'premium-active-senior-5',
+    'premium-active-senior-6',
+    'premium-working-holiday-8',
     'premium-toeic',
-    'premium-business-master',
+    'premium-business-master-8',
+    'premium-junior',
+    'premium-guardian',
   ];
   private readonly roomFeeOrder = [
     'challenger-single',
     'challenger-twin',
-    'challenger-quad-loft',
-    'challenger-quad-studio',
-    'premium-single-a-balcony',
-    'premium-semi-single',
-    'premium-twin-a-balcony',
-    'premium-twin-b-no-balcony',
-    'premium-quad-a-balcony',
-    'premium-quad-b-no-balcony',
+    'challenger-quad-duplex',
+    'challenger-quad-bunk',
+    'premium-single-no-balcony',
+    'premium-single-balcony',
+    'premium-twin-no-balcony',
+    'premium-twin-balcony',
+    'premium-quad-no-balcony',
+    'premium-quad-balcony',
   ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
@@ -86,7 +89,7 @@ export class JicSchoolDetailComponent implements OnInit {
   readonly usdToCny = 7.2;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 24];
   selectedCourseId = 'challenger-esl-lite';
-  selectedRoomId = 'challenger-quad-studio';
+  selectedRoomId = 'challenger-quad-bunk';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
@@ -97,7 +100,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { icon: 'assignment', label: '重点方向', value: 'ESL / IELTS / Speaking / Career', note: '从基础英文、雅思保证班到TOEIC、商务和打工度假都有对应路线。' },
     { icon: 'school', label: '学习风格', value: '目标导向分校区', note: '先按目标选校区，再按课时量、管理强度和房型做报价。' },
     { icon: 'bed', label: '住宿', value: '单人 / 双人 / 四人房', note: 'Challenger和Premium房型不同，热门档期要提前确认空位。' },
-    { icon: 'payments', label: '费用表', value: '2026公开费用整理', note: '课程住宿以USD计算，当地费用多以PHP到校支付。' },
+    { icon: 'payments', label: '费用表', value: 'JIC 2025费用表整理', note: '课程住宿以USD计算，特别选修课和保证班费用以PHP另计。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -121,74 +124,79 @@ export class JicSchoolDetailComponent implements OnInit {
     { label: 'Challenger地址', value: '73 Del Nacia Apt, Upper West Camp 7, Baguio City, Philippines' },
     { label: '主要校区', value: 'Challenger Campus（ESL / IELTS，官方main-campus页面）与 Premium Campus（Speaking / Career）' },
     { label: 'Challenger概况', value: '官方页面列容量约130人、2006年设立、最低年龄18岁。' },
-    { label: '课程方向', value: 'ESL Flex、ESL Lite/Core/Standard、IELTS Lite/Core/Standard/Guarantee、Speaking Starter/Pro/Master、TEP ESL、TOEIC、Business Master、Working Holiday' },
-    { label: '住宿方向', value: 'Challenger单人、双人、四人Loft、四人Studio；Premium单人、Semi Single、双人A/B、四人A/B' },
+    { label: '课程方向', value: 'ESL Lite/Core/Standard、IELTS Lite/Core/Standard/Guarantee、Speaking、TEP、Active Senior、TOEIC、Business、Working Holiday、青少年与监护人课程' },
+    { label: '住宿方向', value: 'Challenger标准单人/双人、复式或上下铺四人间；Premium无阳台/带阳台单人、双人及四人间' },
     { label: '学习制度', value: 'Challenger更重视词汇测试、自习、IELTS和ESL体系；Premium更重视主题式学习、口语输出和职业场景' },
-    { label: '报价说明', value: '2026公开费用按4周整理；JIC日元表按公开固定汇率JPY145/USD折算，最终以学校正式报价为准' },
+    { label: '报价说明', value: '根据思达顾问提供的JIC 2025费用表按4周整理；最终以学校正式报价为准' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/jic-campus-hero.jpg', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
     { image: 'assets/philippines/jic-main-ielts-class.png', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
     { image: 'assets/philippines/jic-premium-group-class.png', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
-    { image: 'assets/philippines/jic-premium-quad-room.png', title: '房型差异直接影响预算', text: '从Challenger四人Studio到Premium单人阳台房，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
+    { image: 'assets/philippines/jic-premium-quad-room.png', title: '房型差异直接影响预算', text: '从Challenger上下铺四人间到Premium带阳台单人间，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
   ];
 
   readonly suitableFor: FitItem[] = [
     { title: '想在碧瑶系统冲ESL或IELTS', text: '优先看Challenger校区，课程量、测试和自习制度更适合目标明确的学习节奏。' },
     { title: '想加强口语、表达或职场英文', text: 'Premium的Speaking、TEP ESL、Business Master、Working Holiday和TOEIC路线更容易匹配应用型目标。' },
-    { title: '需要先控制预算再选校区', text: 'Challenger四人Studio或四人Loft常是预算入口，适合先用费用表做总价范围。' },
+    { title: '需要先控制预算再选校区', text: 'Challenger上下铺或复式四人间常是预算入口，适合先用费用表做总价范围。' },
     { title: '成人、工作者或希望住得舒服', text: 'Premium校区房型和设施选择更丰富，适合重视舒适度、安静环境和交流空间的人。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '只想看一个统一报价', text: 'JIC必须先分Challenger和Premium，再看课程、房型和旺季档期，不适合只凭学校名做决定。' },
     { title: '不想接受测试或晚间自习', text: 'Challenger的ESL/IELTS路线会更强调词汇测试、自习和课堂纪律，报名应先确认能否适应。' },
-    { title: '旺季临近才想锁定单人房', text: 'Premium单人房、Semi Single和热门Challenger房型容易紧张，建议提前核空房。' },
+    { title: '旺季临近才想锁定单人房', text: 'Premium单人间和热门Challenger房型容易紧张，建议提前核空房。' },
     { title: '只想要海边度假感', text: 'JIC在碧瑶，优势是学习氛围、凉爽气候和长期投入，不是海岛度假型学校。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'Challenger ESL Flex / Lite / Core / Standard', type: 'Challenger 基础与综合ESL', lessons: '3-6节一对一 + 2节团体 + 2节Special Class', suitable: 'Flex适合轻量入门；Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
-    { name: 'Challenger IELTS Lite / Core / Standard', type: 'IELTS备考', lessons: '4-6节一对一 + 2节团体 + 2节Special Class', suitable: '适合有雅思分数目标、需要听说读写分科训练、模考复盘和晚间自习的人。' },
-    { name: 'Challenger IELTS Guarantee', type: 'IELTS保证班', lessons: '6节一对一 + 2节团体 + 2节Special Class', suitable: '适合目标分数明确、可接受出勤与学习规则，并愿意额外支付保证班参加费的学生。' },
-    { name: 'Premium Speaking Starter / Pro / Master', type: '口语强化', lessons: '4-6节一对一 + 1节团体 + 2节Special Class', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
-    { name: 'Premium TEP ESL 8 / 9 / 10', type: '主题式ESL', lessons: '3-5节一对一 + 3节团体 + 2节Special Class', suitable: '通过旅行、艺术、音乐、烹饪等主题进行沉浸式表达训练，适合喜欢生活化学习的人。' },
-    { name: 'Premium TOEIC / Working Holiday', type: '职业与考试方向', lessons: '3节一对一 + 3节团体 + 2节Special Class', suitable: '适合求职、打工度假、面试、简历、职场沟通或多益成绩目标。' },
-    { name: 'Premium Business Master', type: '商务英语', lessons: '6节一对一 + 2节Special Class', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
+    { name: 'Challenger ESL Lite / Core / Standard', type: 'Challenger 基础与综合ESL', lessons: '4-6节一对一 + 2节小组课', suitable: 'Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
+    { name: 'Challenger IELTS Lite / Core / Standard', type: 'IELTS备考', lessons: '4-6节一对一 + 2节小组课', suitable: 'Standard另含强制自习和30分钟词汇测试，适合有明确分数目标的学生。' },
+    { name: 'Challenger IELTS Guarantee', type: 'IELTS保证班', lessons: '6节一对一 + 2节小组课 + 强制自习及词汇测试', suitable: '每周六模拟测试；保证班参加费另付PHP 18,000。' },
+    { name: 'Premium Speaking Starter 7 / Pro 8 / Master 8', type: '口语强化', lessons: '4-6节一对一 + 1节团体课 + 2节选修课', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
+    { name: 'Premium 主题英语TEP 8 / 9 / 10', type: '主题式ESL', lessons: '3-5节一对一 + 3节团体课 + 2节选修课', suitable: '适合喜欢通过生活主题练习英文表达的学生。' },
+    { name: 'Premium Active Senior 5 / 6', type: '40岁以上成人课程', lessons: '3-4节一对一 + 2节选修课', suitable: '适合40岁以上学生，兼顾英语学习、旅游与休闲。' },
+    { name: 'Premium 托业 / Working Holiday 8', type: '职业与考试方向', lessons: '3节一对一 + 3节团体课 + 2节选修课', suitable: '适合求职、打工度假、职场沟通或托业成绩目标。' },
+    { name: 'Premium Business Master 8', type: '商务英语', lessons: '6节一对一 + 2节选修课', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
+    { name: 'Premium 青少年 / 监护人课程', type: '亲子游学', lessons: '青少年4节一对一 + 2节团体课；监护人2节一对一', suitable: '青少年课程另含1小时写作活动和2小时监控晚自习。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'challenger-esl-flex', name: 'Challenger ESL Flex', tuition: 580, suitable: 'Challenger轻量ESL，适合低预算或先适应校区节奏' },
-    { id: 'challenger-esl-lite', name: 'Challenger ESL Lite', tuition: 760, suitable: 'Challenger基础综合ESL，适合多数入门和稳步提升学生' },
-    { id: 'challenger-esl-core', name: 'Challenger ESL Core', tuition: 860, suitable: '一对一课时更多，适合想加强输出和纠错的人' },
-    { id: 'challenger-esl-standard', name: 'Challenger ESL Standard', tuition: 960, suitable: '高课时ESL，适合短期集中提升' },
-    { id: 'challenger-ielts-lite', name: 'Challenger IELTS Lite', tuition: 960, suitable: 'IELTS入门或基础备考路线' },
-    { id: 'challenger-ielts-core', name: 'Challenger IELTS Core', tuition: 1010, suitable: 'IELTS课时更密集，适合阶段性冲分' },
-    { id: 'challenger-ielts-standard', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '标准IELTS备考路线，适合明确分数目标' },
-    { id: 'challenger-ielts-guarantee', name: 'Challenger IELTS Guarantee', tuition: 1060, suitable: 'IELTS保证班，另需确认保证班规则与参加费' },
-    { id: 'premium-speaking-starter', name: 'Premium Speaking Starter', tuition: 800, suitable: '初学者友好口语课程，适合建立开口信心' },
-    { id: 'premium-speaking-pro', name: 'Premium Speaking Pro', tuition: 975, suitable: '口语输出量更高，适合提升流利度与表达结构' },
-    { id: 'premium-speaking-master', name: 'Premium Speaking Master', tuition: 1150, suitable: '高密度口语与表达训练，适合演讲、讨论和流利度目标' },
-    { id: 'premium-tep-esl-8', name: 'Premium TEP ESL 8', tuition: 800, suitable: '主题式ESL入门，适合生活化英语学习' },
-    { id: 'premium-tep-esl-9', name: 'Premium TEP ESL 9', tuition: 900, suitable: '主题式ESL进阶，团体互动比重高' },
-    { id: 'premium-tep-esl-10', name: 'Premium TEP ESL 10', tuition: 1000, suitable: '主题式ESL高课时，适合想增加一对一训练的人' },
-    { id: 'premium-working-holiday', name: 'Premium Working Holiday', tuition: 900, suitable: '打工度假、面试和工作场景英语准备' },
-    { id: 'premium-toeic', name: 'Premium TOEIC', tuition: 900, suitable: '多益考试与职场英语基础' },
-    { id: 'premium-business-master', name: 'Premium Business Master', tuition: 1150, suitable: '商务会议、邮件、演示和职场表达强化' },
+    { id: 'challenger-esl-lite', name: 'Challenger ESL Lite', tuition: 760, suitable: '4节一对一 + 2节小组课' },
+    { id: 'challenger-esl-core', name: 'Challenger ESL Core', tuition: 860, suitable: '5节一对一 + 2节小组课' },
+    { id: 'challenger-esl-standard', name: 'Challenger ESL Standard', tuition: 960, suitable: '6节一对一 + 2节小组课' },
+    { id: 'challenger-ielts-lite', name: 'Challenger IELTS Lite', tuition: 960, suitable: '4节一对一 + 2节小组课' },
+    { id: 'challenger-ielts-core', name: 'Challenger IELTS Core', tuition: 1010, suitable: '5节一对一 + 2节小组课' },
+    { id: 'challenger-ielts-standard', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试' },
+    { id: 'challenger-ielts-guarantee', name: 'Challenger IELTS Guarantee', tuition: 1060, suitable: '每周六模拟测试；保证班另付PHP 18,000' },
+    { id: 'premium-speaking-starter-7', name: 'Premium Speaking Starter 7', tuition: 800, suitable: '4节一对一 + 1节团体课 + 2节选修课' },
+    { id: 'premium-speaking-pro-8', name: 'Premium Speaking Pro 8', tuition: 975, suitable: '5节一对一 + 1节团体课 + 2节选修课' },
+    { id: 'premium-speaking-master-8', name: 'Premium Speaking Master 8', tuition: 1150, suitable: '6节一对一 + 1节团体课 + 2节选修课' },
+    { id: 'premium-tep-8', name: 'Premium 主题英语TEP 8', tuition: 800, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
+    { id: 'premium-tep-9', name: 'Premium 主题英语TEP 9', tuition: 900, suitable: '4节一对一 + 3节团体课 + 2节选修课' },
+    { id: 'premium-tep-10', name: 'Premium 主题英语TEP 10', tuition: 1000, suitable: '5节一对一 + 3节团体课 + 2节选修课' },
+    { id: 'premium-active-senior-5', name: 'Premium Active Senior 5', tuition: 600, suitable: '3节一对一 + 2节选修课；适合40岁以上学生' },
+    { id: 'premium-active-senior-6', name: 'Premium Active Senior 6', tuition: 700, suitable: '4节一对一 + 2节选修课；适合40岁以上学生' },
+    { id: 'premium-working-holiday-8', name: 'Premium Working Holiday 8', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
+    { id: 'premium-toeic', name: 'Premium 托业', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
+    { id: 'premium-business-master-8', name: 'Premium Business Master 8', tuition: 1150, suitable: '6节一对一 + 2节选修课' },
+    { id: 'premium-junior', name: 'Premium 青少年课程', tuition: 1200, suitable: '4节一对一 + 2节团体课 + 写作活动及监控晚自习' },
+    { id: 'premium-guardian', name: 'Premium 监护人课程', tuition: 600, suitable: '2节一对一' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'challenger-single', name: 'Challenger 单人房', fee: 1300, note: '隐私最高，热门档期需提前确认' },
-    { id: 'challenger-twin', name: 'Challenger 双人房', fee: 800, note: '预算与隐私较平衡的Challenger房型' },
-    { id: 'challenger-quad-loft', name: 'Challenger 四人房Loft', fee: 750, note: 'Loft房型，适合控制总价' },
-    { id: 'challenger-quad-studio', name: 'Challenger 四人房Studio', fee: 600, note: '默认预算参考，适合先做总价估算' },
-    { id: 'premium-single-a-balcony', name: 'Premium 单人房A Balcony', fee: 1450, note: 'Premium高规格单人房，舒适度和预算都最高' },
-    { id: 'premium-semi-single', name: 'Premium Semi Single / 1F Single Use', fee: 1250, note: '兼顾隐私与预算的Premium单人方向' },
-    { id: 'premium-twin-a-balcony', name: 'Premium 双人房A Balcony', fee: 950, note: '带阳台双人房，适合重视生活舒适度' },
-    { id: 'premium-twin-b-no-balcony', name: 'Premium 双人房B No Balcony', fee: 850, note: '无阳台双人房，价格比A房型低' },
-    { id: 'premium-quad-a-balcony', name: 'Premium 四人房A Balcony', fee: 750, note: 'Premium预算与设施平衡，带阳台' },
-    { id: 'premium-quad-b-no-balcony', name: 'Premium 四人房B No Balcony', fee: 650, note: 'Premium预算入口，无阳台房型' },
+    { id: 'challenger-single', name: 'Challenger 单人间（标准）', fee: 1300, note: '主校区标准单人间' },
+    { id: 'challenger-twin', name: 'Challenger 双人间（标准）', fee: 800, note: '主校区标准双人间' },
+    { id: 'challenger-quad-duplex', name: 'Challenger 四人间（复式）', fee: 750, note: '主校区复式四人间' },
+    { id: 'challenger-quad-bunk', name: 'Challenger 四人间（上下铺）', fee: 600, note: '主校区上下铺四人间；默认预算参考' },
+    { id: 'premium-single-no-balcony', name: 'Premium 单人间（无阳台）', fee: 1250, note: '高级校区无阳台单人间' },
+    { id: 'premium-single-balcony', name: 'Premium 单人间（带阳台）', fee: 1450, note: '高级校区带阳台单人间' },
+    { id: 'premium-twin-no-balcony', name: 'Premium 双人间（无阳台）', fee: 850, note: '高级校区无阳台双人间' },
+    { id: 'premium-twin-balcony', name: 'Premium 双人间（带阳台）', fee: 950, note: '高级校区带阳台双人间' },
+    { id: 'premium-quad-no-balcony', name: 'Premium 四人间（无阳台）', fee: 650, note: '高级校区无阳台上下铺四人间' },
+    { id: 'premium-quad-balcony', name: 'Premium 四人间（带阳台）', fee: 750, note: '高级校区带阳台上下铺四人间' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -212,6 +220,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { item: '管理费', amount: 'PHP 1,000', note: '4周参考' },
     { item: '教材费', amount: 'PHP 1,500 - 1,900', note: '按ESL、TOEIC、IELTS等课程不同收取' },
     { item: 'IELTS保证班参加费', amount: 'PHP 18,000', note: '仅IELTS Guarantee相关，报名前需确认规则' },
+    { item: 'Challenger特别选修课', amount: 'PHP 2,000', note: 'Challenger校区每4周参考' },
     { item: '指定接机', amount: 'PHP 3,000', note: '马尼拉或克拉克指定接机日参考' },
   ];
 
@@ -247,13 +256,15 @@ export class JicSchoolDetailComponent implements OnInit {
     '菲律宾碧瑶JIC语言学校必须先分Challenger和Premium校区，再决定课程、房型和费用。',
     'Challenger ESL / IELTS更适合需要测试、自习和明确学习制度的学生。',
     'Premium更适合口语、职业英文、成人学习和更舒适住宿需求。',
-    '页面价格为2026年公开费用参考，最终会随学校政策、优惠、房型空位和汇率变化。',
+    '课程费与住宿费根据思达顾问提供的JIC 2025费用表整理，最终会随学校政策、优惠和房型空位变化。',
+    '斯巴达课程每周强制模拟考；半斯巴达课程双周强制模拟考。',
+    'Challenger校区特别选修课每4周另付PHP 2,000。',
     '旺季附加费按菲律宾碧瑶JIC语言学校公开JPY 5,000/周折算为USD 34.5/周，正式报价需按学校当期账单确认。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶JIC语言学校的Challenger和Premium怎么选？', answer: '目标是ESL基础强化、IELTS备考或需要更强制度，优先看Challenger；目标是口语、职场英文、打工度假、多益或更舒适生活，优先看Premium。' },
-    { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Flex / Lite适合基础弱的学生，Premium Speaking Starter也适合初学者；具体要按自律程度和生活偏好判断校区。' },
+    { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Lite适合从基础开始系统提升，Premium Speaking Starter 7也适合初学者；具体要按自律程度和生活偏好判断校区。' },
     { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后还需准备SSP、SSP I-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'IELTS Guarantee是不是只付课程费就可以？', answer: '不是。IELTS Guarantee除4周课程费外，还需确认保证班参加费、出勤和分数保证规则，页面按公开资料列出PHP 18,000参加费参考。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名菲律宾碧瑶JIC语言学校，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
@@ -280,7 +291,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { label: '菲律宾碧瑶JIC语言学校 官方首页', url: 'https://baguio-jic.com/' },
     { label: 'Baguio JIC Challenger Campus 官方页', url: 'https://baguio-jic.com/campuses/main-campus/' },
     { label: 'Baguio JIC Premium Campus 官方页', url: 'https://baguio-jic.com/campuses/premium-campus/' },
-    { label: '菲律宾碧瑶JIC语言学校 2026费用页', url: 'https://baguio-jic.com/ja/price/' },
+    { label: '菲律宾碧瑶JIC语言学校 官方费用页', url: 'https://baguio-jic.com/ja/price/' },
     { label: 'Fujiyama JIC Challenger Campus费用参考', url: 'https://www.fujiyama-international.com/philippines/jic-baguio.html' },
   ];
 
@@ -308,7 +319,7 @@ export class JicSchoolDetailComponent implements OnInit {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
       .map((lesson) => ({
-        id: this.slugifyPriceKey(lesson.name),
+        id: this.createCourseId(lesson.name),
         name: lesson.name,
         tuition: lesson.price,
         suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
@@ -333,7 +344,7 @@ export class JicSchoolDetailComponent implements OnInit {
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'challenger-quad-studio')?.id ?? this.roomFees[0].id;
+        this.selectedRoomId = this.roomFees.find((room) => room.id === 'challenger-quad-bunk')?.id ?? this.roomFees[0].id;
       }
     }
 
@@ -397,17 +408,23 @@ export class JicSchoolDetailComponent implements OnInit {
     const index = order.indexOf(value);
     return index === -1 ? Number.MAX_SAFE_INTEGER : index;
   }
+  private createCourseId(name: string): string {
+    if (name.includes('托业')) return 'premium-toeic';
+    if (name.includes('青少年')) return 'premium-junior';
+    if (name.includes('监护人')) return 'premium-guardian';
+    return this.slugifyPriceKey(name);
+  }
   private createRoomId(name: string): string {
     if (name.includes('Challenger') && name.includes('单人')) return 'challenger-single';
     if (name.includes('Challenger') && name.includes('双人')) return 'challenger-twin';
-    if (name.includes('Challenger') && name.includes('Loft')) return 'challenger-quad-loft';
-    if (name.includes('Challenger') && name.includes('Studio')) return 'challenger-quad-studio';
-    if (name.includes('Premium') && name.includes('单人房A')) return 'premium-single-a-balcony';
-    if (name.includes('Premium') && name.includes('Semi')) return 'premium-semi-single';
-    if (name.includes('Premium') && name.includes('双人房A')) return 'premium-twin-a-balcony';
-    if (name.includes('Premium') && name.includes('双人房B')) return 'premium-twin-b-no-balcony';
-    if (name.includes('Premium') && name.includes('四人房A')) return 'premium-quad-a-balcony';
-    if (name.includes('Premium') && name.includes('四人房B')) return 'premium-quad-b-no-balcony';
+    if (name.includes('Challenger') && name.includes('四人') && name.includes('复式')) return 'challenger-quad-duplex';
+    if (name.includes('Challenger') && name.includes('四人') && name.includes('上下铺')) return 'challenger-quad-bunk';
+    if (name.includes('Premium') && name.includes('单人') && name.includes('无阳台')) return 'premium-single-no-balcony';
+    if (name.includes('Premium') && name.includes('单人') && name.includes('带阳台')) return 'premium-single-balcony';
+    if (name.includes('Premium') && name.includes('双人') && name.includes('无阳台')) return 'premium-twin-no-balcony';
+    if (name.includes('Premium') && name.includes('双人') && name.includes('带阳台')) return 'premium-twin-balcony';
+    if (name.includes('Premium') && name.includes('四人') && name.includes('无阳台')) return 'premium-quad-no-balcony';
+    if (name.includes('Premium') && name.includes('四人') && name.includes('带阳台')) return 'premium-quad-balcony';
     return this.slugifyPriceKey(name);
   }
   private currencyCodeForDisplay(code?: string): string {

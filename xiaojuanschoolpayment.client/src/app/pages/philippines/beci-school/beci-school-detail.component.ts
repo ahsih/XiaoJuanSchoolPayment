@@ -49,42 +49,41 @@ export class BeciSchoolDetailComponent implements OnInit {
     'eop-lite-esl',
     'eop-speed-esl',
     'eop-sparta-esl',
-    'eop-working-holiday',
+    'eop-ielts',
+    'eop-toeic',
+    'eop-junior-esl',
+    'eop-junior-ielts',
     'sparta-24-esl',
     'sparta-toeic',
     'sparta-ielts',
+    'sparta-ielts-guarantee-12',
     'city-lite-esl',
-    'city-speed-esl',
-    'city-flexi-lite-esl',
-    'city-flexi-speed-esl',
-    'city-bizspeak',
     'city-native-esl',
     'city-unlimited-esl',
-    'city-ielts',
+    'city-junior-esl',
   ];
   private readonly roomFeeOrder = [
-    'eop-quad',
-    'eop-triple',
-    'eop-twin',
-    'eop-single',
-    'eop-regular-single',
     'eop-master-single',
-    'sparta-quad',
+    'eop-regular-single',
+    'eop-twin',
+    'eop-triple',
+    'eop-quad',
     'sparta-3-plus-1',
-    'city-studio-quad',
-    'city-studio-twin',
-    'city-semi-single',
-    'city-semi-master-single',
+    'sparta-quad',
     'city-studio-single',
+    'city-studio-twin',
+    'city-studio-twin-couple',
+    'city-studio-quad',
+    'city-semi-master-single',
+    'city-semi-single',
   ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly discount = 1;
   seasonalFeePerWeek = 40;
   readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 24];
+  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'eop-lite-esl';
   selectedRoomId = 'eop-quad';
   selectedWeeks = 4;
@@ -149,47 +148,47 @@ export class BeciSchoolDetailComponent implements OnInit {
   readonly courses: CourseItem[] = [
     { name: 'EOP Lite ESL', type: '沉浸式轻量ESL', lessons: '2节一对一 + 2节团体 + 2节免费团体', suitable: '适合想保留复习时间、基础较弱或需要慢节奏适应英语环境的学生。' },
     { name: 'EOP SPEED ESL', type: '半斯巴达旗舰ESL', lessons: '4节一对一 + 2节团体 + 2节免费团体', suitable: '适合多数初中级学生，学习量和生活弹性相对平衡。' },
-    { name: 'EOP Sparta ESL', type: 'EOP强化版', lessons: '5节一对一 + 2节团体 + 2节晚间必修', suitable: '适合想保留EOP环境，又希望增加一对一和晚间学习的人。' },
+    { name: 'EOP Sparta ESL', type: 'EOP强化版', lessons: '4节一对一 + 1节SP口语 + 2节团体 + 2节必修晚课', suitable: '适合想保留EOP环境，又希望增加SP反馈和晚间学习的人。' },
+    { name: 'EOP IELTS / TOEIC', type: 'EOP考试课程', lessons: '4节一对一 + 2节团体 + 3节必修晚课与考试', suitable: '适合希望在EOP环境中准备雅思或多益的学生。' },
+    { name: 'EOP Junior ESL / IELTS', type: '青少年课程', lessons: 'Junior ESL为5节一对一 + 1节SP + 2节必修；Junior IELTS为4节一对一 + 2节团体', suitable: '适合需要更高照顾密度和明确学习安排的青少年学生。' },
     { name: 'Sparta 24 ESL', type: '强管理口语冲刺', lessons: '5节一对一 + 2节团体 + 3节晚间义务学习/测试', suitable: '适合自律弱、短期想明显增加输出量和反馈密度的学生。' },
-    { name: 'Sparta IELTS / TOEIC', type: '考试基础与强化', lessons: '4节一对一 + 2节团体 + 3节晚间义务学习/测试', suitable: '适合想在强管理环境中准备雅思或多益基础的学生。' },
-    { name: 'City LITE / SPEED ESL', type: '成人弹性ESL', lessons: 'Lite为2节一对一 + 2节团体；Speed为4节一对一 + 2节团体', suitable: '适合成人、工作者和不想要高压门禁的学生。' },
-    { name: 'City BizSpeak / ESP', type: '职场与特定目标英文', lessons: '以一对一和项目式任务为主', suitable: '适合商务沟通、演示、旅行英文、公众表达等具体需求。' },
-    { name: 'City Unlimited ESL', type: '高弹性一对一', lessons: '固定价格下最多8节一对一 + 2节免费团体', suitable: '适合想自由组合ESL、IELTS、TOEIC或Business科目的学生。' },
-    { name: 'City Native ESL', type: '外教口语方向', lessons: '4节一对一 + 2节团体 + 2节免费团体', suitable: '适合希望加入外教发音和表达反馈的成人学生。' },
+    { name: 'Sparta IELTS / TOEIC / 保证班', type: '考试基础与强化', lessons: '4-5节一对一 + 2节团体 + 3节必修晚课与考试', suitable: '适合想在强管理环境中准备雅思、多益或12周雅思保证班的学生。' },
+    { name: 'City Lite / Native ESL', type: '成人弹性ESL', lessons: 'Lite为2节一对一；Native为4节一对一，均含2节团体 + 2节选修', suitable: '适合成人、工作者和不想要高压门禁的学生。' },
+    { name: 'City Unlimited / Junior ESL', type: '高课量与青少年路线', lessons: 'Unlimited最多8节一对一；Junior为5节一对一 + 1节SP + 2节选修', suitable: '适合想提高一对一课量或需要青少年课程的学生。' },
   ];
 
   courseFees: CourseFee[] = [
     { id: 'eop-lite-esl', name: 'EOP Lite ESL', tuition: 670, suitable: 'EOP轻量课程，适合基础弱、想保留复习时间' },
     { id: 'eop-speed-esl', name: 'EOP SPEED ESL', tuition: 870, suitable: 'EOP半斯巴达旗舰课程，适合多数综合提升学生' },
-    { id: 'eop-sparta-esl', name: 'EOP Sparta ESL', tuition: 900, suitable: 'EOP强度更高，含SP和晚间学习' },
-    { id: 'eop-working-holiday', name: 'EOP Working Holiday', tuition: 1000, suitable: '工作假期准备方向，适合海外打工度假规划' },
-    { id: 'sparta-24-esl', name: 'Sparta 24 ESL', tuition: 900, suitable: 'Sparta强管理口语冲刺，含晚间义务学习与测试' },
-    { id: 'sparta-toeic', name: 'Sparta TOEIC', tuition: 850, suitable: '多益基础与刷题方向，适合考试目标学生' },
-    { id: 'sparta-ielts', name: 'Sparta IELTS', tuition: 900, suitable: '雅思基础与考试策略，适合强管理备考' },
-    { id: 'city-lite-esl', name: 'City LITE ESL', tuition: 670, suitable: 'City轻量成人ESL，适合弹性学习' },
-    { id: 'city-speed-esl', name: 'City SPEED ESL', tuition: 870, suitable: 'City综合ESL，适合成人系统提升' },
-    { id: 'city-flexi-lite-esl', name: 'City FLEXI LITE ESL', tuition: 670, suitable: '夜间一对一 + 团体，适合工作者' },
-    { id: 'city-flexi-speed-esl', name: 'City FLEXI SPEED ESL', tuition: 870, suitable: '夜间课时更多，适合边工作边学习' },
-    { id: 'city-bizspeak', name: 'City BizSpeak', tuition: 800, suitable: '商务表达、演示和职场沟通方向' },
-    { id: 'city-native-esl', name: 'City Native ESL', tuition: 950, suitable: '含外教方向，适合发音与表达反馈' },
-    { id: 'city-unlimited-esl', name: 'City Unlimited ESL', tuition: 950, suitable: '最多8节一对一，科目组合弹性高' },
-    { id: 'city-ielts', name: 'City IELTS', tuition: 900, suitable: 'City成人雅思方向，适合弹性备考' },
+    { id: 'eop-sparta-esl', name: 'EOP Sparta ESL', tuition: 900, suitable: '4节一对一 + 1节SP口语 + 2节团体 + 2节必修晚课' },
+    { id: 'eop-ielts', name: 'EOP IELTS', tuition: 900, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'eop-toeic', name: 'EOP TOEIC', tuition: 850, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'eop-junior-esl', name: 'EOP Junior ESL', tuition: 1300, suitable: '5节一对一 + 1节SP口语 + 2节必修' },
+    { id: 'eop-junior-ielts', name: 'EOP Junior IELTS', tuition: 1400, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'sparta-24-esl', name: 'Sparta 24 ESL', tuition: 900, suitable: '5节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'sparta-toeic', name: 'Sparta TOEIC', tuition: 850, suitable: '5节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'sparta-ielts', name: 'Sparta IELTS', tuition: 900, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'sparta-ielts-guarantee-12', name: 'Sparta IELTS Guarantee（12周）', tuition: 1100, suitable: '12周保证班，4周课程费USD 1,100；12周起报' },
+    { id: 'city-lite-esl', name: 'City LITE ESL', tuition: 670, suitable: '2节一对一 + 2节团体 + 2节选修' },
+    { id: 'city-native-esl', name: 'City Native ESL', tuition: 900, suitable: '4节一对一 + 2节团体 + 2节选修' },
+    { id: 'city-unlimited-esl', name: 'City Unlimited ESL', tuition: 900, suitable: '最多8节一对一 + 2节选修' },
+    { id: 'city-junior-esl', name: 'City Junior ESL', tuition: 1300, suitable: '5节一对一 + 1节SP口语 + 2节选修' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'eop-quad', name: 'EOP 校内四人房', fee: 570, note: '默认预算参考，适合控制总价' },
-    { id: 'eop-triple', name: 'EOP 校内三人房', fee: 670, note: '预算与室友数量较平衡' },
-    { id: 'eop-twin', name: 'EOP 校内双人房', fee: 750, note: '公开表标注男性房型，需按档期确认' },
-    { id: 'eop-single', name: 'EOP 校内单人房', fee: 950, note: '公开表标注女性房型，热门档期需早确认' },
-    { id: 'eop-regular-single', name: 'EOP Mansion Regular Single', fee: 950, note: 'Mansion房型，公开表标注男性方向' },
-    { id: 'eop-master-single', name: 'EOP Mansion Master Single', fee: 1100, note: 'Mansion更高规格单人房，需确认性别与空房' },
-    { id: 'sparta-quad', name: 'Sparta 四人房', fee: 700, note: 'Sparta预算入口，仍需遵守校区强管理规则' },
-    { id: 'sparta-3-plus-1', name: 'Sparta 3+1 Buddy 房', fee: 800, note: '3名学生 + 1名老师同住，英语环境更强' },
-    { id: 'city-studio-quad', name: 'City Studio 四人房', fee: 600, note: 'City预算入口，适合成人弹性学习' },
-    { id: 'city-studio-twin', name: 'City Studio 双人房', fee: 800, note: '仅限兄弟姐妹、同性朋友或夫妻等条件使用' },
-    { id: 'city-semi-single', name: 'City Semi Single', fee: 900, note: '兼顾隐私与预算的City房型' },
-    { id: 'city-semi-master-single', name: 'City Semi Master Single', fee: 1050, note: 'City更高规格单人方向' },
-    { id: 'city-studio-single', name: 'City Studio 单人房', fee: 1250, note: 'City独立空间最高，预算较高' },
+    { id: 'eop-master-single', name: 'EOP 豪华单人房（Master校外）', fee: 1100, note: '校外Master房型，需确认空房与入住安排' },
+    { id: 'eop-regular-single', name: 'EOP 常规单人房', fee: 950, note: '40岁以上学生仅可选择单人房' },
+    { id: 'eop-twin', name: 'EOP 双人房', fee: 750, note: '需按档期确认空房' },
+    { id: 'eop-triple', name: 'EOP 三人房', fee: 670, note: '预算与室友数量较平衡' },
+    { id: 'eop-quad', name: 'EOP 四人房（女生）', fee: 570, note: '女生房型，需按档期确认空房' },
+    { id: 'sparta-3-plus-1', name: 'Sparta 3+1宿舍', fee: 800, note: '不同国籍学生与老师同住，强化英语环境' },
+    { id: 'sparta-quad', name: 'Sparta 普通四人间', fee: 700, note: 'Sparta预算房型，需遵守校区强管理规则' },
+    { id: 'city-studio-single', name: 'City Studio单人间', fee: 1250, note: 'City独立空间最高，预算较高' },
+    { id: 'city-studio-twin', name: 'City Studio双人间', fee: 800, note: '仅限兄弟姐妹、同性朋友或夫妻等条件使用' },
+    { id: 'city-studio-twin-couple', name: 'City Studio双人间（夫妻同行每人）', fee: 750, note: '一对夫妇共同使用Studio双人间时的每人价格' },
+    { id: 'city-studio-quad', name: 'City Studio四人间（上下铺）', fee: 600, note: 'City预算入口，适合成人弹性学习' },
+    { id: 'city-semi-master-single', name: 'City Semi Master单人间', fee: 1050, note: 'City更高规格单人房' },
+    { id: 'city-semi-single', name: 'City Semi单人间', fee: 900, note: '兼顾隐私与预算的City房型' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -248,13 +247,16 @@ export class BeciSchoolDetailComponent implements OnInit {
     'BECI必须先分EOP、Sparta、City校区，再决定课程和房型。',
     'Sparta校区有更强的晚间学习和测试要求，报名前要确认学生能否接受。',
     'City校区更适合成人和工作者，但热门Studio、单人房仍需提前确认空房。',
-    '页面价格为2026年公开费用表参考，最终会随学校政策、优惠、房型空位和汇率变化。',
+    '中介优惠免USD 100注册费；1/2/3周课程费分别按4周价的40%/60%/80%计算。',
+    '8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，并可与常规优惠叠加。',
+    '页面价格为2026年8月19日费用表参考，最终会随学校政策、优惠、房型空位和汇率变化。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶BECI语言学校适合零基础吗？', answer: '可以。零基础或怕开口的学生优先看EOP Lite ESL或EOP SPEED ESL，先用全英文环境建立开口习惯；如果自律弱，也可以让顾问评估是否适合Sparta。' },
     { question: 'BECI的EOP、Sparta、City怎么选？', answer: '想沉浸式口语和英语环境看EOP；想强管理、高学习量、短期冲刺看Sparta；成人、工作者、需要弹性和无宵禁看City。' },
-    { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
+    { question: 'BECI短期和长期优惠怎么计算？', answer: '当前中介优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。8/12/16/20/24周再分别减USD 50/100/200/300/400，并可与常规优惠叠加。' },
+    { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含优惠后的课程费、按周折算的住宿费和旺季附加费，注册费按当前中介优惠免收；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'BECI City Campus适合边工作边学习吗？', answer: '更适合。City Campus面向成人与工作者，有弹性安排、无宵禁和工作空间，但仍建议先按工作时间确认可选课程。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名BECI，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
@@ -357,8 +359,17 @@ export class BeciSchoolDetailComponent implements OnInit {
   }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
+  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.tuitionMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
+  get tuitionMultiplier(): number {
+    const shortStayMultipliers: Record<number, number> = { 1: 0.4, 2: 0.6, 3: 0.8 };
+    return shortStayMultipliers[this.selectedWeeks] ?? this.selectedWeeks / 4;
+  }
+  get payableRegistrationFee(): number { return 0; }
+  get longStayDiscount(): number {
+    const discounts: Record<number, number> = { 8: 50, 12: 100, 16: 200, 20: 300, 24: 400 };
+    return discounts[this.selectedWeeks] ?? 0;
+  }
   get isPeakSeason(): boolean {
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
     const ranges = [
@@ -368,14 +379,18 @@ export class BeciSchoolDetailComponent implements OnInit {
     return ranges.some(([from, to]) => start >= from && start <= to);
   }
   get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
+  get quoteUsd(): number {
+    return this.payableRegistrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks - this.longStayDiscount + this.seasonalSurcharge;
+  }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
   get quoteCnyText(): string {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
     return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
   }
   get discountText(): string {
-    return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`;
+    if (this.selectedWeeks <= 3) return `${this.selectedWeeks}周课程费按4周价的${Math.round(this.tuitionMultiplier * 100)}%`;
+    if (this.longStayDiscount > 0) return `${this.selectedWeeks}周长期折扣`;
+    return '4周课程费原价';
   }
 
   formatUsd(value: number): string {
@@ -392,15 +407,15 @@ export class BeciSchoolDetailComponent implements OnInit {
     if (name.includes('EOP') && name.includes('四人')) return 'eop-quad';
     if (name.includes('EOP') && name.includes('三人')) return 'eop-triple';
     if (name.includes('EOP') && name.includes('双人')) return 'eop-twin';
-    if (name.includes('EOP') && name.includes('校内单人')) return 'eop-single';
-    if (name.includes('Regular Single')) return 'eop-regular-single';
-    if (name.includes('Master Single')) return 'eop-master-single';
+    if (name.includes('EOP') && name.includes('常规单人')) return 'eop-regular-single';
+    if (name.includes('EOP') && name.includes('豪华单人')) return 'eop-master-single';
     if (name.includes('Sparta') && name.includes('四人')) return 'sparta-quad';
     if (name.includes('3+1')) return 'sparta-3-plus-1';
     if (name.includes('City') && name.includes('四人')) return 'city-studio-quad';
+    if (name.includes('City') && name.includes('双人') && name.includes('夫妻')) return 'city-studio-twin-couple';
     if (name.includes('City') && name.includes('双人')) return 'city-studio-twin';
     if (name.includes('Semi Master')) return 'city-semi-master-single';
-    if (name.includes('Semi Single')) return 'city-semi-single';
+    if (name.includes('Semi') && name.includes('单人')) return 'city-semi-single';
     if (name.includes('City') && name.includes('单人')) return 'city-studio-single';
     return this.slugifyPriceKey(name);
   }

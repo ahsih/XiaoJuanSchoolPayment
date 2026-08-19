@@ -829,39 +829,60 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string beciLessonNote = "API BECI 2026年4周USD费用参考；EOP、Sparta、City校区、房型、优惠以学校正式报价为准";
+      const string beciLessonNote = "API BECI 2026年4周USD费用参考；中介优惠免USD 100注册费，1/2/3周课程费分别按4周价的40%/60%/80%计算；8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，可与常规优惠叠加；最终以学校正式报价为准";
 
-      UpsertLesson(context, schoolId, "EOP Lite ESL", 4, 670m, "EOP轻量课程，适合基础弱、想保留复习时间", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "EOP SPEED ESL", 4, 870m, "EOP半斯巴达旗舰课程，适合多数综合提升学生", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "EOP Sparta ESL", 4, 900m, "EOP强度更高，含SP和晚间学习", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "EOP Working Holiday", 4, 1000m, "工作假期准备方向，适合海外打工度假规划", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "Sparta 24 ESL", 4, 900m, "Sparta强管理口语冲刺，含晚间义务学习与测试", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "Sparta TOEIC", 4, 850m, "多益基础与刷题方向，适合考试目标学生", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "Sparta IELTS", 4, 900m, "雅思基础与考试策略，适合强管理备考", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City LITE ESL", 4, 670m, "City轻量成人ESL，适合弹性学习", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City SPEED ESL", 4, 870m, "City综合ESL，适合成人系统提升", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City FLEXI LITE ESL", 4, 670m, "夜间一对一加团体，适合工作者", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City FLEXI SPEED ESL", 4, 870m, "夜间课时更多，适合边工作边学习", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City BizSpeak", 4, 800m, "商务表达、演示和职场沟通方向", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City Native ESL", 4, 950m, "含外教方向，适合发音与表达反馈", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City Unlimited ESL", 4, 950m, "最多8节一对一，科目组合弹性高", now, beciLessonNote);
-      UpsertLesson(context, schoolId, "City IELTS", 4, 900m, "City成人雅思方向，适合弹性备考", now, beciLessonNote);
+      RemoveLesson(context, schoolId, "EOP Working Holiday", 4);
+      RemoveLesson(context, schoolId, "City SPEED ESL", 4);
+      RemoveLesson(context, schoolId, "City FLEXI LITE ESL", 4);
+      RemoveLesson(context, schoolId, "City FLEXI SPEED ESL", 4);
+      RemoveLesson(context, schoolId, "City BizSpeak", 4);
+      RemoveLesson(context, schoolId, "City IELTS", 4);
 
-      UpsertRoom(context, schoolId, "EOP 校内四人房", 4, 570m, "默认预算参考，适合控制总价", now);
-      UpsertRoom(context, schoolId, "EOP 校内三人房", 4, 670m, "预算与室友数量较平衡", now);
-      UpsertRoom(context, schoolId, "EOP 校内双人房", 4, 750m, "公开表标注男性房型，需按档期确认", now);
-      UpsertRoom(context, schoolId, "EOP 校内单人房", 4, 950m, "公开表标注女性房型，热门档期需早确认", now);
-      UpsertRoom(context, schoolId, "EOP Mansion Regular Single", 4, 950m, "Mansion房型，公开表标注男性方向", now);
-      UpsertRoom(context, schoolId, "EOP Mansion Master Single", 4, 1100m, "Mansion更高规格单人房，需确认性别与空房", now);
-      UpsertRoom(context, schoolId, "Sparta 四人房", 4, 700m, "Sparta预算入口，仍需遵守校区强管理规则", now);
-      UpsertRoom(context, schoolId, "Sparta 3+1 Buddy 房", 4, 800m, "3名学生 + 1名老师同住，英语环境更强", now);
-      UpsertRoom(context, schoolId, "City Studio 四人房", 4, 600m, "City预算入口，适合成人弹性学习", now);
-      UpsertRoom(context, schoolId, "City Studio 双人房", 4, 800m, "仅限兄弟姐妹、同性朋友或夫妻等条件使用", now);
-      UpsertRoom(context, schoolId, "City Semi Single", 4, 900m, "兼顾隐私与预算的City房型", now);
-      UpsertRoom(context, schoolId, "City Semi Master Single", 4, 1050m, "City更高规格单人方向", now);
-      UpsertRoom(context, schoolId, "City Studio 单人房", 4, 1250m, "City独立空间最高，预算较高", now);
+      UpsertLesson(context, schoolId, "EOP Lite ESL", 4, 670m, "2节一对一 + 2节团体课 + 2节夜间选修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP SPEED ESL", 4, 870m, "4节一对一 + 2节团体课 + 2节夜间选修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP Sparta ESL", 4, 900m, "4节一对一 + 1节SP口语课 + 2节团体课 + 2节必修晚课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP IELTS", 4, 900m, "4节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP TOEIC", 4, 850m, "4节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP Junior ESL", 4, 1300m, "5节一对一 + 1节SP口语课 + 2节必修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "EOP Junior IELTS", 4, 1400m, "4节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta 24 ESL", 4, 900m, "5节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta TOEIC", 4, 850m, "5节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta IELTS", 4, 900m, "4节一对一 + 2节团体课 + 3节必修晚课与考试", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "Sparta IELTS Guarantee（12周）", 4, 1100m, "4节一对一 + 2节团体课 + 3节必修晚课与考试；12周保证班，12周起报", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City LITE ESL", 4, 670m, "2节一对一 + 2节团体课 + 2节选修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City Native ESL", 4, 900m, "4节一对一 + 2节团体课 + 2节选修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City Unlimited ESL", 4, 900m, "最多8节一对一 + 2节选修课", now, beciLessonNote);
+      UpsertLesson(context, schoolId, "City Junior ESL", 4, 1300m, "5节一对一 + 1节SP口语课 + 2节选修课", now, beciLessonNote);
 
-      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
+      RemoveRoom(context, schoolId, "EOP 校内四人房", 4);
+      RemoveRoom(context, schoolId, "EOP 校内三人房", 4);
+      RemoveRoom(context, schoolId, "EOP 校内双人房", 4);
+      RemoveRoom(context, schoolId, "EOP 校内单人房", 4);
+      RemoveRoom(context, schoolId, "EOP Mansion Regular Single", 4);
+      RemoveRoom(context, schoolId, "EOP Mansion Master Single", 4);
+      RemoveRoom(context, schoolId, "Sparta 四人房", 4);
+      RemoveRoom(context, schoolId, "Sparta 3+1 Buddy 房", 4);
+      RemoveRoom(context, schoolId, "City Studio 四人房", 4);
+      RemoveRoom(context, schoolId, "City Studio 双人房", 4);
+      RemoveRoom(context, schoolId, "City Semi Single", 4);
+      RemoveRoom(context, schoolId, "City Semi Master Single", 4);
+      RemoveRoom(context, schoolId, "City Studio 单人房", 4);
+
+      UpsertRoom(context, schoolId, "EOP 豪华单人房（Master校外）", 4, 1100m, "校外Master房型，需确认空房与入住安排", now);
+      UpsertRoom(context, schoolId, "EOP 常规单人房", 4, 950m, "40岁以上学生仅可选择单人房", now);
+      UpsertRoom(context, schoolId, "EOP 双人房", 4, 750m, "需按档期确认空房", now);
+      UpsertRoom(context, schoolId, "EOP 三人房", 4, 670m, "预算与室友数量较平衡", now);
+      UpsertRoom(context, schoolId, "EOP 四人房（女生）", 4, 570m, "女生房型，需按档期确认空房", now);
+      UpsertRoom(context, schoolId, "Sparta 3+1宿舍", 4, 800m, "不同国籍学生与老师同住，强化英语环境", now);
+      UpsertRoom(context, schoolId, "Sparta 普通四人间", 4, 700m, "Sparta预算房型，需遵守校区强管理规则", now);
+      UpsertRoom(context, schoolId, "City Studio单人间", 4, 1250m, "City独立空间最高，预算较高", now);
+      UpsertRoom(context, schoolId, "City Studio双人间", 4, 800m, "仅限兄弟姐妹、同性朋友或夫妻等条件使用", now);
+      UpsertRoom(context, schoolId, "City Studio双人间（夫妻同行每人）", 4, 750m, "一对夫妇共同使用Studio双人间时的每人价格", now);
+      UpsertRoom(context, schoolId, "City Studio四人间（上下铺）", 4, 600m, "City预算入口，适合成人弹性学习", now);
+      UpsertRoom(context, schoolId, "City Semi Master单人间", 4, 1050m, "City更高规格单人房", now);
+      UpsertRoom(context, schoolId, "City Semi单人间", 4, 900m, "兼顾隐私与预算的City房型", now);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；原价USD 100，中介优惠免注册费", now);
       UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22、2027/6/27-8/22期间按 USD 40 / 周计算", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
       UpsertFee(context, schoolId, "SSP E-Card", 4500m, PhpCurrencyId, "到校支付费用；与SSP相关的电子卡申请费用", now);
@@ -912,38 +933,63 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string jicLessonNote = "Baguio JIC Academy 2026年4周USD费用参考；JIC日元公开表按固定JPY145/USD折算，最终以学校正式报价为准";
+      const string jicLessonNote = "Baguio JIC Academy 2025年4周USD课程费参考；根据思达顾问提供的JIC 2025年课程费表整理，最终以学校正式报价为准";
 
-      UpsertLesson(context, schoolId, "Challenger ESL Flex", 4, 580m, "Challenger轻量ESL，适合低预算或先适应校区节奏", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger ESL Lite", 4, 760m, "Challenger基础综合ESL，适合多数入门和稳步提升学生", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger ESL Core", 4, 860m, "一对一课时更多，适合想加强输出和纠错的人", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger ESL Standard", 4, 960m, "高课时ESL，适合短期集中提升", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Lite", 4, 960m, "IELTS入门或基础备考路线", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Core", 4, 1010m, "IELTS课时更密集，适合阶段性冲分", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Standard", 4, 1060m, "标准IELTS备考路线，适合明确分数目标", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Guarantee", 4, 1060m, "IELTS保证班，另需确认保证班规则与参加费", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium Speaking Starter", 4, 800m, "初学者友好口语课程，适合建立开口信心", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium Speaking Pro", 4, 975m, "口语输出量更高，适合提升流利度与表达结构", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium Speaking Master", 4, 1150m, "高密度口语与表达训练，适合演讲、讨论和流利度目标", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium TEP ESL 8", 4, 800m, "主题式ESL入门，适合生活化英语学习", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium TEP ESL 9", 4, 900m, "主题式ESL进阶，团体互动比重高", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium TEP ESL 10", 4, 1000m, "主题式ESL高课时，适合想增加一对一训练的人", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium Working Holiday", 4, 900m, "打工度假、面试和工作场景英语准备", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium TOEIC", 4, 900m, "多益考试与职场英语基础", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium Business Master", 4, 1150m, "商务会议、邮件、演示和职场表达强化", now, jicLessonNote);
+      RemoveLesson(context, schoolId, "Challenger ESL Flex", 4);
+      UpsertLesson(context, schoolId, "Challenger ESL Lite", 4, 760m, "4节一对一 + 2节小组课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger ESL Core", 4, 860m, "5节一对一 + 2节小组课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger ESL Standard", 4, 960m, "6节一对一 + 2节小组课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Lite", 4, 960m, "4节一对一 + 2节小组课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Core", 4, 1010m, "5节一对一 + 2节小组课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Standard", 4, 1060m, "6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Guarantee", 4, 1060m, "6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六模拟测试，保证班另付PHP 18,000", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Speaking Starter 7", 4, 800m, "4节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Speaking Pro 8", 4, 975m, "5节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Speaking Master 8", 4, 1150m, "6节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 主题英语TEP 8", 4, 800m, "3节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 主题英语TEP 9", 4, 900m, "4节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 主题英语TEP 10", 4, 1000m, "5节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Active Senior 5", 4, 600m, "3节一对一 + 2节选修课；适合40岁以上学生，兼顾旅游与休闲", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Active Senior 6", 4, 700m, "4节一对一 + 2节选修课；适合40岁以上学生，兼顾旅游与休闲", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Working Holiday 8", 4, 900m, "3节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 托业", 4, 900m, "3节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium Business Master 8", 4, 1150m, "6节一对一 + 2节选修课", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 青少年课程", 4, 1200m, "4节一对一 + 2节团体课 + 1小时写作活动 + 2小时监控晚自习", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Premium 监护人课程", 4, 600m, "2节一对一", now, jicLessonNote);
 
-      UpsertRoom(context, schoolId, "Challenger 单人房", 4, 1300m, "隐私最高，热门档期需提前确认", now);
-      UpsertRoom(context, schoolId, "Challenger 双人房", 4, 800m, "预算与隐私较平衡的Challenger房型", now);
-      UpsertRoom(context, schoolId, "Challenger 四人房Loft", 4, 750m, "Loft房型，适合控制总价", now);
-      UpsertRoom(context, schoolId, "Challenger 四人房Studio", 4, 600m, "默认预算参考，适合先做总价估算", now);
-      UpsertRoom(context, schoolId, "Premium 单人房A Balcony", 4, 1450m, "Premium高规格单人房，舒适度和预算都最高", now);
-      UpsertRoom(context, schoolId, "Premium Semi Single / 1F Single Use", 4, 1250m, "兼顾隐私与预算的Premium单人方向", now);
-      UpsertRoom(context, schoolId, "Premium 双人房A Balcony", 4, 950m, "带阳台双人房，适合重视生活舒适度", now);
-      UpsertRoom(context, schoolId, "Premium 双人房B No Balcony", 4, 850m, "无阳台双人房，价格比A房型低", now);
-      UpsertRoom(context, schoolId, "Premium 四人房A Balcony", 4, 750m, "Premium预算与设施平衡，带阳台", now);
-      UpsertRoom(context, schoolId, "Premium 四人房B No Balcony", 4, 650m, "Premium预算入口，无阳台房型", now);
+      RemoveLesson(context, schoolId, "Premium Speaking Starter", 4);
+      RemoveLesson(context, schoolId, "Premium Speaking Pro", 4);
+      RemoveLesson(context, schoolId, "Premium Speaking Master", 4);
+      RemoveLesson(context, schoolId, "Premium TEP ESL 8", 4);
+      RemoveLesson(context, schoolId, "Premium TEP ESL 9", 4);
+      RemoveLesson(context, schoolId, "Premium TEP ESL 10", 4);
+      RemoveLesson(context, schoolId, "Premium Working Holiday", 4);
+      RemoveLesson(context, schoolId, "Premium TOEIC", 4);
+      RemoveLesson(context, schoolId, "Premium Business Master", 4);
 
-      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费，JIC公开日元表为JPY 14,500", now);
+      UpsertRoom(context, schoolId, "Challenger 单人间（标准）", 4, 1300m, "主校区标准单人间", now);
+      UpsertRoom(context, schoolId, "Challenger 双人间（标准）", 4, 800m, "主校区标准双人间", now);
+      UpsertRoom(context, schoolId, "Challenger 四人间（复式）", 4, 750m, "主校区复式四人间", now);
+      UpsertRoom(context, schoolId, "Challenger 四人间（上下铺）", 4, 600m, "主校区上下铺四人间；默认预算参考", now);
+      UpsertRoom(context, schoolId, "Premium 单人间（无阳台）", 4, 1250m, "高级校区无阳台单人间", now);
+      UpsertRoom(context, schoolId, "Premium 单人间（带阳台）", 4, 1450m, "高级校区带阳台单人间", now);
+      UpsertRoom(context, schoolId, "Premium 双人间（无阳台）", 4, 850m, "高级校区无阳台双人间", now);
+      UpsertRoom(context, schoolId, "Premium 双人间（带阳台）", 4, 950m, "高级校区带阳台双人间", now);
+      UpsertRoom(context, schoolId, "Premium 四人间（无阳台）", 4, 650m, "高级校区无阳台上下铺四人间", now);
+      UpsertRoom(context, schoolId, "Premium 四人间（带阳台）", 4, 750m, "高级校区带阳台上下铺四人间", now);
+
+      RemoveRoom(context, schoolId, "Challenger 单人房", 4);
+      RemoveRoom(context, schoolId, "Challenger 双人房", 4);
+      RemoveRoom(context, schoolId, "Challenger 四人房Loft", 4);
+      RemoveRoom(context, schoolId, "Challenger 四人房Studio", 4);
+      RemoveRoom(context, schoolId, "Premium 单人房A Balcony", 4);
+      RemoveRoom(context, schoolId, "Premium Semi Single / 1F Single Use", 4);
+      RemoveRoom(context, schoolId, "Premium 双人房A Balcony", 4);
+      RemoveRoom(context, schoolId, "Premium 双人房B No Balcony", 4);
+      RemoveRoom(context, schoolId, "Premium 四人房A Balcony", 4);
+      RemoveRoom(context, schoolId, "Premium 四人房B No Balcony", 4);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；JIC 2025费用表列示的一次性报名注册费", now);
       UpsertFee(context, schoolId, "旺季附加费", 34.5m, UsdCurrencyId, "前期支付费用；JIC以JPY 5,000/周收取，按固定JPY145/USD折算；2026/6/28-8/22、2027/6/27-8/22期间参考", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
       UpsertFee(context, schoolId, "SSP I-Card", 4500m, PhpCurrencyId, "到校支付费用；与SSP相关的I-Card申请费用", now);
@@ -964,6 +1010,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "教材费（TOEIC Standard）", 1800m, PhpCurrencyId, "到校支付费用；TOEIC Standard每4周参考", now);
       UpsertFee(context, schoolId, "教材费（IELTS）", 1900m, PhpCurrencyId, "到校支付费用；IELTS每4周参考", now);
       UpsertFee(context, schoolId, "IELTS保证班参加费", 18000m, PhpCurrencyId, "到校支付费用；IELTS Guarantee相关，需确认保证班规则", now);
+      UpsertFee(context, schoolId, "Challenger特别选修课", 2000m, PhpCurrencyId, "到校支付费用；Challenger校区特别选修课每4周参考", now);
       UpsertFee(context, schoolId, "指定接机", 3000m, PhpCurrencyId, "到校支付费用；马尼拉或克拉克指定接机日参考", now);
 
       await context.SaveChangesAsync();
@@ -1707,8 +1754,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(PhilinterSchoolName, 1600m, UsdCurrencyId, "USD 1,600 / 4周主费起（注册费另计）", Established(2003), new[] { LegacyPhilinterSchoolName }),
 
         new RegionalStartingPriceSeed(PinesSchoolName, 1420m, UsdCurrencyId, "课程+住宿4周USD 1,420起", Established(2001), new[] { LegacyPinesSchoolName }),
-        new RegionalStartingPriceSeed(BeciSchoolName, 1170m, UsdCurrencyId, "EOP 4周约USD 1,170起", Established(2002), new[] { LegacyBeciSchoolName }),
-        new RegionalStartingPriceSeed("菲律宾碧瑶API BECI（City Campus）", 1270m, UsdCurrencyId, "USD 1,270 / 4周起（Light ESL + Studio Quad）", Established(2022), new[] { "API BECI City Campus", "APIBECI City Campus" }),
+        new RegionalStartingPriceSeed(BeciSchoolName, 1240m, UsdCurrencyId, "USD 1,240 / 4周起（EOP Lite ESL + 四人房，中介优惠免注册费）", Established(2002), new[] { LegacyBeciSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾碧瑶API BECI（City Campus）", 1270m, UsdCurrencyId, "USD 1,270 / 4周起（Lite ESL + Studio四人间，中介优惠免注册费）", Established(2022), new[] { "API BECI City Campus", "APIBECI City Campus" }),
         new RegionalStartingPriceSeed(JicSchoolName, 1460m, UsdCurrencyId, "Challenger 4周约USD 1,460起", Established(2002), new[] { LegacyJicSchoolName, JicAcademyBaguioName }),
         new RegionalStartingPriceSeed(MonolSchoolName, 1250m, UsdCurrencyId, "USD 1,250 / 4周起（ESL 4 + 四人胶囊式上下铺 + 注册费）", Established(2003), new[] { LegacyMonolSchoolName, MonolFullSchoolName }),
         new RegionalStartingPriceSeed(WalesSchoolName, 1700m, UsdCurrencyId, "4周约USD 1,700起（EEP Lite + Share Type Twin + 报名费）", Established(2006), new[] { LegacyWalesSchoolName, WalesFullSchoolName, WalesShortSchoolName }),

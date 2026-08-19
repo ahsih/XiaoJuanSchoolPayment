@@ -18,7 +18,7 @@
             <div class="hero-tags" aria-label="API BECI City Campus特点">
               <span><mat-icon>location_city</mat-icon>官方地区：Baguio</span>
               <span><mat-icon>work</mat-icon>成人 / Workcation</span>
-              <span><mat-icon>record_voice_over</mat-icon>Lite / Speed / ESP / IELTS</span>
+              <span><mat-icon>record_voice_over</mat-icon>Lite / Native / Unlimited / Junior</span>
               <span><mat-icon>laptop_mac</mat-icon>Coworking / 无门禁</span>
             </div>
             <div class="hero-actions">
@@ -56,7 +56,7 @@
             <aside class="hero-price-card">
               <span>4周主费参考</span>
               <strong>{{ packageFeeText }}</strong>
-              <p>Speed ESL + Studio Double 2人房</p>
+              <p>Lite ESL + Studio Quad 4人房</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -64,7 +64,7 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  入学金、SSP、签证、押金、水电、教材、维护费、旺季费和接机需另行确认
+                  中介优惠免注册费；SSP、签证、押金、水电、教材、维护费和接机需另行确认
                 </li>
               </ul>
             </aside>
@@ -214,7 +214,7 @@
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先看全日制还是Workcation</h2>
             <p>
-              Light和Speed适合一般ESL，Flexi适合白天工作、晚上学习，BizSpeak适合商务职场，IELTS适合考试方向。
+              Lite适合轻量学习，Native强化自然表达，Unlimited提高一对一课量，Junior适合青少年路线。
             </p>
           </div>
           <div class="course-grid">
@@ -233,8 +233,8 @@
               <span>City Campus公开价格</span>
               <h2>按课程、房型和周数看主费用</h2>
               <p>
-                以下按公开City Campus美元费用表整理。主费通常含课程、住宿和每日三餐；
-                入学金、SSP、签证、押金、水电、教材、维护费、旺季费和接机另计。
+                以下按所附BECI 2026美元费用表整理。1/2/3周课程费按4周价的40%/60%/80%计算，住宿费按实际周数折算；
+                当前中介优惠免注册费，SSP、签证、押金、水电、教材、维护费和接机另计。
               </p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="API BECI City Campus公开价格">
@@ -273,7 +273,7 @@
           <div class="section-block" id="daily-schedule">
             <div class="section-heading">
               <span>City Campus 一天学习生活安排</span>
-              <h2>全日制学生和Flexi学生的节奏不同</h2>
+              <h2>课程课量不同，一天的节奏也会变化</h2>
             </div>
             <div class="timeline">
               <article *ngFor="let item of schedule">
@@ -291,9 +291,9 @@
           <div class="section-block">
             <div class="section-heading">
               <span>特殊项目 / 注意规则</span>
-              <h2>Unlimited、额外一对一和旺季费要单独确认</h2>
+              <h2>短期比例、长期折扣和旺季费要一起核算</h2>
               <p>
-                City Campus有适合Workcation的弹性项目，但促销、夜间课程、追加一对一和房型限制需要报名时逐项核实。
+                报价器已应用所附2026费用表的免注册费、短期课程比例和长期折扣；追加一对一和房型限制仍需报名时逐项核实。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="API BECI City Campus特殊项目参考">
@@ -311,7 +311,7 @@
               </div>
             </div>
             <ul class="check-list">
-              <li>Flexi课程需先确认你的工作时间、晚间课程名额和网络会议需求。</li>
+              <li>1/2/3周课程费按4周价的40%/60%/80%，住宿费按实际周数折算。</li>
               <li>Studio Double不一定接受陌生人随机合住，报名时要确认使用规则。</li>
               <li>如果你只想去宿务，顾问会优先帮你比较B Cebu、CIA、QQEnglish等宿务学校。</li>
             </ul>
@@ -320,8 +320,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>API BECI City费用快速报价</span>
-              <h2>默认参考：4周Speed ESL + Studio Double 2人房</h2>
-              <p>前期支付参考 = 入学金 + 当前主费。到校费用需另行准备。</p>
+              <h2>默认参考：4周Lite ESL + Studio Quad 4人房</h2>
+              <p>前期支付参考 = 优惠后课程住宿主费 + 旺季附加费；当前中介优惠免注册费。</p>
             </div>
             <div class="quote-form" aria-label="API BECI City费用快速报价选项">
               <label>
@@ -348,8 +348,10 @@
               </label>
             </div>
             <div class="quote-breakdown">
-              <div><span>入学金参考</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>当前主费</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>注册费（中介优惠免收）</span><strong>USD {{ payableRegistrationFee }}（原价 USD {{ registrationFee }}）</strong></div>
+              <div><span>优惠后课程住宿主费</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>长期折扣（已含在主费）</span><strong *ngIf="longStayDiscount > 0">- USD {{ formatUsd(longStayDiscount) }}</strong><strong *ngIf="longStayDiscount === 0">当前周数不适用</strong></div>
+              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
               <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
               <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
               <div><span>当地费用</span><strong>需另行确认</strong></div>
@@ -371,7 +373,7 @@
               </a>
             </div>
             <p class="fee-alert">
-              除主费和入学金外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、水电、教材、维护费、洗衣、接机和旺季费。
+              除优惠后主费外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、水电、教材、维护费、洗衣和接机；旺季费已按所选日期自动计入。
             </p>
             <p class="season-note">{{ seasonalNote }}</p>
           </section>
@@ -409,7 +411,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考API BECI City Campus官方校区说明和公开费用表整理。
+              本页价格更新时间：2026年8月19日。课程费、住宿费、注册费优惠、短期比例和长期折扣按所附BECI 2026费用表更新；校区说明参考API BECI City Campus公开资料。
               学校价格、旺季费、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
@@ -427,7 +429,7 @@
             </div>
             <ul class="check-list">
               <li>API BECI City / B Cebu / CIA等学校路线匹配</li>
-              <li>Light / Speed / Flexi / BizSpeak / IELTS课程选择</li>
+              <li>Lite / Native / Unlimited / Junior ESL课程选择</li>
               <li>Studio / Semi房型空房和Double使用规则确认</li>
               <li>前期支付与到校支付费用清单</li>
             </ul>

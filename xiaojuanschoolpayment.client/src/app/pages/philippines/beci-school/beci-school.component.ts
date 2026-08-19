@@ -76,9 +76,9 @@ export class BeciSchoolComponent {
       text: 'Sparta校区更适合多益和雅思目标；保证班通常有入学分数、出勤率和模考要求。',
     },
     {
-      title: 'ESP / Business English',
-      lessons: '商务、简报、面试、旅行或工作场景主题课',
-      text: 'City Campus方向更适合上班族、自由职业者、创业者或需要职业英语的人。',
+      title: 'City Native / Unlimited / Junior ESL',
+      lessons: '4至8节一对一，并按课程搭配团体、SP或选修课',
+      text: 'City Campus 2026费用表列出成人Native、Unlimited及Junior路线，适合按课量与年龄匹配。',
     },
     {
       title: 'SP / SC / REHAB Speaking',
@@ -91,49 +91,51 @@ export class BeciSchoolComponent {
     {
       campus: 'EOP / Cafe',
       course: 'Lite ESL',
-      fourWeeks: 'USD 1,170-1,550',
-      room: '四人房至单人房',
-      note: '2026公开原价参考，适合轻量ESL。',
+      fourWeeks: 'USD 1,240-1,770',
+      room: '四人房至豪华单人房',
+      note: '2026年4周主费，中介优惠免注册费。',
     },
     {
       campus: 'EOP / Cafe',
       course: 'Speed ESL',
-      fourWeeks: 'USD 1,370-1,750',
-      room: '四人房至单人房',
+      fourWeeks: 'USD 1,440-1,970',
+      room: '四人房至豪华单人房',
       note: '口说强化与半斯巴达代表课程。',
     },
     {
       campus: 'EOP / Cafe',
-      course: 'Sparta ESL / Working Holiday',
-      fourWeeks: 'USD 1,470-1,950',
-      room: '四人房至单人房',
-      note: '强度更高，适合短期集中训练。',
+      course: 'Sparta / IELTS / TOEIC',
+      fourWeeks: 'USD 1,420-2,000',
+      room: '四人房至豪华单人房',
+      note: 'EOP强化及考试路线，适合集中训练。',
     },
     {
       campus: 'Sparta',
       course: '24小时ESL / TOEIC / IELTS',
-      fourWeeks: 'USD 1,650-1,700',
-      room: '四人房',
-      note: '2025公开原价参考，宿舍为3+1沉浸式系统。',
+      fourWeeks: 'USD 1,550-1,700',
+      room: '普通四人间 / 3+1宿舍',
+      note: '2026年4周主费，按课程和房型组合。',
     },
     {
       campus: 'Sparta',
       course: '12周IELTS保证班',
-      fourWeeks: 'USD 5,700 / 12周',
-      room: '四人房',
-      note: '需符合入学分数、出勤和模考规则。',
+      fourWeeks: 'USD 5,300-5,600 / 12周',
+      room: '普通四人间 / 3+1宿舍',
+      note: '已扣12周长期折扣USD 100；12周起报。',
     },
     {
       campus: 'City',
-      course: 'Lite / Speed / ESP / IELTS',
-      fourWeeks: 'USD 1,200-2,100',
+      course: 'Lite / Native / Unlimited / Junior',
+      fourWeeks: 'USD 1,270-2,550',
       room: 'Quad、Studio、Semi等房型',
-      note: '成人工作者导向，房型和课程价差较大。',
+      note: '按2026费用表课程与房型组合。',
     },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: '通常约USD 100，依校区和当期报价确认' },
+    { item: '注册费', amount: '原价USD 100；当前中介优惠免收' },
+    { item: '短期比例', amount: '1/2/3周课程费按4周价的40%/60%/80%' },
+    { item: '长期折扣', amount: '8/12/16/20/24周减USD 50/100/200/300/400' },
     { item: '接机费', amount: '马尼拉约PHP 3,000；克拉克约PHP 2,500；EOP页面显示依距离/人数可变' },
     { item: 'SSP / 学习许可', amount: '当地披索缴费，按学习周数和学校当期标准确认' },
     { item: '签证延签 / ACR I-Card', amount: '长期学习通常需要，依菲律宾移民规则确认' },
@@ -185,7 +187,7 @@ export class BeciSchoolComponent {
     },
     {
       question: 'BECI适合零基础吗？',
-      answer: '可以先看EOP或City的Lite ESL、Speed ESL。若自律较弱也可考虑Sparta ESL，但要确认能否接受更密集的作息。',
+      answer: '可以先看EOP或City的Lite ESL。若自律较弱也可考虑Sparta ESL，但要确认能否接受更密集的作息。',
     },
     {
       question: 'BECI最突出的特色是什么？',
@@ -193,7 +195,7 @@ export class BeciSchoolComponent {
     },
     {
       question: '页面价格包含全部费用吗？',
-      answer: '不包含。学费住宿之外，还需要另算注册费、接机、SSP、签证延签、ACR I-Card、教材、水电、押金和个人生活费。',
+      answer: '不包含。当前中介优惠免注册费，但学费住宿之外仍需另算接机、SSP、签证延签、ACR I-Card、教材、水电、押金和个人生活费。',
     },
   ];
 
