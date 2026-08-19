@@ -90,7 +90,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/monol': {
     title: '菲律宾碧瑶MONOL语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的General ESL、IELTS、LEAP课程、Hotel-style住宿房型、官方费用、餐费说明和当地费用。',
+      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的ESL 4、General ESL、IELTS、LEAP课程、Hotel-style住宿房型、课程住宿费用、餐费说明和当地费用。',
     keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
     image: '/assets/philippines/monol-campus-building.jpg',
   },

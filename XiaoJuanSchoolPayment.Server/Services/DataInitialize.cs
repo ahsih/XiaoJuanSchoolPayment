@@ -761,7 +761,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string pinesLessonNote = "PINES 2026年4周USD费用参考；课程、校区、房型和优惠以学校正式报价为准";
+      const string pinesLessonNote = "PINES 2026年4周USD费用参考；2周按4周课程费和住宿费的65%计算，3周按85%计算；课程、校区、房型和优惠以学校正式报价为准";
 
       UpsertLesson(context, schoolId, "Light ESL 4", 4, 850m, "轻量一对一ESL，适合预算优先和基础提升", now, pinesLessonNote);
       UpsertLesson(context, schoolId, "Power Speaking", 4, 930m, "口语强化，适合开口量和表达训练", now, pinesLessonNote);
@@ -994,20 +994,24 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string monolLessonNote = "MONOL官方Admission页4周USD费用参考；除注册费外，课程和住宿费用以4周为单位，最终以学校正式报价为准";
+      const string monolLessonNote = "MONOL 2025年价目表4周USD费用参考；除注册费外，课程和住宿费用以4周为单位，最终以学校正式报价为准";
 
-      UpsertLesson(context, schoolId, "General ESL", 4, 900m, "官方4周课程费，适合基础和综合英文提升", now, monolLessonNote);
-      UpsertLesson(context, schoolId, "IELTS", 4, 1000m, "官方4周课程费USD900 + Academic Admin Fee USD100", now, monolLessonNote);
-      UpsertLesson(context, schoolId, "LEAP English", 4, 1150m, "官方4周课程费USD900 + Academic Admin Fee USD250", now, monolLessonNote);
+      UpsertLesson(context, schoolId, "ESL 4", 4, 750m, "4节一对一 + 4节团体选修课 + 健身选修课", now, monolLessonNote);
+      UpsertLesson(context, schoolId, "General ESL", 4, 900m, "5节一对一 + 4节团体选修课 + 健身选修课", now, monolLessonNote);
+      UpsertLesson(context, schoolId, "IELTS", 4, 1000m, "5节一对一 + 4节团体选修课 + 健身选修课；每周五模拟考试", now, monolLessonNote);
+      UpsertLesson(context, schoolId, "LEAP English", 4, 1150m, "5节一对一 + 4节团体选修课 + 健身选修课", now, monolLessonNote);
 
-      UpsertRoom(context, schoolId, "Premium Single Room", 4, 1100m, "最高规格单人房，适合长期学习和重视隐私的人", now);
-      UpsertRoom(context, schoolId, "Single Room", 4, 750m, "标准单人房，隐私与价格较平衡", now);
-      UpsertRoom(context, schoolId, "Deluxe Room", 4, 700m, "带厨房，适合家庭或想自理餐食的人", now);
-      UpsertRoom(context, schoolId, "Semi-Single Room", 4, 650m, "独立房间、共用浴室，兼顾隐私与预算", now);
-      UpsertRoom(context, schoolId, "Triple Room", 4, 500m, "多人房型，适合控制总预算", now);
-      UpsertRoom(context, schoolId, "Capsule Six Room", 4, 300m, "默认预算参考，适合先做最低总价估算", now);
+      RemoveRoom(context, schoolId, "Single Room", 4);
+      RemoveRoom(context, schoolId, "Deluxe Room", 4);
+      RemoveRoom(context, schoolId, "Semi-Single Room", 4);
+      RemoveRoom(context, schoolId, "Capsule Six Room", 4);
+      UpsertRoom(context, schoolId, "Premium Single Room", 4, 1100m, "高级单人间，适合长期学习和重视隐私的人", now);
+      UpsertRoom(context, schoolId, "Standard Single Room", 4, 750m, "标准单人间，隐私与价格较平衡", now);
+      UpsertRoom(context, schoolId, "Small Single Room", 4, 650m, "大单间改为两个小房间，两人共用一个洗手间", now);
+      UpsertRoom(context, schoolId, "Triple Room", 4, 500m, "三人间，适合控制住宿预算", now);
+      UpsertRoom(context, schoolId, "Quad Room (Capsule Bunks)", 4, 400m, "四人间，使用胶囊式上下铺", now);
 
-      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；官方Admission页列出的一次性注册费", now);
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；MONOL 2025年价目表列出的一次性注册费", now);
       UpsertFee(context, schoolId, "追加一对一（ESL）", 150m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，ESL 4周参考", now);
       UpsertFee(context, schoolId, "追加一对一（IELTS）", 165m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，IELTS 4周参考", now);
       UpsertFee(context, schoolId, "追加一对一（LEAP）", 180m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，LEAP 4周参考", now);
@@ -1706,7 +1710,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(BeciSchoolName, 1170m, UsdCurrencyId, "EOP 4周约USD 1,170起", Established(2002), new[] { LegacyBeciSchoolName }),
         new RegionalStartingPriceSeed("菲律宾碧瑶API BECI（City Campus）", 1270m, UsdCurrencyId, "USD 1,270 / 4周起（Light ESL + Studio Quad）", Established(2022), new[] { "API BECI City Campus", "APIBECI City Campus" }),
         new RegionalStartingPriceSeed(JicSchoolName, 1460m, UsdCurrencyId, "Challenger 4周约USD 1,460起", Established(2002), new[] { LegacyJicSchoolName, JicAcademyBaguioName }),
-        new RegionalStartingPriceSeed(MonolSchoolName, 1300m, UsdCurrencyId, "4周约USD 1,300起", Established(2003), new[] { LegacyMonolSchoolName, MonolFullSchoolName }),
+        new RegionalStartingPriceSeed(MonolSchoolName, 1250m, UsdCurrencyId, "USD 1,250 / 4周起（ESL 4 + 四人胶囊式上下铺 + 注册费）", Established(2003), new[] { LegacyMonolSchoolName, MonolFullSchoolName }),
         new RegionalStartingPriceSeed(WalesSchoolName, 1700m, UsdCurrencyId, "4周约USD 1,700起（EEP Lite + Share Type Twin + 报名费）", Established(2006), new[] { LegacyWalesSchoolName, WalesFullSchoolName, WalesShortSchoolName }),
         new RegionalStartingPriceSeed("菲律宾碧瑶A&J e-Edu English Academy", 1550m, UsdCurrencyId, "4周USD 1,550起（Eco Relax Lite + Deluxe Triple + 入学金）", Established(2008), new[] { "A&J e-Edu English Academy", "A&J" }),
         new RegionalStartingPriceSeed("HELP English（Longlong Campus）", 1500m, UsdCurrencyId, "4周USD 1,500起", Established(1996), new[] { "HELP English Longlong Campus", "HELP Longlong" }),

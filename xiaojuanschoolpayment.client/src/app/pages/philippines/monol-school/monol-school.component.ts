@@ -51,10 +51,15 @@ export class MonolSchoolComponent {
     { label: '创校时间', value: '2003年' },
     { label: '地址', value: '20-B Purok 9, Tacay Road, Pinsao Proper' },
     { label: '学校类型', value: '半斯巴达、弹性自律、住宿生活配套型' },
-    { label: '适合方向', value: 'General ESL、IELTS、LEAP客制化英文、长期学习' },
+    { label: '适合方向', value: 'ESL 4、General ESL、IELTS、LEAP客制化英文、长期学习' },
   ];
 
   readonly courses: CourseItem[] = [
+    {
+      title: 'ESL 4',
+      lessons: '4节一对一 + 4节团体选修课 + 健身选修课',
+      text: '2025年价目表中预算最低的课程，适合希望保留复习和生活弹性、同时维持一对一训练的学生。',
+    },
     {
       title: 'General ESL',
       lessons: '5节一对一 + 4节团体课 / 天',
@@ -92,43 +97,43 @@ export class MonolSchoolComponent {
       item: '注册费',
       reference: 'USD 100',
       estimate: '报名确认时支付',
-      note: '官方Admission页面列出的一次性费用。',
-      basis: '官方',
+      note: '价目表列出的一次性注册费用。',
+      basis: '2025价目表',
+    },
+    {
+      item: 'ESL 4学费',
+      reference: 'USD 750 / 4周',
+      estimate: '含注册费、配四人间约USD 1,250 / 4周',
+      note: '4节一对一 + 4节团体选修课 + 健身选修课。',
+      basis: '2025价目表',
     },
     {
       item: 'General ESL学费',
       reference: 'USD 900 / 4周',
-      estimate: '加房型后约USD 1,200起 / 4周',
-      note: '若搭配Capsule Six Room，公开价可做最低预算初筛；实际以房型空位为准。',
-      basis: '官方',
+      estimate: '含注册费、配四人间约USD 1,400 / 4周',
+      note: '课程费、住宿费和注册费合计参考，餐食与到校费用另计。',
+      basis: '2025价目表',
     },
     {
       item: 'IELTS学费',
-      reference: 'USD 900 + USD 100学术管理费 / 4周',
-      estimate: '加房型后约USD 1,300起 / 4周',
-      note: '适合已有基础和分数目标者，需确认入学测验与模考安排。',
-      basis: '官方',
+      reference: 'USD 1,000 / 4周',
+      estimate: '含注册费、配四人间约USD 1,500 / 4周',
+      note: '每周五安排模拟考试；需确认入学测验与当期开课安排。',
+      basis: '2025价目表',
     },
     {
       item: 'LEAP English学费',
-      reference: 'USD 900 + USD 250学术管理费 / 4周',
-      estimate: '加房型后约USD 1,450起 / 4周',
+      reference: 'USD 1,150 / 4周',
+      estimate: '含注册费、配四人间约USD 1,650 / 4周',
       note: '客制化程度较高，报价前要先确认学习目标和科目组合。',
-      basis: '官方',
+      basis: '2025价目表',
     },
     {
       item: '宿舍房型',
-      reference: 'USD 300-1,100 / 4周',
-      estimate: '六人胶囊房至Premium Single',
-      note: '官方列出Capsule Six、Triple、Semi-Single、Deluxe、Single、Premium Single等房型。',
-      basis: '官方',
-    },
-    {
-      item: '2026套装参考',
-      reference: '约USD 1,540-1,850 / 4周',
-      estimate: '按课程与房型组合变化',
-      note: 'iOutback公开页展示General English、IELTS、Customized English不同房型套装价，可做市场比价。',
-      basis: 'iOutback',
+      reference: 'USD 400-1,100 / 4周',
+      estimate: '四人胶囊式上下铺至Premium Single',
+      note: '价目表列出Quad、Triple、Small Single、Standard Single和Premium Single房型。',
+      basis: '2025价目表',
     },
     {
       item: '餐食与生活费',
@@ -152,7 +157,7 @@ export class MonolSchoolComponent {
 
   readonly accommodation = [
     '官方资料显示，MONOL与Misty Hills Hotel合作提供住宿管理，强调24小时接待、每日房务、毛巾床品和清洁服务。',
-    '公开房型包括Premium Single、Single、Semi-Single、Deluxe、Triple和Capsule Six；Deluxe带厨房，更适合家庭或想自理餐食的人。',
+    '2025年价目表房型包括Premium Single、Standard Single、Small Single、Triple和Quad（胶囊式上下铺）。',
     '房间设备常见包含冰箱、微波炉、电热水壶、除湿机、保险箱、书桌、衣柜和干湿分离卫浴，细节需按实际房型核对。',
     '餐食不强制打包在学费住宿内，适合想控制饮食、素食或长期学习的人，但也代表学生需要自己规划餐费和日常采购。',
   ];
@@ -182,7 +187,7 @@ export class MonolSchoolComponent {
 
   readonly pros = [
     '创校时间长，官方资料显示自2003年起运营，是碧瑶较有历史的语言学校之一',
-    '课程选择不复杂，General ESL、IELTS和LEAP三条线便于按目标筛选',
+    'ESL 4、General ESL、IELTS和LEAP四条课程线便于按课时、预算和目标筛选',
     '住宿舒适度和生活设施是明显卖点，适合不想牺牲居住品质的成人或长期学生',
     '餐食弹性高，学生可以用学校餐盒、外送、咖啡厅或共享厨房控制预算和饮食',
     '半斯巴达属性比全斯巴达更有弹性，适合自律尚可、但仍想要学习环境的人',
@@ -203,7 +208,7 @@ export class MonolSchoolComponent {
     },
     {
       question: 'MONOL适合零基础学生吗？',
-      answer: '可以优先看General ESL或Light ESL方向。若目标是IELTS，建议先确认入学测验、基础程度和是否需要先补ESL。',
+      answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、基础程度和是否需要先补ESL。',
     },
     {
       question: '费用为什么看起来有不同版本？',

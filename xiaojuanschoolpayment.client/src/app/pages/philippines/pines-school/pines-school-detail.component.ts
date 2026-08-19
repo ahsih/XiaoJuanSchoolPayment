@@ -314,8 +314,13 @@ export class PinesSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
+  get selectedWeekMultiplier(): number {
+    if (this.selectedWeeks === 2) return 0.65;
+    if (this.selectedWeeks === 3) return 0.85;
+    return this.selectedWeeks / 4;
+  }
+  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.selectedWeekMultiplier; }
+  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.selectedWeekMultiplier; }
   get isPeakSeason(): boolean {
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
     const ranges = [

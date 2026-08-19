@@ -45,8 +45,8 @@ export class MonolSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly pricingSchoolSearchName = 'MONOL';
   private readonly pricingSchoolNames = ['菲律宾碧瑶MONOL语言学校', 'MONOL', 'Models of Nonpareil and Outstanding Learning'];
-  private readonly courseFeeOrder = ['general-esl', 'ielts', 'leap-english'];
-  private readonly roomFeeOrder = ['premium-single-room', 'single-room', 'deluxe-room', 'semi-single-room', 'triple-room', 'capsule-six-room'];
+  private readonly courseFeeOrder = ['esl-4', 'general-esl', 'ielts', 'leap-english'];
+  private readonly roomFeeOrder = ['premium-single-room', 'standard-single-room', 'small-single-room', 'triple-room', 'quad-room'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -55,8 +55,8 @@ export class MonolSchoolDetailComponent implements OnInit {
   seasonalFeePerWeek = 0;
   readonly usdToCny = 7.2;
   readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
-  selectedCourseId = 'general-esl';
-  selectedRoomId = 'capsule-six-room';
+  selectedCourseId = 'esl-4';
+  selectedRoomId = 'quad-room';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
@@ -64,10 +64,10 @@ export class MonolSchoolDetailComponent implements OnInit {
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: 'Pinsao Proper山城环境，适合稳定学习和长期生活。' },
     { icon: 'apartment', label: '学校定位', value: '半斯巴达 / 舒适住宿', note: '比传统高压斯巴达更弹性，住宿生活配套是重要卖点。' },
-    { icon: 'school', label: '课程方向', value: 'General ESL / IELTS / LEAP', note: '三条主线清楚，LEAP可按目标客制General ESL、IELTS、TOEIC或Business方向。' },
-    { icon: 'bed', label: '住宿', value: 'Hotel-style dormitory', note: '与Misty Hills Hotel合作管理，房型从Capsule Six到Premium Single。' },
+    { icon: 'school', label: '课程方向', value: 'ESL 4 / General ESL / IELTS / LEAP', note: '从轻量ESL到考试和客制课程，按一对一课时和学习目标选择。' },
+    { icon: 'bed', label: '住宿', value: 'Hotel-style dormitory', note: '2025价目表房型从四人胶囊式上下铺到Premium Single。' },
     { icon: 'restaurant', label: '餐食', value: '餐费另计', note: 'Meal allowance separate，适合需要饮食弹性或长期控制预算的学生。' },
-    { icon: 'payments', label: '费用表', value: '官方Admission页公开', note: '注册费、课程费、住宿费和当地费用均有公开参考。' },
+    { icon: 'payments', label: '费用表', value: 'MONOL 2025年价目表', note: '注册费、4周课程费和不含餐费的4周住宿费均按价目表更新。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -76,7 +76,7 @@ export class MonolSchoolDetailComponent implements OnInit {
     { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.jpg' },
     { category: '教室', title: 'MONOL独立教室区', description: 'Facility页面展示的玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.jpg' },
     { category: '住宿', title: 'Single Room私密房型', description: '官方房型照片展示的单人房，含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.jpg' },
-    { category: '住宿', title: 'Deluxe / Family房型', description: '官方照片展示的带厨房住宿空间，适合家庭、同行者或重视生活舒适度的学生。', src: 'assets/philippines/monol-dormitory-room.jpg' },
+    { category: '住宿', title: 'MONOL住宿空间', description: '官方照片展示的住宿空间；实际房型、床位和设备需按当期空房确认。', src: 'assets/philippines/monol-dormitory-room.jpg' },
     { category: '住宿', title: 'Triple Room多人房', description: '官方照片展示的多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.jpg' },
     { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Facility页面Aqua Garden Cafe照片展示的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.jpg' },
     { category: '餐厅', title: 'MONOL餐点参考', description: '官方照片展示的餐点，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.jpg' },
@@ -91,22 +91,22 @@ export class MonolSchoolDetailComponent implements OnInit {
     { label: '英文名称', value: 'MONOL / Models of Nonpareil and Outstanding Learning' },
     { label: '创校时间', value: '2003年' },
     { label: '地址', value: '20-B Purok 9, Tacay Road, Pinsao Proper, Baguio City, Benguet' },
-    { label: '课程方向', value: 'General ESL、IELTS、LEAP English；LEAP可延伸TOEIC、Business English和其他客制科目' },
-    { label: '房型方向', value: 'Premium Single、Single、Semi-Single、Deluxe、Triple、Capsule Six' },
+    { label: '课程方向', value: 'ESL 4、General ESL、IELTS、LEAP English' },
+    { label: '房型方向', value: 'Premium Single、Standard Single、Small Single、Triple、Quad（胶囊式上下铺）' },
     { label: '住宿服务', value: '与Misty Hills Hotel合作，提供24小时接待、每日房务、毛巾床品和房间清洁' },
-    { label: '报价说明', value: '官方说明除注册费外，课程费和住宿费以4周为单位；餐费另计，到校费用多以PHP支付' },
+    { label: '报价说明', value: '2025年价目表除注册费外，课程费和住宿费以4周为单位；住宿不含餐费，到校费用多以PHP支付' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/monol-campus-building.jpg', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
     { image: 'assets/philippines/monol-private-room.jpg', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
-    { image: 'assets/philippines/monol-classroom.jpg', title: '课程线清楚', text: 'General ESL补基础，IELTS面向升学就业目标，LEAP用学习者画像和客制课程做更精细的目标匹配。' },
+    { image: 'assets/philippines/monol-classroom.jpg', title: '课程线清楚', text: 'ESL 4和General ESL按课时与预算补基础，IELTS面向考试目标，LEAP提供更客制化的学习安排。' },
     { image: 'assets/philippines/monol-rooftop-gym.jpg', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
   ];
 
   readonly suitableFor: FitItem[] = [
     { title: '计划8周以上稳定学习', text: 'MONOL的住宿、设施和半斯巴达节奏更适合中长期学习者，而不是只追求短期高压冲刺。' },
-    { title: '重视住宿舒适度和生活配套', text: 'Single、Premium Single、Deluxe和Semi-Single适合成人、家庭或希望住得稳定的人。' },
+    { title: '重视住宿舒适度和生活配套', text: 'Premium Single、Standard Single和Small Single适合重视隐私或希望住得稳定的人。' },
     { title: '想学ESL或IELTS但不想过度高压', text: 'General ESL和IELTS都有9节日课结构，但晚间生活更需要学生自己安排复习。' },
     { title: '需要课程客制化', text: 'LEAP适合有职业、TOEIC、Business、IELTS或其他具体目标，需要先做学习者画像的人。' },
   ];
@@ -119,6 +119,7 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   readonly courses: CourseItem[] = [
+    { name: 'ESL 4', type: '轻量综合英文', lessons: '4节一对一 + 4节团体选修课 + 健身选修课', suitable: '适合预算优先、希望保留复习和生活弹性，同时维持一对一训练的学生。' },
     { name: 'General ESL', type: '基础与综合英文', lessons: '5节一对一 + 4节团体课 / 天', suitable: '使用螺旋式复习和沟通法，覆盖听说读写、语法和发音，适合打基础和系统提升。' },
     { name: 'IELTS', type: '雅思备考', lessons: '5节一对一 + 4节团体课 / 天', suitable: '面向升学、海外就业或移民方向，官方建议General ESL中级以上基础，并安排每期模拟考试。' },
     { name: 'LEAP English', type: '客制化英文', lessons: '5节一对一 + 4节团体课 + Fitness Classes', suitable: '先做学习者画像和目标分析，再按General ESL、IELTS、TOEIC、Business或其他科目组合课程。' },
@@ -126,23 +127,23 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'general-esl', name: 'General ESL', tuition: 900, suitable: '官方4周课程费，适合基础和综合英文提升' },
-    { id: 'ielts', name: 'IELTS', tuition: 1000, suitable: '官方4周课程费USD900 + Academic Admin Fee USD100' },
-    { id: 'leap-english', name: 'LEAP English', tuition: 1150, suitable: '官方4周课程费USD900 + Academic Admin Fee USD250' },
+    { id: 'esl-4', name: 'ESL 4', tuition: 750, suitable: '4节一对一 + 4节团体选修课 + 健身选修课' },
+    { id: 'general-esl', name: 'General ESL', tuition: 900, suitable: '5节一对一 + 4节团体选修课 + 健身选修课' },
+    { id: 'ielts', name: 'IELTS', tuition: 1000, suitable: '5节一对一 + 4节团体选修课 + 健身选修课；每周五模拟考试' },
+    { id: 'leap-english', name: 'LEAP English', tuition: 1150, suitable: '5节一对一 + 4节团体选修课 + 健身选修课' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'premium-single-room', name: 'Premium Single Room', fee: 1100, note: '最高规格单人房，适合长期学习和重视隐私的人' },
-    { id: 'single-room', name: 'Single Room', fee: 750, note: '标准单人房，隐私与价格较平衡' },
-    { id: 'deluxe-room', name: 'Deluxe Room', fee: 700, note: '带厨房，适合家庭或想自理餐食的人' },
-    { id: 'semi-single-room', name: 'Semi-Single Room', fee: 650, note: '独立房间、共用浴室，兼顾隐私与预算' },
-    { id: 'triple-room', name: 'Triple Room', fee: 500, note: '多人房型，适合控制总预算' },
-    { id: 'capsule-six-room', name: 'Capsule Six Room', fee: 300, note: '默认预算参考，适合先做最低总价估算' },
+    { id: 'premium-single-room', name: 'Premium Single Room', fee: 1100, note: '高级单人间，适合长期学习和重视隐私的人' },
+    { id: 'standard-single-room', name: 'Standard Single Room', fee: 750, note: '标准单人间，隐私与价格较平衡' },
+    { id: 'small-single-room', name: 'Small Single Room', fee: 650, note: '大单间改为两个小房间，两人共用一个洗手间' },
+    { id: 'triple-room', name: 'Triple Room', fee: 500, note: '三人间，适合控制住宿预算' },
+    { id: 'quad-room', name: 'Quad Room (Capsule Bunks)', fee: 400, note: '四人间，使用胶囊式上下铺' },
   ];
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐 / 个人准备', text: '餐食不强制打包，学生可按自己的饮食习惯和预算安排。' },
-    { time: '08:00 - 12:00', title: '上午一对一与团体课', text: 'General ESL、IELTS和LEAP都以5节一对一加4节团体课作为核心结构。' },
+    { time: '08:00 - 12:00', title: '上午一对一与团体课', text: 'ESL 4安排4节一对一；General ESL、IELTS和LEAP安排5节一对一，并搭配团体选修课。' },
     { time: '12:00 - 13:00', title: '午餐与短休', text: '可结合餐盒、咖啡厅、外送或共享厨房安排午餐。' },
     { time: '13:00 - 17:00', title: '下午课程与反馈', text: 'IELTS关注考试科目训练，LEAP更强调学习监测、目标调整和客制化。' },
     { time: '17:00 - 22:00', title: 'Fitness / 复习 / 生活安排', text: '官方课程页提到Fitness Classes为平日可选，晚间更适合自律复习和运动休息。' },
@@ -166,7 +167,7 @@ export class MonolSchoolDetailComponent implements OnInit {
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先判断是否适合MONOL', text: '确认学生是否需要舒适住宿、长期稳定学习、饮食弹性和半斯巴达节奏。' },
-    { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认General ESL、IELTS或LEAP，房型、空房、餐食预算和正式报价。' },
+    { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认ESL 4、General ESL、IELTS或LEAP，房型、空房、餐食预算和正式报价。' },
     { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提供学习资料、费用清单、行李清单、接机和到校注意事项。' },
     { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、费用、生活适应或学校沟通问题，可继续联系思达协助。' },
@@ -193,18 +194,18 @@ export class MonolSchoolDetailComponent implements OnInit {
   readonly campusActivities = ['新生说明会', 'Fitness Classes', '英语口语活动', 'IELTS模拟考试', '学生交流活动'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Camp John Hay', 'Mines View Park'];
   readonly notes = [
-    'MONOL官方说明除注册费外，所有费用以4周为单位列示。',
+    'MONOL 2025年价目表说明除注册费外，课程费和住宿费以4周为单位列示。',
     '餐费在官方Admission页标注为Separate，报价时要单独估算餐食和个人生活费。',
-    'IELTS和LEAP的Academic Admin Fee已计入本页课程费，用于避免低估前期支付金额。',
+    '本页课程费按2025年价目表直接列示：ESL 4 / General ESL / IELTS / LEAP分别为USD 750 / 900 / 1,000 / 1,150。',
     'Security Deposit官方列为USD 100或PHP 4,000，本页到校费用按PHP 4,000展示。',
     'MONOL官方Admission页没有列出旺季附加费，本计算器按USD 0处理；最终以学校正式账单为准。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶MONOL语言学校是斯巴达学校吗？', answer: '更适合归类为半斯巴达或自律弹性型。它有高课时日课和学习支持，但不像典型高压斯巴达学校主要靠强制自习和门禁推动。' },
-    { question: 'MONOL适合零基础学生吗？', answer: '可以优先看General ESL。若目标是IELTS，建议先确认入学测验、英语基础和是否需要先读ESL过渡。' },
+    { question: 'MONOL适合零基础学生吗？', answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、英语基础和是否需要先读ESL过渡。' },
     { question: '页面报价包含餐费吗？', answer: '不包含。MONOL官方Admission页把Meal Allowance标注为Separate，所以本页前期支付参考只计算注册费、课程费、住宿费和额外附加费。' },
-    { question: 'IELTS和LEAP为什么比官方课程费USD900高？', answer: '因为官方费用表写明IELTS有USD100 Academic Admin Fee，LEAP有USD250 Academic Admin Fee。本页课程费已把这些费用并入计算。' },
+    { question: '页面的课程和住宿价格按什么周期计算？', answer: '注册费为一次性USD 100；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名MONOL，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -257,7 +258,7 @@ export class MonolSchoolDetailComponent implements OnInit {
     if (databaseCourseFees.length > 0) {
       this.courseFees = databaseCourseFees;
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
-        this.selectedCourseId = this.courseFees.find((course) => course.id === 'general-esl')?.id ?? this.courseFees[0].id;
+        this.selectedCourseId = this.courseFees.find((course) => course.id === 'esl-4')?.id ?? this.courseFees[0].id;
       }
     }
 
@@ -273,7 +274,7 @@ export class MonolSchoolDetailComponent implements OnInit {
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'capsule-six-room')?.id ?? this.roomFees[0].id;
+        this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad-room')?.id ?? this.roomFees[0].id;
       }
     }
 
@@ -332,11 +333,10 @@ export class MonolSchoolDetailComponent implements OnInit {
   }
   private createRoomId(name: string): string {
     if (name.includes('Premium Single')) return 'premium-single-room';
-    if (name.includes('Semi-Single')) return 'semi-single-room';
-    if (name.includes('Single')) return 'single-room';
-    if (name.includes('Deluxe')) return 'deluxe-room';
+    if (name.includes('Standard Single')) return 'standard-single-room';
+    if (name.includes('Small Single')) return 'small-single-room';
     if (name.includes('Triple')) return 'triple-room';
-    if (name.includes('Capsule')) return 'capsule-six-room';
+    if (name.includes('Quad')) return 'quad-room';
     return this.slugifyPriceKey(name);
   }
   private currencyCodeForDisplay(code?: string): string {
