@@ -242,7 +242,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/iloilo/mk-language-training-center': {
     title: '菲律宾伊洛伊洛MK Language Training Center | ESL雅思亲子课程费用',
     description:
-      '菲律宾伊洛伊洛MK Language Training Center页面，整理MK Iloilo的ESL 1-7、ESL Intensive、IELTS、TESOL、Internship、Family课程、4周USD课程住宿费、PHP当地费用和报名注意事项。',
+      '菲律宾伊洛伊洛MK Language Training Center页面，整理MK Iloilo的ESL Basic至Intensive、IELTS、TESOL、Business、Working Holiday、Junior、Internship课程、短期与4周USD课程住宿费、PHP当地费用和报名注意事项。',
     keywords:
       '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, 伊洛伊洛语言学校, 菲律宾ESL学校, 菲律宾亲子游学, 菲律宾IELTS学校',
     image: '/assets/philippines/baguio-study-hero.jpg',

@@ -10,11 +10,10 @@ type CourseId =
   | 'esl'
   | 'esl-intensive'
   | 'business-english'
-  | 'family-program'
-  | 'ielts-toeic-basic'
-  | 'ielts-toeic-intermediate'
-  | 'ielts-toeic-advanced';
-type RoomId = 'quad' | 'triple' | 'double' | 'single';
+  | 'ielts-basic-intermediate'
+  | 'ielts-advanced'
+  | 'ielts-guaranteed';
+type RoomId = 'single' | 'double' | 'two-plus-one';
 
 interface QuickInfo {
   icon: string;
@@ -116,10 +115,11 @@ interface SourceLink {
   ],
 })
 export class HelpLonglongSchoolComponent {
+  readonly registrationFee = 100;
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
   selectedCourseId: CourseId = 'esl';
-  selectedRoomId: RoomId = 'quad';
+  selectedRoomId: RoomId = 'double';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
@@ -148,8 +148,8 @@ export class HelpLonglongSchoolComponent {
     {
       icon: 'school',
       label: '课程方向',
-      value: 'ESL / IELTS / TOEIC',
-      note: '官网列General ESL、TOEIC、IELTS、Business English与线上一对一课程方向。',
+      value: 'ESL / IELTS / Business',
+      note: '所附2025年费用表列ESL、ESL Intensive、Business English和三个IELTS级别。',
     },
     {
       icon: 'apartment',
@@ -160,8 +160,8 @@ export class HelpLonglongSchoolComponent {
     {
       icon: 'payments',
       label: '4周起价',
-      value: 'USD 1,500 起',
-      note: 'ESL USD900 + Quad四人房USD600；当地PHP费用另算。',
+      value: 'USD 1,580 起',
+      note: 'ESL USD800 + Double双人房USD780；注册费USD100及当地PHP费用另算。',
     },
   ];
 
@@ -187,7 +187,7 @@ export class HelpLonglongSchoolComponent {
     {
       category: '住宿',
       title: '校内宿舍方向',
-      description: '官方费用表按Single、Double、Triple、Quad房型核算4周住宿费。',
+      description: '所附2025年费用表列Single、Double与2+1三种4周住宿价格。',
       src: 'assets/philippines/baguio-study-hero.jpg',
     },
     {
@@ -204,9 +204,9 @@ export class HelpLonglongSchoolComponent {
     { label: '地址', value: 'Lamtang Road, La Trinidad, Benguet, Philippines' },
     { label: '品牌历史', value: 'HELP English创立于1996年，Longlong校区于2007年开放，官方历史页列容量约400人。' },
     { label: '当前状态提示', value: '官网Baguio页面提示：Longlong设施升级期间，活跃Sparta训练项目与资深教师目前整合在HELP Clark Campus。' },
-    { label: '课程方向', value: 'General ESL、ESL Intensive、Business English、Family Program、IELTS / TOEIC Basic / Intermediate / Advanced。' },
+    { label: '课程方向', value: 'ESL、ESL Intensive、Business English、IELTS Basic & Intermediate、IELTS Advanced、IELTS Guaranteed。' },
     { label: '设施', value: '100间1:1教室、22间1:5小组教室、5间大讲堂、宿舍、餐厅、健身房、休息区、便利店、医务室和洗衣服务。' },
-    { label: '4周费用', value: '课程住宿USD 1,500起；Baguio 4周当地费用官方表总额PHP 21,700。' },
+    { label: '4周费用', value: '2025年课程住宿USD 1,580起，注册费USD 100另计；Baguio 4周当地费用参考PHP 21,700。' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -223,7 +223,7 @@ export class HelpLonglongSchoolComponent {
     {
       image: this.galleryImages[2].src,
       title: '考试与综合英语都能衔接',
-      text: '公开课程费覆盖ESL、ESL Intensive、Business、Family、IELTS与TOEIC不同级别，适合做4-24周预算初筛。',
+      text: '所附2025年课程费覆盖ESL、ESL Intensive、Business与IELTS不同级别，适合做4-24周预算初筛。',
     },
     {
       image: 'assets/philippines/help-clark-local-fee.jpeg',
@@ -234,8 +234,8 @@ export class HelpLonglongSchoolComponent {
 
   readonly suitableFor: FitItem[] = [
     { title: '想要碧瑶山城和严格学习节奏', text: 'Longlong传统定位偏Sparta，适合想减少外部干扰、每天稳定上课和自习的人。' },
-    { title: 'ESL打底后转考试或商务方向', text: 'HELP公开课程覆盖ESL、IELTS、TOEIC和Business，可按英语基础逐步规划。' },
-    { title: '想先用官方USD表做预算', text: 'HELP公开4周课程费与住宿费，报价公式清楚，适合先估算课程住宿大头。' },
+    { title: 'ESL打底后转考试或商务方向', text: '2025年费用表覆盖ESL、IELTS和Business，可按英语基础逐步规划。' },
+    { title: '想先用USD表做预算', text: '所附费用表列出4周课程费、住宿费和注册费，适合先估算课程住宿大头。' },
     { title: '愿意等学校确认当前开放安排', text: '如果你可以接受先核实Longlong重开、空房或Clark承接方案，HELP仍值得列入候选。' },
   ];
 
@@ -251,65 +251,61 @@ export class HelpLonglongSchoolComponent {
       id: 'esl',
       name: 'ESL',
       type: 'General English',
-      lessons: '4周课程费 USD 900',
-      suitable: '适合第一次游学、口语基础打底和想用Sparta节奏建立学习习惯的学生。',
-      tuition4w: 900,
+      lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '费用表备注：每4周一次月考。',
+      tuition4w: 800,
     },
     {
       id: 'esl-intensive',
       name: 'ESL Intensive',
       type: 'Intensive ESL',
-      lessons: '4周课程费 USD 1,040',
-      suitable: '适合想增加课时密度、短期集中补弱项或从ESL衔接考试课程的人。',
-      tuition4w: 1040,
+      lessons: '每日5节一对一 + 2节小团体 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '费用表备注：每4周一次月考。',
+      tuition4w: 940,
     },
     {
       id: 'business-english',
       name: 'Business English',
       type: 'Business',
-      lessons: '4周课程费 USD 1,050',
-      suitable: '适合会议、邮件、表达、演示和职场沟通需求，需要确认入学基础要求。',
-      tuition4w: 1050,
+      lessons: '每日5节一对一 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '适合会议、表达和职场沟通需求，入学基础要求以学校回复为准。',
+      tuition4w: 900,
     },
     {
-      id: 'family-program',
-      name: 'Family Program',
-      type: 'Family',
-      lessons: '4周课程费 USD 1,000',
-      suitable: '适合亲子同行做预算初筛，年龄、监护、活动和房型需按当期开班确认。',
-      tuition4w: 1000,
+      id: 'ielts-basic-intermediate',
+      name: 'IELTS - Basic & Intermediate',
+      type: 'IELTS Exam Prep',
+      lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '费用表备注：每4周一次模拟考；5分以上每2周一次。',
+      tuition4w: 900,
     },
     {
-      id: 'ielts-toeic-basic',
-      name: 'IELTS / TOEIC Basic',
-      type: 'Exam Prep',
-      lessons: '4周课程费 USD 1,050',
-      suitable: '适合考试基础阶段，重点核对入学测试、模考频率和目标分数。',
-      tuition4w: 1050,
+      id: 'ielts-advanced',
+      name: 'IELTS - Advanced',
+      type: 'IELTS Exam Prep',
+      lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '费用表备注：每4周一次模拟考；5分以上每2周一次。',
+      tuition4w: 940,
     },
     {
-      id: 'ielts-toeic-intermediate',
-      name: 'IELTS / TOEIC Intermediate',
-      type: 'Exam Prep',
-      lessons: '4周课程费 USD 1,050',
-      suitable: '适合已有考试基础、需要阶段性强化听说读写的人。',
-      tuition4w: 1050,
-    },
-    {
-      id: 'ielts-toeic-advanced',
-      name: 'IELTS / TOEIC Advanced',
-      type: 'Exam Prep',
-      lessons: '4周课程费 USD 1,150',
-      suitable: '适合较高目标分数或需要考试专项冲刺的人，需先确认分班要求。',
-      tuition4w: 1150,
+      id: 'ielts-guaranteed',
+      name: 'IELTS - Guaranteed',
+      type: 'IELTS Guaranteed',
+      lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 1节词汇考试 + 晚自习',
+      suitable: '费用表备注：保分班每周一次模拟考，周四考试。',
+      tuition4w: 940,
     },
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: 'Quad Room / 四人房', fee4w: 600, note: '4周住宿费，官方说明含每日餐食和饮用水。' },
-    { id: 'triple', name: 'Triple Room / 三人房', fee4w: 680, note: '4周住宿费，预算和人数平衡。' },
-    { id: 'double', name: 'Double Room / 双人房', fee4w: 780, note: '4周住宿费，适合同伴同行或希望室友少一点的人。' },
-    { id: 'single', name: 'Single Room / 单人房', fee4w: 1030, note: '4周住宿费，隐私最好，空房通常需要尽早确认。' },
+    { id: 'single', name: 'Single Room / 单人间', fee4w: 1030, note: '所附2025年费用表列示的4周住宿费。' },
+    { id: 'double', name: 'Double Room / 双人间', fee4w: 780, note: '所附2025年费用表列示的4周住宿费，也是表内最低房价。' },
+    {
+      id: 'two-plus-one',
+      name: '2+1 Room',
+      fee4w: 850,
+      note: '2+1 Room student安排：每日4–5节一对一 + 3节小团体 + 2节大团体 + 1节词汇考试 + 晚自习；表内未列单独课程费。',
+    },
   ];
 
   readonly localFeeTotals: LocalFeeTotal[] = [
@@ -339,7 +335,7 @@ export class HelpLonglongSchoolComponent {
   readonly schedule: ScheduleItem[] = [
     { time: '07:20', title: '早餐', text: '校内用餐后开始晨间阅读和正式课程准备。' },
     { time: '08:00', title: 'Morning Reading', text: '官方日程列晨读，帮助学生进入Sparta学习节奏。' },
-    { time: '08:50 - 15:05', title: '一对一与小组课程', text: '一对一、小组课和自习穿插安排，课程内容按ESL、IELTS、TOEIC或Business目标分配。' },
+    { time: '08:50 - 15:05', title: '一对一与小组课程', text: '一对一、小组课和自习穿插安排，课程内容按ESL、IELTS或Business目标分配。' },
     { time: '15:50', title: 'Special Optional Class', text: '可选特别课或额外学习安排，以当期开课为准。' },
     { time: '19:00 - 21:00', title: '晚自习与词汇测试', text: '官方日程列19:00自习、20:00词汇测试、21:00继续自习，适合需要外部推动的人。' },
     { time: 'Weekend', title: '周末与外出', text: '官方规则列平日外出限制，周末外出、旅行和返校时间需按学校规定申请和遵守。' },
@@ -347,8 +343,8 @@ export class HelpLonglongSchoolComponent {
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'fact_check', title: '先确认Longlong状态', text: '向学校核对Longlong当前是否开放、是否可住宿、课程和教师是否仍由Clark承接。' },
-    { icon: 'school', title: '匹配课程级别', text: '按英语基础、IELTS/TOEIC目标、商务或亲子需求确认课程方向。' },
-    { icon: 'hotel', title: '锁定房型与入学日', text: '确认Single、Double、Triple或Quad房型空位，特别是长期和旺季档期。' },
+    { icon: 'school', title: '匹配课程级别', text: '按英语基础、IELTS目标或商务需求确认课程方向。' },
+    { icon: 'hotel', title: '锁定房型与入学日', text: '确认Single、Double或2+1房型空位，特别是长期和旺季档期。' },
     { icon: 'payments', title: '拆分USD与PHP预算', text: '课程住宿按USD公式估算，当地费用按Baguio Local Fee表另列。' },
     { icon: 'flight_takeoff', title: '安排接机与交通', text: '马尼拉到碧瑶车程较长，需确认指定接机日、抵达机场和到校方式。' },
     { icon: 'support_agent', title: '报名后继续跟进', text: '如校区、住宿、课程或费用有变化，顾问协助与学校复核。' },
@@ -357,8 +353,8 @@ export class HelpLonglongSchoolComponent {
   readonly notes = [
     'HELP官网Baguio页面明确提示：Longlong设施升级期间，活跃Sparta课程与资深教师目前整合在HELP Clark Campus。',
     '本页仍保留Longlong校区资料，是为了帮助学生了解HELP Baguio传统校区与费用结构；正式报名必须先确认当前是否开放。',
-    'HELP官方费用公式为（课程费 + 宿舍费）x 学习周数 / 4；当地PHP费用、机票、保险、接机和个人消费另计。',
-    'Dormitory Fee官方说明包含每日餐食和饮用水，房型空位与实际住宿楼栋需按学校回复确认。',
+    '课程费与宿舍费按所附HELP 2025年费用表更新；一次性注册费USD 100，当地PHP费用、机票、保险、接机和个人消费另计。',
+    '2025年费用表只列Single、Double与2+1房型；房型空位、餐食范围与实际住宿楼栋需按学校回复确认。',
     '平日外出、EOP、晚自习、词汇测试和周末旅行规则较严格，适合目标明确并能接受纪律的人。',
   ];
 
@@ -371,12 +367,12 @@ export class HelpLonglongSchoolComponent {
     {
       question: 'HELP Longlong 4周最低多少钱？',
       answer:
-        '按HELP官方Tuition and Fees页面，ESL课程USD900 + Quad四人房USD600，4周课程住宿合计USD1,500起。Baguio 4周当地费用表总额PHP21,700，机票、保险、接机和个人消费另算。',
+        '按所附HELP 2025年费用表，ESL课程USD800 + Double双人间USD780，4周课程住宿合计USD1,580起；再加一次性注册费USD100，前期USD参考为USD1,680。Baguio当地PHP费用、机票、保险、接机和个人消费另算。',
     },
     {
-      question: 'HELP Longlong适合雅思或多益吗？',
+      question: 'HELP Longlong适合雅思吗？',
       answer:
-        '适合作为候选。HELP公开课程包含IELTS / TOEIC Basic、Intermediate、Advanced；但具体开课校区、入学分班、模考和教师安排要按学校当期回复确认。',
+        '适合作为候选。2025年费用表列IELTS Basic & Intermediate、IELTS Advanced和IELTS Guaranteed；备注列每4周一次模拟考、5分以上每2周一次、保分班每周一次并在周四考试。具体开课校区、分班和教师安排仍要按学校当期回复确认。',
     },
     {
       question: 'Longlong和HELP Clark怎么比较？',
@@ -440,7 +436,7 @@ export class HelpLonglongSchoolComponent {
   }
 
   get quoteUsd(): number {
-    return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks;
+    return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks;
   }
 
   get quoteText(): string {
@@ -448,7 +444,9 @@ export class HelpLonglongSchoolComponent {
   }
 
   get fourWeekStartingText(): string {
-    return this.formatMoney(this.courses[0].tuition4w + this.roomOptions[0].fee4w, 'USD');
+    const lowestTuition = Math.min(...this.courses.map((course) => course.tuition4w));
+    const lowestRoomFee = Math.min(...this.roomOptions.map((room) => room.fee4w));
+    return this.formatMoney(lowestTuition + lowestRoomFee, 'USD');
   }
 
   get selectedLocalFeeText(): string {
@@ -457,17 +455,18 @@ export class HelpLonglongSchoolComponent {
   }
 
   get formulaText(): string {
-    return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4`;
+    return `注册费 + (${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4`;
   }
 
   get courseFeeRows() {
+    const roomFee = (id: RoomId) => this.roomOptions.find((room) => room.id === id)?.fee4w ?? 0;
+
     return this.courses.map((course) => ({
       course: course.name,
       tuition: this.formatMoney(course.tuition4w, 'USD'),
-      quad: this.formatMoney(course.tuition4w + this.roomOptions[0].fee4w, 'USD'),
-      triple: this.formatMoney(course.tuition4w + this.roomOptions[1].fee4w, 'USD'),
-      double: this.formatMoney(course.tuition4w + this.roomOptions[2].fee4w, 'USD'),
-      single: this.formatMoney(course.tuition4w + this.roomOptions[3].fee4w, 'USD'),
+      single: this.formatMoney(course.tuition4w + roomFee('single'), 'USD'),
+      double: this.formatMoney(course.tuition4w + roomFee('double'), 'USD'),
+      twoPlusOne: this.formatMoney(course.tuition4w + roomFee('two-plus-one'), 'USD'),
       suitable: course.suitable,
     }));
   }

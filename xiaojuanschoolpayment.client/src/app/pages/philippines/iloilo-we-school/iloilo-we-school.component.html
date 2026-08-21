@@ -208,6 +208,7 @@
             <article class="course-card" *ngFor="let course of courseOptions">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
+              <strong class="course-price">4周课程费 USD {{ formatUsd(course.tuition4Weeks) }}</strong>
               <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.suitable }}</p>
             </article>
@@ -218,10 +219,16 @@
           <div class="section-block">
             <div class="section-heading">
               <span>WE Academy官方公开价格</span>
-              <h2>按课程、房型和周数看课程住宿套餐价</h2>
+              <h2>WE 2026课程与住宿套餐价</h2>
               <p>
-                以下按WE Academy官方英文费用页整理。表内为课程住宿套餐价；注册费和到校PHP费用另计。
+                套餐价 = 课程费 + 住宿费。以下按2026年4周价目表计算，8至24周按相同4周单价展开；注册费和到校PHP费用另计。
               </p>
+            </div>
+            <div class="room-price-list" aria-label="WE Academy 2026年4周住宿费">
+              <span *ngFor="let room of roomOptions">
+                <strong>{{ room.shortName }}</strong>
+                4周 USD {{ formatUsd(room.price4Weeks) }}
+              </span>
             </div>
             <div class="data-table we-fee-table" role="table" aria-label="WE Academy官方公开价格">
               <div class="table-row table-head" role="row">
@@ -276,8 +283,8 @@
         <section class="split-layout" id="special-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>Guardian / IELTS / 额外课程</span>
-              <h2>亲子和考试路线要把附加费用一起看</h2>
+              <span>IELTS / 额外课程</span>
+              <h2>考试路线和加课费用要一起看</h2>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="WE Academy特色费用参考">
               <div class="table-row table-head" role="row">
@@ -322,7 +329,9 @@
               <label>
                 房型
                 <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+                  <option *ngFor="let room of roomOptions" [value]="room.id">
+                    {{ room.name }}（4周 USD {{ formatUsd(room.price4Weeks) }}）
+                  </option>
                 </select>
               </label>
               <label>

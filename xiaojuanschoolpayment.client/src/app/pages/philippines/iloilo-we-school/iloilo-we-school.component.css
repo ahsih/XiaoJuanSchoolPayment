@@ -47,6 +47,35 @@
   color: #147061;
 }
 
+:host .iloilo-we-page .course-price {
+  display: block;
+  margin: 8px 0;
+  color: #17324f;
+}
+
+:host .iloilo-we-page .room-price-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+:host .iloilo-we-page .room-price-list span {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  border: 1px solid #c8e2db;
+  border-radius: 8px;
+  background: #f0faf7;
+  color: #526579;
+  font-size: 0.86rem;
+}
+
+:host .iloilo-we-page .room-price-list strong {
+  color: #147061;
+  font-size: 0.95rem;
+}
+
 :host .iloilo-we-page .fit-grid > div,
 :host .iloilo-we-page .timeline article {
   background: #f0faf7;
@@ -106,5 +135,9 @@
 
   :host .iloilo-we-page .source-grid {
     grid-template-columns: 1fr;
+  }
+
+  :host .iloilo-we-page .room-price-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

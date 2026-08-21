@@ -41,6 +41,7 @@ interface RoomOption {
   id: string;
   name: string;
   shortName: string;
+  price4Weeks: number;
   note: string;
 }
 
@@ -50,7 +51,7 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  pricesByRoom: Record<string, Record<WeekOption, number>>;
+  tuition4Weeks: number;
   note: string;
 }
 
@@ -279,9 +280,10 @@ export class IloiloWeSchoolComponent {
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'single', name: 'Single room', shortName: '1人房', note: '适合长期成人和重视隐私的学生。' },
-    { id: 'double', name: 'Double room', shortName: '2人房', note: '适合朋友同行、亲子或愿意合住的人。' },
-    { id: 'triple', name: 'Triple room', shortName: '3人房', note: '官方套餐价最低房型，空房和性别安排需确认。' },
+    { id: 'single', name: 'Single room', shortName: '1人房', price4Weeks: 820, note: '适合长期成人和重视隐私的学生。' },
+    { id: 'double', name: 'Double room', shortName: '2人房', price4Weeks: 580, note: '适合朋友同行、亲子或愿意合住的人。' },
+    { id: 'triple', name: 'Triple room', shortName: '3人房', price4Weeks: 530, note: '2026价目表中住宿费最低的房型，空房和性别安排需确认。' },
+    { id: 'family', name: 'Family room', shortName: '家庭房', price4Weeks: 580, note: '仅2间；两房一厅，适合3至4人家庭，需优先确认空房。' },
   ];
 
   readonly courseOptions: CourseOption[] = [
@@ -289,115 +291,86 @@ export class IloiloWeSchoolComponent {
       id: 'esl-a',
       name: 'ESL A',
       type: '轻量ESL',
-      lessons: '1:1三节 + Group两节 + 晚间免费课两小时',
+      lessons: '一对一3节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合慢节奏打基础、第一次游学或长期适应。',
-      pricesByRoom: {
-        single: { 4: 1390, 8: 2780, 12: 4170, 16: 5560, 20: 6950, 24: 8340 },
-        double: { 4: 1150, 8: 2300, 12: 3450, 16: 4600, 20: 5750, 24: 6900 },
-        triple: { 4: 1100, 8: 2200, 12: 3300, 16: 4400, 20: 5500, 24: 6600 },
-      },
-      note: '官方费用页4周课程费USD570，套餐价按房型列示。',
+      tuition4Weeks: 570,
+      note: '2026价目表4周课程费USD570。',
     },
     {
       id: 'esl-b',
       name: 'ESL B',
       type: '标准ESL',
-      lessons: '1:1四节 + Group一节 + 晚间免费课两小时',
+      lessons: '一对一4节 + 团体课1节 + 选修课2节（周五除外）',
       suitable: '适合想增加一对一比例，同时保留自由复习时间的人。',
-      pricesByRoom: {
-        single: { 4: 1480, 8: 2960, 12: 4440, 16: 5920, 20: 7400, 24: 8880 },
-        double: { 4: 1240, 8: 2480, 12: 3720, 16: 4960, 20: 6200, 24: 7440 },
-        triple: { 4: 1190, 8: 2380, 12: 3570, 16: 4760, 20: 5950, 24: 7140 },
-      },
-      note: '官方费用页4周课程费USD660。',
+      tuition4Weeks: 660,
+      note: '2026价目表4周课程费USD660。',
     },
     {
       id: 'esl-c',
       name: 'ESL C',
       type: '均衡ESL',
-      lessons: '1:1四节 + Group两节 + 晚间免费课两小时',
+      lessons: '一对一4节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合多数成人ESL学生，听说读写和小组互动更平衡。',
-      pricesByRoom: {
-        single: { 4: 1530, 8: 3060, 12: 4590, 16: 6120, 20: 7650, 24: 9180 },
-        double: { 4: 1290, 8: 2580, 12: 3870, 16: 5160, 20: 6450, 24: 7740 },
-        triple: { 4: 1240, 8: 2480, 12: 3720, 16: 4960, 20: 6200, 24: 7440 },
-      },
-      note: '官方说明推荐12周以上学生选择更均衡的ESL C/C+路线。',
+      tuition4Weeks: 710,
+      note: '2026价目表4周课程费USD710。',
     },
     {
       id: 'esl-d',
-      name: 'ESL D / Semi-Sparta',
-      type: '半斯巴达强化',
-      lessons: '1:1五节 + Group两节 + 晚间免费课两小时',
+      name: 'ESL D',
+      type: '强化ESL',
+      lessons: '一对一5节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合12周以内想加强学习密度和自习推动的人。',
-      pricesByRoom: {
-        single: { 4: 1680, 8: 3360, 12: 5040, 16: 6720, 20: 8400, 24: 10080 },
-        double: { 4: 1440, 8: 2880, 12: 4320, 16: 5760, 20: 7200, 24: 8640 },
-        triple: { 4: 1390, 8: 2780, 12: 4170, 16: 5560, 20: 6950, 24: 8340 },
-      },
-      note: '费用表按ESL D列示，正式课表需按入学时学校说明确认。',
+      tuition4Weeks: 860,
+      note: '2026价目表4周课程费USD860。',
     },
     {
       id: 'toeic',
       name: 'TOEIC',
       type: '多益',
-      lessons: '1:1四节 + Group两节 + 晚间免费课两小时',
+      lessons: '一对一4节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合求职、升学或企业英语证明需求。',
-      pricesByRoom: {
-        single: { 4: 1640, 8: 3280, 12: 4920, 16: 6560, 20: 8200, 24: 9840 },
-        double: { 4: 1400, 8: 2800, 12: 4200, 16: 5600, 20: 7000, 24: 8400 },
-        triple: { 4: 1350, 8: 2700, 12: 4050, 16: 5400, 20: 6750, 24: 8100 },
-      },
-      note: '官方费用页列每4周一次模考。',
+      tuition4Weeks: 820,
+      note: '2026价目表4周课程费USD820。',
     },
     {
       id: 'business',
       name: 'Business',
       type: '商务英语',
-      lessons: '1:1四节 + Group两节 + 晚间免费课两小时',
+      lessons: '一对一4节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合会议、简报、邮件、面试和职场英语。',
-      pricesByRoom: {
-        single: { 4: 1640, 8: 3280, 12: 4920, 16: 6560, 20: 8200, 24: 9840 },
-        double: { 4: 1400, 8: 2800, 12: 4200, 16: 5600, 20: 7000, 24: 8400 },
-        triple: { 4: 1350, 8: 2700, 12: 4050, 16: 5400, 20: 6750, 24: 8100 },
-      },
-      note: '官方费用页列每月两次Friday presentation。',
+      tuition4Weeks: 820,
+      note: '2026价目表4周课程费USD820。',
     },
     {
       id: 'ielts',
       name: 'IELTS',
       type: '雅思',
-      lessons: '1:1四节 + Group两节 + 晚间免费课两小时',
+      lessons: '一对一4节 + 团体课2节 + 选修课2节（周五除外）',
       suitable: '适合雅思入门到5.5左右水平，需要模考和官方考试资源的人。',
-      pricesByRoom: {
-        single: { 4: 1800, 8: 3600, 12: 5400, 16: 7200, 20: 9000, 24: 10800 },
-        double: { 4: 1560, 8: 3120, 12: 4680, 16: 6240, 20: 7800, 24: 9360 },
-        triple: { 4: 1510, 8: 3020, 12: 4530, 16: 6040, 20: 7550, 24: 9060 },
-      },
-      note: '官方费用页列4周起报、每4周模考、每8周提供官方考试。',
+      tuition4Weeks: 980,
+      note: '2026价目表4周课程费USD980；每4周一次模考。',
     },
     {
       id: 'junior',
       name: 'Junior',
       type: '青少年英语',
-      lessons: '1:1六节',
+      lessons: '一对一6节',
       suitable: '适合青少年和亲子路线，需确认监护、房型和年龄规则。',
-      pricesByRoom: {
-        single: { 4: 1660, 8: 3320, 12: 4980, 16: 6640, 20: 8300, 24: 9960 },
-        double: { 4: 1420, 8: 2840, 12: 4260, 16: 5680, 20: 7100, 24: 8520 },
-        triple: { 4: 1370, 8: 2740, 12: 4110, 16: 5480, 20: 6850, 24: 8220 },
-      },
-      note: 'Junior课程只列一对一6小时，低龄安排需另行确认。',
+      tuition4Weeks: 840,
+      note: '2026价目表4周课程费USD840；低龄安排需另行确认。',
+    },
+    {
+      id: 'guardian',
+      name: 'Guardian',
+      type: '监护人课程',
+      lessons: '一对一3节',
+      suitable: '适合陪同Junior学生入学的家长或监护人。',
+      tuition4Weeks: 460,
+      note: '2026价目表4周课程费USD460。',
     },
   ];
 
   readonly specialFees: SpecialCourseFee[] = [
-    {
-      label: 'Guardian Course',
-      lessons: '1:1三节 / 天',
-      reference: '4周Double USD1,040；Triple USD990',
-      note: '适合家长陪读或监护人课程，官方费用页未列Single房口径。',
-    },
     {
       label: '额外1:1课程',
       lessons: 'Add 1:1 Class',
@@ -565,8 +538,13 @@ export class IloiloWeSchoolComponent {
 
   feeFor(courseId: string, roomId: string, weeks: WeekOption = 4): number {
     const course = this.courseOptions.find((item) => item.id === courseId);
+    const room = this.roomOptions.find((item) => item.id === roomId);
 
-    return course?.pricesByRoom[roomId]?.[weeks] ?? 0;
+    if (!course || !room) {
+      return 0;
+    }
+
+    return (course.tuition4Weeks + room.price4Weeks) * (weeks / 4);
   }
 
   get filteredGalleryImages(): GalleryImage[] {

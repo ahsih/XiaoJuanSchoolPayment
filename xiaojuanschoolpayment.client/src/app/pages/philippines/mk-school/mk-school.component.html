@@ -12,7 +12,7 @@
             <h1><span>菲律宾伊洛伊洛</span><span>MK Language Training Center</span></h1>
             <p class="hero-lead">
               <span>MK位于Iloilo Westwoods一带，是更安静、预算友好、适合长期ESL和亲子路线的小众城市学校。</span>
-              <span>课程覆盖ESL 1-7、ESL Intensive、IELTS、TESOL附加、Internship和Family课程，可按一对一课量、房型和周数拆分报价。</span>
+              <span>课程覆盖ESL Basic至Intensive、IELTS、TESOL附加、Business、Working Holiday、Junior和Internship，可按一对一课量、房型和周数拆分报价。</span>
               <span>本页按公开学校资料、Iloilo公开报道和费用表整理；正式价格、空房和校规以学校invoice为准。</span>
             </p>
             <div class="hero-tags" aria-label="MK Language Training Center特点">
@@ -200,9 +200,9 @@
 
         <section class="section-block" id="course-fees">
           <div class="section-heading">
-            <span>MK公开4周课程住宿参考</span>
+            <span>MK 2025年4周课程住宿参考</span>
             <h2>先看课程费 + 房型费，再加注册费和当地PHP费用</h2>
-            <p>下表按公开费用资料整理。套餐参考为4周课程费 + 4周房型费，不含注册费和菲律宾当地PHP费用。</p>
+            <p>下表按MK 2025费用表整理。套餐参考为4周课程费 + 4周房型费，不含注册费和菲律宾当地PHP费用；1周按4周价40%、2周65%、3周85%换算。</p>
           </div>
 
           <div class="data-table mk-tuition-table" role="table" aria-label="MK Language Training Center 4周课程住宿套餐参考">
@@ -258,8 +258,8 @@
           <section class="quote-panel">
             <div class="section-heading">
               <span>MK费用快速估算</span>
-              <h2>默认参考：4周 ESL 1 + 4人房</h2>
-              <p>估算公式：课程费 + 宿舍费 + 注册费；当地PHP费用单独提示，不并入USD总额。</p>
+              <h2>默认参考：4周 ESL Basic + 4人亲子房</h2>
+              <p>估算公式：课程费 + 宿舍费 + 注册费；1周按4周价40%、2周65%、3周85%，当地PHP费用单独提示，不并入USD总额。</p>
             </div>
             <div class="quote-form" aria-label="MK费用估算选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -278,7 +278,7 @@
             <div class="quote-result">
               <span>前期USD参考</span>
               <strong>{{ quoteText }}</strong>
-              <em>另准备约{{ localFeeText }}当地费用，机票、保险、接机和个人消费另算</em>
+              <em>另准备约{{ localFeeText }}当地费用<span *ngIf="selectedWeeks < 4">（短期暂按4周档参考）</span>，机票、保险、接机和个人消费另算</em>
               <p *ngIf="quoteCalculated">已按当前选择更新。下一步建议确认MK正式报价、房型空位、校规、优惠和学校invoice。</p>
             </div>
             <div class="quote-actions">

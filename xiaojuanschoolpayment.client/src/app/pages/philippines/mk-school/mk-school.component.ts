@@ -5,23 +5,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 type GalleryCategory = '全部' | '校园' | '课堂' | '住宿' | '生活';
-type WeekOption = 4 | 8 | 12 | 16 | 20 | 24;
+type ShortWeekOption = 1 | 2 | 3;
+type WeekOption = ShortWeekOption | 4 | 8 | 12 | 16 | 20 | 24;
 type CourseId =
-  | 'esl1'
-  | 'esl2'
-  | 'esl3'
-  | 'esl4'
-  | 'esl5'
-  | 'esl6'
-  | 'esl7'
+  | 'esl-basic'
+  | 'esl-standard'
+  | 'esl-premium'
   | 'esl-intensive'
-  | 'ielts-regular'
+  | 'ielts'
   | 'ielts-guarantee'
   | 'tesol'
-  | 'internship'
-  | 'family-child-basic'
-  | 'family-child-premium'
-  | 'family-parent';
+  | 'business'
+  | 'working-holiday'
+  | 'guardian'
+  | 'junior-basic'
+  | 'junior-premium'
+  | 'internship-first'
+  | 'internship-later';
 type RoomId = 'quad' | 'triple' | 'double' | 'single';
 
 interface QuickInfo {
@@ -61,6 +61,7 @@ interface CourseOption {
   lessons: string;
   suitable: string;
   tuition4w: number;
+  tuitionLabel?: string;
   note?: string;
 }
 
@@ -128,14 +129,19 @@ interface SourceLink {
 export class MkSchoolComponent {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '课堂', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  selectedCourseId: CourseId = 'esl1';
+  selectedCourseId: CourseId = 'esl-basic';
   selectedRoomId: RoomId = 'quad';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
 
   readonly registrationFeeUsd = 100;
-  readonly weekOptions: WeekOption[] = [4, 8, 12, 16, 20, 24];
+  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
+  readonly shortStayRates: Readonly<Record<ShortWeekOption, number>> = {
+    1: 0.4,
+    2: 0.65,
+    3: 0.85,
+  };
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -153,8 +159,8 @@ export class MkSchoolComponent {
     {
       icon: 'menu_book',
       label: '课程方向',
-      value: 'ESL / IELTS / TESOL / Family',
-      note: 'ESL从3到7节一对一可选，也有IELTS、TESOL附加、Internship和亲子课程。',
+      value: 'ESL / IELTS / TESOL / Junior',
+      note: '课程包括ESL Basic至Intensive、IELTS、TESOL附加、Business、Working Holiday、Junior和Internship。',
     },
     {
       icon: 'home_work',
@@ -171,8 +177,8 @@ export class MkSchoolComponent {
     {
       icon: 'payments',
       label: '4周起价',
-      value: 'USD 1,210 + PHP当地费起',
-      note: '按ESL1 + 4人房 + 注册费USD100估算；当地PHP费用参考4周PHP15,050。',
+      value: 'USD 1,270 + PHP当地费起',
+      note: '按ESL Basic + 4人亲子房 + 注册费USD100估算；4人房仅限亲子或团体，当地PHP费用参考4周PHP15,050。',
     },
   ];
 
@@ -214,7 +220,7 @@ export class MkSchoolComponent {
     { label: '英文名称', value: 'MK Language Training Center / MK Education / Metro Korea Language Training Center' },
     { label: '城市区域', value: 'Iloilo City, Mandurriao, Westwoods Subdivision / Barangay Dungon-C一带' },
     { label: '参考地址', value: 'Lot 43, 44, 45 Block 44, Barangay Dungon-C, Mandurriao, Iloilo City, Philippines' },
-    { label: '课程方向', value: 'ESL 1-7、ESL Intensive、IELTS Regular、IELTS Guarantee、TESOL、Internship、Family Child、Family Parent。' },
+    { label: '课程方向', value: 'ESL Basic、ESL Standard、ESL Premium、ESL Intensive、IELTS、TESOL、Business、Working Holiday、Guardian、Junior和Internship。' },
     { label: '学习模式', value: '公开资料以Semi-Sparta、英语环境、晚间自习和校内住宿一体管理为主；具体门禁和处罚规则需当期确认。' },
     { label: '设施参考', value: '校内宿舍、教室、餐厅/咖啡、篮球场、健身房、自习室、洗衣与清洁服务等。' },
     { label: '资料提醒', value: '官方域名mk-edu.net在本次整理时无法稳定抓取；页面费用按公开学校资料页汇总，正式报名仍以学校invoice为准。' },
@@ -229,7 +235,7 @@ export class MkSchoolComponent {
     {
       image: this.galleryImages[1].src,
       title: 'ESL一对一课时选择多',
-      text: 'ESL1到ESL7按一对一和小组课比例调整，从预算型到高密度口语训练都能放进报价比较。',
+      text: 'ESL Basic到ESL Intensive按一对一和小组课比例调整，从预算型到高密度口语训练都能放进报价比较。',
     },
     {
       image: this.galleryImages[2].src,
@@ -238,8 +244,8 @@ export class MkSchoolComponent {
     },
     {
       image: this.galleryImages[4].src,
-      title: '成人、考试、亲子都可看',
-      text: '除成人ESL外，MK还可比较IELTS、TESOL、Internship和Family路线，适合多成员同行或长期规划。',
+      title: '成人、考试、青少年都可看',
+      text: '除成人ESL外，MK还可比较IELTS、TESOL、Business、Working Holiday、Junior和Internship路线。',
     },
   ];
 
@@ -247,7 +253,7 @@ export class MkSchoolComponent {
     { title: '想控制预算长期读ESL', text: '4人房和ESL低阶课程组合门槛较友好，适合8-24周打基础。' },
     { title: '喜欢小众安静城市', text: 'Iloilo生活节奏比宿务和马尼拉更平稳，适合少干扰学习。' },
     { title: '想要校内住宿一体管理', text: '课堂、宿舍和生活设施集中，日常动线简单，第一次菲律宾游学也容易适应。' },
-    { title: '亲子或考试路线一起比较', text: 'Family Child/Parent、IELTS和TESOL等课程可和成人ESL一起核价。' },
+    { title: '亲子或考试路线一起比较', text: 'Junior、Guardian、IELTS和TESOL等课程可和成人ESL一起核价。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
@@ -258,36 +264,36 @@ export class MkSchoolComponent {
   ];
 
   readonly courses: CourseOption[] = [
-    { id: 'esl1', name: 'ESL 1', type: 'Budget ESL', lessons: '3节1:1 + 2节1:5 + 2节晚间自习', suitable: '适合预算优先、基础口语和长期适应。', tuition4w: 590 },
-    { id: 'esl2', name: 'ESL 2', type: 'Standard ESL', lessons: '4节1:1 + 1节1:5 + 2节晚间自习', suitable: '适合想提高一对一比例但仍控制预算。', tuition4w: 610 },
-    { id: 'esl3', name: 'ESL 3', type: 'Balanced ESL', lessons: '4节1:1 + 2节1:5 + 2节晚间自习', suitable: '适合一般成人口语、听力和表达强化。', tuition4w: 670 },
-    { id: 'esl4', name: 'ESL 4', type: 'Group Mix', lessons: '4节1:1 + 3节1:5 + 2节晚间自习', suitable: '适合喜欢一对一和小组互动并重。', tuition4w: 730 },
-    { id: 'esl5', name: 'ESL 5', type: 'Speaking Focus', lessons: '5节1:1 + 2节1:5 + 2节晚间自习', suitable: '适合想增加个别纠正和输出练习。', tuition4w: 750 },
-    { id: 'esl6', name: 'ESL 6', type: 'Intensive Mix', lessons: '5节1:1 + 3节1:5 + 2节晚间自习', suitable: '适合想要更满课表和更多课堂互动。', tuition4w: 810 },
-    { id: 'esl7', name: 'ESL 7', type: 'High 1:1', lessons: '6节1:1 + 2节1:5 + 2节晚间自习', suitable: '适合短期集中输出和高比例一对一。', tuition4w: 830 },
-    { id: 'esl-intensive', name: 'ESL Intensive', type: '1:1 Intensive', lessons: '7节1:1 + 2节晚间自习', suitable: '适合不想上小组课、想集中一对一训练的人。', tuition4w: 850 },
-    { id: 'ielts-regular', name: 'IELTS Regular', type: 'Exam Prep', lessons: '6节1:1 + 2节晚间自习', suitable: '适合雅思基础提升、题型熟悉和听说读写训练。', tuition4w: 800 },
-    { id: 'ielts-guarantee', name: 'IELTS Guarantee', type: 'Score Goal', lessons: '6节1:1 + 2节1:5 + 2节晚间自习', suitable: '适合有分数目标且能配合出勤、模考和规则的学生。', tuition4w: 950 },
+    { id: 'esl-basic', name: 'ESL Basic', type: 'Budget ESL', lessons: '3节1:1 + 2节1:5 + 2节自习', suitable: '适合预算优先、基础口语和长期适应。', tuition4w: 650 },
+    { id: 'esl-standard', name: 'ESL Standard', type: 'Standard ESL', lessons: '4节1:1 + 2节1:5 + 2节自习', suitable: '适合一般成人口语、听力和表达强化。', tuition4w: 730 },
+    { id: 'esl-premium', name: 'ESL Premium', type: 'Premium ESL', lessons: '5节1:1 + 2节1:5 + 2节自习', suitable: '适合想增加个别纠正和输出练习。', tuition4w: 820 },
+    { id: 'esl-intensive', name: 'ESL Intensive', type: '1:1 Intensive', lessons: '7节1:1 + 2节自习', suitable: '适合不想上小组课、想集中一对一训练的人。', tuition4w: 930 },
+    { id: 'ielts', name: 'IELTS', type: 'Exam Prep', lessons: '4节1:1 + 2节1:5 + 2节自习', suitable: '适合雅思基础提升、题型熟悉和听说读写训练。', tuition4w: 880 },
+    { id: 'ielts-guarantee', name: 'IELTS Guarantee', type: 'Score Goal', lessons: '6节1:1 + 2节1:5 + 2节强制自习', suitable: '适合有分数目标且能配合出勤、模考和规则的学生。', tuition4w: 1050 },
     {
       id: 'tesol',
       name: 'TESOL Add-on',
       type: 'WVSU Add-on',
       lessons: '任一MK课程 + 周六WVSU 8小时TESOL课',
       suitable: '适合想把ESL和TESOL证书方向组合的学生。',
-      tuition4w: 940,
-      note: '按ESL1 + TESOL add-on USD350估算，另有WVSU SSP USD125参考。',
+      tuition4w: 1000,
+      tuitionLabel: 'USD 350 + WVSU SSP（附加）',
+      note: '估算按ESL Basic USD650 + TESOL附加USD350计算，WVSU SSP另计。',
     },
-    { id: 'internship', name: 'Internship Course', type: 'Practicum', lessons: '前4周ESL，后续4节1:1 + 3小时实习 + 晚自习', suitable: '适合想把英语和职场/服务体验结合的学生。', tuition4w: 780 },
-    { id: 'family-child-basic', name: 'Family Child Basic', type: 'Family', lessons: '5节1:1 + 2节晚间自习', suitable: '适合亲子游学中孩子基础英文提升。', tuition4w: 700 },
-    { id: 'family-child-premium', name: 'Family Child Premium', type: 'Family', lessons: '7节1:1 + 2节晚间自习', suitable: '适合孩子短期高密度一对一训练。', tuition4w: 900 },
-    { id: 'family-parent', name: 'Family Parent', type: 'Parent', lessons: '4节1:1 + 2节晚间自习', suitable: '适合陪读家长轻量同步学习。', tuition4w: 520 },
+    { id: 'business', name: 'Business Course', type: 'Business English', lessons: '4节1:1 + 2节1:5 + 2节自习', suitable: '适合工作沟通、商务表达和职场英语提升。', tuition4w: 880 },
+    { id: 'working-holiday', name: 'Working Holiday', type: 'Work English', lessons: '4节1:1 + 2节1:5 + 2节自习', suitable: '适合为海外工作与生活场景准备英语。', tuition4w: 800 },
+    { id: 'guardian', name: 'Guardian 监护人', type: 'Parent', lessons: '4节1:1 + 2节自习', suitable: '适合陪读家长同步学习。', tuition4w: 570 },
+    { id: 'junior-basic', name: 'Junior Basic 青少年', type: 'Junior', lessons: '4节1:1 + 1节1:5 + 2节自习', suitable: '适合青少年基础英文提升。', tuition4w: 770 },
+    { id: 'junior-premium', name: 'Junior Premium 青少年', type: 'Junior', lessons: '6节1:1 + 3节1:5 + 2节自习', suitable: '适合青少年高密度短期强化。', tuition4w: 990, note: '最低入学年龄5周岁。' },
+    { id: 'internship-first', name: 'Internship Course 前4周', type: 'Practicum', lessons: '4节1:1 + 3节1:5 + 2节自习', suitable: '实习课程第一阶段的英语准备。', tuition4w: 860, note: '完整课程最少报名8周。' },
+    { id: 'internship-later', name: 'Internship Course 后续4周', type: 'Practicum', lessons: '4节1:1 + 3小时实习 + 2节自习', suitable: '完成前4周后进入英语与实习结合阶段。', tuition4w: 860, note: '须与前4周组合，完整课程最少报名8周。' },
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: '4人房 / Quad', fee4w: 520, note: '预算最低，适合长期学习和能接受共享空间的学生。' },
-    { id: 'triple', name: '3人房 / Triple', fee4w: 580, note: '费用和舒适度平衡，适合成人或朋友同行。' },
-    { id: 'double', name: '2人房 / Double', fee4w: 660, note: '更容易休息和整理学习节奏，预算中等。' },
-    { id: 'single', name: '1人房 / Single', fee4w: 800, note: '隐私最高，适合工作人士、考试备考或对休息要求高的人。' },
+    { id: 'quad', name: '4人亲子房 / Quad Family', fee4w: 520, note: '仅限亲子或团体，普通成人报名需先确认是否可选。' },
+    { id: 'triple', name: '3人房 / Triple', fee4w: 600, note: '费用和舒适度平衡，适合成人或朋友同行。' },
+    { id: 'double', name: '2人房 / Double', fee4w: 700, note: '更容易休息和整理学习节奏，预算中等。' },
+    { id: 'single', name: '1人房 / Single', fee4w: 990, note: '隐私最高，适合工作人士、考试备考或对休息要求高的人。' },
   ];
 
   readonly localFeeSummaries: LocalFeeSummary[] = [
@@ -324,7 +330,7 @@ export class MkSchoolComponent {
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'location_city', title: '先确认是否适合Iloilo', text: '如果你要安静、预算友好和长期ESL，MK更对题；想要海边热闹则先比较宿务。' },
-    { icon: 'menu_book', title: '按课量选ESL级别', text: 'ESL1-7和Intensive差别主要在一对一、小组课和总课量，不只看课程名。' },
+    { icon: 'menu_book', title: '按课量选ESL级别', text: 'ESL Basic、Standard、Premium和Intensive差别主要在一对一、小组课和总课量。' },
     { icon: 'hotel', title: '锁定房型与周数', text: '4人房、3人房、2人房、1人房会明显影响总价和舒适度。' },
     { icon: 'receipt_long', title: '拆分USD和PHP', text: '课程住宿注册费按USD估算，SSP、签证、电水、押金、教材和接机按PHP另列。' },
     { icon: 'verified', title: '向学校核正式报价', text: 'mk-edu.net抓取不稳定，正式报名必须核对学校当期invoice、空房和优惠。' },
@@ -334,7 +340,8 @@ export class MkSchoolComponent {
   readonly notes = [
     '本页费用按公开学校资料整理；过去促销有效期已经过期，不纳入当前估算。',
     '公开资料列宿舍费通常包含三餐、洗衣、房间清洁和校内设施使用，但实际包含项目以学校当期说明为准。',
-    'TESOL属于附加路线，需叠加MK课程，并可能另有WVSU SSP USD125等学校/大学费用。',
+    'TESOL属于USD350附加路线，需叠加任一MK课程，并另付WVSU SSP等学校/大学费用。',
+    '短期价格按4周课程费和住宿费换算：1周40%、2周65%、3周85%；注册费不参与换算。',
     'Iloilo机场接机、到校时间、周末入住和退房规则需要随航班确认。',
     '长期学习会产生签证延期、I-Card和更多教材费用，页面估算只作为初筛预算。',
   ];
@@ -348,7 +355,7 @@ export class MkSchoolComponent {
     {
       question: 'MK 4周最低大概多少钱？',
       answer:
-        '按公开资料，ESL1课程费USD590，4人房住宿USD520，注册费USD100，4周前期USD参考约USD1,210；当地PHP费用4周参考约PHP15,050。',
+        '按2025费用表，ESL Basic课程费USD650，4人亲子房USD520，注册费USD100，4周前期USD参考约USD1,270；4人房仅限亲子或团体，当地PHP费用4周参考约PHP15,050。',
     },
     {
       question: 'MK是Sparta学校吗？',
@@ -358,7 +365,7 @@ export class MkSchoolComponent {
     {
       question: 'MK适合亲子吗？',
       answer:
-        '可以放进亲子候选，因为公开课程表有Family Child Basic/Premium和Family Parent课程。低龄年龄、监护、房型、活动和陪读规则需要报名时逐项确认。',
+        '可以放进亲子候选，因为费用表有Junior Basic/Premium、Guardian和4人亲子房。低龄年龄、监护、房型、活动和陪读规则需要报名时逐项确认。',
     },
     {
       question: '为什么页面没有直接引用mk-edu.net价格？',
@@ -413,15 +420,29 @@ export class MkSchoolComponent {
   }
 
   get selectedLocalFeeSummary(): LocalFeeSummary {
+    if (this.selectedWeeks < 4) {
+      return {
+        weeks: this.selectedWeeks,
+        totalPhp: this.localFeeSummaries[0].totalPhp,
+        visa: `${this.selectedWeeks}周无需签证延期；当地费暂按4周档参考`,
+      };
+    }
     return this.localFeeSummaries.find((fee) => fee.weeks === this.selectedWeeks) ?? this.localFeeSummaries[0];
   }
 
+  get durationMultiplier(): number {
+    if (this.selectedWeeks < 4) {
+      return this.shortStayRates[this.selectedWeeks as ShortWeekOption];
+    }
+    return this.selectedWeeks / 4;
+  }
+
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition4w * (this.selectedWeeks / 4);
+    return this.selectedCourse.tuition4w * this.durationMultiplier;
   }
 
   get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee4w * (this.selectedWeeks / 4);
+    return this.selectedRoom.fee4w * this.durationMultiplier;
   }
 
   get quoteUsd(): number {
@@ -441,13 +462,16 @@ export class MkSchoolComponent {
   }
 
   get formulaText(): string {
+    if (this.selectedWeeks < 4) {
+      return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) 4周价 x ${this.durationMultiplier * 100}% + 注册费`;
+    }
     return `(${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4 + 注册费`;
   }
 
   get courseFeeRows() {
     return this.courses.map((course) => ({
       course: course.name,
-      tuition: this.formatUsd(course.tuition4w),
+      tuition: course.tuitionLabel ?? this.formatUsd(course.tuition4w),
       quad: this.formatUsd(course.tuition4w + this.roomOptions[0].fee4w),
       triple: this.formatUsd(course.tuition4w + this.roomOptions[1].fee4w),
       double: this.formatUsd(course.tuition4w + this.roomOptions[2].fee4w),
@@ -475,7 +499,7 @@ export class MkSchoolComponent {
   }
 
   formatUsd(value: number): string {
-    return `USD ${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    return `USD ${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
   }
 
   formatPhp(value: number): string {

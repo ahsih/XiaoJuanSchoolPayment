@@ -135,7 +135,6 @@
     minmax(96px, 0.45fr)
     minmax(96px, 0.45fr)
     minmax(96px, 0.45fr)
-    minmax(96px, 0.45fr)
     minmax(250px, 1.35fr);
 }
 
@@ -143,7 +142,7 @@
   grid-template-columns: minmax(170px, 0.8fr) minmax(120px, 0.45fr) minmax(0, 1.55fr);
 }
 
-:host .help-longlong-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 6),
+:host .help-longlong-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 5),
 :host .help-longlong-room-table .table-row span:nth-child(2) {
   font-weight: 850;
 }

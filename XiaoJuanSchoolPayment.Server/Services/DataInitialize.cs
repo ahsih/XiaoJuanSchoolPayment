@@ -34,6 +34,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid MbcSchoolId = Guid.Parse("51f7d253-0f88-4a2b-bd68-640253ef8cbc");
     private static readonly Guid GlcSchoolId = Guid.Parse("f16a6538-19a2-46c5-a93e-5cd0f19c60f7");
     private static readonly Guid IuSchoolId = Guid.Parse("bc2606e1-7dc1-4f15-8a47-6424ea15936f");
+    private static readonly Guid IloiloWeSchoolId = Guid.Parse("c6f1485a-67e3-47da-92cb-f6ec9b8f5127");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -83,6 +84,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyMbcSchoolName = "Manila Business College";
     private const string GlcSchoolName = "菲律宾宿务Global Language Cebu";
     private const string IuSchoolName = "菲律宾宿务IU English Academy";
+    private const string IloiloWeSchoolName = "菲律宾伊洛伊洛WE Academy";
+    private const string LegacyIloiloWeSchoolName = "WE Academy Iloilo";
+    private const string AlternateIloiloWeSchoolName = "We Academy Iloilo";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -113,6 +117,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedMbcPricingAsync(context);
       await SeedGlcPricingAsync(context);
       await SeedIuPricingAsync(context);
+      await SeedIloiloWePricingAsync(context);
       await SeedRegionalStartingPricesAsync(context);
     }
 
@@ -1712,6 +1717,57 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedIloiloWePricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == IloiloWeSchoolId ||
+        x.Name == IloiloWeSchoolName ||
+        x.Name == LegacyIloiloWeSchoolName ||
+        x.Name == AlternateIloiloWeSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = IloiloWeSchoolId,
+          Name = IloiloWeSchoolName,
+          CreatedDate = new DateTime(2003, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = IloiloWeSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2003, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string lessonNote = "WE Academy Iloilo 2026年价目表；所列为4周USD课程费，住宿费、注册费和当地费用另计";
+
+      UpsertLesson(context, schoolId, "ESL A", 4, 570m, "一对一3节 + 团体课2节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL B", 4, 660m, "一对一4节 + 团体课1节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL C", 4, 710m, "一对一4节 + 团体课2节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL D", 4, 860m, "一对一5节 + 团体课2节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "TOEIC", 4, 820m, "一对一4节 + 团体课2节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Business", 4, 820m, "一对一4节 + 团体课2节 + 选修课2节（周五除外）", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS", 4, 980m, "一对一4节 + 团体课2节 + 选修课2节（周五除外）；每4周一次模考", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Junior", 4, 840m, "一对一6节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Guardian", 4, 460m, "一对一3节", now, lessonNote, UsdCurrencyId);
+
+      UpsertRoom(context, schoolId, "单人间", 4, 820m, "WE Academy Iloilo 2026年价目表4周住宿费", now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "双人间", 4, 580m, "WE Academy Iloilo 2026年价目表4周住宿费", now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "三人间", 4, 530m, "WE Academy Iloilo 2026年价目表4周住宿费", now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "家庭房", 4, 580m, "WE Academy Iloilo 2026年价目表4周住宿费；仅2间，两房一厅，适合3至4人家庭", now, UsdCurrencyId);
+
+      UpsertFee(context, schoolId, "Registration Fee", 100m, UsdCurrencyId, "前期支付费用；WE Academy Iloilo注册费USD100", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static async Task SeedRegionalStartingPricesAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
@@ -1760,7 +1816,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(MonolSchoolName, 1250m, UsdCurrencyId, "USD 1,250 / 4周起（ESL 4 + 四人胶囊式上下铺 + 注册费）", Established(2003), new[] { LegacyMonolSchoolName, MonolFullSchoolName }),
         new RegionalStartingPriceSeed(WalesSchoolName, 1700m, UsdCurrencyId, "4周约USD 1,700起（EEP Lite + Share Type Twin + 报名费）", Established(2006), new[] { LegacyWalesSchoolName, WalesFullSchoolName, WalesShortSchoolName }),
         new RegionalStartingPriceSeed("菲律宾碧瑶A&J e-Edu English Academy", 1550m, UsdCurrencyId, "4周USD 1,550起（Eco Relax Lite + Deluxe Triple + 入学金）", Established(2008), new[] { "A&J e-Edu English Academy", "A&J" }),
-        new RegionalStartingPriceSeed("HELP English（Longlong Campus）", 1500m, UsdCurrencyId, "4周USD 1,500起", Established(1996), new[] { "HELP English Longlong Campus", "HELP Longlong" }),
+        new RegionalStartingPriceSeed("HELP English（Longlong Campus）", 1580m, UsdCurrencyId, "4周USD 1,580起（ESL + 双人间；注册费USD 100另计）", Established(1996), new[] { "HELP English Longlong Campus", "HELP Longlong" }),
 
         new RegionalStartingPriceSeed("菲律宾克拉克 CIP语言学校", 7740m, CnyCurrencyId, "CNY 7,740 / 4周主费起（Light ESL + 校内四人间，注册费另计）", Established(2007), new[] { "CIP", "CIP English", "CIP English Kepos" }),
         new RegionalStartingPriceSeed(EgSchoolName, 1540m, UsdCurrencyId, "USD 1,540 / 4周起（ESL 4 + 宿舍1&2四人间 + 注册费）", Established(2013), new[] { LegacyEgSchoolName, EgFullSchoolName }),
@@ -1774,8 +1830,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(AmericanEnglishSchoolName, 14800m, PhpCurrencyId, "PHP 14,800 / 40小时起参考", Established(2006), new[] { LegacyAmericanEnglishSchoolName }),
         new RegionalStartingPriceSeed(BerlitzSchoolName, 3200m, PhpCurrencyId, "PHP 3,200 Starter Course公告价；常规课需核价", Established(2020), new[] { LegacyBerlitzSchoolName }),
 
-        new RegionalStartingPriceSeed("菲律宾伊洛伊洛WE Academy", 1100m, UsdCurrencyId, "USD 1,100起 + 注册费", Established(2003), new[] { "WE Academy Iloilo", "We Academy Iloilo" }),
-        new RegionalStartingPriceSeed("菲律宾伊洛伊洛MK Language Training Center", 1210m, UsdCurrencyId, "USD 1,210 + PHP当地费起", Established(2002), new[] { "MK Language Training Center", "MK Education", "Metro Korea Language Training Center" }),
+        new RegionalStartingPriceSeed(IloiloWeSchoolName, 1100m, UsdCurrencyId, "USD 1,100 / 4周起（ESL A + 三人间；注册费另计）", Established(2003), new[] { LegacyIloiloWeSchoolName, AlternateIloiloWeSchoolName }),
+        new RegionalStartingPriceSeed("菲律宾伊洛伊洛MK Language Training Center", 1270m, UsdCurrencyId, "USD 1,270 + PHP当地费起（ESL Basic + 4人亲子房 + 注册费）", Established(2002), new[] { "MK Language Training Center", "MK Education", "Metro Korea Language Training Center" }),
         new RegionalStartingPriceSeed("菲律宾怡朗GITC College International Language Center", 930m, UsdCurrencyId, "USD 930起 + 注册费", Established(2003), new[] { "GITC College International Language Center", "Green International Technological College Language Center" }),
 
         new RegionalStartingPriceSeed("菲律宾长滩岛Boracay Coco English Academy", 1300m, UsdCurrencyId, "USD 1,300起含注册费", Established(2018), new[] { "Boracay Coco English Academy" }),
