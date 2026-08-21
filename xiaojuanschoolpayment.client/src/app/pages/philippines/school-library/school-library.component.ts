@@ -392,6 +392,13 @@ const libraryPages: Record<string, LibraryPage> = {
         route: '/philippines-study/iloilo/we-academy',
       },
       {
+        icon: 'record_voice_over',
+        title: 'PIA · Polyglot International Academy',
+        tag: '伊洛伊洛 / ESL / Power Speaking',
+        text: '适合想住Iloilo Business Park生活圈，比较一对一口语、考试、青少年课程和合作酒店费用的学生。',
+        route: '/philippines-study/iloilo/polyglot-international-academy',
+      },
+      {
         icon: 'school',
         title: 'MK Language Training Center',
         tag: '伊洛伊洛 / Semi-Sparta',
@@ -406,17 +413,10 @@ const libraryPages: Record<string, LibraryPage> = {
         route: '/philippines-study/bacolod/e-room-language-center',
       },
       {
-        icon: 'account_balance',
-        title: 'LSLC Language Skills Learning Center',
-        tag: '巴科洛德 / 大学校园型',
-        text: '适合想在University of St. La Salle校园环境中学习，比较Regular、Intensive、考试和Business套餐费用的学生。',
-        route: '/philippines-study/bacolod/lslc-language-skills-learning-center',
-      },
-      {
         icon: 'pool',
         title: 'Boracay Coco English Academy',
         tag: '长滩岛 / Resort-style Family',
-        text: '适合想在长滩岛度假型校园中学习ESL、IELTS、亲子和低龄课程，并比较2026低季与Regular费用的学生。',
+        text: '适合想在长滩岛度假型校园中学习ESL、商务英语、IELTS、亲子和低龄课程，并比较2026课程与食宿费用的学生。',
         route: '/philippines-study/boracay/boracay-coco-english-academy',
       },
       {

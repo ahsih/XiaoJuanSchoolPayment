@@ -53,7 +53,6 @@
     minmax(180px, 1fr)
     minmax(240px, 1.35fr)
     minmax(95px, 0.58fr)
-    minmax(105px, 0.62fr)
     minmax(120px, 0.7fr);
 }
 
@@ -62,9 +61,39 @@
     minmax(190px, 1.15fr)
     minmax(115px, 0.68fr)
     minmax(130px, 0.72fr)
-    minmax(105px, 0.58fr)
     minmax(120px, 0.64fr)
     minmax(180px, 1fr);
+}
+
+:host .boracay-coco-page .short-stay-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px;
+  border: 1px solid #b9e0e5;
+  border-radius: 8px;
+  background: #eefbfc;
+}
+
+:host .boracay-coco-page .short-stay-rates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+:host .boracay-coco-page .short-stay-rates span {
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #17324f;
+  font-weight: 800;
+  text-align: center;
+}
+
+:host .boracay-coco-page .mobile-room-fees p {
+  margin: 8px 0 0;
+  color: #40506a;
+  line-height: 1.65;
 }
 
 :host .boracay-coco-page .source-panel {
@@ -107,6 +136,10 @@
   }
 
   :host .boracay-coco-page .source-grid {
+    grid-template-columns: 1fr;
+  }
+
+  :host .boracay-coco-page .short-stay-rates {
     grid-template-columns: 1fr;
   }
 }

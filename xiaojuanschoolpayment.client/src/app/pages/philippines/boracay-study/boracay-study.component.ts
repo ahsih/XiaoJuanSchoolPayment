@@ -81,7 +81,7 @@ export class BoracayStudyComponent {
       icon: 'pool',
       title: 'Boracay Coco English Academy',
       tag: 'Resort-style / Family / ESL',
-      text: '适合想在长滩岛度假型校园中学习ESL、IELTS、亲子和低龄儿童课程，并清楚比较2026费用的学生。',
+      text: '适合想在长滩岛度假型校园中学习ESL、商务英语、IELTS、亲子和低龄儿童课程，并清楚比较2026课程与食宿费用的学生。',
       route: '/philippines-study/boracay/boracay-coco-english-academy',
     },
     {

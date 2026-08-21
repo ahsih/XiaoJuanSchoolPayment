@@ -1,0 +1,253 @@
+:host {
+  display: block;
+}
+
+:host .pia-detail-page {
+  background:
+    linear-gradient(180deg, #fff7f5 0, #ffffff 720px),
+    #ffffff;
+}
+
+:host .back-link,
+:host .hero-tags span,
+:host .section-heading > span,
+:host .compact-heading > span,
+:host .course-card > span,
+:host .course-lessons,
+:host .timeline time,
+:host .gallery-tabs button.active,
+:host .section-nav a:hover {
+  color: #9d1d2c;
+}
+
+:host .hero-tags span,
+:host .section-heading > span,
+:host .compact-heading > span {
+  border-color: #efc9ce;
+  background: #fff5f6;
+}
+
+:host .primary-action {
+  background: #b51f30;
+  box-shadow: 0 14px 28px rgba(181, 31, 48, 0.18);
+}
+
+:host .secondary-action {
+  border-color: #d88d96;
+  color: #9d1d2c;
+}
+
+:host .trust-note mat-icon,
+:host .quick-card mat-icon,
+:host .note-list mat-icon,
+:host .local-fee-grid mat-icon {
+  color: #b51f30;
+}
+
+:host .hero-copy h1,
+:host .section-heading h2,
+:host .compact-heading h2,
+:host .bottom-cta h2 {
+  color: #32141a;
+}
+
+:host .hero-media {
+  grid-template-columns: minmax(0, 1fr) 118px;
+  align-items: stretch;
+}
+
+:host .feature-photo img {
+  height: 344px;
+}
+
+:host .media-strip img {
+  height: 86px;
+}
+
+:host .hero-price-card {
+  grid-column: 1 / -1;
+  padding: 20px;
+  border-radius: 8px;
+  background: #32141a;
+  color: #ffffff;
+}
+
+:host .hero-price-card > span {
+  color: #f6cbd1;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+:host .hero-price-card > strong {
+  display: block;
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+:host .hero-price-card p {
+  margin: 8px 0 12px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+:host .hero-price-card ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  list-style: none;
+}
+
+:host .hero-price-card li {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+}
+
+:host .hero-price-card mat-icon {
+  width: 16px;
+  height: 16px;
+  color: #f4b8c0;
+  font-size: 16px;
+}
+
+:host .gallery-tabs button.active {
+  border-color: #b51f30;
+  background: #fff1f3;
+}
+
+:host .gallery-grid img {
+  aspect-ratio: 4 / 3;
+  object-position: center;
+}
+
+:host .gallery-grid figcaption span {
+  display: block;
+  color: #5c6879;
+}
+
+:host .advisor-panel {
+  background: #32141a;
+}
+
+:host .advisor-avatar {
+  background: #b51f30;
+}
+
+:host .pricing-layout {
+  align-items: start;
+}
+
+:host .course-card strong,
+:host .data-table .table-row:not(.table-head) span:nth-child(2),
+:host .side-price {
+  color: #a81f2d;
+  font-weight: 950;
+}
+
+:host .quote-panel {
+  border-color: #efc9ce;
+  background: #fff5f6;
+}
+
+:host .quote-result {
+  background: #32141a;
+}
+
+:host .accommodation-panel {
+  background: #fffaf8;
+}
+
+:host .notice-panel {
+  border-color: #f0d6c6;
+  background: #fff8f2;
+}
+
+:host .notice-panel mat-icon {
+  color: #b51f30;
+}
+
+:host .source-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .source-list a {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #e0e8ee;
+  border-radius: 8px;
+  color: #9d1d2c;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+:host .source-list mat-icon {
+  flex: 0 0 auto;
+}
+
+:host .bottom-cta {
+  background: #32141a;
+}
+
+:host .bottom-cta > a {
+  min-width: 220px;
+}
+
+:host .mobile-anchor-nav mat-icon,
+:host .hero-tags mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+@media (max-width: 980px) {
+  :host .source-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .hero-media {
+    grid-template-columns: 1fr;
+  }
+
+  :host .feature-photo img {
+    height: 290px;
+  }
+
+  :host .media-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  :host .media-strip img {
+    height: 82px;
+  }
+
+  :host .hero-price-card {
+    grid-column: auto;
+  }
+
+  :host .hero-price-card ul {
+    display: grid;
+  }
+
+  :host .bottom-cta > a {
+    width: 100%;
+    min-width: 0;
+  }
+}

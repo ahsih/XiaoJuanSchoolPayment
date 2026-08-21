@@ -12,13 +12,13 @@
             <h1><span>菲律宾巴科洛德</span><span>E-Room Language Center</span></h1>
             <p class="hero-lead">
               <span>E-Room位于Bacolod Magsaysay Ave一带，是低干扰、预算友好、校内住宿生活一体的学习型语言学校。</span>
-              <span>课程覆盖ESL/Business、IELTS、TOEIC、Guardian和管理型Junior，可按Classic或Semi-Sparta、课量、房型和周数拆分报价。</span>
-              <span>本页按E-Room官方首页、费用页、位置页和校规页整理；正式价格、空房和优惠以学校invoice为准。</span>
+              <span>2024费用表覆盖ESL/青少年、IELTS/TOEIC/商务英语、监护人和幼儿园课程，可按课量、房型和周数估算。</span>
+              <span>本页课程、住宿和注册费按所附E-Room 2024费用表整理；正式价格、空房和优惠以学校invoice为准。</span>
             </p>
             <div class="hero-tags" aria-label="E-Room Language Center特点">
               <span><mat-icon>location_on</mat-icon>Bacolod / Magsaysay Ave</span>
               <span><mat-icon>rule</mat-icon>Classic / Semi-Sparta</span>
-              <span><mat-icon>family_restroom</mat-icon>ESL / IELTS / TOEIC / Junior</span>
+              <span><mat-icon>family_restroom</mat-icon>ESL / 青少年 / 考试 / 商务 / 幼儿园</span>
               <span><mat-icon>payments</mat-icon>{{ fourWeekStartingText }} / 4周参考</span>
             </div>
             <div class="hero-actions">
@@ -37,7 +37,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面估算默认拆成KRW课程住宿注册接机费 + PHP当地费用；长期学习请重点核对签证延期、I-Card、电水和教材。
+              页面估算按2024费用表计算USD课程、住宿和注册费；PHP当地费用、接机费及当期优惠需另行确认。
             </p>
           </div>
 
@@ -55,7 +55,7 @@
             <aside class="hero-price-card">
               <span>4周常见参考</span>
               <strong>{{ fourWeekStartingText }}</strong>
-              <p>Flexible + 4人房 + 注册费KRW100,000 + Bacolod接机KRW30,000</p>
+              <p>ESL/青少年Course A + 三人间 + USD 100注册费</p>
               <ul>
                 <li><mat-icon>check_circle</mat-icon>住宿费含三餐、每周3次洗衣与清洁</li>
                 <li><mat-icon>info</mat-icon>SSP、签证、电水、押金、教材等PHP费用另计</li>
@@ -127,13 +127,13 @@
             </div>
             <p>
               如果学生想控制整体预算，又希望有门禁、测试和住宿餐食一体的基本管理，E-Room可以放进Bacolod候选。
-              选它时要重点看Classic或Semi-Sparta、KRW和PHP费用拆分、房型、签证和当期校规。
+              选它时要重点看Classic或Semi-Sparta、USD和PHP费用拆分、房型、签证和当期校规。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">ER</div>
               <div>
                 <strong>顾问建议</strong>
-                <span>成人先按课量选Flexible/Light/Regular；家庭和未成年路线要单独确认年龄、监护和活动。</span>
+                <span>成人和青少年可按一对一课量选Course A/B/C；家庭路线要单独确认年龄、监护、接送和住宿限制。</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -185,8 +185,8 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程类型</span>
-            <h2>从Flexible ESL到IELTS/TOEIC和管理型Junior</h2>
-            <p>成人课程差异主要在一对一课时和考试方向；家庭课程学生官方说明只能申请Classic过程。</p>
+            <h2>从ESL/青少年Course A-C到考试、商务和幼儿园课程</h2>
+            <p>Course A/B/C主要差在一对一课时；监护人必须与青少年学生一起报名，幼儿园课程需确认休息时段接送安排。</p>
           </div>
           <div class="course-grid eroom-course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -196,33 +196,19 @@
               <p>{{ course.suitable }}</p>
             </article>
           </div>
-          <div class="junior-fee-strip">
-            <div class="pricing-subheading">
-              <span>Junior Managed Program</span>
-              <h3>管理型Junior 4周费用参考</h3>
-            </div>
-            <div class="junior-fee-grid">
-              <article *ngFor="let fee of juniorFees">
-                <span>{{ fee.room }}</span>
-                <strong>{{ formatKrw(fee.fee4w) }}</strong>
-                <p>{{ fee.note }}</p>
-              </article>
-            </div>
-          </div>
         </section>
 
         <section class="section-block" id="course-fees">
           <div class="section-heading">
-            <span>E-Room官方4周课程住宿参考</span>
-            <h2>先看课程费 + 房型费，再加注册费、接机费和PHP当地费用</h2>
-            <p>下表按E-Room官方费用页整理。套餐参考为4周课程费 + 4周房型费，不含注册费、接机费和菲律宾当地PHP费用。</p>
+            <span>E-Room 2024年4周课程住宿参考</span>
+            <h2>先看课程费 + 房型费，再加USD 100注册费和其他当地费用</h2>
+            <p>下表按所附E-Room 2024费用表整理。套餐参考为4周课程费 + 4周房型费，不含注册费、接机费和菲律宾当地费用。</p>
           </div>
 
           <div class="data-table eroom-tuition-table" role="table" aria-label="E-Room Language Center 4周课程住宿套餐参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">4周课程费</span>
-              <span role="columnheader">4人房套餐</span>
               <span role="columnheader">3人房套餐</span>
               <span role="columnheader">2人房套餐</span>
               <span role="columnheader">1人房套餐</span>
@@ -231,7 +217,6 @@
             <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
               <span role="cell">{{ row.course }}</span>
               <span role="cell">{{ row.tuition }}</span>
-              <span role="cell">{{ row.quad }}</span>
               <span role="cell">{{ row.triple }}</span>
               <span role="cell">{{ row.double }}</span>
               <span role="cell">{{ row.single }}</span>
@@ -243,7 +228,7 @@
             <article *ngFor="let row of courseFeeRows">
               <span>{{ row.course }}</span>
               <div><em>课程费</em><strong>{{ row.tuition }}</strong></div>
-              <div><em>4人房套餐</em><strong>{{ row.quad }}</strong></div>
+              <div><em>3人房套餐</em><strong>{{ row.triple }}</strong></div>
               <div><em>2人房套餐</em><strong>{{ row.double }}</strong></div>
               <p>{{ row.suitable }}</p>
             </article>
@@ -261,7 +246,7 @@
             </div>
             <div class="table-row" role="row" *ngFor="let room of roomOptions">
               <span role="cell">{{ room.name }}</span>
-              <span role="cell">{{ formatKrw(room.fee4w) }}</span>
+              <span role="cell">{{ formatUsd(room.fee4w) }}</span>
               <span role="cell">{{ room.note }}</span>
             </div>
           </div>
@@ -271,25 +256,24 @@
           <section class="quote-panel">
             <div class="section-heading">
               <span>E-Room费用快速估算</span>
-              <h2>默认参考：4周 Flexible + 4人房</h2>
-              <p>估算公式：课程费 + 宿舍费 + 注册费 + Bacolod接机费；当地PHP费用单独提示，不并入KRW总额。</p>
+              <h2>默认参考：4周 ESL/青少年Course A + 三人间</h2>
+              <p>估算公式：课程费 + 宿舍费 + USD 100注册费。8周以上按4周单价线性估算；接机和当地费用不并入USD总额。</p>
             </div>
             <div class="quote-form" aria-label="E-Room费用估算选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courses" [ngValue]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomOptions" [ngValue]="room.id">{{ room.name }}</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseChanged()"><option *ngFor="let course of courses" [ngValue]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomOptions" [ngValue]="room.id" [disabled]="selectedCourseId === 'guardian' && room.id === 'single'">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
             </div>
             <div class="quote-breakdown eroom-quote-breakdown">
-              <div><span>注册费</span><strong>{{ formatKrw(registrationFeeKrw) }}</strong></div>
-              <div><span>接机费</span><strong>{{ formatKrw(pickupFeeKrw) }}</strong></div>
-              <div><span>课程费</span><strong>{{ formatKrw(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>{{ formatKrw(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>注册费</span><strong>{{ formatUsd(registrationFeeUsd) }}</strong></div>
+              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
               <div><span>PHP费用提示</span><strong>{{ selectedLocalFeeGuide.title }}</strong></div>
               <div><span>公式</span><strong>{{ formulaText }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期KRW参考</span>
+              <span>前期USD参考</span>
               <strong>{{ quoteText }}</strong>
               <em>{{ selectedLocalFeeGuide.text }}</em>
               <p *ngIf="quoteCalculated">已按当前选择更新。下一步建议确认E-Room正式报价、房型空位、校规、优惠和学校invoice。</p>
@@ -317,8 +301,8 @@
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>到校支付费用</span>
-            <h2>KRW课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按E-Room官方费用页整理，金额可能随政府规则、学校政策、汇率和学习周数调整。</p>
+            <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
+            <p>注册费按所附2024费用表更新；其他当地费用为单独参考，可能随政府规则、学校政策、汇率和学习周数调整。</p>
           </div>
           <div class="local-summary-grid" aria-label="E-Room当地费用按周数提示">
             <article *ngFor="let fee of localFeeGuides">
@@ -349,7 +333,7 @@
         <section class="sida-ev-section" id="service-process">
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
-            <h2>通过思达启航咨询E-Room，我们会把KRW和PHP费用拆清楚</h2>
+            <h2>通过思达启航咨询E-Room，我们会把USD和PHP费用拆清楚</h2>
             <p>顾问会按学生年龄、管理模式、课程、房型、入学日、接机机场和当期学校回复核对正式报价。</p>
           </div>
           <div class="process-grid desktop-process-grid">
@@ -406,7 +390,7 @@
           <strong>{{ selectedWeeks }}周</strong>
           <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteText }}</div>
-          <small>{{ selectedLocalFeeGuide.title }}另看PHP当地费用，正式invoice需当期确认</small>
+          <small>{{ selectedLocalFeeGuide.title }}另看PHP当地费用；8周以上按4周单价估算，正式invoice需当期确认</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">估算费用<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>
@@ -421,7 +405,7 @@
       <div>
         <h2>想知道E-Room Language Center适不适合你？</h2>
         <p>把入学日期、周数、年龄、英文程度、课程目标和房型告诉顾问，我们帮你核对E-Room当期正式报价和Bacolod学校替代选项。</p>
-        <ul><li>0中介服务费</li><li>Classic或Semi-Sparta匹配</li><li>KRW与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
+        <ul><li>0中介服务费</li><li>Classic或Semi-Sparta匹配</li><li>USD与PHP费用拆分</li><li>从申请到入学持续协助</li></ul>
       </div>
       <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
     </section>

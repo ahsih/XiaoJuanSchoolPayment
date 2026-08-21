@@ -1,23 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
+import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '课堂' | '住宿' | '生活';
 type WeekOption = 4 | 8 | 12 | 16 | 20 | 24;
 type CourseId =
+  | 'esl-youth-a'
+  | 'esl-youth-b'
+  | 'esl-youth-c'
+  | 'exam-business-a'
+  | 'exam-business-b'
+  | 'exam-business-c'
   | 'guardian'
-  | 'flexible'
-  | 'light'
-  | 'regular'
-  | 'intensive'
-  | 'power-speaking'
-  | 'ielts-toeic-light'
-  | 'ielts-toeic-regular'
-  | 'ielts-toeic-intensive'
-  | 'ielts-toeic-power';
-type RoomId = 'quad' | 'triple' | 'double' | 'single';
+  | 'kindergarten';
+type RoomId = 'triple' | 'double' | 'single';
 
 interface QuickInfo {
   icon: string;
@@ -55,7 +58,7 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  fees: Record<WeekOption, number>;
+  fee4w: number;
 }
 
 interface RoomOption {
@@ -75,12 +78,6 @@ interface LocalFeeGuide {
   weeks: WeekOption;
   title: string;
   text: string;
-}
-
-interface JuniorFee {
-  room: string;
-  fee4w: number;
-  note: string;
 }
 
 interface ScheduleItem {
@@ -125,17 +122,18 @@ interface SourceLink {
     './eroom-school.component.css',
   ],
 })
-export class EroomSchoolComponent {
+export class EroomSchoolComponent implements OnInit {
+  private readonly schoolService = inject(SchoolService);
+  private readonly pricingSchoolName = '菲律宾巴科洛德E-Room Language Center';
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '课堂', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  selectedCourseId: CourseId = 'flexible';
-  selectedRoomId: RoomId = 'quad';
+  selectedCourseId: CourseId = 'esl-youth-a';
+  selectedRoomId: RoomId = 'triple';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
 
-  readonly registrationFeeKrw = 100000;
-  readonly pickupFeeKrw = 30000;
+  registrationFeeUsd = 100;
   readonly weekOptions: WeekOption[] = [4, 8, 12, 16, 20, 24];
 
   readonly quickInfo: QuickInfo[] = [
@@ -154,8 +152,8 @@ export class EroomSchoolComponent {
     {
       icon: 'menu_book',
       label: '课程方向',
-      value: 'ESL / Business / IELTS / TOEIC / Junior',
-      note: '成人和家庭课程覆盖ESL、Business、IELTS、TOEIC；另有管理型Junior路线。',
+      value: 'ESL / 青少年 / IELTS / TOEIC / 商务 / 幼儿园',
+      note: '2024费用表列出ESL/青少年A-C、考试/商务A-C、监护人和幼儿园课程。',
     },
     {
       icon: 'home_work',
@@ -172,8 +170,8 @@ export class EroomSchoolComponent {
     {
       icon: 'payments',
       label: '4周常见起步',
-      value: 'KRW 1,370,000 + PHP当地费',
-      note: '按Flexible + 4人房 + 注册费KRW100,000 + 巴科洛德接机KRW30,000估算。',
+      value: 'USD 1,250 + 当地费',
+      note: '按ESL/青少年Course A + 三人间 + USD 100注册费估算。',
     },
   ];
 
@@ -217,8 +215,8 @@ export class EroomSchoolComponent {
     { label: '官方地址', value: 'Lot 1, Block 3 Magsaysay Ave, Bacolod, 6100 Negros Occidental, Philippines' },
     { label: '联系方式参考', value: 'Tel: +63-34-703-1377 / Email: malkim78@gmail.com' },
     { label: '学校历史', value: '公开历史页显示学校2005年开办，2022年完成专用校舍。' },
-    { label: '课程方向', value: 'ESL/Business Classic & Semi-Sparta、IELTS/TOEIC、Guardian、管理型Junior课程。' },
-    { label: '费用币种', value: '课程费、住宿费、注册费和接机费以KRW列示；SSP、I-Card、电水、押金、教材和签证等以PHP列示。' },
+    { label: '课程方向', value: 'ESL/青少年、IELTS/TOEIC/商务英语、监护人和幼儿园课程。' },
+    { label: '费用币种', value: '所附2024费用表以USD列课程、住宿和注册费；SSP、I-Card、电水、押金、教材和签证等当地费用另行确认。' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -239,113 +237,96 @@ export class EroomSchoolComponent {
     },
     {
       image: this.galleryImages[3].src,
-      title: '成人、家庭、青少年都能看',
-      text: '除成人ESL和考试课程外，E-Room也列出Guardian和管理型Junior费用，适合家庭一起比较。',
+      title: '成人、家庭、青少年都能选',
+      text: '除成人ESL和考试课程外，2024费用表也列出青少年、监护人和幼儿园课程，适合家庭一起比较。',
     },
   ];
 
   readonly suitableFor: FitItem[] = [
-    { title: '想控制预算读ESL', text: 'Bacolod生活成本通常更温和，E-Room 4人房和Flexible/Light等课程适合预算型成人。' },
+    { title: '想控制预算读ESL', text: 'Bacolod生活成本通常更温和，E-Room三人间和ESL Course A适合先做预算。' },
     { title: '想在安静城市长期学习', text: '不追求海边度假或大城市夜生活，更适合8到24周稳定打基础。' },
     { title: '需要一点管理推动', text: 'Semi-Sparta、门禁、测试和出勤规则适合需要学校帮忙维持节奏的学生。' },
-    { title: '家庭或青少年路线比较', text: 'Guardian、Family和Junior费用在官方表中单独列出，适合亲子或未成年路线初筛。' },
+    { title: '家庭或青少年路线比较', text: '青少年、监护人和幼儿园课程在2024费用表中单独列出，适合亲子或未成年路线初筛。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '想要海岛度假感', text: 'E-Room是Bacolod市区学习型校园，不是宿务Mactan或长滩岛的海边体验。' },
-    { title: '只接受USD报价', text: '官方价格以韩元和菲律宾披索拆分，需要一起看汇率和到校费用。' },
+    { title: '只看USD学费和住宿', text: 'SSP、签证、电水、押金和教材等当地费用仍需另外核对。' },
     { title: '希望全外教或美式小班', text: '这页重点不是Native-only路线，外教比例和老师安排需当期确认。' },
     { title: '不想遵守门禁和测试', text: '学校规则列出门禁、出勤和测试要求，不适合完全自由型学习期待。' },
   ];
 
-  readonly courses: CourseOption[] = [
+  courses: CourseOption[] = [
+    {
+      id: 'esl-youth-a',
+      name: 'ESL / 青少年 Course A',
+      type: 'ESL / Youth',
+      lessons: '5节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合希望兼顾一对一训练与团体互动的成人或青少年。',
+      fee4w: 600,
+    },
+    {
+      id: 'esl-youth-b',
+      name: 'ESL / 青少年 Course B',
+      type: 'ESL / Youth',
+      lessons: '6节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合想增加一对一练习量、加快口语和基础提升的学生。',
+      fee4w: 670,
+    },
+    {
+      id: 'esl-youth-c',
+      name: 'ESL / 青少年 Course C',
+      type: 'ESL / Youth',
+      lessons: '7节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合短期高密度学习或希望获得更多个别纠正的学生。',
+      fee4w: 740,
+    },
+    {
+      id: 'exam-business-a',
+      name: 'IELTS / TOEIC / 商务英语 Course A',
+      type: 'Exam / Business',
+      lessons: '5节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合刚开始备考或想系统学习商务英语的学生。',
+      fee4w: 730,
+    },
+    {
+      id: 'exam-business-b',
+      name: 'IELTS / TOEIC / 商务英语 Course B',
+      type: 'Exam / Business',
+      lessons: '6节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合有明确考试或商务目标、需要更多一对一反馈的学生。',
+      fee4w: 800,
+    },
+    {
+      id: 'exam-business-c',
+      name: 'IELTS / TOEIC / 商务英语 Course C',
+      type: 'Exam / Business',
+      lessons: '7节一对一 + 1节团体课 + 1节选修课',
+      suitable: '适合短期考试冲刺或高密度商务英语训练。',
+      fee4w: 870,
+    },
     {
       id: 'guardian',
-      name: 'Guardian',
+      name: '监护人课程',
       type: 'Parent / Guardian',
-      lessons: '3节1:1 + 1节Option',
-      suitable: '适合陪读家长或想轻量上课的学生。',
-      fees: { 4: 580000, 8: 1160000, 12: 1700000, 16: 2260000, 20: 2820000, 24: 3380000 },
+      lessons: '4节一对一',
+      suitable: '必须与青少年学生一起报名，不可单独报名，且不能选择单人间。',
+      fee4w: 450,
     },
     {
-      id: 'flexible',
-      name: 'Flexible',
-      type: 'Budget ESL',
-      lessons: '3节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合预算优先，但想保留小组互动和可选课。',
-      fees: { 4: 620000, 8: 1240000, 12: 1820000, 16: 2420000, 20: 3020000, 24: 3620000 },
-    },
-    {
-      id: 'light',
-      name: 'Light',
-      type: 'Standard ESL',
-      lessons: '4节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合一般成人口语、听力和基础语法提升。',
-      fees: { 4: 720000, 8: 1440000, 12: 2120000, 16: 2820000, 20: 3520000, 24: 4220000 },
-    },
-    {
-      id: 'regular',
-      name: 'Regular',
-      type: 'Balanced ESL',
-      lessons: '5节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合想增加一对一纠正，又希望课表不过度压迫的学生。',
-      fees: { 4: 820000, 8: 1640000, 12: 2420000, 16: 3220000, 20: 4020000, 24: 4820000 },
-    },
-    {
-      id: 'intensive',
-      name: 'Intensive',
-      type: 'High 1:1',
-      lessons: '6节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合短期集中输出和需要更多个别纠正的人。',
-      fees: { 4: 920000, 8: 1840000, 12: 2720000, 16: 3620000, 20: 4520000, 24: 5420000 },
-    },
-    {
-      id: 'power-speaking',
-      name: 'Power Speaking',
-      type: 'Speaking Intensive',
-      lessons: '7节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合短期高密度口语训练和想把一对一拉满的学生。',
-      fees: { 4: 1020000, 8: 2040000, 12: 3020000, 16: 4020000, 20: 5020000, 24: 6020000 },
-    },
-    {
-      id: 'ielts-toeic-light',
-      name: 'IELTS / TOEIC Light',
-      type: 'Exam Prep',
-      lessons: '4节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合刚进入考试准备，想兼顾基础和题型熟悉。',
-      fees: { 4: 860000, 8: 1720000, 12: 2540000, 16: 3380000, 20: 4220000, 24: 5060000 },
-    },
-    {
-      id: 'ielts-toeic-regular',
-      name: 'IELTS / TOEIC Regular',
-      type: 'Exam Prep',
-      lessons: '5节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合有考试目标，想增加一对一练习和反馈。',
-      fees: { 4: 960000, 8: 1920000, 12: 2840000, 16: 3780000, 20: 4720000, 24: 5660000 },
-    },
-    {
-      id: 'ielts-toeic-intensive',
-      name: 'IELTS / TOEIC Intensive',
-      type: 'Exam Intensive',
-      lessons: '6节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合分数压力更明确，想提高备考课量的学生。',
-      fees: { 4: 1060000, 8: 2120000, 12: 3140000, 16: 4180000, 20: 5220000, 24: 6260000 },
-    },
-    {
-      id: 'ielts-toeic-power',
-      name: 'IELTS / TOEIC Power',
-      type: 'Exam Power',
-      lessons: '7节1:1 + 1节1:4 + 1节Option',
-      suitable: '适合短期考试冲刺和更高密度一对一反馈。',
-      fees: { 4: 1160000, 8: 2320000, 12: 3440000, 16: 4580000, 20: 5720000, 24: 6860000 },
+      id: 'kindergarten',
+      name: '幼儿园课程',
+      type: 'Kindergarten',
+      lessons: '6小时（09:00-16:00，含1小时休息）',
+      suitable: '休息时段需由家长自行接送，具体安排请在报名时确认。',
+      fee4w: 990,
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: '4人房 / Quad', fee4w: 620000, note: '预算最低，适合长期学习和能接受共享空间的学生。' },
-    { id: 'triple', name: '3人房 / Triple', fee4w: 720000, note: '费用和舒适度平衡，是预算型成人常见选择。' },
-    { id: 'double', name: '2人房 / Double', fee4w: 820000, note: '更适合朋友同行或希望休息质量更稳定的学生。' },
-    { id: 'single', name: '1人房 / Single', fee4w: 970000, note: '隐私最高，适合备考、工作人士或对睡眠要求高的人。' },
+  roomOptions: RoomOption[] = [
+    { id: 'triple', name: '三人间 / Triple', fee4w: 550, note: '2024费用表中价格最低的房型。' },
+    { id: 'double', name: '双人间 / Double', fee4w: 600, note: '适合朋友同行、亲子或希望兼顾预算与空间的学生。' },
+    { id: 'single', name: '单人间 / Single', fee4w: 750, note: '监护人课程不能选择单人间。' },
   ];
 
   readonly localFeeGuides: LocalFeeGuide[] = [
@@ -358,8 +339,7 @@ export class EroomSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'Registration', amount: 'KRW 100,000', note: '入学金，官方说明为一次性且不退。' },
-    { item: 'Bacolod Pickup', amount: 'KRW 30,000', note: '巴科洛德机场接机参考费用。' },
+    { item: 'Registration', amount: 'USD 100', note: '所附2024费用表列示的注册费。' },
     { item: 'SSP', amount: 'PHP 7,200', note: 'Special Study Permit，官方列6个月有效。' },
     { item: 'ACR I-Card', amount: 'PHP 4,060', note: '官方列1年有效，通常长期学习需确认。' },
     { item: 'Student ID', amount: 'PHP 200', note: '学生证发行费。' },
@@ -368,31 +348,23 @@ export class EroomSchoolComponent {
     { item: 'Books', amount: 'PHP 250-450 / 本', note: '按课程实际教材购买。' },
     { item: 'Dorm Deposit', amount: 'PHP 3,000', note: '宿舍押金，退房检查后按规则退还。' },
     { item: 'Visa Extension', amount: 'PHP 4,360起', note: '官方列4周后4,360，8周后5,630，后续每阶段3,660。' },
-    { item: 'Extra 1:1', amount: 'KRW 150,000 / 4周', note: '加一对一课的官方参考费用。' },
-    { item: 'Extra 1:4 Group', amount: 'KRW 60,000 / 4周', note: '加1:4小组课的官方参考费用。' },
-  ];
-
-  readonly juniorFees: JuniorFee[] = [
-    { room: 'Junior 1人房', fee4w: 2400000, note: '含课程、住宿、Bacolod接机、SSP、I-Card、签证、教材、公证、活动和水费等官方列示项目。' },
-    { room: 'Junior 2人房', fee4w: 2220000, note: '适合希望费用和舒适度平衡的管理型青少年路线。' },
-    { room: 'Junior 3人房', fee4w: 2170000, note: '官方4周表中最低Junior房型参考，电费和注册费等仍需另看。' },
   ];
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:30 - 08:50', title: 'Semi-Sparta早间词汇测试', text: '选择Semi-Sparta的学生通常会有更明确的早间学习节奏。' },
     { time: '08:00 - 12:00', title: '上午一对一 / 小组课', text: '按ESL、Business、IELTS或TOEIC安排口语、语法、听力、阅读和考试技巧。' },
     { time: '12:00 - 13:00', title: '午餐与休息', text: '住宿费包含平日和周末三餐，适合想省去通勤和餐食安排的学生。' },
-    { time: '13:00 - 17:00', title: '下午课程与补强', text: 'Regular以上课程会有更高比例一对一课时，适合加强输出和老师反馈。' },
+    { time: '13:00 - 17:00', title: '下午课程与补强', text: 'Course B和Course C会增加一对一课时，适合加强输出和老师反馈。' },
     { time: '晚上', title: '免费夜间选修课', text: '公开教育系统资料提到周一到周五可选TOEIC/IELTS、发音、语法、会话等夜间课。' },
-    { time: '周末', title: 'Bacolod生活与活动', text: 'Junior项目含活动和文化体验；成人周末安排需遵守门禁和校规。' },
+    { time: '周末', title: 'Bacolod生活与活动', text: '青少年和家庭的周末安排需逐项确认；成人外出仍需遵守门禁和校规。' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'location_city', title: '先确认是否适合Bacolod', text: '如果你想低预算、安静、长期学习，E-Room更对题；想海岛和大城市则同步比较宿务。' },
     { icon: 'rule', title: '选择Classic或Semi-Sparta', text: '先判断自律度和门禁接受度，再决定管理模式，费用表目前列为同价。' },
-    { icon: 'menu_book', title: '按课量选课程', text: 'Flexible、Light、Regular、Intensive和Power Speaking主要差在一对一课时。' },
-    { icon: 'hotel', title: '锁定房型与周数', text: '4人房到1人房价格差明显，长期学习先看预算和睡眠需求。' },
-    { icon: 'receipt_long', title: '拆分KRW和PHP', text: '课程住宿、注册和接机按KRW看；SSP、签证、电水、押金和教材按PHP看。' },
+    { icon: 'menu_book', title: '按课量选课程', text: 'Course A、B、C主要差在每天的一对一课时；考试和商务课程价格另列。' },
+    { icon: 'hotel', title: '锁定房型与周数', text: '三人间到单人间价格差明显；监护人课程不能选择单人间。' },
+    { icon: 'receipt_long', title: '拆分USD和PHP', text: '所附2024表中的课程、住宿和注册费按USD看；SSP、签证、电水、押金和教材等当地费用另行确认。' },
     { icon: 'verified', title: '核对正式Invoice', text: '报名前确认当期费用、优惠、空房、接机、门禁、测试和退费规则。' },
   ];
 
@@ -414,22 +386,22 @@ export class EroomSchoolComponent {
     {
       question: 'E-Room 4周大概多少钱？',
       answer:
-        '按官方费用表，Flexible课程KRW620,000，4人房KRW620,000，注册费KRW100,000，Bacolod接机KRW30,000，4周常见起步参考KRW1,370,000，另有PHP当地费用。',
+        '按所附2024费用表，ESL/青少年Course A为USD600，三人间USD550，注册费USD100，4周常见起步参考为USD1,250，另有当地费用。',
     },
     {
       question: 'Classic和Semi-Sparta费用一样吗？',
       answer:
-        '官方2026费用页把ESL/Business和IELTS/TOEIC都标为Classic & Semi-Sparta同一价格体系，但报名时仍要确认当期管理规则和可选模式。',
+        '学校公开资料曾把Classic与Semi-Sparta列在同一价格体系；所附2024费用表提醒两者每天日程安排不同，报名时仍要确认当期管理规则和可选模式。',
     },
     {
       question: 'E-Room适合亲子或青少年吗？',
       answer:
-        '可以作为候选。官方费用页列Guardian、成人/家庭课程，以及管理型Junior 4周费用。未成年学生需要逐项确认年龄、监护、活动、门禁和入住规则。',
+        '可以作为候选。所附2024费用表列出ESL/青少年、监护人和幼儿园课程。监护人必须与青少年学生一起报名且不能选择单人间；幼儿园课程的休息时段需由家长自行接送。',
     },
     {
-      question: '为什么费用同时有KRW和PHP？',
+      question: '为什么费用同时有USD和PHP？',
       answer:
-        'E-Room官方页面以KRW列课程费、住宿费、注册费和接机费，以PHP列SSP、I-Card、签证、电水、教材、押金等当地费用。',
+        '所附2024费用表以USD列课程费、住宿费和注册费；SSP、I-Card、签证、电水、教材、押金等当地费用通常以PHP确认。',
     },
   ];
 
@@ -462,6 +434,108 @@ export class EroomSchoolComponent {
     { label: 'E-Room官方历史页', url: 'https://www.e-room.org/theme/sample135/html/history.php' },
   ];
 
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+  }
+
+  private loadPricingFromDatabase(): void {
+    this.schoolService.getSchools({ name: 'E-Room' }).pipe(
+      switchMap((schools) => {
+        const school =
+          schools.find((item) => item.name === this.pricingSchoolName) ??
+          schools.find((item) => item.name.includes('E-Room')) ??
+          schools.find((item) => item.name.includes('EROOM')) ??
+          schools[0];
+
+        if (!school?.id) {
+          return EMPTY;
+        }
+
+        return forkJoin({
+          lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
+          rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
+          fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ lessons, rooms, fees }) => {
+      this.applyPricingData(lessons, rooms, fees);
+    });
+  }
+
+  private applyPricingData(
+    lessons: SchoolLessonDTO[],
+    rooms: SchoolRoomDTO[],
+    fees: SchoolFeeDTO[],
+  ): void {
+    const courseIdsByName: Record<string, CourseId> = {
+      'ESL / 青少年 Course A': 'esl-youth-a',
+      'ESL / 青少年 Course B': 'esl-youth-b',
+      'ESL / 青少年 Course C': 'esl-youth-c',
+      'IELTS / TOEIC / 商务英语 Course A': 'exam-business-a',
+      'IELTS / TOEIC / 商务英语 Course B': 'exam-business-b',
+      'IELTS / TOEIC / 商务英语 Course C': 'exam-business-c',
+      监护人课程: 'guardian',
+      幼儿园课程: 'kindergarten',
+    };
+
+    for (const lesson of lessons.filter((item) => item.week === 4 && this.isUsd(item.currencyCode, item.currencyId))) {
+      const courseId = courseIdsByName[lesson.name];
+      const course = this.courses.find((item) => item.id === courseId);
+      if (!course) continue;
+
+      course.fee4w = lesson.price;
+      course.lessons = lesson.description || course.lessons;
+      if ((course.id === 'guardian' || course.id === 'kindergarten') && lesson.note) {
+        course.suitable = lesson.note;
+      }
+    }
+
+    const roomIdsByName: Record<string, RoomId> = {
+      '三人间 / Triple': 'triple',
+      '双人间 / Double': 'double',
+      '单人间 / Single': 'single',
+    };
+
+    for (const roomData of rooms.filter((item) => item.week === 4 && this.isUsd(item.currencyCode, item.currencyId))) {
+      const roomId = roomIdsByName[roomData.name];
+      const room = this.roomOptions.find((item) => item.id === roomId);
+      if (!room) continue;
+
+      room.fee4w = roomData.price;
+      room.note = roomData.description || room.note;
+    }
+
+    const registrationFee = fees.find(
+      (fee) => fee.name === '注册费' && this.isUsd(fee.currencyCode, fee.currencyId),
+    );
+    if (registrationFee) {
+      this.registrationFeeUsd = registrationFee.fee;
+      const registrationRow = this.localFees.find((fee) => fee.item === 'Registration');
+      if (registrationRow) {
+        registrationRow.amount = this.formatUsd(registrationFee.fee);
+      }
+    }
+
+    const startingCourse = this.courses.find((course) => course.id === 'esl-youth-a') ?? this.courses[0];
+    const startingRoom = this.roomOptions.find((room) => room.id === 'triple') ?? this.roomOptions[0];
+    const startingPrice = this.registrationFeeUsd + startingCourse.fee4w + startingRoom.fee4w;
+    const startingPriceCard = this.quickInfo.find((item) => item.label === '4周常见起步');
+    if (startingPriceCard) {
+      startingPriceCard.value = `${this.formatUsd(startingPrice)} + 当地费`;
+      startingPriceCard.note = `按${startingCourse.name} + ${startingRoom.name} + ${this.formatUsd(this.registrationFeeUsd)}注册费估算。`;
+    }
+
+    const priceFaq = this.faqs.find((item) => item.question === 'E-Room 4周大概多少钱？');
+    if (priceFaq) {
+      priceFaq.answer = `按数据库中的2024费用，${startingCourse.name}为${this.formatUsd(startingCourse.fee4w)}，${startingRoom.name}为${this.formatUsd(startingRoom.fee4w)}，注册费${this.formatUsd(this.registrationFeeUsd)}，4周常见起步参考为${this.formatUsd(startingPrice)}，另有当地费用。`;
+    }
+  }
+
+  private isUsd(currencyCode: string | undefined, currencyId: number): boolean {
+    return currencyCode === 'USD' || currencyId === 1;
+  }
+
   get filteredGalleryImages(): GalleryImage[] {
     return this.selectedGalleryCategory === '全部'
       ? this.galleryImages
@@ -469,7 +543,7 @@ export class EroomSchoolComponent {
   }
 
   get selectedCourse(): CourseOption {
-    return this.courses.find((course) => course.id === this.selectedCourseId) ?? this.courses[1];
+    return this.courses.find((course) => course.id === this.selectedCourseId) ?? this.courses[0];
   }
 
   get selectedRoom(): RoomOption {
@@ -481,38 +555,37 @@ export class EroomSchoolComponent {
   }
 
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.fees[this.selectedWeeks];
+    return this.selectedCourse.fee4w * (this.selectedWeeks / 4);
   }
 
   get roomFeeForSelectedWeeks(): number {
     return this.selectedRoom.fee4w * (this.selectedWeeks / 4);
   }
 
-  get quoteKrw(): number {
-    return this.registrationFeeKrw + this.pickupFeeKrw + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks;
+  get quoteUsd(): number {
+    return this.registrationFeeUsd + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks;
   }
 
   get quoteText(): string {
-    return `${this.formatKrw(this.quoteKrw)} 起`;
+    return `${this.formatUsd(this.quoteUsd)} 起`;
   }
 
   get fourWeekStartingText(): string {
-    const flexible = this.courses.find((course) => course.id === 'flexible') ?? this.courses[1];
-    return this.formatKrw(this.registrationFeeKrw + this.pickupFeeKrw + flexible.fees[4] + this.roomOptions[0].fee4w);
+    const courseA = this.courses.find((course) => course.id === 'esl-youth-a') ?? this.courses[0];
+    return this.formatUsd(this.registrationFeeUsd + courseA.fee4w + this.roomOptions[0].fee4w);
   }
 
   get formulaText(): string {
-    return `${this.selectedCourse.name} ${this.selectedWeeks}周课程费 + ${this.selectedRoom.name}住宿费 + 注册费 + 接机费`;
+    return `${this.selectedCourse.name} ${this.selectedWeeks}周课程费 + ${this.selectedRoom.name}住宿费 + 注册费`;
   }
 
   get courseFeeRows() {
     return this.courses.map((course) => ({
       course: course.name,
-      tuition: this.formatKrw(course.fees[4]),
-      quad: this.formatKrw(course.fees[4] + this.roomOptions[0].fee4w),
-      triple: this.formatKrw(course.fees[4] + this.roomOptions[1].fee4w),
-      double: this.formatKrw(course.fees[4] + this.roomOptions[2].fee4w),
-      single: this.formatKrw(course.fees[4] + this.roomOptions[3].fee4w),
+      tuition: this.formatUsd(course.fee4w),
+      triple: this.formatUsd(course.fee4w + this.roomOptions[0].fee4w),
+      double: this.formatUsd(course.fee4w + this.roomOptions[1].fee4w),
+      single: course.id === 'guardian' ? '不可选择' : this.formatUsd(course.fee4w + this.roomOptions[2].fee4w),
       suitable: course.suitable,
     }));
   }
@@ -525,6 +598,12 @@ export class EroomSchoolComponent {
     this.quoteCalculated = true;
   }
 
+  onCourseChanged(): void {
+    if (this.selectedCourseId === 'guardian' && this.selectedRoomId === 'single') {
+      this.selectedRoomId = 'triple';
+    }
+  }
+
   scrollToSection(target: string, event?: Event): void {
     event?.preventDefault();
     const targetElement = document.getElementById(target);
@@ -535,8 +614,8 @@ export class EroomSchoolComponent {
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`);
   }
 
-  formatKrw(value: number): string {
-    return `KRW ${value.toLocaleString('ko-KR', { maximumFractionDigits: 0 })}`;
+  formatUsd(value: number): string {
+    return `USD ${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   }
 
   formatPhp(value: number): string {

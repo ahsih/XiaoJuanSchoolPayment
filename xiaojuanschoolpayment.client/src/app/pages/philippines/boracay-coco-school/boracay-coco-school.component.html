@@ -12,7 +12,7 @@
             <h1>菲律宾长滩岛Boracay Coco English Academy</h1>
             <p class="hero-lead">
               Boracay Coco English Academy位于长滩岛Manoc-Manoc，2018年创立，主打度假型校园、
-              成人ESL、IELTS、亲子和低龄儿童课程。官网公开2026低季和Regular费用，适合想把英语学习、
+              成人ESL、商务英语、IELTS、亲子和低龄儿童课程。2026课程与食宿费用已按最新价目表整理，适合想把英语学习、
               海岛生活和住宿体验一起规划的学生。
             </p>
             <div class="hero-tags" aria-label="Boracay Coco English Academy特点">
@@ -53,13 +53,13 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周成人参考</span>
-              <strong>USD 1,300 <small>起</small></strong>
-              <p>低季Lite ESL + 校内Deluxe Twin + 注册费估算</p>
+              <span>4周每人参考</span>
+              <strong>USD 1,500 <small>起</small></strong>
+              <p>Lite ESL + 家庭房五人间 + 注册费估算</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  官网公开2026低季与Regular课程、住宿和当地费用
+                  2026课程、食宿和当地费用分项整理
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片参考官方图库及公开学校图库；费用参考Boracay Coco English Academy官网2026价格表，最终以学校正式报价为准。
+              图片参考官方图库及公开学校图库；费用按COCO 2026价目表整理，最终以学校正式报价为准。
             </p>
           </div>
         </section>
@@ -200,9 +200,9 @@
         <section class="section-block" id="course-fees">
           <div class="section-heading">
             <span>2026课程费用</span>
-            <h2>官方公开4周课程费：低季和Regular分开看</h2>
+            <h2>COCO 2026年4周课程价格</h2>
             <p>
-              以下为官网2026价格图中的课程费，不含住宿、注册费和到校PHP费用。低季促销为Regular价格的75%口径。
+              以下为价目表中的4周课程费，不含食宿、注册费和到校PHP费用。
             </p>
           </div>
           <div class="data-table coco-course-table" role="table" aria-label="Boracay Coco官方2026课程费">
@@ -210,8 +210,7 @@
               <span role="columnheader">课程</span>
               <span role="columnheader">课时</span>
               <span role="columnheader">年龄</span>
-              <span role="columnheader">低季4周</span>
-              <span role="columnheader">Regular 4周</span>
+              <span role="columnheader">4周课程费</span>
             </div>
             <div class="table-row" role="row" *ngFor="let course of courseOptions">
               <span role="cell">
@@ -220,8 +219,7 @@
               </span>
               <span role="cell">{{ course.lessons }}</span>
               <span role="cell">{{ course.age }}</span>
-              <span role="cell">USD {{ formatUsd(course.tuition.low) }}</span>
-              <span role="cell">USD {{ formatUsd(course.tuition.regular) }}</span>
+              <span role="cell">USD {{ formatUsd(course.tuition) }}</span>
             </div>
           </div>
           <div class="mobile-card-list mobile-course-fees" aria-label="Boracay Coco课程费手机卡片">
@@ -231,12 +229,8 @@
               <p>{{ course.lessons }}</p>
               <dl>
                 <div>
-                  <dt>低季4周</dt>
-                  <dd>USD {{ formatUsd(course.tuition.low) }}</dd>
-                </div>
-                <div>
-                  <dt>Regular 4周</dt>
-                  <dd>USD {{ formatUsd(course.tuition.regular) }}</dd>
+                  <dt>4周课程费</dt>
+                  <dd>USD {{ formatUsd(course.tuition) }}</dd>
                 </div>
               </dl>
             </article>
@@ -246,10 +240,9 @@
         <section class="section-block" id="room-fees">
           <div class="section-heading">
             <span>2026住宿费用</span>
-            <h2>住宿按每人4周计价，家庭房要按同行人数确认</h2>
+            <h2>食宿按每人4周计价，家庭房要按同行人数确认</h2>
             <p>
-              官网住宿表列校内宿舍、校外宿舍、合作酒店和合作度假村。住宿费包含平日三餐、周末brunch，
-              但到校服务费、水电、押金和洗衣另计。
+              价目表列单人间、双人间、豪华亲子房和家庭房。到校服务费、水电、押金和洗衣另计。
             </p>
           </div>
           <div class="data-table coco-room-table" role="table" aria-label="Boracay Coco官方2026住宿费">
@@ -257,8 +250,7 @@
               <span role="columnheader">住宿</span>
               <span role="columnheader">类型</span>
               <span role="columnheader">适合人数</span>
-              <span role="columnheader">低季4周</span>
-              <span role="columnheader">Regular 4周</span>
+              <span role="columnheader">4周食宿费</span>
               <span role="columnheader">备注</span>
             </div>
             <div class="table-row" role="row" *ngFor="let room of roomOptions">
@@ -268,9 +260,28 @@
               </span>
               <span role="cell">{{ room.category }}</span>
               <span role="cell">{{ room.occupancy }}</span>
-              <span role="cell">USD {{ formatUsd(room.rates.low) }}</span>
-              <span role="cell">USD {{ formatUsd(room.rates.regular) }}</span>
+              <span role="cell">USD {{ formatUsd(room.rate) }}</span>
               <span role="cell">{{ room.note }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="Boracay Coco食宿费手机卡片">
+            <article *ngFor="let room of roomOptions">
+              <span>{{ room.category }} · {{ room.occupancy }}</span>
+              <h3>{{ room.shortName }}</h3>
+              <p>{{ room.name }}</p>
+              <div>
+                <strong>4周食宿费</strong>
+                <strong>USD {{ formatUsd(room.rate) }}</strong>
+              </div>
+              <p>{{ room.note }}</p>
+            </article>
+          </div>
+          <div class="short-stay-panel" aria-label="Boracay Coco短周期费用规则">
+            <strong>短周期费用</strong>
+            <div class="short-stay-rates">
+              <span *ngFor="let rate of shortStayRates">
+                {{ rate.weeks }}周：4周价的{{ rate.percentage }}%
+              </span>
             </div>
           </div>
         </section>
@@ -278,16 +289,10 @@
         <section class="section-block quote-section" id="quote">
           <div class="section-heading">
             <span>费用快速报价</span>
-            <h2>选择课程、季节、房型和周数，先估主费用</h2>
-            <p>报价器按课程费 + 住宿费 + USD100注册费估算；PHP当地费用另列在下方。</p>
+            <h2>选择课程、房型和周数，先估主费用</h2>
+            <p>报价器按课程费 + 食宿费 + USD100注册费估算；1至3周分别按4周价的40%、60%、80%试算，PHP当地费用另列在下方。</p>
           </div>
           <div class="quote-form" aria-label="Boracay Coco费用快速报价选项">
-            <label>
-              <span>季节</span>
-              <select [(ngModel)]="selectedSeasonId">
-                <option *ngFor="let season of seasons" [ngValue]="season.id">{{ season.label }}</option>
-              </select>
-            </label>
             <label>
               <span>课程</span>
               <select [(ngModel)]="selectedCourseId">
@@ -323,9 +328,9 @@
               <p>{{ quoteCnyText }}，按USD:CNY {{ usdToCny }} 粗估</p>
             </div>
             <ul>
-              <li><mat-icon>event</mat-icon>{{ selectedSeason.label }}：{{ selectedSeason.note }}</li>
+              <li><mat-icon>event</mat-icon>{{ selectedWeeks }}周试算：课程与食宿使用同一周数系数</li>
               <li><mat-icon>menu_book</mat-icon>{{ selectedCourse.name }}：课程费USD {{ formatUsd(selectedTuition) }}</li>
-              <li><mat-icon>hotel</mat-icon>{{ selectedRoom.shortName }}：住宿费USD {{ formatUsd(selectedAccommodation) }}</li>
+              <li><mat-icon>hotel</mat-icon>{{ selectedRoom.shortName }}：食宿费USD {{ formatUsd(selectedAccommodation) }}</li>
               <li><mat-icon>payments</mat-icon>注册费USD {{ registrationFee }}；当地PHP费用、机票保险和生活费另计</li>
             </ul>
           </div>
@@ -440,8 +445,8 @@
       <aside class="side-panel" aria-label="Boracay Coco English Academy页面快捷导航">
         <div class="side-card">
           <span>4周参考</span>
-          <strong class="side-price">USD 1,300起</strong>
-          <p>低季Lite ESL + 校内Deluxe Twin + 注册费</p>
+          <strong class="side-price">USD 1,500起</strong>
+          <p>Lite ESL + 家庭房五人间 + 注册费</p>
           <a class="primary-action full-action" href="#quote" (click)="scrollToSection('quote', $event)">
             试算费用
             <mat-icon>calculate</mat-icon>

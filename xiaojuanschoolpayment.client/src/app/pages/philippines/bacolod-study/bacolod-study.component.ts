@@ -83,14 +83,6 @@ export class BacolodStudyComponent {
       route: '/philippines-study/bacolod/e-room-language-center',
       highlights: ['KRW课程住宿费', 'PHP当地费用', '校内住宿三餐', '半斯巴达可选'],
     },
-    {
-      image: 'https://cebu21.jp/2017/assets/img/school/lslc/5-06b.jpg',
-      title: '菲律宾巴科洛德LSLC语言学校',
-      tag: 'University Campus / ESL / IELTS / TOEIC / Business',
-      text: '适合想在University of St. La Salle校园内学习，并比较Regular、Intensive、考试和Business套餐费用的学生。',
-      route: '/philippines-study/bacolod/lslc-language-skills-learning-center',
-      highlights: ['USD套餐费', '大学校园环境', '学生宿舍/Hotel One', '2026年45分钟课'],
-    },
   ];
 
   readonly compareRows = [

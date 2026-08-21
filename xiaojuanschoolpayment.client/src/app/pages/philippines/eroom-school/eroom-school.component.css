@@ -100,18 +100,12 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-:host .junior-fee-strip {
-  margin-top: 26px;
-}
-
-:host .junior-fee-grid,
 :host .local-summary-grid {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(3, 1fr);
 }
 
-:host .junior-fee-grid article,
 :host .local-summary-grid article {
   border: 1px solid rgba(15, 118, 110, 0.16);
   border-radius: 8px;
@@ -119,7 +113,6 @@
   padding: 15px;
 }
 
-:host .junior-fee-grid span,
 :host .local-summary-grid span {
   display: block;
   color: #607086;
@@ -127,7 +120,6 @@
   font-weight: 850;
 }
 
-:host .junior-fee-grid strong,
 :host .local-summary-grid strong {
   display: block;
   margin-top: 7px;
@@ -136,7 +128,6 @@
   font-weight: 950;
 }
 
-:host .junior-fee-grid p,
 :host .local-summary-grid p {
   margin: 7px 0 0;
   color: #40506a;
@@ -145,14 +136,14 @@
 }
 
 :host .eroom-tuition-table .table-row {
-  grid-template-columns: minmax(158px, 0.9fr) repeat(5, minmax(108px, 0.48fr)) minmax(240px, 1.2fr);
+  grid-template-columns: minmax(200px, 1fr) repeat(4, minmax(108px, 0.48fr)) minmax(240px, 1.2fr);
 }
 
 :host .eroom-room-table .table-row {
   grid-template-columns: minmax(170px, 0.8fr) minmax(140px, 0.55fr) minmax(0, 1.55fr);
 }
 
-:host .eroom-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 6),
+:host .eroom-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 5),
 :host .eroom-room-table .table-row span:nth-child(2) {
   font-weight: 850;
 }
@@ -200,7 +191,6 @@
   }
 
   :host .eroom-quote-breakdown,
-  :host .junior-fee-grid,
   :host .local-summary-grid {
     grid-template-columns: minmax(0, 1fr);
   }

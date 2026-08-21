@@ -94,6 +94,13 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
         route: '/philippines-study/iloilo/we-academy',
       },
       {
+        icon: 'record_voice_over',
+        title: 'PIA · Polyglot International Academy',
+        tag: 'ESL / Exam / Power Speaking',
+        text: '适合想住Iloilo Business Park生活圈，比较一对一口语、考试、青少年课程和合作酒店费用的学生。',
+        route: '/philippines-study/iloilo/polyglot-international-academy',
+      },
+      {
         icon: 'school',
         title: 'MK Language Training Center',
         tag: 'Semi-Sparta / ESL / Family',

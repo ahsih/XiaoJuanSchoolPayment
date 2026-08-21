@@ -128,7 +128,6 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/boracay", "monthly", "0.75"),
   ("/philippines-study/bacolod", "monthly", "0.75"),
   ("/philippines-study/bacolod/e-room-language-center", "monthly", "0.75"),
-  ("/philippines-study/bacolod/lslc-language-skills-learning-center", "monthly", "0.75"),
   ("/philippines-study/iloilo", "monthly", "0.75"),
   ("/philippines-study/iloilo/mk-language-training-center", "monthly", "0.75"),
   ("/philippines-study/davao", "monthly", "0.75"),

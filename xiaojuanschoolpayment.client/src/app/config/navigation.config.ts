@@ -539,6 +539,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/iloilo/we-academy',
           },
           {
+            id: 'polyglot-international-academy',
+            label: '菲律宾伊洛伊洛PIA语言学校',
+            route: '/philippines-study/iloilo/polyglot-international-academy',
+          },
+          {
             id: 'gitc-college-international-language-center',
             label: '菲律宾伊洛伊洛GITC College语言学校',
             route:
@@ -580,11 +585,6 @@ export const mainNavigation: NavigationItem[] = [
             id: 'e-room-language-center',
             label: '菲律宾巴科洛德E-Room Language Center',
             route: '/philippines-study/bacolod/e-room-language-center',
-          },
-          {
-            id: 'lslc-language-skills-learning-center',
-            label: '菲律宾巴科洛德LSLC语言学校',
-            route: '/philippines-study/bacolod/lslc-language-skills-learning-center',
           },
         ],
       },

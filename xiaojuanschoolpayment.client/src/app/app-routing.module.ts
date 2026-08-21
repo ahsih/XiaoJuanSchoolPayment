@@ -558,13 +558,6 @@ const routes: Routes = [
             (m) => m.EroomSchoolComponent,
           ),
       },
-      {
-        path: 'philippines-study/bacolod/lslc-language-skills-learning-center',
-        loadComponent: () =>
-          import('./pages/philippines/lslc-school/lslc-school.component').then(
-            (m) => m.LslcSchoolComponent,
-          ),
-      },
       { path: 'philippines-study/bacolod', component: BacolodStudyComponent },
       {
         path: 'philippines-study/iloilo/gitc-college-international-language-center',
@@ -576,6 +569,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/philippines/iloilo-we-school/iloilo-we-school.component').then(
             (m) => m.IloiloWeSchoolComponent,
+          ),
+      },
+      {
+        path: 'philippines-study/iloilo/polyglot-international-academy',
+        loadComponent: () =>
+          import('./pages/philippines/pia-school/pia-school.component').then(
+            (m) => m.PiaSchoolComponent,
           ),
       },
       {

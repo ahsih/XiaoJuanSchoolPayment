@@ -1,0 +1,466 @@
+<div class="cia-page pia-detail-page">
+  <div class="page-grid">
+    <main class="page-main">
+      <section class="hero-section" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/philippines-study/iloilo">
+            <mat-icon>arrow_back</mat-icon>
+            返回伊洛伊洛学校列表
+          </a>
+          <p class="breadcrumb">菲律宾游学 / 伊洛伊洛学校 / PIA</p>
+          <h1>菲律宾伊洛伊洛 PIA 语言学校</h1>
+          <p class="hero-lead">
+            位于Iloilo Business Park的城市型英语学校，以一对一课程、ESL与考试路线、Power Speaking和亲子课程为主。
+          </p>
+          <div class="hero-tags" aria-label="PIA学校特点">
+            <span><mat-icon>location_on</mat-icon>Iloilo Business Park</span>
+            <span><mat-icon>record_voice_over</mat-icon>一对一强化</span>
+            <span><mat-icon>apartment</mat-icon>2023年更新环境</span>
+            <span><mat-icon>family_restroom</mat-icon>Junior / Guardian</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+              计算4周费用
+              <mat-icon>calculate</mat-icon>
+            </a>
+            <a class="secondary-action" href="#gallery" (click)="scrollToSection('gallery', $event)">
+              查看官方图片
+              <mat-icon>photo_library</mat-icon>
+            </a>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              咨询当前房态
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="trust-note">
+            <mat-icon>verified</mat-icon>
+            学校资料与图片来自PIA英文官网；课程、住宿和USD 100注册费继续采用你提供的2024价目表，金额未改动。
+          </p>
+        </div>
+
+        <div class="hero-media" aria-label="PIA学校与住宿图片">
+          <figure class="feature-photo">
+            <img
+              src="https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg"
+              alt="PIA所在的Iloilo Business Park与Festive Walk生活圈"
+            />
+            <figcaption>PIA官方图片：Iloilo Business Park生活圈</figcaption>
+          </figure>
+          <div class="media-strip" aria-label="PIA图片缩略图">
+            <figure *ngFor="let image of galleryImages.slice(2, 5)">
+              <img [src]="image.src" [alt]="image.title" />
+              <figcaption>{{ image.title }}</figcaption>
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>4周起始参考</span>
+            <strong>USD 1,330</strong>
+            <p>ESL / 考试课程1 + 合作酒店三人间 + USD 100注册费</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>课程 USD 615</li>
+              <li><mat-icon>check_circle</mat-icon>住宿 USD 615</li>
+              <li><mat-icon>info</mat-icon>当地费用另计</li>
+            </ul>
+          </aside>
+          <p class="photo-source">图片来源：PIA英文官网About PIA与Facility页面。</p>
+        </div>
+      </section>
+
+      <nav class="mobile-anchor-nav" aria-label="PIA手机端快捷导航">
+        <a
+          *ngFor="let item of mobileAnchors"
+          [href]="'#' + item.target"
+          (click)="scrollToSection(item.target, $event)"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          {{ item.label }}
+        </a>
+      </nav>
+
+      <section class="quick-info" aria-label="PIA快速信息">
+        <article class="quick-card" *ngFor="let item of quickInfo">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <div>
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+            <p>{{ item.note }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-block" id="gallery">
+        <div class="section-heading">
+          <span>官方校园图片</span>
+          <h2>先看PIA所在街区、公寓房间与公共设施</h2>
+          <p>
+            以下均为PIA英文官网公开图片。住宿照片展示学校当前介绍的Saint Honore公寓环境，不代表你提供价目表中的合作酒店房型。
+          </p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="PIA图片分类">
+          <button
+            type="button"
+            *ngFor="let category of galleryCategories"
+            [class.active]="selectedGalleryCategory === category"
+            (click)="setGalleryCategory(category)"
+          >
+            {{ category }}
+          </button>
+        </div>
+        <div class="gallery-grid">
+          <figure *ngFor="let image of filteredGalleryImages">
+            <img [src]="image.src" [alt]="image.title" loading="lazy" />
+            <figcaption>
+              <strong>{{ image.title }}</strong>
+              <span>{{ image.description }}</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <div class="info-trio">
+        <section class="panel basic-panel" id="basic-info">
+          <div class="compact-heading">
+            <span>学校基本信息</span>
+            <h2>PIA官方资料</h2>
+          </div>
+          <dl class="info-list">
+            <div *ngFor="let row of basicInfo">
+              <dt>{{ row.label }}</dt>
+              <dd>{{ row.value }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="panel advisor-panel" id="advisor-review">
+          <div class="quote-mark">“</div>
+          <div class="compact-heading">
+            <span>思达顾问点评</span>
+            <h2>PIA更适合重视城市便利与一对一课量的学生</h2>
+          </div>
+          <p>
+            PIA的优势不是封闭校园，而是Business Park的生活便利、较新的公寓配套，以及从6到8节一对一的Power Speaking路线。选校时最需要把住宿版本与当地费用核对清楚。
+          </p>
+          <div class="advisor-card">
+            <div class="advisor-avatar">Sida</div>
+            <div>
+              <strong>顾问建议</strong>
+              <span>先确认入学日期、课程强度、实际住宿地点与房型，再决定是否适合。</span>
+            </div>
+          </div>
+          <a class="primary-action full-action" routerLink="/about-sida/contact">
+            让顾问帮我确认PIA
+            <mat-icon>chat</mat-icon>
+          </a>
+        </section>
+
+        <section class="panel highlight-panel" id="highlights">
+          <div class="compact-heading">
+            <span>核心亮点</span>
+            <h2>PIA为什么值得放进候选清单</h2>
+          </div>
+          <div class="highlight-list">
+            <article *ngFor="let item of highlights">
+              <img [src]="item.image" [alt]="item.title" loading="lazy" />
+              <div>
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="fit-section" id="fit">
+        <div class="section-heading">
+          <span>适合 / 不适合</span>
+          <h2>先判断PIA是不是你的路线</h2>
+        </div>
+        <div class="fit-grid">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑PIA</h3>
+            <article *ngFor="let item of suitableFor">
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.text }}</p>
+            </article>
+          </div>
+          <div>
+            <h3><mat-icon>error</mat-icon>这些情况要先确认</h3>
+            <article *ngFor="let item of notSuitableFor">
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.text }}</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="courses">
+        <div class="section-heading">
+          <span>课程类型</span>
+          <h2>ESL、考试、Power Speaking与亲子路线</h2>
+          <p>
+            PIA英文官网的课程结构与所附价目表一致：ESL / EXAM搭配一对一和小组课，Power ESL只安排一对一课程。
+          </p>
+        </div>
+        <div class="course-grid">
+          <article class="course-card" *ngFor="let course of courseOptions">
+            <span>{{ course.type }}</span>
+            <h3>{{ course.name }}</h3>
+            <p class="course-lessons">{{ course.lessons }}</p>
+            <p>4周课程费：<strong>USD {{ formatUsd(course.tuition4Weeks) }}</strong></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="split-layout pricing-layout" id="course-fees">
+        <div class="section-block">
+          <div class="section-heading">
+            <span>2024课程费</span>
+            <h2>PIA 4周课程费用</h2>
+            <p>价格按你提供的PIA 2024年价目表保留，注册费与住宿费另计。</p>
+          </div>
+          <div class="data-table course-fee-table" role="table" aria-label="PIA 2024年4周课程费用">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程</span>
+              <span role="columnheader">4周费用</span>
+              <span role="columnheader">课程安排</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let course of courseOptions">
+              <span role="cell">{{ course.name }}</span>
+              <span role="cell">USD {{ formatUsd(course.tuition4Weeks) }}</span>
+              <span role="cell">{{ course.lessons }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list" aria-label="PIA课程费用手机卡片">
+            <article *ngFor="let course of courseOptions">
+              <span>{{ course.type }}</span>
+              <strong>{{ course.name }}</strong>
+              <div><em>4周课程费</em><b>USD {{ formatUsd(course.tuition4Weeks) }}</b></div>
+              <p>{{ course.lessons }}</p>
+            </article>
+          </div>
+        </div>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading">
+            <span>PIA费用报价</span>
+            <h2>4周课程 + 住宿 + 注册费</h2>
+            <p>选择课程和合作酒店房型，计算所附价目表明确列出的前期美元费用。</p>
+          </div>
+          <div class="quote-form" aria-label="PIA费用核价选项">
+            <label>
+              课程
+              <select [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courseOptions" [value]="course.id">
+                  {{ course.name }}（USD {{ formatUsd(course.tuition4Weeks) }}）
+                </option>
+              </select>
+            </label>
+            <label>
+              住宿
+              <select [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">
+                  {{ room.occupancy }}（USD {{ formatUsd(room.fee4Weeks) }}）
+                </option>
+              </select>
+            </label>
+            <label>
+              学习周数
+              <input value="4周" readonly />
+            </label>
+            <label>
+              预计入学日
+              <input type="date" [(ngModel)]="selectedStartDate" />
+            </label>
+          </div>
+          <div class="quote-breakdown">
+            <div><span>注册费</span><strong>USD {{ formatUsd(registrationFee) }}</strong></div>
+            <div><span>课程</span><strong>{{ selectedCourse.name }} · USD {{ formatUsd(selectedCourse.tuition4Weeks) }}</strong></div>
+            <div><span>住宿</span><strong>{{ selectedRoom.occupancy }} · USD {{ formatUsd(selectedRoom.fee4Weeks) }}</strong></div>
+            <div><span>当地费用</span><strong>SSP、教材、水电、押金等另计</strong></div>
+          </div>
+          <div class="quote-result" aria-live="polite">
+            <span>当前4周前期费用参考</span>
+            <strong>USD {{ formatUsd(quoteTotal) }}</strong>
+            <em>{{ selectedCourse.name }} + {{ selectedRoom.name }} + 注册费</em>
+            <p *ngIf="quoteCalculated">已按当前选择更新；正式费用仍以PIA最新invoice与实际房态为准。</p>
+          </div>
+          <div class="quote-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()">
+              生成核价结果
+              <mat-icon>request_quote</mat-icon>
+            </button>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              获取顾问确认报价
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="fee-alert">
+            价目表只提供4周价格，本页不自行推算其他周数；住宿照片与合作酒店价格属于不同资料口径。
+          </p>
+        </section>
+      </section>
+
+      <section class="split-layout" id="room-fees">
+        <div class="section-block">
+          <div class="section-heading">
+            <span>2024住宿费</span>
+            <h2>校外合作酒店4周住宿费用</h2>
+            <p>以下单、双、三人房名称与金额按你提供的价目表原样保留。</p>
+          </div>
+          <div class="data-table room-fee-table" role="table" aria-label="PIA 2024年住宿费用">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">房型</span>
+              <span role="columnheader">4周费用</span>
+              <span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span role="cell">{{ room.occupancy }}</span>
+              <span role="cell">USD {{ formatUsd(room.fee4Weeks) }}</span>
+              <span role="cell">{{ room.name }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list" aria-label="PIA住宿费用手机卡片">
+            <article *ngFor="let room of roomOptions">
+              <span>{{ room.occupancy }}</span>
+              <strong>{{ room.name }}</strong>
+              <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee4Weeks) }}</b></div>
+            </article>
+          </div>
+        </div>
+
+        <section class="section-block accommodation-panel">
+          <div class="section-heading">
+            <span>官方住宿设施</span>
+            <h2>PIA官网公开的公寓配置</h2>
+            <p>具体设备可能因房间而异，正式入住地点也需结合价目表与房态确认。</p>
+          </div>
+          <ul class="note-list">
+            <li><mat-icon>check</mat-icon><span>空调、个人床位、书桌、座椅、台灯与镜子</span></li>
+            <li><mat-icon>check</mat-icon><span>厨房可配冰箱、微波炉、炉具、煮饭设备与洗衣机</span></li>
+            <li><mat-icon>check</mat-icon><span>社区泳池、健身房、游戏室、儿童房与理疗空间</span></li>
+            <li><mat-icon>check</mat-icon><span>公寓大堂设门禁，仅限获准人员进入</span></li>
+          </ul>
+        </section>
+      </section>
+
+      <section class="section-block" id="local-fees">
+        <div class="section-heading">
+          <span>当地费用</span>
+          <h2>PIA英文官网当前公开的到校费用参考</h2>
+          <p>以下不加入4周美元计算器，币种为菲律宾比索；正式金额和签证规则请在报名时再次确认。</p>
+        </div>
+        <div class="local-fee-grid desktop-local-fees">
+          <article *ngFor="let fee of localFees">
+            <span>{{ fee.item }}</span>
+            <strong>{{ fee.amount }}</strong>
+            <p>{{ fee.note }}</p>
+          </article>
+        </div>
+        <details class="mobile-only mobile-details">
+          <summary>查看全部当地费用</summary>
+          <div class="local-fee-grid">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }}</strong>
+              <p>{{ fee.note }}</p>
+            </article>
+          </div>
+        </details>
+      </section>
+
+      <section class="notice-panel" id="price-note">
+        <mat-icon>info</mat-icon>
+        <div>
+          <h2>价格与官网资料的口径说明</h2>
+          <p>
+            课程费、合作酒店住宿费和USD 100注册费来自你提供的PIA 2024年费用表，保持不变；学校资料、课程结构、当地费用与图片来自PIA英文官网。正式报名以学校最新账单与实际住宿确认书为准。
+          </p>
+        </div>
+      </section>
+
+      <section class="section-block" id="sources">
+        <div class="section-heading">
+          <span>资料来源</span>
+          <h2>PIA官方参考链接</h2>
+        </div>
+        <div class="source-list">
+          <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
+            <mat-icon>open_in_new</mat-icon>
+            {{ source.label }}
+          </a>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq">
+        <div class="section-heading">
+          <span>常见问题</span>
+          <h2>报名PIA前常被问到的问题</h2>
+        </div>
+        <details *ngFor="let faq of faqs">
+          <summary>{{ faq.question }}</summary>
+          <p>{{ faq.answer }}</p>
+        </details>
+      </section>
+
+      <section class="bottom-cta">
+        <div>
+          <h2>想确认PIA当前课程、住宿地点与空房？</h2>
+          <p>把入学日期、学习周数、课程方向、年龄和房型偏好发给顾问，我们会按学校最新回复核对。</p>
+          <ul>
+            <li>课程强度匹配</li>
+            <li>实际住宿确认</li>
+            <li>当地费用拆分</li>
+            <li>完整报名协助</li>
+          </ul>
+        </div>
+        <a class="primary-action" routerLink="/about-sida/contact">
+          获取PIA完整报价
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </section>
+    </main>
+
+    <aside class="side-panel" aria-label="PIA页面快捷导航">
+      <div class="current-card">
+        <span>当前参考</span>
+        <strong>4周</strong>
+        <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+        <div class="side-price">USD {{ formatUsd(quoteTotal) }}</div>
+        <small>含USD 100注册费；当地费用另计</small>
+        <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+          计算费用
+          <mat-icon>calculate</mat-icon>
+        </a>
+        <a class="secondary-action" routerLink="/about-sida/contact">
+          咨询顾问
+          <mat-icon>chat</mat-icon>
+        </a>
+      </div>
+      <nav class="section-nav" aria-label="PIA页面目录">
+        <a
+          *ngFor="let item of sideNav"
+          [href]="'#' + item.target"
+          (click)="scrollToSection(item.target, $event)"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          {{ item.label }}
+        </a>
+        <a href="#top" (click)="scrollToSection('top', $event)">
+          <mat-icon>arrow_upward</mat-icon>
+          返回顶部
+        </a>
+      </nav>
+    </aside>
+  </div>
+
+  <div class="mobile-bottom-actions" aria-label="PIA手机端固定操作">
+    <a href="#quote" (click)="scrollToSection('quote', $event)">
+      <mat-icon>calculate</mat-icon>
+      计算费用
+    </a>
+    <a routerLink="/about-sida/contact">
+      <mat-icon>support_agent</mat-icon>
+      咨询顾问
+    </a>
+  </div>
+</div>

@@ -35,6 +35,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid GlcSchoolId = Guid.Parse("f16a6538-19a2-46c5-a93e-5cd0f19c60f7");
     private static readonly Guid IuSchoolId = Guid.Parse("bc2606e1-7dc1-4f15-8a47-6424ea15936f");
     private static readonly Guid IloiloWeSchoolId = Guid.Parse("c6f1485a-67e3-47da-92cb-f6ec9b8f5127");
+    private static readonly Guid IloiloPiaSchoolId = Guid.Parse("a7c35f31-6e94-49c3-9d4a-b7e4a6918f52");
+    private static readonly Guid EroomSchoolId = Guid.Parse("e5c0c1d4-0b7a-4d7e-8f3a-2c91b6a54012");
     private const string CiaSchoolName = "CIA Cebu International Academy";
     private const string EvSchoolName = "EV Academy";
     private const string CpiSchoolName = "菲律宾宿务CPI语言学校";
@@ -87,6 +89,12 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string IloiloWeSchoolName = "菲律宾伊洛伊洛WE Academy";
     private const string LegacyIloiloWeSchoolName = "WE Academy Iloilo";
     private const string AlternateIloiloWeSchoolName = "We Academy Iloilo";
+    private const string IloiloPiaSchoolName = "菲律宾伊洛伊洛PIA语言学校";
+    private const string IloiloPiaFullSchoolName = "Polyglot International Academy";
+    private const string IloiloPiaAlternateSchoolName = "PIA Iloilo";
+    private const string EroomSchoolName = "菲律宾巴科洛德E-Room Language Center";
+    private const string EroomFullSchoolName = "E-Room Language Center";
+    private const string EroomAlternateSchoolName = "EROOM";
 
     public static async Task SeedAsync(IServiceProvider services)
     {
@@ -118,6 +126,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedGlcPricingAsync(context);
       await SeedIuPricingAsync(context);
       await SeedIloiloWePricingAsync(context);
+      await SeedIloiloPiaPricingAsync(context);
+      await SeedEroomPricingAsync(context);
       await SeedRegionalStartingPricesAsync(context);
     }
 
@@ -1768,6 +1778,107 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedIloiloPiaPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == IloiloPiaSchoolId ||
+        x.Name == IloiloPiaSchoolName ||
+        x.Name == IloiloPiaFullSchoolName ||
+        x.Name == IloiloPiaAlternateSchoolName);
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = IloiloPiaSchoolId,
+          Name = IloiloPiaSchoolName,
+          CreatedDate = new DateTime(2012, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = IloiloPiaSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2012, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string lessonNote = "PIA Iloilo 2024年价目表；所列为4周USD课程费，住宿费、注册费和其他当地费用另计";
+      const string roomNote = "PIA Iloilo 2024年价目表；校外合作酒店4周USD住宿费，房态和当前合作酒店需在报名时确认";
+
+      UpsertLesson(context, schoolId, "ESL / 考试课程 1", 4, 615m, "一对一4节 + 小组课2节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL / 考试课程 2", 4, 692m, "一对一4节 + 小组课3节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL / 考试课程 3", 4, 769m, "一对一4节 + 小组课4节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL / 完整考试课程", 4, 846m, "一对一6节 + 小组课2节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Power Speaking A", 4, 769m, "一对一6节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Power Speaking B", 4, 885m, "一对一7节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "Power Speaking C", 4, 1000m, "一对一8节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "监护人课程", 4, 462m, "一对一4节", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "青少年课程", 4, 538m, "一对一4节", now, lessonNote, UsdCurrencyId);
+
+      UpsertRoom(context, schoolId, "校外合作酒店单人间", 4, 923m, roomNote, now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "校外合作酒店双人间", 4, 692m, roomNote, now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "校外合作酒店三人间", 4, 615m, roomNote, now, UsdCurrencyId);
+
+      UpsertFee(context, schoolId, "Registration Fee", 100m, UsdCurrencyId, "PIA Iloilo 2024年价目表一次性注册费USD100", now);
+
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedEroomPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == EroomSchoolId ||
+        x.Name == EroomSchoolName ||
+        x.Name == EroomFullSchoolName ||
+        x.Name == EroomAlternateSchoolName ||
+        x.Name == "E-Room Bacolod");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = EroomSchoolId,
+          Name = EroomSchoolName,
+          CreatedDate = new DateTime(2005, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = EroomSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2005, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string lessonNote = "E-Room Bacolod 2024年价目表；所列为4周USD课程费，住宿费、注册费和其他当地费用另计";
+
+      UpsertLesson(context, schoolId, "ESL / 青少年 Course A", 4, 600m, "5节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL / 青少年 Course B", 4, 670m, "6节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "ESL / 青少年 Course C", 4, 740m, "7节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC / 商务英语 Course A", 4, 730m, "5节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC / 商务英语 Course B", 4, 800m, "6节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "IELTS / TOEIC / 商务英语 Course C", 4, 870m, "7节一对一 + 1节团体课 + 1节选修课", now, lessonNote, UsdCurrencyId);
+      UpsertLesson(context, schoolId, "监护人课程", 4, 450m, "4节一对一", now, "必须与青少年学生一起报名，不可单独报名，且不能选择单人间", UsdCurrencyId);
+      UpsertLesson(context, schoolId, "幼儿园课程", 4, 990m, "6小时（09:00-16:00，含1小时休息）", now, "休息时段需由家长自行接送，具体安排请在报名时确认", UsdCurrencyId);
+
+      UpsertRoom(context, schoolId, "三人间 / Triple", 4, 550m, "2024费用表中价格最低的房型", now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "双人间 / Double", 4, 600m, "适合朋友同行、亲子或希望兼顾预算与空间的学生", now, UsdCurrencyId);
+      UpsertRoom(context, schoolId, "单人间 / Single", 4, 750m, "监护人课程不能选择单人间", now, UsdCurrencyId);
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "E-Room Bacolod 2024年价目表一次性注册费USD100", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static async Task SeedRegionalStartingPricesAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
@@ -1830,11 +1941,14 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(AmericanEnglishSchoolName, 14800m, PhpCurrencyId, "PHP 14,800 / 40小时起参考", Established(2006), new[] { LegacyAmericanEnglishSchoolName }),
         new RegionalStartingPriceSeed(BerlitzSchoolName, 3200m, PhpCurrencyId, "PHP 3,200 Starter Course公告价；常规课需核价", Established(2020), new[] { LegacyBerlitzSchoolName }),
 
+        new RegionalStartingPriceSeed(EroomSchoolName, 1250m, UsdCurrencyId, "USD 1,250 / 4周起（ESL / 青少年 Course A + 三人间 + 注册费；2024参考）", Established(2005), new[] { EroomFullSchoolName, EroomAlternateSchoolName, "E-Room Bacolod" }),
+
         new RegionalStartingPriceSeed(IloiloWeSchoolName, 1100m, UsdCurrencyId, "USD 1,100 / 4周起（ESL A + 三人间；注册费另计）", Established(2003), new[] { LegacyIloiloWeSchoolName, AlternateIloiloWeSchoolName }),
+        new RegionalStartingPriceSeed(IloiloPiaSchoolName, 1330m, UsdCurrencyId, "USD 1,330 / 4周起（ESL / 考试课程1 + 校外合作酒店三人间 + 注册费；2024参考）", Established(2012), new[] { IloiloPiaFullSchoolName, IloiloPiaAlternateSchoolName }),
         new RegionalStartingPriceSeed("菲律宾伊洛伊洛MK Language Training Center", 1270m, UsdCurrencyId, "USD 1,270 + PHP当地费起（ESL Basic + 4人亲子房 + 注册费）", Established(2002), new[] { "MK Language Training Center", "MK Education", "Metro Korea Language Training Center" }),
         new RegionalStartingPriceSeed("菲律宾怡朗GITC College International Language Center", 930m, UsdCurrencyId, "USD 930起 + 注册费", Established(2003), new[] { "GITC College International Language Center", "Green International Technological College Language Center" }),
 
-        new RegionalStartingPriceSeed("菲律宾长滩岛Boracay Coco English Academy", 1300m, UsdCurrencyId, "USD 1,300起含注册费", Established(2018), new[] { "Boracay Coco English Academy" }),
+        new RegionalStartingPriceSeed("菲律宾长滩岛Boracay Coco English Academy", 1500m, UsdCurrencyId, "USD 1,500起含注册费", Established(2018), new[] { "Boracay Coco English Academy" }),
         new RegionalStartingPriceSeed("菲律宾长滩岛Paradise English Boracay Language Institute", 1072m, UsdCurrencyId, "USD 1,072起含注册费", Established(2005), new[] { "Paradise English Boracay Language Institute", "Paradise English Language Institute", "Paradise English Boracay" }),
       };
 

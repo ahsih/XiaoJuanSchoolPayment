@@ -212,31 +212,31 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/bacolod': {
     title: '巴科洛德菲律宾留学与英语游学 | 语言学校选择',
     description:
-      '巴科洛德菲律宾留学和英语游学指南，适合关注生活成本、安静学习环境、长期英语提升、E-Room Language Center和LSLC语言学校等学校选择的学生。',
-    keywords: '巴科洛德留学, 巴科洛德游学, Bacolod语言学校, 菲律宾低预算游学, E-Room Language Center, LSLC语言学校',
+      '巴科洛德菲律宾留学和英语游学指南，适合关注生活成本、安静学习环境、长期英语提升和E-Room Language Center的学生。',
+    keywords: '巴科洛德留学, 巴科洛德游学, Bacolod语言学校, 菲律宾低预算游学, E-Room Language Center',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/bacolod/e-room-language-center': {
-    title: '菲律宾巴科洛德E-Room Language Center | ESL雅思多益课程费用',
+    title: '菲律宾巴科洛德E-Room Language Center | 2024年USD课程住宿费用',
     description:
-      '菲律宾巴科洛德E-Room Language Center页面，整理E-Room官方ESL/Business、IELTS/TOEIC、Classic/Semi-Sparta、Guardian、Junior课程、KRW课程住宿费、PHP当地费用和报名注意事项。',
+      '菲律宾巴科洛德E-Room Language Center页面，整理2024年ESL/青少年、IELTS/TOEIC/商务英语、监护人、幼儿园课程、USD课程住宿费、PHP当地费用和报名注意事项。',
     keywords:
       '菲律宾巴科洛德E-Room Language Center, E-Room Bacolod, EROOM, 巴科洛德语言学校, 菲律宾ESL学校, 菲律宾低预算游学, Bacolod English school',
-    image: '/assets/philippines/baguio-study-hero.jpg',
-  },
-  '/philippines-study/bacolod/lslc-language-skills-learning-center': {
-    title: '菲律宾巴科洛德LSLC语言学校 | ESL雅思多益商务课程费用',
-    description:
-      '菲律宾巴科洛德LSLC语言学校页面，整理LSLC Language Skills Learning Center、University of St. La Salle校园、Regular ESL、Intensive ESL、TOEIC/TOEFL/IELTS/Business课程、2026 USD套餐费用、Hotel One住宿和PHP当地费用。',
-    keywords:
-      '菲律宾巴科洛德LSLC语言学校, LSLC Language Skills Learning Center, LSLC Bacolod, University of St La Salle, 巴科洛德语言学校, 菲律宾ESL学校, 菲律宾IELTS学校',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/iloilo': {
     title: '伊洛伊洛菲律宾留学与英语游学 | Iloilo语言学校',
     description:
-      '伊洛伊洛菲律宾留学和英语游学城市指南，帮助学生了解安全环境、学习氛围、生活成本、GITC和MK Language Training Center等课程选择。',
-    keywords: '伊洛伊洛留学, 伊洛伊洛游学, Iloilo语言学校, 菲律宾英语游学, MK Language Training Center, GITC Iloilo',
+      '伊洛伊洛菲律宾留学和英语游学城市指南，帮助学生了解安全环境、学习氛围、生活成本、PIA、WE Academy、GITC和MK Language Training Center等课程选择。',
+    keywords: '伊洛伊洛留学, 伊洛伊洛游学, Iloilo语言学校, 菲律宾英语游学, PIA Iloilo, WE Academy Iloilo, MK Language Training Center, GITC Iloilo',
+    image: '/assets/philippines/baguio-study-hero.jpg',
+  },
+  '/philippines-study/iloilo/polyglot-international-academy': {
+    title: '菲律宾伊洛伊洛PIA语言学校 | ESL考试口语与2024费用',
+    description:
+      '菲律宾伊洛伊洛PIA语言学校页面，整理Polyglot International Academy的ESL、考试、Power Speaking、青少年和监护人课程，以及2024年4周USD课程、校外合作酒店住宿和注册费用。',
+    keywords:
+      '菲律宾伊洛伊洛PIA语言学校, Polyglot International Academy, PIA Iloilo, 伊洛伊洛语言学校, 怡朗PIA, 菲律宾ESL学校, Power Speaking',
     image: '/assets/philippines/baguio-study-hero.jpg',
   },
   '/philippines-study/iloilo/mk-language-training-center': {
@@ -558,9 +558,9 @@ export class SeoService {
       'berlitz-philippines': '菲律宾马尼拉Berlitz语言学校',
       'manila-business-college': '菲律宾马尼拉Business College学校',
       'mk-language-training-center': '菲律宾伊洛伊洛MK Language Training Center',
+      'polyglot-international-academy': '菲律宾伊洛伊洛PIA语言学校',
       'gitc-college-international-language-center': '菲律宾伊洛伊洛GITC College语言学校',
       'e-room-language-center': '菲律宾巴科洛德E-Room Language Center',
-      'lslc-language-skills-learning-center': '菲律宾巴科洛德LSLC语言学校',
       cost: '费用',
       faq: '常见问题',
       offers: '优惠',
