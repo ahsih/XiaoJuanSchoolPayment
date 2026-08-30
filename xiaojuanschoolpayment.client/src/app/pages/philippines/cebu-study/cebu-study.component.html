@@ -1,181 +1,272 @@
-<div class="cebu-page">
-  <section class="cebu-hero">
-    <div class="cebu-hero__copy">
-      <span class="section-kicker">Cebu English Study</span>
-      <h1>宿务英语游学</h1>
-      <p>
-        宿务是菲律宾英语游学最成熟的城市之一。这里学校数量多、课程类型完整、机场衔接方便，
-        既能安排高密度一对一训练，也能兼顾海岛生活、亲子陪读和短期体验。
-      </p>
-      <div class="hero-actions">
-        <a class="primary-action" routerLink="/about-sida/contact">
-          免费匹配宿务学校
+<link rel="stylesheet" href="/assets/cebu-study-page.css" />
+<main class="cebu-page">
+  <section class="hero-section" aria-labelledby="cebu-page-title">
+    <div class="page-shell hero-layout">
+      <div class="hero-copy">
+        <nav class="breadcrumb" aria-label="面包屑">
+          <a routerLink="/philippines-study/why-philippines">菲律宾游学</a>
           <mat-icon>chevron_right</mat-icon>
-        </a>
-        <a
-          class="secondary-action"
-          href="#school-profiles"
-          appScrollTo="school-profiles"
-        >
-          查看学校信息
-          <mat-icon>south</mat-icon>
-        </a>
+          <span>宿务</span>
+        </nav>
+
+        <span class="eyebrow">CEBU STUDY GUIDE</span>
+        <h1 id="cebu-page-title">宿务英语游学</h1>
+        <p class="hero-lead">
+          学校很多不用一次看完。先确认学习目标、管理强度和住宿偏好，
+          再从合适的学校类型里做选择。
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button--primary" href="#school-types" appScrollTo="school-types">
+            先按目标选校
+            <mat-icon>arrow_downward</mat-icon>
+          </a>
+          <a class="button button--secondary" routerLink="/about-sida/contact">
+            免费获取选校建议
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </div>
+
+        <p class="hero-note">
+          <mat-icon>verified</mat-icon>
+          已整理 {{ schoolProfiles.length }} 所宿务学校资料，课程与费用以学校当期回复为准
+        </p>
+      </div>
+
+      <div class="hero-gallery" aria-label="宿务语言学校校园环境">
+        <figure class="hero-photo hero-photo--main">
+          <img src="/assets/cia/campus-pool.jpg" alt="宿务 CIA 语言学校泳池与校园" />
+          <figcaption>学习，也可以有舒适的生活节奏</figcaption>
+        </figure>
+        <figure class="hero-photo">
+          <img src="/assets/ev/campus-lawn.jpg" alt="宿务 EV 语言学校校园" />
+        </figure>
+        <figure class="hero-photo">
+          <img src="/assets/cpi/campus-exterior.jpg" alt="宿务 CPI 语言学校校园" />
+        </figure>
       </div>
     </div>
 
-    <aside class="cebu-hero__panel" aria-label="宿务游学快速信息">
+    <div class="page-shell quick-facts" aria-label="宿务游学快速信息">
       <div>
-        <strong>适合</strong>
-        <span
-          >成人口语 / 雅思多益 / 亲子陪读 / 青少年营队 / 第一次菲律宾游学</span
-        >
+        <mat-icon>record_voice_over</mat-icon>
+        <span><strong>主要课程</strong>口语、雅思、商务、亲子</span>
       </div>
       <div>
-        <strong>城市关键词</strong>
-        <span>学校集中、机场方便、海岛体验、课程选择丰富、房型差异明显</span>
+        <mat-icon>tune</mat-icon>
+        <span><strong>管理方式</strong>自律、半斯巴达、斯巴达</span>
       </div>
       <div>
-        <strong>选校重点</strong>
-        <span>课程比例、校区位置、住宿餐食、管理强度、年龄限制和当期优惠</span>
+        <mat-icon>apartment</mat-icon>
+        <span><strong>住宿选择</strong>校内宿舍、公寓、酒店型</span>
       </div>
-    </aside>
+      <div>
+        <mat-icon>flight_takeoff</mat-icon>
+        <span><strong>适合人群</strong>初次游学、短期、家庭同行</span>
+      </div>
+    </div>
   </section>
 
-  <section class="highlight-section">
-    <div class="section-heading">
-      <span class="section-kicker">Why Cebu</span>
-      <h2>为什么很多学生会先看宿务？</h2>
-      <p>
-        宿务的优势不是单一“便宜”，而是学校密度、生活便利、课程完整度和周末体验都比较均衡。
-      </p>
+  <nav class="section-nav" aria-label="页面目录">
+    <div class="page-shell">
+      <a href="#quick-start" appScrollTo="quick-start">怎么开始</a>
+      <a href="#school-types" appScrollTo="school-types">按目标选校</a>
+      <a href="#school-profiles" appScrollTo="school-profiles">学校目录</a>
+      <a href="#city-compare" appScrollTo="city-compare">城市比较</a>
+    </div>
+  </nav>
+
+  <section class="content-section page-shell" id="quick-start">
+    <div class="section-heading section-heading--center">
+      <span class="eyebrow">QUICK START</span>
+      <h2>先回答 3 个问题，选校会简单很多</h2>
+      <p>不用先记学校名字。把需求排好顺序，候选范围自然会缩小。</p>
     </div>
 
-    <div class="highlight-grid">
-      <article class="highlight-card" *ngFor="let item of highlights">
-        <span class="highlight-icon">
-          <mat-icon>{{ item.icon }}</mat-icon>
-        </span>
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.text }}</p>
+    <div class="steps-grid">
+      <article>
+        <span class="step-number">01</span>
+        <mat-icon>flag</mat-icon>
+        <h3>这次最想解决什么？</h3>
+        <p>口语开口、考试分数、商务沟通，还是孩子的英语体验。</p>
+      </article>
+      <article>
+        <span class="step-number">02</span>
+        <mat-icon>schedule</mat-icon>
+        <h3>需要多强的学习节奏？</h3>
+        <p>自律型更自由，半斯巴达兼顾生活，斯巴达适合集中冲刺。</p>
+      </article>
+      <article>
+        <span class="step-number">03</span>
+        <mat-icon>bed</mat-icon>
+        <h3>住宿和预算怎么取舍？</h3>
+        <p>房型、校区位置和餐食会直接影响总费用与日常体验。</p>
       </article>
     </div>
   </section>
 
-  <section class="school-type-section" id="school-types">
-    <div class="section-heading">
-      <span class="section-kicker">School Types</span>
-      <h2>宿务学校怎么选？先看学习目标</h2>
-    </div>
+  <section class="content-section content-section--tint" id="school-types">
+    <div class="page-shell">
+      <div class="section-heading">
+        <span class="eyebrow">CHOOSE BY GOAL</span>
+        <h2>按学习目标，先选对学校类型</h2>
+        <p>这一步只做方向判断；选定类型后，再去比较具体课程、房型和费用。</p>
+      </div>
 
-    <div class="school-type-grid">
-      <article class="school-type-card" *ngFor="let type of schoolTypes">
-        <span>{{ type.tag }}</span>
-        <h3>{{ type.title }}</h3>
-        <p>{{ type.text }}</p>
-        <small>{{ type.examples }}</small>
-      </article>
+      <div class="type-grid">
+        <article class="type-card" *ngFor="let type of schoolTypes; let i = index">
+          <div class="type-card__top">
+            <span class="type-icon">{{ i + 1 }}</span>
+            <span class="type-tag">{{ type.tag }}</span>
+          </div>
+          <h3>{{ type.title }}</h3>
+          <p>{{ type.text }}</p>
+          <a href="#school-profiles" appScrollTo="school-profiles">
+            查看相关学校
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </article>
+      </div>
     </div>
   </section>
 
-  <section class="profile-section" id="school-profiles">
-    <div class="section-heading">
-      <span class="section-kicker">Cebu Schools</span>
-      <h2>宿务热门语言学校信息整理</h2>
-      <p>
-        以下信息优先按学校官网可确认内容整理，并结合中文游学网站常见分类方式改写。课程、宿舍和优惠会更新，最终以学校当期报价与回信为准。
-      </p>
+  <section class="content-section page-shell" id="school-profiles">
+    <div class="directory-heading">
+      <div class="section-heading">
+        <span class="eyebrow">SCHOOL DIRECTORY</span>
+        <h2>宿务语言学校目录</h2>
+        <p>
+          卡片默认只展示选校需要的关键信息；需要时再展开住宿、设施与报名提醒。
+        </p>
+      </div>
+      <span class="school-count">共 {{ schoolProfiles.length }} 所</span>
     </div>
 
-    <div class="profile-grid">
-      <ng-container *ngFor="let school of schoolProfiles">
-        <a *ngIf="school.route; else plainProfileCard" class="profile-card profile-card--link" [routerLink]="school.route">
-          <ng-container *ngTemplateOutlet="profileCardContent; context: { $implicit: school }"></ng-container>
-        </a>
+    <div class="school-grid">
+      <article class="school-card" *ngFor="let school of schoolProfiles">
+        <header class="school-card__header">
+          <span class="style-tag">{{ school.style }}</span>
+          <h3>{{ school.name }}</h3>
+          <p class="school-location">
+            <mat-icon>location_on</mat-icon>
+            {{ school.location }}
+          </p>
+        </header>
 
-        <ng-template #plainProfileCard>
-          <article class="profile-card">
-            <ng-container *ngTemplateOutlet="profileCardContent; context: { $implicit: school }"></ng-container>
-          </article>
-        </ng-template>
-      </ng-container>
-
-      <ng-template #profileCardContent let-school>
-        <div class="profile-card__head">
-          <span>{{ school.style }}</span>
-          <h3>
-            <span class="school-link" *ngIf="school.route; else plainSchoolName">
-              {{ school.name }}
-              <mat-icon>arrow_forward</mat-icon>
-            </span>
-            <ng-template #plainSchoolName>{{ school.name }}</ng-template>
-          </h3>
-          <p>{{ school.location }}</p>
-          <strong *ngIf="school.startingPrice" class="starting-price">
-            学费住宿 {{ school.startingPrice }}
+        <div class="school-card__body">
+          <strong *ngIf="school.startingPrice" class="school-price">
+            <small>参考起价</small>
+            {{ school.startingPrice }}
           </strong>
+
+          <div class="course-tags" aria-label="主要课程">
+            <span *ngFor="let course of school.courses.slice(0, 3)">{{ course }}</span>
+            <span *ngIf="school.courses.length > 3" class="course-more">
+              +{{ school.courses.length - 3 }}
+            </span>
+          </div>
+
+          <p class="best-for" [attr.title]="school.bestFor">
+            <strong>更适合</strong>
+            {{ school.bestFor }}
+          </p>
+
+          <details>
+            <summary>
+              展开住宿与报名信息
+              <mat-icon>expand_more</mat-icon>
+            </summary>
+            <dl>
+              <div>
+                <dt>适合人群</dt>
+                <dd>{{ school.bestFor }}</dd>
+              </div>
+              <div>
+                <dt>住宿</dt>
+                <dd>{{ school.accommodation }}</dd>
+              </div>
+              <div>
+                <dt>设施</dt>
+                <dd>{{ school.facilities }}</dd>
+              </div>
+              <div>
+                <dt>报名提醒</dt>
+                <dd>{{ school.note }}</dd>
+              </div>
+            </dl>
+          </details>
         </div>
 
-        <div class="course-tags" aria-label="课程类型">
-          <span *ngFor="let course of school.courses">{{ course }}</span>
-        </div>
-
-        <dl class="profile-list">
-          <div>
-            <dt>住宿类型</dt>
-            <dd>{{ school.accommodation }}</dd>
-          </div>
-          <div>
-            <dt>校园设施</dt>
-            <dd>{{ school.facilities }}</dd>
-          </div>
-          <div>
-            <dt>适合人群</dt>
-            <dd>{{ school.bestFor }}</dd>
-          </div>
-          <div>
-            <dt>报名提示</dt>
-            <dd>{{ school.note }}</dd>
-          </div>
-        </dl>
-      </ng-template>
-    </div>
-  </section>
-
-  <section class="decision-section">
-    <div class="section-heading">
-      <span class="section-kicker">Selection Checklist</span>
-      <h2>思达教育建议这样核对学校资料</h2>
-    </div>
-
-    <div class="decision-grid">
-      <article class="decision-card" *ngFor="let point of decisionPoints">
-        <h3>{{ point.label }}</h3>
-        <p>{{ point.text }}</p>
+        <a *ngIf="school.route" class="school-action" [routerLink]="school.route">
+          查看学校详情
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
       </article>
     </div>
   </section>
 
-  <section class="compare-section">
-    <div class="compare-copy">
-      <span class="section-kicker">Cebu vs Baguio</span>
-      <h2>宿务和碧瑶，不是谁更好，而是谁更适合</h2>
-      <p>
-        宿务更适合重视便利、海岛生活和学校选择的人；碧瑶更适合考试冲刺和高强度管理。
-        如果还不确定城市，建议先根据学习目标、预算、住宿偏好和自律程度筛选。
-      </p>
-    </div>
-
-    <div class="compare-table" role="table" aria-label="宿务与碧瑶游学比较">
-      <div class="compare-row compare-row--head" role="row">
-        <span role="columnheader">项目</span>
-        <span role="columnheader">宿务</span>
-        <span role="columnheader">碧瑶</span>
+  <section class="content-section content-section--dark" id="city-compare">
+    <div class="page-shell compare-layout">
+      <div class="compare-copy">
+        <span class="eyebrow eyebrow--light">CEBU OR BAGUIO</span>
+        <h2>宿务和碧瑶，差别主要在学习节奏</h2>
+        <p>
+          宿务选择多、生活方便；碧瑶学习氛围更集中。没有绝对更好的城市，
+          只有更符合这次目标的选择。
+        </p>
+        <a class="text-link" routerLink="/philippines-study/baguio">
+          了解碧瑶游学
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
       </div>
-      <div class="compare-row" role="row" *ngFor="let row of compareRows">
-        <span role="cell">{{ row.label }}</span>
-        <span role="cell">{{ row.cebu }}</span>
-        <span role="cell">{{ row.baguio }}</span>
+
+      <div class="compare-table" role="table" aria-label="宿务与碧瑶游学比较">
+        <div class="compare-row compare-row--head" role="row">
+          <span role="columnheader">比较项目</span>
+          <span role="columnheader">宿务</span>
+          <span role="columnheader">碧瑶</span>
+        </div>
+        <div class="compare-row" role="row" *ngFor="let row of compareRows">
+          <strong role="cell">{{ row.label }}</strong>
+          <span role="cell">{{ row.cebu }}</span>
+          <span role="cell">{{ row.baguio }}</span>
+        </div>
       </div>
     </div>
   </section>
-</div>
+
+  <section class="content-section page-shell">
+    <div class="section-heading section-heading--center">
+      <span class="eyebrow">BEFORE YOU APPLY</span>
+      <h2>最后核对这 6 项</h2>
+      <p>总费用和入住体验，往往取决于这些容易被忽略的细节。</p>
+    </div>
+
+    <div class="check-grid">
+      <article *ngFor="let point of decisionPoints; let i = index">
+        <span>{{ i + 1 }}</span>
+        <div>
+          <h3>{{ point.label }}</h3>
+          <p>{{ point.text }}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="page-shell final-cta">
+    <div>
+      <span class="eyebrow eyebrow--light">FREE SCHOOL MATCHING</span>
+      <h2>不想自己比较几十所学校？</h2>
+      <p>告诉我们学习目标、计划周数、预算和房型偏好，先帮你缩小到 3–5 所合适学校。</p>
+    </div>
+    <a class="button button--light" routerLink="/about-sida/contact">
+      免费获取选校方案
+      <mat-icon>arrow_forward</mat-icon>
+    </a>
+  </section>
+
+  <div class="mobile-actions" aria-label="快速操作">
+    <a href="#school-profiles" appScrollTo="school-profiles">学校目录</a>
+    <a routerLink="/about-sida/contact">免费咨询</a>
+  </div>
+</main>
