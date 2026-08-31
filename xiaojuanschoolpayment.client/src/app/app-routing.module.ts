@@ -280,6 +280,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/cebu/btes-english-academy',
+        loadComponent: () =>
+          import('./pages/philippines/btes-school/btes-school.component').then(
+            (m) => m.BtesSchoolComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/cella-uni-sparta-campus',
         loadComponent: () =>
           import('./pages/philippines/cella-uni-sparta-school/cella-uni-sparta-school.component').then(

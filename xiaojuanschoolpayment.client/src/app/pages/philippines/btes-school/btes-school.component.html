@@ -1,0 +1,45 @@
+<main class="btes-page">
+  <section class="btes-hero">
+    <div class="btes-hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
+      <p class="breadcrumb">菲律宾游学 / 宿务语言学校 / BTES</p>
+      <span class="eyebrow">BRAINY TUTELAGE ENGLISH SCHOOL</span>
+      <h1>菲律宾宿务 BTES 英语学校</h1>
+      <p class="lead">台资市区型语言学校，课程覆盖ESL、雅思、TOEIC、商务与亲子路线。适合希望兼顾一对一课量、中文沟通和整体预算的学生。</p>
+      <div class="hero-tags">
+        <span><mat-icon>location_on</mat-icon>Kasambagan · Cebu City</span>
+        <span><mat-icon>thumb_up</mat-icon>高性价比</span>
+        <span><mat-icon>family_restroom</mat-icon>亲子课程</span>
+      </div>
+      <div class="hero-actions">
+        <a class="primary" routerLink="/about-sida/contact">咨询BTES课程与费用<mat-icon>arrow_forward</mat-icon></a>
+        <a href="https://btesenglish.com/" target="_blank" rel="noopener">查看学校官网<mat-icon>open_in_new</mat-icon></a>
+      </div>
+    </div>
+    <figure>
+      <img src="https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg" alt="BTES宿务校区外观" />
+      <figcaption><strong>BTES Cebu Campus</strong><span>市区独立校区 · 学习与住宿集中管理</span></figcaption>
+    </figure>
+  </section>
+
+  <section class="btes-section">
+    <header><span>30秒看懂BTES</span><h2>适合预算清晰、重视课量的宿务游学</h2><p>先看学校定位，再决定具体课程。正式费用与名额需根据入学日期、课程和房型确认。</p></header>
+    <div class="feature-grid">
+      <article *ngFor="let item of features"><mat-icon>{{ item.icon }}</mat-icon><div><h3>{{ item.title }}</h3><p>{{ item.text }}</p></div></article>
+    </div>
+  </section>
+
+  <section class="btes-section course-section">
+    <header><span>COURSE OPTIONS</span><h2>主要课程方向</h2><p>BTES提供从轻量ESL到考试、商务及家庭课程的多种组合。</p></header>
+    <div class="course-grid">
+      <article *ngFor="let item of courses"><mat-icon>{{ item.icon }}</mat-icon><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
+    </div>
+  </section>
+
+  <section class="decision-panel">
+    <div><span>思达顾问建议</span><h2>BTES更适合这些学生</h2><ul><li>希望一对一课量扎实，同时控制整体预算</li><li>第一次去菲律宾，更看重中文沟通与市区便利</li><li>成人ESL、考试备考或亲子同行都需要可选方案</li></ul></div>
+    <aside><mat-icon>support_agent</mat-icon><h3>先确认课程和房型，再比较价格</h3><p>告诉顾问学习目标、周数、预算和住宿偏好，获取当前档期的正式方案。</p><a routerLink="/about-sida/contact">联系顾问获取BTES方案<mat-icon>arrow_forward</mat-icon></a></aside>
+  </section>
+
+  <section class="source-note"><mat-icon>info</mat-icon><p>学校定位与课程方向参考BTES学校公开资料；课程、费用、入学日与房型可能调整，请以学校当期确认和正式报价为准。</p></section>
+</main>

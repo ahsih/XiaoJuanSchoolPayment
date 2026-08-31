@@ -1,272 +1,397 @@
 <link rel="stylesheet" href="/assets/cebu-study-page.css" />
 <main class="cebu-page">
-  <section class="hero-section" aria-labelledby="cebu-page-title">
-    <div class="page-shell hero-layout">
+  <section class="hero">
+    <div class="page-shell hero-grid">
       <div class="hero-copy">
         <nav class="breadcrumb" aria-label="面包屑">
+          <a routerLink="/">首页</a>
+          <mat-icon>chevron_right</mat-icon>
           <a routerLink="/philippines-study/why-philippines">菲律宾游学</a>
           <mat-icon>chevron_right</mat-icon>
-          <span>宿务</span>
+          <span>宿务 Cebu</span>
         </nav>
 
-        <span class="eyebrow">CEBU STUDY GUIDE</span>
-        <h1 id="cebu-page-title">宿务英语游学</h1>
-        <p class="hero-lead">
-          学校很多不用一次看完。先确认学习目标、管理强度和住宿偏好，
-          再从合适的学校类型里做选择。
+        <p class="hero-kicker">
+          <mat-icon>wb_sunny</mat-icon>
+          菲律宾游学首选城市之一
         </p>
+        <h1>菲律宾 · 宿务 <em>Cebu</em></h1>
+        <h2>阳光海岛 × 优质学校 × 高性价比</h2>
+        <p class="hero-description">
+          宿务是菲律宾最受欢迎的英语游学城市之一，<br />
+          学校选择多，生活便利，学习与生活完美平衡。
+        </p>
+
+        <div class="benefit-chips" aria-label="宿务游学优势">
+          <span><mat-icon>apartment</mat-icon>学校选择多</span>
+          <span><mat-icon>local_cafe</mat-icon>生活便利</span>
+          <span><mat-icon>directions_bus</mat-icon>交通方便</span>
+          <span><mat-icon>groups</mat-icon>适合各类学生</span>
+        </div>
 
         <div class="hero-actions">
-          <a class="button button--primary" href="#school-types" appScrollTo="school-types">
-            先按目标选校
-            <mat-icon>arrow_downward</mat-icon>
+          <a class="primary-button" routerLink="/about-sida/contact">
+            <mat-icon>forum</mat-icon>
+            微信咨询选校
           </a>
-          <a class="button button--secondary" routerLink="/about-sida/contact">
-            免费获取选校建议
-            <mat-icon>arrow_forward</mat-icon>
+          <a class="secondary-button" href="#all-schools" appScrollTo="all-schools">
+            <mat-icon>play_circle</mat-icon>
+            查看全部学校
           </a>
         </div>
-
-        <p class="hero-note">
-          <mat-icon>verified</mat-icon>
-          已整理 {{ schoolProfiles.length }} 所宿务学校资料，课程与费用以学校当期回复为准
-        </p>
       </div>
 
-      <div class="hero-gallery" aria-label="宿务语言学校校园环境">
-        <figure class="hero-photo hero-photo--main">
-          <img src="/assets/cia/campus-pool.jpg" alt="宿务 CIA 语言学校泳池与校园" />
-          <figcaption>学习，也可以有舒适的生活节奏</figcaption>
-        </figure>
-        <figure class="hero-photo">
-          <img src="/assets/ev/campus-lawn.jpg" alt="宿务 EV 语言学校校园" />
-        </figure>
-        <figure class="hero-photo">
-          <img src="/assets/cpi/campus-exterior.jpg" alt="宿务 CPI 语言学校校园" />
-        </figure>
-      </div>
-    </div>
+      <div class="hero-visual" aria-label="宿务海岛与英语课堂">
+        <img
+          class="hero-sea"
+          src="/assets/philippines/cebu-study-hero.jpg"
+          alt="菲律宾宿务碧蓝海岸与城市景观"
+        />
+        <div
+          class="hero-class hero-class--study"
+          role="img"
+          aria-label="学生在明亮的学习空间自主学习"
+        ></div>
+        <div
+          class="hero-class hero-class--lesson"
+          role="img"
+          aria-label="英语老师与学生进行互动课堂"
+        ></div>
 
-    <div class="page-shell quick-facts" aria-label="宿务游学快速信息">
-      <div>
-        <mat-icon>record_voice_over</mat-icon>
-        <span><strong>主要课程</strong>口语、雅思、商务、亲子</span>
-      </div>
-      <div>
-        <mat-icon>tune</mat-icon>
-        <span><strong>管理方式</strong>自律、半斯巴达、斯巴达</span>
-      </div>
-      <div>
-        <mat-icon>apartment</mat-icon>
-        <span><strong>住宿选择</strong>校内宿舍、公寓、酒店型</span>
-      </div>
-      <div>
-        <mat-icon>flight_takeoff</mat-icon>
-        <span><strong>适合人群</strong>初次游学、短期、家庭同行</span>
+        <div class="hero-stats" aria-label="思达启航宿务服务数据">
+          <div><mat-icon>workspace_premium</mat-icon><strong>30+</strong><span>宿务学校资料</span></div>
+          <div><strong>98%</strong><span>学员满意度</span></div>
+          <div><strong>8年+</strong><span>菲律宾游学经验</span></div>
+          <div><strong>24h</strong><span>驻点服务支持</span></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <nav class="section-nav" aria-label="页面目录">
-    <div class="page-shell">
-      <a href="#quick-start" appScrollTo="quick-start">怎么开始</a>
-      <a href="#school-types" appScrollTo="school-types">按目标选校</a>
-      <a href="#school-profiles" appScrollTo="school-profiles">学校目录</a>
-      <a href="#city-compare" appScrollTo="city-compare">城市比较</a>
-    </div>
-  </nav>
+  <div class="page-shell dashboard-grid">
+    <section class="panel selection-panel" id="school-selection">
+      <header class="panel-heading">
+        <div>
+          <h2>按需求快速选校 <span>〰</span></h2>
+          <p>根据你的学习目标，快速找到合适的学校</p>
+        </div>
+      </header>
 
-  <section class="content-section page-shell" id="quick-start">
-    <div class="section-heading section-heading--center">
-      <span class="eyebrow">QUICK START</span>
-      <h2>先回答 3 个问题，选校会简单很多</h2>
-      <p>不用先记学校名字。把需求排好顺序，候选范围自然会缩小。</p>
-    </div>
-
-    <div class="steps-grid">
-      <article>
-        <span class="step-number">01</span>
-        <mat-icon>flag</mat-icon>
-        <h3>这次最想解决什么？</h3>
-        <p>口语开口、考试分数、商务沟通，还是孩子的英语体验。</p>
-      </article>
-      <article>
-        <span class="step-number">02</span>
-        <mat-icon>schedule</mat-icon>
-        <h3>需要多强的学习节奏？</h3>
-        <p>自律型更自由，半斯巴达兼顾生活，斯巴达适合集中冲刺。</p>
-      </article>
-      <article>
-        <span class="step-number">03</span>
-        <mat-icon>bed</mat-icon>
-        <h3>住宿和预算怎么取舍？</h3>
-        <p>房型、校区位置和餐食会直接影响总费用与日常体验。</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="content-section content-section--tint" id="school-types">
-    <div class="page-shell">
-      <div class="section-heading">
-        <span class="eyebrow">CHOOSE BY GOAL</span>
-        <h2>按学习目标，先选对学校类型</h2>
-        <p>这一步只做方向判断；选定类型后，再去比较具体课程、房型和费用。</p>
-      </div>
-
-      <div class="type-grid">
-        <article class="type-card" *ngFor="let type of schoolTypes; let i = index">
-          <div class="type-card__top">
-            <span class="type-icon">{{ i + 1 }}</span>
-            <span class="type-tag">{{ type.tag }}</span>
-          </div>
-          <h3>{{ type.title }}</h3>
-          <p>{{ type.text }}</p>
-          <a href="#school-profiles" appScrollTo="school-profiles">
-            查看相关学校
+      <div class="selection-grid">
+        <article
+          class="selection-card"
+          *ngFor="let group of selectionGroups"
+          [attr.data-tone]="group.tone"
+        >
+          <button
+            type="button"
+            class="selection-title selection-title-button"
+            (click)="showDirectoryCategory(group.category)"
+            [attr.aria-label]="'查看' + group.title + '学校列表'"
+          >
+            <span class="selection-icon"><mat-icon>{{ group.icon }}</mat-icon></span>
+            <h3>{{ group.title }}</h3>
+          </button>
+          <p>{{ group.subtitle }}</p>
+          <img [src]="group.image" [alt]="group.title + '宿务学校校园'" />
+          <ul>
+            <li *ngFor="let school of group.schools">
+              <mat-icon>check_circle</mat-icon>{{ school }}
+            </li>
+          </ul>
+          <button
+            type="button"
+            class="selection-category-link"
+            (click)="showDirectoryCategory(group.category)"
+          >
+            查看 {{ group.schools.length }} 所学校
             <mat-icon>arrow_forward</mat-icon>
-          </a>
+          </button>
         </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="content-section page-shell" id="school-profiles">
-    <div class="directory-heading">
-      <div class="section-heading">
-        <span class="eyebrow">SCHOOL DIRECTORY</span>
-        <h2>宿务语言学校目录</h2>
-        <p>
-          卡片默认只展示选校需要的关键信息；需要时再展开住宿、设施与报名提醒。
-        </p>
+    <section class="panel schools-panel" id="popular-schools">
+      <header class="panel-heading panel-heading--row">
+        <div>
+          <h2>宿务热门学校推荐</h2>
+          <p>课程特色、校园环境与管理模式各有侧重</p>
+        </div>
+        <a class="heading-link" href="#all-schools" appScrollTo="all-schools">
+          更多学校
+          <mat-icon>arrow_downward</mat-icon>
+        </a>
+      </header>
+
+      <div class="school-cards">
+        <article class="school-card" *ngFor="let school of featuredSchools">
+          <div class="school-image">
+            <img [src]="school.image" [alt]="school.name + '宿务校园'" />
+            <span [attr.data-tone]="school.tone">{{ school.badge }}</span>
+          </div>
+          <div class="school-content">
+            <h3>{{ school.name }}</h3>
+            <p>{{ school.description }}</p>
+            <div class="school-tags">
+              <span *ngFor="let tag of school.tags">{{ tag }}</span>
+            </div>
+            <a [routerLink]="school.route">
+              查看详情
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </article>
       </div>
-      <span class="school-count">共 {{ schoolProfiles.length }} 所</span>
-    </div>
 
-    <div class="school-grid">
-      <article class="school-card" *ngFor="let school of schoolProfiles">
-        <header class="school-card__header">
-          <span class="style-tag">{{ school.style }}</span>
-          <h3>{{ school.name }}</h3>
-          <p class="school-location">
-            <mat-icon>location_on</mat-icon>
-            {{ school.location }}
-          </p>
+      <a class="school-directory" href="#all-schools" appScrollTo="all-schools">
+        <span>更多宿务学校</span>
+        <div aria-hidden="true">
+          <i>B'Cebu</i>
+          <i>I.BREEZE</i>
+          <i>Cebu Blue Ocean</i>
+          <i>Philinter</i>
+          <i>CELLA Premium</i>
+          <i>QQEnglish</i>
+        </div>
+        <strong>查看全部 {{ allSchools.length }} 所 <mat-icon>arrow_forward</mat-icon></strong>
+      </a>
+    </section>
+
+    <section class="panel lifestyle-panel">
+      <header class="panel-heading">
+        <div>
+          <h2>在宿务，学习与生活一样精彩</h2>
+          <p>高效学习，也享受海岛城市的轻松节奏</p>
+        </div>
+      </header>
+
+      <div class="lifestyle-grid">
+        <article *ngFor="let item of lifestyleItems">
+          <img [src]="item.image" [alt]="item.title" />
+          <div>
+            <h3><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel service-panel" id="service-guarantees">
+      <header class="service-heading">
+        <div>
+          <span class="service-eyebrow">SIDA SERVICE GUARANTEE</span>
+          <h2>为什么学生更放心找思达启航报名？</h2>
+          <p>不是一句“全程服务”，而是把价格、合同、国内沟通和海外支持做成看得见的保障。</p>
+        </div>
+        <a routerLink="/about-sida/contact">咨询顾问并获取方案 <mat-icon>arrow_forward</mat-icon></a>
+      </header>
+
+      <aside class="service-gratitude" aria-label="致每一位信任思达启航的学生">
+        <figure class="service-gratitude-photo">
+          <img
+            src="/assets/cia/sida-why-main-branded.jpg"
+            alt="思达启航顾问与学生面对面沟通留学方案"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            <small>面对面认真沟通</small>
+            <strong>每一份方案，都从听懂你的目标和顾虑开始</strong>
+          </figcaption>
+        </figure>
+
+        <div class="service-gratitude-content">
+          <div class="service-gratitude-heading">
+            <span><mat-icon>favorite</mat-icon></span>
+            <div>
+              <small>我们的初心 · 极致利他，成人达己</small>
+              <strong>感恩每一份信任，我们会认真接住你的托付</strong>
+            </div>
+          </div>
+          <blockquote>我们始终相信：只有学生真正选对学校、学有所获、走得更远，思达启航才能走得长久。谢谢你把这段重要的旅程交给我们，我们会把每件该做的事认真做好，也让关心你的人更安心。</blockquote>
+          <p>我们不会用漂亮话代替服务：该说明的费用和风险提前说清楚，该落实的合同、材料与境外衔接逐项落实；报名之后，也会继续对你的学习和生活负责。</p>
+          <div class="service-gratitude-values" aria-label="思达启航服务态度">
+            <span><mat-icon>record_voice_over</mat-icon>先认真听你说</span>
+            <span><mat-icon>handshake</mat-icon>答应你的认真做到</span>
+            <span><mat-icon>volunteer_activism</mat-icon>报名之后继续负责</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="service-chapter" aria-labelledby="registration-guarantee-title">
+        <header class="service-chapter-heading">
+          <span class="service-chapter-mark"><b>01</b><i>报名保障</i></span>
+          <div>
+            <h3 id="registration-guarantee-title">承诺写清楚，过程有人负责</h3>
+            <p>价格、合同和境内外支持，都落实为可核实的服务内容。</p>
+          </div>
         </header>
 
-        <div class="school-card__body">
-          <strong *ngIf="school.startingPrice" class="school-price">
-            <small>参考起价</small>
-            {{ school.startingPrice }}
-          </strong>
+        <div class="trust-highlights" aria-label="思达启航核心服务保障">
+          <article *ngFor="let item of trustHighlights">
+            <div class="service-card-visual" [class.service-card-visual--icon-only]="!item.image">
+              <img *ngIf="item.image" [src]="item.image" [alt]="item.alt || item.title" loading="lazy" decoding="async" />
+              <span><mat-icon>{{ item.icon }}</mat-icon></span>
+            </div>
+            <div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.text }}</p>
+            </div>
+          </article>
+        </div>
+      </section>
 
-          <div class="course-tags" aria-label="主要课程">
-            <span *ngFor="let course of school.courses.slice(0, 3)">{{ course }}</span>
-            <span *ngIf="school.courses.length > 3" class="course-more">
-              +{{ school.courses.length - 3 }}
-            </span>
+      <section class="service-chapter" aria-labelledby="full-service-title">
+        <header class="service-chapter-heading">
+          <span class="service-chapter-mark"><b>02</b><i>全流程服务</i></span>
+          <div>
+            <h3 id="full-service-title">从选校到在读，重要节点不掉线</h3>
+            <p>把容易遗漏的环节逐项拆开，让每一步都清楚、有人跟进。</p>
           </div>
+        </header>
 
-          <p class="best-for" [attr.title]="school.bestFor">
-            <strong>更适合</strong>
-            {{ school.bestFor }}
-          </p>
+        <div class="service-grid">
+          <article *ngFor="let service of services">
+            <div class="service-card-visual" [class.service-card-visual--icon-only]="!service.image">
+              <img *ngIf="service.image" [src]="service.image" [alt]="service.alt || service.title" loading="lazy" decoding="async" />
+              <span><mat-icon>{{ service.icon }}</mat-icon></span>
+            </div>
+            <div>
+              <h3>{{ service.title }}</h3>
+              <p>{{ service.text }}</p>
+            </div>
+          </article>
+        </div>
+      </section>
 
-          <details>
-            <summary>
-              展开住宿与报名信息
-              <mat-icon>expand_more</mat-icon>
-            </summary>
-            <dl>
-              <div>
-                <dt>适合人群</dt>
-                <dd>{{ school.bestFor }}</dd>
-              </div>
-              <div>
-                <dt>住宿</dt>
-                <dd>{{ school.accommodation }}</dd>
-              </div>
-              <div>
-                <dt>设施</dt>
-                <dd>{{ school.facilities }}</dd>
-              </div>
-              <div>
-                <dt>报名提醒</dt>
-                <dd>{{ school.note }}</dd>
-              </div>
-            </dl>
-          </details>
+      <section class="service-chapter service-chapter--alumni" aria-labelledby="alumni-benefits-title">
+        <header class="service-chapter-heading">
+          <span class="service-chapter-mark"><b>03</b><i>长期陪伴</i></span>
+          <div>
+            <h3 id="alumni-benefits-title">一次报名，不是服务的终点</h3>
+            <p>从宿务学习结束，到继续线上学英语、欧洲语言学习或爱尔兰升学，老学员都有可延续的支持。</p>
+          </div>
+          <em><mat-icon>favorite</mat-icon>老学员持续权益</em>
+        </header>
+
+        <div class="alumni-benefit-grid">
+          <article *ngFor="let item of alumniBenefits; let i = index">
+            <b>0{{ i + 1 }}</b>
+            <div class="service-card-visual" [class.service-card-visual--icon-only]="!item.image">
+              <img *ngIf="item.image" [src]="item.image" [alt]="item.alt || item.title" loading="lazy" decoding="async" />
+              <span><mat-icon>{{ item.icon }}</mat-icon></span>
+            </div>
+            <div>
+              <h4>{{ item.title }}</h4>
+              <p>{{ item.text }}</p>
+            </div>
+          </article>
         </div>
 
-        <a *ngIf="school.route" class="school-action" [routerLink]="school.route">
-          查看学校详情
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
-      </article>
-    </div>
-  </section>
+        <small><mat-icon>info</mat-icon>具体免注册费、优惠及奖学金适用条件，以申请时的学校政策与书面确认为准。</small>
+      </section>
+    </section>
 
-  <section class="content-section content-section--dark" id="city-compare">
-    <div class="page-shell compare-layout">
-      <div class="compare-copy">
-        <span class="eyebrow eyebrow--light">CEBU OR BAGUIO</span>
-        <h2>宿务和碧瑶，差别主要在学习节奏</h2>
-        <p>
-          宿务选择多、生活方便；碧瑶学习氛围更集中。没有绝对更好的城市，
-          只有更符合这次目标的选择。
-        </p>
-        <a class="text-link" routerLink="/philippines-study/baguio">
-          了解碧瑶游学
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
-      </div>
-
-      <div class="compare-table" role="table" aria-label="宿务与碧瑶游学比较">
-        <div class="compare-row compare-row--head" role="row">
-          <span role="columnheader">比较项目</span>
-          <span role="columnheader">宿务</span>
-          <span role="columnheader">碧瑶</span>
-        </div>
-        <div class="compare-row" role="row" *ngFor="let row of compareRows">
-          <strong role="cell">{{ row.label }}</strong>
-          <span role="cell">{{ row.cebu }}</span>
-          <span role="cell">{{ row.baguio }}</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="content-section page-shell">
-    <div class="section-heading section-heading--center">
-      <span class="eyebrow">BEFORE YOU APPLY</span>
-      <h2>最后核对这 6 项</h2>
-      <p>总费用和入住体验，往往取决于这些容易被忽略的细节。</p>
-    </div>
-
-    <div class="check-grid">
-      <article *ngFor="let point of decisionPoints; let i = index">
-        <span>{{ i + 1 }}</span>
+    <section class="panel all-schools-panel" id="all-schools">
+      <header class="all-schools-heading">
         <div>
-          <h3>{{ point.label }}</h3>
-          <p>{{ point.text }}</p>
+          <span>CEBU SCHOOL DIRECTORY</span>
+          <h2>{{ directoryHeading }}</h2>
+          <p>{{ directoryDescription }}</p>
         </div>
-      </article>
-    </div>
-  </section>
+        <a routerLink="/about-sida/contact">
+          不确定怎么选？免费匹配
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </header>
 
-  <section class="page-shell final-cta">
-    <div>
-      <span class="eyebrow eyebrow--light">FREE SCHOOL MATCHING</span>
-      <h2>不想自己比较几十所学校？</h2>
-      <p>告诉我们学习目标、计划周数、预算和房型偏好，先帮你缩小到 3–5 所合适学校。</p>
-    </div>
-    <a class="button button--light" routerLink="/about-sida/contact">
-      免费获取选校方案
-      <mat-icon>arrow_forward</mat-icon>
-    </a>
-  </section>
+      <div class="directory-toolbar" aria-label="宿务学校筛选">
+        <div class="directory-filters">
+          <button
+            type="button"
+            *ngFor="let filter of directoryFilters"
+            [class.active]="activeDirectoryFilter === filter.label"
+            (click)="activeDirectoryFilter = filter.label"
+          >
+            <mat-icon>{{ filter.icon }}</mat-icon>
+            {{ filter.label }}
+            <span>{{ directoryFilterCount(filter.label) }}</span>
+          </button>
+        </div>
+        <p>当前显示 <strong>{{ visibleSchools.length }}</strong> 所学校</p>
+      </div>
 
-  <div class="mobile-actions" aria-label="快速操作">
-    <a href="#school-profiles" appScrollTo="school-profiles">学校目录</a>
-    <a routerLink="/about-sida/contact">免费咨询</a>
+      <div class="all-schools-grid">
+        <a
+          class="directory-school-card"
+          *ngFor="let school of visibleSchools"
+          [routerLink]="school.route"
+        >
+          <div class="directory-school-image">
+            <img
+              [src]="school.image"
+              [alt]="school.name + '学校校园图片'"
+              [style.object-position]="school.imagePosition || 'center'"
+              loading="lazy"
+              (error)="handleSchoolImageError($event)"
+            />
+            <span>{{ school.tag }}</span>
+          </div>
+          <div class="directory-school-content">
+            <p class="directory-school-location">
+              <mat-icon>location_on</mat-icon>
+              {{ school.location }}
+            </p>
+            <h3>{{ school.name }}</h3>
+            <p class="directory-school-summary">{{ school.summary }}</p>
+            <div class="directory-school-tags" aria-label="主要课程">
+              <span class="directory-course-label"><mat-icon>menu_book</mat-icon>课程</span>
+              <span *ngFor="let item of school.highlights">{{ item }}</span>
+            </div>
+            <strong>
+              {{ school.linkLabel || '查看学校详情' }}
+              <mat-icon>arrow_forward</mat-icon>
+            </strong>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel contact-panel">
+      <header class="panel-heading panel-heading--row">
+        <div>
+          <h2>联系思达顾问 <span>〰</span></h2>
+          <p>扫码添加微信，按你的游学方向对接合适顾问</p>
+        </div>
+        <a class="heading-link" routerLink="/about-sida/contact">
+          查看完整联系方式
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </header>
+
+      <div class="advisor-grid">
+        <article class="advisor-card" *ngFor="let advisor of advisors">
+          <img class="advisor-avatar" [src]="advisor.avatar" [alt]="advisor.name + '顾问头像'" />
+          <div class="advisor-info">
+            <span>{{ advisor.focus }}</span>
+            <h3>{{ advisor.name }}</h3>
+            <p>{{ advisor.text }}</p>
+            <a [href]="'tel:' + advisor.phone">
+              <mat-icon>phone_in_talk</mat-icon>
+              {{ advisor.phoneDisplay }}
+            </a>
+          </div>
+          <figure>
+            <img [src]="advisor.qr" [alt]="advisor.name + '顾问微信二维码'" />
+            <figcaption>扫码加微信</figcaption>
+          </figure>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="mobile-actions" aria-label="移动端快捷操作">
+    <a href="#all-schools" appScrollTo="all-schools">查看学校</a>
+    <a routerLink="/about-sida/contact"><mat-icon>forum</mat-icon>微信咨询</a>
   </div>
 </main>

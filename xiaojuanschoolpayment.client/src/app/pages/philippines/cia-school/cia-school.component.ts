@@ -19,6 +19,7 @@ import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
@@ -88,6 +89,14 @@ interface RoomFee {
 interface LocalFee {
   item: string;
   amount: string;
+  note: string;
+}
+
+interface LocalFeeEstimate {
+  item: string;
+  unitLabel: string;
+  quantity: number;
+  total: number;
   note: string;
 }
 
@@ -168,6 +177,7 @@ export class CiaSchoolComponent implements OnInit {
   @ViewChild('gallerySlider') private gallerySlider?: ElementRef<HTMLElement>;
 
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
   private readonly shortTermPriceRatios: Readonly<Record<number, number>> = {
     1: 0.4,
@@ -183,6 +193,10 @@ export class CiaSchoolComponent implements OnInit {
     lemonQr: '/assets/contact/lemon-wechat-qr.png',
     peninAvatar: '/assets/contact/penin-avatar.jpg',
     peninQr: '/assets/contact/penin-wechat-qr.png',
+    lisaAvatar: '/assets/contact/lisa-avatar-cartoon.png',
+    lisaQr: '/assets/contact/lisa-wechat-qr.png',
+    irisAvatar: '/assets/contact/iris-avatar-cartoon.png',
+    irisQr: '/assets/contact/iris-wechat-qr.png',
   };
   private readonly courseFeeOrder = [
     'regular-esl',
@@ -325,8 +339,11 @@ export class CiaSchoolComponent implements OnInit {
   registrationFee = 100;
   readonly discount = 0.95;
   seasonalFeePerWeek = 40;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
+  usdToCny = 7.2;
+  phpPerCny = 9;
+  exchangeRateDate = '';
+  usingLiveExchangeRates = false;
+  readonly weekOptions = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
 
   selectedCourseId = 'regular-esl';
   selectedRoomId = 'd4';
@@ -864,17 +881,17 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 8,000', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP E-card', amount: 'PHP 4,000', note: '以学校现场收费为准' },
-    { item: '管理费', amount: 'PHP 4,000', note: '4周参考' },
-    { item: '水电费', amount: 'PHP 2,000', note: '按周期或实际使用调整' },
-    { item: '教材费', amount: 'PHP 2,000', note: '按课程和实际购买教材调整' },
-    { item: '学生证', amount: 'PHP 200', note: '一次性费用参考' },
-    { item: '押金', amount: 'PHP 2,500', note: '退房检查后按学校规则退还' },
-    { item: '接机费', amount: 'PHP 1,000', note: '宿务机场接机参考' },
+    { item: 'SSP', amount: '8,000比索', note: '特别学习许可，通常到校支付' },
+    { item: 'SSP E-card', amount: '4,000比索', note: '以学校现场收费为准' },
+    { item: '管理费', amount: '4,000比索', note: '4周参考' },
+    { item: '水电费', amount: '2,000比索', note: '按周期或实际使用调整' },
+    { item: '教材费', amount: '2,000比索', note: '按课程和实际购买教材调整' },
+    { item: '学生证', amount: '200比索', note: '一次性费用参考' },
+    { item: '押金', amount: '2,500比索', note: '退房检查后按学校规则退还' },
+    { item: '接机费', amount: '1,000比索', note: '宿务机场接机参考' },
     {
       item: 'ACR I-card',
-      amount: 'PHP 4,500',
+      amount: '4,500比索',
       note: '长期学习或延签时可能需要',
     },
   ];
@@ -956,7 +973,7 @@ export class CiaSchoolComponent implements OnInit {
         '适合。Regular ESL 可以从基础开始，但如果目标是短期快速开口，建议让顾问比较 Intensive 或 Power Intensive 是否更合适。',
     },
     {
-      question: '页面上的 USD 1,667.5 是全部费用吗？',
+      question: '页面上的1,667.5美元是全部费用吗？',
       answer:
         '不是。它是默认4周 Regular ESL + 四人间 D-4 的前期支付参考，不包含到校后通常需要支付的 SSP、SSP E-card、管理费、水电费、教材费、学生证、押金等当地费用。',
     },
@@ -1234,42 +1251,6 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly feeStructureCards = [
-    {
-      icon: 'account_balance_wallet',
-      title: '前期支付费用（到校前）',
-      rows: [
-        { label: '注册费', value: 'USD 100' },
-        { label: '课程费（含折扣）', value: 'USD 855' },
-        { label: '住宿费（含折扣）', value: 'USD 712.5' },
-        { label: '旺季附加费', value: 'USD 160' },
-      ],
-      note: '合计约 USD 1,827.5',
-    },
-    {
-      icon: 'celebration',
-      title: '到校支付学杂费（到校后）',
-      rows: [
-        { label: 'SSP 特殊学习许可证', value: 'PHP 8,000' },
-        { label: 'SSP E-card', value: 'PHP 4,500' },
-        { label: '水电费（预估）', value: 'PHP 3,000' },
-        { label: '教材费（预估）', value: 'PHP 2,000' },
-      ],
-      note: '预计人民币 2,500+',
-    },
-    {
-      icon: 'receipt_long',
-      title: '可能产生费用（按需支付）',
-      rows: [
-        { label: 'ACR I-card 外国人身份证', value: 'PHP 4,500' },
-        { label: '签证延期（按月）', value: 'PHP 5,130+' },
-        { label: '换机票（周日接机）', value: 'PHP 1,000' },
-        { label: '额外考试费', value: 'USD 250' },
-      ],
-      note: '按实际发生金额支付',
-    },
-  ];
-
   readonly lifeCards = [
     {
       icon: 'home',
@@ -1470,8 +1451,25 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadExchangeRates();
     this.loadPricingFromDatabase();
     this.loadGalleryFromDatabase();
+  }
+
+  private loadExchangeRates(): void {
+    this.exchangeRateService
+      .getLatestCnyRates()
+      .pipe(catchError(() => EMPTY))
+      .subscribe((rates) => {
+        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) {
+          return;
+        }
+
+        this.usdToCny = rates.usdToCny;
+        this.phpPerCny = rates.phpPerCny;
+        this.exchangeRateDate = rates.date;
+        this.usingLiveExchangeRates = true;
+      });
   }
 
   private loadPricingFromDatabase(): void {
@@ -1690,7 +1688,7 @@ export class CiaSchoolComponent implements OnInit {
     }
 
     const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
+      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === '比索')
       .map((fee) => ({
         item: fee.name,
         amount: this.formatCurrencyAmount(fee),
@@ -1813,38 +1811,212 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
-  get isPeakSeason(): boolean {
-    const startDate = this.parseDate(this.selectedStartDate);
-
-    return [
+  get peakSeasonWeeks(): number {
+    const studyStart = this.parseDate(this.selectedStartDate);
+    const peakRanges = [
       ['2026-06-14', '2026-08-08'],
       ['2027-01-17', '2027-02-14'],
-    ].some(
-      ([start, end]) =>
-        startDate >= this.parseDate(start) && startDate <= this.parseDate(end),
-    );
+    ] as const;
+
+    return Array.from({ length: this.selectedWeeks }, (_, index) => {
+      const weekStart = this.addDays(studyStart, index * 7);
+      const weekEnd = this.addDays(weekStart, 6);
+
+      return peakRanges.some(([start, end]) =>
+        this.dateRangesOverlap(
+          weekStart,
+          weekEnd,
+          this.parseDate(start),
+          this.parseDate(end),
+        ),
+      );
+    }).filter(Boolean).length;
+  }
+
+  get isPeakSeason(): boolean {
+    return this.peakSeasonWeeks > 0;
   }
 
   get seasonalSurcharge(): number {
-    return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0;
+    return this.peakSeasonWeeks * this.seasonalFeePerWeek;
+  }
+
+  get isChristmasPromotionEligible(): boolean {
+    const studyStart = this.parseDate(this.selectedStartDate);
+    const studyEnd = this.addDays(studyStart, this.selectedWeeks * 7 - 1);
+
+    return (
+      studyStart <= this.parseDate('2026-12-20') &&
+      studyEnd >= this.parseDate('2027-01-02')
+    );
+  }
+
+  get payableRegistrationFee(): number {
+    return this.isChristmasPromotionEligible ? 0 : this.registrationFee;
+  }
+
+  get sidaDiscountAmount(): number {
+    return (
+      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
+      (1 - this.discount)
+    );
+  }
+
+  get christmasDiscountAmount(): number {
+    return this.isChristmasPromotionEligible ? 200 : 0;
+  }
+
+  get totalDiscountAmount(): number {
+    return (
+      this.sidaDiscountAmount +
+      this.christmasDiscountAmount +
+      (this.isChristmasPromotionEligible ? this.registrationFee : 0)
+    );
   }
 
   get quoteUsd(): number {
-    return (
-      this.registrationFee +
-      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
-        this.discount +
-      this.seasonalSurcharge
+    return Math.max(
+      0,
+      this.payableRegistrationFee +
+        this.tuitionForSelectedWeeks +
+        this.roomFeeForSelectedWeeks +
+        this.seasonalSurcharge -
+        this.sidaDiscountAmount -
+        this.christmasDiscountAmount,
     );
   }
 
   get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)} 起`;
+    return `${this.formatUsd(this.quoteUsd)} 美元起`;
   }
 
   get quoteCnyText(): string {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
+  }
+
+  get exchangeRateDateText(): string {
+    if (!this.exchangeRateDate) {
+      return '备用参考值';
+    }
+
+    return this.exchangeRateDate.replace(/-/g, '/');
+  }
+
+  get exchangeRateSummary(): string {
+    const source = this.usingLiveExchangeRates
+      ? `最新网络参考汇率 · ${this.exchangeRateDateText}`
+      : '网络汇率加载失败，暂用备用参考值';
+
+    return `人民币金额按${source.includes('最新') ? '实时汇率' : '备用汇率'}预估，最终以支付当日汇率为准`;
+  }
+
+  get estimatedLocalFees(): LocalFeeEstimate[] {
+    const fourWeekCycles = this.selectedWeeks / 4;
+    const needsLongStayDocuments = this.selectedWeeks >= 8;
+    const visaExtensionCount = needsLongStayDocuments
+      ? Math.max(1, Math.ceil((this.selectedWeeks - 8) / 4))
+      : 0;
+    const textbookSets = Math.ceil(this.selectedWeeks / 8);
+
+    return [
+      {
+        item: 'SSP特殊学习许可证',
+        unitLabel: '₱8,000 / 次',
+        quantity: 1,
+        total: 8000,
+        note: '移民局收取，一次办理通常6个月有效；首次只报短期课程后续费或换校时，可能需要重新办理。',
+      },
+      {
+        item: 'SSP-E Card',
+        unitLabel: '₱4,500 / 次',
+        quantity: 1,
+        total: 4500,
+        note: '入学时与SSP同时办理，按一次性费用估算。',
+      },
+      {
+        item: 'ACR-I Card 外国人身份证',
+        unitLabel: '₱4,500 / 次',
+        quantity: needsLongStayDocuments ? 1 : 0,
+        total: needsLongStayDocuments ? 4500 : 0,
+        note: '30天签证学习超过4周需办理；59天签证超过8周需办理。一次有效1年；换校请向原校取卡，否则可能重复缴费。',
+      },
+      {
+        item: '管理费',
+        unitLabel: '₱4,000 / 4周',
+        quantity: fourWeekCycles,
+        total: 4000 * fourWeekCycles,
+        note: '校内教学楼及其他设施维护费，按学习周数比例叠加。',
+      },
+      {
+        item: '电费',
+        unitLabel: '₱2,000 / 4周',
+        quantity: fourWeekCycles,
+        total: 2000 * fourWeekCycles,
+        note: '按基础用电量估算；超过基础用电量时，学校可能额外收费。',
+      },
+      {
+        item: '水费',
+        unitLabel: '₱1,000 / 4周',
+        quantity: fourWeekCycles,
+        total: 1000 * fourWeekCycles,
+        note: '按基础用水量估算；超过基础用水量时，学校可能额外收费。',
+      },
+      {
+        item: '签证续签',
+        unitLabel: '₱5,130 / 次',
+        quantity: visaExtensionCount,
+        total: 5130 * visaExtensionCount,
+        note: '暂按8至12周续签1次、16周续签2次，之后每增加4周多1次估算；每次费用可能不同。',
+      },
+      {
+        item: '教材费',
+        unitLabel: '₱2,000 / 套',
+        quantity: textbookSets,
+        total: 2000 * textbookSets,
+        note: '按一套教材预估使用8周计算，实际以课程和学校发放教材为准。',
+      },
+      {
+        item: '学生证',
+        unitLabel: '₱200 / 次',
+        quantity: 1,
+        total: 200,
+        note: '一次性费用。',
+      },
+    ];
+  }
+
+  readonly excludedLocalFees: LocalFeeEstimate[] = [
+    {
+      item: '宿务马克坦机场周日接机',
+      unitLabel: '₱1,000 / 次',
+      quantity: 0,
+      total: 0,
+      note: '可自由选择，也可自行打车；不计入学杂费合计。',
+    },
+    {
+      item: '房间押金',
+      unitLabel: '₱2,500 / 次',
+      quantity: 1,
+      total: 2500,
+      note: '无损坏及其他扣费时毕业可退；不计入学杂费合计。',
+    },
+  ];
+
+  get estimatedLocalFeeTotal(): number {
+    return this.estimatedLocalFees.reduce((total, fee) => total + fee.total, 0);
+  }
+
+  get estimatedLocalFeeCny(): number {
+    return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny);
+  }
+
+  formatPhp(value: number): string {
+    return `₱${Math.round(value).toLocaleString('en-US')}`;
+  }
+
+  formatFeeQuantity(value: number): string {
+    return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
   }
 
   get discountText(): string {
@@ -1860,80 +2032,112 @@ export class CiaSchoolComponent implements OnInit {
 
   get quoteImageData(): QuoteImageCardData {
     const now = new Date();
-    const quoteMonth = `${now.getFullYear()}年${now.getMonth() + 1}月`;
+    const validUntil = this.addDays(now, 30);
+    const formatChineseDate = (date: Date) =>
+      `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+    const quoteDate = formatChineseDate(now);
     const quoteCnyAmount =
       Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    const discountUsd =
-      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
-      (1 - this.discount);
-    const roomCapacityMatch =
-      this.selectedRoom.name.match(/([1-9])\s*人/) ??
-      this.selectedRoom.id.match(/(\d)/);
-    const roomCapacity = roomCapacityMatch?.[1]
-      ? `${roomCapacityMatch[1]}人`
-      : '按房型确认';
     const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
 
     return {
+      layout: 'cia-detailed',
       fileName: `CIA-${this.selectedWeeks}周报价单-${fileDate}.png`,
       logoSrc: this.quoteImageAssets.logo,
       heroSrc: this.quoteImageAssets.hero,
       schoolCode: 'CIA',
       title: `${this.selectedWeeks}周菲律宾游学`,
       subtitle: 'Cebu International Academy / 宿务麦克坦岛 / 半斯巴达英语学校',
-      quoteDateText: quoteMonth,
-      updatedAtText: quoteMonth,
+      quoteDateText: quoteDate,
+      updatedAtText: quoteDate,
+      quoteNumber: `SQ-CIA-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-001`,
+      validUntilText: formatChineseDate(validUntil),
       studentItems: [
-        { icon: '周', label: '学习周数', value: `${this.selectedWeeks}周` },
         {
           icon: '日',
           label: '入学日期',
           value: this.selectedStartDate.replace(/-/g, '/'),
         },
-        { icon: '课', label: '课程', value: this.selectedCourse.name },
-        { icon: '排', label: '课程安排', value: this.selectedCourse.schedule },
-        { icon: '房', label: '房型', value: this.selectedRoom.name },
-        { icon: '人', label: '入住人数', value: roomCapacity },
       ],
+      paymentSectionTitle: '学校费用明细（到校前支付给学校的费用）',
       paymentItems: [
         {
           icon: '注',
           label: '注册费',
-          amount: `USD ${this.formatUsd(this.registrationFee)}`,
+          amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`,
+          note: this.isChristmasPromotionEligible
+            ? `圣诞新年优惠已免除${this.registrationFee}美元`
+            : '新生收取，具体以学校确认为准',
         },
         {
           icon: '课',
-          label: `课程费（${this.selectedCourse.name} ${this.selectedWeeks}周）`,
-          amount: `USD ${this.formatUsd(this.tuitionForSelectedWeeks)}`,
+          label: '课程费',
+          amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`,
+          note: `${this.selectedCourse.name}；${this.selectedCourse.schedule}`,
         },
         {
           icon: '宿',
-          label: `住宿费（${this.selectedRoom.name} ${this.selectedWeeks}周）`,
-          amount: `USD ${this.formatUsd(this.roomFeeForSelectedWeeks)}`,
+          label: '住宿费',
+          amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`,
+          note: this.selectedRoom.name,
         },
         {
           icon: '旺',
           label: '旺季附加费',
-          note: `USD ${this.formatUsd(this.seasonalFeePerWeek)}/周 x ${this.selectedWeeks}周`,
-          amount: `USD ${this.formatUsd(this.seasonalSurcharge)}`,
+          note: `${this.formatUsd(this.seasonalFeePerWeek)}美元/周 × 覆盖${this.peakSeasonWeeks}周；2026/6/14–8/8、2027/1/17–2/14`,
+          amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`,
         },
         {
           icon: '折',
-          label: '思达折扣',
-          note: `(${this.discountText}，仅课程费和住宿费)`,
-          amount: `- USD ${this.formatUsd(discountUsd)}`,
+          label: `思达启航优惠（${this.discountText}）`,
+          note: `课程费 + 住宿费按95折，已优惠${this.formatUsd(this.sidaDiscountAmount)}美元`,
+          amount: `- ${this.formatUsd(this.sidaDiscountAmount)} 美元`,
           accent: true,
         },
+        {
+          icon: '惠',
+          label: '圣诞新年优惠',
+          note: '须完整覆盖2026/12/20–2027/1/2；符合时减200美元且免注册费',
+          amount: this.isChristmasPromotionEligible ? '- 200 美元' : '未适用',
+          accent: this.isChristmasPromotionEligible,
+        },
       ],
-      totalLabel: '前期支付参考合计',
-      totalUsd: `USD ${this.formatUsd(this.quoteUsd)}`,
-      totalCny: `约 RMB ${quoteCnyAmount.toLocaleString('zh-CN')}`,
-      totalNote: '（按参考汇率估算）',
-      localFeeAmount: '人民币 2500+',
+      totalLabel: '思达启航折后价（最终支付给学校的金额）',
+      totalUsd: `${this.formatUsd(this.quoteUsd)} 美元`,
+      totalCny: `人民币预计金额：约 ${quoteCnyAmount.toLocaleString('zh-CN')} 元`,
+      totalNote: '按实时汇率预估，最终以支付当日汇率为准',
+      localFeeTitle: `到校后${this.selectedWeeks}周学杂费明细参考（学校及政府相关部门收取）`,
+      localFeeAmount: this.formatPhp(this.estimatedLocalFeeTotal),
       localFeeDescription:
-        '包括 SSP、SSP E-card、水电费、管理费、教材费、学生证、房间押金等。',
-      localFeeNote: '实际以到校后学校收取为准。',
-      note: '本报价为参考估算，最终以 CIA 学校最新报价、空房、优惠及思达启航顾问确认为准。',
+        `约人民币${this.estimatedLocalFeeCny.toLocaleString('zh-CN')}元；含SSP、证件、管理、水电、签证及教材等预估。`,
+      localFeeNote: '不含接机及可退房间押金，实际以到校缴费为准。',
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({
+        label: fee.item,
+        unit: fee.unitLabel,
+        quantity: this.formatFeeQuantity(fee.quantity),
+        amount: this.formatPhp(fee.total),
+        note: fee.note,
+      })),
+      localFeeCny: `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`,
+      exchangeRateText: '按实时汇率预估',
+      optionalFeeItems: this.excludedLocalFees.map((fee) => ({
+        label: fee.item,
+        amount: fee.unitLabel,
+        note: fee.note,
+      })),
+      benefitItems: [
+        { title: '0中介费', text: '学校合作渠道价，费用透明无隐瞒' },
+        { title: '同条件保价', text: '相同学校、课程与房型可协助核价' },
+        { title: '费用提前说明', text: '学费、学杂费与优惠逐项列明' },
+        { title: '全程报名协助', text: '选校、报名、付款及行前指导' },
+        { title: '学习期间售后', text: '课程与住宿问题持续协助沟通' },
+      ],
+      importantNotes: [
+        '人民币金额按实时汇率预估，最终以支付当日汇率为准。',
+        '学杂费为到校后比索现金预估，实际以学校及相关部门收费为准。',
+        '本报价最终以 CIA 最新价格、空房、优惠及思达启航顾问确认为准。',
+      ],
+      note: '人民币金额为网络参考汇率估算，实际以支付当日汇率为准；学杂费为到校后比索现金预估；本报价最终以 CIA 最新价格、空房、优惠及思达启航顾问确认为准。',
       contact: {
         name: 'Jenny',
         phone: '132 4982 7686',
@@ -1969,6 +2173,24 @@ export class CiaSchoolComponent implements OnInit {
           avatarSrc: this.quoteImageAssets.peninAvatar,
           qrSrc: this.quoteImageAssets.peninQr,
           buttonLabel: '咨询游学方案',
+        },
+        {
+          title: '菲律宾与马来西亚',
+          name: 'LISA',
+          description: '菲律宾游学、马来西亚游学规划',
+          phone: '178 5860 5668',
+          avatarSrc: this.quoteImageAssets.lisaAvatar,
+          qrSrc: this.quoteImageAssets.lisaQr,
+          buttonLabel: '咨询菲律宾与马来西亚',
+        },
+        {
+          title: '菲律宾与马来西亚',
+          name: 'IRIS',
+          description: '菲律宾游学、马来西亚游学规划',
+          phone: '156 2285 9185',
+          avatarSrc: this.quoteImageAssets.irisAvatar,
+          qrSrc: this.quoteImageAssets.irisQr,
+          buttonLabel: '咨询菲律宾与马来西亚',
         },
       ],
     };
@@ -2013,10 +2235,16 @@ export class CiaSchoolComponent implements OnInit {
 
   private currencyCodeForDisplay(code?: string): string {
     if (!code) {
-      return 'USD';
+      return '美元';
     }
 
-    return code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
+    const normalizedCode = code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
+
+    if (normalizedCode === 'USD') {
+      return '美元';
+    }
+
+    return normalizedCode === 'PHP' ? '比索' : normalizedCode;
   }
 
   private formatCurrencyAmount(fee: SchoolFeeDTO): string {
@@ -2040,5 +2268,20 @@ export class CiaSchoolComponent implements OnInit {
 
   private parseDate(value: string): Date {
     return new Date(`${value}T00:00:00`);
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  private dateRangesOverlap(
+    firstStart: Date,
+    firstEnd: Date,
+    secondStart: Date,
+    secondEnd: Date,
+  ): boolean {
+    return firstStart <= secondEnd && firstEnd >= secondStart;
   }
 }

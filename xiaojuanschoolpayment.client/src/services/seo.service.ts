@@ -59,6 +59,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
     image: '/assets/study-hero-collage.png',
   },
+  '/philippines-study/cebu/btes-english-academy': {
+    title: '菲律宾宿务BTES语言学校 | 课程、住宿与报名咨询',
+    description:
+      '菲律宾宿务BTES语言学校介绍，整理General ESL、IELTS、TOEIC、Business、Junior与Family课程、学校位置、适合人群和报名咨询。',
+    keywords: '菲律宾宿务BTES语言学校, BTES English Academy, Brainy Tutelage English School, 宿务高性价比语言学校, 宿务亲子游学',
+    image: 'https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg',
+  },
   '/philippines-study/cebu/elsa-international-language-school': {
     title: '菲律宾宿务ELSA语言学校 | 2026-2027课程食宿费用',
     description:
