@@ -36,6 +36,7 @@ interface ServiceItem {
   title: string;
   text: string;
   image?: string;
+  iconAsset?: string;
   alt?: string;
 }
 
@@ -61,6 +62,11 @@ interface Advisor {
   qr: string;
   phone: string;
   phoneDisplay: string;
+}
+
+interface FaqItem {
+  question: string;
+  answer: string;
 }
 
 @Component({
@@ -298,6 +304,8 @@ export class CebuStudyComponent {
       icon: 'price_check',
       title: '保价服务',
       text: '同种情况下，如果报名后或者入学后比价发现有价格比我们更低的，我们核实后退差价。',
+      iconAsset: '/assets/philippines/service-price-guarantee.svg',
+      alt: '保价承诺已核验图标',
     },
     {
       icon: 'storefront',
@@ -650,6 +658,25 @@ export class CebuStudyComponent {
       qr: '/assets/contact/jenny-wechat-qr.png',
       phone: '13249827686',
       phoneDisplay: '132 4982 7686',
+    },
+  ];
+
+  readonly faqs: FaqItem[] = [
+    {
+      question: '宿务适合第一次去菲律宾游学吗？',
+      answer: '适合。宿务学校选择多、国际航班和城市生活方便，从轻松口语到考试备考、亲子与青少年课程都能比较，第一次游学更容易按自己的节奏找到方案。',
+    },
+    {
+      question: '宿务学校这么多，应该怎么选？',
+      answer: '先确认学习目标、管理强度、课程比例、住宿偏好和预算。顾问会按你的需求先排除不合适的学校，再给出两到三个可直接比较的方案。',
+    },
+    {
+      question: '宿务适合亲子和青少年学习吗？',
+      answer: '适合，亲子和青少年课程选择较多。报名前要重点确认最低年龄、是否需要家长同行、家庭房、监护安排、开课日期和接送。',
+    },
+    {
+      question: '报名前应该准备哪些信息？',
+      answer: '准备预计入学日期、学习周数、英语目标、预算、房型偏好和学生年龄即可；顾问会继续核对课程、校区、空房、退改规则、优惠和当地费用。',
     },
   ];
 }

@@ -8,25 +8,21 @@
           <mat-icon>chevron_right</mat-icon>
           <a routerLink="/philippines-study/why-philippines">菲律宾游学</a>
           <mat-icon>chevron_right</mat-icon>
-          <span>宿务 Cebu</span>
+          <span>{{ page.breadcrumbLabel }}</span>
         </nav>
 
         <p class="hero-kicker">
-          <mat-icon>wb_sunny</mat-icon>
-          菲律宾游学首选城市之一
+          <mat-icon>{{ page.heroKickerIcon || 'travel_explore' }}</mat-icon>
+          {{ page.heroKicker }}
         </p>
-        <h1>菲律宾 · 宿务 <em>Cebu</em></h1>
-        <h2>阳光海岛 × 优质学校 × 高性价比</h2>
-        <p class="hero-description">
-          宿务是菲律宾最受欢迎的英语游学城市之一，<br />
-          学校选择多，生活便利，学习与生活完美平衡。
-        </p>
+        <h1>菲律宾 · {{ page.cityName }} <em>{{ page.englishName }}</em></h1>
+        <h2>{{ page.heroSubtitle }}</h2>
+        <p class="hero-description">{{ page.heroDescription }}</p>
 
-        <div class="benefit-chips" aria-label="宿务游学优势">
-          <span><mat-icon>apartment</mat-icon>学校选择多</span>
-          <span><mat-icon>local_cafe</mat-icon>生活便利</span>
-          <span><mat-icon>directions_bus</mat-icon>交通方便</span>
-          <span><mat-icon>groups</mat-icon>适合各类学生</span>
+        <div class="benefit-chips" [attr.aria-label]="page.cityName + '游学优势'">
+          <span *ngFor="let chip of page.benefitChips">
+            <mat-icon>{{ chip.icon }}</mat-icon>{{ chip.label }}
+          </span>
         </div>
 
         <div class="hero-actions">
@@ -41,28 +37,27 @@
         </div>
       </div>
 
-      <div class="hero-visual" aria-label="宿务海岛与英语课堂">
-        <img
-          class="hero-sea"
-          src="/assets/philippines/cebu-study-hero.jpg"
-          alt="菲律宾宿务碧蓝海岸与城市景观"
-        />
+      <div class="hero-visual" [attr.aria-label]="page.heroVisualLabel">
+        <img class="hero-sea" [src]="page.heroImage" [alt]="page.heroImageAlt" />
         <div
           class="hero-class hero-class--study"
           role="img"
-          aria-label="学生在明亮的学习空间自主学习"
+          aria-label="学生在学习空间自主学习"
+          [style.background]="heroBackground(page.heroStudyImage)"
         ></div>
         <div
           class="hero-class hero-class--lesson"
           role="img"
-          aria-label="英语老师与学生进行互动课堂"
+          aria-label="老师与学生进行互动英语课堂"
+          [style.background]="heroBackground(page.heroLessonImage)"
         ></div>
 
-        <div class="hero-stats" aria-label="思达启航宿务服务数据">
-          <div><mat-icon>workspace_premium</mat-icon><strong>30+</strong><span>宿务学校资料</span></div>
-          <div><strong>98%</strong><span>学员满意度</span></div>
-          <div><strong>8年+</strong><span>菲律宾游学经验</span></div>
-          <div><strong>24h</strong><span>驻点服务支持</span></div>
+        <div class="hero-stats" [attr.aria-label]="page.cityName + '游学概览'">
+          <div *ngFor="let stat of page.stats">
+            <mat-icon *ngIf="stat.icon">{{ stat.icon }}</mat-icon>
+            <strong>{{ stat.value }}</strong>
+            <span>{{ stat.label }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -72,15 +67,15 @@
     <section class="panel selection-panel" id="school-selection">
       <header class="panel-heading">
         <div>
-          <h2>按需求快速选校 <span>〰</span></h2>
-          <p>根据你的学习目标，快速找到合适的学校</p>
+          <h2>{{ page.selectionTitle || '按需求快速选校' }} <span>〰</span></h2>
+          <p>{{ page.selectionSubtitle || '根据你的学习目标，快速找到合适的学校' }}</p>
         </div>
       </header>
 
       <div class="selection-grid">
         <article
           class="selection-card"
-          *ngFor="let group of selectionGroups"
+          *ngFor="let group of page.selectionGroups"
           [attr.data-tone]="group.tone"
         >
           <button
@@ -93,7 +88,7 @@
             <h3>{{ group.title }}</h3>
           </button>
           <p>{{ group.subtitle }}</p>
-          <img [src]="group.image" [alt]="group.title + '宿务学校校园'" />
+          <img [src]="group.image" [alt]="group.title + page.cityName + '学校校园'" />
           <ul>
             <li *ngFor="let school of group.schools">
               <mat-icon>check_circle</mat-icon>{{ school }}
@@ -104,7 +99,7 @@
             class="selection-category-link"
             (click)="showDirectoryCategory(group.category)"
           >
-            查看 {{ group.schools.length }} 所学校
+            查看 {{ directoryFilterCount(group.category) }} 所学校
             <mat-icon>arrow_forward</mat-icon>
           </button>
         </article>
@@ -114,8 +109,8 @@
     <section class="panel schools-panel" id="popular-schools">
       <header class="panel-heading panel-heading--row">
         <div>
-          <h2>宿务热门学校推荐</h2>
-          <p>课程特色、校园环境与管理模式各有侧重</p>
+          <h2>{{ page.featuredTitle || page.cityName + '热门学校推荐' }}</h2>
+          <p>{{ page.featuredSubtitle || '课程特色、校园环境与管理模式各有侧重' }}</p>
         </div>
         <a class="heading-link" href="#all-schools" appScrollTo="all-schools">
           更多学校
@@ -123,10 +118,10 @@
         </a>
       </header>
 
-      <div class="school-cards">
-        <article class="school-card" *ngFor="let school of featuredSchools">
+      <div class="school-cards" [class.school-cards--compact]="page.featuredSchools.length < 5">
+        <article class="school-card" *ngFor="let school of page.featuredSchools">
           <div class="school-image">
-            <img [src]="school.image" [alt]="school.name + '宿务校园'" />
+            <img [src]="school.image" [alt]="school.name + page.cityName + '校园'" />
             <span [attr.data-tone]="school.tone">{{ school.badge }}</span>
           </div>
           <div class="school-content">
@@ -144,29 +139,24 @@
       </div>
 
       <a class="school-directory" href="#all-schools" appScrollTo="all-schools">
-        <span>更多宿务学校</span>
+        <span>更多{{ page.cityName }}学校</span>
         <div aria-hidden="true">
-          <i>B'Cebu</i>
-          <i>I.BREEZE</i>
-          <i>Cebu Blue Ocean</i>
-          <i>Philinter</i>
-          <i>CELLA Premium</i>
-          <i>QQEnglish</i>
+          <i *ngFor="let school of page.schoolPreviewNames">{{ school }}</i>
         </div>
-        <strong>查看全部 {{ allSchools.length }} 所 <mat-icon>arrow_forward</mat-icon></strong>
+        <strong>查看全部 {{ page.directorySchools.length }} 所 <mat-icon>arrow_forward</mat-icon></strong>
       </a>
     </section>
 
     <section class="panel lifestyle-panel">
       <header class="panel-heading">
         <div>
-          <h2>在宿务，学习与生活一样精彩</h2>
-          <p>高效学习，也享受海岛城市的轻松节奏</p>
+          <h2>{{ page.lifestyleTitle }}</h2>
+          <p>{{ page.lifestyleSubtitle }}</p>
         </div>
       </header>
 
-      <div class="lifestyle-grid">
-        <article *ngFor="let item of lifestyleItems">
+      <div class="lifestyle-grid" [class.lifestyle-grid--compact]="page.lifestyleItems.length < 5">
+        <article *ngFor="let item of page.lifestyleItems">
           <img [src]="item.image" [alt]="item.title" />
           <div>
             <h3><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</h3>
@@ -255,8 +245,7 @@
           <article *ngFor="let service of services">
             <div class="service-card-visual" [class.service-card-visual--icon-only]="!service.image">
               <img *ngIf="service.image" [src]="service.image" [alt]="service.alt || service.title" loading="lazy" decoding="async" />
-              <img *ngIf="service.iconAsset" class="service-card-icon-asset" [src]="service.iconAsset" [alt]="service.alt || service.title" decoding="async" />
-              <span *ngIf="!service.iconAsset"><mat-icon>{{ service.icon }}</mat-icon></span>
+              <span><mat-icon>{{ service.icon }}</mat-icon></span>
             </div>
             <div>
               <h3>{{ service.title }}</h3>
@@ -271,7 +260,7 @@
           <span class="service-chapter-mark"><b>03</b><i>长期陪伴</i></span>
           <div>
             <h3 id="alumni-benefits-title">一次报名，不是服务的终点</h3>
-            <p>从宿务学习结束，到继续线上学英语、欧洲语言学习或爱尔兰升学，老学员都有可延续的支持。</p>
+            <p>从菲律宾学习结束，到继续线上学英语、欧洲语言学习或爱尔兰升学，老学员都有可延续的支持。</p>
           </div>
           <em><mat-icon>favorite</mat-icon>老学员持续权益</em>
         </header>
@@ -279,10 +268,9 @@
         <div class="alumni-benefit-grid">
           <article *ngFor="let item of alumniBenefits; let i = index">
             <b>0{{ i + 1 }}</b>
-            <div class="service-card-visual" [class.service-card-visual--icon-only]="!item.image">
-              <img *ngIf="item.image" [src]="item.image" [alt]="item.alt || item.title" loading="lazy" decoding="async" />
-              <img *ngIf="item.iconAsset" class="service-card-icon-asset" [src]="item.iconAsset" [alt]="item.alt || item.title" decoding="async" />
-              <span *ngIf="!item.iconAsset"><mat-icon>{{ item.icon }}</mat-icon></span>
+            <div class="service-card-visual">
+              <img [src]="item.image" [alt]="item.alt || item.title" loading="lazy" decoding="async" />
+              <span><mat-icon>{{ item.icon }}</mat-icon></span>
             </div>
             <div>
               <h4>{{ item.title }}</h4>
@@ -298,7 +286,7 @@
     <section class="panel all-schools-panel" id="all-schools">
       <header class="all-schools-heading">
         <div>
-          <span>CEBU SCHOOL DIRECTORY</span>
+          <span>{{ page.directoryEyebrow }}</span>
           <h2>{{ directoryHeading }}</h2>
           <p>{{ directoryDescription }}</p>
         </div>
@@ -308,11 +296,11 @@
         </a>
       </header>
 
-      <div class="directory-toolbar" aria-label="宿务学校筛选">
+      <div class="directory-toolbar" [attr.aria-label]="page.cityName + '学校筛选'">
         <div class="directory-filters">
           <button
             type="button"
-            *ngFor="let filter of directoryFilters"
+            *ngFor="let filter of page.directoryCategories"
             [class.active]="activeDirectoryFilter === filter.label"
             (click)="activeDirectoryFilter = filter.label"
           >
@@ -325,11 +313,7 @@
       </div>
 
       <div class="all-schools-grid">
-        <a
-          class="directory-school-card"
-          *ngFor="let school of visibleSchools"
-          [routerLink]="school.route"
-        >
+        <a class="directory-school-card" *ngFor="let school of visibleSchools" [routerLink]="school.route">
           <div class="directory-school-image">
             <img
               [src]="school.image"
@@ -341,20 +325,14 @@
             <span>{{ school.tag }}</span>
           </div>
           <div class="directory-school-content">
-            <p class="directory-school-location">
-              <mat-icon>location_on</mat-icon>
-              {{ school.location }}
-            </p>
+            <p class="directory-school-location"><mat-icon>location_on</mat-icon>{{ school.location }}</p>
             <h3>{{ school.name }}</h3>
             <p class="directory-school-summary">{{ school.summary }}</p>
             <div class="directory-school-tags" aria-label="主要课程">
               <span class="directory-course-label"><mat-icon>menu_book</mat-icon>课程</span>
               <span *ngFor="let item of school.highlights">{{ item }}</span>
             </div>
-            <strong>
-              {{ school.linkLabel || '查看学校详情' }}
-              <mat-icon>arrow_forward</mat-icon>
-            </strong>
+            <strong>{{ school.linkLabel || '查看学校详情与报价' }}<mat-icon>arrow_forward</mat-icon></strong>
           </div>
         </a>
       </div>
@@ -364,12 +342,9 @@
       <header class="panel-heading panel-heading--row">
         <div>
           <h2>联系思达顾问 <span>〰</span></h2>
-          <p>扫码添加微信，按你的游学方向对接合适顾问</p>
+          <p>选校有疑问随时问，顾问会按你的目标、预算和时间给出可比较的方案</p>
         </div>
-        <a class="heading-link" routerLink="/about-sida/contact">
-          查看完整联系方式
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
+        <a class="heading-link" routerLink="/about-sida/contact">查看完整联系方式<mat-icon>arrow_forward</mat-icon></a>
       </header>
 
       <div class="advisor-grid">
@@ -379,10 +354,7 @@
             <span>{{ advisor.focus }}</span>
             <h3>{{ advisor.name }}</h3>
             <p>{{ advisor.text }}</p>
-            <a [href]="'tel:' + advisor.phone">
-              <mat-icon>phone_in_talk</mat-icon>
-              {{ advisor.phoneDisplay }}
-            </a>
+            <a [href]="'tel:' + advisor.phone"><mat-icon>phone_in_talk</mat-icon>{{ advisor.phoneDisplay }}</a>
           </div>
           <figure>
             <img [src]="advisor.qr" [alt]="advisor.name + '顾问微信二维码'" />
@@ -392,16 +364,16 @@
       </div>
     </section>
 
-    <section class="panel city-faq-section" aria-labelledby="cebu-faq-title">
+    <section class="panel city-faq-section" aria-labelledby="city-faq-title">
       <header class="panel-heading">
         <div>
           <span class="service-eyebrow">FAQ</span>
-          <h2 id="cebu-faq-title">宿务游学常见问题</h2>
+          <h2 id="city-faq-title">{{ page.cityName }}游学常见问题</h2>
           <p>选校前常见的实际问题，先帮你把关键信息说清楚</p>
         </div>
       </header>
       <div class="city-faq-list">
-        <details *ngFor="let faq of faqs">
+        <details *ngFor="let faq of page.faqs">
           <summary>{{ faq.question }}</summary>
           <p>{{ faq.answer }}</p>
         </details>

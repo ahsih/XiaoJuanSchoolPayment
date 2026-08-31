@@ -37,8 +37,6 @@ import { TranslatePipe } from './pipes/translate.pipe';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippines-study/why-philippines-study.component';
 import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
-import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay-study.component';
-import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
 import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
@@ -68,8 +66,6 @@ import { IrelandPageContentComponent } from './pages/ireland/page-content/irelan
     NavbarComponent,
     WhyPhilippinesStudyComponent,
     CitySchoolsComponent,
-    BoracayStudyComponent,
-    BacolodStudyComponent,
     RegionalCityStudyComponent,
     SchoolRecommendationComponent,
     SchoolLibraryComponent,

@@ -312,10 +312,12 @@ mat-icon {
 }
 
 .hero-stats strong {
+  min-width: 0;
   color: #1b5d46;
-  font-size: 19px;
+  font-size: clamp(15px, 1.45vw, 19px);
   font-weight: 950;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .hero-stats div:nth-child(3) strong,
@@ -331,6 +333,8 @@ mat-icon {
   font-weight: 800;
   text-align: center;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .hero-stats div:first-child span {
@@ -1216,6 +1220,13 @@ mat-icon {
   filter: saturate(0.82) contrast(0.96);
 }
 
+.service-card-visual > .service-card-icon-asset {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: none;
+}
+
 .service-card-visual > span {
   position: absolute;
   bottom: 5px;
@@ -1689,6 +1700,62 @@ mat-icon {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   padding: 0 15px 14px;
+}
+
+.city-faq-section {
+  grid-column: 1 / -1;
+  padding: 24px 28px 28px;
+}
+
+.city-faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.city-faq-list details {
+  min-width: 0;
+  border: 1px solid #e3ebe6;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(57, 78, 68, 0.045);
+}
+
+.city-faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px;
+  color: #174c39;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  list-style: none;
+}
+
+.city-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.city-faq-list summary::after {
+  content: "+";
+  color: var(--orange-dark);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.city-faq-list details[open] summary::after {
+  content: "−";
+}
+
+.city-faq-list p {
+  margin: 0;
+  padding: 0 16px 16px;
+  color: #6c706d;
+  font-size: 11px;
+  line-height: 1.75;
 }
 
 .advisor-card {
@@ -2216,6 +2283,14 @@ mat-icon {
 
   .advisor-card {
     grid-template-columns: 50px minmax(0, 1fr) 68px;
+  }
+
+  .city-faq-section {
+    padding: 20px 15px;
+  }
+
+  .city-faq-list {
+    grid-template-columns: 1fr;
   }
 
   .mobile-actions {

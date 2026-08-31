@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 interface RegionalCityStudyPage {
   cityName: string;
   englishName: string;
+  heroImage?: string;
   route: string;
   positioning: string;
   intro: string;
@@ -23,6 +24,7 @@ interface RegionalCityStudyPage {
   }[];
   schoolCards?: {
     icon: string;
+    image: string;
     title: string;
     tag: string;
     text: string;
@@ -34,6 +36,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
   iloilo: {
     cityName: '伊洛伊洛',
     englishName: 'Iloilo',
+    heroImage: 'https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg',
     route: '/philippines-study/iloilo',
     positioning: '小众、安静、成本友好',
     intro:
@@ -88,6 +91,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
     schoolCards: [
       {
         icon: 'verified',
+        image: 'https://www.philja.com/school/sch_img/we_i/main4.jpg',
         title: 'WE Academy',
         tag: 'Semi-Sparta / IDP IELTS',
         text: '适合想在Iloilo安静城市里比较ESL、TOEIC、Business、IELTS、Junior和住宿套餐费用的学生。',
@@ -95,6 +99,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       },
       {
         icon: 'record_voice_over',
+        image: 'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
         title: 'PIA · Polyglot International Academy',
         tag: 'ESL / Exam / Power Speaking',
         text: '适合想住Iloilo Business Park生活圈，比较一对一口语、考试、青少年课程和合作酒店费用的学生。',
@@ -102,6 +107,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       },
       {
         icon: 'school',
+        image: 'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
         title: 'MK Language Training Center',
         tag: 'Semi-Sparta / ESL / Family',
         text: '适合想在Iloilo安静城市里控制预算，比较ESL、IELTS、TESOL、Internship和Family课程的学生。',
@@ -109,6 +115,7 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       },
       {
         icon: 'account_balance',
+        image: 'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
         title: 'GITC College International Language Center',
         tag: '大学附属 / TOEIC / IELTS',
         text: '适合想在Iloilo安静环境中结合ESL、考试备考、大学交流和SDGs体验的学生。',

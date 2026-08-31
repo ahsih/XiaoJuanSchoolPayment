@@ -1913,10 +1913,14 @@ export class CiaSchoolComponent implements OnInit {
 
   get estimatedLocalFees(): LocalFeeEstimate[] {
     const fourWeekCycles = this.selectedWeeks / 4;
-    const needsLongStayDocuments = this.selectedWeeks >= 8;
+    const needsLongStayDocuments = this.selectedWeeks > 8;
     const visaExtensionCount = needsLongStayDocuments
-      ? Math.max(1, Math.ceil((this.selectedWeeks - 8) / 4))
+      ? Math.ceil((this.selectedWeeks - 8) / 4)
       : 0;
+    const visaExtensionTotal =
+      visaExtensionCount === 0
+        ? 0
+        : 5130 + Math.max(0, visaExtensionCount - 1) * 4700;
     const textbookSets = Math.ceil(this.selectedWeeks / 8);
 
     return [
@@ -1964,10 +1968,10 @@ export class CiaSchoolComponent implements OnInit {
       },
       {
         item: '签证续签',
-        unitLabel: '₱5,130 / 次',
+        unitLabel: '首续₱5,130',
         quantity: visaExtensionCount,
-        total: 5130 * visaExtensionCount,
-        note: '暂按8至12周续签1次、16周续签2次，之后每增加4周多1次估算；每次费用可能不同。',
+        total: visaExtensionTotal,
+        note: '按59天签证估算：超过8周后每4周续签1次；首次约₱5,130，后续每次约₱4,700，最终以移民局收费为准。',
       },
       {
         item: '教材费',
@@ -2039,6 +2043,17 @@ export class CiaSchoolComponent implements OnInit {
     const quoteCnyAmount =
       Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
     const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
+    const localFeeShortNotes: Record<string, string> = {
+      SSP特殊学习许可证: '一次办理通常6个月有效；续费或换校时可能需要重新办理。',
+      'SSP-E Card': '入学时与SSP同时办理，按一次性费用估算。',
+      'ACR-I Card 外国人身份证': '30天签证超过4周、59天签证超过8周需办理；一次有效1年。',
+      管理费: '按学习周数比例计算。',
+      电费: '按基础用电量估算，超额可能另行收费。',
+      水费: '按基础用水量估算，超额可能另行收费。',
+      签证续签: '按59天签证估算；首次约₱5,130，后续每次约₱4,700。',
+      教材费: '每套预估使用8周，最终以学校实际发放教材为准。',
+      学生证: '一次性费用。',
+    };
 
     return {
       layout: 'cia-detailed',
@@ -2047,7 +2062,7 @@ export class CiaSchoolComponent implements OnInit {
       heroSrc: this.quoteImageAssets.hero,
       schoolCode: 'CIA',
       title: `${this.selectedWeeks}周菲律宾游学`,
-      subtitle: 'Cebu International Academy / 宿务麦克坦岛 / 半斯巴达英语学校',
+      subtitle: '',
       quoteDateText: quoteDate,
       updatedAtText: quoteDate,
       quoteNumber: `SQ-CIA-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-001`,
@@ -2067,7 +2082,7 @@ export class CiaSchoolComponent implements OnInit {
           amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`,
           note: this.isChristmasPromotionEligible
             ? `圣诞新年优惠已免除${this.registrationFee}美元`
-            : '新生收取，具体以学校确认为准',
+            : '老学员免注册费',
         },
         {
           icon: '课',
@@ -2089,8 +2104,8 @@ export class CiaSchoolComponent implements OnInit {
         },
         {
           icon: '折',
-          label: `思达启航优惠（${this.discountText}）`,
-          note: `课程费 + 住宿费按95折，已优惠${this.formatUsd(this.sidaDiscountAmount)}美元`,
+          label: '思达95折优惠',
+          note: `本次优惠金额：${this.formatUsd(this.sidaDiscountAmount)}美元`,
           amount: `- ${this.formatUsd(this.sidaDiscountAmount)} 美元`,
           accent: true,
         },
@@ -2116,7 +2131,7 @@ export class CiaSchoolComponent implements OnInit {
         unit: fee.unitLabel,
         quantity: this.formatFeeQuantity(fee.quantity),
         amount: this.formatPhp(fee.total),
-        note: fee.note,
+        note: localFeeShortNotes[fee.item] ?? fee.note,
       })),
       localFeeCny: `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`,
       exchangeRateText: '按实时汇率预估',
@@ -2126,11 +2141,18 @@ export class CiaSchoolComponent implements OnInit {
         note: fee.note,
       })),
       benefitItems: [
-        { title: '0中介费', text: '学校合作渠道价，费用透明无隐瞒' },
-        { title: '同条件保价', text: '相同学校、课程与房型可协助核价' },
-        { title: '费用提前说明', text: '学费、学杂费与优惠逐项列明' },
-        { title: '全程报名协助', text: '选校、报名、付款及行前指导' },
-        { title: '学习期间售后', text: '课程与住宿问题持续协助沟通' },
+        { title: '0中介费', text: '' },
+        { title: '价格保护', text: '' },
+        { title: '全程报名协助', text: '' },
+        { title: '海外驻点售后', text: '' },
+      ],
+      serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
+      alumniBenefitItems: [
+        {
+          title: '老学员权益',
+          subtitle: '',
+          text: '老学员可享线上课程优惠、留学爱尔兰及欧美英语学校专属奖学金和优惠。',
+        },
       ],
       importantNotes: [
         '人民币金额按实时汇率预估，最终以支付当日汇率为准。',
@@ -2146,53 +2168,6 @@ export class CiaSchoolComponent implements OnInit {
         wechatLabel: '微信二维码占位',
         footerText: '获取正式报价与空房确认',
       },
-      consultants: [
-        {
-          title: '英爱留学',
-          name: 'Jenny',
-          description: '爱尔兰/英国本科、硕士、预科、半工半读',
-          phone: '132 4982 7686',
-          avatarSrc: this.quoteImageAssets.jennyAvatar,
-          qrSrc: this.quoteImageAssets.jennyQr,
-          buttonLabel: '咨询英爱留学',
-        },
-        {
-          title: '多国方案',
-          name: 'Lemon',
-          description: '还没确定国家、想比较费用/时间/路径',
-          phone: '132 9852 9856',
-          avatarSrc: this.quoteImageAssets.lemonAvatar,
-          qrSrc: this.quoteImageAssets.lemonQr,
-          buttonLabel: '咨询多国方案',
-        },
-        {
-          title: '菲律宾与东南亚',
-          name: 'Penin',
-          description: '菲律宾游学、马来/新加坡/越南短期英语',
-          phone: '153 6765 9331',
-          avatarSrc: this.quoteImageAssets.peninAvatar,
-          qrSrc: this.quoteImageAssets.peninQr,
-          buttonLabel: '咨询游学方案',
-        },
-        {
-          title: '菲律宾与马来西亚',
-          name: 'LISA',
-          description: '菲律宾游学、马来西亚游学规划',
-          phone: '178 5860 5668',
-          avatarSrc: this.quoteImageAssets.lisaAvatar,
-          qrSrc: this.quoteImageAssets.lisaQr,
-          buttonLabel: '咨询菲律宾与马来西亚',
-        },
-        {
-          title: '菲律宾与马来西亚',
-          name: 'IRIS',
-          description: '菲律宾游学、马来西亚游学规划',
-          phone: '156 2285 9185',
-          avatarSrc: this.quoteImageAssets.irisAvatar,
-          qrSrc: this.quoteImageAssets.irisQr,
-          buttonLabel: '咨询菲律宾与马来西亚',
-        },
-      ],
     };
   }
 

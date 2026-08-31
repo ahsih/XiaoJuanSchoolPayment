@@ -1,0 +1,945 @@
+.city-study-page,
+.city-study-page * {
+  box-sizing: border-box;
+}
+
+.city-study-page {
+  --city-green: #0b5c43;
+  --city-green-2: #16785a;
+  --city-green-soft: #e8f5ee;
+  --city-orange: #f56b2a;
+  --city-orange-soft: #fff1e8;
+  --city-ink: #163d31;
+  --city-muted: #64776f;
+  --city-line: #d7e6de;
+  width: min(1216px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: 24px 0 64px !important;
+  color: var(--city-ink) !important;
+  text-align: left !important;
+}
+
+.city-study-page > section {
+  margin-top: 18px !important;
+}
+
+.city-study-page > section:first-of-type {
+  margin-top: 0 !important;
+}
+
+.city-study-page .hero,
+.city-study-page .boracay-hero,
+.city-study-page .bacolod-hero,
+.city-study-page .regional-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.88fr) minmax(430px, 1.12fr) !important;
+  gap: 22px !important;
+  min-height: 0 !important;
+  padding: 22px !important;
+  align-items: stretch !important;
+  overflow: hidden;
+  border: 1px solid #e4e5da;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 6% 4%, rgba(224, 246, 235, 0.9), transparent 34%),
+    radial-gradient(circle at 96% 5%, rgba(255, 235, 222, 0.92), transparent 34%),
+    #fff;
+  box-shadow: 0 14px 36px rgba(38, 82, 63, 0.08);
+}
+
+.city-study-page .hero__content,
+.city-study-page .boracay-hero__copy,
+.city-study-page .bacolod-hero__copy,
+.city-study-page .regional-hero__copy {
+  display: flex;
+  min-width: 0;
+  padding: 8px 4px 8px 2px !important;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.city-breadcrumb {
+  display: flex;
+  margin: 0 0 18px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: #7c746b;
+  font-size: 13px;
+}
+
+.city-breadcrumb a {
+  color: #54665f;
+  text-decoration: none;
+}
+
+.city-breadcrumb a:hover {
+  color: var(--city-orange);
+}
+
+.city-breadcrumb mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+.city-study-page .section-kicker {
+  display: inline-flex;
+  width: max-content;
+  margin: 0 0 10px !important;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: var(--city-orange-soft);
+  color: #aa4e23 !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+}
+
+.city-study-page .hero h1,
+.city-study-page .boracay-hero h1,
+.city-study-page .bacolod-hero h1,
+.city-study-page .regional-hero h1 {
+  margin: 0 !important;
+  color: #082f25 !important;
+  font-size: clamp(31px, 3vw, 45px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.025em;
+}
+
+.city-study-page h1 em {
+  display: inline-block;
+  margin-left: 8px;
+  color: #1d1d1d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.88em;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.city-hero-subtitle {
+  margin: 13px 0 10px !important;
+  color: #33271f !important;
+  font-size: clamp(18px, 1.9vw, 25px) !important;
+  line-height: 1.35;
+}
+
+.city-study-page .hero__content > p:not(.section-kicker),
+.city-study-page .boracay-hero__copy > p,
+.city-study-page .bacolod-hero__copy > p,
+.city-study-page .regional-hero__copy > p {
+  margin: 0 !important;
+  color: var(--city-muted) !important;
+  font-size: 15px !important;
+  line-height: 1.8 !important;
+}
+
+.city-study-page .hero-actions {
+  display: flex !important;
+  margin-top: 18px !important;
+  flex-wrap: wrap;
+  gap: 10px !important;
+}
+
+.city-study-page .hero-actions a,
+.city-study-page .primary-action,
+.city-study-page .secondary-action {
+  display: inline-flex !important;
+  min-height: 45px;
+  padding: 0 17px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--city-orange) !important;
+  border-radius: 9px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.city-study-page .hero-actions a:hover,
+.city-study-page .primary-action:hover,
+.city-study-page .secondary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(185, 75, 26, 0.14);
+}
+
+.city-study-page .primary-action {
+  background: var(--city-orange) !important;
+  color: #fff !important;
+}
+
+.city-study-page .secondary-action {
+  background: rgba(255, 255, 255, 0.82) !important;
+  color: #25211f !important;
+}
+
+.city-study-page .hero__media,
+.city-study-page .boracay-hero__media,
+.city-study-page .city-hero-visual {
+  position: relative;
+  min-width: 0;
+  min-height: 398px !important;
+  margin: 0 !important;
+  overflow: hidden;
+  border-radius: 15px !important;
+  background: #dcece4;
+  box-shadow: 0 10px 26px rgba(28, 74, 54, 0.13);
+}
+
+.city-study-page .hero__media > img,
+.city-study-page .boracay-hero__media > img,
+.city-study-page .city-hero-visual > img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 398px;
+  object-fit: cover !important;
+}
+
+.city-study-page .hero__media::after,
+.city-study-page .boracay-hero__media::after,
+.city-study-page .city-hero-visual::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 38%;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(2, 48, 35, 0.64));
+}
+
+.city-study-page .hero__media figcaption,
+.city-study-page .boracay-hero__media figcaption {
+  position: absolute !important;
+  z-index: 2;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  margin: 0 !important;
+  padding: 9px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 9px;
+  background: rgba(3, 70, 50, 0.76) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  backdrop-filter: blur(8px);
+}
+
+.city-study-page .stat-row {
+  display: grid !important;
+  margin-top: 18px !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  overflow: hidden;
+  border: 1px solid #d8e7df;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.city-study-page .stat-row > div {
+  min-width: 0;
+  padding: 11px 10px !important;
+  text-align: center;
+}
+
+.city-study-page .stat-row > div + div {
+  border-left: 1px solid #dce8e1;
+}
+
+.city-study-page .stat-row strong {
+  display: block;
+  color: var(--city-green) !important;
+  font-size: 15px !important;
+  line-height: 1.25;
+}
+
+.city-study-page .stat-row span {
+  display: block;
+  margin-top: 4px;
+  color: #78847f !important;
+  font-size: 11px !important;
+  line-height: 1.35;
+}
+
+.city-study-page .quick-panel,
+.city-study-page .bacolod-hero__panel,
+.city-study-page .regional-hero__panel {
+  display: grid !important;
+  z-index: 2;
+  gap: 0 !important;
+  border: 1px solid #d6e5dd !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.93) !important;
+  box-shadow: 0 10px 22px rgba(25, 73, 53, 0.12);
+}
+
+.city-study-page .quick-panel {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  padding: 0 !important;
+}
+
+.city-study-page .city-hero-visual .bacolod-hero__panel,
+.city-study-page .city-hero-visual .regional-hero__panel {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 0 !important;
+}
+
+.city-study-page .quick-panel > div,
+.city-study-page .bacolod-hero__panel > div,
+.city-study-page .regional-hero__panel > div {
+  padding: 13px 15px !important;
+}
+
+.city-study-page .quick-panel > div + div,
+.city-study-page .bacolod-hero__panel > div + div,
+.city-study-page .regional-hero__panel > div + div {
+  border-left: 1px solid var(--city-line);
+}
+
+.city-study-page .quick-panel strong,
+.city-study-page .bacolod-hero__panel strong,
+.city-study-page .regional-hero__panel strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--city-green) !important;
+  font-size: 12px;
+}
+
+.city-study-page .quick-panel span,
+.city-study-page .bacolod-hero__panel span,
+.city-study-page .regional-hero__panel span {
+  color: #6b7872 !important;
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+
+.city-study-page .intro-band,
+.city-study-page .highlight-section,
+.city-study-page .type-section,
+.city-study-page .profile-section,
+.city-study-page .decision-section,
+.city-study-page .cost-section,
+.city-study-page .compare-section,
+.city-study-page .faq-source-section,
+.city-study-page .school-type-section,
+.city-study-page .featured-school-section {
+  padding: 24px !important;
+  border: 1px solid var(--city-line) !important;
+  border-radius: 17px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 10px 28px rgba(35, 82, 62, 0.065) !important;
+}
+
+.city-study-page .intro-band {
+  display: grid !important;
+  grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.25fr) !important;
+  gap: 24px !important;
+  align-items: center;
+  border-color: #f0d5c5 !important;
+  background: linear-gradient(110deg, #fff7f1, #fff 44%, #f3faf6) !important;
+}
+
+.city-study-page .intro-band h2,
+.city-study-page .section-heading h2 {
+  margin: 0 !important;
+  color: #0a513d !important;
+  font-size: clamp(22px, 2.2vw, 30px) !important;
+  line-height: 1.28 !important;
+}
+
+.city-study-page .intro-band p,
+.city-study-page .section-heading p {
+  margin: 8px 0 0 !important;
+  color: var(--city-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+}
+
+.city-study-page .section-heading {
+  margin: 0 0 18px !important;
+  max-width: none !important;
+}
+
+.city-study-page .highlight-grid,
+.city-study-page .type-grid,
+.city-study-page .school-type-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.city-study-page .info-card,
+.city-study-page .highlight-card,
+.city-study-page .type-card,
+.city-study-page .school-type-card {
+  min-width: 0;
+  padding: 18px !important;
+  border: 1px solid var(--city-line) !important;
+  border-top: 3px solid #82bda1 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(145deg, #fff, #f7fbf9) !important;
+  box-shadow: none !important;
+}
+
+.city-study-page .info-card:hover,
+.city-study-page .highlight-card:hover,
+.city-study-page .type-card:hover,
+.city-study-page .school-type-card:hover {
+  transform: translateY(-2px);
+  border-color: #a9d1bd !important;
+}
+
+.city-study-page .card-icon,
+.city-study-page .highlight-icon {
+  display: grid !important;
+  width: 42px !important;
+  height: 42px !important;
+  margin: 0 0 12px !important;
+  place-items: center;
+  border-radius: 50% !important;
+  background: var(--city-green-soft) !important;
+  color: var(--city-green) !important;
+}
+
+.city-study-page .card-icon mat-icon,
+.city-study-page .highlight-icon mat-icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+}
+
+.city-study-page .info-card h3,
+.city-study-page .highlight-card h3,
+.city-study-page .type-card h3,
+.city-study-page .school-type-card h3 {
+  margin: 0 0 7px !important;
+  color: #164838 !important;
+  font-size: 16px !important;
+  line-height: 1.4 !important;
+}
+
+.city-study-page .info-card p,
+.city-study-page .highlight-card p,
+.city-study-page .type-card p,
+.city-study-page .school-type-card p {
+  margin: 0 !important;
+  color: #6c7a74 !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+}
+
+.city-study-page .type-card > span,
+.city-study-page .school-type-card > span:not(.highlight-icon) {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin-bottom: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--city-orange-soft) !important;
+  color: #a94d23 !important;
+  font-size: 11px !important;
+  font-weight: 800;
+}
+
+.city-study-page .type-card small {
+  display: block;
+  margin-top: 11px;
+  color: var(--city-green);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.city-study-page .profile-section,
+.city-study-page .featured-school-section {
+  scroll-margin-top: 88px;
+}
+
+.city-study-page .profile-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.city-study-page .profile-card {
+  display: block !important;
+  min-width: 0;
+  height: 100%;
+  padding: 0 0 16px !important;
+  overflow: hidden;
+  border: 1px solid var(--city-line) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  box-shadow: 0 7px 18px rgba(31, 77, 57, 0.07) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.city-study-page .profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(31, 77, 57, 0.12) !important;
+}
+
+.city-study-page .profile-card__image {
+  display: block;
+  width: 100%;
+  height: 172px;
+  object-fit: cover;
+  background: #dfece5;
+}
+
+.city-study-page .profile-card__head,
+.city-study-page .course-tags,
+.city-study-page .profile-list {
+  margin-right: 15px !important;
+  margin-left: 15px !important;
+}
+
+.city-study-page .profile-card__head {
+  padding: 15px 0 10px !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: var(--city-ink) !important;
+}
+
+.city-study-page .profile-card__head > span {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--city-green) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800;
+}
+
+.city-study-page .profile-card__head h3 {
+  margin: 0 !important;
+  color: #0e4635 !important;
+  font-size: 17px !important;
+  line-height: 1.38 !important;
+}
+
+.city-study-page .school-link {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.city-study-page .school-link mat-icon {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  font-size: 19px;
+}
+
+.city-study-page .profile-card__head p {
+  margin: 6px 0 0 !important;
+  color: #81776e !important;
+  font-size: 12px !important;
+}
+
+.city-study-page .starting-price {
+  display: block;
+  margin-top: 8px;
+  padding: 7px 9px !important;
+  border-radius: 7px;
+  background: var(--city-orange-soft) !important;
+  color: #b95629 !important;
+  font-size: 12px !important;
+  line-height: 1.45;
+}
+
+.city-study-page .course-tags {
+  display: flex !important;
+  padding: 11px 0 !important;
+  flex-wrap: wrap;
+  gap: 5px !important;
+  border-top: 1px solid #edf2ef;
+  border-bottom: 1px solid #edf2ef;
+}
+
+.city-study-page .course-tags span {
+  padding: 3px 6px !important;
+  border: 1px solid #d7e4dd !important;
+  border-radius: 5px !important;
+  background: #f7faf8 !important;
+  color: #46665a !important;
+  font-size: 10px !important;
+  line-height: 1.35;
+}
+
+.city-study-page .profile-list {
+  margin-top: 10px !important;
+}
+
+.city-study-page .profile-list > div {
+  display: grid !important;
+  grid-template-columns: 66px minmax(0, 1fr) !important;
+  gap: 8px !important;
+  padding: 7px 0 !important;
+  border: 0 !important;
+  border-bottom: 1px dashed #e0e9e4 !important;
+}
+
+.city-study-page .profile-list > div:last-child {
+  border-bottom: 0 !important;
+}
+
+.city-study-page .profile-list dt {
+  color: var(--city-green) !important;
+  font-size: 11px !important;
+  font-weight: 800;
+}
+
+.city-study-page .profile-list dd {
+  margin: 0 !important;
+  color: #6d7a74 !important;
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+}
+
+.city-study-page .decision-grid,
+.city-study-page .cost-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.city-study-page .decision-card,
+.city-study-page .cost-grid article {
+  display: flex !important;
+  min-width: 0;
+  padding: 16px !important;
+  gap: 11px !important;
+  border: 1px solid var(--city-line) !important;
+  border-radius: 12px !important;
+  background: #f9fcfa !important;
+}
+
+.city-study-page .decision-card mat-icon {
+  color: var(--city-green-2);
+}
+
+.city-study-page .decision-card h3,
+.city-study-page .cost-grid h3 {
+  margin: 0 0 5px !important;
+  color: #184737 !important;
+  font-size: 14px !important;
+}
+
+.city-study-page .decision-card p,
+.city-study-page .cost-grid p {
+  margin: 0 !important;
+  color: #6c7974 !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+}
+
+.city-study-page .cost-grid article {
+  display: block !important;
+}
+
+.city-study-page .compare-section {
+  display: grid !important;
+  grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1.28fr) !important;
+  gap: 22px !important;
+  align-items: start;
+  border-color: #edd8ca !important;
+  background: linear-gradient(120deg, #fff8f3, #fff 48%, #f3faf6) !important;
+}
+
+.city-study-page .compare-copy h2 {
+  margin: 0 !important;
+  color: #0d513e !important;
+  font-size: 24px !important;
+  line-height: 1.35 !important;
+}
+
+.city-study-page .compare-copy p {
+  margin: 10px 0 0 !important;
+  color: #6b7772 !important;
+  font-size: 13px !important;
+  line-height: 1.7 !important;
+}
+
+.city-study-page .compare-table {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d8e4de !important;
+  border-radius: 12px !important;
+  background: #fff;
+}
+
+.city-study-page .compare-row {
+  border-bottom: 1px solid #e5ece8 !important;
+}
+
+.city-study-page .compare-row:last-child {
+  border-bottom: 0 !important;
+}
+
+.city-study-page .compare-row--head {
+  background: var(--city-green) !important;
+  color: #fff !important;
+}
+
+.city-study-page .compare-row span {
+  min-width: 0;
+  padding: 10px 11px !important;
+  font-size: 11px !important;
+  line-height: 1.45;
+}
+
+.city-study-page .faq-source-section {
+  display: block !important;
+}
+
+.city-study-page .faq-panel {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.city-study-page .faq-panel article {
+  padding: 15px 0 !important;
+  border-top: 1px solid var(--city-line) !important;
+}
+
+.city-study-page .faq-panel article h3 {
+  margin: 0 0 6px !important;
+  color: #164838 !important;
+  font-size: 15px !important;
+}
+
+.city-study-page .faq-panel article p {
+  margin: 0 !important;
+  color: #6a7872 !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+}
+
+.city-study-page .featured-school-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.city-study-page .featured-school-card {
+  position: relative;
+  display: grid !important;
+  min-width: 0;
+  padding: 0 0 16px !important;
+  overflow: hidden;
+  border: 1px solid var(--city-line) !important;
+  border-top: 3px solid #82bda1 !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  box-shadow: 0 7px 18px rgba(31, 77, 57, 0.07) !important;
+}
+
+.city-study-page .featured-school-card__image,
+.city-study-page .featured-school-card > img {
+  display: block;
+  width: 100% !important;
+  height: 190px !important;
+  object-fit: cover !important;
+  grid-column: 1 / -1;
+}
+
+.city-study-page .featured-school-card > :not(img) {
+  margin-right: 16px !important;
+  margin-left: 16px !important;
+}
+
+.city-study-page .featured-school-card > .highlight-icon {
+  margin-top: -21px !important;
+  border: 3px solid #fff;
+}
+
+.city-study-page .featured-school-card h3 {
+  margin-top: 7px !important;
+}
+
+.city-study-page .featured-school-card strong,
+.city-study-page .featured-school-card a:not(.primary-action) {
+  display: inline-flex;
+  margin-top: 13px;
+  align-items: center;
+  gap: 4px;
+  color: var(--city-green) !important;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.city-study-page .featured-school-card .school-tag {
+  display: inline-flex;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin-top: 13px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--city-orange-soft);
+  color: #a94d23;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.city-study-page .featured-school-card > div {
+  padding: 0 !important;
+}
+
+.city-study-page .school-highlights {
+  display: flex;
+  margin-top: 11px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.city-study-page .school-highlights span {
+  padding: 3px 6px;
+  border: 1px solid #d9e5df;
+  border-radius: 5px;
+  color: #4d665c;
+  font-size: 10px;
+}
+
+@media (max-width: 1020px) {
+  .city-study-page .hero,
+  .city-study-page .boracay-hero,
+  .city-study-page .bacolod-hero,
+  .city-study-page .regional-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  .city-study-page .hero__media,
+  .city-study-page .boracay-hero__media,
+  .city-study-page .city-hero-visual {
+    min-height: 360px !important;
+  }
+
+  .city-study-page .hero__media > img,
+  .city-study-page .boracay-hero__media > img,
+  .city-study-page .city-hero-visual > img {
+    min-height: 360px;
+  }
+
+  .city-study-page .highlight-grid,
+  .city-study-page .type-grid,
+  .city-study-page .school-type-grid,
+  .city-study-page .profile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .city-study-page .compare-section {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .city-study-page {
+    width: min(100% - 20px, 1216px) !important;
+    padding-top: 12px !important;
+  }
+
+  .city-study-page .hero,
+  .city-study-page .boracay-hero,
+  .city-study-page .bacolod-hero,
+  .city-study-page .regional-hero,
+  .city-study-page .intro-band,
+  .city-study-page .highlight-section,
+  .city-study-page .type-section,
+  .city-study-page .profile-section,
+  .city-study-page .decision-section,
+  .city-study-page .cost-section,
+  .city-study-page .compare-section,
+  .city-study-page .faq-source-section,
+  .city-study-page .school-type-section,
+  .city-study-page .featured-school-section {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .city-study-page .hero h1,
+  .city-study-page .boracay-hero h1,
+  .city-study-page .bacolod-hero h1,
+  .city-study-page .regional-hero h1 {
+    font-size: 30px !important;
+  }
+
+  .city-study-page h1 em {
+    display: block;
+    margin: 5px 0 0;
+  }
+
+  .city-study-page .hero-actions,
+  .city-study-page .hero-actions a {
+    width: 100%;
+  }
+
+  .city-study-page .hero__media,
+  .city-study-page .boracay-hero__media,
+  .city-study-page .city-hero-visual,
+  .city-study-page .hero__media > img,
+  .city-study-page .boracay-hero__media > img,
+  .city-study-page .city-hero-visual > img {
+    min-height: 310px !important;
+  }
+
+  .city-study-page .stat-row,
+  .city-study-page .quick-panel,
+  .city-study-page .city-hero-visual .bacolod-hero__panel,
+  .city-study-page .city-hero-visual .regional-hero__panel,
+  .city-study-page .intro-band,
+  .city-study-page .highlight-grid,
+  .city-study-page .type-grid,
+  .city-study-page .school-type-grid,
+  .city-study-page .profile-grid,
+  .city-study-page .decision-grid,
+  .city-study-page .cost-grid,
+  .city-study-page .featured-school-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .city-study-page .stat-row > div + div,
+  .city-study-page .quick-panel > div + div,
+  .city-study-page .bacolod-hero__panel > div + div,
+  .city-study-page .regional-hero__panel > div + div {
+    border-top: 1px solid var(--city-line);
+    border-left: 0;
+  }
+
+  .city-study-page .city-hero-visual .bacolod-hero__panel,
+  .city-study-page .city-hero-visual .regional-hero__panel {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    margin: -34px 10px 10px;
+  }
+
+  .city-study-page .profile-card__image,
+  .city-study-page .featured-school-card__image,
+  .city-study-page .featured-school-card > img {
+    height: 205px !important;
+  }
+
+  .city-study-page .compare-table {
+    overflow-x: auto;
+  }
+
+  .city-study-page .compare-row {
+    min-width: 620px;
+  }
+}

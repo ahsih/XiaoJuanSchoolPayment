@@ -1,22 +1,35 @@
-<div class="regional-page" *ngIf="page$ | async as page">
+<link rel="stylesheet" href="/assets/philippines-city-study-page.css" />
+<main class="regional-page" [class.city-study-page]="page.route === '/philippines-study/iloilo'" *ngIf="page$ | async as page">
   <section class="regional-hero">
     <div class="regional-hero__copy">
-      <span class="section-kicker">{{ page.englishName }} English Study</span>
-      <h1>{{ page.cityName }}游学</h1>
+      <nav class="city-breadcrumb" aria-label="面包屑">
+        <a routerLink="/">首页</a><mat-icon>chevron_right</mat-icon>
+        <a routerLink="/philippines-study/why-philippines">菲律宾游学</a><mat-icon>chevron_right</mat-icon>
+        <span>{{ page.cityName }} {{ page.englishName }}</span>
+      </nav>
+      <span class="section-kicker">菲律宾小众安静型学习城市</span>
+      <h1>菲律宾 · {{ page.cityName }} <em>{{ page.englishName }}</em></h1>
+      <h2 class="city-hero-subtitle">{{ page.positioning }}</h2>
       <p>{{ page.intro }}</p>
       <div class="hero-actions">
         <a class="primary-action" routerLink="/about-sida/contact">
           免费匹配{{ page.cityName }}方案
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="#program-types" appScrollTo="program-types">
-          查看适合项目类型
+        <a
+          class="secondary-action"
+          [href]="page.schoolCards?.length ? '#all-schools' : '#program-types'"
+          [appScrollTo]="page.schoolCards?.length ? 'all-schools' : 'program-types'"
+        >
+          {{ page.schoolCards?.length ? '查看全部学校' : '查看适合项目类型' }}
           <mat-icon>south</mat-icon>
         </a>
       </div>
     </div>
 
-    <aside class="regional-hero__panel">
+    <div class="city-hero-visual">
+      <img *ngIf="page.heroImage" [src]="page.heroImage" [alt]="page.cityName + '语言学校校园环境'" />
+      <aside class="regional-hero__panel">
       <div>
         <strong>适合</strong>
         <span>{{ page.suitable }}</span>
@@ -29,7 +42,8 @@
         <strong>选校重点</strong>
         <span>{{ page.selectionFocus }}</span>
       </div>
-    </aside>
+      </aside>
+    </div>
   </section>
 
   <section class="highlight-section">
@@ -65,7 +79,7 @@
     </div>
   </section>
 
-  <section class="featured-school-section" *ngIf="page.schoolCards?.length">
+  <section class="featured-school-section" id="all-schools" *ngIf="page.schoolCards?.length">
     <div class="section-heading">
       <span class="section-kicker">Featured Schools</span>
       <h2>{{ page.cityName }}学校资料</h2>
@@ -74,6 +88,7 @@
 
     <div class="featured-school-grid">
       <article class="featured-school-card" *ngFor="let school of page.schoolCards">
+        <img class="featured-school-card__image" [src]="school.image" [alt]="school.title + '校园环境'" loading="lazy" decoding="async" />
         <span class="highlight-icon">
           <mat-icon>{{ school.icon }}</mat-icon>
         </span>
@@ -89,4 +104,4 @@
       </article>
     </div>
   </section>
-</div>
+</main>

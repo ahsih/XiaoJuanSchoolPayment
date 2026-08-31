@@ -13,8 +13,6 @@ import { AdminSchoolNotesComponent } from './pages/admin-school-notes/admin-scho
 import { MainNavbarComponent } from './pages/main-navbar/main-navbar.component';
 import { WhyPhilippinesStudyComponent } from './pages/philippines/why-philippines-study/why-philippines-study.component';
 import { CitySchoolsComponent } from './pages/philippines/city-schools/city-schools.component';
-import { BoracayStudyComponent } from './pages/philippines/boracay-study/boracay-study.component';
-import { BacolodStudyComponent } from './pages/philippines/bacolod-study/bacolod-study.component';
 import { RegionalCityStudyComponent } from './pages/philippines/regional-city-study/regional-city-study.component';
 import { SchoolRecommendationComponent } from './pages/philippines/school-recommendation/school-recommendation.component';
 import { SchoolLibraryComponent } from './pages/philippines/school-library/school-library.component';
@@ -557,7 +555,13 @@ const routes: Routes = [
             (m) => m.ParadiseEnglishSchoolComponent,
           ),
       },
-      { path: 'philippines-study/boracay', component: BoracayStudyComponent },
+      {
+        path: 'philippines-study/boracay',
+        loadComponent: () =>
+          import('./pages/philippines/boracay-study/boracay-study.component').then(
+            (m) => m.BoracayStudyComponent,
+          ),
+      },
       {
         path: 'philippines-study/bacolod/e-room-language-center',
         loadComponent: () =>
@@ -565,7 +569,13 @@ const routes: Routes = [
             (m) => m.EroomSchoolComponent,
           ),
       },
-      { path: 'philippines-study/bacolod', component: BacolodStudyComponent },
+      {
+        path: 'philippines-study/bacolod',
+        loadComponent: () =>
+          import('./pages/philippines/bacolod-study/bacolod-study.component').then(
+            (m) => m.BacolodStudyComponent,
+          ),
+      },
       {
         path: 'philippines-study/iloilo/gitc-college-international-language-center',
         loadComponent: () =>
@@ -592,8 +602,10 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/iloilo',
-        component: RegionalCityStudyComponent,
-        data: { cityKey: 'iloilo' },
+        loadComponent: () =>
+          import('./pages/philippines/iloilo-study/iloilo-study.component').then(
+            (m) => m.IloiloStudyComponent,
+          ),
       },
       {
         path: 'philippines-study/davao',

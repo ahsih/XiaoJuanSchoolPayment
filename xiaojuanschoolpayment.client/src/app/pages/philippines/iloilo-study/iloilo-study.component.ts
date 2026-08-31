@@ -1,0 +1,120 @@
+import { Component } from '@angular/core';
+import {
+  createCityStudyPage,
+  PhilippinesCityStudyLayoutComponent,
+} from '../../../components/philippines-city-study-layout/philippines-city-study-layout.component';
+
+@Component({
+  selector: 'app-iloilo-study',
+  standalone: true,
+  imports: [PhilippinesCityStudyLayoutComponent],
+  templateUrl: './iloilo-study.component.html',
+  styleUrl: './iloilo-study.component.css',
+})
+export class IloiloStudyComponent {
+  readonly page = createCityStudyPage({
+    cityName: '伊洛伊洛',
+    englishName: 'Iloilo',
+    heroKicker: '小众安静、成本友好的学习城市',
+    heroKickerIcon: 'spa',
+    heroSubtitle: '安静小城 × 成本友好 × 长期 ESL',
+    heroDescription:
+      '伊洛伊洛适合想避开热门城市、控制预算并在更安静环境中学习英语的学生。这里生活节奏平稳、干扰较少，适合长期打基础、练口语，也适合第一次出国后慢慢适应英语环境。',
+    heroImage: 'https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg',
+    heroImageAlt: '菲律宾伊洛伊洛城市与学习环境',
+    heroStudyImage: 'https://www.philja.com/school/sch_img/we_i/main4.jpg',
+    heroLessonImage: 'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
+    heroVisualLabel: '伊洛伊洛城市、语言学校与学习生活场景',
+    benefitChips: [
+      { icon: 'spa', label: '安静少干扰' },
+      { icon: 'savings', label: '成本容易控制' },
+      { icon: 'record_voice_over', label: '适合基础口语' },
+      { icon: 'schedule', label: '适合长期学习' },
+    ],
+    stats: [
+      { value: '4所', label: '重点学校资料', icon: 'workspace_premium' },
+      { value: 'ESL为主', label: '口语与基础提升' },
+      { value: '城市安静', label: '日常学习干扰少' },
+      { value: '预算友好', label: '适合长期规划' },
+    ],
+    schoolTypes: [
+      { title: '安静长期型', tag: 'Quiet / Long Stay', text: '适合计划用较长周期打基础、建立英语习惯，并希望减少城市娱乐干扰的学生。', examples: 'WE Academy、MK、GITC', icon: 'spa' },
+      { title: '高性价比 ESL', tag: 'Budget ESL', text: '适合把预算重点放在一对一课时、住宿和学习周期，希望总费用更好控制的学生。', examples: 'WE Academy、MK、GITC', icon: 'savings' },
+      { title: '口语与考试型', tag: 'Speaking / Exam', text: '适合提升日常沟通，同时需要 TOEIC、IELTS 或阶段性考试训练的学生。', examples: 'PIA、WE Academy、MK、GITC', icon: 'workspace_premium' },
+      { title: '初次适应型', tag: 'Easy Pace', text: '适合第一次出国，想在城市压力较低的环境中逐步适应课程、住宿和英语生活。', examples: 'PIA、WE Academy、MK', icon: 'record_voice_over' },
+    ],
+    schoolProfiles: [
+      {
+        name: 'WE Academy',
+        image: 'https://www.philja.com/school/sch_img/we_i/main4.jpg',
+        location: 'Iloilo City',
+        style: '半斯巴达 / IDP IELTS',
+        route: '/philippines-study/iloilo/we-academy',
+        courses: ['ESL', 'TOEIC', 'Business', 'IELTS', 'Junior'],
+        bestFor: '想在安静城市比较完整 ESL、考试、商务、青少年课程与住宿套餐的学生。',
+        categories: ['安静长期型', '高性价比 ESL', '口语与考试型', '初次适应型'],
+      },
+      {
+        name: 'PIA · Polyglot International Academy',
+        shortName: 'PIA',
+        image: 'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
+        location: 'Iloilo Business Park',
+        style: '口语 / 考试 / 城市生活圈',
+        route: '/philippines-study/iloilo/polyglot-international-academy',
+        courses: ['ESL', 'Power Speaking', 'IELTS', 'TOEIC', 'Junior'],
+        bestFor: '想住在城市生活圈，重视一对一口语、考试课程和生活便利的学生。',
+        categories: ['口语与考试型', '初次适应型'],
+      },
+      {
+        name: 'MK Language Training Center',
+        shortName: 'MK',
+        image: 'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
+        location: 'Iloilo City',
+        style: '半斯巴达 / ESL / Family',
+        route: '/philippines-study/iloilo/mk-language-training-center',
+        courses: ['ESL', 'IELTS', 'TESOL', 'Internship', 'Family'],
+        bestFor: '想控制预算，同时比较 ESL、考试、实习与家庭课程的学生。',
+        categories: ['安静长期型', '高性价比 ESL', '口语与考试型', '初次适应型'],
+      },
+      {
+        name: 'GITC College International Language Center',
+        shortName: 'GITC',
+        image: 'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
+        location: 'Iloilo City',
+        style: '大学附属 / TOEIC / IELTS',
+        route: '/philippines-study/iloilo/gitc-college-international-language-center',
+        courses: ['ESL', 'TOEIC', 'IELTS', 'University Exchange', 'SDGs'],
+        bestFor: '想把英语、考试备考与大学交流环境结合起来的学生。',
+        categories: ['安静长期型', '高性价比 ESL', '口语与考试型'],
+      },
+    ],
+    highlights: [
+      { icon: 'spa', title: '学习环境更安静', text: '相比热门城市，生活干扰较少，更适合形成稳定的上课和自习节奏。' },
+      { icon: 'savings', title: '成本更容易控制', text: '学习和生活开销相对友好，适合预算敏感或计划长期学习的学生。' },
+      { icon: 'record_voice_over', title: '适合基础口语', text: '安静城市更容易推动学生慢慢建立开口信心和英语生活习惯。' },
+      { icon: 'location_city', title: '生活压力较低', text: '基本生活配套齐全，又不会过度拥挤，第一次出国也更容易适应。' },
+    ],
+    selectionImages: [
+      'https://www.philja.com/school/sch_img/we_i/main4.jpg',
+      'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
+      'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
+      'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
+    ],
+    lifestyleImages: [
+      'https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg',
+      '/assets/philippines/monol-food-service.jpg',
+      '/assets/philippines/pines-one-to-one-classroom.jpg',
+      '/assets/philippines/cebu-city-view.jpg',
+    ],
+    faqs: [
+      { question: '伊洛伊洛适合第一次菲律宾游学吗？', answer: '适合喜欢安静、预算友好和生活压力较低环境的学生；如果更重视海岛活动与大量学校选择，宿务会更丰富。' },
+      { question: '伊洛伊洛适合长期学习吗？', answer: '适合。相对平稳的生活节奏有利于长期打基础，但仍要按课程时数、房型、餐食和当地费用核算总成本。' },
+      { question: '这里有考试和商务课程吗？', answer: '部分学校有 IELTS、TOEIC、Business 等方向，报名前需确认当期开班、师资、模考和课程比例。' },
+      { question: '报名前最应该核对什么？', answer: '确认入学日、课程开放、房型空位、管理制度、接送、退改规则、优惠有效期和当地费用。' },
+    ],
+    featuredTitle: '伊洛伊洛热门语言学校推荐',
+    featuredSubtitle: '学校数量不多，重点比较课程、住宿、管理与生活圈',
+    lifestyleTitle: '在伊洛伊洛，用更安静的日常建立英语习惯',
+    lifestyleSubtitle: '小众、生活压力低与成本友好，适合把学习做成长期计划',
+  });
+}

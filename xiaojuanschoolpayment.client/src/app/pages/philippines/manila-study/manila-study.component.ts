@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { ScrollToDirective } from '../../../directives/scroll-to.directive';
+import {
+  createCityStudyPage,
+  PhilippinesCityStudyLayoutComponent,
+} from '../../../components/philippines-city-study-layout/philippines-city-study-layout.component';
 
 interface StatItem {
   value: string;
@@ -24,6 +24,7 @@ interface SchoolType {
 
 interface SchoolProfile {
   name: string;
+  image: string;
   location: string;
   style: string;
   route?: string;
@@ -59,9 +60,8 @@ interface SourceLink {
 @Component({
   selector: 'app-manila-study',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, ScrollToDirective],
+  imports: [PhilippinesCityStudyLayoutComponent],
   templateUrl: './manila-study.component.html',
-  styleUrl: './manila-study.component.css',
 })
 export class ManilaStudyComponent {
   readonly stats: StatItem[] = [
@@ -123,6 +123,7 @@ export class ManilaStudyComponent {
   readonly schoolProfiles: SchoolProfile[] = [
     {
       name: '菲律宾马尼拉Enderun语言学校',
+      image: '/assets/philippines/enderun-extension-socials.jpg',
       location: 'Taguig / Enderun Colleges 体系',
       style: '学术英语、商务英语与短课型',
       route: '/philippines-study/manila/enderun-extension',
@@ -146,6 +147,7 @@ export class ManilaStudyComponent {
     },
     {
       name: '菲律宾马尼拉American-English-Skill语言学校',
+      image: '/assets/philippines/american-english-training-room.jpg',
       location: 'Makati / Metro Manila',
       style: '成人口语与企业沟通训练',
       route: '/philippines-study/manila/american-english-skills-development-center',
@@ -169,6 +171,7 @@ export class ManilaStudyComponent {
     },
     {
       name: '菲律宾马尼拉Berlitz语言学校',
+      image: '/assets/philippines/berlitz-hero.webp',
       location: 'Makati / Metro Manila',
       style: '国际语言培训与企业服务型',
       route: '/philippines-study/manila/berlitz-philippines',
@@ -191,6 +194,7 @@ export class ManilaStudyComponent {
     },
     {
       name: '菲律宾马尼拉Business College学校',
+      image: '/assets/philippines/mbc-slider-1.jpg',
       location: 'Manila City',
       style: '商科院校与国际学生衔接候选',
       route: '/philippines-study/manila/manila-business-college',
@@ -305,4 +309,54 @@ export class ManilaStudyComponent {
         '确认上课点、课程日期、授课方式、住宿是否自理、通勤时间、签证停留和退款/改期规则。',
     },
   ];
+
+  readonly page = createCityStudyPage({
+    cityName: '马尼拉',
+    englishName: 'Manila',
+    heroKicker: '首都圈商务与短期英语学习',
+    heroKickerIcon: 'business_center',
+    heroSubtitle: '首都资源 × 商务英语 × 城市短课',
+    heroDescription:
+      '马尼拉适合成人、职场人士与短期停留者。这里航班和城市资源集中，商务沟通、学术衔接与企业课程更有优势；多数课程不是传统寄宿制，选校时要把上课地点、住宿和通勤一起安排。',
+    heroImage: '/assets/philippines/manila-study-hero.jpg',
+    heroImageAlt: '菲律宾马尼拉城市与英语学习环境',
+    heroStudyImage: '/assets/philippines/american-english-training-room.jpg',
+    heroLessonImage: '/assets/philippines/enderun-general-english.jpg',
+    heroVisualLabel: '马尼拉城市、商务与英语课堂场景',
+    benefitChips: [
+      { icon: 'flight_takeoff', label: '国际航班集中' },
+      { icon: 'business_center', label: '商务英语场景' },
+      { icon: 'school', label: '学术衔接资源' },
+      { icon: 'schedule', label: '适合城市短课' },
+    ],
+    stats: [
+      { value: '4所', label: '重点学校与中心', icon: 'workspace_premium' },
+      { value: '成人为主', label: '口语 / 商务 / 学术' },
+      { value: '短期灵活', label: '城市课与企业课' },
+      { value: '交通集中', label: '转机与组合行程' },
+    ],
+    schoolTypes: this.schoolTypes.map((type, index) => ({
+      ...type,
+      icon: ['record_voice_over', 'business_center', 'school', 'route'][index],
+    })),
+    schoolProfiles: this.schoolProfiles,
+    highlights: this.highlights,
+    selectionImages: [
+      '/assets/philippines/american-english-training-room.jpg',
+      '/assets/philippines/enderun-business-english.jpg',
+      '/assets/philippines/mbc-classroom.jpg',
+      '/assets/philippines/manila-study-hero.jpg',
+    ],
+    lifestyleImages: [
+      '/assets/philippines/manila-study-hero.jpg',
+      '/assets/philippines/american-english-presentation-skills.jpg',
+      '/assets/philippines/enderun-academic-english.jpg',
+      '/assets/philippines/berlitz-adults.webp',
+    ],
+    faqs: this.faqs,
+    featuredTitle: '马尼拉英语学校与培训中心',
+    featuredSubtitle: '城市型课程差异较大，先确认场景、地点与授课方式',
+    lifestyleTitle: '在马尼拉，把英语直接放进真实城市场景',
+    lifestyleSubtitle: '商务、学术、面试与短期停留，都能找到更贴近使用需求的课程',
+  });
 }

@@ -38,6 +38,12 @@ export interface QuoteImageBenefitItem {
   text: string;
 }
 
+export interface QuoteImageAlumniBenefitItem {
+  title: string;
+  subtitle: string;
+  text: string;
+}
+
 export interface QuoteImageContact {
   name: string;
   phone: string;
@@ -80,6 +86,8 @@ export interface QuoteImageCardData {
   exchangeRateText?: string;
   optionalFeeItems?: QuoteImageOptionalFeeItem[];
   benefitItems?: QuoteImageBenefitItem[];
+  serviceLocations?: string[];
+  alumniBenefitItems?: QuoteImageAlumniBenefitItem[];
   importantNotes?: string[];
   noteTitle?: string;
   note: string;
@@ -366,7 +374,7 @@ export class QuoteImageDownloadButtonComponent {
     this.emailSuccess = '';
 
     try {
-      const blob = await this.createQuoteImageBlob(1);
+      const blob = await this.createQuoteImageBlob(2);
       const formData = new FormData();
       formData.append('email', email);
       formData.append('fileName', this.quote.fileName || 'quote-image.png');
@@ -436,7 +444,7 @@ export class QuoteImageDownloadButtonComponent {
       ),
     ]);
     const width = 1032;
-    const height = this.quote.layout === 'cia-detailed' ? 1760 : 1848;
+    const height = this.quote.layout === 'cia-detailed' ? 1954 : 1848;
     const scale = scaleOverride ?? Math.max(2, Math.min(window.devicePixelRatio || 2, 3));
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -513,12 +521,12 @@ export class QuoteImageDownloadButtonComponent {
 
     const drawSectionNumber = (number: string, title: string, y: number): void => {
       this.drawRoundedRect(context, 36, y - 23, 32, 28, 5, green);
-      context.font = '900 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = '#ffffff';
       context.textAlign = 'center';
       context.fillText(number, 52, y - 4);
       context.textAlign = 'left';
-      context.font = '900 20px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.font = '900 23px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
       context.fillText(title, 78, y - 3);
     };
@@ -529,73 +537,97 @@ export class QuoteImageDownloadButtonComponent {
       y: number,
       maxWidth: number,
       color = navy,
-      font = '600 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+      font = '600 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
       lines = 1,
+      lineHeight = 20,
     ): void => {
-      this.drawWrappedText(context, text, x, y, maxWidth, 16, font, color, lines);
+      this.drawWrappedText(context, text, x, y, maxWidth, lineHeight, font, color, lines);
+    };
+
+    const drawCenteredTableText = (
+      text: string,
+      x: number,
+      top: number,
+      rowHeight: number,
+      maxWidth: number,
+      color = navy,
+      font = '600 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+      maxLines = 1,
+      lineHeight = 20,
+    ): void => {
+      context.font = font;
+      context.fillStyle = color;
+      const wrappedLines = this.wrapCanvasText(context, text, maxWidth, maxLines);
+      if (wrappedLines.length === 0) {
+        return;
+      }
+
+      const metrics = wrappedLines.map((line) => context.measureText(line));
+      const ascent = Math.max(...metrics.map((metric) => metric.actualBoundingBoxAscent || 0));
+      const descent = Math.max(...metrics.map((metric) => metric.actualBoundingBoxDescent || 0));
+      const textHeight = ascent + descent + (wrappedLines.length - 1) * lineHeight;
+      const firstBaseline = top + (rowHeight - textHeight) / 2 + ascent;
+
+      wrappedLines.forEach((line, index) => {
+        context.fillText(line, x, firstBaseline + index * lineHeight);
+      });
     };
 
     context.fillStyle = '#ffffff';
     context.fillRect(0, 0, width, height);
 
-    this.drawImageContain(context, assets.logo, 30, 18, 430, 68);
-    const headerLines = [
-      ['报价编号：', this.quote.quoteNumber ?? '—'],
-      ['报价日期：', this.quote.quoteDateText],
-      ['报价有效期：', this.quote.validUntilText ?? '以顾问确认为准'],
-    ];
-    headerLines.forEach(([label, value], index) => {
-      const y = 30 + index * 24;
-      context.font = '800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-      context.fillStyle = navy;
-      context.fillText(label, 760, y);
-      context.font = '600 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-      context.fillText(value, 842, y);
-    });
+    this.drawImageContain(context, assets.logo, 30, 10, 430, 58);
+    context.font = '850 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = navy;
+    context.fillText('保价日期：', 780, 43);
+    context.font = '700 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillText(this.quote.validUntilText ?? '以顾问确认为准', 866, 43);
 
-    this.drawRoundedRect(context, padding, 98, contentWidth, 140, 10, '#ffffff', border, 1);
+    this.drawRoundedRect(context, padding, 80, contentWidth, 122, 10, '#ffffff', border, 1);
     context.font = '950 38px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = orange;
-    context.fillText(this.quote.schoolCode, 42, 158);
+    context.fillText(this.quote.schoolCode, 42, 140);
     const codeWidth = context.measureText(this.quote.schoolCode).width;
     context.fillStyle = green;
-    context.fillText(` ${this.quote.title}报价单`, 42 + codeWidth, 158);
-    this.drawWrappedText(
-      context,
-      this.quote.subtitle,
-      44,
-      196,
-      520,
-      20,
-      '650 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
-      navy,
-      2,
-    );
+    context.fillText(` ${this.quote.title}报价单`, 42 + codeWidth, 140);
+    if (this.quote.subtitle) {
+      this.drawWrappedText(
+        context,
+        this.quote.subtitle,
+        44,
+        173,
+        520,
+        20,
+        '650 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+        navy,
+        1,
+      );
+    }
     const admissionDate = this.quote.studentItems[0];
     if (admissionDate) {
-      this.drawRoundedRect(context, 44, 209, 210, 22, 6, '#f2f7f4');
-      context.font = '800 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      this.drawRoundedRect(context, 44, 166, 210, 24, 6, '#f2f7f4');
+      context.font = '800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
-      context.fillText(`${admissionDate.label}：${admissionDate.value}`, 56, 224);
+      context.fillText(`${admissionDate.label}：${admissionDate.value}`, 56, 183);
     }
-    this.drawRoundedImageCover(context, assets.hero, 590, 109, 422, 118, 10);
+    this.drawRoundedImageCover(context, assets.hero, 590, 86, 422, 106, 10);
 
-    this.drawRoundedRect(context, padding, 248, contentWidth, 422, 9, '#ffffff', border, 1);
-    drawSectionNumber('01', this.quote.paymentSectionTitle ?? '学校费用明细（到校前支付给学校的费用）', 279);
-    const paymentColumns = [36, 220, 408, 992];
+    this.drawRoundedRect(context, padding, 212, contentWidth, 510, 9, '#ffffff', border, 1);
+    drawSectionNumber('01', this.quote.paymentSectionTitle ?? '学校费用明细（到校前支付给学校的费用）', 246);
+    const paymentColumns = [36, 236, 420, 992];
     context.fillStyle = '#f3f6f4';
-    context.fillRect(36, 291, 956, 28);
+    context.fillRect(36, 262, 956, 36);
     ['项目', '金额（美元）', '说明'].forEach((label, index) => {
-      const centers = [128, 314, 700];
-      context.font = '850 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      const centers = [136, 328, 706];
+      context.font = '850 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
       context.textAlign = 'center';
-      context.fillText(label, centers[index], 310);
+      context.fillText(label, centers[index], 286);
     });
     context.textAlign = 'left';
     const paymentRows = this.quote.paymentItems.slice(0, 6);
-    const paymentRowHeights = [40, 60, 40, 52, 50, 50];
-    let paymentRowTop = 319;
+    const paymentRowHeights = [52, 74, 52, 60, 58, 62];
+    let paymentRowTop = 298;
     paymentRows.forEach((row, index) => {
       const rowHeight = paymentRowHeights[index] ?? 46;
       const top = paymentRowTop;
@@ -604,146 +636,168 @@ export class QuoteImageDownloadButtonComponent {
         context.fillRect(36, top, 956, rowHeight);
       }
       this.drawSolidLine(context, 36, top, 992, top, '#e1e6e8');
-      const centerY = top + rowHeight / 2 + 5;
-      drawTableText(row.label, 54, centerY, 150, row.accent ? orange : navy, `${row.accent ? '800' : '650'} 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`);
-      drawTableText(row.amount, 250, centerY, 130, row.accent ? orange : navy, '800 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
-      drawTableText(row.note ?? '—', 430, top + 20, 540, row.accent ? orange : '#334155', '600 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2);
+      context.textAlign = 'center';
+      drawCenteredTableText(row.label, 136, top, rowHeight, 170, row.accent ? orange : navy, `${row.accent ? '850' : '700'} 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`, 2, 21);
+      drawCenteredTableText(row.amount, 328, top, rowHeight, 150, row.accent ? orange : navy, '850 19px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
+      context.textAlign = 'left';
+      drawCenteredTableText(row.note ?? '—', 438, top, rowHeight, 532, row.accent ? orange : '#334155', '650 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 3, 20);
       paymentRowTop += rowHeight;
     });
     paymentColumns
       .slice(1, -1)
       .forEach((x) =>
-        this.drawSolidLine(context, x, 291, x, paymentRowTop, '#e1e6e8'),
+        this.drawSolidLine(context, x, 262, x, paymentRowTop, '#e1e6e8'),
       );
     this.drawSolidLine(context, 36, paymentRowTop, 992, paymentRowTop, '#e1e6e8');
     context.fillStyle = paleOrange;
-    context.fillRect(36, paymentRowTop, 956, 58);
-    context.font = '900 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillRect(36, paymentRowTop, 956, 64);
+    context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
-    context.fillText(this.quote.totalLabel, 56, paymentRowTop + 34);
-    context.font = '950 22px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillText(this.quote.totalUsd, 405, paymentRowTop + 36);
+    context.fillText(this.quote.totalLabel, 52, paymentRowTop + 38);
+    this.drawRoundedRect(context, 392, paymentRowTop + 9, 224, 46, 7, '#fff3e8', '#f3a072', 1);
+    context.font = '950 30px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = orange;
-    context.font = '900 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillText(this.quote.totalCny, 615, paymentRowTop + 27);
-    drawTableText(this.quote.totalNote ?? '', 615, paymentRowTop + 45, 355, '#64748b', '600 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1);
+    context.textAlign = 'center';
+    context.fillText(this.quote.totalUsd, 504, paymentRowTop + 42);
+    context.textAlign = 'left';
+    context.fillStyle = green;
+    context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillText(this.quote.totalCny, 645, paymentRowTop + 27);
+    drawTableText(this.quote.totalNote ?? '', 645, paymentRowTop + 50, 325, '#64748b', '650 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
 
-    this.drawRoundedRect(context, padding, 680, contentWidth, 638, 9, '#ffffff', border, 1);
-    drawSectionNumber('02', this.quote.localFeeTitle ?? '到校后学杂费明细参考（学校及相关部门收取）', 711);
-    const localColumns = [36, 230, 360, 430, 548, 992];
+    this.drawRoundedRect(context, padding, 734, contentWidth, 708, 9, '#ffffff', border, 1);
+    drawSectionNumber('02', this.quote.localFeeTitle ?? '到校后学杂费明细参考（学校及相关部门收取）', 768);
+    const localColumns = [36, 236, 420, 992];
     context.fillStyle = '#f3f6f4';
-    context.fillRect(36, 723, 956, 30);
-    const localHeaders = ['项目', '单价（比索）', '数量', '总价（比索）', '简要说明'];
+    context.fillRect(36, 784, 956, 36);
+    const localHeaders = ['项目', '本次预计金额（比索）', '简要说明'];
     localHeaders.forEach((label, index) => {
-      context.font = '850 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.font = '850 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
       context.textAlign = 'center';
-      context.fillText(label, (localColumns[index] + localColumns[index + 1]) / 2, 743);
+      context.fillText(label, (localColumns[index] + localColumns[index + 1]) / 2, 808);
     });
     context.textAlign = 'left';
     const localRows = this.quote.localFeeItems?.slice(0, 9) ?? [];
+    const localRowHeights = [54, 50, 62, 48, 50, 50, 62, 52, 46];
+    let localRowTop = 820;
     localRows.forEach((row, index) => {
-      const top = 753 + index * 50;
+      const top = localRowTop;
+      const rowHeight = localRowHeights[index] ?? 56;
       if (index % 2 === 1) {
         context.fillStyle = '#fbfcfc';
-        context.fillRect(36, top, 956, 50);
+        context.fillRect(36, top, 956, rowHeight);
       }
       this.drawSolidLine(context, 36, top, 992, top, '#e1e6e8');
-      drawTableText(row.label, 48, top + 20, 170, navy, '650 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2);
-      drawTableText(row.unit, 242, top + 29, 106, '#334155', '600 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
-      drawTableText(row.quantity, 386, top + 29, 34, navy, '700 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
-      drawTableText(row.amount, 448, top + 29, 88, navy, '800 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
-      drawTableText(row.note, 562, top + 19, 414, '#475569', '550 10px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2);
+      context.textAlign = 'center';
+      drawCenteredTableText(row.label, 136, top, rowHeight, 174, navy, '700 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2, 19);
+      drawCenteredTableText(row.amount, 328, top, rowHeight, 150, navy, '850 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif');
+      context.textAlign = 'left';
+      drawCenteredTableText(row.note, 438, top, rowHeight, 532, '#475569', '600 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2, 18);
+      localRowTop += rowHeight;
     });
-    localColumns.slice(1, -1).forEach((x) => this.drawSolidLine(context, x, 723, x, 1247, '#e1e6e8'));
-    this.drawSolidLine(context, 36, 1203, 992, 1203, '#e1e6e8');
+    localColumns.slice(1, -1).forEach((x) => this.drawSolidLine(context, x, 784, x, localRowTop, '#e1e6e8'));
+    this.drawSolidLine(context, 36, localRowTop, 992, localRowTop, '#e1e6e8');
     context.fillStyle = paleOrange;
-    context.fillRect(36, 1203, 956, 44);
-    context.font = '900 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillRect(36, localRowTop, 956, 56);
+    context.font = '900 19px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
-    context.fillText('本次预计学杂费合计', 88, 1231);
+    context.fillText('本次预计学杂费合计', 72, localRowTop + 36);
     context.fillStyle = orange;
-    context.fillText(this.quote.localFeeAmount, 448, 1231);
-    context.fillText(this.quote.localFeeCny ?? '', 655, 1231);
+    context.textAlign = 'center';
+    context.fillText(this.quote.localFeeAmount, 328, localRowTop + 36);
+    context.textAlign = 'left';
+    context.fillText(this.quote.localFeeCny ?? '', 620, localRowTop + 36);
 
     const optionalFees = this.quote.optionalFeeItems?.slice(0, 2) ?? [];
     optionalFees.forEach((item, index) => {
       const x = 36 + index * 482;
-      this.drawRoundedRect(context, x, 1257, 468, 48, 6, '#f8fbf9', '#dfe8e2', 1);
-      context.font = '800 11px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      const y = localRowTop + 68;
+      this.drawRoundedRect(context, x, y, 468, 64, 6, '#f8fbf9', '#dfe8e2', 1);
+      context.font = '850 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
-      context.fillText(`${item.label}  ${item.amount}`, x + 12, 1275);
-      drawTableText(item.note, x + 12, 1293, 440, '#64748b', '550 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1);
+      context.fillText(`${item.label}  ${item.amount}`, x + 12, y + 24);
+      drawTableText(item.note, x + 12, y + 49, 440, '#64748b', '600 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 18);
     });
 
-    this.drawRoundedRect(context, padding, 1328, contentWidth, 116, 9, '#ffffff', border, 1);
-    drawSectionNumber('03', '为什么选择思达启航？', 1358);
-    const benefits = this.quote.benefitItems?.slice(0, 5) ?? [];
-    const benefitWidth = 184;
+    this.drawRoundedRect(context, padding, 1454, contentWidth, 174, 9, '#ffffff', border, 1);
+    drawSectionNumber('03', '为什么选择思达启航？', 1490);
+
+    const benefits = this.quote.benefitItems?.slice(0, 4) ?? [];
     benefits.forEach((item, index) => {
-      const x = 48 + index * 190;
-      if (index > 0) {
-        this.drawSolidLine(context, x - 12, 1371, x - 12, 1428, '#e2e8ec');
-      }
-      context.font = '900 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      const x = 36 + index * 238;
+      const y = 1505;
+      this.drawRoundedRect(context, x, y, 224, 44, 7, '#f8fbf9', '#dfe8e2', 1);
+      context.fillStyle = index === 1 ? orange : green;
+      context.fillRect(x, y, 5, 44);
+      context.font = '900 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
       context.textAlign = 'center';
-      context.fillText(item.title, x + benefitWidth / 2, 1392);
-      context.textAlign = 'left';
-      this.drawWrappedText(context, item.text, x + 8, 1412, benefitWidth - 16, 15, '550 10px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', '#475569', 2);
+      context.fillText(item.title, x + 112, y + 29);
     });
 
-    this.drawRoundedRect(context, padding, 1454, contentWidth, 212, 9, '#ffffff', border, 1);
-    drawSectionNumber('04', '你的专属顾问团队', 1484);
-    const cardWidth = 184;
-    assets.consultants.forEach((item, index) => {
-      const x = 36 + index * 192;
-      const y = 1498;
-      this.drawRoundedRect(context, x, y, cardWidth, 154, 7, '#fbfdfc', '#e1e8e4', 1);
-      if (item.consultant.placeholder) {
-        this.drawRoundedRect(context, x + 14, y + 14, 46, 46, 23, '#eaf4ee');
-        context.font = '900 18px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-        context.fillStyle = green;
-        context.textAlign = 'center';
-        context.fillText(item.consultant.name.slice(0, 1), x + 37, y + 44);
-        context.textAlign = 'left';
-      } else {
-        this.drawCircularImage(context, item.avatar, x + 37, y + 37, 23);
-      }
-      context.font = '900 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-      context.fillStyle = orange;
-      context.fillText(item.consultant.name, x + 70, y + 25);
-      context.font = '700 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    const alumniText = this.quote.alumniBenefitItems?.[0]?.text ?? '';
+    this.drawRoundedRect(context, 36, 1557, 956, 40, 6, '#fff8f1', '#f2b38c', 1);
+    context.fillStyle = orange;
+    context.fillRect(36, 1557, 5, 40);
+    context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = orange;
+    context.textAlign = 'left';
+    context.fillText('老学员专属优惠', 54, 1583);
+    context.font = '800 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = navy;
+    context.fillText(alumniText, 206, 1583);
+
+    const serviceLocations = this.quote.serviceLocations?.slice(0, 3) ?? [
+      '深圳总部',
+      '菲律宾驻点',
+      '欧洲驻点',
+    ];
+    const locationColors = ['#ef4444', '#2563eb', '#1d4ed8'];
+    serviceLocations.forEach((location, index) => {
+      const x = 266 + index * 176;
+      this.drawRoundedRect(context, x, 1601, 28, 22, 4, locationColors[index] ?? green);
+      context.font = '850 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = '#ffffff';
+      context.textAlign = 'center';
+      context.fillText(index === 0 ? '中' : index === 1 ? '菲' : '欧', x + 14, 1617);
+      context.font = '850 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = navy;
-      this.drawWrappedText(context, item.consultant.title ?? '咨询顾问', x + 70, y + 42, 100, 12, '700 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', navy, 2);
-      this.drawRoundedRect(context, x + 58, y + 68, 68, 68, 4, '#ffffff', '#e3e8e5', 1);
-      if (item.consultant.placeholder) {
-        context.font = '700 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-        context.fillStyle = '#94a3b8';
-        context.textAlign = 'center';
-        context.fillText('二维码', x + 92, y + 95);
-        context.fillText('待补充', x + 92, y + 111);
-      } else {
-        this.drawImageContain(context, item.qr, x + 62, y + 72, 60, 60);
-      }
-      context.font = '800 9px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-      context.fillStyle = green;
-      context.textAlign = 'center';
-      context.fillText(item.consultant.placeholder ? '联系方式待补充' : `☎ ${item.consultant.phone}`, x + cardWidth / 2, y + 148);
       context.textAlign = 'left';
+      context.fillText(location, x + 36, 1618);
     });
 
-    this.drawRoundedRect(context, padding, 1676, contentWidth, 68, 8, '#f7faf8', '#dce7e1', 1);
-    context.font = '900 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    this.drawRoundedRect(context, padding, 1640, contentWidth, 178, 9, '#ffffff', border, 1);
+    drawSectionNumber('04', '报价核验与官方对接', 1676);
+    const mainContact = assets.consultants[0];
+    if (mainContact) {
+      this.drawRoundedRect(context, 36, 1690, 956, 112, 8, '#fbfdfc', '#dfe8e2', 1);
+      this.drawCircularImage(context, mainContact.avatar, 92, 1746, 36);
+      context.font = '900 20px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = green;
+      context.textAlign = 'left';
+      context.fillText(`报价核验联系人：${mainContact.consultant.name}`, 150, 1723);
+      context.font = '950 24px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = orange;
+      context.fillText(`电话 / 微信：${mainContact.consultant.phone}`, 150, 1756);
+      context.font = '700 15px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = '#475569';
+      context.fillText('用于核验报价、空房及适用优惠；已有专属顾问请继续联系原顾问', 150, 1783);
+      this.drawRoundedRect(context, 862, 1697, 96, 96, 6, '#ffffff', '#dfe7e2', 1);
+      this.drawImageContain(context, mainContact.qr, 869, 1704, 82, 82);
+    }
+
+    this.drawRoundedRect(context, padding, 1830, contentWidth, 106, 8, '#f7faf8', '#dce7e1', 1);
+    context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
-    context.fillText('05  重要说明', 38, 1698);
+    context.fillText('05  重要说明', 38, 1862);
     const importantNotes = this.quote.importantNotes?.length
       ? this.quote.importantNotes
       : [this.quote.note];
     importantNotes.slice(0, 3).forEach((note, index) => {
-      context.font = '600 10px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.font = '650 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = '#475569';
-      context.fillText(`✓ ${note}`, 145, 1695 + index * 17);
+      context.fillText(`✓ ${note}`, 174, 1861 + index * 27);
     });
   }
 

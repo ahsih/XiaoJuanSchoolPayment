@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { ScrollToDirective } from '../../../directives/scroll-to.directive';
+import {
+  createCityStudyPage,
+  PhilippinesCityStudyLayoutComponent,
+} from '../../../components/philippines-city-study-layout/philippines-city-study-layout.component';
 
 interface StatItem {
   value: string;
@@ -24,6 +24,7 @@ interface SchoolType {
 
 interface SchoolProfile {
   name: string;
+  image: string;
   location: string;
   style: string;
   route?: string;
@@ -59,9 +60,8 @@ interface SourceLink {
 @Component({
   selector: 'app-clark-study',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, ScrollToDirective],
+  imports: [PhilippinesCityStudyLayoutComponent],
   templateUrl: './clark-study.component.html',
-  styleUrl: './clark-study.component.css',
 })
 export class ClarkStudyComponent {
   readonly stats: StatItem[] = [
@@ -123,6 +123,7 @@ export class ClarkStudyComponent {
   readonly schoolProfiles: SchoolProfile[] = [
     {
       name: '菲律宾克拉克 CIP语言学校',
+      image: '/assets/philippines/cip-campus-hero.jpg',
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
@@ -147,6 +148,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克EG语言学校',
+      image: '/assets/philippines/eg-campus-building.jpg',
       location: 'Lot 2-B Friendship Highway, Cutcut, Angeles City',
       style: 'ESL、Native、考试与Golf体验型',
       route: '/philippines-study/clark/eg-academy',
@@ -171,6 +173,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克WE Academy语言学校',
+      image: '/assets/philippines/we-hero.jpg',
       location: 'Fil-Am Friendship Highway, Angeles City',
       style: '度假式校区与亲子友好型',
       route: '/philippines-study/clark/clark-we-academy',
@@ -194,6 +197,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克TALK Academy语言学校',
+      image: 'https://clarktalkacademy.com/assets/campus.jpg',
       location: 'Clark Freeport Zone, Pampanga',
       style: '一对一口语、舒适住宿与Golf/Senior方向',
       route: '/philippines-study/clark/talk-academy',
@@ -219,6 +223,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克HELP English语言学校',
+      image: '/assets/philippines/help-clark-main-building.jpg',
       location: 'Clark / Pampanga',
       style: 'Sparta强管理与考试路线候选',
       route: '/philippines-study/clark/help-english-clark',
@@ -234,6 +239,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克AELC语言学校',
+      image: '/assets/philippines/aelc-campus.jpg',
       location: 'Clark / Angeles City',
       style: 'Native口语、TOEIC与IELTS候选',
       route: '/philippines-study/clark/aelc-native-focused-clark-schools',
@@ -257,6 +263,7 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克HANA Academy',
+      image: 'https://media.loveitopcdn.com/29958/campus-hana-min.jpg',
       location: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City',
       style: 'Native口语、亲子、Golf与Senior舒适型',
       route: '/philippines-study/clark/hana-academy',
@@ -413,4 +420,54 @@ export class ClarkStudyComponent {
     },
     { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
   ];
+
+  readonly page = createCityStudyPage({
+    cityName: '克拉克',
+    englishName: 'Clark',
+    heroKicker: '机场便利与亲子友好的学习城市',
+    heroKickerIcon: 'flight_takeoff',
+    heroSubtitle: '国际社区 × 外教口语 × 亲子友好',
+    heroDescription:
+      '克拉克拥有国际机场与成熟生活配套，外教口语、亲子和青少年课程选择突出。这里比海岛旅游区安静，交通又比山城更轻松，适合重视接送便利、住宿舒适与家庭学习安排的学生。',
+    heroImage: '/assets/philippines/clark-study-hero.jpg',
+    heroImageAlt: '菲律宾克拉克城市与语言学校环境',
+    heroStudyImage: '/assets/philippines/cip-classroom-one-to-one.jpg',
+    heroLessonImage: '/assets/philippines/we-native-teacher.jpg',
+    heroVisualLabel: '克拉克城市、外教课堂与亲子学习场景',
+    benefitChips: [
+      { icon: 'flight_takeoff', label: '国际机场便利' },
+      { icon: 'record_voice_over', label: '外教口语突出' },
+      { icon: 'family_restroom', label: '亲子课程丰富' },
+      { icon: 'villa', label: '住宿环境舒适' },
+    ],
+    stats: [
+      { value: '7所', label: '克拉克学校资料', icon: 'workspace_premium' },
+      { value: '外教课', label: 'Native Mix' },
+      { value: '亲子友好', label: '儿童与陪读' },
+      { value: '机场直达', label: '行程衔接更省心' },
+    ],
+    schoolTypes: this.schoolTypes.map((type, index) => ({
+      ...type,
+      icon: ['record_voice_over', 'family_restroom', 'school', 'business_center'][index],
+    })),
+    schoolProfiles: this.schoolProfiles,
+    highlights: this.highlights,
+    selectionImages: [
+      '/assets/philippines/cip-campus-hero.jpg',
+      '/assets/philippines/we-family-program.jpg',
+      '/assets/philippines/eg-campus-building.jpg',
+      '/assets/philippines/help-clark-main-building.jpg',
+    ],
+    lifestyleImages: [
+      '/assets/philippines/we-native-teacher.jpg',
+      '/assets/philippines/we-campus-life.jpg',
+      '/assets/philippines/clark-study-hero.jpg',
+      '/assets/philippines/cip-stay-amenities.jpg',
+    ],
+    faqs: this.faqs,
+    featuredTitle: '克拉克热门语言学校推荐',
+    featuredSubtitle: '重点比较外教比例、亲子安排、住宿和机场接送',
+    lifestyleTitle: '在克拉克，学习和家庭生活都更从容',
+    lifestyleSubtitle: '国际社区、机场与成熟生活配套，让短期和亲子行程更好安排',
+  });
 }
