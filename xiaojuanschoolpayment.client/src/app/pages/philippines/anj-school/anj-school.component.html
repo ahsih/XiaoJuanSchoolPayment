@@ -424,6 +424,7 @@
               发送给顾问复核
               <mat-icon>send</mat-icon>
             </a>
+            <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
           </div>
           <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认A&amp;J正式invoice、房型空位及尚待补充的常规/生日/淡季优惠。</p>
         </section>

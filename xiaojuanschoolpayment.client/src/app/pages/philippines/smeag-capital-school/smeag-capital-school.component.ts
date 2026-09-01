@@ -14,6 +14,8 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -116,7 +118,7 @@ interface SidaTrustBadge {
 @Component({
   selector: 'app-smeag-capital-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './smeag-capital-school.component.html',
   styleUrls: [
@@ -880,6 +882,38 @@ export class SmeagCapitalSchoolComponent implements OnInit {
 
   get localFeesCnyText(): string {
     return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.excluded);
+    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'SMEAG',
+      schoolName: '菲律宾宿务SMEAG Capital语言学校',
+      filePrefix: 'SMEAG-Capital',
+      heroSrc: '/assets/philippines/smeag-capital-building.png',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '折', label: '思达折扣', amount: '9折', note: `${this.discountText}，优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+        { icon: '淡', label: '淡季优惠', amount: this.lowSeasonDiscount ? `- ${this.formatUsd(this.lowSeasonDiscount)} 美元` : '未适用', note: `USD 25/周 × 重叠${this.lowSeasonWeeks}周`, accent: this.lowSeasonDiscount > 0 },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeesTotal,
+      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
+      localFeeNote: '接机和可退押金单独列示，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
+      ruleNotes: [
+        '校内住宿按课程费＋住宿费9折；校外酒店只折课程费，酒店住宿费不打折。',
+        '2026/08/23—2027/01/01在校期间，每个重叠学习周再减25美元。',
+      ],
+    });
   }
 
   formatUsd(value: number): string {

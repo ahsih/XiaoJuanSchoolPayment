@@ -9,6 +9,8 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -31,7 +33,7 @@ interface SidaPinesTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-pines-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './pines-school-detail.component.html',
   styleUrls: [
@@ -431,6 +433,41 @@ export class PinesSchoolDetailComponent implements OnInit {
   get localFeeCnyText(): string {
     if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
     return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.optional);
+    const optionalFees = this.localFees.filter((fee) => fee.optional);
+    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
+    const otherDiscounts = this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscountAmount;
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'PINES',
+      schoolName: '菲律宾碧瑶PINES语言学校',
+      filePrefix: 'PINES',
+      heroSrc: '/assets/philippines/pines-campus-hero.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: this.registrationDiscountAmount ? '思达优惠免注册费' : '一次性学校注册费' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周` },
+        { icon: '折', label: '思达折扣', amount: '95折', note: `课程费与住宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+        { icon: '惠', label: '其他优惠', amount: `- ${this.formatUsd(otherDiscounts)} 美元`, note: '免注册费、淡季与12周以上优惠按条件自动计算', accent: otherDiscounts > 0 },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeeTotal,
+      localFeeCny: Math.round(this.localFeeTotal / this.phpPerCny),
+      localFeeNote: '不含可退押金及按需洗衣服务，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
+      ruleNotes: [
+        '2周按4周价65%，3周按85%；4周以上按4周单价和学习周期计算。',
+        '旺季附加费、常规淡季优惠、12周以上优惠及免注册费均按对应条件自动计算。',
+      ],
+    });
   }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }

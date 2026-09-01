@@ -307,6 +307,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP I-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、管理费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
             <p class="season-note">旺季附加费：2026/6/28—8/22期间就读的周数按USD 40/周计算；页面会根据所选入学日和学习周数自动统计。</p>

@@ -311,7 +311,7 @@
             <div class="section-heading">
               <span>CG Sparta费用快速报价</span>
               <h2>默认参考：4周Sparta Course + 校内4人房</h2>
-              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
+              <p>以上课程与住宿单价均按4周计；思达9折、淡季与长周期优惠会按条件自动计算。</p>
             </div>
             <div class="quote-form" aria-label="CG Sparta费用快速报价选项">
               <label>
@@ -339,15 +339,16 @@
             </div>
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
-              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
-              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
-              <div><span>旺季提醒</span><strong>需另行确认</strong></div>
+              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>思达折扣</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+              <div><span>淡季优惠</span><strong>- USD {{ formatUsd(offSeasonDiscount) }}</strong></div>
+              <div><span>长周期优惠</span><strong>- USD {{ formatUsd(longStayDiscount) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
+              <em>{{ quoteCnyText }}（{{ exchangeRateText }}）</em>
               <p *ngIf="quoteCalculated">
                 已按当前选择更新。正式报价仍需确认房型、性别、入学日、旺季、优惠和当地费用。
               </p>
@@ -356,6 +357,10 @@
               <button type="button" class="primary-action" (click)="calculateQuote()">
                 立即计算我的费用<mat-icon>calculate</mat-icon>
               </button>
+              <app-quote-image-download-button
+                [quote]="quoteImageData"
+                label="保存报价单图片"
+              ></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价<mat-icon>support_agent</mat-icon>
               </a>
@@ -378,8 +383,8 @@
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
+              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
             </article>
           </div>
           <details class="mobile-only mobile-details">
@@ -387,11 +392,12 @@
             <div class="local-fee-grid mobile-local-fees">
               <article *ngFor="let fee of localFees">
                 <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
-                <p>{{ fee.note }}</p>
+                <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+                <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
               </article>
             </div>
           </details>
+          <p class="fee-alert">预计学杂费合计：{{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}）；接机和可退押金不计入合计。</p>
         </section>
 
         <section class="notice-panel" id="price-note">

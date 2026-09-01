@@ -302,7 +302,7 @@
             <span>费用快速报价</span>
             <h2>用公开价目表先估算CG Banilad主费用</h2>
             <p>
-              这个计算器用于快速比较课程、房型和周数。正式报价还需要确认入学日期、空房、汇率、优惠和学校最新费用。
+              以上课程与住宿单价均按4周计；思达9折、淡季与长周期优惠会按入学日和周数自动计算。
             </p>
           </div>
           <div class="quote-form" aria-label="CG Banilad费用快速报价选项">
@@ -332,19 +332,34 @@
 
           <div class="quote-breakdown">
             <article>
-              <span>预计主费用</span>
+              <span>课程费</span>
+              <strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedWeeksText }}</p>
+            </article>
+            <article>
+              <span>住宿费</span>
+              <strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+              <p>{{ selectedRoom.name }}</p>
+            </article>
+            <article>
+              <span>思达9折优惠</span>
+              <strong>- {{ formatUsd(sidaDiscountAmount) }}</strong>
+              <p>仅课程费与住宿费；注册费不减免。</p>
+            </article>
+            <article>
+              <span>淡季优惠</span>
+              <strong>- {{ formatUsd(offSeasonDiscount) }}</strong>
+              <p>2026/8/30-12/27入学，每满4周优惠USD 150。</p>
+            </article>
+            <article>
+              <span>长周期优惠</span>
+              <strong>- {{ formatUsd(longStayDiscount) }}</strong>
+              <p>12/16/20/24周分别优惠USD 50/100/150/200。</p>
+            </article>
+            <article>
+              <span>最终学校费用</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeksText }}</p>
-            </article>
-            <article>
-              <span>平均每周</span>
-              <strong>{{ weeklyAverageText }}</strong>
-              <p>{{ quoteNote }}</p>
-            </article>
-            <article>
-              <span>房型备注</span>
-              <strong>{{ selectedRoom.note }}</strong>
-              <p>注册费 {{ formatUsd(registrationFeeUsd) }} 已计入；当地PHP费用另计。</p>
+              <p>人民币预计 {{ quoteCnyText }}（{{ exchangeRateText }}）；已含注册费 {{ formatUsd(registrationFeeUsd) }}。</p>
             </article>
           </div>
 
@@ -353,6 +368,10 @@
               标记为已估算
               <mat-icon>done</mat-icon>
             </button>
+            <app-quote-image-download-button
+              [quote]="quoteImageData"
+              label="保存报价单图片"
+            ></app-quote-image-download-button>
             <a class="secondary-action" routerLink="/about-sida/contact">
               发送给顾问复核
               <mat-icon>send</mat-icon>
@@ -374,17 +393,18 @@
           <div class="local-fee-grid cg-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
+              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
             </article>
           </div>
           <div class="mobile-card-list mobile-only">
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
+              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
             </article>
           </div>
+          <p class="quote-status">预计学杂费合计：{{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}）；接机和可退押金不计入合计。</p>
         </section>
 
         <section class="section-block">

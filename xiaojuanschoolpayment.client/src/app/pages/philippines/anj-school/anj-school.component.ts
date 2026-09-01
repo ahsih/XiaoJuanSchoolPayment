@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿';
@@ -107,7 +109,7 @@ interface SourceLink {
 @Component({
   selector: 'app-anj-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './anj-school.component.html',
   styleUrls: [
@@ -657,6 +659,40 @@ export class AnjSchoolComponent implements OnInit {
   scrollToSection(id: string, event?: Event): void {
     event?.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.optional);
+    const optionalFees = this.localFees.filter((fee) => fee.optional);
+    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'A&J',
+      schoolName: '菲律宾碧瑶A&J语言学校',
+      filePrefix: 'AJ',
+      heroSrc: '/assets/philippines/anj-campus-hero.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFeeUsd)} 美元`, note: '思达优惠免注册费' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.courseTuitionUsd)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.lessons}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeUsd)} 美元`, note: this.selectedRoom.name },
+        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.peakSurchargeUsd)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周` },
+        { icon: '惠', label: '注册费优惠', amount: `- ${this.formatUsd(this.registrationDiscountAmount)} 美元`, note: '思达报名优惠已自动计入', accent: true },
+        { icon: '折', label: '思达折扣', amount: '95折', note: `课程费与住宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeeTotal,
+      localFeeCny: Math.round(this.localFeeTotal / this.phpPerCny),
+      localFeeNote: '不含可退押金及按需洗衣服务，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
+      ruleNotes: [
+        '常规优惠、生日优惠和淡季优惠金额暂未录入，待学校补充后再自动计算。',
+        '当前自动计入免注册费、课程与住宿95折，以及适用的旺季附加费。',
+      ],
+    });
   }
 
   formatUsd(value: number): string {

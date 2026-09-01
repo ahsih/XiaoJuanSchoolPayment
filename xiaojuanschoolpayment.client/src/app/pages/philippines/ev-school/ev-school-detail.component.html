@@ -361,6 +361,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">到校学杂费会按学习周数、校内或校外住宿、签证时长自动估算。接机与可退房间押金单独列示，不计入学杂费合计。</p>
             <p class="season-note">旺季附加费为 USD 40 / 周，系统按学习日期与 2026/07/05—08/29 的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>

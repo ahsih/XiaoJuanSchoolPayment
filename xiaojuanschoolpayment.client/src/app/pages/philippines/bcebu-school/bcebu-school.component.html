@@ -24,17 +24,17 @@
           </div>
 
           <div class="hero-media">
-            <figure class="feature-photo generic-study-photo">
-              <img src="assets/study-hero-collage.png" alt="英语学习与课堂场景" />
-              <figcaption>B'Cebu 2026课程与住宿费用参考</figcaption>
+            <figure class="feature-photo school-campus-photo">
+              <img src="/assets/philippines/bcebu-campus-hero.webp" alt="B'Cebu语言学校校区主楼与庭院" />
+              <figcaption>B'Cebu语言学校校区实景</figcaption>
             </figure>
             <aside class="hero-price-card">
-              <span>4周标准课程参考</span>
-              <strong>USD 1,750 <small>起</small></strong>
-              <p>Speed ESL + 三人间，已含USD 100注册费</p>
+              <span>{{ selectedWeeks }}周当前选择参考</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}，已计入适用优惠</p>
               <ul>
-                <li><mat-icon>check_circle</mat-icon>1/2/3周按40%/60%/80%计算</li>
-                <li><mat-icon>info</mat-icon>当地费用与特殊入住资格需另行确认</li>
+                <li><mat-icon>check_circle</mat-icon>思达9折并免USD 100注册费</li>
+                <li><mat-icon>info</mat-icon>长期优惠可与思达及淡季优惠叠加</li>
               </ul>
             </aside>
           </div>
@@ -48,7 +48,7 @@
 
         <section class="notice-panel ratio-notice">
           <mat-icon>percent</mat-icon>
-          <div><h2>短期课程计算规则</h2><p>1周按4周课程费和住宿费的40%计算，2周按60%计算，3周按80%计算；USD 100注册费为一次性费用，不按比例折算。</p></div>
+          <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的40%/60%/80%计算。成人淡季入学可享85折；通过思达报名再享9折并免USD 100注册费；8周起长期优惠可叠加。</p></div>
         </section>
 
         <section class="split-layout" id="course-fees">
@@ -69,6 +69,7 @@
                 <span>课程</span><strong>{{ fee.name }}</strong><div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div><p>{{ fee.suitable }}</p>
               </article>
             </div>
+            <p class="fee-alert course-check-note">课程核对提示：学校官网当前把B'SPARTA列为4节一对一＋2节团体＋5节强制课、Business尾段列为2节选修，Junior列为17岁及以下；本次2026价表分别写为5节一对一、2节必修及6－16岁。本页报价采用2026价表，报名时需向学校书面确认最新课表。</p>
           </div>
 
           <div class="section-block" id="room-fees">
@@ -93,7 +94,7 @@
 
         <section class="quote-panel full-width-quote" id="quote">
           <div class="section-heading">
-            <span>B'Cebu费用快速报价</span><h2>选择周数、课程和房型</h2><p>前期支付参考 = USD 100注册费 + 课程费 × 周数比例 + 住宿费 × 周数比例。</p>
+            <span>B'Cebu费用快速报价</span><h2>选择周数、课程、房型和入学日</h2><p>系统按“课程住宿费－记者活动优惠（如选）→ 成人淡季85折 → 思达9折 → 长周期优惠”的顺序自动计算，注册费通过思达报名免收。</p>
           </div>
           <div class="quote-form">
             <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
@@ -101,27 +102,69 @@
             <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
             <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           </div>
+          <label class="option-check reporter-check">
+            <input type="checkbox" [(ngModel)]="includeReporterActivity" [disabled]="!reporterEligible" />
+            <span><strong>参加记者活动优惠</strong><small>2026/8/17－12/28入学、成人4周起；每周减USD 25，需完成学校规定的社交平台图文及视频发布任务，毕业后返还差价。亲子家庭不可参加。</small></span>
+          </label>
           <div class="quote-breakdown">
             <div><span>注册费</span><strong>USD {{ formatUsd(registrationFee) }}</strong></div>
+            <div class="discount-line"><span>注册费优惠</span><strong>- USD {{ formatUsd(registrationDiscount) }}</strong></div>
             <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
             <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-            <div><span>计算规则</span><strong>{{ billingRuleText }}</strong></div>
+            <div *ngIf="reporterDiscount > 0" class="discount-line"><span>记者活动优惠</span><strong>- USD {{ formatUsd(reporterDiscount) }}</strong></div>
+            <div class="discount-line"><span>成人淡季优惠</span><strong>- USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
+            <div class="discount-line"><span>思达9折</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+            <div class="discount-line"><span>长期优惠</span><strong>- USD {{ formatUsd(longStayDiscount) }}</strong></div>
+            <div><span>周数计价</span><strong>{{ billingRuleText }}</strong></div>
           </div>
           <div class="quote-result">
-            <span>前期支付参考</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
+            <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}（{{ exchangeRateText }}）</em>
             <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认课程资格、房型空位和学校政策。</p>
           </div>
           <div class="quote-actions">
             <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
+            <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             <a class="secondary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
           </div>
+          <p class="fee-alert">长期优惠：8周USD 50、12周USD 100、16周USD 200、20周USD 300、24周USD 400，之后每增加4周再优惠USD 100，可叠加。</p>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading">
+            <span>到校后支付费用参考</span>
+            <h2>{{ selectedWeeks }}周学杂费明细</h2>
+            <p>按当前学习周数自动估算，通常到校后以比索支付。接机和可退房间押金单独列示，不计入下方学杂费合计。</p>
+          </div>
+          <div class="local-fee-grid desktop-local-fees">
+            <article *ngFor="let fee of localFees">
+              <span>{{ fee.item }}</span>
+              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+              <p>{{ fee.note }}；{{ fee.excluded ? '另行准备' : '小计' }} {{ formatPhp(fee.total) }}</p>
+            </article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看到校学杂费全部明细</summary>
+            <div class="local-fee-grid mobile-local-fees">
+              <article *ngFor="let fee of localFees">
+                <span>{{ fee.item }}</span>
+                <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
+                <p>{{ fee.note }}；{{ fee.excluded ? '另行准备' : '小计' }} {{ formatPhp(fee.total) }}</p>
+              </article>
+            </div>
+          </details>
+          <div class="local-fee-summary">
+            <div><span>预计到校学杂费合计</span><strong>{{ formatPhp(localFeesTotal) }}</strong><small>{{ localFeesCnyText }}</small></div>
+            <label class="option-check pickup-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /><span><strong>加入宿务机场团体接机参考</strong><small>PHP 1,000；工作日接机参考PHP 1,500，不并入上方学杂费合计。</small></span></label>
+          </div>
+          <p class="fee-alert">15－未满18岁独自来校需另付未成年监护管理费，金额须按年龄和入学方案向学校确认，本报价暂不计入；旺季15岁以下学生不单独接收，可咨询夏令营。</p>
+          <p class="fee-alert">亲子报名需预付USD 500/人订金，该订金属于前期预付款，正式报价时由顾问确认抵扣方式，未重复加入本页总额。</p>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与说明</h2>
-            <p>本页价格更新时间：2026年8月18日。课程、住宿和短期比例按用户提供的B'Cebu 2026价目表整理；未提供的当地PHP费用、优惠、亲子订金、房型空位和其他学校收费需由顾问另行确认。</p>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页价格更新时间：2026年9月1日。课程体系已对照B'Cebu/APIBECI官方课程资料；2026美元价格、住宿、优惠和到校学杂费按思达顾问本次价表录入。官网与2026价表在B'SPARTA、Business和Junior的部分课时或年龄说明上存在差异，本页报价采用2026价表，正式报名仍以学校书面确认的最新课表、空房和收费为准。</p>
           </div>
         </section>
 

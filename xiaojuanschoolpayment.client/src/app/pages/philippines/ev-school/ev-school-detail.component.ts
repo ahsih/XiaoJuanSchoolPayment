@@ -9,6 +9,8 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -41,7 +43,7 @@ interface SidaEvTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-ev-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './ev-school-detail.component.html',
   styleUrls: [
@@ -426,6 +428,38 @@ export class EvSchoolDetailComponent implements OnInit {
   }
   get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.excluded);
+    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'EV',
+      schoolName: '菲律宾宿务EV Academy',
+      filePrefix: 'EV',
+      heroSrc: '/assets/ev/campus-exterior.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与95折' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周；不参与95折` },
+        { icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: this.isMinorStudent ? `USD 100/4周 × ${this.minorManagementPeriods}` : '未勾选未成年学生' },
+        { icon: '折', label: '思达折扣', amount: '95折', note: `仅课程费和住宿费打折，优惠${this.formatUsd(this.discountAmount)}美元`, accent: true },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeesTotal,
+      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
+      localFeeNote: '接机和可退房间押金单独列示，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total || Number.parseFloat(fee.amount.replace(/[^0-9.]/g, '')) || 0), note: fee.note })),
+      ruleNotes: [
+        '课程费和住宿费按95折计算；注册费、旺季附加费和未成年管理费不参与折扣。',
+        '旺季附加费按实际覆盖周数计算，未成年管理费按每4周自动计算。',
+      ],
+    });
+  }
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
   formatPhp(value: number): string { return `PHP ${value.toLocaleString('en-US')}`; }
   private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }

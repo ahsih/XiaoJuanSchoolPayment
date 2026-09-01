@@ -308,6 +308,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">淡季规则：课程须在2026/6/28前结束，或于2026/8/23后开始并在2026年内入学；每满4周课程费减USD 100、住宿费减USD 100，旺季不适用。符合条件者在2026/12/31前工作日享免费早餐。</p>
             <p class="season-note">SNS活动期为2026/1/1—6/27，仅限Premium、Standard及Small Single房；每4周需在小红书及抖音发布一篇在校故事，可再减USD 100。活动可能随时结束，最终以顾问确认学校仍开放为准。</p>

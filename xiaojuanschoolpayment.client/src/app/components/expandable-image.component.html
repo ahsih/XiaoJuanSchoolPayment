@@ -35,7 +35,10 @@
     <mat-icon>close</mat-icon>
   </button>
 
-  <div class="expandable-image__viewer" (click)="stopClose($event)">
+  <div
+    class="expandable-image__viewer"
+    [class.expandable-image__viewer--single]="!hasMultipleImages"
+    (click)="stopClose($event)">
     <button
       *ngIf="hasMultipleImages"
       type="button"

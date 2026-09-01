@@ -35,6 +35,158 @@
   display: none;
 }
 
+:host .video-section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 3vw, 42px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 94% 4%, rgba(216, 239, 92, 0.17), transparent 25%),
+    linear-gradient(145deg, #052f26, #087050);
+  box-shadow: 0 20px 44px rgba(3, 62, 45, 0.13);
+}
+
+:host .video-section .section-eyebrow {
+  color: #d8ef5c;
+}
+
+:host .video-section .section-heading h2 {
+  color: #ffffff;
+}
+
+:host .video-section .section-heading p {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+:host .video-section .wechat-note {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+:host .video-grid {
+  gap: 18px;
+}
+
+:host .video-grid article {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  background: #ffffff;
+  text-align: left;
+  box-shadow: 0 18px 34px rgba(2, 31, 23, 0.2);
+}
+
+:host .video-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #061a14;
+}
+
+:host .video-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:host .video-official-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(4, 32, 24, 0.82);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+:host .video-official-label mat-icon {
+  width: 17px;
+  height: 17px;
+  color: #d8ef5c;
+  font-size: 17px;
+}
+
+:host .video-card-body {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 320px;
+  padding: 20px 20px 24px;
+}
+
+:host .video-grid .video-card-body h3,
+:host .video-grid .video-card-body p {
+  margin: 0;
+  padding: 0;
+}
+
+:host .video-grid .video-card-body h3 {
+  color: #12352a;
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+:host .video-course-logo {
+  display: block;
+  width: auto;
+  max-width: min(100%, 210px);
+  height: 46px;
+  margin-block: 2px 4px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+:host .video-grid .video-card-body p {
+  color: #6c776f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+:host .video-grid .video-card-body ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 1px solid #e5ece8;
+  color: #41554c;
+  list-style: none;
+}
+
+:host .video-grid .video-card-body li {
+  position: relative;
+  margin: 0;
+  padding-left: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+:host .video-grid .video-card-body li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f06a32;
+}
+
 @media (min-width: 1800px) {
   :host .cia-page {
     padding-inline: 48px;
@@ -323,6 +475,45 @@
   :host .environment-grid figcaption {
     min-height: 174px;
   }
+
+  :host .video-section {
+    padding: 22px 16px;
+    border-radius: 16px;
+  }
+
+  :host .video-section .section-heading-row {
+    gap: 14px;
+  }
+
+  :host .video-section .wechat-note {
+    justify-self: start;
+  }
+
+  :host .video-grid {
+    display: flex;
+    gap: 12px;
+    margin-inline: -16px;
+    padding: 0 16px 6px;
+    overflow-x: auto;
+    scroll-padding-inline: 16px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :host .video-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  :host .video-grid article {
+    flex: 0 0 min(86vw, 330px);
+    scroll-snap-align: start;
+  }
+
+  :host .video-card-body {
+    min-height: 310px;
+  }
+
 }
 
 @media (max-width: 390px) {

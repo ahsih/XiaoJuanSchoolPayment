@@ -41,8 +41,8 @@
 
           <div class="hero-media" aria-label="CPI校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/cpi/campus-pool.jpg" alt="菲律宾宿务CPI语言学校校园泳池" />
-              <figcaption>菲律宾宿务CPI语言学校度假村式校园</figcaption>
+              <img src="assets/cpi/campus-exterior.jpg" alt="菲律宾宿务CPI语言学校校园主景和泳池" />
+              <figcaption>菲律宾宿务CPI语言学校主校区与泳池</figcaption>
             </figure>
             <div class="media-strip" aria-label="CPI校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(1, 4)">
@@ -51,21 +51,21 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>ESL GENERAL + A栋四人间</p>
+              <span>{{ selectedWeeks }}周参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }}</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和住宿费估算
+                  课程费和住宿费已自动按思达9折计算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用、旺季附加费和家庭房需另行确认
+                  符合条件时自动减USD 25/周淡季优惠
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：CPI学校公开资料图片，资料页注明依据CPI官方公告整理</p>
+            <p class="photo-source">封面图：CPI学校主校区图片；报价单下载同步使用学校主图</p>
           </div>
         </section>
 
@@ -228,6 +228,7 @@
                 <p>{{ fee.suitable }}</p>
               </article>
             </div>
+            <p class="fee-alert">核对说明：公开2026课程资料与本页主要课程价格和课时一致；公开清单只列TOEIC、IELTS保证班，未列TOEFL GUARANTEE，本页暂按您提供的2026价目表保留，并标注待校方确认。</p>
           </div>
 
           <div class="section-block" id="daily-schedule">
@@ -278,7 +279,7 @@
             <div class="section-heading">
               <span>CPI 费用快速报价</span>
               <h2>默认参考：4周 ESL GENERAL + A栋四人间</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 周数比例 × 优惠折扣 + 旺季附加费</p>
+              <p>计算规则：注册费 +（课程费 + 住宿费）× 9折 − 符合条件的淡季优惠（USD 25/周）</p>
             </div>
             <div class="quote-form" aria-label="CPI费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -291,46 +292,56 @@
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
               <div><span>短期 / 长期计算规则</span><strong>{{ billingRuleText }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div class="discount-row"><span>思达折扣（仅课程费和住宿费）</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+              <div class="discount-row"><span>淡季优惠（{{ offSeasonEligible ? '已按注册日期计入' : '当前不适用' }}）</span><strong>- USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
+              <div><span>限量一对一加课</span><strong>{{ extraClassEligible ? '符合入学日期，限前20名' : '当前入学日期不适用' }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期支付参考</span>
+              <span>最终应付学校金额</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateText }}，最终以支付当日汇率为准</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、管理费、水电费、教材费、学生证、设施维护费、接机费、押金等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">CPI旺季附加费、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+            <p class="fee-alert">本次学杂费自动估算为 {{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}），不含可选接机、可退押金及洗衣服务。</p>
+            <p class="season-note">淡季优惠按报价/注册日期判断：2026/08/24–2027/01/01期间注册，USD 25/周；一对一加课按入学日期判断：2026/08/24–09/28，限前20名。</p>
           </section>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数和学校政策会影响最终金额。</p>
+            <h2>按当前 {{ selectedWeeks }} 周自动计算学杂费</h2>
+            <p>以下费用以 PHP 计价，通常到校后支付；数量会随学习周数自动变化。</p>
           </div>
+          <label class="option-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /> 需要宿务机场周日接机（PHP 1,000，可选，不计入学杂费合计）</label>
           <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded">
+              <span>{{ fee.item }}<em *ngIf="fee.excluded">可选/不计入合计</em></span>
+              <strong>{{ fee.amount }}</strong>
+              <b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b>
+              <p>{{ fee.note }}</p>
+            </article>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看到校支付费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+              <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p></article>
             </div>
           </details>
+          <div class="local-fee-summary"><span>预计到校学杂费合计（不含可选/可退项目）</span><strong>{{ formatPhp(localFeesTotal) }}</strong><em>{{ localFeesCnyText }} · {{ exchangeRateText }}</em></div>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月18日。课程与住宿费按CPI 2026价目表整理；1周、2周、3周分别按4周价格的37.5%、65%、90%计算。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月1日。课程与住宿费按您提供的CPI 2026价目表逐项录入，并与公开2026课程资料交叉核对；1周、2周、3周分别按4周价格的37.5%、65%、90%计算。托福保证班、限量加课名额、空房和最终优惠仍须向校方确认。</p>
           </div>
         </section>
 
@@ -436,8 +447,8 @@
       <aside class="side-panel" aria-label="CPI页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
-          <strong>4周</strong>
-          <p>ESL GENERAL<br />A栋四人间</p>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

@@ -305,6 +305,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">2周课程费及住宿费按4周价的65%计算，3周按85%；4周以上按4周单价和学习周期计算。雅思保证班会自动限制最低8周或12周。</p>
             <p class="season-note">旺季附加费：2026/6/28—8/23期间实际覆盖的学习周数按USD 40/周计算。</p>

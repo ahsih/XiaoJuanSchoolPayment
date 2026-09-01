@@ -9,6 +9,8 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -32,7 +34,7 @@ interface SidaJicTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-jic-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './jic-school-detail.component.html',
   styleUrls: [
@@ -89,6 +91,7 @@ export class JicSchoolDetailComponent implements OnInit {
   readonly registrationDiscount = 100;
   seasonalFeePerWeek = 40;
   usdToCny = 7.2;
+  phpPerCny = 7.75;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
@@ -491,6 +494,58 @@ export class JicSchoolDetailComponent implements OnInit {
   get exchangeRateSummary(): string {
     if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
     return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+  }
+
+  get quoteImageData() {
+    const periods = Math.max(1, Math.ceil(this.selectedWeeks / 4));
+    const visaExtensions = Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4));
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const isChallenger = this.selectedRoomId.startsWith('challenger-');
+    const isGuarantee = this.selectedCourseId.includes('guarantee');
+    const localRows = [
+      { label: 'SSP', unit: 'PHP 7,800', quantity: '1', total: 7800, note: '特别学习许可，通常到校支付。' },
+      { label: 'SSP I-Card', unit: 'PHP 4,500', quantity: '1', total: 4500, note: '与SSP同时办理的一次性费用。' },
+      { label: 'ACR I-Card', unit: 'PHP 4,000', quantity: String(acrQuantity), total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理。' },
+      { label: '水电费', unit: 'PHP 3,000/4周', quantity: String(periods), total: 3000 * periods, note: '按每4周参考，实际按学校规则调整。' },
+      { label: '管理费', unit: 'PHP 1,000/4周', quantity: String(periods), total: 1000 * periods, note: '按每4周计算。' },
+      { label: '洗衣费', unit: 'PHP 1,200/4周', quantity: String(periods), total: 1200 * periods, note: '按每4周参考。' },
+      { label: '教材费', unit: 'PHP 1,700/4周', quantity: String(periods), total: 1700 * periods, note: '按课程调整，ESL / TOEIC Lite参考。' },
+      { label: '签证延签', unit: 'PHP 4,940/次起', quantity: String(visaExtensions), total: 4940 * visaExtensions, note: '超过8周后按预计延签次数计算。' },
+      { label: 'Challenger特别选修课', unit: 'PHP 2,000/4周', quantity: String(isChallenger ? periods : 0), total: isChallenger ? 2000 * periods : 0, note: '仅Challenger校区按每4周参考。' },
+      { label: 'IELTS保证班参加费', unit: 'PHP 18,000', quantity: String(isGuarantee ? 1 : 0), total: isGuarantee ? 18000 : 0, note: '仅IELTS Guarantee课程适用。' },
+    ];
+    const localTotal = localRows.reduce((sum, row) => sum + row.total, 0);
+    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'JIC',
+      schoolName: '菲律宾碧瑶JIC语言学校',
+      filePrefix: 'JIC',
+      heroSrc: '/assets/philippines/jic-campus-hero.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周` },
+        { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: `免注册费、${this.offSeasonDiscountLabel}、长期及节日优惠按条件自动计算`, accent: true },
+      ],
+      localFeeItems: localRows.map((row) => ({ label: row.label, unit: row.unit, quantity: row.quantity, amount: php(row.total), note: row.note })),
+      localFeeTotal: localTotal,
+      localFeeCny: Math.round(localTotal / this.phpPerCny),
+      localFeeNote: '不含可退宿舍保证金及指定接机，实际以到校缴费为准。',
+      optionalFeeItems: [
+        { label: '指定接机', amount: 'PHP 3,000', note: '按需选择，不计入学杂费合计。' },
+        { label: '宿舍保证金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还。' },
+      ],
+      ruleNotes: [
+        '旺季按实际覆盖周数收取；淡季、长期及节日优惠按入学日期、房型和周数自动计算。',
+        '不同校区的课程、房型和当地费用不同，须按当前选择逐项核对。',
+      ],
+    });
   }
 
   formatUsd(value: number): string {

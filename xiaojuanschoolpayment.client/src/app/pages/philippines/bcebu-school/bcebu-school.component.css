@@ -6,8 +6,8 @@
   background: linear-gradient(180deg, #fff9e8 0, #ffffff 620px);
 }
 
-:host .generic-study-photo img {
-  object-position: center;
+:host .school-campus-photo img {
+  object-position: center 54%;
 }
 
 :host .ratio-notice {
@@ -19,8 +19,93 @@
   margin-top: 26px;
 }
 
+:host .option-check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #f0cf72;
+  border-radius: 8px;
+  background: #fffdf4;
+  color: #102033;
+  cursor: pointer;
+}
+
+:host .option-check input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #087343;
+}
+
+:host .option-check span,
+:host .option-check small {
+  display: block;
+}
+
+:host .option-check small {
+  margin-top: 4px;
+  color: #526176;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+:host .option-check:has(input:disabled) {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+:host .discount-line strong {
+  color: #e94f16;
+}
+
+:host .local-fee-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 18px;
+}
+
+:host .local-fee-summary > div {
+  padding: 16px;
+  border-left: 4px solid #ff5a1f;
+  border-radius: 8px;
+  background: #fff7f2;
+}
+
+:host .local-fee-summary span,
+:host .local-fee-summary strong,
+:host .local-fee-summary small {
+  display: block;
+}
+
+:host .local-fee-summary strong {
+  margin-top: 5px;
+  color: #e94f16;
+  font-size: 25px;
+}
+
+:host .local-fee-summary small {
+  margin-top: 3px;
+  color: #526176;
+}
+
+:host .pickup-check {
+  margin-top: 0;
+}
+
+:host .fee-alert + .fee-alert {
+  margin-top: 8px;
+}
+
 @media (max-width: 680px) {
   :host .full-width-quote {
     margin-top: 18px;
+  }
+
+  :host .local-fee-summary {
+    grid-template-columns: 1fr;
   }
 }

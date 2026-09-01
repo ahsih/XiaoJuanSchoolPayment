@@ -1,0 +1,122 @@
+:host {
+  display: block;
+}
+
+:host .hero-media .feature-photo img {
+  object-position: center 48%;
+}
+
+:host .course-fee-table .table-row,
+:host .room-fee-table .table-row {
+  grid-template-columns: minmax(150px, 1.05fr) minmax(116px, 0.55fr) minmax(230px, 1.5fr);
+}
+
+:host .discount-row strong,
+:host .optional-fee > span,
+:host .optional-fee > span em {
+  color: #e94f16;
+}
+
+:host .quote-result small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 12px;
+}
+
+:host .option-check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid #f0cf72;
+  border-radius: 8px;
+  background: #fffdf4;
+  color: #102033;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+:host .option-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: #087343;
+}
+
+:host .local-fee-grid article span em {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-style: normal;
+}
+
+:host .local-fee-grid article b {
+  display: block;
+  margin-top: 7px;
+  color: #526176;
+  font-size: 12px;
+}
+
+:host .optional-fee {
+  border-style: dashed;
+  background: #fffaf7;
+}
+
+:host .local-fee-summary {
+  display: grid;
+  gap: 5px;
+  margin-top: 18px;
+  padding: 18px;
+  border-left: 4px solid #ff5a1f;
+  border-radius: 8px;
+  background: #fff7f2;
+}
+
+:host .local-fee-summary span,
+:host .local-fee-summary strong,
+:host .local-fee-summary em {
+  display: block;
+}
+
+:host .local-fee-summary strong {
+  color: #e94f16;
+  font-size: 26px;
+}
+
+:host .local-fee-summary em {
+  color: #526176;
+  font-size: 13px;
+  font-style: normal;
+}
+
+@media (max-width: 760px) {
+  :host .course-fee-table,
+  :host .room-fee-table {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  :host app-cia-school,
+  :host .cia-page {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  :host .hero-section,
+  :host .hero-copy,
+  :host .hero-media,
+  :host .feature-photo,
+  :host .media-strip,
+  :host .hero-price-card,
+  :host .quote-actions {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  :host .quote-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

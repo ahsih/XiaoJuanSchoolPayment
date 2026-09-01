@@ -9,6 +9,8 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -31,7 +33,7 @@ interface SidaBeciTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-beci-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './beci-school-detail.component.html',
   styleUrls: [
@@ -438,6 +440,45 @@ export class BeciSchoolDetailComponent implements OnInit {
   get localFeeCnyText(): string {
     if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
     return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.optional);
+    const optionalFees = this.localFees.filter((fee) => fee.optional);
+    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
+    const campusHero: Record<'eop' | 'sparta' | 'city', string> = {
+      eop: '/assets/philippines/beci-eop-campus.jpg',
+      sparta: '/assets/philippines/beci-campus-building.png',
+      city: '/assets/philippines/beci-city-study-lounge.png',
+    };
+
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'BECI',
+      schoolName: '菲律宾碧瑶BECI语言学校',
+      filePrefix: `BECI-${this.selectedCourseCampus.toUpperCase()}`,
+      heroSrc: campusHero[this.selectedCourseCampus],
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '思达优惠免注册费' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '淡', label: '淡季折扣', amount: this.offSeasonDiscountAmount ? `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元` : '未适用', note: '符合日期时课程费与住宿费按9折计算', accent: this.offSeasonDiscountAmount > 0 },
+        { icon: '长', label: '长期优惠', amount: this.longStayDiscount ? `- ${this.formatUsd(this.longStayDiscount)} 美元` : '未适用', note: '8周50、12周100，之后每增加4周多减100美元', accent: this.longStayDiscount > 0 },
+        { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: '注册费、淡季和长期优惠已自动计入', accent: true },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeeTotal,
+      localFeeCny: Math.round(this.localFeeTotal / this.phpPerCny),
+      localFeeNote: '不含可退押金及按需接机，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
+      ruleNotes: [
+        '1/2/3周课程费分别按4周价40%/60%/80%计算，住宿费按实际周数折算。',
+        '三个校区共用优惠规则；淡季折扣与长期优惠可按条件叠加。',
+      ],
+    });
   }
 
   formatUsd(value: number): string {

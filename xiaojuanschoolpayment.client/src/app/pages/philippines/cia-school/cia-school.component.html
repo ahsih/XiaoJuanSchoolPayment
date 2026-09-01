@@ -240,7 +240,7 @@
     <section class="cia-section" id="gallery">
       <div class="section-heading">
         <h2>按区域查看 CIA 环境</h2>
-        <p>先看校园整体，再按教室、住宿、餐厅和设施筛选；房型卡片包含多角度实景，点击可放大并前后浏览。</p>
+        <p>校园、教室、餐厅和设施按实景卡片查看；切换到“住宿”可直接比较7类房型、查看多角度照片与详细差异。</p>
       </div>
       <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
         <button
@@ -252,7 +252,7 @@
           {{ category }}
         </button>
       </div>
-      <div class="environment-grid" #gallerySlider>
+      <div class="environment-grid" #gallerySlider *ngIf="selectedGalleryCategory !== '住宿'">
         <figure *ngFor="let image of displayedGalleryImages">
           <app-expandable-image
             [src]="image.src"
@@ -270,14 +270,18 @@
           </figcaption>
         </figure>
       </div>
-    </section>
 
-    <section class="room-comparison-section" id="room-comparison" aria-labelledby="room-comparison-title">
+      <section
+        *ngIf="selectedGalleryCategory === '住宿'"
+        class="room-comparison-section room-comparison-section--embedded"
+        id="room-comparison"
+        aria-labelledby="room-comparison-title"
+      >
       <div class="room-comparison-heading">
         <div>
           <span>ROOM GUIDE · 房型选择</span>
           <h3 id="room-comparison-title">CIA房型实景与差异</h3>
-          <p>看完上方各房型的多角度实景，再在这里核对空间、床型、服务频率和关键设备；点击房型即可切换详细说明。</p>
+          <p>在这里集中查看7类房型的实景、空间、床型、服务频率和关键设备；点击房型即可切换照片与详细说明。</p>
         </div>
         <span class="room-comparison-source"><mat-icon>verified</mat-icon>学校2026房型资料</span>
       </div>
@@ -391,6 +395,7 @@
         <mat-icon>tips_and_updates</mat-icon>
         图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。
       </p>
+      </section>
     </section>
 
     <section class="cia-section" id="courses">
@@ -648,21 +653,35 @@
           <h2>看完课程结构，再用视频感受课堂</h2>
           <p>一般英语、雅思、托业和商务英语均可在线播放，帮助你在看报价前进一步判断课堂节奏。</p>
         </div>
-        <span class="wechat-note"><mat-icon>smart_display</mat-icon>课程视频可播放</span>
+        <span class="wechat-note"><mat-icon>verified</mat-icon>CIA 官方课程视频</span>
       </div>
       <div class="video-grid">
         <article *ngFor="let item of videoCards">
           <div class="video-media">
-            <video controls preload="metadata" [attr.aria-label]="item.title">
+            <span class="video-official-label"><mat-icon>smart_display</mat-icon>{{ item.code }} COURSE</span>
+            <video
+              controls
+              preload="metadata"
+              [poster]="item.poster"
+              [attr.aria-label]="item.title"
+            >
               <source [src]="item.videoSrc" type="video/mp4" />
               您的浏览器暂不支持播放此视频。
             </video>
           </div>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-          <ul>
-            <li *ngFor="let detail of item.details">{{ detail }}</li>
-          </ul>
+          <div class="video-card-body">
+            <h3>{{ item.title }}</h3>
+            <img
+              class="video-course-logo"
+              [src]="item.brandLogo"
+              [alt]="item.brandAlt"
+              loading="lazy"
+            />
+            <p>{{ item.text }}</p>
+            <ul>
+              <li *ngFor="let detail of item.details">{{ detail }}</li>
+            </ul>
+          </div>
         </article>
       </div>
     </section>
@@ -1290,6 +1309,54 @@
         咨询 CIA 亲子营档期
         <mat-icon>chevron_right</mat-icon>
       </a>
+    </section>
+
+    <section
+      class="cia-section official-student-reviews"
+      id="student-reviews"
+      aria-labelledby="student-reviews-title"
+    >
+      <div class="official-review-heading">
+        <div class="section-heading">
+          <span class="section-eyebrow">OFFICIAL STUDENT REVIEWS</span>
+          <h2 id="student-reviews-title">在CIA学习与生活，学生怎么说？</h2>
+          <p>
+            课程表告诉你每天学什么，学生的真实经历则能帮助你理解：刚到校时会遇到什么、适应以后有什么变化，以及课堂之外的宿务生活是什么样子。
+          </p>
+        </div>
+        <span class="official-review-source">
+          <mat-icon>verified</mat-icon>
+          CIA官网学生反馈
+        </span>
+      </div>
+
+      <div class="official-review-grid" aria-label="CIA官网学生反馈中文整理">
+        <article *ngFor="let review of officialStudentReviews">
+          <figure>
+            <img [src]="review.image" [alt]="review.imageAlt" loading="lazy" />
+            <figcaption>{{ review.focus }}</figcaption>
+          </figure>
+          <div class="official-review-card-copy">
+            <span class="official-review-number">STORY {{ review.number }}</span>
+            <h3>{{ review.title }}</h3>
+            <blockquote>{{ review.excerpt }}</blockquote>
+            <a
+              [href]="review.sourceUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="在CIA官网查看这条学生反馈原文"
+            >
+              查看CIA官网原文
+              <mat-icon>open_in_new</mat-icon>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <p class="official-review-note">
+        <mat-icon>translate</mat-icon>
+        中文内容根据CIA官网英文学生反馈忠实整理，为便于阅读进行了精简；照片及原始反馈来自CIA官方网站，个人体验仅代表分享者本人。
+      </p>
     </section>
 
     <section class="cia-section sida-cia-section" id="service-process">

@@ -214,6 +214,16 @@ interface StudentCareService {
   points: string[];
 }
 
+interface OfficialStudentReview {
+  number: string;
+  focus: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  imageAlt: string;
+  sourceUrl: string;
+}
+
 interface CampusPracticalGuide {
   icon: string;
   eyebrow: string;
@@ -564,14 +574,6 @@ export class CiaSchoolComponent implements OnInit {
     },
     {
       category: '住宿',
-      title: '校内宿舍概览',
-      description:
-        '宿舍紧邻 Building 2，减少通勤时间，方便学生把更多时间留给学习和休息。',
-      src: '/assets/cia/dormitory-overview.jpg',
-      details: ['单人、双人、三人、四人及套房可选', '按房型每周清洁、洗衣2至3次'],
-    },
-    {
-      category: '住宿',
       title: '豪华单人间 P-1',
       description: '校内大尺寸单人床房型，配有独立学习位置和简易料理区。',
       src: ciaRoomGalleries.premium[0],
@@ -652,6 +654,14 @@ export class CiaSchoolComponent implements OnInit {
     },
     {
       category: '设施',
+      title: '瑜伽与普拉提室',
+      description:
+        '配有普拉提核心床、凯迪拉克床、瑜伽垫和辅助训练器材，可用于伸展、瑜伽及普拉提活动。',
+      src: 'assets/cia/yoga-pilates-room-official.jpg',
+      details: ['CIA官方设施实景', '课程及开放安排以校内公告为准'],
+    },
+    {
+      category: '设施',
       title: 'IDP IELTS 官方考场',
       description:
         '校内设有雅思官方考试场地，空间安静宽敞，方便雅思学生熟悉考试环境。',
@@ -673,6 +683,14 @@ export class CiaSchoolComponent implements OnInit {
         '图书馆空间宽敞，提供 ESL 教材和不同类型读物，适合自习和课后复习。',
       src: 'assets/cia/library.jpg',
       details: ['Building 2 四楼', '每天 06:00-23:00'],
+    },
+    {
+      category: '设施',
+      title: '小礼堂 / 放映空间',
+      description:
+        '配有阶梯座椅、投影及音响设备，可用于说明会、课程活动、演讲和校园集会。',
+      src: 'assets/cia/auditorium-official.jpg',
+      details: ['CIA官方设施实景', '具体用途与开放安排以学校公告为准'],
     },
     {
       category: '设施',
@@ -703,8 +721,16 @@ export class CiaSchoolComponent implements OnInit {
       title: '户外篮球场',
       description:
         '可进行篮球、排球、羽毛球及部分团体运动，位于校园户外活动区。',
-      src: 'assets/cia/basketball-court-official.jpg',
-      details: ['学校官方设施示意图', '活动安排以校内公告为准'],
+      src: 'assets/cia/activity-sportsfest-official.jpg',
+      details: ['CIA官方篮球活动实景', '活动安排以校内公告为准'],
+    },
+    {
+      category: '设施',
+      title: '羽毛球活动',
+      description:
+        '户外活动区可架设球网进行羽毛球；图为 CIA 校内 Sportsfest 羽毛球比赛实景。',
+      src: 'assets/cia/badminton-sportsfest-official.jpg',
+      details: ['CIA官方 Sportsfest 2024 实景', '日常使用及活动安排以校内公告为准'],
     },
   ];
 
@@ -1610,9 +1636,12 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly videoCards = [
     {
+      code: 'ESL',
       title: '一般英语小组课程视频',
       text: 'Regular ESL 最新课表参考',
-      poster: 'assets/cia/course-learning.jpg',
+      poster: 'assets/cia/course-video-posters/esl-course.jpg',
+      brandLogo: 'assets/cia/course-video-posters/cambridge-esl.png',
+      brandAlt: 'Cambridge English Qualifications 标志',
       videoSrc:
         'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
       details: [
@@ -1622,9 +1651,12 @@ export class CiaSchoolComponent implements OnInit {
       ],
     },
     {
+      code: 'IELTS',
       title: '雅思小组课程视频',
       text: '雅思官方考试中心',
-      poster: 'assets/cia/idp-testing-venue.jpg',
+      poster: 'assets/cia/course-video-posters/ielts-course.jpg',
+      brandLogo: 'assets/cia/course-video-posters/idp-ielts.png',
+      brandAlt: 'IDP IELTS 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
       details: [
@@ -1635,9 +1667,12 @@ export class CiaSchoolComponent implements OnInit {
       ],
     },
     {
+      code: 'TOEIC',
       title: '托业小组课程视频',
       text: '托业备考课程',
-      poster: 'assets/cia/medium-group-class.jpg',
+      poster: 'assets/cia/course-video-posters/toeic-course.jpg',
+      brandLogo: 'assets/cia/course-video-posters/ets-toeic.png',
+      brandAlt: 'ETS TOEIC 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
       details: [
@@ -1648,9 +1683,12 @@ export class CiaSchoolComponent implements OnInit {
       ],
     },
     {
+      code: 'BUSINESS',
       title: '商务英语小组课程视频',
       text: '剑桥商务英语课程',
-      poster: 'assets/cia/classroom-overview.png',
+      poster: 'assets/cia/course-video-posters/business-course.jpg',
+      brandLogo: 'assets/cia/course-video-posters/cambridge-business.png',
+      brandAlt: 'Cambridge English Business 标志',
       videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
       details: [
         '商务一对一课程 5 节',
@@ -2019,6 +2057,53 @@ export class CiaSchoolComponent implements OnInit {
       icon: 'assignment',
       title: '报名提醒',
       text: '报名确认前先确认年龄要求、营地地点、开课日期、房型和监护支持与费用明细。',
+    },
+  ];
+
+  readonly officialStudentReviews: OfficialStudentReview[] = [
+    {
+      number: '01',
+      focus: '城市与同伴体验',
+      title: '走出校园，更真实地认识宿务',
+      excerpt:
+        '平时的生活大多围绕学校和住宿展开，这次和朋友一起体验宿务夜晚，让我看见了当地真实而有活力的城市生活。我们品尝当地食物、一路聊天，也留下了很特别的共同回忆。',
+      image: '/assets/cia/student-reviews/review-city-night.png',
+      imageAlt: 'CIA官网学生反馈照片，学生在宿务城市活动地点留影',
+      sourceUrl:
+        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6291',
+    },
+    {
+      number: '02',
+      focus: '课堂适应与口语信心',
+      title: '从紧张听不懂，到更敢开口表达',
+      excerpt:
+        '第一次到海外学习英语时，我既期待又担心。刚开始不太适应老师的语速，也会害怕回答问题；熟悉课堂后，我逐渐能更自信地参与交流，也明白学习语言不用害怕犯错。',
+      image: '/assets/cia/student-reviews/review-first-study.png',
+      imageAlt: 'CIA官网学生反馈照片，学生与家人在宿务户外活动时合影',
+      sourceUrl:
+        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6289',
+    },
+    {
+      number: '03',
+      focus: '自然与文化体验',
+      title: '在英语学习之外，感受菲律宾文化',
+      excerpt:
+        '宿务的海景、自然风光和多元文化给我留下了深刻印象。虽然一开始对陌生环境有些不适应，但当地人的友善让我慢慢融入，也让我更期待以后去不同国家体验新的文化。',
+      image: '/assets/cia/student-reviews/review-cebu-culture.png',
+      imageAlt: 'CIA官网学生反馈照片，多国学生在宿务聚餐交流',
+      sourceUrl:
+        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6288',
+    },
+    {
+      number: '04',
+      focus: '朋友同行与成长',
+      title: '旅行不只看景点，也是在体验当地生活',
+      excerpt:
+        '清澈的海水、热带风景、菲律宾食物和城市生活，都让这次宿务之行变得难忘。和朋友一起拍照、分享新鲜体验，也让我体会到认识一种文化，远不只是去著名景点打卡。',
+      image: '/assets/cia/student-reviews/review-friends-trip.png',
+      imageAlt: 'CIA官网学生反馈照片，学生与老师和同学在教室合影',
+      sourceUrl:
+        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6287',
     },
   ];
 
@@ -2521,7 +2606,6 @@ export class CiaSchoolComponent implements OnInit {
       '校园泳池与主楼',
       '户外泳池',
       '教室楼层环境',
-      '校内宿舍概览',
       '学生餐厅',
       'IDP IELTS 官方考场',
       '图书馆 / 自习室',

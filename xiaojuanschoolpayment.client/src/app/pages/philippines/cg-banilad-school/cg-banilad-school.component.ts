@@ -1,8 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, EMPTY } from 'rxjs';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
@@ -64,6 +68,9 @@ interface LocalFee {
   item: string;
   amount: string;
   note: string;
+  quantity: number;
+  total: number;
+  excluded?: boolean;
 }
 
 interface ProcessStep {
@@ -91,7 +98,7 @@ interface SourceLink {
 @Component({
   selector: 'app-cg-banilad-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cg-banilad-school.component.html',
   styleUrls: [
@@ -102,11 +109,18 @@ interface SourceLink {
     './cg-banilad-school.component.css',
   ],
 })
-export class CgBaniladSchoolComponent {
+export class CgBaniladSchoolComponent implements OnInit {
+  private readonly exchangeRateService = inject(ExchangeRateService);
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
   readonly registrationFeeUsd = 100;
+  readonly sidaDiscountRate = 0.9;
+  readonly offSeasonDiscountPerFourWeeks = 150;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  exchangeRateLive = false;
   readonly weekOptions: WeekOption[] = [3, 4, 8, 12, 16, 20, 24];
   readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
     3: 0.85,
@@ -163,7 +177,7 @@ export class CgBaniladSchoolComponent {
       title: 'CG Banilad低层校园与中庭',
       description:
         'Banilad校区位于Cebu City生活圈内，校园空间比海边度假型学校更紧凑，优势是市区便利。',
-      src: 'https://phl-ryugaku-apa.com/wp-content/uploads/2023/04/20-scaled-e1684639334995.jpg',
+      src: '/assets/philippines/cg-banilad-campus-hero.jpg',
     },
     {
       category: '教室',
@@ -220,7 +234,7 @@ export class CgBaniladSchoolComponent {
     },
     {
       label: '4周起价',
-      value: 'USD 1,400起：Light ESL + Banilad 4人房 + 注册费；菲律宾当地费用另计。',
+      value: '原价USD 1,400：Light ESL + 4人房 + 注册费；思达9折后USD 1,270，符合淡季活动再减USD 150。',
     },
   ];
 
@@ -231,8 +245,7 @@ export class CgBaniladSchoolComponent {
       text: 'Banilad Campus保留单词、作文、选修和小班课等学习推动，但整体更适合想住市区、周边生活便利的学生。',
     },
     {
-      image:
-        'https://phl-ryugaku-apa.com/wp-content/uploads/2023/04/20-scaled-e1684639334995.jpg',
+      image: '/assets/philippines/cg-banilad-campus-hero.jpg',
       title: '课程选择很完整',
       text: 'Light、General、Intensive、Power、Semi-Sparta、IELTS、TOEIC、Business、Family都能在同一校区比较。',
     },
@@ -326,7 +339,7 @@ export class CgBaniladSchoolComponent {
       id: 'ielts-basic',
       name: 'IELTS Basic',
       type: '雅思基础',
-      lessons: '1:1 + 1:4雅思/ESL组合',
+      lessons: '1:1 4节（IELTS 2 + ESL 2）+ 1:4 4节（IELTS 2 + ESL 2）+ 单词测试 + 选修',
       suitable: '准备进入雅思学习，但还需要基础英文支撑的学生。',
       tuitionUsd: 850,
     },
@@ -334,7 +347,7 @@ export class CgBaniladSchoolComponent {
       id: 'toeic',
       name: 'TOEIC Basic',
       type: '多益备考',
-      lessons: '1:1 + 1:4考试技能训练',
+      lessons: '1:1 4节（TOEIC 2 + ESL 2）+ 1:4 4节（TOEIC 2 + ESL 2）+ 单词测试 + 选修',
       suitable: '以多益分数、求职或升学要求为目标的学生。',
       tuitionUsd: 850,
     },
@@ -342,7 +355,7 @@ export class CgBaniladSchoolComponent {
       id: 'business',
       name: 'Business English',
       type: '商务英文',
-      lessons: '1:1 + 1:4商务主题训练',
+      lessons: '1:1 4节（Business 2 + ESL 2）+ 1:4 4节（外教2 + ESL 2）+ 选修',
       suitable: '需要会议、简报、邮件和职场沟通英文的成人学生。',
       tuitionUsd: 850,
     },
@@ -350,7 +363,7 @@ export class CgBaniladSchoolComponent {
       id: 'guardian',
       name: 'Family ESL (Guardian)',
       type: '亲子陪读',
-      lessons: '监护人课程',
+      lessons: '1:1 4节',
       suitable: '陪同孩子游学，同时想安排轻量英文学习的家长。',
       tuitionUsd: 750,
     },
@@ -358,7 +371,7 @@ export class CgBaniladSchoolComponent {
       id: 'junior',
       name: 'Family ESL (Junior)',
       type: '青少年亲子',
-      lessons: 'Junior课程',
+      lessons: '1:1 4节 + 1:4 2节',
       suitable: '小学、初中、高中学生配合监护人同行。',
       tuitionUsd: 1150,
     },
@@ -395,18 +408,6 @@ export class CgBaniladSchoolComponent {
       title: '单词、作文、选修或自习',
       text: 'Semi-Sparta路线会更强调学习推动；Light ESL则留出更多自主安排时间。',
     },
-  ];
-
-  readonly localFees: LocalFee[] = [
-    { item: 'SSP特别学习许可', amount: 'PHP 7,800', note: '按官方2025当地费用表列示。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '菲律宾学习许可相关卡证费用。' },
-    { item: '押金', amount: 'PHP 250 / 周', note: '4周参考PHP 1,000，退宿时按学校规则结算。' },
-    { item: '管理维护费', amount: 'PHP 500 / 周', note: '4周参考PHP 2,000。' },
-    { item: '公用电费', amount: 'PHP 500 / 周', note: '不含冷气电费；冷气按PHP 25/KWH参考。' },
-    { item: '水费', amount: 'PHP 125 / 周', note: '4周参考PHP 500。' },
-    { item: '接机费', amount: 'PHP 1,200', note: '以宿务机场抵达接机参考。' },
-    { item: '教材费', amount: 'PHP 250-450 / 本', note: '按实际使用教材数量结算。' },
-    { item: '签证延长', amount: 'PHP 5,160起', note: '5-8周起需要延签，金额按停留周数递增。' },
   ];
 
   readonly processSteps: ProcessStep[] = [
@@ -479,6 +480,17 @@ export class CgBaniladSchoolComponent {
     { label: 'CG Academy官方学校介绍', url: 'https://www.cebucg.com/en/about.html' },
   ];
 
+  ngOnInit(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(
+      catchError(() => EMPTY),
+    ).subscribe((snapshot) => {
+      this.usdToCny = snapshot.usdToCny;
+      this.phpPerCny = snapshot.phpPerCny;
+      this.exchangeRateDate = snapshot.date;
+      this.exchangeRateLive = true;
+    });
+  }
+
   get filteredGalleryImages(): GalleryImage[] {
     if (this.selectedGalleryCategory === '全部') {
       return this.galleryImages;
@@ -508,12 +520,67 @@ export class CgBaniladSchoolComponent {
     return this.fourWeekStudyStayUsd * cycles;
   }
 
+  get tuitionForSelectedWeeks(): number {
+    return this.selectedCourse.tuitionUsd * this.durationMultiplier;
+  }
+
+  get roomFeeForSelectedWeeks(): number {
+    return this.selectedRoom.feeUsd * this.durationMultiplier;
+  }
+
+  get durationMultiplier(): number {
+    return this.selectedWeeks < 4
+      ? this.shortTermRatios[this.selectedWeeks] ?? 1
+      : this.selectedWeeks / 4;
+  }
+
+  get sidaDiscountAmount(): number {
+    return this.studyStayUsd * (1 - this.sidaDiscountRate);
+  }
+
+  get isOffSeasonEntry(): boolean {
+    return this.selectedStartDate >= '2026-08-30' && this.selectedStartDate <= '2026-12-27';
+  }
+
+  get offSeasonDiscount(): number {
+    return this.isOffSeasonEntry
+      ? Math.floor(this.selectedWeeks / 4) * this.offSeasonDiscountPerFourWeeks
+      : 0;
+  }
+
+  get longStayDiscount(): number {
+    const discounts: Partial<Record<WeekOption, number>> = {
+      12: 50,
+      16: 100,
+      20: 150,
+      24: 200,
+    };
+    return discounts[this.selectedWeeks] ?? 0;
+  }
+
   get quoteUsd(): number {
-    return this.registrationFeeUsd + this.studyStayUsd;
+    return Math.max(
+      0,
+      this.registrationFeeUsd +
+        this.studyStayUsd * this.sidaDiscountRate -
+        this.offSeasonDiscount -
+        this.longStayDiscount,
+    );
   }
 
   get quoteUsdText(): string {
     return this.formatUsd(this.quoteUsd);
+  }
+
+  get quoteCnyText(): string {
+    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    return `约 ${rounded.toLocaleString('zh-CN')} 元`;
+  }
+
+  get exchangeRateText(): string {
+    return this.exchangeRateLive && this.exchangeRateDate
+      ? `汇率日期 ${this.exchangeRateDate}`
+      : '暂按备用汇率估算';
   }
 
   get fourWeekLightQuadText(): string {
@@ -533,7 +600,72 @@ export class CgBaniladSchoolComponent {
       return '普通课程3周按4周课程费与住宿费合计的85%计算，另加注册费；实际开课日和空房需再确认。';
     }
 
-    return '4周以上按4周单价倍数估算；当地PHP费用、机票、保险和个人消费另计。';
+    return '4周以上按4周单价倍数估算；课程住宿9折，符合条件的淡季与长周期优惠会自动叠加。';
+  }
+
+  get localFeePeriods(): number {
+    return Math.max(1, Math.ceil(this.selectedWeeks / 4));
+  }
+
+  get visaExtensionCount(): number {
+    return Math.max(0, Math.ceil((this.selectedWeeks - 4) / 4));
+  }
+
+  get localFees(): LocalFee[] {
+    const periods = this.localFeePeriods;
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
+      { item: 'SSP E-CARD', amount: 'PHP 4,500 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I CARD 外国人身份证', amount: 'PHP 4,500 / 次', quantity: acrQuantity, total: 4500 * acrQuantity, note: '长周期学习或首次续签时通常需要办理' },
+      { item: '维护管理费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '校内设施维护费用，按每4周计算' },
+      { item: '电费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '预估费用，超出部分按PHP 25/kW另收' },
+      { item: '水费', amount: 'PHP 500 / 4周', quantity: periods, total: 500 * periods, note: '按每4周计算' },
+      { item: '签证续签', amount: 'PHP 5,160 / 次', quantity: this.visaExtensionCount, total: 5160 * this.visaExtensionCount, note: '首次续签费用预估；实际按移民局及停留时长收取' },
+      { item: '书本教材费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '按课程和实际购买教材调整' },
+      { item: '宿务马克坦机场接机', amount: 'PHP 1,200 / 次', quantity: 0, total: 1200, note: '可选，也可自行打车；不计入学杂费合计', excluded: true },
+      { item: '房间押金', amount: 'PHP 250 / 周', quantity: this.selectedWeeks, total: 250 * this.selectedWeeks, note: '无损坏及欠费时按学校规则退还；不计入学杂费合计', excluded: true },
+    ];
+  }
+
+  get localFeesTotal(): number {
+    return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
+  }
+
+  get localFeesCnyText(): string {
+    return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.excluded);
+    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'CG BANILAD',
+      schoolName: '菲律宾宿务CG Academy Banilad校区',
+      filePrefix: 'CG-Banilad',
+      heroSrc: '/assets/philippines/cg-banilad-campus-hero.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFeeUsd).replace('USD ', '')} 美元`, note: '一次性学校注册费；保留且不参与9折' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks).replace('USD ', '')} 美元`, note: `${this.selectedCourse.name}；以上单价以4周为基准` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks).replace('USD ', '')} 美元`, note: this.selectedRoom.name },
+        { icon: '折', label: '思达折扣', amount: '9折', note: `仅课程费和住宿费，优惠${this.formatUsd(this.sidaDiscountAmount).replace('USD ', '')}美元`, accent: true },
+        { icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount).replace('USD ', '')} 美元`, note: '2026/8/30-12/27入学，每满4周优惠USD 150' },
+        { icon: '长', label: '长周期优惠', amount: `- ${this.formatUsd(this.longStayDiscount).replace('USD ', '')} 美元`, note: '12/16/20/24周分别优惠USD 50/100/150/200' },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeesTotal,
+      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
+      localFeeNote: '接机和可退房间押金单独列示，实际以到校缴费为准。',
+      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: fee.note })),
+      ruleNotes: [
+        '课程费和住宿费按思达9折计算；注册费USD 100保留且不参与折扣。',
+        '淡季优惠按每满4周计算；12周以上长周期优惠自动叠加。',
+      ],
+    });
   }
 
   get courseFeeRows() {
@@ -565,5 +697,9 @@ export class CgBaniladSchoolComponent {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     })}`;
+  }
+
+  formatPhp(value: number): string {
+    return `PHP ${value.toLocaleString('en-US')}`;
   }
 }

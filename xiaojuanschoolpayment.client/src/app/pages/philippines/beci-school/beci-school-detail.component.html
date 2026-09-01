@@ -305,6 +305,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">1/2/3周课程费分别按4周价的40%/60%/80%计算，住宿费按实际周数折算；Sparta IELTS保证班自动限制12周起报。</p>
             <p class="season-note">三校区统一优惠：免USD 100注册费；2026/9/6—12/27入学，课程费与住宿费自动按9折；8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，并可与淡季优惠叠加。City Studio双人间夫妻同行时每人USD 750/4周。</p>
