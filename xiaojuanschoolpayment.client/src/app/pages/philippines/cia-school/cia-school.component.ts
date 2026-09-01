@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  ElementRef,
   OnInit,
-  ViewChild,
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +19,7 @@ import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { CIA_STUDENT_REVIEWS } from './cia-student-reviews.data';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -131,6 +130,7 @@ interface RoomComparisonProfile {
   highlights: string[];
   note: string;
   image: string;
+  gallery: readonly string[];
   imageAlt: string;
 }
 
@@ -169,6 +169,7 @@ interface CampusMonthlyEvent {
   text: string;
   image: string;
   imageAlt: string;
+  imagePosition?: string;
 }
 
 interface CourseDetailGuide {
@@ -212,16 +213,6 @@ interface StudentCareService {
   location: string;
   schedule: string;
   points: string[];
-}
-
-interface OfficialStudentReview {
-  number: string;
-  focus: string;
-  title: string;
-  excerpt: string;
-  image: string;
-  imageAlt: string;
-  sourceUrl: string;
 }
 
 interface CampusPracticalGuide {
@@ -289,8 +280,6 @@ interface SidaCiaTrustBadge {
   styleUrl: './cia-school.component.css',
 })
 export class CiaSchoolComponent implements OnInit {
-  @ViewChild('gallerySlider') private gallerySlider?: ElementRef<HTMLElement>;
-
   private readonly schoolService = inject(SchoolService);
   private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
@@ -442,7 +431,15 @@ export class CiaSchoolComponent implements OnInit {
     '餐厅',
     '设施',
   ];
+  readonly galleryAlbumCategories: Exclude<GalleryCategory, '全部'>[] = [
+    '校园',
+    '教室',
+    '住宿',
+    '餐厅',
+    '设施',
+  ];
   selectedGalleryCategory: GalleryCategory = '全部';
+  selectedGalleryImageIndex = 0;
   selectedHeroImageIndex = 0;
   usingUploadedGallery = false;
 
@@ -563,14 +560,6 @@ export class CiaSchoolComponent implements OnInit {
       description: '大组课堂适合发表、演讲、辩论和更大型的课堂活动。',
       src: 'assets/cia/big-group-class.jpg',
       details: ['7间大组教室', '适合演讲与辩论训练'],
-    },
-    {
-      category: '教室',
-      title: '教室楼层环境',
-      description:
-        'CIA 教室配备多用途教学设备，课程包含一对一、小组、中组和大组不同形式。',
-      src: 'assets/cia/classroom-overview.png',
-      details: ['多屏幕教学环境', '按课程目标安排不同班型'],
     },
     {
       category: '住宿',
@@ -1079,11 +1068,11 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   readonly campusMonthlyEvents2026: CampusMonthlyEvent[] = [
-    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.jpg', imageAlt: 'CIA菲律宾文化节传统服饰表演' },
-    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/events-2026/02-valentine-fruit-party.jpg', imageAlt: 'CIA情人节特别活动现场互动' },
-    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/events-2026/03-golden-bell.jpg', imageAlt: 'CIA金铃挑战赛参赛学生' },
-    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/events-2026/04-summer-splash.jpg', imageAlt: 'CIA夏日泡沫派对合影' },
-    { month: 5, icon: 'sports_basketball', title: 'CIA运动会', text: '以团队项目和体育竞赛增进交流。', image: 'assets/cia/events-2026/05-sportsfest.jpg', imageAlt: 'CIA运动会团队助威现场' },
+    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.jpg', imageAlt: 'CIA菲律宾文化节传统服饰表演', imagePosition: 'center 24%' },
+    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/events-2026/02-valentine-fruit-party.jpg', imageAlt: 'CIA情人节特别活动现场互动', imagePosition: 'center 30%' },
+    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/events-2026/03-golden-bell.jpg', imageAlt: 'CIA金铃挑战赛参赛学生', imagePosition: 'center 28%' },
+    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/events-2026/04-summer-splash.jpg', imageAlt: 'CIA夏日泡沫派对合影', imagePosition: 'center 34%' },
+    { month: 5, icon: 'sports_basketball', title: 'CIA篮球赛', text: '在真实篮球比赛中以团队协作增进交流。', image: 'assets/cia/activity-sportsfest-official.jpg', imageAlt: 'CIA校园篮球比赛实景', imagePosition: 'center 34%' },
     { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/events-2026/06-open-mic.jpg', imageAlt: 'CIA开放麦克风比赛现场' },
     { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/events-2026/07-got-talent.jpg', imageAlt: 'CIA达人秀学生舞台表演' },
     { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/events-2026/08-mr-ms-cia.jpg', imageAlt: 'Mr. and Ms. CIA校园风采活动合影' },
@@ -1891,7 +1880,7 @@ export class CiaSchoolComponent implements OnInit {
       eyebrow: 'LAUNDRY',
       title: '免费洗衣与自助付费洗衣',
       facts: [
-        { label: '免费洗衣', value: '每日07:00–15:00收取脏衣，通常2–3天后领取，使用学校洗衣液' },
+        { label: '免费洗衣', value: '每周可送洗2次；通常在07:00–15:00收取脏衣，约2–3天后领取' },
         { label: '付费自助', value: '洗涤及烘干约₱200；可洗内衣裤并使用自己的洗衣液' },
         { label: '付费开放', value: '周一至周五07:00–21:00；周末07:00–17:00；节假日08:00–17:00' },
       ],
@@ -1937,11 +1926,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约21.85㎡',
       view: '泳池景观',
       bed: '约160 × 200cm',
-      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '希望住校、重视独处空间，并希望房内具备简易料理条件的学生。',
       highlights: ['大尺寸单人床', '电磁炉、洗手池与迷你冰箱', '床头灯、拖鞋及壁挂式吹风机'],
       note: '网站报价对应P-1；房间朝向、楼层和具体设备位置以入住分配为准。',
-      image: '/assets/cia/rooms-2026/premium-single-room.jpg',
+      image: ciaRoomGalleries.premium[0],
+      gallery: ciaRoomGalleries.premium,
       imageAlt: 'CIA校内豪华单人间实景，配有大床、书桌及简易料理区',
     },
     {
@@ -1953,11 +1943,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约15.5–16㎡',
       view: '城市景观',
       bed: '约122 × 198cm',
-      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      service: '校外住宿服务频率须单独确认',
       suitable: '希望单人居住、能接受住在学校对面校外住宿楼，并看重智能设备的学生。',
       highlights: ['智能投影与弹出式充电口', '防雾镜与高速无刷吹风机', '洗衣机及简易料理设备'],
       note: '仅此房型属于校外住宿。学校资料包含普通房与小复式两种布局；网站当前报价对应PN-1，具体布局、价格和余房须在报名时单独确认。',
-      image: '/assets/cia/rooms-2026/pinnacle-single-room.jpg',
+      image: ciaRoomGalleries.pinnacle[0],
+      gallery: ciaRoomGalleries.pinnacle,
       imageAlt: 'CIA Pinnacle校外单人间实景，配有单人床、书桌、投影和料理区',
     },
     {
@@ -1969,11 +1960,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约14.3㎡',
       view: '泳池景观',
       bed: '约122 × 198cm',
-      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '希望住校、预算低于豪华单人间，同时保留独立学习和休息空间的学生。',
       highlights: ['紧凑型独立空间', '独立书桌、书架与遮光帘', '迷你冰箱、热水壶及拖鞋'],
       note: '网站报价对应S-1；泳池景观为房型资料所列参考，不能作为指定朝向承诺。',
-      image: '/assets/cia/rooms-2026/standard-single-room.jpg',
+      image: ciaRoomGalleries.standard[0],
+      gallery: ciaRoomGalleries.standard,
       imageAlt: 'CIA校内标准单人间实景，配有单人床、书桌和收纳空间',
     },
     {
@@ -1985,11 +1977,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约24.84㎡',
       view: '花园 / 泳池 / 海景',
       bed: '每床约122 × 198cm',
-      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '结伴报名，或希望在舒适度、交流机会和预算之间取得平衡的学生。',
       highlights: ['两张较宽单人床', '每人独立书桌与收纳位', '卫浴可能为干湿分区或一体式'],
       note: '网站报价对应D-2；景观和卫浴布局会因具体房号而不同。',
-      image: '/assets/cia/rooms-2026/twin-room.jpg',
+      image: ciaRoomGalleries.twin[0],
+      gallery: ciaRoomGalleries.twin,
       imageAlt: 'CIA校内双人间实景，配有两张单人床和独立学习位置',
     },
     {
@@ -2001,11 +1994,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约31.05㎡',
       view: '花园 / 海景',
       bed: '每床约122 × 198cm',
-      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '希望控制住宿预算，同时保留较宽床位和多人交流环境的学生。',
       highlights: ['三张较宽单人床', '卫生间与淋浴间分开', '每人独立书桌、插座与收纳位'],
       note: '网站报价对应D-3；花园或海景属于可能朝向，不能预先保证。',
-      image: '/assets/cia/rooms-2026/triple-room.jpg',
+      image: ciaRoomGalleries.triple[0],
+      gallery: ciaRoomGalleries.triple,
       imageAlt: 'CIA校内三人间实景，配有三张单人床和连续学习桌',
     },
     {
@@ -2017,11 +2011,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约31.8㎡',
       view: '花园 / 海景',
       bed: '每床约99 × 190.5cm',
-      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '优先控制预算、喜欢同学互动，并能适应多人共同生活节奏的学生。',
       highlights: ['普通多人间中面积最大', '卫生间与淋浴间分开', '24个以上插座及独立学习位'],
       note: '网站报价对应D-4；多人间入住人数及床位安排以学校实际分配为准。',
-      image: '/assets/cia/rooms-2026/quad-room.jpg',
+      image: ciaRoomGalleries.quad[0],
+      gallery: ciaRoomGalleries.quad,
       imageAlt: 'CIA校内四人间实景，配有四张单人床和连续学习桌',
     },
     {
@@ -2033,11 +2028,12 @@ export class CiaSchoolComponent implements OnInit {
       size: '约31.18㎡',
       view: '海景',
       bed: '主床约193 × 203cm',
-      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      service: '免费洗衣每周2次 · 房间清洁每周1次',
       suitable: '亲子、家庭或希望获得更完整起居与料理配置的学生。',
       highlights: ['电视、大冰箱、微波炉与电磁炉', '洗手池、餐具、浴袍及茶几', '阳台及更完整的起居空间'],
       note: '同一套房硬件对应SR-1至SR-4的不同入住人数报价；实际加床、床型及可住人数须按家庭人数和余房确认。',
-      image: '/assets/cia/rooms-2026/suite-room.jpg',
+      image: ciaRoomGalleries.suite[0],
+      gallery: ciaRoomGalleries.suite,
       imageAlt: 'CIA家庭精致套房实景，配有大床、电视、餐桌及料理区',
     },
   ];
@@ -2060,52 +2056,7 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly officialStudentReviews: OfficialStudentReview[] = [
-    {
-      number: '01',
-      focus: '城市与同伴体验',
-      title: '走出校园，更真实地认识宿务',
-      excerpt:
-        '平时的生活大多围绕学校和住宿展开，这次和朋友一起体验宿务夜晚，让我看见了当地真实而有活力的城市生活。我们品尝当地食物、一路聊天，也留下了很特别的共同回忆。',
-      image: '/assets/cia/student-reviews/review-city-night.png',
-      imageAlt: 'CIA官网学生反馈照片，学生在宿务城市活动地点留影',
-      sourceUrl:
-        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6291',
-    },
-    {
-      number: '02',
-      focus: '课堂适应与口语信心',
-      title: '从紧张听不懂，到更敢开口表达',
-      excerpt:
-        '第一次到海外学习英语时，我既期待又担心。刚开始不太适应老师的语速，也会害怕回答问题；熟悉课堂后，我逐渐能更自信地参与交流，也明白学习语言不用害怕犯错。',
-      image: '/assets/cia/student-reviews/review-first-study.png',
-      imageAlt: 'CIA官网学生反馈照片，学生与家人在宿务户外活动时合影',
-      sourceUrl:
-        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6289',
-    },
-    {
-      number: '03',
-      focus: '自然与文化体验',
-      title: '在英语学习之外，感受菲律宾文化',
-      excerpt:
-        '宿务的海景、自然风光和多元文化给我留下了深刻印象。虽然一开始对陌生环境有些不适应，但当地人的友善让我慢慢融入，也让我更期待以后去不同国家体验新的文化。',
-      image: '/assets/cia/student-reviews/review-cebu-culture.png',
-      imageAlt: 'CIA官网学生反馈照片，多国学生在宿务聚餐交流',
-      sourceUrl:
-        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6288',
-    },
-    {
-      number: '04',
-      focus: '朋友同行与成长',
-      title: '旅行不只看景点，也是在体验当地生活',
-      excerpt:
-        '清澈的海水、热带风景、菲律宾食物和城市生活，都让这次宿务之行变得难忘。和朋友一起拍照、分享新鲜体验，也让我体会到认识一种文化，远不只是去著名景点打卡。',
-      image: '/assets/cia/student-reviews/review-friends-trip.png',
-      imageAlt: 'CIA官网学生反馈照片，学生与老师和同学在教室合影',
-      sourceUrl:
-        'https://www.cebucia.com/en/bbs/board.php?bo_table=experiences_en&wr_id=6287',
-    },
-  ];
+  readonly officialStudentReviews = CIA_STUDENT_REVIEWS;
 
   readonly sidaCiaReasons: SidaCiaReason[] = [
     {
@@ -2523,29 +2474,28 @@ export class CiaSchoolComponent implements OnInit {
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
-    window.setTimeout(() =>
-      this.gallerySlider?.nativeElement.scrollTo({
-        left: 0,
-        behavior: 'smooth',
-      }),
-    );
+    this.selectedGalleryImageIndex = 0;
   }
 
-  scrollGallery(direction: -1 | 1): void {
-    const slider = this.gallerySlider?.nativeElement;
+  selectGalleryImage(index: number): void {
+    const lastIndex = Math.max(this.displayedGalleryImages.length - 1, 0);
+    this.selectedGalleryImageIndex = Math.min(Math.max(index, 0), lastIndex);
+  }
 
-    if (!slider) {
-      return;
+  previousGalleryImage(): void {
+    const length = this.displayedGalleryImages.length;
+    if (length > 0) {
+      this.selectedGalleryImageIndex =
+        (this.selectedGalleryImageIndex - 1 + length) % length;
     }
+  }
 
-    const firstSlide = slider.querySelector('figure');
-    const slideWidth =
-      firstSlide?.getBoundingClientRect().width ?? slider.clientWidth;
-
-    slider.scrollBy({
-      left: direction * (slideWidth + 12),
-      behavior: 'smooth',
-    });
+  nextGalleryImage(): void {
+    const length = this.displayedGalleryImages.length;
+    if (length > 0) {
+      this.selectedGalleryImageIndex =
+        (this.selectedGalleryImageIndex + 1) % length;
+    }
   }
 
   openGalleryFromPreview(event?: Event): void {
@@ -2598,22 +2548,71 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get displayedGalleryImages(): GalleryImage[] {
-    if (this.selectedGalleryCategory !== this.galleryCategories[0]) {
-      return this.filteredGalleryImages;
-    }
+    return this.filteredGalleryImages;
+  }
 
-    const overviewTitles = [
-      '校园泳池与主楼',
-      '户外泳池',
-      '教室楼层环境',
-      '学生餐厅',
-      'IDP IELTS 官方考场',
-      '图书馆 / 自习室',
-    ];
+  get selectedGalleryImage(): GalleryImage {
+    return (
+      this.displayedGalleryImages[this.selectedGalleryImageIndex] ??
+      this.displayedGalleryImages[0] ??
+      this.galleryImages[0]
+    );
+  }
 
-    return overviewTitles
-      .map((title) => this.galleryImages.find((image) => image.title === title))
-      .filter((image): image is GalleryImage => Boolean(image));
+  get displayedGalleryImageSources(): string[] {
+    return this.displayedGalleryImages.map((image) => image.src);
+  }
+
+  get displayedGalleryImageTitles(): string[] {
+    return this.displayedGalleryImages.map((image) => image.title);
+  }
+
+  get displayedGalleryImageCaptions(): string[] {
+    return this.displayedGalleryImages.map((image) => image.description);
+  }
+
+  get displayedGalleryImageAlts(): string[] {
+    return this.displayedGalleryImages.map(
+      (image) => `${image.category}实景：${image.title}`,
+    );
+  }
+
+  get selectedRoomGalleryTitles(): string[] {
+    return this.selectedRoomProfile.gallery.map(
+      (_, index) =>
+        `${this.selectedRoomProfile.label} · ${index === 0 ? '主要空间' : `细节实景 ${index + 1}`}`,
+    );
+  }
+
+  get selectedRoomGalleryCaptions(): string[] {
+    return this.selectedRoomProfile.gallery.map(
+      (_, index) =>
+        `${this.selectedRoomProfile.bookingCode} ${this.selectedRoomProfile.location}房型 · 第${index + 1}张实景`,
+    );
+  }
+
+  get selectedRoomGalleryAlts(): string[] {
+    return this.selectedRoomGalleryTitles.map((title) => `${title}照片`);
+  }
+
+  galleryImagesForCategory(
+    category: Exclude<GalleryCategory, '全部'>,
+  ): GalleryImage[] {
+    return this.galleryImages.filter((image) => image.category === category);
+  }
+
+  galleryAlbumDescription(
+    category: Exclude<GalleryCategory, '全部'>,
+  ): string {
+    const descriptions: Record<Exclude<GalleryCategory, '全部'>, string> = {
+      校园: '主楼、泳池与校区分布',
+      教室: '一对一、小组、中组与大组课空间',
+      住宿: '7类房型、多角度实景与配置差异',
+      餐厅: '学生餐厅与咖啡吧',
+      设施: '运动、考试、自习、医疗与休闲空间',
+    };
+
+    return descriptions[category];
   }
 
   get heroGalleryPreviewImages(): GalleryImage[] {
@@ -2687,8 +2686,8 @@ export class CiaSchoolComponent implements OnInit {
 
   get tuitionRuleSummary(): string {
     return this.uses2027Tuition
-      ? '报名日期为2026年9月1日或之后，且入学日期为2027年1月1日或之后，已采用2027新课程费。'
-      : '只要在2026年9月1日前报名，或仍在2026年入学，课程费继续采用2026原价格。';
+      ? '按当前报价日期与预计入学日期估算为2027新课程费；最终以学校实际收到报名及确认入学日期为准。'
+      : '按当前报价日期与预计入学日期估算为2026原价格；最终以学校实际收到报名及确认入学日期为准。';
   }
 
   get roomFeeForSelectedWeeks(): number {

@@ -7,7 +7,10 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -20,7 +23,7 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; excluded?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -36,7 +39,7 @@ interface SidaPhilinterTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-philinter-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './philinter-school-detail.component.html',
   styleUrls: [
@@ -44,26 +47,33 @@ interface SidaPhilinterTrustBadge { icon: string; label: string; }
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    './philinter-school-detail.component.css',
   ],
 })
 export class PhilinterSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'Philinter';
   private readonly pricingSchoolNames = ['菲律宾宿务Philinter语言学校', 'Philinter Academy'];
-  private readonly courseFeeOrder = ['light-esl', 'general-esl', 'intensive-esl', 'intensive-power-speaking', 'ielts-intensive', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toeic-regular', 'focus-industry', 'basic-business', 'advanced-business', 'speaking', 'junior-speaking'];
+  private readonly courseFeeOrder = ['light-esl', 'general-esl', 'intensive-esl', 'intensive-power-speaking', 'ielts-intensive', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toeic-regular', 'toeic-guarantee-12-weeks', 'focus-industry', 'basic-business', 'advanced-business', 'primary-english-7-11-years', 'junior-esl-12-17-years', 'junior-ielts-12-17-years', 'speaking', 'junior-speaking'];
   private readonly roomFeeOrder = ['in-campus-triple', 'in-campus-twin', 'in-campus-single', 'azon-triple', 'azon-twin', 'azon-single'];
+  private readonly shortTermRatios: Record<number, number> = { 1: 0.45, 2: 0.65, 3: 0.85 };
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 220;
-  readonly discount = 1;
-  seasonalFeePerWeek = 0;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
+  readonly sidaDiscountRate = 0.9;
+  seasonalFeePerWeek = 40;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  exchangeRateLive = false;
+  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'light-esl';
   selectedRoomId = 'in-campus-triple';
   selectedWeeks = 4;
-  selectedStartDate = '2026-05-18';
+  selectedStartDate = '2026-09-07';
+  includeAirportPickup = true;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -135,19 +145,23 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'light-esl', name: 'Light ESL', tuition: 790, suitable: '轻量综合英语，适合短期体验或希望保留生活弹性的学生' },
-    { id: 'general-esl', name: 'General ESL', tuition: 900, suitable: '综合英语，适合第一次游学和稳步提升' },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1030, suitable: '高强度综合英语，适合想加快英文提升的学生' },
-    { id: 'intensive-power-speaking', name: 'Intensive Power Speaking', tuition: 1170, suitable: '强化口说与表达流利度，适合短期口语突破' },
-    { id: 'ielts-intensive', name: 'IELTS Intensive', tuition: 1200, suitable: '雅思专项备考，适合目标分数学生' },
-    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1580, suitable: '8周保证班方向，需确认入学分数、出勤、模考和校规' },
-    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1420, suitable: '12周保证班方向，需确认入学分数、出勤、模考和校规' },
-    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1100, suitable: '托业备考，适合升学、求职或企业英语需求' },
-    { id: 'focus-industry', name: 'Focus Industry（可定制）', tuition: 1280, suitable: '行业主题英文，需按目标行业和开课档期确认' },
-    { id: 'basic-business', name: 'Basic Business', tuition: 1150, suitable: '商务基础英文，入学要求雅思3分' },
-    { id: 'advanced-business', name: 'Advanced Business', tuition: 1200, suitable: '进阶商务英语，入学要求雅思3.5至4分' },
-    { id: 'speaking', name: 'Speaking', tuition: 1400, suitable: '口语强化课程，最长报名8周' },
-    { id: 'junior-speaking', name: 'Junior Speaking', tuition: 1400, suitable: '青少年口语强化课程，最长报名8周' },
+    { id: 'light-esl', name: 'Light ESL', tuition: 790, suitable: '2节一对一 + 2节小团体 + 2节大团体选修 + 选修活动' },
+    { id: 'general-esl', name: 'General ESL', tuition: 900, suitable: '3节一对一 + 1节小团体 + 2节精品小团体 + 2节大团体选修 + 选修活动' },
+    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1030, suitable: '4节一对一 + 1节小团体 + 2节精品团体 + 1节大团体 + 2节夜间辅导选修 + 选修活动' },
+    { id: 'intensive-power-speaking', name: 'Intensive Power Speaking', tuition: 1170, suitable: '4节一对一 + 2节小团体 + 2节精品小团体 + 2节夜间自习选修 + 选修活动' },
+    { id: 'ielts-intensive', name: 'IELTS Intensive', tuition: 1200, suitable: '4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模考' },
+    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1580, suitable: '4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模考；8周保证班' },
+    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1420, suitable: '4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模考；12周保证班' },
+    { id: 'toeic-regular', name: 'TOEIC Regular', tuition: 1100, suitable: '4节一对一 + 2节小团体 + 2节大团体 + 选修活动 + 每周五模考' },
+    { id: 'toeic-guarantee-12-weeks', name: 'TOEIC Guarantee 12 Weeks', tuition: 1260, suitable: '托业保证班12周；入学分数、出勤、模考和校规需确认' },
+    { id: 'focus-industry', name: 'Focus Industry（可定制）', tuition: 1280, suitable: '3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动' },
+    { id: 'basic-business', name: 'Basic Business', tuition: 1150, suitable: '3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动；雅思3分起' },
+    { id: 'advanced-business', name: 'Advanced Business', tuition: 1200, suitable: '3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动；雅思3.5–4分起' },
+    { id: 'primary-english-7-11-years', name: 'Primary English（7–11岁）', tuition: 1340, suitable: '儿童英语课程；年龄、陪同及监护规则需提前确认' },
+    { id: 'junior-esl-12-17-years', name: 'Junior ESL（12–17岁）', tuition: 1340, suitable: '3节一对一 + 2节小团体 + 2节选修自习课' },
+    { id: 'junior-ielts-12-17-years', name: 'Junior IELTS（12–17岁）', tuition: 1490, suitable: '4节一对一 + 4节小团体 + 2节雅思强制自习 + 每周六上午模考；雅思3分起' },
+    { id: 'speaking', name: 'Speaking', tuition: 1400, suitable: '8节口语团体课 + 2节晚课 + 2节选修课；最长8周' },
+    { id: 'junior-speaking', name: 'Junior Speaking', tuition: 1400, suitable: '7节口语团体课 + 2节晚课 + 2节选修课；最长8周' },
   ];
 
   roomFees: RoomFee[] = [
@@ -166,21 +180,6 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { time: '13:00 - 17:00', title: '下午课程', text: '继续口说、听力、阅读、写作、考试策略或商务主题训练。' },
     { time: '17:00 - 19:00', title: '晚餐与自由时间', text: '可使用校内设施；外出、门禁和校外住宿接送规则需提前确认。' },
     { time: '19:00 - 21:00', title: '自习 / 晚间学习 / 模考', text: 'Intensive、IELTS和保证班方向可能有更明确的晚间安排。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 6,800', note: '特别学习许可，最终以学校现场收费为准' },
-    { item: 'SSP E-card', amount: 'PHP 4,000', note: '以学校现场收费为准' },
-    { item: '接机费', amount: 'PHP 1,200', note: '周末接机参考，平日抵达通常需另行确认' },
-    { item: '平日接机费', amount: 'PHP 1,500', note: '平日抵达参考，以学校安排为准' },
-    { item: '水电费', amount: 'PHP 2,500', note: '4周参考，按实际或学校规则调整' },
-    { item: '教材费', amount: 'PHP 2,000', note: '按课程和实际购买教材调整' },
-    { item: '管理费', amount: 'PHP 1,000', note: '4周参考，最终以学校现场收费为准' },
-    { item: '宿舍押金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '学生证', amount: 'PHP 300', note: '一次性费用参考' },
-    { item: '额外住宿', amount: 'PHP 3,000 / 晚', note: '按实际额外入住晚数计算' },
-    { item: 'ACR I-card', amount: '按周期确认', note: '长期学习或延签时通常需要' },
-    { item: '签证延签', amount: '按周数确认', note: '按学习周数和菲律宾签证规则调整' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -251,7 +250,8 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     'Philinter报名前建议先确认General、Intensive、IPS、IELTS或Business方向，课程强度差异明显。',
     '校内宿舍和校外公寓在门禁、接送、生活便利度和预算上不同，报名时要一起确认。',
     '儿童和青少年课程需先确认年龄、陪同家长、监护规则、开课档期和房型。',
-    '本页课程费与住宿费为4周参考；1周、2周、3周分别按4周价格的40%、65%、85%计算。',
+    '本页课程费与住宿费为4周参考；1周、2周、3周分别按4周价格的45%、65%、85%计算。',
+    '2026年8月16日至12月25日入学，指定课程与房型每满8周优惠USD 300；不得与校方其他优惠或Voucher并用。',
     '到校支付费用会随学校政策、汇率和个人情况变化，最终以学校现场收费为准。',
   ];
 
@@ -260,7 +260,8 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { question: 'Philinter是斯巴达学校吗？', answer: 'Philinter整体更常被理解为半斯巴达学校，但Intensive、IELTS和保证班方向会有更强的学习安排和规则。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后通常还需支付SSP、SSP E-card、水电、教材、押金、接机、延签等当地费用。' },
     { question: 'Philinter适合口说强化吗？', answer: '适合。Intensive Power Speaking是Philinter常被关注的口说方向，适合想提升流利度、准确度和表达自信的学生。' },
-    { question: 'Philinter短期1至3周怎么计算？', answer: '课程费和住宿费均以4周价格为基准：1周按40%、2周按65%、3周按85%计算；课程与住宿注册费另计。' },
+    { question: 'Philinter短期1至3周怎么计算？', answer: '课程费和住宿费均以4周价格为基准：1周按45%、2周按65%、3周按85%计算；课程与住宿注册费另计。' },
+    { question: '2026年下半年淡季优惠怎么计算？', answer: '2026年8月16日至12月25日入学，报名至少8周且选择校内三人房、Azon单人房或Azon双人房时，每满8周优惠USD 300；IELTS及TOEIC保证班、走读、校内单人或双人房不参加，且不得与校方其他优惠或Voucher并用。页面按条件初筛，最终以学校确认为准。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名Philinter，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
 
@@ -282,7 +283,15 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
+      this.usdToCny = snapshot.usdToCny;
+      this.phpPerCny = snapshot.phpPerCny;
+      this.exchangeRateDate = snapshot.date;
+      this.exchangeRateLive = true;
+    });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -325,10 +334,6 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
     if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -349,19 +354,121 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.selectedWeekMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.selectedWeekMultiplier; }
+  get courseAndRoomBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get selectedWeekMultiplier(): number {
-    if (this.selectedWeeks === 1) return 0.4;
-    if (this.selectedWeeks === 2) return 0.65;
-    if (this.selectedWeeks === 3) return 0.85;
-    return this.selectedWeeks / 4;
+    return this.shortTermRatios[this.selectedWeeks] ?? (this.selectedWeeks / 4);
   }
-  get seasonalSurcharge(): number { return this.seasonalFeePerWeek > 0 ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
-  get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
+  get billingRuleText(): string {
+    const percentage = this.shortTermRatios[this.selectedWeeks];
+    return percentage ? `${this.selectedWeeks}周按4周课程费和住宿费的${percentage * 100}%计算` : `${this.selectedWeeks}周按4周价格的${this.selectedWeekMultiplier}倍计算`;
+  }
+  get sidaDiscountAmount(): number { return Math.round(this.courseAndRoomBase * (1 - this.sidaDiscountRate) * 100) / 100; }
+  get isOffSeasonEntry(): boolean { return this.isDateBetween(this.selectedStartDate, '2026-08-16', '2026-12-25'); }
+  get isOffSeasonRoomEligible(): boolean { return ['in-campus-triple', 'azon-single', 'azon-twin'].includes(this.selectedRoomId); }
+  get isGuaranteeCourse(): boolean { return ['ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toeic-guarantee-12-weeks'].includes(this.selectedCourseId); }
+  get offSeasonEligible(): boolean { return this.isOffSeasonEntry && this.selectedWeeks >= 8 && this.isOffSeasonRoomEligible && !this.isGuaranteeCourse; }
+  get offSeasonDiscountAmount(): number { return this.offSeasonEligible ? Math.floor(this.selectedWeeks / 8) * 300 : 0; }
+  get offSeasonEligibilityText(): string {
+    if (!this.isOffSeasonEntry) return '入学日期不在2026/08/16–12/25活动期';
+    if (this.selectedWeeks < 8) return '最低需报名8周';
+    if (this.isGuaranteeCourse) return 'IELTS/TOEIC保证班不参加';
+    if (!this.isOffSeasonRoomEligible) return '仅校内三人房、Azon单人房或双人房参加';
+    return `符合条件，每满8周减USD 300，已优惠USD ${this.formatUsd(this.offSeasonDiscountAmount)}`;
+  }
+  get peakSeasonWeeks(): number {
+    const start = this.parseDate(this.selectedStartDate);
+    if (!start) return 0;
+    const peakStart = this.parseDate('2026-07-05')!;
+    const peakEnd = this.parseDate('2026-08-29')!;
+    let count = 0;
+    for (let index = 0; index < this.selectedWeeks; index += 1) {
+      const studyWeek = new Date(start.getTime());
+      studyWeek.setUTCDate(studyWeek.getUTCDate() + index * 7);
+      if (studyWeek >= peakStart && studyWeek <= peakEnd) count += 1;
+    }
+    return count;
+  }
+  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
+  get quoteUsd(): number { return Math.max(0, this.registrationFee + this.courseAndRoomBase * this.sidaDiscountRate + this.seasonalSurcharge - this.offSeasonDiscountAmount); }
+  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)}`; }
+  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元`; }
+  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+
+  get localFeeBiweeklyPeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 2)); }
+  get localFeeFourWeekPeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return this.selectedWeeks > 4 ? 1 : 0; }
+  get visaExtensionTotal(): number {
+    if (this.selectedWeeks <= 4) return 0;
+    let total = 5140;
+    if (this.selectedWeeks > 8) total += 6920;
+    if (this.selectedWeeks > 12) total += 4440;
+    if (this.selectedWeeks > 16) total += 4950;
+    if (this.selectedWeeks > 20) total += 5450;
+    return total;
+  }
+  get roomDeposit(): number {
+    if (this.selectedWeeks <= 2) return 2000;
+    if (this.selectedWeeks <= 7) return 3000;
+    if (this.selectedWeeks <= 11) return 4000;
+    return 5000;
+  }
+  get localFees(): LocalFee[] {
+    const biweeklyPeriods = this.localFeeBiweeklyPeriods;
+    const fourWeekPeriods = this.localFeeFourWeekPeriods;
+    const extensionQuantity = this.visaExtensionCount;
+    const acrQuantity = extensionQuantity > 0 ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需重新办理' },
+      { item: 'SSP I-CARD', amount: 'PHP 4,500 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I CARD 外国人身份证', amount: 'PHP 4,000 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '首次续签时办理，只收一次' },
+      { item: '管理费', amount: 'PHP 2,200 / 2周', quantity: biweeklyPeriods, total: 2200 * biweeklyPeriods, note: '按每2周计算' },
+      { item: '电费', amount: 'PHP 2,800 / 2周', quantity: biweeklyPeriods, total: 2800 * biweeklyPeriods, note: '预估；含公共用电及房间基础用电16kW/周，超出按PHP25/kW/人收取' },
+      { item: '水费', amount: 'PHP 1,000 / 2周', quantity: biweeklyPeriods, total: 1000 * biweeklyPeriods, note: '按每2周计算' },
+      { item: '旅游签续签', amount: '按学习周数阶梯计算', quantity: extensionQuantity, total: this.visaExtensionTotal, note: '5–8周PHP5,140；9–12周再加PHP6,920；13–16周再加PHP4,440；17–20周再加PHP4,950；21–24周再加PHP5,450；国籍不同可能调整' },
+      { item: '书本教材费', amount: 'PHP 2,000 / 4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '预估；按课程和实际购买教材调整' },
+      { item: '学生证', amount: 'PHP 400 / 次', quantity: 1, total: 400, note: '一次性费用' },
+      { item: '宿务麦克坦机场接机', amount: 'PHP 1,200 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1200 : 0, note: '可选；周六、周日06:00–24:00参考，其他时间PHP1,500，默认不计入学杂费合计', excluded: true },
+      { item: '宿舍押金', amount: `PHP ${this.roomDeposit.toLocaleString('en-US')} / 次`, quantity: 1, total: this.roomDeposit, note: '1–2周PHP2,000；3–7周PHP3,000；8–11周PHP4,000；12–24周PHP5,000；可退', excluded: true },
+      { item: '额外住宿', amount: 'PHP 3,000 / 晚', quantity: 0, total: 0, note: '按实际额外入住晚数计算，默认不计入合计', excluded: true },
+    ];
+  }
+  get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
+  get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.excluded);
+    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'PHILINTER',
+      schoolName: '菲律宾宿务Philinter语言学校',
+      filePrefix: 'PHILINTER',
+      heroSrc: '/assets/philinter/campus-main.jpeg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '课程注册费USD120 + 住宿注册费USD100' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；以上单价以4周为基准` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+        { icon: '折', label: '思达折扣', amount: '9折', note: `仅课程费和住宿费，已优惠USD ${this.formatUsd(this.sidaDiscountAmount)}`, accent: true },
+        { icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: this.offSeasonEligibilityText },
+        { icon: '旺', label: '暑期附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.peakSeasonWeeks}周 × USD ${this.formatUsd(this.seasonalFeePerWeek)}` },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeesTotal,
+      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
+      localFeeNote: '接机、可退宿舍押金及额外住宿单独列示，不计入学杂费合计。',
+      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: fee.note })),
+      ruleNotes: [
+        '计算规则：注册费 +（课程费 + 住宿费）× 思达9折 + 暑期附加费 − 符合条件的淡季优惠。',
+        '淡季活动每满8周减USD300；仅校内三人房、Azon单人/双人房，IELTS及TOEIC保证班除外。',
+      ],
+    });
+  }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  formatPhp(value: number): string { return `PHP ${value.toLocaleString('en-US')}`; }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string {
@@ -373,10 +480,9 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     if (name.includes('单人')) return 'in-campus-single';
     return this.slugifyPriceKey(name);
   }
-  private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string {
-    if (fee.fee === 0) return '需顾问确认';
-    return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`;
+  private isDateBetween(value: string, start: string, end: string): boolean { return value >= start && value <= end; }
+  private parseDate(value: string): Date | null {
+    const parsed = new Date(`${value}T00:00:00Z`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
-  private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }
 }

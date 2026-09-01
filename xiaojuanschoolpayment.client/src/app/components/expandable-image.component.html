@@ -28,7 +28,7 @@
   class="expandable-image__overlay"
   role="dialog"
   aria-modal="true"
-  [attr.aria-label]="title || alt || '图片预览'"
+  [attr.aria-label]="activeTitle || activeAlt || '图片预览'"
   (click)="close()"
 >
   <button type="button" class="expandable-image__close" aria-label="关闭图片预览" (click)="close($event)">
@@ -43,7 +43,7 @@
       *ngIf="hasMultipleImages"
       type="button"
       class="expandable-image__nav expandable-image__nav--previous"
-      [attr.aria-label]="'查看上一张：' + (title || alt || '图片')"
+      [attr.aria-label]="'查看上一张图片'"
       (click)="previous($event)"
     >
       <mat-icon>chevron_left</mat-icon>
@@ -54,11 +54,11 @@
       (touchstart)="startTouch($event)"
       (touchend)="endTouch($event)"
     >
-      <img [src]="activeSrc" [alt]="(alt || title) + (hasMultipleImages ? ' ' + (activeIndex + 1) : '')" />
-      <figcaption *ngIf="title || caption || hasMultipleImages">
+      <img [src]="activeSrc" [alt]="activeAlt || activeTitle || '图片预览'" />
+      <figcaption *ngIf="activeTitle || activeCaption || hasMultipleImages">
         <div>
-          <strong *ngIf="title">{{ title }}</strong>
-          <span *ngIf="caption">{{ caption }}</span>
+          <strong *ngIf="activeTitle">{{ activeTitle }}</strong>
+          <span *ngIf="activeCaption">{{ activeCaption }}</span>
         </div>
         <span *ngIf="hasMultipleImages" class="expandable-image__counter">
           {{ activeIndex + 1 }} / {{ imageSources.length }}
@@ -70,7 +70,7 @@
       *ngIf="hasMultipleImages"
       type="button"
       class="expandable-image__nav expandable-image__nav--next"
-      [attr.aria-label]="'查看下一张：' + (title || alt || '图片')"
+      [attr.aria-label]="'查看下一张图片'"
       (click)="next($event)"
     >
       <mat-icon>chevron_right</mat-icon>

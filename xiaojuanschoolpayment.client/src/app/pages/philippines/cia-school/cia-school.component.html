@@ -240,7 +240,7 @@
     <section class="cia-section" id="gallery">
       <div class="section-heading">
         <h2>按区域查看 CIA 环境</h2>
-        <p>校园、教室、餐厅和设施按实景卡片查看；切换到“住宿”可直接比较7类房型、查看多角度照片与详细差异。</p>
+        <p>“全部”先按区域进入相册；各相册用缩略图切换实景，点击主图可放大并前后浏览，住宿相册还可直接比较7类房型。</p>
       </div>
       <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
         <button
@@ -252,48 +252,115 @@
           {{ category }}
         </button>
       </div>
-      <div class="environment-grid" #gallerySlider *ngIf="selectedGalleryCategory !== '住宿'">
-        <figure *ngFor="let image of displayedGalleryImages">
-          <app-expandable-image
-            [src]="image.src"
-            [alt]="image.title"
-            [title]="image.title"
-            [caption]="image.description"
-            [images]="image.gallery || []"
-            [loading]="image.category === '住宿' ? 'eager' : 'lazy'"
-            previewHeight="260px"
-          ></app-expandable-image>
-          <figcaption>
-            <span>{{ image.category }}</span>
-            <strong>{{ image.title }}</strong>
-            <p>{{ image.description }}</p>
-          </figcaption>
-        </figure>
+
+      <div
+        *ngIf="selectedGalleryCategory === '全部'"
+        class="gallery-album-grid"
+        aria-label="CIA环境相册入口"
+      >
+        <button
+          type="button"
+          *ngFor="let category of galleryAlbumCategories"
+          [attr.aria-label]="'进入' + category + '相册'"
+          (click)="setGalleryCategory(category)"
+        >
+          <span class="gallery-album-cover" aria-hidden="true">
+            <img
+              *ngFor="let image of galleryImagesForCategory(category).slice(0, 3); let coverIndex = index"
+              [src]="image.src"
+              [alt]="''"
+              loading="lazy"
+            />
+          </span>
+          <span class="gallery-album-copy">
+            <span>
+              <strong>{{ category }}相册</strong>
+              <small>{{ galleryImagesForCategory(category).length }}项实景</small>
+            </span>
+            <mat-icon>arrow_forward</mat-icon>
+          </span>
+          <em>{{ galleryAlbumDescription(category) }}</em>
+        </button>
+      </div>
+
+      <div
+        *ngIf="selectedGalleryCategory !== '全部' && selectedGalleryCategory !== '住宿'"
+        class="environment-showcase"
+        id="gallery-category-panel"
+      >
+        <div class="environment-album-toolbar">
+          <div>
+            <strong>{{ selectedGalleryCategory }}相册</strong>
+            <span>第 {{ selectedGalleryImageIndex + 1 }} / {{ displayedGalleryImages.length }} 张</span>
+          </div>
+          <nav [attr.aria-label]="selectedGalleryCategory + '相册切换'">
+            <button type="button" aria-label="上一张" (click)="previousGalleryImage()">
+              <mat-icon>chevron_left</mat-icon>
+              上一张
+            </button>
+            <button type="button" aria-label="下一张" (click)="nextGalleryImage()">
+              下一张
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </nav>
+        </div>
+
+        <div class="environment-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'">
+          <button
+            type="button"
+            role="tab"
+            *ngFor="let image of displayedGalleryImages; let imageIndex = index"
+            [class.active]="selectedGalleryImageIndex === imageIndex"
+            [attr.aria-selected]="selectedGalleryImageIndex === imageIndex"
+            [attr.aria-label]="'查看' + image.title"
+            (click)="selectGalleryImage(imageIndex)"
+          >
+            <img [src]="image.src" [alt]="image.title + '缩略图'" loading="lazy" />
+            <span>{{ image.title }}</span>
+          </button>
+        </div>
+
+        <article class="environment-profile-panel" role="tabpanel" aria-live="polite">
+          <div class="environment-profile-photo">
+            <app-expandable-image
+              [src]="selectedGalleryImage.src"
+              [images]="displayedGalleryImageSources"
+              [imageAlts]="displayedGalleryImageAlts"
+              [imageTitles]="displayedGalleryImageTitles"
+              [imageCaptions]="displayedGalleryImageCaptions"
+              [alt]="selectedGalleryImage.title"
+              [title]="selectedGalleryImage.title"
+              [caption]="selectedGalleryImage.description"
+              loading="eager"
+              previewHeight="clamp(280px, 31vw, 420px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <span><mat-icon>collections</mat-icon>{{ displayedGalleryImages.length }}张 · 点击放大并前后浏览</span>
+          </div>
+
+          <div class="environment-profile-copy">
+            <span class="section-eyebrow">{{ selectedGalleryImage.category }} · CIA CAMPUS</span>
+            <h3>{{ selectedGalleryImage.title }}</h3>
+            <p>{{ selectedGalleryImage.description }}</p>
+            <ul *ngIf="selectedGalleryImage.details?.length">
+              <li *ngFor="let detail of selectedGalleryImage.details">
+                <mat-icon>check_circle</mat-icon>{{ detail }}
+              </li>
+            </ul>
+            <p class="environment-profile-note">
+              <mat-icon>info</mat-icon>图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。
+            </p>
+          </div>
+        </article>
+
       </div>
 
       <section
         *ngIf="selectedGalleryCategory === '住宿'"
         class="room-comparison-section room-comparison-section--embedded"
         id="room-comparison"
-        aria-labelledby="room-comparison-title"
+        aria-label="CIA房型实景与差异"
       >
-      <div class="room-comparison-heading">
-        <div>
-          <span>ROOM GUIDE · 房型选择</span>
-          <h3 id="room-comparison-title">CIA房型实景与差异</h3>
-          <p>在这里集中查看7类房型的实景、空间、床型、服务频率和关键设备；点击房型即可切换照片与详细说明。</p>
-        </div>
-        <span class="room-comparison-source"><mat-icon>verified</mat-icon>学校2026房型资料</span>
-      </div>
-
-      <aside class="room-common-features" aria-label="CIA房型共通配置">
-        <mat-icon>check_circle</mat-icon>
-        <div>
-          <strong>各房型共通基础配置</strong>
-          <p>空调、遮光帘、书桌椅、书架、衣柜与衣架、独立卫浴热水、吹风机、冰箱及洗衣篮；具体品牌和摆放位置可能不同。</p>
-        </div>
-      </aside>
-
       <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
         <button
           type="button"
@@ -318,16 +385,39 @@
         [id]="'room-panel-' + selectedRoomProfile.id"
         aria-live="polite"
       >
-        <div class="room-profile-photo">
-          <app-expandable-image
-            [src]="selectedRoomProfile.image"
-            [alt]="selectedRoomProfile.imageAlt"
-            [title]="selectedRoomProfile.label + '实景'"
-            [caption]="selectedRoomProfile.note"
-            previewHeight="clamp(250px, 30vw, 390px)"
-            previewFit="cover"
-          ></app-expandable-image>
-          <span><mat-icon>zoom_in</mat-icon>点击查看大图</span>
+        <div class="room-profile-gallery">
+          <div class="room-profile-photo">
+            <app-expandable-image
+              [src]="selectedRoomProfile.image"
+              [images]="selectedRoomProfile.gallery"
+              [imageAlts]="selectedRoomGalleryAlts"
+              [imageTitles]="selectedRoomGalleryTitles"
+              [imageCaptions]="selectedRoomGalleryCaptions"
+              [alt]="selectedRoomProfile.imageAlt"
+              [title]="selectedRoomProfile.label + '实景'"
+              [caption]="selectedRoomProfile.note"
+              loading="eager"
+              previewHeight="clamp(250px, 30vw, 390px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <span><mat-icon>collections</mat-icon>{{ selectedRoomProfile.gallery.length }}张实景 · 点击前后浏览</span>
+          </div>
+
+          <div class="room-detail-thumbnails" [attr.aria-label]="selectedRoomProfile.label + '细节图片'">
+            <app-expandable-image
+              *ngFor="let detailImage of selectedRoomProfile.gallery.slice(1, 5); let imageIndex = index"
+              [src]="detailImage"
+              [images]="selectedRoomProfile.gallery"
+              [imageAlts]="selectedRoomGalleryAlts"
+              [imageTitles]="selectedRoomGalleryTitles"
+              [imageCaptions]="selectedRoomGalleryCaptions"
+              [alt]="selectedRoomProfile.label + '细节实景 ' + (imageIndex + 2)"
+              [title]="selectedRoomProfile.label + '多角度实景'"
+              [caption]="selectedRoomProfile.note"
+              previewHeight="76px"
+              previewFit="cover"
+            ></app-expandable-image>
+          </div>
         </div>
 
         <div class="room-profile-copy">
@@ -878,17 +968,17 @@
           </select>
         </label>
         <label>
-          报名日期
-          <input type="date" [(ngModel)]="selectedRegistrationDate" />
+          报价日期
+          <input type="date" [(ngModel)]="selectedRegistrationDate" readonly aria-readonly="true" />
         </label>
         <label>
-          入学日期
+          预计入学日期
           <input type="date" [(ngModel)]="selectedStartDate" />
         </label>
         <div class="tuition-rule-card" [class.tuition-rule-card--new]="uses2027Tuition">
           <span>{{ appliedTuitionLabel }}</span>
           <strong>{{ tuitionRuleSummary }}</strong>
-          <small>原定2026年入学后改期到2027年的订单，需再按实际改期日期由顾问核对。</small>
+          <small>报价日期用于页面估算，不代表锁价；适用价格仍以学校实际收到报名及确认入学日期为准。</small>
         </div>
         <button class="primary-action" type="button" (click)="calculateQuote()">
           重新计算
@@ -908,8 +998,8 @@
             </p>
           </div>
           <strong
-            >{{ appliedTuitionLabel }} · 报名
-            {{ selectedRegistrationDate | date: "yyyy/MM/dd" }} · 入学
+            >{{ appliedTuitionLabel }} · 报价
+            {{ selectedRegistrationDate | date: "yyyy/MM/dd" }} · 预计入学
             {{ selectedStartDate | date: "yyyy/MM/dd" }}</strong
           >
         </div>
@@ -1175,7 +1265,12 @@
 
         <div class="campus-event-grid">
           <article *ngFor="let event of campusMonthlyEvents2026; let index = index" [style.--event-index]="index">
-            <img [src]="event.image" [alt]="event.imageAlt" loading="lazy" />
+            <img
+              [src]="event.image"
+              [alt]="event.imageAlt"
+              [style.object-position]="event.imagePosition || 'center 28%'"
+              loading="lazy"
+            />
             <span class="campus-event-month">{{ event.month }}月</span>
             <div class="campus-event-copy">
               <mat-icon>{{ event.icon }}</mat-icon>
@@ -1326,11 +1421,11 @@
         </div>
         <span class="official-review-source">
           <mat-icon>verified</mat-icon>
-          CIA官网学生反馈
+          CIA学生真实反馈整理
         </span>
       </div>
 
-      <div class="official-review-grid" aria-label="CIA官网学生反馈中文整理">
+      <div class="official-review-grid" aria-label="CIA学生反馈中文整理">
         <article *ngFor="let review of officialStudentReviews">
           <figure>
             <img [src]="review.image" [alt]="review.imageAlt" loading="lazy" />
@@ -1341,13 +1436,11 @@
             <h3>{{ review.title }}</h3>
             <blockquote>{{ review.excerpt }}</blockquote>
             <a
-              [href]="review.sourceUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="在CIA官网查看这条学生反馈原文"
+              [routerLink]="['/philippines-study/cebu/cia-cebu-international-academy/student-reviews', review.slug]"
+              [attr.aria-label]="'查看学生反馈全文：' + review.title"
             >
-              查看CIA官网原文
-              <mat-icon>open_in_new</mat-icon>
+              查看完整反馈
+              <mat-icon>arrow_forward</mat-icon>
             </a>
           </div>
         </article>
@@ -1355,7 +1448,7 @@
 
       <p class="official-review-note">
         <mat-icon>translate</mat-icon>
-        中文内容根据CIA官网英文学生反馈忠实整理，为便于阅读进行了精简；照片及原始反馈来自CIA官方网站，个人体验仅代表分享者本人。
+        中文内容根据学生公开分享整理翻译，为便于阅读进行了中文表达优化；图片与内容用于介绍学生体验，个人经历仅代表分享者本人。
       </p>
     </section>
 

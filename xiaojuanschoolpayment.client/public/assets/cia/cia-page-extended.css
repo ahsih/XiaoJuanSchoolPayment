@@ -1590,10 +1590,10 @@ app-cia-school .campus-event-grid article {
 app-cia-school .campus-event-grid article > img {
   display: block;
   width: 100%;
-  height: 82px;
+  height: auto;
+  aspect-ratio: 16 / 7;
   object-fit: cover;
-  filter: saturate(0.78) contrast(0.96);
-  opacity: 0.82;
+  filter: saturate(0.94) contrast(0.98);
 }
 
 app-cia-school .campus-event-copy {
@@ -2154,6 +2154,386 @@ app-cia-school .campus-practical-grid article > p mat-icon {
   }
 }
 
+/* CIA环境：区域相册入口与紧凑型实景浏览 */
+app-cia-school .gallery-album-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+app-cia-school .gallery-album-grid > button {
+  min-width: 0;
+  padding: 7px;
+  overflow: hidden;
+  border: 1px solid #d9e5df;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #173a4b;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 10px 24px rgb(20 71 55 / 6%);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+app-cia-school .gallery-album-grid > button:hover,
+app-cia-school .gallery-album-grid > button:focus-visible {
+  border-color: #6eac93;
+  box-shadow: 0 13px 28px rgb(20 71 55 / 12%);
+  transform: translateY(-2px);
+}
+
+app-cia-school .gallery-album-cover {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #eaf1ed;
+}
+
+app-cia-school .gallery-album-cover img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+}
+
+app-cia-school .gallery-album-cover img:first-child {
+  grid-row: 1 / 3;
+}
+
+app-cia-school .gallery-album-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 5px 3px;
+}
+
+app-cia-school .gallery-album-copy > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+app-cia-school .gallery-album-copy strong {
+  color: #07503a;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+app-cia-school .gallery-album-copy small {
+  color: #7b8a83;
+  font-size: 10px;
+}
+
+app-cia-school .gallery-album-copy mat-icon {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  border-radius: 50%;
+  background: #e7f4ed;
+  color: #08714f;
+  font-size: 17px;
+  line-height: 25px;
+  text-align: center;
+}
+
+app-cia-school .gallery-album-grid > button > em {
+  display: block;
+  min-height: 32px;
+  padding: 0 5px 7px;
+  overflow: hidden;
+  color: #66767e;
+  font-size: 10px;
+  font-style: normal;
+  line-height: 1.55;
+}
+
+app-cia-school .environment-showcase {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+app-cia-school .environment-album-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border: 1px solid #d7e7e1;
+  border-radius: 14px;
+  background: #f6fbf8;
+}
+
+app-cia-school .environment-album-toolbar > div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+app-cia-school .environment-album-toolbar strong {
+  color: #07533e;
+  font-size: 17px;
+}
+
+app-cia-school .environment-album-toolbar span {
+  color: #6c8079;
+  font-size: 12px;
+}
+
+app-cia-school .environment-album-toolbar nav {
+  display: flex;
+  gap: 8px;
+}
+
+app-cia-school .environment-album-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #aad1c3;
+  border-radius: 9px;
+  color: #08714f;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+app-cia-school .environment-album-toolbar mat-icon {
+  width: 19px;
+  height: 19px;
+  font-size: 19px;
+}
+
+app-cia-school .environment-profile-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 8px;
+}
+
+app-cia-school .environment-profile-tabs button {
+  min-width: 0;
+  padding: 6px;
+  overflow: hidden;
+  border: 1px solid #d9e5df;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #233f4e;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+app-cia-school .environment-profile-tabs button:hover,
+app-cia-school .environment-profile-tabs button:focus-visible {
+  border-color: #7fb79f;
+  box-shadow: 0 8px 18px rgb(20 77 58 / 10%);
+  transform: translateY(-1px);
+}
+
+app-cia-school .environment-profile-tabs button.active {
+  border-color: #08714f;
+  background: #eef8f3;
+  box-shadow: 0 0 0 2px rgb(8 113 79 / 10%);
+}
+
+app-cia-school .environment-profile-tabs img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+app-cia-school .environment-profile-tabs span {
+  display: grid;
+  gap: 2px;
+  padding: 8px 4px 4px;
+}
+
+app-cia-school .environment-profile-tabs strong,
+app-cia-school .environment-profile-tabs small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+app-cia-school .environment-profile-tabs strong {
+  color: #14384a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+app-cia-school .environment-profile-tabs small {
+  color: #7a898f;
+  font-size: 10px;
+}
+
+app-cia-school .environment-profile-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+  gap: clamp(18px, 2.5vw, 30px);
+  margin-top: 14px;
+  padding: clamp(14px, 2vw, 22px);
+  border: 1px solid #dce8e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgb(20 71 55 / 7%);
+}
+
+app-cia-school .environment-profile-photo {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #e9efec;
+  --expandable-image-radius: 14px;
+}
+
+app-cia-school .environment-profile-photo > span {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgb(5 61 45 / 88%);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+app-cia-school .environment-profile-photo > span mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+app-cia-school .environment-profile-copy {
+  align-self: center;
+  min-width: 0;
+}
+
+app-cia-school .environment-profile-copy h3 {
+  margin: 6px 0 0;
+  color: #064c38;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.25;
+}
+
+app-cia-school .environment-profile-copy > p:not(.environment-profile-note) {
+  margin: 14px 0 0;
+  color: #53666f;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+app-cia-school .environment-profile-copy ul {
+  display: grid;
+  gap: 9px;
+  margin: 17px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+app-cia-school .environment-profile-copy li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #445d67;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+app-cia-school .environment-profile-copy li mat-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: #0b7955;
+  font-size: 18px;
+}
+
+app-cia-school .environment-profile-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px dashed #dce6e1;
+  color: #75828a;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+app-cia-school .environment-profile-note mat-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-top: 1px;
+  color: #df692d;
+  font-size: 16px;
+}
+
+app-cia-school .environment-filmstrip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 136px;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 8px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+app-cia-school .environment-filmstrip button {
+  min-width: 0;
+  padding: 5px;
+  overflow: hidden;
+  border: 1px solid #d9e6e1;
+  border-radius: 11px;
+  color: #27463d;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+app-cia-school .environment-filmstrip button.active {
+  border-color: #08714f;
+  background: #eef8f3;
+  box-shadow: 0 0 0 2px rgb(8 113 79 / 10%);
+}
+
+app-cia-school .environment-filmstrip img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+app-cia-school .environment-filmstrip span {
+  display: block;
+  padding: 7px 3px 3px;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* 2026房型资料：住宿实景之后的房型差异说明 */
 app-cia-school .room-comparison-section {
   scroll-margin-top: 150px;
@@ -2255,7 +2635,7 @@ app-cia-school .room-profile-tabs {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 18px;
+  margin-top: 0;
 }
 
 app-cia-school .room-profile-tabs button {
@@ -2328,6 +2708,10 @@ app-cia-school .room-profile-panel {
   box-shadow: 0 14px 34px rgb(20 71 55 / 7%);
 }
 
+app-cia-school .room-profile-gallery {
+  min-width: 0;
+}
+
 app-cia-school .room-profile-photo {
   position: relative;
   min-width: 0;
@@ -2354,6 +2738,33 @@ app-cia-school .room-profile-photo > span {
 }
 
 app-cia-school .room-profile-photo > span mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+app-cia-school .room-detail-thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+app-cia-school .room-detail-thumbnails app-expandable-image {
+  min-width: 0;
+  --expandable-image-radius: 9px;
+}
+
+app-cia-school .room-detail-thumbnails .expandable-image__count {
+  display: none;
+}
+
+app-cia-school .room-detail-thumbnails .expandable-image__zoom {
+  width: 26px;
+  height: 26px;
+}
+
+app-cia-school .room-detail-thumbnails .expandable-image__zoom mat-icon {
   width: 16px;
   height: 16px;
   font-size: 16px;
@@ -2639,7 +3050,31 @@ app-cia-school .room-comparison-disclaimer mat-icon {
   font-size: 17px;
 }
 
+@media (max-width: 1100px) {
+  app-cia-school .gallery-album-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 980px) {
+  app-cia-school .environment-profile-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 8px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  app-cia-school .environment-profile-tabs button {
+    flex: 0 0 142px;
+    scroll-snap-align: start;
+  }
+
+  app-cia-school .environment-profile-panel {
+    grid-template-columns: 1fr;
+  }
+
   app-cia-school .room-profile-tabs {
     display: flex;
     gap: 8px;
@@ -2660,6 +3095,55 @@ app-cia-school .room-comparison-disclaimer mat-icon {
 }
 
 @media (max-width: 700px) {
+  app-cia-school .gallery-album-grid {
+    display: flex;
+    gap: 10px;
+    margin-inline: -12px;
+    padding: 2px 12px 9px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  app-cia-school .gallery-album-grid > button {
+    flex: 0 0 min(76vw, 270px);
+    scroll-snap-align: start;
+  }
+
+  app-cia-school .environment-album-toolbar {
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  app-cia-school .environment-album-toolbar > div {
+    display: grid;
+    gap: 2px;
+  }
+
+  app-cia-school .environment-album-toolbar button {
+    min-height: 36px;
+    padding: 0 8px;
+    font-size: 0;
+  }
+
+  app-cia-school .environment-filmstrip {
+    grid-auto-columns: 116px;
+  }
+
+  app-cia-school .environment-profile-panel {
+    gap: 16px;
+    padding: 10px;
+  }
+
+  app-cia-school .environment-profile-copy {
+    padding: 4px 4px 7px;
+  }
+
+  app-cia-school .environment-profile-photo > span {
+    right: 9px;
+    bottom: 9px;
+  }
+
   app-cia-school .room-comparison-section {
     padding: 18px 12px;
     border-radius: 15px;

@@ -51,13 +51,13 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>Light ESL + 校内三人房</p>
+              <span>{{ selectedWeeks }}周当前选择参考</span>
+              <strong>USD {{ formatUsd(quoteUsd) }}</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和住宿费估算
+                  已含注册费、课程住宿思达9折及符合条件的淡季优惠
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -65,7 +65,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：Philinter Academy官方网站公开图片；学校、课程、设施信息参考Philinter官方网站公开资料。</p>
+            <p class="photo-source">封面及报价单使用Philinter学校校区主图；学校、课程、设施信息参考Philinter官方网站公开资料。</p>
           </div>
         </section>
 
@@ -206,7 +206,7 @@
             <div class="section-heading">
               <span>Philinter 2026 年 4 周课程费</span>
               <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费参考，币种为美元。1周按40%、2周按65%、3周按85%计算；课程注册费USD 120另计。</p>
+              <p>以下为4周课程费参考，币种为美元。1周按45%、2周按65%、3周按85%计算；课程注册费USD 120另计。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="Philinter 2026年4周课程费">
               <div class="table-row table-head" role="row">
@@ -249,7 +249,7 @@
             <div class="section-heading">
               <span>Philinter 2026 年 4 周住宿费</span>
               <h2>校内宿舍和校外公寓要分开确认</h2>
-              <p>默认报价使用校内三人房。1周按40%、2周按65%、3周按85%计算；住宿注册费USD 100另计。校外公寓需确认空房、接送和门禁规则。</p>
+              <p>默认报价使用校内三人房。1周按45%、2周按65%、3周按85%计算；住宿注册费USD 100另计。校外公寓需确认空房、接送和门禁规则。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="Philinter 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -276,8 +276,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>Philinter 费用快速报价</span>
-              <h2>默认参考：4周 Light ESL + 校内三人房</h2>
-              <p>前期支付参考 = 课程及住宿注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
+              <h2>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
+              <p>最终应付学校金额 = 注册费 +（课程费 + 住宿费）× 思达9折 + 暑期附加费 − 符合条件的淡季优惠</p>
             </div>
             <div class="quote-form" aria-label="Philinter费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -289,21 +289,25 @@
               <div><span>注册费（课程120 + 住宿100）</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>{{ billingRuleText }}</span><strong>计费倍率 {{ selectedWeekMultiplier }}</strong></div>
+              <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+              <div class="discount-line"><span>2026下半年淡季优惠：{{ offSeasonEligibilityText }}</span><strong>− USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
+              <div><span>暑期附加费（{{ peakSeasonWeeks }}周 × USD {{ formatUsd(seasonalFeePerWeek) }}）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateText }}；人民币仅作实时估算</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认课程、房型、空房和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、水电费、教材费、管理费、学生证、宿舍押金、接机费、签证延签、ACR I-card等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">1周、2周、3周的课程费和住宿费分别按4周价格的40%、65%、85%计算。Philinter旺季附加费、校外公寓规则、青少年监护规则、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+            <p class="fee-alert">当前{{ selectedWeeks }}周计入的到校学杂费预估为 PHP {{ localFeesTotal.toLocaleString('en-US') }}（{{ localFeesCnyText }}），不含接机、可退宿舍押金和额外住宿。</p>
+            <p class="season-note">淡季活动按入学日期初筛：2026/08/16–12/25入学、至少8周、指定房型、非IELTS/TOEIC保证班，每满8周减USD 300。不得与校方其他优惠或Voucher并用；思达9折为代办优惠，页面按可叠加规则计算，最终资格及账单由学校确认。</p>
           </section>
         </section>
 
@@ -313,22 +317,35 @@
             <h2>前期支付之外，还要准备当地费用</h2>
             <p>以下费用以PHP计价，通常到校后支付。不同课程、周数、住宿方式和学校政策会影响最终金额。</p>
           </div>
+          <label class="option-check">
+            <input type="checkbox" [(ngModel)]="includeAirportPickup" />
+            显示机场接机参考（单独列示，不计入学杂费合计）
+          </label>
           <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
+              <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
+            </article>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看到校支付费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+              <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
+                <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
+              </article>
             </div>
           </details>
+          <div class="local-fee-summary">
+            <span>预计到校学杂费合计（不含可选/可退项目）</span>
+            <strong>{{ formatPhp(localFeesTotal) }}</strong>
+            <em>{{ localFeesCnyText }}</em>
+          </div>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月18日。课程费、住宿费、注册费与短期比例按Philinter 2026费用表更新；1周、2周、3周分别按4周课程费和住宿费的40%、65%、85%计算。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月1日。课程费、住宿费、注册费、暑期附加费与短期比例按Philinter 2026费用表核对；1周、2周、3周分别按4周课程费和住宿费的45%、65%、85%计算。2026下半年淡季优惠按用户提供的合作方活动通知录入，活动资格、房型空位、当地费用和最终账单仍以学校书面确认为准。</p>
           </div>
         </section>
 

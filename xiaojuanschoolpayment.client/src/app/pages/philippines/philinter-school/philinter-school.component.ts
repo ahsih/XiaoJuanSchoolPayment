@@ -51,17 +51,17 @@ export class PhilinterSchoolComponent {
   readonly courses: CourseItem[] = [
     {
       title: 'General ESL / Intensive ESL',
-      lessons: 'General ESL 3节一对一 + 3节小团体 + 2节大团体；Intensive ESL 5节一对一 + 2节小团体',
+      lessons: 'General：3节一对一 + 1节小团体 + 2节精品小团体 + 2节大团体选修；Intensive：4节一对一 + 1节小团体 + 2节精品团体 + 1节大团体 + 2节夜间辅导选修',
       text: '适合初学到中级学生，想系统提升阅读、词汇、发音、听说、文法与写作基础。',
     },
     {
       title: 'IPS 强化口说',
-      lessons: '5节一对一 + 3节小团体',
+      lessons: '4节一对一 + 2节小团体 + 2节精品小团体 + 2节夜间自习选修 + 选修活动',
       text: '适合想集中提高表达、自信、发音和实际沟通能力的学生，是 Philinter 的常见亮点课程。',
     },
     {
       title: 'IELTS / TOEIC / Guarantee',
-      lessons: '考试科目一对一 + 模考 + 晚自习 / 保证班规则',
+      lessons: 'IELTS：4节一对一 + 4节小团体 + 2节强制夜间辅导 + 周六模考；TOEIC：4节一对一 + 2节小团体 + 2节大团体 + 周五模考',
       text: '适合有明确分数目标的学生。保证班需满足入学成绩、出席率、模考、校规等条件。',
     },
     {
@@ -71,8 +71,8 @@ export class PhilinterSchoolComponent {
     },
     {
       title: 'Primary / Junior',
-      lessons: '儿童英文、青少年ESL、青少年雅思',
-      text: '适合7-15岁学生，但通常需要成年人陪同，并按年龄、面试和程度确认课程开放规则。',
+      lessons: 'Primary English 7–11岁；Junior ESL / IELTS 12–17岁；另有最长8周的Junior Speaking',
+      text: '适合儿童与青少年，需按年龄、陪同、监护、面试和程度确认开课规则。',
     },
   ];
 
@@ -92,11 +92,13 @@ export class PhilinterSchoolComponent {
     { item: '住宿注册费', amount: 'USD 100' },
     { item: '周末接机', amount: 'PHP 1,200' },
     { item: '平日接机', amount: 'PHP 1,500' },
-    { item: 'SSP学习许可', amount: '当地披索缴费，按学校最新标准确认' },
-    { item: '宿舍押金', amount: '当地缴纳，退房结算' },
-    { item: '水电 / 管理费', amount: '按校内或校外住宿规则确认' },
-    { item: '教材费 / 材料费', amount: '按课程和实际教材计算' },
-    { item: '签证延签 / ACR I-Card', amount: '按学习周数和菲律宾签证规则确认' },
+    { item: 'SSP + SSP I-CARD', amount: 'PHP 7,800 + 4,500' },
+    { item: '管理费', amount: 'PHP 2,200 / 2周' },
+    { item: '电费 / 水费', amount: 'PHP 2,800 + 1,000 / 2周' },
+    { item: '教材费', amount: '约PHP 2,000 / 4周' },
+    { item: '学生证', amount: 'PHP 400' },
+    { item: '宿舍押金', amount: 'PHP 2,000–5,000，可退' },
+    { item: '签证延签 / ACR I-Card', amount: '按学习周数计算' },
   ];
 
   readonly facilities = [
@@ -138,7 +140,7 @@ export class PhilinterSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: '菲律宾宿务Philinter语言学校的起价是多少？',
-      answer: '2026费用表中，Light ESL加校内三人房4周主费为USD 1,600，General ESL加校内三人房为USD 1,710；另加课程注册费USD 120和住宿注册费USD 100。',
+      answer: '2026费用表中，Light ESL加校内三人房4周原价为USD 1,600；通过思达报名，课程及住宿9折后为USD 1,440，再加课程与住宿注册费USD 220，4周参考合计USD 1,660。',
     },
     {
       question: 'Philinter 适合口说强化吗？',

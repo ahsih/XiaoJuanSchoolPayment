@@ -15,6 +15,9 @@ export class ExpandableImageComponent implements OnDestroy {
   @Input() alt = '';
   @Input() title = '';
   @Input() caption = '';
+  @Input() imageAlts: readonly string[] = [];
+  @Input() imageTitles: readonly string[] = [];
+  @Input() imageCaptions: readonly string[] = [];
   @Input() disabled = false;
   @Input() loading: 'eager' | 'lazy' = 'lazy';
   @Input() previewHeight = '';
@@ -59,7 +62,7 @@ export class ExpandableImageComponent implements OnDestroy {
       return;
     }
 
-    this.activeIndex = 0;
+    this.activeIndex = Math.max(this.imageSources.indexOf(this.src), 0);
     this.previousBodyOverflow = this.document.body.style.overflow;
     this.document.body.style.overflow = 'hidden';
     this.isOpen = true;
@@ -128,6 +131,18 @@ export class ExpandableImageComponent implements OnDestroy {
 
   protected get activeSrc(): string {
     return this.imageSources[this.activeIndex] ?? this.src;
+  }
+
+  protected get activeAlt(): string {
+    return this.imageAlts[this.activeIndex] ?? this.alt ?? this.activeTitle;
+  }
+
+  protected get activeTitle(): string {
+    return this.imageTitles[this.activeIndex] ?? this.title;
+  }
+
+  protected get activeCaption(): string {
+    return this.imageCaptions[this.activeIndex] ?? this.caption;
   }
 
   protected get hasMultipleImages(): boolean {

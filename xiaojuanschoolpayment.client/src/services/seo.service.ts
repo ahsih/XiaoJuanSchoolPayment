@@ -404,6 +404,15 @@ export class SeoService {
   }
 
   private findSectionSeo(path: string): SeoPage | undefined {
+    if (path.startsWith('/philippines-study/cebu/cia-cebu-international-academy/student-reviews/')) {
+      return {
+        title: 'CIA学生反馈 | 宿务英语游学真实体验',
+        description: '阅读CIA学生在课堂适应、口语提升、宿务生活与文化体验方面的中文反馈整理。',
+        keywords: 'CIA学生反馈, 宿务游学体验, 菲律宾英语学习体验, CIA语言学校',
+        image: '/assets/cia/student-reviews/review-city-night.png',
+      };
+    }
+
     if (path.startsWith('/philippines-study/cebu/')) {
       return {
         title: '宿务菲律宾语言学校详情 | 课程费用住宿咨询',

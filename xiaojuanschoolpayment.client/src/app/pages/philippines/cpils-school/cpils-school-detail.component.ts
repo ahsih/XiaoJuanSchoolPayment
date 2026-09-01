@@ -7,7 +7,10 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -20,7 +23,7 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; excluded?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -36,7 +39,7 @@ interface SidaCpilsTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-cpils-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cpils-school-detail.component.html',
   styleUrls: [
@@ -44,10 +47,12 @@ interface SidaCpilsTrustBadge { icon: string; label: string; }
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    './cpils-school-detail.component.css',
   ],
 })
 export class CpilsSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'CPILS';
   private readonly pricingSchoolNames = ['菲律宾宿务CPILS语言学校', 'CPILS'];
   private readonly courseFeeOrder = ['general-esl', 'general-esl-light', 'general-esl-plus', 'premier-sparta', 'toeic-course', 'toeic-guarantee', 'pre-ielts-course', 'ielts-course', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks', 'toefl-course', 'business-english', 'power-speaking-and-modern-communication'];
@@ -56,14 +61,20 @@ export class CpilsSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 125;
-  readonly discount = 1;
-  seasonalFeePerWeek = 0;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
+  readonly sidaDiscountRate = 0.9;
+  readonly offSeasonDiscountRate = 0.95;
+  seasonalFeePerWeek = 40;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  exchangeRateLive = false;
+  readonly weekOptions = [4, 8, 12, 16, 20, 24];
   selectedCourseId = 'general-esl';
   selectedRoomId = 'regular-quad';
   selectedWeeks = 4;
-  selectedStartDate = '2026-05-18';
+  selectedStartDate = '2026-09-07';
+  selectedRegistrationDate = '2026-09-01';
+  includeAirportPickup = false;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -117,34 +128,33 @@ export class CpilsSchoolDetailComponent implements OnInit {
   readonly notSuitableFor: FitItem[] = [
     { title: '只想要度假村感和新校区环境', text: 'CPILS是市区老牌学校，环境重点不在度假风格，若重视校园质感可比较CPI、CIA、EV。' },
     { title: '完全不想接受校规或学习管理', text: '考试、斯巴达和保证班方向会有更明确的出勤、测试和纪律要求。' },
-    { title: '只看网页价格，不准备当地费用', text: '除前期费用外，到校还会有SSP、SSP E-card、水电、教材、押金等当地费用。' },
+    { title: '只看网页价格，不准备当地费用', text: '除前期费用外，到校还会有SSP、SSP I-CARD、管理、水电、教材、押金等当地费用。' },
     { title: '热门档期才临时确认单人房', text: '考试课程、亲子档期、Premium或单人房都建议提前确认空房。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'General ESL / Plus / Light', type: '综合英语', lessons: '一对一 + 1:2 / 1:4 / 1:12等团体课组合', suitable: '适合第一次游学、基础提升和希望按强度微调的学生。' },
-    { name: 'Premier Sparta', type: '斯巴达强化', lessons: '更高强度学习管理 + 沟通能力训练', suitable: '适合自律不足、需要明确学习节奏推动的人。' },
-    { name: 'IELTS Course', type: '雅思备考', lessons: '听说读写、词汇文法、目标分数和模考训练', suitable: '适合英联邦升学、移民或明确分数目标学生。' },
-    { name: 'TOEIC / TOEFL Course', type: '考试英语', lessons: '考试专项、技巧训练和定期测试', suitable: '适合求职、毕业门槛、升学和企业英语需求。' },
-    { name: 'Business English', type: '商务英语', lessons: '会议、简报、面试、谈判与职场书信', suitable: '适合职场人士和准备英文工作场景的学生。' },
-    { name: 'Power Speaking and Modern Communication', type: '口语沟通', lessons: '口语流利度、表达自信和现代沟通训练', suitable: '适合想增加开口量、提升沟通反应的学生。' },
-    { name: 'Parent-Child Program', type: '亲子课程', lessons: '家长与孩子同行学习安排', suitable: '适合亲子游学，但年龄、监护、房型和校规需提前确认。' },
+    { name: 'General ESL / Plus / Light', type: '综合英语', lessons: 'General为3堂1:1 + 2堂1:4 + 2堂1:12；Plus增加为4堂1:1；Light为4节1:1 + 1节团体课', suitable: 'Light仅限淡季入学；其余适合基础到进阶综合提升。' },
+    { name: 'Premier Sparta', type: '斯巴达强化', lessons: '5堂1:1 + 2堂1:4 + 2堂1:12 + 2堂强制自修 + 选修课', suitable: '适合需要明确管理和高强度学习节奏的学生。' },
+    { name: 'IELTS / Pre-IELTS / Guarantee', type: '雅思备考', lessons: 'Pre-IELTS以1:1为主；IELTS为4堂1:1 + 5堂大团体 + 3堂强制自修', suitable: '雅思保分班按8周或12周方案起报。' },
+    { name: 'TOEIC / TOEIC Guarantee', type: '托业备考', lessons: '4堂1:1 + 2堂1:4 + 2堂大团体 + 3堂强制自修 + 选修课', suitable: '听力与阅读训练，每月2次模拟考试。' },
+    { name: 'TOEFL Course', type: '托福备考', lessons: '3堂1:1 + 2堂1:4 + 2堂1:12 + 2堂大团体 + 3堂强制自修', suitable: '每月1次模拟考试，适合有北美升学或托福分数目标的学生。' },
+    { name: 'Business / PMC', type: '商务与演讲', lessons: 'Business为4堂1:1 + 2堂1:4 + 1堂1:12 + 2堂大团体；PMC增加口语与强制自修', suitable: '两类课程均4周起报。' },
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'general-esl', name: 'General ESL', tuition: 935, suitable: '基础综合英语，适合第一次游学和稳步提升' },
-    { id: 'general-esl-light', name: 'General ESL Light', tuition: 600, suitable: '较轻量综合英语，适合想保留生活弹性的学生' },
-    { id: 'general-esl-plus', name: 'General ESL Plus', tuition: 935, suitable: '综合英语加强方向，适合想增加输出训练的学生' },
-    { id: 'premier-sparta', name: 'Premier Sparta', tuition: 1040, suitable: '斯巴达学习强度，适合需要纪律推动的学生' },
-    { id: 'toeic-course', name: 'TOEIC Course', tuition: 1040, suitable: '托业备考，适合求职、升学或企业英语需求' },
-    { id: 'toeic-guarantee', name: 'TOEIC Guarantee', tuition: 1132, suitable: '托业保证班；听力和阅读每月安排2次模拟考试' },
-    { id: 'pre-ielts-course', name: 'Pre-IELTS Course', tuition: 1097, suitable: '雅思3分以下学生的预备课程，最少报名4周' },
-    { id: 'ielts-course', name: 'IELTS Course', tuition: 1097, suitable: '雅思备考与目标分数训练，最少报名4周' },
-    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1247.5, suitable: '雅思保证班8周方案；8周起报并赠送机考' },
-    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1189.7, suitable: '雅思保证班12周方案；12周起报' },
-    { id: 'toefl-course', name: 'TOEFL Course', tuition: 1040, suitable: '托福备考，适合北美升学或考试目标学生' },
-    { id: 'business-english', name: 'Business English', tuition: 1040, suitable: '商务沟通、会议、演示和职场表达；4周起报' },
-    { id: 'power-speaking-and-modern-communication', name: 'Power Speaking and Modern Communication', tuition: 1040, suitable: 'PMC演讲与现代沟通训练；4周起报' },
+    { id: 'general-esl', name: 'General ESL', tuition: 935, suitable: '3堂1:1 + 2堂1:4 + 2堂1:12 + 选修课' },
+    { id: 'general-esl-light', name: 'General ESL Light', tuition: 600, suitable: '4节1:1 + 1节团体课；仅限淡季入学' },
+    { id: 'general-esl-plus', name: 'General ESL Plus', tuition: 935, suitable: '4堂1:1 + 2堂1:4 + 1堂1:12 + 选修课' },
+    { id: 'premier-sparta', name: 'Premier Sparta', tuition: 1040, suitable: '5堂1:1 + 2堂1:4 + 2堂1:12 + 2堂强制自修 + 选修课' },
+    { id: 'toeic-course', name: 'TOEIC Course', tuition: 1040, suitable: '4堂1:1 + 2堂1:4 + 2堂大团体 + 3堂强制自修 + 选修；每月2次模考' },
+    { id: 'toeic-guarantee', name: 'TOEIC Guarantee', tuition: 1132, suitable: '4堂1:1 + 2堂1:4 + 2堂大团体 + 3堂强制自修 + 选修；每月2次模考' },
+    { id: 'pre-ielts-course', name: 'Pre-IELTS Course', tuition: 1097, suitable: '5堂1:1 + 1堂1:4 + 1堂1:8 + 2堂大团体 + 3堂强制自修；雅思3分以下' },
+    { id: 'ielts-course', name: 'IELTS Course', tuition: 1097, suitable: '4堂1:1 + 5堂大团体 + 3堂强制自修；每月2次模考，4周起报' },
+    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1247.5, suitable: '4堂1:1 + 5堂大团体 + 3堂强制自修；8周起报，赠机考' },
+    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1189.7, suitable: '4堂1:1 + 5堂大团体 + 3堂强制自修；12周起报' },
+    { id: 'toefl-course', name: 'TOEFL Course', tuition: 1040, suitable: '3堂1:1 + 2堂1:4 + 2堂1:12 + 2堂大团体 + 3堂强制自修；每月1次模考' },
+    { id: 'business-english', name: 'Business English', tuition: 1040, suitable: '4堂1:1 + 2堂1:4 + 1堂1:12 + 2堂大团体；4周起报' },
+    { id: 'power-speaking-and-modern-communication', name: 'Power Speaking and Modern Communication', tuition: 1040, suitable: '4堂1:1 + 3堂1:4 + 1堂1:12 + 2堂大团体 + 2堂强制自修；4周起报' },
   ];
 
   roomFees: RoomFee[] = [
@@ -167,19 +177,6 @@ export class CpilsSchoolDetailComponent implements OnInit {
     { time: '13:00 - 17:00', title: '下午课程', text: '继续口语、听力、阅读、写作、考试技巧或商务表达训练。' },
     { time: '17:00 - 19:00', title: '晚餐与自由时间', text: '可使用学校服务窗口、宿舍、洗衣或休闲设施。' },
     { time: '19:00 - 21:00', title: '自习 / 选修 / 校内安排', text: '斯巴达、考试和亲子课程的晚间规则需按项目确认。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 6,800', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP E-card', amount: 'PHP 4,000', note: '以学校现场收费为准' },
-    { item: '水电费', amount: 'PHP 2,000', note: '公开资料示例为每周预收 PHP 500，4周 PHP 2,000，多退少补' },
-    { item: '教材费', amount: 'PHP 2,000', note: '按课程和实际购买教材调整' },
-    { item: '管理费', amount: 'PHP 1,000', note: '4周参考，最终以学校现场收费为准' },
-    { item: '学生证', amount: 'PHP 300', note: '一次性费用参考' },
-    { item: '宿舍押金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '接机费', amount: 'PHP 1,200', note: '宿务机场接机参考' },
-    { item: 'ACR I-card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
-    { item: '洗衣费', amount: 'PHP 500', note: '按实际使用和衣物重量调整' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -256,7 +253,8 @@ export class CpilsSchoolDetailComponent implements OnInit {
   readonly faqs: FaqItem[] = [
     { question: 'CPILS适合第一次菲律宾游学吗？', answer: '适合目标清楚、可以接受一定学习管理的学生。若第一次游学但希望有人督促学习，CPILS会比自由型学校更有节奏。' },
     { question: 'CPILS更适合考试还是口语？', answer: '两者都有，但CPILS的老牌考试资源和管理体系更突出。若目标是IELTS、TOEIC或TOEFL，建议优先核对当前分数、目标分数和可读周数。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和可能的旺季附加费；到校后仍需支付SSP、SSP E-card、水电费、教材费、押金等当地费用。' },
+    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、课程费、住宿费、已计入优惠和可能的暑假附加费；到校学杂费会按周数另行计算。' },
+    { question: 'CPILS优惠怎么计算？', answer: '课程费与住宿费先按思达9折计算；符合2026淡季条件时再享95折。无对外窗单/双人房每4周另减USD50，符合学习期覆盖条件时圣诞/新年再减USD75或150；注册费不打折。' },
     { question: 'CPILS住宿有哪些房型？', answer: '官方资料列出单人、双人、三人和四人房，也有Main Building Regular、Premium和Extension等住宿方向。具体空房需按入学日期确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名CPILS，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -277,7 +275,15 @@ export class CpilsSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
+      this.usdToCny = snapshot.usdToCny;
+      this.phpPerCny = snapshot.phpPerCny;
+      this.exchangeRateDate = snapshot.date;
+      this.exchangeRateLive = true;
+    });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -320,10 +326,6 @@ export class CpilsSchoolDetailComponent implements OnInit {
     if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
     if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -343,14 +345,153 @@ export class CpilsSchoolDetailComponent implements OnInit {
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
-  get isPeakSeason(): boolean { return false; }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
-  get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
+  get courseAndRoomBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
+  get sidaDiscountAmount(): number { return this.roundMoney(this.courseAndRoomBase * (1 - this.sidaDiscountRate)); }
+  get afterSidaDiscount(): number { return this.courseAndRoomBase * this.sidaDiscountRate; }
+  get isSummerBlackout(): boolean { return this.isDateBetween(this.selectedStartDate, '2026-06-01', '2026-08-26'); }
+  get isOffSeasonEntry(): boolean { return this.selectedStartDate.startsWith('2026-') && this.selectedStartDate <= '2026-12-27' && !this.isSummerBlackout; }
+  get offSeasonEligible(): boolean { return this.selectedWeeks >= 4 && this.isOffSeasonEntry; }
+  get offSeasonDiscountAmount(): number { return this.offSeasonEligible ? this.roundMoney(this.afterSidaDiscount * (1 - this.offSeasonDiscountRate)) : 0; }
+  get offSeasonEligibilityText(): string {
+    if (this.selectedWeeks < 4) return '最低报名4周';
+    if (this.isSummerBlackout) return '2026/06/01–08/26入学不参加淡季优惠';
+    if (!this.selectedStartDate.startsWith('2026-') || this.selectedStartDate > '2026-12-27') return '需于2026/12/27前入学';
+    return '符合条件，课程费和住宿费在思达9折后再享95折';
+  }
+  get noWindowDiscountEligible(): boolean { return ['no-window-single', 'no-window-twin'].includes(this.selectedRoomId) && this.isOffSeasonEntry; }
+  get noWindowDiscountAmount(): number { return this.noWindowDiscountEligible ? Math.floor(this.selectedWeeks / 4) * 50 : 0; }
+  get noWindowDiscountText(): string {
+    if (!['no-window-single', 'no-window-twin'].includes(this.selectedRoomId)) return '仅无对外窗单人房/双人房参加';
+    if (!this.isOffSeasonEntry) return '需在2026/12/27前入学，且避开2026/06/01–08/26';
+    return `每4周减USD 50，已优惠USD ${this.formatUsd(this.noWindowDiscountAmount)}`;
+  }
+  get holidayDiscountAmount(): number {
+    if (!this.isDateBetween(this.selectedRegistrationDate, '2026-06-29', '2026-12-31')) return 0;
+    const studyEnd = this.studyEndDate;
+    if (!studyEnd) return 0;
+    if (this.selectedStartDate <= '2026-12-21' && studyEnd >= '2027-01-01') return 150;
+    if (this.selectedStartDate <= '2026-12-21' && studyEnd >= '2026-12-26') return 75;
+    return 0;
+  }
+  get holidayDiscountText(): string {
+    if (!this.isDateBetween(this.selectedRegistrationDate, '2026-06-29', '2026-12-31')) return '注册日需在2026/06/29–12/31之间';
+    if (this.holidayDiscountAmount === 150) return '学习期覆盖2026/12/21–2027/01/01，减USD 150';
+    if (this.holidayDiscountAmount === 75) return '学习期覆盖2026/12/21–12/26，减USD 75';
+    return '学习期未完整覆盖圣诞/新年指定日期';
+  }
+  get peakSeasonWeeks(): number {
+    const start = this.parseDate(this.selectedStartDate);
+    if (!start) return 0;
+    const peakStart = this.parseDate('2026-07-05')!;
+    const peakEnd = this.parseDate('2026-08-29')!;
+    let count = 0;
+    for (let index = 0; index < this.selectedWeeks; index += 1) {
+      const studyWeek = new Date(start.getTime());
+      studyWeek.setUTCDate(studyWeek.getUTCDate() + index * 7);
+      if (studyWeek >= peakStart && studyWeek <= peakEnd) count += 1;
+    }
+    return count;
+  }
+  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
+  get quoteUsd(): number {
+    return Math.max(0, this.roundMoney(this.registrationFee + this.afterSidaDiscount - this.offSeasonDiscountAmount + this.seasonalSurcharge - this.noWindowDiscountAmount - this.holidayDiscountAmount));
+  }
+  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)}`; }
+  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元`; }
+  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+  get studyEndDate(): string {
+    const start = this.parseDate(this.selectedStartDate);
+    if (!start) return '';
+    start.setUTCDate(start.getUTCDate() + this.selectedWeeks * 7 - 1);
+    return start.toISOString().slice(0, 10);
+  }
+  get courseEligibilityText(): string {
+    if (this.selectedCourseId === 'ielts-guarantee-8-weeks' && this.selectedWeeks < 8) return '该课程最低8周，请调整学习周数';
+    if (this.selectedCourseId === 'ielts-guarantee-12-weeks' && this.selectedWeeks < 12) return '该课程最低12周，请调整学习周数';
+    if (this.selectedCourseId === 'general-esl-light' && !this.isOffSeasonEntry) return 'General ESL Light仅限淡季入学，需学校再确认';
+    return '当前周数符合页面已知起报规则';
+  }
+  get examBenefitText(): string {
+    if (this.selectedCourseId === 'ielts-course' && this.selectedWeeks >= 12) return '雅思课程报名12周，可赠送1次雅思官方考试';
+    if (['toeic-course', 'toeic-guarantee'].includes(this.selectedCourseId)) {
+      const count = Math.min(6, Math.floor(this.selectedWeeks / 4));
+      return `按学习周数可赠送${count}次托业官方考试（4–7周1次，每增4周再增1次）`;
+    }
+    return '当前课程无额外官方考试赠送';
+  }
+
+  get localFeeBiweeklyPeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 2)); }
+  get localFeeFourWeekPeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return this.selectedWeeks > 4 ? 1 : 0; }
+  get visaExtensionTotal(): number {
+    if (this.selectedWeeks <= 4) return 0;
+    let total = 5130;
+    if (this.selectedWeeks > 8) total += 6400;
+    if (this.selectedWeeks > 12) total += 4440;
+    if (this.selectedWeeks > 16) total += 4440;
+    if (this.selectedWeeks > 20) total += 4440;
+    return total;
+  }
+  get localFees(): LocalFee[] {
+    const biweeklyPeriods = this.localFeeBiweeklyPeriods;
+    const fourWeekPeriods = this.localFeeFourWeekPeriods;
+    const acrQuantity = this.selectedWeeks > 4 ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需重新办理' },
+      { item: 'SSP I-CARD', amount: 'PHP 4,000 / 次', quantity: 1, total: 4000, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I CARD 外国人身份证', amount: 'PHP 4,000 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '首次续签时办理，学校统一带队到移民局' },
+      { item: '管理费', amount: 'PHP 2,000 / 2周', quantity: biweeklyPeriods, total: 2000 * biweeklyPeriods, note: '按每2周计算' },
+      { item: '水费', amount: 'PHP 800 / 2周', quantity: biweeklyPeriods, total: 800 * biweeklyPeriods, note: '按每2周计算' },
+      { item: '电费', amount: 'PHP 2,000 / 2周', quantity: biweeklyPeriods, total: 2000 * biweeklyPeriods, note: '预估；实际按用电量结算，参考PHP22/kW' },
+      { item: '续签费用', amount: '按学习周数阶梯计算', quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: '5–8周PHP5,130；9–12周再加PHP6,400；之后每4周参考再加PHP4,440，最终以移民局为准' },
+      { item: '书本教材费', amount: 'PHP 2,500 / 4周', quantity: fourWeekPeriods, total: 2500 * fourWeekPeriods, note: '预估；不同课程教材不同，按实际购买结算' },
+      { item: '学生证', amount: 'PHP 100 / 次', quantity: 1, total: 100, note: '含ID照片，一次性费用' },
+      { item: '宿务麦克坦机场接机', amount: 'PHP 1,000 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1000 : 0, note: '可选；可自行打车，默认不计入学杂费合计', excluded: true },
+      { item: '宿舍押金', amount: 'PHP 2,000 / 次', quantity: 1, total: 2000, note: '无损坏及无额外扣费时，毕业退还', excluded: true },
+      { item: '风扇/学生证预存', amount: 'PHP 1,000 / 次', quantity: 0, total: 0, note: '可选；资料备注含风扇租借PHP200/4周及风扇押金PHP500，未使用部分可退', excluded: true },
+      { item: '洗衣服务', amount: '按重量与衣物计费', quantity: 0, total: 0, note: '按实际使用收取，默认不计入合计', excluded: true },
+    ];
+  }
+  get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
+  get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+
+  get quoteImageData() {
+    const includedFees = this.localFees.filter((fee) => !fee.excluded);
+    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+    return buildPhilippinesDetailedQuote({
+      schoolCode: 'CPILS',
+      schoolName: '菲律宾宿务CPILS语言学校',
+      filePrefix: 'CPILS',
+      heroSrc: '/assets/cpils/campus-main.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.selectedStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；4周单价×${this.selectedWeeks / 4}` },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: `${this.selectedRoom.name}；4周单价×${this.selectedWeeks / 4}` },
+        { icon: '折', label: '思达折扣', amount: '课程费+住宿费9折', note: `已优惠USD ${this.formatUsd(this.sidaDiscountAmount)}；注册费不减`, accent: true },
+        { icon: '淡', label: '淡季入学优惠', amount: `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: this.offSeasonEligibilityText },
+        { icon: '房', label: '无对外窗房优惠', amount: `- ${this.formatUsd(this.noWindowDiscountAmount)} 美元`, note: this.noWindowDiscountText },
+        { icon: '节', label: '圣诞/新年优惠', amount: `- ${this.formatUsd(this.holidayDiscountAmount)} 美元`, note: this.holidayDiscountText },
+        { icon: '旺', label: '暑假附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.peakSeasonWeeks}周 × USD ${this.formatUsd(this.seasonalFeePerWeek)}` },
+      ],
+      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.localFeesTotal,
+      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
+      localFeeNote: '接机、可退宿舍押金、风扇预存及洗衣服务单独列示，不计入学杂费合计。',
+      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: fee.note })),
+      ruleNotes: [
+        '计算规则：注册费 +（课程费 + 住宿费）×思达9折×符合条件的淡季95折 + 暑假附加费 − 房型优惠 − 圣诞/新年优惠。',
+        '淡季95折适用于2026/12/27前入学（不含06/01–08/26），最少4周；仅课程费和住宿费参与。',
+        this.examBenefitText,
+      ],
+    });
+  }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  formatPhp(value: number): string { return `PHP ${value.toLocaleString('en-US')}`; }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string {
@@ -361,7 +502,10 @@ export class CpilsSchoolDetailComponent implements OnInit {
     if (name.includes('单人')) return `${roomType}-single`;
     return this.slugifyPriceKey(name);
   }
-  private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string { return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`; }
-  private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }
+  private roundMoney(value: number): number { return Math.round(value * 10) / 10; }
+  private isDateBetween(value: string, start: string, end: string): boolean { return value >= start && value <= end; }
+  private parseDate(value: string): Date | null {
+    const parsed = new Date(`${value}T00:00:00Z`);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
 }

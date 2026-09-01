@@ -18,6 +18,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid CpiSchoolId = Guid.Parse("8c5d52f6-cfe1-45d9-9b66-1c5c0cdb2a6d");
     private static readonly Guid BCebuSchoolId = Guid.Parse("f7d8a312-4c91-46e9-87a1-2d63c89b0e54");
     private static readonly Guid CpilsSchoolId = Guid.Parse("6d0bcf03-e6d7-41b3-b14f-1467e762747d");
+    private static readonly Guid IbreezeSchoolId = Guid.Parse("91d9b221-7f86-4f4a-86c1-a58669b937ab");
     private static readonly Guid FellaSchoolId = Guid.Parse("ec6d3456-b310-46b8-9f4c-f7173c2a4e7c");
     private static readonly Guid PhilinterSchoolId = Guid.Parse("7a2e4b6c-8d51-42e7-9f3b-0a2d9f4c5b31");
     private static readonly Guid PinesSchoolId = Guid.Parse("3e72d4cb-9f12-4f21-9d7b-6b356a99f019");
@@ -47,6 +48,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string LegacyBCebuSchoolName = "BECI B'Cebu";
     private const string CpilsSchoolName = "菲律宾宿务CPILS语言学校";
     private const string LegacyCpilsSchoolName = "CPILS";
+    private const string IbreezeSchoolName = "菲律宾宿务I.BREEZE语言学校";
+    private const string LegacyIbreezeSchoolName = "I.BREEZE International Language Center";
     private const string FellaSchoolName = "菲律宾宿务English Fella语言学校";
     private const string LegacyFellaSchoolName = "English Fella";
     private const string PhilinterSchoolName = "菲律宾宿务Philinter语言学校";
@@ -111,6 +114,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedCpiPricingAsync(context);
       await SeedBCebuPricingAsync(context);
       await SeedCpilsPricingAsync(context);
+      await SeedIbreezePricingAsync(context);
       await SeedFellaPricingAsync(context);
       await SeedPhilinterPricingAsync(context);
       await SeedPinesPricingAsync(context);
@@ -502,6 +506,79 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedIbreezePricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == IbreezeSchoolId ||
+        x.Name == IbreezeSchoolName ||
+        x.Name == LegacyIbreezeSchoolName ||
+        x.Name == "IBREEZE");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = IbreezeSchoolId,
+          Name = IbreezeSchoolName,
+          CreatedDate = new DateTime(2012, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      else
+      {
+        school.Name = IbreezeSchoolName;
+        if (school.CreatedDate == default)
+        {
+          school.CreatedDate = new DateTime(2012, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        }
+      }
+
+      var schoolId = school.Id;
+      const string lessonNote = "I.BREEZE 2026年4周课程费；课程费和住宿费享思达9折；未满18岁按抵达日国际年龄判断并按Junior学费规则计算；最终以学校正式报价为准";
+
+      UpsertLesson(context, schoolId, "Intensive Speaking", 4, 770m, "一对一4节 + Activity 1节；以表达和辩论技巧为主", now, lessonNote);
+      UpsertLesson(context, schoolId, "Light ESL", 4, 840m, "一对一4节 + 团体课2节 + Activity 1节", now, lessonNote);
+      UpsertLesson(context, schoolId, "General Business & BEC", 4, 890m, "一对一4节 + 小组课2节 + Special/Activity 1节；入学参考IELTS3.5或I.BREEZE A2", now, lessonNote);
+      UpsertLesson(context, schoolId, "Power ESL", 4, 990m, "一对一5节 + 团体课2节 + Special 1节 + Activity 1节", now, lessonNote);
+      UpsertLesson(context, schoolId, "Intensive Beginner", 4, 990m, "一对一5节 + 团体课3节 + Activity 1节 + 词汇测试", now, lessonNote);
+      UpsertLesson(context, schoolId, "IELTS Starter", 4, 990m, "合作方2026表：一对一4节 + 团体课3节 + Activity 1节 + 每4周2次模考；学校官网当前页显示一对一5节，需书面确认；公开价适用3至8周", now, lessonNote);
+      UpsertLesson(context, schoolId, "IELTS Target", 4, 1190m, "一对一5节 + 团体课3节 + 晚课2节 + 每周四模考/周五解析；12周起报", now, lessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Target", 4, 1020m, "一对一5节 + 团体课2节 + Activity 1节 + 每周五模考", now, lessonNote);
+      UpsertLesson(context, schoolId, "Junior English", 4, 1290m, "一对一4节 + 词汇/写作小组2节 + Activity 1节；5至14岁与家长同行", now, lessonNote);
+
+      UpsertRoom(context, schoolId, "IB1四人房（上下铺）", 4, 720m, "校内主楼多人房，预算最低", now);
+      UpsertRoom(context, schoolId, "IB1三人房", 4, 790m, "校内主楼三人房", now);
+      UpsertRoom(context, schoolId, "IB1双人房", 4, 900m, "校内主楼双人房", now);
+      UpsertRoom(context, schoolId, "IB1单人房", 4, 1270m, "校内主楼单人房，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "IB2四人房", 4, 750m, "IB2多人房，适合兼顾环境与预算", now);
+      UpsertRoom(context, schoolId, "IB2双人房", 4, 950m, "IB2双人房，按性别和入学日确认空房", now);
+      UpsertRoom(context, schoolId, "IB2单人房", 4, 1320m, "IB2单人房，热门档期需早确认", now);
+      UpsertRoom(context, schoolId, "校外公寓超级单人间", 4, 1420m, "一张大床并含卧室与客厅；家具家电和平日接送以实际安排为准", now);
+      UpsertRoom(context, schoolId, "校外公寓标准单人间", 4, 1390m, "配2张单人床；家具家电和平日接送以实际安排为准", now);
+      UpsertRoom(context, schoolId, "校外公寓标准双人间", 4, 1050m, "校外双人房；距离学校步行约5分钟", now);
+      UpsertRoom(context, schoolId, "校外公寓超级双人间", 4, 1070m, "可住3至5人，配置1张大床和2张单人床", now);
+      UpsertRoom(context, schoolId, "校外公寓家庭房（3-5人）", 4, 890m, "3至5人家庭同行参考房型", now);
+
+      UpsertFee(context, schoolId, "注册费", 150m, UsdCurrencyId, "前期支付费用；一次性学校注册费，不参与折扣", now);
+      UpsertFee(context, schoolId, "暑期附加费", 40m, UsdCurrencyId, "前期支付费用；2026/06/28–08/15就读，按重叠周数收取USD40/周", now);
+      UpsertFee(context, schoolId, "未成年监护费", 100m, UsdCurrencyId, "未满18岁且无父母陪同独自就读，每4周USD100", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可证", now);
+      UpsertFee(context, schoolId, "SSP E-CARD", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
+      UpsertFee(context, schoolId, "ACR-I CARD", 4000m, PhpCurrencyId, "到校支付费用；首次续签时办理", now);
+      UpsertFee(context, schoolId, "维护管理费", 4000m, PhpCurrencyId, "到校支付费用；每4周收取", now);
+      UpsertFee(context, schoolId, "校内电费", 2000m, PhpCurrencyId, "到校支付费用；每4周含每周20kW基础用电，超出PHP23/kW", now);
+      UpsertFee(context, schoolId, "水费", 1000m, PhpCurrencyId, "到校支付费用；PHP250/周", now);
+      UpsertFee(context, schoolId, "签证续签", 5140m, PhpCurrencyId, "到校支付费用；第1至5次参考PHP5,140 / 6,410 / 4,440 / 5,040 / 4,440", now);
+      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；每4周预估，实际约PHP1,500至2,500", now);
+      UpsertFee(context, schoolId, "学生证", 400m, PhpCurrencyId, "到校支付费用；官方费用表列2张ID Card", now);
+      UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "1至4周PHP3,000；5周以上PHP5,000，无损坏及欠费时可退", now);
+      UpsertFee(context, schoolId, "机场接机", 30m, UsdCurrencyId, "可选；周日USD30，周六USD50", now);
+      UpsertFee(context, schoolId, "洗衣服务", 130m, PhpCurrencyId, "按实际使用计费；PHP130/5kg", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static async Task SeedCpiPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
@@ -699,19 +776,19 @@ namespace XiaoJuanSchoolPayment.Server.Services
       var schoolId = school.Id;
       const string cpilsLessonNote = "CPILS 2026年4周费用拆分参考；最终以学校正式报价为准";
 
-      UpsertLesson(context, schoolId, "General ESL", 4, 935m, "基础综合英语，适合第一次游学和稳步提升", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "General ESL Plus", 4, 935m, "综合英语加强方向，适合想增加输出训练的学生", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "General ESL Light", 4, 600m, "较轻量综合英语，适合想保留生活弹性的学生", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "Premier Sparta", 4, 1040m, "斯巴达学习强度，适合需要纪律推动的学生", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "TOEIC Course", 4, 1040m, "托业备考，适合求职、升学或企业英语需求", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "TOEIC Guarantee", 4, 1132m, "托业保证班；听力和阅读每月安排2次模拟考试", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "Pre-IELTS Course", 4, 1097m, "雅思3分以下学生的预备课程，最少报名4周", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Course", 4, 1097m, "雅思备考与目标分数训练，最少报名4周", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1247.5m, "雅思保证班8周方案；8周起报并赠送机考", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1189.7m, "雅思保证班12周方案；12周起报", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "TOEFL Course", 4, 1040m, "托福备考，适合北美升学或考试目标学生", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "Business English", 4, 1040m, "商务沟通、会议、演示和职场表达；4周起报", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "Power Speaking and Modern Communication", 4, 1040m, "PMC演讲与现代沟通训练；4周起报", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "General ESL", 4, 935m, "3堂1:1 + 2堂1:4 + 2堂1:12 + 选修课", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "General ESL Plus", 4, 935m, "4堂1:1 + 2堂1:4 + 1堂1:12 + 选修课", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "General ESL Light", 4, 600m, "4节1:1 + 1节团体课；仅限淡季入学", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Premier Sparta", 4, 1040m, "5堂1:1 + 2堂1:4 + 2堂1:12 + 2堂强制自修 + 选修课", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Course", 4, 1040m, "4堂1:1 + 2堂1:4 + 2堂大团体 + 3堂强制自修 + 选修；每月2次模考", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Guarantee", 4, 1132m, "4堂1:1 + 2堂1:4 + 2堂大团体 + 3堂强制自修 + 选修；每月2次模考", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Pre-IELTS Course", 4, 1097m, "5堂1:1 + 1堂1:4 + 1堂1:8 + 2堂大团体 + 3堂强制自修；雅思3分以下", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Course", 4, 1097m, "4堂1:1 + 5堂大团体 + 3堂强制自修；每月2次模考，4周起报", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1247.5m, "4堂1:1 + 5堂大团体 + 3堂强制自修；8周起报，赠机考", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1189.7m, "4堂1:1 + 5堂大团体 + 3堂强制自修；12周起报", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "TOEFL Course", 4, 1040m, "3堂1:1 + 2堂1:4 + 2堂1:12 + 2堂大团体 + 3堂强制自修；每月1次模考", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Business English", 4, 1040m, "4堂1:1 + 2堂1:4 + 1堂1:12 + 2堂大团体；4周起报", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "Power Speaking and Modern Communication", 4, 1040m, "4堂1:1 + 3堂1:4 + 1堂1:12 + 2堂大团体 + 2堂强制自修；4周起报", now, cpilsLessonNote);
       RemoveLesson(context, schoolId, "Parent-Child Program", 4);
 
       UpsertRoom(context, schoolId, "单人房", 4, 995m, "隐私最好，预算较高，热门档期需早确认", now);
@@ -726,17 +803,25 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "高级四人房", 4, 780m, "高级多人房中预算压力较低", now);
 
       UpsertFee(context, schoolId, "注册费", 125m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
-      UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
-      UpsertFee(context, schoolId, "SSP", 6800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
-      UpsertFee(context, schoolId, "SSP E-card", 4000m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
-      UpsertFee(context, schoolId, "水电费", 2000m, PhpCurrencyId, "到校支付费用；公开资料示例为每周预收 PHP 500，4周 PHP 2,000，多退少补", now);
-      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；按课程和实际购买教材调整", now);
-      UpsertFee(context, schoolId, "管理费", 1000m, PhpCurrencyId, "到校支付费用；4周参考，最终以学校现场收费为准", now);
-      UpsertFee(context, schoolId, "学生证", 300m, PhpCurrencyId, "到校支付费用；一次性费用参考", now);
-      UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
-      UpsertFee(context, schoolId, "接机费", 1200m, PhpCurrencyId, "到校支付费用；宿务机场接机参考", now);
-      UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
-      UpsertFee(context, schoolId, "洗衣费", 500m, PhpCurrencyId, "到校支付费用；按实际使用和衣物重量调整", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/07/05–08/29就读，按实际重叠周数收取USD40/周", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特殊学习许可证，按报名学习时长办理", now);
+      UpsertFee(context, schoolId, "SSP I-CARD", 4000m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
+      UpsertFee(context, schoolId, "ACR-I CARD", 4000m, PhpCurrencyId, "到校支付费用；首次续签时办理", now);
+      UpsertFee(context, schoolId, "管理费", 2000m, PhpCurrencyId, "到校支付费用；每2周收取", now);
+      UpsertFee(context, schoolId, "水费", 800m, PhpCurrencyId, "到校支付费用；每2周收取", now);
+      UpsertFee(context, schoolId, "电费", 2000m, PhpCurrencyId, "到校支付费用；每2周预估，实际按用电量结算，参考PHP22/kW", now);
+      UpsertFee(context, schoolId, "签证续签", 5130m, PhpCurrencyId, "到校支付费用；首次续签参考，之后按学习周数阶梯计算", now);
+      UpsertFee(context, schoolId, "书本教材费", 2500m, PhpCurrencyId, "到校支付费用；每4周预估，以实际购买为准", now);
+      UpsertFee(context, schoolId, "学生证", 100m, PhpCurrencyId, "到校支付费用；含ID照片，一次性费用", now);
+      UpsertFee(context, schoolId, "宿舍押金", 2000m, PhpCurrencyId, "到校支付费用；无损坏及无额外扣费时毕业退还", now);
+      UpsertFee(context, schoolId, "接机费", 1000m, PhpCurrencyId, "到校支付费用；可选，宿务麦克坦机场接机参考", now);
+      UpsertFee(context, schoolId, "风扇/学生证预存", 1000m, PhpCurrencyId, "到校支付费用；可选，含风扇租借及押金参考", now);
+      UpsertFee(context, schoolId, "洗衣服务", 0m, PhpCurrencyId, "到校支付费用；按实际使用、重量与衣物收取", now);
+      RemoveFee(context, schoolId, "SSP E-card");
+      RemoveFee(context, schoolId, "水电费");
+      RemoveFee(context, schoolId, "教材费");
+      RemoveFee(context, schoolId, "ACR I-card");
+      RemoveFee(context, schoolId, "洗衣费");
 
       await context.SaveChangesAsync();
     }
@@ -849,7 +934,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string philinterLessonNote = "Philinter 2026年4周课程费参考；1/2/3周分别按4周课程费和住宿费的40%/65%/85%计算；最终以学校正式报价为准";
+      const string philinterLessonNote = "Philinter 2026年4周课程费参考；1/2/3周分别按4周课程费和住宿费的45%/65%/85%计算；课程费和住宿费思达9折；2026/08/16-12/25入学、指定房型且非IELTS/TOEIC保证班时每满8周减USD300；最终以学校正式报价为准";
 
       RemoveLesson(context, schoolId, "TOEFL", 4);
       RemoveLesson(context, schoolId, "Focused Industry", 4);
@@ -862,12 +947,16 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "Intensive ESL", 4, 1030m, "4节一对一 + 1节小团体 + 2节精品团体 + 1节大团体 + 2节选修夜间辅导 + 选修活动", now, philinterLessonNote);
       UpsertLesson(context, schoolId, "Intensive Power Speaking", 4, 1170m, "4节一对一 + 2节小团体 + 2节精品小团体 + 2节选修夜间自习 + 选修活动", now, philinterLessonNote);
       UpsertLesson(context, schoolId, "IELTS Intensive", 4, 1200m, "4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模拟测试", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1580m, "雅思保证班8周方向；需按入学分数、出勤、模考和校规确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1420m, "雅思保证班12周方向；需按入学分数、出勤、模考和校规确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 8 Weeks", 4, 1580m, "4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模考；8周保证班", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "IELTS Guarantee 12 Weeks", 4, 1420m, "4节一对一 + 4节小团体 + 2节强制夜间辅导 + 每周六上午模考；12周保证班", now, philinterLessonNote);
       UpsertLesson(context, schoolId, "TOEIC Regular", 4, 1100m, "4节一对一 + 2节小团体 + 2节大团体 + 选修活动 + 每周五模拟测试", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Focus Industry（可定制）", 4, 1280m, "行业主题英文，需按目标行业和开课档期确认", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Basic Business", 4, 1150m, "商务基础英文；入学要求雅思3分", now, philinterLessonNote);
-      UpsertLesson(context, schoolId, "Advanced Business", 4, 1200m, "商务沟通、演示、会议和职场表达；入学要求雅思3.5至4分", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "TOEIC Guarantee 12 Weeks", 4, 1260m, "托业保证班12周；入学分数、出勤、模考及校规需确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Focus Industry（可定制）", 4, 1280m, "3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Basic Business", 4, 1150m, "3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动；雅思3分起", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Advanced Business", 4, 1200m, "3节一对一 + 2节小团体 + 2节精品小团体 + 1节大团体选修 + 选修活动；雅思3.5至4分起", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Primary English（7–11岁）", 4, 1340m, "儿童英语课程；年龄、陪同及监护规则需提前确认", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Junior ESL（12–17岁）", 4, 1340m, "3节一对一 + 2节小团体 + 2节选修自习课", now, philinterLessonNote);
+      UpsertLesson(context, schoolId, "Junior IELTS（12–17岁）", 4, 1490m, "4节一对一 + 4节小团体 + 2节雅思强制自习 + 每周六上午模考；雅思3分起", now, philinterLessonNote);
       UpsertLesson(context, schoolId, "Speaking", 4, 1400m, "8节口语团体课 + 2节晚课 + 2节选修课；最长8周", now, philinterLessonNote);
       UpsertLesson(context, schoolId, "Junior Speaking", 4, 1400m, "7节口语团体课 + 2节晚课 + 2节选修课；最长8周", now, philinterLessonNote);
 
@@ -879,19 +968,21 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "校外公寓三人房", 4, 890m, "Azon Condo三人房；接送、门禁和空房需顾问确认", now);
 
       UpsertFee(context, schoolId, "注册费", 220m, UsdCurrencyId, "前期支付费用；课程注册费USD 120 + 住宿注册费USD 100", now);
-      UpsertFee(context, schoolId, "旺季附加费", 0m, UsdCurrencyId, "前期支付费用；是否收取及金额需按入学档期由顾问确认", now);
-      UpsertFee(context, schoolId, "SSP", 6800m, PhpCurrencyId, "到校支付费用；特别学习许可，最终以学校现场收费为准", now);
-      UpsertFee(context, schoolId, "SSP E-card", 4000m, PhpCurrencyId, "到校支付费用；以学校现场收费为准", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/07/05抵达至08/29学习期间，按覆盖周数收取USD40/周", now);
+      UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "特别学习许可；按报名学习时长办理，续费及换校需重新办理", now);
+      UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "入学时与SSP同时办理，只收一次", now);
       UpsertFee(context, schoolId, "接机费", 1200m, PhpCurrencyId, "到校支付费用；周末接机参考，平日接机通常更高", now);
       UpsertFee(context, schoolId, "平日接机费", 1500m, PhpCurrencyId, "到校支付费用；平日抵达参考，以学校安排为准", now);
-      UpsertFee(context, schoolId, "水电费", 2500m, PhpCurrencyId, "到校支付费用；4周参考，按实际或学校规则调整", now);
-      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；按课程和实际购买教材调整", now);
-      UpsertFee(context, schoolId, "管理费", 1000m, PhpCurrencyId, "到校支付费用；4周参考，最终以学校现场收费为准", now);
-      UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "到校支付费用；退房检查后按学校规则退还", now);
-      UpsertFee(context, schoolId, "学生证", 300m, PhpCurrencyId, "到校支付费用；一次性费用参考", now);
+      RemoveFee(context, schoolId, "水电费");
+      UpsertFee(context, schoolId, "电费", 2800m, PhpCurrencyId, "每2周；含公共用电及房间基础用电16kW/周，超出按PHP25/kW/人收取", now);
+      UpsertFee(context, schoolId, "水费", 1000m, PhpCurrencyId, "每2周收取", now);
+      UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "每4周预估；按课程和实际购买教材调整", now);
+      UpsertFee(context, schoolId, "管理费", 2200m, PhpCurrencyId, "每2周收取", now);
+      UpsertFee(context, schoolId, "宿舍押金", 2000m, PhpCurrencyId, "1-2周PHP2000；3-7周PHP3000；8-11周PHP4000；12-24周PHP5000；退房检查后可退", now);
+      UpsertFee(context, schoolId, "学生证", 400m, PhpCurrencyId, "一次性费用", now);
       UpsertFee(context, schoolId, "额外住宿", 3000m, PhpCurrencyId, "到校支付费用；每晚 PHP 3,000，按实际额外入住晚数计算", now);
       UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
-      UpsertFee(context, schoolId, "签证延签", 4140m, PhpCurrencyId, "到校支付费用；按学习周数和菲律宾签证规则调整", now);
+      UpsertFee(context, schoolId, "签证延签", 5140m, PhpCurrencyId, "5-8周PHP5140；9-12周再加PHP6920；13-16周再加PHP4440；17-20周再加PHP4950；21-24周再加PHP5450；国籍不同可能调整", now);
 
       await context.SaveChangesAsync();
     }
@@ -2113,7 +2204,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务SMEAG Capital语言学校", 1458m, UsdCurrencyId, "USD 1,458 / 4周淡季起（ESL常规＋校内四人间，9折后再减淡季优惠）", Established(2006), new[] { "SMEAG Capital", "SMEAG Capital Campus" }),
         new RegionalStartingPriceSeed("菲律宾宿务Genius English Academy语言学校", 1400m, UsdCurrencyId, "USD 1,400 / 4周起", Established(2013), new[] { "Genius English Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务Howdy English Academy语言学校", 874m, UsdCurrencyId, "USD 874 / 1周起", Established(2014), new[] { "Howdy English Academy", "Howdy" }),
-        new RegionalStartingPriceSeed("菲律宾宿务I.BREEZE语言学校", 1490m, UsdCurrencyId, "USD 1,490 / 4周起", Established(2012), new[] { "I.BREEZE", "I.BREEZE International Language Center", "IBREEZE" }),
+        new RegionalStartingPriceSeed("菲律宾宿务I.BREEZE语言学校", 1491m, UsdCurrencyId, "USD 1,491 / 4周起（课程住宿思达9折后含注册费）", Established(2012), new[] { "I.BREEZE", "I.BREEZE International Language Center", "IBREEZE" }),
         new RegionalStartingPriceSeed("菲律宾宿务IU English Academy", 1350m, UsdCurrencyId, "USD 1,350 / 4周起", Established(2024), new[] { "IU English Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务Lapulapu", 2080m, UsdCurrencyId, "USD 2,080 / 4周起", Established(2024), new[] { "Lapulapu", "LCIC" }),
         new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1820m, UsdCurrencyId, "USD 1,820 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
@@ -2121,9 +2212,9 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 1886m, UsdCurrencyId, "USD 1,886 / 4周起（半斯巴达ESL＋四人间，课程及住宿95折）", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
         new RegionalStartingPriceSeed(CpiSchoolName, 1503m, UsdCurrencyId, "USD 1,503 / 4周起（ESL GENERAL + A栋四人间，思达9折并计入当前淡季优惠）", Established(2015), new[] { LegacyCpiSchoolName }),
         new RegionalStartingPriceSeed(BCebuSchoolName, 1262.25m, UsdCurrencyId, "USD 1,262.25 / 4周起（淡季Speed ESL + 三人间，已计思达优惠）", Established(2026), new[] { LegacyBCebuSchoolName, "B'Cebu" }),
-        new RegionalStartingPriceSeed(CpilsSchoolName, 1635m, UsdCurrencyId, "USD 1,635 / 4周起", Established(2001), new[] { LegacyCpilsSchoolName }),
+        new RegionalStartingPriceSeed(CpilsSchoolName, 1522.9m, UsdCurrencyId, "USD 1,522.9 / 4周起（含注册费，思达9折+淡季95折后）", Established(2001), new[] { LegacyCpilsSchoolName }),
         new RegionalStartingPriceSeed(FellaSchoolName, 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2006), new[] { LegacyFellaSchoolName }),
-        new RegionalStartingPriceSeed(PhilinterSchoolName, 1600m, UsdCurrencyId, "USD 1,600 / 4周主费起（注册费另计）", Established(2003), new[] { LegacyPhilinterSchoolName }),
+        new RegionalStartingPriceSeed(PhilinterSchoolName, 1660m, UsdCurrencyId, "USD 1,660 / 4周起（思达9折后含注册费）", Established(2003), new[] { LegacyPhilinterSchoolName }),
 
         new RegionalStartingPriceSeed(PinesSchoolName, 1420m, UsdCurrencyId, "课程+住宿4周USD 1,420起", Established(2001), new[] { LegacyPinesSchoolName }),
         new RegionalStartingPriceSeed(BeciSchoolName, 1240m, UsdCurrencyId, "USD 1,240 / 4周起（EOP Lite ESL + 四人房，中介优惠免注册费）", Established(2002), new[] { LegacyBeciSchoolName }),

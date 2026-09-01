@@ -1,0 +1,70 @@
+<main class="review-page">
+  <ng-container *ngIf="review; else missingReview">
+    <nav class="review-breadcrumb" aria-label="面包屑导航">
+      <a routerLink="/philippines-study/cebu/cia-cebu-international-academy">
+        <mat-icon>school</mat-icon>
+        CIA学校详情
+      </a>
+      <mat-icon>chevron_right</mat-icon>
+      <a
+        routerLink="/philippines-study/cebu/cia-cebu-international-academy"
+        fragment="student-reviews"
+      >学生反馈</a>
+    </nav>
+
+    <article class="review-article">
+      <header>
+        <span>STUDENT STORY {{ review.number }}</span>
+        <p>{{ review.focus }}</p>
+        <h1>{{ review.title }}</h1>
+        <div class="review-intro">
+          <mat-icon>format_quote</mat-icon>
+          <strong>{{ review.excerpt }}</strong>
+        </div>
+      </header>
+
+      <figure>
+        <img [src]="review.image" [alt]="review.imageAlt" />
+        <figcaption>{{ review.imageAlt }}</figcaption>
+      </figure>
+
+      <section class="review-body" aria-label="学生反馈全文">
+        <p *ngFor="let paragraph of review.body">{{ paragraph }}</p>
+      </section>
+
+      <aside class="review-note">
+        <mat-icon>translate</mat-icon>
+        <p>
+          <strong>中文整理说明</strong>
+          内容根据学生公开分享整理翻译，并为便于中文阅读进行了表达优化；个人经历仅代表分享者本人。
+        </p>
+      </aside>
+
+      <footer>
+        <a
+          class="review-back"
+          routerLink="/philippines-study/cebu/cia-cebu-international-academy"
+          fragment="student-reviews"
+        >
+          <mat-icon>arrow_back</mat-icon>
+          返回查看其他学生反馈
+        </a>
+        <a class="review-cta" routerLink="/about-sida/contact">
+          咨询CIA课程与住宿
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </footer>
+    </article>
+  </ng-container>
+
+  <ng-template #missingReview>
+    <section class="review-missing">
+      <mat-icon>article</mat-icon>
+      <h1>暂未找到这篇学生反馈</h1>
+      <a
+        routerLink="/philippines-study/cebu/cia-cebu-international-academy"
+        fragment="student-reviews"
+      >返回CIA学生反馈</a>
+    </section>
+  </ng-template>
+</main>

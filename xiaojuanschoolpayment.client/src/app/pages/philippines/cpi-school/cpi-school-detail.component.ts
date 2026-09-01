@@ -201,7 +201,7 @@ export class CpiSchoolDetailComponent implements OnInit {
     {
       number: '02',
       title: '房型和费用提前算清',
-      text: '0中介服务费，课程费、住宿费、旺季附加费及CPI到校费用逐项说明。',
+      text: '0中介服务费，课程费、住宿费、折扣优惠及CPI到校费用逐项说明。',
       image: 'assets/cia/sida-why-action-fees.jpg',
       alt: '思达启航顾问为学生核算菲律宾宿务CPI语言学校费用',
     },

@@ -175,6 +175,13 @@ const routes: Routes = [
         component: WhyPhilippinesStudyComponent,
       },
       {
+        path: 'philippines-study/cebu/cia-cebu-international-academy/student-reviews/:slug',
+        loadComponent: () =>
+          import('./pages/philippines/cia-student-review/cia-student-review.component').then(
+            (m) => m.CiaStudentReviewComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/cia-cebu-international-academy',
         loadComponent: () =>
           import('./pages/philippines/cia-school/cia-school.component').then((m) => m.CiaSchoolComponent),

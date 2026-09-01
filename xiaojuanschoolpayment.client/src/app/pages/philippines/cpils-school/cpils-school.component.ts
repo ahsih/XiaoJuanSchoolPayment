@@ -51,13 +51,13 @@ export class CpilsSchoolComponent {
 
   readonly courses: CourseItem[] = [
     {
-      title: 'General ESL / Intensive ESL',
-      lessons: '一般英文 3节一对一 + 2节1:4 + 2节1:8；强化英文增加一对一比例',
-      text: '适合初学到中级学生，先打稳生活英语、发音、阅读、词汇和听力基础，也可参加定期 TOEIC 模考。',
+      title: 'General ESL / Plus / Light',
+      lessons: 'General为3堂1:1 + 2堂1:4 + 2堂1:12；Plus为4堂1:1 + 2堂1:4 + 1堂1:12；Light为4节1:1 + 1节团体课',
+      text: 'General ESL Light仅限淡季入学；其余适合基础到进阶综合提升。',
     },
     {
       title: 'Premier Sparta',
-      lessons: '5节一对一 + 2节1:4 + 2节1:8 + 强制课程 + 晚自习',
+      lessons: '5堂1:1 + 2堂1:4 + 2堂1:12 + 2堂强制自修 + 选修课',
       text: '适合想用更高纪律和更长学习时间推进听说读写的学生，周一至周四会有更明确的自习和管理安排。',
     },
     {
@@ -89,13 +89,12 @@ export class CpilsSchoolComponent {
 
   readonly localFees: LocalFee[] = [
     { item: '注册费', amount: 'USD 125' },
-    { item: 'SSP学习许可', amount: '当地披索缴费，按学校当期标准确认' },
-    { item: '宿舍押金', amount: '当地缴纳，退房结算' },
-    { item: '水电费', amount: '公开资料示例为每周预收 PHP 500，4周 PHP 2,000，多退少补' },
-    { item: '教材费 / 管理费', amount: '按课程与实际使用教材计算' },
-    { item: '签证延签 / ACR I-Card', amount: '按学习周数与菲律宾签证规则确认' },
-    { item: '机场接送', amount: '公开价格通常未包含，按抵达时间与学校安排确认' },
-    { item: '健身房', amount: '部分资料显示需另付月费，报名前确认最新规则' },
+    { item: 'SSP / SSP I-CARD', amount: 'PHP 7,800 + PHP 4,000（一次）' },
+    { item: '管理费 / 水费 / 电费', amount: '每2周 PHP 2,000 + 800 + 2,000；电费按实际用量结算' },
+    { item: '书本教材费 / 学生证', amount: '每4周预估 PHP 2,500 + 一次性 PHP 100' },
+    { item: '签证续签 / ACR I-CARD', amount: '5–8周首次续签 PHP 5,130；ACR I-CARD PHP 4,000' },
+    { item: '宿舍押金 / 机场接机', amount: 'PHP 2,000（可退）/ PHP 1,000（可选）' },
+    { item: '4周学杂费预估', amount: 'PHP 24,000（不含接机和可退押金）' },
   ];
 
   readonly facilities = [
@@ -141,7 +140,7 @@ export class CpilsSchoolComponent {
     },
     {
       question: 'CPILS 的起价是多少？',
-      answer: '2026费用表显示，General ESL 四人房4周的课程费与住宿费合计为 USD 1,635，另收 USD 125 注册费。最终价格要按优惠、课程和房型确认。',
+      answer: '2026原价表中，General ESL四人房4周课程费与住宿费合计USD1,635，另收USD125注册费。当符合思达9折与淡季95折时，页面报价为USD1,522.9。',
     },
     {
       question: 'CPILS 的 IELTS / TOEIC 优势是什么？',
