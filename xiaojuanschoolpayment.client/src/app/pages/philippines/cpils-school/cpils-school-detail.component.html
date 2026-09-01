@@ -15,7 +15,7 @@
             </p>
             <div class="hero-tags" aria-label="CPILS特点">
               <span><mat-icon>history_edu</mat-icon>2001年创立</span>
-              <span><mat-icon>workspace_premium</mat-icon>IELTS / TOEIC资源</span>
+              <span><mat-icon>workspace_premium</mat-icon>雅思 / 托业资源</span>
               <span><mat-icon>hotel</mat-icon>校内住宿</span>
               <span><mat-icon>rule</mat-icon>斯巴达可选</span>
             </div>
@@ -130,7 +130,7 @@
               <h2>先确认考试目标，再选管理强度</h2>
             </div>
             <p>
-              CPILS不是单纯看环境的学校，它更适合目标导向学生。若你要IELTS、TOEIC、TOEFL分数，建议先确认当前分数、目标分数和可读周数；若只是提升口语，则重点比较General ESL、Premier Sparta、Business和Power Speaking的课时差异。
+              CPILS不是单纯看环境的学校，它更适合目标导向学生。若你要雅思、托业或托福分数，建议先确认当前分数、目标分数和可读周数；若只是提升口语，则重点比较General ESL、斯巴达ESL、Business和PMC演讲课程的课时差异。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
@@ -189,7 +189,7 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>CPILS课程覆盖综合英语、斯巴达、IELTS、TOEIC、TOEFL、商务、口语沟通和亲子项目，建议先按目标筛选。</p>
+            <p>CPILS课程覆盖综合英语、斯巴达、雅思、托业、托福、商务、口语沟通和亲子项目，建议先按目标筛选。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -277,26 +277,43 @@
             <div class="section-heading">
               <span>CPILS 费用快速报价</span>
               <h2>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
-              <p>最终应付学校金额 = 注册费 +（课程费 + 住宿费）× 思达9折 × 符合条件的淡季95折 + 暑假附加费 − 房型优惠 − 圣诞/新年优惠</p>
             </div>
             <div class="quote-form" aria-label="CPILS费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
               <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-              <label>报名注册日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label>
+              <label>预计报名日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label>
             </div>
             <div class="quote-breakdown">
               <div><span>注册费（不参与折扣）</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
               <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
-              <div class="discount-line"><span>淡季入学95折：{{ offSeasonEligibilityText }}</span><strong>− USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
-              <div class="discount-line"><span>无对外窗房优惠：{{ noWindowDiscountText }}</span><strong>− USD {{ formatUsd(noWindowDiscountAmount) }}</strong></div>
-              <div class="discount-line"><span>圣诞/新年优惠：{{ holidayDiscountText }}</span><strong>− USD {{ formatUsd(holidayDiscountAmount) }}</strong></div>
-              <div><span>暑假附加费（{{ peakSeasonWeeks }}周 × USD {{ formatUsd(seasonalFeePerWeek) }}）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
-              <div><span>课程规则</span><strong>{{ courseEligibilityText }}</strong></div>
-              <div><span>官方考试赠送</span><strong>{{ examBenefitText }}</strong></div>
+              <div class="discount-line quote-rule-card">
+                <span>淡季入学优惠</span>
+                <small>2026/12/27前入学，旺季2026/06/01–08/26除外，最少4周；课程费和住宿费在思达9折后再享95折</small>
+                <strong>− USD {{ formatUsd(offSeasonDiscountAmount) }}</strong>
+              </div>
+              <div class="discount-line quote-rule-card">
+                <span>无对外窗房优惠</span>
+                <small>无对外窗单人间/双人间每4周优惠50美元；2026/12/27前入学，旺季2026/06/01–08/26除外</small>
+                <strong>− USD {{ formatUsd(noWindowDiscountAmount) }}</strong>
+              </div>
+              <div class="discount-line quote-rule-card">
+                <span>圣诞/新年优惠</span>
+                <small>报名日期：2026/06/29–12/31；学习期覆盖2026/12/21–12/26减75美元，覆盖2026/12/21–2027/01/01减150美元</small>
+                <strong>− USD {{ formatUsd(holidayDiscountAmount) }}</strong>
+              </div>
+              <div class="quote-rule-card">
+                <span>暑假附加费：40美元/周</span>
+                <small>学习时间：2026/07/05–2026/08/29；当前重叠{{ peakSeasonWeeks }}周</small>
+                <strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
+              </div>
+              <div class="exam-benefit-card">
+                <span>官方考试赠送</span>
+                <strong>{{ examBenefitText }}</strong>
+              </div>
             </div>
             <div class="quote-result">
               <span>最终应付学校金额</span>
@@ -310,46 +327,67 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
               <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">当前{{ selectedWeeks }}周计入的到校学杂费预估为 {{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}），不含接机、可退宿舍押金、风扇预存和洗衣服务。</p>
+            <p class="fee-alert">当前{{ selectedWeeks }}周计入的到校学杂费预估为 {{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}），不含接机、可退宿舍押金和风扇预存。</p>
             <p class="season-note">优惠按入学日、报名日、周数和房型自动初筛；思达9折与淡季95折仅计入课程费和住宿费，注册费不减。圣诞/新年优惠可与其他活动同时使用，最终以学校账单为准。</p>
           </section>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以PHP计价，数量会随学习周数自动更新。可选或可退项目单独列示，不计入学杂费合计。</p>
-          </div>
-          <label class="option-check">
-            <input type="checkbox" [(ngModel)]="includeAirportPickup" />
-            显示机场接机参考（单独列示，不计入学杂费合计）
-          </label>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
-              <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
-                <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
-              </article>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+          <div class="local-fee-heading">
+            <div>
+              <span>到校后另付 · 自动预估</span>
+              <h3 id="local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
             </div>
-          </details>
-          <div class="local-fee-summary">
-            <span>预计到校学杂费合计（不含可选/可退项目）</span>
             <strong>{{ formatPhp(localFeesTotal) }}</strong>
-            <em>{{ localFeesCnyText }}</em>
           </div>
-        </section>
+          <p class="local-fee-intro">
+            以下费用以比索计价，数量随学习周数自动更新。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴费为准。
+          </p>
 
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程费、住宿费、注册费、暑假附加费和学杂费已按CPILS 2026费用表与学校公开费用页核对；思达9折、淡季95折、无对外窗房优惠和圣诞/新年优惠按你提供的合作方活动通知录入。优惠资格、官方考试赠送、房型空位、当地费用和最终账单仍以学校书面确认为准。</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead>
+                <tr>
+                  <th scope="col">费用明细</th>
+                  <th scope="col">计费参考</th>
+                  <th scope="col">数量</th>
+                  <th scope="col">预估小计</th>
+                  <th scope="col">备注</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let fee of includedLocalFees">
+                  <th scope="row">{{ fee.item }}</th>
+                  <td>{{ fee.amount }}</td>
+                  <td>{{ fee.quantity }}</td>
+                  <td class="fee-amount">{{ formatPhp(fee.total) }}</td>
+                  <td>{{ fee.note }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th>
+                  <td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td>
+                  <td>不含可选接机、可退押金及按实际使用项目</td>
+                </tr>
+                <tr>
+                  <th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th>
+                  <td class="fee-cny">{{ localFeesCnyText }}</td>
+                  <td>最终以兑换及支付时的实际汇率为准</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <div *ngFor="let fee of excludedLocalFees">
+              <span>
+                <strong>{{ fee.item }}</strong>
+                <small>{{ fee.note }}</small>
+              </span>
+              <b>{{ fee.amount }}</b>
+            </div>
           </div>
         </section>
 

@@ -23,63 +23,42 @@
   font-size: 12px;
 }
 
-:host .option-check {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin: 16px 0;
-  padding: 14px 16px;
-  border: 1px solid #f0cf72;
-  border-radius: 8px;
-  background: #fffdf4;
-  color: #102033;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-:host .option-check input {
-  width: 18px;
-  height: 18px;
-  accent-color: #087343;
-}
-
-:host .local-fee-grid article b {
+:host .quote-breakdown .quote-rule-card small {
   display: block;
-  margin-top: 7px;
-  color: #526176;
-  font-size: 12px;
+  margin-top: 4px;
+  color: #6c5b50;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
 }
 
-:host .optional-fee {
-  border-style: dashed;
-  background: #fffaf7;
-}
-
-:host .local-fee-summary {
+:host .quote-breakdown .quote-rule-card {
   display: grid;
-  gap: 5px;
-  margin-top: 18px;
-  padding: 18px;
-  border-left: 4px solid #ff5a1f;
-  border-radius: 8px;
-  background: #fff7f2;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 18px;
+  align-items: center;
 }
 
-:host .local-fee-summary span,
-:host .local-fee-summary strong,
-:host .local-fee-summary em {
-  display: block;
+:host .quote-breakdown .quote-rule-card span,
+:host .quote-breakdown .quote-rule-card small {
+  grid-column: 1;
 }
 
-:host .local-fee-summary strong {
-  color: #e94f16;
-  font-size: 26px;
+:host .quote-breakdown .quote-rule-card strong {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 82px;
+  margin-top: 0;
+  text-align: right;
 }
 
-:host .local-fee-summary em {
-  color: #526176;
-  font-size: 13px;
-  font-style: normal;
+:host .quote-breakdown .exam-benefit-card {
+  grid-column: 1 / -1;
+}
+
+:host .quote-breakdown .exam-benefit-card strong {
+  line-height: 1.55;
 }
 
 @media (max-width: 760px) {
@@ -110,5 +89,16 @@
 
   :host .quote-actions {
     grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :host .quote-breakdown .quote-rule-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .quote-breakdown .quote-rule-card strong {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 8px;
+    text-align: left;
   }
 }

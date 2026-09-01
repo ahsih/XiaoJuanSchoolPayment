@@ -245,13 +245,6 @@ interface CtaConsultant {
   buttonLabel: string;
 }
 
-interface CourseMatchAdvisor {
-  icon: string;
-  title: string;
-  name: string;
-  text: string;
-}
-
 interface SidaCiaReason {
   number: string;
   title: string;
@@ -1513,6 +1506,11 @@ export class CiaSchoolComponent implements OnInit {
         'CIA 的空房、优惠、旺季附加费和当地费用会随时间变化。顾问可以把课程、房型、入学日期和最新优惠一起核对，给学生正式报价。',
     },
     {
+      question: '报名 CIA 前还需要确认哪些信息？',
+      answer:
+        '建议同时确认目标课程、计划入学日期、学习周数、房型空位、是否覆盖旺季、是否需要雅思官方考试，以及到校学杂费预算。课程开班、空房、优惠、付款节点和退改政策最终以学校正式录取、账单及当期规定为准。',
+    },
+    {
       question: '思达会协助签证和入境吗？',
       answer:
         '会。通过思达报名 CIA，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。',
@@ -1530,25 +1528,23 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly mobileAnchors: SideNavItem[] = [
     { label: '概览', target: 'top', icon: 'dashboard' },
-    { label: '亮点', target: 'highlights', icon: 'star' },
     { label: '校园', target: 'campus-introduction', icon: 'apartment' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
-    { label: '生活', target: 'campus-life', icon: 'bed' },
-    { label: '服务', target: 'student-care-services', icon: 'support_agent' },
+    { label: '评价', target: 'student-reviews', icon: 'rate_review' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
   readonly snapshotCards = [
     {
-      icon: 'apartment',
+      icon: 'history_edu',
       title: '学校定位',
-      text: '宿务麦克坦岛半斯巴达英语学校',
+      text: '2003年创校，2022年启用麦克坦新校区，采用半斯巴达管理',
     },
     {
       icon: 'workspace_premium',
       title: '考试资源',
-      text: 'IDP IELTS 官方考场，定期考试，成绩更快',
+      text: '具备 IDP IELTS 官方考场资源，并安排定期模考与考试支持',
     },
     {
       icon: 'menu_book',
@@ -1556,70 +1552,19 @@ export class CiaSchoolComponent implements OnInit {
       text: 'ESL / IELTS / TOEIC / Business / Callan / College Immersion',
     },
     {
-      icon: 'bed',
-      title: '住宿生活',
-      text: '校内宿舍、餐厅、泳池、健身房等',
-    },
-    {
-      icon: 'person',
-      title: '适合人群',
-      text: '成人英语、雅思备考、职场提升、亲子营',
-    },
-    {
-      icon: 'support_agent',
-      title: '顾问提醒',
-      text: '更适合看重综合体验、课程和生活便利的学生',
-    },
-  ];
-
-  readonly coreHighlights = [
-    {
-      icon: 'history_edu',
-      image: 'assets/cia/campus-sunset-aerial-enhanced.png',
-      title: '2003年创校经验',
-      text: '长期服务来自不同国家和地区的学生，课程、住宿与学生支援体系较完整。',
-    },
-    {
-      icon: 'location_on',
-      image: 'assets/cia/campus-building.png',
-      title: '麦克坦新校区位置便利',
-      text: '学习、住宿、餐厅与生活设施集中，前往机场、餐厅和麦克坦休闲区域相对方便。',
-    },
-    {
       icon: 'sports_basketball',
-      image: 'assets/cia/recreation-room.jpg',
-      title: '课后活动选择较多',
-      text: '健身、游泳、篮球、排球、卡拉OK与休闲室等活动，让学习与生活更平衡。',
-    },
-    {
-      icon: 'auto_stories',
-      image: 'assets/cia/course-learning.jpg',
-      title: '课程选择范围广',
-      text: 'ESL、IELTS、TOEIC、Business、Working Holiday、Callan 与大学沉浸式课程均可选择。',
-    },
-    {
-      icon: 'support_agent',
-      image: 'assets/cia/student-care-cro.jpg',
-      title: '学生支援响应及时',
-      text: 'CRO与学业顾问覆盖住宿、生活和学习问题，帮助学生减少适应期中的阻碍。',
-    },
-    {
-      icon: 'restaurant',
-      image: 'assets/cia/dining-hall.jpg',
-      title: '三餐兼顾多国口味',
-      text: '校内餐厅每日供应不同餐食，并尽量兼顾多国学生的饮食习惯与营养需要。',
+      title: '校园与生活',
+      text: '教学、住宿、餐厅、泳池、健身和球场集中在同一校园',
     },
     {
       icon: 'school',
-      image: 'assets/cia/one-to-one-class.png',
-      title: '专注英语的学习环境',
-      text: '一对一与不同规模团体课结合，配合晨考、写作和自习，形成清晰的学习节奏。',
+      title: '学习节奏',
+      text: '一对一与团体课结合，配合晨考、写作、自习和 EOP 规则',
     },
     {
-      icon: 'public',
-      image: 'assets/cia/international-students.jpg',
-      title: '真实的跨文化交流',
-      text: '国际学生共同学习与生活，配合EOP英语使用规则，增加课外自然使用英语的机会。',
+      icon: 'support_agent',
+      title: '学生支持',
+      text: 'CRO、学业顾问、医务室与24小时安保覆盖学习和生活问题',
     },
   ];
 
@@ -1803,45 +1748,18 @@ export class CiaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly lifeCards = [
-    {
-      icon: 'home',
-      image: 'assets/cia/dormitory-service-official.jpg',
-      badge: '',
-      title: '宿舍',
-      text: '多种房型可选，独立卫浴、空调、热水、WiFi 全覆盖。',
-    },
-    {
-      icon: 'restaurant',
-      image: 'assets/cia/dining-hall.jpg',
-      badge: '',
-      title: '餐食',
-      text: '三餐营养搭配，兼顾亚洲口味与不同学生需求。',
-    },
-    {
-      icon: 'local_laundry_service',
-      image: 'assets/cia/laundry-service-illustration.png',
-      badge: '洗衣服务示意图',
-      title: '保洁与洗衣',
-      text: '学校提供免费洗衣服务，每周可送洗2次，通常2–3天后领取；宿舍房间原则上每周清洁1次。',
-    },
-    {
-      icon: 'fitness_center',
-      image: 'assets/cia/fitness-center.jpg',
-      badge: '',
-      title: '校园设施',
-      text: '泳池、健身房、篮球场、自习室和休闲空间齐全。',
-    },
-    {
-      icon: 'location_on',
-      image: 'assets/cia/mactan-airport-official.png',
-      badge: '',
-      title: '麦克坦周边',
-      text: '位于麦克坦岛，前往机场、餐厅及周末活动地点较方便；实际车程会受交通情况影响。',
-    },
-  ];
-
   readonly campusPracticalGuides: CampusPracticalGuide[] = [
+    {
+      icon: 'airport_shuttle',
+      eyebrow: 'AIRPORT PICKUP',
+      title: '机场接机与到校迎新',
+      facts: [
+        { label: '接机地点', value: '宿务麦克坦机场到达区，按学校确认的接机指引集合' },
+        { label: '周末接机', value: '费用参考约₱1,000，以航班与学校确认安排为准' },
+        { label: '工作日接机', value: '费用参考约₱1,500，需提前提交完整航班信息' },
+      ],
+      note: '到校后会安排基础说明与迎新资料；接机时段、集合点、费用及可否安排须以报名后的正式确认单为准。',
+    },
     {
       icon: 'confirmation_number',
       eyebrow: 'ADMIN OFFICE',
@@ -2110,66 +2028,11 @@ export class CiaSchoolComponent implements OnInit {
     { icon: 'apartment', label: '深圳总部 + 菲律宾·欧洲驻点' },
   ];
 
-  readonly enrollmentChecks = [
-    {
-      icon: 'flag',
-      title: '目标课程',
-      text: 'ESL / IELTS / TOEIC / Business 或其他课程',
-    },
-    { icon: 'event', title: '入学日期', text: '确定计划入学的具体日期' },
-    {
-      icon: 'bed',
-      title: '房型',
-      text: '选择适合的房型（单人 / 双人 / 多人 / 套房）',
-    },
-    {
-      icon: 'trending_up',
-      title: '是否旺季',
-      text: '旺季名额紧张，建议提前报名',
-    },
-    {
-      icon: 'quiz',
-      title: '是否需要雅思官方考试',
-      text: '如需确认考试日期与考位安排',
-    },
-    {
-      icon: 'payments',
-      title: '到校学杂费预算',
-      text: '确认额外费用预算（学杂费 / 电费等）',
-    },
-    {
-      icon: 'sync_alt',
-      title: '是否考虑续读或转校',
-      text: '如有长期规划，建议提前准备',
-    },
-  ];
-
   readonly ctaBadges = [
     '正规签约保障',
     '费用透明无隐形消费',
     '菲律宾及多国驻点支持',
     '学习期间持续协助',
-  ];
-
-  readonly courseMatchAdvisors: CourseMatchAdvisor[] = [
-    {
-      icon: 'school',
-      title: '英爱留学规划',
-      name: 'Jenny',
-      text: '后续帮衔接爱尔兰/英国留学',
-    },
-    {
-      icon: 'public',
-      title: '多国家方案比较',
-      name: 'Lemon',
-      text: '还没确定国家，想比较费用和路线',
-    },
-    {
-      icon: 'travel_explore',
-      title: '菲律宾与东南亚游学',
-      name: 'Penin',
-      text: 'CIA、菲律宾学校、马来/新加坡/越南短期英语',
-    },
   ];
 
   readonly ctaConsultants: CtaConsultant[] = [
@@ -2516,7 +2379,8 @@ export class CiaSchoolComponent implements OnInit {
       return;
     }
 
-    const headerOffset = window.innerWidth <= 680 ? 132 : 92;
+    const headerOffset =
+      window.innerWidth <= 760 ? 136 : window.innerWidth <= 1099 ? 208 : 136;
     const targetTop =
       targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 

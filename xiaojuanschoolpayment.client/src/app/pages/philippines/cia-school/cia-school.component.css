@@ -529,3 +529,436 @@
     grid-column: auto;
   }
 }
+
+/* CIA page information hierarchy: keep the first read concise and let students
+   expand reference material only when they need it. */
+:host .decision-summary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(420px, 0.96fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-top: 28px;
+}
+
+:host .decision-summary-grid .overview-grid,
+:host .decision-summary-grid .advisor-review {
+  height: 100%;
+  margin: 0;
+}
+
+:host .decision-summary-grid .overview-main,
+:host .decision-summary-grid .advisor-review {
+  box-sizing: border-box;
+}
+
+:host .decision-summary-grid .advisor-review {
+  display: grid;
+  align-content: start;
+}
+
+:host .decision-summary-grid .snapshot-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:host .campus-introduction--compact {
+  margin-bottom: 0;
+}
+
+:host .campus-introduction--compact .campus-intro-layout {
+  display: block;
+}
+
+:host .campus-introduction--compact + #gallery {
+  margin-top: 14px;
+}
+
+:host .campus-volunteer-highlight {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.7fr) minmax(0, 1.3fr);
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid #d9e8df;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f3fbf7, #fff9f3);
+}
+
+:host .campus-volunteer-highlight > img {
+  width: 100%;
+  height: 100%;
+  min-height: 210px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+:host .campus-volunteer-highlight > div {
+  display: grid;
+  align-content: center;
+  gap: 9px;
+  padding: 10px 12px;
+}
+
+:host .campus-volunteer-highlight h4,
+:host .campus-volunteer-highlight p,
+:host .campus-volunteer-highlight small {
+  margin: 0;
+}
+
+:host .campus-volunteer-highlight h4 {
+  color: #073f30;
+  font-size: clamp(20px, 2vw, 26px);
+}
+
+:host .campus-volunteer-highlight p,
+:host .campus-volunteer-highlight small {
+  color: #5f7168;
+  line-height: 1.7;
+}
+
+:host .campus-volunteer-highlight > div > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+:host .campus-volunteer-highlight > div > div span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #e4f3eb;
+  color: #08714f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+:host .campus-volunteer-highlight mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+}
+
+:host .cia-collapsible-section {
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid #dbe8e1;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(4, 63, 45, 0.06);
+}
+
+:host .cia-collapsible-section > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  min-height: 84px;
+  padding: 16px 20px;
+  color: #083f30;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+:host .cia-collapsible-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+:host .cia-collapsible-section > summary:hover {
+  background: #f6fbf8;
+}
+
+:host .cia-collapsible-section > summary:focus-visible {
+  outline: 3px solid rgba(255, 100, 43, 0.35);
+  outline-offset: -3px;
+}
+
+:host .cia-collapsible-section > summary > span:nth-child(2) {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+:host .cia-collapsible-section > summary strong {
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+:host .cia-collapsible-section > summary small {
+  color: #64756d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+:host .collapsible-summary-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 13px;
+  background: #e8f5ee;
+  color: #08714f;
+}
+
+:host .collapsible-summary-icon mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+}
+
+:host .collapsible-chevron {
+  transition: transform 180ms ease;
+}
+
+:host .cia-collapsible-section[open] > summary {
+  border-bottom: 1px solid #e2ebe6;
+  background: #f8fcfa;
+}
+
+:host .cia-collapsible-section[open] > summary .collapsible-chevron {
+  transform: rotate(180deg);
+}
+
+:host .collapsible-panel-body {
+  padding: 22px;
+}
+
+:host .campus-vr-section,
+:host .media-disclosure,
+:host .refund-policy-section {
+  margin-top: 24px;
+}
+
+:host .course-detail-disclosure .course-facts-grid {
+  margin-top: 0;
+}
+
+:host .campus-vr-body {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+  gap: 24px;
+  align-items: center;
+}
+
+:host .campus-vr-body .campus-vr-copy,
+:host .campus-vr-body .campus-vr-frame {
+  margin: 0;
+}
+
+:host .course-choice-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+:host #courses .course-choice-grid article {
+  min-height: 220px;
+  padding: 22px 18px;
+}
+
+:host #courses .course-choice-grid mat-icon {
+  width: 42px;
+  height: 42px;
+  font-size: 42px;
+}
+
+:host .course-detail-disclosure {
+  margin-top: 18px;
+}
+
+:host .course-detail-disclosure .daily-schedule-section,
+:host .secondary-info-disclosure .school-calendar-section,
+:host .secondary-info-disclosure .ielts-exam-section,
+:host .media-disclosure .video-section {
+  margin-top: 0;
+}
+
+:host .detailed-fees-disclosure,
+:host .secondary-info-disclosure {
+  margin-top: 24px;
+}
+
+:host .detailed-fees-disclosure > .collapsible-panel-body {
+  padding: 0;
+}
+
+:host .media-disclosure > .collapsible-panel-body {
+  padding: 0;
+}
+
+:host .media-disclosure .video-section {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:host .refund-policy-section > .collapsible-panel-body {
+  padding: clamp(22px, 3vw, 38px);
+}
+
+:host .events-more-disclosure {
+  margin-top: 16px;
+}
+
+:host .events-more-disclosure > summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  border: 1px solid #d8e6de;
+  border-radius: 12px;
+  background: #f7fbf9;
+  color: #08714f;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+  list-style: none;
+}
+
+:host .events-more-disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+:host .events-more-disclosure > summary mat-icon {
+  transition: transform 180ms ease;
+}
+
+:host .events-more-disclosure[open] > summary {
+  margin-bottom: 16px;
+}
+
+:host .events-more-disclosure[open] > summary mat-icon {
+  transform: rotate(180deg);
+}
+
+:host [id] {
+  scroll-margin-top: 144px;
+}
+
+@media (max-width: 1099px) {
+  :host .decision-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .campus-vr-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .campus-volunteer-highlight {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .campus-volunteer-highlight > img {
+    aspect-ratio: 16 / 8;
+    min-height: 0;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1099px) {
+  :host [id] {
+    scroll-margin-top: 208px;
+  }
+}
+
+@media (max-width: 760px) {
+  :host .decision-summary-grid {
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  :host .decision-summary-grid .snapshot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  :host .decision-summary-grid .snapshot-grid article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    align-content: start;
+    min-height: 154px;
+    padding: 14px;
+  }
+
+  :host .decision-summary-grid .snapshot-grid article > mat-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+  }
+
+  :host .cia-collapsible-section > summary {
+    gap: 11px;
+    min-height: 76px;
+    padding: 13px 14px;
+  }
+
+  :host .cia-collapsible-section > summary strong {
+    font-size: 16px;
+  }
+
+  :host .cia-collapsible-section > summary small {
+    font-size: 12px;
+  }
+
+  :host .collapsible-summary-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+
+  :host .collapsible-panel-body {
+    padding: 15px;
+  }
+
+  :host .course-choice-grid {
+    display: flex;
+    gap: 12px;
+    margin-inline: -14px;
+    padding: 0 14px 6px;
+    overflow-x: auto;
+    scroll-padding-inline: 14px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :host .course-choice-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  :host .course-choice-grid article {
+    flex: 0 0 min(78vw, 292px);
+    min-height: 220px;
+    scroll-snap-align: start;
+  }
+
+  :host .secondary-info-disclosure .collapsible-panel-body {
+    padding: 12px;
+  }
+
+  :host .campus-introduction--compact + #gallery {
+    margin-top: 10px;
+  }
+
+  :host .campus-volunteer-highlight {
+    gap: 12px;
+    padding: 9px;
+  }
+
+  :host .campus-volunteer-highlight > img {
+    aspect-ratio: 16 / 9;
+  }
+
+  :host .campus-volunteer-highlight > div {
+    padding: 8px 6px 10px;
+  }
+
+  :host [id] {
+    scroll-margin-top: 136px;
+  }
+}

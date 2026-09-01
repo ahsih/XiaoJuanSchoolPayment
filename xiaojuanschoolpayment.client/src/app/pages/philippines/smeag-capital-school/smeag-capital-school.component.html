@@ -332,7 +332,7 @@
             <div class="section-heading">
               <span>SMEAG Capital 费用快速报价</span>
               <h2>默认参考：4周 ESL常规 + 校内四人间</h2>
-              <p>前期支付参考 = 注册费 + 9折后的课程费 + 住宿费 − 淡季优惠。校内住宿费参与9折，校外酒店住宿费不打折。</p>
+              <p>前期支付参考 = 注册费 + 9折后的课程费 + 住宿费 − 淡季优惠。校内住宿费参与9折，校外住宿无折扣。</p>
             </div>
             <div class="quote-form" aria-label="SMEAG Capital费用快速报价选项">
               <label>
@@ -362,10 +362,6 @@
               <label>
                 预计入学日
                 <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-              <label class="smeag-quote-check">
-                <input type="checkbox" [(ngModel)]="includeAirportPickup" />
-                <span>需要宿务马克坦机场接机（到校支付，可选）</span>
               </label>
             </div>
             <div class="quote-breakdown">
@@ -411,7 +407,7 @@
               <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">
-              到校学杂费会按学习周数、ACR I-card和旅游签证续签次数自动估算。接机与可退押金单独列示，不计入学杂费合计。
+              到校学杂费按SMEAG 2027新版当地费用表自动估算。可选接机费和可退押金单独列示，不计入学杂费合计。
             </p>
             <p class="season-note">
               2026/08/23—2027/01/01在校学习期间，每个重叠学习周减USD25；先计算思达9折，再扣淡季优惠。注册费和当地费用不打折。
@@ -419,38 +415,33 @@
           </section>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>
-              以下费用以PHP计价，系统会按当前周数和签证时长自动计算数量。接机与押金不计入合计。
-            </p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ formatPhp(fee.total) }}</strong>
-              <em>{{ fee.amount }} × {{ fee.quantity }}</em>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ formatPhp(fee.total) }}</strong>
-                <em>{{ fee.amount }} × {{ fee.quantity }}</em>
-                <p>{{ fee.note }}</p>
-              </article>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="smeag-local-fee-title">
+          <div class="local-fee-heading">
+            <div>
+              <span>到校后另付 · SMEAG 2027新版</span>
+              <h3 id="smeag-local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
             </div>
-          </details>
-          <div class="smeag-local-total">
-            <span>本次预计到校学杂费合计</span>
-            <strong>{{ formatPhp(localFeesTotal) }}</strong>
-            <em>{{ localFeesCnyText }}</em>
-            <small>不含可选接机及可退押金；最终以学校和菲律宾相关部门实收为准</small>
+          </div>
+          <p class="local-fee-intro">
+            以下依据SMEAG 2027新版Local Fee表按周数自动计算；接机费可自由选择，押金在无欠费及损坏时按学校规定退还，两项均在合计下方单独列示。费用可因移民政策及学校规定调整，最终以到校实收为准。
+          </p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let fee of includedLocalFees">
+                  <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含可选接机费、可退押金及教材费</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="excluded-fee-list" *ngIf="excludedLocalFees.length">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b></div>
           </div>
         </section>
 
@@ -459,7 +450,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年9月1日。课程费、住宿费、当地费用及优惠规则按SMEAG Capital 2026价目表与思达顾问资料更新，并交叉参考SMEAG官方Capital课程与学习规则。学校价格、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              本页价格更新时间：2026年9月2日。课程费与住宿费按SMEAG Capital 2026 China价目表核对，到校学杂费按SMEAG 2027新版Local Fee表更新，教材费按课程类别另行列示。学校价格、房型空位、移民费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>

@@ -1,0 +1,191 @@
+:host .local-fee-estimate {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 26px;
+  padding: 22px;
+  border: 1px solid #f2c9aa;
+  border-radius: 10px;
+  background: #fffaf6;
+}
+
+:host .local-fee-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+:host .local-fee-heading span {
+  display: block;
+  margin-bottom: 5px;
+  color: #b75114;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.05em;
+}
+
+:host .local-fee-heading h3 {
+  margin: 0;
+  color: #203147;
+  font-size: 22px;
+  font-weight: 950;
+}
+
+:host .local-fee-heading > strong {
+  flex: 0 0 auto;
+  color: #e9560c;
+  font-size: 30px;
+  font-weight: 950;
+}
+
+:host .local-fee-intro {
+  margin: 14px 0 18px;
+  padding: 11px 13px;
+  border-left: 4px solid #ef7c36;
+  background: #ffffff;
+  color: #5d4b40;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+:host .local-fee-table-wrap {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid #eadbd1;
+  border-radius: 8px;
+  background: #ffffff;
+  -webkit-overflow-scrolling: touch;
+}
+
+:host .local-fee-table {
+  width: 100%;
+  min-width: 880px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: #304056;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+:host .local-fee-table thead th:nth-child(1) { width: 19%; }
+:host .local-fee-table thead th:nth-child(2) { width: 14%; }
+:host .local-fee-table thead th:nth-child(3) { width: 8%; }
+:host .local-fee-table thead th:nth-child(4) { width: 13%; }
+:host .local-fee-table thead th:nth-child(5) { width: 46%; }
+
+:host .local-fee-table th,
+:host .local-fee-table td {
+  padding: 11px 12px;
+  border-right: 1px solid #eadbd1;
+  border-bottom: 1px solid #eadbd1;
+  text-align: left;
+  vertical-align: middle;
+}
+
+:host .local-fee-table tr > :last-child { border-right: 0; }
+:host .local-fee-table tbody tr:last-child > * { border-bottom-color: #d6bca9; }
+
+:host .local-fee-table thead th {
+  background: #f8e9df;
+  color: #57331d;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+:host .local-fee-table tbody th {
+  color: #26364b;
+  font-weight: 900;
+}
+
+:host .local-fee-table tbody td:nth-child(2),
+:host .local-fee-table tbody td:nth-child(3),
+:host .local-fee-table .fee-amount,
+:host .local-fee-table .fee-cny {
+  white-space: nowrap;
+}
+
+:host .local-fee-table .fee-amount {
+  color: #172b43;
+  font-weight: 950;
+}
+
+:host .local-fee-table tfoot th,
+:host .local-fee-table tfoot td {
+  background: #fff0e5;
+  color: #6b3415;
+  font-weight: 900;
+}
+
+:host .local-fee-table tfoot tr:last-child > * {
+  border-bottom: 0;
+  background: #f7f0ff;
+  color: #5a347c;
+}
+
+:host .local-fee-table .fee-cny {
+  color: #7a3ba2;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+:host .excluded-fee-list {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px dashed #d9b79f;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .excluded-fee-list h4 {
+  margin: 0 0 9px;
+  color: #6b422b;
+  font-size: 14px;
+  font-weight: 950;
+}
+
+:host .excluded-fee-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 9px 0;
+}
+
+:host .excluded-fee-list > div + div { border-top: 1px solid #eee2da; }
+:host .excluded-fee-list span,
+:host .excluded-fee-list small { display: block; }
+:host .excluded-fee-list strong { color: #2d3d52; font-size: 14px; }
+
+:host .excluded-fee-list small {
+  margin-top: 3px;
+  color: #6e7785;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+:host .excluded-fee-list b {
+  flex: 0 0 auto;
+  color: #34465d;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  :host .local-fee-estimate { margin-top: 22px; padding: 16px; }
+  :host .local-fee-heading { align-items: flex-start; }
+  :host .local-fee-heading h3 { font-size: 19px; }
+  :host .local-fee-heading > strong { font-size: 24px; }
+}
+
+@media (max-width: 430px) {
+  :host .local-fee-heading,
+  :host .excluded-fee-list > div { display: grid; }
+  :host .local-fee-heading > strong { margin-top: 2px; }
+}

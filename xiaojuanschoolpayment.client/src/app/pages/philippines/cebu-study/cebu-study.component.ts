@@ -17,6 +17,15 @@ interface SelectionGroup {
   schools: string[];
 }
 
+interface DirectoryFilter {
+  label: DirectoryCategory;
+  icon: string;
+  iconAsset?: string;
+  iconCopies?: 2;
+  iconEmoji?: string;
+  tone?: SelectionGroup['tone'];
+}
+
 interface FeaturedSchool {
   name: string;
   badge: string;
@@ -362,12 +371,23 @@ export class CebuStudyComponent {
     },
   ];
 
-  readonly directoryFilters: { label: DirectoryCategory; icon: string }[] = [
+  readonly directoryFilters: DirectoryFilter[] = [
     { label: '全部学校', icon: 'grid_view' },
-    { label: '雅思名校', icon: 'workspace_premium' },
-    { label: '斯巴达管理', icon: 'shield' },
-    { label: '高性价比', icon: 'savings' },
-    { label: '亲子友好', icon: 'family_restroom' },
+    {
+      label: '雅思名校',
+      icon: 'verified',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
+      tone: 'green',
+    },
+    {
+      label: '斯巴达管理',
+      icon: 'military_tech',
+      iconAsset: '/assets/philippines/sparta-soldier-icon.png',
+      iconCopies: 2,
+      tone: 'violet',
+    },
+    { label: '高性价比', icon: 'savings', iconEmoji: '💰', tone: 'orange' },
+    { label: '亲子友好', icon: 'family_restroom', iconEmoji: '👨‍👩‍👧', tone: 'blue' },
   ];
 
   activeDirectoryFilter: DirectoryCategory = '全部学校';

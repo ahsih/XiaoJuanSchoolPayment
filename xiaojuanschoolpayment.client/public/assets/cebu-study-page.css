@@ -1,4 +1,4 @@
-:host {
+.cebu-page {
   display: block;
   --orange: #ff6828;
   --orange-dark: #f45116;
@@ -30,11 +30,11 @@
   margin-inline: auto;
 }
 
-a {
+.cebu-page a {
   color: inherit;
 }
 
-mat-icon {
+.cebu-page mat-icon {
   flex: 0 0 auto;
 }
 
@@ -1465,21 +1465,21 @@ mat-icon {
 .directory-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 9px;
 }
 
 .directory-filters button {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  min-height: 34px;
-  padding: 0 10px;
+  gap: 7px;
+  min-height: 42px;
+  padding: 5px 11px 5px 7px;
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
   color: #66736d;
   font: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 850;
   cursor: pointer;
   transition: 0.16s ease;
@@ -1498,23 +1498,81 @@ mat-icon {
   box-shadow: 0 6px 14px rgba(37, 109, 80, 0.18);
 }
 
-.directory-filters mat-icon {
-  width: 15px;
-  height: 15px;
-  font-size: 15px;
+.directory-filter-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid #dce7e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #256d50;
+  box-shadow: 0 3px 8px rgba(28, 70, 51, 0.07);
 }
 
-.directory-filters button > span {
+.directory-filter-icon mat-icon {
+  width: 19px;
+  height: 19px;
+  font-size: 19px;
+}
+
+.directory-filter-icon--brand img {
+  display: block;
+  width: 31px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.directory-filter-icon--pair {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  justify-content: center;
+  border-color: #d7dec7;
+  background: linear-gradient(135deg, #fff, #eef3e4);
+}
+
+.directory-filter-icon--pair img {
+  display: block;
+  width: 14px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.directory-filter-icon--emoji {
+  background: linear-gradient(135deg, #fff, #f7f8f4);
+}
+
+.directory-filters button[data-tone="orange"] .directory-filter-icon--emoji {
+  border-color: #f0d9a7;
+  background: linear-gradient(135deg, #fffdf6, #fff0c9);
+}
+
+.directory-filters button[data-tone="blue"] .directory-filter-icon--emoji {
+  border-color: #cfe3f0;
+  background: linear-gradient(135deg, #f9fdff, #e8f5fc);
+}
+
+.directory-filter-emoji {
+  display: block;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 19px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.directory-filter-count {
   display: grid;
   min-width: 17px;
   height: 17px;
   place-items: center;
   border-radius: 999px;
   background: rgba(33, 80, 62, 0.08);
-  font-size: 7px;
+  font-size: 8px;
 }
 
-.directory-filters button.active > span {
+.directory-filters button.active > .directory-filter-count {
   background: rgba(255, 255, 255, 0.18);
 }
 
@@ -1903,6 +1961,10 @@ mat-icon {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 
+  .selection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .selection-panel,
   .schools-panel {
     grid-column: span 12;
@@ -1938,23 +2000,26 @@ mat-icon {
   }
 }
 
-@media (max-width: 920px) {
+/* Tablet layout: reduce the hero minimums and simplify the denser sections
+   before their desktop columns begin to feel cramped. */
+@media (max-width: 1024px) {
   .hero {
     min-height: 0;
   }
 
   .hero-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(340px, 0.82fr) minmax(0, 1.18fr);
     gap: 24px;
-    padding-block: 26px;
+    padding-block: 22px;
   }
 
   .hero-copy h1 {
-    font-size: 45px;
+    gap: 8px;
+    font-size: 40px;
   }
 
   .hero-visual {
-    height: 400px;
+    height: 354px;
   }
 
   .dashboard-grid {
@@ -1972,6 +2037,27 @@ mat-icon {
 
   .all-schools-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .directory-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .directory-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .directory-filters button {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .directory-toolbar > p {
+    align-self: flex-end;
   }
 
   .school-cards {
@@ -2015,6 +2101,24 @@ mat-icon {
 
   .service-heading {
     align-items: flex-start;
+  }
+}
+
+/* Portrait tablets and narrow preview panels need a single-column hero. */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-block: 26px;
+  }
+
+  .hero-copy h1 {
+    gap: 13px;
+    font-size: 45px;
+  }
+
+  .hero-visual {
+    height: 400px;
   }
 }
 
@@ -2119,15 +2223,8 @@ mat-icon {
   }
 
   .selection-grid {
-    grid-template-columns: repeat(4, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    scroll-snap-type: x mandatory;
-  }
-
-  .selection-grid::-webkit-scrollbar {
-    display: none;
   }
 
   .selection-card {
@@ -2135,7 +2232,6 @@ mat-icon {
     gap: 4px 10px;
     min-height: 108px;
     padding: 13px 14px;
-    scroll-snap-align: start;
   }
 
   .selection-icon {

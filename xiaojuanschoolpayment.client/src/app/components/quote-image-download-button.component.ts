@@ -621,9 +621,9 @@ export class QuoteImageDownloadButtonComponent {
       context.fillText(label, centers[index], 286);
     });
     context.textAlign = 'left';
-    const paymentRows = this.quote.paymentItems.slice(0, 6);
+    const paymentRows = this.quote.paymentItems.slice(0, 7);
     const paymentRowHeights = [52, 74, 52, 60, 58, 62];
-    const compactPaymentRowHeight = paymentRows.length > 0 && paymentRows.length < 6
+    const compactPaymentRowHeight = paymentRows.length > 0 && paymentRows.length !== 6
       ? Math.min(150, Math.floor(358 / paymentRows.length))
       : 0;
     let paymentRowTop = 298;

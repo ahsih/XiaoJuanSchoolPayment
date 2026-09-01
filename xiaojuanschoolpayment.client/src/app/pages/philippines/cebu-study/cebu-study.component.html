@@ -171,11 +171,27 @@
             type="button"
             *ngFor="let filter of directoryFilters"
             [class.active]="activeDirectoryFilter === filter.label"
+            [attr.data-tone]="filter.tone || null"
             (click)="activeDirectoryFilter = filter.label"
           >
-            <mat-icon>{{ filter.icon }}</mat-icon>
+            <span
+              class="directory-filter-icon"
+              [class.directory-filter-icon--brand]="filter.iconAsset && !filter.iconCopies"
+              [class.directory-filter-icon--pair]="filter.iconCopies === 2"
+              [class.directory-filter-icon--emoji]="filter.iconEmoji"
+              aria-hidden="true"
+            >
+              <ng-container *ngIf="filter.iconAsset">
+                <img [src]="filter.iconAsset" alt="" />
+                <img *ngIf="filter.iconCopies === 2" [src]="filter.iconAsset" alt="" />
+              </ng-container>
+              <span *ngIf="!filter.iconAsset && filter.iconEmoji" class="directory-filter-emoji">
+                {{ filter.iconEmoji }}
+              </span>
+              <mat-icon *ngIf="!filter.iconAsset && !filter.iconEmoji">{{ filter.icon }}</mat-icon>
+            </span>
             {{ filter.label }}
-            <span>{{ directoryFilterCount(filter.label) }}</span>
+            <span class="directory-filter-count">{{ directoryFilterCount(filter.label) }}</span>
           </button>
         </div>
         <p>当前显示 <strong>{{ visibleSchools.length }}</strong> 所学校</p>

@@ -17,6 +17,7 @@ export interface PhilippinesDetailedQuoteInput {
   paymentItems: QuoteImagePaymentItem[];
   localFeeItems: QuoteImageLocalFeeItem[];
   localFeeTotal: number;
+  localCurrencyName?: string;
   localFeeCny: number;
   localFeeNote: string;
   optionalFeeItems?: QuoteImageOptionalFeeItem[];
@@ -56,13 +57,15 @@ export function buildPhilippinesDetailedQuote(
       { icon: '日', label: '入学日期', value: input.startDate.replace(/-/g, '/') },
     ],
     paymentSectionTitle: '学校费用明细（到校前支付给学校的费用）',
-    paymentItems: input.paymentItems.slice(0, 6),
+    paymentItems: input.paymentItems.slice(0, 7),
     totalLabel: '最终应付学校金额',
     totalUsd: `${formatUsd(input.totalUsd)} 美元`,
     totalCny: `人民币预计金额：约 ${quoteCny.toLocaleString('zh-CN')} 元`,
     totalNote: '按实时汇率预估，最终以支付当日汇率为准',
     localFeeTitle: `到校后${input.weeks}周学杂费明细参考（学校及政府相关部门收取）`,
-    localFeeAmount: formatPhp(input.localFeeTotal),
+    localFeeAmount: input.localCurrencyName
+      ? `${input.localFeeTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} ${input.localCurrencyName}`
+      : formatPhp(input.localFeeTotal),
     localFeeDescription: `约人民币${input.localFeeCny.toLocaleString('zh-CN')}元；按当前周数和个人情况自动估算。`,
     localFeeNote: input.localFeeNote,
     localFeeItems: input.localFeeItems.slice(0, 10),

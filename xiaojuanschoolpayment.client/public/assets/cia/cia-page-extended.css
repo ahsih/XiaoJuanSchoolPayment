@@ -807,17 +807,34 @@ app-cia-school .course-detail-guide-list details {
   border: 1px solid #dbe7e1;
   border-radius: 12px;
   background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+app-cia-school .course-detail-guide-list details:hover {
+  border-color: #9bcbb9;
+  box-shadow: 0 7px 18px rgba(8, 113, 79, 0.08);
+}
+
+app-cia-school .course-detail-guide-list details[open] {
+  border-color: #77bca3;
+  box-shadow: 0 9px 22px rgba(8, 113, 79, 0.1);
 }
 
 app-cia-school .course-detail-guide-list summary {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 24px;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
   min-height: 70px;
   padding: 12px 16px;
   cursor: pointer;
   list-style: none;
+  transition: background-color 0.2s ease;
+}
+
+app-cia-school .course-detail-guide-list summary:hover,
+app-cia-school .course-detail-guide-list details[open] > summary {
+  background: #f5fbf8;
 }
 
 app-cia-school .course-detail-guide-list summary::-webkit-details-marker {
@@ -854,6 +871,36 @@ app-cia-school .course-detail-guide-list summary small {
 app-cia-school .course-detail-chevron {
   color: #718078;
   transition: transform 0.2s ease;
+}
+
+app-cia-school .course-detail-toggle {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px 0 11px;
+  border: 1px solid #b9d9cd;
+  border-radius: 999px;
+  background: #edf8f3;
+  color: #08714f;
+  white-space: nowrap;
+}
+
+app-cia-school .course-detail-toggle b {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+app-cia-school .course-detail-toggle-open {
+  display: none;
+}
+
+app-cia-school .course-detail-guide-list details[open] .course-detail-toggle-closed {
+  display: none;
+}
+
+app-cia-school .course-detail-guide-list details[open] .course-detail-toggle-open {
+  display: inline;
 }
 
 app-cia-school .course-detail-guide-list details[open] .course-detail-chevron {
@@ -1867,9 +1914,18 @@ app-cia-school .campus-event-grid p {
   }
 
   app-cia-school .course-detail-guide-list summary {
-    grid-template-columns: 38px minmax(0, 1fr) 22px;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
     gap: 9px;
     padding: 11px;
+  }
+
+  app-cia-school .course-detail-toggle {
+    min-height: 32px;
+    padding-inline: 8px;
+  }
+
+  app-cia-school .course-detail-toggle b {
+    font-size: 10px;
   }
 
   app-cia-school .course-detail-guide-list summary > span {

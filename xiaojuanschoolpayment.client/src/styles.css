@@ -1238,7 +1238,7 @@ app-cia-school .quote-total em {
 
 app-cia-school .quote-tool-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 22px;
 }
@@ -2471,6 +2471,126 @@ app-cia-school .sida-cia-trust-bar strong {
   line-height: 1.35;
 }
 
+app-cia-school .sida-cia-alumni-benefits {
+  margin-top: 18px;
+  padding: 24px;
+  border: 1px solid #cfe2d9;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 190, 79, 0.18), transparent 32%),
+    linear-gradient(135deg, #f1faf6 0%, #fffaf2 100%);
+}
+
+app-cia-school .sida-cia-alumni-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+app-cia-school .sida-cia-alumni-heading > span {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ff6a2a;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(255, 106, 42, 0.2);
+}
+
+app-cia-school .sida-cia-alumni-heading mat-icon {
+  width: 27px;
+  height: 27px;
+  font-size: 27px;
+}
+
+app-cia-school .sida-cia-alumni-heading small {
+  display: block;
+  color: #db541d;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+app-cia-school .sida-cia-alumni-heading h3 {
+  margin: 3px 0 0;
+  color: #073f2d;
+  font-size: clamp(22px, 2vw, 28px);
+  line-height: 1.2;
+}
+
+app-cia-school .sida-cia-alumni-heading p {
+  margin: 6px 0 0;
+  color: #596778;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+app-cia-school .sida-cia-alumni-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+app-cia-school .sida-cia-alumni-grid article {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 20px 18px;
+  border: 1px solid rgba(7, 63, 45, 0.13);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 22px rgba(27, 57, 48, 0.06);
+}
+
+app-cia-school .sida-cia-alumni-grid article > span {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: rgba(7, 63, 45, 0.22);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+app-cia-school .sida-cia-alumni-grid mat-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e7f5ef;
+  color: #087b58;
+  font-size: 23px;
+}
+
+app-cia-school .sida-cia-alumni-grid strong {
+  display: block;
+  padding-right: 18px;
+  color: #073f2d;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+app-cia-school .sida-cia-alumni-grid p {
+  margin: 7px 0 0;
+  color: #536174;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+app-cia-school .sida-cia-alumni-note {
+  display: block;
+  margin-top: 14px;
+  color: #687587;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 app-cia-school .quote-result-card {
   min-width: 0;
 }
@@ -2787,6 +2907,30 @@ app-cia-school .quote-form-card > p {
   line-height: 1.65;
 }
 
+app-cia-school .quote-recalculate-row {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+
+app-cia-school .quote-recalculate-row .primary-action {
+  display: inline-flex;
+  width: auto;
+  min-width: 240px;
+  min-height: 54px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+app-cia-school .quote-recalculate-row mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
 app-cia-school .quote-result-card {
   min-width: 0;
   align-self: start;
@@ -3045,6 +3189,14 @@ app-cia-school .student-care-grid dl div {
 }
 
 @media (max-width: 1040px) {
+  app-cia-school .sida-cia-alumni-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  app-cia-school .sida-cia-alumni-grid article:last-child {
+    grid-column: 1 / -1;
+  }
+
   app-cia-school .sida-cia-trust-bar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3187,6 +3339,32 @@ app-cia-school .student-care-grid dl div {
     line-height: 1.55;
   }
 
+  app-cia-school .sida-cia-alumni-benefits {
+    padding: 20px 16px;
+  }
+
+  app-cia-school .sida-cia-alumni-grid {
+    grid-template-columns: 1fr;
+  }
+
+  app-cia-school .sida-cia-alumni-grid article:last-child {
+    grid-column: auto;
+  }
+
+  app-cia-school .sida-cia-alumni-heading {
+    align-items: flex-start;
+  }
+
+  app-cia-school .sida-cia-alumni-heading > span {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  app-cia-school .sida-cia-alumni-grid article {
+    padding: 17px 15px;
+  }
+
   app-cia-school .sida-cia-trust-bar strong {
     font-size: 15px;
   }
@@ -3201,6 +3379,15 @@ app-cia-school .student-care-grid dl div {
   app-cia-school .quote-form-card .primary-action,
   app-cia-school .quote-form-card > p {
     grid-column: 1;
+  }
+
+  app-cia-school .quote-recalculate-row {
+    grid-column: 1;
+  }
+
+  app-cia-school .quote-recalculate-row .primary-action {
+    width: 100%;
+    min-width: 0;
   }
 
   app-cia-school .quote-result-head,

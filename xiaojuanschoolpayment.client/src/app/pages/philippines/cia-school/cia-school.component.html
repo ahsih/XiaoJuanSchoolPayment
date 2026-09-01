@@ -108,6 +108,7 @@
       </a>
     </nav>
 
+    <div class="decision-summary-grid" id="overview">
     <section class="overview-grid" aria-label="30 秒看懂 CIA">
       <div class="overview-main">
         <div class="section-heading">
@@ -147,26 +148,9 @@
         </div>
       </div>
     </section>
+    </div>
 
-    <section class="cia-section" id="highlights">
-      <div class="section-heading">
-        <span class="section-eyebrow">WHY STUDY AT CIA</span>
-        <h2>为什么选择 CIA？</h2>
-        <p>从办学经验、课程选择到学生支援与校园生活，综合判断它是否适合你的学习目标。</p>
-      </div>
-      <div class="feature-card-grid">
-        <article *ngFor="let item of coreHighlights">
-          <img [src]="item.image" [alt]="item.title" />
-          <span
-            ><mat-icon>{{ item.icon }}</mat-icon></span
-          >
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="cia-section campus-introduction" id="campus-introduction">
+    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction">
       <div class="section-heading section-heading-row">
         <div>
           <span class="section-eyebrow">CAMPUS AT A GLANCE</span>
@@ -177,15 +161,6 @@
       </div>
 
       <div class="campus-intro-layout">
-        <div class="campus-intro-visuals" aria-label="CIA校园、宿舍和设施图片">
-          <img src="assets/cia/campus-building.png" alt="CIA麦克坦校区主楼和泳池" />
-          <div>
-            <img src="assets/cia/quad-room.jpg" alt="CIA校内四人宿舍" />
-            <img src="assets/cia/fitness-center.jpg" alt="CIA校内健身房" />
-            <img src="assets/cia/dining-hall.jpg" alt="CIA学生餐厅" />
-          </div>
-        </div>
-
         <div class="campus-building-grid">
           <article *ngFor="let building of campusBuildings">
             <span>{{ building.code }}</span>
@@ -212,32 +187,6 @@
           <p>周一至周四安排每日晨考；未通过当日晨考时，当天晚间通常不可外出。具体门禁、EOP与扣点规则以入学说明和当期校规为准。</p>
         </div>
       </aside>
-    </section>
-
-    <section class="cia-section campus-vr-section" id="campus-vr">
-      <div class="campus-vr-copy">
-        <span class="section-eyebrow">53-SCENE VIRTUAL TOUR</span>
-        <h2>在线走进 CIA 3D 校园</h2>
-        <p>拖动视角查看教室、宿舍与校园动线；手机可横屏浏览，点击右上角全屏效果更清楚。</p>
-        <a
-          href="https://www.720yun.com/vr/ac9j5puysw4"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          在新窗口全屏参观
-          <mat-icon>open_in_new</mat-icon>
-        </a>
-      </div>
-      <div class="campus-vr-frame">
-        <iframe
-          src="https://www.720yun.com/vr/ac9j5puysw4"
-          title="CIA 3D校园全景导览"
-          loading="lazy"
-          allow="fullscreen; accelerometer; gyroscope"
-          allowfullscreen
-          referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
-      </div>
     </section>
 
     <section class="cia-section" id="gallery">
@@ -491,6 +440,42 @@
       </section>
     </section>
 
+    <details class="cia-section cia-collapsible-section campus-vr-section" id="campus-vr">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>360</mat-icon></span>
+        <span>
+          <strong>在线走进 CIA 3D校园</strong>
+          <small>展开后可拖动查看教室、宿舍与校园动线</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body campus-vr-body">
+        <div class="campus-vr-copy">
+          <span class="section-eyebrow">53-SCENE VIRTUAL TOUR</span>
+          <h2>在线走进 CIA 3D 校园</h2>
+          <p>拖动视角查看教室、宿舍与校园动线；手机可横屏浏览，点击右上角全屏效果更清楚。</p>
+          <a
+            href="https://www.720yun.com/vr/ac9j5puysw4"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            在新窗口全屏参观
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+        </div>
+        <div class="campus-vr-frame">
+          <iframe
+            src="https://www.720yun.com/vr/ac9j5puysw4"
+            title="CIA 3D校园全景导览"
+            loading="lazy"
+            allow="fullscreen; accelerometer; gyroscope"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+      </div>
+    </details>
+
     <section class="cia-section" id="courses">
       <div class="section-heading">
         <h2>CIA 课程怎么选？</h2>
@@ -506,6 +491,16 @@
           <p>{{ item.text }}</p>
         </article>
       </div>
+      <details class="cia-collapsible-section course-detail-disclosure">
+        <summary>
+          <span class="collapsible-summary-icon"><mat-icon>fact_check</mat-icon></span>
+          <span>
+            <strong>查看课程细节与每日课表</strong>
+            <small>选修方向、保证班规则、亲子项目和周一至周五作息</small>
+          </span>
+          <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+        </summary>
+        <div class="collapsible-panel-body">
       <div class="course-facts-grid" aria-label="CIA 课程重点说明">
         <article>
           <mat-icon>workspace_premium</mat-icon>
@@ -584,6 +579,8 @@
         </div>
         <p class="daily-schedule-note"><mat-icon>info</mat-icon>晨考与早餐时间有部分重叠，学生应按学校分组和入学说明安排用餐及考试；保证班晚间另有指定学习安排。</p>
       </section>
+        </div>
+      </details>
 
       <ng-template #calendarPlanningSections>
       <section class="school-calendar-section" id="school-calendar" aria-labelledby="school-calendar-title">
@@ -698,45 +695,9 @@
       </section>
       </ng-template>
 
-      <div class="course-match-cta" aria-label="CIA 课程顾问匹配">
-        <div class="course-match-intro">
-          <mat-icon>support_agent</mat-icon>
-          <div>
-            <h2>不确定选哪种 CIA 课程？</h2>
-            <p>
-              把你的英语基础、学习周数和目标告诉我们，思达启航会帮你匹配课程、房型和预算方案。
-            </p>
-          </div>
-        </div>
-
-        <div class="course-match-advisor-grid">
-          <article
-            class="course-match-advisor"
-            *ngFor="let advisor of courseMatchAdvisors"
-          >
-            <mat-icon>{{ advisor.icon }}</mat-icon>
-            <div>
-              <h3>{{ advisor.title }}</h3>
-              <strong>{{ advisor.name }}</strong>
-              <p>{{ advisor.text }}</p>
-            </div>
-          </article>
-        </div>
-
-        <div class="course-match-action">
-          <a class="primary-action" routerLink="/about-sida/contact">
-            帮我匹配课程和费用
-            <mat-icon>chevron_right</mat-icon>
-          </a>
-          <small>点击后选择顾问，添加微信或电话咨询</small>
-        </div>
-
-        <p class="course-match-note">
-          <mat-icon>verified_user</mat-icon>
-          添加后请备注「CIA」，顾问会根据你的目标、周数和预算给你课程建议。
-        </p>
-      </div>
     </section>
+
+    <ng-container *ngTemplateOutlet="quoteSection"></ng-container>
 
     <ng-template #courseVideosSection>
     <section class="video-section" id="videos">
@@ -780,7 +741,16 @@
     </section>
     </ng-template>
 
-    <section class="tables-section" id="course-fees">
+    <details class="tables-section cia-collapsible-section detailed-fees-disclosure" id="course-fees">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>receipt_long</mat-icon></span>
+        <span>
+          <strong>查看完整课程费、住宿费与入住规则</strong>
+          <small>适合已经初步选定课程或需要核对详细价目的学生</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
       <div class="course-table-block">
         <h2><mat-icon>menu_book</mat-icon>CIA 2027课程费 / 4周</h2>
         <p class="tuition-table-note">
@@ -822,54 +792,6 @@
           </div>
         </aside>
 
-        <section class="course-detail-guides" aria-labelledby="course-detail-guide-title">
-          <div class="course-detail-guide-heading">
-            <div>
-              <span class="section-eyebrow">IMPORTANT COURSE NOTES</span>
-              <h3 id="course-detail-guide-title">报名前值得确认的课程细节</h3>
-              <p>把学校资料中容易影响选课、保证班权益和学习安排的内容集中列在这里；点击课程组可展开查看。</p>
-            </div>
-            <mat-icon>tips_and_updates</mat-icon>
-          </div>
-
-          <div class="course-detail-guide-list">
-            <details *ngFor="let guide of courseDetailGuides; let first = first" [open]="first">
-              <summary>
-                <span><mat-icon>{{ guide.icon }}</mat-icon></span>
-                <div>
-                  <strong>{{ guide.title }}</strong>
-                  <small>{{ guide.subtitle }}</small>
-                </div>
-                <mat-icon class="course-detail-chevron">expand_more</mat-icon>
-              </summary>
-              <div class="course-detail-guide-body">
-                <dl>
-                  <div *ngFor="let fact of guide.facts">
-                    <dt>{{ fact.label }}</dt>
-                    <dd>{{ fact.value }}</dd>
-                  </div>
-                </dl>
-                <ul>
-                  <li *ngFor="let point of guide.points">{{ point }}</li>
-                </ul>
-                <figure *ngIf="guide.image" class="course-detail-evidence">
-                  <img [src]="guide.image" [alt]="guide.imageAlt || ''" loading="lazy" />
-                  <figcaption>{{ guide.imageCaption }}</figcaption>
-                </figure>
-                <p *ngIf="guide.notice" class="course-detail-notice">
-                  <mat-icon>verified_user</mat-icon>{{ guide.notice }}
-                </p>
-              </div>
-            </details>
-          </div>
-        </section>
-        <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
-          <mat-icon>info</mat-icon>
-          <div>
-            <strong>学校规则参考说明</strong>
-            <p>课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。</p>
-          </div>
-        </aside>
       </div>
 
       <div class="room-table-block" id="room-fees">
@@ -939,10 +861,77 @@
         </aside>
 
       </div>
-    </section>
 
-    <ng-container *ngTemplateOutlet="courseVideosSection"></ng-container>
+      <section class="course-detail-guides" aria-labelledby="course-detail-guide-title">
+        <div class="course-detail-guide-heading">
+          <div>
+            <span class="section-eyebrow">IMPORTANT COURSE NOTES</span>
+            <h3 id="course-detail-guide-title">报名前值得确认的课程细节</h3>
+            <p>下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。</p>
+          </div>
+          <mat-icon>tips_and_updates</mat-icon>
+        </div>
 
+        <div class="course-detail-guide-list">
+          <details *ngFor="let guide of courseDetailGuides; let first = first" [open]="first">
+            <summary>
+              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
+              <div>
+                <strong>{{ guide.title }}</strong>
+                <small>{{ guide.subtitle }}</small>
+              </div>
+              <div class="course-detail-toggle" aria-hidden="true">
+                <b class="course-detail-toggle-closed">点击查看详情</b>
+                <b class="course-detail-toggle-open">收起详情</b>
+                <mat-icon class="course-detail-chevron">expand_more</mat-icon>
+              </div>
+            </summary>
+            <div class="course-detail-guide-body">
+              <dl>
+                <div *ngFor="let fact of guide.facts">
+                  <dt>{{ fact.label }}</dt>
+                  <dd>{{ fact.value }}</dd>
+                </div>
+              </dl>
+              <ul>
+                <li *ngFor="let point of guide.points">{{ point }}</li>
+              </ul>
+              <figure *ngIf="guide.image" class="course-detail-evidence">
+                <img [src]="guide.image" [alt]="guide.imageAlt || ''" loading="lazy" />
+                <figcaption>{{ guide.imageCaption }}</figcaption>
+              </figure>
+              <p *ngIf="guide.notice" class="course-detail-notice">
+                <mat-icon>verified_user</mat-icon>{{ guide.notice }}
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+      <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
+        <mat-icon>info</mat-icon>
+        <div>
+          <strong>学校规则参考说明</strong>
+          <p>课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。</p>
+        </div>
+      </aside>
+      </div>
+    </details>
+
+    <details class="cia-section cia-collapsible-section media-disclosure">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>play_circle</mat-icon></span>
+        <span>
+          <strong>观看 CIA 课程视频</strong>
+          <small>一般英语、雅思、托业和商务英语课堂介绍</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <ng-container *ngTemplateOutlet="courseVideosSection"></ng-container>
+      </div>
+    </details>
+
+    <ng-template #quoteSection>
     <section class="quote-results-section" id="quote">
       <div class="quote-form-card">
         <h2><mat-icon>calculate</mat-icon>CIA 费用快速报价</h2>
@@ -978,14 +967,12 @@
           预计入学日期
           <input type="date" [(ngModel)]="selectedStartDate" />
         </label>
-        <div class="tuition-rule-card" [class.tuition-rule-card--new]="uses2027Tuition">
-          <span>{{ appliedTuitionLabel }}</span>
-          <strong>{{ tuitionRuleSummary }}</strong>
-          <small>报价日期用于页面估算，不代表锁价；适用价格仍以学校实际收到报名及确认入学日期为准。</small>
+        <div class="quote-recalculate-row">
+          <button class="primary-action" type="button" (click)="calculateQuote()">
+            <mat-icon>calculate</mat-icon>
+            重新计算
+          </button>
         </div>
-        <button class="primary-action" type="button" (click)="calculateQuote()">
-          重新计算
-        </button>
         <p>
           短期比例：1周40%、2周60%、3周80%；4周以上按4周课程费和住宿费的平均价格，根据周数线性累加；100美元注册费不按比例折算。
         </p>
@@ -1139,22 +1126,23 @@
             [label]="usingLiveExchangeRates ? '保存报价单图片' : '正在获取最新参考汇率...'"
             buttonClass="secondary-action"
           ></app-quote-image-download-button>
-          <app-quote-image-download-button
-            [quote]="quoteImageData"
-            [disabled]="!usingLiveExchangeRates"
-            mode="email"
-            [label]="usingLiveExchangeRates ? '发送到邮箱' : '正在获取最新参考汇率...'"
-            savingLabel="发送中..."
-            icon="mail"
-            buttonClass="secondary-action"
-          ></app-quote-image-download-button>
           <a class="primary-action" routerLink="/about-sida/contact"
             ><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a
           >
       </div>
     </section>
+    </ng-template>
 
-    <section class="refund-policy-section" id="refund-policy" aria-labelledby="refund-policy-title">
+    <details class="refund-policy-section cia-collapsible-section" id="refund-policy" aria-labelledby="refund-policy-title">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>policy</mat-icon></span>
+        <span>
+          <strong>CIA 取消与退款规定</strong>
+          <small>报名前展开确认出发前、到校后与延长课程的退款规则</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
       <div class="refund-policy-heading">
         <div>
           <span class="section-eyebrow">CANCELLATION & REFUND</span>
@@ -1194,140 +1182,8 @@
           <p class="refund-card-footnote">退款金额及适用时间最终以CIA审核和正式账单为准。</p>
         </article>
       </div>
-    </section>
-
-    <section class="cia-section" id="campus-life">
-      <div class="section-heading">
-        <h2>住宿与生活</h2>
       </div>
-      <div class="life-grid">
-        <article *ngFor="let item of lifeCards">
-          <img *ngIf="item.image; else lifeServiceVisual" [src]="item.image" [alt]="item.title" />
-          <span *ngIf="item.image && item.badge" class="life-image-badge">{{ item.badge }}</span>
-          <ng-template #lifeServiceVisual>
-            <div class="life-service-visual" aria-label="CIA洗衣服务信息">
-              <mat-icon>{{ item.icon }}</mat-icon>
-              <strong>{{ item.badge }}</strong>
-              <span>校方洗衣服务</span>
-            </div>
-          </ng-template>
-          <h3>
-            <mat-icon>{{ item.icon }}</mat-icon
-            >{{ item.title }}
-          </h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-
-      <section class="campus-practical-section" aria-labelledby="campus-practical-title">
-        <div class="campus-practical-heading">
-          <div>
-            <span class="section-eyebrow">ARRIVAL &amp; DAILY GUIDE</span>
-            <h3 id="campus-practical-title">到校后实用信息</h3>
-            <p>把容易影响第一周生活的办事、通信、用餐与洗衣信息集中整理，方便学生快速找到重点。</p>
-          </div>
-          <span><mat-icon>bookmark_added</mat-icon>建议到校后保存</span>
-        </div>
-
-        <aside class="campus-practical-reference" aria-label="CIA到校信息更新提醒">
-          <mat-icon>update</mat-icon>
-          <p><strong>信息更新提醒：</strong>办事地点与时间、SIM卡及充值、餐厅供餐、洗衣费用和其他校内规则都可能随学校运营调整。本区内容仅供行前及到校初期参考，实际以CIA到校说明和当期公告为准。</p>
-        </aside>
-
-        <div class="campus-practical-grid">
-          <article *ngFor="let guide of campusPracticalGuides">
-            <header>
-              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
-              <div>
-                <small>{{ guide.eyebrow }}</small>
-                <h4>{{ guide.title }}</h4>
-              </div>
-            </header>
-            <dl>
-              <div *ngFor="let fact of guide.facts">
-                <dt>{{ fact.label }}</dt>
-                <dd>{{ fact.value }}</dd>
-              </div>
-            </dl>
-            <p><mat-icon>info</mat-icon>{{ guide.note }}</p>
-          </article>
-        </div>
-      </section>
-
-      <ng-container *ngTemplateOutlet="calendarPlanningSections"></ng-container>
-
-      <div class="campus-events-section" id="campus-events" aria-labelledby="campus-events-title">
-        <div class="campus-events-heading">
-          <div>
-            <span class="section-eyebrow">MONTHLY EVENTS &amp; ACTIVITIES</span>
-            <h3 id="campus-events-title">2026年 CIA 每月校园活动</h3>
-            <p>从文化节、运动会到国际美食节，月度活动让学生在课堂之外自然使用英语、认识不同国家的同学。</p>
-          </div>
-          <span><mat-icon>celebration</mat-icon>全年12个主题</span>
-        </div>
-
-        <div class="campus-event-grid">
-          <article *ngFor="let event of campusMonthlyEvents2026; let index = index" [style.--event-index]="index">
-            <img
-              [src]="event.image"
-              [alt]="event.imageAlt"
-              [style.object-position]="event.imagePosition || 'center 28%'"
-              loading="lazy"
-            />
-            <span class="campus-event-month">{{ event.month }}月</span>
-            <div class="campus-event-copy">
-              <mat-icon>{{ event.icon }}</mat-icon>
-              <h4>{{ event.title }}</h4>
-              <p>{{ event.text }}</p>
-            </div>
-          </article>
-        </div>
-        <p class="campus-events-note"><mat-icon>campaign</mat-icon>封面选自CIA官方历年活动实景，仅用于帮助理解主题；2026年实际活动主题、举行日期、参加名额与费用以学校当月公告为准。</p>
-      </div>
-    </section>
-
-    <section class="cia-section volunteer-section" id="volunteer-activities">
-      <div class="volunteer-intro">
-        <div>
-          <span class="section-eyebrow">BEYOND THE CLASSROOM</span>
-          <h2>志愿者活动：在真实交流中使用英语</h2>
-          <p>
-            CIA长期组织学生参与社区关怀。活动通常安排在周六，学生在老师带领下为有需要的儿童送去食物，并通过唱歌、舞蹈和游戏交流互动。
-          </p>
-          <span class="volunteer-certificate-note">
-            <mat-icon>workspace_premium</mat-icon>
-            部分活动完成后可提供志愿者活动证明，具体以当月活动安排及主办方实际出具为准。
-          </span>
-        </div>
-        <figure class="volunteer-photo">
-          <img src="assets/cia/activity-volunteer-official.jpg" alt="CIA学生与当地儿童参加志愿者活动的官方合影" loading="lazy" />
-          <figcaption>学校官方志愿者活动照片</figcaption>
-        </figure>
-        <span class="volunteer-frequency"><mat-icon>event</mat-icon>通常每月1次</span>
-      </div>
-
-      <div class="volunteer-journey" aria-label="CIA志愿者活动流程">
-        <article>
-          <span>01</span>
-          <mat-icon>campaign</mat-icon>
-          <h3>查看当月公告</h3>
-          <p>是否举行、报名时间、名额和参加费用以学校当月通知为准。</p>
-        </article>
-        <article>
-          <span>02</span>
-          <mat-icon>diversity_3</mat-icon>
-          <h3>老师带队参加</h3>
-          <p>学校老师组织学生前往社区或合作机构，提前说明活动内容与注意事项。</p>
-        </article>
-        <article>
-          <span>03</span>
-          <mat-icon>volunteer_activism</mat-icon>
-          <h3>参与关怀与互动</h3>
-          <p>通过物资分享、歌曲、舞蹈和游戏与当地儿童交流，认识课堂之外的菲律宾。</p>
-        </article>
-      </div>
-
-    </section>
+    </details>
 
     <section
       class="cia-section student-care-section"
@@ -1449,10 +1305,6 @@
         </article>
       </div>
 
-      <p class="official-review-note">
-        <mat-icon>translate</mat-icon>
-        中文内容根据学生公开分享整理翻译，为便于阅读进行了中文表达优化；图片与内容用于介绍学生体验，个人经历仅代表分享者本人。
-      </p>
     </section>
 
     <section class="cia-section sida-cia-section" id="service-process">
@@ -1511,19 +1363,44 @@
           <strong>{{ item.label }}</strong>
         </article>
       </div>
-    </section>
 
-    <section class="cia-section" id="enrollment-notes">
-      <div class="section-heading">
-        <h2><mat-icon>assignment_turned_in</mat-icon>报名 CIA 前建议确认</h2>
-      </div>
-      <div class="check-grid">
-        <article *ngFor="let item of enrollmentChecks">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
+      <aside class="sida-cia-alumni-benefits" aria-labelledby="cia-alumni-benefits-title">
+        <div class="sida-cia-alumni-heading">
+          <span><mat-icon>workspace_premium</mat-icon></span>
+          <div>
+            <small>学习结束，服务继续</small>
+            <h3 id="cia-alumni-benefits-title">老学员回国后福利</h3>
+            <p>继续学习英语或规划下一阶段升学时，可申请思达老学员专属权益。</p>
+          </div>
+        </div>
+        <div class="sida-cia-alumni-grid">
+          <article>
+            <span>01</span>
+            <mat-icon>record_voice_over</mat-icon>
+            <div>
+              <strong>一对一线上英语</strong>
+              <p>老学员可享线上一对一英语课程专属优惠。</p>
+            </div>
+          </article>
+          <article>
+            <span>02</span>
+            <mat-icon>school</mat-icon>
+            <div>
+              <strong>爱尔兰继续深造</strong>
+              <p>申请爱尔兰留学，可享思达专属奖学金或项目优惠。</p>
+            </div>
+          </article>
+          <article>
+            <span>03</span>
+            <mat-icon>public</mat-icon>
+            <div>
+              <strong>欧美国家英语进修</strong>
+              <p>继续到欧美国家学习英语，部分合作学校可免注册费或享专属优惠。</p>
+            </div>
+          </article>
+        </div>
+        <small class="sida-cia-alumni-note">具体奖学金、减免范围和适用条件，以申请时合作学校及思达启航确认的当期政策为准。</small>
+      </aside>
     </section>
 
     <section class="faq-section" id="faq">
