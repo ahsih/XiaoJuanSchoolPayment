@@ -907,6 +907,28 @@ app-cia-school .course-detail-guide-body ul {
   line-height: 1.65;
 }
 
+app-cia-school .course-detail-evidence {
+  width: min(100%, 460px);
+  margin: 15px 0 0;
+  overflow: hidden;
+  border: 1px solid #d9e6e0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+app-cia-school .course-detail-evidence img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+app-cia-school .course-detail-evidence figcaption {
+  padding: 9px 11px;
+  color: #6a7972;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
 app-cia-school .course-detail-notice {
   display: flex;
   gap: 7px;
@@ -1981,6 +2003,39 @@ app-cia-school .campus-practical-heading > span mat-icon {
   font-size: 17px;
 }
 
+app-cia-school .campus-practical-reference {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+  margin: 16px 0 0;
+  padding: 13px 14px;
+  border: 1px solid #f0d4bf;
+  border-radius: 11px;
+  background: #fff8f2;
+  color: #76523e;
+}
+
+app-cia-school .campus-practical-reference mat-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: #ffe8d7;
+  color: #d96328;
+}
+
+app-cia-school .campus-practical-reference p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+app-cia-school .campus-practical-reference strong {
+  color: #8a4827;
+}
+
 app-cia-school .campus-practical-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2099,7 +2154,7 @@ app-cia-school .campus-practical-grid article > p mat-icon {
   }
 }
 
-/* 2026房型资料：价格之后的实景与差异说明 */
+/* 2026房型资料：住宿实景之后的房型差异说明 */
 app-cia-school .room-comparison-section {
   scroll-margin-top: 150px;
   margin-top: 24px;

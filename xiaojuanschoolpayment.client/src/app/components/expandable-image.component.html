@@ -17,6 +17,10 @@
   <span class="expandable-image__zoom" aria-hidden="true">
     <mat-icon>zoom_in</mat-icon>
   </span>
+  <span *ngIf="hasMultipleImages" class="expandable-image__count" aria-hidden="true">
+    <mat-icon>collections</mat-icon>
+    {{ imageSources.length }}张
+  </span>
 </button>
 
 <div
@@ -31,11 +35,42 @@
     <mat-icon>close</mat-icon>
   </button>
 
-  <figure class="expandable-image__figure" (click)="stopClose($event)">
-    <img [src]="src" [alt]="alt || title" />
-    <figcaption *ngIf="title || caption">
-      <strong *ngIf="title">{{ title }}</strong>
-      <span *ngIf="caption">{{ caption }}</span>
-    </figcaption>
-  </figure>
+  <div class="expandable-image__viewer" (click)="stopClose($event)">
+    <button
+      *ngIf="hasMultipleImages"
+      type="button"
+      class="expandable-image__nav expandable-image__nav--previous"
+      [attr.aria-label]="'查看上一张：' + (title || alt || '图片')"
+      (click)="previous($event)"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <figure
+      class="expandable-image__figure"
+      (touchstart)="startTouch($event)"
+      (touchend)="endTouch($event)"
+    >
+      <img [src]="activeSrc" [alt]="(alt || title) + (hasMultipleImages ? ' ' + (activeIndex + 1) : '')" />
+      <figcaption *ngIf="title || caption || hasMultipleImages">
+        <div>
+          <strong *ngIf="title">{{ title }}</strong>
+          <span *ngIf="caption">{{ caption }}</span>
+        </div>
+        <span *ngIf="hasMultipleImages" class="expandable-image__counter">
+          {{ activeIndex + 1 }} / {{ imageSources.length }}
+        </span>
+      </figcaption>
+    </figure>
+
+    <button
+      *ngIf="hasMultipleImages"
+      type="button"
+      class="expandable-image__nav expandable-image__nav--next"
+      [attr.aria-label]="'查看下一张：' + (title || alt || '图片')"
+      (click)="next($event)"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
 </div>

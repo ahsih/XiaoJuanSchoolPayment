@@ -36,8 +36,26 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  gallery?: readonly string[];
   details?: string[];
 }
+
+const buildCiaRoomGallery = (folder: string, count: number): string[] =>
+  Array.from(
+    { length: count },
+    (_, index) =>
+      `/assets/cia/rooms-2026/gallery/${folder}/${folder}-${String(index + 1).padStart(2, '0')}.jpg?v=20260901`,
+  );
+
+const ciaRoomGalleries = {
+  premium: buildCiaRoomGallery('premium', 6),
+  pinnacle: buildCiaRoomGallery('pinnacle', 8),
+  standard: buildCiaRoomGallery('standard', 6),
+  twin: buildCiaRoomGallery('twin', 6),
+  triple: buildCiaRoomGallery('triple', 6),
+  quad: buildCiaRoomGallery('quad', 6),
+  suite: buildCiaRoomGallery('suite', 6),
+};
 
 interface BasicInfoRow {
   label: string;
@@ -159,6 +177,9 @@ interface CourseDetailGuide {
   subtitle: string;
   facts: Array<{ label: string; value: string }>;
   points: string[];
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
   notice?: string;
 }
 
@@ -396,10 +417,10 @@ export class CiaSchoolComponent implements OnInit {
       note: '4周为一个学习单元，通过快速问答、即时纠错和系统复习训练英语反应速度。',
     },
     'college-immersion': {
-      suitable: 'IAU航空大学旁听与校园沉浸体验',
+      suitable: '想参加IAU航空大学体验，报名时应选择此课程',
       schedule:
         'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '想参加IAU大学体验需选择此课程；4周为一个学习单元，另收IAU一次性注册费USD 50。',
+      note: '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费USD 50，详细旁听与证书说明见下方课程细节。',
     },
   };
 
@@ -412,6 +433,7 @@ export class CiaSchoolComponent implements OnInit {
     '设施',
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
+  selectedHeroImageIndex = 0;
   usingUploadedGallery = false;
 
   registrationFee = 100;
@@ -552,35 +574,40 @@ export class CiaSchoolComponent implements OnInit {
       category: '住宿',
       title: '豪华单人间 P-1',
       description: '校内大尺寸单人床房型，配有独立学习位置和简易料理区。',
-      src: '/assets/cia/rooms-2026/premium-single-room.jpg?v=20260901',
+      src: ciaRoomGalleries.premium[0],
+      gallery: ciaRoomGalleries.premium,
       details: ['约21.85㎡，泳池景观参考', '电磁炉、洗手池及迷你冰箱'],
     },
     {
       category: '住宿',
       title: '校外单人间 PN-1',
       description: '位于学校对面的校外住宿楼，适合重视独立空间及智能设备的学生。',
-      src: '/assets/cia/rooms-2026/pinnacle-single-room.jpg?v=20260901',
+      src: ciaRoomGalleries.pinnacle[0],
+      gallery: ciaRoomGalleries.pinnacle,
       details: ['约15.5至16㎡，城市景观参考', '具体普通房或小复式布局须确认'],
     },
     {
       category: '住宿',
       title: '标准单人间 S-1',
       description: '校内紧凑型单人间，适合希望专注学习并保留个人空间的学生。',
-      src: '/assets/cia/rooms-2026/standard-single-room.jpg?v=20260901',
+      src: ciaRoomGalleries.standard[0],
+      gallery: ciaRoomGalleries.standard,
       details: ['约14.3㎡，泳池景观参考', '独立书桌、书架与迷你冰箱'],
     },
     {
       category: '住宿',
       title: '双人间 D-2',
       description: '适合朋友同行，或希望有室友交流又保留一定生活空间的学生。',
-      src: '/assets/cia/rooms-2026/twin-room.jpg?v=20260901',
+      src: ciaRoomGalleries.twin[0],
+      gallery: ciaRoomGalleries.twin,
       details: ['约24.84㎡，两张较宽单人床', '卫浴可能为干湿分区或一体式'],
     },
     {
       category: '住宿',
       title: '三人间 D-3',
       description: '适合希望控制预算，同时多和不同国籍室友练习英语的学生。',
-      src: '/assets/cia/rooms-2026/triple-room.jpg?v=20260901',
+      src: ciaRoomGalleries.triple[0],
+      gallery: ciaRoomGalleries.triple,
       details: ['约31.05㎡，每人独立学习位', '卫生间与淋浴间分开'],
     },
     {
@@ -588,14 +615,16 @@ export class CiaSchoolComponent implements OnInit {
       title: '四人间 D-4',
       description:
         '预算压力相对低，适合愿意和多位室友共同生活、增加英语使用机会的学生。',
-      src: '/assets/cia/rooms-2026/quad-room.jpg?v=20260901',
+      src: ciaRoomGalleries.quad[0],
+      gallery: ciaRoomGalleries.quad,
       details: ['约31.8㎡，普通多人间中面积最大', '卫生间与淋浴间分开'],
     },
     {
       category: '住宿',
       title: '家庭精致套房 SR',
       description: '同一套房体系按实际入住人数对应SR-1至SR-4，适合亲子和家庭。',
-      src: '/assets/cia/rooms-2026/suite-room.jpg?v=20260901',
+      src: ciaRoomGalleries.suite[0],
+      gallery: ciaRoomGalleries.suite,
       details: ['约31.18㎡，海景参考', '大冰箱、电视、微波炉及料理区'],
     },
     {
@@ -1024,18 +1053,18 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   readonly campusMonthlyEvents2026: CampusMonthlyEvent[] = [
-    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA菲律宾文化主题活动' },
-    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园主题舞台活动' },
-    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/activity-golden-bell-official.jpg', imageAlt: 'CIA金铃挑战赛现场' },
-    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/activity-aqua-zumba-official.jpg', imageAlt: 'CIA校园水上活动' },
-    { month: 5, icon: 'sports_basketball', title: 'CIA运动会', text: '以团队项目和体育竞赛增进交流。', image: 'assets/cia/activity-sportsfest-official.jpg', imageAlt: 'CIA运动会篮球比赛' },
-    { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA开放舞台活动' },
-    { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA学生舞台表演' },
-    { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA校园风采主题活动' },
-    { month: 9, icon: 'diversity_3', title: '世界文化舞蹈', text: '用舞蹈认识不同国家与文化。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA国际文化舞蹈活动' },
-    { month: 10, icon: 'celebration', title: '万圣节派对与员工日', text: '节日装扮、互动游戏与校园庆祝。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园节日派对' },
-    { month: 11, icon: 'public', title: 'CIA国际文化日', text: '各国学生参与文化展示与美食节。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA国际文化主题活动' },
-    { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园年末舞台活动' },
+    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.jpg', imageAlt: 'CIA菲律宾文化节传统服饰表演' },
+    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/events-2026/02-valentine-fruit-party.jpg', imageAlt: 'CIA情人节特别活动现场互动' },
+    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/events-2026/03-golden-bell.jpg', imageAlt: 'CIA金铃挑战赛参赛学生' },
+    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/events-2026/04-summer-splash.jpg', imageAlt: 'CIA夏日泡沫派对合影' },
+    { month: 5, icon: 'sports_basketball', title: 'CIA运动会', text: '以团队项目和体育竞赛增进交流。', image: 'assets/cia/events-2026/05-sportsfest.jpg', imageAlt: 'CIA运动会团队助威现场' },
+    { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/events-2026/06-open-mic.jpg', imageAlt: 'CIA开放麦克风比赛现场' },
+    { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/events-2026/07-got-talent.jpg', imageAlt: 'CIA达人秀学生舞台表演' },
+    { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/events-2026/08-mr-ms-cia.jpg', imageAlt: 'Mr. and Ms. CIA校园风采活动合影' },
+    { month: 9, icon: 'diversity_3', title: '世界文化舞蹈', text: '用舞蹈认识不同国家与文化。', image: 'assets/cia/events-2026/09-dances-around-world.jpg', imageAlt: 'CIA世界文化舞蹈表演' },
+    { month: 10, icon: 'celebration', title: '万圣节派对与员工日', text: '节日装扮、互动游戏与校园庆祝。', image: 'assets/cia/events-2026/10-halloween.jpg', imageAlt: 'CIA万圣节服装活动舞台现场' },
+    { month: 11, icon: 'public', title: 'CIA国际文化日', text: '各国学生参与文化展示与美食节。', image: 'assets/cia/events-2026/11-national-day.jpg', imageAlt: 'CIA国际文化日学生展示现场' },
+    { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/events-2026/12-white-christmas.jpg', imageAlt: 'CIA白色圣诞主题舞台活动' },
   ];
 
   readonly courseDetailGuides: CourseDetailGuide[] = [
@@ -1137,11 +1166,15 @@ export class CiaSchoolComponent implements OnInit {
         { label: '预约时间', value: '建议至少提前4周确认方向、课表与名额' },
       ],
       points: [
+        'College Immersion是独立的CIA课程安排，不是报名Regular ESL后临时增加的一节选修课；报名时应明确备注“IAU大学沉浸”。',
         'CIA日常英语课程包括ESL一对一4节、小组1节、中组1节、大组1节、选修1节、写作1节与自习2节。',
         'IAU旁听通常分为2次、每次3小时，每次可能旁听1–3门课；CIA负责协调日期、课表和往返交通。',
         '可申请航空航天工程、飞机维修、航空公司管理、飞行方向航空技术、航空电子、旅游管理、酒店管理及教育等方向，实际以IAU当期课表为准。',
         '常规4周旁听完成后对应观察与参与类证明；如目标是60小时完成证明或大学学分，必须在报名时单独提出并确认，不可默认包含。',
       ],
+      image: 'assets/cia/iau-immersion-certificate-sample.png',
+      imageAlt: 'IAU六十小时沉浸项目完成证书样式',
+      imageCaption: 'IAU 60小时完成证书样式仅作类型说明；常规4周旁听不等同于默认获得该证书。',
       notice: '旁听科目、开课日期、名额、证书类型及学分认可均可能调整；最终以CIA与IAU书面确认，以及学生原就读院校的学分认定结果为准。',
     },
     {
@@ -2474,6 +2507,11 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
+  selectHeroGalleryImage(index: number): void {
+    const lastIndex = Math.max(this.heroGalleryPreviewImages.length - 1, 0);
+    this.selectedHeroImageIndex = Math.min(Math.max(index, 0), lastIndex);
+  }
+
   get displayedGalleryImages(): GalleryImage[] {
     if (this.selectedGalleryCategory !== this.galleryCategories[0]) {
       return this.filteredGalleryImages;
@@ -2504,6 +2542,27 @@ export class CiaSchoolComponent implements OnInit {
         this.featuredGalleryCategories.includes(image.category),
       )
       .slice(0, 4);
+  }
+
+  get selectedHeroGalleryImage(): GalleryImage {
+    return (
+      this.heroGalleryPreviewImages[this.selectedHeroImageIndex] ??
+      this.heroGalleryPreviewImages[0] ??
+      this.galleryImages[0]
+    );
+  }
+
+  get selectedHeroGallerySources(): string[] {
+    const images = this.heroGalleryPreviewImages;
+    const selected = images[this.selectedHeroImageIndex] ?? images[0];
+
+    if (!selected) {
+      return [];
+    }
+
+    return [selected, ...images.filter((image) => image !== selected)].map(
+      (image) => image.src,
+    );
   }
 
   get selectedCourse(): CourseFee {

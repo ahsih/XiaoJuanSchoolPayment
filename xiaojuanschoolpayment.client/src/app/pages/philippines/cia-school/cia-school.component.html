@@ -49,10 +49,47 @@
       </div>
 
       <div class="hero-media" aria-label="CIA 校园图片">
-        <div class="hero-collage">
+        <div class="hero-collage hero-collage--desktop">
           <figure *ngFor="let image of heroGalleryPreviewImages.slice(0, 4)">
             <img [src]="image.src" [alt]="image.title" />
           </figure>
+        </div>
+
+        <div class="hero-gallery-mobile" aria-label="CIA 校园图片浏览">
+          <div class="hero-gallery-mobile-stage">
+            <app-expandable-image
+              [src]="selectedHeroGalleryImage.src"
+              [images]="selectedHeroGallerySources"
+              [alt]="selectedHeroGalleryImage.title"
+              [title]="selectedHeroGalleryImage.title"
+              [caption]="selectedHeroGalleryImage.description"
+              loading="eager"
+              previewHeight="clamp(250px, 68vw, 360px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <div class="hero-gallery-mobile-caption">
+              <span>{{ selectedHeroGalleryImage.category }}</span>
+              <div>
+                <strong>{{ selectedHeroGalleryImage.title }}</strong>
+                <small><mat-icon>zoom_in</mat-icon>点击主图可放大并前后浏览</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-gallery-mobile-thumbs" role="tablist" aria-label="切换CIA校园图片">
+            <button
+              type="button"
+              role="tab"
+              *ngFor="let image of heroGalleryPreviewImages.slice(0, 4); let imageIndex = index"
+              [class.active]="selectedHeroImageIndex === imageIndex"
+              [attr.aria-selected]="selectedHeroImageIndex === imageIndex"
+              [attr.aria-label]="'查看' + image.title"
+              (click)="selectHeroGalleryImage(imageIndex)"
+            >
+              <img [src]="image.src" [alt]="image.title + '缩略图'" loading="eager" />
+              <span>{{ image.title }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -203,7 +240,7 @@
     <section class="cia-section" id="gallery">
       <div class="section-heading">
         <h2>按区域查看 CIA 环境</h2>
-        <p>先看校园整体，再按教室、住宿、餐厅和设施筛选；点击任意图片可放大查看。</p>
+        <p>先看校园整体，再按教室、住宿、餐厅和设施筛选；房型卡片包含多角度实景，点击可放大并前后浏览。</p>
       </div>
       <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
         <button
@@ -215,13 +252,14 @@
           {{ category }}
         </button>
       </div>
-      <div class="environment-grid">
+      <div class="environment-grid" #gallerySlider>
         <figure *ngFor="let image of displayedGalleryImages">
           <app-expandable-image
             [src]="image.src"
             [alt]="image.title"
             [title]="image.title"
             [caption]="image.description"
+            [images]="image.gallery || []"
             [loading]="image.category === '住宿' ? 'eager' : 'lazy'"
             previewHeight="260px"
           ></app-expandable-image>
@@ -232,6 +270,127 @@
           </figcaption>
         </figure>
       </div>
+    </section>
+
+    <section class="room-comparison-section" id="room-comparison" aria-labelledby="room-comparison-title">
+      <div class="room-comparison-heading">
+        <div>
+          <span>ROOM GUIDE · 房型选择</span>
+          <h3 id="room-comparison-title">CIA房型实景与差异</h3>
+          <p>看完上方各房型的多角度实景，再在这里核对空间、床型、服务频率和关键设备；点击房型即可切换详细说明。</p>
+        </div>
+        <span class="room-comparison-source"><mat-icon>verified</mat-icon>学校2026房型资料</span>
+      </div>
+
+      <aside class="room-common-features" aria-label="CIA房型共通配置">
+        <mat-icon>check_circle</mat-icon>
+        <div>
+          <strong>各房型共通基础配置</strong>
+          <p>空调、遮光帘、书桌椅、书架、衣柜与衣架、独立卫浴热水、吹风机、冰箱及洗衣篮；具体品牌和摆放位置可能不同。</p>
+        </div>
+      </aside>
+
+      <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
+        <button
+          type="button"
+          role="tab"
+          *ngFor="let profile of roomComparisonProfiles"
+          [class.active]="selectedRoomProfileId === profile.id"
+          [attr.aria-selected]="selectedRoomProfileId === profile.id"
+          [attr.aria-controls]="'room-panel-' + profile.id"
+          (click)="setRoomProfile(profile.id)"
+        >
+          <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
+          <span>
+            <strong>{{ profile.label }}</strong>
+            <small>{{ profile.bookingCode }} · {{ profile.location }}</small>
+          </span>
+        </button>
+      </div>
+
+      <article
+        class="room-profile-panel"
+        role="tabpanel"
+        [id]="'room-panel-' + selectedRoomProfile.id"
+        aria-live="polite"
+      >
+        <div class="room-profile-photo">
+          <app-expandable-image
+            [src]="selectedRoomProfile.image"
+            [alt]="selectedRoomProfile.imageAlt"
+            [title]="selectedRoomProfile.label + '实景'"
+            [caption]="selectedRoomProfile.note"
+            previewHeight="clamp(250px, 30vw, 390px)"
+            previewFit="cover"
+          ></app-expandable-image>
+          <span><mat-icon>zoom_in</mat-icon>点击查看大图</span>
+        </div>
+
+        <div class="room-profile-copy">
+          <header>
+            <div>
+              <span>{{ selectedRoomProfile.englishName }}</span>
+              <h4>{{ selectedRoomProfile.label }}</h4>
+            </div>
+            <div class="room-profile-badges">
+              <b>{{ selectedRoomProfile.bookingCode }}</b>
+              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+            </div>
+          </header>
+
+          <dl class="room-profile-facts">
+            <div><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
+            <div><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
+            <div><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
+            <div><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
+          </dl>
+
+          <div class="room-profile-suitable">
+            <mat-icon>person_search</mat-icon>
+            <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
+          </div>
+
+          <ul class="room-profile-highlights">
+            <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
+          </ul>
+
+          <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
+        </div>
+      </article>
+
+      <div class="room-comparison-table-wrap">
+        <div class="room-comparison-table-heading">
+          <strong>7类房型快速对比</strong>
+          <span>手机可左右滑动查看完整信息</span>
+        </div>
+        <table class="room-comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">房型</th>
+              <th scope="col">报价对应</th>
+              <th scope="col">参考面积</th>
+              <th scope="col">可能景观</th>
+              <th scope="col">床尺寸</th>
+              <th scope="col">洗衣 / 清洁</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let profile of roomComparisonProfiles">
+              <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
+              <td><b>{{ profile.bookingCode }}</b></td>
+              <td>{{ profile.size }}</td>
+              <td>{{ profile.view }}</td>
+              <td>{{ profile.bed }}</td>
+              <td>{{ profile.service }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="room-comparison-disclaimer">
+        <mat-icon>tips_and_updates</mat-icon>
+        图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。
+      </p>
     </section>
 
     <section class="cia-section" id="courses">
@@ -279,20 +438,6 @@
           </div>
         </article>
       </div>
-
-      <a
-        class="iau-course-jump"
-        href="#iau-immersion-guide"
-        (click)="scrollToSection('iau-immersion-guide', $event)"
-      >
-        <mat-icon>flight_takeoff</mat-icon>
-        <div>
-          <span>IAU IMMERSION</span>
-          <strong>想去IAU航空大学旁听？对应报名课程是 College Immersion</strong>
-          <small>查看英语课安排、每4周旁听时数、USD 50注册费，以及普通旁听证明与60小时完成证明的区别。</small>
-        </div>
-        <span>查看对应安排<mat-icon>arrow_forward</mat-icon></span>
-      </a>
 
       <section class="daily-schedule-section" aria-labelledby="daily-schedule-title">
         <div class="daily-schedule-heading">
@@ -348,7 +493,7 @@
           <div>
             <span class="section-eyebrow">ACADEMIC CALENDAR</span>
             <h3 id="school-calendar-title">CIA 2026–2027年学校假期</h3>
-            <p>安排入学日期和学习周数时，应同时避开学校假期；是否停课或调整课程，以CIA当期正式通知为准。</p>
+            <p>本表可用于初步规划入学日期与学习周数，但仅供参考。菲律宾国家或地方政府可能临时公布、新增或调整假期，CIA也可能相应调整停课、补课与校园安排，最终以政府公告及CIA当期正式通知为准。</p>
           </div>
           <span class="calendar-priority"><mat-icon>event_available</mat-icon>2027年优先展示</span>
         </div>
@@ -384,7 +529,7 @@
 
         <p class="calendar-footnote">
           <mat-icon>info</mat-icon>
-          开斋节与宰牲节日期会根据伊斯兰历及天文观测另行公布，页面所列日期仅按学校年度资料展示。
+          页面根据CIA已发布的年度资料整理；除开斋节、宰牲节等日期需按宗教历法确认外，菲律宾政府也可能临时宣布全国或地方特别假期，请勿将本表视为最终停课日历。
         </p>
       </section>
 
@@ -555,103 +700,6 @@
           </div>
         </div>
 
-        <section
-          class="iau-immersion-guide"
-          id="iau-immersion-guide"
-          aria-labelledby="iau-immersion-guide-title"
-        >
-          <div class="iau-immersion-heading">
-            <div>
-              <span class="section-eyebrow">WHICH COURSE TO BOOK</span>
-              <h3 id="iau-immersion-guide-title">
-                想参加 IAU 航空大学体验？请选择
-                <em>College Immersion</em>
-              </h3>
-              <p>
-                这是一门独立的CIA课程安排，不是报名Regular ESL后临时增加的一节选修课。报名时应明确备注“IAU大学沉浸”，让顾问提前确认专业方向、大学课表和名额。
-              </p>
-            </div>
-            <span class="iau-course-match-badge"
-              ><mat-icon>check_circle</mat-icon>价格表对应课程</span
-            >
-          </div>
-
-          <div class="iau-booking-flow" aria-label="IAU大学沉浸课程报名和上课安排">
-            <article class="iau-booking-card iau-booking-card--course">
-              <span>报名时选择</span>
-              <mat-icon>account_balance</mat-icon>
-              <h4>College Immersion<br />（IAU大学沉浸）</h4>
-              <p>4周为一个学习单位；课程费按上方入学年份价格表计算，另收IAU一次性注册费USD 50。</p>
-            </article>
-
-            <mat-icon class="iau-booking-arrow">arrow_forward</mat-icon>
-
-            <article class="iau-booking-card">
-              <span>在CIA学习英语</span>
-              <mat-icon>menu_book</mat-icon>
-              <h4>每日完整英语课程</h4>
-              <p>一对一4节，并搭配小组、中组、大组、选修、写作和自习，不会因为旁听大学课程而只剩少量英语课。</p>
-            </article>
-
-            <mat-icon class="iau-booking-arrow">arrow_forward</mat-icon>
-
-            <article class="iau-booking-card">
-              <span>到IAU旁听</span>
-              <mat-icon>flight_takeoff</mat-icon>
-              <h4>每4周至少6小时</h4>
-              <p>通常安排2次、每次3小时，每次旁听1–3门课；CIA协调课表并提供IAU往返交通。</p>
-            </article>
-          </div>
-
-          <div class="iau-program-details">
-            <div class="iau-study-directions">
-              <h4><mat-icon>explore</mat-icon>可申请哪些方向？</h4>
-              <p>学生需在出发前提出希望旁听的方向，实际科目以IAU当期学期课表和可接收名额为准。</p>
-              <div>
-                <span>航空航天工程</span>
-                <span>飞机维修技术</span>
-                <span>航空公司管理</span>
-                <span>飞行方向航空技术</span>
-                <span>航空电子学</span>
-                <span>旅游管理</span>
-                <span>酒店管理</span>
-                <span>中小学教育</span>
-              </div>
-            </div>
-
-            <div class="iau-certificate-explainer">
-              <figure>
-                <img
-                  src="assets/cia/iau-immersion-certificate-sample.png"
-                  alt="IAU六十小时沉浸项目完成证书样式"
-                  loading="lazy"
-                />
-                <figcaption>所提供的IAU 60小时完成证书样式</figcaption>
-              </figure>
-              <div>
-                <span class="section-eyebrow">CERTIFICATE OPTIONS</span>
-                <h4>证书分两种理解，报名时必须说清楚</h4>
-                <article>
-                  <strong>常规4周旁听路线</strong>
-                  <p>每4周完成至少6小时IAU旁听，对应学校资料所述的观察与参与类证明。</p>
-                </article>
-                <article>
-                  <strong>60小时完成证明或大学学分路线</strong>
-                  <p>不能默认包含在普通4周旁听中。若学生需要图示60小时证明、完整选课或学分转移，应在报名时单独提出，由CIA与IAU确认课时、选科和证书类型；学分是否获认可还需学生原就读院校批准。</p>
-                </article>
-              </div>
-            </div>
-          </div>
-
-          <aside class="iau-program-notice">
-            <mat-icon>info</mat-icon>
-            <p>
-              <strong>建议至少提前4周确认。</strong>
-              IAU课程会受大学学期、课表、名额及专业开放情况影响；以上费用、旁听时数、交通、证书和学分说明仅供报名判断，最终以CIA、IAU及学生原就读院校的书面确认为准。
-            </p>
-          </aside>
-        </section>
-
         <aside class="class-size-note" aria-label="CIA团体课人数说明">
           <mat-icon>groups</mat-icon>
           <div>
@@ -692,6 +740,10 @@
                 <ul>
                   <li *ngFor="let point of guide.points">{{ point }}</li>
                 </ul>
+                <figure *ngIf="guide.image" class="course-detail-evidence">
+                  <img [src]="guide.image" [alt]="guide.imageAlt || ''" loading="lazy" />
+                  <figcaption>{{ guide.imageCaption }}</figcaption>
+                </figure>
                 <p *ngIf="guide.notice" class="course-detail-notice">
                   <mat-icon>verified_user</mat-icon>{{ guide.notice }}
                 </p>
@@ -774,126 +826,6 @@
           </div>
         </aside>
 
-        <section class="room-comparison-section" id="room-comparison" aria-labelledby="room-comparison-title">
-          <div class="room-comparison-heading">
-            <div>
-              <span>ROOM GUIDE · 房型选择</span>
-              <h3 id="room-comparison-title">CIA房型实景与差异</h3>
-              <p>先按上方价格筛选预算，再在这里核对空间、床型、服务频率和关键设备；点击房型即可切换实景与说明。</p>
-            </div>
-            <span class="room-comparison-source"><mat-icon>verified</mat-icon>学校2026房型资料</span>
-          </div>
-
-          <aside class="room-common-features" aria-label="CIA房型共通配置">
-            <mat-icon>check_circle</mat-icon>
-            <div>
-              <strong>各房型共通基础配置</strong>
-              <p>空调、遮光帘、书桌椅、书架、衣柜与衣架、独立卫浴热水、吹风机、冰箱及洗衣篮；具体品牌和摆放位置可能不同。</p>
-            </div>
-          </aside>
-
-          <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
-            <button
-              type="button"
-              role="tab"
-              *ngFor="let profile of roomComparisonProfiles"
-              [class.active]="selectedRoomProfileId === profile.id"
-              [attr.aria-selected]="selectedRoomProfileId === profile.id"
-              [attr.aria-controls]="'room-panel-' + profile.id"
-              (click)="setRoomProfile(profile.id)"
-            >
-              <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
-              <span>
-                <strong>{{ profile.label }}</strong>
-                <small>{{ profile.bookingCode }} · {{ profile.location }}</small>
-              </span>
-            </button>
-          </div>
-
-          <article
-            class="room-profile-panel"
-            role="tabpanel"
-            [id]="'room-panel-' + selectedRoomProfile.id"
-            aria-live="polite"
-          >
-            <div class="room-profile-photo">
-              <app-expandable-image
-                [src]="selectedRoomProfile.image"
-                [alt]="selectedRoomProfile.imageAlt"
-                [title]="selectedRoomProfile.label + '实景'"
-                [caption]="selectedRoomProfile.note"
-                previewHeight="clamp(250px, 30vw, 390px)"
-                previewFit="cover"
-              ></app-expandable-image>
-              <span><mat-icon>zoom_in</mat-icon>点击查看大图</span>
-            </div>
-
-            <div class="room-profile-copy">
-              <header>
-                <div>
-                  <span>{{ selectedRoomProfile.englishName }}</span>
-                  <h4>{{ selectedRoomProfile.label }}</h4>
-                </div>
-                <div class="room-profile-badges">
-                  <b>{{ selectedRoomProfile.bookingCode }}</b>
-                  <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
-                </div>
-              </header>
-
-              <dl class="room-profile-facts">
-                <div><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
-                <div><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
-                <div><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
-                <div><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
-              </dl>
-
-              <div class="room-profile-suitable">
-                <mat-icon>person_search</mat-icon>
-                <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
-              </div>
-
-              <ul class="room-profile-highlights">
-                <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
-              </ul>
-
-              <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
-            </div>
-          </article>
-
-          <div class="room-comparison-table-wrap">
-            <div class="room-comparison-table-heading">
-              <strong>7类房型快速对比</strong>
-              <span>手机可左右滑动查看完整信息</span>
-            </div>
-            <table class="room-comparison-table">
-              <thead>
-                <tr>
-                  <th scope="col">房型</th>
-                  <th scope="col">报价对应</th>
-                  <th scope="col">参考面积</th>
-                  <th scope="col">可能景观</th>
-                  <th scope="col">床尺寸</th>
-                  <th scope="col">洗衣 / 清洁</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let profile of roomComparisonProfiles">
-                  <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
-                  <td><b>{{ profile.bookingCode }}</b></td>
-                  <td>{{ profile.size }}</td>
-                  <td>{{ profile.view }}</td>
-                  <td>{{ profile.bed }}</td>
-                  <td>{{ profile.service }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="room-comparison-disclaimer">
-            <mat-icon>tips_and_updates</mat-icon>
-            图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。
-          </p>
-        </section>
       </div>
     </section>
 
@@ -1185,6 +1117,11 @@
           <span><mat-icon>bookmark_added</mat-icon>建议到校后保存</span>
         </div>
 
+        <aside class="campus-practical-reference" aria-label="CIA到校信息更新提醒">
+          <mat-icon>update</mat-icon>
+          <p><strong>信息更新提醒：</strong>办事地点与时间、SIM卡及充值、餐厅供餐、洗衣费用和其他校内规则都可能随学校运营调整。本区内容仅供行前及到校初期参考，实际以CIA到校说明和当期公告为准。</p>
+        </aside>
+
         <div class="campus-practical-grid">
           <article *ngFor="let guide of campusPracticalGuides">
             <header>
@@ -1228,7 +1165,7 @@
             </div>
           </article>
         </div>
-        <p class="campus-events-note"><mat-icon>campaign</mat-icon>活动主题、举行日期、参加名额与费用以学校当月公告为准。</p>
+        <p class="campus-events-note"><mat-icon>campaign</mat-icon>封面选自CIA官方历年活动实景，仅用于帮助理解主题；2026年实际活动主题、举行日期、参加名额与费用以学校当月公告为准。</p>
       </div>
     </section>
 
