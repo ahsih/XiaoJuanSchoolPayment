@@ -7,6 +7,7 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
@@ -20,7 +21,7 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -43,6 +44,7 @@ interface SidaPinesTrustBadge { icon: string; label: string; }
 })
 export class PinesSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'PINES';
   private readonly pricingSchoolNames = ['菲律宾碧瑶PINES语言学校', 'PINES International Academy'];
   private readonly courseFeeOrder = [
@@ -58,23 +60,34 @@ export class PinesSchoolDetailComponent implements OnInit {
     'junior-family-course',
     'pre-ielts',
     'ielts-regular',
-    'ielts-speaking-and-writing-intensive',
-    'ielts-guarantee-8-weeks',
-    'ielts-guarantee-12-weeks',
+    'ielts-intensive',
+    'ielts-guarantee-8-weeks-5-5-6-0',
+    'ielts-guarantee-8-weeks-6-5-7-0',
+    'ielts-guarantee-12-weeks-5-5-6-0',
+    'ielts-guarantee-12-weeks-6-5-7-0',
   ];
-  private readonly roomFeeOrder = ['sextuple', '5b-solo', 'quad', 'twin-b', 'twin-a', 'single-c', 'single-b', 'single-a'];
+  private readonly roomFeeOrder = [
+    'main-sextuple', 'main-5b-solo', 'main-quad', 'main-twin-b', 'main-twin-a', 'main-single-c', 'main-single-b', 'main-single-a',
+    'ielts-quad', 'ielts-triple', 'ielts-twin', 'ielts-single-b', 'ielts-single-a',
+  ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 130;
-  readonly discount = 1;
+  registrationFee = 100;
+  readonly registrationDiscount = 100;
+  readonly sidaDiscountRate = 0.95;
+  readonly offSeasonDiscountPerFourWeeks = 150;
+  readonly longStayDiscount = 100;
   seasonalFeePerWeek = 40;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 24];
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
+  readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'light-esl-4';
-  selectedRoomId = 'sextuple';
+  selectedRoomId = 'main-sextuple';
   selectedWeeks = 4;
-  selectedStartDate = '2026-08-23';
+  selectedStartDate = '2026-09-06';
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -143,30 +156,39 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    { id: 'light-esl-4', name: 'Light ESL 4', tuition: 850, suitable: '轻量一对一ESL，适合预算优先和基础提升' },
-    { id: 'power-speaking', name: 'Power Speaking', tuition: 930, suitable: '口语强化，适合开口量和表达训练' },
-    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1020, suitable: '5节一对一，短期强化更合适' },
-    { id: 'power-esl-5', name: 'Power ESL 5', tuition: 980, suitable: '一对一比例更高，适合目标明确学生' },
-    { id: 'power-esl-7', name: 'Power ESL 7', tuition: 1220, suitable: '高强度一对一，适合集中突破' },
-    { id: 'toeic-toeic-speaking', name: 'TOEIC / TOEIC Speaking', tuition: 980, suitable: '多益方向，适合求职或升学需求' },
-    { id: 'parents-course', name: 'Parents Course', tuition: 750, suitable: '亲子同行家长课程' },
-    { id: 'junior-family-course', name: 'Junior Family Course', tuition: 1500, suitable: '青少年亲子课程，规则需提前确认' },
-    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1100, suitable: '雅思入门，适合还未直接进入Regular的学生' },
-    { id: 'ielts-regular', name: 'IELTS Regular', tuition: 1100, suitable: '雅思常规备考' },
-    { id: 'ielts-speaking-and-writing-intensive', name: 'IELTS Speaking & Writing Intensive', tuition: 1200, suitable: '雅思口写强化' },
-    { id: 'ielts-guarantee-8-weeks', name: 'IELTS Guarantee 8 Weeks', tuition: 1450, suitable: '8周USD 2,900折算4周；需符合入学与出勤规则' },
-    { id: 'ielts-guarantee-12-weeks', name: 'IELTS Guarantee 12 Weeks', tuition: 1350, suitable: '12周USD 4,050折算4周；需符合入学与出勤规则' },
+    { id: 'light-esl-4', name: 'Light ESL 4', tuition: 850, suitable: '主校区｜4节一对一' },
+    { id: 'power-speaking', name: 'Power Speaking', tuition: 930, suitable: '主校区｜4节一对一 + 4节小组课' },
+    { id: 'intensive-esl', name: 'Intensive ESL', tuition: 1020, suitable: '主校区｜5节一对一 + 2节小组课' },
+    { id: 'power-esl-5', name: 'Power ESL 5', tuition: 980, suitable: '主校区｜5节一对一' },
+    { id: 'power-esl-7', name: 'Power ESL 7', tuition: 1220, suitable: '主校区｜7节一对一' },
+    { id: 'toeic-toeic-speaking', name: 'TOEIC / TOEIC Speaking', tuition: 980, suitable: '主校区｜4节一对一 + 4节小组课 + 选修课' },
+    { id: 'business-english-practical', name: 'Business English Practical', tuition: 1080, suitable: '主校区｜初中级：4节一对一 + 3节小组课' },
+    { id: 'business-english-executive', name: 'Business English Executive', tuition: 1080, suitable: '主校区｜中高级：5节一对一' },
+    { id: 'parents-course', name: 'Family Junior 家长课程', tuition: 750, suitable: '主校区｜3节一对一 + 2节选修课' },
+    { id: 'junior-family-course', name: 'Family Junior 青少年课程', tuition: 1500, suitable: '主校区｜5节一对一 + 2节小组课 + 2节选修课' },
+    { id: 'pre-ielts', name: 'Pre-IELTS', tuition: 1050, suitable: '雅思校区｜4节一对一 + 4节小组课' },
+    { id: 'ielts-regular', name: 'IELTS', tuition: 1100, suitable: '雅思校区｜4节一对一 + 3节小组课' },
+    { id: 'ielts-intensive', name: 'IELTS Intensive', tuition: 1200, suitable: '雅思校区｜6节一对一' },
+    { id: 'ielts-guarantee-8-weeks-5-5-6-0', name: 'IELTS 保证班8周（5.5/6.0）', tuition: 1450, suitable: '雅思校区｜5节一对一 + 2节小组课；8周起报' },
+    { id: 'ielts-guarantee-8-weeks-6-5-7-0', name: 'IELTS 保证班8周（6.5/7.0）', tuition: 1450, suitable: '雅思校区｜6节一对一；8周起报' },
+    { id: 'ielts-guarantee-12-weeks-5-5-6-0', name: 'IELTS 保证班12周（5.5/6.0）', tuition: 1350, suitable: '雅思校区｜5节一对一 + 2节小组课；12周起报' },
+    { id: 'ielts-guarantee-12-weeks-6-5-7-0', name: 'IELTS 保证班12周（6.5/7.0）', tuition: 1350, suitable: '雅思校区｜6节一对一；12周起报' },
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'sextuple', name: '六人房', fee: 570, note: 'Main Campus可选，预算压力最低，需确认空房' },
-    { id: '5b-solo', name: '5B Solo', fee: 650, note: '2026年8月23日起Main可选，兼顾预算和相对私密' },
-    { id: 'quad', name: '四人房', fee: 700, note: '多人房中预算与舒适度较平衡' },
-    { id: 'twin-b', name: '双人房B', fee: 840, note: '适合同伴同行或希望更少室友' },
-    { id: 'twin-a', name: '双人房A', fee: 870, note: '双人房更舒适，热门档期需早确认' },
-    { id: 'single-c', name: '单人房C', fee: 970, note: '单人房入门选择，适合重视隐私' },
-    { id: 'single-b', name: '单人房B', fee: 1150, note: '男性限定资料较常见，需按校区和档期确认' },
-    { id: 'single-a', name: '单人房A', fee: 1250, note: '隐私和舒适度最高，预算较高' },
+    { id: 'main-sextuple', name: '主校区六人房（上下床）', fee: 570, note: '主校区预算房型' },
+    { id: 'main-5b-solo', name: '主校区5B Solo', fee: 650, note: '舒适多人房，需确认空房' },
+    { id: 'main-quad', name: '主校区四人房（上下床）', fee: 700, note: '主校区多人房' },
+    { id: 'main-twin-b', name: '主校区双人房B', fee: 840, note: '双人房选择' },
+    { id: 'main-twin-a', name: '主校区双人房A', fee: 870, note: '双人房选择' },
+    { id: 'main-single-c', name: '主校区单人房C', fee: 970, note: '主校区单人房入门选择' },
+    { id: 'main-single-b', name: '主校区单人房B', fee: 1150, note: '套间房型；两房共用客厅，B房内有独立卫生间' },
+    { id: 'main-single-a', name: '主校区单人房A', fee: 1250, note: '主校区标准单人房' },
+    { id: 'ielts-quad', name: '雅思校区四人房（上下床）', fee: 630, note: '雅思校区预算房型' },
+    { id: 'ielts-triple', name: '雅思校区三人房', fee: 680, note: '雅思校区三人房' },
+    { id: 'ielts-twin', name: '雅思校区双人房', fee: 870, note: '雅思校区双人房' },
+    { id: 'ielts-single-b', name: '雅思校区单人房B', fee: 1150, note: '一楼房型，环境相对潮湿' },
+    { id: 'ielts-single-a', name: '雅思校区单人房A', fee: 1250, note: '由双人房升级为单人入住' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -176,19 +198,6 @@ export class PinesSchoolDetailComponent implements OnInit {
     { time: '13:00 - 17:05', title: '下午课程', text: '继续一对一、团体课、雅思口写或听读专项训练。' },
     { time: '17:05 - 19:00', title: '晚餐与休息', text: '是否外出、门禁和自习安排需按校区与管理模式确认。' },
     { time: '19:00 - 22:00', title: '选修 / EB PRO / 监督晚自习', text: '雅思保证班和强化项目通常对晚自习、模考和出勤要求更严格。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP I-Card', amount: 'PHP 4,500', note: '以学校现场收费为准' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
-    { item: '签证延签', amount: 'PHP 4,940 起', note: '8周首次延签参考，周数越长金额越高' },
-    { item: '教材费', amount: 'PHP 1,100', note: '4周5本以下参考' },
-    { item: '教材费（6册以上）', amount: 'PHP 1,500', note: '4周6本以上参考' },
-    { item: '水电费', amount: 'PHP 3,000', note: '4周参考，按学校规则调整' },
-    { item: '宿舍保证金', amount: 'PHP 4,000', note: '退房检查后按学校规则退还' },
-    { item: '洗衣费', amount: 'PHP 150 / 次', note: '单次7kg以内参考' },
-    { item: '指定接机', amount: 'PHP 3,000', note: '马尼拉或克拉克指定接机日参考' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -250,7 +259,23 @@ export class PinesSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService
+      .getLatestCnyRates()
+      .pipe(catchError(() => EMPTY))
+      .subscribe((rates) => {
+        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+        this.usdToCny = rates.usdToCny;
+        this.phpPerCny = rates.phpPerCny;
+        this.exchangeRateDate = rates.date;
+        this.usingLiveExchangeRate = true;
+      });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -273,10 +298,19 @@ export class PinesSchoolDetailComponent implements OnInit {
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({ id: this.slugifyPriceKey(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认适合人群' }))
+      .map((lesson) => {
+        const id = this.createCourseId(lesson.name);
+        const verifiedSchedule = this.courseFees.find((course) => course.id === id)?.suitable;
+        return {
+          id,
+          name: lesson.name,
+          tuition: lesson.price,
+          suitable: verifiedSchedule || lesson.description || lesson.note || '请联系顾问确认课程安排',
+        };
+      })
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
-    if (databaseCourseFees.length > 0) {
-      this.courseFees = databaseCourseFees;
+    if (this.courseFeeOrder.every((id) => databaseCourseFees.some((course) => course.id === id))) {
+      this.courseFees = databaseCourseFees.filter((course) => this.courseFeeOrder.includes(course.id));
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees.find((course) => course.id === 'light-esl-4')?.id ?? this.courseFees[0].id;
     }
 
@@ -284,19 +318,15 @@ export class PinesSchoolDetailComponent implements OnInit {
       .filter((room) => room.week === 4)
       .map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' }))
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.length > 0) {
-      this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'sextuple')?.id ?? this.roomFees[0].id;
+    if (this.roomFeeOrder.every((id) => databaseRoomFees.some((room) => room.id === id))) {
+      this.roomFees = databaseRoomFees.filter((room) => this.roomFeeOrder.includes(room.id));
+      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'main-sextuple')?.id ?? this.roomFees[0].id;
     }
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
     if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -313,7 +343,20 @@ export class PinesSchoolDetailComponent implements OnInit {
 
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
-  get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
+  get selectedCourseCampus(): 'main' | 'ielts' { return this.selectedCourseId.includes('ielts') ? 'ielts' : 'main'; }
+  get availableRoomFees(): RoomFee[] { return this.roomFees.filter((room) => room.id.startsWith(`${this.selectedCourseCampus}-`)); }
+  get selectedRoom(): RoomFee { return this.availableRoomFees.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomFees[0] ?? this.roomFees[0]; }
+  get minimumSelectedCourseWeeks(): number {
+    if (this.selectedCourseId.includes('guarantee-12-weeks')) return 12;
+    if (this.selectedCourseId.includes('guarantee-8-weeks')) return 8;
+    return 2;
+  }
+  onCourseChange(): void {
+    if (this.selectedWeeks < this.minimumSelectedCourseWeeks) this.selectedWeeks = this.minimumSelectedCourseWeeks;
+    if (!this.availableRoomFees.some((room) => room.id === this.selectedRoomId)) {
+      this.selectedRoomId = this.selectedCourseCampus === 'ielts' ? 'ielts-quad' : 'main-sextuple';
+    }
+  }
   get selectedWeekMultiplier(): number {
     if (this.selectedWeeks === 2) return 0.65;
     if (this.selectedWeeks === 3) return 0.85;
@@ -321,32 +364,107 @@ export class PinesSchoolDetailComponent implements OnInit {
   }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.selectedWeekMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.selectedWeekMultiplier; }
-  get isPeakSeason(): boolean {
-    const start = new Date(`${this.selectedStartDate}T00:00:00`);
-    const ranges = [
-      [new Date('2026-06-28T00:00:00'), new Date('2026-08-22T23:59:59')],
-      [new Date('2027-06-27T00:00:00'), new Date('2027-08-22T23:59:59')],
-    ];
-    return ranges.some(([from, to]) => start >= from && start <= to);
+  get peakSeasonWeeks(): number {
+    const arrival = this.parseDate(this.selectedStartDate);
+    if (!arrival) return 0;
+    let coveredWeeks = 0;
+    for (let week = 0; week < this.selectedWeeks; week += 1) {
+      const weekStart = new Date(arrival);
+      weekStart.setDate(arrival.getDate() + week * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      if (this.dateRangesOverlap(weekStart, weekEnd, '2026-06-28', '2026-08-23')) coveredWeeks += 1;
+    }
+    return coveredWeeks;
   }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
+  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
+  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
+  get sidaDiscountAmount(): number { return (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.sidaDiscountRate); }
+  get fourWeekBlocks(): number { return Math.floor(this.selectedWeeks / 4); }
+  get offSeasonEligibleBlocks(): number {
+    const arrival = this.parseDate(this.selectedStartDate);
+    const lastEligibleDate = this.parseDate('2026-12-31');
+    if (!arrival || !lastEligibleDate) return 0;
+    let blocks = 0;
+    for (let block = 0; block < this.fourWeekBlocks; block += 1) {
+      const blockStart = new Date(arrival);
+      blockStart.setDate(arrival.getDate() + block * 28);
+      const blockEnd = new Date(blockStart);
+      blockEnd.setDate(blockStart.getDate() + 27);
+      if (blockEnd <= lastEligibleDate && !this.dateRangesOverlap(blockStart, blockEnd, '2026-06-28', '2026-08-23')) blocks += 1;
+    }
+    return blocks;
+  }
+  get offSeasonDiscountAmount(): number { return this.offSeasonEligibleBlocks * this.offSeasonDiscountPerFourWeeks; }
+  get longStayDiscountAmount(): number { return this.selectedWeeks >= 12 ? this.longStayDiscount : 0; }
+  get totalDiscountAmount(): number {
+    return this.registrationDiscountAmount + this.sidaDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscountAmount;
+  }
+  get quoteBeforeDiscounts(): number { return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge; }
+  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
-  get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
+  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`; }
+  get exchangeRateSummary(): string {
+    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
+    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+  }
+
+  get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
+  get localFees(): LocalFee[] {
+    const rows: LocalFee[] = [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '一次办理，通常有效6个月；更换学校需重新办理' },
+      { item: 'SSP-E Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，一次性费用' },
+      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, this.selectedWeeks > 8 ? 1 : 0), quantity: this.selectedWeeks > 8 ? 1 : 0, total: this.selectedWeeks > 8 ? 4000 : 0, note: '学习超过8周时预计办理，一次有效1年' },
+      { item: '水电费', amount: this.localFeeAmount(3000, this.localFeePeriods), quantity: this.localFeePeriods, total: 3000 * this.localFeePeriods, note: `PHP 3,000/4周 × ${this.localFeePeriods}；超额用电另收PHP 25/kW` },
+      { item: '签证延签', amount: this.localFeeAmount(6210, this.visaExtensionCount), quantity: this.visaExtensionCount, total: 6210 * this.visaExtensionCount, note: this.visaExtensionCount > 0 ? `按学习周期预估${this.visaExtensionCount}次；首次参考PHP 6,210，后续以移民局为准` : '8周内暂不计；超过8周后按延签次数预估' },
+      { item: '校内预存款', amount: this.localFeeAmount(4000, this.localFeePeriods), quantity: this.localFeePeriods, total: 4000 * this.localFeePeriods, note: `PHP 4,000/4周 × ${this.localFeePeriods}；用于教材、洗衣、复印、选修课和周末餐食等，按实际扣费` },
+      { item: '学生证', amount: 'PHP 200', quantity: 1, total: 200, note: '一次性费用' },
+      { item: '马尼拉机场接机', amount: 'PHP 3,000', quantity: 0, total: 0, optional: true, note: '按需选择；指定周日团体接机' },
+      { item: '克拉克机场接机', amount: 'PHP 3,000', quantity: 1, total: 3000, note: '报价默认计入一次指定周日团体接机，可按实际行程调整' },
+      { item: '房间押金', amount: 'PHP 4,000', quantity: 1, total: 4000, optional: true, note: '不计入学杂费合计；退房检查无损坏及欠费后退还' },
+      { item: '洗衣服务', amount: 'PHP 1,200', quantity: 0, total: 0, note: '按实际使用，不计入合计；洗烘PHP 150/7kg，单洗或单烘PHP 100/7kg' },
+    ];
+    return rows;
+  }
+  get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
+  get localFeeCnyText(): string {
+    if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
+    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
+  private parseDate(value: string): Date | null { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
+  private dateRangesOverlap(start: Date, end: Date, from: string, to: string): boolean {
+    const rangeStart = this.parseDate(from);
+    const rangeEnd = this.parseDate(to);
+    return !!rangeStart && !!rangeEnd && start <= rangeEnd && end >= rangeStart;
+  }
+  private createCourseId(name: string): string {
+    if (/Family Junior.*家长|Parents Course/iu.test(name)) return 'parents-course';
+    if (/Family Junior.*青少年|Junior Family Course/iu.test(name)) return 'junior-family-course';
+    if (/IELTS.*保证班.*8.*5\.5|IELTS Guarantee 8 Weeks.*5\.5/iu.test(name)) return 'ielts-guarantee-8-weeks-5-5-6-0';
+    if (/IELTS.*保证班.*8.*6\.5|IELTS Guarantee 8 Weeks.*6\.5/iu.test(name)) return 'ielts-guarantee-8-weeks-6-5-7-0';
+    if (/IELTS.*保证班.*12.*5\.5|IELTS Guarantee 12 Weeks.*5\.5/iu.test(name)) return 'ielts-guarantee-12-weeks-5-5-6-0';
+    if (/IELTS.*保证班.*12.*6\.5|IELTS Guarantee 12 Weeks.*6\.5/iu.test(name)) return 'ielts-guarantee-12-weeks-6-5-7-0';
+    if (name === 'IELTS') return 'ielts-regular';
+    return this.slugifyPriceKey(name);
+  }
   private createRoomId(name: string): string {
-    if (name.includes('六人')) return 'sextuple';
-    if (name.includes('5B') || name.includes('5人')) return '5b-solo';
-    if (name.includes('四人')) return 'quad';
-    if (name.includes('双人房B')) return 'twin-b';
-    if (name.includes('双人房A')) return 'twin-a';
-    if (name.includes('单人房C')) return 'single-c';
-    if (name.includes('单人房B')) return 'single-b';
-    if (name.includes('单人房A')) return 'single-a';
+    const campus = name.includes('雅思') || /IELTS/iu.test(name) ? 'ielts' : 'main';
+    if (name.includes('六人')) return `${campus}-sextuple`;
+    if (name.includes('5B') || name.includes('5人')) return `${campus}-5b-solo`;
+    if (name.includes('四人')) return `${campus}-quad`;
+    if (name.includes('三人')) return `${campus}-triple`;
+    if (name.includes('双人房B')) return `${campus}-twin-b`;
+    if (name.includes('双人房A')) return `${campus}-twin-a`;
+    if (name.includes('双人')) return `${campus}-twin`;
+    if (name.includes('单人房C')) return `${campus}-single-c`;
+    if (name.includes('单人房B')) return `${campus}-single-b`;
+    if (name.includes('单人房A')) return `${campus}-single-a`;
     return this.slugifyPriceKey(name);
   }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }

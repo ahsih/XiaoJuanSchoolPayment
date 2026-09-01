@@ -236,6 +236,7 @@
   grid-template-columns: minmax(118px, 0.9fr) minmax(112px, 0.7fr) minmax(0, 1.2fr);
 }
 
+
 :host .pricing-note {
   margin-top: 16px;
   color: #d42020;

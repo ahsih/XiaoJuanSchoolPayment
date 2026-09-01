@@ -7,6 +7,7 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
@@ -20,7 +21,7 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -43,6 +44,7 @@ interface SidaBeciTrustBadge { icon: string; label: string; }
 })
 export class BeciSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'BECI';
   private readonly pricingSchoolNames = ['菲律宾碧瑶BECI语言学校', 'BECI International Language Academy', 'API BECI'];
   private readonly courseFeeOrder = [
@@ -81,13 +83,17 @@ export class BeciSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  seasonalFeePerWeek = 40;
-  readonly usdToCny = 7.2;
+  readonly registrationDiscount = 100;
+  readonly offSeasonDiscountRate = 0.9;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'eop-lite-esl';
   selectedRoomId = 'eop-quad';
   selectedWeeks = 4;
-  selectedStartDate = '2026-08-23';
+  selectedStartDate = '2026-09-06';
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -142,7 +148,7 @@ export class BeciSchoolDetailComponent implements OnInit {
     { title: '只想按学校名报名', text: 'BECI各校区差异很大，必须先确认EOP、Sparta或City，否则课程强度和生活规则可能不匹配。' },
     { title: '不想遵守英语环境或晚间要求', text: 'EOP和Sparta有更明确的学习纪律，喜欢完全自由生活的人要谨慎。' },
     { title: '只想海边度假体验', text: 'BECI位于碧瑶，优势在学习氛围和凉爽气候，不是海岛度假型学校。' },
-    { title: '临近旺季才锁热门房型', text: '单人房、3+1房和Studio房型在热门档期需要提前确认空房。' },
+    { title: '临近入学才锁热门房型', text: '单人房、3+1房和Studio房型在热门档期需要提前确认空房。' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -151,7 +157,7 @@ export class BeciSchoolDetailComponent implements OnInit {
     { name: 'EOP Sparta ESL', type: 'EOP强化版', lessons: '4节一对一 + 1节SP口语 + 2节团体 + 2节必修晚课', suitable: '适合想保留EOP环境，又希望增加SP反馈和晚间学习的人。' },
     { name: 'EOP IELTS / TOEIC', type: 'EOP考试课程', lessons: '4节一对一 + 2节团体 + 3节必修晚课与考试', suitable: '适合希望在EOP环境中准备雅思或多益的学生。' },
     { name: 'EOP Junior ESL / IELTS', type: '青少年课程', lessons: 'Junior ESL为5节一对一 + 1节SP + 2节必修；Junior IELTS为4节一对一 + 2节团体', suitable: '适合需要更高照顾密度和明确学习安排的青少年学生。' },
-    { name: 'Sparta 24 ESL', type: '强管理口语冲刺', lessons: '5节一对一 + 2节团体 + 3节晚间义务学习/测试', suitable: '适合自律弱、短期想明显增加输出量和反馈密度的学生。' },
+    { name: 'Sparta 24 ESL', type: '强管理口语冲刺', lessons: '4节一对一 + 1节SP口语 + 2节团体 + 3节晚间义务学习/测试', suitable: '适合自律弱、短期想明显增加输出量和反馈密度的学生。' },
     { name: 'Sparta IELTS / TOEIC / 保证班', type: '考试基础与强化', lessons: '4-5节一对一 + 2节团体 + 3节必修晚课与考试', suitable: '适合想在强管理环境中准备雅思、多益或12周雅思保证班的学生。' },
     { name: 'City Lite / Native ESL', type: '成人弹性ESL', lessons: 'Lite为2节一对一；Native为4节一对一，均含2节团体 + 2节选修', suitable: '适合成人、工作者和不想要高压门禁的学生。' },
     { name: 'City Unlimited / Junior ESL', type: '高课量与青少年路线', lessons: 'Unlimited最多8节一对一；Junior为5节一对一 + 1节SP + 2节选修', suitable: '适合想提高一对一课量或需要青少年课程的学生。' },
@@ -165,14 +171,14 @@ export class BeciSchoolDetailComponent implements OnInit {
     { id: 'eop-toeic', name: 'EOP TOEIC', tuition: 850, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
     { id: 'eop-junior-esl', name: 'EOP Junior ESL', tuition: 1300, suitable: '5节一对一 + 1节SP口语 + 2节必修' },
     { id: 'eop-junior-ielts', name: 'EOP Junior IELTS', tuition: 1400, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
-    { id: 'sparta-24-esl', name: 'Sparta 24 ESL', tuition: 900, suitable: '5节一对一 + 2节团体 + 3节必修晚课与考试' },
+    { id: 'sparta-24-esl', name: 'Sparta 24 ESL', tuition: 900, suitable: '4节一对一 + 1节SP口语 + 2节团体 + 3节必修晚课与考试' },
     { id: 'sparta-toeic', name: 'Sparta TOEIC', tuition: 850, suitable: '5节一对一 + 2节团体 + 3节必修晚课与考试' },
     { id: 'sparta-ielts', name: 'Sparta IELTS', tuition: 900, suitable: '4节一对一 + 2节团体 + 3节必修晚课与考试' },
     { id: 'sparta-ielts-guarantee-12', name: 'Sparta IELTS Guarantee（12周）', tuition: 1100, suitable: '12周保证班，4周课程费USD 1,100；12周起报' },
-    { id: 'city-lite-esl', name: 'City LITE ESL', tuition: 670, suitable: '2节一对一 + 2节团体 + 2节选修' },
-    { id: 'city-native-esl', name: 'City Native ESL', tuition: 900, suitable: '4节一对一 + 2节团体 + 2节选修' },
-    { id: 'city-unlimited-esl', name: 'City Unlimited ESL', tuition: 900, suitable: '最多8节一对一 + 2节选修' },
-    { id: 'city-junior-esl', name: 'City Junior ESL', tuition: 1300, suitable: '5节一对一 + 1节SP口语 + 2节选修' },
+    { id: 'city-lite-esl', name: 'City LITE ESL', tuition: 670, suitable: '2节一对一 + 2节团体 + 2节选修；夜间一对一安排在17:00—21:00，较常规课程少1节' },
+    { id: 'city-native-esl', name: 'City Native ESL', tuition: 900, suitable: '4节一对一 + 2节团体 + 2节选修；夜间一对一安排在17:00—21:00，较常规课程少1节' },
+    { id: 'city-unlimited-esl', name: 'City Unlimited ESL', tuition: 900, suitable: '最多8节一对一 + 2节选修；夜间一对一安排在17:00—21:00，较常规课程少1节' },
+    { id: 'city-junior-esl', name: 'City Junior ESL', tuition: 1300, suitable: '5节一对一 + 1节SP口语 + 2节选修；夜间一对一安排在17:00—21:00，较常规课程少1节' },
   ];
 
   roomFees: RoomFee[] = [
@@ -200,24 +206,9 @@ export class BeciSchoolDetailComponent implements OnInit {
     { time: '19:00 - 22:00', title: '晚间学习 / 自习 / 选修', text: 'Sparta 24 ESL与考试课通常包含晚间义务学习和测试，EOP Sparta也有晚间必修。' },
   ];
 
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，到校后办理' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '与SSP相关的电子卡申请费用' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
-    { item: '签证延签', amount: 'PHP 4,940 起', note: '8周首次延签参考，周数越长费用越高' },
-    { item: 'ID Card', amount: 'PHP 200', note: '学生证或校内识别费用参考' },
-    { item: '教材费', amount: 'PHP 1,000 - 2,000', note: '按课程不同每4周收取，考试和高强度课程通常更高' },
-    { item: '宿舍保证金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '水电费', amount: 'PHP 3,000', note: '4周参考，按学校规则或实际使用调整' },
-    { item: '维护费', amount: 'PHP 1,000', note: '4周参考' },
-    { item: '洗衣费', amount: 'PHP 1,500 - 1,600', note: 'EOP/Sparta参考PHP 1,500，City参考PHP 1,600' },
-    { item: '指定接机', amount: 'PHP 3,000', note: '马尼拉或克拉克指定接机日参考' },
-    { item: '个别接机', amount: 'PHP 12,000 起', note: '非指定日或个人接机需单独确认' },
-  ];
-
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先做校区匹配', text: '根据英语基础、自律程度、目标课程、年龄、是否工作和生活偏好，先判断EOP、Sparta或City。' },
-    { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认BECI课程、房型、空房、入学日、校区规则、旺季附加费和正式报价。' },
+    { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认BECI课程、房型、空房、入学日、校区规则、适用优惠和正式报价。' },
     { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提供学习资料、费用清单、行李清单、接机和到校注意事项。' },
     { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、学习方法或学校沟通问题，可继续联系思达协助。' },
@@ -226,7 +217,7 @@ export class BeciSchoolDetailComponent implements OnInit {
 
   readonly sidaBeciReasons: SidaBeciReason[] = [
     { number: '01', title: '先判断BECI哪个校区适合', text: '不会只按学校名推荐，会把EOP、Sparta、City的管理强度、年龄层和课程目标分开比较。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择BECI校区' },
-    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶BECI语言学校费用' },
+    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、适用优惠和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶BECI语言学校费用' },
     { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
     { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
     { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
@@ -255,8 +246,8 @@ export class BeciSchoolDetailComponent implements OnInit {
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶BECI语言学校适合零基础吗？', answer: '可以。零基础或怕开口的学生优先看EOP Lite ESL或EOP SPEED ESL，先用全英文环境建立开口习惯；如果自律弱，也可以让顾问评估是否适合Sparta。' },
     { question: 'BECI的EOP、Sparta、City怎么选？', answer: '想沉浸式口语和英语环境看EOP；想强管理、高学习量、短期冲刺看Sparta；成人、工作者、需要弹性和无宵禁看City。' },
-    { question: 'BECI短期和长期优惠怎么计算？', answer: '当前中介优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。8/12/16/20/24周再分别减USD 50/100/200/300/400，并可与常规优惠叠加。' },
-    { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含优惠后的课程费、按周折算的住宿费和旺季附加费，注册费按当前中介优惠免收；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
+    { question: 'BECI短期、淡季和长期优惠怎么计算？', answer: '思达优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。2026/9/6—12/27入学，课程费与住宿费按9折；8/12/16/20/24周再分别减USD 50/100/200/300/400，长期折扣可与淡季9折叠加。' },
+    { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含课程费和住宿费，并自动扣除免注册费、符合条件的2026淡季9折及长期折扣；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'BECI City Campus适合边工作边学习吗？', answer: '更适合。City Campus面向成人与工作者，有弹性安排、无宵禁和工作空间，但仍建议先按工作时间确认可选课程。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名BECI，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
@@ -277,7 +268,20 @@ export class BeciSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+      this.usdToCny = rates.usdToCny;
+      this.phpPerCny = rates.phpPerCny;
+      this.exchangeRateDate = rates.date;
+      this.usingLiveExchangeRate = true;
+    });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -300,15 +304,19 @@ export class BeciSchoolDetailComponent implements OnInit {
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({
-        id: this.slugifyPriceKey(lesson.name),
-        name: lesson.name,
-        tuition: lesson.price,
-        suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
-      }))
+      .map((lesson) => {
+        const id = this.slugifyPriceKey(lesson.name);
+        const verifiedSchedule = this.courseFees.find((course) => course.id === id)?.suitable;
+        return {
+          id,
+          name: lesson.name,
+          tuition: lesson.price,
+          suitable: verifiedSchedule || lesson.description || lesson.note || '请联系顾问确认课程安排',
+        };
+      })
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
-    if (databaseCourseFees.length > 0) {
-      this.courseFees = databaseCourseFees;
+    if (this.courseFeeOrder.every((id) => databaseCourseFees.some((course) => course.id === id))) {
+      this.courseFees = databaseCourseFees.filter((course) => this.courseFeeOrder.includes(course.id));
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
         this.selectedCourseId = this.courseFees.find((course) => course.id === 'eop-lite-esl')?.id ?? this.courseFees[0].id;
       }
@@ -323,8 +331,8 @@ export class BeciSchoolDetailComponent implements OnInit {
         note: room.description || '请联系顾问确认空房',
       }))
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.length > 0) {
-      this.roomFees = databaseRoomFees;
+    if (this.roomFeeOrder.every((id) => databaseRoomFees.some((room) => room.id === id))) {
+      this.roomFees = databaseRoomFees.filter((room) => this.roomFeeOrder.includes(room.id));
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
         this.selectedRoomId = this.roomFees.find((room) => room.id === 'eop-quad')?.id ?? this.roomFees[0].id;
       }
@@ -332,12 +340,6 @@ export class BeciSchoolDetailComponent implements OnInit {
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
-    const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
-    if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -358,44 +360,91 @@ export class BeciSchoolDetailComponent implements OnInit {
       : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
-  get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
+  get selectedCourseCampus(): 'eop' | 'sparta' | 'city' {
+    if (this.selectedCourseId.startsWith('sparta-')) return 'sparta';
+    if (this.selectedCourseId.startsWith('city-')) return 'city';
+    return 'eop';
+  }
+  get availableRoomFees(): RoomFee[] { return this.roomFees.filter((room) => room.id.startsWith(`${this.selectedCourseCampus}-`)); }
+  get selectedRoom(): RoomFee { return this.availableRoomFees.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomFees[0] ?? this.roomFees[0]; }
+  get minimumSelectedCourseWeeks(): number { return this.selectedCourseId === 'sparta-ielts-guarantee-12' ? 12 : 1; }
+  onCourseChange(): void {
+    if (this.selectedWeeks < this.minimumSelectedCourseWeeks) this.selectedWeeks = this.minimumSelectedCourseWeeks;
+    if (!this.availableRoomFees.some((room) => room.id === this.selectedRoomId)) {
+      const defaults = { eop: 'eop-quad', sparta: 'sparta-quad', city: 'city-studio-quad' } as const;
+      this.selectedRoomId = defaults[this.selectedCourseCampus];
+    }
+  }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.tuitionMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
   get tuitionMultiplier(): number {
     const shortStayMultipliers: Record<number, number> = { 1: 0.4, 2: 0.6, 3: 0.8 };
     return shortStayMultipliers[this.selectedWeeks] ?? this.selectedWeeks / 4;
   }
-  get payableRegistrationFee(): number { return 0; }
+  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
   get longStayDiscount(): number {
     const discounts: Record<number, number> = { 8: 50, 12: 100, 16: 200, 20: 300, 24: 400 };
     return discounts[this.selectedWeeks] ?? 0;
   }
-  get isPeakSeason(): boolean {
-    const start = new Date(`${this.selectedStartDate}T00:00:00`);
-    const ranges = [
-      [new Date('2026-06-28T00:00:00'), new Date('2026-08-22T23:59:59')],
-      [new Date('2027-06-27T00:00:00'), new Date('2027-08-22T23:59:59')],
-    ];
-    return ranges.some(([from, to]) => start >= from && start <= to);
+  get isOffSeasonPromotionEligible(): boolean {
+    const start = this.parseDate(this.selectedStartDate);
+    const from = this.parseDate('2026-09-06');
+    const to = this.parseDate('2026-12-27');
+    return !!start && !!from && !!to && start >= from && start <= to;
   }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number {
-    return this.payableRegistrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks - this.longStayDiscount + this.seasonalSurcharge;
+  get offSeasonDiscountAmount(): number {
+    return this.isOffSeasonPromotionEligible
+      ? (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.offSeasonDiscountRate)
+      : 0;
   }
+  get totalDiscountAmount(): number { return this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscount; }
+  get quoteBeforeDiscounts(): number { return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
+  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
   get quoteCnyText(): string {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
-  get discountText(): string {
-    if (this.selectedWeeks <= 3) return `${this.selectedWeeks}周课程费按4周价的${Math.round(this.tuitionMultiplier * 100)}%`;
-    if (this.longStayDiscount > 0) return `${this.selectedWeeks}周长期折扣`;
-    return '4周课程费原价';
+  get exchangeRateSummary(): string {
+    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
+    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+  }
+
+  get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
+  get visaExtensionTotal(): number {
+    const totals: Record<number, number> = { 1: 4940, 2: 11150, 3: 15390, 4: 19630, 5: 23870 };
+    return totals[this.visaExtensionCount] ?? (this.visaExtensionCount > 5 ? 23870 + (this.visaExtensionCount - 5) * 4240 : 0);
+  }
+  get textbookQuantity(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 8)); }
+  get localFees(): LocalFee[] {
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '按学习时长办理；续费或换校可能需要重新办理' },
+      { item: 'SSP-E Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，一次性费用' },
+      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, acrQuantity), quantity: acrQuantity, total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理' },
+      { item: '维护管理费', amount: this.localFeeAmount(1000, this.localFeePeriods), quantity: this.localFeePeriods, total: 1000 * this.localFeePeriods, note: `PHP 1,000/4周 × ${this.localFeePeriods}` },
+      { item: '水电费', amount: this.localFeeAmount(3000, this.localFeePeriods), quantity: this.localFeePeriods, total: 3000 * this.localFeePeriods, note: `PHP 3,000/4周 × ${this.localFeePeriods}；超额用电另收PHP 25/kW` },
+      { item: '克拉克机场接机', amount: 'PHP 3,000', quantity: 1, total: 3000, note: '报价默认计入一次指定周日团体接机，可按实际行程调整' },
+      { item: '签证延签', amount: `PHP ${this.visaExtensionTotal.toLocaleString('en-US')}`, quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: this.visaExtensionCount > 0 ? `按学习周期预计办理${this.visaExtensionCount}次；最终以移民局实收为准` : '8周内暂不计；超过8周后按延签次数预估' },
+      { item: '教材费', amount: this.localFeeAmount(2000, this.textbookQuantity), quantity: this.textbookQuantity, total: 2000 * this.textbookQuantity, note: `每套参考使用8周，实际按课程及学校发放教材为准` },
+      { item: '学生证（含照片）', amount: 'PHP 200', quantity: 1, total: 200, note: '一次性费用' },
+      { item: '洗衣服务', amount: this.localFeeAmount(1500, this.localFeePeriods), quantity: this.localFeePeriods, total: 1500 * this.localFeePeriods, note: `PHP 1,500/4周 × ${this.localFeePeriods}；每周一至周四送洗，含洗涤、烘干和折叠` },
+      { item: '马尼拉机场接机', amount: 'PHP 3,000', quantity: 0, total: 0, optional: true, note: '按需选择；指定周日团体接机' },
+      { item: '房间押金', amount: 'PHP 3,000', quantity: 1, total: 3000, optional: true, note: '不计入学杂费合计；退房检查无损坏及欠费后退还' },
+    ];
+  }
+  get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
+  get localFeeCnyText(): string {
+    if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
+    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
   formatUsd(value: number): string {
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
+  private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
+  private parseDate(value: string): Date | null { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }

@@ -12,7 +12,7 @@
     [style.height]="previewHeight || null"
     [style.min-height]="previewMinHeight || null"
     [style.object-fit]="previewFit || null"
-    loading="lazy"
+    [attr.loading]="loading"
   />
   <span class="expandable-image__zoom" aria-hidden="true">
     <mat-icon>zoom_in</mat-icon>

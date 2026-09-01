@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { BeciSchoolDetailComponent } from './beci-school-detail.component';
 
@@ -7,12 +8,15 @@ describe('BeciSchoolDetailComponent pricing', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: SchoolService, useValue: {} }],
+      providers: [
+        { provide: SchoolService, useValue: {} },
+        { provide: ExchangeRateService, useValue: {} },
+      ],
     });
     component = TestBed.runInInjectionContext(() => new BeciSchoolDetailComponent());
     component.selectedCourseId = 'eop-lite-esl';
     component.selectedRoomId = 'eop-quad';
-    component.selectedStartDate = '2026-08-23';
+    component.selectedStartDate = '2027-01-10';
   });
 
   it('uses the supplied 2026 course prices', () => {
@@ -28,7 +32,7 @@ describe('BeciSchoolDetailComponent pricing', () => {
     component.selectedWeeks = 1;
     expect(component.tuitionForSelectedWeeks).toBe(268);
     expect(component.roomFeeForSelectedWeeks).toBe(142.5);
-    expect(component.payableRegistrationFee).toBe(0);
+    expect(component.registrationDiscountAmount).toBe(100);
     expect(component.quoteUsd).toBe(410.5);
 
     component.selectedWeeks = 2;
@@ -53,11 +57,24 @@ describe('BeciSchoolDetailComponent pricing', () => {
     }
   });
 
-  it('adds the peak-season surcharge after promotions', () => {
+  it('applies the 2026 off-season 10% discount to tuition and room', () => {
     component.selectedWeeks = 4;
-    component.selectedStartDate = '2026-07-01';
+    component.selectedStartDate = '2026-09-06';
 
-    expect(component.seasonalSurcharge).toBe(160);
-    expect(component.quoteUsd).toBe(1400);
+    expect(component.offSeasonDiscountAmount).toBeCloseTo(124, 5);
+    expect(component.quoteUsd).toBeCloseTo(1116, 5);
+  });
+
+  it('keeps course and room campus selections aligned', () => {
+    component.selectedCourseId = 'city-lite-esl';
+    component.onCourseChange();
+
+    expect(component.selectedRoomId).toBe('city-studio-quad');
+    expect(component.availableRoomFees.every((room) => room.id.startsWith('city-'))).toBeTrue();
+  });
+
+  it('reproduces the supplied 8-week local-fee total', () => {
+    component.selectedWeeks = 8;
+    expect(component.localFeeTotal).toBe(28500);
   });
 });

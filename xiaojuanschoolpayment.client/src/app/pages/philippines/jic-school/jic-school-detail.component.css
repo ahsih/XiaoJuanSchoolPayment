@@ -14,6 +14,14 @@
   line-height: 1.6;
 }
 
+:host .quote-result small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 :host .hero-lead span {
   display: block;
   max-width: 100%;

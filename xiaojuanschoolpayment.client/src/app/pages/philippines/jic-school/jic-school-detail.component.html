@@ -59,15 +59,15 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、课程费和住宿费估算
+                  已含注册费、课程费、住宿费及自动优惠估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用、旺季附加费和保证班规则需另行确认
+                  旺季附加费按学习周数估算，到校费用和保证班规则需确认
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：菲律宾碧瑶JIC语言学校官网、Challenger Campus、Premium Campus与公开学校图库；课程及住宿费用根据思达顾问提供的JIC 2025费用表整理。</p>
+            <p class="photo-source">图片来源：菲律宾碧瑶JIC语言学校官网、Challenger Campus、Premium Campus与公开学校图库；课程费与住宿费按JIC 2026价格逐项核对。</p>
           </div>
         </section>
 
@@ -206,11 +206,11 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>菲律宾碧瑶JIC语言学校 2025 年 4 周课程费</span>
+              <span>菲律宾碧瑶JIC语言学校 2026 年 4 周课程费</span>
               <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下根据JIC 2025课程费表整理，币种为美元；最终以学校正式账单为准。</p>
+              <p>以下根据JIC 2026课程费表逐项核对，币种为美元；最终以学校正式账单为准。</p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="JIC 2025年4周课程费">
+            <div class="data-table course-fee-table" role="table" aria-label="JIC 2026年4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
@@ -222,7 +222,7 @@
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="JIC 2025年4周课程费手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="JIC 2026年4周课程费手机卡片">
               <article *ngFor="let fee of courseFees">
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
@@ -249,11 +249,11 @@
         <section class="split-layout" id="room-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>菲律宾碧瑶JIC语言学校 2025 年 4 周住宿费</span>
+              <span>菲律宾碧瑶JIC语言学校 2026 年 4 周住宿费</span>
               <h2>房型和校区会明显影响总预算</h2>
               <p>默认报价使用Challenger四人间（上下铺）。Premium单人间和带阳台房型建议先让顾问确认空房。</p>
             </div>
-            <div class="data-table room-fee-table" role="table" aria-label="JIC 2025年4周住宿费">
+            <div class="data-table room-fee-table" role="table" aria-label="JIC 2026年4周住宿费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">房型</span>
                 <span role="columnheader">4周住宿费</span>
@@ -265,7 +265,7 @@
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="JIC 2025年4周住宿费手机卡片">
+            <div class="mobile-card-list mobile-room-fees" aria-label="JIC 2026年4周住宿费手机卡片">
               <article *ngFor="let room of roomFees">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
@@ -279,7 +279,7 @@
             <div class="section-heading">
               <span>菲律宾碧瑶JIC语言学校费用快速报价</span>
               <h2>默认参考：4周 Challenger ESL Lite + Challenger 四人间（上下铺）</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）x 优惠折扣 + 旺季附加费</p>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 + 旺季附加费 − 自动适用优惠</p>
             </div>
             <div class="quote-form" aria-label="JIC费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -291,13 +291,17 @@
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>旺季附加费（{{ peakSeasonWeeks }}周）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>思达注册费优惠</span><strong>- USD {{ formatUsd(registrationDiscountAmount) }}</strong></div>
+              <div><span>{{ offSeasonDiscountLabel }}</span><strong>{{ offSeasonDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonDiscountAmount) : '未适用' }}</strong></div>
+              <div><span>长期学习优惠</span><strong>{{ longTermDiscountAmount > 0 ? '- USD ' + formatUsd(longTermDiscountAmount) : '未适用' }}</strong></div>
+              <div><span>圣诞及节日优惠</span><strong>{{ holidayDiscountAmount > 0 ? '- USD ' + formatUsd(holidayDiscountAmount) : '未适用' }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateSummary }}</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房、保证班规则和优惠。</p>
             </div>
             <div class="quote-actions">
@@ -305,7 +309,9 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP I-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、管理费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">菲律宾碧瑶JIC语言学校旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间JPY 5,000/周，页面按公开固定汇率JPY145/USD折算为USD 34.5/周。</p>
+            <p class="season-note">旺季附加费：2026/6/28—8/22期间就读的周数按USD 40/周计算；页面会根据所选入学日和学习周数自动统计。</p>
+            <p class="season-note">淡季优惠：入学日为2026/8/23—2027/1/9时，四人房每4周减USD 150、单人/双人房每4周减USD 50；入学日为2027/2/21—6/26或2027/8/22—2028/1/8时，四人房每4周减USD 100、单人/双人房每4周减USD 50。校内延长不适用。</p>
+            <p class="season-note">长期与节日优惠：12/16/20/24周分别减USD 300/400/500/600；双人及四人房在2026/11/29—12/13或12/27—2027/1/10入学减USD 200，在2027/11/28—12/12或12/26—2028/1/9入学减USD 150。符合条件时可与淡季、长期优惠叠加，最终以学校审核为准。</p>
           </section>
         </section>
 
@@ -330,7 +336,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页课程费与住宿费根据思达顾问提供的JIC 2025费用表整理；校区、课程特色和其他当地费用参考菲律宾碧瑶JIC语言学校公开资料。学校价格、优惠、房型空位和当地费用可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页课程费与住宿费按JIC 2026价格逐项核对；校区、课程特色和其他当地费用参考菲律宾碧瑶JIC语言学校公开资料。学校价格、优惠、房型空位和当地费用可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 

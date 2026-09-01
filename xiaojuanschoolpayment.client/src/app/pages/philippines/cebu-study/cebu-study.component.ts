@@ -382,8 +382,8 @@ export class CebuStudyComponent {
   readonly allSchools: DirectorySchool[] = [
     {
       name: 'CIA', route: '/philippines-study/cebu/cia-cebu-international-academy', tag: '度假村式校区',
-      location: 'Mactan · Lapu-Lapu', summary: '度假村式新校区，课程、住宿与生活配套均衡，适合雅思和亲子学生。',
-      image: '/assets/cia/campus-building.png', highlights: ['综合英语', '雅思', '托业', '商务英语', '剑桥英语', '航空英语', '打工度假英语', '亲子课程'],
+      location: 'Mactan · Lapu-Lapu', summary: '2022年启用的度假村式新校区，课程、住宿与生活配套均衡，校内设IDP雅思官方考场。',
+      image: '/assets/cia/campus-building.png', highlights: ['ESL综合英语', 'Cambridge ESL', '雅思', '托业', '商务英语', '打工度假英语', 'Callan ESL', '大学沉浸课程', '亲子 / 青少年营'],
     },
     {
       name: 'First English', route: '/philippines-study/cebu/first-english-global-college', tag: '日系亲子型校区',
@@ -645,7 +645,7 @@ export class CebuStudyComponent {
       name: 'Lemon',
       focus: '多国家方案规划',
       text: '费用、时间与升学路径综合比较',
-      avatar: '/assets/contact/lemon-avatar.jpg',
+      avatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
       qr: '/assets/contact/lemon-wechat-qr.png',
       phone: '13298529856',
       phoneDisplay: '132 9852 9856',

@@ -63,7 +63,7 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用、旺季附加费和校区规则需另行确认
+                  到校费用、适用优惠和校区规则需另行确认
                 </li>
               </ul>
             </aside>
@@ -279,33 +279,36 @@
             <div class="section-heading">
               <span>BECI 费用快速报价</span>
               <h2>默认参考：4周 EOP Lite ESL + EOP 四人房（女生）</h2>
-              <p>前期支付参考 = 优惠后课程费 + 按周折算住宿费 - 长期折扣 + 旺季附加费；中介优惠免注册费。</p>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 − 免注册费 − 自动适用的淡季9折 − 长期折扣。</p>
             </div>
             <div class="quote-form" aria-label="BECI费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks" [disabled]="weeks < minimumSelectedCourseWeeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseChange()"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of availableRoomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
             </div>
             <div class="quote-breakdown">
-              <div><span>注册费（中介优惠免收）</span><strong>USD {{ payableRegistrationFee }}（原价 USD {{ registrationFee }}）</strong></div>
+              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong *ngIf="selectedWeeks <= 3">已应用</strong><strong *ngIf="longStayDiscount > 0">- USD {{ formatUsd(longStayDiscount) }}</strong><strong *ngIf="selectedWeeks === 4">无额外折扣</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>思达优惠（免注册费）</span><strong>- USD {{ formatUsd(registrationDiscountAmount) }}</strong></div>
+              <div><span>2026淡季折扣（9折）</span><strong>{{ offSeasonDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonDiscountAmount) : '未适用' }}</strong></div>
+              <div><span>长期折扣</span><strong>{{ longStayDiscount > 0 ? '- USD ' + formatUsd(longStayDiscount) : '未适用' }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateSummary }}</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、维护费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">中介优惠免USD 100注册费；1/2/3周课程费按4周价的40%/60%/80%计算；8/12/16/20/24周长期折扣为USD 50/100/200/300/400，可与常规优惠叠加。City Studio双人间夫妻同行时每人USD 750/4周。旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周。</p>
+            <p class="fee-alert">1/2/3周课程费分别按4周价的40%/60%/80%计算，住宿费按实际周数折算；Sparta IELTS保证班自动限制12周起报。</p>
+            <p class="season-note">三校区统一优惠：免USD 100注册费；2026/9/6—12/27入学，课程费与住宿费自动按9折；8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，并可与淡季优惠叠加。City Studio双人间夫妻同行时每人USD 750/4周。</p>
+            <p class="season-note">City校区如选择夜间课程，一对一上课时间为17:00—21:00，每门课程较常规日间安排少1节一对一，需在报名时确认。</p>
           </section>
         </section>
 
@@ -313,15 +316,21 @@
           <div class="section-heading">
             <span>到校支付费用参考</span>
             <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数和学校政策会影响最终金额。</p>
+            <p>已按当前选择的{{ selectedWeeks }}周自动计算。费用以PHP计价，通常到校后支付；房间押金和未选择的马尼拉接机不计入学杂费合计。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
+          </div>
+          <div class="quote-result local-fee-result">
+            <span>本次预计学杂费合计（{{ selectedWeeks }}周）</span>
+            <strong>PHP {{ localFeeTotal.toLocaleString('en-US') }}</strong>
+            <em>{{ localFeeCnyText }}</em>
+            <small>{{ exchangeRateSummary }}</small>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看到校支付费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+              <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
             </div>
           </details>
         </section>
@@ -330,7 +339,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月19日。课程费、住宿费、注册费优惠、短期比例和长期折扣按所附BECI 2026费用表更新；校区、课程和特色参考APIBECI官方页面。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月1日。三校区、课程体系与住宿范围已对照APIBECI官方资料；2026美元价格、课程节数、淡季与长期优惠、到校学杂费按思达顾问本次最新价表录入。公开渠道的个别旧版课表与2026价表存在差异，报价单统一采用本次2026价表，正式报名仍以学校书面确认为准。</p>
           </div>
         </section>
 

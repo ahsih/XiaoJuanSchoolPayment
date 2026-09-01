@@ -12,6 +12,7 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
@@ -77,6 +78,9 @@ interface LocalFee {
   item: string;
   amount: string;
   note: string;
+  quantity: number;
+  total: number;
+  excluded?: boolean;
 }
 
 interface ProcessStep {
@@ -124,7 +128,8 @@ interface SidaTrustBadge {
 })
 export class SmeagCapitalSchoolComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
-  private readonly pricingSchoolSearchName = 'SMEAG';
+  private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly pricingSchoolSearchName = 'SMEAG Capital';
   private readonly pricingSchoolNames = [
     '菲律宾宿务SMEAG Capital语言学校',
     'SMEAG Capital Campus',
@@ -132,20 +137,21 @@ export class SmeagCapitalSchoolComponent implements OnInit {
     'SMEAG Global Education',
   ];
   private readonly courseFeeOrder = [
-    'esl',
-    'speaking-master',
+    'esl-regular-ket-pet-fce',
+    'esl-cae',
+    'speaking-master-ket-pet-fce',
+    'speaking-master-cae',
+    'esl-junior-2',
+    'toefl-ielts-pre',
+    'toefl-ielts-regular-guarantee',
+    'toeic-pre',
+    'toeic-regular-guarantee',
     'business',
-    'pre-ielts',
-    'ielts',
-    'ielts-guarantee',
-    'pre-toeic',
-    'toeic',
-    'pre-toefl',
-    'toefl',
-    'family-program-child',
-    'family-program-parents',
+    'esl-junior',
+    'children',
+    'guardian',
   ];
-  private readonly roomFeeOrder = ['quad', 'triple', 'twin', 'single'];
+  private readonly roomFeeOrder = ['campus-single', 'campus-twin', 'campus-triple', 'campus-quad', 'campus-five', 'hotel-single', 'hotel-twin', 'hotel-triple', 'hotel-quad'];
 
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
@@ -158,15 +164,19 @@ export class SmeagCapitalSchoolComponent implements OnInit {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 100;
-  readonly discount = 1;
-  seasonalFeePerWeek = 0;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
+  readonly discount = 0.9;
+  lowSeasonDiscountPerWeek = 25;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  exchangeRateLive = false;
+  readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
 
-  selectedCourseId = 'esl';
-  selectedRoomId = 'quad';
+  selectedCourseId = 'esl-regular-ket-pet-fce';
+  selectedRoomId = 'campus-quad';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
+  includeAirportPickup = false;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -282,7 +292,7 @@ export class SmeagCapitalSchoolComponent implements OnInit {
     },
     {
       label: '费用参考',
-      value: '2026公开参考：ESL学费USD 820/4周，四人房USD 760/4周，注册费USD 100',
+      value: '2026价目表参考：ESL常规USD 840/4周，校内四人房USD 780/4周，注册费USD 100',
     },
   ];
 
@@ -342,7 +352,7 @@ export class SmeagCapitalSchoolComponent implements OnInit {
     },
     {
       title: '预算只看学费住宿，不看当地费用',
-      text: 'SSP、SSP E-card、押金、水电、管理费、接机和签证延长都要另算。',
+      text: 'SSP、SSP-I Card、押金、水电、管理费、接机和签证延长都要另算。',
     },
     {
       title: '临近开学才指定单人房',
@@ -396,105 +406,31 @@ export class SmeagCapitalSchoolComponent implements OnInit {
   ];
 
   courseFees: CourseFee[] = [
-    {
-      id: 'esl',
-      name: 'ESL',
-      tuition: 820,
-      suitable: '基础综合英语，适合第一次游学和稳步提升',
-    },
-    {
-      id: 'speaking-master',
-      name: 'Speaking Master',
-      tuition: 1100,
-      suitable: '口语表达与反应训练，适合想增加开口量的学生',
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      tuition: 1540,
-      suitable: '商务沟通、演讲、会议和职场任务',
-    },
-    {
-      id: 'pre-ielts',
-      name: 'Pre-IELTS',
-      tuition: 1100,
-      suitable: '雅思入门与基础过渡',
-    },
-    {
-      id: 'ielts',
-      name: 'IELTS',
-      tuition: 1220,
-      suitable: '雅思常规备考与分数提升',
-    },
-    {
-      id: 'ielts-guarantee',
-      name: 'IELTS Guarantee',
-      tuition: 1220,
-      suitable: '雅思目标分路径，需确认入学分数和保证班规则',
-    },
-    {
-      id: 'pre-toeic',
-      name: 'Pre-TOEIC',
-      tuition: 960,
-      suitable: '多益入门，适合先补词汇和题型基础',
-    },
-    {
-      id: 'toeic',
-      name: 'TOEIC',
-      tuition: 1040,
-      suitable: '多益常规备考，适合求职和分数证明',
-    },
-    {
-      id: 'pre-toefl',
-      name: 'Pre-TOEFL',
-      tuition: 1040,
-      suitable: '托福入门与学术英语基础',
-    },
-    {
-      id: 'toefl',
-      name: 'TOEFL',
-      tuition: 1160,
-      suitable: '托福备考，适合北美升学和学术英语目标',
-    },
-    {
-      id: 'family-program-child',
-      name: 'Family Program (Child)',
-      tuition: 1400,
-      suitable: '亲子学生课程，需按年龄和档期确认',
-    },
-    {
-      id: 'family-program-parents',
-      name: 'Family Program (Parents)',
-      tuition: 780,
-      suitable: '陪读家长课程，适合生活英语和基础沟通',
-    },
+    { id: 'esl-regular-ket-pet-fce', name: 'ESL常规（KET/PET/FCE）', tuition: 840, suitable: '4节一对一 + 2节小组课 + 3小时选修 + 早晚斯巴达课；成人课程通常10岁起' },
+    { id: 'esl-cae', name: 'ESL（CAE）', tuition: 1320, suitable: '4节一对一 + 2节小组课 + 3小时选修 + 早晚斯巴达课' },
+    { id: 'speaking-master-ket-pet-fce', name: 'ESL / Speaking Master（KET/PET/FCE）', tuition: 1140, suitable: '4节一对一 + 2节四人小组 + 2节选修（演讲/口语/商务）+ 早晚斯巴达课' },
+    { id: 'speaking-master-cae', name: 'ESL / Speaking Master（CAE）', tuition: 1620, suitable: '4节一对一 + 2节四人小组 + 2节特殊课（演讲/口语/商务）+ 早晚斯巴达课' },
+    { id: 'esl-junior-2', name: 'ESL Junior 2', tuition: 1140, suitable: '5节一对一 + 2节讨论团体课 + 电影团体课 + 团体作业辅导' },
+    { id: 'toefl-ielts-pre', name: 'TOEFL / IELTS（预备班）', tuition: 1140, suitable: '4节一对一 + 2节四人小组 + 2节八人小组 + 早晚斯巴达课' },
+    { id: 'toefl-ielts-regular-guarantee', name: 'TOEFL / IELTS（常规/12周保分）', tuition: 1260, suitable: '4节一对一 + 2节四人小组 + 2节八人小组 + 早晚斯巴达课；保分班须满足入学与模考要求' },
+    { id: 'toeic-pre', name: 'TOEIC（预备班）', tuition: 1080, suitable: '4节一对一 + 2节小组课 + 2节选修 + 早晚斯巴达课' },
+    { id: 'toeic-regular-guarantee', name: 'TOEIC（常规/保分）', tuition: 1140, suitable: '4节一对一 + 2节小组课 + 2节选修 + 早晚斯巴达课' },
+    { id: 'business', name: 'Business', tuition: 1660, suitable: '8节一对一 + 选修课 + 早晚斯巴达课' },
+    { id: 'esl-junior', name: 'ESL Junior', tuition: 840, suitable: '4节一对一 + 2节讨论团体课 + 电影团体课 + 团体作业辅导；6至14岁' },
+    { id: 'children', name: '儿童课程', tuition: 1540, suitable: '4节一对一 + 4节团体课 + 2.5小时活动课；6至12岁' },
+    { id: 'guardian', name: '监护人课程', tuition: 840, suitable: '4节一对一 + 2节小组课' },
   ];
 
   roomFees: RoomFee[] = [
-    {
-      id: 'quad',
-      name: '四人房',
-      fee: 760,
-      note: '默认报价参考，预算压力较低',
-    },
-    {
-      id: 'triple',
-      name: '三人房',
-      fee: 840,
-      note: '预算与生活空间比较平衡',
-    },
-    {
-      id: 'twin',
-      name: '双人房',
-      fee: 960,
-      note: '适合朋友同行或希望室友数量少一点',
-    },
-    {
-      id: 'single',
-      name: '单人房',
-      fee: 1140,
-      note: '隐私最好，长期备考和热门档期需早确认',
-    },
+    { id: 'campus-single', name: '校内单人间', fee: 1180, note: '数量有限，热门档期需尽早确认' },
+    { id: 'campus-twin', name: '校内双人间', fee: 1020, note: '适合同伴同行或希望减少室友人数' },
+    { id: 'campus-triple', name: '校内三人间', fee: 880, note: '预算与生活空间比较平衡' },
+    { id: 'campus-quad', name: '校内四人间', fee: 780, note: '默认报价参考房型' },
+    { id: 'campus-five', name: '校内五人间', fee: 720, note: '校内住宿中预算最低' },
+    { id: 'hotel-single', name: '校外酒店单人间', fee: 1420, note: '合作S Hotel，距离校区约3公里；酒店住宿费不打折' },
+    { id: 'hotel-twin', name: '校外酒店双人间', fee: 1260, note: '合作S Hotel；酒店住宿费不打折' },
+    { id: 'hotel-triple', name: '校外酒店三人间', fee: 1120, note: '合作S Hotel；酒店住宿费不打折' },
+    { id: 'hotel-quad', name: '校外酒店四人间', fee: 1020, note: '合作S Hotel；酒店住宿费不打折' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -528,19 +464,6 @@ export class SmeagCapitalSchoolComponent implements OnInit {
       title: 'Evening Sparta / 模考',
       text: '考试课程和前4周规则更严格，报名时建议让顾问核对最新细则。',
     },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 6,800', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP E-Card', amount: 'PHP 3,800', note: '以学校现场收费为准' },
-    { item: 'ACR I-Card', amount: 'PHP 3,500', note: '长期学习或延签时通常需要' },
-    { item: '教材费', amount: '按课程实际收取', note: '不同课程、等级和教材数量会变化' },
-    { item: '宿舍押金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '电费', amount: 'PHP 2,400', note: '4周参考，实际以学校规则为准' },
-    { item: '水费', amount: 'PHP 2,000', note: '4周参考，实际以学校规则为准' },
-    { item: '管理费', amount: 'PHP 2,000', note: '4周参考' },
-    { item: '签证延长', amount: '按学习周数', note: '停留超过免签期后需按规定办理' },
-    { item: '接机费', amount: 'PHP 1,200', note: '宿务机场接机参考' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -674,7 +597,7 @@ export class SmeagCapitalSchoolComponent implements OnInit {
     {
       question: '页面上的报价包含全部费用吗？',
       answer:
-        '不包含全部。快速报价主要估算注册费、课程费和住宿费；到校后还要准备SSP、SSP E-card、押金、水电、管理费、教材、接机和可能的签证延长费用。',
+        '不包含全部。快速报价主要估算注册费、课程费和住宿费；到校后还要准备SSP、SSP-I Card、押金、水电、管理费、教材、接机和可能的签证延长费用。',
     },
     {
       question: 'SMEAG Capital适合雅思学生吗？',
@@ -711,6 +634,16 @@ export class SmeagCapitalSchoolComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPricingFromDatabase();
+    this.loadExchangeRates();
+  }
+
+  private loadExchangeRates(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
+      this.usdToCny = snapshot.usdToCny;
+      this.phpPerCny = snapshot.phpPerCny;
+      this.exchangeRateDate = snapshot.date;
+      this.exchangeRateLive = true;
+    });
   }
 
   private loadPricingFromDatabase(): void {
@@ -758,18 +691,19 @@ export class SmeagCapitalSchoolComponent implements OnInit {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
       .map((lesson) => ({
-        id: this.slugifyPriceKey(lesson.name),
+        id: this.createCourseId(lesson.name),
         name: lesson.name,
         tuition: lesson.price,
         suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
       }))
+      .filter((lesson) => this.courseFeeOrder.includes(lesson.id))
       .sort(
         (a, b) =>
           this.orderIndex(this.courseFeeOrder, a.id) -
           this.orderIndex(this.courseFeeOrder, b.id),
       );
 
-    if (databaseCourseFees.length > 0) {
+    if (databaseCourseFees.length === this.courseFeeOrder.length) {
       this.courseFees = databaseCourseFees;
       if (
         !this.courseFees.some((course) => course.id === this.selectedCourseId)
@@ -792,11 +726,11 @@ export class SmeagCapitalSchoolComponent implements OnInit {
           this.orderIndex(this.roomFeeOrder, b.id),
       );
 
-    if (databaseRoomFees.length > 0) {
+    if (databaseRoomFees.length === this.roomFeeOrder.length) {
       this.roomFees = databaseRoomFees;
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
         this.selectedRoomId =
-          this.roomFees.find((room) => room.id === 'quad')?.id ??
+          this.roomFees.find((room) => room.id === 'campus-quad')?.id ??
           this.roomFees[0].id;
       }
     }
@@ -806,20 +740,9 @@ export class SmeagCapitalSchoolComponent implements OnInit {
       this.registrationFee = registrationFee.fee;
     }
 
-    const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
-    if (peakSeasonFee) {
-      this.seasonalFeePerWeek = peakSeasonFee.fee;
-    }
-
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({
-        item: fee.name,
-        amount: this.formatCurrencyAmount(fee),
-        note: this.cleanFeeDescription(fee.description),
-      }));
-    if (databaseLocalFees.length > 0) {
-      this.localFees = databaseLocalFees;
+    const lowSeasonDiscount = fees.find((fee) => fee.name === '淡季优惠');
+    if (lowSeasonDiscount && lowSeasonDiscount.fee > 0) {
+      this.lowSeasonDiscountPerWeek = lowSeasonDiscount.fee;
     }
   }
 
@@ -874,28 +797,39 @@ export class SmeagCapitalSchoolComponent implements OnInit {
   }
 
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition * (this.selectedWeeks / 4);
+    return this.selectedCourse.tuition * this.durationPriceMultiplier(this.selectedWeeks);
   }
 
   get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee * (this.selectedWeeks / 4);
+    return this.selectedRoom.fee * this.durationPriceMultiplier(this.selectedWeeks);
   }
 
-  get isPeakSeason(): boolean {
-    return false;
+  get usesHotelRoom(): boolean {
+    return this.selectedRoomId.startsWith('hotel-');
   }
 
-  get seasonalSurcharge(): number {
-    return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0;
+  get tuitionDiscountAmount(): number {
+    return this.tuitionForSelectedWeeks * (1 - this.discount);
+  }
+
+  get roomDiscountAmount(): number {
+    return this.usesHotelRoom ? 0 : this.roomFeeForSelectedWeeks * (1 - this.discount);
+  }
+
+  get sidaDiscountAmount(): number {
+    return this.tuitionDiscountAmount + this.roomDiscountAmount;
+  }
+
+  get lowSeasonWeeks(): number {
+    return this.countOverlappingStudyWeeks('2026-08-23', '2027-01-01');
+  }
+
+  get lowSeasonDiscount(): number {
+    return this.lowSeasonWeeks * this.lowSeasonDiscountPerWeek;
   }
 
   get quoteUsd(): number {
-    return (
-      this.registrationFee +
-      (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) *
-        this.discount +
-      this.seasonalSurcharge
-    );
+    return Math.max(0, this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks - this.sidaDiscountAmount - this.lowSeasonDiscount);
   }
 
   get quoteUsdText(): string {
@@ -903,15 +837,49 @@ export class SmeagCapitalSchoolComponent implements OnInit {
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const rounded = Math.round(this.quoteUsd * this.usdToCny);
 
     return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
   }
 
   get discountText(): string {
-    return this.discount === 1
-      ? '公开参考价，优惠需顾问确认'
-      : `${Math.round(this.discount * 100)} 折扣范围`;
+    return this.usesHotelRoom ? '课程费9折，酒店住宿费不打折' : '课程费和校内住宿费9折';
+  }
+
+  get exchangeRateText(): string {
+    return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
+  }
+
+  get localFeePeriods(): number {
+    return Math.max(1, Math.ceil(this.selectedWeeks / 4));
+  }
+
+  get visaExtensionCount(): number {
+    return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4));
+  }
+
+  get localFees(): LocalFee[] {
+    const periods = this.localFeePeriods;
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
+      { item: 'SSP-I CARD', amount: 'PHP 4,300 / 次', quantity: 1, total: 4300, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I CARD 外国人身份证', amount: 'PHP 4,300 / 次', quantity: acrQuantity, total: 4300 * acrQuantity, note: '第一次签证续签时通常需要办理' },
+      { item: '管理费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '按每4周计算' },
+      { item: '水电费', amount: 'PHP 2,400 / 4周', quantity: periods, total: 2400 * periods, note: '预估费用，超额用电另收PHP 25/kW' },
+      { item: '旅游签证续签', amount: 'PHP 6,400 / 次', quantity: this.visaExtensionCount, total: 6400 * this.visaExtensionCount, note: '首次续签费用预估，每次有效期约30天；以移民局实收为准' },
+      { item: '书本教材费', amount: 'PHP 2,000 / 次', quantity: 1, total: 2000, note: '按课程和实际购买教材调整，学完后可能需要重新购买' },
+      { item: '宿务马克坦机场接机', amount: 'PHP 1,200 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1200 : 0, note: '可选，也可自行打车；不计入学杂费合计', excluded: true },
+      { item: '押金', amount: 'PHP 3,000 / 次', quantity: 1, total: 3000, note: '含房间押金PHP 2,500、钥匙PHP 300、电子卡PHP 200；无损坏及欠费时可退', excluded: true },
+    ];
+  }
+
+  get localFeesTotal(): number {
+    return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
+  }
+
+  get localFeesCnyText(): string {
+    return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
   formatUsd(value: number): string {
@@ -919,6 +887,55 @@ export class SmeagCapitalSchoolComponent implements OnInit {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
+  }
+
+  formatPhp(value: number): string {
+    return `PHP ${value.toLocaleString('en-US')}`;
+  }
+
+  private durationPriceMultiplier(weeks: number): number {
+    if (weeks === 2) return 0.65;
+    if (weeks === 3) return 0.85;
+    return weeks / 4;
+  }
+
+  private countOverlappingStudyWeeks(rangeStartValue: string, rangeEndValue: string): number {
+    const studyStart = this.parseLocalDate(this.selectedStartDate);
+    const rangeStart = this.parseLocalDate(rangeStartValue);
+    const rangeEnd = this.parseLocalDate(rangeEndValue);
+    if (!studyStart || !rangeStart || !rangeEnd) return 0;
+    let count = 0;
+    for (let week = 0; week < this.selectedWeeks; week += 1) {
+      const weekStart = new Date(studyStart);
+      weekStart.setDate(studyStart.getDate() + week * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      if (weekStart <= rangeEnd && weekEnd >= rangeStart) count += 1;
+    }
+    return count;
+  }
+
+  private parseLocalDate(value: string): Date | null {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
+  }
+
+  private createCourseId(name: string): string {
+    const normalized = name.toLowerCase();
+    if (name.includes('常规') && /ket|pet|fce/i.test(name)) return 'esl-regular-ket-pet-fce';
+    if (normalized.includes('speaking master') && normalized.includes('cae')) return 'speaking-master-cae';
+    if (normalized.includes('speaking master')) return 'speaking-master-ket-pet-fce';
+    if (normalized.includes('esl') && normalized.includes('cae')) return 'esl-cae';
+    if (normalized.includes('junior 2')) return 'esl-junior-2';
+    if (name.includes('TOEFL') && name.includes('IELTS') && name.includes('预备')) return 'toefl-ielts-pre';
+    if (name.includes('TOEFL') && name.includes('IELTS')) return 'toefl-ielts-regular-guarantee';
+    if (normalized.includes('toeic') && name.includes('预备')) return 'toeic-pre';
+    if (normalized.includes('toeic')) return 'toeic-regular-guarantee';
+    if (normalized.includes('business')) return 'business';
+    if (normalized.includes('esl junior')) return 'esl-junior';
+    if (name.includes('儿童')) return 'children';
+    if (name.includes('监护人')) return 'guardian';
+    return this.slugifyPriceKey(name);
   }
 
   private slugifyPriceKey(value: string): string {
@@ -936,40 +953,13 @@ export class SmeagCapitalSchoolComponent implements OnInit {
   }
 
   private createRoomId(name: string): string {
-    if (name.includes('四人') || /\b4\b/.test(name)) {
-      return 'quad';
-    }
-    if (name.includes('三人') || /\b3\b/.test(name)) {
-      return 'triple';
-    }
-    if (name.includes('双人') || name.includes('二人') || /\b2\b/.test(name)) {
-      return 'twin';
-    }
-    if (name.includes('单人') || /\b1\b/.test(name)) {
-      return 'single';
-    }
+    const prefix = name.includes('酒店') ? 'hotel' : 'campus';
+    if (name.includes('五人')) return `${prefix}-five`;
+    if (name.includes('四人')) return `${prefix}-quad`;
+    if (name.includes('三人')) return `${prefix}-triple`;
+    if (name.includes('双人') || name.includes('二人')) return `${prefix}-twin`;
+    if (name.includes('单人')) return `${prefix}-single`;
 
     return this.slugifyPriceKey(name);
-  }
-
-  private currencyCodeForDisplay(code?: string): string {
-    return !code
-      ? 'USD'
-      : code.toUpperCase() === 'PESO'
-        ? 'PHP'
-        : code.toUpperCase();
-  }
-
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string {
-    return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', {
-      minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1,
-      maximumFractionDigits: 1,
-    })}`;
-  }
-
-  private cleanFeeDescription(description?: string): string {
-    return description
-      ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '')
-      : '以学校现场收费为准';
   }
 }

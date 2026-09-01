@@ -53,9 +53,9 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
+              <span>4周思达折后参考</span>
               <strong>{{ fourWeekStartingText }}</strong>
-              <p>Eco Relax Lite + Deluxe Triple + 入学金USD 100</p>
+              <p>Eco Relax Lite + Deluxe Triple，已计入免注册费与95折</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -63,7 +63,7 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  SSP、签证、教材、水电、维护费、押金、接机、机票和保险另计
+                  SSP、签证、教材、水电、押金、接机、机票和保险另计
                 </li>
               </ul>
             </aside>
@@ -201,8 +201,8 @@
             <span>课程 / 公开参考费用</span>
             <h2>A&amp;J 2026年公开4周课程费与住宿费</h2>
             <p>
-              下方以USD整理公开4周费用。课程费和住宿费分开列示，套餐估算为“课程费 + 房型费”，不含入学金USD 100、
-              旺季附加费和菲律宾当地PHP费用。
+              下方以USD整理公开费用。普通课程按4周价列示，TOEIC与IELTS保分班按学校规定周数单独列示，
+              避免把保分班总价误当成4周价。套餐列为“课程费 + 房型费”折前价，思达优惠在下方报价器自动计算。
             </p>
           </div>
 
@@ -256,6 +256,33 @@
           </div>
 
           <div class="pricing-subheading">
+            <span>保分班费用</span>
+            <h3>TOEIC与IELTS保分班按规定周数报名</h3>
+          </div>
+          <div class="data-table anj-guarantee-table" role="table" aria-label="A&J 2026年保分班费用">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">保分课程</span>
+              <span role="columnheader">报名周数</span>
+              <span role="columnheader">课程费</span>
+              <span role="columnheader">课程结构</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let row of guaranteeFeeRows">
+              <span role="cell">{{ row.course }}</span>
+              <span role="cell">{{ row.weeks }}</span>
+              <span role="cell">{{ row.tuition }}</span>
+              <span role="cell">{{ row.lessons }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-guarantee-fees" aria-label="A&J保分班费用手机卡片">
+            <article *ngFor="let row of guaranteeFeeRows">
+              <span>{{ row.course }}</span>
+              <div><em>周数</em><strong>{{ row.weeks }}</strong></div>
+              <div><em>课程费</em><strong>{{ row.tuition }}</strong></div>
+              <p>{{ row.lessons }}</p>
+            </article>
+          </div>
+
+          <div class="pricing-subheading">
             <span>住宿费用</span>
             <h3>A&amp;J 4周住宿费参考</h3>
           </div>
@@ -302,14 +329,14 @@
             <span>费用快速报价</span>
             <h2>用A&amp;J公开价格先估算课程住宿费</h2>
             <p>
-              报价器按4周公开价格倍数估算课程费+住宿费+入学金。旺季附加费可打开参考；
-              SSP、签证、教材、水电、维护费、押金和接机仍需另行准备PHP预算。
+              普通课程按4周价倍数、保分班按学校固定周数计算。已自动计入思达免注册费、课程+住宿95折，
+              并根据入学日自动计算旺季附加费。常规、生日与淡季优惠金额暂未确定，当前不参与计算。
             </p>
           </div>
           <div class="quote-form" aria-label="A&J费用快速报价选项">
             <label>
               课程
-              <select [(ngModel)]="selectedCourseId">
+              <select [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseChange()">
                 <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
               </select>
             </label>
@@ -322,16 +349,19 @@
             <label>
               周数
               <select [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
+                <option *ngFor="let week of availableWeekOptions" [ngValue]="week">{{ week }}周</option>
               </select>
             </label>
             <label>
               预计入学日
               <input type="date" [(ngModel)]="selectedStartDate" />
             </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="includePeakSurcharge" />
-              <span>加入旺季附加费USD 40/周</span>
+            <label>
+              接机机场
+              <select [(ngModel)]="selectedPickupAirport">
+                <option value="clark">克拉克机场</option>
+                <option value="manila">马尼拉机场</option>
+              </select>
             </label>
           </div>
 
@@ -342,19 +372,46 @@
               <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
             </div>
             <div>
-              <span>入学金</span>
-              <strong>USD 100</strong>
-              <p>SSP、签证、教材、水电、维护费和押金另计。</p>
+              <span>思达注册费优惠</span>
+              <strong>- {{ formatUsd(registrationDiscountAmount) }}</strong>
+              <p>原注册费USD 100，本次免除。</p>
+            </div>
+            <div>
+              <span>思达折扣</span>
+              <strong>95折（- {{ formatUsd(sidaDiscountAmount) }}）</strong>
+              <p>按课程费+住宿费计算。</p>
             </div>
             <div>
               <span>旺季附加费</span>
               <strong>{{ peakSurchargeText }}</strong>
-              <p>是否适用需按入学日期与学校账单确认。</p>
+              <p>{{ peakSeasonWeeks }}周 × USD 40；按学习日期与旺季重叠周数自动计算。</p>
+            </div>
+            <div class="pending-promotion">
+              <span>常规优惠</span>
+              <strong>金额待补充</strong>
+              <p>当前按USD 0计算。</p>
+            </div>
+            <div class="pending-promotion">
+              <span>生日优惠</span>
+              <strong>金额待补充</strong>
+              <p>当前按USD 0计算。</p>
+            </div>
+            <div class="pending-promotion">
+              <span>淡季优惠</span>
+              <strong>金额待补充</strong>
+              <p>当前按USD 0计算。</p>
+            </div>
+          </div>
+
+          <div class="anj-quote-result">
+            <div>
+              <span>最终应付学校金额</span>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周，优惠已计入</p>
             </div>
             <div>
-              <span>预计USD合计</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>平均每周约 {{ weeklyAverageText }}，不含菲律宾当地费用和机票保险。</p>
+              <strong>{{ quoteCnyText }}</strong>
+              <p>{{ exchangeRateSummary }}</p>
             </div>
           </div>
 
@@ -368,19 +425,20 @@
               <mat-icon>send</mat-icon>
             </a>
           </div>
-          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认A&amp;J正式报价、房型空位、入学日、旺季附加费和当地PHP费用。</p>
+          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认A&amp;J正式invoice、房型空位及尚待补充的常规/生日/淡季优惠。</p>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>菲律宾当地费用</span>
-            <h2>A&amp;J报价外还要准备的费用</h2>
-            <p>以下按公开费用资料与学校规则整理。菲律宾政府费用、学校当地费用和宿舍规则可能调整，报名时需再次确认。</p>
+            <h2>A&amp;J到校后学杂费明细参考</h2>
+            <p>已按周数、房型和接机机场自动计算。住宿押金可退，洗衣按需付费，两者不计入合计；最终以学校与移民局实收为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
               <strong>{{ fee.amount }}</strong>
+              <em>数量：{{ fee.quantity }}</em>
               <p>{{ fee.note }}</p>
             </article>
           </div>
@@ -388,8 +446,13 @@
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
               <strong>{{ fee.amount }}</strong>
+              <em>数量：{{ fee.quantity }}</em>
               <p>{{ fee.note }}</p>
             </article>
+          </div>
+          <div class="anj-local-total">
+            <div><span>本次预计学杂费合计</span><strong>PHP {{ localFeeTotal | number:'1.0-0' }}</strong></div>
+            <div><strong>{{ localFeeCnyText }}</strong><p>{{ exchangeRateSummary }}</p></div>
           </div>
         </section>
 
@@ -397,7 +460,8 @@
           <div class="section-heading">
             <span>公开资料来源</span>
             <h2>A&amp;J页面公开资料来源</h2>
-            <p>学校定位、课程结构、校园设施、规则、公开费用和当地费用参考A&amp;J官方页面与近期公开费用资料。</p>
+            <p>学校定位、课程结构、校园设施与规则已对照A&amp;J官方页面；2026价格与当地费用按您提供的学校明细表更新。</p>
+            <p class="source-review-note">年龄核对提醒：2026价格表将Junior ESL标为7—15岁，A&amp;J官网当前标为8—16岁；页面保留价格表名称，报名应再向学校确认实际年龄规则。</p>
           </div>
           <nav class="section-nav anj-source-grid" aria-label="A&J公开资料来源">
             <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
@@ -447,7 +511,7 @@
         <div class="current-card">
           <span>A&amp;J ECO Campus</span>
           <strong class="side-price">{{ fourWeekStartingText }}</strong>
-          <p>Eco Relax Lite + Deluxe Triple + 入学金，SSP、签证、教材、水电、维护费、押金等另计。</p>
+          <p>Eco Relax Lite + Deluxe Triple思达折后参考，已免注册费；SSP、签证、教材、水电、押金等另计。</p>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
             估算费用
             <mat-icon>calculate</mat-icon>

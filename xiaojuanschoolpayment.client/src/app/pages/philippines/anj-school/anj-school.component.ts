@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, EMPTY } from 'rxjs';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿';
@@ -29,7 +31,9 @@ type CourseId =
   | 'test-course'
   | 'junior-lite'
   | 'junior-esl'
-  | 'junior-test';
+  | 'junior-test'
+  | 'toeic-guarantee'
+  | 'ielts-guarantee';
 
 interface QuickInfo {
   icon: string;
@@ -61,7 +65,9 @@ interface CourseOption {
   type: string;
   lessons: string;
   suitable: string;
-  tuition4w: number;
+  tuition4w?: number;
+  tuitionByWeeks?: Partial<Record<WeekOption, number>>;
+  allowedWeeks?: WeekOption[];
 }
 
 interface RoomOption {
@@ -72,10 +78,13 @@ interface RoomOption {
   isTotalPrice?: boolean;
 }
 
-interface FeeRow {
+interface LocalFee {
   item: string;
   amount: string;
   note: string;
+  quantity: number;
+  total: number;
+  optional?: boolean;
 }
 
 interface ScheduleItem {
@@ -109,7 +118,8 @@ interface SourceLink {
     './anj-school.component.css',
   ],
 })
-export class AnjSchoolComponent {
+export class AnjSchoolComponent implements OnInit {
+  private readonly exchangeRateService = inject(ExchangeRateService);
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
@@ -118,11 +128,17 @@ export class AnjSchoolComponent {
   selectedRoomId: RoomId = 'deluxe-triple';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
-  includePeakSurcharge = false;
+  selectedPickupAirport: 'clark' | 'manila' = 'clark';
   quoteCalculated = false;
 
   readonly registrationFeeUsd = 100;
+  readonly registrationDiscountUsd = 100;
+  readonly sidaDiscountRate = 0.95;
   readonly peakSurchargePerWeekUsd = 40;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -262,7 +278,7 @@ export class AnjSchoolComponent {
       id: 'eco-relax-lite',
       name: 'Eco Relax Lite',
       type: 'ESL / 轻量口语',
-      lessons: '1:1 x 3 + Optional Night Class + Optional Vocabulary Test',
+      lessons: '3节一对一 + 1次可选词汇测试 + 1节可选夜间课',
       suitable: '适合陪读家长、成人轻量学习、第一次游学或想保留更多自习和生活空间的人。',
       tuition4w: 650,
     },
@@ -270,7 +286,7 @@ export class AnjSchoolComponent {
       id: 'eco-relax-plus',
       name: 'Eco Relax Plus',
       type: 'ESL / 标准平衡',
-      lessons: '1:1 x 3 + Group x 2 + Vocabulary Test + Optional Class',
+      lessons: '3节一对一 + 2节团体课 + 前4周强制词汇测试 + 1节可选夜间课',
       suitable: '适合想兼顾一对一纠正和团体输出，强度不要太高但要有稳定学习节奏的人。',
       tuition4w: 750,
     },
@@ -278,7 +294,7 @@ export class AnjSchoolComponent {
       id: 'eco-hub',
       name: 'Eco Hub ESL',
       type: 'ESL / 目标轨道',
-      lessons: '1:1 x 4 + Group x 2 + Vocabulary Test + Optional Class',
+      lessons: '4节一对一 + 2节团体课 + 前4周强制词汇测试 + 1节可选夜间课',
       suitable: '可按Speaking Accelerator、Business Booster、Navigator方向选课，适合有明确使用场景的人。',
       tuition4w: 850,
     },
@@ -286,7 +302,7 @@ export class AnjSchoolComponent {
       id: 'eco-sparta',
       name: 'Eco Sparta',
       type: 'ESL / 高强度',
-      lessons: '1:1 x 6 + Mandatory Night Class + Mandatory Vocabulary Test',
+      lessons: '6节一对一 + 强制词汇测试 + 强制夜间课 + 20:00—23:00强制自习',
       suitable: '适合自律弱、想短期把开口和基础强行推上去，并能接受更密集日程的人。',
       tuition4w: 1150,
     },
@@ -294,33 +310,51 @@ export class AnjSchoolComponent {
       id: 'test-course',
       name: 'Test Course',
       type: 'IELTS / TOEIC / TOEFL / PTE',
-      lessons: '1:1 x 4 + Group x 2 + Vocabulary Test + Optional Class + Monthly Mock Test',
+      lessons: '4节一对一 + 2节团体课 + 前4周强制词汇测试 + 1节可选夜间课 + 每月模考',
       suitable: '适合已有分数目标，想在碧瑶做阶段性备考、模考和弱项训练的人。',
       tuition4w: 950,
     },
     {
       id: 'junior-lite',
-      name: 'Junior Lite',
+      name: 'Junior Lite（4—6岁）',
       type: 'Junior / 轻量',
-      lessons: '1:1 x 3 + Optional Class',
+      lessons: '3节一对一 + 1节可选夜间课 + 每月模考',
       suitable: '适合低龄学生先适应英文环境，课程强度相对轻。',
       tuition4w: 900,
     },
     {
       id: 'junior-esl',
-      name: 'Junior ESL',
+      name: 'Junior ESL（价表7—15岁）',
       type: 'Junior / 标准',
-      lessons: '1:1 x 4 + Group x 2 + Mandatory Vocabulary Test + Optional Class',
-      suitable: '适合寒暑假或中长期青少年英语强化，需同步确认监护、房型和活动安排。',
+      lessons: '4节一对一 + 2节团体课 + 强制词汇测试 + 1节可选夜间课 + 每月模考',
+      suitable: '本次2026价表标7—15岁，学校当前官网标8—16岁；报名需按实际年龄向学校书面确认。',
       tuition4w: 1300,
     },
     {
       id: 'junior-test',
-      name: 'Junior Test',
+      name: 'Junior Test（12—16岁）',
       type: 'Junior / 考试',
-      lessons: '1:1 x 4 + Group x 2 + Mandatory Vocabulary Test + Optional Class',
-      suitable: '适合有考试基础目标的青少年学生，报名时需确认当前开班与年龄要求。',
+      lessons: '4节一对一 + 2节团体课 + 强制词汇测试 + 1节可选夜间课 + 每月模考',
+      suitable: '适合准备IELTS、TOEIC、TOEFL或PTE的12—16岁学生；12岁以下仅可选择TOEFL Junior方向。',
       tuition4w: 1350,
+    },
+    {
+      id: 'toeic-guarantee',
+      name: 'TOEIC保分班',
+      type: '保证班 / TOEIC',
+      lessons: '4节一对一 + 2节团体课 + 强制词汇测试 + 强制夜间课 + 每天模考',
+      suitable: '12周按入学分数保证提升100—300分；16周无需初始分数，目标保证800分。',
+      tuitionByWeeks: { 12: 2850, 16: 3800 },
+      allowedWeeks: [12, 16],
+    },
+    {
+      id: 'ielts-guarantee',
+      name: 'IELTS Double Guarantee保分班',
+      type: '保证班 / IELTS',
+      lessons: '5节一对一 + 2节团体课 + 强制词汇测试 + 强制夜间课 + 每周模考',
+      suitable: '入学需达到IELTS 4.0；12/20/24周分别以5.5/6.0/6.5总分为保证目标。',
+      tuitionByWeeks: { 12: 3150, 20: 5250, 24: 6300 },
+      allowedWeeks: [12, 20, 24],
     },
   ];
 
@@ -340,39 +374,24 @@ export class AnjSchoolComponent {
     { id: 'eco-villa-exclusive-triple', name: 'Eco Villa整栋（三人入住）', note: '三人独享整栋别墅的4周总价。', fee4w: 3700, isTotalPrice: true },
   ];
 
-  readonly localFees: FeeRow[] = [
-    { item: '入学金', amount: 'USD 100', note: '报名固定费用；本页报价器已加入。' },
-    { item: '旺季附加费', amount: 'USD 40 / 周', note: '公开资料列2026/6/28-8/22与2027/6/27-8/22；本页可手动加入估算。' },
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，到校当地支付。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '与SSP相关的电子卡费用。' },
-    { item: '签证延长', amount: 'PHP 0-23,870', note: '4周内通常免延签；8周PHP 4,940；24周累计PHP 23,870。' },
-    { item: '水电费', amount: 'PHP 2,500-4,000 / 4周', note: 'Deluxe PHP 2,500；Premium/Eco Villa PHP 3,500；Suite PHP 4,000。' },
-    { item: '维护费', amount: 'PHP 1,000-1,500 / 4周', note: 'Deluxe PHP 1,000；Premium/Eco Villa/Studio/Suite PHP 1,500。' },
-    { item: '住宿押金', amount: 'PHP 3,000-5,000', note: 'Deluxe PHP 3,000；Premium、Eco Villa、Premium Studio为PHP 5,000。' },
-    { item: '团体接机', amount: 'PHP 3,000', note: '公开资料列马尼拉或克拉克机场团体接机参考。' },
-    { item: '学生证', amount: 'PHP 200', note: '到校当地支付。' },
-    { item: '教材费', amount: 'PHP 1,000-1,500 / 4周', note: 'ESL与Junior参考PHP 1,000；Test Course参考PHP 1,500。' },
-    { item: '延住费', amount: 'PHP 1,500-2,000 / 天', note: '学校规则列Deluxe PHP 1,500/天，Premium与Villa PHP 2,000/天。' },
-  ];
-
   readonly scheduleItems: ScheduleItem[] = [
     {
-      time: 'Morning',
+      time: '上午核心课',
       title: '一对一核心课',
       text: '按Eco Relax、Eco Hub或考试方向安排口说、听力、发音、语法、写作或弱项训练。',
     },
     {
-      time: 'Daytime',
+      time: '日间团体课',
       title: '团体课与目标主题',
       text: 'Eco Relax Plus和Eco Hub加入团体课，帮助学生练习互动表达、商务或生活场景英语。',
     },
     {
-      time: 'Evening',
-      title: 'Night Class / 单词测试',
+      time: '晚间课程',
+      title: '夜间课 / 单词测试',
       text: '部分课程可选，Eco Sparta和保证班方向会更严格；报名时要确认当前课程规则。',
     },
     {
-      time: 'Weekend',
+      time: '周末',
       title: '活动、出行与规则',
       text: '周末可安排Baguio周边活动，但跨城市旅行需按学校规定提前提交waiver并保持联系。',
     },
@@ -385,7 +404,7 @@ export class AnjSchoolComponent {
     },
     {
       title: '页面报价包含所有费用吗？',
-      text: '不包含。报价器只估算USD课程费、住宿费、入学金和可选旺季附加费；SSP、签证、教材、水电、维护费、押金、接机、机票和保险另计。',
+      text: '不包含全部当地费用。USD报价已自动计入思达免注册费、95折和按入学日判定的旺季附加费；SSP、签证、教材、水电、接机等PHP费用在下方单独估算，押金和洗衣不计入学杂费合计。',
     },
     {
       title: 'Eco Relax Lite和Eco Sparta怎么选？',
@@ -416,11 +435,28 @@ export class AnjSchoolComponent {
     { label: 'A&J官方首页', url: 'https://www.anjedudc.com/' },
     { label: 'A&J官方ESL课程页', url: 'https://www.anjedudc.com/esl-course/' },
     { label: 'A&J官方保证班页', url: 'https://www.anjedudc.com/guarantee-course/' },
+    { label: 'A&J官方TOEIC保证班页', url: 'https://www.anjedudc.com/toeic-guarantee/' },
+    { label: 'A&J官方Junior课程页', url: 'https://www.anjedudc.com/junior-course/' },
     { label: 'A&J官方校园规则页', url: 'https://www.anjedudc.com/school-regulation/' },
-    { label: 'A&J官方学生宿舍页', url: 'https://www.anjedudc.com/dormitory-room/' },
+    { label: 'A&J官方学生宿舍页', url: 'https://www.anjedudc.com/facilities/dormitory-rooms/' },
+    { label: 'A&J官方其他费用与接机说明', url: 'https://www.anjedudc.com/additional-information/' },
     { label: 'Fujiyama A&J ECO Campus 2026费用参考', url: 'https://www.fujiyama-international.com/philippines/anj-eco.html' },
     { label: 'Cebu Buddy A&J ECO Campus费用参考', url: 'https://cebu-buddy.com/school/aj-eco/' },
   ];
+
+  ngOnInit(): void {
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+      this.usdToCny = rates.usdToCny;
+      this.phpPerCny = rates.phpPerCny;
+      this.exchangeRateDate = rates.date;
+      this.usingLiveExchangeRate = true;
+    });
+  }
 
   get filteredGalleryImages(): GalleryImage[] {
     if (this.selectedGalleryCategory === '全部') {
@@ -442,16 +478,68 @@ export class AnjSchoolComponent {
     return this.roomOptions.filter((room) => !room.isTotalPrice);
   }
 
+  get availableWeekOptions(): WeekOption[] {
+    return this.selectedCourse.allowedWeeks ?? this.weekOptions;
+  }
+
+  onCourseChange(): void {
+    if (!this.availableWeekOptions.includes(this.selectedWeeks)) {
+      this.selectedWeeks = this.availableWeekOptions[0];
+    }
+  }
+
+  get courseTuitionUsd(): number {
+    if (this.selectedCourse.tuitionByWeeks) {
+      return this.selectedCourse.tuitionByWeeks[this.selectedWeeks] ?? 0;
+    }
+    return (this.selectedCourse.tuition4w ?? 0) * (this.selectedWeeks / 4);
+  }
+
+  get roomFeeUsd(): number {
+    return this.selectedRoom.fee4w * (this.selectedWeeks / 4);
+  }
+
   get packageUsd(): number {
-    return Math.round((this.selectedCourse.tuition4w + this.selectedRoom.fee4w) * (this.selectedWeeks / 4));
+    return this.courseTuitionUsd + this.roomFeeUsd;
+  }
+
+  get registrationDiscountAmount(): number {
+    return Math.min(this.registrationFeeUsd, this.registrationDiscountUsd);
+  }
+
+  get sidaDiscountAmount(): number {
+    return this.packageUsd * (1 - this.sidaDiscountRate);
+  }
+
+  get peakSeasonWeeks(): number {
+    const start = this.parseDate(this.selectedStartDate);
+    if (!start) return 0;
+    const peakRanges = [
+      ['2026-06-28', '2026-08-22'],
+      ['2027-06-27', '2027-08-22'],
+    ] as const;
+    let weeks = 0;
+    for (let week = 0; week < this.selectedWeeks; week += 1) {
+      const weekStart = new Date(start);
+      weekStart.setDate(weekStart.getDate() + week * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      const overlapsPeak = peakRanges.some(([fromValue, toValue]) => {
+        const from = this.parseDate(fromValue);
+        const to = this.parseDate(toValue);
+        return !!from && !!to && weekStart <= to && weekEnd >= from;
+      });
+      if (overlapsPeak) weeks += 1;
+    }
+    return weeks;
   }
 
   get peakSurchargeUsd(): number {
-    return this.includePeakSurcharge ? this.selectedWeeks * this.peakSurchargePerWeekUsd : 0;
+    return this.peakSeasonWeeks * this.peakSurchargePerWeekUsd;
   }
 
   get quoteUsd(): number {
-    return this.registrationFeeUsd + this.packageUsd + this.peakSurchargeUsd;
+    return Math.max(0, this.registrationFeeUsd + this.packageUsd - this.registrationDiscountAmount - this.sidaDiscountAmount + this.peakSurchargeUsd);
   }
 
   get packageUsdText(): string {
@@ -459,21 +547,31 @@ export class AnjSchoolComponent {
   }
 
   get peakSurchargeText(): string {
-    return this.includePeakSurcharge ? this.formatUsd(this.peakSurchargeUsd) : '未加入';
+    return this.peakSurchargeUsd > 0 ? this.formatUsd(this.peakSurchargeUsd) : '不适用';
   }
 
   get quoteUsdText(): string {
     return this.formatUsd(this.quoteUsd);
   }
 
+  get quoteCnyText(): string {
+    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
+  }
+
+  get exchangeRateSummary(): string {
+    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
+    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+  }
+
   get fourWeekStartingText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[0].tuition4w + this.roomOptions[0].fee4w);
+    return this.formatUsd(((this.courses[0].tuition4w ?? 0) + this.roomOptions[0].fee4w) * this.sidaDiscountRate);
   }
 
   get ecoHubPremiumTwinText(): string {
     const ecoHub = this.courses.find((course) => course.id === 'eco-hub') ?? this.courses[2];
     const premiumTwin = this.roomOptions.find((room) => room.id === 'premium-twin') ?? this.roomOptions[3];
-    return this.formatUsd(this.registrationFeeUsd + ecoHub.tuition4w + premiumTwin.fee4w);
+    return this.formatUsd(((ecoHub.tuition4w ?? 0) + premiumTwin.fee4w) * this.sidaDiscountRate);
   }
 
   get weeklyAverageText(): string {
@@ -483,18 +581,18 @@ export class AnjSchoolComponent {
   get courseFeeRows() {
     const featuredRoomIds: RoomId[] = ['deluxe-triple', 'deluxe-twin', 'deluxe-single', 'premium-twin'];
 
-    return this.courses.map((course) => {
+    return this.courses.filter((course) => course.tuition4w !== undefined).map((course) => {
       const totals = featuredRoomIds.reduce(
         (acc, roomId) => {
           const room = this.roomOptions.find((option) => option.id === roomId) ?? this.roomOptions[0];
-          return { ...acc, [roomId]: this.formatUsd(course.tuition4w + room.fee4w) };
+          return { ...acc, [roomId]: this.formatUsd((course.tuition4w ?? 0) + room.fee4w) };
         },
         {} as Record<RoomId, string>,
       );
 
       return {
         course: course.name,
-        tuition: this.formatUsd(course.tuition4w),
+        tuition: this.formatUsd(course.tuition4w ?? 0),
         deluxeTriple: totals['deluxe-triple'],
         deluxeTwin: totals['deluxe-twin'],
         deluxeSingle: totals['deluxe-single'],
@@ -502,6 +600,50 @@ export class AnjSchoolComponent {
         lessons: course.lessons,
       };
     });
+  }
+
+  get guaranteeFeeRows() {
+    return this.courses
+      .filter((course) => course.tuitionByWeeks)
+      .flatMap((course) => Object.entries(course.tuitionByWeeks ?? {}).map(([weeks, tuition]) => ({
+        course: course.name,
+        weeks: `${weeks}周`,
+        tuition: this.formatUsd(tuition),
+        lessons: course.lessons,
+      })));
+  }
+
+  get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
+  get roomWaterUnit(): number {
+    if (this.selectedRoomId === 'premium-suite') return 4000;
+    return this.selectedRoomId.startsWith('deluxe') ? 2500 : 3500;
+  }
+  get roomDeposit(): number { return this.selectedRoomId.startsWith('deluxe') ? 3000 : 5000; }
+  get localFees(): LocalFee[] {
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const visaTotal = this.visaExtensionCount * 4940;
+    const clarkQuantity = this.selectedPickupAirport === 'clark' ? 1 : 0;
+    const manilaQuantity = this.selectedPickupAirport === 'manila' ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '移民局收取，有效期6个月；换校通常需重新办理' },
+      { item: 'SSP E-Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, acrQuantity), quantity: acrQuantity, total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理' },
+      { item: '水电费', amount: this.localFeeAmount(this.roomWaterUnit, this.localFeePeriods), quantity: this.localFeePeriods, total: this.roomWaterUnit * this.localFeePeriods, note: `${this.selectedRoomId.startsWith('deluxe') ? 'Deluxe' : this.selectedRoomId === 'premium-suite' ? 'Suite' : 'Premium / Villa'} PHP ${this.roomWaterUnit.toLocaleString('en-US')}/4周 × ${this.localFeePeriods}；超出用电另收PHP 25/kW` },
+      { item: '签证续签', amount: `PHP ${visaTotal.toLocaleString('en-US')}`, quantity: this.visaExtensionCount, total: visaTotal, note: this.visaExtensionCount > 0 ? `按首次续签PHP 4,940/次估算，共${this.visaExtensionCount}次；最终以移民局实收为准` : '8周内暂不计；超过8周后按续签次数估算' },
+      { item: '教材费', amount: this.localFeeAmount(1500, this.localFeePeriods), quantity: this.localFeePeriods, total: 1500 * this.localFeePeriods, note: `PHP 1,500/4周 × ${this.localFeePeriods}；实际以课程与学校发放教材为准` },
+      { item: '学生证', amount: 'PHP 200', quantity: 1, total: 200, note: '一次性费用' },
+      { item: '马尼拉机场接机', amount: this.localFeeAmount(3000, manilaQuantity), quantity: manilaQuantity, total: 3000 * manilaQuantity, optional: manilaQuantity === 0, note: '与克拉克接机二选一；周日固定时间团体接机' },
+      { item: '克拉克机场接机', amount: this.localFeeAmount(3000, clarkQuantity), quantity: clarkQuantity, total: 3000 * clarkQuantity, optional: clarkQuantity === 0, note: '与马尼拉接机二选一；周日固定时间团体接机' },
+      { item: '住宿押金', amount: `PHP ${this.roomDeposit.toLocaleString('en-US')}`, quantity: 1, total: this.roomDeposit, optional: true, note: '不计入学杂费合计；无损坏及欠费，毕业时退还' },
+      { item: '洗衣服务', amount: 'PHP 0', quantity: 0, total: 0, optional: true, note: '洗+烘PHP 150/7kg/次，只洗或只烘PHP 100/7kg/次；按需付费，不计入合计' },
+    ];
+  }
+
+  get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((sum, fee) => sum + fee.total, 0); }
+  get localFeeCnyText(): string {
+    if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
+    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -518,10 +660,16 @@ export class AnjSchoolComponent {
   }
 
   formatUsd(value: number): string {
-    return `USD ${value.toLocaleString('en-US')}`;
+    return `USD ${value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 })}`;
   }
 
   formatRoomFee(room: RoomOption): string {
     return `${this.formatUsd(room.fee4w)}${room.isTotalPrice ? '（总价）' : ''}`;
+  }
+
+  private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
+  private parseDate(value: string): Date | null {
+    const date = new Date(`${value}T12:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 }

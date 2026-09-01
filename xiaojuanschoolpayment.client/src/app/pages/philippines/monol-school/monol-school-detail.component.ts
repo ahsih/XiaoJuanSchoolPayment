@@ -7,6 +7,7 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
@@ -20,7 +21,7 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -43,6 +44,7 @@ interface SidaMonolTrustBadge { icon: string; label: string; }
 })
 export class MonolSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'MONOL';
   private readonly pricingSchoolNames = ['菲律宾碧瑶MONOL语言学校', 'MONOL', 'Models of Nonpareil and Outstanding Learning'];
   private readonly courseFeeOrder = ['esl-4', 'general-esl', 'ielts', 'leap-english'];
@@ -51,14 +53,21 @@ export class MonolSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly discount = 1;
-  seasonalFeePerWeek = 0;
-  readonly usdToCny = 7.2;
+  readonly registrationDiscount = 100;
+  readonly offSeasonCourseDiscountPerBlock = 100;
+  readonly offSeasonRoomDiscountPerBlock = 100;
+  readonly snsDiscountPerBlock = 100;
+  usdToCny = 7.2;
+  phpPerCny = 7.75;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
   readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'esl-4';
   selectedRoomId = 'quad-room';
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
+  selectedPickupAirport: 'manila' | 'clark' = 'manila';
+  applySnsPromotion = false;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -120,9 +129,10 @@ export class MonolSchoolDetailComponent implements OnInit {
 
   readonly courses: CourseItem[] = [
     { name: 'ESL 4', type: '轻量综合英文', lessons: '4节一对一 + 4节团体选修课 + 健身选修课', suitable: '适合预算优先、希望保留复习和生活弹性，同时维持一对一训练的学生。' },
-    { name: 'General ESL', type: '基础与综合英文', lessons: '5节一对一 + 4节团体课 / 天', suitable: '使用螺旋式复习和沟通法，覆盖听说读写、语法和发音，适合打基础和系统提升。' },
-    { name: 'IELTS', type: '雅思备考', lessons: '5节一对一 + 4节团体课 / 天', suitable: '面向升学、海外就业或移民方向，官方建议General ESL中级以上基础，并安排每期模拟考试。' },
-    { name: 'LEAP English', type: '客制化英文', lessons: '5节一对一 + 4节团体课 + Fitness Classes', suitable: '先做学习者画像和目标分析，再按General ESL、IELTS、TOEIC、Business或其他科目组合课程。' },
+    { name: 'General ESL', type: '基础与综合英文', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '覆盖听说读写、语法和发音，适合打基础和系统提升。' },
+    { name: 'IELTS', type: '雅思备考', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '面向升学、海外就业或移民方向；代理价表注明每周五模拟考试，学校公开课程页按每期安排模拟考试。' },
+    { name: 'LEAP English', type: '客制化英文', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '先做学习者画像和目标分析，再按General ESL、IELTS、TOEIC、Business或其他科目组合课程。' },
+    { name: 'Junior ESL', type: '亲子与青少年规则', lessons: '支持5—15岁学生与父母同行学习', suitable: '寒暑假不接受Junior ESL单独报名；16—18岁可选成人课程，5—18岁独自在校学习另收USD 100/4周管理费。课程价格需单独确认。' },
     { name: 'Additional One-on-One', type: '追加一对一', lessons: '按ESL / IELTS / LEAP不同价格追加', suitable: '适合到校后发现某一科目需要更多纠错或强化时再单独确认。' },
   ];
 
@@ -142,27 +152,12 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   readonly schedule: ScheduleItem[] = [
-    { time: '07:00 - 08:00', title: '早餐 / 个人准备', text: '餐食不强制打包，学生可按自己的饮食习惯和预算安排。' },
+    { time: '07:00 - 08:00', title: '早餐 / 个人准备', text: '淡季符合条件的学生，2026年12月31日前工作日提供免费早餐；其他餐食按个人选择另计。' },
     { time: '08:00 - 12:00', title: '上午一对一与团体课', text: 'ESL 4安排4节一对一；General ESL、IELTS和LEAP安排5节一对一，并搭配团体选修课。' },
     { time: '12:00 - 13:00', title: '午餐与短休', text: '可结合餐盒、咖啡厅、外送或共享厨房安排午餐。' },
-    { time: '13:00 - 17:00', title: '下午课程与反馈', text: 'IELTS关注考试科目训练，LEAP更强调学习监测、目标调整和客制化。' },
-    { time: '17:00 - 22:00', title: 'Fitness / 复习 / 生活安排', text: '官方课程页提到Fitness Classes为平日可选，晚间更适合自律复习和运动休息。' },
+    { time: '13:00 - 17:00', title: '下午课程与团体选修', text: '团体选修包含写作、讨论、语法和发音；IELTS关注考试科目训练，LEAP按个人目标调整。' },
+    { time: '17:00 - 22:00', title: '健身选修 / 复习', text: '17:00—19:00健身训练，19:00—20:00拳击，20:00—21:00泰拳，21:00—22:00瑜伽；具体开放以校方当期安排为准。' },
     { time: '周末', title: '碧瑶生活与休息', text: '适合安排市区采购、咖啡厅、Burnham Park、Camp John Hay或自然景点。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'Security Deposit', amount: 'PHP 4,000', note: '或USD 100，完成学习后按学校规则退还' },
-    { item: 'SSP Application', amount: 'PHP 7,800', note: '特别学习许可，有效期6个月' },
-    { item: 'SSP ACR I-Card', amount: 'PHP 4,500', note: '申请SSP时支付' },
-    { item: 'TVV ACR I-Card', amount: 'PHP 3,500', note: '首次签证延签时支付' },
-    { item: '签证延签8周', amount: 'PHP 2,500', note: 'Waiver参考' },
-    { item: '签证延签12周', amount: 'PHP 9,700', note: 'Waiver + 第一次延签含TVV ACR I-Card参考' },
-    { item: '签证延签16周', amount: 'PHP 10,500', note: 'Waiver + 第一次延签含TVV ACR I-Card参考' },
-    { item: '签证延签20周', amount: 'PHP 12,300', note: 'Waiver + 第一次 + 第二次延签参考' },
-    { item: '签证延签24周', amount: 'PHP 13,000', note: 'Waiver + 第一次 + 第二次延签参考' },
-    { item: '马尼拉团体接机', amount: 'PHP 3,000', note: 'Group pickup from Manila Airport' },
-    { item: '克拉克团体接机', amount: 'PHP 2,500', note: 'Group pickup from Clark Airport' },
-    { item: '餐费', amount: 'Separate', note: '官方Admission页标注Meal Allowance Separate' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -195,16 +190,19 @@ export class MonolSchoolDetailComponent implements OnInit {
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Camp John Hay', 'Mines View Park'];
   readonly notes = [
     'MONOL 2025年价目表说明除注册费外，课程费和住宿费以4周为单位列示。',
-    '餐费在官方Admission页标注为Separate，报价时要单独估算餐食和个人生活费。',
+    '通过思达报名免USD 100注册费；符合淡季条件时，每满4周课程费减USD 100、住宿费减USD 100。',
+    'SNS活动仅限符合日期且选择单人房或小单间的学生；每4周发布一篇小红书及抖音在校故事，可再减USD 100，活动可能随时结束。',
+    '餐费约PHP 14,000/4周，房间押金PHP 4,000，均不计入学杂费合计。',
     '本页课程费按2025年价目表直接列示：ESL 4 / General ESL / IELTS / LEAP分别为USD 750 / 900 / 1,000 / 1,150。',
-    'Security Deposit官方列为USD 100或PHP 4,000，本页到校费用按PHP 4,000展示。',
-    'MONOL官方Admission页没有列出旺季附加费，本计算器按USD 0处理；最终以学校正式账单为准。',
+    '课程结构已与学校公开Program页核对；报价采用思达收到的2025代理价目表，个别房型名称与学校当前公开页面不同。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶MONOL语言学校是斯巴达学校吗？', answer: '更适合归类为半斯巴达或自律弹性型。它有高课时日课和学习支持，但不像典型高压斯巴达学校主要靠强制自习和门禁推动。' },
     { question: 'MONOL适合零基础学生吗？', answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、英语基础和是否需要先读ESL过渡。' },
-    { question: '页面报价包含餐费吗？', answer: '不包含。MONOL官方Admission页把Meal Allowance标注为Separate，所以本页前期支付参考只计算注册费、课程费、住宿费和额外附加费。' },
+    { question: '页面报价包含餐费吗？', answer: '不包含。餐费按约PHP 14,000/4周单独准备，房间押金也单列且不计入学杂费合计。淡季符合条件时，2026年12月31日前工作日提供免费早餐。' },
+    { question: 'MONOL淡季优惠如何自动计算？', answer: '课程在2026年6月28日前结束，或于2026年8月23日后开始且在2026年内入学，每满4周自动减课程费USD 100和住宿费USD 100；旺季期间不适用。' },
+    { question: 'SNS活动优惠会自动计算吗？', answer: '选择参加活动且日期、房型符合时才计算。活动期为2026年1月1日至6月27日，仅限单人房和小单间；每4周需在小红书及抖音发布一篇在校故事，可再减USD 100，最终需顾问确认活动仍开放。' },
     { question: '页面的课程和住宿价格按什么周期计算？', answer: '注册费为一次性USD 100；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名MONOL，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
@@ -225,7 +223,20 @@ export class MonolSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+      this.usdToCny = rates.usdToCny;
+      this.phpPerCny = rates.phpPerCny;
+      this.exchangeRateDate = rates.date;
+      this.usingLiveExchangeRate = true;
+    });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -255,8 +266,8 @@ export class MonolSchoolDetailComponent implements OnInit {
         suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
       }))
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
-    if (databaseCourseFees.length > 0) {
-      this.courseFees = databaseCourseFees;
+    if (this.courseFeeOrder.every((id) => databaseCourseFees.some((course) => course.id === id))) {
+      this.courseFees = databaseCourseFees.filter((course) => this.courseFeeOrder.includes(course.id));
       if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
         this.selectedCourseId = this.courseFees.find((course) => course.id === 'esl-4')?.id ?? this.courseFees[0].id;
       }
@@ -271,8 +282,8 @@ export class MonolSchoolDetailComponent implements OnInit {
         note: room.description || '请联系顾问确认空房',
       }))
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.length > 0) {
-      this.roomFees = databaseRoomFees;
+    if (this.roomFeeOrder.every((id) => databaseRoomFees.some((room) => room.id === id))) {
+      this.roomFees = databaseRoomFees.filter((room) => this.roomFeeOrder.includes(room.id));
       if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
         this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad-room')?.id ?? this.roomFees[0].id;
       }
@@ -280,12 +291,6 @@ export class MonolSchoolDetailComponent implements OnInit {
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
-    const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
-    if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -309,21 +314,88 @@ export class MonolSchoolDetailComponent implements OnInit {
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
-  get isPeakSeason(): boolean { return false; }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
+  get fullFourWeekBlocks(): number { return Math.floor(this.selectedWeeks / 4); }
+  get studyEndDate(): Date | null {
+    const start = this.parseDate(this.selectedStartDate);
+    if (!start) return null;
+    const end = new Date(start);
+    end.setDate(end.getDate() + this.selectedWeeks * 7 - 1);
+    return end;
+  }
+  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
+  get isOffSeasonPromotionEligible(): boolean {
+    const start = this.parseDate(this.selectedStartDate);
+    const end = this.studyEndDate;
+    const firstPeriodEnd = this.parseDate('2026-06-27');
+    const secondPeriodStart = this.parseDate('2026-08-23');
+    const promotionEnd = this.parseDate('2026-12-31');
+    if (!start || !end || !firstPeriodEnd || !secondPeriodStart || !promotionEnd) return false;
+    if (start.getFullYear() !== 2026) return false;
+    return end <= firstPeriodEnd || (start >= secondPeriodStart && start <= promotionEnd);
+  }
+  get offSeasonCourseDiscountAmount(): number {
+    return this.isOffSeasonPromotionEligible ? this.fullFourWeekBlocks * this.offSeasonCourseDiscountPerBlock : 0;
+  }
+  get offSeasonRoomDiscountAmount(): number {
+    return this.isOffSeasonPromotionEligible ? this.fullFourWeekBlocks * this.offSeasonRoomDiscountPerBlock : 0;
+  }
+  get isSnsPromotionEligible(): boolean {
+    const start = this.parseDate(this.selectedStartDate);
+    const from = this.parseDate('2026-01-01');
+    const to = this.parseDate('2026-06-27');
+    const eligibleRoom = ['premium-single-room', 'standard-single-room', 'small-single-room'].includes(this.selectedRoomId);
+    return !!start && !!from && !!to && start >= from && start <= to && eligibleRoom && this.fullFourWeekBlocks > 0;
+  }
+  get snsDiscountAmount(): number {
+    return this.applySnsPromotion && this.isSnsPromotionEligible ? this.fullFourWeekBlocks * this.snsDiscountPerBlock : 0;
+  }
+  get totalDiscountAmount(): number {
+    return this.registrationDiscountAmount + this.offSeasonCourseDiscountAmount + this.offSeasonRoomDiscountAmount + this.snsDiscountAmount;
+  }
+  get quoteBeforeDiscounts(): number { return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
+  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
   get quoteCnyText(): string {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
-  get discountText(): string {
-    return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`;
+  get exchangeRateSummary(): string {
+    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
+    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+  }
+
+  get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
+  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
+  get textbookQuantity(): number { return this.localFeePeriods; }
+  get localFees(): LocalFee[] {
+    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const visaExtensionTotal = this.visaExtensionCount * 4940;
+    const manilaQuantity = this.selectedPickupAirport === 'manila' ? 1 : 0;
+    const clarkQuantity = this.selectedPickupAirport === 'clark' ? 1 : 0;
+    return [
+      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '有效期6个月；换校通常需重新办理' },
+      { item: 'SSP-I Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, acrQuantity), quantity: acrQuantity, total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理' },
+      { item: '签证续签', amount: `PHP ${visaExtensionTotal.toLocaleString('en-US')}`, quantity: this.visaExtensionCount, total: visaExtensionTotal, note: this.visaExtensionCount > 0 ? `按首次续签PHP 4,940/次估算，共${this.visaExtensionCount}次；最终以移民局实收为准` : '8周内暂不计；超过8周后按续签次数估算' },
+      { item: '教材费', amount: this.localFeeAmount(2000, this.textbookQuantity), quantity: this.textbookQuantity, total: 2000 * this.textbookQuantity, note: `PHP 2,000/4周 × ${this.textbookQuantity}；使用电子教材可免费，需自带电子设备` },
+      { item: '学生证', amount: 'PHP 130', quantity: 1, total: 130, note: '一次性费用' },
+      { item: '马尼拉机场接机', amount: this.localFeeAmount(3000, manilaQuantity), quantity: manilaQuantity, total: 3000 * manilaQuantity, optional: manilaQuantity === 0, note: '与克拉克接机二选一；周日固定时间团体接机' },
+      { item: '克拉克机场接机', amount: this.localFeeAmount(3000, clarkQuantity), quantity: clarkQuantity, total: 3000 * clarkQuantity, optional: clarkQuantity === 0, note: '与马尼拉接机二选一；周日固定时间团体接机' },
+      { item: '房间押金', amount: 'PHP 4,000', quantity: 1, total: 4000, optional: true, note: '不计入学杂费合计；无损坏及欠费，毕业时退还' },
+      { item: '餐费', amount: this.localFeeAmount(14000, this.localFeePeriods), quantity: this.localFeePeriods, total: 14000 * this.localFeePeriods, optional: true, note: `约PHP 14,000/4周 × ${this.localFeePeriods}；按实际点餐支付，不计入学杂费合计` },
+    ];
+  }
+  get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
+  get localFeeCnyText(): string {
+    if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
+    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
   formatUsd(value: number): string {
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
+  private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
+  private parseDate(value: string): Date | null { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
@@ -338,14 +410,5 @@ export class MonolSchoolDetailComponent implements OnInit {
     if (name.includes('Triple')) return 'triple-room';
     if (name.includes('Quad')) return 'quad-room';
     return this.slugifyPriceKey(name);
-  }
-  private currencyCodeForDisplay(code?: string): string {
-    return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
-  }
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string {
-    return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`;
-  }
-  private cleanFeeDescription(description?: string): string {
-    return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准';
   }
 }

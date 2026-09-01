@@ -88,6 +88,10 @@
   grid-template-columns: minmax(170px, 0.8fr) minmax(120px, 0.45fr) minmax(0, 1.55fr);
 }
 
+:host .anj-page .anj-guarantee-table .table-row {
+  grid-template-columns: minmax(190px, 0.85fr) minmax(110px, 0.4fr) minmax(120px, 0.45fr) minmax(0, 1.7fr);
+}
+
 :host .anj-page .anj-tuition-table .table-row span:nth-child(n + 2):nth-child(-n + 6),
 :host .anj-page .anj-room-table .table-row span:nth-child(2) {
   font-weight: 850;
@@ -117,6 +121,75 @@
 
 :host .anj-page .anj-quote-breakdown {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .anj-page .pending-promotion {
+  background: #f8faf9;
+}
+
+:host .anj-page .pending-promotion strong {
+  color: #68768b;
+  font-size: 16px;
+}
+
+:host .anj-page .anj-quote-result,
+:host .anj-page .anj-local-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1px;
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid #f0c59f;
+  border-left: 5px solid #f36a21;
+  border-radius: 10px;
+  background: #ead9c9;
+}
+
+:host .anj-page .anj-quote-result > div,
+:host .anj-page .anj-local-total > div {
+  display: flex;
+  min-height: 92px;
+  padding: 16px 20px;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff9f3;
+}
+
+:host .anj-page .anj-quote-result span,
+:host .anj-page .anj-local-total span {
+  color: #125b4d;
+  font-weight: 900;
+}
+
+:host .anj-page .anj-quote-result strong,
+:host .anj-page .anj-local-total strong {
+  margin-top: 4px;
+  color: #ed5a24;
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 950;
+}
+
+:host .anj-page .anj-quote-result p,
+:host .anj-page .anj-local-total p {
+  margin: 5px 0 0;
+  color: #617086;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+:host .anj-page .local-fee-grid article em,
+:host .anj-page #local-fees .mobile-card-list article em {
+  color: #738096;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+:host .anj-page .source-review-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-left: 3px solid #e0a338;
+  background: #fffaf0;
 }
 
 :host .anj-page .toggle-row {
@@ -185,7 +258,8 @@
 
 @media (max-width: 860px) {
   :host .anj-page .anj-tuition-table,
-  :host .anj-page .anj-room-table {
+  :host .anj-page .anj-room-table,
+  :host .anj-page .anj-guarantee-table {
     display: none;
   }
 
@@ -201,6 +275,11 @@
 
   :host .anj-page .anj-course-grid,
   :host .anj-page .anj-quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .anj-page .anj-quote-result,
+  :host .anj-page .anj-local-total {
     grid-template-columns: 1fr;
   }
 

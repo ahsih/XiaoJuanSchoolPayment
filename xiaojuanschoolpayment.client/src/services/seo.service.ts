@@ -90,7 +90,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/baguio-jic': {
     title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
     description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、青少年与监护人课程、住宿房型、2025费用和报名注意事项。',
+      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、青少年与监护人课程、2026课程费、住宿房型、优惠规则和报名注意事项。',
     keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.jpg',
   },

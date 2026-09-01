@@ -380,7 +380,7 @@ export class PhilippinesCityStudyLayoutComponent {
       name: 'Lemon',
       focus: '多国家方案规划',
       text: '费用、时间与升学路径综合比较',
-      avatar: '/assets/contact/lemon-avatar.jpg',
+      avatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
       qr: '/assets/contact/lemon-wechat-qr.png',
       phone: '13298529856',
       phoneDisplay: '132 9852 9856',

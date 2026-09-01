@@ -53,7 +53,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>ESL Classic + 四人间</p>
+              <p>半斯巴达 ESL + 四人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -203,13 +203,13 @@
 
         <section class="section-block pricing-reference" id="course-fees">
           <div class="section-heading">
-            <span>EV 2025 年 4 周课程费</span>
+            <span>EV 2026 年 4 周课程费</span>
             <h2>先看课程费，再叠加食宿费</h2>
             <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
           </div>
           <div class="pricing-table-grid">
             <div>
-              <div class="data-table course-fee-table" role="table" aria-label="EV 2025年4周课程费">
+              <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
                 <div class="table-row table-head" role="row">
                   <span role="columnheader">课程</span>
                   <span role="columnheader">4周课程费</span>
@@ -221,8 +221,8 @@
                   <span role="cell">{{ fee.suitable }}</span>
                 </div>
               </div>
-              <p class="pricing-note">以上单价均为4周费用；1周按40%、2周按65%、3周按85%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。网页估算已按课程费和食宿费95折计算，注册费不打折。</p>
-              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2025年4周课程费手机卡片">
+              <p class="pricing-note">以上单价均为4周费用；1周按40%、2周按65%、3周按85%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。网页估算仅对课程费和住宿费计算95折，其他费用不打折。</p>
+              <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
                 <article *ngFor="let fee of courseFees">
                   <span>课程</span>
                   <strong>{{ fee.name }}</strong>
@@ -234,11 +234,11 @@
 
             <div>
               <div class="section-heading pricing-subheading" id="room-fees">
-                <span>EV 2025 年 4 周食宿费</span>
+                <span>EV 2026 年 4 周食宿费</span>
                 <h2>房型会明显影响总预算</h2>
                 <p>默认报价使用四人间。热门房型建议提前确认空房。</p>
               </div>
-              <div class="data-table room-fee-table" role="table" aria-label="EV 2025年4周食宿费">
+              <div class="data-table room-fee-table" role="table" aria-label="EV 2026年4周食宿费">
                 <div class="table-row table-head" role="row">
                   <span role="columnheader">房型</span>
                   <span role="columnheader">4周食宿费</span>
@@ -250,7 +250,7 @@
                   <span role="cell">{{ room.note }}</span>
                 </div>
               </div>
-              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2025年4周食宿费手机卡片">
+              <div class="mobile-card-list mobile-room-fees" aria-label="EV 2026年4周食宿费手机卡片">
                 <article *ngFor="let room of roomFees">
                   <span>房型</span>
                   <strong>{{ room.name }}</strong>
@@ -332,58 +332,68 @@
         <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>EV 费用快速报价</span>
-              <h2>默认参考：4周 ESL Classic + 四人间</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 食宿费）× 95折 + 旺季附加费。注册费不参与折扣。</p>
+              <h2>默认参考：4周半斯巴达 ESL + 四人间</h2>
+              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 95折 + 未成年管理费 + 旺季附加费。只有课程费和住宿费参与95折。</p>
             </div>
             <div class="quote-form" aria-label="EV费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
               <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+              <label class="quote-check"><input type="checkbox" [(ngModel)]="isMinorStudent" /><span>未满18岁（自动计入 USD 100 / 4周管理费）</span></label>
+              <label class="quote-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /><span>需要宿务机场周日接机（到校支付，可选）</span></label>
             </div>
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>食宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>仅课程费和食宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
+              <div><span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(discountAmount) }}</strong></div>
+              <div><span>未成年管理费</span><strong>USD {{ formatUsd(minorManagementFee) }}</strong></div>
+              <div><span>旺季附加费（{{ peakSeasonWeeks }}周）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateText }}，人民币仅供估算</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、教材费、水电费、学生证、设施维护费、接机费、保证金等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">EV旺季附加费、优惠和正式报价需由顾问按入学档期向学校确认。</p>
+            <p class="fee-alert">到校学杂费会按学习周数、校内或校外住宿、签证时长自动估算。接机与可退房间押金单独列示，不计入学杂费合计。</p>
+            <p class="season-note">旺季附加费为 USD 40 / 周，系统按学习日期与 2026/07/05—08/29 的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>到校支付费用参考</span>
             <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数和学校政策会影响最终金额。</p>
+            <p>以下费用以 PHP 计价，系统会按当前周数、房型和签证时长自动计算数量。接机与房间押金不计入合计。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            <article *ngFor="let fee of localFees" [class.fee-excluded]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ formatPhp(fee.total) }}</strong><em>{{ fee.amount }} × {{ fee.quantity }}</em><p>{{ fee.note }}</p></article>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看到校支付费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+              <article *ngFor="let fee of localFees" [class.fee-excluded]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ formatPhp(fee.total) }}</strong><em>{{ fee.amount }} × {{ fee.quantity }}</em><p>{{ fee.note }}</p></article>
             </div>
           </details>
+          <div class="local-fee-total">
+            <span>本次预计到校学杂费合计</span>
+            <strong>{{ formatPhp(localFeesTotal) }}</strong>
+            <em>{{ localFeesCnyText }}</em>
+            <small>不含可选接机及可退房间押金；最终以学校和菲律宾相关部门实收为准</small>
+          </div>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月18日。学校环境、课程和设施信息参考菲律宾宿务EV语言学校官方网站学校资料、Study Plans、课程、宿舍、校园与设施页面；费用参考EV 2025年价目表及思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月1日。学校环境与课程结构参考菲律宾宿务EV语言学校官方网站，课程费、住宿费、当地费用及优惠规则按EV 2026年价目表与思达顾问资料更新。学校价格、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -490,7 +500,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>ESL Classic<br />四人间</p>
+          <p>半斯巴达 ESL<br />四人间</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

@@ -64,11 +64,11 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>ESL + 四人房 + 注册费</p>
+              <p>ESL常规 + 校内四人间 + 注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  使用公开2026参考价：ESL USD 820 + 四人房 USD 760
+                  使用2026参考价：ESL常规 USD 840 + 校内四人间 USD 780
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -248,7 +248,7 @@
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
+                <span role="columnheader">课程安排</span>
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
@@ -294,7 +294,7 @@
               <span>SMEAG 2026 年 4 周住宿费</span>
               <h2>房型会明显影响总预算</h2>
               <p>
-                默认报价使用四人房。单人房、热门档期和亲子房型建议先让顾问确认空房。
+                默认报价使用校内四人间。校外酒店住宿费不参与思达9折，热门档期建议先确认空房。
               </p>
             </div>
             <div
@@ -331,8 +331,8 @@
           <section class="quote-panel" id="quote">
             <div class="section-heading">
               <span>SMEAG Capital 费用快速报价</span>
-              <h2>默认参考：4周 ESL + 四人房</h2>
-              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 + 旺季附加费</p>
+              <h2>默认参考：4周 ESL常规 + 校内四人间</h2>
+              <p>前期支付参考 = 注册费 + 9折后的课程费 + 住宿费 − 淡季优惠。校内住宿费参与9折，校外酒店住宿费不打折。</p>
             </div>
             <div class="quote-form" aria-label="SMEAG Capital费用快速报价选项">
               <label>
@@ -363,6 +363,10 @@
                 预计入学日
                 <input type="date" [(ngModel)]="selectedStartDate" />
               </label>
+              <label class="smeag-quote-check">
+                <input type="checkbox" [(ngModel)]="includeAirportPickup" />
+                <span>需要宿务马克坦机场接机（到校支付，可选）</span>
+              </label>
             </div>
             <div class="quote-breakdown">
               <div>
@@ -377,17 +381,18 @@
                 ><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
               </div>
               <div>
-                <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
+                <span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(sidaDiscountAmount) }}</strong>
               </div>
               <div>
-                <span>旺季附加费</span
-                ><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
+                <span>淡季优惠（{{ lowSeasonWeeks }}周 × USD {{ lowSeasonDiscountPerWeek }}）</span
+                ><strong>- USD {{ formatUsd(lowSeasonDiscount) }}</strong>
               </div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateText }}，人民币仅供估算</small>
               <p *ngIf="quoteCalculated">
                 已按当前选择更新，正式报价仍需顾问确认空房和优惠。
               </p>
@@ -405,10 +410,10 @@
               </a>
             </div>
             <p class="fee-alert">
-              除前期支付费用外，学生到校后通常还需支付SSP、SSP E-card、ACR I-card、教材费、宿舍押金、水电费、管理费、接机费和签证延长等当地费用。实际金额以学校现场收取和个人学习周数为准。
+              到校学杂费会按学习周数、ACR I-card和旅游签证续签次数自动估算。接机与可退押金单独列示，不计入学杂费合计。
             </p>
             <p class="season-note">
-              SMEAG Capital优惠、旺季规则、考试课程保证班规则和正式报价需由顾问按入学档期向学校确认。
+              2026/08/23—2027/01/01在校学习期间，每个重叠学习周减USD25；先计算思达9折，再扣淡季优惠。注册费和当地费用不打折。
             </p>
           </section>
         </section>
@@ -418,13 +423,14 @@
             <span>到校支付费用参考</span>
             <h2>前期支付之外，还要准备当地费用</h2>
             <p>
-              以下费用以PHP计价，通常到校后支付。不同课程、周数、签证时长和学校政策会影响最终金额。
+              以下费用以PHP计价，系统会按当前周数和签证时长自动计算数量。接机与押金不计入合计。
             </p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
               <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
+              <strong>{{ formatPhp(fee.total) }}</strong>
+              <em>{{ fee.amount }} × {{ fee.quantity }}</em>
               <p>{{ fee.note }}</p>
             </article>
           </div>
@@ -433,11 +439,18 @@
             <div class="local-fee-grid mobile-local-fees">
               <article *ngFor="let fee of localFees">
                 <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
+                <strong>{{ formatPhp(fee.total) }}</strong>
+                <em>{{ fee.amount }} × {{ fee.quantity }}</em>
                 <p>{{ fee.note }}</p>
               </article>
             </div>
           </details>
+          <div class="smeag-local-total">
+            <span>本次预计到校学杂费合计</span>
+            <strong>{{ formatPhp(localFeesTotal) }}</strong>
+            <em>{{ localFeesCnyText }}</em>
+            <small>不含可选接机及可退押金；最终以学校和菲律宾相关部门实收为准</small>
+          </div>
         </section>
 
         <section class="notice-panel" id="price-note">
@@ -445,7 +458,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考Alpha Edu公开2026 SMEAG Capital学费、住宿费和当地费用表，并交叉参考SMEAG官方课程/规则说明及其他公开代理页面。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              本页价格更新时间：2026年9月1日。课程费、住宿费、当地费用及优惠规则按SMEAG Capital 2026价目表与思达顾问资料更新，并交叉参考SMEAG官方Capital课程与学习规则。学校价格、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>
@@ -617,7 +630,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>ESL<br />四人房</p>
+          <p>ESL常规<br />校内四人间</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a

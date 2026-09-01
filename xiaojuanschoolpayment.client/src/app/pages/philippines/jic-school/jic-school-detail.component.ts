@@ -7,6 +7,7 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
@@ -44,6 +45,7 @@ interface SidaJicTrustBadge { icon: string; label: string; }
 })
 export class JicSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'JIC';
   private readonly pricingSchoolNames = ['Baguio JIC', '菲律宾碧瑶JIC语言学校', 'Baguio JIC Academy', 'JIC Academy Baguio'];
   private readonly courseFeeOrder = [
@@ -84,10 +86,12 @@ export class JicSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly discount = 1;
-  seasonalFeePerWeek = 34.5;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 24];
+  readonly registrationDiscount = 100;
+  seasonalFeePerWeek = 40;
+  usdToCny = 7.2;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
+  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   selectedCourseId = 'challenger-esl-lite';
   selectedRoomId = 'challenger-quad-bunk';
   selectedWeeks = 4;
@@ -100,7 +104,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { icon: 'assignment', label: '重点方向', value: 'ESL / IELTS / Speaking / Career', note: '从基础英文、雅思保证班到TOEIC、商务和打工度假都有对应路线。' },
     { icon: 'school', label: '学习风格', value: '目标导向分校区', note: '先按目标选校区，再按课时量、管理强度和房型做报价。' },
     { icon: 'bed', label: '住宿', value: '单人 / 双人 / 四人房', note: 'Challenger和Premium房型不同，热门档期要提前确认空位。' },
-    { icon: 'payments', label: '费用表', value: 'JIC 2025费用表整理', note: '课程住宿以USD计算，特别选修课和保证班费用以PHP另计。' },
+    { icon: 'payments', label: '费用表', value: 'JIC 2026价格', note: '课程住宿以USD计算，特别选修课和保证班费用以PHP另计。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -127,7 +131,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { label: '课程方向', value: 'ESL Lite/Core/Standard、IELTS Lite/Core/Standard/Guarantee、Speaking、TEP、Active Senior、TOEIC、Business、Working Holiday、青少年与监护人课程' },
     { label: '住宿方向', value: 'Challenger标准单人/双人、复式或上下铺四人间；Premium无阳台/带阳台单人、双人及四人间' },
     { label: '学习制度', value: 'Challenger更重视词汇测试、自习、IELTS和ESL体系；Premium更重视主题式学习、口语输出和职业场景' },
-    { label: '报价说明', value: '根据思达顾问提供的JIC 2025费用表按4周整理；最终以学校正式报价为准' },
+    { label: '报价说明', value: '课程费与住宿费按JIC 2026价格逐项核对；最终以学校正式报价为准' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -153,7 +157,7 @@ export class JicSchoolDetailComponent implements OnInit {
 
   readonly courses: CourseItem[] = [
     { name: 'Challenger ESL Lite / Core / Standard', type: 'Challenger 基础与综合ESL', lessons: '4-6节一对一 + 2节小组课', suitable: 'Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
-    { name: 'Challenger IELTS Lite / Core / Standard', type: 'IELTS备考', lessons: '4-6节一对一 + 2节小组课', suitable: 'Standard另含强制自习和30分钟词汇测试，适合有明确分数目标的学生。' },
+    { name: 'Challenger IELTS Lite / Core / Standard', type: 'IELTS备考', lessons: '4-6节一对一 + 2节小组课', suitable: '雅思课程每周六安排模拟考试；Standard另含强制自习和30分钟词汇测试。' },
     { name: 'Challenger IELTS Guarantee', type: 'IELTS保证班', lessons: '6节一对一 + 2节小组课 + 强制自习及词汇测试', suitable: '每周六模拟测试；保证班参加费另付PHP 18,000。' },
     { name: 'Premium Speaking Starter 7 / Pro 8 / Master 8', type: '口语强化', lessons: '4-6节一对一 + 1节团体课 + 2节选修课', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
     { name: 'Premium 主题英语TEP 8 / 9 / 10', type: '主题式ESL', lessons: '3-5节一对一 + 3节团体课 + 2节选修课', suitable: '适合喜欢通过生活主题练习英文表达的学生。' },
@@ -167,10 +171,10 @@ export class JicSchoolDetailComponent implements OnInit {
     { id: 'challenger-esl-lite', name: 'Challenger ESL Lite', tuition: 760, suitable: '4节一对一 + 2节小组课' },
     { id: 'challenger-esl-core', name: 'Challenger ESL Core', tuition: 860, suitable: '5节一对一 + 2节小组课' },
     { id: 'challenger-esl-standard', name: 'Challenger ESL Standard', tuition: 960, suitable: '6节一对一 + 2节小组课' },
-    { id: 'challenger-ielts-lite', name: 'Challenger IELTS Lite', tuition: 960, suitable: '4节一对一 + 2节小组课' },
-    { id: 'challenger-ielts-core', name: 'Challenger IELTS Core', tuition: 1010, suitable: '5节一对一 + 2节小组课' },
-    { id: 'challenger-ielts-standard', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试' },
-    { id: 'challenger-ielts-guarantee', name: 'Challenger IELTS Guarantee', tuition: 1060, suitable: '每周六模拟测试；保证班另付PHP 18,000' },
+    { id: 'challenger-ielts-lite', name: 'Challenger IELTS Lite', tuition: 960, suitable: '4节一对一 + 2节小组课；每周六模拟考试' },
+    { id: 'challenger-ielts-core', name: 'Challenger IELTS Core', tuition: 1010, suitable: '5节一对一 + 2节小组课；每周六模拟考试' },
+    { id: 'challenger-ielts-standard', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六模拟考试' },
+    { id: 'challenger-ielts-guarantee', name: 'Challenger IELTS Guarantee', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六模拟测试，保证班另付PHP 18,000' },
     { id: 'premium-speaking-starter-7', name: 'Premium Speaking Starter 7', tuition: 800, suitable: '4节一对一 + 1节团体课 + 2节选修课' },
     { id: 'premium-speaking-pro-8', name: 'Premium Speaking Pro 8', tuition: 975, suitable: '5节一对一 + 1节团体课 + 2节选修课' },
     { id: 'premium-speaking-master-8', name: 'Premium Speaking Master 8', tuition: 1150, suitable: '6节一对一 + 1节团体课 + 2节选修课' },
@@ -256,10 +260,11 @@ export class JicSchoolDetailComponent implements OnInit {
     '菲律宾碧瑶JIC语言学校必须先分Challenger和Premium校区，再决定课程、房型和费用。',
     'Challenger ESL / IELTS更适合需要测试、自习和明确学习制度的学生。',
     'Premium更适合口语、职业英文、成人学习和更舒适住宿需求。',
-    '课程费与住宿费根据思达顾问提供的JIC 2025费用表整理，最终会随学校政策、优惠和房型空位变化。',
+    '课程费与住宿费按JIC 2026价格逐项核对，最终会随学校政策、优惠和房型空位变化。',
     '斯巴达课程每周强制模拟考；半斯巴达课程双周强制模拟考。',
     'Challenger校区特别选修课每4周另付PHP 2,000。',
-    '旺季附加费按菲律宾碧瑶JIC语言学校公开JPY 5,000/周折算为USD 34.5/周，正式报价需按学校当期账单确认。',
+    '2026旺季附加费为USD 40/周，适用期间为2026/6/28—8/22；页面按实际覆盖旺季的学习周数自动计算。',
+    '淡季优惠按入学日期、房型和每满4周自动计算；长期优惠、圣诞及节日优惠可按规则叠加，校内延长不适用淡季优惠。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
@@ -295,7 +300,22 @@ export class JicSchoolDetailComponent implements OnInit {
     { label: 'Fujiyama JIC Challenger Campus费用参考', url: 'https://www.fujiyama-international.com/philippines/jic-baguio.html' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService
+      .getLatestCnyRates()
+      .pipe(catchError(() => EMPTY))
+      .subscribe((rates) => {
+        if (rates.usdToCny <= 0) return;
+        this.usdToCny = rates.usdToCny;
+        this.exchangeRateDate = rates.date;
+        this.usingLiveExchangeRate = true;
+      });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -318,12 +338,16 @@ export class JicSchoolDetailComponent implements OnInit {
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons
       .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({
-        id: this.createCourseId(lesson.name),
-        name: lesson.name,
-        tuition: lesson.price,
-        suitable: lesson.description || lesson.note || '请联系顾问确认适合人群',
-      }))
+      .map((lesson) => {
+        const id = this.createCourseId(lesson.name);
+        const verifiedSchedule = this.courseFees.find((course) => course.id === id)?.suitable;
+        return {
+          id,
+          name: lesson.name,
+          tuition: lesson.price,
+          suitable: verifiedSchedule || lesson.description || lesson.note || '请联系顾问确认课程安排',
+        };
+      })
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
     if (databaseCourseFees.length > 0) {
       this.courseFees = databaseCourseFees;
@@ -350,8 +374,8 @@ export class JicSchoolDetailComponent implements OnInit {
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
-    const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
-    if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
+    // JIC 2026收费表明确旺季附加费为40美元/周。旧数据库记录不能覆盖新规则。
+    this.seasonalFeePerWeek = 40;
     const databaseLocalFees = fees
       .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
       .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
@@ -379,23 +403,94 @@ export class JicSchoolDetailComponent implements OnInit {
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
-  get isPeakSeason(): boolean {
-    const start = new Date(`${this.selectedStartDate}T00:00:00`);
-    const ranges = [
-      [new Date('2026-06-28T00:00:00'), new Date('2026-08-22T23:59:59')],
-      [new Date('2027-06-27T00:00:00'), new Date('2027-08-22T23:59:59')],
+  get peakSeasonWeeks(): number {
+    const ranges: Array<[string, string]> = [
+      ['2026-06-28', '2026-08-22'],
+      ['2027-06-27', '2027-08-21'],
     ];
-    return ranges.some(([from, to]) => start >= from && start <= to);
+    const arrival = this.parseDate(this.selectedStartDate);
+    if (!arrival) return 0;
+
+    let coveredWeeks = 0;
+    for (let week = 0; week < this.selectedWeeks; week += 1) {
+      const weekStart = new Date(arrival);
+      weekStart.setDate(arrival.getDate() + week * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      if (ranges.some(([from, to]) => this.dateRangesOverlap(weekStart, weekEnd, from, to))) {
+        coveredWeeks += 1;
+      }
+    }
+    return coveredWeeks;
   }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
+  get isPeakSeason(): boolean { return this.peakSeasonWeeks > 0; }
+  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
+
+  get fourWeekBlocks(): number { return Math.floor(this.selectedWeeks / 4); }
+  get selectedRoomCategory(): 'single' | 'twin' | 'quad' {
+    const roomName = `${this.selectedRoomId} ${this.selectedRoom.name}`.toLowerCase();
+    if (roomName.includes('quad') || roomName.includes('四人')) return 'quad';
+    if (roomName.includes('twin') || roomName.includes('双人')) return 'twin';
+    return 'single';
+  }
+  get offSeasonPromotionYear(): 2026 | 2027 | null {
+    const arrival = this.parseDate(this.selectedStartDate);
+    if (!arrival || this.selectedWeeks < 4) return null;
+    if (this.dateInRange(arrival, '2026-08-23', '2027-01-09')) return 2026;
+    if (
+      this.dateInRange(arrival, '2027-02-21', '2027-06-26') ||
+      this.dateInRange(arrival, '2027-08-22', '2028-01-08')
+    ) return 2027;
+    return null;
+  }
+  get offSeasonDiscountPerBlock(): number {
+    if (this.offSeasonPromotionYear === 2026) return this.selectedRoomCategory === 'quad' ? 150 : 50;
+    if (this.offSeasonPromotionYear === 2027) return this.selectedRoomCategory === 'quad' ? 100 : 50;
+    return 0;
+  }
+  get offSeasonDiscountAmount(): number { return this.offSeasonDiscountPerBlock * this.fourWeekBlocks; }
+  get offSeasonDiscountLabel(): string {
+    return this.offSeasonPromotionYear ? `${this.offSeasonPromotionYear}淡季优惠` : '常规淡季优惠';
+  }
+
+  get longTermDiscountAmount(): number {
+    if (this.selectedWeeks >= 24) return 600;
+    if (this.selectedWeeks >= 20) return 500;
+    if (this.selectedWeeks >= 16) return 400;
+    if (this.selectedWeeks >= 12) return 300;
+    return 0;
+  }
+
+  get holidayDiscountAmount(): number {
+    if (this.selectedWeeks < 4 || this.selectedRoomCategory === 'single') return 0;
+    const arrival = this.parseDate(this.selectedStartDate);
+    if (!arrival) return 0;
+    const qualifiesFor2026Holiday =
+      this.dateInRange(arrival, '2026-11-29', '2026-12-13') ||
+      this.dateInRange(arrival, '2026-12-27', '2027-01-10');
+    if (qualifiesFor2026Holiday) return 200;
+    const qualifiesFor2027Holiday =
+      this.dateInRange(arrival, '2027-11-28', '2027-12-12') ||
+      this.dateInRange(arrival, '2027-12-26', '2028-01-09');
+    return qualifiesFor2027Holiday ? 150 : 0;
+  }
+
+  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
+  get totalDiscountAmount(): number {
+    return this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longTermDiscountAmount + this.holidayDiscountAmount;
+  }
+  get quoteBeforeDiscounts(): number {
+    return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge;
+  }
+  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
   get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
   get quoteCnyText(): string {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
-  get discountText(): string {
-    return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`;
+  get exchangeRateSummary(): string {
+    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
+    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
   }
 
   formatUsd(value: number): string {
@@ -407,6 +502,20 @@ export class JicSchoolDetailComponent implements OnInit {
   private orderIndex(order: string[], value: string): number {
     const index = order.indexOf(value);
     return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+  }
+  private parseDate(value: string): Date | null {
+    const date = new Date(`${value}T12:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  private dateInRange(date: Date, from: string, to: string): boolean {
+    const rangeStart = this.parseDate(from);
+    const rangeEnd = this.parseDate(to);
+    return !!rangeStart && !!rangeEnd && date >= rangeStart && date <= rangeEnd;
+  }
+  private dateRangesOverlap(start: Date, end: Date, from: string, to: string): boolean {
+    const rangeStart = this.parseDate(from);
+    const rangeEnd = this.parseDate(to);
+    return !!rangeStart && !!rangeEnd && start <= rangeEnd && end >= rangeStart;
   }
   private createCourseId(name: string): string {
     if (name.includes('托业')) return 'premium-toeic';

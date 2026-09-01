@@ -67,6 +67,7 @@ interface CourseFee {
   id: string;
   name: string;
   tuition: number;
+  tuition2027: number;
   suitable: string;
   schedule: string;
   note: string;
@@ -84,6 +85,81 @@ interface RoomFee {
   name: string;
   fee: number;
   note: string;
+}
+
+interface RoomRateOption {
+  id: string;
+  label: string;
+  code: string;
+  location: '校内' | '校外';
+}
+
+interface RoomRateGroup {
+  title: string;
+  rooms: RoomRateOption[];
+}
+
+interface RoomComparisonProfile {
+  id: string;
+  label: string;
+  englishName: string;
+  bookingCode: string;
+  location: '校内' | '校外';
+  size: string;
+  view: string;
+  bed: string;
+  service: string;
+  suitable: string;
+  highlights: string[];
+  note: string;
+  image: string;
+  imageAlt: string;
+}
+
+interface CampusBuildingCard {
+  code: string;
+  title: string;
+  icon: string;
+  facilities: string[];
+}
+
+interface DailyScheduleRow {
+  time: string;
+  activity: string;
+  kind: 'meal' | 'test' | 'class' | 'activity' | 'free';
+}
+
+interface HolidayCalendar {
+  year: number;
+  label: string;
+  months: Array<{
+    month: number;
+    holidays: Array<{ day: string; name: string; provisional?: boolean }>;
+  }>;
+}
+
+interface IeltsExamDate {
+  month: number;
+  academic: { day: string; weekday: string };
+  general: { day: string; weekday: string };
+}
+
+interface CampusMonthlyEvent {
+  month: number;
+  icon: string;
+  title: string;
+  text: string;
+  image: string;
+  imageAlt: string;
+}
+
+interface CourseDetailGuide {
+  icon: string;
+  title: string;
+  subtitle: string;
+  facts: Array<{ label: string; value: string }>;
+  points: string[];
+  notice?: string;
 }
 
 interface LocalFee {
@@ -115,6 +191,14 @@ interface StudentCareService {
   location: string;
   schedule: string;
   points: string[];
+}
+
+interface CampusPracticalGuide {
+  icon: string;
+  eyebrow: string;
+  title: string;
+  facts: Array<{ label: string; value: string }>;
+  note: string;
 }
 
 interface FaqItem {
@@ -189,7 +273,7 @@ export class CiaSchoolComponent implements OnInit {
     hero: '/assets/cia/campus-building.png',
     jennyAvatar: '/assets/contact/jenny-avatar.jpg',
     jennyQr: '/assets/contact/jenny-wechat-qr.png',
-    lemonAvatar: '/assets/contact/lemon-avatar.jpg',
+    lemonAvatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
     lemonQr: '/assets/contact/lemon-wechat-qr.png',
     peninAvatar: '/assets/contact/penin-avatar.jpg',
     peninQr: '/assets/contact/penin-wechat-qr.png',
@@ -210,11 +294,8 @@ export class CiaSchoolComponent implements OnInit {
     'ielts-guarantee',
     'business',
     'working-holiday',
-    'certified-university',
-    'callan',
-    'junior',
-    'guardian',
-    'immersion',
+    'callan-esl',
+    'college-immersion',
   ];
   private readonly roomFeeOrder = [
     'p1',
@@ -243,85 +324,82 @@ export class CiaSchoolComponent implements OnInit {
     Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>
   > = {
     'regular-esl': {
-      suitable: '基础综合提升',
-      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
-      note: 'ESL 可在报名时提前申请不参加晨测。',
+      suitable: '基础综合提升 / 可申请 Light ESL',
+      schedule:
+        '一对一4节 + 小组1节 + 中组1节 + 大组1节 + 选修1节 + 写作1节 + 自习1节',
+      note: 'Regular ESL 均衡提升听说读写；Light ESL 需在出发前申请，可按学校规则减少部分课程。',
     },
     'intensive-esl': {
       suitable: '想增加一对一课时',
-      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
-      note: '更适合短期加强口语和老师纠音。',
+      schedule:
+        '一对一5节 + 小组1节 + 中组1节 + 选修1节 + 写作1节 + 自习1节',
+      note: '比 Regular ESL 多1节一对一，适合短期加强口语输出和老师纠音。',
     },
     'power-intensive': {
       suitable: '短期高强度口语突破',
-      schedule: '一对一6课时 + 团体1课时（小1）+ 选修课1节',
-      note: '课时强度最高，建议能接受密集学习。',
+      schedule:
+        '一对一6节 + 小组1节 + 选修1节 + 写作1节 + 自习1节',
+      note: '一对一比例最高，适合时间有限、希望集中补弱项的学生。',
     },
     'pre-toeic': {
-      suitable: '托业预备',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
-      note: '托业方向需参加晨考词汇测试。',
+      suitable: '托业预备 / 无入学分数要求',
+      schedule:
+        '托业一对一4节 + ESL小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
+      note: '4周为一个学习单元，每2周安排一次模拟考试，适合先建立托业基础。',
     },
     'toeic-regular': {
       suitable: '托业常规备考',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
-      note: '必须参加晨考词汇测试，不参加当天不可以出校。',
+      schedule:
+        '托业一对一4节 + 托业小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
+      note: '4周为一个学习单元，每2周安排一次模拟考试。',
     },
     'toeic-guarantee': {
-      suitable: '托业保分',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
-      note: '保分班通常有入学分数、出勤和模考要求。',
+      suitable: '托业600 / 700 / 800 / 900分保证班',
+      schedule:
+        '托业一对一4节 + 托业小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
+      note: '12周课程；入学参考分数为400 / 500 / 650 / 790分，并有出勤、每周模考和官方考试要求。',
     },
     'pre-ielts': {
-      suitable: '雅思预备',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
-      note: '适合还需要先打基础的雅思学生。',
+      suitable: '雅思预备 / 无入学分数要求',
+      schedule:
+        '雅思一对一4节 + ESL小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
+      note: '4周为一个学习单元，每2周安排一次模拟考试，适合先补齐雅思基础。',
     },
     'ielts-regular': {
       suitable: '雅思常规备考',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）+ 选修课1节',
-      note: '适合已有目标分数，至少学习4周。',
+      schedule:
+        '雅思一对一4节 + 雅思小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
+      note: '建议雅思3.5分以上，4周为一个学习单元，每2周安排一次模拟考试。',
     },
     'ielts-guarantee': {
-      suitable: '雅思保分',
-      schedule: '一对一4课时 + 团体3课时（小1、中2）',
-      note: '保分班需确认入学分数、出勤率和官方考试安排。',
+      suitable: '雅思5.5 / 6.0 / 6.5 / 7.0分保证班',
+      schedule:
+        '雅思一对一4节 + 雅思小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节；周一至周三另有强化晚课',
+      note: '12周课程；入学参考分数为3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分，并有出勤、每周四模考和官方考试要求。',
     },
     business: {
-      suitable: '商务沟通与面试表达',
-      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
-      note: '适合职场沟通、邮件、会议和面试场景。',
+      suitable: '商务沟通、演示与职场写作',
+      schedule:
+        '商务一对一5节 + 商务小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节',
+      note: '入学参考为 CIA Level 4 或 TOEIC 400分；4或8周为一个单元，4周以上学生需完成商务PPT发表。',
     },
     'working-holiday': {
       suitable: '海外生活与面试沟通',
-      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
-      note: '适合准备打工度假或长期海外生活。',
+      schedule:
+        'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
+      note: '4周为一个学习单元，内容覆盖生存英语、求职准备和海外生活沟通。',
     },
-    'certified-university': {
-      suitable: '大学衔接英语',
-      schedule: '一对一4课时 + 团体3课时（小1、中1、大1）+ 选修课1节',
-      note: '建议先确认合作大学和证书要求。',
+    'callan-esl': {
+      suitable: '高频问答与快速口语反应',
+      schedule:
+        'Callan一对一3节 + ESL一对一2节 + ESL小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节',
+      note: '4周为一个学习单元，通过快速问答、即时纠错和系统复习训练英语反应速度。',
     },
-    callan: {
-      suitable: '快速口语反应训练',
-      schedule: '一对一5课时 + 团体2课时（小1、中1）+ 选修课1节',
-      note: '适合想用高频问答提升口语反应的学生。',
-    },
-    junior: {
-      suitable: '15岁以下青少年',
-      schedule: '青少年：6节一对一',
-      note: '满15周岁可选择 ESL，未满15周岁通常选择青少年课程。',
-      highlightNote: true,
-    },
-    guardian: {
-      suitable: '亲子监护人',
-      schedule: '监护人：4节一对一 + 团体2课时（小1、中1）',
-      note: '适合陪读家长同步学习。',
-    },
-    immersion: {
-      suitable: '大学沉浸体验',
-      schedule: '一对一4课时 + 团体3课时 + 每4周6小时大学旁听课程',
-      note: 'IAU大学需单独再付注册金50美元，航校另计。',
+    'college-immersion': {
+      suitable: 'IAU航空大学旁听与校园沉浸体验',
+      schedule:
+        'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
+      note: '想参加IAU大学体验需选择此课程；4周为一个学习单元，另收IAU一次性注册费USD 50。',
     },
   };
 
@@ -339,6 +417,11 @@ export class CiaSchoolComponent implements OnInit {
   registrationFee = 100;
   readonly discount = 0.95;
   seasonalFeePerWeek = 40;
+  readonly peakSeasonRanges = [
+    { label: '2026暑期', start: '2026-06-14', end: '2026-08-08' },
+    { label: '2027寒假', start: '2027-01-17', end: '2027-02-13' },
+    { label: '2027暑假', start: '2027-06-13', end: '2027-08-07' },
+  ] as const;
   usdToCny = 7.2;
   phpPerCny = 9;
   exchangeRateDate = '';
@@ -347,8 +430,10 @@ export class CiaSchoolComponent implements OnInit {
 
   selectedCourseId = 'regular-esl';
   selectedRoomId = 'd4';
+  selectedRoomProfileId = 'premium-single';
   selectedWeeks = 4;
-  selectedStartDate = '2026-07-05';
+  selectedRegistrationDate = this.formatLocalDate(new Date());
+  selectedStartDate = this.nextSundayDate();
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -373,8 +458,8 @@ export class CiaSchoolComponent implements OnInit {
     {
       icon: 'school',
       label: '课程选项',
-      value: 'ESL / IELTS / TOEIC',
-      note: '另有商务英语与假期项目',
+      value: 'ESL / 考试 / 职场英语',
+      note: '另有 Cambridge、Callan、大学沉浸与假期项目',
     },
     {
       icon: 'bed',
@@ -395,8 +480,8 @@ export class CiaSchoolComponent implements OnInit {
       category: '校园',
       title: '校园泳池与主楼',
       description:
-        '麦克坦校区第二栋于2022年完成，整体是度假型校园氛围，学习、住宿和生活设施集中。',
-      src: 'assets/cia/campus-building.png',
+        'CIA 于2022年6月在麦克坦新校区正式开课，学习、住宿和生活设施集中在度假型校园内。',
+      src: 'assets/cia/campus-sunset-aerial-enhanced.png',
       details: ['半斯巴达 Plus 校区', '周末可前往周边餐厅和景点'],
     },
     {
@@ -460,37 +545,58 @@ export class CiaSchoolComponent implements OnInit {
       title: '校内宿舍概览',
       description:
         '宿舍紧邻 Building 2，减少通勤时间，方便学生把更多时间留给学习和休息。',
-      src: 'assets/cia/dormitory-overview.jpg',
-      details: ['单人、双人、三人、四人间可选', '每周清洁一次，洗衣每周两次'],
+      src: '/assets/cia/dormitory-overview.jpg',
+      details: ['单人、双人、三人、四人及套房可选', '按房型每周清洁、洗衣2至3次'],
     },
     {
       category: '住宿',
-      title: '单人间',
-      description: '适合希望专注学习、重视个人空间和安静度的学生。',
-      src: 'assets/cia/single-room.jpg',
-      details: ['床、桌子、衣柜、保险箱', '洗手盆、热水淋浴、冰箱、Wi-Fi'],
+      title: '豪华单人间 P-1',
+      description: '校内大尺寸单人床房型，配有独立学习位置和简易料理区。',
+      src: '/assets/cia/rooms-2026/premium-single-room.jpg?v=20260901',
+      details: ['约21.85㎡，泳池景观参考', '电磁炉、洗手池及迷你冰箱'],
     },
     {
       category: '住宿',
-      title: '双人间',
+      title: '校外单人间 PN-1',
+      description: '位于学校对面的校外住宿楼，适合重视独立空间及智能设备的学生。',
+      src: '/assets/cia/rooms-2026/pinnacle-single-room.jpg?v=20260901',
+      details: ['约15.5至16㎡，城市景观参考', '具体普通房或小复式布局须确认'],
+    },
+    {
+      category: '住宿',
+      title: '标准单人间 S-1',
+      description: '校内紧凑型单人间，适合希望专注学习并保留个人空间的学生。',
+      src: '/assets/cia/rooms-2026/standard-single-room.jpg?v=20260901',
+      details: ['约14.3㎡，泳池景观参考', '独立书桌、书架与迷你冰箱'],
+    },
+    {
+      category: '住宿',
+      title: '双人间 D-2',
       description: '适合朋友同行，或希望有室友交流又保留一定生活空间的学生。',
-      src: 'assets/cia/twin-room.jpg',
-      details: ['床、桌子、衣柜、保险箱', '空调、冰箱、独立卫浴、Wi-Fi'],
+      src: '/assets/cia/rooms-2026/twin-room.jpg?v=20260901',
+      details: ['约24.84㎡，两张较宽单人床', '卫浴可能为干湿分区或一体式'],
     },
     {
       category: '住宿',
-      title: '三人间',
+      title: '三人间 D-3',
       description: '适合希望控制预算，同时多和不同国籍室友练习英语的学生。',
-      src: 'assets/cia/triple-room.jpg',
-      details: ['更容易练习日常英语', '清洁每周一次，洗衣每周两次'],
+      src: '/assets/cia/rooms-2026/triple-room.jpg?v=20260901',
+      details: ['约31.05㎡，每人独立学习位', '卫生间与淋浴间分开'],
     },
     {
       category: '住宿',
       title: '四人间 D-4',
       description:
         '预算压力相对低，适合愿意和多位室友共同生活、增加英语使用机会的学生。',
-      src: 'assets/cia/quad-room.jpg',
-      details: ['默认报价常用参考房型', '适合预算优先学生'],
+      src: '/assets/cia/rooms-2026/quad-room.jpg?v=20260901',
+      details: ['约31.8㎡，普通多人间中面积最大', '卫生间与淋浴间分开'],
+    },
+    {
+      category: '住宿',
+      title: '家庭精致套房 SR',
+      description: '同一套房体系按实际入住人数对应SR-1至SR-4，适合亲子和家庭。',
+      src: '/assets/cia/rooms-2026/suite-room.jpg?v=20260901',
+      details: ['约31.18㎡，海景参考', '大冰箱、电视、微波炉及料理区'],
     },
     {
       category: '餐厅',
@@ -547,19 +653,43 @@ export class CiaSchoolComponent implements OnInit {
       src: 'assets/cia/clinic.jpg',
       details: ['Building 2 三楼', '平日 08:00-18:00'],
     },
+    {
+      category: '设施',
+      title: '音乐与卡拉OK室',
+      description:
+        '位于 Building 2 四楼，配有点歌、音响和休息座位，适合课后与同学放松。',
+      src: 'assets/cia/karaoke-room-official.jpg',
+      details: ['学校官方设施图片', '具体开放时间以校内公告为准'],
+    },
+    {
+      category: '设施',
+      title: 'Mini Mart 校内商店',
+      description:
+        '可购买日用品、零食和饮品，临时补充生活用品更方便。',
+      src: 'assets/cia/mini-mart-official.jpg',
+      details: ['学校官方设施图片', '商品与营业时间以现场为准'],
+    },
+    {
+      category: '设施',
+      title: '户外篮球场',
+      description:
+        '可进行篮球、排球、羽毛球及部分团体运动，位于校园户外活动区。',
+      src: 'assets/cia/basketball-court-official.jpg',
+      details: ['学校官方设施示意图', '活动安排以校内公告为准'],
+    },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾宿务 CIA 语言学校' },
     { label: '所在地区', value: 'Lapu-Lapu City, Mactan, Cebu' },
-    { label: '创校时间', value: '2003年创校，麦克坦校区2020年启用' },
+    { label: '创校时间', value: '2003年创校，麦克坦新校区2022年6月正式开课' },
     { label: '学生容量', value: '约600名学生' },
     { label: '教师规模', value: '约300名教师' },
     { label: '管理模式', value: '半斯巴达：每日测试、出勤、门禁和EOP管理' },
-    { label: '住宿房型', value: '校内单人间、双人间、三人间、四人间、套房' },
+    { label: '住宿房型', value: '单人、双人、三人、四人及家庭精致套房；另有PN-1校外单人间' },
     {
       label: '核心资源',
-      value: 'IDP IELTS官方考点、Cambridge认证、校内餐厅与设施',
+      value: 'IDP IELTS官方考点、Cambridge ESL备考体系、24小时CRO学生支援',
     },
   ];
 
@@ -626,67 +756,412 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly courses: CourseItem[] = [
     {
-      name: 'Regular ESL',
-      type: '基础综合英语',
-      lessons: '4节一对一 + 小组课 + 选修/自习',
-      suitable: '适合第一次游学、希望稳步提升听说读写的学生。',
+      name: 'Regular ESL / Light ESL',
+      type: '综合英语 / 可申请轻量课表',
+      lessons: '4节一对一 + 小组、中组、大组、选修、写作与自习',
+      suitable: '适合第一次游学、希望稳步提升听说读写，或需要较灵活课表的学生。',
       icon: 'school',
     },
     {
       name: 'Intensive ESL',
       type: '强化英语',
-      lessons: '增加一对一比例，搭配小组课',
+      lessons: '5节一对一 + 小组、中组、选修、写作与自习',
       suitable: '适合短期想加强口语表达和老师纠音的学生。',
       icon: 'menu_book',
     },
     {
       name: 'Power Intensive',
       type: '高强度一对一',
-      lessons: '更多一对一课程，学习节奏更紧',
+      lessons: '6节一对一 + 小组、选修、写作与自习',
       suitable: '适合4周左右集中突破口语、听力和表达的学生。',
       icon: 'psychology',
     },
     {
-      name: 'IELTS Regular',
-      type: '雅思备考',
-      lessons: '听说读写专项 + 模考 + 语法词汇',
-      suitable: '适合已有分数目标，至少学习4周的学生。',
+      name: 'Pre / Regular IELTS',
+      type: '雅思预备与常规备考',
+      lessons: '雅思一对一4节 + Clinic中组2节 + 小组、选修、写作与自习',
+      suitable: 'Pre 无入学分数要求；Regular 建议雅思3.5分以上。',
       icon: 'edit_note',
     },
     {
       name: 'IELTS Guarantee',
       type: '雅思保证班',
-      lessons: '12周起，需达到入学分数与出勤要求',
+      lessons: '12周课程 + 周一至周三强化晚课 + 每周四模考',
       suitable: '适合目标明确、能接受严格出勤和模考要求的学生。',
       icon: 'workspace_premium',
     },
     {
-      name: 'TOEIC Regular',
-      type: '托业备考',
-      lessons: '听力、阅读、语法和考试技巧',
-      suitable: '适合求职、升学或企业英语能力证明需求。',
+      name: 'Pre / Regular / Guarantee TOEIC',
+      type: '托业预备、常规与保证班',
+      lessons: '托业一对一4节 + Clinic中组2节 + 小组、选修、写作与自习',
+      suitable: '适合求职、升学或有600–900分目标的学生。',
       icon: 'verified',
     },
     {
       name: 'Business',
       type: '商务英语',
-      lessons: '会议、演示、邮件、面试与商务表达',
+      lessons: '商务一对一5节 + 商务小组、综合中组、选修、写作与自习',
       suitable: '适合职场人士或准备英文工作场景的学生。',
       icon: 'business_center',
     },
     {
       name: 'Working Holiday',
       type: '打工度假英语',
-      lessons: '生活英语、面试表达和场景沟通',
+      lessons: '生存英语、求职准备、面试表达和海外生活沟通',
       suitable: '适合准备海外生活、打工度假或长线旅行的人群。',
       icon: 'travel_explore',
     },
     {
-      name: 'Immersion',
-      type: '沉浸体验',
-      lessons: '校内课程搭配校外或大学相关体验',
-      suitable: '适合想把学习和当地文化体验结合的学生。',
-      icon: 'forum',
+      name: 'Callan ESL',
+      type: '快速口语反应训练',
+      lessons: '3节Callan一对一 + 2节ESL一对一 + 小组、选修、写作与自习',
+      suitable: '适合想通过高频问答、即时纠错和重复训练加快英语反应的学生。',
+      icon: 'record_voice_over',
+    },
+    {
+      name: 'College Immersion（IAU）',
+      type: 'IAU航空大学沉浸课程',
+      lessons: 'ESL一对一4节 + 小组、中组、大组、选修、写作与自习',
+      suitable: '想旁听IAU航空大学课程的学生应选择这一项；不是在Regular ESL上另加一节选修课。',
+      icon: 'account_balance',
+    },
+  ];
+
+  readonly campusBuildings: CampusBuildingCard[] = [
+    {
+      code: '01',
+      title: '1号楼 · 考试与服务',
+      icon: 'fact_check',
+      facilities: ['IDP IELTS官方考场', 'Mini Mart校内商店', '旅行社服务点'],
+    },
+    {
+      code: '02',
+      title: '2号楼 · 教学与生活',
+      icon: 'apartment',
+      facilities: ['宿舍服务台与行政办公室', '咖啡吧、学生餐厅与护士站', '教室、健身房、图书馆与小礼堂', '瑜伽及普拉提活动空间'],
+    },
+    {
+      code: '03',
+      title: '3号楼 · 宿舍与教务',
+      icon: 'bed',
+      facilities: ['校内宿舍', '洗衣房', '教务处', '教学教室'],
+    },
+    {
+      code: 'OUTDOOR',
+      title: '中庭 · 户外活动',
+      icon: 'pool',
+      facilities: ['约50米主泳池', '户外休息区', '篮球、排球及羽毛球活动场地'],
+    },
+  ];
+
+  readonly weekdaySchedule: DailyScheduleRow[] = [
+    { time: '06:40–08:00', activity: '早餐', kind: 'meal' },
+    { time: '07:20–08:00', activity: '每日晨考', kind: 'test' },
+    { time: '08:00–08:45', activity: '第1节', kind: 'class' },
+    { time: '08:50–09:35', activity: '第2节', kind: 'class' },
+    { time: '09:40–10:25', activity: '第3节', kind: 'class' },
+    { time: '10:30–11:15', activity: '第4节', kind: 'class' },
+    { time: '11:20–12:05', activity: '第5节', kind: 'class' },
+    { time: '12:05–13:05', activity: '午餐', kind: 'meal' },
+    { time: '13:05–13:50', activity: '第6节', kind: 'class' },
+    { time: '13:55–14:40', activity: '第7节', kind: 'class' },
+    { time: '14:45–15:30', activity: '第8节', kind: 'class' },
+    { time: '15:35–16:20', activity: '第9节', kind: 'class' },
+    { time: '16:25–17:10', activity: '第10节', kind: 'class' },
+    { time: '17:15–18:00', activity: '第11节', kind: 'class' },
+    { time: '18:00–19:00', activity: '晚餐', kind: 'meal' },
+    { time: '19:00–22:00', activity: '自由时间 / 保证班指定晚间学习', kind: 'free' },
+  ];
+
+  readonly fridaySchedule: DailyScheduleRow[] = [
+    { time: '06:40–08:00', activity: '早餐', kind: 'meal' },
+    { time: '08:00–08:40', activity: '第1节', kind: 'class' },
+    { time: '08:45–09:25', activity: '第2节', kind: 'class' },
+    { time: '09:30–10:10', activity: '第3节', kind: 'class' },
+    { time: '10:15–10:55', activity: '第4节', kind: 'class' },
+    { time: '11:00–11:40', activity: '第5节', kind: 'class' },
+    { time: '11:45–12:25', activity: '第6节', kind: 'class' },
+    { time: '12:25–13:30', activity: '午餐', kind: 'meal' },
+    { time: '13:30–14:10', activity: '第7节', kind: 'class' },
+    { time: '14:15–14:55', activity: '第8节', kind: 'class' },
+    { time: '15:00–15:40', activity: '第9节', kind: 'class' },
+    { time: '15:45–16:25', activity: '第10节', kind: 'class' },
+    { time: '16:30–17:10', activity: '第11节', kind: 'class' },
+    { time: '17:10–18:00', activity: '演讲、朗读竞赛或月度活动', kind: 'activity' },
+    { time: '18:00–19:00', activity: '晚餐', kind: 'meal' },
+    { time: '19:00–24:00', activity: '自由时间', kind: 'free' },
+  ];
+
+  readonly holidayCalendars: HolidayCalendar[] = [
+    {
+      year: 2027,
+      label: '规划2027年入学时优先查看',
+      months: [
+        { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
+        {
+          month: 3,
+          holidays: [
+            { day: '9日或10日', name: '开斋节', provisional: true },
+            { day: '25日', name: '濯足节' },
+            { day: '26日', name: '耶稣受难日' },
+          ],
+        },
+        {
+          month: 4,
+          holidays: [
+            { day: '9日', name: '勇士日' },
+            { day: '27日', name: '拉普拉普胜利纪念日' },
+          ],
+        },
+        {
+          month: 5,
+          holidays: [{ day: '16日或17日', name: '宰牲节', provisional: true }],
+        },
+        { month: 6, holidays: [{ day: '18日', name: '拉普拉普市宪章日' }] },
+        {
+          month: 8,
+          holidays: [
+            { day: '6日', name: '宿务省宪章日' },
+            { day: '30日', name: '国家英雄日' },
+          ],
+        },
+        { month: 9, holidays: [{ day: '10日', name: '奥斯梅尼亚日' }] },
+        {
+          month: 11,
+          holidays: [
+            { day: '1日', name: '诸圣节' },
+            { day: '2日', name: '万灵节' },
+          ],
+        },
+        {
+          month: 12,
+          holidays: [
+            { day: '3日', name: '博尼法西奥日' },
+            { day: '8日', name: '圣母无染原罪瞻礼' },
+            { day: '24日', name: '平安夜' },
+            { day: '30日', name: '黎刹日' },
+            { day: '31日', name: '除夕' },
+          ],
+        },
+      ],
+    },
+    {
+      year: 2026,
+      label: '2026年在读学生参考',
+      months: [
+        { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
+        { month: 2, holidays: [{ day: '17日', name: '农历新年' }] },
+        {
+          month: 3,
+          holidays: [{ day: '20日', name: '开斋节', provisional: true }],
+        },
+        {
+          month: 4,
+          holidays: [
+            { day: '2日', name: '濯足节' },
+            { day: '3日', name: '耶稣受难日' },
+            { day: '10日', name: '勇士日' },
+            { day: '27日', name: '拉普拉普胜利纪念日' },
+          ],
+        },
+        {
+          month: 5,
+          holidays: [
+            { day: '1日', name: '劳动节' },
+            { day: '29日', name: '宰牲节', provisional: true },
+          ],
+        },
+        {
+          month: 6,
+          holidays: [
+            { day: '12日', name: '独立日' },
+            { day: '17日', name: '拉普拉普市宪章日' },
+          ],
+        },
+        {
+          month: 8,
+          holidays: [
+            { day: '7日', name: '宿务省宪章日' },
+            { day: '21日', name: '尼诺·阿基诺日' },
+            { day: '31日', name: '国家英雄日' },
+          ],
+        },
+        { month: 9, holidays: [{ day: '9日', name: '奥斯梅尼亚日' }] },
+        {
+          month: 11,
+          holidays: [
+            { day: '2日', name: '万灵节' },
+            { day: '30日', name: '博尼法西奥日' },
+          ],
+        },
+        {
+          month: 12,
+          holidays: [
+            { day: '8日', name: '圣母无染原罪瞻礼' },
+            { day: '24日', name: '平安夜' },
+            { day: '25日', name: '圣诞节' },
+            { day: '30日', name: '黎刹日' },
+            { day: '31日', name: '除夕' },
+          ],
+        },
+      ],
+    },
+  ];
+
+  readonly ieltsExamDates2026: IeltsExamDate[] = [
+    { month: 1, academic: { day: '31日', weekday: '周六' }, general: { day: '15日', weekday: '周四' } },
+    { month: 2, academic: { day: '14日', weekday: '周六' }, general: { day: '21日', weekday: '周六' } },
+    { month: 3, academic: { day: '14日', weekday: '周六' }, general: { day: '21日', weekday: '周六' } },
+    { month: 4, academic: { day: '23日', weekday: '周四' }, general: { day: '25日', weekday: '周六' } },
+    { month: 5, academic: { day: '16日', weekday: '周六' }, general: { day: '23日', weekday: '周六' } },
+    { month: 6, academic: { day: '27日', weekday: '周六' }, general: { day: '20日', weekday: '周六' } },
+    { month: 7, academic: { day: '18日', weekday: '周六' }, general: { day: '25日', weekday: '周六' } },
+    { month: 8, academic: { day: '29日', weekday: '周六' }, general: { day: '22日', weekday: '周六' } },
+    { month: 9, academic: { day: '26日', weekday: '周六' }, general: { day: '17日', weekday: '周四' } },
+    { month: 10, academic: { day: '10日', weekday: '周六' }, general: { day: '17日', weekday: '周六' } },
+    { month: 11, academic: { day: '14日', weekday: '周六' }, general: { day: '28日', weekday: '周六' } },
+    { month: 12, academic: { day: '19日', weekday: '周六' }, general: { day: '12日', weekday: '周六' } },
+  ];
+
+  readonly campusMonthlyEvents2026: CampusMonthlyEvent[] = [
+    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA菲律宾文化主题活动' },
+    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园主题舞台活动' },
+    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/activity-golden-bell-official.jpg', imageAlt: 'CIA金铃挑战赛现场' },
+    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/activity-aqua-zumba-official.jpg', imageAlt: 'CIA校园水上活动' },
+    { month: 5, icon: 'sports_basketball', title: 'CIA运动会', text: '以团队项目和体育竞赛增进交流。', image: 'assets/cia/activity-sportsfest-official.jpg', imageAlt: 'CIA运动会篮球比赛' },
+    { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA开放舞台活动' },
+    { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA学生舞台表演' },
+    { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA校园风采主题活动' },
+    { month: 9, icon: 'diversity_3', title: '世界文化舞蹈', text: '用舞蹈认识不同国家与文化。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA国际文化舞蹈活动' },
+    { month: 10, icon: 'celebration', title: '万圣节派对与员工日', text: '节日装扮、互动游戏与校园庆祝。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园节日派对' },
+    { month: 11, icon: 'public', title: 'CIA国际文化日', text: '各国学生参与文化展示与美食节。', image: 'assets/cia/activity-cultural-day-official.jpg', imageAlt: 'CIA国际文化主题活动' },
+    { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/activity-seasonal-party-official.jpg', imageAlt: 'CIA校园年末舞台活动' },
+  ];
+
+  readonly courseDetailGuides: CourseDetailGuide[] = [
+    {
+      icon: 'record_voice_over',
+      title: 'ESL一般英语与选修课',
+      subtitle: '综合英语能力、强制写作与14类选修方向',
+      facts: [
+        { label: '团体人数', value: '小团体1–6人 / 中团体6–15人 / 大团体15–20人' },
+        { label: '写作安排', value: '按程度指定题目与字数，隔日由老师批改' },
+        { label: '入学分级', value: '入学测试决定L0–L10等级，并对应CEFR Pre-A1至C2' },
+        { label: '程度测验', value: '通常每4周1次；仅读4周者第4周可选择不参加' },
+        { label: '选修方式', value: '提交第一、第二、第三志愿，每周可申请换课' },
+      ],
+      points: [
+        'Regular、Intensive与Power Intensive通过不同数量的一对一课，训练听、说、读、写、语法和词汇。',
+        '学校按实际应上课日统计出勤；请假同样计入出勤率。总出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
+        '一周内缺席超过5节课（请假除外），学校资料列明下一周末可能暂停外出。晨考、写作字数与合格分数会随课程和级别不同。',
+        'Light ESL需提前特别申请；可申请放弃不超过50%的课程，但不退被放弃课程费用。',
+        'Light ESL的晨考和写作可选择参加；连续两次未参加会自动取消，需向教务申请并在两周后恢复。到校后改为Light ESL，学校资料列明需另付200美元。',
+        '选修方向包括IELTS / TOEIC / Business Open、Conversation Club、Public Speaking、Reel English、Movie Class、Dance、Hello Pops、Guitar、Uke ’n’ Talk、Callan训练、商务经济英语和母语外教课等；名额已满时会按后续志愿或自由时间安排。',
+      ],
+      notice: '课程、选修名额、晨考分数与外出规则可能按等级和学期调整，以入学测试、教务排课及当期校规为准。',
+    },
+    {
+      icon: 'workspace_premium',
+      title: 'TOEIC预备、常规与保证班',
+      subtitle: '明确目标分数、每周模考与12周保证班要求',
+      facts: [
+        { label: 'Pre-TOEIC', value: '无入学门槛；4周为单位；每2周1次模考' },
+        { label: '保证目标', value: '600 / 700 / 800 / 900分' },
+        { label: '入学分数', value: '分别为400 / 500 / 650 / 790分以上' },
+      ],
+      points: [
+        '保证班需读满12周，出勤率达到95%，每周模考出勤率100%，并在读期间参加一次官方考试。',
+        '周一至周三另有约1.5小时强制晚自习；校规和扣点规则与一般学生相同。',
+        '符合条件但校内模考未达到目标分数时，学校资料列明可承担延长4周的课程费；住宿及学杂费由学生承担。',
+        '符合保证班条件者可申请一次官方考试相关权益，需保留并提交正式考试收据。',
+      ],
+      notice: '保证权益须满足全部条件，并以学校审核、当期考务安排和正式说明为准。',
+    },
+    {
+      icon: 'fact_check',
+      title: 'IELTS预备、常规与保证班',
+      subtitle: '校内IDP考试资源与分数分级入学',
+      facts: [
+        { label: 'Pre-IELTS', value: '入学测试3.0分及以下；后续模考达3.5分可转常规雅思' },
+        { label: 'Regular IELTS', value: '入学测试3.5分及以上' },
+        { label: '常规模考', value: '通常每周四15:30–19:00；口语时间另行通知' },
+        { label: '保证目标', value: '5.5 / 6.0 / 6.5 / 7.0分' },
+        { label: '入学分数', value: '3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分' },
+      ],
+      points: [
+        '预备雅思晨考通常需达到4分、周累计16分，写作约80–200词；常规雅思晨考通常需达到7分、周累计26分，写作约100–250词。',
+        '保证班需读满12周，出勤率达到95%，每周四模考出勤率100%，并在读期间参加一次官方考试。',
+        '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为₱13,660，需提交考试收据。',
+        '符合全部条件但未达到目标分数时，学校资料列明可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
+      ],
+      notice: '考试费金额和保证权益会随官方考务政策调整，报名时须再次书面确认。',
+    },
+    {
+      icon: 'business_center',
+      title: '商务英语与打工度假',
+      subtitle: '职场沟通、求职准备与毕业发表',
+      facts: [
+        { label: '商务英语门槛', value: 'CIA Level 4或TOEIC 400分以上' },
+        { label: '商务英语周期', value: '4周或8周为一个单元' },
+        { label: '程度测验', value: '每4周1次，缺席可能影响下一周外出' },
+        { label: 'Working Holiday', value: '无入学门槛；4周为一个单元' },
+      ],
+      points: [
+        '商务英语覆盖英文简报、谈判、商务书写、主持英文会议与商业咨询等实用场景。',
+        '商务英语晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
+        '商务英语学生毕业周需在小礼堂完成商务主题PPT发表；不参加时学校资料列明可能收取₱2,500。',
+        'Working Holiday包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
+      ],
+    },
+    {
+      icon: 'speed',
+      title: 'Callan快速口语课程',
+      subtitle: '通过高频问答训练英语反应速度',
+      facts: [
+        { label: '对应报名课程', value: 'Callan ESL' },
+        { label: '学习单位', value: '无入学门槛；4周为单位' },
+      ],
+      points: [
+        'Callan课程以快速问答、即时纠错、自然缩略语和系统重复训练，提升英语反应速度。',
+        '每日包含3节Callan一对一、2节ESL一对一，并搭配小组、中组、选修、写作和自习。',
+      ],
+    },
+    {
+      icon: 'flight_takeoff',
+      title: 'IAU大学沉浸课程',
+      subtitle: '想旁听Indiana Aerospace University课程，请选College Immersion',
+      facts: [
+        { label: '对应报名课程', value: 'College Immersion（IAU大学沉浸）' },
+        { label: '基本安排', value: '4周为单位；每4周至少6小时IAU旁听' },
+        { label: 'IAU注册费', value: '一次性USD 50，课程费以入学年份价格表为准' },
+        { label: '预约时间', value: '建议至少提前4周确认方向、课表与名额' },
+      ],
+      points: [
+        'CIA日常英语课程包括ESL一对一4节、小组1节、中组1节、大组1节、选修1节、写作1节与自习2节。',
+        'IAU旁听通常分为2次、每次3小时，每次可能旁听1–3门课；CIA负责协调日期、课表和往返交通。',
+        '可申请航空航天工程、飞机维修、航空公司管理、飞行方向航空技术、航空电子、旅游管理、酒店管理及教育等方向，实际以IAU当期课表为准。',
+        '常规4周旁听完成后对应观察与参与类证明；如目标是60小时完成证明或大学学分，必须在报名时单独提出并确认，不可默认包含。',
+      ],
+      notice: '旁听科目、开课日期、名额、证书类型及学分认可均可能调整；最终以CIA与IAU书面确认，以及学生原就读院校的学分认定结果为准。',
+    },
+    {
+      icon: 'nightlight_round',
+      title: 'Evening Intensive 晚间强化课',
+      subtitle: '两周一期的免费加课，适合希望利用晚间增加学习量的学生',
+      facts: [
+        { label: '上课时间', value: '周一至周四19:00–21:00' },
+        { label: '课程周期', value: '每2周一期，每晚2小时集中训练' },
+        { label: '课程级别', value: '可按当前水平选择初级或中级班' },
+        { label: '课程费用', value: '课程本身免费；报名时需缴₱2,000可退押金' },
+        { label: '适合人群', value: '英语基础较弱、希望系统巩固或学有余力的学生' },
+      ],
+      points: [
+        '课程通过集中的晚间训练进一步巩固英语；学生可根据自身水平选择对应班级。',
+        '报名地点为学校3号楼教务处；每期是否开班取决于报名人数，以教务处公告为准。',
+        '报名确认后通常不可撤销；未按时上课会计入最终出勤。迟到每次可能扣₱100，缺席每次可能扣₱200。',
+        '累计缺席3次或主动退出课程时，学校资料列明可能不退押金并取消课程资格。',
+      ],
+      notice: '开班人数、报名方式、押金退还与扣费规则可能调整，仅供参考，最终以到校后教务处公告和现场说明为准。',
     },
   ];
 
@@ -695,105 +1170,100 @@ export class CiaSchoolComponent implements OnInit {
       id: 'regular-esl',
       name: 'Regular ESL',
       tuition: 900,
+      tuition2027: 1000,
       ...this.courseFeeDetails['regular-esl'],
     },
     {
       id: 'intensive-esl',
       name: 'Intensive ESL',
       tuition: 1000,
+      tuition2027: 1100,
       ...this.courseFeeDetails['intensive-esl'],
     },
     {
       id: 'power-intensive',
       name: 'Power Intensive',
       tuition: 1100,
+      tuition2027: 1200,
       ...this.courseFeeDetails['power-intensive'],
     },
     {
       id: 'pre-toeic',
       name: 'Pre-TOEIC',
       tuition: 1000,
+      tuition2027: 1100,
       ...this.courseFeeDetails['pre-toeic'],
     },
     {
       id: 'toeic-regular',
       name: 'TOEIC Regular',
       tuition: 1000,
+      tuition2027: 1100,
       ...this.courseFeeDetails['toeic-regular'],
     },
     {
       id: 'toeic-guarantee',
       name: 'TOEIC Guarantee',
       tuition: 1000,
+      tuition2027: 1100,
       ...this.courseFeeDetails['toeic-guarantee'],
     },
     {
       id: 'pre-ielts',
       name: 'Pre-IELTS',
       tuition: 1050,
+      tuition2027: 1150,
       ...this.courseFeeDetails['pre-ielts'],
     },
     {
       id: 'ielts-regular',
       name: 'IELTS Regular',
       tuition: 1050,
+      tuition2027: 1150,
       ...this.courseFeeDetails['ielts-regular'],
     },
     {
       id: 'ielts-guarantee',
       name: 'IELTS Guarantee',
       tuition: 1050,
+      tuition2027: 1150,
       ...this.courseFeeDetails['ielts-guarantee'],
     },
     {
       id: 'business',
       name: 'Business',
       tuition: 1050,
+      tuition2027: 1150,
       ...this.courseFeeDetails['business'],
     },
     {
       id: 'working-holiday',
       name: 'Working Holiday',
       tuition: 950,
+      tuition2027: 1050,
       ...this.courseFeeDetails['working-holiday'],
     },
     {
-      id: 'certified-university',
-      name: 'CERTIFIED UNIVERSITY',
-      tuition: 1000,
-      ...this.courseFeeDetails['certified-university'],
-    },
-    {
-      id: 'callan',
-      name: 'CALLAN',
+      id: 'callan-esl',
+      name: 'Callan ESL',
       tuition: 1050,
-      ...this.courseFeeDetails['callan'],
+      tuition2027: 1050,
+      ...this.courseFeeDetails['callan-esl'],
     },
     {
-      id: 'junior',
-      name: '亲子青少年',
-      tuition: 1300,
-      ...this.courseFeeDetails['junior'],
-    },
-    {
-      id: 'guardian',
-      name: '亲子监护人',
-      tuition: 1300,
-      ...this.courseFeeDetails['guardian'],
-    },
-    {
-      id: 'immersion',
-      name: 'Immersion 大学沉浸式课程',
+      id: 'college-immersion',
+      name: 'College Immersion（IAU大学沉浸）',
       tuition: 1000,
-      ...this.courseFeeDetails['immersion'],
+      tuition2027: 1100,
+      ...this.courseFeeDetails['college-immersion'],
     },
   ];
 
   readonly schedule: ScheduleItem[] = [
     {
-      time: '07:20 - 08:00',
-      title: '每日测试',
-      text: '词汇或课程相关测试，影响当天外出资格。',
+      time: '06:40 - 08:00',
+      title: '早餐与晨间测试',
+      text: '早餐时段为06:40–08:00；周一至周四07:20–08:00进行单词或课程测试。',
     },
     {
       time: '08:00 - 12:05',
@@ -811,14 +1281,19 @@ export class CiaSchoolComponent implements OnInit {
       text: '小组课、专项训练、口语或语法词汇课程。',
     },
     {
-      time: '15:35 - 17:10',
-      title: '自习 / 阅读 / 写作',
-      text: '用于完成作业、复盘一对一反馈或准备模考。',
+      time: '15:35 - 18:00',
+      title: '下午课程、写作与自习',
+      text: '继续一对一、团体或选修课程，并按所选课程完成写作和自习。',
     },
     {
-      time: '17:15 - 20:10',
-      title: '选修或晚间课程',
-      text: '按课程和个人选择安排，具体以到校课表为准。',
+      time: '18:00 - 22:00',
+      title: '晚餐与自由时间',
+      text: '18:00–19:00晚餐，19:00–22:00自由活动；保证班另有指定晚间学习安排。',
+    },
+    {
+      time: '周五 17:10 - 18:00',
+      title: '演讲、朗读或月度活动',
+      text: '周五采用40分钟课节，下午安排演讲/朗读比赛或每月大型活动。',
     },
   ];
 
@@ -881,14 +1356,16 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   localFees: LocalFee[] = [
-    { item: 'SSP', amount: '8,000比索', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP E-card', amount: '4,000比索', note: '以学校现场收费为准' },
-    { item: '管理费', amount: '4,000比索', note: '4周参考' },
-    { item: '水电费', amount: '2,000比索', note: '按周期或实际使用调整' },
-    { item: '教材费', amount: '2,000比索', note: '按课程和实际购买教材调整' },
-    { item: '学生证', amount: '200比索', note: '一次性费用参考' },
-    { item: '押金', amount: '2,500比索', note: '退房检查后按学校规则退还' },
-    { item: '接机费', amount: '1,000比索', note: '宿务机场接机参考' },
+    { item: 'SSP', amount: '8,000比索', note: '无菲律宾长期签证者需办理' },
+    { item: 'SSP E-card', amount: '4,500比索', note: '办理SSP时同时办理' },
+    { item: '综合管理费', amount: '4,000比索', note: '每4周 / 人' },
+    { item: '水费', amount: '1,000比索', note: '每4周参考' },
+    { item: '电费', amount: '2,000比索', note: '每4周基础额度，超额按当地电价另计' },
+    { item: '教材费', amount: '2,000比索', note: '每套约使用8周，按课程及进度调整' },
+    { item: '照片费', amount: '200比索', note: '一次性费用' },
+    { item: '房间押金', amount: '2,500比索', note: '退房检查后按学校规定退还' },
+    { item: '周末接机', amount: '1,000比索', note: '宿务机场接机' },
+    { item: '工作日接机', amount: '1,500比索', note: '宿务机场接机' },
     {
       item: 'ACR I-card',
       amount: '4,500比索',
@@ -973,9 +1450,9 @@ export class CiaSchoolComponent implements OnInit {
         '适合。Regular ESL 可以从基础开始，但如果目标是短期快速开口，建议让顾问比较 Intensive 或 Power Intensive 是否更合适。',
     },
     {
-      question: '页面上的1,667.5美元是全部费用吗？',
+      question: 'CIA 2027年课程费从什么时候开始使用？',
       answer:
-        '不是。它是默认4周 Regular ESL + 四人间 D-4 的前期支付参考，不包含到校后通常需要支付的 SSP、SSP E-card、管理费、水电费、教材费、学生证、押金等当地费用。',
+        '不是所有学生从2026年9月1日起统一涨价。只有在2026年9月1日或之后报名，并且在2027年1月1日或之后入学，才采用2027新课程费；2026年入学仍按原价。若原定2026年入学后改期到2027年，需要按改期日期再核对。',
     },
     {
       question: 'CIA 是不是斯巴达学校？',
@@ -1006,11 +1483,11 @@ export class CiaSchoolComponent implements OnInit {
   readonly mobileAnchors: SideNavItem[] = [
     { label: '概览', target: 'top', icon: 'dashboard' },
     { label: '亮点', target: 'highlights', icon: 'star' },
-    { label: '视频', target: 'videos', icon: 'play_circle' },
-    { label: '环境', target: 'gallery', icon: 'image' },
+    { label: '校园', target: 'campus-introduction', icon: 'apartment' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
-    { label: '服务', target: 'service-process', icon: 'support_agent' },
+    { label: '生活', target: 'campus-life', icon: 'bed' },
+    { label: '服务', target: 'student-care-services', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
@@ -1028,7 +1505,7 @@ export class CiaSchoolComponent implements OnInit {
     {
       icon: 'menu_book',
       title: '课程覆盖',
-      text: 'ESL / IELTS / TOEIC / Business / Working Holiday',
+      text: 'ESL / IELTS / TOEIC / Business / Callan / College Immersion',
     },
     {
       icon: 'bed',
@@ -1049,89 +1526,104 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly coreHighlights = [
     {
-      icon: 'domain',
-      image: 'assets/cia/campus-building.png',
-      title: '新麦克坦校区',
-      text: '校区空间较新，学习、住宿、餐厅和设施集中，生活更便利。',
+      icon: 'history_edu',
+      image: 'assets/cia/campus-sunset-aerial-enhanced.png',
+      title: '2003年创校经验',
+      text: '长期服务来自不同国家和地区的学生，课程、住宿与学生支援体系较完整。',
     },
     {
-      icon: 'fact_check',
-      image: 'assets/cia/one-to-one-class.png',
-      title: 'IDP IELTS 官方考场',
-      text: '拥有 IDP IELTS 官方考点，适合雅思目标学生熟悉考试环境。',
+      icon: 'location_on',
+      image: 'assets/cia/campus-building.png',
+      title: '麦克坦新校区位置便利',
+      text: '学习、住宿、餐厅与生活设施集中，前往机场、餐厅和麦克坦休闲区域相对方便。',
+    },
+    {
+      icon: 'sports_basketball',
+      image: 'assets/cia/recreation-room.jpg',
+      title: '课后活动选择较多',
+      text: '健身、游泳、篮球、排球、卡拉OK与休闲室等活动，让学习与生活更平衡。',
     },
     {
       icon: 'auto_stories',
-      image: 'assets/cia/small-group-class.jpg',
-      title: '课程体系完整',
-      text: 'ESL、IELTS、TOEIC、Business、Working Holiday、CALLAN 等方向可选。',
+      image: 'assets/cia/course-learning.jpg',
+      title: '课程选择范围广',
+      text: 'ESL、IELTS、TOEIC、Business、Working Holiday、Callan 与大学沉浸式课程均可选择。',
     },
     {
-      icon: 'shield',
-      image: 'assets/cia/quad-room.jpg',
-      title: '半斯巴达管理',
-      text: '有学习节奏与监督，也保留一定自由度，适合多数学生。',
+      icon: 'support_agent',
+      image: 'assets/cia/student-care-cro.jpg',
+      title: '学生支援响应及时',
+      text: 'CRO与学业顾问覆盖住宿、生活和学习问题，帮助学生减少适应期中的阻碍。',
     },
     {
-      icon: 'favorite',
-      image: 'assets/cia/campus-pool.jpg',
-      title: '校园设施丰富',
-      text: '泳池、健身房、自习室、餐厅等一体配套，课后生活更完整。',
-    },
-    {
-      icon: 'groups',
+      icon: 'restaurant',
       image: 'assets/cia/dining-hall.jpg',
-      title: '国际学生氛围',
-      text: '来自韩国、日本、台湾、越南、中国等国家和地区的学生较多。',
+      title: '三餐兼顾多国口味',
+      text: '校内餐厅每日供应不同餐食，并尽量兼顾多国学生的饮食习惯与营养需要。',
+    },
+    {
+      icon: 'school',
+      image: 'assets/cia/one-to-one-class.png',
+      title: '专注英语的学习环境',
+      text: '一对一与不同规模团体课结合，配合晨考、写作和自习，形成清晰的学习节奏。',
+    },
+    {
+      icon: 'public',
+      image: 'assets/cia/international-students.jpg',
+      title: '真实的跨文化交流',
+      text: '国际学生共同学习与生活，配合EOP英语使用规则，增加课外自然使用英语的机会。',
     },
   ];
 
   readonly videoCards = [
     {
       title: '一般英语小组课程视频',
-      text: '剑桥英语资格课程',
+      text: 'Regular ESL 最新课表参考',
+      poster: 'assets/cia/course-learning.jpg',
       videoSrc:
         'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
       details: [
         '1 对 1 课程 4 节',
-        '小组课程 2 节',
-        '中组课程 1 节',
-        '大组课程 1 节',
+        '小组 / 中组 / 大组各 1 节',
+        '选修、写作、自习各 1 节',
       ],
     },
     {
       title: '雅思小组课程视频',
       text: '雅思官方考试中心',
+      poster: 'assets/cia/idp-testing-venue.jpg',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
       details: [
         '1 对 1 课程 4 节',
-        '雅思专项辅导课 2 节',
-        '雅思语法课 1 节',
-        '雅思词汇课 1 节',
+        'IELTS Clinic 中组课程 2 节',
+        '雅思小组 / 选修各 1 节',
+        '写作 1 节 + 自习 2 节',
       ],
     },
     {
       title: '托业小组课程视频',
       text: '托业备考课程',
+      poster: 'assets/cia/medium-group-class.jpg',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
       details: [
         '1 对 1 课程 4 节',
-        '小组课程 2 节',
-        '中组课程 1 节',
-        '大组课程 1 节',
+        'TOEIC Clinic 中组课程 2 节',
+        '托业小组 / 选修各 1 节',
+        '写作 1 节 + 自习 2 节',
       ],
     },
     {
       title: '商务英语小组课程视频',
       text: '剑桥商务英语课程',
+      poster: 'assets/cia/classroom-overview.png',
       videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
       details: [
-        '1 对 1 课程 4 节',
-        '小组课程 2 节',
-        '中组课程 1 节',
-        '大组课程 1 节',
+        '商务一对一课程 5 节',
+        '商务小组 / 综合中组各 1 节',
+        '选修与写作各 1 节',
+        '自习 2 节',
       ],
     },
   ];
@@ -1158,7 +1650,7 @@ export class CiaSchoolComponent implements OnInit {
     {
       icon: 'scoreboard',
       label: '托业目标',
-      title: 'TOEIC Regular / TOEIC Guarantee',
+      title: 'Pre-TOEIC / TOEIC Regular / TOEIC Guarantee',
       text: '听力、阅读强化，适合求职或升学分数目标。',
     },
     {
@@ -1170,7 +1662,7 @@ export class CiaSchoolComponent implements OnInit {
     {
       icon: 'flight_takeoff',
       label: '特色项目',
-      title: 'Working Holiday / CALLAN / Immersion',
+      title: 'Working Holiday / Callan / College Immersion',
       text: '适合打工度假、口语训练或大学深度体验项目。',
     },
   ];
@@ -1233,7 +1725,7 @@ export class CiaSchoolComponent implements OnInit {
       subtitle: '词汇、语法与写作节奏',
       text: '新生入学说明时会收到每日测试资料。周一至周四早上安排基础词汇、语法测试，并配合自习写作练习，由一对一写作老师检查。',
       location: 'SSR / C楼',
-      schedule: '周一至周四 07:20-07:54',
+      schedule: '周一至周四 07:20-08:00',
       points: [
         '低于要求分数会影响外出权限',
         '迟到、带手机或未写姓名可能记零分',
@@ -1254,33 +1746,228 @@ export class CiaSchoolComponent implements OnInit {
   readonly lifeCards = [
     {
       icon: 'home',
-      image: 'assets/cia/campus-building.png',
+      image: 'assets/cia/dormitory-service-official.jpg',
+      badge: '',
       title: '宿舍',
       text: '多种房型可选，独立卫浴、空调、热水、WiFi 全覆盖。',
     },
     {
       icon: 'restaurant',
       image: 'assets/cia/dining-hall.jpg',
+      badge: '',
       title: '餐食',
       text: '三餐营养搭配，兼顾亚洲口味与不同学生需求。',
     },
     {
       icon: 'local_laundry_service',
-      image: 'assets/cia/twin-room.jpg',
-      title: '洗衣打扫',
-      text: '定期打扫公共区域，学生可使用校内洗衣服务。',
+      image: 'assets/cia/laundry-service-illustration.png',
+      badge: '洗衣服务示意图',
+      title: '保洁与洗衣',
+      text: '学校提供免费洗衣服务，每周可送洗2次，通常2–3天后领取；宿舍房间原则上每周清洁1次。',
     },
     {
       icon: 'fitness_center',
       image: 'assets/cia/fitness-center.jpg',
+      badge: '',
       title: '校园设施',
       text: '泳池、健身房、篮球场、自习室和休闲空间齐全。',
     },
     {
       icon: 'location_on',
-      image: 'assets/cia/campus-pool.jpg',
-      title: '周边生活',
-      text: '超市、餐厅、商场、银行和机场等生活资源较便利。',
+      image: 'assets/cia/mactan-airport-official.png',
+      badge: '',
+      title: '麦克坦周边',
+      text: '位于麦克坦岛，前往机场、餐厅及周末活动地点较方便；实际车程会受交通情况影响。',
+    },
+  ];
+
+  readonly campusPracticalGuides: CampusPracticalGuide[] = [
+    {
+      icon: 'confirmation_number',
+      eyebrow: 'ADMIN OFFICE',
+      title: '行政办公室办事指引',
+      facts: [
+        { label: '位置', value: '1号楼入口处，先取号再到对应窗口办理' },
+        { label: '办公时间', value: '08:00–18:00；午休11:50–13:00' },
+        { label: '表格截止', value: '旅行、退房、Free Day等申请通常需在17:00前提交' },
+      ],
+      note: '签证延长、护照、退款与押金、延长住宿、旅行申请、课本领取、志愿者活动及出勤确认等业务由不同窗口负责。',
+    },
+    {
+      icon: 'sim_card',
+      eyebrow: 'SIM & INTERNET',
+      title: '校内SIM卡与充值',
+      facts: [
+        { label: '未注册SIM', value: '约₱50，需本人使用护照和基本信息完成注册' },
+        { label: '已注册SIM', value: '约₱150，可直接充值使用，通常无需再次注册' },
+        { label: '充值方式', value: '校内小卖铺现场充值，或使用“菲速充”微信小程序' },
+      ],
+      note: '学校资料显示小卖铺电话卡为Smart卡；套餐、售价和注册要求可能随电信政策调整。',
+    },
+    {
+      icon: 'restaurant_menu',
+      eyebrow: 'DINING HOURS',
+      title: '校内餐厅用餐时间',
+      facts: [
+        { label: '周一至周六 / 节假日', value: '早餐06:30–08:00；午餐11:30–13:00；晚餐17:30–19:00' },
+        { label: '周五午餐', value: '11:30–13:10' },
+        { label: '周日', value: '早午餐10:00–12:00；晚餐17:30–19:00' },
+      ],
+      note: '餐食通常会在结束前10分钟停止供应；课程表中的学生早餐安排可能从06:40开始，请按入学通知协调晨考与用餐。',
+    },
+    {
+      icon: 'local_laundry_service',
+      eyebrow: 'LAUNDRY',
+      title: '免费洗衣与自助付费洗衣',
+      facts: [
+        { label: '免费洗衣', value: '每日07:00–15:00收取脏衣，通常2–3天后领取，使用学校洗衣液' },
+        { label: '付费自助', value: '洗涤及烘干约₱200；可洗内衣裤并使用自己的洗衣液' },
+        { label: '付费开放', value: '周一至周五07:00–21:00；周末07:00–17:00；节假日08:00–17:00' },
+      ],
+      note: '学校资料另列遗失物品赔偿参考标准（约₱50–₱500）；送洗前后请自行核对衣物，最终处理以校方规定为准。',
+    },
+  ];
+
+  readonly roomRateGroups: RoomRateGroup[] = [
+    {
+      title: '单人间',
+      rooms: [
+        { id: 'p1', label: '豪华单人间', code: 'P-1', location: '校内' },
+        { id: 'pn1', label: '校外单人间', code: 'PN-1', location: '校外' },
+        { id: 's1', label: '标准单人间', code: 'S-1', location: '校内' },
+      ],
+    },
+    {
+      title: '普通多人间',
+      rooms: [
+        { id: 'd2', label: '双人间', code: 'D-2', location: '校内' },
+        { id: 'd3', label: '三人间', code: 'D-3', location: '校内' },
+        { id: 'd4', label: '四人间', code: 'D-4', location: '校内' },
+      ],
+    },
+    {
+      title: '家庭精致套房',
+      rooms: [
+        { id: 'sr1', label: '单人套房', code: 'SR-1', location: '校内' },
+        { id: 'sr2', label: '双人套房', code: 'SR-2', location: '校内' },
+        { id: 'sr3', label: '三人套房', code: 'SR-3', location: '校内' },
+        { id: 'sr4', label: '四人套房', code: 'SR-4', location: '校内' },
+      ],
+    },
+  ];
+
+  readonly roomComparisonProfiles: RoomComparisonProfile[] = [
+    {
+      id: 'premium-single',
+      label: '豪华单人间',
+      englishName: 'Premium Single',
+      bookingCode: 'P-1',
+      location: '校内',
+      size: '约21.85㎡',
+      view: '泳池景观',
+      bed: '约160 × 200cm',
+      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      suitable: '希望住校、重视独处空间，并希望房内具备简易料理条件的学生。',
+      highlights: ['大尺寸单人床', '电磁炉、洗手池与迷你冰箱', '床头灯、拖鞋及壁挂式吹风机'],
+      note: '网站报价对应P-1；房间朝向、楼层和具体设备位置以入住分配为准。',
+      image: '/assets/cia/rooms-2026/premium-single-room.jpg',
+      imageAlt: 'CIA校内豪华单人间实景，配有大床、书桌及简易料理区',
+    },
+    {
+      id: 'pinnacle-single',
+      label: '校外单人间',
+      englishName: 'Pinnacle Single',
+      bookingCode: 'PN-1',
+      location: '校外',
+      size: '约15.5–16㎡',
+      view: '城市景观',
+      bed: '约122 × 198cm',
+      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      suitable: '希望单人居住、能接受住在学校对面校外住宿楼，并看重智能设备的学生。',
+      highlights: ['智能投影与弹出式充电口', '防雾镜与高速无刷吹风机', '洗衣机及简易料理设备'],
+      note: '仅此房型属于校外住宿。学校资料包含普通房与小复式两种布局；网站当前报价对应PN-1，具体布局、价格和余房须在报名时单独确认。',
+      image: '/assets/cia/rooms-2026/pinnacle-single-room.jpg',
+      imageAlt: 'CIA Pinnacle校外单人间实景，配有单人床、书桌、投影和料理区',
+    },
+    {
+      id: 'standard-single',
+      label: '标准单人间',
+      englishName: 'Standard Single',
+      bookingCode: 'S-1',
+      location: '校内',
+      size: '约14.3㎡',
+      view: '泳池景观',
+      bed: '约122 × 198cm',
+      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      suitable: '希望住校、预算低于豪华单人间，同时保留独立学习和休息空间的学生。',
+      highlights: ['紧凑型独立空间', '独立书桌、书架与遮光帘', '迷你冰箱、热水壶及拖鞋'],
+      note: '网站报价对应S-1；泳池景观为房型资料所列参考，不能作为指定朝向承诺。',
+      image: '/assets/cia/rooms-2026/standard-single-room.jpg',
+      imageAlt: 'CIA校内标准单人间实景，配有单人床、书桌和收纳空间',
+    },
+    {
+      id: 'twin',
+      label: '双人间',
+      englishName: 'Twin Room',
+      bookingCode: 'D-2',
+      location: '校内',
+      size: '约24.84㎡',
+      view: '花园 / 泳池 / 海景',
+      bed: '每床约122 × 198cm',
+      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      suitable: '结伴报名，或希望在舒适度、交流机会和预算之间取得平衡的学生。',
+      highlights: ['两张较宽单人床', '每人独立书桌与收纳位', '卫浴可能为干湿分区或一体式'],
+      note: '网站报价对应D-2；景观和卫浴布局会因具体房号而不同。',
+      image: '/assets/cia/rooms-2026/twin-room.jpg',
+      imageAlt: 'CIA校内双人间实景，配有两张单人床和独立学习位置',
+    },
+    {
+      id: 'triple',
+      label: '三人间',
+      englishName: 'Triple Room',
+      bookingCode: 'D-3',
+      location: '校内',
+      size: '约31.05㎡',
+      view: '花园 / 海景',
+      bed: '每床约122 × 198cm',
+      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      suitable: '希望控制住宿预算，同时保留较宽床位和多人交流环境的学生。',
+      highlights: ['三张较宽单人床', '卫生间与淋浴间分开', '每人独立书桌、插座与收纳位'],
+      note: '网站报价对应D-3；花园或海景属于可能朝向，不能预先保证。',
+      image: '/assets/cia/rooms-2026/triple-room.jpg',
+      imageAlt: 'CIA校内三人间实景，配有三张单人床和连续学习桌',
+    },
+    {
+      id: 'quad',
+      label: '四人间',
+      englishName: 'Quad Room',
+      bookingCode: 'D-4',
+      location: '校内',
+      size: '约31.8㎡',
+      view: '花园 / 海景',
+      bed: '每床约99 × 190.5cm',
+      service: '洗衣每周2次 · 清洁每周2次 · 每2周更换床品',
+      suitable: '优先控制预算、喜欢同学互动，并能适应多人共同生活节奏的学生。',
+      highlights: ['普通多人间中面积最大', '卫生间与淋浴间分开', '24个以上插座及独立学习位'],
+      note: '网站报价对应D-4；多人间入住人数及床位安排以学校实际分配为准。',
+      image: '/assets/cia/rooms-2026/quad-room.jpg',
+      imageAlt: 'CIA校内四人间实景，配有四张单人床和连续学习桌',
+    },
+    {
+      id: 'suite',
+      label: '家庭精致套房',
+      englishName: 'Suite Room',
+      bookingCode: 'SR-1 / SR-2 / SR-3 / SR-4',
+      location: '校内',
+      size: '约31.18㎡',
+      view: '海景',
+      bed: '主床约193 × 203cm',
+      service: '洗衣每周3次 · 清洁每周3次 · 每2周更换床品',
+      suitable: '亲子、家庭或希望获得更完整起居与料理配置的学生。',
+      highlights: ['电视、大冰箱、微波炉与电磁炉', '洗手池、餐具、浴袍及茶几', '阳台及更完整的起居空间'],
+      note: '同一套房硬件对应SR-1至SR-4的不同入住人数报价；实际加床、床型及可住人数须按家庭人数和余房确认。',
+      image: '/assets/cia/rooms-2026/suite-room.jpg',
+      imageAlt: 'CIA家庭精致套房实景，配有大床、电视、餐桌及料理区',
     },
   ];
 
@@ -1451,9 +2138,22 @@ export class CiaSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadExtendedPageStyles();
     this.loadExchangeRates();
     this.loadPricingFromDatabase();
     this.loadGalleryFromDatabase();
+  }
+
+  private loadExtendedPageStyles(): void {
+    if (typeof document === 'undefined' || document.getElementById('cia-page-extended-styles')) {
+      return;
+    }
+
+    const stylesheet = document.createElement('link');
+    stylesheet.id = 'cia-page-extended-styles';
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = 'assets/cia/cia-page-extended.css';
+    document.head.appendChild(stylesheet);
   }
 
   private loadExchangeRates(): void {
@@ -1581,6 +2281,9 @@ export class CiaSchoolComponent implements OnInit {
           id,
           name: lesson.name,
           tuition: lesson.price,
+          tuition2027:
+            this.courseFees.find((course) => course.id === id)?.tuition2027 ??
+            lesson.price,
           suitable:
             lesson.description ||
             details?.suitable ||
@@ -1771,6 +2474,26 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
+  get displayedGalleryImages(): GalleryImage[] {
+    if (this.selectedGalleryCategory !== this.galleryCategories[0]) {
+      return this.filteredGalleryImages;
+    }
+
+    const overviewTitles = [
+      '校园泳池与主楼',
+      '户外泳池',
+      '教室楼层环境',
+      '校内宿舍概览',
+      '学生餐厅',
+      'IDP IELTS 官方考场',
+      '图书馆 / 自习室',
+    ];
+
+    return overviewTitles
+      .map((title) => this.galleryImages.find((image) => image.title === title))
+      .filter((image): image is GalleryImage => Boolean(image));
+  }
+
   get heroGalleryPreviewImages(): GalleryImage[] {
     if (this.usingUploadedGallery) {
       return this.galleryImages.slice(0, 4);
@@ -1798,7 +2521,31 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuition * this.priceRatioForSelectedWeeks;
+    return this.selectedCourseBaseTuition * this.priceRatioForSelectedWeeks;
+  }
+
+  get uses2027Tuition(): boolean {
+    return (
+      this.parseDate(this.selectedRegistrationDate) >=
+        this.parseDate('2026-09-01') &&
+      this.parseDate(this.selectedStartDate) >= this.parseDate('2027-01-01')
+    );
+  }
+
+  get selectedCourseBaseTuition(): number {
+    return this.uses2027Tuition
+      ? this.selectedCourse.tuition2027
+      : this.selectedCourse.tuition;
+  }
+
+  get appliedTuitionLabel(): string {
+    return this.uses2027Tuition ? '2027新价格' : '2026原价格';
+  }
+
+  get tuitionRuleSummary(): string {
+    return this.uses2027Tuition
+      ? '报名日期为2026年9月1日或之后，且入学日期为2027年1月1日或之后，已采用2027新课程费。'
+      : '只要在2026年9月1日前报名，或仍在2026年入学，课程费继续采用2026原价格。';
   }
 
   get roomFeeForSelectedWeeks(): number {
@@ -1813,16 +2560,12 @@ export class CiaSchoolComponent implements OnInit {
 
   get peakSeasonWeeks(): number {
     const studyStart = this.parseDate(this.selectedStartDate);
-    const peakRanges = [
-      ['2026-06-14', '2026-08-08'],
-      ['2027-01-17', '2027-02-14'],
-    ] as const;
 
     return Array.from({ length: this.selectedWeeks }, (_, index) => {
       const weekStart = this.addDays(studyStart, index * 7);
       const weekEnd = this.addDays(weekStart, 6);
 
-      return peakRanges.some(([start, end]) =>
+      return this.peakSeasonRanges.some(({ start, end }) =>
         this.dateRangesOverlap(
           weekStart,
           weekEnd,
@@ -1839,6 +2582,39 @@ export class CiaSchoolComponent implements OnInit {
 
   get seasonalSurcharge(): number {
     return this.peakSeasonWeeks * this.seasonalFeePerWeek;
+  }
+
+  get coveredPeakSeasonLabels(): string {
+    const studyStart = this.parseDate(this.selectedStartDate);
+    const studyEnd = this.addDays(studyStart, this.selectedWeeks * 7 - 1);
+
+    return this.peakSeasonRanges
+      .filter(({ start, end }) =>
+        this.dateRangesOverlap(
+          studyStart,
+          studyEnd,
+          this.parseDate(start),
+          this.parseDate(end),
+        ),
+      )
+      .map(({ label }) => label)
+      .join('、');
+  }
+
+  get peakSeasonStatusText(): string {
+    if (!this.isPeakSeason) {
+      return '当前选择的入学日期与学习周数未覆盖旺季，附加费为0美元。';
+    }
+
+    return `当前方案覆盖${this.coveredPeakSeasonLabels}共${this.peakSeasonWeeks}周，已自动计入${this.formatUsd(this.seasonalSurcharge)}美元。`;
+  }
+
+  get peakSeasonRangeText(): string {
+    return this.peakSeasonRanges
+      .map(({ label, start, end }) =>
+        `${label} ${start.replace(/-/g, '/')}–${end.replace(/-/g, '/')}`,
+      )
+      .join('；');
   }
 
   get isChristmasPromotionEligible(): boolean {
@@ -1904,11 +2680,11 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get exchangeRateSummary(): string {
-    const source = this.usingLiveExchangeRates
-      ? `最新网络参考汇率 · ${this.exchangeRateDateText}`
-      : '网络汇率加载失败，暂用备用参考值';
+    if (!this.usingLiveExchangeRates) {
+      return '正在获取最新参考汇率，请稍候';
+    }
 
-    return `人民币金额按${source.includes('最新') ? '实时汇率' : '备用汇率'}预估，最终以支付当日汇率为准`;
+    return `人民币金额按最新权威参考汇率预估（${this.exchangeRateDateText}），最终以支付当日汇率为准`;
   }
 
   get estimatedLocalFees(): LocalFeeEstimate[] {
@@ -1917,10 +2693,10 @@ export class CiaSchoolComponent implements OnInit {
     const visaExtensionCount = needsLongStayDocuments
       ? Math.ceil((this.selectedWeeks - 8) / 4)
       : 0;
-    const visaExtensionTotal =
-      visaExtensionCount === 0
-        ? 0
-        : 5130 + Math.max(0, visaExtensionCount - 1) * 4700;
+    const visaExtensionFees = [6410, 4540, 4540, 4540, 5650];
+    const visaExtensionTotal = visaExtensionFees
+      .slice(0, visaExtensionCount)
+      .reduce((total, fee) => total + fee, 0);
     const textbookSets = Math.ceil(this.selectedWeeks / 8);
 
     return [
@@ -1929,7 +2705,7 @@ export class CiaSchoolComponent implements OnInit {
         unitLabel: '₱8,000 / 次',
         quantity: 1,
         total: 8000,
-        note: '移民局收取，一次办理通常6个月有效；首次只报短期课程后续费或换校时，可能需要重新办理。',
+        note: '没有菲律宾学生签证、工签或退休签等长期签证的学生需办理；持有效长期签证者可按学校审核免办。',
       },
       {
         item: 'SSP-E Card',
@@ -1943,45 +2719,45 @@ export class CiaSchoolComponent implements OnInit {
         unitLabel: '₱4,500 / 次',
         quantity: needsLongStayDocuments ? 1 : 0,
         total: needsLongStayDocuments ? 4500 : 0,
-        note: '30天签证学习超过4周需办理；59天签证超过8周需办理。一次有效1年；换校请向原校取卡，否则可能重复缴费。',
+        note: '持30天旅游签证者在第一次延签时须办理；持59天旅游签证者学习超过8周须办理，参考费₱4,500。',
       },
       {
-        item: '管理费',
+        item: '综合管理费',
         unitLabel: '₱4,000 / 4周',
         quantity: fourWeekCycles,
         total: 4000 * fourWeekCycles,
-        note: '校内教学楼及其他设施维护费，按学习周数比例叠加。',
+        note: '按每4周₱4,000 / 人计算。',
       },
       {
         item: '电费',
         unitLabel: '₱2,000 / 4周',
         quantity: fourWeekCycles,
         total: 2000 * fourWeekCycles,
-        note: '按基础用电量估算；超过基础用电量时，学校可能额外收费。',
+        note: '以菲律宾当地电价为准；超过基本用电额度时另行收费，单价可能按当地电力公司调整。',
       },
       {
         item: '水费',
         unitLabel: '₱1,000 / 4周',
         quantity: fourWeekCycles,
         total: 1000 * fourWeekCycles,
-        note: '按基础用水量估算；超过基础用水量时，学校可能额外收费。',
+        note: '按每4周₱1,000 / 人计算。',
       },
       {
         item: '签证续签',
-        unitLabel: '首续₱5,130',
+        unitLabel: '首续₱6,410',
         quantity: visaExtensionCount,
         total: visaExtensionTotal,
-        note: '按59天签证估算：超过8周后每4周续签1次；首次约₱5,130，后续每次约₱4,700，最终以移民局收费为准。',
+        note: '以59天旅游签证为例：12周首次延签₱6,410；16、20、24周分别再加₱4,540，28周第5次为₱5,650。',
       },
       {
-        item: '教材费',
+        item: '教材费（第一套）',
         unitLabel: '₱2,000 / 套',
         quantity: textbookSets,
         total: 2000 * textbookSets,
-        note: '按一套教材预估使用8周计算，实际以课程和学校发放教材为准。',
+        note: '每套₱2,000，约使用8周；ESL、IELTS、Business、ESP通常9本，TOEIC通常7本，实际按课程与学习进度发放。',
       },
       {
-        item: '学生证',
+        item: '照片费',
         unitLabel: '₱200 / 次',
         quantity: 1,
         total: 200,
@@ -1992,8 +2768,15 @@ export class CiaSchoolComponent implements OnInit {
 
   readonly excludedLocalFees: LocalFeeEstimate[] = [
     {
-      item: '宿务马克坦机场周日接机',
+      item: '宿务马克坦机场周末接机',
       unitLabel: '₱1,000 / 次',
+      quantity: 0,
+      total: 0,
+      note: '可自由选择，也可自行打车；不计入学杂费合计。',
+    },
+    {
+      item: '宿务马克坦机场工作日接机',
+      unitLabel: '₱1,500 / 次',
       quantity: 0,
       total: 0,
       note: '可自由选择，也可自行打车；不计入学杂费合计。',
@@ -2003,7 +2786,7 @@ export class CiaSchoolComponent implements OnInit {
       unitLabel: '₱2,500 / 次',
       quantity: 1,
       total: 2500,
-      note: '无损坏及其他扣费时毕业可退；不计入学杂费合计。',
+      note: '₱2,500 / 人，完成退房及房间检查后按学校规定退还；不计入学杂费合计。',
     },
   ];
 
@@ -2040,6 +2823,7 @@ export class CiaSchoolComponent implements OnInit {
     const formatChineseDate = (date: Date) =>
       `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
     const quoteDate = formatChineseDate(now);
+    const quoteDateShort = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
     const quoteCnyAmount =
       Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
     const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
@@ -2047,12 +2831,12 @@ export class CiaSchoolComponent implements OnInit {
       SSP特殊学习许可证: '一次办理通常6个月有效；续费或换校时可能需要重新办理。',
       'SSP-E Card': '入学时与SSP同时办理，按一次性费用估算。',
       'ACR-I Card 外国人身份证': '30天签证超过4周、59天签证超过8周需办理；一次有效1年。',
-      管理费: '按学习周数比例计算。',
+      综合管理费: '每4周₱4,000 / 人。',
       电费: '按基础用电量估算，超额可能另行收费。',
       水费: '按基础用水量估算，超额可能另行收费。',
-      签证续签: '按59天签证估算；首次约₱5,130，后续每次约₱4,700。',
-      教材费: '每套预估使用8周，最终以学校实际发放教材为准。',
-      学生证: '一次性费用。',
+      签证续签: '按59天签证估算；12周首续₱6,410，16–24周每4周再加₱4,540。',
+      '教材费（第一套）': '每套₱2,000，约使用8周，最终以学校实际发放为准。',
+      照片费: '一次性费用。',
     };
 
     return {
@@ -2061,13 +2845,18 @@ export class CiaSchoolComponent implements OnInit {
       logoSrc: this.quoteImageAssets.logo,
       heroSrc: this.quoteImageAssets.hero,
       schoolCode: 'CIA',
-      title: `${this.selectedWeeks}周菲律宾游学`,
+      title: `${this.selectedWeeks}周`,
       subtitle: '',
       quoteDateText: quoteDate,
       updatedAtText: quoteDate,
       quoteNumber: `SQ-CIA-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-001`,
       validUntilText: formatChineseDate(validUntil),
       studentItems: [
+        {
+          icon: '价',
+          label: '报价日期',
+          value: quoteDateShort,
+        },
         {
           icon: '日',
           label: '入学日期',
@@ -2082,13 +2871,13 @@ export class CiaSchoolComponent implements OnInit {
           amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`,
           note: this.isChristmasPromotionEligible
             ? `圣诞新年优惠已免除${this.registrationFee}美元`
-            : '老学员免注册费',
+            : '一次性学校注册费',
         },
         {
           icon: '课',
           label: '课程费',
           amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`,
-          note: `${this.selectedCourse.name}；${this.selectedCourse.schedule}`,
+          note: `${this.appliedTuitionLabel}；${this.selectedCourse.name}；${this.selectedCourse.schedule}`,
         },
         {
           icon: '宿',
@@ -2099,14 +2888,14 @@ export class CiaSchoolComponent implements OnInit {
         {
           icon: '旺',
           label: '旺季附加费',
-          note: `${this.formatUsd(this.seasonalFeePerWeek)}美元/周 × 覆盖${this.peakSeasonWeeks}周；2026/6/14–8/8、2027/1/17–2/14`,
+          note: `${this.formatUsd(this.seasonalFeePerWeek)}美元/周 × 覆盖${this.peakSeasonWeeks}周；${this.peakSeasonRangeText}`,
           amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`,
         },
         {
           icon: '折',
-          label: '思达95折优惠',
-          note: `本次优惠金额：${this.formatUsd(this.sidaDiscountAmount)}美元`,
-          amount: `- ${this.formatUsd(this.sidaDiscountAmount)} 美元`,
+          label: '思达折扣',
+          note: `优惠金额：${this.formatUsd(this.sidaDiscountAmount)}美元`,
+          amount: '95折',
           accent: true,
         },
         {
@@ -2117,7 +2906,7 @@ export class CiaSchoolComponent implements OnInit {
           accent: this.isChristmasPromotionEligible,
         },
       ],
-      totalLabel: '思达启航折后价（最终支付给学校的金额）',
+      totalLabel: '最终应付学校金额',
       totalUsd: `${this.formatUsd(this.quoteUsd)} 美元`,
       totalCny: `人民币预计金额：约 ${quoteCnyAmount.toLocaleString('zh-CN')} 元`,
       totalNote: '按实时汇率预估，最终以支付当日汇率为准',
@@ -2125,7 +2914,7 @@ export class CiaSchoolComponent implements OnInit {
       localFeeAmount: this.formatPhp(this.estimatedLocalFeeTotal),
       localFeeDescription:
         `约人民币${this.estimatedLocalFeeCny.toLocaleString('zh-CN')}元；含SSP、证件、管理、水电、签证及教材等预估。`,
-      localFeeNote: '不含接机及可退房间押金，实际以到校缴费为准。',
+      localFeeNote: '不含接机及房间押金，实际以到校缴费为准。',
       localFeeItems: this.estimatedLocalFees.map((fee) => ({
         label: fee.item,
         unit: fee.unitLabel,
@@ -2135,26 +2924,34 @@ export class CiaSchoolComponent implements OnInit {
       })),
       localFeeCny: `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`,
       exchangeRateText: '按实时汇率预估',
-      optionalFeeItems: this.excludedLocalFees.map((fee) => ({
-        label: fee.item,
-        amount: fee.unitLabel,
-        note: fee.note,
-      })),
+      optionalFeeItems: this.excludedLocalFees
+        .filter((fee) => !fee.item.includes('工作日接机'))
+        .map((fee) => ({
+          label: fee.item.includes('周末接机')
+            ? '周末接机'
+            : fee.item,
+          amount: fee.unitLabel,
+          note: fee.item.includes('接机')
+            ? '按需选择，也可自行前往；不计入学杂费合计。'
+            : fee.note,
+        })),
       benefitItems: [
-        { title: '0中介费', text: '' },
-        { title: '价格保护', text: '' },
-        { title: '全程报名协助', text: '' },
-        { title: '海外驻点售后', text: '' },
+        { title: '0中介费', text: '学校合作价格，不额外加收服务费' },
+        { title: '价格保护', text: '同条件可比价，核实更低价退差价' },
+        { title: '全程报名协助', text: '选校、签证、付款及行前指导' },
+        { title: '海外驻点售后', text: '学习期间持续跟进，问题有人协助' },
       ],
       serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
       alumniBenefitItems: [
         {
           title: '老学员权益',
           subtitle: '',
-          text: '老学员可享线上课程优惠、留学爱尔兰及欧美英语学校专属奖学金和优惠。',
+          text: '老学员结业后可享线上一对一英语课程专属优惠，留学爱尔兰及欧美英语学校专属奖学金和优惠。',
         },
       ],
       importantNotes: [
+        this.tuitionRuleSummary,
+        '若原定2026年入学后改期到2027年，课程费还要按改期日期单独核对。',
         '人民币金额按实时汇率预估，最终以支付当日汇率为准。',
         '学杂费为到校后比索现金预估，实际以学校及相关部门收费为准。',
         '本报价最终以 CIA 最新价格、空房、优惠及思达启航顾问确认为准。',
@@ -2239,6 +3036,39 @@ export class CiaSchoolComponent implements OnInit {
     return description
       .replace(/^到校支付费用；/, '')
       .replace(/^前期支付费用；/, '');
+  }
+
+  roomFeeFor(id: string): number {
+    return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
+  }
+
+  roomsForRateGroup(group: RoomRateGroup): RoomRateOption[] {
+    return group.rooms;
+  }
+
+  setRoomProfile(profileId: string): void {
+    this.selectedRoomProfileId = profileId;
+  }
+
+  get selectedRoomProfile(): RoomComparisonProfile {
+    return (
+      this.roomComparisonProfiles.find((profile) => profile.id === this.selectedRoomProfileId) ??
+      this.roomComparisonProfiles[0]
+    );
+  }
+
+  private nextSundayDate(): string {
+    const date = new Date();
+    const daysUntilSunday = (7 - date.getDay()) % 7;
+    date.setDate(date.getDate() + daysUntilSunday);
+    return this.formatLocalDate(date);
+  }
+
+  private formatLocalDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private parseDate(value: string): Date {

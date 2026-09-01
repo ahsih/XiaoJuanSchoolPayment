@@ -57,11 +57,11 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、课程费和住宿费估算
+                  已含课程、住宿及自动适用优惠估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用、旺季附加费和保证班规则需另行确认
+                  旺季附加费按学习日期自动统计，到校费用另列
                 </li>
               </ul>
             </aside>
@@ -206,7 +206,7 @@
             <div class="section-heading">
               <span>PINES 2026 年 4 周课程费</span>
               <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费参考，币种为美元。IELTS Guarantee为长周期课程，页面按4周等值展示用于快速估算。</p>
+              <p>以下为4周课程费参考，币种为美元；课时已按PINES课程表逐项核对。主校区课程可另选EB PRO，另收PHP 5,000/4周。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="PINES 2026年4周课程费">
               <div class="table-row table-head" role="row">
@@ -249,7 +249,7 @@
             <div class="section-heading">
               <span>PINES 2026 年 4 周住宿费</span>
               <h2>房型会明显影响总预算</h2>
-              <p>默认报价使用六人房。单人房、5B Solo和IELTS校区可选房型建议先让顾问确认空房。</p>
+              <p>选择课程后仅显示对应校区房型，避免把主校区课程与雅思校区住宿错误组合；房型仍需确认空房。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="PINES 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -277,33 +277,38 @@
             <div class="section-heading">
               <span>PINES 费用快速报价</span>
               <h2>默认参考：4周 Light ESL 4 + 六人房</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费；2周按4周价格的65%，3周按85%</p>
+              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 + 旺季附加费 − 免注册费 − 思达95折 − 自动适用的淡季及长期优惠</p>
             </div>
             <div class="quote-form" aria-label="PINES费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks" [disabled]="weeks < minimumSelectedCourseWeeks">{{ weeks }} 周</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseChange()"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of availableRoomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
             </div>
             <div class="quote-breakdown">
               <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>旺季附加费（{{ peakSeasonWeeks }}周）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span>免注册费</span><strong>- USD {{ formatUsd(registrationDiscountAmount) }}</strong></div>
+              <div><span>思达95折优惠</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+              <div><span>常规淡季优惠</span><strong>{{ offSeasonDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonDiscountAmount) : '未适用' }}</strong></div>
+              <div><span>12周以上额外优惠</span><strong>{{ longStayDiscountAmount > 0 ? '- USD ' + formatUsd(longStayDiscountAmount) : '未适用' }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateSummary }}</small>
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房、校区和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP I-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">PINES旺季附加费参考为2026/6/28-8/22、2027/6/27-8/22期间USD 40/周；最终需由顾问按入学档期确认。</p>
+            <p class="fee-alert">2周课程费及住宿费按4周价的65%计算，3周按85%；4周以上按4周单价和学习周期计算。雅思保证班会自动限制最低8周或12周。</p>
+            <p class="season-note">旺季附加费：2026/6/28—8/23期间实际覆盖的学习周数按USD 40/周计算。</p>
+            <p class="season-note">淡季及长期优惠：学习日期在2026/12/31前且不覆盖旺季的完整4周，每4周减USD 150；12周以上再减USD 100。页面会逐个4周周期判断，并与免注册费、思达95折自动叠加，最终以学校审核为准。</p>
           </section>
         </section>
 
@@ -311,15 +316,21 @@
           <div class="section-heading">
             <span>到校支付费用参考</span>
             <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数和学校政策会影响最终金额。</p>
+            <p>已按当前选择的{{ selectedWeeks }}周自动计算。费用以PHP计价，通常到校后支付；押金和洗衣服务不计入学杂费合计。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+            <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
+          </div>
+          <div class="quote-result local-fee-result">
+            <span>本次预计学杂费合计（{{ selectedWeeks }}周）</span>
+            <strong>PHP {{ localFeeTotal.toLocaleString('en-US') }}</strong>
+            <em>{{ localFeeCnyText }}</em>
+            <small>{{ exchangeRateSummary }}</small>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看到校支付费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+              <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
             </div>
           </details>
         </section>
@@ -328,7 +339,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年7月31日。课程、校区、入学日、宿舍和雅思保证班规则参考PINES官方英文与中文页面；费用参考公开2026年费用表并由思达顾问整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月1日。课程安排参考PINES官方课程页面；2026课程费、住宿费、优惠和到校学杂费按思达顾问最新价目表逐项核对。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
