@@ -11,8 +11,8 @@
 
 :host .cia-page {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
+  max-width: var(--site-reading-width, 1560px);
+  margin: 0 auto;
   padding: 30px clamp(16px, 2vw, 32px) 44px;
   color: #081a32;
 }
@@ -213,14 +213,75 @@
 
 :host .pricing-table-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
   align-items: start;
   margin-top: 18px;
 }
 
+:host .course-fee-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+:host .course-fee-group {
+  min-width: 0;
+}
+
+:host .course-fee-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 72px;
+  padding: 12px 16px;
+  border: 1px solid #dce8ee;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: #edf3f8;
+}
+
+:host .course-fee-group--semi .course-fee-group-heading {
+  border-color: #cfe5da;
+  background: #edf8f2;
+}
+
+:host .course-fee-group-heading span {
+  display: block;
+  color: #e9560c;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+:host .course-fee-group-heading h3 {
+  margin: 3px 0 0;
+  color: #102033;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+:host .course-fee-group-heading b {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #102033;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+:host .course-fee-group--semi .course-fee-group-heading b {
+  background: #08724f;
+}
+
 :host .pricing-table-grid .data-table {
   margin-top: 0;
+}
+
+:host .course-fee-group .data-table {
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
 }
 
 :host .pricing-table-grid .table-row span {
@@ -243,6 +304,42 @@
   font-size: 15px;
   font-weight: 850;
   line-height: 1.65;
+}
+
+:host .mobile-course-fee-group {
+  display: grid;
+  gap: 12px;
+}
+
+:host .mobile-course-fee-group h3 {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #102033;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 950;
+}
+
+:host .mobile-course-fee-group + .mobile-course-fee-group {
+  margin-top: 8px;
+}
+
+:host .mobile-course-fee-group + .mobile-course-fee-group h3 {
+  background: #08724f;
+}
+
+:host .quote-form input[type="date"] {
+  cursor: pointer;
+}
+
+:host .quote-breakdown .peak-fee-label small {
+  display: block;
+  margin-top: 3px;
+  color: #8a5a3a;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.45;
 }
 
 :host .sida-ev-section {
@@ -440,6 +537,10 @@
 @media (max-width: 640px) {
   :host .cia-page {
     padding: 18px 14px calc(96px + env(safe-area-inset-bottom));
+  }
+
+  :host .course-fee-groups {
+    display: none;
   }
 
   :host .hero-section {

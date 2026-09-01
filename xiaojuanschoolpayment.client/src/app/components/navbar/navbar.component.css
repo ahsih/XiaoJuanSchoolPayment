@@ -182,6 +182,238 @@
   gap: 1rem;
 }
 
+.mega-menu--philippines {
+  max-height: min(76vh, 560px);
+  overflow: hidden;
+}
+
+.mega-menu__philippines {
+  display: grid;
+  align-content: start;
+  gap: 0.95rem;
+  min-width: 0;
+}
+
+.philippines-menu-section {
+  min-width: 0;
+}
+
+.philippines-menu-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.philippines-menu-heading strong {
+  color: #08183a;
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.philippines-menu-heading span {
+  color: #7c899a;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.philippines-quick-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.philippines-quick-links a {
+  min-width: 0;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 16px;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e3e9ef;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #263c58;
+  font-size: 0.8rem;
+  font-weight: 850;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: border-color 0.16s ease, background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.philippines-quick-links a:hover,
+.philippines-quick-links a:focus-visible {
+  border-color: #bcdac9;
+  background: #f3faf6;
+  color: #0e7040;
+}
+
+.philippines-quick-links mat-icon {
+  width: 19px;
+  height: 19px;
+  color: #14824a;
+  font-size: 19px;
+}
+
+.philippines-quick-links a > mat-icon:last-child {
+  width: 15px;
+  height: 15px;
+  color: #8491a2;
+  font-size: 15px;
+}
+
+.philippines-city-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.philippines-city-link {
+  min-width: 0;
+  min-height: 66px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 16px;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e3e9ef;
+  border-radius: 8px;
+  background: #fbfcfd;
+  color: #203550;
+  text-decoration: none;
+  transition: border-color 0.16s ease, background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+a.philippines-city-link:hover,
+a.philippines-city-link:focus-visible {
+  border-color: #bcdac9;
+  background: #f1faf5;
+  transform: translateY(-1px);
+}
+
+.philippines-city-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #e9f5ee;
+  color: #117845;
+}
+
+.philippines-city-icon mat-icon {
+  width: 19px;
+  height: 19px;
+  font-size: 19px;
+}
+
+.philippines-city-copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.philippines-city-copy > strong {
+  overflow: hidden;
+  color: #132943;
+  font-size: 0.88rem;
+  font-weight: 950;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.philippines-city-copy > small {
+  color: #7d8a9a;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.philippines-city-link > mat-icon:last-child {
+  width: 16px;
+  height: 16px;
+  color: #8b97a7;
+  font-size: 16px;
+}
+
+.philippines-city-link--more {
+  grid-template-columns: 36px minmax(0, 1fr);
+  background: #fff9f4;
+  border-color: #f1dfd1;
+}
+
+.philippines-city-link--more .philippines-city-icon {
+  background: #fff0e4;
+  color: #df5f1e;
+}
+
+.philippines-more-city-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.55rem;
+}
+
+.philippines-more-city-links a {
+  color: #6f5a49;
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.philippines-more-city-links a:hover,
+.philippines-more-city-links a:focus-visible {
+  color: #e25f1e;
+}
+
+.philippines-menu-section--needs {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #edf1f5;
+}
+
+.philippines-menu-section--needs .philippines-menu-heading {
+  display: block;
+  margin: 0;
+}
+
+.philippines-menu-section--needs .philippines-menu-heading span {
+  display: none;
+}
+
+.philippines-need-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.philippines-need-links a {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.65rem;
+  border-radius: 999px;
+  background: #f2f6f8;
+  color: #42546a;
+  font-size: 0.76rem;
+  font-weight: 850;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.philippines-need-links a:hover,
+.philippines-need-links a:focus-visible {
+  background: #e8f5ee;
+  color: #0f7542;
+}
+
 .mega-group {
   min-width: 0;
   padding: 0.85rem;
@@ -420,6 +652,19 @@
     gap: 0.65rem;
   }
 
+  .mega-menu--philippines {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .mega-menu__philippines {
+    gap: 0.85rem;
+  }
+
+  .philippines-city-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .mega-group {
     padding: 0.75rem;
   }
@@ -497,6 +742,40 @@
     order: 4;
     grid-column: 1 / -1;
     top: calc(100% + 1px);
+  }
+
+  .philippines-menu-heading span {
+    display: none;
+  }
+
+  .philippines-quick-links,
+  .philippines-city-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .philippines-quick-links a {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+
+  .philippines-quick-links a > mat-icon:last-child,
+  .philippines-city-link > mat-icon:last-child {
+    display: none;
+  }
+
+  .philippines-city-link {
+    grid-template-columns: 32px minmax(0, 1fr);
+    min-height: 62px;
+    padding: 0.5rem;
+  }
+
+  .philippines-city-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .philippines-menu-section--needs {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 

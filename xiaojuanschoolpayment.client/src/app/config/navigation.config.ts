@@ -191,7 +191,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'philippines-study',
     label: '菲律宾游学',
     route: '/philippines-study/why-philippines',
-    note: '当前主要收入业务入口',
+    note: '按城市和学习目标，快速找到合适的学校与课程',
     children: [
       {
         id: 'why-philippines',

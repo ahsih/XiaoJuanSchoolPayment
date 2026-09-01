@@ -116,7 +116,7 @@ export class ManilaStudyComponent {
       title: '短期转机组合型',
       tag: 'Short Stay / Combo',
       text: '适合只有 1-2 周、需要面试培训、企业拜访、转机停留，或想先了解菲律宾再转城市的学生。',
-      examples: '马尼拉 + 宿务 / 碧瑶 / Clark 组合',
+      examples: '菲律宾马尼拉Enderun语言学校、菲律宾马尼拉American-English-Skill语言学校、菲律宾马尼拉Berlitz语言学校',
     },
   ];
 

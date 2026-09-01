@@ -39,9 +39,13 @@
         <mat-icon *ngIf="item.children?.length">expand_more</mat-icon>
       </a>
 
-      <div class="mega-menu" *ngIf="item.children?.length">
+      <div
+        class="mega-menu"
+        [class.mega-menu--philippines]="isPhilippinesMenu(item)"
+        *ngIf="item.children?.length"
+      >
         <div class="mega-menu__intro">
-          <span>STAR Education</span>
+          <span>{{ isPhilippinesMenu(item) ? "SIDA PHILIPPINES STUDY" : "STAR Education" }}</span>
           <strong>{{ item.label }}</strong>
           <p>{{ item.note || "完整项目路径与申请资讯" }}</p>
           <a routerLink="/about-sida/contact" (click)="closeMenus()">
@@ -50,7 +54,83 @@
           </a>
         </div>
 
-        <div class="mega-menu__columns">
+        <div
+          class="mega-menu__philippines"
+          *ngIf="isPhilippinesMenu(item); else standardMegaMenu"
+        >
+          <section class="philippines-menu-section philippines-menu-section--quick">
+            <div class="philippines-menu-heading">
+              <strong>快速入口</strong>
+              <span>先了解费用和选校方式</span>
+            </div>
+            <div class="philippines-quick-links">
+              <a
+                *ngFor="let quickLink of getPhilippinesQuickLinks(item); trackBy: trackById"
+                [routerLink]="quickLink.route"
+                (click)="closeMenus()"
+              >
+                <mat-icon>{{ getPhilippinesQuickLinkIcon(quickLink) }}</mat-icon>
+                <span>{{ quickLink.label }}</span>
+                <mat-icon>arrow_forward</mat-icon>
+              </a>
+            </div>
+          </section>
+
+          <section class="philippines-menu-section philippines-menu-section--cities">
+            <div class="philippines-menu-heading">
+              <strong>按城市选择</strong>
+              <span>进入城市页后再查看学校、课程和住宿</span>
+            </div>
+            <div class="philippines-city-grid">
+              <a
+                class="philippines-city-link"
+                *ngFor="let city of getPhilippinesCities(item); trackBy: trackById"
+                [routerLink]="city.route"
+                (click)="closeMenus()"
+              >
+                <span class="philippines-city-icon">
+                  <mat-icon>{{ getPhilippinesCityIcon(city) }}</mat-icon>
+                </span>
+                <span class="philippines-city-copy">
+                  <strong>{{ getPhilippinesCityLabel(city) }}</strong>
+                  <small>{{ getPhilippinesCitySchoolCount(city) }} 所学校</small>
+                </span>
+                <mat-icon>chevron_right</mat-icon>
+              </a>
+
+              <div class="philippines-city-link philippines-city-link--more">
+                <span class="philippines-city-icon"><mat-icon>explore</mat-icon></span>
+                <span class="philippines-city-copy">
+                  <strong>更多城市</strong>
+                  <span class="philippines-more-city-links">
+                    <a
+                      *ngFor="let city of getMorePhilippinesCities(item); trackBy: trackById"
+                      [routerLink]="city.route"
+                      (click)="closeMenus()"
+                    >{{ getPhilippinesCityLabel(city) }}</a>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section class="philippines-menu-section philippines-menu-section--needs">
+            <div class="philippines-menu-heading">
+              <strong>按需求选择</strong>
+              <span>按学习目标快速缩小范围</span>
+            </div>
+            <div class="philippines-need-links">
+              <a
+                *ngFor="let need of getPhilippinesNeedLinks(item); trackBy: trackById"
+                [routerLink]="need.route"
+                (click)="closeMenus()"
+              >{{ need.label }}</a>
+            </div>
+          </section>
+        </div>
+
+        <ng-template #standardMegaMenu>
+          <div class="mega-menu__columns">
           <section
             class="mega-group"
             [class.mega-group--collapsible]="canCollapseThirdLevel(item, child)"
@@ -136,7 +216,8 @@
               </button>
             </div>
           </section>
-        </div>
+          </div>
+        </ng-template>
       </div>
     </div>
   </nav>

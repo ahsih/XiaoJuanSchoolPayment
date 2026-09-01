@@ -73,59 +73,62 @@
       </header>
 
       <div class="selection-grid">
-        <article
+        <button
+          type="button"
           class="selection-card"
           *ngFor="let group of page.selectionGroups"
           [attr.data-tone]="group.tone"
+          (click)="showDirectoryCategory(group.category)"
+          [attr.aria-label]="'筛选并查看' + group.title + '学校'"
         >
-          <button
-            type="button"
-            class="selection-title selection-title-button"
-            (click)="showDirectoryCategory(group.category)"
-            [attr.aria-label]="'查看' + group.title + '学校列表'"
+          <span
+            class="selection-icon"
+            [class.selection-icon--brand]="group.iconAsset && !group.iconCopies"
+            [class.selection-icon--pair]="group.iconCopies === 2"
+            [class.selection-icon--emoji]="group.iconEmoji"
           >
-            <span class="selection-icon"><mat-icon>{{ group.icon }}</mat-icon></span>
-            <h3>{{ group.title }}</h3>
-          </button>
-          <p>{{ group.subtitle }}</p>
-          <img [src]="group.image" [alt]="group.title + page.cityName + '学校校园'" />
-          <ul>
-            <li *ngFor="let school of group.schools">
-              <mat-icon>check_circle</mat-icon>{{ school }}
-            </li>
-          </ul>
-          <button
-            type="button"
-            class="selection-category-link"
-            (click)="showDirectoryCategory(group.category)"
-          >
-            查看 {{ directoryFilterCount(group.category) }} 所学校
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </article>
+            <ng-container *ngIf="group.iconAsset">
+              <img [src]="group.iconAsset" alt="" aria-hidden="true" />
+              <img *ngIf="group.iconCopies === 2" [src]="group.iconAsset" alt="" aria-hidden="true" />
+            </ng-container>
+            <span *ngIf="!group.iconAsset && group.iconEmoji" class="selection-emoji" aria-hidden="true">
+              {{ group.iconEmoji }}
+            </span>
+            <mat-icon *ngIf="!group.iconAsset && !group.iconEmoji">{{ group.icon }}</mat-icon>
+          </span>
+          <span class="selection-copy">
+            <strong>{{ group.title }}</strong>
+            <small>{{ group.subtitle }}</small>
+          </span>
+          <span class="selection-count">{{ directoryFilterCount(group.category) }} 所</span>
+          <span class="selection-action">
+            查看学校
+            <mat-icon>arrow_downward</mat-icon>
+          </span>
+        </button>
       </div>
     </section>
 
     <section class="panel schools-panel" id="popular-schools">
-      <header class="panel-heading panel-heading--row">
+      <header class="panel-heading">
         <div>
           <h2>{{ page.featuredTitle || page.cityName + '热门学校推荐' }}</h2>
           <p>{{ page.featuredSubtitle || '课程特色、校园环境与管理模式各有侧重' }}</p>
         </div>
-        <a class="heading-link" href="#all-schools" appScrollTo="all-schools">
-          更多学校
-          <mat-icon>arrow_downward</mat-icon>
-        </a>
       </header>
 
       <div class="school-cards" [class.school-cards--compact]="page.featuredSchools.length < 5">
         <article class="school-card" *ngFor="let school of page.featuredSchools">
-          <div class="school-image">
+          <a
+            class="school-image"
+            [routerLink]="school.route"
+            [attr.aria-label]="'查看' + school.name + '学校介绍'"
+          >
             <img [src]="school.image" [alt]="school.name + page.cityName + '校园'" />
             <span [attr.data-tone]="school.tone">{{ school.badge }}</span>
-          </div>
+          </a>
           <div class="school-content">
-            <h3>{{ school.name }}</h3>
+            <h3><a [routerLink]="school.route">{{ school.name }}</a></h3>
             <p>{{ school.description }}</p>
             <div class="school-tags">
               <span *ngFor="let tag of school.tags">{{ tag }}</span>
@@ -139,12 +142,64 @@
       </div>
 
       <a class="school-directory" href="#all-schools" appScrollTo="all-schools">
-        <span>更多{{ page.cityName }}学校</span>
-        <div aria-hidden="true">
-          <i *ngFor="let school of page.schoolPreviewNames">{{ school }}</i>
-        </div>
-        <strong>查看全部 {{ page.directorySchools.length }} 所 <mat-icon>arrow_forward</mat-icon></strong>
+        <span>查看全部 {{ page.directorySchools.length }} 所{{ page.cityName }}学校</span>
+        <mat-icon>arrow_downward</mat-icon>
       </a>
+    </section>
+
+    <section class="panel all-schools-panel" id="all-schools">
+      <header class="all-schools-heading">
+        <div>
+          <span>{{ page.directoryEyebrow }}</span>
+          <h2>{{ directoryHeading }}</h2>
+          <p>{{ directoryDescription }}</p>
+        </div>
+        <a routerLink="/about-sida/contact">
+          不确定怎么选？免费匹配
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </header>
+
+      <div class="directory-toolbar" [attr.aria-label]="page.cityName + '学校筛选'">
+        <div class="directory-filters">
+          <button
+            type="button"
+            *ngFor="let filter of page.directoryCategories"
+            [class.active]="activeDirectoryFilter === filter.label"
+            (click)="activeDirectoryFilter = filter.label"
+          >
+            <mat-icon>{{ filter.icon }}</mat-icon>
+            {{ filter.label }}
+            <span>{{ directoryFilterCount(filter.label) }}</span>
+          </button>
+        </div>
+        <p>当前显示 <strong>{{ visibleSchools.length }}</strong> 所学校</p>
+      </div>
+
+      <div class="all-schools-grid">
+        <a class="directory-school-card" *ngFor="let school of visibleSchools" [routerLink]="school.route">
+          <div class="directory-school-image">
+            <img
+              [src]="school.image"
+              [alt]="school.name + '学校校园图片'"
+              [style.object-position]="school.imagePosition || 'center'"
+              loading="lazy"
+              (error)="handleSchoolImageError($event)"
+            />
+            <span>{{ school.tag }}</span>
+          </div>
+          <div class="directory-school-content">
+            <p class="directory-school-location"><mat-icon>location_on</mat-icon>{{ school.location }}</p>
+            <h3>{{ school.name }}</h3>
+            <p class="directory-school-summary">{{ school.summary }}</p>
+            <div class="directory-school-tags" aria-label="主要课程">
+              <span class="directory-course-label"><mat-icon>menu_book</mat-icon>课程</span>
+              <span *ngFor="let item of school.highlights">{{ item }}</span>
+            </div>
+            <strong>{{ school.linkLabel || '查看学校详情与报价' }}<mat-icon>arrow_forward</mat-icon></strong>
+          </div>
+        </a>
+      </div>
     </section>
 
     <section class="panel lifestyle-panel">
@@ -281,61 +336,6 @@
 
         <small><mat-icon>info</mat-icon>具体免注册费、优惠及奖学金适用条件，以申请时的学校政策与书面确认为准。</small>
       </section>
-    </section>
-
-    <section class="panel all-schools-panel" id="all-schools">
-      <header class="all-schools-heading">
-        <div>
-          <span>{{ page.directoryEyebrow }}</span>
-          <h2>{{ directoryHeading }}</h2>
-          <p>{{ directoryDescription }}</p>
-        </div>
-        <a routerLink="/about-sida/contact">
-          不确定怎么选？免费匹配
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
-      </header>
-
-      <div class="directory-toolbar" [attr.aria-label]="page.cityName + '学校筛选'">
-        <div class="directory-filters">
-          <button
-            type="button"
-            *ngFor="let filter of page.directoryCategories"
-            [class.active]="activeDirectoryFilter === filter.label"
-            (click)="activeDirectoryFilter = filter.label"
-          >
-            <mat-icon>{{ filter.icon }}</mat-icon>
-            {{ filter.label }}
-            <span>{{ directoryFilterCount(filter.label) }}</span>
-          </button>
-        </div>
-        <p>当前显示 <strong>{{ visibleSchools.length }}</strong> 所学校</p>
-      </div>
-
-      <div class="all-schools-grid">
-        <a class="directory-school-card" *ngFor="let school of visibleSchools" [routerLink]="school.route">
-          <div class="directory-school-image">
-            <img
-              [src]="school.image"
-              [alt]="school.name + '学校校园图片'"
-              [style.object-position]="school.imagePosition || 'center'"
-              loading="lazy"
-              (error)="handleSchoolImageError($event)"
-            />
-            <span>{{ school.tag }}</span>
-          </div>
-          <div class="directory-school-content">
-            <p class="directory-school-location"><mat-icon>location_on</mat-icon>{{ school.location }}</p>
-            <h3>{{ school.name }}</h3>
-            <p class="directory-school-summary">{{ school.summary }}</p>
-            <div class="directory-school-tags" aria-label="主要课程">
-              <span class="directory-course-label"><mat-icon>menu_book</mat-icon>课程</span>
-              <span *ngFor="let item of school.highlights">{{ item }}</span>
-            </div>
-            <strong>{{ school.linkLabel || '查看学校详情与报价' }}<mat-icon>arrow_forward</mat-icon></strong>
-          </div>
-        </a>
-      </div>
     </section>
 
     <section class="panel contact-panel">

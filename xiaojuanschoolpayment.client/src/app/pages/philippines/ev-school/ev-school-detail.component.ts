@@ -80,6 +80,9 @@ export class EvSchoolDetailComponent implements OnInit {
   registrationFee = 100;
   readonly discount = 0.95;
   seasonalFeePerWeek = 40;
+  readonly peakSeasonDateRange = '2026/07/05–2026/08/29';
+  private readonly peakSeasonStartDate = '2026-07-05';
+  private readonly peakSeasonEndDate = '2026-08-29';
   minorManagementFeePerPeriod = 100;
   usdToCny = 7.2;
   phpPerCny = 7.75;
@@ -371,8 +374,19 @@ export class EvSchoolDetailComponent implements OnInit {
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
   calculateQuote(): void { this.quoteCalculated = true; }
+  openDatePicker(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement | null;
+    if (!input || typeof input.showPicker !== 'function') return;
+    try {
+      input.showPicker();
+    } catch {
+      input.focus();
+    }
+  }
   scrollToSection(target: string, event?: Event): void { event?.preventDefault(); const targetElement = document.getElementById(target); if (!targetElement) return; const headerOffset = window.innerWidth <= 680 ? 132 : 92; const targetTop = targetElement.getBoundingClientRect().top + window.scrollY - headerOffset; window.scrollTo({ top: Math.max(targetTop, 0), behavior: 'smooth' }); window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`); }
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
+  get spartaCourseFees(): CourseFee[] { return this.courseFees.filter((course) => course.id.startsWith('sparta-')); }
+  get semiSpartaCourseFees(): CourseFee[] { return this.courseFees.filter((course) => course.id.startsWith('semi-sparta-')); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[this.roomFees.length - 1]; }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.durationPriceMultiplier(this.selectedWeeks); }
@@ -382,8 +396,8 @@ export class EvSchoolDetailComponent implements OnInit {
   get discountedCourseAndRoom(): number { return this.discountBase * this.discount; }
   get peakSeasonWeeks(): number {
     const startDate = this.parseLocalDate(this.selectedStartDate);
-    const peakStart = this.parseLocalDate('2026-07-05');
-    const peakEnd = this.parseLocalDate('2026-08-29');
+    const peakStart = this.parseLocalDate(this.peakSeasonStartDate);
+    const peakEnd = this.parseLocalDate(this.peakSeasonEndDate);
     if (!startDate || !peakStart || !peakEnd) return 0;
     let overlappingWeeks = 0;
     for (let week = 0; week < this.selectedWeeks; week += 1) {
@@ -397,6 +411,7 @@ export class EvSchoolDetailComponent implements OnInit {
   }
   get isPeakSeason(): boolean { return this.peakSeasonWeeks > 0; }
   get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
+  get seasonalFeePerFourWeeks(): number { return this.seasonalFeePerWeek * 4; }
   get minorManagementPeriods(): number { return this.isMinorStudent ? Math.ceil(this.selectedWeeks / 4) : 0; }
   get minorManagementFee(): number { return this.minorManagementPeriods * this.minorManagementFeePerPeriod; }
   get quoteUsd(): number { return this.registrationFee + this.discountedCourseAndRoom + this.seasonalSurcharge + this.minorManagementFee; }
@@ -406,26 +421,29 @@ export class EvSchoolDetailComponent implements OnInit {
   get discountText(): string { return '课程费和住宿费95折'; }
   get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
   get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
+  get visaExtensionFeeTotal(): number { return this.visaExtensionCount === 0 ? 0 : 5430 + (this.visaExtensionCount - 1) * 4700; }
   get usesOffCampusRoom(): boolean { return this.selectedRoomId.startsWith('off-campus'); }
   get roomDeposit(): number { return this.selectedWeeks <= 8 ? 3000 : 5000; }
   get localFees(): LocalFee[] {
     const periods = this.localFeePeriods;
-    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const acrQuantity = this.visaExtensionCount > 0 ? 1 : 0;
     const managementFee = this.usesOffCampusRoom ? 4000 : 2000;
     return [
       { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
       { item: 'SSP E-CARD', amount: 'PHP 4,500 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
-      { item: 'ACR-I Card 外国人身份证', amount: 'PHP 4,000 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '超过8周通常需办理，由学校统一带队办理' },
+      { item: 'ACR-I Card 外国人身份证', amount: 'PHP 4,000 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '只要办理签证续签就需支付，由学校统一办理' },
       { item: this.usesOffCampusRoom ? '校外公寓管理费' : '校内管理费', amount: `PHP ${managementFee.toLocaleString('en-US')} / 4周`, quantity: periods, total: managementFee * periods, note: '设施维护费用，按每4周计算' },
       { item: '电费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '每周超过15kW用电量，超出部分另收PHP 20/kW' },
       { item: '水费', amount: 'PHP 1,200 / 4周', quantity: periods, total: 1200 * periods, note: '公共用水和房间用水' },
-      { item: '签证续签', amount: 'PHP 5,430 / 次', quantity: this.visaExtensionCount, total: 5430 * this.visaExtensionCount, note: '首次续签费用预估，每次续签有效期30天；以移民局实收为准' },
+      { item: '签证续签', amount: '首次 PHP 5,430；后续 PHP 4,700 / 次', quantity: this.visaExtensionCount, total: this.visaExtensionFeeTotal, note: '首次续签约PHP 5,430，后续续签预计PHP 4,700/次；以移民局实收为准' },
       { item: '教材费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '按不同课程和实际购买教材调整' },
       { item: '学生证', amount: 'PHP 500 / 次', quantity: 1, total: 500, note: '一次性费用' },
       { item: '宿务马克坦机场周日接机', amount: 'PHP 1,200 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1200 : 0, note: '可选，也可自行打车；默认不计入学杂费合计', excluded: true },
       { item: '房间押金', amount: `PHP ${this.roomDeposit.toLocaleString('en-US')} / 次`, quantity: 1, total: this.roomDeposit, note: '1至8周PHP 3,000，9至24周PHP 5,000；无损坏及欠费时可退', excluded: true },
     ];
   }
+  get includedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => !fee.excluded); }
+  get excludedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => fee.excluded); }
   get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
   get quoteImageData() {
@@ -442,12 +460,12 @@ export class EvSchoolDetailComponent implements OnInit {
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
       paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与95折' },
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费' },
         { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
         { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周；不参与95折` },
-        { icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: this.isMinorStudent ? `USD 100/4周 × ${this.minorManagementPeriods}` : '未勾选未成年学生' },
-        { icon: '折', label: '思达折扣', amount: '95折', note: `仅课程费和住宿费打折，优惠${this.formatUsd(this.discountAmount)}美元`, accent: true },
+        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD ${this.formatUsd(this.seasonalFeePerWeek)}/周（每4周USD ${this.formatUsd(this.seasonalFeePerFourWeeks)}）；${this.peakSeasonDateRange}覆盖${this.peakSeasonWeeks}周；不参与95折` },
+        { icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: '未满18岁学生USD 100/4周，按学习周数自动计算' },
+        { icon: '折', label: '思达折扣', amount: '95折', note: `优惠金额：${this.formatUsd(this.discountAmount)}美元`, accent: true },
       ],
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
       localFeeTotal: this.localFeesTotal,
@@ -456,12 +474,13 @@ export class EvSchoolDetailComponent implements OnInit {
       optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total || Number.parseFloat(fee.amount.replace(/[^0-9.]/g, '')) || 0), note: fee.note })),
       ruleNotes: [
         '课程费和住宿费按95折计算；注册费、旺季附加费和未成年管理费不参与折扣。',
-        '旺季附加费按实际覆盖周数计算，未成年管理费按每4周自动计算。',
+        `旺季附加费为USD ${this.formatUsd(this.seasonalFeePerWeek)}/周（每4周USD ${this.formatUsd(this.seasonalFeePerFourWeeks)}），按${this.peakSeasonDateRange}的实际覆盖周数计算；未成年管理费按每4周自动计算。`,
       ],
     });
   }
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 10) / 10; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 1 }); }
   formatPhp(value: number): string { return `PHP ${value.toLocaleString('en-US')}`; }
+  formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
   private parseLocalDate(value: string): Date | null { const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value); return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null; }
   private createCourseId(name: string): string {

@@ -134,7 +134,7 @@ export class ExpandableImageComponent implements OnDestroy {
   }
 
   protected get activeAlt(): string {
-    return this.imageAlts[this.activeIndex] ?? this.alt ?? this.activeTitle;
+    return this.imageAlts[this.activeIndex] || this.alt || this.activeTitle;
   }
 
   protected get activeTitle(): string {

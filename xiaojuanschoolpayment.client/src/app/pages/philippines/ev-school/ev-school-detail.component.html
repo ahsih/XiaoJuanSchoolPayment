@@ -208,27 +208,66 @@
             <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
           </div>
           <div class="pricing-table-grid">
-            <div>
-              <div class="data-table course-fee-table" role="table" aria-label="EV 2026年4周课程费">
-                <div class="table-row table-head" role="row">
-                  <span role="columnheader">课程</span>
-                  <span role="columnheader">4周课程费</span>
-                  <span role="columnheader">课程安排</span>
-                </div>
-                <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                  <span role="cell">{{ fee.name }}</span>
-                  <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                  <span role="cell">{{ fee.suitable }}</span>
-                </div>
+            <div class="course-fee-pricing">
+              <div class="course-fee-groups" aria-label="EV斯巴达与半斯巴达课程费分类">
+                <section class="course-fee-group course-fee-group--sparta">
+                  <header class="course-fee-group-heading">
+                    <div><span>SPARTA</span><h3>斯巴达课程</h3></div>
+                    <b>{{ spartaCourseFees.length }} 门</b>
+                  </header>
+                  <div class="data-table course-fee-table" role="table" aria-label="EV斯巴达2026年4周课程费">
+                    <div class="table-row table-head" role="row">
+                      <span role="columnheader">课程</span>
+                      <span role="columnheader">4周课程费</span>
+                      <span role="columnheader">课程安排</span>
+                    </div>
+                    <div class="table-row" role="row" *ngFor="let fee of spartaCourseFees">
+                      <span role="cell">{{ fee.name }}</span>
+                      <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                      <span role="cell">{{ fee.suitable }}</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="course-fee-group course-fee-group--semi">
+                  <header class="course-fee-group-heading">
+                    <div><span>SEMI-SPARTA</span><h3>半斯巴达课程</h3></div>
+                    <b>{{ semiSpartaCourseFees.length }} 门</b>
+                  </header>
+                  <div class="data-table course-fee-table" role="table" aria-label="EV半斯巴达2026年4周课程费">
+                    <div class="table-row table-head" role="row">
+                      <span role="columnheader">课程</span>
+                      <span role="columnheader">4周课程费</span>
+                      <span role="columnheader">课程安排</span>
+                    </div>
+                    <div class="table-row" role="row" *ngFor="let fee of semiSpartaCourseFees">
+                      <span role="cell">{{ fee.name }}</span>
+                      <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                      <span role="cell">{{ fee.suitable }}</span>
+                    </div>
+                  </div>
+                </section>
               </div>
               <p class="pricing-note">以上单价均为4周费用；1周按40%、2周按65%、3周按85%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。网页估算仅对课程费和住宿费计算95折，其他费用不打折。</p>
               <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
-                <article *ngFor="let fee of courseFees">
-                  <span>课程</span>
-                  <strong>{{ fee.name }}</strong>
-                  <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                  <p>{{ fee.suitable }}</p>
-                </article>
+                <section class="mobile-course-fee-group">
+                  <h3>斯巴达课程</h3>
+                  <article *ngFor="let fee of spartaCourseFees">
+                    <span>课程</span>
+                    <strong>{{ fee.name }}</strong>
+                    <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                    <p>{{ fee.suitable }}</p>
+                  </article>
+                </section>
+                <section class="mobile-course-fee-group">
+                  <h3>半斯巴达课程</h3>
+                  <article *ngFor="let fee of semiSpartaCourseFees">
+                    <span>课程</span>
+                    <strong>{{ fee.name }}</strong>
+                    <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                    <p>{{ fee.suitable }}</p>
+                  </article>
+                </section>
               </div>
             </div>
 
@@ -337,9 +376,9 @@
             </div>
             <div class="quote-form" aria-label="EV费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><optgroup label="斯巴达课程"><option *ngFor="let course of spartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup><optgroup label="半斯巴达课程"><option *ngFor="let course of semiSpartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" (click)="openDatePicker($event)" aria-label="选择EV预计入学日期" /></label>
               <label class="quote-check"><input type="checkbox" [(ngModel)]="isMinorStudent" /><span>未满18岁（自动计入 USD 100 / 4周管理费）</span></label>
               <label class="quote-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /><span>需要宿务机场周日接机（到校支付，可选）</span></label>
             </div>
@@ -349,7 +388,7 @@
               <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
               <div><span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(discountAmount) }}</strong></div>
               <div><span>未成年管理费</span><strong>USD {{ formatUsd(minorManagementFee) }}</strong></div>
-              <div><span>旺季附加费（{{ peakSeasonWeeks }}周）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div><span class="peak-fee-label">旺季附加费<small>USD {{ formatUsd(seasonalFeePerWeek) }}/周（每4周 USD {{ formatUsd(seasonalFeePerFourWeeks) }}） · {{ peakSeasonDateRange }} · 覆盖 {{ peakSeasonWeeks }} 周</small></span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
@@ -364,29 +403,65 @@
               <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">到校学杂费会按学习周数、校内或校外住宿、签证时长自动估算。接机与可退房间押金单独列示，不计入学杂费合计。</p>
-            <p class="season-note">旺季附加费为 USD 40 / 周，系统按学习日期与 2026/07/05—08/29 的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
+            <p class="season-note">旺季附加费为 USD {{ formatUsd(seasonalFeePerWeek) }} / 周（每4周 USD {{ formatUsd(seasonalFeePerFourWeeks) }}），系统按学习日期与 {{ peakSeasonDateRange }} 的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，系统会按当前周数、房型和签证时长自动计算数量。接机与房间押金不计入合计。</p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees" [class.fee-excluded]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ formatPhp(fee.total) }}</strong><em>{{ fee.amount }} × {{ fee.quantity }}</em><p>{{ fee.note }}</p></article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees" [class.fee-excluded]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ formatPhp(fee.total) }}</strong><em>{{ fee.amount }} × {{ fee.quantity }}</em><p>{{ fee.note }}</p></article>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="ev-local-fee-title">
+          <div class="local-fee-heading">
+            <div>
+              <span>到校后另付 · 自动预估</span>
+              <h3 id="ev-local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
             </div>
-          </details>
-          <div class="local-fee-total">
-            <span>本次预计到校学杂费合计</span>
             <strong>{{ formatPhp(localFeesTotal) }}</strong>
-            <em>{{ localFeesCnyText }}</em>
-            <small>不含可选接机及可退房间押金；最终以学校和菲律宾相关部门实收为准</small>
+          </div>
+          <p class="local-fee-intro">
+            以下费用以 PHP 计价，系统会按当前周数、房型和签证时长自动计算。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴纳比索现金为准。
+          </p>
+
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead>
+                <tr>
+                  <th scope="col">费用明细</th>
+                  <th scope="col">计费参考</th>
+                  <th scope="col">数量</th>
+                  <th scope="col">预估小计</th>
+                  <th scope="col">备注</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let fee of includedLocalFees">
+                  <th scope="row">{{ fee.item }}</th>
+                  <td>{{ fee.amount }}</td>
+                  <td>{{ formatFeeQuantity(fee.quantity) }}</td>
+                  <td class="fee-amount">{{ formatPhp(fee.total) }}</td>
+                  <td>{{ fee.note }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th>
+                  <td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td>
+                  <td>不含可选接机及可退房间押金</td>
+                </tr>
+                <tr>
+                  <th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th>
+                  <td class="fee-cny">{{ localFeesCnyText }}</td>
+                  <td>最终以兑换及支付时的实际汇率为准</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <div *ngFor="let fee of excludedLocalFees">
+              <span>
+                <strong>{{ fee.item }}</strong>
+                <small>{{ fee.note }}</small>
+              </span>
+              <b>{{ fee.amount }}</b>
+            </div>
           </div>
         </section>
 

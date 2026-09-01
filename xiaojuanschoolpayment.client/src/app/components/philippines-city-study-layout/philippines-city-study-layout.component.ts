@@ -14,6 +14,9 @@ export interface CityStudyStat {
 
 export interface CityStudySelectionGroup {
   icon: string;
+  iconAsset?: string;
+  iconCopies?: 2;
+  iconEmoji?: string;
   title: string;
   subtitle: string;
   category: string;
@@ -132,6 +135,36 @@ const selectionTones: CityCardTone[] = ['green', 'violet', 'orange', 'blue'];
 const featuredTones: CityCardTone[] = ['green', 'violet', 'teal', 'navy', 'orange'];
 const fallbackIcons = ['workspace_premium', 'shield', 'thumb_up', 'family_restroom'];
 
+const selectionVisual = (
+  title: string,
+  fallbackIcon: string,
+): Pick<CityStudySelectionGroup, 'icon' | 'iconAsset' | 'iconCopies' | 'iconEmoji'> => {
+  if (/斯巴达|强化管理|严格管理|高强度/.test(title)) {
+    return {
+      icon: 'military_tech',
+      iconAsset: '/assets/philippines/sparta-soldier-icon.png',
+      iconCopies: 2,
+    };
+  }
+
+  if (/亲子|家庭|低龄|青少年/.test(title)) {
+    return { icon: 'family_restroom', iconEmoji: '👨‍👩‍👧' };
+  }
+
+  if (/性价比|预算|成本|经济/.test(title)) {
+    return { icon: 'savings', iconEmoji: '💰' };
+  }
+
+  if (/雅思/.test(title)) {
+    return {
+      icon: 'verified',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
+    };
+  }
+
+  return { icon: fallbackIcon };
+};
+
 export function createCityStudyPage(source: CityStudyPageSource): CityStudyPageConfig {
   const shortName = (profile: CityStudySourceProfile): string =>
     profile.shortName ||
@@ -194,7 +227,7 @@ export function createCityStudyPage(source: CityStudyPageSource): CityStudyPageC
     benefitChips: source.benefitChips,
     stats: source.stats,
     selectionGroups: source.schoolTypes.slice(0, 4).map((type, index) => ({
-      icon: type.icon || fallbackIcons[index],
+      ...selectionVisual(type.title, type.icon || fallbackIcons[index]),
       title: type.title,
       subtitle: type.text,
       category: type.title,
@@ -227,7 +260,7 @@ export function createCityStudyPage(source: CityStudyPageSource): CityStudyPageC
       { label: '全部学校', icon: 'grid_view' },
       ...source.schoolTypes.slice(0, 4).map((type, index) => ({
         label: type.title,
-        icon: type.icon || fallbackIcons[index],
+        icon: selectionVisual(type.title, type.icon || fallbackIcons[index]).icon,
       })),
     ],
     directorySchools,
@@ -427,7 +460,14 @@ export class PhilippinesCityStudyLayoutComponent {
   showDirectoryCategory(category: string): void {
     this.activeDirectoryFilter = category;
     window.setTimeout(() => {
-      document.getElementById('all-schools')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const directory = document.getElementById('all-schools');
+      if (!directory) {
+        return;
+      }
+
+      const headerOffset = window.innerWidth <= 620 ? 82 : 74;
+      const scrollTop = directory.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
     });
   }
 

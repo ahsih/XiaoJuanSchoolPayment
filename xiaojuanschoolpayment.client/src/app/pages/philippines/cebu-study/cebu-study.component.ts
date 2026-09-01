@@ -6,6 +6,9 @@ import { ScrollToDirective } from '../../../directives/scroll-to.directive';
 
 interface SelectionGroup {
   icon: string;
+  iconAsset?: string;
+  iconCopies?: 2;
+  iconEmoji?: string;
   title: string;
   subtitle: string;
   category: Exclude<DirectoryCategory, '全部学校'>;
@@ -79,7 +82,8 @@ interface FaqItem {
 export class CebuStudyComponent {
   readonly selectionGroups: SelectionGroup[] = [
     {
-      icon: 'workspace_premium',
+      icon: 'verified',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
       title: '雅思名校',
       subtitle: '雅思课程成熟，备考与模考资源更完整',
       category: '雅思名校',
@@ -97,7 +101,9 @@ export class CebuStudyComponent {
       ],
     },
     {
-      icon: 'shield',
+      icon: 'military_tech',
+      iconAsset: '/assets/philippines/sparta-soldier-icon.png',
+      iconCopies: 2,
       title: '斯巴达管理模式',
       subtitle: '高强度课程，适合集中冲刺',
       category: '斯巴达管理',
@@ -117,7 +123,8 @@ export class CebuStudyComponent {
       ],
     },
     {
-      icon: 'thumb_up',
+      icon: 'savings',
+      iconEmoji: '💰',
       title: '高性价比',
       subtitle: '课量扎实，预算更友好',
       category: '高性价比',
@@ -141,6 +148,7 @@ export class CebuStudyComponent {
     },
     {
       icon: 'family_restroom',
+      iconEmoji: '👨‍👩‍👧',
       title: '亲子友好型学习',
       subtitle: '亲子、青少年与家庭住宿路线集中比较',
       category: '亲子友好',
@@ -620,7 +628,14 @@ export class CebuStudyComponent {
   showDirectoryCategory(category: Exclude<DirectoryCategory, '全部学校'>): void {
     this.activeDirectoryFilter = category;
     window.setTimeout(() => {
-      document.getElementById('all-schools')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const directory = document.getElementById('all-schools');
+      if (!directory) {
+        return;
+      }
+
+      const headerOffset = window.innerWidth <= 620 ? 82 : 74;
+      const scrollTop = directory.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
     });
   }
 

@@ -2635,7 +2635,7 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
-  get selectedHeroGallerySources(): string[] {
+  get selectedHeroGalleryImages(): GalleryImage[] {
     const images = this.heroGalleryPreviewImages;
     const selected = images[this.selectedHeroImageIndex] ?? images[0];
 
@@ -2643,8 +2643,24 @@ export class CiaSchoolComponent implements OnInit {
       return [];
     }
 
-    return [selected, ...images.filter((image) => image !== selected)].map(
-      (image) => image.src,
+    return [selected, ...images.filter((image) => image !== selected)];
+  }
+
+  get selectedHeroGallerySources(): string[] {
+    return this.selectedHeroGalleryImages.map((image) => image.src);
+  }
+
+  get selectedHeroGalleryTitles(): string[] {
+    return this.selectedHeroGalleryImages.map((image) => image.title);
+  }
+
+  get selectedHeroGalleryCaptions(): string[] {
+    return this.selectedHeroGalleryImages.map((image) => image.description);
+  }
+
+  get selectedHeroGalleryAlts(): string[] {
+    return this.selectedHeroGalleryImages.map(
+      (image) => `${image.category}实景：${image.title}`,
     );
   }
 

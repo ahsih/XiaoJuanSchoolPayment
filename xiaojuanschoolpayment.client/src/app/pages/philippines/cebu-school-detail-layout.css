@@ -4,8 +4,8 @@
 
 .cia-page {
   width: 100%;
-  max-width: 100%;
-  margin: 0;
+  max-width: var(--site-reading-width, 1560px);
+  margin: 0 auto;
   padding: 28px clamp(16px, 2.4vw, 36px) 56px;
   color: #102033;
 }

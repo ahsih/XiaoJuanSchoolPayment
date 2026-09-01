@@ -13,6 +13,14 @@ body {
 
 body {
   min-height: 100vh;
+  min-width: 320px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+:root {
+  --site-reading-width: 1560px;
+  --site-page-gutter: clamp(14px, 2vw, 32px);
 }
 
 a {
@@ -40,6 +48,52 @@ a {
 .mat-mdc-form-field-infix,
 .mat-mdc-select-arrow {
   color: #172033;
+}
+
+/* Shared public-page viewport contract.
+   Content-heavy pages keep a readable line length on 2K/4K displays while
+   retaining their existing full-width backgrounds and mobile layouts. */
+body .cia-page {
+  width: 100%;
+  max-width: var(--site-reading-width) !important;
+  margin-inline: auto !important;
+}
+
+app-cebu-study .cebu-page .page-shell {
+  width: min(var(--site-reading-width), calc(100% - var(--site-page-gutter) - var(--site-page-gutter))) !important;
+  margin-inline: auto !important;
+}
+
+app-home .hero-inner,
+app-home .services-section,
+app-home .school-section,
+app-home .trust-grid,
+app-home .projects-section,
+app-home .journey-section,
+app-home .partners-section,
+app-home .stats-inner,
+app-home .final-cta > div,
+app-home .home-footer {
+  width: min(var(--site-reading-width), calc(100% - var(--site-page-gutter) - var(--site-page-gutter))) !important;
+  max-width: var(--site-reading-width) !important;
+  margin-inline: auto !important;
+}
+
+@media (min-width: 1600px) {
+  html,
+  body {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --site-page-gutter: 12px;
+  }
+
+  body {
+    font-size: 16px;
+  }
 }
 
 /* Baguio and Clark school detail styles live in src/app/pages/philippines/school-detail-layout.css. */
