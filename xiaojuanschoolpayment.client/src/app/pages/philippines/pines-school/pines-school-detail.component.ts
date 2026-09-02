@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
@@ -31,10 +31,17 @@ interface SideNavItem { label: string; target: string; icon: string; }
 interface SidaPinesReason { number: string; title: string; text: string; image: string; alt: string; }
 interface SidaPinesTrustBadge { icon: string; label: string; }
 type PinesRoomAvailabilityStatus = 'open' | 'limited' | 'stay-only' | 'closed';
-interface PinesRoomAvailabilityRoom { name: string; status: PinesRoomAvailabilityStatus; vacancies: number | null; }
+type PinesStudentGender = 'male' | 'female';
+interface PinesGenderAvailability { status: PinesRoomAvailabilityStatus; vacancies: number | null; }
+interface PinesRoomAvailabilityRoom { name: string; male: PinesGenderAvailability; female: PinesGenderAvailability; }
 interface PinesRoomAvailabilityDate { date: string; rooms: PinesRoomAvailabilityRoom[]; }
 interface PinesRoomAvailabilityCampus { code: string; name: string; dates: PinesRoomAvailabilityDate[]; }
 interface PinesRoomAvailabilityResponse { updatedAt: string; isCached: boolean; campuses: PinesRoomAvailabilityCampus[]; }
+interface PinesStayPeriod { weeks: number; date: string; available: boolean; vacancies: number | null; mustMoveAfter: boolean; }
+interface PinesStayRoom { name: string; male: PinesStayPeriod[]; female: PinesStayPeriod[]; }
+interface PinesStayAvailabilityResponse { updatedAt: string; isCached: boolean; campus: string; startDate: string; maxWeeks: number; rooms: PinesStayRoom[]; }
+interface PinesRoomPlanSegment { room: string; startDate: string; endDate: string; weeks: number; vacancies: number | null; }
+interface PinesRoomPlan { title: string; description: string; segments: PinesRoomPlanSegment[]; }
 
 @Component({
   selector: 'app-pines-school-detail',
@@ -103,6 +110,16 @@ export class PinesSchoolDetailComponent implements OnInit {
   roomAvailability: PinesRoomAvailabilityResponse | null = null;
   selectedAvailabilityCampusCode = 'MAIN';
   selectedAvailabilityDate = '';
+  selectedAvailabilityGender: PinesStudentGender = 'male';
+  readonly availabilityWeekOptions = [4, 8, 12, 16, 20];
+  selectedAvailabilityWeeks = 12;
+  selectedPreferredRoom = '';
+  stayOptionsLoading = false;
+  stayOptionsError = '';
+  stayOptions: PinesStayAvailabilityResponse | null = null;
+  roomPlanLoading = false;
+  roomPlanError = '';
+  roomPlans: PinesRoomPlan[] = [];
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，学习氛围集中' },
@@ -281,10 +298,11 @@ export class PinesSchoolDetailComponent implements OnInit {
     this.loadRoomAvailability();
   }
 
-  loadRoomAvailability(): void {
+  loadRoomAvailability(forceRefresh = false): void {
     this.roomAvailabilityLoading = true;
     this.roomAvailabilityError = '';
-    this.http.get<PinesRoomAvailabilityResponse>('/pines-room-availability').pipe(
+    const url = forceRefresh ? '/pines-room-availability?refresh=true' : '/pines-room-availability';
+    this.http.get<PinesRoomAvailabilityResponse>(url).pipe(
       catchError(() => {
         this.roomAvailabilityLoading = false;
         this.roomAvailabilityError = '学校公开房态暂时无法读取，请稍后再试或联系顾问确认。';
@@ -296,12 +314,76 @@ export class PinesSchoolDetailComponent implements OnInit {
       const currentCampus = availability.campuses.find((campus) => campus.code === this.selectedAvailabilityCampusCode) ?? availability.campuses[0];
       this.selectedAvailabilityCampusCode = currentCampus?.code ?? '';
       this.selectedAvailabilityDate = currentCampus?.dates[0]?.date ?? '';
+      this.loadStayOptions();
     });
   }
 
   selectAvailabilityCampus(code: string): void {
     this.selectedAvailabilityCampusCode = code;
     this.selectedAvailabilityDate = this.selectedAvailabilityCampus?.dates[0]?.date ?? '';
+    this.selectedPreferredRoom = '';
+    this.loadStayOptions();
+  }
+
+  onAvailabilityDateChange(): void {
+    this.loadStayOptions();
+  }
+
+  loadStayOptions(): void {
+    if (!this.selectedAvailabilityCampusCode || !this.selectedAvailabilityDate) return;
+    this.stayOptionsLoading = true;
+    this.stayOptionsError = '';
+    this.roomPlans = [];
+    this.roomPlanError = '';
+    this.getStayOptions(this.selectedAvailabilityCampusCode, this.selectedAvailabilityDate).pipe(
+      catchError(() => {
+        this.stayOptionsLoading = false;
+        this.stayOptionsError = '连续住宿周期暂时无法读取，请稍后重试。';
+        return EMPTY;
+      }),
+    ).subscribe((options) => {
+      this.stayOptions = options;
+      this.stayOptionsLoading = false;
+      if (!options.rooms.some((room) => room.name === this.selectedPreferredRoom)) {
+        this.selectedPreferredRoom = options.rooms.find((room) => /6B|六人/iu.test(room.name))?.name ?? options.rooms[0]?.name ?? '';
+      }
+    });
+  }
+
+  generateRoomPlan(): void {
+    const campusDates = this.selectedAvailabilityCampus?.dates.map((row) => row.date) ?? [];
+    const start = this.parseDate(this.selectedAvailabilityDate);
+    if (!start || !this.selectedAvailabilityCampusCode) return;
+    const planDates = campusDates.filter((date) => {
+      const value = this.parseDate(date);
+      if (!value) return false;
+      const weeksFromStart = Math.round((value.getTime() - start.getTime()) / 604800000);
+      return weeksFromStart >= 0 && weeksFromStart < this.selectedAvailabilityWeeks && weeksFromStart % 2 === 0;
+    });
+    if (!planDates.length) return;
+
+    this.roomPlanLoading = true;
+    this.roomPlanError = '';
+    const requests = planDates.map((date) =>
+      date === this.stayOptions?.startDate
+        ? this.getStayOptions(this.selectedAvailabilityCampusCode, date, this.stayOptions)
+        : this.getStayOptions(this.selectedAvailabilityCampusCode, date));
+    forkJoin(requests).pipe(
+      catchError(() => {
+        this.roomPlanLoading = false;
+        this.roomPlanError = '学校房态正在变化，暂时无法完成分段住宿计算，请稍后重试。';
+        return EMPTY;
+      }),
+    ).subscribe((responses) => {
+      this.roomPlanLoading = false;
+      const stablePlan = this.buildRoomPlan(responses, 'stable');
+      const preferredPlan = this.buildRoomPlan(responses, 'preferred');
+      this.roomPlans = [stablePlan, preferredPlan].filter((plan, index, all): plan is PinesRoomPlan =>
+        !!plan && all.findIndex((item) => item && this.planKey(item) === this.planKey(plan)) === index);
+      if (!this.roomPlans.length) {
+        this.roomPlanError = `当前公开房态暂时找不到覆盖${this.selectedAvailabilityWeeks}周的完整组合，建议调整入学日期或联系顾问向学校人工确认。`;
+      }
+    });
   }
 
   get selectedAvailabilityCampus(): PinesRoomAvailabilityCampus | null {
@@ -312,13 +394,135 @@ export class PinesSchoolDetailComponent implements OnInit {
     return this.selectedAvailabilityCampus?.dates.find((row) => row.date === this.selectedAvailabilityDate) ?? null;
   }
 
-  roomAvailabilityStatusText(room: PinesRoomAvailabilityRoom): string {
-    switch (room.status) {
-      case 'open': return '可开始课程';
-      case 'limited': return room.vacancies === null ? '少量空房' : `剩余 ${room.vacancies} 个名额`;
-      case 'stay-only': return '可续住，暂不可当日入学';
-      default: return '暂不可申请';
+  get availabilityLastDate(): string {
+    const dates = this.selectedAvailabilityCampus?.dates ?? [];
+    return dates[dates.length - 1]?.date ?? '';
+  }
+
+  get selectedGenderLabel(): string { return this.selectedAvailabilityGender === 'male' ? '男生' : '女生'; }
+
+  roomGenderAvailability(room: PinesRoomAvailabilityRoom, gender = this.selectedAvailabilityGender): PinesGenderAvailability {
+    return room[gender];
+  }
+
+  roomAvailabilityStatusText(availability: PinesGenderAvailability): string {
+    switch (availability.status) {
+      case 'open': return '可报名（学校未公开数量）';
+      case 'limited': return availability.vacancies === null ? '可报名，名额较少' : `可报名 · 剩余 ${availability.vacancies} 个名额`;
+      case 'stay-only': return '不可从当天入住（仅可续住）';
+      default: return '不可报名';
     }
+  }
+
+  selectAvailabilityDate(date: string): void {
+    if (date === this.selectedAvailabilityDate) return;
+    this.selectedAvailabilityDate = date;
+    this.onAvailabilityDateChange();
+  }
+
+  bookableRooms(row: PinesRoomAvailabilityDate | null, gender: PinesStudentGender = this.selectedAvailabilityGender): PinesRoomAvailabilityRoom[] {
+    return row?.rooms.filter((room) => ['open', 'limited'].includes(this.roomGenderAvailability(room, gender).status)) ?? [];
+  }
+
+  stayOnlyRooms(row: PinesRoomAvailabilityDate | null, gender: PinesStudentGender = this.selectedAvailabilityGender): PinesRoomAvailabilityRoom[] {
+    return row?.rooms.filter((room) => this.roomGenderAvailability(room, gender).status === 'stay-only') ?? [];
+  }
+
+  closedRooms(row: PinesRoomAvailabilityDate | null, gender: PinesStudentGender = this.selectedAvailabilityGender): PinesRoomAvailabilityRoom[] {
+    return row?.rooms.filter((room) => this.roomGenderAvailability(room, gender).status === 'closed') ?? [];
+  }
+
+  dateAvailabilityText(row: PinesRoomAvailabilityDate, gender: PinesStudentGender): string {
+    const rooms = this.bookableRooms(row, gender);
+    if (!rooms.length) return '暂无可报名房型';
+    const knownVacancies = this.knownVacancyTotal(row, gender);
+    return knownVacancies > 0 ? `${rooms.length}种可报 · 至少${knownVacancies}个名额` : `${rooms.length}种房型可报名`;
+  }
+
+  knownVacancyTotal(row: PinesRoomAvailabilityDate | null, gender: PinesStudentGender = this.selectedAvailabilityGender): number {
+    return this.bookableRooms(row, gender).reduce((total, room) => total + (this.roomGenderAvailability(room, gender).vacancies ?? 0), 0);
+  }
+
+  roomVacancyBadgeText(room: PinesRoomAvailabilityRoom): string {
+    const availability = this.roomGenderAvailability(room);
+    if (availability.vacancies !== null) return `仅剩 ${availability.vacancies} 个名额`;
+    return availability.status === 'limited' ? '名额紧张，数量未公开' : '可报名，数量未公开';
+  }
+
+  get selectedDateBookableRooms(): PinesRoomAvailabilityRoom[] { return this.bookableRooms(this.selectedAvailabilityRow); }
+  get selectedDateStayOnlyRooms(): PinesRoomAvailabilityRoom[] { return this.stayOnlyRooms(this.selectedAvailabilityRow); }
+  get selectedDateClosedRooms(): PinesRoomAvailabilityRoom[] { return this.closedRooms(this.selectedAvailabilityRow); }
+  get nextAvailableDates(): PinesRoomAvailabilityDate[] {
+    const dates = this.selectedAvailabilityCampus?.dates ?? [];
+    const selectedIndex = dates.findIndex((row) => row.date === this.selectedAvailabilityDate);
+    return dates.slice(Math.max(0, selectedIndex + 1)).filter((row) => this.bookableRooms(row).length > 0).slice(0, 3);
+  }
+
+  formatAvailabilityRoomName(name: string): string {
+    const genderSuffix = /\bFemale\b|女生/iu.test(name) ? '（女生）' : /\bMale\b|男生/iu.test(name) ? '（男生）' : '';
+    return name
+      .replace(/\s*(Male|Female|男生|女生)\s*$/iu, '')
+      .replace(/Single\s*A\s*\(2\s*beds?\)/iu, '单人房A（双床）')
+      .replace(/Single\s*A/iu, '单人房A')
+      .replace(/Single\s*B/iu, '单人房B')
+      .replace(/Single\s*C/iu, '单人房C')
+      .replace(/Twin\s*A/iu, '双人房A')
+      .replace(/Twin\s*B/iu, '双人房B')
+      .replace(/5B\s*Solo/iu, '5B Solo房')
+      .replace(/^3B$/iu, '三人房')
+      .replace(/^4B$/iu, '四人房')
+      .replace(/^6B$/iu, '六人房')
+      + genderSuffix;
+  }
+
+  get preferredStayRoom(): PinesStayRoom | null {
+    return this.stayOptions?.rooms.find((room) => room.name === this.selectedPreferredRoom) ?? null;
+  }
+
+  stayRoomByName(name: string): PinesStayRoom | null {
+    return this.stayOptions?.rooms.find((room) => room.name === name) ?? null;
+  }
+
+  get sameRoomOptions(): PinesStayRoom[] {
+    if (!this.stayOptions) return [];
+    return this.stayOptions.rooms
+      .filter((room) => this.stayPeriod(room, this.selectedAvailabilityWeeks)?.available)
+      .sort((a, b) => this.roomPreferenceRank(a.name) - this.roomPreferenceRank(b.name));
+  }
+
+  get preferredRoomTargetPeriod(): PinesStayPeriod | null {
+    return this.preferredStayRoom ? this.stayPeriod(this.preferredStayRoom, this.selectedAvailabilityWeeks) : null;
+  }
+
+  get preferredRoomAvailableDurations(): PinesStayPeriod[] {
+    if (!this.preferredStayRoom) return [];
+    return this.genderStayPeriods(this.preferredStayRoom).filter((period) => period.available && period.weeks <= this.selectedAvailabilityWeeks);
+  }
+
+  stayPeriod(room: PinesStayRoom, weeks: number): PinesStayPeriod | null {
+    return this.genderStayPeriods(room).find((period) => period.weeks === weeks) ?? null;
+  }
+
+  genderStayPeriods(room: PinesStayRoom): PinesStayPeriod[] {
+    return room[this.selectedAvailabilityGender];
+  }
+
+  stayDurationSummary(room: PinesStayRoom): string {
+    const availableWeeks = this.genderStayPeriods(room)
+      .filter((period) => period.available && this.availabilityWeekOptions.includes(period.weeks))
+      .map((period) => period.weeks);
+    return availableWeeks.length ? `${availableWeeks.join('、')}周` : '暂无完整4周周期';
+  }
+
+  stayVacancyText(period: PinesStayPeriod | null): string {
+    if (!period?.available) return '不可连续入住';
+    return period.vacancies === null ? '可申请，名额未公开' : `剩余 ${period.vacancies} 个名额`;
+  }
+
+  formatPlanDate(value: string): string {
+    const date = this.parseDate(value);
+    if (!date) return value;
+    return new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric' }).format(date);
   }
 
   formatAvailabilityDate(value: string): string {
@@ -332,6 +536,86 @@ export class PinesSchoolDetailComponent implements OnInit {
     const date = new Date(this.roomAvailability.updatedAt);
     if (Number.isNaN(date.getTime())) return '';
     return new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(date);
+  }
+
+  private getStayOptions(campus: string, date: string, cached?: PinesStayAvailabilityResponse) {
+    if (cached) return of(cached);
+    const url = `/pines-room-availability/stay-options?campus=${encodeURIComponent(campus)}&startDate=${encodeURIComponent(date)}`;
+    return this.http.get<PinesStayAvailabilityResponse>(url);
+  }
+
+  private buildRoomPlan(responses: PinesStayAvailabilityResponse[], strategy: 'stable' | 'preferred'): PinesRoomPlan | null {
+    const start = this.parseDate(this.selectedAvailabilityDate);
+    if (!start) return null;
+    const byOffset = new Map<number, PinesStayAvailabilityResponse>();
+    responses.forEach((response) => {
+      const date = this.parseDate(response.startDate);
+      if (!date) return;
+      byOffset.set(Math.round((date.getTime() - start.getTime()) / 604800000), response);
+    });
+
+    const memo = new Map<string, { cost: number; segments: PinesRoomPlanSegment[] } | null>();
+    const search = (offset: number, previousRoom: string): { cost: number; segments: PinesRoomPlanSegment[] } | null => {
+      if (offset === this.selectedAvailabilityWeeks) return { cost: 0, segments: [] };
+      const key = `${offset}|${previousRoom}`;
+      if (memo.has(key)) return memo.get(key) ?? null;
+      const response = byOffset.get(offset);
+      if (!response) { memo.set(key, null); return null; }
+      let best: { cost: number; segments: PinesRoomPlanSegment[] } | null = null;
+      for (const room of response.rooms) {
+        const periods = room[this.selectedAvailabilityGender];
+        for (const period of periods) {
+          if (!period.available || period.weeks <= 0 || offset + period.weeks > this.selectedAvailabilityWeeks) continue;
+          const next = search(offset + period.weeks, room.name);
+          if (!next) continue;
+          const changed = previousRoom.length > 0 && previousRoom !== room.name;
+          const rank = this.roomPreferenceRank(room.name);
+          const segmentCost = strategy === 'stable'
+            ? 1000 + (changed ? 700 : 0) + rank * period.weeks
+            : 40 + (changed ? 80 : 0) + rank * period.weeks * 100;
+          const end = new Date(start);
+          end.setDate(start.getDate() + (offset + period.weeks) * 7);
+          const segment: PinesRoomPlanSegment = {
+            room: room.name,
+            startDate: response.startDate,
+            endDate: end.toISOString().slice(0, 10),
+            weeks: period.weeks,
+            vacancies: period.vacancies,
+          };
+          const candidate = { cost: segmentCost + next.cost, segments: [segment, ...next.segments] };
+          if (!best || candidate.cost < best.cost) best = candidate;
+        }
+      }
+      memo.set(key, best);
+      return best;
+    };
+
+    const result = search(0, '');
+    if (!result) return null;
+    return {
+      title: strategy === 'stable' ? '稳定优先方案' : '首选房型优先方案',
+      description: strategy === 'stable' ? '优先减少换房次数，再尽量接近首选房型。' : '优先接近首选房型，必要时接受分段换房。',
+      segments: result.segments,
+    };
+  }
+
+  private roomPreferenceRank(roomName: string): number {
+    const preferredCapacity = this.roomCapacity(this.selectedPreferredRoom);
+    const capacity = this.roomCapacity(roomName);
+    if (roomName === this.selectedPreferredRoom) return 0;
+    if (preferredCapacity && capacity) return Math.abs(preferredCapacity - capacity) + 1;
+    return 8;
+  }
+
+  private roomCapacity(roomName: string): number | null {
+    if (/single|单人/iu.test(roomName)) return 1;
+    if (/twin|双人/iu.test(roomName)) return 2;
+    const match = roomName.match(/([3-6])\s*B|([3-6])人/iu);
+    return match ? Number(match[1] ?? match[2]) : null;
+  }
+
+  private planKey(plan: PinesRoomPlan): string {
+    return plan.segments.map((segment) => `${segment.room}:${segment.startDate}:${segment.weeks}`).join('|');
   }
 
   private loadExchangeRate(): void {

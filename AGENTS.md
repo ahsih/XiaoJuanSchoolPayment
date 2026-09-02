@@ -81,7 +81,7 @@ Key endpoint groups use route prefixes without `/api`:
 - `/currency`: Admin-only currency lookup.
 - `/contact-form/send`: anonymous JSON contact submission through SMTP.
 - `/quote-email/send`: anonymous multipart upload that emails a generated quote PNG.
-- `/pines-room-availability`: anonymous read-only PINES room availability feed; the server fetches a fixed public school endpoint and returns only sanitized Main/IELTS campus dates, room names, and public status fields.
+- `/pines-room-availability`: anonymous read-only PINES room availability feed; the server fetches fixed public school endpoints and returns only sanitized Main/IELTS dates, male/female vacancies, and exact continuous-stay options. The `/stay-options` child route supports the public room-plan calculator without exposing portal identifiers or navigation.
 - `/uploads`: static uploaded files through ASP.NET static-file middleware.
 
 The Angular services use relative URLs so the development proxy and production same-origin hosting both work. Preserve this unless deployment is intentionally changed.

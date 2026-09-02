@@ -320,7 +320,7 @@
               <h2>按入学日期查看 Main 与 IELTS 校区房态</h2>
               <p>这里仅展示学校公开的房态结果，不嵌入学校门户，也不会显示其他校区、内部资料或外部导航。</p>
             </div>
-            <button type="button" class="room-refresh-button" (click)="loadRoomAvailability()" [disabled]="roomAvailabilityLoading">
+            <button type="button" class="room-refresh-button" (click)="loadRoomAvailability(true)" [disabled]="roomAvailabilityLoading">
               <mat-icon>refresh</mat-icon>{{ roomAvailabilityLoading ? '更新中' : '刷新房态' }}
             </button>
           </div>
@@ -341,7 +341,7 @@
           <div class="room-availability-error" *ngIf="roomAvailabilityError" role="alert">
             <mat-icon>error_outline</mat-icon>
             <span>{{ roomAvailabilityError }}</span>
-            <button type="button" (click)="loadRoomAvailability()">重新读取</button>
+            <button type="button" (click)="loadRoomAvailability(true)">重新读取</button>
           </div>
 
           <ng-container *ngIf="roomAvailability && !roomAvailabilityError">
@@ -355,32 +355,132 @@
               </button>
             </div>
 
-            <div class="room-date-toolbar">
-              <label>
-                <span>选择入学日期</span>
-                <select [(ngModel)]="selectedAvailabilityDate">
-                  <option *ngFor="let row of selectedAvailabilityCampus?.dates" [value]="row.date">{{ formatAvailabilityDate(row.date) }}</option>
-                </select>
-              </label>
-              <div class="room-status-legend" aria-label="房态图例">
-                <span data-status="open">可开始课程</span>
-                <span data-status="limited">少量空房</span>
-                <span data-status="stay-only">只可续住</span>
-                <span data-status="closed">暂不可申请</span>
+            <div class="room-search-panel">
+              <div class="room-search-heading">
+                <div>
+                  <span>智能查房条件</span>
+                  <h3>输入学生情况，先看能否全程住，再计算换房方案</h3>
+                </div>
+                <small>学校目前公开到 {{ formatAvailabilityDate(availabilityLastDate) }}</small>
+              </div>
+              <div class="room-search-fields">
+                <fieldset>
+                  <legend>学生性别</legend>
+                  <div class="room-gender-toggle">
+                    <button type="button" [class.active]="selectedAvailabilityGender === 'male'" (click)="selectedAvailabilityGender = 'male'; roomPlans = []">男生</button>
+                    <button type="button" [class.active]="selectedAvailabilityGender === 'female'" (click)="selectedAvailabilityGender = 'female'; roomPlans = []">女生</button>
+                  </div>
+                </fieldset>
+                <label>
+                  <span>计划学习周期</span>
+                  <select [(ngModel)]="selectedAvailabilityWeeks" (ngModelChange)="roomPlans = []">
+                    <option *ngFor="let weeks of availabilityWeekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                  </select>
+                </label>
+                <label>
+                  <span>优先房型</span>
+                  <select [(ngModel)]="selectedPreferredRoom" (ngModelChange)="roomPlans = []" [disabled]="stayOptionsLoading">
+                    <option *ngFor="let room of stayOptions?.rooms" [value]="room.name">{{ formatAvailabilityRoomName(room.name) }}</option>
+                  </select>
+                </label>
+                <button type="button" class="room-plan-button" (click)="generateRoomPlan()" [disabled]="stayOptionsLoading || roomPlanLoading || !selectedPreferredRoom || !selectedDateBookableRooms.length">
+                  <mat-icon>auto_awesome</mat-icon>{{ roomPlanLoading ? '正在组合房态' : '生成住宿方案' }}
+                </button>
               </div>
             </div>
 
-            <div class="room-status-grid" *ngIf="selectedAvailabilityRow as availabilityRow">
-              <article *ngFor="let room of availabilityRow.rooms" [attr.data-status]="room.status">
-                <div class="room-status-dot" aria-hidden="true"></div>
-                <div>
-                  <strong>{{ room.name }}</strong>
-                  <span>{{ roomAvailabilityStatusText(room) }}</span>
-                </div>
-              </article>
+            <div class="room-availability-loading" *ngIf="stayOptionsLoading" aria-live="polite">
+              <mat-icon>sync</mat-icon><span>正在读取{{ selectedAvailabilityGender === 'male' ? '男生' : '女生' }}连续住宿周期……</span>
+            </div>
+            <div class="room-availability-error" *ngIf="stayOptionsError" role="alert">
+              <mat-icon>error_outline</mat-icon><span>{{ stayOptionsError }}</span><button type="button" (click)="loadStayOptions()">重新读取</button>
             </div>
 
-            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>房态变化较快，此处用于初步筛选；提交申请前仍由思达顾问向学校确认最终空房。</p>
+            <div class="room-booking-board" *ngIf="stayOptions && !stayOptionsLoading && !stayOptionsError">
+              <aside class="room-date-sidebar" *ngIf="selectedAvailabilityCampus as campus">
+                <div class="room-board-step"><b>1</b><div><span>选择入学日期</span><strong>当前查看{{ selectedGenderLabel }}房态</strong></div></div>
+                <div class="room-date-list">
+                  <button type="button" *ngFor="let row of campus.dates" [class.active]="row.date === selectedAvailabilityDate" [class.available]="bookableRooms(row).length" (click)="selectAvailabilityDate(row.date)">
+                    <strong>{{ formatAvailabilityDate(row.date) }}</strong>
+                    <span>{{ dateAvailabilityText(row, selectedAvailabilityGender) }}</span>
+                  </button>
+                </div>
+              </aside>
+
+              <div class="room-booking-result" *ngIf="selectedAvailabilityRow as availabilityRow">
+                <div class="room-board-step"><b>2</b><div><span>查看学校房态结论</span><strong>{{ formatAvailabilityDate(selectedAvailabilityDate) }} · {{ selectedGenderLabel }} · {{ selectedAvailabilityWeeks }}周</strong></div></div>
+
+                <div class="room-result-verdict" [class.available]="selectedDateBookableRooms.length">
+                  <mat-icon>{{ selectedDateBookableRooms.length ? 'check_circle' : 'event_busy' }}</mat-icon>
+                  <div>
+                    <strong>{{ selectedDateBookableRooms.length ? selectedDateBookableRooms.length + '种房型可以报名' : '当天暂无可报名房型' }}</strong>
+                    <span *ngIf="knownVacancyTotal(availabilityRow) > 0">学校已公开至少 {{ knownVacancyTotal(availabilityRow) }} 个剩余名额</span>
+                    <span *ngIf="selectedDateBookableRooms.length && knownVacancyTotal(availabilityRow) === 0">房型可报名，但学校没有公布具体剩余数量</span>
+                    <span *ngIf="!selectedDateBookableRooms.length">学校页面显示“—”，这里不会推测为有房</span>
+                  </div>
+                </div>
+
+                <div class="room-bookable-list" *ngIf="selectedDateBookableRooms.length; else noBookableRooms">
+                  <article *ngFor="let room of selectedDateBookableRooms">
+                    <div class="room-bookable-heading">
+                      <strong>{{ formatAvailabilityRoomName(room.name) }}</strong>
+                      <b [class.known]="roomGenderAvailability(room).vacancies !== null">{{ roomVacancyBadgeText(room) }}</b>
+                    </div>
+                    <div class="room-duration-answer" *ngIf="stayRoomByName(room.name) as stayRoom">
+                      <span>可连续住宿</span>
+                      <strong>{{ stayDurationSummary(stayRoom) }}</strong>
+                    </div>
+                  </article>
+                </div>
+
+                <ng-template #noBookableRooms>
+                  <div class="room-no-bookable"><mat-icon>event_busy</mat-icon><span>建议改选下面较近的可报名日期。</span></div>
+                  <div class="room-next-dates" *ngIf="nextAvailableDates.length">
+                    <button type="button" *ngFor="let row of nextAvailableDates" (click)="selectAvailabilityDate(row.date)">
+                      <strong>{{ formatAvailabilityDate(row.date) }}</strong><span>{{ dateAvailabilityText(row, selectedAvailabilityGender) }}</span>
+                    </button>
+                  </div>
+                </ng-template>
+
+                <div class="room-stay-summary" *ngIf="selectedDateBookableRooms.length">
+                  <div [class.available]="preferredRoomTargetPeriod?.available">
+                    <span>首选 {{ formatAvailabilityRoomName(selectedPreferredRoom) }}</span>
+                    <strong>{{ stayVacancyText(preferredRoomTargetPeriod) }}</strong>
+                    <small *ngIf="!preferredRoomTargetPeriod?.available && preferredRoomAvailableDurations.length">可连续：<ng-container *ngFor="let period of preferredRoomAvailableDurations; let last = last">{{ period.weeks }}周{{ last ? '' : '、' }}</ng-container></small>
+                  </div>
+                  <div [class.available]="sameRoomOptions.length">
+                    <span>同一房型住满{{ selectedAvailabilityWeeks }}周</span>
+                    <strong>{{ sameRoomOptions.length ? sameRoomOptions.length + '种房型可选' : '暂时没有' }}</strong>
+                    <small *ngIf="sameRoomOptions.length">优先：{{ formatAvailabilityRoomName(sameRoomOptions[0].name) }}</small>
+                  </div>
+                </div>
+
+                <div class="room-plan-error" *ngIf="roomPlanError"><mat-icon>info</mat-icon>{{ roomPlanError }}</div>
+                <div class="room-plan-results" *ngIf="roomPlans.length">
+                  <article *ngFor="let plan of roomPlans">
+                    <div class="room-plan-title"><div><span>推荐</span><h3>{{ plan.title }}</h3></div><p>{{ plan.description }}</p></div>
+                    <div class="room-plan-timeline">
+                      <div *ngFor="let segment of plan.segments; let index = index">
+                        <b>{{ index + 1 }}</b>
+                        <section>
+                          <strong>{{ formatAvailabilityRoomName(segment.room) }} · {{ segment.weeks }}周</strong>
+                          <span>{{ formatPlanDate(segment.startDate) }}—{{ formatPlanDate(segment.endDate) }}</span>
+                          <small>{{ segment.vacancies === null ? '学校未公开精确名额' : '当前公开剩余 ' + segment.vacancies + ' 个名额' }}</small>
+                        </section>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+
+                <details class="room-unavailable-details" *ngIf="selectedDateClosedRooms.length || selectedDateStayOnlyRooms.length">
+                  <summary>查看当天不可报名的其他房型</summary>
+                  <p *ngIf="selectedDateClosedRooms.length"><strong>不可报名：</strong><ng-container *ngFor="let room of selectedDateClosedRooms; let last = last">{{ formatAvailabilityRoomName(room.name) }}{{ last ? '' : '、' }}</ng-container></p>
+                  <p *ngIf="selectedDateStayOnlyRooms.length"><strong>仅可续住：</strong><ng-container *ngFor="let room of selectedDateStayOnlyRooms; let last = last">{{ formatAvailabilityRoomName(room.name) }}{{ last ? '' : '、' }}</ng-container></p>
+                </details>
+              </div>
+            </div>
+
+            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>页面与学校公开房态联动并缓存约5分钟。房态变化较快，自动方案用于筛选；提交申请前仍由思达顾问向学校确认最终房间与换房安排。</p>
           </ng-container>
         </section>
 
