@@ -235,6 +235,114 @@
   background: #b5561f;
 }
 
+:host .cg-banilad-page .cg-course-price-table .table-row {
+  grid-template-columns: minmax(200px, 1fr) minmax(140px, 0.6fr) minmax(0, 2.4fr);
+}
+
+:host .cg-banilad-page #courses,
+:host .cg-banilad-page #quote,
+:host .cg-banilad-page #local-fees {
+  scroll-margin-top: 156px;
+}
+
+:host .cg-banilad-page .cg-course-price-table .table-row small {
+  display: block;
+  margin-top: 4px;
+  color: #637286;
+}
+
+:host .cg-banilad-page .cg-course-price-table .table-row > span:nth-child(2) {
+  font-weight: 850;
+}
+
+:host .cg-banilad-page .cg-course-price-table + .mobile-course-prices + .section-heading {
+  margin-top: 30px;
+}
+
+:host .cg-banilad-page .quote-breakdown {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+:host .cg-banilad-page .quote-breakdown > div {
+  min-width: 0;
+  padding: 16px;
+}
+
+:host .cg-banilad-page .quote-breakdown span {
+  font-size: 14px;
+}
+
+:host .cg-banilad-page .quote-breakdown strong {
+  font-size: 20px;
+}
+
+:host .cg-banilad-page .quote-breakdown small {
+  display: block;
+  margin-top: 7px;
+  color: #526176;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+:host .cg-banilad-page .quote-breakdown .quote-adjustment-card--summer {
+  grid-column: 1 / -1;
+  border-color: #edb99b;
+  background: #fff3e8;
+}
+
+:host .cg-banilad-page .quote-rule-note {
+  margin: 16px 0;
+  color: #8b4b27;
+  line-height: 1.7;
+}
+
+:host .cg-banilad-page .quote-result small {
+  display: block;
+  margin-top: 8px;
+  line-height: 1.6;
+  color: #d5e0e9;
+}
+
+:host .cg-banilad-page .local-fee-table {
+  font-size: 14px;
+}
+
+:host .cg-banilad-page .local-fee-table tbody td:nth-child(2),
+:host .cg-banilad-page .local-fee-table .fee-amount,
+:host .cg-banilad-page .local-fee-table .fee-cny {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+:host .cg-banilad-page .pickup-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: #304056;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+:host .cg-banilad-page .pickup-option input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  accent-color: #08724f;
+}
+
+:host .cg-banilad-page .mobile-fee-hint {
+  display: none;
+  margin: 10px 0 0;
+  color: #6b563e;
+  font-size: 13px;
+}
+
+:host .cg-banilad-page .local-fee-table-wrap:focus-visible {
+  outline: 2px solid #0b6f8f;
+  outline-offset: 3px;
+}
+
 @media (max-width: 1180px) {
   :host .cg-banilad-page .cg-course-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -249,6 +357,14 @@
 }
 
 @media (max-width: 860px) {
+  :host .cg-banilad-page .cg-course-price-table {
+    display: none;
+  }
+
+  :host .cg-banilad-page .mobile-fee-hint {
+    display: block;
+  }
+
   :host .cg-banilad-page .cg-course-table,
   :host .cg-banilad-page .cg-room-table {
     display: none;
@@ -260,6 +376,14 @@
 }
 
 @media (max-width: 640px) {
+  :host .cg-banilad-page .quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .cg-banilad-page .quote-result strong {
+    font-size: 28px;
+  }
+
   :host .cg-banilad-page .hero-copy h1 {
     font-size: 38px;
   }

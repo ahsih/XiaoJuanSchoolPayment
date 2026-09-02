@@ -24,7 +24,7 @@
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
               </a>
-              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
                 查看CPI课程和房型
                 <mat-icon>menu_book</mat-icon>
               </a>
@@ -52,8 +52,8 @@
             </div>
             <aside class="hero-price-card">
               <span>{{ selectedWeeks }}周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }}</strong>
-              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
+              <strong>{{ quoteUsdText }}</strong>
+              <p>{{ courseDisplayName(selectedCourse.name) }} + {{ selectedRoom.name }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -61,7 +61,7 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  符合条件时自动减USD 25/周淡季优惠
+                  符合条件时额外计入淡季及12月优惠
                 </li>
               </ul>
             </aside>
@@ -94,19 +94,60 @@
             <p>先看校园、教室、住宿、餐厅和设施，再判断CPI的学习与生活环境是否适合你。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="CPI图片分类">
-            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+            <button type="button" role="tab" *ngFor="let category of galleryCategories" [attr.aria-selected]="selectedGalleryCategory === category" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
               {{ category }}
             </button>
           </div>
-          <div class="gallery-grid">
+          <div class="gallery-grid" *ngIf="selectedGalleryCategory !== '住宿'">
             <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" />
+              <img *ngIf="image.category !== '住宿'" [src]="image.src" [alt]="image.title" />
+              <button *ngIf="image.category === '住宿'" type="button" class="dormitory-entry" aria-label="查看CPI全部9类宿舍房型" (click)="openDormitoryGallery()">
+                <img [src]="image.src" alt="CPI四人间A上床下桌实景" loading="lazy" />
+                <span>查看9类宿舍房型 <mat-icon>arrow_forward</mat-icon></span>
+              </button>
               <figcaption>
                 <strong>{{ image.title }}</strong>
-                <span>{{ image.description }}</span>
+                <span *ngIf="image.description">{{ image.description }}</span>
               </figcaption>
             </figure>
           </div>
+
+          <section *ngIf="selectedGalleryCategory === '住宿'" class="cpi-dormitory-gallery" aria-labelledby="cpi-dormitory-title">
+            <div class="dormitory-heading">
+              <h3 id="cpi-dormitory-title">CPI 宿舍房型</h3>
+              <p>9类房型实景 · A/B沿用学校照片资料中的分类</p>
+            </div>
+            <div class="dormitory-layout">
+              <div class="dormitory-tabs" role="tablist" aria-label="选择CPI宿舍房型">
+                <button type="button" role="tab" *ngFor="let room of dormitoryProfiles; let roomIndex = index"
+                  [id]="'cpi-dorm-tab-' + room.id" [class.active]="selectedDormitoryId === room.id"
+                  [attr.aria-selected]="selectedDormitoryId === room.id" [attr.tabindex]="selectedDormitoryId === room.id ? 0 : -1"
+                  aria-controls="cpi-dormitory-panel" (click)="selectDormitory(room.id)" (keydown)="handleDormitoryKey($event, roomIndex)">
+                  <img [src]="room.gallery[0]" alt="" loading="lazy" />
+                  <span>{{ room.label }}</span>
+                </button>
+              </div>
+              <article class="dormitory-panel" id="cpi-dormitory-panel" role="tabpanel" [attr.aria-labelledby]="'cpi-dorm-tab-' + selectedDormitoryId">
+                <header aria-live="polite">
+                  <div><h4>{{ selectedDormitory.label }}</h4><p>{{ selectedDormitory.englishName }}</p></div>
+                  <span>{{ selectedDormitoryImageIndex + 1 }} / {{ selectedDormitory.gallery.length }}</span>
+                </header>
+                <app-expandable-image class="dormitory-main-image"
+                  [src]="selectedDormitoryImage" [images]="selectedDormitory.gallery"
+                  [imageTitles]="dormitoryImageTitles" [imageAlts]="dormitoryImageTitles"
+                  [alt]="dormitoryImageTitles[selectedDormitoryImageIndex]" [title]="selectedDormitory.label"
+                  loading="eager" previewFit="contain"></app-expandable-image>
+                <div class="dormitory-thumbnails" [attr.aria-label]="selectedDormitory.label + '照片切换'">
+                  <button type="button" *ngFor="let photo of selectedDormitory.gallery; let photoIndex = index"
+                    [class.active]="selectedDormitoryImageIndex === photoIndex" [attr.aria-pressed]="selectedDormitoryImageIndex === photoIndex"
+                    [attr.aria-label]="'查看' + selectedDormitory.label + '第' + (photoIndex + 1) + '张照片'" (click)="selectDormitoryPhoto(photoIndex)">
+                    <img [src]="photo" alt="" loading="lazy" />
+                  </button>
+                </div>
+                <p class="dormitory-help"><mat-icon>zoom_in</mat-icon>点击主图放大，可前后浏览同房型照片</p>
+              </article>
+            </div>
+          </section>
         </section>
 
         <div class="info-trio">
@@ -185,56 +226,44 @@
           </div>
         </section>
 
-        <section class="section-block" id="courses">
-          <div class="section-heading">
-            <span>课程类型介绍</span>
-            <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>General English适合第一次游学，Intensive English适合强化，考试、口语、商务和亲子方向需要按目标细分。</p>
-          </div>
-          <div class="course-grid">
-            <article class="course-card" *ngFor="let course of courses">
-              <span>{{ course.type }}</span>
-              <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
-              <p>{{ course.suitable }}</p>
-            </article>
-          </div>
-        </section>
-
         <section class="split-layout" id="course-fees">
           <div class="section-block">
-            <div class="section-heading">
-              <span>CPI 2026 年 4 周课程费</span>
-              <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费参考，币种为美元。最终以学校当期报价、空房和优惠为准。</p>
+            <div class="section-heading cpi-fee-heading">
+              <h2>CPI 2026年4周课程费</h2>
+              <p class="cpi-heading-subtitle">先看课程费，再叠加住宿费</p>
+              <p>以下为周一至周五的每日课程安排，课程费按4周计算。具体课表及节假日安排以学校确认为准。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="CPI 2026年4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
+                <span role="columnheader">每日课程安排</span>
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ courseDisplayName(fee.name) }}</span>
+                <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
             <div class="mobile-card-list mobile-course-fees" aria-label="CPI 2026年4周课程费手机卡片">
               <article *ngFor="let fee of courseFees">
                 <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <strong>{{ courseDisplayName(fee.name) }}</strong>
+                <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                 <p>{{ fee.suitable }}</p>
               </article>
             </div>
-            <p class="fee-alert">核对说明：公开2026课程资料与本页主要课程价格和课时一致；公开清单只列TOEIC、IELTS保证班，未列TOEFL GUARANTEE，本页暂按您提供的2026价目表保留，并标注待校方确认。</p>
+            <div class="course-notes">
+              <h3>课程说明</h3>
+              <p>青少年课程（6–15岁）：{{ juniorCourseNote }}。</p>
+              <p class="fee-alert">1周起报。1周、2周、3周的课程费和住宿费分别按4周价格的37.5%、65%、90%计算；注册费{{ formatUsd(registrationFee) }}美元，只收一次，不随学习周数变化。</p>
+            </div>
           </div>
 
           <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>CPI 一天学习生活安排</span>
-              <h2>半斯巴达节奏，具体课表到校后确认</h2>
+            <div class="section-heading cpi-fee-heading">
+              <h2>CPI 一天学习生活安排</h2>
+              <p class="cpi-heading-subtitle">半斯巴达节奏，具体课表到校后确认</p>
             </div>
             <div class="timeline">
               <article *ngFor="let item of schedule">
@@ -247,9 +276,10 @@
 
         <section class="split-layout" id="room-fees">
           <div class="section-block">
-            <div class="section-heading">
-              <span>CPI 2026 年 4 周住宿费</span>
-              <h2>房型会明显影响总预算</h2>
+            <div class="section-heading cpi-fee-heading">
+              <h2>CPI 2026年4周住宿费</h2>
+              <p class="cpi-heading-subtitle">房型会明显影响总预算</p>
+              <a class="dormitory-price-link" href="#gallery" (click)="openDormitoryGallery($event)"><mat-icon>photo_library</mat-icon>查看不同房型的宿舍照片</a>
               <p>默认报价使用A栋四人间。B栋、单人房和家庭房型建议先让顾问确认空房。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="CPI 2026年4周住宿费">
@@ -260,7 +290,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomFees">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
@@ -268,33 +298,45 @@
               <article *ngFor="let room of roomFees">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div>
                 <p>{{ room.note }}</p>
               </article>
             </div>
-            <p class="fee-alert">特别房型：B区304套房（适合四人）为 PHP 5,000 / 晚，按实际入住晚数计算，不参与4周USD宿舍估算。</p>
+            <p class="fee-alert">特别房型：B区304套房（适合四人）为5,000比索/晚，按实际入住晚数计算，不参与4周美元宿舍估算。</p>
           </div>
 
           <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>CPI 费用快速报价</span>
-              <h2>默认参考：4周 ESL GENERAL + A栋四人间</h2>
-              <p>计算规则：注册费 +（课程费 + 住宿费）× 9折 − 符合条件的淡季优惠（USD 25/周）</p>
+            <div class="section-heading cpi-fee-heading">
+              <h2>CPI 费用快速报价</h2>
+              <p class="cpi-heading-subtitle">{{ selectedWeeks }}周 {{ courseDisplayName(selectedCourse.name) }} + {{ selectedRoom.name }}</p>
             </div>
             <div class="quote-form" aria-label="CPI费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ courseDisplayName(course.name) }}</option></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+              <label>预计注册日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label>
             </div>
             <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>短期 / 长期计算规则</span><strong>{{ billingRuleText }}</strong></div>
-              <div class="discount-row"><span>思达折扣（仅课程费和住宿费）</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
-              <div class="discount-row"><span>淡季优惠（{{ offSeasonEligible ? '已按注册日期计入' : '当前不适用' }}）</span><strong>- USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
-              <div><span>限量一对一加课</span><strong>{{ extraClassEligible ? '符合入学日期，限前20名' : '当前入学日期不适用' }}</strong></div>
+              <div><span>注册费（一次性，不打折）</span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
+              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+              <div class="discount-row"><span>思达9折（课程费和住宿费）</span><strong>− {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
+              <div class="discount-row quote-rule-card">
+                <span>淡季优惠 · 25美元/周</span>
+                <small>{{ offSeasonRuleText }}；{{ offSeasonEligible ? '当前已按注册日计入' : '当前注册日不适用' }}。</small>
+                <strong>{{ offSeasonDiscountAmount > 0 ? '− ' : '' }}{{ formatUsd(offSeasonDiscountAmount) }} 美元</strong>
+              </div>
+              <div class="discount-row quote-rule-card">
+                <span>12月额外优惠 · 25美元/周</span>
+                <small>{{ decemberRuleText }}；{{ decemberCalculationText }}。</small>
+                <strong>{{ decemberDiscountAmount > 0 ? '− ' : '' }}{{ formatUsd(decemberDiscountAmount) }} 美元</strong>
+              </div>
+              <div class="quote-rule-card extra-class-card">
+                <span>限量一对一加课</span>
+                <small>{{ extraClassRuleText }}。</small>
+                <strong>{{ extraClassEligible ? '符合日期，名额待确认' : '当前日期不适用' }}</strong>
+              </div>
             </div>
             <div class="quote-result">
               <span>最终应付学校金额</span>
@@ -308,40 +350,34 @@
               <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">本次学杂费自动估算为 {{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}），不含可选接机、可退押金及洗衣服务。</p>
-            <p class="season-note">淡季优惠按报价/注册日期判断：2026/08/24–2027/01/01期间注册，USD 25/周；一对一加课按入学日期判断：2026/08/24–09/28，限前20名。</p>
+            <p class="season-note">{{ billingRuleText }}。注册费{{ formatUsd(registrationFee) }}美元，只收一次，不随学习周数变化，也不打折；课程费和住宿费享思达9折，再减符合条件的淡季及12月优惠。到校学杂费另计。</p>
           </section>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>按当前 {{ selectedWeeks }} 周自动计算学杂费</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付；数量会随学习周数自动变化。</p>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="cpi-local-fee-title">
+          <div class="local-fee-heading">
+            <div><span>到校后另付 · 自动预估</span><h2 id="cpi-local-fee-title">{{ selectedWeeks }}周学杂费明细</h2></div>
           </div>
-          <label class="option-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /> 需要宿务机场周日接机（PHP 1,000，可选，不计入学杂费合计）</label>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded">
-              <span>{{ fee.item }}<em *ngIf="fee.excluded">可选/不计入合计</em></span>
-              <strong>{{ fee.amount }}</strong>
-              <b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b>
-              <p>{{ fee.note }}</p>
-            </article>
+          <p class="local-fee-intro">以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证相关费用按持59天签证预估；教材按每次约用8周预估；水费不足4周按4周计算。</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let fee of includedLocalFees">
+                  <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含接机、可退押金和洗衣服务</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
+              </tfoot>
+            </table>
           </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p></article>
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <div *ngFor="let fee of excludedLocalFees">
+              <span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b>
             </div>
-          </details>
-          <div class="local-fee-summary"><span>预计到校学杂费合计（不含可选/可退项目）</span><strong>{{ formatPhp(localFeesTotal) }}</strong><em>{{ localFeesCnyText }} · {{ exchangeRateText }}</em></div>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程与住宿费按您提供的CPI 2026价目表逐项录入，并与公开2026课程资料交叉核对；1周、2周、3周分别按4周价格的37.5%、65%、90%计算。托福保证班、限量加课名额、空房和最终优惠仍须向校方确认。</p>
           </div>
         </section>
 
@@ -392,6 +428,18 @@
               <strong>{{ item.label }}</strong>
             </article>
           </div>
+          <aside class="sida-cia-alumni-benefits" aria-labelledby="cpi-alumni-benefits-title">
+            <div class="sida-cia-alumni-heading">
+              <span><mat-icon>workspace_premium</mat-icon></span>
+              <div><small>学习结束，服务继续</small><h3 id="cpi-alumni-benefits-title">老学员回国后福利</h3><p>继续学习英语或规划下一阶段升学时，可申请思达老学员专属权益。</p></div>
+            </div>
+            <div class="sida-cia-alumni-grid">
+              <article><span>01</span><mat-icon>record_voice_over</mat-icon><div><strong>一对一线上英语</strong><p>老学员可享线上一对一英语课程专属优惠。</p></div></article>
+              <article><span>02</span><mat-icon>school</mat-icon><div><strong>爱尔兰继续深造</strong><p>申请爱尔兰留学，可享思达专属奖学金或项目优惠。</p></div></article>
+              <article><span>03</span><mat-icon>public</mat-icon><div><strong>欧美国家英语进修</strong><p>继续到欧美国家学习英语，部分合作学校可免注册费或享专属优惠。</p></div></article>
+            </div>
+            <small class="sida-cia-alumni-note">具体奖学金、减免范围和适用条件，以申请时合作学校及思达启航确认的当期政策为准。</small>
+          </aside>
         </section>
 
         <section class="section-block" id="service-flow">
@@ -448,7 +496,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>{{ selectedWeeks }}周</strong>
-          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <p>{{ courseDisplayName(selectedCourse.name) }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

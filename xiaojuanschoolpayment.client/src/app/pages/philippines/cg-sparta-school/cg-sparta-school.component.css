@@ -47,6 +47,33 @@
   color: #5d3a91;
 }
 
+:host .cg-sparta-page .cg-overview-section {
+  display: block;
+  margin-top: 28px;
+}
+
+:host .cg-sparta-page .cg-overview-section > .section-heading {
+  margin: 0 0 20px;
+}
+
+:host .cg-sparta-page .cg-overview-section .snapshot-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+:host .cg-sparta-page .cg-overview-section .snapshot-grid article {
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  min-height: 0;
+  padding: 22px;
+}
+
+:host .cg-sparta-page .cg-overview-section .snapshot-grid mat-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+}
+
 :host .cg-sparta-page .fit-grid > div,
 :host .cg-sparta-page .timeline article {
   background: #f4faf5;
@@ -61,7 +88,11 @@
 }
 
 :host .cg-sparta-page .room-fee-table .table-row {
-  grid-template-columns: minmax(180px, 1.4fr) minmax(150px, 1fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+}
+
+:host .cg-sparta-page .room-fee-table {
+  display: grid;
 }
 
 :host .cg-sparta-page .room-fee-table .table-row:not(.table-head) span:last-child {
@@ -81,12 +112,198 @@
   white-space: nowrap;
 }
 
-:host .cg-sparta-page .special-fee-table .table-row {
-  grid-template-columns:
-    minmax(150px, 0.9fr)
-    minmax(180px, 1fr)
-    minmax(150px, 0.9fr)
-    minmax(0, 1.15fr);
+:host .cg-sparta-page .cg-quote-card {
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid #f0d8c9;
+  border-radius: 10px;
+  background: #fff8f3;
+}
+
+:host .cg-sparta-page .cg-quote-heading > span {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid #bde3d3;
+  border-radius: 6px;
+  background: #f0faf5;
+  color: #057054;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+:host .cg-sparta-page .cg-quote-heading h2 {
+  margin: 12px 0 20px;
+  color: #102238;
+  font-size: clamp(23px, 2.6vw, 32px);
+  line-height: 1.3;
+}
+
+:host .cg-sparta-page .cg-quote-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+:host .cg-sparta-page .cg-quote-form label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: #526176;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+:host .cg-sparta-page .cg-quote-form select,
+:host .cg-sparta-page .cg-quote-form input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid #cbdde7;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #102238;
+  font: inherit;
+}
+
+:host .cg-sparta-page .cg-quote-form :is(select, input):focus-visible {
+  outline: 2px solid #08745c;
+  outline-offset: 2px;
+}
+
+:host .cg-sparta-page .cg-quote-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 14px;
+}
+
+:host .cg-sparta-page .cg-base-fee,
+:host .cg-sparta-page .cg-adjustment-card {
+  padding: 14px;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+:host .cg-sparta-page .cg-base-fee {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+:host .cg-sparta-page .cg-quote-adjustments {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+:host .cg-sparta-page .cg-adjustment-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 4px 18px;
+}
+
+:host .cg-sparta-page .cg-adjustment-card > small {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+:host .cg-sparta-page .cg-adjustment-card > strong {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  text-align: right;
+}
+
+:host .cg-sparta-page .cg-base-fee > span,
+:host .cg-sparta-page .cg-adjustment-card > span {
+  color: #354b5d;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+:host .cg-sparta-page .cg-base-fee > strong,
+:host .cg-sparta-page .cg-adjustment-card > strong {
+  color: #102238;
+  font-size: 17px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+:host .cg-sparta-page .cg-adjustment-card--discount > strong,
+:host .cg-sparta-page .cg-base-fee--discount > strong {
+  color: #e85218;
+}
+
+:host .cg-sparta-page .cg-base-fee > small,
+:host .cg-sparta-page .cg-adjustment-card > small {
+  color: #66717f;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+:host .cg-sparta-page .cg-quote-rule-note {
+  grid-column: 1 / -1;
+  margin: 12px 0;
+  color: #76716b;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+:host .cg-sparta-page .cg-quote-total {
+  display: grid;
+  gap: 5px;
+  padding: 22px;
+  border-radius: 8px;
+  background: #102235;
+  color: #ffffff;
+}
+
+:host .cg-sparta-page .cg-quote-total > strong {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+:host .cg-sparta-page .cg-quote-total > span,
+:host .cg-sparta-page .cg-quote-total > em {
+  color: #e3edf7;
+  font-size: 15px;
+}
+
+:host .cg-sparta-page .cg-quote-total > small {
+  margin-top: 4px;
+  color: #c5d6e5;
+  font-size: 12px;
+}
+
+:host .cg-sparta-page .cg-quote-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+:host .cg-sparta-page .cg-quote-actions > :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+:host .cg-sparta-page .short-stay-fee-note {
+  margin: 12px 0 0;
+  color: #53657d;
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 :host .cg-sparta-page .source-panel {
@@ -123,6 +340,10 @@
 }
 
 @media (max-width: 860px) {
+  :host .cg-sparta-page .cg-overview-section .snapshot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   :host .cg-sparta-page .course-fee-table {
     display: grid;
     min-width: 900px;
@@ -130,5 +351,39 @@
 
   :host .cg-sparta-page .source-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  :host .cg-sparta-page .cg-quote-card {
+    padding: 16px;
+  }
+
+  :host .cg-sparta-page .cg-overview-section .snapshot-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  :host .cg-sparta-page .cg-overview-section .snapshot-grid article {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  :host .cg-sparta-page .cg-quote-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .cg-sparta-page .cg-quote-breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .cg-sparta-page .cg-adjustment-card {
+    gap: 4px 10px;
+    padding: 12px;
+  }
+
+  :host .cg-sparta-page .cg-adjustment-card > strong {
+    font-size: 15px;
   }
 }

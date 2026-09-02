@@ -108,13 +108,6 @@ interface SourceLink {
   url: string;
 }
 
-interface SpecialCourseFee {
-  label: string;
-  lessons: string;
-  four: string;
-  note: string;
-}
-
 @Component({
   selector: 'app-cg-sparta-school',
   standalone: true,
@@ -145,6 +138,10 @@ export class CgSpartaSchoolComponent implements OnInit {
   readonly registrationFee = 100;
   readonly sidaDiscountRate = 0.9;
   readonly offSeasonDiscountPerFourWeeks = 150;
+  readonly summerFeePerWeek = 40;
+  readonly summerDateRange = '2026/07/05–2026/08/30';
+  readonly offSeasonRuleText = '2026/08/30–2026/12/27入学，每满4周优惠150美元';
+  readonly longStayRuleText = '12周优惠50美元；16周100美元；20周150美元；24周200美元';
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
@@ -409,10 +406,6 @@ export class CgSpartaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly specialFees: SpecialCourseFee[] = [
-    { label: 'Short-Term ESL', lessons: 'Sparta与Banilad两校区均适用，短期课表需按校区确认', four: '1周学费USD 370 / 2周学费USD 640', note: '注册费、住宿费和当地费用另计；普通课程3周按4周主费的85%计算' },
-  ];
-
   readonly schedule: ScheduleItem[] = [
     {
       time: '07:00 - 08:00',
@@ -603,14 +596,13 @@ export class CgSpartaSchoolComponent implements OnInit {
     { label: '学校环境', target: 'gallery', icon: 'image' },
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
-    { label: '特殊课程', target: 'special-fees', icon: 'bolt' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];
   readonly mobileAnchors: SideNavItem[] = [
     { label: '概览', target: 'top', icon: 'dashboard' },
     { label: '环境', target: 'gallery', icon: 'image' },
-    { label: '课程', target: 'courses', icon: 'menu_book' },
+    { label: '课程', target: 'course-fees', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
@@ -641,7 +633,7 @@ export class CgSpartaSchoolComponent implements OnInit {
       return;
     }
 
-    const headerOffset = window.innerWidth <= 680 ? 132 : 92;
+    const headerOffset = window.innerWidth <= 680 ? 132 : 156;
     const targetTop =
       targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 
@@ -728,18 +720,40 @@ export class CgSpartaSchoolComponent implements OnInit {
     return discounts[this.selectedWeeks] ?? 0;
   }
 
+  get summerWeeks(): number {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(this.selectedStartDate)) return 0;
+    const start = Date.parse(`${this.selectedStartDate}T00:00:00Z`);
+    if (!Number.isFinite(start) || new Date(start).toISOString().slice(0, 10) !== this.selectedStartDate) return 0;
+
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    const summerStart = Date.UTC(2026, 6, 5);
+    // The supplied final date (August 30) is inclusive, matching the displayed rule.
+    const summerEndExclusive = Date.UTC(2026, 7, 31);
+    let count = 0;
+    for (let week = 0; week < this.selectedWeeks; week += 1) {
+      const weekStart = start + week * weekMs;
+      if (weekStart < summerEndExclusive && weekStart + weekMs > summerStart) count += 1;
+    }
+    return count;
+  }
+
+  get summerSurcharge(): number {
+    return this.summerWeeks * this.summerFeePerWeek;
+  }
+
   get quoteUsd(): number {
     return Math.max(
       0,
       this.registrationFee +
-        this.selectedPackageFee * this.sidaDiscountRate -
+        this.selectedPackageFee * this.sidaDiscountRate +
+        this.summerSurcharge -
         this.offSeasonDiscount -
         this.longStayDiscount,
     );
   }
 
   get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)}`;
+    return `${this.formatUsd(this.quoteUsd)} 美元`;
   }
 
   get quoteCnyText(): string {
@@ -755,7 +769,7 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get seasonalNote(): string {
-    return '2026年8月30日至12月27日入学，每满4周优惠USD 150；可与思达9折及长周期优惠叠加。';
+    return `${this.offSeasonRuleText}；可与思达9折及长期优惠叠加。`;
   }
 
   get localFeePeriods(): number {
@@ -806,10 +820,11 @@ export class CgSpartaSchoolComponent implements OnInit {
     const paymentItems = [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
       { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.lessons}` },
-      { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: `${this.selectedRoom.name}；按4周价格和学习周数计算` },
-      { icon: '折', label: '思达折扣', amount: '9折', note: `课程费和住宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
-      ...(this.offSeasonDiscount > 0 ? [{ icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount)} 美元`, note: '2026/8/30–12/27入学，每满4周优惠150美元', accent: true }] : []),
-      ...(this.longStayDiscount > 0 ? [{ icon: '长', label: '长周期优惠', amount: `- ${this.formatUsd(this.longStayDiscount)} 美元`, note: '12/16/20/24周分别优惠50/100/150/200美元', accent: true }] : []),
+      { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+      { icon: '折', label: '思达折扣', amount: '9折', note: `优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+      ...(this.offSeasonDiscount > 0 ? [{ icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount)} 美元`, note: this.offSeasonRuleText, accent: true }] : []),
+      ...(this.longStayDiscount > 0 ? [{ icon: '长', label: '长期优惠', amount: `- ${this.formatUsd(this.longStayDiscount)} 美元`, note: this.longStayRuleText, accent: true }] : []),
+      ...(this.summerSurcharge > 0 ? [{ icon: '暑', label: '暑假附加费', amount: `${this.formatUsd(this.summerSurcharge)} 美元`, note: `${this.summerFeePerWeek}美元/周/人；${this.summerDateRange}就读；本次计费${this.summerWeeks}周，不参与9折` }] : []),
     ];
     return buildPhilippinesDetailedQuote({
       schoolCode: 'CG SPARTA',
@@ -828,15 +843,16 @@ export class CgSpartaSchoolComponent implements OnInit {
       localFeeNote: '接机和可退押金单独列示；学杂费与思达游学无关，仅供参考，实际以到校缴费为准。',
       optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: fee.note })),
       ruleNotes: [
-        '课程费和住宿费按思达9折计算；注册费USD 100保留且不参与折扣。',
-        '淡季优惠按每满4周计算；12周以上长周期优惠自动叠加。',
+        '课程费和食宿费按思达9折计算；注册费和暑假附加费不参与折扣。',
+        '按单人报价，已计入适用优惠与附加费；暑假期间有重叠的学习周按整周计费，最终以学校账单为准。',
       ],
     });
   }
 
   formatUsd(value: number): string {
-    return value.toLocaleString('en-US', {
-      minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
+    const rounded = Math.round((value + Number.EPSILON) * 10) / 10;
+    return rounded.toLocaleString('en-US', {
+      minimumFractionDigits: Number.isInteger(rounded) ? 0 : 1,
       maximumFractionDigits: 1,
     });
   }

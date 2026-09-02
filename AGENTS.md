@@ -195,6 +195,7 @@ Keep `/admin` under `RoleGuard`, use `[Authorize(Roles = "Admin")]` for server m
 ## Conventions and safe-edit rules
 
 - Preserve Chinese user-facing copy unless the task explicitly changes wording or language behavior.
+- 所有学校的费用展示统一使用中文币种名称：美元、比索、人民币等，不使用 USD、PHP、CNY 等英文币种代码作为展示文案。此规则适用于课程与住宿价格、报价计算器、学杂费、优惠及附加费说明，以及生成的报价图片。内部计算、API 字段、数据库币种代码和 ID 保持原有含义，不因展示中文化而更改。后续调整任一学校费用时，同时检查网页与报价图片的一致性。
 - Reuse a neighboring page's layout and shared CSS before inventing another school-detail pattern. Shared styles include files such as `school-detail-layout.css`, `cebu-school-detail-layout.css`, and school-family component styles.
 - Keep API paths relative and keep DTO property meaning synchronized across C# and TypeScript.
 - Avoid broad mechanical formatting of the very large route, seed, SEO, and navigation files; make focused edits to reduce merge conflicts.

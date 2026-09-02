@@ -24,7 +24,7 @@
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
               </a>
-              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+              <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
                 查看CG课程和房型
                 <mat-icon>menu_book</mat-icon>
               </a>
@@ -56,7 +56,7 @@
           </a>
         </nav>
 
-        <section class="cia-section overview-grid decision-summary-grid" aria-label="30秒看懂CG Sparta">
+        <section class="cia-section cg-overview-section" aria-label="30秒看懂CG Sparta">
           <div class="section-heading"><h2>30秒看懂 CG Sparta</h2></div>
           <div class="snapshot-grid">
           <article *ngFor="let item of quickInfo">
@@ -178,35 +178,16 @@
           </div>
         </section>
 
-        <section class="cia-section section-block" id="courses">
-          <div class="section-heading">
-            <span>课程类型介绍</span>
-            <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>
-              CG Sparta课程覆盖标准Sparta ESL、Premier Sparta、TOEIC、IELTS、Business和1-2周Short-Term ESL。
-              大多数课程都围绕“正课 + 晚间训练 + 自习管理”来设计。
-            </p>
-          </div>
-          <div class="course-grid">
-            <article class="course-card" *ngFor="let course of courseOptions">
-              <span>{{ course.type }}</span>
-              <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
-              <p>{{ course.suitable }}</p>
-            </article>
-          </div>
-        </section>
-
         <details class="tables-section cia-collapsible-section detailed-fees-disclosure" id="course-fees" open>
           <summary>
             <span class="collapsible-summary-icon"><mat-icon>receipt_long</mat-icon></span>
-            <span><strong>查看完整课程费、课程安排与住宿费</strong><small>2026年CG Sparta最新4周价格，课程与住宿分开核对</small></span>
+            <span><strong>查看完整课程费、课程安排与住宿费</strong></span>
             <mat-icon class="collapsible-chevron">expand_more</mat-icon>
           </summary>
           <div class="collapsible-panel-body">
             <div class="course-table-block">
               <h2><mat-icon>menu_book</mat-icon>CG Sparta 2026课程费 / 4周</h2>
-              <p class="tuition-table-note">课程费与住宿费分开计算；注册费为100美元。以下每日课表按你提供的2026价目表更新。</p>
+              <p class="tuition-table-note">课程费与住宿费分开计算；注册费为100美元。</p>
               <div class="data-table course-fee-table" role="table" aria-label="CG Sparta 2026年4周课程费与课程安排">
                 <div class="table-row table-head" role="row">
                   <span role="columnheader">课程名称</span>
@@ -221,6 +202,10 @@
                   <span role="cell">{{ course.id === 'ielts-intensive' ? '12周起报' : course.suitable }}</span>
                 </div>
               </div>
+              <p class="short-stay-fee-note" id="special-fees">
+                1–2周 Short-Term ESL：1周学费370美元，2周学费640美元；住宿费、注册费及学杂费另计。<br>
+                普通课程3周：课程费与住宿费按4周价格的85%计算；注册费及学杂费另计。
+              </p>
             </div>
 
             <div class="room-table-block" id="room-fees">
@@ -257,39 +242,13 @@
             </div>
           </section>
 
-        <section class="cia-section section-block" id="special-fees">
-            <div class="section-heading">
-              <span>短期课程参考</span>
-              <h2>1-2周Short-Term ESL与普通课程分开报价</h2>
-              <p>
-                1-2周使用Short-Term ESL固定学费；普通课程报名3周时，课程与住宿主费按4周价格的85%计算。
-              </p>
+        <section class="quote-results-section cia-section cg-quote-section" id="quote">
+          <div class="cg-quote-card">
+            <div class="cg-quote-heading">
+              <span>CG Sparta 费用快速报价</span>
+              <h2>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
             </div>
-            <div class="data-table special-fee-table" role="table" aria-label="CG Sparta特殊课程参考">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">课时</span>
-                <span role="columnheader">参考价</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of specialFees">
-                <span role="cell">{{ fee.label }}</span>
-                <span role="cell">{{ fee.lessons }}</span>
-                <span role="cell">{{ fee.four }}</span>
-                <span role="cell">{{ fee.note }}</span>
-              </div>
-            </div>
-            <ul class="check-list">
-              <li>Short-Term ESL：1周学费USD 370，2周学费USD 640，注册费与住宿费另计。</li>
-              <li>普通课程3周主费 = 4周课程费与住宿费合计 × 85%。</li>
-              <li>IELTS Guarantee与Business English已纳入上方课程表和报价器。</li>
-            </ul>
-        </section>
-
-        <section class="quote-results-section cia-section" id="quote">
-          <div class="quote-form-card">
-            <h2><mat-icon>calculate</mat-icon>CG Sparta费用快速报价</h2>
-            <p>课程费与住宿费按4周价格分别计算，思达9折及符合条件的优惠会自动计入。</p>
+            <div class="cg-quote-form" aria-label="CG Sparta单人报价选项">
               <label>
                 学习周数
                 <select [(ngModel)]="selectedWeeks">
@@ -312,30 +271,42 @@
                 预计入学日
                 <input type="date" [(ngModel)]="selectedStartDate" />
               </label>
-              <div class="quote-recalculate-row">
-                <button type="button" class="primary-action" (click)="calculateQuote()"><mat-icon>calculate</mat-icon>重新计算</button>
-              </div>
-              <p>3周按4周课程费与住宿费的85%计算；4周以上按4周价格和学习周期累计，100美元注册费不按比例折算。</p>
-          </div>
+            </div>
+            <div class="cg-quote-breakdown">
+              <div class="cg-base-fee"><span>注册费（不参与折扣）</span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
+              <div class="cg-base-fee"><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+              <div class="cg-base-fee"><span>食宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+              <div class="cg-base-fee cg-base-fee--discount"><span>思达9折（课程费和食宿费）</span><strong>− {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
 
-          <div class="quote-result-card">
-            <div class="quote-result-head">
-              <div><h2>报价结果</h2><p>{{ selectedCourse.name }} + {{ selectedRoom.name }} + {{ selectedWeeks }}周</p></div>
-              <strong>预计入学 {{ selectedStartDate | date: "yyyy/MM/dd" }}</strong>
+              <div class="cg-quote-adjustments">
+                <div class="cg-adjustment-card cg-adjustment-card--discount">
+                  <span>淡季优惠 · 150美元/4周</span>
+                  <strong>{{ offSeasonDiscount > 0 ? '− ' : '' }}{{ formatUsd(offSeasonDiscount) }} 美元</strong>
+                  <small>{{ offSeasonRuleText }}。</small>
+                </div>
+                <div class="cg-adjustment-card cg-adjustment-card--discount">
+                  <span>长期优惠 · 12周及以上</span>
+                  <strong>{{ longStayDiscount > 0 ? '− ' : '' }}{{ formatUsd(longStayDiscount) }} 美元</strong>
+                  <small>{{ longStayRuleText }}。</small>
+                </div>
+                <div class="cg-adjustment-card cg-adjustment-card--summer">
+                  <span>暑假附加费 · 40美元/周/人</span>
+                  <strong>{{ summerSurcharge > 0 ? '+ ' : '' }}{{ formatUsd(summerSurcharge) }} 美元</strong>
+                  <small>就读时间：{{ summerDateRange }}（含首尾日期）。本次计费{{ summerWeeks }}周。</small>
+                </div>
+              </div>
             </div>
-            <div class="result-lines">
-              <div><span>注册费<small>一次性学校注册费，不参与折扣</small></span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
-              <div><span>课程费（{{ selectedCourse.name }} · {{ selectedWeeks }}周）<small>{{ selectedCourse.lessons }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-              <div><span>住宿费（{{ selectedRoom.name }} · {{ selectedWeeks }}周）<small>{{ selectedRoom.note }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
-              <div class="promotion-applied"><span>思达折扣<small>仅课程费和住宿费参加9折</small></span><strong>- {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
-              <div *ngIf="offSeasonDiscount > 0" class="promotion-applied"><span>淡季优惠<small>2026/8/30–12/27入学，每满4周减150美元</small></span><strong>- {{ formatUsd(offSeasonDiscount) }} 美元</strong></div>
-              <div *ngIf="longStayDiscount > 0" class="promotion-applied"><span>长周期优惠<small>12周以上按学习周期自动计算</small></span><strong>- {{ formatUsd(longStayDiscount) }} 美元</strong></div>
-            </div>
-            <div class="quote-total">
-              <span>前期支付参考合计</span>
+            <div class="cg-quote-total" aria-live="polite">
+              <span>最终应付学校金额</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>人民币预计金额：{{ quoteCnyText }}</em>
               <small class="exchange-rate-summary">{{ exchangeRateText }}，最终以支付当日汇率为准</small>
+            </div>
+            <p class="cg-quote-rule-note">按单人报价，优惠符合条件时自动叠加。3周课程和食宿费按4周价的85%计算；注册费及暑假附加费不打折。暑假按有重叠的学习周计费，不足一周按一周预估，最终以学校确认为准。</p>
+            <div class="cg-quote-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()"><mat-icon>calculate</mat-icon>重新计算</button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
             </div>
           </div>
 
@@ -364,22 +335,6 @@
             </div>
           </section>
 
-          <div class="quote-tool-row">
-            <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
-            <a class="primary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
-          </div>
-        </section>
-
-        <section class="cia-section notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>
-              本页价格更新时间：2026年9月2日。课程费、住宿费和学杂费已按你提供的CG Academy 2026费用表核对。
-              学校价格、住宿空位、当地费用和汇率可能调整，
-              报名以顾问向学校确认后的正式报价为准。
-            </p>
-          </div>
         </section>
 
         <section class="cia-section materials-panel" id="materials">

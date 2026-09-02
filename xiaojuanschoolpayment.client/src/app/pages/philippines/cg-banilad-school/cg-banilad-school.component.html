@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面费用按CG Banilad 2026美元价目表和2025菲律宾当地费用表整理。
+              页面费用按学校提供的美元课程、住宿与优惠资料核对，签证续签参考学校公开费用表。
               正式报名仍需按入学日、房型空位、汇率和学校当期报价确认。
             </p>
           </div>
@@ -204,60 +204,34 @@
             <span>课程 / 公开参考费用</span>
             <h2>CG Banilad 2026课程与4周主费用</h2>
             <p>
-              下方按官方2026 Banilad价目表整理，显示注册费、4周学费和4周住宿费合计。
-              菲律宾当地费用、机票、保险、汇率波动和个人消费没有包含在主费用内。
+              以下为学校提供的4周美元单价：先选课程，再叠加住宿费；注册费100美元另计。
+              优惠与暑假附加费会在下方报价器按入学日期和周数计算，到校学杂费另列。
             </p>
           </div>
 
-          <div class="course-grid cg-course-grid">
-            <article class="course-card" *ngFor="let course of courses">
-              <span>{{ course.type }}</span>
-              <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
-              <p>{{ course.suitable }}</p>
-              <strong>{{ formatUsd(course.tuitionUsd) }} / 4周学费</strong>
-            </article>
-          </div>
-
-          <div class="data-table cg-course-table" role="table" aria-label="CG Banilad 2026课程住宿套餐">
+          <div class="data-table cg-course-price-table" role="table" aria-label="CG Banilad课程单价与课节安排">
             <div class="table-row table-head" role="row">
-              <span role="columnheader">课程</span>
-              <span role="columnheader">4人房</span>
-              <span role="columnheader">3人房</span>
-              <span role="columnheader">2人房</span>
-              <span role="columnheader">1人房</span>
+              <span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">每日课程安排</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
-              <span role="cell">{{ row.course }}</span>
-              <span role="cell">{{ row.quad }}</span>
-              <span role="cell">{{ row.triple }}</span>
-              <span role="cell">{{ row.twin }}</span>
-              <span role="cell">{{ row.single }}</span>
+            <div class="table-row" role="row" *ngFor="let course of courses">
+              <span role="cell"><strong>{{ course.name }}</strong><small>{{ course.type }}</small></span>
+              <span role="cell">{{ formatUsd(course.tuitionUsd) }}</span>
+              <span role="cell">{{ course.lessons }}</span>
             </div>
           </div>
-
-          <div class="mobile-card-list mobile-course-fees" aria-label="CG Banilad 2026套餐手机卡片">
-            <article *ngFor="let row of courseFeeRows">
-              <span>{{ row.course }}</span>
-              <div>
-                <em>4人房</em>
-                <strong>{{ row.quad }}</strong>
-              </div>
-              <div>
-                <em>2人房</em>
-                <strong>{{ row.twin }}</strong>
-              </div>
-              <div>
-                <em>1人房</em>
-                <strong>{{ row.single }}</strong>
-              </div>
+          <div class="mobile-card-list mobile-course-prices" aria-label="CG Banilad课程费用手机卡片">
+            <article *ngFor="let course of courses">
+              <span>{{ course.name }}</span>
+              <div><em>4周课程费</em><strong>{{ formatUsd(course.tuitionUsd) }}</strong></div>
+              <p>{{ course.lessons }}</p>
+              <small>{{ course.suitable }}</small>
             </article>
           </div>
 
           <div class="section-heading">
             <span>住宿费 / 4周</span>
             <h2>校内、Alicia与88th Avenue住宿价格</h2>
-            <p>以下住宿费为4周美元价格。Alicia距离校区步行约3分钟；88th Avenue邻近生活区并提供接送服务。</p>
+            <p>以下为每人4周美元住宿费。Alicia距离校区步行约3分钟；88th Avenue邻近原Noble、靠近IT Park，并提供接送服务。</p>
           </div>
           <div class="data-table cg-room-table" role="table" aria-label="CG Banilad 2026住宿费">
             <div class="table-row table-head" role="row">
@@ -278,7 +252,7 @@
               <p>{{ room.note }}</p>
             </article>
           </div>
-          <p class="fee-alert">Short-Term ESL学费：1周USD 370，2周USD 640；注册费、住宿费和当地费用另计。普通课程3周按4周课程费与住宿费合计的85%计算。</p>
+          <p class="fee-alert">Short-Term ESL学费：1周370美元，2周640美元；注册费、住宿费和当地费用另计。普通课程3周按4周课程费与住宿费合计的85%计算。</p>
         </section>
 
         <section class="section-block" id="study-life">
@@ -297,114 +271,103 @@
           </div>
         </section>
 
-        <section class="quote-panel" id="quote">
+        <section class="quote-panel" id="quote" aria-labelledby="quote-title">
           <div class="section-heading">
-            <span>费用快速报价</span>
-            <h2>用公开价目表先估算CG Banilad主费用</h2>
-            <p>
-              以上课程与住宿单价均按4周计；思达9折、淡季与长周期优惠会按入学日和周数自动计算。
-            </p>
+            <span>CG Banilad 费用快速报价</span>
+            <h2 id="quote-title">{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
+            <p>按单人估算：注册费 + 课程与住宿费 × 9折 − 适用优惠 + 暑假附加费。</p>
           </div>
           <div class="quote-form" aria-label="CG Banilad费用快速报价选项">
-            <label>
-              课程
-              <select [(ngModel)]="selectedCourseId">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label>
-              房型
-              <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label>
-              周数
-              <select [(ngModel)]="selectedWeeks">
+            <label for="banilad-weeks">学习周数
+              <select id="banilad-weeks" [(ngModel)]="selectedWeeks">
                 <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
               </select>
             </label>
-            <label>
-              预计入学日
-              <input type="date" [(ngModel)]="selectedStartDate" />
+            <label for="banilad-course">课程
+              <select id="banilad-course" [(ngModel)]="selectedCourseId">
+                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
+              </select>
+            </label>
+            <label for="banilad-room">房型
+              <select id="banilad-room" [(ngModel)]="selectedRoomId">
+                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
+              </select>
+            </label>
+            <label for="banilad-start">预计入学日
+              <input id="banilad-start" #startDateInput type="date" [(ngModel)]="selectedStartDate" (click)="openDatePicker(startDateInput)" />
             </label>
           </div>
 
           <div class="quote-breakdown">
-            <article>
-              <span>课程费</span>
-              <strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedWeeksText }}</p>
-            </article>
-            <article>
-              <span>住宿费</span>
-              <strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
-              <p>{{ selectedRoom.name }}</p>
-            </article>
-            <article>
+            <h3 class="quote-breakdown-heading">学校基础费用 · 美元</h3>
+            <div><span>注册费（不参与折扣）</span><strong>{{ formatUsd(registrationFeeUsd) }}</strong></div>
+            <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong><small>{{ selectedCourse.name }} / {{ selectedWeeksText }}</small></div>
+            <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong><small>{{ selectedRoom.name }}</small></div>
+            <h3 class="quote-breakdown-heading quote-breakdown-heading--adjustments">优惠与附加费 · 按当前选择自动计算</h3>
+            <div class="quote-adjustment-card quote-adjustment-card--discount">
               <span>思达9折优惠</span>
-              <strong>- {{ formatUsd(sidaDiscountAmount) }}</strong>
-              <p>仅课程费与住宿费；注册费不减免。</p>
-            </article>
-            <article>
-              <span>淡季优惠</span>
-              <strong>- {{ formatUsd(offSeasonDiscount) }}</strong>
-              <p>2026/8/30-12/27入学，每满4周优惠USD 150。</p>
-            </article>
-            <article>
-              <span>长周期优惠</span>
-              <strong>- {{ formatUsd(longStayDiscount) }}</strong>
-              <p>12/16/20/24周分别优惠USD 50/100/150/200。</p>
-            </article>
-            <article>
-              <span>最终学校费用</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>人民币预计 {{ quoteCnyText }}（{{ exchangeRateText }}）；已含注册费 {{ formatUsd(registrationFeeUsd) }}。</p>
-            </article>
+              <strong>− {{ formatUsd(sidaDiscountAmount) }}</strong>
+              <small>仅课程费和食宿费享9折；注册费、暑假附加费和学杂费不打折。</small>
+            </div>
+            <div class="quote-adjustment-card quote-adjustment-card--discount">
+              <span>淡季优惠 · 150美元 / 4周</span>
+              <strong>{{ offSeasonDiscount > 0 ? '− ' : '' }}{{ formatUsd(offSeasonDiscount) }}</strong>
+              <small>{{ offSeasonRuleText }}（含首尾日期）。{{ offSeasonDiscount > 0 ? '本次已计入。' : '本次不适用。' }}</small>
+            </div>
+            <div class="quote-adjustment-card quote-adjustment-card--discount">
+              <span>长期优惠 · 12周及以上</span>
+              <strong>{{ longStayDiscount > 0 ? '− ' : '' }}{{ formatUsd(longStayDiscount) }}</strong>
+              <small>{{ longStayRuleText }}。{{ longStayDiscount > 0 ? '本次已计入。' : '本次不适用。' }}</small>
+            </div>
+            <div class="quote-adjustment-card quote-adjustment-card--summer">
+              <span>暑假附加费 · 40美元 / 周 / 人</span>
+              <strong>{{ summerSurcharge > 0 ? '+ ' : '' }}{{ formatUsd(summerSurcharge) }}</strong>
+              <small>{{ summerDateRange }}就读（含首尾日期）；本次重叠{{ summerWeeks }}个学习周。未满一周按一周预估，具体以学校为准。</small>
+            </div>
           </div>
-
+          <p class="quote-rule-note" *ngIf="selectedWeeks === 3">3周课程费与住宿费先按4周价格的85%折算，再计思达9折；不满4周不计淡季优惠。</p>
+          <div class="quote-result" aria-live="polite">
+            <span>最终应付学校金额</span>
+            <strong>{{ quoteUsdText }}</strong>
+            <em>人民币预计金额：{{ quoteCnyText }}</em>
+            <small>{{ exchangeRateText }}，人民币金额仅供参考，最终以支付当日汇率为准。</small>
+          </div>
           <div class="quote-actions">
-            <button type="button" class="primary-action" (click)="calculateQuote()">
-              标记为已估算
-              <mat-icon>done</mat-icon>
-            </button>
-            <app-quote-image-download-button
-              [quote]="quoteImageData"
-              label="保存报价单图片"
-            ></app-quote-image-download-button>
-            <a class="secondary-action" routerLink="/about-sida/contact">
-              发送给顾问复核
-              <mat-icon>send</mat-icon>
-            </a>
+            <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+            <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
           </div>
-          <p class="quote-status" *ngIf="quoteCalculated">
-            已按当前选择完成估算。下一步建议确认空房、入学日、优惠和PHP当地费用。
-          </p>
+          <p class="quote-status" role="status" *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需确认课程、房型、空房和优惠。</p>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>菲律宾当地费用</span>
-            <h2>到校后还要准备的PHP费用</h2>
-            <p>
-              以下按CG Academy公开2025当地费用表整理。不同周数、签证政策和学校更新可能影响最终金额。
-            </p>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+          <div class="local-fee-heading">
+            <div><span>到校后另付 · 比索预估</span><h3 id="local-fee-title">{{ selectedWeeks }}周学杂费明细</h3></div>
           </div>
-          <div class="local-fee-grid cg-local-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
-              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
-            </article>
+          <p class="local-fee-intro">{{ localFeeEstimateNote }}</p>
+          <div class="local-fee-table-wrap" tabindex="0" role="region" aria-label="学杂费明细，可横向滚动查看完整表格">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let fee of includedLocalFees">
+                  <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含可选接机及可退押金，具体以学校实收为准</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
+              </tfoot>
+            </table>
           </div>
-          <div class="mobile-card-list mobile-only">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
-              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
-            </article>
+          <p class="mobile-fee-hint">手机可左右滑动表格，查看计费参考和完整备注。</p>
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <label class="pickup-option"><input type="checkbox" [(ngModel)]="includeAirportPickup" />需要宿务马克坦机场接机（可选，1,200比索 / 次）</label>
+            <div *ngFor="let fee of excludedLocalFees">
+              <span><strong>{{ fee.item }}</strong><small>{{ fee.amount }} × {{ fee.quantity }}；{{ fee.note }}</small></span>
+              <b>预估 {{ formatPhp(fee.total) }}</b>
+            </div>
           </div>
-          <p class="quote-status">预计学杂费合计：{{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}）；接机和可退押金不计入合计。</p>
         </section>
 
         <section class="section-block">
@@ -431,7 +394,7 @@
           <div class="section-heading">
             <span>公开资料来源</span>
             <h2>CG Banilad页面公开资料来源</h2>
-            <p>费用、课程、设施和地址信息优先参考CG Academy官方页面与官方PDF；图片为公开页面引用。</p>
+            <p>美元课程费、住宿费及优惠按学校提供的资料核对；签证续签参考学校公开当地费用表。韩元版价格仅供资料查阅，不作为本页美元报价依据。</p>
           </div>
           <div class="source-grid">
             <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
@@ -470,7 +433,7 @@
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认空房与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分USD主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分美元主费与比索当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CG Sparta、I.BREEZE等宿务学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">
