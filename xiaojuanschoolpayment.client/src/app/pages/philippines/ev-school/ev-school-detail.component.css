@@ -333,6 +333,64 @@
   cursor: pointer;
 }
 
+:host .quote-breakdown {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+:host .quote-breakdown-heading {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  padding: 0 2px 8px;
+  border-bottom: 1px solid #eadbd2;
+  color: #0a513b;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1.4;
+}
+
+:host .quote-breakdown-heading--adjustments {
+  margin-top: 10px;
+}
+
+:host .quote-breakdown .quote-adjustment-card {
+  display: grid;
+  align-content: start;
+  min-height: 112px;
+  border: 1px solid #f0dfd5;
+}
+
+:host .quote-breakdown .quote-adjustment-card small {
+  display: block;
+  margin-top: 5px;
+  color: #7a685d;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+:host .quote-breakdown .quote-adjustment-card--discount strong {
+  color: #e94f16;
+}
+
+:host .quote-adjustment-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+:host .quote-adjustment-toggle input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #08724f;
+}
+
+:host .quote-adjustment-toggle span {
+  color: #526176;
+}
+
 :host .quote-breakdown .peak-fee-label small {
   display: block;
   margin-top: 3px;
@@ -531,6 +589,16 @@
 
   :host .sida-ev-main-photo {
     min-height: 330px;
+  }
+}
+
+@media (max-width: 760px) {
+  :host .quote-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  :host .quote-breakdown .quote-adjustment-card {
+    min-height: 0;
   }
 }
 

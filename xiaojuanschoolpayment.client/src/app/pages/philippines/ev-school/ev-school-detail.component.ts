@@ -94,7 +94,6 @@ export class EvSchoolDetailComponent implements OnInit {
   selectedWeeks = 4;
   selectedStartDate = '2026-09-07';
   isMinorStudent = false;
-  includeAirportPickup = false;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -313,7 +312,7 @@ export class EvSchoolDetailComponent implements OnInit {
     { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑半斯巴达或半斯巴达综合英语。' },
     { question: 'EV的斯巴达和半斯巴达怎么选？', answer: '斯巴达更适合冲刺型学生，日程、自习和门禁要求更强；半斯巴达适合想学习但也希望保留一定外出和生活弹性的学生。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考包含注册费、95折后的课程与住宿费，以及适用的未成年管理费和旺季附加费；到校后仍需支付SSP、SSP E-card、管理费、水电、教材、学生证及适用的签证费用。接机和可退押金单独列示。' },
-    { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同。报价器会为未满18岁学生按每4周USD100自动计入管理费，具体陪同、住宿和门禁规则仍需报名时确认。' },
+    { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同。报价器会为未满18岁学生按每4周100美元自动计入管理费，具体陪同、住宿和门禁规则仍需报名时确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名EV，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -415,7 +414,7 @@ export class EvSchoolDetailComponent implements OnInit {
   get minorManagementPeriods(): number { return this.isMinorStudent ? Math.ceil(this.selectedWeeks / 4) : 0; }
   get minorManagementFee(): number { return this.minorManagementPeriods * this.minorManagementFeePerPeriod; }
   get quoteUsd(): number { return this.registrationFee + this.discountedCourseAndRoom + this.seasonalSurcharge + this.minorManagementFee; }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元起`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
   get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
   get discountText(): string { return '课程费和住宿费95折'; }
@@ -429,17 +428,17 @@ export class EvSchoolDetailComponent implements OnInit {
     const acrQuantity = this.visaExtensionCount > 0 ? 1 : 0;
     const managementFee = this.usesOffCampusRoom ? 4000 : 2000;
     return [
-      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
-      { item: 'SSP E-CARD', amount: 'PHP 4,500 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
-      { item: 'ACR-I Card 外国人身份证', amount: 'PHP 4,000 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '只要办理签证续签就需支付，由学校统一办理' },
-      { item: this.usesOffCampusRoom ? '校外公寓管理费' : '校内管理费', amount: `PHP ${managementFee.toLocaleString('en-US')} / 4周`, quantity: periods, total: managementFee * periods, note: '设施维护费用，按每4周计算' },
-      { item: '电费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '每周超过15kW用电量，超出部分另收PHP 20/kW' },
-      { item: '水费', amount: 'PHP 1,200 / 4周', quantity: periods, total: 1200 * periods, note: '公共用水和房间用水' },
-      { item: '签证续签', amount: '首次 PHP 5,430；后续 PHP 4,700 / 次', quantity: this.visaExtensionCount, total: this.visaExtensionFeeTotal, note: '首次续签约PHP 5,430，后续续签预计PHP 4,700/次；以移民局实收为准' },
-      { item: '教材费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '按不同课程和实际购买教材调整' },
-      { item: '学生证', amount: 'PHP 500 / 次', quantity: 1, total: 500, note: '一次性费用' },
-      { item: '宿务马克坦机场周日接机', amount: 'PHP 1,200 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1200 : 0, note: '可选，也可自行打车；默认不计入学杂费合计', excluded: true },
-      { item: '房间押金', amount: `PHP ${this.roomDeposit.toLocaleString('en-US')} / 次`, quantity: 1, total: this.roomDeposit, note: '1至8周PHP 3,000，9至24周PHP 5,000；无损坏及欠费时可退', excluded: true },
+      { item: 'SSP特殊学习许可证', amount: '7,800 比索 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
+      { item: 'SSP E-CARD', amount: '4,500 比索 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
+      { item: 'ACR-I Card 外国人身份证', amount: '4,000 比索 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '只要办理签证续签就需支付，由学校统一办理' },
+      { item: this.usesOffCampusRoom ? '校外公寓管理费' : '校内管理费', amount: `${managementFee.toLocaleString('en-US')} 比索 / 4周`, quantity: periods, total: managementFee * periods, note: '设施维护费用，按每4周计算' },
+      { item: '电费', amount: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '每周超过15kW用电量，超出部分另收20比索/kW' },
+      { item: '水费', amount: '1,200 比索 / 4周', quantity: periods, total: 1200 * periods, note: '公共用水和房间用水' },
+      { item: '签证续签', amount: '5,430 比索 / 次', quantity: this.visaExtensionCount, total: this.visaExtensionFeeTotal, note: '首次续签约5,430比索，后续续签预计4,700比索/次；以移民局实收为准' },
+      { item: '教材费', amount: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '按不同课程和实际购买教材调整' },
+      { item: '学生证', amount: '500 比索 / 次', quantity: 1, total: 500, note: '一次性费用' },
+      { item: '宿务马克坦机场周日接机', amount: '1,200 比索 / 次', quantity: 0, total: 0, note: '可选，也可自行打车；默认不计入学杂费合计', excluded: true },
+      { item: '房间押金', amount: `${this.roomDeposit.toLocaleString('en-US')} 比索 / 次`, quantity: 1, total: this.roomDeposit, note: '1至8周3,000比索，9至24周5,000比索；无损坏及欠费时可退', excluded: true },
     ];
   }
   get includedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => !fee.excluded); }
@@ -463,9 +462,9 @@ export class EvSchoolDetailComponent implements OnInit {
         { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费' },
         { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
         { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD ${this.formatUsd(this.seasonalFeePerWeek)}/周（每4周USD ${this.formatUsd(this.seasonalFeePerFourWeeks)}）；${this.peakSeasonDateRange}覆盖${this.peakSeasonWeeks}周；不参与95折` },
-        { icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: '未满18岁学生USD 100/4周，按学习周数自动计算' },
-        { icon: '折', label: '思达折扣', amount: '95折', note: `优惠金额：${this.formatUsd(this.discountAmount)}美元`, accent: true },
+        ...(this.discountAmount > 0 ? [{ icon: '折', label: '思达折扣', amount: '95折', note: `优惠金额：${this.formatUsd(this.discountAmount)}美元`, accent: true }] : []),
+        ...(this.seasonalSurcharge > 0 ? [{ icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.formatUsd(this.seasonalFeePerWeek)}美元/周（每4周${this.formatUsd(this.seasonalFeePerFourWeeks)}美元）；${this.peakSeasonDateRange}覆盖${this.peakSeasonWeeks}周；不参与95折` }] : []),
+        ...(this.minorManagementFee > 0 ? [{ icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: '未满18岁学生每4周100美元，按学习周数自动计算' }] : []),
       ],
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
       localFeeTotal: this.localFeesTotal,
@@ -474,12 +473,12 @@ export class EvSchoolDetailComponent implements OnInit {
       optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total || Number.parseFloat(fee.amount.replace(/[^0-9.]/g, '')) || 0), note: fee.note })),
       ruleNotes: [
         '课程费和住宿费按95折计算；注册费、旺季附加费和未成年管理费不参与折扣。',
-        `旺季附加费为USD ${this.formatUsd(this.seasonalFeePerWeek)}/周（每4周USD ${this.formatUsd(this.seasonalFeePerFourWeeks)}），按${this.peakSeasonDateRange}的实际覆盖周数计算；未成年管理费按每4周自动计算。`,
+        `旺季附加费为${this.formatUsd(this.seasonalFeePerWeek)}美元/周（每4周${this.formatUsd(this.seasonalFeePerFourWeeks)}美元），按${this.peakSeasonDateRange}的实际覆盖周数计算；未成年管理费按每4周自动计算。`,
       ],
     });
   }
   formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 10) / 10; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 1 }); }
-  formatPhp(value: number): string { return `PHP ${value.toLocaleString('en-US')}`; }
+  formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
   private parseLocalDate(value: string): Date | null { const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value); return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null; }

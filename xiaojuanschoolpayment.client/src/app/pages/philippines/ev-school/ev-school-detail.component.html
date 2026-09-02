@@ -52,7 +52,7 @@
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <strong>{{ formatUsd(quoteUsd) }} 美元 <small>起</small></strong>
               <p>半斯巴达 ESL + 四人间</p>
               <ul>
                 <li>
@@ -223,7 +223,7 @@
                     </div>
                     <div class="table-row" role="row" *ngFor="let fee of spartaCourseFees">
                       <span role="cell">{{ fee.name }}</span>
-                      <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                      <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                       <span role="cell">{{ fee.suitable }}</span>
                     </div>
                   </div>
@@ -242,7 +242,7 @@
                     </div>
                     <div class="table-row" role="row" *ngFor="let fee of semiSpartaCourseFees">
                       <span role="cell">{{ fee.name }}</span>
-                      <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                      <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                       <span role="cell">{{ fee.suitable }}</span>
                     </div>
                   </div>
@@ -255,7 +255,7 @@
                   <article *ngFor="let fee of spartaCourseFees">
                     <span>课程</span>
                     <strong>{{ fee.name }}</strong>
-                    <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                    <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                     <p>{{ fee.suitable }}</p>
                   </article>
                 </section>
@@ -264,7 +264,7 @@
                   <article *ngFor="let fee of semiSpartaCourseFees">
                     <span>课程</span>
                     <strong>{{ fee.name }}</strong>
-                    <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                    <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                     <p>{{ fee.suitable }}</p>
                   </article>
                 </section>
@@ -285,7 +285,7 @@
                 </div>
                 <div class="table-row" role="row" *ngFor="let room of roomFees">
                   <span role="cell">{{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                  <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                   <span role="cell">{{ room.note }}</span>
                 </div>
               </div>
@@ -293,7 +293,7 @@
                 <article *ngFor="let room of roomFees">
                   <span>房型</span>
                   <strong>{{ room.name }}</strong>
-                  <div><em>4周食宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                  <div><em>4周食宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div>
                   <p>{{ room.note }}</p>
                 </article>
               </div>
@@ -372,23 +372,38 @@
             <div class="section-heading">
               <span>EV 费用快速报价</span>
               <h2>默认参考：4周半斯巴达 ESL + 四人间</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 95折 + 未成年管理费 + 旺季附加费。只有课程费和住宿费参与95折。</p>
+              <p>选择学习周数、课程、房型和预计入学日，即可查看费用估算。</p>
             </div>
             <div class="quote-form" aria-label="EV费用快速报价选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
               <label>课程<select [(ngModel)]="selectedCourseId"><optgroup label="斯巴达课程"><option *ngFor="let course of spartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup><optgroup label="半斯巴达课程"><option *ngFor="let course of semiSpartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup></select></label>
               <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
               <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" (click)="openDatePicker($event)" aria-label="选择EV预计入学日期" /></label>
-              <label class="quote-check"><input type="checkbox" [(ngModel)]="isMinorStudent" /><span>未满18岁（自动计入 USD 100 / 4周管理费）</span></label>
-              <label class="quote-check"><input type="checkbox" [(ngModel)]="includeAirportPickup" /><span>需要宿务机场周日接机（到校支付，可选）</span></label>
             </div>
             <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(discountAmount) }}</strong></div>
-              <div><span>未成年管理费</span><strong>USD {{ formatUsd(minorManagementFee) }}</strong></div>
-              <div><span class="peak-fee-label">旺季附加费<small>USD {{ formatUsd(seasonalFeePerWeek) }}/周（每4周 USD {{ formatUsd(seasonalFeePerFourWeeks) }}） · {{ peakSeasonDateRange }} · 覆盖 {{ peakSeasonWeeks }} 周</small></span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <h3 class="quote-breakdown-heading">基础费用</h3>
+              <div><span>注册费</span><strong>{{ registrationFee }} 美元</strong></div>
+              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+
+              <h3 class="quote-breakdown-heading quote-breakdown-heading--adjustments">优惠与附加费</h3>
+              <div class="quote-adjustment-card quote-adjustment-card--discount">
+                <span>{{ discountText }}</span>
+                <small>仅课程费和住宿费参加</small>
+                <strong>− {{ formatUsd(discountAmount) }} 美元</strong>
+              </div>
+              <div class="quote-adjustment-card quote-adjustment-card--minor">
+                <label class="quote-adjustment-toggle">
+                  <input type="checkbox" [(ngModel)]="isMinorStudent" />
+                  <span>未满18岁管理费</span>
+                </label>
+                <small>每4周100美元，勾选后自动计入</small>
+                <strong>{{ formatUsd(minorManagementFee) }} 美元</strong>
+              </div>
+              <div class="quote-adjustment-card quote-adjustment-card--peak">
+                <span class="peak-fee-label">旺季附加费<small>{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元） · {{ peakSeasonDateRange }} · 当前覆盖{{ peakSeasonWeeks }}周</small></span>
+                <strong>{{ formatUsd(seasonalSurcharge) }} 美元</strong>
+              </div>
             </div>
             <div class="quote-result">
               <span>前期支付参考</span>
@@ -403,7 +418,7 @@
               <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
             <p class="fee-alert">到校学杂费会按学习周数、校内或校外住宿、签证时长自动估算。接机与可退房间押金单独列示，不计入学杂费合计。</p>
-            <p class="season-note">旺季附加费为 USD {{ formatUsd(seasonalFeePerWeek) }} / 周（每4周 USD {{ formatUsd(seasonalFeePerFourWeeks) }}），系统按学习日期与 {{ peakSeasonDateRange }} 的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
+            <p class="season-note">旺季附加费为{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元），系统按学习日期与{{ peakSeasonDateRange }}的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
         </section>
 
         <section class="local-fee-estimate" id="local-fees" aria-labelledby="ev-local-fee-title">
@@ -412,10 +427,9 @@
               <span>到校后另付 · 自动预估</span>
               <h3 id="ev-local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
             </div>
-            <strong>{{ formatPhp(localFeesTotal) }}</strong>
           </div>
           <p class="local-fee-intro">
-            以下费用以 PHP 计价，系统会按当前周数、房型和签证时长自动计算。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴纳比索现金为准。
+            以下费用以比索计价，系统会按当前周数、房型和签证时长自动计算。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴纳金额为准。
           </p>
 
           <div class="local-fee-table-wrap">
