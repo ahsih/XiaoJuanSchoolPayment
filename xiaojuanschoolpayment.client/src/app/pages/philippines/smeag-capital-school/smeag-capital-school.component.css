@@ -1,0 +1,15 @@
+:host .hero-media {
+  grid-template-columns: minmax(0, 1fr) 230px;
+}
+
+@media (max-width: 1040px) {
+  :host .hero-media {
+    grid-template-columns: minmax(0, 1fr) 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  :host .hero-media {
+    grid-template-columns: 1fr;
+  }
+}

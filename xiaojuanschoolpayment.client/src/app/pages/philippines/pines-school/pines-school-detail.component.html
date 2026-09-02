@@ -313,6 +313,77 @@
           </section>
         </section>
 
+        <section class="section-block pines-room-availability" id="room-availability">
+          <div class="room-availability-header">
+            <div class="section-heading">
+              <span>PINES 公开房态查询</span>
+              <h2>按入学日期查看 Main 与 IELTS 校区房态</h2>
+              <p>这里仅展示学校公开的房态结果，不嵌入学校门户，也不会显示其他校区、内部资料或外部导航。</p>
+            </div>
+            <button type="button" class="room-refresh-button" (click)="loadRoomAvailability()" [disabled]="roomAvailabilityLoading">
+              <mat-icon>refresh</mat-icon>{{ roomAvailabilityLoading ? '更新中' : '刷新房态' }}
+            </button>
+          </div>
+
+          <div class="room-privacy-note">
+            <mat-icon>lock</mat-icon>
+            <div>
+              <strong>安全展示范围</strong>
+              <span>仅含 PINES Main、IELTS 校区的入学日期、房型、公开状态，以及学校公开显示的剩余名额。</span>
+            </div>
+            <small *ngIf="roomAvailabilityUpdatedText">更新时间 {{ roomAvailabilityUpdatedText }}{{ roomAvailability?.isCached ? '（缓存数据）' : '' }}</small>
+          </div>
+
+          <div class="room-availability-loading" *ngIf="roomAvailabilityLoading && !roomAvailability" aria-live="polite">
+            <mat-icon>sync</mat-icon><span>正在安全读取学校公开房态……</span>
+          </div>
+
+          <div class="room-availability-error" *ngIf="roomAvailabilityError" role="alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ roomAvailabilityError }}</span>
+            <button type="button" (click)="loadRoomAvailability()">重新读取</button>
+          </div>
+
+          <ng-container *ngIf="roomAvailability && !roomAvailabilityError">
+            <div class="room-campus-tabs" aria-label="选择PINES校区">
+              <button
+                type="button"
+                *ngFor="let campus of roomAvailability.campuses"
+                [class.active]="campus.code === selectedAvailabilityCampusCode"
+                (click)="selectAvailabilityCampus(campus.code)">
+                {{ campus.name }}
+              </button>
+            </div>
+
+            <div class="room-date-toolbar">
+              <label>
+                <span>选择入学日期</span>
+                <select [(ngModel)]="selectedAvailabilityDate">
+                  <option *ngFor="let row of selectedAvailabilityCampus?.dates" [value]="row.date">{{ formatAvailabilityDate(row.date) }}</option>
+                </select>
+              </label>
+              <div class="room-status-legend" aria-label="房态图例">
+                <span data-status="open">可开始课程</span>
+                <span data-status="limited">少量空房</span>
+                <span data-status="stay-only">只可续住</span>
+                <span data-status="closed">暂不可申请</span>
+              </div>
+            </div>
+
+            <div class="room-status-grid" *ngIf="selectedAvailabilityRow as availabilityRow">
+              <article *ngFor="let room of availabilityRow.rooms" [attr.data-status]="room.status">
+                <div class="room-status-dot" aria-hidden="true"></div>
+                <div>
+                  <strong>{{ room.name }}</strong>
+                  <span>{{ roomAvailabilityStatusText(room) }}</span>
+                </div>
+              </article>
+            </div>
+
+            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>房态变化较快，此处用于初步筛选；提交申请前仍由思达顾问向学校确认最终空房。</p>
+          </ng-container>
+        </section>
+
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>到校支付费用参考</span>

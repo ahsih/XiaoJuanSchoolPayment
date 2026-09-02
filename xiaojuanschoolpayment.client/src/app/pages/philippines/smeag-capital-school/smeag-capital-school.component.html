@@ -61,21 +61,6 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
-            <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>ESL常规 + 校内四人间 + 注册费</p>
-              <ul>
-                <li>
-                  <mat-icon>check_circle</mat-icon>
-                  使用2026参考价：ESL常规 USD 840 + 校内四人间 USD 780
-                </li>
-                <li>
-                  <mat-icon>info</mat-icon>
-                  当地费用、优惠、房型和考试规则需顾问另行确认
-                </li>
-              </ul>
-            </aside>
             <p class="photo-source">
               图片与费用参考自SMEAG官方资料及公开留学代理页面；最终以学校当期正式报价为准。
             </p>
@@ -380,7 +365,7 @@
                 <span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(sidaDiscountAmount) }}</strong>
               </div>
               <div>
-                <span>淡季优惠（{{ lowSeasonWeeks }}周 × USD {{ lowSeasonDiscountPerWeek }}）</span
+                <span>淡季优惠（适用期：2026/08/23–2027/01/01；{{ lowSeasonWeeks }}周 × USD {{ lowSeasonDiscountPerWeek }}）</span
                 ><strong>- USD {{ formatUsd(lowSeasonDiscount) }}</strong>
               </div>
             </div>
@@ -406,12 +391,6 @@
               </a>
               <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">
-              到校学杂费按SMEAG 2027新版当地费用表自动估算。可选接机费和可退押金单独列示，不计入学杂费合计。
-            </p>
-            <p class="season-note">
-              2026/08/23—2027/01/01在校学习期间，每个重叠学习周减USD25；先计算思达9折，再扣淡季优惠。注册费和当地费用不打折。
-            </p>
           </section>
         </section>
 
@@ -442,16 +421,6 @@
           <div class="excluded-fee-list" *ngIf="excludedLocalFees.length">
             <h4>另行准备（不计入上方学杂费合计）</h4>
             <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b></div>
-          </div>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>
-              本页价格更新时间：2026年9月2日。课程费与住宿费按SMEAG Capital 2026 China价目表核对，到校学杂费按SMEAG 2027新版Local Fee表更新，教材费按课程类别另行列示。学校价格、房型空位、移民费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
-            </p>
           </div>
         </section>
 

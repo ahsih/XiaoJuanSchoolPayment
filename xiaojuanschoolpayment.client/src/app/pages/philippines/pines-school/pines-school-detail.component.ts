@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
@@ -29,6 +30,11 @@ interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 interface SidaPinesReason { number: string; title: string; text: string; image: string; alt: string; }
 interface SidaPinesTrustBadge { icon: string; label: string; }
+type PinesRoomAvailabilityStatus = 'open' | 'limited' | 'stay-only' | 'closed';
+interface PinesRoomAvailabilityRoom { name: string; status: PinesRoomAvailabilityStatus; vacancies: number | null; }
+interface PinesRoomAvailabilityDate { date: string; rooms: PinesRoomAvailabilityRoom[]; }
+interface PinesRoomAvailabilityCampus { code: string; name: string; dates: PinesRoomAvailabilityDate[]; }
+interface PinesRoomAvailabilityResponse { updatedAt: string; isCached: boolean; campuses: PinesRoomAvailabilityCampus[]; }
 
 @Component({
   selector: 'app-pines-school-detail',
@@ -45,6 +51,7 @@ interface SidaPinesTrustBadge { icon: string; label: string; }
   ],
 })
 export class PinesSchoolDetailComponent implements OnInit {
+  private readonly http = inject(HttpClient);
   private readonly schoolService = inject(SchoolService);
   private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'PINES';
@@ -91,6 +98,11 @@ export class PinesSchoolDetailComponent implements OnInit {
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
+  roomAvailabilityLoading = false;
+  roomAvailabilityError = '';
+  roomAvailability: PinesRoomAvailabilityResponse | null = null;
+  selectedAvailabilityCampusCode = 'MAIN';
+  selectedAvailabilityDate = '';
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，学习氛围集中' },
@@ -248,6 +260,7 @@ export class PinesSchoolDetailComponent implements OnInit {
     { label: '学校环境', target: 'gallery', icon: 'image' },
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
+    { label: '实时房态', target: 'room-availability', icon: 'event_available' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
     { label: '报名流程', target: 'service-process', icon: 'task_alt' },
     { label: '常见问题', target: 'faq', icon: 'help' },
@@ -257,6 +270,7 @@ export class PinesSchoolDetailComponent implements OnInit {
     { label: '环境', target: 'gallery', icon: 'image' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
+    { label: '房态', target: 'room-availability', icon: 'event_available' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
@@ -264,6 +278,60 @@ export class PinesSchoolDetailComponent implements OnInit {
   ngOnInit(): void {
     this.loadPricingFromDatabase();
     this.loadExchangeRate();
+    this.loadRoomAvailability();
+  }
+
+  loadRoomAvailability(): void {
+    this.roomAvailabilityLoading = true;
+    this.roomAvailabilityError = '';
+    this.http.get<PinesRoomAvailabilityResponse>('/pines-room-availability').pipe(
+      catchError(() => {
+        this.roomAvailabilityLoading = false;
+        this.roomAvailabilityError = '学校公开房态暂时无法读取，请稍后再试或联系顾问确认。';
+        return EMPTY;
+      }),
+    ).subscribe((availability) => {
+      this.roomAvailability = availability;
+      this.roomAvailabilityLoading = false;
+      const currentCampus = availability.campuses.find((campus) => campus.code === this.selectedAvailabilityCampusCode) ?? availability.campuses[0];
+      this.selectedAvailabilityCampusCode = currentCampus?.code ?? '';
+      this.selectedAvailabilityDate = currentCampus?.dates[0]?.date ?? '';
+    });
+  }
+
+  selectAvailabilityCampus(code: string): void {
+    this.selectedAvailabilityCampusCode = code;
+    this.selectedAvailabilityDate = this.selectedAvailabilityCampus?.dates[0]?.date ?? '';
+  }
+
+  get selectedAvailabilityCampus(): PinesRoomAvailabilityCampus | null {
+    return this.roomAvailability?.campuses.find((campus) => campus.code === this.selectedAvailabilityCampusCode) ?? null;
+  }
+
+  get selectedAvailabilityRow(): PinesRoomAvailabilityDate | null {
+    return this.selectedAvailabilityCampus?.dates.find((row) => row.date === this.selectedAvailabilityDate) ?? null;
+  }
+
+  roomAvailabilityStatusText(room: PinesRoomAvailabilityRoom): string {
+    switch (room.status) {
+      case 'open': return '可开始课程';
+      case 'limited': return room.vacancies === null ? '少量空房' : `剩余 ${room.vacancies} 个名额`;
+      case 'stay-only': return '可续住，暂不可当日入学';
+      default: return '暂不可申请';
+    }
+  }
+
+  formatAvailabilityDate(value: string): string {
+    const date = this.parseDate(value);
+    if (!date) return value;
+    return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }).format(date);
+  }
+
+  get roomAvailabilityUpdatedText(): string {
+    if (!this.roomAvailability?.updatedAt) return '';
+    const date = new Date(this.roomAvailability.updatedAt);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(date);
   }
 
   private loadExchangeRate(): void {

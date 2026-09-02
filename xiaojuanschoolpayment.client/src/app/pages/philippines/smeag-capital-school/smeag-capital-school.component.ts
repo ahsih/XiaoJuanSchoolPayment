@@ -127,6 +127,7 @@ interface SidaTrustBadge {
     '../cebu-school-detail-responsive.css',
     '../philippines-local-fee-table.css',
     '../ev-school/ev-school-detail.component.css',
+    './smeag-capital-school.component.css',
   ],
 })
 export class SmeagCapitalSchoolComponent implements OnInit {
@@ -928,6 +929,21 @@ export class SmeagCapitalSchoolComponent implements OnInit {
       this.localFees.find((fee) => fee.item.includes('机场接机')),
       this.localFees.find((fee) => fee.item.includes('押金')),
     ].filter((fee): fee is LocalFee => Boolean(fee));
+    const paymentItems = [
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
+      { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
+      { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
+      { icon: '折', label: '思达折扣', amount: '9折', note: `优惠金额：${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+      ...(this.lowSeasonDiscount > 0
+        ? [{
+            icon: '淡',
+            label: '淡季优惠',
+            amount: `- ${this.formatUsd(this.lowSeasonDiscount)} 美元`,
+            note: `适用期：2026/08/23–2027/01/01；USD 25/周 × 重叠${this.lowSeasonWeeks}周`,
+            accent: true,
+          }]
+        : []),
+    ];
 
     return buildPhilippinesDetailedQuote({
       schoolCode: 'SMEAG',
@@ -938,13 +954,7 @@ export class SmeagCapitalSchoolComponent implements OnInit {
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
-      paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
-        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
-        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '折', label: '思达折扣', amount: '9折', note: `优惠金额：${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
-        { icon: '淡', label: '淡季优惠', amount: this.lowSeasonDiscount ? `- ${this.formatUsd(this.lowSeasonDiscount)} 美元` : '未适用', note: `USD 25/周 × 重叠${this.lowSeasonWeeks}周`, accent: this.lowSeasonDiscount > 0 },
-      ],
+      paymentItems,
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
       localFeeTotal: this.localFeesTotal,
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),

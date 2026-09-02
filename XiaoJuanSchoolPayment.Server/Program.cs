@@ -64,6 +64,13 @@ builder.Services.AddIdentity<SchoolUser, IdentityRole>()
 builder.Services.AddScoped<ISchoolService, SchoolService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.Configure<ContactFormOptions>(builder.Configuration.GetSection("ContactForm"));
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient("PinesPortal", client =>
+{
+  client.BaseAddress = new Uri("https://pinesportal.com/");
+  client.Timeout = TimeSpan.FromSeconds(12);
+  client.DefaultRequestHeaders.UserAgent.ParseAdd("SidaQihang-PublicRoomAvailability/1.0");
+});
 
 builder.Services.AddCors(options =>
 {
