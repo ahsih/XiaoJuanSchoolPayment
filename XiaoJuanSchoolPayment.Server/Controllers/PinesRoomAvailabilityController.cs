@@ -46,7 +46,10 @@ public sealed class PinesRoomAvailabilityController : ControllerBase
       using var document = await LoadPublicFeedAsync(cancellationToken);
       var sanitized = BuildSanitizedResponse(document.RootElement);
       _cache.Set(FreshCacheKey, sanitized, TimeSpan.FromMinutes(5));
-      _cache.Set(StaleCacheKey, sanitized, TimeSpan.FromMinutes(15));
+      // Keep the latest successful public snapshot long enough to bridge a
+      // temporary portal challenge without immediately falling back to the
+      // older bundled snapshot. The response timestamp remains visible in UI.
+      _cache.Set(StaleCacheKey, sanitized, TimeSpan.FromHours(24));
       return Ok(sanitized);
     }
     catch (Exception ex) when (IsUpstreamException(ex))
@@ -55,6 +58,13 @@ public sealed class PinesRoomAvailabilityController : ControllerBase
       if (_cache.TryGetValue(StaleCacheKey, out PinesRoomAvailabilityResponse? stale) && stale is not null)
       {
         return Ok(stale with { IsCached = true });
+      }
+
+      var fallback = PinesRoomAvailabilityFallback.Build();
+      if (fallback is not null)
+      {
+        _cache.Set(FreshCacheKey, fallback, TimeSpan.FromMinutes(5));
+        return Ok(fallback);
       }
 
       return UpstreamProblem();

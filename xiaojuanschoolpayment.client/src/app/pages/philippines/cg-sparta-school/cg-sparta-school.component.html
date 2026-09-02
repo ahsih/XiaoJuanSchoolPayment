@@ -1,8 +1,7 @@
 <app-cia-school>
   <div class="cia-page cg-sparta-page">
-    <div class="page-grid">
-      <main class="page-main">
-        <section class="hero-section" id="top">
+      <main class="cia-shell">
+        <section class="cia-hero" id="top">
           <div class="hero-copy">
             <a class="back-link" routerLink="/philippines-study/cebu">
               <mat-icon>arrow_back</mat-icon>
@@ -42,46 +41,25 @@
           </div>
 
           <div class="hero-media" aria-label="CG Academy Sparta Campus校园图片展示">
-            <figure class="feature-photo">
-              <img [src]="galleryImages[0].src" alt="菲律宾宿务CG Academy Sparta Campus校区与泳池" />
-              <figcaption>CG Academy Sparta Campus 宿务Talisay高强度学习校区</figcaption>
-            </figure>
-            <div class="media-strip" aria-label="CG Sparta校园缩略图">
-              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+            <div class="hero-collage hero-collage--desktop">
+              <figure *ngFor="let image of galleryImages.slice(0, 4)">
                 <img [src]="image.src" [alt]="image.title" />
-                <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
-            <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>Sparta Course + 校内4人房 + 注册费</p>
-              <ul>
-                <li>
-                  <mat-icon>check_circle</mat-icon>
-                  使用2026公开参考价：课程住宿USD 1,450 + 注册费USD 100
-                </li>
-                <li>
-                  <mat-icon>info</mat-icon>
-                  SSP、签证、押金、水电、教材、接机、冷气电费和旺季加价需另行确认
-                </li>
-              </ul>
-            </aside>
-            <p class="photo-source">
-              图片与费用参考自CG官方资料及公开留学代理页面；最终以学校当期正式报价为准。
-            </p>
           </div>
         </section>
 
-        <nav class="mobile-anchor-nav" aria-label="CG Sparta手机端快捷导航">
+        <nav class="section-tabs" aria-label="CG Sparta页面导航">
           <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
             <mat-icon>{{ item.icon }}</mat-icon>
             {{ item.label }}
           </a>
         </nav>
 
-        <section class="quick-info" aria-label="CG Sparta快速信息卡">
-          <article class="quick-card" *ngFor="let item of quickInfo">
+        <section class="cia-section overview-grid decision-summary-grid" aria-label="30秒看懂CG Sparta">
+          <div class="section-heading"><h2>30秒看懂 CG Sparta</h2></div>
+          <div class="snapshot-grid">
+          <article *ngFor="let item of quickInfo">
             <mat-icon>{{ item.icon }}</mat-icon>
             <div>
               <span>{{ item.label }}</span>
@@ -89,9 +67,10 @@
               <p>{{ item.note }}</p>
             </div>
           </article>
+          </div>
         </section>
 
-        <section class="section-block" id="gallery">
+        <section class="cia-section section-block" id="gallery">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
             <h2>先看CG Sparta的校区、教室、住宿和餐食</h2>
@@ -176,7 +155,7 @@
           </section>
         </div>
 
-        <section class="fit-section" id="fit">
+        <section class="cia-section fit-section" id="fit">
           <div class="section-heading">
             <span>适合 / 不太适合</span>
             <h2>先判断CG Sparta是否适合你</h2>
@@ -199,7 +178,7 @@
           </div>
         </section>
 
-        <section class="section-block" id="courses">
+        <section class="cia-section section-block" id="courses">
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
@@ -218,49 +197,51 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>CG Sparta 2026公开参考价</span>
-              <h2>课程住宿套餐价：按课程、房型和周数看</h2>
-              <p>
-                以下为公开2026美元参考价，通常按“课程费 + 住宿费”估算；注册费、旺季费和当地费用需另外确认。
-              </p>
-            </div>
-            <div class="data-table course-fee-table" role="table" aria-label="CG Sparta 2026课程住宿套餐">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程 / 房型</span>
-                <span role="columnheader">3周（4周价85%）</span>
-                <span role="columnheader">4周</span>
-                <span role="columnheader">8周</span>
-                <span role="columnheader">12周</span>
-              </div>
-              <ng-container *ngFor="let course of courseOptions">
-                <div class="table-row" role="row" *ngFor="let room of roomOptions">
-                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
+        <details class="tables-section cia-collapsible-section detailed-fees-disclosure" id="course-fees" open>
+          <summary>
+            <span class="collapsible-summary-icon"><mat-icon>receipt_long</mat-icon></span>
+            <span><strong>查看完整课程费、课程安排与住宿费</strong><small>2026年CG Sparta最新4周价格，课程与住宿分开核对</small></span>
+            <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+          </summary>
+          <div class="collapsible-panel-body">
+            <div class="course-table-block">
+              <h2><mat-icon>menu_book</mat-icon>CG Sparta 2026课程费 / 4周</h2>
+              <p class="tuition-table-note">课程费与住宿费分开计算；注册费为100美元。以下每日课表按你提供的2026价目表更新。</p>
+              <div class="data-table course-fee-table" role="table" aria-label="CG Sparta 2026年4周课程费与课程安排">
+                <div class="table-row table-head" role="row">
+                  <span role="columnheader">课程名称</span>
+                  <span role="columnheader">4周课程费</span>
+                  <span role="columnheader">每日课程安排</span>
+                  <span role="columnheader">备注</span>
                 </div>
-              </ng-container>
+                <div class="table-row" role="row" *ngFor="let course of courseOptions">
+                  <span role="cell"><strong>{{ course.name }}</strong></span>
+                  <span role="cell"><strong>{{ formatUsd(course.tuitionUsd) }} 美元</strong></span>
+                  <span role="cell" class="course-schedule-cell">{{ course.lessons }}</span>
+                  <span role="cell">{{ course.id === 'ielts-intensive' ? '12周起报' : course.suitable }}</span>
+                </div>
+              </div>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="CG Sparta 2026套餐手机卡片">
-              <ng-container *ngFor="let course of courseOptions">
-                <article *ngFor="let room of roomOptions">
-                  <span>{{ course.name }}</span>
-                  <strong>{{ room.name }}</strong>
-                  <div><em>3周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 3)) }}</b></div>
-                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
-                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
-                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
-                  <p>{{ course.lessons }}。{{ room.note }}</p>
-                </article>
-              </ng-container>
+
+            <div class="room-table-block" id="room-fees">
+              <div class="room-table-heading">
+                <h2><mat-icon>bed</mat-icon>住宿费 / 4周</h2>
+              </div>
+              <div class="data-table room-fee-table" role="table" aria-label="CG Sparta 2026年4周住宿费">
+                <div class="table-row table-head" role="row">
+                  <span role="columnheader">房型</span>
+                  <span role="columnheader">4周住宿费</span>
+                </div>
+                <div class="table-row" role="row" *ngFor="let room of roomOptions">
+                  <span role="cell"><strong>{{ room.name }}</strong></span>
+                  <span role="cell"><strong>{{ formatUsd(room.feeUsd) }} 美元</strong></span>
+                </div>
+              </div>
             </div>
           </div>
+        </details>
 
-          <div class="section-block" id="daily-schedule">
+          <section class="cia-section section-block" id="daily-schedule">
             <div class="section-heading">
               <span>CG Sparta 一天学习生活安排</span>
               <h2>从早课到晚自习，节奏非常固定</h2>
@@ -274,11 +255,9 @@
                 </div>
               </article>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="split-layout" id="special-fees">
-          <div class="section-block">
+        <section class="cia-section section-block" id="special-fees">
             <div class="section-heading">
               <span>短期课程参考</span>
               <h2>1-2周Short-Term ESL与普通课程分开报价</h2>
@@ -305,15 +284,12 @@
               <li>普通课程3周主费 = 4周课程费与住宿费合计 × 85%。</li>
               <li>IELTS Guarantee与Business English已纳入上方课程表和报价器。</li>
             </ul>
-          </div>
+        </section>
 
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>CG Sparta费用快速报价</span>
-              <h2>默认参考：4周Sparta Course + 校内4人房</h2>
-              <p>以上课程与住宿单价均按4周计；思达9折、淡季与长周期优惠会按条件自动计算。</p>
-            </div>
-            <div class="quote-form" aria-label="CG Sparta费用快速报价选项">
+        <section class="quote-results-section cia-section" id="quote">
+          <div class="quote-form-card">
+            <h2><mat-icon>calculate</mat-icon>CG Sparta费用快速报价</h2>
+            <p>课程费与住宿费按4周价格分别计算，思达9折及符合条件的优惠会自动计入。</p>
               <label>
                 学习周数
                 <select [(ngModel)]="selectedWeeks">
@@ -336,83 +312,77 @@
                 预计入学日
                 <input type="date" [(ngModel)]="selectedStartDate" />
               </label>
+              <div class="quote-recalculate-row">
+                <button type="button" class="primary-action" (click)="calculateQuote()"><mat-icon>calculate</mat-icon>重新计算</button>
+              </div>
+              <p>3周按4周课程费与住宿费的85%计算；4周以上按4周价格和学习周期累计，100美元注册费不按比例折算。</p>
+          </div>
+
+          <div class="quote-result-card">
+            <div class="quote-result-head">
+              <div><h2>报价结果</h2><p>{{ selectedCourse.name }} + {{ selectedRoom.name }} + {{ selectedWeeks }}周</p></div>
+              <strong>预计入学 {{ selectedStartDate | date: "yyyy/MM/dd" }}</strong>
             </div>
-            <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>思达折扣</span><strong>- USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
-              <div><span>淡季优惠</span><strong>- USD {{ formatUsd(offSeasonDiscount) }}</strong></div>
-              <div><span>长周期优惠</span><strong>- USD {{ formatUsd(longStayDiscount) }}</strong></div>
+            <div class="result-lines">
+              <div><span>注册费<small>一次性学校注册费，不参与折扣</small></span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
+              <div><span>课程费（{{ selectedCourse.name }} · {{ selectedWeeks }}周）<small>{{ selectedCourse.lessons }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+              <div><span>住宿费（{{ selectedRoom.name }} · {{ selectedWeeks }}周）<small>{{ selectedRoom.note }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+              <div class="promotion-applied"><span>思达折扣<small>仅课程费和住宿费参加9折</small></span><strong>- {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
+              <div *ngIf="offSeasonDiscount > 0" class="promotion-applied"><span>淡季优惠<small>2026/8/30–12/27入学，每满4周减150美元</small></span><strong>- {{ formatUsd(offSeasonDiscount) }} 美元</strong></div>
+              <div *ngIf="longStayDiscount > 0" class="promotion-applied"><span>长周期优惠<small>12周以上按学习周期自动计算</small></span><strong>- {{ formatUsd(longStayDiscount) }} 美元</strong></div>
             </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
+            <div class="quote-total">
+              <span>前期支付参考合计</span>
               <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}（{{ exchangeRateText }}）</em>
-              <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认房型、性别、入学日、旺季、优惠和当地费用。
-              </p>
+              <em>人民币预计金额：{{ quoteCnyText }}</em>
+              <small class="exchange-rate-summary">{{ exchangeRateText }}，最终以支付当日汇率为准</small>
             </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">
-                立即计算我的费用<mat-icon>calculate</mat-icon>
-              </button>
-              <app-quote-image-download-button
-                [quote]="quoteImageData"
-                label="保存报价单图片"
-              ></app-quote-image-download-button>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价<mat-icon>support_agent</mat-icon>
-              </a>
+          </div>
+
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+            <div class="local-fee-heading">
+              <div><span>到校后另付 · 自动预估</span><h3 id="local-fee-title">{{ selectedWeeks }}周学杂费明细</h3></div>
             </div>
-            <p class="fee-alert">
-              除课程住宿套餐外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、教材、水电、冷气电费、接机和个人生活费。
-            </p>
-            <p class="season-note">{{ seasonalNote }}</p>
+            <p class="local-fee-intro">以下费用由学校、移民局及相关部门收取，和思达游学无关，仅供准备比索现金时参考；数量会按学习周数自动更新，最终以到校缴费为准。</p>
+            <div class="local-fee-table-wrap">
+              <table class="local-fee-table">
+                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let fee of includedLocalFees">
+                    <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含可选接机及可退押金</td></tr>
+                  <tr><th colspan="3" scope="row">人民币预计金额（按实时汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="excluded-fee-list">
+              <h4>另行准备（不计入上方学杂费合计）</h4>
+              <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b></div>
+            </div>
           </section>
+
+          <div class="quote-tool-row">
+            <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
+            <a class="primary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
+          </div>
         </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>套餐之外，还要准备当地费用</h2>
-            <p>
-              以下费用来自CG官方当地费用表和公开代理资料，不同周数、签证时长、房型和学校政策会影响最终金额。
-            </p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
-              <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }} × {{ fee.quantity }}</strong>
-                <p>{{ fee.note }}；{{ fee.excluded ? '可选参考' : '小计' }} {{ formatPhp(fee.total) }}</p>
-              </article>
-            </div>
-          </details>
-          <p class="fee-alert">预计学杂费合计：{{ formatPhp(localFeesTotal) }}（{{ localFeesCnyText }}）；接机和可退押金不计入合计。</p>
-        </section>
-
-        <section class="notice-panel" id="price-note">
+        <section class="cia-section notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月18日。费用参考CG Academy官网、2026英文宣传册、2026价格表、
-              官方当地费用表及公开代理页面整理。学校价格、住宿空位、当地费用和汇率可能调整，
+              本页价格更新时间：2026年9月2日。课程费、住宿费和学杂费已按你提供的CG Academy 2026费用表核对。
+              学校价格、住宿空位、当地费用和汇率可能调整，
               报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
         </section>
 
-        <section class="materials-panel" id="materials">
+        <section class="cia-section materials-panel" id="materials">
           <div>
             <div class="section-heading">
               <span>获取 CG Sparta 完整资料与报价单</span>
@@ -434,7 +404,7 @@
           </a>
         </section>
 
-        <section class="source-panel" id="sources">
+        <section class="cia-section source-panel" id="sources">
           <div class="section-heading">
             <span>资料来源</span>
             <h2>CG Sparta页面公开资料来源</h2>
@@ -450,7 +420,7 @@
           </div>
         </section>
 
-        <section class="sida-ev-section" id="service-process">
+        <section class="cia-section sida-ev-section" id="service-process">
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
             <h2>为什么通过思达启航报名 CG Sparta?</h2>
@@ -484,7 +454,7 @@
           </div>
         </section>
 
-        <section class="section-block" id="service-flow">
+        <section class="cia-section section-block" id="service-flow">
           <div class="section-heading">
             <span>通过思达报名 CG Sparta 的免费协助流程</span>
             <h2>从选校到回国，顾问持续跟进</h2>
@@ -511,7 +481,7 @@
           </details>
         </section>
 
-        <section class="split-layout" id="campus-life">
+        <section class="cia-section split-layout" id="campus-life">
           <div class="section-block">
             <div class="section-heading">
               <span>到校后的学校服务</span>
@@ -565,7 +535,7 @@
           </div>
         </section>
 
-        <section class="section-block" id="enrollment-notes">
+        <section class="cia-section section-block" id="enrollment-notes">
           <div class="section-heading">
             <span>报名注意事项</span>
             <h2>确认 CG Sparta 前，建议先核对这些信息</h2>
@@ -577,7 +547,7 @@
           </ul>
         </section>
 
-        <section class="faq-section" id="faq">
+        <section class="cia-section faq-section" id="faq">
           <div class="section-heading">
             <span>常见问题</span>
             <h2>报名 CG Sparta 前常被问到的问题</h2>
@@ -588,25 +558,6 @@
           </details>
         </section>
       </main>
-
-      <aside class="side-panel" aria-label="CG Sparta页面快捷导航">
-        <div class="current-card">
-          <span>当前参考</span>
-          <strong>{{ selectedWeeks }}周</strong>
-          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
-          <div class="side-price">{{ quoteUsdText }}</div>
-          <small>{{ quoteCnyText }}</small>
-          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
-          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
-        </div>
-        <nav class="section-nav" aria-label="页面目录">
-          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
-            <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
-          </a>
-          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
-        </nav>
-      </aside>
-    </div>
 
     <section class="bottom-cta">
       <div>

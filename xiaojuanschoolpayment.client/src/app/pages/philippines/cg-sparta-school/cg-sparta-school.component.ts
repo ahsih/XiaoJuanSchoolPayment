@@ -126,6 +126,7 @@ interface SpecialCourseFee {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../cia-school/cia-school.component.css',
     './cg-sparta-school.component.css',
   ],
 })
@@ -338,43 +339,43 @@ export class CgSpartaSchoolComponent implements OnInit {
       id: 'sparta',
       name: 'Sparta Course',
       type: '标准斯巴达ESL',
-      lessons: '1:1四节 + 1:4四节 + 夜间课/自习 + 单词作文 + 强制自习',
+      lessons: '一对一4课时 + 小组4课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合想用高强度课表提升口语、听力、阅读和写作基础的学生。',
       tuitionUsd: 800,
       fourWeekFees: { quad: 1450, triple: 1500, twin: 1550, single: 1700, 'external-single': 2000 },
     },
     {
       id: 'premier-sparta',
-      name: 'Premier Sparta Course',
+      name: 'Premier Sparta',
       type: '一对一加量ESL',
-      lessons: '1:1五节 + 1:4三节 + 夜间课/自习 + 单词作文 + 强制自习',
+      lessons: '一对一5课时 + 小组3课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合想比标准Sparta多一节一对一反馈的人。',
       tuitionUsd: 850,
       fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
     },
     {
       id: 'toeic-sparta',
-      name: 'TOEIC Sparta Course',
+      name: '斯巴达TOEIC',
       type: 'TOEIC备考',
-      lessons: 'TOEIC 1:1二节 + ESL 1:1二节 + TOEIC/ESL小组四节',
+      lessons: 'TOEIC一对一4课时 + 小组4课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合想兼顾TOEIC分数和一般英语基础的学生。',
       tuitionUsd: 850,
       fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
     },
     {
       id: 'toeic-premier',
-      name: 'TOEIC Premier Sparta',
+      name: 'TOEIC Premier',
       type: 'TOEIC强化',
-      lessons: 'TOEIC 1:1三节 + ESL 1:1二节 + 小组三节 + 双周模考',
+      lessons: '一对一5课时 + 小组3课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合TOEIC目标更明确、希望增加一对一备考比例的人。',
       tuitionUsd: 900,
       fourWeekFees: { quad: 1550, triple: 1600, twin: 1650, single: 1800, 'external-single': 2100 },
     },
     {
       id: 'ielts-basic',
-      name: 'IELTS Basic Course',
+      name: '斯巴达IELTS Basic',
       type: 'IELTS入门',
-      lessons: 'IELTS/ESL 1:1四节 + 1:4四节 + IELTS词汇 + 强制自习',
+      lessons: '一对一4课时 + 小组4课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合未达到保证班门槛、想先熟悉IELTS题型的人。',
       tuitionUsd: 850,
       fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
@@ -383,16 +384,16 @@ export class CgSpartaSchoolComponent implements OnInit {
       id: 'ielts-guarantee',
       name: 'IELTS Guarantee',
       type: 'IELTS保证班',
-      lessons: 'IELTS 1:1四节 + IELTS小组四节 + IELTS思维课 + 词汇 + 自习',
+      lessons: '一对一4课时 + 小组4课时 + 晚课雅思 + 雅思词汇 + 自习2节课',
       suitable: '适合达到入学门槛、需要保证班学习规则推动的学生。',
       tuitionUsd: 1100,
       fourWeekFees: { quad: 1750, triple: 1800, twin: 1850, single: 2000, 'external-single': 2300 },
     },
     {
       id: 'ielts-intensive',
-      name: 'IELTS Intensive Course',
+      name: 'IELTS Intensive',
       type: 'IELTS密集',
-      lessons: 'IELTS 1:1四节 + IELTS小组四节 + 每周模考 + 强制自习',
+      lessons: '一对一4课时 + 小组4课时 + 雅思晚课 + 雅思词汇 + 自习2节课',
       suitable: '适合有明确IELTS分数需求、想集中冲刺听说读写的人。',
       tuitionUsd: 950,
       fourWeekFees: { quad: 1600, triple: 1650, twin: 1700, single: 1850, 'external-single': 2150 },
@@ -401,7 +402,7 @@ export class CgSpartaSchoolComponent implements OnInit {
       id: 'business-english',
       name: 'Business English',
       type: '商务英语',
-      lessons: '1:1四节 + 1:4四节 + 夜间课/自习 + 单词测试 + 自习',
+      lessons: '一对一4课时 + 小组4课时 + 晚课或自习1节 + 词汇测试1节 + 自习2节',
       suitable: '适合需要会议、简报、面试和职场沟通英语的学生，4周起报。',
       tuitionUsd: 850,
       fourWeekFees: { quad: 1500, triple: 1550, twin: 1600, single: 1750, 'external-single': 2050 },
@@ -590,7 +591,7 @@ export class CgSpartaSchoolComponent implements OnInit {
     {
       question: 'CG Sparta适合IELTS吗？',
       answer:
-        '适合列入候选。IELTS Basic适合入门，IELTS Intensive适合密集备考，IELTS Guarantee通常为12周并有入学分数门槛。',
+        '适合列入候选。IELTS Basic适合入门，IELTS Intensive适合密集备考且12周起报，IELTS Guarantee另有入学分数门槛。',
     },
     {
       question: '平日真的不能外出吗？',
@@ -758,32 +759,41 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get localFeePeriods(): number {
-    return Math.max(1, Math.ceil(this.selectedWeeks / 4));
+    return Math.max(2, Math.ceil(this.selectedWeeks / 4));
   }
 
   get visaExtensionCount(): number {
-    return Math.max(0, Math.ceil((this.selectedWeeks - 4) / 4));
+    return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4));
   }
 
   get localFees(): LocalFee[] {
     const periods = this.localFeePeriods;
     const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const textbookQuantity = Math.max(1, Math.ceil(this.selectedWeeks / 8));
     return [
-      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
-      { item: 'SSP E-CARD', amount: 'PHP 4,500 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次' },
-      { item: 'ACR-I CARD 外国人身份证', amount: 'PHP 4,500 / 次', quantity: acrQuantity, total: 4500 * acrQuantity, note: '长周期学习或首次续签时通常需要办理' },
-      { item: '维护管理费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '校内设施维护费用，按每4周计算' },
-      { item: '电费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '预估费用，超出部分按PHP 25/kW另收' },
-      { item: '水费', amount: 'PHP 500 / 4周', quantity: periods, total: 500 * periods, note: '按每4周计算' },
-      { item: '签证续签', amount: 'PHP 5,160 / 次', quantity: this.visaExtensionCount, total: 5160 * this.visaExtensionCount, note: '首次续签费用预估；实际按移民局及停留时长收取' },
-      { item: '书本教材费', amount: 'PHP 2,000 / 4周', quantity: periods, total: 2000 * periods, note: '按课程和实际购买教材调整' },
-      { item: '宿务马克坦机场接机', amount: 'PHP 1,200 / 次', quantity: 0, total: 1200, note: '可选，也可自行打车；不计入学杂费合计', excluded: true },
-      { item: '房间押金', amount: 'PHP 250 / 周', quantity: this.selectedWeeks, total: 250 * this.selectedWeeks, note: '无损坏及欠费时按学校规则退还；不计入学杂费合计', excluded: true },
+      { item: 'SSP特殊学习许可证', amount: '7,800比索 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费及换校需重新办理' },
+      { item: 'SSP-E CARD', amount: '4,500比索 / 次', quantity: 1, total: 4500, note: '移民局收取，入学和SSP同时办理，只收一次' },
+      { item: 'ACR-I CARD 外国人身份证', amount: '4,500比索 / 次', quantity: acrQuantity, total: 4500 * acrQuantity, note: '移民局收取，第一次续签时按实际情况办理' },
+      { item: '维护管理费', amount: '2,000比索 / 期', quantity: periods, total: 2000 * periods, note: '按学校费用表和学习周期自动估算' },
+      { item: '电费', amount: '2,000比索 / 期', quantity: periods, total: 2000 * periods, note: '预估费用，超出额度部分另收25比索/kW' },
+      { item: '水费', amount: '500比索 / 期', quantity: periods, total: 500 * periods, note: '按学校费用表和学习周期自动估算' },
+      { item: '旅游签证续签', amount: '5,160比索 / 次', quantity: this.visaExtensionCount, total: 5160 * this.visaExtensionCount, note: '移民局收取，根据实际情况收费；续签一次有效期30天，此处为一次续签费用预估' },
+      { item: '书本教材费', amount: '2,000比索 / 套', quantity: textbookQuantity, total: 2000 * textbookQuantity, note: '因课程使用教材不同，按实际购买结算；学完后需重新购买新教材' },
+      { item: '宿务马克坦机场接机', amount: '1,200比索 / 次', quantity: 0, total: 0, note: '可自由选择是否需要，也可自行打车；不计入学杂费合计', excluded: true },
+      { item: '押金', amount: '1,000比索 / 次', quantity: 1, total: 1000, note: '无损坏及没有额外扣费时，毕业后退还；不计入学杂费合计', excluded: true },
     ];
   }
 
   get localFeesTotal(): number {
     return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
+  }
+
+  get includedLocalFees(): LocalFee[] {
+    return this.localFees.filter((fee) => !fee.excluded);
+  }
+
+  get excludedLocalFees(): LocalFee[] {
+    return this.localFees.filter((fee) => fee.excluded);
   }
 
   get localFeesCnyText(): string {
@@ -793,6 +803,14 @@ export class CgSpartaSchoolComponent implements OnInit {
   get quoteImageData() {
     const includedFees = this.localFees.filter((fee) => !fee.excluded);
     const optionalFees = this.localFees.filter((fee) => fee.excluded);
+    const paymentItems = [
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
+      { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.lessons}` },
+      { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: `${this.selectedRoom.name}；按4周价格和学习周数计算` },
+      { icon: '折', label: '思达折扣', amount: '9折', note: `课程费和住宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
+      ...(this.offSeasonDiscount > 0 ? [{ icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount)} 美元`, note: '2026/8/30–12/27入学，每满4周优惠150美元', accent: true }] : []),
+      ...(this.longStayDiscount > 0 ? [{ icon: '长', label: '长周期优惠', amount: `- ${this.formatUsd(this.longStayDiscount)} 美元`, note: '12/16/20/24周分别优惠50/100/150/200美元', accent: true }] : []),
+    ];
     return buildPhilippinesDetailedQuote({
       schoolCode: 'CG SPARTA',
       schoolName: '菲律宾宿务CG Academy Sparta校区',
@@ -802,18 +820,12 @@ export class CgSpartaSchoolComponent implements OnInit {
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
-      paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费；保留且不参与9折' },
-        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；以上单价以4周为基准` },
-        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '折', label: '思达折扣', amount: '9折', note: `仅课程费和住宿费，优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
-        { icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount)} 美元`, note: '2026/8/30-12/27入学，每满4周优惠USD 150' },
-        { icon: '长', label: '长周期优惠', amount: `- ${this.formatUsd(this.longStayDiscount)} 美元`, note: '12/16/20/24周分别优惠USD 50/100/150/200' },
-      ],
+      paymentItems,
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
       localFeeTotal: this.localFeesTotal,
+      localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: '接机和可退房间押金单独列示，实际以到校缴费为准。',
+      localFeeNote: '接机和可退押金单独列示；学杂费与思达游学无关，仅供参考，实际以到校缴费为准。',
       optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: fee.note })),
       ruleNotes: [
         '课程费和住宿费按思达9折计算；注册费USD 100保留且不参与折扣。',
@@ -830,7 +842,11 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   formatPhp(value: number): string {
-    return `PHP ${value.toLocaleString('en-US')}`;
+    return `${value.toLocaleString('en-US')} 比索`;
+  }
+
+  formatFeeQuantity(value: number): string {
+    return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
   }
 
   private durationMultiplier(weeks: WeekOption): number {

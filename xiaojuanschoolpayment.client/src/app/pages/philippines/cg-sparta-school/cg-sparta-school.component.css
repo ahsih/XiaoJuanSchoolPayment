@@ -34,11 +34,11 @@
 }
 
 :host .cg-sparta-page .hero-media {
+  grid-template-columns: minmax(0, 1fr);
   border-color: #d2dfd3;
   background: linear-gradient(180deg, #ffffff 0%, #f5fbf5 100%);
 }
 
-:host .cg-sparta-page .hero-price-card strong,
 :host .cg-sparta-page .side-price {
   color: #2f6b3d;
 }
@@ -54,8 +54,31 @@
 
 :host .cg-sparta-page .course-fee-table .table-row {
   grid-template-columns:
-    minmax(188px, 1.25fr)
-    repeat(4, minmax(92px, 0.68fr));
+    minmax(160px, 0.9fr)
+    minmax(110px, 0.5fr)
+    minmax(360px, 1.8fr)
+    minmax(250px, 1.2fr);
+}
+
+:host .cg-sparta-page .room-fee-table .table-row {
+  grid-template-columns: minmax(180px, 1.4fr) minmax(150px, 1fr);
+}
+
+:host .cg-sparta-page .room-fee-table .table-row:not(.table-head) span:last-child {
+  color: #06704d;
+}
+
+:host .cg-sparta-page .course-table-block {
+  overflow-x: auto;
+}
+
+:host .cg-sparta-page .quote-results-section {
+  margin-top: 28px;
+}
+
+:host .cg-sparta-page .local-fee-table .fee-amount,
+:host .cg-sparta-page .local-fee-table .fee-cny {
+  white-space: nowrap;
 }
 
 :host .cg-sparta-page .special-fee-table .table-row {
@@ -101,7 +124,8 @@
 
 @media (max-width: 860px) {
   :host .cg-sparta-page .course-fee-table {
-    display: none;
+    display: grid;
+    min-width: 900px;
   }
 
   :host .cg-sparta-page .source-grid {

@@ -314,7 +314,11 @@ export class PinesSchoolDetailComponent implements OnInit {
       const currentCampus = availability.campuses.find((campus) => campus.code === this.selectedAvailabilityCampusCode) ?? availability.campuses[0];
       this.selectedAvailabilityCampusCode = currentCampus?.code ?? '';
       this.selectedAvailabilityDate = currentCampus?.dates[0]?.date ?? '';
-      this.loadStayOptions();
+      if (availability.isCached) {
+        this.resetStayOptions();
+      } else {
+        this.loadStayOptions();
+      }
     });
   }
 
@@ -322,14 +326,26 @@ export class PinesSchoolDetailComponent implements OnInit {
     this.selectedAvailabilityCampusCode = code;
     this.selectedAvailabilityDate = this.selectedAvailabilityCampus?.dates[0]?.date ?? '';
     this.selectedPreferredRoom = '';
-    this.loadStayOptions();
+    if (this.roomAvailability?.isCached) {
+      this.resetStayOptions();
+    } else {
+      this.loadStayOptions();
+    }
   }
 
   onAvailabilityDateChange(): void {
-    this.loadStayOptions();
+    if (this.roomAvailability?.isCached) {
+      this.resetStayOptions();
+    } else {
+      this.loadStayOptions();
+    }
   }
 
   loadStayOptions(): void {
+    if (this.roomAvailability?.isCached) {
+      this.resetStayOptions();
+      return;
+    }
     if (!this.selectedAvailabilityCampusCode || !this.selectedAvailabilityDate) return;
     this.stayOptionsLoading = true;
     this.stayOptionsError = '';
@@ -348,6 +364,15 @@ export class PinesSchoolDetailComponent implements OnInit {
         this.selectedPreferredRoom = options.rooms.find((room) => /6B|六人/iu.test(room.name))?.name ?? options.rooms[0]?.name ?? '';
       }
     });
+  }
+
+  private resetStayOptions(): void {
+    this.stayOptions = null;
+    this.stayOptionsLoading = false;
+    this.stayOptionsError = '';
+    this.selectedPreferredRoom = '';
+    this.roomPlans = [];
+    this.roomPlanError = '';
   }
 
   generateRoomPlan(): void {

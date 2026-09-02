@@ -345,6 +345,14 @@
           </div>
 
           <ng-container *ngIf="roomAvailability && !roomAvailabilityError">
+            <div class="room-cache-notice" *ngIf="roomAvailability.isCached" role="status">
+              <mat-icon>history</mat-icon>
+              <div>
+                <strong>当前显示最近一次官方公开房态</strong>
+                <span>PINES 实时接口暂时限制自动读取，以下数据保存于 {{ roomAvailabilityUpdatedText }}。可先按校区、日期和性别筛选；连续住宿周期请联系顾问向学校确认。</span>
+              </div>
+            </div>
+
             <div class="room-campus-tabs" aria-label="选择PINES校区">
               <button
                 type="button"
@@ -359,11 +367,11 @@
               <div class="room-search-heading">
                 <div>
                   <span>智能查房条件</span>
-                  <h3>输入学生情况，先看能否全程住，再计算换房方案</h3>
+                  <h3>{{ roomAvailability.isCached ? '选择学生情况，查看保存的公开房态' : '输入学生情况，先看能否全程住，再计算换房方案' }}</h3>
                 </div>
                 <small>学校目前公开到 {{ formatAvailabilityDate(availabilityLastDate) }}</small>
               </div>
-              <div class="room-search-fields">
+              <div class="room-search-fields" [class.cached]="roomAvailability.isCached">
                 <fieldset>
                   <legend>学生性别</legend>
                   <div class="room-gender-toggle">
@@ -371,21 +379,23 @@
                     <button type="button" [class.active]="selectedAvailabilityGender === 'female'" (click)="selectedAvailabilityGender = 'female'; roomPlans = []">女生</button>
                   </div>
                 </fieldset>
-                <label>
-                  <span>计划学习周期</span>
-                  <select [(ngModel)]="selectedAvailabilityWeeks" (ngModelChange)="roomPlans = []">
-                    <option *ngFor="let weeks of availabilityWeekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
-                  </select>
-                </label>
-                <label>
-                  <span>优先房型</span>
-                  <select [(ngModel)]="selectedPreferredRoom" (ngModelChange)="roomPlans = []" [disabled]="stayOptionsLoading">
-                    <option *ngFor="let room of stayOptions?.rooms" [value]="room.name">{{ formatAvailabilityRoomName(room.name) }}</option>
-                  </select>
-                </label>
-                <button type="button" class="room-plan-button" (click)="generateRoomPlan()" [disabled]="stayOptionsLoading || roomPlanLoading || !selectedPreferredRoom || !selectedDateBookableRooms.length">
-                  <mat-icon>auto_awesome</mat-icon>{{ roomPlanLoading ? '正在组合房态' : '生成住宿方案' }}
-                </button>
+                <ng-container *ngIf="!roomAvailability.isCached">
+                  <label>
+                    <span>计划学习周期</span>
+                    <select [(ngModel)]="selectedAvailabilityWeeks" (ngModelChange)="roomPlans = []">
+                      <option *ngFor="let weeks of availabilityWeekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>优先房型</span>
+                    <select [(ngModel)]="selectedPreferredRoom" (ngModelChange)="roomPlans = []" [disabled]="stayOptionsLoading">
+                      <option *ngFor="let room of stayOptions?.rooms" [value]="room.name">{{ formatAvailabilityRoomName(room.name) }}</option>
+                    </select>
+                  </label>
+                  <button type="button" class="room-plan-button" (click)="generateRoomPlan()" [disabled]="stayOptionsLoading || roomPlanLoading || !selectedPreferredRoom || !selectedDateBookableRooms.length">
+                    <mat-icon>auto_awesome</mat-icon>{{ roomPlanLoading ? '正在组合房态' : '生成住宿方案' }}
+                  </button>
+                </ng-container>
               </div>
             </div>
 
@@ -396,7 +406,7 @@
               <mat-icon>error_outline</mat-icon><span>{{ stayOptionsError }}</span><button type="button" (click)="loadStayOptions()">重新读取</button>
             </div>
 
-            <div class="room-booking-board" *ngIf="stayOptions && !stayOptionsLoading && !stayOptionsError">
+            <div class="room-booking-board" *ngIf="(stayOptions || roomAvailability.isCached) && !stayOptionsLoading && !stayOptionsError">
               <aside class="room-date-sidebar" *ngIf="selectedAvailabilityCampus as campus">
                 <div class="room-board-step"><b>1</b><div><span>选择入学日期</span><strong>当前查看{{ selectedGenderLabel }}房态</strong></div></div>
                 <div class="room-date-list">
@@ -408,7 +418,7 @@
               </aside>
 
               <div class="room-booking-result" *ngIf="selectedAvailabilityRow as availabilityRow">
-                <div class="room-board-step"><b>2</b><div><span>查看学校房态结论</span><strong>{{ formatAvailabilityDate(selectedAvailabilityDate) }} · {{ selectedGenderLabel }} · {{ selectedAvailabilityWeeks }}周</strong></div></div>
+                <div class="room-board-step"><b>2</b><div><span>查看学校房态结论</span><strong>{{ formatAvailabilityDate(selectedAvailabilityDate) }} · {{ selectedGenderLabel }}<ng-container *ngIf="!roomAvailability.isCached"> · {{ selectedAvailabilityWeeks }}周</ng-container></strong></div></div>
 
                 <div class="room-result-verdict" [class.available]="selectedDateBookableRooms.length">
                   <mat-icon>{{ selectedDateBookableRooms.length ? 'check_circle' : 'event_busy' }}</mat-icon>
@@ -442,7 +452,7 @@
                   </div>
                 </ng-template>
 
-                <div class="room-stay-summary" *ngIf="selectedDateBookableRooms.length">
+                <div class="room-stay-summary" *ngIf="!roomAvailability.isCached && selectedDateBookableRooms.length">
                   <div [class.available]="preferredRoomTargetPeriod?.available">
                     <span>首选 {{ formatAvailabilityRoomName(selectedPreferredRoom) }}</span>
                     <strong>{{ stayVacancyText(preferredRoomTargetPeriod) }}</strong>
@@ -480,7 +490,7 @@
               </div>
             </div>
 
-            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>页面与学校公开房态联动并缓存约5分钟。房态变化较快，自动方案用于筛选；提交申请前仍由思达顾问向学校确认最终房间与换房安排。</p>
+            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>{{ roomAvailability.isCached ? '当前为最近一次保存的公开房态，仅供初步筛选。学校房态变化较快，提交申请前请由思达顾问向学校确认最新房间。' : '页面与学校公开房态联动并缓存约5分钟。房态变化较快，自动方案用于筛选；提交申请前仍由思达顾问向学校确认最终房间与换房安排。' }}</p>
           </ng-container>
         </section>
 
