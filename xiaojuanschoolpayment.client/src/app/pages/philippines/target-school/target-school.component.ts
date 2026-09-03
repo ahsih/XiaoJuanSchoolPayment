@@ -249,7 +249,7 @@ export class TargetSchoolComponent {
     },
     {
       title: '想要最严格高压斯巴达',
-      text: 'TARGET有门禁和学习规则，但整体更偏成人友好和半自律学习；高压备考可比较EV、CG Sparta或SMEAG。',
+      text: 'TARGET有门禁和学习规则，但整体更偏成人友好和半自律学习；高压备考可比较EV、CG斯巴达校区或SMEAG。',
     },
     {
       title: '只看促销价做决定',

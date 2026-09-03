@@ -112,6 +112,44 @@
   white-space: nowrap;
 }
 
+:host .cg-sparta-page .local-fee-table tbody td:nth-child(2) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+:host .cg-sparta-page .pickup-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: #304056;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+:host .cg-sparta-page .pickup-option input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  accent-color: #08724f;
+}
+
+:host .cg-sparta-page .mobile-fee-hint {
+  display: none;
+  margin: 10px 0 0;
+  color: #6b563e;
+  font-size: 13px;
+}
+
+:host .cg-sparta-page .local-fee-table-wrap:focus-visible {
+  outline: 2px solid #2f6b3d;
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  :host .cg-sparta-page .mobile-fee-hint { display: block; }
+}
+
 :host .cg-sparta-page .cg-quote-card {
   min-width: 0;
   padding: 26px;
@@ -178,6 +216,7 @@
   gap: 10px;
   margin: 18px 0 14px;
 }
+
 
 :host .cg-sparta-page .cg-base-fee,
 :host .cg-sparta-page .cg-adjustment-card {

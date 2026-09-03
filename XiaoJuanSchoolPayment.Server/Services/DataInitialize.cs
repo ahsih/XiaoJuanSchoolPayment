@@ -308,7 +308,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "Business", 4, 1050m, "商务沟通、演示、会议与职场写作", now, ciaLessonNote);
       UpsertLesson(context, schoolId, "Working Holiday", 4, 950m, "生存英语、求职准备与海外生活沟通", now, ciaLessonNote);
       UpsertLesson(context, schoolId, "Callan ESL", 4, 1050m, "高频问答、即时纠错与快速口语反应", now, ciaLessonNote);
-      UpsertLesson(context, schoolId, "College Immersion", 4, 1000m, "大学校园沉浸体验；IAU大学注册费另计USD50", now, ciaLessonNote);
+      UpsertLesson(context, schoolId, "College Immersion", 4, 1000m, "大学校园沉浸体验；IAU一次性注册费另计50美元", now, ciaLessonNote);
 
       RemoveLesson(context, schoolId, "CALLAN", 4);
       RemoveLesson(context, schoolId, "CERTIFIED UNIVERSITY", 4);
@@ -422,8 +422,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，按学习时长办理", now);
       UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
       UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；只要办理签证续签就需支付，由学校统一办理", now);
-      UpsertFee(context, schoolId, "校内管理费", 2000m, PhpCurrencyId, "到校支付费用；设施维护费，按每4周计算", now);
-      UpsertFee(context, schoolId, "校外公寓管理费", 4000m, PhpCurrencyId, "到校支付费用；入住校外公寓时按每4周计算", now);
+      UpsertFee(context, schoolId, "校内管理费", 2000m, PhpCurrencyId, "到校支付费用；仅校内住宿计收，每4周2000比索，不足4周按4周预估", now);
+      UpsertFee(context, schoolId, "校外公寓管理费", 4000m, PhpCurrencyId, "到校支付费用；仅校外住宿计收，每4周4000比索，不足4周按4周预估", now);
       UpsertFee(context, schoolId, "电费", 2000m, PhpCurrencyId, "到校支付费用；每4周参考，超过每周15kW另收PHP20/kW", now);
       UpsertFee(context, schoolId, "水费", 1200m, PhpCurrencyId, "到校支付费用；公共用水和房间用水，每4周收取", now);
       UpsertFee(context, schoolId, "签证续签", 5430m, PhpCurrencyId, "到校支付费用；首次续签约PHP5430，后续续签预计PHP4700/次，以移民局实收为准", now);
@@ -503,7 +503,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "水电费", 2400m, PhpCurrencyId, "SMEAG 2027新版到校费用；每4周收取，超额使用另行收费", now);
       UpsertFee(context, schoolId, "旅游签证续签", 5130m, PhpCurrencyId, "SMEAG 2027新版累计费用；8/12/16/20/24周分别为PHP5130/11530/15960/20390/24820", now);
       RemoveFee(context, schoolId, "书本教材费");
-      UpsertFee(context, schoolId, "教材费（按课程）", 700m, PhpCurrencyId, "另行准备，不计入Local Fee官方合计；Family Program PHP2500、TOEFL PHP1500、TOEIC PHP1300、Business English PHP400、ESL PHP700、IELTS PHP2500、Speaking Master PHP1500", now);
+      UpsertFee(context, schoolId, "教材费（按课程）", 700m, PhpCurrencyId, "到校支付费用；每套约用4–6周，依学习进度购买；先计所选课程1套，后续按实另计。每套参考：亲子Family Program 2500比索、托福TOEFL 1500比索、托业TOEIC 1300比索、商务英语Business English 400比索、综合英语ESL 700比索、雅思IELTS 2500比索、口语强化Speaking Master 1500比索。托福/雅思合并课程按所选考试方向匹配教材费", now);
       UpsertFee(context, schoolId, "宿务马克坦机场接机", 1200m, PhpCurrencyId, "SMEAG 2027新版到校费用；可自由选择，也可自行打车，不计入学杂费合计", now);
       UpsertFee(context, schoolId, "押金", 2000m, PhpCurrencyId, "SMEAG 2027新版到校费用；含房间押金PHP1500、钥匙PHP300、电子钱包卡PHP200，无欠费及损坏时按学校规定退还，不计入学杂费合计", now);
       UpsertFee(context, schoolId, "2×2英寸照片", 0m, PhpCurrencyId, "入学准备1张；24周学生为ECC准备4张（5.08cm×5.08cm）", now);

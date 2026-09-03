@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { SchoolQuotePlan, QuotePlanRow, presentSchoolQuote } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import {
   Component,
   OnInit,
@@ -261,7 +263,7 @@ interface SidaCiaTrustBadge {
 @Component({
   selector: 'app-cia-school',
   standalone: true,
-  imports: [
+  imports: [SchoolQuotePlanComponent,
     CommonModule,
     FormsModule,
     RouterModule,
@@ -270,7 +272,7 @@ interface SidaCiaTrustBadge {
     QuoteImageDownloadButtonComponent,
   ],
   templateUrl: './cia-school.component.html',
-  styleUrl: './cia-school.component.css',
+  styleUrls: ['./cia-school.component.css', '../school-quote-rollout.css'],
 })
 export class CiaSchoolComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
@@ -412,7 +414,7 @@ export class CiaSchoolComponent implements OnInit {
       suitable: '想参加IAU航空大学体验，报名时应选择此课程',
       schedule:
         'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费USD 50，详细旁听与证书说明见下方课程细节。',
+      note: '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费50美元，详细旁听与证书说明见下方课程细节。',
     },
   };
 
@@ -448,14 +450,31 @@ export class CiaSchoolComponent implements OnInit {
   phpPerCny = 9;
   exchangeRateDate = '';
   usingLiveExchangeRates = false;
+  readonly localFeeIntro = '以下费用以比索计价，由学校及相关部门收取；接机与可退押金另列。';
   readonly weekOptions = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
 
-  selectedCourseId = 'regular-esl';
-  selectedRoomId = 'd4';
+  readonly quotePlan = new SchoolQuotePlan('regular-esl', 'd4', '2026-09-06', this.weekOptions,
+    kind => kind === 'course'
+      ? this.courseFees.map(option => ({ id: option.id, name: option.name, details: option.schedule }))
+      : this.roomFees.map(option => ({ id: option.id, name: option.name, details: '' })),
+    (kind, row) => {
+      if (kind === 'course') {
+        const option = this.courseFees.find(option => option.id === row.optionId);
+        return option ? (this.selectedRegistrationDate >= '2026-09-01' && row.startDate >= '2027-01-01' ? option.tuition2027 : option.tuition) * (this.shortTermPriceRatios[row.weeks] ?? row.weeks / 4) : 0;
+      }
+      const option = this.roomFees.find(option => option.id === row.optionId);
+      return option ? option.fee * (this.shortTermPriceRatios[row.weeks] ?? row.weeks / 4) : 0;
+    });
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get selectedWeeks() { return this.quotePlan.courseWeeks; }
+  set selectedWeeks(value: number) { this.quotePlan.courses[0].weeks = value; this.quotePlan.rooms[0].weeks = value; }
+  get selectedStartDate() { return this.quotePlan.startDate; }
+  set selectedStartDate(value: string) { this.quotePlan.courses[0].startDate = value; this.quotePlan.rooms[0].startDate = value; }
   selectedRoomProfileId = 'premium-single';
-  selectedWeeks = 4;
   selectedRegistrationDate = this.formatLocalDate(new Date());
-  selectedStartDate = this.nextSundayDate();
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -1128,7 +1147,7 @@ export class CiaSchoolComponent implements OnInit {
       points: [
         '预备雅思晨考通常需达到4分、周累计16分，写作约80–200词；常规雅思晨考通常需达到7分、周累计26分，写作约100–250词。',
         '保证班需读满12周，出勤率达到95%，每周四模考出勤率100%，并在读期间参加一次官方考试。',
-        '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为₱13,660，需提交考试收据。',
+        '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为13,660比索，需提交考试收据。',
         '符合全部条件但未达到目标分数时，学校资料列明可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
       ],
       notice: '考试费金额和保证权益会随官方考务政策调整，报名时须再次书面确认。',
@@ -1170,7 +1189,7 @@ export class CiaSchoolComponent implements OnInit {
       facts: [
         { label: '对应报名课程', value: 'College Immersion（IAU大学沉浸）' },
         { label: '基本安排', value: '4周为单位；每4周至少6小时IAU旁听' },
-        { label: 'IAU注册费', value: '一次性USD 50，课程费以入学年份价格表为准' },
+        { label: 'IAU注册费', value: '一次性50美元，课程费以入学年份价格表为准' },
         { label: '预约时间', value: '建议至少提前4周确认方向、课表与名额' },
       ],
       points: [
@@ -2535,6 +2554,12 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
+  get iauRegistrationFeeNote(): string {
+    return this.quotePlan.courses.some(row => row.optionId === 'college-immersion')
+      ? 'IAU一次性注册费50美元另计（未计入上述合计）。'
+      : '';
+  }
+
   get selectedRoom(): RoomFee {
     return (
       this.roomFees.find((room) => room.id === this.selectedRoomId) ??
@@ -2542,9 +2567,7 @@ export class CiaSchoolComponent implements OnInit {
     );
   }
 
-  get tuitionForSelectedWeeks(): number {
-    return this.selectedCourseBaseTuition * this.priceRatioForSelectedWeeks;
-  }
+  get tuitionForSelectedWeeks(): number { return this.quotePlan.total('course'); }
 
   get uses2027Tuition(): boolean {
     return (
@@ -2570,9 +2593,7 @@ export class CiaSchoolComponent implements OnInit {
       : '按当前报价日期与预计入学日期估算为2026原价格；最终以学校实际收到报名及确认入学日期为准。';
   }
 
-  get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.fee * this.priceRatioForSelectedWeeks;
-  }
+  get roomFeeForSelectedWeeks(): number { return this.quotePlan.total('room'); }
 
   private get priceRatioForSelectedWeeks(): number {
     return (
@@ -2581,21 +2602,8 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get peakSeasonWeeks(): number {
-    const studyStart = this.parseDate(this.selectedStartDate);
-
-    return Array.from({ length: this.selectedWeeks }, (_, index) => {
-      const weekStart = this.addDays(studyStart, index * 7);
-      const weekEnd = this.addDays(weekStart, 6);
-
-      return this.peakSeasonRanges.some(({ start, end }) =>
-        this.dateRangesOverlap(
-          weekStart,
-          weekEnd,
-          this.parseDate(start),
-          this.parseDate(end),
-        ),
-      );
-    }).filter(Boolean).length;
+    return this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]).filter(week =>
+      this.peakSeasonRanges.some(range => week <= this.quotePlan.date(range.end)! && week + 6 * 86400000 >= this.quotePlan.date(range.start)!)).length;
   }
 
   get isPeakSeason(): boolean {
@@ -2640,13 +2648,7 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get isChristmasPromotionEligible(): boolean {
-    const studyStart = this.parseDate(this.selectedStartDate);
-    const studyEnd = this.addDays(studyStart, this.selectedWeeks * 7 - 1);
-
-    return (
-      studyStart <= this.parseDate('2026-12-20') &&
-      studyEnd >= this.parseDate('2027-01-02')
-    );
+    return this.quotePlan.covers('2026-12-20', '2027-01-02') && this.quotePlan.covers('2026-12-20', '2027-01-02', this.quotePlan.rooms);
   }
 
   get payableRegistrationFee(): number {
@@ -2689,7 +2691,7 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const rounded = Math.round(this.quoteUsd * this.usdToCny);
     return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
 
@@ -2710,10 +2712,10 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get estimatedLocalFees(): LocalFeeEstimate[] {
-    const fourWeekCycles = this.selectedWeeks / 4;
-    const needsLongStayDocuments = this.selectedWeeks > 8;
+    const fourWeekCycles = this.quotePlan.roomWeeks / 4;
+    const needsLongStayDocuments = this.quotePlan.stayWeeks > 8;
     const visaExtensionCount = needsLongStayDocuments
-      ? Math.ceil((this.selectedWeeks - 8) / 4)
+      ? Math.ceil((this.quotePlan.stayWeeks - 8) / 4)
       : 0;
     const visaExtensionFees = [6410, 4540, 4540, 4540, 5650];
     const visaExtensionTotal = visaExtensionFees
@@ -2769,7 +2771,7 @@ export class CiaSchoolComponent implements OnInit {
         unitLabel: '首续₱6,410',
         quantity: visaExtensionCount,
         total: visaExtensionTotal,
-        note: '以59天旅游签证为例：12周首次延签₱6,410；16、20、24周分别再加₱4,540，28周第5次为₱5,650。',
+        note: visaExtensionCount === 0 ? '按持59天旅游签证预估，本次无需续签；实际依签证及停留天数办理。' : `按持59天旅游签证预估，首次6,410比索${visaExtensionCount > 1 ? '，后续每次4,540比索' : ''}；实际依签证及停留天数办理。`,
       },
       {
         item: '教材费（第一套）',
@@ -2821,7 +2823,11 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   formatPhp(value: number): string {
-    return `₱${Math.round(value).toLocaleString('en-US')}`;
+    return `${Math.round(value).toLocaleString('en-US')} 比索`;
+  }
+
+  formatPesoText(value: string): string {
+    return value.replace(/₱\s*([0-9][0-9,]*)/g, '$1比索');
   }
 
   formatFeeQuantity(value: number): string {
@@ -2829,17 +2835,28 @@ export class CiaSchoolComponent implements OnInit {
   }
 
   get discountText(): string {
-    return `${Math.round(this.discount * 100)} 折`;
+    return '95折';
   }
 
   formatUsd(value: number): string {
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
-      maximumFractionDigits: 1,
+      maximumFractionDigits: 2,
     });
   }
 
-  get quoteImageData(): QuoteImageCardData {
+  get quoteImageData() {
+    const base = this.baseQuoteImageData;
+    return presentSchoolQuote({
+      ...base,
+      importantNotes: [...this.quotePlan.shortStayNotes(weeks => this.shortTermPriceRatios[weeks]), '课程费按报名日期及各段课程开始日期匹配2026或2027价格；改期需重新确认。', '最终以学校价格、空房及优惠确认为准。'],
+      totalNote: this.iauRegistrationFeeNote ? `${this.iauRegistrationFeeNote} 人民币按参考汇率预估。` : '人民币按参考汇率预估，最终以支付当日汇率为准',
+      paymentItems: base.paymentItems.filter(item => !((item.label === '旺季附加费' && !this.seasonalSurcharge) || (item.label === '圣诞新年优惠' && !this.isChristmasPromotionEligible))),
+      localFeeNote: this.localFeeIntro,
+    }, this.quotePlan, 'CIA', this.quoteUsd, this.usdToCny);
+  }
+
+  private get baseQuoteImageData(): QuoteImageCardData {
     const now = new Date();
     const validUntil = this.addDays(now, 30);
     const formatChineseDate = (date: Date) =>
@@ -2847,19 +2864,8 @@ export class CiaSchoolComponent implements OnInit {
     const quoteDate = formatChineseDate(now);
     const quoteDateShort = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
     const quoteCnyAmount =
-      Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+      Math.round(this.quoteUsd * this.usdToCny);
     const fileDate = this.selectedStartDate.replace(/[^0-9]/g, '') || 'quote';
-    const localFeeShortNotes: Record<string, string> = {
-      SSP特殊学习许可证: '一次办理通常6个月有效；续费或换校时可能需要重新办理。',
-      'SSP-E Card': '入学时与SSP同时办理，按一次性费用估算。',
-      'ACR-I Card 外国人身份证': '30天签证超过4周、59天签证超过8周需办理；一次有效1年。',
-      综合管理费: '每4周₱4,000 / 人。',
-      电费: '按基础用电量估算，超额可能另行收费。',
-      水费: '按基础用水量估算，超额可能另行收费。',
-      签证续签: '按59天签证估算；12周首续₱6,410，16–24周每4周再加₱4,540。',
-      '教材费（第一套）': '每套₱2,000，约使用8周，最终以学校实际发放为准。',
-      照片费: '一次性费用。',
-    };
 
     return {
       layout: 'cia-detailed',
@@ -2885,7 +2891,7 @@ export class CiaSchoolComponent implements OnInit {
           value: this.selectedStartDate.replace(/-/g, '/'),
         },
       ],
-      paymentSectionTitle: '学校费用明细（到校前支付给学校的费用）',
+      paymentSectionTitle: '学校费用明细',
       paymentItems: [
         {
           icon: '注',
@@ -2931,7 +2937,9 @@ export class CiaSchoolComponent implements OnInit {
       totalLabel: '最终应付学校金额',
       totalUsd: `${this.formatUsd(this.quoteUsd)} 美元`,
       totalCny: `人民币预计金额：约 ${quoteCnyAmount.toLocaleString('zh-CN')} 元`,
-      totalNote: '按实时汇率预估，最终以支付当日汇率为准',
+      totalNote: this.iauRegistrationFeeNote
+        ? `${this.iauRegistrationFeeNote} 汇率以支付当日为准。`
+        : '按实时汇率预估，最终以支付当日汇率为准',
       localFeeTitle: `到校后${this.selectedWeeks}周学杂费明细参考（学校及政府相关部门收取）`,
       localFeeAmount: this.formatPhp(this.estimatedLocalFeeTotal),
       localFeeDescription:
@@ -2939,10 +2947,10 @@ export class CiaSchoolComponent implements OnInit {
       localFeeNote: '不含接机及房间押金，实际以到校缴费为准。',
       localFeeItems: this.estimatedLocalFees.map((fee) => ({
         label: fee.item,
-        unit: fee.unitLabel,
+        unit: this.formatPesoText(fee.unitLabel),
         quantity: this.formatFeeQuantity(fee.quantity),
         amount: this.formatPhp(fee.total),
-        note: localFeeShortNotes[fee.item] ?? fee.note,
+        note: this.formatPesoText(fee.note),
       })),
       localFeeCny: `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`,
       exchangeRateText: '按实时汇率预估',
@@ -2952,10 +2960,10 @@ export class CiaSchoolComponent implements OnInit {
           label: fee.item.includes('周末接机')
             ? '周末接机'
             : fee.item,
-          amount: fee.unitLabel,
+          amount: this.formatPesoText(fee.unitLabel),
           note: fee.item.includes('接机')
             ? '按需选择，也可自行前往；不计入学杂费合计。'
-            : fee.note,
+            : this.formatPesoText(fee.note),
         })),
       benefitItems: [
         { title: '0中介费', text: '学校合作价格，不额外加收服务费' },

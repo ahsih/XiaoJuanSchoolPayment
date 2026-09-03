@@ -2,6 +2,46 @@
   grid-template-columns: minmax(0, 1fr) 230px;
 }
 
+:host .textbook-reference {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #eadbd1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+:host .textbook-reference h4 {
+  margin: 0;
+  color: #6b422b;
+  font-size: 15px;
+}
+
+:host .textbook-reference p {
+  margin: 6px 0 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+:host .textbook-price-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 24px;
+  margin: 0;
+}
+
+:host .textbook-price-list dt {
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+:host .textbook-price-list dd {
+  margin: 3px 0 0;
+  color: #26364b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
 @media (max-width: 1040px) {
   :host .hero-media {
     grid-template-columns: minmax(0, 1fr) 220px;
@@ -10,6 +50,10 @@
 
 @media (max-width: 640px) {
   :host .hero-media {
+    grid-template-columns: 1fr;
+  }
+
+  :host .textbook-price-list {
     grid-template-columns: 1fr;
   }
 }

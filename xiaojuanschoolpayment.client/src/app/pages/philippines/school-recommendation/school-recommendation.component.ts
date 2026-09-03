@@ -58,7 +58,7 @@ const recommendationPages: Record<string, RecommendationPage> = {
     ],
     recommendedSchools: [
       {
-        name: 'CG Sparta',
+        name: 'CG斯巴达校区',
         city: '宿务',
         fit: '斯巴达雅思冲刺',
         reason: '适合需要强管理、高密度课程和明确考试目标的学生。',
@@ -244,7 +244,7 @@ const recommendationPages: Record<string, RecommendationPage> = {
     ],
     recommendedSchools: [
       {
-        name: 'CG Sparta',
+        name: 'CG斯巴达校区',
         city: '宿务',
         fit: '斯巴达雅思与ESL',
         reason: '适合希望在宿务接受较强管理、密集课程和考试冲刺的学生。',

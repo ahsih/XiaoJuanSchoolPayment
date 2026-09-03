@@ -244,7 +244,7 @@ export class ImsSchoolComponent {
     },
     {
       title: '想要最严格斯巴达管理',
-      text: 'IMS更像综合型市区学校；若需要高度管控、强制晚自习和更严格门禁，可同步比较CG Sparta、EV SP1或CELLA Uni。',
+      text: 'IMS更像综合型市区学校；若需要高度管控、强制晚自习和更严格门禁，可同步比较CG斯巴达校区、EV SP1或CELLA Uni。',
     },
   ];
 

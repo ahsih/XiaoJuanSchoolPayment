@@ -230,7 +230,6 @@
           <div class="section-block">
             <div class="section-heading cpi-fee-heading">
               <h2>CPI 2026年4周课程费</h2>
-              <p class="cpi-heading-subtitle">先看课程费，再叠加住宿费</p>
               <p>以下为周一至周五的每日课程安排，课程费按4周计算。具体课表及节假日安排以学校确认为准。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="CPI 2026年4周课程费">
@@ -307,16 +306,10 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading cpi-fee-heading">
-              <h2>CPI 费用快速报价</h2>
-              <p class="cpi-heading-subtitle">{{ selectedWeeks }}周 {{ courseDisplayName(selectedCourse.name) }} + {{ selectedRoom.name }}</p>
+              <h2>CPI{{ selectedWeeks }}周报价</h2>
             </div>
-            <div class="quote-form" aria-label="CPI费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ courseDisplayName(course.name) }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-              <label>预计注册日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label>
-            </div>
+            <app-school-quote-plan [plan]="quotePlan"></app-school-quote-plan>
+            <div class="quote-form"><label>预计注册日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label></div>
             <div class="quote-breakdown">
               <div><span>注册费（一次性，不打折）</span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
               <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
@@ -347,10 +340,9 @@
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
-              <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="season-note">{{ billingRuleText }}。注册费{{ formatUsd(registrationFee) }}美元，只收一次，不随学习周数变化，也不打折；课程费和住宿费享思达9折，再减符合条件的淡季及12月优惠。到校学杂费另计。</p>
           </section>
         </section>
 
@@ -358,7 +350,7 @@
           <div class="local-fee-heading">
             <div><span>到校后另付 · 自动预估</span><h2 id="cpi-local-fee-title">{{ selectedWeeks }}周学杂费明细</h2></div>
           </div>
-          <p class="local-fee-intro">以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证相关费用按持59天签证预估；教材按每次约用8周预估；水费不足4周按4周计算。</p>
+          <p class="local-fee-intro">{{ localFeeIntro }}</p>
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
               <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>

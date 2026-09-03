@@ -269,7 +269,7 @@ export class WinningSchoolComponent {
   readonly notSuitableFor: FitItem[] = [
     {
       title: '只想强斯巴达管理',
-      text: 'Winning整体更偏弹性和营队/综合型路线，强管理考试冲刺可同步比较CG Sparta、EV或SMEAG。',
+      text: 'Winning整体更偏弹性和营队/综合型路线，强管理考试冲刺可同步比较CG斯巴达校区、EV或SMEAG。',
     },
     {
       title: '需要成人完全安静型校区',

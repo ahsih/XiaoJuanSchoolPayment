@@ -48,9 +48,9 @@ describe('CG Banilad verified quote', () => {
       expect(component.selectedCourse.name).toBe(name);
       expect(component.selectedCourse.lessons).not.toMatch(/IELTS|TOEIC/);
       expect(component.selectedCourse.type).not.toContain('多益');
-      const courseNote = component.quoteImageData.paymentItems.find(row => row.label === '课程费')?.note;
-      expect(courseNote).toContain(name);
-      expect(courseNote).not.toMatch(/IELTS|TOEIC/);
+      const courseItem = component.quoteImageData.paymentItems.find(row => row.label === '课程费');
+      expect(courseItem?.detailTitle).toContain(name);
+      expect(courseItem?.note).not.toMatch(/IELTS|TOEIC/);
       expect(component.selectedCourse.tuitionUsd).toBe(850);
     }
   });
@@ -84,9 +84,13 @@ describe('CG Banilad verified quote', () => {
       const fee = component.localFees.find(row => row.item === '旅游签证续签')!;
       expect(fee.quantity).toBe(count);
       expect(fee.total).withContext(`${weeks} weeks`).toBe(total);
-      expect(fee.amount).toBe('首次5,160比索；第2次6,390比索；第3–5次4,460比索/次');
-      expect(fee.note).toContain('按持59天签证预估，学习超过8周才需续签');
-      expect(fee.note).toContain('若持30天签证，学习超过4周需续签');
+      expect(fee.amount.includes('第2次')).toBe(count >= 2);
+      expect(fee.amount.includes('其余')).toBe(count >= 3);
+      expect(fee.note.includes('本次无需续签')).toBe(count === 0);
+      expect(fee.note).toContain('按持59天签证');
+      expect(fee.note).toContain('若持30天签证，需另行核算');
+      expect(fee.note).not.toContain('12/16/20/24');
+      expect(fee.note).not.toContain('第6次');
       const imageFee = component.quoteImageData.localFeeItems?.find(row => row.label === fee.item);
       expect(imageFee?.quantity).toBe(String(count));
       expect(imageFee?.amount).toBe(component.formatPhp(total));
@@ -103,6 +107,17 @@ describe('CG Banilad verified quote', () => {
     component.selectedWeeks = 12;
     expect(component.localFeesTotal).toBe(37460);
     expect(component.localFees.find(row => row.item === 'ACR-I CARD 外国人身份证')?.quantity).toBe(1);
+  });
+
+  it('shows the three-week rule only when a selected course or room actually uses it', () => {
+    component.quotePlan.add('course');
+    component.quotePlan.add('room');
+    expect(component.quoteImageData.importantNotes?.join('')).not.toContain('85%');
+    component.quotePlan.courses[0].weeks = 3;
+    expect(component.quoteImageData.importantNotes?.join('')).toContain('85%');
+    component.quotePlan.courses[0].weeks = 4;
+    component.quotePlan.rooms[1].weeks = 3;
+    expect(component.quoteImageData.importantNotes?.join('')).toContain('85%');
   });
 
   it('updates all local-fee and image totals for the 59-day visa estimate', () => {
@@ -219,7 +234,7 @@ describe('CG Banilad verified quote', () => {
     expect(quote.localFeeItems?.find(row => row.label === 'ACR-I CARD 外国人身份证')?.amount).toBe('0 比索');
     expect(quote.optionalFeeItems?.find(row => row.label.includes('接机'))?.amount).toBe('0 比索');
     expect(quote.optionalFeeItems?.find(row => row.label.includes('押金'))?.amount).toBe('1,000 比索');
-    expect(quote.importantNotes).toContain(component.localFeeEstimateNote);
+    expect(quote.importantNotes).not.toContain(component.localFeeEstimateNote);
     expect(quote.localFeeNote).toContain('具体以学校');
   });
 
@@ -264,8 +279,8 @@ describe('CG Banilad verified quote', () => {
     expect(quote.totalUsd).toBe('3,285 美元');
     expect(quote.paymentItems.some(row => /美元\s*美元/.test(`${row.amount} ${row.note}`))).toBeFalse();
     const visa = quote.localFeeItems?.find(row => row.label === '旅游签证续签');
-    expect(visa?.unit).toContain('首次5,160比索');
-    expect(visa?.unit).toContain('第2次6,390比索');
+    expect(visa?.unit).toBe('首次5,160 比索');
+    expect(visa?.unit).not.toContain('第2次');
   });
 
   it('renders the estimate disclaimer above separate fee columns and preserves original notes', async () => {

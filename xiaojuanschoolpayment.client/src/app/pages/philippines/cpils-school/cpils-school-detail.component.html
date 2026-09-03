@@ -52,7 +52,7 @@
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }}</strong>
+              <strong>{{ formatUsd(quoteUsd) }} 美元</strong>
               <p>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
               <ul>
                 <li>
@@ -275,40 +275,34 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <span>CPILS 费用快速报价</span>
-              <h2>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
+              <h2>CPILS{{ selectedWeeks }}周报价</h2>
             </div>
-            <div class="quote-form" aria-label="CPILS费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-              <label>预计报名日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label>
-            </div>
+            <app-school-quote-plan [plan]="quotePlan"></app-school-quote-plan>
+            <div class="quote-form"><label>预计报名日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label></div>
             <div class="quote-breakdown">
-              <div><span>注册费（不参与折扣）</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+              <div><span>注册费（不参与折扣）</span><strong>{{ registrationFee }} 美元</strong></div>
+              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+              <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
               <div class="discount-line quote-rule-card">
                 <span>淡季入学优惠</span>
                 <small>2026/12/27前入学，旺季2026/06/01–08/26除外，最少4周；课程费和住宿费在思达9折后再享95折</small>
-                <strong>− USD {{ formatUsd(offSeasonDiscountAmount) }}</strong>
+                <strong>− {{ formatUsd(offSeasonDiscountAmount) }} 美元</strong>
               </div>
               <div class="discount-line quote-rule-card">
                 <span>无对外窗房优惠</span>
                 <small>无对外窗单人间/双人间每4周优惠50美元；2026/12/27前入学，旺季2026/06/01–08/26除外</small>
-                <strong>− USD {{ formatUsd(noWindowDiscountAmount) }}</strong>
+                <strong>− {{ formatUsd(noWindowDiscountAmount) }} 美元</strong>
               </div>
               <div class="discount-line quote-rule-card">
                 <span>圣诞/新年优惠</span>
                 <small>报名日期：2026/06/29–12/31；学习期覆盖2026/12/21–12/26减75美元，覆盖2026/12/21–2027/01/01减150美元</small>
-                <strong>− USD {{ formatUsd(holidayDiscountAmount) }}</strong>
+                <strong>− {{ formatUsd(holidayDiscountAmount) }} 美元</strong>
               </div>
               <div class="quote-rule-card">
                 <span>暑假附加费：40美元/周</span>
                 <small>学习时间：2026/07/05–2026/08/29；当前重叠{{ peakSeasonWeeks }}周</small>
-                <strong>USD {{ formatUsd(seasonalSurcharge) }}</strong>
+                <strong>{{ formatUsd(seasonalSurcharge) }} 美元</strong>
               </div>
               <div class="exam-benefit-card">
                 <span>官方考试赠送</span>
@@ -325,7 +319,7 @@
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error"></app-quote-image-download-button>
             </div>
           </section>
         </section>
@@ -338,7 +332,7 @@
             </div>
           </div>
           <p class="local-fee-intro">
-            以下费用以比索计价，数量随学习周数自动更新。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴费为准。
+            {{ localFeeIntro }}
           </p>
 
           <div class="local-fee-table-wrap">

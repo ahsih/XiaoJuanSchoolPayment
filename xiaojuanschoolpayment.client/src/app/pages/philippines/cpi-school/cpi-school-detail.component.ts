@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { SchoolQuotePlan, QuotePlanRow, presentSchoolQuote } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,10 +42,11 @@ interface SidaCpiTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-cpi-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, ExpandableImageComponent],
+  imports: [SchoolQuotePlanComponent,CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, ExpandableImageComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cpi-school-detail.component.html',
   styleUrls: [
+    '../school-quote-rollout.css',
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
@@ -78,10 +81,27 @@ export class CpiSchoolDetailComponent implements OnInit {
   exchangeRateLive = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   readonly juniorCourseNote = '可将1节一对一转给家长，可部分周期转课';
-  selectedCourseId = 'esl-general-15';
-  selectedRoomId = 'building-a-quad';
-  selectedWeeks = 4;
-  selectedStartDate = '2026-09-07';
+  readonly localFeeIntro = '以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证相关费用按持59天签证预估；教材按每次约用8周预估；水费不足4周按4周计算。';
+  readonly quotePlan = new SchoolQuotePlan('esl-general-15', 'building-a-quad', '2026-09-06', this.weekOptions,
+    kind => kind === 'course'
+      ? this.courseFees.map(option => ({ id: option.id, name: this.courseDisplayName(option.name), details: option.suitable }))
+      : this.roomFees.map(option => ({ id: option.id, name: option.name, details: option.name.includes('六人') ? '仅限女生' : option.name.includes('3张床') ? '家庭房型，3张床' : '' })),
+    (kind, row) => {
+      if (kind === 'course') {
+        const option = this.courseFees.find(option => option.id === row.optionId);
+        return option ? option.tuition * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
+      }
+      const option = this.roomFees.find(option => option.id === row.optionId);
+      return option ? option.fee * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
+    });
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get selectedWeeks() { return this.quotePlan.courseWeeks; }
+  set selectedWeeks(value: number) { this.quotePlan.courses[0].weeks = value; this.quotePlan.rooms[0].weeks = value; }
+  get selectedStartDate() { return this.quotePlan.startDate; }
+  set selectedStartDate(value: string) { this.quotePlan.courses[0].startDate = value; this.quotePlan.rooms[0].startDate = value; }
   selectedRegistrationDate = this.currentDateKey;
   quoteCalculated = false;
 
@@ -368,8 +388,8 @@ export class CpiSchoolDetailComponent implements OnInit {
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
   get billingMultiplier(): number { return this.shortTermRatios[this.selectedWeeks] ?? (this.selectedWeeks / 4); }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.billingMultiplier; }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.billingMultiplier; }
+  get tuitionForSelectedWeeks(): number { return this.quotePlan.total('course'); }
+  get roomFeeForSelectedWeeks(): number { return this.quotePlan.total('room'); }
   get courseAndRoomBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get billingRuleText(): string {
     const percentage = this.shortTermRatios[this.selectedWeeks];
@@ -385,21 +405,8 @@ export class CpiSchoolDetailComponent implements OnInit {
   get offSeasonDiscountAmount(): number { return this.offSeasonEligible ? this.selectedWeeks * this.offSeasonDiscountPerWeek : 0; }
   get extraClassEligible(): boolean { return this.isDateBetween(this.selectedStartDate, '2026-08-24', '2026-09-28'); }
   get decemberStay(): { fullWeeks: number; partialWeeks: number } {
-    const start = this.parseDate(this.selectedStartDate);
-    if (start === null) return { fullWeeks: 0, partialWeeks: 0 };
-    const weekMs = 7 * 86400000;
-    const decemberStart = Date.UTC(2026, 11, 1);
-    const decemberEnd = Date.UTC(2027, 0, 1);
-    let fullWeeks = 0;
-    let partialWeeks = 0;
-    for (let week = 0; week < this.selectedWeeks; week++) {
-      const weekStart = start + week * weekMs;
-      const weekEnd = weekStart + weekMs;
-      const overlap = Math.max(0, Math.min(weekEnd, decemberEnd) - Math.max(weekStart, decemberStart));
-      if (overlap === weekMs) fullWeeks++;
-      else if (overlap > 0) partialWeeks++;
-    }
-    return { fullWeeks, partialWeeks };
+    const fullWeeks = this.quotePlan.weekStarts().filter(start => start >= Date.UTC(2026, 11, 1) && start + 7 * 86400000 <= Date.UTC(2027, 0, 1)).length;
+    return { fullWeeks, partialWeeks: this.quotePlan.overlapWeeks('2026-12-01', '2026-12-31') - fullWeeks };
   }
   get decemberDiscountAmount(): number { return this.decemberStay.fullWeeks * this.decemberDiscountPerWeek; }
   get decemberCalculationText(): string {
@@ -412,20 +419,20 @@ export class CpiSchoolDetailComponent implements OnInit {
   }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const rounded = Math.round(this.quoteUsd * this.usdToCny);
     return `约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
   get exchangeRateText(): string {
     return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
   }
 
-  get localFeeFourWeekPeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
-  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks * 7 - 59) / 30)); }
+  get localFeeFourWeekPeriods(): number { return Math.max(1, Math.ceil(this.quotePlan.roomWeeks / 4)); }
+  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.quotePlan.stayWeeks * 7 - 59) / 30)); }
   get textbookPurchaseCount(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 8)); }
   get localFees(): LocalFee[] {
     const fourWeekPeriods = this.localFeeFourWeekPeriods;
     const extensionQuantity = this.visaExtensionCount;
-    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
+    const acrQuantity = this.quotePlan.stayWeeks > 8 ? 1 : 0;
     return [
       { item: 'SSP特殊学习许可证', amount: '7,800 比索 / 次', quantity: 1, total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需重新办理' },
       { item: 'SSP E-CARD', amount: '4,500 比索 / 次', quantity: 1, total: 4500, note: '移民局收取；入学时与SSP同时办理，只收一次' },
@@ -434,7 +441,7 @@ export class CpiSchoolDetailComponent implements OnInit {
       { item: '管理费', amount: '1,000 比索 / 4周', quantity: fourWeekPeriods, total: 1000 * fourWeekPeriods, note: '校内教学楼及其他设施维护费' },
       { item: '水费', amount: '1,500 比索 / 4周', quantity: fourWeekPeriods, total: 1500 * fourWeekPeriods, note: '每4周计费，不足4周按4周计算' },
       { item: '电费', amount: '2,000 比索 / 4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '预估；超出固定用量按房型另收6–20比索/千瓦时' },
-      { item: '签证续签', amount: '5,140 比索 / 次', quantity: extensionQuantity, total: 5140 * extensionQuantity, note: '按持59天签证预估，超出天数每30天计一次，12周按续签1次估算；持30天签证需更早续签，最终以实际签证、停留天数和收费为准' },
+      { item: '签证续签', amount: '5,140 比索 / 次', quantity: extensionQuantity, total: 5140 * extensionQuantity, note: `${extensionQuantity === 0 ? '按持59天签证预估，本次无需续签' : '按持59天签证预估，超出天数每30天计一次'}；持30天签证需更早续签，最终以实际签证、停留天数和收费为准` },
       { item: '教材费', amount: '2,000 比索 / 8周', quantity: this.textbookPurchaseCount, total: 2000 * this.textbookPurchaseCount, note: '按每次购买教材约可使用8周预估，不足8周按一次计；具体依个人学习进度和实际购买教材情况结算' },
       { item: '学生证', amount: '350 比索 / 次', quantity: 1, total: 350, note: '可自备白底证件照5×5厘米' },
       { item: '宿务马克坦机场周日接机', amount: '1,000 比索 / 次', quantity: 0, total: 0, note: '可选，也可自行打车；其他时间1,500比索/次/人；不计入学杂费合计', excluded: true },
@@ -450,6 +457,15 @@ export class CpiSchoolDetailComponent implements OnInit {
   get excludedLocalFees(): LocalFee[] { return this.localFees.filter(fee => fee.excluded); }
 
   get quoteImageData() {
+    const base = this.baseQuoteImageData;
+    return presentSchoolQuote({
+      ...base,
+      importantNotes: [...this.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks]), ...(this.quotePlan.courses.some(row => this.courseFees.find(course => course.id === row.optionId)?.name.startsWith('JUNIOR')) ? [`青少年课程说明：${this.juniorCourseNote}。`] : []), '最终以学校价格、空房及优惠确认为准。'],
+      totalNote: '人民币按参考汇率预估，最终以支付当日汇率为准',
+    }, this.quotePlan, 'CPI', this.quoteUsd, this.usdToCny);
+  }
+
+  private get baseQuoteImageData() {
     const includedFees = this.localFees.filter((fee) => !fee.excluded);
     const optionalFees = this.localFees.filter((fee) => fee.excluded);
     return buildPhilippinesDetailedQuote({
@@ -462,6 +478,7 @@ export class CpiSchoolDetailComponent implements OnInit {
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
       fullFeeDetails: true,
+      localFeeTableLayout: 'web',
       paymentItems: [
         { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
         { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.courseDisplayName(this.selectedCourse.name)}；周一至周五每日：${this.selectedCourse.suitable}` },
@@ -475,8 +492,8 @@ export class CpiSchoolDetailComponent implements OnInit {
       localFeeTotal: this.localFeesTotal,
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: '接机、可退房间押金及洗衣服务单独列示，不计入学杂费合计。',
-      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: fee.amount, note: `本次数量${fee.quantity}，小计${this.formatPhp(fee.total)}；${fee.note}` })),
+      localFeeNote: this.localFeeIntro,
+      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
       ruleNotes: [
         `1周、2周、3周的课程费与住宿费分别按4周价的37.5%、65%、90%计算；注册费${this.formatUsd(this.registrationFee)}美元，只收一次，不随学习周数变化。`,
         '课程费和住宿费享思达9折；注册费不打折，符合条件的淡季及12月优惠额外扣减。',

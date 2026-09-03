@@ -934,39 +934,9 @@
     <ng-template #quoteSection>
     <section class="quote-results-section" id="quote">
       <div class="quote-form-card">
-        <h2><mat-icon>calculate</mat-icon>CIA 费用快速报价</h2>
-        <label>
-          学习周数
-          <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
-              {{ weeks }}周
-            </option>
-          </select>
-        </label>
-        <label>
-          课程
-          <select [(ngModel)]="selectedCourseId">
-            <option *ngFor="let course of courseFees" [value]="course.id">
-              {{ course.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          房型
-          <select [(ngModel)]="selectedRoomId">
-            <option *ngFor="let room of roomFees" [value]="room.id">
-              {{ room.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          报价日期
-          <input type="date" [(ngModel)]="selectedRegistrationDate" readonly aria-readonly="true" />
-        </label>
-        <label>
-          预计入学日期
-          <input type="date" [(ngModel)]="selectedStartDate" />
-        </label>
+        <h2>CIA{{ selectedWeeks }}周报价</h2>
+        <app-school-quote-plan [plan]="quotePlan"></app-school-quote-plan>
+        <label>报价日期<input type="date" [(ngModel)]="selectedRegistrationDate" readonly aria-readonly="true" /></label>
         <div class="quote-recalculate-row">
           <button class="primary-action" type="button" (click)="calculateQuote()">
             <mat-icon>calculate</mat-icon>
@@ -979,20 +949,7 @@
       </div>
 
       <div class="quote-result-card">
-        <div class="quote-result-head">
-          <div>
-            <h2>报价结果 <small>示例</small></h2>
-            <p>
-              {{ selectedCourse.name }} + {{ selectedRoom.name }} +
-              {{ selectedWeeks }}周
-            </p>
-          </div>
-          <strong
-            >{{ appliedTuitionLabel }} · 报价
-            {{ selectedRegistrationDate | date: "yyyy/MM/dd" }} · 预计入学
-            {{ selectedStartDate | date: "yyyy/MM/dd" }}</strong
-          >
-        </div>
+        <div class="quote-result-head"><h3>学校费用</h3></div>
         <div class="result-lines">
           <div [class.promotion-applied]="isChristmasPromotionEligible">
             <span>
@@ -1003,15 +960,13 @@
           </div>
           <div>
             <span>
-              课程费（{{ selectedCourse.name }} · {{ selectedWeeks }}周）
-              <small>{{ appliedTuitionLabel }}；课程安排：{{ selectedCourse.schedule }}</small>
+              课程费合计
             </span>
             <strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong>
           </div>
           <div>
             <span>
-              住宿费（{{ selectedRoom.name }} · {{ selectedWeeks }}周）
-              <small>当前选择房型：{{ selectedRoom.name }}</small>
+              住宿费合计
             </span>
             <strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong>
           </div>
@@ -1046,6 +1001,7 @@
             <em>正在获取最新参考汇率…</em>
           </ng-template>
           <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
+          <small *ngIf="iauRegistrationFeeNote">{{ iauRegistrationFeeNote }}</small>
         </div>
       </div>
 
@@ -1059,9 +1015,7 @@
             </div>
             <strong>{{ formatPhp(estimatedLocalFeeTotal) }}</strong>
           </div>
-          <p class="local-fee-intro">
-            按学校最新学杂费资料自动预估；如与旧资料不一致，以下方明细和说明为准。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴纳比索现金为准。
-          </p>
+          <p class="local-fee-intro">{{ localFeeIntro }}</p>
 
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
@@ -1077,10 +1031,10 @@
               <tbody>
                 <tr *ngFor="let fee of estimatedLocalFees">
                   <th scope="row">{{ fee.item }}</th>
-                  <td>{{ fee.unitLabel }}</td>
+                  <td>{{ formatPesoText(fee.unitLabel) }}</td>
                   <td>{{ formatFeeQuantity(fee.quantity) }}</td>
                   <td class="fee-amount">{{ formatPhp(fee.total) }}</td>
-                  <td>{{ fee.note }}</td>
+                  <td>{{ formatPesoText(fee.note) }}</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -1114,7 +1068,7 @@
                 <strong>{{ fee.item }}</strong>
                 <small>{{ fee.note }}</small>
               </span>
-              <b>{{ fee.unitLabel }}</b>
+              <b>{{ formatPesoText(fee.unitLabel) }}</b>
             </div>
           </div>
       </section>
@@ -1122,7 +1076,7 @@
       <div class="quote-tool-row">
           <app-quote-image-download-button
             [quote]="quoteImageData"
-            [disabled]="!usingLiveExchangeRates"
+            [disabled]="!usingLiveExchangeRates || !!quotePlan.error"
             [label]="usingLiveExchangeRates ? '保存报价单图片' : '正在获取最新参考汇率...'"
             buttonClass="secondary-action"
           ></app-quote-image-download-button>

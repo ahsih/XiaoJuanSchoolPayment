@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": ["src/app/components/quote-promotion-preview.spec.ts", "src/**/*.d.ts"]
+}

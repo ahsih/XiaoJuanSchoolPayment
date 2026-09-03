@@ -267,7 +267,7 @@ export class CuriousWorldSchoolComponent {
     },
     {
       title: '需要超严格斯巴达管理',
-      text: '公开资料更像半斯巴达和自习支持，强制管理需求可比较CG Sparta、EV、SMEAG。',
+      text: '公开资料更像半斯巴达和自习支持，强制管理需求可比较CG斯巴达校区、EV、SMEAG。',
     },
     {
       title: '周末餐食/活动必须固定',
@@ -491,7 +491,7 @@ export class CuriousWorldSchoolComponent {
     '公开来源对注册费和餐食口径存在差异，报名时需以学校最新报价单和入学说明为准。',
     'Workcation Light为淡季限定，不能直接当作全年最低价。',
     '周末加课、追加一对一、活动和前后泊安排都需要提前确认是否开放。',
-    '如果目标是强制管理或海边度假，应同步比较CG Sparta/EV/SMEAG或CIA/Genius/CBOA。',
+    '如果目标是强制管理或海边度假，应同步比较CG斯巴达校区/EV/SMEAG或CIA/Genius/CBOA。',
   ];
   readonly faqs: FaqItem[] = [
     {

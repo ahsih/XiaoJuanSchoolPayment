@@ -232,7 +232,7 @@ const libraryPages: Record<string, LibraryPage> = {
       },
       {
         icon: 'assignment',
-        title: 'CG Academy Sparta Campus',
+        title: 'CG斯巴达校区',
         tag: '宿务 / 管理型',
         text: '适合想要平日外出限制、EOP、单词作文、强制自习和TOEIC/IELTS备考节奏的学生。',
         route: '/philippines-study/cebu/cg-academy-sparta-campus',

@@ -1,0 +1,15 @@
+:host{display:block;min-width:0;container-type:inline-size;color:#173b31}
+.plan-list{margin:14px 0;border:1px solid #d5e1db;border-radius:8px;overflow:hidden;background:white}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#e8f3ed}
+h3{margin:0;font-size:16px}small{margin-left:10px;color:#61786c;font-size:12px}
+button{min-height:40px;border:0;border-radius:5px;padding:6px 12px;background:#2f6b3d;color:white;font-weight:700;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+.columns,.plan-row{display:grid;grid-template-columns:minmax(140px,1.2fr) minmax(150px,1.4fr) 70px 142px 108px 100px 40px;gap:10px;align-items:center;padding:12px}
+.columns{font-size:12px;background:#f9fbfa;color:#65776d}.plan-row+.plan-row{border-top:1px solid #edf0ee}
+.plan-row>*{min-width:0}.plan-row label>span,.end>span{display:none}
+select,input{box-sizing:border-box;width:100%;min-width:0;min-height:42px;padding:8px;border:1px solid #ccd9d1;border-radius:5px;background:white;color:#173449;font:inherit;font-size:13px}
+.details{font-size:12px;line-height:1.65;color:#536779;overflow-wrap:anywhere}.end{font-size:12px;white-space:nowrap}.amount{font-size:13px;text-align:right;white-space:nowrap}
+.remove{color:#924632;background:white;padding:4px;font-size:12px}.exam{display:block;margin-top:8px;font-size:12px;color:#596c7d}
+:is(input,select,button):focus-visible{outline:2px solid #08745c;outline-offset:2px}
+.warning{padding:10px 12px;border-left:3px solid #d9843f;background:#fff4e7;color:#895023;font-size:13px;line-height:1.6}
+@container(max-width:1000px){.columns{display:none}.plan-row{grid-template-columns:minmax(0,1fr) 106px;gap:10px}.type{grid-column:1;grid-row:1}.weeks{grid-column:2;grid-row:1}.details{grid-column:1/-1;grid-row:2}.start{grid-column:1;grid-row:3}.end{grid-column:2;grid-row:3}.amount{grid-column:1;grid-row:4;text-align:left}.remove{grid-column:2;grid-row:4}.plan-row label>span,.end>span{display:block;margin-bottom:5px;font-size:11px;color:#6b7e72}.end time{display:block;min-height:42px;line-height:42px}.details:empty{display:none}}

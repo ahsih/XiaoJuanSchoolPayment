@@ -299,7 +299,7 @@ export class CijPremiumSchoolComponent {
     },
     {
       title: '目标是强制高压备考',
-      text: 'Premium更偏舒适与口语沟通；如果要严格管理，可比较CG Sparta、EV、SMEAG或CIJ Sparta/Liloan路线。',
+      text: 'Premium更偏舒适与口语沟通；如果要严格管理，可比较CG斯巴达校区、EV、SMEAG或CIJ Sparta/Liloan路线。',
     },
     {
       title: '只看最低公开价',
@@ -549,7 +549,7 @@ export class CijPremiumSchoolComponent {
     '你提供的CIEC Global网址与CIJ Premium Campus公开资料名称不同，报名之前必须确认学校主体、校区和住宿地址。',
     '课程住宿套餐不含注册费、SSP、签证、押金、教材、水电、管理费、接机和个人生活费。',
     'Power TOEIC Guarantee、Native课程和追加课程的开课规则、级别门槛和老师配置需单独确认。',
-    '如果目标是严格斯巴达或低龄营队，应同步比较CIJ Sparta/Liloan、CG Sparta、EV、SMEAG或CIEC相关项目。',
+    '如果目标是严格斯巴达或低龄营队，应同步比较CIJ Sparta/Liloan、CG斯巴达校区、EV、SMEAG或CIEC相关项目。',
   ];
   readonly faqs: FaqItem[] = [
     {

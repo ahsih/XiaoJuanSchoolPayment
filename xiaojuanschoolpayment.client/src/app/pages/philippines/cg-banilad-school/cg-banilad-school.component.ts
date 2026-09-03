@@ -1,4 +1,6 @@
 import { CommonModule } from '@angular/common';
+import { SchoolQuotePlan, QuotePlanRow, presentSchoolQuote } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,9 +10,10 @@ import { ExchangeRateService } from '../../../../services/exchange-rate.service'
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
+import { CgLocalFee as LocalFee, estimateCgLocalFees } from '../cg-local-fees';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 3 | 4 | 8 | 12 | 16 | 20 | 24;
+type WeekOption = number;
 
 interface QuickInfo {
   icon: string;
@@ -64,15 +67,6 @@ interface ScheduleItem {
   text: string;
 }
 
-interface LocalFee {
-  item: string;
-  amount: string;
-  note: string;
-  quantity: number;
-  total: number;
-  excluded?: boolean;
-}
-
 interface ProcessStep {
   icon: string;
   title: string;
@@ -98,10 +92,11 @@ interface SourceLink {
 @Component({
   selector: 'app-cg-banilad-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
+  imports: [SchoolQuotePlanComponent,CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cg-banilad-school.component.html',
   styleUrls: [
+    '../school-quote-rollout.css',
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
@@ -131,10 +126,26 @@ export class CgBaniladSchoolComponent implements OnInit {
     3: 0.85,
   };
 
-  selectedCourseId = 'general-esl';
-  selectedRoomId = 'quad';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
+  readonly quotePlan = new SchoolQuotePlan('general-esl', 'quad', '2026-09-06', this.weekOptions,
+    kind => kind === 'course'
+      ? this.courses.map(option => ({ id: option.id, name: option.name, details: option.lessons }))
+      : this.roomOptions.map(option => ({ id: option.id, name: option.name, details: '' })),
+    (kind, row) => {
+      if (kind === 'course') {
+        const option = this.courses.find(option => option.id === row.optionId);
+        return option ? option.tuitionUsd * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
+      }
+      const option = this.roomOptions.find(option => option.id === row.optionId);
+      return option ? option.feeUsd * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
+    });
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get selectedWeeks() { return this.quotePlan.courseWeeks; }
+  set selectedWeeks(value: number) { this.quotePlan.courses[0].weeks = value; this.quotePlan.rooms[0].weeks = value; }
+  get selectedStartDate() { return this.quotePlan.startDate; }
+  set selectedStartDate(value: string) { this.quotePlan.courses[0].startDate = value; this.quotePlan.rooms[0].startDate = value; }
   quoteCalculated = false;
   includeAirportPickup = false;
 
@@ -203,7 +214,7 @@ export class CgBaniladSchoolComponent implements OnInit {
       category: '校区',
       title: '泳池与公共休息区',
       description:
-        'Banilad Campus保留CG系统化学习管理，也比Sparta校区更适合想保留一点城市生活弹性的学生。',
+        'Banilad Campus保留CG系统化学习管理，也比斯巴达校区更适合想保留一点城市生活弹性的学生。',
       src: 'https://www.ryugaku-onebridge.com/api/pict/5104',
     },
     {
@@ -269,7 +280,7 @@ export class CgBaniladSchoolComponent implements OnInit {
     },
     {
       title: '想要半斯巴达，但不想太硬',
-      text: '如果CG Sparta太严格，Banilad Campus可以作为更平衡的CG系选择。',
+      text: '如果CG斯巴达校区太严格，Banilad Campus可以作为更平衡的CG系选择。',
     },
     {
       title: '正在比较亲子、商务或考试课程',
@@ -441,9 +452,9 @@ export class CgBaniladSchoolComponent implements OnInit {
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'CG Banilad和CG Sparta怎么选？',
+      question: 'CG Banilad和CG斯巴达校区怎么选？',
       answer:
-        '如果你想要更严格的全日制斯巴达管理，优先看CG Sparta；如果想留在宿务市区，兼顾课程强度和生活便利，Banilad Campus更适合。',
+        '如果你想要更严格的全日制斯巴达管理，优先看CG斯巴达校区；如果想留在宿务市区，兼顾课程强度和生活便利，Banilad Campus更适合。',
     },
     {
       question: '页面上的费用是否已经包含所有支出？',
@@ -517,22 +528,11 @@ export class CgBaniladSchoolComponent implements OnInit {
     return this.selectedCourse.tuitionUsd + this.selectedRoom.feeUsd;
   }
 
-  get studyStayUsd(): number {
-    if (this.selectedWeeks < 4) {
-      return this.fourWeekStudyStayUsd * (this.shortTermRatios[this.selectedWeeks] ?? 1);
-    }
+  get studyStayUsd(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
 
-    const cycles = this.selectedWeeks / 4;
-    return this.fourWeekStudyStayUsd * cycles;
-  }
+  get tuitionForSelectedWeeks(): number { return this.quotePlan.total('course'); }
 
-  get tuitionForSelectedWeeks(): number {
-    return this.selectedCourse.tuitionUsd * this.durationMultiplier;
-  }
-
-  get roomFeeForSelectedWeeks(): number {
-    return this.selectedRoom.feeUsd * this.durationMultiplier;
-  }
+  get roomFeeForSelectedWeeks(): number { return this.quotePlan.total('room'); }
 
   get durationMultiplier(): number {
     return this.selectedWeeks < 4
@@ -545,13 +545,13 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get isOffSeasonEntry(): boolean {
-    return this.startDateUtc !== null && this.selectedStartDate >= '2026-08-30' && this.selectedStartDate <= '2026-12-27';
+    return this.quotePlan.courses.some(row => this.quotePlan.date(row.startDate) !== null && row.startDate >= '2026-08-30' && row.startDate <= '2026-12-27');
   }
 
   get offSeasonDiscount(): number {
-    return this.isOffSeasonEntry
-      ? Math.floor(this.selectedWeeks / 4) * this.offSeasonDiscountPerFourWeeks
-      : 0;
+    return this.quotePlan.courses
+      .filter(row => this.quotePlan.date(row.startDate) !== null && row.startDate >= '2026-08-30' && row.startDate <= '2026-12-27')
+      .reduce((sum, row) => sum + Math.floor(row.weeks / 4) * this.offSeasonDiscountPerFourWeeks, 0);
   }
 
   get longStayDiscount(): number {
@@ -586,27 +586,14 @@ export class CgBaniladSchoolComponent implements OnInit {
       ? value : null;
   }
 
-  get summerWeeks(): number {
-    const start = this.startDateUtc;
-    if (start === null) return 0;
-    const weekMs = 7 * 24 * 60 * 60 * 1000;
-    const summerStart = Date.UTC(2026, 6, 5);
-    // Both dates in the supplied school notice are inclusive.
-    const summerEndExclusive = Date.UTC(2026, 7, 31);
-    let count = 0;
-    for (let week = 0; week < this.selectedWeeks; week += 1) {
-      const weekStart = start + week * weekMs;
-      if (weekStart < summerEndExclusive && weekStart + weekMs > summerStart) count += 1;
-    }
-    return count;
-  }
+  get summerWeeks(): number { return this.quotePlan.overlapWeeks('2026-07-05', '2026-08-30', [...this.quotePlan.courses, ...this.quotePlan.rooms]); }
 
   get summerSurcharge(): number {
     return this.summerWeeks * this.summerFeePerWeek;
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const rounded = Math.round(this.quoteUsd * this.usdToCny);
     return `约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
 
@@ -637,23 +624,19 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get localFeePeriods(): number {
-    return Math.max(1, Math.ceil(this.selectedWeeks / 4));
+    return this.localFeeEstimate.periods;
   }
 
   get localFeeEstimateNote(): string {
-    return '学杂费均为预估金额，仅供准备比索现金参考，具体以学校及相关部门到校实收为准。' +
-      (this.selectedWeeks === 3 ? '3周管理费、电费和水费按4周预估。' : '');
+    return '学杂费为比索现金预估，具体以学校及相关部门到校实收为准。' + (this.quotePlan.roomWeeks === 3 ? '3周管理费、电费和水费按4周预估。' : '');
   }
 
   get visaExtensionCount(): number {
-    // Default estimate: the initial visa covers 59 days; each extension covers 30 days.
-    const uncoveredStudyDays = Math.max(0, this.selectedWeeks * 7 - 59);
-    return Math.ceil(uncoveredStudyDays / 30);
+    return this.localFeeEstimate.visaExtensionCount;
   }
 
   get visaExtensionFee(): number {
-    // CG public table's cumulative fee tiers, indexed by required extensions, not study weeks.
-    return [0, 5160, 11550, 16010, 20470, 24930][this.visaExtensionCount] ?? 0;
+    return this.localFeeEstimate.visaExtensionFee;
   }
 
   get includedLocalFees(): LocalFee[] {
@@ -665,22 +648,11 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get localFees(): LocalFee[] {
-    const periods = this.localFeePeriods;
-    // Default estimate assumes a 59-day visa: charge once only after eight weeks.
-    // Earlier processing with a 30-day visa remains a conditional note, not an automatic fee.
-    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
-    return [
-      { item: 'SSP特殊学习许可证', amount: '7,800 比索 / 次', quantity: 1, total: 7800, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理' },
-      { item: 'SSP E-CARD', amount: '4,500 比索 / 次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，本次按一次预估；换学校需要携带证明，否则需要重新办理' },
-      { item: 'ACR-I CARD 外国人身份证', amount: '4,500 比索 / 次', quantity: acrQuantity, total: 4500 * acrQuantity, note: '按持59天签证预估，学习超过8周计入一次；若持30天签证，约第4周首次续签时可能提前产生，以实际办理为准' },
-      { item: '维护管理费', amount: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '每4周预估1份，具体以学校实收为准' },
-      { item: '电费', amount: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '预估金额；空调或超额用电按学校计量另收，参考25比索/度' },
-      { item: '水费', amount: '500 比索 / 4周', quantity: periods, total: 500 * periods, note: '每4周预估1份，具体以学校实收为准' },
-      { item: '旅游签证续签', amount: '首次5,160比索；第2次6,390比索；第3–5次4,460比索/次', quantity: this.visaExtensionCount, total: this.visaExtensionFee, note: '按持59天签证预估，学习超过8周才需续签；超出59天的学习天数按每次30天向上取整。若持30天签证，学习超过4周需续签。12/16/20/24周续签费累计预估5,160/11,550/16,010/20,470比索，具体以学校及相关部门实收为准' },
-      { item: '书本教材费', amount: '2,000 比索 / 次预估', quantity: 1, total: 2000, note: '先预估2,000比索；不同课程教材不同，按实际购买结算，学完后另购新教材' },
-      { item: '宿务马克坦机场接机（可选）', amount: '1,200 比索 / 次', quantity: this.includeAirportPickup ? 1 : 0, total: this.includeAirportPickup ? 1200 : 0, note: '可选择接机，也可自行打车；不计入学杂费合计', excluded: true },
-      { item: '押金（可退）', amount: '1,000 比索 / 次预估', quantity: 1, total: 1000, note: '预估1,000比索，具体以学校为准；无损坏或额外扣费时按规定退还，不计入学杂费合计', excluded: true },
-    ];
+    return this.localFeeEstimate.fees;
+  }
+
+  private get localFeeEstimate() {
+    return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks);
   }
 
   get localFeesTotal(): number {
@@ -692,6 +664,18 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get quoteImageData() {
+    const base = this.baseQuoteImageData;
+    return presentSchoolQuote({
+      ...base,
+      importantNotes: [
+        ...this.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks as WeekOption]!),
+        '最终以学校价格、空房及优惠确认为准。',
+      ],
+      totalNote: '人民币按参考汇率预估，最终以支付当日汇率为准',
+    }, this.quotePlan, 'CG Banilad', this.quoteUsd, this.usdToCny);
+  }
+
+  private get baseQuoteImageData() {
     const paymentItems: QuoteImagePaymentItem[] = [
       { icon: '注', label: '注册费', amount: this.formatUsd(this.registrationFeeUsd), note: '一次性学校注册费，不参与折扣' },
       { icon: '课', label: '课程费', amount: this.formatUsd(this.tuitionForSelectedWeeks), note: `${this.selectedCourse.name}；${this.selectedCourse.lessons}` },
@@ -703,7 +687,7 @@ export class CgBaniladSchoolComponent implements OnInit {
     ];
     if (this.sidaDiscountAmount > 0) paymentItems.push({ icon: '折', label: '思达折扣', amount: '9折', note: `优惠金额：${this.formatUsd(this.sidaDiscountAmount)}`, accent: true });
     if (this.offSeasonDiscount > 0) paymentItems.push({ icon: '淡', label: '淡季优惠', amount: `− ${this.formatUsd(this.offSeasonDiscount)}`, note: this.offSeasonRuleText, accent: true });
-    if (this.longStayDiscount > 0) paymentItems.push({ icon: '长', label: '长期优惠', amount: `− ${this.formatUsd(this.longStayDiscount)}`, note: `${this.selectedWeeks}周适用；${this.longStayRuleText}`, accent: true });
+    if (this.longStayDiscount > 0) paymentItems.push({ icon: '长', label: '长期优惠', amount: `− ${this.formatUsd(this.longStayDiscount)}`, note: `本次${this.selectedWeeks}周，优惠${this.formatUsd(this.longStayDiscount)}`, accent: true });
     if (this.summerSurcharge > 0) {
       paymentItems.push({ icon: '暑', label: '暑假附加费', amount: this.formatUsd(this.summerSurcharge), note: `${this.summerDateRange}就读；40美元/周/人 × ${this.summerWeeks}周` });
       ruleNotes.push('暑假附加费不打折；按有重叠的学习周计费，不足一周按一周预估，具体以学校为准。');

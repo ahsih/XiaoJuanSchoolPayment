@@ -1,0 +1,54 @@
+:host .ev-quote-panel { min-width: 0; }
+:host .ev-quote-heading h2 { margin-bottom: 12px; }
+:host .ev-quote-list { margin: 14px 0; overflow: hidden; border: 1px solid #d5e1db; border-radius: 8px; background: #fff; }
+:host .ev-quote-list header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; background: #e8f3ed; }
+:host .ev-quote-list h3 { margin: 0; color: #174b33; font-size: 15px; }
+:host .ev-quote-list h3 small { margin-left: 10px; color: #61786c; font-size: 12px; font-weight: 600; }
+:host .ev-quote-list header button { display: inline-flex; align-items: center; gap: 3px; min-height: 38px; padding: 6px 11px; border: 0; border-radius: 5px; background: #2f6b3d; color: #fff; font-weight: 800; cursor: pointer; }
+:host .ev-quote-list header button:disabled { opacity: .5; cursor: not-allowed; }
+:host .ev-quote-list header mat-icon { width: 18px; height: 18px; font-size: 18px; }
+:host .ev-list-columns,
+:host .ev-list-row { display: grid; grid-template-columns: minmax(180px, 1.1fr) minmax(210px, 1.3fr) 76px 142px 112px 105px 44px; align-items: center; gap: 10px; padding: 11px 12px; }
+:host .ev-list-columns { padding-block: 9px; background: #f9fbfa; color: #64748b; font-size: 12px; text-align: center; }
+:host .ev-list-columns span:first-child,
+:host .ev-list-columns span:nth-child(2) { text-align: left; }
+:host .ev-list-row { min-height: 72px; box-sizing: border-box; }
+:host .ev-list-row + .ev-list-row { border-top: 1px solid #edf0ee; }
+:host .ev-list-row > * { min-width: 0; }
+:host .ev-list-row label > span,
+:host .ev-row-details > span,
+:host .ev-row-date > span,
+:host .ev-row-amount > span { display: none; }
+:host .ev-list-row select,
+:host .ev-list-row input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 40px; padding: 8px; border: 1px solid #d0dcd5; border-radius: 5px; background: #fff; color: #1d3549; font: inherit; font-size: 13px; }
+:host .ev-row-weeks select { text-align: center; }
+:host .ev-row-details { color: #536779; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+:host .ev-row-date { color: #596c7d; font-size: 12px; white-space: nowrap; }
+:host .ev-row-end time { display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 5px; background: #f7faf8; font-variant-numeric: tabular-nums; }
+:host .ev-row-amount { color: #174b33; font-size: 13px; text-align: right; white-space: nowrap; }
+:host .ev-row-remove { min-height: 40px; padding: 4px; border: 0; background: #fff; color: #9c4934; cursor: pointer; }
+:host :is(.ev-list-row select, .ev-list-row input, .ev-quote-list button):focus-visible { outline: 2px solid #08745c; outline-offset: 2px; }
+:host .ev-plan-caption { margin: 10px 0; color: #64748b; font-size: 12px; line-height: 1.65; }
+:host .ev-plan-warning { margin: 10px 0; padding: 10px 12px; border-left: 3px solid #d9843f; background: #fff4e7; color: #895023; font-size: 13px; line-height: 1.6; }
+
+@media (max-width: 1120px) {
+  :host .ev-list-columns { display: none; }
+  :host .ev-list-row { grid-template-columns: minmax(0, 1fr) 92px; gap: 10px; padding: 12px; }
+  :host .ev-row-type { grid-column: 1; grid-row: 1; }
+  :host .ev-row-weeks { grid-column: 2; grid-row: 1; }
+  :host .ev-row-details { grid-column: 1 / -1; grid-row: 2; }
+  :host .ev-row-start { grid-column: 1; grid-row: 3; }
+  :host .ev-row-end { grid-column: 2; grid-row: 3; }
+  :host .ev-row-amount { grid-column: 1; grid-row: 4; text-align: left; }
+  :host .ev-row-remove { grid-column: 2; grid-row: 4; }
+  :host .ev-list-row label > span,
+  :host .ev-row-details > span,
+  :host .ev-row-date > span { display: block; margin-bottom: 4px; color: #829089; font-size: 11px; }
+  :host .ev-row-amount > span { display: inline; margin-right: 8px; color: #829089; font-weight: 400; }
+}
+
+@media (max-width: 430px) {
+  :host .ev-quote-list header { align-items: flex-start; }
+  :host .ev-quote-list h3 small { display: block; margin: 3px 0 0; }
+  :host .ev-quote-list header button { min-height: 44px; }
+}

@@ -302,7 +302,7 @@ export class GlcSchoolComponent implements OnInit {
     },
     {
       title: '需要超严格斯巴达管理',
-      text: 'GLC更适合半斯巴达/自律平衡型；强制学习管理可同步比较CG Sparta、EV或SMEAG。',
+      text: 'GLC更适合半斯巴达/自律平衡型；强制学习管理可同步比较CG斯巴达校区、EV或SMEAG。',
     },
     {
       title: '只看最低总价',

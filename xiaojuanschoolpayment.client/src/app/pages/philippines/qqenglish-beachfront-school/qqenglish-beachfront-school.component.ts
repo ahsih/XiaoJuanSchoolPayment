@@ -267,7 +267,7 @@ export class QqenglishBeachfrontSchoolComponent {
     },
     {
       title: '想要强制斯巴达管理',
-      text: 'QQEnglish更偏弹性一对一和自律学习；强制晚自习、门禁和考试冲刺可看CG Sparta、EV或SMEAG。',
+      text: 'QQEnglish更偏弹性一对一和自律学习；强制晚自习、门禁和考试冲刺可看CG斯巴达校区、EV或SMEAG。',
     },
     {
       title: '不想拆分费用口径',

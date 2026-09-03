@@ -106,7 +106,7 @@ export class CebuStudyComponent {
         'Philinter',
         'Fella',
         'CELLA Uni',
-        'CG 斯巴达',
+        'CG斯巴达校区',
       ],
     },
     {
@@ -123,7 +123,7 @@ export class CebuStudyComponent {
         'CPI',
         'SMEAG Capital',
         'CPILS',
-        'CG 斯巴达',
+        'CG斯巴达校区',
         'Philinter',
         'CELLA Uni',
         "B'Cebu",
@@ -146,7 +146,7 @@ export class CebuStudyComponent {
         'ICL',
         'IU',
         'CG Banilad',
-        'CG 斯巴达',
+        'CG斯巴达校区',
         'ELSA',
         'BTES',
         'CELLA Uni',
@@ -393,15 +393,15 @@ export class CebuStudyComponent {
   activeDirectoryFilter: DirectoryCategory = '全部学校';
 
   readonly directoryCategorySchools: Record<Exclude<DirectoryCategory, '全部学校'>, string[]> = {
-    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella', 'CELLA Uni', 'CG Sparta'],
-    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG Sparta', 'Philinter', 'CELLA Uni', "B'Cebu", 'GLC', 'QQEnglish BFC'],
-    高性价比: ['CPI', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'CG Sparta', 'ELSA', 'BTES', 'CELLA Uni', 'Winning 海滨校区', '3D Academy', 'CPILS'],
+    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella', 'CELLA Uni', 'CG斯巴达校区'],
+    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG斯巴达校区', 'Philinter', 'CELLA Uni', "B'Cebu", 'GLC', 'QQEnglish BFC'],
+    高性价比: ['CPI', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'CG斯巴达校区', 'ELSA', 'BTES', 'CELLA Uni', 'Winning 海滨校区', '3D Academy', 'CPILS'],
     亲子友好: ['EV La Mer', 'CPI', 'CIEC', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'English Fella', 'ELSA', 'SMEAG Encanto 海滨校区', 'Cebu Blue Ocean', 'Philinter', 'Genius English', 'EMO', 'HLA', 'QQEnglish BFC', 'BTES', 'CELLA Premium', 'Winning 海滨校区', 'IMS Banilad', 'GLC'],
   };
 
   readonly directoryPopularityOrder = [
     'CIA', 'EV Academy', 'EV La Mer', 'CPI', 'CPILS', 'SMEAG Capital', 'SMEAG Encanto 海滨校区', 'English Fella', 'Philinter', "B'Cebu",
-    'I.BREEZE', 'Cebu Blue Ocean', 'CELLA Uni', 'CG Sparta', 'GLC', 'CELLA Premium', 'CG Banilad',
+    'I.BREEZE', 'Cebu Blue Ocean', 'CELLA Uni', 'CG斯巴达校区', 'GLC', 'CELLA Premium', 'CG Banilad',
     'IU Academy', 'Winning 海滨校区', 'QQEnglish BFC', 'ELSA', '3D Academy', 'ICL', 'IMS Banilad',
     'TARGET', 'First English', 'CIEC', 'Genius English', 'STARGATE', 'BTES', 'CIJ Premium',
     'HLA', 'EMO', 'Curious World', 'ETHOS', 'Howdy English', 'GLANT', 'Lapulapu',
@@ -511,7 +511,7 @@ export class CebuStudyComponent {
       image: 'https://cebu21.jp/include/schoolno5/cellaunicenter/Pool/photocuc_29.jpg', highlights: ['强化口语', '雅思保证班', '托业', '英语教师资格课程', '短期密集英语'],
     },
     {
-      name: 'CG Sparta', route: '/philippines-study/cebu/cg-academy-sparta-campus', tag: '斯巴达专门校',
+      name: 'CG斯巴达校区', route: '/philippines-study/cebu/cg-academy-sparta-campus', tag: '斯巴达专门校',
       location: 'Talisay · Cebu', summary: '高强度日程与EOP环境，适合短期集中提升和考试冲刺。',
       image: 'https://phl-ryugaku-apa.com/wp-content/uploads/2023/04/School-view-2-scaled-e1685250113690.jpg', highlights: ['斯巴达 / 高阶综合英语', '雅思保证班', '托业', '商务英语', '短期综合英语'],
     },

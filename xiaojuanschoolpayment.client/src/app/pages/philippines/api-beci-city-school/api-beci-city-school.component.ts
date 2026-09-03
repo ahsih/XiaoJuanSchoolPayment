@@ -270,7 +270,7 @@ export class ApiBeciCitySchoolComponent {
     },
     {
       title: '需要强斯巴达管理',
-      text: 'City Campus是Non-Sparta和无门禁路线，需要强制晚自习与高压管理可看BECI Sparta、CG Sparta或EV。',
+      text: 'City Campus是Non-Sparta和无门禁路线，需要强制晚自习与高压管理可看BECI Sparta、CG斯巴达校区或EV。',
     },
     {
       title: '亲子低龄同行',

@@ -1,0 +1,67 @@
+:host .cg-sparta-page .cg-quote-heading h2 { margin-bottom: 16px; }
+:host .cg-sparta-page .cg-quote-card { container-type: inline-size; }
+:host .cg-sparta-page .cg-sunday-input { display: flex; align-items: center; width: 100%; max-width: 180px; min-height: 40px; box-sizing: border-box; border: 1px solid #cbd8d1; border-radius: 5px; background: white; }
+:host .cg-sparta-page .cg-sunday-input input { width: 100%; min-width: 0; border: 0; background: transparent; padding: 8px; color: #193b2c; font: inherit; font-size: 12px; cursor: pointer; }
+:host .cg-sparta-page .cg-sunday-input mat-datepicker-toggle { --mdc-icon-button-state-layer-size: 36px; --mdc-icon-button-icon-size: 20px; flex: 0 0 36px; }
+:host .cg-sparta-page .cg-quote-list { margin: 14px 0; border: 1px solid #d5e1db; border-radius: 8px; background: #fff; overflow: hidden; }
+:host .cg-sparta-page .cg-quote-list header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; background: #e8f3ed; }
+:host .cg-sparta-page .cg-quote-list h3 { margin: 0; font-size: 16px; color: #174b33; }
+:host .cg-sparta-page .cg-quote-list h3 small { margin-left: 12px; color: #61786c; font-size: 12px; font-weight: 500; }
+:host .cg-sparta-page .cg-quote-list header button { display: inline-flex; align-items: center; gap: 3px; min-height: 40px; border: 0; border-radius: 5px; background: #2f6b3d; color: white; padding: 6px 12px; font-weight: 700; cursor: pointer; }
+:host .cg-sparta-page .cg-quote-list button:disabled { opacity: .5; cursor: not-allowed; }
+:host .cg-sparta-page .cg-quote-list header mat-icon { font-size: 18px; width: 18px; height: 18px; }
+:host .cg-sparta-page .cg-list-columns,
+:host .cg-sparta-page .cg-list-row { display: grid; grid-template-columns: minmax(140px, 1.2fr) minmax(150px, 1.4fr) 70px 142px 108px 100px 40px; align-items: center; gap: 10px; padding: 12px; }
+:host .cg-sparta-page :is(.cg-col-weeks, .cg-col-date) { text-align: center; }
+:host .cg-sparta-page :is(.cg-col-amount, .cg-row-amount) { text-align: right; }
+:host .cg-sparta-page .cg-list-row > * { min-width: 0; }
+:host .cg-sparta-page .cg-row-lessons { font-size: 12px; line-height: 1.65; color: #536779; overflow-wrap: anywhere; }
+:host .cg-sparta-page .cg-row-lessons > span { display: none; }
+:host .cg-sparta-page .cg-row-lessons strong { display: block; color: #536779; font-size: 12px; font-weight: 400; }
+:host .cg-sparta-page .cg-row-lessons small { display: block; margin-top: 4px; color: #738279; font-size: 11px; line-height: 1.6; }
+:host .cg-sparta-page .cg-course-english { display: none; margin-top: 4px; color: #667a70; font-size: 11px; overflow-wrap: anywhere; }
+:host .cg-sparta-page .cg-list-columns { color: #64748b; font-size: 12px; background: #f9fbfa; padding-block: 9px; }
+:host .cg-sparta-page .cg-list-row { min-height: 72px; box-sizing: border-box; }
+:host .cg-sparta-page .cg-list-row + .cg-list-row { border-top: 1px solid #edf0ee; }
+:host .cg-sparta-page .cg-list-row label { min-width: 0; }
+:host .cg-sparta-page .cg-list-row label > span,
+:host .cg-sparta-page .cg-row-date > span,
+:host .cg-sparta-page .cg-row-amount > span { display: none; }
+:host .cg-sparta-page .cg-list-row select { box-sizing: border-box; width: 100%; min-width: 0; min-height: 42px; padding: 8px; border: 1px solid #ccd9d1; border-radius: 5px; color: #1d3549; background: white; font: inherit; font-size: 13px; }
+:host .cg-sparta-page .cg-row-date { color: #596c7d; font-size: 12px; white-space: nowrap; }
+:host .cg-sparta-page .cg-row-weeks select { text-align: center; }
+:host .cg-sparta-page .cg-row-end time { display: flex; align-items: center; justify-content: center; min-height: 40px; border-radius: 4px; background: #f7faf8; }
+:host .cg-sparta-page :is(.cg-row-date, .cg-row-amount, .cg-sunday-input input) { font-variant-numeric: tabular-nums; }
+:host .cg-sparta-page .cg-row-amount { color: #174b33; font-size: 13px; white-space: nowrap; }
+:host .cg-sparta-page .cg-row-remove { min-height: 40px; padding: 4px; background: white; border: 0; color: #9c4934; cursor: pointer; }
+:host .cg-sparta-page .cg-row-warning { grid-column: 1 / -1; margin: 0; color: #965327; font-size: 12px; line-height: 1.5; }
+:host .cg-sparta-page .cg-row-date-error { grid-column: 1 / -1; margin: 0; color: #ad3522; font-size: 12px; }
+:host .cg-sparta-page .cg-plan-caption,
+:host .cg-sparta-page .cg-combined-rules { color: #64748b; font-size: 12px; line-height: 1.65; margin: 10px 0; }
+:host .cg-sparta-page .cg-combined-rules summary { cursor: pointer; }
+:host .cg-sparta-page .cg-plan-warning { padding: 10px 12px; border-left: 3px solid #d9843f; background: #fff4e7; color: #895023; font-size: 13px; line-height: 1.6; }
+:host .cg-sparta-page .cg-fee-summary-title { font-size: 16px; color: #174b33; margin: 20px 0 10px; }
+:host .cg-sparta-page .cg-quote-breakdown { margin-top: 8px; gap: 8px; }
+:host .cg-sparta-page :is(.cg-base-fee, .cg-adjustment-card) { padding: 10px 12px; }
+:host .cg-sparta-page :is(.cg-list-row select, .cg-quote-list button, .cg-sunday-input input):focus-visible { outline: 2px solid #08745c; outline-offset: 2px; }
+@container (max-width: 1000px) {
+  :host .cg-sparta-page .cg-course-english { display: block; }
+  :host .cg-sparta-page .cg-list-columns { display: none; }
+  :host .cg-sparta-page .cg-list-row,
+  :host .cg-sparta-page .cg-course-list .cg-list-row { grid-template-columns: minmax(0, 1fr) 106px; gap: 10px; padding: 12px; }
+  :host .cg-sparta-page .cg-row-type { grid-column: 1; grid-row: 1; }
+  :host .cg-sparta-page .cg-row-weeks { grid-column: 2; grid-row: 1; align-self: start; }
+  :host .cg-sparta-page .cg-row-lessons { grid-column: 1 / -1; grid-row: 2; }
+  :host .cg-sparta-page .cg-row-lessons:empty { display: none; }
+  :host .cg-sparta-page .cg-row-start { grid-column: 1; grid-row: 3; }
+  :host .cg-sparta-page .cg-row-end { grid-column: 2; grid-row: 3; }
+  :host .cg-sparta-page .cg-row-amount { grid-row: 4; grid-column: 1; text-align: left; }
+  :host .cg-sparta-page .cg-row-remove { grid-row: 4; grid-column: 2; min-height: 44px; }
+  :host .cg-sparta-page .cg-list-row label > span,
+  :host .cg-sparta-page .cg-row-date > span,
+  :host .cg-sparta-page .cg-row-lessons > span { display: block; color: #829089; font-size: 11px; margin-bottom: 4px; }
+  :host .cg-sparta-page .cg-row-amount > span { display: inline; color: #829089; margin-right: 8px; font-weight: 400; }
+  :host .cg-sparta-page .cg-row-warning { grid-row: 5; }
+  :host .cg-sparta-page .cg-row-date-error { grid-row: 6; }
+  :host .cg-sparta-page .cg-quote-list header button { min-height: 44px; }
+}

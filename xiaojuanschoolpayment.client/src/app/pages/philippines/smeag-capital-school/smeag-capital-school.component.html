@@ -237,7 +237,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
@@ -249,7 +249,7 @@
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
                 <div>
-                  <em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b>
+                  <em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b>
                 </div>
                 <p>{{ fee.suitable }}</p>
               </article>
@@ -294,7 +294,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomFees">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
@@ -306,7 +306,7 @@
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
                 <div>
-                  <em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b>
+                  <em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b>
                 </div>
                 <p>{{ room.note }}</p>
               </article>
@@ -315,58 +315,27 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <span>SMEAG Capital 费用快速报价</span>
-              <h2>默认参考：4周 ESL常规 + 校内四人间</h2>
-              <p>前期支付参考 = 注册费 + 9折后的课程费 + 住宿费 − 淡季优惠。校内住宿费参与9折，校外住宿无折扣。</p>
+              <h2>SMEAG Capital{{ selectedWeeks }}周报价</h2>
             </div>
-            <div class="quote-form" aria-label="SMEAG Capital费用快速报价选项">
-              <label>
-                学习周数
-                <select [(ngModel)]="selectedWeeks">
-                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
-                    {{ weeks }} 周
-                  </option>
-                </select>
-              </label>
-              <label>
-                课程
-                <select [(ngModel)]="selectedCourseId">
-                  <option *ngFor="let course of courseFees" [value]="course.id">
-                    {{ course.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                房型
-                <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of roomFees" [value]="room.id">
-                    {{ room.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                预计入学日
-                <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-            </div>
+            <app-school-quote-plan [plan]="quotePlan" [examCourseIds]="examCourseIds"></app-school-quote-plan>
             <div class="quote-breakdown">
               <div>
-                <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+                <span>注册费</span><strong>{{ registrationFee }} 美元</strong>
               </div>
               <div>
                 <span>课程费</span
-                ><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
+                ><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong>
               </div>
               <div>
                 <span>住宿费</span
-                ><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
+                ><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong>
               </div>
               <div>
-                <span>{{ discountText }}</span><strong>优惠 USD {{ formatUsd(sidaDiscountAmount) }}</strong>
+                <span>{{ discountText }}</span><strong>优惠 {{ formatUsd(sidaDiscountAmount) }} 美元</strong>
               </div>
               <div>
-                <span>淡季优惠（适用期：2026/08/23–2027/01/01；{{ lowSeasonWeeks }}周 × USD {{ lowSeasonDiscountPerWeek }}）</span
-                ><strong>- USD {{ formatUsd(lowSeasonDiscount) }}</strong>
+                <span>淡季优惠（适用期：2026/08/23–2027/01/01；{{ lowSeasonWeeks }}周 × {{ lowSeasonDiscountPerWeek }}美元）</span
+                ><strong>- {{ formatUsd(lowSeasonDiscount) }} 美元</strong>
               </div>
             </div>
             <div class="quote-result">
@@ -389,7 +358,7 @@
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价<mat-icon>support_agent</mat-icon>
               </a>
-              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error" label="保存报价单图片"></app-quote-image-download-button>
             </div>
           </section>
         </section>
@@ -402,7 +371,7 @@
             </div>
           </div>
           <p class="local-fee-intro">
-            以下依据SMEAG 2027新版Local Fee表按周数自动计算；接机费可自由选择，押金在无欠费及损坏时按学校规定退还，两项均在合计下方单独列示。费用可因移民政策及学校规定调整，最终以到校实收为准。
+            {{ localFeeIntro }}
           </p>
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
@@ -413,7 +382,7 @@
                 </tr>
               </tbody>
               <tfoot>
-                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含可选接机费、可退押金及教材费</td></tr>
+                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>含1套教材预估费用；不含可选接机费及可退押金</td></tr>
                 <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
               </tfoot>
             </table>
@@ -422,6 +391,16 @@
             <h4>另行准备（不计入上方学杂费合计）</h4>
             <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b></div>
           </div>
+          <section class="textbook-reference" aria-labelledby="smeag-textbook-reference-title">
+            <h4 id="smeag-textbook-reference-title">各课程教材价格参考（比索/套）</h4>
+            <p>上表仅计入所选课程的1套教材，以下价格不重复计费。</p>
+            <dl class="textbook-price-list">
+              <div *ngFor="let textbook of textbookPrices">
+                <dt>{{ textbook.label }}</dt>
+                <dd>{{ formatPhp(textbook.price) }} / 套</dd>
+              </div>
+            </dl>
+          </section>
         </section>
 
         <section class="materials-panel" id="materials">

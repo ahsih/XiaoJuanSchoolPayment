@@ -273,36 +273,15 @@
 
         <section class="quote-panel" id="quote" aria-labelledby="quote-title">
           <div class="section-heading">
-            <span>CG Banilad 费用快速报价</span>
-            <h2 id="quote-title">{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
-            <p>按单人估算：注册费 + 课程与住宿费 × 9折 − 适用优惠 + 暑假附加费。</p>
+            <h2 id="quote-title">CG Banilad{{ selectedWeeks }}周报价</h2>
           </div>
-          <div class="quote-form" aria-label="CG Banilad费用快速报价选项">
-            <label for="banilad-weeks">学习周数
-              <select id="banilad-weeks" [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
-              </select>
-            </label>
-            <label for="banilad-course">课程
-              <select id="banilad-course" [(ngModel)]="selectedCourseId">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label for="banilad-room">房型
-              <select id="banilad-room" [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label for="banilad-start">预计入学日
-              <input id="banilad-start" #startDateInput type="date" [(ngModel)]="selectedStartDate" (click)="openDatePicker(startDateInput)" />
-            </label>
-          </div>
+          <app-school-quote-plan [plan]="quotePlan"></app-school-quote-plan>
 
           <div class="quote-breakdown">
             <h3 class="quote-breakdown-heading">学校基础费用 · 美元</h3>
             <div><span>注册费（不参与折扣）</span><strong>{{ formatUsd(registrationFeeUsd) }}</strong></div>
-            <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong><small>{{ selectedCourse.name }} / {{ selectedWeeksText }}</small></div>
-            <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong><small>{{ selectedRoom.name }}</small></div>
+            <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
+            <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
             <h3 class="quote-breakdown-heading quote-breakdown-heading--adjustments">优惠与附加费 · 按当前选择自动计算</h3>
             <div class="quote-adjustment-card quote-adjustment-card--discount">
               <span>思达9折优惠</span>
@@ -335,7 +314,7 @@
           <div class="quote-actions">
             <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
             <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-            <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
+            <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error" label="保存报价单图片"></app-quote-image-download-button>
           </div>
           <p class="quote-status" role="status" *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需确认课程、房型、空房和优惠。</p>
         </section>
@@ -434,7 +413,7 @@
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认空房与正式报价</li>
             <li><mat-icon>check_circle</mat-icon> 拆分美元主费与比索当地费用</li>
-            <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CG Sparta、I.BREEZE等宿务学校</li>
+            <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、CG斯巴达校区、I.BREEZE等宿务学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">
             联系思达顾问

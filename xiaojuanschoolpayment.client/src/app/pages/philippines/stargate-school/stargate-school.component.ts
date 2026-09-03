@@ -271,7 +271,7 @@ export class StargateSchoolComponent {
     },
     {
       title: '需要强制斯巴达管理',
-      text: 'STARGATE偏初学者支持和半自律学习；强管理或考试冲刺可看CG Sparta、EV或SMEAG。',
+      text: 'STARGATE偏初学者支持和半自律学习；强管理或考试冲刺可看CG斯巴达校区、EV或SMEAG。',
     },
   ];
 

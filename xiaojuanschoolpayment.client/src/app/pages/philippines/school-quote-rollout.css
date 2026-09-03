@@ -1,0 +1,16 @@
+:host #quote { grid-column: 1 / -1; min-width: 0; }
+:host #quote .quote-form-card,
+:host #quote .quote-result-card { grid-column: 1 / -1; min-width: 0; }
+:host #quote .quote-form-card { display: block; }
+:host #quote .quote-form-card > label { display: block; max-width: 260px; margin-top: 12px; }
+:host #quote .quote-form { margin-block: 12px; }
+:host #quote app-school-quote-plan { width: 100%; }
+:host #quote h2 { font-size: clamp(24px, 3vw, 34px); overflow-wrap: anywhere; }
+:host #quote .quote-breakdown > div { min-width: 0; }
+:host #quote .quote-result > strong,
+:host #quote .quote-total > strong { overflow-wrap: anywhere; }
+@media(max-width:680px){
+  :host #quote { padding: 16px 12px; }
+  :host #quote .quote-form-card, :host #quote .quote-result-card { padding: 16px 12px; }
+  :host #quote .quote-breakdown { grid-template-columns: minmax(0,1fr); }
+}

@@ -368,18 +368,33 @@
           </div>
         </section>
 
-        <section class="quote-panel" id="quote">
-            <div class="section-heading">
+        <section class="quote-panel ev-quote-panel" id="quote">
+            <div class="section-heading ev-quote-heading">
               <span>EV 费用快速报价</span>
-              <h2>默认参考：4周半斯巴达 ESL + 四人间</h2>
-              <p>选择学习周数、课程、房型和预计入学日，即可查看费用估算。</p>
+              <h2>{{ quoteHeading }}</h2>
+              <p>课程与住宿可以分别添加多行；每行独立选择类型、周数和周日开始日期，结束日期自动计算至周六。</p>
             </div>
-            <div class="quote-form" aria-label="EV费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><optgroup label="斯巴达课程"><option *ngFor="let course of spartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup><optgroup label="半斯巴达课程"><option *ngFor="let course of semiSpartaCourseFees" [value]="course.id">{{ course.name }}</option></optgroup></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" (click)="openDatePicker($event)" aria-label="选择EV预计入学日期" /></label>
-            </div>
+            <section *ngFor="let list of quoteLists; trackBy: trackQuoteList" class="ev-quote-list" [class.ev-course-list]="list.kind === 'course'" [attr.aria-label]="list.title + '清单'">
+              <header>
+                <h3>{{ list.title }} <small>共{{ list.weeks }}周</small></h3>
+                <button type="button" (click)="addSelection(list.kind)" [disabled]="!canAddSelection(list.kind)" [attr.aria-label]="'添加' + list.title"><mat-icon>add</mat-icon>添加{{ list.title }}</button>
+              </header>
+              <div class="ev-list-columns" aria-hidden="true">
+                <span>{{ list.title }}类型</span><span>说明</span><span>周数</span><span>开始日期 · 周日</span><span>结束日期 · 周六</span><span>金额（美元）</span><span></span>
+              </div>
+              <div *ngFor="let row of list.rows; trackBy: trackSelection" class="ev-list-row">
+                <label class="ev-row-type"><span>{{ list.title }}类型</span><select [ngModel]="row.optionId" (ngModelChange)="updateSelection(list.kind, row.id, { optionId: $event })" [attr.aria-label]="list.title + row.index + '类型'" [title]="row.name"><option *ngFor="let option of list.options" [value]="option.id">{{ option.name }}</option></select></label>
+                <div class="ev-row-details"><span>说明</span>{{ row.details }}</div>
+                <label class="ev-row-weeks"><span>周数</span><select [ngModel]="row.weeks" (ngModelChange)="updateSelection(list.kind, row.id, { weeks: $event })" [attr.aria-label]="list.title + row.index + '周数'"><option *ngFor="let weeks of selectionWeekOptions(list.kind, row)" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+                <label class="ev-row-date ev-row-start"><span>开始日期 · 周日</span><input type="date" [ngModel]="row.startDate" (ngModelChange)="updateSelection(list.kind, row.id, { startDate: $event })" (click)="openDatePicker($event)" [attr.aria-label]="list.title + row.index + '开始日期（仅限周日）'" /></label>
+                <div class="ev-row-date ev-row-end"><span>结束日期 · 周六</span><time>{{ row.endDate }}</time></div>
+                <strong class="ev-row-amount"><span>金额</span>{{ formatUsd(row.amount) }} 美元</strong>
+                <button *ngIf="list.rows.length > 1" type="button" class="ev-row-remove" (click)="removeSelection(list.kind, row.id)" [attr.aria-label]="'删除' + list.title + row.index">删除</button>
+              </div>
+            </section>
+            <p *ngIf="planError" class="ev-plan-warning" role="alert">{{ planError }}</p>
+            <p *ngIf="!planError && dateCoverageMismatch" class="ev-plan-warning">课程与住宿日期不完全一致，将分别计费；请确认未覆盖的住宿或额外住宿安排。</p>
+            <p class="ev-plan-caption">注册费只收一次；课程和住宿分别最多24周。</p>
             <div class="quote-breakdown">
               <h3 class="quote-breakdown-heading">基础费用</h3>
               <div><span>注册费</span><strong>{{ registrationFee }} 美元</strong></div>
@@ -413,23 +428,23 @@
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房和优惠。</p>
             </div>
             <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <button type="button" class="primary-action" (click)="calculateQuote()">重新计算<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive || !canExportQuote" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">到校学杂费会按学习周数、校内或校外住宿、签证时长自动估算。接机与可退房间押金单独列示，不计入学杂费合计。</p>
-            <p class="season-note">旺季附加费为{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元），系统按学习日期与{{ peakSeasonDateRange }}的重叠周数自动计入；注册费、未成年管理费和旺季附加费均不参与95折。</p>
+            <p class="fee-alert">教材按课程周数，管理费与水电费按住宿周数，签证费按完整停留时间估算。校内、校外住宿管理费分别计算；接机与可退房间押金单独列示，不计入学杂费合计。</p>
+            <p class="season-note">旺季附加费为{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元），系统按课程及住宿日期与{{ peakSeasonDateRange }}的重叠周数自动计入，同一周不重复收费；注册费、未成年管理费和旺季附加费均不参与95折。</p>
         </section>
 
         <section class="local-fee-estimate" id="local-fees" aria-labelledby="ev-local-fee-title">
           <div class="local-fee-heading">
             <div>
               <span>到校后另付 · 自动预估</span>
-              <h3 id="ev-local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
+              <h3 id="ev-local-fee-title">课程{{ totalWeeks }}周 / 住宿{{ roomTotalWeeks }}周学杂费明细</h3>
             </div>
           </div>
           <p class="local-fee-intro">
-            以下费用以比索计价，系统会按当前周数、房型和签证时长自动计算。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴纳金额为准。
+            {{ localFeeEstimateNote }}
           </p>
 
           <div class="local-fee-table-wrap">
@@ -454,7 +469,7 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th>
+                  <th colspan="3" scope="row">本方案学杂费总计预估（比索）</th>
                   <td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td>
                   <td>不含可选接机及可退房间押金</td>
                 </tr>

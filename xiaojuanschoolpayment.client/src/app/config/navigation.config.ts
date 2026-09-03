@@ -326,7 +326,7 @@ export const mainNavigation: NavigationItem[] = [
           },
           {
             id: 'cg-academy-sparta-campus',
-            label: '菲律宾宿务CG Academy（Sparta Campus）',
+            label: '菲律宾宿务CG斯巴达校区',
             route: '/philippines-study/cebu/cg-academy-sparta-campus',
           },
           {

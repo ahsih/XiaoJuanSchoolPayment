@@ -103,8 +103,26 @@ describe('CPI pricing and complete quote export', () => {
     expect(quote.optionalFeeItems?.[2].amount).toBe('200 比索 / 5公斤 / 次');
     expect(quote.localFeeAmount).toBe('19,150 比索');
     expect(quote.paymentItems.find(row => row.label === '课程费')?.note).toContain('4节一对一');
-    expect(quote.paymentItems.find(row => row.label === '住宿费')?.note).toBe(component.selectedRoom.name);
+    expect(quote.paymentItems.find(row => row.label === '住宿费')?.detailTitle).toBe(component.selectedRoom.name);
     expect(JSON.stringify(quote)).not.toMatch(/\bUSD\b|\bPHP\b/);
+  });
+
+  it('keeps the exported introduction and every local fee remark identical to the webpage', () => {
+    for (const weeks of [1, 4, 8, 12, 24]) {
+      component.selectedWeeks = weeks;
+      const quote = component.quoteImageData;
+      expect(quote.localFeeTableLayout).toBe('web');
+      expect(quote.localFeeNote).toBe(component.localFeeIntro);
+      expect(quote.localFeeNote).toContain('签证相关费用按持59天签证预估');
+      expect(quote.localFeeNote).toContain('教材按每次约用8周预估');
+      expect(quote.localFeeNote).toContain('水费不足4周按4周计算');
+      expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
+        label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: component.formatPhp(fee.total), note: fee.note,
+      })));
+      expect(quote.optionalFeeItems).toEqual(component.excludedLocalFees.map(fee => ({
+        label: fee.item, amount: fee.amount, note: fee.note,
+      })));
+    }
   });
 
   it('uses bilingual exam and ESP names and preserves stable course identifiers', () => {
@@ -127,7 +145,7 @@ describe('CPI pricing and complete quote export', () => {
       component.selectedCourseId = id;
       expect(component.selectedCourse.name).toBe(name);
       expect(component.courseDisplayName(name)).toBe(display);
-      expect(component.quoteImageData.paymentItems[1].note).toContain(display);
+      expect(component.quoteImageData.paymentItems[1].detailTitle).toContain(display);
     }
   });
 
@@ -175,9 +193,11 @@ describe('CPI pricing and complete quote export', () => {
     expect(layout.localHeights.length).toBe(10);
     expect(layout.optionalHeights.length).toBe(3);
     expect(layout.localExtra).toBeGreaterThan(0);
-    expect(layout.noteHeights.length).toBe(renderer.quote.importantNotes!.length);
-    expect(renderer['detailedLocalNote'](renderer.quote.localFeeItems![0])).toContain('7,800 比索 / 次 × 1');
-    expect(820 + layout.localHeights.reduce((s, h) => s + h, 0) + 70 + layout.optionalHeights.reduce((s, h) => s + h, 0))
+    expect(layout.noteHeights.length).toBe(layout.importantNotes.length);
+    expect(layout.importantNotes.filter(note => note.includes('人民币金额按参考汇率估算')).length).toBe(1);
+    expect(renderer['detailedLocalNote'](renderer.quote.localFeeItems![0])).toBe(component.includedLocalFees[0].note);
+    expect(layout.localNoteHeight).toBeGreaterThan(0);
+    expect(820 + layout.localNoteHeight + layout.localHeights.reduce((s, h) => s + h, 0) + 70 + layout.optionalHeights.reduce((s, h) => s + h, 0))
       .toBeLessThanOrEqual(1442 + layout.localExtra - 14);
   });
 
@@ -189,7 +209,7 @@ describe('CPI pricing and complete quote export', () => {
       expect(component.quoteUsd - component.courseAndRoomBase + component.sidaDiscountAmount).withContext(`${weeks} weeks`).toBeCloseTo(100, 6);
       expect(component.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
       expect(component.quoteImageData.paymentItems.find(row => row.label === '注册费')?.amount).toBe('100 美元');
-      expect(component.quoteImageData.importantNotes?.join('')).toContain('只收一次，不随学习周数变化');
+      expect(component.quoteImageData.paymentItems.find(row => row.label === '注册费')?.note).toContain('一次性');
     }
   });
 
@@ -198,7 +218,11 @@ describe('CPI pricing and complete quote export', () => {
     component.selectedStartDate = '2026-12-07';
     const renderer = new QuoteImageDownloadButtonComponent();
     renderer.quote = component.quoteImageData;
+    const canvasText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
+    const drawnText = canvasText.calls.allArgs().map(args => args[0]).join('');
+    expect(drawnText).toContain(component.localFeeIntro);
+    for (const fee of component.localFees) expect(drawnText).toContain(fee.note);
     expect(blob.type).toBe('image/png');
     expect(blob.size).toBeGreaterThan(10000);
     const bitmap = await createImageBitmap(blob);
