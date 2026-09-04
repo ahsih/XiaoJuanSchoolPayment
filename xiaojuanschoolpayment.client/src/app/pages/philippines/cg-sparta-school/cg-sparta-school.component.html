@@ -242,117 +242,29 @@
             </div>
           </section>
 
-        <section class="quote-results-section cia-section cg-quote-section" id="quote">
-          <div class="cg-quote-card">
-            <div class="cg-quote-heading">
-              <h2>{{ quoteHeading }}</h2>
-            </div>
-            <section *ngFor="let list of quoteLists; trackBy: trackQuoteList" class="cg-quote-list" [class.cg-course-list]="list.kind === 'course'" [attr.aria-label]="list.title + '清单'">
-              <header><h3>{{ list.title }} <small>共{{ list.weeks }}周</small></h3><button type="button" (click)="addSelection(list.kind)" [disabled]="!canAddSelection(list.kind)" [attr.aria-label]="'添加' + list.title"><mat-icon>add</mat-icon>添加{{ list.title }}</button></header>
-              <div class="cg-list-columns" aria-hidden="true">
-                <span class="cg-col-type">{{ list.title }}类型</span>
-                <span *ngIf="list.kind === 'course'">课程安排</span>
-                <span *ngIf="list.kind === 'room'">说明</span>
-                <span class="cg-col-weeks">周数</span>
-                <span class="cg-col-date">开始日期 · 周日</span>
-                <span class="cg-col-date">结束日期 · 周六</span>
-                <span class="cg-col-amount">金额（美元）</span>
-                <span></span>
-              </div>
-              <div *ngFor="let row of list.rows; trackBy: trackSelection" class="cg-list-row">
-                <label class="cg-row-type"><span>{{ list.title }}类型</span><select [ngModel]="row.optionId" (ngModelChange)="updateSelection(list.kind, row.id, { optionId: $event })" [attr.aria-label]="list.title + row.index + '类型'" [title]="row.name"><option *ngFor="let option of list.options" [value]="option.id">{{ option.name }}</option></select><small *ngIf="row.englishName" class="cg-course-english">{{ row.englishName }}</small></label>
-                <div *ngIf="list.kind === 'course'" class="cg-row-lessons" [title]="row.lessons"><span>课程安排</span><strong>{{ row.lessonMain }}</strong><small>{{ row.lessonExtra }}</small></div>
-                <div *ngIf="list.kind === 'room'" class="cg-row-lessons"></div>
-                <label class="cg-row-weeks"><span>周数</span><select [ngModel]="row.weeks" (ngModelChange)="updateSelection(list.kind, row.id, { weeks: $event })" [attr.aria-label]="list.title + row.index + '周数'"><option *ngFor="let weeks of selectionWeekOptions(list.kind, row)" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-                <div class="cg-row-date cg-row-start"><span>开始日期 · 周日</span>
-                  <div class="cg-sunday-input">
-                    <input [matDatepicker]="rowPicker" [matDatepickerFilter]="sundayFilter" [ngModel]="rowStartDate(row)"
-                      (dateChange)="setRowStartDate(list.kind, row.id, $event.value)" readonly (click)="rowPicker.open()"
-                      [attr.aria-label]="list.title + row.index + '开始日期（仅限周日）'" />
-                    <mat-datepicker-toggle [for]="rowPicker" [aria-label]="'选择' + list.title + row.index + '开始日期'"></mat-datepicker-toggle>
-                    <mat-datepicker #rowPicker></mat-datepicker>
-                  </div>
-                </div>
-                <div class="cg-row-date cg-row-end"><span>结束日期 · 周六</span><time>{{ row.endDate }}</time></div>
-                <strong class="cg-row-amount"><span>金额</span>{{ formatUsd(row.amount) }} 美元</strong>
-                <button type="button" class="cg-row-remove" [disabled]="list.rows.length === 1" (click)="removeSelection(list.kind, row.id)" [attr.aria-label]="'删除' + list.title + row.index">删除</button>
-                <p *ngIf="row.warning" class="cg-row-warning">{{ row.warning }}</p>
-                <p *ngIf="dateErrors.get(row.id)" class="cg-row-date-error" role="alert">{{ dateErrors.get(row.id) }}</p>
-              </div>
-            </section>
-            <p *ngIf="planError" class="cg-plan-warning" role="alert">{{ planError }}</p>
-            <p *ngIf="!planError && dateCoverageMismatch" class="cg-plan-warning">课程与住宿日期不完全一致，将分别计费；请确认未覆盖的住宿或额外住宿安排。</p>
-            <p class="cg-plan-caption">可选1–52周；注册费只计一次。</p>
-            <p *ngIf="hasLongPlan" class="cg-plan-warning">{{ longPlanNote }}</p>
-            <h3 class="cg-fee-summary-title">学校费用明细</h3>
-            <div class="cg-quote-breakdown">
-              <div class="cg-base-fee"><span>注册费（不参与折扣）</span><strong>{{ formatUsd(registrationFee) }} 美元</strong></div>
-              <div class="cg-base-fee"><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-              <div class="cg-base-fee"><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
-
-              <div class="cg-quote-adjustments">
-                <div class="cg-adjustment-card cg-adjustment-card--discount">
-                  <span>思达9折优惠</span><strong>− {{ formatUsd(sidaDiscountAmount) }} 美元</strong>
-                  <small>仅课程费和住宿费享9折；注册费、暑假附加费和学杂费不打折。</small>
-                </div>
-                <div class="cg-adjustment-card cg-adjustment-card--discount">
-                  <span>淡季优惠 · 150美元/4周</span>
-                  <strong>{{ offSeasonDiscount > 0 ? '− ' : '' }}{{ formatUsd(offSeasonDiscount) }} 美元</strong>
-                  <small>{{ offSeasonRuleText }}。</small>
-                </div>
-                <div class="cg-adjustment-card cg-adjustment-card--discount">
-                  <span>长期优惠 · 12周及以上</span>
-                  <strong>{{ longStayDiscount > 0 ? '− ' : '' }}{{ formatUsd(longStayDiscount) }} 美元</strong>
-                  <small>{{ longStayRuleText }}。</small>
-                </div>
-                <div class="cg-adjustment-card cg-adjustment-card--summer">
-                  <span>暑假附加费 · 40美元/周/人</span>
-                  <strong>{{ summerSurcharge > 0 ? '+ ' : '' }}{{ formatUsd(summerSurcharge) }} 美元</strong>
-                  <small>就读时间：{{ summerDateRange }}（含首尾日期）。本次计费{{ summerWeeks }}周。</small>
-                </div>
-              </div>
-            </div>
-            <div class="cg-quote-total" aria-live="polite">
-              <span>{{ canExportQuote ? '最终应付学校金额' : '当前费用预估（请完善日期和周数）' }}</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>人民币预计金额：{{ quoteCnyText }}</em>
-              <small class="exchange-rate-summary">{{ exchangeRateText }}，最终以支付当日汇率为准</small>
-            </div>
-            <p class="cg-quote-rule-note" *ngIf="applicablePriceNote">{{ applicablePriceNote }}</p>
-            <div class="cg-quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()"><mat-icon>calculate</mat-icon>重新计算</button>
-              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive || !canExportQuote" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
-              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
-            </div>
-          </div>
-
-          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
-            <div class="local-fee-heading">
-              <div><span>到校后另付 · 比索预估</span><h3 id="local-fee-title">{{ totalWeeks }}周学杂费明细</h3></div>
-            </div>
-            <p class="local-fee-intro">{{ localFeeEstimateNote }}</p>
-            <div class="local-fee-table-wrap" tabindex="0" role="region" aria-label="学杂费明细，可横向滚动查看完整表格">
-              <table class="local-fee-table">
-                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-                <tbody>
-                  <tr *ngFor="let fee of includedLocalFees">
-                    <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr><th colspan="3" scope="row">{{ totalWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含可选接机及可退押金，具体以学校实收为准</td></tr>
-                  <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
-                </tfoot>
-              </table>
-            </div>
-            <p class="mobile-fee-hint">手机可左右滑动表格，查看计费参考和完整备注。</p>
-            <div class="excluded-fee-list">
-              <h4>另行准备（不计入上方学杂费合计）</h4>
-              <label class="pickup-option"><input type="checkbox" [(ngModel)]="includeAirportPickup" />需要宿务马克坦机场接机（可选，1,200 比索 / 次）</label>
-              <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.amount }} × {{ fee.quantity }}；{{ fee.note }}</small></span><b>{{ formatPhp(fee.total) }}</b></div>
-            </div>
-          </section>
-
+        <section class="quote-panel group-quote" id="quote">
+          <div class="section-heading"><h2>{{quoteHeading}}</h2></div>
+          <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode==='single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode==='group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode==='group'">学生人数<input type="number" min="2" max="20" [(ngModel)]="studentCount" /></label></div>
+          <p class="group-hint" *ngIf="quoteMode==='group'">每人分别安排课程和住宿；每位学生的课程与住宿均可选择1–52周。</p>
+          <article class="student-quote" *ngFor="let student of activeStudents;let i=index">
+            <h3 *ngIf="quoteMode==='group'">学生{{i+1}}</h3>
+            <div class="student-fields"><label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label><label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label><label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{option.label}}</option></select></label></div>
+            <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <p class="group-hint" *ngIf="student.selectedAgeGroup==='minor'">按所选课程收费；未成年入学及监护要求须顾问确认。</p>
+            <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+            <p class="group-hint" *ngIf="student.quotePlan.stayWeeks>24">{{longPlanNoteFor(student)}}</p>
+            <div class="student-subtotal" *ngIf="quoteMode==='group'"><span>学生{{i+1}}学校费用小计</span><strong>{{formatUsd(student.quoteUsd)}} 美元</strong></div>
+          </article>
+          <div class="quote-breakdown"><div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{item.label}}<small>{{item.note}}</small></span><strong>{{item.amount}}</strong></div></div>
+          <p class="fee-alert" *ngIf="quoteError">{{quoteError}}</p>
+          <div class="quote-result"><span>最终应付学校金额</span><strong>{{quoteUsdText}}</strong><em>人民币预计金额：{{quoteCnyText}}</em><small>参考汇率：1美元 ≈ {{usdToCny}}元人民币（{{exchangeRateText}}）</small></div>
+          <div class="quote-actions"><button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a></div>
+        </section>
+        <section class="local-fee-estimate" id="local-fees">
+          <div class="local-fee-heading"><div><h3>到校后学杂费明细</h3></div></div><p class="local-fee-intro">{{localFeeEstimateNote}}</p>
+          <div class="local-fee-table-wrap" tabindex="0"><table class="local-fee-table"><thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead><tbody><tr *ngFor="let fee of includedLocalFees"><th>{{fee.item}}</th><td>{{fee.amount}}</td><td>{{formatFeeQuantity(fee.quantity)}}</td><td class="fee-amount">{{formatPhp(fee.total)}}</td><td>{{fee.note}}</td></tr></tbody><tfoot><tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{formatPhp(localFeesTotal)}}</td><td>不含接机及可退押金</td></tr><tr><th colspan="3">人民币预计金额</th><td class="fee-cny">{{localFeesCnyText}}</td><td>参考汇率：1元人民币 ≈ {{phpPerCny}}比索；最终以实际汇率为准</td></tr></tfoot></table></div>
+          <p class="mobile-fee-hint">手机可左右滑动表格，查看完整备注。</p>
+          <div class="excluded-fee-list"><h4>另行准备（不计入上方学杂费合计）</h4><div *ngFor="let fee of optionalFeeItems"><span><strong>{{fee.label}}</strong><small>{{fee.note}}</small></span><b>{{fee.amount}}<small>{{fee.cnyAmount}}</small></b></div></div>
         </section>
 
         <section class="cia-section materials-panel" id="materials">

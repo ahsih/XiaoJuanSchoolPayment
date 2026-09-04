@@ -112,3 +112,18 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+:host #course-fees, :host #room-fees { grid-template-columns: minmax(0, 1fr); }
+:host .quote-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+:host .age-billing-rules p { margin: 8px 0; font-weight: 400; }
+:host .local-fee-table { table-layout: fixed; width: 100%; }
+:host .local-fee-table th, :host .local-fee-table td { overflow-wrap: anywhere; white-space: normal; }
+:host .excluded-fee-list small { font-weight: 400; }
+:host .mobile-fee-hint, :host .mobile-fee-total { display: none; }
+@media (max-width: 760px) {
+  :host .mobile-fee-hint { display: block; color: #526176; font-size: 13px; }
+  :host .mobile-fee-total { display: grid; gap: 6px; padding: 16px 0; color: #526176; }
+  :host .mobile-fee-total strong { color: #e94f16; font-size: 24px; }
+  :host .local-fee-table tfoot { display: none; }
+}
+@media (max-width: 760px) { :host .quote-form { grid-template-columns: minmax(0, 1fr); } }

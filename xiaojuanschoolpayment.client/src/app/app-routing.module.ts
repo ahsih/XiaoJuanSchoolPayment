@@ -1037,7 +1037,21 @@ const routes: Routes = [
             (m) => m.AdminSchoolPhotosComponent,
           ),
       },
+      {
+        path: 'student-applications',
+        loadComponent: () =>
+          import('./pages/admin-student-applications/admin-student-applications.component').then(
+            (m) => m.AdminStudentApplicationsComponent,
+          ),
+      },
     ],
+  },
+  {
+    path: 'student',
+    data: { role: 'student' },
+    canActivate: [RoleGuard],
+    loadComponent: () =>
+      import('./pages/student-portal/student-portal.component').then((m) => m.StudentPortalComponent),
   },
   { path: '**', redirectTo: '' },
 ];

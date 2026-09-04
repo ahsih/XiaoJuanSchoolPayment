@@ -32,7 +32,7 @@ builder.Services.AddAuthentication(options =>
   {
     ValidateIssuer = true,
     ValidateAudience = true,
-    ValidateLifetime = false,
+    ValidateLifetime = true,
     ValidateIssuerSigningKey = true,
     ValidIssuer = builder.Configuration["Jwt:Issuer"],
     ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -200,7 +200,9 @@ app.MapGet("/robots.txt", (HttpRequest request) =>
     "User-agent: *",
     "Allow: /",
     "Disallow: /admin",
+    "Disallow: /student",
     "Disallow: /login",
+    "Disallow: /register",
     $"Sitemap: {origin}/sitemap.xml",
     string.Empty,
   });

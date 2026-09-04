@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { SchoolQuotePlan, QuotePlanRow, presentSchoolQuote } from '../../../components/school-quote-plan';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,8 @@ import { buildPhilippinesDetailedQuote } from '../../../components/philippines-q
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import { CgLocalFee as LocalFee, estimateCgLocalFees } from '../cg-local-fees';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { CgBaniladStudentQuote } from './cg-banilad-student-quote';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
 type WeekOption = number;
@@ -103,6 +105,7 @@ interface SourceLink {
     '../ev-school/ev-school-detail.component.css',
     '../philippines-local-fee-table.css',
     './cg-banilad-school.component.css',
+    '../../../components/school-group-quote.css',
   ],
 })
 export class CgBaniladSchoolComponent implements OnInit {
@@ -126,18 +129,16 @@ export class CgBaniladSchoolComponent implements OnInit {
     3: 0.85,
   };
 
-  readonly quotePlan = new SchoolQuotePlan('general-esl', 'quad', '2026-09-06', this.weekOptions,
-    kind => kind === 'course'
-      ? this.courses.map(option => ({ id: option.id, name: option.name, details: option.lessons }))
-      : this.roomOptions.map(option => ({ id: option.id, name: option.name, details: '' })),
-    (kind, row) => {
-      if (kind === 'course') {
-        const option = this.courses.find(option => option.id === row.optionId);
-        return option ? option.tuitionUsd * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
-      }
-      const option = this.roomOptions.find(option => option.id === row.optionId);
-      return option ? option.feeUsd * (this.shortTermRatios[row.weeks] ?? row.weeks / 4) : 0;
-    });
+  readonly students:CgBaniladStudentQuote[]=[new CgBaniladStudentQuote(this)];
+  quoteMode:'single'|'group'='single';
+  private requestedStudentCount=2;
+  get studentCount(){return this.requestedStudentCount;}
+  set studentCount(value:number){this.requestedStudentCount=value;if(Number.isInteger(value)&&value>=2&&value<=20)while(this.students.length<value)this.students.push(new CgBaniladStudentQuote(this));}
+  setQuoteMode(value:'single'|'group'){this.quoteMode=value;if(value==='group')this.studentCount=this.requestedStudentCount;}
+  get activeStudents(){return this.quoteMode==='single'?this.students.slice(0,1):this.students.slice(0,Math.max(2,Math.min(20,Math.floor(this.studentCount)||2)));}
+  get quotePlan(){return this.students[0].quotePlan;}
+  get quoteHeading(){return this.quoteMode==='single'?`CG Banilad${this.selectedWeeks}周报价`:`CG Banilad ${this.activeStudents.length}人报价`;}
+  get quoteError(){if(this.quoteMode==='group'&&(!Number.isInteger(this.studentCount)||this.studentCount<2||this.studentCount>20))return '多人报价人数请选择2–20人的整数。';const i=this.activeStudents.findIndex(s=>!!s.error);return i<0?'':`${this.quoteMode==='group'?'学生'+(i+1)+'：':''}${this.activeStudents[i].error}`;}
   get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
   set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
   get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
@@ -530,9 +531,9 @@ export class CgBaniladSchoolComponent implements OnInit {
 
   get studyStayUsd(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
 
-  get tuitionForSelectedWeeks(): number { return this.quotePlan.total('course'); }
+  get tuitionForSelectedWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.tuition,0); }
 
-  get roomFeeForSelectedWeeks(): number { return this.quotePlan.total('room'); }
+  get roomFeeForSelectedWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.accommodation,0); }
 
   get durationMultiplier(): number {
     return this.selectedWeeks < 4
@@ -541,7 +542,7 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get sidaDiscountAmount(): number {
-    return this.studyStayUsd * (1 - this.sidaDiscountRate);
+    return this.activeStudents.reduce((sum,s)=>sum+s.sidaDiscount,0);
   }
 
   get isOffSeasonEntry(): boolean {
@@ -549,30 +550,15 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get offSeasonDiscount(): number {
-    return this.quotePlan.courses
-      .filter(row => this.quotePlan.date(row.startDate) !== null && row.startDate >= '2026-08-30' && row.startDate <= '2026-12-27')
-      .reduce((sum, row) => sum + Math.floor(row.weeks / 4) * this.offSeasonDiscountPerFourWeeks, 0);
+    return this.activeStudents.reduce((sum,s)=>sum+s.offSeasonDiscount,0);
   }
 
   get longStayDiscount(): number {
-    const discounts: Partial<Record<WeekOption, number>> = {
-      12: 50,
-      16: 100,
-      20: 150,
-      24: 200,
-    };
-    return discounts[this.selectedWeeks] ?? 0;
+    return this.activeStudents.reduce((sum,s)=>sum+s.longStayDiscount,0);
   }
 
   get quoteUsd(): number {
-    return Math.max(
-      0,
-      this.registrationFeeUsd +
-        this.studyStayUsd * this.sidaDiscountRate -
-        this.offSeasonDiscount -
-        this.longStayDiscount +
-        this.summerSurcharge,
-    );
+    return this.activeStudents.reduce((sum,s)=>sum+s.quoteUsd,0);
   }
 
   get quoteUsdText(): string {
@@ -586,7 +572,7 @@ export class CgBaniladSchoolComponent implements OnInit {
       ? value : null;
   }
 
-  get summerWeeks(): number { return this.quotePlan.overlapWeeks('2026-07-05', '2026-08-30', [...this.quotePlan.courses, ...this.quotePlan.rooms]); }
+  get summerWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.summerWeeks,0); }
 
   get summerSurcharge(): number {
     return this.summerWeeks * this.summerFeePerWeek;
@@ -648,12 +634,13 @@ export class CgBaniladSchoolComponent implements OnInit {
   }
 
   get localFees(): LocalFee[] {
-    return this.localFeeEstimate.fees;
+    const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
+      .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
+    const optional=estimateCgLocalFees(this.quotePlan.stayWeeks,this.includeAirportPickup,this.quotePlan.roomWeeks,this.students[0].visaType).fees.filter(f=>f.excluded);
+    return [...included,...optional];
   }
 
-  private get localFeeEstimate() {
-    return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks);
-  }
+  private get localFeeEstimate() { return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks,this.students[0].visaType); }
 
   get localFeesTotal(): number {
     return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
@@ -663,57 +650,28 @@ export class CgBaniladSchoolComponent implements OnInit {
     return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
-  get quoteImageData() {
-    const base = this.baseQuoteImageData;
-    return presentSchoolQuote({
-      ...base,
-      importantNotes: [
-        ...this.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks as WeekOption]!),
-        '最终以学校价格、空房及优惠确认为准。',
-      ],
-      totalNote: '人民币按参考汇率预估，最终以支付当日汇率为准',
-    }, this.quotePlan, 'CG Banilad', this.quoteUsd, this.usdToCny);
+  get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
+  get schoolPaymentItems(){
+    const paid=this.activeStudents.filter(s=>s.registration>0).length;
+    return [{icon:'注',label:'注册费',amount:this.formatUsd(this.payableRegistrationFee),note:`一次性费用，老学员返校免费；本次计收${paid}人 × ${this.registrationFeeUsd}美元${paid<this.activeStudents.length?'，其余已免':''}`},...groupPaymentLines(this.activeStudents,false)];
   }
-
-  private get baseQuoteImageData() {
-    const paymentItems: QuoteImagePaymentItem[] = [
-      { icon: '注', label: '注册费', amount: this.formatUsd(this.registrationFeeUsd), note: '一次性学校注册费，不参与折扣' },
-      { icon: '课', label: '课程费', amount: this.formatUsd(this.tuitionForSelectedWeeks), note: `${this.selectedCourse.name}；${this.selectedCourse.lessons}` },
-      { icon: '宿', label: '住宿费', amount: this.formatUsd(this.roomFeeForSelectedWeeks), note: this.selectedRoom.name },
-    ];
-    const ruleNotes = [
-      '仅课程费和住宿费享思达9折，注册费不参与折扣。',
-      this.localFeeEstimateNote,
-    ];
-    if (this.sidaDiscountAmount > 0) paymentItems.push({ icon: '折', label: '思达折扣', amount: '9折', note: `优惠金额：${this.formatUsd(this.sidaDiscountAmount)}`, accent: true });
-    if (this.offSeasonDiscount > 0) paymentItems.push({ icon: '淡', label: '淡季优惠', amount: `− ${this.formatUsd(this.offSeasonDiscount)}`, note: this.offSeasonRuleText, accent: true });
-    if (this.longStayDiscount > 0) paymentItems.push({ icon: '长', label: '长期优惠', amount: `− ${this.formatUsd(this.longStayDiscount)}`, note: `本次${this.selectedWeeks}周，优惠${this.formatUsd(this.longStayDiscount)}`, accent: true });
-    if (this.summerSurcharge > 0) {
-      paymentItems.push({ icon: '暑', label: '暑假附加费', amount: this.formatUsd(this.summerSurcharge), note: `${this.summerDateRange}就读；40美元/周/人 × ${this.summerWeeks}周` });
-      ruleNotes.push('暑假附加费不打折；按有重叠的学习周计费，不足一周按一周预估，具体以学校为准。');
-    }
-    if (this.selectedWeeks === 3) ruleNotes.push('3周课程费与住宿费按4周价格的85%折算，再计思达9折。');
-    const quote = buildPhilippinesDetailedQuote({
-      fullFeeDetails: true,
-      localFeeTableLayout: 'web',
-      schoolCode: 'CG BANILAD',
-      schoolName: '菲律宾宿务CG Academy Banilad校区',
-      filePrefix: 'CG-Banilad',
-      heroSrc: '/assets/philippines/cg-banilad-campus-hero.jpg',
-      weeks: this.selectedWeeks,
-      startDate: this.selectedStartDate,
-      usdToCny: this.usdToCny,
-      totalUsd: this.quoteUsd,
-      paymentItems,
-      localFeeItems: this.includedLocalFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
-      localFeeTotal: this.localFeesTotal,
-      localCurrencyName: '比索',
-      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: this.localFeeEstimateNote,
-      optionalFeeItems: this.excludedLocalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: `${fee.amount} × ${fee.quantity}；${fee.note}` })),
-      ruleNotes,
+  get optionalFeeItems(){
+    return this.excludedLocalFees.map(fee=>({label:fee.item,amount:fee.item.includes('接机')?'1,200 比索':this.formatPhp(fee.total),cnyAmount:`约人民币 ${Math.round((fee.item.includes('接机')?1200:fee.total)/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:fee.item.includes('接机')?(this.activeStudents.length>1?'可选，也可自行前往；多人费用须按实际接机安排确认。':'可选，也可自行前往。'):'预估1,000比索，具体以学校为准；无损坏及无欠费时可退。'}));
+  }
+  get quoteImageData() {
+    const planRows=(['课','宿'] as const).flatMap(icon=>this.activeStudents.flatMap((student,index)=>student.quotePlan.paymentItems().filter(x=>x.icon===icon).map(x=>({...x,label:`${this.quoteMode==='group'?'学生'+(index+1)+' · ':''}${x.label.replace(/^课程费/,'课程名称').replace(/^住宿费/,'住宿名称')}`}))));
+    const paymentItems=[this.schoolPaymentItems[0],...planRows,...groupPaymentLines(this.activeStudents,true)];
+    const warnings=this.activeStudents.flatMap((student,index)=>student.quotePlan.warning?[`${this.quoteMode==='group'?'学生'+(index+1)+'：':''}${student.quotePlan.warning}`]:[]);
+    const short=[...new Set(this.activeStudents.flatMap(student=>student.quotePlan.shortStayNotes(w=>this.shortTermRatios[w]??w/4)))];
+    const quote=buildPhilippinesDetailedQuote({
+      fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG BANILAD',schoolName:'菲律宾宿务CG Academy Banilad校区',filePrefix:'CG-Banilad',
+      heroSrc:'/assets/philippines/cg-banilad-campus-hero.jpg',weeks:this.selectedWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
+      localFeeItems:this.includedLocalFees.map(f=>({label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:f.note})),
+      localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:this.localFeeEstimateNote,
+      optionalFeeItems:this.optionalFeeItems,ruleNotes:[],
     });
-    return { ...quote, totalUsd: this.formatUsd(this.quoteUsd) };
+    const result=applySchoolQuoteImageLayout({...quote,importantNotes:[...warnings,...short,'最终以学校价格、空房及优惠确认为准。']},'CG Banilad',this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
+    return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
   }
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -742,4 +700,5 @@ export class CgBaniladSchoolComponent implements OnInit {
   formatPhp(value: number): string {
     return `${value.toLocaleString('en-US')} 比索`;
   }
+  formatFeeQuantity(value:number){return value.toLocaleString('zh-CN',{maximumFractionDigits:2});}
 }

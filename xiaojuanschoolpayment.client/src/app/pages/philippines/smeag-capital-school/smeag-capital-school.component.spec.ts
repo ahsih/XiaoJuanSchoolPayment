@@ -16,8 +16,8 @@ describe('SMEAG Capital textbook estimates', () => {
   });
 
   it('includes one textbook set exactly once in the local total, not the school payment', () => {
-    expect(component.includedLocalFees.filter(fee => fee.item === '教材费').length).toBe(1);
-    expect(component.excludedLocalFees.map(fee => fee.item)).toEqual(['宿务马克坦机场接机（可选）', '押金（可退）']);
+    expect(component.includedLocalFees.filter(fee => fee.item.startsWith('教材费 ·')).length).toBe(1);
+    expect(component.excludedLocalFees.map(fee => fee.item)).toEqual(['宿务马克坦机场团体接机（可选）', '押金（可退）']);
     expect(component.localFeesTotal).toBe(18400);
     expect(component.quoteImageData.localFeeAmount).toBe('18,400 比索');
     expect(component.quoteUsd).toBe(1458);
@@ -30,11 +30,11 @@ describe('SMEAG Capital textbook estimates', () => {
       ['toefl-ielts-pre', 2500],
     ] as const) {
       component.selectedCourseId = courseId;
-      const textbook = component.includedLocalFees.find(fee => fee.item === '教材费')!;
+      const textbook = component.includedLocalFees.find(fee => fee.item.startsWith('教材费 ·'))!;
       expect(textbook.total).withContext(courseId).toBe(expected);
       expect(component.localFeesTotal).toBe(17700 + expected);
       expect(textbook.note).toContain(component.textbookUsageNote);
-      expect(component.quoteImageData.localFeeItems?.find(fee => fee.label === '教材费')?.note).toBe(textbook.note);
+      expect(component.quoteImageData.localFeeItems?.find(fee => fee.label.startsWith('教材费 ·'))?.note).toBe(textbook.note);
     }
     expect(component.textbookFeeNote).toContain('雅思 IELTS');
   });
@@ -48,7 +48,7 @@ describe('SMEAG Capital textbook estimates', () => {
       component.selectedCourseId = course.id;
       expect(component.textbookFeeNote).toBe(`${component.selectedTextbook.label}；${component.textbookUsageNote}`);
       expect(component.textbookFeeNote.length).toBeLessThan(70);
-      const quoteNote = component.quoteImageData.localFeeItems?.find(fee => fee.label === '教材费')?.note!;
+      const quoteNote = component.quoteImageData.localFeeItems?.find(fee => fee.label.startsWith('教材费 ·'))?.note!;
       for (const other of component.textbookPrices.filter(item => item.id !== component.selectedTextbook.id)) {
         expect(quoteNote).not.toContain(other.label);
       }
@@ -66,7 +66,7 @@ describe('SMEAG Capital textbook estimates', () => {
         expect(component.textbookFeeNote).toContain(label);
         expect(component.localFeesTotal).toBe(17700 + amount);
         expect(component.quoteImageData.localFeeAmount).toBe(component.formatPhp(17700 + amount));
-        expect(component.quoteImageData.localFeeItems?.find(fee => fee.label === '教材费')?.amount).toBe(component.formatPhp(amount));
+        expect(component.quoteImageData.localFeeItems?.find(fee => fee.label.startsWith('教材费 ·'))?.amount).toBe(component.formatPhp(amount));
       }
     }
     component.selectedCourseId = 'esl-regular-ket-pet-fce';
@@ -78,7 +78,7 @@ describe('SMEAG Capital textbook estimates', () => {
   it('clearly estimates the first set across durations without inventing a fixed repurchase cycle', () => {
     for (const weeks of component.weekOptions) {
       component.selectedWeeks = weeks;
-      const textbook = component.includedLocalFees.find(fee => fee.item === '教材费')!;
+      const textbook = component.includedLocalFees.find(fee => fee.item.startsWith('教材费 ·'))!;
       expect(textbook.quantity).toBe(1);
       expect(textbook.total).toBe(700);
       expect(textbook.note).toContain('4–6周');
@@ -111,8 +111,8 @@ describe('SMEAG Capital textbook estimates', () => {
     expect(text.replace(/\s/g, '')).toContain(component.textbookFeeNote.replace(/\s/g, ''));
     expect(text).toContain(component.localFeeIntro);
     expect(text).toContain('18,400 比索');
-    expect(text).not.toContain('Family Program');
-    expect(text).not.toContain('各课程教材价格参考');
+    expect(text).toContain('Family Program');
+    expect(text).toContain('教材价格参考');
     expect(blob.type).toBe('image/png');
     const bitmap = await createImageBitmap(blob);
     const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
@@ -122,4 +122,24 @@ describe('SMEAG Capital textbook estimates', () => {
     expect(bitmap.width).toBe(1032);
     bitmap.close();
   }, 30000);
+
+  it('keeps mixed-student registration, visas, pickup and course textbooks independent', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.students[0].pickupSelected = true;
+    component.students[1].returningStudent = true;
+    component.students[1].visaType = 'srrv';
+    component.students[1].quotePlan.courses[0].optionId = 'business';
+
+    expect(component.payableRegistrationFee).toBe(100);
+    expect(component.excludedLocalFees[0].quantity).toBe(1);
+    expect(component.excludedLocalFees[0].total).toBe(1200);
+    expect(component.excludedLocalFees[0].note).toContain('学校团体接机');
+    expect(component.includedLocalFees.find(row => row.item === '学生2 · SSP特殊学习许可证')?.total).toBe(0);
+    expect(component.includedLocalFees.find(row => row.item === '学生2 · ARP外国人登记')?.total).toBe(300);
+    expect(component.includedLocalFees.some(row => row.item.includes('综合英语 ESL'))).toBeTrue();
+    expect(component.includedLocalFees.some(row => row.item.includes('商务英语 Business English'))).toBeTrue();
+    expect(component.quoteImageData.paymentItems.some(row => row.label.startsWith('学生2 · 课程'))).toBeTrue();
+    expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
+  });
 });

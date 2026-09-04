@@ -1,0 +1,37 @@
+/* I.BREEZE group-form pattern, scoped to the CIA pilot. */
+:host .group-quote { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+:host .group-quote .quote-form-card { background: #fff7f2; border-color: #ffd1bd; }
+:host .group-quote .quote-mode { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+:host .quote-mode button { border: 1px solid #bdd6cc; border-radius: 6px; padding: 10px 18px; background: white; color: #064d3b; cursor: pointer; font: inherit; }
+:host .quote-mode button.active { background: #064d3b; color: white; }
+:host .quote-mode label { display: flex; align-items: center; gap: 10px; margin: 0; }
+:host .quote-mode input { width: 76px; }
+:host .group-hint { font-size: 14px; color: #526176; line-height: 1.7; }
+:host .student-quote { min-width: 0; border-bottom: 1px solid #dce5e9; padding: 16px 0; }
+:host .student-quote h3 { margin: 0 0 14px; color: #064d3b; }
+:host .student-fields { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+:host .student-fields label { display: grid; gap: 8px; min-width: 0; }
+:host .student-fields input, :host .student-fields select { width: 100%; min-width: 0; box-sizing: border-box; }
+:host .option-check { display: flex; gap: 10px; align-items: center; margin: 16px 0; padding: 14px 16px; border: 1px solid #f0cf72; border-radius: 8px; background: #fffdf4; color: #102033; font-weight: 750; cursor: pointer; }
+:host .option-check input { width: 18px; height: 18px; accent-color: #087343; margin: 0; }
+:host .student-subtotal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 12px; color: #14233e; }
+:host .quote-breakdown { display: grid; grid-template-columns: minmax(0,1fr); gap: 0; margin-top: 16px; }
+:host .quote-breakdown > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid #e3e9ed; }
+:host .quote-breakdown small { display: block; color: #64748b; font-size: 12px; font-weight: 400; line-height: 1.65; margin-top: 4px; }
+:host .quote-breakdown strong { flex-shrink: 0; text-align: right; }
+:host .quote-breakdown > div { background: #ffffff; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+:host .group-result { margin-top: 16px; padding: 18px; border-radius: 8px; background: #102033; color: #ffffff; }
+:host .group-result span, :host .group-result em { display: block; color: rgba(255,255,255,.78); }
+:host .group-result strong { display: block; margin-top: 6px; color: #ffffff; font-size: 28px; line-height: 1.15; overflow-wrap: anywhere; }
+:host .group-result small { display: block; margin-top: 6px; color: rgba(255,255,255,.76); font-size: 12px; white-space: pre-line; }
+:host .group-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+:host .quote-breakdown .discount-line strong { color: #e94f16; }
+:host .excluded-fee-list b { text-align: right; }
+:host .excluded-fee-list b small { display: block; font-weight: 400; color: #64748b; }
+:host .local-fee-intro { border-left: 0; font-weight: 400; }
+:host .fee-alert { color: #b42318; }
+@media (max-width: 760px) {
+  :host .student-fields { grid-template-columns: minmax(0,1fr); }
+  :host .group-actions { display: grid; grid-template-columns: minmax(0,1fr); }
+  :host .excluded-fee-list b { text-align: left; }
+}

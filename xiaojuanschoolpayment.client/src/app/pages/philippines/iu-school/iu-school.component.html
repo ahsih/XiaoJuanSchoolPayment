@@ -45,7 +45,7 @@
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
               先告诉顾问你的课程目标、学习周数、房型、是否要Fitness/IELTS/亲子路线和入学日期，
-              思达会帮你确认IU空房、促销、当地费用和正式报价。
+              思达会帮你确认IU空房、校方淡季价、当地费用和正式报价。
             </p>
           </div>
 
@@ -66,11 +66,11 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>Power Speaking 4 + 校内三人房 + 注册费</p>
+              <p>Power Speaking 4 + 校内三人房；符合条件免注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  使用公开参考价：学费USD 850 + 三人房USD 700 + 注册费参考USD 100
+                  使用校方2026价格：学费850美元 + 三人房700美元 + 注册费100美元；符合淡季条件时自动改用1,150美元校方组合价并免注册费
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -168,7 +168,7 @@
               <div class="advisor-avatar">Ivy</div>
               <div>
                 <strong>Ivy 顾问建议</strong>
-                <span>先确认课程路线和校内/外宿舍，再看是否有促销价；IELTS保证班和亲子课程要额外核规则。</span>
+                <span>先确认课程路线和校内/外宿舍，再核对校方淡季组合价；IELTS保证班和亲子课程要额外核规则。</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -242,8 +242,8 @@
               <span>IU 2026公开参考价</span>
               <h2>先看4周课程费，再叠加住宿房型</h2>
               <p>
-                以下为公开4周参考价，币种为美元。部分代理会提供促销套餐，正式价格需按入学日期、名额、住宿和学校确认。
-                IU最短接受3周报名，3周课程费和住宿费均按4周价的80%计算，不提供1-2周方案。
+                以下为官方2026价目表的4周价格，币种为美元。1/2/3周分别按4周价的40%/60%/80%计算，4周以上按比例计算。
+                淡季校方组合价由系统按课程、校内房型和日期判断，思达启航不再叠加其它价格优惠。
               </p>
             </div>
             <div
@@ -258,7 +258,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.schedule }}</span>
               </div>
             </div>
@@ -270,10 +270,20 @@
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
                 <div>
-                  <em>4周学费</em><b>USD {{ formatUsd(fee.tuition) }}</b>
+                  <em>4周学费</em><b>{{ formatUsd(fee.tuition) }} 美元</b>
                 </div>
                 <p>{{ fee.schedule }}</p>
               </article>
+            </div>
+            <div class="course-notes" aria-label="IU与ICL IELTS保分条件">
+              <section>
+                <h3>2026 IELTS保分条件</h3>
+                <ul>
+                  <li>出勤率须达到98%，并完成全部模拟考试。</li>
+                  <li>模拟考试成绩出现3次下降，或每2周未至少提高0.5 Band，将取消保分资格。</li>
+                  <li>最终考试未达目标分数时，学校最多免4周学费；住宿、学杂费和其它费用不在保分范围内。</li>
+                </ul>
+              </section>
             </div>
           </div>
 
@@ -294,7 +304,7 @@
           </div>
         </section>
 
-        <section class="split-layout" id="room-fees">
+        <section id="room-fees">
           <div class="section-block">
             <div class="section-heading">
               <span>IU 2026住宿费用参考</span>
@@ -315,101 +325,47 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomFees">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
             <ul class="check-list">
               <li>校内宿舍配置含空调、浴室、Wi-Fi、冰箱、桌子和感应门锁。</li>
-              <li>部分促销可能按课程+三人房套餐报价，是否适用需确认月份和名额。</li>
+              <li>本次淡季价为校方公布的课程+校内住宿组合价；不可再叠加思达启航或其它中介优惠。</li>
               <li>外部宿舍需确认交通、餐食和服务口径。</li>
+              <li *ngFor="let rule of quoteCalculator.admissionRules">{{ rule }}</li>
             </ul>
           </div>
 
-          <section class="quote-panel" id="quote">
+        </section>
+
+          <section class="quote-panel full-width-quote" id="quote">
             <div class="section-heading">
-              <span>IU费用快速报价</span>
-              <h2>默认参考：4周Power Speaking 4 + 校内三人房</h2>
-              <p>前期支付参考 = 注册费 + 课程费 + 住宿费。3周按4周价的80%计算；IU不提供1-2周方案。</p>
+              <span>IU 2026完整报价</span>
+              <h2>{{ quoteHeading }}</h2>
+              <p>课程与住宿可分别添加；每段均按周日开始、周六结束。系统会自动判断校方淡季组合价，思达启航不再提供或叠加其它价格优惠。</p>
             </div>
-            <div class="quote-form" aria-label="IU English Academy费用快速报价选项">
-              <label>
-                学习周数
-                <select [(ngModel)]="selectedWeeks">
-                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
-                    {{ weeks }} 周
-                  </option>
-                </select>
-              </label>
-              <label>
-                课程
-                <select [(ngModel)]="selectedCourseId">
-                  <option *ngFor="let course of courseFees" [value]="course.id">
-                    {{ course.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                房型
-                <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of roomFees" [value]="room.id">
-                    {{ room.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                预计入学日
-                <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-            </div>
+            <app-school-quote-plan [plan]="quoteCalculator.plan"></app-school-quote-plan>
+            <p class="fee-alert">校方淡季海报有效期为2026/08/23–2027/01/09，学生须在2027/01/16前结业；按周日入住、周六退房规则，报价器以2027/01/09为最后可计优惠的退房日。课程与校内住宿还须同日期且至少4周。{{ quoteCalculator.availabilityNote }}</p>
+            <p class="fee-alert" role="alert" *ngIf="quoteError || quoteWarning">{{ quoteError || quoteWarning }}</p>
             <div class="quote-breakdown">
-              <div>
-                <span>注册费参考</span><strong>USD {{ registrationFee }}</strong>
-              </div>
-              <div>
-                <span>课程费</span
-                ><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong>
-              </div>
-              <div>
-                <span>住宿费</span
-                ><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong>
-              </div>
-              <div>
-                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
-              </div>
-              <div>
-                <span>{{ discountText }}</span><strong>最终优惠需确认</strong>
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+                <span>{{ item.label }}<small>{{ item.detailTitle || item.note }}<br *ngIf="item.detailSubtitle" />{{ item.detailSubtitle }}</small></span>
+                <strong>{{ item.amount }}</strong>
               </div>
             </div>
+            <p class="season-note">{{ quoteCalculator.promotionNote }}</p>
             <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认促销、房型、入学日、校内/外住宿和当地费用。
-              </p>
+              <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateText }}</small>
+              <p *ngIf="quoteCalculated">已按当前课程、住宿、日期及校方2026价格更新。</p>
             </div>
             <div class="quote-actions">
-              <button
-                type="button"
-                class="primary-action"
-                (click)="calculateQuote()"
-              >
-                立即计算我的费用<mat-icon>calculate</mat-icon>
-              </button>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价<mat-icon>support_agent</mat-icon>
-              </a>
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">重新计算<mat-icon>calculate</mat-icon></button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取学校确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">
-              除课程和住宿外，到校后通常还需确认SSP、SSP E-Card、ACR I-Card、教材、押金、电费、维护费、
-              洗衣、接机和签证延长等费用。实际金额以学校当期规则为准。
-            </p>
-            <p class="season-note">
-              公开促销价通常有月份、名额和房型限制；暑假、寒假、单人房和亲子档期建议尽早确认。
-            </p>
           </section>
-        </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
@@ -419,23 +375,18 @@
               以下费用来自IU官方报名页和公开代理资料，不同周数、签证时长、住宿和学校政策会影响最终金额。
             </p>
           </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
+          <p class="local-fee-intro">{{ quoteCalculator.localFeeIntro }}</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
+              <tbody><tr *ngFor="let fee of localFees"><th>{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+              <tfoot>
+                <tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>包含可退押金；额外住宿另计</td></tr>
+                <tr><th colspan="3">人民币预计金额</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>{{ exchangeRateText }}</td></tr>
+              </tfoot>
+            </table>
           </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
-                <p>{{ fee.note }}</p>
-              </article>
-            </div>
-          </details>
+          <div class="excluded-fee-list"><h4>另行准备</h4><div *ngFor="let fee of quoteCalculator.optionalFees"><span>{{ fee.label }}<small>{{ fee.note }}</small></span><strong>{{ fee.amount }}</strong></div></div>
         </section>
 
         <section class="notice-panel" id="price-note">
@@ -443,8 +394,8 @@
           <div>
               <h2>价格更新时间与资料说明</h2>
               <p>
-                本页价格更新时间：2026年8月。费用参考IU官方报名页、官方课程/校区说明和公开代理2026费用表。
-                学校价格、促销、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+                本页价格更新时间：2026年9月。费用按本次提供的IU 2026官方价目表、IU/ICL淡季组合价表和保分政策整理。
+                学校价格、住宿空位、当地费用和汇率可能调整，报名以学校书面确认的正式报价为准。
             </p>
           </div>
         </section>
@@ -453,9 +404,9 @@
           <div>
             <div class="section-heading">
               <span>获取 IU 完整资料与报价单</span>
-              <h2>让顾问把课程、房型、促销和当地费用一次核清</h2>
+              <h2>让顾问把课程、房型、校方淡季价和当地费用一次核清</h2>
               <p>
-                通过思达报名IU，顾问会免费协助确认课程、房型、空房、优惠和正式报价，并协助整理菲律宾入境、
+                通过思达报名IU，顾问会免费协助确认课程、房型、空房、适用的校方价格和正式报价，并协助整理菲律宾入境、
                 接机和到校费用清单。
               </p>
             </div>
@@ -661,7 +612,7 @@
 
     <section class="bottom-cta">
       <div>
-        <h2>想知道IU当前是否有空房和优惠？</h2>
+        <h2>想知道IU当前是否有空房和适用的校方淡季价？</h2>
         <p>
           把入学日期、学习周数、课程方向、房型、是否亲子或Fitness/IELTS路线发给顾问，可以更快得到准确报价。
         </p>

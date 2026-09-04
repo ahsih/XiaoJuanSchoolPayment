@@ -1,7 +1,7 @@
 import { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-download-button.component';
 
 export type QuotePlanKind = 'course' | 'room';
-export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; }
+export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; occupant?: number; }
 export interface QuotePlanOption { id: string; name: string; details: string; }
 const DAY = 86400000;
 export const quoteMoney = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
@@ -10,7 +10,7 @@ export const quoteMoney = (value: number) => value.toLocaleString('en-US', { max
 export class SchoolQuotePlan {
   courses: QuotePlanRow[];
   rooms: QuotePlanRow[];
-  private nextId = 3;
+  protected nextId = 3;
   constructor(
     courseId: string, roomId: string, startDate: string,
     readonly allowedWeeks: readonly number[],

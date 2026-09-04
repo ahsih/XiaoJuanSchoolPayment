@@ -216,7 +216,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
@@ -224,7 +224,7 @@
               <article *ngFor="let fee of courseFees">
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                 <p>{{ fee.suitable }}</p>
               </article>
             </div>
@@ -259,7 +259,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomFees">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
@@ -267,7 +267,7 @@
               <article *ngFor="let room of roomFees">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div>
                 <p>{{ room.note }}</p>
               </article>
             </div>
@@ -275,38 +275,23 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <h2>CPILS{{ selectedWeeks }}周报价</h2>
+              <h2>{{ quoteHeading }}</h2>
             </div>
-            <app-school-quote-plan [plan]="quotePlan"></app-school-quote-plan>
-            <div class="quote-form"><label>预计报名日<input type="date" [(ngModel)]="selectedRegistrationDate" /></label></div>
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿及费用条件，注册费和学杂费按人计算。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields"><label>预计报名日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label><label>抵达时年龄<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label><label>签证类型<select [(ngModel)]="student.visaType"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label></div>
+              <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label><label class="option-check"><input type="checkbox" [(ngModel)]="student.pickupSelected" />需要学校机场团体接机</label></div>
+              <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">未成年学生按所选课程收费，入学及监护要求须顾问确认。</p>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentQuoteUsd(student)) }} 美元</strong></div>
+            </article>
             <div class="quote-breakdown">
-              <div><span>注册费（不参与折扣）</span><strong>{{ registrationFee }} 美元</strong></div>
-              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
-              <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− {{ formatUsd(sidaDiscountAmount) }} 美元</strong></div>
-              <div class="discount-line quote-rule-card">
-                <span>淡季入学优惠</span>
-                <small>2026/12/27前入学，旺季2026/06/01–08/26除外，最少4周；课程费和住宿费在思达9折后再享95折</small>
-                <strong>− {{ formatUsd(offSeasonDiscountAmount) }} 美元</strong>
-              </div>
-              <div class="discount-line quote-rule-card">
-                <span>无对外窗房优惠</span>
-                <small>无对外窗单人间/双人间每4周优惠50美元；2026/12/27前入学，旺季2026/06/01–08/26除外</small>
-                <strong>− {{ formatUsd(noWindowDiscountAmount) }} 美元</strong>
-              </div>
-              <div class="discount-line quote-rule-card">
-                <span>圣诞/新年优惠</span>
-                <small>报名日期：2026/06/29–12/31；学习期覆盖2026/12/21–12/26减75美元，覆盖2026/12/21–2027/01/01减150美元</small>
-                <strong>− {{ formatUsd(holidayDiscountAmount) }} 美元</strong>
-              </div>
-              <div class="quote-rule-card">
-                <span>暑假附加费：40美元/周</span>
-                <small>学习时间：2026/07/05–2026/08/29；当前重叠{{ peakSeasonWeeks }}周</small>
-                <strong>{{ formatUsd(seasonalSurcharge) }} 美元</strong>
-              </div>
-              <div class="exam-benefit-card">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
+              <div class="exam-benefit-card" *ngIf="applicableExamBenefits.length">
                 <span>官方考试赠送</span>
-                <strong>{{ examBenefitText }}</strong>
+                <strong>{{ applicableExamBenefitText }}</strong>
               </div>
             </div>
             <div class="quote-result">
@@ -317,10 +302,11 @@
               <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认课程、房型、空房和优惠。</p>
             </div>
             <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError"></app-quote-image-download-button>
             </div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
           </section>
         </section>
 
@@ -328,7 +314,7 @@
           <div class="local-fee-heading">
             <div>
               <span>到校后另付 · 自动预估</span>
-              <h3 id="local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
+              <h3 id="local-fee-title">{{ localFeePeriodLabel }}学杂费明细</h3>
             </div>
           </div>
           <p class="local-fee-intro">
@@ -357,7 +343,7 @@
               </tbody>
               <tfoot>
                 <tr>
-                  <th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th>
+                  <th colspan="3" scope="row">{{ localFeePeriodLabel }}学杂费总计预估（比索）</th>
                   <td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td>
                   <td>不含可选接机、可退押金及按实际使用项目</td>
                 </tr>
@@ -377,7 +363,7 @@
                 <strong>{{ fee.item }}</strong>
                 <small>{{ fee.note }}</small>
               </span>
-              <b>{{ fee.amount }}</b>
+                <b>{{ fee.amount }}<small *ngIf="fee.total">约人民币 {{ (fee.total / phpPerCny).toLocaleString('zh-CN', { maximumFractionDigits: 0 }) }} 元</small></b>
             </div>
           </div>
         </section>

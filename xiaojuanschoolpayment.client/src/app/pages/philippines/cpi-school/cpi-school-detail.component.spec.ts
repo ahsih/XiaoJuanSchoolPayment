@@ -84,7 +84,7 @@ describe('CPI pricing and complete quote export', () => {
     }
     component.selectedStartDate = '2026-09-29';
     expect(component.extraClassEligible).toBeFalse();
-    expect(component.quoteImageData.paymentItems.find(row => row.label === '限量一对一加课')?.note).toContain('当前入学日期不适用');
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '限量一对一加课')).toBeUndefined();
     expect(component.quoteUsd).toBe(1503);
     component.selectedStartDate = '2026-12-01';
     expect(component.quoteImageData.paymentItems.length).toBe(7);
@@ -95,15 +95,15 @@ describe('CPI pricing and complete quote export', () => {
     component.selectedRegistrationDate = '2027-01-02';
     component.selectedStartDate = '2027-02-01';
     const quote = component.quoteImageData;
-    expect(quote.paymentItems.map(row => row.label)).toEqual(['注册费', '课程费', '住宿费', '思达折扣', '限量一对一加课']);
-    expect(quote.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('优惠167美元');
+    expect(quote.paymentItems.map(row => row.label)).toEqual(['注册费', '课程', '住宿', '思达折扣']);
+    expect(quote.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('1人适用；课程费和住宿费享9折');
     expect(quote.localFeeItems?.length).toBe(10);
     expect(quote.localFeeItems?.find(row => row.label.includes('ARP'))?.amount).toBe('0 比索');
     expect(quote.optionalFeeItems?.length).toBe(3);
     expect(quote.optionalFeeItems?.[2].amount).toBe('200 比索 / 5公斤 / 次');
     expect(quote.localFeeAmount).toBe('19,150 比索');
-    expect(quote.paymentItems.find(row => row.label === '课程费')?.note).toContain('4节一对一');
-    expect(quote.paymentItems.find(row => row.label === '住宿费')?.detailTitle).toBe(component.selectedRoom.name);
+    expect(quote.paymentItems.find(row => row.label === '课程')?.note).toContain('4节一对一');
+    expect(quote.paymentItems.find(row => row.label === '住宿')?.detailTitle).toBe(component.selectedRoom.name);
     expect(JSON.stringify(quote)).not.toMatch(/\bUSD\b|\bPHP\b/);
   });
 
@@ -113,16 +113,18 @@ describe('CPI pricing and complete quote export', () => {
       const quote = component.quoteImageData;
       expect(quote.localFeeTableLayout).toBe('web');
       expect(quote.localFeeNote).toBe(component.localFeeIntro);
-      expect(quote.localFeeNote).toContain('签证相关费用按持59天签证预估');
+      expect(quote.localFeeNote).toContain('签证费用按每位学生当前选择的签证类型及停留时间预估');
       expect(quote.localFeeNote).toContain('教材按每次约用8周预估');
       expect(quote.localFeeNote).toContain('水费不足4周按4周计算');
-      expect(quote.localFeeNote).toContain('入学请准备白底美签格式照片2张，尺寸5.1×5.1厘米。');
+      expect(quote.localFeeNote).toContain('请准备2张5.1×5.1厘米、白色背景的美签规格照片。');
       expect(JSON.stringify(quote)).not.toContain('白底证件照5×5厘米');
       expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
         label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: component.formatPhp(fee.total), note: fee.note,
       })));
       expect(quote.optionalFeeItems).toEqual(component.excludedLocalFees.map(fee => ({
-        label: fee.item, amount: fee.amount, note: fee.note,
+        label: fee.item, amount: fee.amount,
+        cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / component.phpPerCny).toLocaleString('zh-CN')} 元` : '',
+        note: fee.note,
       })));
     }
   });
@@ -295,5 +297,26 @@ describe('CPI pricing and complete quote export', () => {
     component.selectedWeeks = 1;
     expect(component.localFees.find(row => row.item === '水费')?.total).toBe(1500);
     expect(component.localFees.find(row => row.item === '水费')?.note).toContain('不足4周按4周计算');
+  });
+
+  it('calculates a mixed two-student quote per person and keeps the image synchronized', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.students[0].pickupSelected = true;
+    component.students[1].pickupSelected = true;
+    component.students[1].returningStudent = true;
+    component.students[1].visaType = 'student';
+    component.students[1].selectedAgeGroup = 'junior';
+    component.students[1].quotePlan.courses[0].optionId = 'junior-6-15';
+
+    expect(component.payableRegistrationFee).toBe(100);
+    expect(component.excludedLocalFees[0].quantity).toBe(2);
+    expect(component.excludedLocalFees[0].total).toBe(2000);
+    expect(component.excludedLocalFees[0].note).toContain('学校团体接机');
+    expect(component.includedLocalFees.find(row => row.item === '学生2 · SSP特殊学习许可证')?.total).toBe(0);
+    expect(component.includedLocalFees.find(row => row.item === '学生2 · ARP外国人登记')?.total).toBe(300);
+    expect(component.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
+    expect(component.quoteImageData.paymentItems.some(row => row.label.startsWith('学生2 · 课程'))).toBeTrue();
+    expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
   });
 });

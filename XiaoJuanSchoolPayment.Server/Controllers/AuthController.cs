@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -68,6 +69,7 @@ namespace MyProject.Controllers
     {
         new Claim(JwtRegisteredClaimNames.Sub, user.Email),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
         new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
         new Claim(ClaimTypes.Email, user.Email)
     };
@@ -96,6 +98,21 @@ namespace MyProject.Controllers
         Name = user.FirstName + " " + user.LastName,
         Email = user.Email
       });
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
+    {
+      var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+      var user = string.IsNullOrWhiteSpace(userId) ? null : await _userManager.FindByIdAsync(userId);
+      if (user == null)
+      {
+        return Unauthorized();
+      }
+
+      var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+      return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(x => x.Description));
     }
 
   }

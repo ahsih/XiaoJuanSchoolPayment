@@ -82,8 +82,8 @@ describe('EV accommodation management fees', () => {
         expect(onCampusFee.total).toBe(offCampus ? 0 : 2000 * periods);
         expect(offCampusFee.quantity).toBe(offCampus ? periods : 0);
         expect(offCampusFee.total).toBe(offCampus ? 4000 * periods : 0);
-        expect(offCampusFee.amount).toBe('4,000 比索 / 4周');
-        expect(component.includedLocalFees.length).toBe(10);
+        expect(offCampusFee.amount).toBe('4,000 比索／4周');
+        expect(component.includedLocalFees.length).toBe(11);
         const otherFees = component.includedLocalFees.filter(fee => !fee.item.includes('管理费'));
         expect(component.localFeesTotal).toBe(otherFees.reduce((sum, fee) => sum + fee.total, 0) + (offCampus ? 4000 : 2000) * periods);
       }
@@ -132,7 +132,7 @@ describe('EV accommodation management fees', () => {
       expect(text).toContain('4,000比索/4周');
       expect(blob.type).toBe('image/png');
       const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
-      expect(layout.localHeights.length).toBe(10);
+      expect(layout.localHeights.length).toBe(11);
       expect(820 + layout.localHeights.reduce((sum, value) => sum + value, 0) + 70 + layout.optionalHeights.reduce((sum, value) => sum + value, 0))
         .toBeLessThanOrEqual(1442 + layout.localExtra - 14);
     }
@@ -295,8 +295,22 @@ describe('EV accommodation management fees', () => {
     expect(draw.calls.allArgs().filter(args => args[0] === 'EV主校区8周报价').length).toBe(1);
     expect(text).not.toMatch(/组合报价|停留跨度|课程共8周|住宿共8周|默认报价参考房型|每行课程与住宿分别计费|不随课程或住宿行数增加/);
     expect(renderer.quote.paymentItems.filter(item => item.detailTitle).length).toBe(4);
-    expect(renderer.quote.localFeeItems?.length).toBe(10);
-    expect(renderer.quote.importantNotes?.length).toBe(1);
+    expect(renderer.quote.localFeeItems?.length).toBe(11);
+    expect(renderer.quote.importantNotes?.join('')).toContain('最终以学校价格');
     expect(renderer.quote.totalUsd).toBe('4,527 美元');
   }, 30000);
+
+  it('calculates mixed returning, long-visa and pickup choices per student', () => {
+    component.setQuoteMode('group');
+    const second = component.activeStudents[1].calculator;
+    second.returningStudent = true;
+    second.visaType = 'work';
+    component.calculator.pickup = 'sunday';
+    expect(component.registrationTotal).toBe(100);
+    expect(component.excludedLocalFees[0].quantity).toBe(1);
+    expect(component.excludedLocalFees[0].total).toBe(1200);
+    expect(component.localFees.filter(row => row.item.endsWith('ARP外国人登记')).reduce((sum, row) => sum + row.total, 0)).toBe(300);
+    expect(component.localFees.filter(row => row.item.startsWith('学生2') && ['SSP特殊学习许可证', 'SSP E-CARD', 'ACR-I Card 外国人身份证', '签证续签'].some(name => row.item.endsWith(name))).every(row => row.total === 0)).toBeTrue();
+    expect(component.quoteImageData.headingText).toBe('EV主校区8周报价');
+  });
 });

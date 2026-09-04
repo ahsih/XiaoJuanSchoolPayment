@@ -37,18 +37,33 @@ export class AuthService {
   }
 
   public getRole(): string | null {
+    return this.getRoles()[0] ?? null;
+  }
+
+  public getRoles(): string[] {
     const token = localStorage.getItem('token');
-    if (!token) return null;
+    if (!token) return [];
     const decoded = this.jwtHelper.decodeToken(token);
-     return (
+    const value = (
       decoded?.role || 
       decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 
-      null
-    )
+      []
+    );
+    return (Array.isArray(value) ? value : [value]).map((role) => String(role));
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    const token = localStorage.getItem('token');
+    return this.http.post<void>(
+      `${this.apiUrl}/change-password`,
+      { currentPassword, newPassword },
+      { headers: token ? { Authorization: `Bearer ${token}` } : {} },
+    );
   }
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/']);
   }
 }

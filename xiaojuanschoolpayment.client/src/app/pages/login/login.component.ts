@@ -28,7 +28,8 @@ export class LoginComponent {
     this.authService.login(email, password).subscribe({
       next: (res) => {
         console.log('Login successful', res);
-        this.router.navigate(['/admin']);
+        const roles = this.authService.getRoles().map((role) => role.toLowerCase());
+        this.router.navigate([roles.includes('admin') ? '/admin' : roles.includes('student') ? '/student' : '/']);
       },
       error: (err) => {
         console.error(err);

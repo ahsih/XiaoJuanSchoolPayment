@@ -6,6 +6,8 @@
     public DateTime ExpiryDate { get; set; }
     public required IList<string> Roles { get; set; }
     public required string Name { get; set; }
-    public required string Email { get; set; }
+    public required string Account { get; set; }
+    public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
   }
 }

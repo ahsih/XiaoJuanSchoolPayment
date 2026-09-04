@@ -44,7 +44,7 @@ export class PhilinterSchoolComponent {
     { label: '创校年份', value: '2003年' },
     { label: '学校类型', value: '半斯巴达 / 斯巴达管理模式' },
     { label: '位置', value: '麦克坦岛 / Lapu-Lapu City，距离机场较近' },
-    { label: '最低年龄', value: '7岁起需父母陪同；15岁以上可免家长陪同' },
+    { label: '最低年龄', value: '12岁起；12–17岁须与年满18岁的监护人同住一间房' },
     { label: '考试资源', value: '2024年成为 British Council IELTS 官方考场' },
   ];
 
@@ -70,34 +70,33 @@ export class PhilinterSchoolComponent {
       text: '适合职场学生、求职者和需要特定行业英文的人，例如医疗、营销、饭店管理、教育、会计、工程等方向。',
     },
     {
-      title: 'Primary / Junior',
-      lessons: 'Primary English 7–11岁；Junior ESL / IELTS 12–17岁；另有最长8周的Junior Speaking',
-      text: '适合儿童与青少年，需按年龄、陪同、监护、面试和程度确认开课规则。',
+      title: 'Junior',
+      lessons: 'Junior ESL / IELTS 12–17岁；另有最长8周的Junior Speaking',
+      text: '仅限12–17岁，须与成年监护人同房；成人课程以当年度满18岁判断。',
     },
   ];
 
   readonly priceRows: PriceRow[] = [
-    { course: 'Light ESL', triple: 'USD 1,600', twin: 'USD 1,760', single: 'USD 2,190' },
-    { course: 'General ESL', triple: 'USD 1,710', twin: 'USD 1,870', single: 'USD 2,300' },
-    { course: 'Intensive ESL', triple: 'USD 1,840', twin: 'USD 2,000', single: 'USD 2,430' },
-    { course: 'Intensive Power Speaking', triple: 'USD 1,980', twin: 'USD 2,140', single: 'USD 2,570' },
-    { course: 'IELTS Intensive / Advanced Business', triple: 'USD 2,010', twin: 'USD 2,170', single: 'USD 2,600' },
-    { course: 'IELTS Guarantee 8周', triple: 'USD 4,780', twin: 'USD 5,100', single: 'USD 5,960' },
-    { course: 'IELTS Guarantee 12周', triple: 'USD 6,690', twin: 'USD 7,170', single: 'USD 8,460' },
-    { course: 'Speaking / Junior Speaking', triple: 'USD 2,210', twin: 'USD 2,370', single: 'USD 2,800' },
+    { course: 'Light ESL', triple: '1,600 美元', twin: '1,760 美元', single: '2,190 美元' },
+    { course: 'General ESL', triple: '1,710 美元', twin: '1,870 美元', single: '2,300 美元' },
+    { course: 'Intensive ESL', triple: '1,840 美元', twin: '2,000 美元', single: '2,430 美元' },
+    { course: 'Intensive Power Speaking', triple: '1,980 美元', twin: '2,140 美元', single: '2,570 美元' },
+    { course: 'IELTS Intensive / Advanced Business', triple: '2,010 美元', twin: '2,170 美元', single: '2,600 美元' },
+    { course: 'IELTS Guarantee 8周', triple: '4,780 美元', twin: '5,100 美元', single: '5,960 美元' },
+    { course: 'IELTS Guarantee 12周', triple: '6,690 美元', twin: '7,170 美元', single: '8,460 美元' },
+    { course: 'Speaking / Junior Speaking', triple: '2,210 美元', twin: '2,370 美元', single: '2,800 美元' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '课程注册费', amount: 'USD 120' },
-    { item: '住宿注册费', amount: 'USD 100' },
-    { item: '周末接机', amount: 'PHP 1,200' },
-    { item: '平日接机', amount: 'PHP 1,500' },
-    { item: 'SSP + SSP I-CARD', amount: 'PHP 7,800 + 4,500' },
-    { item: '管理费', amount: 'PHP 2,200 / 2周' },
-    { item: '电费 / 水费', amount: 'PHP 2,800 + 1,000 / 2周' },
-    { item: '教材费', amount: '约PHP 2,000 / 4周' },
-    { item: '学生证', amount: 'PHP 400' },
-    { item: '宿舍押金', amount: 'PHP 2,000–5,000，可退' },
+    { item: '注册费', amount: '每人120美元，一次性收取' },
+    { item: '周末接机', amount: '比索 1,200' },
+    { item: '平日接机', amount: '比索 1,500' },
+    { item: 'SSP + SSP I-CARD', amount: '比索 7,800 + 4,500' },
+    { item: '管理费', amount: '比索 2,200 / 4周' },
+    { item: '电费 / 水费', amount: '比索 2,800 + 1,000 / 4周' },
+    { item: '教材费', amount: '约比索 2,000 / 4周' },
+    { item: '学生证', amount: '比索 400' },
+    { item: '宿舍押金', amount: '比索 2,000–5,000，可退' },
     { item: '签证延签 / ACR I-Card', amount: '按学习周数计算' },
   ];
 
@@ -140,7 +139,7 @@ export class PhilinterSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: '菲律宾宿务Philinter语言学校的起价是多少？',
-      answer: '2026费用表中，Light ESL加校内三人房4周原价为USD 1,600；通过思达报名，课程及住宿9折后为USD 1,440，再加课程与住宿注册费USD 220，4周参考合计USD 1,660。',
+      answer: '2026费用表中，Light ESL加校内三人房4周原价为1,600 美元；通过思达报名，课程及住宿9折后为1,440 美元，再加每人120美元注册费，4周参考合计1,560美元。',
     },
     {
       question: 'Philinter 适合口说强化吗？',

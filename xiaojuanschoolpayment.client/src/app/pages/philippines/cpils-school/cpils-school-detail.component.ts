@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { SchoolQuotePlan, QuotePlanRow, presentSchoolQuote } from '../../../components/school-quote-plan';
+import { SchoolQuotePlan, QuotePlanRow, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ interface CourseFee { id: string; name: string; tuition: number; suitable: strin
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; excluded?: boolean; }
+interface CpilsStudentQuote { quotePlan: SchoolQuotePlan; selectedAgeGroup: 'adult' | 'minor'; visaType: SchoolVisaType; returningStudent: boolean; pickupSelected: boolean; selectedRegistrationDate: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -51,6 +53,7 @@ interface SidaCpilsTrustBadge { icon: string; label: string; }
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
     '../philippines-local-fee-table.css',
+    '../../../components/school-group-quote.css',
     './cpils-school-detail.component.css',
   ],
 })
@@ -74,18 +77,21 @@ export class CpilsSchoolDetailComponent implements OnInit {
   exchangeRateLive = false;
   readonly weekOptions = [4, 8, 12, 16, 20, 24];
   readonly localFeeIntro = '以下费用以比索计价，数量随学习周数自动更新。费用由学校及相关部门收取，仅供准备现金时参考，最终以到校缴费为准。';
-  readonly quotePlan = new SchoolQuotePlan('general-esl', 'regular-quad', '2026-09-06', this.weekOptions,
-    kind => kind === 'course'
-      ? this.courseFees.map(option => ({ id: option.id, name: option.name, details: option.suitable }))
-      : this.roomFees.map(option => ({ id: option.id, name: option.name, details: '' })),
-    (kind, row) => {
-      if (kind === 'course') {
-        const option = this.courseFees.find(option => option.id === row.optionId);
-        return option ? option.tuition * (row.weeks / 4) : 0;
-      }
-      const option = this.roomFees.find(option => option.id === row.optionId);
-      return option ? option.fee * (row.weeks / 4) : 0;
-    });
+  readonly visaOptions = SCHOOL_VISA_OPTIONS;
+  readonly students: CpilsStudentQuote[] = [this.createStudent()];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
+  get studentCount() { return this.requestedStudentCount; }
+  set studentCount(value: number) { this.requestedStudentCount = value; if (Number.isInteger(value) && value >= 2 && value <= 20) while (this.students.length < value) this.students.push(this.createStudent()); }
+  setQuoteMode(value: 'single' | 'group') { this.quoteMode = value; if (value === 'group') this.studentCount = this.requestedStudentCount; }
+  get activeStudents() { return this.quoteMode === 'single' ? this.students.slice(0, 1) : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2))); }
+  get quotePlan() { return this.students[0].quotePlan; }
+  private createStudent(): CpilsStudentQuote {
+    return { quotePlan: new SchoolQuotePlan('general-esl', 'regular-quad', '2026-09-06', this.weekOptions,
+      kind => kind === 'course' ? this.courseFees.map(option => ({ id: option.id, name: option.name, details: option.suitable })) : this.roomFees.map(option => ({ id: option.id, name: option.name, details: '' })),
+      (kind, row) => { const option = kind === 'course' ? this.courseFees.find(item => item.id === row.optionId) : this.roomFees.find(item => item.id === row.optionId); return option ? ('tuition' in option ? option.tuition : option.fee) * (row.weeks / 4) : 0; }),
+      selectedAgeGroup: 'adult', visaType: 'tourist59', returningStudent: false, pickupSelected: false, selectedRegistrationDate: '2026-09-01' };
+  }
   get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
   set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
   get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
@@ -94,7 +100,8 @@ export class CpilsSchoolDetailComponent implements OnInit {
   set selectedWeeks(value: number) { this.quotePlan.courses[0].weeks = value; this.quotePlan.rooms[0].weeks = value; }
   get selectedStartDate() { return this.quotePlan.startDate; }
   set selectedStartDate(value: string) { this.quotePlan.courses[0].startDate = value; this.quotePlan.rooms[0].startDate = value; }
-  selectedRegistrationDate = '2026-09-01';
+  get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
+  set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -274,7 +281,7 @@ export class CpilsSchoolDetailComponent implements OnInit {
     { question: 'CPILS适合第一次菲律宾游学吗？', answer: '适合目标清楚、可以接受一定学习管理的学生。若第一次游学但希望有人督促学习，CPILS会比自由型学校更有节奏。' },
     { question: 'CPILS更适合考试还是口语？', answer: '两者都有，但CPILS的老牌考试资源和管理体系更突出。若目标是雅思、托业或托福，建议优先核对当前分数、目标分数和可读周数。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、课程费、住宿费、已计入优惠和可能的暑假附加费；到校学杂费会按周数另行计算。' },
-    { question: 'CPILS优惠怎么计算？', answer: '课程费与住宿费先按思达9折计算；符合2026淡季条件时再享95折。无对外窗单/双人房每4周另减USD50，符合学习期覆盖条件时圣诞/新年再减USD75或150；注册费不打折。' },
+    { question: 'CPILS优惠怎么计算？', answer: '课程费与住宿费先按思达9折计算；符合2026淡季条件时再享95折。无对外窗单/双人房每4周另减50美元，符合学习期覆盖条件时圣诞/新年再减75或150美元；注册费不打折。' },
     { question: 'CPILS住宿有哪些房型？', answer: '官方资料列出单人、双人、三人和四人房，也有Main Building Regular、Premium和Extension等住宿方向。具体空房需按入学日期确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名CPILS，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -363,50 +370,57 @@ export class CpilsSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.quotePlan.total('course'); }
-  get roomFeeForSelectedWeeks(): number { return this.quotePlan.total('room'); }
+  get tuitionForSelectedWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.total('course'), 0); }
+  get roomFeeForSelectedWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.total('room'), 0); }
   get courseAndRoomBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
-  get sidaDiscountAmount(): number { return this.roundMoney(this.courseAndRoomBase * (1 - this.sidaDiscountRate)); }
-  get afterSidaDiscount(): number { return this.courseAndRoomBase * this.sidaDiscountRate; }
+  private studentBase(student: CpilsStudentQuote) { return student.quotePlan.total('course') + student.quotePlan.total('room'); }
+  private studentSidaDiscount(student: CpilsStudentQuote) { return this.roundMoney(this.studentBase(student) * (1 - this.sidaDiscountRate)); }
+  get sidaDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentSidaDiscount(student), 0); }
+  get afterSidaDiscount(): number { return this.courseAndRoomBase - this.sidaDiscountAmount; }
   get isSummerBlackout(): boolean { return this.isDateBetween(this.selectedStartDate, '2026-06-01', '2026-08-26'); }
   private isOffSeasonRow(row: QuotePlanRow): boolean {
     return row.startDate.startsWith('2026-')
       && row.startDate <= '2026-12-27'
       && !this.isDateBetween(row.startDate, '2026-06-01', '2026-08-26');
   }
-  get isOffSeasonEntry(): boolean { return [...this.quotePlan.courses, ...this.quotePlan.rooms].some(row => this.isOffSeasonRow(row)); }
-  get offSeasonEligibleBase(): number {
-    return [...this.quotePlan.courses, ...this.quotePlan.rooms]
+  private studentOffSeasonEligibleBase(student: CpilsStudentQuote): number {
+    return [...student.quotePlan.courses, ...student.quotePlan.rooms]
       .filter(row => row.weeks >= 4 && this.isOffSeasonRow(row))
-      .reduce((sum, row) => sum + this.quotePlan.price(this.quotePlan.courses.includes(row) ? 'course' : 'room', row) * this.sidaDiscountRate, 0);
+      .reduce((sum, row) => sum + student.quotePlan.price(student.quotePlan.courses.includes(row) ? 'course' : 'room', row) * this.sidaDiscountRate, 0);
   }
+  get isOffSeasonEntry(): boolean { return this.activeStudents.some(student => [...student.quotePlan.courses, ...student.quotePlan.rooms].some(row => this.isOffSeasonRow(row))); }
+  get offSeasonEligibleBase(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentOffSeasonEligibleBase(student), 0); }
   get offSeasonEligible(): boolean { return this.offSeasonEligibleBase > 0; }
   get offSeasonDiscountAmount(): number { return this.roundMoney(this.offSeasonEligibleBase * (1 - this.offSeasonDiscountRate)); }
-  get noWindowDiscountAmount(): number {
-    return this.quotePlan.rooms
+  private studentNoWindowDiscount(student: CpilsStudentQuote): number {
+    return student.quotePlan.rooms
       .filter(row => this.isOffSeasonRow(row) && ['no-window-single', 'no-window-twin'].includes(row.optionId))
       .reduce((sum, row) => sum + Math.floor(row.weeks / 4) * 50, 0);
   }
+  get noWindowDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentNoWindowDiscount(student), 0); }
   get noWindowDiscountEligible(): boolean { return this.noWindowDiscountAmount > 0; }
-  get holidayDiscountAmount(): number {
-    if (!this.isDateBetween(this.selectedRegistrationDate, '2026-06-29', '2026-12-31')) return 0;
-    const studyEnd = this.studyEndDate;
-    if (!studyEnd) return 0;
-    if (this.quotePlan.covers('2026-12-21', '2027-01-01')) return 150;
-    if (this.quotePlan.covers('2026-12-21', '2026-12-26')) return 75;
+  private studentHolidayDiscount(student: CpilsStudentQuote): number {
+    if (!this.isDateBetween(student.selectedRegistrationDate, '2026-06-29', '2026-12-31')) return 0;
+    if (student.quotePlan.covers('2026-12-21', '2027-01-01')) return 150;
+    if (student.quotePlan.covers('2026-12-21', '2026-12-26')) return 75;
     return 0;
   }
+  get holidayDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentHolidayDiscount(student), 0); }
   get holidayDiscountText(): string {
     if (!this.isDateBetween(this.selectedRegistrationDate, '2026-06-29', '2026-12-31')) return '注册日需在2026/06/29–12/31之间';
     if (this.holidayDiscountAmount === 150) return '学习期覆盖2026/12/21–2027/01/01，减150美元';
     if (this.holidayDiscountAmount === 75) return '学习期覆盖2026/12/21–12/26，减75美元';
     return '学习期未完整覆盖圣诞/新年指定日期';
   }
-  get peakSeasonWeeks(): number { return this.quotePlan.overlapWeeks('2026-07-05', '2026-08-29', [...this.quotePlan.courses, ...this.quotePlan.rooms]); }
+  private studentPeakWeeks(student: CpilsStudentQuote) { return student.quotePlan.overlapWeeks('2026-07-05', '2026-08-29', [...student.quotePlan.courses, ...student.quotePlan.rooms]); }
+  get peakSeasonWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentPeakWeeks(student), 0); }
   get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
-  get quoteUsd(): number {
-    return Math.max(0, this.roundMoney(this.registrationFee + this.afterSidaDiscount - this.offSeasonDiscountAmount + this.seasonalSurcharge - this.noWindowDiscountAmount - this.holidayDiscountAmount));
-  }
+  private studentRegistration(student: CpilsStudentQuote) { return student.returningStudent ? 0 : this.registrationFee; }
+  get payableRegistrationFee() { return this.activeStudents.reduce((sum, student) => sum + this.studentRegistration(student), 0); }
+  studentQuoteUsd(student: CpilsStudentQuote): number { return Math.max(0, this.roundMoney(this.studentRegistration(student) + this.studentBase(student) - this.studentSidaDiscount(student) - this.roundMoney(this.studentOffSeasonEligibleBase(student) * (1 - this.offSeasonDiscountRate)) + this.studentPeakWeeks(student) * this.seasonalFeePerWeek - this.studentNoWindowDiscount(student) - this.studentHolidayDiscount(student))); }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentQuoteUsd(student), 0); }
+  get totalCourseWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.courseWeeks, 0); }
+  get localFeePeriodLabel(): string { return this.quoteMode === 'single' ? `${this.quotePlan.stayWeeks}周` : `${this.activeStudents.length}人`; }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元`; }
   get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
@@ -415,71 +429,96 @@ export class CpilsSchoolDetailComponent implements OnInit {
     return '雅思课程报名12周赠1次雅思官方考试；雅思保证班赠机考；托业课程/保证班4–7周赠1次，每增加4周再赠1次（最多6次）';
   }
 
-  get localFeeFourWeekPeriods(): number { return Math.max(1, Math.ceil(this.quotePlan.roomWeeks / 4)); }
-  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.quotePlan.stayWeeks - 4) / 4)); }
-  get visaExtensionTotal(): number {
-    if (this.quotePlan.stayWeeks <= 4) return 0;
-    let total = 5130;
-    if (this.quotePlan.stayWeeks > 8) total += 6400;
-    if (this.quotePlan.stayWeeks > 12) total += 4440;
-    if (this.quotePlan.stayWeeks > 16) total += 4440;
-    if (this.quotePlan.stayWeeks > 20) total += 4440;
-    return total;
+  private studentExamBenefits(student: CpilsStudentQuote): string[] {
+    return student.quotePlan.courses.flatMap(row => {
+      if (row.optionId === 'ielts-course' && row.weeks >= 12) return ['雅思课程12周及以上：赠1次雅思官方考试'];
+      if (row.optionId.startsWith('ielts-guarantee-')) return ['雅思保证班：赠1次雅思机考'];
+      if (['toeic-course', 'toeic-guarantee'].includes(row.optionId) && row.weeks >= 4) {
+        return [`${this.courseFees.find(course => course.id === row.optionId)?.name ?? '托业课程'}：赠${Math.min(6, 1 + Math.floor((row.weeks - 4) / 4))}次官方考试`];
+      }
+      return [];
+    });
   }
-  get localFees(): LocalFee[] {
-    const fourWeekPeriods = this.localFeeFourWeekPeriods;
-    const acrQuantity = this.quotePlan.stayWeeks > 4 ? 1 : 0;
+  get applicableExamBenefits(): string[] {
+    return this.activeStudents.flatMap((student, index) => this.studentExamBenefits(student).map(note => this.quoteMode === 'group' ? `学生${index + 1}：${note}` : note));
+  }
+  get applicableExamBenefitText(): string { return this.applicableExamBenefits.join('；'); }
+
+  get quoteHeading() { return `CPILS${this.totalCourseWeeks}周报价`; }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex(student => !!student.quotePlan.error || !this.visaOptions.some(option => option.value === student.visaType));
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quotePlan.error || '请选择有效的签证类型。'}`;
+  }
+  private isLongTermVisa(student: CpilsStudentQuote) { return !['tourist30', 'tourist59'].includes(student.visaType); }
+  private visaLabel(student: CpilsStudentQuote) { return this.visaOptions.find(option => option.value === student.visaType)?.label ?? ''; }
+  private visaExtensionCountFor(student: CpilsStudentQuote) { return this.isLongTermVisa(student) ? 0 : Math.max(0, Math.ceil((student.quotePlan.stayWeeks * 7 - (student.visaType === 'tourist30' ? 30 : 59)) / 30)); }
+  private visaExtensionTotalFor(student: CpilsStudentQuote) { return [5130, 6400, 4440, 4440, 4440].slice(0, this.visaExtensionCountFor(student)).reduce((sum, value) => sum + value, 0); }
+  get visaExtensionCount(): number { return this.activeStudents.reduce((sum, student) => sum + this.visaExtensionCountFor(student), 0); }
+  get visaExtensionTotal(): number { return this.activeStudents.reduce((sum, student) => sum + this.visaExtensionTotalFor(student), 0); }
+  private studentLocalFees(student: CpilsStudentQuote): SchoolLocalFee[] {
+    const fourWeekPeriods = Math.max(1, Math.ceil(student.quotePlan.roomWeeks / 4));
+    const extensions = this.visaExtensionCountFor(student);
+    const longTerm = this.isLongTermVisa(student);
+    const acrQuantity = longTerm ? 0 : extensions > 0 ? 1 : 0;
+    const arpQuantity = longTerm || extensions > 0 ? 1 : 0;
+    const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
+    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 4));
     return [
-      { item: 'SSP特殊学习许可证', amount: '7,800 比索 / 次', quantity: 1, total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需重新办理' },
-      { item: 'SSP I-CARD', amount: '4,000 比索 / 次', quantity: 1, total: 4000, note: '入学时与SSP同时办理，只收一次' },
-      { item: 'ACR-I CARD 外国人身份证', amount: '4,000 比索 / 次', quantity: acrQuantity, total: 4000 * acrQuantity, note: '首次续签时办理，学校统一带队到移民局' },
-      { item: '管理费', amount: '2,000 比索 / 4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '每4周2,000比索' },
-      { item: '水费', amount: '800 比索 / 4周', quantity: fourWeekPeriods, total: 800 * fourWeekPeriods, note: '每4周800比索' },
-      { item: '电费', amount: '2,000 比索 / 4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '预估每4周2,000比索；实际按用电量结算，参考22比索/kW' },
-      { item: '续签费用', amount: '按学习周数阶梯计算', quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: this.visaExtensionCount === 0 ? '本次暂未计入续签费，实际依签证及停留天数，以移民局收费为准' : `首次5,130比索${this.visaExtensionCount > 1 ? '，第2次6,400比索' : ''}${this.visaExtensionCount > 2 ? '，其余每次4,440比索' : ''}；最终以移民局收费为准` },
-      { item: '书本教材费', amount: '2,500 比索 / 4周', quantity: Math.ceil(this.selectedWeeks / 4), total: 2500 * Math.ceil(this.selectedWeeks / 4), note: '预估；不同课程教材不同，按实际购买结算' },
-      { item: '学生证', amount: '100 比索 / 次', quantity: 1, total: 100, note: '含ID照片，一次性费用' },
-      { item: '宿务麦克坦机场接机', amount: '1,000 比索 / 次', quantity: 1, total: 1000, note: '可选；可自行打车，不计入学杂费合计', excluded: true },
-      { item: '宿舍押金', amount: '2,000 比索 / 次', quantity: 1, total: 2000, note: '无损坏及无额外扣费时，毕业退还', excluded: true },
-      { item: '风扇/学生证预存', amount: '1,000 比索 / 次', quantity: 0, total: 0, note: '可选；资料备注含风扇租借200比索/4周及风扇押金500比索，未使用部分可退', excluded: true },
+      { item: 'SSP特殊学习许可证', unitLabel: '7,800 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 7800, note: longTerm ? visaNote : '移民局收取；按报名学习时长办理，续费及换校需重新办理。' },
+      { item: 'SSP I-CARD', unitLabel: '4,000 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 4000, note: longTerm ? visaNote : '入学时与SSP同时办理，只收一次。' },
+      { item: 'ACR-I CARD 外国人身份证', unitLabel: '4,000 比索／次', quantity: acrQuantity, total: 4000 * acrQuantity, note: longTerm ? visaNote : `按${this.visaLabel(student)}预估，首次续签时办理，学校统一带队到移民局。` },
+      { item: 'ARP外国人登记', unitLabel: '300 比索／次', quantity: arpQuantity, total: 300 * arpQuantity, note: longTerm ? '长期签证仍计收一次，暂按300比索预估；须由顾问确认学校最新政策。' : '旅游签证首次续签时计入一次，暂按300比索预估；须由顾问确认学校最新政策。' },
+      { item: '管理费', unitLabel: '2,000 比索／4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '每4周2,000比索。' },
+      { item: '水费', unitLabel: '800 比索／4周', quantity: fourWeekPeriods, total: 800 * fourWeekPeriods, note: '每4周800比索。' },
+      { item: '电费', unitLabel: '2,000 比索／4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '预估每4周2,000比索；实际按用电量结算，参考22比索／kW。' },
+      { item: '续签费用', unitLabel: '按学习周数阶梯计算', quantity: extensions, total: this.visaExtensionTotalFor(student), note: longTerm ? visaNote : extensions ? `按${this.visaLabel(student)}预估，本次${extensions}次；最终以移民局收费为准。` : `按${this.visaLabel(student)}预估，本次无需续签。` },
+      { item: '书本教材费', unitLabel: '2,500 比索／4周', quantity: books, total: 2500 * books, note: '预估；不同课程教材不同，按实际购买结算。' },
+      { item: '学生证', unitLabel: '100 比索／次', quantity: 1, total: 100, note: '含ID照片，一次性费用。' },
     ];
   }
-  get includedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => !fee.excluded); }
-  get excludedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => fee.excluded); }
-  get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
+  get localFees(): LocalFee[] { return this.includedLocalFees; }
+  get includedLocalFees(): LocalFee[] { return groupLocalFees(this.activeStudents.map(student => ({ localFees: this.studentLocalFees(student) }))).map(fee => ({ item: fee.item, amount: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note })); }
+  get excludedLocalFees(): LocalFee[] {
+    const pickupCount = this.activeStudents.filter(student => student.pickupSelected).length, count = this.activeStudents.length;
+    return [
+      { item: '宿务麦克坦机场团体接机', amount: pickupCount ? this.formatPhp(1000 * pickupCount) : '1,000 比索／人', quantity: pickupCount, total: 1000 * pickupCount, note: `1,000比索／人${pickupCount ? ` × ${pickupCount}人` : ''}；学校团体接机，可能需在机场等候同批其他学生；不计入学杂费合计。`, excluded: true },
+      { item: '宿舍押金', amount: this.formatPhp(2000 * count), quantity: count, total: 2000 * count, note: `2,000比索／人${count > 1 ? ` × ${count}人` : ''}；无损坏及无欠费时可退；不计入学杂费合计。`, excluded: true },
+      { item: '风扇／学生证预存', amount: '1,000 比索／人', quantity: 0, total: 0, note: '可选；资料备注含风扇租借200比索／4周及风扇押金500比索，未使用部分可退。', excluded: true },
+    ];
+  }
+  get localFeesTotal(): number { return this.includedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
 
-  get quoteImageData() {
-    const base = this.baseQuoteImageData;
-    return presentSchoolQuote({
-      ...base,
-      importantNotes: ['最终以学校价格、空房及优惠确认为准。'],
-      totalNote: '人民币按参考汇率预估，最终以支付当日汇率为准',
-    }, this.quotePlan, 'CPILS', this.quoteUsd, this.usdToCny);
+  private studentPaymentLines(student: CpilsStudentQuote): SchoolPaymentLine[] {
+    const offSeason = this.roundMoney(this.studentOffSeasonEligibleBase(student) * (1 - this.offSeasonDiscountRate));
+    const noWindow = this.studentNoWindowDiscount(student), holiday = this.studentHolidayDiscount(student), peak = this.studentPeakWeeks(student) * this.seasonalFeePerWeek;
+    return [
+      { icon: '折', label: '思达折扣', value: -this.studentSidaDiscount(student), note: '课程费和住宿费享9折', promotionKey: 'sida' },
+      ...(offSeason ? [{ icon: '淡', label: '淡季入学优惠', value: -offSeason, note: '思达9折后再享95折', promotionKey: 'off-season' }] : []),
+      ...(noWindow ? [{ icon: '房', label: '无对外窗房优惠', value: -noWindow, note: '无对外窗单人间／双人间每4周优惠50美元', promotionKey: 'no-window' }] : []),
+      ...(holiday ? [{ icon: '节', label: '圣诞／新年优惠', value: -holiday, note: holiday === 150 ? '完整覆盖2026/12/21–2027/01/01' : '完整覆盖2026/12/21–12/26', promotionKey: 'holiday' }] : []),
+      ...(peak ? [{ icon: '旺', label: '暑假附加费', value: peak, note: `重叠${this.studentPeakWeeks(student)}周 × ${this.formatUsd(this.seasonalFeePerWeek)}美元／周`, promotionKey: 'summer' }] : []),
+    ];
+  }
+  get schoolPaymentItems() {
+    const paid = this.activeStudents.filter(student => !student.returningStudent).length;
+    return [
+      { label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: `一次性费用，老学员返校免费；本次计收${paid}人${paid < this.activeStudents.length ? `，${this.activeStudents.length - paid}人免收` : ''}` },
+      { label: '课程费合计', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: '按每位学生实际选择的课程和日期计算' },
+      { label: '住宿费合计', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: '按每位学生实际选择的房型和日期计算' },
+      ...groupPaymentLines(this.activeStudents.map(student => ({ paymentLines: this.studentPaymentLines(student) })), true),
+    ];
   }
 
-  private get baseQuoteImageData() {
-    const includedFees = this.localFees.filter((fee) => !fee.excluded);
-    const optionalFees = this.localFees.filter((fee) => fee.excluded);
+  get quoteImageData() {
     const paymentItems: QuoteImagePaymentItem[] = [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
-      { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `课程安排：${this.selectedCourse.suitable}` },
-      { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: `${this.selectedRoom.name}；4周单价×${this.selectedWeeks / 4}` },
-      { icon: '折', label: '思达折扣', amount: `- ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: '课程费和住宿费9折', accent: true },
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: this.schoolPaymentItems[0].note },
+      ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({ ...item, label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程').replace(/^住宿费/, '住宿')}` })))),
+      ...groupPaymentLines(this.activeStudents.map(student => ({ paymentLines: this.studentPaymentLines(student) })), true),
+      ...(this.applicableExamBenefits.length ? [{ icon: '赠', label: '官方考试赠送', amount: '按课程适用', note: this.applicableExamBenefitText }] : []),
     ];
-    if (this.offSeasonDiscountAmount > 0) {
-      paymentItems.push({ icon: '淡', label: '淡季入学优惠', amount: `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: '思达9折后再享95折' });
-    }
-    if (this.noWindowDiscountAmount > 0) {
-      paymentItems.push({ icon: '房', label: '无对外窗房优惠', amount: `- ${this.formatUsd(this.noWindowDiscountAmount)} 美元`, note: '无对外窗单人间/双人间每4周优惠50美元' });
-    }
-    if (this.holidayDiscountAmount > 0) {
-      paymentItems.push({ icon: '节', label: '圣诞/新年优惠', amount: `- ${this.formatUsd(this.holidayDiscountAmount)} 美元`, note: this.holidayDiscountText });
-    }
-    if (this.seasonalSurcharge > 0) {
-      paymentItems.push({ icon: '旺', label: '暑假附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `暑假期间重叠${this.peakSeasonWeeks}周 × ${this.formatUsd(this.seasonalFeePerWeek)}美元/周` });
-    }
-    return buildPhilippinesDetailedQuote({
+    const quote = buildPhilippinesDetailedQuote({
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
       schoolCode: 'CPILS',
@@ -491,17 +530,18 @@ export class CpilsSchoolDetailComponent implements OnInit {
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
       paymentItems,
-      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: this.includedLocalFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
       localFeeTotal: this.localFeesTotal,
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
       localFeeNote: this.localFeeIntro,
-      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
-      ruleNotes: [
-        '报价单仅列出当前选择实际产生的优惠和附加费；未适用项目不显示。',
-        '优惠与附加费按预计报名日、预计入学日、房型及学习周数自动判断，最终以学校确认账单为准。',
-      ],
+      optionalFeeItems: this.excludedLocalFees.map(fee => ({ label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: fee.note })),
+      ruleNotes: [],
     });
+    const mismatchNotes = this.activeStudents.map((student, index) => student.quotePlan.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}` : '').filter(Boolean);
+    const ageNotes = this.activeStudents.map((student, index) => student.selectedAgeGroup === 'minor' ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}未成年学生按所选课程收费，入学及监护要求须顾问确认。` : '').filter(Boolean);
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...mismatchNotes, ...ageNotes, '最终以学校价格、空房及优惠确认为准。'] }, 'CPILS', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined } };
   }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
