@@ -31,8 +31,8 @@ describe('five-school multi-row quote rollout', () => {
       const quote = component.quoteImageData;
       expect(component.quotePlan.error).toBe('');
       expect(quote.headingText).toContain('8周报价');
-      expect(quote.paymentItems.filter(row => row.label.startsWith('课程费')).length).toBe(2);
-      expect(quote.paymentItems.filter(row => row.label.startsWith('住宿费')).length).toBe(2);
+      expect(quote.paymentItems.filter(row => row.icon === '课').length).toBe(2);
+      expect(quote.paymentItems.filter(row => row.icon === '宿').length).toBe(2);
       expect(quote.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
       expect(quote.localFeeTableLayout).toBe('web');
       expect(quote.fullFeeDetails).toBeTrue();
@@ -143,8 +143,10 @@ describe('five-school multi-row quote rollout', () => {
         expect(quote.subtitle).toBe('');
         const periods = quote.paymentItems.filter(row => row.detailTitle);
         expect(periods.length).toBe(courseCount + roomCount);
-        expect(periods[0].label).toBe(courseCount === 1 ? '课程费' : '课程费1');
-        expect(periods[courseCount].label).toBe(roomCount === 1 ? '住宿费' : '住宿费1');
+        const courseLabel = key === 'cia' ? '课程名称' : '课程费';
+        const roomLabel = key === 'cia' ? '住宿名称' : '住宿费';
+        expect(periods[0].label).toBe(courseCount === 1 ? courseLabel : courseLabel + '1');
+        expect(periods[courseCount].label).toBe(roomCount === 1 ? roomLabel : roomLabel + '1');
         expect(quote.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
         const context = document.createElement('canvas').getContext('2d')!;
         const layout = renderer['measureFullFeeLayout'](context);

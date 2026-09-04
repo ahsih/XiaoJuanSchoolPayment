@@ -8,6 +8,14 @@ import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { SchoolService } from '../../../../services/school.service';
+import { GlcQuoteCalculator } from './glc-quote';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { GLC_COURSES, GLC_ROOMS, GLC_REGISTRATION_NOTE, GLC_LOCAL_FEE_INTRO, glcCourseName } from './glc-pricing';
+import { QuotePlanRow, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { SCHOOL_VISA_OPTIONS, SchoolVisaType, groupLocalFees } from '../../../components/school-group-quote';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -64,12 +72,6 @@ interface ScheduleItem {
   text: string;
 }
 
-interface LocalFee {
-  item: string;
-  amount: string;
-  note: string;
-}
-
 interface ProcessStep {
   icon: string;
   title: string;
@@ -99,22 +101,33 @@ interface SpecialCourseFee {
   note: string;
 }
 
+interface GlcStudentQuote {
+  calculator: GlcQuoteCalculator;
+  ageGroup: 'adult' | 'minor';
+  sharedCourseOwner: number | null;
+  ownCourses: QuotePlanRow[];
+}
+
 @Component({
   selector: 'app-glc-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SchoolQuotePlanComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './glc-school.component.html',
   styleUrls: [
+    '../school-quote-rollout.css',
+    '../philippines-local-fee-table.css',
     '../cebu-school-detail-layout.css',
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../../../components/school-group-quote.css',
     './glc-school.component.css',
   ],
 })
 export class GlcSchoolComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolName = '菲律宾宿务Global Language Cebu';
   private readonly specialFeeOrder = [
     'Light Power Speaking',
@@ -154,14 +167,65 @@ export class GlcSchoolComponent implements OnInit {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 120;
-  readonly usdToCny = 7.2;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
+  usdToCny = 7.2;
+  phpPerCny = 9;
+  exchangeRateDate = '';
 
-  selectedCourseId = 'power-speaking';
-  selectedRoomId = 'annex-double';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
-  quoteCalculated = false;
+  readonly visaOptions = SCHOOL_VISA_OPTIONS;
+  readonly students: GlcStudentQuote[] = [this.createStudent()];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
+  get studentCount() { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) while (this.students.length < value) this.students.push(this.createStudent());
+  }
+  setQuoteMode(value: 'single' | 'group') { this.quoteMode = value; if (value === 'group') this.studentCount = this.requestedStudentCount; }
+  get activeStudents(): GlcStudentQuote[] {
+    const active = this.quoteMode === 'single' ? this.students.slice(0, 1) : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+    active.forEach((student, index) => {
+      const owner = student.sharedCourseOwner ? active[student.sharedCourseOwner - 1] : undefined;
+      const valid = !!owner && student.sharedCourseOwner! <= index && owner.sharedCourseOwner === null && owner.calculator.family;
+      if (!valid) student.sharedCourseOwner = null;
+      student.calculator.plan.courses = valid ? owner!.calculator.plan.courses : student.ownCourses;
+      student.calculator.returningStudents = student.calculator.returningStudents ? 1 : 0;
+      student.calculator.peopleOverride = 1;
+    });
+    return active;
+  }
+  private createStudent(): GlcStudentQuote {
+    const calculator = new GlcQuoteCalculator(() => this.quoteCourses, () => this.roomOptions, () => this.registrationFee);
+    calculator.peopleOverride = 1;
+    const ownCourses = calculator.plan.courses;
+    return { calculator, ageGroup: 'adult', sharedCourseOwner: null, ownCourses };
+  }
+  get calculator() { return this.students[0].calculator; }
+  get quotePlan() { return this.calculator.plan; }
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  get selectedWeeks() { return this.totalCourseWeeks; }
+  get selectedStartDate() { return this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? ''; }
+  get quoteCourses() {
+    return GLC_COURSES.map(course => {
+      const current = this.courseOptions.find(item => item.name === course.name)
+        ?? this.specialFees.find(item => item.label === course.name);
+      return { ...course, weeklyTuition: current?.weeklyTuition ?? course.weeklyTuition };
+    });
+  }
+  get courseFeeGroups() {
+    const courses = this.quoteCourses;
+    return ['一般英语', '雅思', '商务', '亲子', '儿童英语', '青少年英语']
+      .map(type => ({ type, courses: courses.filter(course => course.type === type) }));
+  }
+
+  courseDisplayName(id: string): string {
+    const course = GLC_COURSES.find(item => item.id === id);
+    return course ? glcCourseName(course) : '';
+  }
+
+  shareCandidates(index: number) { return this.activeStudents.slice(0, index).map((student, owner) => ({ owner: owner + 1, student })).filter(item => item.student.sharedCourseOwner === null && item.student.calculator.family); }
+  isCourseShared(student: GlcStudentQuote) { return student.sharedCourseOwner !== null; }
+  sharedStudentNumbers(ownerIndex: number) { return this.activeStudents.map((student, index) => student.sharedCourseOwner === ownerIndex + 1 ? index + 1 : 0).filter(Boolean); }
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -208,7 +272,7 @@ export class GlcSchoolComponent implements OnInit {
       title: 'GLC Mabolo校区',
       description:
         'GLC位于Cebu City Mabolo生活圈，周边有商场、餐厅、超市和医疗资源。',
-      src: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b82f95b2c14f958198a6__D431020.webp',
+      src: '/assets/glc/campus-main.jpg',
     },
     {
       category: '教室',
@@ -310,146 +374,17 @@ export class GlcSchoolComponent implements OnInit {
     },
   ];
 
-  roomOptions: RoomOption[] = [
-    { id: 'main-deluxe-single', name: '主楼豪华单人间', note: '2026年住宿费为USD 645 / 周。', weeklyAccommodation: 645 },
-    { id: 'main-single', name: '主楼单人间', note: '2026年住宿费为USD 385 / 周。', weeklyAccommodation: 385 },
-    { id: 'main-double', name: '主楼双人间', note: '2026年住宿费为USD 270 / 周。', weeklyAccommodation: 270 },
-    { id: 'main-triple', name: '主楼三人间', note: '2026年住宿费为USD 220 / 周，适合控制预算。', weeklyAccommodation: 220 },
-    { id: 'annex-double', name: '副楼双人间', note: '2026年住宿费为USD 250 / 周；斯巴达管理学生只能选择副楼住宿。', weeklyAccommodation: 250 },
-    { id: 'annex-single', name: '副楼单人间', note: '2026年住宿费为USD 360 / 周；斯巴达管理学生只能选择副楼住宿。', weeklyAccommodation: 360 },
-  ];
+  roomOptions: RoomOption[] = GLC_ROOMS.map(room => ({ ...room }));
 
-  courseOptions: CourseOption[] = [
-    {
-      id: 'power-speaking',
-      name: 'Power Speaking',
-      type: '一般英语',
-      lessons: '1:1四节 + 小组两节（选修课）',
-      suitable: '适合第一次游学、基础听说训练和想平衡学习与自由时间的学生。',
-      weeklyTuition: 215,
-    },
-    {
-      id: 'intensive-power-speaking',
-      name: 'Intensive Power Speaking',
-      type: '口语强化',
-      lessons: '1:1五节 + 小组两节（选修课）',
-      suitable: '适合想增加一对一比例、短期集中补弱项和提高输出频率的学生。',
-      weeklyTuition: 270,
-    },
-    {
-      id: 'ultra7-power-speaking',
-      name: 'Ultra7 Power Speaking',
-      type: '高密度一对一',
-      lessons: '1:1七节 + 小组一节（选修课）',
-      suitable: '适合时间有限、想让课程几乎全部围绕个人弱点安排的学生。',
-      weeklyTuition: 375,
-    },
-  ];
+  courseOptions: CourseOption[] = GLC_COURSES
+    .filter(course => ['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(course.id))
+    .map(course => ({ ...course }));
 
-  specialFees: SpecialCourseFee[] = [
-    {
-      label: 'Light Power Speaking',
-      lessons: '1:1三节 + 小组两节（选修课）',
-      weeklyTuition: 165,
-      note: '15岁以上；住宿费另加。',
-    },
-    {
-      label: 'Ultra Sparta ESL',
-      lessons: '1:1五节 + 小组三节 + 词汇/写作测试 + 晚课两节 + 自习一节',
-      weeklyTuition: 280,
-      note: '含周六上午课程；斯巴达管理学生只能选择副楼住宿。',
-    },
-    {
-      label: 'Family Package 2',
-      lessons: '1:1八节（青少年与监护人共享）+ 监护人小组两节',
-      weeklyTuition: 410,
-      note: '小孩5-11岁，青少年12-14岁。',
-    },
-    {
-      label: 'Family Package 3',
-      lessons: '1:1十二节（青少年与监护人共享）+ 监护人小组两节',
-      weeklyTuition: 590,
-      note: '小孩5-11岁，青少年12-14岁。',
-    },
-    {
-      label: 'Family Package 4',
-      lessons: '1:1十六节（青少年与监护人共享）+ 监护人小组两节',
-      weeklyTuition: 775,
-      note: '小孩5-11岁，青少年12-14岁。',
-    },
-    {
-      label: 'Kids English 6',
-      lessons: '1:1六节',
-      weeklyTuition: 335,
-      note: '适合5-11岁儿童。',
-    },
-    {
-      label: 'Kids English 7',
-      lessons: '1:1七节',
-      weeklyTuition: 400,
-      note: '适合5-11岁儿童。',
-    },
-    {
-      label: 'Kids English 8',
-      lessons: '1:1八节',
-      weeklyTuition: 465,
-      note: '适合5-11岁儿童。',
-    },
-    {
-      label: 'Junior Power Speaking 6',
-      lessons: '1:1六节',
-      weeklyTuition: 325,
-      note: '适合12-14岁青少年。',
-    },
-    {
-      label: 'Junior Power Speaking 7',
-      lessons: '1:1七节',
-      weeklyTuition: 375,
-      note: '适合12-14岁青少年。',
-    },
-    {
-      label: 'Junior Power Speaking 8',
-      lessons: '1:1八节',
-      weeklyTuition: 430,
-      note: '适合12-14岁青少年。',
-    },
-    {
-      label: 'General IELTS',
-      lessons: '1:1四节 + 小组两节 + 选修课',
-      weeklyTuition: 240,
-      note: '需确认英文程度、教材和开课安排。',
-    },
-    {
-      label: 'Intensive IELTS',
-      lessons: '1:1五节 + 小组两节 + 选修课',
-      weeklyTuition: 300,
-      note: '需确认英文程度、教材和开课安排。',
-    },
-    {
-      label: 'Ultra8 IELTS',
-      lessons: '1:1八节 + 选修课',
-      weeklyTuition: 430,
-      note: '需确认英文程度、教材和开课安排。',
-    },
-    {
-      label: 'Ultra IELTS斯巴达',
-      lessons: '1:1五节 + 强制小组三节 + 测试、晚课与自习',
-      weeklyTuition: 355,
-      note: '含周六上午模考；斯巴达管理学生只能选择副楼住宿。',
-    },
-    {
-      label: 'Business course',
-      lessons: '1:1四节 + 小组两节（选修课）',
-      weeklyTuition: 300,
-      note: '住宿费与当地费用另加。',
-    },
-    {
-      label: 'Ultra7 Business',
-      lessons: '1:1七节 + 小组一节（选修课）',
-      weeklyTuition: 465,
-      note: '住宿费与当地费用另加。',
-    },
-  ];
+  specialFees: SpecialCourseFee[] = GLC_COURSES
+    .filter(course => !['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(course.id))
+    .map(course => ({ label: course.name, lessons: course.lessons, weeklyTuition: course.weeklyTuition, note: course.suitable || '住宿费与学杂费另计。' }));
+
+  readonly registrationNote = GLC_REGISTRATION_NOTE;
 
   readonly schedule: ScheduleItem[] = [
     {
@@ -484,20 +419,93 @@ export class GlcSchoolComponent implements OnInit {
     },
   ];
 
-  readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 120', note: '本页报价器按公开参考注册费计算' },
-    { item: '机场接机', amount: 'USD 30起', note: '周日/平日或接送组合价格不同，需按航班确认' },
-    { item: 'SSP', amount: 'PHP 8,000', note: '特别学习许可，通常所有学生需办理' },
-    { item: 'SSP I-Card', amount: 'PHP 4,500', note: '公开费用表列与SSP分开支付' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '通常9周以上需确认' },
-    { item: '签证延长', amount: 'PHP 4,670起', note: '8周及以上常见，随周数增加' },
-    { item: '管理费', amount: 'PHP 3,000-6,000', note: '公开表按1-4周区间列示，长周数需累计确认' },
-    { item: '电费', amount: 'PHP 500 / 周', note: '学生宿舍参考，酒店或特殊房型另行确认' },
-    { item: '教材费', amount: 'PHP 3,000起', note: 'ESL、考试、商务教材区间不同' },
-    { item: '宿舍押金', amount: 'PHP 3,000或USD 50', note: '退房时按实际扣费结算' },
-    { item: '特殊餐食', amount: 'USD 70 / 周参考', note: '过敏或特殊餐食需提前申请' },
-    { item: '追加一对一', amount: 'PHP 3,000 / 周', note: '是否可加课取决于老师和课表空位' },
-  ];
+  readonly localFeeIntro = GLC_LOCAL_FEE_INTRO;
+  get localFees() {
+    return groupLocalFees(this.activeStudents.map(student => ({ localFees: student.calculator.localFees.map(fee => ({ item: fee.item, unitLabel: fee.unit, quantity: fee.quantity, total: fee.total, note: fee.note })) })))
+      .map(fee => ({ item: fee.item, unit: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note }));
+  }
+  get localTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get pickupCount() { return this.activeStudents.filter(student => student.calculator.pickup !== 'none').length; }
+  get optionalFees() {
+    const pickup = this.activeStudents.reduce((sum, student) => sum + student.calculator.pickupAmount, 0);
+    const selected = this.pickupCount;
+    const free = this.activeStudents.filter(student => student.calculator.pickup !== 'none' && student.calculator.freePickup).length;
+    return [
+      { item: '宿务马克坦机场团体接机', total: pickup, note: `${selected ? `本次${selected}人选择接机${free ? `，其中${free}人符合周日免费接机` : ''}` : '本次无人选择接机'}；非免费接机1,750比索／人。学校团体接机，按实际选择接机的人数计费；可能需在机场等候同批其他学生。` },
+      { item: '房间押金', total: 3000 * this.activeStudents.length, note: `3,000比索／人 × ${this.activeStudents.length}人；可抵扣电费，离校按学校实际结算；不计入学杂费合计。` },
+    ];
+  }
+
+  pesoCnyText(amount: number): string {
+    return `人民币约 ${Math.round(amount / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  }
+
+  get exchangeRateNote(): string {
+    return this.exchangeRateDate
+      ? `参考汇率日期：${this.exchangeRateDate}；人民币预估仅供参考，最终以支付时汇率为准。`
+      : '人民币暂按备用汇率预估，最终以支付时汇率为准。';
+  }
+
+  studentSubtotal(student: GlcStudentQuote): number {
+    const calculator = student.calculator;
+    return calculator.registration + calculator.accommodation + (student.sharedCourseOwner ? 0 : calculator.tuition - calculator.schoolDiscount - calculator.sidaDiscount);
+  }
+  get registrationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.registration, 0); }
+  get tuitionTotal() { return this.activeStudents.reduce((sum, student) => sum + (student.sharedCourseOwner ? 0 : student.calculator.tuition), 0); }
+  get accommodationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.accommodation, 0); }
+  get schoolDiscountTotal() { return this.activeStudents.reduce((sum, student) => sum + (student.sharedCourseOwner ? 0 : student.calculator.schoolDiscount), 0); }
+  get sidaDiscountTotal() { return this.activeStudents.reduce((sum, student) => sum + (student.sharedCourseOwner ? 0 : student.calculator.sidaDiscount), 0); }
+  get totalCourseWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.courseWeeks, 0); }
+  get quoteHeading() { return `GLC${this.totalCourseWeeks}周报价`; }
+  get quoteError() {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex(student => !!student.calculator.error);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].calculator.error}`;
+  }
+  get schoolPaymentItems() {
+    const newStudents = this.activeStudents.filter(student => student.calculator.registration > 0).length;
+    return [
+      { label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: `一次性费用，老学员返校免费；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}` },
+      { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: '家庭共享套餐由关联的两名学生共用一份课程，只收一次课程费。' },
+      { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: '按每位学生实际选择的房型和日期计算。' },
+      ...(this.schoolDiscountTotal ? [{ label: '学校优惠', amount: `− ${this.formatUsd(this.schoolDiscountTotal)} 美元`, note: this.calculator.promotionNote }] : []),
+      ...(this.sidaDiscountTotal ? [{ label: '思达启航专属优惠', amount: `− ${this.formatUsd(this.sidaDiscountTotal)} 美元`, note: this.calculator.sidaNote }] : []),
+    ];
+  }
+
+  get quoteImageData() {
+    const courseItems: QuoteImagePaymentItem[] = [];
+    const roomItems: QuoteImagePaymentItem[] = [];
+    this.activeStudents.forEach((student, index) => {
+      const items = student.calculator.plan.paymentItems();
+      if (!student.sharedCourseOwner) {
+        const linked = this.sharedStudentNumbers(index);
+        const people = [index + 1, ...linked].join('、');
+        courseItems.push(...items.filter(item => item.icon === '课').map(item => ({ ...item, label: `${this.quoteMode === 'group' ? `学生${people}${linked.length ? '共享' : ''} · ` : ''}${item.label.replace(/^课程费/, '课程')}` })));
+      }
+      roomItems.push(...items.filter(item => item.icon === '宿').map(item => ({ ...item, label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^住宿费/, '住宿')}` })));
+    });
+    const paymentItems: QuoteImagePaymentItem[] = [
+      { icon: '注', label: '注册费', amount: `${quoteMoney(this.registrationTotal)} 美元`, note: this.schoolPaymentItems[0].note },
+      ...courseItems,
+      ...roomItems,
+      ...(this.schoolDiscountTotal ? [{ icon: '惠', label: '学校优惠', amount: `− ${quoteMoney(this.schoolDiscountTotal)} 美元`, note: this.calculator.promotionNote, accent: true }] : []),
+      ...(this.sidaDiscountTotal ? [{ icon: '惠', label: '思达启航专属优惠', amount: `− ${quoteMoney(this.sidaDiscountTotal)} 美元`, note: this.calculator.sidaNote, accent: true }] : []),
+    ];
+    const quote = buildPhilippinesDetailedQuote({
+      schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc: '/assets/glc/campus-main.jpg',
+      weeks: this.totalCourseWeeks, startDate: this.selectedStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
+      fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
+      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: fee.note })),
+      localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: this.localFeeIntro,
+      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: fee.note })),
+      ruleNotes: [],
+    });
+    const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
+    const shared = this.activeStudents.flatMap((student, index) => student.sharedCourseOwner ? [`学生${student.sharedCourseOwner}与学生${index + 1}共享一份家庭课程套餐；住宿、注册费和学杂费分别按人计算。`] : []);
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...warnings, ...shared, '所有学生不收取寒暑假附加费。', '最终以学校价格、空房及优惠确认为准。'] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined } };
+  }
 
   readonly serviceSteps: ProcessStep[] = [
     {
@@ -573,7 +581,7 @@ export class GlcSchoolComponent implements OnInit {
   ];
   readonly notes = [
     '本页2026年课程和住宿价格按GLC美元周价表整理，报价器按“每周学费 + 每周住宿费”乘以周数计算。',
-    '价格表未列短期附加费或长期优惠，因此报价器不自行增加或扣减；正式报价仍需按入学日期与学校确认。',
+    '学校年度优惠按就读期间及课程条件计算；思达启航专属优惠每满4周50美元，所有学生免寒暑假附加费。',
     '亲子、Kids/Junior、IELTS、Business和斯巴达路线的年龄、入学条件、宿舍限制与开课安排需另行确认。',
     'SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机和押金通常不包含在课程住宿套餐内。',
   ];
@@ -606,9 +614,9 @@ export class GlcSchoolComponent implements OnInit {
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
-    { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
+    { label: '课程费用与安排', target: 'course-fees', icon: 'menu_book' },
+    { label: '住宿费用与房型', target: 'room-fees', icon: 'hotel' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
-    { label: '特殊课程', target: 'special-fees', icon: 'bolt' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];
@@ -629,6 +637,13 @@ export class GlcSchoolComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPricingFromDatabase();
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(rates => {
+      if (Number.isFinite(rates.usdToCny) && Number.isFinite(rates.phpPerCny) && rates.usdToCny > 0 && rates.phpPerCny > 0) {
+        this.usdToCny = rates.usdToCny;
+        this.phpPerCny = rates.phpPerCny;
+        this.exchangeRateDate = rates.date;
+      }
+    });
   }
 
   private loadPricingFromDatabase(): void {
@@ -669,7 +684,7 @@ export class GlcSchoolComponent implements OnInit {
       return databaseLesson
         ? {
             ...course,
-            lessons: databaseLesson.description || course.lessons,
+            lessons: GLC_COURSES.find(item => item.name === course.name)?.lessons || databaseLesson.description || course.lessons,
             suitable: databaseLesson.note || course.suitable,
             weeklyTuition: databaseLesson.price,
           }
@@ -680,7 +695,7 @@ export class GlcSchoolComponent implements OnInit {
       .filter((lesson) => !primaryCourseNames.has(lesson.name))
       .map((lesson) => ({
         label: lesson.name,
-        lessons: lesson.description || '课程安排请向学校确认',
+        lessons: GLC_COURSES.find(item => item.name === lesson.name)?.lessons || lesson.description || '课程安排请向学校确认',
         weeklyTuition: lesson.price,
         note: lesson.note || '住宿费与当地费用另加。',
       }))
@@ -711,7 +726,7 @@ export class GlcSchoolComponent implements OnInit {
     if (databaseRooms.length > 0) {
       this.roomOptions = databaseRooms;
       if (!this.roomOptions.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId =
+        this.quotePlan.rooms[0].optionId =
           this.roomOptions.find((room) => room.id === 'annex-double')?.id ??
           this.roomOptions[0].id;
       }
@@ -720,10 +735,6 @@ export class GlcSchoolComponent implements OnInit {
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) {
       this.registrationFee = registrationFee.fee;
-      const localRegistrationFee = this.localFees.find((fee) => fee.item === '入学金');
-      if (localRegistrationFee) {
-        localRegistrationFee.amount = `USD ${this.formatUsd(registrationFee.fee)}`;
-      }
     }
   }
 
@@ -744,10 +755,6 @@ export class GlcSchoolComponent implements OnInit {
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
-  }
-
-  calculateQuote(): void {
-    this.quoteCalculated = true;
   }
 
   scrollToSection(target: string, event?: Event): void {
@@ -789,8 +796,8 @@ export class GlcSchoolComponent implements OnInit {
 
   get selectedCourse(): CourseOption {
     return (
-      this.courseOptions.find((course) => course.id === this.selectedCourseId) ??
-      this.courseOptions[0]
+      this.quoteCourses.find((course) => course.id === this.selectedCourseId) ??
+      this.quoteCourses[0]
     );
   }
 
@@ -802,37 +809,25 @@ export class GlcSchoolComponent implements OnInit {
   }
 
   get selectedPackageFee(): number {
-    return this.feeFor(this.selectedCourseId, this.selectedRoomId, this.selectedWeeks);
+    return this.tuitionTotal + this.accommodationTotal;
   }
 
   get quoteUsd(): number {
-    return this.registrationFee + this.selectedPackageFee;
+    return this.activeStudents.reduce((sum, student) => sum + this.studentSubtotal(student), 0);
   }
 
   get packageFeeText(): string {
-    return `USD ${this.formatUsd(this.selectedPackageFee)} 起`;
+    return `${this.formatUsd(this.feeFor('power-speaking', 'annex-double', 4))} 美元`;
   }
 
   get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)} 起`;
+    return `${this.formatUsd(this.quoteUsd)} 美元`;
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
+    const rounded = Math.round(this.quoteUsd * this.usdToCny);
 
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
-  }
-
-  get seasonalNote(): string {
-    const start = new Date(`${this.selectedStartDate}T00:00:00`);
-
-    if (Number.isNaN(start.getTime())) {
-      return '入学日期需要和学校确认，房型空位、学校优惠和当地费用会影响最终报价。';
-    }
-
-    return this.selectedWeeks <= 3
-      ? '当前选择为1-3周课程，报价器按2026年周价直接计算；是否另有短期规则需向学校确认。'
-      : '报价器按2026年周价直接计算，未自行加入长期优惠；最终仍需按学校当期报价单确认。';
+    return `约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
 
   formatUsd(amount: number): string {

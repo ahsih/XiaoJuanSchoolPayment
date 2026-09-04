@@ -59,7 +59,7 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  按每周课程USD 215 + 每周住宿USD 250计算
+                  按每周课程215美元 + 每周住宿250美元计算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -208,238 +208,131 @@
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courseOptions">
               <span>{{ course.type }}</span>
-              <h3>{{ course.name }}</h3>
+              <h3>{{ courseDisplayName(course.id) }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.suitable }}</p>
             </article>
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>GLC 2026年课程与住宿价格</span>
-              <h2>先看每周单价，再按课程、房型和周数计算</h2>
-              <p>
-                以下按2026年GLC美元周价表整理。组合价 =（每周课程费 + 每周住宿费）× 周数；
-                入学金、SSP、签证、押金、电费、管理费、教材和接送需另外确认。
-              </p>
-            </div>
-            <div class="data-table weekly-rate-table" role="table" aria-label="GLC 2026年主要课程周价">
+        <section class="section-block glc-price-section" id="course-fees">
+          <div class="section-heading">
+            <span>GLC 2026年课程价格</span>
+            <h2>课程费用与课程安排</h2>
+            <p>以下为每周课程费，不含住宿。注册费为{{ formatUsd(registrationFee) }}美元 / 人，{{ registrationNote }}。</p>
+          </div>
+          <div class="glc-fee-group" *ngFor="let group of courseFeeGroups" [attr.id]="group.type === '亲子' ? 'special-fees' : null">
+            <h3 class="course-fee-group-heading">{{ group.type }}</h3>
+            <div class="data-table glc-catalog-table" role="table" [attr.aria-label]="'GLC' + group.type + '课程周价与安排'">
               <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
+                <span role="columnheader">课程名称</span>
+                <span role="columnheader">每周课程费（美元）</span>
                 <span role="columnheader">课程安排</span>
-                <span role="columnheader">课程价格 / 周</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let course of courseOptions">
-                <span role="cell">{{ course.name }}</span>
-                <span role="cell">{{ course.lessons }}</span>
-                <span role="cell">USD {{ formatUsd(course.weeklyTuition) }}</span>
+              <div class="table-row" role="row" *ngFor="let course of group.courses">
+                <span class="glc-catalog-name" role="cell"><strong>{{ course.chineseName }}</strong><small>{{ course.englishName || course.name }}</small></span>
+                <span class="glc-catalog-price" role="cell"><strong>{{ formatUsd(course.weeklyTuition) }} 美元</strong><small>每周{{ course.family ? ' / 共享套餐' : ' / 人' }}</small></span>
+                <span class="glc-catalog-detail" role="cell">{{ course.lessons }}<small *ngIf="course.suitable">{{ course.suitable }}</small></span>
               </div>
-            </div>
-            <div class="data-table weekly-rate-table accommodation-rate-table" role="table" aria-label="GLC 2026年住宿周价">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">住宿价格 / 周</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomOptions">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.weeklyAccommodation) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
-            </div>
-            <h3 class="price-matrix-heading">Power Speaking课程住宿组合价</h3>
-            <div class="data-table course-fee-table" role="table" aria-label="GLC Power Speaking课程住宿组合价">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程 / 房型</span>
-                <span role="columnheader">1周</span>
-                <span role="columnheader">4周</span>
-                <span role="columnheader">8周</span>
-                <span role="columnheader">12周</span>
-                <span role="columnheader">24周</span>
-              </div>
-              <ng-container *ngFor="let course of courseOptions">
-                <div class="table-row" role="row" *ngFor="let room of roomOptions">
-                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 24)) }}</span>
-                </div>
-              </ng-container>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="GLC Power Speaking课程住宿组合价手机卡片">
-              <ng-container *ngFor="let course of courseOptions">
-                <article *ngFor="let room of roomOptions">
-                  <span>{{ course.name }}</span>
-                  <strong>{{ room.name }}</strong>
-                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
-                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
-                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
-                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
-                  <p>每周课程USD {{ formatUsd(course.weeklyTuition) }} + 每周住宿USD {{ formatUsd(room.weeklyAccommodation) }}。{{ course.lessons }}。{{ room.note }}</p>
-                </article>
-              </ng-container>
             </div>
           </div>
+          <p class="glc-catalog-note">亲子课程由2人共享一份套餐，住宿与学杂费按人数另计。</p>
+        </section>
 
-          <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>GLC 一天学习生活安排</span>
-              <h2>课程强度从标准到七节一对一都能选</h2>
+        <section class="section-block glc-price-section" id="room-fees">
+          <div class="section-heading">
+            <span>GLC 2026年住宿价格</span>
+            <h2>住宿费用与房型</h2>
+            <p>以下为每人每周住宿费，课程费另计。斯巴达管理课程仅可选择副楼住宿。</p>
+          </div>
+          <div class="data-table glc-catalog-table glc-room-table" role="table" aria-label="GLC住宿周价与房型">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">住宿房型</span>
+              <span role="columnheader">每周住宿费（美元）</span>
+              <span role="columnheader">住宿说明</span>
             </div>
-            <div class="timeline">
-              <article *ngFor="let item of schedule">
-                <time>{{ item.time }}</time>
-                <div>
-                  <strong>{{ item.title }}</strong>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
+            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+              <span class="glc-catalog-name" role="cell"><strong>{{ room.name }}</strong></span>
+              <span class="glc-catalog-price" role="cell"><strong>{{ formatUsd(room.weeklyAccommodation) }} 美元</strong><small>每周 / 人</small></span>
+              <span class="glc-catalog-detail" role="cell">{{ room.note }}</span>
             </div>
           </div>
         </section>
 
-        <section class="split-layout" id="special-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>其他课程2026年周价</span>
-              <h2>轻量、斯巴达、亲子、青少年、IELTS与Business课程</h2>
-              <p>
-                以下为课程周价，正式报价还要按房型和周数加上住宿费，并另计注册费与当地费用。
-              </p>
-            </div>
-            <div class="data-table special-fee-table" role="table" aria-label="GLC其他课程费用参考">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">项目</span>
-                <span role="columnheader">课时 / 口径</span>
-                <span role="columnheader">参考价</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of specialFees">
-                <span role="cell">{{ fee.label }}</span>
-                <span role="cell">{{ fee.lessons }}</span>
-                <span role="cell">USD {{ formatUsd(fee.weeklyTuition) }} / 周</span>
-                <span role="cell">{{ fee.note }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-special-fees" aria-label="GLC其他课程2026年周价手机卡片">
-              <article *ngFor="let fee of specialFees">
-                <span>课程周价</span>
-                <strong>{{ fee.label }}</strong>
-                <div><em>课程安排</em><b>{{ fee.lessons }}</b></div>
-                <div><em>课程价格</em><b>USD {{ formatUsd(fee.weeklyTuition) }} / 周</b></div>
-                <p>{{ fee.note }}</p>
-              </article>
-            </div>
-            <ul class="check-list">
-              <li>Family、Kids、Junior路线要确认年龄、同行家长、房型和监护规则。</li>
-              <li>IELTS和Business方向需确认开课、教材、老师和程度要求。</li>
-              <li>Ultra Sparta ESL与Ultra IELTS斯巴达学生只能选择副楼住宿。</li>
-            </ul>
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading">
+            <span>GLC 一天学习生活安排</span>
+            <h2>在校作息参考</h2>
           </div>
+          <div class="timeline">
+            <article *ngFor="let item of schedule">
+              <time>{{ item.time }}</time>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </section>
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <span>GLC费用快速报价</span>
-              <h2>默认参考：4周Power Speaking + 副楼双人间</h2>
-              <p>前期支付参考 = 入学金 +（每周课程费 + 每周住宿费）× 周数。到校费用需另行准备。</p>
+              <h2>{{ quoteHeading }}</h2>
+              <p>课程与住宿按每周单价计费；每行独立选择周数与周日开始日期，结束日期自动计算至周六。</p>
             </div>
-            <div class="quote-form" aria-label="GLC费用快速报价选项">
-              <label>
-                学习周数
-                <select [(ngModel)]="selectedWeeks">
-                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
-                </select>
-              </label>
-              <label>
-                课程
-                <select [(ngModel)]="selectedCourseId">
-                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
-                </select>
-              </label>
-              <label>
-                房型
-                <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-                </select>
-              </label>
-              <label>
-                预计入学日
-                <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-            </div>
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿和费用条件。选择家庭共享套餐时，可将后一位学生关联到前一位学生，课程只收费一次。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields">
+                <label>报名日期（用于接机优惠）<input type="date" [(ngModel)]="student.calculator.registrationDate" required /></label>
+                <label>抵达时年龄<select [(ngModel)]="student.ageGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+                <label>签证类型<select [(ngModel)]="student.calculator.visaType"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+              </div>
+              <div class="student-options"><label class="option-check"><input type="checkbox" [ngModel]="student.calculator.returningStudents === 1" (ngModelChange)="student.calculator.returningStudents = $event ? 1 : 0" />老学员返校（免注册费）</label><label class="option-check">机场接机<select [(ngModel)]="student.calculator.pickup"><option value="none">不需要接机</option><option value="sunday">周日团体接机</option><option value="weekday">非周日团体接机</option></select></label></div>
+              <label class="family-share" *ngIf="quoteMode === 'group' && i > 0 && shareCandidates(i).length">课程收费方式<select [(ngModel)]="student.sharedCourseOwner"><option [ngValue]="null">独立选择课程</option><option *ngFor="let option of shareCandidates(i)" [ngValue]="option.owner">共享学生{{ option.owner }}的家庭课程套餐</option></select></label>
+              <p class="glc-family-note" *ngIf="student.sharedCourseOwner">学生{{ student.sharedCourseOwner }}与学生{{ i + 1 }}共享一份家庭课程；两人的住宿、注册费和学杂费仍分别计算。</p>
+              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentSubtotal(student)) }} 美元</strong></div>
+            </article>
             <div class="quote-breakdown">
-              <div><span>入学金参考</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程价格 / 周</span><strong>USD {{ formatUsd(selectedCourse.weeklyTuition) }}</strong></div>
-              <div><span>住宿价格 / 周</span><strong>USD {{ formatUsd(selectedRoom.weeklyAccommodation) }}</strong></div>
-              <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
-              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
-              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
-              <div><span>短期/长期提醒</span><strong>需另行确认</strong></div>
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期支付参考</span>
+              <span>{{ quoteError ? '请完善方案后确认总价' : '最终应付学校金额' }}</span>
               <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">
-                已按当前选择和2026年周价更新。正式报价仍需确认房型、性别、入学日、学校优惠和当地费用。
-              </p>
+              <em>人民币预计金额：{{ quoteCnyText }}</em>
+              <small>{{ exchangeRateNote }}</small>
             </div>
+            <p class="glc-payment-note">学费需到校前2周交齐，可由思达代收或自行转美元给学校。</p>
             <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">
-                立即计算我的费用<mat-icon>calculate</mat-icon>
-              </button>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价<mat-icon>support_agent</mat-icon>
-              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">
-              除课程住宿套餐外，到校后通常还需确认SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机、押金和个人生活费。
-            </p>
-            <p class="season-note">{{ seasonalNote }}</p>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
           </section>
-        </section>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>套餐之外，还要准备当地费用</h2>
-            <p>
-              以下费用来自公开费用资料，不同周数、签证时长、房型和学校政策会影响最终金额。
-            </p>
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+          <div class="local-fee-heading"><div><span>到校后另付 · 比索预估</span><h3 id="local-fee-title">{{ quoteMode === 'single' ? selectedWeeks + '周' : activeStudents.length + '人' }}学杂费明细</h3></div></div>
+          <p class="local-fee-intro">{{ localFeeIntro }}</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let fee of localFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unit }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatUsd(fee.total) }} 比索</td><td>{{ fee.note }}</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">学杂费总计预估（比索）</th><td class="fee-amount">{{ formatUsd(localTotal) }} 比索</td><td>不含接机费和房间押金，实际以学校收取为准</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">{{ pesoCnyText(localTotal) }}</td><td>{{ exchangeRateNote }}</td></tr>
+              </tfoot>
+            </table>
           </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
-                <p>{{ fee.note }}</p>
-              </article>
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费合计）</h4>
+            <div *ngFor="let fee of optionalFees">
+              <span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span>
+              <span class="glc-optional-amount"><b>{{ formatUsd(fee.total) }} 比索</b><small>{{ pesoCnyText(fee.total) }}</small></span>
             </div>
-          </details>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>
-              本页价格更新时间：2026年8月。课程费、住宿费与注册费按GLC 2026年价目表整理。
-              学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
-            </p>
           </div>
         </section>
+
 
         <section class="materials-panel" id="materials">
           <div>
@@ -580,7 +473,7 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>{{ selectedWeeks }}周</strong>
-          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <p>{{ quotePlan.courses.length }}项课程 · {{ quotePlan.rooms.length }}项住宿{{ calculator.family ? ' · 亲子2人' : '' }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

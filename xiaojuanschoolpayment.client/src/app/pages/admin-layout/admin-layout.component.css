@@ -6,6 +6,7 @@
 }
 
 .sidebar {
+  flex: 0 0 220px;
   width: 220px;
   background: #2d3e50;
   color: #fff;
@@ -44,6 +45,7 @@
 
 .content {
   flex: 1;
+  min-width: 0;
   padding: 1rem;
 }
 
@@ -56,4 +58,35 @@
 
 .logout a:hover {
   background: #1a252f;
+}
+
+@media (max-width: 760px) {
+  .admin-container {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    padding-top: 0;
+    flex-direction: row;
+  }
+
+  .nav-links {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .sidebar li {
+    flex: 0 0 auto;
+  }
+
+  .sidebar a {
+    white-space: nowrap;
+  }
+
+  .logout {
+    flex: 0 0 auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
 }

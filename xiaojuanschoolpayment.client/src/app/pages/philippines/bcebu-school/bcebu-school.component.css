@@ -109,3 +109,25 @@
     grid-template-columns: 1fr;
   }
 }
+
+:host .catalog-note { display: block; margin-top: 6px; font-size: 13px; color: #64748b; font-weight: 400; }
+:host .quote-breakdown .quote-rule-card { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 18px; align-items: start; }
+:host .quote-rule-card span, :host .quote-rule-card small { grid-column: 1; }
+:host .quote-rule-card span { color: #26374b; font-weight: 700; }
+:host .quote-rule-card small { color: #6c5b50; font-size: 13px; font-weight: 400; line-height: 1.65; }
+:host .quote-rule-card strong { grid-column: 2; grid-row: 1 / span 2; margin: 0; text-align: right; white-space: nowrap; }
+:host .quote-form input { width: 100%; min-width: 0; box-sizing: border-box; padding: 11px 12px; border: 1px solid #dcc7b7; border-radius: 7px; font: inherit; background: #fff; }
+:host .quote-form label { min-width: 0; }
+:host .quote-result small { display: block; margin-top: 10px; font-weight: 400; line-height: 1.6; }
+:host .reporter-settlement { color: #26374b; font-weight: 600; }
+:host .excluded-fee-list b { text-align: right; color: #26374b; }
+:host .excluded-fee-list b small { font-weight: 400; white-space: normal; }
+:host .local-fee-table .fee-amount, :host .local-fee-table .fee-cny { text-align: right; }
+:host .pickup-form { margin-top: 18px; }
+@media (max-width: 680px) {
+  :host .quote-breakdown .quote-rule-card { grid-template-columns: minmax(0, 1fr); }
+  :host .quote-rule-card strong { grid-column: 1; grid-row: auto; text-align: left; }
+  :host .excluded-fee-list b { text-align: left; }
+}
+:host .student-options { display: flex; flex-wrap: wrap; gap: 12px; }
+:host .student-options .option-check { flex: 1 1 260px; }

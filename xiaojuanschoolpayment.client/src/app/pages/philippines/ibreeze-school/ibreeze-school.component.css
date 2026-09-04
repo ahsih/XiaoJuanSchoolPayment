@@ -2,6 +2,39 @@
   display: block;
 }
 
+:host .course-notes { margin-top: 24px; color: #526176; font-size: 14px; font-weight: 400; line-height: 1.8; }
+:host .course-notes section + section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #e3e9ed; }
+:host .course-notes h3 { margin: 0 0 10px; color: #173c32; font-size: 16px; font-weight: 700; line-height: 1.5; }
+:host .course-notes p,
+:host .course-notes li,
+:host .course-notes dd { color: #526176; font-size: 14px; font-weight: 400; line-height: 1.8; }
+:host .course-notes p,
+:host .course-notes dl,
+:host .course-notes dd { margin: 0; }
+:host .course-notes ul { margin: 0; padding-left: 20px; }
+:host .course-notes li + li { margin-top: 8px; }
+:host .course-notes dl > div + div { margin-top: 14px; }
+:host .course-notes dt { margin-bottom: 3px; color: #334155; font-weight: 500; }
+
+:host .quote-breakdown { grid-template-columns: minmax(0, 1fr); }
+:host .quote-breakdown > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+:host .quote-breakdown small { display: block; color: #64748b; font-size: 12px; font-weight: 400; line-height: 1.65; margin-top: 4px; }
+:host .quote-breakdown strong { flex-shrink: 0; text-align: right; }
+:host .excluded-fee-list strong { text-align: right; flex-shrink: 0; }
+:host .excluded-fee-list strong small { font-weight: 400; }
+:host .option-check small { display: block; margin-top: 4px; color: #64748b; font-size: 12px; font-weight: 400; line-height: 1.6; }
+:host .age-billing-rules { margin: 16px 0; padding: 14px 16px; border: 1px solid #e0e8e3; border-radius: 8px; background: #f8fbf9; color: #526176; font-size: 14px; line-height: 1.8; }
+:host .age-billing-rules h3 { margin: 0 0 8px; font-size: 15px; color: #173c32; }
+:host .age-billing-rules ul { margin: 0; padding-left: 20px; }
+:host .age-billing-rules li { font-weight: 400; }
+:host .age-billing-rules .current-rule { color: #174c3a; font-weight: 700; }
+:host .age-billing-rules small { display: block; margin-top: 8px; color: #64748b; }
+:host .local-fee-intro { border-left: 0; font-weight: 400; }
+:host .excluded-fee-list h3 { margin: 0 0 9px; color: #6b422b; font-size: 14px; }
+@media (max-width: 600px) {
+  :host .excluded-fee-list strong { text-align: left; }
+}
+
 :host .hero-media .feature-photo img {
   object-position: center 48%;
 }
@@ -112,3 +145,16 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+.quote-mode { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+.quote-mode button { border: 1px solid #bdd6cc; border-radius: 6px; padding: 10px 18px; background: white; color: #064d3b; cursor: pointer; font: inherit; }
+.quote-mode button.active { background: #064d3b; color: white; }
+.quote-mode label { display: flex; align-items: center; gap: 10px; }
+.quote-mode input { width: 76px; padding: 9px; border: 1px solid #bdd6cc; border-radius: 6px; font: inherit; }
+.group-hint { font-size: 14px; color: #526176; line-height: 1.7; }
+.student-quote { min-width: 0; border-bottom: 1px solid #dce5e9; padding: 16px 0; }
+.student-quote h3 { margin: 0 0 14px; color: #064d3b; }
+.student-quote h3 span { display: block; color: #526176; font-size: 14px; font-weight: 400; margin-top: 6px; }
+.student-subtotal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 12px; color: #14233e; }
+.split-layout#room-fees { grid-template-columns: minmax(0, 1fr); }
+.student-quote .quote-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 760px) { .student-quote .quote-form { grid-template-columns: minmax(0, 1fr); } }

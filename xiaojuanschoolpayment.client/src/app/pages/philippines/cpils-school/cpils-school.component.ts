@@ -78,23 +78,23 @@ export class CpilsSchoolComponent {
   ];
 
   readonly priceRows: PriceRow[] = [
-    { course: 'General ESL / General ESL Plus', quad: 'USD 1,635', triple: 'USD 1,710', twin: 'USD 1,775', single: 'USD 1,930' },
-    { course: 'General ESL Light', quad: 'USD 1,300', triple: 'USD 1,375', twin: 'USD 1,440', single: 'USD 1,595' },
-    { course: 'Premier Sparta / Business / TOEIC / TOEFL / PMC', quad: 'USD 1,740', triple: 'USD 1,815', twin: 'USD 1,880', single: 'USD 2,035' },
-    { course: 'TOEIC Guarantee', quad: 'USD 1,832', triple: 'USD 1,907', twin: 'USD 1,972', single: 'USD 2,127' },
-    { course: 'Pre-IELTS / IELTS', quad: 'USD 1,797', triple: 'USD 1,872', twin: 'USD 1,937', single: 'USD 2,092' },
-    { course: 'IELTS Guarantee 8 Weeks（4周费率）', quad: 'USD 1,947.5', triple: 'USD 2,022.5', twin: 'USD 2,087.5', single: 'USD 2,242.5' },
-    { course: 'IELTS Guarantee 12 Weeks（4周费率）', quad: 'USD 1,889.7', triple: 'USD 1,964.7', twin: 'USD 2,029.7', single: 'USD 2,184.7' },
+    { course: 'General ESL / General ESL Plus', quad: '1,635 美元', triple: '1,710 美元', twin: '1,775 美元', single: '1,930 美元' },
+    { course: 'General ESL Light', quad: '1,300 美元', triple: '1,375 美元', twin: '1,440 美元', single: '1,595 美元' },
+    { course: 'Premier Sparta / Business / TOEIC / TOEFL / PMC', quad: '1,740 美元', triple: '1,815 美元', twin: '1,880 美元', single: '2,035 美元' },
+    { course: 'TOEIC Guarantee', quad: '1,832 美元', triple: '1,907 美元', twin: '1,972 美元', single: '2,127 美元' },
+    { course: 'Pre-IELTS / IELTS', quad: '1,797 美元', triple: '1,872 美元', twin: '1,937 美元', single: '2,092 美元' },
+    { course: 'IELTS Guarantee 8 Weeks（4周费率）', quad: '1,947.5 美元', triple: '2,022.5 美元', twin: '2,087.5 美元', single: '2,242.5 美元' },
+    { course: 'IELTS Guarantee 12 Weeks（4周费率）', quad: '1,889.7 美元', triple: '1,964.7 美元', twin: '2,029.7 美元', single: '2,184.7 美元' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 125' },
-    { item: 'SSP / SSP I-CARD', amount: 'PHP 7,800 + PHP 4,000（一次）' },
-    { item: '管理费 / 水费 / 电费', amount: '每2周 PHP 2,000 + 800 + 2,000；电费按实际用量结算' },
-    { item: '书本教材费 / 学生证', amount: '每4周预估 PHP 2,500 + 一次性 PHP 100' },
-    { item: '签证续签 / ACR I-CARD', amount: '5–8周首次续签 PHP 5,130；ACR I-CARD PHP 4,000' },
-    { item: '宿舍押金 / 机场接机', amount: 'PHP 2,000（可退）/ PHP 1,000（可选）' },
-    { item: '4周学杂费预估', amount: 'PHP 24,000（不含接机和可退押金）' },
+    { item: '注册费', amount: '125 美元' },
+    { item: 'SSP / SSP I-CARD', amount: '7,800 比索 + 4,000 比索（一次）' },
+    { item: '管理费 / 水费 / 电费', amount: '每2周 2,000 + 800 + 2,000 比索；电费按实际用量结算' },
+    { item: '书本教材费 / 学生证', amount: '每4周预估 2,500 比索 + 一次性 100 比索' },
+    { item: '签证续签 / ACR I-CARD', amount: '5–8周首次续签 5,130 比索；ACR I-CARD 4,000 比索' },
+    { item: '宿舍押金 / 机场接机', amount: '2,000 比索（可退）/ 1,000 比索（可选）' },
+    { item: '4周学杂费预估', amount: '24,000 比索（不含接机和可退押金）' },
   ];
 
   readonly facilities = [
@@ -140,7 +140,7 @@ export class CpilsSchoolComponent {
     },
     {
       question: 'CPILS 的起价是多少？',
-      answer: '2026原价表中，General ESL四人房4周课程费与住宿费合计USD1,635，另收USD125注册费。当符合思达9折与淡季95折时，页面报价为USD1,522.9。',
+      answer: '2026原价表中，General ESL四人房4周课程费与住宿费合计1,635美元，另收125美元注册费。当符合思达9折与淡季95折时，页面报价为1,522.9美元。',
     },
     {
       question: 'CPILS 的 IELTS / TOEIC 优势是什么？',

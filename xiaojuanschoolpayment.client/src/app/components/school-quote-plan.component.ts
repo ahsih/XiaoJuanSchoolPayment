@@ -10,6 +10,8 @@ import { SchoolQuotePlan, quoteMoney } from './school-quote-plan';
 export class SchoolQuotePlanComponent {
   @Input({ required: true }) plan!: SchoolQuotePlan;
   @Input() examCourseIds: string[] = [];
+  @Input() travellerCount = 1;
+  get travellers() { return Array.from({ length: this.travellerCount }, (_, index) => index + 1); }
   readonly lists = [{ kind: 'course' as const, title: '课程' }, { kind: 'room' as const, title: '住宿' }];
   readonly money = quoteMoney;
   trackRow(_: number, row: { id: number }) { return row.id; }

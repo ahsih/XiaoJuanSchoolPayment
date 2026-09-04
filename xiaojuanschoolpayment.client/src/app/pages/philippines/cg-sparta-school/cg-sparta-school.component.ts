@@ -9,6 +9,9 @@ import { catchError, EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { CgSpartaStudentQuote } from './cg-sparta-student-quote';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { CgLocalFee as LocalFee, estimateCgLocalFees } from '../cg-local-fees';
 
@@ -114,7 +117,7 @@ interface SourceLink {
 @Component({
   selector: 'app-cg-sparta-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, MatDatepickerModule, QuoteImageDownloadButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, MatDatepickerModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
   providers: [
     provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: 'zh-CN' },
@@ -134,6 +137,7 @@ interface SourceLink {
     '../cia-school/cia-school.component.css',
     './cg-sparta-school.component.css',
     './cg-quote-plan.css',
+    '../../../components/school-group-quote.css',
   ],
 })
 export class CgSpartaSchoolComponent implements OnInit {
@@ -161,12 +165,32 @@ export class CgSpartaSchoolComponent implements OnInit {
   exchangeRateLive = false;
   readonly maxQuoteWeeks = 52;
   readonly weekOptions: WeekOption[] = Array.from({ length: this.maxQuoteWeeks }, (_, index) => index + 1);
-  courseSelections: QuoteSelection[] = [{ id: 1, weeks: 4, optionId: 'sparta', startDate: '2026-09-06' }];
-  roomSelections: QuoteSelection[] = [{ id: 2, weeks: 4, optionId: 'quad', startDate: '2026-09-06' }];
+  readonly students:CgSpartaStudentQuote[]=[new CgSpartaStudentQuote(this)];
+  quoteMode:'single'|'group'='single';
+  private requestedStudentCount=2;
+  get studentCount(){return this.requestedStudentCount;}
+  set studentCount(value:number){this.requestedStudentCount=value;if(Number.isInteger(value)&&value>=2&&value<=20)while(this.students.length<value)this.students.push(new CgSpartaStudentQuote(this));}
+  setQuoteMode(value:'single'|'group'){this.quoteMode=value;if(value==='group')this.studentCount=this.requestedStudentCount;}
+  get activeStudents(){return this.quoteMode==='single'?this.students.slice(0,1):this.students.slice(0,Math.max(2,Math.min(20,Math.floor(this.studentCount)||2)));}
+  get quotePlan(){return this.students[0].quotePlan;}
+  get quoteError(){if(this.quoteMode==='group'&&(!Number.isInteger(this.studentCount)||this.studentCount<2||this.studentCount>20))return '多人报价人数请选择2–20人的整数。';const i=this.activeStudents.findIndex(s=>!!s.error);return i<0?'':`${this.quoteMode==='group'?'学生'+(i+1)+'：':''}${this.activeStudents[i].error}`;}
+  get courseSelections():QuoteSelection[]{return this.quotePlan.courses;}
+  set courseSelections(value:QuoteSelection[]){this.quotePlan.courses=value;}
+  get roomSelections():QuoteSelection[]{return this.quotePlan.rooms;}
+  set roomSelections(value:QuoteSelection[]){this.quotePlan.rooms=value;}
   private nextSelectionId = 3;
   readonly combinedPlanNote = '注册费只计一次；每行按自己的周数和日期估算。连续课程合并初筛优惠，有间隔则分段判断。签证按最早开始至最晚结束的停留时间（含间隔）预估，管理费与水电按住宿周数预估；换课、换房及额外教材或差价以学校确认为准。';
   readonly durationPriceNote = '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。换课、换房和非标准周期的实际收费以学校确认为准。';
-  readonly longPlanNote = '超过24周的方案按现有单价延伸预估；长期优惠暂按已公布的最高200美元档位，第6次起续签每次暂按4,460比索。长期在读涉及的许可续办、教材及其他实际费用需学校确认。';
+  get longPlanNote() { return this.longPlanNoteFor(this.students[0]); }
+
+  longPlanNoteFor(student: CgSpartaStudentQuote) {
+    const visaCount = student.localFees.find(fee => fee.item === '旅游签证续签')?.quantity ?? 0;
+    return [
+      '超过24周的方案按现有单价延伸预估；长期优惠暂按已公布的最高200美元档位。',
+      visaCount > 5 ? '第6次起续签每次暂按4,460比索。' : '',
+      '长期在读涉及的许可续办、教材及其他实际费用需学校确认。',
+    ].filter(Boolean).join('');
+  }
   readonly dateErrors = new Map<number, string>();
   private readonly rowDateCache = new Map<number, { key: string; date: Date | null }>();
   readonly sundayFilter = (date: Date | null): boolean => !!date && Number.isFinite(date.getTime()) && date.getDay() === 0;
@@ -598,7 +622,7 @@ export class CgSpartaSchoolComponent implements OnInit {
     {
       question: 'CG斯巴达校区适合短期一两周吗？',
       answer:
-        '可以考虑Short-Term ESL：1周学费USD 370，2周学费USD 640；注册费、住宿、开课规则和假日安排要报名前确认。',
+        '可以考虑Short-Term ESL：1周学费370美元，2周学费640美元；注册费、住宿、开课规则和假日安排要报名前确认。',
     },
     {
       question: 'CG斯巴达校区适合IELTS吗？',
@@ -658,9 +682,9 @@ export class CgSpartaSchoolComponent implements OnInit {
   get totalWeeks(): number { return this.courseSelections.reduce((sum, row) => sum + row.weeks, 0); }
   get roomTotalWeeks(): number { return this.roomSelections.reduce((sum, row) => sum + row.weeks, 0); }
   get isCombinedPlan(): boolean { return this.courseSelections.length > 1 || this.roomSelections.length > 1 || this.dateCoverageMismatch; }
-  get quoteHeading(): string { return `CG斯巴达校区${this.totalWeeks}周报价`; }
+  get quoteHeading(): string { return this.quoteMode==='single'?`CG斯巴达校区${this.totalWeeks}周报价`:`CG斯巴达校区 ${this.activeStudents.length}人报价`; }
   get durationMismatch(): boolean { return this.totalWeeks !== this.roomTotalWeeks; }
-  get canExportQuote(): boolean { return this.validSundayStart && !this.hasOverlappingRows && this.stayWeeks <= this.maxQuoteWeeks; }
+  get canExportQuote(): boolean { return !this.quoteError; }
   get selectedStartDate(): string { return [...this.courseSelections].sort((a, b) => a.startDate.localeCompare(b.startDate))[0].startDate; }
   // Legacy single-plan callers; the page edits each row through setRowStartDate instead.
   set selectedStartDate(value: string) {
@@ -849,16 +873,12 @@ export class CgSpartaSchoolComponent implements OnInit {
     return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks;
   }
 
-  get tuitionForSelectedWeeks(): number {
-    return this.courseQuoteRows.reduce((sum, row) => sum + row.amount, 0);
-  }
+  get tuitionForSelectedWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.tuition,0); }
 
-  get roomFeeForSelectedWeeks(): number {
-    return this.roomQuoteRows.reduce((sum, row) => sum + row.amount, 0);
-  }
+  get roomFeeForSelectedWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.accommodation,0); }
 
   get sidaDiscountAmount(): number {
-    return this.selectedPackageFee * (1 - this.sidaDiscountRate);
+    return this.activeStudents.reduce((sum,s)=>sum+s.sidaDiscount,0);
   }
 
   get isOffSeasonEntry(): boolean {
@@ -866,12 +886,11 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get offSeasonDiscount(): number {
-    return this.coursePeriods.filter(period => period.startDate >= '2026-08-30' && period.startDate <= '2026-12-27')
-      .reduce((sum, period) => sum + Math.floor(period.weeks / 4) * this.offSeasonDiscountPerFourWeeks, 0);
+    return this.activeStudents.reduce((sum,s)=>sum+s.offSeasonDiscount,0);
   }
 
   get longStayDiscount(): number {
-    return this.coursePeriods.reduce((sum, period) => sum + Math.max(0, Math.min(200, (Math.floor(period.weeks / 4) - 2) * 50)), 0);
+    return this.activeStudents.reduce((sum,s)=>sum+s.longStayDiscount,0);
   }
 
   private get coursePeriods(): Array<{ startDate: string; weeks: number }> {
@@ -884,33 +903,13 @@ export class CgSpartaSchoolComponent implements OnInit {
     return periods;
   }
 
-  get summerWeeks(): number {
-    const weekMs = 7 * 24 * 60 * 60 * 1000;
-    const summerStart = Date.UTC(2026, 6, 5);
-    // The supplied final date (August 30) is inclusive, matching the displayed rule.
-    const summerEndExclusive = Date.UTC(2026, 7, 31);
-    let count = 0;
-    for (const date of this.weekDates([...this.courseSelections, ...this.roomSelections])) {
-      const weekStart = Date.parse(`${date}T00:00:00Z`);
-      if (weekStart < summerEndExclusive && weekStart + weekMs > summerStart) count += 1;
-    }
-    return count;
-  }
+  get summerWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.summerWeeks,0); }
 
   get summerSurcharge(): number {
     return this.summerWeeks * this.summerFeePerWeek;
   }
 
-  get quoteUsd(): number {
-    return Math.max(
-      0,
-      this.registrationFee +
-        this.selectedPackageFee * this.sidaDiscountRate +
-        this.summerSurcharge -
-        this.offSeasonDiscount -
-        this.longStayDiscount,
-    );
-  }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum,s)=>sum+s.quoteUsd,0); }
 
   get quoteUsdText(): string {
     return `${this.formatUsd(this.quoteUsd)} 美元`;
@@ -949,11 +948,14 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get localFees(): LocalFee[] {
-    return this.localFeeEstimate.fees;
+    const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
+      .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
+    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType).fees.filter(f=>f.excluded);
+    return [...included,...optional];
   }
 
   private get localFeeEstimate() {
-    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks);
+    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType);
   }
 
   get localFeesTotal(): number {
@@ -972,51 +974,26 @@ export class CgSpartaSchoolComponent implements OnInit {
     return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
   }
 
+  get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
+  get schoolPaymentItems(){const paid=this.activeStudents.filter(s=>s.registration>0).length;return [{icon:'注',label:'注册费',amount:`${this.formatUsd(this.payableRegistrationFee)} 美元`,note:`一次性费用，老学员返校免费；本次计收${paid}人 × ${this.registrationFee}美元${paid<this.activeStudents.length?'，其余已免':''}`},...groupPaymentLines(this.activeStudents,false)];}
+  get optionalFeeItems(){return this.excludedLocalFees.map(f=>({label:f.item,amount:f.item.includes('接机')?'1,200 比索':this.formatPhp(f.total),cnyAmount:`约人民币 ${Math.round((f.item.includes('接机')?1200:f.total)/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:f.item.includes('接机')?(this.activeStudents.length>1?'可选，也可自行前往；多人费用须按实际接机安排确认。':'可选，也可自行前往。'):'预估1,000比索，具体以学校为准；无损坏及无欠费时可退。'}));}
   get quoteImageData() {
-    const includedFees = this.localFees.filter((fee) => !fee.excluded);
-    const optionalFees = this.localFees.filter((fee) => fee.excluded);
-    const paymentItems = [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费，不参与折扣' },
-      ...[...this.courseQuoteRows].sort((a, b) => a.startDate.localeCompare(b.startDate)).map((row, index) => ({
-        icon: '课', label: `课程费${this.courseSelections.length > 1 ? index + 1 : ''}`,
-        amount: `${this.formatUsd(row.amount)} 美元`, detailTitle: row.name,
-        detailSubtitle: `${row.dateRange} · ${row.weeks}周`,
-        note: `${row.lessons}${row.warning ? `；${row.warning}` : ''}`,
-      })),
-      ...[...this.roomQuoteRows].sort((a, b) => a.startDate.localeCompare(b.startDate)).map((row, index) => ({
-        icon: '宿', label: `住宿费${this.roomSelections.length > 1 ? index + 1 : ''}`,
-        amount: `${this.formatUsd(row.amount)} 美元`, detailTitle: row.name,
-        detailSubtitle: `${row.dateRange} · ${row.weeks}周`,
-      })),
-      { icon: '折', label: '思达折扣', amount: '9折', note: `课程及食宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
-      ...(this.offSeasonDiscount > 0 ? [{ icon: '淡', label: '淡季优惠', amount: `- ${this.formatUsd(this.offSeasonDiscount)} 美元`, note: '符合淡季条件的课程，每满4周优惠150美元', accent: true }] : []),
-      ...(this.longStayDiscount > 0 ? [{ icon: '长', label: '长期优惠', amount: `- ${this.formatUsd(this.longStayDiscount)} 美元`, note: this.hasLongPlan ? '按已公布的最高优惠档位预估' : '按连续课程时长计入长期优惠', accent: true }] : []),
-      ...(this.summerSurcharge > 0 ? [{ icon: '暑', label: '暑假附加费', amount: `${this.formatUsd(this.summerSurcharge)} 美元`, note: `${this.summerFeePerWeek}美元/周/人 × ${this.summerWeeks}周；不足一周按一周计，不参与9折` }] : []),
-    ];
-    return applySchoolQuoteImageLayout(buildPhilippinesDetailedQuote({
-      fullFeeDetails: true,
-      localFeeTableLayout: 'web',
-      schoolCode: 'CG斯巴达校区',
-      schoolName: 'CG斯巴达校区',
-      filePrefix: 'CG斯巴达校区',
-      heroSrc: '/assets/philippines/cg-sparta-campus-hero.jpg',
-      weeks: this.totalWeeks,
-      startDate: this.selectedStartDate,
-      usdToCny: this.usdToCny,
-      totalUsd: this.quoteUsd,
-      paymentItems,
-      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
-      localFeeTotal: this.localFeesTotal,
-      localCurrencyName: '比索',
-      localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: this.localFeeEstimateNote,
-      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), note: `${fee.amount} × ${fee.quantity}；${fee.note}` })),
-      ruleNotes: [
-        '按单人预估；换课、换房涉及的差价需另行确认。',
-        ...(this.applicablePriceNote ? [this.applicablePriceNote] : []),
-        ...(this.dateCoverageMismatch ? ['课程与住宿日期不完全一致，未覆盖或额外住宿需另行确认。'] : []),
-      ],
-    }), 'CG斯巴达校区', this.totalWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const planRows=(['课','宿'] as const).flatMap(icon=>this.activeStudents.flatMap((student,index)=>{
+      const rows=[...(icon==='课'?student.quotePlan.courses:student.quotePlan.rooms)].sort((a,b)=>a.startDate.localeCompare(b.startDate));
+      return student.quotePlan.paymentItems().filter(x=>x.icon===icon).map((x,rowIndex)=>{
+        const warning=icon==='课'?student.warning(rows[rowIndex]):'';
+        return {...x,label:`${this.quoteMode==='group'?'学生'+(index+1)+' · ':''}${x.label.replace(/^课程费/,'课程名称').replace(/^住宿费/,'住宿名称')}`,note:[x.note,warning].filter(Boolean).join('；')};
+      });
+    }));
+    const paymentItems=[this.schoolPaymentItems[0],...planRows,...groupPaymentLines(this.activeStudents,true)];
+    const warnings=this.activeStudents.flatMap((s,i)=>s.quotePlan.warning?[`${this.quoteMode==='group'?'学生'+(i+1)+'：':''}${s.quotePlan.warning}`]:[]);
+    const short=[...new Set(this.activeStudents.flatMap(s=>s.quotePlan.shortStayNotes(w=>s.multiplier(w))))];
+    const prorated=this.activeStudents.some(s=>[...s.quotePlan.courses,...s.quotePlan.rooms].some(row=>row.weeks>4&&row.weeks%4!==0))?['非4周整期的费用按周折算，均为预估。']:[];
+    const long=[...new Set(this.activeStudents.filter(s=>s.quotePlan.stayWeeks>24).map(s=>this.longPlanNoteFor(s)))];
+    const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.jpg',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
+      localFeeItems:this.includedLocalFees.map(f=>({label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:f.note})),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:this.localFeeEstimateNote,optionalFeeItems:this.optionalFeeItems,ruleNotes:[]});
+    const result=applySchoolQuoteImageLayout({...quote,importantNotes:[...warnings,...short,...prorated,...long,'最终以学校价格、空房及优惠确认为准。']},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
+    return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
   }
 
   get applicablePriceNote(): string {

@@ -39,7 +39,7 @@ describe('CG Banilad verified quote', () => {
     component.selectedCourseId = 'toeic';
     expect(component.selectedCourse.lessons).toContain('托业 3节 + ESL 1节');
     expect(component.selectedCourse.lessons).toContain('选修1节（强制）');
-    expect(component.quoteImageData.paymentItems.find(row => row.label === '课程费')?.note).toContain(component.selectedCourse.lessons);
+    expect(component.quoteImageData.paymentItems.find(row => row.icon === '课')?.note).toContain(component.selectedCourse.lessons);
   });
 
   it('uses Chinese exam names consistently in course data and exported quotes', () => {
@@ -48,7 +48,7 @@ describe('CG Banilad verified quote', () => {
       expect(component.selectedCourse.name).toBe(name);
       expect(component.selectedCourse.lessons).not.toMatch(/IELTS|TOEIC/);
       expect(component.selectedCourse.type).not.toContain('多益');
-      const courseItem = component.quoteImageData.paymentItems.find(row => row.label === '课程费');
+      const courseItem = component.quoteImageData.paymentItems.find(row => row.icon === '课');
       expect(courseItem?.detailTitle).toContain(name);
       expect(courseItem?.note).not.toMatch(/IELTS|TOEIC/);
       expect(component.selectedCourse.tuitionUsd).toBe(850);
@@ -105,7 +105,7 @@ describe('CG Banilad verified quote', () => {
     // Eight weeks are covered by the default 59-day visa; no extension or ACR fee yet.
     expect(component.localFeesTotal).toBe(23300);
     component.selectedWeeks = 12;
-    expect(component.localFeesTotal).toBe(37460);
+    expect(component.localFeesTotal).toBe(37760);
     expect(component.localFees.find(row => row.item === 'ACR-I CARD 外国人身份证')?.quantity).toBe(1);
   });
 
@@ -121,7 +121,7 @@ describe('CG Banilad verified quote', () => {
   });
 
   it('updates all local-fee and image totals for the 59-day visa estimate', () => {
-    for (const [weeks, total] of [[3, 18800], [4, 18800], [8, 23300], [12, 37460], [16, 48350], [20, 57310], [24, 66270]] as const) {
+    for (const [weeks, total] of [[3, 18800], [4, 18800], [8, 23300], [12, 37760], [16, 48650], [20, 57610], [24, 66570]] as const) {
       component.selectedWeeks = weeks;
       expect(component.localFeesTotal).withContext(`${weeks} weeks`).toBe(total);
       expect(component.quoteImageData.localFeeAmount).toBe(component.formatPhp(total));
@@ -216,11 +216,11 @@ describe('CG Banilad verified quote', () => {
 
   it('omits unapplied discounts and surcharges from image payment rows', () => {
     const labels = () => component.quoteImageData.paymentItems.map(row => row.label);
-    expect(labels()).toEqual(['注册费', '课程费', '住宿费', '思达折扣', '淡季优惠']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣', '淡季优惠']);
     component.selectedStartDate = '2027-01-04';
-    expect(labels()).toEqual(['注册费', '课程费', '住宿费', '思达折扣']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣']);
     component.selectedStartDate = '2026-07-05';
-    expect(labels()).toEqual(['注册费', '课程费', '住宿费', '思达折扣', '暑假附加费']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣', '暑假附加费']);
   });
 
   it('preserves all ten local fee details, including zero amounts, and the estimate disclaimer', () => {
@@ -228,11 +228,11 @@ describe('CG Banilad verified quote', () => {
     expect(quote.layout).toBe('cia-detailed');
     expect(quote.fullFeeDetails).toBeTrue();
     expect(quote.localFeeTableLayout).toBe('web');
-    expect(quote.localFeeItems?.length).toBe(8);
+    expect(quote.localFeeItems?.length).toBe(9);
     expect(quote.optionalFeeItems?.length).toBe(2);
     expect(quote.localFeeItems?.find(row => row.label === '旅游签证续签')?.amount).toBe('0 比索');
     expect(quote.localFeeItems?.find(row => row.label === 'ACR-I CARD 外国人身份证')?.amount).toBe('0 比索');
-    expect(quote.optionalFeeItems?.find(row => row.label.includes('接机'))?.amount).toBe('0 比索');
+    expect(quote.optionalFeeItems?.find(row => row.label.includes('接机'))?.amount).toBe('1,200 比索');
     expect(quote.optionalFeeItems?.find(row => row.label.includes('押金'))?.amount).toBe('1,000 比索');
     expect(quote.importantNotes).not.toContain(component.localFeeEstimateNote);
     expect(quote.localFeeNote).toContain('具体以学校');
@@ -248,8 +248,10 @@ describe('CG Banilad verified quote', () => {
         amount: component.formatPhp(fee.total), note: fee.note,
       })));
       expect(quote.optionalFeeItems).toEqual(component.excludedLocalFees.map(fee => ({
-        label: fee.item, amount: component.formatPhp(fee.total),
-        note: `${fee.amount} × ${fee.quantity}；${fee.note}`,
+        label: fee.item,
+        amount: fee.item.includes('接机') ? '1,200 比索' : component.formatPhp(fee.total),
+        cnyAmount: `约人民币 ${Math.round((fee.item.includes('接机') ? 1200 : fee.total) / component.phpPerCny).toLocaleString('zh-CN')} 元`,
+        note: fee.item.includes('接机') ? '可选，也可自行前往。' : '预估1,000比索，具体以学校为准；无损坏及无欠费时可退。',
       })));
     }
   });
@@ -265,6 +267,100 @@ describe('CG Banilad verified quote', () => {
     expect(component.quoteUsd).toBe(tuition);
   });
 
+  it('calculates a mixed two-person quote per student and charges registration by new-student count', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    const [adult, minor] = component.activeStudents;
+    adult.quotePlan.courses[0].startDate = '2027-01-03';
+    adult.quotePlan.rooms[0].startDate = '2027-01-03';
+    minor.selectedAgeGroup = 'minor';
+    minor.returningStudent = true;
+    minor.visaType = 'student';
+    minor.quotePlan.courses[0].optionId = 'junior';
+
+    expect(component.payableRegistrationFee).toBe(100);
+    expect(component.schoolPaymentItems[0].amount).toBe('100 美元');
+    expect(component.quoteUsd).toBeCloseTo(adult.quoteUsd + minor.quoteUsd);
+    expect(component.localFeesTotal).toBe(component.includedLocalFees.reduce((sum, fee) => sum + fee.total, 0));
+    expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
+    expect(component.quoteImageData.paymentItems.filter(row => row.icon === '课').map(row => row.label)).toEqual([
+      '学生1 · 课程名称', '学生2 · 课程名称',
+    ]);
+    expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达折扣').length).toBe(1);
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toContain('2人适用');
+  });
+
+  it('zeros the four provisional long-term-visa fees but keeps one ARP fee and adviser reminders', () => {
+    for (const visa of ['student', 'work', 'srrv', 'sirv'] as const) {
+      component.activeStudents[0].visaType = visa;
+      component.selectedWeeks = 12;
+      for (const label of ['SSP特殊学习许可证', 'SSP E-CARD', 'ACR-I CARD 外国人身份证', '旅游签证续签']) {
+        const fee = component.includedLocalFees.find(row => row.item === label)!;
+        expect(fee.total).withContext(`${visa}/${label}`).toBe(0);
+        expect(fee.note).withContext(`${visa}/${label}`).toContain('顾问');
+        expect(fee.note).withContext(`${visa}/${label}`).toContain('学校确认');
+      }
+      const arp = component.includedLocalFees.find(row => row.item === 'ARP外国人登记')!;
+      expect(arp.total).withContext(visa).toBe(300);
+      expect(arp.note).withContext(visa).toContain('长期签证仍计收一次');
+      expect(arp.note).withContext(visa).toContain('顾问');
+    }
+  });
+
+  it('keeps age informational and prices the course actually selected', () => {
+    const student = component.activeStudents[0];
+    student.selectedAgeGroup = 'minor';
+    student.quotePlan.courses[0].optionId = 'general-esl';
+    expect(student.tuition).toBe(700);
+    student.quotePlan.courses[0].optionId = 'junior';
+    expect(student.tuition).toBe(1150);
+  });
+
+  it('merges only identical promotion types and preserves partial eligibility in the image', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    const [first, second] = component.activeStudents;
+    first.quotePlan.courses[0].startDate = '2027-01-03';
+    first.quotePlan.rooms[0].startDate = '2027-01-03';
+    second.quotePlan.courses[0].startDate = '2026-09-06';
+    second.quotePlan.rooms[0].startDate = '2026-09-06';
+    const lines = component.quoteImageData.paymentItems;
+    expect(lines.filter(row => row.label === '思达折扣').length).toBe(1);
+    expect(lines.find(row => row.label === '学生2 · 淡季优惠')?.amount).toBe('− 150 美元');
+    expect(lines.some(row => row.label === '学生1 · 淡季优惠')).toBeFalse();
+  });
+
+  it('renders one to four independent course and accommodation rows without changing the template', () => {
+    const plan = component.activeStudents[0].quotePlan;
+    const starts = ['2026-09-06', '2026-10-04', '2026-11-01', '2026-11-29'];
+    for (let count = 1; count <= 4; count++) {
+      while (plan.courses.length < count) plan.add('course');
+      while (plan.rooms.length < count) plan.add('room');
+      plan.courses.forEach((row, index) => row.startDate = starts[index]);
+      plan.rooms.forEach((row, index) => row.startDate = starts[index]);
+      const rows = component.quoteImageData.paymentItems;
+      expect(rows.filter(row => row.icon === '课').length).withContext(`${count} course rows`).toBe(count);
+      expect(rows.filter(row => row.icon === '宿').length).withContext(`${count} room rows`).toBe(count);
+      expect(component.quoteError).toBe('');
+    }
+    expect(plan.maxWeeks).toBe(24);
+  });
+
+  it('allows the same dates for different students but blocks overlaps and totals beyond 24 weeks within one student', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    const [first, second] = component.activeStudents;
+    expect(first.quotePlan.courses[0].startDate).toBe(second.quotePlan.courses[0].startDate);
+    expect(component.quoteError).toBe('');
+    first.quotePlan.add('course');
+    first.quotePlan.courses[1].startDate = first.quotePlan.courses[0].startDate;
+    expect(component.quoteError).toContain('学生1');
+    expect(component.quoteError).toContain('日期有重叠');
+    first.quotePlan.courses[1].startDate = '2026-10-04';
+    first.quotePlan.courses[0].weeks = 24;
+    expect(component.quoteError).toContain('24周');
+  });
+
   it('uses Chinese currencies across webpage fee data and every exported fee', () => {
     expect(component.formatUsd(1234.56)).toBe('1,234.56 美元');
     expect(component.formatPhp(4500)).toBe('4,500 比索');
@@ -275,7 +371,7 @@ describe('CG Banilad verified quote', () => {
     expect(quote.paymentItems.length).toBe(7);
     expect(JSON.stringify(quote)).not.toMatch(/\b(?:USD|PHP|CNY)\b/);
     expect(JSON.stringify(component.localFees)).not.toMatch(/\b(?:USD|PHP|CNY)\b/);
-    expect(quote.localFeeAmount).toBe('37,460 比索');
+    expect(quote.localFeeAmount).toBe('37,760 比索');
     expect(quote.totalUsd).toBe('3,285 美元');
     expect(quote.paymentItems.some(row => /美元\s*美元/.test(`${row.amount} ${row.note}`))).toBeFalse();
     const visa = quote.localFeeItems?.find(row => row.label === '旅游签证续签');

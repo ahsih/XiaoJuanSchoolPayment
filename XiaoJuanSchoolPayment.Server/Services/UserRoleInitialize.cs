@@ -8,7 +8,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     {
       var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-      string[] roles = { "Admin", "User" };
+      string[] roles = { "Admin", "Staff", "User", "Student" };
 
       foreach (var role in roles)
       {

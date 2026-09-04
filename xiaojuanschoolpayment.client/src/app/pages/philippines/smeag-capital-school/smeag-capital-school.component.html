@@ -315,31 +315,23 @@
 
           <section class="quote-panel" id="quote">
             <div class="section-heading">
-              <h2>SMEAG Capital{{ selectedWeeks }}周报价</h2>
+              <h2>{{ quoteHeading }}</h2>
             </div>
-            <app-school-quote-plan [plan]="quotePlan" [examCourseIds]="examCourseIds"></app-school-quote-plan>
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿及费用条件，注册费和学杂费按人计算。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields"><label>预计报名日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label><label>抵达时年龄<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label><label>签证类型<select [(ngModel)]="student.visaType"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label></div>
+              <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label><label class="option-check"><input type="checkbox" [(ngModel)]="student.pickupSelected" />需要学校机场团体接机</label></div>
+              <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">未成年学生按所选课程收费，入学及监护要求须顾问确认。</p>
+              <app-school-quote-plan [plan]="student.quotePlan" [examCourseIds]="examCourseIds"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentQuoteUsd(student)) }} 美元</strong></div>
+            </article>
             <div class="quote-breakdown">
-              <div>
-                <span>注册费</span><strong>{{ registrationFee }} 美元</strong>
-              </div>
-              <div>
-                <span>课程费</span
-                ><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong>
-              </div>
-              <div>
-                <span>住宿费</span
-                ><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong>
-              </div>
-              <div>
-                <span>{{ discountText }}</span><strong>优惠 {{ formatUsd(sidaDiscountAmount) }} 美元</strong>
-              </div>
-              <div>
-                <span>淡季优惠（适用期：2026/08/23–2027/01/01；{{ lowSeasonWeeks }}周 × {{ lowSeasonDiscountPerWeek }}美元）</span
-                ><strong>- {{ formatUsd(lowSeasonDiscount) }} 美元</strong>
-              </div>
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期支付参考</span>
+              <span>最终应付学校金额</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
               <small>{{ exchangeRateText }}，人民币仅供估算</small>
@@ -352,14 +344,16 @@
                 type="button"
                 class="primary-action"
                 (click)="calculateQuote()"
+                [disabled]="!!quoteError"
               >
                 立即计算我的费用<mat-icon>calculate</mat-icon>
               </button>
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价<mat-icon>support_agent</mat-icon>
               </a>
-              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quotePlan.error" label="保存报价单图片"></app-quote-image-download-button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button>
             </div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
           </section>
         </section>
 
@@ -367,7 +361,7 @@
           <div class="local-fee-heading">
             <div>
               <span>到校后另付 · SMEAG 2027新版</span>
-              <h3 id="smeag-local-fee-title">{{ selectedWeeks }}周学杂费明细</h3>
+              <h3 id="smeag-local-fee-title">{{ localFeePeriodLabel }}学杂费明细</h3>
             </div>
           </div>
           <p class="local-fee-intro">
@@ -382,14 +376,14 @@
                 </tr>
               </tbody>
               <tfoot>
-                <tr><th colspan="3" scope="row">{{ selectedWeeks }}周学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>含1套教材预估费用；不含可选接机费及可退押金</td></tr>
+                <tr><th colspan="3" scope="row">{{ localFeePeriodLabel }}学杂费总计预估（比索）</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>含所选课程教材预估费用；不含可选接机费及可退押金</td></tr>
                 <tr><th colspan="3" scope="row">人民币预计金额（按当前参考汇率预估）</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>最终以兑换及支付时的实际汇率为准</td></tr>
               </tfoot>
             </table>
           </div>
           <div class="excluded-fee-list" *ngIf="excludedLocalFees.length">
             <h4>另行准备（不计入上方学杂费合计）</h4>
-            <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}</b></div>
+            <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small *ngIf="fee.total">约人民币 {{ (fee.total / phpPerCny).toLocaleString('zh-CN', { maximumFractionDigits: 0 }) }} 元</small></b></div>
           </div>
           <section class="textbook-reference" aria-labelledby="smeag-textbook-reference-title">
             <h4 id="smeag-textbook-reference-title">各课程教材价格参考（比索/套）</h4>

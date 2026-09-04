@@ -36,6 +36,7 @@ export interface QuoteImageLocalFeeItem {
 export interface QuoteImageOptionalFeeItem {
   label: string;
   amount: string;
+  cnyAmount?: string;
   note: string;
 }
 
@@ -88,7 +89,10 @@ export interface QuoteImageCardData {
   totalLabel: string;
   totalUsd: string;
   totalCny: string;
+  totalIncludedLabel?: string;
   totalNote?: string;
+  /** Opt-in for school-specific additional-payment warnings; preserve legacy layouts. */
+  expandTotalNote?: boolean;
   localFeeTitle?: string;
   localFeeAmount: string;
   localFeeDescription: string;
@@ -102,6 +106,9 @@ export interface QuoteImageCardData {
   benefitItems?: QuoteImageBenefitItem[];
   serviceLocations?: string[];
   alumniBenefitItems?: QuoteImageAlumniBenefitItem[];
+  /** School-specific opt-out when no alumni price benefit may be advertised. */
+  hideAlumniBenefit?: boolean;
+  finalConfirmationText?: string;
   importantNotes?: string[];
   noteTitle?: string;
   note: string;
@@ -644,21 +651,27 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const optionalHeights = (this.quote.optionalFeeItems ?? []).map(row => Math.max(48,
       lineCount(row.note, this.detailedGrid.noteWidth, font(12, 400)) * 15 + 18,
       lineCount(row.label, 186, font(14, 850)) * 17 + 18,
-      lineCount(row.amount, 160, font(14, 900)) * 17 + 18,
+      lineCount(row.amount, row.cnyAmount ? this.detailedGrid.amountWidth : 160, font(14, 900)) * 17 + 18
+        + (row.cnyAmount ? lineCount(row.cnyAmount, this.detailedGrid.amountWidth, font(12, 400)) * 16 : 0),
     ));
     const importantNotes = this.quoteFooterNotes();
     const noteHeights = importantNotes.map(note =>
       Math.max(27, lineCount(`✓ ${note}`, 820, font(13, this.isDateMismatchNote(note) ? 700 : 400)) * 18 + 9));
     const benefitsHeight = Math.max(56, ...(this.quote.benefitItems?.slice(0, 4) ?? []).map(item =>
       44 + (lineCount(item.text, 206, font(12, 400)) - 1) * 15 + 8));
-    const alumniHeight = Math.max(36, lineCount(this.quote.alumniBenefitItems?.[0]?.text ?? '', 770, font(16, 400)) * 20 + 16);
-    const serviceHeight = 47 + benefitsHeight + 8 + alumniHeight + 12;
+    const alumniHeight = this.quote.hideAlumniBenefit
+      ? 0
+      : Math.max(36, lineCount(this.quote.alumniBenefitItems?.[0]?.text ?? '', 770, font(16, 400)) * 20 + 16);
+    const serviceHeight = 47 + benefitsHeight + (this.quote.hideAlumniBenefit ? 12 : 8 + alumniHeight + 12);
     const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
     const footerHeight = Math.max(56, sum(noteHeights) + 24);
+    const totalNoteLines = this.quote.expandTotalNote ? this.expandedTotalNoteLines(context) : [];
+    const totalHeight = 64 + Math.max(0, totalNoteLines.length - 1) * 16;
     return {
+      totalNoteLines, totalHeight,
       paymentHeights, paymentDetails, paymentProjects, localHeights, optionalHeights, noteHeights, localNoteHeight,
       importantNotes, footerHeight, benefitsHeight, alumniHeight, serviceHeight,
-      paymentExtra: hasItemDetails ? sum(paymentHeights) - 358 : Math.max(0, sum(paymentHeights) - 358),
+      paymentExtra: (hasItemDetails ? sum(paymentHeights) - 358 : Math.max(0, sum(paymentHeights) - 358)) + totalHeight - 64,
       localExtra: Math.max(0, localNoteHeight + sum(localHeights) + 64 + 6 + sum(optionalHeights) + 14 - 622),
       notesExtra: footerHeight - 106 + serviceHeight - 174,
     };
@@ -667,6 +680,14 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   private detailedLocalNote(row: QuoteImageLocalFeeItem): string {
     if (this.quote.localFeeTableLayout === 'web') return row.note;
     return this.quote.fullFeeDetails ? `计费：${row.unit} × ${row.quantity}；${row.note}` : row.note;
+  }
+
+  private expandedTotalNoteLines(context: CanvasRenderingContext2D): string[] {
+    const rate = this.quote.conversionRates
+      ? `参考汇率：1美元 ≈ ${this.quote.conversionRates.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币` : '';
+    context.font = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    return [rate, ...this.withoutExchangeNote(this.quote.totalNote ?? '').split('\n')].filter(Boolean)
+      .flatMap(text => this.wrapCanvasText(context, text, this.detailedGrid.noteWidth, 1000));
   }
 
   private isDateMismatchNote(note: string): boolean {
@@ -690,7 +711,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       ...notes.filter(note => this.isDateMismatchNote(note)),
       ...notes.filter(note => !this.isDateMismatchNote(note)),
       `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '本次采用备用汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`,
-      '最终以学校价格、空房及优惠确认为准。',
+      this.quote.finalConfirmationText ?? '最终以学校价格、空房及优惠确认为准。',
     ];
   }
 
@@ -905,18 +926,19 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       );
     this.drawSolidLine(context, 36, paymentRowTop, 992, paymentRowTop, '#e1e6e8');
     context.fillStyle = '#fffaf5';
-    context.fillRect(36, paymentRowTop, 956, 64);
+    const schoolTotalHeight = fullLayout?.totalHeight ?? 64;
+    context.fillRect(36, paymentRowTop, 956, schoolTotalHeight);
     context.fillStyle = orange;
-    context.fillRect(36, paymentRowTop, 5, 64);
-    this.drawSolidLine(context, 236, paymentRowTop, 236, paymentRowTop + 64, '#eadfd6');
-    this.drawSolidLine(context, grid.noteBoundary, paymentRowTop, grid.noteBoundary, paymentRowTop + 64, '#eadfd6');
+    context.fillRect(36, paymentRowTop, 5, schoolTotalHeight);
+    this.drawSolidLine(context, 236, paymentRowTop, 236, paymentRowTop + schoolTotalHeight, '#eadfd6');
+    this.drawSolidLine(context, grid.noteBoundary, paymentRowTop, grid.noteBoundary, paymentRowTop + schoolTotalHeight, '#eadfd6');
     context.textAlign = 'center';
     context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
     context.fillText(this.quote.totalLabel, 136, paymentRowTop + 27);
     context.font = '700 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = '#64748b';
-    context.fillText('优惠已计入', 136, paymentRowTop + 48);
+    context.fillText(this.quote.totalIncludedLabel ?? '优惠已计入', 136, paymentRowTop + 48);
     let totalFontSize = 27;
     context.font = `950 ${totalFontSize}px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`;
     while (context.measureText(this.quote.totalUsd).width > grid.amountWidth && totalFontSize > 16) {
@@ -933,7 +955,11 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       : '';
     const totalNote = [schoolRate, fullLayout ? this.withoutExchangeNote(this.quote.totalNote ?? '') : this.quote.totalNote ?? ''].filter(Boolean).join('；');
     context.fillText(this.quote.totalCny, grid.noteLeft, paymentRowTop + (totalNote ? 27 : 38));
-    drawTableText(totalNote, grid.noteLeft, paymentRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
+    if (this.quote.expandTotalNote && fullLayout) {
+      fullLayout.totalNoteLines.forEach((line, index) => drawTableText(line, grid.noteLeft, paymentRowTop + 49 + index * 16, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16));
+    } else {
+      drawTableText(totalNote, grid.noteLeft, paymentRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
+    }
 
     context.save();
     context.translate(0, fullLayout?.paymentExtra ?? 0);
@@ -1037,7 +1063,10 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
         context.textAlign = 'center';
         drawCenteredTableText(item.label, 136, rowTop, rowHeight, 186, green, '850 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 17);
         context.textAlign = 'right';
-        drawCenteredTableText(item.amount, grid.amountRight, rowTop, rowHeight, grid.amountWidth, navy, '900 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 17);
+        context.font = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+        const secondaryHeight = item.cnyAmount ? this.wrapCanvasText(context, item.cnyAmount, grid.amountWidth, 1000).length * 16 : 0;
+        drawCenteredTableText(item.amount, grid.amountRight, rowTop, rowHeight - secondaryHeight, grid.amountWidth, navy, '900 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 17);
+        if (item.cnyAmount) drawCenteredTableText(item.cnyAmount, grid.amountRight, rowTop + rowHeight - secondaryHeight - 6, secondaryHeight, grid.amountWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 16);
         context.textAlign = 'left';
         drawCenteredTableText(item.note, grid.noteLeft, rowTop, rowHeight, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 15);
         return;
@@ -1088,17 +1117,19 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     context.fillText(serviceLocations.join(' · '), 984, 1487);
     context.textAlign = 'left';
 
-    const alumniText = this.quote.alumniBenefitItems?.[0]?.text ?? '';
-    const alumniTop = fullLayout ? benefitsTop + benefitsHeight + 8 : 1581;
-    const alumniHeight = fullLayout?.alumniHeight ?? 36;
-    this.drawRoundedRect(context, 36, alumniTop, 956, alumniHeight, 6, '#fff8f1', '#f2b38c', 1);
-    context.fillStyle = orange;
-    context.fillRect(36, alumniTop, 5, alumniHeight);
-    context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillStyle = orange;
-    context.textAlign = 'left';
-    context.fillText('老学员专属优惠', 54, alumniTop + 24);
-    drawTableText(alumniText, 206, alumniTop + 24, 770, navy, '400 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', fullLayout ? 1000 : 1, 20);
+    if (!this.quote.hideAlumniBenefit) {
+      const alumniText = this.quote.alumniBenefitItems?.[0]?.text ?? '';
+      const alumniTop = fullLayout ? benefitsTop + benefitsHeight + 8 : 1581;
+      const alumniHeight = fullLayout?.alumniHeight ?? 36;
+      this.drawRoundedRect(context, 36, alumniTop, 956, alumniHeight, 6, '#fff8f1', '#f2b38c', 1);
+      context.fillStyle = orange;
+      context.fillRect(36, alumniTop, 5, alumniHeight);
+      context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = orange;
+      context.textAlign = 'left';
+      context.fillText('老学员专属优惠', 54, alumniTop + 24);
+      drawTableText(alumniText, 206, alumniTop + 24, 770, navy, '400 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', fullLayout ? 1000 : 1, 20);
+    }
 
     const footerTop = fullLayout ? 1454 + serviceHeight + 12 : 1640;
     this.drawRoundedRect(context, padding, footerTop, contentWidth, fullLayout?.footerHeight ?? 106, 8, '#f7faf8', '#dce7e1', 1);

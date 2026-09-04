@@ -374,54 +374,24 @@
               <h2>{{ quoteHeading }}</h2>
               <p>课程与住宿可以分别添加多行；每行独立选择类型、周数和周日开始日期，结束日期自动计算至周六。</p>
             </div>
-            <section *ngFor="let list of quoteLists; trackBy: trackQuoteList" class="ev-quote-list" [class.ev-course-list]="list.kind === 'course'" [attr.aria-label]="list.title + '清单'">
-              <header>
-                <h3>{{ list.title }} <small>共{{ list.weeks }}周</small></h3>
-                <button type="button" (click)="addSelection(list.kind)" [disabled]="!canAddSelection(list.kind)" [attr.aria-label]="'添加' + list.title"><mat-icon>add</mat-icon>添加{{ list.title }}</button>
-              </header>
-              <div class="ev-list-columns" aria-hidden="true">
-                <span>{{ list.title }}类型</span><span>说明</span><span>周数</span><span>开始日期 · 周日</span><span>结束日期 · 周六</span><span>金额（美元）</span><span></span>
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿、日期、年龄、签证、返校状态和接机。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields">
+                <label>抵达时年龄<select [(ngModel)]="student.ageGroup" (ngModelChange)="student.calculator.isMinorStudent = $event === 'minor'"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+                <label>签证类型<select [(ngModel)]="student.calculator.visaType"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </div>
-              <div *ngFor="let row of list.rows; trackBy: trackSelection" class="ev-list-row">
-                <label class="ev-row-type"><span>{{ list.title }}类型</span><select [ngModel]="row.optionId" (ngModelChange)="updateSelection(list.kind, row.id, { optionId: $event })" [attr.aria-label]="list.title + row.index + '类型'" [title]="row.name"><option *ngFor="let option of list.options" [value]="option.id">{{ option.name }}</option></select></label>
-                <div class="ev-row-details"><span>说明</span>{{ row.details }}</div>
-                <label class="ev-row-weeks"><span>周数</span><select [ngModel]="row.weeks" (ngModelChange)="updateSelection(list.kind, row.id, { weeks: $event })" [attr.aria-label]="list.title + row.index + '周数'"><option *ngFor="let weeks of selectionWeekOptions(list.kind, row)" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-                <label class="ev-row-date ev-row-start"><span>开始日期 · 周日</span><input type="date" [ngModel]="row.startDate" (ngModelChange)="updateSelection(list.kind, row.id, { startDate: $event })" (click)="openDatePicker($event)" [attr.aria-label]="list.title + row.index + '开始日期（仅限周日）'" /></label>
-                <div class="ev-row-date ev-row-end"><span>结束日期 · 周六</span><time>{{ row.endDate }}</time></div>
-                <strong class="ev-row-amount"><span>金额</span>{{ formatUsd(row.amount) }} 美元</strong>
-                <button *ngIf="list.rows.length > 1" type="button" class="ev-row-remove" (click)="removeSelection(list.kind, row.id)" [attr.aria-label]="'删除' + list.title + row.index">删除</button>
-              </div>
-            </section>
+              <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.returningStudent" />老学员返校（免注册费）</label><label class="option-check">机场接机<select [(ngModel)]="student.calculator.pickup"><option value="none">不需要接机</option><option value="sunday">周日团体接机</option></select></label></div>
+              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentSubtotal(student)) }} 美元</strong></div>
+            </article>
             <p *ngIf="planError" class="ev-plan-warning" role="alert">{{ planError }}</p>
-            <p *ngIf="!planError && dateCoverageMismatch" class="ev-plan-warning">课程与住宿日期不完全一致，将分别计费；请确认未覆盖的住宿或额外住宿安排。</p>
-            <p class="ev-plan-caption">注册费只收一次；课程和住宿分别最多24周。</p>
             <div class="quote-breakdown">
-              <h3 class="quote-breakdown-heading">基础费用</h3>
-              <div><span>注册费</span><strong>{{ registrationFee }} 美元</strong></div>
-              <div><span>课程费</span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-              <div><span>住宿费</span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
-
-              <h3 class="quote-breakdown-heading quote-breakdown-heading--adjustments">优惠与附加费</h3>
-              <div class="quote-adjustment-card quote-adjustment-card--discount">
-                <span>{{ discountText }}</span>
-                <small>仅课程费和住宿费参加</small>
-                <strong>− {{ formatUsd(discountAmount) }} 美元</strong>
-              </div>
-              <div class="quote-adjustment-card quote-adjustment-card--minor">
-                <label class="quote-adjustment-toggle">
-                  <input type="checkbox" [(ngModel)]="isMinorStudent" />
-                  <span>未满18岁管理费</span>
-                </label>
-                <small>每4周100美元，勾选后自动计入</small>
-                <strong>{{ formatUsd(minorManagementFee) }} 美元</strong>
-              </div>
-              <div class="quote-adjustment-card quote-adjustment-card--peak">
-                <span class="peak-fee-label">旺季附加费<small>{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元） · {{ peakSeasonDateRange }} · 当前覆盖{{ peakSeasonWeeks }}周</small></span>
-                <strong>{{ formatUsd(seasonalSurcharge) }} 美元</strong>
-              </div>
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
             </div>
             <div class="quote-result">
-              <span>前期支付参考</span>
+              <span>{{ planError ? '请完善方案后确认总价' : '最终应付学校金额' }}</span>
               <strong>{{ quoteUsdText }}</strong>
               <em>{{ quoteCnyText }}</em>
               <small>{{ exchangeRateText }}，人民币仅供估算</small>
@@ -432,15 +402,14 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive || !canExportQuote" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">教材按课程周数，管理费与水电费按住宿周数，签证费按完整停留时间估算。校内、校外住宿管理费分别计算；接机与可退房间押金单独列示，不计入学杂费合计。</p>
-            <p class="season-note">旺季附加费为{{ formatUsd(seasonalFeePerWeek) }}美元/周（每4周{{ formatUsd(seasonalFeePerFourWeeks) }}美元），系统按课程及住宿日期与{{ peakSeasonDateRange }}的重叠周数自动计入，同一周不重复收费；注册费、未成年管理费和旺季附加费均不参与95折。</p>
+            <p class="fee-alert">教材按课程周数，管理费与水电费按住宿周数，签证费按完整停留时间估算。校内、校外住宿管理费分别计算；接机与可退房间押金单独列示。</p>
         </section>
 
         <section class="local-fee-estimate" id="local-fees" aria-labelledby="ev-local-fee-title">
           <div class="local-fee-heading">
             <div>
               <span>到校后另付 · 自动预估</span>
-              <h3 id="ev-local-fee-title">课程{{ totalWeeks }}周 / 住宿{{ roomTotalWeeks }}周学杂费明细</h3>
+              <h3 id="ev-local-fee-title">{{ quoteMode === 'single' ? calculator.plan.courseWeeks + '周' : activeStudents.length + '人' }}学杂费明细</h3>
             </div>
           </div>
           <p class="local-fee-intro">
@@ -489,7 +458,7 @@
                 <strong>{{ fee.item }}</strong>
                 <small>{{ fee.note }}</small>
               </span>
-              <b>{{ fee.amount }}</b>
+              <span class="glc-optional-amount"><b>{{ formatPhp(fee.total) }}</b><small>人民币约 {{ (fee.total / phpPerCny) | number:'1.0-0' }} 元</small></span>
             </div>
           </div>
         </section>

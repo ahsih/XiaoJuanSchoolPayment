@@ -1,0 +1,77 @@
+<header class="portal-header">
+  <a routerLink="/" class="brand">思达启航教育</a>
+  <button mat-stroked-button type="button" (click)="logout()">退出登录</button>
+</header>
+
+<main class="portal-shell">
+  <section class="welcome">
+    <p class="eyebrow">学生中心</p>
+    <h1>我的报名</h1>
+    <p>在这里查看学校申请进度、课程与住宿信息，以及顾问上传的文件。</p>
+  </section>
+
+  <p class="loading" *ngIf="loading">正在加载报名信息…</p>
+  <mat-card class="empty-card" *ngIf="!loading && applications.length === 0">
+    <mat-card-content>
+      <h2>暂时没有报名记录</h2>
+      <p>如果顾问已经为你建档，请确认登录邮箱是否正确，或联系顾问处理。</p>
+    </mat-card-content>
+  </mat-card>
+
+  <article class="application" *ngFor="let application of applications">
+    <div class="application-heading">
+      <div>
+        <span class="status" [class.cancelled]="application.status === '已取消'">{{ application.status }}</span>
+        <h2>{{ application.schoolName }}</h2>
+        <p>最后更新：{{ application.lastUpdated | date:'yyyy-MM-dd HH:mm' }}</p>
+      </div>
+      <div class="date-box">
+        <span>预计入学</span>
+        <strong>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }}</strong>
+      </div>
+    </div>
+
+    <div class="progress-block">
+      <div class="progress-label"><span>申请进度</span><strong>{{ progress(application) }}%</strong></div>
+      <div class="progress-track"><span [style.width.%]="progress(application)"></span></div>
+      <div class="milestones">
+        <span *ngFor="let status of statuses; let index = index" [class.reached]="index <= statusIndex(application)">{{ status }}</span>
+      </div>
+    </div>
+
+    <div class="details">
+      <div><span>课程</span><strong>{{ application.courseName || '待确认' }}</strong></div>
+      <div><span>住宿</span><strong>{{ application.accommodationName || '待确认' }}</strong></div>
+      <div><span>学习时间</span><strong>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }} 至 {{ application.endDate ? (application.endDate | date:'yyyy-MM-dd') : '待确认' }}</strong></div>
+    </div>
+
+    <div class="adviser-note" *ngIf="application.studentVisibleNotes">
+      <strong>顾问留言</strong>
+      <p>{{ application.studentVisibleNotes }}</p>
+    </div>
+
+    <section class="documents">
+      <h3>我的文件</h3>
+      <p class="muted" *ngIf="application.documents.length === 0">顾问尚未上传文件。</p>
+      <button class="document" type="button" *ngFor="let document of application.documents" (click)="download(application, document)">
+        <span class="document-icon">{{ document.documentType === '入学通知书' ? '录' : document.documentType === '报价单' ? '价' : '文' }}</span>
+        <span class="document-name"><strong>{{ document.displayName }}</strong><small>{{ document.documentType }} · {{ fileSize(document.sizeBytes) }}</small></span>
+        <span class="download">下载</span>
+      </button>
+    </section>
+  </article>
+
+  <mat-card class="password-card">
+    <mat-card-header><mat-card-title>修改登录密码</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <p>第一次登录后，请把员工提供的临时密码改成自己的密码。</p>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
+        <mat-form-field appearance="outline"><mat-label>当前密码</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>新密码</mat-label><input matInput type="password" formControlName="newPassword" /></mat-form-field>
+        <mat-form-field appearance="outline"><mat-label>再次输入新密码</mat-label><input matInput type="password" formControlName="confirmPassword" /></mat-form-field>
+        <button mat-flat-button color="primary" type="submit" [disabled]="changingPassword">{{ changingPassword ? '修改中…' : '修改密码' }}</button>
+      </form>
+      <p class="form-error" *ngIf="passwordForm.hasError('passwordMismatch')">两次输入的新密码不一致。</p>
+    </mat-card-content>
+  </mat-card>
+</main>

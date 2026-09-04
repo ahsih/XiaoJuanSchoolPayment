@@ -52,8 +52,8 @@
             </div>
             <aside class="hero-price-card">
               <span>{{ selectedWeeks }}周当前选择参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }}</strong>
-              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
+              <strong>{{ formatUsd(quoteUsd) }} 美元</strong>
+              <p>PHILINTER{{ selectedWeeks }}周报价</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -189,7 +189,7 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>Light/General适合综合英语，Intensive和IPS适合提高学习强度和口语输出，IELTS/TOEIC/TOEFL适合考试目标，Business与Junior方向要按年龄和用途细分。</p>
+            <p>Light/General适合综合英语，Intensive和IPS适合提高学习强度和口语输出，IELTS/TOEIC适合考试目标，Business与Junior方向要按年龄和用途细分。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -206,17 +206,17 @@
             <div class="section-heading">
               <span>Philinter 2026 年 4 周课程费</span>
               <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费参考，币种为美元。1周按45%、2周按65%、3周按85%计算；课程注册费USD 120另计。</p>
+              <p>以下为4周课程费参考，币种为美元。1周按45%、2周按65%、3周按85%计算；注册费每人120美元另计。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="Philinter 2026年4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
                 <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
+                <span role="columnheader">课程安排 / 备注</span>
               </div>
               <div class="table-row" role="row" *ngFor="let fee of courseFees">
                 <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.suitable }}</span>
               </div>
             </div>
@@ -224,7 +224,7 @@
               <article *ngFor="let fee of courseFees">
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                 <p>{{ fee.suitable }}</p>
               </article>
             </div>
@@ -249,7 +249,7 @@
             <div class="section-heading">
               <span>Philinter 2026 年 4 周住宿费</span>
               <h2>校内宿舍和校外公寓要分开确认</h2>
-              <p>默认报价使用校内三人房。1周按45%、2周按65%、3周按85%计算；住宿注册费USD 100另计。校外公寓需确认空房、接送和门禁规则。</p>
+              <p>住宿按每人计价。1周按45%、2周按65%、3周按85%计算。校外公寓需确认空房、接送和门禁规则。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="Philinter 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -259,7 +259,7 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomFees">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
@@ -267,85 +267,60 @@
               <article *ngFor="let room of roomFees">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                <div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div>
                 <p>{{ room.note }}</p>
               </article>
             </div>
           </div>
 
           <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>Philinter 费用快速报价</span>
-              <h2>{{ selectedWeeks }}周 {{ selectedCourse.name }} + {{ selectedRoom.name }}</h2>
-              <p>最终应付学校金额 = 注册费 +（课程费 + 住宿费）× 思达9折 + 暑期附加费 − 符合条件的淡季优惠</p>
-            </div>
-            <div class="quote-form" aria-label="Philinter费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-            </div>
-            <div class="quote-breakdown">
-              <div><span>注册费（课程120 + 住宿100）</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ billingRuleText }}</span><strong>计费倍率 {{ selectedWeekMultiplier }}</strong></div>
-              <div class="discount-line"><span>思达折扣（仅课程费和住宿费）</span><strong>− USD {{ formatUsd(sidaDiscountAmount) }}</strong></div>
-              <div class="discount-line"><span>2026下半年淡季优惠：{{ offSeasonEligibilityText }}</span><strong>− USD {{ formatUsd(offSeasonDiscountAmount) }}</strong></div>
-              <div><span>暑期附加费（{{ peakSeasonWeeks }}周 × USD {{ formatUsd(seasonalFeePerWeek) }}）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <small>{{ exchangeRateText }}；人民币仅作实时估算</small>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认课程、房型、空房和优惠。</p>
-            </div>
+            <div class="section-heading"><h2>PHILINTER{{ selectedWeeks }}周报价</h2></div>
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿、日期、年龄、签证、返校状态和接机。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields">
+                <label>就读当年度年龄<select [(ngModel)]="student.calculator.ageGroup"><option value="adult">当年度满18岁或以上</option><option value="junior">12–17岁</option><option value="under12">未满12岁</option></select></label>
+                <label>签证类型<select [(ngModel)]="student.calculator.visaType"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+              </div>
+              <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.returningStudent" />老学员返校（免注册费）</label><label class="option-check">机场接机<select [(ngModel)]="student.calculator.pickup"><option value="none">不需要接机</option><option value="weekend">周六／周日06:00–24:00团体接机</option><option value="other">其他时间团体接机</option></select></label></div>
+              <label class="option-check" *ngIf="student.calculator.isMinor"><input type="checkbox" [(ngModel)]="student.calculator.guardianSameRoom" />已确认与年满18岁的监护人同住一间房（不可分房）</label>
+              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.calculator.totalUsd) }} 美元</strong></div>
+            </article>
+            <div class="quote-breakdown"><div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div></div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="quote-result"><span>{{ quoteError ? '请完善方案后确认总价' : '最终应付学校金额' }}</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateText }}；人民币金额为预估</small></div>
             <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">当前{{ selectedWeeks }}周计入的到校学杂费预估为 PHP {{ localFeesTotal.toLocaleString('en-US') }}（{{ localFeesCnyText }}），不含接机、可退宿舍押金和额外住宿。</p>
-            <p class="season-note">淡季活动按入学日期初筛：2026/08/16–12/25入学、至少8周、指定房型、非IELTS/TOEIC保证班，每满8周减USD 300。不得与校方其他优惠或Voucher并用；思达9折为代办优惠，页面按可叠加规则计算，最终资格及账单由学校确认。</p>
           </section>
         </section>
-
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以PHP计价，通常到校后支付。不同课程、周数、住宿方式和学校政策会影响最终金额。</p>
+        <section class="local-fee-estimate" id="local-fees">
+          <div class="local-fee-heading"><div><span>到校后另付 · 自动预估</span><h2>到校后学杂费明细</h2></div></div>
+          <p class="local-fee-intro">{{ localFeeIntro }}</p>
+          <p class="mobile-fee-hint">左右滑动查看小计与完整备注。</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody><tr *ngFor="let fee of localFees">
+                <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+              </tr></tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>不含接机、可退押金及额外住宿</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
+              </tfoot>
+            </table>
           </div>
-          <label class="option-check">
-            <input type="checkbox" [(ngModel)]="includeAirportPickup" />
-            显示机场接机参考（单独列示，不计入学杂费合计）
-          </label>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
-              <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees" [class.optional-fee]="fee.excluded" [hidden]="fee.item === '宿务麦克坦机场接机' && !includeAirportPickup">
-                <span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><b>数量 {{ fee.quantity }} · 小计 {{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p>
-              </article>
+          <div class="mobile-fee-total"><span>预计到校学杂费合计</span><strong>{{ formatPhp(localFeesTotal) }}</strong><small>{{ localFeesCnyText }}</small></div>
+          <div class="excluded-fee-list">
+            <h3>另行准备（不计入上方学杂费合计）</h3>
+            <div *ngFor="let fee of optionalFeeItems">
+              <span>{{ fee.label }}<small>{{ fee.note }}</small></span>
+              <strong>{{ fee.amount }}<small *ngIf="fee.cnyAmount">{{ fee.cnyAmount }}</small></strong>
             </div>
-          </details>
-          <div class="local-fee-summary">
-            <span>预计到校学杂费合计（不含可选/可退项目）</span>
-            <strong>{{ formatPhp(localFeesTotal) }}</strong>
-            <em>{{ localFeesCnyText }}</em>
-          </div>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程费、住宿费、注册费、暑期附加费与短期比例按Philinter 2026费用表核对；1周、2周、3周分别按4周课程费和住宿费的45%、65%、85%计算。2026下半年淡季优惠按用户提供的合作方活动通知录入，活动资格、房型空位、当地费用和最终账单仍以学校书面确认为准。</p>
           </div>
         </section>
 

@@ -35,11 +35,11 @@
           </div>
           <aside class="hero-price-card">
             <span>4周参考</span>
-            <strong>USD 1,550 <small>起</small></strong>
-            <p>Power Speaking 4 + 4人房，已含入学金USD 100参考。</p>
+            <strong>1,050美元 <small>起</small></strong>
+            <p>淡季4周Power Speaking 4 + 校内四人房，符合条件时免注册费。</p>
             <ul>
               <li><mat-icon>check_circle</mat-icon>课程、住宿、三餐打包价</li>
-              <li><mat-icon>info</mat-icon>SSP、签证、教材、水电维护和押金等到校PHP费用另计</li>
+              <li><mat-icon>info</mat-icon>SSP、签证、教材、水电维护和押金等到校比索费用另计</li>
             </ul>
           </aside>
         </div>
@@ -68,11 +68,11 @@
         <aside class="mini-quote-card">
           <h2><mat-icon>calculate</mat-icon>费用快速报价</h2>
           <label>周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidStudyLength()"><option *ngFor="let item of courseFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.tuition4Weeks) }}/4周</option></select></label>
-          <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.fee4Weeks) }}/4周</option></select></label>
+          <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidStudyLength()"><option *ngFor="let item of courseFees" [value]="item.id">{{ item.name }} · {{ formatUsd(item.tuition) }}美元/4周</option></select></label>
+          <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · {{ formatUsd(item.fee) }}美元/4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
-          <p>{{ quoteUsdText }}，最终需以学校空房、优惠和当期到校费用确认为准。</p>
+          <p>{{ quoteUsdText }}；系统会判断校方淡季价，思达启航不再叠加其它价格优惠。</p>
         </aside>
       </section>
 
@@ -122,51 +122,34 @@
             <p>{{ course.suitable }}</p>
           </article>
         </div>
+        <div class="course-notes" aria-label="ICL IELTS保分条件">
+          <section><h3>2026 IELTS保分条件</h3><ul>
+            <li>出勤率须达到98%，并完成全部模拟考试。</li>
+            <li>模拟考试成绩出现3次下降，或每2周未至少提高0.5 Band，将取消保分资格。</li>
+            <li>最终考试未达目标分数时，学校最多免4周学费；住宿、学杂费和其它费用不在保分范围内。</li>
+          </ul></section>
+        </div>
       </section>
 
-      <section class="quote-results-section" id="quote">
-        <div class="quote-form-card">
-          <h2><mat-icon>calculate</mat-icon>ICL费用快速报价</h2>
-          <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-          <label>课程<select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidStudyLength()"><option *ngFor="let item of courseFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.tuition4Weeks) }}/4周</option></select></label>
-          <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · USD {{ formatUsd(item.fee4Weeks) }}/4周</option></select></label>
-          <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-          <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-          <p>报价器按公开美元费用表计算课程、住宿、餐食，并加入入学金USD 100；到校PHP费用、机票、保险和个人生活费另计。</p>
+      <section class="quote-panel full-width-quote" id="quote">
+        <div class="section-heading"><span>ICL 2026完整报价</span><h2>{{ quoteHeading }}</h2><p>课程与住宿可分别添加；每段均按周日开始、周六结束。系统按校方2026常规价和淡季组合价计算。</p></div>
+        <app-school-quote-plan [plan]="quoteCalculator.plan"></app-school-quote-plan>
+        <p class="fee-alert">校方淡季海报有效期为2026/08/23–2027/01/09，学生须在2027/01/16前结业；按周日入住、周六退房规则，报价器以2027/01/09为最后可计优惠的退房日。课程与校内住宿还须同日期且至少4周。{{ quoteCalculator.availabilityNote }}</p>
+        <p class="fee-alert" role="alert" *ngIf="quoteError || quoteWarning">{{ quoteError || quoteWarning }}</p>
+        <div class="quote-breakdown">
+          <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.detailTitle || item.note }}<br *ngIf="item.detailSubtitle" />{{ item.detailSubtitle }}</small></span><strong>{{ item.amount }}</strong></div>
         </div>
-        <div class="quote-result-card">
-          <div class="quote-result-head">
-            <h2>{{ selectedCourse.name }}</h2>
-            <small>{{ selectedCourse.category }}</small>
-            <p>{{ selectedCourse.lessons }} / {{ selectedRoom.name }}</p>
-            <strong>{{ selectedWeeks }}周</strong>
-          </div>
-          <div class="result-lines">
-            <div><span>课程费</span><strong>{{ courseFeeText }}</strong></div>
-            <div><span>住宿费</span><strong>{{ roomFeeText }}</strong></div>
-            <div><span>课程 + 住宿</span><strong>{{ baseFeeText }}</strong></div>
-            <div><span>入学金</span><strong>USD {{ registrationFeeUsd }}</strong></div>
-            <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
-            <div><span>课程说明</span><strong>{{ selectedCourse.note }}</strong></div>
-          </div>
-          <div class="quote-total">
-            <span>前期支付参考</span>
-            <strong>{{ quoteUsdText }}</strong>
-            <em *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认空房、优惠和学校当期政策。</em>
-          </div>
-          <div class="quote-tool-row">
-            <a class="primary-action" routerLink="/about-sida/contact">获取正式报价<mat-icon>support_agent</mat-icon></a>
-            <a class="secondary-action" href="#fee-structure" (click)="scrollToSection('fee-structure', $event)">查看4周费用表<mat-icon>table_chart</mat-icon></a>
-          </div>
-        </div>
+        <p class="season-note">{{ quoteCalculator.promotionNote }}</p>
+        <div class="quote-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateText }}</small><p *ngIf="quoteCalculated">已按当前课程、住宿、日期及校方2026价格更新。</p></div>
+        <div class="quote-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">重新计算<mat-icon>calculate</mat-icon></button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact">获取学校确认报价<mat-icon>support_agent</mat-icon></a></div>
       </section>
 
       <section class="tables-section" id="fee-structure">
         <div>
           <h2><mat-icon>receipt_long</mat-icon>ICL公开美元费用参考</h2>
-          <p class="table-intro">以下为截图所列的ICL 2025年4周美元课程费与住宿费，课程和房型需相加计算；不含入学金、SSP、签证、教材、水电维护、洗衣、押金、接机和个人支出。</p>
+          <p class="table-intro">以下为本次提供的ICL 2026年4周美元课程费与住宿费。1/2/3周分别按40%/60%/80%计算；4周以上按比例计算。淡季校内住宿组合由报价器按校方组合价表自动调整。</p>
           <h3>课程费</h3>
-          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2025年4周课程费参考">
+          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2026年4周课程费参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">4周课程费</span>
@@ -174,12 +157,12 @@
             </div>
             <div class="table-row" role="row" *ngFor="let course of courseFees">
               <span role="cell">{{ course.name }}<small>{{ course.category }}</small></span>
-              <span role="cell">USD {{ formatUsd(course.tuition4Weeks) }}</span>
-              <span role="cell">{{ course.lessons }}<small>{{ course.note }}</small></span>
+              <span role="cell">{{ formatUsd(course.tuition) }} 美元</span>
+              <span role="cell">{{ course.schedule }}<small>{{ course.note }}</small></span>
             </div>
           </div>
           <h3 class="fee-subheading">住宿费</h3>
-          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2025年4周住宿费参考">
+          <div class="data-table icl-fee-table" role="table" aria-label="ICL 2026年4周住宿费参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">住宿类型</span>
               <span role="columnheader">4周住宿费</span>
@@ -187,7 +170,7 @@
             </div>
             <div class="table-row" role="row" *ngFor="let room of roomFees">
               <span role="cell">{{ room.name }}</span>
-              <span role="cell">USD {{ formatUsd(room.fee4Weeks) }}</span>
+              <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
               <span role="cell">{{ room.note }}</span>
             </div>
           </div>
@@ -196,10 +179,12 @@
           <h3>费用阅读重点</h3>
           <ul>
             <li>课程费和住宿费分开列示：先选课程，再加所选房型。</li>
-            <li>本页报价器只额外加入入学金USD 100，接机和当地费用以PHP另列。</li>
-            <li>1/2/3周报价沿用页面原有的40%/60%/85%短期换算；4周以上按每4周价格计算。</li>
+            <li>注册费为100美元；符合校方淡季住宿组合条件时免收一次。</li>
+            <li>1/2/3周按40%/60%/80%换算；4周以上按每4周价格比例计算。</li>
+            <li>淡季价不可叠加思达启航或其它中介额外优惠。</li>
             <li>SSP、SSP E-Card、签证延长、教材、水电维护、洗衣和押金通常到校后支付。</li>
-            <li>公开费用来自ICL 2025年1月后相关费用资料，报名前仍需确认学校最新报价与空房。</li>
+            <li>本页费用按本次提供的ICL 2026价格表、IU/ICL淡季组合价表及保分政策整理。</li>
+            <li *ngFor="let rule of quoteCalculator.admissionRules">{{ rule }}</li>
           </ul>
         </aside>
       </section>
@@ -233,20 +218,19 @@
           <h2>到校与额外费用</h2>
           <p>正式预算不能只看课程食宿费，还要预留菲律宾当地费用、机票保险和个人生活支出。</p>
         </div>
-        <div class="check-grid icl-local-grid">
-          <article *ngFor="let fee of localFees">
-            <mat-icon>payments</mat-icon>
-            <h3>{{ fee.item }}</h3>
-            <strong>{{ fee.amount }}</strong>
-            <p>{{ fee.note }}</p>
-          </article>
-        </div>
+        <p class="local-fee-intro">{{ quoteCalculator.localFeeIntro }}</p>
+        <div class="local-fee-table-wrap"><table class="local-fee-table">
+          <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
+          <tbody><tr *ngFor="let fee of localFees"><th>{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+          <tfoot><tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>包含可退押金；额外住宿另计</td></tr><tr><th colspan="3">人民币预计金额</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>{{ exchangeRateText }}</td></tr></tfoot>
+        </table></div>
+        <div class="excluded-fee-list"><h4>另行准备</h4><div *ngFor="let fee of quoteCalculator.optionalFees"><span>{{ fee.label }}<small>{{ fee.note }}</small></span><strong>{{ fee.amount }}</strong></div></div>
       </section>
 
       <section class="cia-section source-section">
         <div class="section-heading">
           <h2>资料来源</h2>
-          <p>本页学校定位参考ICL / iCrazy官方公开页面、官方Facebook公开内容和第三方公开费用表。学校价格、空房、国籍比例和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
+          <p>学校定位参考ICL / iCrazy公开资料；价格与规则按本次提供的ICL 2026价目表、IU/ICL淡季组合价表及IELTS保分通知整理。学校价格、空房和当地费用可能更新，报名前以学校书面确认的正式报价为准。</p>
         </div>
         <div class="source-links">
           <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
@@ -270,7 +254,7 @@
         </details>
         <details>
           <summary>费用表里的价格是美元吗？</summary>
-          <p>本页课程食宿费统一按公开费用表的美元价格呈现；SSP、签证、教材、水电维护、洗衣、接机和押金等当地费用以PHP另计。</p>
+          <p>本页课程食宿费统一按校方费用表的美元价格呈现；SSP、签证、教材、水电维护、洗衣、接机和押金等当地费用以比索另计。</p>
         </details>
         <details>
           <summary>Power Speaking 4和8怎么选？</summary>
@@ -297,7 +281,7 @@
         <ul>
           <li><mat-icon>check_circle</mat-icon>课程和房型建议</li>
           <li><mat-icon>check_circle</mat-icon>空房和入学日确认</li>
-          <li><mat-icon>check_circle</mat-icon>前期美元费用与到校PHP费用拆分</li>
+          <li><mat-icon>check_circle</mat-icon>前期美元费用与到校比索费用拆分</li>
           <li><mat-icon>check_circle</mat-icon>与CIA、GLANT、SMEAG等学校横向比较</li>
         </ul>
       </section>

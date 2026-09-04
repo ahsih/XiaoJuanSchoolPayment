@@ -1,9 +1,10 @@
 <section class="plan-list" *ngFor="let list of lists">
-  <header><h3>{{ list.title }} <small>{{ list.kind === 'course' ? plan.courseWeeks : plan.roomWeeks }}周</small></h3><button type="button" (click)="plan.add(list.kind)" [disabled]="!plan.canAdd(list.kind)">＋ 添加{{ list.title }}</button></header>
+  <header><h3>{{ list.title }} <small *ngIf="list.kind === 'course' || travellerCount === 1">{{ list.kind === 'course' ? plan.courseWeeks : plan.roomWeeks }}周</small><small *ngIf="list.kind === 'room' && travellerCount > 1">{{ travellerCount }}人 · 每人分别选择</small></h3><button type="button" (click)="plan.add(list.kind)" [disabled]="!plan.canAdd(list.kind)">＋ 添加{{ list.title }}</button></header>
   <div class="columns"><span>类型</span><span>说明</span><span>周数</span><span>开始日期（周日）</span><span>结束日期（周六）</span><span>金额</span><span></span></div>
   <div class="plan-row" *ngFor="let row of plan.rows(list.kind); let i = index; trackBy: trackRow">
     <label class="type"><span>{{ list.title }}{{ i + 1 }}类型</span><select [(ngModel)]="row.optionId" [attr.aria-label]="list.title + (i + 1) + '类型'"><option *ngFor="let option of plan.options(list.kind)" [value]="option.id">{{ option.name }}</option></select>
       <label class="exam" *ngIf="list.kind === 'course' && examCourseIds.includes(row.optionId)">考试方向<select [ngModel]="row.textbookId || 'ielts'" (ngModelChange)="row.textbookId = $event" [attr.aria-label]="'课程' + (i + 1) + '考试方向'"><option value="ielts">雅思 IELTS</option><option value="toefl">托福 TOEFL</option></select></label>
+      <label class="exam" *ngIf="list.kind === 'room' && travellerCount > 1">入住学员<select [ngModel]="row.occupant || 1" (ngModelChange)="row.occupant = $event" [attr.aria-label]="'住宿' + (i + 1) + '入住学员'"><option *ngFor="let person of travellers" [ngValue]="person">学员{{ person }}</option></select></label>
     </label>
     <div class="details">{{ details(list.kind, row.optionId) }}</div>
     <label class="weeks"><span>周数</span><select [(ngModel)]="row.weeks" [attr.aria-label]="list.title + (i + 1) + '周数'"><option *ngFor="let week of plan.allowedWeeks" [ngValue]="week">{{ week }}周</option></select></label>

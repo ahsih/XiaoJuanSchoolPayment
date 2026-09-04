@@ -52,32 +52,25 @@
   background: #f1f9fc;
 }
 
-:host .glc-page .course-fee-table .table-row {
-  grid-template-columns:
-    minmax(200px, 1.2fr)
-    repeat(5, minmax(88px, 0.58fr));
-}
+:host .glc-fee-group { margin-top: 24px; }
+:host .glc-page .glc-catalog-table { display: block; }
+:host .glc-fee-group .course-fee-group-heading { margin: 0; }
+:host .glc-fee-group .glc-catalog-table { margin-top: 0; border-radius: 0 0 8px 8px; }
+:host .glc-page .glc-catalog-table .table-row { grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1.7fr); }
+:host .glc-catalog-table .table-row > span { padding: 16px; overflow-wrap: anywhere; line-height: 1.65; }
+:host .glc-catalog-table .table-row:not(.table-head):nth-child(odd) { background: #f8fbfc; }
+:host .glc-catalog-name strong, :host .glc-catalog-price strong { color: #102f40; font-weight: 700; }
+:host .glc-catalog-table small { display: block; margin-top: 3px; color: #64748b; font-size: 13px; font-weight: 400; }
+:host .glc-catalog-note { margin: 18px 0 0; color: #64748b; font-size: 14px; line-height: 1.7; }
 
-:host .glc-page .weekly-rate-table .table-row {
-  grid-template-columns: minmax(160px, 0.8fr) minmax(260px, 1.5fr) minmax(130px, 0.65fr);
-}
-
-:host .glc-page .accommodation-rate-table .table-row {
-  grid-template-columns: minmax(160px, 0.8fr) minmax(150px, 0.65fr) minmax(260px, 1.4fr);
-}
-
-:host .glc-page .price-matrix-heading {
-  margin: 24px 0 0;
-  color: #102033;
-  font-size: 18px;
-}
-
-:host .glc-page .special-fee-table .table-row {
-  grid-template-columns:
-    minmax(150px, 0.9fr)
-    minmax(170px, 1fr)
-    minmax(156px, 0.95fr)
-    minmax(0, 1.2fr);
+@media (max-width: 640px) {
+  :host .glc-page .glc-catalog-table .table-head { display: none; }
+  :host .glc-page .glc-catalog-table .table-row:not(.table-head) { grid-template-columns: minmax(0, 1fr) 110px; }
+  :host .glc-catalog-table .table-row > span { padding: 12px; }
+  :host .glc-catalog-table .glc-catalog-price { text-align: right; }
+  :host .glc-catalog-table .table-row > .glc-catalog-detail { grid-column: 1 / -1; padding-top: 0; border-top: 0; font-size: 14px; }
+  :host .glc-catalog-detail::before { content: '课程安排'; display: block; margin-bottom: 4px; color: #64748b; font-size: 12px; }
+  :host .glc-room-table .glc-catalog-detail::before { content: '住宿说明'; }
 }
 
 :host .glc-page .source-panel {
@@ -114,11 +107,33 @@
 }
 
 @media (max-width: 860px) {
-  :host .glc-page .course-fee-table {
-    display: none;
-  }
-
   :host .glc-page .source-grid {
     grid-template-columns: 1fr;
   }
+}
+
+:host .glc-optional-amount { flex-shrink: 0; text-align: right; }
+:host .glc-optional-amount small { display: block; margin-top: 5px; color: #64748b; }
+:host .glc-promotions { margin: 16px 0; border: 1px solid #ecdacd; border-radius: 8px; background: white; overflow: hidden; }
+:host .glc-promotions article { padding: 16px; display: flex; gap: 20px; justify-content: space-between; align-items: center; }
+:host .glc-promotions article + article { border-top: 1px solid #ecdacd; }
+:host .glc-promotions p { margin: 6px 0 0; font-size: 13px; color: #64748b; line-height: 1.7; }
+:host .glc-promotions b { flex-shrink: 0; color: #17394a; }
+:host .glc-promotions .discount-amount { color: #f05b18; }
+:host .glc-promotions .glc-promotion-caption { margin: 0; padding: 12px 16px; background: #f8fbf9; }
+:host .glc-family-note { padding: 12px; border: 1px solid #b8ddea; border-radius: 6px; background: #eef9fc; font-size: 14px; line-height: 1.7; }
+:host .student-options { display: flex; flex-wrap: wrap; gap: 12px; }
+:host .student-options .option-check { flex: 1 1 250px; }
+:host .student-options select, :host .family-share select { min-width: 0; width: 100%; }
+:host .family-share { display: grid; gap: 8px; margin: 4px 0 14px; color: #344054; font-weight: 700; }
+:host .glc-payment-note { color: #64748b; font-size: 13px; line-height: 1.7; }
+:host #quote .quote-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+:host #quote .quote-form input[type="date"] { width: 100%; min-width: 0; box-sizing: border-box; }
+:host #quote .quote-breakdown { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:host #local-fees .local-fee-table th,
+:host #local-fees .local-fee-table td { white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+@media (max-width: 520px) {
+  :host .glc-promotions article { align-items: flex-start; flex-direction: column; gap: 8px; }
+  :host .glc-optional-amount { text-align: left; }
+  :host #quote .quote-form, :host #quote .quote-breakdown { grid-template-columns: minmax(0, 1fr); }
 }

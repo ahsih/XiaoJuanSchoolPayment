@@ -9,6 +9,8 @@ ng-serve-iu.err.log
 ng-serve-iu.out.log
 XiaoJuanSchoolPayment.Server/obj/project.assets.json
 /XiaoJuanSchoolPayment.Server/obj
+/XiaoJuanSchoolPayment.Server/App_Data/student-documents/*
+!/XiaoJuanSchoolPayment.Server/App_Data/student-documents/.gitkeep
 xiaojuanschoolpayment.client/ng-serve-cip.err.log
 xiaojuanschoolpayment.client/ng-serve-cip.out.log
 xiaojuanschoolpayment.client/ng-serve.err.log
@@ -36,3 +38,6 @@ outputs/dotnet-cli/.dotnet/8.0.424.toolpath.sentinel
 outputs/school-tracker-20260902/菲律宾语言学校价格与网页检查进度表.xlsx
 xiaojuanschoolpayment.client/pnpm-lock.yaml
 xiaojuanschoolpayment.client/pnpm-workspace.yaml
+/outputs
+outputs/cg-sparta-web-390.png
+outputs/cg-sparta-web-1440.png
