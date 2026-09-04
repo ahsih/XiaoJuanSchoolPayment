@@ -12,5 +12,7 @@
     public required string LastName { get; set; }
     [System.ComponentModel.DataAnnotations.Required, System.ComponentModel.DataAnnotations.MaxLength(64)]
     public required string InvitationCode { get; set; }
+    public required string AccessCode { get; set; }
+    public required string Email { get; set; }
   }
 }

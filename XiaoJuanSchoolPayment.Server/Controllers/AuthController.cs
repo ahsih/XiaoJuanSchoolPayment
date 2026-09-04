@@ -96,7 +96,8 @@ namespace MyProject.Controllers
         ExpiryDate = token.ValidTo,
         Roles = roles,
         Name = user.FirstName + " " + user.LastName,
-        Email = user.Email
+        Email = user.Email,
+        Account = ""
       });
     }
 
