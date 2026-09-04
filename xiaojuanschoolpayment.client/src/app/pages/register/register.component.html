@@ -1,5 +1,5 @@
 <div class="register-page">
-  <div class="register-container" aria-hidden="true">
+  <div class="register-container">
     <h2>{{ 'register.title' | t }}</h2>
 
     <form
@@ -53,7 +53,7 @@
       <!-- Access Code -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>{{ 'common.accessCode' | t }}</mat-label>
-        <input matInput type="email" formControlName="accessCode" required />
+        <input matInput type="text" formControlName="accessCode" required />
         <mat-error
           *ngIf="
             registerForm.get('accessCode')?.invalid &&
@@ -104,24 +104,4 @@
       </button>
     </form>
   </div>
-
-  <section class="consultant-card" aria-label="联系 Jenny">
-    <button
-      mat-icon-button
-      type="button"
-      class="consultant-card__back"
-      aria-label="Go back to the previous page"
-      title="Go back"
-      (click)="goBack()"
-    >
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <img src="/assets/contact/jenny-wechat-qr.png" alt="Jenny 微信二维码" />
-    <div class="consultant-copy">
-      <span>注册功能完善中，即将上线</span>
-      <strong>Jenny</strong>
-      <p>13249827686</p>
-      <p>jennyyi&#64;163.com</p>
-    </div>
-  </section>
 </div>
