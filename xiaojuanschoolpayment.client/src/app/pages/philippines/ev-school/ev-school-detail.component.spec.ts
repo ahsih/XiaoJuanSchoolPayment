@@ -15,6 +15,60 @@ describe('EV accommodation management fees', () => {
     component = TestBed.runInInjectionContext(() => new EvSchoolDetailComponent());
   });
 
+  it('puts the monetary discount in the amount column and actual conversion rates below totals', async () => {
+    component.addSelection('course'); component.addSelection('room');
+    component.usdToCny = 6.719075;
+    component.phpPerCny = 9.3037;
+    component.exchangeRateDate = '2026-09-03'; component.exchangeRateLive = true;
+    const quote = component.quoteImageData;
+    const discount = quote.paymentItems.find(row => row.label === '思达折扣')!;
+    expect(discount.amount).toBe('− 188 美元');
+    expect(discount.note).toBe('课程费和住宿费享95折');
+    expect(quote.totalUsd).toBe('3,672 美元');
+    expect(quote.conversionRates).toEqual({ usdToCny: 6.719075, phpPerCny: 9.3037, date: '2026-09-03' });
+    const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = quote;
+    const paint: { text: string; x: number; color: string; font: string }[] = [];
+    const original = CanvasRenderingContext2D.prototype.fillText;
+    spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callFake(function(this: CanvasRenderingContext2D, text, x, y, maxWidth) {
+      paint.push({ text, x, color: String(this.fillStyle), font: this.font });
+      if (maxWidth === undefined) original.call(this, text, x, y); else original.call(this, text, x, y, maxWidth);
+    });
+    await renderer['createQuoteImageBlob'](1);
+    expect(paint.some(p => p.text === '− 188 美元' && p.x === 546 && p.color === '#f25518')).toBeTrue();
+    const rates = paint.filter(p => p.text.startsWith('参考汇率：'));
+    expect(rates.map(p => p.text)).toEqual(['参考汇率：1美元 ≈ 6.719075元人民币', '参考汇率：1元人民币 ≈ 9.3037比索']);
+    expect(rates.every(p => p.x === 566 && p.color === '#64748b' && !/bold|[56789]00/.test(p.font))).toBeTrue();
+    const text = paint.map(p => p.text).join('');
+    expect(text.split('2026-09-03').length - 1).toBe(1);
+    expect(text.split('最终以实际兑换或支付汇率为准').length - 1).toBe(1);
+    expect(text).not.toContain('共优惠188');
+    component.exchangeRateLive = false;
+    renderer.quote = component.quoteImageData;
+    expect(renderer['quoteFooterNotes']().join('')).toContain('本次采用备用汇率');
+    expect(renderer['quoteFooterNotes']().join('')).not.toContain('2026-09-03');
+  });
+
+  it('uses the high-resolution brand master and the requested deposit wording', async () => {
+    expect(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note).toBe('1至8周3,000比索，9至24周5,000比索；无损坏及无欠费时可退');
+    expect(component.quoteImageData.optionalFeeItems?.find(fee => fee.label === '房间押金')?.note).toBe(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note);
+    const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = component.quoteImageData;
+    const loaded = spyOn<any>(renderer, 'loadCanvasImage').and.callThrough();
+    const images: { sourceWidth: number; cropWidth: number }[] = [];
+    const drawImage = CanvasRenderingContext2D.prototype.drawImage;
+    spyOn(CanvasRenderingContext2D.prototype, 'drawImage').and.callFake(function(this: CanvasRenderingContext2D, image: CanvasImageSource, ...coordinates: number[]) {
+      // Export now releases source images after rendering; capture dimensions while drawing.
+      images.push({ sourceWidth: (image as HTMLImageElement).naturalWidth, cropWidth: coordinates[2] });
+      drawImage.apply(this, [image, ...coordinates] as Parameters<CanvasRenderingContext2D['drawImage']>);
+    });
+    const text = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
+    await renderer['createQuoteImageBlob'](2);
+    expect(loaded.calls.allArgs().some(args => args[0] === '/assets/sida-qihang-navbar-logo.jpg')).toBeTrue();
+    expect(loaded.calls.allArgs().some(args => String(args[0]).includes('quote-header-logo'))).toBeFalse();
+    expect(images.some(image => image.sourceWidth === 1672 && image.cropWidth === 1215)).toBeTrue();
+    expect(text.calls.allArgs().filter(args => args[0] === '留学规划 · 语言提升').length).toBe(1);
+    expect(text.calls.allArgs().filter(args => args[0] === '从思达启航，走向更美好的未来').length).toBe(1);
+  });
+
   it('always displays both management rows, charging only the applicable room type', () => {
     for (const room of component.roomFees) {
       component.selectedRoomId = room.id;

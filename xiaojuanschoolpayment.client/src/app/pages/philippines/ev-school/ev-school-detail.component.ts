@@ -555,7 +555,7 @@ export class EvSchoolDetailComponent implements OnInit {
       { item: '教材费', amount: '2,000 比索 / 4周', quantity: this.textbookPeriods, total: 2000 * this.textbookPeriods, note: '按累计课程周数预估；换课或实际购买不同教材时调整' },
       { item: '学生证', amount: '500 比索 / 次', quantity: 1, total: 500, note: '一次性费用' },
       { item: '宿务马克坦机场周日接机', amount: '1,200 比索 / 次', quantity: 0, total: 0, note: '可选，也可自行打车；默认不计入学杂费合计', excluded: true },
-      { item: '房间押金', amount: `${this.roomDeposit.toLocaleString('en-US')} 比索 / 次`, quantity: 1, total: this.roomDeposit, note: '1至8周3,000比索，9至24周5,000比索；无损坏及欠费时可退', excluded: true },
+      { item: '房间押金', amount: `${this.roomDeposit.toLocaleString('en-US')} 比索 / 次`, quantity: 1, total: this.roomDeposit, note: '1至8周3,000比索，9至24周5,000比索；无损坏及无欠费时可退', excluded: true },
     ];
   }
   get includedLocalFees(): LocalFee[] { return this.localFees.filter((fee) => !fee.excluded); }
@@ -583,7 +583,7 @@ export class EvSchoolDetailComponent implements OnInit {
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性费用，不参与折扣' },
       ...this.courseQuoteRows.map(row => ({ icon: '课', label: `课程费${this.courseSelections.length > 1 ? row.index : ''}`, amount: `${this.formatUsd(row.amount)} 美元`, detailTitle: row.name, detailSubtitle: `${row.dateRange} · ${row.weeks}周`, note: row.details })),
       ...this.roomQuoteRows.map(row => ({ icon: '宿', label: `住宿费${this.roomSelections.length > 1 ? row.index : ''}`, amount: `${this.formatUsd(row.amount)} 美元`, detailTitle: row.name, detailSubtitle: `${row.dateRange} · ${row.weeks}周`, note: row.optionId === 'off-campus-double' ? '仅限两人同时预订' : undefined })),
-      { icon: '折', label: '思达折扣', amount: '95折', note: `仅课程费和住宿费参加，共优惠${this.formatUsd(this.discountAmount)}美元`, accent: true },
+      { icon: '折', label: '思达折扣', amount: `− ${this.formatUsd(this.discountAmount)} 美元`, note: '课程费和住宿费享95折', accent: true },
       ...(this.seasonalSurcharge > 0 ? [{ icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.peakSeasonDateRange}，${this.seasonalFeePerWeek}美元/周 × ${this.peakSeasonWeeks}周；同一周不重复计费，不参与折扣`, accent: false }] : []),
       ...(this.minorManagementFee > 0 ? [{ icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: `未满18岁；每4周${this.minorManagementFeePerPeriod}美元，共${this.minorManagementPeriods}期；不足4周按一期，不参与折扣`, accent: false }] : []),
     ];
@@ -618,6 +618,7 @@ export class EvSchoolDetailComponent implements OnInit {
       totalUsd: `${this.formatUsd(this.quoteUsd)} 美元`,
       totalCny: `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`,
       totalNote: `${this.exchangeRateText}，最终以支付当日汇率为准`,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined },
     };
   }
   formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 2 }); }

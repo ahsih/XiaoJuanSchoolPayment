@@ -81,7 +81,7 @@ export class CpiSchoolDetailComponent implements OnInit {
   exchangeRateLive = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   readonly juniorCourseNote = '可将1节一对一转给家长，可部分周期转课';
-  readonly localFeeIntro = '以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证相关费用按持59天签证预估；教材按每次约用8周预估；水费不足4周按4周计算。';
+  readonly localFeeIntro = '以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证相关费用按持59天签证预估；教材按每次约用8周预估；水费不足4周按4周计算。入学请准备白底美签格式照片2张，尺寸5.1×5.1厘米。';
   readonly quotePlan = new SchoolQuotePlan('esl-general-15', 'building-a-quad', '2026-09-06', this.weekOptions,
     kind => kind === 'course'
       ? this.courseFees.map(option => ({ id: option.id, name: this.courseDisplayName(option.name), details: option.suitable }))
@@ -443,7 +443,7 @@ export class CpiSchoolDetailComponent implements OnInit {
       { item: '电费', amount: '2,000 比索 / 4周', quantity: fourWeekPeriods, total: 2000 * fourWeekPeriods, note: '预估；超出固定用量按房型另收6–20比索/千瓦时' },
       { item: '签证续签', amount: '5,140 比索 / 次', quantity: extensionQuantity, total: 5140 * extensionQuantity, note: `${extensionQuantity === 0 ? '按持59天签证预估，本次无需续签' : '按持59天签证预估，超出天数每30天计一次'}；持30天签证需更早续签，最终以实际签证、停留天数和收费为准` },
       { item: '教材费', amount: '2,000 比索 / 8周', quantity: this.textbookPurchaseCount, total: 2000 * this.textbookPurchaseCount, note: '按每次购买教材约可使用8周预估，不足8周按一次计；具体依个人学习进度和实际购买教材情况结算' },
-      { item: '学生证', amount: '350 比索 / 次', quantity: 1, total: 350, note: '可自备白底证件照5×5厘米' },
+      { item: '学生证', amount: '350 比索 / 次', quantity: 1, total: 350, note: '一次性费用' },
       { item: '宿务马克坦机场周日接机', amount: '1,000 比索 / 次', quantity: 0, total: 0, note: '可选，也可自行打车；其他时间1,500比索/次/人；不计入学杂费合计', excluded: true },
       { item: '房间押金', amount: '3,000 比索 / 次', quantity: 1, total: 3000, note: '收一次；无损坏及额外扣费时毕业可退；不计入学杂费合计', excluded: true },
       { item: '洗衣服务', amount: '200 比索 / 5公斤 / 次', quantity: 0, total: 0, note: '根据实际需要使用和付费；不计入学杂费合计', excluded: true },

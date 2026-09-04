@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": [
+    "src/app/components/quote-image-export.spec.ts",
+    "src/app/components/quote-image-layout.spec.ts",
+    "src/app/pages/philippines/school-quote-rollout.spec.ts",
+    "src/app/pages/philippines/ev-school/ev-school-detail.component.spec.ts",
+    "src/app/pages/philippines/cg-sparta-school/cg-sparta-school.component.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

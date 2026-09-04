@@ -1,0 +1,26 @@
+:host { position: fixed; inset: 0; z-index: 20000; color: #15243d; }
+* { box-sizing: border-box; }
+.preview-backdrop { height: 100%; display: grid; place-items: center; padding: 20px; background: #0f172aa6; }
+.preview-dialog { display: flex; flex-direction: column; width: min(760px, 100%); max-height: 100%; min-height: 240px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 16px 60px #0003; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; border-bottom: 1px solid #e1e8e4; flex: none; }
+h2 { margin: 0; color: #00422d; font-size: 19px; }
+button { min-height: 44px; padding: 8px 16px; border: 1px solid #d4dfd9; border-radius: 8px; background: #fff; color: #00422d; font: inherit; font-size: 14px; cursor: pointer; }
+button:focus-visible { outline: 3px solid #ff9d58; outline-offset: 2px; }
+button:disabled { opacity: .6; }
+.primary { color: #fff; background: #00643e; border-color: #00643e; }
+.instructions { padding: 12px 18px; background: #eef7f2; font-size: 14px; line-height: 1.6; flex: none; }
+.instructions strong { color: #00422d; }
+p { margin: 4px 0 0; }
+.error { color: #ac3211; }
+.image-scroll { overflow: auto; overscroll-behavior: contain; min-height: 0; padding: 12px; background: #e9eeeb; -webkit-overflow-scrolling: touch; }
+img { display: block; width: 100%; height: auto; background: #fff; -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto; }
+.loading { padding: 48px 12px; text-align: center; color: #52665a; }
+footer { padding: 12px 18px; display: flex; flex-wrap: wrap; gap: 8px; flex: none; }
+footer p { width: 100%; color: #64748b; font-size: 12px; line-height: 1.6; }
+@media (max-width: 600px) {
+  .preview-backdrop { padding: 0; }
+  .preview-dialog { width: 100%; height: 100%; max-height: 100dvh; border-radius: 0; }
+  header { padding-top: max(12px, env(safe-area-inset-top)); }
+  .image-scroll { flex: 1; padding: 8px; }
+  footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+}

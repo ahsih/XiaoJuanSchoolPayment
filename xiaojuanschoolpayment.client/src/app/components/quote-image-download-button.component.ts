@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { QuoteImagePreviewComponent } from './quote-image-preview.component';
+import { downloadQuoteBlob, encodeQuoteCanvas, loadQuoteImage, quoteBlobDataUrl,
+  quoteCanvasScale, quoteImageEnvironment, validateQuoteBlob } from './quote-image-export';
 
 export type QuoteImageActionMode = 'download' | 'email';
 
@@ -93,6 +96,8 @@ export interface QuoteImageCardData {
   localFeeItems?: QuoteImageLocalFeeItem[];
   localFeeCny?: string;
   exchangeRateText?: string;
+  /** Exact rates used by the calculator, not inferred from rounded totals. */
+  conversionRates?: { usdToCny: number; phpPerCny: number; date?: string };
   optionalFeeItems?: QuoteImageOptionalFeeItem[];
   benefitItems?: QuoteImageBenefitItem[];
   serviceLocations?: string[];
@@ -107,11 +112,19 @@ export interface QuoteImageCardData {
 @Component({
   selector: 'app-quote-image-download-button',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent],
   template: `
     <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving" (click)="handleButtonClick()">
       <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ isSaving ? savingLabel : label }}
     </button>
+
+    <p *ngIf="saveError && !isPreviewOpen" class="quote-email-message error" role="alert">{{ saveError }}</p>
+    <app-quote-image-preview *ngIf="isPreviewOpen"
+      [src]="previewSrc" [busy]="isSaving" [error]="saveError" [wechat]="isWeChat"
+      [canShare]="canSharePreview" [sharing]="isSharing"
+      (closed)="closeImagePreview()" (retry)="saveQuoteImage()"
+      (share)="shareImagePreview()" (download)="downloadImagePreview()"
+      (imageFailed)="previewImageFailed()" />
 
     <div
       *ngIf="isEmailDialogOpen"
@@ -318,7 +331,7 @@ export interface QuoteImageCardData {
     `,
   ],
 })
-export class QuoteImageDownloadButtonComponent {
+export class QuoteImageDownloadButtonComponent implements OnDestroy {
   @Input({ required: true }) quote!: QuoteImageCardData;
   @Input() label = '保存报价单图片';
   @Input() savingLabel = '生成中...';
@@ -333,6 +346,61 @@ export class QuoteImageDownloadButtonComponent {
   protected recipientEmail = '';
   protected emailError = '';
   protected emailSuccess = '';
+  protected isPreviewOpen = false;
+  protected previewSrc = '';
+  protected saveError = '';
+  protected isWeChat = false;
+  protected canSharePreview = false;
+  protected isSharing = false;
+  private previewFile?: File;
+  private saveSequence = 0;
+  private destroyed = false;
+
+  ngOnDestroy(): void {
+    this.destroyed = true;
+    this.closeImagePreview();
+  }
+
+  protected closeImagePreview(): void {
+    this.saveSequence++;
+    this.isPreviewOpen = false;
+    this.previewSrc = '';
+    this.previewFile = undefined;
+    this.canSharePreview = false;
+    this.saveError = '';
+  }
+
+  protected previewImageFailed(): void {
+    this.previewSrc = '';
+    this.previewFile = undefined;
+    this.canSharePreview = false;
+    this.saveError = '图片预览加载失败，请重新生成。';
+  }
+
+  protected async shareImagePreview(): Promise<void> {
+    if (!this.previewFile || !this.canSharePreview || this.isSharing) return;
+    this.isSharing = true;
+    this.saveError = '';
+    try {
+      // Invoked directly from a fresh tap, not after the asynchronous canvas render.
+      await navigator.share({ files: [this.previewFile] });
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) {
+        this.saveError = '当前浏览器未能分享图片，请长按图片保存，或使用下载图片按钮。';
+      }
+    } finally {
+      this.isSharing = false;
+    }
+  }
+
+  protected downloadImagePreview(): void {
+    if (!this.previewFile || this.isWeChat) return;
+    try {
+      downloadQuoteBlob(this.previewFile, this.previewFile.name);
+    } catch {
+      this.saveError = '下载未能启动，请长按图片保存。';
+    }
+  }
 
   protected handleButtonClick(): void {
     if (this.mode === 'email') {
@@ -415,25 +483,41 @@ export class QuoteImageDownloadButtonComponent {
   }
 
   async saveQuoteImage(): Promise<void> {
-    if (this.isSaving || !this.quote) {
+    if (this.disabled || this.destroyed || this.isSaving || !this.quote) {
       return;
     }
 
     this.isSaving = true;
+    this.saveError = '';
+    this.previewSrc = '';
+    this.previewFile = undefined;
+    this.canSharePreview = false;
+    const sequence = ++this.saveSequence;
+    const environment = quoteImageEnvironment();
+    this.isWeChat = environment.wechat;
+    this.isPreviewOpen = environment.mobile;
+    const fileName = this.quote.fileName || 'quote-image.png';
 
     try {
       const blob = await this.createQuoteImageBlob();
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = objectUrl;
-      link.download = this.quote.fileName || 'quote-image.png';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+      if (sequence !== this.saveSequence || this.destroyed) return;
+      if (environment.mobile) {
+        const src = await quoteBlobDataUrl(blob);
+        if (sequence !== this.saveSequence || this.destroyed) return;
+        this.previewFile = new File([blob], fileName, { type: 'image/png' });
+        this.previewSrc = src;
+        try {
+          this.canSharePreview = !environment.wechat && typeof navigator.share === 'function'
+            && typeof navigator.canShare === 'function' && navigator.canShare({ files: [this.previewFile] });
+        } catch { this.canSharePreview = false; }
+      } else {
+        downloadQuoteBlob(blob, fileName);
+      }
     } catch (error) {
       console.error('Failed to create quote image', error);
-      window.alert('报价单图片生成失败，请稍后重试。');
+      if (sequence === this.saveSequence && !this.destroyed) {
+        this.saveError = '报价单图片未能完整生成，请检查网络后重新生成；也可关闭其他页面后再试。';
+      }
     } finally {
       this.isSaving = false;
     }
@@ -442,10 +526,10 @@ export class QuoteImageDownloadButtonComponent {
   private async createQuoteImageBlob(scaleOverride?: number): Promise<Blob> {
     const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
     const [logo, hero, consultantAssets] = await Promise.all([
-      this.loadCanvasImage(this.quote.logoSrc),
+      this.loadCanvasImage(this.useHighResolutionBrandHeader ? '/assets/sida-qihang-navbar-logo.jpg' : this.quote.logoSrc),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
-        consultants.map(async (consultant) => ({
+        (this.quote.layout === 'cia-detailed' ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
           consultant,
           avatar: await this.loadCanvasImage(consultant.avatarSrc),
           qr: await this.loadCanvasImage(consultant.qrSrc),
@@ -453,7 +537,6 @@ export class QuoteImageDownloadButtonComponent {
       ),
     ]);
     const width = 1032;
-    const scale = scaleOverride ?? Math.max(2, Math.min(window.devicePixelRatio || 2, 3));
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
@@ -467,35 +550,42 @@ export class QuoteImageDownloadButtonComponent {
       ? 1764 + (fullLayout?.paymentExtra ?? 0) + (fullLayout?.localExtra ?? 0) + (fullLayout?.notesExtra ?? 0)
       : 1848;
 
-    canvas.width = width * scale;
-    canvas.height = height * scale;
-    context.scale(scale, scale);
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = 'high';
-
-    if (this.quote.layout === 'cia-detailed') {
-      this.drawDetailedQuoteImage(
-        context,
-        { logo, hero, consultants: consultantAssets.slice(0, 5) },
-        width,
-        height,
-      );
-    } else {
-      this.drawQuoteImage(
-        context,
-        { logo, hero, consultants: consultantAssets.slice(0, 3) },
-        width,
-        height,
-      );
+    const initialScale = quoteCanvasScale(width, height,
+      scaleOverride ?? Math.max(2, window.devicePixelRatio || 2), quoteImageEnvironment().mobile);
+    let failure: unknown;
+    try {
+      // Retry once at a smaller resolution; preserve every row and the approved layout.
+      for (const scale of [initialScale, initialScale * 0.75]) {
+        try {
+          canvas.width = Math.max(1, Math.floor(width * scale));
+          canvas.height = Math.max(1, Math.floor(height * scale));
+          context.scale(canvas.width / width, canvas.height / height);
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = 'high';
+          if (this.quote.layout === 'cia-detailed') {
+            this.drawDetailedQuoteImage(context, {
+              logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })),
+            }, width, height);
+          } else {
+            this.drawQuoteImage(context, { logo, hero, consultants: consultantAssets }, width, height);
+          }
+          const blob = await encodeQuoteCanvas(canvas);
+          // Release the backing bitmap before decoding the PNG, especially on iOS.
+          canvas.width = 1;
+          canvas.height = 1;
+          await validateQuoteBlob(blob);
+          return blob;
+        } catch (error) {
+          failure = error;
+        } finally {
+          canvas.width = 1;
+          canvas.height = 1;
+        }
+      }
+      throw failure;
+    } finally {
+      for (const image of [logo, hero, ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
-
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png', 0.98));
-
-    if (!blob) {
-      throw new Error('Quote image could not be created');
-    }
-
-    return blob;
   }
 
   private async getResponseMessage(response: Response): Promise<string> {
@@ -599,7 +689,7 @@ export class QuoteImageDownloadButtonComponent {
     return [
       ...notes.filter(note => this.isDateMismatchNote(note)),
       ...notes.filter(note => !this.isDateMismatchNote(note)),
-      '人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。',
+      `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '本次采用备用汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`,
       '最终以学校价格、空房及优惠确认为准。',
     ];
   }
@@ -638,8 +728,6 @@ export class QuoteImageDownloadButtonComponent {
       hero: HTMLImageElement;
       consultants: Array<{
         consultant: QuoteImageContact;
-        avatar: HTMLImageElement;
-        qr: HTMLImageElement;
       }>;
     },
     width: number,
@@ -711,7 +799,7 @@ export class QuoteImageDownloadButtonComponent {
     context.fillStyle = '#ffffff';
     context.fillRect(0, 0, width, height);
 
-    this.drawImageContain(context, assets.logo, 252, 4, 520, 70);
+    this.drawQuoteBrandHeader(context, assets.logo, 252, 4);
 
     this.drawRoundedRect(context, padding, 80, contentWidth, 122, 10, '#ffffff', border, 1);
     context.font = '950 31px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
@@ -840,7 +928,10 @@ export class QuoteImageDownloadButtonComponent {
     context.fillText(this.quote.totalUsd, grid.amountRight, paymentRowTop + 39);
     context.textAlign = 'left';
     context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    const totalNote = fullLayout ? this.withoutExchangeNote(this.quote.totalNote ?? '') : this.quote.totalNote ?? '';
+    const schoolRate = fullLayout && this.quote.conversionRates
+      ? `参考汇率：1美元 ≈ ${this.quote.conversionRates.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币`
+      : '';
+    const totalNote = [schoolRate, fullLayout ? this.withoutExchangeNote(this.quote.totalNote ?? '') : this.quote.totalNote ?? ''].filter(Boolean).join('；');
     context.fillText(this.quote.totalCny, grid.noteLeft, paymentRowTop + (totalNote ? 27 : 38));
     drawTableText(totalNote, grid.noteLeft, paymentRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
 
@@ -921,7 +1012,11 @@ export class QuoteImageDownloadButtonComponent {
     context.fillText(this.quote.localFeeAmount, grid.amountRight, localRowTop + 38);
     context.textAlign = 'left';
     context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    context.fillText(this.quote.localFeeCny ?? '', grid.noteLeft, localRowTop + (fullLayout ? 38 : 27));
+    const localRate = fullLayout && this.quote.conversionRates
+      ? `参考汇率：1元人民币 ≈ ${this.quote.conversionRates.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索`
+      : '';
+    context.fillText(this.quote.localFeeCny ?? '', grid.noteLeft, localRowTop + (fullLayout && !localRate ? 38 : 27));
+    if (localRate) drawTableText(localRate, grid.noteLeft, localRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
     if (!fullLayout) drawTableText('按实时汇率预估，实际以到校缴费为准', 438, localRowTop + 49, 530, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
 
     const optionalFees = (fullLayout ? this.quote.optionalFeeItems : this.quote.optionalFeeItems?.slice(0, 2)) ?? [];
@@ -1053,7 +1148,7 @@ export class QuoteImageDownloadButtonComponent {
     context.fillStyle = background;
     context.fillRect(0, 0, width, height);
 
-    this.drawImageContain(context, assets.logo, 36, 24, 520, 70);
+    this.drawQuoteBrandHeader(context, assets.logo, 36, 24);
     this.drawHeaderLine(context, '报价日期：', this.quote.quoteDateText, 755, 47, '日');
     this.drawHeaderLine(context, '资料更新时间：', this.quote.updatedAtText, 755, 82, '时');
 
@@ -1441,6 +1536,28 @@ export class QuoteImageDownloadButtonComponent {
     context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
   }
 
+  private get useHighResolutionBrandHeader(): boolean {
+    return /\/sida-qihang-quote-header-logo(?:-transparent)?\.png$/.test(this.quote.logoSrc);
+  }
+
+  private drawQuoteBrandHeader(context: CanvasRenderingContext2D, logo: HTMLImageElement, x: number, y: number): void {
+    if (!this.useHighResolutionBrandHeader) {
+      this.drawImageContain(context, logo, x, y, 520, 70);
+      return;
+    }
+    context.save();
+    // Sample the original brand artwork directly; never enlarge the old 427×54 header.
+    // This crop excludes the white margins of the existing 1672×941 master asset.
+    context.drawImage(logo, 247, 295, 1215, 312, x + 12, y + 9, 194, 194 * 312 / 1215);
+    this.drawSolidLine(context, x + 251, y + 16, x + 251, y + 54, '#ead5c3');
+    context.textAlign = 'left';
+    context.fillStyle = '#bc9d87';
+    context.font = '700 14px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillText('留学规划 · 语言提升', x + 267, y + 31);
+    context.fillText('从思达启航，走向更美好的未来', x + 267, y + 50);
+    context.restore();
+  }
+
   private drawImageContain(context: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number, width: number, height: number): void {
     const imageRatio = image.naturalWidth / image.naturalHeight;
     const boxRatio = width / height;
@@ -1560,11 +1677,6 @@ export class QuoteImageDownloadButtonComponent {
   }
 
   private loadCanvasImage(source: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error(`Image failed to load: ${source}`));
-      image.src = source;
-    });
+    return loadQuoteImage(source).catch(() => loadQuoteImage(source));
   }
 }

@@ -116,6 +116,8 @@ describe('CPI pricing and complete quote export', () => {
       expect(quote.localFeeNote).toContain('签证相关费用按持59天签证预估');
       expect(quote.localFeeNote).toContain('教材按每次约用8周预估');
       expect(quote.localFeeNote).toContain('水费不足4周按4周计算');
+      expect(quote.localFeeNote).toContain('入学请准备白底美签格式照片2张，尺寸5.1×5.1厘米。');
+      expect(JSON.stringify(quote)).not.toContain('白底证件照5×5厘米');
       expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
         label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: component.formatPhp(fee.total), note: fee.note,
       })));
