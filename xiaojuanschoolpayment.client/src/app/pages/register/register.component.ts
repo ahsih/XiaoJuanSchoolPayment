@@ -53,11 +53,15 @@ export class RegisterComponent {
     }
 
     const value = this.registerForm.getRawValue();
+    const account = value.account.trim();
+    const registrationCode = value.invitationCode.trim();
     const user: SchoolUserDTO = {
-      account: value.account.trim(),
+      account,
+      email: this.accountType === 'email' ? account : '',
       password: value.password,
       name: value.name.trim(),
-      invitationCode: value.invitationCode.trim(),
+      invitationCode: registrationCode,
+      accessCode: registrationCode,
     };
 
     this.loading = true;

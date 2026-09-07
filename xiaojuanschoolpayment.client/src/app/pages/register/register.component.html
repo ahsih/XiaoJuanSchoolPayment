@@ -23,12 +23,12 @@
           </div>
 
           <div>
-            <label class="field-label" for="invitation-code">验证码</label>
+            <label class="field-label" for="invitation-code">邀请码或管理员访问码</label>
             <div class="auth-input" [class.invalid]="registerForm.get('invitationCode')?.invalid && registerForm.get('invitationCode')?.touched">
               <mat-icon>vpn_key</mat-icon>
-              <input id="invitation-code" formControlName="invitationCode" placeholder="请输入验证码" autocomplete="off" />
+              <input id="invitation-code" formControlName="invitationCode" placeholder="请输入邀请码或访问码" autocomplete="off" />
             </div>
-            <p class="field-error" *ngIf="registerForm.get('invitationCode')?.invalid && registerForm.get('invitationCode')?.touched">请输入验证码</p>
+            <p class="field-error" *ngIf="registerForm.get('invitationCode')?.invalid && registerForm.get('invitationCode')?.touched">请输入邀请码或访问码</p>
           </div>
         </div>
 

@@ -152,32 +152,30 @@ namespace MyProject.Controllers
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             var now = DateTime.UtcNow;
-            var invitationHash = XiaoJuanSchoolPayment.Server.Controllers.InvitationCodesController.HashCode(request.InvitationCode);
-            var invitation = await _context.InvitationCodes.AsNoTracking()
-              .FirstOrDefaultAsync(x => x.CodeHash == invitationHash, cancellationToken);
+            InvitationCode? invitation = null;
             var role = string.Empty;
+            var accessCode = _config["AccessCode"];
+            var usesAdminAccessCode = !string.IsNullOrWhiteSpace(accessCode)
+              && string.Equals(accessCode, request.AccessCode, StringComparison.Ordinal);
 
-            if (invitation != null)
+            if (usesAdminAccessCode)
             {
-                if (invitation.UsedAt.HasValue || invitation.RevokedAt.HasValue || invitation.ExpiresAt <= now)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                    return BadRequest("验证码无效、已使用或已过期。");
-                }
-                role = invitation.Role;
+                role = "Admin";
             }
             else
             {
-                var accessCode = _config["AccessCode"];
-                var canBootstrapAdmin = !await _context.Users.AnyAsync(cancellationToken)
-                  && !string.IsNullOrWhiteSpace(accessCode)
-                  && string.Equals(accessCode, request.InvitationCode, StringComparison.Ordinal);
-                if (!canBootstrapAdmin)
+                var invitationHash = XiaoJuanSchoolPayment.Server.Controllers.InvitationCodesController.HashCode(request.InvitationCode);
+                invitation = await _context.InvitationCodes.AsNoTracking()
+                  .FirstOrDefaultAsync(x => x.CodeHash == invitationHash, cancellationToken);
+                if (invitation == null
+                  || invitation.UsedAt.HasValue
+                  || invitation.RevokedAt.HasValue
+                  || invitation.ExpiresAt <= now)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    return BadRequest("验证码无效、已使用或已过期。");
+                    return BadRequest("邀请码或管理员访问码无效、已使用或已过期。");
                 }
-                role = "Admin";
+                role = invitation.Role;
             }
 
             var displayName = request.Name.Trim();
@@ -226,6 +224,60 @@ namespace MyProject.Controllers
             await transaction.CommitAsync(cancellationToken);
             return Ok();
         }
+
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginDTO request, CancellationToken cancellationToken)
+    {
+      if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
+      {
+        return BadRequest(accountError);
+      }
+
+      var user = await account.FindUserAsync(_userManager, _context);
+      if (user == null)
+      {
+        return Unauthorized("账号或登录凭证不正确。");
+      }
+
+      if (request.Method == "Password")
+      {
+        if (string.IsNullOrWhiteSpace(request.Password))
+        {
+          return BadRequest("请输入密码。");
+        }
+
+        var passwordResult = await _signInManager.CheckPasswordSignInAsync(
+          user,
+          request.Password,
+          lockoutOnFailure: true);
+        if (!passwordResult.Succeeded)
+        {
+          return Unauthorized(passwordResult.IsLockedOut
+            ? "登录尝试过多，请稍后再试。"
+            : "账号或密码不正确。");
+        }
+      }
+      else
+      {
+        if (string.IsNullOrWhiteSpace(request.VerificationCode))
+        {
+          return BadRequest("请输入验证码。");
+        }
+
+        var codeError = await ValidateAndConsumeCodeAsync(
+          account.Value,
+          "Login",
+          request.VerificationCode,
+          cancellationToken);
+        if (codeError != null)
+        {
+          return Unauthorized(codeError);
+        }
+      }
+
+      return Ok(await CreateTokenAsync(user));
+    }
 
         [Authorize]
     [HttpPost("change-password")]
