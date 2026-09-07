@@ -18,7 +18,7 @@
               <span><mat-icon>terrain</mat-icon>碧瑶ECO Campus</span>
               <span><mat-icon>record_voice_over</mat-icon>3-6节一对一选择</span>
               <span><mat-icon>forest</mat-icon>自然型一体校园</span>
-              <span><mat-icon>paid</mat-icon>2026公开USD费用</span>
+              <span><mat-icon>paid</mat-icon>2026公开美元费用</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -37,7 +37,7 @@
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
               课程和校区信息参考A&amp;J官方页面；费用按公开2026年A&amp;J ECO Campus资料整理。
-              正式报名仍需按开课日、房型空位、旺季附加费和学校invoice确认。
+              正式报名仍需按开课日、房型空位、旺季附加费和学校正式账单确认。
             </p>
           </div>
 
@@ -201,8 +201,8 @@
             <span>课程 / 公开参考费用</span>
             <h2>A&amp;J 2026年公开4周课程费与住宿费</h2>
             <p>
-              下方以USD整理公开费用。普通课程按4周价列示，TOEIC与IELTS保分班按学校规定周数单独列示，
-              避免把保分班总价误当成4周价。套餐列为“课程费 + 房型费”折前价，思达优惠在下方报价器自动计算。
+              下方以美元整理2026费用。普通课程按4周价列示，TOEIC与IELTS保分班按学校规定周数单独列示，
+              课程和住宿分别显示；思达优惠及A&amp;J当期优惠在下方报价器自动计算。
             </p>
           </div>
 
@@ -215,24 +215,18 @@
             </article>
           </div>
 
-          <div class="data-table anj-tuition-table" role="table" aria-label="A&J 2026年4周课程与住宿套餐参考">
+          <div class="data-table anj-tuition-table" role="table" aria-label="A&J 2026年4周课程费用">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">4周课程费</span>
-              <span role="columnheader">Deluxe Triple套餐</span>
-              <span role="columnheader">Deluxe Twin套餐</span>
-              <span role="columnheader">Deluxe Single套餐</span>
-              <span role="columnheader">Premium Twin套餐</span>
               <span role="columnheader">课程结构</span>
+              <span role="columnheader">适合人群</span>
             </div>
             <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
               <span role="cell">{{ row.course }}</span>
               <span role="cell">{{ row.tuition }}</span>
-              <span role="cell">{{ row.deluxeTriple }}</span>
-              <span role="cell">{{ row.deluxeTwin }}</span>
-              <span role="cell">{{ row.deluxeSingle }}</span>
-              <span role="cell">{{ row.premiumTwin }}</span>
               <span role="cell">{{ row.lessons }}</span>
+              <span role="cell">{{ row.suitable }}</span>
             </div>
           </div>
 
@@ -243,15 +237,8 @@
                 <em>课程费</em>
                 <strong>{{ row.tuition }}</strong>
               </div>
-              <div>
-                <em>Deluxe Triple套餐</em>
-                <strong>{{ row.deluxeTriple }}</strong>
-              </div>
-              <div>
-                <em>Premium Twin套餐</em>
-                <strong>{{ row.premiumTwin }}</strong>
-              </div>
               <p>{{ row.lessons }}</p>
+              <p>{{ row.suitable }}</p>
             </article>
           </div>
 
@@ -327,133 +314,122 @@
         <section class="quote-panel" id="quote">
           <div class="section-heading">
             <span>费用快速报价</span>
-            <h2>用A&amp;J公开价格先估算课程住宿费</h2>
+            <h2>{{ quoteHeading }}</h2>
             <p>
-              普通课程按4周价倍数、保分班按学校固定周数计算。已自动计入思达免注册费、课程+住宿95折，
-              并根据入学日自动计算旺季附加费。常规、生日与淡季优惠金额暂未确定，当前不参与计算。
+              每名学生可独立安排多段课程与住宿。系统按入学日、新生或续课状态、出生月日自动判断A&amp;J优惠，
+              先扣固定优惠，再对剩余课程费和住宿费计算思达95折；旺季附加费不参与折扣。
             </p>
           </div>
-          <div class="quote-form" aria-label="A&J费用快速报价选项">
-            <label>
-              课程
-              <select [(ngModel)]="selectedCourseId" (ngModelChange)="onCourseChange()">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label>
-              房型
-              <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of quoteRoomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label>
-              周数
-              <select [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of availableWeekOptions" [ngValue]="week">{{ week }}周</option>
-              </select>
-            </label>
-            <label>
-              预计入学日
-              <input type="date" [(ngModel)]="selectedStartDate" />
-            </label>
-            <label>
-              接机机场
-              <select [(ngModel)]="selectedPickupAirport">
-                <option value="clark">克拉克机场</option>
-                <option value="manila">马尼拉机场</option>
-              </select>
-            </label>
-          </div>
+          <div class="quote-form-card group-quote">
+            <div class="quote-mode" role="group" aria-label="报价人数模式">
+              <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+              <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+              <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+            </div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生独立填写报名、生日、续课、签证、接机及课程住宿；整间总价房型须由对应人数选择完全相同的房型与日期，报价中只计收一次。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields anj-student-fields">
+                <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label>出生月份<input type="number" min="1" max="12" step="1" [(ngModel)]="student.birthMonth" /></label>
+                <label>出生日期<input type="number" min="1" max="31" step="1" [(ngModel)]="student.birthDay" /></label>
+                <label>报名状态<select [(ngModel)]="student.enrollmentStatus"><option value="new">新生</option><option value="continuation">校内续课</option></select></label>
+                <label>入境签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+                <label>机场接机<select [(ngModel)]="student.pickupAirport"><option value="none">不需要学校接机</option><option value="manila">马尼拉机场接机</option><option value="clark">克拉克机场接机</option></select></label>
+              </div>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <p class="student-promotion-status">
+                <strong>{{ student.enrollmentStatus === 'continuation' ? '续课优惠' : '新生优惠' }}：</strong>
+                常规 {{ formatUsd(student.regularDiscount) }}美元；生日 {{ formatUsd(student.birthdayDiscount) }}美元；淡季 {{ formatUsd(student.lowSeasonDiscount) }}美元；续课 {{ formatUsd(student.continuationDiscount) }}美元；思达95折减 {{ formatUsd(student.sidaDiscount) }}美元。
+              </p>
+              <p class="fee-alert" *ngIf="student.priceYearWarning">{{ student.priceYearWarning }}</p>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
 
-          <div class="quote-breakdown anj-quote-breakdown">
-            <div>
-              <span>课程+住宿</span>
-              <strong>{{ packageUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
+            <div class="quote-breakdown anj-quote-breakdown">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+                <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span>
+                <strong>{{ item.amount }}</strong>
+              </div>
             </div>
-            <div>
-              <span>思达注册费优惠</span>
-              <strong>- {{ formatUsd(registrationDiscountAmount) }}</strong>
-              <p>原注册费USD 100，本次免除。</p>
-            </div>
-            <div>
-              <span>思达折扣</span>
-              <strong>95折（- {{ formatUsd(sidaDiscountAmount) }}）</strong>
-              <p>按课程费+住宿费计算。</p>
-            </div>
-            <div>
-              <span>旺季附加费</span>
-              <strong>{{ peakSurchargeText }}</strong>
-              <p>{{ peakSeasonWeeks }}周 × USD 40；按学习日期与旺季重叠周数自动计算。</p>
-            </div>
-            <div class="pending-promotion">
-              <span>常规优惠</span>
-              <strong>金额待补充</strong>
-              <p>当前按USD 0计算。</p>
-            </div>
-            <div class="pending-promotion">
-              <span>生日优惠</span>
-              <strong>金额待补充</strong>
-              <p>当前按USD 0计算。</p>
-            </div>
-            <div class="pending-promotion">
-              <span>淡季优惠</span>
-              <strong>金额待补充</strong>
-              <p>当前按USD 0计算。</p>
-            </div>
-          </div>
-
-          <div class="anj-quote-result">
-            <div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="group-result anj-quote-result">
               <span>最终应付学校金额</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周，优惠已计入</p>
+              <em>{{ quoteCnyText }}</em>
+              <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
+              <small *ngIf="quoteCalculated">已按当前选择更新；正式报价仍需确认A&amp;J空房、2027价格和最终账单。</small>
             </div>
-            <div>
-              <strong>{{ quoteCnyText }}</strong>
-              <p>{{ exchangeRateSummary }}</p>
+            <div class="group-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
             </div>
+            <p class="season-note">旺季附加费：2026/06/28–08/22；2027按相同8周星期推算为2027/06/27–08/21。每个实际重叠课程周加收40美元，不参与优惠。</p>
+            <p class="season-note">优惠顺序：免100美元注册费；A&amp;J新生或续课固定优惠先扣除；剩余课程费和住宿费再享思达95折。新生优惠与续课优惠不叠加。</p>
           </div>
-
-          <div class="quote-actions">
-            <button type="button" class="primary-action" (click)="calculateQuote()">
-              标记为已估算
-              <mat-icon>done</mat-icon>
-            </button>
-            <a class="secondary-action" routerLink="/about-sida/contact">
-              发送给顾问复核
-              <mat-icon>send</mat-icon>
-            </a>
-            <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
-          </div>
-          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认A&amp;J正式invoice、房型空位及尚待补充的常规/生日/淡季优惠。</p>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>菲律宾当地费用</span>
-            <h2>A&amp;J到校后学杂费明细参考</h2>
-            <p>已按周数、房型和接机机场自动计算。住宿押金可退，洗衣按需付费，两者不计入合计；最终以学校与移民局实收为准。</p>
+            <h2>A&amp;J到校后学杂费明细</h2>
+            <p>{{ localFeeIntro }}</p>
           </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <em>数量：{{ fee.quantity }}</em>
-              <p>{{ fee.note }}</p>
+          <div class="local-fee-table-wrap">
+            <table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody><tr *ngFor="let fee of estimatedLocalFees">
+                <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+              </tr></tbody>
+              <tfoot>
+                <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含住宿押金及按需洗衣服务</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币 ≈ 9比索；最终以实际兑换或支付汇率为准</td></tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="excluded-fee-list">
+            <h4>另行准备（不计入上方学杂费及人民币预估合计）</h4>
+            <div *ngFor="let fee of optionalFeeItems">
+              <span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span>
+              <b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="promotions">
+          <div class="section-heading">
+            <span>A&amp;J 2026–2027优惠</span>
+            <h2>按入学日自动匹配的新生、生日、淡季与续课优惠</h2>
+            <p>下列固定金额可以在符合条件时参与报价。生日优惠要求报名4周及以上并提交生日证明；2026按出生日期尾数判断，2027起按生日月份与入学月份相同判断。</p>
+          </div>
+          <div class="anj-promotion-rules">
+            <article>
+              <strong>思达长期优惠</strong>
+              <p>每名学生免100美元注册费；A&amp;J固定优惠扣除后，剩余课程费和住宿费享95折。</p>
+            </article>
+            <article>
+              <strong>生日优惠100美元</strong>
+              <p>报名日不早于2025/12/15且课程不少于4周：2026年1–3月入学看出生日期尾数3/6/9，4–6月看2/4/8，7–9月看7，10–12月看0/1/5；2027年起生日月份须与入学月份相同，并提交生日证明。</p>
+            </article>
+            <article>
+              <strong>叠加与互斥顺序</strong>
+              <p>A&amp;J新生常规、生日和淡季优惠可在符合条件时先行扣除；续课学生只走续课档，不与新生档叠加；之后再计算思达95折。</p>
             </article>
           </div>
-          <div class="mobile-card-list mobile-only">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <em>数量：{{ fee.quantity }}</em>
-              <p>{{ fee.note }}</p>
+          <div class="anj-promotion-grid">
+            <article *ngFor="let period of newPromotionPeriods">
+              <span>{{ period.label }}</span>
+              <strong>{{ period.start.replaceAll('-', '/') }}–{{ period.end.replaceAll('-', '/') }}</strong>
+              <p *ngIf="period.regularDiscounts[4] !== undefined">常规优惠：{{ formatDiscountTiers(period.regularDiscounts) }}</p>
+              <p *ngIf="period.lowSeasonPerFourWeeks">淡季优惠：每个完整4课程周减{{ period.lowSeasonPerFourWeeks }}美元。</p>
             </article>
           </div>
-          <div class="anj-local-total">
-            <div><span>本次预计学杂费合计</span><strong>PHP {{ localFeeTotal | number:'1.0-0' }}</strong></div>
-            <div><strong>{{ localFeeCnyText }}</strong><p>{{ exchangeRateSummary }}</p></div>
+          <div class="anj-continuation-grid">
+            <article *ngFor="let period of continuationPeriods">
+              <span>{{ period.label }}</span>
+              <p>{{ formatDiscountTiers(period.discounts) }}</p>
+            </article>
           </div>
         </section>
 
@@ -498,7 +474,7 @@
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认A&amp;J空位与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分USD课程住宿费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分美元课程住宿费与比索当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较碧瑶自然校园与斯巴达学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">

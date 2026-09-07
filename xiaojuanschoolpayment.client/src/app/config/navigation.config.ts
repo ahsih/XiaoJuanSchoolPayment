@@ -418,10 +418,14 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/baguio/pines-international-academy',
           },
           {
-            id: 'beci-international-language-academy',
-            label: '菲律宾碧瑶BECI语言学校',
-            route:
-              '/philippines-study/baguio/beci-international-language-academy',
+            id: 'beci-eop-campus',
+            label: '菲律宾碧瑶BECI EOP校区',
+            route: '/philippines-study/baguio/beci-eop-campus',
+          },
+          {
+            id: 'beci-sparta-campus',
+            label: '菲律宾碧瑶BECI斯巴达校区',
+            route: '/philippines-study/baguio/beci-sparta-campus',
           },
           {
             id: 'api-beci-city-campus',

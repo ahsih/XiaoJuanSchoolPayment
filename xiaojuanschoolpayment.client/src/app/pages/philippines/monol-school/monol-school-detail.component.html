@@ -53,13 +53,13 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>ESL 4 + Quad Room（胶囊式上下铺）</p>
+              <span>{{ selectedWeeks }}周当前参考</span>
+              <strong>{{ formatUsd(quoteUsd) }} 美元</strong>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、课程费和住宿费估算
+                  已含课程费、住宿费及思达免注册费优惠
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -67,7 +67,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：MONOL官网首页、Facility与Why MONOL官方页面；课程与住宿费用参考MONOL 2025年价目表并由思达顾问整理。</p>
+            <p class="photo-source">图片来源：MONOL官网首页、Facility与Why MONOL官方页面；课程与住宿费用参考MONOL 2026年价目表并由思达顾问整理。</p>
           </div>
         </section>
 
@@ -203,146 +203,124 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>MONOL 2025 年 4 周课程费</span>
-              <h2>四种课程按课时、目标和预算选择</h2>
-              <p>以下课程费参考MONOL 2025年价目表。除注册费外，课程和住宿费用以4周为单位。</p>
-            </div>
-            <div class="data-table course-fee-table" role="table" aria-label="MONOL 4周课程费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="MONOL 4周课程费手机卡片">
-              <article *ngFor="let fee of courseFees">
-                <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                <p>{{ fee.suitable }}</p>
-              </article>
-            </div>
-          </div>
-
-          <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>MONOL 一天学习生活安排</span>
-              <h2>日课密度不低，晚间更看学生自律</h2>
-            </div>
-            <div class="timeline">
-              <article *ngFor="let item of schedule">
-                <time>{{ item.time }}</time>
-                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section class="split-layout" id="room-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>MONOL 2025 年 4 周住宿费（不含餐费）</span>
-              <h2>房型会明显影响总预算和生活体验</h2>
-              <p>默认报价使用四人胶囊式上下铺。Premium、Standard和Small Single房建议先让顾问确认空房和实际房型细节。</p>
-            </div>
-            <div class="data-table room-fee-table" role="table" aria-label="MONOL 4周住宿费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">4周住宿费</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="MONOL 4周住宿费手机卡片">
-              <article *ngFor="let room of roomFees">
-                <span>房型</span>
-                <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                <p>{{ room.note }}</p>
-              </article>
-            </div>
-          </div>
-
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>MONOL 费用快速报价</span>
-              <h2>默认参考：4周 ESL 4 + Quad Room（胶囊式上下铺）</h2>
-              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 − 免注册费 − 淡季课程/住宿优惠 − 符合条件的SNS活动优惠。</p>
-            </div>
-            <div class="quote-form" aria-label="MONOL费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-              <label>接机机场<select [(ngModel)]="selectedPickupAirport"><option value="manila">马尼拉机场</option><option value="clark">克拉克机场</option></select></label>
-              <label>SNS在校故事活动<select [(ngModel)]="applySnsPromotion"><option [ngValue]="false">不参加</option><option [ngValue]="true" [disabled]="!isSnsPromotionEligible">参加（符合条件时）</option></select></label>
-            </div>
-            <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>思达优惠（免注册费）</span><strong>- USD {{ formatUsd(registrationDiscountAmount) }}</strong></div>
-              <div><span>淡季课程费优惠</span><strong>{{ offSeasonCourseDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonCourseDiscountAmount) : '未适用' }}</strong></div>
-              <div><span>淡季住宿费优惠</span><strong>{{ offSeasonRoomDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonRoomDiscountAmount) : '未适用' }}</strong></div>
-              <div><span>SNS活动优惠</span><strong>{{ snsDiscountAmount > 0 ? '- USD ' + formatUsd(snsDiscountAmount) : '未适用' }}</strong></div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <small>{{ exchangeRateSummary }}</small>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认房型、餐费、当地费用和优惠。</p>
-            </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
-              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
-            </div>
-            <p class="fee-alert">淡季规则：课程须在2026/6/28前结束，或于2026/8/23后开始并在2026年内入学；每满4周课程费减USD 100、住宿费减USD 100，旺季不适用。符合条件者在2026/12/31前工作日享免费早餐。</p>
-            <p class="season-note">SNS活动期为2026/1/1—6/27，仅限Premium、Standard及Small Single房；每4周需在小红书及抖音发布一篇在校故事，可再减USD 100。活动可能随时结束，最终以顾问确认学校仍开放为准。</p>
-          </section>
-        </section>
-
-        <section class="section-block" id="local-fees">
+        <section class="section-block catalog-section" id="course-fees">
           <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用和餐费</h2>
-            <p>已按当前选择的{{ selectedWeeks }}周自动计算。费用以PHP计价；房间押金、餐费和未选择的机场接机不计入学杂费合计。</p>
+            <span>MONOL 2026 年 4 周课程费</span>
+            <h2>课程价格与每日安排</h2>
+            <p>注册费为100美元；以下课程费均为每4周价格，报价器按所选周数提供预算。</p>
           </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
-          </div>
-          <div class="quote-result local-fee-result">
-            <span>本次预计学杂费合计（{{ selectedWeeks }}周）</span>
-            <strong>PHP {{ localFeeTotal.toLocaleString('en-US') }}</strong>
-            <em>{{ localFeeCnyText }}</em>
-            <small>{{ exchangeRateSummary }}</small>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees" [attr.data-optional]="fee.optional ? 'true' : 'false'" [attr.data-quantity]="fee.quantity" [attr.data-total]="fee.total"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>数量 {{ fee.quantity }}｜{{ fee.note }}</p></article>
+          <div class="data-table course-fee-table" role="table" aria-label="MONOL 2026年4周课程费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程名称</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排</span><span role="columnheader">备注</span>
             </div>
-          </details>
+            <div class="table-row" role="row" *ngFor="let fee of courseFees">
+              <span role="cell">{{ fee.name }}</span><span role="cell">{{ formatUsd(fee.tuition) }} 美元</span><span role="cell">{{ fee.suitable }}</span><span role="cell">{{ fee.note || '—' }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="MONOL 2026年4周课程费手机卡片">
+            <article *ngFor="let fee of courseFees">
+              <span>课程名称</span><strong>{{ fee.name }}</strong>
+              <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
+              <p>{{ fee.suitable }}<ng-container *ngIf="fee.note">；{{ fee.note }}</ng-container></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading"><span>MONOL 一天学习生活安排</span><h2>日课密度不低，晚间更看学生自律</h2></div>
+          <div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
+        </section>
+
+        <section class="section-block catalog-section" id="room-fees">
+          <div class="section-heading">
+            <span>MONOL 2026 年 4 周住宿费（不含餐费）</span>
+            <h2>住宿价格与房型说明</h2>
+            <p>住宿费不含餐费；报价器默认选择四人间（胶囊式上下铺）。</p>
+          </div>
+          <div class="data-table room-fee-table" role="table" aria-label="MONOL 2026年4周住宿费">
+            <div class="table-row table-head" role="row"><span role="columnheader">房间类型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
+            <div class="table-row" role="row" *ngFor="let room of roomFees"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }} 美元</span><span role="cell">{{ room.note || '—' }}</span></div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="MONOL 2026年4周住宿费手机卡片">
+            <article *ngFor="let room of roomFees"><span>房间类型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div><p>{{ room.note || '—' }}</p></article>
+          </div>
+        </section>
+
+        <section class="quote-results-section group-quote" id="quote">
+          <div class="quote-form-card">
+            <div class="section-heading">
+              <span>MONOL 完整费用报价</span>
+              <h2>{{ quoteHeading }}</h2>
+              <p>可按每位学生分别添加多段课程和住宿，学校付款、优惠与到校学杂费会和当前选择同步更新。</p>
+            </div>
+            <div class="quote-mode" role="group" aria-label="报价人数模式">
+              <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+              <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+              <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+            </div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">支持2–20人；每位学生独立选择课程、住宿日期、年龄、签证、接机和SNS活动，费用分别计算后汇总。</p>
+
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields">
+                <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+                <label>入境签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [value]="option.value">{{ option.label }}</option></select></label>
+                <label>机场接机<select [(ngModel)]="student.pickupAirport"><option value="none">不需要学校接机</option><option value="manila">马尼拉机场接机</option><option value="clark">克拉克机场接机</option></select></label>
+              </div>
+              <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（作为报名信息记录，实际资格由顾问确认）</label>
+              <label class="option-check"><input type="checkbox" [(ngModel)]="student.applySnsPromotion" />参加SNS在校故事活动（仅符合日期、房型及发布要求时计入）</label>
+              <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">当前先按所选成人课程和房型估算；未成年课程、监护与管理费用须由顾问向MONOL确认。</p>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
+
+            <div class="quote-breakdown">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+                <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
+              </div>
+            </div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="group-result">
+              <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small>
+              <small *ngIf="quoteCalculated">已按当前选择更新；正式报价仍以MONOL账单、空房和优惠确认为准。</small>
+            </div>
+            <div class="group-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
+            </div>
+            <div class="quote-general-notes">
+              <strong>报价说明</strong>
+              <ul><li *ngFor="let note of quoteGeneralNotes">{{ note }}</li></ul>
+            </div>
+          </div>
+
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+            <div class="local-fee-heading"><div><span>到校支付费用参考</span><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+            <p class="local-fee-intro">已按{{ activeStudents.length }}位学生各自的完整停留跨度、签证与接机选择估算；不同签证说明会按学生分别保留。房间押金与餐费另行准备，不计入学杂费和人民币预估合计。</p>
+            <div class="local-fee-table-wrap">
+              <table class="local-fee-table">
+                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                <tbody><tr *ngFor="let fee of estimatedLocalFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+                <tfoot>
+                  <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含房间押金及餐费</td></tr>
+                  <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ localFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币≈9比索；最终以实际兑换或支付汇率为准</td></tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="excluded-fee-list">
+              <h4>另行准备（不计入上方学杂费及人民币预估合计）</h4>
+              <div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div>
+            </div>
+          </section>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程结构已与MONOL官方Program及Admission页面核对；美元价格、房型、淡季/SNS优惠和到校学杂费按思达顾问本次收到的MONOL价表录入。代理价表中的Small Single、Quad房型与学校当前公开页的部分房型名称不同，报价单按本次价表计算，报名仍以学校书面账单和优惠确认为准。</p>
+            <p>本页价格更新时间：2026年9月1日。课程结构已与MONOL官方Program及Admission页面核对；美元价格、房型、淡季/SNS优惠和到校学杂费按思达顾问本次收到的MONOL 2026价表录入。价表中的小单间和四人胶囊房与学校公开页的部分房型名称可能不同，报价单按本次价表计算，报名仍以学校书面账单和优惠确认为准。</p>
           </div>
         </section>
 
@@ -448,8 +426,8 @@
       <aside class="side-panel" aria-label="MONOL页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
-          <strong>4周</strong>
-          <p>ESL 4<br />Quad Room（胶囊式上下铺）</p>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

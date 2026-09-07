@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
@@ -11,6 +11,8 @@ import { ExchangeRateService } from '../../../../services/exchange-rate.service'
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
+import { BECI_CAMPUS_PRICING, BeciCampus } from '../beci-quote/beci-pricing';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -33,7 +35,7 @@ interface SidaBeciTrustBadge { icon: string; label: string; }
 @Component({
   selector: 'app-beci-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, BeciQuoteCalculatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './beci-school-detail.component.html',
   styleUrls: [
@@ -47,6 +49,8 @@ interface SidaBeciTrustBadge { icon: string; label: string; }
 export class BeciSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute, { optional: true });
+  readonly campus: Exclude<BeciCampus, 'city'> = this.route?.snapshot.data['campus'] === 'sparta' ? 'sparta' : 'eop';
   private readonly pricingSchoolSearchName = 'BECI';
   private readonly pricingSchoolNames = ['菲律宾碧瑶BECI语言学校', 'BECI International Language Academy', 'API BECI'];
   private readonly courseFeeOrder = [
@@ -97,6 +101,90 @@ export class BeciSchoolDetailComponent implements OnInit {
   selectedWeeks = 4;
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
+
+  get campusConfig() { return BECI_CAMPUS_PRICING[this.campus]; }
+  get campusTitle(): string { return this.campusConfig.name; }
+  get campusHero(): string { return this.campusConfig.hero; }
+  get campusStartingPrice(): number { return this.campus === 'eop' ? 1240 : 1550; }
+  get campusDefaultPlan(): string { return this.campus === 'eop' ? 'Lite ESL＋四人间（女生）' : 'TOEIC＋普通四人间'; }
+  get campusLead(): string {
+    return this.campus === 'eop'
+      ? '全英文口语沉浸校区，适合怕开口、希望建立英语思维，并在半斯巴达节奏中持续输出的学生。'
+      : '严格管理与考试强化校区，适合希望用密集课程、晚间学习和测试推动进步的学生。';
+  }
+  get campusCourses(): CourseItem[] {
+    const prefix = this.campus === 'eop' ? 'EOP' : 'Sparta';
+    return this.courses.filter((course) => course.name.startsWith(prefix));
+  }
+  get campusGalleryImages(): GalleryImage[] {
+    return this.galleryImages.filter((image) => this.campus === 'eop'
+      ? image.src.includes('beci-eop')
+      : image.src.includes('beci-campus') || image.src.includes('beci-one-to-one') || image.src.includes('beci-speaking'));
+  }
+  get campusQuickInfo(): QuickInfo[] {
+    return this.campus === 'eop' ? [
+      { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，适合沉浸学习' },
+      { icon: 'record_voice_over', label: '校区特色', value: 'English Only Policy', note: '强调持续开口与英语思维' },
+      { icon: 'school', label: '课程', value: 'ESL / IELTS / TOEIC / Junior', note: '7门2026课程选择' },
+      { icon: 'bed', label: '住宿', value: '单人至四人间', note: '40岁及以上只能选择单人间' },
+      { icon: 'savings', label: '4周起价', value: '1,240美元', note: 'Lite ESL＋女生四人间，已免注册费' },
+      { icon: 'event_available', label: '入学规则', value: '周日入学', note: '周六离校，按实际日期报价' },
+    ] : [
+      { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，适合集中学习' },
+      { icon: 'verified_user', label: '管理模式', value: 'Sparta', note: '晚间必修、测试与强管理' },
+      { icon: 'school', label: '课程', value: '24 ESL / TOEIC / IELTS', note: '含12周雅思保证班' },
+      { icon: 'bed', label: '住宿', value: '3＋1 / 普通四人间', note: '按当期性别与床位确认' },
+      { icon: 'savings', label: '4周起价', value: '1,550美元', note: 'TOEIC＋普通四人间，已免注册费' },
+      { icon: 'event_available', label: '入学规则', value: '周日入学', note: '周六离校，按实际日期报价' },
+    ];
+  }
+  get campusBasicInfo(): BasicInfoRow[] {
+    return [
+      { label: '学校名称', value: this.campusTitle },
+      { label: '英文名称', value: this.campus === 'eop' ? 'API BECI EOP Campus' : 'API BECI Sparta Campus' },
+      { label: '所在地', value: '菲律宾碧瑶 Baguio' },
+      { label: '校区定位', value: this.campus === 'eop' ? '全英文口语沉浸与半斯巴达学习' : '严格管理、口语诊断与考试强化' },
+      { label: '课程数量', value: `${this.campusConfig.courses.length}门2026课程` },
+      { label: '住宿数量', value: `${this.campusConfig.rooms.length}种2026房型` },
+      { label: '报价币种', value: '课程与住宿使用美元；到校学杂费使用菲律宾比索' },
+    ];
+  }
+  get campusHighlights(): Highlight[] {
+    return this.campus === 'eop'
+      ? this.highlights.filter((item) => item.title === '口语处方反馈机制' || item.title === '三个校区定位清楚').map((item) =>
+          item.title === '三个校区定位清楚'
+            ? { ...item, title: '全英文口语沉浸环境', text: 'EOP校区通过English Only Policy和持续输出活动帮助学生建立开口习惯。' }
+            : item)
+      : this.highlights.filter((item) => item.title === '口语处方反馈机制' || item.title === 'Sparta冲刺型学习');
+  }
+  get campusSuitableFor(): FitItem[] {
+    return this.campus === 'eop'
+      ? [this.suitableFor[0], this.suitableFor[3]]
+      : [this.suitableFor[1], this.suitableFor[3]];
+  }
+  get campusNotSuitableFor(): FitItem[] {
+    return this.notSuitableFor.filter((item) => item.title !== '只想按学校名报名');
+  }
+  get campusServiceSteps(): ProcessStep[] {
+    return this.serviceSteps.map((step, index) => index === 0
+      ? { ...step, title: '确认当前校区匹配', text: `根据英语基础、学习目标和作息偏好，确认${this.campusTitle}符合学生需求。` }
+      : step);
+  }
+  get campusNotes(): string[] {
+    const common = [
+      '所有思达学生优惠100美元注册费；1/2/3周课程费和住宿费均按4周价的40%/60%/80%计算。',
+      '2026/02/08–06/14或09/06–12/27入学，整段课程与住宿九折；淡季优惠后再减长期优惠。',
+      '2026/06/28–08/22及星期对齐的2027/06/27–08/21，每个实际重叠课程周加收40美元。',
+      '最终报名以学校正式录取、空房、账单和顾问确认报价为准。',
+    ];
+    return [this.campusConfig.campusNote, ...common];
+  }
+  get campusFaqs(): FaqItem[] {
+    const campusQuestion = this.campus === 'eop'
+      ? { question: 'BECI EOP校区适合什么学生？', answer: '适合想在全英文环境中持续练习口语、建立开口习惯，并接受半斯巴达学习节奏的学生。' }
+      : { question: 'BECI斯巴达校区适合什么学生？', answer: '适合需要严格管理、密集学习、晚间必修和考试训练推动的学生。' };
+    return [campusQuestion, this.faqs[2], this.faqs[3], this.faqs[5]];
+  }
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，适合长期学习和备考' },
@@ -154,8 +242,8 @@ export class BeciSchoolDetailComponent implements OnInit {
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'EOP Lite ESL', type: '沉浸式轻量ESL', lessons: '2节一对一 + 2节团体 + 2节免费团体', suitable: '适合想保留复习时间、基础较弱或需要慢节奏适应英语环境的学生。' },
-    { name: 'EOP SPEED ESL', type: '半斯巴达旗舰ESL', lessons: '4节一对一 + 2节团体 + 2节免费团体', suitable: '适合多数初中级学生，学习量和生活弹性相对平衡。' },
+    { name: 'EOP Lite ESL', type: '沉浸式轻量ESL', lessons: '2节一对一 + 2节团体 + 2节夜间选修课', suitable: '适合想保留复习时间、基础较弱或需要慢节奏适应英语环境的学生。' },
+    { name: 'EOP SPEED ESL', type: '半斯巴达旗舰ESL', lessons: '4节一对一 + 2节团体 + 2节夜间选修课', suitable: '适合多数初中级学生，学习量和生活弹性相对平衡。' },
     { name: 'EOP Sparta ESL', type: 'EOP强化版', lessons: '4节一对一 + 1节SP口语 + 2节团体 + 2节必修晚课', suitable: '适合想保留EOP环境，又希望增加SP反馈和晚间学习的人。' },
     { name: 'EOP IELTS / TOEIC', type: 'EOP考试课程', lessons: '4节一对一 + 2节团体 + 3节必修晚课与考试', suitable: '适合希望在EOP环境中准备雅思或多益的学生。' },
     { name: 'EOP Junior ESL / IELTS', type: '青少年课程', lessons: 'Junior ESL为5节一对一 + 1节SP + 2节必修；Junior IELTS为4节一对一 + 2节团体', suitable: '适合需要更高照顾密度和明确学习安排的青少年学生。' },
@@ -350,16 +438,17 @@ export class BeciSchoolDetailComponent implements OnInit {
     event?.preventDefault();
     const targetElement = document.getElementById(target);
     if (!targetElement) return;
-    const headerOffset = window.innerWidth <= 680 ? 132 : 92;
+    const headerOffset = 150;
     const targetTop = targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
     window.scrollTo({ top: Math.max(targetTop, 0), behavior: 'smooth' });
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`);
   }
 
   get filteredGalleryImages(): GalleryImage[] {
+    const campusImages = this.campusGalleryImages;
     return this.selectedGalleryCategory === '全部'
-      ? this.galleryImages
-      : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
+      ? campusImages
+      : campusImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedCourseCampus(): 'eop' | 'sparta' | 'city' {

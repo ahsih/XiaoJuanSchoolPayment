@@ -409,9 +409,21 @@ const routes: Routes = [
           import('./pages/philippines/pines-school/pines-school-detail.component').then((m) => m.PinesSchoolDetailComponent),
       },
       {
-        path: 'philippines-study/baguio/beci-international-language-academy',
+        path: 'philippines-study/baguio/beci-eop-campus',
         loadComponent: () =>
           import('./pages/philippines/beci-school/beci-school-detail.component').then((m) => m.BeciSchoolDetailComponent),
+        data: { campus: 'eop' },
+      },
+      {
+        path: 'philippines-study/baguio/beci-sparta-campus',
+        loadComponent: () =>
+          import('./pages/philippines/beci-school/beci-school-detail.component').then((m) => m.BeciSchoolDetailComponent),
+        data: { campus: 'sparta' },
+      },
+      {
+        path: 'philippines-study/baguio/beci-international-language-academy',
+        redirectTo: '/philippines-study/baguio/beci-eop-campus',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/baguio/api-beci-city-campus',

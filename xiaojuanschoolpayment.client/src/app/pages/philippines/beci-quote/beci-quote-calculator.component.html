@@ -1,0 +1,116 @@
+<section class="beci-pricing" id="course-fees" [attr.data-campus]="campus">
+  <div class="pricing-heading">
+    <span>BECI 2026 费用明细</span>
+    <h2>{{ config.shortName }}课程与住宿价格</h2>
+    <p>以下均为每名学生4周美元价格。1/2/3周的课程和住宿均按对应4周价格的40%/60%/80%计算。</p>
+  </div>
+
+  <div class="catalog-grid">
+    <section class="catalog-card">
+      <h3>课程费</h3>
+      <div class="catalog-table-wrap">
+        <table class="catalog-table">
+          <thead><tr><th>课程名称</th><th>4周课程费</th><th>课程安排</th><th>备注</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let course of config.courses">
+              <th>{{ course.name }}</th><td>{{ formatUsd(course.price) }} 美元</td><td>{{ course.schedule }}</td><td>{{ course.note || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="catalog-card">
+      <h3>住宿费</h3>
+      <div class="catalog-table-wrap">
+        <table class="catalog-table room-table">
+          <thead><tr><th>房间类型</th><th>4周住宿费</th><th>备注</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let room of config.rooms">
+              <th>{{ room.name }}</th><td>{{ formatUsd(room.price) }} 美元</td><td>{{ room.note }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="promotion-panel" id="special-fees">
+    <div><strong>思达注册费优惠</strong><span>所有思达学生减100美元注册费</span></div>
+    <div><strong>2026淡季九折</strong><span>02/08–06/14或09/06–12/27入学，整段课程与住宿减10%</span></div>
+    <div><strong>长期学习优惠</strong><span>8/12/16/20/24周减50/100/200/300/400美元，可与淡季优惠叠加</span></div>
+    <div><strong>旺季附加费</strong><span>实际重叠课程周每周40美元；2027档期按星期对齐估算</span></div>
+  </section>
+
+  <section class="quote-results-section group-quote" id="quote">
+    <div class="quote-form-card">
+      <h2>{{ quoteHeading }}</h2>
+      <div class="quote-mode" role="group" aria-label="报价人数模式">
+        <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+        <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+        <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+      </div>
+      <p class="group-hint" *ngIf="quoteMode === 'group'">支持2–20人；每名学生分别选择课程、住宿、日期、年龄、签证和接机。切换人数时，暂不参与报价的学生资料会保留。</p>
+
+      <article class="student-quote" *ngFor="let student of activeStudents; let i = index; trackBy: trackIndex">
+        <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+        <div class="student-fields">
+          <label>抵达时年龄<input type="number" min="0" max="100" step="1" [(ngModel)]="student.arrivalAge" /></label>
+          <label>旅游签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+          <label>机场接机<select [(ngModel)]="student.pickup"><option *ngFor="let option of student.pickupOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+        </div>
+        <label class="option-check" *ngIf="campus === 'city' && quoteMode === 'group'">
+          <input type="checkbox" [(ngModel)]="student.cityCoupleRateSelected" />
+          两名夫妻共同选择Studio双人间，申请每人750美元／4周夫妻价
+        </label>
+        <p class="group-hint" *ngIf="campus === 'eop'">40岁及以上只能选择单人间；系统会在不符合时阻止生成报价图片。</p>
+        <p class="group-hint" *ngIf="campus === 'city'">夜间课程安排只作说明，不作为独立收费课程选项。</p>
+        <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+        <div class="student-subtotal" *ngIf="quoteMode === 'group'">
+          <span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong>
+        </div>
+      </article>
+
+      <div class="quote-breakdown">
+        <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+          <span>{{ item.label }}<small>{{ item.detailTitle || item.note }}</small><small *ngIf="item.detailSubtitle">{{ item.detailSubtitle }}</small></span>
+          <strong>{{ item.amount }}</strong>
+        </div>
+      </div>
+      <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+      <div class="group-result">
+        <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
+        <small>{{ exchangeRateSummary }}</small>
+        <small *ngIf="quoteCalculated">已按当前选择更新；最终以学校正式账单和顾问确认为准。</small>
+      </div>
+      <div class="group-actions">
+        <button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+        <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+        <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
+      </div>
+    </div>
+
+    <section class="local-fee-estimate" id="local-fees" aria-labelledby="beci-local-fee-title">
+      <div class="local-fee-heading"><h3 id="beci-local-fee-title">到校后学杂费明细</h3></div>
+      <p class="local-fee-intro">费用与思达游学服务无关，由学校或相关部门收取。按每名学生完整停留跨度、课程周数、住宿周数、30/59天签证和接机选择自动预估。</p>
+      <div class="local-fee-table-wrap">
+        <table class="local-fee-table">
+          <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let fee of estimatedLocalFees">
+              <th>{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>已选择的接机计入；房间押金不计入</td></tr>
+            <tr><th colspan="3">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>参考汇率：1元人民币 ≈ {{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="excluded-fee-list">
+        <h4>另行准备（不计入上方学杂费合计）</h4>
+        <div><span><strong>房间押金</strong><small>{{ activeStudents.length }}人 × 3,000比索；无损坏、无欠费并按学校规则完成退房后可退。</small></span><b>{{ formatPhp(depositTotal) }}<small>约人民币 {{ depositCny.toLocaleString('zh-CN') }} 元</small></b></div>
+      </div>
+    </section>
+  </section>
+</section>

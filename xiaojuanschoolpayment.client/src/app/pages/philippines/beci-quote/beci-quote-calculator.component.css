@@ -1,0 +1,50 @@
+:host { display: block; }
+.beci-pricing { display: grid; gap: 24px; margin: 32px 0; color: #17243a; scroll-margin-top: 150px; }
+#quote, #local-fees { scroll-margin-top: 150px; }
+.pricing-heading { padding: 28px; border: 1px solid #dce8e2; border-radius: 12px; background: linear-gradient(135deg, #f8fffb, #fff8f1); }
+.pricing-heading > span { color: #e75520; font-size: 13px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+.pricing-heading h2 { margin: 8px 0; color: #064d3b; font-size: clamp(25px, 3vw, 36px); }
+.pricing-heading p { margin: 0; line-height: 1.75; color: #526176; }
+.catalog-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr); gap: 22px; align-items: start; }
+.catalog-card { min-width: 0; border: 1px solid #dce5e9; border-radius: 10px; padding: 22px; background: white; box-shadow: 0 12px 30px rgba(23, 36, 58, .06); }
+.catalog-card h3 { margin: 0 0 16px; color: #064d3b; font-size: 23px; }
+.catalog-table-wrap, .local-fee-table-wrap { max-width: 100%; overflow-x: auto; }
+.catalog-table, .local-fee-table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 14px; }
+.catalog-table th, .catalog-table td, .local-fee-table th, .local-fee-table td { border: 1px solid #d8e0e4; padding: 12px; text-align: left; line-height: 1.55; vertical-align: top; }
+.catalog-table thead, .local-fee-table thead { background: #f1e3fa; }
+.catalog-table tbody th, .local-fee-table tbody th { color: #183d34; background: #fbfdfc; }
+.catalog-table td:nth-child(2) { white-space: nowrap; font-weight: 800; }
+.room-table { min-width: 560px; }
+.promotion-panel { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.promotion-panel div { display: grid; gap: 6px; padding: 18px; border: 1px solid #ead9f3; border-radius: 9px; background: #fbf3ff; }
+.promotion-panel strong { color: #502064; }
+.promotion-panel span { color: #5e5265; font-size: 14px; line-height: 1.6; }
+.quote-form-card, .local-fee-estimate { min-width: 0; border: 1px solid #dce5e9; border-radius: 12px; padding: 26px; background: white; box-shadow: 0 14px 38px rgba(23, 36, 58, .07); }
+.quote-form-card > h2 { margin: 0 0 18px; color: #064d3b; }
+.student-fields input, .student-fields select, .quote-mode input { min-height: 44px; border: 1px solid #bdcbd0; border-radius: 6px; padding: 8px 10px; background: white; color: #17243a; font: inherit; }
+.primary-action, .secondary-action { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; border: 1px solid #087343; border-radius: 7px; padding: 10px 16px; cursor: pointer; font: inherit; font-weight: 800; text-decoration: none; }
+.primary-action { background: #087343; color: white; }
+.secondary-action { background: white; color: #087343; }
+.primary-action:disabled { opacity: .45; cursor: not-allowed; }
+.local-fee-heading h3 { margin: 0; color: #064d3b; font-size: 25px; }
+.local-fee-intro { margin: 12px 0 18px; color: #526176; line-height: 1.7; }
+.local-fee-table .fee-amount { white-space: nowrap; font-weight: 800; }
+.local-fee-table tfoot { background: #f1e3fa; }
+.local-fee-table .fee-cny { color: #b33d16; font-weight: 900; }
+.excluded-fee-list { margin-top: 18px; border: 1px solid #f0cf72; border-radius: 8px; padding: 16px; background: #fffdf4; }
+.excluded-fee-list h4 { margin: 0 0 10px; color: #6d4b00; }
+.excluded-fee-list > div { display: flex; justify-content: space-between; gap: 20px; }
+.excluded-fee-list span, .excluded-fee-list small { display: block; }
+.excluded-fee-list small { margin-top: 4px; color: #64748b; line-height: 1.55; }
+.excluded-fee-list b { flex-shrink: 0; text-align: right; }
+@media (max-width: 980px) {
+  .catalog-grid { grid-template-columns: minmax(0, 1fr); }
+  .promotion-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .beci-pricing { margin: 22px 0; gap: 16px; }
+  .pricing-heading, .catalog-card, .quote-form-card, .local-fee-estimate { padding: 17px 13px; }
+  .promotion-panel { grid-template-columns: minmax(0, 1fr); }
+  .excluded-fee-list > div { display: grid; }
+  .excluded-fee-list b { text-align: left; }
+}

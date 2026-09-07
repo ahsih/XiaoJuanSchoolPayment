@@ -3,6 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -98,7 +99,7 @@ interface SpecialCourseFee {
 @Component({
   selector: 'app-api-beci-city-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, BeciQuoteCalculatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './api-beci-city-school.component.html',
   styleUrls: [
@@ -572,7 +573,7 @@ export class ApiBeciCitySchoolComponent {
       return;
     }
 
-    const headerOffset = window.innerWidth <= 680 ? 132 : 92;
+    const headerOffset = 150;
     const targetTop =
       targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 

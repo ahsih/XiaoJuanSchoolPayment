@@ -8,18 +8,14 @@
               <mat-icon>arrow_back</mat-icon>
               返回碧瑶学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶BECI语言学校</p>
-            <h1>菲律宾碧瑶BECI语言学校</h1>
-            <p class="hero-lead">
-              <span>碧瑶多校区老牌语言学校。</span>
-              <span>EOP适合英语沉浸，Sparta适合强管理。</span>
-              <span>City适合成人、工作者和弹性学习。</span>
-            </p>
-            <div class="hero-tags" aria-label="BECI特点">
-              <span><mat-icon>terrain</mat-icon>碧瑶三校区</span>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / {{ campusTitle }}</p>
+            <h1>{{ campusTitle }}</h1>
+            <p class="hero-lead"><span>{{ campusLead }}</span></p>
+            <div class="hero-tags" [attr.aria-label]="campusTitle + '特点'">
+              <span><mat-icon>terrain</mat-icon>{{ campus === 'eop' ? 'EOP Campus' : 'Sparta Campus' }}</span>
               <span><mat-icon>record_voice_over</mat-icon>Speaking Prescription</span>
-              <span><mat-icon>verified_user</mat-icon>EOP / Sparta</span>
-              <span><mat-icon>work</mat-icon>成人City校区</span>
+              <span><mat-icon>verified_user</mat-icon>{{ campus === 'eop' ? '全英文口语沉浸' : '严格学习管理' }}</span>
+              <span><mat-icon>school</mat-icon>2026独立校区报价</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -27,7 +23,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看BECI校区和课程
+                查看本校区课程
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -37,25 +33,25 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              提交英语基础、目标课程、校区偏好、房型和入学日期后，思达顾问会帮你确认空房、校区规则、优惠和正式报价。
+              提交英语基础、目标课程、房型和入学日期后，思达顾问会帮你确认本校区空房、规则、优惠和正式报价。
             </p>
           </div>
 
-          <div class="hero-media" aria-label="BECI校园图片展示">
+          <div class="hero-media" [attr.aria-label]="campusTitle + '校园图片展示'">
             <figure class="feature-photo">
-              <img src="assets/philippines/beci-eop-campus.jpg" alt="菲律宾碧瑶BECI语言学校EOP Campus校园环境" />
-              <figcaption>APIBECI EOP Campus航拍校园环境</figcaption>
+              <img [src]="campusHero" [alt]="campusTitle + '校园环境'" />
+              <figcaption>{{ campusTitle }}校园环境</figcaption>
             </figure>
             <div class="media-strip" aria-label="BECI校园缩略图">
-              <figure *ngFor="let image of galleryImages.slice(1, 4)">
+              <figure *ngFor="let image of campusGalleryImages.slice(0, 3)">
                 <img [src]="image.src" [alt]="image.title" />
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>EOP Lite ESL + EOP 四人房（女生）</p>
+              <strong>USD {{ formatUsd(campusStartingPrice) }} <small>起</small></strong>
+              <p>{{ campusDefaultPlan }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -63,11 +59,11 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  到校费用、适用优惠和校区规则需另行确认
+                  到校学杂费会按个人签证、周数和接机选择自动预估
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：APIBECI官网、EOP Campus、Sparta Campus与City Campus官方页面；费用参考公开2026年费用表并由思达顾问整理</p>
+            <p class="photo-source">图片来源：APIBECI官方校区资料；费用参考BECI 2026费用表并由思达顾问整理</p>
           </div>
         </section>
 
@@ -79,7 +75,7 @@
         </nav>
 
         <section class="quick-info" aria-label="BECI快速信息卡">
-          <article class="quick-card" *ngFor="let item of quickInfo">
+          <article class="quick-card" *ngFor="let item of campusQuickInfo">
             <mat-icon>{{ item.icon }}</mat-icon>
             <div>
               <span>{{ item.label }}</span>
@@ -92,8 +88,8 @@
         <section class="section-block" id="gallery">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
-            <h2>按校区和空间查看 BECI 环境</h2>
-            <p>先看校区、教室、住宿、餐厅和学习资源，再判断EOP、Sparta或City哪一种节奏适合你。</p>
+            <h2>查看 {{ campusTitle }} 环境</h2>
+            <p>学校介绍、课程、住宿和报价均锁定当前校区，不会混入其他BECI校区价格。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="BECI图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -115,10 +111,10 @@
           <section class="panel basic-panel" id="basic-info">
             <div class="compact-heading">
               <span>学校基本信息</span>
-              <h2>BECI 基本资料</h2>
+              <h2>{{ campusTitle }}基本资料</h2>
             </div>
             <dl class="info-list">
-              <div *ngFor="let row of basicInfo">
+              <div *ngFor="let row of campusBasicInfo">
                 <dt>{{ row.label }}</dt>
                 <dd>{{ row.value }}</dd>
               </div>
@@ -129,16 +125,16 @@
             <div class="quote-mark">“</div>
             <div class="compact-heading">
               <span>思达顾问点评</span>
-              <h2>先分校区，再看课程和费用</h2>
+              <h2>先确认课程、房型和日期</h2>
             </div>
             <p>
-              BECI不能只看学校名。EOP、Sparta、City的学习强度、年龄层、住宿房型和生活规则差异明显。报价前要先确认校区，再按课程、房型、周数和旺季档期核总价。
+              当前页面只使用{{ campusTitle }}的课程与房型。报价前按每名学生的年龄、课程、住宿、签证、接机和实际日期分别核算。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
               <div>
                 <strong>Ivy 顾问建议</strong>
-                <span>怕开口看EOP，自律弱看Sparta，成人和工作者先看City。</span>
+                <span>{{ campus === 'eop' ? '适合想建立开口习惯、重视全英文环境的学生。' : '适合能接受严格管理、晚间学习和考试训练的学生。' }}</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -150,10 +146,10 @@
           <section class="panel highlight-panel" id="highlights">
             <div class="compact-heading">
               <span>BECI 核心亮点</span>
-              <h2>为什么很多学生会把 BECI 放进候选</h2>
+              <h2>{{ campusTitle }}核心特色</h2>
             </div>
             <div class="highlight-list">
-              <article *ngFor="let item of highlights">
+              <article *ngFor="let item of campusHighlights">
                 <img [src]="item.image" [alt]="item.title" />
                 <div>
                   <strong>{{ item.title }}</strong>
@@ -167,19 +163,19 @@
         <section class="fit-section" id="fit">
           <div class="section-heading">
             <span>适合 / 不太适合</span>
-            <h2>先判断 BECI 是否适合你</h2>
+            <h2>先判断 {{ campusTitle }} 是否适合你</h2>
           </div>
           <div class="fit-grid">
             <div>
               <h3><mat-icon>check_circle</mat-icon>适合优先考虑 BECI</h3>
-              <article *ngFor="let item of suitableFor">
+              <article *ngFor="let item of campusSuitableFor">
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.text }}</p>
               </article>
             </div>
             <div>
               <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
-              <article *ngFor="let item of notSuitableFor">
+              <article *ngFor="let item of campusNotSuitableFor">
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.text }}</p>
               </article>
@@ -190,11 +186,11 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>课程类型介绍</span>
-            <h2>不知道选哪种课程？先按校区和学习目标看</h2>
-            <p>EOP偏沉浸口语，Sparta偏强管理冲刺，City偏成人、工作者和弹性英文应用。</p>
+            <h2>{{ campusTitle }}课程介绍</h2>
+            <p>{{ campus === 'eop' ? '按口语沉浸、考试目标和青少年学习需求选择。' : '按高强度ESL、托业、雅思或12周保证班选择。' }}</p>
           </div>
           <div class="course-grid">
-            <article class="course-card" *ngFor="let course of courses">
+            <article class="course-card" *ngFor="let course of campusCourses">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
@@ -203,6 +199,9 @@
           </div>
         </section>
 
+        <app-beci-quote-calculator [campus]="campus"></app-beci-quote-calculator>
+
+        <ng-container *ngIf="false">
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
@@ -336,13 +335,7 @@
           </details>
         </section>
 
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。三校区、课程体系与住宿范围已对照APIBECI官方资料；2026美元价格、课程节数、淡季与长期优惠、到校学杂费按思达顾问本次最新价表录入。公开渠道的个别旧版课表与2026价表存在差异，报价单统一采用本次2026价表，正式报名仍以学校书面确认为准。</p>
-          </div>
-        </section>
+        </ng-container>
 
         <section class="materials-panel" id="materials">
           <div>
@@ -400,12 +393,12 @@
             <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。</p>
           </div>
           <div class="process-grid desktop-process-grid">
-            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            <article *ngFor="let step of campusServiceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
           </div>
           <details class="mobile-only mobile-details">
             <summary>查看报名流程</summary>
             <div class="process-grid mobile-process-grid">
-              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+              <article *ngFor="let step of campusServiceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
             </div>
           </details>
         </section>
@@ -434,12 +427,12 @@
 
         <section class="section-block" id="enrollment-notes">
           <div class="section-heading"><span>报名注意事项</span><h2>确认 BECI 前，建议先核对这些信息</h2></div>
-          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+          <ul class="note-list"><li *ngFor="let note of campusNotes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
         </section>
 
         <section class="faq-section" id="faq">
           <div class="section-heading"><span>常见问题</span><h2>报名 BECI 前常被问到的问题</h2></div>
-          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+          <details *ngFor="let faq of campusFaqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
         </section>
       </main>
 

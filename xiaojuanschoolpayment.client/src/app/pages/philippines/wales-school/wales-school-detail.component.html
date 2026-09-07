@@ -13,7 +13,7 @@
             <p class="hero-lead">
               <span>碧瑶Legarda市区生活圈的小型语言学校。</span>
               <span>EEP适合生活沟通，Infinity适合综合强化。</span>
-              <span>IELTS、Business和Junior方向适合目标明确的学生。</span>
+              <span>PTE、IELTS和Junior方向适合目标明确的学生。</span>
             </p>
             <div class="hero-tags" aria-label="WALES特点">
               <span><mat-icon>terrain</mat-icon>碧瑶市区</span>
@@ -54,8 +54,8 @@
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>EEP Lite + Share Type Twin</p>
+              <strong>{{ formatUsd(startingQuoteUsd) }} 美元 <small>起</small></strong>
+              <p>EEP Lite + Share Type双人房</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -63,11 +63,11 @@
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  已含USD 100报名费；餐费、到校费用和空房需另行确认
+                  已含100美元报名费；餐费、到校费用和空房需另行确认
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：WALES官方网站School Profile、Facility与Room页面；课程费参考2026公开资料，住宿费与USD 100报名费按用户提供的2025价目表更新。</p>
+            <p class="photo-source">图片来源：WALES官方网站School Profile、Facility与Room页面；课程、住宿、报名费与到校费用按2026年9月收到的学校价表更新。</p>
           </div>
         </section>
 
@@ -191,7 +191,7 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>从 EEP 到 Infinity、IELTS 与 Junior 课程</h2>
-            <p>WALES课程选择的重点是先判断学习强度，再按目标决定生活英文、综合强化、商务、雅思或青少年方向。</p>
+            <p>WALES课程选择的重点是先判断学习强度，再按目标决定生活英文、综合强化、PTE、雅思或青少年方向。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -203,134 +203,105 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>WALES 2026 年 4 周课程费</span>
-              <h2>课程费按EEP、Infinity、IELTS和Junior方向拆分</h2>
-              <p>以下为4周课程费参考，币种为美元。IELTS Guarantee通常为8周以上，需另行确认保证班规则。</p>
-            </div>
-            <div class="data-table course-fee-table" role="table" aria-label="WALES 2026年4周课程费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="WALES 2026年4周课程费手机卡片">
-              <article *ngFor="let fee of courseFees">
-                <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                <p>{{ fee.suitable }}</p>
-              </article>
-            </div>
+        <section class="section-block catalog-section" id="course-fees">
+          <div class="section-heading">
+            <span>WALES 2026 年课程费</span>
+            <h2>11门课程的4周价格、课表与限制</h2>
+            <p>报名费为100美元；以下课程费为每4周价格。PTE仅开放4、8、12周，IELTS Guarantee从8周起。</p>
           </div>
-
-          <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>WALES 一天学习生活安排</span>
-              <h2>小校弹性更高，晚间更看学生自律</h2>
-            </div>
-            <div class="timeline">
-              <article *ngFor="let item of schedule">
-                <time>{{ item.time }}</time>
-                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
-              </article>
-            </div>
+          <div class="data-table course-fee-table" role="table" aria-label="WALES 2026年课程费">
+            <div class="table-row table-head" role="row"><span role="columnheader">课程名称</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排</span><span role="columnheader">备注</span></div>
+            <div class="table-row" role="row" *ngFor="let fee of courseFees"><span role="cell">{{ fee.name }}</span><span role="cell">{{ formatUsd(fee.tuition) }} 美元</span><span role="cell">{{ fee.suitable }}</span><span role="cell">{{ fee.note }}</span></div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="WALES 2026年课程费手机卡片">
+            <article *ngFor="let fee of courseFees"><span>课程名称</span><strong>{{ fee.name }}</strong><div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div><p>{{ fee.suitable }}；{{ fee.note }}</p></article>
           </div>
         </section>
 
-        <section class="split-layout" id="room-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>WALES 2025 年 4 周住宿费</span>
-              <h2>房型会明显影响总预算和生活体验</h2>
-              <p>默认报价使用Share Type Twin。额外加床是主房补充费用，不可单独预订；所有房型仍需先确认空房。</p>
-            </div>
-            <div class="data-table room-fee-table" role="table" aria-label="WALES 2025年4周住宿费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">4周住宿费</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="WALES 2025年4周住宿费手机卡片">
-              <article *ngFor="let room of roomFees">
-                <span>房型</span>
-                <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                <p>{{ room.note }}</p>
-              </article>
-            </div>
-          </div>
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading"><span>WALES 一天学习生活安排</span><h2>小校弹性更高，晚间更看学生自律</h2></div>
+          <div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
+        </section>
 
-          <section class="quote-panel" id="quote">
+        <section class="section-block catalog-section" id="room-fees">
+          <div class="section-heading">
+            <span>WALES 2026 年住宿费</span>
+            <h2>16种房型的每人4周价格</h2>
+            <p>家庭房与多人房均按每人计价；报价器默认选择Share Type双人房。所有房型需先确认空房。</p>
+          </div>
+          <div class="data-table room-fee-table" role="table" aria-label="WALES 2026年住宿费">
+            <div class="table-row table-head" role="row"><span role="columnheader">房间类型</span><span role="columnheader">4周住宿费／人</span><span role="columnheader">备注</span></div>
+            <div class="table-row" role="row" *ngFor="let room of roomFees"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }} 美元</span><span role="cell">{{ room.note }}</span></div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="WALES 2026年住宿费手机卡片">
+            <article *ngFor="let room of roomFees"><span>房间类型</span><strong>{{ room.name }}</strong><div><em>4周住宿费／人</em><b>{{ formatUsd(room.fee) }} 美元</b></div><p>{{ room.note }}</p></article>
+          </div>
+        </section>
+
+        <section class="quote-results-section group-quote" id="quote">
+          <div class="quote-form-card">
             <div class="section-heading">
-              <span>WALES 费用快速报价</span>
-              <h2>默认参考：4周 EEP Lite + Share Type Twin</h2>
-              <p>前期支付参考 = USD 100报名费 +（课程费 + 住宿费）x 优惠折扣 + 额外附加费。</p>
+              <span>WALES 费用报价</span>
+              <h2>{{ quoteHeading }}</h2>
+              <p>每位学生可独立添加多条课程和住宿；学校付款、优惠与到校学杂费均由同一份计算结果同步生成网页和报价图片。</p>
             </div>
-            <div class="quote-form" aria-label="WALES费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of quoteRoomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
+            <div class="quote-mode" role="group" aria-label="报价人数模式">
+              <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+              <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+              <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
             </div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">支持2–20人。每位学生分别填写个人资料、课程、住宿、日期和费用条件；减少人数或切回单人时，暂时隐藏的资料仍会保留，但不会计入当前报价。</p>
+
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields" [attr.aria-label]="'学生' + (i + 1) + '个人报价资料'">
+                <label>抵达时年龄<input type="number" min="1" max="100" step="1" [(ngModel)]="student.age" /></label>
+                <label>学生身份<select [(ngModel)]="student.studentStatus"><option value="new">新生</option><option value="current">WALES在校生</option><option value="returning">WALES返校生</option></select></label>
+                <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label>签证类型<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [value]="option.value">{{ option.label }}</option></select></label>
+                <label>机场接机<select [(ngModel)]="student.selectedPickup"><option value="none">不需要接机</option><option value="manila-group">马尼拉团体接机（3,000比索）</option><option value="clark-group">克拉克团体接机（3,000比索）</option><option value="manila-private">马尼拉个人接机（12,000比索）</option><option value="clark-private">克拉克个人接机（8,000比索）</option></select></label>
+              </div>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <p class="fee-alert" role="alert" *ngIf="student.promotionWarning">{{ student.promotionWarning }}</p>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
+
             <div class="quote-breakdown">
-              <div><span>报名/注册费</span><strong>{{ registrationFee > 0 ? 'USD ' + formatUsd(registrationFee) : '待学校确认' }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>额外附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
             </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认餐费、房型、空房、当地费用和优惠。</p>
-            </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="quote-result group-result"><span>{{ quoteMode === 'group' ? activeStudents.length + '人学校费用合计' : '最终应付学校金额' }}</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small><p *ngIf="quoteCalculated">已按当前选择更新；正式报价仍以WALES账单、空房和优惠名额确认为准。</p></div>
+            <div class="quote-actions group-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付SSP、ACR I-Card、签证延签、水电、维护、宿舍保证金、学生证、餐费和个人生活费等。实际金额以学校现场收费和个人情况为准。</p>
-            <p class="season-note">WALES公开2026资料显示8周以上可能有淡季周数优惠，优惠日期、房型空位和适用条件需由顾问向学校确认。</p>
-          </section>
-        </section>
+            <p class="promotion-callout"><strong>年末限定：</strong>每名学生、每条住宿独立判断。2026/11/29入住4或6周，或12/13入住4周时住宿费六折；返校生可申请，在校生不适用，限10名且不得与长周数优惠叠加。</p>
+            <p class="season-note"><strong>长周数优惠：</strong>2025/08/01后注册，并按公告四周一期的BESA开学日（网页按前一天周日抵达）入学，8/12/16/20/24周原优惠为200/300/400/550/700美元；与2026/06/28–08/08旺季重叠时，每满2周减少50美元优惠。</p>
+          </div>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地PHP费用和餐费</h2>
-            <p>以下费用多以PHP计价，按学习周数不同而变化。4周本地费用公开参考约PHP 22,100，长期学习需叠加延签和ACR I-Card。</p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+            <div class="local-fee-heading"><div><span>到校支付费用参考</span><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+            <p class="local-fee-intro">{{ localFeeIntro }}</p>
+            <div class="local-fee-table-wrap">
+              <table class="local-fee-table">
+                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                <tbody><tr *ngFor="let fee of localFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+                <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>含教材、所选接机、适用课程专属费及可退宿舍保证金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ localFeeCny.toLocaleString('zh-CN') }} 元</td><td>{{ usingLiveExchangeRate ? '参考汇率日期 ' + exchangeRateDate : '备用汇率估算' }}：1元人民币≈{{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr></tfoot>
+              </table>
             </div>
-          </details>
+            <div class="excluded-fee-list">
+              <h4>按需另加的参考项目（不计入上方学杂费合计）</h4>
+              <div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div>
+            </div>
+          </section>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月19日。学校信息参考WALES官方网站的School Profile、Curriculum、EEP、ESL、Business、IELTS、Room和Admissions页面；课程费与当地费用参考WALES 2026公开资料，住宿费和USD 100报名费按用户提供的2025价目表更新。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月7日。11门课程、16种住宿、100美元报名费、到校学杂费、长周数优惠及2026年末限定住宿六折，均按思达顾问本次收到的WALES学校资料录入。6周费用按4周单价的1.5倍估算；学校价格、优惠名额、房型空位、实际上课天数、当地费用和汇率可能调整，报名以顾问向学校确认后的正式账单为准。</p>
           </div>
         </section>
 
@@ -437,9 +408,9 @@
         <div class="current-card">
           <span>当前参考</span>
           <strong>4周</strong>
-          <p>EEP Lite<br />Share Type Twin</p>
-          <div class="side-price">{{ quoteUsdText }}</div>
-          <small>{{ quoteCnyText }}</small>
+          <p>EEP Lite<br />Share Type双人房</p>
+          <div class="side-price">{{ formatUsd(startingQuoteUsd) }} 美元</div>
+          <small>{{ startingQuoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>
