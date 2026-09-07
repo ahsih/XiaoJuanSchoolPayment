@@ -565,6 +565,35 @@ a.philippines-city-link:focus-visible {
   font-size: 18px;
 }
 
+.register-entry {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0 0.85rem;
+  border: 1px solid #c9ded6;
+  border-radius: 8px;
+  color: #075d49;
+  background: #f4faf7;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 850;
+  white-space: nowrap;
+  transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+}
+
+.register-entry:hover {
+  border-color: #f2a06f;
+  color: #d9541c;
+  background: #fff7ee;
+}
+
+.register-entry mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
 .mobile-auth-links {
   display: none;
 }
@@ -600,7 +629,7 @@ a.philippines-city-link:focus-visible {
   color: #08183a;
 }
 
-@media (max-width: 1260px) {
+@media (max-width: 1440px) {
   .site-header {
     padding-inline: 16px;
     gap: 1rem;
@@ -613,7 +642,7 @@ a.philippines-city-link:focus-visible {
 
 }
 
-@media (max-width: 1260px) {
+@media (max-width: 1440px) {
   .site-header {
     grid-template-columns: auto auto auto;
     justify-content: space-between;
