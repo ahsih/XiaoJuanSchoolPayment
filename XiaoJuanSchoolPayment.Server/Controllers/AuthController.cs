@@ -137,23 +137,97 @@ namespace MyProject.Controllers
     }
 
     [AllowAnonymous]
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(SchoolUserDTO request, CancellationToken cancellationToken)
-    {
-      if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
-      {
-        return BadRequest(accountError);
-      }
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(SchoolUserDTO request, CancellationToken cancellationToken)
+        {
+            if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
+            {
+                return BadRequest(accountError);
+            }
 
-      if (await account.FindUserAsync(_userManager, _context) != null)
-      {
-        return Conflict("该手机号码或邮箱已注册，请直接登录。");
-      }
+            if (await account.FindUserAsync(_userManager, _context) != null)
+            {
+                return Conflict("该手机号码或邮箱已注册，请直接登录。");
+            }
 
-      return Ok(await CreateTokenAsync(user));
-    }
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+            var now = DateTime.UtcNow;
+            var invitationHash = XiaoJuanSchoolPayment.Server.Controllers.InvitationCodesController.HashCode(request.InvitationCode);
+            var invitation = await _context.InvitationCodes.AsNoTracking()
+              .FirstOrDefaultAsync(x => x.CodeHash == invitationHash, cancellationToken);
+            var role = string.Empty;
 
-    [Authorize]
+            if (invitation != null)
+            {
+                if (invitation.UsedAt.HasValue || invitation.RevokedAt.HasValue || invitation.ExpiresAt <= now)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return BadRequest("验证码无效、已使用或已过期。");
+                }
+                role = invitation.Role;
+            }
+            else
+            {
+                var accessCode = _config["AccessCode"];
+                var canBootstrapAdmin = !await _context.Users.AnyAsync(cancellationToken)
+                  && !string.IsNullOrWhiteSpace(accessCode)
+                  && string.Equals(accessCode, request.InvitationCode, StringComparison.Ordinal);
+                if (!canBootstrapAdmin)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return BadRequest("验证码无效、已使用或已过期。");
+                }
+                role = "Admin";
+            }
+
+            var displayName = request.Name.Trim();
+            var user = new SchoolUser
+            {
+                Email = account.Type == "Email" ? account.Value : null,
+                EmailConfirmed = account.Type == "Email",
+                PhoneNumber = account.Type == "Phone" ? account.Value : null,
+                PhoneNumberConfirmed = account.Type == "Phone",
+                FirstName = displayName,
+                LastName = string.Empty,
+                UserName = account.UserName,
+            };
+
+            var createResult = await _userManager.CreateAsync(user, request.Password);
+            if (!createResult.Succeeded)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return BadRequest(createResult.Errors.Select(x => x.Description));
+            }
+
+            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            if (!roleResult.Succeeded)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return BadRequest(roleResult.Errors.Select(x => x.Description));
+            }
+
+            if (invitation != null)
+            {
+                var consumedInvitations = await _context.InvitationCodes
+                  .Where(x => x.Id == invitation.Id
+                    && x.UsedAt == null
+                    && x.RevokedAt == null
+                    && x.ExpiresAt > now)
+                  .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.UsedAt, now)
+                    .SetProperty(x => x.UsedByUserId, user.Id), cancellationToken);
+                if (consumedInvitations != 1)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    return Conflict("该验证码刚刚已被使用，请向邀请人获取新的验证码。");
+                }
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+            return Ok();
+        }
+
+        [Authorize]
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
     {
