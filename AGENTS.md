@@ -30,7 +30,7 @@ MySQL/MariaDB database
 ```
 
 - Frontend: Angular 19, TypeScript 5.7, RxJS, Angular Material, Karma/Jasmine.
-- Backend: ASP.NET Core 8, EF Core 9, Pomelo MySQL provider, ASP.NET Identity, JWT bearer authentication, Swagger.
+- Backend: ASP.NET Core 10, EF Core 9, Pomelo MySQL provider, ASP.NET Identity, JWT bearer authentication, Swagger.
 - Production container: builds Angular with Node 22, publishes the .NET API, and serves the Angular build from `wwwroot` on port 8080.
 - Development: Angular runs at `https://localhost:53747` and proxies API paths to the ASP.NET server, normally `https://localhost:7209`.
 
@@ -147,7 +147,7 @@ Before changing school content or pricing, search for the school name across bot
 Prerequisites:
 
 - Node.js 22 and npm.
-- .NET 8 SDK.
+- .NET 10 SDK.
 - MySQL 8 or a compatible MariaDB instance.
 - A trusted ASP.NET development HTTPS certificate (`dotnet dev-certs https --trust`) if using HTTPS locally.
 

@@ -136,7 +136,7 @@ namespace MyProject.Controllers
       });
     }
 
-    [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(SchoolUserDTO request, CancellationToken cancellationToken)
         {

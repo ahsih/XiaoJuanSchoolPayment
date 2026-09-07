@@ -5,13 +5,13 @@ This repository contains the public website and admin system for 思达启航教
 The application has two projects:
 
 - `xiaojuanschoolpayment.client`: Angular 19 frontend with public content pages, school calculators, authentication, and admin screens.
-- `XiaoJuanSchoolPayment.Server`: ASP.NET Core 8 API using EF Core, MySQL, ASP.NET Identity/JWT, SMTP email delivery, and local school-photo storage.
+- `XiaoJuanSchoolPayment.Server`: ASP.NET Core 10 API using EF Core 9, MySQL, ASP.NET Identity/JWT, SMTP email delivery, and local school-photo storage.
 
 For an architecture map, local setup, change workflows, verification commands, and guidance for AI coding assistants, read [AGENTS.md](AGENTS.md) before making changes.
 
 ## Quick start
 
-Prerequisites are Node.js 22, the .NET 8 SDK, and a running MySQL-compatible database.
+Prerequisites are Node.js 22, the .NET 10 SDK, and a running MySQL-compatible database.
 
 ```powershell
 npm --prefix xiaojuanschoolpayment.client ci

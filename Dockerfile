@@ -9,7 +9,7 @@ RUN npm ci
 COPY xiaojuanschoolpayment.client ./
 RUN npm run build
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS server-build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS server-build
 WORKDIR /src
 
 COPY XiaoJuanSchoolPayment.Server ./XiaoJuanSchoolPayment.Server
@@ -24,7 +24,7 @@ RUN dotnet publish ./XiaoJuanSchoolPayment.Server/XiaoJuanSchoolPayment.Server.c
     --output /app/publish \
     --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:8080

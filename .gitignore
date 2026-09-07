@@ -4,7 +4,6 @@
 /xiaojuanschoolpayment.client/.chrome-cdp-preview
 /xiaojuanschoolpayment.client/obj
 /XiaoJuanSchoolPayment.Server/bin
-/XiaoJuanSchoolPayment.Server/obj/Debug/net8.0
 ng-serve-iu.err.log
 ng-serve-iu.out.log
 XiaoJuanSchoolPayment.Server/obj/project.assets.json
@@ -32,9 +31,6 @@ outputs/cpi-karma.cjs
 outputs/cpi-quote-four-weeks.png
 outputs/cpi-quote-twelve-weeks.png
 outputs/cpi-quote-verified.png
-outputs/dotnet-cli/.dotnet/8.0.424.aspNetCertificateSentinel
-outputs/dotnet-cli/.dotnet/8.0.424.dotnetFirstUseSentinel
-outputs/dotnet-cli/.dotnet/8.0.424.toolpath.sentinel
 outputs/school-tracker-20260902/菲律宾语言学校价格与网页检查进度表.xlsx
 xiaojuanschoolpayment.client/pnpm-lock.yaml
 xiaojuanschoolpayment.client/pnpm-workspace.yaml
