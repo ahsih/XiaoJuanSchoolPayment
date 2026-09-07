@@ -1,0 +1,54 @@
+<section class="invite-page">
+  <header>
+    <span>ACCOUNT ACCESS</span>
+    <h1>邀请码管理</h1>
+    <p>{{ isAdmin ? '管理员生成员工邀请码，每个邀请码仅可使用一次。' : '员工生成学生邀请码，每个邀请码仅可使用一次。' }}</p>
+  </header>
+
+  <div class="create-card">
+    <div>
+      <strong>生成{{ isAdmin ? '员工' : '学生' }}邀请码</strong>
+      <small>有效期</small>
+    </div>
+    <select [(ngModel)]="expiresInDays" aria-label="邀请码有效期">
+      <option [ngValue]="7">7天</option>
+      <option [ngValue]="30">30天</option>
+      <option [ngValue]="90">90天</option>
+    </select>
+    <button type="button" (click)="create()" [disabled]="loading">
+      <mat-icon>add</mat-icon>{{ loading ? '生成中…' : '生成邀请码' }}
+    </button>
+  </div>
+
+  <div class="new-code" *ngIf="newInvitation?.code">
+    <div>
+      <span>请立即复制并交给{{ isAdmin ? '员工' : '学生' }}</span>
+      <strong>{{ newInvitation?.code }}</strong>
+      <small>为保护账号安全，完整邀请码只在这里显示一次。</small>
+    </div>
+    <button type="button" (click)="copy(newInvitation?.code)"><mat-icon>content_copy</mat-icon>复制</button>
+  </div>
+
+  <div class="permission-next" *ngIf="isAdmin">
+    <mat-icon>admin_panel_settings</mat-icon>
+    <div><strong>员工注册后，还需要分配权限</strong><small>可以按员工分别勾选她负责的学校、学校页面、价格、报价图片备注、媒体和学生档案。</small></div>
+    <a routerLink="/admin/staff-permissions">设置员工权限</a>
+  </div>
+
+  <div class="list-card">
+    <div class="list-heading">
+      <h2>历史邀请码</h2>
+      <span>{{ invitations.length }} 个</span>
+    </div>
+    <div class="empty" *ngIf="!invitations.length">还没有生成过邀请码</div>
+    <div class="invite-row" *ngFor="let invitation of invitations">
+      <div class="code-summary">
+        <strong>{{ invitation.code || invitation.codePrefix + '…' }}</strong>
+        <small>{{ invitation.role === 'Staff' ? '员工账号' : '学生账号' }}</small>
+      </div>
+      <div><small>有效期至</small><span>{{ invitation.expiresAt | date:'yyyy-MM-dd' }}</span></div>
+      <span class="status" [class.available]="invitation.status === '未使用'">{{ invitation.status }}</span>
+      <button class="revoke" type="button" *ngIf="invitation.status === '未使用'" (click)="revoke(invitation)">撤销</button>
+    </div>
+  </div>
+</section>

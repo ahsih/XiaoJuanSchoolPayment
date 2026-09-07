@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ScrollToDirective } from '../../directives/scroll-to.directive';
@@ -290,7 +291,7 @@ interface Advisor {
 @Component({
   selector: 'app-philippines-city-study-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, ScrollToDirective],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ScrollToDirective],
   templateUrl: './philippines-city-study-layout.component.html',
   styleUrl: './philippines-city-study-layout.component.css',
 })
@@ -298,6 +299,7 @@ export class PhilippinesCityStudyLayoutComponent {
   @Input({ required: true }) page!: CityStudyPageConfig;
 
   activeDirectoryFilter = '全部学校';
+  schoolSearchQuery = '';
 
   readonly services: ServiceItem[] = [
     {
@@ -430,13 +432,33 @@ export class PhilippinesCityStudyLayoutComponent {
   ];
 
   get visibleSchools(): CityStudyDirectorySchool[] {
-    if (this.activeDirectoryFilter === '全部学校') {
-      return this.page.directorySchools;
+    const categorySchools = this.activeDirectoryFilter === '全部学校'
+      ? this.page.directorySchools
+      : this.page.directorySchools.filter((school) =>
+        school.categories.includes(this.activeDirectoryFilter),
+      );
+    const searchTerms = this.schoolSearchQuery
+      .trim()
+      .toLocaleLowerCase()
+      .split(/\s+/)
+      .map((term) => this.normalizeDirectorySearch(term))
+      .filter(Boolean);
+
+    if (searchTerms.length === 0) {
+      return categorySchools;
     }
 
-    return this.page.directorySchools.filter((school) =>
-      school.categories.includes(this.activeDirectoryFilter),
-    );
+    return categorySchools.filter((school) => {
+      const searchText = this.normalizeDirectorySearch([
+        school.name,
+        school.tag,
+        school.location,
+        school.summary,
+        ...school.highlights,
+      ].join(' '));
+
+      return searchTerms.every((term) => searchText.includes(term));
+    });
   }
 
   get directoryHeading(): string {
@@ -480,5 +502,12 @@ export class PhilippinesCityStudyLayoutComponent {
     if (!image.src.endsWith('/assets/study-hero-collage.png')) {
       image.src = '/assets/study-hero-collage.png';
     }
+  }
+
+  private normalizeDirectorySearch(value: string): string {
+    return value
+      .normalize('NFKC')
+      .toLocaleLowerCase()
+      .replace(/[\s.'’·\-_/（）()]+/g, '');
   }
 }

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { CellaQuoteCalculatorComponent } from '../cella-quote/cella-quote-calculator.component';
+import { CELLA_FAMILY_PACKAGES, cellaCourses, cellaRooms } from '../cella-quote/cella-pricing';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12;
 
 interface QuickInfo {
   icon: string;
@@ -37,31 +37,10 @@ interface FitItem {
   text: string;
 }
 
-interface RoomOption {
-  id: string;
-  name: string;
-  note: string;
-}
-
-interface CourseOption {
-  id: string;
-  name: string;
-  type: string;
-  lessons: string;
-  suitable: string;
-  fourWeekFees: Record<string, number>;
-}
-
 interface ScheduleItem {
   time: string;
   title: string;
   text: string;
-}
-
-interface LocalFee {
-  item: string;
-  amount: string;
-  note: string;
 }
 
 interface ProcessStep {
@@ -102,7 +81,7 @@ interface SourceLink {
 @Component({
   selector: 'app-cella-premium-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatIconModule, CellaQuoteCalculatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cella-premium-school.component.html',
   styleUrls: [
@@ -114,6 +93,9 @@ interface SourceLink {
   ],
 })
 export class CellaPremiumSchoolComponent {
+  readonly pricingCourses = cellaCourses('premium');
+  readonly pricingRooms = cellaRooms('premium');
+  readonly familyPackages = CELLA_FAMILY_PACKAGES;
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -123,16 +105,6 @@ export class CellaPremiumSchoolComponent {
     '设施',
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
-
-  readonly registrationFee = 150;
-  readonly usdToCny = 7.2;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12];
-
-  selectedCourseId = 'light-esl';
-  selectedRoomId = 'six';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
-  quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -236,7 +208,7 @@ export class CellaPremiumSchoolComponent {
     { label: '学生规模', value: '公开资料显示约100-180名，国籍比例每月变化，日本比例约20-40%参考' },
     { label: '课程方向', value: 'Light ESL、Power Speaking 1/2、BPE、Working Holiday、ACE、Expresser、Family Package' },
     { label: '住宿房型', value: '校内1人房、半单人房、2人房、4人房、6人房；Alicia外部寮1人/2人房' },
-    { label: '4周起价', value: 'USD 1,580起：Light ESL + 6人房 + 注册费' },
+    { label: '活动期4周起价', value: '1,479美元起：Light ESL＋六人房活动价＋注册费' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -304,81 +276,6 @@ export class CellaPremiumSchoolComponent {
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
-    { id: 'six', name: '6人房', note: '公开表最低房型，适合控制预算。' },
-    { id: 'quad', name: '4人房', note: '比6人房舒适，仍相对经济。' },
-    { id: 'twin', name: '2人房', note: '预算与隐私较平衡。' },
-    { id: 'semi', name: '半单人房', note: '独立空间更好，卫浴通常需共享。' },
-    { id: 'single', name: '1人房', note: '隐私最好，热门档期需尽早确认。' },
-    { id: 'alicia-twin', name: 'Alicia外部寮2人房', note: '外部寮选择，适合想住Alicia的学生。' },
-  ];
-
-  readonly courseOptions: CourseOption[] = [
-    {
-      id: 'light-esl',
-      name: 'Light ESL',
-      type: '轻量ESL',
-      lessons: '1:1三节 + 小组一节，自习可选',
-      suitable: '适合想保留下午/上午自由时间、轻量提升英语的人。',
-      fourWeekFees: { single: 2430, semi: 2030, twin: 1830, quad: 1630, six: 1430, 'alicia-twin': 1830 },
-    },
-    {
-      id: 'power-speaking-1',
-      name: 'Power Speaking 1',
-      type: '口语综合强化',
-      lessons: '1:1四节 + 小组四节',
-      suitable: '适合想兼顾一对一和小组输出、稳步提升会话的人。',
-      fourWeekFees: { single: 2530, semi: 2130, twin: 1930, quad: 1730, six: 1530, 'alicia-twin': 1930 },
-    },
-    {
-      id: 'power-speaking-2',
-      name: 'Power Speaking 2',
-      type: '高比例1:1',
-      lessons: '1:1六节 + 小组两节',
-      suitable: '适合想短期增加一对一纠音、表达和反馈密度的人。',
-      fourWeekFees: { single: 2680, semi: 2280, twin: 2080, quad: 1880, six: 1680, 'alicia-twin': 2080 },
-    },
-    {
-      id: 'business-prep',
-      name: 'BPE Preparation',
-      type: '商务英语基础',
-      lessons: '商务1:1四节 + ESL小组四节',
-      suitable: '适合想先建立商务英语基础，同时保留一般英语训练的人。',
-      fourWeekFees: { single: 2680, semi: 2280, twin: 2080, quad: 1880, six: 1680, 'alicia-twin': 2080 },
-    },
-    {
-      id: 'business-intensive',
-      name: 'BPE Intensive',
-      type: '商务英语强化',
-      lessons: '商务1:1四节 + 商务小组四节',
-      suitable: '适合中级以上、想集中练会议、邮件、演示和职场沟通的人。',
-      fourWeekFees: { single: 2780, semi: 2380, twin: 2180, quad: 1980, six: 1780, 'alicia-twin': 2180 },
-    },
-    {
-      id: 'working-holiday',
-      name: 'Working Holiday',
-      type: '打工度假准备',
-      lessons: '1:1三节 + 小组四节 + OJT可选',
-      suitable: '适合之后计划澳洲、加拿大等打工度假的学生。',
-      fourWeekFees: { single: 2530, semi: 2130, twin: 1930, quad: 1730, six: 1530, 'alicia-twin': 1930 },
-    },
-    {
-      id: 'ace',
-      name: 'Airline Cabin Crew English',
-      type: '航空服务英语',
-      lessons: '1:1四节 + 小组三节 + Native小组一节',
-      suitable: '适合航空业、客舱服务和英文面试方向，通常4周/8周规划。',
-      fourWeekFees: { single: 2600, semi: 2200, twin: 2200, quad: 1800, six: 1600, 'alicia-twin': 2000 },
-    },
-  ];
-
-  readonly expresserFees = [
-    { label: 'Expresser 1周', lessons: '1:1九节 + 小组一节', four: '1周限定：USD 900起 / 4人房', note: '初日下午开始上课，适合超短期社会人' },
-    { label: 'Expresser 2周', lessons: '1:1九节 + 小组一节', four: '2周限定：USD 1,350起 / 4人房', note: '含第一周周六上午课程，需按学校规则确认' },
-    { label: 'Family Package家长', lessons: '1:1两节 + 小组一节', four: '需按家庭组合确认', note: '适合亲子同行家长轻量学习' },
-    { label: 'Family Package儿童', lessons: '1:1四节 + 小组四节', four: '需按年龄与房型确认', note: '儿童课程与暑期Junior Camp需单独核价' },
-  ];
-
   readonly schedule: ScheduleItem[] = [
     {
       time: '07:00 - 08:00',
@@ -410,21 +307,6 @@ export class CellaPremiumSchoolComponent {
       title: '自习 / 生活管理',
       text: '公开资料列门禁规则，实际校规、外宿和出入管理以到校说明为准。',
     },
-  ];
-
-  readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 150', note: '出发前支付，不含在课程住宿套餐内' },
-    { item: '高峰期加价', amount: 'USD 40 / 周', note: '公开资料列2026年夏季旺季加价，日期需按学校当期确认' },
-    { item: 'SSP + SSP I-Card', amount: 'PHP 12,300', note: 'SSP PHP 7,800 + SSP I-Card PHP 4,500参考' },
-    { item: '签证延长', amount: 'PHP 5,140起', note: '30天内通常无需延签，5-8周起产生费用' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长周期学习通常需要确认' },
-    { item: '宿舍押金', amount: 'PHP 2,000-10,000', note: '按周数变化，退房结算水电/洗衣/损坏后返还' },
-    { item: '管理费', amount: 'PHP 800-1,000 / 周', note: '不同公开表口径略有差异，以学校正式报价为准' },
-    { item: '电费', amount: 'PHP 500 / 周起', note: '公开资料列超出额度另收超额电费' },
-    { item: '水费', amount: 'PHP 300 / 周', note: '按周计算参考' },
-    { item: '教材费', amount: 'PHP 200-600 / 册', note: '或约PHP 2,000 / 4周，按课程和级别变化' },
-    { item: 'ID Card', amount: 'PHP 200', note: '学生证费用参考' },
-    { item: '机场接机', amount: 'PHP 1,200', note: '亲子或多人接机需单独确认' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -606,10 +488,6 @@ export class CellaPremiumSchoolComponent {
     this.selectedGalleryCategory = category;
   }
 
-  calculateQuote(): void {
-    this.quoteCalculated = true;
-  }
-
   scrollToSection(target: string, event?: Event): void {
     event?.preventDefault();
     const targetElement = document.getElementById(target);
@@ -630,55 +508,12 @@ export class CellaPremiumSchoolComponent {
     );
   }
 
-  feeFor(courseId: string, roomId: string, weeks: WeekOption = 4): number {
-    const course = this.courseOptions.find((item) => item.id === courseId);
-    const fourWeekFee = course?.fourWeekFees[roomId] ?? 0;
-
-    return Math.round(fourWeekFee * this.durationMultiplier(weeks));
-  }
-
   get filteredGalleryImages(): GalleryImage[] {
     return this.selectedGalleryCategory === '全部'
       ? this.galleryImages
       : this.galleryImages.filter(
           (image) => image.category === this.selectedGalleryCategory,
         );
-  }
-
-  get selectedCourse(): CourseOption {
-    return (
-      this.courseOptions.find((course) => course.id === this.selectedCourseId) ??
-      this.courseOptions[0]
-    );
-  }
-
-  get selectedRoom(): RoomOption {
-    return (
-      this.roomOptions.find((room) => room.id === this.selectedRoomId) ??
-      this.roomOptions[0]
-    );
-  }
-
-  get selectedPackageFee(): number {
-    return this.feeFor(this.selectedCourseId, this.selectedRoomId, this.selectedWeeks);
-  }
-
-  get quoteUsd(): number {
-    return this.registrationFee + this.selectedPackageFee;
-  }
-
-  get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)} 起`;
-  }
-
-  get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
-  }
-
-  get seasonalNote(): string {
-    return '公开资料列2026年夏季旺季可能加收USD 40/周，正式以学校报价为准';
   }
 
   formatUsd(value: number): string {
@@ -688,16 +523,4 @@ export class CellaPremiumSchoolComponent {
     });
   }
 
-  private durationMultiplier(weeks: WeekOption): number {
-    const multiplier: Record<WeekOption, number> = {
-      1: 0.4,
-      2: 0.65,
-      3: 0.85,
-      4: 1,
-      8: 2,
-      12: 3,
-    };
-
-    return multiplier[weeks];
-  }
 }

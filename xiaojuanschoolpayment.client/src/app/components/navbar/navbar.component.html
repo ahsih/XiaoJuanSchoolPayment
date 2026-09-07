@@ -220,14 +220,25 @@
         </ng-template>
       </div>
     </div>
+
+    <div class="mobile-auth-links">
+      <a routerLink="/login" (click)="closeMenus()"><mat-icon>person_outline</mat-icon>登录</a>
+      <a routerLink="/register" (click)="closeMenus()">邀请码注册</a>
+    </div>
   </nav>
 
-  <a
-    class="consult-button"
-    routerLink="/about-sida/contact"
-    (click)="closeMenus()"
-  >
-    <mat-icon>chat_bubble</mat-icon>
-    <span>免费咨询</span>
-  </a>
+  <div class="header-actions">
+    <a class="account-entry" routerLink="/login" (click)="closeMenus()">
+      <mat-icon>person_outline</mat-icon>
+      <span>登录</span>
+    </a>
+    <a
+      class="consult-button"
+      routerLink="/about-sida/contact"
+      (click)="closeMenus()"
+    >
+      <mat-icon>chat_bubble</mat-icon>
+      <span>免费咨询</span>
+    </a>
+  </div>
 </header>

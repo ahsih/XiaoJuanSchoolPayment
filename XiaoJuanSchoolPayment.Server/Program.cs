@@ -14,17 +14,34 @@ using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
 
 var builder = WebApplication.CreateBuilder(args);
-// Prevent cookie auth from redirecting for APIs (return 401/403 instead)
-builder.Services.ConfigureApplicationCookie(o =>
-{
-  o.Events.OnRedirectToLogin = ctx => { ctx.Response.StatusCode = 401; return Task.CompletedTask; };
-  o.Events.OnRedirectToAccessDenied = ctx => { ctx.Response.StatusCode = 403; return Task.CompletedTask; };
-});
-// 1. Add authentication
+
+// Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
+
+builder.Services.AddIdentity<SchoolUser, IdentityRole>(options =>
+  {
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+  })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// Identity registers cookie defaults, so configure the API's JWT defaults after Identity.
 builder.Services.AddAuthentication(options =>
 {
+  options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
   options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
   options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
@@ -37,12 +54,18 @@ builder.Services.AddAuthentication(options =>
     ValidIssuer = builder.Configuration["Jwt:Issuer"],
     ValidAudience = builder.Configuration["Jwt:Audience"],
     IssuerSigningKey = new SymmetricSecurityKey(
-          Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-    RoleClaimType = "role"
+          Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("Jwt:Key is not configured."))),
+    RoleClaimType = System.Security.Claims.ClaimTypes.Role
   };
 });
 
-// 2. Add authorization
+builder.Services.ConfigureApplicationCookie(o =>
+{
+  o.Events.OnRedirectToLogin = ctx => { ctx.Response.StatusCode = 401; return Task.CompletedTask; };
+  o.Events.OnRedirectToAccessDenied = ctx => { ctx.Response.StatusCode = 403; return Task.CompletedTask; };
+});
+
 builder.Services.AddAuthorization(options =>
 {
   options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
@@ -50,21 +73,18 @@ builder.Services.AddAuthorization(options =>
       .Build();
 });
 
-// Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
-
-builder.Services.AddIdentity<SchoolUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
 builder.Services.AddScoped<ISchoolService, SchoolService>();
+builder.Services.AddScoped<ISchoolContentService, SchoolContentService>();
+builder.Services.AddScoped<IStaffPermissionService, StaffPermissionService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.Configure<ContactFormOptions>(builder.Configuration.GetSection("ContactForm"));
+builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection("Authentication"));
+builder.Services.AddScoped<IVerificationCodeDeliveryService, VerificationCodeDeliveryService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient("AliyunSms", client =>
+{
+  client.Timeout = TimeSpan.FromSeconds(12);
+});
 builder.Services.AddHttpClient("PinesPortal", client =>
 {
   client.BaseAddress = new Uri("https://pinesportal.com/");

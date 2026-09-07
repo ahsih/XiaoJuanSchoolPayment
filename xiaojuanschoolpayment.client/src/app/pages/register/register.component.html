@@ -1,107 +1,74 @@
-<div class="register-page">
-  <div class="register-container">
-    <h2>{{ 'register.title' | t }}</h2>
+<main class="auth-page">
+  <section class="auth-shell" aria-labelledby="register-title">
+    <a class="auth-brand" routerLink="/" aria-label="返回思达启航首页">
+      <img src="/assets/sida-qihang-quote-header-logo-transparent.png" alt="思达启航教育｜留学规划、语言提升，从思达启航，走向更美好的未来" />
+    </a>
 
-    <form
-      [formGroup]="registerForm"
-      (ngSubmit)="onSubmit()"
-      class="register-form"
-    >
-      <!-- Email -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'common.email' | t }}</mat-label>
-        <input matInput type="email" formControlName="email" required />
-        <mat-error
-          *ngIf="
-            registerForm.get('email')?.invalid &&
-            registerForm.get('email')?.touched
-          "
-        >
-          {{ 'register.validEmailRequired' | t }}
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Password -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'common.password' | t }}</mat-label>
-        <input
-          matInput
-          [type]="hidePassword ? 'password' : 'text'"
-          formControlName="password"
-          required
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="hidePassword = !hidePassword"
-        >
-          <mat-icon>{{
-            hidePassword ? "visibility_off" : "visibility"
-          }}</mat-icon>
-        </button>
-        <mat-error
-          *ngIf="
-            registerForm.get('password')?.invalid &&
-            registerForm.get('password')?.touched
-          "
-        >
-          {{ 'register.passwordRequired' | t }}
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Access Code -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'common.accessCode' | t }}</mat-label>
-        <input matInput type="text" formControlName="accessCode" required />
-        <mat-error
-          *ngIf="
-            registerForm.get('accessCode')?.invalid &&
-            registerForm.get('accessCode')?.touched
-          "
-        >
-          {{ 'register.accessCodeRequired' | t }}
-        </mat-error>
-      </mat-form-field>
-
-      <!-- First & Last Name -->
-      <div class="name-fields">
-        <mat-form-field appearance="outline" class="half-width">
-          <mat-label>{{ 'common.firstName' | t }}</mat-label>
-          <input matInput formControlName="firstName" required />
-          <mat-error
-            *ngIf="
-              registerForm.get('firstName')?.invalid &&
-              registerForm.get('firstName')?.touched
-            "
-          >
-            {{ 'register.firstNameRequired' | t }}
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="half-width">
-          <mat-label>{{ 'common.lastName' | t }}</mat-label>
-          <input matInput formControlName="lastName" required />
-          <mat-error
-            *ngIf="
-              registerForm.get('lastName')?.invalid &&
-              registerForm.get('lastName')?.touched
-            "
-          >
-            {{ 'register.lastNameRequired' | t }}
-          </mat-error>
-        </mat-form-field>
+    <div class="auth-card">
+      <div class="auth-copy">
+        <span class="auth-eyebrow">受邀加入</span>
+        <h1 id="register-title">创建你的账号</h1>
+        <p>完成验证后，即可使用思达启航专属服务。</p>
       </div>
 
-      <!-- Submit Button -->
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="registerForm.invalid || loading"
-      >
-        {{ 'register.submit' | t }}
-      </button>
-    </form>
-  </div>
-</div>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="two-columns">
+          <div>
+            <label class="field-label" for="register-name">姓名</label>
+            <div class="auth-input" [class.invalid]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+              <mat-icon>person_outline</mat-icon>
+              <input id="register-name" formControlName="name" placeholder="请输入真实姓名" autocomplete="name" />
+            </div>
+            <p class="field-error" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">请输入姓名</p>
+          </div>
+
+          <div>
+            <label class="field-label" for="invitation-code">验证码</label>
+            <div class="auth-input" [class.invalid]="registerForm.get('invitationCode')?.invalid && registerForm.get('invitationCode')?.touched">
+              <mat-icon>vpn_key</mat-icon>
+              <input id="invitation-code" formControlName="invitationCode" placeholder="请输入验证码" autocomplete="off" />
+            </div>
+            <p class="field-error" *ngIf="registerForm.get('invitationCode')?.invalid && registerForm.get('invitationCode')?.touched">请输入验证码</p>
+          </div>
+        </div>
+
+        <div class="choice-tabs" aria-label="选择注册方式">
+          <button type="button" [class.active]="accountType === 'phone'" (click)="setAccountType('phone')">
+            <mat-icon>phone_iphone</mat-icon>手机号码
+          </button>
+          <button type="button" [class.active]="accountType === 'email'" (click)="setAccountType('email')">
+            <mat-icon>mail_outline</mat-icon>邮箱
+          </button>
+        </div>
+
+        <label class="field-label" for="register-account">{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}</label>
+        <div class="auth-input" [class.invalid]="registerForm.get('account')?.invalid && registerForm.get('account')?.touched">
+          <mat-icon>{{ accountType === 'phone' ? 'phone_iphone' : 'mail_outline' }}</mat-icon>
+          <input id="register-account" formControlName="account" [type]="accountType === 'phone' ? 'tel' : 'email'" [placeholder]="accountPlaceholder" autocomplete="username" />
+        </div>
+        <p class="field-error" *ngIf="registerForm.get('account')?.invalid && registerForm.get('account')?.touched">
+          请输入正确的{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}
+        </p>
+
+        <label class="field-label" for="register-password">设置密码</label>
+        <div class="auth-input" [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          <mat-icon>lock_outline</mat-icon>
+          <input id="register-password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="至少8位，包含数字" autocomplete="new-password" />
+          <button class="visibility-button" type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? '显示密码' : '隐藏密码'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <p class="field-error" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">密码至少8位，并包含一个数字</p>
+
+        <button class="primary-button" type="submit" [disabled]="loading">
+          {{ loading ? '正在注册…' : '注册账号' }}
+          <mat-icon *ngIf="!loading">arrow_forward</mat-icon>
+        </button>
+      </form>
+
+      <p class="auth-footer">已经有账号？<a routerLink="/login">直接登录</a></p>
+    </div>
+
+    <p class="back-home"><a routerLink="/"><mat-icon>arrow_back</mat-icon>返回网站首页</a></p>
+  </section>
+</main>

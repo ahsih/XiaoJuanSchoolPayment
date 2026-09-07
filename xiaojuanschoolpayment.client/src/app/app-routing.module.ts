@@ -1022,7 +1022,7 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    data: { role: 'admin' },
+    data: { roles: ['admin', 'staff'] },
     canActivate: [RoleGuard],
     children: [
       { path: '', component: AdminComponent },
@@ -1030,6 +1030,20 @@ const routes: Routes = [
       { path: 'school-rooms', component: AdminSchoolRoomsComponent },
       { path: 'school-fees', component: AdminSchoolFeesComponent },
       { path: 'school-notes', component: AdminSchoolNotesComponent },
+      {
+        path: 'school-content',
+        loadComponent: () =>
+          import('./pages/admin-school-content/admin-school-content.component').then(
+            (m) => m.AdminSchoolContentComponent,
+          ),
+      },
+      {
+        path: 'school-quote-image',
+        loadComponent: () =>
+          import('./pages/admin-school-quote-image/admin-school-quote-image.component').then(
+            (m) => m.AdminSchoolQuoteImageComponent,
+          ),
+      },
       {
         path: 'school-photos',
         loadComponent: () =>
@@ -1042,6 +1056,22 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin-student-applications/admin-student-applications.component').then(
             (m) => m.AdminStudentApplicationsComponent,
+          ),
+      },
+      {
+        path: 'invitations',
+        loadComponent: () =>
+          import('./pages/invitation-management/invitation-management.component').then(
+            (m) => m.InvitationManagementComponent,
+          ),
+      },
+      {
+        path: 'staff-permissions',
+        data: { role: 'admin' },
+        canActivate: [RoleGuard],
+        loadComponent: () =>
+          import('./pages/admin-staff-permissions/admin-staff-permissions.component').then(
+            (m) => m.AdminStaffPermissionsComponent,
           ),
       },
     ],

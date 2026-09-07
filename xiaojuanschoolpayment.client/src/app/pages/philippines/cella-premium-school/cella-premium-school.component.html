@@ -53,13 +53,13 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>{{ quoteUsdText }}</strong>
+              <span>活动期4周参考</span>
+              <strong>1,479美元起</strong>
               <p>Light ESL + 6人房 + 注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  使用2026公开参考价：套餐USD 1,430 + 注册费USD 150
+                  六人房活动价499美元＋课程830美元＋注册费150美元
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -207,11 +207,11 @@
             </p>
           </div>
           <div class="course-grid">
-            <article class="course-card" *ngFor="let course of courseOptions">
-              <span>{{ course.type }}</span>
+            <article class="course-card" *ngFor="let course of pricingCourses">
+              <span>2026课程</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
-              <p>{{ course.suitable }}</p>
+              <p>{{ course.note }}</p>
             </article>
           </div>
         </section>
@@ -220,41 +220,26 @@
           <div class="section-block">
             <div class="section-heading">
               <span>CELLA Premium 2026公开参考价</span>
-              <h2>课程住宿套餐价：按课程、房型和周数看</h2>
+              <h2>课程费与住宿费分开核对</h2>
               <p>
-                以下为公开2026套餐参考价，通常含授课、住宿、餐食、清扫和洗衣；注册费、旺季费和当地费用需另外确认。
+                以下为附件确认的2026年4周价格，币种为美元。注册费、优惠、旺季费和当地费用由报价器另行计算。
               </p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="CELLA Premium 2026课程住宿套餐">
+            <div class="data-table premium-pricing-table" role="table" aria-label="CELLA Premium 2026年课程费">
               <div class="table-row table-head" role="row">
-                <span role="columnheader">课程 / 房型</span>
-                <span role="columnheader">1周</span>
-                <span role="columnheader">4周</span>
-                <span role="columnheader">8周</span>
-                <span role="columnheader">12周</span>
+                <span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排／备注</span>
               </div>
-              <ng-container *ngFor="let course of courseOptions.slice(0, 5)">
-                <div class="table-row" role="row" *ngFor="let room of roomOptions.slice(0, 5)">
-                  <span role="cell">{{ course.name }} / {{ room.name }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</span>
-                  <span role="cell">USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</span>
-                </div>
-              </ng-container>
+              <div class="table-row" role="row" *ngFor="let course of pricingCourses"><span role="cell">{{ course.name }}</span><span role="cell">{{ formatUsd(course.tuition) }}美元</span><span role="cell">{{ course.lessons }}。{{ course.note }}</span></div>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="CELLA Premium 2026套餐手机卡片">
-              <ng-container *ngFor="let course of courseOptions.slice(0, 5)">
-                <article *ngFor="let room of roomOptions.slice(0, 5)">
-                  <span>{{ course.name }}</span>
-                  <strong>{{ room.name }}</strong>
-                  <div><em>1周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 1)) }}</b></div>
-                  <div><em>4周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 4)) }}</b></div>
-                  <div><em>8周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 8)) }}</b></div>
-                  <div><em>12周</em><b>USD {{ formatUsd(feeFor(course.id, room.id, 12)) }}</b></div>
-                  <p>{{ course.lessons }}。{{ room.note }}</p>
-                </article>
-              </ng-container>
+            <div class="mobile-card-list mobile-course-fees" aria-label="CELLA Premium 2026年课程费手机卡片">
+              <article *ngFor="let course of pricingCourses"><span>课程</span><strong>{{ course.name }}</strong><div><em>4周课程费</em><b>{{ formatUsd(course.tuition) }}美元</b></div><p>{{ course.lessons }}。{{ course.note }}</p></article>
+            </div>
+            <div class="data-table premium-pricing-table room-pricing-table" role="table" aria-label="CELLA Premium 2026年住宿费">
+              <div class="table-row table-head" role="row"><span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
+              <div class="table-row" role="row" *ngFor="let room of pricingRooms"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }}美元</span><span role="cell">{{ room.note }}</span></div>
+            </div>
+            <div class="mobile-card-list mobile-room-fees" aria-label="CELLA Premium 2026年住宿费手机卡片">
+              <article *ngFor="let room of pricingRooms"><span>房型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }}美元</b></div><p>{{ room.note }}</p></article>
             </div>
           </div>
 
@@ -275,121 +260,29 @@
           </div>
         </section>
 
-        <section class="split-layout" id="special-fees">
+        <section class="cella-special-stack" id="special-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>短期 / 亲子 / 特殊课程参考</span>
-              <h2>Expresser和Family路线要单独确认规则</h2>
+              <span>亲子 / 特殊课程参考</span>
+              <h2>Family Package附件价格</h2>
               <p>
-                1-2周短期课程、亲子课程和ACE航空服务英语的报名条件、房型、年龄和开课规则需要报名前逐项确认。
+                以下家庭套餐包含注册费、课程费、住宿费和当地费用；不含汇款手续费及额外电费。币种为美元，家庭成员组合、年龄、床位和空房需向学校确认。
               </p>
             </div>
-            <div class="data-table special-fee-table" role="table" aria-label="CELLA Premium特殊课程参考">
+            <div class="data-table family-fee-table" role="table" aria-label="CELLA Premium家庭套餐参考">
               <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">课时</span>
-                <span role="columnheader">参考价</span>
-                <span role="columnheader">备注</span>
+                <span role="columnheader">家庭房型</span><span role="columnheader">成员组合</span><span role="columnheader">4周</span><span role="columnheader">6周</span><span role="columnheader">8周</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let fee of expresserFees">
-                <span role="cell">{{ fee.label }}</span>
-                <span role="cell">{{ fee.lessons }}</span>
-                <span role="cell">{{ fee.four }}</span>
-                <span role="cell">{{ fee.note }}</span>
-              </div>
+              <div class="table-row" role="row" *ngFor="let item of familyPackages"><span role="cell">{{ item.room }}</span><span role="cell">{{ item.occupants }}</span><span role="cell">{{ formatUsd(item.prices[4]) }}美元</span><span role="cell">{{ formatUsd(item.prices[6]) }}美元</span><span role="cell">{{ formatUsd(item.prices[8]) }}美元</span></div>
             </div>
             <ul class="check-list">
-              <li>Expresser强调短期密集和初日开始上课，适合假期很短的学生。</li>
-              <li>Family Package需要按家长/儿童课程、年龄、房型和档期确认。</li>
+              <li>Walk-In课程4周参考：监护人700美元，青少年英语1,300美元。</li>
+              <li>Family Package的家庭成员组合、课程、年龄、房型和档期均需确认。</li>
               <li>Alicia外部寮房型与校内宿舍不同，需同步确认通勤和空房。</li>
             </ul>
           </div>
 
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>CELLA费用快速报价</span>
-              <h2>默认参考：4周Light ESL + 6人房</h2>
-              <p>前期支付参考 = 注册费 + 课程住宿套餐。到校费用需另行准备。</p>
-            </div>
-            <div class="quote-form" aria-label="CELLA Premium费用快速报价选项">
-              <label>
-                学习周数
-                <select [(ngModel)]="selectedWeeks">
-                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option>
-                </select>
-              </label>
-              <label>
-                课程
-                <select [(ngModel)]="selectedCourseId">
-                  <option *ngFor="let course of courseOptions" [value]="course.id">{{ course.name }}</option>
-                </select>
-              </label>
-              <label>
-                房型
-                <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-                </select>
-              </label>
-              <label>
-                预计入学日
-                <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-            </div>
-            <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程住宿套餐</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
-              <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
-              <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
-              <div><span>旺季提醒</span><strong>需另行确认</strong></div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认房型、性别、入学日、旺季、优惠和当地费用。
-              </p>
-            </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">
-                立即计算我的费用<mat-icon>calculate</mat-icon>
-              </button>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价<mat-icon>support_agent</mat-icon>
-              </a>
-            </div>
-            <p class="fee-alert">
-              除课程住宿套餐外，到校后通常还需确认SSP、签证、ACR、押金、教材、水电、管理费、ID、接机和个人生活费。
-            </p>
-            <p class="season-note">{{ seasonalNote }}</p>
-          </section>
-        </section>
-
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>套餐之外，还要准备当地费用</h2>
-            <p>
-              以下费用来自公开费用表，不同周数、签证时长、房型和学校政策会影响最终金额。
-            </p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
-                <p>{{ fee.note }}</p>
-              </article>
-            </div>
-          </details>
+          <app-cella-quote-calculator initialCampus="premium"></app-cella-quote-calculator>
         </section>
 
         <section class="notice-panel" id="price-note">
@@ -582,11 +475,11 @@
 
       <aside class="side-panel" aria-label="CELLA Premium页面快捷导航">
         <div class="current-card">
-          <span>当前参考</span>
-          <strong>{{ selectedWeeks }}周</strong>
-          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
-          <div class="side-price">{{ quoteUsdText }}</div>
-          <small>{{ quoteCnyText }}</small>
+          <span>2026下半年活动期</span>
+          <strong>4周起</strong>
+          <p>Light ESL<br />Premium六人房活动价</p>
+          <div class="side-price">1,479美元起</div>
+          <small>人民币参考额请以报价器实时汇率为准</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>

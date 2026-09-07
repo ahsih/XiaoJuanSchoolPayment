@@ -104,8 +104,10 @@ export interface QuoteImageCardData {
   conversionRates?: { usdToCny: number; phpPerCny: number; date?: string };
   optionalFeeItems?: QuoteImageOptionalFeeItem[];
   benefitItems?: QuoteImageBenefitItem[];
+  serviceSectionTitle?: string;
   serviceLocations?: string[];
   alumniBenefitItems?: QuoteImageAlumniBenefitItem[];
+  alumniBenefitTitle?: string;
   /** School-specific opt-out when no alumni price benefit may be advertised. */
   hideAlumniBenefit?: boolean;
   finalConfirmationText?: string;
@@ -608,6 +610,11 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  /** Reuse the production canvas renderer for embedded employee previews without downloading a file. */
+  async createPreviewDataUrl(scaleOverride = 1): Promise<string> {
+    return quoteBlobDataUrl(await this.createQuoteImageBlob(scaleOverride));
+  }
+
   private get detailedGrid() {
     const aligned = this.quote.fullFeeDetails && this.quote.localFeeTableLayout === 'web';
     return { noteBoundary: aligned ? 556 : 420, amountRight: aligned ? 546 : 400,
@@ -1086,7 +1093,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     context.translate(0, fullLayout?.localExtra ?? 0);
     const serviceHeight = fullLayout?.serviceHeight ?? 174;
     this.drawRoundedRect(context, padding, 1454, contentWidth, serviceHeight, 9, '#ffffff', border, 1);
-    drawSectionNumber('03', '为什么选择思达启航？', 1490);
+    drawSectionNumber('03', this.quote.serviceSectionTitle ?? '为什么选择思达启航？', 1490);
 
     const benefits = this.quote.benefitItems?.slice(0, 4) ?? [];
     const benefitsTop = fullLayout ? 1501 : 1505;
@@ -1127,7 +1134,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = orange;
       context.textAlign = 'left';
-      context.fillText('老学员专属优惠', 54, alumniTop + 24);
+      context.fillText(this.quote.alumniBenefitTitle ?? '老学员专属优惠', 54, alumniTop + 24);
       drawTableText(alumniText, 206, alumniTop + 24, 770, navy, '400 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', fullLayout ? 1000 : 1, 20);
     }
 
@@ -1135,7 +1142,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     this.drawRoundedRect(context, padding, footerTop, contentWidth, fullLayout?.footerHeight ?? 106, 8, '#f7faf8', '#dce7e1', 1);
     context.font = '900 16px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
-    context.fillText('04  报价说明', 38, footerTop + 32);
+    context.fillText(`04  ${this.quote.noteTitle ?? '报价说明'}`, 38, footerTop + 32);
     const importantNotes = fullLayout?.importantNotes ?? (this.quote.importantNotes?.length
       ? this.quote.importantNotes
       : [this.quote.note]);

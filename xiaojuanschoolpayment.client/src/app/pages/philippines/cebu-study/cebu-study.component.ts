@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ScrollToDirective } from '../../../directives/scroll-to.directive';
@@ -84,7 +85,7 @@ interface FaqItem {
 @Component({
   selector: 'app-cebu-study',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, ScrollToDirective],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ScrollToDirective],
   templateUrl: './cebu-study.component.html',
   styleUrl: './cebu-study.component.css',
 })
@@ -391,6 +392,7 @@ export class CebuStudyComponent {
   ];
 
   activeDirectoryFilter: DirectoryCategory = '全部学校';
+  schoolSearchQuery = '';
 
   readonly directoryCategorySchools: Record<Exclude<DirectoryCategory, '全部学校'>, string[]> = {
     雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella', 'CELLA Uni', 'CG斯巴达校区'],
@@ -624,9 +626,28 @@ export class CebuStudyComponent {
 
   get visibleSchools(): DirectorySchool[] {
     const activeFilter = this.activeDirectoryFilter;
-    const schools = activeFilter === '全部学校'
+    const categorySchools = activeFilter === '全部学校'
       ? this.allSchools
       : this.allSchools.filter((school) => this.directoryCategorySchools[activeFilter].includes(school.name));
+    const searchTerms = this.schoolSearchQuery
+      .trim()
+      .toLocaleLowerCase()
+      .split(/\s+/)
+      .map((term) => this.normalizeDirectorySearch(term))
+      .filter(Boolean);
+    const schools = searchTerms.length === 0
+      ? categorySchools
+      : categorySchools.filter((school) => {
+        const searchText = this.normalizeDirectorySearch([
+          school.name,
+          school.tag,
+          school.location,
+          school.summary,
+          ...school.highlights,
+        ].join(' '));
+
+        return searchTerms.every((term) => searchText.includes(term));
+      });
 
     const displayOrder = activeFilter === '全部学校'
       ? this.directoryPopularityOrder
@@ -664,6 +685,13 @@ export class CebuStudyComponent {
     if (!image.src.endsWith('/assets/study-hero-collage.png')) {
       image.src = '/assets/study-hero-collage.png';
     }
+  }
+
+  private normalizeDirectorySearch(value: string): string {
+    return value
+      .normalize('NFKC')
+      .toLocaleLowerCase()
+      .replace(/[\s.'’·\-_/（）()]+/g, '');
   }
 
   readonly advisors: Advisor[] = [

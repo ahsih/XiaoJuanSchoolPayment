@@ -34,6 +34,78 @@
   grid-template-columns: minmax(150px, 1.05fr) minmax(116px, 0.55fr) minmax(220px, 1.4fr);
 }
 
+:host .campus-price-groups {
+  display: grid;
+  gap: 20px;
+}
+
+:host .campus-price-group {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #cfe4db;
+  border-radius: 12px;
+  background: #fff;
+}
+
+:host .campus-price-group.premium-campus {
+  border-color: #d7deef;
+}
+
+:host .campus-price-heading {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid #dbe8e2;
+  background: linear-gradient(135deg, #eaf7f1, #f7fbf9);
+}
+
+:host .premium-campus .campus-price-heading {
+  border-bottom-color: #e0e4f0;
+  background: linear-gradient(135deg, #eef1fa, #fafbfe);
+}
+
+:host .campus-price-heading > span {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #087343;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+:host .premium-campus .campus-price-heading > span {
+  background: #314f8f;
+}
+
+:host .campus-price-heading h3,
+:host .campus-price-heading p {
+  margin: 0;
+}
+
+:host .campus-price-heading h3 {
+  color: #10243b;
+  font-size: 1.08rem;
+}
+
+:host .campus-price-heading p {
+  margin-top: 3px;
+  color: #5b6a7b;
+  font-size: 0.88rem;
+}
+
+:host .campus-price-group .data-table {
+  border: 0;
+  border-radius: 0;
+}
+
+:host .bilingual-name {
+  color: #173a31;
+  font-weight: 700;
+}
+
 :host .jic-source-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 18px;
@@ -41,6 +113,102 @@
 
 :host .jic-source-grid mat-icon {
   color: #087343;
+}
+
+:host #quote {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  min-width: 0;
+}
+
+:host #quote .quote-form-card,
+:host #quote .local-fee-estimate {
+  min-width: 0;
+  border: 1px solid #d8e5de;
+  border-radius: 10px;
+  padding: 24px;
+  background: #fff;
+}
+
+:host .jic-student-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host .campus-switch-hint {
+  margin: -4px 0 16px;
+  color: #5b6a7b;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+:host .jic-option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: stretch;
+}
+
+:host .jic-option-row .option-check {
+  flex: 1 1 230px;
+}
+
+:host .jic-promotion-status {
+  display: grid;
+  gap: 8px;
+}
+
+:host .jic-promotion-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin: 18px 0 10px;
+  color: #173a31;
+}
+
+:host .jic-promotion-heading span {
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+:host .jic-promotion-status > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 12px;
+  border: 1px solid #e3e9ed;
+  border-radius: 7px;
+  background: #f8fafb;
+}
+
+:host .jic-promotion-status span,
+:host .jic-promotion-status small {
+  display: block;
+}
+
+:host .jic-promotion-status small {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+:host .jic-promotion-status b {
+  flex-shrink: 0;
+  text-align: right;
+  color: #64748b;
+}
+
+:host .jic-promotion-status .applied b {
+  color: #d9480f;
+}
+
+:host .jic-promotion-status .surcharge b {
+  color: #9a3412;
 }
 
 @media (max-width: 760px) {
@@ -51,6 +219,36 @@
 
   :host .jic-source-grid {
     grid-template-columns: 1fr;
+  }
+
+  :host .campus-price-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  :host #quote .quote-form-card,
+  :host #quote .local-fee-estimate {
+    padding: 16px 12px;
+  }
+
+  :host .jic-student-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .jic-promotion-status > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  :host .jic-promotion-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  :host .jic-promotion-status b {
+    text-align: left;
   }
 }
 

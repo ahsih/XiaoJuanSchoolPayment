@@ -751,11 +751,9 @@
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
       <div class="collapsible-panel-body">
-      <div class="course-table-block">
-        <h2><mat-icon>menu_book</mat-icon>CIA 2027课程费 / 4周</h2>
-        <p class="tuition-table-note">
-          2027新价从2026年9月1日开始接受报名，但需同时在2027年1月1日或之后入学；2026年内入学仍按原价，因此下表保留必要对照。
-        </p>
+      <div class="course-table-block" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
+        <h2 data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')"><mat-icon>menu_book</mat-icon>{{ courseTableTitle }}</h2>
+        <p class="tuition-table-note" data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')">{{ courseTableNote }}</p>
         <div
           class="data-table course-fee-table"
           role="table"
@@ -768,7 +766,7 @@
             <span role="columnheader">2026年内入学价</span>
             <span role="columnheader">课程定位与适合人群</span>
           </div>
-          <div class="table-row" role="row" *ngFor="let fee of courseFees">
+          <div class="table-row" role="row" *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
             <span role="cell"
               ><strong>{{ fee.name }}</strong></span
             >
@@ -782,22 +780,20 @@
           </div>
         </div>
 
-        <aside class="class-size-note" aria-label="CIA团体课人数说明">
+        <aside class="class-size-note" aria-label="CIA团体课人数说明" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')">
           <mat-icon>groups</mat-icon>
           <div>
             <strong>团体课人数说明</strong>
-            <p>
-              小团体1–6人，中团体6–15人，大团体15–20人。
-            </p>
+            <p>{{ groupClassNote }}</p>
           </div>
         </aside>
 
       </div>
 
-      <div class="room-table-block" id="room-fees">
+      <div class="room-table-block" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-fees')">
         <div class="room-table-heading">
-          <h2><mat-icon>bed</mat-icon>住宿费 / 4周</h2>
-          <p>学校2027价目表显示住宿费未调整；仅PN-1明确标注为校外，其余房型按校内宿舍体系展示，最终以报名时空房为准。</p>
+          <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
+          <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
         </div>
         <div class="room-price-matrix" aria-label="CIA 2027年4周住宿费分组表">
           <section *ngFor="let group of roomRateGroups">
@@ -806,7 +802,7 @@
               class="room-price-matrix-grid"
               [style.grid-template-columns]="'repeat(' + group.rooms.length + ', minmax(0, 1fr))'"
             >
-              <article *ngFor="let room of roomsForRateGroup(group)">
+              <article *ngFor="let room of roomsForRateGroup(group); trackBy: trackPreviewRow" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                 <span
                   class="room-location-badge"
                   [class.room-location-badge--off-campus]="room.location === '校外'"
@@ -820,43 +816,30 @@
           </section>
         </div>
 
-        <div class="short-stay-rate" aria-label="CIA短期住宿费率">
+        <div class="short-stay-rate" aria-label="CIA短期住宿费率" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>短期就读费率</strong>
-          <span><b>1周</b><em>4周费用的40%</em></span>
-          <span><b>2周</b><em>4周费用的60%</em></span>
-          <span><b>3周</b><em>4周费用的80%</em></span>
+          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
+          <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
+          <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
         </div>
 
-        <aside class="check-in-out-policy" aria-labelledby="check-in-out-title">
+        <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
           <div class="check-in-out-heading">
             <span><mat-icon>hotel</mat-icon></span>
             <div>
               <small>住宿提醒</small>
-              <h3 id="check-in-out-title">CIA入住与退房提醒</h3>
+              <h3 id="check-in-out-title">{{ stayPolicyTitle }}</h3>
             </div>
           </div>
           <div class="check-in-out-grid">
-            <article>
-              <span>入住日期</span>
-              <strong>周日 15:00 起</strong>
-              <p>以学校确认的周日抵达日为准；如需提前入住，须先确认空房，最多仅可提前1天。</p>
-            </article>
-            <article>
-              <span>退房日期</span>
-              <strong>结业后周六 12:00 前</strong>
-              <p>超过中午12点未按时退房，学校可按实际房型收取1晚住宿费。</p>
-            </article>
-            <article>
-              <span>额外住宿晚数</span>
-              <strong>额外留宿须提前确认</strong>
-              <p>延长住宿最多1天，以下费用包含住宿与餐食，最终以学校空房和批准为准。</p>
+            <article *ngFor="let policy of stayPolicies">
+              <span>{{ policy.label }}</span>
+              <strong>{{ policy.value }}</strong>
+              <p>{{ policy.note }}</p>
             </article>
           </div>
           <div class="extra-night-rates">
-            <span><b>单人房</b>₱2,500 / 人 / 天</span>
-            <span><b>双人房</b>₱2,000 / 人 / 天</span>
-            <span><b>三人房</b>₱1,500 / 人 / 天</span>
-            <span><b>四人房</b>₱1,000 / 人 / 天</span>
+            <span *ngFor="let rate of extraNightRates"><b>{{ rate.label }}</b>{{ formatPhp(rate.amount) }} / 人 / 天</span>
           </div>
         </aside>
 
@@ -934,7 +917,7 @@
     <ng-template #quoteSection>
     <section class="quote-results-section group-quote" id="quote">
       <div class="quote-form-card">
-        <h2>{{ quoteHeading }}</h2>
+        <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteHeading }}</h2>
         <div class="quote-mode" role="group" aria-label="报价人数模式">
           <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
           <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
@@ -953,8 +936,8 @@
           <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
           <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
         </article>
-        <div class="quote-breakdown">
-          <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+        <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
+          <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
             <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
           </div>
         </div>
@@ -971,12 +954,12 @@
         </div>
       </div>
       <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
-        <div class="local-fee-heading"><div><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
-        <p class="local-fee-intro">{{ localFeeIntro }}</p>
+        <div class="local-fee-heading" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')"><div><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+        <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
         <div class="local-fee-table-wrap">
           <table class="local-fee-table">
             <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-            <tbody><tr *ngFor="let fee of estimatedLocalFees">
+            <tbody><tr *ngFor="let fee of estimatedLocalFees; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
               <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
             </tr></tbody>
             <tfoot>
@@ -987,7 +970,7 @@
         </div>
         <div class="excluded-fee-list">
           <h4>另行准备（不计入上方学杂费合计）</h4>
-          <div *ngFor="let fee of optionalFeeItems">
+          <div *ngFor="let fee of optionalFeeItems; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.label)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.label))">
             <span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span>
             <b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b>
           </div>

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SchoolQuotePlan, quoteMoney } from './school-quote-plan';
+import { QuotePlanKind, QuotePlanOption, SchoolQuotePlan, quoteMoney } from './school-quote-plan';
 
 @Component({
   selector: 'app-school-quote-plan', standalone: true, imports: [CommonModule, FormsModule],
@@ -16,4 +16,12 @@ export class SchoolQuotePlanComponent {
   readonly money = quoteMoney;
   trackRow(_: number, row: { id: number }) { return row.id; }
   details(kind: 'course' | 'room', id: string) { return this.plan.options(kind).find(option => option.id === id)?.details ?? ''; }
+  optionGroups(kind: QuotePlanKind): { label: string; options: QuotePlanOption[] }[] {
+    const options = this.plan.options(kind);
+    const labels = [...new Set(options.map((option) => option.group).filter((label): label is string => !!label))];
+    if (!labels.length) return [{ label: '', options }];
+    const grouped = labels.map((label) => ({ label, options: options.filter((option) => option.group === label) }));
+    const ungrouped = options.filter((option) => !option.group);
+    return ungrouped.length ? [...grouped, { label: '其他', options: ungrouped }] : grouped;
+  }
 }

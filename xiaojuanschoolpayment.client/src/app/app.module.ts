@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { EditSchoolDialogComponent } from './pages/admin/edit-school-dialog/edit-school-dialog.component';
 import { AdminSchoolLessonsComponent } from './pages/admin-school-lessons/admin-school-lessons.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { EditSchoolLessonDialogComponent } from './pages/admin-school-lessons/edit-school-lesson-dialog/edit-school-lesson-dialog.component';
 import { AdminSchoolRoomsComponent } from './pages/admin-school-rooms/admin-school-rooms.component';
@@ -92,6 +93,7 @@ import { IrelandPageContentComponent } from './pages/ireland/page-content/irelan
     MatDialogModule,
     MatOptionModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatCardModule,
     ScrollToDirective,
     IrelandPageContentComponent,

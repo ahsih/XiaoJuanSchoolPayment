@@ -8,6 +8,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .columns{font-size:12px;background:#f9fbfa;color:#65776d}.plan-row+.plan-row{border-top:1px solid #edf0ee}
 .plan-row>*{min-width:0}.plan-row label>span,.end>span{display:none}
 select,input{box-sizing:border-box;width:100%;min-width:0;min-height:42px;padding:8px;border:1px solid #ccd9d1;border-radius:5px;background:white;color:#173449;font:inherit;font-size:13px}
+select optgroup{font-weight:800;color:#155a48}select option{font-weight:500;color:#173449}
 .details{font-size:12px;line-height:1.65;color:#536779;overflow-wrap:anywhere}.end{font-size:12px;white-space:nowrap}.amount{font-size:13px;text-align:right;white-space:nowrap}
 .remove{color:#924632;background:white;padding:4px;font-size:12px}.exam{display:block;margin-top:8px;font-size:12px;color:#596c7d}
 :is(input,select,button):focus-visible{outline:2px solid #08745c;outline-offset:2px}

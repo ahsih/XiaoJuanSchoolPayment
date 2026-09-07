@@ -1,36 +1,75 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h2 class="title">{{ 'login.title' | t }}</h2>
+<main class="auth-page">
+  <section class="auth-shell" aria-labelledby="login-title">
+    <a class="auth-brand" routerLink="/" aria-label="返回思达启航首页">
+      <img src="/assets/sida-qihang-quote-header-logo-transparent.png" alt="思达启航教育｜留学规划、语言提升，从思达启航，走向更美好的未来" />
+    </a>
 
-    <!-- Email field -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'common.email' | t }}</mat-label>
-      <input matInput type="email" formControlName="email" />
-      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
-        {{ 'login.emailRequired' | t }}
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
-        {{ 'login.invalidEmail' | t }}
-      </mat-error>
-    </mat-form-field>
+    <div class="auth-card">
+      <div class="auth-copy">
+        <span class="auth-eyebrow">欢迎回来</span>
+        <h1 id="login-title">登录思达启航</h1>
+        <p>查看你的申请进度与重要文件。</p>
+      </div>
 
-    <!-- Password field -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'common.password' | t }}</mat-label>
-      <input matInput type="password" formControlName="password" />
-      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-        {{ 'login.passwordRequired' | t }}
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-        {{ 'login.passwordMin' | t }}
-      </mat-error>
-    </mat-form-field>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="choice-tabs" aria-label="选择账号类型">
+          <button type="button" [class.active]="accountType === 'phone'" (click)="setAccountType('phone')">
+            <mat-icon>phone_iphone</mat-icon>手机号码
+          </button>
+          <button type="button" [class.active]="accountType === 'email'" (click)="setAccountType('email')">
+            <mat-icon>mail_outline</mat-icon>邮箱
+          </button>
+        </div>
 
-    <mat-error *ngIf="errorMessageKey">{{ errorMessageKey | t }}</mat-error>
+        <label class="field-label" for="login-account">{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}</label>
+        <div class="auth-input" [class.invalid]="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
+          <mat-icon>{{ accountType === 'phone' ? 'phone_iphone' : 'mail_outline' }}</mat-icon>
+          <input id="login-account" formControlName="account" [type]="accountType === 'phone' ? 'tel' : 'email'" [placeholder]="accountPlaceholder" autocomplete="username" />
+        </div>
+        <p class="field-error" *ngIf="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
+          请输入正确的{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}
+        </p>
 
-    <!-- Login button -->
-    <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loginForm.invalid">
-      {{ 'login.submit' | t }}
-    </button>
-  </form>
-</div>
+        <div class="method-switch" aria-label="选择登录方式">
+          <button type="button" [class.active]="loginMethod === 'Code'" (click)="setLoginMethod('Code')">验证码登录</button>
+          <button type="button" [class.active]="loginMethod === 'Password'" (click)="setLoginMethod('Password')">密码登录</button>
+        </div>
+
+        <ng-container *ngIf="loginMethod === 'Code'; else passwordLogin">
+          <label class="field-label" for="login-code">验证码</label>
+          <div class="code-row">
+            <div class="auth-input" [class.invalid]="loginForm.get('verificationCode')?.invalid && loginForm.get('verificationCode')?.touched">
+              <mat-icon>verified_user</mat-icon>
+              <input id="login-code" formControlName="verificationCode" inputmode="numeric" maxlength="6" placeholder="请输入6位验证码" autocomplete="one-time-code" />
+            </div>
+            <button class="code-button" type="button" (click)="sendCode()" [disabled]="sendingCode || countdown > 0">
+              {{ sendingCode ? '发送中…' : countdown > 0 ? countdown + '秒' : '获取验证码' }}
+            </button>
+          </div>
+          <p class="field-error" *ngIf="loginForm.get('verificationCode')?.invalid && loginForm.get('verificationCode')?.touched">请输入6位验证码</p>
+        </ng-container>
+
+        <ng-template #passwordLogin>
+          <label class="field-label" for="login-password">登录密码</label>
+          <div class="auth-input" [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <mat-icon>lock_outline</mat-icon>
+            <input id="login-password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="请输入登录密码" autocomplete="current-password" />
+            <button class="visibility-button" type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? '显示密码' : '隐藏密码'">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <p class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">请输入登录密码</p>
+        </ng-template>
+
+        <button class="primary-button" type="submit" [disabled]="loading">
+          {{ loading ? '正在登录…' : '登录' }}
+          <mat-icon *ngIf="!loading">arrow_forward</mat-icon>
+        </button>
+      </form>
+
+      <p class="auth-footer">还没有账号？<a routerLink="/register">使用邀请码注册</a></p>
+    </div>
+
+    <p class="back-home"><a routerLink="/"><mat-icon>arrow_back</mat-icon>返回网站首页</a></p>
+  </section>
+</main>

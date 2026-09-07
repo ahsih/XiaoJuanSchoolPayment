@@ -2,7 +2,7 @@ import { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-downloa
 
 export type QuotePlanKind = 'course' | 'room';
 export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; occupant?: number; }
-export interface QuotePlanOption { id: string; name: string; details: string; }
+export interface QuotePlanOption { id: string; name: string; details: string; group?: string; }
 const DAY = 86400000;
 export const quoteMoney = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 
@@ -112,7 +112,7 @@ export class SchoolQuotePlan {
         icon: kind === 'course' ? '课' : '宿',
         label: `${kind === 'course' ? '课程费' : '住宿费'}${this.rows(kind).length > 1 ? index + 1 : ''}`,
         amount: `${quoteMoney(this.price(kind, row))} 美元`,
-        detailTitle: option?.name ?? '请选择类型',
+        detailTitle: option?.group ? `${option.group}｜${option.name}` : option?.name ?? '请选择类型',
         detailSubtitle: `${row.startDate.replace(/-/g, '/')}–${this.end(row).replace(/-/g, '/')} · ${row.weeks}周`,
         note: option?.details ?? '',
       };

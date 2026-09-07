@@ -99,9 +99,31 @@
   color: #1f74b5;
 }
 
+:host .cella-premium-page .premium-pricing-table .table-row {
+  grid-template-columns: minmax(170px, 0.8fr) minmax(120px, 0.45fr) minmax(0, 1.75fr);
+}
+
+:host .cella-premium-page .room-pricing-table {
+  margin-top: 24px;
+}
+
+:host .cella-premium-page .family-fee-table .table-row {
+  grid-template-columns: minmax(170px, 1fr) minmax(150px, 0.9fr) repeat(3, minmax(82px, 0.5fr));
+}
+
+:host .cella-special-stack {
+  display: grid;
+  gap: 26px;
+}
+
 @media (max-width: 860px) {
-  :host .cella-premium-page .course-fee-table {
+  :host .cella-premium-page .course-fee-table,
+  :host .cella-premium-page .premium-pricing-table {
     display: none;
+  }
+
+  :host .cella-premium-page .family-fee-table .table-row {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   :host .cella-premium-page .source-grid {

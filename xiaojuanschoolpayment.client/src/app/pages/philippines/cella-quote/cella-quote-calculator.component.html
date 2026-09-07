@@ -1,0 +1,123 @@
+<section class="cella-quote-shell" id="quote">
+  <div class="section-heading">
+    <span>CELLA 2026年完整报价</span>
+    <h2>{{ quoteHeading }}</h2>
+    <p>本页面只生成当前校区报价；每名学生可独立选择课程、房型、日期、报名身份和优惠，网页与报价图片使用同一套计算结果。</p>
+  </div>
+
+  <div class="quote-mode" role="group" aria-label="报价人数模式">
+    <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+    <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+    <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" (ngModelChange)="updateStudentCount()" /></label>
+  </div>
+  <p class="group-hint" *ngIf="quoteMode === 'group'">支持当前校区2–20人团体报价，每人的课程、房型和费用分别计算；接机、洗衣和房间押金只显示参考，不自动按人数累加。</p>
+
+  <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+    <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) : '当前学生方案' }}</h3>
+    <div class="student-fields">
+      <label>课程
+        <select [ngModel]="student.courseId" (ngModelChange)="updateCourse(student, $event)">
+          <option *ngFor="let course of student.courseOptions" [value]="course.id">{{ courseOptionLabel(course) }}</option>
+        </select>
+      </label>
+      <label *ngIf="!student.isFamilyPackage">房型
+        <select [(ngModel)]="student.roomId">
+          <option *ngFor="let room of student.roomOptions" [value]="room.id">{{ room.name }} · {{ formatMoney(room.fee) }}美元／4周</option>
+        </select>
+      </label>
+      <label *ngIf="student.isFamilyPackage">套餐房型
+        <input [value]="student.selectedCourse?.familyPackage?.room + '｜' + student.selectedCourse?.familyPackage?.occupants" disabled />
+      </label>
+      <label>入学／入住周日
+        <input type="date" [(ngModel)]="student.startDate" />
+      </label>
+      <label>{{ student.isFamilyPackage ? '家庭套餐周数' : '实际就读周数' }}
+        <select *ngIf="student.isFamilyPackage" [(ngModel)]="student.weeks"><option [ngValue]="4">4周</option><option [ngValue]="6">6周</option><option [ngValue]="8">8周</option></select>
+        <input *ngIf="!student.isFamilyPackage" type="number" min="1" max="24" step="1" [(ngModel)]="student.weeks" [disabled]="student.isSocialPromotion" />
+      </label>
+      <label *ngIf="!student.isFamilyPackage">旅游签证初始停留期
+        <select [(ngModel)]="student.initialVisaDays"><option [ngValue]="30">30天</option><option [ngValue]="59">59天</option></select>
+      </label>
+      <label *ngIf="!student.isFamilyPackage">报名身份
+        <select [(ngModel)]="student.enrollmentStatus">
+          <option value="new">新生首次报名</option>
+          <option value="transfer">转校学生</option>
+          <option value="extension">延期／续读学生</option>
+        </select>
+      </label>
+      <label *ngIf="!student.isFamilyPackage">优惠选择
+        <select [ngModel]="student.promotionMode" (ngModelChange)="updatePromotion(student, $event)">
+          <option value="standard">淡季／六人间特价＋长期优惠</option>
+          <option value="social-6-plus-2">6+2限时限额活动</option>
+          <option value="social-9-plus-3">9+3限时限额活动</option>
+        </select>
+      </label>
+    </div>
+    <label class="option-check" *ngIf="!student.isFamilyPackage"><input type="checkbox" [(ngModel)]="student.minorManagementSelected" /><span>计入未成年人管理费（25美元／周／人）<small>是否适用需按学生年龄向学校确认。</small></span></label>
+    <p class="family-package-notice" *ngIf="student.isFamilyPackage"><strong>家庭套餐按整包价计算：</strong>{{ student.selectedCourse?.note }}</p>
+
+    <div class="student-summary">
+      <div><span>实际日期</span><strong>{{ formatDate(student.startDate) }}–{{ formatDate(student.endDate) }}</strong></div>
+      <div><span>收费周数</span><strong>{{ student.paidWeeks }}周<span *ngIf="student.giftWeeks">，赠送{{ student.giftWeeks }}周</span></strong></div>
+      <div><span>学校费用小计</span><strong>{{ formatMoney(student.schoolTotal) }}美元</strong></div>
+      <p *ngIf="student.exchangeConfirmationNote">{{ student.exchangeConfirmationNote }}</p>
+    </div>
+  </article>
+
+  <div class="promotion-guide" *ngIf="hasRegularQuotes || hasFamilyPackages">
+    <section *ngIf="hasRegularQuotes">
+      <h3>2026年淡季与长期报名优惠</h3>
+      <p>{{ formatDate(lowSeasonStart) }}–{{ formatDate(lowSeasonEnd) }}。符合房型每个完整4周优惠100美元；Premium六人间活动价499美元／4周，与淡季100美元优惠互斥。8／12／16周长期优惠分别再减50／100／150美元。1／2／3周暂沿用现有40%／65%／85%估算，附件未确认，需向学校确认。</p>
+    </section>
+    <section *ngIf="hasRegularQuotes">
+      <h3>6+2／9+3社交媒体活动</h3>
+      <p>仅限本页面对应校区四人间及首次报名新生；课程和住宿分别按6周／9周收费，实际就读8周／12周，当地费用按实际周数收取，不与任何其他优惠同用。不同校区请分别进入各自页面生成报价。</p>
+      <ul><li *ngFor="let note of socialPromotionNotes">{{ note }}</li></ul>
+    </section>
+    <section *ngIf="hasFamilyPackages" class="family-package-guide">
+      <h3>Family Package家庭套餐</h3>
+      <p>仅在CELLA Premium页面提供。可选双人、三人及两种四人家庭组合，按附件确认的4周／6周／8周整包价计算；不再另加普通课程房型、注册费或套餐已含的当地费用。家庭成员年龄、课程组合、Main／Alicia房型与空房均需向学校确认。</p>
+    </section>
+  </div>
+
+  <div class="quote-breakdown" aria-label="学校费用明细">
+    <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.accent">
+      <span>{{ item.label }}<small *ngIf="item.detailTitle">{{ item.detailTitle }} · {{ item.detailSubtitle }}</small><small *ngIf="item.note">{{ item.note }}</small></span>
+      <strong>{{ item.amount }}</strong>
+    </div>
+  </div>
+
+  <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+  <div class="group-result">
+    <span>最终应付学校金额</span>
+    <strong>{{ formatMoney(schoolTotal) }}美元</strong>
+    <em>约人民币{{ schoolTotalCny.toLocaleString('zh-CN') }}元</em>
+    <small>{{ exchangeRateText }}；最终以支付当日汇率、学校空房和正式账单为准。</small>
+  </div>
+  <div class="group-actions">
+    <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button>
+    <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError"></app-quote-image-download-button>
+    <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+  </div>
+</section>
+
+<section class="local-fee-estimate" id="local-fees">
+  <div class="local-fee-heading"><div><span>到校后另付 · 按实际周数预估</span><h2>CELLA学杂费明细</h2></div></div>
+  <p class="local-fee-intro">{{ localFeeIntro }}</p>
+  <div class="local-fee-table-wrap">
+    <table class="local-fee-table">
+      <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+      <tbody><tr *ngFor="let fee of localFeeRows">
+        <th scope="row">{{ fee.label }}</th><td>{{ fee.unit }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ fee.amount }}</td><td>{{ fee.note }}</td>
+      </tr></tbody>
+      <tfoot>
+        <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ localFeeTotalText }}</td><td>{{ localFeeTotalNote }}</td></tr>
+        <tr *ngIf="hasRegularQuotes"><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约{{ localFeeTotalCny.toLocaleString('zh-CN') }}元</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="excluded-fee-list">
+    <h3>另行准备（不计入上方学杂费合计）</h3>
+    <div *ngFor="let fee of optionalFeeItems"><span>{{ fee.label }}<small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small *ngIf="fee.cnyAmount">{{ fee.cnyAmount }}</small></b></div>
+  </div>
+</section>

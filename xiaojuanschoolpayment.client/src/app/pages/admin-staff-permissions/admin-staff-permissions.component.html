@@ -1,0 +1,77 @@
+<div class="permissions-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">账户与权限</span>
+      <h1>员工与权限</h1>
+      <p>按员工和学校分配功能。未勾选的学校或功能，员工无法查看对应入口，也无法通过旧网址提交修改。</p>
+    </div>
+    <a class="invite-link" routerLink="/admin/invitations">
+      <mat-icon>person_add</mat-icon>
+      先邀请新员工
+    </a>
+  </header>
+
+  <div class="notice">
+    <mat-icon>verified_user</mat-icon>
+    <div><strong>推荐设置方式</strong><span>先选择员工，再勾选她负责的学校和工作内容；“发布更新”始终只保留给管理员。</span></div>
+  </div>
+
+  <div *ngIf="message" class="message" [class.success]="messageKind === 'success'" [class.error]="messageKind === 'error'">{{ message }}</div>
+
+  <div *ngIf="isLoading" class="state-card">正在加载员工权限…</div>
+
+  <div *ngIf="!isLoading && !staff.length" class="empty-card">
+    <mat-icon>group_add</mat-icon>
+    <h2>目前还没有员工账号</h2>
+    <p>请先在“邀请码管理”生成员工邀请码。员工完成注册后，就会出现在这里。</p>
+    <a routerLink="/admin/invitations">前往邀请码管理</a>
+  </div>
+
+  <main *ngIf="!isLoading && staff.length" class="permission-workspace">
+    <aside class="staff-list">
+      <h2>选择员工</h2>
+      <button *ngFor="let user of staff" type="button" [class.active]="selected?.userId === user.userId" (click)="select(user)">
+        <span class="avatar">{{ (user.name || user.account).slice(0, 1) }}</span>
+        <span><strong>{{ user.name || '未填写姓名' }}</strong><small>{{ user.account }}</small></span>
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </aside>
+
+    <section class="permission-panel" *ngIf="selected">
+      <div class="panel-heading">
+        <div><span>正在设置</span><h2>{{ selected.name || selected.account }}</h2></div>
+        <label class="school-search"><mat-icon>search</mat-icon><input [(ngModel)]="search" placeholder="搜索学校" /></label>
+      </div>
+
+      <div class="legend">
+        <span><strong>学校页面</strong> 学校介绍和网页文字</span>
+        <span><strong>课程价格</strong> 课程、住宿、杂费和报价规则</span>
+        <span><strong>图片备注</strong> 报价图片说明文字</span>
+        <span><strong>媒体</strong> 照片和视频</span>
+        <span><strong>学生档案</strong> 申请与文件</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>学校</th><th>全部</th><th>学校页面</th><th>课程价格</th><th>图片备注</th><th>媒体</th><th>学生档案</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let school of filteredSchools">
+              <td><strong>{{ school.schoolName }}</strong></td>
+              <td><input type="checkbox" [checked]="rowHasAll(school)" (change)="toggleAll(school, $any($event.target).checked)" [attr.aria-label]="school.schoolName + ' 全部权限'" /></td>
+              <td><input type="checkbox" [(ngModel)]="school.schoolContent" /></td>
+              <td><input type="checkbox" [(ngModel)]="school.pricing" /></td>
+              <td><input type="checkbox" [(ngModel)]="school.quoteImage" /></td>
+              <td><input type="checkbox" [(ngModel)]="school.media" /></td>
+              <td><input type="checkbox" [(ngModel)]="school.students" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="save-bar">
+        <span>员工只能保存和提交审核，不能发布到官网。</span>
+        <button type="button" (click)="save()" [disabled]="isSaving"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存权限' }}</button>
+      </footer>
+    </section>
+  </main>
+</div>

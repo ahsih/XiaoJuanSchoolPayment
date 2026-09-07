@@ -1,7 +1,6 @@
 export interface SchoolUserDTO {
-  email: string;
+  account: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  accessCode?: string; 
+  name: string;
+  invitationCode: string;
 }

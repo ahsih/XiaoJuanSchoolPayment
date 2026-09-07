@@ -11,6 +11,20 @@ import { ExchangeRateService } from '../../../../services/exchange-rate.service'
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import {
+  JIC_COURSE_FEES,
+  JIC_LOCAL_FEE_COPY,
+  JIC_PEAK_FEE_PER_WEEK,
+  JIC_REGISTRATION_FEE,
+  JIC_ROOM_FEES,
+  JicCampus,
+  JicCourseFee,
+  JicRoomFee,
+} from './jic-pricing';
+import { JicStudentQuote } from './jic-student-quote';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -20,21 +34,19 @@ interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
 interface CourseItem { name: string; type: string; lessons: string; suitable: string; }
-interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
-interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 interface SourceLink { label: string; url: string; }
 interface SidaJicReason { number: string; title: string; text: string; image: string; alt: string; }
 interface SidaJicTrustBadge { icon: string; label: string; }
+interface CampusPriceGroup<T> { campus: JicCampus; eyebrow: string; title: string; description: string; items: T[]; }
 
 @Component({
   selector: 'app-jic-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './jic-school-detail.component.html',
   styleUrls: [
@@ -42,6 +54,8 @@ interface SidaJicTrustBadge { icon: string; label: string; }
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../../../components/school-group-quote.css',
     './jic-school-detail.component.css',
   ],
 })
@@ -87,19 +101,14 @@ export class JicSchoolDetailComponent implements OnInit {
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100;
-  readonly registrationDiscount = 100;
-  seasonalFeePerWeek = 40;
+  registrationFee = JIC_REGISTRATION_FEE;
+  seasonalFeePerWeek = JIC_PEAK_FEE_PER_WEEK;
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  selectedCourseId = 'challenger-esl-lite';
-  selectedRoomId = 'challenger-quad-bunk';
-  selectedWeeks = 4;
-  selectedStartDate = '2026-09-06';
   quoteCalculated = false;
+  readonly localFeeIntro = JIC_LOCAL_FEE_COPY.intro;
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，适合把注意力放在长期学习和备考上。' },
@@ -159,52 +168,61 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'Challenger ESL Lite / Core / Standard', type: 'Challenger 基础与综合ESL', lessons: '4-6节一对一 + 2节小组课', suitable: 'Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
-    { name: 'Challenger IELTS Lite / Core / Standard', type: 'IELTS备考', lessons: '4-6节一对一 + 2节小组课', suitable: '雅思课程每周六安排模拟考试；Standard另含强制自习和30分钟词汇测试。' },
-    { name: 'Challenger IELTS Guarantee', type: 'IELTS保证班', lessons: '6节一对一 + 2节小组课 + 强制自习及词汇测试', suitable: '每周六模拟测试；保证班参加费另付PHP 18,000。' },
-    { name: 'Premium Speaking Starter 7 / Pro 8 / Master 8', type: '口语强化', lessons: '4-6节一对一 + 1节团体课 + 2节选修课', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
-    { name: 'Premium 主题英语TEP 8 / 9 / 10', type: '主题式ESL', lessons: '3-5节一对一 + 3节团体课 + 2节选修课', suitable: '适合喜欢通过生活主题练习英文表达的学生。' },
-    { name: 'Premium Active Senior 5 / 6', type: '40岁以上成人课程', lessons: '3-4节一对一 + 2节选修课', suitable: '适合40岁以上学生，兼顾英语学习、旅游与休闲。' },
-    { name: 'Premium 托业 / Working Holiday 8', type: '职业与考试方向', lessons: '3节一对一 + 3节团体课 + 2节选修课', suitable: '适合求职、打工度假、职场沟通或托业成绩目标。' },
-    { name: 'Premium Business Master 8', type: '商务英语', lessons: '6节一对一 + 2节选修课', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
-    { name: 'Premium 青少年 / 监护人课程', type: '亲子游学', lessons: '青少年4节一对一 + 2节团体课；监护人2节一对一', suitable: '青少年课程另含1小时写作活动和2小时监控晚自习。' },
+    { name: 'ESL Lite / Core / Standard · 轻量 / 核心 / 标准英语课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节小组课', suitable: 'Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
+    { name: 'IELTS Lite / Core / Standard · 雅思轻量 / 核心 / 标准课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节小组课', suitable: '雅思课程每周六安排模拟考试；Standard另含强制自习和30分钟词汇测试。' },
+    { name: 'IELTS Guarantee · 雅思保分班', type: 'Challenger 挑战校区（主校区）', lessons: '6节一对一 + 2节小组课 + 强制自习及词汇测试', suitable: '每周六模拟测试；保证班参加费另付PHP 18,000。' },
+    { name: 'Speaking Starter / Pro / Master · 口语入门 / 进阶 / 大师课程', type: 'Premium 高级校区', lessons: '4-6节一对一 + 1节团体课 + 2节选修课', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
+    { name: 'TEP 8 / 9 / 10 · 主题英语课程', type: 'Premium 高级校区', lessons: '3-5节一对一 + 3节团体课 + 2节选修课', suitable: '适合喜欢通过生活主题练习英文表达的学生。' },
+    { name: 'Active Senior 5 / 6 · 活力银发课程', type: 'Premium 高级校区', lessons: '3-4节一对一 + 2节选修课', suitable: '适合40岁以上学生，兼顾英语学习、旅游与休闲。' },
+    { name: 'TOEIC / Working Holiday 8 · 托业 / 打工度假英语课程', type: 'Premium 高级校区', lessons: '3节一对一 + 3节团体课 + 2节选修课', suitable: '适合求职、打工度假、职场沟通或托业成绩目标。' },
+    { name: 'Business Master 8 · 商务英语大师课程', type: 'Premium 高级校区', lessons: '6节一对一 + 2节选修课', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
+    { name: 'Junior / Guardian · 青少年 / 监护人课程', type: 'Premium 高级校区', lessons: '青少年4节一对一 + 2节团体课；监护人2节一对一', suitable: '青少年课程另含1小时写作活动和2小时监控晚自习。' },
   ];
 
-  courseFees: CourseFee[] = [
-    { id: 'challenger-esl-lite', name: 'Challenger ESL Lite', tuition: 760, suitable: '4节一对一 + 2节小组课' },
-    { id: 'challenger-esl-core', name: 'Challenger ESL Core', tuition: 860, suitable: '5节一对一 + 2节小组课' },
-    { id: 'challenger-esl-standard', name: 'Challenger ESL Standard', tuition: 960, suitable: '6节一对一 + 2节小组课' },
-    { id: 'challenger-ielts-lite', name: 'Challenger IELTS Lite', tuition: 960, suitable: '4节一对一 + 2节小组课；每周六模拟考试' },
-    { id: 'challenger-ielts-core', name: 'Challenger IELTS Core', tuition: 1010, suitable: '5节一对一 + 2节小组课；每周六模拟考试' },
-    { id: 'challenger-ielts-standard', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六模拟考试' },
-    { id: 'challenger-ielts-guarantee', name: 'Challenger IELTS Guarantee', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六模拟测试，保证班另付PHP 18,000' },
-    { id: 'premium-speaking-starter-7', name: 'Premium Speaking Starter 7', tuition: 800, suitable: '4节一对一 + 1节团体课 + 2节选修课' },
-    { id: 'premium-speaking-pro-8', name: 'Premium Speaking Pro 8', tuition: 975, suitable: '5节一对一 + 1节团体课 + 2节选修课' },
-    { id: 'premium-speaking-master-8', name: 'Premium Speaking Master 8', tuition: 1150, suitable: '6节一对一 + 1节团体课 + 2节选修课' },
-    { id: 'premium-tep-8', name: 'Premium 主题英语TEP 8', tuition: 800, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-    { id: 'premium-tep-9', name: 'Premium 主题英语TEP 9', tuition: 900, suitable: '4节一对一 + 3节团体课 + 2节选修课' },
-    { id: 'premium-tep-10', name: 'Premium 主题英语TEP 10', tuition: 1000, suitable: '5节一对一 + 3节团体课 + 2节选修课' },
-    { id: 'premium-active-senior-5', name: 'Premium Active Senior 5', tuition: 600, suitable: '3节一对一 + 2节选修课；适合40岁以上学生' },
-    { id: 'premium-active-senior-6', name: 'Premium Active Senior 6', tuition: 700, suitable: '4节一对一 + 2节选修课；适合40岁以上学生' },
-    { id: 'premium-working-holiday-8', name: 'Premium Working Holiday 8', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-    { id: 'premium-toeic', name: 'Premium 托业', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-    { id: 'premium-business-master-8', name: 'Premium Business Master 8', tuition: 1150, suitable: '6节一对一 + 2节选修课' },
-    { id: 'premium-junior', name: 'Premium 青少年课程', tuition: 1200, suitable: '4节一对一 + 2节团体课 + 写作活动及监控晚自习' },
-    { id: 'premium-guardian', name: 'Premium 监护人课程', tuition: 600, suitable: '2节一对一' },
-  ];
+  courseFees: JicCourseFee[] = JIC_COURSE_FEES.map((course) => ({ ...course }));
+  roomFees: JicRoomFee[] = JIC_ROOM_FEES.map((room) => ({ ...room }));
 
-  roomFees: RoomFee[] = [
-    { id: 'challenger-single', name: 'Challenger 单人间（标准）', fee: 1300, note: '主校区标准单人间' },
-    { id: 'challenger-twin', name: 'Challenger 双人间（标准）', fee: 800, note: '主校区标准双人间' },
-    { id: 'challenger-quad-duplex', name: 'Challenger 四人间（复式）', fee: 750, note: '主校区复式四人间' },
-    { id: 'challenger-quad-bunk', name: 'Challenger 四人间（上下铺）', fee: 600, note: '主校区上下铺四人间；默认预算参考' },
-    { id: 'premium-single-no-balcony', name: 'Premium 单人间（无阳台）', fee: 1250, note: '高级校区无阳台单人间' },
-    { id: 'premium-single-balcony', name: 'Premium 单人间（带阳台）', fee: 1450, note: '高级校区带阳台单人间' },
-    { id: 'premium-twin-no-balcony', name: 'Premium 双人间（无阳台）', fee: 850, note: '高级校区无阳台双人间' },
-    { id: 'premium-twin-balcony', name: 'Premium 双人间（带阳台）', fee: 950, note: '高级校区带阳台双人间' },
-    { id: 'premium-quad-no-balcony', name: 'Premium 四人间（无阳台）', fee: 650, note: '高级校区无阳台上下铺四人间' },
-    { id: 'premium-quad-balcony', name: 'Premium 四人间（带阳台）', fee: 750, note: '高级校区带阳台上下铺四人间' },
-  ];
+  get courseFeeGroups(): CampusPriceGroup<JicCourseFee>[] {
+    return [
+      {
+        campus: 'challenger',
+        eyebrow: 'CHALLENGER CAMPUS',
+        title: '挑战校区（主校区）课程',
+        description: 'ESL综合英语与IELTS雅思强化课程',
+        items: this.courseFees.filter((course) => course.campus === 'challenger'),
+      },
+      {
+        campus: 'premium',
+        eyebrow: 'PREMIUM CAMPUS',
+        title: '高级校区课程',
+        description: '口语、主题英语、职业英语、成人及亲子课程',
+        items: this.courseFees.filter((course) => course.campus === 'premium'),
+      },
+    ];
+  }
+
+  get roomFeeGroups(): CampusPriceGroup<JicRoomFee>[] {
+    return [
+      {
+        campus: 'challenger',
+        eyebrow: 'CHALLENGER CAMPUS',
+        title: '挑战校区（主校区）住宿',
+        description: '标准单人、双人及两种四人房',
+        items: this.roomFees.filter((room) => room.campus === 'challenger'),
+      },
+      {
+        campus: 'premium',
+        eyebrow: 'PREMIUM CAMPUS',
+        title: '高级校区住宿',
+        description: '单人、双人及四人房均分无阳台与带阳台房型',
+        items: this.roomFees.filter((room) => room.campus === 'premium'),
+      },
+    ];
+  }
+
+  readonly students: JicStudentQuote[] = [new JicStudentQuote(this)];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐 / 晨间准备', text: 'Challenger学生通常需要为词汇测试、课堂和自习安排预留稳定节奏。' },
@@ -213,22 +231,6 @@ export class JicSchoolDetailComponent implements OnInit {
     { time: '13:00 - 17:00', title: '下午课程与输出训练', text: 'Challenger偏备考与基础强化，Premium偏主题、口语和职业场景应用。' },
     { time: '18:00 - 19:00', title: '晚餐 / 个人时间', text: '不同校区门禁和生活规则不同，报名时应按当期规定确认。' },
     { time: '19:30 - 22:00', title: '词汇测试 / 自习 / 选修', text: 'Challenger公开资料中有晚间词汇测试和自习安排，适合需要制度推动的人。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，通常到校支付' },
-    { item: 'SSP I-Card', amount: 'PHP 4,500', note: '与SSP相关的I-Card申请费用' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
-    { item: '签证延签', amount: 'PHP 4,940 起', note: '8周首次延签参考，后续按周数递增' },
-    { item: 'ID Card', amount: 'PHP 200', note: '学生证或校内识别费用' },
-    { item: '宿舍保证金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '水电费', amount: 'PHP 3,000', note: '4周参考，按学校规则或实际使用调整' },
-    { item: '洗衣费', amount: 'PHP 1,200', note: '4周参考' },
-    { item: '管理费', amount: 'PHP 1,000', note: '4周参考' },
-    { item: '教材费', amount: 'PHP 1,500 - 1,900', note: '按ESL、TOEIC、IELTS等课程不同收取' },
-    { item: 'IELTS保证班参加费', amount: 'PHP 18,000', note: '仅IELTS Guarantee相关，报名前需确认规则' },
-    { item: 'Challenger特别选修课', amount: 'PHP 2,000', note: 'Challenger校区每4周参考' },
-    { item: '指定接机', amount: 'PHP 3,000', note: '马尼拉或克拉克指定接机日参考' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -313,8 +315,9 @@ export class JicSchoolDetailComponent implements OnInit {
       .getLatestCnyRates()
       .pipe(catchError(() => EMPTY))
       .subscribe((rates) => {
-        if (rates.usdToCny <= 0) return;
+        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
         this.usdToCny = rates.usdToCny;
+        this.phpPerCny = rates.phpPerCny;
         this.exchangeRateDate = rates.date;
         this.usingLiveExchangeRate = true;
       });
@@ -343,50 +346,116 @@ export class JicSchoolDetailComponent implements OnInit {
       .filter((lesson) => lesson.week === 4)
       .map((lesson) => {
         const id = this.createCourseId(lesson.name);
-        const verifiedSchedule = this.courseFees.find((course) => course.id === id)?.suitable;
+        const catalogCourse = this.courseFees.find((course) => course.id === id);
+        if (!catalogCourse) return null;
         return {
-          id,
+          ...catalogCourse,
           name: lesson.name,
           tuition: lesson.price,
-          suitable: verifiedSchedule || lesson.description || lesson.note || '请联系顾问确认课程安排',
+          suitable: catalogCourse.suitable || lesson.description || lesson.note || '请联系顾问确认课程安排',
         };
       })
+      .filter((course): course is JicCourseFee => !!course)
       .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
     if (databaseCourseFees.length > 0) {
       this.courseFees = databaseCourseFees;
-      if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) {
-        this.selectedCourseId = this.courseFees.find((course) => course.id === 'challenger-esl-lite')?.id ?? this.courseFees[0].id;
-      }
     }
 
     const databaseRoomFees = rooms
       .filter((room) => room.week === 4)
-      .map((room) => ({
-        id: this.createRoomId(room.name),
-        name: room.name,
-        fee: room.price,
-        note: room.description || '请联系顾问确认空房',
-      }))
+      .map((room) => {
+        const id = this.createRoomId(room.name);
+        const catalogRoom = this.roomFees.find((item) => item.id === id);
+        return catalogRoom ? { ...catalogRoom, name: room.name, fee: room.price, note: catalogRoom.note || room.description || '请联系顾问确认空房' } : null;
+      })
+      .filter((room): room is JicRoomFee => !!room)
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length > 0) {
       this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) {
-        this.selectedRoomId = this.roomFees.find((room) => room.id === 'challenger-quad-bunk')?.id ?? this.roomFees[0].id;
-      }
     }
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
-    // JIC 2026收费表明确旺季附加费为40美元/周。旧数据库记录不能覆盖新规则。
-    this.seasonalFeePerWeek = 40;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
+    // The supplied JIC sheet is authoritative for this fixed surcharge.
+    this.seasonalFeePerWeek = JIC_PEAK_FEE_PER_WEEK;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
   calculateQuote(): void { this.quoteCalculated = true; }
+  get studentCount(): number { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(new JicStudentQuote(this));
+    }
+  }
+  setQuoteMode(value: 'single' | 'group'): void {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+  setStudentCampus(student: JicStudentQuote, campus: JicCampus): void { student.setCampus(campus); }
+  get activeStudents(): JicStudentQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+  get quoteHeading(): string {
+    return this.quoteMode === 'single' ? `JIC ${this.students[0].campus === 'challenger' ? '挑战校区' : '高级校区'}${this.selectedWeeks}周报价` : `JIC ${this.activeStudents.length}人报价`;
+  }
+  get quoteFormHeading(): string {
+    return this.quoteMode === 'single'
+      ? 'JIC Challenger / Premium 两校区报价'
+      : `JIC Challenger / Premium ${this.activeStudents.length}人报价`;
+  }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex((student) => !!student.quoteError);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quoteError}`;
+  }
+  get selectedWeeks(): number { return this.students[0].courseWeeks; }
+  get selectedStartDate(): string { return this.students[0].arrivalDate; }
+  get earliestStartDate(): string { return this.activeStudents.map((student) => student.arrivalDate).filter(Boolean).sort()[0] ?? ''; }
+  get quoteImageHeroSrc(): string {
+    const campuses = new Set(this.activeStudents.map((student) => student.campus));
+    if (campuses.size === 1 && campuses.has('premium')) {
+      return '/assets/philippines/jic-premium-campus-overview.jpg';
+    }
+    if (campuses.size === 1 && campuses.has('challenger')) {
+      return '/assets/philippines/jic-main-campus-overview.png';
+    }
+    return '/assets/philippines/jic-campus-hero.jpg';
+  }
+  get schoolPaymentItems() {
+    return [
+      {
+        icon: '注',
+        label: '注册费',
+        amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
+        note: `100美元／人且每人只收一次；长期学生、老学员返校或在校延长在“注册费优惠”行抵扣。`,
+      },
+      ...groupPaymentLines(this.activeStudents, false),
+    ];
+  }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get exchangeRateSummary(): string {
+    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
+    return `参考汇率：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元，1元≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
+  }
+  get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
+  get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
+  get optionalFeeItems() {
+    const count = this.activeStudents.length;
+    const total = 3000 * count;
+    return [{
+      label: '宿舍押金（可退）',
+      amount: `${this.formatPhp(total)}${count > 1 ? `（3,000比索／人 × ${count}人）` : ''}`,
+      cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+      note: `${JIC_LOCAL_FEE_COPY.deposit} 多人报价按每人一笔列为参考。`,
+    }];
+  }
   scrollToSection(target: string, event?: Event): void {
     event?.preventDefault();
     const targetElement = document.getElementById(target);
@@ -402,175 +471,67 @@ export class JicSchoolDetailComponent implements OnInit {
       ? this.galleryImages
       : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
-  get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
-  get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
-  get peakSeasonWeeks(): number {
-    const ranges: Array<[string, string]> = [
-      ['2026-06-28', '2026-08-22'],
-      ['2027-06-27', '2027-08-21'],
-    ];
-    const arrival = this.parseDate(this.selectedStartDate);
-    if (!arrival) return 0;
-
-    let coveredWeeks = 0;
-    for (let week = 0; week < this.selectedWeeks; week += 1) {
-      const weekStart = new Date(arrival);
-      weekStart.setDate(arrival.getDate() + week * 7);
-      const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekStart.getDate() + 6);
-      if (ranges.some(([from, to]) => this.dateRangesOverlap(weekStart, weekEnd, from, to))) {
-        coveredWeeks += 1;
-      }
-    }
-    return coveredWeeks;
-  }
-  get isPeakSeason(): boolean { return this.peakSeasonWeeks > 0; }
-  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
-
-  get fourWeekBlocks(): number { return Math.floor(this.selectedWeeks / 4); }
-  get selectedRoomCategory(): 'single' | 'twin' | 'quad' {
-    const roomName = `${this.selectedRoomId} ${this.selectedRoom.name}`.toLowerCase();
-    if (roomName.includes('quad') || roomName.includes('四人')) return 'quad';
-    if (roomName.includes('twin') || roomName.includes('双人')) return 'twin';
-    return 'single';
-  }
-  get offSeasonPromotionYear(): 2026 | 2027 | null {
-    const arrival = this.parseDate(this.selectedStartDate);
-    if (!arrival || this.selectedWeeks < 4) return null;
-    if (this.dateInRange(arrival, '2026-08-23', '2027-01-09')) return 2026;
-    if (
-      this.dateInRange(arrival, '2027-02-21', '2027-06-26') ||
-      this.dateInRange(arrival, '2027-08-22', '2028-01-08')
-    ) return 2027;
-    return null;
-  }
-  get offSeasonDiscountPerBlock(): number {
-    if (this.offSeasonPromotionYear === 2026) return this.selectedRoomCategory === 'quad' ? 150 : 50;
-    if (this.offSeasonPromotionYear === 2027) return this.selectedRoomCategory === 'quad' ? 100 : 50;
-    return 0;
-  }
-  get offSeasonDiscountAmount(): number { return this.offSeasonDiscountPerBlock * this.fourWeekBlocks; }
-  get offSeasonDiscountLabel(): string {
-    return this.offSeasonPromotionYear ? `${this.offSeasonPromotionYear}淡季优惠` : '常规淡季优惠';
-  }
-
-  get longTermDiscountAmount(): number {
-    if (this.selectedWeeks >= 24) return 600;
-    if (this.selectedWeeks >= 20) return 500;
-    if (this.selectedWeeks >= 16) return 400;
-    if (this.selectedWeeks >= 12) return 300;
-    return 0;
-  }
-
-  get holidayDiscountAmount(): number {
-    if (this.selectedWeeks < 4 || this.selectedRoomCategory === 'single') return 0;
-    const arrival = this.parseDate(this.selectedStartDate);
-    if (!arrival) return 0;
-    const qualifiesFor2026Holiday =
-      this.dateInRange(arrival, '2026-11-29', '2026-12-13') ||
-      this.dateInRange(arrival, '2026-12-27', '2027-01-10');
-    if (qualifiesFor2026Holiday) return 200;
-    const qualifiesFor2027Holiday =
-      this.dateInRange(arrival, '2027-11-28', '2027-12-12') ||
-      this.dateInRange(arrival, '2027-12-26', '2028-01-09');
-    return qualifiesFor2027Holiday ? 150 : 0;
-  }
-
-  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
-  get totalDiscountAmount(): number {
-    return this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longTermDiscountAmount + this.holidayDiscountAmount;
-  }
-  get quoteBeforeDiscounts(): number {
-    return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge;
-  }
-  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
-  }
-  get exchangeRateSummary(): string {
-    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
-    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
-  }
-
   get quoteImageData() {
-    const periods = Math.max(1, Math.ceil(this.selectedWeeks / 4));
-    const visaExtensions = Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4));
-    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
-    const isChallenger = this.selectedRoomId.startsWith('challenger-');
-    const isGuarantee = this.selectedCourseId.includes('guarantee');
-    const localRows = [
-      { label: 'SSP', unit: 'PHP 7,800', quantity: '1', total: 7800, note: '特别学习许可，通常到校支付。' },
-      { label: 'SSP I-Card', unit: 'PHP 4,500', quantity: '1', total: 4500, note: '与SSP同时办理的一次性费用。' },
-      { label: 'ACR I-Card', unit: 'PHP 4,000', quantity: String(acrQuantity), total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理。' },
-      { label: '水电费', unit: 'PHP 3,000/4周', quantity: String(periods), total: 3000 * periods, note: '按每4周参考，实际按学校规则调整。' },
-      { label: '管理费', unit: 'PHP 1,000/4周', quantity: String(periods), total: 1000 * periods, note: '按每4周计算。' },
-      { label: '洗衣费', unit: 'PHP 1,200/4周', quantity: String(periods), total: 1200 * periods, note: '按每4周参考。' },
-      { label: '教材费', unit: 'PHP 1,700/4周', quantity: String(periods), total: 1700 * periods, note: '按课程调整，ESL / TOEIC Lite参考。' },
-      { label: '签证延签', unit: 'PHP 4,940/次起', quantity: String(visaExtensions), total: 4940 * visaExtensions, note: '超过8周后按预计延签次数计算。' },
-      { label: 'Challenger特别选修课', unit: 'PHP 2,000/4周', quantity: String(isChallenger ? periods : 0), total: isChallenger ? 2000 * periods : 0, note: '仅Challenger校区按每4周参考。' },
-      { label: 'IELTS保证班参加费', unit: 'PHP 18,000', quantity: String(isGuarantee ? 1 : 0), total: isGuarantee ? 18000 : 0, note: '仅IELTS Guarantee课程适用。' },
+    const paymentItems = [
+      this.schoolPaymentItems[0],
+      ...(['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems()
+        .filter((item) => item.icon === icon)
+        .map((item) => ({
+          ...item,
+          label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
+        })))),
+      ...groupPaymentLines(this.activeStudents.map((student) => ({ paymentLines: student.paymentLines.filter((line) => line.value !== 0) })), true),
     ];
-    const localTotal = localRows.reduce((sum, row) => sum + row.total, 0);
-    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
-
-    return buildPhilippinesDetailedQuote({
+    const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`] : []);
+    const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'JIC',
       schoolName: '菲律宾碧瑶JIC语言学校',
       filePrefix: 'JIC',
-      heroSrc: '/assets/philippines/jic-campus-hero.jpg',
+      heroSrc: this.quoteImageHeroSrc,
       weeks: this.selectedWeeks,
-      startDate: this.selectedStartDate,
+      startDate: this.earliestStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
-      paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '一次性学校注册费' },
-        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
-        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周` },
-        { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: `免注册费、${this.offSeasonDiscountLabel}、长期及节日优惠按条件自动计算`, accent: true },
-      ],
-      localFeeItems: localRows.map((row) => ({ label: row.label, unit: row.unit, quantity: row.quantity, amount: php(row.total), note: row.note })),
-      localFeeTotal: localTotal,
-      localFeeCny: Math.round(localTotal / this.phpPerCny),
-      localFeeNote: '不含可退宿舍保证金及指定接机，实际以到校缴费为准。',
-      optionalFeeItems: [
-        { label: '指定接机', amount: 'PHP 3,000', note: '按需选择，不计入学杂费合计。' },
-        { label: '宿舍保证金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还。' },
-      ],
-      ruleNotes: [
-        '旺季按实际覆盖周数收取；淡季、长期及节日优惠按入学日期、房型和周数自动计算。',
-        '不同校区的课程、房型和当地费用不同，须按当前选择逐项核对。',
-      ],
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+      paymentItems,
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.estimatedLocalFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: this.estimatedLocalFeeCny,
+      localFeeNote: `${this.localFeeIntro} 已选择的接机计入本表；可退宿舍押金另列。`,
+      optionalFeeItems: this.optionalFeeItems,
+      // As with CIA, applied promotions and surcharges belong beside their amounts
+      // in the school-payment table instead of being repeated in the footer.
+      ruleNotes: [],
     });
+    const result = applySchoolQuoteImageLayout({
+      ...quote,
+      localFeeTitle: '到校后学杂费明细',
+      importantNotes: [
+        ...warnings,
+        '课程和住宿最低4周；入学及入住按周日，离校及退房按周六。',
+      ],
+    }, 'JIC', this.selectedWeeks, this.earliestStartDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${this.earliestStartDate.replace(/-/g, '')}.png`,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined },
+    };
   }
 
   formatUsd(value: number): string {
-    return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
+    return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
+  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
   private orderIndex(order: string[], value: string): number {
     const index = order.indexOf(value);
     return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-  }
-  private parseDate(value: string): Date | null {
-    const date = new Date(`${value}T12:00:00`);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-  private dateInRange(date: Date, from: string, to: string): boolean {
-    const rangeStart = this.parseDate(from);
-    const rangeEnd = this.parseDate(to);
-    return !!rangeStart && !!rangeEnd && date >= rangeStart && date <= rangeEnd;
-  }
-  private dateRangesOverlap(start: Date, end: Date, from: string, to: string): boolean {
-    const rangeStart = this.parseDate(from);
-    const rangeEnd = this.parseDate(to);
-    return !!rangeStart && !!rangeEnd && start <= rangeEnd && end >= rangeStart;
   }
   private createCourseId(name: string): string {
     if (name.includes('托业')) return 'premium-toeic';
@@ -590,14 +551,5 @@ export class JicSchoolDetailComponent implements OnInit {
     if (name.includes('Premium') && name.includes('四人') && name.includes('无阳台')) return 'premium-quad-no-balcony';
     if (name.includes('Premium') && name.includes('四人') && name.includes('带阳台')) return 'premium-quad-balcony';
     return this.slugifyPriceKey(name);
-  }
-  private currencyCodeForDisplay(code?: string): string {
-    return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase();
-  }
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string {
-    return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`;
-  }
-  private cleanFeeDescription(description?: string): string {
-    return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准';
   }
 }

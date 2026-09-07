@@ -1428,26 +1428,78 @@
   line-height: 1.55;
 }
 
-.all-schools-heading > a {
-  display: inline-flex;
+.directory-search {
+  display: flex;
+  flex: 0 1 390px;
   align-items: center;
-  gap: 5px;
-  min-height: 40px;
-  padding: 0 15px;
-  border: 1px solid #f2a678;
-  border-radius: 7px;
-  background: #fff;
-  color: var(--orange-dark);
-  font-size: 10px;
-  font-weight: 900;
-  text-decoration: none;
-  white-space: nowrap;
+  gap: 9px;
+  width: min(390px, 100%);
+  min-height: 46px;
+  padding: 0 8px 0 13px;
+  border: 1px solid #d7e4dc;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 7px 18px rgba(35, 84, 64, 0.07);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
-.all-schools-heading > a mat-icon {
-  width: 14px;
-  height: 14px;
-  font-size: 14px;
+.directory-search:focus-within {
+  border-color: #e99660;
+  box-shadow: 0 0 0 3px rgba(239, 142, 82, 0.13), 0 8px 20px rgba(35, 84, 64, 0.08);
+}
+
+.directory-search > mat-icon {
+  width: 21px;
+  height: 21px;
+  color: #287055;
+  font-size: 21px;
+}
+
+.directory-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #214d3c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.directory-search input::placeholder {
+  color: #96a29c;
+  font-weight: 600;
+}
+
+.directory-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.directory-search button {
+  display: grid;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: #f5f8f6;
+  color: #718078;
+  cursor: pointer;
+}
+
+.directory-search button:hover {
+  background: #edf3ef;
+  color: #255d47;
+}
+
+.directory-search button mat-icon {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
 }
 
 .directory-toolbar {
@@ -1593,6 +1645,48 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   padding: 0 28px 30px;
+}
+
+.directory-empty {
+  margin: 0 28px 30px;
+  padding: 42px 24px;
+  border: 1px dashed #ccdcd3;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #65736c;
+  text-align: center;
+}
+
+.directory-empty mat-icon {
+  width: 34px;
+  height: 34px;
+  color: #85a092;
+  font-size: 34px;
+}
+
+.directory-empty strong {
+  display: block;
+  margin-top: 7px;
+  color: #214d3c;
+  font-size: 16px;
+}
+
+.directory-empty p {
+  margin: 6px 0 14px;
+  font-size: 12px;
+}
+
+.directory-empty button {
+  min-height: 36px;
+  padding: 0 15px;
+  border: 1px solid #d3e0d8;
+  border-radius: 8px;
+  background: #fff;
+  color: #256d50;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
 }
 
 .directory-school-card {
@@ -1929,7 +2023,9 @@
 .school-image:focus-visible,
 .school-content a:focus-visible,
 .school-directory:focus-visible,
-.all-schools-heading a:focus-visible,
+.directory-search input:focus-visible,
+.directory-search button:focus-visible,
+.directory-empty button:focus-visible,
 .directory-school-card:focus-visible,
 .advisor-info a:focus-visible {
   outline: 3px solid rgba(255, 104, 40, 0.3);
@@ -2391,6 +2487,11 @@
     padding: 18px 15px 13px;
   }
 
+  .directory-search {
+    flex-basis: auto;
+    width: 100%;
+  }
+
   .directory-toolbar {
     align-items: stretch;
     flex-direction: column;
@@ -2411,6 +2512,11 @@
     grid-template-columns: 1fr;
     gap: 10px;
     padding: 0 15px 18px;
+  }
+
+  .directory-empty {
+    margin: 0 15px 18px;
+    padding: 32px 18px;
   }
 
   .directory-school-card {

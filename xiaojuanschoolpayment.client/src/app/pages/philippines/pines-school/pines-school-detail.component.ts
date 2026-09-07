@@ -10,8 +10,12 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
-import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { PinesStudentQuote, pinesPriceMultiplier } from './pines-student-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -24,7 +28,8 @@ interface CourseItem { name: string; type: string; lessons: string; suitable: st
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
+type PinesCampusCode = 'main' | 'ielts';
+interface CampusCatalogGroup<T> { code: PinesCampusCode; title: string; description: string; items: T[]; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -46,7 +51,7 @@ interface PinesRoomPlan { title: string; description: string; segments: PinesRoo
 @Component({
   selector: 'app-pines-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SchoolQuotePlanComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './pines-school-detail.component.html',
   styleUrls: [
@@ -54,6 +59,9 @@ interface PinesRoomPlan { title: string; description: string; segments: PinesRoo
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../philippines-local-fee-table.css',
+    '../../../components/school-group-quote.css',
     './pines-school-detail.component.css',
   ],
 })
@@ -83,27 +91,26 @@ export class PinesSchoolDetailComponent implements OnInit {
     'ielts-guarantee-12-weeks-6-5-7-0',
   ];
   private readonly roomFeeOrder = [
-    'main-sextuple', 'main-5b-solo', 'main-quad', 'main-twin-b', 'main-twin-a', 'main-single-c', 'main-single-b', 'main-single-a',
-    'ielts-quad', 'ielts-triple', 'ielts-twin', 'ielts-single-b', 'ielts-single-a',
+    'main-single-a', 'main-single-b', 'main-single-c', 'main-twin-a', 'main-twin-b', 'main-family-2-3', 'main-quad', 'main-5b-solo', 'main-sextuple',
+    'ielts-single-a', 'ielts-single-b', 'ielts-single-c', 'ielts-twin', 'ielts-triple', 'ielts-quad', 'ielts-5b-solo',
   ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly registrationDiscount = 100;
   readonly sidaDiscountRate = 0.95;
   readonly offSeasonDiscountPerFourWeeks = 150;
-  readonly longStayDiscount = 100;
+  readonly twelveWeekDiscount = 100;
+  readonly longStayDiscounts: Readonly<Record<number, number>> = { 16: 100, 20: 150, 24: 200 };
   seasonalFeePerWeek = 40;
+  readonly peakSeasonRanges = [
+    { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
+    { label: '2027旺季（按2026年8周档期推算）', start: '2027-06-27', end: '2027-08-21' },
+  ] as const;
   usdToCny = 7.2;
-  phpPerCny = 7.75;
+  phpPerCny = 9;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
-  readonly weekOptions = [2, 3, 4, 8, 12, 16, 20, 24];
-  selectedCourseId = 'light-esl-4';
-  selectedRoomId = 'main-sextuple';
-  selectedWeeks = 4;
-  selectedStartDate = '2026-09-06';
   quoteCalculated = false;
   roomAvailabilityLoading = false;
   roomAvailabilityError = '';
@@ -207,20 +214,65 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
 
   roomFees: RoomFee[] = [
-    { id: 'main-sextuple', name: '主校区六人房（上下床）', fee: 570, note: '主校区预算房型' },
-    { id: 'main-5b-solo', name: '主校区5B Solo', fee: 650, note: '舒适多人房，需确认空房' },
-    { id: 'main-quad', name: '主校区四人房（上下床）', fee: 700, note: '主校区多人房' },
-    { id: 'main-twin-b', name: '主校区双人房B', fee: 840, note: '双人房选择' },
-    { id: 'main-twin-a', name: '主校区双人房A', fee: 870, note: '双人房选择' },
-    { id: 'main-single-c', name: '主校区单人房C', fee: 970, note: '主校区单人房入门选择' },
-    { id: 'main-single-b', name: '主校区单人房B', fee: 1150, note: '套间房型；两房共用客厅，B房内有独立卫生间' },
     { id: 'main-single-a', name: '主校区单人房A', fee: 1250, note: '主校区标准单人房' },
-    { id: 'ielts-quad', name: '雅思校区四人房（上下床）', fee: 630, note: '雅思校区预算房型' },
-    { id: 'ielts-triple', name: '雅思校区三人房', fee: 680, note: '雅思校区三人房' },
-    { id: 'ielts-twin', name: '雅思校区双人房', fee: 870, note: '雅思校区双人房' },
-    { id: 'ielts-single-b', name: '雅思校区单人房B', fee: 1150, note: '一楼房型，环境相对潮湿' },
+    { id: 'main-single-b', name: '主校区单人房B', fee: 1150, note: '套间房型；两房共用客厅，B房内有独立卫生间' },
+    { id: 'main-single-c', name: '主校区单人房C', fee: 970, note: '主校区单人房入门选择' },
+    { id: 'main-twin-a', name: '主校区双人房A', fee: 870, note: '双人房选择' },
+    { id: 'main-twin-b', name: '主校区双人房B', fee: 840, note: '双人房选择' },
+    { id: 'main-family-2-3', name: '主校区亲子2–3人房', fee: 780, note: '双人间／加床；价格按每位学生计算' },
+    { id: 'main-quad', name: '主校区四人房（上下床）', fee: 700, note: '主校区多人房' },
+    { id: 'main-5b-solo', name: '主校区5B Solo', fee: 650, note: '舒适多人房，需确认空房' },
+    { id: 'main-sextuple', name: '主校区六人房（上下床）', fee: 570, note: '主校区预算房型' },
     { id: 'ielts-single-a', name: '雅思校区单人房A', fee: 1250, note: '由双人房升级为单人入住' },
+    { id: 'ielts-single-b', name: '雅思校区单人房B', fee: 1150, note: '一楼房型，环境相对潮湿' },
+    { id: 'ielts-single-c', name: '雅思校区单人房C', fee: 970, note: '' },
+    { id: 'ielts-twin', name: '雅思校区双人房', fee: 870, note: '雅思校区双人房' },
+    { id: 'ielts-triple', name: '雅思校区三人房', fee: 680, note: '雅思校区三人房' },
+    { id: 'ielts-quad', name: '雅思校区四人房（上下床）', fee: 630, note: '雅思校区预算房型' },
+    { id: 'ielts-5b-solo', name: '雅思校区5B Solo', fee: 650, note: '' },
   ];
+
+  get courseFeeGroups(): CampusCatalogGroup<CourseFee>[] {
+    return [
+      {
+        code: 'main',
+        title: '主校区 Main Campus',
+        description: '综合英语、口语、TOEIC、商务英语及亲子课程',
+        items: this.courseFees.filter((course) => this.campusCode(course.id) === 'main'),
+      },
+      {
+        code: 'ielts',
+        title: '雅思校区 IELTS Campus',
+        description: 'Pre-IELTS、IELTS、IELTS Intensive及雅思保证班',
+        items: this.courseFees.filter((course) => this.campusCode(course.id) === 'ielts'),
+      },
+    ];
+  }
+
+  get roomFeeGroups(): CampusCatalogGroup<RoomFee>[] {
+    return [
+      {
+        code: 'main',
+        title: '主校区 Main Campus',
+        description: '主校区住宿，仅与主校区课程组合',
+        items: this.roomFees.filter((room) => this.campusCode(room.id) === 'main'),
+      },
+      {
+        code: 'ielts',
+        title: '雅思校区 IELTS Campus',
+        description: '雅思校区住宿，仅与雅思校区课程组合',
+        items: this.roomFees.filter((room) => this.campusCode(room.id) === 'ielts'),
+      },
+    ];
+  }
+
+  catalogCourseDetails(value: string): string { return value.replace(/^(主校区|雅思校区)｜/u, ''); }
+  catalogRoomName(value: string): string { return value.replace(/^(主校区|雅思校区)/u, ''); }
+
+  readonly students: PinesStudentQuote[] = [new PinesStudentQuote(this)];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
+  readonly localFeeIntro = '以下费用以比索计价，由学校及相关部门收取；校内预存款、房间押金和洗衣服务另列，不计入学杂费及人民币预估合计。';
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐 / 可选晨间学习', text: 'Main Campus可按课程和EB PRO安排晨间学习或单词测试。' },
@@ -269,7 +321,7 @@ export class PinesSchoolDetailComponent implements OnInit {
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶PINES语言学校适合零基础吗？', answer: '可以先看Main Campus的Light ESL、Power Speaking或Intensive ESL。完全零基础不建议直接报名雅思保证班，因为保证班有入学分数门槛。' },
     { question: 'Main Campus和IELTS Campus怎么选？', answer: '想提升基础口语、综合英语、TOEIC或亲子方向，优先看Main Campus；已有雅思目标和一定基础，再考虑IELTS Campus。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后仍需支付SSP、SSP I-Card、ACR I-Card、签证延签、教材、水电、押金等当地费用。' },
+    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。学校付款部分显示课程、住宿、附加费和优惠；到校后学杂费另列SSP、SSP-E Card、ACR-I Card、签证续签、水电和学生证，可选接机也会按当前选择计入。校内预存款、房间押金和洗衣服务需另行准备，不计入学杂费合计。' },
     { question: 'PINES雅思保证班有什么要求？', answer: '官方资料列出8或12周、5.5到7.0目标分数、入学分数门槛、每周六模考、95%出勤、100%参加模考等规则，报名时需按目标分数逐项确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名PINES，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
@@ -695,7 +747,10 @@ export class PinesSchoolDetailComponent implements OnInit {
 
     const databaseRoomFees = rooms
       .filter((room) => room.week === 4)
-      .map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' }))
+      .map((room) => {
+        const id = this.createRoomId(room.name);
+        return { id, name: room.name, fee: room.price, note: this.roomNote(id, room.description) };
+      })
       .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (this.roomFeeOrder.every((id) => databaseRoomFees.some((room) => room.id === id))) {
       this.roomFees = databaseRoomFees.filter((room) => this.roomFeeOrder.includes(room.id));
@@ -721,142 +776,196 @@ export class PinesSchoolDetailComponent implements OnInit {
   }
 
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
+  get studentCount() { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(new PinesStudentQuote(this));
+    }
+  }
+  setQuoteMode(value: 'single' | 'group') {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+  get activeStudents() {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+  get quotePlan() { return this.students[0].quotePlan; }
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get selectedWeeks() { return this.quotePlan.courseWeeks; }
+  set selectedWeeks(value: number) {
+    this.quotePlan.courses[0].weeks = value;
+    this.quotePlan.rooms[0].weeks = value;
+  }
+  get selectedStartDate() { return this.quotePlan.startDate; }
+  set selectedStartDate(value: string) {
+    this.quotePlan.courses[0].startDate = value;
+    this.quotePlan.rooms[0].startDate = value;
+  }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
-  get selectedCourseCampus(): 'main' | 'ielts' { return this.selectedCourseId.includes('ielts') ? 'ielts' : 'main'; }
+  get selectedCourseCampus(): PinesCampusCode { return this.campusCode(this.selectedCourseId); }
   get availableRoomFees(): RoomFee[] { return this.roomFees.filter((room) => room.id.startsWith(`${this.selectedCourseCampus}-`)); }
   get selectedRoom(): RoomFee { return this.availableRoomFees.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomFees[0] ?? this.roomFees[0]; }
-  get minimumSelectedCourseWeeks(): number {
-    if (this.selectedCourseId.includes('guarantee-12-weeks')) return 12;
-    if (this.selectedCourseId.includes('guarantee-8-weeks')) return 8;
-    return 2;
-  }
-  onCourseChange(): void {
-    if (this.selectedWeeks < this.minimumSelectedCourseWeeks) this.selectedWeeks = this.minimumSelectedCourseWeeks;
-    if (!this.availableRoomFees.some((room) => room.id === this.selectedRoomId)) {
-      this.selectedRoomId = this.selectedCourseCampus === 'ielts' ? 'ielts-quad' : 'main-sextuple';
-    }
-  }
-  get selectedWeekMultiplier(): number {
-    if (this.selectedWeeks === 2) return 0.65;
-    if (this.selectedWeeks === 3) return 0.85;
-    return this.selectedWeeks / 4;
-  }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.selectedWeekMultiplier; }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * this.selectedWeekMultiplier; }
-  get peakSeasonWeeks(): number {
-    const arrival = this.parseDate(this.selectedStartDate);
-    if (!arrival) return 0;
-    let coveredWeeks = 0;
-    for (let week = 0; week < this.selectedWeeks; week += 1) {
-      const weekStart = new Date(arrival);
-      weekStart.setDate(arrival.getDate() + week * 7);
-      const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekStart.getDate() + 6);
-      if (this.dateRangesOverlap(weekStart, weekEnd, '2026-06-28', '2026-08-23')) coveredWeeks += 1;
-    }
-    return coveredWeeks;
-  }
-  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
-  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
-  get sidaDiscountAmount(): number { return (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.sidaDiscountRate); }
-  get fourWeekBlocks(): number { return Math.floor(this.selectedWeeks / 4); }
-  get offSeasonEligibleBlocks(): number {
-    const arrival = this.parseDate(this.selectedStartDate);
-    const lastEligibleDate = this.parseDate('2026-12-31');
-    if (!arrival || !lastEligibleDate) return 0;
-    let blocks = 0;
-    for (let block = 0; block < this.fourWeekBlocks; block += 1) {
-      const blockStart = new Date(arrival);
-      blockStart.setDate(arrival.getDate() + block * 28);
-      const blockEnd = new Date(blockStart);
-      blockEnd.setDate(blockStart.getDate() + 27);
-      if (blockEnd <= lastEligibleDate && !this.dateRangesOverlap(blockStart, blockEnd, '2026-06-28', '2026-08-23')) blocks += 1;
-    }
-    return blocks;
-  }
-  get offSeasonDiscountAmount(): number { return this.offSeasonEligibleBlocks * this.offSeasonDiscountPerFourWeeks; }
-  get longStayDiscountAmount(): number { return this.selectedWeeks >= 12 ? this.longStayDiscount : 0; }
+  get selectedWeekMultiplier(): number { return pinesPriceMultiplier(this.quotePlan.courses[0].weeks); }
+  get tuitionForSelectedWeeks(): number { return this.students[0].tuition; }
+  get roomFeeForSelectedWeeks(): number { return this.students[0].accommodation; }
+  get peakSeasonWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.peakWeeks, 0); }
+  get seasonalSurcharge(): number { return this.activeStudents.reduce((sum, student) => sum + student.seasonalSurcharge, 0); }
+  get registrationDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + student.registrationDiscount, 0); }
+  get sidaDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + student.sidaDiscount, 0); }
+  get offSeasonDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + student.offSeasonDiscount, 0); }
+  get twelveWeekDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + student.twelveWeekDiscount, 0); }
+  get longStayDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + student.longStayDiscount, 0); }
   get totalDiscountAmount(): number {
-    return this.registrationDiscountAmount + this.sidaDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscountAmount;
+    return this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.twelveWeekDiscountAmount + this.longStayDiscountAmount + this.sidaDiscountAmount;
   }
-  get quoteBeforeDiscounts(): number { return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge; }
-  get quoteUsd(): number { return Math.max(0, this.quoteBeforeDiscounts - this.totalDiscountAmount); }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`; }
+  get quoteBeforeDiscounts(): number {
+    return this.activeStudents.reduce((sum, student) => sum + student.registration + student.tuition + student.accommodation + student.seasonalSurcharge, 0);
+  }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    if (!this.usingLiveExchangeRate) return '人民币金额正在按最新参考汇率更新';
-    return `人民币金额按最新参考汇率预估（${this.exchangeRateDate.replace(/-/g, '/')}），最终以支付当日汇率为准`;
+    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币；1元人民币 ≈ ${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${this.usingLiveExchangeRate && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值'}）`;
   }
-
-  get localFeePeriods(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 4)); }
-  get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.selectedWeeks - 8) / 4)); }
-  get localFees(): LocalFee[] {
-    const rows: LocalFee[] = [
-      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '一次办理，通常有效6个月；更换学校需重新办理' },
-      { item: 'SSP-E Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，一次性费用' },
-      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, this.selectedWeeks > 8 ? 1 : 0), quantity: this.selectedWeeks > 8 ? 1 : 0, total: this.selectedWeeks > 8 ? 4000 : 0, note: '学习超过8周时预计办理，一次有效1年' },
-      { item: '水电费', amount: this.localFeeAmount(3000, this.localFeePeriods), quantity: this.localFeePeriods, total: 3000 * this.localFeePeriods, note: `PHP 3,000/4周 × ${this.localFeePeriods}；超额用电另收PHP 25/kW` },
-      { item: '签证延签', amount: this.localFeeAmount(6210, this.visaExtensionCount), quantity: this.visaExtensionCount, total: 6210 * this.visaExtensionCount, note: this.visaExtensionCount > 0 ? `按学习周期预估${this.visaExtensionCount}次；首次参考PHP 6,210，后续以移民局为准` : '8周内暂不计；超过8周后按延签次数预估' },
-      { item: '校内预存款', amount: this.localFeeAmount(4000, this.localFeePeriods), quantity: this.localFeePeriods, total: 4000 * this.localFeePeriods, note: `PHP 4,000/4周 × ${this.localFeePeriods}；用于教材、洗衣、复印、选修课和周末餐食等，按实际扣费` },
-      { item: '学生证', amount: 'PHP 200', quantity: 1, total: 200, note: '一次性费用' },
-      { item: '马尼拉机场接机', amount: 'PHP 3,000', quantity: 0, total: 0, optional: true, note: '按需选择；指定周日团体接机' },
-      { item: '克拉克机场接机', amount: 'PHP 3,000', quantity: 1, total: 3000, note: '报价默认计入一次指定周日团体接机，可按实际行程调整' },
-      { item: '房间押金', amount: 'PHP 4,000', quantity: 1, total: 4000, optional: true, note: '不计入学杂费合计；退房检查无损坏及欠费后退还' },
-      { item: '洗衣服务', amount: 'PHP 1,200', quantity: 0, total: 0, note: '按实际使用，不计入合计；洗烘PHP 150/7kg，单洗或单烘PHP 100/7kg' },
+  get registrationNote(): string {
+    return `一次性费用，100美元／人；所有通过思达报名的学生均免收，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`;
+  }
+  get campusPlanPaymentItems(): QuoteImagePaymentItem[] {
+    const entries = this.activeStudents.flatMap((student, studentIndex) =>
+      student.quotePlan.paymentItems().map((item, rowIndex) => {
+        const detailParts = (item.detailTitle ?? '').split('｜');
+        const campus = detailParts.length > 1 ? detailParts[0] : (item.icon === '课' && (item.detailTitle ?? '').includes('IELTS') ? '雅思校区 IELTS Campus' : '主校区 Main Campus');
+        const suffix = item.label.match(/\d+$/)?.[0] ?? '';
+        const kindLabel = item.icon === '课' ? `课程名称${suffix}` : `住宿名称${suffix}`;
+        return {
+          campusRank: campus.startsWith('雅思校区') ? 1 : 0,
+          studentIndex,
+          kindRank: item.icon === '课' ? 0 : 1,
+          rowIndex,
+          item: {
+            ...item,
+            label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}${campus} · ${kindLabel}`,
+            detailTitle: detailParts.length > 1 ? detailParts.slice(1).join('｜') : item.detailTitle,
+          },
+        };
+      }),
+    );
+    return entries
+      .sort((a, b) => a.campusRank - b.campusRank || a.studentIndex - b.studentIndex || a.kindRank - b.kindRank || a.rowIndex - b.rowIndex)
+      .map((entry) => entry.item);
+  }
+  get schoolPaymentItems(): QuoteImagePaymentItem[] {
+    return [
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.length * this.registrationFee)} 美元`, note: this.registrationNote },
+      ...this.campusPlanPaymentItems,
+      ...groupPaymentLines(this.activeStudents, false),
     ];
-    return rows;
   }
-  get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
-  get localFeeCnyText(): string {
-    if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
-    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex((student) => !!student.quoteError);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quoteError}`;
   }
+  get quoteHeading(): string {
+    if (this.quoteMode === 'single') return `PINES ${this.students[0].quotePlan.courseWeeks}周报价`;
+    const weeks = [...new Set(this.activeStudents.map((student) => student.quotePlan.courseWeeks))];
+    const weekLabel = weeks.length === 1 ? `${weeks[0]}` : weeks.join('/');
+    return `PINES ${this.activeStudents.length}人${weekLabel}周报价`;
+  }
+  get quoteStartDate(): string {
+    return this.activeStudents.map((student) => student.quotePlan.startDate).filter(Boolean).sort()[0] ?? this.selectedStartDate;
+  }
+  get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
+  get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get estimatedLocalFeeCny(): number { return this.phpPerCny > 0 ? Math.round(this.estimatedLocalFeeTotal / this.phpPerCny) : 0; }
+  get localFeeTotal(): number { return this.estimatedLocalFeeTotal; }
+  get localFeeCnyText(): string { return `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`; }
+  get optionalFeeItems() {
+    const campusDepositQuantity = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.quantity, 0);
+    const campusDepositTotal = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.total, 0);
+    const roomDepositTotal = 4000 * this.activeStudents.length;
+    const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return [
+      {
+        label: '校内预存款', amount: this.formatPhp(campusDepositTotal), cnyAmount: cny(campusDepositTotal),
+        note: `4,000比索／4周 × ${this.formatFeeQuantity(campusDepositQuantity)}；用于教材、洗衣、复印、选修课和周末餐食等，按实际扣费；不计入学杂费及人民币预估合计。`,
+      },
+      {
+        label: '房间押金（可退）', amount: this.formatPhp(roomDepositTotal), cnyAmount: cny(roomDepositTotal),
+        note: `4,000比索／人${this.activeStudents.length > 1 ? ` × ${this.activeStudents.length}人` : ''}；无损坏且无欠费时按学校规定退还；不计入学杂费合计。`,
+      },
+      {
+        label: '洗衣服务', amount: '1,200 比索参考', cnyAmount: cny(1200),
+        note: '按实际使用，不计入学杂费合计；洗烘150比索／7kg，单洗或单烘100比索／7kg。',
+      },
+    ];
+  }
+  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
 
   get quoteImageData() {
-    const includedFees = this.localFees.filter((fee) => !fee.optional);
-    const optionalFees = this.localFees.filter((fee) => fee.optional);
-    const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
-    const otherDiscounts = this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscountAmount;
-
-    return buildPhilippinesDetailedQuote({
+    const paymentItems = [
+      this.schoolPaymentItems[0],
+      ...this.campusPlanPaymentItems,
+      ...groupPaymentLines(this.activeStudents, true),
+    ];
+    const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`]
+      : []);
+    const shortStayNotes = [...new Set(this.activeStudents.flatMap((student) => student.shortStayNotes))];
+    const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'PINES',
       schoolName: '菲律宾碧瑶PINES语言学校',
       filePrefix: 'PINES',
       heroSrc: '/assets/philippines/pines-campus-hero.jpg',
       weeks: this.selectedWeeks,
-      startDate: this.selectedStartDate,
+      startDate: this.quoteStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
-      paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: this.registrationDiscountAmount ? '思达优惠免注册费' : '一次性学校注册费' },
-        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
-        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `USD 40/周 × 覆盖${this.peakSeasonWeeks}周` },
-        { icon: '折', label: '思达折扣', amount: '95折', note: `课程费与住宿费优惠${this.formatUsd(this.sidaDiscountAmount)}美元`, accent: true },
-        { icon: '惠', label: '其他优惠', amount: `- ${this.formatUsd(otherDiscounts)} 美元`, note: '免注册费、淡季与12周以上优惠按条件自动计算', accent: otherDiscounts > 0 },
-      ],
-      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
-      localFeeTotal: this.localFeeTotal,
-      localFeeCny: Math.round(this.localFeeTotal / this.phpPerCny),
-      localFeeNote: '不含可退押金及按需洗衣服务，实际以到校缴费为准。',
-      optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
-      ruleNotes: [
-        '2周按4周价65%，3周按85%；4周以上按4周单价和学习周期计算。',
-        '旺季附加费、常规淡季优惠、12周以上优惠及免注册费均按对应条件自动计算。',
-      ],
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+      paymentItems,
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.estimatedLocalFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: this.estimatedLocalFeeCny,
+      localFeeNote: this.localFeeIntro,
+      optionalFeeItems: this.optionalFeeItems,
+      ruleNotes: [],
     });
+    const result = applySchoolQuoteImageLayout({
+      ...quote,
+      importantNotes: [
+        ...warnings,
+        ...shortStayNotes,
+        '4周以上按对应4周价格和实际周数等比例计算；每段课程及住宿最多24周。',
+        '2026旺季为2026/06/28–08/22；2027旺季按相同8周档期推算为2027/06/27–08/21，开始均为周日、结束均为周六。',
+        '固定优惠先扣减，课程费和住宿费的剩余金额再享思达95折；最终以学校价格、空房及优惠确认为准。',
+      ],
+    }, 'PINES', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`,
+      conversionRates: {
+        usdToCny: this.usdToCny,
+        phpPerCny: this.phpPerCny,
+        date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined,
+      },
+    };
   }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
-  private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
+  campusCode(id: string): PinesCampusCode { return id.includes('ielts') ? 'ielts' : 'main'; }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private parseDate(value: string): Date | null { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
-  private dateRangesOverlap(start: Date, end: Date, from: string, to: string): boolean {
-    const rangeStart = this.parseDate(from);
-    const rangeEnd = this.parseDate(to);
-    return !!rangeStart && !!rangeEnd && start <= rangeEnd && end >= rangeStart;
-  }
   private createCourseId(name: string): string {
     if (/Family Junior.*家长|Parents Course/iu.test(name)) return 'parents-course';
     if (/Family Junior.*青少年|Junior Family Course/iu.test(name)) return 'junior-family-course';
@@ -869,6 +978,7 @@ export class PinesSchoolDetailComponent implements OnInit {
   }
   private createRoomId(name: string): string {
     const campus = name.includes('雅思') || /IELTS/iu.test(name) ? 'ielts' : 'main';
+    if (/亲子.*2.*3人/iu.test(name)) return 'main-family-2-3';
     if (name.includes('六人')) return `${campus}-sextuple`;
     if (name.includes('5B') || name.includes('5人')) return `${campus}-5b-solo`;
     if (name.includes('四人')) return `${campus}-quad`;
@@ -880,6 +990,10 @@ export class PinesSchoolDetailComponent implements OnInit {
     if (name.includes('单人房B')) return `${campus}-single-b`;
     if (name.includes('单人房A')) return `${campus}-single-a`;
     return this.slugifyPriceKey(name);
+  }
+  private roomNote(id: string, description?: string): string {
+    if (id === 'ielts-5b-solo' || id === 'ielts-single-c') return '';
+    return description || '请联系顾问确认空房';
   }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
   private formatCurrencyAmount(fee: SchoolFeeDTO): string { return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`; }

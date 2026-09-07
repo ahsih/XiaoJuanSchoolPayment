@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Data.Models;
+using XiaoJuanSchoolPayment.Server.Interface;
 
 namespace XiaoJuanSchoolPayment.Server.Controllers
 {
@@ -36,24 +37,29 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     private readonly UserManager<SchoolUser> _userManager;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
+    private readonly IStaffPermissionService _permissions;
 
     public StudentApplicationsController(
       AppDbContext context,
       UserManager<SchoolUser> userManager,
       IWebHostEnvironment environment,
-      IConfiguration configuration)
+      IConfiguration configuration,
+      IStaffPermissionService permissions)
     {
       _context = context;
       _userManager = userManager;
       _environment = environment;
       _configuration = configuration;
+      _permissions = permissions;
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpGet]
     public async Task<ActionResult<IList<StudentApplicationDTO>>> GetAll([FromQuery] string? search, CancellationToken cancellationToken)
     {
       var query = BaseQuery();
+      var allowedSchoolIds = await _permissions.GetSchoolIdsAsync(User, StaffPermissionScopes.Students, cancellationToken);
+      query = query.Where(x => allowedSchoolIds.Contains(x.SchoolId));
       if (!string.IsNullOrWhiteSpace(search))
       {
         var keyword = search.Trim().ToLower();
@@ -83,12 +89,13 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(applications.Select(x => ToDto(x, includeInternalNotes: false)).ToList());
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpPost]
     public async Task<ActionResult<StudentApplicationDTO>> Create([FromBody] CreateStudentApplicationDTO request, CancellationToken cancellationToken)
     {
       var validationError = ValidateApplication(request.SchoolId, request.StartDate, request.EndDate, request.Status);
       if (validationError != null) return BadRequest(validationError);
+      if (!await CanManageStudents(request.SchoolId, cancellationToken)) return Forbid();
       if (!await _context.Schools.AnyAsync(x => x.Id == request.SchoolId, cancellationToken)) return BadRequest("所选学校不存在。");
 
       var email = request.Email.Trim();
@@ -146,7 +153,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return CreatedAtAction(nameof(GetAll), ToDto(application, includeInternalNotes: true));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<StudentApplicationDTO>> Update(Guid id, [FromBody] UpdateStudentApplicationDTO request, CancellationToken cancellationToken)
     {
@@ -155,6 +162,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
 
       var application = await BaseQuery().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
       if (application == null) return NotFound();
+      if (!await CanManageStudents(application.SchoolId, cancellationToken) ||
+          !await CanManageStudents(request.SchoolId, cancellationToken)) return Forbid();
       if (!await _context.Schools.AnyAsync(x => x.Id == request.SchoolId, cancellationToken)) return BadRequest("所选学校不存在。");
 
       application.SchoolId = request.SchoolId;
@@ -172,13 +181,14 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(ToDto(application, includeInternalNotes: true));
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpPost("{id:guid}/documents")]
     [RequestSizeLimit(MaxDocumentSizeBytes + 1024 * 1024)]
     public async Task<ActionResult<StudentApplicationDocumentDTO>> UploadDocument(Guid id, [FromForm] StudentDocumentUploadDTO request, CancellationToken cancellationToken)
     {
       var application = await _context.StudentApplications.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
       if (application == null) return NotFound();
+      if (!await CanManageStudents(application.SchoolId, cancellationToken)) return Forbid();
       if (request.File.Length == 0 || request.File.Length > MaxDocumentSizeBytes) return BadRequest("文件不能为空，且大小不能超过 15MB。");
       if (!AllowedDocumentCategories.Contains(request.DocumentType.Trim())) return BadRequest("文件类型无效。");
 
@@ -234,7 +244,11 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         .FirstOrDefaultAsync(x => x.Id == documentId && x.StudentApplicationId == applicationId, cancellationToken);
       if (document?.StudentApplication == null) return NotFound();
 
-      if (!User.IsInRole("Admin"))
+      if (User.IsInRole("Staff"))
+      {
+        if (!await CanManageStudents(document.StudentApplication.SchoolId, cancellationToken)) return Forbid();
+      }
+      else if (!User.IsInRole("Admin"))
       {
         var userId = await GetCurrentUserIdAsync();
         if (!User.IsInRole("Student") || userId != document.StudentApplication.StudentUserId || !document.IsVisibleToStudent) return Forbid();
@@ -245,13 +259,18 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return PhysicalFile(path, document.ContentType, document.OriginalFileName, enableRangeProcessing: true);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpDelete("{applicationId:guid}/documents/{documentId:guid}")]
     public async Task<IActionResult> DeleteDocument(Guid applicationId, Guid documentId, CancellationToken cancellationToken)
     {
       var document = await _context.StudentApplicationDocuments
         .FirstOrDefaultAsync(x => x.Id == documentId && x.StudentApplicationId == applicationId, cancellationToken);
       if (document == null) return NotFound();
+      var schoolId = await _context.StudentApplications.AsNoTracking()
+        .Where(application => application.Id == applicationId)
+        .Select(application => (Guid?)application.SchoolId)
+        .FirstOrDefaultAsync(cancellationToken);
+      if (!schoolId.HasValue || !await CanManageStudents(schoolId.Value, cancellationToken)) return Forbid();
 
       var path = ResolvePrivateDocumentPath(document.FilePath);
       _context.StudentApplicationDocuments.Remove(document);
@@ -270,6 +289,9 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       var email = User.FindFirstValue(ClaimTypes.Email);
       return string.IsNullOrWhiteSpace(email) ? null : (await _userManager.FindByEmailAsync(email))?.Id;
     }
+
+    private Task<bool> CanManageStudents(Guid schoolId, CancellationToken cancellationToken) =>
+      _permissions.HasAsync(User, schoolId, StaffPermissionScopes.Students, cancellationToken);
 
     private string ResolvePrivateDocumentPath(string relativePath)
     {

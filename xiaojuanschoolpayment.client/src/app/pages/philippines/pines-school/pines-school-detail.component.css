@@ -11,6 +11,175 @@
   line-height: 1.6;
 }
 
+:host .campus-catalog-group {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #c9ded4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+:host .campus-catalog-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #dceae4;
+  background: #edf7f2;
+}
+
+:host .campus-catalog-heading > span {
+  min-width: 58px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #176a50;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-align: center;
+}
+
+:host .campus-catalog-heading h3,
+:host .campus-catalog-heading p {
+  margin: 0;
+}
+
+:host .campus-catalog-heading h3 {
+  color: #174c3d;
+  font-size: 17px;
+}
+
+:host .campus-catalog-heading p {
+  margin-top: 3px;
+  color: #61766d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+:host .campus-catalog-group.ielts-campus {
+  border-color: #d8cee7;
+}
+
+:host .campus-catalog-group.ielts-campus .campus-catalog-heading {
+  border-bottom-color: #e8e0f1;
+  background: #f5f0fa;
+}
+
+:host .campus-catalog-group.ielts-campus .campus-catalog-heading > span {
+  background: #6a478e;
+}
+
+:host .campus-catalog-group.ielts-campus .campus-catalog-heading h3 {
+  color: #553875;
+}
+
+:host .campus-catalog-group .data-table {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+:host .campus-quote-note {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border-left: 4px solid #176a50;
+  border-radius: 7px;
+  background: #eef7f3;
+  color: #345f52;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+:host .quote-breakdown .payment-detail-title {
+  color: #214f70;
+  font-weight: 800;
+}
+
+:host .quote-results-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-top: 28px;
+}
+
+:host .quote-form-card {
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid #e2e8ee;
+  border-radius: 8px;
+  background: #fff7f2;
+  box-shadow: 0 12px 28px rgba(29, 43, 59, 0.08);
+}
+
+:host .quote-form-card h2 {
+  margin: 0 0 22px;
+  color: #043f2d;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 950;
+  line-height: 1.22;
+}
+
+:host .quote-form-card select,
+:host .quote-form-card input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid #d7e1e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #15243d;
+  font: inherit;
+}
+
+:host #quote .student-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+:host #quote .season-note,
+:host #quote > .quote-form-card > .fee-alert {
+  margin: 12px 0 0;
+  padding: 11px 13px;
+  border-radius: 7px;
+  background: #f7f9fb;
+  color: #667487;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+:host #quote > .quote-form-card > .fee-alert {
+  border-left: 4px solid #e86824;
+  color: #8a3f18;
+}
+
+:host .local-fee-table th,
+:host .local-fee-table td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1040px) {
+  :host #quote .student-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  :host .quote-form-card {
+    padding: 20px 16px;
+  }
+
+  :host #quote .student-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .campus-catalog-heading {
+    align-items: flex-start;
+    padding: 12px;
+  }
+}
+
 :host .pines-room-availability {
   background: linear-gradient(145deg, #f5fbf8 0%, #f4f8ff 100%);
   border-color: #bfded1;

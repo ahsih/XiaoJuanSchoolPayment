@@ -3,5 +3,7 @@ export interface JWTLoginTokenDTO {
     expiryDate: Date;
     roles: string[];
     name: string;
-    email: string;
+    account: string;
+    email?: string;
+    phoneNumber?: string;
 }

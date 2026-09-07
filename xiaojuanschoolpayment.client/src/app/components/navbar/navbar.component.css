@@ -537,6 +537,38 @@ a.philippines-city-link:focus-visible {
   font-size: 18px;
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.account-entry {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #5b4638;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.account-entry:hover {
+  color: #f06a22;
+}
+
+.account-entry mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.mobile-auth-links {
+  display: none;
+}
+
 .consult-button {
   min-height: 40px;
   display: inline-flex;
@@ -578,9 +610,10 @@ a.philippines-city-link:focus-visible {
     padding: 0 0.55rem;
     font-size: 0.94rem;
   }
+
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1260px) {
   .site-header {
     grid-template-columns: auto auto auto;
     justify-content: space-between;
@@ -700,7 +733,7 @@ a.philippines-city-link:focus-visible {
     display: none;
   }
 
-  .consult-button {
+  .header-actions {
     display: none;
   }
 
@@ -742,6 +775,34 @@ a.philippines-city-link:focus-visible {
     order: 4;
     grid-column: 1 / -1;
     top: calc(100% + 1px);
+  }
+
+  .mobile-auth-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    padding: 0.9rem 0 0.15rem;
+  }
+
+  .mobile-auth-links a {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border: 1px solid #edc9aa;
+    border-radius: 8px;
+    color: #c55322;
+    background: #fff8f2;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 850;
+  }
+
+  .mobile-auth-links mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
   }
 
   .philippines-menu-heading span {

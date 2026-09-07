@@ -1,49 +1,80 @@
-<div class="admin-container">
-  <nav class="sidebar">
-    <ul class="nav-links">
-      <li>
+<div class="admin-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/admin" aria-label="返回员工后台首页">
+      <img
+        src="/assets/sida-qihang-navbar-logo.jpg"
+        alt="思达启航教育 SIDA Qihang Education"
+      />
+      <span class="admin-badge">员工后台</span>
+    </a>
+
+    <nav class="sidebar-navigation" aria-label="员工后台导航">
+      <section class="nav-section">
+        <p class="nav-label">学校内容</p>
         <a
           routerLink="/admin"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
-          >{{ 'admin.layout.schools' | t }}</a
         >
-      </li>
-      <li>
-        <a routerLink="/admin/school-lessons" routerLinkActive="active"
-          >{{ 'admin.layout.lessons' | t }}</a
-        >
-      </li>
-      <li>
-        <a routerLink="/admin/school-rooms" routerLinkActive="active"
-          >{{ 'admin.layout.rooms' | t }}</a
-        >
-      </li>
-      <li>
-        <a routerLink="/admin/school-fees" routerLinkActive="active"
-          >{{ 'admin.layout.fees' | t }}</a
-        >
-      </li>
-      <li>
-        <a routerLink="/admin/school-notes" routerLinkActive="active"
-          >{{ 'admin.layout.notes' | t }}</a
-        >
-      </li>
-      <li>
-        <a routerLink="/admin/school-photos" routerLinkActive="active"
-          >School Photos</a
-        >
-      </li>
-      <li>
-        <a routerLink="/admin/student-applications" routerLinkActive="active"
-          >学生报名管理</a
-        >
-      </li>
-    </ul>
-    <div class="logout">
-      <a (click)="logout()">{{ 'admin.layout.logout' | t }}</a>
-    </div>
-  </nav>
+          <mat-icon>space_dashboard</mat-icon>
+          <span>学校工作台</span>
+        </a>
+        <a *ngIf="canUse('schoolContent')" routerLink="/admin/school-content" routerLinkActive="active">
+          <mat-icon>dashboard_customize</mat-icon>
+          <span>学校页面编辑</span>
+        </a>
+        <a *ngIf="canUse('quoteImage')" routerLink="/admin/school-quote-image" routerLinkActive="active">
+          <mat-icon>image</mat-icon>
+          <span>报价图片备注</span>
+        </a>
+        <a *ngIf="canUse('pricing')" routerLink="/admin/school-lessons" routerLinkActive="active">
+          <mat-icon>menu_book</mat-icon>
+          <span>课程与价格</span>
+        </a>
+        <a *ngIf="canUse('pricing')" routerLink="/admin/school-rooms" routerLinkActive="active">
+          <mat-icon>bed</mat-icon>
+          <span>住宿与价格</span>
+        </a>
+        <a *ngIf="canUse('pricing')" routerLink="/admin/school-fees" routerLinkActive="active">
+          <mat-icon>receipt_long</mat-icon>
+          <span>当地费用</span>
+        </a>
+        <a *ngIf="canUse('schoolContent')" routerLink="/admin/school-notes" routerLinkActive="active">
+          <mat-icon>description</mat-icon>
+          <span>学校说明</span>
+        </a>
+        <a *ngIf="canUse('media')" routerLink="/admin/school-photos" routerLinkActive="active">
+          <mat-icon>perm_media</mat-icon>
+          <span>照片与视频</span>
+        </a>
+      </section>
+
+      <section class="nav-section">
+        <p class="nav-label">学生服务</p>
+        <a *ngIf="canUse('students')" routerLink="/admin/student-applications" routerLinkActive="active">
+          <mat-icon>folder_shared</mat-icon>
+          <span>学生申请与档案</span>
+        </a>
+      </section>
+
+      <section class="nav-section">
+        <p class="nav-label">账户与权限</p>
+        <a routerLink="/admin/invitations" routerLinkActive="active">
+          <mat-icon>person_add</mat-icon>
+          <span>邀请码管理</span>
+        </a>
+        <a *ngIf="isAdmin" routerLink="/admin/staff-permissions" routerLinkActive="active">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>员工与权限</span>
+        </a>
+      </section>
+    </nav>
+
+    <button class="logout-button" type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>{{ 'admin.layout.logout' | t }}</span>
+    </button>
+  </aside>
 
   <main class="content">
     <router-outlet></router-outlet>

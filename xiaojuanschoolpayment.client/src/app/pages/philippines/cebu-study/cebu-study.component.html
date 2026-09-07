@@ -159,10 +159,25 @@
           <h2>{{ directoryHeading }}</h2>
           <p>{{ directoryDescription }}</p>
         </div>
-        <a routerLink="/about-sida/contact">
-          不确定怎么选？免费匹配
-          <mat-icon>arrow_forward</mat-icon>
-        </a>
+        <div class="directory-search" role="search">
+          <mat-icon aria-hidden="true">search</mat-icon>
+          <input
+            type="search"
+            [(ngModel)]="schoolSearchQuery"
+            aria-label="搜索宿务学校"
+            placeholder="搜索学校名称，例如 CIA、EV、I.BREEZE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button
+            *ngIf="schoolSearchQuery"
+            type="button"
+            aria-label="清除学校搜索"
+            (click)="schoolSearchQuery = ''"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
       </header>
 
       <div class="directory-toolbar" aria-label="宿务学校筛选">
@@ -197,7 +212,7 @@
         <p>当前显示 <strong>{{ visibleSchools.length }}</strong> 所学校</p>
       </div>
 
-      <div class="all-schools-grid">
+      <div class="all-schools-grid" *ngIf="visibleSchools.length > 0">
         <a
           class="directory-school-card"
           *ngFor="let school of visibleSchools"
@@ -230,6 +245,13 @@
             </strong>
           </div>
         </a>
+      </div>
+
+      <div class="directory-empty" *ngIf="visibleSchools.length === 0" aria-live="polite">
+        <mat-icon>search_off</mat-icon>
+        <strong>没有找到相关学校</strong>
+        <p>可以换一个学校简称，或清除搜索后重新查看。</p>
+        <button type="button" (click)="schoolSearchQuery = ''">清除搜索</button>
       </div>
     </section>
 

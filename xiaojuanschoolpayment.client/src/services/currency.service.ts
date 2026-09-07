@@ -7,7 +7,7 @@ import { CurrencyDTO } from '../interfaces/currency.dto';
   providedIn: 'root',
 })
 export class CurrencyService {
-  private apiUrl = 'currency';
+  private apiUrl = '/currency';
   constructor(private http: HttpClient) {}
   getCurrencies(): Observable<CurrencyDTO[]> {
     const token = localStorage.getItem('token');

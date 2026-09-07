@@ -962,3 +962,12 @@
     scroll-margin-top: 136px;
   }
 }
+:host(.cia-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.cia-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #ff601f !important;
+  outline-offset: -3px;
+  background-color: #fff4e9 !important;
+  box-shadow: inset 5px 0 #ff601f;
+}
+:host(.cia-editor-preview) .cia-preview-highlight > [role="cell"],
+:host(.cia-editor-preview) tr.cia-preview-highlight > * { background-color: #fff4e9 !important; }

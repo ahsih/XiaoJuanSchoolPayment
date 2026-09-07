@@ -19,6 +19,8 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<StudentApplication> StudentApplications { get; set; }
     public DbSet<StudentApplicationDocument> StudentApplicationDocuments { get; set; }
     public DbSet<InvitationCode> InvitationCodes { get; set; }
+    public DbSet<AccountVerificationCode> AccountVerificationCodes { get; set; }
+    public DbSet<SchoolContentRevision> SchoolContentRevisions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -48,6 +50,26 @@ namespace XiaoJuanSchoolPayment.Server.Data
 
       builder.Entity<InvitationCode>()
         .HasIndex(x => x.CreatedByUserId);
+
+      builder.Entity<AccountVerificationCode>()
+        .HasIndex(x => new { x.Account, x.Purpose, x.CreatedAt });
+
+      builder.Entity<SchoolUser>()
+        .HasIndex(x => x.PhoneNumber)
+        .IsUnique();
+
+      builder.Entity<SchoolContentRevision>()
+        .HasIndex(x => new { x.SchoolId, x.Version })
+        .IsUnique();
+
+      builder.Entity<SchoolContentRevision>()
+        .HasIndex(x => new { x.SchoolId, x.Status });
+
+      builder.Entity<SchoolContentRevision>()
+        .HasOne(x => x.School)
+        .WithMany()
+        .HasForeignKey(x => x.SchoolId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
   }
 }

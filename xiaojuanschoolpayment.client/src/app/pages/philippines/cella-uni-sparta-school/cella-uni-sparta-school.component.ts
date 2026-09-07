@@ -1,19 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
+import { CellaQuoteCalculatorComponent } from '../cella-quote/cella-quote-calculator.component';
+import { cellaCourses, cellaRooms } from '../cella-quote/cella-pricing';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
 
 interface SnapshotCard { icon: string; title: string; text: string; }
 interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; text: string; src: string; }
 interface CourseItem { icon: string; name: string; lessons: string; suitable: string; }
-interface FeePackage { id: string; category: string; course: string; room: string; lessons: string; prices: Record<WeekOption, number>; note: string; }
-interface FeeSummaryRow { course: string; lessons: string; room: string; price: string; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
 interface SourceLink { label: string; url: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -21,20 +18,15 @@ interface SideNavItem { label: string; target: string; icon: string; }
 @Component({
   selector: 'app-cella-uni-sparta-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, SidaWhySectionComponent, CellaQuoteCalculatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cella-uni-sparta-school.component.html',
   styleUrl: './cella-uni-sparta-school.component.css',
 })
 export class CellaUniSpartaSchoolComponent {
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  readonly registrationFeeUsd = 150;
-  readonly peakSeasonWeeklyUsd = 40;
-  selectedWeeks: WeekOption = 4;
-  selectedPackageId = 'ps1-quad';
-  selectedStartDate = '2026-09-07';
+  readonly pricingCourses = cellaCourses('uni');
+  readonly pricingRooms = cellaRooms('uni');
   selectedGalleryCategory: GalleryCategory = '全部';
-  quoteCalculated = false;
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
 
@@ -95,44 +87,6 @@ export class CellaUniSpartaSchoolComponent {
     { icon: 'speed', name: 'Expresser 1 / 2', lessons: '短期密集一对一9 + 小组1', suitable: '只有1-2周假期、希望最大化一对一课时和短期输出量的学生。' },
   ];
 
-  readonly feePackages: FeePackage[] = [
-    { id: 'ps1-quad', category: '最低预算', course: 'Power Speaking 1', room: '4人房', lessons: '一对一4 + Native Group1 + Group3', prices: this.buildPrices(1630), note: '2026公开4周学费USD 930 + 4人房USD 700，适合预算优先。' },
-    { id: 'ps1-triple', category: '舒适预算', course: 'Power Speaking 1', room: '3人房', lessons: '一对一4 + Native Group1 + Group3', prices: this.buildPrices(1730), note: '室友更少，仍保留标准课程与较好性价比。' },
-    { id: 'ps1-double', category: '双人房', course: 'Power Speaking 1', room: '2人房', lessons: '一对一4 + Native Group1 + Group3', prices: this.buildPrices(1830), note: '住宿舒适度和预算较平衡，适合多数成人学生。' },
-    { id: 'ps1-single', category: '单人房', course: 'Power Speaking 1', room: '1人房', lessons: '一对一4 + Native Group1 + Group3', prices: this.buildPrices(2230), note: '适合重视睡眠、隐私和独立学习空间的人。' },
-    { id: 'ps2-quad', category: '高一对一', course: 'Power Speaking 2', room: '4人房', lessons: '一对一6 + Native Group1 + Group1', prices: this.buildPrices(1780), note: '比PS1多两节一对一，适合短期想加速口语输出。' },
-    { id: 'toeic-prep-quad', category: '多益基础', course: 'TOEIC Preparation', room: '4人房', lessons: 'TOEIC一对一4 + ESL小组4', prices: this.buildPrices(1780), note: '适合多益基础备考，同时保留一般英语小组课。' },
-    { id: 'toeic-intensive-quad', category: '多益强化', course: 'TOEIC Intensive', room: '4人房', lessons: 'TOEIC一对一4 + TOEIC小组4', prices: this.buildPrices(1880), note: '小组课也转为多益方向，适合目标更明确的学生。' },
-    { id: 'ielts-prep-quad', category: '雅思基础', course: 'IELTS Preparation', room: '4人房', lessons: 'IELTS一对一4 + ESL小组4', prices: this.buildPrices(1780), note: '适合雅思入门、基础补强和逐步进入考试节奏。' },
-    { id: 'ielts-intensive-quad', category: '雅思强化', course: 'IELTS Intensive', room: '4人房', lessons: 'IELTS一对一4 + IELTS小组4', prices: this.buildPrices(1880), note: '适合听说读写都希望进入考试型训练的人。' },
-    { id: 'ps1-jdn-double', category: 'JDN外部寮', course: 'Power Speaking 1', room: 'JDN 2人房', lessons: '一对一4 + Native Group1 + Group3', prices: this.buildPrices(1830), note: '公开资料显示JDN外部寮2人房与校内2人房同价，需确认空房与接驳。' },
-  ];
-
-  readonly feeSummaryRows: FeeSummaryRow[] = [
-    { course: 'Power Speaking 1', lessons: '一对一4 + Native Group1 + Group3', room: '4人房', price: 'USD 1,630 / 4周', note: '标准最低预算，不含入学金' },
-    { course: 'Power Speaking 1', lessons: '一对一4 + Native Group1 + Group3', room: '3人房', price: 'USD 1,730 / 4周', note: '减少室友人数' },
-    { course: 'Power Speaking 1', lessons: '一对一4 + Native Group1 + Group3', room: '2人房', price: 'USD 1,830 / 4周', note: '双人房常用方案' },
-    { course: 'Power Speaking 1', lessons: '一对一4 + Native Group1 + Group3', room: '1人房', price: 'USD 2,230 / 4周', note: '单人房预算' },
-    { course: 'Power Speaking 2', lessons: '一对一6 + Native Group1 + Group1', room: '4人房', price: 'USD 1,780 / 4周', note: '高一对一ESL' },
-    { course: 'TOEIC / IELTS Preparation', lessons: '一对一4 + 小组4', room: '4人房', price: 'USD 1,780 / 4周', note: '考试基础路线' },
-    { course: 'TOEIC / IELTS Intensive', lessons: '一对一4 + 考试小组4', room: '4人房', price: 'USD 1,880 / 4周', note: '考试强化路线' },
-    { course: 'IELTS Guarantee', lessons: '一对一6 + IELTS小组2 + 特别课', room: '4人房', price: 'USD 6,240 / 12周', note: '保证班通常按12周确认' },
-    { course: 'TESOL', lessons: '2:8课程6 + e-learning2', room: '4人房', price: 'USD 2,430 / 4周', note: '指定入学日课程' },
-    { course: 'Expresser 1 / 2', lessons: '短期密集一对一9 + 小组1', room: '4人房', price: 'USD 850 / 1周；USD 1,280 / 2周', note: '短期保证班' },
-  ];
-
-  readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 150', note: '一次性费用，本页报价器已加入。' },
-    { item: '旺季加价', amount: 'USD 40 / 周', note: '公开资料列2026/7/5-8/29、2027/7/4-8/28为旺季；本页按入学日落在旺季时估算。' },
-    { item: '未成年管理费', amount: 'USD 25 / 周', note: '15-18岁未成年学生可能适用，报名时需按年龄确认。' },
-    { item: 'SSP + E-Card', amount: 'PHP 12,300', note: 'SSP 7,800 + SSP E-Card 4,500。' },
-    { item: '签证延长', amount: 'PHP 5,140起', note: '超过30天通常需办理，12周、16周、20周、24周对应不同阶段。' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '通常9周以上需要办理。' },
-    { item: '宿舍押金', amount: 'PHP 2,000-10,000', note: '按学习周数分段，退房检查后依学校规则退还。' },
-    { item: '水电与管理费', amount: 'PHP 1,800 / 周', note: '电费500/周、水费300/周、管理费1,000/周；超额用电另计。' },
-    { item: '教材 / ID / 接机', amount: 'PHP 200-600 / 册起', note: 'ID 200；个人接机1,200，家庭接机2,500，教材按实际课程购买。' },
-  ];
-
   readonly suitableFor: FitItem[] = [
     { title: '想要强学习节奏', text: '晨间课、日间课程、晚间课和词汇测试构成固定节奏，适合需要外部纪律推动的人。' },
     { title: '目标是口语或考试', text: 'Power Speaking适合开口训练；IELTS、TOEIC和Guarantee路线适合明确分数目标。' },
@@ -143,7 +97,7 @@ export class CellaUniSpartaSchoolComponent {
   readonly notSuitableFor: FitItem[] = [
     { title: '想要自由型学校', text: 'Uni Sparta学习管理更强，若希望课后自由度高，可以比较CIA、I.BREEZE或3D等半斯巴达/自由型学校。' },
     { title: '只想住海边度假区', text: 'CELLA Uni在宿务市Talamban区域，不是Mactan海边校区；若看重海边，可比较Cebu Blue Ocean或Genius。' },
-    { title: '不想承担当地费用', text: '课程食宿费之外，SSP、签证、水电管理、教材、押金和接机等PHP费用需要单独预算。' },
+    { title: '不想承担当地费用', text: '课程食宿费之外，SSP、签证、水电管理、教材、押金和接机等比索费用需要单独预算。' },
   ];
 
   readonly sourceLinks: SourceLink[] = [
@@ -168,44 +122,8 @@ export class CellaUniSpartaSchoolComponent {
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
 
-  get selectedPackage(): FeePackage {
-    return this.feePackages.find((item) => item.id === this.selectedPackageId) ?? this.feePackages[0];
-  }
-
-  get baseFeeUsd(): number {
-    return this.selectedPackage.prices[this.selectedWeeks];
-  }
-
-  get peakSeasonChargeUsd(): number {
-    return this.isPeakSeasonStart ? this.selectedWeeks * this.peakSeasonWeeklyUsd : 0;
-  }
-
-  get estimatedTotalUsd(): number {
-    return this.baseFeeUsd + this.registrationFeeUsd + this.peakSeasonChargeUsd;
-  }
-
-  get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.estimatedTotalUsd)} 起`;
-  }
-
-  get baseFeeText(): string {
-    return `USD ${this.formatUsd(this.baseFeeUsd)}`;
-  }
-
-  get peakSeasonChargeText(): string {
-    return this.peakSeasonChargeUsd > 0 ? `USD ${this.formatUsd(this.peakSeasonChargeUsd)}` : 'USD 0';
-  }
-
-  get peakSeasonStatusText(): string {
-    return this.isPeakSeasonStart ? '当前入学日落在公开旺季期间，已按USD 40/周估算。' : '当前入学日未落在公开旺季期间。';
-  }
-
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
-  }
-
-  calculateQuote(): void {
-    this.quoteCalculated = true;
   }
 
   scrollToSection(target: string, event?: Event): void {
@@ -222,27 +140,4 @@ export class CellaUniSpartaSchoolComponent {
     return value.toLocaleString('en-US', { maximumFractionDigits: 0 });
   }
 
-  private buildPrices(fourWeekPrice: number): Record<WeekOption, number> {
-    return {
-      1: Math.round(fourWeekPrice * 0.4),
-      2: Math.round(fourWeekPrice * 0.65),
-      3: Math.round(fourWeekPrice * 0.85),
-      4: fourWeekPrice,
-      8: fourWeekPrice * 2,
-      12: fourWeekPrice * 3,
-      16: fourWeekPrice * 4,
-      20: fourWeekPrice * 5,
-      24: fourWeekPrice * 6,
-    };
-  }
-
-  private get isPeakSeasonStart(): boolean {
-    const start = new Date(`${this.selectedStartDate}T00:00:00`);
-    if (Number.isNaN(start.getTime())) return false;
-    return this.isBetween(start, '2026-07-05', '2026-08-29') || this.isBetween(start, '2027-07-04', '2027-08-28');
-  }
-
-  private isBetween(date: Date, from: string, to: string): boolean {
-    return date >= new Date(`${from}T00:00:00`) && date <= new Date(`${to}T23:59:59`);
-  }
 }

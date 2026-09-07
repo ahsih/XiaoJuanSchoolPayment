@@ -53,6 +53,14 @@
   grid-template-columns: minmax(138px, 0.9fr) minmax(132px, 0.58fr) minmax(0, 1.12fr);
 }
 
+:host .tables-section {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:host .tables-section .price-note {
+  grid-column: 1 / -1;
+}
+
 :host .cella-fee-table small {
   display: block;
   margin-top: 4px;
@@ -111,6 +119,10 @@
 }
 
 @media (max-width: 920px) {
+  :host .tables-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   :host .source-links {
     grid-template-columns: 1fr;
   }

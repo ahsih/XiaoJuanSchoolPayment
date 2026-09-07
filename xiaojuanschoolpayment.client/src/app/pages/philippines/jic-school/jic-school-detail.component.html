@@ -210,25 +210,33 @@
               <h2>先看课程费，再叠加住宿费</h2>
               <p>以下根据JIC 2026课程费表逐项核对，币种为美元；最终以学校正式账单为准。</p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="JIC 2026年4周课程费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">4周课程费</span>
-                <span role="columnheader">课程安排 / 备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="JIC 2026年4周课程费手机卡片">
-              <article *ngFor="let fee of courseFees">
-                <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                <p>{{ fee.suitable }}</p>
-              </article>
+            <div class="campus-price-groups">
+              <section class="campus-price-group" *ngFor="let group of courseFeeGroups" [class.premium-campus]="group.campus === 'premium'">
+                <header class="campus-price-heading">
+                  <span>{{ group.eyebrow }}</span>
+                  <div><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
+                </header>
+                <div class="data-table course-fee-table" role="table" [attr.aria-label]="group.title + '2026年4周课程费'">
+                  <div class="table-row table-head" role="row">
+                    <span role="columnheader">中英文课程名称</span>
+                    <span role="columnheader">4周课程费</span>
+                    <span role="columnheader">课程安排 / 备注</span>
+                  </div>
+                  <div class="table-row" role="row" *ngFor="let fee of group.items">
+                    <span role="cell"><strong class="bilingual-name">{{ fee.displayName }}</strong></span>
+                    <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
+                    <span role="cell">{{ fee.suitable }}</span>
+                  </div>
+                </div>
+                <div class="mobile-card-list mobile-course-fees" [attr.aria-label]="group.title + '2026年4周课程费手机卡片'">
+                  <article *ngFor="let fee of group.items">
+                    <span>中英文课程名称</span>
+                    <strong>{{ fee.displayName }}</strong>
+                    <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
+                    <p>{{ fee.suitable }}</p>
+                  </article>
+                </div>
+              </section>
             </div>
           </div>
 
@@ -253,92 +261,116 @@
               <h2>房型和校区会明显影响总预算</h2>
               <p>默认报价使用Challenger四人间（上下铺）。Premium单人间和带阳台房型建议先让顾问确认空房。</p>
             </div>
-            <div class="data-table room-fee-table" role="table" aria-label="JIC 2026年4周住宿费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">4周住宿费</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
+            <div class="campus-price-groups">
+              <section class="campus-price-group" *ngFor="let group of roomFeeGroups" [class.premium-campus]="group.campus === 'premium'">
+                <header class="campus-price-heading">
+                  <span>{{ group.eyebrow }}</span>
+                  <div><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
+                </header>
+                <div class="data-table room-fee-table" role="table" [attr.aria-label]="group.title + '2026年4周住宿费'">
+                  <div class="table-row table-head" role="row">
+                    <span role="columnheader">房型</span>
+                    <span role="columnheader">4周住宿费</span>
+                    <span role="columnheader">备注</span>
+                  </div>
+                  <div class="table-row" role="row" *ngFor="let room of group.items">
+                    <span role="cell">{{ room.name }}</span>
+                    <span role="cell">USD {{ formatUsd(room.fee) }}</span>
+                    <span role="cell">{{ room.note }}</span>
+                  </div>
+                </div>
+                <div class="mobile-card-list mobile-room-fees" [attr.aria-label]="group.title + '2026年4周住宿费手机卡片'">
+                  <article *ngFor="let room of group.items">
+                    <span>房型</span>
+                    <strong>{{ room.name }}</strong>
+                    <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
+                    <p>{{ room.note }}</p>
+                  </article>
+                </div>
+              </section>
             </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="JIC 2026年4周住宿费手机卡片">
-              <article *ngFor="let room of roomFees">
-                <span>房型</span>
-                <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                <p>{{ room.note }}</p>
+          </div>
+
+          <section class="quote-panel group-quote" id="quote">
+            <div class="quote-form-card">
+              <div class="section-heading">
+                <span>菲律宾碧瑶JIC语言学校完整费用报价</span>
+                <h2>{{ quoteFormHeading }}</h2>
+                <p>课程与住宿最低4周，可分别添加日期段；到校日期、报名日期、房型、周数和是否为在校延长会共同决定优惠。</p>
+              </div>
+              <div class="quote-mode" role="group" aria-label="JIC报价人数模式">
+                <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+                <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+                <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+              </div>
+              <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生独立选择Challenger或Premium、课程、住宿、签证与接机；未启用的学生资料会保留但不计入合计。</p>
+
+              <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+                <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) + ' · 双校区报价设置' : '双校区报价设置（Challenger / Premium）' }}</h3>
+                <p class="campus-switch-hint">请在下方选择 Challenger 挑战校区或 Premium 高级校区，课程与住宿选项会随校区自动切换。</p>
+                <div class="student-fields jic-student-fields">
+                  <label>选择校区（Challenger / Premium）<select [ngModel]="student.campus" (ngModelChange)="setStudentCampus(student, $event)"><option value="challenger">Challenger 挑战校区（主校区）</option><option value="premium">Premium 高级校区</option></select></label>
+                  <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                  <label>旅游签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+                  <label>机场接机<select [(ngModel)]="student.airportPickup"><option *ngFor="let option of student.airportPickupOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+                </div>
+                <div class="jic-option-row">
+                  <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+                  <label class="option-check"><input type="checkbox" [(ngModel)]="student.isExtensionStudent" />本次是在校延长</label>
+                  <label class="option-check" *ngIf="student.campus === 'challenger'"><input type="checkbox" [(ngModel)]="student.includeChallengerSpecialElective" />计入Challenger特别选修课</label>
+                </div>
+                <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+                <div class="jic-promotion-heading">
+                  <strong>当前方案的优惠与旺季核算</strong>
+                  <span>以下结果会随校区、日期、周数和房型自动更新；未符合时显示具体原因。</span>
+                </div>
+                <div class="jic-promotion-status" aria-label="当前优惠判断">
+                  <div *ngFor="let line of student.paymentLines" [class.applied]="line.value < 0" [class.surcharge]="line.value > 0">
+                    <span><strong>{{ line.label }}</strong><small>{{ line.note }}</small></span>
+                    <b>{{ line.value < 0 ? '− ' + formatUsd(-line.value) + ' 美元' : line.value > 0 ? formatUsd(line.value) + ' 美元' : '未适用' }}</b>
+                  </div>
+                </div>
+                <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
               </article>
-            </div>
-          </div>
 
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>菲律宾碧瑶JIC语言学校费用快速报价</span>
-              <h2>默认参考：4周 Challenger ESL Lite + Challenger 四人间（上下铺）</h2>
-              <p>前期支付参考 = 注册费 + 课程费 + 住宿费 + 旺季附加费 − 自动适用优惠</p>
+              <div class="quote-breakdown">
+                <div>
+                  <span>{{ schoolPaymentItems[0].label }}<small>{{ schoolPaymentItems[0].note }}</small></span><strong>{{ schoolPaymentItems[0].amount }}</strong>
+                </div>
+              </div>
+              <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+              <div class="group-result">
+                <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small>
+                <small *ngIf="quoteCalculated">已按当前选择重新核算；正式账单仍需确认课程、房型空位及学校优惠审核。</small>
+              </div>
+              <div class="group-actions">
+                <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+                <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+                <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
+              </div>
             </div>
-            <div class="quote-form" aria-label="JIC费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-            </div>
-            <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>旺季附加费（{{ peakSeasonWeeks }}周）</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
-              <div><span>思达注册费优惠</span><strong>- USD {{ formatUsd(registrationDiscountAmount) }}</strong></div>
-              <div><span>{{ offSeasonDiscountLabel }}</span><strong>{{ offSeasonDiscountAmount > 0 ? '- USD ' + formatUsd(offSeasonDiscountAmount) : '未适用' }}</strong></div>
-              <div><span>长期学习优惠</span><strong>{{ longTermDiscountAmount > 0 ? '- USD ' + formatUsd(longTermDiscountAmount) : '未适用' }}</strong></div>
-              <div><span>圣诞及节日优惠</span><strong>{{ holidayDiscountAmount > 0 ? '- USD ' + formatUsd(holidayDiscountAmount) : '未适用' }}</strong></div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <small>{{ exchangeRateSummary }}</small>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房、保证班规则和优惠。</p>
-            </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
-              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-              <app-quote-image-download-button [quote]="quoteImageData" label="保存报价单图片"></app-quote-image-download-button>
-            </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP I-Card、ACR I-Card、签证延签、教材费、水电费、宿舍保证金、管理费、洗衣费、接机费等当地费用。实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">旺季附加费：2026/6/28—8/22期间就读的周数按USD 40/周计算；页面会根据所选入学日和学习周数自动统计。</p>
-            <p class="season-note">淡季优惠：入学日为2026/8/23—2027/1/9时，四人房每4周减USD 150、单人/双人房每4周减USD 50；入学日为2027/2/21—6/26或2027/8/22—2028/1/8时，四人房每4周减USD 100、单人/双人房每4周减USD 50。校内延长不适用。</p>
-            <p class="season-note">长期与节日优惠：12/16/20/24周分别减USD 300/400/500/600；双人及四人房在2026/11/29—12/13或12/27—2027/1/10入学减USD 200，在2027/11/28—12/12或12/26—2028/1/9入学减USD 150。符合条件时可与淡季、长期优惠叠加，最终以学校审核为准。</p>
+
+            <section class="local-fee-estimate" id="local-fees" aria-labelledby="jic-local-fee-title">
+              <div class="local-fee-heading"><div><h3 id="jic-local-fee-title">到校后学杂费明细</h3></div></div>
+              <p class="local-fee-intro">{{ localFeeIntro }}</p>
+              <div class="local-fee-table-wrap">
+                <table class="local-fee-table">
+                  <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                  <tbody><tr *ngFor="let fee of estimatedLocalFees">
+                    <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+                  </tr></tbody>
+                  <tfoot>
+                    <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>已选择的接机计入；不含可退宿舍押金</td></tr>
+                    <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>1元人民币≈{{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索（{{ usingLiveExchangeRate ? exchangeRateDate.replaceAll('-', '/') : '备用参考值' }}）</td></tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div class="excluded-fee-list">
+                <h4>另行准备（不计入学杂费合计）</h4>
+                <div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div>
+              </div>
+            </section>
           </section>
-        </section>
-
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数和学校政策会影响最终金额。</p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
-            </div>
-          </details>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页课程费与住宿费按JIC 2026价格逐项核对；校区、课程特色和其他当地费用参考菲律宾碧瑶JIC语言学校公开资料。学校价格、优惠、房型空位和当地费用可能调整，报名以顾问向学校确认后的正式报价为准。</p>
-          </div>
         </section>
 
         <section class="materials-panel" id="materials">

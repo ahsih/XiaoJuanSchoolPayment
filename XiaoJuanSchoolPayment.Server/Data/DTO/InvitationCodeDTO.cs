@@ -4,7 +4,7 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
 {
   public class CreateInvitationCodeDTO
   {
-    [Range(1, 30)]
+    [Range(1, 90)]
     public int ExpiresInDays { get; set; } = 7;
   }
 

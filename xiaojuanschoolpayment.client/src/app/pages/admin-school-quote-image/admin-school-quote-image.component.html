@@ -1,0 +1,103 @@
+<div class="image-editor-page">
+  <header>
+    <div><span>学校内容管理 · CIA 样板</span><h1>报价图片备注</h1><p>只修改图片文字说明。排版、Logo、价格、优惠金额和合计由系统固定生成。</p></div>
+    <div class="actions">
+      <button type="button" (click)="saveDraft()" [disabled]="isSaving || isSubmitting || !isCiaSelected"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}</button>
+      <button *ngIf="!canPublish" class="primary" type="button" (click)="submitForReview()" [disabled]="isSubmitting || isSaving || !isCiaSelected"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交管理员审核' }}</button>
+      <button *ngIf="canPublish && editor?.pendingReview" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
+      <button *ngIf="canPublish" class="primary" type="button" (click)="publish()" [disabled]="isPublishing || !isCiaSelected"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '管理员发布' }}</button>
+    </div>
+  </header>
+
+  <section class="school-bar">
+    <label>选择学校<select [ngModel]="selectedSchool?.id" (ngModelChange)="selectSchoolId($event)"><option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</option></select></label>
+    <div *ngIf="isCiaSelected"><span>草稿 {{ editor?.draft ? 'v' + editor?.draft?.version : '未保存' }}</span><span *ngIf="editor?.pendingReview">待审核 v{{ editor?.pendingReview?.version }}</span><span>已发布 {{ editor?.published ? 'v' + editor?.published?.version : '使用默认文字' }}</span></div>
+  </section>
+  <p class="status" *ngIf="statusMessage" [class.error]="statusKind === 'error'">{{ statusMessage }}</p>
+  <div class="loading" *ngIf="isLoading">正在加载报价图片设置…</div>
+  <section class="unsupported" *ngIf="selectedSchool && !isCiaSelected">{{ statusMessage }}</section>
+
+  <main *ngIf="!isLoading && isCiaSelected" (input)="contentChanged()" (change)="contentChanged()">
+    <section class="form-panel">
+      <div class="notice"><mat-icon>lock</mat-icon><div><strong>价格与优惠不在这里修改</strong><p>右侧金额是预览示例；学生实际生成时，系统会自动使用官网当前日期、课程、房型与优惠计算结果。</p></div></div>
+
+      <nav class="image-order" aria-label="报价图片内容顺序">
+        <button type="button" (click)="scrollToEditorSection('image-section-01')"><b>01</b>学校费用</button>
+        <span>→</span>
+        <button type="button" (click)="scrollToEditorSection('image-section-02')"><b>02</b>到校学杂费</button>
+        <span>→</span>
+        <button type="button" (click)="scrollToEditorSection('image-section-03')"><b>03</b>思达服务</button>
+        <span>→</span>
+        <button type="button" (click)="scrollToEditorSection('image-section-04')"><b>04</b>报价说明</button>
+      </nav>
+
+      <article id="image-section-01">
+        <h2><span>01</span> 学校费用明细</h2>
+        <label>学校费板块标题<input [(ngModel)]="settings.paymentSectionTitle" maxlength="40" /></label>
+
+        <div class="row-note">
+          <div><strong>注册费</strong><small>金额由报价计算器自动生成</small></div>
+          <label>说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.registration" maxlength="300"></textarea></label>
+        </div>
+        <div class="row-note">
+          <div><strong>课程名称</strong><small>日期与课表自动保留，这里填写图片补充说明</small></div>
+          <label>补充说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.course" maxlength="300" placeholder="可留空；例如：课程安排以学校最终课表为准"></textarea></label>
+        </div>
+        <div class="row-note">
+          <div><strong>住宿名称</strong><small>日期、房型和金额由报价计算器自动生成</small></div>
+          <label>说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.accommodation" maxlength="300" placeholder="可留空；例如：房型与空房以学校最终确认为准"></textarea></label>
+        </div>
+        <div class="row-note">
+          <div><strong>优惠／附加费</strong><small>优惠名称、金额与适用条件自动保留</small></div>
+          <label>补充说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.promotion" maxlength="300" placeholder="可留空；例如：优惠资格以学校最终确认为准"></textarea></label>
+        </div>
+      </article>
+
+      <article id="image-section-02">
+        <h2><span>02</span> 到校后学杂费明细</h2>
+        <label>学杂费板块标题<input [(ngModel)]="settings.localFeeSectionTitle" maxlength="40" /></label>
+        <label>学杂费表格上方说明<textarea rows="3" [(ngModel)]="settings.localFeeIntro" maxlength="300"></textarea></label>
+        <p class="section-help">下面按照图片表格的先后顺序排列。只修改“备注”，计费参考、数量和金额仍由系统计算。</p>
+        <div class="fee-note" *ngFor="let fee of imageFeeRows; let i = index">
+          <div class="fee-name">
+            <span>{{ i + 1 }}</span>
+            <div><strong>{{ fee.name }}</strong><small>{{ feeBillingText(fee) }}</small></div>
+          </div>
+          <label>图片备注<textarea rows="2" [(ngModel)]="settings.localFeeNotes[fee.id]" maxlength="400"></textarea></label>
+        </div>
+      </article>
+
+      <article id="image-section-03">
+        <h2><span>03</span> 为什么选择思达启航</h2>
+        <label>板块标题<input [(ngModel)]="settings.serviceSectionTitle" maxlength="40" /></label>
+        <div class="benefit" *ngFor="let item of settings.benefits; let i = index">
+          <strong>服务优势 {{ i + 1 }}</strong>
+          <label>短标题<input [(ngModel)]="item.title" maxlength="18" /></label>
+          <label>说明<input [(ngModel)]="item.text" maxlength="60" /></label>
+        </div>
+        <label>服务地点（最多3个，用顿号隔开）<input [(ngModel)]="serviceLocationsText" maxlength="80" /></label>
+        <label>老学员标题<input [(ngModel)]="settings.alumniBenefitTitle" maxlength="24" /></label>
+        <label>老学员说明<textarea rows="3" [(ngModel)]="settings.alumniBenefitText" maxlength="300"></textarea></label>
+      </article>
+
+      <article id="image-section-04">
+        <div class="article-title"><h2><span>04</span> 图片底部报价说明</h2><button type="button" (click)="addFooterNote()"><mat-icon>add</mat-icon>新增一条</button></div>
+        <label>板块标题<input [(ngModel)]="settings.noteSectionTitle" maxlength="30" /></label>
+        <div class="note-row" *ngFor="let note of settings.footerNotes; let i = index">
+          <label>说明 {{ i + 1 }}<textarea rows="3" [(ngModel)]="settings.footerNotes[i]" maxlength="300"></textarea></label>
+          <button type="button" (click)="removeFooterNote(i)" [disabled]="settings.footerNotes.length <= 1"><mat-icon>delete</mat-icon></button>
+        </div>
+      </article>
+
+      <div class="save-box">
+        <label>本次修改说明<input [(ngModel)]="changeSummary" placeholder="例如：更新老学员权益和底部提醒" maxlength="500" /></label>
+        <p>{{ canPublish ? '可先保存草稿，确认右侧图片后再发布。' : '保存后官网不会改变，需要管理员确认发布。' }}</p>
+      </div>
+    </section>
+
+    <aside class="preview-panel">
+      <div class="preview-head"><div><strong>实际图片排版预览</strong><small>修改文字后自动重新生成</small></div><span>示例金额 · 不可编辑</span></div>
+      <app-quote-image-inline-preview [quote]="previewQuote" />
+    </aside>
+  </main>
+</div>

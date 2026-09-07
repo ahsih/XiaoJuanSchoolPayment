@@ -1,0 +1,274 @@
+<div class="content-editor-page">
+  <header class="editor-header">
+    <div>
+      <span class="eyebrow">学校内容管理 · CIA 样板</span>
+      <h1>学校页面与报价规则</h1>
+      <p>在左侧修改，右侧直接显示官网真实页面。员工保存草稿，管理员确认后发布。</p>
+    </div>
+    <div class="header-actions">
+      <button class="button secondary" type="button" (click)="openPublicPage()">
+        <mat-icon>open_in_new</mat-icon>打开官网
+      </button>
+      <button class="button secondary" type="button" (click)="saveDraft()" [disabled]="!isCiaSelected || isSaving || isPublishing">
+        <mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}
+      </button>
+      <button *ngIf="canPublish" class="button primary" type="button" (click)="publish()" [disabled]="!isCiaSelected || isSaving || isPublishing">
+        <mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '发布更新' }}
+      </button>
+    </div>
+  </header>
+
+  <section class="school-toolbar">
+    <div class="school-search">
+      <label for="school-search">搜索并选择学校</label>
+      <div class="search-input">
+        <mat-icon>search</mat-icon>
+        <input id="school-search" type="search" [(ngModel)]="schoolSearch" (focus)="showSchoolResults = true" (input)="showSchoolResults = true" autocomplete="off" placeholder="输入学校中文名或英文名" />
+      </div>
+      <div class="school-results" *ngIf="showSchoolResults">
+        <button *ngFor="let school of filteredSchools" type="button" (click)="selectSchool(school)">
+          <span>{{ school.name }}</span>
+          <small>{{ school.name.toLowerCase().includes('cia') ? 'CIA 样板已接通' : '待复制' }}</small>
+        </button>
+        <p *ngIf="filteredSchools.length === 0">没有找到学校</p>
+      </div>
+    </div>
+    <div class="version-summary" *ngIf="isCiaSelected">
+      <span><mat-icon>edit_note</mat-icon>草稿 {{ editor?.draft ? 'v' + editor?.draft?.version : '未保存' }}</span>
+      <span><mat-icon>public</mat-icon>官网 {{ editor?.published ? 'v' + editor?.published?.version : '使用原始数据' }}</span>
+      <span *ngIf="editor?.draft?.updatedByName"><mat-icon>person</mat-icon>{{ editor?.draft?.updatedByName }} · {{ editor?.draft?.updatedAt | date:'yyyy/MM/dd HH:mm' }}</span>
+    </div>
+  </section>
+
+  <p class="status-message" *ngIf="statusMessage" [class.success]="statusKind === 'success'" [class.error]="statusKind === 'error'">
+    <mat-icon>{{ statusKind === 'success' ? 'check_circle' : statusKind === 'error' ? 'error' : 'info' }}</mat-icon>
+    {{ statusMessage }}
+  </p>
+
+  <section class="pilot-placeholder" *ngIf="selectedSchool && !isCiaSelected">
+    <mat-icon>content_copy</mat-icon>
+    <h2>{{ selectedSchool.name }}</h2>
+    <p>CIA 样板确认后，会把相同的四板块、草稿审核、实时预览和历史版本复制到这所学校。</p>
+  </section>
+
+  <ng-container *ngIf="isCiaSelected">
+    <nav class="editor-tabs" aria-label="学校内容板块">
+      <button *ngFor="let tab of tabs" type="button" [class.active]="activeTab === tab.id" (click)="selectTab(tab.id)">
+        <mat-icon>{{ tab.icon }}</mat-icon>{{ tab.label }}
+      </button>
+    </nav>
+
+    <div class="loading-state" *ngIf="isLoading"><span></span>正在加载 CIA 内容…</div>
+
+    <main class="workspace" *ngIf="!isLoading">
+      <section class="form-panel" (input)="contentChanged()" (change)="contentChanged()">
+        <div class="panel-heading">
+          <div>
+            <span>修改表单</span>
+            <h2>{{ tabs[activeTab === 'courses' ? 0 : activeTab === 'rooms' ? 1 : activeTab === 'fees' ? 2 : 3].label }}</h2>
+          </div>
+          <small>右侧预览会即时更新</small>
+        </div>
+
+        <ng-container *ngIf="activeTab === 'courses'">
+          <div class="item-picker">
+            <div class="picker-heading"><strong>课程列表</strong><button type="button" (click)="addCourse()"><mat-icon>add</mat-icon>新增课程</button></div>
+            <button class="picker-item" *ngFor="let item of content.courses; trackBy: trackById" type="button" [class.active]="selectedCourseId === item.id" [class.hidden-item]="!item.enabled" (click)="selectItem('course', item.id)">
+              <span>{{ item.name }}<small>{{ item.enabled ? '官网显示' : '已隐藏' }}</small></span><b>{{ item.tuition2027 | number }} 美元</b>
+            </button>
+          </div>
+          <div class="edit-card" data-selected-editor *ngIf="selectedCourse as item" (focusin)="focusEditorItem('course', item.id)">
+            <div class="edit-card-title"><h3>编辑课程</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>官网显示</span></label></div>
+            <div class="field-grid two">
+              <label>课程名称<input [(ngModel)]="item.name" /></label>
+              <label>内部编号<input [(ngModel)]="item.id" disabled /></label>
+              <label>2026 原价（美元/4周）<input type="number" min="0" [(ngModel)]="item.tuition" /></label>
+              <label>2027 新价（美元/4周）<input type="number" min="0" [(ngModel)]="item.tuition2027" /></label>
+            </div>
+            <label>每日课程安排<textarea rows="3" [(ngModel)]="item.schedule"></textarea></label>
+            <label>课程定位与适合人群<input [(ngModel)]="item.suitable" /></label>
+            <label>详细说明<textarea rows="3" [(ngModel)]="item.note"></textarea></label>
+            <div class="row-actions">
+              <button type="button" (click)="move('course', item.id, -1)"><mat-icon>arrow_upward</mat-icon>上移</button>
+              <button type="button" (click)="move('course', item.id, 1)"><mat-icon>arrow_downward</mat-icon>下移</button>
+              <button class="danger" type="button" (click)="removeItem('course', item.id)"><mat-icon>delete</mat-icon>删除课程</button>
+            </div>
+          </div>
+          <div class="edit-card compact">
+            <h3>课程表说明</h3>
+            <label data-editor-section="course-heading" (focusin)="focusEditorItem('section', 'course-heading')">板块标题<input [(ngModel)]="content.quoteSettings.courseTableTitle" /></label>
+            <label data-editor-section="course-note" (focusin)="focusEditorItem('section', 'course-note')">价格切换说明<textarea rows="3" [(ngModel)]="content.quoteSettings.courseTableNote"></textarea></label>
+            <label data-editor-section="class-note" (focusin)="focusEditorItem('section', 'class-note')">团体课人数说明<input [(ngModel)]="content.quoteSettings.groupClassNote" /></label>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'rooms'">
+          <div class="item-picker">
+            <div class="picker-heading"><strong>房型列表</strong><button type="button" (click)="addRoom()"><mat-icon>add</mat-icon>新增房型</button></div>
+            <button class="picker-item" *ngFor="let item of content.rooms; trackBy: trackById" type="button" [class.active]="selectedRoomId === item.id" [class.hidden-item]="!item.enabled" (click)="selectItem('room', item.id)">
+              <span>{{ item.label }}<small>{{ item.code }} · {{ item.location }}</small></span><b>{{ item.fee | number }} 美元</b>
+            </button>
+          </div>
+          <div class="edit-card" data-selected-editor *ngIf="selectedRoom as item" (focusin)="focusEditorItem('room', item.id)">
+            <div class="edit-card-title"><h3>编辑房型</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>官网显示</span></label></div>
+            <div class="field-grid two">
+              <label>完整名称<input [(ngModel)]="item.name" /></label>
+              <label>页面短名称<input [(ngModel)]="item.label" /></label>
+              <label>房型编号<input [(ngModel)]="item.code" /></label>
+              <label>4周价格（美元）<input type="number" min="0" [(ngModel)]="item.fee" /></label>
+              <label>住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
+              <label>页面分组<input [(ngModel)]="item.group" /></label>
+            </div>
+            <label>房型说明<textarea rows="3" [(ngModel)]="item.note"></textarea></label>
+            <div class="row-actions">
+              <button type="button" (click)="move('room', item.id, -1)"><mat-icon>arrow_upward</mat-icon>上移</button>
+              <button type="button" (click)="move('room', item.id, 1)"><mat-icon>arrow_downward</mat-icon>下移</button>
+              <button class="danger" type="button" (click)="removeItem('room', item.id)"><mat-icon>delete</mat-icon>删除房型</button>
+            </div>
+          </div>
+          <div class="edit-card compact">
+            <h3>住宿板块说明</h3>
+            <label data-editor-section="room-heading" (focusin)="focusEditorItem('section', 'room-heading')">板块标题<input [(ngModel)]="content.quoteSettings.roomTableTitle" /></label>
+            <label data-editor-section="room-note" (focusin)="focusEditorItem('section', 'room-note')">房型说明<textarea rows="3" [(ngModel)]="content.quoteSettings.roomTableNote"></textarea></label>
+            <label data-editor-section="stay-policy" (focusin)="focusEditorItem('section', 'stay-policy')">入住与退房标题<input [(ngModel)]="content.quoteSettings.stayPolicyTitle" /></label>
+            <div class="nested-card" *ngFor="let policy of content.quoteSettings.stayPolicies; let i = index" (focusin)="focusEditorItem('section', 'stay-policy')">
+              <strong>提醒 {{ i + 1 }}</strong>
+              <div class="field-grid two"><label>名称<input [(ngModel)]="policy.label" /></label><label>重点内容<input [(ngModel)]="policy.value" /></label></div>
+              <label>详细说明<textarea rows="2" [(ngModel)]="policy.note"></textarea></label>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'fees'">
+          <div class="item-picker">
+            <div class="picker-heading"><strong>费用列表</strong><button type="button" (click)="addFee()"><mat-icon>add</mat-icon>新增费用</button></div>
+            <button class="picker-item" *ngFor="let item of content.localFees; trackBy: trackById" type="button" [class.active]="selectedFeeId === item.id" [class.hidden-item]="!item.enabled" (click)="selectItem('fee', item.id)">
+              <span>{{ item.name }}<small>{{ item.includeInTotal ? '计入合计' : '仅作参考' }}</small></span><b>{{ item.amount | number }} 比索</b>
+            </button>
+          </div>
+          <div class="edit-card" data-selected-editor *ngIf="selectedFee as item" (focusin)="focusEditorItem('fee', item.id)">
+            <div class="edit-card-title"><h3>编辑费用与计算方法</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>官网显示</span></label></div>
+            <div class="risk-note"><mat-icon>calculate</mat-icon>这里修改的计费方式会同时影响网页报价和报价图片。</div>
+            <div class="field-grid two">
+              <label>费用名称<input [(ngModel)]="item.name" /></label>
+              <label>金额（比索）<input type="number" min="0" [(ngModel)]="item.amount" /></label>
+              <label>计费方式<select [(ngModel)]="item.billingRule"><option *ngFor="let option of feeBillingOptions" [value]="option.value">{{ option.label }}</option></select></label>
+              <label>每几周一个计费周期<input type="number" min="1" [(ngModel)]="item.periodWeeks" /></label>
+              <label>周期取整方式<select [(ngModel)]="item.rounding"><option value="proportional">按比例</option><option value="ceil">不足一个周期向上取整</option></select></label>
+              <label>续签阶梯金额（逗号分隔）<input [ngModel]="item.rates?.join(', ')" (ngModelChange)="updateFeeRates(item, $event)" /></label>
+            </div>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" [(ngModel)]="item.includeInTotal" />计入到校学杂费合计</label>
+              <label><input type="checkbox" [(ngModel)]="item.waiveForLongTermVisa" />长期签证暂按免收</label>
+              <label><input type="checkbox" [(ngModel)]="item.multiplyByStudents" />多人报价按人数计算</label>
+            </div>
+            <label>官网及图片备注<textarea rows="4" [(ngModel)]="item.note"></textarea></label>
+            <div class="row-actions">
+              <button type="button" (click)="move('fee', item.id, -1)"><mat-icon>arrow_upward</mat-icon>上移</button>
+              <button type="button" (click)="move('fee', item.id, 1)"><mat-icon>arrow_downward</mat-icon>下移</button>
+              <button class="danger" type="button" (click)="removeItem('fee', item.id)"><mat-icon>delete</mat-icon>删除费用</button>
+            </div>
+          </div>
+          <div class="edit-card compact" data-editor-section="local-fee-intro" (focusin)="focusEditorItem('section', 'local-fee-intro')"><h3>费用板块说明</h3><label>表格上方说明<textarea rows="3" [(ngModel)]="content.quoteSettings.localFeeIntro"></textarea></label></div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'rules'">
+          <div class="edit-card" data-editor-section="quote">
+            <h3>基础报价规则</h3>
+            <div class="risk-note"><mat-icon>warning_amber</mat-icon>日期、比例和优惠会改变最终金额，发布时需要管理员再次确认。</div>
+            <div class="field-grid two">
+              <label data-editor-section="quote-registration" (focusin)="focusEditorItem('section', 'quote-registration')">注册费（美元）<input type="number" min="0" [(ngModel)]="content.quoteSettings.registrationFee" /></label>
+              <label (focusin)="focusEditorItem('section', 'quote-season')">旺季附加费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.peakSeasonFeePerWeek" /></label>
+              <label (focusin)="focusEditorItem('section', 'quote')">新价格报名起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceRegistrationStart" /></label>
+              <label (focusin)="focusEditorItem('section', 'quote')">新价格入学起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceArrivalStart" /></label>
+              <label data-editor-section="short-stay" (focusin)="focusEditorItem('section', 'short-stay')">1周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['1']" /></label>
+              <label (focusin)="focusEditorItem('section', 'short-stay')">2周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['2']" /></label>
+              <label (focusin)="focusEditorItem('section', 'short-stay')">3周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['3']" /></label>
+            </div>
+          </div>
+
+          <div class="edit-card" data-editor-section="quote-season" (focusin)="focusEditorItem('section', 'quote-season')">
+            <div class="edit-card-title"><h3>旺季日期</h3><button class="inline-add" type="button" (click)="addPeakRange()"><mat-icon>add</mat-icon>新增旺季</button></div>
+            <div class="rule-row" *ngFor="let range of content.quoteSettings.peakSeasonRanges; trackBy: trackById">
+              <label class="switch"><input type="checkbox" [(ngModel)]="range.enabled" /><span>启用</span></label>
+              <input aria-label="旺季名称" [(ngModel)]="range.label" />
+              <input aria-label="旺季开始日期" type="date" [(ngModel)]="range.start" />
+              <input aria-label="旺季结束日期" type="date" [(ngModel)]="range.end" />
+              <button class="icon-danger" type="button" title="删除旺季" (click)="removeItem('peak', range.id)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+
+          <div class="item-picker">
+            <div class="picker-heading"><strong>学校优惠</strong><button type="button" (click)="addPromotion()"><mat-icon>add</mat-icon>新增优惠</button></div>
+            <button class="picker-item" *ngFor="let item of content.quoteSettings.promotions; trackBy: trackById" type="button" [class.active]="selectedPromotionId === item.id" [class.hidden-item]="!item.enabled" (click)="selectItem('promotion', item.id)">
+              <span>{{ item.name }}<small>{{ item.enabled ? '正在使用' : '已停用' }} · {{ item.stackable ? '可叠加' : '不可叠加' }}</small></span><b>{{ item.discountType === 'percentage' ? item.discountValue + '%' : item.discountValue + ' 美元' }}</b>
+            </button>
+          </div>
+          <div class="edit-card" data-selected-editor *ngIf="selectedPromotion as item" (focusin)="focusEditorItem('promotion', item.id)">
+            <div class="edit-card-title"><h3>编辑优惠计算规则</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>启用优惠</span></label></div>
+            <div class="field-grid two">
+              <label>优惠名称<input [(ngModel)]="item.name" /></label>
+              <label>优先级<input type="number" [(ngModel)]="item.priority" /></label>
+              <label>优惠方式<select [(ngModel)]="item.discountType"><option value="none">不减金额，仅免注册费</option><option value="percentage">百分比折扣</option><option value="fixed">固定减免</option><option value="per-course-week">每课程周减免</option></select></label>
+              <label>优惠数值<input type="number" min="0" [(ngModel)]="item.discountValue" /></label>
+              <label>优惠计算范围<select [(ngModel)]="item.appliesTo"><option value="tuition">仅课程费</option><option value="accommodation">仅住宿费</option><option value="tuition-and-accommodation">课程费与住宿费</option><option value="school-total">学校费用合计</option></select></label>
+              <label>覆盖条件<select [(ngModel)]="item.coverageTarget"><option value="none">不要求覆盖指定日期</option><option value="course">课程覆盖指定日期</option><option value="course-and-accommodation">课程和住宿都覆盖指定日期</option></select></label>
+              <label>报名开始日<input type="date" [(ngModel)]="item.registrationStart" /></label>
+              <label>报名结束日<input type="date" [(ngModel)]="item.registrationEnd" /></label>
+              <label>抵达开始日<input type="date" [(ngModel)]="item.arrivalStart" /></label>
+              <label>抵达结束日<input type="date" [(ngModel)]="item.arrivalEnd" /></label>
+              <label>活动覆盖开始日<input type="date" [(ngModel)]="item.coverageStart" /></label>
+              <label>活动覆盖结束日<input type="date" [(ngModel)]="item.coverageEnd" /></label>
+              <label>最低课程周数<input type="number" min="0" [(ngModel)]="item.minimumCourseWeeks" /></label>
+              <label>最低住宿周数<input type="number" min="0" [(ngModel)]="item.minimumAccommodationWeeks" /></label>
+            </div>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" [(ngModel)]="item.newStudentsOnly" />仅限新生</label>
+              <label><input type="checkbox" [(ngModel)]="item.stackable" />可以与其他优惠叠加</label>
+              <label><input type="checkbox" [(ngModel)]="item.waiveRegistration" />同时免注册费</label>
+            </div>
+            <label>官网和报价图片显示的优惠说明<textarea rows="4" [(ngModel)]="item.description"></textarea></label>
+            <div class="row-actions">
+              <button type="button" (click)="move('promotion', item.id, -1)"><mat-icon>arrow_upward</mat-icon>上移</button>
+              <button type="button" (click)="move('promotion', item.id, 1)"><mat-icon>arrow_downward</mat-icon>下移</button>
+              <button class="danger" type="button" (click)="removeItem('promotion', item.id)"><mat-icon>delete</mat-icon>删除优惠</button>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="save-panel">
+          <label>本次修改说明<input [(ngModel)]="changeSummary" placeholder="例如：增加九月优惠、调整签证续签费用" /></label>
+          <div>
+            <button class="button secondary" type="button" (click)="saveDraft()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>save</mat-icon>保存草稿</button>
+            <button *ngIf="!canPublish" class="button primary" type="button" (click)="submitForReview()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交管理员审核' }}</button>
+            <button *ngIf="canPublish && editor?.pendingReview" class="button secondary" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
+            <button *ngIf="canPublish" class="button primary" type="button" (click)="publish()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>publish</mat-icon>管理员发布</button>
+          </div>
+          <small *ngIf="!canPublish">先保存草稿或直接提交审核；管理员确认发布后才会同步到官网。</small>
+          <small *ngIf="editor?.pendingReview">版本 {{ editor?.pendingReview?.version }} 正在等待管理员审核。</small>
+        </div>
+
+        <details class="history-panel" *ngIf="editor?.history?.length">
+          <summary><mat-icon>history</mat-icon>查看历史版本（{{ editor?.history?.length }}）</summary>
+          <article *ngFor="let revision of editor?.history">
+            <div><strong>版本 {{ revision.version }} · {{ revision.status === 'Published' ? '已发布' : revision.status === 'Draft' ? '草稿' : '历史发布版' }}</strong><span>{{ revision.changeSummary || '未填写修改说明' }}</span><small>{{ revision.updatedByName }} · {{ revision.updatedAt | date:'yyyy/MM/dd HH:mm' }}</small></div>
+            <button *ngIf="canPublish" type="button" (click)="restore(revision.id, revision.version)">恢复为草稿</button>
+          </article>
+        </details>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="preview-heading">
+          <div><span class="live-dot"></span><strong>官网实时预览</strong><small>预览使用官网真实组件，不是另外画的一套</small></div>
+          <button type="button" (click)="openPublicPage()"><mat-icon>open_in_new</mat-icon>新窗口查看</button>
+        </div>
+        <p class="preview-tip"><mat-icon>touch_app</mat-icon>左侧选择后自动定位并高亮；也可以点击右侧内容打开编辑项。</p>
+        <div class="preview-location" role="status" aria-live="polite">
+          <div><strong>对应位置：{{ previewLocation }}</strong><small>{{ previewStatus }}</small></div>
+          <button type="button" (click)="locatePreview()"><mat-icon>my_location</mat-icon>重新定位</button>
+        </div>
+        <iframe #previewFrame title="CIA 官网实时预览" [src]="previewUrl" (load)="previewLoaded()"></iframe>
+      </aside>
+    </main>
+  </ng-container>
+</div>
