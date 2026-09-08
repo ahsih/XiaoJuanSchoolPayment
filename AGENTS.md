@@ -12,7 +12,7 @@ XiaoJuanSchoolPayment is the codebase for **思达启航教育 (Sida Qihang Educ
 - School-specific quote calculators backed by database pricing.
 - Contact and quote-image email forms.
 
-There is also a JWT-protected employee area for maintaining schools, lessons, rooms, fees, notes, student applications, private documents, invitations, and uploaded school photos. Accounts register by phone number or email plus an access/invitation code and password; login supports either password or a verification code.
+There is also a JWT-protected employee area for maintaining schools, lessons, rooms, fees, notes, student applications, private documents, invitations, and uploaded school photos. Accounts register with a required email, an optional phone number, an access/invitation code, and a password; the configured access code always grants Admin while invitation codes carry their stored Staff or Student role. Login is password-only and accepts either the registered email or optional phone number. Password recovery accepts either identifier but always emails the reset link to the account's registered email.
 
 ## Architecture at a glance
 
@@ -30,7 +30,7 @@ MySQL/MariaDB database
 ```
 
 - Frontend: Angular 19, TypeScript 5.7, RxJS, Angular Material, Karma/Jasmine.
-- Backend: ASP.NET Core 8, EF Core 9, Pomelo MySQL provider, ASP.NET Identity, JWT bearer authentication, Swagger.
+- Backend: ASP.NET Core 10, EF Core 9, Pomelo MySQL provider, ASP.NET Identity, JWT bearer authentication, Swagger.
 - Production container: builds Angular with Node 22, publishes the .NET API, and serves the Angular build from `wwwroot` on port 8080.
 - Development: Angular runs at `https://localhost:53747` and proxies API paths to the ASP.NET server, normally `https://localhost:7209`.
 
@@ -74,14 +74,14 @@ MySQL/MariaDB database
 - `Currency`: code and symbol.
 - `SchoolUser`: ASP.NET Identity user with first and last name. Admin accounts use the employee backend; Student accounts use the student portal.
 - `InvitationCode`: single-use, expiring role invitation. Admin users create Staff invitations; Staff users create Student invitations.
-- `AccountVerificationCode`: short-lived, hashed email/SMS codes for passwordless login, with resend and failed-attempt limits.
+- `AccountVerificationCode`: legacy verification-code records retained for migration compatibility; the current authentication flow does not create or accept verification codes.
 - `SchoolContentRevision`: per-school JSON snapshots for employee drafts and administrator-published website content, including version, author, change summary, and publish timestamps.
 - `StudentApplication`: a student's school application, course/accommodation summary, dates, status, student-visible notes, and employee-only notes. One student can have multiple applications.
 - `StudentApplicationDocument`: private application files such as quotes and offer letters. Files are stored outside `wwwroot` under `App_Data/student-documents` and are downloaded only through an authorized endpoint.
 
 Key endpoint groups use route prefixes without `/api`:
 
-- `/auth`: phone/email registration, password or verification-code login, verification-code delivery, password changes, and authenticated invitation management.
+- `/auth`: required-email/optional-phone registration, password login by email or phone, emailed password reset, password changes, and authenticated invitation management.
 - `/school`: public read endpoints; Admin-only create/update/photo-delete endpoints.
 - `/school-content`: anonymous published-content reads; school-scoped Admin/Staff editor reads and draft saves; Staff can submit drafts for review, while Admin publishes, returns a review to draft, or restores a historical version. Quote-image-only staff use the dedicated merge endpoint so they cannot replace the rest of the school content document.
 - `/staff-permissions`: Admin-only employee permission management plus the current Admin/Staff user's own permission view. Per-school feature grants are stored as ASP.NET Identity `SchoolPermission` claims for school page content, pricing, quote-image notes, media, and student applications; mutation endpoints must enforce these grants server-side.
@@ -92,7 +92,7 @@ Key endpoint groups use route prefixes without `/api`:
 - `/pines-room-availability`: anonymous read-only PINES room availability feed; the server fetches fixed public school endpoints and returns only sanitized Main/IELTS dates, male/female vacancies, and exact continuous-stay options. The `/stay-options` child route supports the public room-plan calculator without exposing portal identifiers or navigation.
 - `/uploads`: static uploaded files through ASP.NET static-file middleware.
 
-The existing `/admin` area is the employee backend for both Admin and Staff roles. Its home page is a school-content workbench whose school list follows the public Cebu directory's curated popularity order, leaves unranked schools alphabetized, and marks the top ten; keep that ordering synchronized when the public popularity list changes. `/admin/school-lessons?schoolId=<id>` opens the selected school's filtered course workspace; keep new employee content tools school-centric instead of restoring all-school edit tables. `/admin/school-content?schoolId=<id>` is the visual school-page editor: CIA is the first supported pilot and its same-origin iframe reuses the real public component for live previews. `/admin/school-quote-image?schoolId=<id>` is the CIA quote-image copy editor: it reuses the production canvas renderer for its preview and only edits headings, explanatory copy, service benefits, and footer notes; layout, branding, calculated prices, promotion amounts, and totals stay calculator-owned. Staff save or submit a review, and only Admin may publish or return it. `/admin/staff-permissions` lets Admin assign each Staff account to schools and features; the sidebar is only a convenience and every write API must remain the source-of-truth permission check. `/student` is the Student-role portal. Admin users create single-use Staff invitations, and Staff users create single-use Student invitations from `/admin/invitations`. Invitees register their own phone number or email, access/invitation code, and password; both account types can later log in by password or a new verification code. The legacy `AccessCode` is accepted only to bootstrap the first Admin when no users exist. Email login codes reuse the `ContactForm` SMTP configuration; SMS login codes use the `Authentication__Sms` Aliyun credentials, signature, and template. Keep student documents out of public static-file folders. `StudentDocuments__RootPath` can point document storage at a persistent mounted directory in production; the default is `App_Data/student-documents` under the server content root.
+The existing `/admin` area is the employee backend for both Admin and Staff roles. Its home page is a school-content workbench whose school list follows the public Cebu directory's curated popularity order, leaves unranked schools alphabetized, and marks the top ten; keep that ordering synchronized when the public popularity list changes. `/admin/school-lessons?schoolId=<id>` opens the selected school's filtered course workspace; keep new employee content tools school-centric instead of restoring all-school edit tables. `/admin/school-content?schoolId=<id>` is the visual school-page editor: CIA is the first supported pilot and its same-origin iframe reuses the real public component for live previews. `/admin/school-quote-image?schoolId=<id>` is the CIA quote-image copy editor: it reuses the production canvas renderer for its preview and only edits headings, explanatory copy, service benefits, and footer notes; layout, branding, calculated prices, promotion amounts, and totals stay calculator-owned. Staff save or submit a review, and only Admin may publish or return it. `/admin/staff-permissions` lets Admin assign each Staff account to schools and features; the sidebar is only a convenience and every write API must remain the source-of-truth permission check. `/student` is the Student-role portal. Admin users create single-use Staff invitations, and Staff users create single-use Student invitations from `/admin/invitations`. Invitees register a required email, an optional phone number, an access/invitation code, and a password. They can log in with their email or registered phone number and password. Password recovery accepts either identifier and sends the reset link only to the registered email through the `ContactForm` SMTP configuration. The configured `AccessCode` can register an Admin at any time; keep it secret because possession grants administrator-registration authority. Configure `Authentication__PublicOrigin` in production so emailed password-reset links use the canonical public site origin. Keep student documents out of public static-file folders. `StudentDocuments__RootPath` can point document storage at a persistent mounted directory in production; the default is `App_Data/student-documents` under the server content root.
 
 The Angular services use relative URLs so the development proxy and production same-origin hosting both work. Preserve this unless deployment is intentionally changed.
 
@@ -147,7 +147,7 @@ Before changing school content or pricing, search for the school name across bot
 Prerequisites:
 
 - Node.js 22 and npm.
-- .NET 8 SDK.
+- .NET 10 SDK.
 - MySQL 8 or a compatible MariaDB instance.
 - A trusted ASP.NET development HTTPS certificate (`dotnet dev-certs https --trust`) if using HTTPS locally.
 
@@ -167,13 +167,10 @@ $env:Jwt__Key = "<long-random-development-key>"
 $env:Jwt__Issuer = "SchoolPayment"
 $env:Jwt__Audience = "YourAppUsers"
 $env:AccessCode = "<private-registration-code>"
-$env:Authentication__Sms__AccessKeyId = "<aliyun-access-key-id>"
-$env:Authentication__Sms__AccessKeySecret = "<aliyun-access-key-secret>"
-$env:Authentication__Sms__SignName = "<approved-sms-signature>"
-$env:Authentication__Sms__TemplateCode = "<approved-verification-template-code>"
+$env:Authentication__PublicOrigin = "https://www.example.com"
 ```
 
-SMTP is only required to exercise the contact and quote-email endpoints. Configure it with `ContactForm__RecipientEmail`, `ContactForm__SenderEmail`, `ContactForm__Smtp__Host`, `__Port`, `__Username`, `__Password`, and `__EnableSsl` environment variables or .NET user secrets.
+SMTP is required to exercise contact delivery, quote-email delivery, and password recovery. Configure it with `ContactForm__RecipientEmail`, `ContactForm__SenderEmail`, `ContactForm__Smtp__Host`, `__Port`, `__Username`, `__Password`, and `__EnableSsl` environment variables or .NET user secrets.
 
 Start from Visual Studio by opening the solution and launching the HTTPS profile, or run:
 
@@ -269,7 +266,7 @@ Keep `/admin` under `RoleGuard`, use `[Authorize(Roles = "Admin")]` for server m
 ## Security and deployment cautions
 
 - Configuration files in the current history contain development database/auth values and an SMTP credential. Never quote those values in tickets, prompts, logs, or documentation. Replace committed secrets with environment variables/user secrets and rotate exposed credentials before any real deployment.
-- JWT lifetime validation is enabled. CORS still allows any origin and should be restricted to trusted production domains before exposing the API publicly. Registration codes are HMAC-hashed and invitations are SHA-256-hashed in storage; the legacy `AccessCode` can grant Admin only while bootstrapping an otherwise empty user table.
+- JWT lifetime validation is enabled. CORS still allows any origin and should be restricted to trusted production domains before exposing the API publicly. Registration codes are HMAC-hashed and invitations are SHA-256-hashed in storage; the configured `AccessCode` grants Admin registration whenever supplied and must be protected as an administrator credential.
 - Swagger is enabled only in Development.
 - The Docker image does not contain MySQL; supply `ConnectionStrings__DefaultConnection` at runtime.
 - Uploaded school photos are written to the container/local filesystem. Mount persistent storage in production or uploads will disappear when the container is replaced.

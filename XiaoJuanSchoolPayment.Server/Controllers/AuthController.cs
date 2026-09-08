@@ -1,15 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using XiaoJuanSchoolPayment.Server.Data;
-using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Services;
@@ -24,9 +22,8 @@ namespace MyProject.Controllers
     private readonly SignInManager<SchoolUser> _signInManager;
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
-    private readonly AuthenticationOptions _authOptions;
-    private readonly IVerificationCodeDeliveryService _deliveryService;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IMemoryCache _memoryCache;
+    private readonly IAccountEmailService _accountEmailService;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
@@ -34,162 +31,89 @@ namespace MyProject.Controllers
       SignInManager<SchoolUser> signInManager,
       AppDbContext context,
       IConfiguration config,
-      IOptions<AuthenticationOptions> authOptions,
-      IVerificationCodeDeliveryService deliveryService,
-      IWebHostEnvironment environment,
+      IMemoryCache memoryCache,
+      IAccountEmailService accountEmailService,
       ILogger<AuthController> logger)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _context = context;
       _config = config;
-      _authOptions = authOptions.Value;
-      _deliveryService = deliveryService;
-      _environment = environment;
+      _memoryCache = memoryCache;
+      _accountEmailService = accountEmailService;
       _logger = logger;
     }
 
-    [AllowAnonymous]
-    [HttpPost("verification-code")]
-    public async Task<ActionResult<VerificationCodeResponseDTO>> SendVerificationCode(
-      SendVerificationCodeDTO request,
-      CancellationToken cancellationToken)
-    {
-      if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
-      {
-        return BadRequest(accountError);
-      }
-
-      var purpose = request.Purpose;
-      var existingUser = await account.FindUserAsync(_userManager, _context);
-      if (purpose == "Register" && existingUser != null)
-      {
-        return Conflict("该手机号码或邮箱已注册，请直接登录。");
-      }
-      if (purpose == "Login" && existingUser == null)
-      {
-        return BadRequest("该手机号码或邮箱尚未注册。");
-      }
-
-      var now = DateTime.UtcNow;
-      var cooldown = Math.Clamp(_authOptions.ResendCooldownSeconds, 30, 300);
-      var latestRequest = await _context.AccountVerificationCodes.AsNoTracking()
-        .Where(x => x.Account == account.Value && x.Purpose == purpose)
-        .OrderByDescending(x => x.CreatedAt)
-        .FirstOrDefaultAsync(cancellationToken);
-      if (latestRequest != null && latestRequest.CreatedAt.AddSeconds(cooldown) > now)
-      {
-        var retryAfter = (int)Math.Ceiling((latestRequest.CreatedAt.AddSeconds(cooldown) - now).TotalSeconds);
-        return StatusCode(StatusCodes.Status429TooManyRequests, $"请在 {retryAfter} 秒后重新获取验证码。");
-      }
-
-      var hourlyLimit = Math.Clamp(_authOptions.MaxRequestsPerHour, 3, 20);
-      var requestsLastHour = await _context.AccountVerificationCodes.CountAsync(
-        x => x.Account == account.Value && x.Purpose == purpose && x.CreatedAt >= now.AddHours(-1),
-        cancellationToken);
-      if (requestsLastHour >= hourlyLimit)
-      {
-        return StatusCode(StatusCodes.Status429TooManyRequests, "验证码请求过于频繁，请稍后再试。");
-      }
-
-      var code = RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
-      var lifetimeMinutes = Math.Clamp(_authOptions.VerificationCodeLifetimeMinutes, 3, 15);
-      var verification = new AccountVerificationCode
-      {
-        Id = Guid.NewGuid(),
-        Account = account.Value,
-        AccountType = account.Type,
-        Purpose = purpose,
-        CodeHash = HashVerificationCode(account.Value, purpose, code),
-        CreatedAt = now,
-        ExpiresAt = now.AddMinutes(lifetimeMinutes),
-      };
-
-      _context.AccountVerificationCodes.Add(verification);
-      await _context.SaveChangesAsync(cancellationToken);
-
-      string? developmentCode = null;
-      try
-      {
-        await _deliveryService.SendAsync(account, code, cancellationToken);
-      }
-      catch (VerificationDeliveryUnavailableException) when (_environment.IsDevelopment())
-      {
-        developmentCode = code;
-        _logger.LogWarning("Verification delivery is not configured for {AccountType}; returning a development-only code.", account.Type);
-      }
-      catch (Exception ex)
-      {
-        verification.ConsumedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync(cancellationToken);
-        _logger.LogError(ex, "Failed to deliver a verification code through {AccountType}.", account.Type);
-        return StatusCode(StatusCodes.Status503ServiceUnavailable, "验证码暂时无法发送，请稍后重试。");
-      }
-
-      return Ok(new VerificationCodeResponseDTO
-      {
-        DeliveryChannel = account.Type,
-        MaskedAccount = MaskAccount(account),
-        ExpiresInSeconds = lifetimeMinutes * 60,
-        RetryAfterSeconds = cooldown,
-        DevelopmentCode = developmentCode,
-      });
-    }
-
-    [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(SchoolUserDTO request, CancellationToken cancellationToken)
         {
-            if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
+            if (!AccountIdentifier.TryCreate(request.Email, out var email, out var emailError)
+              || email == null
+              || email.Type != "Email")
             {
-                return BadRequest(accountError);
+                return BadRequest(emailError ?? "邮箱格式不正确。");
             }
 
-            if (await account.FindUserAsync(_userManager, _context) != null)
+            if (await email.FindUserAsync(_userManager, _context) != null)
             {
-                return Conflict("该手机号码或邮箱已注册，请直接登录。");
+                return Conflict("该邮箱已注册，请直接登录。");
+            }
+
+            AccountIdentifier? phone = null;
+            if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+            {
+                if (!AccountIdentifier.TryCreate(request.PhoneNumber, out phone, out var phoneError)
+                  || phone == null
+                  || phone.Type != "Phone")
+                {
+                    return BadRequest(phoneError ?? "手机号码格式不正确。");
+                }
+
+                if (await phone.FindUserAsync(_userManager, _context) != null)
+                {
+                    return Conflict("该手机号码已注册，请直接登录。");
+                }
             }
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             var now = DateTime.UtcNow;
-            var invitationHash = XiaoJuanSchoolPayment.Server.Controllers.InvitationCodesController.HashCode(request.InvitationCode);
-            var invitation = await _context.InvitationCodes.AsNoTracking()
-              .FirstOrDefaultAsync(x => x.CodeHash == invitationHash, cancellationToken);
+            InvitationCode? invitation = null;
             var role = string.Empty;
+            var accessCode = _config["AccessCode"];
+            var usesAdminAccessCode = !string.IsNullOrWhiteSpace(accessCode)
+              && string.Equals(accessCode, request.AccessCode, StringComparison.Ordinal);
 
-            if (invitation != null)
+            if (usesAdminAccessCode)
             {
-                if (invitation.UsedAt.HasValue || invitation.RevokedAt.HasValue || invitation.ExpiresAt <= now)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                    return BadRequest("验证码无效、已使用或已过期。");
-                }
-                role = invitation.Role;
+                role = "Admin";
             }
             else
             {
-                var accessCode = _config["AccessCode"];
-                var canBootstrapAdmin = !await _context.Users.AnyAsync(cancellationToken)
-                  && !string.IsNullOrWhiteSpace(accessCode)
-                  && string.Equals(accessCode, request.InvitationCode, StringComparison.Ordinal);
-                if (!canBootstrapAdmin)
+                var invitationHash = XiaoJuanSchoolPayment.Server.Controllers.InvitationCodesController.HashCode(request.InvitationCode);
+                invitation = await _context.InvitationCodes.AsNoTracking()
+                  .FirstOrDefaultAsync(x => x.CodeHash == invitationHash, cancellationToken);
+                if (invitation == null
+                  || invitation.UsedAt.HasValue
+                  || invitation.RevokedAt.HasValue
+                  || invitation.ExpiresAt <= now)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    return BadRequest("验证码无效、已使用或已过期。");
+                    return BadRequest("邀请码或管理员访问码无效、已使用或已过期。");
                 }
-                role = "Admin";
+                role = invitation.Role;
             }
 
             var displayName = request.Name.Trim();
             var user = new SchoolUser
             {
-                Email = account.Type == "Email" ? account.Value : null,
-                EmailConfirmed = account.Type == "Email",
-                PhoneNumber = account.Type == "Phone" ? account.Value : null,
-                PhoneNumberConfirmed = account.Type == "Phone",
+                Email = email.Value,
+                EmailConfirmed = false,
+                PhoneNumber = phone?.Value,
+                PhoneNumberConfirmed = false,
                 FirstName = displayName,
                 LastName = string.Empty,
-                UserName = account.UserName,
+                UserName = email.UserName,
             };
 
             var createResult = await _userManager.CreateAsync(user, request.Password);
@@ -219,13 +143,114 @@ namespace MyProject.Controllers
                 if (consumedInvitations != 1)
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    return Conflict("该验证码刚刚已被使用，请向邀请人获取新的验证码。");
+                    return Conflict("该邀请码刚刚已被使用，请向邀请人获取新的邀请码。");
                 }
             }
 
             await transaction.CommitAsync(cancellationToken);
             return Ok();
         }
+
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginDTO request, CancellationToken cancellationToken)
+    {
+      if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
+      {
+        return BadRequest(accountError);
+      }
+
+      var user = await account.FindUserAsync(_userManager, _context);
+      if (user == null)
+      {
+        return Unauthorized("账号或登录凭证不正确。");
+      }
+
+      var passwordResult = await _signInManager.CheckPasswordSignInAsync(
+        user,
+        request.Password,
+        lockoutOnFailure: true);
+      if (!passwordResult.Succeeded)
+      {
+        return Unauthorized(passwordResult.IsLockedOut
+          ? "登录尝试过多，请稍后再试。"
+          : "账号或密码不正确。");
+      }
+
+      return Ok(await CreateTokenAsync(user));
+    }
+
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(
+      ForgotPasswordDTO request,
+      CancellationToken cancellationToken)
+    {
+      if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
+      {
+        return BadRequest(accountError);
+      }
+
+      var cooldownKey = $"password-reset:{account.Type}:{account.Value}";
+      if (_memoryCache.TryGetValue(cooldownKey, out _))
+      {
+        return Accepted(new { message = "如果该账号存在，密码重置邮件将发送至注册邮箱。" });
+      }
+      _memoryCache.Set(cooldownKey, true, TimeSpan.FromMinutes(1));
+
+      var user = await account.FindUserAsync(_userManager, _context);
+      if (user == null || string.IsNullOrWhiteSpace(user.Email))
+      {
+        return Accepted(new { message = "如果该账号存在，密码重置邮件将发送至注册邮箱。" });
+      }
+
+      var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+      var resetUrl = BuildPasswordResetUrl(user.Email, token);
+      var displayName = string.Join(" ", new[] { user.FirstName, user.LastName }
+        .Where(x => !string.IsNullOrWhiteSpace(x)));
+
+      try
+      {
+        await _accountEmailService.SendPasswordResetAsync(
+          user.Email,
+          displayName,
+          resetUrl,
+          cancellationToken);
+      }
+      catch (Exception ex)
+      {
+        _memoryCache.Remove(cooldownKey);
+        _logger.LogError(ex, "Failed to send a password reset email.");
+        return StatusCode(
+          StatusCodes.Status503ServiceUnavailable,
+          "密码重置邮件暂时无法发送，请稍后重试。");
+      }
+
+      return Accepted(new { message = "如果该账号存在，密码重置邮件将发送至注册邮箱。" });
+    }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDTO request)
+    {
+      var email = request.Email.Trim().ToLowerInvariant();
+      var user = await _userManager.FindByEmailAsync(email);
+      if (user == null)
+      {
+        return BadRequest("密码重置链接无效或已过期，请重新申请。");
+      }
+
+      user.EmailConfirmed = true;
+      var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+      if (!result.Succeeded)
+      {
+        return BadRequest(result.Errors.Any(x => x.Code.Contains("Password", StringComparison.OrdinalIgnoreCase))
+          ? result.Errors.Select(x => x.Description)
+          : new[] { "密码重置链接无效或已过期，请重新申请。" });
+      }
+
+      return Ok();
+    }
 
         [Authorize]
     [HttpPost("change-password")]
@@ -242,65 +267,13 @@ namespace MyProject.Controllers
       return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(x => x.Description));
     }
 
-    private async Task<string?> ValidateAndConsumeCodeAsync(
-      string account,
-      string purpose,
-      string code,
-      CancellationToken cancellationToken)
+    private string BuildPasswordResetUrl(string email, string token)
     {
-      var now = DateTime.UtcNow;
-      var verification = await _context.AccountVerificationCodes.AsNoTracking()
-        .Where(x => x.Account == account && x.Purpose == purpose && x.ConsumedAt == null && x.ExpiresAt > now)
-        .OrderByDescending(x => x.CreatedAt)
-        .FirstOrDefaultAsync(cancellationToken);
-      if (verification == null)
-      {
-        return "验证码无效或已过期，请重新获取。";
-      }
-
-      var maxAttempts = Math.Clamp(_authOptions.MaxFailedAttempts, 3, 10);
-      if (verification.FailedAttempts >= maxAttempts)
-      {
-        await _context.AccountVerificationCodes
-          .Where(x => x.Id == verification.Id && x.ConsumedAt == null)
-          .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.ConsumedAt, now), cancellationToken);
-        return "验证码尝试次数过多，请重新获取。";
-      }
-
-      var suppliedHash = HashVerificationCode(account, purpose, code);
-      if (!CryptographicOperations.FixedTimeEquals(
-        Convert.FromHexString(verification.CodeHash),
-        Convert.FromHexString(suppliedHash)))
-      {
-        if (verification.FailedAttempts + 1 >= maxAttempts)
-        {
-          await _context.AccountVerificationCodes
-            .Where(x => x.Id == verification.Id && x.ConsumedAt == null)
-            .ExecuteUpdateAsync(setters => setters
-              .SetProperty(x => x.FailedAttempts, x => x.FailedAttempts + 1)
-              .SetProperty(x => x.ConsumedAt, now), cancellationToken);
-        }
-        else
-        {
-          await _context.AccountVerificationCodes
-            .Where(x => x.Id == verification.Id && x.ConsumedAt == null)
-            .ExecuteUpdateAsync(setters => setters
-              .SetProperty(x => x.FailedAttempts, x => x.FailedAttempts + 1), cancellationToken);
-        }
-        return "验证码不正确。";
-      }
-
-      var consumedCodes = await _context.AccountVerificationCodes
-        .Where(x => x.Id == verification.Id && x.ConsumedAt == null && x.ExpiresAt > now)
-        .ExecuteUpdateAsync(setters => setters.SetProperty(x => x.ConsumedAt, now), cancellationToken);
-      return consumedCodes == 1 ? null : "验证码已被使用，请重新获取。";
-    }
-
-    private string HashVerificationCode(string account, string purpose, string code)
-    {
-      var secret = _config["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured.");
-      using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-      return Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes($"{account}|{purpose}|{code}")));
+      var configuredOrigin = _config["Authentication:PublicOrigin"]?.Trim().TrimEnd('/');
+      var origin = string.IsNullOrWhiteSpace(configuredOrigin)
+        ? $"{Request.Scheme}://{Request.Host}"
+        : configuredOrigin;
+      return $"{origin}/reset-password?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
     }
 
     private async Task<JWTLoginTokenDTO> CreateTokenAsync(SchoolUser user)
@@ -351,20 +324,5 @@ namespace MyProject.Controllers
       };
     }
 
-    private static string MaskAccount(AccountIdentifier account)
-    {
-      if (account.Type == "Phone")
-      {
-        var value = account.Value;
-        return value.Length > 8 ? $"{value[..Math.Min(5, value.Length - 4)]}****{value[^4..]}" : "****";
-      }
-
-      var parts = account.Value.Split('@', 2);
-      var localPart = parts[0];
-      var maskedLocal = localPart.Length <= 2
-        ? $"{localPart[0]}*"
-        : $"{localPart[..2]}***";
-      return $"{maskedLocal}@{parts[1]}";
-    }
   }
 }
