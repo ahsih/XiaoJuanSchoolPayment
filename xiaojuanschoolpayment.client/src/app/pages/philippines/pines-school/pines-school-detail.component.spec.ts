@@ -45,28 +45,30 @@ describe('PinesSchoolDetailComponent pricing', () => {
     expect(component.roomFeeForSelectedWeeks).toBe(780);
   });
 
-  it('separates the public course and accommodation catalogs by campus', () => {
+  it('keeps matching room types, prices and notes in both campus groups', () => {
     expect(component.courseFeeGroups.map((group) => [group.code, group.items.length])).toEqual([
       ['main', 10],
       ['ielts', 7],
     ]);
     expect(component.roomFeeGroups.map((group) => [group.code, group.items.length])).toEqual([
       ['main', 9],
-      ['ielts', 7],
+      ['ielts', 9],
     ]);
     expect(component.roomFeeGroups[0].items.map((room) => room.id)).toEqual([
       'main-single-a', 'main-single-b', 'main-single-c', 'main-twin-a', 'main-twin-b', 'main-family-2-3', 'main-quad', 'main-5b-solo', 'main-sextuple',
     ]);
     expect(component.roomFeeGroups[1].items.map((room) => room.id)).toEqual([
-      'ielts-single-a', 'ielts-single-b', 'ielts-single-c', 'ielts-twin', 'ielts-triple', 'ielts-quad', 'ielts-5b-solo',
+      'ielts-single-a', 'ielts-single-b', 'ielts-single-c', 'ielts-twin-a', 'ielts-twin-b', 'ielts-family-2-3', 'ielts-quad', 'ielts-5b-solo', 'ielts-sextuple',
     ]);
-    expect(component.roomFeeGroups[1].items.filter((room) => room.id === 'ielts-5b-solo' || room.id === 'ielts-single-c').every((room) => room.note === '')).toBeTrue();
+    expect(component.roomFeeGroups[1].items.map((room) => room.fee)).toEqual(component.roomFeeGroups[0].items.map((room) => room.fee));
+    expect(component.roomFeeGroups[1].items.map((room) => room.note)).toEqual(component.roomFeeGroups[0].items.map((room) => room.note));
   });
 
-  it('labels school payment rows with the selected campus', () => {
+  it('labels an IELTS course and matching IELTS accommodation together', () => {
     component.selectedCourseId = 'ielts-regular';
     component.selectedRoomId = 'ielts-quad';
     expect(component.schoolPaymentItems.some((item) => item.label === '雅思校区 IELTS Campus · 课程名称')).toBeTrue();
     expect(component.schoolPaymentItems.some((item) => item.label === '雅思校区 IELTS Campus · 住宿名称')).toBeTrue();
+    expect(component.quoteError).toBe('');
   });
 });

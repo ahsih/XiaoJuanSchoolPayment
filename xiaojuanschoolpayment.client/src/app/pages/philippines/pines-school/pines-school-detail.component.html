@@ -254,8 +254,8 @@
           <div class="section-block">
             <div class="section-heading">
               <span>PINES 2026 年 4 周住宿费</span>
-              <h2>房型会明显影响总预算</h2>
-              <p>报价器会校验课程与住宿校区是否匹配；房型仍需向学校确认空房。</p>
+              <h2>主校区与雅思校区住宿</h2>
+              <p>两个校区分别列出可选房型和4周价格；报价时请按课程所属校区选择对应房型，实际空房需向学校确认。</p>
             </div>
             <div class="campus-catalog-group" *ngFor="let group of roomFeeGroups" [class.ielts-campus]="group.code === 'ielts'">
               <div class="campus-catalog-heading">
@@ -293,7 +293,7 @@
                 <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
                 <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
               </div>
-              <p class="campus-quote-note"><strong>校区分开显示：</strong>课程和住宿下拉框均按“主校区 Main Campus / 雅思校区 IELTS Campus”分类；同一学习日期必须选择同一校区的课程和房型。</p>
+              <p class="campus-quote-note"><strong>按校区选择：</strong>课程和住宿下拉框按主校区、雅思校区分类，同一学习日期请选择同一校区的课程和房型。</p>
               <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿、日期、签证和接机；亲子2–3人房按每位学生的床位价格计算。</p>
               <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
                 <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
@@ -326,7 +326,7 @@
               </div>
               <p class="fee-alert">2周课程费及住宿费按4周价的65%计算，3周按85%；4–24周按对应4周价格和实际周数等比例计算。雅思保证班每段至少选择8周或12周。</p>
               <p class="season-note">旺季附加费：2026/06/28–08/22；2027年按相同8周档期推算为2027/06/27–08/21。开始均为周日、结束均为周六，实际覆盖的每个学习周加收40美元。</p>
-              <p class="season-note">优惠可叠加：2026/12/31前未覆盖旺季的每个完整4周减150美元；12周及以上再减100美元；16/20/24周另减100/150/200美元；所有思达报名学生免100美元注册费。固定优惠先扣减，课程费和住宿费的剩余金额再享95折。</p>
+              <p class="season-note">优惠可叠加：2026/12/31前注册，未覆盖旺季的每个完整4周减150美元；12周及以上再减100美元；长期优惠16周减100美元，之后每增加2周叠加25美元；所有思达报名学生免100美元注册费。固定优惠先扣减，课程费和住宿费的剩余金额再享95折。</p>
             </div>
 
             <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
@@ -540,7 +540,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程安排参考PINES官方课程页面；2026课程费、住宿费、优惠和到校学杂费按思达顾问最新价目表逐项核对。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月8日。课程安排参考PINES官方课程页面；2026课程费、住宿费、优惠和到校学杂费按思达顾问最新价目表逐项核对。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 

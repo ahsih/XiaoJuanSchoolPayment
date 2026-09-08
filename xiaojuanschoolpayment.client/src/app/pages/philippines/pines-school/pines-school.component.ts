@@ -117,14 +117,14 @@ export class PinesSchoolComponent {
     {
       item: 'IELTS入门 / IELTS课程 4周',
       mainCampus: '-',
-      ieltsCampus: 'USD 1,680-2,300',
-      note: '四人房至单人房B，按入门或一般IELTS课程区间。',
+      ieltsCampus: '约USD 1,620-2,450',
+      note: '按Pre-IELTS到IELTS Intensive、六人房到单人房A估算区间。',
     },
     {
       item: 'IELTS保证班',
       mainCampus: '-',
-      ieltsCampus: '8周USD 4,160-5,200；12周USD 5,940-7,500',
-      note: '需满足入学分数、出勤率、模考与校规要求。',
+      ieltsCampus: '8周约USD 4,040-5,400；12周约USD 5,760-7,800',
+      note: '含雅思校区住宿估算；需满足入学分数、出勤率、模考与校规要求。',
     },
   ];
 

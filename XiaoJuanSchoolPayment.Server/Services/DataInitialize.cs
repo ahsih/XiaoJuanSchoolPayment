@@ -506,7 +506,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       RemoveFee(context, schoolId, "保证金");
       RemoveFee(context, schoolId, "洗衣费");
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费，不参与95折", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；USD40/周（每4周USD160）；2026/07/05至2026/08/29学习期间按重叠周数收取，不参与95折", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；USD40/周（每4周USD160）；2026/07/05–2026/08/29、2027/07/04–2027/08/28学习期间按重叠周数收取，档期均为完整8周，不参与95折", now);
       UpsertFee(context, schoolId, "未成年管理费", 100m, UsdCurrencyId, "前期支付费用；未满18岁学生USD100/4周，不参与95折", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，按学习时长办理", now);
       UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
@@ -1268,6 +1268,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       RemoveRoom(context, schoolId, "单人房C", 4);
       RemoveRoom(context, schoolId, "单人房B", 4);
       RemoveRoom(context, schoolId, "单人房A", 4);
+      RemoveRoom(context, schoolId, "雅思校区三人房", 4);
+      RemoveRoom(context, schoolId, "雅思校区双人房", 4);
 
       UpsertRoom(context, schoolId, "主校区六人房（上下床）", 4, 570m, "主校区预算房型", now);
       UpsertRoom(context, schoolId, "主校区5B Solo", 4, 650m, "舒适多人房，需确认空房", now);
@@ -1278,20 +1280,22 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "主校区单人房B", 4, 1150m, "套间房型；两房共用客厅，B房内有独立卫生间", now);
       UpsertRoom(context, schoolId, "主校区单人房A", 4, 1250m, "主校区标准单人房", now);
       UpsertRoom(context, schoolId, "主校区亲子2–3人房", 4, 780m, "双人间／加床；价格按每位学生计算", now);
-      UpsertRoom(context, schoolId, "雅思校区5B Solo", 4, 650m, "", now);
-      UpsertRoom(context, schoolId, "雅思校区四人房（上下床）", 4, 630m, "雅思校区预算房型", now);
-      UpsertRoom(context, schoolId, "雅思校区三人房", 4, 680m, "雅思校区三人房", now);
-      UpsertRoom(context, schoolId, "雅思校区双人房", 4, 870m, "雅思校区双人房", now);
-      UpsertRoom(context, schoolId, "雅思校区单人房C", 4, 970m, "", now);
-      UpsertRoom(context, schoolId, "雅思校区单人房B", 4, 1150m, "一楼房型，环境相对潮湿", now);
-      UpsertRoom(context, schoolId, "雅思校区单人房A", 4, 1250m, "由双人房升级为单人入住", now);
+      UpsertRoom(context, schoolId, "雅思校区六人房（上下床）", 4, 570m, "主校区预算房型", now);
+      UpsertRoom(context, schoolId, "雅思校区5B Solo", 4, 650m, "舒适多人房，需确认空房", now);
+      UpsertRoom(context, schoolId, "雅思校区四人房（上下床）", 4, 700m, "主校区多人房", now);
+      UpsertRoom(context, schoolId, "雅思校区双人房B", 4, 840m, "双人房选择", now);
+      UpsertRoom(context, schoolId, "雅思校区双人房A", 4, 870m, "双人房选择", now);
+      UpsertRoom(context, schoolId, "雅思校区单人房C", 4, 970m, "主校区单人房入门选择", now);
+      UpsertRoom(context, schoolId, "雅思校区单人房B", 4, 1150m, "套间房型；两房共用客厅，B房内有独立卫生间", now);
+      UpsertRoom(context, schoolId, "雅思校区单人房A", 4, 1250m, "主校区标准单人房", now);
+      UpsertRoom(context, schoolId, "雅思校区亲子2–3人房", 4, 780m, "双人间／加床；价格按每位学生计算", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；原价USD 100，思达报名免注册费", now);
       UpsertFee(context, schoolId, "免注册费优惠", 100m, UsdCurrencyId, "前期支付优惠；思达报名免收USD 100注册费", now);
       UpsertFee(context, schoolId, "思达折扣", 0.95m, UsdCurrencyId, "前期支付优惠；课程费与住宿费按95折计算", now);
-      UpsertFee(context, schoolId, "常规淡季优惠", 150m, UsdCurrencyId, "前期支付优惠；学习日期在2026/12/31前且不覆盖2026/6/28-8/22旺季的完整4周，每4周减USD 150", now);
+      UpsertFee(context, schoolId, "常规淡季优惠", 150m, UsdCurrencyId, "前期支付优惠；2026/12/31前注册，未覆盖2026/6/28-8/22旺季的课程每满4周减USD 150", now);
       UpsertFee(context, schoolId, "12周以上额外优惠", 100m, UsdCurrencyId, "前期支付优惠；学习12周及以上一次性减USD 100", now);
-      UpsertFee(context, schoolId, "长期优惠", 200m, UsdCurrencyId, "前期支付优惠；16周减USD 100、20周减USD 150、24周减USD 200，可与其他优惠叠加", now);
+      UpsertFee(context, schoolId, "长期优惠", 100m, UsdCurrencyId, "前期支付优惠；16周减USD 100，之后每增加2周叠加USD 25，可与其他优惠叠加", now);
       UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22、2027/6/27-8/21期间实际覆盖的学习周数按USD 40/周计算；档期均为周日至周六的完整8周", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；一次办理通常有效6个月，更换学校需重新办理", now);
       UpsertFee(context, schoolId, "SSP-E Card", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，一次性费用", now);

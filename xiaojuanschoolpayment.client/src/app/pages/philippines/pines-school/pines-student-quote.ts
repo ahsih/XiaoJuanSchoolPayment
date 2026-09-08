@@ -8,7 +8,10 @@ interface PinesQuotePrices {
   sidaDiscountRate: number;
   offSeasonDiscountPerFourWeeks: number;
   twelveWeekDiscount: number;
-  longStayDiscounts: Readonly<Record<number, number>>;
+  longStayMinimumWeeks: number;
+  longStayBaseDiscount: number;
+  longStayIncrementWeeks: number;
+  longStayIncrementDiscount: number;
   seasonalFeePerWeek: number;
   peakSeasonRanges: readonly { label: string; start: string; end: string }[];
 }
@@ -127,7 +130,10 @@ export class PinesStudentQuote {
   get seasonalSurcharge() { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
 
   get offSeasonBlocks(): number {
-    const lastEligibleDay = this.quotePlan.date('2026-12-31')!;
+    const registrationDeadline = this.quotePlan.date('2026-12-31')!;
+    const registrationDate = this.quotePlan.date(this.selectedRegistrationDate);
+    if (registrationDate === null || registrationDate > registrationDeadline) return 0;
+
     const peakWeekStarts = new Set<number>();
     for (const range of this.prices.peakSeasonRanges) {
       this.quotePlan.weekStarts(this.quotePlan.courses).forEach((week) => {
@@ -137,29 +143,18 @@ export class PinesStudentQuote {
       });
     }
     const eligibleWeeks = this.quotePlan.weekStarts(this.quotePlan.courses)
-      .filter((week) => week + 6 * DAY <= lastEligibleDay && !peakWeekStarts.has(week));
-    if (!eligibleWeeks.length) return 0;
-
-    let blocks = 0;
-    let run = 1;
-    for (let index = 1; index <= eligibleWeeks.length; index += 1) {
-      if (index < eligibleWeeks.length && eligibleWeeks[index] - eligibleWeeks[index - 1] === 7 * DAY) {
-        run += 1;
-        continue;
-      }
-      blocks += Math.floor(run / 4);
-      run = 1;
-    }
-    return blocks;
+      .filter((week) => !peakWeekStarts.has(week));
+    return Math.floor(eligibleWeeks.length / 4);
   }
 
   get offSeasonDiscount() { return this.offSeasonBlocks * this.prices.offSeasonDiscountPerFourWeeks; }
   get twelveWeekDiscount() { return this.quotePlan.courseWeeks >= 12 ? this.prices.twelveWeekDiscount : 0; }
   get longStayDiscount(): number {
-    return Object.entries(this.prices.longStayDiscounts)
-      .map(([weeks, amount]) => ({ weeks: Number(weeks), amount }))
-      .filter((tier) => this.quotePlan.courseWeeks >= tier.weeks)
-      .sort((a, b) => b.weeks - a.weeks)[0]?.amount ?? 0;
+    if (this.quotePlan.courseWeeks < this.prices.longStayMinimumWeeks) return 0;
+    const additionalBlocks = Math.floor(
+      (this.quotePlan.courseWeeks - this.prices.longStayMinimumWeeks) / this.prices.longStayIncrementWeeks,
+    );
+    return this.prices.longStayBaseDiscount + additionalBlocks * this.prices.longStayIncrementDiscount;
   }
   get fixedCourseRoomDiscounts() { return this.offSeasonDiscount + this.twelveWeekDiscount + this.longStayDiscount; }
   get sidaDiscount() {
@@ -181,9 +176,9 @@ export class PinesStudentQuote {
         note: `${this.prices.seasonalFeePerWeek}美元／学习周 × ${this.peakWeeks}周；${ranges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；不参与折扣`,
       }] : []),
       { icon: '免', label: '思达免注册费', value: -this.registrationDiscount, note: '所有通过思达报名的学生免收100美元注册费', promotionKey: 'registration' },
-      ...(this.offSeasonDiscount ? [{ icon: '惠', label: '常规淡季优惠', value: -this.offSeasonDiscount, note: `未覆盖旺季的完整4周共${this.offSeasonBlocks}段，每段减150美元`, promotionKey: 'off-season' }] : []),
+      ...(this.offSeasonDiscount ? [{ icon: '惠', label: '常规淡季优惠', value: -this.offSeasonDiscount, note: `2026/12/31前注册，未覆盖旺季的课程共${this.quotePlan.courseWeeks - this.peakWeeks}周，每满4周减150美元，共${this.offSeasonBlocks}段`, promotionKey: 'off-season' }] : []),
       ...(this.twelveWeekDiscount ? [{ icon: '惠', label: '12周以上额外优惠', value: -this.twelveWeekDiscount, note: '累计课程达到12周，一次减100美元', promotionKey: 'twelve-week' }] : []),
-      ...(this.longStayDiscount ? [{ icon: '长', label: '长期优惠', value: -this.longStayDiscount, note: `累计课程${this.quotePlan.courseWeeks}周，适用16/20/24周减100/150/200美元档位`, promotionKey: `long-stay-${this.longStayDiscount}` }] : []),
+      ...(this.longStayDiscount ? [{ icon: '长', label: '长期优惠', value: -this.longStayDiscount, note: `累计课程${this.quotePlan.courseWeeks}周；16周减100美元，之后每增加2周叠加25美元；可与其他优惠叠加`, promotionKey: `long-stay-${this.longStayDiscount}` }] : []),
       { icon: '折', label: '思达95折', value: -this.sidaDiscount, note: '课程费和住宿费先减固定优惠，再按95折计算', promotionKey: 'sida' },
     ];
   }

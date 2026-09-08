@@ -251,6 +251,24 @@ describe('EV accommodation management fees', () => {
     bitmap.close();
   }, 30000);
 
+  it('charges the 2027 eight-week peak season and includes both date ranges in the quote detail', () => {
+    component.selectedStartDate = '2027-07-04';
+    component.selectedWeeks = 8;
+
+    expect(component.peakSeasonWeeks).toBe(8);
+    expect(component.peakTotal).toBe(320);
+    const webpageRow = component.schoolPaymentItems.find(row => row.label === '旺季附加费');
+    const imageRow = component.quoteImageData.paymentItems.find(row => row.label === '旺季附加费');
+    expect(webpageRow?.amount).toBe('320 美元');
+    expect(webpageRow?.note).toContain('2026/07/05–2026/08/29；2027/07/04–2027/08/28');
+    expect(imageRow?.amount).toBe('320 美元');
+    expect(imageRow?.note).toBe(webpageRow?.note);
+
+    component.selectedStartDate = '2027-08-29';
+    expect(component.peakSeasonWeeks).toBe(0);
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeFalse();
+  });
+
   it('requires Sunday starts and leaves other rows unchanged when editing or deleting', () => {
     component.addSelection('course');
     const second = component.courseSelections[1];

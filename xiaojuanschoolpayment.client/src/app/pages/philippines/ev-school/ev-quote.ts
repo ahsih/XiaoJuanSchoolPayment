@@ -6,6 +6,11 @@ export interface EvRoomPrice { id: string; name: string; fee: number; note: stri
 export interface EvLocalFee { item: string; unitLabel: string; quantity: number; total: number; note: string; }
 
 const DAY = 86_400_000;
+export const EV_PEAK_SEASONS = [
+  { start: '2026-07-05', end: '2026-08-29', label: '2026/07/05–2026/08/29' },
+  { start: '2027-07-04', end: '2027-08-28', label: '2027/07/04–2027/08/28' },
+] as const;
+export const EV_PEAK_SEASON_DATE_RANGE = EV_PEAK_SEASONS.map(season => season.label).join('；');
 export const evPriceMultiplier = (weeks: number) => weeks === 1 ? .4 : weeks === 2 ? .65 : weeks === 3 ? .85 : weeks / 4;
 
 export class EvStudentCalculator {
@@ -39,7 +44,7 @@ export class EvStudentCalculator {
   get accommodation() { return this.plan.total('room'); }
   get discountBase() { return this.tuition + this.accommodation; }
   get discountAmount() { return this.discountBase * .05; }
-  get peakWeeks() { return this.overlapUniqueWeeks('2026-07-05', '2026-08-29'); }
+  get peakWeeks() { return this.overlapUniqueWeeks(EV_PEAK_SEASONS); }
   get peakSurcharge() { return this.peakWeeks * this.seasonalFeePerWeek(); }
   get minorPeriods() { return this.isMinorStudent ? Math.ceil(this.plan.courseWeeks / 4) : 0; }
   get minorFee() { return this.minorPeriods * this.minorFeePerPeriod(); }
@@ -87,15 +92,19 @@ export class EvStudentCalculator {
   get paymentRows() { return this.plan.paymentItems(); }
   format(value: number) { return quoteMoney(value); }
 
-  private overlapUniqueWeeks(start: string, end: string) {
-    const from = Date.parse(`${start}T00:00:00Z`), to = Date.parse(`${end}T00:00:00Z`);
+  private overlapUniqueWeeks(seasons: ReadonlyArray<{ start: string; end: string }>) {
+    const ranges = seasons.map(season => ({
+      from: Date.parse(`${season.start}T00:00:00Z`),
+      to: Date.parse(`${season.end}T00:00:00Z`),
+    }));
     const weeks = new Set<number>();
     for (const row of [...this.plan.courses, ...this.plan.rooms]) {
       const rowStart = this.plan.date(row.startDate);
       if (rowStart === null) continue;
       for (let index = 0; index < row.weeks; index++) {
         const weekStart = rowStart + index * 7 * DAY;
-        if (weekStart <= to && weekStart + 6 * DAY >= from) weeks.add(weekStart);
+        const weekEnd = weekStart + 6 * DAY;
+        if (ranges.some(range => weekStart <= range.to && weekEnd >= range.from)) weeks.add(weekStart);
       }
     }
     return weeks.size;

@@ -8,15 +8,17 @@ const prices = {
   roomFees: [
     { id: 'main-sextuple', name: '主校区六人房', fee: 570, note: '主校区' },
     { id: 'main-family-2-3', name: '主校区亲子2–3人房', fee: 780, note: '按每位学生计算' },
-    { id: 'ielts-quad', name: '雅思校区四人房', fee: 630, note: '雅思校区' },
-    { id: 'ielts-5b-solo', name: '雅思校区5B Solo', fee: 650, note: '' },
-    { id: 'ielts-single-c', name: '雅思校区单人房C', fee: 970, note: '' },
+    { id: 'ielts-sextuple', name: '雅思校区六人房', fee: 570, note: '主校区' },
+    { id: 'ielts-family-2-3', name: '雅思校区亲子2–3人房', fee: 780, note: '按每位学生计算' },
   ],
   registrationFee: 100,
   sidaDiscountRate: 0.95,
   offSeasonDiscountPerFourWeeks: 150,
   twelveWeekDiscount: 100,
-  longStayDiscounts: { 16: 100, 20: 150, 24: 200 },
+  longStayMinimumWeeks: 16,
+  longStayBaseDiscount: 100,
+  longStayIncrementWeeks: 2,
+  longStayIncrementDiscount: 25,
   seasonalFeePerWeek: 40,
   peakSeasonRanges: [
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
@@ -44,6 +46,38 @@ describe('PinesStudentQuote', () => {
     expect(quote.longStayDiscount).toBe(100);
     expect(quote.sidaDiscount).toBe(244);
     expect(quote.quoteUsd).toBe(4636);
+  });
+
+  it('starts the stackable long-stay discount at 16 weeks and adds 25 dollars every two weeks', () => {
+    const quote = new PinesStudentQuote(prices);
+    quote.quotePlan.courses[0].weeks = 15;
+    expect(quote.longStayDiscount).toBe(0);
+    quote.quotePlan.courses[0].weeks = 16;
+    expect(quote.longStayDiscount).toBe(100);
+    quote.quotePlan.courses[0].weeks = 18;
+    expect(quote.longStayDiscount).toBe(125);
+    quote.quotePlan.courses[0].weeks = 20;
+    expect(quote.longStayDiscount).toBe(150);
+    quote.quotePlan.courses[0].weeks = 22;
+    expect(quote.longStayDiscount).toBe(175);
+    quote.quotePlan.courses[0].weeks = 24;
+    expect(quote.longStayDiscount).toBe(200);
+  });
+
+  it('deducts 150 dollars for every four eligible course weeks when registered by the deadline', () => {
+    const quote = new PinesStudentQuote(prices);
+    quote.selectedRegistrationDate = '2026-09-08';
+    quote.quotePlan.courses[0].startDate = '2026-09-13';
+    quote.quotePlan.rooms[0].startDate = '2026-09-13';
+    quote.quotePlan.courses[0].weeks = 20;
+    quote.quotePlan.rooms[0].weeks = 20;
+
+    expect(quote.offSeasonBlocks).toBe(5);
+    expect(quote.offSeasonDiscount).toBe(750);
+
+    quote.selectedRegistrationDate = '2027-01-01';
+    expect(quote.offSeasonBlocks).toBe(0);
+    expect(quote.offSeasonDiscount).toBe(0);
   });
 
   it('counts the aligned 2026 and 2027 peak seasons as eight weeks', () => {
@@ -103,51 +137,37 @@ describe('PinesStudentQuote', () => {
     expect(first.accommodation + second.accommodation).toBe(1560);
   });
 
-  it('groups course and room choices by campus and labels image rows with that campus', () => {
+  it('groups matching accommodation under both campuses', () => {
     const quote = new PinesStudentQuote(prices);
     expect(quote.quotePlan.options('course').map((option) => option.group)).toEqual([
       '主校区 Main Campus',
       '雅思校区 IELTS Campus',
     ]);
-    expect(quote.quotePlan.options('room').find((option) => option.id === 'ielts-quad')).toEqual(jasmine.objectContaining({
-      name: '四人房',
-      group: '雅思校区 IELTS Campus',
-    }));
-    expect(quote.quotePlan.options('room').find((option) => option.id === 'ielts-5b-solo')).toEqual(jasmine.objectContaining({
-      name: '5B Solo',
-      group: '雅思校区 IELTS Campus',
-    }));
-    expect(quote.quotePlan.options('room').find((option) => option.id === 'ielts-single-c')).toEqual(jasmine.objectContaining({
-      name: '单人房C',
-      group: '雅思校区 IELTS Campus',
-    }));
+    expect(quote.quotePlan.options('room').map((option) => option.group)).toEqual([
+      '主校区 Main Campus',
+      '主校区 Main Campus',
+      '雅思校区 IELTS Campus',
+      '雅思校区 IELTS Campus',
+    ]);
+    quote.quotePlan.rooms[0].optionId = 'ielts-sextuple';
+    expect(quote.accommodation).toBe(570);
+    quote.quotePlan.rooms[0].optionId = 'main-sextuple';
     expect(quote.quotePlan.paymentItems().map((item) => item.detailTitle)).toEqual([
       '主校区 Main Campus｜Light ESL 4',
       '主校区 Main Campus｜六人房',
     ]);
   });
 
-  it('blocks a course and accommodation combination from different campuses', () => {
+  it('blocks cross-campus accommodation and accepts the matching IELTS room', () => {
     const quote = new PinesStudentQuote(prices);
     quote.quotePlan.courses[0].optionId = 'ielts-regular';
     expect(quote.quoteError).toContain('课程与住宿所属校区不一致');
-    quote.quotePlan.rooms[0].optionId = 'ielts-quad';
-    expect(quote.quoteError).toBe('');
-  });
 
-  it('prices the IELTS Campus 5B Solo room the same as Main Campus', () => {
-    const quote = new PinesStudentQuote(prices);
-    quote.quotePlan.courses[0].optionId = 'ielts-regular';
-    quote.quotePlan.rooms[0].optionId = 'ielts-5b-solo';
-    expect(quote.accommodation).toBe(650);
+    quote.quotePlan.rooms[0].optionId = 'ielts-sextuple';
     expect(quote.quoteError).toBe('');
-  });
-
-  it('prices the IELTS Campus single room C the same as Main Campus', () => {
-    const quote = new PinesStudentQuote(prices);
-    quote.quotePlan.courses[0].optionId = 'ielts-regular';
-    quote.quotePlan.rooms[0].optionId = 'ielts-single-c';
-    expect(quote.accommodation).toBe(970);
-    expect(quote.quoteError).toBe('');
+    expect(quote.quotePlan.paymentItems().map((item) => item.detailTitle)).toEqual([
+      '雅思校区 IELTS Campus｜IELTS',
+      '雅思校区 IELTS Campus｜六人房',
+    ]);
   });
 });

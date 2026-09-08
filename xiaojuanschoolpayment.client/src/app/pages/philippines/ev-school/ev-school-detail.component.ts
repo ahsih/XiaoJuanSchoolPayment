@@ -14,7 +14,7 @@ import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
-import { EvStudentCalculator, evPriceMultiplier } from './ev-quote';
+import { EV_PEAK_SEASON_DATE_RANGE, EvStudentCalculator, evPriceMultiplier } from './ev-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -89,9 +89,7 @@ export class EvSchoolDetailComponent implements OnInit {
   registrationFee = 100;
   readonly discount = 0.95;
   seasonalFeePerWeek = 40;
-  readonly peakSeasonDateRange = '2026/07/05–2026/08/29';
-  private readonly peakSeasonStartDate = '2026-07-05';
-  private readonly peakSeasonEndDate = '2026-08-29';
+  readonly peakSeasonDateRange = EV_PEAK_SEASON_DATE_RANGE;
   minorManagementFeePerPeriod = 100;
   usdToCny = 7.2;
   phpPerCny = 7.75;
@@ -539,22 +537,7 @@ export class EvSchoolDetailComponent implements OnInit {
   get discountBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get discountAmount(): number { return this.discountBase * (1 - this.discount); }
   get discountedCourseAndRoom(): number { return this.discountBase * this.discount; }
-  get peakSeasonWeeks(): number {
-    const peakStart = this.parseLocalDate(this.peakSeasonStartDate);
-    const peakEnd = this.parseLocalDate(this.peakSeasonEndDate);
-    if (!peakStart || !peakEnd) return 0;
-    const weeks = new Set<string>();
-    for (const row of [...this.courseSelections, ...this.roomSelections]) {
-      for (let week = 0; week < row.weeks; week += 1) {
-        const key = this.dateAt(row.startDate, week * 7);
-        const start = this.parseLocalDate(key);
-        if (!start) continue;
-        const end = new Date(start); end.setDate(start.getDate() + 6);
-        if (start <= peakEnd && end >= peakStart) weeks.add(key);
-      }
-    }
-    return weeks.size;
-  }
+  get peakSeasonWeeks(): number { return this.calculator.peakWeeks; }
   get isPeakSeason(): boolean { return this.peakSeasonWeeks > 0; }
   get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
   get seasonalFeePerFourWeeks(): number { return this.seasonalFeePerWeek * 4; }

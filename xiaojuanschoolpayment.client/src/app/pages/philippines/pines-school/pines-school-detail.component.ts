@@ -92,7 +92,7 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
   private readonly roomFeeOrder = [
     'main-single-a', 'main-single-b', 'main-single-c', 'main-twin-a', 'main-twin-b', 'main-family-2-3', 'main-quad', 'main-5b-solo', 'main-sextuple',
-    'ielts-single-a', 'ielts-single-b', 'ielts-single-c', 'ielts-twin', 'ielts-triple', 'ielts-quad', 'ielts-5b-solo',
+    'ielts-single-a', 'ielts-single-b', 'ielts-single-c', 'ielts-twin-a', 'ielts-twin-b', 'ielts-family-2-3', 'ielts-quad', 'ielts-5b-solo', 'ielts-sextuple',
   ];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
@@ -101,7 +101,10 @@ export class PinesSchoolDetailComponent implements OnInit {
   readonly sidaDiscountRate = 0.95;
   readonly offSeasonDiscountPerFourWeeks = 150;
   readonly twelveWeekDiscount = 100;
-  readonly longStayDiscounts: Readonly<Record<number, number>> = { 16: 100, 20: 150, 24: 200 };
+  readonly longStayMinimumWeeks = 16;
+  readonly longStayBaseDiscount = 100;
+  readonly longStayIncrementWeeks = 2;
+  readonly longStayIncrementDiscount = 25;
   seasonalFeePerWeek = 40;
   readonly peakSeasonRanges = [
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
@@ -156,7 +159,7 @@ export class PinesSchoolDetailComponent implements OnInit {
     { label: 'Main Campus地址', value: '#3 Rommel Mansion Building Ignacio Villamor St., Lualhati, Baguio City' },
     { label: 'IELTS Campus地址', value: '#49 Chapis Village, Marcos Highway, Baguio City' },
     { label: '课程方向', value: 'Power Speaking、Intensive ESL、Power ESL、TOEIC、Family、Pre-IELTS、IELTS、IELTS Guarantee' },
-    { label: '住宿房型', value: '单人房、双人房、三人房、四人房、五人Solo、六人房；不同校区可选不同' },
+    { label: '住宿房型', value: '主校区与雅思校区的房型及价格相同；可选单人房、双人房、四人房、5B Solo、六人房及亲子房' },
     { label: '官方资质', value: 'TESDA、Bureau of Immigration、Department of Tourism、SEC、Baguio City Hall等登记' },
   ];
 
@@ -223,13 +226,15 @@ export class PinesSchoolDetailComponent implements OnInit {
     { id: 'main-quad', name: '主校区四人房（上下床）', fee: 700, note: '主校区多人房' },
     { id: 'main-5b-solo', name: '主校区5B Solo', fee: 650, note: '舒适多人房，需确认空房' },
     { id: 'main-sextuple', name: '主校区六人房（上下床）', fee: 570, note: '主校区预算房型' },
-    { id: 'ielts-single-a', name: '雅思校区单人房A', fee: 1250, note: '由双人房升级为单人入住' },
-    { id: 'ielts-single-b', name: '雅思校区单人房B', fee: 1150, note: '一楼房型，环境相对潮湿' },
-    { id: 'ielts-single-c', name: '雅思校区单人房C', fee: 970, note: '' },
-    { id: 'ielts-twin', name: '雅思校区双人房', fee: 870, note: '雅思校区双人房' },
-    { id: 'ielts-triple', name: '雅思校区三人房', fee: 680, note: '雅思校区三人房' },
-    { id: 'ielts-quad', name: '雅思校区四人房（上下床）', fee: 630, note: '雅思校区预算房型' },
-    { id: 'ielts-5b-solo', name: '雅思校区5B Solo', fee: 650, note: '' },
+    { id: 'ielts-single-a', name: '雅思校区单人房A', fee: 1250, note: '主校区标准单人房' },
+    { id: 'ielts-single-b', name: '雅思校区单人房B', fee: 1150, note: '套间房型；两房共用客厅，B房内有独立卫生间' },
+    { id: 'ielts-single-c', name: '雅思校区单人房C', fee: 970, note: '主校区单人房入门选择' },
+    { id: 'ielts-twin-a', name: '雅思校区双人房A', fee: 870, note: '双人房选择' },
+    { id: 'ielts-twin-b', name: '雅思校区双人房B', fee: 840, note: '双人房选择' },
+    { id: 'ielts-family-2-3', name: '雅思校区亲子2–3人房', fee: 780, note: '双人间／加床；价格按每位学生计算' },
+    { id: 'ielts-quad', name: '雅思校区四人房（上下床）', fee: 700, note: '主校区多人房' },
+    { id: 'ielts-5b-solo', name: '雅思校区5B Solo', fee: 650, note: '舒适多人房，需确认空房' },
+    { id: 'ielts-sextuple', name: '雅思校区六人房（上下床）', fee: 570, note: '主校区预算房型' },
   ];
 
   get courseFeeGroups(): CampusCatalogGroup<CourseFee>[] {
@@ -978,7 +983,7 @@ export class PinesSchoolDetailComponent implements OnInit {
   }
   private createRoomId(name: string): string {
     const campus = name.includes('雅思') || /IELTS/iu.test(name) ? 'ielts' : 'main';
-    if (/亲子.*2.*3人/iu.test(name)) return 'main-family-2-3';
+    if (/亲子.*2.*3人/iu.test(name)) return `${campus}-family-2-3`;
     if (name.includes('六人')) return `${campus}-sextuple`;
     if (name.includes('5B') || name.includes('5人')) return `${campus}-5b-solo`;
     if (name.includes('四人')) return `${campus}-quad`;
@@ -991,8 +996,7 @@ export class PinesSchoolDetailComponent implements OnInit {
     if (name.includes('单人房A')) return `${campus}-single-a`;
     return this.slugifyPriceKey(name);
   }
-  private roomNote(id: string, description?: string): string {
-    if (id === 'ielts-5b-solo' || id === 'ielts-single-c') return '';
+  private roomNote(_id: string, description?: string): string {
     return description || '请联系顾问确认空房';
   }
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
