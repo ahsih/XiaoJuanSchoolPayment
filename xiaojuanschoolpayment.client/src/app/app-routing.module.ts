@@ -28,6 +28,11 @@ const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
       {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./pages/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
+      },
+      {
         path: 'ireland-study/experience-ireland',
         component: IrelandInfoPageComponent,
         data: { infoKey: 'experience' },

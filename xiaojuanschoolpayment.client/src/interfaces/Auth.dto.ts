@@ -1,20 +1,12 @@
-export type AccountType = 'phone' | 'email';
-export type LoginMethod = 'Password' | 'Code';
-export type VerificationPurpose = 'Login' | 'Register';
-
 export interface LoginRequestDTO {
   account: string;
-  method: LoginMethod;
-  password?: string;
-  verificationCode?: string;
+  password: string;
 }
 
-export interface VerificationCodeResponseDTO {
-  deliveryChannel: 'Phone' | 'Email';
-  maskedAccount: string;
-  expiresInSeconds: number;
-  retryAfterSeconds: number;
-  developmentCode?: string;
+export interface ResetPasswordRequestDTO {
+  email: string;
+  token: string;
+  newPassword: string;
 }
 
 export interface InvitationCodeDTO {

@@ -41,17 +41,16 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('supports phone or email and code or password login', () => {
-    component.setAccountType('email');
-    component.setLoginMethod('Password');
-    component.loginForm.patchValue({ account: 'student@example.com', password: 'Password1' });
+  it('accepts either email or phone with a password', () => {
+    component.loginForm.setValue({ account: 'student@example.com', password: 'Password1' });
+    expect(component.loginForm.valid).toBeTrue();
+
+    component.loginForm.setValue({ account: '13800138000', password: 'Password1' });
     expect(component.loginForm.valid).toBeTrue();
   });
 
   it('posts a password login request to auth/login', () => {
-    component.setAccountType('email');
-    component.setLoginMethod('Password');
-    component.loginForm.patchValue({
+    component.loginForm.setValue({
       account: 'admin@example.com',
       password: 'Password1',
     });
@@ -60,10 +59,10 @@ describe('LoginComponent', () => {
 
     const request = httpMock.expectOne('auth/login');
     expect(request.request.method).toBe('POST');
-    expect(request.request.body.account).toBe('admin@example.com');
-    expect(request.request.body.method).toBe('Password');
-    expect(request.request.body.password).toBe('Password1');
-    expect(request.request.body.verificationCode).toBeUndefined();
+    expect(request.request.body).toEqual({
+      account: 'admin@example.com',
+      password: 'Password1',
+    });
     request.flush({
       token: 'password-token',
       expiryDate: new Date(Date.now() + 60_000).toISOString(),
@@ -74,27 +73,15 @@ describe('LoginComponent', () => {
     });
   });
 
-  it('posts a verification-code login request to auth/login', () => {
-    component.loginForm.patchValue({
-      account: '13800138000',
-      verificationCode: '123456',
-    });
+  it('requests password recovery by phone and sends it to the registered email', () => {
+    component.openPasswordRecovery();
+    component.forgotPasswordForm.setValue({ account: '13800138000' });
+    component.requestPasswordReset();
 
-    component.onSubmit();
-
-    const request = httpMock.expectOne('auth/login');
+    const request = httpMock.expectOne('auth/forgot-password');
     expect(request.request.method).toBe('POST');
-    expect(request.request.body.account).toBe('13800138000');
-    expect(request.request.body.method).toBe('Code');
-    expect(request.request.body.password).toBeUndefined();
-    expect(request.request.body.verificationCode).toBe('123456');
-    request.flush({
-      token: 'code-token',
-      expiryDate: new Date(Date.now() + 60_000).toISOString(),
-      roles: ['Student'],
-      name: '测试学生',
-      account: '+8613800138000',
-      phoneNumber: '+8613800138000',
-    });
+    expect(request.request.body).toEqual({ account: '13800138000' });
+    request.flush({});
+    expect(component.resetRequested).toBeTrue();
   });
 });

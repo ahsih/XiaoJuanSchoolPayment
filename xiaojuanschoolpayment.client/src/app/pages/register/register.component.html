@@ -8,7 +8,7 @@
       <div class="auth-copy">
         <span class="auth-eyebrow">受邀加入</span>
         <h1 id="register-title">创建你的账号</h1>
-        <p>完成验证后，即可使用思达启航专属服务。</p>
+        <p>邮箱用于登录和找回密码，手机号码可选填。</p>
       </div>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
@@ -32,23 +32,19 @@
           </div>
         </div>
 
-        <div class="choice-tabs" aria-label="选择注册方式">
-          <button type="button" [class.active]="accountType === 'phone'" (click)="setAccountType('phone')">
-            <mat-icon>phone_iphone</mat-icon>手机号码
-          </button>
-          <button type="button" [class.active]="accountType === 'email'" (click)="setAccountType('email')">
-            <mat-icon>mail_outline</mat-icon>邮箱
-          </button>
+        <label class="field-label" for="register-email">邮箱地址</label>
+        <div class="auth-input" [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          <mat-icon>mail_outline</mat-icon>
+          <input id="register-email" formControlName="email" type="email" placeholder="请输入邮箱地址" autocomplete="email" />
         </div>
+        <p class="field-error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">请输入正确的邮箱地址</p>
 
-        <label class="field-label" for="register-account">{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}</label>
-        <div class="auth-input" [class.invalid]="registerForm.get('account')?.invalid && registerForm.get('account')?.touched">
-          <mat-icon>{{ accountType === 'phone' ? 'phone_iphone' : 'mail_outline' }}</mat-icon>
-          <input id="register-account" formControlName="account" [type]="accountType === 'phone' ? 'tel' : 'email'" [placeholder]="accountPlaceholder" autocomplete="username" />
+        <label class="field-label" for="register-phone">手机号码 <span class="optional-label">（选填）</span></label>
+        <div class="auth-input" [class.invalid]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">
+          <mat-icon>phone_iphone</mat-icon>
+          <input id="register-phone" formControlName="phoneNumber" type="tel" placeholder="填写后也可用手机号码登录" autocomplete="tel" />
         </div>
-        <p class="field-error" *ngIf="registerForm.get('account')?.invalid && registerForm.get('account')?.touched">
-          请输入正确的{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}
-        </p>
+        <p class="field-error" *ngIf="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">请输入正确的手机号码</p>
 
         <label class="field-label" for="register-password">设置密码</label>
         <div class="auth-input" [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">

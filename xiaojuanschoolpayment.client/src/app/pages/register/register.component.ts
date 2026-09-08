@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth.service';
 import { SchoolUserDTO } from '../../../interfaces/SchoolUser.dto';
-import { AccountType } from '../../../interfaces/Auth.dto';
 
 @Component({
   selector: 'register',
@@ -13,7 +12,6 @@ import { AccountType } from '../../../interfaces/Auth.dto';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  accountType: AccountType = 'phone';
   hidePassword = true;
   loading = false;
 
@@ -28,22 +26,10 @@ export class RegisterComponent {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(40)]],
       invitationCode: ['', [Validators.required]],
-      account: ['', [Validators.required, this.phoneValidator]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [this.optionalPhoneValidator]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*\d).+$/)]],
     });
-  }
-
-  setAccountType(type: AccountType): void {
-    if (this.accountType === type) return;
-    this.accountType = type;
-    const account = this.registerForm.get('account');
-    account?.setValue('');
-    account?.setValidators(
-      type === 'phone'
-        ? [Validators.required, this.phoneValidator]
-        : [Validators.required, Validators.email],
-    );
-    account?.updateValueAndValidity();
   }
 
   onSubmit(): void {
@@ -53,11 +39,10 @@ export class RegisterComponent {
     }
 
     const value = this.registerForm.getRawValue();
-    const account = value.account.trim();
     const registrationCode = value.invitationCode.trim();
     const user: SchoolUserDTO = {
-      account,
-      email: this.accountType === 'email' ? account : '',
+      email: value.email.trim(),
+      phoneNumber: value.phoneNumber.trim() || undefined,
       password: value.password,
       name: value.name.trim(),
       invitationCode: registrationCode,
@@ -78,19 +63,21 @@ export class RegisterComponent {
     });
   }
 
-  get accountPlaceholder(): string {
-    return this.accountType === 'phone' ? '请输入手机号码' : '请输入邮箱地址';
-  }
-
-  private phoneValidator(control: { value: unknown }): { phone: true } | null {
-    const value = String(control.value ?? '').replace(/[\s-]/g, '');
-    return /^(?:\+?86)?1[3-9]\d{9}$/.test(value) ? null : { phone: true };
+  private optionalPhoneValidator(control: { value: unknown }): { phone: true } | null {
+    let value = String(control.value ?? '').replace(/[\s()-]/g, '');
+    if (!value) return null;
+    if (value.startsWith('00')) value = `+${value.slice(2)}`;
+    if (/^(?:\+?86)?1[3-9]\d{9}$/.test(value)) return null;
+    return /^\+[1-9]\d{7,14}$/.test(value) ? null : { phone: true };
   }
 
   private showError(error: any, fallback: string): void {
-    const message = typeof error?.error === 'string'
-      ? error.error
-      : error?.error?.message || fallback;
+    const body = error?.error;
+    const message = typeof body === 'string'
+      ? body
+      : Array.isArray(body)
+        ? body.join('；')
+        : body?.message || fallback;
     this.snackBar.open(message, '关闭', { duration: 5000 });
   }
 }

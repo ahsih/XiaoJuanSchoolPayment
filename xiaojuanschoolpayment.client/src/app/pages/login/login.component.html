@@ -6,60 +6,31 @@
 
     <div class="auth-card">
       <div class="auth-copy">
-        <span class="auth-eyebrow">欢迎回来</span>
-        <h1 id="login-title">登录思达启航</h1>
-        <p>查看你的申请进度与重要文件。</p>
+        <span class="auth-eyebrow">{{ recoveryMode ? '账号安全' : '欢迎回来' }}</span>
+        <h1 id="login-title">{{ recoveryMode ? '找回密码' : '登录思达启航' }}</h1>
+        <p>{{ recoveryMode ? '输入邮箱或手机号码，重置链接将发送至注册邮箱。' : '使用邮箱或已登记的手机号码及密码登录。' }}</p>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-        <div class="choice-tabs" aria-label="选择账号类型">
-          <button type="button" [class.active]="accountType === 'phone'" (click)="setAccountType('phone')">
-            <mat-icon>phone_iphone</mat-icon>手机号码
-          </button>
-          <button type="button" [class.active]="accountType === 'email'" (click)="setAccountType('email')">
-            <mat-icon>mail_outline</mat-icon>邮箱
-          </button>
-        </div>
-
-        <label class="field-label" for="login-account">{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}</label>
+      <form *ngIf="!recoveryMode; else recoveryPanel" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <label class="field-label" for="login-account">邮箱或手机号码</label>
         <div class="auth-input" [class.invalid]="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
-          <mat-icon>{{ accountType === 'phone' ? 'phone_iphone' : 'mail_outline' }}</mat-icon>
-          <input id="login-account" formControlName="account" [type]="accountType === 'phone' ? 'tel' : 'email'" [placeholder]="accountPlaceholder" autocomplete="username" />
+          <mat-icon>person_outline</mat-icon>
+          <input id="login-account" formControlName="account" type="text" placeholder="请输入邮箱或手机号码" autocomplete="username" />
         </div>
-        <p class="field-error" *ngIf="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">
-          请输入正确的{{ accountType === 'phone' ? '手机号码' : '邮箱地址' }}
-        </p>
+        <p class="field-error" *ngIf="loginForm.get('account')?.invalid && loginForm.get('account')?.touched">请输入正确的邮箱或手机号码</p>
 
-        <div class="method-switch" aria-label="选择登录方式">
-          <button type="button" [class.active]="loginMethod === 'Code'" (click)="setLoginMethod('Code')">验证码登录</button>
-          <button type="button" [class.active]="loginMethod === 'Password'" (click)="setLoginMethod('Password')">密码登录</button>
-        </div>
-
-        <ng-container *ngIf="loginMethod === 'Code'; else passwordLogin">
-          <label class="field-label" for="login-code">验证码</label>
-          <div class="code-row">
-            <div class="auth-input" [class.invalid]="loginForm.get('verificationCode')?.invalid && loginForm.get('verificationCode')?.touched">
-              <mat-icon>verified_user</mat-icon>
-              <input id="login-code" formControlName="verificationCode" inputmode="numeric" maxlength="6" placeholder="请输入6位验证码" autocomplete="one-time-code" />
-            </div>
-            <button class="code-button" type="button" (click)="sendCode()" [disabled]="sendingCode || countdown > 0">
-              {{ sendingCode ? '发送中…' : countdown > 0 ? countdown + '秒' : '获取验证码' }}
-            </button>
-          </div>
-          <p class="field-error" *ngIf="loginForm.get('verificationCode')?.invalid && loginForm.get('verificationCode')?.touched">请输入6位验证码</p>
-        </ng-container>
-
-        <ng-template #passwordLogin>
+        <div class="field-heading">
           <label class="field-label" for="login-password">登录密码</label>
-          <div class="auth-input" [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            <mat-icon>lock_outline</mat-icon>
-            <input id="login-password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="请输入登录密码" autocomplete="current-password" />
-            <button class="visibility-button" type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? '显示密码' : '隐藏密码'">
-              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-            </button>
-          </div>
-          <p class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">请输入登录密码</p>
-        </ng-template>
+          <button class="text-button" type="button" (click)="openPasswordRecovery()">忘记密码？</button>
+        </div>
+        <div class="auth-input" [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <mat-icon>lock_outline</mat-icon>
+          <input id="login-password" formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="请输入登录密码" autocomplete="current-password" />
+          <button class="visibility-button" type="button" (click)="hidePassword = !hidePassword" [attr.aria-label]="hidePassword ? '显示密码' : '隐藏密码'">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        <p class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">请输入登录密码</p>
 
         <button class="primary-button" type="submit" [disabled]="loading">
           {{ loading ? '正在登录…' : '登录' }}
@@ -67,7 +38,33 @@
         </button>
       </form>
 
-      <p class="auth-footer">还没有账号？<a routerLink="/register">注册</a></p>
+      <ng-template #recoveryPanel>
+        <div *ngIf="resetRequested; else recoveryForm" class="success-panel" role="status">
+          <mat-icon>mark_email_read</mat-icon>
+          <h2>请检查注册邮箱</h2>
+          <p>如果该账号存在，密码重置邮件已发送至注册邮箱。使用手机号码申请时，邮件也只会发送至账号绑定的邮箱。</p>
+          <button class="primary-button" type="button" (click)="closePasswordRecovery()">返回登录</button>
+        </div>
+
+        <ng-template #recoveryForm>
+          <form [formGroup]="forgotPasswordForm" (ngSubmit)="requestPasswordReset()" novalidate>
+            <label class="field-label" for="recovery-account">邮箱或手机号码</label>
+            <div class="auth-input" [class.invalid]="forgotPasswordForm.get('account')?.invalid && forgotPasswordForm.get('account')?.touched">
+              <mat-icon>person_search</mat-icon>
+              <input id="recovery-account" formControlName="account" type="text" placeholder="请输入邮箱或手机号码" autocomplete="username" />
+            </div>
+            <p class="field-error" *ngIf="forgotPasswordForm.get('account')?.invalid && forgotPasswordForm.get('account')?.touched">请输入正确的邮箱或手机号码</p>
+
+            <button class="primary-button" type="submit" [disabled]="loading">
+              {{ loading ? '正在发送…' : '发送重置邮件' }}
+              <mat-icon *ngIf="!loading">mail_outline</mat-icon>
+            </button>
+            <button class="secondary-button" type="button" (click)="closePasswordRecovery()">返回登录</button>
+          </form>
+        </ng-template>
+      </ng-template>
+
+      <p class="auth-footer" *ngIf="!recoveryMode">还没有账号？<a routerLink="/register">注册</a></p>
     </div>
 
     <p class="back-home"><a routerLink="/"><mat-icon>arrow_back</mat-icon>返回网站首页</a></p>

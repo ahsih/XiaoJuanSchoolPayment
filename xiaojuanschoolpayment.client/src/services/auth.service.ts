@@ -9,8 +9,7 @@ import { JWTLoginTokenDTO } from '../interfaces/JWTLoginToken.dto';
 import {
   LoginRequestDTO,
   InvitationCodeDTO,
-  VerificationCodeResponseDTO,
-  VerificationPurpose,
+  ResetPasswordRequestDTO,
 } from '../interfaces/Auth.dto';
 
 @Injectable({
@@ -26,14 +25,12 @@ export class AuthService {
     return this.http.post<void>(`${this.apiUrl}/register`, user);
   }
 
-  sendVerificationCode(
-    account: string,
-    purpose: VerificationPurpose
-  ): Observable<VerificationCodeResponseDTO> {
-    return this.http.post<VerificationCodeResponseDTO>(
-      `${this.apiUrl}/verification-code`,
-      { account, purpose }
-    );
+  requestPasswordReset(account: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forgot-password`, { account });
+  }
+
+  resetPassword(request: ResetPasswordRequestDTO): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reset-password`, request);
   }
 
   getInvitations(): Observable<InvitationCodeDTO[]> {

@@ -29,11 +29,17 @@ builder.Services.AddIdentity<SchoolUser, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
+    options.User.RequireUniqueEmail = true;
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
   })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+  options.TokenLifespan = TimeSpan.FromHours(1);
+});
 
 // Identity registers cookie defaults, so configure the API's JWT defaults after Identity.
 builder.Services.AddAuthentication(options =>
@@ -78,13 +84,8 @@ builder.Services.AddScoped<ISchoolContentService, SchoolContentService>();
 builder.Services.AddScoped<IStaffPermissionService, StaffPermissionService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.Configure<ContactFormOptions>(builder.Configuration.GetSection("ContactForm"));
-builder.Services.Configure<AuthenticationOptions>(builder.Configuration.GetSection("Authentication"));
-builder.Services.AddScoped<IVerificationCodeDeliveryService, VerificationCodeDeliveryService>();
+builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
 builder.Services.AddMemoryCache();
-builder.Services.AddHttpClient("AliyunSms", client =>
-{
-  client.Timeout = TimeSpan.FromSeconds(12);
-});
 builder.Services.AddHttpClient("PinesPortal", client =>
 {
   client.BaseAddress = new Uri("https://pinesportal.com/");
@@ -225,6 +226,7 @@ app.MapGet("/robots.txt", (HttpRequest request) =>
     "Disallow: /student",
     "Disallow: /login",
     "Disallow: /register",
+    "Disallow: /reset-password",
     $"Sitemap: {origin}/sitemap.xml",
     string.Empty,
   });
