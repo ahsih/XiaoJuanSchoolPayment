@@ -184,7 +184,7 @@ export class SchoolService {
     }
 
     return firstValueFrom(
-      this.http.post<SchoolPhotoDTO>(`${this.apiUrl}/upload-photo`, formData, {
+      this.http.post<SchoolPhotoDTO>(`${this.apiUrl}/upload-media`, formData, {
         headers: {
           Authorization: 'Bearer ' + token,
         },

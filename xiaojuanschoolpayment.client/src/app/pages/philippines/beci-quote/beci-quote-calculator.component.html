@@ -1,8 +1,8 @@
-<section class="beci-pricing" id="course-fees" [attr.data-campus]="campus">
+<section class="beci-pricing" id="course-fees" [attr.data-campus]="campus" data-cia-preview-kind="section" data-cia-preview-id="course-fees">
   <div class="pricing-heading">
     <span>BECI 2026 费用明细</span>
     <h2>{{ config.shortName }}课程与住宿价格</h2>
-    <p>以下均为每名学生4周美元价格。1/2/3周的课程和住宿均按对应4周价格的40%/60%/80%计算。</p>
+    <p data-cia-preview-kind="section" data-cia-preview-id="short-stay">{{ contentConfig.quoteSettings.groupClassNote }}</p>
   </div>
 
   <div class="catalog-grid">
@@ -12,7 +12,7 @@
         <table class="catalog-table">
           <thead><tr><th>课程名称</th><th>4周课程费</th><th>课程安排</th><th>备注</th></tr></thead>
           <tbody>
-            <tr *ngFor="let course of config.courses">
+            <tr *ngFor="let course of config.courses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="course.id">
               <th>{{ course.name }}</th><td>{{ formatUsd(course.price) }} 美元</td><td>{{ course.schedule }}</td><td>{{ course.note || '—' }}</td>
             </tr>
           </tbody>
@@ -20,13 +20,13 @@
       </div>
     </section>
 
-    <section class="catalog-card">
+    <section class="catalog-card" data-cia-preview-kind="section" data-cia-preview-id="room-fees">
       <h3>住宿费</h3>
       <div class="catalog-table-wrap">
         <table class="catalog-table room-table">
           <thead><tr><th>房间类型</th><th>4周住宿费</th><th>备注</th></tr></thead>
           <tbody>
-            <tr *ngFor="let room of config.rooms">
+            <tr *ngFor="let room of config.rooms" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id">
               <th>{{ room.name }}</th><td>{{ formatUsd(room.price) }} 美元</td><td>{{ room.note }}</td>
             </tr>
           </tbody>
@@ -35,14 +35,12 @@
     </section>
   </div>
 
-  <section class="promotion-panel" id="special-fees">
-    <div><strong>思达注册费优惠</strong><span>所有思达学生减100美元注册费</span></div>
-    <div><strong>2026淡季九折</strong><span>02/08–06/14或09/06–12/27入学，整段课程与住宿减10%</span></div>
-    <div><strong>长期学习优惠</strong><span>8/12/16/20/24周减50/100/200/300/400美元，可与淡季优惠叠加</span></div>
-    <div><strong>旺季附加费</strong><span>实际重叠课程周每周40美元；2027档期按星期对齐估算</span></div>
+  <section class="promotion-panel" id="special-fees" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown">
+    <div *ngFor="let promotion of activePromotions" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="promotion.id"><strong>{{ promotion.name }}</strong><span>{{ promotionSummary(promotion) }}</span></div>
+    <div data-cia-preview-kind="section" data-cia-preview-id="quote-season"><strong>旺季附加费</strong><span>实际重叠课程周每周{{ contentConfig.quoteSettings.peakSeasonFeePerWeek }}美元；启用日期按后台设置计算</span></div>
   </section>
 
-  <section class="quote-results-section group-quote" id="quote">
+  <section class="quote-results-section group-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote">
     <div class="quote-form-card">
       <h2>{{ quoteHeading }}</h2>
       <div class="quote-mode" role="group" aria-label="报价人数模式">
@@ -90,14 +88,14 @@
       </div>
     </div>
 
-    <section class="local-fee-estimate" id="local-fees" aria-labelledby="beci-local-fee-title">
+    <section class="local-fee-estimate" id="local-fees" aria-labelledby="beci-local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees">
       <div class="local-fee-heading"><h3 id="beci-local-fee-title">到校后学杂费明细</h3></div>
-      <p class="local-fee-intro">费用与思达游学服务无关，由学校或相关部门收取。按每名学生完整停留跨度、课程周数、住宿周数、30/59天签证和接机选择自动预估。</p>
+      <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro">{{ localFeeIntro }}</p>
       <div class="local-fee-table-wrap">
         <table class="local-fee-table">
           <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
           <tbody>
-            <tr *ngFor="let fee of estimatedLocalFees">
+            <tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="feeId(fee.item)">
               <th>{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
             </tr>
           </tbody>
@@ -109,7 +107,7 @@
       </div>
       <div class="excluded-fee-list">
         <h4>另行准备（不计入上方学杂费合计）</h4>
-        <div><span><strong>房间押金</strong><small>{{ activeStudents.length }}人 × 3,000比索；无损坏、无欠费并按学校规则完成退房后可退。</small></span><b>{{ formatPhp(depositTotal) }}<small>约人民币 {{ depositCny.toLocaleString('zh-CN') }} 元</small></b></div>
+        <div data-cia-preview-kind="fee" data-cia-preview-id="room-deposit"><span><strong>房间押金</strong><small>{{ activeStudents.length }}人 × {{ depositPerPerson.toLocaleString('zh-CN') }}比索；无损坏、无欠费并按学校规则完成退房后可退。</small></span><b>{{ formatPhp(depositTotal) }}<small>约人民币 {{ depositCny.toLocaleString('zh-CN') }} 元</small></b></div>
       </div>
     </section>
   </section>

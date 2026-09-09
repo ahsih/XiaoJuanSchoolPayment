@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CurrencyService } from '../../../services/currency.service';
 import { firstValueFrom } from 'rxjs';
 import { EditSchoolFeeDialogComponent } from './edit-school-fee-dialog/edit-school-fee-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-admin-school-fees',
@@ -33,6 +34,7 @@ export class AdminSchoolFeesComponent {
   schoolFeetos: SchoolFeeDTO[] = [];
   schoolDtos: SchoolDTO[] = [];
   currencyDtos: CurrencyDTO[] = [];
+  selectedSchoolId = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -41,7 +43,8 @@ export class AdminSchoolFeesComponent {
     private fb: FormBuilder,
     private schoolService: SchoolService,
     private matDialog: MatDialog,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private route: ActivatedRoute
   ) {
     this.schoolFeesForm = this.fb.group({
       name: ['', Validators.required],
@@ -60,8 +63,8 @@ export class AdminSchoolFeesComponent {
   }
 
   ngOnInit(): void {
+    this.selectedSchoolId = this.route.snapshot.queryParamMap.get('schoolId') ?? '';
     this.loadSchools();
-    this.loadSchoolFees();
     this.loadCurrencys();
   }
 
@@ -80,7 +83,7 @@ export class AdminSchoolFeesComponent {
         currencyId: this.schoolFeesForm.value.currencyId,
       } as SchoolFeeDTO;
       await this.schoolService.saveSchoolFee(schoolFeeDTO);
-      this.schoolFeesForm.reset();
+      this.schoolFeesForm.reset({ schoolId: this.selectedSchoolId });
       this.loadSchoolFees();
     }
   }
@@ -93,6 +96,12 @@ export class AdminSchoolFeesComponent {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  onSchoolChanged(schoolId: string) {
+    this.selectedSchoolId = schoolId;
+    this.schoolFeesForm.patchValue({ schoolId });
+    this.loadSchoolFees();
+  }
   private loadCurrencys() {
     this.currencyService.getCurrencies().subscribe({
       next: (rows) => (this.currencyDtos = rows ?? []),
@@ -102,13 +111,23 @@ export class AdminSchoolFeesComponent {
 
   private loadSchools() {
     this.schoolService.getSchools().subscribe({
-      next: (rows) => (this.schoolDtos = rows ?? []),
+      next: (rows) => {
+        this.schoolDtos = rows ?? [];
+        const selected = this.schoolDtos.find(school => school.id === this.selectedSchoolId)
+          ?? this.schoolDtos.find(school => school.name.toLowerCase().includes('cia'))
+          ?? this.schoolDtos[0];
+        if (selected) this.onSchoolChanged(selected.id);
+      },
       error: (err) => console.error('Failed to load schools', err),
     });
   }
 
   private loadSchoolFees() {
-    this.schoolService.getSchoolFees().subscribe({
+    if (!this.selectedSchoolId) {
+      this.dataSource.data = [];
+      return;
+    }
+    this.schoolService.getSchoolFees({ schoolId: this.selectedSchoolId }).subscribe({
       next: (rows) => (this.dataSource.data = rows ?? []),
       error: (err) => console.error('Failed to load fees', err),
     });

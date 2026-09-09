@@ -1,15 +1,15 @@
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
+import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 
-interface MonolQuotePrices {
+export interface MonolQuotePrices {
   courseFees: { id: string; name: string; tuition: number; suitable: string; note: string }[];
   roomFees: { id: string; name: string; fee: number; note: string }[];
   registrationFee: number;
-  registrationDiscount: number;
-  offSeasonCourseDiscountPerBlock: number;
-  offSeasonRoomDiscountPerBlock: number;
-  snsDiscountPerBlock: number;
+  shortStayRatios: Record<string, number>;
+  promotionRules: CiaPromotionRule[];
+  localFeeRules: CiaLocalFeeRule[];
 }
 
 export const MONOL_VISA_OPTIONS = [
@@ -63,7 +63,10 @@ export class MonolStudentQuote {
       const rate = kind === 'course'
         ? this.prices.courseFees.find((course) => course.id === row.optionId)?.tuition
         : this.prices.roomFees.find((room) => room.id === row.optionId)?.fee;
-      return rounded((rate ?? 0) * row.weeks / 4);
+      const multiplier = row.weeks < 4
+        ? (this.prices.shortStayRatios[String(row.weeks)] ?? row.weeks / 4)
+        : row.weeks / 4;
+      return rounded((rate ?? 0) * multiplier);
     },
   );
 
@@ -79,34 +82,74 @@ export class MonolStudentQuote {
   get tuition() { return this.quotePlan.total('course'); }
   get accommodation() { return this.quotePlan.total('room'); }
   get registration() { return this.prices.registrationFee; }
-  get registrationDiscount() { return Math.min(this.registration, this.prices.registrationDiscount); }
+  get registrationDiscount() {
+    const rule = this.promotion('monol-registration-waiver');
+    return rule?.waiveRegistration && (!rule.newStudentsOnly || !this.returningStudent) ? this.registration : 0;
+  }
   get visaLabel() { return this.visaOptions.find((option) => option.value === this.visaType)?.label ?? ''; }
 
-  private rowIsOffSeason(row: { startDate: string; weeks: number }): boolean {
+  private rowMatchesRule(row: { startDate: string; weeks: number }, rule: CiaPromotionRule, kind: 'course' | 'room'): boolean {
+    if (!rule.enabled || (rule.newStudentsOnly && this.returningStudent)) return false;
+    if (kind === 'course' && row.weeks < rule.minimumCourseWeeks) return false;
+    if (kind === 'room' && row.weeks < rule.minimumAccommodationWeeks) return false;
     const start = this.quotePlan.date(row.startDate);
     const end = this.quotePlan.date(new Date((start ?? 0) + (row.weeks * 7 - 1) * DAY).toISOString().slice(0, 10));
-    const earlyEnd = this.quotePlan.date('2026-06-27');
-    const lateStart = this.quotePlan.date('2026-08-23');
-    const promotionEnd = this.quotePlan.date('2026-12-31');
-    if (start === null || end === null || earlyEnd === null || lateStart === null || promotionEnd === null) return false;
-    return end <= earlyEnd || (start >= lateStart && start <= promotionEnd);
+    if (start === null || end === null) return false;
+    const registration = this.quotePlan.date(this.selectedRegistrationDate);
+    const registrationStart = rule.registrationStart ? this.quotePlan.date(rule.registrationStart) : null;
+    const registrationEnd = rule.registrationEnd ? this.quotePlan.date(rule.registrationEnd) : null;
+    const arrivalStart = rule.arrivalStart ? this.quotePlan.date(rule.arrivalStart) : null;
+    const arrivalEnd = rule.arrivalEnd ? this.quotePlan.date(rule.arrivalEnd) : null;
+    const coverageStart = rule.coverageStart ? this.quotePlan.date(rule.coverageStart) : null;
+    const coverageEnd = rule.coverageEnd ? this.quotePlan.date(rule.coverageEnd) : null;
+    if (registration === null) return false;
+    if (registrationStart !== null && registration < registrationStart) return false;
+    if (registrationEnd !== null && registration > registrationEnd) return false;
+    if (arrivalStart !== null && start < arrivalStart) return false;
+    if (arrivalEnd !== null && start > arrivalEnd) return false;
+    if (coverageStart !== null && start < coverageStart) return false;
+    if (coverageEnd !== null && end > coverageEnd) return false;
+    return true;
+  }
+
+  private offSeasonSummary(kind: 'course' | 'room'): { blocks: number; discount: number; rules: CiaPromotionRule[] } {
+    const prefix = `monol-off-season-${kind}`;
+    const rows = kind === 'course' ? this.quotePlan.courses : this.quotePlan.rooms;
+    let blocks = 0;
+    let discount = 0;
+    const rules: CiaPromotionRule[] = [];
+    for (const row of rows) {
+      const rule = this.prices.promotionRules.find(item => item.id.startsWith(prefix) && this.rowMatchesRule(row, item, kind));
+      if (!rule) continue;
+      const rowBlocks = Math.floor(row.weeks / 4);
+      blocks += rowBlocks;
+      discount += rowBlocks * rule.discountValue;
+      if (!rules.some(item => item.id === rule.id)) rules.push(rule);
+    }
+    return { blocks, discount, rules };
   }
 
   get offSeasonCourseBlocks() {
-    return this.quotePlan.courses.reduce((sum, row) => sum + (this.rowIsOffSeason(row) ? Math.floor(row.weeks / 4) : 0), 0);
+    return this.offSeasonSummary('course').blocks;
   }
   get offSeasonRoomBlocks() {
-    return this.quotePlan.rooms.reduce((sum, row) => sum + (this.rowIsOffSeason(row) ? Math.floor(row.weeks / 4) : 0), 0);
+    return this.offSeasonSummary('room').blocks;
   }
-  get offSeasonCourseDiscount() { return this.offSeasonCourseBlocks * this.prices.offSeasonCourseDiscountPerBlock; }
-  get offSeasonRoomDiscount() { return this.offSeasonRoomBlocks * this.prices.offSeasonRoomDiscountPerBlock; }
+  get offSeasonCourseDiscount() { return this.offSeasonSummary('course').discount; }
+  get offSeasonRoomDiscount() { return this.offSeasonSummary('room').discount; }
   get isBreakfastEligible() { return this.offSeasonCourseBlocks > 0; }
 
   get snsEligibleBlocks(): number {
-    const from = this.quotePlan.date('2026-01-01')!;
-    const to = this.quotePlan.date('2026-06-27')!;
+    const rule = this.promotion('monol-sns');
+    if (!rule || (rule.newStudentsOnly && this.returningStudent)) return 0;
+    const from = this.quotePlan.date(rule.coverageStart ?? '');
+    const to = this.quotePlan.date(rule.coverageEnd ?? '');
+    if (from === null || to === null) return 0;
+    const eligibleRoomIds = rule.eligibleRoomIds?.length
+      ? rule.eligibleRoomIds
+      : ['premium-single-room', 'standard-single-room', 'small-single-room'];
     const eligibleRooms = this.quotePlan.rooms.filter((room) =>
-      ['premium-single-room', 'standard-single-room', 'small-single-room'].includes(room.optionId));
+      eligibleRoomIds.includes(room.optionId));
     let blocks = 0;
     for (const course of this.quotePlan.courses) {
       const courseStart = this.quotePlan.date(course.startDate);
@@ -123,7 +166,10 @@ export class MonolStudentQuote {
     }
     return blocks;
   }
-  get snsDiscount() { return this.applySnsPromotion ? this.snsEligibleBlocks * this.prices.snsDiscountPerBlock : 0; }
+  get snsDiscount() {
+    const rule = this.promotion('monol-sns');
+    return this.applySnsPromotion && rule ? this.snsEligibleBlocks * rule.discountValue : 0;
+  }
 
   get quoteBeforeDiscounts() { return this.registration + this.tuition + this.accommodation; }
   get quoteUsd() {
@@ -132,29 +178,36 @@ export class MonolStudentQuote {
   }
 
   get paymentLines(): SchoolPaymentLine[] {
+    const registration = this.promotion('monol-registration-waiver');
+    const courseSummary = this.offSeasonSummary('course');
+    const roomSummary = this.offSeasonSummary('room');
+    const snsRule = this.promotion('monol-sns');
     return [
-      { icon: '免', label: '思达注册费优惠', value: -this.registrationDiscount, note: '通过思达报名免100美元注册费。', promotionKey: 'registration' },
+      ...(this.registrationDiscount ? [{ icon: '免', label: registration?.name ?? '思达注册费优惠', value: -this.registrationDiscount, note: registration?.description ?? '通过思达报名免注册费。', promotionKey: 'registration' }] : []),
       ...(this.offSeasonCourseDiscount ? [{
         icon: '惠', label: '淡季课程优惠', value: -this.offSeasonCourseDiscount,
-        note: `${this.offSeasonCourseBlocks}个完整4周，每段课程费减100美元。`, promotionKey: 'off-season-course',
+        note: `${this.offSeasonCourseBlocks}个完整4周；${courseSummary.rules.map(rule => rule.description).join('；') || '按当前淡季规则计算。'}`, promotionKey: 'off-season-course',
       }] : []),
       ...(this.offSeasonRoomDiscount ? [{
         icon: '惠', label: '淡季住宿优惠', value: -this.offSeasonRoomDiscount,
-        note: `${this.offSeasonRoomBlocks}个完整4周，每段住宿费减100美元。`, promotionKey: 'off-season-room',
+        note: `${this.offSeasonRoomBlocks}个完整4周；${roomSummary.rules.map(rule => rule.description).join('；') || '按当前淡季规则计算。'}`, promotionKey: 'off-season-room',
       }] : []),
       ...(this.snsDiscount ? [{
-        icon: '惠', label: 'SNS特别活动', value: -this.snsDiscount,
-        note: `${this.snsEligibleBlocks}个完整4周符合日期与房型条件；须完成小红书及抖音发布要求，活动可能随时结束。`, promotionKey: 'sns',
+        icon: '惠', label: snsRule?.name ?? 'SNS特别活动', value: -this.snsDiscount,
+        note: `${this.snsEligibleBlocks}个完整4周；${snsRule?.description ?? '符合日期、房型及发布要求。'}`, promotionKey: 'sns',
       }] : []),
     ];
   }
 
   get statusLines(): QuoteImagePaymentItem[] {
+    const courseRules = this.prices.promotionRules.filter(item => item.enabled && item.id.startsWith('monol-off-season-course'));
+    const roomRules = this.prices.promotionRules.filter(item => item.enabled && item.id.startsWith('monol-off-season-room'));
+    const snsRule = this.promotion('monol-sns');
     return [
-      ...(!this.offSeasonCourseDiscount ? [{ icon: '惠', label: '淡季课程优惠', amount: '未适用', note: '课程在2026/6/28前结束，或于2026/8/23后开始且在2026年内入学时，每个完整4周减100美元。' }] : []),
-      ...(!this.offSeasonRoomDiscount ? [{ icon: '惠', label: '淡季住宿优惠', amount: '未适用', note: '住宿在2026/6/28前结束，或于2026/8/23后开始且在2026年内入住时，每个完整4周减100美元。' }] : []),
+      ...(!this.offSeasonCourseDiscount && courseRules.length ? [{ icon: '惠', label: '淡季课程优惠', amount: '未适用', note: courseRules.map(rule => rule.description).join('；') }] : []),
+      ...(!this.offSeasonRoomDiscount && roomRules.length ? [{ icon: '惠', label: '淡季住宿优惠', amount: '未适用', note: roomRules.map(rule => rule.description).join('；') }] : []),
       { icon: '早', label: '淡季工作日免费早餐', amount: this.isBreakfastEligible ? '适用' : '未适用', note: '符合淡季条件且在2026/12/31前的工作日提供免费早餐。' },
-      ...(!this.snsDiscount ? [{ icon: '惠', label: 'SNS特别活动', amount: '未适用', note: '2026/1/1–6/27，仅限高级单人间、标准单人间和小单间；勾选参加且每个完整4周完成小红书及抖音发布要求后减100美元。' }] : []),
+      ...(!this.snsDiscount && snsRule ? [{ icon: '惠', label: snsRule.name, amount: '未适用', note: snsRule.description }] : []),
     ];
   }
 
@@ -168,22 +221,41 @@ export class MonolStudentQuote {
 
   get localFees(): SchoolLocalFee[] {
     const extensions = this.visaExtensionCount;
-    const acr = extensions > 0 ? 1 : 0;
-    const manila = this.pickupAirport === 'manila' ? 1 : 0;
-    const clark = this.pickupAirport === 'clark' ? 1 : 0;
-    return [
-      { item: 'SSP特殊学习许可证', unitLabel: '7,800比索／次', quantity: 1, total: 7800, note: '移民局收取，有效期6个月；更换学校需重新办理。' },
-      { item: 'SSP-I Card', unitLabel: '4,500比索／次', quantity: 1, total: 4500, note: '移民局收取，入学时与SSP同时办理，只收一次。' },
-      { item: 'ACR-I Card 外国人身份证', unitLabel: '4,000比索／次', quantity: acr, total: 4000 * acr, note: `按${this.visaLabel}和完整停留跨度预估；第一次签证续签时办理。` },
-      { item: '签证续签', unitLabel: '4,940比索／30天', quantity: extensions, total: 4940 * extensions, note: `按${this.visaLabel}和完整停留跨度预估；每次续签有效期30天，实际以移民局及学校收取为准。` },
-      { item: '教材费', unitLabel: '2,000比索／4周', quantity: this.textbookQuantity, total: 2000 * this.textbookQuantity, note: '此为预估；使用电子教材免费，需自带电子设备。' },
-      { item: '学生证', unitLabel: '130比索／次', quantity: 1, total: 130, note: '一次性费用。' },
-      { item: '马尼拉机场接机', unitLabel: '3,000比索／次', quantity: manila, total: 3000 * manila, note: '由学生自由选择是否需要；周日固定时间团体接机。' },
-      { item: '克拉克机场接机', unitLabel: '3,000比索／次', quantity: clark, total: 3000 * clark, note: '由学生自由选择是否需要；周日固定时间团体接机。' },
-    ];
+    return this.prices.localFeeRules
+      .filter(rule => rule.enabled && rule.includeInTotal)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(rule => {
+        const period = Math.max(1, rule.periodWeeks ?? 4);
+        let quantity = 1;
+        if (rule.id === 'acr-i-card' || rule.billingRule === 'first-visa-extension') quantity = extensions > 0 ? 1 : 0;
+        else if (rule.billingRule === 'visa-extension-schedule') quantity = extensions;
+        else if (rule.billingRule === 'per-course-period') {
+          quantity = this.quotePlan.courses.reduce((sum, row) => sum + (rule.rounding === 'ceil' ? Math.ceil(row.weeks / period) : row.weeks / period), 0);
+        } else if (rule.billingRule === 'per-accommodation-period') {
+          quantity = rule.rounding === 'ceil' ? Math.ceil(this.quotePlan.roomWeeks / period) : this.quotePlan.roomWeeks / period;
+        } else if (rule.id === 'manila-pickup') quantity = this.pickupAirport === 'manila' ? 1 : 0;
+        else if (rule.id === 'clark-pickup') quantity = this.pickupAirport === 'clark' ? 1 : 0;
+        const unitLabel = rule.billingRule === 'visa-extension-schedule' ? `${rule.amount.toLocaleString()}比索／30天`
+          : rule.billingRule === 'per-course-period' || rule.billingRule === 'per-accommodation-period' ? `${rule.amount.toLocaleString()}比索／${period}周`
+            : `${rule.amount.toLocaleString()}比索／次`;
+        const visaNote = ['acr-i-card', 'visa-extension'].includes(rule.id) ? `按${this.visaLabel}和完整停留跨度预估；` : '';
+        return { item: rule.name, unitLabel, quantity, total: rounded(rule.amount * quantity), note: `${visaNote}${rule.note}` };
+      });
   }
 
-  get roomDeposit() { return 4000; }
+  get roomDeposit() { return this.fee('room-deposit')?.amount ?? 0; }
   get mealQuantity() { return this.quotePlan.roomWeeks / 4; }
-  get mealEstimate() { return rounded(14000 * this.mealQuantity); }
+  get mealEstimate() {
+    const fee = this.fee('meals');
+    const period = Math.max(1, fee?.periodWeeks ?? 4);
+    return rounded((fee?.amount ?? 0) * this.quotePlan.roomWeeks / period);
+  }
+
+  private promotion(id: string): CiaPromotionRule | undefined {
+    return this.prices.promotionRules.find(item => item.id === id && item.enabled);
+  }
+
+  private fee(id: string): CiaLocalFeeRule | undefined {
+    return this.prices.localFeeRules.find(item => item.id === id && item.enabled);
+  }
 }

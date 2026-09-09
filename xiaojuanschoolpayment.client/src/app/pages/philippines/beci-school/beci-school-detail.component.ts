@@ -1,36 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, ProviderToken, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
-import { BECI_CAMPUS_PRICING, BeciCampus } from '../beci-quote/beci-pricing';
+import { BeciCampus } from '../beci-quote/beci-pricing';
+import { CiaContentConfig, CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { beciCampusPricingFromContent, cloneBeciContentConfig, createDefaultBeciContentConfig } from './beci-content-config';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
-interface CourseItem { name: string; type: string; lessons: string; suitable: string; }
+interface CourseItem { id?: string; name: string; type: string; lessons: string; suitable: string; }
 interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
 interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
+interface LocalFee { id: string; item: string; amount: string; note: string; quantity: number; total: number; optional?: boolean; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 interface SidaBeciReason { number: string; title: string; text: string; image: string; alt: string; }
 interface SidaBeciTrustBadge { icon: string; label: string; }
+
+function optionalInject<T>(token: ProviderToken<T>): T | null {
+  try { return inject(token, { optional: true }); } catch { return null; }
+}
 
 @Component({
   selector: 'app-beci-school-detail',
@@ -46,10 +55,22 @@ interface SidaBeciTrustBadge { icon: string; label: string; }
     './beci-school-detail.component.css',
   ],
 })
-export class BeciSchoolDetailComponent implements OnInit {
-  private readonly schoolService = inject(SchoolService);
-  private readonly exchangeRateService = inject(ExchangeRateService);
-  private readonly route = inject(ActivatedRoute, { optional: true });
+export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly schoolService = optionalInject(SchoolService);
+  private readonly schoolContentService = optionalInject(SchoolContentService);
+  private readonly exchangeRateService = optionalInject(ExchangeRateService);
+  private readonly route = optionalInject(ActivatedRoute);
+  private readonly previewHost = optionalInject(ElementRef) as ElementRef<HTMLElement> | null;
+  private readonly initialContent = createDefaultBeciContentConfig();
+  private currentContentConfig = cloneBeciContentConfig(this.initialContent);
+  readonly contentConfig = () => this.currentContentConfig;
+  private previewContent?: CiaContentConfig;
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route?.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private versionedContentApplied = false;
   readonly campus: Exclude<BeciCampus, 'city'> = this.route?.snapshot.data['campus'] === 'sparta' ? 'sparta' : 'eop';
   private readonly pricingSchoolSearchName = 'BECI';
   private readonly pricingSchoolNames = ['菲律宾碧瑶BECI语言学校', 'BECI International Language Academy', 'API BECI'];
@@ -102,7 +123,7 @@ export class BeciSchoolDetailComponent implements OnInit {
   selectedStartDate = '2026-09-06';
   quoteCalculated = false;
 
-  get campusConfig() { return BECI_CAMPUS_PRICING[this.campus]; }
+  get campusConfig() { return beciCampusPricingFromContent(this.currentContentConfig, this.campus); }
   get campusTitle(): string { return this.campusConfig.name; }
   get campusHero(): string { return this.campusConfig.hero; }
   get campusStartingPrice(): number { return this.campus === 'eop' ? 1240 : 1550; }
@@ -113,8 +134,13 @@ export class BeciSchoolDetailComponent implements OnInit {
       : '严格管理与考试强化校区，适合希望用密集课程、晚间学习和测试推动进步的学生。';
   }
   get campusCourses(): CourseItem[] {
-    const prefix = this.campus === 'eop' ? 'EOP' : 'Sparta';
-    return this.courses.filter((course) => course.name.startsWith(prefix));
+    return this.campusConfig.courses.map(course => ({
+      id: course.id,
+      name: course.name,
+      type: this.campus === 'eop' ? 'EOP课程' : '斯巴达课程',
+      lessons: course.schedule,
+      suitable: course.note || this.campusConfig.campusNote,
+    }));
   }
   get campusGalleryImages(): GalleryImage[] {
     return this.galleryImages.filter((image) => this.campus === 'eop'
@@ -195,7 +221,7 @@ export class BeciSchoolDetailComponent implements OnInit {
     { icon: 'event_available', label: '学习节奏', value: '弹性到强管理', note: 'City无宵禁，Sparta晚间学习和测试更严格' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'APIBECI官网展示的EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.jpg' },
     { category: '校区', title: 'BECI校区建筑外观', description: '官方首页展示的BECI碧瑶校区建筑，用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.png' },
     { category: '校区', title: 'BECI碧瑶校区大楼', description: '官方首页展示的碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.png' },
@@ -208,6 +234,7 @@ export class BeciSchoolDetailComponent implements OnInit {
     { category: '设施', title: 'City Campus学习休息区', description: 'City Campus页面展示的成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.png' },
     { category: '设施', title: 'City Campus自习工作区', description: '官方City Campus页面展示的安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.png' },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾碧瑶BECI语言学校' },
@@ -359,11 +386,152 @@ export class BeciSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadPricingFromDatabase();
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent, this.isEditorPreview);
+    if (!this.isEditorPreview) this.loadPricingFromDatabase();
+    this.loadPublishedContent();
     this.loadExchangeRate();
   }
 
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview || !this.previewHost) return;
+    this.previewHost.nativeElement.classList.add('beci-editor-preview');
+    window.parent.postMessage({ type: 'beci-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'beci-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content, true);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'beci-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    const previewHost = this.previewHost;
+    if (!this.isEditorPreview || !this.previewTarget || !previewHost) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      (previewHost.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.cia-preview-highlight').forEach(element => element.classList.remove('cia-preview-highlight'));
+      result.elements.forEach(element => element.classList.add('cia-preview-highlight'));
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠规则区域。'
+          : result.exact ? `橙色框内就是 BECI ${this.campus === 'eop' ? 'EOP' : '斯巴达'}校区对应内容。` : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'beci-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('beci-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'BECI' ? value : null;
+    } catch { return null; }
+  }
+
+  private loadPublishedContent(): void {
+    const schoolService = this.schoolService;
+    const schoolContentService = this.schoolContentService;
+    if (!schoolService || !schoolContentService) return;
+    schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
+      switchMap((schools) => {
+        const school = this.pricingSchoolNames.map(name => schools.find(item => item.name === name)).find(Boolean)
+          ?? schools.find(item => item.name.toUpperCase().includes('BECI')) ?? schools[0];
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview, true);
+      else if (published?.content) this.applyContentConfig(published.content, true);
+      if (!this.versionedContentApplied) this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyContentConfig(value: CiaContentConfig, authoritative = false): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'BECI') return;
+    const content = cloneBeciContentConfig(value);
+    this.currentContentConfig = content;
+    this.previewContent = content;
+    if (authoritative) this.versionedContentApplied = true;
+    const campusPricing = beciCampusPricingFromContent(content, this.campus);
+    this.courseFees = campusPricing.courses.map(item => ({ id: item.id, name: item.name, tuition: item.price, suitable: item.note || item.schedule }));
+    this.roomFees = campusPricing.rooms.map(item => ({ id: item.id, name: item.name, fee: item.price, note: item.note }));
+    if (!this.courseFees.some(item => item.id === this.selectedCourseId)) this.selectedCourseId = campusPricing.defaultCourseId;
+    if (!this.roomFees.some(item => item.id === this.selectedRoomId)) this.selectedRoomId = campusPricing.defaultRoomId;
+    this.registrationFee = content.quoteSettings.registrationFee;
+    if (!this.courseFees.some(item => item.id === this.selectedCourseId)) this.selectedCourseId = campusPricing.defaultCourseId;
+    if (!this.roomFees.some(item => item.id === this.selectedRoomId)) this.selectedRoomId = campusPricing.defaultRoomId;
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url && (item.campus ? item.campus === this.campus : this.campus === 'eop')).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
+        category: this.resolveMediaCategory(item.category),
+        title: item.caption || item.altText || item.originalFileName || 'BECI学校媒体',
+        description: item.altText || item.caption || 'BECI学校实景内容',
+        src: item.url,
+        contentType: item.contentType,
+      })),
+    ];
+    this.queuePreviewFocus(false);
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url)).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'BECI学校媒体',
+      description: photo.altText || photo.caption || 'BECI学校实景内容',
+      src: photo.url ?? '',
+      contentType: photo.contentType,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校区';
+  }
+
   private loadExchangeRate(): void {
+    if (!this.exchangeRateService) return;
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
       if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
       this.usdToCny = rates.usdToCny;
@@ -374,7 +542,9 @@ export class BeciSchoolDetailComponent implements OnInit {
   }
 
   private loadPricingFromDatabase(): void {
-    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
+    const schoolService = this.schoolService;
+    if (!schoolService) return;
+    schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
         const school =
           this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
@@ -382,13 +552,15 @@ export class BeciSchoolDetailComponent implements OnInit {
           schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({
-          lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
-          rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
-          fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          lessons: schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
+          rooms: schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
+          fees: schoolService.getSchoolFees({ schoolId: school.id }),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees }) => {
+      if (!this.versionedContentApplied) this.applyPricingData(lessons, rooms, fees);
+    });
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -458,35 +630,33 @@ export class BeciSchoolDetailComponent implements OnInit {
   }
   get availableRoomFees(): RoomFee[] { return this.roomFees.filter((room) => room.id.startsWith(`${this.selectedCourseCampus}-`)); }
   get selectedRoom(): RoomFee { return this.availableRoomFees.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomFees[0] ?? this.roomFees[0]; }
-  get minimumSelectedCourseWeeks(): number { return this.selectedCourseId === 'sparta-ielts-guarantee-12' ? 12 : 1; }
+  get minimumSelectedCourseWeeks(): number { return this.campusConfig.courses.find(item => item.id === this.selectedCourseId)?.minimumWeeks ?? 1; }
   onCourseChange(): void {
     if (this.selectedWeeks < this.minimumSelectedCourseWeeks) this.selectedWeeks = this.minimumSelectedCourseWeeks;
     if (!this.availableRoomFees.some((room) => room.id === this.selectedRoomId)) {
-      const defaults = { eop: 'eop-quad', sparta: 'sparta-quad', city: 'city-studio-quad' } as const;
-      this.selectedRoomId = defaults[this.selectedCourseCampus];
+      this.selectedRoomId = this.campusConfig.defaultRoomId;
     }
   }
   get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * this.tuitionMultiplier; }
   get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
   get tuitionMultiplier(): number {
-    const shortStayMultipliers: Record<number, number> = { 1: 0.4, 2: 0.6, 3: 0.8 };
+    const shortStayMultipliers: Record<number, number> = Object.fromEntries(Object.entries(this.currentContentConfig.quoteSettings.shortStayRatios).map(([weeks, ratio]) => [Number(weeks), ratio]));
     return shortStayMultipliers[this.selectedWeeks] ?? this.selectedWeeks / 4;
   }
-  get registrationDiscountAmount(): number { return Math.min(this.registrationFee, this.registrationDiscount); }
+  get registrationDiscountAmount(): number {
+    return this.currentContentConfig.quoteSettings.promotions.some(item => item.enabled && item.waiveRegistration)
+      ? this.registrationFee : 0;
+  }
   get longStayDiscount(): number {
-    const discounts: Record<number, number> = { 8: 50, 12: 100, 16: 200, 20: 300, 24: 400 };
-    return discounts[this.selectedWeeks] ?? 0;
+    const rule = this.currentContentConfig.quoteSettings.promotions.find(item => item.enabled && item.ruleKind === 'beci-long-stay');
+    return rule?.discountTiers?.[String(this.selectedWeeks)] ?? 0;
   }
   get isOffSeasonPromotionEligible(): boolean {
-    const start = this.parseDate(this.selectedStartDate);
-    const from = this.parseDate('2026-09-06');
-    const to = this.parseDate('2026-12-27');
-    return !!start && !!from && !!to && start >= from && start <= to;
+    return !!this.activeOffSeasonPromotion;
   }
   get offSeasonDiscountAmount(): number {
-    return this.isOffSeasonPromotionEligible
-      ? (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * (1 - this.offSeasonDiscountRate)
-      : 0;
+    const rule = this.activeOffSeasonPromotion;
+    return rule ? (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * Math.max(0, rule.discountValue) / 100 : 0;
   }
   get totalDiscountAmount(): number { return this.registrationDiscountAmount + this.offSeasonDiscountAmount + this.longStayDiscount; }
   get quoteBeforeDiscounts(): number { return this.registrationFee + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
@@ -509,21 +679,21 @@ export class BeciSchoolDetailComponent implements OnInit {
   }
   get textbookQuantity(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 8)); }
   get localFees(): LocalFee[] {
-    const acrQuantity = this.selectedWeeks > 8 ? 1 : 0;
-    return [
-      { item: 'SSP特殊学习许可证', amount: 'PHP 7,800', quantity: 1, total: 7800, note: '按学习时长办理；续费或换校可能需要重新办理' },
-      { item: 'SSP-E Card', amount: 'PHP 4,500', quantity: 1, total: 4500, note: '入学时与SSP同时办理，一次性费用' },
-      { item: 'ACR-I Card 外国人身份证', amount: this.localFeeAmount(4000, acrQuantity), quantity: acrQuantity, total: 4000 * acrQuantity, note: '学习超过8周、首次续签时预计办理' },
-      { item: '维护管理费', amount: this.localFeeAmount(1000, this.localFeePeriods), quantity: this.localFeePeriods, total: 1000 * this.localFeePeriods, note: `PHP 1,000/4周 × ${this.localFeePeriods}` },
-      { item: '水电费', amount: this.localFeeAmount(3000, this.localFeePeriods), quantity: this.localFeePeriods, total: 3000 * this.localFeePeriods, note: `PHP 3,000/4周 × ${this.localFeePeriods}；超额用电另收PHP 25/kW` },
-      { item: '克拉克机场接机', amount: 'PHP 3,000', quantity: 1, total: 3000, note: '报价默认计入一次指定周日团体接机，可按实际行程调整' },
-      { item: '签证延签', amount: `PHP ${this.visaExtensionTotal.toLocaleString('en-US')}`, quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: this.visaExtensionCount > 0 ? `按学习周期预计办理${this.visaExtensionCount}次；最终以移民局实收为准` : '8周内暂不计；超过8周后按延签次数预估' },
-      { item: '教材费', amount: this.localFeeAmount(2000, this.textbookQuantity), quantity: this.textbookQuantity, total: 2000 * this.textbookQuantity, note: `每套参考使用8周，实际按课程及学校发放教材为准` },
-      { item: '学生证（含照片）', amount: 'PHP 200', quantity: 1, total: 200, note: '一次性费用' },
-      { item: '洗衣服务', amount: this.localFeeAmount(1500, this.localFeePeriods), quantity: this.localFeePeriods, total: 1500 * this.localFeePeriods, note: `PHP 1,500/4周 × ${this.localFeePeriods}；每周一至周四送洗，含洗涤、烘干和折叠` },
-      { item: '马尼拉机场接机', amount: 'PHP 3,000', quantity: 0, total: 0, optional: true, note: '按需选择；指定周日团体接机' },
-      { item: '房间押金', amount: 'PHP 3,000', quantity: 1, total: 3000, optional: true, note: '不计入学杂费合计；退房检查无损坏及欠费后退还' },
-    ];
+    return this.currentContentConfig.localFees.filter(rule => rule.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(rule => {
+      const quantity = this.localFeeQuantity(rule);
+      const total = rule.billingRule === 'visa-extension-schedule'
+        ? this.visaRuleTotal(rule)
+        : rule.amount * quantity;
+      return {
+        id: rule.id,
+        item: rule.name,
+        amount: `${rule.currency} ${Math.round(total).toLocaleString('en-US')}`,
+        quantity,
+        total,
+        optional: !rule.includeInTotal || rule.billingRule === 'optional' || quantity === 0,
+        note: this.currentContentConfig.quoteImageSettings.localFeeNotes[rule.id] || rule.note,
+      };
+    });
   }
   get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
   get localFeeCnyText(): string {
@@ -532,6 +702,7 @@ export class BeciSchoolDetailComponent implements OnInit {
   }
 
   get quoteImageData() {
+    const settings = this.currentContentConfig.quoteImageSettings;
     const includedFees = this.localFees.filter((fee) => !fee.optional);
     const optionalFees = this.localFees.filter((fee) => fee.optional);
     const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
@@ -541,7 +712,7 @@ export class BeciSchoolDetailComponent implements OnInit {
       city: '/assets/philippines/beci-city-study-lounge.png',
     };
 
-    return buildPhilippinesDetailedQuote({
+    const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'BECI',
       schoolName: '菲律宾碧瑶BECI语言学校',
       filePrefix: `BECI-${this.selectedCourseCampus.toUpperCase()}`,
@@ -551,29 +722,56 @@ export class BeciSchoolDetailComponent implements OnInit {
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
       paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: '思达优惠免注册费' },
-        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: `${this.selectedCourse.name}；${this.selectedCourse.suitable}` },
-        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: this.selectedRoom.name },
-        { icon: '淡', label: '淡季折扣', amount: this.offSeasonDiscountAmount ? `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元` : '未适用', note: '符合日期时课程费与住宿费按9折计算', accent: this.offSeasonDiscountAmount > 0 },
-        { icon: '长', label: '长期优惠', amount: this.longStayDiscount ? `- ${this.formatUsd(this.longStayDiscount)} 美元` : '未适用', note: '8周50、12周100，之后每增加4周多减100美元', accent: this.longStayDiscount > 0 },
-        { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: '注册费、淡季和长期优惠已自动计入', accent: true },
+        { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: settings.paymentNotes.registration },
+        { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: [this.selectedCourse.name, this.selectedCourse.suitable, settings.paymentNotes.course].filter(Boolean).join('；') },
+        { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: [this.selectedRoom.name, settings.paymentNotes.accommodation].filter(Boolean).join('；') },
+        { icon: '淡', label: '淡季折扣', amount: this.offSeasonDiscountAmount ? `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元` : '未适用', note: [this.activeOffSeasonPromotion?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), accent: this.offSeasonDiscountAmount > 0 },
+        { icon: '长', label: '长期优惠', amount: this.longStayDiscount ? `- ${this.formatUsd(this.longStayDiscount)} 美元` : '未适用', note: [this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === 'beci-long-stay')?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), accent: this.longStayDiscount > 0 },
+        { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: settings.paymentNotes.promotion, accent: true },
       ],
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
       localFeeTotal: this.localFeeTotal,
       localFeeCny: Math.round(this.localFeeTotal / this.phpPerCny),
-      localFeeNote: '不含可退押金及按需接机，实际以到校缴费为准。',
+      localFeeNote: settings.localFeeIntro,
       optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
-      ruleNotes: [
-        '1/2/3周课程费分别按4周价40%/60%/80%计算，住宿费按实际周数折算。',
-        '三个校区共用优惠规则；淡季折扣与长期优惠可按条件叠加。',
-      ],
+      ruleNotes: settings.footerNotes,
     });
+    return {
+      ...quote,
+      paymentSectionTitle: settings.paymentSectionTitle,
+      localFeeTitle: settings.localFeeSectionTitle,
+      serviceSectionTitle: settings.serviceSectionTitle,
+      benefitItems: settings.benefits,
+      serviceLocations: settings.serviceLocations,
+      alumniBenefitTitle: settings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
+      noteTitle: settings.noteSectionTitle,
+    };
   }
 
   formatUsd(value: number): string {
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
   private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
+  private localFeeQuantity(rule: CiaLocalFeeRule): number {
+    if (rule.billingRule === 'first-visa-extension') return this.visaExtensionCount > 0 ? 1 : 0;
+    if (rule.billingRule === 'visa-extension-schedule') return this.visaExtensionCount;
+    if (rule.billingRule === 'per-accommodation-period') return Math.max(1, Math.ceil(this.selectedWeeks / Math.max(1, rule.periodWeeks ?? 4)));
+    if (rule.billingRule === 'per-course-period') return Math.max(1, Math.ceil(this.selectedWeeks / Math.max(1, rule.periodWeeks ?? 4)));
+    if (rule.billingRule === 'selected-manila-pickup') return 0;
+    if (rule.billingRule === 'selected-clark-pickup') return 1;
+    return 1;
+  }
+  private visaRuleTotal(rule: CiaLocalFeeRule): number {
+    const rates = rule.rates?.length ? rule.rates : [rule.amount];
+    let total = 0;
+    for (let index = 0; index < this.visaExtensionCount; index += 1) total += rates[Math.min(index, rates.length - 1)] ?? rule.amount;
+    return total;
+  }
+  private get activeOffSeasonPromotion() {
+    return this.currentContentConfig.quoteSettings.promotions.find(item => item.enabled && item.discountType === 'percentage'
+      && this.selectedStartDate >= (item.arrivalStart ?? '') && this.selectedStartDate <= (item.arrivalEnd ?? '9999-12-31'));
+  }
   private parseDate(value: string): Date | null { const date = new Date(`${value}T12:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

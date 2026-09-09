@@ -10,7 +10,7 @@ import { QuoteImageCardData, QuoteImageDownloadButtonComponent } from './quote-i
     <app-quote-image-download-button #renderer class="hidden-renderer" [quote]="quote" />
     <div class="preview-state" *ngIf="busy">正在生成真实报价图片预览…</div>
     <div class="preview-state error" *ngIf="error">{{ error }}</div>
-    <img *ngIf="src" [src]="src" alt="CIA 报价单图片实时预览" />
+    <img *ngIf="src" [src]="src" [alt]="quote.schoolCode + ' 报价单图片实时预览'" />
   `,
   styles: [`
     :host { display:block; min-height:640px; background:#e8eeec; }

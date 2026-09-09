@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { AnjSchoolComponent } from './anj-school.component';
 
 describe('AnjSchoolComponent shared rooms', () => {
@@ -15,6 +17,14 @@ describe('AnjSchoolComponent shared rooms', () => {
         {
           provide: ExchangeRateService,
           useValue: { getLatestCnyRates: () => of({ usdToCny: 7.2, phpToCny: 1 / 9, date: '2026-09-07' }) },
+        },
+        {
+          provide: SchoolService,
+          useValue: { getSchools: () => of([]) },
+        },
+        {
+          provide: SchoolContentService,
+          useValue: { getPublished: () => of(null) },
         },
       ],
     }).compileComponents();

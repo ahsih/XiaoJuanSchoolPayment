@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditSchoolDialogComponent } from './edit-school-dialog/edit-school-dialog.component';
 import { firstValueFrom } from 'rxjs';
 
+type SchoolCity = 'all' | 'cebu' | 'baguio' | 'clark' | 'manila' | 'iloilo' | 'bacolod' | 'other';
+
 @Component({
   selector: 'app-admin',
   standalone: false,
@@ -66,8 +68,21 @@ export class AdminComponent implements OnInit {
   dataSource = new MatTableDataSource<SchoolDTO>([]);
   allSchools: SchoolDTO[] = [];
   filteredSchools: SchoolDTO[] = [];
+  selectedCity: SchoolCity = 'all';
+  searchTerm = '';
   pageIndex = 0;
   pageSize = 10;
+
+  readonly cityOptions: Array<{ id: SchoolCity; label: string }> = [
+    { id: 'all', label: '全部' },
+    { id: 'cebu', label: '宿务' },
+    { id: 'baguio', label: '碧瑶' },
+    { id: 'clark', label: '克拉克' },
+    { id: 'manila', label: '马尼拉' },
+    { id: 'iloilo', label: '伊洛伊洛' },
+    { id: 'bacolod', label: '巴科洛德' },
+    { id: 'other', label: '长滩岛' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -87,6 +102,90 @@ export class AdminComponent implements OnInit {
 
   get schoolCount(): number {
     return this.allSchools.length;
+  }
+
+  get ciaSchool(): SchoolDTO | undefined {
+    return this.allSchools.find((school) => this.isCiaSchool(school));
+  }
+
+  isCiaSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('ciacebuinternationalacademy');
+  }
+
+  isPinesSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('pines');
+  }
+
+  isMonolSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('monol');
+  }
+
+  isEvSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name === 'evacademy' || name.includes('菲律宾宿务ev语言学校');
+  }
+
+  isSmeagSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('smeagcapital');
+  }
+
+  isPhilinterSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('philinter');
+  }
+
+  isCgBaniladSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('cgacademy') && name.includes('banilad');
+  }
+
+  isCgSpartaSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('cgacademy') && name.includes('sparta');
+  }
+
+  isCpiSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('cpi') && !name.includes('cpils');
+  }
+
+  isBCebuSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('bcebu') || name.includes('becibcebu');
+  }
+
+  isCpilsSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('cpils');
+  }
+
+  isGlcSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('globallanguagecebu');
+  }
+
+  isIbreezeSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('ibreeze');
+  }
+
+  isAnjSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('a&jeedu') || name.includes('ajeedu') || name.includes('anjedu');
+  }
+
+  isBeciSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return !this.isBCebuSchool(school) && name.includes('beci');
+  }
+
+  isJicSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('jic');
+  }
+
+  isUnifiedSchool(school: SchoolDTO): boolean {
+    return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school);
+  }
+
+  managementRoute(school: SchoolDTO): string {
+    return this.isUnifiedSchool(school) ? '/admin/school-content' : '/admin/school-lessons';
   }
 
   getPopularityRank(school: SchoolDTO): number | null {
@@ -122,12 +221,28 @@ export class AdminComponent implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const term = ((event.target as HTMLInputElement).value || '').trim().toLowerCase();
+    this.searchTerm = (event.target as HTMLInputElement).value || '';
+    this.filterSchools();
+  }
+
+  selectCity(city: SchoolCity): void {
+    this.selectedCity = city;
+    this.filterSchools();
+  }
+
+  cityCount(city: SchoolCity): number {
+    if (city === 'all') return this.allSchools.length;
+    return this.allSchools.filter(school => this.getSchoolCity(school) === city).length;
+  }
+
+  private filterSchools(): void {
+    const term = this.searchTerm.trim().toLowerCase();
     this.filteredSchools = this.allSchools.filter((school) => {
+      const matchesCity = this.selectedCity === 'all' || this.getSchoolCity(school) === this.selectedCity;
       const date = school.createdDate
         ? new Date(school.createdDate).toISOString().slice(0, 10)
         : '';
-      return school.name.toLowerCase().includes(term) || date.includes(term);
+      return matchesCity && (!term || school.name.toLowerCase().includes(term) || date.includes(term));
     });
     this.pageIndex = 0;
     this.updateSchoolPage();
@@ -143,9 +258,7 @@ export class AdminComponent implements OnInit {
     this.schoolService.getSchools().subscribe({
       next: (rows) => {
         this.allSchools = this.sortSchoolsByPopularity(rows ?? []);
-        this.filteredSchools = [...this.allSchools];
-        this.pageIndex = 0;
-        this.updateSchoolPage();
+        this.filterSchools();
       },
       error: (err) => console.error('Failed to load schools', err),
     });
@@ -172,6 +285,17 @@ export class AdminComponent implements OnInit {
     return this.popularityOrder.findIndex((aliases) =>
       aliases.some((alias) => schoolName.includes(this.normalizeSchoolName(alias)))
     );
+  }
+
+  private getSchoolCity(school: SchoolDTO): SchoolCity {
+    const name = this.normalizeSchoolName(school.name);
+    if (['碧瑶', 'baguio', 'pines', 'monol', 'wales', 'ajeed', 'beciinternational', 'jicacademy', 'helpenglishlonglongcampus'].some(value => name.includes(this.normalizeSchoolName(value)))) return 'baguio';
+    if (['克拉克', 'clark', 'egacademy', 'educationgroupgranma', 'aelc', 'americanenglishlearningcenter'].some(value => name.includes(this.normalizeSchoolName(value)))) return 'clark';
+    if (['马尼拉', 'manila', 'enderun', 'berlitzphilippines', 'americanenglishskills', 'businesscollege'].some(value => name.includes(this.normalizeSchoolName(value)))) return 'manila';
+    if (['伊洛伊洛', '怡朗', 'iloilo', 'polyglotinternationalacademy', 'gitccollegeinternationallanguagecenter'].some(value => name.includes(this.normalizeSchoolName(value)))) return 'iloilo';
+    if (['巴科洛德', 'bacolod', 'eroom'].some(value => name.includes(this.normalizeSchoolName(value)))) return 'bacolod';
+    if (name.includes('宿务') || name.includes('cebu') || this.getPopularityIndex(school) >= 0) return 'cebu';
+    return 'other';
   }
 
   private normalizeSchoolName(value: string): string {

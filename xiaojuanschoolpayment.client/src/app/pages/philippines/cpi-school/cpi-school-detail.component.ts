@@ -2,25 +2,30 @@ import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
 import { CPI_DORMITORY_PROFILES } from './cpi-dormitory-photos.data';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneCpiContentConfig, createDefaultCpiContentConfig } from './cpi-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -64,34 +69,55 @@ interface SidaCpiTrustBadge { icon: string; label: string; }
     './cpi-school-detail.component.css',
   ],
 })
-export class CpiSchoolDetailComponent implements OnInit {
+export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
+  private readonly initialContent = createDefaultCpiContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
   private readonly pricingSchoolSearchName = 'CPI';
   private readonly pricingSchoolNames = ['菲律宾宿务CPI语言学校', 'CPI Cebu Pelis Institute'];
   private readonly courseFeeOrder = ['esl-general-15', 'esl-intensive', 'toeic-preparatory', 'toefl-preparatory', 'ielts-preparatory', 'toeic-general', 'toefl-general', 'ielts-general', 'toeic-intensive', 'toefl-intensive', 'ielts-intensive', 'ielts-guarantee', 'toefl-guarantee', 'toeic-guarantee', 'junior-6-15', 'parents', 'esp-bridge', 'esp-general'];
   private readonly roomFeeOrder = ['building-a-single', 'building-a-double', 'building-a-triple', 'building-a-quad', 'building-b-single', 'building-b-double-a', 'building-b-double-b', 'building-b-triple', 'building-b-quad', 'building-b-six'];
-  private readonly shortTermRatios: Record<number, number> = { 1: 0.375, 2: 0.65, 3: 0.9 };
+  private shortTermRatios: Record<number, number> = { 1: 0.375, 2: 0.65, 3: 0.9 };
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   readonly dormitoryProfiles = CPI_DORMITORY_PROFILES;
   selectedDormitoryId = 'quad-a';
   selectedDormitoryImageIndex = 0;
-  registrationFee = 100;
-  readonly sidaDiscountRate = 0.9;
-  readonly offSeasonDiscountPerWeek = 25;
-  readonly decemberDiscountPerWeek = 25;
-  readonly offSeasonRuleText = '2026/08/24–2027/01/01期间注册，每周优惠25美元';
-  readonly decemberRuleText = '学习期包含2026年12月，12月期间每周额外优惠25美元';
-  readonly extraClassRuleText = '2026/08/24–2026/09/28入学，额外加一节一对一课程；限20个名额，先到先得，须学校确认剩余名额';
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  promotionRules: CiaPromotionRule[] = structuredClone(this.initialContent.quoteSettings.promotions);
+  localFeeRules: CiaLocalFeeRule[] = structuredClone(this.initialContent.localFees);
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.initialContent.quoteImageSettings);
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = structuredClone(this.initialContent.quoteSettings.stayPolicies);
+  extraNightRates = structuredClone(this.initialContent.quoteSettings.extraNightRates);
+  get sidaDiscountRate() { return 1 - (this.promotionRule('cpi-sida-90')?.discountValue ?? 0) / 100; }
+  get offSeasonDiscountPerWeek() { return this.promotionRule('cpi-off-season')?.discountValue ?? 0; }
+  get decemberDiscountPerWeek() { return this.promotionRule('cpi-december')?.discountValue ?? 0; }
+  get offSeasonRuleText() { return this.promotionRule('cpi-off-season')?.description ?? '当前未启用淡季优惠'; }
+  get decemberRuleText() { return this.promotionRule('cpi-december')?.description ?? '当前未启用12月优惠'; }
+  get extraClassRuleText() { return this.promotionRule('cpi-extra-class')?.description ?? '当前未启用加课优惠'; }
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  readonly juniorCourseNote = '可将1节一对一转给家长，可部分周期转课';
-  readonly localFeeIntro = '以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证费用按每位学生当前选择的签证类型及停留时间预估；教材按每次约用8周预估；水费不足4周按4周计算。请准备2张5.1×5.1厘米、白色背景的美签规格照片。';
+  get juniorCourseNote() { return this.groupClassNote.replace(/^青少年课程（6–15岁）/, '').replace(/^[：:]/, '').replace(/。$/, ''); }
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
   readonly visaOptions = SCHOOL_VISA_OPTIONS;
   readonly students: CpiStudentQuote[] = [this.createStudent()];
   quoteMode: 'single' | 'group' = 'single';
@@ -139,7 +165,7 @@ export class CpiSchoolDetailComponent implements OnInit {
     { icon: 'event_available', label: '校区位置', value: 'Nivel Hills, Lahug', note: '宿务半山安静校园环境' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     { category: '校园', title: 'CPI校区主景', description: '位于Nivel Hills / Lahug，校园、泳池、住宿和设施集中。', src: 'assets/cpi/campus-exterior.jpg' },
     { category: '教室', title: '一对一教室', description: '用于综合英语、口语、考试专项和商务课程。', src: 'assets/cpi/group-classroom.jpg' },
     { category: '教室', title: '团体教室', description: '小团体和大团体课程用于讨论、表达和综合训练。', src: 'assets/cpi/classroom.jpg' },
@@ -321,13 +347,152 @@ export class CpiSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadPricingFromDatabase();
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
+    this.loadSchoolContent();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
       this.usdToCny = snapshot.usdToCny;
       this.phpPerCny = snapshot.phpPerCny;
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('cpi-editor-preview');
+    window.parent.postMessage({ type: 'cpi-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'cpi-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'cpi-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id
+      && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback
+        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。'
+            : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'cpi-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('cpi-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'CPI' ? value : null;
+    } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'CPI') return;
+    const content = cloneCpiContentConfig(value);
+    this.previewContent = content;
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) this.courseFees = courses.map(item => ({ id: item.id, name: item.name, tuition: item.tuition, suitable: item.schedule || item.suitable }));
+    if (rooms.length) this.roomFees = rooms.map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note }));
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortTermRatios = Object.fromEntries(Object.entries(settings.shortStayRatios).map(([weeks, ratio]) => [Number(weeks), ratio]));
+    this.promotionRules = structuredClone(settings.promotions);
+    this.localFeeRules = structuredClone(content.localFees);
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = structuredClone(settings.stayPolicies);
+    this.extraNightRates = structuredClone(settings.extraNightRates);
+    this.localFeeIntro = settings.localFeeIntro;
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) if (!this.courseFees.some(item => item.id === row.optionId)) row.optionId = this.courseFees[0]?.id ?? '';
+      for (const row of student.quotePlan.rooms) if (!this.roomFees.some(item => item.id === row.optionId)) row.optionId = this.roomFees[0]?.id ?? '';
+    }
+  }
+
+  private loadSchoolContent(): void {
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
+      switchMap(schools => {
+        const school = this.pricingSchoolNames.map(name => schools.find(item => item.name === name)).find(Boolean)
+          ?? schools.find(item => item.name.toLowerCase().includes('cpi') && !item.name.toLowerCase().includes('cpils'));
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'CPI 学校媒体',
+        description: photo.altText || photo.caption || 'CPI 学校实景内容',
+        src: photo.url ?? '', contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
   }
 
   private loadPricingFromDatabase(): void {
@@ -422,16 +587,50 @@ export class CpiSchoolDetailComponent implements OnInit {
       ? `${this.selectedWeeks}周按4周课程费和住宿费的${percentage * 100}%计算`
       : `${this.selectedWeeks}周按4周价格的${this.billingMultiplier}倍计算`;
   }
-  private studentSidaDiscount(student: CpiStudentQuote): number { return Math.round((student.quotePlan.total('course') + student.quotePlan.total('room')) * 10) / 100; }
+  get billingRuleSummary(): string {
+    const rows = Object.entries(this.shortTermRatios).sort(([a], [b]) => Number(a) - Number(b));
+    return rows.length ? `${rows.map(([weeks, ratio]) => `${weeks}周按4周价格的${Number(ratio) * 100}%`).join('、')}计算` : '4周以上按周折算';
+  }
+  promotionRule(id: string): CiaPromotionRule | undefined { return this.promotionRules.find(item => item.id === id && item.enabled); }
+  private promotionEligible(rule: CiaPromotionRule, student: CpiStudentQuote): boolean {
+    if (!rule.enabled || (rule.newStudentsOnly && student.returningStudent)) return false;
+    if (student.quotePlan.courseWeeks < rule.minimumCourseWeeks || student.quotePlan.roomWeeks < rule.minimumAccommodationWeeks) return false;
+    if (rule.registrationStart && !this.isDateBetween(student.selectedRegistrationDate, rule.registrationStart, rule.registrationEnd || rule.registrationStart)) return false;
+    if (rule.registrationEnd && !rule.registrationStart && student.selectedRegistrationDate > rule.registrationEnd) return false;
+    if (rule.arrivalStart && student.quotePlan.startDate < rule.arrivalStart) return false;
+    if (rule.arrivalEnd && student.quotePlan.startDate > rule.arrivalEnd) return false;
+    return true;
+  }
+  private promotionCourseWeeks(rule: CiaPromotionRule, student: CpiStudentQuote): number {
+    if (!rule.coverageStart || !rule.coverageEnd || rule.coverageTarget === 'none') return student.quotePlan.courseWeeks;
+    const from = Date.parse(`${rule.coverageStart}T00:00:00Z`);
+    const through = Date.parse(`${rule.coverageEnd}T00:00:00Z`);
+    return student.quotePlan.weekStarts(student.quotePlan.courses).filter(start => start >= from && start + 6 * 86400000 <= through).length;
+  }
+  private studentPromotionAmount(rule: CiaPromotionRule, student: CpiStudentQuote): number {
+    if (!this.promotionEligible(rule, student) || rule.discountType === 'none') return 0;
+    const tuition = student.quotePlan.total('course');
+    const accommodation = student.quotePlan.total('room');
+    const base = rule.appliesTo === 'tuition' ? tuition : rule.appliesTo === 'accommodation' ? accommodation
+      : rule.appliesTo === 'school-total' ? tuition + accommodation + this.registrationFee : tuition + accommodation;
+    if (rule.discountType === 'percentage') return Math.round(base * rule.discountValue) / 100;
+    if (rule.discountType === 'per-course-week') return this.promotionCourseWeeks(rule, student) * rule.discountValue;
+    const repetitions = rule.incrementWeeks && rule.incrementValue && student.quotePlan.courseWeeks >= rule.minimumCourseWeeks
+      ? Math.floor((student.quotePlan.courseWeeks - rule.minimumCourseWeeks) / rule.incrementWeeks) : 0;
+    return rule.discountValue + repetitions * (rule.incrementValue ?? 0);
+  }
+  private studentSidaDiscount(student: CpiStudentQuote): number { const rule = this.promotionRule('cpi-sida-90'); return rule ? this.studentPromotionAmount(rule, student) : 0; }
   get sidaDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentSidaDiscount(student), 0); }
-  private studentOffSeasonDiscount(student: CpiStudentQuote): number { return this.isDateBetween(student.selectedRegistrationDate, '2026-08-24', '2027-01-01') ? student.quotePlan.courseWeeks * this.offSeasonDiscountPerWeek : 0; }
+  private studentOffSeasonDiscount(student: CpiStudentQuote): number { const rule = this.promotionRule('cpi-off-season'); return rule ? this.studentPromotionAmount(rule, student) : 0; }
   get offSeasonEligible(): boolean { return this.activeStudents.some(student => this.studentOffSeasonDiscount(student) > 0); }
   get offSeasonDiscountAmount(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentOffSeasonDiscount(student), 0); }
-  private studentExtraClassEligible(student: CpiStudentQuote): boolean { return this.isDateBetween(student.quotePlan.startDate, '2026-08-24', '2026-09-28'); }
+  private studentExtraClassEligible(student: CpiStudentQuote): boolean { const rule = this.promotionRule('cpi-extra-class'); return !!rule && this.promotionEligible(rule, student); }
   get extraClassEligible(): boolean { return this.activeStudents.some(student => this.studentExtraClassEligible(student)); }
   private studentDecemberStay(student: CpiStudentQuote): { fullWeeks: number; partialWeeks: number } {
-    const fullWeeks = student.quotePlan.weekStarts().filter(start => start >= Date.UTC(2026, 11, 1) && start + 7 * 86400000 <= Date.UTC(2027, 0, 1)).length;
-    return { fullWeeks, partialWeeks: student.quotePlan.overlapWeeks('2026-12-01', '2026-12-31') - fullWeeks };
+    const rule = this.promotionRule('cpi-december');
+    if (!rule?.coverageStart || !rule.coverageEnd || !this.promotionEligible(rule, student)) return { fullWeeks: 0, partialWeeks: 0 };
+    const fullWeeks = this.promotionCourseWeeks(rule, student);
+    return { fullWeeks, partialWeeks: student.quotePlan.overlapWeeks(rule.coverageStart, rule.coverageEnd) - fullWeeks };
   }
   get decemberStay(): { fullWeeks: number; partialWeeks: number } {
     return this.activeStudents.reduce((total, student) => { const value = this.studentDecemberStay(student); return { fullWeeks: total.fullWeeks + value.fullWeeks, partialWeeks: total.partialWeeks + value.partialWeeks }; }, { fullWeeks: 0, partialWeeks: 0 });
@@ -441,11 +640,15 @@ export class CpiSchoolDetailComponent implements OnInit {
     const { fullWeeks, partialWeeks } = this.decemberStay;
     return `本次已计入完整${fullWeeks}周` + (partialWeeks ? `；另有${partialWeeks}个跨月学习周，不足一周的优惠待学校确认，暂未计入` : '');
   }
-  private studentRegistration(student: CpiStudentQuote): number { return student.returningStudent ? 0 : this.registrationFee; }
+  private studentRegistration(student: CpiStudentQuote): number {
+    const returningWaiver = student.returningStudent && !!this.promotionRule('cpi-returning-registration');
+    const ruleWaiver = this.promotionRules.some(rule => rule.id !== 'cpi-returning-registration' && rule.waiveRegistration && this.promotionEligible(rule, student));
+    return returningWaiver || ruleWaiver ? 0 : this.registrationFee;
+  }
   get payableRegistrationFee(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentRegistration(student), 0); }
   studentQuoteUsd(student: CpiStudentQuote): number {
-    const december = this.studentDecemberStay(student).fullWeeks * this.decemberDiscountPerWeek;
-    const total = this.studentRegistration(student) + student.quotePlan.total('course') + student.quotePlan.total('room') - this.studentSidaDiscount(student) - this.studentOffSeasonDiscount(student) - december;
+    const discounts = this.promotionRules.reduce((sum, rule) => sum + this.studentPromotionAmount(rule, student), 0);
+    const total = this.studentRegistration(student) + student.quotePlan.total('course') + student.quotePlan.total('room') - discounts;
     return Math.max(0, Math.round(total * 100) / 100);
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentQuoteUsd(student), 0); }
@@ -475,6 +678,7 @@ export class CpiSchoolDetailComponent implements OnInit {
   private isLongTermVisa(student: CpiStudentQuote) { return !['tourist30', 'tourist59'].includes(student.visaType); }
   private visaLabel(student: CpiStudentQuote) { return this.visaOptions.find(option => option.value === student.visaType)?.label ?? ''; }
   private visaExtensionCountFor(student: CpiStudentQuote) { return this.isLongTermVisa(student) ? 0 : Math.max(0, Math.ceil((student.quotePlan.stayWeeks * 7 - (student.visaType === 'tourist30' ? 30 : 59)) / 30)); }
+  private localFeeRule(id: string): CiaLocalFeeRule | undefined { return this.localFeeRules.find(item => item.id === id && item.enabled); }
   get visaExtensionCount(): number { return this.activeStudents.reduce((sum, student) => sum + this.visaExtensionCountFor(student), 0); }
   get textbookPurchaseCount(): number { return Math.max(1, Math.ceil(this.selectedWeeks / 8)); }
   private studentLocalFees(student: CpiStudentQuote): SchoolLocalFee[] {
@@ -498,27 +702,70 @@ export class CpiSchoolDetailComponent implements OnInit {
       { item: '学生证', unitLabel: '350 比索／次', quantity: 1, total: 350, note: '一次性费用。' },
     ];
   }
+  private configuredStudentLocalFees(student: CpiStudentQuote): SchoolLocalFee[] {
+    const fourWeekPeriods = Math.max(1, Math.ceil(student.quotePlan.roomWeeks / 4));
+    const extensionQuantity = this.visaExtensionCountFor(student);
+    const longTerm = this.isLongTermVisa(student);
+    const acrQuantity = longTerm ? 0 : extensionQuantity > 0 ? 1 : 0;
+    const arpQuantity = longTerm || extensionQuantity > 0 ? 1 : 0;
+    const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
+    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 8));
+    const create = (id: string, quantity: number, note?: string, total?: number): SchoolLocalFee[] => {
+      const rule = this.localFeeRule(id);
+      if (!rule) return [];
+      const period = rule.periodWeeks ?? (id === 'books' ? 8 : 4);
+      const unitLabel = ['management', 'water', 'electricity', 'books'].includes(id)
+        ? `${this.formatPhp(rule.amount)}／${period}周` : `${this.formatPhp(rule.amount)}／次`;
+      return [{ item: rule.name, unitLabel, quantity, total: total ?? rule.amount * quantity, note: note ?? rule.note }];
+    };
+    const visaRule = this.localFeeRule('visa-extension');
+    const visaTotal = visaRule ? Array.from({ length: extensionQuantity }, (_, index) => visaRule.rates?.[index] ?? visaRule.rates?.at(-1) ?? visaRule.amount).reduce((sum, amount) => sum + amount, 0) : 0;
+    return [
+      ...create('ssp', longTerm ? 0 : 1, longTerm ? visaNote : undefined),
+      ...create('ssp-e-card', longTerm ? 0 : 1, longTerm ? visaNote : undefined),
+      ...create('acr-i-card', acrQuantity, longTerm ? visaNote : undefined),
+      ...create('arp', arpQuantity, longTerm ? `长期签证仍计收一次；${this.localFeeRule('arp')?.note ?? ''}` : undefined),
+      ...create('management', fourWeekPeriods),
+      ...create('water', fourWeekPeriods),
+      ...create('electricity', fourWeekPeriods),
+      ...create('visa-extension', extensionQuantity, longTerm ? visaNote : `${extensionQuantity ? `按${this.visaLabel(student)}预估，本次${extensionQuantity}次` : `按${this.visaLabel(student)}预估，本次无需续签`}；${visaRule?.note ?? ''}`, visaTotal),
+      ...create('books', books),
+      ...create('student-id', 1),
+    ];
+  }
   get localFees(): LocalFee[] { return this.includedLocalFees; }
-  get includedLocalFees(): LocalFee[] { return groupLocalFees(this.activeStudents.map(student => ({ localFees: this.studentLocalFees(student) }))).map(fee => ({ item: fee.item, amount: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note })); }
+  get includedLocalFees(): LocalFee[] { return groupLocalFees(this.activeStudents.map(student => ({ localFees: this.configuredStudentLocalFees(student) }))).map(fee => ({ item: fee.item, amount: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note })); }
   get localFeesTotal(): number { return this.includedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
   get excludedLocalFees(): LocalFee[] {
     const pickupCount = this.activeStudents.filter(student => student.pickupSelected).length;
     const count = this.activeStudents.length;
-    return [
-      { item: '宿务马克坦机场周日团体接机', amount: pickupCount ? this.formatPhp(1000 * pickupCount) : '1,000 比索／人', quantity: pickupCount, total: 1000 * pickupCount, note: `1,000比索／人${pickupCount ? ` × ${pickupCount}人` : ''}；学校团体接机，可能需在机场等候同批其他学生。其他时间1,500比索／人；不计入学杂费合计。`, excluded: true },
-      { item: '房间押金', amount: this.formatPhp(3000 * count), quantity: count, total: 3000 * count, note: `3,000比索／人${count > 1 ? ` × ${count}人` : ''}；无损坏及无欠费时可退；不计入学杂费合计。`, excluded: true },
-      { item: '洗衣服务', amount: '200 比索／5公斤／次', quantity: 0, total: 0, note: '根据实际需要使用和付费；不计入学杂费合计。', excluded: true },
-    ];
+    return this.localFeeRules.filter(rule => rule.enabled && !rule.includeInTotal).map(rule => {
+      if (rule.id === 'pickup') {
+        const total = rule.amount * pickupCount;
+        return { item: rule.name, amount: pickupCount ? this.formatPhp(total) : `${this.formatPhp(rule.amount)}／人`, quantity: pickupCount, total, note: `${rule.note}${rule.secondaryAmount ? `其他时间${this.formatPhp(rule.secondaryAmount)}／人；` : ''}不计入学杂费合计。`, excluded: true };
+      }
+      if (rule.id === 'deposit') {
+        const total = rule.amount * count;
+        return { item: rule.name, amount: this.formatPhp(total), quantity: count, total, note: `${rule.note}不计入学杂费合计。`, excluded: true };
+      }
+      const suffix = rule.secondaryLabel ? ` / ${rule.secondaryLabel.replace(/／/g, ' / ')}` : '';
+      return { item: rule.name, amount: `${this.formatPhp(rule.amount).replace(' 比索', ' 比索')}${suffix}`, quantity: 0, total: 0, note: `${rule.note}不计入学杂费合计。`, excluded: true };
+    });
   }
 
   private studentPaymentLines(student: CpiStudentQuote): SchoolPaymentLine[] {
-    const december = this.studentDecemberStay(student).fullWeeks * this.decemberDiscountPerWeek;
-    return [
-      { icon: '折', label: '思达折扣', value: -this.studentSidaDiscount(student), note: '课程费和住宿费享9折', promotionKey: 'sida' },
-      ...(this.studentOffSeasonDiscount(student) > 0 ? [{ icon: '淡', label: '淡季优惠', value: -this.studentOffSeasonDiscount(student), note: `${this.offSeasonRuleText}；按该学生累计课程周数计算`, promotionKey: 'off-season' }] : []),
-      ...(december > 0 ? [{ icon: '冬', label: '12月额外优惠', value: -december, note: `${this.decemberRuleText}；按完整覆盖周计算`, promotionKey: 'december' }] : []),
-    ];
+    return this.promotionRules
+      .filter(rule => rule.discountType !== 'none')
+      .map(rule => ({ rule, amount: this.studentPromotionAmount(rule, student) }))
+      .filter(item => item.amount > 0)
+      .map(({ rule, amount }) => ({
+        icon: rule.id === 'cpi-sida-90' ? '折' : rule.id === 'cpi-december' ? '冬' : '惠',
+        label: rule.name,
+        value: -amount,
+        note: `${this.quoteMode === 'single' ? '1人适用；' : ''}${rule.description}${rule.discountType === 'per-course-week' ? '；按符合条件的课程周数计算' : ''}`,
+        promotionKey: rule.id,
+      }));
   }
   get schoolPaymentItems() {
     const returning = this.activeStudents.length - this.activeStudents.filter(student => this.studentRegistration(student) > 0).length;
@@ -531,14 +778,17 @@ export class CpiSchoolDetailComponent implements OnInit {
   }
 
   get quoteImageData() {
+    const settings = this.quoteImageSettings;
+    const extraClassRule = this.promotionRule('cpi-extra-class');
     const paymentItems = [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: this.schoolPaymentItems[0].note },
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration || this.schoolPaymentItems[0].note },
       ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({
         ...item,
         label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程').replace(/^住宿费/, '住宿')}`,
+        note: [item.note, icon === '课' ? settings.paymentNotes.course : settings.paymentNotes.accommodation].filter(Boolean).join('；'),
       })))),
       ...groupPaymentLines(this.activeStudents.map(student => ({ paymentLines: this.studentPaymentLines(student) })), true),
-      ...(this.extraClassEligible ? [{ icon: '赠', label: '限量一对一加课', amount: '名额待确认', note: `${this.quoteMode === 'group' ? this.activeStudents.map((student, index) => this.studentExtraClassEligible(student) ? index + 1 : 0).filter(Boolean).map(index => `学生${index}`).join('、') : '当前方案'}符合入学日期；非现金优惠，不抵扣费用。` }] : []),
+      ...(this.extraClassEligible ? [{ icon: '赠', label: extraClassRule?.name ?? '限量一对一加课', amount: '名额待确认', note: `${extraClassRule?.description ?? ''}；${this.quoteMode === 'group' ? this.activeStudents.map((student, index) => this.studentExtraClassEligible(student) ? index + 1 : 0).filter(Boolean).map(index => `学生${index}`).join('、') : '当前方案'}符合；非现金优惠，不抵扣费用。` }] : []),
     ];
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'CPI',
@@ -552,20 +802,35 @@ export class CpiSchoolDetailComponent implements OnInit {
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
       paymentItems,
-      localFeeItems: this.includedLocalFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: this.includedLocalFees.map((fee) => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: settings.localFeeNotes[id] || fee.note }; }),
       localFeeTotal: this.localFeesTotal,
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: this.localFeeIntro,
-      optionalFeeItems: this.excludedLocalFees.map(fee => ({ label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: fee.note })),
-      ruleNotes: [],
+      localFeeNote: settings.localFeeIntro,
+      optionalFeeItems: this.excludedLocalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: settings.localFeeNotes[id] || fee.note }; }),
+      ruleNotes: settings.footerNotes,
     });
     const mismatchNotes = this.activeStudents.map((student, index) => student.quotePlan.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}` : '').filter(Boolean);
     const ageNotes = this.activeStudents.map((student, index) => this.studentAgeNote(student) ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.studentAgeNote(student)}` : '').filter(Boolean);
     const juniorNotes = this.activeStudents.flatMap((student, index) => student.quotePlan.courses.some(row => row.optionId === 'junior-6-15') ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}青少年课程说明：${this.juniorCourseNote}。`] : []);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks])))];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...mismatchNotes, ...ageNotes, ...juniorNotes, ...shortNotes, '最终以学校价格、空房及优惠确认为准。'] }, 'CPI', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
-    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined } };
+    const importantNotes = [...mismatchNotes, ...ageNotes, ...juniorNotes, ...shortNotes, ...settings.footerNotes];
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'CPI', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
+      serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
+      alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
+      noteTitle: settings.noteSectionTitle, importantNotes,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined },
+    };
+  }
+
+  previewFeeId(name: string) { return this.localFeeRules.find(item => item.name === name)?.id ?? 'local-fees'; }
+  previewPaymentTarget(item: { label: string; note?: string }): CiaPreviewTarget {
+    if (item.label === '注册费') return { kind: 'section', id: 'quote-registration' };
+    const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || (item.note ?? '').includes(rule.description));
+    return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }

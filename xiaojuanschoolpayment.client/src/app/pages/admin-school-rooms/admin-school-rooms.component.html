@@ -6,7 +6,7 @@
 >
   <mat-form-field appearance="fill" style="width: 100%">
     <mat-label>{{ 'admin.linkSchoolHint' | t }}</mat-label>
-    <mat-select formControlName="schoolId">
+    <mat-select formControlName="schoolId" (selectionChange)="onSchoolChanged($event.value)">
       <mat-option *ngFor="let school of schoolDtos" [value]="school.id">
         {{ school.name }}
       </mat-option>

@@ -1,9 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, ProviderToken, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
+import { CiaContentConfig } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { beciCampusPricingFromContent, cloneBeciContentConfig, createDefaultBeciContentConfig } from '../beci-school/beci-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -20,6 +27,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  contentType?: string;
 }
 
 interface BasicInfoRow {
@@ -96,6 +104,10 @@ interface SpecialCourseFee {
   note: string;
 }
 
+function optionalInject<T>(token: ProviderToken<T>): T | null {
+  try { return inject(token, { optional: true }); } catch { return null; }
+}
+
 @Component({
   selector: 'app-api-beci-city-school',
   standalone: true,
@@ -110,7 +122,21 @@ interface SpecialCourseFee {
     './api-beci-city-school.component.css',
   ],
 })
-export class ApiBeciCitySchoolComponent {
+export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly schoolService = optionalInject(SchoolService);
+  private readonly schoolContentService = optionalInject(SchoolContentService);
+  private readonly route = optionalInject(ActivatedRoute);
+  private readonly previewHost = optionalInject(ElementRef) as ElementRef<HTMLElement> | null;
+  private readonly initialContent = createDefaultBeciContentConfig();
+  private currentContentConfig = cloneBeciContentConfig(this.initialContent);
+  private versionedContentApplied = false;
+  readonly contentConfig = () => this.currentContentConfig;
+  private previewContent?: CiaContentConfig;
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route?.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -126,8 +152,8 @@ export class ApiBeciCitySchoolComponent {
   readonly usdToCny = 7.2;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
 
-  selectedCourseId = 'light-esl';
-  selectedRoomId = 'studio-quad';
+  selectedCourseId = 'city-lite-esl';
+  selectedRoomId = 'city-studio-quad';
   selectedWeeks: WeekOption = 4;
   selectedStartDate = '2026-09-07';
   quoteCalculated = false;
@@ -171,7 +197,7 @@ export class ApiBeciCitySchoolComponent {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'API BECI City Campus外观',
@@ -215,6 +241,7 @@ export class ApiBeciCitySchoolComponent {
       src: 'assets/philippines/beci-campus-building.png',
     },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '页面名称', value: '菲律宾碧瑶API BECI（City Campus）' },
@@ -279,7 +306,7 @@ export class ApiBeciCitySchoolComponent {
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
+  roomOptions: RoomOption[] = [
     { id: 'studio-single', name: 'Studio Single 1人房', fee: 1250, note: '隐私度最高，适合远程工作、会议和长期住宿。' },
     { id: 'semi-master-single', name: 'Semi Master Single 1人房', fee: 1050, note: '单人房预算折中，适合成人独立学习。' },
     { id: 'semi-single', name: 'Semi Single 1人房', fee: 900, note: '相对经济的单人房，正式报名需确认空房。' },
@@ -288,7 +315,7 @@ export class ApiBeciCitySchoolComponent {
     { id: 'studio-quad', name: 'Studio Quad 4人房', fee: 600, note: '预算最低房型，适合可接受多人房的成人学生。' },
   ];
 
-  readonly courseOptions: CourseOption[] = [
+  courseOptions: CourseOption[] = [
     {
       id: 'light-esl',
       name: 'Lite ESL',
@@ -533,6 +560,156 @@ export class ApiBeciCitySchoolComponent {
     { label: 'API BECI City Campus 2026学校资料', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
     { label: 'API BECI课程调整与City Campus费用更新参考', url: 'https://philippines-university.jp/%E3%80%90api-beci%E3%80%912025%E5%B9%B45%E6%9C%88%E4%BB%A5%E9%99%8D%E3%81%AE%E3%82%B3%E3%83%BC%E3%82%B9%E5%90%8D%E5%A4%89%E6%9B%B4%EF%BC%86%E6%96%99%E9%87%91%E6%94%B9%E5%AE%9A%E3%81%AE%E3%81%8A/' },
   ];
+
+  ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent, this.isEditorPreview);
+    this.loadPublishedContent();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview || !this.previewHost) return;
+    this.previewHost.nativeElement.classList.add('beci-editor-preview');
+    window.parent.postMessage({ type: 'beci-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'beci-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content, true);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'beci-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    const previewHost = this.previewHost;
+    if (!this.isEditorPreview || !this.previewTarget || !previewHost) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      (previewHost.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('.cia-preview-highlight').forEach(element => element.classList.remove('cia-preview-highlight'));
+      result.elements.forEach(element => element.classList.add('cia-preview-highlight'));
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠规则区域。'
+          : result.exact ? '橙色框内就是 BECI City 校区对应内容。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'beci-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('beci-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'BECI' ? value : null;
+    } catch { return null; }
+  }
+
+  private loadPublishedContent(): void {
+    const schoolService = this.schoolService;
+    const schoolContentService = this.schoolContentService;
+    if (!schoolService || !schoolContentService) return;
+    schoolService.getSchools({ name: 'BECI' }).pipe(
+      switchMap((schools) => {
+        const school = schools.find(item => item.name.includes('City Campus'))
+          ?? schools.find(item => item.name.includes('City'))
+          ?? schools.find(item => item.name === '菲律宾碧瑶BECI语言学校')
+          ?? schools[0];
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview, true);
+      else if (published?.content) this.applyContentConfig(published.content, true);
+      if (!this.versionedContentApplied) this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyContentConfig(value: CiaContentConfig, authoritative = false): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'BECI') return;
+    const content = cloneBeciContentConfig(value);
+    this.currentContentConfig = content;
+    this.previewContent = content;
+    if (authoritative) this.versionedContentApplied = true;
+    const pricing = beciCampusPricingFromContent(content, 'city');
+    this.roomOptions = pricing.rooms.map(room => ({ id: room.id, name: room.name, fee: room.price, note: room.note }));
+    this.courseOptions = pricing.courses.map(course => ({
+      id: course.id,
+      name: course.name,
+      type: 'City课程',
+      courseFee: course.price,
+      lessons: course.schedule,
+      suitable: course.note || pricing.campusNote,
+      pricesByRoom: this.makeCoursePrices(course.price),
+    }));
+    if (!this.courseOptions.some(item => item.id === this.selectedCourseId)) this.selectedCourseId = pricing.defaultCourseId;
+    if (!this.roomOptions.some(item => item.id === this.selectedRoomId)) this.selectedRoomId = pricing.defaultRoomId;
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url && (!item.campus || item.campus === 'city')).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
+        category: this.resolveMediaCategory(item.category),
+        title: item.caption || item.altText || item.originalFileName || 'BECI City学校媒体',
+        description: item.altText || item.caption || 'BECI City学校实景内容',
+        src: item.url,
+        contentType: item.contentType,
+      })),
+    ];
+    this.queuePreviewFocus(false);
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url)).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'BECI City学校媒体',
+      description: photo.altText || photo.caption || 'BECI City学校实景内容',
+      src: photo.url ?? '',
+      contentType: photo.contentType,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
+  }
 
   private makeCoursePrices(courseFee: number): Record<string, Record<WeekOption, number>> {
     return Object.fromEntries(

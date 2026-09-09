@@ -977,6 +977,52 @@
   line-height: 1.35;
 }
 
+:host .gallery-grid video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #0d2132;
+}
+
+:host .pines-policy-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #d9e7e1;
+  border-radius: 14px;
+  background: #f6fbf8;
+}
+
+:host .pines-policy-list h3 { margin: 0; color: #064f3d; }
+:host .pines-policy-list article { display: grid; gap: 3px; }
+:host .pines-policy-list span { color: #5f7180; line-height: 1.55; }
+
+:host .student-fields .returning-student {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #dbe5e1;
+  border-radius: 10px;
+  background: #f8fbfa;
+}
+
+:host .student-fields .returning-student input { width: auto; margin: 0; }
+
+:host(.pines-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.pines-editor-preview) .cia-preview-highlight {
+  position: relative;
+  z-index: 2;
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  background-color: #fff8f2 !important;
+  box-shadow: 0 0 0 5px rgba(255, 90, 31, .14);
+}
+
 :host .room-availability-loading,
 :host .room-availability-error,
 :host .room-availability-disclaimer {

@@ -1,23 +1,52 @@
 <div class="image-editor-page">
   <header>
-    <div><span>学校内容管理 · CIA 样板</span><h1>报价图片备注</h1><p>只修改图片文字说明。排版、Logo、价格、优惠金额和合计由系统固定生成。</p></div>
-    <div class="actions">
-      <button type="button" (click)="saveDraft()" [disabled]="isSaving || isSubmitting || !isCiaSelected"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}</button>
-      <button *ngIf="!canPublish" class="primary" type="button" (click)="submitForReview()" [disabled]="isSubmitting || isSaving || !isCiaSelected"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交管理员审核' }}</button>
-      <button *ngIf="canPublish && editor?.pendingReview" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
-      <button *ngIf="canPublish" class="primary" type="button" (click)="publish()" [disabled]="isPublishing || !isCiaSelected"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '管理员发布' }}</button>
-    </div>
+    <div><span>学校内容管理 · {{ schoolShortName }} 工作台</span><h1>报价图片备注</h1><p>只修改图片文字说明。排版、Logo、价格、优惠金额和合计由系统固定生成。</p></div>
   </header>
 
   <section class="school-bar">
     <label>选择学校<select [ngModel]="selectedSchool?.id" (ngModelChange)="selectSchoolId($event)"><option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</option></select></label>
-    <div *ngIf="isCiaSelected"><span>草稿 {{ editor?.draft ? 'v' + editor?.draft?.version : '未保存' }}</span><span *ngIf="editor?.pendingReview">待审核 v{{ editor?.pendingReview?.version }}</span><span>已发布 {{ editor?.published ? 'v' + editor?.published?.version : '使用默认文字' }}</span></div>
+    <div *ngIf="isSupportedSchool"><span>草稿 {{ editor?.draft ? 'v' + editor?.draft?.version : '未保存' }}</span><span *ngIf="editor?.pendingReview">待审核 v{{ editor?.pendingReview?.version }}</span><span>已发布 {{ editor?.published ? 'v' + editor?.published?.version : '使用默认文字' }}</span></div>
+  </section>
+  <section class="beci-campus-switch" *ngIf="isBeciSelected">
+    <strong>报价图片预览校区</strong>
+    <button type="button" [class.active]="beciCampus === 'eop'" (click)="selectBeciCampus('eop')">EOP</button>
+    <button type="button" [class.active]="beciCampus === 'sparta'" (click)="selectBeciCampus('sparta')">Sparta</button>
+    <button type="button" [class.active]="beciCampus === 'city'" (click)="selectBeciCampus('city')">City</button>
+    <span>文字说明共用，右侧金额按所选校区生成。</span>
   </section>
   <p class="status" *ngIf="statusMessage" [class.error]="statusKind === 'error'">{{ statusMessage }}</p>
   <div class="loading" *ngIf="isLoading">正在加载报价图片设置…</div>
-  <section class="unsupported" *ngIf="selectedSchool && !isCiaSelected">{{ statusMessage }}</section>
+  <section class="unsupported" *ngIf="selectedSchool && !isSupportedSchool">{{ statusMessage }}</section>
 
-  <main *ngIf="!isLoading && isCiaSelected" (input)="contentChanged()" (change)="contentChanged()">
+  <ng-container *ngIf="!isLoading && isSupportedSchool">
+    <nav class="workspace-tabs" aria-label="学校内容板块">
+      <button type="button" (click)="openContentTab('courses')"><mat-icon>menu_book</mat-icon>课程与学费</button>
+      <button type="button" (click)="openContentTab('rooms')"><mat-icon>bed</mat-icon>住宿与规则</button>
+      <button type="button" (click)="openContentTab('fees')"><mat-icon>receipt_long</mat-icon>当地杂费</button>
+      <button type="button" (click)="openContentTab('rules')"><mat-icon>percent</mat-icon>报价规则与优惠</button>
+      <button type="button" (click)="openContentTab('media')"><mat-icon>perm_media</mat-icon>照片与视频</button>
+      <button class="active" type="button"><mat-icon>image</mat-icon>报价图片</button>
+    </nav>
+
+    <section class="image-workflow">
+      <div class="workflow-copy">
+        <span><mat-icon>{{ editor?.pendingReview ? 'hourglass_top' : 'edit_note' }}</mat-icon>{{ editor?.pendingReview ? '等待管理员审核' : '正在编辑图片备注' }}</span>
+        <label>本次修改说明（提交审核必填）<input [(ngModel)]="changeSummary" placeholder="例如：更新学杂费备注和报价说明" maxlength="500" /></label>
+        <div class="pending-review-summary" *ngIf="editor?.pendingReview as pending">
+          <mat-icon>assignment</mat-icon>
+          <div><strong>待审核修改说明：{{ pending.changeSummary }}</strong><small>提交人：{{ pending.updatedByName }} · {{ pending.updatedAt | date:'yyyy/MM/dd HH:mm' }}</small></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button type="button" (click)="saveDraft()" [disabled]="isSaving || isSubmitting"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}</button>
+        <button class="primary" type="button" (click)="submitForReview()" [disabled]="isSubmitting || isSaving"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交审核' }}</button>
+        <button *ngIf="canPublish && editor?.pendingReview" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
+        <button *ngIf="canPublish && editor?.pendingReview" class="primary" type="button" (click)="publish()" [disabled]="isPublishing"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '审核并发布' }}</button>
+      </div>
+    </section>
+  </ng-container>
+
+  <main *ngIf="!isLoading && isSupportedSchool" (input)="contentChanged()" (change)="contentChanged()">
     <section class="form-panel">
       <div class="notice"><mat-icon>lock</mat-icon><div><strong>价格与优惠不在这里修改</strong><p>右侧金额是预览示例；学生实际生成时，系统会自动使用官网当前日期、课程、房型与优惠计算结果。</p></div></div>
 
@@ -89,10 +118,6 @@
         </div>
       </article>
 
-      <div class="save-box">
-        <label>本次修改说明<input [(ngModel)]="changeSummary" placeholder="例如：更新老学员权益和底部提醒" maxlength="500" /></label>
-        <p>{{ canPublish ? '可先保存草稿，确认右侧图片后再发布。' : '保存后官网不会改变，需要管理员确认发布。' }}</p>
-      </div>
     </section>
 
     <aside class="preview-panel">

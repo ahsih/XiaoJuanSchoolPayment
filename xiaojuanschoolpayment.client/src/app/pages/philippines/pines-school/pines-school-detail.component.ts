@@ -1,26 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { PinesStudentQuote, pinesPriceMultiplier } from './pines-student-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { clonePinesContentConfig, createDefaultPinesContentConfig } from './pines-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -65,12 +71,22 @@ interface PinesRoomPlan { title: string; description: string; segments: PinesRoo
     './pines-school-detail.component.css',
   ],
 })
-export class PinesSchoolDetailComponent implements OnInit {
+export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolSearchName = 'PINES';
   private readonly pricingSchoolNames = ['菲律宾碧瑶PINES语言学校', 'PINES International Academy'];
+  private readonly initialContent = createDefaultPinesContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
   private readonly courseFeeOrder = [
     'light-esl-4',
     'power-speaking',
@@ -97,19 +113,23 @@ export class PinesSchoolDetailComponent implements OnInit {
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100;
-  readonly sidaDiscountRate = 0.95;
-  readonly offSeasonDiscountPerFourWeeks = 150;
-  readonly twelveWeekDiscount = 100;
-  readonly longStayMinimumWeeks = 16;
-  readonly longStayBaseDiscount = 100;
-  readonly longStayIncrementWeeks = 2;
-  readonly longStayIncrementDiscount = 25;
-  seasonalFeePerWeek = 40;
-  readonly peakSeasonRanges = [
-    { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
-    { label: '2027旺季（按2026年8周档期推算）', start: '2027-06-27', end: '2027-08-21' },
-  ] as const;
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  registrationWaiverEnabled = true;
+  sidaDiscountRate = 0.95;
+  offSeasonDiscountPerFourWeeks = 150;
+  offSeasonRegistrationEnd = '2026-12-31';
+  twelveWeekMinimumWeeks = 12;
+  twelveWeekDiscount = 100;
+  longStayMinimumWeeks = 16;
+  longStayBaseDiscount = 100;
+  longStayIncrementWeeks = 2;
+  longStayIncrementDiscount = 25;
+  seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  peakSeasonRanges: Array<{ label: string; start: string; end: string }> = this.initialContent.quoteSettings.peakSeasonRanges.map(({ label, start, end }) => ({ label, start, end }));
+  shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
+  localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
+  promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
+  quoteImageSettings: CiaQuoteImageSettings = this.initialContent.quoteImageSettings;
   usdToCny = 7.2;
   phpPerCny = 9;
   exchangeRateDate = '';
@@ -140,7 +160,7 @@ export class PinesSchoolDetailComponent implements OnInit {
     { icon: 'event_available', label: '入学节奏', value: '双周入学为主', note: '官方表单列出2026-2028入学日' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     { category: '校园', title: 'PINES Main Campus外观', description: 'PINES官方Facilities页面展示的Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.jpg' },
     { category: '校园', title: 'PINES主校区楼体', description: '官方首页设施区展示的Main Campus Building，适合先判断校区环境。', src: 'assets/philippines/pines-campus-building.jpg' },
     { category: '教室', title: '一对一教室', description: 'PINES官方Main Campus Facilities页面展示的一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.jpg' },
@@ -277,7 +297,14 @@ export class PinesSchoolDetailComponent implements OnInit {
   readonly students: PinesStudentQuote[] = [new PinesStudentQuote(this)];
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
-  readonly localFeeIntro = '以下费用以比索计价，由学校及相关部门收取；校内预存款、房间押金和洗衣服务另列，不计入学杂费及人民币预估合计。';
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐 / 可选晨间学习', text: 'Main Campus可按课程和EB PRO安排晨间学习或单词测试。' },
@@ -350,10 +377,73 @@ export class PinesSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
     this.loadExchangeRate();
     this.loadRoomAvailability();
   }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('pines-editor-preview');
+    window.parent.postMessage({ type: 'pines-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'pines-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback
+        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) {
+        if (scroll) revealCiaPreviewElement(element);
+      }
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。'
+            : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'pines-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'pines-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id
+      && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  trackPreviewRow(index: number): number { return index; }
 
   loadRoomAvailability(forceRefresh = false): void {
     this.roomAvailabilityLoading = true;
@@ -713,6 +803,82 @@ export class PinesSchoolDetailComponent implements OnInit {
       });
   }
 
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('pines-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'PINES' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'PINES') return;
+    const content = clonePinesContentConfig(value);
+    this.previewContent = content;
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) {
+      this.courseFees = courses.map(item => ({
+        id: item.id,
+        name: item.name,
+        tuition: item.tuition,
+        suitable: `${item.suitable}${item.schedule ? `｜${item.schedule}` : ''}`,
+      }));
+    }
+    if (rooms.length) {
+      this.roomFees = rooms.map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note }));
+    }
+
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortStayRatios = { ...settings.shortStayRatios };
+    this.seasonalFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = settings.peakSeasonRanges
+      .filter(item => item.enabled)
+      .map(({ label, start, end }) => ({ label, start, end }));
+    this.localFeeRules = content.localFees.map(item => ({ ...item }));
+    this.promotionRules = settings.promotions.map(item => ({ ...item }));
+    const promotion = (id: string) => this.promotionRules.find(item => item.id === id && item.enabled);
+    const registration = promotion('pines-registration-waiver');
+    const offSeason = promotion('pines-off-season');
+    const twelveWeek = promotion('pines-twelve-week');
+    const longStay = promotion('pines-long-stay');
+    const sida = promotion('pines-sida-discount');
+    this.registrationWaiverEnabled = !!registration?.waiveRegistration;
+    this.offSeasonDiscountPerFourWeeks = offSeason?.discountValue ?? 0;
+    this.offSeasonRegistrationEnd = offSeason?.registrationEnd ?? '';
+    this.twelveWeekMinimumWeeks = twelveWeek?.minimumCourseWeeks ?? Number.MAX_SAFE_INTEGER;
+    this.twelveWeekDiscount = twelveWeek?.discountValue ?? 0;
+    this.longStayMinimumWeeks = longStay?.minimumCourseWeeks ?? Number.MAX_SAFE_INTEGER;
+    this.longStayBaseDiscount = longStay?.discountValue ?? 0;
+    this.longStayIncrementWeeks = Math.max(1, longStay?.incrementWeeks ?? 2);
+    this.longStayIncrementDiscount = longStay?.incrementValue ?? 0;
+    this.sidaDiscountRate = sida?.discountType === 'percentage' ? 1 - sida.discountValue / 100 : 1;
+    this.localFeeIntro = settings.localFeeIntro;
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = settings.stayPolicies.map(item => ({ ...item }));
+    this.quoteImageSettings = content.quoteImageSettings;
+
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) {
+        if (!this.courseFees.some(item => item.id === row.optionId)) row.optionId = this.courseFees[0]?.id ?? row.optionId;
+      }
+      for (const row of student.quotePlan.rooms) {
+        if (!this.roomFees.some(item => item.id === row.optionId)) row.optionId = this.roomFees[0]?.id ?? row.optionId;
+      }
+    }
+    this.queuePreviewFocus(false);
+  }
+
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
       switchMap((schools) => {
@@ -725,10 +891,42 @@ export class PinesSchoolDetailComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existingSources = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? [])
+      .filter(photo => !!photo.url && !existingSources.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'PINES 学校媒体',
+        description: photo.altText || photo.caption || 'PINES 学校实景内容',
+        src: photo.url ?? '',
+        contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('campus') || value.includes('校园')) return '校园';
+    return '设施';
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -816,7 +1014,7 @@ export class PinesSchoolDetailComponent implements OnInit {
   get selectedCourseCampus(): PinesCampusCode { return this.campusCode(this.selectedCourseId); }
   get availableRoomFees(): RoomFee[] { return this.roomFees.filter((room) => room.id.startsWith(`${this.selectedCourseCampus}-`)); }
   get selectedRoom(): RoomFee { return this.availableRoomFees.find((room) => room.id === this.selectedRoomId) ?? this.availableRoomFees[0] ?? this.roomFees[0]; }
-  get selectedWeekMultiplier(): number { return pinesPriceMultiplier(this.quotePlan.courses[0].weeks); }
+  get selectedWeekMultiplier(): number { return pinesPriceMultiplier(this.quotePlan.courses[0].weeks, this.shortStayRatios); }
   get tuitionForSelectedWeeks(): number { return this.students[0].tuition; }
   get roomFeeForSelectedWeeks(): number { return this.students[0].accommodation; }
   get peakSeasonWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.peakWeeks, 0); }
@@ -894,32 +1092,51 @@ export class PinesSchoolDetailComponent implements OnInit {
   get optionalFeeItems() {
     const campusDepositQuantity = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.quantity, 0);
     const campusDepositTotal = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.total, 0);
-    const roomDepositTotal = 4000 * this.activeStudents.length;
+    const roomDeposit = this.localFeeRules.find(item => item.id === 'room-deposit' && item.enabled);
+    const laundry = this.localFeeRules.find(item => item.id === 'laundry' && item.enabled);
+    const roomDepositTotal = (roomDeposit?.amount ?? 0) * this.activeStudents.length;
     const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
     return [
       {
         label: '校内预存款', amount: this.formatPhp(campusDepositTotal), cnyAmount: cny(campusDepositTotal),
-        note: `4,000比索／4周 × ${this.formatFeeQuantity(campusDepositQuantity)}；用于教材、洗衣、复印、选修课和周末餐食等，按实际扣费；不计入学杂费及人民币预估合计。`,
+        note: `${this.localFeeRules.find(item => item.id === 'campus-deposit')?.amount.toLocaleString('en-US') ?? '0'}比索／4周 × ${this.formatFeeQuantity(campusDepositQuantity)}；${this.localFeeRules.find(item => item.id === 'campus-deposit')?.note ?? ''}`,
       },
-      {
+      ...(roomDeposit ? [{
         label: '房间押金（可退）', amount: this.formatPhp(roomDepositTotal), cnyAmount: cny(roomDepositTotal),
-        note: `4,000比索／人${this.activeStudents.length > 1 ? ` × ${this.activeStudents.length}人` : ''}；无损坏且无欠费时按学校规定退还；不计入学杂费合计。`,
-      },
-      {
-        label: '洗衣服务', amount: '1,200 比索参考', cnyAmount: cny(1200),
-        note: '按实际使用，不计入学杂费合计；洗烘150比索／7kg，单洗或单烘100比索／7kg。',
-      },
+        note: `${roomDeposit.amount.toLocaleString('en-US')}比索／人${this.activeStudents.length > 1 ? ` × ${this.activeStudents.length}人` : ''}；${roomDeposit.note}`,
+      }] : []),
+      ...(laundry ? [{
+        label: laundry.name, amount: `${this.formatPhp(laundry.amount)}参考`, cnyAmount: cny(laundry.amount),
+        note: laundry.note,
+      }] : []),
     ];
   }
   formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
+  previewFeeId(name: string): string {
+    return this.localFeeRules.find(item => item.name === name)?.id ?? 'local-fees';
+  }
+  previewPromotionId(label: string): string {
+    return this.promotionRules.find(item => label.includes(item.name))?.id ?? 'quote-breakdown';
+  }
+  previewPaymentTarget(item: QuoteImagePaymentItem): CiaPreviewTarget {
+    if (item.icon === '课') {
+      return { kind: 'course', id: this.courseFees.find(course => item.detailTitle?.includes(course.name))?.id ?? 'course-fees' };
+    }
+    if (item.icon === '宿') {
+      return { kind: 'room', id: this.roomFees.find(room => item.detailTitle?.includes(room.name))?.id ?? 'room-fees' };
+    }
+    if (item.icon === '注') return { kind: 'section', id: 'quote-registration' };
+    if (item.icon === '旺') return { kind: 'section', id: 'quote-season' };
+    return { kind: 'promotion', id: this.previewPromotionId(item.label) };
+  }
 
   get quoteImageData() {
     const paymentItems = [
       this.schoolPaymentItems[0],
       ...this.campusPlanPaymentItems,
       ...groupPaymentLines(this.activeStudents, true),
-    ];
+    ].map(item => ({ ...item, note: this.imagePaymentNote(item) }));
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`]
       : []);
@@ -936,12 +1153,18 @@ export class PinesSchoolDetailComponent implements OnInit {
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
       paymentItems,
-      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: this.estimatedLocalFees.map((fee) => {
+        const id = this.previewFeeId(fee.item);
+        return { label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
       localFeeTotal: this.estimatedLocalFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.estimatedLocalFeeCny,
       localFeeNote: this.localFeeIntro,
-      optionalFeeItems: this.optionalFeeItems,
+      optionalFeeItems: this.optionalFeeItems.map(fee => {
+        const id = this.previewFeeId(fee.label);
+        return { ...fee, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
       ruleNotes: [],
     });
     const result = applySchoolQuoteImageLayout({
@@ -950,20 +1173,38 @@ export class PinesSchoolDetailComponent implements OnInit {
         ...warnings,
         ...shortStayNotes,
         '4周以上按对应4周价格和实际周数等比例计算；每段课程及住宿最多24周。',
-        '2026旺季为2026/06/28–08/22；2027旺季按相同8周档期推算为2027/06/27–08/21，开始均为周日、结束均为周六。',
-        '固定优惠先扣减，课程费和住宿费的剩余金额再享思达95折；最终以学校价格、空房及优惠确认为准。',
+        '2027年旺季预计为2027/06/27–08/21，开始为周日、结束为周六。',
+        '最终以学校确认的价格、空房及优惠为准。',
       ],
     }, 'PINES', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
+      localFeeNote: this.quoteImageSettings.localFeeIntro,
+      serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.quoteImageSettings.benefits,
+      serviceLocations: this.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.quoteImageSettings.noteSectionTitle,
+      importantNotes: [...warnings, ...shortStayNotes, ...this.quoteImageSettings.footerNotes],
       conversionRates: {
         usdToCny: this.usdToCny,
         phpPerCny: this.phpPerCny,
         date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined,
       },
     };
+  }
+
+  private imagePaymentNote(item: QuoteImagePaymentItem): string {
+    const settings = this.quoteImageSettings.paymentNotes;
+    const extra = item.icon === '注' ? settings.registration
+      : item.icon === '课' ? settings.course
+        : item.icon === '宿' ? settings.accommodation : settings.promotion;
+    return [item.note, extra].filter(Boolean).filter((value, index, all) => all.indexOf(value) === index).join('；');
   }
 
   formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }

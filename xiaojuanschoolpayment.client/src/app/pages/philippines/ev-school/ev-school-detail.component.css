@@ -306,6 +306,70 @@
   line-height: 1.65;
 }
 
+:host .ev-stay-policy {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #d8e8e1;
+  border-radius: 16px;
+  background: #f7fbf9;
+}
+
+:host .ev-stay-policy h3 {
+  margin: 0 0 14px;
+  color: #063f35;
+  font-size: 19px;
+}
+
+:host .ev-stay-policy > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+:host .ev-stay-policy article {
+  padding: 14px;
+  border: 1px solid #dfebe6;
+  border-radius: 12px;
+  background: #fff;
+}
+
+:host .ev-stay-policy span,
+:host .ev-stay-policy p {
+  display: block;
+  margin: 0;
+  color: #607168;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+:host .ev-stay-policy strong {
+  display: block;
+  margin: 5px 0;
+  color: #102d43;
+  font-size: 16px;
+}
+
+:host .gallery-grid video {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  background: #071d2d;
+}
+
+:host(.ev-editor-preview) [data-cia-preview-kind] {
+  cursor: pointer;
+}
+
+:host(.ev-editor-preview) .cia-preview-highlight {
+  position: relative;
+  z-index: 2;
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -2px;
+  border-radius: 8px;
+  background-color: #fff8f1 !important;
+}
+
 :host .mobile-course-fee-group {
   display: grid;
   gap: 12px;
@@ -566,6 +630,9 @@
 }
 
 @media (max-width: 1040px) {
+  :host .ev-stay-policy > div {
+    grid-template-columns: 1fr;
+  }
   :host .hero-media {
     grid-template-columns: minmax(0, 1fr) 220px;
   }

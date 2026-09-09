@@ -1,9 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SmeagCapitalSchoolComponent } from './smeag-capital-school.component';
+import { createDefaultSmeagContentConfig } from './smeag-content-config';
 
 describe('SMEAG Capital textbook estimates', () => {
   let component: SmeagCapitalSchoolComponent;
@@ -11,6 +15,9 @@ describe('SMEAG Capital textbook estimates', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     component = TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent());
   });
@@ -88,14 +95,14 @@ describe('SMEAG Capital textbook estimates', () => {
       expect(component.quoteImageData.localFeeItems?.reduce((sum, fee) => sum + Number(fee.amount.replace(/[^0-9.]/g, '')), 0)).toBe(component.localFeesTotal);
     }
     component.selectedWeeks = 12;
-    expect(component.localFeesTotal).toBe(45230);
+    expect(component.localFeesTotal).toBe(39130);
   });
 
   it('shares the introduction and all fee notes between webpage and export', () => {
     const quote = component.quoteImageData;
     expect(quote.localFeeTableLayout).toBe('web');
     expect(quote.fullFeeDetails).toBeTrue();
-    expect(quote.localFeeNote).toBe(component.localFeeIntro);
+    expect(quote.localFeeNote).toBe(component.quoteImageSettings.localFeeIntro);
     expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
       label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: component.formatPhp(fee.total), note: fee.note,
     })));
@@ -108,10 +115,11 @@ describe('SMEAG Capital textbook estimates', () => {
     const canvasText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
     const text = canvasText.calls.allArgs().map(args => args[0]).join('');
-    expect(text.replace(/\s/g, '')).toContain(component.textbookFeeNote.replace(/\s/g, ''));
-    expect(text).toContain(component.localFeeIntro);
+    expect(text).toContain(component.selectedTextbook.label);
+    expect(text).toContain(component.textbookUsageNote);
+    expect(text).toContain(component.quoteImageSettings.localFeeIntro);
     expect(text).toContain('18,400 比索');
-    expect(text).toContain('Family Program');
+    expect(component.quoteImageData.optionalFeeItems?.some(item => item.label.includes('Family Program'))).toBeTrue();
     expect(text).toContain('教材价格参考');
     expect(blob.type).toBe('image/png');
     const bitmap = await createImageBitmap(blob);
@@ -141,5 +149,22 @@ describe('SMEAG Capital textbook estimates', () => {
     expect(component.includedLocalFees.some(row => row.item.includes('商务英语 Business English'))).toBeTrue();
     expect(component.quoteImageData.paymentItems.some(row => row.label.startsWith('学生2 · 课程'))).toBeTrue();
     expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
+  });
+
+  it('uses employee-edited SMEAG prices, fee rules, discounts and image notes together', () => {
+    const edited = createDefaultSmeagContentConfig();
+    edited.courses[0].tuition = 900;
+    edited.rooms.find(room => room.id === 'campus-quad')!.fee = 800;
+    edited.localFees.find(fee => fee.id === 'utilities')!.amount = 3500;
+    edited.quoteSettings.promotions.find(rule => rule.id === 'smeag-sida-90')!.discountValue = 12;
+    edited.quoteImageSettings.footerNotes = ['员工修改后的SMEAG报价说明'];
+
+    component['applyContentConfig'](edited);
+
+    expect(component.tuitionForSelectedWeeks).toBe(900);
+    expect(component.roomFeeForSelectedWeeks).toBe(800);
+    expect(component.schoolPaymentItems.find(row => row.label === '思达折扣')?.amount).toBe('− 204 美元');
+    expect(component.includedLocalFees.find(row => row.item === '设施使用费（Utilities）')?.total).toBe(3500);
+    expect(component.quoteImageData.importantNotes).toContain('员工修改后的SMEAG报价说明');
   });
 });

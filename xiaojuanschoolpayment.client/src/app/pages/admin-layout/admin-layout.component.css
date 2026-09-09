@@ -51,6 +51,8 @@
 }
 
 .sidebar-navigation {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   padding-top: 12px;
   overflow-y: auto;
@@ -109,6 +111,64 @@
   box-shadow: inset 3px 0 0 #ff6a21;
 }
 
+.legacy-navigation {
+  margin-top: 0;
+}
+
+.tools-section {
+  margin-top: auto !important;
+  padding-top: 18px;
+}
+
+.legacy-navigation summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #68786f;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.legacy-navigation summary::-webkit-details-marker {
+  display: none;
+}
+
+.legacy-navigation summary:hover {
+  color: #087343;
+  background: #f5faf7;
+}
+
+.legacy-navigation summary mat-icon {
+  width: 19px;
+  height: 19px;
+  font-size: 19px;
+}
+
+.legacy-navigation .summary-arrow {
+  margin-left: auto;
+  transition: transform 160ms ease;
+}
+
+.legacy-navigation[open] .summary-arrow {
+  transform: rotate(180deg);
+}
+
+.legacy-navigation > p {
+  margin: 2px 12px 6px 44px;
+  color: #9a887a;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.legacy-navigation a {
+  padding-left: 20px;
+  font-size: 13px;
+}
+
 .logout-button {
   flex: 0 0 auto;
   margin-top: 14px;
@@ -151,6 +211,7 @@
 
   .sidebar-navigation {
     display: flex;
+    flex-direction: row;
     gap: 6px;
     padding: 0;
     overflow-x: auto;
@@ -159,6 +220,10 @@
 
   .nav-section {
     display: contents;
+  }
+
+  .tools-section {
+    display: none;
   }
 
   .nav-section + .nav-section {

@@ -1,12 +1,16 @@
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
+import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 
 interface PinesQuotePrices {
   courseFees: { id: string; name: string; tuition: number; suitable: string }[];
   roomFees: { id: string; name: string; fee: number; note: string }[];
   registrationFee: number;
+  registrationWaiverEnabled: boolean;
   sidaDiscountRate: number;
   offSeasonDiscountPerFourWeeks: number;
+  offSeasonRegistrationEnd: string;
+  twelveWeekMinimumWeeks: number;
   twelveWeekDiscount: number;
   longStayMinimumWeeks: number;
   longStayBaseDiscount: number;
@@ -14,6 +18,9 @@ interface PinesQuotePrices {
   longStayIncrementDiscount: number;
   seasonalFeePerWeek: number;
   peakSeasonRanges: readonly { label: string; start: string; end: string }[];
+  shortStayRatios: Record<string, number>;
+  localFeeRules: CiaLocalFeeRule[];
+  promotionRules: CiaPromotionRule[];
 }
 
 export const PINES_VISA_OPTIONS = [
@@ -24,9 +31,11 @@ export const PINES_VISA_OPTIONS = [
 export type PinesVisaType = typeof PINES_VISA_OPTIONS[number]['value'];
 export type PinesPickupAirport = 'none' | 'manila' | 'clark';
 
-export const pinesPriceMultiplier = (weeks: number): number => {
-  if (weeks === 2) return 0.65;
-  if (weeks === 3) return 0.85;
+export const pinesPriceMultiplier = (
+  weeks: number,
+  ratios: Record<string, number> = { '2': 0.65, '3': 0.85 },
+): number => {
+  if (ratios[String(weeks)] !== undefined) return ratios[String(weeks)];
   return weeks / 4;
 };
 
@@ -78,7 +87,7 @@ export class PinesStudentQuote {
       const rate = kind === 'course'
         ? this.prices.courseFees.find((course) => course.id === row.optionId)?.tuition
         : this.prices.roomFees.find((room) => room.id === row.optionId)?.fee;
-      return rounded((rate ?? 0) * pinesPriceMultiplier(row.weeks));
+      return rounded((rate ?? 0) * pinesPriceMultiplier(row.weeks, this.prices.shortStayRatios));
     },
   );
 
@@ -115,7 +124,10 @@ export class PinesStudentQuote {
   get tuition() { return this.quotePlan.total('course'); }
   get accommodation() { return this.quotePlan.total('room'); }
   get registration() { return this.prices.registrationFee; }
-  get registrationDiscount() { return this.prices.registrationFee; }
+  get registrationDiscount() {
+    const rule = this.promotion('pines-registration-waiver');
+    return this.prices.registrationWaiverEnabled && rule?.waiveRegistration && this.isPromotionEligible(rule) ? this.prices.registrationFee : 0;
+  }
 
   get peakWeeks(): number {
     return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) =>
@@ -130,9 +142,9 @@ export class PinesStudentQuote {
   get seasonalSurcharge() { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
 
   get offSeasonBlocks(): number {
-    const registrationDeadline = this.quotePlan.date('2026-12-31')!;
+    const registrationDeadline = this.quotePlan.date(this.prices.offSeasonRegistrationEnd);
     const registrationDate = this.quotePlan.date(this.selectedRegistrationDate);
-    if (registrationDate === null || registrationDate > registrationDeadline) return 0;
+    if (registrationDeadline === null || registrationDate === null || registrationDate > registrationDeadline) return 0;
 
     const peakWeekStarts = new Set<number>();
     for (const range of this.prices.peakSeasonRanges) {
@@ -147,10 +159,23 @@ export class PinesStudentQuote {
     return Math.floor(eligibleWeeks.length / 4);
   }
 
-  get offSeasonDiscount() { return this.offSeasonBlocks * this.prices.offSeasonDiscountPerFourWeeks; }
-  get twelveWeekDiscount() { return this.quotePlan.courseWeeks >= 12 ? this.prices.twelveWeekDiscount : 0; }
+  get offSeasonDiscount() {
+    const rule = this.promotion('pines-off-season');
+    if (!rule || !this.isPromotionEligible(rule) || !this.offSeasonBlocks) return 0;
+    const eligibleWeeks = this.offSeasonBlocks * 4;
+    if (rule.discountType === 'percentage') return rounded(this.tuition * eligibleWeeks / Math.max(1, this.quotePlan.courseWeeks) * rule.discountValue / 100);
+    if (rule.discountType === 'per-course-week') return rounded(eligibleWeeks * rule.discountValue);
+    return rounded(this.offSeasonBlocks * this.prices.offSeasonDiscountPerFourWeeks);
+  }
+  get twelveWeekDiscount() {
+    const rule = this.promotion('pines-twelve-week');
+    if (!rule || !this.isPromotionEligible(rule) || this.quotePlan.courseWeeks < this.prices.twelveWeekMinimumWeeks) return 0;
+    return this.promotionDiscount(rule, this.promotionBase(rule), this.prices.twelveWeekDiscount);
+  }
   get longStayDiscount(): number {
-    if (this.quotePlan.courseWeeks < this.prices.longStayMinimumWeeks) return 0;
+    const rule = this.promotion('pines-long-stay');
+    if (!rule || !this.isPromotionEligible(rule) || this.quotePlan.courseWeeks < this.prices.longStayMinimumWeeks) return 0;
+    if (rule.discountType !== 'fixed') return this.promotionDiscount(rule, this.promotionBase(rule), this.prices.longStayBaseDiscount);
     const additionalBlocks = Math.floor(
       (this.quotePlan.courseWeeks - this.prices.longStayMinimumWeeks) / this.prices.longStayIncrementWeeks,
     );
@@ -158,7 +183,12 @@ export class PinesStudentQuote {
   }
   get fixedCourseRoomDiscounts() { return this.offSeasonDiscount + this.twelveWeekDiscount + this.longStayDiscount; }
   get sidaDiscount() {
-    const discountedBase = Math.max(0, this.tuition + this.accommodation - this.fixedCourseRoomDiscounts);
+    const rule = this.promotion('pines-sida-discount');
+    if (!rule || !this.isPromotionEligible(rule)) return 0;
+    const priorDiscounts = rule.appliesTo === 'accommodation' ? 0 : this.fixedCourseRoomDiscounts;
+    const discountedBase = Math.max(0, this.promotionBase(rule) - priorDiscounts);
+    if (rule.discountType === 'fixed') return Math.min(discountedBase, rule.discountValue);
+    if (rule.discountType === 'per-course-week') return Math.min(discountedBase, rounded(this.quotePlan.courseWeeks * rule.discountValue));
     return rounded(discountedBase * (1 - this.prices.sidaDiscountRate));
   }
   get quoteUsd() {
@@ -170,16 +200,21 @@ export class PinesStudentQuote {
 
   get paymentLines(): SchoolPaymentLine[] {
     const ranges = this.prices.peakSeasonRanges.filter((range) => this.quotePlan.overlapWeeks(range.start, range.end, this.quotePlan.courses) > 0);
+    const registration = this.promotion('pines-registration-waiver');
+    const offSeason = this.promotion('pines-off-season');
+    const twelveWeek = this.promotion('pines-twelve-week');
+    const longStay = this.promotion('pines-long-stay');
+    const sida = this.promotion('pines-sida-discount');
     return [
       ...(this.seasonalSurcharge ? [{
         icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
         note: `${this.prices.seasonalFeePerWeek}美元／学习周 × ${this.peakWeeks}周；${ranges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；不参与折扣`,
       }] : []),
-      { icon: '免', label: '思达免注册费', value: -this.registrationDiscount, note: '所有通过思达报名的学生免收100美元注册费', promotionKey: 'registration' },
-      ...(this.offSeasonDiscount ? [{ icon: '惠', label: '常规淡季优惠', value: -this.offSeasonDiscount, note: `2026/12/31前注册，未覆盖旺季的课程共${this.quotePlan.courseWeeks - this.peakWeeks}周，每满4周减150美元，共${this.offSeasonBlocks}段`, promotionKey: 'off-season' }] : []),
-      ...(this.twelveWeekDiscount ? [{ icon: '惠', label: '12周以上额外优惠', value: -this.twelveWeekDiscount, note: '累计课程达到12周，一次减100美元', promotionKey: 'twelve-week' }] : []),
-      ...(this.longStayDiscount ? [{ icon: '长', label: '长期优惠', value: -this.longStayDiscount, note: `累计课程${this.quotePlan.courseWeeks}周；16周减100美元，之后每增加2周叠加25美元；可与其他优惠叠加`, promotionKey: `long-stay-${this.longStayDiscount}` }] : []),
-      { icon: '折', label: '思达95折', value: -this.sidaDiscount, note: '课程费和住宿费先减固定优惠，再按95折计算', promotionKey: 'sida' },
+      ...(this.registrationDiscount ? [{ icon: '免', label: registration?.name ?? '免注册费', value: -this.registrationDiscount, note: registration?.description ?? '', promotionKey: 'registration' }] : []),
+      ...(this.offSeasonDiscount ? [{ icon: '惠', label: offSeason?.name ?? '常规淡季优惠', value: -this.offSeasonDiscount, note: `${offSeason?.description ?? ''}；本次符合${this.offSeasonBlocks}个完整周期`, promotionKey: 'off-season' }] : []),
+      ...(this.twelveWeekDiscount ? [{ icon: '惠', label: twelveWeek?.name ?? '长期课程优惠', value: -this.twelveWeekDiscount, note: twelveWeek?.description ?? '', promotionKey: 'twelve-week' }] : []),
+      ...(this.longStayDiscount ? [{ icon: '长', label: longStay?.name ?? '长期优惠', value: -this.longStayDiscount, note: `${longStay?.description ?? ''}；本次累计课程${this.quotePlan.courseWeeks}周`, promotionKey: `long-stay-${this.longStayDiscount}` }] : []),
+      ...(this.sidaDiscount ? [{ icon: '折', label: sida?.name ?? '思达折扣', value: -this.sidaDiscount, note: sida?.description ?? '', promotionKey: 'sida' }] : []),
     ];
   }
 
@@ -189,26 +224,28 @@ export class PinesStudentQuote {
   }
 
   get localFees(): SchoolLocalFee[] {
-    const periods = this.quotePlan.roomWeeks / 4;
-    const extensions = this.visaExtensionCount;
-    const acr = extensions > 0 ? 1 : 0;
-    const manilaPickup = this.pickupAirport === 'manila' ? 1 : 0;
-    const clarkPickup = this.pickupAirport === 'clark' ? 1 : 0;
-    return [
-      { item: 'SSP特殊学习许可证', unitLabel: '7,800 比索／次', quantity: 1, total: 7800, note: '移民局收取，通常有效6个月；更换学校需重新办理。' },
-      { item: 'SSP-E Card', unitLabel: '4,500 比索／次', quantity: 1, total: 4500, note: '入学时与SSP同时办理，只收一次。' },
-      { item: 'ACR-I Card 外国人身份证', unitLabel: '4,000 比索／次', quantity: acr, total: acr * 4000, note: `按${this.visaLabel}预估，第一次签证续签时办理；以学校及移民局要求为准。` },
-      { item: '水电费', unitLabel: '3,000 比索／4周', quantity: periods, total: rounded(3000 * periods), note: '按住宿周数计算；此为预估，超额用电另收25比索／kW。' },
-      { item: '签证续签', unitLabel: '6,210 比索／30天', quantity: extensions, total: extensions * 6210, note: `按${this.visaLabel}及完整停留跨度预估；${extensions ? `本次预计续签${extensions}次` : '本次预计无需续签'}，实际以移民局及学校办理为准。` },
-      { item: '学生证', unitLabel: '200 比索／次', quantity: 1, total: 200, note: '一次性费用。' },
-      { item: '马尼拉机场接机', unitLabel: '3,000 比索／次', quantity: manilaPickup, total: manilaPickup * 3000, note: '由学生自由选择；指定周日团体接机。' },
-      { item: '克拉克机场接机', unitLabel: '3,000 比索／次', quantity: clarkPickup, total: clarkPickup * 3000, note: '由学生自由选择；指定周日团体接机。' },
-    ];
+    return this.prices.localFeeRules
+      .filter(rule => rule.enabled && rule.includeInTotal)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(rule => {
+        const quantity = this.feeQuantity(rule);
+        const notePrefix = ['acr-i-card', 'visa-extension'].includes(rule.id)
+          ? `按${this.visaLabel}预估；${rule.id === 'visa-extension' ? (this.visaExtensionCount ? `本次预计续签${this.visaExtensionCount}次` : '本次预计无需续签') : ''}`
+          : '';
+        return {
+          item: rule.name,
+          unitLabel: this.feeUnit(rule),
+          quantity,
+          total: this.feeTotal(rule, quantity),
+          note: [notePrefix, rule.note].filter(Boolean).join('；'),
+        };
+      });
   }
 
   get campusDeposit() {
-    const quantity = this.quotePlan.roomWeeks / 4;
-    return { quantity, total: rounded(4000 * quantity) };
+    const rule = this.prices.localFeeRules.find(item => item.id === 'campus-deposit');
+    const quantity = rule ? this.feeQuantity(rule) : 0;
+    return { quantity, total: rule ? this.feeTotal(rule, quantity) : 0 };
   }
 
   get pickupLabel() {
@@ -217,5 +254,73 @@ export class PinesStudentQuote {
     return '不需要学校接机';
   }
 
-  get shortStayNotes() { return this.quotePlan.shortStayNotes(pinesPriceMultiplier); }
+  get shortStayNotes() { return this.quotePlan.shortStayNotes(weeks => pinesPriceMultiplier(weeks, this.prices.shortStayRatios)); }
+
+  private promotion(id: string): CiaPromotionRule | undefined {
+    return this.prices.promotionRules.find(item => item.id === id && item.enabled);
+  }
+
+  private isPromotionEligible(rule: CiaPromotionRule): boolean {
+    if (rule.newStudentsOnly && this.returningStudent) return false;
+    if (this.quotePlan.courseWeeks < rule.minimumCourseWeeks || this.quotePlan.roomWeeks < rule.minimumAccommodationWeeks) return false;
+    const registration = this.quotePlan.date(this.selectedRegistrationDate);
+    const registrationStart = this.quotePlan.date(rule.registrationStart ?? '');
+    const registrationEnd = this.quotePlan.date(rule.registrationEnd ?? '');
+    if (registrationStart !== null && (registration === null || registration < registrationStart)) return false;
+    if (registrationEnd !== null && (registration === null || registration > registrationEnd)) return false;
+    const arrival = Math.min(...this.quotePlan.courses.map(row => this.quotePlan.date(row.startDate) ?? Number.MAX_SAFE_INTEGER));
+    const arrivalStart = this.quotePlan.date(rule.arrivalStart ?? '');
+    const arrivalEnd = this.quotePlan.date(rule.arrivalEnd ?? '');
+    if (arrivalStart !== null && arrival < arrivalStart) return false;
+    if (arrivalEnd !== null && arrival > arrivalEnd) return false;
+    if (rule.coverageTarget !== 'none' && rule.coverageStart && rule.coverageEnd) {
+      const courseOverlap = this.quotePlan.overlapWeeks(rule.coverageStart, rule.coverageEnd, this.quotePlan.courses) > 0;
+      const roomOverlap = this.quotePlan.overlapWeeks(rule.coverageStart, rule.coverageEnd, this.quotePlan.rooms) > 0;
+      if (!courseOverlap || (rule.coverageTarget === 'course-and-accommodation' && !roomOverlap)) return false;
+    }
+    return true;
+  }
+
+  private promotionBase(rule: CiaPromotionRule): number {
+    if (rule.appliesTo === 'tuition') return this.tuition;
+    if (rule.appliesTo === 'accommodation') return this.accommodation;
+    if (rule.appliesTo === 'school-total') return this.registration + this.tuition + this.accommodation + this.seasonalSurcharge;
+    return this.tuition + this.accommodation;
+  }
+
+  private promotionDiscount(rule: CiaPromotionRule, base: number, fallback: number): number {
+    if (rule.discountType === 'percentage') return rounded(base * rule.discountValue / 100);
+    if (rule.discountType === 'per-course-week') return rounded(this.quotePlan.courseWeeks * rule.discountValue);
+    if (rule.discountType === 'none') return 0;
+    return rounded(fallback);
+  }
+
+  private feeQuantity(rule: CiaLocalFeeRule): number {
+    if (rule.id === 'manila-pickup') return this.pickupAirport === 'manila' ? 1 : 0;
+    if (rule.id === 'clark-pickup') return this.pickupAirport === 'clark' ? 1 : 0;
+    if (rule.billingRule === 'first-visa-extension' || rule.billingRule === 'long-term-or-first-extension') return this.visaExtensionCount > 0 ? 1 : 0;
+    if (rule.billingRule === 'visa-extension-schedule') return this.visaExtensionCount;
+    if (rule.billingRule === 'per-accommodation-period' || rule.billingRule === 'per-course-period') {
+      const weeks = rule.billingRule === 'per-accommodation-period' ? this.quotePlan.roomWeeks : this.quotePlan.courseWeeks;
+      const periods = weeks / Math.max(1, rule.periodWeeks ?? 4);
+      return rule.rounding === 'ceil' ? Math.ceil(periods) : periods;
+    }
+    if (rule.billingRule === 'optional') return 0;
+    return 1;
+  }
+
+  private feeTotal(rule: CiaLocalFeeRule, quantity: number): number {
+    if (rule.billingRule === 'visa-extension-schedule' && rule.rates?.length) {
+      return rounded(Array.from({ length: quantity }, (_, index) => rule.rates![Math.min(index, rule.rates!.length - 1)] ?? rule.amount)
+        .reduce((sum, amount) => sum + amount, 0));
+    }
+    return rounded(rule.amount * quantity);
+  }
+
+  private feeUnit(rule: CiaLocalFeeRule): string {
+    const amount = Math.round(rule.amount).toLocaleString('en-US');
+    if (rule.billingRule === 'per-accommodation-period' || rule.billingRule === 'per-course-period') return `${amount} 比索／${rule.periodWeeks ?? 4}周`;
+    if (rule.billingRule === 'visa-extension-schedule') return `${amount} 比索／30天`;
+    return `${amount} 比索／次`;
+  }
 }

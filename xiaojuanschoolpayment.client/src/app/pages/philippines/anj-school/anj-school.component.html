@@ -89,7 +89,7 @@
           </article>
         </section>
 
-        <section class="section-block" id="gallery">
+        <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'gallery')">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
             <h2>先看A&amp;J的校园、教室、宿舍和生活空间</h2>
@@ -110,7 +110,8 @@
           </div>
           <div class="gallery-grid">
             <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <video *ngIf="image.contentType?.startsWith('video/'); else anjGalleryImage" [src]="image.src" controls preload="metadata" [attr.aria-label]="image.title"></video>
+              <ng-template #anjGalleryImage><img [src]="image.src" [alt]="image.title" loading="lazy" /></ng-template>
               <figcaption>
                 <strong>{{ image.title }}</strong>
                 <span>{{ image.description }}</span>
@@ -196,18 +197,15 @@
           </div>
         </section>
 
-        <section class="section-block" id="courses">
+        <section class="section-block" id="courses" data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')">
           <div class="section-heading">
             <span>课程 / 公开参考费用</span>
-            <h2>A&amp;J 2026年公开4周课程费与住宿费</h2>
-            <p>
-              下方以美元整理2026费用。普通课程按4周价列示，TOEIC与IELTS保分班按学校规定周数单独列示，
-              课程和住宿分别显示；思达优惠及A&amp;J当期优惠在下方报价器自动计算。
-            </p>
+            <h2>{{ courseTableTitle }}</h2>
+            <p data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')">{{ courseTableNote }}</p>
           </div>
 
           <div class="course-grid anj-course-grid">
-            <article class="course-card" *ngFor="let course of courses">
+            <article class="course-card" *ngFor="let course of courses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
@@ -222,7 +220,7 @@
               <span role="columnheader">课程结构</span>
               <span role="columnheader">适合人群</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
+            <div class="table-row" role="row" *ngFor="let row of courseFeeRows" data-cia-preview-kind="course" [attr.data-cia-preview-id]="row.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', row.id)">
               <span role="cell">{{ row.course }}</span>
               <span role="cell">{{ row.tuition }}</span>
               <span role="cell">{{ row.lessons }}</span>
@@ -231,7 +229,7 @@
           </div>
 
           <div class="mobile-card-list mobile-course-fees" aria-label="A&J 4周课程费用手机卡片">
-            <article *ngFor="let row of courseFeeRows">
+            <article *ngFor="let row of courseFeeRows" data-cia-preview-kind="course" [attr.data-cia-preview-id]="row.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', row.id)">
               <span>{{ row.course }}</span>
               <div>
                 <em>课程费</em>
@@ -253,7 +251,7 @@
               <span role="columnheader">课程费</span>
               <span role="columnheader">课程结构</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let row of guaranteeFeeRows">
+            <div class="table-row" role="row" *ngFor="let row of guaranteeFeeRows" data-cia-preview-kind="course" [attr.data-cia-preview-id]="row.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', row.id)">
               <span role="cell">{{ row.course }}</span>
               <span role="cell">{{ row.weeks }}</span>
               <span role="cell">{{ row.tuition }}</span>
@@ -261,7 +259,7 @@
             </div>
           </div>
           <div class="mobile-card-list mobile-guarantee-fees" aria-label="A&J保分班费用手机卡片">
-            <article *ngFor="let row of guaranteeFeeRows">
+            <article *ngFor="let row of guaranteeFeeRows" data-cia-preview-kind="course" [attr.data-cia-preview-id]="row.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', row.id)">
               <span>{{ row.course }}</span>
               <div><em>周数</em><strong>{{ row.weeks }}</strong></div>
               <div><em>课程费</em><strong>{{ row.tuition }}</strong></div>
@@ -269,9 +267,10 @@
             </article>
           </div>
 
-          <div class="pricing-subheading">
+          <div class="pricing-subheading" data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')">
             <span>住宿费用</span>
-            <h3>A&amp;J 4周住宿费参考</h3>
+            <h3>{{ roomTableTitle }}</h3>
+            <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
           </div>
           <div class="data-table anj-room-table" role="table" aria-label="A&J 2026年4周住宿费用">
             <div class="table-row table-head" role="row">
@@ -279,7 +278,7 @@
               <span role="columnheader">4周住宿费</span>
               <span role="columnheader">适合人群</span>
             </div>
-            <div class="table-row" role="row" *ngFor="let room of roomOptions">
+            <div class="table-row" role="row" *ngFor="let room of roomOptions" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
               <span role="cell">{{ room.name }}</span>
               <span role="cell">{{ formatRoomFee(room) }}</span>
               <span role="cell">{{ room.note }}</span>
@@ -287,7 +286,7 @@
           </div>
 
           <div class="mobile-card-list mobile-room-fees" aria-label="A&J 4周住宿费用手机卡片">
-            <article *ngFor="let room of roomOptions">
+            <article *ngFor="let room of roomOptions" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
               <span>{{ room.name }}</span>
               <strong>{{ formatRoomFee(room) }}</strong>
               <p>{{ room.note }}</p>
@@ -311,13 +310,13 @@
           </div>
         </section>
 
-        <section class="quote-panel" id="quote">
+        <section class="quote-panel" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">
           <div class="section-heading">
             <span>费用快速报价</span>
             <h2>{{ quoteHeading }}</h2>
             <p>
               每名学生可独立安排多段课程与住宿。系统按入学日、新生或续课状态、出生月日自动判断A&amp;J优惠，
-              先扣固定优惠，再对剩余课程费和住宿费计算思达95折；旺季附加费不参与折扣。
+              先扣固定优惠，再对剩余课程费和住宿费按{{ (sidaDiscountRate * 100) | number:'1.0-2' }}%计算；旺季附加费不参与折扣。
             </p>
           </div>
           <div class="quote-form-card group-quote">
@@ -338,16 +337,12 @@
                 <label>机场接机<select [(ngModel)]="student.pickupAirport"><option value="none">不需要学校接机</option><option value="manila">马尼拉机场接机</option><option value="clark">克拉克机场接机</option></select></label>
               </div>
               <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
-              <p class="student-promotion-status">
-                <strong>{{ student.enrollmentStatus === 'continuation' ? '续课优惠' : '新生优惠' }}：</strong>
-                常规 {{ formatUsd(student.regularDiscount) }}美元；生日 {{ formatUsd(student.birthdayDiscount) }}美元；淡季 {{ formatUsd(student.lowSeasonDiscount) }}美元；续课 {{ formatUsd(student.continuationDiscount) }}美元；思达95折减 {{ formatUsd(student.sidaDiscount) }}美元。
-              </p>
               <p class="fee-alert" *ngIf="student.priceYearWarning">{{ student.priceYearWarning }}</p>
               <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
             </article>
 
             <div class="quote-breakdown anj-quote-breakdown">
-              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)">
                 <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span>
                 <strong>{{ item.amount }}</strong>
               </div>
@@ -365,21 +360,21 @@
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
             </div>
-            <p class="season-note">旺季附加费：2026/06/28–08/22；2027按相同8周星期推算为2027/06/27–08/21。每个实际重叠课程周加收40美元，不参与优惠。</p>
-            <p class="season-note">优惠顺序：免100美元注册费；A&amp;J新生或续课固定优惠先扣除；剩余课程费和住宿费再享思达95折。新生优惠与续课优惠不叠加。</p>
+            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">旺季附加费：每个实际重叠课程周加收{{ seasonalFeePerWeek }}美元，不参与优惠；日期按已启用的旺季范围计算。</p>
+            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">优惠顺序：{{ registrationWaiverEnabled ? '免注册费；' : '' }}A&amp;J新生或续课固定优惠先扣除；剩余课程费和住宿费再按{{ (sidaDiscountRate * 100) | number:'1.0-2' }}%计算。新生优惠与续课优惠不叠加。</p>
           </div>
         </section>
 
-        <section class="section-block" id="local-fees">
+        <section class="section-block" id="local-fees" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>A&amp;J到校后学杂费明细</h2>
-            <p>{{ localFeeIntro }}</p>
+            <p data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
           </div>
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
               <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-              <tbody><tr *ngFor="let fee of estimatedLocalFees">
+              <tbody><tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
                 <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
               </tr></tbody>
               <tfoot>
@@ -397,20 +392,20 @@
           </div>
         </section>
 
-        <section class="section-block" id="promotions">
+        <section class="section-block" id="promotions" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
           <div class="section-heading">
             <span>A&amp;J 2026–2027优惠</span>
             <h2>按入学日自动匹配的新生、生日、淡季与续课优惠</h2>
             <p>下列固定金额可以在符合条件时参与报价。生日优惠要求报名4周及以上并提交生日证明；2026按出生日期尾数判断，2027起按生日月份与入学月份相同判断。</p>
           </div>
           <div class="anj-promotion-rules">
-            <article>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="registration-waiver" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'registration-waiver')">
               <strong>思达长期优惠</strong>
-              <p>每名学生免100美元注册费；A&amp;J固定优惠扣除后，剩余课程费和住宿费享95折。</p>
+              <p>{{ promotionDescription('registration-waiver') }} {{ promotionDescription('sida-discount') }}</p>
             </article>
-            <article>
-              <strong>生日优惠100美元</strong>
-              <p>报名日不早于2025/12/15且课程不少于4周：2026年1–3月入学看出生日期尾数3/6/9，4–6月看2/4/8，7–9月看7，10–12月看0/1/5；2027年起生日月份须与入学月份相同，并提交生日证明。</p>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="anj-birthday" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'anj-birthday')">
+              <strong>生日优惠{{ birthdayDiscount }}美元</strong>
+              <p>{{ promotionDescription('anj-birthday') }} 报名日不早于{{ birthdayRegistrationStart.replaceAll('-', '/') }}。</p>
             </article>
             <article>
               <strong>叠加与互斥顺序</strong>
@@ -418,7 +413,7 @@
             </article>
           </div>
           <div class="anj-promotion-grid">
-            <article *ngFor="let period of newPromotionPeriods">
+            <article *ngFor="let period of newPromotionPeriods" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="previewPromotionId(period.label)" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', previewPromotionId(period.label))">
               <span>{{ period.label }}</span>
               <strong>{{ period.start.replaceAll('-', '/') }}–{{ period.end.replaceAll('-', '/') }}</strong>
               <p *ngIf="period.regularDiscounts[4] !== undefined">常规优惠：{{ formatDiscountTiers(period.regularDiscounts) }}</p>
@@ -426,7 +421,7 @@
             </article>
           </div>
           <div class="anj-continuation-grid">
-            <article *ngFor="let period of continuationPeriods">
+            <article *ngFor="let period of continuationPeriods" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="previewPromotionId(period.label)" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', previewPromotionId(period.label))">
               <span>{{ period.label }}</span>
               <p>{{ formatDiscountTiers(period.discounts) }}</p>
             </article>

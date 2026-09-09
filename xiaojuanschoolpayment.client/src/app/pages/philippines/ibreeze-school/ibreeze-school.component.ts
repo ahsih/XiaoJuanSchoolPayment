@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { IbreezeStudentQuote } from './ibreeze-student-quote';
@@ -15,6 +17,9 @@ import { IBREEZE_COURSES, IBREEZE_ROOMS, IBREEZE_MINOR_POLICY, IBREEZE_OFF_CAMPU
 import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
+import { CiaContentConfig, CiaQuoteImageSettings, CiaStayPolicyCard } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneIbreezeContentConfig, createDefaultIbreezeContentConfig } from './ibreeze-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -30,6 +35,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  contentType?: string;
 }
 
 interface BasicInfoRow {
@@ -130,13 +136,25 @@ interface SidaTrustBadge {
     './ibreeze-school.component.css',
   ],
 })
-export class IbreezeSchoolComponent implements OnInit {
+export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolSearchName = 'I.BREEZE';
   private readonly pricingSchoolNames = ['菲律宾宿务I.BREEZE语言学校', 'I.BREEZE International Language Center', 'IBREEZE'];
   private readonly courseFeeOrder = ['intensive-speaking', 'light-esl', 'general-business-and-bec', 'power-esl', 'intensive-beginner', 'ielts-starter', 'ielts-target', 'toeic-target', 'junior-english'];
   private readonly roomFeeOrder = ['quad-main', 'triple-main', 'twin-main', 'single-main', 'quad-ib2', 'twin-ib2', 'single-ib2', 'off-campus-superior-single', 'off-campus-standard-single', 'off-campus-standard-twin', 'off-campus-superior-twin', 'off-campus-family'];
+  private readonly initialContent = createDefaultIbreezeContentConfig();
+  private currentContentConfig = cloneIbreezeContentConfig(this.initialContent);
+  readonly contentConfig = () => this.currentContentConfig;
+  private previewContent?: CiaContentConfig;
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -208,7 +226,7 @@ export class IbreezeSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'I.BREEZE泳池与校区',
@@ -266,6 +284,7 @@ export class IbreezeSchoolComponent implements OnInit {
       src: 'https://www.ceburyugaku-master.com/school/img/ibreeze_prime/dormitory_06.webp',
     },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾宿务I.BREEZE语言学校' },
@@ -432,7 +451,15 @@ export class IbreezeSchoolComponent implements OnInit {
   get quoteHeading() {
     return this.quoteMode === 'single' ? `I.BREEZE${this.selectedWeeks}周报价` : `I.BREEZE ${this.activeStudents.length}人报价`;
   }
-  readonly localFeeIntro = '以下费用以比索计价，由学校及相关部门收取，最终以到校实收为准。校外住宿已含水电；接机与可退押金另列。';
+  localFeeIntro = this.currentContentConfig.quoteSettings.localFeeIntro;
+  courseTableTitle = this.currentContentConfig.quoteSettings.courseTableTitle;
+  courseTableNote = this.currentContentConfig.quoteSettings.courseTableNote;
+  groupClassNote = this.currentContentConfig.quoteSettings.groupClassNote;
+  roomTableTitle = this.currentContentConfig.quoteSettings.roomTableTitle;
+  roomTableNote = this.currentContentConfig.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.currentContentConfig.quoteSettings.stayPolicyTitle;
+  stayPolicies: CiaStayPolicyCard[] = structuredClone(this.currentContentConfig.quoteSettings.stayPolicies);
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.currentContentConfig.quoteImageSettings);
   get returningStudent() { return this.students[0].returningStudent; }
   set returningStudent(value: boolean) { this.students[0].returningStudent = value; }
 
@@ -637,6 +664,7 @@ export class IbreezeSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
       this.usdToCny = snapshot.usdToCny;
@@ -644,6 +672,70 @@ export class IbreezeSchoolComponent implements OnInit {
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('ibreeze-editor-preview');
+    window.parent.postMessage({ type: 'ibreeze-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'ibreeze-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'ibreeze-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'ibreeze-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('ibreeze-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'IBREEZE' ? value : null;
+    } catch { return null; }
   }
 
   private loadPricingFromDatabase(): void {
@@ -658,25 +750,91 @@ export class IbreezeSchoolComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      else this.applyPricingData(lessons, rooms, fees);
+      this.applyGalleryPhotos(photos);
+    });
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
-    // Keep the confirmed schedules and room descriptions; the API remains the price source.
-    this.courseOptions = IBREEZE_COURSES.map(course => ({
-      ...course, tuition: lessons.find(lesson => lesson.week === 4 && this.slugifyPriceKey(lesson.name) === course.id)?.price ?? course.tuition,
-    }));
-    this.roomOptions = IBREEZE_ROOMS.map(room => ({
-      ...room, fee: rooms.find(item => item.week === 4 && this.createRoomId(item.name) === room.id)?.price ?? room.fee,
-    }));
-
+    const content = createDefaultIbreezeContentConfig();
+    for (const course of content.courses) {
+      const row = lessons.find(lesson => lesson.week === 4 && this.slugifyPriceKey(lesson.name) === course.id);
+      if (row) course.tuition = row.price;
+    }
+    for (const room of content.rooms) {
+      const row = rooms.find(item => item.week === 4 && this.createRoomId(item.name) === room.id);
+      if (row) room.fee = row.price;
+    }
     const registrationFee = fees.find((fee) => fee.name === '注册费');
-    if (registrationFee) this.registrationFee = registrationFee.fee;
+    if (registrationFee) content.quoteSettings.registrationFee = registrationFee.fee;
     const seasonalFee = fees.find((fee) => fee.name === '暑期附加费');
-    if (seasonalFee) this.seasonalFeePerWeek = seasonalFee.fee;
+    if (seasonalFee) content.quoteSettings.peakSeasonFeePerWeek = seasonalFee.fee;
+    this.applyContentConfig(content);
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'IBREEZE') return;
+    const content = cloneIbreezeContentConfig(value);
+    this.currentContentConfig = content;
+    this.previewContent = content;
+    this.courseOptions = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id, name: item.name, tuition: item.tuition, lessons: item.schedule, suitable: item.suitable || item.note,
+    }));
+    this.roomOptions = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id, name: item.label || item.name, fee: item.fee, note: item.note,
+    }));
+    this.registrationFee = content.quoteSettings.registrationFee;
+    this.seasonalFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
+    this.localFeeIntro = content.quoteSettings.localFeeIntro;
+    this.courseTableTitle = content.quoteSettings.courseTableTitle;
+    this.courseTableNote = content.quoteSettings.courseTableNote;
+    this.groupClassNote = content.quoteSettings.groupClassNote;
+    this.roomTableTitle = content.quoteSettings.roomTableTitle;
+    this.roomTableNote = content.quoteSettings.roomTableNote;
+    this.stayPolicyTitle = content.quoteSettings.stayPolicyTitle;
+    this.stayPolicies = structuredClone(content.quoteSettings.stayPolicies);
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
+        category: this.resolveMediaCategory(item.category),
+        title: item.caption || item.altText || item.originalFileName || 'I.BREEZE 学校媒体',
+        description: item.altText || item.caption || 'I.BREEZE 学校实景内容',
+        src: item.url,
+        contentType: item.contentType,
+      })),
+    ];
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) if (!this.courseOptions.some(item => item.id === row.optionId)) row.optionId = this.courseOptions[0]?.id ?? '';
+      for (const row of student.quotePlan.rooms) if (!this.roomOptions.some(item => item.id === row.optionId)) row.optionId = this.roomOptions[0]?.id ?? '';
+    }
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url)).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category), title: photo.caption || photo.altText || photo.originalFileName || 'I.BREEZE 学校媒体',
+      description: photo.altText || photo.caption || 'I.BREEZE 学校实景内容', src: photo.url ?? '', contentType: photo.contentType,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
   }
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -842,15 +1000,29 @@ export class IbreezeSchoolComponent implements OnInit {
     return items;
   }
 
+  previewFeeId(name: string): string {
+    return this.currentContentConfig.localFees.find(item => item.name === name)?.id ?? 'local-fees';
+  }
+
+  previewPaymentTarget(item: { label: string }): CiaPreviewTarget {
+    const label = item.label.replace(/^学生\d+\s*·\s*/, '');
+    if (label === '注册费') return { kind: 'section', id: 'quote-registration' };
+    const promotion = this.currentContentConfig.quoteSettings.promotions.find(rule => rule.enabled && (
+      label === rule.name || (rule.id.startsWith('september-') && label === '9月住宿优惠') || (rule.id === 'christmas-2026' && label === '圣诞特别优惠')
+    ));
+    return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
+  }
+
   get quoteImageData() {
+    const imageSettings = this.quoteImageSettings;
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'I.BREEZE', schoolName: '菲律宾宿务I.BREEZE语言学校', filePrefix: 'I-BREEZE',
       heroSrc: '/assets/ibreeze/campus-main.jpg', weeks: this.selectedWeeks, startDate: this.selectedStartDate,
       usdToCny: this.usdToCny, totalUsd: this.quoteUsd, fullFeeDetails: true, localFeeTableLayout: 'web',
       paymentItems: this.schoolPaymentItems,
-      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
       localFeeTotal: this.localFeesTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
-      localFeeNote: this.localFeeIntro, optionalFeeItems: this.optionalFeeItems,
+      localFeeNote: imageSettings.localFeeIntro, optionalFeeItems: this.optionalFeeItems,
       ruleNotes: this.activeStudents.flatMap((student, index) => student.isMinor
         ? [`${this.quoteMode === 'group' ? '学生' + (index + 1) + '：' : ''}${student.courseEligibilityText}`] : []),
     });
@@ -858,11 +1030,24 @@ export class IbreezeSchoolComponent implements OnInit {
     paymentItems.splice(1, 0, ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({
       ...item, label: `${this.quoteMode === 'group' ? '学生' + (index + 1) + ' · ' : ''}${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
     })))));
+    for (const item of paymentItems) {
+      const extra = item.icon === '注' ? imageSettings.paymentNotes.registration
+        : item.icon === '课' ? imageSettings.paymentNotes.course
+          : item.icon === '宿' ? imageSettings.paymentNotes.accommodation
+            : imageSettings.paymentNotes.promotion;
+      item.note = this.joinNotes(item.note, extra);
+    }
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? '学生' + (index + 1) + '：' : ''}${student.quotePlan.warning}`] : []);
     const result = applySchoolQuoteImageLayout({ ...quote, paymentItems,
       importantNotes: [...warnings, ...(quote.importantNotes ?? [])] }, 'I.BREEZE', this.selectedWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
-    return { ...result, headingText: this.quoteHeading,
+    return { ...result, headingText: this.quoteHeading, paymentSectionTitle: imageSettings.paymentSectionTitle,
+      localFeeTitle: imageSettings.localFeeSectionTitle, serviceSectionTitle: imageSettings.serviceSectionTitle,
+      benefitItems: imageSettings.benefits, serviceLocations: imageSettings.serviceLocations,
+      alumniBenefitTitle: imageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: imageSettings.alumniBenefitTitle, subtitle: '', text: imageSettings.alumniBenefitText }],
+      noteTitle: imageSettings.noteSectionTitle,
+      importantNotes: [...(result.importantNotes ?? []), ...imageSettings.footerNotes],
       fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined } };
   }
@@ -871,6 +1056,7 @@ export class IbreezeSchoolComponent implements OnInit {
     return quoteMoney(value);
   }
   formatPhp(value: number): string { return `${quoteMoney(value)} 比索`; }
+  private joinNotes(...parts: Array<string | undefined>): string { return [...new Set(parts.map(part => part?.trim()).filter((part): part is string => !!part))].join('；'); }
   private roundMoney(value: number): number { return Math.round(value * 10) / 10; }
   private isDateBetween(value: string, start: string, end: string): boolean { return value >= start && value <= end; }
   private parseDate(value: string): Date | null {

@@ -71,4 +71,16 @@ describe('PinesSchoolDetailComponent pricing', () => {
     expect(component.schoolPaymentItems.some((item) => item.label === '雅思校区 IELTS Campus · 住宿名称')).toBeTrue();
     expect(component.quoteError).toBe('');
   });
+
+  it('shares the local-fee collection notice with the generated quote image', () => {
+    expect(component.localFeeIntro).toContain('抵达菲律宾后直接向学校缴纳');
+    expect(component.localFeeIntro).toContain('以学校实际收取为准');
+    expect(component.quoteImageData.localFeeNote).toBe(component.localFeeIntro);
+  });
+
+  it('keeps only the current 2027 peak-season estimate in image notes', () => {
+    const notes = component.quoteImageData.importantNotes ?? [];
+    expect(notes.some((note) => note.includes('2027/06/27–08/21'))).toBeTrue();
+    expect(notes.some((note) => note.includes('2026/06/28–08/22'))).toBeFalse();
+  });
 });

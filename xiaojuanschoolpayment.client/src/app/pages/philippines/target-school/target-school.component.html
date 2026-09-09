@@ -18,7 +18,7 @@
               <span><mat-icon>record_voice_over</mat-icon>1:1课量清楚</span>
               <span><mat-icon>location_city</mat-icon>Talamban安静校区</span>
               <span><mat-icon>pool</mat-icon>泳池与校内住宿</span>
-              <span><mat-icon>paid</mat-icon>USD公开价格</span>
+              <span><mat-icon>paid</mat-icon>美元公开价格</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -55,7 +55,7 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ fourWeekStartingText }}</strong>
-              <p>Lite 4 + 6人房 + 入学金USD 150</p>
+              <p>Lite 4＋六人房＋150美元注册费</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -198,12 +198,11 @@
 
         <section class="section-block" id="courses">
           <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
-            <h2>TARGET 2026年7月后公开4周套餐价</h2>
+            <span>学校课程＋住宿套餐价</span>
+            <h2>TARGET 2026年7月10日起适用价目表</h2>
             <p>
-              下表按TARGET官方费用页整理，金额为4周课程费+宿舍费，不含入学金USD 150和菲律宾当地费用。
-              当前活动折扣参考：3周减USD 60、4周减USD 120、6周减USD 180、12周减USD 420；
-              是否适用需按申请时间和旺季规则确认。
+              金额为每位学生的课程＋校内住宿套餐，不拆分学费和住宿费；不含150美元注册费及菲律宾当地学杂费。
+              同价课程仍分开展示和选择，避免把课程分类混在一起。
             </p>
           </div>
 
@@ -211,50 +210,40 @@
             <article class="course-card" *ngFor="let course of courses">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
+              <p class="course-lessons">{{ course.arrangement }}</p>
               <p>{{ course.suitable }}</p>
+              <small>{{ course.note }}</small>
             </article>
           </div>
 
-          <div class="data-table target-course-table" role="table" aria-label="TARGET 4周套餐公开价格">
-            <div class="table-row table-head" role="row">
-              <span role="columnheader">课程</span>
-              <span role="columnheader">6人房</span>
-              <span role="columnheader">4人房</span>
-              <span role="columnheader">3人房</span>
-              <span role="columnheader">2人房</span>
-              <span role="columnheader">1人房</span>
-              <span role="columnheader">课程结构</span>
-            </div>
-            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
-              <span role="cell">{{ row.course }}</span>
-              <span role="cell">{{ row.six }}</span>
-              <span role="cell">{{ row.quad }}</span>
-              <span role="cell">{{ row.triple }}</span>
-              <span role="cell">{{ row.twin }}</span>
-              <span role="cell">{{ row.single }}</span>
-              <span role="cell">{{ row.lessons }}</span>
-            </div>
-          </div>
-
-          <div class="mobile-card-list mobile-course-fees" aria-label="TARGET 4周套餐手机卡片">
-            <article *ngFor="let row of courseFeeRows">
-              <span>{{ row.course }}</span>
-              <div>
-                <em>6人房</em>
-                <strong>{{ row.six }}</strong>
+          <div class="target-price-list" aria-label="TARGET完整套餐价目表">
+            <article class="target-price-card" *ngFor="let course of courses">
+              <header>
+                <div><span>{{ course.type }}</span><h3>{{ course.name }}</h3></div>
+                <p>{{ course.arrangement }}</p>
+              </header>
+              <div class="target-price-table-wrap">
+                <table>
+                  <thead><tr><th scope="col">房型</th><th scope="col" *ngFor="let week of officialPriceWeeks">{{ week }}周</th></tr></thead>
+                  <tbody>
+                    <tr *ngFor="let room of roomOptions">
+                      <th scope="row">{{ room.name }}</th>
+                      <td *ngFor="let week of officialPriceWeeks">{{ officialPackagePrice(course.id, room.id, week) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div>
-                <em>3人房</em>
-                <strong>{{ row.triple }}</strong>
-              </div>
-              <div>
-                <em>1人房</em>
-                <strong>{{ row.single }}</strong>
-              </div>
-              <p>{{ row.lessons }}</p>
+              <p class="target-price-note">{{ course.note }}</p>
             </article>
           </div>
+
+          <aside class="target-pricing-rule">
+            <mat-icon>calculate</mat-icon>
+            <div>
+              <strong>未列周数与换课／换房计价</strong>
+              <p>超过4周但价目表未列出的周数，按4周套餐价÷4×所需周数计算。住宿期间更换课程或房型时，按总学习时长对应的1周、2周、3周或4周价格档位折算每段套餐后合并。</p>
+            </div>
+          </aside>
         </section>
 
         <section class="section-block" id="study-life">
@@ -275,98 +264,110 @@
 
         <section class="quote-panel" id="quote">
           <div class="section-heading">
-            <span>费用快速报价</span>
-            <h2>用TARGET官方公开价格先估算课程住宿费</h2>
-            <p>
-              报价器按官方公开USD价格计算课程+宿舍+入学金。活动折扣可打开参考，但最终是否适用要看申请时间、
-              入学日期和旺季重叠周数。当前列明折扣为3周USD 60、4周USD 120、6周USD 180、12周USD 420。
-            </p>
+            <span>TARGET完整费用报价</span>
+            <h2>{{ quoteHeading }}</h2>
+            <p>每一行选择一个“课程＋房型”套餐，学校现金优惠、思达9折、升级权益和到校学杂费会随日期及个人签证自动更新。</p>
           </div>
-          <div class="quote-form" aria-label="TARGET费用快速报价选项">
-            <label>
-              课程
-              <select [(ngModel)]="selectedCourseId">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label>
-              房型
-              <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label>
-              周数
-              <select [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
-              </select>
-            </label>
-            <label>
-              预计入学日
-              <input type="date" [(ngModel)]="selectedStartDate" />
-            </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="includeCampaignDiscount" />
-              <span>显示官方活动折扣参考</span>
-            </label>
+          <div class="quote-mode target-quote-mode" role="group" aria-label="报价人数模式">
+            <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+            <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+            <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
           </div>
+          <p class="group-hint" *ngIf="quoteMode === 'group'">支持2–20人；每位学生独立选择报名日、旅游签证、套餐与接机，费用分别计算后汇总。</p>
+
+          <article class="student-quote target-student-quote" *ngFor="let student of activeStudents; let i = index">
+            <header class="target-student-heading">
+              <div>
+                <span>{{ quoteMode === 'group' ? '学生 ' + (i + 1) : '报价条件' }}</span>
+                <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) + '的入学与套餐信息' : '设置入学与套餐信息' }}</h3>
+                <p>先确认报名与签证，再选择课程住宿套餐。</p>
+              </div>
+              <div class="target-student-weeks"><small>当前学习时长</small><strong>{{ student.packageWeeks }}周</strong></div>
+            </header>
+
+            <section class="target-profile-card" aria-label="入学基本条件">
+              <header class="target-card-heading">
+                <span><mat-icon>event_available</mat-icon></span>
+                <div><strong>入学基本条件</strong><small>用于判断签证费用与限时升级资格</small></div>
+              </header>
+              <div class="student-fields">
+                <label><span class="target-field-label"><mat-icon>edit_calendar</mat-icon>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label><span class="target-field-label"><mat-icon>badge</mat-icon>初始旅游签证</span>
+                  <select [(ngModel)]="student.visaType"><option value="tourist30">30天旅游签证</option><option value="tourist59">59天旅游签证</option></select>
+                </label>
+                <label class="target-pickup-check"><span class="target-field-label"><mat-icon>airport_shuttle</mat-icon>机场接机</span><span class="target-check-control"><input type="checkbox" [(ngModel)]="student.pickupRequested" />需要宿务机场接机</span></label>
+                <label *ngIf="student.packageWeeks >= 12"><span class="target-field-label"><mat-icon>workspace_premium</mat-icon>12周以上升级权益</span>
+                  <select [(ngModel)]="student.upgradeChoice"><option value="final-course-upgrade">最后4周升级ULTIMATE 8／IELTS</option><option value="weekend-trips">参加2次TARGET周末活动</option></select>
+                </label>
+              </div>
+            </section>
+
+            <div class="target-package-list">
+              <div class="target-card-heading target-package-list-heading">
+                <span><mat-icon>school</mat-icon></span>
+                <div><strong>课程住宿套餐</strong><small>课程费与校内住宿合并计价，不拆分住宿金额</small></div>
+              </div>
+              <article class="target-package-row" *ngFor="let row of student.packages; let rowIndex = index">
+                <header>
+                  <div class="target-package-title"><span>套餐 {{ rowIndex + 1 }}</span><strong>选择课程、房型与日期</strong></div>
+                  <div class="target-package-header-actions"><b>{{ formatUsd(student.packagePrice(row)) }}美元</b><button type="button" *ngIf="student.packages.length > 1" (click)="student.removePackage(row.id)" aria-label="删除这段套餐"><mat-icon>delete_outline</mat-icon>删除</button></div>
+                </header>
+                <div class="target-package-fields">
+                  <label class="target-course-field"><span class="target-field-label"><mat-icon>menu_book</mat-icon>课程名称与安排</span><select [(ngModel)]="row.courseId"><option *ngFor="let course of courses" [value]="course.id">{{ course.name }}｜{{ course.arrangement }}</option></select></label>
+                  <label><span class="target-field-label"><mat-icon>bed</mat-icon>房型</span><select [(ngModel)]="row.roomId"><option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option></select></label>
+                  <label><span class="target-field-label"><mat-icon>date_range</mat-icon>周数</span><select [(ngModel)]="row.weeks"><option *ngFor="let week of student.weekOptions" [ngValue]="week">{{ week }}周</option></select></label>
+                  <label><span class="target-field-label"><mat-icon>flight_land</mat-icon>周日入学／入住</span><input type="date" [(ngModel)]="row.startDate" /></label>
+                </div>
+              </article>
+              <button type="button" class="target-add-package" (click)="student.addPackage()" [disabled]="!student.canAddPackage()">
+                <span><mat-icon>add_circle</mat-icon><strong>添加下一段课程＋房型套餐</strong></span>
+              </button>
+            </div>
+            <p class="fee-alert" *ngIf="student.warning">{{ student.warning }}</p>
+            <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }}美元</strong></div>
+          </article>
 
           <div class="quote-breakdown target-quote-breakdown">
-            <div>
-              <span>课程+住宿</span>
-              <strong>{{ packageUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
-            </div>
-            <div>
-              <span>入学金</span>
-              <strong>USD 150</strong>
-              <p>SSP、签证、教材、水电和押金另计。</p>
-            </div>
-            <div>
-              <span>活动折扣参考</span>
-              <strong>{{ campaignDiscountText }}</strong>
-              <p>仅按3、4、6、12周列明优惠计算；繁忙期和申请时机可能影响是否适用。</p>
-            </div>
-            <div>
-              <span>预计USD合计</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>平均每周约 {{ weeklyAverageText }}，不含菲律宾当地费用和机票保险。</p>
+            <div class="target-breakdown-heading"><span><small>费用汇总</small><strong>学校费用明细</strong></span><em>随上方选择自动更新</em></div>
+            <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')">
+              <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
             </div>
           </div>
 
-          <div class="quote-actions">
-            <button type="button" class="primary-action" (click)="calculateQuote()">
-              标记为已估算
-              <mat-icon>done</mat-icon>
-            </button>
-            <a class="secondary-action" routerLink="/about-sida/contact">
-              发送给顾问复核
-              <mat-icon>send</mat-icon>
-            </a>
+          <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+          <div class="group-result">
+            <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small>
+            <small *ngIf="quoteCalculated">已按当前选择更新；正式报价仍以TARGET账单、空房和活动资格确认为准。</small>
           </div>
-          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认TARGET正式报价、活动折扣、房型空位、入学日期和当地费用。</p>
-        </section>
+          <div class="group-actions">
+            <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+            <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+            <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
+          </div>
+          <div class="quote-general-notes"><strong>报价说明</strong><ul><li *ngFor="let note of quoteGeneralNotes">{{ note }}</li></ul></div>
 
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>菲律宾当地费用</span>
-            <h2>TARGET报价外还要准备的费用</h2>
-            <p>以下按TARGET官方费用页整理。菲律宾政府费用、学校当地费用和宿舍规则可能调整，报名时需再次确认。</p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <div class="mobile-card-list mobile-only">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+            <div class="local-fee-heading"><div><span>到校支付费用参考</span><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+            <p class="local-fee-intro">已按{{ activeStudents.length }}位学生各自的套餐周数、完整停留跨度及30天／59天初始旅游签证估算。房间押金、接机和洗衣另列，不计入学杂费合计。</p>
+            <div class="local-fee-table-wrap">
+              <table class="local-fee-table">
+                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                <tbody><tr *ngFor="let fee of estimatedLocalFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+                <tfoot>
+                  <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含房间押金、接机及洗衣服务</td></tr>
+                  <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">{{ localFeeCnyText }}</td><td>参考：1元人民币≈{{ phpPerCny | number:'1.0-2' }}比索；最终以实际兑换或支付汇率为准</td></tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="excluded-fee-list">
+              <h4>另行准备（不计入上方学杂费及人民币预估合计）</h4>
+              <div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small *ngIf="fee.cnyAmount">{{ fee.cnyAmount }}</small></b></div>
+            </div>
+            <div class="target-local-fee-notes">
+              <strong>说明</strong>
+              <ol><li>{{ quoteGeneralNotes[0] }}</li><li>{{ quoteGeneralNotes[1] }}</li></ol>
+            </div>
+          </section>
         </section>
 
         <section class="section-block source-panel" id="sources">
@@ -413,7 +414,7 @@
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认TARGET空位与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分USD课程住宿费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 分列美元学校费用与比索当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较宿务高性价比成人学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">

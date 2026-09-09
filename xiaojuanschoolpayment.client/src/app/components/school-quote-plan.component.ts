@@ -11,11 +11,26 @@ export class SchoolQuotePlanComponent {
   @Input({ required: true }) plan!: SchoolQuotePlan;
   @Input() examCourseIds: string[] = [];
   @Input() travellerCount = 1;
+  @Input() syncCourseDatesToRooms = false;
+  readonly sundayDateMinimum = '2020-01-05';
   get travellers() { return Array.from({ length: this.travellerCount }, (_, index) => index + 1); }
   readonly lists = [{ kind: 'course' as const, title: '课程' }, { kind: 'room' as const, title: '住宿' }];
   readonly money = quoteMoney;
   trackRow(_: number, row: { id: number }) { return row.id; }
   details(kind: 'course' | 'room', id: string) { return this.plan.options(kind).find(option => option.id === id)?.details ?? ''; }
+  updateStartDate(kind: QuotePlanKind, index: number, value: string, input: HTMLInputElement): void {
+    const row = this.plan.rows(kind)[index];
+    const timestamp = this.plan.date(value);
+    if (!row || timestamp === null || new Date(timestamp).getUTCDay() !== 0) {
+      input.value = row?.startDate ?? '';
+      return;
+    }
+    row.startDate = value;
+    if (this.syncCourseDatesToRooms) {
+      const matchingRow = this.plan.rows(kind === 'course' ? 'room' : 'course')[index];
+      if (matchingRow) matchingRow.startDate = value;
+    }
+  }
   optionGroups(kind: QuotePlanKind): { label: string; options: QuotePlanOption[] }[] {
     const options = this.plan.options(kind);
     const labels = [...new Set(options.map((option) => option.group).filter((label): label is string => !!label))];

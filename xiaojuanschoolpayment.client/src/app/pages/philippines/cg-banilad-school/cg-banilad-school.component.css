@@ -235,6 +235,42 @@
   background: #b5561f;
 }
 
+:host .cg-banilad-page .gallery-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  display: block;
+  object-fit: cover;
+  background: #071b2f;
+}
+
+:host .cg-banilad-stay-policy {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #cfe1d9;
+  border-radius: 18px;
+  background: #f5fbf8;
+}
+
+:host .cg-banilad-stay-policy h3 { margin: 0 0 14px; color: #064f3b; }
+:host .cg-banilad-stay-policy > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+:host .cg-banilad-stay-policy article { padding: 14px; border: 1px solid #dce9e4; border-radius: 12px; background: #fff; }
+:host .cg-banilad-stay-policy span { display: block; color: #e85b24; font-size: 12px; font-weight: 700; }
+:host .cg-banilad-stay-policy strong { display: block; margin: 5px 0; color: #102640; }
+:host .cg-banilad-stay-policy p { margin: 0; color: #607083; font-size: 13px; line-height: 1.6; }
+
+:host(.cg-banilad-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.cg-banilad-editor-preview) .cia-preview-highlight {
+  position: relative;
+  z-index: 2;
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  box-shadow: 0 0 0 5px rgb(255 90 31 / 14%);
+}
+
+@media (max-width: 760px) {
+  :host .cg-banilad-stay-policy > div { grid-template-columns: 1fr; }
+}
+
 :host .cg-banilad-page .cg-course-price-table .table-row {
   grid-template-columns: minmax(200px, 1fr) minmax(140px, 0.6fr) minmax(0, 2.4fr);
 }

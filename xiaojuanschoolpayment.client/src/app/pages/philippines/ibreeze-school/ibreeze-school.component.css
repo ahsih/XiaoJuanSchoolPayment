@@ -158,3 +158,21 @@
 .split-layout#room-fees { grid-template-columns: minmax(0, 1fr); }
 .student-quote .quote-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 760px) { .student-quote .quote-form { grid-template-columns: minmax(0, 1fr); } }
+
+:host .gallery-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #071f1a;
+}
+
+:host-context(.ibreeze-editor-preview) [data-cia-preview-kind] {
+  cursor: pointer;
+  transition: outline-color 160ms ease, box-shadow 160ms ease;
+}
+
+:host-context(.ibreeze-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.14);
+}

@@ -1,6 +1,6 @@
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { applySchoolQuoteImageLayout, quoteMoney, SchoolQuotePlan } from '../../../components/school-quote-plan';
-import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
+import { QuoteImageCardData, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 
 export type IuIclCampus = 'IU' | 'ICL';
 type PromoCourse = 'power4' | 'power6' | 'power8' | 'light' | 'junior' | 'ielts' | 'guarantee8' | 'guarantee12' | 'toeic';
@@ -168,7 +168,9 @@ export class IuIclQuote {
       kind => (kind === 'course' ? this.courses : this.rooms).map(item => ({
         id: item.id,
         name: item.name,
-        details: kind === 'course' ? (item as IuIclCourse).schedule : (item as IuIclRoom).note,
+        details: kind === 'course'
+          ? (item as IuIclCourse).schedule
+          : (item as IuIclRoom).note.startsWith('淡季海报标注') ? '' : (item as IuIclRoom).note,
       })),
       (kind, row) => {
         const item = (kind === 'course' ? this.courses : this.rooms).find(option => option.id === row.optionId);
@@ -267,6 +269,21 @@ export class IuIclQuote {
     ];
   }
 
+  get imageSchoolPaymentItems(): QuoteImagePaymentItem[] {
+    return this.schoolPaymentItems.map(item => {
+      if (item.label === '校方淡季组合价调整') {
+        return {
+          ...item,
+          note: `适用期2026/08/23–2027/01/09，须在2027/01/16前结业；${this.availabilityNote}`,
+        };
+      }
+      if (item.label === '校方免注册费') {
+        return { ...item, note: '符合校方组合条件，本次免注册费；不叠加思达启航或其它中介优惠。' };
+      }
+      return item;
+    });
+  }
+
   get visaExtensionCount(): number {
     return this.plan.stayWeeks <= 4 ? 0 : Math.min(5, Math.ceil((this.plan.stayWeeks - 4) / 4));
   }
@@ -303,7 +320,11 @@ export class IuIclQuote {
     return [{ label: '额外住宿（每人）', amount: '1,300 比索／晚', note: '仅在超出标准周日入住、周六13:00退房安排时另计；需先确认空房。' }];
   }
   get localFeeIntro(): string {
-    return '按校方2026价目表自动估算。4/8/12/16/24周校内住宿方案应分别为22,900/33,200/49,000/59,300/79,900比索；其中押金为可退金额，教材与签证最终以实际办理为准。';
+    return '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。本页及报价单按当前课程、住宿和停留周数提供预估，具体项目和金额以学校实际收取为准；宿舍押金已计入合计但通常符合条件可退，额外住宿另列且不计入学杂费及人民币预估合计。按现有价目表，4/8/12/16/24周校内住宿方案分别估算为22,900/33,200/49,000/59,300/79,900比索。';
+  }
+
+  get imageLocalFeeIntro(): string {
+    return '学杂费为抵达菲律宾后向学校缴纳的当地费用，本报价仅供参考，具体以到校实收为准；宿舍押金已计入合计，额外住宿另列。';
   }
 
   imageData(usdToCny: number, phpPerCny: number, exchangeDate: string | undefined, heroSrc: string) {
@@ -317,12 +338,12 @@ export class IuIclQuote {
       startDate: this.selectedStartDate,
       usdToCny,
       totalUsd: this.total,
-      paymentItems: this.schoolPaymentItems,
+      paymentItems: this.imageSchoolPaymentItems,
       localFeeItems: this.localFees.map(item => ({ label: item.item, unit: item.amount, quantity: String(item.quantity), amount: `${quoteMoney(item.total)} 比索`, note: item.note })),
       localFeeTotal: this.localFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeeTotal / phpPerCny),
-      localFeeNote: this.localFeeIntro,
+      localFeeNote: this.imageLocalFeeIntro,
       optionalFeeItems: this.optionalFees,
       ruleNotes: [],
       fullFeeDetails: true,
@@ -331,11 +352,9 @@ export class IuIclQuote {
     const guaranteeSelected = this.plan.courses.some(row => this.courses.find(item => item.id === row.optionId)?.fixedWeeks);
     const importantNotes = [
       ...(this.warning ? [this.warning] : []),
-      this.promotionNote,
-      this.availabilityNote,
       ...(guaranteeSelected ? IU_ICL_GUARANTEE_RULES : []),
-      ...this.admissionRules,
-      '入学/入住按周日，结业/退房按周六；课程、住宿和当地费用最终以学校书面确认为准。',
+      '全部费用须在抵达前28天付清，注册费不退；取消与改期按校方政策执行。',
+      '入学/入住按周日，结业/退房按周六。',
     ];
     const result = applySchoolQuoteImageLayout({
       ...quote,
@@ -343,6 +362,7 @@ export class IuIclQuote {
       alumniBenefitItems: [],
       totalIncludedLabel: this.promoPairCount ? '校方淡季价已计入' : '按校方常规价计算',
       finalConfirmationText: '最终以学校书面确认的价格与空房为准。',
+      noteTitle: '报价说明',
       importantNotes,
       benefitItems: [
         { title: '0中介费', text: '不额外加收报名服务费' },
@@ -356,4 +376,138 @@ export class IuIclQuote {
       conversionRates: { usdToCny, phpPerCny, date: exchangeDate },
     };
   }
+}
+
+const groupScope = (indexes: number[], total: number): string =>
+  indexes.length === total ? `${total}人适用` : `学生${indexes.join('、')}适用`;
+
+/** Keep each student's IU/ICL calculation independent, then combine only the presentation rows. */
+export function iuIclGroupPaymentItems(
+  students: readonly IuIclQuote[],
+  imageCopy = false,
+): QuoteImagePaymentItem[] {
+  if (students.length === 1) return imageCopy ? students[0].imageSchoolPaymentItems : students[0].schoolPaymentItems;
+
+  const items: QuoteImagePaymentItem[] = [{
+    icon: '注',
+    label: '注册费',
+    amount: `${quoteMoney(students.length * students[0].registrationFee)} 美元`,
+    note: `${students.length}人 × ${students[0].registrationFee}美元；每位学生一次性计收，符合校方淡季组合条件者单独免除。`,
+  }];
+
+  students.forEach((student, index) => {
+    items.push(...student.plan.paymentItems().map(item => ({
+      ...item,
+      label: `学生${index + 1} · ${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
+    })));
+  });
+
+  const promotionStudents = students
+    .map((student, index) => ({ student, index: index + 1 }))
+    .filter(entry => entry.student.lowSeasonDiscount > 0);
+  if (promotionStudents.length) {
+    const discount = promotionStudents.reduce((sum, entry) => sum + entry.student.lowSeasonDiscount, 0);
+    const note = imageCopy
+      ? `${groupScope(promotionStudents.map(entry => entry.index), students.length)}；适用期2026/08/23–2027/01/09，须在2027/01/16前结业；${students[0].availabilityNote}`
+      : `${groupScope(promotionStudents.map(entry => entry.index), students.length)}；同日期课程与校内住宿满4周，按校方淡季组合价表分别计算；不与其它优惠叠加。`;
+    items.push({ icon: '惠', label: '校方淡季组合价调整', amount: `− ${quoteMoney(discount)} 美元`, note, accent: true });
+  }
+
+  const waiverStudents = students
+    .map((student, index) => ({ student, index: index + 1 }))
+    .filter(entry => entry.student.registrationWaiver > 0);
+  if (waiverStudents.length) {
+    const waiver = waiverStudents.reduce((sum, entry) => sum + entry.student.registrationWaiver, 0);
+    items.push({
+      icon: '免',
+      label: '校方免注册费',
+      amount: `− ${quoteMoney(waiver)} 美元`,
+      note: `${groupScope(waiverStudents.map(entry => entry.index), students.length)}；符合校方组合条件者免注册费，不叠加思达启航或其它中介优惠。`,
+      accent: true,
+    });
+  }
+  return items;
+}
+
+export function iuIclGroupLocalFees(students: readonly IuIclQuote[]): IuIclLocalFee[] {
+  if (students.length === 1) return students[0].localFees;
+  const groups = new Map<string, { fee: IuIclLocalFee; students: number[]; order: number }>();
+  students.forEach((student, index) => student.localFees.forEach((fee, order) => {
+    const key = JSON.stringify([fee.item, fee.amount, fee.note]);
+    const existing = groups.get(key);
+    if (existing) {
+      existing.fee.quantity += fee.quantity;
+      existing.fee.total += fee.total;
+      existing.students.push(index + 1);
+    } else {
+      groups.set(key, { fee: { ...fee }, students: [index + 1], order });
+    }
+  }));
+  return [...groups.values()]
+    .sort((left, right) => left.order - right.order)
+    .map(({ fee, students: indexes }) => ({
+      ...fee,
+      item: indexes.length === students.length ? fee.item : `学生${indexes.join('、')} · ${fee.item}`,
+    }));
+}
+
+export function buildIuIclGroupImageData(
+  students: readonly IuIclQuote[],
+  usdToCny: number,
+  phpPerCny: number,
+  exchangeDate: string | undefined,
+  heroSrc: string,
+): QuoteImageCardData {
+  if (!students.length) throw new Error('IU/ICL多人报价至少需要一名学生。');
+  if (students.length === 1) return students[0].imageData(usdToCny, phpPerCny, exchangeDate, heroSrc);
+
+  const campus = students[0].campus;
+  const totalUsd = students.reduce((sum, student) => sum + student.total, 0);
+  const localFees = iuIclGroupLocalFees(students);
+  const localFeeTotal = localFees.reduce((sum, fee) => sum + fee.total, 0);
+  const startDate = students.map(student => student.selectedStartDate).filter(Boolean).sort()[0] ?? '';
+  const base = students[0].imageData(usdToCny, phpPerCny, exchangeDate, heroSrc);
+  const warnings = students.flatMap((student, index) => student.warning ? [`学生${index + 1}：${student.warning}`] : []);
+  const guaranteeSelected = students.some(student => student.plan.courses.some(row =>
+    student.courses.find(courseItem => courseItem.id === row.optionId)?.fixedWeeks));
+  const eligibleCount = students.filter(student => student.promoPairCount > 0).length;
+  const quoteDate = base.studentItems.find(item => item.label === '报价日期');
+
+  return {
+    ...base,
+    headingText: `${campus} ${students.length}人报价`,
+    title: `${students.length}人`,
+    fileName: `${campus}-${students.length}人报价-${startDate.replace(/-/g, '')}.png`,
+    studentItems: [
+      ...(quoteDate ? [quoteDate] : []),
+      { icon: '人', label: '学生人数', value: `${students.length}人` },
+      { icon: '日', label: '最早入学日期', value: startDate.replace(/-/g, '/') },
+    ],
+    paymentItems: iuIclGroupPaymentItems(students, true),
+    totalUsd: `${quoteMoney(totalUsd)} 美元`,
+    totalCny: `人民币预计金额：约 ${Math.round(totalUsd * usdToCny).toLocaleString('zh-CN')} 元`,
+    totalIncludedLabel: eligibleCount ? `${eligibleCount}人校方淡季价已计入` : '按校方常规价计算',
+    localFeeTitle: '到校后学杂费明细',
+    localFeeItems: localFees.map(fee => ({
+      label: fee.item,
+      unit: fee.amount,
+      quantity: String(fee.quantity),
+      amount: `${quoteMoney(fee.total)} 比索`,
+      note: fee.note,
+    })),
+    localFeeAmount: `${quoteMoney(localFeeTotal)} 比索`,
+    localFeeCny: `人民币预计金额：约 ${Math.round(localFeeTotal / phpPerCny).toLocaleString('zh-CN')} 元`,
+    localFeeDescription: `多人合计约人民币${Math.round(localFeeTotal / phpPerCny).toLocaleString('zh-CN')}元；按每位学生的实际停留分别估算。`,
+    optionalFeeItems: [{
+      ...students[0].optionalFees[0],
+      note: '按每位学生超出标准入住安排的实际晚数另计；多人共住及空房须向学校确认。',
+    }],
+    importantNotes: [
+      ...warnings,
+      ...(guaranteeSelected ? IU_ICL_GUARANTEE_RULES : []),
+      '全部费用须在抵达前28天付清，注册费不退；取消与改期按校方政策执行。',
+      '每位学生入学/入住按周日，结业/退房按周六。',
+    ],
+    conversionRates: { usdToCny, phpPerCny, date: exchangeDate },
+  };
 }

@@ -1,11 +1,15 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { CpiSchoolDetailComponent } from './cpi-school-detail.component';
+import { createDefaultCpiContentConfig } from './cpi-content-config';
 
 describe('CPI pricing and complete quote export', () => {
   let component: CpiSchoolDetailComponent;
@@ -13,6 +17,9 @@ describe('CPI pricing and complete quote export', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     component = TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent());
     component.selectedRegistrationDate = '2026-09-03';
@@ -87,8 +94,9 @@ describe('CPI pricing and complete quote export', () => {
     expect(component.quoteImageData.paymentItems.find(row => row.label === '限量一对一加课')).toBeUndefined();
     expect(component.quoteUsd).toBe(1503);
     component.selectedStartDate = '2026-12-01';
-    expect(component.quoteImageData.paymentItems.length).toBe(7);
-    expect(component.quoteImageData.paymentItems[6].label).toBe('限量一对一加课');
+    expect(component.quoteImageData.paymentItems.length).toBe(6);
+    expect(component.quoteImageData.paymentItems[5].label).toBe('12月额外优惠');
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '限量一对一加课')).toBeUndefined();
   });
 
   it('hides non-applicable school discounts but keeps every local and optional detail', () => {
@@ -318,5 +326,28 @@ describe('CPI pricing and complete quote export', () => {
     expect(component.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
     expect(component.quoteImageData.paymentItems.some(row => row.label.startsWith('学生2 · 课程'))).toBeTrue();
     expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
+  });
+
+  it('uses employee-edited CPI prices, rules, local fees and quote-image copy together', () => {
+    const edited = createDefaultCpiContentConfig();
+    edited.courses.find(course => course.id === 'esl-general-15')!.tuition = 1000;
+    edited.rooms.find(room => room.id === 'building-a-quad')!.fee = 800;
+    edited.quoteSettings.registrationFee = 120;
+    edited.quoteSettings.promotions.find(rule => rule.id === 'cpi-sida-90')!.discountValue = 5;
+    edited.quoteSettings.promotions.find(rule => rule.id === 'cpi-off-season')!.discountValue = 20;
+    edited.localFees.find(fee => fee.id === 'management')!.amount = 3000;
+    edited.quoteImageSettings.paymentSectionTitle = '自定义学校费用';
+    edited.quoteImageSettings.footerNotes = ['自定义报价备注'];
+
+    (component as unknown as { applyContentConfig(value: typeof edited): void }).applyContentConfig(edited);
+    component.selectedRegistrationDate = '2026-09-03';
+    component.selectedStartDate = '2026-09-06';
+
+    expect(component.tuitionForSelectedWeeks).toBe(1000);
+    expect(component.roomFeeForSelectedWeeks).toBe(800);
+    expect(component.quoteUsd).toBe(1750);
+    expect(component.localFees.find(row => row.item === '管理费')?.total).toBe(3000);
+    expect(component.quoteImageData.paymentSectionTitle).toBe('自定义学校费用');
+    expect(component.quoteImageData.importantNotes).toContain('自定义报价备注');
   });
 });

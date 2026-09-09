@@ -1,4 +1,7 @@
 import { PinesStudentQuote, pinesPriceMultiplier } from './pines-student-quote';
+import { createDefaultPinesContentConfig } from './pines-content-config';
+
+const defaultContent = createDefaultPinesContentConfig();
 
 const prices = {
   courseFees: [
@@ -12,8 +15,11 @@ const prices = {
     { id: 'ielts-family-2-3', name: '雅思校区亲子2–3人房', fee: 780, note: '按每位学生计算' },
   ],
   registrationFee: 100,
+  registrationWaiverEnabled: true,
   sidaDiscountRate: 0.95,
   offSeasonDiscountPerFourWeeks: 150,
+  offSeasonRegistrationEnd: '2026-12-31',
+  twelveWeekMinimumWeeks: 12,
   twelveWeekDiscount: 100,
   longStayMinimumWeeks: 16,
   longStayBaseDiscount: 100,
@@ -24,6 +30,9 @@ const prices = {
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
     { label: '2027旺季', start: '2027-06-27', end: '2027-08-21' },
   ],
+  shortStayRatios: { '2': 0.65, '3': 0.85 },
+  localFeeRules: defaultContent.localFees,
+  promotionRules: defaultContent.quoteSettings.promotions,
 };
 
 describe('PinesStudentQuote', () => {

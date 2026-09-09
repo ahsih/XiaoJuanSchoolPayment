@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { applySchoolQuoteImageLayout, QuotePlanRow } from '../../../components/school-quote-plan';
@@ -12,6 +15,8 @@ import { groupLocalFees, groupPaymentLines } from '../../../components/school-gr
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import {
+  ANJ_BIRTHDAY_DISCOUNT,
+  ANJ_BIRTHDAY_REGISTRATION_START,
   ANJ_COURSES,
   ANJ_CONTINUATION_PERIODS,
   ANJ_NEW_PROMOTION_PERIODS,
@@ -22,9 +27,15 @@ import {
   ANJ_SEASONAL_FEE_PER_WEEK,
   ANJ_SIDA_DISCOUNT_RATE,
   ANJ_WEEK_OPTIONS,
+  AnjContinuationPeriod,
+  AnjCourse,
+  AnjPromotionPeriod,
   AnjRoom,
 } from './anj-pricing';
 import { AnjStudentQuote } from './anj-student-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneAnjContentConfig, createDefaultAnjContentConfig } from './anj-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿';
 
@@ -40,6 +51,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  contentType?: string;
 }
 
 interface BasicInfoRow {
@@ -86,21 +98,41 @@ interface SourceLink {
     './anj-school.component.css',
   ],
 })
-export class AnjSchoolComponent implements OnInit {
+export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
+  private readonly initialContent = createDefaultAnjContentConfig();
+  private currentContentConfig = cloneAnjContentConfig(this.initialContent);
+  readonly contentConfig = () => this.currentContentConfig;
+  private previewContent?: CiaContentConfig;
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
   readonly weekOptions = ANJ_WEEK_OPTIONS;
-  readonly courses = ANJ_COURSES;
-  readonly rooms = ANJ_ROOMS;
-  readonly roomOptions = this.rooms;
-  readonly newPromotionPeriods = ANJ_NEW_PROMOTION_PERIODS;
-  readonly continuationPeriods = ANJ_CONTINUATION_PERIODS;
-  readonly registrationFee = ANJ_REGISTRATION_FEE;
-  readonly sidaDiscountRate = ANJ_SIDA_DISCOUNT_RATE;
-  readonly seasonalFeePerWeek = ANJ_SEASONAL_FEE_PER_WEEK;
-  readonly peakSeasonRanges = ANJ_PEAK_SEASON_RANGES;
+  courses: AnjCourse[] = ANJ_COURSES.map(item => ({ ...item, feeByWeeks: item.feeByWeeks ? { ...item.feeByWeeks } : undefined, allowedWeeks: item.allowedWeeks ? [...item.allowedWeeks] : undefined }));
+  rooms: AnjRoom[] = ANJ_ROOMS.map(item => ({ ...item }));
+  get roomOptions() { return this.rooms; }
+  newPromotionPeriods: AnjPromotionPeriod[] = ANJ_NEW_PROMOTION_PERIODS.map(item => ({ ...item, regularDiscounts: { ...item.regularDiscounts } }));
+  continuationPeriods: AnjContinuationPeriod[] = ANJ_CONTINUATION_PERIODS.map(item => ({ ...item, discounts: { ...item.discounts } }));
+  registrationFee = ANJ_REGISTRATION_FEE;
+  registrationWaiverEnabled = true;
+  birthdayPromotionEnabled = true;
+  birthdayDiscount = ANJ_BIRTHDAY_DISCOUNT;
+  birthdayRegistrationStart = ANJ_BIRTHDAY_REGISTRATION_START;
+  sidaDiscountRate = ANJ_SIDA_DISCOUNT_RATE;
+  seasonalFeePerWeek = ANJ_SEASONAL_FEE_PER_WEEK;
+  peakSeasonRanges: Array<{ label: string; start: string; end: string }> = ANJ_PEAK_SEASON_RANGES.map(item => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = structuredClone(this.currentContentConfig.localFees);
+  localFeeIntro = this.currentContentConfig.quoteSettings.localFeeIntro;
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.currentContentConfig.quoteImageSettings);
   readonly students: AnjStudentQuote[] = [new AnjStudentQuote(this)];
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
@@ -150,7 +182,7 @@ export class AnjSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'A&J Admin Building',
@@ -314,9 +346,187 @@ export class AnjSchoolComponent implements OnInit {
     { label: 'Fujiyama A&J ECO Campus 2026费用参考', url: 'https://www.fujiyama-international.com/philippines/anj-eco.html' },
     { label: 'Cebu Buddy A&J ECO Campus费用参考', url: 'https://cebu-buddy.com/school/aj-eco/' },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
+    this.loadPublishedContent();
     this.loadExchangeRate();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('anj-editor-preview');
+    window.parent.postMessage({ type: 'anj-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'anj-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'anj-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠规则区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'anj-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('anj-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'ANJ' ? value : null;
+    } catch { return null; }
+  }
+
+  private loadPublishedContent(): void {
+    this.schoolService.getSchools({ name: 'A&J' }).pipe(
+      switchMap((schools) => {
+        const school = schools.find(item => item.name === '菲律宾碧瑶A&J e-Edu English Academy')
+          ?? schools.find(item => item.name.toLowerCase().includes('a&j'))
+          ?? schools[0];
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'ANJ') return;
+    const content = cloneAnjContentConfig(value);
+    this.currentContentConfig = content;
+    this.previewContent = content;
+    this.courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id,
+      name: item.name,
+      type: item.courseType || '英语课程',
+      lessons: item.schedule,
+      suitable: item.suitable || item.note,
+      fee4w: item.feeByWeeks ? undefined : item.tuition,
+      feeByWeeks: item.feeByWeeks ? { ...item.feeByWeeks } as AnjCourse['feeByWeeks'] : undefined,
+      allowedWeeks: item.allowedWeeks ? [...item.allowedWeeks] as AnjCourse['allowedWeeks'] : undefined,
+    }));
+    this.rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id,
+      name: item.label || item.name,
+      note: item.note,
+      fee4w: item.fee,
+      priceMode: item.priceMode ?? 'per-person',
+      minOccupancy: item.minOccupancy ?? 1,
+      maxOccupancy: item.maxOccupancy ?? 1,
+      waterFee4w: item.waterFee4w ?? 0,
+      waterGroup: (item.waterGroup ?? item.group ?? 'Premium / Villa') as AnjRoom['waterGroup'],
+      deposit: item.deposit ?? 0,
+    }));
+    const activePromotions = content.quoteSettings.promotions.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    this.newPromotionPeriods = activePromotions.filter(item => item.ruleKind === 'anj-new-period').map(item => ({
+      label: item.name,
+      start: item.arrivalStart ?? '',
+      end: item.arrivalEnd ?? '',
+      regularDiscounts: { ...(item.discountTiers ?? {}) } as AnjPromotionPeriod['regularDiscounts'],
+      lowSeasonPerFourWeeks: item.incrementValue ?? 0,
+    }));
+    this.continuationPeriods = activePromotions.filter(item => item.ruleKind === 'anj-continuation-period').map(item => ({
+      label: item.name,
+      start: item.arrivalStart ?? '',
+      end: item.arrivalEnd ?? '',
+      discounts: { ...(item.discountTiers ?? {}) } as AnjContinuationPeriod['discounts'],
+    }));
+    const registrationRule = activePromotions.find(item => item.id === 'registration-waiver');
+    const birthdayRule = activePromotions.find(item => item.ruleKind === 'anj-birthday' || item.id === 'anj-birthday');
+    const sidaRule = activePromotions.find(item => item.id === 'sida-discount');
+    this.registrationFee = content.quoteSettings.registrationFee;
+    this.registrationWaiverEnabled = !!registrationRule?.waiveRegistration;
+    this.birthdayPromotionEnabled = !!birthdayRule;
+    this.birthdayDiscount = birthdayRule?.discountValue ?? 0;
+    this.birthdayRegistrationStart = birthdayRule?.registrationStart || ANJ_BIRTHDAY_REGISTRATION_START;
+    this.sidaDiscountRate = sidaRule?.discountType === 'percentage' ? Math.max(0, 1 - sidaRule.discountValue / 100) : 1;
+    this.seasonalFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = content.quoteSettings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ label: item.label, start: item.start, end: item.end }));
+    this.localFeeRules = content.localFees.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    this.localFeeIntro = content.quoteSettings.localFeeIntro;
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
+        category: this.resolveMediaCategory(item.category),
+        title: item.caption || item.altText || item.originalFileName || 'A&J学校媒体',
+        description: item.altText || item.caption || 'A&J学校实景内容',
+        src: item.url,
+        contentType: item.contentType,
+      })),
+    ];
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) if (!this.courses.some(item => item.id === row.optionId)) row.optionId = this.courses[0]?.id ?? '';
+      for (const row of student.quotePlan.rooms) if (!this.rooms.some(item => item.id === row.optionId)) row.optionId = this.rooms[0]?.id ?? '';
+    }
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url)).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'A&J学校媒体',
+      description: photo.altText || photo.caption || 'A&J学校实景内容',
+      src: photo.url ?? '',
+      contentType: photo.contentType,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    return '校园';
   }
 
   private loadExchangeRate(): void {
@@ -338,6 +548,7 @@ export class AnjSchoolComponent implements OnInit {
 
   get courseFeeRows() {
     return this.courses.filter((course) => course.fee4w !== undefined).map((course) => ({
+      id: course.id,
       course: course.name,
       tuition: `${this.formatUsd(course.fee4w ?? 0)} 美元`,
       lessons: course.lessons,
@@ -349,6 +560,7 @@ export class AnjSchoolComponent implements OnInit {
     return this.courses
       .filter((course) => course.feeByWeeks)
       .flatMap((course) => Object.entries(course.feeByWeeks ?? {}).map(([weeks, tuition]) => ({
+        id: course.id,
         course: course.name,
         weeks: `${weeks}周`,
         tuition: `${this.formatUsd(tuition)} 美元`,
@@ -395,6 +607,15 @@ export class AnjSchoolComponent implements OnInit {
   get quoteUsd() { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText() { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get courseTableTitle() { return this.currentContentConfig.quoteSettings.courseTableTitle; }
+  get courseTableNote() { return this.currentContentConfig.quoteSettings.courseTableNote; }
+  get roomTableTitle() { return this.currentContentConfig.quoteSettings.roomTableTitle; }
+  get roomTableNote() { return this.currentContentConfig.quoteSettings.roomTableNote; }
+  get stayPolicyTitle() { return this.currentContentConfig.quoteSettings.stayPolicyTitle; }
+  get stayPolicies() { return this.currentContentConfig.quoteSettings.stayPolicies; }
+  promotionDescription(id: string): string {
+    return this.currentContentConfig.quoteSettings.promotions.find(item => item.id === id)?.description ?? '';
+  }
 
   get quoteHeading() {
     return this.quoteMode === 'single'
@@ -414,7 +635,7 @@ export class AnjSchoolComponent implements OnInit {
     return [
       {
         icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.length * this.registrationFee)} 美元`,
-        note: `一次性费用，100美元／人；通过思达报名全部免收，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`,
+        note: `一次性费用，${this.formatUsd(this.registrationFee)}美元／人；${this.registrationWaiverEnabled ? '通过思达报名全部免收' : '当前未启用免注册费优惠'}，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`,
       },
       ...this.planPaymentItems,
       ...groupPaymentLines(this.activeStudents, false),
@@ -466,7 +687,6 @@ export class AnjSchoolComponent implements OnInit {
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal() { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get estimatedLocalFeeCny() { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
-  get localFeeIntro() { return '学杂费为到校后以比索支付的预估，按每名学生的签证、课程、住宿和接机分别计算；押金与洗衣服务另列，不计入合计。'; }
 
   get optionalFeeItems() {
     const standardDepositTotal = this.activeStudents.reduce((sum, student) => {
@@ -479,15 +699,20 @@ export class AnjSchoolComponent implements OnInit {
     const sharedDepositTotal = this.sharedRoomReservations.reduce((sum, reservation) => sum + reservation.room.deposit, 0);
     const depositTotal = standardDepositTotal + sharedDepositTotal;
     const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    const laundry = this.localFeeRules.find(item => item.id === 'laundry' && item.enabled);
     return [
       {
         label: '住宿押金（可退）', amount: this.formatPhp(depositTotal), cnyAmount: cny(depositTotal),
-        note: `Deluxe房型3,000比索，Premium、Suite及Villa房型5,000比索；整间总价房型按房间计一次。无损坏及额外扣费时按学校规定退还，不计入学杂费合计。`,
+        note: `押金按所选房型计算；整间总价房型按房间计一次。无损坏及额外扣费时按学校规定退还，不计入学杂费合计。`,
       },
-      {
-        label: '洗衣服务', amount: '按次支付', cnyAmount: '不计入预估合计',
-        note: '洗衣加烘干150比索／7kg／次；只洗或只烘100比索／7kg／次，按实际使用支付。',
-      },
+      ...(laundry ? [{
+        label: laundry.name,
+        amount: laundry.secondaryAmount
+          ? `${this.formatPhp(laundry.amount)}／${laundry.secondaryLabel ?? '另一服务'} ${this.formatPhp(laundry.secondaryAmount)}`
+          : this.formatPhp(laundry.amount),
+        cnyAmount: '不计入预估合计',
+        note: laundry.note,
+      }] : []),
     ];
   }
 
@@ -503,11 +728,15 @@ export class AnjSchoolComponent implements OnInit {
   }
 
   get fourWeekStartingText() {
-    return `${this.formatUsd((650 + 800) * this.sidaDiscountRate)} 美元`;
+    const course = this.courses.find(item => item.id === 'eco-relax-lite')?.fee4w ?? 0;
+    const room = this.rooms.find(item => item.id === 'deluxe-triple')?.fee4w ?? 0;
+    return `${this.formatUsd((course + room) * this.sidaDiscountRate)} 美元`;
   }
 
   get ecoHubPremiumTwinText() {
-    return `${this.formatUsd((850 + 1150) * this.sidaDiscountRate)} 美元`;
+    const course = this.courses.find(item => item.id === 'eco-hub')?.fee4w ?? 0;
+    const room = this.rooms.find(item => item.id === 'premium-twin')?.fee4w ?? 0;
+    return `${this.formatUsd((course + room) * this.sidaDiscountRate)} 美元`;
   }
 
   sharedRoomShare(student: AnjStudentQuote, row: QuotePlanRow, room: AnjRoom, fullPrice: number): number {
@@ -565,10 +794,15 @@ export class AnjSchoolComponent implements OnInit {
   }
 
   get quoteImageData() {
+    const settings = this.quoteImageSettings;
     const paymentItems = [
-      this.schoolPaymentItems[0],
-      ...this.planPaymentItems,
-      ...groupPaymentLines(this.activeStudents, true),
+      { ...this.schoolPaymentItems[0], note: this.joinNotes(this.schoolPaymentItems[0].note, settings.paymentNotes.registration) },
+      ...this.planPaymentItems.map(item => ({
+        ...item,
+        note: this.joinNotes(item.note, item.icon === '课' ? settings.paymentNotes.course : settings.paymentNotes.accommodation),
+      })),
+      ...groupPaymentLines(this.activeStudents.map((student) => ({ paymentLines: student.applicablePaymentLines })), true)
+        .map(item => ({ ...item, note: this.joinNotes(item.note, settings.paymentNotes.promotion) })),
     ];
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`]
@@ -590,36 +824,72 @@ export class AnjSchoolComponent implements OnInit {
         unit: fee.unitLabel,
         quantity: this.formatFeeQuantity(fee.quantity),
         amount: this.formatPhp(fee.total),
-        note: fee.note,
+        note: settings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note,
       })),
       localFeeTotal: this.estimatedLocalFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.estimatedLocalFeeCny,
-      localFeeNote: this.localFeeIntro,
+      localFeeNote: settings.localFeeIntro,
       optionalFeeItems: this.optionalFeeItems,
       ruleNotes: [],
     });
     const result = applySchoolQuoteImageLayout({
       ...quote,
-      importantNotes: [
-        ...warnings,
-        ...this.priceYearWarnings,
-        '普通课程和住宿仅提供4/8/12/16/20/24周报价；TOEIC及IELTS保分班只按各自固定周数报价。',
-        '2026旺季为2026/06/28–08/22；2027按相同8周星期推算为2027/06/27–08/21，按实际重叠课程周每周加收40美元。',
-        'A&J新生优惠与续课优惠互斥；固定优惠先扣减，再对剩余课程费和住宿费享思达95折。',
-        '当地费用人民币统一按1元约9比索参考；最终以学校、移民局、空房和正式账单为准。',
-      ],
+      importantNotes: [...warnings, ...this.priceYearWarnings, ...settings.footerNotes],
     }, 'A&J', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: settings.paymentSectionTitle,
+      localFeeTitle: settings.localFeeSectionTitle,
+      serviceSectionTitle: settings.serviceSectionTitle,
+      benefitItems: settings.benefits,
+      serviceLocations: settings.serviceLocations,
+      alumniBenefitTitle: settings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
+      noteTitle: settings.noteSectionTitle,
       conversionRates: {
         usdToCny: this.usdToCny,
         phpPerCny: this.phpPerCny,
         date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined,
       },
     };
+  }
+
+  previewFeeId(name: string): string {
+    const normalized = name.replace(/^学生[\d、]+ · /, '');
+    return this.localFeeRules.find(item => item.name === normalized)?.id
+      ?? (normalized.startsWith('水电费') ? 'local-fees' : 'local-fees');
+  }
+
+  previewPromotionId(label: string): string {
+    return this.currentContentConfig.quoteSettings.promotions.find(item => item.name === label)?.id ?? 'quote-breakdown';
+  }
+
+  previewPaymentTarget(item: { label: string }): CiaPreviewTarget {
+    const label = item.label.replace(/^学生[\d、]+ · /, '');
+    if (label.includes('注册费')) return { kind: 'section', id: 'quote-registration' };
+    if (label.includes('课程名称')) return { kind: 'course', id: this.activeStudents[0]?.quotePlan.courses[0]?.optionId ?? this.courses[0]?.id ?? '' };
+    if (label.includes('住宿名称')) return { kind: 'room', id: this.activeStudents[0]?.quotePlan.rooms[0]?.optionId ?? this.rooms[0]?.id ?? '' };
+    if (label.includes('常规')) return { kind: 'promotion', id: this.currentPromotionId('anj-new-period') };
+    if (label.includes('淡季')) return { kind: 'promotion', id: this.currentPromotionId('anj-new-period') };
+    if (label.includes('续课')) return { kind: 'promotion', id: this.currentPromotionId('anj-continuation-period') };
+    if (label.includes('生日')) return { kind: 'promotion', id: 'anj-birthday' };
+    if (label.includes('思达') && label.includes('折')) return { kind: 'promotion', id: 'sida-discount' };
+    if (label.includes('免注册费')) return { kind: 'promotion', id: 'registration-waiver' };
+    return { kind: 'section', id: 'quote-breakdown' };
+  }
+
+  private currentPromotionId(ruleKind: string): string {
+    return this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === ruleKind
+      && this.quoteStartDate >= (item.arrivalStart ?? '') && this.quoteStartDate <= (item.arrivalEnd ?? '9999-12-31'))?.id
+      ?? this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === ruleKind)?.id
+      ?? 'quote-breakdown';
+  }
+
+  private joinNotes(...parts: Array<string | undefined>): string {
+    return parts.map(part => part?.trim()).filter(Boolean).join('；');
   }
 
   formatUsd(value: number): string {

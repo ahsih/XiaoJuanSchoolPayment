@@ -11,7 +11,7 @@ import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
-import { IuIclQuote } from '../iu-school/iu-icl-quote';
+import { buildIuIclGroupImageData, IuIclQuote, iuIclGroupLocalFees, iuIclGroupPaymentItems } from '../iu-school/iu-icl-quote';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
 
@@ -31,7 +31,13 @@ interface SideNavItem { label: string; target: string; icon: string; }
   imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, SchoolQuotePlanComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './icl-school.component.html',
-  styleUrl: './icl-school.component.css',
+  styleUrls: [
+    './icl-school.component.css',
+    '../school-quote-rollout.css',
+    '../philippines-local-fee-table.css',
+    '../../../components/school-group-quote.css',
+    '../iu-school/iu-icl-quote-layout.css',
+  ],
 })
 export class IclSchoolComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
@@ -40,6 +46,9 @@ export class IclSchoolComponent implements OnInit {
   readonly weekOptions = Array.from({ length: 24 }, (_, index) => index + 1);
   readonly registrationFeeUsd = 100;
   readonly quoteCalculator = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
+  readonly students: IuIclQuote[] = [this.quoteCalculator];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
@@ -115,7 +124,35 @@ export class IclSchoolComponent implements OnInit {
 
   readonly courseFees = this.quoteCalculator.courses;
   readonly roomFees = this.quoteCalculator.rooms;
-  get localFees() { return this.quoteCalculator.localFees; }
+  get studentCount(): number { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(this.createStudentQuote());
+    }
+  }
+
+  setQuoteMode(value: 'single' | 'group'): void {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+
+  get activeStudents(): IuIclQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+
+  private createStudentQuote(): IuIclQuote {
+    const quote = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', this.quoteCalculator.selectedStartDate);
+    quote.updatePrices(
+      new Map(this.quoteCalculator.courses.map(courseItem => [courseItem.name, courseItem.tuition])),
+      new Map(this.quoteCalculator.rooms.map(roomItem => [roomItem.name, roomItem.fee])),
+    );
+    return quote;
+  }
+
+  get localFees() { return iuIclGroupLocalFees(this.activeStudents); }
 
   readonly suitableFor: FitItem[] = [
     { title: '想在宿务市区读半斯巴达', text: 'ICL的位置和管理强度介于自由型小校与高压斯巴达之间，适合想要节奏但不想完全封闭的人。' },
@@ -175,10 +212,9 @@ export class IclSchoolComponent implements OnInit {
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[]): void {
-    this.quoteCalculator.updatePrices(
-      new Map(lessons.filter(item => item.week === 4).map(item => [item.name, item.price])),
-      new Map(rooms.filter(item => item.week === 4).map(item => [item.name, item.price])),
-    );
+    const coursePrices = new Map(lessons.filter(item => item.week === 4).map(item => [item.name, item.price]));
+    const roomPrices = new Map(rooms.filter(item => item.week === 4).map(item => [item.name, item.price]));
+    this.students.forEach(student => student.updatePrices(coursePrices, roomPrices));
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -195,7 +231,8 @@ export class IclSchoolComponent implements OnInit {
   }
 
   get availableWeekOptions(): number[] { return this.weekOptions; }
-  get quoteUsdText(): string { return `${this.formatUsd(this.quoteCalculator.total)} 美元`; }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.total, 0); }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get courseFeeText(): string { return `${this.formatUsd(this.quoteCalculator.regularCourseTotal)} 美元`; }
   get roomFeeText(): string { return `${this.formatUsd(this.quoteCalculator.regularRoomTotal)} 美元`; }
   get baseFeeText(): string { return `${this.formatUsd(this.quoteCalculator.regularCourseTotal + this.quoteCalculator.regularRoomTotal)} 美元`; }
@@ -211,15 +248,48 @@ export class IclSchoolComponent implements OnInit {
     const fixedWeeks = this.selectedCourse.fixedWeeks;
     if (fixedWeeks) this.selectedWeeks = fixedWeeks;
   }
-  get quoteHeading(): string { return `ICL${this.quoteCalculator.courseWeeks}周报价`; }
-  get schoolPaymentItems() { return this.quoteCalculator.schoolPaymentItems; }
-  get quoteError(): string { return this.quoteCalculator.error; }
-  get quoteWarning(): string { return this.quoteCalculator.warning; }
-  get localFeesTotal(): number { return this.quoteCalculator.localFeeTotal; }
-  get quoteCnyText(): string { return `人民币预计约 ${Math.round(this.quoteCalculator.total * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteHeading(): string {
+    return this.quoteMode === 'single' ? `ICL${this.quoteCalculator.courseWeeks}周报价` : `ICL ${this.activeStudents.length}人报价`;
+  }
+  get schoolPaymentItems() { return iuIclGroupPaymentItems(this.activeStudents); }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) {
+      return '多人报价人数请选择2–20人的整数。';
+    }
+    const index = this.activeStudents.findIndex(student => !!student.error);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].error}`;
+  }
+  get quoteWarning(): string {
+    return this.activeStudents.flatMap((student, index) => student.warning
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.warning}`]
+      : []).join('；');
+  }
+  get promotionNote(): string {
+    if (this.quoteMode === 'single') return this.quoteCalculator.promotionNote;
+    const eligible = this.activeStudents.filter(student => student.promoPairCount > 0).length;
+    return eligible
+      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；不叠加思达启航或其它中介优惠。`
+      : '当前所有学生均按校方2026常规价计算；思达启航不提供或叠加其它价格优惠。';
+  }
+  get localFeesTotal(): number { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get quoteCnyText(): string { return `人民币预计约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
   get localFeesCnyText(): string { return `人民币预计约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
   get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
-  get quoteImageData() { return this.quoteCalculator.imageData(this.usdToCny, this.phpPerCny, this.exchangeRateLive ? this.exchangeRateDate : undefined, '/assets/iu/iu-icl-low-season-promo-2026.jpg'); }
+  get optionalFees() {
+    return this.quoteMode === 'single' ? this.quoteCalculator.optionalFees : [{
+      ...this.quoteCalculator.optionalFees[0],
+      note: '按每位学生超出标准入住安排的实际晚数另计；多人共住及空房须向学校确认。',
+    }];
+  }
+  get quoteImageData() {
+    return buildIuIclGroupImageData(
+      this.activeStudents,
+      this.usdToCny,
+      this.phpPerCny,
+      this.exchangeRateLive ? this.exchangeRateDate : undefined,
+      '/assets/philippines/icl-campus-hero.jpg',
+    );
+  }
   formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }
 
   setGalleryCategory(category: GalleryCategory): void {

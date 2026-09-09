@@ -117,3 +117,21 @@
     grid-template-columns: 1fr;
   }
 }
+:host-context(.beci-editor-preview) [data-cia-preview-kind] {
+  cursor: pointer;
+  scroll-margin-top: 144px;
+}
+
+:host-context(.beci-editor-preview) .cia-preview-highlight,
+:host-context(.beci-editor-preview) [data-cia-preview-kind].cia-preview-highlight {
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  background-color: rgba(255, 90, 31, 0.06);
+}
+
+.gallery-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #071c2c;
+}

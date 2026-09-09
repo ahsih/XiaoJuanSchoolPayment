@@ -8,7 +8,7 @@
     </label>
     <div class="details">{{ details(list.kind, row.optionId) }}</div>
     <label class="weeks"><span>周数</span><select [(ngModel)]="row.weeks" [attr.aria-label]="list.title + (i + 1) + '周数'"><option *ngFor="let week of plan.allowedWeeks" [ngValue]="week">{{ week }}周</option></select></label>
-    <label class="start"><span>开始日期（周日）</span><input type="date" [(ngModel)]="row.startDate" [attr.aria-label]="list.title + (i + 1) + '开始日期（仅限周日）'"></label>
+    <label class="start"><span>开始日期（周日）</span><input #startDateInput type="date" [ngModel]="row.startDate" (ngModelChange)="updateStartDate(list.kind, i, $event, startDateInput)" [min]="sundayDateMinimum" step="7" title="开始日期仅限周日" [attr.aria-label]="list.title + (i + 1) + '开始日期（仅限周日）'"></label>
     <div class="end"><span>结束日期（周六）</span><time>{{ plan.end(row).replaceAll('-', '/') || '—' }}</time></div>
     <strong class="amount">{{ money(plan.price(list.kind, row)) }} 美元</strong>
     <button type="button" class="remove" (click)="plan.remove(list.kind, row.id)" [disabled]="plan.rows(list.kind).length === 1" [attr.aria-label]="'删除' + list.title + (i + 1)">删除</button>

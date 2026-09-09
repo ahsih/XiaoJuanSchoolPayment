@@ -14,9 +14,23 @@ namespace XiaoJuanSchoolPayment.Server.Interface
       string userId,
       string userName,
       CancellationToken cancellationToken);
+    Task<SchoolContentRevisionDTO> SavePricingSettingsDraft(
+      Guid schoolId,
+      JsonElement content,
+      string? changeSummary,
+      string userId,
+      string userName,
+      CancellationToken cancellationToken);
     Task<SchoolContentRevisionDTO> SaveQuoteImageSettingsDraft(
       Guid schoolId,
       JsonElement quoteImageSettings,
+      string? changeSummary,
+      string userId,
+      string userName,
+      CancellationToken cancellationToken);
+    Task<SchoolContentRevisionDTO> SaveMediaSettingsDraft(
+      Guid schoolId,
+      JsonElement media,
       string? changeSummary,
       string userId,
       string userName,

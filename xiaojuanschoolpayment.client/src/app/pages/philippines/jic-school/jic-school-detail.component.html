@@ -89,7 +89,7 @@
           </article>
         </section>
 
-        <section class="section-block" id="gallery">
+        <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'gallery')">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
             <h2>按校区和空间查看 JIC 环境</h2>
@@ -102,7 +102,8 @@
           </div>
           <div class="gallery-grid">
             <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" />
+              <video *ngIf="image.contentType?.startsWith('video/')" controls preload="metadata"><source [src]="image.src" [type]="image.contentType" /></video>
+              <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" />
               <figcaption>
                 <strong>{{ image.title }}</strong>
                 <span>{{ image.description }}</span>
@@ -204,11 +205,11 @@
         </section>
 
         <section class="split-layout" id="course-fees">
-          <div class="section-block">
+          <div class="section-block" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
             <div class="section-heading">
               <span>菲律宾碧瑶JIC语言学校 2026 年 4 周课程费</span>
-              <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下根据JIC 2026课程费表逐项核对，币种为美元；最终以学校正式账单为准。</p>
+              <h2>{{ contentConfig().quoteSettings.courseTableTitle }}</h2>
+              <p>{{ contentConfig().quoteSettings.courseTableNote }}</p>
             </div>
             <div class="campus-price-groups">
               <section class="campus-price-group" *ngFor="let group of courseFeeGroups" [class.premium-campus]="group.campus === 'premium'">
@@ -222,14 +223,14 @@
                     <span role="columnheader">4周课程费</span>
                     <span role="columnheader">课程安排 / 备注</span>
                   </div>
-                  <div class="table-row" role="row" *ngFor="let fee of group.items">
+                  <div class="table-row" role="row" *ngFor="let fee of group.items" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                     <span role="cell"><strong class="bilingual-name">{{ fee.displayName }}</strong></span>
                     <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
                     <span role="cell">{{ fee.suitable }}</span>
                   </div>
                 </div>
                 <div class="mobile-card-list mobile-course-fees" [attr.aria-label]="group.title + '2026年4周课程费手机卡片'">
-                  <article *ngFor="let fee of group.items">
+                  <article *ngFor="let fee of group.items" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                     <span>中英文课程名称</span>
                     <strong>{{ fee.displayName }}</strong>
                     <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
@@ -255,11 +256,11 @@
         </section>
 
         <section class="split-layout" id="room-fees">
-          <div class="section-block">
+          <div class="section-block" data-cia-preview-kind="section" data-cia-preview-id="room-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-fees')">
             <div class="section-heading">
               <span>菲律宾碧瑶JIC语言学校 2026 年 4 周住宿费</span>
-              <h2>房型和校区会明显影响总预算</h2>
-              <p>默认报价使用Challenger四人间（上下铺）。Premium单人间和带阳台房型建议先让顾问确认空房。</p>
+              <h2>{{ contentConfig().quoteSettings.roomTableTitle }}</h2>
+              <p>{{ contentConfig().quoteSettings.roomTableNote }}</p>
             </div>
             <div class="campus-price-groups">
               <section class="campus-price-group" *ngFor="let group of roomFeeGroups" [class.premium-campus]="group.campus === 'premium'">
@@ -273,14 +274,14 @@
                     <span role="columnheader">4周住宿费</span>
                     <span role="columnheader">备注</span>
                   </div>
-                  <div class="table-row" role="row" *ngFor="let room of group.items">
+                  <div class="table-row" role="row" *ngFor="let room of group.items" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                     <span role="cell">{{ room.name }}</span>
                     <span role="cell">USD {{ formatUsd(room.fee) }}</span>
                     <span role="cell">{{ room.note }}</span>
                   </div>
                 </div>
                 <div class="mobile-card-list mobile-room-fees" [attr.aria-label]="group.title + '2026年4周住宿费手机卡片'">
-                  <article *ngFor="let room of group.items">
+                  <article *ngFor="let room of group.items" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                     <span>房型</span>
                     <strong>{{ room.name }}</strong>
                     <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
@@ -291,7 +292,7 @@
             </div>
           </div>
 
-          <section class="quote-panel group-quote" id="quote">
+          <section class="quote-panel group-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">
             <div class="quote-form-card">
               <div class="section-heading">
                 <span>菲律宾碧瑶JIC语言学校完整费用报价</span>
@@ -325,7 +326,7 @@
                   <span>以下结果会随校区、日期、周数和房型自动更新；未符合时显示具体原因。</span>
                 </div>
                 <div class="jic-promotion-status" aria-label="当前优惠判断">
-                  <div *ngFor="let line of student.paymentLines" [class.applied]="line.value < 0" [class.surcharge]="line.value > 0">
+                  <div *ngFor="let line of student.paymentLines" [class.applied]="line.value < 0" [class.surcharge]="line.value > 0" [attr.data-cia-preview-kind]="line.promotionKey ? 'promotion' : 'section'" [attr.data-cia-preview-id]="line.promotionKey || 'quote-season'" [class.cia-preview-highlight]="isPreviewHighlighted(line.promotionKey ? 'promotion' : 'section', line.promotionKey || 'quote-season')">
                     <span><strong>{{ line.label }}</strong><small>{{ line.note }}</small></span>
                     <b>{{ line.value < 0 ? '− ' + formatUsd(-line.value) + ' 美元' : line.value > 0 ? formatUsd(line.value) + ' 美元' : '未适用' }}</b>
                   </div>
@@ -350,13 +351,13 @@
               </div>
             </div>
 
-            <section class="local-fee-estimate" id="local-fees" aria-labelledby="jic-local-fee-title">
+            <section class="local-fee-estimate" id="local-fees" aria-labelledby="jic-local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">
               <div class="local-fee-heading"><div><h3 id="jic-local-fee-title">到校后学杂费明细</h3></div></div>
               <p class="local-fee-intro">{{ localFeeIntro }}</p>
               <div class="local-fee-table-wrap">
                 <table class="local-fee-table">
                   <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-                  <tbody><tr *ngFor="let fee of estimatedLocalFees">
+                  <tbody><tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="feePreviewId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', feePreviewId(fee.item))">
                     <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
                   </tr></tbody>
                   <tfoot>

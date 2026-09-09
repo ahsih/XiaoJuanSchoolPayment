@@ -1,15 +1,26 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { EMPTY } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent, QuoteImageLocalFeeItem } from '../../../components/quote-image-download-button.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school.component';
+import { createDefaultCgBaniladContentConfig } from './cg-banilad-content-config';
 
 describe('CG Banilad verified quote', () => {
   let component: CgBaniladSchoolComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
+      providers: [
+        { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+        { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+        { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+        { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
+      ],
     });
     component = TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent());
   });
@@ -238,21 +249,16 @@ describe('CG Banilad verified quote', () => {
     expect(quote.localFeeNote).toContain('具体以学校');
   });
 
-  it('keeps image fee columns, notes and the section disclaimer identical to the webpage', () => {
+  it('keeps image fee columns synchronized while allowing image-only notes and disclaimer copy', () => {
     for (const weeks of component.weekOptions) {
       component.selectedWeeks = weeks;
       const quote = component.quoteImageData;
-      expect(quote.localFeeNote).toBe(component.localFeeEstimateNote);
+      expect(quote.localFeeNote).toBe(component.quoteImageSettings.localFeeIntro);
       expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
         label: fee.item, unit: fee.amount, quantity: String(fee.quantity),
         amount: component.formatPhp(fee.total), note: fee.note,
       })));
-      expect(quote.optionalFeeItems).toEqual(component.excludedLocalFees.map(fee => ({
-        label: fee.item,
-        amount: fee.item.includes('接机') ? '1,200 比索' : component.formatPhp(fee.total),
-        cnyAmount: `约人民币 ${Math.round((fee.item.includes('接机') ? 1200 : fee.total) / component.phpPerCny).toLocaleString('zh-CN')} 元`,
-        note: fee.item.includes('接机') ? '可选，也可自行前往。' : '预估1,000比索，具体以学校为准；无损坏及无欠费时可退。',
-      })));
+      expect(quote.optionalFeeItems).toEqual(component.optionalFeeItems);
     }
   });
 
@@ -393,7 +399,7 @@ describe('CG Banilad verified quote', () => {
     const blob = await renderApi.createQuoteImageBlob(1);
     expect(blob.type).toBe('image/png');
     expect(blob.size).toBeGreaterThan(10000);
-    const disclaimerCall = wrapped.calls.allArgs().find(args => args[1] === component.localFeeEstimateNote)!;
+    const disclaimerCall = wrapped.calls.allArgs().find(args => args[1] === component.quoteImageData.localFeeNote)!;
     expect(disclaimerCall).toBeDefined();
     const header = painted.calls.allArgs().find(args => args[0] === '计费参考')!;
     expect(Number(disclaimerCall[3])).toBeLessThan(header[2]);
@@ -411,5 +417,26 @@ describe('CG Banilad verified quote', () => {
     const renderApi = renderer as unknown as { detailedLocalNote(row: QuoteImageLocalFeeItem): string };
     const fee = renderer.quote.localFeeItems![0];
     expect(renderApi.detailedLocalNote(fee)).toBe(`计费：${fee.unit} × ${fee.quantity}；${fee.note}`);
+  });
+
+  it('applies employee-edited prices, fee rules and quote-image copy without changing the layout', () => {
+    const edited = createDefaultCgBaniladContentConfig();
+    edited.courses.find(course => course.id === 'general-esl')!.tuition = 800;
+    edited.rooms.find(room => room.id === 'quad')!.fee = 700;
+    edited.quoteSettings.registrationFee = 120;
+    edited.quoteSettings.promotions.find(rule => rule.id === 'cg-banilad-sida-90')!.discountValue = 5;
+    edited.localFees.find(rule => rule.id === 'management')!.amount = 3000;
+    edited.quoteImageSettings.paymentSectionTitle = '自定义学校费用';
+    edited.quoteImageSettings.footerNotes = ['自定义报价备注'];
+
+    (component as unknown as { applyContentConfig(value: typeof edited): void }).applyContentConfig(edited);
+
+    expect(component.tuitionForSelectedWeeks).toBe(800);
+    expect(component.roomFeeForSelectedWeeks).toBe(700);
+    expect(component.quoteUsd).toBe(1395);
+    expect(component.includedLocalFees.find(fee => fee.item === '维护管理费')?.total).toBe(3000);
+    expect(component.quoteImageData.paymentSectionTitle).toBe('自定义学校费用');
+    expect(component.quoteImageData.importantNotes).toContain('自定义报价备注');
+    expect(component.quoteImageData.layout).toBe('cia-detailed');
   });
 });

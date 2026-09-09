@@ -57,3 +57,37 @@
     grid-template-columns: 1fr;
   }
 }
+
+.gallery-grid video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #0f1f2d;
+}
+
+.smeag-stay-policy {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #d9e8e1;
+  border-radius: 14px;
+  background: #f7fbf9;
+}
+
+.smeag-stay-policy h3 { margin: 0 0 12px; color: #075b46; }
+.smeag-stay-policy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.smeag-stay-policy-grid article { padding: 12px; border: 1px solid #e1ebe7; border-radius: 10px; background: #fff; }
+.smeag-stay-policy-grid span { display: block; color: #ef5b2a; font-size: 12px; font-weight: 800; }
+.smeag-stay-policy-grid strong { display: block; margin: 5px 0; color: #10233b; }
+.smeag-stay-policy-grid p { margin: 0; color: #637083; line-height: 1.55; }
+
+:host(.smeag-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.smeag-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #ff5a1f;
+  outline-offset: -3px;
+  background-color: #fff7ed !important;
+  box-shadow: 0 0 0 4px rgb(255 90 31 / 16%);
+}
+
+@media (max-width: 760px) {
+  .smeag-stay-policy-grid { grid-template-columns: 1fr; }
+}

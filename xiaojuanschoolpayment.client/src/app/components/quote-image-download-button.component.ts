@@ -113,6 +113,12 @@ export interface QuoteImageCardData {
   finalConfirmationText?: string;
   importantNotes?: string[];
   noteTitle?: string;
+  /** Render supplied detailed-footer notes exactly, without a generated checkmark prefix. */
+  footerNotesVerbatim?: boolean;
+  /** Detailed layout defaults to adding the calculator exchange-rate explanation. */
+  appendExchangeRateNote?: boolean;
+  /** Detailed layout defaults to adding the final school-confirmation sentence. */
+  appendFinalConfirmationNote?: boolean;
   note: string;
   contact: QuoteImageContact;
   consultants?: QuoteImageContact[];
@@ -662,8 +668,10 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
         + (row.cnyAmount ? lineCount(row.cnyAmount, this.detailedGrid.amountWidth, font(12, 400)) * 16 : 0),
     ));
     const importantNotes = this.quoteFooterNotes();
-    const noteHeights = importantNotes.map(note =>
-      Math.max(27, lineCount(`✓ ${note}`, 820, font(13, this.isDateMismatchNote(note) ? 700 : 400)) * 18 + 9));
+    const noteHeights = importantNotes.map(note => {
+      const renderedNote = this.quote.footerNotesVerbatim ? note : `✓ ${note}`;
+      return Math.max(27, lineCount(renderedNote, 820, font(13, this.isDateMismatchNote(note) ? 700 : 400)) * 18 + 9);
+    });
     const benefitsHeight = Math.max(56, ...(this.quote.benefitItems?.slice(0, 4) ?? []).map(item =>
       44 + (lineCount(item.text, 206, font(12, 400)) - 1) * 15 + 8));
     const alumniHeight = this.quote.hideAlumniBenefit
@@ -713,12 +721,18 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
 
   private quoteFooterNotes(): string[] {
     const source = this.quote.importantNotes?.length ? this.quote.importantNotes : [this.quote.note];
-    const notes = [...new Set(source.map(note => this.withoutExchangeNote(note)).filter(note => note && !this.isGeneralConfirmation(note)))];
+    const prepared = this.quote.footerNotesVerbatim
+      ? source.map(note => note.trim())
+      : source.map(note => this.withoutExchangeNote(note));
+    const notes = [...new Set(prepared.filter(note => note && !this.isGeneralConfirmation(note)))];
+    const exchangeNote = `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '本次采用备用汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`;
     return [
       ...notes.filter(note => this.isDateMismatchNote(note)),
       ...notes.filter(note => !this.isDateMismatchNote(note)),
-      `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '本次采用备用汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`,
-      this.quote.finalConfirmationText ?? '最终以学校价格、空房及优惠确认为准。',
+      ...(this.quote.appendExchangeRateNote === false ? [] : [exchangeNote]),
+      ...(this.quote.appendFinalConfirmationNote === false
+        ? []
+        : [this.quote.finalConfirmationText ?? '最终以学校价格、空房及优惠确认为准。']),
     ];
   }
 
@@ -1150,7 +1164,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     (fullLayout ? importantNotes : importantNotes.slice(0, 3)).forEach((note, index) => {
       if (fullLayout) {
         const mismatch = this.isDateMismatchNote(note);
-        drawTableText(`✓ ${note}`, 174, nextNoteTop, 820, mismatch ? '#9a3412' : '#475569', `${mismatch ? 700 : 400} 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`, 1000, 18);
+        drawTableText(this.quote.footerNotesVerbatim ? note : `✓ ${note}`, 174, nextNoteTop, 820, mismatch ? '#9a3412' : '#475569', `${mismatch ? 700 : 400} 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`, 1000, 18);
         nextNoteTop += fullLayout.noteHeights[index];
         return;
       }

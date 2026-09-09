@@ -426,3 +426,37 @@
     font-size: 15px;
   }
 }
+:host .gallery-grid video,
+:host .hero-collage video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:host .cg-sparta-stay-policy {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #dce9e4;
+  border-radius: 14px;
+  background: #f6fbf8;
+}
+
+:host .cg-sparta-stay-policy h3 { margin: 0 0 14px; color: #064f3b; }
+:host .cg-sparta-stay-policy > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+:host .cg-sparta-stay-policy article { padding: 14px; border: 1px solid #dce9e4; border-radius: 12px; background: #fff; }
+:host .cg-sparta-stay-policy span { display: block; color: #e85b24; font-size: 12px; font-weight: 700; }
+:host .cg-sparta-stay-policy strong { display: block; margin: 5px 0; color: #102640; }
+:host .cg-sparta-stay-policy p { margin: 0; color: #607083; font-size: 13px; line-height: 1.6; }
+
+:host(.cg-sparta-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.cg-sparta-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  background-color: rgba(255, 245, 237, .88) !important;
+  box-shadow: 0 0 0 5px rgba(255, 90, 31, .14) !important;
+}
+
+@media (max-width: 720px) {
+  :host .cg-sparta-stay-policy > div { grid-template-columns: 1fr; }
+}

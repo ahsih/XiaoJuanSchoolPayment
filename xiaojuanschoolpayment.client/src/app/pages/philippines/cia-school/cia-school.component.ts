@@ -60,6 +60,18 @@ interface GalleryImage {
   details?: string[];
 }
 
+interface CiaVideoCard {
+  code: string;
+  title: string;
+  text: string;
+  poster?: string;
+  brandLogo?: string;
+  brandAlt?: string;
+  videoSrc: string;
+  contentType: string;
+  details: string[];
+}
+
 const buildCiaRoomGallery = (folder: string, count: number): string[] =>
   Array.from(
     { length: count },
@@ -465,6 +477,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedGalleryImageIndex = 0;
   selectedHeroImageIndex = 0;
   usingUploadedGallery = false;
+  uploadedVideoCards: CiaVideoCard[] = [];
 
   registrationFee = this.defaultContentConfig.quoteSettings.registrationFee;
   futurePriceRegistrationStart = this.defaultContentConfig.quoteSettings.futurePriceRegistrationStart;
@@ -1673,7 +1686,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  readonly videoCards = [
+  readonly videoCards: CiaVideoCard[] = [
     {
       code: 'ESL',
       title: '一般英语小组课程视频',
@@ -1683,6 +1696,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       brandAlt: 'Cambridge English Qualifications 标志',
       videoSrc:
         'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
+      contentType: 'video/mp4',
       details: [
         '1 对 1 课程 4 节',
         '小组 / 中组 / 大组各 1 节',
@@ -1698,6 +1712,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       brandAlt: 'IDP IELTS 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
+      contentType: 'video/mp4',
       details: [
         '1 对 1 课程 4 节',
         'IELTS Clinic 中组课程 2 节',
@@ -1714,6 +1729,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       brandAlt: 'ETS TOEIC 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
+      contentType: 'video/mp4',
       details: [
         '1 对 1 课程 4 节',
         'TOEIC Clinic 中组课程 2 节',
@@ -1729,6 +1745,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       brandLogo: 'assets/cia/course-video-posters/cambridge-business.png',
       brandAlt: 'Cambridge English Business 标志',
       videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
+      contentType: 'video/mp4',
       details: [
         '商务一对一课程 5 节',
         '商务小组 / 综合中组各 1 节',
@@ -1737,6 +1754,10 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       ],
     },
   ];
+
+  get displayedVideoCards(): CiaVideoCard[] {
+    return [...this.videoCards, ...this.uploadedVideoCards];
+  }
 
   readonly courseChoiceCards = [
     {
@@ -2468,13 +2489,18 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
-    const uploadedPhotos = (photos ?? [])
+    const uploadedMedia = (photos ?? [])
       .filter((photo) => Boolean(photo.url))
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
-    if (uploadedPhotos.length === 0) {
+    if (uploadedMedia.length === 0) {
       return;
     }
+
+    const uploadedPhotos = uploadedMedia.filter(photo =>
+      !photo.contentType || photo.contentType.toLowerCase().startsWith('image/'));
+    const uploadedVideos = uploadedMedia.filter(photo =>
+      photo.contentType?.toLowerCase().startsWith('video/'));
 
     const existingSources = new Set(
       this.galleryImages.map((image) => image.src),
@@ -2492,8 +2518,22 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       }))
       .filter((image) => !existingSources.has(image.src));
 
-    this.usingUploadedGallery = true;
-    this.galleryImages = [...this.galleryImages, ...uploadedGalleryImages];
+    if (uploadedGalleryImages.length > 0) {
+      this.usingUploadedGallery = true;
+      this.galleryImages = [...this.galleryImages, ...uploadedGalleryImages];
+    }
+
+    const existingVideos = new Set(this.videoCards.map(item => item.videoSrc));
+    this.uploadedVideoCards = uploadedVideos
+      .filter(photo => !!photo.url && !existingVideos.has(photo.url))
+      .map(photo => ({
+        code: 'SCHOOL',
+        title: photo.caption || photo.originalFileName || 'CIA 学校视频',
+        text: photo.altText || `${this.resolveUploadedPhotoCategory(photo.category)}实景视频`,
+        videoSrc: photo.url ?? '',
+        contentType: photo.contentType ?? 'video/mp4',
+        details: [`官网分类：${this.resolveUploadedPhotoCategory(photo.category)}`],
+      }));
   }
 
   private applyPricingData(

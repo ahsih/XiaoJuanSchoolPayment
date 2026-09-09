@@ -1,5 +1,6 @@
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
+import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 import {
   BECI_OFF_SEASON_RANGES,
   BECI_PEAK_RANGES,
@@ -11,6 +12,15 @@ import {
 
 export type BeciVisaType = 'tourist30' | 'tourist59';
 export type BeciPickup = 'none' | 'manila' | 'clark';
+
+export interface BeciQuoteRules {
+  registrationFee: number;
+  shortStayRatios: Record<string, number>;
+  peakSeasonFeePerWeek: number;
+  peakSeasonRanges: Array<{ start: string; end: string; enabled: boolean }>;
+  promotions: CiaPromotionRule[];
+  localFees: CiaLocalFeeRule[];
+}
 
 const DAY = 86400000;
 const rounded = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
@@ -40,7 +50,7 @@ export class BeciStudentQuote {
 
   readonly quotePlan: SchoolQuotePlan;
 
-  constructor(readonly campus: BeciCampusPricing) {
+  constructor(readonly campus: BeciCampusPricing, private readonly rules?: BeciQuoteRules) {
     this.quotePlan = new SchoolQuotePlan(
       campus.defaultCourseId,
       campus.defaultRoomId,
@@ -57,14 +67,14 @@ export class BeciStudentQuote {
         const base = kind === 'course'
           ? campus.courses.find((course) => course.id === row.optionId)?.price ?? 0
           : this.roomFourWeekPrice(row.optionId);
-        return rounded(base * beciPriceMultiplier(row.weeks));
+        return rounded(base * this.priceMultiplier(row.weeks));
       },
     );
   }
 
   private roomFourWeekPrice(roomId: string): number {
     if (this.campus.id === 'city' && roomId === 'city-studio-twin' && this.cityCoupleRateSelected) {
-      return 750;
+      return this.campus.rooms.find((room) => room.id === roomId)?.coupleRate ?? 750;
     }
     return this.campus.rooms.find((room) => room.id === roomId)?.price ?? 0;
   }
@@ -92,26 +102,35 @@ export class BeciStudentQuote {
 
   get tuition(): number { return this.quotePlan.total('course'); }
   get accommodation(): number { return this.quotePlan.total('room'); }
-  get registrationOriginal(): number { return 100; }
-  get registrationDiscount(): number { return 100; }
+  get registrationOriginal(): number { return this.rules?.registrationFee ?? 100; }
+  get registrationDiscount(): number {
+    const waiver = this.rules?.promotions.find(item => item.enabled && item.waiveRegistration && item.id === 'beci-registration-waiver');
+    return this.rules ? (waiver ? this.registrationOriginal : 0) : 100;
+  }
 
   get entryDate(): string {
     return this.quotePlan.courses.map((row) => row.startDate).filter(Boolean).sort()[0] ?? '';
   }
 
   get offSeasonEligible(): boolean {
+    if (this.rules) return this.activeOffSeasonPromotion !== undefined;
     return BECI_OFF_SEASON_RANGES.some((range) => this.entryDate >= range.start && this.entryDate <= range.end);
   }
 
   get offSeasonDiscount(): number {
-    return this.offSeasonEligible ? rounded((this.tuition + this.accommodation) * 0.1) : 0;
+    if (!this.offSeasonEligible) return 0;
+    return rounded((this.tuition + this.accommodation) * ((this.activeOffSeasonPromotion?.discountValue ?? 10) / 100));
   }
 
-  get longStayDiscount(): number { return beciLongStayDiscount(this.quotePlan.courseWeeks); }
+  get longStayDiscount(): number {
+    if (!this.rules) return beciLongStayDiscount(this.quotePlan.courseWeeks);
+    const promotion = this.rules.promotions.find(item => item.enabled && item.ruleKind === 'beci-long-stay');
+    return promotion?.discountTiers?.[String(this.quotePlan.courseWeeks)] ?? 0;
+  }
 
   get peakWeeks(): number {
     return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) =>
-      BECI_PEAK_RANGES.some((range) => {
+      this.peakRanges.some((range) => {
         const start = this.quotePlan.date(range.start)!;
         const end = this.quotePlan.date(range.end)!;
         return week <= end && week + 6 * DAY >= start;
@@ -119,7 +138,7 @@ export class BeciStudentQuote {
     ).length;
   }
 
-  get peakSurcharge(): number { return this.peakWeeks * 40; }
+  get peakSurcharge(): number { return this.peakWeeks * (this.rules?.peakSeasonFeePerWeek ?? 40); }
 
   get quoteUsd(): number {
     return Math.max(0, rounded(
@@ -135,12 +154,12 @@ export class BeciStudentQuote {
 
   get paymentLines(): SchoolPaymentLine[] {
     const result: SchoolPaymentLine[] = [
-      { icon: '注', label: '注册费原价', value: 100, note: '每名学生一次；通过思达报名另列100美元优惠。' },
-      { icon: '惠', label: '思达注册费优惠', value: -100, note: '所有通过思达报名的学生均优惠100美元注册费。', promotionKey: 'beci-registration-waiver' },
+      { icon: '注', label: '注册费原价', value: this.registrationOriginal, note: `每名学生一次；符合条件时另列${quoteMoney(this.registrationDiscount)}美元优惠。` },
     ];
+    if (this.registrationDiscount > 0) result.push({ icon: '惠', label: '思达注册费优惠', value: -this.registrationDiscount, note: this.registrationWaiverPromotion?.description ?? '所有通过思达报名的学生均优惠注册费。', promotionKey: 'beci-registration-waiver' });
     if (this.offSeasonDiscount > 0) result.push({
-      icon: '淡', label: '2026淡季九折优惠', value: -this.offSeasonDiscount,
-      note: `入学日${this.entryDate.replace(/-/g, '/')}符合优惠；整段课程费与住宿费减10%。`,
+      icon: '淡', label: this.activeOffSeasonPromotion?.name ?? '2026淡季九折优惠', value: -this.offSeasonDiscount,
+      note: this.activeOffSeasonPromotion?.description ?? `入学日${this.entryDate.replace(/-/g, '/')}符合优惠；整段课程费与住宿费减10%。`,
       promotionKey: 'beci-off-season',
     });
     if (this.longStayDiscount > 0) result.push({
@@ -149,7 +168,7 @@ export class BeciStudentQuote {
     });
     if (this.peakSurcharge > 0) result.push({
       icon: '旺', label: '碧瑶旺季附加费', value: this.peakSurcharge,
-      note: `40美元／课程重叠周 × ${this.peakWeeks}周；不参与折扣。`,
+      note: `${quoteMoney(this.rules?.peakSeasonFeePerWeek ?? 40)}美元／课程重叠周 × ${this.peakWeeks}周；不参与折扣。`,
     });
     return result;
   }
@@ -160,6 +179,28 @@ export class BeciStudentQuote {
     const pickupSelected = this.pickup !== 'none';
     const pickupLabel = this.pickup === 'manila' ? '马尼拉机场接机' : this.pickup === 'clark' ? '克拉克机场接机' : '机场接机';
     const visaLabel = this.visaType === 'tourist30' ? '30天旅游签证' : '59天旅游签证';
+    if (this.rules) return this.rules.localFees.filter(fee => fee.enabled && fee.includeInTotal).map(fee => {
+      const periodWeeks = fee.periodWeeks ?? 4;
+      let quantity = 1;
+      if (fee.billingRule === 'per-accommodation-period') quantity = Math.ceil(this.quotePlan.roomWeeks / periodWeeks);
+      if (fee.billingRule === 'per-course-period') quantity = Math.ceil(this.quotePlan.courseWeeks / periodWeeks);
+      if (fee.billingRule === 'first-visa-extension') quantity = this.visaExtensionCount > 0 ? 1 : 0;
+      if (fee.billingRule === 'visa-extension-schedule') quantity = this.visaExtensionCount;
+      if (fee.billingRule === 'selected-manila-pickup') quantity = this.pickup === 'manila' ? 1 : 0;
+      if (fee.billingRule === 'selected-clark-pickup') quantity = this.pickup === 'clark' ? 1 : 0;
+      const rates = fee.rates ?? [];
+      const total = fee.billingRule === 'visa-extension-schedule'
+        ? Array.from({ length: quantity }, (_, index) => rates[index] ?? rates.at(-1) ?? fee.amount).reduce((sum, amount) => sum + amount, 0)
+        : fee.amount * quantity;
+      const unitLabel = fee.billingRule === 'per-accommodation-period'
+        ? `${quoteMoney(fee.amount)} 比索／${periodWeeks}周`
+        : fee.billingRule === 'per-course-period'
+          ? `${quoteMoney(fee.amount)} 比索／套`
+          : fee.billingRule === 'visa-extension-schedule'
+            ? `${quoteMoney(fee.amount)} 比索／30天`
+            : `${quoteMoney(fee.amount)} 比索／次`;
+      return { item: fee.name, unitLabel, quantity, total, note: fee.note };
+    });
     return [
       { item: 'SSP特殊学习许可证', unitLabel: '7,800 比索／次', quantity: 1, total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需要重新确认。' },
       { item: 'SSP-E CARD', unitLabel: '4,500 比索／次', quantity: 1, total: 4500, note: '移民局收取；入学时与SSP同时办理，只收一次。' },
@@ -175,6 +216,8 @@ export class BeciStudentQuote {
   }
 
   get depositReference(): SchoolLocalFee {
+    const fee = this.rules?.localFees.find(item => item.enabled && !item.includeInTotal && item.id === 'room-deposit');
+    if (fee) return { item: fee.name, unitLabel: `${quoteMoney(fee.amount)} 比索／人`, quantity: 1, total: fee.amount, note: fee.note };
     return { item: '房间押金', unitLabel: '3,000 比索／人', quantity: 1, total: 3000, note: '不计入学杂费合计；无损坏、无欠费并按学校规则完成退房后可退。' };
   }
 
@@ -182,4 +225,21 @@ export class BeciStudentQuote {
   get visaSummary(): string { return `${this.visaType === 'tourist30' ? 30 : 59}天旅游签证；预计续签${this.visaExtensionCount}次`; }
   get pickupSummary(): string { return this.pickupOptions.find((option) => option.value === this.pickup)?.label ?? ''; }
   format(value: number): string { return quoteMoney(value); }
+
+  private get registrationWaiverPromotion(): CiaPromotionRule | undefined {
+    return this.rules?.promotions.find(item => item.enabled && item.waiveRegistration && item.id === 'beci-registration-waiver');
+  }
+
+  private get activeOffSeasonPromotion(): CiaPromotionRule | undefined {
+    return this.rules?.promotions.find(item => item.enabled && item.discountType === 'percentage'
+      && this.entryDate >= (item.arrivalStart ?? '') && this.entryDate <= (item.arrivalEnd ?? '9999-12-31'));
+  }
+
+  private get peakRanges(): Array<{ start: string; end: string }> {
+    return this.rules ? this.rules.peakSeasonRanges.filter(item => item.enabled) : [...BECI_PEAK_RANGES];
+  }
+
+  private priceMultiplier(weeks: number): number {
+    return this.rules?.shortStayRatios[String(weeks)] ?? beciPriceMultiplier(weeks);
+  }
 }

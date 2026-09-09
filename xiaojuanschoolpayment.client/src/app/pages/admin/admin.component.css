@@ -125,7 +125,7 @@
 
 .quick-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin: 18px 0;
 }
@@ -300,6 +300,61 @@
   width: min(350px, 42%);
 }
 
+.city-filters {
+  display: flex;
+  gap: 8px;
+  padding: 14px 24px;
+  overflow-x: auto;
+  border-bottom: 1px solid #edf0f5;
+  background: #fbfcfd;
+}
+
+.city-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid #dce5e1;
+  border-radius: 999px;
+  color: #52645c;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.city-filters button small {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  color: #76867f;
+  background: #edf3f0;
+  font-size: 10px;
+}
+
+.city-filters button:hover,
+.city-filters button.active {
+  border-color: #7db69f;
+  color: #075a42;
+  background: #eaf6f1;
+}
+
+.city-filters button.active {
+  box-shadow: inset 0 -2px #ff6a21;
+}
+
+.city-filters button.active small {
+  color: #fff;
+  background: #087343;
+}
+
 .table-scroll {
   width: 100%;
   overflow-x: auto;
@@ -397,8 +452,7 @@ mat-paginator {
 
 @media (max-width: 720px) {
   .page-header,
-  .list-toolbar,
-  .dashboard-hero {
+  .list-toolbar {
     align-items: stretch;
     flex-direction: column;
   }
@@ -442,7 +496,8 @@ mat-paginator {
   }
 
   .create-panel,
-  .list-toolbar {
+  .list-toolbar,
+  .city-filters {
     padding: 20px 18px;
   }
 }

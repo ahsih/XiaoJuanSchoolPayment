@@ -1,12 +1,40 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { catchError, forkJoin, of, switchMap } from 'rxjs';
+import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
+import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
+import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import {
+  groupLocalFees,
+  groupPaymentLines,
+} from '../../../components/school-group-quote';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import {
+  QuoteImageDownloadButtonComponent,
+  QuoteImagePaymentItem,
+} from '../../../components/quote-image-download-button.component';
+import {
+  BlueOceanCoursePrice,
+  BlueOceanLocalFeePrices,
+  BlueOceanQuotePrices,
+  BlueOceanRoomPrice,
+  BlueOceanStudentQuote,
+  blueOceanPriceMultiplier,
+} from './blue-ocean-student-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12;
-
 interface QuickInfo {
   icon: string;
   label: string;
@@ -37,37 +65,10 @@ interface FitItem {
   text: string;
 }
 
-interface CourseOption {
-  id: string;
-  name: string;
-  type: string;
-  lessons: string;
-  suitable: string;
-}
-
-interface DormOption {
-  id: string;
-  name: string;
-  baseFourWeek: number;
-  note: string;
-}
-
-interface TuitionFee {
-  courseId: string;
-  weeks: WeekOption;
-  fee: number;
-}
-
 interface ScheduleItem {
   time: string;
   title: string;
   text: string;
-}
-
-interface LocalFee {
-  item: string;
-  amount: string;
-  note: string;
 }
 
 interface ProcessStep {
@@ -108,7 +109,14 @@ interface SourceLink {
 @Component({
   selector: 'app-cebu-blue-ocean-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    MatIconModule,
+    SchoolQuotePlanComponent,
+    QuoteImageDownloadButtonComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cebu-blue-ocean-school.component.html',
   styleUrls: [
@@ -116,10 +124,19 @@ interface SourceLink {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../philippines-local-fee-table.css',
+    '../../../components/school-group-quote.css',
     './cebu-blue-ocean-school.component.css',
   ],
 })
-export class CebuBlueOceanSchoolComponent {
+export class CebuBlueOceanSchoolComponent
+  implements OnInit, BlueOceanQuotePrices
+{
+  private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly pricingSchoolSearchName = 'Cebu Blue Ocean Academy';
+
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -130,14 +147,49 @@ export class CebuBlueOceanSchoolComponent {
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFee = 100;
-  readonly usdToCny = 7.2;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12];
-
-  selectedCourseId = 'light-esl';
-  selectedRoomId = 'egi-triple-ocean';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
+  registrationFee = 100;
+  sidaDiscountRate = 0.95;
+  offSeasonDiscountPerFourWeeks = 150;
+  twelveWeekMinimumWeeks = 12;
+  twelveWeekDiscount = 100;
+  longStayMinimumWeeks = 16;
+  longStayBaseDiscount = 100;
+  longStayIncrementWeeks = 2;
+  longStayIncrementDiscount = 25;
+  seasonalFeePerWeek = 40;
+  peakSeasonRanges = [
+    { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
+    { label: '2027旺季', start: '2027-06-27', end: '2027-08-21' },
+  ];
+  shortStayRatios: Record<string, number> = {
+    '1': 0.4,
+    '2': 0.65,
+    '3': 0.85,
+  };
+  localFeePrices: BlueOceanLocalFeePrices = {
+    ssp: 7800,
+    sspECard: 4500,
+    acrICard: 4000,
+    visaFirstCumulative: 5140,
+    visaSecondCumulative: 11550,
+    visaThirdCumulative: 15990,
+    visaAdditional: 5140,
+    accommodationDepositPerWeek: 1000,
+    offCampusUtilitiesPerWeek: 1000,
+    electiveMinimum: 300,
+    electiveMaximum: 800,
+    textbookMinimum: 1100,
+    textbookMaximum: 1500,
+    ieltsTextbook: 2500,
+    laundryPerLoad: 200,
+    pickup: 1200,
+    studentId: 300,
+    managementPerWeek: 500,
+  };
+  usdToCny = 7.2;
+  phpPerCny = 9;
+  exchangeRateDate = '';
+  usingLiveExchangeRates = false;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -241,7 +293,7 @@ export class CebuBlueOceanSchoolComponent {
     { label: '学校定位', value: 'Mactan岛海边度假型英语学校，PINES姊妹校，强调教学稳定和度假设施' },
     { label: '课程方向', value: 'Light ESL、Intensive ESL、Survival ESL、Power ESL 5/7、Business、TOEIC、IELTS、Junior、Parents 3H、Senior Course' },
     { label: '住宿房型', value: 'Ocean Suites单人房；EGI Hotel海景/市景双人房、海景三人房' },
-    { label: '4周起价', value: 'USD 1,820起：Light ESL学费 + EGI三人海景住宿 + 注册费' },
+    { label: '4周基础价', value: 'USD 1,820：Light ESL 870 + 校内三人海景房850 + 注册费100；报价时再计算免注册费、95折及适用学校优惠' },
     { label: '当地费用', value: 'SSP、SSP I-Card、ACR、签证延长、押金、教材、水电、管理费、洗衣和接机另算' },
   ];
 
@@ -310,159 +362,141 @@ export class CebuBlueOceanSchoolComponent {
     },
   ];
 
-  readonly courseOptions: CourseOption[] = [
+  courseOptions: BlueOceanCoursePrice[] = [
     {
       id: 'light-esl',
-      name: 'Light ESL 4',
+      name: 'Light ESL',
       type: '轻量口语综合',
-      lessons: '1:1 4小时 + Big Group Option 2小时',
+      lessons: '一对一4节',
       suitable: '适合希望平衡上课、休息、工作和Mactan生活体验的学生。',
-    },
-    {
-      id: 'intensive-esl',
-      name: 'Intensive ESL',
-      type: '标准综合英语',
-      lessons: '1:1 5小时 + 4:1小组2小时 + Big Group Option 2小时',
-      suitable: '适合想要一对一和小组课都具备的标准强度学生。',
+      baseFourWeek: 870,
     },
     {
       id: 'survival-esl',
       name: 'Survival ESL',
       type: '初学者生活英语',
-      lessons: '公开表：1:1 4节 + 小组2节',
-      suitable: '适合零基础或初级学生，公开资料提示入学级别较高会转普通Intensive ESL。',
+      lessons: '一对一4节 + 小组课2节',
+      suitable: '适合零基础或初级学生；每段最多选择4周。',
+      baseFourWeek: 1050,
+      maxWeeks: 4,
+    },
+    {
+      id: 'intensive-esl',
+      name: 'Intensive ESL',
+      type: '标准综合英语',
+      lessons: '一对一5节 + 小组课2节',
+      suitable: '适合想要一对一和小组课都具备的标准强度学生。',
+      baseFourWeek: 970,
     },
     {
       id: 'power-esl-5',
       name: 'Power ESL 5',
       type: '一对一强化',
-      lessons: '公开表：1:1 5节',
+      lessons: '一对一5节',
       suitable: '适合想增加一对一开口、反馈和教材定制空间的学生。',
+      baseFourWeek: 930,
     },
     {
       id: 'power-esl-7',
       name: 'Power ESL 7',
       type: '高密度一对一',
-      lessons: '公开表：1:1 7节 + Option 2节',
+      lessons: '一对一7节',
       suitable: '适合短期集中练口语、听力、词汇、阅读和基础写作的学生。',
+      baseFourWeek: 1170,
     },
     {
       id: 'business',
       name: 'Business English',
       type: '商务英语',
-      lessons: '1:1 5小时 + Group 2小时 + Big Group Option 2小时',
+      lessons: '一对一5节 + 小组课2节',
       suitable: '适合准备英文面试、简历、会议、演示和国际职场沟通的人。',
+      baseFourWeek: 1200,
     },
     {
       id: 'toeic',
       name: 'TOEIC',
       type: '多益备考',
-      lessons: '公开表：1:1 5节 + 小组2节',
+      lessons: '一对一5节 + 小组课2节',
       suitable: '适合有求职、毕业门槛或职业英语成绩需求的学生。',
+      baseFourWeek: 1050,
     },
     {
       id: 'ielts',
       name: 'IELTS',
       type: '雅思备考',
-      lessons: '1:1 5小时 + Group 2小时 + Big Group Option 2小时',
+      lessons: '一对一5节 + 小组课2节',
       suitable: '适合有留学、移民或就业目标分数，需要系统备考的学生。',
+      baseFourWeek: 1130,
     },
     {
       id: 'junior',
-      name: 'Junior Course',
+      name: '青少年课程（未满15岁）',
       type: '青少年英语',
-      lessons: '公开表：1:1 5节 + 小组2节',
+      lessons: '一对一5节 + 小组课2节',
       suitable: '适合青少年/亲子方向，旺季Family Camp规则需单独确认。',
+      baseFourWeek: 1500,
     },
     {
       id: 'parents',
-      name: 'Parents 3H',
+      name: '监护人课程',
       type: '家长课程',
-      lessons: '公开表：1:1 3节',
+      lessons: '一对一3节（可转让一节课给小朋友）',
       suitable: '适合亲子同行家长保留较多陪伴和休息时间。',
+      baseFourWeek: 750,
     },
     {
       id: 'senior',
       name: 'Senior Course',
       type: '40岁以上特色课程',
-      lessons: '公开表：1:1 4节 + 特色小组课',
+      lessons: '一对一4节 + 特色小组课',
       suitable: '适合40岁以上、希望兼顾一对一学习与特色小组互动的学生。',
+      baseFourWeek: 1050,
     },
   ];
 
-  readonly dormOptions: DormOption[] = [
+  dormOptions: BlueOceanRoomPrice[] = [
     {
       id: 'egi-triple-ocean',
-      name: 'EGI海景三人房',
+      name: '校内三人间（海景）',
       baseFourWeek: 850,
       note: '4周住宿费最低，适合控制预算。',
+      offCampus: false,
     },
     {
       id: 'egi-twin-city',
-      name: 'EGI市景双人房',
+      name: '校内双人间（城景）',
       baseFourWeek: 900,
       note: '预算和空间平衡，市景房通常比海景房低。',
+      offCampus: false,
     },
     {
       id: 'egi-twin-ocean',
-      name: 'EGI海景双人房',
+      name: '校内双人间（海景）',
       baseFourWeek: 1120,
       note: '更有Mactan度假感，热门季节需提前确认。',
+      offCampus: false,
     },
     {
       id: 'ocean-suite-superior',
-      name: 'Ocean Suites单人Superior',
+      name: '校外高级房型',
       baseFourWeek: 1250,
       note: '外部单人住宿，公开资料提示18岁以上、60岁以上学生需选Ocean Suites。',
+      offCampus: true,
     },
     {
       id: 'ocean-suite-deluxe',
-      name: 'Ocean Suites单人Deluxe',
+      name: '校外豪华房型',
       baseFourWeek: 1400,
       note: '单人房舒适度更高，往返校区需按学校安排。',
+      offCampus: true,
     },
     {
       id: 'ocean-suite-ocean',
-      name: 'Ocean Suites单人Ocean View',
+      name: '校外单人间（海景）',
       baseFourWeek: 1600,
       note: '单人海景房预算最高，适合重视隐私和住宿品质的人。',
+      offCampus: true,
     },
-  ];
-
-  readonly tuitionFees: TuitionFee[] = [
-    { courseId: 'light-esl', weeks: 4, fee: 870 },
-    { courseId: 'light-esl', weeks: 8, fee: 1740 },
-    { courseId: 'light-esl', weeks: 12, fee: 2510 },
-    { courseId: 'intensive-esl', weeks: 4, fee: 970 },
-    { courseId: 'intensive-esl', weeks: 8, fee: 1940 },
-    { courseId: 'intensive-esl', weeks: 12, fee: 2810 },
-    { courseId: 'survival-esl', weeks: 4, fee: 1050 },
-    { courseId: 'survival-esl', weeks: 8, fee: 2100 },
-    { courseId: 'survival-esl', weeks: 12, fee: 3050 },
-    { courseId: 'power-esl-5', weeks: 4, fee: 930 },
-    { courseId: 'power-esl-5', weeks: 8, fee: 1860 },
-    { courseId: 'power-esl-5', weeks: 12, fee: 2690 },
-    { courseId: 'power-esl-7', weeks: 4, fee: 1170 },
-    { courseId: 'power-esl-7', weeks: 8, fee: 2340 },
-    { courseId: 'power-esl-7', weeks: 12, fee: 3410 },
-    { courseId: 'business', weeks: 4, fee: 1200 },
-    { courseId: 'business', weeks: 8, fee: 2400 },
-    { courseId: 'business', weeks: 12, fee: 3500 },
-    { courseId: 'toeic', weeks: 4, fee: 1050 },
-    { courseId: 'toeic', weeks: 8, fee: 2100 },
-    { courseId: 'toeic', weeks: 12, fee: 3050 },
-    { courseId: 'ielts', weeks: 4, fee: 1130 },
-    { courseId: 'ielts', weeks: 8, fee: 2260 },
-    { courseId: 'ielts', weeks: 12, fee: 3290 },
-    { courseId: 'junior', weeks: 4, fee: 1500 },
-    { courseId: 'junior', weeks: 8, fee: 3000 },
-    { courseId: 'junior', weeks: 12, fee: 4400 },
-    { courseId: 'parents', weeks: 4, fee: 750 },
-    { courseId: 'parents', weeks: 8, fee: 1500 },
-    { courseId: 'parents', weeks: 12, fee: 2150 },
-    { courseId: 'senior', weeks: 4, fee: 1050 },
-    { courseId: 'senior', weeks: 8, fee: 2100 },
-    { courseId: 'senior', weeks: 12, fee: 3050 },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -498,20 +532,17 @@ export class CebuBlueOceanSchoolComponent {
     },
   ];
 
-  readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 100', note: '出发前支付，不含在学费和住宿费中' },
-    { item: '高峰期加价', amount: 'USD 40 / 周', note: '公开表列2026/6/28-8/22高峰季加价；正式以学校报价为准' },
-    { item: '机场接机', amount: 'PHP 1,200 / 1,500', note: '指定时间团体接机PHP 1,200，个别接机通常PHP 1,500' },
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，金额可能按政策更新' },
-    { item: 'SSP I-Card', amount: 'PHP 4,500', note: '公开表列SSP I-Card费用' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '60天以上或长周期学习通常需要确认' },
-    { item: '签证延长', amount: 'PHP 5,140起', note: '5-8周PHP 5,140，周数越长费用越高' },
-    { item: '酒店押金', amount: 'PHP 1,000 / 周', note: '毕业退房时按水电等费用结算' },
-    { item: '综合管理费', amount: 'PHP 500 / 周', note: '到校后按学习周数支付' },
-    { item: '教材费', amount: 'PHP 1,100-2,500 / 4周', note: '5册以下PHP 1,100；IELTS教材通常更高' },
-    { item: '水电费', amount: '实费结算', note: 'EGI按实际用量结算；Ocean Suites公开表列PHP 1,000/周' },
-    { item: '洗衣服务', amount: 'PHP 150-200 / 次', note: '洗衣+烘干按住宿类型和服务项目变化' },
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
+  readonly students: BlueOceanStudentQuote[] = [
+    new BlueOceanStudentQuote(this),
   ];
+
+  readonly localFeeBottomNote =
+    '学杂费是到菲律宾当地需要交纳的费用，是学校直接收取的，我们的报价只作为参考，因菲律宾政策变动当地费用可能会有浮动，具体以到校后收取的为准。';
+  readonly schoolFeeImageNote =
+    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行实时汇率，把美元换算为人民币结算。';
+  readonly localFeeImageNote = `2、${this.localFeeBottomNote}`;
 
   readonly serviceSteps: ProcessStep[] = [
     {
@@ -630,7 +661,7 @@ export class CebuBlueOceanSchoolComponent {
   ];
   readonly notes = [
     '4周课程与住宿基准使用学校2025美元价目表；实际金额会按学校当期报价、汇率和政策调整。',
-    'CBOA公开价格中，学费和住宿费分开列出，报价器会把注册费、学费、住宿费相加。',
+    'CBOA公开价格中，学费和住宿费分开列出；报价器先按95折计算课程与住宿，再扣学校固定优惠，并免除思达学生注册费。',
     '课程与住宿的1周、2周、3周费用分别按4周价格的40%、65%、85%计算。',
     '暑假旺季、Family Camp、海景房和Ocean Suites单人房需要提前确认空房和规则。',
     '到校后SSP、签证、押金、教材、水电、管理费和洗衣等费用需以学校Orientation说明为准。',
@@ -644,12 +675,12 @@ export class CebuBlueOceanSchoolComponent {
     {
       question: '页面上的CBOA报价包含全部费用吗？',
       answer:
-        '不包含全部。报价器主要估算注册费、学费和住宿费；到校后还要准备SSP、SSP I-Card、ACR、签证延长、押金、教材、水电、管理费、洗衣等当地费用。',
+        '学校费用和优惠会自动计算；到校学杂费按签证和停留跨度估算，押金、教材、水电、选修、洗衣和接机另列为4周参考项目。',
     },
     {
       question: 'CBOA适合亲子游学吗？',
       answer:
-        '可以列入候选。CBOA有Junior Course和Parents 3H，但暑假亲子旺季、Family Camp、年龄、房型和名额规则变化较多，建议先让顾问确认当期招生口径。',
+        '可以列入候选。CBOA有未满15岁的青少年课程和监护人课程，但暑假亲子旺季、Family Camp、年龄、房型和名额规则需要按当期安排确认。',
     },
     {
       question: 'CBOA适合雅思或多益备考吗？',
@@ -690,6 +721,39 @@ export class CebuBlueOceanSchoolComponent {
     { label: 'Fujiyama CBOA费用与当地费用', url: 'https://www.fujiyama-international.com/philippines/cebu-blue-ocean-academy.html' },
   ];
 
+  ngOnInit(): void {
+    this.exchangeRateService.getLatestCnyRates().subscribe({
+      next: (rates) => {
+        this.usdToCny = rates.usdToCny;
+        this.phpPerCny = rates.phpPerCny;
+        this.exchangeRateDate = rates.date;
+        this.usingLiveExchangeRates = true;
+      },
+    });
+
+    this.schoolService
+      .getSchools({ name: this.pricingSchoolSearchName })
+      .pipe(
+        switchMap((schools) => {
+          const school = schools.find((item) =>
+            /Cebu Blue Ocean|CBOA|宿务蓝海/iu.test(item.name),
+          );
+          if (!school) return of(null);
+          return forkJoin({
+            lessons: this.schoolService.getSchoolLessons({
+              schoolId: school.id,
+            }),
+            rooms: this.schoolService.getSchoolRooms({ schoolId: school.id }),
+            fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          });
+        }),
+        catchError(() => of(null)),
+      )
+      .subscribe((data) => {
+        if (data) this.applyPricingData(data.lessons, data.rooms, data.fees);
+      });
+  }
+
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
   }
@@ -718,28 +782,32 @@ export class CebuBlueOceanSchoolComponent {
     );
   }
 
-  tuitionFor(courseId: string, weeks: WeekOption = this.selectedWeeks): number {
-    const listedFee = this.tuitionFees.find(
-      (item) => item.courseId === courseId && item.weeks === weeks,
-    )?.fee;
-
-    if (listedFee !== undefined) {
-      return listedFee;
+  tuitionFor(courseId: string, weeks = this.selectedWeeks): number {
+    const course = this.courseOptions.find((item) => item.id === courseId);
+    if (!course || (course.maxWeeks !== undefined && weeks > course.maxWeeks)) {
+      return 0;
     }
-
-    const fourWeekFee = this.tuitionFees.find(
-      (item) => item.courseId === courseId && item.weeks === 4,
-    )?.fee;
-
-    return fourWeekFee && weeks < 4
-      ? fourWeekFee * this.durationMultiplier(weeks)
-      : 0;
+    return this.roundMoney(
+      course.baseFourWeek *
+        blueOceanPriceMultiplier(weeks, this.shortStayRatios),
+    );
   }
 
-  dormFeeFor(roomId: string, weeks: WeekOption = this.selectedWeeks): number {
-    const room = this.dormOptions.find((item) => item.id === roomId);
+  coursePriceText(course: BlueOceanCoursePrice, weeks: number): string {
+    if (course.maxWeeks !== undefined && weeks > course.maxWeeks) {
+      return `最多${course.maxWeeks}周`;
+    }
+    return `USD ${this.formatUsd(this.tuitionFor(course.id, weeks))}`;
+  }
 
-    return room ? room.baseFourWeek * this.durationMultiplier(weeks) : 0;
+  dormFeeFor(roomId: string, weeks = this.selectedWeeks): number {
+    const room = this.dormOptions.find((item) => item.id === roomId);
+    return room
+      ? this.roundMoney(
+          room.baseFourWeek *
+            blueOceanPriceMultiplier(weeks, this.shortStayRatios),
+        )
+      : 0;
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -750,14 +818,79 @@ export class CebuBlueOceanSchoolComponent {
         );
   }
 
-  get selectedCourse(): CourseOption {
+  get studentCount(): number {
+    return this.requestedStudentCount;
+  }
+
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) {
+        this.students.push(new BlueOceanStudentQuote(this));
+      }
+    }
+  }
+
+  setQuoteMode(value: 'single' | 'group'): void {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+
+  get activeStudents(): BlueOceanStudentQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(
+          0,
+          Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)),
+        );
+  }
+
+  get quotePlan() {
+    return this.students[0].quotePlan;
+  }
+
+  get selectedCourseId(): string {
+    return this.quotePlan.courses[0].optionId;
+  }
+
+  set selectedCourseId(value: string) {
+    this.quotePlan.courses[0].optionId = value;
+  }
+
+  get selectedRoomId(): string {
+    return this.quotePlan.rooms[0].optionId;
+  }
+
+  set selectedRoomId(value: string) {
+    this.quotePlan.rooms[0].optionId = value;
+  }
+
+  get selectedWeeks(): number {
+    return this.quotePlan.courseWeeks;
+  }
+
+  set selectedWeeks(value: number) {
+    this.quotePlan.courses[0].weeks = value;
+    this.quotePlan.rooms[0].weeks = value;
+  }
+
+  get selectedStartDate(): string {
+    return this.quotePlan.startDate;
+  }
+
+  set selectedStartDate(value: string) {
+    this.quotePlan.courses[0].startDate = value;
+    this.quotePlan.rooms[0].startDate = value;
+  }
+
+  get selectedCourse(): BlueOceanCoursePrice {
     return (
       this.courseOptions.find((course) => course.id === this.selectedCourseId) ??
       this.courseOptions[0]
     );
   }
 
-  get selectedRoom(): DormOption {
+  get selectedRoom(): BlueOceanRoomPrice {
     return (
       this.dormOptions.find((room) => room.id === this.selectedRoomId) ??
       this.dormOptions[0]
@@ -765,48 +898,383 @@ export class CebuBlueOceanSchoolComponent {
   }
 
   get selectedTuitionFee(): number {
-    return this.tuitionFor(this.selectedCourseId, this.selectedWeeks);
+    return this.students[0].tuition;
   }
 
   get selectedDormFee(): number {
-    return this.dormFeeFor(this.selectedRoomId, this.selectedWeeks);
+    return this.students[0].accommodation;
+  }
+
+  get planPaymentItems(): QuoteImagePaymentItem[] {
+    return this.activeStudents.flatMap((student, studentIndex) =>
+      student.quotePlan.paymentItems().map((item) => ({
+        ...item,
+        label: `${
+          this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''
+        }${item.label.replace(/^课程费/u, '课程名称').replace(/^住宿费/u, '住宿名称')}`,
+      })),
+    );
+  }
+
+  get schoolPaymentItems(): QuoteImagePaymentItem[] {
+    return [
+      {
+        icon: '注',
+        label: '注册费',
+        amount: `${this.formatUsd(
+          this.activeStudents.length * this.registrationFee,
+        )} 美元`,
+        note: `100美元／人；下方按思达启航长期优惠全额减免。`,
+      },
+      ...this.planPaymentItems,
+      ...groupPaymentLines(this.activeStudents, false),
+    ];
+  }
+
+  get quoteError(): string {
+    if (
+      this.quoteMode === 'group' &&
+      (!Number.isInteger(this.studentCount) ||
+        this.studentCount < 2 ||
+        this.studentCount > 20)
+    ) {
+      return '多人报价人数请选择2–20人的整数。';
+    }
+    const index = this.activeStudents.findIndex(
+      (student) => !!student.quoteError,
+    );
+    return index < 0
+      ? ''
+      : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${
+          this.activeStudents[index].quoteError
+        }`;
+  }
+
+  get quoteHeading(): string {
+    return this.quoteMode === 'single'
+      ? `Cebu Blue Ocean ${this.students[0].quotePlan.courseWeeks}周报价`
+      : `Cebu Blue Ocean ${this.activeStudents.length}人报价`;
+  }
+
+  get quoteStartDate(): string {
+    return (
+      this.activeStudents
+        .map((student) => student.quotePlan.startDate)
+        .filter(Boolean)
+        .sort()[0] ?? this.selectedStartDate
+    );
   }
 
   get quoteUsd(): number {
-    return this.registrationFee + this.selectedTuitionFee + this.selectedDormFee;
+    return this.activeStudents.reduce(
+      (sum, student) => sum + student.quoteUsd,
+      0,
+    );
   }
 
   get quoteUsdText(): string {
-    return `USD ${this.formatUsd(this.quoteUsd)} 起`;
+    return `${this.formatUsd(this.quoteUsd)} 美元`;
   }
 
   get quoteCnyText(): string {
-    const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
-
-    return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
+    return `人民币预计金额：约 ${Math.round(
+      this.quoteUsd * this.usdToCny,
+    ).toLocaleString('zh-CN')} 元`;
   }
 
-  get seasonalNote(): string {
-    return '公开表列2026/6/28-8/22旺季可能加收USD 40/周，正式以学校报价为准';
+  get exchangeRateSummary(): string {
+    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', {
+      maximumFractionDigits: 6,
+    })}元人民币；1元人民币 ≈ ${this.phpPerCny.toLocaleString('zh-CN', {
+      maximumFractionDigits: 6,
+    })}比索（${
+      this.usingLiveExchangeRates && this.exchangeRateDate
+        ? this.exchangeRateDate.replace(/-/g, '/')
+        : '备用参考值'
+    }）`;
+  }
+
+  get estimatedLocalFees() {
+    return groupLocalFees(this.activeStudents);
+  }
+
+  get estimatedLocalFeeTotal(): number {
+    return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0);
+  }
+
+  get estimatedLocalFeeCny(): number {
+    return this.phpPerCny > 0
+      ? Math.round(this.estimatedLocalFeeTotal / this.phpPerCny)
+      : 0;
+  }
+
+  get optionalFeeItems() {
+    const fees = this.localFeePrices;
+    const totalRoomWeeks = this.activeStudents.reduce(
+      (sum, student) => sum + student.accommodationWeeks,
+      0,
+    );
+    const totalOffCampusWeeks = this.activeStudents.reduce(
+      (sum, student) => sum + student.offCampusAccommodationWeeks,
+      0,
+    );
+    const hasCampusAccommodation = this.activeStudents.some(
+      (student) => student.hasCampusAccommodation,
+    );
+    const pickupStudents = this.activeStudents.filter(
+      (student) => student.pickupRequested,
+    ).length;
+    const hasIelts = this.activeStudents.some(
+      (student) => student.usesIeltsCourse,
+    );
+    const depositTotal = fees.accommodationDepositPerWeek * totalRoomWeeks;
+    const offCampusUtilitiesTotal =
+      fees.offCampusUtilitiesPerWeek * totalOffCampusWeeks;
+    const cny = (value: number) =>
+      `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString(
+        'zh-CN',
+      )} 元`;
+
+    return [
+      {
+        label: '住宿费押金',
+        amount: this.formatPhp(depositTotal),
+        cnyAmount: cny(depositTotal),
+        note: `${fees.accommodationDepositPerWeek.toLocaleString(
+          'en-US',
+        )}比索／住宿周 × ${totalRoomWeeks}周；水电费在押金中扣除；不计入学杂费合计。`,
+      },
+      {
+        label: '水电费',
+        amount:
+          totalOffCampusWeeks > 0
+            ? `${this.formatPhp(offCampusUtilitiesTotal)}参考`
+            : '校内按实际使用结算',
+        cnyAmount:
+          totalOffCampusWeeks > 0 ? cny(offCampusUtilitiesTotal) : undefined,
+        note: `${
+          hasCampusAccommodation ? '校内住宿按实际使用情况结算；' : ''
+        }校外住宿${fees.offCampusUtilitiesPerWeek.toLocaleString(
+          'en-US',
+        )}比索／周。`,
+      },
+      {
+        label: '选修课',
+        amount: `${fees.electiveMinimum.toLocaleString(
+          'en-US',
+        )}–${fees.electiveMaximum.toLocaleString('en-US')} 比索／2周`,
+        note: '4周学杂费参考项目，按学生实际选择结算。',
+      },
+      {
+        label: '书本费',
+        amount: hasIelts
+          ? `${fees.ieltsTextbook.toLocaleString('en-US')} 比索／4周`
+          : `${fees.textbookMinimum.toLocaleString(
+              'en-US',
+            )}–${fees.textbookMaximum.toLocaleString('en-US')} 比索／4周`,
+        note: hasIelts
+          ? `本次含IELTS课程，按IELTS教材${fees.ieltsTextbook.toLocaleString(
+              'en-US',
+            )}比索／4周参考。`
+          : '普通课程约1,100–1,500比索／4周。',
+      },
+      {
+        label: '洗衣费',
+        amount: `${fees.laundryPerLoad.toLocaleString(
+          'en-US',
+        )} 比索／7kg／次`,
+        note: '4周学杂费参考项目，按实际洗衣次数结算。',
+      },
+      {
+        label: '宿务马克坦机场接机',
+        amount: pickupStudents
+          ? this.formatPhp(fees.pickup * pickupStudents)
+          : `${this.formatPhp(fees.pickup)}／人参考`,
+        cnyAmount: pickupStudents
+          ? cny(fees.pickup * pickupStudents)
+          : cny(fees.pickup),
+        note: `常规接机1,200比索／人（周六10:00至周日凌晨2:00）；本次${
+          pickupStudents ? `${pickupStudents}人选择` : '未选择'
+        }；不计入学杂费合计。`,
+      },
+    ];
+  }
+
+  get quoteImageData() {
+    const paymentItems = [
+      this.schoolPaymentItems[0],
+      ...this.planPaymentItems,
+      ...groupPaymentLines(this.activeStudents, true),
+    ];
+    const quote = buildPhilippinesDetailedQuote({
+      schoolCode: 'CBOA',
+      schoolName: 'Cebu Blue Ocean Academy',
+      filePrefix: 'Cebu-Blue-Ocean',
+      heroSrc:
+        'https://storage.googleapis.com/studio-cms-assets/projects/JgqeXQQ9Ok/s-1200x800_v-fms_webp_b05503a5-81cb-4119-afec-e61f287a5ffe_middle.webp',
+      weeks: this.selectedWeeks,
+      startDate: this.quoteStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+      paymentItems,
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({
+        label: fee.item,
+        unit: fee.unitLabel,
+        quantity: this.formatFeeQuantity(fee.quantity),
+        amount: this.formatPhp(fee.total),
+        note: fee.note,
+      })),
+      localFeeTotal: this.estimatedLocalFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: this.estimatedLocalFeeCny,
+      localFeeNote: '',
+      optionalFeeItems: this.optionalFeeItems,
+      ruleNotes: [],
+    });
+    const result = applySchoolQuoteImageLayout(
+      {
+        ...quote,
+        noteTitle: '报价说明',
+        importantNotes: [this.schoolFeeImageNote, this.localFeeImageNote],
+      },
+      'Cebu Blue Ocean',
+      this.selectedWeeks,
+      this.quoteStartDate,
+      this.quoteUsd,
+      this.usdToCny,
+    );
+
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(
+        /-/g,
+        '',
+      )}.png`,
+      localFeeTitle: '到校后学杂费明细参考（学校及政府相关部门收取）',
+      importantNotes: [this.schoolFeeImageNote, this.localFeeImageNote],
+      footerNotesVerbatim: true,
+      appendFinalConfirmationNote: false,
+      appendExchangeRateNote: true,
+      conversionRates: {
+        usdToCny: this.usdToCny,
+        phpPerCny: this.phpPerCny,
+        date: this.usingLiveExchangeRates
+          ? this.exchangeRateDate
+          : undefined,
+      },
+    };
+  }
+
+  formatPhp(value: number): string {
+    return `${Math.round(value).toLocaleString('en-US')} 比索`;
+  }
+
+  formatFeeQuantity(value: number): string {
+    return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
   }
 
   formatUsd(value: number): string {
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
-      maximumFractionDigits: 1,
+      maximumFractionDigits: 2,
     });
   }
 
-  private durationMultiplier(weeks: WeekOption): number {
-    const multiplier: Record<WeekOption, number> = {
-      1: 0.4,
-      2: 0.65,
-      3: 0.85,
-      4: 1,
-      8: 2,
-      12: 3,
-    };
+  private applyPricingData(
+    lessons: SchoolLessonDTO[],
+    rooms: SchoolRoomDTO[],
+    fees: SchoolFeeDTO[],
+  ): void {
+    const databaseCourses = lessons
+      .filter((lesson) => lesson.week === 4)
+      .map((lesson) => ({ lesson, id: this.courseIdFromName(lesson.name) }))
+      .filter(
+        (entry): entry is { lesson: SchoolLessonDTO; id: string } => !!entry.id,
+      );
+    if (
+      this.courseOptions.every((course) =>
+        databaseCourses.some((entry) => entry.id === course.id),
+      )
+    ) {
+      this.courseOptions.forEach((course) => {
+        const database = databaseCourses.find((entry) => entry.id === course.id);
+        if (!database) return;
+        course.baseFourWeek = database.lesson.price;
+        if (database.lesson.description) course.lessons = database.lesson.description;
+      });
+    }
 
-    return multiplier[weeks];
+    const databaseRooms = rooms
+      .filter((room) => room.week === 4)
+      .map((room) => ({ room, id: this.roomIdFromName(room.name) }))
+      .filter(
+        (entry): entry is { room: SchoolRoomDTO; id: string } => !!entry.id,
+      );
+    if (
+      this.dormOptions.every((room) =>
+        databaseRooms.some((entry) => entry.id === room.id),
+      )
+    ) {
+      this.dormOptions.forEach((room) => {
+        const database = databaseRooms.find((entry) => entry.id === room.id);
+        if (!database) return;
+        room.baseFourWeek = database.room.price;
+        if (database.room.description) room.note = database.room.description;
+      });
+    }
+
+    const fee = (name: RegExp) => fees.find((item) => name.test(item.name))?.fee;
+    this.registrationFee = fee(/^注册费$/u) ?? this.registrationFee;
+    this.seasonalFeePerWeek = fee(/旺季附加费/u) ?? this.seasonalFeePerWeek;
+    this.localFeePrices.ssp = fee(/^SSP特殊学习许可证$/iu) ?? this.localFeePrices.ssp;
+    this.localFeePrices.sspECard = fee(/^SSP-E CARD$/iu) ?? this.localFeePrices.sspECard;
+    this.localFeePrices.acrICard = fee(/^ACR-I CARD$/iu) ?? this.localFeePrices.acrICard;
+    this.localFeePrices.visaFirstCumulative = fee(/第1次签证续签累计/u) ?? this.localFeePrices.visaFirstCumulative;
+    this.localFeePrices.visaSecondCumulative = fee(/第2次签证续签累计/u) ?? this.localFeePrices.visaSecondCumulative;
+    this.localFeePrices.visaThirdCumulative = fee(/第3次签证续签累计/u) ?? this.localFeePrices.visaThirdCumulative;
+    this.localFeePrices.visaAdditional = fee(/第4次起每次签证续签预估/u) ?? this.localFeePrices.visaAdditional;
+    this.localFeePrices.accommodationDepositPerWeek = fee(/住宿费押金/u) ?? this.localFeePrices.accommodationDepositPerWeek;
+    this.localFeePrices.offCampusUtilitiesPerWeek = fee(/校外水电费/u) ?? this.localFeePrices.offCampusUtilitiesPerWeek;
+    this.localFeePrices.electiveMinimum = fee(/选修课最低/u) ?? this.localFeePrices.electiveMinimum;
+    this.localFeePrices.electiveMaximum = fee(/选修课最高/u) ?? this.localFeePrices.electiveMaximum;
+    this.localFeePrices.textbookMinimum = fee(/普通教材费最低/u) ?? this.localFeePrices.textbookMinimum;
+    this.localFeePrices.textbookMaximum = fee(/普通教材费最高/u) ?? this.localFeePrices.textbookMaximum;
+    this.localFeePrices.ieltsTextbook = fee(/IELTS教材费/u) ?? this.localFeePrices.ieltsTextbook;
+    this.localFeePrices.laundryPerLoad = fee(/洗衣费/u) ?? this.localFeePrices.laundryPerLoad;
+    this.localFeePrices.pickup = fee(/机场接机/u) ?? this.localFeePrices.pickup;
+    this.localFeePrices.studentId = fee(/学生证/u) ?? this.localFeePrices.studentId;
+    this.localFeePrices.managementPerWeek = fee(/管理费/u) ?? this.localFeePrices.managementPerWeek;
+  }
+
+  private courseIdFromName(name: string): string {
+    if (/Survival ESL/iu.test(name)) return 'survival-esl';
+    if (/Intensive ESL/iu.test(name)) return 'intensive-esl';
+    if (/Light ESL/iu.test(name)) return 'light-esl';
+    if (/Power ESL\s*5/iu.test(name)) return 'power-esl-5';
+    if (/Power ESL\s*7/iu.test(name)) return 'power-esl-7';
+    if (/Business/iu.test(name)) return 'business';
+    if (/TOEIC/iu.test(name)) return 'toeic';
+    if (/IELTS/iu.test(name)) return 'ielts';
+    if (/监护人|Parents|Guardian/iu.test(name)) return 'parents';
+    if (/青少年|Junior/iu.test(name)) return 'junior';
+    if (/Senior/iu.test(name)) return 'senior';
+    return '';
+  }
+
+  private roomIdFromName(name: string): string {
+    if (/校内.*三人.*海景|EGI.*Triple.*Ocean/iu.test(name)) return 'egi-triple-ocean';
+    if (/校内.*双人.*城景|EGI.*Twin.*City/iu.test(name)) return 'egi-twin-city';
+    if (/校内.*双人.*海景|EGI.*Twin.*Ocean/iu.test(name)) return 'egi-twin-ocean';
+    if (/校外.*高级|Ocean Suites.*Superior/iu.test(name)) return 'ocean-suite-superior';
+    if (/校外.*豪华|Ocean Suites.*Deluxe/iu.test(name)) return 'ocean-suite-deluxe';
+    if (/校外.*单人.*海景|Ocean Suites.*Ocean/iu.test(name)) return 'ocean-suite-ocean';
+    return '';
+  }
+
+  private roundMoney(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
   }
 }

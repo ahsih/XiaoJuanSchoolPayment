@@ -1,21 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { GlcQuoteCalculator } from './glc-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
-import { GLC_COURSES, GLC_ROOMS, GLC_REGISTRATION_NOTE, GLC_LOCAL_FEE_INTRO, glcCourseName } from './glc-pricing';
+import { GlcCourse, GLC_COURSES, GLC_ROOMS, GLC_REGISTRATION_NOTE, GLC_LOCAL_FEE_INTRO, glcCourseName } from './glc-pricing';
 import { QuotePlanRow, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolVisaType, groupLocalFees } from '../../../components/school-group-quote';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { CiaContentConfig, CiaQuoteImageSettings, CiaStayPolicyCard } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneGlcContentConfig, createDefaultGlcContentConfig } from './glc-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
@@ -32,6 +38,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  contentType?: string;
 }
 
 interface BasicInfoRow {
@@ -125,37 +132,22 @@ interface GlcStudentQuote {
     './glc-school.component.css',
   ],
 })
-export class GlcSchoolComponent implements OnInit {
+export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolName = '菲律宾宿务Global Language Cebu';
-  private readonly specialFeeOrder = [
-    'Light Power Speaking',
-    'Ultra Sparta ESL',
-    'Family Package 2',
-    'Family Package 3',
-    'Family Package 4',
-    'Kids English 6',
-    'Kids English 7',
-    'Kids English 8',
-    'Junior Power Speaking 6',
-    'Junior Power Speaking 7',
-    'Junior Power Speaking 8',
-    'General IELTS',
-    'Intensive IELTS',
-    'Ultra8 IELTS',
-    'Ultra IELTS斯巴达',
-    'Business course',
-    'Ultra7 Business',
-  ];
-  private readonly roomOrder = [
-    '主楼豪华单人间',
-    '主楼单人间',
-    '主楼双人间',
-    '主楼三人间',
-    '副楼双人间',
-    '副楼单人间',
-  ];
+  private readonly initialContent = createDefaultGlcContentConfig();
+  private contentConfig = cloneGlcContentConfig(this.initialContent);
+  private allQuoteCourses: GlcCourse[] = this.mapConfiguredCourses(this.contentConfig);
+  private previewContent?: CiaContentConfig;
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -194,7 +186,7 @@ export class GlcSchoolComponent implements OnInit {
     return active;
   }
   private createStudent(): GlcStudentQuote {
-    const calculator = new GlcQuoteCalculator(() => this.quoteCourses, () => this.roomOptions, () => this.registrationFee);
+    const calculator = new GlcQuoteCalculator(() => this.quoteCourses, () => this.roomOptions, () => this.registrationFee, () => this.contentConfig);
     calculator.peopleOverride = 1;
     const ownCourses = calculator.plan.courses;
     return { calculator, ageGroup: 'adult', sharedCourseOwner: null, ownCourses };
@@ -206,20 +198,41 @@ export class GlcSchoolComponent implements OnInit {
   get selectedWeeks() { return this.totalCourseWeeks; }
   get selectedStartDate() { return this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? ''; }
   get quoteCourses() {
-    return GLC_COURSES.map(course => {
-      const current = this.courseOptions.find(item => item.name === course.name)
-        ?? this.specialFees.find(item => item.label === course.name);
-      return { ...course, weeklyTuition: current?.weeklyTuition ?? course.weeklyTuition };
-    });
+    return this.allQuoteCourses;
+  }
+
+  private mapConfiguredCourses(content: CiaContentConfig): GlcCourse[] {
+    return content.courses
+      .filter(item => item.enabled)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(item => {
+        const fallback = GLC_COURSES.find(course => course.id === item.id);
+        return {
+          id: item.id,
+          name: item.name,
+          englishName: item.englishName ?? fallback?.englishName ?? item.name,
+          chineseName: item.chineseName ?? fallback?.chineseName ?? item.name,
+          type: item.group ?? fallback?.type ?? '其他课程',
+          lessons: item.schedule,
+          suitable: item.suitable,
+          weeklyTuition: item.tuition,
+          offSeasonEligible: item.offSeasonEligible ?? fallback?.offSeasonEligible ?? false,
+          annexOnly: item.annexOnly ?? fallback?.annexOnly,
+          family: item.family ?? fallback?.family,
+          textbook: item.textbook ?? fallback?.textbook ?? 'esl',
+        };
+      });
   }
   get courseFeeGroups() {
     const courses = this.quoteCourses;
-    return ['一般英语', '雅思', '商务', '亲子', '儿童英语', '青少年英语']
+    const preferred = ['一般英语', '雅思', '商务', '亲子', '儿童英语', '青少年英语'];
+    const extra = [...new Set(courses.map(course => course.type))].filter(type => !preferred.includes(type));
+    return [...preferred, ...extra]
       .map(type => ({ type, courses: courses.filter(course => course.type === type) }));
   }
 
   courseDisplayName(id: string): string {
-    const course = GLC_COURSES.find(item => item.id === id);
+    const course = this.quoteCourses.find(item => item.id === id);
     return course ? glcCourseName(course) : '';
   }
 
@@ -266,7 +279,7 @@ export class GlcSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'GLC Mabolo校区',
@@ -310,6 +323,7 @@ export class GlcSchoolComponent implements OnInit {
       src: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b8b2c9416ac1b74d3789_DSC03460.webp',
     },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾宿务Global Language Cebu' },
@@ -376,15 +390,15 @@ export class GlcSchoolComponent implements OnInit {
 
   roomOptions: RoomOption[] = GLC_ROOMS.map(room => ({ ...room }));
 
-  courseOptions: CourseOption[] = GLC_COURSES
+  courseOptions: CourseOption[] = this.allQuoteCourses
     .filter(course => ['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(course.id))
-    .map(course => ({ ...course }));
+    .map(course => course);
 
   specialFees: SpecialCourseFee[] = GLC_COURSES
     .filter(course => !['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(course.id))
     .map(course => ({ label: course.name, lessons: course.lessons, weeklyTuition: course.weeklyTuition, note: course.suitable || '住宿费与学杂费另计。' }));
 
-  readonly registrationNote = GLC_REGISTRATION_NOTE;
+  get registrationNote() { return this.quoteImageSettings.paymentNotes.registration || GLC_REGISTRATION_NOTE; }
 
   readonly schedule: ScheduleItem[] = [
     {
@@ -419,7 +433,15 @@ export class GlcSchoolComponent implements OnInit {
     },
   ];
 
-  readonly localFeeIntro = GLC_LOCAL_FEE_INTRO;
+  localFeeIntro = GLC_LOCAL_FEE_INTRO;
+  courseTableTitle = this.contentConfig.quoteSettings.courseTableTitle;
+  courseTableNote = this.contentConfig.quoteSettings.courseTableNote;
+  groupClassNote = this.contentConfig.quoteSettings.groupClassNote;
+  roomTableTitle = this.contentConfig.quoteSettings.roomTableTitle;
+  roomTableNote = this.contentConfig.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.contentConfig.quoteSettings.stayPolicyTitle;
+  stayPolicies: CiaStayPolicyCard[] = structuredClone(this.contentConfig.quoteSettings.stayPolicies);
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.contentConfig.quoteImageSettings);
   get localFees() {
     return groupLocalFees(this.activeStudents.map(student => ({ localFees: student.calculator.localFees.map(fee => ({ item: fee.item, unitLabel: fee.unit, quantity: fee.quantity, total: fee.total, note: fee.note })) })))
       .map(fee => ({ item: fee.item, unit: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note }));
@@ -465,15 +487,16 @@ export class GlcSchoolComponent implements OnInit {
   get schoolPaymentItems() {
     const newStudents = this.activeStudents.filter(student => student.calculator.registration > 0).length;
     return [
-      { label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: `一次性费用，老学员返校免费；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}` },
-      { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: '家庭共享套餐由关联的两名学生共用一份课程，只收一次课程费。' },
-      { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: '按每位学生实际选择的房型和日期计算。' },
+      { label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: `${this.quoteImageSettings.paymentNotes.registration}；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}` },
+      { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: this.quoteImageSettings.paymentNotes.course },
+      { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: this.quoteImageSettings.paymentNotes.accommodation },
       ...(this.schoolDiscountTotal ? [{ label: '学校优惠', amount: `− ${this.formatUsd(this.schoolDiscountTotal)} 美元`, note: this.calculator.promotionNote }] : []),
       ...(this.sidaDiscountTotal ? [{ label: '思达启航专属优惠', amount: `− ${this.formatUsd(this.sidaDiscountTotal)} 美元`, note: this.calculator.sidaNote }] : []),
     ];
   }
 
   get quoteImageData() {
+    const imageSettings = this.quoteImageSettings;
     const courseItems: QuoteImagePaymentItem[] = [];
     const roomItems: QuoteImagePaymentItem[] = [];
     this.activeStudents.forEach((student, index) => {
@@ -496,15 +519,42 @@ export class GlcSchoolComponent implements OnInit {
       schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc: '/assets/glc/campus-main.jpg',
       weeks: this.totalCourseWeeks, startDate: this.selectedStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
-      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: fee.note })),
-      localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: this.localFeeIntro,
-      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: fee.note })),
+      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
+      localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: imageSettings.localFeeIntro,
+      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
       ruleNotes: [],
     });
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shared = this.activeStudents.flatMap((student, index) => student.sharedCourseOwner ? [`学生${student.sharedCourseOwner}与学生${index + 1}共享一份家庭课程套餐；住宿、注册费和学杂费分别按人计算。`] : []);
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...warnings, ...shared, '所有学生不收取寒暑假附加费。', '最终以学校价格、空房及优惠确认为准。'] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
-    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined } };
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...warnings, ...shared, ...imageSettings.footerNotes] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: imageSettings.paymentSectionTitle,
+      localFeeTitle: imageSettings.localFeeSectionTitle,
+      serviceSectionTitle: imageSettings.serviceSectionTitle,
+      benefitItems: imageSettings.benefits,
+      serviceLocations: imageSettings.serviceLocations,
+      alumniBenefitTitle: imageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: imageSettings.alumniBenefitTitle, subtitle: '', text: imageSettings.alumniBenefitText }],
+      noteTitle: imageSettings.noteSectionTitle,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
+    };
+  }
+
+  previewFeeId(name: string): string {
+    return this.contentConfig.localFees.find(item => item.name === name)?.id ?? 'local-fees';
+  }
+
+  previewPaymentTarget(item: { label: string }): CiaPreviewTarget {
+    if (item.label === '注册费') return { kind: 'section', id: 'quote-registration' };
+    if (item.label === '学校优惠') {
+      const rule = this.contentConfig.quoteSettings.promotions.find(item => item.enabled && item.id.startsWith('glc-school-window-'));
+      return { kind: 'promotion', id: rule?.id ?? 'glc-school-window-1' };
+    }
+    if (item.label === '思达启航专属优惠') return { kind: 'promotion', id: 'glc-sida' };
+    return { kind: 'section', id: 'quote-breakdown' };
   }
 
   readonly serviceSteps: ProcessStep[] = [
@@ -636,7 +686,8 @@ export class GlcSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.loadPricingFromDatabase();
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
+    this.loadSchoolContent();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(rates => {
       if (Number.isFinite(rates.usdToCny) && Number.isFinite(rates.phpPerCny) && rates.usdToCny > 0 && rates.phpPerCny > 0) {
         this.usdToCny = rates.usdToCny;
@@ -646,28 +697,148 @@ export class GlcSchoolComponent implements OnInit {
     });
   }
 
-  private loadPricingFromDatabase(): void {
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('glc-editor-preview');
+    window.parent.postMessage({ type: 'glc-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'glc-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'glc-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'glc-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('glc-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'GLC' ? value : null;
+    } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'GLC') return;
+    const content = cloneGlcContentConfig(value);
+    this.contentConfig = content;
+    this.previewContent = content;
+    const courses = this.mapConfiguredCourses(content);
+    this.allQuoteCourses = courses;
+    this.courseOptions = courses.filter(item => ['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(item.id));
+    this.specialFees = courses.filter(item => !['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(item.id))
+      .map(item => ({ label: item.name, lessons: item.lessons, weeklyTuition: item.weeklyTuition, note: item.suitable || '住宿费与当地费用另加。' }));
+    this.roomOptions = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(item => ({ id: item.id, name: item.label || item.name, note: item.note, weeklyAccommodation: item.fee }));
+    this.registrationFee = content.quoteSettings.registrationFee;
+    this.localFeeIntro = content.quoteSettings.localFeeIntro;
+    this.courseTableTitle = content.quoteSettings.courseTableTitle;
+    this.courseTableNote = content.quoteSettings.courseTableNote;
+    this.groupClassNote = content.quoteSettings.groupClassNote;
+    this.roomTableTitle = content.quoteSettings.roomTableTitle;
+    this.roomTableNote = content.quoteSettings.roomTableNote;
+    this.stayPolicyTitle = content.quoteSettings.stayPolicyTitle;
+    this.stayPolicies = structuredClone(content.quoteSettings.stayPolicies);
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder)
+        .map(item => ({
+          category: this.resolveMediaCategory(item.category),
+          title: item.caption || item.altText || item.originalFileName || 'GLC 学校媒体',
+          description: item.altText || item.caption || 'GLC 学校实景内容',
+          src: item.url,
+          contentType: item.contentType,
+        })),
+    ];
+    for (const student of this.students) {
+      for (const row of student.calculator.plan.courses) if (!courses.some(item => item.id === row.optionId)) row.optionId = courses[0]?.id ?? '';
+      for (const row of student.calculator.plan.rooms) if (!this.roomOptions.some(item => item.id === row.optionId)) row.optionId = this.roomOptions[0]?.id ?? '';
+    }
+  }
+
+  private loadSchoolContent(): void {
     this.schoolService.getSchools({ name: 'Global Language Cebu' }).pipe(
-      switchMap((schools) => {
-        const school =
-          schools.find((item) => item.name === this.pricingSchoolName) ??
-          schools.find((item) => item.name.includes('Global Language Cebu')) ??
-          schools[0];
-
-        if (!school?.id) {
-          return EMPTY;
-        }
-
+      switchMap(schools => {
+        const school = schools.find(item => item.name === this.pricingSchoolName)
+          ?? schools.find(item => item.name.toLowerCase().includes('global language cebu')) ?? schools[0];
+        if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 1 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 1 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => {
-      this.applyPricingData(lessons, rooms, fees);
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      else this.applyPricingData(lessons, rooms, fees);
+      this.applyGalleryPhotos(photos);
     });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({ category: this.resolveMediaCategory(photo.category), title: photo.caption || photo.altText || photo.originalFileName || 'GLC 学校媒体', description: photo.altText || photo.caption || 'GLC 学校实景内容', src: photo.url ?? '', contentType: photo.contentType }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
   }
 
   private applyPricingData(
@@ -675,67 +846,19 @@ export class GlcSchoolComponent implements OnInit {
     rooms: SchoolRoomDTO[],
     fees: SchoolFeeDTO[],
   ): void {
-    const weeklyLessons = lessons.filter((lesson) => lesson.week === 1);
-    const primaryCourseNames = new Set(this.courseOptions.map((course) => course.name));
-
-    this.courseOptions = this.courseOptions.map((course) => {
-      const databaseLesson = weeklyLessons.find((lesson) => lesson.name === course.name);
-
-      return databaseLesson
-        ? {
-            ...course,
-            lessons: GLC_COURSES.find(item => item.name === course.name)?.lessons || databaseLesson.description || course.lessons,
-            suitable: databaseLesson.note || course.suitable,
-            weeklyTuition: databaseLesson.price,
-          }
-        : course;
-    });
-
-    const databaseSpecialFees = weeklyLessons
-      .filter((lesson) => !primaryCourseNames.has(lesson.name))
-      .map((lesson) => ({
-        label: lesson.name,
-        lessons: GLC_COURSES.find(item => item.name === lesson.name)?.lessons || lesson.description || '课程安排请向学校确认',
-        weeklyTuition: lesson.price,
-        note: lesson.note || '住宿费与当地费用另加。',
-      }))
-      .sort(
-        (left, right) =>
-          this.orderIndex(this.specialFeeOrder, left.label) -
-          this.orderIndex(this.specialFeeOrder, right.label),
-      );
-
-    if (databaseSpecialFees.length > 0) {
-      this.specialFees = databaseSpecialFees;
+    const content = createDefaultGlcContentConfig();
+    const weeklyLessons = lessons.filter(lesson => lesson.week === 1);
+    for (const item of content.courses) {
+      const row = weeklyLessons.find(lesson => lesson.name === item.name || lesson.name === item.englishName);
+      if (row) item.tuition = row.price;
     }
-
-    const databaseRooms = rooms
-      .filter((room) => room.week === 1)
-      .map((room) => ({
-        id: this.createRoomId(room),
-        name: room.name,
-        note: room.description || '请联系顾问确认空房和住宿规则。',
-        weeklyAccommodation: room.price,
-      }))
-      .sort(
-        (left, right) =>
-          this.orderIndex(this.roomOrder, left.name) -
-          this.orderIndex(this.roomOrder, right.name),
-      );
-
-    if (databaseRooms.length > 0) {
-      this.roomOptions = databaseRooms;
-      if (!this.roomOptions.some((room) => room.id === this.selectedRoomId)) {
-        this.quotePlan.rooms[0].optionId =
-          this.roomOptions.find((room) => room.id === 'annex-double')?.id ??
-          this.roomOptions[0].id;
-      }
+    for (const item of content.rooms) {
+      const row = rooms.find(room => room.week === 1 && (room.name === item.name || this.createRoomId(room) === item.id));
+      if (row) item.fee = row.price;
     }
-
     const registrationFee = fees.find((fee) => fee.name === '注册费');
-    if (registrationFee) {
-      this.registrationFee = registrationFee.fee;
-    }
+    if (registrationFee) content.quoteSettings.registrationFee = registrationFee.fee;
+    this.applyContentConfig(content);
   }
 
   private createRoomId(room: SchoolRoomDTO): string {
@@ -746,11 +869,6 @@ export class GlcSchoolComponent implements OnInit {
     if (room.name === '副楼双人间') return 'annex-double';
     if (room.name === '副楼单人间') return 'annex-single';
     return `database-${room.id}`;
-  }
-
-  private orderIndex(order: string[], value: string): number {
-    const index = order.indexOf(value);
-    return index === -1 ? Number.MAX_SAFE_INTEGER : index;
   }
 
   setGalleryCategory(category: GalleryCategory): void {

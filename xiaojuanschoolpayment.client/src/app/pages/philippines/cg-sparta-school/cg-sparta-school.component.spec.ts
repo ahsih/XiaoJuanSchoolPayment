@@ -1,16 +1,27 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { EMPTY } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { CgSpartaSchoolComponent } from './cg-sparta-school.component';
 import { CgBaniladSchoolComponent } from '../cg-banilad-school/cg-banilad-school.component';
 import { QuoteImageDownloadButtonComponent, QuoteImageLocalFeeItem } from '../../../components/quote-image-download-button.component';
+import { createDefaultCgSpartaContentConfig } from './cg-sparta-content-config';
 
 describe('CG斯巴达校区 quote adjustments', () => {
   let component: CgSpartaSchoolComponent;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
+      providers: [
+        { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+        { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+        { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+        { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
+      ],
     });
     component = TestBed.runInInjectionContext(() => new CgSpartaSchoolComponent());
   });
@@ -211,12 +222,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
         label: fee.item, unit: fee.amount, quantity: String(fee.quantity),
         amount: component.formatPhp(fee.total), note: fee.note,
       })));
-      expect(quote.optionalFeeItems).toEqual(component.excludedLocalFees.map(fee => ({
-        label: fee.item,
-        amount: fee.item.includes('接机') ? '1,200 比索' : component.formatPhp(fee.total),
-        cnyAmount: `约人民币 ${Math.round((fee.item.includes('接机') ? 1200 : fee.total) / component.phpPerCny).toLocaleString('zh-CN')} 元`,
-        note: fee.item.includes('接机') ? '可选，也可自行前往。' : '预估1,000比索，具体以学校为准；无损坏及无欠费时可退。',
-      })));
+      expect(quote.optionalFeeItems).toEqual(component.optionalFeeItems);
     }
   });
 
@@ -549,6 +555,27 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(localTitleY).toBeGreaterThan(700);
     expect(bitmap.height).toBeGreaterThan(1764);
     bitmap.close();
+  });
+
+  it('applies employee-edited prices, fee rules and quote-image copy without changing the layout', () => {
+    const edited = createDefaultCgSpartaContentConfig();
+    edited.courses.find(course => course.id === 'sparta')!.tuition = 900;
+    edited.rooms.find(room => room.id === 'quad')!.fee = 700;
+    edited.quoteSettings.registrationFee = 120;
+    edited.quoteSettings.promotions.find(rule => rule.id === 'cg-sparta-sida-90')!.discountValue = 5;
+    edited.localFees.find(rule => rule.id === 'management')!.amount = 3000;
+    edited.quoteImageSettings.paymentSectionTitle = '自定义学校费用';
+    edited.quoteImageSettings.footerNotes = ['自定义报价备注'];
+
+    (component as unknown as { applyContentConfig(value: typeof edited): void }).applyContentConfig(edited);
+
+    expect(component.tuitionForSelectedWeeks).toBe(900);
+    expect(component.roomFeeForSelectedWeeks).toBe(700);
+    expect(component.quoteUsd).toBe(1490);
+    expect(component.includedLocalFees.find(fee => fee.item === '维护管理费')?.total).toBe(3000);
+    expect(component.quoteImageData.paymentSectionTitle).toBe('自定义学校费用');
+    expect(component.quoteImageData.importantNotes).toContain('自定义报价备注');
+    expect(component.quoteImageData.layout).toBe('cia-detailed');
   });
 
   it('shows only relevant pricing caveats while leaving detailed local-fee notes unchanged', () => {

@@ -2,50 +2,14 @@
   <header class="page-header">
     <div>
       <span class="eyebrow">员工工作台</span>
-      <h1>学校内容管理</h1>
-      <p>从学校进入课程、住宿、费用和媒体资料，集中维护对外展示内容。</p>
+      <h1>学校工作台</h1>
+      <p>按城市找到学校，进入后在同一个页面维护官网、报价规则、报价图片和媒体。</p>
     </div>
     <button mat-flat-button color="primary" type="button" (click)="openCreateSchool()">
       <mat-icon>add</mat-icon>
       新增学校
     </button>
   </header>
-
-  <section class="dashboard-hero">
-    <div class="hero-copy">
-      <span class="hero-label">内容中心</span>
-      <h2>一次选择学校，集中完成全部维护</h2>
-      <p>当前先开放课程、住宿、费用、说明和照片管理，后续报价网页与报价图片也会合并到同一所学校中。</p>
-    </div>
-    <div class="school-total">
-      <span>已收录学校</span>
-      <strong>{{ schoolCount }}</strong>
-      <small>所</small>
-    </div>
-  </section>
-
-  <section class="quick-grid" aria-label="常用管理入口">
-    <a routerLink="/admin/school-lessons" class="quick-card blue-card">
-      <span class="quick-icon"><mat-icon>menu_book</mat-icon></span>
-      <span class="quick-copy"><strong>课程与价格</strong><small>课程、周期、价格与报价说明</small></span>
-      <mat-icon class="quick-arrow">arrow_forward</mat-icon>
-    </a>
-    <a routerLink="/admin/school-rooms" class="quick-card purple-card">
-      <span class="quick-icon"><mat-icon>bed</mat-icon></span>
-      <span class="quick-copy"><strong>住宿与价格</strong><small>房型、住宿周期和费用</small></span>
-      <mat-icon class="quick-arrow">arrow_forward</mat-icon>
-    </a>
-    <a routerLink="/admin/school-fees" class="quick-card amber-card">
-      <span class="quick-icon"><mat-icon>receipt_long</mat-icon></span>
-      <span class="quick-copy"><strong>当地费用</strong><small>注册、签证与生活杂费</small></span>
-      <mat-icon class="quick-arrow">arrow_forward</mat-icon>
-    </a>
-    <a routerLink="/admin/school-photos" class="quick-card green-card">
-      <span class="quick-icon"><mat-icon>perm_media</mat-icon></span>
-      <span class="quick-copy"><strong>照片与视频</strong><small>校园媒体、封面和展示顺序</small></span>
-      <mat-icon class="quick-arrow">arrow_forward</mat-icon>
-    </a>
-  </section>
 
   <section class="create-panel" *ngIf="showCreateSchool">
     <div class="panel-heading">
@@ -86,10 +50,10 @@
     <div class="list-toolbar">
       <div>
         <div class="list-heading-meta">
-          <span class="panel-kicker">全部学校</span>
+          <span class="panel-kicker">学校分类</span>
           <span class="sort-badge"><mat-icon>local_fire_department</mat-icon>热门优先</span>
         </div>
-        <h2>选择要管理的学校</h2>
+        <h2>按城市选择学校</h2>
       </div>
       <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
         <mat-label>搜索学校</mat-label>
@@ -97,6 +61,13 @@
         <input matInput (input)="applyFilter($event)" placeholder="输入学校名称" />
       </mat-form-field>
     </div>
+
+    <nav class="city-filters" aria-label="按城市筛选学校">
+      <button *ngFor="let city of cityOptions" type="button" [class.active]="selectedCity === city.id" (click)="selectCity(city.id)">
+        <span>{{ city.label }}</span>
+        <small>{{ cityCount(city.id) }}</small>
+      </button>
+    </nav>
 
     <div class="table-scroll">
       <table mat-table [dataSource]="dataSource">
@@ -122,8 +93,8 @@
           <th mat-header-cell *matHeaderCellDef>操作</th>
           <td mat-cell *matCellDef="let row">
             <div class="row-actions">
-              <a mat-flat-button color="primary" [routerLink]="['/admin/school-lessons']" [queryParams]="{ schoolId: row.id }">
-                管理内容
+              <a mat-flat-button color="primary" [routerLink]="[managementRoute(row)]" [queryParams]="{ schoolId: row.id }">
+                {{ isUnifiedSchool(row) ? '进入统一工作台' : '管理基础资料' }}
               </a>
               <button mat-stroked-button type="button" (click)="edit(row)">基本资料</button>
             </div>

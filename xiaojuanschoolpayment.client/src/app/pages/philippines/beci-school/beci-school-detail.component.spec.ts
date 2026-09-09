@@ -65,12 +65,13 @@ describe('BeciSchoolDetailComponent pricing', () => {
     expect(component.quoteUsd).toBeCloseTo(1116, 5);
   });
 
-  it('keeps course and room campus selections aligned', () => {
-    component.selectedCourseId = 'city-lite-esl';
+  it('keeps the EOP page locked to EOP rooms', () => {
+    component.selectedCourseId = 'eop-lite-esl';
+    component.selectedRoomId = 'sparta-quad';
     component.onCourseChange();
 
-    expect(component.selectedRoomId).toBe('city-studio-quad');
-    expect(component.availableRoomFees.every((room) => room.id.startsWith('city-'))).toBeTrue();
+    expect(component.selectedRoomId).toBe('eop-quad-female');
+    expect(component.availableRoomFees.every((room) => room.id.startsWith('eop-'))).toBeTrue();
   });
 
   it('reproduces the supplied 8-week local-fee total', () => {

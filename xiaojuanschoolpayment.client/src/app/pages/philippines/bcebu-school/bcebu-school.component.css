@@ -131,3 +131,63 @@
 }
 :host .student-options { display: flex; flex-wrap: wrap; gap: 12px; }
 :host .student-options .option-check { flex: 1 1 260px; }
+
+:host .bcebu-media-gallery,
+:host .stay-policy-panel {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #d8e7df;
+  border-radius: 16px;
+  background: #f8fcfa;
+}
+
+:host .media-grid,
+:host .stay-policy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+:host .media-grid figure,
+:host .stay-policy-grid article {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #dce7e1;
+  border-radius: 12px;
+  background: #fff;
+}
+
+:host .media-grid img,
+:host .media-grid video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #eaf2ee;
+}
+
+:host .media-grid figcaption,
+:host .stay-policy-grid article { padding: 13px; }
+:host .media-grid figcaption strong,
+:host .media-grid figcaption span,
+:host .stay-policy-grid span,
+:host .stay-policy-grid strong { display: block; }
+:host .media-grid figcaption span,
+:host .stay-policy-grid p,
+:host .empty-media { margin: 5px 0 0; color: #607066; line-height: 1.6; }
+:host .stay-policy-panel h3 { margin: 0 0 14px; color: #075b3c; }
+
+:host .bcebu-editor-preview [data-cia-preview-kind] { cursor: pointer; }
+:host .cia-editor-highlight {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #ff5a1f !important;
+  outline-offset: -3px;
+  border-radius: 8px;
+  background-color: #fff8f2 !important;
+}
+
+@media (max-width: 900px) {
+  :host .media-grid,
+  :host .stay-policy-grid { grid-template-columns: 1fr; }
+}

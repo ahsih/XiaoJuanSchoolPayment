@@ -64,17 +64,17 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>4周参考</span>
+              <span>4周优惠参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>Light ESL + EGI海景三人房 + 注册费</p>
+              <p>Light ESL + 校内三人海景房</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  使用学校2025价目表：学费USD 870 + 住宿USD 850 + 注册费USD 100
+                  使用学校2025价目表；思达学生免注册费，课程与住宿享95折，淡季每满4周再减150美元
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  SSP、签证、押金、教材、水电、管理费、洗衣和旺季加价需另行确认
+                  SSP、证件、签证续签、管理费及其它4周学杂费参考在报价结果下方单独列出
                 </li>
               </ul>
             </aside>
@@ -238,7 +238,7 @@
           <div class="section-block">
             <div class="section-heading">
               <span>CBOA 2025学费参考</span>
-              <h2>先看课程学费，再加住宿和注册费</h2>
+              <h2>先看课程学费，再加住宿并计算优惠</h2>
               <p>
                 以下为学校2025价目表，币种为美元。1周、2周、3周分别按4周价格的40%、65%、85%计算，住宿费另计。
               </p>
@@ -257,10 +257,10 @@
               </div>
               <div class="table-row" role="row" *ngFor="let course of courseOptions">
                 <span role="cell">{{ course.name }}</span>
-                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 1)) }}</span>
-                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 4)) }}</span>
-                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 8)) }}</span>
-                <span role="cell">USD {{ formatUsd(tuitionFor(course.id, 12)) }}</span>
+                <span role="cell">{{ coursePriceText(course, 1) }}</span>
+                <span role="cell">{{ coursePriceText(course, 4) }}</span>
+                <span role="cell">{{ coursePriceText(course, 8) }}</span>
+                <span role="cell">{{ coursePriceText(course, 12) }}</span>
               </div>
             </div>
             <div
@@ -270,10 +270,10 @@
               <article *ngFor="let course of courseOptions">
                 <span>{{ course.type }}</span>
                 <strong>{{ course.name }}</strong>
-                <div><em>1周</em><b>USD {{ formatUsd(tuitionFor(course.id, 1)) }}</b></div>
-                <div><em>4周</em><b>USD {{ formatUsd(tuitionFor(course.id, 4)) }}</b></div>
-                <div><em>8周</em><b>USD {{ formatUsd(tuitionFor(course.id, 8)) }}</b></div>
-                <div><em>12周</em><b>USD {{ formatUsd(tuitionFor(course.id, 12)) }}</b></div>
+                <div><em>1周</em><b>{{ coursePriceText(course, 1) }}</b></div>
+                <div><em>4周</em><b>{{ coursePriceText(course, 4) }}</b></div>
+                <div><em>8周</em><b>{{ coursePriceText(course, 8) }}</b></div>
+                <div><em>12周</em><b>{{ coursePriceText(course, 12) }}</b></div>
                 <p>{{ course.lessons }}</p>
               </article>
             </div>
@@ -299,10 +299,10 @@
         <section class="split-layout" id="room-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>住宿费用参考</span>
+              <span>CBOA 2025住宿费参考</span>
               <h2>EGI与Ocean Suites房型差异会明显影响预算</h2>
               <p>
-                学校价目表列住宿费为4周价格。1周、2周、3周分别按4周价格的40%、65%、85%计算；长周数正式以学校报价为准。
+                学校价目表列住宿费为4周价格。1周、2周、3周分别按4周价格的40%、65%、85%计算；4周以上按比例计算。
               </p>
             </div>
             <div
@@ -330,128 +330,219 @@
             </ul>
           </div>
 
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>CBOA费用快速报价</span>
-              <h2>默认参考：4周Light ESL + EGI海景三人房</h2>
-              <p>前期支付参考 = 注册费 + 课程学费 + 住宿费。到校费用需另行准备。</p>
-            </div>
-            <div class="quote-form" aria-label="CBOA费用快速报价选项">
-              <label>
-                学习周数
-                <select [(ngModel)]="selectedWeeks">
-                  <option *ngFor="let weeks of weekOptions" [ngValue]="weeks">
-                    {{ weeks }} 周
-                  </option>
-                </select>
-              </label>
-              <label>
-                课程
-                <select [(ngModel)]="selectedCourseId">
-                  <option *ngFor="let course of courseOptions" [value]="course.id">
-                    {{ course.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                房型
-                <select [(ngModel)]="selectedRoomId">
-                  <option *ngFor="let room of dormOptions" [value]="room.id">
-                    {{ room.name }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                预计入学日
-                <input type="date" [(ngModel)]="selectedStartDate" />
-              </label>
-            </div>
-            <div class="quote-breakdown">
-              <div>
-                <span>注册费</span><strong>USD {{ registrationFee }}</strong>
+          <section class="quote-results-section group-quote" id="quote">
+            <div class="quote-form-card">
+              <h2>{{ quoteHeading }}</h2>
+              <div class="quote-mode" role="group" aria-label="报价人数模式">
+                <button
+                  type="button"
+                  [class.active]="quoteMode === 'single'"
+                  [attr.aria-pressed]="quoteMode === 'single'"
+                  (click)="setQuoteMode('single')"
+                >
+                  单人报价
+                </button>
+                <button
+                  type="button"
+                  [class.active]="quoteMode === 'group'"
+                  [attr.aria-pressed]="quoteMode === 'group'"
+                  (click)="setQuoteMode('group')"
+                >
+                  多人报价
+                </button>
+                <label *ngIf="quoteMode === 'group'">
+                  学生人数
+                  <input
+                    type="number"
+                    min="2"
+                    max="20"
+                    step="1"
+                    [(ngModel)]="studentCount"
+                  />
+                </label>
               </div>
-              <div>
-                <span>课程学费</span
-                ><strong>USD {{ formatUsd(selectedTuitionFee) }}</strong>
+
+              <p class="group-hint">
+                每名学生独立选择1–24周课程、住宿、周日开始日期和入境签证。课程与住宿均按1周40%、2周65%、3周85%，4周以上按比例计算。
+              </p>
+              <p class="group-hint">
+                价格顺序：课程费与住宿费先享思达95折，再扣淡季、12周及长期固定优惠；思达学生不限周数免100美元注册费。
+              </p>
+
+              <article
+                class="student-quote"
+                *ngFor="let student of activeStudents; let i = index"
+              >
+                <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+                <div class="student-fields">
+                  <label>
+                    报名注册日
+                    <input
+                      type="date"
+                      [(ngModel)]="student.selectedRegistrationDate"
+                    />
+                  </label>
+                  <label>
+                    抵达时年龄段
+                    <select [(ngModel)]="student.selectedAgeGroup">
+                      <option value="adult">15岁及以上</option>
+                      <option value="under15">未满15岁</option>
+                    </select>
+                  </label>
+                  <label>
+                    入境签证
+                    <select [(ngModel)]="student.visaType">
+                      <option
+                        *ngFor="let option of student.visaOptions"
+                        [ngValue]="option.value"
+                      >
+                        {{ option.label }}
+                      </option>
+                    </select>
+                  </label>
+                  <label>
+                    宿务马克坦机场接机
+                    <select [(ngModel)]="student.pickupRequested">
+                      <option [ngValue]="false">不需要</option>
+                      <option [ngValue]="true">需要，1,200比索/人参考</option>
+                    </select>
+                  </label>
+                </div>
+                <p
+                  class="group-hint"
+                  *ngIf="student.selectedAgeGroup === 'under15'"
+                >
+                  未满15岁可选择青少年课程；具体监护人、住宿及入学安排按学校要求确认。
+                </p>
+                <app-school-quote-plan
+                  [plan]="student.quotePlan"
+                ></app-school-quote-plan>
+                <div class="student-subtotal" *ngIf="quoteMode === 'group'">
+                  <span>学生{{ i + 1 }}学校费用小计</span>
+                  <strong>{{ formatUsd(student.quoteUsd) }} 美元</strong>
+                </div>
+              </article>
+
+              <div class="quote-breakdown">
+                <div
+                  *ngFor="let item of schoolPaymentItems"
+                  [class.discount-line]="item.amount.startsWith('−')"
+                >
+                  <span>
+                    {{ item.label }}
+                    <small class="payment-detail-title" *ngIf="item.detailTitle">
+                      {{ item.detailTitle }}
+                      <ng-container *ngIf="item.detailSubtitle">
+                        · {{ item.detailSubtitle }}
+                      </ng-container>
+                    </small>
+                    <small>{{ item.note }}</small>
+                  </span>
+                  <strong>{{ item.amount }}</strong>
+                </div>
               </div>
-              <div>
-                <span>住宿费</span
-                ><strong>USD {{ formatUsd(selectedDormFee) }}</strong>
+
+              <p class="fee-alert" role="alert" *ngIf="quoteError">
+                {{ quoteError }}
+              </p>
+              <div class="group-result">
+                <span>最终应付学校金额</span>
+                <strong>{{ quoteUsdText }}</strong>
+                <em>{{ quoteCnyText }}</em>
+                <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
+                <small *ngIf="quoteCalculated">已按当前选择更新。</small>
               </div>
-              <div>
-                <span>当前课程</span><strong>{{ selectedCourse.name }}</strong>
+              <div class="group-actions">
+                <button
+                  class="primary-action"
+                  type="button"
+                  (click)="calculateQuote()"
+                  [disabled]="!!quoteError"
+                >
+                  <mat-icon>calculate</mat-icon>立即计算我的费用
+                </button>
+                <app-quote-image-download-button
+                  [quote]="quoteImageData"
+                  [disabled]="!!quoteError"
+                  label="保存报价单图片"
+                  buttonClass="secondary-action"
+                ></app-quote-image-download-button>
+                <a class="secondary-action" routerLink="/about-sida/contact">
+                  <mat-icon>support_agent</mat-icon>获取顾问确认报价
+                </a>
               </div>
-              <div>
-                <span>当前房型</span><strong>{{ selectedRoom.name }}</strong>
-              </div>
-              <div>
-                <span>旺季提醒</span><strong>需另行确认</strong>
-              </div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">
-                已按当前选择更新。正式报价仍需确认海景/市景、Ocean Suites、性别、入学日、旺季和当地费用。
+              <p class="fee-alert">
+                Survival ESL每段最多4周；其他课程和住宿每段可选1–24周，每名学生的课程与住宿累计及完整停留跨度均不超过24周。
+              </p>
+              <p class="season-note">
+                旺季：2026/06/28–08/22、2027/06/27–08/21。每个重叠课程周加收40美元，Family Course除外；旺季只取消每4周150美元淡季优惠，其他优惠继续使用。
               </p>
             </div>
-            <div class="quote-actions">
-              <button
-                type="button"
-                class="primary-action"
-                (click)="calculateQuote()"
-              >
-                立即计算我的费用<mat-icon>calculate</mat-icon>
-              </button>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价<mat-icon>support_agent</mat-icon>
-              </a>
-            </div>
-            <p class="fee-alert">
-              除注册费、学费和住宿费外，到校后通常还需确认SSP、SSP I-Card、ACR、签证延长、押金、教材、
-              管理费、水电、ID卡、洗衣、接机和旺季加价等费用。
-            </p>
-            <p class="season-note">{{ seasonalNote }}</p>
+
+            <section
+              class="local-fee-estimate"
+              id="local-fees"
+              aria-labelledby="local-fee-title"
+            >
+              <div class="local-fee-heading">
+                <div><h3 id="local-fee-title">到校后学杂费明细</h3></div>
+              </div>
+              <div class="local-fee-table-wrap">
+                <table class="local-fee-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">费用明细</th>
+                      <th scope="col">计费参考</th>
+                      <th scope="col">数量</th>
+                      <th scope="col">预估小计</th>
+                      <th scope="col">备注</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let fee of estimatedLocalFees">
+                      <th scope="row">{{ fee.item }}</th>
+                      <td>{{ fee.unitLabel }}</td>
+                      <td>{{ formatFeeQuantity(fee.quantity) }}</td>
+                      <td class="fee-amount">{{ formatPhp(fee.total) }}</td>
+                      <td>{{ fee.note }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colspan="3" scope="row">预计到校学杂费合计</th>
+                      <td class="fee-amount">
+                        {{ formatPhp(estimatedLocalFeeTotal) }}
+                      </td>
+                      <td>固定项目合计</td>
+                    </tr>
+                    <tr>
+                      <th colspan="3" scope="row">人民币预计金额</th>
+                      <td class="fee-cny">
+                        约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元
+                      </td>
+                      <td>{{ exchangeRateSummary }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="excluded-fee-list">
+                <h4>4周学杂费参考项目（不计入上方固定项目合计）</h4>
+                <div *ngFor="let fee of optionalFeeItems">
+                  <span>
+                    <strong>{{ fee.label }}</strong>
+                    <small>{{ fee.note }}</small>
+                  </span>
+                  <b>
+                    {{ fee.amount }}
+                    <small *ngIf="fee.cnyAmount">{{ fee.cnyAmount }}</small>
+                  </b>
+                </div>
+              </div>
+
+              <p class="local-fee-bottom-note">{{ localFeeBottomNote }}</p>
+            </section>
           </section>
-        </section>
-
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>学费住宿之外，还要准备当地费用</h2>
-            <p>
-              以下费用来自公开费用表，不同周数、签证时长、房型和学校政策会影响最终金额。
-            </p>
-          </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees">
-                <span>{{ fee.item }}</span>
-                <strong>{{ fee.amount }}</strong>
-                <p>{{ fee.note }}</p>
-              </article>
-            </div>
-          </details>
-        </section>
-
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>
-              本页价格更新时间：2026年8月。4周课程与住宿基准参考学校2025价目表，当地费用参考公开资料，并结合CBOA官方课程、
-              宿舍、校区设施和地址信息整理。学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
-            </p>
-          </div>
         </section>
 
         <section class="materials-panel" id="materials">

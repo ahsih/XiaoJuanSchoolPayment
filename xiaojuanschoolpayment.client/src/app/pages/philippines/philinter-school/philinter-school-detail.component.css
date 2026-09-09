@@ -119,8 +119,19 @@
 :host .local-fee-table { table-layout: fixed; width: 100%; }
 :host .local-fee-table th, :host .local-fee-table td { overflow-wrap: anywhere; white-space: normal; }
 :host .excluded-fee-list small { font-weight: 400; }
+:host .gallery-grid video { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #10233b; }
+:host .philinter-stay-policy { margin-top: 18px; padding: 18px; border: 1px solid #dce9e4; border-radius: 12px; background: #f6fbf9; }
+:host .philinter-stay-policy h3 { margin: 0 0 12px; color: #054d37; }
+:host .philinter-stay-policy-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+:host .philinter-stay-policy-grid article { padding: 12px; border: 1px solid #e1ebe7; border-radius: 10px; background: #fff; }
+:host .philinter-stay-policy-grid span { display: block; color: #ef5b2a; font-size: 12px; font-weight: 800; }
+:host .philinter-stay-policy-grid strong { display: block; margin: 5px 0; color: #10233b; }
+:host .philinter-stay-policy-grid p { margin: 0; color: #637083; line-height: 1.55; }
+:host(.philinter-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.philinter-editor-preview) .cia-preview-highlight { position: relative; z-index: 1; outline: 3px solid #ff5a1f; outline-offset: -3px; box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.14); }
 :host .mobile-fee-hint, :host .mobile-fee-total { display: none; }
 @media (max-width: 760px) {
+  :host .philinter-stay-policy-grid { grid-template-columns: 1fr; }
   :host .mobile-fee-hint { display: block; color: #526176; font-size: 13px; }
   :host .mobile-fee-total { display: grid; gap: 6px; padding: 16px 0; color: #526176; }
   :host .mobile-fee-total strong { color: #e94f16; font-size: 24px; }

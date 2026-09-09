@@ -85,7 +85,7 @@
           </article>
         </section>
 
-        <section class="section-block" id="gallery">
+        <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'gallery')">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
             <h2>查看 {{ campusTitle }} 环境</h2>
@@ -98,7 +98,8 @@
           </div>
           <div class="gallery-grid">
             <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" />
+              <video *ngIf="image.contentType?.startsWith('video/')" [src]="image.src" controls preload="metadata"></video>
+              <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" />
               <figcaption>
                 <strong>{{ image.title }}</strong>
                 <span>{{ image.description }}</span>
@@ -183,14 +184,14 @@
           </div>
         </section>
 
-        <section class="section-block" id="courses">
+        <section class="section-block" id="courses" data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')">
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>{{ campusTitle }}课程介绍</h2>
             <p>{{ campus === 'eop' ? '按口语沉浸、考试目标和青少年学习需求选择。' : '按高强度ESL、托业、雅思或12周保证班选择。' }}</p>
           </div>
           <div class="course-grid">
-            <article class="course-card" *ngFor="let course of campusCourses">
+            <article class="course-card" *ngFor="let course of campusCourses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
@@ -199,7 +200,7 @@
           </div>
         </section>
 
-        <app-beci-quote-calculator [campus]="campus"></app-beci-quote-calculator>
+        <app-beci-quote-calculator [campus]="campus" [contentConfig]="contentConfig()"></app-beci-quote-calculator>
 
         <ng-container *ngIf="false">
         <section class="split-layout" id="course-fees">

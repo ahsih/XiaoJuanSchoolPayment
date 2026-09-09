@@ -49,6 +49,30 @@ export class SchoolContentService {
     );
   }
 
+  savePricingDraft<TContent>(
+    schoolId: string,
+    content: TContent,
+    changeSummary?: string,
+  ): Observable<SchoolContentRevisionDTO<TContent>> {
+    return this.http.put<SchoolContentRevisionDTO<TContent>>(
+      `${this.apiUrl}/${schoolId}/pricing-draft`,
+      { content, changeSummary },
+      { headers: this.authHeaders() },
+    );
+  }
+
+  saveMediaDraft<TContent, TMedia>(
+    schoolId: string,
+    media: TMedia,
+    changeSummary?: string,
+  ): Observable<SchoolContentRevisionDTO<TContent>> {
+    return this.http.put<SchoolContentRevisionDTO<TContent>>(
+      `${this.apiUrl}/${schoolId}/media-draft`,
+      { media, changeSummary },
+      { headers: this.authHeaders() },
+    );
+  }
+
   publish<TContent>(schoolId: string): Observable<SchoolContentRevisionDTO<TContent>> {
     return this.http.post<SchoolContentRevisionDTO<TContent>>(
       `${this.apiUrl}/${schoolId}/publish`,
@@ -59,7 +83,7 @@ export class SchoolContentService {
 
   submitForReview<TContent>(
     schoolId: string,
-    scope: 'SchoolContent' | 'QuoteImage',
+    scope: 'SchoolContent' | 'Pricing' | 'QuoteImage' | 'Media',
   ): Observable<SchoolContentRevisionDTO<TContent>> {
     return this.http.post<SchoolContentRevisionDTO<TContent>>(
       `${this.apiUrl}/${schoolId}/submit-review?scope=${scope}`,

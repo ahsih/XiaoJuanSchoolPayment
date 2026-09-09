@@ -1,26 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { PHILINTER_COURSES, PHILINTER_ROOMS } from './philinter-catalog';
-import { PHILINTER_AGE_RULE, PHILINTER_FAMILY_RULE, PHILINTER_PROMOTION, PHILINTER_SUMMER_PERIODS, PhilinterStudentCalculator, philinterMultiplier } from './philinter-quote';
+import { PHILINTER_AGE_RULE, PHILINTER_FAMILY_RULE, PHILINTER_PROMOTION, PhilinterStudentCalculator, philinterMultiplier } from './philinter-quote';
 import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { clonePhilinterContentConfig, createDefaultPhilinterContentConfig } from './philinter-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -56,15 +61,36 @@ interface PhilinterStudentQuote { calculator: PhilinterStudentCalculator; }
     './philinter-school-detail.component.css',
   ],
 })
-export class PhilinterSchoolDetailComponent implements OnInit {
+export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
+  private readonly initialContent = createDefaultPhilinterContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
   private readonly pricingSchoolSearchName = 'Philinter';
   private readonly pricingSchoolNames = ['菲律宾宿务Philinter语言学校', 'Philinter Academy'];
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  readonly registrationFee = 120;
-  seasonalFeePerWeek = 40;
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
+  promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item, rates: item.rates ? [...item.rates] : undefined }));
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.initialContent.quoteImageSettings);
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
+  seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  peakSeasonRanges = this.initialContent.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
@@ -72,14 +98,23 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   readonly weekOptions = Array.from({ length: 24 }, (_, i) => i + 1);
   readonly ageRule = PHILINTER_AGE_RULE;
   readonly familyRule = PHILINTER_FAMILY_RULE;
-  readonly promotionRule = PHILINTER_PROMOTION;
-  readonly localFeeIntro = '学杂费为到校后由学校及相关部门收取的当地费用，与思达游学无关；以下为预估，以到校实收为准。';
+  get promotionRule(): string { return this.promotionRules.find(item => item.id === 'philinter-low-season' && item.enabled)?.description ?? '当前未启用淡季优惠。'; }
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
   readonly visaOptions = SCHOOL_VISA_OPTIONS;
   readonly students: PhilinterStudentQuote[] = [this.createStudent()];
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
   quoteCalculated = false;
-  private createStudent(): PhilinterStudentQuote { return { calculator: new PhilinterStudentCalculator(() => this.courseFees, () => this.roomFees, () => this.registrationFee, () => this.seasonalFeePerWeek) }; }
+  private createStudent(): PhilinterStudentQuote {
+    return { calculator: new PhilinterStudentCalculator(
+      () => this.courseFees,
+      () => this.roomFees,
+      () => this.registrationFee,
+      () => this.seasonalFeePerWeek,
+      () => ({ ...this.initialContent.quoteSettings, shortStayRatios: this.shortStayRatios, promotions: this.promotionRules, peakSeasonRanges: this.peakSeasonRanges, peakSeasonFeePerWeek: this.seasonalFeePerWeek }),
+      () => this.localFeeRules,
+    ) };
+  }
   get studentCount() { return this.requestedStudentCount; }
   set studentCount(value: number) { this.requestedStudentCount = value; if (Number.isInteger(value) && value >= 2 && value <= 20) while (this.students.length < value) this.students.push(this.createStudent()); }
   setQuoteMode(value: 'single' | 'group') { this.quoteMode = value; if (value === 'group') this.studentCount = this.requestedStudentCount; }
@@ -104,7 +139,7 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { icon: 'flight_land', label: '位置特点', value: 'Lapu-Lapu / 近宿务机场', note: '适合重视抵达便利和麦克坦生活资源的学生' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     { category: '校园', title: 'Philinter校园楼体', description: '官方设施图片展示Philinter校内住宿与教学楼体。', src: 'assets/philinter/campus-main.jpeg' },
     { category: '校园', title: '校园泳池', description: '官方设施页介绍泳池位于宿舍与咖啡厅之间，可供学生课后放松。', src: 'assets/philinter/campus-pool.jpg' },
     { category: '校园', title: '学校大厅', description: '学校大厅是学生报到、公告和日常沟通的中心区域。', src: 'assets/philinter/lobby.png' },
@@ -277,7 +312,102 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('philinter-editor-preview');
+    window.parent.postMessage({ type: 'philinter-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'philinter-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'philinter-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'philinter-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('philinter-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'PHILINTER' ? value : null;
+    } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'PHILINTER') return;
+    const content = clonePhilinterContentConfig(value);
+    this.previewContent = content;
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) this.courseFees = courses.map(item => ({ id: item.id, name: item.name, lookupName: PHILINTER_COURSES.find(course => course.id === item.id)?.lookupName ?? item.name, tuition: item.tuition, suitable: item.schedule }));
+    if (rooms.length) this.roomFees = rooms.map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note }));
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortStayRatios = { ...settings.shortStayRatios };
+    this.promotionRules = settings.promotions.map(item => ({ ...item, eligibleRoomIds: item.eligibleRoomIds ? [...item.eligibleRoomIds] : undefined }));
+    this.localFeeRules = content.localFees.map(item => ({ ...item, rates: item.rates ? [...item.rates] : undefined }));
+    this.seasonalFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = settings.peakSeasonRanges.map(item => ({ ...item }));
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = settings.stayPolicies.map(item => ({ ...item }));
+    this.localFeeIntro = settings.localFeeIntro;
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    for (const student of this.students) {
+      if (!this.courseFees.some(item => item.id === student.calculator.plan.courses[0]?.optionId)) student.calculator.plan.courses[0].optionId = this.courseFees[0]?.id ?? '';
+      if (!this.roomFees.some(item => item.id === student.calculator.plan.rooms[0]?.optionId)) student.calculator.plan.rooms[0].optionId = this.roomFees[0]?.id ?? '';
+    }
+  }
+
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
       this.usdToCny = snapshot.usdToCny;
@@ -299,10 +429,42 @@ export class PhilinterSchoolDetailComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existingSources = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? [])
+      .filter(photo => !!photo.url && !existingSources.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'Philinter 学校媒体',
+        description: photo.altText || photo.caption || 'Philinter 学校实景内容',
+        src: photo.url ?? '',
+        contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('campus') || value.includes('校园') || value.includes('校区')) return '校园';
+    return '设施';
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -338,14 +500,14 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     return `${this.promotionRule}${this.offSeasonDiscountAmount ? '' : '当前所选期间未满8个连续合资格周。'}`;
   }
   get summerPeriods() {
-    return PHILINTER_SUMMER_PERIODS.map(period => ({ ...period,
+    return this.peakSeasonRanges.filter(period => period.enabled).map(period => ({ ...period, estimated: period.id.includes('2027') || period.label.includes('预估'),
       weeks: this.quotePlan.overlapWeeks(period.start, period.end) }));
   }
-  private summerPeriodLabel(period: typeof PHILINTER_SUMMER_PERIODS[number]) {
+  private summerPeriodLabel(period: { start: string; end: string; estimated?: boolean }) {
     return `${period.start.replace(/-/g, '/')}（周日）–${period.end.replace(/-/g, '/')}（周六）${period.estimated ? '，参照2026年同为8周预估' : ''}`;
   }
   get summerSurchargeRule() {
-    return `暑期附加费${this.seasonalFeePerWeek}美元／周，按课程覆盖周数计收。${PHILINTER_SUMMER_PERIODS.map(period => this.summerPeriodLabel(period)).join('；')}。`;
+    return `暑期附加费${this.seasonalFeePerWeek}美元／周，按课程覆盖周数计收。${this.peakSeasonRanges.filter(period => period.enabled).map(period => this.summerPeriodLabel(period)).join('；')}。`;
   }
   get peakSeasonWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.summerWeeks, 0); }
   get summerSurchargeNote() {
@@ -370,11 +532,13 @@ export class PhilinterSchoolDetailComponent implements OnInit {
   get schoolPaymentItems() {
     const newStudents = this.activeStudents.filter(student => !student.calculator.returningStudent).length;
     const discountedStudents = this.activeStudents.map((student, index) => student.calculator.schoolDiscount ? index + 1 : 0).filter(Boolean);
-    const schoolDiscountNote = `${this.quoteMode === 'group' && discountedStudents.length ? `学生${discountedStudents.join('、')}适用；` : ''}${this.promotionRule}${this.offSeasonDiscountAmount ? '' : '当前所选期间未满8个连续合资格周。'}`;
+    const schoolDiscountNote = `${this.quoteMode === 'group' && discountedStudents.length ? `学生${discountedStudents.join('、')}适用；` : ''}${this.promotionRule}${this.offSeasonDiscountAmount ? '' : '当前所选期间未达到优惠条件。'}`;
+    const sidaRule = this.promotionRules.find(item => item.id === 'philinter-sida-90' && item.enabled);
+    const schoolRule = this.promotionRules.find(item => item.id === 'philinter-low-season' && item.enabled);
     return [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.reduce((sum, student) => sum + student.calculator.registration, 0))} 美元`, note: `一次性费用，老学员返校免费；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}。` },
-      { icon: '折', label: '思达启航折扣', amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: '课程费及住宿费9折；注册费、附加费不打折。', accent: true },
-      { icon: '淡', label: '淡季优惠', amount: `${this.offSeasonDiscountAmount ? '− ' : ''}${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: schoolDiscountNote, accent: this.offSeasonDiscountAmount > 0 },
+      ...(sidaRule ? [{ icon: '折', label: sidaRule.name, amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: sidaRule.description, accent: true }] : []),
+      ...(schoolRule ? [{ icon: '淡', label: schoolRule.name, amount: `${this.offSeasonDiscountAmount ? '− ' : ''}${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: schoolDiscountNote, accent: this.offSeasonDiscountAmount > 0 }] : []),
       ...(this.seasonalSurcharge ? [{ icon: '旺', label: '暑期附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `按各学生实际覆盖暑期周数计收，共${this.peakSeasonWeeks}人周；不限制最低学习周数。` }] : []),
     ];
   }
@@ -384,16 +548,20 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     return groupLocalFees(this.activeStudents.map(student => ({ localFees: student.calculator.localFees })))
       .map(fee => ({ item: fee.item, amount: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note }));
   }
+  private localFeeRule(id: string): CiaLocalFeeRule | undefined { return this.localFeeRules.find(item => item.id === id && item.enabled); }
   get localFeesTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText() { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元人民币`; }
   get optionalFeeItems() {
     const pickupCount = this.activeStudents.filter(student => student.calculator.pickup !== 'none').length;
     const pickup = this.activeStudents.reduce((sum, student) => sum + student.calculator.pickupAmount, 0);
     const deposit = this.activeStudents.reduce((sum, student) => sum + student.calculator.roomDeposit, 0);
+    const pickupRule = this.localFeeRule('pickup');
+    const depositRule = this.localFeeRule('deposit');
+    const extraNight = this.previewContent?.quoteSettings.extraNightRates?.[0] ?? this.initialContent.quoteSettings.extraNightRates[0];
     return [
-      { label: '宿务马克坦机场团体接机', value: pickup, note: `${pickupCount ? `本次${pickupCount}人选择接机` : '本次无人选择接机'}；周末06:00–24:00为1,200比索／人，其他时间1,500比索／人。学校团体接机，可能需在机场等候同批其他学生。` },
-      { label: '宿舍押金', value: deposit, note: '按每位学生停留周数计收：1–2周2,000比索，3–7周3,000比索，8–11周4,000比索，12–24周5,000比索；退房检查后可退。' },
-      { label: '额外住宿', value: 3000, note: '3,000比索／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。' },
+      ...(pickupRule ? [{ label: pickupRule.name, value: pickup, note: `${pickupCount ? `本次${pickupCount}人选择接机` : '本次无人选择接机'}；${pickupRule.note}` }] : []),
+      ...(depositRule ? [{ label: depositRule.name, value: deposit, note: `${depositRule.note} 1–2周${this.formatPhp(depositRule.amount)}，3–7周增加1,000比索，8–11周增加2,000比索，12–24周按最高档。` }] : []),
+      ...(extraNight ? [{ label: extraNight.label, value: extraNight.amount, note: `${this.formatPhp(extraNight.amount)}／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。` }] : []),
     ].map(item => ({ label: item.label, amount: this.formatPhp(item.value), note: item.note,
       cnyAmount: `人民币预计约 ${Math.round(item.value / this.phpPerCny).toLocaleString('zh-CN')} 元` }));
   }
@@ -403,26 +571,58 @@ export class PhilinterSchoolDetailComponent implements OnInit {
     this.activeStudents.forEach((student, index) => {
       const prefix = this.quoteMode === 'group' ? `学生${index + 1} · ` : '';
       const rows = student.calculator.plan.paymentItems();
-      courseItems.push(...rows.filter(row => row.icon === '课').map(row => ({ ...row, label: `${prefix}${row.label}` })));
-      roomItems.push(...rows.filter(row => row.icon === '宿').map(row => ({ ...row, label: `${prefix}${row.label}` })));
+      courseItems.push(...rows.filter(row => row.icon === '课').map(row => ({ ...row, label: `${prefix}${row.label}`, note: [row.note, this.quoteImageSettings.paymentNotes.course].filter(Boolean).join('；') })));
+      roomItems.push(...rows.filter(row => row.icon === '宿').map(row => ({ ...row, label: `${prefix}${row.label}`, note: [row.note, this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；') })));
     });
     const startDate = this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? '';
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'PHILINTER', schoolName: 'PHILINTER', filePrefix: 'PHILINTER', heroSrc: '/assets/philinter/campus-main.jpeg',
       weeks: this.selectedWeeks, startDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', localCurrencyName: '比索',
-      paymentItems: [items[0], ...courseItems, ...roomItems, ...items.slice(1)],
-      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
-      localFeeTotal: this.localFeesTotal, localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny), localFeeNote: this.localFeeIntro,
-      optionalFeeItems: this.optionalFeeItems,
-      ruleNotes: [],
+      paymentItems: [
+        { ...items[0], note: [items[0]?.note, this.quoteImageSettings.paymentNotes.registration].filter(Boolean).join('；') },
+        ...courseItems,
+        ...roomItems,
+        ...items.slice(1).map(item => ({ ...item, note: [item.note, this.quoteImageSettings.paymentNotes.promotion].filter(Boolean).join('；') })),
+      ],
+      localFeeItems: this.localFees.map(fee => {
+        const id = this.localFeeRules.find(rule => rule.name === fee.item.replace(/^学生\d+ · /, ''))?.id ?? '';
+        return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
+      localFeeTotal: this.localFeesTotal, localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny), localFeeNote: this.quoteImageSettings.localFeeIntro,
+      optionalFeeItems: this.optionalFeeItems.map(fee => {
+        const id = this.localFeeRules.find(rule => rule.name === fee.label)?.id ?? '';
+        return { ...fee, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
+      ruleNotes: this.quoteImageSettings.footerNotes,
     });
     const warnings = this.activeStudents.flatMap((student, index) => [
       ...(student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []),
-      ...student.calculator.plan.shortStayNotes(philinterMultiplier),
+      ...student.calculator.plan.shortStayNotes(weeks => philinterMultiplier(weeks, this.shortStayRatios)),
     ]);
-    const result = applySchoolQuoteImageLayout({ ...quote, totalNote: '', exchangeRateText: '', importantNotes: [...new Set([...warnings, ...this.policyNotes]), '最终以学校价格、空房及优惠确认为准。'] }, 'PHILINTER', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
-    return { ...result, headingText: `PHILINTER${this.selectedWeeks}周报价`, fileName: `PHILINTER${this.selectedWeeks}周报价-${startDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined } };
+    const importantNotes = [...new Set([...warnings, ...this.policyNotes, ...this.quoteImageSettings.footerNotes])];
+    const result = applySchoolQuoteImageLayout({ ...quote, totalNote: '', exchangeRateText: '', importantNotes }, 'PHILINTER', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: `PHILINTER${this.selectedWeeks}周报价`,
+      fileName: `PHILINTER${this.selectedWeeks}周报价-${startDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.quoteImageSettings.benefits,
+      serviceLocations: this.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.quoteImageSettings.noteSectionTitle,
+      importantNotes,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
+    };
+  }
+  previewFeeId(name: string): string { return this.localFeeRules.find(item => item.name === name.replace(/^学生\d+ · /, ''))?.id ?? 'local-fees'; }
+  previewPaymentTarget(item: { label: string; note?: string }): CiaPreviewTarget {
+    if (item.label === '注册费') return { kind: 'section', id: 'quote-registration' };
+    const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || (item.note ?? '').includes(rule.description));
+    return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
   formatUsd(value: number) { return quoteMoney(value); }
   formatPhp(value: number) { return `${quoteMoney(value)} 比索`; }

@@ -46,21 +46,40 @@
           </article>
         </section>
 
-        <section class="notice-panel ratio-notice">
-          <mat-icon>percent</mat-icon>
-          <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的40%/60%/80%计算。成人淡季入学可享85折、亲子9折；通过思达报名再享9折并免100美元注册费；8周起长期优惠可叠加。</p></div>
+        <section class="bcebu-media-gallery" id="media" *ngIf="mediaItems.length || isEditorPreview"
+          data-cia-preview-kind="section" data-cia-preview-id="media"
+          [class.cia-editor-highlight]="isPreviewHighlighted('section', 'media')">
+          <div class="section-heading">
+            <span>校园照片与视频</span><h2>B'Cebu 校园实景</h2><p>员工后台发布的照片和视频会按展示顺序同步到这里。</p>
+          </div>
+          <div class="media-grid" *ngIf="mediaItems.length; else emptyMedia">
+            <figure *ngFor="let item of mediaItems">
+              <video *ngIf="item.contentType?.startsWith('video/'); else mediaPhoto" [src]="item.src" controls preload="metadata"></video>
+              <ng-template #mediaPhoto><img [src]="item.src" [alt]="item.title" loading="lazy" /></ng-template>
+              <figcaption><strong>{{ item.title }}</strong><span *ngIf="item.description">{{ item.description }}</span></figcaption>
+            </figure>
+          </div>
+          <ng-template #emptyMedia><p class="empty-media">当前还没有已发布的校园照片或视频。</p></ng-template>
         </section>
 
-        <section class="split-layout" id="course-fees">
+        <section class="notice-panel ratio-notice" data-cia-preview-kind="section" data-cia-preview-id="short-stay"
+          [class.cia-editor-highlight]="isPreviewHighlighted('section', 'short-stay')">
+          <mat-icon>percent</mat-icon>
+          <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的{{ (shortTermRatios['1'] || 0) * 100 }}%/{{ (shortTermRatios['2'] || 0) * 100 }}%/{{ (shortTermRatios['3'] || 0) * 100 }}%计算。成人淡季入学可享85折、亲子9折；通过思达报名再享9折并免100美元注册费；8周起长期优惠可叠加。</p></div>
+        </section>
+
+        <section class="split-layout" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-heading"
+          [class.cia-editor-highlight]="isPreviewHighlighted('section', 'course-heading')">
           <div class="section-block">
             <div class="section-heading">
-              <span>B'Cebu 2026年4周课程费</span><h2>按学习目标选择课程</h2><p>以下课程费以美元计价，住宿费另计，注册费通过思达报名免收。</p>
+              <span>B'Cebu 2026年4周课程费</span><h2>{{ courseTableTitle }}</h2><p>{{ courseTableNote }}</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="B'Cebu 2026年4周课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">安排 / 备注</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+              <div class="table-row" role="row" *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id"
+                [class.cia-editor-highlight]="isPreviewHighlighted('course', fee.id)">
                 <span role="cell">{{ fee.name }}</span><span role="cell">{{ formatUsd(fee.tuition) }} 美元</span><span role="cell">{{ fee.suitable }}<small *ngIf="fee.note" class="catalog-note">{{ fee.note }}</small></span>
               </div>
             </div>
@@ -69,18 +88,21 @@
                 <span>课程</span><strong>{{ fee.name }}</strong><div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div><p>{{ fee.suitable }}</p><p *ngIf="fee.note">{{ fee.note }}</p>
               </article>
             </div>
-            <p class="fee-alert course-check-note">课程安排和年龄说明按本次提供的2026价目表整理；IELTS保证班需雅思官方成绩，12周起报。</p>
+            <p class="fee-alert course-check-note" data-cia-preview-kind="section" data-cia-preview-id="class-note"
+              [class.cia-editor-highlight]="isPreviewHighlighted('section', 'class-note')">{{ groupClassNote }}</p>
           </div>
 
-          <div class="section-block" id="room-fees">
+          <div class="section-block" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-heading"
+            [class.cia-editor-highlight]="isPreviewHighlighted('section', 'room-heading')">
             <div class="section-heading">
-              <span>B'Cebu 2026年4周住宿费</span><h2>房型与入住资格要一起确认</h2><p>以下住宿费以美元计价。50岁以上、亲子、同行关系和淡季开放条件会影响可选房型。</p>
+              <span>B'Cebu 2026年4周住宿费</span><h2>{{ roomTableTitle }}</h2><p>{{ roomTableNote }}</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="B'Cebu 2026年4周住宿费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
+              <div class="table-row" role="row" *ngFor="let room of roomFees" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id"
+                [class.cia-editor-highlight]="isPreviewHighlighted('room', room.id)">
                 <span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }} 美元</span><span role="cell">{{ room.note }}</span>
               </div>
             </div>
@@ -89,10 +111,16 @@
                 <span>房型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div><p>{{ room.note }}</p>
               </article>
             </div>
+            <section class="stay-policy-panel" *ngIf="stayPolicies.length" data-cia-preview-kind="section" data-cia-preview-id="stay-policy"
+              [class.cia-editor-highlight]="isPreviewHighlighted('section', 'stay-policy')">
+              <h3>{{ stayPolicyTitle }}</h3>
+              <div class="stay-policy-grid"><article *ngFor="let policy of stayPolicies"><span>{{ policy.label }}</span><strong>{{ policy.value }}</strong><p>{{ policy.note }}</p></article></div>
+            </section>
           </div>
         </section>
 
-        <section class="quote-panel full-width-quote" id="quote">
+        <section class="quote-panel full-width-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote"
+          [class.cia-editor-highlight]="isPreviewHighlighted('section', 'quote')">
           <div class="section-heading"><h2>{{ quoteHeading }}</h2></div>
           <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
           <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿和费用条件；注册费、住宿及学杂费均按各自方案计算。</p>
@@ -109,8 +137,11 @@
             <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.calculator.total) }} 美元</strong></div>
           </article>
           <p class="fee-alert">课程和住宿可分别添加，日期从周日至周六；入学日为首个课程开始后的周一（{{ calculator.entryDate }}）。周六下午4点后可免费提前入住。</p>
-          <div class="quote-breakdown">
-            <div *ngFor="let item of paymentItems" class="quote-rule-card" [class.discount-line]="item.amount.startsWith('−')">
+          <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown"
+            [class.cia-editor-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
+            <div *ngFor="let item of paymentItems" class="quote-rule-card" [class.discount-line]="item.amount.startsWith('−')"
+              [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id"
+              [class.cia-editor-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)">
               <span>{{ item.label }}</span><small>{{ item.note }}</small><strong>{{ item.amount }}</strong>
             </div>
           </div>
@@ -128,13 +159,16 @@
           <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
         </section>
 
-        <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees"
+          [class.cia-editor-highlight]="isPreviewHighlighted('section', 'local-fees')">
           <div class="local-fee-heading"><div><span>到校后另付 · 自动预估</span><h3 id="local-fee-title">{{ quoteMode === 'single' ? selectedWeeks + '周' : activeStudents.length + '人' }}学杂费明细</h3></div></div>
-          <p class="local-fee-intro">{{ localFeeIntro }}</p>
+          <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro"
+            [class.cia-editor-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
               <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-              <tbody><tr *ngFor="let fee of localFees">
+              <tbody><tr *ngFor="let fee of localFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)"
+                [class.cia-editor-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
                 <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
               </tr></tbody>
               <tfoot>
@@ -145,7 +179,8 @@
           </div>
           <div class="excluded-fee-list">
             <h4>另行准备（不计入上方学杂费合计）</h4>
-            <div *ngFor="let fee of optionalFees">
+            <div *ngFor="let fee of optionalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)"
+              [class.cia-editor-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
               <span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span>
               <b>{{ formatPhp(fee.total) }}<small>{{ phpCny(fee.total) }}</small></b>
             </div>

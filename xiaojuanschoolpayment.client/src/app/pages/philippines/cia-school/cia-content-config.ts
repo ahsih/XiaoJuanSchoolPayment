@@ -1,8 +1,26 @@
 export interface CiaCourseContent {
   id: string;
   name: string;
+  /** Optional bilingual/group metadata used by weekly-price catalogs such as GLC. */
+  englishName?: string;
+  chineseName?: string;
+  group?: string;
+  offSeasonEligible?: boolean;
+  annexOnly?: boolean;
+  family?: boolean;
+  textbook?: 'esl' | 'ielts';
   tuition: number;
   tuition2027: number;
+  /** Optional fixed-duration prices used by guarantee courses such as A&J. */
+  feeByWeeks?: Record<string, number>;
+  /** Optional duration restriction paired with feeByWeeks. */
+  allowedWeeks?: number[];
+  /** Optional public course grouping/type label. */
+  courseType?: string;
+  /** Campus partition for one school brand with multiple independently displayed campuses. */
+  campus?: string;
+  /** Minimum duration used by guarantee courses. */
+  minimumWeeks?: number;
   suitable: string;
   schedule: string;
   note: string;
@@ -18,6 +36,19 @@ export interface CiaRoomContent {
   location: '校内' | '校外';
   group: string;
   fee: number;
+  /** Optional occupancy and utility metadata used by A&J total-price rooms. */
+  priceMode?: 'per-person' | 'per-room';
+  minOccupancy?: number;
+  maxOccupancy?: number;
+  waterFee4w?: number;
+  waterGroup?: string;
+  deposit?: number;
+  /** Campus partition for one school brand with multiple independently displayed campuses. */
+  campus?: string;
+  /** Whether this room satisfies campus rules that restrict older students to single rooms. */
+  single?: boolean;
+  /** Optional reduced per-person price when a qualifying couple shares this room. */
+  coupleRate?: number;
   note: string;
   enabled: boolean;
   sortOrder: number;
@@ -30,6 +61,8 @@ export type CiaLocalFeeBillingRule =
   | 'first-visa-extension'
   | 'long-term-or-first-extension'
   | 'visa-extension-schedule'
+  | 'selected-manila-pickup'
+  | 'selected-clark-pickup'
   | 'optional';
 
 export interface CiaLocalFeeRule {
@@ -70,6 +103,17 @@ export interface CiaPromotionRule {
   waiveRegistration: boolean;
   minimumCourseWeeks: number;
   minimumAccommodationWeeks: number;
+  /** Optional repeating tier used by schools such as PINES long-stay offers. */
+  incrementWeeks?: number;
+  incrementValue?: number;
+  /** Optional exact duration tiers used by A&J new-student and continuation offers. */
+  discountTiers?: Record<string, number>;
+  /** Identifies calculator-specific rule semantics while retaining one editable schema. */
+  ruleKind?: string;
+  /** Optional room restriction for offers such as MONOL's SNS promotion. */
+  eligibleRoomIds?: string[];
+  /** Optional course restriction for offers such as GLC's annual study promotion. */
+  eligibleCourseIds?: string[];
   registrationStart?: string;
   registrationEnd?: string;
   arrivalStart?: string;
@@ -100,6 +144,17 @@ export interface CiaExtraNightRate {
 
 export interface CiaQuoteSettings {
   registrationFee: number;
+  /** Optional school-payment fee used by EV for unaccompanied minors. */
+  minorManagementFeePerPeriod?: number;
+  /** Optional I.BREEZE calculator values that remain outside the peso local-fee total. */
+  airportPickupSundayUsd?: number;
+  airportPickupSaturdayUsd?: number;
+  roomDepositUnder8Weeks?: number;
+  roomDeposit8WeeksOrMore?: number;
+  courseChangeFeePerPeriod?: number;
+  /** Optional weekly unaccompanied-minor rates used by B'Cebu. */
+  minorManagementFeeUnder15PerWeek?: number;
+  minorManagementFeeAge15To17PerWeek?: number;
   futurePriceRegistrationStart: string;
   futurePriceArrivalStart: string;
   shortStayRatios: Record<string, number>;
@@ -146,14 +201,32 @@ export interface CiaQuoteImageSettings {
   footerNotes: string[];
 }
 
+export interface CiaMediaContent {
+  id: string;
+  schoolId: string;
+  url: string;
+  originalFileName?: string;
+  contentType: string;
+  category?: string;
+  caption?: string;
+  altText?: string;
+  displayOrder: number;
+  /** Optional campus partition for brands that publish several campus pages from one school record. */
+  campus?: string;
+  /** Desired website visibility. The database is updated only when an administrator publishes. */
+  isActive: boolean;
+}
+
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC';
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];
   quoteSettings: CiaQuoteSettings;
   quoteImageSettings: CiaQuoteImageSettings;
+  /** Optional for backwards compatibility with revisions created before media review was introduced. */
+  media?: CiaMediaContent[];
 }
 
 const course = (

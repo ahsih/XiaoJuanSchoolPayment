@@ -7,7 +7,22 @@ import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { SCHOOL_VISA_OPTIONS, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import {
+  FELLA_CAMPUS_OPTIONS,
+  FELLA_COURSE_FEES,
+  FELLA_ROOM_FEES,
+  FellaCampus,
+  FellaCourseFee,
+  FellaRoomFee,
+} from './fella-pricing';
+import { FellaStudentQuote } from './fella-student-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -17,10 +32,7 @@ interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
 interface CourseItem { name: string; type: string; lessons: string; suitable: string; }
-interface CourseFee { id: string; name: string; tuition: number; suitable: string; }
 interface ScheduleItem { time: string; title: string; text: string; }
-interface RoomFee { id: string; name: string; fee: number; note: string; }
-interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
@@ -32,11 +44,12 @@ interface SidaFellaReason {
   alt: string;
 }
 interface SidaFellaTrustBadge { icon: string; label: string; }
+interface CampusPriceGroup<T> { campus: FellaCampus; eyebrow: string; title: string; description: string; items: T[]; }
 
 @Component({
   selector: 'app-fella-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './fella-school-detail.component.html',
   styleUrls: [
@@ -44,10 +57,14 @@ interface SidaFellaTrustBadge { icon: string; label: string; }
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../../../components/school-group-quote.css',
+    './fella-school-detail.component.css',
   ],
 })
 export class FellaSchoolDetailComponent implements OnInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly pricingSchoolSearchName = 'English Fella';
   private readonly pricingSchoolNames = ['菲律宾宿务English Fella语言学校', 'English Fella'];
   private readonly courseFeeOrder = ['pic-4', 'pic-5', 'pic-6', 'toeic-esl', 'toeic-practice', 'toeic-guarantee', 'pift-e', 'pift', 'pirc', 'pigi', 'ppt', 'ptft', 'ssc', 'p-jec', 'jec', 'gec', 'ebc'];
@@ -56,20 +73,18 @@ export class FellaSchoolDetailComponent implements OnInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  readonly discount = 1;
-  seasonalFeePerWeek = 0;
-  readonly usdToCny = 7.2;
-  readonly weekOptions = [1, 2, 3, 4, 8, 12];
-  selectedCourseId = 'pic-4';
-  selectedRoomId = 'triple-3a';
-  selectedWeeks = 4;
-  selectedStartDate = '2026-05-18';
+  usdToCny = 7.2;
+  phpPerCny = 8;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
   quoteCalculated = false;
+  readonly campusOptions = FELLA_CAMPUS_OPTIONS;
+  readonly visaOptions = SCHOOL_VISA_OPTIONS;
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'park', label: '学校类型', value: '宿务老牌大校园', note: '2006年创立，官方称建有专属校园' },
     { icon: 'groups', label: '适合人群', value: '成人 / 考试 / 亲子 / 长期', note: '从5岁儿童到成人和银发课程都有方向' },
-    { icon: 'verified_user', label: '管理模式', value: '斯巴达 / 半斯巴达 / 自律', note: '校区和课程不同，规则要先确认' },
+    { icon: 'verified_user', label: '管理模式', value: '斯巴达 / 半斯巴达 / 自律', note: '第一校区斯巴达；第二校区自律型／半斯巴达' },
     { icon: 'school', label: '课程选项', value: 'PIC / IELTS / TOEIC / TOEFL', note: '另有EBC商务、JEC儿童、GEC家长和SSC乐龄课程' },
     { icon: 'bed', label: '住宿房型', value: '3A三人 / 2A双人 / 三种单人房', note: '1B、1A和Premium 1P单人间需核空房' },
     { icon: 'local_activity', label: '校园资源', value: '泳池 / 运动 / CAFELLA', note: '官方设施页展示校园、餐厅、运动和休闲空间' },
@@ -95,15 +110,15 @@ export class FellaSchoolDetailComponent implements OnInit {
     { label: '创立时间', value: '2006年，官方资料称为菲律宾第一批建有专属校园的学校之一' },
     { label: '学校定位', value: '大校园、课程选择多、校区管理模式可选的老牌学校' },
     { label: '课程资源', value: 'PIC、PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC、GEC、SSC' },
-    { label: '年龄要求', value: 'Junior课程5岁起；15岁以上课程需按项目和校区规则确认' },
-    { label: '管理模式', value: '1st Campus偏斯巴达；2nd Campus可按普通/半斯巴达方向确认' },
+    { label: '年龄要求', value: 'P-JEC为5–6岁；JEC为7–15岁；18岁以下单独到校按每周25美元计费' },
+    { label: '管理模式', value: '第一校区为斯巴达；第二校区为自律型／半斯巴达' },
     { label: '设施资源', value: '校园、宿舍、教室、餐厅、办公室、运动设施、其他公共空间' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/fella/campus-main.jpg', title: '大校园与生活支持感', text: 'Fella适合希望学校空间更完整、学习和生活都在校内解决的学生。' },
     { image: 'assets/fella/classroom-1.jpg', title: '课程方向很完整', text: '从PIC综合英语到PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC和GEC都可比较。' },
-    { image: 'assets/fella/dorm-1.jpg', title: '房型和校区要先确认', text: '3A三人间住宿预算最低，Premium 1P、1A和1B’单人间需提前确认校区和空房。' },
+    { image: 'assets/fella/dorm-1.jpg', title: '五种房型覆盖两个校区', text: '3A三人间住宿预算最低，Premium 1P、1A、1B’、2A和3A在两个校区均可选，需提前确认空房。' },
     { image: 'assets/fella/sports-1.jpg', title: '活动和运动资源多', text: '官方资料列出体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
   ];
 
@@ -117,7 +132,7 @@ export class FellaSchoolDetailComponent implements OnInit {
   readonly notSuitableFor: FitItem[] = [
     { title: '只想住最新型豪华校区', text: 'Fella是成熟老牌校园，住宿质感需和CIA、CPI、EV等新型校区比较。' },
     { title: '不想被校规约束', text: '斯巴达校区和考试课程会有更明确的自习、测试、外出和出勤要求。' },
-    { title: '只看低价，不准备当地费用', text: 'Fella到校后仍有SSP、SSP E-card、水电、空调、教材、押金等当地费用。' },
+    { title: '只看低价，不准备当地费用', text: 'Fella到校后仍有SSP、SSP E-CARD、ACR I-CARD、管理费、签证续签、教材和押金等费用。' },
     { title: '不想提前确认校区和房型', text: 'Fella的关键就是校区、管理模式和房型，临近入学更容易被空房限制。' },
   ];
 
@@ -131,33 +146,32 @@ export class FellaSchoolDetailComponent implements OnInit {
     { name: 'SSC', type: '乐龄会话', lessons: '一对一6节 + 选修课', suitable: '适合银发成人提升口语信心和交流能力。' },
   ];
 
-  courseFees: CourseFee[] = [
-    { id: 'pic-4', name: 'PIC-4 一般英语课程', tuition: 950, suitable: '第一、第二校区；一对一4节 + 四人团体2节 + 八人团体1节 + 选修课' },
-    { id: 'pic-5', name: 'PIC-5 一般英语课程', tuition: 1000, suitable: '第一、第二校区；一对一5节 + 四人团体1节 + 八人团体1节 + 选修课' },
-    { id: 'pic-6', name: 'PIC-6 Power Speaking', tuition: 1050, suitable: '第一、第二校区；一对一6节 + 八人团体1节 + 选修课' },
-    { id: 'toeic-esl', name: 'TOEIC ESL 托业入门班', tuition: 1050, suitable: '第一、第二校区；托业一对一2节 + ESL一对一2节 + 团体课 + 选修课' },
-    { id: 'toeic-practice', name: 'TOEIC 托业实战班', tuition: 1050, suitable: '第一、第二校区；一对一4节 + 四人团体2节 + 八人团体1节 + 选修课' },
-    { id: 'toeic-guarantee', name: 'TOEIC 托业保证班', tuition: 1100, suitable: '第一校区；一对一4节 + 四人团体2节 + 八人团体1节 + 强制晚自习及词汇测试' },
-    { id: 'pift-e', name: 'PIFT-E 雅思实战班', tuition: 1050, suitable: '第一、第二校区；入学参考1–2分' },
-    { id: 'pift', name: 'PIFT 雅思实战班', tuition: 1050, suitable: '第一、第二校区；入学参考2.5分以上' },
-    { id: 'pirc', name: 'PIRC 雅思培训班', tuition: 1100, suitable: '第一、第二校区；一对一5节 + 四人团体2节 + 选修课，入学参考2.5分以上' },
-    { id: 'pigi', name: 'PIGI 雅思保证班', tuition: 1100, suitable: '第一校区；一对一4节 + 四人团体2节 + 八人团体1节 + 强制晚自习及词汇测试' },
-    { id: 'ppt', name: 'PPT 托福入门班', tuition: 1050, suitable: '第一、第二校区；托福一对一2节 + ESL一对一2节 + 团体课 + 选修课' },
-    { id: 'ptft', name: 'PTFT 托福实战班', tuition: 1050, suitable: '第一、第二校区；托福一对一4节 + ESL团体课 + 选修课' },
-    { id: 'ssc', name: 'SSC 乐龄会话课', tuition: 1100, suitable: '第二校区自律型；一对一6节 + 选修课' },
-    { id: 'p-jec', name: 'P-JEC 儿童课程', tuition: 1100, suitable: '第二校区；5–6岁，一对一4节 + 选修课' },
-    { id: 'jec', name: 'JEC 儿童课程', tuition: 1100, suitable: '第二校区；7–15岁，一对一4节 + 四人团体2节 + 选修课' },
-    { id: 'gec', name: 'GEC 家长课程', tuition: 800, suitable: '第二校区；一对一3节 + 选修课' },
-    { id: 'ebc', name: 'EBC 商业英文课程', tuition: 1050, suitable: '第二校区；一对一5节 + 四人团体2节 + 选修课' },
-  ];
+  courseFees: FellaCourseFee[] = FELLA_COURSE_FEES.map((course) => ({ ...course }));
+  roomFees: FellaRoomFee[] = FELLA_ROOM_FEES.map((room) => ({ ...room }));
 
-  roomFees: RoomFee[] = [
-    { id: 'premium-1p', name: 'Premium 1P 单人间', fee: 1200, note: '最高规格单人房；适用校区和空房需确认' },
-    { id: 'single-1a', name: '1A 单人间', fee: 1000, note: '单人房；适用校区和空房需确认' },
-    { id: 'single-1b', name: '1B’ 单人间', fee: 950, note: '单人房；适用校区和空房需确认' },
-    { id: 'twin-2a', name: '2A 双人间', fee: 850, note: '适合朋友同行或希望兼顾预算与舒适度' },
-    { id: 'triple-3a', name: '3A 三人间', fee: 750, note: '默认报价参考，住宿预算最低' },
-  ];
+  get courseFeeGroups(): CampusPriceGroup<FellaCourseFee>[] {
+    return this.campusOptions.map((campus) => ({
+      campus: campus.value,
+      eyebrow: campus.value === 'campus1' ? 'FELLA FIRST CAMPUS' : 'FELLA SECOND CAMPUS',
+      title: campus.label,
+      description: `管理模式：${campus.management}`,
+      items: this.courseFees.filter((course) => course.campuses.includes(campus.value)),
+    }));
+  }
+
+  get roomFeeGroups(): CampusPriceGroup<FellaRoomFee>[] {
+    return this.campusOptions.map((campus) => ({
+      campus: campus.value,
+      eyebrow: campus.value === 'campus1' ? 'FELLA FIRST CAMPUS' : 'FELLA SECOND CAMPUS',
+      title: `${campus.label}住宿`,
+      description: '五种房型均适用本校区，实际空房需确认',
+      items: this.roomFees.filter((room) => room.campuses.includes(campus.value)),
+    }));
+  }
+
+  readonly students: FellaStudentQuote[] = [new FellaStudentQuote(this)];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐与晨间准备', text: '校内餐厅用餐后准备课程，斯巴达校区可能有更明确早晚安排。' },
@@ -166,19 +180,6 @@ export class FellaSchoolDetailComponent implements OnInit {
     { time: '13:00 - 17:00', title: '下午课程', text: '继续口语、文法、听力、阅读、写作、考试或商务主题训练。' },
     { time: '17:00 - 19:00', title: '晚餐与自由时间', text: '可使用校园设施，外出和门禁以校区规则为准。' },
     { time: '19:00 - 21:00', title: '自习 / 测试 / 校内活动', text: '斯巴达、J-Sparta和考试课程的晚间规则需按项目确认。' },
-  ];
-
-  localFees: LocalFee[] = [
-    { item: 'SSP', amount: 'PHP 6,800', note: '官方费用页显示截至2023年3月为 PHP 6,800' },
-    { item: 'SSP E-card', amount: 'PHP 3,600', note: '官方费用页显示截至2024年7月为 PHP 3,600' },
-    { item: '水电费', amount: 'PHP 2,500', note: '官方计算器说明4周每人 PHP 2,500' },
-    { item: '空调费', amount: 'PHP 20 / KW', note: '官方计算器说明按 PHP 20 / 1KW 计算' },
-    { item: '教材费', amount: 'PHP 2,000', note: '按课程和实际购买教材调整' },
-    { item: '宿舍押金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '接机费', amount: 'PHP 1,000', note: '官方费用页显示接机费 PHP 1,000' },
-    { item: 'ACR I-card', amount: '按周期确认', note: '金额会按停留周期和汇率调整' },
-    { item: '签证延签', amount: '按周数确认', note: '按学习周数和菲律宾签证规则调整' },
-    { item: '监管费', amount: '需顾问确认', note: '15-17岁独自就读或亲子规则需由顾问确认' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -246,16 +247,18 @@ export class FellaSchoolDetailComponent implements OnInit {
   readonly campusActivities = ['Sports Competition', 'Fun Friday', 'Fella Day', '英语展示', '校内运动', '校园交流'];
   readonly weekendActivities = ['跳岛活动', 'Cebu City Tour', 'Safari Park Tour', '志愿活动', '商场与餐厅', '学生自发聚会'];
   readonly notes = [
-    'English Fella报名前必须确认第一校区或第二校区，以及对应管理模式。',
-    '亲子、青少年、SSC乐龄会话和考试课程要先核对年龄、校区、周数和入学规则。',
-    '本页课程费与住宿费拆分用于报价逻辑，正式报价仍需按学校费用表、优惠和房型确认。',
-    '到校支付费用会随学校政策、汇率和个人情况变化。',
+    'English Fella只有第一校区（斯巴达）和第二校区（自律型／半斯巴达）；课程和房型必须先按校区筛选。',
+    '当前只开放资料已确认的4／8／12／16／20／24周报价，不推算1／2／3周价格。',
+    '优惠顺序为先减7月报名优惠，再对剩余课程费和住宿费计算95折，最后再减可叠加的圣诞优惠。',
+    '18岁以下单独到校由用户勾选未成年服务费，按每个课程周25美元计算。',
+    '30天或59天旅游签证由学生选择；4周通常推荐30天，8周及以上通常推荐59天，最终以移民局发放为准。',
+    '第二次及以后续签金额未提供，页面仅提示预计次数，不计入学杂费合计。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: 'English Fella适合第一次菲律宾游学吗？', answer: '适合，但要先确认校区和管理强度。若你希望有校园空间、生活支持和比较完整的课程选择，Fella值得放入候选。' },
-    { question: 'English Fella是斯巴达学校吗？', answer: 'Fella有不同校区和管理模式。一般会按第一校区偏斯巴达、第二校区较弹性来理解，实际规则需按课程和空房确认。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和可能的旺季附加费；到校后仍需支付SSP、SSP E-card、水电费、空调费、教材费、押金等当地费用。' },
+    { question: 'English Fella是斯巴达学校吗？', answer: 'Fella有两个校区：第一校区为斯巴达，第二校区为自律型／半斯巴达。报价器会按所选校区过滤课程与房型。' },
+    { question: '页面上的报价包含全部费用吗？', answer: '学校费用与到校学杂费会分开计算；房间押金、接机费和挂锁押金另列且不计入学杂费合计。第二次及以后签证续签金额因资料未明确而暂不计价。' },
     { question: 'English Fella适合亲子吗？', answer: '可以考虑。课程表包含P-JEC、JEC儿童课程和GEC家长课程，但要先确认孩子年龄、陪同家长、监护规则、房型和校区。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名English Fella，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -276,7 +279,20 @@ export class FellaSchoolDetailComponent implements OnInit {
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
-  ngOnInit(): void { this.loadPricingFromDatabase(); }
+  ngOnInit(): void {
+    this.loadPricingFromDatabase();
+    this.loadExchangeRate();
+  }
+
+  private loadExchangeRate(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+      this.usdToCny = rates.usdToCny;
+      this.phpPerCny = rates.phpPerCny;
+      this.exchangeRateDate = rates.date;
+      this.usingLiveExchangeRate = true;
+    });
+  }
 
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
@@ -297,36 +313,105 @@ export class FellaSchoolDetailComponent implements OnInit {
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
-    const databaseCourseFees = lessons
-      .filter((lesson) => lesson.week === 4)
-      .map((lesson) => ({ id: this.createCourseId(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认适合人群' }))
-      .sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
-    if (databaseCourseFees.length > 0) {
-      this.courseFees = databaseCourseFees;
-      if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees.find((course) => course.id === 'pic-4')?.id ?? this.courseFees[0].id;
+    for (const lesson of lessons.filter((item) => item.week === 4)) {
+      const course = this.courseFees.find((item) => item.id === this.createCourseId(lesson.name));
+      if (course) course.tuition = lesson.price;
     }
+    this.courseFees.sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
 
-    const databaseRoomFees = rooms
-      .filter((room) => room.week === 4)
-      .map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' }))
-      .sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
-    if (databaseRoomFees.length > 0) {
-      this.roomFees = databaseRoomFees;
-      if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'triple-3a')?.id ?? this.roomFees[0].id;
+    for (const databaseRoom of rooms.filter((item) => item.week === 4)) {
+      const room = this.roomFees.find((item) => item.id === this.createRoomId(databaseRoom.name));
+      if (room) room.fee = databaseRoom.price;
     }
+    this.roomFees.sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
 
     const registrationFee = fees.find((fee) => fee.name === '注册费');
     if (registrationFee) this.registrationFee = registrationFee.fee;
-    const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费');
-    if (peakSeasonFee) this.seasonalFeePerWeek = peakSeasonFee.fee;
-    const databaseLocalFees = fees
-      .filter((fee) => this.currencyCodeForDisplay(fee.currencyCode) === 'PHP')
-      .map((fee) => ({ item: fee.name, amount: this.formatCurrencyAmount(fee), note: this.cleanFeeDescription(fee.description) }));
-    if (databaseLocalFees.length > 0) this.localFees = databaseLocalFees;
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
   calculateQuote(): void { this.quoteCalculated = true; }
+  get studentCount(): number { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(new FellaStudentQuote(this));
+    }
+  }
+  setQuoteMode(value: 'single' | 'group'): void {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+  setStudentCampus(student: FellaStudentQuote, campus: FellaCampus): void { student.setCampus(campus); }
+  get activeStudents(): FellaStudentQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex((student) => !!student.quoteError);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quoteError}`;
+  }
+  get selectedWeeks(): number { return this.students[0].courseWeeks; }
+  get selectedStartDate(): string { return this.students[0].arrivalDate; }
+  get selectedCourse(): FellaCourseFee {
+    const id = this.students[0].quotePlan.courses[0]?.optionId;
+    return this.courseFees.find((course) => course.id === id) ?? this.courseFees[0];
+  }
+  get selectedRoom(): FellaRoomFee {
+    const id = this.students[0].quotePlan.rooms[0]?.optionId;
+    return this.roomFees.find((room) => room.id === id) ?? this.roomFees[0];
+  }
+  get earliestStartDate(): string { return this.activeStudents.map((student) => student.arrivalDate).filter(Boolean).sort()[0] ?? ''; }
+  get quoteFormHeading(): string {
+    return this.quoteMode === 'single' ? 'English Fella 两校区单人报价' : `English Fella ${this.activeStudents.length}人报价`;
+  }
+  private get weekScope(): string {
+    const weeks = [...new Set(this.activeStudents.map((student) => student.courseWeeks))].sort((a, b) => a - b);
+    return weeks.length === 1 ? `${weeks[0]}周` : `（${weeks.map((week) => `${week}周`).join('／')}）`;
+  }
+  get quoteHeading(): string {
+    if (this.quoteMode === 'single') return `English Fella ${this.students[0].campus === 'campus1' ? '第一校区' : '第二校区'}${this.weekScope}报价`;
+    const campuses = new Set(this.activeStudents.map((student) => student.campus));
+    const campus = campuses.size === 1 ? `${this.activeStudents[0].campus === 'campus1' ? '第一校区' : '第二校区'}` : '';
+    return `English Fella ${campus}${this.activeStudents.length}人${this.weekScope}报价`;
+  }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get exchangeRateSummary(): string {
+    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
+    return `参考汇率：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元，1元≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
+  }
+  get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
+  get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
+  readonly localFeeIntro = '学杂费由学校及菲律宾相关部门到校收取；页面按每名学生的课程、住宿和签证选择独立估算。';
+  get optionalFeeItems() {
+    return this.activeStudents.flatMap((student, index) => {
+      const prefix = this.quoteMode === 'group' ? `学生${index + 1} · ` : '';
+      const rows = [
+        {
+          label: `${prefix}房间押金（可退）`, amount: this.formatPhp(student.roomDeposit),
+          cnyAmount: `约人民币 ${Math.round(student.roomDeposit / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+          note: `${student.roomWeeks >= 12 ? '12周及以上为4,000比索' : '12周以下为3,000比索'}；退房时扣除损坏、毕业日后空调电费后退还，超出押金需补齐，电费20比索／千瓦时。`,
+        },
+        {
+          label: `${prefix}挂锁押金（可退）`, amount: this.formatPhp(100),
+          cnyAmount: `约人民币 ${Math.round(100 / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+          note: '无损坏及丢失，毕业时可退。',
+        },
+      ];
+      if (student.pickupFee) rows.splice(1, 0, {
+        label: `${prefix}${student.airportPickup === 'sunday' ? '周日' : '其他时间'}宿务机场接机`,
+        amount: this.formatPhp(student.pickupFee),
+        cnyAmount: `约人民币 ${Math.round(student.pickupFee / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        note: student.airportPickup === 'sunday' ? '周日接机1,000比索／人；也可自行打车。' : '非周日或其他时间接机1,500比索／次／人。',
+      });
+      return rows;
+    });
+  }
   scrollToSection(target: string, event?: Event): void {
     event?.preventDefault();
     const targetElement = document.getElementById(target);
@@ -338,18 +423,66 @@ export class FellaSchoolDetailComponent implements OnInit {
   }
 
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
-  get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
-  get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[0]; }
-  get tuitionForSelectedWeeks(): number { return this.selectedCourse.tuition * (this.selectedWeeks / 4); }
-  get roomFeeForSelectedWeeks(): number { return this.selectedRoom.fee * (this.selectedWeeks / 4); }
-  get isPeakSeason(): boolean { return false; }
-  get seasonalSurcharge(): number { return this.isPeakSeason ? this.selectedWeeks * this.seasonalFeePerWeek : 0; }
-  get quoteUsd(): number { return this.registrationFee + (this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks) * this.discount + this.seasonalSurcharge; }
-  get quoteUsdText(): string { return `USD ${this.formatUsd(this.quoteUsd)} 起`; }
-  get quoteCnyText(): string { const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100; return `约 ${rounded.toLocaleString('zh-CN')} 元起`; }
-  get discountText(): string { return this.discount === 1 ? '优惠需顾问确认，参考范围' : `${Math.round(this.discount * 100)} 折扣范围`; }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  get quoteImageData() {
+    const planItems = (['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems()
+      .filter((item) => item.icon === icon)
+      .map((item) => ({
+        ...item,
+        label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
+        detailTitle: `${student.campusLabel}｜${item.detailTitle ?? ''}`,
+      }))));
+    const paymentItems = [
+      ...planItems,
+      ...groupPaymentLines(this.activeStudents, true),
+    ];
+    const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`] : []);
+    const pendingVisa = this.activeStudents.flatMap((student, index) => student.touristExtensionCount > 1
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}第2次及以后签证续签金额未提供，当前合计只包含首次续签6,440比索。`]
+      : []);
+    const quote = buildPhilippinesDetailedQuote({
+      schoolCode: 'FELLA',
+      schoolName: '菲律宾宿务English Fella语言学校',
+      filePrefix: 'English-Fella',
+      heroSrc: '/assets/fella/campus-main.jpg',
+      weeks: this.selectedWeeks,
+      startDate: this.earliestStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+      paymentItems,
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeTotal: this.estimatedLocalFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: this.estimatedLocalFeeCny,
+      localFeeNote: '学杂费按学生独立计算；不含可退房间押金、接机费及挂锁押金。',
+      optionalFeeItems: this.optionalFeeItems,
+      ruleNotes: [],
+    });
+    const result = applySchoolQuoteImageLayout({
+      ...quote,
+      localFeeTitle: '到校后学杂费明细',
+      importantNotes: [
+        ...warnings,
+        ...pendingVisa,
+        '学校费用需在到校前2周交齐，可交由思达游学代收或自行转美元给学校；人民币支付按支付宝实时汇率结算。',
+        '学杂费由学校及菲律宾相关部门到校收取，本报价仅供参考，具体以学校实际收取为准。',
+        '课程及住宿按周日开始、周六结束；所选校区只显示该校区可选课程和房型。',
+      ],
+      footerNotesVerbatim: true,
+    }, 'English Fella', this.selectedWeeks, this.earliestStartDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${this.earliestStartDate.replace(/-/g, '')}.png`,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined },
+    };
+  }
+
+  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
+  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private createCourseId(name: string): string {
     if (name.startsWith('PIC-6')) return 'pic-6';
@@ -372,11 +505,4 @@ export class FellaSchoolDetailComponent implements OnInit {
     if (name.includes('单人')) return 'standard-single';
     return this.slugifyPriceKey(name);
   }
-  private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
-  private formatCurrencyAmount(fee: SchoolFeeDTO): string {
-    if (fee.fee === 0) return '需顾问确认';
-    if (fee.name === '空调费') return `${this.currencyCodeForDisplay(fee.currencyCode)} ${this.formatUsd(fee.fee)} / KW`;
-    return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`;
-  }
-  private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }
 }

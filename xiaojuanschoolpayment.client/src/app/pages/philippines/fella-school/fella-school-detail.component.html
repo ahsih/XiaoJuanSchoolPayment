@@ -52,16 +52,16 @@
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
-              <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
+              <strong>{{ formatUsd(quoteUsd) }} 美元</strong>
               <p>PIC-4 + 3A 三人间</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和住宿费估算
+                  已按当前报名日、课程、住宿和适用优惠自动估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  校区规则、到校费用和亲子/青少年费用需另行确认
+                  到校学杂费、押金和接机费在报价器中分开列明
                 </li>
               </ul>
             </aside>
@@ -201,134 +201,105 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>English Fella 4 周课程费</span>
-              <h2>先看课程费，再叠加住宿费</h2>
-              <p>以下为4周课程费拆分参考，币种为美元。最终以学校当期报价、校区、空房和优惠为准。</p>
-            </div>
-            <div class="data-table course-fee-table" role="table" aria-label="English Fella 4周课程费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">课程</span>
-                <span role="columnheader">4周课程费</span>
-                <span role="columnheader">适合人群</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
-                <span role="cell">{{ fee.name }}</span>
-                <span role="cell">USD {{ formatUsd(fee.tuition) }}</span>
-                <span role="cell">{{ fee.suitable }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="English Fella 4周课程费手机卡片">
-              <article *ngFor="let fee of courseFees">
-                <span>课程</span>
-                <strong>{{ fee.name }}</strong>
-                <div><em>4周课程费</em><b>USD {{ formatUsd(fee.tuition) }}</b></div>
-                <p>{{ fee.suitable }}</p>
-              </article>
-            </div>
-          </div>
-
-          <div class="section-block" id="daily-schedule">
-            <div class="section-heading">
-              <span>English Fella 一天学习生活安排</span>
-              <h2>校区和课程不同，晚间规则也不同</h2>
-            </div>
-            <div class="timeline">
-              <article *ngFor="let item of schedule">
-                <time>{{ item.time }}</time>
-                <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section class="split-layout" id="room-fees">
-          <div class="section-block">
-            <div class="section-heading">
-              <span>English Fella 2026 年 4 周住宿费</span>
-              <h2>房型、校区和管理模式要一起确认</h2>
-              <p>默认报价使用3A三人间。Premium 1P、1A、1B’单人间及亲子、青少年房型建议先让顾问确认校区与空房。</p>
-            </div>
-            <div class="data-table room-fee-table" role="table" aria-label="English Fella 2026年4周住宿费">
-              <div class="table-row table-head" role="row">
-                <span role="columnheader">房型</span>
-                <span role="columnheader">4周住宿费</span>
-                <span role="columnheader">备注</span>
-              </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
-                <span role="cell">{{ room.name }}</span>
-                <span role="cell">USD {{ formatUsd(room.fee) }}</span>
-                <span role="cell">{{ room.note }}</span>
-              </div>
-            </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="English Fella 2026年4周住宿费手机卡片">
-              <article *ngFor="let room of roomFees">
-                <span>房型</span>
-                <strong>{{ room.name }}</strong>
-                <div><em>4周住宿费</em><b>USD {{ formatUsd(room.fee) }}</b></div>
-                <p>{{ room.note }}</p>
-              </article>
-            </div>
-          </div>
-
-          <section class="quote-panel" id="quote">
-            <div class="section-heading">
-              <span>English Fella 费用快速报价</span>
-              <h2>默认参考：4周 PIC-4 + 3A三人间</h2>
-              <p>前期支付参考 = 注册费 +（课程费 + 住宿费）× 优惠折扣 + 旺季附加费</p>
-            </div>
-            <div class="quote-form" aria-label="English Fella费用快速报价选项">
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
-              <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
-            </div>
-            <div class="quote-breakdown">
-              <div><span>注册费</span><strong>USD {{ registrationFee }}</strong></div>
-              <div><span>课程费</span><strong>USD {{ formatUsd(tuitionForSelectedWeeks) }}</strong></div>
-              <div><span>住宿费</span><strong>USD {{ formatUsd(roomFeeForSelectedWeeks) }}</strong></div>
-              <div><span>{{ discountText }}</span><strong>课程费 + 住宿费</strong></div>
-              <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
-            </div>
-            <div class="quote-result">
-              <span>前期支付参考</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <em>{{ quoteCnyText }}</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新，正式报价仍需顾问确认校区、空房和优惠。</p>
-            </div>
-            <div class="quote-actions">
-              <button type="button" class="primary-action" (click)="calculateQuote()">立即计算我的费用<mat-icon>calculate</mat-icon></button>
-              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
-            </div>
-            <p class="fee-alert">除前期支付费用外，学生到校后通常还需支付 SSP、SSP E-card、水电费、空调费、教材费、宿舍押金、接机费、签证延签、ACR I-card等当地费用。4周建议额外准备约人民币2500元以上，实际金额以学校现场收取和个人情况为准。</p>
-            <p class="season-note">English Fella旺季附加费、校区规则、亲子/青少年监管费用、优惠和正式报价需由顾问按入学档期向学校确认。</p>
-          </section>
-        </section>
-
-        <section class="section-block" id="local-fees">
+        <section class="section-block" id="course-fees">
           <div class="section-heading">
-            <span>到校支付费用参考</span>
-            <h2>前期支付之外，还要准备当地费用</h2>
-            <p>以下费用以 PHP 计价，通常到校后支付。不同课程、周数、校区和学校政策会影响最终金额。</p>
+            <span>English Fella 2026年4周课程费</span>
+            <h2>课程按第一、第二校区分别列出</h2>
+            <p>币种为美元；报价器选择校区后，只显示该校区可选课程。</p>
           </div>
-          <div class="local-fee-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+          <div class="campus-price-groups">
+            <section class="campus-price-group" *ngFor="let group of courseFeeGroups">
+              <div class="campus-price-heading"><span>{{ group.eyebrow }}</span><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
+              <div class="data-table course-fee-table" role="table" [attr.aria-label]="group.title + '4周课程费'">
+                <div class="table-row table-head" role="row"><span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排及要求</span></div>
+                <div class="table-row" role="row" *ngFor="let fee of group.items"><span role="cell">{{ fee.name }}</span><span role="cell">{{ formatUsd(fee.tuition) }} 美元</span><span role="cell">{{ fee.schedule }}；{{ fee.requirement }}</span></div>
+              </div>
+              <div class="mobile-card-list mobile-course-fees">
+                <article *ngFor="let fee of group.items"><span>课程</span><strong>{{ fee.name }}</strong><div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div><p>{{ fee.schedule }}；{{ fee.requirement }}</p></article>
+              </div>
+            </section>
           </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看到校支付费用全部明细</summary>
-            <div class="local-fee-grid mobile-local-fees">
-              <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+        </section>
+
+        <section class="section-block" id="room-fees">
+          <div class="section-heading"><span>English Fella 2026年4周住宿费</span><h2>房型也按校区分类展示</h2><p>五种房型在两个校区均可选，空房仍需学校确认。</p></div>
+          <div class="campus-price-groups">
+            <section class="campus-price-group" *ngFor="let group of roomFeeGroups">
+              <div class="campus-price-heading"><span>{{ group.eyebrow }}</span><h3>{{ group.title }}</h3><p>{{ group.description }}</p></div>
+              <div class="data-table room-fee-table" role="table" [attr.aria-label]="group.title + '4周住宿费'">
+                <div class="table-row table-head" role="row"><span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
+                <div class="table-row" role="row" *ngFor="let room of group.items"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }} 美元</span><span role="cell">{{ room.note }}</span></div>
+              </div>
+              <div class="mobile-card-list mobile-room-fees"><article *ngFor="let room of group.items"><span>房型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div><p>{{ room.note }}</p></article></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading"><span>English Fella 一天学习生活安排</span><h2>校区和课程不同，晚间规则也不同</h2></div>
+          <div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
+        </section>
+
+        <section class="quote-panel group-quote" id="quote">
+          <div class="quote-form-card">
+            <div class="section-heading"><span>English Fella 完整费用报价</span><h2>{{ quoteFormHeading }}</h2><p>仅开放资料已确认的4／8／12／16／20／24周；每条课程与住宿独立选择周日开始日期，结束日自动计算为周六。</p></div>
+            <div class="quote-mode" role="group" aria-label="English Fella报价人数模式">
+              <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+              <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+              <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
             </div>
-          </details>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每名学生独立选择校区、课程、住宿、日期、年龄、返校状态、签证和接机；未启用的学生资料保留但不计入合计。</p>
+
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) + ' · ' : '' }}{{ student.campusLabel }}</h3>
+              <p class="campus-switch-hint">先选校区，课程和房型选项会自动过滤，两个校区的数据不会混在一起。</p>
+              <div class="student-fields fella-student-fields">
+                <label>选择校区<select [ngModel]="student.campus" (ngModelChange)="setStudentCampus(student, $event)"><option *ngFor="let option of campusOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+                <label>报名日期<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label>签证类型<select [ngModel]="student.visaType" (ngModelChange)="student.visaType = $event"><option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option></select><small *ngIf="!student.visaWasManuallySelected">已按停留周数推荐：{{ student.visaLabel }}，可自行修改</small></label>
+                <label>宿务机场接机<select [(ngModel)]="student.airportPickup"><option *ngFor="let option of student.airportPickupOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+              </div>
+              <div class="fella-option-row">
+                <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老生返校（免注册费）</label>
+                <label class="option-check"><input type="checkbox" [(ngModel)]="student.isMinor" />未成年学生单独到校（18岁以下，25美元／周）</label>
+              </div>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <div class="fella-promotion-heading"><strong>当前方案优惠核算</strong><span>亲子课程指P-JEC儿童、JEC儿童和GEC家长课程。</span></div>
+              <div class="fella-promotion-status">
+                <div [class.applied]="student.registrationPromotionDiscount > 0"><span><strong>7月报名优惠</strong><small>{{ student.registrationPromotionNote }}</small></span><b>{{ student.registrationPromotionDiscount ? '− ' + formatUsd(student.registrationPromotionDiscount) + ' 美元' : '未适用' }}</b></div>
+                <div [class.applied]="student.sidaDiscount > 0"><span><strong>思达启航95折</strong><small>{{ student.sidaDiscountNote }}</small></span><b>{{ student.sidaDiscount ? '− ' + formatUsd(student.sidaDiscount) + ' 美元' : '未适用' }}</b></div>
+                <div [class.applied]="student.christmasDiscount > 0"><span><strong>圣诞优惠</strong><small>{{ student.christmasDiscountNote }}</small></span><b>{{ student.christmasDiscount ? '− ' + formatUsd(student.christmasDiscount) + ' 美元' : '未适用' }}</b></div>
+              </div>
+              <p class="fee-alert" *ngIf="student.quotePlan.warning">{{ student.quotePlan.warning }}</p>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
+
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="group-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small><small *ngIf="quoteCalculated">已按当前选择重新核算；最终以学校审核的课程、房型空位和优惠为准。</small></div>
+            <div class="group-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
+            </div>
+          </div>
+
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="fella-local-fee-title">
+            <div class="local-fee-heading"><div><h3 id="fella-local-fee-title">到校后学杂费明细</h3></div></div>
+            <p class="local-fee-intro">{{ localFeeIntro }}</p>
+            <div class="local-fee-table-wrap"><table class="local-fee-table">
+              <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+              <tbody><tr *ngFor="let fee of estimatedLocalFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+              <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含可退房间押金、接机费和挂锁押金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>1元人民币≈{{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索（{{ usingLiveExchangeRate ? exchangeRateDate.replaceAll('-', '/') : '备用参考值' }}）</td></tr></tfoot>
+            </table></div>
+            <div class="excluded-fee-list"><h4>另行准备（不计入学杂费合计）</h4><div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div></div>
+          </section>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年8月18日。学校环境、课程、住宿和设施信息参考English Fella官方网站公开资料；课程费参考所附课程费用表，住宿费参考所附2026住宿费用表，并由思达顾问按当前页面报价逻辑拆分整理。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <p>本页价格更新时间：2026年9月9日。课程、住宿、优惠和当地费用以本次提供的English Fella 2026资料为数据来源；页面排版不照搬附件。第二次及以后签证续签金额仍待移民局或学校确认，未自行估价。学校价格、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 
@@ -434,8 +405,8 @@
       <aside class="side-panel" aria-label="English Fella页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
-          <strong>4周</strong>
-          <p>PIC-4<br />3A三人间</p>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>

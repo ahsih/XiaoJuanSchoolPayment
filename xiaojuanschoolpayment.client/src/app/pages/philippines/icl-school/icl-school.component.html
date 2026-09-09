@@ -131,17 +131,54 @@
         </div>
       </section>
 
-      <section class="quote-panel full-width-quote" id="quote">
-        <div class="section-heading"><span>ICL 2026完整报价</span><h2>{{ quoteHeading }}</h2><p>课程与住宿可分别添加；每段均按周日开始、周六结束。系统按校方2026常规价和淡季组合价计算。</p></div>
-        <app-school-quote-plan [plan]="quoteCalculator.plan"></app-school-quote-plan>
-        <p class="fee-alert">校方淡季海报有效期为2026/08/23–2027/01/09，学生须在2027/01/16前结业；按周日入住、周六退房规则，报价器以2027/01/09为最后可计优惠的退房日。课程与校内住宿还须同日期且至少4周。{{ quoteCalculator.availabilityNote }}</p>
-        <p class="fee-alert" role="alert" *ngIf="quoteError || quoteWarning">{{ quoteError || quoteWarning }}</p>
-        <div class="quote-breakdown">
-          <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.detailTitle || item.note }}<br *ngIf="item.detailSubtitle" />{{ item.detailSubtitle }}</small></span><strong>{{ item.amount }}</strong></div>
+      <section class="quote-results-section group-quote" id="quote">
+        <div class="quote-form-card">
+          <div class="quote-title-block">
+            <span class="quote-eyebrow">ICL 2026完整报价</span>
+            <h2>{{ quoteHeading }}</h2>
+            <p>课程与住宿可分别添加；对应的开始日期会自动同步，新增一段会接在上一段结束后的周日。系统自动判断校方淡季组合价，思达启航不再提供或叠加其它价格优惠。</p>
+          </div>
+          <div class="quote-mode" role="group" aria-label="报价人数模式">
+            <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+            <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+            <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+          </div>
+          <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿和日期，并独立判断校方淡季组合价、注册费及到校学杂费；共住房型仍按每人床位价格计算。</p>
+          <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+            <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+            <app-school-quote-plan [plan]="student.plan" [syncCourseDatesToRooms]="true"></app-school-quote-plan>
+            <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.total) }} 美元</strong></div>
+          </article>
+
+          <section class="promotion-summary" aria-label="ICL校方淡季组合价说明">
+            <h3>校方淡季组合价</h3>
+            <div class="promotion-rule-grid">
+              <div><strong>适用日期</strong><span>2026/08/23–2027/01/09</span></div>
+              <div><strong>组合条件</strong><span>课程与校内住宿同日期、同周数且至少4周</span></div>
+              <div><strong>结业要求</strong><span>须在2027/01/16前结业，最后优惠退房日为2027/01/09</span></div>
+              <div><strong>房型名额</strong><span>{{ quoteCalculator.availabilityNote }}</span></div>
+            </div>
+            <p class="season-note">{{ promotionNote }}</p>
+          </section>
+
+          <p class="fee-alert" role="alert" *ngIf="quoteError || quoteWarning">{{ quoteError || quoteWarning }}</p>
+          <div class="quote-breakdown">
+            <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.detailTitle || item.note }}<br *ngIf="item.detailSubtitle" />{{ item.detailSubtitle }}</small></span><strong>{{ item.amount }}</strong></div>
+          </div>
+          <div class="group-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateText }}</small><p *ngIf="quoteCalculated">已按当前课程、住宿、日期及校方2026价格更新。</p></div>
+          <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact">获取学校确认报价<mat-icon>support_agent</mat-icon></a></div>
         </div>
-        <p class="season-note">{{ quoteCalculator.promotionNote }}</p>
-        <div class="quote-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateText }}</small><p *ngIf="quoteCalculated">已按当前课程、住宿、日期及校方2026价格更新。</p></div>
-        <div class="quote-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError">重新计算<mat-icon>calculate</mat-icon></button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact">获取学校确认报价<mat-icon>support_agent</mat-icon></a></div>
+
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="icl-local-fees-heading">
+          <div class="local-fee-heading"><div><span>到校支付费用参考</span><h3 id="icl-local-fees-heading">到校后学杂费明细</h3></div></div>
+          <p class="local-fee-intro">{{ quoteCalculator.localFeeIntro }}</p>
+          <div class="local-fee-table-wrap"><table class="local-fee-table">
+            <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
+            <tbody><tr *ngFor="let fee of localFees"><th>{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+            <tfoot><tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>包含可退宿舍押金；不含额外住宿</td></tr><tr><th colspan="3">人民币预计金额</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>{{ exchangeRateText }}</td></tr></tfoot>
+          </table></div>
+          <div class="excluded-fee-list"><h4>另行准备（不计入上方学杂费及人民币预估合计）</h4><div *ngFor="let fee of optionalFees"><span>{{ fee.label }}<small>{{ fee.note }}</small></span><strong>{{ fee.amount }}</strong></div></div>
+        </section>
       </section>
 
       <section class="tables-section" id="fee-structure">
@@ -211,20 +248,6 @@
             <p>公开资料列有健身、台球、桌球、儿童活动区、夜间选修、发表活动和定期旅行，适合希望课后也有安排的学生。</p>
           </article>
         </div>
-      </section>
-
-      <section class="cia-section" id="local-fees">
-        <div class="section-heading">
-          <h2>到校与额外费用</h2>
-          <p>正式预算不能只看课程食宿费，还要预留菲律宾当地费用、机票保险和个人生活支出。</p>
-        </div>
-        <p class="local-fee-intro">{{ quoteCalculator.localFeeIntro }}</p>
-        <div class="local-fee-table-wrap"><table class="local-fee-table">
-          <thead><tr><th>费用明细</th><th>计费参考</th><th>数量</th><th>预估小计</th><th>备注</th></tr></thead>
-          <tbody><tr *ngFor="let fee of localFees"><th>{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ fee.quantity }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
-          <tfoot><tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeesTotal) }}</td><td>包含可退押金；额外住宿另计</td></tr><tr><th colspan="3">人民币预计金额</th><td class="fee-cny">{{ localFeesCnyText }}</td><td>{{ exchangeRateText }}</td></tr></tfoot>
-        </table></div>
-        <div class="excluded-fee-list"><h4>另行准备</h4><div *ngFor="let fee of quoteCalculator.optionalFees"><span>{{ fee.label }}<small>{{ fee.note }}</small></span><strong>{{ fee.amount }}</strong></div></div>
       </section>
 
       <section class="cia-section source-section">

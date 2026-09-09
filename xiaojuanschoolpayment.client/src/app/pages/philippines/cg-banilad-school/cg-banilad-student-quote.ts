@@ -1,6 +1,7 @@
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { CgVisaType, estimateCgLocalFees } from '../cg-local-fees';
+import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
 
 interface BaniladPrices {
   courses: {id:string;name:string;lessons:string;tuitionUsd:number}[];
@@ -9,6 +10,9 @@ interface BaniladPrices {
   shortTermRatios: Partial<Record<number,number>>;
   registrationFeeUsd:number; sidaDiscountRate:number; offSeasonDiscountPerFourWeeks:number;
   summerFeePerWeek:number;
+  promotionRules: CiaPromotionRule[];
+  peakSeasonRanges: CiaPeakSeasonRange[];
+  localFeeRules: CiaLocalFeeRule[];
 }
 const rounded=(value:number)=>Math.round((value+Number.EPSILON)*100)/100;
 export class CgBaniladStudentQuote {
@@ -32,21 +36,22 @@ export class CgBaniladStudentQuote {
     if(!['adult','minor'].includes(this.selectedAgeGroup))return '请选择抵达时年龄段。';
     return this.visaOptions.some(x=>x.value===this.visaType)?'':'请选择有效的签证类型。';
   }
-  get registration(){return this.returningStudent?0:this.prices.registrationFeeUsd;}
+  private promotion(id:string){return this.prices.promotionRules.find(rule=>rule.id===id&&rule.enabled);}
+  get registration(){return this.returningStudent&&this.promotion('cg-banilad-returning-registration')?.waiveRegistration?0:this.prices.registrationFeeUsd;}
   get tuition(){return this.quotePlan.total('course');}
   get accommodation(){return this.quotePlan.total('room');}
   get studyStay(){return this.tuition+this.accommodation;}
-  get sidaDiscount(){return rounded(this.studyStay*(1-this.prices.sidaDiscountRate));}
-  get offSeasonDiscount(){return this.quotePlan.courses.filter(r=>this.quotePlan.date(r.startDate)!==null&&r.startDate>='2026-08-30'&&r.startDate<='2026-12-27').reduce((s,r)=>s+Math.floor(r.weeks/4)*this.prices.offSeasonDiscountPerFourWeeks,0);}
-  get longStayDiscount(){return ({12:50,16:100,20:150,24:200} as Record<number,number>)[this.quotePlan.courseWeeks]??0;}
-  get summerWeeks(){return this.quotePlan.overlapWeeks('2026-07-05','2026-08-30',[...this.quotePlan.courses,...this.quotePlan.rooms]);}
+  get sidaDiscount(){const rule=this.promotion('cg-banilad-sida-90');return rule?.discountType==='percentage'?rounded(this.studyStay*rule.discountValue/100):0;}
+  get offSeasonDiscount(){const rule=this.promotion('cg-banilad-off-season');if(!rule)return 0;return this.quotePlan.courses.filter(r=>this.quotePlan.date(r.startDate)!==null&&(!rule.coverageStart||r.startDate>=rule.coverageStart)&&(!rule.coverageEnd||r.startDate<=rule.coverageEnd)).reduce((sum,row)=>sum+Math.floor(row.weeks/Math.max(1,rule.incrementWeeks??rule.minimumCourseWeeks??4))*(rule.incrementValue??rule.discountValue),0);}
+  get longStayDiscount(){const rule=this.promotion('cg-banilad-long-stay');if(!rule||this.quotePlan.courseWeeks<rule.minimumCourseWeeks)return 0;const tiers=Math.floor((this.quotePlan.courseWeeks-rule.minimumCourseWeeks)/Math.max(1,rule.incrementWeeks??4));return rule.discountValue+tiers*(rule.incrementValue??0);}
+  get summerWeeks(){return this.prices.peakSeasonRanges.filter(range=>range.enabled).reduce((sum,range)=>sum+this.quotePlan.overlapWeeks(range.start,range.end,[...this.quotePlan.courses,...this.quotePlan.rooms]),0);}
   get summerSurcharge(){return this.summerWeeks*this.prices.summerFeePerWeek;}
   get quoteUsd(){return Math.max(0,rounded(this.registration+this.studyStay-this.sidaDiscount-this.offSeasonDiscount-this.longStayDiscount+this.summerSurcharge));}
   get paymentLines():SchoolPaymentLine[]{return [
-    {icon:'折',label:'思达折扣',value:-this.sidaDiscount,note:'课程费和住宿费享9折',promotionKey:'sida'},
-    ...(this.offSeasonDiscount?[{icon:'淡',label:'淡季优惠',value:-this.offSeasonDiscount,note:'2026/08/30–2026/12/27入学，每满4周优惠150美元',promotionKey:'offseason'}]:[]),
-    ...(this.longStayDiscount?[{icon:'长',label:'长期优惠',value:-this.longStayDiscount,note:`本次${this.quotePlan.courseWeeks}周，按已公布档位优惠`,promotionKey:'longstay'}]:[]),
-    ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`2026/07/05–2026/08/30；40美元／周／人 × ${this.summerWeeks}周`}]:[]),
+    ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-banilad-sida-90')?.name??'思达折扣',value:-this.sidaDiscount,note:this.promotion('cg-banilad-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
+    ...(this.offSeasonDiscount?[{icon:'淡',label:this.promotion('cg-banilad-off-season')?.name??'淡季优惠',value:-this.offSeasonDiscount,note:this.promotion('cg-banilad-off-season')?.description??'',promotionKey:'offseason'}]:[]),
+    ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-banilad-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-banilad-long-stay')?.description??`本次${this.quotePlan.courseWeeks}周，按已公布档位优惠`,promotionKey:'longstay'}]:[]),
+    ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.prices.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.prices.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周`}]:[]),
   ];}
-  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType).fees;}
+  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.prices.localFeeRules).fees;}
 }

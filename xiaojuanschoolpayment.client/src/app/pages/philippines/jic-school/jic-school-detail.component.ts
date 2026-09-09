@@ -1,19 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { CiaContentConfig } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneJicContentConfig, createDefaultJicContentConfig } from './jic-content-config';
 import {
   JIC_COURSE_FEES,
   JIC_LOCAL_FEE_COPY,
@@ -24,12 +29,12 @@ import {
   JicCourseFee,
   JicRoomFee,
 } from './jic-pricing';
-import { JicStudentQuote } from './jic-student-quote';
+import { JicQuoteRules, JicStudentQuote } from './jic-student-quote';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -59,9 +64,28 @@ interface CampusPriceGroup<T> { campus: JicCampus; eyebrow: string; title: strin
     './jic-school-detail.component.css',
   ],
 })
-export class JicSchoolDetailComponent implements OnInit {
+export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef) as ElementRef<HTMLElement>;
+  private readonly initialContent = createDefaultJicContentConfig();
+  private currentContentConfig = cloneJicContentConfig(this.initialContent);
+  private versionedContentApplied = false;
+  private previewContent?: CiaContentConfig;
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  readonly contentConfig = () => this.currentContentConfig;
+  get rules(): JicQuoteRules {
+    return {
+      localFees: this.currentContentConfig.localFees,
+      promotions: this.currentContentConfig.quoteSettings.promotions,
+      peakSeasonRanges: this.currentContentConfig.quoteSettings.peakSeasonRanges,
+    };
+  }
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
   private readonly pricingSchoolSearchName = 'JIC';
   private readonly pricingSchoolNames = ['Baguio JIC', '菲律宾碧瑶JIC语言学校', 'Baguio JIC Academy', 'JIC Academy Baguio'];
   private readonly courseFeeOrder = [
@@ -108,7 +132,7 @@ export class JicSchoolDetailComponent implements OnInit {
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
-  readonly localFeeIntro = JIC_LOCAL_FEE_COPY.intro;
+  get localFeeIntro(): string { return this.currentContentConfig.quoteSettings.localFeeIntro || JIC_LOCAL_FEE_COPY.intro; }
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: '凉爽山城，适合把注意力放在长期学习和备考上。' },
@@ -119,7 +143,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { icon: 'payments', label: '费用表', value: 'JIC 2026价格', note: '课程住宿以USD计算，特别选修课和保证班费用以PHP另计。' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     { category: '校区', title: '菲律宾碧瑶JIC语言学校Challenger校园航拍', description: '菲律宾碧瑶JIC语言学校官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.jpg' },
     { category: '校区', title: 'Baguio JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.png' },
     { category: '校区', title: 'JIC Premium Campus环境', description: 'Premium Photos页面展示的Premium校区学习生活环境。', src: 'assets/philippines/jic-premium-campus-overview.jpg' },
@@ -178,6 +202,7 @@ export class JicSchoolDetailComponent implements OnInit {
     { name: 'Business Master 8 · 商务英语大师课程', type: 'Premium 高级校区', lessons: '6节一对一 + 2节选修课', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
     { name: 'Junior / Guardian · 青少年 / 监护人课程', type: 'Premium 高级校区', lessons: '青少年4节一对一 + 2节团体课；监护人2节一对一', suitable: '青少年课程另含1小时写作活动和2小时监控晚自习。' },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   courseFees: JicCourseFee[] = JIC_COURSE_FEES.map((course) => ({ ...course }));
   roomFees: JicRoomFee[] = JIC_ROOM_FEES.map((room) => ({ ...room }));
@@ -306,8 +331,43 @@ export class JicSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent, this.isEditorPreview);
     this.loadPricingFromDatabase();
+    this.loadPublishedContent();
     this.loadExchangeRate();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('jic-editor-preview');
+    window.parent.postMessage({ type: 'jic-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'jic-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content, true);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'jic-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
   }
 
   private loadExchangeRate(): void {
@@ -338,7 +398,122 @@ export class JicSchoolDetailComponent implements OnInit {
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees }) => {
+      if (!this.versionedContentApplied) this.applyPricingData(lessons, rooms, fees);
+    });
+  }
+
+  private loadPublishedContent(): void {
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
+      switchMap((schools) => {
+        const school = this.pricingSchoolNames.map(name => schools.find(item => item.name === name)).find(Boolean)
+          ?? schools.find(item => item.name.toUpperCase().includes('JIC')) ?? schools[0];
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview, true);
+      else if (published?.content) this.applyContentConfig(published.content, true);
+      if (!this.versionedContentApplied) this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyContentConfig(value: CiaContentConfig, authoritative = false): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'JIC') return;
+    const content = cloneJicContentConfig(value);
+    this.currentContentConfig = content;
+    this.previewContent = content;
+    if (authoritative) this.versionedContentApplied = true;
+    this.courseFees = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id,
+      campus: item.campus === 'premium' ? 'premium' : 'challenger',
+      displayName: item.name,
+      name: item.englishName || item.name,
+      tuition: item.tuition,
+      suitable: item.schedule || item.suitable || item.note,
+    }));
+    this.roomFees = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
+      id: item.id,
+      campus: item.campus === 'premium' ? 'premium' : 'challenger',
+      category: item.single ? 'single' : item.code === 'twin' ? 'twin' : 'quad',
+      name: item.label || item.name,
+      fee: item.fee,
+      note: item.note,
+      premium2027SingleEligible: item.id === 'premium-single-no-balcony',
+    }));
+    this.registrationFee = content.quoteSettings.registrationFee;
+    this.seasonalFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
+    for (const student of this.students) student.setCampus(student.campus);
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? []).filter(item => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
+        category: this.resolveMediaCategory(item.category),
+        title: item.caption || item.altText || item.originalFileName || 'JIC学校媒体',
+        description: item.altText || item.caption || 'JIC学校实景内容',
+        src: item.url,
+        contentType: item.contentType,
+      })),
+    ];
+    this.queuePreviewFocus(false);
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = photos.filter(photo => !!photo.url && !existing.has(photo.url)).sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'JIC学校媒体',
+      description: photo.altText || photo.caption || 'JIC学校实景内容',
+      src: photo.url ?? '',
+      contentType: photo.contentType,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校区';
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('jic-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'JIC' ? value : null;
+    } catch { return null; }
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      this.previewHost.nativeElement.querySelectorAll<HTMLElement>('.cia-preview-highlight').forEach(element => element.classList.remove('cia-preview-highlight'));
+      result.elements.forEach(element => element.classList.add('cia-preview-highlight'));
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠核算区域。'
+          : result.exact ? '橙色框内就是 JIC 对应内容。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'jic-content-located', target, status }, window.location.origin);
+    }, 80);
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -426,12 +601,13 @@ export class JicSchoolDetailComponent implements OnInit {
     return '/assets/philippines/jic-campus-hero.jpg';
   }
   get schoolPaymentItems() {
+    const imageSettings = this.currentContentConfig.quoteImageSettings;
     return [
       {
         icon: '注',
         label: '注册费',
         amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: `100美元／人且每人只收一次；长期学生、老学员返校或在校延长在“注册费优惠”行抵扣。`,
+        note: imageSettings.paymentNotes.registration || `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；符合条件时在“注册费优惠”行抵扣。`,
       },
       ...groupPaymentLines(this.activeStudents, false),
     ];
@@ -448,12 +624,14 @@ export class JicSchoolDetailComponent implements OnInit {
   get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
   get optionalFeeItems() {
     const count = this.activeStudents.length;
-    const total = 3000 * count;
+    const deposit = this.currentContentConfig.localFees.find(fee => fee.enabled && !fee.includeInTotal && fee.id === 'room-deposit');
+    if (!deposit) return [];
+    const total = deposit.amount * (deposit.multiplyByStudents === false ? 1 : count);
     return [{
-      label: '宿舍押金（可退）',
-      amount: `${this.formatPhp(total)}${count > 1 ? `（3,000比索／人 × ${count}人）` : ''}`,
+      label: deposit.name,
+      amount: `${this.formatPhp(total)}${count > 1 && deposit.multiplyByStudents !== false ? `（${this.formatPhp(deposit.amount)}／人 × ${count}人）` : ''}`,
       cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
-      note: `${JIC_LOCAL_FEE_COPY.deposit} 多人报价按每人一笔列为参考。`,
+      note: this.currentContentConfig.quoteImageSettings.localFeeNotes[deposit.id] || deposit.note,
     }];
   }
   scrollToSection(target: string, event?: Event): void {
@@ -472,6 +650,7 @@ export class JicSchoolDetailComponent implements OnInit {
       : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
   get quoteImageData() {
+    const imageSettings = this.currentContentConfig.quoteImageSettings;
     const paymentItems = [
       this.schoolPaymentItems[0],
       ...(['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems()
@@ -495,11 +674,11 @@ export class JicSchoolDetailComponent implements OnInit {
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
       paymentItems,
-      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({ label: fee.item, unit: fee.unitLabel, quantity: this.formatFeeQuantity(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageFeeNote(fee.item, fee.note) })),
       localFeeTotal: this.estimatedLocalFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.estimatedLocalFeeCny,
-      localFeeNote: `${this.localFeeIntro} 已选择的接机计入本表；可退宿舍押金另列。`,
+      localFeeNote: imageSettings.localFeeIntro || this.localFeeIntro,
       optionalFeeItems: this.optionalFeeItems,
       // As with CIA, applied promotions and surcharges belong beside their amounts
       // in the school-payment table instead of being repeated in the footer.
@@ -507,10 +686,16 @@ export class JicSchoolDetailComponent implements OnInit {
     });
     const result = applySchoolQuoteImageLayout({
       ...quote,
-      localFeeTitle: '到校后学杂费明细',
+      paymentSectionTitle: imageSettings.paymentSectionTitle,
+      localFeeTitle: imageSettings.localFeeSectionTitle,
+      serviceSectionTitle: imageSettings.serviceSectionTitle,
+      benefitItems: imageSettings.benefits,
+      serviceLocations: imageSettings.serviceLocations,
+      alumniBenefitTitle: imageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: imageSettings.alumniBenefitTitle, subtitle: '', text: imageSettings.alumniBenefitText }],
       importantNotes: [
         ...warnings,
-        '课程和住宿最低4周；入学及入住按周日，离校及退房按周六。',
+        ...imageSettings.footerNotes,
       ],
     }, 'JIC', this.selectedWeeks, this.earliestStartDate, this.quoteUsd, this.usdToCny);
     return {
@@ -519,6 +704,15 @@ export class JicSchoolDetailComponent implements OnInit {
       fileName: `${this.quoteHeading}-${this.earliestStartDate.replace(/-/g, '')}.png`,
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined },
     };
+  }
+
+  feePreviewId(itemName: string): string {
+    return this.currentContentConfig.localFees.find(fee => fee.name === itemName)?.id ?? 'local-fee-intro';
+  }
+
+  private quoteImageFeeNote(itemName: string, fallback: string): string {
+    const fee = this.currentContentConfig.localFees.find(item => item.name === itemName);
+    return fee ? this.currentContentConfig.quoteImageSettings.localFeeNotes[fee.id] || fee.note : fallback;
   }
 
   formatUsd(value: number): string {

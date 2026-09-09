@@ -1,25 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
-import { EV_PEAK_SEASON_DATE_RANGE, EvStudentCalculator, evPriceMultiplier } from './ev-quote';
+import { EvStudentCalculator, evPriceMultiplier } from './ev-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneEvContentConfig, createDefaultEvContentConfig } from './ev-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -45,7 +50,7 @@ interface SidaEvReason {
   alt: string;
 }
 interface SidaEvTrustBadge { icon: string; label: string; }
-interface EvStudentQuote { calculator: EvStudentCalculator; ageGroup: 'adult' | 'minor'; }
+interface EvStudentQuote { calculator: EvStudentCalculator; }
 
 @Component({
   selector: 'app-ev-school-detail',
@@ -62,10 +67,20 @@ interface EvStudentQuote { calculator: EvStudentCalculator; ageGroup: 'adult' | 
     '../../../components/school-group-quote.css',
   ],
 })
-export class EvSchoolDetailComponent implements OnInit {
+export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolName = 'EV Academy';
+  private readonly initialContent = createDefaultEvContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
   private readonly courseFeeOrder = [
     'sparta-intensive-esl',
     'sparta-power-speaking-6',
@@ -86,11 +101,22 @@ export class EvSchoolDetailComponent implements OnInit {
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100;
-  readonly discount = 0.95;
-  seasonalFeePerWeek = 40;
-  readonly peakSeasonDateRange = EV_PEAK_SEASON_DATE_RANGE;
-  minorManagementFeePerPeriod = 100;
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
+  peakSeasonRanges: CiaPeakSeasonRange[] = this.initialContent.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
+  promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
+  quoteImageSettings: CiaQuoteImageSettings = this.initialContent.quoteImageSettings;
+  seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  minorManagementFeePerPeriod = this.initialContent.quoteSettings.minorManagementFeePerPeriod ?? 100;
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
@@ -106,8 +132,24 @@ export class EvSchoolDetailComponent implements OnInit {
   private createStudent(): EvStudentQuote {
     const calculator = new EvStudentCalculator(
       () => this.courseFees, () => this.roomFees, () => this.registrationFee,
-      () => this.seasonalFeePerWeek, () => this.minorManagementFeePerPeriod);
-    return { calculator, ageGroup: 'adult' };
+      () => this.seasonalFeePerWeek, () => this.minorManagementFeePerPeriod,
+      () => this.shortStayRatios,
+      () => this.peakSeasonRanges.filter(item => item.enabled),
+      () => this.discountPercent,
+      () => this.localFeeRules,
+      () => this.returningRegistrationWaiverEnabled);
+    return { calculator };
+  }
+  get discountPercent(): number {
+    return this.promotionRules.find(item => item.id === 'ev-sida-95' && item.enabled)?.discountValue ?? 0;
+  }
+  get discount(): number { return 1 - this.discountPercent / 100; }
+  get returningRegistrationWaiverEnabled(): boolean {
+    return this.promotionRules.some(item => item.id === 'ev-returning-registration' && item.enabled && item.waiveRegistration);
+  }
+  get peakSeasonDateRange(): string {
+    return this.peakSeasonRanges.filter(item => item.enabled)
+      .map(item => item.start.replace(/-/g, '/') + '–' + item.end.replace(/-/g, '/')).join('；');
   }
   get studentCount() { return this.requestedStudentCount; }
   set studentCount(value: number) {
@@ -124,7 +166,7 @@ export class EvSchoolDetailComponent implements OnInit {
   set roomSelections(value: QuoteSelection[]) { this.quotePlan.rooms = value; }
   private nextSelectionId = 3;
   get isMinorStudent() { return this.calculator.isMinorStudent; }
-  set isMinorStudent(value: boolean) { this.calculator.isMinorStudent = value; this.students[0].ageGroup = value ? 'minor' : 'adult'; }
+  set isMinorStudent(value: boolean) { this.calculator.isMinorStudent = value; }
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'apartment', label: '学校类型', value: '宿务斯巴达 / 半斯巴达', note: '可选择严格或弹性管理模式' },
@@ -135,13 +177,13 @@ export class EvSchoolDetailComponent implements OnInit {
     { icon: 'event_available', label: '校区位置', value: 'Nasipit, Cebu City', note: '宿务市区校园型学校，生活机能方便' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     { category: '校园', title: 'EV校园外观', description: '2017年迁入的新校区，主打度假村式校园体验。', src: 'assets/ev/campus-exterior.jpg' },
     { category: '校园', title: '校园草坪', description: '开放式校园空间，适合课后活动和学生交流。', src: 'assets/ev/campus-lawn.jpg' },
     { category: '教室', title: '一对一教室', description: '用于口语、写作、考试专项和强化口说课程。', src: 'assets/ev/mtm-classroom.jpg' },
     { category: '住宿', title: '单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/ev/single-room.jpg' },
     { category: '住宿', title: '双人房', description: '适合朋友同行或希望兼顾预算与舒适度。', src: 'assets/ev/double-room.jpg' },
-    { category: '住宿', title: '四人房', description: '默认报价参考房型，预算压力相对低。', src: 'assets/ev/quad-room.jpg' },
+    { category: '住宿', title: '四人房', description: '上下铺房型，预算压力相对低。', src: 'assets/ev/quad-room.jpg' },
     { category: '设施', title: '健身房', description: '课后运动和体能恢复使用。', src: 'assets/ev/gym.jpg' },
     { category: '设施', title: '游泳池', description: 'EV度假型校园的重要生活设施。', src: 'assets/ev/swimming-pool.jpg' },
   ];
@@ -268,7 +310,7 @@ export class EvSchoolDetailComponent implements OnInit {
     { id: 'single', name: '单人间', fee: 1400, note: '热门房型建议提前6个月预定' },
     { id: 'double', name: '双人间', fee: 1030, note: '热门房型建议提前6个月预定' },
     { id: 'triple', name: '三人间', fee: 950, note: '校内住宿' },
-    { id: 'quad-bunk', name: '四人间（上下铺）', fee: 900, note: '默认报价参考房型' },
+    { id: 'quad-bunk', name: '四人间（上下铺）', fee: 900, note: '校内四人间，上下铺房型' },
     { id: 'off-campus-single', name: '校外公寓单人间', fee: 1550, note: '校外公寓，另计校外公寓管理费' },
     { id: 'off-campus-double', name: '校外公寓双人间', fee: 1150, note: '仅限两人同时预定，另计校外公寓管理费' },
   ];
@@ -341,7 +383,7 @@ export class EvSchoolDetailComponent implements OnInit {
   readonly faqs: FaqItem[] = [
     { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可优先考虑半斯巴达或半斯巴达综合英语。' },
     { question: 'EV的斯巴达和半斯巴达怎么选？', answer: '斯巴达更适合冲刺型学生，日程、自习和门禁要求更强；半斯巴达适合想学习但也希望保留一定外出和生活弹性的学生。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考包含注册费、95折后的课程与住宿费，以及适用的未成年管理费和旺季附加费；到校后仍需支付SSP、SSP E-card、管理费、水电、教材、学生证及适用的签证费用。接机和可退押金单独列示。' },
+    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考包含注册费、95折后的课程费、住宿费与适用的旺季附加费，以及不参与折扣的未成年管理费；到校后仍需支付SSP、SSP E-card、管理费、水电、教材、学生证及适用的签证费用。接机和可退押金单独列示。' },
     { question: 'EV适合亲子或未成年学生吗？', answer: '可以考虑，但15岁以下通常需父母陪同。报价器会为未满18岁学生按每4周100美元自动计入管理费，具体陪同、住宿和门禁规则仍需报名时确认。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名EV，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -363,8 +405,123 @@ export class EvSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
     this.loadExchangeRates();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('ev-editor-preview');
+    window.parent.postMessage({ type: 'ev-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'ev-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'ev-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id
+      && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback
+        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。'
+            : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'ev-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('ev-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'EV' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'EV') return;
+    const content = cloneEvContentConfig(value);
+    this.previewContent = content;
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) {
+      this.courseFees = courses.map(item => ({
+        id: item.id,
+        name: item.name,
+        tuition: item.tuition,
+        suitable: item.schedule,
+      }));
+    }
+    if (rooms.length) {
+      this.roomFees = rooms.map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note }));
+    }
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortStayRatios = { ...settings.shortStayRatios };
+    this.peakSeasonRanges = settings.peakSeasonRanges.map(item => ({ ...item }));
+    this.promotionRules = settings.promotions.map(item => ({ ...item }));
+    this.localFeeRules = content.localFees.map(item => ({ ...item, rates: item.rates ? [...item.rates] : undefined }));
+    this.seasonalFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.minorManagementFeePerPeriod = settings.minorManagementFeePerPeriod ?? 100;
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = settings.stayPolicies.map(item => ({ ...item }));
+    this.localFeeIntro = settings.localFeeIntro;
+    this.quoteImageSettings = content.quoteImageSettings;
+    for (const student of this.students) {
+      for (const row of student.calculator.plan.courses) {
+        if (!this.courseFees.some(item => item.id === row.optionId)) row.optionId = this.courseFees[0]?.id ?? row.optionId;
+      }
+      for (const row of student.calculator.plan.rooms) {
+        if (!this.roomFees.some(item => item.id === row.optionId)) row.optionId = this.roomFees[0]?.id ?? row.optionId;
+      }
+    }
+    this.queuePreviewFocus(false);
   }
 
   private loadExchangeRates(): void {
@@ -385,16 +542,48 @@ export class EvSchoolDetailComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existingSources = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? [])
+      .filter(photo => !!photo.url && !existingSources.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'EV 学校媒体',
+        description: photo.altText || photo.caption || 'EV 学校实景内容',
+        src: photo.url ?? '',
+        contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('campus') || value.includes('校园') || value.includes('校区')) return '校园';
+    return '设施';
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
     const databaseCourseFees = lessons.filter((lesson) => lesson.week === 4).map((lesson) => ({ id: this.createCourseId(lesson.name), name: lesson.name, tuition: lesson.price, suitable: lesson.description || lesson.note || '请联系顾问确认课程安排' })).filter((lesson) => this.courseFeeOrder.includes(lesson.id)).sort((a, b) => this.orderIndex(this.courseFeeOrder, a.id) - this.orderIndex(this.courseFeeOrder, b.id));
     if (databaseCourseFees.length === this.courseFeeOrder.length) { this.courseFees = databaseCourseFees; if (!this.courseFees.some((course) => course.id === this.selectedCourseId)) this.selectedCourseId = this.courseFees[0].id; }
-    const databaseRoomFees = rooms.filter((room) => room.week === 4).map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: room.description || '请联系顾问确认空房' })).filter((room) => this.roomFeeOrder.includes(room.id)).sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
+    const databaseRoomFees = rooms.filter((room) => room.week === 4).map((room) => ({ id: this.createRoomId(room.name), name: room.name, fee: room.price, note: (room.description || '请联系顾问确认空房').replace(/；?默认报价参考房型/g, '') })).filter((room) => this.roomFeeOrder.includes(room.id)).sort((a, b) => this.orderIndex(this.roomFeeOrder, a.id) - this.orderIndex(this.roomFeeOrder, b.id));
     if (databaseRoomFees.length === this.roomFeeOrder.length) { this.roomFees = databaseRoomFees; if (!this.roomFees.some((room) => room.id === this.selectedRoomId)) this.selectedRoomId = this.roomFees.find((room) => room.id === 'quad-bunk')?.id ?? this.roomFees[this.roomFees.length - 1].id; }
     const registrationFee = fees.find((fee) => fee.name === '注册费'); if (registrationFee) this.registrationFee = registrationFee.fee;
     const peakSeasonFee = fees.find((fee) => fee.name === '旺季附加费'); if (peakSeasonFee && peakSeasonFee.fee > 0) this.seasonalFeePerWeek = peakSeasonFee.fee;
@@ -534,7 +723,7 @@ export class EvSchoolDetailComponent implements OnInit {
   trackQuoteList(_index: number, list: { kind: QuoteListKind }): string { return list.kind; }
   get tuitionForSelectedWeeks(): number { return this.courseQuoteRows.reduce((sum, row) => sum + row.amount, 0); }
   get roomFeeForSelectedWeeks(): number { return this.roomQuoteRows.reduce((sum, row) => sum + row.amount, 0); }
-  get discountBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
+  get discountBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge; }
   get discountAmount(): number { return this.discountBase * (1 - this.discount); }
   get discountedCourseAndRoom(): number { return this.discountBase * this.discount; }
   get peakSeasonWeeks(): number { return this.calculator.peakWeeks; }
@@ -547,7 +736,9 @@ export class EvSchoolDetailComponent implements OnInit {
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元人民币`; }
   get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
-  get discountText(): string { return '课程费和住宿费95折'; }
+  get discountText(): string {
+    return this.discountPercent > 0 ? `课程费、住宿费和旺季附加费按${100 - this.discountPercent}%计费` : '当前没有百分比折扣';
+  }
   get localFeePeriods(): number { return Math.max(1, Math.ceil(this.roomTotalWeeks / 4)); }
   get textbookPeriods(): number { return Math.max(1, Math.ceil(this.totalWeeks / 4)); }
   get visaExtensionCount(): number { return Math.max(0, Math.ceil((this.stayWeeks - 8) / 4)); }
@@ -561,19 +752,22 @@ export class EvSchoolDetailComponent implements OnInit {
   }
   get includedLocalFees(): LocalFee[] { return this.localFees; }
   get excludedLocalFees(): LocalFee[] {
+    const pickupRule = this.localFeeRules.find(item => item.id === 'cebu-pickup' && item.enabled);
+    const depositRule = this.localFeeRules.find(item => item.id === 'room-deposit' && item.enabled);
     const pickupCount = this.activeStudents.filter(student => student.calculator.pickup !== 'none').length;
     const pickup = this.activeStudents.reduce((sum, student) => sum + student.calculator.pickupAmount, 0);
     const deposit = this.activeStudents.reduce((sum, student) => sum + student.calculator.roomDeposit, 0);
     return [
-      { item: '宿务马克坦机场团体接机', amount: '1,200 比索／人', quantity: pickupCount, total: pickup, note: `${pickupCount ? `本次${pickupCount}人选择接机` : '本次无人选择接机'}；学校团体接机，按实际选择接机的人数计费；可能需在机场等候同批其他学生。`, excluded: true },
-      { item: '房间押金', amount: '按个人停留周数', quantity: this.activeStudents.length, total: deposit, note: this.activeStudents.length === 1 ? '1至8周3,000比索，9至24周5,000比索；无损坏及无欠费时可退' : `按每位学生停留周数计算，共${this.activeStudents.length}人；无损坏及无欠费时可退。`, excluded: true },
+      ...(pickupRule ? [{ item: pickupRule.name, amount: `${pickupRule.amount.toLocaleString()} 比索／人`, quantity: pickupCount, total: pickup, note: `${pickupCount ? `本次${pickupCount}人选择接机` : '本次无人选择接机'}；${pickupRule.note}`, excluded: true }] : []),
+      ...(depositRule ? [{ item: depositRule.name, amount: '按个人停留周数', quantity: this.activeStudents.length, total: deposit, note: depositRule.note, excluded: true }] : []),
     ];
   }
   get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
   get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
   get localFeeEstimateNote(): string {
-    return '以下费用以比索计价，由学校及相关部门收取；接机与可退押金另列。';
+    return this.localFeeIntro;
   }
+  readonly paymentDeadlineNote = '1、学费部分需在到校前2周交齐，可交由思达游学代收，或自行直接向学校转付美元；本报价单所列学校费用即为最终价格，人民币支付时按照支付宝实时汇率将美元换算为人民币结算。';
   get registrationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.registration, 0); }
   get tuitionTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.tuition, 0); }
   get accommodationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.accommodation, 0); }
@@ -582,21 +776,33 @@ export class EvSchoolDetailComponent implements OnInit {
   get minorTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.minorFee, 0); }
   studentSubtotal(student: EvStudentQuote) { return student.calculator.totalUsd; }
   get schoolPaymentItems() {
-    const newStudents = this.activeStudents.filter(student => !student.calculator.returningStudent).length;
+    const chargedRegistrations = this.activeStudents.filter(student => student.calculator.registration > 0).length;
     const minors = this.activeStudents.filter(student => student.calculator.isMinorStudent).length;
+    const discountRule = this.promotionRules.find(item => item.id === 'ev-sida-95' && item.enabled);
+    const returningRule = this.promotionRules.find(item => item.id === 'ev-returning-registration');
+    const peakNote = this.peakTotal
+      ? `${this.peakSeasonDateRange}，按各学生实际覆盖周数计收。`
+      : `当前方案未覆盖旺季；2027年旺季为${this.peakSeasonDateRange}，适用时每周${this.formatUsd(this.seasonalFeePerWeek)}美元。`;
+    const minorNote = this.minorTotal
+      ? `${minors}名未成年学生适用；每4周${this.minorManagementFeePerPeriod}美元，不足4周按一期。`
+      : `当前方案无未成年学生；未满18岁时每4周${this.minorManagementFeePerPeriod}美元，不足4周按一期。`;
     return [
-      { label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: `一次性费用，老学员返校免费；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}` },
+      { label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: `${this.quoteImageSettings.paymentNotes.registration}；本次计收${chargedRegistrations}人${chargedRegistrations < this.activeStudents.length ? `，${this.activeStudents.length - chargedRegistrations}人按“${returningRule?.name ?? '老学员规则'}”免收` : ''}` },
       { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: '按每位学生实际选择的课程和日期计算。' },
       { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: '按每位学生实际选择的房型和日期计算。' },
-      { label: '思达折扣', amount: `− ${this.formatUsd(this.discountTotal)} 美元`, note: '课程费和住宿费享95折。' },
-      ...(this.peakTotal ? [{ label: '旺季附加费', amount: `${this.formatUsd(this.peakTotal)} 美元`, note: `${this.peakSeasonDateRange}，按各学生实际覆盖周数计收，不参与折扣。` }] : []),
-      ...(this.minorTotal ? [{ label: '未成年管理费', amount: `${this.formatUsd(this.minorTotal)} 美元`, note: `${minors}名未成年学生适用；每4周${this.minorManagementFeePerPeriod}美元，不足4周按一期。` }] : []),
+      ...(this.peakSeasonRanges.some(item => item.enabled)
+        ? [{ label: '旺季附加费', amount: `${this.formatUsd(this.peakTotal)} 美元`, note: peakNote }]
+        : []),
+      ...(discountRule
+        ? [{ label: discountRule.name, amount: `− ${this.formatUsd(this.discountTotal)} 美元`, note: discountRule.description }]
+        : []),
+      { label: '未成年管理费', amount: `${this.formatUsd(this.minorTotal)} 美元`, note: minorNote },
     ];
   }
   get quoteRuleNotes(): string[] {
     const rows = this.activeStudents.flatMap(student => [...student.calculator.plan.courses, ...student.calculator.plan.rooms]);
     const shortWeeks = [...new Set(rows.map(row => row.weeks).filter(weeks => weeks < 4))].sort((a, b) => a - b);
-    const shortNote = shortWeeks.map(weeks => `${weeks}周按4周价的${evPriceMultiplier(weeks) * 100}%`).join('，');
+    const shortNote = shortWeeks.map(weeks => `${weeks}周按4周价的${evPriceMultiplier(weeks, this.shortStayRatios) * 100}%`).join('，');
     const proratedNote = rows.some(row => row.weeks > 4 && row.weeks % 4 !== 0) ? '非4周整期的费用按周折算' : '';
     const priceNote = [shortNote, proratedNote].filter(Boolean).join('；');
     const mismatches = this.activeStudents.flatMap((student, index) => student.calculator.plan.mismatch ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}课程与住宿日期不完全一致，未覆盖或额外住宿需另行确认。`] : []);
@@ -611,14 +817,15 @@ export class EvSchoolDetailComponent implements OnInit {
     const courseItems: QuoteImagePaymentItem[] = [], roomItems: QuoteImagePaymentItem[] = [];
     this.activeStudents.forEach((student, index) => {
       const prefix = this.quoteMode === 'group' ? `学生${index + 1} · ` : '';
-      student.calculator.paymentRows.filter(row => row.icon === '课').forEach(row => courseItems.push({ ...row, label: `${prefix}${row.label}` }));
-      student.calculator.paymentRows.filter(row => row.icon === '宿').forEach(row => roomItems.push({ ...row, label: `${prefix}${row.label}` }));
+      student.calculator.paymentRows.filter(row => row.icon === '课').forEach(row => courseItems.push({ ...row, label: `${prefix}${row.label}`, note: [row.note, this.quoteImageSettings.paymentNotes.course].filter(Boolean).join('；') }));
+      student.calculator.paymentRows.filter(row => row.icon === '宿').forEach(row => roomItems.push({ ...row, label: `${prefix}${row.label}`, note: [row.note, this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；') }));
     });
+    const discountRule = this.promotionRules.find(item => item.id === 'ev-sida-95' && item.enabled);
     const paymentItems: QuoteImagePaymentItem[] = [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationTotal)} 美元`, note: this.schoolPaymentItems[0].note },
       ...courseItems, ...roomItems,
-      { icon: '折', label: '思达折扣', amount: `− ${this.formatUsd(this.discountTotal)} 美元`, note: '课程费和住宿费享95折', accent: true },
       ...(this.peakTotal ? [{ icon: '旺', label: '旺季附加费', amount: `${this.formatUsd(this.peakTotal)} 美元`, note: this.schoolPaymentItems.find(item => item.label === '旺季附加费')!.note }] : []),
+      ...(this.discountTotal ? [{ icon: '折', label: discountRule?.name ?? '思达折扣', amount: `− ${this.formatUsd(this.discountTotal)} 美元`, note: [discountRule?.description, this.quoteImageSettings.paymentNotes.promotion].filter(Boolean).join('；'), accent: true }] : []),
       ...(this.minorTotal ? [{ icon: '未', label: '未成年管理费', amount: `${this.formatUsd(this.minorTotal)} 美元`, note: this.schoolPaymentItems.find(item => item.label === '未成年管理费')!.note }] : []),
     ];
     const startDate = this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? '';
@@ -635,21 +842,54 @@ export class EvSchoolDetailComponent implements OnInit {
       fullFeeDetails: true,
       localCurrencyName: '比索',
       paymentItems,
-      localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: fee.note })),
+      localFeeItems: includedFees.map((fee) => {
+        const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? '';
+        return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
       localFeeTotal: this.localFeesTotal,
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
       localFeeTableLayout: 'web',
-      localFeeNote: this.localFeeEstimateNote,
-      optionalFeeItems: optionalFees.map((fee) => ({ label: fee.item, amount: this.formatPhp(fee.total), cnyAmount: `人民币预计约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: fee.note })),
-      ruleNotes: [],
+      localFeeNote: this.quoteImageSettings.localFeeIntro,
+      optionalFeeItems: optionalFees.map((fee) => {
+        const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? '';
+        return { label: fee.item, amount: this.formatPhp(fee.total), cnyAmount: `人民币预计约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+      }),
+      ruleNotes: [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes],
     });
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...this.quoteRuleNotes, '最终以学校价格、空房及优惠确认为准。'] }, 'EV主校区', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
-    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${startDate.replace(/-/g, '')}.png`, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined } };
+    const importantNotes = [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes];
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'EV主校区', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    return {
+      ...result,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${startDate.replace(/-/g, '')}.png`,
+      paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.quoteImageSettings.benefits,
+      serviceLocations: this.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.quoteImageSettings.noteSectionTitle,
+      importantNotes,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined },
+    };
+  }
+  previewFeeId(name: string): string {
+    return this.localFeeRules.find(item => item.name === name)?.id ?? 'local-fees';
+  }
+  previewPaymentTarget(item: { label: string; amount: string; note: string }): CiaPreviewTarget {
+    if (item.label === '课程费合计') return { kind: 'course', id: this.selectedCourseId };
+    if (item.label === '住宿费合计') return { kind: 'room', id: this.selectedRoomId };
+    if (item.label === '注册费') return { kind: 'section', id: 'quote-registration' };
+    if (item.label === '旺季附加费') return { kind: 'section', id: 'quote-season' };
+    if (item.label === '未成年管理费') return { kind: 'section', id: 'quote-breakdown' };
+    const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || item.note.includes(rule.description));
+    return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
   formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 2 }); }
   formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
-  private durationPriceMultiplier(weeks: number): number { if (weeks === 1) return 0.4; if (weeks === 2) return 0.65; if (weeks === 3) return 0.85; return weeks / 4; }
+  private durationPriceMultiplier(weeks: number): number { return evPriceMultiplier(weeks, this.shortStayRatios); }
   private parseLocalDate(value: string): Date | null { const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value); return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null; }
   private createCourseId(name: string): string {
     const normalizedName = name.toLowerCase();

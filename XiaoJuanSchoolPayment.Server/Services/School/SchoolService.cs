@@ -10,8 +10,9 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 {
   public class SchoolService : ISchoolService
   {
-    private const long MaxPhotoSizeBytes = 10 * 1024 * 1024;
-    private static readonly HashSet<string> AllowedPhotoExtensions = new(StringComparer.OrdinalIgnoreCase)
+    private const long MaxImageSizeBytes = 10 * 1024 * 1024;
+    private const long MaxVideoSizeBytes = 200 * 1024 * 1024;
+    private static readonly HashSet<string> AllowedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
       ".jpg",
       ".jpeg",
@@ -19,12 +20,26 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       ".webp",
       ".gif",
     };
-    private static readonly HashSet<string> AllowedPhotoContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> AllowedImageContentTypes = new(StringComparer.OrdinalIgnoreCase)
     {
       "image/jpeg",
       "image/png",
       "image/webp",
       "image/gif",
+    };
+    private static readonly HashSet<string> AllowedVideoExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+      ".mp4",
+      ".webm",
+      ".mov",
+      ".m4v",
+    };
+    private static readonly HashSet<string> AllowedVideoContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+      "video/mp4",
+      "video/webm",
+      "video/quicktime",
+      "video/x-m4v",
     };
 
     private readonly AppDbContext _appDbContext;
@@ -198,23 +213,30 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (photo.File == null || photo.File.Length == 0)
       {
-        throw new ArgumentException("Please upload an image file.");
-      }
-
-      if (photo.File.Length > MaxPhotoSizeBytes)
-      {
-        throw new ArgumentException("Image files must be 10MB or smaller.");
+        throw new ArgumentException("请选择要上传的照片或视频文件。");
       }
 
       var extension = Path.GetExtension(photo.File.FileName);
-      if (string.IsNullOrWhiteSpace(extension) || !AllowedPhotoExtensions.Contains(extension))
+      var isImage = !string.IsNullOrWhiteSpace(extension) &&
+        AllowedImageExtensions.Contains(extension) &&
+        AllowedImageContentTypes.Contains(photo.File.ContentType);
+      var isVideo = !string.IsNullOrWhiteSpace(extension) &&
+        AllowedVideoExtensions.Contains(extension) &&
+        AllowedVideoContentTypes.Contains(photo.File.ContentType);
+
+      if (!isImage && !isVideo)
       {
-        throw new ArgumentException("Only jpg, jpeg, png, webp, and gif images are allowed.");
+        throw new ArgumentException("照片仅支持 JPG、PNG、WebP、GIF；视频仅支持 MP4、WebM、MOV、M4V。");
       }
 
-      if (!AllowedPhotoContentTypes.Contains(photo.File.ContentType))
+      if (isImage && photo.File.Length > MaxImageSizeBytes)
       {
-        throw new ArgumentException("Only jpg, jpeg, png, webp, and gif images are allowed.");
+        throw new ArgumentException("照片文件不能超过 10MB。");
+      }
+
+      if (isVideo && photo.File.Length > MaxVideoSizeBytes)
+      {
+        throw new ArgumentException("视频文件不能超过 200MB。");
       }
 
       var webRootPath = GetWebRootPath();

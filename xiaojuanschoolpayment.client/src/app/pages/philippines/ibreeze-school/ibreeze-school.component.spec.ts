@@ -1,7 +1,10 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { SchoolService } from '../../../../services/school.service';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { IbreezeSchoolComponent } from './ibreeze-school.component';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
@@ -11,6 +14,9 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     c = TestBed.runInInjectionContext(() => new IbreezeSchoolComponent());
   });
@@ -26,7 +32,7 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
     expect(c.courseOptions.find(row => row.id === 'intensive-beginner')!.lessons).toContain('词汇测试');
   });
   it('totals the four-week campus local fees at 21,700 pesos, excluding optional costs', () => {
-    expect(c.localFees.map(row => row.total)).toEqual([7800,4500,0,4000,2000,1000,0,2000,400]);
+    expect(c.localFees.map(row => row.total)).toEqual([7800,4500,0,0,4000,2000,1000,0,2000,400]);
     expect(c.localFeesTotal).toBe(21700);
     expect(c.quoteUsd).toBe(1291);
     expect(c.quoteError).toBe('');
@@ -337,7 +343,7 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
     const payment = c.quoteUsd, original = c.localFeesTotal;
     student.initialVisaDays = 59;
     expect(c.quoteUsd).toBe(payment);
-    expect(c.localFeesTotal).toBe(original - 5140 - 4000);
+    expect(c.localFeesTotal).toBe(original - 5140 - 4000 - 300);
     expect(c.localFees.find(row => row.item === '签证续签')!.quantity).toBe(0);
     expect(c.quoteImageData.localFeeItems!.map(row => row.note)).toEqual(c.localFees.map(row => row.note));
     student.quotePlan.add('course'); student.quotePlan.add('room');
@@ -365,7 +371,7 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
         student.visaType = 30;
         student.quotePlan.courses[0].weeks = student.quotePlan.rooms[0].weeks = weeks;
         const payment = c.quoteUsd;
-        const otherFees = c.localFees.filter(row => !/SSP|ACR|签证续签/.test(row.item));
+        const otherFees = c.localFees.filter(row => !/SSP|ACR|ARP|签证续签/.test(row.item));
         student.visaType = type;
         expect(c.quoteError).toBe(''); expect(c.quoteUsd).toBe(payment);
         expect(student.visaExtensionCount).toBe(0); expect(student.visaExtensionTotal).toBe(0);
@@ -376,7 +382,8 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
           expect(row.note).toContain(student.visaLabel);
           expect(row.note).toContain('暂按免收预估'); expect(row.note).toContain('须由顾问向学校确认');
         });
-        expect(c.localFeesTotal).toBe(otherFees.reduce((sum,row)=>sum+row.total,0));
+        expect(c.localFees.find(row => row.item.startsWith('ARP'))!.total).toBe(300);
+        expect(c.localFeesTotal).toBe(otherFees.reduce((sum,row)=>sum+row.total,0) + 300);
         expect(c.quoteImageData.localFeeItems!.map(row=>row.note)).toEqual(c.localFees.map(row=>row.note));
       }
     }
@@ -393,7 +400,7 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
     c.setQuoteMode('single'); c.setQuoteMode('group');
     expect(c.students[1].visaType).toBe('srrv');
     c.students[1].visaType = 59;
-    expect(c.localFeesTotal).toBe(before - 4000 - 5140);
+    expect(c.localFeesTotal).toBe(before - 4000 - 5140 - 300);
     c.students[1].visaType = 30;
     expect(c.localFeesTotal).toBe(before);
     expect(c.localFees.some(row=>row.note.includes('暂按免收'))).toBeFalse();

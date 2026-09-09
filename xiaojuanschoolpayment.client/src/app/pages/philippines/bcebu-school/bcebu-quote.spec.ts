@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { SchoolService } from '../../../../services/school.service';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { BCebuSchoolComponent } from './bcebu-school.component';
 import { BCebuQuote } from './bcebu-quote';
 import { BCEBU_COURSES, BCEBU_ROOMS, BCEBU_REGISTRATION_NOTE, bcebuLongStay, bcebuOffSeason } from './bcebu-pricing';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { createDefaultBCebuContentConfig } from './bcebu-content-config';
 
 const calculator = () => new BCebuQuote(() => BCEBU_COURSES, () => BCEBU_ROOMS, () => 100, '2026-09-06');
 const duration = (quote: BCebuQuote, weeks: number) => { quote.plan.courses[0].weeks = weeks; quote.plan.rooms[0].weeks = weeks; };
@@ -54,6 +58,25 @@ describe("B'Cebu confirmed 2026 pricing", () => {
 
   it('applies only full long-stay tiers, including durations beyond 24 weeks', () => {
     expect([4,7,8,9,11,12,15,16,20,24,28,52].map(bcebuLongStay)).toEqual([0,0,50,50,50,100,100,200,300,400,500,1100]);
+  });
+
+  it('uses employee-edited prices, rules, fees and quote-image copy from one content version', () => {
+    const content = createDefaultBCebuContentConfig();
+    content.courses.find(row => row.id === 'speed-esl')!.tuition = 1234;
+    content.quoteSettings.shortStayRatios['1'] = 0.5;
+    content.quoteSettings.promotions.find(row => row.id === 'bcebu-reporter')!.discountValue = 30;
+    content.localFees.find(row => row.id === 'management')!.amount = 2500;
+    content.quoteImageSettings.footerNotes = ['员工更新后的报价说明'];
+    const configuredCourses = content.courses.map(row => ({ id: row.id, name: row.name, tuition: row.tuition, suitable: row.schedule, note: row.suitable || row.note }));
+    const configuredRooms = content.rooms.map(row => ({ id: row.id, name: row.name, fee: row.fee, note: row.note }));
+    const quote = new BCebuQuote(() => configuredCourses, () => configuredRooms, () => content.quoteSettings.registrationFee, '2026-08-23', () => content);
+    duration(quote, 1);
+    expect(quote.plan.total('course')).toBe(617);
+    expect(quote.plan.total('room')).toBe(375);
+    duration(quote, 4); quote.reporter = true;
+    expect(quote.reporterDiscount).toBe(120);
+    expect(quote.localFees.find(row => row.item === '维护管理费')!.total).toBe(2500);
+    expect(quote.imageData(7.2, 9, '备用汇率估算').importantNotes).toContain('员工更新后的报价说明');
   });
 
   it('uses optional minor care without granting adult benefits or charging families', () => {
@@ -143,6 +166,9 @@ describe("B'Cebu confirmed 2026 pricing", () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     const component = TestBed.runInInjectionContext(() => new BCebuSchoolComponent());
     component['applyPricingData']([{ name: 'Speed ESL', week: 4, price: 950, description: '旧课表' } as any], [], []);

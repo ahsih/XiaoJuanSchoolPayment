@@ -109,3 +109,17 @@
     grid-template-columns: 1fr;
   }
 }
+:host #room-fees > .section-block,
+:host #room-fees > #quote {
+  grid-column: 1 / -1;
+}
+
+:host .local-fee-bottom-note {
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border-left: 4px solid #ef7c36;
+  background: #ffffff;
+  color: #493d35;
+  font-size: 14px;
+  line-height: 1.8;
+}

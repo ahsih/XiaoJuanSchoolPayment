@@ -162,6 +162,86 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       return await SaveDraft(schoolId, merged, changeSummary, userId, userName, cancellationToken);
     }
 
+    public async Task<SchoolContentRevisionDTO> SavePricingSettingsDraft(
+      Guid schoolId,
+      JsonElement content,
+      string? changeSummary,
+      string userId,
+      string userName,
+      CancellationToken cancellationToken)
+    {
+      if (content.ValueKind != JsonValueKind.Object)
+      {
+        throw new ArgumentException("价格内容必须是有效的数据对象。");
+      }
+
+      var sourceJson = await _context.SchoolContentRevisions
+        .AsNoTracking()
+        .Where(x => x.SchoolId == schoolId &&
+          (x.Status == DraftStatus || x.Status == PendingReviewStatus || x.Status == PublishedStatus))
+        .OrderByDescending(x => x.Status == DraftStatus ? 3 : x.Status == PendingReviewStatus ? 2 : 1)
+        .ThenByDescending(x => x.Version)
+        .Select(x => x.ContentJson)
+        .FirstOrDefaultAsync(cancellationToken);
+
+      if (sourceJson == null)
+      {
+        throw new ArgumentException("请管理员先建立这所学校的内容初始版本，再编辑价格与报价规则。");
+      }
+
+      var root = JsonNode.Parse(sourceJson) as JsonObject
+        ?? throw new ArgumentException("学校内容数据无效，请管理员检查当前版本。");
+      var mergedAny = false;
+      foreach (var propertyName in new[] { "courses", "rooms", "localFees", "quoteSettings" })
+      {
+        if (!content.TryGetProperty(propertyName, out var property)) continue;
+        root[propertyName] = JsonNode.Parse(property.GetRawText());
+        mergedAny = true;
+      }
+
+      if (!mergedAny)
+      {
+        throw new ArgumentException("没有找到可保存的课程、住宿、杂费或报价规则。");
+      }
+
+      var merged = JsonSerializer.Deserialize<JsonElement>(root.ToJsonString());
+      return await SaveDraft(schoolId, merged, changeSummary, userId, userName, cancellationToken);
+    }
+
+    public async Task<SchoolContentRevisionDTO> SaveMediaSettingsDraft(
+      Guid schoolId,
+      JsonElement media,
+      string? changeSummary,
+      string userId,
+      string userName,
+      CancellationToken cancellationToken)
+    {
+      if (media.ValueKind != JsonValueKind.Array)
+      {
+        throw new ArgumentException("学校媒体必须是有效的列表。");
+      }
+
+      var sourceJson = await _context.SchoolContentRevisions
+        .AsNoTracking()
+        .Where(x => x.SchoolId == schoolId &&
+          (x.Status == DraftStatus || x.Status == PendingReviewStatus || x.Status == PublishedStatus))
+        .OrderByDescending(x => x.Status == DraftStatus ? 3 : x.Status == PendingReviewStatus ? 2 : 1)
+        .ThenByDescending(x => x.Version)
+        .Select(x => x.ContentJson)
+        .FirstOrDefaultAsync(cancellationToken);
+
+      if (sourceJson == null)
+      {
+        throw new ArgumentException("请管理员先建立这所学校的内容初始版本，再编辑照片和视频。");
+      }
+
+      var root = JsonNode.Parse(sourceJson) as JsonObject
+        ?? throw new ArgumentException("学校内容数据无效，请管理员检查当前版本。");
+      root["media"] = JsonNode.Parse(media.GetRawText());
+      var merged = JsonSerializer.Deserialize<JsonElement>(root.ToJsonString());
+      return await SaveDraft(schoolId, merged, changeSummary, userId, userName, cancellationToken);
+    }
+
     public async Task<SchoolContentRevisionDTO?> Publish(
       Guid schoolId,
       string userId,
@@ -170,9 +250,8 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
     {
       await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
       var draft = await _context.SchoolContentRevisions
-        .Where(x => x.SchoolId == schoolId && (x.Status == PendingReviewStatus || x.Status == DraftStatus))
-        .OrderByDescending(x => x.Status == PendingReviewStatus)
-        .ThenByDescending(x => x.Version)
+        .Where(x => x.SchoolId == schoolId && x.Status == PendingReviewStatus)
+        .OrderByDescending(x => x.Version)
         .FirstOrDefaultAsync(cancellationToken);
 
       if (draft == null)
@@ -196,6 +275,8 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       draft.UpdatedAt = now;
       draft.PublishedAt = now;
 
+      await ApplyPublishedMediaSettingsAsync(schoolId, draft.ContentJson, now, cancellationToken);
+
       await _context.SaveChangesAsync(cancellationToken);
       await transaction.CommitAsync(cancellationToken);
       return ToRevisionDto(draft);
@@ -212,6 +293,10 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         .OrderByDescending(x => x.Version)
         .FirstOrDefaultAsync(cancellationToken);
       if (draft == null) return null;
+      if (string.IsNullOrWhiteSpace(draft.ChangeSummary))
+      {
+        throw new ArgumentException("请填写本次修改说明后再提交审核。");
+      }
 
       var previousPending = await _context.SchoolContentRevisions
         .Where(x => x.SchoolId == schoolId && x.Status == PendingReviewStatus)
@@ -224,6 +309,45 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       draft.UpdatedAt = DateTime.UtcNow;
       await _context.SaveChangesAsync(cancellationToken);
       return ToRevisionDto(draft);
+    }
+
+    private async Task ApplyPublishedMediaSettingsAsync(
+      Guid schoolId,
+      string contentJson,
+      DateTime updatedAt,
+      CancellationToken cancellationToken)
+    {
+      using var document = JsonDocument.Parse(contentJson);
+      if (!document.RootElement.TryGetProperty("media", out var media) ||
+          media.ValueKind != JsonValueKind.Array)
+      {
+        return;
+      }
+
+      var desiredVisibility = new Dictionary<Guid, bool>();
+      foreach (var item in media.EnumerateArray())
+      {
+        if (!item.TryGetProperty("id", out var idElement) ||
+            idElement.ValueKind != JsonValueKind.String ||
+            !Guid.TryParse(idElement.GetString(), out var id))
+        {
+          continue;
+        }
+
+        var isActive = item.TryGetProperty("isActive", out var activeElement) &&
+          (activeElement.ValueKind == JsonValueKind.True ||
+           (activeElement.ValueKind == JsonValueKind.String && bool.TryParse(activeElement.GetString(), out var parsed) && parsed));
+        desiredVisibility[id] = isActive;
+      }
+
+      var schoolMedia = await _context.SchoolPhotos
+        .Where(photo => photo.SchoolId == schoolId)
+        .ToListAsync(cancellationToken);
+      foreach (var photo in schoolMedia)
+      {
+        photo.IsActive = desiredVisibility.TryGetValue(photo.Id, out var isActive) && isActive;
+        photo.LastUpdated = updatedAt;
+      }
     }
 
     public async Task<SchoolContentRevisionDTO?> ReturnToDraft(

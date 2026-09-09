@@ -1,8 +1,12 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { PhilinterSchoolDetailComponent } from './philinter-school-detail.component';
+import { createDefaultPhilinterContentConfig } from './philinter-content-config';
 import { PHILINTER_SUMMER_PERIODS } from './philinter-quote';
 
 describe('PHILINTER supplied catalog and quote rules', () => {
@@ -15,6 +19,9 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     c = TestBed.runInInjectionContext(() => new PhilinterSchoolDetailComponent());
     setPlan(4, '2026-09-06');
@@ -71,6 +78,24 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     c.quotePlan.rooms[0].optionId = 'azon-single'; expect(c.quoteError).toContain('监护人');
     c.quotePlan.rooms[0].optionId = 'azon-twin'; expect(c.quoteError).toBe('');
     expect(c.policyNotes).toContain(c.familyRule);
+  });
+  it('applies employee-edited prices, rules, local fees and image copy to the public calculator', () => {
+    const edited = createDefaultPhilinterContentConfig();
+    edited.courses.find(row => row.id === 'light-esl')!.tuition = 900;
+    edited.rooms.find(row => row.id === 'in-campus-triple')!.fee = 900;
+    edited.quoteSettings.registrationFee = 150;
+    edited.quoteSettings.promotions.find(row => row.id === 'philinter-sida-90')!.discountValue = 5;
+    edited.localFees.find(row => row.id === 'management')!.amount = 3000;
+    edited.quoteImageSettings.paymentSectionTitle = '自定义学校费用说明';
+    edited.quoteImageSettings.footerNotes = ['自定义报价备注'];
+
+    (c as any).applyContentConfig(edited);
+
+    expect(c.courseAndRoomBase).toBe(1800);
+    expect(c.quoteUsd).toBe(1860);
+    expect(c.localFees.find(row => row.item === '管理费')?.total).toBe(3000);
+    expect(c.quoteImageData.paymentSectionTitle).toBe('自定义学校费用说明');
+    expect(c.quoteImageData.importantNotes).toContain('自定义报价备注');
   });
   it('calculates mixed returning, visa and pickup choices per student', () => {
     c.setQuoteMode('group');

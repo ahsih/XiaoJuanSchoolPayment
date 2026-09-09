@@ -8,9 +8,21 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string? ChangeSummary { get; set; }
   }
 
+  public class SavePricingSettingsDraftDTO
+  {
+    public JsonElement Content { get; set; }
+    public string? ChangeSummary { get; set; }
+  }
+
   public class SaveQuoteImageSettingsDraftDTO
   {
     public JsonElement QuoteImageSettings { get; set; }
+    public string? ChangeSummary { get; set; }
+  }
+
+  public class SaveMediaSettingsDraftDTO
+  {
+    public JsonElement Media { get; set; }
     public string? ChangeSummary { get; set; }
   }
 

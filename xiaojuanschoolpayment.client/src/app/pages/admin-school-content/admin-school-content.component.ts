@@ -20,6 +20,7 @@ import {
   CiaContentConfig,
   CiaCourseContent,
   CiaLocalFeeRule,
+  CiaMediaContent,
   CiaPeakSeasonRange,
   CiaPromotionRule,
   CiaRoomContent,
@@ -27,13 +28,75 @@ import {
   createDefaultCiaContentConfig,
 } from '../philippines/cia-school/cia-content-config';
 import { CIA_PREVIEW_SECTIONS, CiaPreviewKind, CiaPreviewTarget, isCiaPreviewTarget } from '../philippines/cia-school/cia-content-preview';
+import {
+  clonePinesContentConfig,
+  createDefaultPinesContentConfig,
+} from '../philippines/pines-school/pines-content-config';
+import {
+  cloneMonolContentConfig,
+  createDefaultMonolContentConfig,
+} from '../philippines/monol-school/monol-content-config';
+import {
+  cloneEvContentConfig,
+  createDefaultEvContentConfig,
+} from '../philippines/ev-school/ev-content-config';
+import {
+  cloneSmeagContentConfig,
+  createDefaultSmeagContentConfig,
+} from '../philippines/smeag-capital-school/smeag-content-config';
+import {
+  clonePhilinterContentConfig,
+  createDefaultPhilinterContentConfig,
+} from '../philippines/philinter-school/philinter-content-config';
+import {
+  cloneCgBaniladContentConfig,
+  createDefaultCgBaniladContentConfig,
+} from '../philippines/cg-banilad-school/cg-banilad-content-config';
+import {
+  cloneCgSpartaContentConfig,
+  createDefaultCgSpartaContentConfig,
+} from '../philippines/cg-sparta-school/cg-sparta-content-config';
+import {
+  cloneCpiContentConfig,
+  createDefaultCpiContentConfig,
+} from '../philippines/cpi-school/cpi-content-config';
+import {
+  cloneBCebuContentConfig,
+  createDefaultBCebuContentConfig,
+} from '../philippines/bcebu-school/bcebu-content-config';
+import {
+  cloneCpilsContentConfig,
+  createDefaultCpilsContentConfig,
+} from '../philippines/cpils-school/cpils-content-config';
+import {
+  cloneGlcContentConfig,
+  createDefaultGlcContentConfig,
+} from '../philippines/glc-school/glc-content-config';
+import {
+  cloneIbreezeContentConfig,
+  createDefaultIbreezeContentConfig,
+} from '../philippines/ibreeze-school/ibreeze-content-config';
+import {
+  cloneAnjContentConfig,
+  createDefaultAnjContentConfig,
+} from '../philippines/anj-school/anj-content-config';
+import {
+  cloneBeciContentConfig,
+  createDefaultBeciContentConfig,
+} from '../philippines/beci-school/beci-content-config';
+import {
+  cloneJicContentConfig,
+  createDefaultJicContentConfig,
+} from '../philippines/jic-school/jic-content-config';
+import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
+import { AdminSchoolPhotosComponent } from '../admin-school-photos/admin-school-photos.component';
 
-type EditorTab = 'courses' | 'rooms' | 'fees' | 'rules';
+type EditorTab = 'courses' | 'rooms' | 'fees' | 'rules' | 'media';
 
 @Component({
   selector: 'app-admin-school-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, AdminSchoolPhotosComponent],
   templateUrl: './admin-school-content.component.html',
   styleUrl: './admin-school-content.component.css',
 })
@@ -42,6 +105,23 @@ export class AdminSchoolContentComponent implements OnInit {
 
   private readonly ciaSchoolName = 'CIA Cebu International Academy';
   private readonly publicCiaPath = '/philippines-study/cebu/cia-cebu-international-academy';
+  private readonly publicPinesPath = '/philippines-study/baguio/pines-international-academy';
+  private readonly publicMonolPath = '/philippines-study/baguio/monol';
+  private readonly publicEvPath = '/philippines-study/cebu/ev-academy';
+  private readonly publicSmeagPath = '/philippines-study/cebu/smeag-capital';
+  private readonly publicPhilinterPath = '/philippines-study/cebu/philinter-academy';
+  private readonly publicCgBaniladPath = '/philippines-study/cebu/cg-academy-banilad-campus';
+  private readonly publicCgSpartaPath = '/philippines-study/cebu/cg-academy-sparta-campus';
+  private readonly publicCpiPath = '/philippines-study/cebu/cpi-cebu-pelis-institute';
+  private readonly publicBCebuPath = '/philippines-study/cebu/bcebu';
+  private readonly publicCpilsPath = '/philippines-study/cebu/cpils';
+  private readonly publicGlcPath = '/philippines-study/cebu/global-language-cebu';
+  private readonly publicIbreezePath = '/philippines-study/cebu/ibreeze';
+  private readonly publicAnjPath = '/philippines-study/baguio/anj-e-edu-english-academy';
+  private readonly publicBeciEopPath = '/philippines-study/baguio/beci-eop-campus';
+  private readonly publicBeciSpartaPath = '/philippines-study/baguio/beci-sparta-campus';
+  private readonly publicBeciCityPath = '/philippines-study/baguio/api-beci-city-campus';
+  private readonly publicJicPath = '/philippines-study/baguio/baguio-jic';
 
   schools: SchoolDTO[] = [];
   schoolSearch = '';
@@ -54,6 +134,7 @@ export class AdminSchoolContentComponent implements OnInit {
   selectedRoomId = this.content.rooms[0].id;
   selectedFeeId = this.content.localFees[0].id;
   selectedPromotionId = this.content.quoteSettings.promotions[0].id;
+  beciCampus: BeciCampus = 'eop';
   changeSummary = '';
   statusMessage = '';
   statusKind: 'success' | 'warning' | 'error' | '' = '';
@@ -72,6 +153,7 @@ export class AdminSchoolContentComponent implements OnInit {
     { id: 'rooms', label: '住宿与规则', icon: 'bed', anchor: 'room-fees' },
     { id: 'fees', label: '当地杂费', icon: 'receipt_long', anchor: 'local-fees' },
     { id: 'rules', label: '报价规则与优惠', icon: 'percent', anchor: 'quote' },
+    { id: 'media', label: '照片与视频', icon: 'perm_media', anchor: 'gallery' },
   ];
 
   readonly feeBillingOptions = [
@@ -81,6 +163,8 @@ export class AdminSchoolContentComponent implements OnInit {
     { value: 'first-visa-extension', label: '首次续签时收费' },
     { value: 'long-term-or-first-extension', label: '长期签证或首次续签' },
     { value: 'visa-extension-schedule', label: '按续签次数阶梯收费' },
+    { value: 'selected-manila-pickup', label: '选择马尼拉接机时收费' },
+    { value: 'selected-clark-pickup', label: '选择克拉克接机时收费' },
     { value: 'optional', label: '参考费用，不计入合计' },
   ];
 
@@ -98,6 +182,12 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const requestedTab = this.route.snapshot.queryParamMap.get('tab') as EditorTab | null;
+    if (requestedTab && this.tabs.some(tab => tab.id === requestedTab)) {
+      this.activeTab = requestedTab;
+    }
+    const requestedCampus = this.route.snapshot.queryParamMap.get('campus');
+    if (requestedCampus === 'eop' || requestedCampus === 'sparta' || requestedCampus === 'city') this.beciCampus = requestedCampus;
     this.loadSchools();
   }
 
@@ -112,11 +202,129 @@ export class AdminSchoolContentComponent implements OnInit {
       .slice(0, 12);
   }
 
+  isUnifiedSchoolOption(school: SchoolDTO): boolean {
+    const name = school.name.toLowerCase().replace(/[.\s'&-]/g, '');
+    return [
+      'cia', 'pines', 'monol', 'evacademy', '宿务ev', 'smeagcapital', 'philinter',
+      'cgacademybanilad', 'cgacademysparta', 'cpi', 'bcebu', 'cpils',
+      'globallanguagecebu', '宿务glc', 'ibreeze', 'anjeedu', 'beci', 'jic',
+    ].some(token => name.includes(token));
+  }
+
   get isCiaSelected(): boolean {
     return !!this.selectedSchool && (
       this.selectedSchool.name === this.ciaSchoolName ||
       this.selectedSchool.name.toLowerCase().includes('cia')
     );
+  }
+
+  get isPinesSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('pines') || name.includes('碧瑶pines');
+  }
+
+  get isMonolSelected(): boolean {
+    return !!this.selectedSchool?.name.toLowerCase().includes('monol');
+  }
+
+  get isEvSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name === 'ev academy' || name.includes('宿务ev') || name.includes('ev academy');
+  }
+
+  get isSmeagSelected(): boolean {
+    return !!this.selectedSchool?.name.toLowerCase().includes('smeag capital');
+  }
+
+  get isPhilinterSelected(): boolean {
+    return !!this.selectedSchool?.name.toLowerCase().includes('philinter');
+  }
+
+  get isCgBaniladSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('cg academy') && name.includes('banilad');
+  }
+
+  get isCgSpartaSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('cg academy') && name.includes('sparta');
+  }
+
+  get isCpiSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('cpi') && !name.includes('cpils');
+  }
+
+  get isBCebuSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes("b'cebu") || name.includes('bcebu') || name.includes("beci b'cebu");
+  }
+
+  get isCpilsSelected(): boolean {
+    return !!this.selectedSchool?.name.toLowerCase().includes('cpils');
+  }
+
+  get isGlcSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('global language cebu') || name === 'glc' || name.includes('宿务glc');
+  }
+
+  get isIbreezeSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('i.breeze') || name.includes('ibreeze') || name.includes('i-breeze');
+  }
+
+  get isAnjSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('a&j') || name.includes('anj e-edu');
+  }
+
+  get isBeciSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return !this.isBCebuSelected && (name.includes('beci') || name.includes('api beci'));
+  }
+
+  get isJicSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('jic') || name.includes('菲律宾碧瑶jic');
+  }
+
+  get visibleCourses(): CiaCourseContent[] {
+    return this.isBeciSelected ? this.content.courses.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.courses;
+  }
+
+  get visibleRooms(): CiaRoomContent[] {
+    return this.isBeciSelected ? this.content.rooms.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.rooms;
+  }
+
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isBeciSelected || this.isJicSelected; }
+  get schoolCode(): CiaContentConfig['schoolCode'] {
+    return this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
+  }
+  get schoolShortName(): string { return this.schoolCode; }
+  get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
+  get supportsOneWeekShortStay(): boolean { return this.isCiaSelected || this.isBCebuSelected; }
+  get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
+  get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
+  get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
+  get supportsShortStay(): boolean { return !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isJicSelected; }
+  get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isGlcSelected; }
+  get currentPublicPath(): string {
+    if (this.isJicSelected) return this.publicJicPath;
+    if (this.isBeciSelected) return this.beciCampus === 'sparta' ? this.publicBeciSpartaPath : this.beciCampus === 'city' ? this.publicBeciCityPath : this.publicBeciEopPath;
+    return this.isAnjSelected ? this.publicAnjPath : this.isIbreezeSelected ? this.publicIbreezePath : this.isGlcSelected ? this.publicGlcPath : this.isCpilsSelected ? this.publicCpilsPath : this.isBCebuSelected ? this.publicBCebuPath : this.isCpiSelected ? this.publicCpiPath : this.isCgSpartaSelected ? this.publicCgSpartaPath : this.isCgBaniladSelected ? this.publicCgBaniladPath : this.isPhilinterSelected ? this.publicPhilinterPath : this.isSmeagSelected ? this.publicSmeagPath : this.isEvSelected ? this.publicEvPath : this.isMonolSelected ? this.publicMonolPath : this.isPinesSelected ? this.publicPinesPath : this.publicCiaPath;
+  }
+
+  get activeTabLabel(): string {
+    return this.tabs.find(tab => tab.id === this.activeTab)?.label ?? '学校内容';
+  }
+
+  get activeTabHelp(): string {
+    if (this.activeTab === 'courses') return '修改课程名称、课程安排和学费；发布后官网课程表、报价计算器和报价图片共同使用。';
+    if (this.activeTab === 'rooms') return '修改房型、住宿价格和入住规则；右侧会定位到官网住宿板块。';
+    if (this.activeTab === 'fees') return '修改到校学杂费、计费方式和每一项备注；网页与报价图片保持一致。';
+    if (this.activeTab === 'media') return '为当前学校直接上传照片或视频并设置展示位置；审核发布后才会同步到官网。';
+    return '新增或调整学校优惠、旺季日期和计算规则；金额变化发布前需由管理员确认。';
   }
 
   get selectedCourse(): CiaCourseContent | undefined {
@@ -145,21 +353,56 @@ export class AdminSchoolContentComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-    if (this.isCiaSelected) {
-      this.loadCiaEditor(school.id);
+    if (this.isBeciSelected) {
+      const requestedCampus = this.route.snapshot.queryParamMap.get('campus');
+      if (requestedCampus !== 'eop' && requestedCampus !== 'sparta' && requestedCampus !== 'city') {
+        this.beciCampus = school.name.toLowerCase().includes('city') ? 'city' : 'eop';
+      }
+    }
+    if (this.isSupportedSchool) {
+      this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `${this.currentPublicPath}?contentPreview=1`,
+      );
+      this.loadEditor(school.id);
     } else {
       this.editor = undefined;
       this.statusKind = 'warning';
-      this.statusMessage = '目前先完成 CIA 样板。这所学校将在 CIA 确认后复制同一套编辑方式。';
+      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、BECI 三校区与 JIC。这所学校会在价格和报价计算器核对完成后再接入。";
       this.isLoading = false;
     }
   }
 
+  selectBeciCampus(campus: BeciCampus): void {
+    if (!this.isBeciSelected || this.beciCampus === campus) return;
+    this.beciCampus = campus;
+    this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
+    this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
+    this.previewTarget = this.activeTab === 'rooms'
+      ? { kind: 'room', id: this.selectedRoomId }
+      : { kind: 'course', id: this.selectedCourseId };
+    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.currentPublicPath}?contentPreview=1`);
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { campus }, queryParamsHandling: 'merge', replaceUrl: true });
+    this.persistPreview();
+  }
+
   selectTab(tab: EditorTab): void {
     this.activeTab = tab;
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+    if (tab === 'media') return;
     const kind = { courses: 'course', rooms: 'room', fees: 'fee', rules: 'promotion' } as const;
     const id = { courses: this.selectedCourseId, rooms: this.selectedRoomId, fees: this.selectedFeeId, rules: this.selectedPromotionId }[tab];
     this.selectItem(id ? kind[tab] : 'section', id || this.tabs.find(item => item.id === tab)!.anchor);
+  }
+
+  selectEditorItem(kind: 'course' | 'room' | 'fee' | 'promotion', id: string): void {
+    this.selectItem(kind, id);
+    setTimeout(() => document.querySelector<HTMLElement>('[data-selected-editor]')
+      ?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
   }
 
   get previewLocation(): string {
@@ -196,6 +439,15 @@ export class AdminSchoolContentComponent implements OnInit {
     this.sendPreview();
   }
 
+  updateMedia(items: CiaMediaContent[]): void {
+    const wasInitialized = this.content.media !== undefined;
+    this.content.media = items.map(item => ({ ...item }));
+    if (wasInitialized) {
+      this.statusKind = 'warning';
+      this.statusMessage = '媒体修改已加入当前草稿，请填写修改说明后保存或提交审核。';
+    }
+  }
+
   previewLoaded(): void {
     this.sendPreview(true);
   }
@@ -204,14 +456,15 @@ export class AdminSchoolContentComponent implements OnInit {
   selectFromPreview(event: MessageEvent): void {
     if (event.origin !== window.location.origin || event.source !== this.previewFrame?.nativeElement.contentWindow) return;
     const message = event.data;
-    if (message?.type === 'cia-content-ready') { this.sendPreview(true); return; }
-    if (message?.type === 'cia-content-located' && isCiaPreviewTarget(message.target)) {
+    const prefix = this.schoolCode.toLowerCase();
+    if (message?.type === `${prefix}-content-ready`) { this.sendPreview(true); return; }
+    if (message?.type === `${prefix}-content-located` && isCiaPreviewTarget(message.target)) {
       if (message.target.kind === this.previewTarget.kind && message.target.id === this.previewTarget.id) {
         this.previewStatus = typeof message.status === 'string' ? message.status : '';
       }
       return;
     }
-    if (message?.type !== 'cia-content-select' || !isCiaPreviewTarget(message)) return;
+    if (message?.type !== `${prefix}-content-select` || !isCiaPreviewTarget(message)) return;
     if (message.kind === 'section') this.activeTab = CIA_PREVIEW_SECTIONS[message.id].tab;
     this.selectItem(message.kind, message.id, false);
     setTimeout(() => {
@@ -228,6 +481,36 @@ export class AdminSchoolContentComponent implements OnInit {
     this.contentChanged();
   }
 
+  formatNumberMap(value?: Record<string, number>): string {
+    return Object.entries(value ?? {}).sort((a, b) => Number(a[0]) - Number(b[0])).map(([key, amount]) => `${key}:${amount}`).join(', ');
+  }
+
+  updateCourseWeekPrices(item: CiaCourseContent, value: string): void {
+    item.feeByWeeks = this.parseNumberMap(value);
+    this.contentChanged();
+  }
+
+  updateCourseAllowedWeeks(item: CiaCourseContent, value: string): void {
+    item.allowedWeeks = value.split(/[,，、]/).map(part => Number(part.trim())).filter(week => Number.isInteger(week) && week > 0);
+    this.contentChanged();
+  }
+
+  updatePromotionTiers(item: CiaPromotionRule, value: string): void {
+    item.discountTiers = this.parseNumberMap(value);
+    this.contentChanged();
+  }
+
+  private parseNumberMap(value: string): Record<string, number> {
+    const result: Record<string, number> = {};
+    for (const part of value.split(/[,，、]/)) {
+      const [rawKey, rawAmount] = part.trim().split(/[:：]/);
+      const key = Number(rawKey);
+      const amount = Number(rawAmount);
+      if (Number.isFinite(key) && key > 0 && Number.isFinite(amount) && amount >= 0) result[String(key)] = amount;
+    }
+    return result;
+  }
+
   addCourse(): void {
     const item: CiaCourseContent = {
       id: this.uniqueId('course'),
@@ -240,6 +523,18 @@ export class AdminSchoolContentComponent implements OnInit {
       enabled: true,
       sortOrder: this.content.courses.length,
     };
+    if (this.isGlcSelected) {
+      item.englishName = 'New course';
+      item.chineseName = '新课程';
+      item.group = '其他课程';
+      item.offSeasonEligible = false;
+      item.annexOnly = false;
+      item.family = false;
+      item.textbook = 'esl';
+    }
+    if (this.isAnjSelected) item.courseType = '英语课程';
+    if (this.isJicSelected) { item.campus = 'challenger'; item.courseType = 'Challenger 挑战校区'; item.minimumWeeks = 4; item.allowedWeeks = [4, 6, 8, 12, 16, 20, 24]; }
+    if (this.isBeciSelected) { item.campus = this.beciCampus; item.courseType = `${this.beciCampus.toUpperCase()}课程`; }
     this.content.courses.push(item);
     this.selectedCourseId = item.id;
     this.contentChanged();
@@ -259,10 +554,26 @@ export class AdminSchoolContentComponent implements OnInit {
       enabled: true,
       sortOrder: this.content.rooms.length,
     };
+    if (this.isAnjSelected) {
+      item.priceMode = 'per-person';
+      item.minOccupancy = 1;
+      item.maxOccupancy = 1;
+      item.waterFee4w = 0;
+      item.waterGroup = 'Premium / Villa';
+      item.deposit = 0;
+    }
+    if (this.isJicSelected) { item.campus = 'challenger'; item.code = 'quad'; item.group = 'Challenger 挑战校区'; item.single = false; }
+    if (this.isBeciSelected) { item.campus = this.beciCampus; item.single = false; item.coupleRate = undefined; item.code = this.beciCampus.toUpperCase(); }
     this.content.rooms.push(item);
     this.selectedRoomId = item.id;
     this.contentChanged();
     this.selectItem('room', item.id);
+  }
+
+  setJicRoomCategory(item: CiaRoomContent, category: 'single' | 'twin' | 'quad'): void {
+    item.code = category;
+    item.single = category === 'single';
+    this.contentChanged();
   }
 
   addFee(): void {
@@ -329,10 +640,10 @@ export class AdminSchoolContentComponent implements OnInit {
     if (!confirmed) return;
     if (kind === 'course') {
       this.content.courses = this.content.courses.filter(item => item.id !== id);
-      this.selectedCourseId = this.content.courses[0]?.id ?? '';
+      this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
     } else if (kind === 'room') {
       this.content.rooms = this.content.rooms.filter(item => item.id !== id);
-      this.selectedRoomId = this.content.rooms[0]?.id ?? '';
+      this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
     } else if (kind === 'fee') {
       this.content.localFees = this.content.localFees.filter(item => item.id !== id);
       this.selectedFeeId = this.content.localFees[0]?.id ?? '';
@@ -359,19 +670,30 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   saveDraft(): void {
-    if (!this.selectedSchool?.id || !this.isCiaSelected || this.isSaving) return;
+    if (!this.selectedSchool?.id || !this.isSupportedSchool || this.isSaving) return;
+    const hasInitialVersion = !!(this.editor?.draft || this.editor?.pendingReview || this.editor?.published);
+    if (!hasInitialVersion && !this.canPublish) {
+      this.statusKind = 'warning';
+      this.statusMessage = `这所学校尚未建立初始版本，请管理员先打开 ${this.schoolShortName} 工作台并保存一次。`;
+      return;
+    }
     this.isSaving = true;
     this.statusMessage = '';
-    this.schoolContentService.saveDraft(
-      this.selectedSchool.id,
-      this.content,
-      this.changeSummary.trim() || '更新 CIA 学校页面内容',
-    ).pipe(finalize(() => this.isSaving = false)).subscribe({
+    const summary = this.changeSummary.trim() || `更新 ${this.schoolShortName} ${this.activeTabLabel}`;
+    const request = !hasInitialVersion && this.canPublish
+      ? this.schoolContentService.saveDraft(this.selectedSchool.id, this.content, summary)
+      : this.activeTab === 'media'
+      ? this.schoolContentService.saveMediaDraft<CiaContentConfig, CiaMediaContent[]>(
+          this.selectedSchool.id,
+          this.content.media ?? [],
+          summary,
+        )
+      : this.schoolContentService.savePricingDraft(this.selectedSchool.id, this.content, summary);
+    request.pipe(finalize(() => this.isSaving = false)).subscribe({
       next: draft => {
         this.statusKind = 'success';
         this.statusMessage = `草稿已保存（版本 ${draft.version}），官网尚未发布。`;
-        this.changeSummary = '';
-        this.loadCiaEditor(this.selectedSchool!.id, false);
+        this.loadEditor(this.selectedSchool!.id, false);
       },
       error: () => {
         this.statusKind = 'error';
@@ -381,22 +703,40 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   submitForReview(): void {
-    if (!this.selectedSchool?.id || !this.isCiaSelected || this.isSubmitting) return;
+    if (!this.selectedSchool?.id || !this.isSupportedSchool || this.isSubmitting) return;
+    const hasInitialVersion = !!(this.editor?.draft || this.editor?.pendingReview || this.editor?.published);
+    if (!hasInitialVersion && !this.canPublish) {
+      this.statusKind = 'warning';
+      this.statusMessage = `这所学校尚未建立初始版本，请管理员先打开 ${this.schoolShortName} 工作台并保存一次。`;
+      return;
+    }
+    const summary = this.changeSummary.trim();
+    if (!summary) {
+      this.statusKind = 'error';
+      this.statusMessage = '提交审核前，请先填写“本次修改说明”，写清楚改了哪些地方。';
+      return;
+    }
     this.isSubmitting = true;
     this.statusMessage = '';
-    this.schoolContentService.saveDraft(
-      this.selectedSchool.id,
-      this.content,
-      this.changeSummary.trim() || '提交 CIA 学校页面更新审核',
-    ).pipe(
-      switchMap(() => this.schoolContentService.submitForReview<CiaContentConfig>(this.selectedSchool!.id, 'SchoolContent')),
+    const saveRequest = !hasInitialVersion && this.canPublish
+      ? this.schoolContentService.saveDraft(this.selectedSchool.id, this.content, summary)
+      : this.activeTab === 'media'
+      ? this.schoolContentService.saveMediaDraft<CiaContentConfig, CiaMediaContent[]>(
+          this.selectedSchool.id,
+          this.content.media ?? [],
+          summary,
+        )
+      : this.schoolContentService.savePricingDraft(this.selectedSchool.id, this.content, summary);
+    const scope = this.activeTab === 'media' ? 'Media' as const : 'Pricing' as const;
+    saveRequest.pipe(
+      switchMap(() => this.schoolContentService.submitForReview<CiaContentConfig>(this.selectedSchool!.id, scope)),
       finalize(() => this.isSubmitting = false),
     ).subscribe({
       next: revision => {
         this.statusKind = 'success';
         this.statusMessage = `版本 ${revision.version} 已提交管理员审核，官网尚未改变。`;
         this.changeSummary = '';
-        this.loadCiaEditor(this.selectedSchool!.id, false);
+        this.loadEditor(this.selectedSchool!.id, false);
       },
       error: () => {
         this.statusKind = 'error';
@@ -407,24 +747,22 @@ export class AdminSchoolContentComponent implements OnInit {
 
   publish(): void {
     if (!this.selectedSchool?.id || !this.canPublish || this.isPublishing) return;
+    if (!this.editor?.pendingReview) {
+      this.statusKind = 'warning';
+      this.statusMessage = '没有待审核版本。请先填写修改说明并提交审核，再由管理员发布。';
+      return;
+    }
     if (!window.confirm('发布后官网、报价计算器和报价图片会立即使用这份内容。确定发布吗？')) return;
     this.isPublishing = true;
     this.statusMessage = '';
-    const request = this.editor?.pendingReview
-      ? this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool.id)
-      : this.schoolContentService.saveDraft(
-          this.selectedSchool.id,
-          this.content,
-          this.changeSummary.trim() || '管理员发布 CIA 学校页面更新',
-        ).pipe(switchMap(() => this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool!.id)));
-    request.pipe(
+    this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool.id).pipe(
       finalize(() => this.isPublishing = false),
     ).subscribe({
       next: revision => {
         this.statusKind = 'success';
         this.statusMessage = `版本 ${revision.version} 已发布，官网已同步更新。`;
         this.changeSummary = '';
-        this.loadCiaEditor(this.selectedSchool!.id, false);
+        this.loadEditor(this.selectedSchool!.id, false);
       },
       error: () => {
         this.statusKind = 'error';
@@ -441,7 +779,7 @@ export class AdminSchoolContentComponent implements OnInit {
       next: revision => {
         this.statusKind = 'success';
         this.statusMessage = `版本 ${revision.version} 已退回草稿，员工可以继续修改后重新提交。`;
-        this.loadCiaEditor(this.selectedSchool!.id, false);
+        this.loadEditor(this.selectedSchool!.id, false);
       },
       error: () => {
         this.statusKind = 'error';
@@ -455,11 +793,11 @@ export class AdminSchoolContentComponent implements OnInit {
     if (!window.confirm(`把版本 ${version} 恢复为新的草稿吗？恢复后仍需再次点击“发布更新”。`)) return;
     this.schoolContentService.restore<CiaContentConfig>(this.selectedSchool.id, revisionId).subscribe({
       next: draft => {
-        this.content = cloneCiaContentConfig(draft.content);
+        this.content = this.cloneSelectedContent(draft.content);
         this.statusKind = 'success';
         this.statusMessage = `版本 ${version} 已恢复为草稿，尚未发布。`;
         this.persistPreview();
-        this.loadCiaEditor(this.selectedSchool!.id, false);
+        this.loadEditor(this.selectedSchool!.id, false);
       },
       error: () => {
         this.statusKind = 'error';
@@ -469,7 +807,13 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   openPublicPage(): void {
-    window.open(this.publicCiaPath, '_blank', 'noopener');
+    window.open(this.currentPublicPath, '_blank', 'noopener');
+  }
+
+  openQuoteImageEditor(): void {
+    void this.router.navigate(['/admin/school-quote-image'], {
+      queryParams: { schoolId: this.selectedSchool?.id, campus: this.isBeciSelected ? this.beciCampus : undefined },
+    });
   }
 
   trackById(_: number, item: { id: string }): string {
@@ -496,40 +840,44 @@ export class AdminSchoolContentComponent implements OnInit {
     });
   }
 
-  private loadCiaEditor(schoolId: string, showLoading = true): void {
+  private loadEditor(schoolId: string, showLoading = true): void {
     if (showLoading) this.isLoading = true;
     this.editorLoadFailed = false;
     this.editorLoadStatus = 0;
-    const defaults = createDefaultCiaContentConfig();
+    const defaults = this.createSelectedDefaults();
     forkJoin({
       editor: this.schoolContentService.getEditor<CiaContentConfig>(schoolId).pipe(catchError(error => {
         this.editorLoadFailed = true;
         this.editorLoadStatus = Number(error?.status) || 0;
         return of(null);
       })),
-      lessons: this.schoolService.getSchoolLessons({ schoolId, week: 4 }).pipe(catchError(() => of([]))),
-      rooms: this.schoolService.getSchoolRooms({ schoolId, week: 4 }).pipe(catchError(() => of([]))),
+      lessons: this.schoolService.getSchoolLessons({ schoolId, week: this.isGlcSelected ? 1 : 4 }).pipe(catchError(() => of([]))),
+      rooms: this.schoolService.getSchoolRooms({ schoolId, week: this.isGlcSelected ? 1 : 4 }).pipe(catchError(() => of([]))),
       fees: this.schoolService.getSchoolFees({ schoolId }).pipe(catchError(() => of([]))),
     }).subscribe(({ editor, lessons, rooms, fees }) => {
       this.editor = editor ?? undefined;
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
-      this.content = stored ? cloneCiaContentConfig(stored) : defaults;
+      this.content = stored ? this.cloneSelectedContent(stored) : defaults;
       if (!stored) {
         for (const course of this.content.courses) {
-          const row = lessons.find(item => this.slug(item.name) === course.id);
+          const row = lessons.find(item =>
+            this.slug(item.name) === course.id ||
+            item.name === course.name ||
+            item.name === course.englishName,
+          );
           if (row) course.tuition = row.price;
         }
         for (const room of this.content.rooms) {
-          const row = rooms.find(item => this.roomId(item.name) === room.id);
+          const row = rooms.find(item => this.roomId(item.name) === room.id || item.name === room.name);
           if (row) room.fee = row.price;
         }
         const registration = fees.find(item => item.name === '注册费');
-        const peak = fees.find(item => item.name === '旺季附加费');
+        const peak = fees.find(item => item.name === '旺季附加费' || item.name === '暑期附加费');
         if (registration) this.content.quoteSettings.registrationFee = registration.fee;
         if (peak) this.content.quoteSettings.peakSeasonFeePerWeek = peak.fee;
       }
-      this.selectedCourseId = this.content.courses[0]?.id ?? '';
-      this.selectedRoomId = this.content.rooms[0]?.id ?? '';
+      this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
+      this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
       this.selectedFeeId = this.content.localFees[0]?.id ?? '';
       this.selectedPromotionId = this.content.quoteSettings.promotions[0]?.id ?? '';
       this.persistPreview();
@@ -542,7 +890,10 @@ export class AdminSchoolContentComponent implements OnInit {
         } else if (this.editorLoadStatus === 403) {
           this.statusMessage = '版本记录读取失败：当前账号没有编辑权限，请联系管理员。';
         } else if (this.editorLoadStatus === 404) {
-          this.statusMessage = '版本服务尚未加载，请重启后台服务后再保存。当前页面仍可用于预览。';
+          this.statusKind = 'warning';
+          this.statusMessage = this.canPublish
+            ? `这是 ${this.schoolShortName} 的首次设置；请核对当前样板，保存草稿后会建立初始版本。`
+            : `这所学校尚未建立初始版本，请管理员先打开 ${this.schoolShortName} 工作台并保存一次。`;
         } else if (this.editorLoadStatus === 0) {
           this.statusMessage = '暂时无法连接版本服务，请检查后台是否正在运行。当前页面仍可用于预览。';
         } else {
@@ -550,21 +901,26 @@ export class AdminSchoolContentComponent implements OnInit {
         }
       } else if (!editor?.draft && !editor?.published) {
         this.statusKind = 'warning';
-        this.statusMessage = '正在使用 CIA 当前官网数据作为初始样板；首次保存后会建立版本记录。';
+        this.statusMessage = `正在使用 ${this.schoolShortName} 当前官网数据作为初始样板；首次保存后会建立版本记录。`;
       }
     });
   }
 
   private persistPreview(): void {
     if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('cia-content-preview', JSON.stringify(this.content));
+      sessionStorage.setItem(`${this.schoolCode.toLowerCase()}-content-preview`, JSON.stringify(this.content));
     }
   }
 
   private sendPreview(scroll = false): void {
     this.persistPreview();
     setTimeout(() => this.previewFrame?.nativeElement.contentWindow?.postMessage(
-      { type: 'cia-content-preview', content: cloneCiaContentConfig(this.content), target: this.previewTarget, scroll },
+      {
+        type: `${this.schoolCode.toLowerCase()}-content-preview`,
+        content: this.cloneSelectedContent(this.content),
+        target: this.previewTarget,
+        scroll,
+      },
       window.location.origin,
     ));
   }
@@ -574,6 +930,44 @@ export class AdminSchoolContentComponent implements OnInit {
     this.content.rooms.forEach((item, index) => item.sortOrder = index);
     this.content.localFees.forEach((item, index) => item.sortOrder = index);
     this.content.quoteSettings.promotions.forEach((item, index) => item.sortOrder = index);
+  }
+
+  private createSelectedDefaults(): CiaContentConfig {
+    if (this.isJicSelected) return createDefaultJicContentConfig();
+    if (this.isBeciSelected) return createDefaultBeciContentConfig();
+    if (this.isAnjSelected) return createDefaultAnjContentConfig();
+    if (this.isIbreezeSelected) return createDefaultIbreezeContentConfig();
+    if (this.isGlcSelected) return createDefaultGlcContentConfig();
+    if (this.isCpilsSelected) return createDefaultCpilsContentConfig();
+    if (this.isBCebuSelected) return createDefaultBCebuContentConfig();
+    if (this.isCpiSelected) return createDefaultCpiContentConfig();
+    if (this.isCgSpartaSelected) return createDefaultCgSpartaContentConfig();
+    if (this.isCgBaniladSelected) return createDefaultCgBaniladContentConfig();
+    if (this.isPhilinterSelected) return createDefaultPhilinterContentConfig();
+    if (this.isSmeagSelected) return createDefaultSmeagContentConfig();
+    if (this.isEvSelected) return createDefaultEvContentConfig();
+    if (this.isMonolSelected) return createDefaultMonolContentConfig();
+    if (this.isPinesSelected) return createDefaultPinesContentConfig();
+    return createDefaultCiaContentConfig();
+  }
+
+  private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    if (this.isJicSelected) return cloneJicContentConfig(value);
+    if (this.isBeciSelected) return cloneBeciContentConfig(value);
+    if (this.isAnjSelected) return cloneAnjContentConfig(value);
+    if (this.isIbreezeSelected) return cloneIbreezeContentConfig(value);
+    if (this.isGlcSelected) return cloneGlcContentConfig(value);
+    if (this.isCpilsSelected) return cloneCpilsContentConfig(value);
+    if (this.isBCebuSelected) return cloneBCebuContentConfig(value);
+    if (this.isCpiSelected) return cloneCpiContentConfig(value);
+    if (this.isCgSpartaSelected) return cloneCgSpartaContentConfig(value);
+    if (this.isCgBaniladSelected) return cloneCgBaniladContentConfig(value);
+    if (this.isPhilinterSelected) return clonePhilinterContentConfig(value);
+    if (this.isSmeagSelected) return cloneSmeagContentConfig(value);
+    if (this.isEvSelected) return cloneEvContentConfig(value);
+    if (this.isMonolSelected) return cloneMonolContentConfig(value);
+    if (this.isPinesSelected) return clonePinesContentConfig(value);
+    return cloneCiaContentConfig(value);
   }
 
   private uniqueId(prefix: string): string {

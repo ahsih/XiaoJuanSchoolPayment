@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CurrencyService } from '../../../services/currency.service';
 import { firstValueFrom } from 'rxjs';
 import { EditSchoolRoomDialogComponent } from './edit-school-room-dialog/edit-school-room-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-admin-school-rooms',
@@ -34,6 +35,7 @@ export class AdminSchoolRoomsComponent {
   schoolRoomDtos: SchoolRoomDTO[] = [];
   schoolDtos: SchoolDTO[] = [];
   currencyDtos: CurrencyDTO[] = [];
+  selectedSchoolId = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -42,7 +44,8 @@ export class AdminSchoolRoomsComponent {
     private fb: FormBuilder,
     private schoolService: SchoolService,
     private matDialog: MatDialog,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private route: ActivatedRoute
   ) {
     this.schoolRoomsForm = this.fb.group({
       name: ['', Validators.required],
@@ -62,8 +65,8 @@ export class AdminSchoolRoomsComponent {
   }
 
   ngOnInit(): void {
+    this.selectedSchoolId = this.route.snapshot.queryParamMap.get('schoolId') ?? '';
     this.loadSchools();
-    this.loadSchoolRooms();
     this.loadCurrencys();
   }
 
@@ -83,7 +86,7 @@ export class AdminSchoolRoomsComponent {
         currencyId: this.schoolRoomsForm.value.currencyId,
       } as SchoolRoomDTO;
       await this.schoolService.saveSchoolRooms(schoolRoomDTO);
-      this.schoolRoomsForm.reset();
+      this.schoolRoomsForm.reset({ schoolId: this.selectedSchoolId });
       this.loadSchoolRooms();
     }
   }
@@ -96,6 +99,12 @@ export class AdminSchoolRoomsComponent {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  onSchoolChanged(schoolId: string) {
+    this.selectedSchoolId = schoolId;
+    this.schoolRoomsForm.patchValue({ schoolId });
+    this.loadSchoolRooms();
+  }
   private loadCurrencys() {
     this.currencyService.getCurrencies().subscribe({
       next: (rows) => (this.currencyDtos = rows ?? []),
@@ -105,13 +114,23 @@ export class AdminSchoolRoomsComponent {
 
   private loadSchools() {
     this.schoolService.getSchools().subscribe({
-      next: (rows) => (this.schoolDtos = rows ?? []),
+      next: (rows) => {
+        this.schoolDtos = rows ?? [];
+        const selected = this.schoolDtos.find(school => school.id === this.selectedSchoolId)
+          ?? this.schoolDtos.find(school => school.name.toLowerCase().includes('cia'))
+          ?? this.schoolDtos[0];
+        if (selected) this.onSchoolChanged(selected.id);
+      },
       error: (err) => console.error('Failed to load schools', err),
     });
   }
 
   private loadSchoolRooms() {
-    this.schoolService.getSchoolRooms().subscribe({
+    if (!this.selectedSchoolId) {
+      this.dataSource.data = [];
+      return;
+    }
+    this.schoolService.getSchoolRooms({ schoolId: this.selectedSchoolId }).subscribe({
       next: (rows) => (this.dataSource.data = rows ?? []),
       error: (err) => console.error('Failed to load rooms', err),
     });

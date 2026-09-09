@@ -1,8 +1,12 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { SchoolService } from '../../../../services/school.service';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { GlcSchoolComponent } from './glc-school.component';
+import { createDefaultGlcContentConfig } from './glc-content-config';
 import { GLC_COURSES, GLC_ROOMS, GLC_REGISTRATION_NOTE } from './glc-pricing';
 
 describe('GLC user-supplied 2026 reference prices', () => {
@@ -39,6 +43,9 @@ describe('GLC user-supplied 2026 reference prices', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => rates } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     return TestBed.runInInjectionContext(() => new GlcSchoolComponent());
   }
@@ -51,6 +58,23 @@ describe('GLC user-supplied 2026 reference prices', () => {
     expect(page.localFees.find(fee => fee.item === '教材费（雅思）')!.note).toContain('雅思课程1–4周约5,000比索');
     expect(JSON.stringify(page.localFees)).not.toMatch(/USD|PHP|CNY/);
     expect(page.registrationNote).toBe(GLC_REGISTRATION_NOTE);
+  });
+
+  it('provides one versioned GLC document for courses, rooms, fees and quote rules', () => {
+    const content = createDefaultGlcContentConfig();
+    expect(content.schoolCode).toBe('GLC');
+    expect(content.courses.length).toBe(20);
+    expect(content.rooms.length).toBe(6);
+    expect(content.localFees.length).toBe(12);
+    expect(content.courses.find(item => item.id === 'power-speaking')?.tuition).toBe(215);
+    expect(content.rooms.find(item => item.id === 'annex-double')?.fee).toBe(250);
+    expect(content.quoteSettings.promotions.map(item => item.id)).toEqual([
+      'glc-school-window-1',
+      'glc-school-window-2',
+      'glc-sida',
+      'glc-registration-pickup',
+      'glc-returning-registration',
+    ]);
   });
 
   it('groups every course once with bilingual names, full schedules and the calculator weekly rate', () => {

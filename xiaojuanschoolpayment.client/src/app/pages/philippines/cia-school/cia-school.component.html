@@ -703,29 +703,30 @@
     <section class="video-section" id="videos">
       <div class="section-heading section-heading-row">
         <div>
-          <span class="section-eyebrow">COURSE VIDEOS</span>
-          <h2>看完课程结构，再用视频感受课堂</h2>
-          <p>一般英语、雅思、托业和商务英语均可在线播放，帮助你在看报价前进一步判断课堂节奏。</p>
+          <span class="section-eyebrow">SCHOOL VIDEOS</span>
+          <h2>用视频了解 CIA 校园与课程</h2>
+          <p>课程介绍和员工发布的校园视频均可在线播放，帮助你更直观地了解课堂与校园环境。</p>
         </div>
         <span class="wechat-note"><mat-icon>verified</mat-icon>CIA 官方课程视频</span>
       </div>
       <div class="video-grid">
-        <article *ngFor="let item of videoCards">
+        <article *ngFor="let item of displayedVideoCards">
           <div class="video-media">
             <span class="video-official-label"><mat-icon>smart_display</mat-icon>{{ item.code }} COURSE</span>
             <video
               controls
               preload="metadata"
-              [poster]="item.poster"
+              [attr.poster]="item.poster || null"
               [attr.aria-label]="item.title"
             >
-              <source [src]="item.videoSrc" type="video/mp4" />
+              <source [src]="item.videoSrc" [attr.type]="item.contentType" />
               您的浏览器暂不支持播放此视频。
             </video>
           </div>
           <div class="video-card-body">
             <h3>{{ item.title }}</h3>
             <img
+              *ngIf="item.brandLogo"
               class="video-course-logo"
               [src]="item.brandLogo"
               [alt]="item.brandAlt"

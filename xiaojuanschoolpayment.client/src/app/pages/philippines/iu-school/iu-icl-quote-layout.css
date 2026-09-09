@@ -1,0 +1,116 @@
+:host .quote-results-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+  width: 100%;
+  margin-top: 28px;
+}
+
+:host .quote-form-card {
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid #ffd1bd;
+  border-radius: 10px;
+  background: #fff7f2;
+  box-shadow: 0 12px 28px rgba(29, 43, 59, 0.08);
+}
+
+:host .quote-title-block {
+  margin-bottom: 22px;
+}
+
+:host .quote-eyebrow {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #eaf8f1;
+  color: #0a7a52;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+:host .quote-title-block h2 {
+  margin: 10px 0 8px;
+  color: #043f2d;
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+:host .quote-title-block p {
+  max-width: 920px;
+  margin: 0;
+  color: #526176;
+  line-height: 1.7;
+}
+
+:host .promotion-summary {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #f0cf72;
+  border-radius: 9px;
+  background: #fffdf4;
+}
+
+:host .promotion-summary h3 {
+  margin: 0 0 12px;
+  color: #70420d;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+:host .promotion-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+:host .promotion-rule-grid > div {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #5f6672;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+:host .promotion-rule-grid strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #263548;
+  font-weight: 900;
+}
+
+:host .promotion-summary .season-note {
+  margin: 12px 0 0;
+  color: #70420d;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+:host .quote-form-card > .fee-alert {
+  margin: 14px 0 0;
+  padding: 11px 13px;
+  border-left: 4px solid #e86824;
+  border-radius: 7px;
+  background: #fff1e8;
+  color: #8a3f18;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+:host .local-fee-estimate {
+  margin-top: 0;
+}
+
+@media (max-width: 680px) {
+  :host .quote-form-card {
+    padding: 20px 14px;
+  }
+
+  :host .promotion-rule-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

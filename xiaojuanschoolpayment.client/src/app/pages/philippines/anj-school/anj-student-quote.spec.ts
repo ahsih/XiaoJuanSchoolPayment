@@ -39,6 +39,38 @@ describe('AnjStudentQuote', () => {
     expect(quote.sidaDiscount).toBe(60);
     expect(quote.registrationDiscount).toBe(100);
     expect(quote.quoteUsd).toBe(1140);
+    const birthdayLine = quote.paymentLines.find((line) => line.promotionKey === 'anj-birthday');
+    expect(birthdayLine?.value).toBe(-100);
+    expect(birthdayLine?.note).toContain('符合条件，减免100美元');
+    expect(quote.applicablePaymentLines).toContain(birthdayLine!);
+  });
+
+  it('always explains the current birthday rule when the student is not eligible', () => {
+    const quote = quoteAt('2026-09-06');
+    quote.birthMonth = 1;
+    quote.birthDay = 1;
+
+    const birthdayLine = quote.paymentLines.find((line) => line.promotionKey === 'anj-birthday');
+    expect(birthdayLine?.value).toBe(0);
+    expect(birthdayLine?.note).toContain('当前出生日期尾数1不符合本档期');
+    expect(birthdayLine?.note).toContain('2026年7–9月入学，出生日期尾数须为7');
+    expect(birthdayLine?.note).toContain('报名注册日须不早于2025/12/15');
+    expect(birthdayLine?.note).toContain('须提交生日证明');
+    expect(quote.applicablePaymentLines).not.toContain(birthdayLine!);
+  });
+
+  it('shows every promotion status on the webpage but keeps zero-value promotions out of the image', () => {
+    const quote = quoteAt('2026-09-06');
+    quote.birthDay = 1;
+
+    const webPromotionKeys = quote.paymentLines.map((line) => line.promotionKey).filter(Boolean);
+    expect(webPromotionKeys).toEqual([
+      'registration', 'anj-regular', 'anj-birthday', 'anj-low-season', 'anj-continuation', 'sida',
+    ]);
+    expect(quote.paymentLines.find((line) => line.promotionKey === 'anj-continuation')?.note).toContain('当前选择新生');
+
+    const imagePromotionKeys = quote.applicablePaymentLines.map((line) => line.promotionKey).filter(Boolean);
+    expect(imagePromotionKeys).toEqual(['registration', 'anj-regular', 'anj-low-season', 'sida']);
   });
 
   it('keeps continuation pricing mutually exclusive with new-student offers', () => {

@@ -1,7 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { ElementRef } from '@angular/core';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
+import { createDefaultMonolContentConfig } from './monol-content-config';
 import { MonolSchoolDetailComponent } from './monol-school-detail.component';
 
 describe('MONOL 2026 pricing and quote', () => {
@@ -10,7 +14,10 @@ describe('MONOL 2026 pricing and quote', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     component = TestBed.runInInjectionContext(() => new MonolSchoolDetailComponent());
   });
@@ -32,6 +39,8 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.offSeasonRoomDiscountAmount).toBe(100);
     expect(component.quoteUsd).toBe(950);
     expect(component.quoteUsdText).toBe('950 美元');
+    expect(component.schoolPaymentItems.find(item => item.label === '淡季课程优惠')?.note).toContain('2026年8月23日起');
+    expect(component.schoolPaymentItems.find(item => item.label === '淡季课程优惠')?.note).not.toContain('6月27日前结束');
   });
 
   it('uses the chosen initial visa and pickup for local fees', () => {
@@ -108,9 +117,34 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.estimatedLocalFees.find(item => item.item === 'SSP特殊学习许可证')?.quantity).toBe(2);
     expect(component.quoteImageData.paymentItems?.some(item => item.amount === '未适用')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.filter(item => item.label.includes('淡季工作日免费早餐')).length).toBe(1);
-    expect(component.quoteImageData.importantNotes).toEqual(component.quoteGeneralNotes);
+    expect(component.quoteImageData.importantNotes).toEqual(component.quoteImageSettings.footerNotes);
     expect(component.quoteImageData.importantNotes?.join('')).not.toContain('淡季');
     expect(component.quoteImageData.importantNotes?.join('')).not.toContain('SNS');
     expect(JSON.stringify(component.quoteImageData)).not.toContain('CIA');
+  });
+
+  it('uses the employee-editable MONOL price and promotion configuration', () => {
+    component.courseFees.find(item => item.id === 'esl-4')!.tuition = 800;
+    component.promotionRules.find(item => item.id === 'monol-off-season-course-late')!.discountValue = 120;
+
+    expect(component.students[0].tuition).toBe(800);
+    expect(component.students[0].offSeasonCourseDiscount).toBe(120);
+    expect(component.quoteUsd).toBe(980);
+    expect(component.quoteImageData.totalUsd).toBe('980 美元');
+  });
+
+  it('shows only active media saved in the reviewed MONOL content', () => {
+    const content = createDefaultMonolContentConfig();
+    content.media = [
+      { id: 'photo-1', schoolId: 'monol', url: '/uploads/monol-campus.webp', contentType: 'image/webp', category: 'Campus', caption: '新校园照片', altText: 'MONOL新校园照片', displayOrder: 1, isActive: true },
+      { id: 'video-1', schoolId: 'monol', url: '/uploads/monol-tour.mp4', contentType: 'video/mp4', category: 'Facility', caption: '校园视频', altText: 'MONOL校园视频', displayOrder: 2, isActive: true },
+      { id: 'hidden-1', schoolId: 'monol', url: '/uploads/hidden.jpg', contentType: 'image/jpeg', category: 'Campus', caption: '隐藏图片', altText: '', displayOrder: 3, isActive: false },
+    ];
+
+    component['applyContentConfig'](content);
+
+    expect(component.galleryImages.some(item => item.src === '/uploads/monol-campus.webp')).toBeTrue();
+    expect(component.galleryImages.find(item => item.src === '/uploads/monol-tour.mp4')?.contentType).toBe('video/mp4');
+    expect(component.galleryImages.some(item => item.src === '/uploads/hidden.jpg')).toBeFalse();
   });
 });

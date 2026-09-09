@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.StaticFiles;
 using System.Text;
 using System.Xml.Linq;
 using XiaoJuanSchoolPayment.Server.Data;
@@ -110,7 +111,10 @@ var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogg
 
 app.UseCors("AllowAll");
 app.UseDefaultFiles();
-app.UseStaticFiles();
+var staticContentTypes = new FileExtensionContentTypeProvider();
+staticContentTypes.Mappings[".mov"] = "video/quicktime";
+staticContentTypes.Mappings[".m4v"] = "video/x-m4v";
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = staticContentTypes });
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

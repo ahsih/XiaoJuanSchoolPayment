@@ -4,6 +4,7 @@ import { buildPhilippinesDetailedQuote } from '../../../components/philippines-q
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { GlcCourse, GlcRoom, glcCourseName, GLC_LOCAL_FEE_INTRO, GLC_REGISTRATION_NOTE } from './glc-pricing';
 import { SchoolVisaType } from '../../../components/school-group-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 
 const DAY = 86400000;
 const WEEK = 7 * DAY;
@@ -22,10 +23,13 @@ export interface GlcLocalFee {
 
 export class GlcQuoteCalculator {
   readonly weeks = Array.from({ length: 24 }, (_, index) => index + 1);
-  readonly localFeeIntro = GLC_LOCAL_FEE_INTRO;
-  readonly promotionNote = GLC_PROMOTION_NOTE;
-  readonly pickupNote = GLC_PICKUP_NOTE;
-  readonly sidaNote = GLC_SIDA_NOTE;
+  get localFeeIntro() { return this.content?.().quoteSettings.localFeeIntro ?? GLC_LOCAL_FEE_INTRO; }
+  get promotionNote() {
+    const rules = this.schoolPromotionRules;
+    return rules.length ? rules.map(rule => rule.description).filter(Boolean).join(' ') : GLC_PROMOTION_NOTE;
+  }
+  get pickupNote() { return this.promotion('glc-registration-pickup')?.description ?? GLC_PICKUP_NOTE; }
+  get sidaNote() { return this.promotion('glc-sida')?.description ?? GLC_SIDA_NOTE; }
   returningStudents = 0;
   peopleOverride: number | null = null;
   registrationDate = (() => {
@@ -42,6 +46,7 @@ export class GlcQuoteCalculator {
     readonly courses: () => GlcCourse[],
     readonly rooms: () => GlcRoom[],
     readonly registrationRate: () => number,
+    readonly content?: () => CiaContentConfig,
   ) {
     this.plan = new GlcQuotePlan('power-speaking', 'annex-double', '2026-09-06', this.weeks,
       kind => kind === 'course'
@@ -57,7 +62,13 @@ export class GlcQuoteCalculator {
   get family() { return this.plan.courses.some(row => this.course(row)?.family); }
   get people() { return this.peopleOverride ?? (this.family ? 2 : 1); }
   get returningStudentOptions() { return Array.from({ length: this.people + 1 }, (_, index) => index); }
-  get registration() { return (this.people - Math.min(this.people, Math.max(0, this.returningStudents))) * this.registrationRate(); }
+  get registration() {
+    const returningWaiver = this.promotion('glc-returning-registration');
+    const returning = !this.content || returningWaiver?.waiveRegistration
+      ? Math.min(this.people, Math.max(0, this.returningStudents))
+      : 0;
+    return (this.people - returning) * this.registrationRate();
+  }
   get tuition() { return this.plan.total('course'); }
   get accommodation() { return this.plan.total('room'); }
 
@@ -71,26 +82,77 @@ export class GlcQuoteCalculator {
     return blocks + Math.floor(run / 4);
   }
 
-  get schoolDiscountBlocks() {
-    const eligible = this.plan.courses.filter(row => this.course(row)?.offSeasonEligible);
-    return this.blocks(this.plan.weekStarts(eligible).filter(start => GLC_PROMOTION_WINDOWS.some(([from, to]) =>
-      start >= this.plan.date(from)! && start + 6 * DAY <= this.plan.date(to)!)));
+  private get schoolPromotionRules(): CiaPromotionRule[] {
+    const configured = this.content?.().quoteSettings.promotions
+      .filter(rule => rule.enabled && rule.id.startsWith('glc-school-window-'));
+    if (configured?.length) return configured;
+    return GLC_PROMOTION_WINDOWS.map(([coverageStart, coverageEnd], index) => ({
+      id: `glc-school-window-${index + 1}`, name: '学校年度优惠', description: GLC_PROMOTION_NOTE,
+      enabled: true, sortOrder: index, priority: 10 + index, stackable: true, newStudentsOnly: false,
+      discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false,
+      minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 150,
+      eligibleCourseIds: this.courses().filter(course => course.offSeasonEligible).map(course => course.id),
+      coverageStart, coverageEnd, coverageTarget: 'course',
+    }));
   }
-  get schoolDiscount() { return this.schoolDiscountBlocks * 150; }
-  get sidaDiscount() { return this.blocks(this.plan.weekStarts()) * 50; }
+
+  private promotion(id: string): CiaPromotionRule | undefined {
+    return this.content?.().quoteSettings.promotions.find(rule => rule.id === id && rule.enabled);
+  }
+
+  private feeRule(id: string, fallback: Partial<CiaLocalFeeRule>): CiaLocalFeeRule {
+    return this.content?.().localFees.find(rule => rule.id === id) ?? {
+      id, name: String(fallback.name ?? id), currency: 'PHP', amount: Number(fallback.amount ?? 0),
+      billingRule: fallback.billingRule ?? 'once', includeInTotal: fallback.includeInTotal ?? true,
+      note: String(fallback.note ?? ''), enabled: true, sortOrder: Number(fallback.sortOrder ?? 0),
+      ...fallback,
+    } as CiaLocalFeeRule;
+  }
+
+  private schoolRuleBlocks(rule: CiaPromotionRule): number {
+    const eligibleIds = rule.eligibleCourseIds?.length ? new Set(rule.eligibleCourseIds) : null;
+    const eligibleRows = this.plan.courses.filter(row => !eligibleIds || eligibleIds.has(row.optionId));
+    const from = rule.coverageStart ? this.plan.date(rule.coverageStart) : null;
+    const to = rule.coverageEnd ? this.plan.date(rule.coverageEnd) : null;
+    const starts = this.plan.weekStarts(eligibleRows).filter(start =>
+      (from === null || start >= from) && (to === null || start + 6 * DAY <= to));
+    return this.blocks(starts);
+  }
+
+  get schoolDiscountBlocks() { return this.schoolPromotionRules.reduce((sum, rule) => sum + this.schoolRuleBlocks(rule), 0); }
+  get schoolDiscount() {
+    return this.schoolPromotionRules.reduce((sum, rule) =>
+      sum + this.schoolRuleBlocks(rule) * (rule.incrementValue ?? rule.discountValue), 0);
+  }
+  get sidaDiscount() {
+    const rule = this.promotion('glc-sida');
+    if (this.content && !rule) return 0;
+    const eligibleIds = rule?.eligibleCourseIds?.length ? new Set(rule.eligibleCourseIds) : null;
+    const rows = eligibleIds ? this.plan.courses.filter(row => eligibleIds.has(row.optionId)) : this.plan.courses;
+    return this.blocks(this.plan.weekStarts(rows)) * (rule?.incrementValue ?? rule?.discountValue ?? 50);
+  }
   get totalUsd() { return Math.max(0, this.registration + this.tuition + this.accommodation - this.schoolDiscount - this.sidaDiscount); }
   get registrationPickupEligible() {
-    return this.plan.date(this.registrationDate) !== null && this.plan.courseWeeks >= 4
-      && this.registrationDate >= GLC_PICKUP_REGISTRATION_WINDOW[0]
-      && this.registrationDate <= GLC_PICKUP_REGISTRATION_WINDOW[1];
+    const rule = this.promotion('glc-registration-pickup');
+    if (this.content && !rule) return false;
+    const start = rule?.registrationStart ?? GLC_PICKUP_REGISTRATION_WINDOW[0];
+    const end = rule?.registrationEnd ?? GLC_PICKUP_REGISTRATION_WINDOW[1];
+    return this.plan.date(this.registrationDate) !== null && this.plan.courseWeeks >= (rule?.minimumCourseWeeks ?? 4)
+      && this.registrationDate >= start && this.registrationDate <= end;
   }
   get studyPickupEligible() {
     const firstCourse = [...this.plan.courses].sort((a, b) => a.startDate.localeCompare(b.startDate))[0];
-    return this.schoolDiscountBlocks > 0 && !!firstCourse && !!this.course(firstCourse)?.offSeasonEligible
-      && GLC_PROMOTION_WINDOWS.some(([from, to]) => this.plan.startDate >= from && this.plan.startDate <= to);
+    return this.schoolDiscountBlocks > 0 && !!firstCourse && this.schoolPromotionRules.some(rule => {
+      const eligible = !rule.eligibleCourseIds?.length || rule.eligibleCourseIds.includes(firstCourse.optionId);
+      return eligible && (!rule.coverageStart || firstCourse.startDate >= rule.coverageStart)
+        && (!rule.coverageEnd || firstCourse.startDate <= rule.coverageEnd);
+    });
   }
   get freePickup() { return this.pickup === 'sunday' && (this.registrationPickupEligible || this.studyPickupEligible); }
-  get pickupAmount() { return this.pickup === 'none' || this.freePickup ? 0 : 1750 * this.people; }
+  get pickupAmount() {
+    const travellers = this.peopleOverride ?? 1;
+    return this.pickup === 'none' || this.freePickup ? 0 : this.feeRule('pickup', { amount: 1750 }).amount * travellers;
+  }
   get longTermVisa() { return !['tourist30', 'tourist59'].includes(this.visaType); }
   get visaCount() { return this.longTermVisa ? 0 : Math.max(0, Math.ceil((this.plan.stayWeeks * 7 - this.initialVisaDays) / 30)); }
 
@@ -114,22 +176,35 @@ export class GlcQuoteCalculator {
   }
 
   get localFees(): GlcLocalFee[] {
-    const periods = Array.from({ length: this.people }, (_, index) => Math.ceil(this.plan.roomsFor(index + 1).reduce((sum, row) => sum + row.weeks, 0) / 4)).reduce((sum, count) => sum + count, 0);
+    const accommodationPeriods = (rule: CiaLocalFeeRule) => Array.from({ length: this.people }, (_, index) => {
+      const weeks = this.plan.roomsFor(index + 1).reduce((sum, row) => sum + row.weeks, 0);
+      const period = Math.max(1, rule.periodWeeks ?? 4);
+      return rule.rounding === 'proportional' ? weeks / period : Math.ceil(weeks / period);
+    }).reduce((sum, count) => sum + count, 0);
     const textbook = (kind: 'esl' | 'ielts') => this.plan.courses.filter(row => this.course(row)?.textbook === kind).reduce((sum, row) => sum + row.weeks, 0);
     const eslWeeks = textbook('esl'), ieltsWeeks = textbook('ielts');
+    const ssp = this.feeRule('ssp', { name: 'SSP特殊学习许可证', amount: 8000, waiveForLongTermVisa: true });
+    const sspCard = this.feeRule('ssp-e-card', { name: 'SSP-E CARD', amount: 4500, waiveForLongTermVisa: true });
+    const acr = this.feeRule('acr-i-card', { name: 'ACR-I CARD 外国人身份证', amount: 4000, waiveForLongTermVisa: true });
+    const arp = this.feeRule('arp', { name: 'ARP外国人登记', amount: 300 });
+    const management = this.feeRule('management', { name: '管理费', amount: 6000, periodWeeks: 4, rounding: 'ceil' });
+    const water = this.feeRule('water', { name: '水费', amount: 2000, periodWeeks: 4, rounding: 'ceil' });
+    const electricity = this.feeRule('electricity', { name: '电费', amount: 2000, periodWeeks: 4, rounding: 'ceil' });
+    const visa = this.feeRule('visa-extension', { name: '签证续签', amount: 4670 });
     const fees: GlcLocalFee[] = [
-      { item: 'SSP特殊学习许可证', unit: '8,000 比索 / 人', quantity: this.longTermVisa ? 0 : this.people, total: this.longTermVisa ? 0 : 8000 * this.people, note: this.longTermVisa ? this.visaNote : '移民局收取，按报名学习时长办理；续费及换校需要重新办理' },
-      { item: 'SSP-E CARD', unit: '4,500 比索 / 人', quantity: this.longTermVisa ? 0 : this.people, total: this.longTermVisa ? 0 : 4500 * this.people, note: this.longTermVisa ? this.visaNote : '移民局收取，入学和SSP同时办理，每人收一次' },
-      { item: 'ACR-I CARD 外国人身份证', unit: '4,000 比索 / 人', quantity: this.longTermVisa ? 0 : this.visaCount ? this.people : 0, total: this.longTermVisa ? 0 : this.visaCount ? 4000 * this.people : 0, note: this.longTermVisa ? this.visaNote : `按${this.initialVisaDays}天签证预估，第一次续签时每人计入一次，实际以办理要求为准` },
-      { item: 'ARP外国人登记', unit: '300 比索 / 人', quantity: this.longTermVisa || this.visaCount ? this.people : 0, total: (this.longTermVisa || this.visaCount ? this.people : 0) * 300, note: this.longTermVisa ? '长期签证仍计收一次，暂按300比索预估；须由顾问确认学校最新政策。' : '旅游签证首次续签时计入一次，暂按300比索预估；须由顾问确认学校最新政策。' },
-      { item: '管理费', unit: '6,000 比索 / 4周', quantity: periods, total: 6000 * periods, note: 'ID、餐食、洗衣、房间清洁等；按住宿周数，每4周预估1份，不足4周先按1份预估' },
-      { item: '水费', unit: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '按住宿周数，每4周预估1份，不足4周先按1份预估，实际以学校收费为准' },
-      { item: '电费', unit: '2,000 比索 / 4周', quantity: periods, total: 2000 * periods, note: '预估金额；实际按20比索/度/人结算，不足4周先按1份预估' },
-      { item: '签证续签', unit: '4,670 比索 / 次 / 人', quantity: this.visaCount * this.people, total: this.visaCount * 4670 * this.people, note: this.visaNote },
+      { item: ssp.name, unit: `${ssp.amount.toLocaleString('en-US')} 比索 / 人`, quantity: this.longTermVisa && ssp.waiveForLongTermVisa ? 0 : this.people, total: (this.longTermVisa && ssp.waiveForLongTermVisa ? 0 : this.people) * ssp.amount, note: this.longTermVisa && ssp.waiveForLongTermVisa ? this.visaNote : ssp.note },
+      { item: sspCard.name, unit: `${sspCard.amount.toLocaleString('en-US')} 比索 / 人`, quantity: this.longTermVisa && sspCard.waiveForLongTermVisa ? 0 : this.people, total: (this.longTermVisa && sspCard.waiveForLongTermVisa ? 0 : this.people) * sspCard.amount, note: this.longTermVisa && sspCard.waiveForLongTermVisa ? this.visaNote : sspCard.note },
+      { item: acr.name, unit: `${acr.amount.toLocaleString('en-US')} 比索 / 人`, quantity: this.longTermVisa && acr.waiveForLongTermVisa ? 0 : this.visaCount ? this.people : 0, total: (this.longTermVisa && acr.waiveForLongTermVisa ? 0 : this.visaCount ? this.people : 0) * acr.amount, note: this.longTermVisa && acr.waiveForLongTermVisa ? this.visaNote : acr.note },
+      { item: arp.name, unit: `${arp.amount.toLocaleString('en-US')} 比索 / 人`, quantity: this.longTermVisa || this.visaCount ? this.people : 0, total: (this.longTermVisa || this.visaCount ? this.people : 0) * arp.amount, note: arp.note },
+      ...[management, water, electricity].map(rule => { const quantity = accommodationPeriods(rule); return { item: rule.name, unit: `${rule.amount.toLocaleString('en-US')} 比索 / ${rule.periodWeeks ?? 4}周`, quantity, total: rule.amount * quantity, note: rule.note }; }),
+      { item: visa.name, unit: `${visa.amount.toLocaleString('en-US')} 比索 / 次 / 人`, quantity: this.visaCount * this.people, total: this.visaCount * visa.amount * this.people, note: this.visaNote },
     ];
-    if (eslWeeks) fees.push({ item: '教材费（英语课程）', unit: '3,000 比索 / 8周 / 人预估', quantity: Math.ceil(eslWeeks / 8) * this.people, total: 3000 * Math.ceil(eslWeeks / 8) * this.people, note: 'ESL课程1–8周约3,000比索/人；其他英语课程暂作同额预估，不同课程、换课及学习进度可能需另购教材，以实际购买为准' });
-    if (ieltsWeeks) fees.push({ item: '教材费（雅思）', unit: '5,000 比索 / 4周 / 人预估', quantity: Math.ceil(ieltsWeeks / 4) * this.people, total: 5000 * Math.ceil(ieltsWeeks / 4) * this.people, note: '雅思课程1–4周约5,000比索/人，不同课程及学习进度可能需另购教材，以到校后实际购买为准' });
-    return fees;
+    const eslBooks = this.feeRule('books-esl', { name: '教材费（英语课程）', amount: 3000, periodWeeks: 8 });
+    const ieltsBooks = this.feeRule('books-ielts', { name: '教材费（雅思）', amount: 5000, periodWeeks: 4 });
+    if (eslWeeks && eslBooks.enabled) { const quantity = Math.ceil(eslWeeks / (eslBooks.periodWeeks ?? 8)) * this.people; fees.push({ item: eslBooks.name, unit: `${eslBooks.amount.toLocaleString('en-US')} 比索 / ${eslBooks.periodWeeks ?? 8}周 / 人预估`, quantity, total: eslBooks.amount * quantity, note: eslBooks.note }); }
+    if (ieltsWeeks && ieltsBooks.enabled) { const quantity = Math.ceil(ieltsWeeks / (ieltsBooks.periodWeeks ?? 4)) * this.people; fees.push({ item: ieltsBooks.name, unit: `${ieltsBooks.amount.toLocaleString('en-US')} 比索 / ${ieltsBooks.periodWeeks ?? 4}周 / 人预估`, quantity, total: ieltsBooks.amount * quantity, note: ieltsBooks.note }); }
+    const hidden = new Set((this.content?.().localFees ?? []).filter(rule => !rule.enabled).map(rule => rule.name));
+    return fees.filter(fee => !hidden.has(fee.item));
   }
 
   get localTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
@@ -138,18 +213,23 @@ export class GlcQuoteCalculator {
     const status = this.pickup === 'none' ? '本次不选接机，可自行前往学校。'
       : this.freePickup && !this.registrationPickupEligible ? '本次按就读期间的学校年度优惠赠送周日接机一次。'
       : this.pickup === 'sunday' && !this.freePickup ? '本次不符合免费条件，周日接机按1,750比索/次预估。' : '';
-    return `${registration}${GLC_PICKUP_FEE_NOTE}${status}`;
+    const rule = this.promotion('glc-registration-pickup');
+    const base = rule?.description ?? GLC_PICKUP_FEE_NOTE;
+    return `${registration}${base}${status}`;
   }
   get optionalFees() {
+    const pickup = this.feeRule('pickup', { name: '宿务马克坦机场团体接机', amount: 1750, note: '学校团体接机，可能需在机场等候同批其他学生。' });
+    const deposit = this.feeRule('deposit', { name: '房间押金', amount: 3000, note: '可抵扣电费，离校按学校实际结算；不计入学杂费合计。' });
     return [
-      { item: '宿务马克坦机场团体接机', total: this.pickupAmount, note: `${this.pickupFeeNote} 学校团体接机，按实际选择接机的人数计费；可能需在机场等候同批其他学生。` },
-      { item: '房间押金', total: 3000 * this.people, note: `3,000比索/人${this.people > 1 ? `，共${this.people}人` : ''}；可抵扣电费，离校按学校实际结算；不计入学杂费合计` },
+      ...(pickup.enabled ? [{ item: pickup.name, total: this.pickupAmount, note: `${this.pickupFeeNote} ${pickup.note}` }] : []),
+      ...(deposit.enabled ? [{ item: deposit.name, total: deposit.amount * this.people, note: `${deposit.amount.toLocaleString('en-US')}比索/人${this.people > 1 ? `，共${this.people}人` : ''}；${deposit.note}` }] : []),
     ];
   }
 
   imageData(usdToCny: number, phpPerCny: number, exchangeNote: string, heroSrc: string) {
+    const imageSettings = this.content?.().quoteImageSettings;
     const paymentItems: QuoteImagePaymentItem[] = [
-      { icon: '注', label: `注册费${this.people > 1 ? `（${this.people}人）` : ''}`, amount: `${quoteMoney(this.registration)} 美元`, note: GLC_REGISTRATION_NOTE },
+      { icon: '注', label: `注册费${this.people > 1 ? `（${this.people}人）` : ''}`, amount: `${quoteMoney(this.registration)} 美元`, note: imageSettings?.paymentNotes.registration ?? GLC_REGISTRATION_NOTE },
     ];
     if (this.schoolDiscount) paymentItems.push({ icon: '惠', label: '学校优惠', amount: `− ${quoteMoney(this.schoolDiscount)} 美元`, note: this.promotionNote, accent: true });
     if (this.sidaDiscount) paymentItems.push({ icon: '惠', label: '思达启航专属优惠', amount: `− ${quoteMoney(this.sidaDiscount)} 美元`, note: this.sidaNote, accent: true });
@@ -157,11 +237,34 @@ export class GlcQuoteCalculator {
       schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc,
       weeks: this.plan.courseWeeks, startDate: this.plan.startDate, usdToCny, totalUsd: this.totalUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
-      localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: fee.note })),
-      localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / phpPerCny), localFeeNote: this.localFeeIntro,
-      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${Math.round(fee.total / phpPerCny).toLocaleString('zh-CN')} 元`, note: fee.note })),
-      ruleNotes: ['学费需到校前2周交齐，可由思达代收或自行转美元给学校。', '所有学生不收取寒暑假附加费。', exchangeNote],
+      localFeeItems: this.localFees.map(fee => ({
+        label: fee.item,
+        unit: fee.unit,
+        quantity: String(fee.quantity),
+        amount: `${quoteMoney(fee.total)} 比索`,
+        note: imageSettings?.localFeeNotes[this.content?.().localFees.find(item => item.name === fee.item)?.id ?? ''] ?? fee.note,
+      })),
+      localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / phpPerCny), localFeeNote: imageSettings?.localFeeIntro ?? this.localFeeIntro,
+      optionalFeeItems: this.optionalFees.map(fee => ({
+        label: fee.item,
+        amount: `${quoteMoney(fee.total)} 比索`,
+        cnyAmount: `人民币约 ${Math.round(fee.total / phpPerCny).toLocaleString('zh-CN')} 元`,
+        note: imageSettings?.localFeeNotes[this.content?.().localFees.find(item => item.name === fee.item)?.id ?? ''] ?? fee.note,
+      })),
+      ruleNotes: imageSettings?.footerNotes ?? ['学费需到校前2周交齐，可由思达代收或自行转美元给学校。', '所有学生不收取寒暑假附加费。', exchangeNote],
     });
-    return presentSchoolQuote({ ...quote, totalNote: '学费需到校前2周交齐，可由思达代收或自行转美元给学校。', importantNotes: ['所有学生不收取寒暑假附加费。', exchangeNote, '最终以学校价格、空房及优惠确认为准。'] }, this.plan, 'GLC', this.totalUsd, usdToCny);
+    return presentSchoolQuote({
+      ...quote,
+      paymentSectionTitle: imageSettings?.paymentSectionTitle ?? quote.paymentSectionTitle,
+      localFeeTitle: imageSettings?.localFeeSectionTitle ?? quote.localFeeTitle,
+      serviceSectionTitle: imageSettings?.serviceSectionTitle ?? quote.serviceSectionTitle,
+      benefitItems: imageSettings?.benefits ?? quote.benefitItems,
+      serviceLocations: imageSettings?.serviceLocations ?? quote.serviceLocations,
+      alumniBenefitTitle: imageSettings?.alumniBenefitTitle ?? quote.alumniBenefitTitle,
+      alumniBenefitItems: imageSettings ? [{ title: imageSettings.alumniBenefitTitle, subtitle: '', text: imageSettings.alumniBenefitText }] : quote.alumniBenefitItems,
+      noteTitle: imageSettings?.noteSectionTitle ?? quote.noteTitle,
+      totalNote: imageSettings?.footerNotes[0] ?? '学费需到校前2周交齐，可由思达代收或自行转美元给学校。',
+      importantNotes: [...(imageSettings?.footerNotes ?? ['所有学生不收取寒暑假附加费。']), exchangeNote],
+    }, this.plan, 'GLC', this.totalUsd, usdToCny);
   }
 }

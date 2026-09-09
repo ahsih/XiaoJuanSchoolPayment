@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImageOptionalFeeItem, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -15,11 +17,14 @@ import { applySchoolQuoteImageLayout } from '../../../components/school-quote-pl
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { MonolStudentQuote } from './monol-student-quote';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneMonolContentConfig, createDefaultMonolContentConfig } from './monol-content-config';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
-interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; }
+interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
 interface BasicInfoRow { label: string; value: string; }
 interface Highlight { image: string; title: string; text: string; }
 interface FitItem { title: string; text: string; }
@@ -50,21 +55,39 @@ interface SidaMonolTrustBadge { icon: string; label: string; }
     './monol-school-detail.component.css',
   ],
 })
-export class MonolSchoolDetailComponent implements OnInit {
+export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolSearchName = 'MONOL';
   private readonly pricingSchoolNames = ['菲律宾碧瑶MONOL语言学校', 'MONOL', 'Models of Nonpareil and Outstanding Learning'];
+  private readonly initialContent = createDefaultMonolContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
   private readonly courseFeeOrder = ['esl-4', 'general-esl', 'ielts', 'leap-english'];
   private readonly roomFeeOrder = ['premium-single-room', 'standard-single-room', 'small-single-room', 'triple-room', 'quad-room'];
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
-  registrationFee = 100;
-  readonly registrationDiscount = 100;
-  readonly offSeasonCourseDiscountPerBlock = 100;
-  readonly offSeasonRoomDiscountPerBlock = 100;
-  readonly snsDiscountPerBlock = 100;
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
+  promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
+  quoteImageSettings: CiaQuoteImageSettings = this.initialContent.quoteImageSettings;
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
   usdToCny = 7.2;
   readonly phpPerCny = 9;
   readonly quoteGeneralNotes = [
@@ -86,7 +109,7 @@ export class MonolSchoolDetailComponent implements OnInit {
     { icon: 'payments', label: '费用表', value: 'MONOL 2026年价目表', note: '注册费、4周课程费和不含餐费的4周住宿费均按价目表更新。' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  private readonly builtInGalleryImages: GalleryImage[] = [
     { category: '校区', title: 'MONOL校舍外观', description: 'MONOL官网首页展示的Baguio校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.jpg' },
     { category: '教室', title: 'MONOL官方课堂品牌照', description: '官网首页展示的MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.png' },
     { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.jpg' },
@@ -157,6 +180,7 @@ export class MonolSchoolDetailComponent implements OnInit {
     { id: 'triple-room', name: '三人间', fee: 500, note: '' },
     { id: 'quad-room', name: '四人间（胶囊式上下铺）', fee: 400, note: '胶囊房' },
   ];
+  galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly students: MonolStudentQuote[] = [new MonolStudentQuote(this)];
   quoteMode: 'single' | 'group' = 'single';
@@ -235,8 +259,68 @@ export class MonolSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    const preview = this.readSessionPreview();
+    this.applyContentConfig(preview ?? this.initialContent);
     this.loadPricingFromDatabase();
     this.loadExchangeRate();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('monol-editor-preview');
+    window.parent.postMessage({ type: 'monol-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'monol-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'monol-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id
+      && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback
+        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。'
+            : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'monol-content-located', target, status }, window.location.origin);
+    }, 80);
   }
 
   private loadExchangeRate(): void {
@@ -246,6 +330,74 @@ export class MonolSchoolDetailComponent implements OnInit {
       this.exchangeRateDate = rates.date;
       this.usingLiveExchangeRate = true;
     });
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('monol-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'MONOL' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'MONOL') return;
+    const content = cloneMonolContentConfig(value);
+    this.previewContent = content;
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) {
+      this.courseFees = courses.map(item => ({
+        id: item.id,
+        name: item.name,
+        tuition: item.tuition,
+        suitable: item.schedule,
+        note: [item.suitable, item.note].filter(Boolean).join('；'),
+      }));
+    }
+    if (rooms.length) {
+      this.roomFees = rooms.map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note }));
+    }
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortStayRatios = { ...settings.shortStayRatios };
+    this.promotionRules = settings.promotions.map(item => ({ ...item, eligibleRoomIds: item.eligibleRoomIds ? [...item.eligibleRoomIds] : undefined }));
+    this.localFeeRules = content.localFees.map(item => ({ ...item }));
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = settings.stayPolicies.map(item => ({ ...item }));
+    this.localFeeIntro = settings.localFeeIntro;
+    this.quoteImageSettings = content.quoteImageSettings;
+    this.galleryImages = [
+      ...this.builtInGalleryImages.map(item => ({ ...item })),
+      ...(content.media ?? [])
+        .filter(item => item.isActive && !!item.url)
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map(item => ({
+          category: this.resolveMediaCategory(item.category),
+          title: item.caption || item.altText || item.originalFileName || 'MONOL 学校媒体',
+          description: item.altText || item.caption || 'MONOL 学校实景内容',
+          src: item.url,
+          contentType: item.contentType,
+        })),
+    ];
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) {
+        if (!this.courseFees.some(item => item.id === row.optionId)) row.optionId = this.courseFees[0]?.id ?? row.optionId;
+      }
+      for (const row of student.quotePlan.rooms) {
+        if (!this.roomFees.some(item => item.id === row.optionId)) row.optionId = this.roomFees[0]?.id ?? row.optionId;
+      }
+    }
+    this.queuePreviewFocus(false);
   }
 
   private loadPricingFromDatabase(): void {
@@ -260,10 +412,42 @@ export class MonolSchoolDetailComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
+      this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      else this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existingSources = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? [])
+      .filter(photo => !!photo.url && !existingSources.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'MONOL 学校媒体',
+        description: photo.altText || photo.caption || 'MONOL 学校实景内容',
+        src: photo.url ?? '',
+        contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('campus') || value.includes('校园') || value.includes('校区')) return '校区';
+    return '设施';
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -411,6 +595,8 @@ export class MonolSchoolDetailComponent implements OnInit {
     return this.activeStudents.flatMap((student, studentIndex) => student.quotePlan.paymentItems().map((item) => ({
       ...item,
       label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}${item.icon === '课' ? item.label.replace('课程费', '课程名称') : item.label.replace('住宿费', '住宿名称')}`,
+      note: [item.note, item.icon === '课' ? this.quoteImageSettings.paymentNotes.course : this.quoteImageSettings.paymentNotes.accommodation]
+        .filter(Boolean).join('；'),
     })));
   }
   private groupedPromotionItems(): QuoteImagePaymentItem[] {
@@ -449,7 +635,7 @@ export class MonolSchoolDetailComponent implements OnInit {
   }
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
     return [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`, note: `100美元／人，一次性费用；本次共${this.activeStudents.length}人。` },
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`, note: `${this.quoteImageSettings.paymentNotes.registration}；本次共${this.activeStudents.length}人。` },
       ...this.studentPlanPaymentItems(),
       ...this.groupedPromotionItems(),
       ...this.groupedStatusItems(true),
@@ -457,12 +643,14 @@ export class MonolSchoolDetailComponent implements OnInit {
   }
 
   get optionalFeeItems(): QuoteImageOptionalFeeItem[] {
+    const roomDepositRule = this.localFeeRules.find(item => item.id === 'room-deposit' && item.enabled);
+    const mealRule = this.localFeeRules.find(item => item.id === 'meals' && item.enabled);
     const roomDeposit = this.activeStudents.reduce((sum, student) => sum + student.roomDeposit, 0);
     const mealQuantity = this.activeStudents.reduce((sum, student) => sum + student.mealQuantity, 0);
     const meals = this.activeStudents.reduce((sum, student) => sum + student.mealEstimate, 0);
     return [
-      { label: '房间押金', amount: this.formatPhp(roomDeposit), cnyAmount: `约 ${Math.round(roomDeposit / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `4,000比索／人 × ${this.activeStudents.length}；无损坏及欠费时毕业可退，不计入学杂费合计。` },
-      { label: '餐费', amount: this.formatPhp(meals), cnyAmount: `约 ${Math.round(meals / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `14,000比索／4周 × ${this.formatFeeQuantity(mealQuantity)}；约150–250比索／餐，按实际点餐付费，不计入学杂费合计。` },
+      ...(roomDepositRule ? [{ label: roomDepositRule.name, amount: this.formatPhp(roomDeposit), cnyAmount: `约 ${Math.round(roomDeposit / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `${roomDepositRule.amount.toLocaleString()}比索／人 × ${this.activeStudents.length}；${this.quoteImageSettings.localFeeNotes[roomDepositRule.id] || roomDepositRule.note}` }] : []),
+      ...(mealRule ? [{ label: mealRule.name, amount: this.formatPhp(meals), cnyAmount: `约 ${Math.round(meals / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `${mealRule.amount.toLocaleString()}比索／${mealRule.periodWeeks ?? 4}周 × ${this.formatFeeQuantity(mealQuantity)}；${this.quoteImageSettings.localFeeNotes[mealRule.id] || mealRule.note}` }] : []),
     ];
   }
 
@@ -485,19 +673,22 @@ export class MonolSchoolDetailComponent implements OnInit {
         ...this.groupedPromotionItems(),
         ...this.groupedStatusItems(false),
       ],
-      localFeeItems: this.estimatedLocalFees.map((fee) => ({
-        label: fee.item,
-        unit: fee.unitLabel,
-        quantity: this.formatFeeQuantity(fee.quantity),
-        amount: this.formatPhp(fee.total),
-        note: fee.note,
-      })),
+      localFeeItems: this.estimatedLocalFees.map((fee) => {
+        const id = this.localFeeRules.find(item => item.name === fee.item)?.id ?? '';
+        return {
+          label: fee.item,
+          unit: fee.unitLabel,
+          quantity: this.formatFeeQuantity(fee.quantity),
+          amount: this.formatPhp(fee.total),
+          note: this.quoteImageSettings.localFeeNotes[id] || fee.note,
+        };
+      }),
       localFeeTotal: this.localFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.localFeeCny,
-      localFeeNote: '房间押金与餐费另行准备，不计入学杂费及人民币预估合计。',
+      localFeeNote: this.quoteImageSettings.localFeeIntro,
       optionalFeeItems: this.optionalFeeItems,
-      ruleNotes: this.quoteGeneralNotes,
+      ruleNotes: this.quoteImageSettings.footerNotes,
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
     });
@@ -505,10 +696,41 @@ export class MonolSchoolDetailComponent implements OnInit {
       ...applySchoolQuoteImageLayout(quote, 'MONOL', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny),
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading.replace(/\s+/g, '')}-${this.quoteStartDate.replace(/-/g, '')}.png`,
-      importantNotes: this.quoteGeneralNotes,
+      paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.quoteImageSettings.benefits,
+      serviceLocations: this.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.quoteImageSettings.noteSectionTitle,
+      importantNotes: this.quoteImageSettings.footerNotes,
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
       exchangeRateText: `学杂费按1元人民币≈${this.phpPerCny}比索估算`,
     };
+  }
+
+  previewFeeId(name: string): string {
+    return this.localFeeRules.find(item => item.name === name)?.id ?? 'local-fees';
+  }
+
+  previewPaymentTarget(item: QuoteImagePaymentItem): CiaPreviewTarget {
+    if (item.icon === '课') {
+      const id = this.courseFees.find(course => item.detailTitle?.includes(course.name))?.id ?? this.selectedCourseId;
+      return { kind: 'course', id };
+    }
+    if (item.icon === '宿') {
+      const id = this.roomFees.find(room => item.detailTitle?.includes(room.name))?.id ?? this.selectedRoomId;
+      return { kind: 'room', id };
+    }
+    if (item.label.includes('注册费') && !item.amount.startsWith('−')) return { kind: 'section', id: 'quote-registration' };
+    const normalizedLabel = item.label.replace(/（.*?）/g, '');
+    const promotion = this.promotionRules.find(rule => (item.note ?? '').includes(rule.description))
+      ?? this.promotionRules.find(rule => normalizedLabel.includes(rule.name)
+      || (normalizedLabel.includes('淡季课程') && rule.id.startsWith('monol-off-season-course'))
+      || (normalizedLabel.includes('淡季住宿') && rule.id.startsWith('monol-off-season-room'))
+      || (normalizedLabel.includes('注册费') && rule.waiveRegistration));
+    return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
   formatUsd(value: number): string {

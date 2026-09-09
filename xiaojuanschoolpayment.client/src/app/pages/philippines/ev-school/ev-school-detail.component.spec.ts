@@ -1,8 +1,13 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { createDefaultEvContentConfig } from './ev-content-config';
 import { EvSchoolDetailComponent } from './ev-school-detail.component';
 
 describe('EV accommodation management fees', () => {
@@ -10,7 +15,10 @@ describe('EV accommodation management fees', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     component = TestBed.runInInjectionContext(() => new EvSchoolDetailComponent());
   });
@@ -23,7 +31,7 @@ describe('EV accommodation management fees', () => {
     const quote = component.quoteImageData;
     const discount = quote.paymentItems.find(row => row.label === '思达折扣')!;
     expect(discount.amount).toBe('− 188 美元');
-    expect(discount.note).toBe('课程费和住宿费享95折');
+    expect(discount.note).toBe('课程费、住宿费和旺季附加费享95折');
     expect(quote.totalUsd).toBe('3,672 美元');
     expect(quote.conversionRates).toEqual({ usdToCny: 6.719075, phpPerCny: 9.3037, date: '2026-09-03' });
     const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = quote;
@@ -46,6 +54,25 @@ describe('EV accommodation management fees', () => {
     renderer.quote = component.quoteImageData;
     expect(renderer['quoteFooterNotes']().join('')).toContain('本次采用备用汇率');
     expect(renderer['quoteFooterNotes']().join('')).not.toContain('2026-09-03');
+  });
+
+  it('uses employee-edited EV prices, discounts and local fees in both webpage and quote image', () => {
+    const edited = createDefaultEvContentConfig();
+    edited.courses.find(item => item.id === 'semi-sparta-esl')!.tuition = 2000;
+    edited.rooms.find(item => item.id === 'quad-bunk')!.fee = 1000;
+    edited.quoteSettings.promotions.find(item => item.id === 'ev-sida-95')!.discountValue = 10;
+    edited.localFees.find(item => item.id === 'ssp')!.amount = 9000;
+    edited.quoteImageSettings.paymentNotes.course = '员工修改后的课程图片说明';
+
+    component['applyContentConfig'](edited);
+
+    expect(component.selectedCourse.tuition).toBe(2000);
+    expect(component.selectedRoom.fee).toBe(1000);
+    expect(component.discountPercent).toBe(10);
+    expect(component.quoteUsd).toBe(2800);
+    expect(component.includedLocalFees.find(item => item.item === 'SSP特殊学习许可证')?.total).toBe(9000);
+    expect(component.quoteImageData.paymentItems.find(item => item.label === '思达折扣')?.amount).toBe('− 300 美元');
+    expect(component.quoteImageData.paymentItems.find(item => item.label.startsWith('课程费'))?.note).toContain('员工修改后的课程图片说明');
   });
 
   it('uses the high-resolution brand master and the requested deposit wording', async () => {
@@ -109,6 +136,8 @@ describe('EV accommodation management fees', () => {
       const quote = component.quoteImageData;
       expect(quote.fullFeeDetails).toBeTrue();
       expect(quote.localFeeNote).toBe(component.localFeeEstimateNote);
+      expect(quote.localFeeNote).toContain('本报价仅供学生参考');
+      expect(quote.localFeeNote).toContain('具体以到校后实际产生及学校收取为准');
       expect(quote.localFeeItems).toEqual(component.includedLocalFees.map(fee => ({
         label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: component.formatPhp(fee.total), note: fee.note,
       })));
@@ -129,7 +158,7 @@ describe('EV accommodation management fees', () => {
       expect(text).toContain('校内管理费');
       expect(text).toContain('学生证');
       expect(text).toContain(component.formatPhp(component.localFeesTotal).replace(/\s/g, ''));
-      expect(text).toContain('4,000比索/4周');
+      expect(text.replace(/／/g, '/')).toContain('4,000比索/4周');
       expect(blob.type).toBe('image/png');
       const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
       expect(layout.localHeights.length).toBe(11);
@@ -200,7 +229,7 @@ describe('EV accommodation management fees', () => {
     component.updateSelection('course', component.courseSelections[1].id, { startDate: '2026-09-20' });
     expect(component.hasOverlappingRows).toBeTrue();
     expect(component.canExportQuote).toBeFalse();
-    expect(component.planError).toContain('日期重叠');
+    expect(component.planError).toContain('日期有重叠');
   });
 
   it('keeps the image heading concise while preserving necessary rules and the webpage amounts', () => {
@@ -214,15 +243,84 @@ describe('EV accommodation management fees', () => {
     expect(quote.fileName).toContain('EV主校区3周报价');
     expect(quote.importantNotes?.join('')).toContain('2周按4周价的65%，3周按4周价的85%');
     expect(quote.importantNotes?.join('')).toContain('课程与住宿日期不完全一致');
+    expect(quote.importantNotes?.join('')).toContain(component.paymentDeadlineNote);
     expect(quote.importantNotes?.join('')).not.toContain('旺季附加费');
     expect(quote.importantNotes?.join('')).not.toContain('未成年管理费');
     expect(quote.totalUsd).toBe(component.quoteUsdText.replace(/起$/, ''));
-    expect(quote.totalCny).toBe(`人民币预计金额：${component.quoteCnyText.replace(/起$/, '')}`);
+    expect(quote.totalCny).toBe(`人民币预计金额：${component.quoteCnyText.replace(' 元人民币', ' 元').replace(/起$/, '')}`);
     expect(component.formatUsd(1234.25)).toBe('1,234.25');
   });
 
+  it('always shows peak and minor rows on the webpage but omits zero-value rows from the image', () => {
+    const webpageRows = component.schoolPaymentItems;
+    const peakRow = webpageRows.find(row => row.label === '旺季附加费');
+    const minorRow = webpageRows.find(row => row.label === '未成年管理费');
+
+    expect(peakRow?.amount).toBe('0 美元');
+    expect(peakRow?.note).toContain('当前方案未覆盖旺季');
+    expect(minorRow?.amount).toBe('0 美元');
+    expect(minorRow?.note).toContain('当前方案无未成年学生');
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeFalse();
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '未成年管理费')).toBeFalse();
+
+    component.selectedStartDate = '2027-07-04';
+    component.selectedWeeks = 4;
+    component.isMinorStudent = true;
+
+    expect(component.schoolPaymentItems.find(row => row.label === '旺季附加费')?.amount).toBe('160 美元');
+    expect(component.schoolPaymentItems.find(row => row.label === '未成年管理费')?.amount).toBe('100 美元');
+    expect(component.schoolPaymentItems.find(row => row.label === '思达折扣')?.amount).toBe('− 102 美元');
+    expect(component.quoteUsd).toBe(2138);
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeTrue();
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '未成年管理费')).toBeTrue();
+  });
+
+  it('syncs an EV course Sunday to the matching room and rejects non-Sunday dates', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    editor.syncCourseDatesToRooms = true;
+    const input = document.createElement('input');
+
+    editor.updateStartDate('course', 0, '2027-07-04', input);
+    expect(component.courseSelections[0].startDate).toBe('2027-07-04');
+    expect(component.roomSelections[0].startDate).toBe('2027-07-04');
+
+    input.value = '2027-07-05';
+    editor.updateStartDate('course', 0, input.value, input);
+    expect(component.courseSelections[0].startDate).toBe('2027-07-04');
+    expect(component.roomSelections[0].startDate).toBe('2027-07-04');
+    expect(input.value).toBe('2027-07-04');
+  });
+
+  it('groups the EV course selector into Sparta and Semi-Sparta sections', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+
+    const groups = editor.optionGroups('course');
+    expect(groups.map(group => group.label)).toEqual(['斯巴达课程', '半斯巴达课程']);
+    expect(groups[0].options.every(option => option.id.startsWith('sparta-'))).toBeTrue();
+    expect(groups[1].options.every(option => option.id.startsWith('semi-sparta-'))).toBeTrue();
+  });
+
+  it('automatically adds and removes the minor fee when the checkbox changes', () => {
+    const student = component.students[0];
+    const adultTotal = component.quoteUsd;
+
+    student.calculator.isMinorStudent = true;
+    expect(student.calculator.isMinorStudent).toBeTrue();
+    expect(component.minorTotal).toBe(100);
+    expect(component.quoteUsd).toBe(adultTotal + 100);
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '未成年管理费')?.amount).toBe('100 美元');
+
+    student.calculator.isMinorStudent = false;
+    expect(student.calculator.isMinorStudent).toBeFalse();
+    expect(component.minorTotal).toBe(0);
+    expect(component.quoteUsd).toBe(adultTotal);
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '未成年管理费')).toBeFalse();
+  });
+
   it('preserves more than seven payment rows and renders peak and minor fees only when applicable', async () => {
-    component.selectedStartDate = '2026-07-05';
+    component.selectedStartDate = '2027-07-04';
     component.isMinorStudent = true;
     component.selectedWeeks = 2;
     for (let index = 0; index < 2; index++) {
@@ -243,6 +341,8 @@ describe('EV accommodation management fees', () => {
     expect(text).toContain('EV主校区10周报价');
     expect(text).toContain('旺季附加费');
     expect(text).toContain('未成年管理费');
+    expect(text).toContain('到校前2周交齐');
+    expect(text).toContain('支付宝实时汇率');
     const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
     expect(layout.paymentHeights.length).toBe(10);
     expect(layout.paymentExtra).toBeGreaterThan(0);
@@ -251,21 +351,36 @@ describe('EV accommodation management fees', () => {
     bitmap.close();
   }, 30000);
 
-  it('charges the 2027 eight-week peak season and includes both date ranges in the quote detail', () => {
+  it('charges the 2027 eight-week peak season and shows only its current date range', () => {
     component.selectedStartDate = '2027-07-04';
     component.selectedWeeks = 8;
 
     expect(component.peakSeasonWeeks).toBe(8);
     expect(component.peakTotal).toBe(320);
+    expect(component.discountTotal).toBe(204);
+    expect(component.quoteUsd).toBe(3976);
     const webpageRow = component.schoolPaymentItems.find(row => row.label === '旺季附加费');
     const imageRow = component.quoteImageData.paymentItems.find(row => row.label === '旺季附加费');
     expect(webpageRow?.amount).toBe('320 美元');
-    expect(webpageRow?.note).toContain('2026/07/05–2026/08/29；2027/07/04–2027/08/28');
+    expect(webpageRow?.note).toContain('2027/07/04–2027/08/28');
+    expect(webpageRow?.note).not.toContain('2026');
+    expect(webpageRow?.note).not.toContain('95折');
     expect(imageRow?.amount).toBe('320 美元');
     expect(imageRow?.note).toBe(webpageRow?.note);
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('课程费、住宿费和旺季附加费享95折');
 
     component.selectedStartDate = '2027-08-29';
     expect(component.peakSeasonWeeks).toBe(0);
+    expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeFalse();
+  });
+
+  it('does not charge or display the expired 2026 peak season', () => {
+    component.selectedStartDate = '2026-07-05';
+    component.selectedWeeks = 8;
+
+    expect(component.peakSeasonWeeks).toBe(0);
+    expect(component.peakTotal).toBe(0);
+    expect(component.schoolPaymentItems.find(row => row.label === '旺季附加费')?.note).not.toContain('2026/07/05');
     expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeFalse();
   });
 
@@ -315,6 +430,8 @@ describe('EV accommodation management fees', () => {
     expect(renderer.quote.paymentItems.filter(item => item.detailTitle).length).toBe(4);
     expect(renderer.quote.localFeeItems?.length).toBe(11);
     expect(renderer.quote.importantNotes?.join('')).toContain('最终以学校价格');
+    expect(renderer.quote.importantNotes?.join('')).toContain('到校前2周交齐');
+    expect(renderer.quote.importantNotes?.join('')).toContain('支付宝实时汇率');
     expect(renderer.quote.totalUsd).toBe('4,527 美元');
   }, 30000);
 

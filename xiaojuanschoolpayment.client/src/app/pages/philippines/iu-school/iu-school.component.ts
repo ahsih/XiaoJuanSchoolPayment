@@ -11,7 +11,7 @@ import { ExchangeRateService } from '../../../../services/exchange-rate.service'
 import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
-import { IuIclQuote } from './iu-icl-quote';
+import { buildIuIclGroupImageData, IuIclQuote, iuIclGroupLocalFees, iuIclGroupPaymentItems } from './iu-icl-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -124,6 +124,10 @@ interface SourceLink {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../philippines-local-fee-table.css',
+    '../../../components/school-group-quote.css',
+    './iu-icl-quote-layout.css',
   ],
 })
 export class IuSchoolComponent implements OnInit {
@@ -173,6 +177,9 @@ export class IuSchoolComponent implements OnInit {
   exchangeRateLive = false;
   readonly weekOptions = Array.from({ length: 24 }, (_, index) => index + 1);
   readonly quoteCalculator = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
+  readonly students: IuIclQuote[] = [this.quoteCalculator];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
@@ -416,7 +423,35 @@ export class IuSchoolComponent implements OnInit {
     { time: '19:00 - 21:00', title: '晚间运动 / Mock / 自习', text: '公开资料提到晚间运动课、IELTS/TOEIC Mock和自习安排。' },
   ];
 
-  get localFees() { return this.quoteCalculator.localFees; }
+  get studentCount(): number { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(this.createStudentQuote());
+    }
+  }
+
+  setQuoteMode(value: 'single' | 'group'): void {
+    this.quoteMode = value;
+    if (value === 'group') this.studentCount = this.requestedStudentCount;
+  }
+
+  get activeStudents(): IuIclQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+
+  private createStudentQuote(): IuIclQuote {
+    const quote = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', this.quoteCalculator.selectedStartDate);
+    quote.updatePrices(
+      new Map(this.quoteCalculator.courses.map(courseItem => [courseItem.name, courseItem.tuition])),
+      new Map(this.quoteCalculator.rooms.map(roomItem => [roomItem.name, roomItem.fee])),
+    );
+    return quote;
+  }
+
+  get localFees() { return iuIclGroupLocalFees(this.activeStudents); }
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先判断IU是否适合', text: '根据目标、预算、房型、是否亲子、是否需要Fitness或考试课程做初筛。' },
@@ -579,10 +614,9 @@ export class IuSchoolComponent implements OnInit {
     rooms: SchoolRoomDTO[],
     fees: SchoolFeeDTO[],
   ): void {
-    this.quoteCalculator.updatePrices(
-      new Map(lessons.filter(lesson => lesson.week === 4).map(lesson => [lesson.name, lesson.price])),
-      new Map(rooms.filter(room => room.week === 4).map(room => [room.name, room.price])),
-    );
+    const coursePrices = new Map(lessons.filter(lesson => lesson.week === 4).map(lesson => [lesson.name, lesson.price]));
+    const roomPrices = new Map(rooms.filter(room => room.week === 4).map(room => [room.name, room.price]));
+    this.students.forEach(student => student.updatePrices(coursePrices, roomPrices));
 
     const databaseRegistrationFee = fees.find((fee) => fee.name === '注册费');
     if (databaseRegistrationFee) {
@@ -693,7 +727,7 @@ export class IuSchoolComponent implements OnInit {
   }
 
   get quoteUsd(): number {
-    return this.quoteCalculator.total;
+    return this.activeStudents.reduce((sum, student) => sum + student.total, 0);
   }
 
   get quoteUsdText(): string {
@@ -720,14 +754,47 @@ export class IuSchoolComponent implements OnInit {
     this.quoteCalculator.plan.courses[0].startDate = value;
     this.quoteCalculator.plan.rooms[0].startDate = value;
   }
-  get quoteHeading(): string { return `IU${this.quoteCalculator.courseWeeks}周报价`; }
-  get schoolPaymentItems() { return this.quoteCalculator.schoolPaymentItems; }
-  get quoteError(): string { return this.quoteCalculator.error; }
-  get quoteWarning(): string { return this.quoteCalculator.warning; }
-  get localFeesTotal(): number { return this.quoteCalculator.localFeeTotal; }
+  get quoteHeading(): string {
+    return this.quoteMode === 'single' ? `IU${this.quoteCalculator.courseWeeks}周报价` : `IU ${this.activeStudents.length}人报价`;
+  }
+  get schoolPaymentItems() { return iuIclGroupPaymentItems(this.activeStudents); }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) {
+      return '多人报价人数请选择2–20人的整数。';
+    }
+    const index = this.activeStudents.findIndex(student => !!student.error);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].error}`;
+  }
+  get quoteWarning(): string {
+    return this.activeStudents.flatMap((student, index) => student.warning
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.warning}`]
+      : []).join('；');
+  }
+  get promotionNote(): string {
+    if (this.quoteMode === 'single') return this.quoteCalculator.promotionNote;
+    const eligible = this.activeStudents.filter(student => student.promoPairCount > 0).length;
+    return eligible
+      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；不叠加思达启航或其它中介优惠。`
+      : '当前所有学生均按校方2026常规价计算；思达启航不提供或叠加其它价格优惠。';
+  }
+  get localFeesTotal(): number { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get optionalFees() {
+    return this.quoteMode === 'single' ? this.quoteCalculator.optionalFees : [{
+      ...this.quoteCalculator.optionalFees[0],
+      note: '按每位学生超出标准入住安排的实际晚数另计；多人共住及空房须向学校确认。',
+    }];
+  }
   get localFeesCnyText(): string { return `人民币预计约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
   get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
-  get quoteImageData() { return this.quoteCalculator.imageData(this.usdToCny, this.phpPerCny, this.exchangeRateLive ? this.exchangeRateDate : undefined, '/assets/iu/iu-icl-low-season-promo-2026.jpg'); }
+  get quoteImageData() {
+    return buildIuIclGroupImageData(
+      this.activeStudents,
+      this.usdToCny,
+      this.phpPerCny,
+      this.exchangeRateLive ? this.exchangeRateDate : undefined,
+      '/assets/philippines/iu-campus-hero.jpg',
+    );
+  }
   formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }
 
   formatUsd(value: number): string {

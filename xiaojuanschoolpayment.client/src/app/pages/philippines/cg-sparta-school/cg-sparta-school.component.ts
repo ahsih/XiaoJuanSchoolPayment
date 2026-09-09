@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerIntl, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
@@ -14,6 +17,9 @@ import { groupLocalFees, groupPaymentLines } from '../../../components/school-gr
 import { CgSpartaStudentQuote } from './cg-sparta-student-quote';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { CgLocalFee as LocalFee, estimateCgLocalFees } from '../cg-local-fees';
+import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneCgSpartaContentConfig, createDefaultCgSpartaContentConfig } from './cg-sparta-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 type WeekOption = number;
@@ -38,6 +44,7 @@ interface GalleryImage {
   title: string;
   description: string;
   src: string;
+  contentType?: string;
 }
 
 interface BasicInfoRow {
@@ -140,8 +147,21 @@ interface SourceLink {
     '../../../components/school-group-quote.css',
   ],
 })
-export class CgSpartaSchoolComponent implements OnInit {
+export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
+  private readonly initialContent = createDefaultCgSpartaContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+  private previewContent?: CiaContentConfig;
+  private readonly pricingSchoolSearchName = 'CG Academy';
+  private readonly pricingSchoolNames = ['菲律宾宿务CG Academy（Sparta Campus）', 'CG Academy Sparta Campus', 'CG Sparta'];
   readonly galleryCategories: GalleryCategory[] = [
     '全部',
     '校园',
@@ -152,13 +172,26 @@ export class CgSpartaSchoolComponent implements OnInit {
   ];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly registrationFee = 100;
-  readonly sidaDiscountRate = 0.9;
-  readonly offSeasonDiscountPerFourWeeks = 150;
-  readonly summerFeePerWeek = 40;
-  readonly summerDateRange = '2026/07/05–2026/08/30';
-  readonly offSeasonRuleText = '2026/08/30–2026/12/27入学，每满4周优惠150美元';
-  readonly longStayRuleText = '12周优惠50美元；16周100美元；20周150美元；24周200美元';
+  registrationFee = this.initialContent.quoteSettings.registrationFee;
+  promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item, rates: item.rates ? [...item.rates] : undefined }));
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.initialContent.quoteImageSettings);
+  shortTermRatios: Partial<Record<number, number>> = { ...this.initialContent.quoteSettings.shortStayRatios };
+  peakSeasonRanges = this.initialContent.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
+  summerFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  courseTableTitle = this.initialContent.quoteSettings.courseTableTitle;
+  courseTableNote = this.initialContent.quoteSettings.courseTableNote;
+  groupClassNote = this.initialContent.quoteSettings.groupClassNote;
+  roomTableTitle = this.initialContent.quoteSettings.roomTableTitle;
+  roomTableNote = this.initialContent.quoteSettings.roomTableNote;
+  stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
+  stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
+  localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
+  get sidaDiscountRate() { return 1 - (this.promotionRules.find(item => item.id === 'cg-sparta-sida-90' && item.enabled)?.discountValue ?? 0) / 100; }
+  get offSeasonDiscountPerFourWeeks() { return this.promotionRules.find(item => item.id === 'cg-sparta-off-season' && item.enabled)?.discountValue ?? 0; }
+  get summerDateRange() { return this.peakSeasonRanges.filter(item => item.enabled).map(item => `${item.start.replace(/-/g, '/')}–${item.end.replace(/-/g, '/')}`).join('；'); }
+  get offSeasonRuleText() { return this.promotionRules.find(item => item.id === 'cg-sparta-off-season' && item.enabled)?.description ?? '当前未启用淡季优惠'; }
+  get longStayRuleText() { return this.promotionRules.find(item => item.id === 'cg-sparta-long-stay' && item.enabled)?.description ?? '当前未启用长期优惠'; }
   usdToCny = 7.2;
   phpPerCny = 7.75;
   exchangeRateDate = '';
@@ -236,7 +269,7 @@ export class CgSpartaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'CG斯巴达校区与泳池',
@@ -366,7 +399,7 @@ export class CgSpartaSchoolComponent implements OnInit {
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
+  roomOptions: RoomOption[] = [
     { id: 'quad', name: '斯巴达 4人房', feeUsd: 650, note: '校内预算最低房型。' },
     { id: 'triple', name: '斯巴达 3人房', feeUsd: 700, note: '比4人房更舒适，费用仍相对可控。' },
     { id: 'twin', name: '斯巴达 2人房', feeUsd: 750, note: '隐私和预算较平衡。' },
@@ -374,7 +407,7 @@ export class CgSpartaSchoolComponent implements OnInit {
     { id: 'external-single', name: '校外1人房', feeUsd: 1200, note: '校外住宿参考，通勤、空房和校规需单独确认。' },
   ];
 
-  readonly courseOptions: CourseOption[] = [
+  courseOptions: CourseOption[] = [
     {
       id: 'sparta',
       name: '斯巴达课程（Sparta Course）',
@@ -831,6 +864,8 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
+    this.loadSchoolContent();
     this.exchangeRateService.getLatestCnyRates().pipe(
       catchError(() => EMPTY),
     ).subscribe((snapshot) => {
@@ -839,6 +874,152 @@ export class CgSpartaSchoolComponent implements OnInit {
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.isEditorPreview) return;
+    this.previewHost.nativeElement.classList.add('cg-sparta-editor-preview');
+    window.parent.postMessage({ type: 'cg-sparta-content-ready' }, window.location.origin);
+  }
+
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'cg-sparta-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
+  }
+
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target;
+    this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'cg-sparta-content-select', ...target }, window.location.origin);
+  }
+
+  isPreviewHighlighted(kind: string | undefined, id: string | undefined): boolean {
+    return this.isEditorPreview && !!kind && !!id
+      && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
+  }
+
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!;
+      const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target);
+      const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback
+        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find(entry => entry.id === target.id)
+        : target.kind === 'room' ? this.previewContent?.rooms.find(entry => entry.id === target.id)
+          : target.kind === 'fee' ? this.previewContent?.localFees.find(entry => entry.id === target.id)
+            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(entry => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
+        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠；已定位到优惠显示区域。'
+          : result.exact ? '橙色框内就是对应的官网内容，修改会在这里即时显示。'
+            : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'cg-sparta-content-located', target, status }, window.location.origin);
+    }, 80);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try {
+      const raw = sessionStorage.getItem('cg-sparta-content-preview');
+      if (!raw) return null;
+      const value = JSON.parse(raw) as CiaContentConfig;
+      return value?.schemaVersion === 1 && value.schoolCode === 'CG-SPARTA' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'CG-SPARTA') return;
+    const content = cloneCgSpartaContentConfig(value);
+    this.previewContent = content;
+    const existingTypes = new Map(this.courseOptions.map(item => [item.id, item.type]));
+    const courses = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    const rooms = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    if (courses.length) this.courseOptions = courses.map(item => ({
+      id: item.id, name: item.name, type: existingTypes.get(item.id) ?? '课程', lessons: item.schedule,
+      suitable: item.suitable || item.note, tuitionUsd: item.tuition,
+      fourWeekFees: Object.fromEntries(rooms.map(room => [room.id, item.tuition + room.fee])),
+    }));
+    if (rooms.length) this.roomOptions = rooms.map(item => ({ id: item.id, name: item.name, feeUsd: item.fee, note: item.note }));
+    const settings = content.quoteSettings;
+    this.registrationFee = settings.registrationFee;
+    this.shortTermRatios = { ...settings.shortStayRatios };
+    this.summerFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = settings.peakSeasonRanges.map(item => ({ ...item }));
+    this.promotionRules = settings.promotions.map(item => ({ ...item }));
+    this.localFeeRules = content.localFees.map(item => ({ ...item, rates: item.rates ? [...item.rates] : undefined }));
+    this.courseTableTitle = settings.courseTableTitle;
+    this.courseTableNote = settings.courseTableNote;
+    this.groupClassNote = settings.groupClassNote;
+    this.roomTableTitle = settings.roomTableTitle;
+    this.roomTableNote = settings.roomTableNote;
+    this.stayPolicyTitle = settings.stayPolicyTitle;
+    this.stayPolicies = settings.stayPolicies.map(item => ({ ...item }));
+    this.localFeeIntro = settings.localFeeIntro;
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    for (const student of this.students) {
+      for (const row of student.quotePlan.courses) if (!this.courseOptions.some(item => item.id === row.optionId)) row.optionId = this.courseOptions[0]?.id ?? '';
+      for (const row of student.quotePlan.rooms) if (!this.roomOptions.some(item => item.id === row.optionId)) row.optionId = this.roomOptions[0]?.id ?? '';
+    }
+  }
+
+  private loadSchoolContent(): void {
+    this.schoolService.getSchools({ name: this.pricingSchoolSearchName }).pipe(
+      switchMap(schools => {
+        const school = this.pricingSchoolNames.map(name => schools.find(item => item.name === name)).find(Boolean)
+          ?? schools.find(item => item.name.toLowerCase().includes('sparta'));
+        if (!school?.id) return EMPTY;
+        return forkJoin({
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
+        });
+      }),
+      catchError(() => EMPTY),
+    ).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = (photos ?? []).filter(photo => !!photo.url && !existing.has(photo.url))
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map(photo => ({
+        category: this.resolveMediaCategory(photo.category),
+        title: photo.caption || photo.altText || photo.originalFileName || 'CG斯巴达校区媒体',
+        description: photo.altText || photo.caption || 'CG斯巴达校区学校实景内容',
+        src: photo.url ?? '', contentType: photo.contentType,
+      }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
   }
 
   feeFor(courseId: string, roomId: string, weeks: WeekOption = 4): number {
@@ -882,7 +1063,9 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get isOffSeasonEntry(): boolean {
-    return this.validStartDate && this.selectedStartDate >= '2026-08-30' && this.selectedStartDate <= '2026-12-27';
+    const rule = this.promotionRules.find(item => item.id === 'cg-sparta-off-season' && item.enabled);
+    return !!rule && this.validStartDate && (!rule.coverageStart || this.selectedStartDate >= rule.coverageStart)
+      && (!rule.coverageEnd || this.selectedStartDate <= rule.coverageEnd);
   }
 
   get offSeasonDiscount(): number {
@@ -936,7 +1119,10 @@ export class CgSpartaSchoolComponent implements OnInit {
   }
 
   get localFeeEstimateNote(): string {
-    return this.localFeeEstimate.note;
+    return this.localFeeEstimate.note.replace(
+      '学杂费均为预估金额，仅供准备比索现金参考，具体以学校及相关部门到校实收为准。',
+      this.localFeeIntro,
+    );
   }
 
   get visaExtensionCount(): number {
@@ -950,12 +1136,12 @@ export class CgSpartaSchoolComponent implements OnInit {
   get localFees(): LocalFee[] {
     const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
       .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
-    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType).fees.filter(f=>f.excluded);
+    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules).fees.filter(f=>f.excluded);
     return [...included,...optional];
   }
 
   private get localFeeEstimate() {
-    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType);
+    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules);
   }
 
   get localFeesTotal(): number {
@@ -976,7 +1162,7 @@ export class CgSpartaSchoolComponent implements OnInit {
 
   get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
   get schoolPaymentItems(){const paid=this.activeStudents.filter(s=>s.registration>0).length;return [{icon:'注',label:'注册费',amount:`${this.formatUsd(this.payableRegistrationFee)} 美元`,note:`一次性费用，老学员返校免费；本次计收${paid}人 × ${this.registrationFee}美元${paid<this.activeStudents.length?'，其余已免':''}`},...groupPaymentLines(this.activeStudents,false)];}
-  get optionalFeeItems(){return this.excludedLocalFees.map(f=>({label:f.item,amount:f.item.includes('接机')?'1,200 比索':this.formatPhp(f.total),cnyAmount:`约人民币 ${Math.round((f.item.includes('接机')?1200:f.total)/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:f.item.includes('接机')?(this.activeStudents.length>1?'可选，也可自行前往；多人费用须按实际接机安排确认。':'可选，也可自行前往。'):'预估1,000比索，具体以学校为准；无损坏及无欠费时可退。'}));}
+  get optionalFeeItems(){return this.excludedLocalFees.map(f=>{const rule=this.localFeeRules.find(item=>item.name===f.item);const value=f.total||rule?.amount||0;return {label:f.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:rule?.note||f.note};});}
   get quoteImageData() {
     const planRows=(['课','宿'] as const).flatMap(icon=>this.activeStudents.flatMap((student,index)=>{
       const rows=[...(icon==='课'?student.quotePlan.courses:student.quotePlan.rooms)].sort((a,b)=>a.startDate.localeCompare(b.startDate));
@@ -985,15 +1171,28 @@ export class CgSpartaSchoolComponent implements OnInit {
         return {...x,label:`${this.quoteMode==='group'?'学生'+(index+1)+' · ':''}${x.label.replace(/^课程费/,'课程名称').replace(/^住宿费/,'住宿名称')}`,note:[x.note,warning].filter(Boolean).join('；')};
       });
     }));
-    const paymentItems=[this.schoolPaymentItems[0],...planRows,...groupPaymentLines(this.activeStudents,true)];
+    const paymentItems=[
+      {...this.schoolPaymentItems[0],note:[this.schoolPaymentItems[0].note,this.quoteImageSettings.paymentNotes.registration].filter(Boolean).join('；')},
+      ...planRows.map(item=>({...item,note:[item.note,item.icon==='课'?this.quoteImageSettings.paymentNotes.course:this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；')})),
+      ...groupPaymentLines(this.activeStudents,true).map(item=>({...item,note:[item.note,this.quoteImageSettings.paymentNotes.promotion].filter(Boolean).join('；')})),
+    ];
     const warnings=this.activeStudents.flatMap((s,i)=>s.quotePlan.warning?[`${this.quoteMode==='group'?'学生'+(i+1)+'：':''}${s.quotePlan.warning}`]:[]);
     const short=[...new Set(this.activeStudents.flatMap(s=>s.quotePlan.shortStayNotes(w=>s.multiplier(w))))];
     const prorated=this.activeStudents.some(s=>[...s.quotePlan.courses,...s.quotePlan.rooms].some(row=>row.weeks>4&&row.weeks%4!==0))?['非4周整期的费用按周折算，均为预估。']:[];
     const long=[...new Set(this.activeStudents.filter(s=>s.quotePlan.stayWeeks>24).map(s=>this.longPlanNoteFor(s)))];
+    const defaultImageFeeIntro = this.initialContent.quoteImageSettings.localFeeIntro;
+    const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
     const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.jpg',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
-      localFeeItems:this.includedLocalFees.map(f=>({label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:f.note})),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:this.localFeeEstimateNote,optionalFeeItems:this.optionalFeeItems,ruleNotes:[]});
-    const result=applySchoolQuoteImageLayout({...quote,importantNotes:[...warnings,...short,...prorated,...long,'最终以学校价格、空房及优惠确认为准。']},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
-    return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
+      localFeeItems:this.includedLocalFees.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
+    const importantNotes=[...warnings,...short,...prorated,...long,...this.quoteImageSettings.footerNotes];
+    const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
+    return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
+      paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle:this.quoteImageSettings.serviceSectionTitle,benefitItems:this.quoteImageSettings.benefits,
+      serviceLocations:this.quoteImageSettings.serviceLocations,alumniBenefitTitle:this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems:[{title:this.quoteImageSettings.alumniBenefitTitle,subtitle:'',text:this.quoteImageSettings.alumniBenefitText}],
+      noteTitle:this.quoteImageSettings.noteSectionTitle,importantNotes,
+      conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
   }
 
   get applicablePriceNote(): string {
@@ -1023,6 +1222,13 @@ export class CgSpartaSchoolComponent implements OnInit {
 
   private durationMultiplier(weeks: WeekOption): number {
     // CG's published short-stay percentages; longer/non-standard periods are proportional estimates.
-    return weeks === 1 ? 0.4 : weeks === 2 ? 0.6 : weeks === 3 ? 0.85 : weeks / 4;
+    return this.shortTermRatios[weeks] ?? weeks / 4;
+  }
+
+  previewFeeId(name:string){return this.localFeeRules.find(item=>item.name===name)?.id??'local-fees';}
+  previewPaymentTarget(item:{label:string;note?:string}):CiaPreviewTarget{
+    if(item.label==='注册费')return {kind:'section',id:'quote-registration'};
+    const promotion=this.promotionRules.find(rule=>item.label.includes(rule.name)||(item.note??'').includes(rule.description));
+    return promotion?{kind:'promotion',id:promotion.id}:{kind:'section',id:'quote-breakdown'};
   }
 }

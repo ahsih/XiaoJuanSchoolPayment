@@ -1,45 +1,143 @@
-<main class="btes-page">
-  <section class="btes-hero">
-    <div class="btes-hero-copy">
-      <a class="back-link" routerLink="/philippines-study/cebu"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
-      <p class="breadcrumb">菲律宾游学 / 宿务语言学校 / BTES</p>
-      <span class="eyebrow">BRAINY TUTELAGE ENGLISH SCHOOL</span>
-      <h1>菲律宾宿务 BTES 英语学校</h1>
-      <p class="lead">台资市区型语言学校，课程覆盖ESL、雅思、TOEIC、商务与亲子路线。适合希望兼顾一对一课量、中文沟通和整体预算的学生。</p>
-      <div class="hero-tags">
-        <span><mat-icon>location_on</mat-icon>Kasambagan · Cebu City</span>
-        <span><mat-icon>thumb_up</mat-icon>高性价比</span>
-        <span><mat-icon>family_restroom</mat-icon>亲子课程</span>
-      </div>
-      <div class="hero-actions">
-        <a class="primary" routerLink="/about-sida/contact">咨询BTES课程与费用<mat-icon>arrow_forward</mat-icon></a>
-        <a href="https://btesenglish.com/" target="_blank" rel="noopener">查看学校官网<mat-icon>open_in_new</mat-icon></a>
-      </div>
+<app-cia-school>
+  <div class="cia-page btes-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/cebu"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
+            <p class="breadcrumb">菲律宾游学 / 宿务语言学校 / BTES English Academy</p>
+            <h1>菲律宾宿务 BTES English Academy</h1>
+            <p class="hero-lead">BTES位于宿务市Kasambagan，是一所把教学、住宿与生活设施集中在同一校区的市区型语言学校。课程覆盖成人ESL、TOEIC、IELTS、商务英语及5岁起的Junior亲子路线，也提供不住宿的走读方案。</p>
+            <div class="hero-tags" aria-label="BTES学校特点">
+              <span><mat-icon>location_city</mat-icon>宿务市区一体校园</span><span><mat-icon>record_voice_over</mat-icon>每日4至8节课程</span><span><mat-icon>family_restroom</mat-icon>5岁起亲子路线</span><span><mat-icon>directions_walk</mat-icon>住宿或走读</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即计算我的费用<mat-icon>calculate</mat-icon></a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">查看2026价格<mat-icon>menu_book</mat-icon></a>
+              <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
+            </div>
+            <p class="trust-note"><mat-icon>verified</mat-icon>页面已对照BTES官方2026住宿价目表、走读价目表、入学指南、淡季优惠和学校介绍资料。</p>
+          </div>
+          <div class="hero-media" aria-label="BTES校园图片展示">
+            <figure class="feature-photo"><img [src]="galleryImages[0].src" alt="菲律宾宿务BTES English Academy校门" /><figcaption>BTES English Academy，宿务市Kasambagan独立校区</figcaption></figure>
+            <div class="media-strip" aria-label="BTES校园缩略图"><figure *ngFor="let image of galleryImages.slice(3, 6)"><img [src]="image.src" [alt]="image.title" /><figcaption>{{ image.title }}</figcaption></figure></div>
+            <aside class="hero-price-card btes-package-card"><span>限时4周全包套餐</span><strong>{{ fourWeekStartingText }}</strong><p>ESL一对一4节＋团体课2节＋四人房，完整就学于2026/08/23–2027/01/16。</p><ul><li><mat-icon>check_circle</mat-icon>含注册、课程、住宿及海报列明的部分当地费用</li><li><mat-icon>info</mat-icon>电费、接机、押金及未列明费用另计</li></ul></aside>
+            <p class="photo-source">图片选自您提供的BTES学校照片；实际房型与设施开放以当期安排为准。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="BTES手机端快捷导航"><a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a></nav>
+
+        <section class="quick-info" aria-label="BTES快速信息卡"><article class="quick-card" *ngFor="let item of quickInfo"><mat-icon>{{ item.icon }}</mat-icon><div><span>{{ item.label }}</span><strong>{{ item.value }}</strong><p>{{ item.text }}</p></div></article></section>
+
+        <section class="section-block" id="gallery">
+          <div class="section-heading"><span>图片 / 环境展示</span><h2>先看BTES的校园、教室、宿舍与生活设施</h2><p>学校公开资料列有120间一对一教室、12间团体教室与80间宿舍；住宿、用餐、上课和主要休闲设施都在同一校区。</p></div>
+          <div class="gallery-tabs" role="tablist" aria-label="BTES图片分类"><button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button></div>
+          <div class="gallery-grid"><figure *ngFor="let image of filteredGalleryImages"><img [src]="image.src" [alt]="image.title" loading="lazy" /><figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption></figure></div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info"><div class="compact-heading"><span>学校基本信息</span><h2>BTES基本资料</h2></div><dl class="info-list"><div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div></dl></section>
+          <section class="panel advisor-panel" id="advisor-review"><div class="quote-mark">“</div><div class="compact-heading"><span>思达顾问点评</span><h2>BTES适合看重课量、预算与市区生活的人</h2></div><p>它的优势是课程梯度清楚：Chill保留自由时间、Speak Up最均衡、Speak More增加一对一、Talkative把每天8节全部用于个别课。亲子和考试课程也能在同一校区安排。</p><div class="advisor-card"><div class="advisor-avatar">BT</div><div><strong>顾问建议</strong><span>先确定住宿还是走读，再根据一对一课量、年龄、考试目标和房型预算选择。</span></div></div><a class="primary-action full-action" routerLink="/about-sida/contact">让顾问判断是否适合我<mat-icon>chat</mat-icon></a></section>
+          <section class="panel highlight-panel" id="highlights"><div class="compact-heading"><span>BTES核心亮点</span><h2>为什么把BTES列入宿务候选？</h2></div><div class="highlight-list"><article *ngFor="let item of highlights"><mat-icon>check_circle</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div></section>
+        </div>
+
+        <section class="fit-section" id="fit"><div class="section-heading"><span>适合 / 不太适合</span><h2>先判断BTES是不是你的优先学校</h2></div><div class="fit-grid"><div><h3><mat-icon>check_circle</mat-icon>适合优先考虑BTES</h3><article *ngFor="let item of suitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article></div><div><h3><mat-icon>cancel</mat-icon>可能需要再比较</h3><article *ngFor="let item of lessSuitableFor"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article></div></div></section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading"><span>课程 / 住宿 / 走读</span><h2>BTES 2026年官方课程和价格</h2><p>住宿型按4周课程费与房费分别列示；走读（Walk-in）按每周学费计算。住宿型1、2、3周分别按对应4周价的40%、65%、85%，4周以上按周比例。</p></div>
+          <div class="course-grid btes-course-grid"><article class="course-card" *ngFor="let course of courseFeeRows"><span>{{ course.category }}</span><h3>{{ course.name }}｜{{ course.chineseName }}</h3><p class="course-lessons">{{ course.lessons }}</p><p>{{ course.suitable }}</p><small *ngIf="course.minimumScore">{{ course.minimumScore }}</small></article></div>
+          <div class="data-table btes-tuition-table" role="table" aria-label="BTES 2026年课程费用">
+            <div class="table-row table-head" role="row"><span role="columnheader">课程</span><span role="columnheader">住宿型4周课程费</span><span role="columnheader">走读每周课程费</span><span role="columnheader">每日课程结构</span><span role="columnheader">报名说明</span></div>
+            <div class="table-row" role="row" *ngFor="let course of courseFeeRows"><span role="cell"><strong>{{ course.name }}</strong><small>{{ course.chineseName }}</small></span><span role="cell">{{ formatUsd(course.fee4w) }}美元</span><span role="cell">{{ formatUsd(course.walkInFee1w) }}美元</span><span role="cell">{{ course.lessons }}</span><span role="cell">{{ course.minimumScore || (course.minWeeks ? course.minWeeks + '周起' : '1周起') }}<ng-container *ngIf="course.maxWeeks">，最多{{ course.maxWeeks }}周</ng-container></span></div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="BTES课程费用手机卡片"><article *ngFor="let course of courseFeeRows"><span>{{ course.name }}｜{{ course.chineseName }}</span><div><em>住宿型4周</em><strong>{{ formatUsd(course.fee4w) }}美元</strong></div><div><em>走读每周</em><strong>{{ formatUsd(course.walkInFee1w) }}美元</strong></div><p>{{ course.lessons }}</p><p>{{ course.minimumScore || course.suitable }}</p></article></div>
+          <div class="pricing-subheading"><span>校内住宿</span><h3>单人至四人房，标准周日入住、周六退房</h3></div>
+          <div class="data-table btes-room-table" role="table" aria-label="BTES 2026年住宿费用"><div class="table-row table-head" role="row"><span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">每周基础电费</span><span role="columnheader">说明</span></div><div class="table-row" role="row" *ngFor="let room of roomOptions"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatRoomFee(room) }}</span><span role="cell">{{ formatPhp(room.electricityPerWeek) }}／周</span><span role="cell">{{ room.note }}</span></div></div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="BTES住宿费用手机卡片"><article *ngFor="let room of roomOptions"><span>{{ room.name }}</span><strong>{{ formatRoomFee(room) }}</strong><p>基础电费：{{ formatPhp(room.electricityPerWeek) }}／周</p><p>{{ room.note }}</p></article></div>
+          <div class="btes-pricing-notes"><article><mat-icon>directions_walk</mat-icon><div><strong>Walk-in统一译为“走读”</strong><p>走读不住学校宿舍，按官方走读每周课程费计算；本页不收住宿、水费、管理费和宿舍电费，但仍保留实际适用的SSP、证件、签证、教材等当地费用。</p></div></article><article><mat-icon>child_care</mat-icon><div><strong>青少年与家长课程</strong><p>官方价格表为Junior 5–9岁、Junior 10–14岁。5–7岁须有家长或监护人同行；8–17岁无家长同行时，未成年管理费为100美元／每开始4周。</p></div></article></div>
+        </section>
+
+        <section class="section-block" id="study-life"><div class="section-heading"><span>学习生活节奏</span><h2>BTES平日课程与校内生活</h2><p>每节课45分钟、课间10分钟。具体课表依课程和分班安排，以下为官方入学指南中的日常时段。</p></div><div class="timeline"><article *ngFor="let item of scheduleItems"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div></section>
+
+        <section class="section-block btes-all-in-one" id="all-in-one">
+          <div class="offer-heading">
+            <div class="offer-heading-copy">
+              <span class="offer-kicker">BTES 2026淡季限定</span>
+              <h2>4周吃住学 ALL IN ONE</h2>
+              <p>固定ESL课程＋四人房＋海报列明的当地费用，一次打包。</p>
+            </div>
+            <div class="offer-price-card" aria-label="ALL IN ONE限时套餐价每人四周一千美元">
+              <span>限时套餐价</span>
+              <strong><sup>US$</sup>1,000</strong>
+              <em>每人／固定4周</em>
+            </div>
+            <button type="button" class="offer-action" (click)="applyAllInOneOffer()">一键带入报价器<mat-icon>arrow_forward</mat-icon></button>
+          </div>
+          <div class="offer-fixed-grid" aria-label="ALL IN ONE套餐固定条件">
+            <article><span>固定课程</span><strong>ESL 4＋2</strong><p>每天一对一4节＋团体课2节</p></article>
+            <article><span>固定住宿</span><strong>四人房4周</strong><p>周日入住、周六退房</p></article>
+            <article><span>完整就学日期</span><strong>2026/08/23–2027/01/16</strong><p>完整4周全部落在活动期内</p></article>
+          </div>
+          <div class="offer-cost-breakdown">
+            <div class="offer-included">
+              <h3><mat-icon>check_circle</mat-icon>套餐价已包含</h3>
+              <div class="offer-tags"><span>注册费</span><span>4周ESL课程</span><span>四人房4周</span><span>SSP</span><span>SSP E-Card</span><span>学生证</span><span>宿舍管理费</span><span>水费</span><span>4周教材费</span></div>
+            </div>
+            <div class="offer-excluded">
+              <h3><mat-icon>add_circle</mat-icon>另行准备</h3>
+              <p>宿舍电费、符合条件时的ACR与签证延期费、接机、可退押金，以及个人实际发生的其他费用。</p>
+            </div>
+          </div>
+          <p class="offer-rule-note"><mat-icon>info</mat-icon><span><strong>折扣说明：</strong>只有1,000美元套餐不再计算思达95折；其他普通方案在BTES活动折扣后仍正常计算思达95折。</span></p>
+        </section>
+
+        <section class="quote-panel" id="quote">
+          <div class="section-heading"><span>费用快速报价</span><h2>{{ quoteHeading }}</h2><p>每名学生可独立填写年龄、注册日、签证、接机及多段课程与住宿。系统按官方短期比例、走读周价、淡季折扣、ALL IN ONE和当地费用自动计算。</p></div>
+          <div class="quote-form-card group-quote">
+            <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生独立选择课程、住宿/走读、年龄、签证与接机。3人以上只有在同一淡季期间、同时报名并且入学和结业日期完全相同时，才自动计算6折团体优惠。</p>
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields btes-student-fields"><label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label><label>抵达时年龄<input type="number" min="5" max="99" step="1" [(ngModel)]="student.age" /></label><label>报名状态<select [(ngModel)]="student.enrollmentStatus"><option value="new">新生</option><option value="returning">老学员</option></select></label><label>入境签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label><label>宿务机场接机<select [(ngModel)]="student.pickupType"><option value="none">不需要学校接机</option><option value="weekend">周末接机｜1,200比索</option><option value="weekday">工作日接机｜1,500比索</option></select></label><label *ngIf="student.age < 18">监护安排<select [(ngModel)]="student.guardianAccompanied"><option [ngValue]="true">家长/监护人同行</option><option [ngValue]="false">无家长同行</option></select></label></div>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <p class="fee-alert" *ngIf="student.priceYearWarning">{{ student.priceYearWarning }}</p><div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
+            <div class="quote-breakdown btes-quote-breakdown"><div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div></div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="group-result btes-quote-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small class="exchange-rate-summary">{{ exchangeRateSummary }}</small><small *ngIf="quoteCalculated">已按当前选择重新核算；正式报名仍须确认房型、名额及学校最终账单。</small></div>
+            <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a></div>
+            <p class="season-note">优惠顺序：老学员或ALL IN ONE免重复注册费；符合淡季时只取个人或团体一档，再对优惠后的普通课程与住宿计算思达95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
+          </div>
+        </section>
+
+        <section class="section-block" id="local-fees">
+          <div class="section-heading"><span>菲律宾当地费用</span><h2>BTES到校后学杂费明细</h2><p>{{ localFeeIntro }}</p></div>
+          <div class="local-fee-table-wrap"><table class="local-fee-table"><thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead><tbody><tr *ngFor="let fee of estimatedLocalFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody><tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含可退押金、额外住宿、电量超额及送机</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币≈9比索；最终以实际支付汇率为准</td></tr></tfoot></table></div>
+          <div class="excluded-fee-list"><h4>另行准备（不计入上方学杂费及人民币预估合计）</h4><div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div></div>
+        </section>
+
+        <section class="section-block" id="promotions">
+          <div class="section-heading"><span>BTES 2026淡季优惠</span><h2>个人3周75折、个人4周以上7折、3人以上团体6折</h2><p>优惠仅作用于课程费与住宿费，报名费及SSP、签证、宿舍管理、电费、教材、机票等当地费用不参与。三档优惠互斥，不叠加。</p></div>
+          <div class="btes-period-grid"><article *ngFor="let period of lowSeasonPeriods"><span>{{ period.label }}</span><strong>{{ period.start.replaceAll('-', '/') }}–{{ period.end.replaceAll('-', '/') }}</strong><p>所选课程与住宿须完整落在这段就学期间。</p></article></div>
+          <div class="btes-promotion-grid"><article><mat-icon>looks_one</mat-icon><span>个人3周</span><strong>减25%｜付75折</strong><p>淡季期间个人报名3周，课程费与住宿费减25%。</p></article><article><mat-icon>looks_two</mat-icon><span>个人4周及以上</span><strong>减30%｜付7折</strong><p>淡季期间个人报名4周（含）以上，课程费与住宿费减30%。</p></article><article><mat-icon>groups</mat-icon><span>3人及以上</span><strong>减40%｜付6折</strong><p>全体成员须同时报名、同时入学并同时结业；中国大陆团签优先，个签也可享受。</p></article></div>
+          <p class="source-review-note">本页按思达确认的报价规则计算：个人与团体淡季优惠先从课程费和住宿费中扣除，再对优惠后金额计算思达95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
+        </section>
+
+        <section class="section-block" id="holidays">
+          <div class="section-heading"><span>2026校历 / 住宿规则</span><h2>国定假日不补课，额外住宿按晚参考</h2><p>官方2026入学指南说明国定假日放假且不另行补课；周末假期仍可能依政府公告调整。标准周日入住、周六退房，入住14:00、退房12:00。</p></div>
+          <div class="btes-rules-grid"><div><h3>2026学校公布假日</h3><div class="holiday-list"><span *ngFor="let holiday of holidays"><strong>{{ holiday[0] }}</strong>{{ holiday[1] }}</span></div></div><div><h3>额外住宿＋餐食（每晚）</h3><div class="night-list"><span *ngFor="let item of additionalNights"><strong>{{ item.room }}</strong>{{ formatPhp(item.fee) }}</span></div><ul><li>须先确认学校有空房，才能安排提前入住或延后退房。</li><li>费用包含餐食、宿舍管理与电费，入住期间仍须遵守校规与门禁。</li><li>平日及周日门禁23:00；周五、周六与假日前一日01:00。</li></ul></div></div>
+        </section>
+
+        <section class="section-block source-panel" id="sources"><div class="section-heading"><span>资料核对说明</span><h2>本页以学校官方文件为事实依据</h2><p>课程、价格、走读、当地费用、优惠、节假日及入学规则均对照您提供的BTES官方资料；旧图与正式文件冲突时，以2026正式文件和最新优惠海报为准。</p></div><div class="btes-source-grid"><article><mat-icon>description</mat-icon><strong>2026正式住宿价目表</strong><span>课程、房型、短期比例、当地费用与签证延期</span></article><article><mat-icon>directions_walk</mat-icon><strong>2026走读价目表</strong><span>Walk-in统一作为“走读”，按每周课程费计算</span></article><article><mat-icon>school</mat-icon><strong>学校介绍与入学指南</strong><span>课程结构、校园设施、日程、门禁、入住与放假规则</span></article><article><mat-icon>sell</mat-icon><strong>2026淡季与全包海报</strong><span>最新活动日期、25%/30%/40%折扣与1,000美元套餐</span></article></div></section>
+
+        <app-sida-why-section [schoolName]="'菲律宾宿务BTES English Academy'"></app-sida-why-section>
+        <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认BTES前，建议先看这些问题</h2></div><div class="faq-section"><details *ngFor="let item of faqs"><summary>{{ item.title }}</summary><p>{{ item.text }}</p></details></div></section>
+        <section class="bottom-cta"><div><span>获取BTES完整资料与确认报价</span><h2>把日期、周数、课程、住宿或走读告诉思达，我们帮你核对</h2><p>顾问会协助确认BTES当期名额、房型、年龄要求、淡季资格、签证与当地费用，也可同步比较其他宿务语言学校。</p></div><ul><li><mat-icon>check_circle</mat-icon>免费核对BTES空位与正式账单</li><li><mat-icon>check_circle</mat-icon>拆分美元学校费用与比索当地费用</li><li><mat-icon>check_circle</mat-icon>按单人或2–20人生成可保存报价图片</li></ul><a class="primary-action" routerLink="/about-sida/contact">联系思达顾问<mat-icon>support_agent</mat-icon></a></section>
+      </main>
+
+      <aside class="side-panel" aria-label="BTES页面快捷导航"><div class="current-card"><span>BTES 4周ALL IN ONE</span><strong class="side-price">{{ fourWeekStartingText }}</strong><p>限定日期内的ESL＋四人房全包套餐；电费、接机和可退押金等另计。</p><a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">估算费用<mat-icon>calculate</mat-icon></a></div><nav class="section-nav"><a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a></nav></aside>
     </div>
-    <figure>
-      <img src="https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg" alt="BTES宿务校区外观" />
-      <figcaption><strong>BTES Cebu Campus</strong><span>市区独立校区 · 学习与住宿集中管理</span></figcaption>
-    </figure>
-  </section>
-
-  <section class="btes-section">
-    <header><span>30秒看懂BTES</span><h2>适合预算清晰、重视课量的宿务游学</h2><p>先看学校定位，再决定具体课程。正式费用与名额需根据入学日期、课程和房型确认。</p></header>
-    <div class="feature-grid">
-      <article *ngFor="let item of features"><mat-icon>{{ item.icon }}</mat-icon><div><h3>{{ item.title }}</h3><p>{{ item.text }}</p></div></article>
-    </div>
-  </section>
-
-  <section class="btes-section course-section">
-    <header><span>COURSE OPTIONS</span><h2>主要课程方向</h2><p>BTES提供从轻量ESL到考试、商务及家庭课程的多种组合。</p></header>
-    <div class="course-grid">
-      <article *ngFor="let item of courses"><mat-icon>{{ item.icon }}</mat-icon><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
-    </div>
-  </section>
-
-  <section class="decision-panel">
-    <div><span>思达顾问建议</span><h2>BTES更适合这些学生</h2><ul><li>希望一对一课量扎实，同时控制整体预算</li><li>第一次去菲律宾，更看重中文沟通与市区便利</li><li>成人ESL、考试备考或亲子同行都需要可选方案</li></ul></div>
-    <aside><mat-icon>support_agent</mat-icon><h3>先确认课程和房型，再比较价格</h3><p>告诉顾问学习目标、周数、预算和住宿偏好，获取当前档期的正式方案。</p><a routerLink="/about-sida/contact">联系顾问获取BTES方案<mat-icon>arrow_forward</mat-icon></a></aside>
-  </section>
-
-  <section class="source-note"><mat-icon>info</mat-icon><p>学校定位与课程方向参考BTES学校公开资料；课程、费用、入学日与房型可能调整，请以学校当期确认和正式报价为准。</p></section>
-</main>
+    <div class="mobile-bottom-actions" aria-label="BTES手机端固定操作"><a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>估算费用</a><a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>联系顾问</a></div>
+  </div>
+</app-cia-school>

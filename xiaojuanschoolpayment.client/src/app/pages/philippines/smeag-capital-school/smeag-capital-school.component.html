@@ -89,7 +89,7 @@
           </article>
         </section>
 
-        <section class="section-block" id="gallery">
+        <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
             <h2>按区域查看 SMEAG Capital 环境</h2>
@@ -113,7 +113,8 @@
           </div>
           <div class="gallery-grid">
             <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <video *ngIf="image.contentType?.startsWith('video/')" [src]="image.src" controls preload="metadata"></video>
+              <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" loading="lazy" />
               <figcaption>
                 <strong>{{ image.title }}</strong>
                 <span>{{ image.description }}</span>
@@ -216,14 +217,13 @@
           </div>
         </section>
 
-        <section class="split-layout" id="course-fees">
+        <section class="split-layout" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-fees">
           <div class="section-block">
-            <div class="section-heading">
+            <div class="section-heading" data-cia-preview-kind="section" data-cia-preview-id="course-heading">
               <span>SMEAG 2026 年 4 周课程费</span>
-              <h2>先看课程费，再叠加住宿费</h2>
-              <p>
-                以下为公开2026参考价，币种为美元。不同代理、优惠和更新时间会影响最终价格，报名以学校正式报价为准。
-              </p>
+              <h2>{{ courseTableTitle }}</h2>
+              <p data-cia-preview-kind="section" data-cia-preview-id="course-note">{{ courseTableNote }}</p>
+              <p data-cia-preview-kind="section" data-cia-preview-id="class-note">{{ groupClassNote }}</p>
             </div>
             <div
               class="data-table course-fee-table"
@@ -235,7 +235,7 @@
                 <span role="columnheader">4周课程费</span>
                 <span role="columnheader">课程安排</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let fee of courseFees">
+              <div class="table-row" role="row" *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                 <span role="cell">{{ fee.name }}</span>
                 <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                 <span role="cell">{{ fee.suitable }}</span>
@@ -245,7 +245,7 @@
               class="mobile-card-list mobile-course-fees"
               aria-label="SMEAG Capital 2026年4周课程费手机卡片"
             >
-              <article *ngFor="let fee of courseFees">
+              <article *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                 <span>课程</span>
                 <strong>{{ fee.name }}</strong>
                 <div>
@@ -254,6 +254,7 @@
                 <p>{{ fee.suitable }}</p>
               </article>
             </div>
+            <p class="pricing-note" data-cia-preview-kind="section" data-cia-preview-id="short-stay">1周按4周价的{{ shortStayRatios['1'] * 100 }}%，2周按{{ shortStayRatios['2'] * 100 }}%，3周按{{ shortStayRatios['3'] * 100 }}%；4周以上按4周价比例计算。</p>
           </div>
 
           <div class="section-block" id="daily-schedule">
@@ -273,14 +274,12 @@
           </div>
         </section>
 
-        <section class="split-layout" id="room-fees">
+        <section class="split-layout" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-fees">
           <div class="section-block">
             <div class="section-heading">
               <span>SMEAG 2026 年 4 周住宿费</span>
-              <h2>房型会明显影响总预算</h2>
-              <p>
-                默认报价使用校内四人间。校外酒店住宿费不参与思达9折，热门档期建议先确认空房。
-              </p>
+              <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading">{{ roomTableTitle }}</h2>
+              <p data-cia-preview-kind="section" data-cia-preview-id="room-note">{{ roomTableNote }}</p>
             </div>
             <div
               class="data-table room-fee-table"
@@ -292,7 +291,7 @@
                 <span role="columnheader">4周住宿费</span>
                 <span role="columnheader">备注</span>
               </div>
-              <div class="table-row" role="row" *ngFor="let room of roomFees">
+              <div class="table-row" role="row" *ngFor="let room of roomFees" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                 <span role="cell">{{ room.name }}</span>
                 <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
@@ -302,7 +301,7 @@
               class="mobile-card-list mobile-room-fees"
               aria-label="SMEAG Capital 2026年4周住宿费手机卡片"
             >
-              <article *ngFor="let room of roomFees">
+              <article *ngFor="let room of roomFees" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
                 <div>
@@ -311,9 +310,15 @@
                 <p>{{ room.note }}</p>
               </article>
             </div>
+            <section class="smeag-stay-policy" data-cia-preview-kind="section" data-cia-preview-id="stay-policy">
+              <h3>{{ stayPolicyTitle }}</h3>
+              <div class="smeag-stay-policy-grid">
+                <article *ngFor="let policy of stayPolicies"><span>{{ policy.label }}</span><strong>{{ policy.value }}</strong><p>{{ policy.note }}</p></article>
+              </div>
+            </section>
           </div>
 
-          <section class="quote-panel" id="quote">
+          <section class="quote-panel" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote">
             <div class="section-heading">
               <h2>{{ quoteHeading }}</h2>
             </div>
@@ -327,8 +332,8 @@
               <app-school-quote-plan [plan]="student.quotePlan" [examCourseIds]="examCourseIds"></app-school-quote-plan>
               <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentQuoteUsd(student)) }} 美元</strong></div>
             </article>
-            <div class="quote-breakdown">
-              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
+            <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div>
             </div>
             <div class="quote-result">
               <span>最终应付学校金额</span>
@@ -357,21 +362,21 @@
           </section>
         </section>
 
-        <section class="local-fee-estimate" id="local-fees" aria-labelledby="smeag-local-fee-title">
+        <section class="local-fee-estimate" id="local-fees" aria-labelledby="smeag-local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees">
           <div class="local-fee-heading">
             <div>
               <span>到校后另付 · SMEAG 2027新版</span>
               <h3 id="smeag-local-fee-title">{{ localFeePeriodLabel }}学杂费明细</h3>
             </div>
           </div>
-          <p class="local-fee-intro">
+          <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro">
             {{ localFeeIntro }}
           </p>
           <div class="local-fee-table-wrap">
             <table class="local-fee-table">
               <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
               <tbody>
-                <tr *ngFor="let fee of includedLocalFees">
+                <tr *ngFor="let fee of includedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
                   <th scope="row">{{ fee.item }}</th><td>{{ fee.amount }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
                 </tr>
               </tbody>
@@ -383,7 +388,7 @@
           </div>
           <div class="excluded-fee-list" *ngIf="excludedLocalFees.length">
             <h4>另行准备（不计入上方学杂费合计）</h4>
-            <div *ngFor="let fee of excludedLocalFees"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small *ngIf="fee.total">约人民币 {{ (fee.total / phpPerCny).toLocaleString('zh-CN', { maximumFractionDigits: 0 }) }} 元</small></b></div>
+            <div *ngFor="let fee of excludedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))"><span><strong>{{ fee.item }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small *ngIf="fee.total">约人民币 {{ (fee.total / phpPerCny).toLocaleString('zh-CN', { maximumFractionDigits: 0 }) }} 元</small></b></div>
           </div>
           <section class="textbook-reference" aria-labelledby="smeag-textbook-reference-title">
             <h4 id="smeag-textbook-reference-title">各课程教材价格参考（比索/套）</h4>

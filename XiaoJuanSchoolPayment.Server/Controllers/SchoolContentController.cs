@@ -64,6 +64,31 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     [Authorize(Roles = "Admin,Staff")]
+    [HttpPut("{schoolId:guid}/pricing-draft")]
+    public async Task<IActionResult> SavePricingDraft(
+      Guid schoolId,
+      [FromBody] SavePricingSettingsDraftDTO request,
+      CancellationToken cancellationToken)
+    {
+      if (!await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.Pricing, cancellationToken)) return Forbid();
+      try
+      {
+        var result = await _schoolContentService.SavePricingSettingsDraft(
+          schoolId,
+          request.Content,
+          request.ChangeSummary,
+          CurrentUserId(),
+          CurrentUserName(),
+          cancellationToken);
+        return Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
+    }
+
+    [Authorize(Roles = "Admin,Staff")]
     [HttpPut("{schoolId:guid}/quote-image-draft")]
     public async Task<IActionResult> SaveQuoteImageDraft(
       Guid schoolId,
@@ -88,6 +113,31 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
+    [Authorize(Roles = "Admin,Staff")]
+    [HttpPut("{schoolId:guid}/media-draft")]
+    public async Task<IActionResult> SaveMediaDraft(
+      Guid schoolId,
+      [FromBody] SaveMediaSettingsDraftDTO request,
+      CancellationToken cancellationToken)
+    {
+      if (!await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.Media, cancellationToken)) return Forbid();
+      try
+      {
+        var result = await _schoolContentService.SaveMediaSettingsDraft(
+          schoolId,
+          request.Media,
+          request.ChangeSummary,
+          CurrentUserId(),
+          CurrentUserName(),
+          cancellationToken);
+        return Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpPost("{schoolId:guid}/publish")]
     public async Task<IActionResult> Publish(Guid schoolId, CancellationToken cancellationToken)
@@ -97,7 +147,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         CurrentUserId(),
         CurrentUserName(),
         cancellationToken);
-      return result == null ? NotFound("没有可发布的草稿。") : Ok(result);
+      return result == null ? NotFound("没有待审核版本，请先提交审核。") : Ok(result);
     }
 
     [Authorize(Roles = "Admin,Staff")]
@@ -109,14 +159,25 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     {
       var requiredScope = string.Equals(scope, StaffPermissionScopes.QuoteImage, StringComparison.OrdinalIgnoreCase)
         ? StaffPermissionScopes.QuoteImage
-        : StaffPermissionScopes.SchoolContent;
+        : string.Equals(scope, StaffPermissionScopes.Media, StringComparison.OrdinalIgnoreCase)
+          ? StaffPermissionScopes.Media
+          : string.Equals(scope, StaffPermissionScopes.Pricing, StringComparison.OrdinalIgnoreCase)
+            ? StaffPermissionScopes.Pricing
+            : StaffPermissionScopes.SchoolContent;
       if (!await _permissions.HasAsync(User, schoolId, requiredScope, cancellationToken)) return Forbid();
-      var result = await _schoolContentService.SubmitForReview(
-        schoolId,
-        CurrentUserId(),
-        CurrentUserName(),
-        cancellationToken);
-      return result == null ? NotFound("请先保存草稿。") : Ok(result);
+      try
+      {
+        var result = await _schoolContentService.SubmitForReview(
+          schoolId,
+          CurrentUserId(),
+          CurrentUserName(),
+          cancellationToken);
+        return result == null ? NotFound("请先保存草稿。") : Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Roles = "Admin")]
@@ -159,6 +220,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
 
     private async Task<bool> CanUseEitherEditor(Guid schoolId, CancellationToken cancellationToken) =>
       await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.SchoolContent, cancellationToken) ||
-      await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.QuoteImage, cancellationToken);
+      await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.Pricing, cancellationToken) ||
+      await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.QuoteImage, cancellationToken) ||
+      await _permissions.HasAsync(User, schoolId, StaffPermissionScopes.Media, cancellationToken);
   }
 }

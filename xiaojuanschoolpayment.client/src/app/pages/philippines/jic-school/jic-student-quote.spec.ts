@@ -4,6 +4,7 @@ import {
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
 } from './jic-pricing';
+import { createDefaultJicContentConfig } from './jic-content-config';
 import { JicStudentQuote } from './jic-student-quote';
 
 describe('JicStudentQuote', () => {
@@ -158,5 +159,43 @@ describe('JicStudentQuote', () => {
     student.quotePlan.add('course');
     student.quotePlan.courses[1].startDate = '2026-09-06';
     expect(student.quoteError).toContain('重叠');
+  });
+
+  it('uses employee-edited JIC fees and promotion rules from the published content', () => {
+    const config = createDefaultJicContentConfig();
+    const utilities = config.localFees.find((item) => item.id === 'utilities')!;
+    utilities.amount = 3600;
+    const registration = config.quoteSettings.promotions.find((item) => item.ruleKind === 'jic-registration')!;
+    registration.minimumCourseWeeks = 4;
+    const dynamicPrices = {
+      ...prices(),
+      registrationFee: 125,
+      rules: {
+        localFees: config.localFees,
+        promotions: config.quoteSettings.promotions,
+        peakSeasonRanges: config.quoteSettings.peakSeasonRanges,
+      },
+    };
+    const student = new JicStudentQuote(dynamicPrices);
+    setPlan(student, 4, '2026-09-06');
+    expect(student.localFees.find((item) => item.item === '水电费')?.total).toBe(3600);
+    expect(student.registrationDiscount).toBe(125);
+  });
+
+  it('stops applying an offer after an employee disables it', () => {
+    const config = createDefaultJicContentConfig();
+    config.quoteSettings.promotions
+      .filter((item) => item.ruleKind?.startsWith('jic-off-season'))
+      .forEach((item) => item.enabled = false);
+    const student = new JicStudentQuote({
+      ...prices(),
+      rules: {
+        localFees: config.localFees,
+        promotions: config.quoteSettings.promotions,
+        peakSeasonRanges: config.quoteSettings.peakSeasonRanges,
+      },
+    });
+    setPlan(student, 4, '2026-09-06');
+    expect(student.offSeasonDiscount).toBe(0);
   });
 });

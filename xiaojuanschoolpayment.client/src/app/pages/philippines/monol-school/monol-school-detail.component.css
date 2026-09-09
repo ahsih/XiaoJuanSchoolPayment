@@ -231,3 +231,38 @@
     font-size: 28px;
   }
 }
+
+:host .gallery-grid video {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: #071b17;
+}
+
+:host .monol-stay-policy {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid #cfe0da;
+  border-radius: 16px;
+  background: #f5fbf8;
+}
+
+:host .monol-stay-policy h3 { margin: 0 0 14px; color: #064e3b; }
+:host .monol-stay-policy > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+:host .monol-stay-policy article { padding: 14px; border-radius: 12px; background: #fff; border: 1px solid #deebe6; }
+:host .monol-stay-policy span { display: block; color: #e85c24; font-size: 12px; font-weight: 700; }
+:host .monol-stay-policy strong { display: block; margin-top: 6px; color: #0d293f; }
+:host .monol-stay-policy p { margin: 8px 0 0; color: #5f6f7c; line-height: 1.65; }
+
+:host-context(.monol-editor-preview) [data-cia-preview-kind] { cursor: pointer; transition: outline-color .18s ease, background-color .18s ease; }
+:host-context(.monol-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #ff5b22 !important;
+  outline-offset: -3px;
+  background-color: #fff8ef !important;
+  scroll-margin-top: 138px;
+}
+
+@media (max-width: 760px) {
+  :host .monol-stay-policy > div { grid-template-columns: 1fr; }
+}

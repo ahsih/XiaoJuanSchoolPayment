@@ -1,14 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { EMPTY, catchError } from 'rxjs';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import {
+  QuoteImageDownloadButtonComponent,
+  QuoteImageOptionalFeeItem,
+  QuoteImagePaymentItem,
+} from '../../../components/quote-image-download-button.component';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
+import {
+  TARGET_COURSES,
+  TARGET_OFFICIAL_PRICE_WEEKS,
+  TARGET_ROOMS,
+  TargetCourseId,
+  TargetRoomId,
+  targetCourse,
+  targetOfficialPackagePrice,
+  targetRoom,
+} from './target-pricing';
+import { TargetPackageRow, TargetStudentQuote } from './target-student-quote';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 6 | 8 | 12 | 16 | 20 | 24;
-type RoomId = 'six' | 'quad' | 'triple' | 'twin' | 'single';
-type CourseId = 'lite4' | 'target4' | 'target5' | 'target6' | 'ultimate8' | 'ielts' | 'working-holiday';
 
 interface QuickInfo {
   icon: string;
@@ -34,27 +52,6 @@ interface TextCard {
   text: string;
 }
 
-interface CourseOption {
-  id: CourseId;
-  name: string;
-  type: string;
-  lessons: string;
-  suitable: string;
-  prices: Record<RoomId, Record<WeekOption, number>>;
-}
-
-interface RoomOption {
-  id: RoomId;
-  name: string;
-  note: string;
-}
-
-interface FeeRow {
-  item: string;
-  amount: string;
-  note: string;
-}
-
 interface ScheduleItem {
   time: string;
   title: string;
@@ -75,7 +72,7 @@ interface SourceLink {
 @Component({
   selector: 'app-target-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './target-school.component.html',
   styleUrls: [
@@ -83,34 +80,37 @@ interface SourceLink {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
+    '../school-quote-rollout.css',
+    '../../../components/school-group-quote.css',
+    '../philippines-local-fee-table.css',
     './target-school.component.css',
   ],
 })
-export class TargetSchoolComponent {
+export class TargetSchoolComponent implements OnInit {
+  private readonly exchangeRateService = inject(ExchangeRateService);
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
-  selectedCourseId: CourseId = 'target4';
-  selectedRoomId: RoomId = 'six';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
-  includeCampaignDiscount = false;
+  readonly courses = TARGET_COURSES;
+  readonly roomOptions = TARGET_ROOMS;
+  readonly officialPriceWeeks = TARGET_OFFICIAL_PRICE_WEEKS;
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
+  readonly students: TargetStudentQuote[] = [new TargetStudentQuote(), new TargetStudentQuote()];
+  usdToCny = 7.2;
+  phpPerCny = 9;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
   quoteCalculated = false;
 
   readonly registrationFeeUsd = 150;
-  readonly campaignDiscounts: Record<WeekOption, number> = {
-    1: 0,
-    2: 0,
-    3: 60,
-    4: 120,
-    6: 180,
-    8: 0,
-    12: 420,
-    16: 0,
-    20: 0,
-    24: 0,
-  };
+  readonly quoteGeneralNotes = [
+    '学费部分需到校前2周交齐，可以交由思达游学代收或直接自行转美元给学校；报价以最终确认金额及付款时实际汇率为准。',
+    '学杂费为到菲律宾当地需要缴纳的费用，由学校直接收取；报价仅供参考，具体以学校实际收取为准。',
+    '课程与住宿作为同一套餐计价，不拆分金额；入学／入住按周日，离校／退房按周六。',
+    '课程、房型、名额、升级活动及最终账单以TARGET书面确认为准。',
+  ];
+  readonly quoteImageFooterNotes = this.quoteGeneralNotes.slice(0, 2);
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -146,7 +146,7 @@ export class TargetSchoolComponent {
     {
       icon: 'paid',
       label: '公开价格',
-      value: '2026年7月后USD价格',
+      value: '2026年7月后美元价格',
       note: '官方页面说明2026年7月10日后使用新价格；本页报价器按该公开表估算。',
     },
   ];
@@ -156,7 +156,7 @@ export class TargetSchoolComponent {
       category: '校园',
       title: 'TARGET泳池与休息区',
       description: 'Talamban校区带泳池和户外休息区，学习之外也保留轻松交流空间。',
-      src: 'https://target-english.org/wp-content/uploads/Basketball.jpg',
+      src: '/assets/philippines/target-campus-hero.jpg',
     },
     {
       category: '校园',
@@ -209,7 +209,7 @@ export class TargetSchoolComponent {
     { label: '认证', value: 'TESDA认证校；SSP发给申请认可校 AAFS No. SBM-2013-004。' },
     { label: '学校规模', value: '最大容量约140名学生，约100名老师。' },
     { label: '设施', value: '一对一教室、小组教室、自习室、餐厅、泳池、篮球、台球、乒乓、Wi-Fi、警卫室。' },
-    { label: '4周起价', value: 'USD 1,430起：Lite 4 + 6人房 + 入学金USD 150。' },
+    { label: '4周起价', value: '1,430美元起：Lite 4＋六人房＋150美元注册费。' },
   ];
 
   readonly highlights: TextCard[] = [
@@ -257,130 +257,6 @@ export class TargetSchoolComponent {
     },
   ];
 
-  readonly roomOptions: RoomOption[] = [
-    { id: 'six', name: '6人房（上下铺）', note: '预算最低，适合重视性价比和能接受多人房的人。' },
-    { id: 'quad', name: '4人房（上下铺）', note: '多人房但比6人房更宽松，价格仍较低。' },
-    { id: 'triple', name: '3人房', note: '预算和舒适度较平衡，适合中长期学习。' },
-    { id: 'twin', name: '2人房', note: '适合同行朋友或想降低室友人数的人。' },
-    { id: 'single', name: '1人房', note: '隐私最高，旺季和长期房位要尽早确认。' },
-  ];
-
-  readonly courses: CourseOption[] = [
-    {
-      id: 'lite4',
-      name: 'Lite 4',
-      type: 'ESL / 亲子监护人',
-      lessons: '1:1 x 4',
-      suitable: '适合想控制预算、以一对一课为主，或参加亲子游学的监护人。',
-      prices: this.makePrices(
-        [512, 768, 1024, 1280, 1920, 2560, 3840, 5120, 6400, 7680],
-        [544, 816, 1088, 1360, 2040, 2720, 4080, 5440, 6800, 8160],
-        [568, 852, 1136, 1420, 2130, 2840, 4260, 5680, 7100, 8520],
-        [608, 912, 1216, 1520, 2280, 3040, 4560, 6080, 7600, 9120],
-        [712, 1068, 1424, 1780, 2670, 3560, 5340, 7120, 8900, 10680],
-      ),
-    },
-    {
-      id: 'target4',
-      name: 'TARGET 4',
-      type: 'ESL / 平衡预算',
-      lessons: '1:1 x 4 + Group x 3 + 自习 x 1 + Night Class x 2',
-      suitable: '适合1个月以上、想保留自习时间、预算也要稳的人。',
-      prices: this.makePrices(
-        [536, 804, 1072, 1340, 2010, 2680, 4020, 5360, 6700, 8040],
-        [568, 852, 1136, 1420, 2130, 2840, 4260, 5680, 7100, 8520],
-        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
-        [632, 948, 1264, 1580, 2370, 3160, 4740, 6320, 7900, 9480],
-        [736, 1104, 1472, 1840, 2760, 3680, 5520, 7360, 9200, 11040],
-      ),
-    },
-    {
-      id: 'target5',
-      name: 'TARGET 5',
-      type: 'ESL / 热门标准',
-      lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
-      suitable: '适合想增加一对一课量，同时保留小组输出的人。',
-      prices: this.makePrices(
-        [560, 840, 1120, 1400, 2100, 2800, 4200, 5600, 7000, 8400],
-        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
-        [616, 924, 1232, 1540, 2310, 3080, 4620, 6160, 7700, 9240],
-        [656, 984, 1312, 1640, 2460, 3280, 4920, 6560, 8200, 9840],
-        [760, 1140, 1520, 1900, 2850, 3800, 5700, 7600, 9500, 11400],
-      ),
-    },
-    {
-      id: 'target6',
-      name: 'TARGET 6',
-      type: 'ESL / 短期强化',
-      lessons: '1:1 x 6 + Group x 2 + Night Class x 2',
-      suitable: '适合短期、体力较好、想提高一对一密度的人。',
-      prices: this.makePrices(
-        [608, 912, 1216, 1520, 2280, 3040, 4560, 6080, 7600, 9120],
-        [640, 960, 1280, 1600, 2400, 3200, 4800, 6400, 8000, 9600],
-        [664, 996, 1328, 1660, 2490, 3320, 4980, 6640, 8300, 9960],
-        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
-        [808, 1212, 1616, 2020, 3030, 4040, 6060, 8080, 10100, 12120],
-      ),
-    },
-    {
-      id: 'ultimate8',
-      name: 'TARGET ULTIMATE 8',
-      type: '全一对一',
-      lessons: '1:1 x 8 + Night Class x 2',
-      suitable: '适合2周以内短期冲刺、基础较好、想最大化一对一的人。',
-      prices: this.makePrices(
-        [672, 1008, 1344, 1680, 2520, 3360, 5040, 6720, 8400, 10080],
-        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
-        [728, 1092, 1456, 1820, 2730, 3640, 5460, 7280, 9100, 10920],
-        [768, 1152, 1536, 1920, 2880, 3840, 5760, 7680, 9600, 11520],
-        [872, 1308, 1744, 2180, 3270, 4360, 6540, 8720, 10900, 13080],
-      ),
-    },
-    {
-      id: 'ielts',
-      name: 'IELTS',
-      type: '雅思备考',
-      lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
-      suitable: '适合需要雅思提分或12周保证班方向的人。',
-      prices: this.makePrices(
-        [672, 1008, 1344, 1680, 2520, 3360, 5040, 6720, 8400, 10080],
-        [704, 1056, 1408, 1760, 2640, 3520, 5280, 7040, 8800, 10560],
-        [728, 1092, 1456, 1820, 2730, 3640, 5460, 7280, 9100, 10920],
-        [768, 1152, 1536, 1920, 2880, 3840, 5760, 7680, 9600, 11520],
-        [872, 1308, 1744, 2180, 3270, 4360, 6540, 8720, 10900, 13080],
-      ),
-    },
-    {
-      id: 'working-holiday',
-      name: 'Working Holiday',
-      type: '打工度假准备',
-      lessons: '1:1 x 5 + Group x 2 + 自习 x 1 + Night Class x 2',
-      suitable: '适合准备澳洲等英语圈打工度假、面试和履历英文的人。',
-      prices: this.makePrices(
-        [560, 840, 1120, 1400, 2100, 2800, 4200, 5600, 7000, 8400],
-        [592, 888, 1184, 1480, 2220, 2960, 4440, 5920, 7400, 8880],
-        [616, 924, 1232, 1540, 2310, 3080, 4620, 6160, 7700, 9240],
-        [656, 984, 1312, 1640, 2460, 3280, 4920, 6560, 8200, 9840],
-        [760, 1140, 1520, 1900, 2850, 3800, 5700, 7600, 9500, 11400],
-      ),
-    },
-  ];
-
-  readonly localFees: FeeRow[] = [
-    { item: '入学金', amount: 'USD 150', note: '报名固定费用；本页报价器已加入。' },
-    { item: '宿舍保证金', amount: 'PHP 2,500', note: '退宿检查无损坏或遗失后退还。' },
-    { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，期间不论长短均需办理。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '与SSP同时申请。' },
-    { item: 'ACR I-Card', amount: 'PHP 4,300', note: '9周以上通常需要。' },
-    { item: '签证延长', amount: 'PHP 0-24,870', note: '1-4周PHP 0；5-8周PHP 5,140；21-24周合计PHP 24,870。' },
-    { item: '教材费', amount: 'PHP 500起', note: '1周PHP 500；3-4周PHP 2,000；5-8周PHP 3,000。' },
-    { item: '电费', amount: 'PHP 600 / 周', note: '基本费用；超过规定用量会追加。' },
-    { item: '水费', amount: 'PHP 200 / 周', note: '官方日文价格页列示。' },
-    { item: '共益费', amount: 'PHP 500 / 周', note: '校园公共维护费用。' },
-    { item: '机场接机', amount: 'PHP 1,200起', note: '特定时间外或临近报名安排可能另加PHP 1,000。' },
-    { item: '洗衣', amount: 'PHP 150 / 次', note: '每次最多6kg，通常每周最多3天可使用。' },
-  ];
-
   readonly scheduleItems: ScheduleItem[] = [
     {
       time: 'Morning',
@@ -399,8 +275,8 @@ export class TargetSchoolComponent {
     },
     {
       time: 'Evening',
-      title: 'Night Class / 活动',
-      text: '可利用晚间课程和校内设施延长英文接触时间，同时保留成人可持续的节奏。',
+      title: '自主复习与校园生活',
+      text: '完成当天课程后，可按个人学习计划复习，并使用学校开放的生活设施。',
     },
   ];
 
@@ -411,11 +287,11 @@ export class TargetSchoolComponent {
     },
     {
       title: '页面报价包含所有费用吗？',
-      text: '不包含。报价器按官方公开USD课程+住宿费和入学金估算；SSP、签证、教材、水电、共益费、押金、接机、洗衣、机票和保险另计。',
+      text: '不包含。报价器按学校公开的美元课程住宿套餐和注册费估算；SSP、签证、教材、水电、共益费、押金、接机、洗衣、机票和保险另计。',
     },
     {
       title: '促销折扣可以直接使用吗？',
-      text: '不一定。官方说明促销取决于申请时间和入学时间，繁忙期重叠周可能不适用。本页提供开关方便预算，但最终要按学校确认。',
+      text: '报价器会按所选日期自动排除旺季重叠周并计算学校现金优惠；限时升级仍受报名日、入学日、课程、房型空位和名额限制，最终要由学校确认。',
     },
     {
       title: '初学者可以去TARGET吗？',
@@ -457,68 +333,192 @@ export class TargetSchoolComponent {
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
 
-  get selectedCourse(): CourseOption {
-    return this.courses.find((course) => course.id === this.selectedCourseId) ?? this.courses[0];
+  ngOnInit(): void {
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
+      this.usdToCny = rates.usdToCny;
+      this.phpPerCny = rates.phpPerCny;
+      this.exchangeRateDate = rates.date;
+      this.usingLiveExchangeRate = true;
+    });
   }
 
-  get selectedRoom(): RoomOption {
-    return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
-  }
-
-  get packageUsd(): number {
-    return this.selectedCourse.prices[this.selectedRoomId][this.selectedWeeks];
-  }
-
-  get campaignDiscountUsd(): number {
-    return this.includeCampaignDiscount ? this.campaignDiscounts[this.selectedWeeks] : 0;
-  }
-
-  get quoteUsd(): number {
-    return this.registrationFeeUsd + this.packageUsd - this.campaignDiscountUsd;
-  }
-
-  get packageUsdText(): string {
-    return this.formatUsd(this.packageUsd);
-  }
-
-  get campaignDiscountText(): string {
-    if (!this.includeCampaignDiscount) {
-      return '未加入';
+  get studentCount(): number { return this.requestedStudentCount; }
+  set studentCount(value: number) {
+    this.requestedStudentCount = value;
+    if (Number.isInteger(value) && value >= 2 && value <= 20) {
+      while (this.students.length < value) this.students.push(new TargetStudentQuote());
     }
-
-    return this.campaignDiscountUsd > 0
-      ? `-${this.formatUsd(this.campaignDiscountUsd)}`
-      : '当前周数无列明折扣';
   }
 
-  get quoteUsdText(): string {
-    return this.formatUsd(this.quoteUsd);
+  setQuoteMode(mode: 'single' | 'group'): void {
+    this.quoteMode = mode;
+    if (mode === 'group') this.studentCount = this.requestedStudentCount;
+  }
+
+  get activeStudents(): TargetStudentQuote[] {
+    return this.quoteMode === 'single'
+      ? this.students.slice(0, 1)
+      : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
+  }
+
+  get selectedCourseId(): TargetCourseId { return this.students[0].packages[0].courseId; }
+  set selectedCourseId(value: TargetCourseId) { this.students[0].packages[0].courseId = value; }
+  get selectedRoomId(): TargetRoomId { return this.students[0].packages[0].roomId; }
+  set selectedRoomId(value: TargetRoomId) { this.students[0].packages[0].roomId = value; }
+  get selectedWeeks(): number { return this.students[0].packageWeeks; }
+  get selectedStartDate(): string { return this.students[0].startDate; }
+  get selectedCourse() { return targetCourse(this.selectedCourseId) ?? this.courses[0]; }
+  get selectedRoom() { return targetRoom(this.selectedRoomId) ?? this.roomOptions[0]; }
+
+  get packageUsd(): number { return this.students[0].packageTotal; }
+  get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
+  get quoteError(): string {
+    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
+    const index = this.activeStudents.findIndex((student) => !!student.quoteError);
+    return index < 0 ? '' : `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quoteError}`;
+  }
+
+  get packageUsdText(): string { return `${this.formatUsd(this.packageUsd)}美元`; }
+  get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)}美元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get exchangeRateSummary(): string {
+    return this.usingLiveExchangeRate
+      ? `人民币金额按${this.exchangeRateDate.replace(/-/g, '/')}参考汇率估算，最终以付款当日汇率为准`
+      : `美元金额暂按1美元≈${this.usdToCny}元人民币估算，最终以付款当日汇率为准`;
   }
 
   get fourWeekStartingText(): string {
-    const lowestPackageUsd = Math.min(...this.courses.map((course) => course.prices.six[4]));
-    return this.formatUsd(this.registrationFeeUsd + lowestPackageUsd);
+    const lowestPackageUsd = Math.min(...this.courses.map((course) => targetOfficialPackagePrice(course.id, 'six', 4)));
+    return `${this.formatUsd(this.registrationFeeUsd + lowestPackageUsd)}美元`;
   }
 
   get targetFiveFourWeekText(): string {
-    const targetFive = this.courses.find((course) => course.id === 'target5') ?? this.courses[0];
-    return this.formatUsd(this.registrationFeeUsd + targetFive.prices.six[4]);
+    return `${this.formatUsd(this.registrationFeeUsd + targetOfficialPackagePrice('target5', 'six', 4))}美元`;
   }
 
-  get weeklyAverageText(): string {
-    return this.formatUsd(Math.round(this.quoteUsd / this.selectedWeeks));
+  officialPackagePrice(courseId: TargetCourseId, roomId: TargetRoomId, weeks: number): string {
+    return `${this.formatUsd(targetOfficialPackagePrice(courseId, roomId, weeks))}美元`;
   }
 
-  get courseFeeRows() {
-    return this.courses.map((course) => ({
-      course: course.name,
-      lessons: course.lessons,
-      six: this.formatUsd(course.prices.six[4]),
-      quad: this.formatUsd(course.prices.quad[4]),
-      triple: this.formatUsd(course.prices.triple[4]),
-      twin: this.formatUsd(course.prices.twin[4]),
-      single: this.formatUsd(course.prices.single[4]),
-    }));
+  packageCourse(row: TargetPackageRow) { return targetCourse(row.courseId) ?? this.courses[0]; }
+  packageRoom(row: TargetPackageRow) { return targetRoom(row.roomId) ?? this.roomOptions[0]; }
+
+  private packagePaymentItems(): QuoteImagePaymentItem[] {
+    return this.activeStudents.flatMap((student, studentIndex) => [...student.packages]
+      .sort((a, b) => a.startDate.localeCompare(b.startDate))
+      .map((row, rowIndex) => {
+        const course = this.packageCourse(row);
+        const room = this.packageRoom(row);
+        const numberLabel = student.packages.length > 1 ? `${rowIndex + 1}` : '';
+        return {
+          icon: '套',
+          label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}课程住宿套餐${numberLabel}`,
+          amount: `${this.formatUsd(student.packagePrice(row))} 美元`,
+          detailTitle: `${course.name}｜${room.name}`,
+          detailSubtitle: `${row.startDate.replace(/-/g, '/')}–${student.end(row).replace(/-/g, '/')} · ${row.weeks}周`,
+          note: `${course.arrangement}；课程与住宿按学校套餐合并计价，不拆分金额。`,
+        };
+      }));
+  }
+
+  private groupedStatusItems(includeInapplicable: boolean): QuoteImagePaymentItem[] {
+    const entries = this.activeStudents.flatMap((student, index) => student.statusLines
+      .filter((line) => includeInapplicable || !['当前未适用', '未减免'].includes(line.amount))
+      .map((line) => ({ line, studentNumber: index + 1 })));
+    if (this.quoteMode === 'single') return entries.map(({ line }) => line);
+    return entries.map(({ line, studentNumber }) => ({ ...line, label: `学生${studentNumber} · ${line.label}` }));
+  }
+
+  get schoolPaymentItems(): QuoteImagePaymentItem[] {
+    return [
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFeeUsd * this.activeStudents.length)} 美元`, note: `150美元／人，一次性费用；本次共${this.activeStudents.length}人。` },
+      ...this.packagePaymentItems(),
+      ...groupPaymentLines(this.activeStudents, true),
+      ...this.groupedStatusItems(true),
+    ];
+  }
+
+  get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
+  get localFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
+  get localFeeCny(): number { return Math.round(this.localFeeTotal / this.phpPerCny); }
+  get localFeeCnyText(): string { return `约 ${this.localFeeCny.toLocaleString('zh-CN')} 元`; }
+
+  get optionalFeeItems(): QuoteImageOptionalFeeItem[] {
+    const studentCount = this.activeStudents.length;
+    const pickupStudents = this.activeStudents.filter((student) => student.pickupRequested).length;
+    const pickupGroups = Math.ceil(pickupStudents / 2);
+    const pickupEstimate = pickupGroups * 1200;
+    const deposit = studentCount * 2500;
+    return [
+      {
+        label: '房间押金（可退）', amount: this.formatPhp(deposit),
+        cnyAmount: `约 ${Math.round(deposit / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        note: `2,500比索／人 × ${studentCount}；退宿时设施和物品无损坏、遗失时退还，不计入学杂费合计。`,
+      },
+      {
+        label: '宿务机场接机', amount: pickupStudents ? this.formatPhp(pickupEstimate) : '未选择',
+        cnyAmount: pickupStudents ? `约 ${Math.round(pickupEstimate / this.phpPerCny).toLocaleString('zh-CN')} 元` : undefined,
+        note: pickupStudents
+          ? `${pickupStudents}人选择；基本费1,200比索、每组最多2人，当前按${pickupGroups}组参考，实际拼车和安排由学校确认。指定时段外或临近报名可能各加1,000比索。`
+          : '基本费1,200比索，每组最多2人；指定时段外或临近报名可能各加1,000比索，不计入学杂费合计。',
+      },
+      {
+        label: '洗衣服务', amount: '150比索／次',
+        cnyAmount: `约 ${Math.round(150 / this.phpPerCny).toLocaleString('zh-CN')} 元／次`,
+        note: '每次最多6公斤，学校列明每周最多使用3天；按实际次数支付，不计入学杂费合计。',
+      },
+    ];
+  }
+
+  get quoteHeading(): string {
+    return this.quoteMode === 'single' ? `TARGET ${this.selectedWeeks}周报价` : `TARGET ${this.activeStudents.length}人报价`;
+  }
+  get quoteStartDate(): string { return this.activeStudents.map((student) => student.startDate).filter(Boolean).sort()[0] ?? this.selectedStartDate; }
+
+  get quoteImageData() {
+    const warnings = this.activeStudents.map((student, index) => student.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.warning}` : '').filter(Boolean);
+    const quote = buildPhilippinesDetailedQuote({
+      schoolCode: 'TARGET',
+      schoolName: '菲律宾宿务TARGET Global English Academy',
+      filePrefix: 'TARGET',
+      heroSrc: this.galleryImages[0].src,
+      weeks: this.selectedWeeks,
+      startDate: this.quoteStartDate,
+      usdToCny: this.usdToCny,
+      totalUsd: this.quoteUsd,
+      paymentItems: [
+        this.schoolPaymentItems[0],
+        ...this.packagePaymentItems(),
+        ...groupPaymentLines(this.activeStudents, true),
+        ...this.groupedStatusItems(false),
+      ],
+      localFeeItems: this.estimatedLocalFees.map((fee) => ({
+        label: fee.item,
+        unit: fee.unitLabel,
+        quantity: this.formatFeeQuantity(fee.quantity),
+        amount: this.formatPhp(fee.total),
+        note: fee.note,
+      })),
+      localFeeTotal: this.localFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: this.localFeeCny,
+      localFeeNote: '房间押金、接机和洗衣服务另行准备，不计入学杂费及人民币预估合计。',
+      optionalFeeItems: this.optionalFeeItems,
+      ruleNotes: [...warnings, ...this.quoteImageFooterNotes],
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+    });
+    return {
+      ...applySchoolQuoteImageLayout(quote, 'TARGET', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny),
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading.replace(/\s+/g, '')}-${this.quoteStartDate.replace(/-/g, '')}.png`,
+      noteTitle: '报价说明',
+      importantNotes: [...warnings, ...this.quoteImageFooterNotes],
+      finalConfirmationText: '最终以学校价格、空房及优惠确认为准。',
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
+      exchangeRateText: `学杂费按1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}比索估算`,
+    };
   }
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -535,29 +535,10 @@ export class TargetSchoolComponent {
   }
 
   formatUsd(value: number): string {
-    return `USD ${value.toLocaleString('en-US')}`;
+    return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-
-  private makePrices(
-    six: number[],
-    quad: number[],
-    triple: number[],
-    twin: number[],
-    single: number[],
-  ): Record<RoomId, Record<WeekOption, number>> {
-    return {
-      six: this.mapWeekPrices(six),
-      quad: this.mapWeekPrices(quad),
-      triple: this.mapWeekPrices(triple),
-      twin: this.mapWeekPrices(twin),
-      single: this.mapWeekPrices(single),
-    };
-  }
-
-  private mapWeekPrices(values: number[]): Record<WeekOption, number> {
-    return this.weekOptions.reduce(
-      (prices, week, index) => ({ ...prices, [week]: values[index] }),
-      {} as Record<WeekOption, number>,
-    );
+  formatPhp(value: number): string { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}比索`; }
+  formatFeeQuantity(value: number): string {
+    return value.toLocaleString('zh-CN', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
 }

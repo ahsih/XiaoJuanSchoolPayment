@@ -15,6 +15,7 @@ export interface BeciRoomPrice {
   price: number;
   note: string;
   single: boolean;
+  coupleRate?: number;
 }
 
 export interface BeciCampusPricing {
@@ -69,7 +70,7 @@ const spartaRooms: readonly BeciRoomPrice[] = [
 
 const cityRooms: readonly BeciRoomPrice[] = [
   { id: 'city-studio-single', name: 'Studio单人间', price: 1250, note: '独立Studio单人房。', single: true },
-  { id: 'city-studio-twin', name: 'Studio双人间', price: 800, note: '标准价每人800美元／4周；两名夫妻共同选择时每人750美元／4周。', single: false },
+  { id: 'city-studio-twin', name: 'Studio双人间', price: 800, coupleRate: 750, note: '标准价每人800美元／4周；两名夫妻共同选择时每人750美元／4周。', single: false },
   { id: 'city-studio-quad', name: 'Studio四人间（上下铺）', price: 600, note: '按当期性别与床位确认空房。', single: false },
   { id: 'city-semi-master-single', name: 'Semi Master单人间', price: 1050, note: '较高规格单人房。', single: true },
   { id: 'city-semi-single', name: 'Semi单人间', price: 900, note: '单人房。', single: true },

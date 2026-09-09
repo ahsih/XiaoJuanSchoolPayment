@@ -54,6 +54,28 @@
 
 :host .glc-fee-group { margin-top: 24px; }
 :host .glc-page .glc-catalog-table { display: block; }
+:host(.glc-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
+:host(.glc-editor-preview) .cia-preview-highlight {
+  outline: 3px solid #f25b24;
+  outline-offset: -3px;
+  background-color: #fff8f1;
+  scroll-margin-top: 150px;
+}
+:host .glc-page .gallery-grid video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #0f2535;
+}
+:host .glc-stay-policy { margin-top: 18px; padding: 18px; border: 1px solid #cfe4dc; border-radius: 10px; background: #f5fbf8; }
+:host .glc-stay-policy h3 { margin: 0 0 14px; color: #07513f; }
+:host .glc-stay-policy > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+:host .glc-stay-policy article { padding: 14px; border: 1px solid #d9e6e1; border-radius: 8px; background: #fff; }
+:host .glc-stay-policy span, :host .glc-stay-policy strong { display: block; }
+:host .glc-stay-policy span { color: #f05b18; font-size: 12px; font-weight: 700; }
+:host .glc-stay-policy strong { margin-top: 5px; color: #12364a; }
+:host .glc-stay-policy p { margin: 7px 0 0; color: #64748b; font-size: 13px; line-height: 1.65; }
 :host .glc-fee-group .course-fee-group-heading { margin: 0; }
 :host .glc-fee-group .glc-catalog-table { margin-top: 0; border-radius: 0 0 8px 8px; }
 :host .glc-page .glc-catalog-table .table-row { grid-template-columns: minmax(0, 1fr) 180px minmax(0, 1.7fr); }
@@ -64,6 +86,7 @@
 :host .glc-catalog-note { margin: 18px 0 0; color: #64748b; font-size: 14px; line-height: 1.7; }
 
 @media (max-width: 640px) {
+  :host .glc-stay-policy > div { grid-template-columns: 1fr; }
   :host .glc-page .glc-catalog-table .table-head { display: none; }
   :host .glc-page .glc-catalog-table .table-row:not(.table-head) { grid-template-columns: minmax(0, 1fr) 110px; }
   :host .glc-catalog-table .table-row > span { padding: 12px; }

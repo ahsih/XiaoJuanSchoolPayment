@@ -11,7 +11,9 @@ import { groupLocalFees, groupPaymentLines } from '../../../components/school-gr
 import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { BECI_CAMPUS_PRICING, BeciCampus, BeciCampusPricing, beciPriceMultiplier } from './beci-pricing';
-import { BeciStudentQuote } from './beci-student-quote';
+import { CiaContentConfig, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { beciCampusPricingFromContent, createDefaultBeciContentConfig } from '../beci-school/beci-content-config';
+import { BeciQuoteRules, BeciStudentQuote } from './beci-student-quote';
 
 @Component({
   selector: 'app-beci-quote-calculator',
@@ -27,17 +29,33 @@ import { BeciStudentQuote } from './beci-student-quote';
 export class BeciQuoteCalculatorComponent implements OnInit {
   private readonly exchangeRateService = inject(ExchangeRateService);
   private selectedCampus: BeciCampus = 'eop';
+  private currentContent = createDefaultBeciContentConfig();
 
   @Input({ required: true })
   set campus(value: BeciCampus) {
     if (!value || value === this.selectedCampus && this.students.length) return;
     this.selectedCampus = value;
-    this.students = [new BeciStudentQuote(this.config)];
-    this.requestedStudentCount = 2;
-    this.quoteMode = 'single';
+    this.resetStudents();
   }
   get campus(): BeciCampus { return this.selectedCampus; }
-  get config(): BeciCampusPricing { return BECI_CAMPUS_PRICING[this.selectedCampus]; }
+  @Input()
+  set contentConfig(value: CiaContentConfig | undefined) {
+    if (!value) return;
+    this.currentContent = value;
+    this.resetStudents();
+  }
+  get contentConfig(): CiaContentConfig { return this.currentContent; }
+  get config(): BeciCampusPricing { return beciCampusPricingFromContent(this.currentContent, this.selectedCampus); }
+  get quoteRules(): BeciQuoteRules {
+    return {
+      registrationFee: this.currentContent.quoteSettings.registrationFee,
+      shortStayRatios: this.currentContent.quoteSettings.shortStayRatios,
+      peakSeasonFeePerWeek: this.currentContent.quoteSettings.peakSeasonFeePerWeek,
+      peakSeasonRanges: this.currentContent.quoteSettings.peakSeasonRanges,
+      promotions: this.currentContent.quoteSettings.promotions,
+      localFees: this.currentContent.localFees,
+    };
+  }
 
   students: BeciStudentQuote[] = [new BeciStudentQuote(BECI_CAMPUS_PRICING.eop)];
   quoteMode: 'single' | 'group' = 'single';
@@ -62,7 +80,7 @@ export class BeciQuoteCalculatorComponent implements OnInit {
   set studentCount(value: number) {
     this.requestedStudentCount = value;
     if (Number.isInteger(value) && value >= 2 && value <= 20) {
-      while (this.students.length < value) this.students.push(new BeciStudentQuote(this.config));
+      while (this.students.length < value) this.students.push(new BeciStudentQuote(this.config, this.quoteRules));
     }
   }
 
@@ -137,18 +155,37 @@ export class BeciQuoteCalculatorComponent implements OnInit {
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
-  get depositTotal(): number { return this.activeStudents.length * 3000; }
+  get depositTotal(): number { return this.activeStudents.reduce((sum, student) => sum + student.depositReference.total, 0); }
   get depositCny(): number { return Math.round(this.depositTotal / this.phpPerCny); }
+  get depositPerPerson(): number { return this.currentContent.localFees.find(item => item.enabled && item.id === 'room-deposit')?.amount ?? 0; }
+  get activePromotions(): CiaPromotionRule[] {
+    return this.currentContent.quoteSettings.promotions.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+  get localFeeIntro(): string { return this.currentContent.quoteSettings.localFeeIntro; }
 
   calculateQuote(): void { this.quoteCalculated = true; }
   formatUsd(value: number): string { return quoteMoney(value); }
   formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   trackIndex(index: number): number { return index; }
+  feeId(name: string): string {
+    const normalized = name.replace(/^学生[\d、]+ · /, '');
+    return this.currentContent.localFees.find(item => item.name === normalized)?.id ?? 'local-fees';
+  }
+  promotionSummary(item: CiaPromotionRule): string {
+    if (item.waiveRegistration) return `${item.description || item.name}（免${this.formatUsd(this.currentContent.quoteSettings.registrationFee)}美元注册费）`;
+    if (item.discountType === 'percentage') return `${item.description || item.name}（减${item.discountValue}%）`;
+    if (item.discountTiers && Object.keys(item.discountTiers).length) {
+      const tiers = Object.entries(item.discountTiers).sort((a, b) => Number(a[0]) - Number(b[0])).map(([weeks, amount]) => `${weeks}周减${amount}美元`).join('、');
+      return `${item.description || item.name}（${tiers}）`;
+    }
+    return item.description || item.name;
+  }
 
   get quoteImageData() {
+    const shortStayMultiplier = (weeks: number) => this.currentContent.quoteSettings.shortStayRatios[String(weeks)] ?? beciPriceMultiplier(weeks);
     const shortStayNotes = [...new Set(this.activeStudents.flatMap((student) =>
-      student.quotePlan.shortStayNotes(beciPriceMultiplier),
+      student.quotePlan.shortStayNotes(shortStayMultiplier),
     ))];
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`]
@@ -175,18 +212,17 @@ export class BeciQuoteCalculatorComponent implements OnInit {
       localFeeTotal: this.estimatedLocalFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.estimatedLocalFeeCny,
-      localFeeNote: '学杂费按每名学生的课程、住宿、签证和接机选择分别计算后汇总；接机勾选后计入，房间押金不计入。',
+      localFeeNote: this.currentContent.quoteImageSettings.localFeeIntro,
       optionalFeeItems: [{
         label: '房间押金',
         amount: this.formatPhp(this.depositTotal),
         cnyAmount: `约人民币 ${this.depositCny.toLocaleString('zh-CN')} 元`,
-        note: `${this.activeStudents.length}人 × 3,000比索；无损坏、无欠费并按学校规则完成退房后可退，不计入学杂费合计。`,
+        note: `${this.activeStudents.length}人 × ${this.depositPerPerson.toLocaleString('zh-CN')}比索；无损坏、无欠费并按学校规则完成退房后可退，不计入学杂费合计。`,
       }],
       ruleNotes: [
         ...warnings,
         ...shortStayNotes,
-        '2026/02/08–06/14或2026/09/06–12/27入学，整段课程费与住宿费九折；之后再扣长期优惠。',
-        '旺季费按课程实际覆盖2026/06/28–08/22或2027/06/27–08/21的重叠周数，每周40美元。',
+        ...this.currentContent.quoteImageSettings.footerNotes,
         this.config.campusNote,
       ],
     });
@@ -202,12 +238,26 @@ export class BeciQuoteCalculatorComponent implements OnInit {
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.firstEntryDate.replace(/-/g, '')}.png`,
-      localFeeTitle: '到校后学杂费明细（按每名学生方案汇总）',
+      paymentSectionTitle: this.currentContent.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.currentContent.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.currentContent.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.currentContent.quoteImageSettings.benefits,
+      serviceLocations: this.currentContent.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.currentContent.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.currentContent.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.currentContent.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.currentContent.quoteImageSettings.noteSectionTitle,
+      importantNotes: this.currentContent.quoteImageSettings.footerNotes,
       conversionRates: {
         usdToCny: this.usdToCny,
         phpPerCny: this.phpPerCny,
         date: this.usingLiveExchangeRates ? this.exchangeRateDate : undefined,
       },
     };
+  }
+
+  private resetStudents(): void {
+    this.students = [new BeciStudentQuote(this.config, this.quoteRules)];
+    this.requestedStudentCount = 2;
+    this.quoteMode = 'single';
   }
 }
