@@ -53,7 +53,7 @@ MySQL/MariaDB database
   - `Data/Models/`: EF Core and Identity entities.
   - `Data/DTO/` and `Data/Filter/`: API contracts and query filters.
   - `Services/School/SchoolService.cs`: school CRUD/query logic and physical photo storage.
-  - `Services/DataInitialize.cs`: large, idempotent-ish seed/upsert routine for currencies, schools, pricing, rooms, lessons, fees, and notes.
+  - `Services/DataInitialize.cs`: large, insert-only startup seed routine for currencies, schools, pricing, rooms, lessons, fees, and notes. It adds missing baseline records but never updates or deletes existing production records.
   - `Migrations/`: EF Core schema history. Do not hand-edit the model snapshot.
   - `wwwroot/uploads/`: runtime school-photo storage; only `.gitkeep` is source controlled.
 - `Dockerfile`: multi-stage production build.
@@ -103,7 +103,7 @@ The supported visual editors and embedded public pages use a same-origin, source
 Do not assume all visible information comes from the database:
 
 1. Marketing copy, school descriptions, feature lists, citations, and many image references are stored directly in page component `.ts` arrays and `.html` templates.
-2. Interactive quote/course/room/fee data comes from MySQL through `SchoolService`; initial values are created or updated by `Services/DataInitialize.cs`.
+2. Interactive quote/course/room/fee data comes from MySQL through `SchoolService`; missing initial values are inserted by `Services/DataInitialize.cs`, while existing database values remain unchanged on startup.
 3. Each school migrated to the visual workbench stores employee-editable courses, rooms, local fees, promotions, quote rules, quote-image copy, and media in a versioned `SchoolContentRevision` JSON document. Published content overrides database/compiled defaults on that public page; the page, calculator, local-fee table, and generated quote image must continue to use the same published configuration. `cia-content-config.ts` defines the shared schema, while school-specific default config factories are fallbacks rather than a second published source of truth.
 
 CG Banilad and CG Sparta share the local-fee estimator in `src/app/pages/philippines/cg-local-fees.ts`, but their school pricing and employee content remain campus-specific. CG Banilad's versioned employee document is `cg-banilad-content-config.ts`; after publishing it owns Banilad's course/room tables, calculator rules, local-fee rows, quote-image copy and uploaded media. CG Sparta's versioned employee document is `cg-sparta-content-config.ts`; preserve its independent 1–52-week row model, 40%/60%/85% short stays, 200-dollar long-stay discount cap, course-period discount evaluation, and extended visa estimate instead of replacing them with Banilad rules. Both campuses support single-person and group quotes with independent per-student course/accommodation rows, age information, visa type, and returning-student status. Registration is charged once per new student and returning students are exempt. Long-term visas provisionally zero SSP, SSP E-CARD, ACR I-CARD and tourist-extension fees while retaining an adviser-confirmation warning. ARP is estimated at 300 pesos on a tourist's first extension and once for long-term visas. Local fees are computed per student and then grouped only when their fee rule and note match; unclear shared pickup/deposit units remain reference amounts rather than being multiplied automatically.
@@ -203,7 +203,7 @@ Useful local URLs:
 - API/Swagger: `https://localhost:7209/swagger`
 - HTTP API fallback: `http://localhost:5023`
 
-On API startup, `Program.cs` retries database access, applies pending migrations, creates the `Admin`, `Staff`, `User`, and `Student` roles, and runs `DataInitialize.SeedAsync`. A reachable database is therefore required for normal startup, and manual `dotnet ef database update` is usually unnecessary.
+On API startup, `Program.cs` retries database access, applies pending migrations, creates the `Admin`, `Staff`, `User`, and `Student` roles, and runs the insert-only `DataInitialize.SeedAsync`. The initializer adds missing baseline records but preserves all existing rows and values. A reachable database is therefore required for normal startup, and manual `dotnet ef database update` is usually unnecessary.
 
 ## Build and test commands
 
@@ -237,7 +237,7 @@ For visual work, verify both desktop and narrow mobile layouts. Important public
 1. Find the page's `SchoolService` lookup and requested `week` filter.
 2. Update the matching section in `Services/DataInitialize.cs` when the value is canonical seed data.
 3. Keep currency IDs aligned with the seeded currencies.
-4. Ensure startup seeding updates existing rows as intended; some helper methods only insert missing rows while others upsert.
+4. Startup seeding is insert-only. Changing a seed definition does not update an existing environment; apply intentional production data changes through the employee tools, an EF migration, or an explicit maintenance operation.
 5. Verify the public calculator and the matching admin table.
 
 ### Change the schema or API contract

@@ -120,6 +120,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       var provider = scope.ServiceProvider;
       var context = provider.GetRequiredService<AppDbContext>();
 
+      ConfigureInsertOnlySeeding(context);
+
       await SeedCurrenciesAsync(context);
       await SeedCiaPricingAsync(context);
       await SeedBtesPricingAsync(context);
@@ -154,6 +156,24 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedIloiloPiaPricingAsync(context);
       await SeedEroomPricingAsync(context);
       await SeedRegionalStartingPricesAsync(context);
+    }
+
+    private static void ConfigureInsertOnlySeeding(AppDbContext context)
+    {
+      // Startup seeding may add missing baseline records, but live database values
+      // and records must remain owned by production after their initial creation.
+      context.ChangeTracker.StateChanged += (_, args) =>
+      {
+        if (args.NewState == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        {
+          args.Entry.CurrentValues.SetValues(args.Entry.OriginalValues);
+          args.Entry.State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+        }
+        else if (args.NewState == Microsoft.EntityFrameworkCore.EntityState.Deleted)
+        {
+          args.Entry.State = Microsoft.EntityFrameworkCore.EntityState.Unchanged;
+        }
+      };
     }
 
     private static async Task SeedBtesPricingAsync(AppDbContext context)
