@@ -285,7 +285,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'GLC Mabolo校区',
       description:
         'GLC位于Cebu City Mabolo生活圈，周边有商场、餐厅、超市和医疗资源。',
-      src: '/assets/glc/campus-main.jpg',
+      src: '/assets/glc/campus-main.webp',
     },
     {
       category: '教室',
@@ -516,7 +516,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       ...(this.sidaDiscountTotal ? [{ icon: '惠', label: '思达启航专属优惠', amount: `− ${quoteMoney(this.sidaDiscountTotal)} 美元`, note: this.calculator.sidaNote, accent: true }] : []),
     ];
     const quote = buildPhilippinesDetailedQuote({
-      schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc: '/assets/glc/campus-main.jpg',
+      schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc: '/assets/glc/campus-main.webp',
       weeks: this.totalCourseWeeks, startDate: this.selectedStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
       localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),

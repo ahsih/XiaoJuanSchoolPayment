@@ -232,7 +232,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       title: 'I.BREEZE泳池与校区',
       description:
         '宿务市区少见的度假式校区，泳池、餐厅、教室和宿舍形成集中的学习生活空间。',
-      src: 'assets/ibreeze/campus-main.jpg',
+      src: 'assets/ibreeze/campus-main.webp',
     },
     {
       category: '餐厅',
@@ -311,7 +311,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
 
   readonly highlights: Highlight[] = [
     {
-      image: 'assets/ibreeze/campus-main.jpg',
+      image: 'assets/ibreeze/campus-main.webp',
       title: '市区里有度假式校区',
       text: 'I.BREEZE在Mabolo，兼顾市区生活便利和泳池、餐厅、宿舍一体化的学习环境。',
     },
@@ -534,42 +534,42 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       number: '01',
       title: '先看课程强度是否匹配',
       text: 'I.BREEZE课程多，先确定口语、轻量ESL、商务、考试还是Junior，再报价。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的菲律宾宿务语言学校',
     },
     {
       number: '02',
       title: 'IB1/IB2和房型逐项核价',
       text: '单人、双人、三人、四人和Prime房型口径不同，需按性别与日期确认空房。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾语言学校费用',
     },
     {
       number: '03',
       title: '当地费用提前说清楚',
       text: 'SSP、E-Card、押金、教材、水电、签证和洗衣都要和套餐价分开看。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航顾问核验菲律宾游学课程和合同文件',
     },
     {
       number: '04',
       title: '行前清单更完整',
       text: '接机、现金、保险、入境文件、住宿用品和到校费用会提前整理给学生。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '学习中仍可继续沟通',
       text: '遇到课程、老师、住宿或账单疑问时，可让顾问帮忙梳理沟通重点。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '国内顾问 + 宿务驻点',
       text: '国内咨询和宿务当地支持配合，适合第一次去菲律宾游学的学生和家庭。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -1017,7 +1017,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     const imageSettings = this.quoteImageSettings;
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'I.BREEZE', schoolName: '菲律宾宿务I.BREEZE语言学校', filePrefix: 'I-BREEZE',
-      heroSrc: '/assets/ibreeze/campus-main.jpg', weeks: this.selectedWeeks, startDate: this.selectedStartDate,
+      heroSrc: '/assets/ibreeze/campus-main.webp', weeks: this.selectedWeeks, startDate: this.selectedStartDate,
       usdToCny: this.usdToCny, totalUsd: this.quoteUsd, fullFeeDetails: true, localFeeTableLayout: 'web',
       paymentItems: this.schoolPaymentItems,
       localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),

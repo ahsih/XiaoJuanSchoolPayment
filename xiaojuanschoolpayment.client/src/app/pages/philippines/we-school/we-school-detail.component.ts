@@ -94,16 +94,16 @@ export class WeSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'WE泳池与校园标识', description: '官方首页主视觉，能看到泳池、绿地和WE校园标识。', src: 'assets/philippines/we-hero.jpg' },
-    { category: '校园', title: 'WE团队与校园草坪', description: '官方首页校园图片，展示学校团队与主标识区域。', src: 'assets/philippines/we-campus-01.jpg' },
-    { category: '校园', title: 'Farm resort校区环境', description: '官方校园图片，适合判断WE的度假式环境和公共空间。', src: 'assets/philippines/we-campus-02.jpg' },
-    { category: '课堂', title: 'Native一对一课堂', description: '官方Native Mix图片，展示Native老师一对一沟通场景。', src: 'assets/philippines/we-native-teacher.jpg' },
-    { category: '课堂', title: 'Native Mix课程场景', description: '官网Program页老师图片，适合关注发音和自然表达的学生参考。', src: 'assets/philippines/we-native-mix.jpg' },
-    { category: '亲子', title: 'Family Study Program', description: '官方亲子课程图片，适合低龄和家庭陪读方向。', src: 'assets/philippines/we-family-program.jpg' },
-    { category: '亲子', title: 'WE Kindergarten', description: '官方Program页幼儿课程图片，面向4岁到学龄前儿童。', src: 'assets/philippines/we-kindergarten.jpg' },
-    { category: '活动', title: 'English + Golf', description: '官方Golf页图片，展示克拉克高尔夫课程和场地体验。', src: 'assets/philippines/we-golf-01.jpg' },
-    { category: '活动', title: 'Golf练习与球场', description: '官方Golf页第二张图片，适合判断活动课程氛围。', src: 'assets/philippines/we-golf-02.jpg' },
-    { category: '活动', title: 'Swimming Lesson', description: '官方Swimming页图片，展示校内泳池课程。', src: 'assets/philippines/we-swimming.jpg' },
+    { category: '校园', title: 'WE泳池与校园标识', description: '官方首页主视觉，能看到泳池、绿地和WE校园标识。', src: 'assets/philippines/we-hero.webp' },
+    { category: '校园', title: 'WE团队与校园草坪', description: '官方首页校园图片，展示学校团队与主标识区域。', src: 'assets/philippines/we-campus-01.webp' },
+    { category: '校园', title: 'Farm resort校区环境', description: '官方校园图片，适合判断WE的度假式环境和公共空间。', src: 'assets/philippines/we-campus-02.webp' },
+    { category: '课堂', title: 'Native一对一课堂', description: '官方Native Mix图片，展示Native老师一对一沟通场景。', src: 'assets/philippines/we-native-teacher.webp' },
+    { category: '课堂', title: 'Native Mix课程场景', description: '官网Program页老师图片，适合关注发音和自然表达的学生参考。', src: 'assets/philippines/we-native-mix.webp' },
+    { category: '亲子', title: 'Family Study Program', description: '官方亲子课程图片，适合低龄和家庭陪读方向。', src: 'assets/philippines/we-family-program.webp' },
+    { category: '亲子', title: 'WE Kindergarten', description: '官方Program页幼儿课程图片，面向4岁到学龄前儿童。', src: 'assets/philippines/we-kindergarten.webp' },
+    { category: '活动', title: 'English + Golf', description: '官方Golf页图片，展示克拉克高尔夫课程和场地体验。', src: 'assets/philippines/we-golf-01.webp' },
+    { category: '活动', title: 'Golf练习与球场', description: '官方Golf页第二张图片，适合判断活动课程氛围。', src: 'assets/philippines/we-golf-02.webp' },
+    { category: '活动', title: 'Swimming Lesson', description: '官方Swimming页图片，展示校内泳池课程。', src: 'assets/philippines/we-swimming.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -118,10 +118,10 @@ export class WeSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/we-hero.jpg', title: '度假式校内生活', text: 'WE的页面重点不是高压封闭，而是宽敞校园、泳池、便利店、宿舍和教室都在同一校区。' },
-    { image: 'assets/philippines/we-native-teacher.jpg', title: 'Native Mix清晰', text: '官网说明可选择每日1-3节Native一对一，适合发音、语调和真实口语表达目标。' },
-    { image: 'assets/philippines/we-family-program.jpg', title: '亲子与低龄友好', text: '4岁到学龄前可看WE Kindergarten，小学到初中可比较Junior ESL和Junior Native。' },
-    { image: 'assets/philippines/we-golf-01.jpg', title: 'Golf / Swimming活动', text: '高尔夫和游泳有官网公开单次价格，适合把课程和活动体验一起规划。' },
+    { image: 'assets/philippines/we-hero.webp', title: '度假式校内生活', text: 'WE的页面重点不是高压封闭，而是宽敞校园、泳池、便利店、宿舍和教室都在同一校区。' },
+    { image: 'assets/philippines/we-native-teacher.webp', title: 'Native Mix清晰', text: '官网说明可选择每日1-3节Native一对一，适合发音、语调和真实口语表达目标。' },
+    { image: 'assets/philippines/we-family-program.webp', title: '亲子与低龄友好', text: '4岁到学龄前可看WE Kindergarten，小学到初中可比较Junior ESL和Junior Native。' },
+    { image: 'assets/philippines/we-golf-01.webp', title: 'Golf / Swimming活动', text: '高尔夫和游泳有官网公开单次价格，适合把课程和活动体验一起规划。' },
   ];
 
   readonly suitableFor: FitItem[] = [

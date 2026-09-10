@@ -226,7 +226,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       title: 'CG Banilad低层校园与中庭',
       description:
         'Banilad校区位于Cebu City生活圈内，校园空间比海边度假型学校更紧凑，优势是市区便利。',
-      src: '/assets/philippines/cg-banilad-campus-hero.jpg',
+      src: '/assets/philippines/cg-banilad-campus-hero.webp',
     },
     {
       category: '教室',
@@ -294,7 +294,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       text: 'Banilad Campus保留单词、作文、选修和小班课等学习推动，但整体更适合想住市区、周边生活便利的学生。',
     },
     {
-      image: '/assets/philippines/cg-banilad-campus-hero.jpg',
+      image: '/assets/philippines/cg-banilad-campus-hero.webp',
       title: '课程选择很完整',
       text: 'Light、General、Intensive、Power、Semi-Sparta、IELTS、TOEIC、Business、Family都能在同一校区比较。',
     },
@@ -855,7 +855,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
     const quote=buildPhilippinesDetailedQuote({
       fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG BANILAD',schoolName:'菲律宾宿务CG Academy Banilad校区',filePrefix:'CG-Banilad',
-      heroSrc:'/assets/philippines/cg-banilad-campus-hero.jpg',weeks:this.selectedWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
+      heroSrc:'/assets/philippines/cg-banilad-campus-hero.webp',weeks:this.selectedWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
       localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),
       localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,
       optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes,

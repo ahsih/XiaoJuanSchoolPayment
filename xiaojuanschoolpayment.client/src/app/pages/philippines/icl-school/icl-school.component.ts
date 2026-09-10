@@ -287,7 +287,7 @@ export class IclSchoolComponent implements OnInit {
       this.usdToCny,
       this.phpPerCny,
       this.exchangeRateLive ? this.exchangeRateDate : undefined,
-      '/assets/philippines/icl-campus-hero.jpg',
+      '/assets/philippines/icl-campus-hero.webp',
     );
   }
   formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }

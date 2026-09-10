@@ -78,12 +78,12 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '品牌', title: 'American English品牌图', description: '官网公开品牌图，突出“Empowering People”的沟通训练定位。', src: 'assets/philippines/american-english-brand.png' },
-    { category: '课堂', title: 'American English培训现场', description: '官网课程页公开的培训/学员照片，适合展示Makati城市培训中心属性。', src: 'assets/philippines/american-english-training-room.jpg' },
-    { category: '课程', title: 'Accent Neutralization', description: '官网课程图，用于发音、口音中和和清晰表达方向。', src: 'assets/philippines/american-english-accent-neutralization.jpg' },
-    { category: '课程', title: 'Business Writing', description: '官网课程图，适合商务邮件、报告、技术写作和职场文本训练。', src: 'assets/philippines/american-english-business-writing.jpg' },
-    { category: '企业', title: 'Presentation Skills', description: '官网课程图，适合会议、演讲、汇报和领导力表达训练。', src: 'assets/philippines/american-english-presentation-skills.jpg' },
-    { category: '课程', title: 'Speech Enhancement', description: '官网课程图，适合口语流利度、听说和自然表达补强。', src: 'assets/philippines/american-english-speech-enhancement.jpg' },
+    { category: '品牌', title: 'American English品牌图', description: '官网公开品牌图，突出“Empowering People”的沟通训练定位。', src: 'assets/philippines/american-english-brand.webp' },
+    { category: '课堂', title: 'American English培训现场', description: '官网课程页公开的培训/学员照片，适合展示Makati城市培训中心属性。', src: 'assets/philippines/american-english-training-room.webp' },
+    { category: '课程', title: 'Accent Neutralization', description: '官网课程图，用于发音、口音中和和清晰表达方向。', src: 'assets/philippines/american-english-accent-neutralization.webp' },
+    { category: '课程', title: 'Business Writing', description: '官网课程图，适合商务邮件、报告、技术写作和职场文本训练。', src: 'assets/philippines/american-english-business-writing.webp' },
+    { category: '企业', title: 'Presentation Skills', description: '官网课程图，适合会议、演讲、汇报和领导力表达训练。', src: 'assets/philippines/american-english-presentation-skills.webp' },
+    { category: '课程', title: 'Speech Enhancement', description: '官网课程图，适合口语流利度、听说和自然表达补强。', src: 'assets/philippines/american-english-speech-enhancement.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -98,10 +98,10 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/american-english-training-room.jpg', title: 'Makati城市培训中心', text: '适合已经在马尼拉、短住马尼拉、商务出差或希望把英语课插入城市行程的人。' },
-    { image: 'assets/philippines/american-english-business-writing.jpg', title: '商务写作和职场沟通清晰', text: '官网课程覆盖商务邮件、报告、表达、会议、客户服务和领导力沟通。' },
-    { image: 'assets/philippines/american-english-accent-neutralization.jpg', title: '一对一目标更聚焦', text: '一对一可围绕发音、口语、IELTS、商务写作、面试或演讲进行定制。' },
-    { image: 'assets/philippines/american-english-presentation-skills.jpg', title: '企业培训流程成熟', text: '企业课程从Training Needs Analysis开始，再设计课程、交付训练并做课后评估。' },
+    { image: 'assets/philippines/american-english-training-room.webp', title: 'Makati城市培训中心', text: '适合已经在马尼拉、短住马尼拉、商务出差或希望把英语课插入城市行程的人。' },
+    { image: 'assets/philippines/american-english-business-writing.webp', title: '商务写作和职场沟通清晰', text: '官网课程覆盖商务邮件、报告、表达、会议、客户服务和领导力沟通。' },
+    { image: 'assets/philippines/american-english-accent-neutralization.webp', title: '一对一目标更聚焦', text: '一对一可围绕发音、口语、IELTS、商务写作、面试或演讲进行定制。' },
+    { image: 'assets/philippines/american-english-presentation-skills.webp', title: '企业培训流程成熟', text: '企业课程从Training Needs Analysis开始，再设计课程、交付训练并做课后评估。' },
   ];
 
   readonly suitableFor: FitItem[] = [

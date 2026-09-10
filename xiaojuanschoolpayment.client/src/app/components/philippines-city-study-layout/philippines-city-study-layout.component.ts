@@ -159,7 +159,7 @@ const selectionVisual = (
   if (/雅思/.test(title)) {
     return {
       icon: 'verified',
-      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.webp',
     };
   }
 
@@ -306,42 +306,42 @@ export class PhilippinesCityStudyLayoutComponent {
       icon: 'account_balance_wallet',
       title: '0中介费与费用说明',
       text: '按学校合作渠道报价，学费、住宿费和当地费用在报名前逐项说明。',
-      image: '/assets/cia/sida-why-action-fees.jpg',
+      image: '/assets/cia/sida-why-action-fees.webp',
       alt: '顾问核对学校费用和服务明细',
     },
     {
       icon: 'fact_check',
       title: '专业选校建议',
       text: '结合预算、学习目标、课程强度和住宿偏好，认真比较适合你的学校。',
-      image: '/assets/cia/sida-why-action-selection.jpg',
+      image: '/assets/cia/sida-why-action-selection.webp',
       alt: '顾问根据学生需求比较学校和课程',
     },
     {
       icon: 'description',
       title: '签证与材料协助',
       text: '报名材料、签证与入学文件逐项核对，重要内容留下书面确认。',
-      image: '/assets/cia/sida-why-action-contract.jpg',
+      image: '/assets/cia/sida-why-action-contract.webp',
       alt: '顾问逐项核对报名合同与申请材料',
     },
     {
       icon: 'flight_takeoff',
       title: '行前准备清单',
       text: '机票、保险、接机、行李和入境事项一次说明，出发前逐项核对。',
-      image: '/assets/cia/sida-why-action-departure.jpg',
+      image: '/assets/cia/sida-why-action-departure.webp',
       alt: '顾问整理机票、保险和入境行前清单',
     },
     {
       icon: 'location_on',
       title: '菲律宾当地支持',
       text: '到校衔接、在读生活和突发问题，都可以联系菲律宾驻点人员。',
-      image: '/assets/cia/sida-why-action-team.jpg',
+      image: '/assets/cia/sida-why-action-team.webp',
       alt: '国内顾问与菲律宾驻点团队协作服务学生',
     },
     {
       icon: 'support_agent',
       title: '入学后持续跟进',
       text: '完成报名不是终点，学习期间遇到课程或生活问题仍会继续协助沟通。',
-      image: '/assets/cia/sida-why-action-followup.jpg',
+      image: '/assets/cia/sida-why-action-followup.webp',
       alt: '顾问通过线上沟通持续跟进学生学习情况',
     },
   ];
@@ -372,7 +372,7 @@ export class PhilippinesCityStudyLayoutComponent {
       icon: 'verified_user',
       title: '报价透明，服务落实到合同',
       text: '学校费用、服务范围与重要节点提前说明，减少口头承诺和后续信息差。',
-      image: '/assets/philippines/service-contract-proof.jpg',
+      image: '/assets/philippines/service-contract-proof.webp',
       alt: '服务合同、费用明细与签字盖章场景',
     },
   ];
@@ -382,21 +382,21 @@ export class PhilippinesCityStudyLayoutComponent {
       icon: 'video_call',
       title: '老学员回国续学，线上一对一享超值专属价',
       text: '菲律宾课程结束回国后，继续报名线上一对一英语课，可享老学员专属价格，让英语学习不断档。',
-      image: '/assets/philippines/service-online-followup.jpg',
+      image: '/assets/philippines/service-online-followup.webp',
       alt: '学员通过在线视频课程继续学习英语',
     },
     {
       icon: 'flight_takeoff',
       title: '继续去欧洲学英语，争取合作学校优惠',
       text: '后续选择欧洲英语课程时，部分合作学校可申请免注册费或其他专属优惠。',
-      image: '/assets/philippines/beci-eop-outdoor-study.jpg',
+      image: '/assets/philippines/beci-eop-outdoor-study.webp',
       alt: '学员在轻松真实的学习场景中继续练习英语',
     },
     {
       icon: 'school',
       title: '再出发去爱尔兰，老学员奖学金支持',
       text: '之后通过思达启航申请爱尔兰留学，符合当期活动条件的老学员可领取思达启航奖学金。',
-      image: '/assets/philippines/service-ireland-cliffs.jpg',
+      image: '/assets/philippines/service-ireland-cliffs.webp',
       alt: '爱尔兰标志性莫赫悬崖与大西洋实景',
     },
   ];
@@ -415,7 +415,7 @@ export class PhilippinesCityStudyLayoutComponent {
       name: 'Lemon',
       focus: '多国家方案规划',
       text: '费用、时间与升学路径综合比较',
-      avatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
+      avatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901',
       qr: '/assets/contact/lemon-wechat-qr.png',
       phone: '13298529856',
       phoneDisplay: '132 9852 9856',
@@ -499,8 +499,8 @@ export class PhilippinesCityStudyLayoutComponent {
 
   handleSchoolImageError(event: Event): void {
     const image = event.target as HTMLImageElement;
-    if (!image.src.endsWith('/assets/study-hero-collage.png')) {
-      image.src = '/assets/study-hero-collage.png';
+    if (!image.src.endsWith('/assets/study-hero-collage.webp')) {
+      image.src = '/assets/study-hero-collage.webp';
     }
   }
 

@@ -49,7 +49,7 @@ export function buildPhilippinesDetailedQuote(
     fullFeeDetails: input.fullFeeDetails,
     localFeeTableLayout: input.localFeeTableLayout,
     fileName: `${input.filePrefix}-${input.weeks}周报价单-${fileDate}.png`,
-    logoSrc: '/assets/sida-qihang-quote-header-logo-transparent.png',
+    logoSrc: '/assets/sida-qihang-quote-header-logo-transparent.webp',
     heroSrc: input.heroSrc,
     schoolCode: input.schoolCode,
     title: `${input.weeks}周`,

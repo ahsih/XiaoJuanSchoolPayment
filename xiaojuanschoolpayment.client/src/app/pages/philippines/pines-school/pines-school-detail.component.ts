@@ -161,15 +161,15 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'PINES Main Campus外观', description: 'PINES官方Facilities页面展示的Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.jpg' },
+    { category: '校园', title: 'PINES Main Campus外观', description: 'PINES官方Facilities页面展示的Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.webp' },
     { category: '校园', title: 'PINES主校区楼体', description: '官方首页设施区展示的Main Campus Building，适合先判断校区环境。', src: 'assets/philippines/pines-campus-building.jpg' },
-    { category: '教室', title: '一对一教室', description: 'PINES官方Main Campus Facilities页面展示的一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.jpg' },
-    { category: '教室', title: '4:1小团体教室', description: '官方教室照片展示的小团体课程空间，适合讨论、表达和综合训练。', src: 'assets/philippines/pines-group-classroom.jpg' },
-    { category: '住宿', title: 'Main Campus单人房', description: 'PINES官方住宿页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/pines-dormitory-single.jpg' },
-    { category: '住宿', title: 'Main Campus六人房', description: '官方多人房照片展示六人房空间，适合控制预算但需提前确认空房。', src: 'assets/philippines/pines-dormitory-sextuple.jpg' },
-    { category: '餐厅', title: 'PINES Cafeteria', description: 'PINES官方2026餐厅照片，展示校内自助取餐和厨房区域。', src: 'assets/philippines/pines-cafeteria.jpg' },
-    { category: '设施', title: 'Library Main', description: '官方Facilities页面展示的图书与学习资源空间。', src: 'assets/philippines/pines-library.jpg' },
-    { category: '设施', title: 'Front Desk', description: '官方Facilities页面展示的前台与学生支持空间。', src: 'assets/philippines/pines-front-desk.jpg' },
+    { category: '教室', title: '一对一教室', description: 'PINES官方Main Campus Facilities页面展示的一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.webp' },
+    { category: '教室', title: '4:1小团体教室', description: '官方教室照片展示的小团体课程空间，适合讨论、表达和综合训练。', src: 'assets/philippines/pines-group-classroom.webp' },
+    { category: '住宿', title: 'Main Campus单人房', description: 'PINES官方住宿页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/pines-dormitory-single.webp' },
+    { category: '住宿', title: 'Main Campus六人房', description: '官方多人房照片展示六人房空间，适合控制预算但需提前确认空房。', src: 'assets/philippines/pines-dormitory-sextuple.webp' },
+    { category: '餐厅', title: 'PINES Cafeteria', description: 'PINES官方2026餐厅照片，展示校内自助取餐和厨房区域。', src: 'assets/philippines/pines-cafeteria.webp' },
+    { category: '设施', title: 'Library Main', description: '官方Facilities页面展示的图书与学习资源空间。', src: 'assets/philippines/pines-library.webp' },
+    { category: '设施', title: 'Front Desk', description: '官方Facilities页面展示的前台与学生支持空间。', src: 'assets/philippines/pines-front-desk.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -184,10 +184,10 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/pines-campus-hero.jpg', title: '碧瑶老牌学习型学校', text: 'PINES自2001年创立，是碧瑶代表性英语学校之一，适合把学习放在第一位的学生。' },
+    { image: 'assets/philippines/pines-campus-hero.webp', title: '碧瑶老牌学习型学校', text: 'PINES自2001年创立，是碧瑶代表性英语学校之一，适合把学习放在第一位的学生。' },
     { image: 'assets/philippines/pines-campus-building.jpg', title: 'Main与IELTS校区分流', text: 'Main Campus更适合ESL、口语、TOEIC和亲子方向；IELTS Campus更适合雅思目标和保证班。' },
-    { image: 'assets/philippines/pines-one-to-one-classroom.jpg', title: '课程强度选择细', text: '从Light ESL 4到Power ESL 7、Intensive ESL和EB PRO，可按自律程度和目标调整强度。' },
-    { image: 'assets/philippines/pines-library.jpg', title: '雅思保证班规则清晰', text: '官方雅思保证班强调每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
+    { image: 'assets/philippines/pines-one-to-one-classroom.webp', title: '课程强度选择细', text: '从Light ESL 4到Power ESL 7、Intensive ESL和EB PRO，可按自律程度和目标调整强度。' },
+    { image: 'assets/philippines/pines-library.webp', title: '雅思保证班规则清晰', text: '官方雅思保证班强调每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -325,12 +325,12 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly sidaPinesReasons: SidaPinesReason[] = [
-    { number: '01', title: '正式合同与学校文件可核验', text: '国内公司签约，PINES报价、录取文件及收费凭证均可逐项核对。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
-    { number: '02', title: '校区、课程和费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费和到校费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问为学生核算菲律宾碧瑶PINES语言学校费用' },
-    { number: '03', title: '先判断PINES是否适合', text: '根据雅思目标、英语基础、自律程度和预算，帮你判断Main或IELTS校区是否匹配。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择适合的英语学校' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地协作', text: '国内顾问与菲律宾工作人员协作，重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航菲律宾和深圳服务团队' },
+    { number: '01', title: '正式合同与学校文件可核验', text: '国内公司签约，PINES报价、录取文件及收费凭证均可逐项核对。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
+    { number: '02', title: '校区、课程和费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费和到校费用逐项说明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问为学生核算菲律宾碧瑶PINES语言学校费用' },
+    { number: '03', title: '先判断PINES是否适合', text: '根据雅思目标、英语基础、自律程度和预算，帮你判断Main或IELTS校区是否匹配。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生选择适合的英语学校' },
+    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
+    { number: '06', title: '深圳总部 + 菲律宾当地协作', text: '国内顾问与菲律宾工作人员协作，重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
   readonly sidaPinesTrustBadges: SidaPinesTrustBadge[] = [
@@ -1145,7 +1145,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       schoolCode: 'PINES',
       schoolName: '菲律宾碧瑶PINES语言学校',
       filePrefix: 'PINES',
-      heroSrc: '/assets/philippines/pines-campus-hero.jpg',
+      heroSrc: '/assets/philippines/pines-campus-hero.webp',
       weeks: this.selectedWeeks,
       startDate: this.quoteStartDate,
       usdToCny: this.usdToCny,

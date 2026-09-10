@@ -463,12 +463,12 @@ export class IuSchoolComponent implements OnInit {
   ];
 
   readonly sidaReasons: SidaReason[] = [
-    { number: '01', title: '先看课程路线是否匹配', text: 'IU课程线多，先确定口语、考试、商务、Fitness或亲子，再决定是否合适。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择适合的菲律宾宿务语言学校' },
-    { number: '02', title: '课程和宿舍分开核价', text: '课程费、校内住宿、外部宿舍和当地费用口径不同，需逐项核对。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问为学生核算菲律宾语言学校费用' },
-    { number: '03', title: '考试和亲子规则提前确认', text: 'IELTS保证班、Kids、Teenagers和Parents课程都有规则，报名之前要说清楚。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航顾问核验菲律宾游学课程和合同文件' },
-    { number: '04', title: '行前清单更完整', text: '接机、现金、保险、入境文件、住宿用品和到校费用会提前整理给学生。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '学习中仍可继续沟通', text: '遇到课程、老师、住宿或账单疑问时，可让顾问帮忙梳理沟通重点。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '国内顾问 + 宿务驻点', text: '国内咨询和宿务当地支持配合，适合第一次去菲律宾游学的学生和家庭。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航宿务和深圳服务团队' },
+    { number: '01', title: '先看课程路线是否匹配', text: 'IU课程线多，先确定口语、考试、商务、Fitness或亲子，再决定是否合适。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生选择适合的菲律宾宿务语言学校' },
+    { number: '02', title: '课程和宿舍分开核价', text: '课程费、校内住宿、外部宿舍和当地费用口径不同，需逐项核对。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问为学生核算菲律宾语言学校费用' },
+    { number: '03', title: '考试和亲子规则提前确认', text: 'IELTS保证班、Kids、Teenagers和Parents课程都有规则，报名之前要说清楚。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航顾问核验菲律宾游学课程和合同文件' },
+    { number: '04', title: '行前清单更完整', text: '接机、现金、保险、入境文件、住宿用品和到校费用会提前整理给学生。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '学习中仍可继续沟通', text: '遇到课程、老师、住宿或账单疑问时，可让顾问帮忙梳理沟通重点。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
+    { number: '06', title: '国内顾问 + 宿务驻点', text: '国内咨询和宿务当地支持配合，适合第一次去菲律宾游学的学生和家庭。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航宿务和深圳服务团队' },
   ];
 
   readonly sidaTrustBadges: SidaTrustBadge[] = [
@@ -792,7 +792,7 @@ export class IuSchoolComponent implements OnInit {
       this.usdToCny,
       this.phpPerCny,
       this.exchangeRateLive ? this.exchangeRateDate : undefined,
-      '/assets/philippines/iu-campus-hero.jpg',
+      '/assets/philippines/iu-campus-hero.webp',
     );
   }
   formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }

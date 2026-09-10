@@ -189,13 +189,13 @@ export class HanaSchoolComponent {
       category: '住宿',
       title: 'Clark住宿舒适度参考',
       description: 'HANA公开资料列校内宿舍与Hotel Dormitory，房型空位、楼栋和接驳以学校回复为准。',
-      src: 'assets/philippines/clark-study-hero.jpg',
+      src: 'assets/philippines/clark-study-hero.webp',
     },
     {
       category: '生活',
       title: 'Clark-Angeles生活圈',
       description: '官网列学校周边100米内有咖啡、餐厅、超市、ATM等生活资源。',
-      src: 'assets/philippines/clark-study-hero.jpg',
+      src: 'assets/philippines/clark-study-hero.webp',
     },
   ];
 
@@ -227,7 +227,7 @@ export class HanaSchoolComponent {
       text: '官网覆盖3-6岁Kindergarten、7-17岁Junior、Guardian家长课程和50+ Senior课程，适合家庭一站式比较。',
     },
     {
-      image: 'assets/philippines/clark-study-hero.jpg',
+      image: 'assets/philippines/clark-study-hero.webp',
       title: 'English + Golf是明显特色',
       text: 'Golf Intensive和Golf Leisure把英语课与高尔夫练习结合，适合想把学习和运动放在同一行程的人。',
     },

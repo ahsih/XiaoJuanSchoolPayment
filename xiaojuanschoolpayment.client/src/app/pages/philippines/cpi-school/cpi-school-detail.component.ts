@@ -166,14 +166,14 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'CPI校区主景', description: '位于Nivel Hills / Lahug，校园、泳池、住宿和设施集中。', src: 'assets/cpi/campus-exterior.jpg' },
-    { category: '教室', title: '一对一教室', description: '用于综合英语、口语、考试专项和商务课程。', src: 'assets/cpi/group-classroom.jpg' },
-    { category: '教室', title: '团体教室', description: '小团体和大团体课程用于讨论、表达和综合训练。', src: 'assets/cpi/classroom.jpg' },
-    { category: '住宿', title: 'CPI宿舍房型', description: '', src: '/assets/cpi/dorm-photos/quad-a-01.jpg' },
-    { category: '餐厅', title: '学生餐厅', description: '校内用餐，适合希望学习生活集中管理的学生。', src: 'assets/cpi/dining-hall.jpg' },
-    { category: '设施', title: '健身房', description: '课后运动和体能恢复使用。', src: 'assets/cpi/gym.jpg' },
-    { category: '设施', title: '校内咖啡区', description: '课后休息、交流和轻松学习空间。', src: 'assets/cpi/cafe.jpg' },
-    { category: '设施', title: '运动空间', description: '校园活动和周末校内生活更丰富。', src: 'assets/cpi/badminton.jpg' },
+    { category: '校园', title: 'CPI校区主景', description: '位于Nivel Hills / Lahug，校园、泳池、住宿和设施集中。', src: 'assets/cpi/campus-exterior.webp' },
+    { category: '教室', title: '一对一教室', description: '用于综合英语、口语、考试专项和商务课程。', src: 'assets/cpi/group-classroom.webp' },
+    { category: '教室', title: '团体教室', description: '小团体和大团体课程用于讨论、表达和综合训练。', src: 'assets/cpi/classroom.webp' },
+    { category: '住宿', title: 'CPI宿舍房型', description: '', src: '/assets/cpi/dorm-photos/quad-a-01.webp' },
+    { category: '餐厅', title: '学生餐厅', description: '校内用餐，适合希望学习生活集中管理的学生。', src: 'assets/cpi/dining-hall.webp' },
+    { category: '设施', title: '健身房', description: '课后运动和体能恢复使用。', src: 'assets/cpi/gym.webp' },
+    { category: '设施', title: '校内咖啡区', description: '课后休息、交流和轻松学习空间。', src: 'assets/cpi/cafe.webp' },
+    { category: '设施', title: '运动空间', description: '校园活动和周末校内生活更丰富。', src: 'assets/cpi/badminton.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -188,10 +188,10 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/cpi/campus-exterior.jpg', title: '度假村式校园环境', text: 'CPI适合重视住宿、餐厅、泳池和校内生活舒适度的学生。' },
-    { image: 'assets/cpi/classroom.jpg', title: '课程方向覆盖广', text: 'ESL、考试、口语、商务、青少年和家长课程都可以纳入比较。' },
-    { image: 'assets/cpi/dorm-room.jpg', title: '房型选择影响预算', text: 'A栋四人间适合先估算预算，B栋和家庭房型需单独核房。' },
-    { image: 'assets/cpi/dining-hall.jpg', title: '学习生活集中管理', text: '适合第一次游学、亲子或想降低适应成本的学生。' },
+    { image: 'assets/cpi/campus-exterior.webp', title: '度假村式校园环境', text: 'CPI适合重视住宿、餐厅、泳池和校内生活舒适度的学生。' },
+    { image: 'assets/cpi/classroom.webp', title: '课程方向覆盖广', text: 'ESL、考试、口语、商务、青少年和家长课程都可以纳入比较。' },
+    { image: 'assets/cpi/dorm-room.webp', title: '房型选择影响预算', text: 'A栋四人间适合先估算预算，B栋和家庭房型需单独核房。' },
+    { image: 'assets/cpi/dining-hall.webp', title: '学习生活集中管理', text: '适合第一次游学、亲子或想降低适应成本的学生。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -265,42 +265,42 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       number: '01',
       title: '正式合同与学校文件可核验',
       text: '国内公司签约，CPI报价、录取文件及收费凭证均可逐项核对。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航正式合同与学校文件核验',
     },
     {
       number: '02',
       title: '房型和费用提前算清',
       text: '0中介服务费，课程费、住宿费、折扣优惠及CPI到校费用逐项说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾宿务CPI语言学校费用',
     },
     {
       number: '03',
       title: '先判断CPI是否适合',
       text: '根据预算、房型偏好、亲子需求、课程目标和入学档期，帮你判断CPI是否匹配。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '深圳总部 + 宿务驻点服务',
       text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -794,7 +794,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       schoolCode: 'CPI',
       schoolName: '菲律宾宿务CPI语言学校',
       filePrefix: 'CPI',
-      heroSrc: '/assets/cpi/campus-exterior.jpg',
+      heroSrc: '/assets/cpi/campus-exterior.webp',
       weeks: this.selectedWeeks,
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,

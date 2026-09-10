@@ -22,7 +22,7 @@ export const CIA_STUDENT_REVIEWS: readonly CiaStudentReview[] = [
       '我们一路聊天、品尝当地食物，也观察当地人的日常生活。和同学一起行动不仅让旅程更安心，也让课堂之外的英语交流变得很自然。',
       '这次经历让我明白，游学不只是上课。走出校园、与同伴共同探索城市，同样能帮助我理解当地文化，并留下很特别的共同回忆。',
     ],
-    image: '/assets/cia/student-reviews/review-city-night.png?v=20260901',
+    image: '/assets/cia/student-reviews/review-city-night.webp?v=20260901',
     imageAlt: '学生在宿务城市活动地点留影',
   },
   {
@@ -37,7 +37,7 @@ export const CIA_STUDENT_REVIEWS: readonly CiaStudentReview[] = [
       '熟悉课程后，我开始更主动地回答问题，也逐渐不再害怕说错。老师会根据我的反应调整讲解方式，同学之间也会互相鼓励，这让我对开口表达越来越有信心。',
       '课余时间，我们还一起游泳、徒步、品尝当地食物和旅行。这段经历让我看到，语言进步来自持续练习，也来自真实生活中的每一次交流。',
     ],
-    image: '/assets/cia/student-reviews/review-first-study.png?v=20260901',
+    image: '/assets/cia/student-reviews/review-first-study.webp?v=20260901',
     imageAlt: '学生与家人在宿务户外活动时合影',
   },
   {
@@ -52,7 +52,7 @@ export const CIA_STUDENT_REVIEWS: readonly CiaStudentReview[] = [
       '除了上课，我也体验了当地食物、购物和旅行景点。刚到这里时，有些生活方式让我觉得陌生，但当地人的友善让我慢慢放松下来，也更愿意主动认识新的朋友。',
       '照片记录了很多具体的瞬间，而真正留下来的，是我对另一种生活方式的理解。这次经历也让我更期待以后去更多国家，继续学习语言并认识新的文化。',
     ],
-    image: '/assets/cia/student-reviews/review-cebu-culture.png?v=20260901',
+    image: '/assets/cia/student-reviews/review-cebu-culture.webp?v=20260901',
     imageAlt: '多国学生在宿务聚餐交流',
   },
   {
@@ -67,7 +67,7 @@ export const CIA_STUDENT_REVIEWS: readonly CiaStudentReview[] = [
       '一开始面对陌生环境，我也有不习惯的时候。和朋友一起出发、拍照、散步和分享感受之后，旅程变得轻松许多，我们也在相处中更了解彼此。',
       '我逐渐发现，旅行不只是去著名景点打卡。真正有意义的部分，是在当地生活、观察人与文化，并把这些体验带回自己的成长里。',
     ],
-    image: '/assets/cia/student-reviews/review-friends-trip.png?v=20260901',
+    image: '/assets/cia/student-reviews/review-friends-trip.webp?v=20260901',
     imageAlt: '学生与老师和同学在教室合影',
   },
 ];

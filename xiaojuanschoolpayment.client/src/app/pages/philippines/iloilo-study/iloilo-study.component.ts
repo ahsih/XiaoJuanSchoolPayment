@@ -102,9 +102,9 @@ export class IloiloStudyComponent {
     ],
     lifestyleImages: [
       'https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg',
-      '/assets/philippines/monol-food-service.jpg',
-      '/assets/philippines/pines-one-to-one-classroom.jpg',
-      '/assets/philippines/cebu-city-view.jpg',
+      '/assets/philippines/monol-food-service.webp',
+      '/assets/philippines/pines-one-to-one-classroom.webp',
+      '/assets/philippines/cebu-city-view.webp',
     ],
     faqs: [
       { question: '伊洛伊洛适合第一次菲律宾游学吗？', answer: '适合喜欢安静、预算友好和生活压力较低环境的学生；如果更重视海岛活动与大量学校选择，宿务会更丰富。' },

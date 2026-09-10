@@ -80,10 +80,10 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'HELP Clark主楼', description: 'HELP官网Clark Campus页面公开的校区主楼图片。', src: 'assets/philippines/help-clark-main-building.jpg' },
-    { category: '校园', title: 'Clark校区入口环境', description: '同一官方主楼图片可用于核对校舍外观、道路和园区绿化。', src: 'assets/philippines/help-clark-main-building.jpg' },
-    { category: '课程', title: 'Sparta学习制度', description: 'HELP Clark采用HELP体系的斯巴达管理，EOP、晚自习和词汇测试需要重点确认。', src: 'assets/philippines/help-clark-main-building.jpg' },
-    { category: '费用', title: 'HELP Clark当地费用表', description: 'HELP官方Tuition/Local Fee页面公开的Clark当地PHP费用图表。', src: 'assets/philippines/help-clark-local-fee.jpeg' },
+    { category: '校园', title: 'HELP Clark主楼', description: 'HELP官网Clark Campus页面公开的校区主楼图片。', src: 'assets/philippines/help-clark-main-building.webp' },
+    { category: '校园', title: 'Clark校区入口环境', description: '同一官方主楼图片可用于核对校舍外观、道路和园区绿化。', src: 'assets/philippines/help-clark-main-building.webp' },
+    { category: '课程', title: 'Sparta学习制度', description: 'HELP Clark采用HELP体系的斯巴达管理，EOP、晚自习和词汇测试需要重点确认。', src: 'assets/philippines/help-clark-main-building.webp' },
+    { category: '费用', title: 'HELP Clark当地费用表', description: 'HELP官方Tuition/Local Fee页面公开的Clark当地PHP费用图表。', src: 'assets/philippines/help-clark-local-fee.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -98,10 +98,10 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/help-clark-main-building.jpg', title: '老牌HELP体系', text: 'HELP从1996年开始运营，适合想比较老牌Sparta体系、学习管理和考试路线的学生。' },
-    { image: 'assets/philippines/help-clark-main-building.jpg', title: 'Clark安全园区', text: 'Clark Freeport Zone交通和安全优势明显，离Clark机场近，也便于周末生活安排。' },
-    { image: 'assets/philippines/help-clark-local-fee.jpeg', title: '费用拆分清楚', text: '课程住宿以USD计算，到校当地费用以PHP另列，报价时必须分开核对。' },
-    { image: 'assets/philippines/help-clark-main-building.jpg', title: '考试课程选择', text: 'IELTS、TOEIC和Business English都在官方课程体系里，适合升学、求职和职场英语目标。' },
+    { image: 'assets/philippines/help-clark-main-building.webp', title: '老牌HELP体系', text: 'HELP从1996年开始运营，适合想比较老牌Sparta体系、学习管理和考试路线的学生。' },
+    { image: 'assets/philippines/help-clark-main-building.webp', title: 'Clark安全园区', text: 'Clark Freeport Zone交通和安全优势明显，离Clark机场近，也便于周末生活安排。' },
+    { image: 'assets/philippines/help-clark-local-fee.webp', title: '费用拆分清楚', text: '课程住宿以USD计算，到校当地费用以PHP另列，报价时必须分开核对。' },
+    { image: 'assets/philippines/help-clark-main-building.webp', title: '考试课程选择', text: 'IELTS、TOEIC和Business English都在官方课程体系里，适合升学、求职和职场英语目标。' },
   ];
 
   readonly suitableFor: FitItem[] = [

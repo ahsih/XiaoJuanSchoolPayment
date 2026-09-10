@@ -11,7 +11,7 @@ describe('GLC weekly, promotion and family quotes', () => {
   const dates = (quote: GlcQuoteCalculator, start: string, weeks: number) => {
     for (const row of [...quote.plan.courses, ...quote.plan.rooms]) { row.startDate = start; row.weeks = weeks; }
   };
-  const imageData = (quote: GlcQuoteCalculator) => quote.imageData(7.2, 9, '人民币按备用汇率预估，以付款当日汇率为准。', '/assets/glc/campus-main.jpg');
+  const imageData = (quote: GlcQuoteCalculator) => quote.imageData(7.2, 9, '人民币按备用汇率预估，以付款当日汇率为准。', '/assets/glc/campus-main.webp');
 
   it('uses weekly prices, exactly three benefits and the supplied 4-week local total', () => {
     const q = create();

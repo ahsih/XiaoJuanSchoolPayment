@@ -275,7 +275,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       title: 'CG斯巴达校区与泳池',
       description:
         '紫色低层校舍围绕泳池展开，是CG斯巴达校区最有辨识度的校区画面。',
-      src: '/assets/philippines/cg-sparta-campus-hero.jpg',
+      src: '/assets/philippines/cg-sparta-campus-hero.webp',
     },
     {
       category: '设施',
@@ -337,7 +337,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
 
   readonly highlights: Highlight[] = [
     {
-      image: '/assets/philippines/cg-sparta-campus-hero.jpg',
+      image: '/assets/philippines/cg-sparta-campus-hero.webp',
       title: '宿务少见的斯巴达专门校',
       text: '平日外出限制、EOP、单词测试、作文和强制自习，适合目标明确、需要环境约束的人。',
     },
@@ -553,42 +553,42 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       number: '01',
       title: '先确认你是否适合高强度',
       text: 'CG斯巴达校区不是轻松度假型学校，顾问会先帮你判断学习目标和可承受度。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择菲律宾宿务语言学校',
     },
     {
       number: '02',
       title: '课程差异逐项讲清',
       text: '斯巴达、Premier、TOEIC、IELTS、Business和Short-Term ESL的课表不同，不能只看价格。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问核算菲律宾语言学校费用',
     },
     {
       number: '03',
       title: '当地费用提前算清',
       text: 'SSP、签证、押金、水电、教材、接机和冷气电费需要提前准备现金。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航顾问核验菲律宾游学课程和合同文件',
     },
     {
       number: '04',
       title: '校规与行前提醒',
       text: '平日外出、门禁、EOP、旅行保险、周末外宿规则会在出发前提醒学生。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '学习中仍可沟通',
       text: '如果课程强度、老师、宿舍或费用结算有疑问，可让顾问协助梳理重点。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '国内顾问 + 宿务驻点',
       text: '国内咨询和宿务当地支持配合，适合第一次去菲律宾游学的学生。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -1182,7 +1182,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     const long=[...new Set(this.activeStudents.filter(s=>s.quotePlan.stayWeeks>24).map(s=>this.longPlanNoteFor(s)))];
     const defaultImageFeeIntro = this.initialContent.quoteImageSettings.localFeeIntro;
     const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
-    const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.jpg',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
+    const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.webp',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
       localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
     const importantNotes=[...warnings,...short,...prorated,...long,...this.quoteImageSettings.footerNotes];
     const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);

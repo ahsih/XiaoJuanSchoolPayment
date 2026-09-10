@@ -1589,7 +1589,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   }
 
   private get useHighResolutionBrandHeader(): boolean {
-    return /\/sida-qihang-quote-header-logo(?:-transparent)?\.png$/.test(this.quote.logoSrc);
+    return /\/sida-qihang-quote-header-logo(?:-transparent)?\.(?:png|webp)$/.test(this.quote.logoSrc);
   }
 
   private drawQuoteBrandHeader(context: CanvasRenderingContext2D, logo: HTMLImageElement, x: number, y: number): void {

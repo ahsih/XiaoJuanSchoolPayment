@@ -72,15 +72,15 @@ export class MbcSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校徽', title: 'MBC 官方校徽', description: '来自 Manila Business College 官网的官方校徽资源。', src: 'assets/philippines/mbc-logo.png' },
-    { category: '校园', title: 'MBC 校舍外观', description: '官网 About 区块使用的 Manila Business College building 图片。', src: 'assets/philippines/mbc-about.jpg' },
-    { category: '校园', title: 'MBC 品牌场景', description: '官网首页轮播图，展示 MBC 标识和校内活动空间。', src: 'assets/philippines/mbc-slider-1.jpg' },
-    { category: '校园', title: 'MBC 毕业典礼场景', description: '官网首页轮播图，用于呈现学院型学习和毕业路线。', src: 'assets/philippines/mbc-slider-2.jpg' },
-    { category: '课程', title: 'Bachelor Degree 课程入口', description: '官网 Programs offered 区块中的本科课程图片。', src: 'assets/philippines/mbc-program-degree.png' },
-    { category: '课程', title: 'Senior High School ABM', description: '官网 Programs offered 区块中的高中ABM方向图片。', src: 'assets/philippines/mbc-program-shs.png' },
-    { category: '设施', title: 'Classroom', description: '官网 Facilities 区块的教室图片。', src: 'assets/philippines/mbc-classroom.jpg' },
-    { category: '设施', title: 'Library', description: '官网 Facilities 区块的图书馆图片。', src: 'assets/philippines/mbc-library.jpg' },
-    { category: '设施', title: 'Mock Hotel', description: '官网 Facilities 区块的酒店管理模拟空间图片。', src: 'assets/philippines/mbc-mock-hotel.jpg' },
+    { category: '校徽', title: 'MBC 官方校徽', description: '来自 Manila Business College 官网的官方校徽资源。', src: 'assets/philippines/mbc-logo.webp' },
+    { category: '校园', title: 'MBC 校舍外观', description: '官网 About 区块使用的 Manila Business College building 图片。', src: 'assets/philippines/mbc-about.webp' },
+    { category: '校园', title: 'MBC 品牌场景', description: '官网首页轮播图，展示 MBC 标识和校内活动空间。', src: 'assets/philippines/mbc-slider-1.webp' },
+    { category: '校园', title: 'MBC 毕业典礼场景', description: '官网首页轮播图，用于呈现学院型学习和毕业路线。', src: 'assets/philippines/mbc-slider-2.webp' },
+    { category: '课程', title: 'Bachelor Degree 课程入口', description: '官网 Programs offered 区块中的本科课程图片。', src: 'assets/philippines/mbc-program-degree.webp' },
+    { category: '课程', title: 'Senior High School ABM', description: '官网 Programs offered 区块中的高中ABM方向图片。', src: 'assets/philippines/mbc-program-shs.webp' },
+    { category: '设施', title: 'Classroom', description: '官网 Facilities 区块的教室图片。', src: 'assets/philippines/mbc-classroom.webp' },
+    { category: '设施', title: 'Library', description: '官网 Facilities 区块的图书馆图片。', src: 'assets/philippines/mbc-library.webp' },
+    { category: '设施', title: 'Mock Hotel', description: '官网 Facilities 区块的酒店管理模拟空间图片。', src: 'assets/philippines/mbc-mock-hotel.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -95,10 +95,10 @@ export class MbcSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/mbc-about.jpg', title: '马尼拉学院型学习路线', text: 'MBC 适合放入 Manila academic / business pathway 候选清单，重点是商科、管理、会计、酒店和信息系统。' },
-    { image: 'assets/philippines/mbc-classroom.jpg', title: '课堂与学院设施', text: '官网展示 classroom、laboratories、canteens、dormitories 等学习设施，页面会把住宿信息单独标记为需确认。' },
-    { image: 'assets/philippines/mbc-mock-hotel.jpg', title: '酒店管理实践空间', text: 'Hospitality Management 是官网列出的本科方向之一，Mock Hotel 图片适合说明实践型设施。' },
-    { image: 'assets/philippines/mbc-slider-2.jpg', title: '学历和毕业路线', text: '页面不会把它包装成短期口语学校，而是按学院、国际学生申请和城市学习路线来呈现。' },
+    { image: 'assets/philippines/mbc-about.webp', title: '马尼拉学院型学习路线', text: 'MBC 适合放入 Manila academic / business pathway 候选清单，重点是商科、管理、会计、酒店和信息系统。' },
+    { image: 'assets/philippines/mbc-classroom.webp', title: '课堂与学院设施', text: '官网展示 classroom、laboratories、canteens、dormitories 等学习设施，页面会把住宿信息单独标记为需确认。' },
+    { image: 'assets/philippines/mbc-mock-hotel.webp', title: '酒店管理实践空间', text: 'Hospitality Management 是官网列出的本科方向之一，Mock Hotel 图片适合说明实践型设施。' },
+    { image: 'assets/philippines/mbc-slider-2.webp', title: '学历和毕业路线', text: '页面不会把它包装成短期口语学校，而是按学院、国际学生申请和城市学习路线来呈现。' },
   ];
 
   readonly suitableFor: FitItem[] = [

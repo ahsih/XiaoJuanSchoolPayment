@@ -76,7 +76,7 @@ const buildCiaRoomGallery = (folder: string, count: number): string[] =>
   Array.from(
     { length: count },
     (_, index) =>
-      `/assets/cia/rooms-2026/gallery/${folder}/${folder}-${String(index + 1).padStart(2, '0')}.jpg?v=20260901`,
+      `/assets/cia/rooms-2026/gallery/${folder}/${folder}-${String(index + 1).padStart(2, '0')}.webp?v=20260901`,
   );
 
 const ciaRoomGalleries = {
@@ -324,17 +324,17 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
   private readonly defaultContentConfig = createDefaultCiaContentConfig();
   private readonly quoteImageAssets = {
-    logo: '/assets/sida-qihang-quote-header-logo-transparent.png',
-    hero: '/assets/cia/campus-building.png',
+    logo: '/assets/sida-qihang-quote-header-logo-transparent.webp',
+    hero: '/assets/cia/campus-building.webp',
     jennyAvatar: '/assets/contact/jenny-avatar.jpg',
     jennyQr: '/assets/contact/jenny-wechat-qr.png',
-    lemonAvatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
+    lemonAvatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901',
     lemonQr: '/assets/contact/lemon-wechat-qr.png',
     peninAvatar: '/assets/contact/penin-avatar.jpg',
     peninQr: '/assets/contact/penin-wechat-qr.png',
-    lisaAvatar: '/assets/contact/lisa-avatar-cartoon.png',
+    lisaAvatar: '/assets/contact/lisa-avatar-cartoon.webp',
     lisaQr: '/assets/contact/lisa-wechat-qr.png',
-    irisAvatar: '/assets/contact/iris-avatar-cartoon.png',
+    irisAvatar: '/assets/contact/iris-avatar-cartoon.webp',
     irisQr: '/assets/contact/iris-wechat-qr.png',
   };
   private readonly courseFeeOrder = [
@@ -621,7 +621,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '校园泳池与主楼',
       description:
         'CIA 于2022年6月在麦克坦新校区正式开课，学习、住宿和生活设施集中在度假型校园内。',
-      src: 'assets/cia/campus-sunset-aerial-enhanced.png',
+      src: 'assets/cia/campus-sunset-aerial-enhanced.webp',
       details: ['半斯巴达 Plus 校区', '周末可前往周边餐厅和景点'],
     },
     {
@@ -629,7 +629,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '校园地图',
       description:
         '校区分为 Building 1、Building 2 和 Building 3，餐厅、CRO、诊所、健身房、图书馆、宿舍和篮球场等分布在不同楼栋。',
-      src: 'assets/cia/campus-map.png',
+      src: 'assets/cia/campus-map.webp',
       details: [
         'Building 2：餐厅、CRO、健身房、图书馆',
         'Building 3：宿舍、泳池平台、篮球场',
@@ -640,7 +640,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '户外泳池',
       description:
         '主泳池位于校园中心，约50米宽，度假感强，是课后休息和校园活动常用区域。',
-      src: 'assets/cia/campus-pool.jpg',
+      src: 'assets/cia/campus-pool.webp',
       details: ['平日 19:00-21:00', '周末 07:00-21:00'],
     },
     {
@@ -648,28 +648,28 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '一对一教室',
       description:
         '一对一教室配备白板和桌面空间，适合口语纠音、写作反馈和考试专项训练。',
-      src: 'assets/cia/one-to-one-class.png',
+      src: 'assets/cia/one-to-one-class.webp',
       details: ['253间一对一教室', '更容易集中注意力'],
     },
     {
       category: '教室',
       title: '小组课教室',
       description: '用于团体讨论、听说训练和课程互动。',
-      src: 'assets/cia/small-group-class.jpg',
+      src: 'assets/cia/small-group-class.webp',
       details: ['17间小组教室', '适合互动练习'],
     },
     {
       category: '教室',
       title: '中组课教室',
       description: '中组课堂适合听说互动、主题讨论和课堂发表。',
-      src: 'assets/cia/medium-group-class.jpg',
+      src: 'assets/cia/medium-group-class.webp',
       details: ['24间中组教室', '练习讨论与表达'],
     },
     {
       category: '教室',
       title: '大组课教室',
       description: '大组课堂适合发表、演讲、辩论和更大型的课堂活动。',
-      src: 'assets/cia/big-group-class.jpg',
+      src: 'assets/cia/big-group-class.webp',
       details: ['7间大组教室', '适合演讲与辩论训练'],
     },
     {
@@ -734,14 +734,14 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '学生餐厅',
       description:
         '位于 Building 2 一楼，空间宽敞并配有空调，学校厨房每天提供不同餐食。',
-      src: 'assets/cia/dining-hall.jpg',
+      src: 'assets/cia/dining-hall.webp',
       details: ['早餐、午餐、晚餐在校内餐厅', '周末也有用餐时段'],
     },
     {
       category: '餐厅',
       title: 'Cafe Bar',
       description: '咖啡吧提供饮品、轻食和点心，适合课后休息或和同学聊天。',
-      src: 'assets/cia/cafe-bar.jpg',
+      src: 'assets/cia/cafe-bar.webp',
       details: ['Building 2 一楼', '咖啡、蛋糕、松饼等轻食'],
     },
     {
@@ -749,7 +749,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '健身房',
       description:
         '位于 Building 2 四楼，提供现代化健身器材，适合课后运动和保持体能。',
-      src: 'assets/cia/fitness-center.jpg',
+      src: 'assets/cia/fitness-center.webp',
       details: ['平日 19:00-23:00', '周末 07:00-23:00'],
     },
     {
@@ -757,7 +757,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '瑜伽与普拉提室',
       description:
         '配有普拉提核心床、凯迪拉克床、瑜伽垫和辅助训练器材，可用于伸展、瑜伽及普拉提活动。',
-      src: 'assets/cia/yoga-pilates-room-official.jpg',
+      src: 'assets/cia/yoga-pilates-room-official.webp',
       details: ['CIA官方设施实景', '课程及开放安排以校内公告为准'],
     },
     {
@@ -765,7 +765,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'IDP IELTS 官方考场',
       description:
         '校内设有雅思官方考试场地，空间安静宽敞，方便雅思学生熟悉考试环境。',
-      src: 'assets/cia/idp-testing-venue.jpg',
+      src: 'assets/cia/idp-testing-venue.webp',
       details: ['Building 1 一楼和二楼', '适合雅思备考学生'],
     },
     {
@@ -773,7 +773,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'Recreation Room',
       description:
         '休闲娱乐室可用于活动、游戏和学生休息，帮助学生在学习之外放松。',
-      src: 'assets/cia/recreation-room.jpg',
+      src: 'assets/cia/recreation-room.webp',
       details: ['Building 2 四楼', '平日课后和周末开放'],
     },
     {
@@ -781,7 +781,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '图书馆 / 自习室',
       description:
         '图书馆空间宽敞，提供 ESL 教材和不同类型读物，适合自习和课后复习。',
-      src: 'assets/cia/library.jpg',
+      src: 'assets/cia/library.webp',
       details: ['Building 2 四楼', '每天 06:00-23:00'],
     },
     {
@@ -789,7 +789,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '小礼堂 / 放映空间',
       description:
         '配有阶梯座椅、投影及音响设备，可用于说明会、课程活动、演讲和校园集会。',
-      src: 'assets/cia/auditorium-official.jpg',
+      src: 'assets/cia/auditorium-official.webp',
       details: ['CIA官方设施实景', '具体用途与开放安排以学校公告为准'],
     },
     {
@@ -797,7 +797,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '校内诊所',
       description:
         '诊所可处理轻微不适和基础医疗咨询，校内有护士，并可按需要联系医生。',
-      src: 'assets/cia/clinic.jpg',
+      src: 'assets/cia/clinic.webp',
       details: ['Building 2 三楼', '平日 08:00-18:00'],
     },
     {
@@ -805,7 +805,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '音乐与卡拉OK室',
       description:
         '位于 Building 2 四楼，配有点歌、音响和休息座位，适合课后与同学放松。',
-      src: 'assets/cia/karaoke-room-official.jpg',
+      src: 'assets/cia/karaoke-room-official.webp',
       details: ['学校官方设施图片', '具体开放时间以校内公告为准'],
     },
     {
@@ -813,7 +813,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: 'Mini Mart 校内商店',
       description:
         '可购买日用品、零食和饮品，临时补充生活用品更方便。',
-      src: 'assets/cia/mini-mart-official.jpg',
+      src: 'assets/cia/mini-mart-official.webp',
       details: ['学校官方设施图片', '商品与营业时间以现场为准'],
     },
     {
@@ -821,7 +821,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '户外篮球场',
       description:
         '可进行篮球、排球、羽毛球及部分团体运动，位于校园户外活动区。',
-      src: 'assets/cia/activity-sportsfest-official.jpg',
+      src: 'assets/cia/activity-sportsfest-official.webp',
       details: ['CIA官方篮球活动实景', '活动安排以校内公告为准'],
     },
     {
@@ -829,7 +829,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       title: '羽毛球活动',
       description:
         '户外活动区可架设球网进行羽毛球；图为 CIA 校内 Sportsfest 羽毛球比赛实景。',
-      src: 'assets/cia/badminton-sportsfest-official.jpg',
+      src: 'assets/cia/badminton-sportsfest-official.webp',
       details: ['CIA官方 Sportsfest 2024 实景', '日常使用及活动安排以校内公告为准'],
     },
   ];
@@ -850,22 +850,22 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly highlights: Highlight[] = [
     {
-      image: 'assets/cia/quad-room.jpg',
+      image: 'assets/cia/quad-room.webp',
       title: '预算房型清楚',
       text: '四人间 D-4 是默认预算参考，适合先估算总费用。',
     },
     {
-      image: 'assets/cia/campus-building.png',
+      image: 'assets/cia/campus-building.webp',
       title: '校内生活集中',
       text: '上课、住宿、餐厅和设施都在同一校区，适合第一次游学。',
     },
     {
-      image: 'assets/cia/one-to-one-class.png',
+      image: 'assets/cia/one-to-one-class.webp',
       title: '一对一比例高',
       text: 'ESL、考试和商务方向都能搭配一对一课程。',
     },
     {
-      image: 'assets/cia/dining-hall.jpg',
+      image: 'assets/cia/dining-hall.webp',
       title: '生活配套成熟',
       text: '餐厅、健身房、泳池、医务和学生服务都比较完整。',
     },
@@ -1179,18 +1179,18 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   readonly campusMonthlyEvents2026: CampusMonthlyEvent[] = [
-    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.jpg', imageAlt: 'CIA菲律宾文化节传统服饰表演', imagePosition: 'center 24%' },
-    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/events-2026/02-valentine-fruit-party.jpg', imageAlt: 'CIA情人节特别活动现场互动', imagePosition: 'center 30%' },
-    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/events-2026/03-golden-bell.jpg', imageAlt: 'CIA金铃挑战赛参赛学生', imagePosition: 'center 28%' },
-    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/events-2026/04-summer-splash.jpg', imageAlt: 'CIA夏日泡沫派对合影', imagePosition: 'center 34%' },
-    { month: 5, icon: 'sports_basketball', title: 'CIA篮球赛', text: '在真实篮球比赛中以团队协作增进交流。', image: 'assets/cia/activity-sportsfest-official.jpg', imageAlt: 'CIA校园篮球比赛实景', imagePosition: 'center 34%' },
-    { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/events-2026/06-open-mic.jpg', imageAlt: 'CIA开放麦克风比赛现场' },
-    { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/events-2026/07-got-talent.jpg', imageAlt: 'CIA达人秀学生舞台表演' },
-    { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/events-2026/08-mr-ms-cia.jpg', imageAlt: 'Mr. and Ms. CIA校园风采活动合影' },
-    { month: 9, icon: 'diversity_3', title: '世界文化舞蹈', text: '用舞蹈认识不同国家与文化。', image: 'assets/cia/events-2026/09-dances-around-world.jpg', imageAlt: 'CIA世界文化舞蹈表演' },
-    { month: 10, icon: 'celebration', title: '万圣节派对与员工日', text: '节日装扮、互动游戏与校园庆祝。', image: 'assets/cia/events-2026/10-halloween.jpg', imageAlt: 'CIA万圣节服装活动舞台现场' },
-    { month: 11, icon: 'public', title: 'CIA国际文化日', text: '各国学生参与文化展示与美食节。', image: 'assets/cia/events-2026/11-national-day.jpg', imageAlt: 'CIA国际文化日学生展示现场' },
-    { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/events-2026/12-white-christmas.jpg', imageAlt: 'CIA白色圣诞主题舞台活动' },
+    { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.webp', imageAlt: 'CIA菲律宾文化节传统服饰表演', imagePosition: 'center 24%' },
+    { month: 2, icon: 'favorite', title: '情人节特别活动', text: '校园主题互动与水果派对。', image: 'assets/cia/events-2026/02-valentine-fruit-party.webp', imageAlt: 'CIA情人节特别活动现场互动', imagePosition: 'center 30%' },
+    { month: 3, icon: 'notifications_active', title: '金铃挑战赛', text: '结合各国文化服饰的趣味竞赛。', image: 'assets/cia/events-2026/03-golden-bell.webp', imageAlt: 'CIA金铃挑战赛参赛学生', imagePosition: 'center 28%' },
+    { month: 4, icon: 'water', title: '夏日泡沫派对', text: '融入宋干节元素的夏日水上活动。', image: 'assets/cia/events-2026/04-summer-splash.webp', imageAlt: 'CIA夏日泡沫派对合影', imagePosition: 'center 34%' },
+    { month: 5, icon: 'sports_basketball', title: 'CIA篮球赛', text: '在真实篮球比赛中以团队协作增进交流。', image: 'assets/cia/activity-sportsfest-official.webp', imageAlt: 'CIA校园篮球比赛实景', imagePosition: 'center 34%' },
+    { month: 6, icon: 'mic', title: '开放麦克风与校庆', text: '开放舞台，并庆祝CIA创校周年。', image: 'assets/cia/events-2026/06-open-mic.webp', imageAlt: 'CIA开放麦克风比赛现场' },
+    { month: 7, icon: 'music_note', title: 'CIA达人秀', text: '学生展示音乐、舞蹈与个人才艺。', image: 'assets/cia/events-2026/07-got-talent.webp', imageAlt: 'CIA达人秀学生舞台表演' },
+    { month: 8, icon: 'styler', title: 'CIA校园风采活动', text: 'Mr. & Ms. CIA主题校园活动。', image: 'assets/cia/events-2026/08-mr-ms-cia.webp', imageAlt: 'Mr. and Ms. CIA校园风采活动合影' },
+    { month: 9, icon: 'diversity_3', title: '世界文化舞蹈', text: '用舞蹈认识不同国家与文化。', image: 'assets/cia/events-2026/09-dances-around-world.webp', imageAlt: 'CIA世界文化舞蹈表演' },
+    { month: 10, icon: 'celebration', title: '万圣节派对与员工日', text: '节日装扮、互动游戏与校园庆祝。', image: 'assets/cia/events-2026/10-halloween.webp', imageAlt: 'CIA万圣节服装活动舞台现场' },
+    { month: 11, icon: 'public', title: 'CIA国际文化日', text: '各国学生参与文化展示与美食节。', image: 'assets/cia/events-2026/11-national-day.webp', imageAlt: 'CIA国际文化日学生展示现场' },
+    { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/events-2026/12-white-christmas.webp', imageAlt: 'CIA白色圣诞主题舞台活动' },
   ];
 
   readonly courseDetailGuides: CourseDetailGuide[] = [
@@ -1298,7 +1298,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         '可申请航空航天工程、飞机维修、航空公司管理、飞行方向航空技术、航空电子、旅游管理、酒店管理及教育等方向，实际以IAU当期课表为准。',
         '常规4周旁听完成后对应观察与参与类证明；如目标是60小时完成证明或大学学分，必须在报名时单独提出并确认，不可默认包含。',
       ],
-      image: 'assets/cia/iau-immersion-certificate-sample.png',
+      image: 'assets/cia/iau-immersion-certificate-sample.webp',
       imageAlt: 'IAU六十小时沉浸项目完成证书样式',
       imageCaption: 'IAU 60小时完成证书样式仅作类型说明；常规4周旁听不等同于默认获得该证书。',
       notice: '旁听科目、开课日期、名额、证书类型及学分认可均可能调整；最终以CIA与IAU书面确认，以及学生原就读院校的学分认定结果为准。',
@@ -1691,8 +1691,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'ESL',
       title: '一般英语小组课程视频',
       text: 'Regular ESL 最新课表参考',
-      poster: 'assets/cia/course-video-posters/esl-course.jpg',
-      brandLogo: 'assets/cia/course-video-posters/cambridge-esl.png',
+      poster: 'assets/cia/course-video-posters/esl-course.webp',
+      brandLogo: 'assets/cia/course-video-posters/cambridge-esl.webp',
       brandAlt: 'Cambridge English Qualifications 标志',
       videoSrc:
         'assets/cia-video/ESL, WORKING HOLIDAY & TESOL COURSE INTRO.mp4',
@@ -1707,8 +1707,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'IELTS',
       title: '雅思小组课程视频',
       text: '雅思官方考试中心',
-      poster: 'assets/cia/course-video-posters/ielts-course.jpg',
-      brandLogo: 'assets/cia/course-video-posters/idp-ielts.png',
+      poster: 'assets/cia/course-video-posters/ielts-course.webp',
+      brandLogo: 'assets/cia/course-video-posters/idp-ielts.webp',
       brandAlt: 'IDP IELTS 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines) Cebu International Academy - IELTS Course Introduction.mp4',
@@ -1724,8 +1724,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'TOEIC',
       title: '托业小组课程视频',
       text: '托业备考课程',
-      poster: 'assets/cia/course-video-posters/toeic-course.jpg',
-      brandLogo: 'assets/cia/course-video-posters/ets-toeic.png',
+      poster: 'assets/cia/course-video-posters/toeic-course.webp',
+      brandLogo: 'assets/cia/course-video-posters/ets-toeic.webp',
       brandAlt: 'ETS TOEIC 标志',
       videoSrc:
         'assets/cia-video/(English School in Cebu, Philippines ) Cebu International Academy - TOEIC Course Introduction.mp4',
@@ -1741,8 +1741,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       code: 'BUSINESS',
       title: '商务英语小组课程视频',
       text: '剑桥商务英语课程',
-      poster: 'assets/cia/course-video-posters/business-course.jpg',
-      brandLogo: 'assets/cia/course-video-posters/cambridge-business.png',
+      poster: 'assets/cia/course-video-posters/business-course.webp',
+      brandLogo: 'assets/cia/course-video-posters/cambridge-business.webp',
       brandAlt: 'Cambridge English Business 标志',
       videoSrc: 'assets/cia-video/BUSINESS GROUP VIDEO.mp4',
       contentType: 'video/mp4',
@@ -2107,42 +2107,42 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       number: '01',
       title: '正式合同与官方授权',
       text: '国内公司签约，学校报价、录取文件及收费凭证均可核验。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: 'CIA报名合同与授权文件',
     },
     {
       number: '02',
       title: '费用提前算清，同条件保价',
       text: '0中介服务费，学费、住宿费及当地费用提前说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: 'CIA费用清单与计算器',
     },
     {
       number: '03',
       title: '从所有适合的学校中帮你筛选',
       text: '根据目标、预算、基础和管理偏好，分析各校优缺点与价格。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问协助筛选CIA方案',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、机票、保险及接机逐项提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发资料与手机提醒',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、课程、住宿、账单、续读或转校问题继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习',
     },
     {
       number: '06',
       title: '深圳总部 + 菲律宾·欧洲驻点支持',
       text: '国内统筹与境外工作人员协作，重要情况有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航菲律宾和欧洲驻点团队',
     },
   ];

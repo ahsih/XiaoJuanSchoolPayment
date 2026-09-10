@@ -222,17 +222,17 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
-    { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'APIBECI官网展示的EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.jpg' },
-    { category: '校区', title: 'BECI校区建筑外观', description: '官方首页展示的BECI碧瑶校区建筑，用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.png' },
-    { category: '校区', title: 'BECI碧瑶校区大楼', description: '官方首页展示的碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.png' },
-    { category: '教室', title: 'EOP户外一对一学习区', description: 'EOP Campus页面展示的户外学习空间，体现English Only环境。', src: 'assets/philippines/beci-eop-outdoor-class.jpg' },
-    { category: '教室', title: 'Sparta一对一课堂', description: 'Sparta Campus页面展示的一对一课堂，用于口语、考试和SP反馈训练。', src: 'assets/philippines/beci-one-to-one-class.jpg' },
-    { category: '教室', title: 'Speaking Prescription辅导场景', description: '官方Sparta照片展示老师与学生进行针对性口语反馈。', src: 'assets/philippines/beci-speaking-prescription.jpg' },
-    { category: '住宿', title: 'EOP Mansion单人房', description: 'EOP Campus Mansion页面展示的单人房型，适合重视隐私的学生。', src: 'assets/philippines/beci-eop-single-room.png' },
-    { category: '住宿', title: 'EOP Mansion多人房', description: '官方Mansion房型照片展示多人房空间，报名需同步确认性别与空房。', src: 'assets/philippines/beci-eop-shared-room.png' },
-    { category: '餐厅', title: 'EOP户外交流桌区', description: '官方EOP照片中的户外桌区，餐饮和活动安排以当期校区说明为准。', src: 'assets/philippines/beci-eop-outdoor-study.jpg' },
-    { category: '设施', title: 'City Campus学习休息区', description: 'City Campus页面展示的成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.png' },
-    { category: '设施', title: 'City Campus自习工作区', description: '官方City Campus页面展示的安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.png' },
+    { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'APIBECI官网展示的EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.webp' },
+    { category: '校区', title: 'BECI校区建筑外观', description: '官方首页展示的BECI碧瑶校区建筑，用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.webp' },
+    { category: '校区', title: 'BECI碧瑶校区大楼', description: '官方首页展示的碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.webp' },
+    { category: '教室', title: 'EOP户外一对一学习区', description: 'EOP Campus页面展示的户外学习空间，体现English Only环境。', src: 'assets/philippines/beci-eop-outdoor-class.webp' },
+    { category: '教室', title: 'Sparta一对一课堂', description: 'Sparta Campus页面展示的一对一课堂，用于口语、考试和SP反馈训练。', src: 'assets/philippines/beci-one-to-one-class.webp' },
+    { category: '教室', title: 'Speaking Prescription辅导场景', description: '官方Sparta照片展示老师与学生进行针对性口语反馈。', src: 'assets/philippines/beci-speaking-prescription.webp' },
+    { category: '住宿', title: 'EOP Mansion单人房', description: 'EOP Campus Mansion页面展示的单人房型，适合重视隐私的学生。', src: 'assets/philippines/beci-eop-single-room.webp' },
+    { category: '住宿', title: 'EOP Mansion多人房', description: '官方Mansion房型照片展示多人房空间，报名需同步确认性别与空房。', src: 'assets/philippines/beci-eop-shared-room.webp' },
+    { category: '餐厅', title: 'EOP户外交流桌区', description: '官方EOP照片中的户外桌区，餐饮和活动安排以当期校区说明为准。', src: 'assets/philippines/beci-eop-outdoor-study.webp' },
+    { category: '设施', title: 'City Campus学习休息区', description: 'City Campus页面展示的成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.webp' },
+    { category: '设施', title: 'City Campus自习工作区', description: '官方City Campus页面展示的安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.webp' },
   ];
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
@@ -248,10 +248,10 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/beci-eop-campus.jpg', title: '三个校区定位清楚', text: 'EOP适合英语沉浸和口语输出，Sparta适合强管理冲刺，City适合成人、工作者和更弹性的学习节奏。' },
-    { image: 'assets/philippines/beci-speaking-prescription.jpg', title: '口语处方反馈机制', text: 'Speaking Prescription会用录影和维度评估追踪发音、语调、词汇和语法等口语弱点。' },
-    { image: 'assets/philippines/beci-one-to-one-class.jpg', title: 'Sparta冲刺型学习', text: '24 ESL包含白天密集课堂、晚间学习和每周SP测试，适合需要制度推动的学生。' },
-    { image: 'assets/philippines/beci-city-study-lounge.png', title: 'City成人弹性学习', text: 'City Campus面向成人和工作者，主打弹性、无宵禁、商务和ESP方向，也有Unlimited ESL选择。' },
+    { image: 'assets/philippines/beci-eop-campus.webp', title: '三个校区定位清楚', text: 'EOP适合英语沉浸和口语输出，Sparta适合强管理冲刺，City适合成人、工作者和更弹性的学习节奏。' },
+    { image: 'assets/philippines/beci-speaking-prescription.webp', title: '口语处方反馈机制', text: 'Speaking Prescription会用录影和维度评估追踪发音、语调、词汇和语法等口语弱点。' },
+    { image: 'assets/philippines/beci-one-to-one-class.webp', title: 'Sparta冲刺型学习', text: '24 ESL包含白天密集课堂、晚间学习和每周SP测试，适合需要制度推动的学生。' },
+    { image: 'assets/philippines/beci-city-study-lounge.webp', title: 'City成人弹性学习', text: 'City Campus面向成人和工作者，主打弹性、无宵禁、商务和ESP方向，也有Unlimited ESL选择。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -333,12 +333,12 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   ];
 
   readonly sidaBeciReasons: SidaBeciReason[] = [
-    { number: '01', title: '先判断BECI哪个校区适合', text: '不会只按学校名推荐，会把EOP、Sparta、City的管理强度、年龄层和课程目标分开比较。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择BECI校区' },
-    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、适用优惠和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶BECI语言学校费用' },
-    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾工作人员协作，重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航菲律宾和深圳服务团队' },
+    { number: '01', title: '先判断BECI哪个校区适合', text: '不会只按学校名推荐，会把EOP、Sparta、City的管理强度、年龄层和课程目标分开比较。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生选择BECI校区' },
+    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、适用优惠和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问核算菲律宾碧瑶BECI语言学校费用' },
+    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
+    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
+    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾工作人员协作，重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
   readonly sidaBeciTrustBadges: SidaBeciTrustBadge[] = [
@@ -707,9 +707,9 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
     const optionalFees = this.localFees.filter((fee) => fee.optional);
     const php = (value: number) => `PHP ${value.toLocaleString('en-US')}`;
     const campusHero: Record<'eop' | 'sparta' | 'city', string> = {
-      eop: '/assets/philippines/beci-eop-campus.jpg',
-      sparta: '/assets/philippines/beci-campus-building.png',
-      city: '/assets/philippines/beci-city-study-lounge.png',
+      eop: '/assets/philippines/beci-eop-campus.webp',
+      sparta: '/assets/philippines/beci-campus-building.webp',
+      city: '/assets/philippines/beci-city-study-lounge.webp',
     };
 
     const quote = buildPhilippinesDetailedQuote({

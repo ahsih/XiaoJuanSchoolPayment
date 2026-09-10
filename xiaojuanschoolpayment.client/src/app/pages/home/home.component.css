@@ -662,7 +662,7 @@
   margin-top: 48px;
   background:
     linear-gradient(90deg, rgba(6, 48, 32, 0.94), rgba(6, 48, 32, 0.86)),
-    url("/assets/study-hero-collage.png") center / cover;
+    url("/assets/study-hero-collage.webp") center / cover;
   color: #ffffff;
 }
 
@@ -861,7 +861,7 @@
   margin-top: 44px;
   background:
     linear-gradient(90deg, rgba(3, 72, 111, 0.84), rgba(3, 72, 111, 0.24)),
-    url("/assets/philippines/baguio-study-hero.jpg") center / cover;
+    url("/assets/philippines/baguio-study-hero.webp") center / cover;
   color: #ffffff;
 }
 

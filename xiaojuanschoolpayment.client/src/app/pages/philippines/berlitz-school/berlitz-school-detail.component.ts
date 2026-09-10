@@ -72,15 +72,15 @@ export class BerlitzSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '品牌', title: 'Berlitz官方Logo', description: '来自Berlitz Philippines官网主题资源，用于识别官方品牌。', src: 'assets/philippines/berlitz-logo.png' },
+    { category: '品牌', title: 'Berlitz官方Logo', description: '来自Berlitz Philippines官网主题资源，用于识别官方品牌。', src: 'assets/philippines/berlitz-logo.webp' },
     { category: '课堂', title: 'Berlitz语言学习场景', description: '官网首页主视觉图片，适合呈现小组互动和商务沟通学习氛围。', src: 'assets/philippines/berlitz-hero.webp' },
     { category: '课堂', title: 'Berlitz Method课堂', description: '官网Why Learn with Berlitz区块图片，展示沉浸式课堂和教师引导练习。', src: 'assets/philippines/berlitz-method.webp' },
     { category: '课程', title: 'Berlitz Student Portal', description: '官网在线学习门户图片，适合说明课程安排、进度追踪和线上学习入口。', src: 'assets/philippines/berlitz-student-portal.webp' },
     { category: '课程', title: 'Adult Language Learning', description: '官网成人课程卡片图片，用于成人、私教、小组课方向。', src: 'assets/philippines/berlitz-adults.webp' },
     { category: '课程', title: 'Kids & Teens', description: '官网少儿青少年课程卡片图片，适合家庭和青少年语言学习方向。', src: 'assets/philippines/berlitz-kids-teens.webp' },
     { category: '企业', title: 'Cultural Training for Business', description: '官网企业文化培训图片，用于跨文化沟通和企业培训方向。', src: 'assets/philippines/berlitz-cultural-training.webp' },
-    { category: '测评', title: 'Language Testing', description: '官网语言测评服务图片，适合测评、招聘筛选和企业评估方向。', src: 'assets/philippines/berlitz-testing.jpeg' },
-    { category: '测评', title: 'TELC Preparation and Testing', description: '官网TELC相关图片，适合TELC考试准备和考试安排方向。', src: 'assets/philippines/berlitz-telc.jpg' },
+    { category: '测评', title: 'Language Testing', description: '官网语言测评服务图片，适合测评、招聘筛选和企业评估方向。', src: 'assets/philippines/berlitz-testing.webp' },
+    { category: '测评', title: 'TELC Preparation and Testing', description: '官网TELC相关图片，适合TELC考试准备和考试安排方向。', src: 'assets/philippines/berlitz-telc.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -98,7 +98,7 @@ export class BerlitzSchoolDetailComponent implements OnInit {
     { image: 'assets/philippines/berlitz-method.webp', title: '沉浸式Berlitz Method', text: '官网强调课堂从第一天开始使用目标语言，围绕真实场景、目标任务和练习表现推进。' },
     { image: 'assets/philippines/berlitz-adults.webp', title: '成人私教与小组课', text: 'Private适合快速达成个人目标，Group适合固定课表、互动学习和更可控预算。' },
     { image: 'assets/philippines/berlitz-cultural-training.webp', title: '企业语言与文化培训', text: '企业方案可按行业、岗位、预算和线上/面授/混合交付方式定制。' },
-    { image: 'assets/philippines/berlitz-testing.jpeg', title: '语言测评和TELC资源', text: '适合需要招聘筛选、员工语言能力评估、TELC备考或考试安排的人群。' },
+    { image: 'assets/philippines/berlitz-testing.webp', title: '语言测评和TELC资源', text: '适合需要招聘筛选、员工语言能力评估、TELC备考或考试安排的人群。' },
   ];
 
   readonly suitableFor: FitItem[] = [

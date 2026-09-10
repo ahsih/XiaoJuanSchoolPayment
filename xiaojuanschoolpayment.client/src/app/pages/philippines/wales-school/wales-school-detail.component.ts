@@ -111,15 +111,15 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: 'WALES校舍外观', description: 'WALES官方网站展示的Baguio校舍，学校位于Legarda Road生活圈。', src: 'assets/philippines/wales-school-building.jpg' },
-    { category: '设施', title: 'WALES校内设施', description: '官方Facility页面展示的校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.jpg' },
-    { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES官方Classrooms页面展示的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.jpg' },
-    { category: '教室', title: '团体与功能教室', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/philippines/wales-classroom-group.jpg' },
-    { category: '住宿', title: 'Studio房型', description: 'WALES官方Studio Type页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/wales-studio-room.jpg' },
-    { category: '住宿', title: 'Premium Studio房型', description: 'Premium Studio配有更完整的生活设备，适合成人、家庭或长期学习需求。', src: 'assets/philippines/wales-premium-studio-room.jpg' },
-    { category: '住宿', title: 'Condo房型', description: 'Condo Type适合希望有公寓式生活空间、厨房设备和更强生活机能的学生。', src: 'assets/philippines/wales-condo-room.jpg' },
-    { category: '住宿', title: 'Share Type房型', description: 'Share Type适合想兼顾预算、室友互动和生活设备的学生。', src: 'assets/philippines/wales-share-room.jpg' },
-    { category: '餐厅', title: 'WALES Cafeteria', description: '官方Facility页面展示的餐厅空间，正式报价时需把餐费和饮食需求一起确认。', src: 'assets/philippines/wales-cafeteria.jpg' },
+    { category: '校区', title: 'WALES校舍外观', description: 'WALES官方网站展示的Baguio校舍，学校位于Legarda Road生活圈。', src: 'assets/philippines/wales-school-building.webp' },
+    { category: '设施', title: 'WALES校内设施', description: '官方Facility页面展示的校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.webp' },
+    { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES官方Classrooms页面展示的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.webp' },
+    { category: '教室', title: '团体与功能教室', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/philippines/wales-classroom-group.webp' },
+    { category: '住宿', title: 'Studio房型', description: 'WALES官方Studio Type页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/wales-studio-room.webp' },
+    { category: '住宿', title: 'Premium Studio房型', description: 'Premium Studio配有更完整的生活设备，适合成人、家庭或长期学习需求。', src: 'assets/philippines/wales-premium-studio-room.webp' },
+    { category: '住宿', title: 'Condo房型', description: 'Condo Type适合希望有公寓式生活空间、厨房设备和更强生活机能的学生。', src: 'assets/philippines/wales-condo-room.webp' },
+    { category: '住宿', title: 'Share Type房型', description: 'Share Type适合想兼顾预算、室友互动和生活设备的学生。', src: 'assets/philippines/wales-share-room.webp' },
+    { category: '餐厅', title: 'WALES Cafeteria', description: '官方Facility页面展示的餐厅空间，正式报价时需把餐费和饮食需求一起确认。', src: 'assets/philippines/wales-cafeteria.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -134,10 +134,10 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/wales-school-building.jpg', title: '小校容量，照顾更细', text: 'WALES容量约80名学生，适合希望学校人员更容易认识学生、学习和生活问题能快速沟通的人。' },
-    { image: 'assets/philippines/wales-classroom.jpg', title: '一对一隔间教室', text: '官方Classrooms页面展示的一对一玻璃隔间，让学生能在较安静的环境里集中练习与纠错。' },
-    { image: 'assets/philippines/wales-cafeteria.jpg', title: '餐厅空间清楚可见', text: '报名时要把meal fee和饮食需求一起确认，官方餐厅照片能帮助学生先判断日常用餐环境。' },
-    { image: 'assets/philippines/wales-condo-room.jpg', title: '房型选择生活化', text: 'Studio、Premium Studio、Share和Condo房型让WALES更适合重视隐私、厨房设备、网络和生活机能的学生。' },
+    { image: 'assets/philippines/wales-school-building.webp', title: '小校容量，照顾更细', text: 'WALES容量约80名学生，适合希望学校人员更容易认识学生、学习和生活问题能快速沟通的人。' },
+    { image: 'assets/philippines/wales-classroom.webp', title: '一对一隔间教室', text: '官方Classrooms页面展示的一对一玻璃隔间，让学生能在较安静的环境里集中练习与纠错。' },
+    { image: 'assets/philippines/wales-cafeteria.webp', title: '餐厅空间清楚可见', text: '报名时要把meal fee和饮食需求一起确认，官方餐厅照片能帮助学生先判断日常用餐环境。' },
+    { image: 'assets/philippines/wales-condo-room.webp', title: '房型选择生活化', text: 'Studio、Premium Studio、Share和Condo房型让WALES更适合重视隐私、厨房设备、网络和生活机能的学生。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -217,12 +217,12 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
   ];
 
   readonly sidaWalesReasons: SidaWalesReason[] = [
-    { number: '01', title: '先把WALES放进正确比较组', text: '会把它和MONOL、BECI City、JIC Premium等更弹性的碧瑶学校一起比较，而不是只看城市。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达顾问帮助学生判断WALES是否适合' },
-    { number: '02', title: '课程、房型、餐费和当地费用一次算清', text: 'WALES费用需要拆成课程、住宿、meal fee、当地PHP费用和优惠，顾问会逐项列明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达顾问核算菲律宾碧瑶WALES语言学校费用' },
-    { number: '03', title: '正式文件与收费节点可核对', text: '报价、录取、付款节点和学校确认文件都按流程核验，避免只靠网页价格做决定。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达正式合同与学校文件核验' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、航班、接机、换汇和到校PHP费用都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助沟通。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航菲律宾和深圳服务团队' },
+    { number: '01', title: '先把WALES放进正确比较组', text: '会把它和MONOL、BECI City、JIC Premium等更弹性的碧瑶学校一起比较，而不是只看城市。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达顾问帮助学生判断WALES是否适合' },
+    { number: '02', title: '课程、房型、餐费和当地费用一次算清', text: 'WALES费用需要拆成课程、住宿、meal fee、当地PHP费用和优惠，顾问会逐项列明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达顾问核算菲律宾碧瑶WALES语言学校费用' },
+    { number: '03', title: '正式文件与收费节点可核对', text: '报价、录取、付款节点和学校确认文件都按流程核验，避免只靠网页价格做决定。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达正式合同与学校文件核验' },
+    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、航班、接机、换汇和到校PHP费用都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '服务持续到完成学习', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助沟通。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达顾问持续跟进学生学习情况' },
+    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
   readonly sidaWalesTrustBadges: SidaWalesTrustBadge[] = [
@@ -457,7 +457,7 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
       schoolCode: 'WALES',
       schoolName: '菲律宾碧瑶WALES语言学校',
       filePrefix: 'WALES',
-      heroSrc: '/assets/philippines/wales-school-building.jpg',
+      heroSrc: '/assets/philippines/wales-school-building.webp',
       weeks: this.selectedWeeks,
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,
