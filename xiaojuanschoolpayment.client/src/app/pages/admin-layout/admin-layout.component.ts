@@ -11,14 +11,17 @@ import { StaffPermissionService } from '../../../services/staff-permission.servi
 })
 export class AdminLayoutComponent {
   readonly isAdmin: boolean;
+  readonly isPublisher: boolean;
   permissionsLoaded = false;
 
   constructor(
     private authService: AuthService,
     private staffPermissions: StaffPermissionService,
   ) {
-    this.isAdmin = this.authService.getRoles().some(role => role.toLowerCase() === 'admin');
-    if (this.isAdmin) {
+    const roles = this.authService.getRoles().map(role => role.toLowerCase());
+    this.isAdmin = roles.includes('admin');
+    this.isPublisher = this.isAdmin || roles.includes('manager');
+    if (this.isPublisher) {
       this.permissionsLoaded = true;
     } else {
       this.staffPermissions.loadMine().subscribe({
@@ -29,7 +32,7 @@ export class AdminLayoutComponent {
   }
 
   canUse(scope: StaffPermissionScope): boolean {
-    return this.isAdmin || (this.permissionsLoaded && this.staffPermissions.hasAny(scope));
+    return this.isPublisher || (this.permissionsLoaded && this.staffPermissions.hasAny(scope));
   }
   logout() {
     this.authService.logout();

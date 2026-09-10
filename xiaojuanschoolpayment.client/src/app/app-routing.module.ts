@@ -1039,7 +1039,7 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    data: { roles: ['admin', 'staff'] },
+    data: { roles: ['admin', 'manager', 'staff'] },
     canActivate: [RoleGuard],
     children: [
       { path: '', component: AdminComponent },
@@ -1073,6 +1073,15 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin-student-applications/admin-student-applications.component').then(
             (m) => m.AdminStudentApplicationsComponent,
+          ),
+      },
+      {
+        path: 'reviews',
+        data: { roles: ['admin', 'manager'] },
+        canActivate: [RoleGuard],
+        loadComponent: () =>
+          import('./pages/admin-content-reviews/admin-content-reviews.component').then(
+            (m) => m.AdminContentReviewsComponent,
           ),
       },
       {

@@ -14,7 +14,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       _currencyService = currencyService;
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpGet("get-currencys")]
     public async Task<IActionResult> GetSchools(CancellationToken ct) {
       var result = await _currencyService.GetCurrencyDTOs(ct);

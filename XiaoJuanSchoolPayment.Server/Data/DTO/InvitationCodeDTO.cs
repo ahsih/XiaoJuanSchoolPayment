@@ -6,6 +6,8 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
   {
     [Range(1, 90)]
     public int ExpiresInDays { get; set; } = 7;
+
+    public string? EmployeeType { get; set; }
   }
 
   public class InvitationCodeDTO

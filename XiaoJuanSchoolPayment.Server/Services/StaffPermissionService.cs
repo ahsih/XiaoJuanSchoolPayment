@@ -22,8 +22,11 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
     public async Task<bool> HasAsync(ClaimsPrincipal user, Guid schoolId, string scope, CancellationToken cancellationToken)
     {
-      if (user.IsInRole("Admin")) return true;
       if (!StaffPermissionScopes.All.Contains(scope, StringComparer.Ordinal)) return false;
+      if (user.IsInRole("Admin") || user.IsInRole("Manager") || user.IsInRole("Staff"))
+      {
+        return await _context.Schools.AsNoTracking().AnyAsync(school => school.Id == schoolId, cancellationToken);
+      }
       var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
       if (string.IsNullOrWhiteSpace(userId)) return false;
       var value = ClaimValue(schoolId, scope);
@@ -34,7 +37,11 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
     public async Task<IList<Guid>> GetSchoolIdsAsync(ClaimsPrincipal user, string scope, CancellationToken cancellationToken)
     {
-      if (user.IsInRole("Admin")) return await _context.Schools.AsNoTracking().Select(school => school.Id).ToListAsync(cancellationToken);
+      if (!StaffPermissionScopes.All.Contains(scope, StringComparer.Ordinal)) return [];
+      if (user.IsInRole("Admin") || user.IsInRole("Manager") || user.IsInRole("Staff"))
+      {
+        return await _context.Schools.AsNoTracking().Select(school => school.Id).ToListAsync(cancellationToken);
+      }
       var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
       if (string.IsNullOrWhiteSpace(userId)) return [];
       var suffix = $":{scope}";
@@ -46,12 +53,27 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
     public async Task<IList<StaffPermissionUserDTO>> GetStaffAsync(CancellationToken cancellationToken)
     {
-      var staffRoleId = await _context.Roles.AsNoTracking().Where(role => role.Name == "Staff").Select(role => role.Id).FirstOrDefaultAsync(cancellationToken);
-      if (staffRoleId == null) return [];
-      var userIds = await _context.UserRoles.AsNoTracking().Where(link => link.RoleId == staffRoleId).Select(link => link.UserId).ToListAsync(cancellationToken);
+      var employeeRoles = await _context.Roles.AsNoTracking()
+        .Where(role => role.Name == "Staff" || role.Name == "Manager")
+        .Select(role => new { role.Id, role.Name })
+        .ToListAsync(cancellationToken);
+      if (employeeRoles.Count == 0) return [];
+
+      var roleIds = employeeRoles.Select(role => role.Id).ToList();
+      var roleLinks = await _context.UserRoles.AsNoTracking()
+        .Where(link => roleIds.Contains(link.RoleId))
+        .ToListAsync(cancellationToken);
+      var userIds = roleLinks.Select(link => link.UserId).Distinct().ToList();
       var users = await _context.Users.AsNoTracking().Where(user => userIds.Contains(user.Id)).OrderBy(user => user.FirstName).ThenBy(user => user.LastName).ToListAsync(cancellationToken);
+      var managerRoleId = employeeRoles.FirstOrDefault(role => role.Name == "Manager")?.Id;
       var result = new List<StaffPermissionUserDTO>();
-      foreach (var user in users) result.Add(await BuildUserAsync(user, cancellationToken));
+      foreach (var user in users)
+      {
+        var employeeType = managerRoleId != null && roleLinks.Any(link => link.UserId == user.Id && link.RoleId == managerRoleId)
+          ? "Manager"
+          : "Consultant";
+        result.Add(await BuildUserAsync(user, employeeType, cancellationToken));
+      }
       return result;
     }
 
@@ -61,13 +83,12 @@ namespace XiaoJuanSchoolPayment.Server.Services
       if (string.IsNullOrWhiteSpace(userId)) return null;
       var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(item => item.Id == userId, cancellationToken);
       if (user == null) return null;
-      if (principal.IsInRole("Admin"))
+      if (principal.IsInRole("Admin") || principal.IsInRole("Manager") || principal.IsInRole("Staff"))
       {
-        var dto = await BuildUserAsync(user, cancellationToken);
-        foreach (var school in dto.Schools) SetAll(school, true);
-        return dto;
+        var employeeType = principal.IsInRole("Admin") || principal.IsInRole("Manager") ? "Manager" : "Consultant";
+        return await BuildUserAsync(user, employeeType, cancellationToken);
       }
-      return await BuildUserAsync(user, cancellationToken);
+      return null;
     }
 
     public async Task<StaffPermissionUserDTO?> UpdateAsync(string userId, IList<StaffSchoolPermissionDTO> schools, CancellationToken cancellationToken)
@@ -87,27 +108,61 @@ namespace XiaoJuanSchoolPayment.Server.Services
         var addResult = await _userManager.AddClaimsAsync(user, newClaims);
         if (!addResult.Succeeded) throw new InvalidOperationException(string.Join("; ", addResult.Errors.Select(error => error.Description)));
       }
-      return await BuildUserAsync(user, cancellationToken);
+      return await BuildUserAsync(user, "Consultant", cancellationToken);
     }
 
-    private async Task<StaffPermissionUserDTO> BuildUserAsync(SchoolUser user, CancellationToken cancellationToken)
+    public async Task<StaffPermissionUserDTO?> UpdateEmployeeTypeAsync(
+      string userId,
+      string employeeType,
+      CancellationToken cancellationToken)
+    {
+      var user = await _userManager.FindByIdAsync(userId);
+      if (user == null) return null;
+
+      var isManager = string.Equals(employeeType, "Manager", StringComparison.OrdinalIgnoreCase);
+      var isConsultant = string.Equals(employeeType, "Consultant", StringComparison.OrdinalIgnoreCase);
+      if (!isManager && !isConsultant) throw new ArgumentException("员工类型只能选择顾问或管理。");
+
+      var currentRoles = await _userManager.GetRolesAsync(user);
+      if (!currentRoles.Contains("Staff") && !currentRoles.Contains("Manager")) return null;
+
+      var desiredRole = isManager ? "Manager" : "Staff";
+      var otherRole = isManager ? "Staff" : "Manager";
+      if (currentRoles.Contains(otherRole))
+      {
+        var removeResult = await _userManager.RemoveFromRoleAsync(user, otherRole);
+        if (!removeResult.Succeeded) throw new InvalidOperationException(string.Join("; ", removeResult.Errors.Select(error => error.Description)));
+      }
+      if (!currentRoles.Contains(desiredRole))
+      {
+        var addResult = await _userManager.AddToRoleAsync(user, desiredRole);
+        if (!addResult.Succeeded) throw new InvalidOperationException(string.Join("; ", addResult.Errors.Select(error => error.Description)));
+      }
+
+      return await BuildUserAsync(user, isManager ? "Manager" : "Consultant", cancellationToken);
+    }
+
+    private async Task<StaffPermissionUserDTO> BuildUserAsync(
+      SchoolUser user,
+      string employeeType,
+      CancellationToken cancellationToken)
     {
       var schools = await _context.Schools.AsNoTracking().OrderBy(school => school.Name).ToListAsync(cancellationToken);
-      var values = await _context.UserClaims.AsNoTracking().Where(claim => claim.UserId == user.Id && claim.ClaimType == ClaimType).Select(claim => claim.ClaimValue).ToListAsync(cancellationToken);
-      var set = values.Where(value => value != null).ToHashSet(StringComparer.Ordinal);
       return new StaffPermissionUserDTO
       {
         UserId = user.Id,
         Name = $"{user.FirstName} {user.LastName}".Trim(),
         Account = user.PhoneNumber ?? user.Email ?? user.UserName ?? string.Empty,
+        EmployeeType = employeeType,
+        CanPublish = string.Equals(employeeType, "Manager", StringComparison.Ordinal),
         Schools = schools.Select(school => new StaffSchoolPermissionDTO
         {
           SchoolId = school.Id, SchoolName = school.Name,
-          SchoolContent = set.Contains(ClaimValue(school.Id, StaffPermissionScopes.SchoolContent)),
-          Pricing = set.Contains(ClaimValue(school.Id, StaffPermissionScopes.Pricing)),
-          QuoteImage = set.Contains(ClaimValue(school.Id, StaffPermissionScopes.QuoteImage)),
-          Media = set.Contains(ClaimValue(school.Id, StaffPermissionScopes.Media)),
-          Students = set.Contains(ClaimValue(school.Id, StaffPermissionScopes.Students)),
+          SchoolContent = true,
+          Pricing = true,
+          QuoteImage = true,
+          Media = true,
+          Students = true,
         }).ToList(),
       };
     }

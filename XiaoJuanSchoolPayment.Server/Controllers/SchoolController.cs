@@ -23,7 +23,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       _permissions = permissions;
       _context = context;
     }
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save")]
     public async Task<IActionResult> SaveSchool([FromBody]SchoolDTO school, CancellationToken ct)
     {
@@ -32,7 +32,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save-lesson")]
     public async Task<IActionResult> SaveSchoolLesson([FromBody] SchoolLessonDTO lesson, CancellationToken ct)
     {
@@ -41,7 +41,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save-room")]
     public async Task<IActionResult> SaveSchoolRoom([FromBody] SchoolRoomDTO lesson, CancellationToken ct)
     {
@@ -50,7 +50,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save-school-fee")]
     public async Task<IActionResult> SaveSchoolFee([FromBody] SchoolFeeDTO feeDTO, CancellationToken ct)
     {
@@ -59,7 +59,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save-school-note")]
     public async Task<IActionResult> SaveSchoolNote([FromBody] SchoolNoteDTO noteDto, CancellationToken ct)
     {
@@ -68,7 +68,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPost("upload-photo")]
     [HttpPost("upload-media")]
     [RequestSizeLimit(210 * 1024 * 1024)]
@@ -87,7 +87,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPut("save-photo")]
     public async Task<IActionResult> SaveSchoolPhoto([FromBody] SchoolPhotoDTO photo, CancellationToken ct)
     {
@@ -96,7 +96,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return result ? Ok(result) : NotFound();
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpDelete("delete-photo/{id:guid}")]
     public async Task<IActionResult> DeleteSchoolPhoto(Guid id, CancellationToken ct)
     {

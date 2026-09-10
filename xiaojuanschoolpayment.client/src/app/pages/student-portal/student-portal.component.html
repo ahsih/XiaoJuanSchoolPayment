@@ -40,21 +40,49 @@
     </div>
 
     <div class="details">
+      <div><span>报名形式</span><strong>{{ application.enrollmentType }} · {{ application.members.length + 1 }} 人</strong></div>
+      <div><span>报名日期</span><strong>{{ (application.enrollmentDate || application.createdAt) | date:'yyyy-MM-dd' }}</strong></div>
+      <div><span>签证进度</span><strong>{{ application.visaStatus || '未确认' }}</strong></div>
       <div><span>课程</span><strong>{{ application.courseName || '待确认' }}</strong></div>
       <div><span>住宿</span><strong>{{ application.accommodationName || '待确认' }}</strong></div>
-      <div><span>学习时间</span><strong>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }} 至 {{ application.endDate ? (application.endDate | date:'yyyy-MM-dd') : '待确认' }}</strong></div>
+      <div><span>学习周期</span><strong>{{ application.studyWeeks ? application.studyWeeks + ' 周' : '待确认' }}</strong></div>
+      <div><span>整体日期</span><strong>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }} 至 {{ application.endDate ? (application.endDate | date:'yyyy-MM-dd') : '待确认' }}</strong></div>
     </div>
+
+    <section class="plan-details" *ngIf="application.coursePlans.length || application.accommodationPlans.length">
+      <h3>课程与住宿安排</h3>
+      <div class="plan-columns">
+        <div *ngIf="application.coursePlans.length">
+          <h4>课程安排</h4>
+          <p *ngFor="let plan of application.coursePlans"><strong>{{ participantName(application, plan.participantKey) }}</strong><span>{{ plan.name }} · {{ plan.weeks || '待定' }}周</span><small *ngIf="plan.startDate">{{ plan.startDate | date:'yyyy-MM-dd' }} 至 {{ plan.endDate | date:'yyyy-MM-dd' }}</small></p>
+        </div>
+        <div *ngIf="application.accommodationPlans.length">
+          <h4>住宿安排</h4>
+          <p *ngFor="let plan of application.accommodationPlans"><strong>{{ participantName(application, plan.participantKey) }}</strong><span>{{ plan.name }} · {{ plan.weeks || '待定' }}周</span><small *ngIf="plan.startDate">{{ plan.startDate | date:'yyyy-MM-dd' }} 至 {{ plan.endDate | date:'yyyy-MM-dd' }}</small></p>
+        </div>
+      </div>
+    </section>
 
     <div class="adviser-note" *ngIf="application.studentVisibleNotes">
       <strong>顾问留言</strong>
       <p>{{ application.studentVisibleNotes }}</p>
     </div>
 
+    <section class="payments" *ngIf="application.payments.length">
+      <h3>已确认付款</h3>
+      <p class="muted">这里只显示管理已经核对确认的付款记录。</p>
+      <button class="payment" type="button" *ngFor="let payment of application.payments" (click)="downloadPaymentReceipt(application, payment)">
+        <span class="payment-type">{{ payment.paymentType }}</span>
+        <span class="payment-name"><strong>{{ payment.currencyCode }} {{ payment.amount | number:'1.2-2' }}</strong><small>{{ payment.paidAt | date:'yyyy-MM-dd' }} · {{ payment.paymentMethod }}</small></span>
+        <span class="confirmed">已确认 · 查看凭证</span>
+      </button>
+    </section>
+
     <section class="documents">
       <h3>我的文件</h3>
       <p class="muted" *ngIf="application.documents.length === 0">顾问尚未上传文件。</p>
       <button class="document" type="button" *ngFor="let document of application.documents" (click)="download(application, document)">
-        <span class="document-icon">{{ document.documentType === '入学通知书' ? '录' : document.documentType === '报价单' ? '价' : '文' }}</span>
+        <span class="document-icon">{{ documentBadge(document) }}</span>
         <span class="document-name"><strong>{{ document.displayName }}</strong><small>{{ document.documentType }} · {{ fileSize(document.sizeBytes) }}</small></span>
         <span class="download">下载</span>
       </button>
@@ -64,7 +92,7 @@
   <mat-card class="password-card">
     <mat-card-header><mat-card-title>修改登录密码</mat-card-title></mat-card-header>
     <mat-card-content>
-      <p>第一次登录后，请把员工提供的临时密码改成自己的密码。</p>
+      <p>学生通过邀请注册并登录后，可以在这里维护自己的登录密码。</p>
       <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="password-form">
         <mat-form-field appearance="outline"><mat-label>当前密码</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
         <mat-form-field appearance="outline"><mat-label>新密码</mat-label><input matInput type="password" formControlName="newPassword" /></mat-form-field>

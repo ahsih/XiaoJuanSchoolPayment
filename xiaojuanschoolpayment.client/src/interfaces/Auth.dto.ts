@@ -13,7 +13,7 @@ export interface InvitationCodeDTO {
   id: string;
   code?: string;
   codePrefix: string;
-  role: 'Staff' | 'Student';
+  role: 'Staff' | 'Manager' | 'Student';
   createdAt: string;
   expiresAt: string;
   usedAt?: string;

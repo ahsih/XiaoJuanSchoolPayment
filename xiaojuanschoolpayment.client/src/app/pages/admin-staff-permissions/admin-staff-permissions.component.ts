@@ -1,26 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
-import {
-  StaffPermissionUserDTO,
-  StaffSchoolPermissionDTO,
-} from '../../../interfaces/staff-permission.dto';
+import { StaffPermissionUserDTO } from '../../../interfaces/staff-permission.dto';
 import { StaffPermissionService } from '../../../services/staff-permission.service';
+
+type EmployeeType = 'Consultant' | 'Manager';
 
 @Component({
   selector: 'app-admin-staff-permissions',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, RouterLink],
+  imports: [CommonModule, MatIconModule, RouterLink],
   templateUrl: './admin-staff-permissions.component.html',
   styleUrl: './admin-staff-permissions.component.css',
 })
 export class AdminStaffPermissionsComponent implements OnInit {
   staff: StaffPermissionUserDTO[] = [];
   selected?: StaffPermissionUserDTO;
-  search = '';
+  activeType: EmployeeType = 'Consultant';
   isLoading = true;
   isSaving = false;
   message = '';
@@ -30,45 +28,54 @@ export class AdminStaffPermissionsComponent implements OnInit {
 
   ngOnInit(): void { this.load(); }
 
-  get filteredSchools(): StaffSchoolPermissionDTO[] {
-    const keyword = this.search.trim().toLowerCase();
-    return this.selected?.schools.filter(school => !keyword || school.schoolName.toLowerCase().includes(keyword)) ?? [];
+  get consultants(): StaffPermissionUserDTO[] {
+    return this.staff.filter(user => user.employeeType !== 'Manager');
+  }
+
+  get managers(): StaffPermissionUserDTO[] {
+    return this.staff.filter(user => user.employeeType === 'Manager');
+  }
+
+  get visibleStaff(): StaffPermissionUserDTO[] {
+    return this.activeType === 'Manager' ? this.managers : this.consultants;
+  }
+
+  selectType(type: EmployeeType): void {
+    this.activeType = type;
+    this.selected = this.visibleStaff[0];
+    this.message = '';
   }
 
   select(user: StaffPermissionUserDTO): void {
-    this.selected = this.clone(user);
+    this.selected = user;
     this.message = '';
   }
 
-  rowHasAll(school: StaffSchoolPermissionDTO): boolean {
-    return school.schoolContent && school.pricing && school.quoteImage && school.media && school.students;
-  }
+  changeEmployeeType(employeeType: EmployeeType): void {
+    if (!this.selected || this.selected.employeeType === employeeType || this.isSaving) return;
+    const roleName = employeeType === 'Manager' ? '管理' : '顾问';
+    const warning = employeeType === 'Manager'
+      ? '管理可以编辑并直接发布，也可以审核顾问提交的修改。确定要设为管理吗？'
+      : '改为顾问后，该员工将不能发布，只能提交审核。确定继续吗？';
+    if (!window.confirm(warning)) return;
 
-  toggleAll(school: StaffSchoolPermissionDTO, checked: boolean): void {
-    school.schoolContent = checked;
-    school.pricing = checked;
-    school.quoteImage = checked;
-    school.media = checked;
-    school.students = checked;
-  }
-
-  save(): void {
-    if (!this.selected || this.isSaving) return;
     this.isSaving = true;
     this.message = '';
-    this.permissions.update(this.selected.userId, this.selected.schools)
+    const userId = this.selected.userId;
+    this.permissions.updateEmployeeType(userId, employeeType)
       .pipe(finalize(() => this.isSaving = false))
       .subscribe({
         next: updated => {
-          const index = this.staff.findIndex(item => item.userId === updated.userId);
+          const index = this.staff.findIndex(user => user.userId === userId);
           if (index >= 0) this.staff[index] = updated;
-          this.selected = this.clone(updated);
+          this.selected = updated;
+          this.activeType = employeeType;
           this.messageKind = 'success';
-          this.message = `已保存 ${updated.name || updated.account} 的权限，员工下次进入后台时立即生效。`;
+          this.message = `已将 ${updated.name || updated.account} 设为${roleName}，下次登录时按新权限生效。`;
         },
-        error: () => {
+        error: error => {
           this.messageKind = 'error';
-          this.message = '权限保存失败，请稍后重试。';
+          this.message = typeof error?.error === 'string' ? error.error : '员工类型保存失败，请稍后重试。';
         },
       });
   }
@@ -77,16 +84,13 @@ export class AdminStaffPermissionsComponent implements OnInit {
     this.permissions.getAll().pipe(finalize(() => this.isLoading = false)).subscribe({
       next: staff => {
         this.staff = staff;
-        if (staff.length) this.select(staff[0]);
+        if (!this.consultants.length && this.managers.length) this.activeType = 'Manager';
+        this.selected = this.visibleStaff[0];
       },
       error: () => {
         this.messageKind = 'error';
         this.message = '员工列表加载失败。';
       },
     });
-  }
-
-  private clone(user: StaffPermissionUserDTO): StaffPermissionUserDTO {
-    return { ...user, schools: user.schools.map(school => ({ ...school })) };
   }
 }

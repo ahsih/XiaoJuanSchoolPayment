@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XiaoJuanSchoolPayment.Server.Data;
 
@@ -11,9 +12,11 @@ using XiaoJuanSchoolPayment.Server.Data;
 namespace XiaoJuanSchoolPayment.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260909164600_AddStudentApplicationReviewWorkflow")]
+    partial class AddStudentApplicationReviewWorkflow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -623,9 +626,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("AccommodationPlansJson")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("ChangeSummary")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
@@ -634,22 +634,11 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<string>("CoursePlansJson")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("EnrollmentDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("EnrollmentType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("InternalNotes")
                         .HasMaxLength(2000)
@@ -657,9 +646,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("MembersJson")
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime?>("PublishedAt")
                         .HasColumnType("datetime(6)");
@@ -691,23 +677,8 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("StudentEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("StudentFirstName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("StudentLastName")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("StudentPhone")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
-
                     b.Property<string>("StudentUserId")
+                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("varchar(450)");
 
@@ -725,11 +696,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.Property<string>("SubmittedByUserId")
                         .HasMaxLength(450)
                         .HasColumnType("varchar(450)");
-
-                    b.Property<string>("VisaStatus")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
 
                     b.HasKey("Id");
 
@@ -796,125 +762,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.HasIndex("StudentApplicationId");
 
                     b.ToTable("StudentApplicationDocuments");
-                });
-
-            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentPayment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CurrencyCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<bool>("IsVisibleToStudent")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("OriginalFileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("PaidAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("PayerName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("PaymentType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("ReceivingAccount")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
-
-                    b.Property<string>("ReferenceNumber")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("ReviewNote")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<string>("ReviewStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ReviewedByName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("ReviewedByUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("varchar(450)");
-
-                    b.Property<long>("SizeBytes")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("StoredFileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<Guid>("StudentApplicationId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("SubmittedByName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("SubmittedByUserId")
-                        .HasMaxLength(450)
-                        .HasColumnType("varchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentApplicationId");
-
-                    b.HasIndex("ReviewStatus", "SubmittedAt");
-
-                    b.ToTable("StudentPayments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1069,7 +916,8 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.SchoolUser", "StudentUser")
                         .WithMany()
                         .HasForeignKey("StudentUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("School");
 
@@ -1080,17 +928,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                 {
                     b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", "StudentApplication")
                         .WithMany("Documents")
-                        .HasForeignKey("StudentApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StudentApplication");
-                });
-
-            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentPayment", b =>
-                {
-                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", "StudentApplication")
-                        .WithMany("Payments")
                         .HasForeignKey("StudentApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1114,8 +951,6 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", b =>
                 {
                     b.Navigation("Documents");
-
-                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

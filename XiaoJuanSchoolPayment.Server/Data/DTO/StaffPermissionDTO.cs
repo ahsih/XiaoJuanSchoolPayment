@@ -16,11 +16,18 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string UserId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Account { get; set; } = string.Empty;
+    public string EmployeeType { get; set; } = "Consultant";
+    public bool CanPublish { get; set; }
     public IList<StaffSchoolPermissionDTO> Schools { get; set; } = [];
   }
 
   public class UpdateStaffPermissionsDTO
   {
     public IList<StaffSchoolPermissionDTO> Schools { get; set; } = [];
+  }
+
+  public class UpdateEmployeeTypeDTO
+  {
+    public string EmployeeType { get; set; } = "Consultant";
   }
 }

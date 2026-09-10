@@ -18,6 +18,7 @@ export class InvitationManagementComponent implements OnInit {
   invitations: InvitationCodeDTO[] = [];
   newInvitation?: InvitationCodeDTO;
   expiresInDays = 30;
+  employeeType: 'Consultant' | 'Manager' = 'Consultant';
   loading = false;
   isAdmin = false;
 
@@ -31,7 +32,7 @@ export class InvitationManagementComponent implements OnInit {
   create(): void {
     if (this.loading) return;
     this.loading = true;
-    this.authService.createInvitation(this.expiresInDays).subscribe({
+    this.authService.createInvitation(this.expiresInDays, this.isAdmin ? this.employeeType : undefined).subscribe({
       next: (invitation) => {
         this.loading = false;
         this.newInvitation = invitation;
@@ -61,6 +62,12 @@ export class InvitationManagementComponent implements OnInit {
       },
       error: (error) => this.showError(error, '邀请码撤销失败'),
     });
+  }
+
+  roleLabel(invitation: InvitationCodeDTO): string {
+    if (invitation.role === 'Manager') return '管理账号';
+    if (invitation.role === 'Staff') return '顾问账号';
+    return '学生账号';
   }
 
   private load(): void {

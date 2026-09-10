@@ -3,75 +3,81 @@
     <div>
       <span class="eyebrow">账户与权限</span>
       <h1>员工与权限</h1>
-      <p>按员工和学校分配功能。未勾选的学校或功能，员工无法查看对应入口，也无法通过旧网址提交修改。</p>
+      <p>员工只分为顾问和管理两类，不再逐所学校勾选，设置更简单。</p>
     </div>
-    <a class="invite-link" routerLink="/admin/invitations">
-      <mat-icon>person_add</mat-icon>
-      先邀请新员工
-    </a>
+    <a class="invite-link" routerLink="/admin/invitations"><mat-icon>person_add</mat-icon>邀请新员工</a>
   </header>
 
-  <div class="notice">
-    <mat-icon>verified_user</mat-icon>
-    <div><strong>推荐设置方式</strong><span>先选择员工，再勾选她负责的学校和工作内容；“发布更新”始终只保留给管理员。</span></div>
-  </div>
+  <section class="role-overview">
+    <article>
+      <div class="role-icon consultant"><mat-icon>support_agent</mat-icon></div>
+      <div><span>顾问</span><h2>编辑全部学校和学生档案，提交管理审核</h2><p>可以改学校资料、价格与报价、照片视频，也可以创建和修改学生申请、上传档案；所有内容都要提交管理审核。</p></div>
+      <strong class="no-publish"><mat-icon>lock</mat-icon>不能发布</strong>
+    </article>
+    <article>
+      <div class="role-icon manager"><mat-icon>verified_user</mat-icon></div>
+      <div><span>管理</span><h2>可以编辑，也可以直接发布</h2><p>拥有顾问全部编辑功能；自己的修改可直接发布，也可以审核、发布或退回顾问提交的内容。</p></div>
+      <strong class="can-publish"><mat-icon>publish</mat-icon>可以发布</strong>
+    </article>
+  </section>
 
   <div *ngIf="message" class="message" [class.success]="messageKind === 'success'" [class.error]="messageKind === 'error'">{{ message }}</div>
-
-  <div *ngIf="isLoading" class="state-card">正在加载员工权限…</div>
+  <div *ngIf="isLoading" class="state-card">正在加载员工账号…</div>
 
   <div *ngIf="!isLoading && !staff.length" class="empty-card">
-    <mat-icon>group_add</mat-icon>
-    <h2>目前还没有员工账号</h2>
-    <p>请先在“邀请码管理”生成员工邀请码。员工完成注册后，就会出现在这里。</p>
+    <mat-icon>group_add</mat-icon><h2>目前还没有员工账号</h2>
+    <p>先生成“顾问”或“管理”邀请码；员工用邀请码完成注册后，就会自动出现在这里。</p>
     <a routerLink="/admin/invitations">前往邀请码管理</a>
   </div>
 
-  <main *ngIf="!isLoading && staff.length" class="permission-workspace">
-    <aside class="staff-list">
-      <h2>选择员工</h2>
-      <button *ngFor="let user of staff" type="button" [class.active]="selected?.userId === user.userId" (click)="select(user)">
-        <span class="avatar">{{ (user.name || user.account).slice(0, 1) }}</span>
-        <span><strong>{{ user.name || '未填写姓名' }}</strong><small>{{ user.account }}</small></span>
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+  <main *ngIf="!isLoading && staff.length" class="employee-workspace">
+    <aside class="employee-panel">
+      <nav class="role-tabs" aria-label="员工类型">
+        <button type="button" [class.active]="activeType === 'Consultant'" (click)="selectType('Consultant')">顾问 <span>{{ consultants.length }}</span></button>
+        <button type="button" [class.active]="activeType === 'Manager'" (click)="selectType('Manager')">管理 <span>{{ managers.length }}</span></button>
+      </nav>
+      <div class="employee-list" *ngIf="visibleStaff.length; else noCurrentRole">
+        <button *ngFor="let user of visibleStaff" type="button" [class.active]="selected?.userId === user.userId" (click)="select(user)">
+          <span class="avatar">{{ (user.name || user.account).slice(0, 1) }}</span>
+          <span><strong>{{ user.name || '未填写姓名' }}</strong><small>{{ user.account }}</small></span><mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+      <ng-template #noCurrentRole><p class="role-empty">还没有{{ activeType === 'Manager' ? '管理' : '顾问' }}账号</p></ng-template>
     </aside>
 
-    <section class="permission-panel" *ngIf="selected">
-      <div class="panel-heading">
-        <div><span>正在设置</span><h2>{{ selected.name || selected.account }}</h2></div>
-        <label class="school-search"><mat-icon>search</mat-icon><input [(ngModel)]="search" placeholder="搜索学校" /></label>
+    <section class="employee-detail" *ngIf="selected; else chooseEmployee">
+      <div class="detail-heading">
+        <div class="large-avatar">{{ (selected.name || selected.account).slice(0, 1) }}</div>
+        <div><span>当前员工</span><h2>{{ selected.name || '未填写姓名' }}</h2><p>{{ selected.account }}</p></div>
       </div>
 
-      <div class="legend">
-        <span><strong>学校页面</strong> 学校介绍和网页文字</span>
-        <span><strong>课程价格</strong> 课程、住宿、杂费和报价规则</span>
-        <span><strong>图片备注</strong> 报价图片说明文字</span>
-        <span><strong>媒体</strong> 照片和视频</span>
-        <span><strong>学生档案</strong> 申请与文件</span>
+      <div class="role-setting">
+        <span class="section-label">设置员工类型</span>
+        <div class="role-choices">
+          <button type="button" [class.selected]="selected.employeeType !== 'Manager'" (click)="changeEmployeeType('Consultant')" [disabled]="isSaving">
+            <mat-icon>support_agent</mat-icon><span><strong>顾问</strong><small>可编辑、保存草稿、提交审核</small></span><mat-icon class="check">check_circle</mat-icon>
+          </button>
+          <button type="button" [class.selected]="selected.employeeType === 'Manager'" (click)="changeEmployeeType('Manager')" [disabled]="isSaving">
+            <mat-icon>verified_user</mat-icon><span><strong>管理</strong><small>可编辑、直接发布、审核或退回</small></span><mat-icon class="check">check_circle</mat-icon>
+          </button>
+        </div>
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>学校</th><th>全部</th><th>学校页面</th><th>课程价格</th><th>图片备注</th><th>媒体</th><th>学生档案</th></tr></thead>
-          <tbody>
-            <tr *ngFor="let school of filteredSchools">
-              <td><strong>{{ school.schoolName }}</strong></td>
-              <td><input type="checkbox" [checked]="rowHasAll(school)" (change)="toggleAll(school, $any($event.target).checked)" [attr.aria-label]="school.schoolName + ' 全部权限'" /></td>
-              <td><input type="checkbox" [(ngModel)]="school.schoolContent" /></td>
-              <td><input type="checkbox" [(ngModel)]="school.pricing" /></td>
-              <td><input type="checkbox" [(ngModel)]="school.quoteImage" /></td>
-              <td><input type="checkbox" [(ngModel)]="school.media" /></td>
-              <td><input type="checkbox" [(ngModel)]="school.students" /></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="access-summary">
+        <span class="section-label">实际可用权限</span>
+        <div class="access-grid">
+          <article><mat-icon>apartment</mat-icon><div><strong>全部学校</strong><small>{{ selected.schools.length }} 所学校，无需逐一勾选</small></div></article>
+          <article><mat-icon>edit_note</mat-icon><div><strong>全部关键资料</strong><small>学校页面、价格、报价、媒体和学生档案</small></div></article>
+          <article><mat-icon>send</mat-icon><div><strong>{{ selected.canPublish ? '修改留痕' : '提交审核' }}</strong><small>{{ selected.canPublish ? '直接发布也必须填写本次修改说明' : '学校和学生档案修改都必须写清说明' }}</small></div></article>
+          <article [class.highlight]="selected.canPublish"><mat-icon>{{ selected.canPublish ? 'publish' : 'lock' }}</mat-icon><div><strong>{{ selected.canPublish ? '编辑并直接发布' : '不能直接发布' }}</strong><small>{{ selected.canPublish ? '也可审核、发布或退回顾问提交的内容' : '官网和学生账号都要等待管理审核' }}</small></div></article>
+        </div>
       </div>
 
-      <footer class="save-bar">
-        <span>员工只能保存和提交审核，不能发布到官网。</span>
-        <button type="button" (click)="save()" [disabled]="isSaving"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存权限' }}</button>
+      <footer>
+        <span><mat-icon>info</mat-icon>修改员工类型会在该员工下次登录时生效。</span>
+        <a *ngIf="selected.canPublish" routerLink="/admin/reviews">打开审核列表</a>
       </footer>
     </section>
+    <ng-template #chooseEmployee><section class="employee-detail choose"><mat-icon>person_search</mat-icon><p>请从左侧选择一名员工</p></section></ng-template>
   </main>
 </div>

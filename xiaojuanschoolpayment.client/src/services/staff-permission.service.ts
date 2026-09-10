@@ -32,6 +32,17 @@ export class StaffPermissionService {
     );
   }
 
+  updateEmployeeType(
+    userId: string,
+    employeeType: 'Consultant' | 'Manager',
+  ): Observable<StaffPermissionUserDTO> {
+    return this.http.put<StaffPermissionUserDTO>(
+      `${this.apiUrl}/${userId}/employee-type`,
+      { employeeType },
+      { headers: this.authHeaders() },
+    );
+  }
+
   hasAny(scope: StaffPermissionScope): boolean {
     return this.mineSubject.value?.schools.some(school => school[scope]) ?? false;
   }

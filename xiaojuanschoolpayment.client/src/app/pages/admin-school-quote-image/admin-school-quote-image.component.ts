@@ -103,6 +103,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   isSaving = false;
   isPublishing = false;
   isSubmitting = false;
+  hasUnsavedChanges = false;
   beciCampus: BeciCampus = 'eop';
   private previewTimer?: ReturnType<typeof setTimeout>;
 
@@ -122,7 +123,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void { clearTimeout(this.previewTimer); }
 
   get canPublish(): boolean {
-    return this.authService.getRoles().some(role => role.toLowerCase() === 'admin');
+    return this.authService.getRoles().some(role => ['admin', 'manager'].includes(role.toLowerCase()));
   }
   get settings(): CiaQuoteImageSettings { return this.content.quoteImageSettings; }
   get isCiaSelected(): boolean { return this.selectedSchool?.name === this.ciaSchoolName || !!this.selectedSchool?.name.toLowerCase().includes('cia'); }
@@ -168,6 +169,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   contentChanged(): void {
+    this.hasUnsavedChanges = true;
     clearTimeout(this.previewTimer);
     this.previewTimer = setTimeout(() => this.previewQuote = this.buildPreviewQuote(), 260);
   }
@@ -218,7 +220,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       : this.contentService.saveQuoteImageDraft<CiaContentConfig, CiaQuoteImageSettings>(this.selectedSchool.id, this.settings, summary);
     request
       .pipe(finalize(() => this.isSaving = false)).subscribe({
-        next: draft => { this.statusKind = 'success'; this.statusMessage = `图片说明草稿已保存（版本 ${draft.version}），官网尚未发布。`; this.loadEditor(this.selectedSchool!.id, false); },
+        next: draft => { this.hasUnsavedChanges = false; this.statusKind = 'success'; this.statusMessage = `图片说明草稿已保存（版本 ${draft.version}），官网尚未发布。`; this.loadEditor(this.selectedSchool!.id, false); },
         error: error => { this.statusKind = 'error'; this.statusMessage = error?.status === 403 ? '你没有这所学校的报价图片编辑权限。' : '草稿保存失败，请稍后重试。'; },
       });
   }
@@ -248,8 +250,9 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
         finalize(() => this.isSubmitting = false),
       ).subscribe({
         next: revision => {
+          this.hasUnsavedChanges = false;
           this.statusKind = 'success';
-          this.statusMessage = `版本 ${revision.version} 已提交管理员审核，新生成的图片尚未改变。`;
+          this.statusMessage = `版本 ${revision.version} 已提交管理审核，新生成的图片尚未改变。`;
           this.changeSummary = '';
           this.loadEditor(this.selectedSchool!.id, false);
         },
@@ -262,16 +265,26 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
 
   publish(): void {
     if (!this.selectedSchool?.id || !this.canPublish || this.isPublishing) return;
-    if (!this.editor?.pendingReview) {
-      this.statusKind = 'warning';
-      this.statusMessage = '没有待审核版本。请先填写修改说明并提交审核。';
+    const publishExistingReview = !!this.editor?.pendingReview && !this.editor?.draft && !this.hasUnsavedChanges;
+    const summary = this.changeSummary.trim();
+    if (!publishExistingReview && !summary) {
+      this.statusKind = 'error';
+      this.statusMessage = '管理直接发布前，请填写“本次修改说明”，写清楚改了哪些图片备注。';
       return;
     }
-    if (!window.confirm(`发布后，新生成的 ${this.schoolShortName} 报价图片会立即使用这些说明。确定发布吗？`)) return;
+    const actionText = publishExistingReview ? '审核通过后' : '直接发布后';
+    if (!window.confirm(`${actionText}，新生成的 ${this.schoolShortName} 报价图片会立即使用这些说明。确定继续吗？`)) return;
     this.isPublishing = true; this.statusMessage = '';
-    this.contentService.publish<CiaContentConfig>(this.selectedSchool.id).pipe(finalize(() => this.isPublishing = false))
+    const hasInitialVersion = !!(this.editor?.draft || this.editor?.pendingReview || this.editor?.published);
+    const publishRequest = publishExistingReview
+      ? this.contentService.publish<CiaContentConfig>(this.selectedSchool.id)
+      : (!hasInitialVersion
+          ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
+          : this.contentService.saveQuoteImageDraft<CiaContentConfig, CiaQuoteImageSettings>(this.selectedSchool.id, this.settings, summary)
+        ).pipe(switchMap(() => this.contentService.publish<CiaContentConfig>(this.selectedSchool!.id, summary)));
+    publishRequest.pipe(finalize(() => this.isPublishing = false))
       .subscribe({
-        next: revision => { this.statusKind = 'success'; this.statusMessage = `版本 ${revision.version} 已发布，之后生成的报价图片已同步。`; this.changeSummary = ''; this.loadEditor(this.selectedSchool!.id, false); },
+        next: revision => { this.hasUnsavedChanges = false; this.statusKind = 'success'; this.statusMessage = `版本 ${revision.version} 已发布，之后生成的报价图片已同步。`; this.changeSummary = ''; this.loadEditor(this.selectedSchool!.id, false); },
         error: () => { this.statusKind = 'error'; this.statusMessage = '发布失败，当前已发布内容没有改变。'; },
       });
   }
@@ -312,6 +325,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       const defaults = this.createSelectedDefaults();
       this.content = this.cloneSelectedContent(stored ?? defaults);
+      this.hasUnsavedChanges = false;
       this.previewQuote = this.buildPreviewQuote();
       this.isLoading = false;
     });

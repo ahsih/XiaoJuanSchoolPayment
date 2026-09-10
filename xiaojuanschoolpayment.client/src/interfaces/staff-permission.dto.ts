@@ -19,5 +19,7 @@ export interface StaffPermissionUserDTO {
   userId: string;
   name: string;
   account: string;
+  employeeType: 'Consultant' | 'Manager';
+  canPublish: boolean;
   schools: StaffSchoolPermissionDTO[];
 }

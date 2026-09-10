@@ -11,6 +11,7 @@ import {
   STUDENT_APPLICATION_STATUSES,
   StudentApplicationDTO,
   StudentApplicationDocumentDTO,
+  StudentPaymentDTO,
 } from '../../../interfaces/student-application.dto';
 import { AuthService } from '../../../services/auth.service';
 import { StudentApplicationService } from '../../../services/student-application.service';
@@ -33,7 +34,7 @@ import { StudentApplicationService } from '../../../services/student-application
 })
 export class StudentPortalComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  readonly statuses = STUDENT_APPLICATION_STATUSES.filter((status) => status !== '已取消');
+  readonly statuses = STUDENT_APPLICATION_STATUSES.filter((status) => !['已取消', '保留/延期'].includes(status));
   applications: StudentApplicationDTO[] = [];
   loading = true;
   changingPassword = false;
@@ -74,13 +75,32 @@ export class StudentPortalComponent implements OnInit {
     this.applicationService.downloadDocument(application.id, document);
   }
 
+  downloadPaymentReceipt(application: StudentApplicationDTO, payment: StudentPaymentDTO): void {
+    this.applicationService.downloadPaymentReceipt(application.id, payment);
+  }
+
   statusIndex(application: StudentApplicationDTO): number {
     return Math.max(0, this.statuses.indexOf(application.status as typeof this.statuses[number]));
   }
 
   progress(application: StudentApplicationDTO): number {
-    if (application.status === '已取消') return 0;
+    if (['已取消', '保留/延期'].includes(application.status)) return 0;
     return Math.round(((this.statusIndex(application) + 1) / this.statuses.length) * 100);
+  }
+
+  participantName(application: StudentApplicationDTO, participantKey: string): string {
+    if (participantKey === 'primary') return application.studentName;
+    return application.members.find((member) => member.key === participantKey)?.name ?? '同行成员';
+  }
+
+  documentBadge(document: StudentApplicationDocumentDTO): string {
+    if (document.documentType === '入学通知书') return '录';
+    if (['学生报价单', '报价单'].includes(document.documentType)) return '价';
+    if (['学校账单/学生发票', '账单', '付款凭证'].includes(document.documentType)) return '款';
+    if (document.documentType.includes('签证')) return '签';
+    if (document.documentType === '机票行程单') return '行';
+    if (document.documentType === '护照首页') return '护';
+    return '文';
   }
 
   fileSize(bytes: number): string {

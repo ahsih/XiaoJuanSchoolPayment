@@ -7,6 +7,7 @@ namespace XiaoJuanSchoolPayment.Server.Interface
   {
     Task<SchoolContentRevisionDTO?> GetPublished(Guid schoolId, CancellationToken cancellationToken);
     Task<SchoolContentEditorDTO?> GetEditor(Guid schoolId, CancellationToken cancellationToken);
+    Task<IList<SchoolContentReviewDTO>> GetPendingReviews(CancellationToken cancellationToken);
     Task<SchoolContentRevisionDTO> SaveDraft(
       Guid schoolId,
       JsonElement content,
@@ -37,6 +38,7 @@ namespace XiaoJuanSchoolPayment.Server.Interface
       CancellationToken cancellationToken);
     Task<SchoolContentRevisionDTO?> Publish(
       Guid schoolId,
+      string? changeSummary,
       string userId,
       string userName,
       CancellationToken cancellationToken);

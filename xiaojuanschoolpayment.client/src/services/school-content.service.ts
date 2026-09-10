@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   SchoolContentEditorDTO,
+  SchoolContentReviewDTO,
   SchoolContentRevisionDTO,
 } from '../interfaces/school-content.dto';
 
@@ -23,6 +24,12 @@ export class SchoolContentService {
       `${this.apiUrl}/${schoolId}/editor`,
       { headers: this.authHeaders() },
     );
+  }
+
+  getPendingReviews(): Observable<SchoolContentReviewDTO[]> {
+    return this.http.get<SchoolContentReviewDTO[]>(`${this.apiUrl}/reviews`, {
+      headers: this.authHeaders(),
+    });
   }
 
   saveDraft<TContent>(
@@ -73,10 +80,10 @@ export class SchoolContentService {
     );
   }
 
-  publish<TContent>(schoolId: string): Observable<SchoolContentRevisionDTO<TContent>> {
+  publish<TContent>(schoolId: string, changeSummary?: string): Observable<SchoolContentRevisionDTO<TContent>> {
     return this.http.post<SchoolContentRevisionDTO<TContent>>(
       `${this.apiUrl}/${schoolId}/publish`,
-      {},
+      { changeSummary },
       { headers: this.authHeaders() },
     );
   }

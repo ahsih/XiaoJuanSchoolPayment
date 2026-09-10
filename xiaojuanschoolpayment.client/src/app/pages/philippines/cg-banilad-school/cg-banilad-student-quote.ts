@@ -53,5 +53,5 @@ export class CgBaniladStudentQuote {
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-banilad-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-banilad-long-stay')?.description??`本次${this.quotePlan.courseWeeks}周，按已公布档位优惠`,promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.prices.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.prices.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周`}]:[]),
   ];}
-  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.prices.localFeeRules).fees;}
+  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.prices.localFeeRules,this.quotePlan.startDate).fees;}
 }

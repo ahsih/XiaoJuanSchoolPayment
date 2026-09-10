@@ -1136,12 +1136,12 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get localFees(): LocalFee[] {
     const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
       .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
-    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules).fees.filter(f=>f.excluded);
+    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate).fees.filter(f=>f.excluded);
     return [...included,...optional];
   }
 
   private get localFeeEstimate() {
-    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules);
+    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate);
   }
 
   get localFeesTotal(): number {
@@ -1162,7 +1162,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
 
   get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
   get schoolPaymentItems(){const paid=this.activeStudents.filter(s=>s.registration>0).length;return [{icon:'注',label:'注册费',amount:`${this.formatUsd(this.payableRegistrationFee)} 美元`,note:`一次性费用，老学员返校免费；本次计收${paid}人 × ${this.registrationFee}美元${paid<this.activeStudents.length?'，其余已免':''}`},...groupPaymentLines(this.activeStudents,false)];}
-  get optionalFeeItems(){return this.excludedLocalFees.map(f=>{const rule=this.localFeeRules.find(item=>item.name===f.item);const value=f.total||rule?.amount||0;return {label:f.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:rule?.note||f.note};});}
+  get optionalFeeItems(){return this.excludedLocalFees.map(f=>{const rule=this.feeRule(f.item);const value=f.total||rule?.amount||0;return {label:f.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:f.note};});}
   get quoteImageData() {
     const planRows=(['课','宿'] as const).flatMap(icon=>this.activeStudents.flatMap((student,index)=>{
       const rows=[...(icon==='课'?student.quotePlan.courses:student.quotePlan.rooms)].sort((a,b)=>a.startDate.localeCompare(b.startDate));
@@ -1183,7 +1183,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     const defaultImageFeeIntro = this.initialContent.quoteImageSettings.localFeeIntro;
     const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
     const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.jpg',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
-      localFeeItems:this.includedLocalFees.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
+      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
     const importantNotes=[...warnings,...short,...prorated,...long,...this.quoteImageSettings.footerNotes];
     const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
     return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
@@ -1225,7 +1225,8 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     return this.shortTermRatios[weeks] ?? weeks / 4;
   }
 
-  previewFeeId(name:string){return this.localFeeRules.find(item=>item.name===name)?.id??'local-fees';}
+  private feeRule(name:string){return this.localFeeRules.find(item=>item.name===name||item.futureName===name);}
+  previewFeeId(name:string){return this.feeRule(name)?.id??'local-fees';}
   previewPaymentTarget(item:{label:string;note?:string}):CiaPreviewTarget{
     if(item.label==='注册费')return {kind:'section',id:'quote-registration'};
     const promotion=this.promotionRules.find(rule=>item.label.includes(rule.name)||(item.note??'').includes(rule.description));

@@ -130,6 +130,16 @@ namespace MyProject.Controllers
                 return BadRequest(roleResult.Errors.Select(x => x.Description));
             }
 
+            if (string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase))
+            {
+                await _context.StudentApplications
+                  .Where(application => application.StudentUserId == null
+                    && application.StudentEmail != null
+                    && application.StudentEmail.ToLower() == email.Value.ToLower())
+                  .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(application => application.StudentUserId, user.Id), cancellationToken);
+            }
+
             if (invitation != null)
             {
                 var consumedInvitations = await _context.InvitationCodes

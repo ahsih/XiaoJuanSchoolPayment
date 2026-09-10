@@ -11,7 +11,7 @@ using XiaoJuanSchoolPayment.Server.Data.Models;
 namespace XiaoJuanSchoolPayment.Server.Controllers
 {
   [ApiController]
-  [Authorize(Roles = "Admin,Staff")]
+  [Authorize(Roles = "Admin,Manager,Staff")]
   [Route("auth/invitations")]
   public class InvitationCodesController : ControllerBase
   {
@@ -45,7 +45,10 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
       if (string.IsNullOrWhiteSpace(userId)) return Unauthorized();
 
-      var role = User.IsInRole("Admin") ? "Staff" : "Student";
+      var requestedEmployeeType = request.EmployeeType?.Trim();
+      var role = User.IsInRole("Admin")
+        ? string.Equals(requestedEmployeeType, "Manager", StringComparison.OrdinalIgnoreCase) ? "Manager" : "Staff"
+        : "Student";
       var code = CreateReadableCode(role);
       var now = DateTime.UtcNow;
       var invitation = new InvitationCode
@@ -93,7 +96,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     {
       var value = Convert.ToHexString(RandomNumberGenerator.GetBytes(10));
       var groups = Enumerable.Range(0, 5).Select(index => value.Substring(index * 4, 4));
-      return $"{(role == "Staff" ? "YG-EMP" : "YG-STU")}-{string.Join('-', groups)}";
+      var prefix = role == "Manager" ? "YG-MGR" : role == "Staff" ? "YG-CNS" : "YG-STU";
+      return $"{prefix}-{string.Join('-', groups)}";
     }
 
     private static InvitationCodeDTO ToDto(InvitationCode invitation, string? code)

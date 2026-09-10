@@ -39,10 +39,13 @@ export class AuthService {
     });
   }
 
-  createInvitation(expiresInDays: number): Observable<InvitationCodeDTO> {
+  createInvitation(
+    expiresInDays: number,
+    employeeType?: 'Consultant' | 'Manager',
+  ): Observable<InvitationCodeDTO> {
     return this.http.post<InvitationCodeDTO>(
       `${this.apiUrl}/invitations`,
-      { expiresInDays },
+      { expiresInDays, employeeType },
       { headers: this.authHeaders() },
     );
   }

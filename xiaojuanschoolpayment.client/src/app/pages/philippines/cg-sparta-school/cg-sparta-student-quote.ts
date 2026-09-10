@@ -56,7 +56,7 @@ export class CgSpartaStudentQuote {
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-sparta-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-sparta-long-stay')?.description??'',promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.p.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.p.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周；不参与9折`}]:[]),
   ];}
-  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.p.localFeeRules).fees;}
+  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.p.localFeeRules,this.quotePlan.startDate).fees;}
   warning(row:QuotePlanRow){
     return row.optionId==='ielts-intensive'&&row.weeks<12?'雅思密集课程12周起报，当前安排需学校确认。':row.optionId==='business-english'&&row.weeks<4?'商务英语4周起报，当前安排需学校确认。':row.optionId==='ielts-guarantee'?'保证班入学分数、周期及转课规则需学校确认。':'';
   }

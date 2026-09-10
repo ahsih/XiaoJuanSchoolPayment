@@ -7,6 +7,7 @@ const course = (id: string, name: string, tuition: number, schedule: string, sui
 const fee = (value: Omit<CiaLocalFeeRule, 'currency' | 'enabled'>): CiaLocalFeeRule => ({
   ...value, currency: 'PHP', enabled: true,
 });
+const futureStart = '2027-01-03';
 
 export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
   schemaVersion: 1,
@@ -39,17 +40,17 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
     { id: '88th-single', name: '88th Avenue 1人房', label: '88th Avenue 1人房', code: '88-1', location: '校外', group: '88th Avenue', fee: 1700, note: '邻近原Noble、靠近IT Park，生活便利，提供接送服务。', enabled: true, sortOrder: 11 },
   ],
   localFees: [
-    fee({ id: 'ssp', name: 'SSP特殊学习许可证', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '移民局收取，按报名学习时长办理；续费或换校需重新办理', sortOrder: 0 }),
-    fee({ id: 'ssp-i-card', name: 'SSP E-CARD', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP同时办理，本次按一次预估；换学校需要携带证明，否则需要重新办理', sortOrder: 1 }),
-    fee({ id: 'acr-i-card', name: 'ACR-I CARD 外国人身份证', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '按持59天签证预估，学习超过8周计入一次；若持30天签证，约第4周首次续签时可能提前产生，以实际办理为准', sortOrder: 2 }),
-    fee({ id: 'arp', name: 'ARP外国人登记', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '首次续签或长期签证时计入一次；须顾问向学校确认。', sortOrder: 3 }),
-    fee({ id: 'management', name: '维护管理费', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', sortOrder: 4 }),
-    fee({ id: 'electricity', name: '电费', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '预估金额；空调或超额用电按学校计量另收，参考25比索/度', sortOrder: 5 }),
-    fee({ id: 'water', name: '水费', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', sortOrder: 6 }),
-    fee({ id: 'visa-extension', name: '旅游签证续签', amount: 5160, rates: [5160, 6390, 4460, 4460, 4460], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '按签证类型和停留时间预估；以实际办理及收费为准。', sortOrder: 7 }),
-    fee({ id: 'books', name: '书本教材费', amount: 2000, billingRule: 'once', includeInTotal: true, note: '先预估一套；不同课程教材不同，后续按实际购买结算。', sortOrder: 8 }),
-    fee({ id: 'pickup', name: '宿务马克坦机场接机（可选）', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '可选择接机，也可自行打车；不计入学杂费合计', sortOrder: 9 }),
-    fee({ id: 'deposit', name: '押金（可退）', amount: 1000, billingRule: 'optional', includeInTotal: false, note: '预估1,000比索，具体以学校为准；无损坏或额外扣费时按规定退还，不计入学杂费合计', sortOrder: 10 }),
+    fee({ id: 'ssp', name: 'SSP特殊学习许可证', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '校方最新明细列7,800比索；按报名学习时长办理，续费或换校需重新确认。', sortOrder: 0 }),
+    fee({ id: 'ssp-i-card', name: 'ACR E-CARD（SSP）', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '校方最新明细列4,500比索，与SSP同时办理；换学校需携带证明，否则需要重新办理。', sortOrder: 1 }),
+    fee({ id: 'acr-i-card', name: 'ACR I-CARD（旅游签证）', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '旅游签证首次续签时计入一次；59天签证按9周起预估，30天签证按首次续签时预估。', sortOrder: 2 }),
+    fee({ id: 'arp', name: '生物识别申请费', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '随首次旅游签证续签计入一次；长期签证是否收取须由顾问向学校确认。', sortOrder: 3 }),
+    fee({ id: 'management', name: '维护管理费', amount: 2000, futureEffectiveStart: futureStart, futureName: '综合管理费', futureAmount: 750, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', futureNote: '2027年1月4日起入学新生按每周750比索计算。', sortOrder: 4 }),
+    fee({ id: 'electricity', name: '电费', amount: 2000, futureEffectiveStart: futureStart, futureName: '基础电费（不含空调）', futureAmount: 500, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '预估金额；空调或超额用电按学校计量另收，参考25比索/度', futureNote: '每周500比索；空调用电按实际使用另收25比索／千瓦时，并从押金中结算。', sortOrder: 5 }),
+    fee({ id: 'water', name: '水费', amount: 500, futureEffectiveStart: futureStart, futureAmount: 300, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', futureNote: '2027年1月4日起入学新生按每周300比索计算。', sortOrder: 6 }),
+    fee({ id: 'visa-extension', name: '旅游签证续签', amount: 6390, rates: [6390, 4460, 4460, 4460, 4460], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '59天签证：9–12周6,390比索，之后每增加30天按4,460比索预估；30天签证第5次续签按5,870比索。', sortOrder: 7 }),
+    fee({ id: 'books', name: '教材费', amount: 250, secondaryAmount: 450, billingRule: 'once', includeInTotal: false, note: '每本250–450比索，按课程及实际购买数量结算；校方周数总额未计教材。', sortOrder: 8 }),
+    fee({ id: 'pickup', name: '宿务马克坦机场接机（可选）', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '校方最新明细列一次1,200比索接机；本站保留为可选参考，不计入默认合计。', sortOrder: 9 }),
+    fee({ id: 'deposit', name: '住宿押金（可退）', amount: 250, periodWeeks: 1, rounding: 'proportional', billingRule: 'optional', includeInTotal: false, note: '每住宿周250比索；离校时扣除空调等实际费用后按校规退还，本站不计入学杂费合计。', sortOrder: 10 }),
   ],
   quoteSettings: {
     registrationFee: 100,
@@ -63,7 +64,7 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
       { id: 'cg-banilad-long-stay', name: '长期优惠', description: '12/16/20/24周分别优惠50/100/150/200美元。', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 50, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 12, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 50, coverageTarget: 'none' },
       { id: 'cg-banilad-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', enabled: true, sortOrder: 3, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
-    localFeeIntro: '学杂费为比索现金预估，具体以学校及相关部门到校实收为准。接机和可退押金另列，不计入合计。',
+    localFeeIntro: '证件、签证、教材、接机和按周押金已按学校最新明细更新；仅水费、综合管理费和基础电费于2027年1月4日起切换新标准。',
     courseTableTitle: 'CG Banilad 2026课程与4周主费用',
     courseTableNote: '课程按4周美元价格列示；3周按4周课程费和住宿费的85%估算。',
     groupClassNote: '课程课节、考试规则和亲子课程要求须按所选课程确认。',
@@ -81,7 +82,7 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
     paymentSectionTitle: '学校费用明细',
     paymentNotes: { registration: '一次性费用，老学员返校免费', course: '按所选课程、周数及日期计算', accommodation: '按所选房型、周数及日期计算', promotion: '优惠按当前有效规则自动计算' },
     localFeeSectionTitle: '到校后学杂费明细',
-    localFeeIntro: '学杂费由学校及相关部门到校收取；页面按当前选择预估，具体以学校现场实收为准。',
+    localFeeIntro: '证件、签证、教材、接机和按周押金已按学校最新明细更新；仅水费、综合管理费和基础电费于2027年1月4日起切换新标准。',
     localFeeNotes: {},
     serviceSectionTitle: '为什么选择思达启航？',
     benefits: [
@@ -102,13 +103,65 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
 export const cloneCgBaniladContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const defaults = createDefaultCgBaniladContentConfig();
   const clone = structuredClone(value);
+  const legacyPageIntros = new Set([
+    '学杂费为比索现金预估，具体以学校及相关部门到校实收为准。接机和可退押金另列，不计入合计。',
+    '学杂费为比索现金预估，具体以学校及相关部门到校实收为准；系统按入学日期自动切换2027年1月4日起生效的新标准。',
+  ]);
+  if (legacyPageIntros.has(clone.quoteSettings.localFeeIntro)) {
+    clone.quoteSettings.localFeeIntro = defaults.quoteSettings.localFeeIntro;
+  }
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= defaults.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
   clone.quoteSettings.promotions ??= defaults.quoteSettings.promotions.map(item => ({ ...item }));
   clone.quoteSettings.stayPolicies ??= defaults.quoteSettings.stayPolicies.map(item => ({ ...item }));
   clone.quoteSettings.extraNightRates ??= [];
   clone.quoteImageSettings ??= structuredClone(defaults.quoteImageSettings);
+  const legacyImageIntros = new Set([
+    '学杂费由学校及相关部门到校收取；页面按当前选择预估，具体以学校现场实收为准。',
+    '学杂费由学校及相关部门到校收取；系统按入学日期自动切换2027年1月4日起生效的新标准。',
+  ]);
+  if (legacyImageIntros.has(clone.quoteImageSettings.localFeeIntro)) {
+    clone.quoteImageSettings.localFeeIntro = defaults.quoteImageSettings.localFeeIntro;
+  }
   clone.localFees ??= defaults.localFees.map(item => ({ ...item }));
+  clone.localFees = clone.localFees.map(item => {
+    const fallback = defaults.localFees.find(candidate => candidate.id === item.id);
+    if (!fallback) return item;
+    if (!['management', 'electricity', 'water'].includes(item.id)) {
+      return {
+        ...item,
+        name: fallback.name,
+        amount: fallback.amount,
+        secondaryAmount: fallback.secondaryAmount,
+        billingRule: fallback.billingRule,
+        periodWeeks: fallback.periodWeeks,
+        rounding: fallback.rounding,
+        rates: fallback.rates ? [...fallback.rates] : undefined,
+        waiveForLongTermVisa: fallback.waiveForLongTermVisa,
+        includeInTotal: fallback.includeInTotal,
+        note: fallback.note,
+        futureEffectiveStart: undefined,
+        futureName: undefined,
+        futureAmount: undefined,
+        futureSecondaryAmount: undefined,
+        futurePeriodWeeks: undefined,
+        futureRounding: undefined,
+        futureRates: undefined,
+        futureNote: undefined,
+      };
+    }
+    return {
+      ...item,
+      futureEffectiveStart: item.futureEffectiveStart ?? fallback.futureEffectiveStart,
+      futureName: item.futureName ?? fallback.futureName,
+      futureAmount: item.futureAmount ?? fallback.futureAmount,
+      futureSecondaryAmount: item.futureSecondaryAmount ?? fallback.futureSecondaryAmount,
+      futurePeriodWeeks: item.futurePeriodWeeks ?? fallback.futurePeriodWeeks,
+      futureRounding: item.futureRounding ?? fallback.futureRounding,
+      futureRates: item.futureRates ?? (fallback.futureRates ? [...fallback.futureRates] : undefined),
+      futureNote: item.futureNote ?? fallback.futureNote,
+    };
+  });
   clone.media ??= [];
   return clone;
 };

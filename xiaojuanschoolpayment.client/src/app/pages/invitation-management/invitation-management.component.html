@@ -5,11 +5,15 @@
     <p>{{ isAdmin ? '管理员生成员工邀请码，每个邀请码仅可使用一次。' : '员工生成学生邀请码，每个邀请码仅可使用一次。' }}</p>
   </header>
 
-  <div class="create-card">
+  <div class="create-card" [class.admin-create]="isAdmin">
     <div>
       <strong>生成{{ isAdmin ? '员工' : '学生' }}邀请码</strong>
-      <small>有效期</small>
+      <small>{{ isAdmin ? '先选择员工类型，再设置有效期' : '设置有效期' }}</small>
     </div>
+    <select *ngIf="isAdmin" [(ngModel)]="employeeType" aria-label="员工类型">
+      <option value="Consultant">顾问 · 可编辑并提交审核</option>
+      <option value="Manager">管理 · 可审核并发布</option>
+    </select>
     <select [(ngModel)]="expiresInDays" aria-label="邀请码有效期">
       <option [ngValue]="7">7天</option>
       <option [ngValue]="30">30天</option>
@@ -22,7 +26,7 @@
 
   <div class="new-code" *ngIf="newInvitation?.code">
     <div>
-      <span>请立即复制并交给{{ isAdmin ? '员工' : '学生' }}</span>
+      <span>请立即复制并交给{{ newInvitation ? roleLabel(newInvitation) : (isAdmin ? '员工' : '学生') }}</span>
       <strong>{{ newInvitation?.code }}</strong>
       <small>为保护账号安全，完整邀请码只在这里显示一次。</small>
     </div>
@@ -31,8 +35,8 @@
 
   <div class="permission-next" *ngIf="isAdmin">
     <mat-icon>admin_panel_settings</mat-icon>
-    <div><strong>员工注册后，还需要分配权限</strong><small>可以按员工分别勾选她负责的学校、学校页面、价格、报价图片备注、媒体和学生档案。</small></div>
-    <a routerLink="/admin/staff-permissions">设置员工权限</a>
+    <div><strong>员工注册后，可以随时调整类型</strong><small>顾问可编辑全部学校并提交审核；管理可核对、发布或退回。</small></div>
+    <a routerLink="/admin/staff-permissions">管理员工类型</a>
   </div>
 
   <div class="list-card">
@@ -44,7 +48,7 @@
     <div class="invite-row" *ngFor="let invitation of invitations">
       <div class="code-summary">
         <strong>{{ invitation.code || invitation.codePrefix + '…' }}</strong>
-        <small>{{ invitation.role === 'Staff' ? '员工账号' : '学生账号' }}</small>
+        <small>{{ roleLabel(invitation) }}</small>
       </div>
       <div><small>有效期至</small><span>{{ invitation.expiresAt | date:'yyyy-MM-dd' }}</span></div>
       <span class="status" [class.available]="invitation.status === '未使用'">{{ invitation.status }}</span>

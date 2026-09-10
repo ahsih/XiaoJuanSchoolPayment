@@ -49,7 +49,7 @@ export class LoginComponent {
       next: (response) => {
         this.loading = false;
         const roles = response.roles.map((role) => role.toLowerCase());
-        this.router.navigate([roles.some((role) => role === 'admin' || role === 'staff') ? '/admin' : '/student']);
+        this.router.navigate([roles.some((role) => role === 'admin' || role === 'manager' || role === 'staff') ? '/admin' : '/student']);
       },
       error: (error) => {
         this.loading = false;

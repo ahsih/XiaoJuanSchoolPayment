@@ -76,6 +76,15 @@ export interface CiaLocalFeeRule {
   periodWeeks?: number;
   rounding?: 'proportional' | 'ceil';
   rates?: number[];
+  /** Optional dated replacement values. CG uses the Sunday arrival that corresponds to the published Monday effective date. */
+  futureEffectiveStart?: string;
+  futureName?: string;
+  futureAmount?: number;
+  futureSecondaryAmount?: number;
+  futurePeriodWeeks?: number;
+  futureRounding?: 'proportional' | 'ceil';
+  futureRates?: number[];
+  futureNote?: string;
   waiveForLongTermVisa?: boolean;
   includeInTotal: boolean;
   multiplyByStudents?: boolean;

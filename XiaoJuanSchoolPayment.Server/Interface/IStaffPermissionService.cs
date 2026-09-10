@@ -20,5 +20,6 @@ namespace XiaoJuanSchoolPayment.Server.Interface
     Task<IList<StaffPermissionUserDTO>> GetStaffAsync(CancellationToken cancellationToken);
     Task<StaffPermissionUserDTO?> GetMineAsync(ClaimsPrincipal user, CancellationToken cancellationToken);
     Task<StaffPermissionUserDTO?> UpdateAsync(string userId, IList<StaffSchoolPermissionDTO> schools, CancellationToken cancellationToken);
+    Task<StaffPermissionUserDTO?> UpdateEmployeeTypeAsync(string userId, string employeeType, CancellationToken cancellationToken);
   }
 }

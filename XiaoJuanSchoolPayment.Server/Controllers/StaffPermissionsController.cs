@@ -17,7 +17,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     public async Task<ActionResult<IList<StaffPermissionUserDTO>>> GetAll(CancellationToken cancellationToken) =>
       Ok(await _permissions.GetStaffAsync(cancellationToken));
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpGet("me")]
     public async Task<ActionResult<StaffPermissionUserDTO>> GetMine(CancellationToken cancellationToken)
     {
@@ -31,6 +31,24 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     {
       var result = await _permissions.UpdateAsync(userId, request.Schools, cancellationToken);
       return result == null ? NotFound("没有找到该员工账号。") : Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{userId}/employee-type")]
+    public async Task<ActionResult<StaffPermissionUserDTO>> UpdateEmployeeType(
+      string userId,
+      UpdateEmployeeTypeDTO request,
+      CancellationToken cancellationToken)
+    {
+      try
+      {
+        var result = await _permissions.UpdateEmployeeTypeAsync(userId, request.EmployeeType, cancellationToken);
+        return result == null ? NotFound("没有找到该员工账号。") : Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
   }
 }

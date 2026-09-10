@@ -142,6 +142,7 @@ export class AdminSchoolContentComponent implements OnInit {
   isSaving = false;
   isPublishing = false;
   isSubmitting = false;
+  hasUnsavedChanges = false;
   previewUrl: SafeResourceUrl;
   previewTarget: CiaPreviewTarget = { kind: 'course', id: this.selectedCourseId };
   previewStatus = '正在加载对应位置…';
@@ -192,7 +193,7 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   get canPublish(): boolean {
-    return this.authService.getRoles().some(role => role.toLowerCase() === 'admin');
+    return this.authService.getRoles().some(role => ['admin', 'manager'].includes(role.toLowerCase()));
   }
 
   get filteredSchools(): SchoolDTO[] {
@@ -323,7 +324,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.activeTab === 'courses') return '修改课程名称、课程安排和学费；发布后官网课程表、报价计算器和报价图片共同使用。';
     if (this.activeTab === 'rooms') return '修改房型、住宿价格和入住规则；右侧会定位到官网住宿板块。';
     if (this.activeTab === 'fees') return '修改到校学杂费、计费方式和每一项备注；网页与报价图片保持一致。';
-    if (this.activeTab === 'media') return '为当前学校直接上传照片或视频并设置展示位置；审核发布后才会同步到官网。';
+    if (this.activeTab === 'media') return '为当前学校直接上传照片或视频并设置展示位置；发布后才会同步到官网。';
     return '新增或调整学校优惠、旺季日期和计算规则；金额变化发布前需由管理员确认。';
   }
 
@@ -434,6 +435,7 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   contentChanged(): void {
+    this.hasUnsavedChanges = true;
     this.normalizeSortOrders();
     this.persistPreview();
     this.sendPreview();
@@ -443,8 +445,11 @@ export class AdminSchoolContentComponent implements OnInit {
     const wasInitialized = this.content.media !== undefined;
     this.content.media = items.map(item => ({ ...item }));
     if (wasInitialized) {
+      this.hasUnsavedChanges = true;
       this.statusKind = 'warning';
-      this.statusMessage = '媒体修改已加入当前草稿，请填写修改说明后保存或提交审核。';
+      this.statusMessage = this.canPublish
+        ? '媒体修改尚未发布，请填写修改说明后保存草稿或直接发布。'
+        : '媒体修改已加入当前草稿，请填写修改说明后保存或提交审核。';
     }
   }
 
@@ -691,6 +696,7 @@ export class AdminSchoolContentComponent implements OnInit {
       : this.schoolContentService.savePricingDraft(this.selectedSchool.id, this.content, summary);
     request.pipe(finalize(() => this.isSaving = false)).subscribe({
       next: draft => {
+        this.hasUnsavedChanges = false;
         this.statusKind = 'success';
         this.statusMessage = `草稿已保存（版本 ${draft.version}），官网尚未发布。`;
         this.loadEditor(this.selectedSchool!.id, false);
@@ -733,8 +739,9 @@ export class AdminSchoolContentComponent implements OnInit {
       finalize(() => this.isSubmitting = false),
     ).subscribe({
       next: revision => {
+        this.hasUnsavedChanges = false;
         this.statusKind = 'success';
-        this.statusMessage = `版本 ${revision.version} 已提交管理员审核，官网尚未改变。`;
+        this.statusMessage = `版本 ${revision.version} 已提交管理审核，官网尚未改变。`;
         this.changeSummary = '';
         this.loadEditor(this.selectedSchool!.id, false);
       },
@@ -747,18 +754,35 @@ export class AdminSchoolContentComponent implements OnInit {
 
   publish(): void {
     if (!this.selectedSchool?.id || !this.canPublish || this.isPublishing) return;
-    if (!this.editor?.pendingReview) {
-      this.statusKind = 'warning';
-      this.statusMessage = '没有待审核版本。请先填写修改说明并提交审核，再由管理员发布。';
+    const publishExistingReview = !!this.editor?.pendingReview && !this.editor?.draft && !this.hasUnsavedChanges;
+    const summary = this.changeSummary.trim();
+    if (!publishExistingReview && !summary) {
+      this.statusKind = 'error';
+      this.statusMessage = '管理直接发布前，请填写“本次修改说明”，写清楚改了哪些地方。';
       return;
     }
-    if (!window.confirm('发布后官网、报价计算器和报价图片会立即使用这份内容。确定发布吗？')) return;
+    const actionText = publishExistingReview ? '审核通过并发布' : '直接发布本次修改';
+    if (!window.confirm(`${actionText}后，官网、报价计算器和报价图片会立即更新。确定继续吗？`)) return;
     this.isPublishing = true;
     this.statusMessage = '';
-    this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool.id).pipe(
+    const hasInitialVersion = !!(this.editor?.draft || this.editor?.pendingReview || this.editor?.published);
+    const publishRequest = publishExistingReview
+      ? this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool.id)
+      : (!hasInitialVersion
+          ? this.schoolContentService.saveDraft(this.selectedSchool.id, this.content, summary)
+          : this.activeTab === 'media'
+            ? this.schoolContentService.saveMediaDraft<CiaContentConfig, CiaMediaContent[]>(
+                this.selectedSchool.id,
+                this.content.media ?? [],
+                summary,
+              )
+            : this.schoolContentService.savePricingDraft(this.selectedSchool.id, this.content, summary)
+        ).pipe(switchMap(() => this.schoolContentService.publish<CiaContentConfig>(this.selectedSchool!.id, summary)));
+    publishRequest.pipe(
       finalize(() => this.isPublishing = false),
     ).subscribe({
       next: revision => {
+        this.hasUnsavedChanges = false;
         this.statusKind = 'success';
         this.statusMessage = `版本 ${revision.version} 已发布，官网已同步更新。`;
         this.changeSummary = '';
@@ -858,6 +882,7 @@ export class AdminSchoolContentComponent implements OnInit {
       this.editor = editor ?? undefined;
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       this.content = stored ? this.cloneSelectedContent(stored) : defaults;
+      this.hasUnsavedChanges = false;
       if (!stored) {
         for (const course of this.content.courses) {
           const row = lessons.find(item =>

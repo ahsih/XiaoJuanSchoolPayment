@@ -30,8 +30,8 @@
 
     <section class="image-workflow">
       <div class="workflow-copy">
-        <span><mat-icon>{{ editor?.pendingReview ? 'hourglass_top' : 'edit_note' }}</mat-icon>{{ editor?.pendingReview ? '等待管理员审核' : '正在编辑图片备注' }}</span>
-        <label>本次修改说明（提交审核必填）<input [(ngModel)]="changeSummary" placeholder="例如：更新学杂费备注和报价说明" maxlength="500" /></label>
+        <span><mat-icon>{{ editor?.pendingReview && !editor?.draft ? 'hourglass_top' : 'edit_note' }}</mat-icon>{{ editor?.pendingReview && !editor?.draft ? '等待管理审核' : '正在编辑图片备注' }}</span>
+        <label>本次修改说明（{{ canPublish ? '直接发布' : '提交审核' }}必填）<input [(ngModel)]="changeSummary" placeholder="例如：更新学杂费备注和报价说明" maxlength="500" /></label>
         <div class="pending-review-summary" *ngIf="editor?.pendingReview as pending">
           <mat-icon>assignment</mat-icon>
           <div><strong>待审核修改说明：{{ pending.changeSummary }}</strong><small>提交人：{{ pending.updatedByName }} · {{ pending.updatedAt | date:'yyyy/MM/dd HH:mm' }}</small></div>
@@ -39,9 +39,9 @@
       </div>
       <div class="actions">
         <button type="button" (click)="saveDraft()" [disabled]="isSaving || isSubmitting"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}</button>
-        <button class="primary" type="button" (click)="submitForReview()" [disabled]="isSubmitting || isSaving"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交审核' }}</button>
-        <button *ngIf="canPublish && editor?.pendingReview" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
-        <button *ngIf="canPublish && editor?.pendingReview" class="primary" type="button" (click)="publish()" [disabled]="isPublishing"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '审核并发布' }}</button>
+        <button *ngIf="!canPublish" class="primary" type="button" (click)="submitForReview()" [disabled]="isSubmitting || isSaving"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交审核' }}</button>
+        <button *ngIf="canPublish && editor?.pendingReview && !editor?.draft" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
+        <button *ngIf="canPublish" class="primary" type="button" (click)="publish()" [disabled]="isPublishing || isSubmitting || isSaving"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : (editor?.pendingReview && !editor?.draft && !hasUnsavedChanges ? '审核并发布' : '直接发布') }}</button>
       </div>
     </section>
   </ng-container>

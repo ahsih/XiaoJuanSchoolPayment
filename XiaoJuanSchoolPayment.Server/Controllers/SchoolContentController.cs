@@ -29,7 +29,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return content == null ? NotFound() : Ok(content);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpGet("{schoolId:guid}/editor")]
     public async Task<IActionResult> GetEditor(Guid schoolId, CancellationToken cancellationToken)
     {
@@ -38,7 +38,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return content == null ? NotFound() : Ok(content);
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPut("{schoolId:guid}/draft")]
     public async Task<IActionResult> SaveDraft(
       Guid schoolId,
@@ -63,7 +63,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPut("{schoolId:guid}/pricing-draft")]
     public async Task<IActionResult> SavePricingDraft(
       Guid schoolId,
@@ -88,7 +88,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPut("{schoolId:guid}/quote-image-draft")]
     public async Task<IActionResult> SaveQuoteImageDraft(
       Guid schoolId,
@@ -113,7 +113,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPut("{schoolId:guid}/media-draft")]
     public async Task<IActionResult> SaveMediaDraft(
       Guid schoolId,
@@ -138,19 +138,30 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPost("{schoolId:guid}/publish")]
-    public async Task<IActionResult> Publish(Guid schoolId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Publish(
+      Guid schoolId,
+      [FromBody] PublishSchoolContentDTO? request,
+      CancellationToken cancellationToken)
     {
-      var result = await _schoolContentService.Publish(
-        schoolId,
-        CurrentUserId(),
-        CurrentUserName(),
-        cancellationToken);
-      return result == null ? NotFound("没有待审核版本，请先提交审核。") : Ok(result);
+      try
+      {
+        var result = await _schoolContentService.Publish(
+          schoolId,
+          request?.ChangeSummary,
+          CurrentUserId(),
+          CurrentUserName(),
+          cancellationToken);
+        return result == null ? NotFound("没有可发布的草稿或待审核版本。") : Ok(result);
+      }
+      catch (ArgumentException ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPost("{schoolId:guid}/submit-review")]
     public async Task<IActionResult> SubmitForReview(
       Guid schoolId,
@@ -180,7 +191,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPost("{schoolId:guid}/return-to-draft")]
     public async Task<IActionResult> ReturnToDraft(
       Guid schoolId,
@@ -196,7 +207,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       return result == null ? NotFound("没有待审核版本。") : Ok(result);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     [HttpPost("{schoolId:guid}/restore/{revisionId:guid}")]
     public async Task<IActionResult> Restore(
       Guid schoolId,
@@ -211,6 +222,11 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         cancellationToken);
       return result == null ? NotFound() : Ok(result);
     }
+
+    [Authorize(Roles = "Admin,Manager")]
+    [HttpGet("reviews")]
+    public async Task<IActionResult> GetPendingReviews(CancellationToken cancellationToken) =>
+      Ok(await _schoolContentService.GetPendingReviews(cancellationToken));
 
     private string CurrentUserId() =>
       User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.Identity?.Name ?? "unknown";

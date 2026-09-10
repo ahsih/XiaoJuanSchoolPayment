@@ -791,7 +791,10 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   get localFeeEstimateNote(): string {
-    return this.localFeeIntro + (this.quotePlan.roomWeeks === 3 ? '3周管理费、电费和水费按4周预估。' : '');
+    return this.localFeeEstimate.note.replace(
+      '学杂费均为预估金额，仅供准备比索现金参考，具体以学校及相关部门到校实收为准。',
+      this.localFeeIntro,
+    );
   }
 
   get visaExtensionCount(): number {
@@ -813,11 +816,11 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get localFees(): LocalFee[] {
     const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
       .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
-    const optional=estimateCgLocalFees(this.quotePlan.stayWeeks,this.includeAirportPickup,this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules).fees.filter(f=>f.excluded);
+    const optional=estimateCgLocalFees(this.quotePlan.stayWeeks,this.includeAirportPickup,this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate).fees.filter(f=>f.excluded);
     return [...included,...optional];
   }
 
-  private get localFeeEstimate() { return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules); }
+  private get localFeeEstimate() { return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate); }
 
   get localFeesTotal(): number {
     return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
@@ -834,9 +837,9 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   }
   get optionalFeeItems(){
     return this.excludedLocalFees.map(fee=>{
-      const rule=this.localFeeRules.find(item=>item.name===fee.item);
+      const rule=this.feeRule(fee.item);
       const value=fee.total||rule?.amount||0;
-      return {label:fee.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:rule?.note||fee.note};
+      return {label:fee.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:fee.note};
     });
   }
   get quoteImageData() {
@@ -848,12 +851,14 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     ];
     const warnings=this.activeStudents.flatMap((student,index)=>student.quotePlan.warning?[`${this.quoteMode==='group'?'学生'+(index+1)+'：':''}${student.quotePlan.warning}`]:[]);
     const short=[...new Set(this.activeStudents.flatMap(student=>student.quotePlan.shortStayNotes(w=>this.shortTermRatios[w]??w/4)))];
+    const defaultImageFeeIntro = this.initialContent.quoteImageSettings.localFeeIntro;
+    const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
     const quote=buildPhilippinesDetailedQuote({
       fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG BANILAD',schoolName:'菲律宾宿务CG Academy Banilad校区',filePrefix:'CG-Banilad',
       heroSrc:'/assets/philippines/cg-banilad-campus-hero.jpg',weeks:this.selectedWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
-      localFeeItems:this.includedLocalFees.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),
-      localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:this.quoteImageSettings.localFeeIntro,
-      optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.localFeeRules.find(rule=>rule.name===f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes,
+      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),
+      localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,
+      optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes,
     });
     const importantNotes=[...warnings,...short,...this.quoteImageSettings.footerNotes];
     const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG Banilad',this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
@@ -866,7 +871,8 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
   }
 
-  previewFeeId(name:string){return this.localFeeRules.find(item=>item.name===name)?.id??'local-fees';}
+  private feeRule(name:string){return this.localFeeRules.find(item=>item.name===name||item.futureName===name);}
+  previewFeeId(name:string){return this.feeRule(name)?.id??'local-fees';}
   previewPaymentTarget(item:{label:string;note?:string}):CiaPreviewTarget{
     if(item.label==='注册费')return {kind:'section',id:'quote-registration'};
     const promotion=this.promotionRules.find(rule=>item.label.includes(rule.name)||(item.note??'').includes(rule.description));

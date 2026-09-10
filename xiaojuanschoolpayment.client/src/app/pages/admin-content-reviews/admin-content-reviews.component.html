@@ -1,0 +1,128 @@
+<div class="review-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">管理工作</span>
+      <h1>审核与发布</h1>
+      <p>集中查看顾问提交的学校内容、学生档案和付款记录。核对后再确认、发布或退回。</p>
+    </div>
+    <button type="button" (click)="load()" [disabled]="isLoading">
+      <mat-icon>refresh</mat-icon>刷新列表
+    </button>
+  </header>
+
+  <section class="workflow-guide">
+    <div><b>1</b><span><strong>查看修改说明</strong><small>确认顾问写清了改动内容</small></span></div>
+    <mat-icon>arrow_forward</mat-icon>
+    <div><b>2</b><span><strong>打开页面核对</strong><small>检查学校预览、学生资料或付款凭证</small></span></div>
+    <mat-icon>arrow_forward</mat-icon>
+    <div><b>3</b><span><strong>发布或退回</strong><small>发布后才同步到官网或学生账号</small></span></div>
+  </section>
+
+  <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+  <div *ngIf="isLoading" class="state-card">正在加载待审核修改…</div>
+
+  <section *ngIf="!isLoading && !reviews.length && !studentReviews.length && !paymentReviews.length" class="state-card empty">
+    <mat-icon>task_alt</mat-icon>
+    <h2>目前没有待审核内容</h2>
+    <p>顾问提交审核后，会自动出现在这里。</p>
+  </section>
+
+  <section *ngIf="!isLoading && reviews.length" class="review-list review-section">
+    <div class="list-heading">
+      <div><h2>学校内容待审核</h2><span>{{ reviews.length }} 项</span></div>
+      <small>按提交时间排序，较早提交的排在前面</small>
+    </div>
+
+    <article *ngFor="let review of reviews" class="review-card">
+      <div class="school-block">
+        <span class="version">版本 {{ review.version }}</span>
+        <h3>{{ review.schoolName }}</h3>
+        <p><mat-icon>person</mat-icon>{{ review.updatedByName || '员工' }} 提交</p>
+        <p><mat-icon>schedule</mat-icon>{{ review.updatedAt | date:'yyyy-MM-dd HH:mm' }}</p>
+      </div>
+
+      <div class="change-block">
+        <span class="label">顾问填写的修改说明</span>
+        <strong>{{ review.changeSummary || '未填写修改说明' }}</strong>
+        <div class="section-tags">
+          <span *ngFor="let section of review.changedSections">{{ section }}</span>
+        </div>
+      </div>
+
+      <a
+        [routerLink]="['/admin/school-content']"
+        [queryParams]="{ schoolId: review.schoolId, review: 1 }"
+      >
+        打开修改页面核对
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </article>
+  </section>
+
+  <section *ngIf="!isLoading && studentReviews.length" class="review-list review-section">
+    <div class="list-heading">
+      <div><h2>学生申请与档案待审核</h2><span>{{ studentReviews.length }} 项</span></div>
+      <small>发布后，学生账号才会看到这次修改</small>
+    </div>
+
+    <article *ngFor="let review of studentReviews" class="review-card student-card">
+      <div class="school-block">
+        <span class="version">学生档案</span>
+        <h3>{{ review.studentName }}</h3>
+        <p><mat-icon>school</mat-icon>{{ review.schoolName }}</p>
+        <p><mat-icon>schedule</mat-icon>{{ review.submittedAt | date:'yyyy-MM-dd HH:mm' }}</p>
+      </div>
+
+      <div class="change-block">
+        <span class="label">{{ review.submittedByName || '顾问' }} 填写的修改说明</span>
+        <strong>{{ review.changeSummary }}</strong>
+        <div class="section-tags">
+          <span>进度：{{ review.status }}</span>
+          <span>文件：{{ review.documents.length }} 个</span>
+        </div>
+      </div>
+
+      <a
+        [routerLink]="['/admin/student-applications']"
+        [queryParams]="{ applicationId: review.id }"
+      >
+        打开学生档案核对
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </article>
+  </section>
+
+  <section *ngIf="!isLoading && paymentReviews.length" class="review-list review-section payment-review-list">
+    <div class="list-heading">
+      <div><h2>学生付款待审核</h2><span>{{ paymentReviews.length }} 笔</span></div>
+      <small>查看金额与付款凭证，确认到账后才计入收款记录</small>
+    </div>
+
+    <article *ngFor="let payment of paymentReviews" class="review-card payment-card">
+      <div class="school-block">
+        <span class="version payment-version">{{ payment.paymentType }}</span>
+        <h3>{{ payment.studentName }}</h3>
+        <p><mat-icon>school</mat-icon>{{ payment.schoolName }}</p>
+        <p><mat-icon>schedule</mat-icon>{{ payment.submittedAt | date:'yyyy-MM-dd HH:mm' }}</p>
+      </div>
+
+      <div class="change-block">
+        <span class="label">{{ payment.submittedByName || '顾问' }} 提交的付款</span>
+        <strong class="payment-total">{{ payment.currencyCode }} {{ payment.amount | number:'1.2-2' }}</strong>
+        <div class="section-tags">
+          <span>付款人：{{ payment.payerName }}</span>
+          <span>方式：{{ payment.paymentMethod }}</span>
+          <span>付款日期：{{ payment.paidAt | date:'yyyy-MM-dd' }}</span>
+        </div>
+      </div>
+
+      <a
+        [routerLink]="['/admin/student-applications']"
+        [queryParams]="{ applicationId: payment.studentApplicationId, paymentId: payment.id }"
+      >
+        查看凭证并审核
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </article>
+  </section>
+</div>

@@ -20,3 +20,14 @@ export interface SchoolContentEditorDTO<TContent> {
   published?: SchoolContentRevisionDTO<TContent>;
   history: SchoolContentRevisionSummaryDTO[];
 }
+
+export interface SchoolContentReviewDTO {
+  schoolId: string;
+  schoolName: string;
+  revisionId: string;
+  version: number;
+  changeSummary?: string;
+  updatedByName: string;
+  updatedAt: string;
+  changedSections: string[];
+}

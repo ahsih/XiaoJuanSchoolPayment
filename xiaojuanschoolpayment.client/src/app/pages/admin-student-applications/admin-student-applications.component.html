@@ -1,145 +1,589 @@
 <div class="page-heading">
   <div>
-    <p class="eyebrow">员工后台</p>
-    <h1>学生报名管理</h1>
-    <p>创建学生账号、更新报名进度，并上传学生可见的报价单或入学通知书。</p>
+    <p class="eyebrow">学生管理 · 内部试用</p>
+    <h1>学生工作台</h1>
+    <p>先把学生和报名进度管清楚；顾问提交，管理审核后再同步给学生。</p>
+  </div>
+  <div class="heading-actions">
+    <span class="role-badge"><mat-icon>{{ canPublish ? 'verified_user' : 'support_agent' }}</mat-icon>{{ canPublish ? '管理账号' : '顾问账号' }}</span>
+    <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+      <mat-icon>person_add</mat-icon>新建学生档案
+    </button>
   </div>
 </div>
 
-<div class="workspace">
-  <mat-card class="editor-card">
-    <mat-card-header>
-      <mat-card-title>{{ editingId ? '编辑报名' : '新建学生报名' }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()" class="form-grid">
-        <mat-form-field appearance="outline">
-          <mat-label>学生邮箱</mat-label>
-          <input matInput type="email" formControlName="email" [readonly]="!!editingId" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" *ngIf="!editingId">
-          <mat-label>临时密码</mat-label>
-          <input matInput type="password" formControlName="temporaryPassword" />
-          <mat-hint>已有学生再次报名时可留空</mat-hint>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>名字</mat-label>
-          <input matInput formControlName="firstName" [readonly]="!!editingId" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>姓氏</mat-label>
-          <input matInput formControlName="lastName" [readonly]="!!editingId" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="wide">
-          <mat-label>报名学校</mat-label>
-          <mat-select formControlName="schoolId">
-            <mat-option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>课程</mat-label>
-          <input matInput formControlName="courseName" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>住宿</mat-label>
-          <input matInput formControlName="accommodationName" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>入学日期</mat-label>
-          <input matInput type="date" formControlName="startDate" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>结束日期</mat-label>
-          <input matInput type="date" formControlName="endDate" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="wide">
-          <mat-label>当前进度</mat-label>
-          <mat-select formControlName="status">
-            <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="wide">
-          <mat-label>给学生看的说明</mat-label>
-          <textarea matInput rows="3" formControlName="studentVisibleNotes"></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="wide">
-          <mat-label>员工内部备注</mat-label>
-          <textarea matInput rows="3" formControlName="internalNotes"></textarea>
-        </mat-form-field>
-        <div class="form-actions wide">
-          <button mat-flat-button color="primary" type="submit" [disabled]="saving">
-            {{ saving ? '保存中…' : editingId ? '保存修改' : '创建学生与报名' }}
-          </button>
-          <button mat-button type="button" *ngIf="editingId" (click)="resetForm()">取消编辑</button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+<section class="phase-notice">
+  <mat-icon>experiment</mat-icon>
+  <div>
+    <strong>当前先供员工内部使用</strong>
+    <p>继续通过微信和学生沟通。资料确认无误后由管理发布，已开通账号的学生才会看到审核后的内容。</p>
+  </div>
+  <span>以后可逐步邀请学生登录</span>
+</section>
 
-  <section class="records">
-    <div class="search-row">
-      <mat-form-field appearance="outline">
-        <mat-label>搜索学生、邮箱或学校</mat-label>
-        <input matInput [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" (keyup.enter)="loadApplications()" />
-      </mat-form-field>
-      <button mat-stroked-button type="button" (click)="loadApplications()">搜索</button>
+<section class="summary-grid" aria-label="学生工作台分类">
+  <button type="button" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+    <span class="summary-icon all"><mat-icon>groups</mat-icon></span>
+    <span><small>全部学生</small><strong>{{ applications.length }}</strong></span>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'incomplete'" (click)="setFilter('incomplete')">
+    <span class="summary-icon incomplete"><mat-icon>assignment_late</mat-icon></span>
+    <span><small>待补充资料</small><strong>{{ incompleteCount }}</strong></span>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'draft'" (click)="setFilter('draft')">
+    <span class="summary-icon draft"><mat-icon>edit_note</mat-icon></span>
+    <span><small>{{ canPublish ? '待直接发布' : '待我提交' }}</small><strong>{{ draftCount }}</strong></span>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'review'" (click)="setFilter('review')">
+    <span class="summary-icon review"><mat-icon>fact_check</mat-icon></span>
+    <span><small>待管理审核</small><strong>{{ reviewCount }}</strong></span>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'published'" (click)="setFilter('published')">
+    <span class="summary-icon published"><mat-icon>check_circle</mat-icon></span>
+    <span><small>已同步学生</small><strong>{{ publishedCount }}</strong></span>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'payment-review'" (click)="setFilter('payment-review')">
+    <span class="summary-icon payment"><mat-icon>payments</mat-icon></span>
+    <span><small>{{ canPublish ? '待审核付款' : '付款审核中' }}</small><strong>{{ pendingPaymentCount }}</strong></span>
+  </button>
+</section>
+
+<section class="workflow-guide">
+  <div><b>1</b><span><strong>顾问登记</strong><small>先填必要资料，其他内容可以以后补充</small></span></div>
+  <mat-icon>arrow_forward</mat-icon>
+  <div><b>2</b><span><strong>提交管理</strong><small>说明修改了哪些资料、付款或文件</small></span></div>
+  <mat-icon>arrow_forward</mat-icon>
+  <div><b>3</b><span><strong>审核后同步</strong><small>学生只看到确认后的内容</small></span></div>
+</section>
+
+<section class="student-list-card">
+  <div class="list-toolbar">
+    <div>
+      <p class="section-label">{{ filterTitle }}</p>
+      <h2>{{ filteredApplications.length }} 条报名记录</h2>
+    </div>
+    <label class="search-box">
+      <mat-icon>search</mat-icon>
+      <input [(ngModel)]="search" [ngModelOptions]="{ standalone: true }" placeholder="搜索学生、邮箱或学校" />
+      <button *ngIf="search" type="button" aria-label="清空搜索" (click)="search = ''"><mat-icon>close</mat-icon></button>
+    </label>
+  </div>
+
+  <section class="record-filter-panel" aria-label="报名记录筛选">
+    <div class="record-filter-heading">
+      <span><mat-icon>filter_alt</mat-icon></span>
+      <div><strong>报名记录筛选</strong><small>可组合选择报名月份、学生状态、学校和签证进度</small></div>
+      <button *ngIf="hasRecordFilters" mat-button type="button" (click)="resetFilters()"><mat-icon>restart_alt</mat-icon>清空全部</button>
     </div>
 
-    <p *ngIf="loading">正在加载…</p>
-    <p class="empty" *ngIf="!loading && applications.length === 0">还没有学生报名记录。</p>
+    <nav class="record-state-chips" aria-label="学生入学状态">
+      <button type="button" [class.active]="recordStateFilter === 'all'" (click)="setRecordStateFilter('all')">全部 <b>{{ recordStateCount('all') }}</b></button>
+      <button type="button" [class.active]="recordStateFilter === 'not-enrolled'" (click)="setRecordStateFilter('not-enrolled')">未入学 <b>{{ recordStateCount('not-enrolled') }}</b></button>
+      <button type="button" [class.active]="recordStateFilter === 'enrolled'" (click)="setRecordStateFilter('enrolled')">已入学 <b>{{ recordStateCount('enrolled') }}</b></button>
+      <button type="button" [class.active]="recordStateFilter === 'on-hold'" (click)="setRecordStateFilter('on-hold')">保留／延期 <b>{{ recordStateCount('on-hold') }}</b></button>
+      <button type="button" [class.active]="recordStateFilter === 'cancelled'" (click)="setRecordStateFilter('cancelled')">已取消 <b>{{ recordStateCount('cancelled') }}</b></button>
+    </nav>
 
-    <mat-card class="application-card" *ngFor="let application of applications">
-      <mat-card-content>
-        <div class="record-top">
-          <div>
-            <span class="status">{{ application.status }}</span>
-            <h2>{{ application.studentName }}</h2>
-            <p>{{ application.studentEmail }}</p>
-          </div>
-          <div class="record-actions">
-            <button mat-stroked-button (click)="edit(application)">编辑</button>
-            <button mat-flat-button color="primary" (click)="selectApplication(application)">管理文件</button>
-          </div>
-        </div>
-        <dl>
-          <div><dt>学校</dt><dd>{{ application.schoolName }}</dd></div>
-          <div><dt>课程</dt><dd>{{ application.courseName || '待确认' }}</dd></div>
-          <div><dt>住宿</dt><dd>{{ application.accommodationName || '待确认' }}</dd></div>
-          <div><dt>日期</dt><dd>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }} – {{ application.endDate ? (application.endDate | date:'yyyy-MM-dd') : '待确认' }}</dd></div>
-        </dl>
-        <p class="note" *ngIf="application.studentVisibleNotes"><strong>学生可见：</strong>{{ application.studentVisibleNotes }}</p>
-        <p class="note internal" *ngIf="application.internalNotes"><strong>内部备注：</strong>{{ application.internalNotes }}</p>
-        <div class="document-list" *ngIf="application.documents.length">
-          <button class="document-chip" type="button" *ngFor="let document of application.documents" (click)="download(application, document)">
-            {{ document.documentType }} · {{ document.displayName }}
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <div class="filter-controls">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>报名月份</mat-label>
+        <mat-select [(ngModel)]="registrationMonthFilter" [ngModelOptions]="{ standalone: true }">
+          <mat-option value="">全部月份</mat-option>
+          <mat-option *ngFor="let month of registrationMonthOptions" [value]="month">{{ monthLabel(month) }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>报名学校</mat-label>
+        <mat-select [(ngModel)]="schoolFilter" [ngModelOptions]="{ standalone: true }">
+          <mat-option value="">全部学校</mat-option>
+          <mat-option *ngFor="let school of schoolFilterOptions" [value]="school.id">{{ school.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>签证进度</mat-label>
+        <mat-select [(ngModel)]="visaFilter" [ngModelOptions]="{ standalone: true }">
+          <mat-option value="all">全部签证状态</mat-option>
+          <mat-option value="not-started">未办理／未确认</mat-option>
+          <mat-option value="in-progress">办理中</mat-option>
+          <mat-option value="approved">已获签</mat-option>
+          <mat-option value="not-required">无需办理</mat-option>
+          <mat-option value="rework">被拒／重新办理</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p>当前显示 <strong>{{ filteredApplications.length }}</strong> 条报名记录</p>
+    </div>
   </section>
+
+  <div class="privacy-note">
+    <mat-icon>lock</mat-icon>
+    <span><strong>内部跟进备注</strong>不会给学生看；标记为“学生可见”的说明和文件，也必须经过管理发布。</span>
+  </div>
+
+  <p class="loading" *ngIf="loading">正在加载学生资料…</p>
+
+  <div class="empty-state" *ngIf="!loading && filteredApplications.length === 0">
+    <span><mat-icon>{{ applications.length === 0 ? 'person_add' : 'filter_alt_off' }}</mat-icon></span>
+    <h3>{{ applications.length === 0 ? '先建立第一位学生档案' : '这个筛选条件暂时没有记录' }}</h3>
+    <p>{{ applications.length === 0 ? '先登记姓名和报名学校，联系方式、课程和日期都可以后面再补充。' : '可以切换上方分类，或者清空全部筛选条件。' }}</p>
+    <button *ngIf="applications.length === 0" mat-flat-button color="primary" type="button" (click)="openCreate()">新建学生档案</button>
+    <button *ngIf="applications.length > 0" mat-stroked-button type="button" (click)="resetFilters()">查看全部记录</button>
+  </div>
+
+  <div class="student-grid" *ngIf="!loading && filteredApplications.length > 0">
+    <article
+      class="student-card"
+      *ngFor="let application of filteredApplications"
+      [id]="'application-' + application.id"
+      [class.review-target]="targetApplicationId === application.id"
+    >
+      <div class="student-card-top">
+        <div class="student-identity">
+          <span class="avatar">{{ studentInitial(application) }}</span>
+          <div>
+            <div class="status-row">
+              <span class="status">{{ application.status }}</span>
+              <span class="visa-status">签证：{{ visaStatusLabel(application) }}</span>
+              <span class="review-status" [class.pending]="application.reviewStatus === 'PendingReview'" [class.published]="application.reviewStatus === 'Published'">
+                {{ reviewLabel(application) }}
+              </span>
+              <span class="account-status" [class.active]="application.hasStudentAccount">{{ application.hasStudentAccount ? '学生账号已开通' : '学生账号未开通' }}</span>
+            </div>
+            <h3>{{ application.studentName }}</h3>
+            <p>{{ application.studentEmail || application.studentPhone || '联系方式待补充' }}</p>
+          </div>
+        </div>
+        <div class="record-actions">
+          <button mat-stroked-button type="button" (click)="edit(application)"><mat-icon>edit</mat-icon>编辑资料</button>
+          <button mat-stroked-button type="button" (click)="selectApplication(application)"><mat-icon>folder</mat-icon>资料与付款</button>
+        </div>
+      </div>
+
+      <div class="completion-row">
+        <span>资料完整度</span>
+        <div class="completion-track"><i [style.width.%]="completion(application)"></i></div>
+        <strong>{{ completion(application) }}%</strong>
+      </div>
+
+      <dl>
+        <div><dt>报名形式</dt><dd>{{ application.enrollmentType }} · {{ personCount(application) }} 人</dd></div>
+        <div><dt>报名日期</dt><dd>{{ (application.enrollmentDate || application.createdAt) | date:'yyyy-MM-dd' }}</dd></div>
+        <div><dt>报名学校</dt><dd>{{ application.schoolName }}</dd></div>
+        <div><dt>签证状态</dt><dd>{{ visaStatusLabel(application) }}</dd></div>
+        <div><dt>课程</dt><dd>{{ application.courseName || '待补充' }}</dd></div>
+        <div><dt>住宿</dt><dd>{{ application.accommodationName || '待补充' }}</dd></div>
+        <div><dt>学习周期</dt><dd>{{ application.studyWeeks ? application.studyWeeks + ' 周' : '待确认' }}</dd></div>
+        <div><dt>整体日期</dt><dd>{{ application.startDate ? (application.startDate | date:'yyyy-MM-dd') : '待确认' }} – {{ application.endDate ? (application.endDate | date:'yyyy-MM-dd') : '待确认' }}</dd></div>
+      </dl>
+
+      <details class="plan-disclosure" *ngIf="application.coursePlans.length || application.accommodationPlans.length || application.members.length">
+        <summary>查看同行成员和分段安排</summary>
+        <div class="member-summary" *ngIf="application.members.length">
+          <span *ngFor="let member of application.members"><strong>{{ member.name }}</strong>{{ member.relationship ? ' · ' + member.relationship : '' }}</span>
+        </div>
+        <div class="saved-plan-list" *ngIf="application.coursePlans.length">
+          <b>课程</b>
+          <span *ngFor="let plan of application.coursePlans">{{ plan.name }} · {{ plan.weeks || '待定' }}周 <small *ngIf="plan.startDate">{{ plan.startDate | date:'yyyy-MM-dd' }} 起</small></span>
+        </div>
+        <div class="saved-plan-list" *ngIf="application.accommodationPlans.length">
+          <b>住宿</b>
+          <span *ngFor="let plan of application.accommodationPlans">{{ plan.name }} · {{ plan.weeks || '待定' }}周 <small *ngIf="plan.startDate">{{ plan.startDate | date:'yyyy-MM-dd' }} 起</small></span>
+        </div>
+      </details>
+
+      <div class="card-foot">
+        <span><mat-icon>description</mat-icon>{{ application.documents.length }} 份资料</span>
+        <span><mat-icon>payments</mat-icon>{{ paymentCount(application, 'Confirmed') }} 笔到账<span *ngIf="paymentCount(application, 'PendingReview')"> · {{ paymentCount(application, 'PendingReview') }} 笔待审核</span></span>
+        <span><mat-icon>schedule</mat-icon>更新于 {{ application.lastUpdated | date:'yyyy-MM-dd HH:mm' }}</span>
+      </div>
+
+      <details class="notes-disclosure" *ngIf="application.studentVisibleNotes || application.internalNotes">
+        <summary>查看备注</summary>
+        <p class="note" *ngIf="application.studentVisibleNotes"><strong>学生可见：</strong>{{ application.studentVisibleNotes }}</p>
+        <p class="note internal" *ngIf="application.internalNotes"><strong>仅员工可见：</strong>{{ application.internalNotes }}</p>
+      </details>
+
+      <section class="review-panel" [class.pending]="application.reviewStatus === 'PendingReview'" [class.published]="application.reviewStatus === 'Published'">
+        <ng-container *ngIf="application.reviewStatus === 'Draft'">
+          <div class="review-copy">
+            <strong>{{ canPublish ? '本次修改尚未同步' : '修改完成后提交给管理' }}</strong>
+            <p class="return-reason" *ngIf="application.changeSummary">{{ application.changeSummary }}</p>
+            <small>请写清楚本次改了哪些报名资料、付款凭证或文件。</small>
+          </div>
+          <textarea
+            rows="2"
+            maxlength="500"
+            [(ngModel)]="reviewNotes[application.id]"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="例如：更新入学日期；新增定金付款凭证和报价单"
+          ></textarea>
+          <button *ngIf="!canPublish" mat-flat-button color="primary" type="button" (click)="submitForReview(application)" [disabled]="reviewBusyId === application.id">
+            <mat-icon>send</mat-icon>提交管理审核
+          </button>
+          <button *ngIf="canPublish" mat-flat-button color="primary" type="button" (click)="publish(application)" [disabled]="reviewBusyId === application.id">
+            <mat-icon>publish</mat-icon>直接同步学生账号
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="application.reviewStatus === 'PendingReview'">
+          <div class="review-copy">
+            <strong>顾问修改说明</strong>
+            <p>{{ application.changeSummary }}</p>
+            <small>{{ application.submittedByName || '员工' }} · {{ application.submittedAt | date:'yyyy-MM-dd HH:mm' }}</small>
+          </div>
+          <div class="review-actions" *ngIf="canPublish">
+            <button mat-stroked-button type="button" (click)="returnForChanges(application)" [disabled]="reviewBusyId === application.id"><mat-icon>undo</mat-icon>退回修改</button>
+            <button mat-flat-button color="primary" type="button" (click)="publish(application)" [disabled]="reviewBusyId === application.id"><mat-icon>publish</mat-icon>审核并同步</button>
+          </div>
+          <span class="waiting" *ngIf="!canPublish"><mat-icon>hourglass_top</mat-icon>等待管理审核</span>
+        </ng-container>
+
+        <ng-container *ngIf="application.reviewStatus === 'Published'">
+          <div class="review-copy published-copy">
+            <mat-icon>verified</mat-icon>
+            <span><strong>当前版本已同步给学生</strong><small *ngIf="application.publishedAt">{{ application.publishedByName || '管理' }} · {{ application.publishedAt | date:'yyyy-MM-dd HH:mm' }}</small></span>
+          </div>
+        </ng-container>
+      </section>
+    </article>
+  </div>
+</section>
+
+<div class="drawer-backdrop" *ngIf="editorOpen" (click)="closeEditor()">
+  <aside class="editor-drawer" (click)="$event.stopPropagation()">
+    <header>
+      <div>
+        <p class="section-label">{{ editingId ? '补充和更新资料' : '先快速建立学生档案' }}</p>
+        <h2>{{ editingId ? '编辑学生报名' : '新建学生档案' }}</h2>
+      </div>
+      <button type="button" class="icon-button" aria-label="关闭" (click)="closeEditor()"><mat-icon>close</mat-icon></button>
+    </header>
+
+    <div class="quick-tip" *ngIf="!editingId">
+      <mat-icon>tips_and_updates</mat-icon>
+      <span><strong>不用一次填完所有资料</strong><small>只需要学生姓名和报名学校即可建档，联系方式、课程、住宿和日期都可以以后补充。</small></span>
+    </div>
+
+    <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+      <section class="form-section">
+        <div class="form-section-title"><b>1</b><span><strong>报名人员</strong><small>支持单人、亲子家庭和多人同行，主联系人以后可关联学生账号</small></span></div>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>报名形式</mat-label>
+            <mat-select formControlName="enrollmentType">
+              <mat-option *ngFor="let type of enrollmentTypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>主联系人／第一位学员姓名</mat-label>
+            <input matInput formControlName="firstName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>护照姓氏（可后补）</mat-label>
+            <input matInput formControlName="lastName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>联系电话（可后补）</mat-label>
+            <input matInput type="tel" formControlName="phoneNumber" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide" *ngIf="!editingId">
+            <mat-label>学生邮箱（可后补，以后注册登录使用）</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-hint>学生以后用相同邮箱注册，系统会自动关联这份档案</mat-hint>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide" *ngIf="editingId">
+            <mat-label>学生邮箱（以后注册登录使用）</mat-label>
+            <input matInput type="email" formControlName="email" [readonly]="editingHasStudentAccount" />
+            <mat-hint>{{ editingHasStudentAccount ? '已关联学生账号，如需更换登录邮箱请由管理处理' : '学生以后用相同邮箱注册，系统会自动关联这份档案' }}</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="subsection-heading">
+          <div><strong>家庭成员／同行人</strong><small>亲子家庭可添加家长和孩子；朋友同行也可以放在同一份报名档案</small></div>
+          <button mat-stroked-button type="button" (click)="addMember()"><mat-icon>group_add</mat-icon>添加同行人</button>
+        </div>
+        <div class="repeater-list" formArrayName="members" *ngIf="membersArray.length">
+          <div class="repeater-card member-card" *ngFor="let member of membersArray.controls; let i = index" [formGroupName]="i">
+            <div class="repeater-index">{{ i + 2 }}</div>
+            <mat-form-field appearance="outline">
+              <mat-label>姓名</mat-label>
+              <input matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>与主联系人关系</mat-label>
+              <input matInput formControlName="relationship" placeholder="孩子、家长或同行朋友" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>联系电话（可选）</mat-label>
+              <input matInput type="tel" formControlName="phoneNumber" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>邮箱（可选）</mat-label>
+              <input matInput type="email" formControlName="email" />
+            </mat-form-field>
+            <button class="remove-row" type="button" aria-label="删除同行人" (click)="removeMember(i)"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><b>2</b><span><strong>报名与分段学习方案</strong><small>每个人可以有多段课程和多段住宿，周期按开始日期和周数自动计算</small></span></div>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>报名学校</mat-label>
+            <mat-select formControlName="schoolId">
+              <mat-option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>报名日期</mat-label>
+            <input matInput type="date" formControlName="enrollmentDate" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>学生状态</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>签证办理状态</mat-label>
+            <mat-select formControlName="visaStatus">
+              <mat-option *ngFor="let status of visaStatuses" [value]="status">{{ status }}</mat-option>
+            </mat-select>
+            <mat-hint>签证进度和是否入学分开记录，方便单独筛选</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="plan-block">
+          <div class="subsection-heading compact">
+            <div><strong>课程安排</strong><small>转课程或连续报读不同课程时，分开添加</small></div>
+            <button mat-stroked-button type="button" (click)="addPlan('course')"><mat-icon>add</mat-icon>添加课程</button>
+          </div>
+          <div class="repeater-list" formArrayName="coursePlans">
+            <div class="repeater-card plan-card" *ngFor="let plan of coursePlansArray.controls; let i = index" [formGroupName]="i">
+              <div class="repeater-index">{{ i + 1 }}</div>
+              <mat-form-field appearance="outline">
+                <mat-label>对应学员</mat-label>
+                <mat-select formControlName="participantKey">
+                  <mat-option *ngFor="let person of participantOptions" [value]="person.key">{{ person.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="plan-name">
+                <mat-label>课程名称（可后补）</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>开始日期</mat-label>
+                <input matInput type="date" formControlName="startDate" (change)="syncPlanEnd(plan)" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>学习周期（周）</mat-label>
+                <input matInput type="number" min="1" max="104" formControlName="weeks" (input)="syncPlanEnd(plan)" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>结束日期（自动）</mat-label>
+                <input matInput type="date" formControlName="endDate" readonly />
+              </mat-form-field>
+              <button class="remove-row" type="button" aria-label="删除课程" (click)="removePlan('course', i)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-block">
+          <div class="subsection-heading compact">
+            <div><strong>住宿安排</strong><small>换房型、校内外住宿或日期不同时，分开添加</small></div>
+            <button mat-stroked-button type="button" (click)="addPlan('accommodation')"><mat-icon>add</mat-icon>添加住宿</button>
+          </div>
+          <div class="repeater-list" formArrayName="accommodationPlans">
+            <div class="repeater-card plan-card" *ngFor="let plan of accommodationPlansArray.controls; let i = index" [formGroupName]="i">
+              <div class="repeater-index">{{ i + 1 }}</div>
+              <mat-form-field appearance="outline">
+                <mat-label>对应入住人</mat-label>
+                <mat-select formControlName="participantKey">
+                  <mat-option *ngFor="let person of participantOptions" [value]="person.key">{{ person.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="plan-name">
+                <mat-label>住宿名称（可后补）</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>入住日期</mat-label>
+                <input matInput type="date" formControlName="startDate" (change)="syncPlanEnd(plan)" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>住宿周期（周）</mat-label>
+                <input matInput type="number" min="1" max="104" formControlName="weeks" (input)="syncPlanEnd(plan)" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>退房日期（自动）</mat-label>
+                <input matInput type="date" formControlName="endDate" readonly />
+              </mat-form-field>
+              <button class="remove-row" type="button" aria-label="删除住宿" (click)="removePlan('accommodation', i)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="form-section notes-section">
+        <div class="form-section-title"><b>3</b><span><strong>跟进与学生通知</strong><small>内部信息和学生可见内容分开填写</small></span></div>
+        <mat-form-field appearance="outline" class="block-field">
+          <mat-label>内部跟进备注（学生看不到）</mat-label>
+          <textarea matInput rows="4" formControlName="internalNotes" placeholder="例如：待确认护照姓名；已微信提醒补交材料"></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="block-field student-visible-field">
+          <mat-label>审核后给学生看的说明</mat-label>
+          <textarea matInput rows="4" formControlName="studentVisibleNotes" placeholder="例如：学校已收到申请，下一步等待入学通知书"></textarea>
+          <mat-hint>只有管理发布后才会同步到学生账号</mat-hint>
+        </mat-form-field>
+      </section>
+
+      <section class="form-section future-documents">
+        <div class="form-section-title"><b>4</b><span><strong>后续办理资料</strong><small>先建档即可，不需要现在全部上传</small></span></div>
+        <div class="future-document-grid">
+          <span><mat-icon>request_quote</mat-icon>学生报价单</span>
+          <span><mat-icon>receipt_long</mat-icon>账单／学生发票</span>
+          <span><mat-icon>payments</mat-icon>付款凭证</span>
+          <span><mat-icon>school</mat-icon>入学通知书</span>
+          <span><mat-icon>badge</mat-icon>护照与签证</span>
+          <span><mat-icon>flight</mat-icon>机票与行前资料</span>
+        </div>
+        <p>建立档案后，在学生卡片点击“资料与付款”即可按阶段上传；顾问提交、管理审核后，学生账号才能看到。</p>
+      </section>
+
+      <footer class="drawer-actions">
+        <button mat-stroked-button type="button" (click)="closeEditor()">取消</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="saving">
+          <mat-icon>save</mat-icon>{{ saving ? '保存中…' : editingId ? '保存为草稿' : '建立学生档案' }}
+        </button>
+      </footer>
+    </form>
+  </aside>
 </div>
 
-<div class="modal-backdrop" *ngIf="selectedApplication" (click)="selectedApplication = null">
+<div class="modal-backdrop" *ngIf="selectedApplication && !editorOpen" (click)="selectedApplication = null">
   <mat-card class="document-modal" (click)="$event.stopPropagation()">
-    <mat-card-header>
-      <mat-card-title>{{ selectedApplication.studentName }} · 文件管理</mat-card-title>
-    </mat-card-header>
+    <header class="document-header">
+      <div>
+        <p class="section-label">资料与付款</p>
+        <h2>{{ selectedApplication.studentName }}</h2>
+        <p>从报价、缴费、录取、签证到行前资料，按办理阶段统一存放。</p>
+      </div>
+      <button class="icon-button" type="button" aria-label="关闭" (click)="selectedApplication = null"><mat-icon>close</mat-icon></button>
+    </header>
     <mat-card-content>
+      <div class="document-summary">
+        <div><strong>{{ selectedApplication.documents.length }}</strong><span>办理资料</span></div>
+        <div><strong>{{ paymentCount(selectedApplication, 'PendingReview') }}</strong><span>付款待审核</span></div>
+        <div><strong>{{ paymentCount(selectedApplication, 'Confirmed') }}</strong><span>已确认到账</span></div>
+        <div><strong>{{ confirmedPaymentTotals(selectedApplication) }}</strong><span>已确认金额</span></div>
+      </div>
+
+      <section class="payment-workspace">
+        <header class="payment-heading">
+          <div>
+            <p class="section-label">付款记录</p>
+            <h3>顾问提交，管理确认到账</h3>
+            <small>每次付款单独登记，确认后的金额可作为后续收款和工资统计依据。</small>
+          </div>
+          <button mat-flat-button color="primary" type="button" (click)="openPaymentForm()">
+            <mat-icon>add_card</mat-icon>提交一笔付款
+          </button>
+        </header>
+
+        <div class="payment-list" *ngIf="selectedApplication.payments.length; else noPayments">
+          <article
+            class="payment-row"
+            *ngFor="let payment of selectedApplication.payments"
+            [id]="'payment-' + payment.id"
+            [class.pending]="payment.reviewStatus === 'PendingReview'"
+            [class.confirmed]="payment.reviewStatus === 'Confirmed'"
+            [class.returned]="payment.reviewStatus === 'Returned'"
+            [class.review-target]="targetPaymentId === payment.id"
+          >
+            <div class="payment-amount">
+              <span>{{ payment.paymentType }}</span>
+              <strong>{{ payment.currencyCode }} {{ payment.amount | number:'1.2-2' }}</strong>
+              <small>{{ payment.paidAt | date:'yyyy-MM-dd' }}</small>
+            </div>
+            <div class="payment-details">
+              <div class="payment-title-row">
+                <strong>{{ payment.payerName }}</strong>
+                <span class="payment-status">{{ paymentStatusLabel(payment) }}</span>
+              </div>
+              <p>{{ payment.paymentMethod }}<ng-container *ngIf="payment.receivingAccount"> · 收款账户：{{ payment.receivingAccount }}</ng-container></p>
+              <p *ngIf="payment.referenceNumber">流水号／备注号：{{ payment.referenceNumber }}</p>
+              <p *ngIf="payment.note">顾问备注：{{ payment.note }}</p>
+              <p class="return-note" *ngIf="payment.reviewStatus === 'Returned'">管理退回：{{ payment.reviewNote }}</p>
+              <small>{{ payment.submittedByName || '顾问' }} 于 {{ payment.submittedAt | date:'yyyy-MM-dd HH:mm' }} 提交</small>
+            </div>
+            <div class="payment-actions">
+              <button mat-stroked-button type="button" (click)="downloadPaymentReceipt(payment)"><mat-icon>receipt_long</mat-icon>查看凭证</button>
+              <button *ngIf="payment.reviewStatus !== 'Confirmed'" mat-button type="button" (click)="openPaymentForm(payment)">修改</button>
+              <button *ngIf="payment.reviewStatus !== 'Confirmed'" mat-button color="warn" type="button" (click)="deletePayment(payment)" [disabled]="paymentBusyId === payment.id">删除</button>
+              <button *ngIf="canPublish && payment.reviewStatus === 'PendingReview'" mat-stroked-button type="button" (click)="returnPayment(payment)" [disabled]="paymentBusyId === payment.id">退回</button>
+              <button *ngIf="canPublish && payment.reviewStatus === 'PendingReview'" mat-flat-button color="primary" type="button" (click)="confirmPayment(payment)" [disabled]="paymentBusyId === payment.id"><mat-icon>done_all</mat-icon>确认到账</button>
+            </div>
+          </article>
+        </div>
+        <ng-template #noPayments>
+          <div class="payment-empty"><mat-icon>account_balance_wallet</mat-icon><p>还没有付款记录。收到学生截图后，在这里登记第一笔付款。</p></div>
+        </ng-template>
+
+        <form *ngIf="paymentFormOpen" [formGroup]="paymentForm" class="payment-form" (ngSubmit)="submitPayment()">
+          <div class="payment-form-title">
+            <div><strong>{{ editingPaymentId ? '修改并重新提交' : '提交付款审核' }}</strong><small>学生和学校信息已经自动带入，只需填写本次付款。</small></div>
+            <button type="button" class="icon-button" aria-label="关闭付款表单" (click)="closePaymentForm()"><mat-icon>close</mat-icon></button>
+          </div>
+          <mat-form-field appearance="outline"><mat-label>付款人／学生</mat-label><input matInput formControlName="payerName" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>付款类型</mat-label><mat-select formControlName="paymentType"><mat-option *ngFor="let type of paymentTypes" [value]="type">{{ type }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>付款金额</mat-label><input matInput type="number" min="0.01" step="0.01" formControlName="amount" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>币种</mat-label><mat-select formControlName="currencyCode"><mat-option *ngFor="let currency of paymentCurrencies" [value]="currency">{{ currency }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>付款日期</mat-label><input matInput type="date" formControlName="paidAt" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>付款方式</mat-label><mat-select formControlName="paymentMethod"><mat-option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</mat-option></mat-select></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>收款账户（可选）</mat-label><input matInput formControlName="receivingAccount" placeholder="例如：公司对公账户／易娟支付宝" /></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>流水号／备注号（可选）</mat-label><input matInput formControlName="referenceNumber" /></mat-form-field>
+          <mat-form-field appearance="outline" class="wide"><mat-label>顾问备注（可选）</mat-label><textarea matInput rows="2" formControlName="note" placeholder="例如：学生分两次支付，这是第一笔定金"></textarea></mat-form-field>
+          <label class="file-picker payment-file">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>{{ editingPaymentId ? '需要更换凭证时再选择文件' : '选择付款截图或银行回单' }}（PDF／图片，最多15MB）</span>
+            <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" (change)="onPaymentFileSelected($event)" />
+            <strong *ngIf="selectedPaymentFile">{{ selectedPaymentFile.name }}</strong>
+          </label>
+          <div class="payment-form-actions">
+            <button mat-stroked-button type="button" (click)="closePaymentForm()">取消</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="!!paymentBusyId"><mat-icon>send</mat-icon>{{ editingPaymentId ? '重新提交审核' : '提交管理审核' }}</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="document-checklist">
+        <div class="checklist-heading"><strong>办理资料清单</strong><small>绿色代表已经上传；灰色项目可以以后补充</small></div>
+        <div class="checklist-grid">
+          <span *ngFor="let item of documentChecklist" [class.complete]="documentChecklistComplete(selectedApplication, item.types)">
+            <mat-icon>{{ documentChecklistComplete(selectedApplication, item.types) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>{{ item.label }}
+          </span>
+        </div>
+      </section>
+
+      <p class="modal-review-note"><mat-icon>info</mat-icon>下方办理资料仍按学生档案流程审核；上方付款记录由管理单独确认到账。</p>
       <div class="existing-documents" *ngIf="selectedApplication.documents.length; else noDocuments">
         <div class="document-row" *ngFor="let document of selectedApplication.documents">
-          <div>
+          <span class="document-type-icon"><mat-icon>{{ documentIcon(document) }}</mat-icon></span>
+          <div class="document-name">
             <strong>{{ document.displayName }}</strong>
             <small>{{ document.documentType }} · {{ fileSize(document.sizeBytes) }} · {{ document.isVisibleToStudent ? '学生可见' : '仅员工可见' }}</small>
           </div>
-          <div>
+          <div class="document-actions">
             <button mat-button (click)="download(selectedApplication, document)">下载</button>
             <button mat-button color="warn" (click)="deleteDocument(selectedApplication, document)">删除</button>
           </div>
         </div>
       </div>
-      <ng-template #noDocuments><p class="empty">尚未上传文件。</p></ng-template>
+      <ng-template #noDocuments><div class="document-empty"><mat-icon>folder_open</mat-icon><p>还没有上传报价、录取、签证等办理资料。</p></div></ng-template>
 
       <form [formGroup]="documentForm" class="upload-form" (ngSubmit)="uploadDocument()">
+        <h3 class="wide">新增资料</h3>
         <mat-form-field appearance="outline">
           <mat-label>文件类型</mat-label>
           <mat-select formControlName="documentType">
@@ -151,14 +595,14 @@
           <input matInput formControlName="displayName" placeholder="留空则使用原文件名" />
         </mat-form-field>
         <label class="file-picker">
+          <mat-icon>upload_file</mat-icon>
           <span>选择文件（PDF、图片或 DOCX，最多 15MB）</span>
           <input type="file" accept=".pdf,.png,.jpg,.jpeg,.docx" (change)="onFileSelected($event)" />
           <strong *ngIf="selectedFile">{{ selectedFile.name }}</strong>
         </label>
-        <label class="visibility"><input type="checkbox" formControlName="isVisibleToStudent" /> 学生可见</label>
+        <label class="visibility"><input type="checkbox" formControlName="isVisibleToStudent" /> 审核发布后允许学生查看</label>
         <div class="form-actions">
-          <button mat-flat-button color="primary" type="submit">上传文件</button>
-          <button mat-button type="button" (click)="selectedApplication = null">关闭</button>
+          <button mat-flat-button color="primary" type="submit"><mat-icon>cloud_upload</mat-icon>上传到草稿</button>
         </div>
       </form>
     </mat-card-content>

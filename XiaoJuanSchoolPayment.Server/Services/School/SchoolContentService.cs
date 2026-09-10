@@ -78,6 +78,42 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       };
     }
 
+    public async Task<IList<SchoolContentReviewDTO>> GetPendingReviews(CancellationToken cancellationToken)
+    {
+      var pending = await _context.SchoolContentRevisions
+        .AsNoTracking()
+        .Include(revision => revision.School)
+        .Where(revision => revision.Status == PendingReviewStatus)
+        .OrderBy(revision => revision.UpdatedAt)
+        .ToListAsync(cancellationToken);
+
+      if (pending.Count == 0) return [];
+
+      var schoolIds = pending.Select(revision => revision.SchoolId).Distinct().ToList();
+      var published = await _context.SchoolContentRevisions
+        .AsNoTracking()
+        .Where(revision => schoolIds.Contains(revision.SchoolId) && revision.Status == PublishedStatus)
+        .OrderByDescending(revision => revision.Version)
+        .ToListAsync(cancellationToken);
+      var publishedBySchool = published
+        .GroupBy(revision => revision.SchoolId)
+        .ToDictionary(group => group.Key, group => group.First());
+
+      return pending.Select(revision => new SchoolContentReviewDTO
+      {
+        SchoolId = revision.SchoolId,
+        SchoolName = revision.School?.Name ?? "未命名学校",
+        RevisionId = revision.Id,
+        Version = revision.Version,
+        ChangeSummary = revision.ChangeSummary,
+        UpdatedByName = revision.UpdatedByName,
+        UpdatedAt = revision.UpdatedAt,
+        ChangedSections = GetChangedSections(
+          publishedBySchool.GetValueOrDefault(revision.SchoolId)?.ContentJson,
+          revision.ContentJson),
+      }).ToList();
+    }
+
     public async Task<SchoolContentRevisionDTO> SaveDraft(
       Guid schoolId,
       JsonElement content,
@@ -244,14 +280,17 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
     public async Task<SchoolContentRevisionDTO?> Publish(
       Guid schoolId,
+      string? changeSummary,
       string userId,
       string userName,
       CancellationToken cancellationToken)
     {
       await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
       var draft = await _context.SchoolContentRevisions
-        .Where(x => x.SchoolId == schoolId && x.Status == PendingReviewStatus)
-        .OrderByDescending(x => x.Version)
+        .Where(x => x.SchoolId == schoolId &&
+          (x.Status == DraftStatus || x.Status == PendingReviewStatus))
+        .OrderByDescending(x => x.Status == DraftStatus ? 1 : 0)
+        .ThenByDescending(x => x.Version)
         .FirstOrDefaultAsync(cancellationToken);
 
       if (draft == null)
@@ -259,11 +298,21 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         return null;
       }
 
-      var published = await _context.SchoolContentRevisions
+      if (draft.Status == DraftStatus)
+      {
+        var summary = NormalizeSummary(changeSummary) ?? draft.ChangeSummary;
+        if (string.IsNullOrWhiteSpace(summary))
+        {
+          throw new ArgumentException("管理直接发布前，请填写本次修改说明。");
+        }
+        draft.ChangeSummary = summary;
+      }
+
+      var superseded = await _context.SchoolContentRevisions
         .Where(x => x.SchoolId == schoolId && x.Id != draft.Id &&
-          (x.Status == PublishedStatus || x.Status == PendingReviewStatus))
+          (x.Status == PublishedStatus || x.Status == PendingReviewStatus || x.Status == DraftStatus))
         .ToListAsync(cancellationToken);
-      foreach (var previous in published)
+      foreach (var previous in superseded)
       {
         previous.Status = ArchivedStatus;
       }
@@ -292,7 +341,11 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         .Where(x => x.SchoolId == schoolId && x.Status == DraftStatus)
         .OrderByDescending(x => x.Version)
         .FirstOrDefaultAsync(cancellationToken);
-      if (draft == null) return null;
+
+      if (draft == null)
+      {
+        return null;
+      }
       if (string.IsNullOrWhiteSpace(draft.ChangeSummary))
       {
         throw new ArgumentException("请填写本次修改说明后再提交审核。");
@@ -442,6 +495,41 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       }
 
       return normalized.Length <= 500 ? normalized : normalized[..500];
+    }
+
+    private static IList<string> GetChangedSections(string? publishedJson, string pendingJson)
+    {
+      if (string.IsNullOrWhiteSpace(publishedJson)) return ["首次建立学校内容"];
+
+      var previous = JsonNode.Parse(publishedJson) as JsonObject;
+      var current = JsonNode.Parse(pendingJson) as JsonObject;
+      if (previous == null || current == null) return ["学校内容"];
+
+      var sectionLabels = new Dictionary<string, string>(StringComparer.Ordinal)
+      {
+        ["courses"] = "课程与学费",
+        ["rooms"] = "住宿与规则",
+        ["localFees"] = "当地杂费",
+        ["quoteSettings"] = "报价规则与优惠",
+        ["quoteImageSettings"] = "报价图片备注",
+        ["media"] = "照片与视频",
+      };
+      var changed = sectionLabels
+        .Where(section => !JsonNode.DeepEquals(previous[section.Key], current[section.Key]))
+        .Select(section => section.Value)
+        .ToList();
+
+      var knownKeys = sectionLabels.Keys.Append("schemaVersion").ToHashSet(StringComparer.Ordinal);
+      var otherKeys = previous.Select(item => item.Key)
+        .Concat(current.Select(item => item.Key))
+        .Where(key => !knownKeys.Contains(key))
+        .Distinct(StringComparer.Ordinal);
+      if (otherKeys.Any(key => !JsonNode.DeepEquals(previous[key], current[key])))
+      {
+        changed.Add("学校页面资料");
+      }
+
+      return changed.Count > 0 ? changed : ["内容说明"];
     }
 
     private static SchoolContentRevisionDTO ToRevisionDto(SchoolContentRevision revision) => new()

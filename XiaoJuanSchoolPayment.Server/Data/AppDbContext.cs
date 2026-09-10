@@ -18,6 +18,7 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<Currency> SchoolCurrency { get; set; }
     public DbSet<StudentApplication> StudentApplications { get; set; }
     public DbSet<StudentApplicationDocument> StudentApplicationDocuments { get; set; }
+    public DbSet<StudentPayment> StudentPayments { get; set; }
     public DbSet<InvitationCode> InvitationCodes { get; set; }
     public DbSet<AccountVerificationCode> AccountVerificationCodes { get; set; }
     public DbSet<SchoolContentRevision> SchoolContentRevisions { get; set; }
@@ -43,6 +44,15 @@ namespace XiaoJuanSchoolPayment.Server.Data
         .WithMany(x => x.Documents)
         .HasForeignKey(x => x.StudentApplicationId)
         .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<StudentPayment>()
+        .HasOne(x => x.StudentApplication)
+        .WithMany(x => x.Payments)
+        .HasForeignKey(x => x.StudentApplicationId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<StudentPayment>()
+        .HasIndex(x => new { x.ReviewStatus, x.SubmittedAt });
 
       builder.Entity<InvitationCode>()
         .HasIndex(x => x.CodeHash)

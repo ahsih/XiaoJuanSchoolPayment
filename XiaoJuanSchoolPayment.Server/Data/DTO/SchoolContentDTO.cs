@@ -26,6 +26,11 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string? ChangeSummary { get; set; }
   }
 
+  public class PublishSchoolContentDTO
+  {
+    public string? ChangeSummary { get; set; }
+  }
+
   public class SchoolContentRevisionDTO
   {
     public Guid Id { get; set; }
@@ -57,5 +62,17 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public SchoolContentRevisionDTO? PendingReview { get; set; }
     public SchoolContentRevisionDTO? Published { get; set; }
     public IList<SchoolContentRevisionSummaryDTO> History { get; set; } = [];
+  }
+
+  public class SchoolContentReviewDTO
+  {
+    public Guid SchoolId { get; set; }
+    public string SchoolName { get; set; } = string.Empty;
+    public Guid RevisionId { get; set; }
+    public int Version { get; set; }
+    public string? ChangeSummary { get; set; }
+    public string UpdatedByName { get; set; } = string.Empty;
+    public DateTime UpdatedAt { get; set; }
+    public IList<string> ChangedSections { get; set; } = [];
   }
 }

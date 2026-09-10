@@ -27,6 +27,7 @@ namespace XiaoJuanSchoolPayment.Server.Data.Models
 
     public long SizeBytes { get; set; }
     public bool IsVisibleToStudent { get; set; } = true;
+    public bool IsPendingDeletion { get; set; }
     public DateTime UploadedAt { get; set; }
   }
 }

@@ -5,6 +5,7 @@ header h1 { margin: 7px 0 8px; font-size: 28px; }
 header p { margin: 0; color: #806f63; }
 .create-card, .new-code, .list-card, .permission-next { margin-top: 26px; border: 1px solid #eadfd5; border-radius: 14px; background: #fff; box-shadow: 0 10px 32px rgba(70, 47, 31, .06); }
 .create-card { display: grid; grid-template-columns: 1fr 130px auto; align-items: center; gap: 16px; padding: 22px; }
+.create-card.admin-create { grid-template-columns: 1fr minmax(235px, auto) 130px auto; }
 .create-card div { display: grid; gap: 5px; }
 .create-card small, .invite-row small, .new-code small { color: #978579; }
 select { min-height: 42px; padding: 0 12px; border: 1px solid #d9ccc1; border-radius: 8px; color: #45362c; background: #fff; }
@@ -31,7 +32,7 @@ button mat-icon { width: 18px; height: 18px; font-size: 18px; }
 .revoke { border: 0; color: #a25035; background: none; cursor: pointer; }
 @media (max-width: 720px) {
   .invite-page { padding: 26px 15px 48px; }
-  .create-card { grid-template-columns: 1fr 110px; }
+  .create-card, .create-card.admin-create { grid-template-columns: 1fr; }
   .create-card button { grid-column: 1 / -1; }
   .new-code { align-items: stretch; flex-direction: column; }
   .permission-next { grid-template-columns:32px 1fr; }.permission-next a{grid-column:1/-1;text-align:center}

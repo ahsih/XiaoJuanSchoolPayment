@@ -3,7 +3,7 @@
     <div>
       <span class="eyebrow">学校内容管理 · {{ schoolShortName }} 工作台</span>
       <h1>学校页面与报价规则</h1>
-      <p>在左侧修改，右侧直接显示官网真实页面。员工保存草稿，管理员确认后发布。</p>
+      <p>在左侧修改，右侧直接显示官网真实页面。顾问提交管理审核；管理可填写修改说明后直接发布。</p>
     </div>
     <div class="header-actions">
       <button class="button secondary" type="button" (click)="openPublicPage()">
@@ -68,8 +68,8 @@
 
     <section class="workflow-bar">
       <div class="workflow-copy">
-        <span class="workflow-state"><mat-icon>{{ editor?.pendingReview ? 'hourglass_top' : 'edit_note' }}</mat-icon>{{ editor?.pendingReview ? '等待管理员审核' : '正在编辑草稿' }}</span>
-        <label>本次修改说明（提交审核必填）<input [(ngModel)]="changeSummary" maxlength="500" [placeholder]="activeTab === 'media' ? '例如：新增校园介绍视频，调整宿舍照片顺序' : '例如：更新 2027 课程价格和九月优惠'" /></label>
+        <span class="workflow-state"><mat-icon>{{ editor?.pendingReview && !editor?.draft ? 'hourglass_top' : 'edit_note' }}</mat-icon>{{ editor?.pendingReview && !editor?.draft ? '等待管理审核' : '正在编辑草稿' }}</span>
+        <label>本次修改说明（{{ canPublish ? '直接发布' : '提交审核' }}必填）<input [(ngModel)]="changeSummary" maxlength="500" [placeholder]="activeTab === 'media' ? '例如：新增校园介绍视频，调整宿舍照片顺序' : '例如：更新 2027 课程价格和九月优惠'" /></label>
         <div class="pending-review-summary" *ngIf="editor?.pendingReview as pending">
           <mat-icon>assignment</mat-icon>
           <div><strong>待审核修改说明：{{ pending.changeSummary }}</strong><small>提交人：{{ pending.updatedByName }} · {{ pending.updatedAt | date:'yyyy/MM/dd HH:mm' }}</small></div>
@@ -77,9 +77,9 @@
       </div>
       <div class="workflow-actions">
         <button class="button secondary" type="button" (click)="saveDraft()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>save</mat-icon>{{ isSaving ? '保存中…' : '保存草稿' }}</button>
-        <button class="button primary" type="button" (click)="submitForReview()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交审核' }}</button>
-        <button *ngIf="canPublish && editor?.pendingReview" class="button secondary" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
-        <button *ngIf="canPublish && editor?.pendingReview" class="button primary" type="button" (click)="publish()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : '审核并发布' }}</button>
+        <button *ngIf="!canPublish" class="button primary" type="button" (click)="submitForReview()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>send</mat-icon>{{ isSubmitting ? '提交中…' : '提交审核' }}</button>
+        <button *ngIf="canPublish && editor?.pendingReview && !editor?.draft" class="button secondary" type="button" (click)="returnForChanges()" [disabled]="isPublishing"><mat-icon>undo</mat-icon>退回修改</button>
+        <button *ngIf="canPublish" class="button primary" type="button" (click)="publish()" [disabled]="isSaving || isPublishing || isSubmitting"><mat-icon>publish</mat-icon>{{ isPublishing ? '发布中…' : (editor?.pendingReview && !editor?.draft && !hasUnsavedChanges ? '审核并发布' : '直接发布') }}</button>
       </div>
     </section>
 

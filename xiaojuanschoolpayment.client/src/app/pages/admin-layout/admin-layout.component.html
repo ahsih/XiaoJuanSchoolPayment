@@ -19,6 +19,10 @@
           <mat-icon>space_dashboard</mat-icon>
           <span>学校工作台</span>
         </a>
+        <a *ngIf="isPublisher" routerLink="/admin/reviews" routerLinkActive="active">
+          <mat-icon>fact_check</mat-icon>
+          <span>审核与发布</span>
+        </a>
       </section>
 
       <section class="nav-section">
@@ -41,7 +45,7 @@
         </a>
       </section>
 
-      <section class="nav-section tools-section" *ngIf="canUse('pricing') || canUse('schoolContent')">
+      <section class="nav-section tools-section" *ngIf="isPublisher">
         <p class="nav-label">更多工具</p>
         <details class="legacy-navigation">
           <summary>
@@ -50,19 +54,19 @@
             <mat-icon class="summary-arrow">expand_more</mat-icon>
           </summary>
           <p>仅供尚未接入统一工作台的学校使用</p>
-          <a *ngIf="canUse('pricing')" routerLink="/admin/school-lessons" routerLinkActive="active">
+          <a routerLink="/admin/school-lessons" routerLinkActive="active">
             <mat-icon>menu_book</mat-icon>
             <span>课程基础数据</span>
           </a>
-          <a *ngIf="canUse('pricing')" routerLink="/admin/school-rooms" routerLinkActive="active">
+          <a routerLink="/admin/school-rooms" routerLinkActive="active">
             <mat-icon>bed</mat-icon>
             <span>住宿基础数据</span>
           </a>
-          <a *ngIf="canUse('pricing')" routerLink="/admin/school-fees" routerLinkActive="active">
+          <a routerLink="/admin/school-fees" routerLinkActive="active">
             <mat-icon>receipt_long</mat-icon>
             <span>费用基础数据</span>
           </a>
-          <a *ngIf="canUse('schoolContent')" routerLink="/admin/school-notes" routerLinkActive="active">
+          <a routerLink="/admin/school-notes" routerLinkActive="active">
             <mat-icon>description</mat-icon>
             <span>学校说明</span>
           </a>
