@@ -93,12 +93,12 @@ export class CebuStudyComponent {
   readonly selectionGroups: SelectionGroup[] = [
     {
       icon: 'verified',
-      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.webp',
       title: '雅思名校',
       subtitle: '雅思课程成熟，备考与模考资源更完整',
       category: '雅思名校',
       tone: 'green',
-      image: '/assets/cia/idp-testing-venue.jpg',
+      image: '/assets/cia/idp-testing-venue.webp',
       schools: [
         'CIA',
         'EV Academy',
@@ -118,7 +118,7 @@ export class CebuStudyComponent {
       subtitle: '高强度课程，适合集中冲刺',
       category: '斯巴达管理',
       tone: 'violet',
-      image: '/assets/ev/campus-exterior.jpg',
+      image: '/assets/ev/campus-exterior.webp',
       schools: [
         'EV 主校区',
         'CPI',
@@ -139,7 +139,7 @@ export class CebuStudyComponent {
       subtitle: '课量扎实，预算更友好',
       category: '高性价比',
       tone: 'orange',
-      image: '/assets/cpi/campus-exterior.jpg',
+      image: '/assets/cpi/campus-exterior.webp',
       schools: [
         'CPI',
         'I.BREEZE',
@@ -163,7 +163,7 @@ export class CebuStudyComponent {
       subtitle: '亲子、青少年与家庭住宿路线集中比较',
       category: '亲子友好',
       tone: 'blue',
-      image: '/assets/philippines/ev-la-mer-campus.jpg',
+      image: '/assets/philippines/ev-la-mer-campus.webp',
       schools: [
         'EV La Mer',
         'CPI',
@@ -196,7 +196,7 @@ export class CebuStudyComponent {
       name: 'CIA',
       badge: '综合实力强',
       tone: 'green',
-      image: '/assets/cia/campus-building.png',
+      image: '/assets/cia/campus-building.webp',
       route: '/philippines-study/cebu/cia-cebu-international-academy',
       description: '国际化新校区，课程与生活配套均衡',
       tags: ['雅思考场', '亲子友好'],
@@ -205,7 +205,7 @@ export class CebuStudyComponent {
       name: 'EV Academy',
       badge: '双管理模式',
       tone: 'violet',
-      image: '/assets/ev/campus-exterior.jpg',
+      image: '/assets/ev/campus-exterior.webp',
       route: '/philippines-study/cebu/ev-academy',
       description: '可选斯巴达或半斯巴达，兼顾强度与自由度',
       tags: ['斯巴达', '半斯巴达', '雅思课程'],
@@ -214,7 +214,7 @@ export class CebuStudyComponent {
       name: 'CPI',
       badge: '度假氛围',
       tone: 'teal',
-      image: '/assets/cpi/campus-exterior.jpg',
+      image: '/assets/cpi/campus-exterior.webp',
       route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
       description: '斯巴达与半斯巴达可选，设施与生活配套完善',
       tags: ['斯巴达', '半斯巴达', '亲子友好'],
@@ -223,7 +223,7 @@ export class CebuStudyComponent {
       name: 'CPILS',
       badge: '老牌名校',
       tone: 'navy',
-      image: '/assets/cpils/campus-front.jpg',
+      image: '/assets/cpils/campus-front.webp',
       route: '/philippines-study/cebu/cpils',
       description: '老牌综合学校，可选斯巴达与半斯巴达管理',
       tags: ['斯巴达', '半斯巴达', '资源齐全'],
@@ -232,7 +232,7 @@ export class CebuStudyComponent {
       name: 'English Fella',
       badge: '选择灵活',
       tone: 'orange',
-      image: '/assets/fella/campus-main.jpg',
+      image: '/assets/fella/campus-main.webp',
       route: '/philippines-study/cebu/english-fella',
       description: '双校区选择，课程与管理方式灵活',
       tags: ['半斯巴达', '环境舒适'],
@@ -244,31 +244,31 @@ export class CebuStudyComponent {
       icon: 'school',
       title: '高效学习',
       text: '一对一课程密集，按目标制定学习计划',
-      image: '/assets/ev/mtm-classroom.jpg',
+      image: '/assets/ev/mtm-classroom.webp',
     },
     {
       icon: 'restaurant',
       title: '饮食丰富',
       text: '校内餐食多样，生活安排更省心',
-      image: '/assets/philippines/cebu-lifestyle-dining.jpg',
+      image: '/assets/philippines/cebu-lifestyle-dining.webp',
     },
     {
       icon: 'location_city',
       title: '生活便利',
       text: '现代商圈、医疗、餐饮与日常配套集中',
-      image: '/assets/philippines/cebu-city-view.jpg',
+      image: '/assets/philippines/cebu-city-view.webp',
     },
     {
       icon: 'surfing',
       title: '周末出游',
       text: '跳岛、浮潜与海上活动，让周末真正放松下来',
-      image: '/assets/philippines/cebu-weekend-ocean.png',
+      image: '/assets/philippines/cebu-weekend-ocean.webp',
     },
     {
       icon: 'verified_user',
       title: '安全友好',
       text: '住宿型学校通常设门卫值守、门禁与访客管理',
-      image: '/assets/philippines/cebu-school-gate-security.jpg',
+      image: '/assets/philippines/cebu-school-gate-security.webp',
     },
   ];
 
@@ -277,42 +277,42 @@ export class CebuStudyComponent {
       icon: 'account_balance_wallet',
       title: '0中介费与费用说明',
       text: '按学校合作渠道报价，学费、住宿费和当地费用在报名前逐项说明。',
-      image: '/assets/cia/sida-why-action-fees.jpg',
+      image: '/assets/cia/sida-why-action-fees.webp',
       alt: '顾问核对学校费用和服务明细',
     },
     {
       icon: 'fact_check',
       title: '专业选校建议',
       text: '结合预算、学习目标、课程强度和住宿偏好，认真比较适合你的学校。',
-      image: '/assets/cia/sida-why-action-selection.jpg',
+      image: '/assets/cia/sida-why-action-selection.webp',
       alt: '顾问根据学生需求比较学校和课程',
     },
     {
       icon: 'description',
       title: '签证与材料协助',
       text: '报名材料、签证与入学文件逐项核对，重要内容留下书面确认。',
-      image: '/assets/cia/sida-why-action-contract.jpg',
+      image: '/assets/cia/sida-why-action-contract.webp',
       alt: '顾问逐项核对报名合同与申请材料',
     },
     {
       icon: 'flight_takeoff',
       title: '行前准备清单',
       text: '机票、保险、接机、行李和入境事项一次说明，出发前逐项核对。',
-      image: '/assets/cia/sida-why-action-departure.jpg',
+      image: '/assets/cia/sida-why-action-departure.webp',
       alt: '顾问整理机票、保险和入境行前清单',
     },
     {
       icon: 'location_on',
       title: '宿务当地支持',
       text: '到校衔接、在读生活和突发问题，都可以联系菲律宾驻点人员。',
-      image: '/assets/cia/sida-why-action-team.jpg',
+      image: '/assets/cia/sida-why-action-team.webp',
       alt: '国内顾问与菲律宾驻点团队协作服务学生',
     },
     {
       icon: 'support_agent',
       title: '入学后持续跟进',
       text: '完成报名不是终点，学习期间遇到课程或生活问题仍会继续协助沟通。',
-      image: '/assets/cia/sida-why-action-followup.jpg',
+      image: '/assets/cia/sida-why-action-followup.webp',
       alt: '顾问通过线上沟通持续跟进学生学习情况',
     },
   ];
@@ -343,7 +343,7 @@ export class CebuStudyComponent {
       icon: 'verified_user',
       title: '报价透明，服务落实到合同',
       text: '学校费用、服务范围与重要节点提前说明，减少口头承诺和后续信息差。',
-      image: '/assets/philippines/service-contract-proof.jpg',
+      image: '/assets/philippines/service-contract-proof.webp',
       alt: '服务合同、费用明细与签字盖章场景',
     },
   ];
@@ -353,21 +353,21 @@ export class CebuStudyComponent {
       icon: 'video_call',
       title: '老学员回国续学，线上一对一享超值专属价',
       text: '宿务课程结束回国后，继续报名线上一对一英语课，可享比常规报名更划算的老学员专属价格，让英语学习不断档。',
-      image: '/assets/philippines/service-online-followup.jpg',
+      image: '/assets/philippines/service-online-followup.webp',
       alt: '学员通过在线视频课程继续学习英语',
     },
     {
       icon: 'flight_takeoff',
       title: '继续去欧洲学英语，争取合作学校优惠',
       text: '后续选择欧洲英语课程时，部分合作学校可申请免注册费或其他专属优惠。',
-      image: '/assets/philippines/beci-eop-outdoor-study.jpg',
+      image: '/assets/philippines/beci-eop-outdoor-study.webp',
       alt: '学员在轻松真实的学习场景中继续练习英语',
     },
     {
       icon: 'school',
       title: '再出发去爱尔兰，老学员奖学金支持',
       text: '之后通过思达启航申请爱尔兰留学，符合当期活动条件的老学员可领取思达启航奖学金。',
-      image: '/assets/philippines/service-ireland-cliffs.jpg',
+      image: '/assets/philippines/service-ireland-cliffs.webp',
       alt: '爱尔兰标志性莫赫悬崖与大西洋实景',
     },
   ];
@@ -377,7 +377,7 @@ export class CebuStudyComponent {
     {
       label: '雅思名校',
       icon: 'verified',
-      iconAsset: '/assets/cia/course-video-posters/idp-ielts.png',
+      iconAsset: '/assets/cia/course-video-posters/idp-ielts.webp',
       tone: 'green',
     },
     {
@@ -413,7 +413,7 @@ export class CebuStudyComponent {
     {
       name: 'CIA', route: '/philippines-study/cebu/cia-cebu-international-academy', tag: '度假村式校区',
       location: 'Mactan · Lapu-Lapu', summary: '2022年启用的度假村式新校区，课程、住宿与生活配套均衡，校内设IDP雅思官方考场。',
-      image: '/assets/cia/campus-building.png', highlights: ['ESL综合英语', 'Cambridge ESL', '雅思', '托业', '商务英语', '打工度假英语', 'Callan ESL', '大学沉浸课程', '亲子 / 青少年营'],
+      image: '/assets/cia/campus-building.webp', highlights: ['ESL综合英语', 'Cambridge ESL', '雅思', '托业', '商务英语', '打工度假英语', 'Callan ESL', '大学沉浸课程', '亲子 / 青少年营'],
     },
     {
       name: 'First English', route: '/philippines-study/cebu/first-english-global-college', tag: '日系亲子型校区',
@@ -439,7 +439,7 @@ export class CebuStudyComponent {
     {
       name: 'HLA', route: '/about-sida/contact', tag: '自然校园·家庭型',
       location: 'Liloan · Cebu', summary: '绿地型综合校园，设置亲子、成人英语及多种专业英语课程，适合家庭同行。',
-      image: '/assets/philippines/hla-campus.jpg', highlights: ['综合英语', '亲子课程', '雅思 / 托业', '商务英语', '航空英语'],
+      image: '/assets/philippines/hla-campus.webp', highlights: ['综合英语', '亲子课程', '雅思 / 托业', '商务英语', '航空英语'],
       linkLabel: '咨询学校资料',
     },
     {
@@ -460,7 +460,7 @@ export class CebuStudyComponent {
     {
       name: 'CIJ Premium', route: '/philippines-study/cebu/cij-academy-premium-campus', tag: '市区舒适校区',
       location: 'Mabolo · Cebu City', summary: '舒适住宿结合高比例一对一、外教、商务与托业课程。',
-      image: '/assets/philippines/cij-premium-campus-cover.jpg', highlights: ['综合英语4 / 高阶英语', '强化口语', '外教英语', '商务英语', '托业'],
+      image: '/assets/philippines/cij-premium-campus-cover.webp', highlights: ['综合英语4 / 高阶英语', '强化口语', '外教英语', '商务英语', '托业'],
     },
     {
       name: 'Curious World', route: '/philippines-study/cebu/curious-world-academy', tag: '市区半斯巴达',
@@ -525,12 +525,12 @@ export class CebuStudyComponent {
     {
       name: 'SMEAG Capital', route: '/philippines-study/cebu/smeag-capital', tag: '市区考试型校区',
       location: 'Guadalupe · Cebu City', summary: '市区考试型校区，雅思、托业、托福和保证班体系成熟。',
-      image: '/assets/philippines/smeag-capital-building.png', highlights: ['剑桥综合英语', '口语大师', '雅思保证班', '托业 / 托福', '商务英语', '亲子课程'],
+      image: '/assets/philippines/smeag-capital-building.webp', highlights: ['剑桥综合英语', '口语大师', '雅思保证班', '托业 / 托福', '商务英语', '亲子课程'],
     },
     {
       name: 'SMEAG Encanto 海滨校区', route: '/about-sida/contact', tag: '麦克坦海滨亲子校区',
       location: 'Mactan · Lapu-Lapu', summary: '海滨度假型校区，亲子课程、Cambridge体系与家庭住宿是主要特色。',
-      image: '/assets/philippines/smeag-encanto-campus-official.png', imagePosition: 'center 74%', highlights: ['亲子营', '剑桥综合英语', '综合英语1 / 2', '商务英语'],
+      image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['亲子营', '剑桥综合英语', '综合英语1 / 2', '商务英语'],
       linkLabel: '咨询学校资料',
     },
     {
@@ -571,18 +571,18 @@ export class CebuStudyComponent {
     {
       name: 'EV Academy', route: '/philippines-study/cebu/ev-academy', tag: '现代综合校区',
       location: 'Nasipit · Cebu City', summary: '高品质现代校园，SP1斯巴达与SP2半斯巴达路线可选。',
-      image: '/assets/ev/campus-exterior.jpg', highlights: ['斯巴达 / 半斯巴达综合英语', '强化口语', '雅思', '托业', '商务英语'],
+      image: '/assets/ev/campus-exterior.webp', highlights: ['斯巴达 / 半斯巴达综合英语', '强化口语', '雅思', '托业', '商务英语'],
     },
     {
       name: 'EV La Mer', route: '/about-sida/contact', tag: '麦克坦亲子度假校区',
       location: 'Cordova · Mactan', summary: 'EV第二校区，以泳池度假环境、亲子课程和青少年项目为主要特色。',
-      image: '/assets/philippines/ev-la-mer-campus.jpg', highlights: ['经典综合英语', '强化口语6 / 8节', '亲子课程', '熟龄英语'],
+      image: '/assets/philippines/ev-la-mer-campus.webp', highlights: ['经典综合英语', '强化口语6 / 8节', '亲子课程', '熟龄英语'],
       linkLabel: '咨询学校资料',
     },
     {
       name: 'CPI', route: '/philippines-study/cebu/cpi-cebu-pelis-institute', tag: '度假村校园',
       location: 'Nivel Hills · Cebu City', summary: '设施完善的半斯巴达校园，兼顾考试课程、亲子与生活体验。',
-      image: '/assets/cpi/campus-exterior.jpg', highlights: ['常规 / 强化综合英语', '雅思 / 托业 / 托福', '口语强化', '商务英语', '青少年 / 家长英语'],
+      image: '/assets/cpi/campus-exterior.webp', highlights: ['常规 / 强化综合英语', '雅思 / 托业 / 托福', '口语强化', '商务英语', '青少年 / 家长英语'],
     },
     {
       name: "B'Cebu", route: '/philippines-study/cebu/bcebu', tag: '麦克坦新校区',
@@ -592,17 +592,17 @@ export class CebuStudyComponent {
     {
       name: 'CPILS', route: '/philippines-study/cebu/cpils', tag: '老牌综合校',
       location: 'Cebu City', summary: '长期办学积累深厚，综合英语、雅思、托业和斯巴达管理成熟。',
-      image: '/assets/cpils/campus-main.jpg', highlights: ['常规综合英语', '强化口语', '雅思', '托业 / 托福', '商务英语', '亲子课程'],
+      image: '/assets/cpils/campus-main.webp', highlights: ['常规综合英语', '强化口语', '雅思', '托业 / 托福', '商务英语', '亲子课程'],
     },
     {
       name: 'English Fella', route: '/philippines-study/cebu/english-fella', tag: '双校区管理可选',
       location: 'Talamban · Cebu City', summary: '斯巴达与半斯巴达校区可选，适合考试备考和长期学习。',
-      image: '/assets/fella/campus-main.jpg', highlights: ['强化口语', '雅思保证班', '托业 / 托福', '商务英语', '青少年 / 家长英语'],
+      image: '/assets/fella/campus-main.webp', highlights: ['强化口语', '雅思保证班', '托业 / 托福', '商务英语', '青少年 / 家长英语'],
     },
     {
       name: 'Philinter', route: '/philippines-study/cebu/philinter-academy', tag: '老牌综合校',
       location: 'Mactan · Lapu-Lapu', summary: '老牌半斯巴达学校，口语、雅思、商务和家庭课程体系完整。',
-      image: '/assets/philinter/campus-main.jpeg', highlights: ['常规 / 强化综合英语', '强化口语', '雅思保证班', '托业', '商务 / 行业英语', '青少年英语（12岁起）'],
+      image: '/assets/philinter/campus-main.webp', highlights: ['常规 / 强化综合英语', '强化口语', '雅思保证班', '托业', '商务 / 行业英语', '青少年英语（12岁起）'],
     },
   ];
 
@@ -682,8 +682,8 @@ export class CebuStudyComponent {
 
   handleSchoolImageError(event: Event): void {
     const image = event.target as HTMLImageElement;
-    if (!image.src.endsWith('/assets/study-hero-collage.png')) {
-      image.src = '/assets/study-hero-collage.png';
+    if (!image.src.endsWith('/assets/study-hero-collage.webp')) {
+      image.src = '/assets/study-hero-collage.webp';
     }
   }
 
@@ -708,7 +708,7 @@ export class CebuStudyComponent {
       name: 'Lemon',
       focus: '多国家方案规划',
       text: '费用、时间与升学路径综合比较',
-      avatar: '/assets/contact/lemon-avatar.jpg?v=20260901',
+      avatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901',
       qr: '/assets/contact/lemon-wechat-qr.png',
       phone: '13298529856',
       phoneDisplay: '132 9852 9856',

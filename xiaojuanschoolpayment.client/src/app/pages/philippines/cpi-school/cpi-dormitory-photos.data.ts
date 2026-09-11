@@ -5,10 +5,13 @@ export interface CpiDormitoryProfile {
   gallery: string[];
 }
 
-const photos = (id: string, count: number): string[] => Array.from(
-  { length: count },
-  (_, index) => `/assets/cpi/dorm-photos/${id}-${String(index + 1).padStart(2, '0')}.jpg`,
-);
+const jpegPhotos = new Set(['six-female-01', 'six-female-05', 'triple-b-05']);
+
+const photos = (id: string, count: number): string[] => Array.from({ length: count }, (_, index) => {
+  const fileName = `${id}-${String(index + 1).padStart(2, '0')}`;
+  const extension = jpegPhotos.has(fileName) ? 'jpg' : 'webp';
+  return `/assets/cpi/dorm-photos/${fileName}.${extension}`;
+});
 
 // Original photographs from CH_宿务CPI-宿舍照片.pdf, pages 2–10.
 // A/B are the photo guide's labels, not an inferred mapping to current room prices.

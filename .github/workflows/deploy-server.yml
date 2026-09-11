@@ -1,0 +1,54 @@
+name: Deploy production server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SERVER_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Update production server
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" 'bash -se' <<'REMOTE'
+          set -Eeuo pipefail
+          cd /opt/sida/app
+          git pull --ff-only origin main
+          sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml up -d --build app caddy
+          sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml ps
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error http://127.0.0.1/ >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+
+          sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml logs --tail=100 app caddy
+          exit 1
+          REMOTE

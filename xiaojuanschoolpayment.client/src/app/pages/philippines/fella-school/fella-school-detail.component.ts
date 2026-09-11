@@ -91,17 +91,17 @@ export class FellaSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'English Fella校园', description: '大校园和绿化空间，是Fella区别于市区型学校的重要特点。', src: 'assets/fella/campus-main.jpg' },
-    { category: '校园', title: '校园泳池区域', description: '官方设施页展示泳池和户外活动空间。', src: 'assets/fella/campus-pool.jpg' },
-    { category: '校园', title: '校区环境', description: '适合希望学习、住宿、运动和休息集中在校园内的学生。', src: 'assets/fella/campus-view.jpg' },
-    { category: '教室', title: '一对一教室', description: 'PIC、考试、商务和口语课程都会使用一对一训练。', src: 'assets/fella/classroom-1.jpg' },
-    { category: '教室', title: '团体教室', description: '小团体、大团体和选修课程用于讨论、表达和综合训练。', src: 'assets/fella/classroom-2.jpg' },
-    { category: '住宿', title: '宿舍房间', description: '房间通常配有床、桌椅、收纳和空调，具体以校区房型为准。', src: 'assets/fella/dorm-1.jpg' },
-    { category: '住宿', title: '住宿空间参考', description: '3A三人间、2A双人间和三种单人间会明显影响总预算。', src: 'assets/fella/dorm-2.jpg' },
-    { category: '餐厅', title: '学生餐厅', description: '校内餐厅适合希望学习生活集中管理的学生。', src: 'assets/fella/cafeteria-2.jpg' },
-    { category: '设施', title: '运动设施', description: '官方设施页展示运动空间，适合课后活动和校园交流。', src: 'assets/fella/sports-1.jpg' },
-    { category: '设施', title: '篮球与运动区', description: '课后运动和月度校园活动会用到这些公共空间。', src: 'assets/fella/sports-2.jpg' },
-    { category: '设施', title: '校内公共设施', description: 'CAFELLA、办公室、休闲和其他校内支持资源需按校区确认。', src: 'assets/fella/facility-1.jpg' },
+    { category: '校园', title: 'English Fella校园', description: '大校园和绿化空间，是Fella区别于市区型学校的重要特点。', src: 'assets/fella/campus-main.webp' },
+    { category: '校园', title: '校园泳池区域', description: '官方设施页展示泳池和户外活动空间。', src: 'assets/fella/campus-pool.webp' },
+    { category: '校园', title: '校区环境', description: '适合希望学习、住宿、运动和休息集中在校园内的学生。', src: 'assets/fella/campus-view.webp' },
+    { category: '教室', title: '一对一教室', description: 'PIC、考试、商务和口语课程都会使用一对一训练。', src: 'assets/fella/classroom-1.webp' },
+    { category: '教室', title: '团体教室', description: '小团体、大团体和选修课程用于讨论、表达和综合训练。', src: 'assets/fella/classroom-2.webp' },
+    { category: '住宿', title: '宿舍房间', description: '房间通常配有床、桌椅、收纳和空调，具体以校区房型为准。', src: 'assets/fella/dorm-1.webp' },
+    { category: '住宿', title: '住宿空间参考', description: '3A三人间、2A双人间和三种单人间会明显影响总预算。', src: 'assets/fella/dorm-2.webp' },
+    { category: '餐厅', title: '学生餐厅', description: '校内餐厅适合希望学习生活集中管理的学生。', src: 'assets/fella/cafeteria-2.webp' },
+    { category: '设施', title: '运动设施', description: '官方设施页展示运动空间，适合课后活动和校园交流。', src: 'assets/fella/sports-1.webp' },
+    { category: '设施', title: '篮球与运动区', description: '课后运动和月度校园活动会用到这些公共空间。', src: 'assets/fella/sports-2.webp' },
+    { category: '设施', title: '校内公共设施', description: 'CAFELLA、办公室、休闲和其他校内支持资源需按校区确认。', src: 'assets/fella/facility-1.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -116,10 +116,10 @@ export class FellaSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/fella/campus-main.jpg', title: '大校园与生活支持感', text: 'Fella适合希望学校空间更完整、学习和生活都在校内解决的学生。' },
-    { image: 'assets/fella/classroom-1.jpg', title: '课程方向很完整', text: '从PIC综合英语到PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC和GEC都可比较。' },
-    { image: 'assets/fella/dorm-1.jpg', title: '五种房型覆盖两个校区', text: '3A三人间住宿预算最低，Premium 1P、1A、1B’、2A和3A在两个校区均可选，需提前确认空房。' },
-    { image: 'assets/fella/sports-1.jpg', title: '活动和运动资源多', text: '官方资料列出体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
+    { image: 'assets/fella/campus-main.webp', title: '大校园与生活支持感', text: 'Fella适合希望学校空间更完整、学习和生活都在校内解决的学生。' },
+    { image: 'assets/fella/classroom-1.webp', title: '课程方向很完整', text: '从PIC综合英语到PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC和GEC都可比较。' },
+    { image: 'assets/fella/dorm-1.webp', title: '五种房型覆盖两个校区', text: '3A三人间住宿预算最低，Premium 1P、1A、1B’、2A和3A在两个校区均可选，需提前确认空房。' },
+    { image: 'assets/fella/sports-1.webp', title: '活动和运动资源多', text: '官方资料列出体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -196,42 +196,42 @@ export class FellaSchoolDetailComponent implements OnInit {
       number: '01',
       title: '正式合同与学校文件可核验',
       text: '国内公司签约，English Fella报价、录取文件及收费凭证均可逐项核对。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航正式合同与学校文件核验',
     },
     {
       number: '02',
       title: '校区、课程和费用提前算清',
       text: '0中介服务费，课程费、住宿费、校区规则及English Fella到校费用逐项说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾宿务English Fella语言学校费用',
     },
     {
       number: '03',
       title: '先判断Fella是否适合',
       text: '根据学习目标、校区偏好、管理强度、预算、房型和入学档期，帮你判断Fella是否匹配。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '深圳总部 + 宿务驻点服务',
       text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -444,7 +444,7 @@ export class FellaSchoolDetailComponent implements OnInit {
       schoolCode: 'FELLA',
       schoolName: '菲律宾宿务English Fella语言学校',
       filePrefix: 'English-Fella',
-      heroSrc: '/assets/fella/campus-main.jpg',
+      heroSrc: '/assets/fella/campus-main.webp',
       weeks: this.selectedWeeks,
       startDate: this.earliestStartDate,
       usdToCny: this.usdToCny,

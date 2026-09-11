@@ -144,17 +144,17 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
-    { category: '校区', title: '菲律宾碧瑶JIC语言学校Challenger校园航拍', description: '菲律宾碧瑶JIC语言学校官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.jpg' },
-    { category: '校区', title: 'Baguio JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.png' },
+    { category: '校区', title: '菲律宾碧瑶JIC语言学校Challenger校园航拍', description: '菲律宾碧瑶JIC语言学校官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.webp' },
+    { category: '校区', title: 'Baguio JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.webp' },
     { category: '校区', title: 'JIC Premium Campus环境', description: 'Premium Photos页面展示的Premium校区学习生活环境。', src: 'assets/philippines/jic-premium-campus-overview.jpg' },
-    { category: '教室', title: 'Challenger IELTS一对一课堂', description: 'Main Campus Classes照片展示的IELTS备考与一对一辅导场景。', src: 'assets/philippines/jic-main-ielts-class.png' },
-    { category: '教室', title: 'Premium小组互动课堂', description: 'Premium Campus Classes照片展示的Active Learning小组课堂。', src: 'assets/philippines/jic-premium-group-class.png' },
-    { category: '住宿', title: 'Challenger Loft房型', description: 'Main Campus Rooms照片展示的loft住宿空间，适合先比较预算与生活习惯。', src: 'assets/philippines/jic-main-room-loft.jpg' },
-    { category: '住宿', title: 'Premium四人房', description: 'Premium Campus Rooms照片展示的四人房，报名需同步确认校区、性别与空房。', src: 'assets/philippines/jic-premium-quad-room.png' },
-    { category: '餐厅', title: 'Premium校区餐食', description: 'Premium Photos的Cafeteria & Meals照片展示学校餐食，菜单以当期安排为准。', src: 'assets/philippines/jic-premium-meal.png' },
-    { category: '餐厅', title: 'Premium Cafe', description: 'Premium Photos展示的校内Cafe空间，适合课后休息和交流。', src: 'assets/philippines/jic-premium-cafe.png' },
-    { category: '设施', title: 'Main Campus自习与Library', description: 'Main Photos页面展示的Library学习空间，适合IELTS与长期备考学生。', src: 'assets/philippines/jic-main-library.jpg' },
-    { category: '设施', title: 'Premium Student Center', description: 'Premium Photos展示的学生中心与休息空间，体现更舒适的生活配套。', src: 'assets/philippines/jic-premium-student-center.png' },
+    { category: '教室', title: 'Challenger IELTS一对一课堂', description: 'Main Campus Classes照片展示的IELTS备考与一对一辅导场景。', src: 'assets/philippines/jic-main-ielts-class.webp' },
+    { category: '教室', title: 'Premium小组互动课堂', description: 'Premium Campus Classes照片展示的Active Learning小组课堂。', src: 'assets/philippines/jic-premium-group-class.webp' },
+    { category: '住宿', title: 'Challenger Loft房型', description: 'Main Campus Rooms照片展示的loft住宿空间，适合先比较预算与生活习惯。', src: 'assets/philippines/jic-main-room-loft.webp' },
+    { category: '住宿', title: 'Premium四人房', description: 'Premium Campus Rooms照片展示的四人房，报名需同步确认校区、性别与空房。', src: 'assets/philippines/jic-premium-quad-room.webp' },
+    { category: '餐厅', title: 'Premium校区餐食', description: 'Premium Photos的Cafeteria & Meals照片展示学校餐食，菜单以当期安排为准。', src: 'assets/philippines/jic-premium-meal.webp' },
+    { category: '餐厅', title: 'Premium Cafe', description: 'Premium Photos展示的校内Cafe空间，适合课后休息和交流。', src: 'assets/philippines/jic-premium-cafe.webp' },
+    { category: '设施', title: 'Main Campus自习与Library', description: 'Main Photos页面展示的Library学习空间，适合IELTS与长期备考学生。', src: 'assets/philippines/jic-main-library.webp' },
+    { category: '设施', title: 'Premium Student Center', description: 'Premium Photos展示的学生中心与休息空间，体现更舒适的生活配套。', src: 'assets/philippines/jic-premium-student-center.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -171,10 +171,10 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/jic-campus-hero.jpg', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
-    { image: 'assets/philippines/jic-main-ielts-class.png', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
-    { image: 'assets/philippines/jic-premium-group-class.png', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
-    { image: 'assets/philippines/jic-premium-quad-room.png', title: '房型差异直接影响预算', text: '从Challenger上下铺四人间到Premium带阳台单人间，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
+    { image: 'assets/philippines/jic-campus-hero.webp', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
+    { image: 'assets/philippines/jic-main-ielts-class.webp', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
+    { image: 'assets/philippines/jic-premium-group-class.webp', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
+    { image: 'assets/philippines/jic-premium-quad-room.webp', title: '房型差异直接影响预算', text: '从Challenger上下铺四人间到Premium带阳台单人间，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -268,12 +268,12 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   readonly sidaJicReasons: SidaJicReason[] = [
-    { number: '01', title: '先判断菲律宾碧瑶JIC语言学校哪个校区适合', text: '不会只按学校名推荐，会把Challenger和Premium的学习强度、课程目标、生活舒适度和预算拆开比较。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生选择菲律宾碧瑶JIC语言学校校区' },
-    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费、保证班费用和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶JIC语言学校费用' },
-    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航菲律宾和深圳服务团队' },
+    { number: '01', title: '先判断菲律宾碧瑶JIC语言学校哪个校区适合', text: '不会只按学校名推荐，会把Challenger和Premium的学习强度、课程目标、生活舒适度和预算拆开比较。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生选择菲律宾碧瑶JIC语言学校校区' },
+    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费、保证班费用和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问核算菲律宾碧瑶JIC语言学校费用' },
+    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
+    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
+    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
   readonly sidaJicTrustBadges: SidaJicTrustBadge[] = [
@@ -596,9 +596,9 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       return '/assets/philippines/jic-premium-campus-overview.jpg';
     }
     if (campuses.size === 1 && campuses.has('challenger')) {
-      return '/assets/philippines/jic-main-campus-overview.png';
+      return '/assets/philippines/jic-main-campus-overview.webp';
     }
-    return '/assets/philippines/jic-campus-hero.jpg';
+    return '/assets/philippines/jic-campus-hero.webp';
   }
   get schoolPaymentItems() {
     const imageSettings = this.currentContentConfig.quoteImageSettings;

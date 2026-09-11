@@ -178,14 +178,14 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'EV校园外观', description: '2017年迁入的新校区，主打度假村式校园体验。', src: 'assets/ev/campus-exterior.jpg' },
-    { category: '校园', title: '校园草坪', description: '开放式校园空间，适合课后活动和学生交流。', src: 'assets/ev/campus-lawn.jpg' },
-    { category: '教室', title: '一对一教室', description: '用于口语、写作、考试专项和强化口说课程。', src: 'assets/ev/mtm-classroom.jpg' },
-    { category: '住宿', title: '单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/ev/single-room.jpg' },
-    { category: '住宿', title: '双人房', description: '适合朋友同行或希望兼顾预算与舒适度。', src: 'assets/ev/double-room.jpg' },
-    { category: '住宿', title: '四人房', description: '上下铺房型，预算压力相对低。', src: 'assets/ev/quad-room.jpg' },
-    { category: '设施', title: '健身房', description: '课后运动和体能恢复使用。', src: 'assets/ev/gym.jpg' },
-    { category: '设施', title: '游泳池', description: 'EV度假型校园的重要生活设施。', src: 'assets/ev/swimming-pool.jpg' },
+    { category: '校园', title: 'EV校园外观', description: '2017年迁入的新校区，主打度假村式校园体验。', src: 'assets/ev/campus-exterior.webp' },
+    { category: '校园', title: '校园草坪', description: '开放式校园空间，适合课后活动和学生交流。', src: 'assets/ev/campus-lawn.webp' },
+    { category: '教室', title: '一对一教室', description: '用于口语、写作、考试专项和强化口说课程。', src: 'assets/ev/mtm-classroom.webp' },
+    { category: '住宿', title: '单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/ev/single-room.webp' },
+    { category: '住宿', title: '双人房', description: '适合朋友同行或希望兼顾预算与舒适度。', src: 'assets/ev/double-room.webp' },
+    { category: '住宿', title: '四人房', description: '上下铺房型，预算压力相对低。', src: 'assets/ev/quad-room.webp' },
+    { category: '设施', title: '健身房', description: '课后运动和体能恢复使用。', src: 'assets/ev/gym.webp' },
+    { category: '设施', title: '游泳池', description: 'EV度假型校园的重要生活设施。', src: 'assets/ev/swimming-pool.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -200,10 +200,10 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/ev/campus-exterior.jpg', title: '2004年起深耕宿务英语教育', text: 'EV长期服务亚洲学生，官方介绍中强调其Intensive English Program与学生导向课程研发。' },
-    { image: 'assets/ev/mtm-classroom.jpg', title: '斯巴达 / 半斯巴达管理模式可选', text: '斯巴达偏冲刺和严格管理，半斯巴达偏学习与生活平衡，适合先按自律程度和学习目标做选择。' },
-    { image: 'assets/ev/swimming-pool.jpg', title: '度假村式校园定位', text: 'EV强调现代化设施、开放式环境和校园生活完整度，不只是单纯上课。' },
-    { image: 'assets/ev/quad-room.jpg', title: 'IDP雅思官方考点资源', text: '雅思学生可把课程、模考和正式考试环境一起纳入考虑，减少考试场地陌生感。' },
+    { image: 'assets/ev/campus-exterior.webp', title: '2004年起深耕宿务英语教育', text: 'EV长期服务亚洲学生，官方介绍中强调其Intensive English Program与学生导向课程研发。' },
+    { image: 'assets/ev/mtm-classroom.webp', title: '斯巴达 / 半斯巴达管理模式可选', text: '斯巴达偏冲刺和严格管理，半斯巴达偏学习与生活平衡，适合先按自律程度和学习目标做选择。' },
+    { image: 'assets/ev/swimming-pool.webp', title: '度假村式校园定位', text: 'EV强调现代化设施、开放式环境和校园生活完整度，不只是单纯上课。' },
+    { image: 'assets/ev/quad-room.webp', title: 'IDP雅思官方考点资源', text: '雅思学生可把课程、模考和正式考试环境一起纳入考虑，减少考试场地陌生感。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -329,42 +329,42 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       number: '01',
       title: '正式合同与官方授权',
       text: '国内公司签约，EV报价、录取文件及收费凭证均可核验。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航正式合同与学校文件核验',
     },
     {
       number: '02',
       title: '费用提前算清，同条件保价',
       text: '0中介服务费，学费、食宿费及EV到校费用逐项说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾游学费用',
     },
     {
       number: '03',
       title: '先判断斯巴达或半斯巴达是否适合',
       text: '根据目标、预算、自律程度和房型偏好，帮你判断EV是否匹配。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、课程、住宿、账单、续读或转校问题继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '深圳总部 + 菲律宾驻点服务',
       text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航菲律宾和深圳服务团队',
     },
   ];
@@ -834,7 +834,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       schoolCode: 'EV主校区',
       schoolName: '菲律宾宿务EV Academy',
       filePrefix: 'EV',
-      heroSrc: '/assets/ev/campus-exterior.jpg',
+      heroSrc: '/assets/ev/campus-exterior.webp',
       weeks: this.selectedWeeks,
       startDate,
       usdToCny: this.usdToCny,

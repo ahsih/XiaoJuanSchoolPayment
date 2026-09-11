@@ -118,9 +118,9 @@ describe('IU and ICL 2026 quote rules', () => {
 
   it('keeps the full-detail webpage and image rows synchronized in Chinese currency names', () => {
     const quote = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
-    const image = quote.imageData(7.2, 7.8, '2026-09-05', '/assets/philippines/icl-campus-hero.jpg');
+    const image = quote.imageData(7.2, 7.8, '2026-09-05', '/assets/philippines/icl-campus-hero.webp');
     expect(image.headingText).toBe('ICL4周报价');
-    expect(image.heroSrc).toBe('/assets/philippines/icl-campus-hero.jpg');
+    expect(image.heroSrc).toBe('/assets/philippines/icl-campus-hero.webp');
     expect(image.fullFeeDetails).toBeTrue();
     expect(image.hideAlumniBenefit).toBeTrue();
     expect(image.alumniBenefitItems).toEqual([]);
@@ -147,16 +147,16 @@ describe('IU and ICL 2026 quote rules', () => {
   it('uses each school campus image instead of the promotion poster', () => {
     const iu = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
     const icl = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
-    expect(iu.imageData(7.2, 7.8, undefined, '/assets/philippines/iu-campus-hero.jpg').heroSrc)
-      .toBe('/assets/philippines/iu-campus-hero.jpg');
-    expect(icl.imageData(7.2, 7.8, undefined, '/assets/philippines/icl-campus-hero.jpg').heroSrc)
-      .toBe('/assets/philippines/icl-campus-hero.jpg');
+    expect(iu.imageData(7.2, 7.8, undefined, '/assets/philippines/iu-campus-hero.webp').heroSrc)
+      .toBe('/assets/philippines/iu-campus-hero.webp');
+    expect(icl.imageData(7.2, 7.8, undefined, '/assets/philippines/icl-campus-hero.webp').heroSrc)
+      .toBe('/assets/philippines/icl-campus-hero.webp');
   });
 
   it('adds every IELTS guarantee condition to the otherwise concise image notes', () => {
     const quote = new IuIclQuote('IU', 'ielts-guarantee-8', 'campus-triple', '2026-09-13');
     align(quote, 8, '2026-09-13');
-    const image = quote.imageData(7.2, 7.8, undefined, '/assets/philippines/iu-campus-hero.jpg');
+    const image = quote.imageData(7.2, 7.8, undefined, '/assets/philippines/iu-campus-hero.webp');
     const imageNotes = image.importantNotes ?? [];
     expect(imageNotes).toHaveSize(7);
     expect(imageNotes).toEqual(jasmine.arrayContaining(IU_ICL_GUARANTEE_RULES));
@@ -191,9 +191,9 @@ describe('IU and ICL 2026 quote rules', () => {
     const second = new IuIclQuote('ICL', 'ielts-guarantee-8', 'campus-triple', '2026-10-04');
     align(second, 8, '2026-10-04');
     const image = buildIuIclGroupImageData(
-      [first, second], 7.2, 7.8, '2026-09-09', '/assets/philippines/icl-campus-hero.jpg');
+      [first, second], 7.2, 7.8, '2026-09-09', '/assets/philippines/icl-campus-hero.webp');
     expect(image.headingText).toBe('ICL 2人报价');
-    expect(image.heroSrc).toBe('/assets/philippines/icl-campus-hero.jpg');
+    expect(image.heroSrc).toBe('/assets/philippines/icl-campus-hero.webp');
     expect(image.totalUsd).toBe(`${(first.total + second.total).toLocaleString('en-US')} 美元`);
     expect(image.paymentItems.some(item => item.label.startsWith('学生1 · 课程名称'))).toBeTrue();
     expect(image.paymentItems.some(item => item.label.startsWith('学生2 · 课程名称'))).toBeTrue();

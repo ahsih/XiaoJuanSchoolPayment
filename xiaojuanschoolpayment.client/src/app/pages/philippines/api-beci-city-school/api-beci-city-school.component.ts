@@ -203,42 +203,42 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
       title: 'API BECI City Campus外观',
       description:
         'City Campus位于Baguio市区生活圈，适合成人、工作者和偏弹性学习节奏的学生。',
-      src: 'assets/philippines/beci-campus-blue-roof.png',
+      src: 'assets/philippines/beci-campus-blue-roof.webp',
     },
     {
       category: '设施',
       title: 'City Campus学习休息区',
       description:
         '公共学习与休息空间更像成人学习社区，适合边工作边学习或课后自习。',
-      src: 'assets/philippines/beci-city-study-lounge.png',
+      src: 'assets/philippines/beci-city-study-lounge.webp',
     },
     {
       category: '设施',
       title: 'City Campus自习工作区',
       description:
         '公开资料强调coworking、online meeting room和library，适合Workcation学生。',
-      src: 'assets/philippines/beci-city-workspace.png',
+      src: 'assets/philippines/beci-city-workspace.webp',
     },
     {
       category: '教室',
       title: 'BECI一对一课堂参考',
       description:
         'Lite ESL、Native ESL、Unlimited ESL和Junior ESL都以一对一训练为重要组成。',
-      src: 'assets/philippines/beci-one-to-one-class.jpg',
+      src: 'assets/philippines/beci-one-to-one-class.webp',
     },
     {
       category: '教室',
       title: 'Speaking Prescription反馈',
       description:
         'BECI校系特色之一是用录影和维度诊断追踪学生口语弱点。',
-      src: 'assets/philippines/beci-speaking-prescription.jpg',
+      src: 'assets/philippines/beci-speaking-prescription.webp',
     },
     {
       category: '校园',
       title: 'BECI校区建筑参考',
       description:
         'API BECI在Baguio有不同校区，City Campus需和EOP、Sparta分开比较。',
-      src: 'assets/philippines/beci-campus-building.png',
+      src: 'assets/philippines/beci-campus-building.webp',
     },
   ];
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
@@ -256,17 +256,17 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
 
   readonly highlights: Highlight[] = [
     {
-      image: 'assets/philippines/beci-city-study-lounge.png',
+      image: 'assets/philippines/beci-city-study-lounge.webp',
       title: '成人和工作者友好',
       text: 'City Campus公开定位为成人英语教育中心，有弹性课程、工作空间和线上会议环境。',
     },
     {
-      image: 'assets/philippines/beci-city-workspace.png',
+      image: 'assets/philippines/beci-city-workspace.webp',
       title: '轻量到高课量可选',
       text: 'Lite适合保留工作和复习时间，Unlimited适合希望提高每日一对一课量的学生。',
     },
     {
-      image: 'assets/philippines/beci-speaking-prescription.jpg',
+      image: 'assets/philippines/beci-speaking-prescription.webp',
       title: 'BECI校系口语反馈',
       text: 'BECI强调Speaking Prescription和学习管理系统，适合想用反馈机制修正口语弱点的学生。',
     },

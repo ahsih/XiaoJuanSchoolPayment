@@ -123,7 +123,7 @@ export class ManilaStudyComponent {
   readonly schoolProfiles: SchoolProfile[] = [
     {
       name: '菲律宾马尼拉Enderun语言学校',
-      image: '/assets/philippines/enderun-extension-socials.jpg',
+      image: '/assets/philippines/enderun-extension-socials.webp',
       location: 'Taguig / Enderun Colleges 体系',
       style: '学术英语、商务英语与短课型',
       route: '/philippines-study/manila/enderun-extension',
@@ -147,7 +147,7 @@ export class ManilaStudyComponent {
     },
     {
       name: '菲律宾马尼拉American-English-Skill语言学校',
-      image: '/assets/philippines/american-english-training-room.jpg',
+      image: '/assets/philippines/american-english-training-room.webp',
       location: 'Makati / Metro Manila',
       style: '成人口语与企业沟通训练',
       route: '/philippines-study/manila/american-english-skills-development-center',
@@ -194,7 +194,7 @@ export class ManilaStudyComponent {
     },
     {
       name: '菲律宾马尼拉Business College学校',
-      image: '/assets/philippines/mbc-slider-1.jpg',
+      image: '/assets/philippines/mbc-slider-1.webp',
       location: 'Manila City',
       style: '商科院校与国际学生衔接候选',
       route: '/philippines-study/manila/manila-business-college',
@@ -318,10 +318,10 @@ export class ManilaStudyComponent {
     heroSubtitle: '首都资源 × 商务英语 × 城市短课',
     heroDescription:
       '马尼拉适合成人、职场人士与短期停留者。这里航班和城市资源集中，商务沟通、学术衔接与企业课程更有优势；多数课程不是传统寄宿制，选校时要把上课地点、住宿和通勤一起安排。',
-    heroImage: '/assets/philippines/manila-study-hero.jpg',
+    heroImage: '/assets/philippines/manila-study-hero.webp',
     heroImageAlt: '菲律宾马尼拉城市与英语学习环境',
-    heroStudyImage: '/assets/philippines/american-english-training-room.jpg',
-    heroLessonImage: '/assets/philippines/enderun-general-english.jpg',
+    heroStudyImage: '/assets/philippines/american-english-training-room.webp',
+    heroLessonImage: '/assets/philippines/enderun-general-english.webp',
     heroVisualLabel: '马尼拉城市、商务与英语课堂场景',
     benefitChips: [
       { icon: 'flight_takeoff', label: '国际航班集中' },
@@ -342,15 +342,15 @@ export class ManilaStudyComponent {
     schoolProfiles: this.schoolProfiles,
     highlights: this.highlights,
     selectionImages: [
-      '/assets/philippines/american-english-training-room.jpg',
-      '/assets/philippines/enderun-business-english.jpg',
-      '/assets/philippines/mbc-classroom.jpg',
-      '/assets/philippines/manila-study-hero.jpg',
+      '/assets/philippines/american-english-training-room.webp',
+      '/assets/philippines/enderun-business-english.webp',
+      '/assets/philippines/mbc-classroom.webp',
+      '/assets/philippines/manila-study-hero.webp',
     ],
     lifestyleImages: [
-      '/assets/philippines/manila-study-hero.jpg',
-      '/assets/philippines/american-english-presentation-skills.jpg',
-      '/assets/philippines/enderun-academic-english.jpg',
+      '/assets/philippines/manila-study-hero.webp',
+      '/assets/philippines/american-english-presentation-skills.webp',
+      '/assets/philippines/enderun-academic-english.webp',
       '/assets/philippines/berlitz-adults.webp',
     ],
     faqs: this.faqs,

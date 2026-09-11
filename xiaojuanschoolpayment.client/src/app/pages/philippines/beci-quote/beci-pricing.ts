@@ -79,19 +79,19 @@ const cityRooms: readonly BeciRoomPrice[] = [
 export const BECI_CAMPUS_PRICING: Readonly<Record<BeciCampus, BeciCampusPricing>> = {
   eop: {
     id: 'eop', code: 'BECI EOP', name: '菲律宾碧瑶BECI EOP校区', shortName: 'BECI EOP校区',
-    hero: '/assets/philippines/beci-eop-campus.jpg', courses: eopCourses, rooms: eopRooms,
+    hero: '/assets/philippines/beci-eop-campus.webp', courses: eopCourses, rooms: eopRooms,
     defaultCourseId: 'eop-lite-esl', defaultRoomId: 'eop-quad-female',
     campusNote: 'EOP校区40岁及以上学生只能选择单人间；Junior课程目前不设置固定年龄拦截。',
   },
   sparta: {
     id: 'sparta', code: 'BECI SPARTA', name: '菲律宾碧瑶BECI斯巴达校区', shortName: 'BECI斯巴达校区',
-    hero: '/assets/philippines/beci-campus-blue-roof.png', courses: spartaCourses, rooms: spartaRooms,
+    hero: '/assets/philippines/beci-campus-blue-roof.webp', courses: spartaCourses, rooms: spartaRooms,
     defaultCourseId: 'sparta-24-esl', defaultRoomId: 'sparta-quad',
     campusNote: 'IELTS保证班12周起报；晚间必修课与考试安排以学校当期课表为准。',
   },
   city: {
     id: 'city', code: 'API BECI CITY', name: '菲律宾碧瑶API BECI City Campus', shortName: 'API BECI City校区',
-    hero: '/assets/philippines/beci-city-study-lounge.png', courses: cityCourses, rooms: cityRooms,
+    hero: '/assets/philippines/beci-city-study-lounge.webp', courses: cityCourses, rooms: cityRooms,
     defaultCourseId: 'city-lite-esl', defaultRoomId: 'city-studio-quad',
     campusNote: '夜间一对一通常安排在17:00–21:00，每门夜间课程较常规日间安排少1节一对一；本项只作说明。',
   },

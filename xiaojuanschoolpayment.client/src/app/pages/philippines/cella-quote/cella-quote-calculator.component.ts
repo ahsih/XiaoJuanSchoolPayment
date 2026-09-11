@@ -266,7 +266,7 @@ export class CellaQuoteCalculatorComponent implements OnInit {
       schoolName: `菲律宾宿务${CELLA_CAMPUS_NAMES[this.initialCampus]}`,
       filePrefix: this.initialCampus === 'uni' ? 'CELLA-Uni-Sparta' : 'CELLA-Premium',
       // Quote export must stay same-origin; remote campus photos can taint the canvas.
-      heroSrc: '/assets/philippines/cebu-study-hero.jpg',
+      heroSrc: '/assets/philippines/cebu-study-hero.webp',
       weeks: first?.actualWeeks ?? 4,
       startDate: earliest,
       usdToCny: this.usdToCny,

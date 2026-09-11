@@ -274,7 +274,7 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
     return {
       layout: 'cia-detailed',
       fileName: `${fileSafeCode}-${weeks}周报价单-${dateText.replaceAll('/', '')}.png`,
-      logoSrc: '/assets/sida-qihang-quote-header-logo-transparent.png',
+      logoSrc: '/assets/sida-qihang-quote-header-logo-transparent.webp',
       heroSrc: this.extractHeroSource(),
       schoolCode,
       title: `${weeks}周`,
@@ -630,11 +630,11 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
 
   private cityHeroFallback(): string {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes('/baguio/')) return '/assets/philippines/baguio-study-hero.jpg';
-    if (path.includes('/clark/')) return '/assets/philippines/clark-study-hero.jpg';
-    if (path.includes('/manila/')) return '/assets/philippines/manila-study-hero.jpg';
-    if (path.includes('/cebu/')) return '/assets/philippines/cebu-study-hero.jpg';
-    return '/assets/study-hero-collage.png';
+    if (path.includes('/baguio/')) return '/assets/philippines/baguio-study-hero.webp';
+    if (path.includes('/clark/')) return '/assets/philippines/clark-study-hero.webp';
+    if (path.includes('/manila/')) return '/assets/philippines/manila-study-hero.webp';
+    if (path.includes('/cebu/')) return '/assets/philippines/cebu-study-hero.webp';
+    return '/assets/study-hero-collage.webp';
   }
 
   private findQuoteTotalElement(quoteSection: HTMLElement): HTMLElement | null {

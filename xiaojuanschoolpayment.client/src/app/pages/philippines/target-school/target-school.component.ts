@@ -156,7 +156,7 @@ export class TargetSchoolComponent implements OnInit {
       category: '校园',
       title: 'TARGET泳池与休息区',
       description: 'Talamban校区带泳池和户外休息区，学习之外也保留轻松交流空间。',
-      src: '/assets/philippines/target-campus-hero.jpg',
+      src: '/assets/philippines/target-campus-hero.webp',
     },
     {
       category: '校园',

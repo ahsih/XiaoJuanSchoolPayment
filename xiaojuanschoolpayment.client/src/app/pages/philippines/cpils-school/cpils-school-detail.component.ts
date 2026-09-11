@@ -143,17 +143,17 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'CPILS主楼外观', description: '宿务市区型校园，学习、住宿和服务集中在校内。', src: 'assets/cpils/campus-main.jpg' },
-    { category: '校园', title: 'CPILS校园入口', description: '老牌市区学校，适合重视学习管理和生活机能的学生。', src: 'assets/cpils/campus-front.jpg' },
-    { category: '教室', title: '课程体系展示', description: '官方课程页列出ESL、斯巴达ESL、雅思、托业、托福等方向。', src: 'assets/cpils/classroom-header.jpg' },
-    { category: '教室', title: '课程负责人展示', description: '官方课程页展示不同课程负责人，适合按目标选择课程。', src: 'assets/cpils/classroom-teacher.jpg' },
-    { category: '住宿', title: '宿舍楼与住宿区', description: '官方资料显示CPILS有180间以上宿舍房间。', src: 'assets/cpils/dormitory-building.jpg' },
-    { category: '住宿', title: '校内双人房参考', description: '房内通常配备床具、桌椅、冰箱、独立卫浴和Wi-Fi。', src: 'assets/cpils/regular-room-3.jpg' },
-    { category: '住宿', title: 'Premium房型参考', description: 'Premium房型费用更高，亲子、青少年和高楼层房型需提前确认。', src: 'assets/cpils/premium-room-2.jpg' },
-    { category: '餐厅', title: 'Dining Area餐饮区', description: '官方服务设施列出Dining Area和Snack Bar。', src: 'assets/cpils/service-12.png' },
-    { category: '设施', title: 'Fitness Gym健身房', description: '官方休闲设施页列出健身房，适合课后运动。', src: 'assets/cpils/gym.jpg' },
-    { category: '设施', title: 'Outdoor Swimming Pool', description: '泳池是CPILS官方介绍中的主要休闲设施之一。', src: 'assets/cpils/leisure-pool.jpg' },
-    { category: '设施', title: '学生服务柜台', description: '到校后费用、证件、宿舍和日常问题可通过学校窗口处理。', src: 'assets/cpils/service-2.png' },
+    { category: '校园', title: 'CPILS主楼外观', description: '宿务市区型校园，学习、住宿和服务集中在校内。', src: 'assets/cpils/campus-main.webp' },
+    { category: '校园', title: 'CPILS校园入口', description: '老牌市区学校，适合重视学习管理和生活机能的学生。', src: 'assets/cpils/campus-front.webp' },
+    { category: '教室', title: '课程体系展示', description: '官方课程页列出ESL、斯巴达ESL、雅思、托业、托福等方向。', src: 'assets/cpils/classroom-header.webp' },
+    { category: '教室', title: '课程负责人展示', description: '官方课程页展示不同课程负责人，适合按目标选择课程。', src: 'assets/cpils/classroom-teacher.webp' },
+    { category: '住宿', title: '宿舍楼与住宿区', description: '官方资料显示CPILS有180间以上宿舍房间。', src: 'assets/cpils/dormitory-building.webp' },
+    { category: '住宿', title: '校内双人房参考', description: '房内通常配备床具、桌椅、冰箱、独立卫浴和Wi-Fi。', src: 'assets/cpils/regular-room-3.webp' },
+    { category: '住宿', title: 'Premium房型参考', description: 'Premium房型费用更高，亲子、青少年和高楼层房型需提前确认。', src: 'assets/cpils/premium-room-2.webp' },
+    { category: '餐厅', title: 'Dining Area餐饮区', description: '官方服务设施列出Dining Area和Snack Bar。', src: 'assets/cpils/service-12.webp' },
+    { category: '设施', title: 'Fitness Gym健身房', description: '官方休闲设施页列出健身房，适合课后运动。', src: 'assets/cpils/gym.webp' },
+    { category: '设施', title: 'Outdoor Swimming Pool', description: '泳池是CPILS官方介绍中的主要休闲设施之一。', src: 'assets/cpils/leisure-pool.webp' },
+    { category: '设施', title: '学生服务柜台', description: '到校后费用、证件、宿舍和日常问题可通过学校窗口处理。', src: 'assets/cpils/service-2.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -168,10 +168,10 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/cpils/campus-main.jpg', title: '宿务老牌语言学校', text: '2001年创立，适合看重学校经验、管理体系和考试资源的学生。' },
-    { image: 'assets/cpils/classroom-header.jpg', title: '课程覆盖完整', text: 'ESL、斯巴达、雅思、托业、托福、商务、口语和亲子课程都可比较。' },
-    { image: 'assets/cpils/regular-room-3.jpg', title: '校内住宿集中管理', text: '宿舍、课程、餐饮和服务都在校内，适合想降低通勤和适应压力的人。' },
-    { image: 'assets/cpils/gym.jpg', title: '学习之外也有设施', text: '泳池、健身房、咖啡娱乐区和休息区能支持课后放松。' },
+    { image: 'assets/cpils/campus-main.webp', title: '宿务老牌语言学校', text: '2001年创立，适合看重学校经验、管理体系和考试资源的学生。' },
+    { image: 'assets/cpils/classroom-header.webp', title: '课程覆盖完整', text: 'ESL、斯巴达、雅思、托业、托福、商务、口语和亲子课程都可比较。' },
+    { image: 'assets/cpils/regular-room-3.webp', title: '校内住宿集中管理', text: '宿舍、课程、餐饮和服务都在校内，适合想降低通勤和适应压力的人。' },
+    { image: 'assets/cpils/gym.webp', title: '学习之外也有设施', text: '泳池、健身房、咖啡娱乐区和休息区能支持课后放松。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -249,42 +249,42 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       number: '01',
       title: '正式合同与学校文件可核验',
       text: '国内公司签约，CPILS报价、录取文件及收费凭证均可逐项核对。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航正式合同与学校文件核验',
     },
     {
       number: '02',
       title: '考试目标和费用提前算清',
       text: '0中介服务费，课程费、住宿费、考试课程规则及CPILS到校费用逐项说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾宿务CPILS语言学校费用',
     },
     {
       number: '03',
       title: '先判断CPILS是否适合',
       text: '根据目标分数、管理强度、预算、房型和入学档期，帮你判断CPILS是否匹配。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '深圳总部 + 宿务驻点服务',
       text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -727,7 +727,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       schoolCode: 'CPILS',
       schoolName: '菲律宾宿务CPILS语言学校',
       filePrefix: 'CPILS',
-      heroSrc: '/assets/cpils/campus-main.jpg',
+      heroSrc: '/assets/cpils/campus-main.webp',
       weeks: this.selectedWeeks,
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,

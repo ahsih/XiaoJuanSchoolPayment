@@ -188,13 +188,13 @@ export class HelpLonglongSchoolComponent {
       category: '住宿',
       title: '校内宿舍方向',
       description: '所附2025年费用表列Single、Double与2+1三种4周住宿价格。',
-      src: 'assets/philippines/baguio-study-hero.jpg',
+      src: 'assets/philippines/baguio-study-hero.webp',
     },
     {
       category: '生活',
       title: 'Baguio学习生活环境',
       description: 'Longlong位于Benguet山城区域，凉爽安静但交通与当前开放状态需提前确认。',
-      src: 'assets/philippines/baguio-study-hero.jpg',
+      src: 'assets/philippines/baguio-study-hero.webp',
     },
   ];
 
@@ -226,7 +226,7 @@ export class HelpLonglongSchoolComponent {
       text: '所附2025年课程费覆盖ESL、ESL Intensive、Business与IELTS不同级别，适合做4-24周预算初筛。',
     },
     {
-      image: 'assets/philippines/help-clark-local-fee.jpeg',
+      image: 'assets/philippines/help-clark-local-fee.webp',
       title: '必须确认当期校区安排',
       text: '由于官网明确提示Longlong升级期间课程与教师整合至Clark，报名前要先核对是否能入住Longlong或由Clark承接。',
     },

@@ -94,14 +94,14 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'EG校园与泳池外观', description: 'EG官方校园页展示的校区、泳池、球场和庭院环境。', src: 'assets/philippines/eg-facility-001.jpg' },
-    { category: '校园', title: 'EG校园总览', description: '官方Facility综合图，展示校舍、宿舍、泳池和公共空间。', src: 'assets/philippines/eg-campus-overview.png' },
+    { category: '校园', title: 'EG校园与泳池外观', description: 'EG官方校园页展示的校区、泳池、球场和庭院环境。', src: 'assets/philippines/eg-facility-001.webp' },
+    { category: '校园', title: 'EG校园总览', description: '官方Facility综合图，展示校舍、宿舍、泳池和公共空间。', src: 'assets/philippines/eg-campus-overview.webp' },
     { category: '教室', title: '教学楼与教室', description: '官方School Building图，包含大堂、教室、一对一教室和多媒体教室。', src: 'assets/philippines/eg-classroom.jpg' },
-    { category: '住宿', title: 'Dormitory 1 双人/单人房', description: '官方宿舍图展示房间、书桌、衣柜、浴室和走廊空间。', src: 'assets/philippines/eg-dormitory.jpg' },
+    { category: '住宿', title: 'Dormitory 1 双人/单人房', description: '官方宿舍图展示房间、书桌、衣柜、浴室和走廊空间。', src: 'assets/philippines/eg-dormitory.webp' },
     { category: '住宿', title: 'Dormitory 1 四人房', description: '官方四人房图，适合先判断低预算房型和基本生活配置。', src: 'assets/philippines/eg-group-classroom.jpg' },
-    { category: '住宿', title: 'Dormitory 2 房型', description: '官方Dormitory 2图，展示单人/多人房和卫浴空间。', src: 'assets/philippines/eg-facility-003.jpg' },
-    { category: '运动', title: '高尔夫与运动设施', description: '官方设施图展示高尔夫练习场、球场、篮球场和休息区。', src: 'assets/philippines/eg-facility-004.jpg' },
-    { category: '运动', title: 'EG Golf项目', description: '官方Golf页展示高尔夫练习场、教练和课程方向。', src: 'assets/philippines/eg-golf-facility.png' },
+    { category: '住宿', title: 'Dormitory 2 房型', description: '官方Dormitory 2图，展示单人/多人房和卫浴空间。', src: 'assets/philippines/eg-facility-003.webp' },
+    { category: '运动', title: '高尔夫与运动设施', description: '官方设施图展示高尔夫练习场、球场、篮球场和休息区。', src: 'assets/philippines/eg-facility-004.webp' },
+    { category: '运动', title: 'EG Golf项目', description: '官方Golf页展示高尔夫练习场、教练和课程方向。', src: 'assets/philippines/eg-golf-facility.webp' },
     { category: '设施', title: '校园设施综合图', description: '官方图集中展示泳池、教室、TOEIC考场、宿舍和运动设施。', src: 'assets/philippines/eg-room-2018.jpg' },
   ];
 
@@ -117,10 +117,10 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/eg-facility-001.jpg', title: 'Clark舒适型校园', text: 'EG适合想在克拉克把校园环境、住宿、学习和生活便利度一起考虑的学生。' },
+    { image: 'assets/philippines/eg-facility-001.webp', title: 'Clark舒适型校园', text: 'EG适合想在克拉克把校园环境、住宿、学习和生活便利度一起考虑的学生。' },
     { image: 'assets/philippines/eg-classroom.jpg', title: '一对一和团体课并重', text: '官网概况列出50间一对一教室和20间团体教室，ESL和考试课程都可按强度选择。' },
-    { image: 'assets/philippines/eg-facility-004.jpg', title: '高尔夫英语特色明显', text: 'EG Golf页列出练习场、教练和追加课程费用，适合把英语和高尔夫体验结合。' },
-    { image: 'assets/philippines/eg-facility-002.jpg', title: '宿舍配置清晰', text: '官方宿舍图展示床位、书桌、衣柜、卫浴等空间，报价时重点确认房型和空房。' },
+    { image: 'assets/philippines/eg-facility-004.webp', title: '高尔夫英语特色明显', text: 'EG Golf页列出练习场、教练和追加课程费用，适合把英语和高尔夫体验结合。' },
+    { image: 'assets/philippines/eg-facility-002.webp', title: '宿舍配置清晰', text: '官方宿舍图展示床位、书桌、衣柜、卫浴等空间，报价时重点确认房型和空房。' },
   ];
 
   readonly suitableFor: FitItem[] = [

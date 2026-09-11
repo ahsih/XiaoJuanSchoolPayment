@@ -96,7 +96,7 @@ export class HomeComponent {
       city: '菲律宾 · 宿务',
       tag: 'IELTS / TOEIC / Family',
       description: 'Mactan 度假型新校区，适合雅思、亲子和第一次菲律宾游学。',
-      image: '/assets/cia/campus-building.png',
+      image: '/assets/cia/campus-building.webp',
       route: '/philippines-study/cebu/cia-cebu-international-academy',
     },
     {
@@ -104,7 +104,7 @@ export class HomeComponent {
       city: '菲律宾 · 宿务',
       tag: 'Sparta / IELTS / Speaking',
       description: '宿务市区现代校园，斯巴达和半斯巴达强度可选。',
-      image: '/assets/ev/campus-exterior.jpg',
+      image: '/assets/ev/campus-exterior.webp',
       route: '/philippines-study/cebu/ev-academy',
     },
     {
@@ -112,7 +112,7 @@ export class HomeComponent {
       city: '菲律宾 · 宿务',
       tag: 'Resort / ESL / Family',
       description: 'Nivel Hills 度假村式校园，适合重视住宿、设施和舒适度的学生。',
-      image: '/assets/cpi/campus-pool.jpg',
+      image: '/assets/cpi/campus-pool.webp',
       route: '/philippines-study/cebu/cpi-cebu-pelis-institute',
     },
   ];
@@ -161,25 +161,25 @@ export class HomeComponent {
 
   readonly projects: ProjectCard[] = [
     {
-      image: '/assets/study-hero-collage.png',
+      image: '/assets/study-hero-collage.webp',
       title: '爱尔兰留学申请',
       description: '本科、硕士、预科和半工半读申请，覆盖选校、材料、签证与行前准备。',
       route: '/ireland-study/undergraduate-application',
     },
     {
-      image: '/assets/philippines/baguio-study-hero.jpg',
+      image: '/assets/philippines/baguio-study-hero.webp',
       title: '菲律宾英语游学',
       description: 'ESL、雅思、商务英语等课程规划，适合短期突破与长期沉浸学习。',
       route: '/philippines-study/schools/by-city',
     },
     {
-      image: '/assets/philinter/group-classroom.png',
+      image: '/assets/philinter/group-classroom.webp',
       title: '线上英语课程',
       description: '外教一对一和专项口语写作训练，在家也能稳定提升英语能力。',
       route: '/online-english/courses',
     },
     {
-      image: '/assets/philippines/manila-study-hero.jpg',
+      image: '/assets/philippines/manila-study-hero.webp',
       title: '海外游学项目',
       description: '多国文化体验与主题课程，帮助学生提前适应海外学习环境。',
       route: '/overseas-study-tour/ireland',

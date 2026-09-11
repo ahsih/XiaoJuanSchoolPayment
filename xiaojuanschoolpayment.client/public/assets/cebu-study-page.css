@@ -256,13 +256,13 @@
 .hero-class--study {
   background:
     linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
-    url("/assets/study-hero-collage.png") right top / auto 200% no-repeat;
+    url("/assets/study-hero-collage.webp") right top / auto 200% no-repeat;
 }
 
 .hero-class--lesson {
   background:
     linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
-    url("/assets/study-hero-collage.png") right bottom / auto 200% no-repeat;
+    url("/assets/study-hero-collage.webp") right bottom / auto 200% no-repeat;
 }
 
 .hero-stats {

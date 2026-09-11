@@ -94,14 +94,14 @@ export class AelcSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'AELC校舍外观', description: 'AELC学校楼体与入口，来自AELC学校资料页图片。', src: 'assets/philippines/aelc-main.jpg' },
-    { category: '校园', title: 'AELC校内环境', description: 'AELC校园内部公共空间和通行区域。', src: 'assets/philippines/aelc-campus.jpg' },
-    { category: '校园', title: 'AELC前台区域', description: '学校接待与前台空间，适合核对校内氛围。', src: 'assets/philippines/aelc-front.jpg' },
-    { category: '课堂', title: 'AELC课程场景', description: '课堂和教学环境，适合关注Native口语与一对一课程的学生参考。', src: 'assets/philippines/aelc-classroom.jpg' },
-    { category: '住宿', title: 'AELC宿舍楼', description: '宿舍外观与公共空间，房型和开放状态需按当期确认。', src: 'assets/philippines/aelc-dormitory.jpg' },
-    { category: '住宿', title: 'AELC双人房参考', description: 'AELC资料页中的宿舍房间照片。', src: 'assets/philippines/aelc-room.jpg' },
-    { category: '生活', title: 'AELC餐厅', description: '校内餐食和公共生活区域参考。', src: 'assets/philippines/aelc-dining.jpg' },
-    { category: '生活', title: 'AELC泳池设施', description: '校内泳池和休闲设施参考。', src: 'assets/philippines/aelc-pool.jpg' },
+    { category: '校园', title: 'AELC校舍外观', description: 'AELC学校楼体与入口，来自AELC学校资料页图片。', src: 'assets/philippines/aelc-main.webp' },
+    { category: '校园', title: 'AELC校内环境', description: 'AELC校园内部公共空间和通行区域。', src: 'assets/philippines/aelc-campus.webp' },
+    { category: '校园', title: 'AELC前台区域', description: '学校接待与前台空间，适合核对校内氛围。', src: 'assets/philippines/aelc-front.webp' },
+    { category: '课堂', title: 'AELC课程场景', description: '课堂和教学环境，适合关注Native口语与一对一课程的学生参考。', src: 'assets/philippines/aelc-classroom.webp' },
+    { category: '住宿', title: 'AELC宿舍楼', description: '宿舍外观与公共空间，房型和开放状态需按当期确认。', src: 'assets/philippines/aelc-dormitory.webp' },
+    { category: '住宿', title: 'AELC双人房参考', description: 'AELC资料页中的宿舍房间照片。', src: 'assets/philippines/aelc-room.webp' },
+    { category: '生活', title: 'AELC餐厅', description: '校内餐食和公共生活区域参考。', src: 'assets/philippines/aelc-dining.webp' },
+    { category: '生活', title: 'AELC泳池设施', description: '校内泳池和休闲设施参考。', src: 'assets/philippines/aelc-pool.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -116,10 +116,10 @@ export class AelcSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/aelc-main.jpg', title: 'Clark Native方向代表学校', text: 'AELC长期被作为Clark外教口语、发音和欧美表达方向的候选学校来比较。' },
-    { image: 'assets/philippines/aelc-classroom.jpg', title: '外教一对一比例值得关注', text: '课程表按菲律宾老师、Native老师一对一、Native团体课和选修课拆分，报名时要核对真实课表。' },
-    { image: 'assets/philippines/aelc-dormitory.jpg', title: '两个校区定位不同', text: 'Center 1偏TOEIC和成人基础英语；Center 2偏IELTS、亲子和长期海外规划方向。' },
-    { image: 'assets/philippines/aelc-pool.jpg', title: '生活设施完整', text: '资料图包含宿舍、餐厅、泳池和校内公共空间，适合想比较生活舒适度的学生。' },
+    { image: 'assets/philippines/aelc-main.webp', title: 'Clark Native方向代表学校', text: 'AELC长期被作为Clark外教口语、发音和欧美表达方向的候选学校来比较。' },
+    { image: 'assets/philippines/aelc-classroom.webp', title: '外教一对一比例值得关注', text: '课程表按菲律宾老师、Native老师一对一、Native团体课和选修课拆分，报名时要核对真实课表。' },
+    { image: 'assets/philippines/aelc-dormitory.webp', title: '两个校区定位不同', text: 'Center 1偏TOEIC和成人基础英语；Center 2偏IELTS、亲子和长期海外规划方向。' },
+    { image: 'assets/philippines/aelc-pool.webp', title: '生活设施完整', text: '资料图包含宿舍、餐厅、泳池和校内公共空间，适合想比较生活舒适度的学生。' },
   ];
 
   readonly suitableFor: FitItem[] = [

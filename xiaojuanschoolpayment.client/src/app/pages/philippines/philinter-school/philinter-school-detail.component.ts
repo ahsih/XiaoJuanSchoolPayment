@@ -140,20 +140,20 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'Philinter校园楼体', description: '官方设施图片展示Philinter校内住宿与教学楼体。', src: 'assets/philinter/campus-main.jpeg' },
-    { category: '校园', title: '校园泳池', description: '官方设施页介绍泳池位于宿舍与咖啡厅之间，可供学生课后放松。', src: 'assets/philinter/campus-pool.jpg' },
-    { category: '校园', title: '学校大厅', description: '学校大厅是学生报到、公告和日常沟通的中心区域。', src: 'assets/philinter/lobby.png' },
-    { category: '教室', title: '一对一/小班学习场景', description: 'Philinter课程强调个别化支持和进度追踪。', src: 'assets/philinter/one-on-one-room.jpg' },
-    { category: '教室', title: '团体教室', description: '用于讨论、表达、演示和综合训练。', src: 'assets/philinter/study-hall.jpg' },
-    { category: '教室', title: '讲座教室', description: '大型团体课、说明会和活动会用到的教学空间。', src: 'assets/philinter/group-classroom.png' },
-    { category: '住宿', title: '校内单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/philinter/single-room.jpg' },
-    { category: '住宿', title: '校内双人房', description: '预算与舒适度相对平衡，适合同伴同行。', src: 'assets/philinter/double-room.jpg' },
-    { category: '住宿', title: '校内三人房', description: '上下铺房型，按每人床位计费。', src: 'assets/philinter/triple-room.jpg' },
-    { category: '住宿', title: '校外公寓参考', description: 'Azon Condo方向更偏生活品质，需确认接送、门禁和空房。', src: 'assets/philinter/condo-room.png' },
-    { category: '餐厅', title: '学生咖啡厅', description: '官方设施页展示咖啡厅与泳池相连的休息空间。', src: 'assets/philinter/cafeteria-1.jpg' },
-    { category: '餐厅', title: '餐厅与用餐空间', description: '三餐和学生交流的重要生活区域。', src: 'assets/philinter/cafeteria-2.jpg' },
-    { category: '设施', title: '洗衣服务', description: '日常生活服务之一，具体规则以学校现场安排为准。', src: 'assets/philinter/laundry.jpg' },
-    { category: '设施', title: '学习大厅', description: '适合晚间自习、模考准备和课后复习。', src: 'assets/philinter/study-hall.jpg' },
+    { category: '校园', title: 'Philinter校园楼体', description: '官方设施图片展示Philinter校内住宿与教学楼体。', src: 'assets/philinter/campus-main.webp' },
+    { category: '校园', title: '校园泳池', description: '官方设施页介绍泳池位于宿舍与咖啡厅之间，可供学生课后放松。', src: 'assets/philinter/campus-pool.webp' },
+    { category: '校园', title: '学校大厅', description: '学校大厅是学生报到、公告和日常沟通的中心区域。', src: 'assets/philinter/lobby.webp' },
+    { category: '教室', title: '一对一/小班学习场景', description: 'Philinter课程强调个别化支持和进度追踪。', src: 'assets/philinter/one-on-one-room.webp' },
+    { category: '教室', title: '团体教室', description: '用于讨论、表达、演示和综合训练。', src: 'assets/philinter/study-hall.webp' },
+    { category: '教室', title: '讲座教室', description: '大型团体课、说明会和活动会用到的教学空间。', src: 'assets/philinter/group-classroom.webp' },
+    { category: '住宿', title: '校内单人房', description: '适合重视隐私和安静学习环境的学生。', src: 'assets/philinter/single-room.webp' },
+    { category: '住宿', title: '校内双人房', description: '预算与舒适度相对平衡，适合同伴同行。', src: 'assets/philinter/double-room.webp' },
+    { category: '住宿', title: '校内三人房', description: '上下铺房型，按每人床位计费。', src: 'assets/philinter/triple-room.webp' },
+    { category: '住宿', title: '校外公寓参考', description: 'Azon Condo方向更偏生活品质，需确认接送、门禁和空房。', src: 'assets/philinter/condo-room.webp' },
+    { category: '餐厅', title: '学生咖啡厅', description: '官方设施页展示咖啡厅与泳池相连的休息空间。', src: 'assets/philinter/cafeteria-1.webp' },
+    { category: '餐厅', title: '餐厅与用餐空间', description: '三餐和学生交流的重要生活区域。', src: 'assets/philinter/cafeteria-2.webp' },
+    { category: '设施', title: '洗衣服务', description: '日常生活服务之一，具体规则以学校现场安排为准。', src: 'assets/philinter/laundry.webp' },
+    { category: '设施', title: '学习大厅', description: '适合晚间自习、模考准备和课后复习。', src: 'assets/philinter/study-hall.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -168,10 +168,10 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philinter/one-on-one-room.jpg', title: 'Buddy Teacher和进度管理', text: '官方介绍Buddy Teacher System，适合希望学习过程有人跟进的学生。' },
-    { image: 'assets/philinter/group-classroom.png', title: '口语与考试课程都强', text: 'ESL、Intensive Power Speaking、IELTS、TOEIC和商务方向都可比较。' },
-    { image: 'assets/philinter/campus-pool.jpg', title: '麦克坦位置与校内生活', text: '距离机场较近，校内有泳池、咖啡厅、宿舍和学习空间。' },
-    { image: 'assets/philinter/single-room.jpg', title: '校内与校外住宿可选', text: '校内方便学习管理，校外公寓更适合重视生活品质的成人或家庭。' },
+    { image: 'assets/philinter/one-on-one-room.webp', title: 'Buddy Teacher和进度管理', text: '官方介绍Buddy Teacher System，适合希望学习过程有人跟进的学生。' },
+    { image: 'assets/philinter/group-classroom.webp', title: '口语与考试课程都强', text: 'ESL、Intensive Power Speaking、IELTS、TOEIC和商务方向都可比较。' },
+    { image: 'assets/philinter/campus-pool.webp', title: '麦克坦位置与校内生活', text: '距离机场较近，校内有泳池、咖啡厅、宿舍和学习空间。' },
+    { image: 'assets/philinter/single-room.webp', title: '校内与校外住宿可选', text: '校内方便学习管理，校外公寓更适合重视生活品质的成人或家庭。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -224,42 +224,42 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       number: '01',
       title: '正式合同与学校文件可核验',
       text: '国内公司签约，Philinter报价、录取文件及收费凭证均可逐项核对。',
-      image: 'assets/cia/sida-why-action-contract.jpg',
+      image: 'assets/cia/sida-why-action-contract.webp',
       alt: '思达启航正式合同与学校文件核验',
     },
     {
       number: '02',
       title: '课程、住宿和费用提前算清',
       text: '0中介服务费，课程费、校内/校外住宿费、考试规则及Philinter到校费用逐项说明。',
-      image: 'assets/cia/sida-why-action-fees.jpg',
+      image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾宿务Philinter语言学校费用',
     },
     {
       number: '03',
       title: '先判断Philinter是否适合',
       text: '根据口语、IELTS、TOEIC、商务、青少年目标和预算，帮你判断Philinter是否匹配。',
-      image: 'assets/cia/sida-why-action-selection.jpg',
+      image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择适合的英语学校',
     },
     {
       number: '04',
       title: '出发前每一步有人提醒',
       text: '签证、eTravel、入学文件、付款、接机和当地费用准备都会提前提醒。',
-      image: 'assets/cia/sida-why-action-departure.jpg',
+      image: 'assets/cia/sida-why-action-departure.webp',
       alt: '菲律宾游学出发前文件和行李准备',
     },
     {
       number: '05',
       title: '服务持续到完成学习回国',
       text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。',
-      image: 'assets/cia/sida-why-action-followup.jpg',
+      image: 'assets/cia/sida-why-action-followup.webp',
       alt: '思达启航顾问持续跟进学生学习情况',
     },
     {
       number: '06',
       title: '深圳总部 + 宿务驻点服务',
       text: '国内顾问与宿务工作人员协作，重要节点有人跟进。',
-      image: 'assets/cia/sida-why-action-team.jpg',
+      image: 'assets/cia/sida-why-action-team.webp',
       alt: '思达启航宿务和深圳服务团队',
     },
   ];
@@ -576,7 +576,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     });
     const startDate = this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? '';
     const quote = buildPhilippinesDetailedQuote({
-      schoolCode: 'PHILINTER', schoolName: 'PHILINTER', filePrefix: 'PHILINTER', heroSrc: '/assets/philinter/campus-main.jpeg',
+      schoolCode: 'PHILINTER', schoolName: 'PHILINTER', filePrefix: 'PHILINTER', heroSrc: '/assets/philinter/campus-main.webp',
       weeks: this.selectedWeeks, startDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', localCurrencyName: '比索',
       paymentItems: [

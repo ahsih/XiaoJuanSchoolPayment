@@ -68,10 +68,10 @@ export class EnderunSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '品牌', title: 'Enderun Extension品牌图', description: '官方Enderun Extension社交图，呈现城市继续教育和商务学习氛围。', src: 'assets/philippines/enderun-extension-socials.jpg' },
-    { category: '课程', title: 'General English', description: '官方General English课程图，适合日常沟通、社交表达和综合英语训练。', src: 'assets/philippines/enderun-general-english.jpg' },
-    { category: '商务', title: 'Business English', description: '官方Business English课程图，强调商务情境、会议表达和跨文化沟通。', src: 'assets/philippines/enderun-business-english.jpg' },
-    { category: '学术', title: 'Academic English', description: '官方Academic English课程图，适合大学或研究生阶段的学术英语准备。', src: 'assets/philippines/enderun-academic-english.jpg' },
+    { category: '品牌', title: 'Enderun Extension品牌图', description: '官方Enderun Extension社交图，呈现城市继续教育和商务学习氛围。', src: 'assets/philippines/enderun-extension-socials.webp' },
+    { category: '课程', title: 'General English', description: '官方General English课程图，适合日常沟通、社交表达和综合英语训练。', src: 'assets/philippines/enderun-general-english.webp' },
+    { category: '商务', title: 'Business English', description: '官方Business English课程图，强调商务情境、会议表达和跨文化沟通。', src: 'assets/philippines/enderun-business-english.webp' },
+    { category: '学术', title: 'Academic English', description: '官方Academic English课程图，适合大学或研究生阶段的学术英语准备。', src: 'assets/philippines/enderun-academic-english.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -86,10 +86,10 @@ export class EnderunSchoolDetailComponent implements OnInit {
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/enderun-extension-socials.jpg', title: '马尼拉城市型学习', text: 'Enderun适合希望把英语课、城市生活、商务场景和学院资源结合起来的人。' },
-    { image: 'assets/philippines/enderun-general-english.jpg', title: 'BLP弹性学习', text: '官方说明BLP像会员制学习，可参加社交团体课，并配合每周一对一指导。' },
-    { image: 'assets/philippines/enderun-business-english.jpg', title: '商务英语辨识度高', text: 'Business English聚焦听说、邮件、跨文化、演示和财务等职场主题。' },
-    { image: 'assets/philippines/enderun-academic-english.jpg', title: '学术衔接方向清晰', text: 'Academic English面向大学或研究生准备，强调阅读、写作、听力与口语系统训练。' },
+    { image: 'assets/philippines/enderun-extension-socials.webp', title: '马尼拉城市型学习', text: 'Enderun适合希望把英语课、城市生活、商务场景和学院资源结合起来的人。' },
+    { image: 'assets/philippines/enderun-general-english.webp', title: 'BLP弹性学习', text: '官方说明BLP像会员制学习，可参加社交团体课，并配合每周一对一指导。' },
+    { image: 'assets/philippines/enderun-business-english.webp', title: '商务英语辨识度高', text: 'Business English聚焦听说、邮件、跨文化、演示和财务等职场主题。' },
+    { image: 'assets/philippines/enderun-academic-english.webp', title: '学术衔接方向清晰', text: 'Academic English面向大学或研究生准备，强调阅读、写作、听力与口语系统训练。' },
   ];
 
   readonly suitableFor: FitItem[] = [

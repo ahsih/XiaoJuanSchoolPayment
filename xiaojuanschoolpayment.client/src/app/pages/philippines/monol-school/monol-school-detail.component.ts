@@ -110,19 +110,19 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
-    { category: '校区', title: 'MONOL校舍外观', description: 'MONOL官网首页展示的Baguio校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.jpg' },
-    { category: '教室', title: 'MONOL官方课堂品牌照', description: '官网首页展示的MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.png' },
-    { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.jpg' },
-    { category: '教室', title: 'MONOL独立教室区', description: 'Facility页面展示的玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.jpg' },
-    { category: '住宿', title: 'Single Room私密房型', description: '官方房型照片展示的单人房，含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.jpg' },
-    { category: '住宿', title: 'MONOL住宿空间', description: '官方照片展示的住宿空间；实际房型、床位和设备需按当期空房确认。', src: 'assets/philippines/monol-dormitory-room.jpg' },
-    { category: '住宿', title: 'Triple Room多人房', description: '官方照片展示的多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.jpg' },
-    { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Facility页面Aqua Garden Cafe照片展示的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.jpg' },
-    { category: '餐厅', title: 'MONOL餐点参考', description: '官方照片展示的餐点，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.jpg' },
-    { category: '设施', title: 'Lounge学习休息区', description: 'Facility页面Lounge照片展示的自习、工作与交流空间。', src: 'assets/philippines/monol-lounge.jpg' },
-    { category: '设施', title: 'Rooftop Gym', description: 'Facility页面Rooftop Gym照片展示可看山景的健身空间。', src: 'assets/philippines/monol-rooftop-gym.jpg' },
-    { category: '设施', title: 'Golf Driving Range', description: 'Facility页面Golf Driving Range照片展示的校内高尔夫练习区。', src: 'assets/philippines/monol-golf-range.jpg' },
-    { category: '设施', title: 'Rooftop Lounge', description: 'Facility页面屋顶休息区照片展示的夜间开放空间。', src: 'assets/philippines/monol-rooftop-lounge.jpg' },
+    { category: '校区', title: 'MONOL校舍外观', description: 'MONOL官网首页展示的Baguio校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.webp' },
+    { category: '教室', title: 'MONOL官方课堂品牌照', description: '官网首页展示的MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.webp' },
+    { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.webp' },
+    { category: '教室', title: 'MONOL独立教室区', description: 'Facility页面展示的玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.webp' },
+    { category: '住宿', title: 'Single Room私密房型', description: '官方房型照片展示的单人房，含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.webp' },
+    { category: '住宿', title: 'MONOL住宿空间', description: '官方照片展示的住宿空间；实际房型、床位和设备需按当期空房确认。', src: 'assets/philippines/monol-dormitory-room.webp' },
+    { category: '住宿', title: 'Triple Room多人房', description: '官方照片展示的多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.webp' },
+    { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Facility页面Aqua Garden Cafe照片展示的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.webp' },
+    { category: '餐厅', title: 'MONOL餐点参考', description: '官方照片展示的餐点，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.webp' },
+    { category: '设施', title: 'Lounge学习休息区', description: 'Facility页面Lounge照片展示的自习、工作与交流空间。', src: 'assets/philippines/monol-lounge.webp' },
+    { category: '设施', title: 'Rooftop Gym', description: 'Facility页面Rooftop Gym照片展示可看山景的健身空间。', src: 'assets/philippines/monol-rooftop-gym.webp' },
+    { category: '设施', title: 'Golf Driving Range', description: 'Facility页面Golf Driving Range照片展示的校内高尔夫练习区。', src: 'assets/philippines/monol-golf-range.webp' },
+    { category: '设施', title: 'Rooftop Lounge', description: 'Facility页面屋顶休息区照片展示的夜间开放空间。', src: 'assets/philippines/monol-rooftop-lounge.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -137,10 +137,10 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philippines/monol-campus-building.jpg', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
-    { image: 'assets/philippines/monol-private-room.jpg', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
-    { image: 'assets/philippines/monol-classroom.jpg', title: '课程线清楚', text: 'ESL 4和General ESL按课时与预算补基础，IELTS面向考试目标，LEAP提供更客制化的学习安排。' },
-    { image: 'assets/philippines/monol-rooftop-gym.jpg', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
+    { image: 'assets/philippines/monol-campus-building.webp', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
+    { image: 'assets/philippines/monol-private-room.webp', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
+    { image: 'assets/philippines/monol-classroom.webp', title: '课程线清楚', text: 'ESL 4和General ESL按课时与预算补基础，IELTS面向考试目标，LEAP提供更客制化的学习安排。' },
+    { image: 'assets/philippines/monol-rooftop-gym.webp', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -205,12 +205,12 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly sidaMonolReasons: SidaMonolReason[] = [
-    { number: '01', title: '先判断MONOL是否真的适合', text: '会把学习强度、住宿期待、餐食弹性、交通位置和学生自律程度一起评估。', image: 'assets/cia/sida-why-action-selection.jpg', alt: '思达启航顾问帮助学生判断MONOL是否适合' },
-    { number: '02', title: '课程、房型、餐费和当地费用提前算清', text: '0中介服务费，课程费、住宿费、餐食另计、签证和到校比索费用逐项说明。', image: 'assets/cia/sida-why-action-fees.jpg', alt: '思达启航顾问核算菲律宾碧瑶MONOL语言学校费用' },
-    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.jpg', alt: '思达启航正式合同与学校文件核验' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.jpg', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.jpg', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.jpg', alt: '思达启航菲律宾和深圳服务团队' },
+    { number: '01', title: '先判断MONOL是否真的适合', text: '会把学习强度、住宿期待、餐食弹性、交通位置和学生自律程度一起评估。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生判断MONOL是否适合' },
+    { number: '02', title: '课程、房型、餐费和当地费用提前算清', text: '0中介服务费，课程费、住宿费、餐食另计、签证和到校比索费用逐项说明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问核算菲律宾碧瑶MONOL语言学校费用' },
+    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
+    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
+    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
+    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
   readonly sidaMonolTrustBadges: SidaMonolTrustBadge[] = [
@@ -662,7 +662,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       schoolCode: 'MONOL',
       schoolName: '菲律宾碧瑶MONOL语言学校',
       filePrefix: 'MONOL',
-      heroSrc: '/assets/philippines/monol-campus-building.jpg',
+      heroSrc: '/assets/philippines/monol-campus-building.webp',
       weeks: this.selectedWeeks,
       startDate: this.quoteStartDate,
       usdToCny: this.usdToCny,

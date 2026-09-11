@@ -123,7 +123,7 @@ export class BaguioStudyComponent {
   readonly schoolProfiles: SchoolProfile[] = [
     {
       name: '菲律宾碧瑶PINES语言学校',
-      image: '/assets/philippines/pines-campus-hero.jpg',
+      image: '/assets/philippines/pines-campus-hero.webp',
       location: '碧瑶市 / 多校区体系',
       style: '半斯巴达为主 / 可选强化管理',
       route: '/philippines-study/baguio/pines-international-academy',
@@ -136,7 +136,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶JIC语言学校',
-      image: '/assets/philippines/jic-campus-hero.jpg',
+      image: '/assets/philippines/jic-campus-hero.webp',
       location: 'Challenger / Premium Campus',
       style: '斯巴达 / 半斯巴达可选',
       route: '/philippines-study/baguio/baguio-jic',
@@ -149,7 +149,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶BECI斯巴达校区',
-      image: '/assets/philippines/beci-campus-blue-roof.png',
+      image: '/assets/philippines/beci-campus-blue-roof.webp',
       location: '碧瑶市 / Sparta Campus',
       style: '斯巴达管理 / 口语与考试强化',
       route: '/philippines-study/baguio/beci-sparta-campus',
@@ -162,7 +162,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶BECI EOP校区',
-      image: '/assets/philippines/beci-eop-campus.jpg',
+      image: '/assets/philippines/beci-eop-campus.webp',
       location: '碧瑶市 / EOP Campus',
       style: '半斯巴达 / 全英文口语沉浸',
       route: '/philippines-study/baguio/beci-eop-campus',
@@ -175,7 +175,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶API BECI（City Campus）',
-      image: '/assets/philippines/beci-city-workspace.png',
+      image: '/assets/philippines/beci-city-workspace.webp',
       location: 'Baguio City / City Campus',
       style: 'BECI成人弹性校区，Workcation / Non-Sparta / Coworking / Lite / Native / Unlimited / Junior ESL',
       route: '/philippines-study/baguio/api-beci-city-campus',
@@ -197,7 +197,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶MONOL语言学校',
-      image: '/assets/philippines/monol-campus-building.jpg',
+      image: '/assets/philippines/monol-campus-building.webp',
       location: 'Pinsao Proper, Baguio City',
       style: '长期学习与生活配套型',
       route: '/philippines-study/baguio/monol',
@@ -210,7 +210,7 @@ export class BaguioStudyComponent {
     },
     {
       name: '菲律宾碧瑶WALES语言学校',
-      image: '/assets/philippines/wales-school-building.jpg',
+      image: '/assets/philippines/wales-school-building.webp',
       location: '碧瑶市中心附近',
       style: '小型学校与市区便利',
       route: '/philippines-study/baguio/wales-academy',
@@ -347,10 +347,10 @@ export class BaguioStudyComponent {
     heroSubtitle: '凉爽山城，把时间真正留给学习',
     heroDescription:
       '碧瑶是菲律宾北部山城，没有国际直达航班，通常需从马尼拉或克拉克转车前往，交通不如宿务便利。但这里全年凉爽、城市节奏安静，半斯巴达、强化管理和考试课程集中，适合把学习放在第一位、愿意规律作息的学生。',
-    heroImage: '/assets/philippines/baguio-study-hero.jpg',
+    heroImage: '/assets/philippines/baguio-study-hero.webp',
     heroImageAlt: '菲律宾碧瑶山城与学习环境',
-    heroStudyImage: '/assets/philippines/pines-one-to-one-classroom.jpg',
-    heroLessonImage: '/assets/philippines/jic-main-ielts-class.png',
+    heroStudyImage: '/assets/philippines/pines-one-to-one-classroom.webp',
+    heroLessonImage: '/assets/philippines/jic-main-ielts-class.webp',
     heroVisualLabel: '碧瑶山城、语言学校与学习生活场景',
     benefitChips: [
       { icon: 'ac_unit', label: '全年凉爽' },
@@ -391,16 +391,16 @@ export class BaguioStudyComponent {
     })),
     highlights: this.highlights,
     selectionImages: [
-      '/assets/philippines/pines-campus-hero.jpg',
-      '/assets/philippines/jic-main-ielts-class.png',
-      '/assets/philippines/monol-campus-building.jpg',
-      '/assets/philippines/wales-classroom-group.jpg',
+      '/assets/philippines/pines-campus-hero.webp',
+      '/assets/philippines/jic-main-ielts-class.webp',
+      '/assets/philippines/monol-campus-building.webp',
+      '/assets/philippines/wales-classroom-group.webp',
     ],
     lifestyleImages: [
-      '/assets/philippines/baguio-university-town-upb.jpg',
-      '/assets/philippines/baguio-cool-city.jpg',
-      '/assets/philippines/baguio-panagbenga-festival-clear.jpg',
-      '/assets/philippines/beci-city-study-lounge.png',
+      '/assets/philippines/baguio-university-town-upb.webp',
+      '/assets/philippines/baguio-cool-city.webp',
+      '/assets/philippines/baguio-panagbenga-festival-clear.webp',
+      '/assets/philippines/beci-city-study-lounge.webp',
     ],
     faqs: this.faqs,
     featuredTitle: '碧瑶热门语言学校推荐',
