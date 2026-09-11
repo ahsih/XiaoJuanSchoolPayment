@@ -81,6 +81,10 @@ import {
   createDefaultAnjContentConfig,
 } from '../philippines/anj-school/anj-content-config';
 import {
+  cloneImsContentConfig,
+  createDefaultImsContentConfig,
+} from '../philippines/ims-school/ims-content-config';
+import {
   cloneBeciContentConfig,
   createDefaultBeciContentConfig,
 } from '../philippines/beci-school/beci-content-config';
@@ -118,6 +122,7 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicGlcPath = '/philippines-study/cebu/global-language-cebu';
   private readonly publicIbreezePath = '/philippines-study/cebu/ibreeze';
   private readonly publicAnjPath = '/philippines-study/baguio/anj-e-edu-english-academy';
+  private readonly publicImsPath = '/philippines-study/cebu/ims-academy';
   private readonly publicBeciEopPath = '/philippines-study/baguio/beci-eop-campus';
   private readonly publicBeciSpartaPath = '/philippines-study/baguio/beci-sparta-campus';
   private readonly publicBeciCityPath = '/philippines-study/baguio/api-beci-city-campus';
@@ -208,7 +213,7 @@ export class AdminSchoolContentComponent implements OnInit {
     return [
       'cia', 'pines', 'monol', 'evacademy', '宿务ev', 'smeagcapital', 'philinter',
       'cgacademybanilad', 'cgacademysparta', 'cpi', 'bcebu', 'cpils',
-      'globallanguagecebu', '宿务glc', 'ibreeze', 'anjeedu', 'beci', 'jic',
+      'globallanguagecebu', '宿务glc', 'ibreeze', 'anjeedu', 'imsacademy', '宿务ims', 'beci', 'jic',
     ].some(token => name.includes(token));
   }
 
@@ -280,6 +285,11 @@ export class AdminSchoolContentComponent implements OnInit {
     return name.includes('a&j') || name.includes('anj e-edu');
   }
 
+  get isImsSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('ims academy') || name.includes('宿务ims');
+  }
+
   get isBeciSelected(): boolean {
     const name = this.selectedSchool?.name.toLowerCase() ?? '';
     return !this.isBCebuSelected && (name.includes('beci') || name.includes('api beci'));
@@ -298,9 +308,9 @@ export class AdminSchoolContentComponent implements OnInit {
     return this.isBeciSelected ? this.content.rooms.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.rooms;
   }
 
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isBeciSelected || this.isJicSelected; }
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected; }
   get schoolCode(): CiaContentConfig['schoolCode'] {
-    return this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
+    return this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
   }
   get schoolShortName(): string { return this.schoolCode; }
   get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
@@ -308,12 +318,12 @@ export class AdminSchoolContentComponent implements OnInit {
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
   get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
-  get supportsShortStay(): boolean { return !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isJicSelected; }
+  get supportsShortStay(): boolean { return !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isGlcSelected; }
   get currentPublicPath(): string {
     if (this.isJicSelected) return this.publicJicPath;
     if (this.isBeciSelected) return this.beciCampus === 'sparta' ? this.publicBeciSpartaPath : this.beciCampus === 'city' ? this.publicBeciCityPath : this.publicBeciEopPath;
-    return this.isAnjSelected ? this.publicAnjPath : this.isIbreezeSelected ? this.publicIbreezePath : this.isGlcSelected ? this.publicGlcPath : this.isCpilsSelected ? this.publicCpilsPath : this.isBCebuSelected ? this.publicBCebuPath : this.isCpiSelected ? this.publicCpiPath : this.isCgSpartaSelected ? this.publicCgSpartaPath : this.isCgBaniladSelected ? this.publicCgBaniladPath : this.isPhilinterSelected ? this.publicPhilinterPath : this.isSmeagSelected ? this.publicSmeagPath : this.isEvSelected ? this.publicEvPath : this.isMonolSelected ? this.publicMonolPath : this.isPinesSelected ? this.publicPinesPath : this.publicCiaPath;
+    return this.isImsSelected ? this.publicImsPath : this.isAnjSelected ? this.publicAnjPath : this.isIbreezeSelected ? this.publicIbreezePath : this.isGlcSelected ? this.publicGlcPath : this.isCpilsSelected ? this.publicCpilsPath : this.isBCebuSelected ? this.publicBCebuPath : this.isCpiSelected ? this.publicCpiPath : this.isCgSpartaSelected ? this.publicCgSpartaPath : this.isCgBaniladSelected ? this.publicCgBaniladPath : this.isPhilinterSelected ? this.publicPhilinterPath : this.isSmeagSelected ? this.publicSmeagPath : this.isEvSelected ? this.publicEvPath : this.isMonolSelected ? this.publicMonolPath : this.isPinesSelected ? this.publicPinesPath : this.publicCiaPath;
   }
 
   get activeTabLabel(): string {
@@ -368,7 +378,7 @@ export class AdminSchoolContentComponent implements OnInit {
     } else {
       this.editor = undefined;
       this.statusKind = 'warning';
-      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、BECI 三校区与 JIC。这所学校会在价格和报价计算器核对完成后再接入。";
+      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区与 JIC。这所学校会在价格和报价计算器核对完成后再接入。";
       this.isLoading = false;
     }
   }
@@ -500,6 +510,17 @@ export class AdminSchoolContentComponent implements OnInit {
     this.contentChanged();
   }
 
+  updateRoomWeekPrices(item: CiaRoomContent, value: string): void {
+    item.feeByWeeks = this.parseNumberMap(value);
+    item.fee = item.feeByWeeks['4'] ?? item.fee;
+    this.contentChanged();
+  }
+
+  updateRoomAllowedWeeks(item: CiaRoomContent, value: string): void {
+    item.allowedWeeks = value.split(/[,，、]/).map(part => Number(part.trim())).filter(weeks => Number.isInteger(weeks) && weeks > 0);
+    this.contentChanged();
+  }
+
   updatePromotionTiers(item: CiaPromotionRule, value: string): void {
     item.discountTiers = this.parseNumberMap(value);
     this.contentChanged();
@@ -537,7 +558,8 @@ export class AdminSchoolContentComponent implements OnInit {
       item.family = false;
       item.textbook = 'esl';
     }
-    if (this.isAnjSelected) item.courseType = '英语课程';
+    if (this.isAnjSelected || this.isImsSelected) item.courseType = '英语课程';
+    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
     if (this.isJicSelected) { item.campus = 'challenger'; item.courseType = 'Challenger 挑战校区'; item.minimumWeeks = 4; item.allowedWeeks = [4, 6, 8, 12, 16, 20, 24]; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.courseType = `${this.beciCampus.toUpperCase()}课程`; }
     this.content.courses.push(item);
@@ -567,6 +589,7 @@ export class AdminSchoolContentComponent implements OnInit {
       item.waterGroup = 'Premium / Villa';
       item.deposit = 0;
     }
+    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
     if (this.isJicSelected) { item.campus = 'challenger'; item.code = 'quad'; item.group = 'Challenger 挑战校区'; item.single = false; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.single = false; item.coupleRate = undefined; item.code = this.beciCampus.toUpperCase(); }
     this.content.rooms.push(item);
@@ -961,6 +984,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isJicSelected) return createDefaultJicContentConfig();
     if (this.isBeciSelected) return createDefaultBeciContentConfig();
     if (this.isAnjSelected) return createDefaultAnjContentConfig();
+    if (this.isImsSelected) return createDefaultImsContentConfig();
     if (this.isIbreezeSelected) return createDefaultIbreezeContentConfig();
     if (this.isGlcSelected) return createDefaultGlcContentConfig();
     if (this.isCpilsSelected) return createDefaultCpilsContentConfig();
@@ -980,6 +1004,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isJicSelected) return cloneJicContentConfig(value);
     if (this.isBeciSelected) return cloneBeciContentConfig(value);
     if (this.isAnjSelected) return cloneAnjContentConfig(value);
+    if (this.isImsSelected) return cloneImsContentConfig(value);
     if (this.isIbreezeSelected) return cloneIbreezeContentConfig(value);
     if (this.isGlcSelected) return cloneGlcContentConfig(value);
     if (this.isCpilsSelected) return cloneCpilsContentConfig(value);

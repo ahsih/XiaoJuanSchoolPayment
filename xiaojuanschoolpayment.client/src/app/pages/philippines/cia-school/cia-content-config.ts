@@ -36,6 +36,10 @@ export interface CiaRoomContent {
   location: '校内' | '校外';
   group: string;
   fee: number;
+  /** Optional exact-duration accommodation prices used by IMS and other non-proportional catalogs. */
+  feeByWeeks?: Record<string, number>;
+  /** Optional duration restriction paired with feeByWeeks. */
+  allowedWeeks?: number[];
   /** Optional occupancy and utility metadata used by A&J total-price rooms. */
   priceMode?: 'per-person' | 'per-room';
   minOccupancy?: number;
@@ -68,7 +72,7 @@ export type CiaLocalFeeBillingRule =
 export interface CiaLocalFeeRule {
   id: string;
   name: string;
-  currency: 'PHP';
+  currency: 'PHP' | 'USD';
   amount: number;
   secondaryAmount?: number;
   secondaryLabel?: string;
@@ -228,7 +232,7 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS';
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];

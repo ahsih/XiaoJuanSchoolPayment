@@ -29,6 +29,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private static readonly Guid MonolSchoolId = Guid.Parse("2d7c4bd9-0f3b-4b2d-9fb7-d53c2d6a90df");
     private static readonly Guid WalesSchoolId = Guid.Parse("6b825ff8-4f79-4b65-9447-2f4e7abef0a1");
     private static readonly Guid AnjSchoolId = Guid.Parse("9a6f0a73-b5e4-4d18-9c2d-3f5e7a8b1c04");
+    private static readonly Guid ImsSchoolId = Guid.Parse("1c8f47a6-90d2-4b7f-a35e-6a08d7c1f259");
     private static readonly Guid EgSchoolId = Guid.Parse("82cbcbad-1162-4088-823d-ea100bfee689");
     private static readonly Guid WeSchoolId = Guid.Parse("783171c4-90e8-448c-91a4-2caf09e65c03");
     private static readonly Guid HelpSchoolId = Guid.Parse("a4c3183e-b569-4b1f-b854-fcdd019b4d1a");
@@ -79,6 +80,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
     private const string WalesShortSchoolName = "WALES";
     private const string AnjSchoolName = "菲律宾碧瑶A&J e-Edu English Academy";
     private const string LegacyAnjSchoolName = "A&J e-Edu English Academy";
+    private const string ImsSchoolName = "菲律宾宿务IMS Academy";
     private const string EgSchoolName = "菲律宾克拉克EG语言学校";
     private const string LegacyEgSchoolName = "EG Academy";
     private const string EgFullSchoolName = "Education Group Granma INC";
@@ -141,6 +143,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedMonolPricingAsync(context);
       await SeedWalesPricingAsync(context);
       await SeedAnjPricingAsync(context);
+      await SeedImsPricingAsync(context);
       await SeedEgPricingAsync(context);
       await SeedWePricingAsync(context);
       await SeedHelpPricingAsync(context);
@@ -1954,6 +1957,135 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await context.SaveChangesAsync();
     }
 
+    private static async Task SeedImsPricingAsync(AppDbContext context)
+    {
+      var now = DateTime.UtcNow;
+      var school = context.Schools.FirstOrDefault(x =>
+        x.Id == ImsSchoolId ||
+        x.Name == ImsSchoolName ||
+        x.Name == "IMS Academy" ||
+        x.Name == "IMS Academy Cebu" ||
+        x.Name == "International Maekyung School Academy");
+
+      if (school == null)
+      {
+        school = new XiaoJuanSchoolPayment.Server.Data.Models.School
+        {
+          Id = ImsSchoolId,
+          Name = ImsSchoolName,
+          CreatedDate = new DateTime(2013, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+        };
+        context.Schools.Add(school);
+      }
+      var schoolId = school.Id;
+      var weeks = new[] { 1, 2, 3, 4, 8, 12, 16, 20, 24 };
+      Dictionary<int, decimal> Price(params decimal[] values) => weeks.Zip(values).ToDictionary(pair => pair.First, pair => pair.Second);
+      // IMS startup data is insert-only: preserve every existing production price, description and timestamp.
+      void UpsertLesson(AppDbContext seedContext, Guid targetSchoolId, string name, int week, decimal price, string description, DateTime lastUpdated, string note, int currencyId)
+      {
+        if (seedContext.SchoolLessons.Any(x => x.SchoolId == targetSchoolId && x.Name == name && x.Week == week)) return;
+        seedContext.SchoolLessons.Add(new SchoolLesson { Id = Guid.NewGuid(), SchoolId = targetSchoolId, Name = name, Week = week, Price = price, CurrencyId = currencyId, Description = description, Note = note, LastUpdated = lastUpdated });
+      }
+      void UpsertRoom(AppDbContext seedContext, Guid targetSchoolId, string name, int week, decimal price, string description, DateTime lastUpdated, int currencyId)
+      {
+        if (seedContext.SchoolRooms.Any(x => x.SchoolId == targetSchoolId && x.Name == name && x.Week == week)) return;
+        seedContext.SchoolRooms.Add(new SchoolRoom { Id = Guid.NewGuid(), SchoolId = targetSchoolId, Name = name, Week = week, Price = price, CurrencyId = currencyId, Description = description, LastUpdated = lastUpdated });
+      }
+      void UpsertFee(AppDbContext seedContext, Guid targetSchoolId, string name, decimal fee, int currencyId, string description, DateTime lastUpdated)
+      {
+        if (seedContext.SchoolFees.Any(x => x.SchoolId == targetSchoolId && x.Name == name)) return;
+        seedContext.SchoolFees.Add(new SchoolFee { Id = Guid.NewGuid(), SchoolId = targetSchoolId, Name = name, Fee = fee, CurrencyId = currencyId, Description = description, LastUpdated = lastUpdated });
+      }
+      var courses = new (string Name, string Schedule, Dictionary<int, decimal> Prices)[]
+      {
+        ("Premium ESL", "每天4节一对一 + 4节团体课", Price(255, 510, 680, 850, 1700, 2550, 3400, 4250, 5100)),
+        ("Intensive ESL", "每天6节一对一 + 3节团体课", Price(300, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000)),
+        ("Essential ESL 4", "每天4节一对一", Price(210, 420, 560, 700, 1400, 2100, 2800, 3500, 4200)),
+        ("Essential ESL 5", "每天5节一对一", Price(255, 510, 680, 850, 1700, 2550, 3400, 4250, 5100)),
+        ("Essential ESL 6", "每天6节一对一", Price(300, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000)),
+        ("Senior ESL", "每天5节一对一，或4节一对一 + 1节团体课", Price(240, 480, 640, 800, 1600, 2400, 3200, 4000, 4800)),
+        ("Working Holiday", "每天4节一对一 + 4节团体课", Price(300, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000)),
+        ("Business English", "每天4节一对一 + 4节团体课", Price(300, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000)),
+        ("Power Speaking", "每天4节一对一 + 4节团体课", Price(315, 630, 840, 1050, 2100, 3150, 4200, 5250, 6300)),
+        ("Mommy TESOL", "每天4节一对一", Price(255, 510, 680, 850, 1700, 2550, 3400, 4250, 5100)),
+        ("TESOL Light", "每天5节一对一", Price(270, 540, 720, 900, 1800, 2700, 3600, 4500, 5400)),
+        ("TOEIC Speaking", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("OPIC", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("Pre-TOEIC", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("TOEIC", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("TOEIC Guarantee", "每天4节一对一 + 4节团体课", new Dictionary<int, decimal> { [12] = 3450, [16] = 4550, [20] = 5650, [24] = 6900 }),
+        ("Pre-IELTS", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("IELTS", "每天4节一对一 + 4节团体课", Price(330, 660, 880, 1100, 2200, 3300, 4400, 5500, 6600)),
+        ("IELTS Guarantee", "每天4节一对一 + 4节团体课", new Dictionary<int, decimal> { [12] = 3600, [16] = 4700, [20] = 5800, [24] = 7200 }),
+        ("Pre-TOEFL", "每天4节一对一 + 4节团体课", Price(420, 840, 1120, 1400, 2800, 4200, 5600, 7000, 8400)),
+        ("Intensive TOEFL", "每天4节一对一 + 4节团体课", Price(420, 840, 1120, 1400, 2800, 4200, 5600, 7000, 8400)),
+        ("SAT", "每天6节一对一", Price(420, 840, 1120, 1400, 2800, 4200, 5600, 7000, 8400)),
+        ("Junior ESL 6", "每天6节一对一；可按规则接收一名家长的3节一对一，最终最多9节", Price(390, 780, 1040, 1300, 2600, 3900, 5200, 6500, 7800)),
+        ("Junior ESL 8", "每天8节一对一；不能接收家长转课", Price(510, 1020, 1360, 1700, 3400, 5100, 6800, 8500, 10200)),
+        ("Junior ESL 9", "每天9节一对一；不能接收家长转课", Price(570, 1140, 1520, 1900, 3800, 5700, 7600, 9500, 11400)),
+        ("Parents ESL", "每天3节一对一 + 1节团体课；亲子报名家长必须本人注册并购买", Price(240, 480, 640, 800, 1600, 2400, 3200, 4000, 4800)),
+      };
+      const string lessonNote = "IMS 2026 China USD价目表；课程费与住宿费分开；1、2、3周使用明确价格，不能按4周价倒算；保证班空白周数不得报价";
+      foreach (var course in courses)
+      {
+        foreach (var price in course.Prices)
+        {
+          UpsertLesson(context, schoolId, course.Name, price.Key, price.Value, course.Schedule, now, lessonNote, UsdCurrencyId);
+        }
+      }
+
+      var rooms = new (string Name, Dictionary<int, decimal> Prices)[]
+      {
+        ("单人房", Price(300, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000)),
+        ("双人房", Price(255, 510, 680, 850, 1700, 2550, 3400, 4250, 5100)),
+        ("三人房", Price(210, 420, 560, 700, 1400, 2100, 2800, 3500, 4200)),
+        ("四人房", Price(195, 390, 520, 650, 1300, 1950, 2600, 3250, 3900)),
+      };
+      foreach (var room in rooms)
+      {
+        foreach (var price in room.Prices)
+        {
+          UpsertRoom(context, schoolId, room.Name, price.Key, price.Value, "IMS校内宿舍；按2026美元价目表明确周数计费，空房按日期与性别确认", now, UsdCurrencyId);
+        }
+      }
+
+      UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "每名注册学生一次性收取；绝不参加学校活动、思达95折或返校减免", now);
+      UpsertFee(context, schoolId, "IMS 2+2达人活动", 0m, UsdCurrencyId, "淡季完整连续4周段按明确2周课程价与2周住宿价收费；同一次连续学习最多一次；1月及6–8月不适用；须完成学校社交媒体要求", now);
+      UpsertFee(context, schoolId, "IMS淡季立减", 300m, UsdCurrencyId, "总学习期至少12周；每个符合淡季月份的连续4周段减300美元；同一段不能与2+2叠加", now);
+      UpsertFee(context, schoolId, "IMS长期优惠", 0m, UsdCurrencyId, "按2+2折算后的付费课程周数一次性从课程费减免：8–11周50、12–15周100、16–19周200、20–23周300、24–27周400美元", now);
+      UpsertFee(context, schoolId, "思达课程住宿95折", 5m, UsdCurrencyId, "学校活动与固定减免后，仅对剩余课程费和住宿费减5%；内部佣金不在公开页面或图片展示", now);
+      UpsertFee(context, schoolId, "SSP", 8000m, PhpCurrencyId, "2026/07/01起当地费用；强制费用", now);
+      UpsertFee(context, schoolId, "E-Card", 4000m, PhpCurrencyId, "2026/07/01起当地费用；强制费用", now);
+      UpsertFee(context, schoolId, "教材费", 3000m, PhpCurrencyId, "费用表预估；教材按课程和级别不同，最终按实际购买", now);
+      UpsertFee(context, schoolId, "学生证", 300m, PhpCurrencyId, "一次性费用", now);
+      UpsertFee(context, schoolId, "宿舍/钥匙押金", 3000m, PhpCurrencyId, "费用表TOTAL包含；无损坏并归还钥匙后按学校规则退还", now);
+      UpsertFee(context, schoolId, "水费", 500m, PhpCurrencyId, "每住宿周", now);
+      UpsertFee(context, schoolId, "基础电费", 500m, PhpCurrencyId, "每住宿周", now);
+      UpsertFee(context, schoolId, "空调费", 250m, PhpCurrencyId, "每住宿周；包含100kW/4周，超额30比索/kW", now);
+      UpsertFee(context, schoolId, "签证延长（5–8周累计）", 5050m, PhpCurrencyId, "累计5,050比索", now);
+      UpsertFee(context, schoolId, "签证延长（9–12周累计）", 11850m, PhpCurrencyId, "累计11,850比索", now);
+      UpsertFee(context, schoolId, "签证延长（13–16周累计）", 16300m, PhpCurrencyId, "累计16,300比索", now);
+      UpsertFee(context, schoolId, "签证延长（17–20周累计）", 20750m, PhpCurrencyId, "累计20,750比索", now);
+      UpsertFee(context, schoolId, "签证延长（21–24周累计）", 25200m, PhpCurrencyId, "累计25,200比索", now);
+      UpsertFee(context, schoolId, "ACR I-Card", 4000m, PhpCurrencyId, "从9周起计入一次", now);
+      UpsertFee(context, schoolId, "宿务机场接机", 1000m, PhpCurrencyId, "官方TOTAL AMOUNT包含一次；如自行前往可取消", now);
+      UpsertFee(context, schoolId, "宿务机场送机", 1000m, PhpCurrencyId, "可选，不在官方TOTAL AMOUNT内", now);
+      UpsertFee(context, schoolId, "走读午餐", 6000m, PhpCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "额外ESL一对一", 150m, UsdCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "额外ESL团体课", 120m, UsdCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "ESL团体课转一对一", 100m, UsdCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "额外Special一对一", 200m, UsdCurrencyId, "可选；每4周；Special含IELTS、TOEIC等非ESL课程", now);
+      UpsertFee(context, schoolId, "额外Special团体课", 150m, UsdCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "Special团体课转一对一", 130m, UsdCurrencyId, "可选；每4周", now);
+      UpsertFee(context, schoolId, "Guardian Service", 450m, UsdCurrencyId, "独立可选项目；每4周；不能与免费晚间托管混为一项", now);
+      UpsertFee(context, schoolId, "School Management for International Students", 2100m, UsdCurrencyId, "独立可选项目；每4周；不能与Guardian Service或免费晚间托管混为一项", now);
+      UpsertFee(context, schoolId, "ECC（超过6个月）", 1000m, PhpCurrencyId, "条件性参考；普通1–24周报价不自动加入", now);
+      UpsertFee(context, schoolId, "CRTV（超过6个月）", 2000m, PhpCurrencyId, "条件性参考；普通1–24周报价不自动加入", now);
+      UpsertFee(context, schoolId, "Annual Report", 500m, PhpCurrencyId, "条件性参考；11月前入境并居留至次年1月以后时可能适用，须学校确认", now);
+
+      await context.SaveChangesAsync();
+    }
+
     private static async Task SeedAnjPricingAsync(AppDbContext context)
     {
       var now = DateTime.UtcNow;
@@ -2747,7 +2879,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务CIEC", 1650m, UsdCurrencyId, "USD 1,650 / 4周起", Established(2012), new[] { "CIEC", "CIEC Global" }),
         new RegionalStartingPriceSeed("菲律宾宿务ELSA International Language School", 1850m, UsdCurrencyId, "USD 1,850 / 4周起（Super Basic ESL + 五人间 + 注册费）", Established(2004), new[] { "ELSA International Language School", "ELSA" }),
         new RegionalStartingPriceSeed("菲律宾宿务ETHOS Language School", 1438m, UsdCurrencyId, "USD 1,438 / 4周起", Established(2013), new[] { "ETHOS Language School", "ETHOS" }),
-        new RegionalStartingPriceSeed("菲律宾宿务IMS Academy", 1500m, UsdCurrencyId, "USD 1,500 / 4周起", Established(2015), new[] { "IMS Academy" }),
+        new RegionalStartingPriceSeed(ImsSchoolName, 1382.5m, UsdCurrencyId, "USD 1,382.50 / 4周起（Essential ESL 4 + 四人房 + 95折 + 不可减注册费）", Established(2013), new[] { "IMS Academy", "IMS Academy Cebu" }),
         new RegionalStartingPriceSeed("菲律宾宿务TARGET Global English Academy", 1430m, UsdCurrencyId, "USD 1,430 / 4周起", Established(2013), new[] { "TARGET Global English Academy", "TARGET" }),
         new RegionalStartingPriceSeed("菲律宾宿务CIJ Academy（Premium Campus）", 1300m, UsdCurrencyId, "USD 1,300 / 4周起", Established(2003), new[] { "CIJ Academy Premium Campus", "CIJ Premium Campus" }),
         new RegionalStartingPriceSeed("菲律宾宿务Curious World Academy", 1550m, UsdCurrencyId, "USD 1,550 / 4周起", Established(2022), new[] { "Curious World Academy", "CWA" }),

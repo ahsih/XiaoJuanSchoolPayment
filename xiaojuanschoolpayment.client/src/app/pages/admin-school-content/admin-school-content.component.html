@@ -119,12 +119,12 @@
               <label *ngIf="isGlcSelected">中文名称<input [(ngModel)]="item.chineseName" /></label>
               <label *ngIf="isGlcSelected">课程分组<input [(ngModel)]="item.group" /></label>
               <label *ngIf="isGlcSelected">教材类型<select [(ngModel)]="item.textbook"><option value="esl">英语课程教材</option><option value="ielts">雅思教材</option></select></label>
-              <label *ngIf="isAnjSelected">课程类型<input [(ngModel)]="item.courseType" /></label>
+              <label *ngIf="isAnjSelected || isImsSelected">课程类型<input [(ngModel)]="item.courseType" /></label>
               <label *ngIf="isJicSelected">所属校区<select [(ngModel)]="item.campus"><option value="challenger">Challenger 挑战校区</option><option value="premium">Premium 高级校区</option></select></label>
               <label *ngIf="isBeciSelected">所属校区<input [value]="beciCampus === 'eop' ? 'EOP 校区' : beciCampus === 'sparta' ? 'Sparta 校区' : 'City 校区'" disabled /></label>
               <label *ngIf="isBeciSelected">最低报名周数<input type="number" min="1" [(ngModel)]="item.minimumWeeks" /></label>
-              <label *ngIf="isAnjSelected && item.feeByWeeks !== undefined">固定周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateCourseWeekPrices(item, $event)" placeholder="12:2850, 16:3800" /></label>
-              <label *ngIf="isAnjSelected && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateCourseAllowedWeeks(item, $event)" placeholder="12, 16" /></label>
+              <label *ngIf="(isAnjSelected || isImsSelected) && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateCourseWeekPrices(item, $event)" placeholder="1:210, 2:420, 3:560, 4:700" /></label>
+              <label *ngIf="(isAnjSelected || isImsSelected) && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateCourseAllowedWeeks(item, $event)" placeholder="1, 2, 3, 4, 8, 12" /></label>
             </div>
             <div class="checkbox-grid" *ngIf="isGlcSelected">
               <label><input type="checkbox" [(ngModel)]="item.offSeasonEligible" />参加学校年度优惠</label>
@@ -164,6 +164,8 @@
               <label>{{ roomPriceLabel }}<input type="number" min="0" [(ngModel)]="item.fee" /></label>
               <label>住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
               <label>页面分组<input [(ngModel)]="item.group" /></label>
+              <label *ngIf="isImsSelected && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateRoomWeekPrices(item, $event)" placeholder="1:195, 2:390, 3:520, 4:650" /></label>
+              <label *ngIf="isImsSelected && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateRoomAllowedWeeks(item, $event)" placeholder="1, 2, 3, 4, 8, 12" /></label>
             </div>
             <label>房型说明<textarea rows="3" [(ngModel)]="item.note"></textarea></label>
             <div class="nested-card" *ngIf="isJicSelected">
@@ -217,7 +219,7 @@
           <div class="item-picker">
             <div class="picker-heading"><strong>费用列表</strong><button type="button" (click)="addFee()"><mat-icon>add</mat-icon>新增费用</button></div>
             <button class="picker-item" *ngFor="let item of content.localFees; trackBy: trackById" type="button" [class.active]="selectedFeeId === item.id" [class.hidden-item]="!item.enabled" (click)="selectEditorItem('fee', item.id)">
-              <span>{{ item.name }}<small>{{ item.includeInTotal ? '计入合计' : '仅作参考' }}</small></span><b>{{ item.amount | number }} 比索</b>
+              <span>{{ item.name }}<small>{{ item.includeInTotal ? '计入合计' : '仅作参考' }}</small></span><b>{{ item.amount | number }} {{ item.currency === 'USD' ? '美元' : '比索' }}</b>
             </button>
           </div>
           <div class="edit-card" data-selected-editor *ngIf="selectedFee as item" (focusin)="focusEditorItem('fee', item.id)">
@@ -225,7 +227,8 @@
             <div class="risk-note"><mat-icon>calculate</mat-icon>这里修改的计费方式会同时影响网页报价和报价图片。</div>
             <div class="field-grid two">
               <label>费用名称<input [(ngModel)]="item.name" /></label>
-              <label>金额（比索）<input type="number" min="0" [(ngModel)]="item.amount" /></label>
+              <label>金额（{{ item.currency === 'USD' ? '美元' : '比索' }}）<input type="number" min="0" [(ngModel)]="item.amount" /></label>
+              <label *ngIf="isImsSelected">币种<select [(ngModel)]="item.currency"><option value="PHP">菲律宾比索</option><option value="USD">美元</option></select></label>
               <label>计费方式<select [(ngModel)]="item.billingRule"><option *ngFor="let option of feeBillingOptions" [value]="option.value">{{ option.label }}</option></select></label>
               <label>每几周一个计费周期<input type="number" min="1" [(ngModel)]="item.periodWeeks" /></label>
               <label>周期取整方式<select [(ngModel)]="item.rounding"><option value="proportional">按比例</option><option value="ceil">不足一个周期向上取整</option></select></label>
