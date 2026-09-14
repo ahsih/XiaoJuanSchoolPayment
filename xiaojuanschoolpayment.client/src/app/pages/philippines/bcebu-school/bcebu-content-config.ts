@@ -118,7 +118,14 @@ export const cloneBCebuContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteSettings ??= structuredClone(defaults.quoteSettings);
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= structuredClone(defaults.quoteSettings.peakSeasonRanges);
-  clone.quoteSettings.promotions ??= structuredClone(defaults.quoteSettings.promotions);
+  clone.quoteSettings.promotions ??= [];
+  // Add rules introduced after an older revision was published while preserving
+  // employee edits to any rule already stored in that revision.
+  const savedPromotionIds = new Set(clone.quoteSettings.promotions.map(rule => rule.id));
+  clone.quoteSettings.promotions.push(...structuredClone(
+    defaults.quoteSettings.promotions.filter(rule => !savedPromotionIds.has(rule.id)),
+  ));
+  clone.quoteSettings.promotions.sort((a, b) => a.sortOrder - b.sortOrder);
   clone.quoteSettings.stayPolicies ??= structuredClone(defaults.quoteSettings.stayPolicies);
   clone.quoteSettings.extraNightRates ??= [];
   clone.quoteImageSettings ??= structuredClone(defaults.quoteImageSettings);

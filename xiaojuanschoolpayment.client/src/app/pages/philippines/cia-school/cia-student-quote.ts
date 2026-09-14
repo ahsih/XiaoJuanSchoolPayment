@@ -238,9 +238,9 @@ export class CiaStudentQuote {
               note: `${this.prices.seasonalFeePerWeek}美元／周 × ${this.peakWeeks}周；${ranges
                 .map(
                   (range) =>
-                    `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`,
+                    `${range.label} ${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`,
                 )
-                .join('；')}；不参与折扣`,
+                .join('；')}；按课程与住宿实际覆盖周去重计收，不参与折扣`,
             },
           ]
         : []),

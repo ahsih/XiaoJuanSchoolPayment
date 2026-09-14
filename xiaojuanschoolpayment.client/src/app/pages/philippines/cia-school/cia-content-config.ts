@@ -173,6 +173,8 @@ export interface CiaQuoteSettings {
   shortStayRatios: Record<string, number>;
   peakSeasonFeePerWeek: number;
   peakSeasonRanges: CiaPeakSeasonRange[];
+  /** Lets older published CIA documents inherit confirmed peak-season rules once. */
+  peakSeasonPolicyVersion?: number;
   promotions: CiaPromotionRule[];
   localFeeIntro: string;
   courseTableTitle: string;
@@ -319,6 +321,7 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
       { id: 'winter-2027', label: '2027寒假', start: '2027-01-17', end: '2027-02-13', enabled: true },
       { id: 'summer-2027', label: '2027暑假', start: '2027-06-13', end: '2027-08-07', enabled: true },
     ],
+    peakSeasonPolicyVersion: 2027,
     promotions: [
       {
         id: 'sida-discount', name: '思达折扣', description: '课程费和住宿费享95折', enabled: true, sortOrder: 0,
@@ -389,6 +392,28 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
 
 export const cloneCiaContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const clone = JSON.parse(JSON.stringify(value)) as CiaContentConfig;
+  // Revisions published before CIA confirmed its 2027 calendar may contain the
+  // former 02/14 winter end date and no summer period. Upgrade those revisions
+  // in memory so the public page, editor, calculator and image all agree. Once
+  // the upgraded document is saved, later employee edits remain untouched.
+  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < 2027) {
+    const confirmed2027Ranges: CiaPeakSeasonRange[] = [
+      { id: 'winter-2027', label: '2027寒假', start: '2027-01-17', end: '2027-02-13', enabled: true },
+      { id: 'summer-2027', label: '2027暑假', start: '2027-06-13', end: '2027-08-07', enabled: true },
+    ];
+    clone.quoteSettings.peakSeasonFeePerWeek = 40;
+    for (const confirmedRange of confirmed2027Ranges) {
+      const index = clone.quoteSettings.peakSeasonRanges.findIndex(
+        range => range.id === confirmedRange.id,
+      );
+      if (index >= 0) {
+        clone.quoteSettings.peakSeasonRanges[index] = confirmedRange;
+      } else {
+        clone.quoteSettings.peakSeasonRanges.push(confirmedRange);
+      }
+    }
+    clone.quoteSettings.peakSeasonPolicyVersion = 2027;
+  }
   // Older saved revisions predate image-only copy; merge defaults without changing their prices or rules.
   const defaults = createDefaultCiaContentConfig().quoteImageSettings;
   const saved = clone.quoteImageSettings;

@@ -48,7 +48,7 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
     fee({ id: 'electricity', name: '电费', amount: 2000, futureEffectiveStart: futureStart, futureName: '基础电费（不含空调）', futureAmount: 500, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '预估金额；空调或超额用电按学校计量另收，参考25比索/度', futureNote: '每周500比索；空调用电按实际使用另收25比索／千瓦时，并从押金中结算。', sortOrder: 5 }),
     fee({ id: 'water', name: '水费', amount: 500, futureEffectiveStart: futureStart, futureAmount: 300, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', futureNote: '2027年1月4日起入学新生按每周300比索计算。', sortOrder: 6 }),
     fee({ id: 'visa-extension', name: '旅游签证续签', amount: 6390, rates: [6390, 4460, 4460, 4460, 4460], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '59天签证：9–12周6,390比索，之后每增加30天按4,460比索预估；30天签证第5次续签按5,870比索。', sortOrder: 7 }),
-    fee({ id: 'books', name: '教材费', amount: 250, secondaryAmount: 450, billingRule: 'once', includeInTotal: false, note: '每本250–450比索，按课程及实际购买数量结算；校方周数总额未计教材。', sortOrder: 8 }),
+    fee({ id: 'books', name: '教材费', amount: 250, secondaryAmount: 450, billingRule: 'once', includeInTotal: true, note: '校方参考每本250–450比索；本次按已填写数量及单价计入学杂费合计，实际以课程及到校购买为准。', sortOrder: 8 }),
     fee({ id: 'pickup', name: '宿务马克坦机场接机（可选）', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '校方最新明细列一次1,200比索接机；本站保留为可选参考，不计入默认合计。', sortOrder: 9 }),
     fee({ id: 'deposit', name: '住宿押金（可退）', amount: 250, periodWeeks: 1, rounding: 'proportional', billingRule: 'optional', includeInTotal: false, note: '每住宿周250比索；离校时扣除空调等实际费用后按校规退还，本站不计入学杂费合计。', sortOrder: 10 }),
   ],
@@ -95,7 +95,7 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
     alumniBenefitTitle: '老学员专属优惠',
     alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
     noteSectionTitle: '报价说明',
-    footerNotes: ['课程、住宿、暑期附加费和优惠按当前选择及有效规则计算。', '到校费用、签证与教材按实际发生和学校最新政策确认。', '最终以学校价格、空房及优惠确认为准。'],
+    footerNotes: ['课程、住宿、暑期附加费和优惠按当前选择及有效规则计算。', '教材按填写的数量和单价估算并计入学杂费合计，实际以课程及到校购买为准。', '最终以学校价格、空房及优惠确认为准。'],
   },
   media: [],
 });

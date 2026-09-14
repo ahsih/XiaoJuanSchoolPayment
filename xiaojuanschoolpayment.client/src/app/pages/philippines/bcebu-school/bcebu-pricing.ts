@@ -28,7 +28,7 @@ export const BCEBU_ROOMS: BCebuRoom[] = [
 
 export const BCEBU_REGISTRATION_NOTE = '一次性费用，老学员返校免费';
 export const BCEBU_PROMOTION_DATES = '2026/2/16–6/29、2026/8/17–12/28入学';
-export const BCEBU_REPORTER_NOTE = '4周起，每周优惠25美元，每天额外增加1节一对一课程；国内社交平台（小红书、抖音、快手等）需有500粉丝，发帖不少于100字；亲子家庭不参加。记者优惠在淡季折扣前计算，由中介预收，完成活动毕业后退叠加淡季及思达折扣后的实际差价。';
+export const BCEBU_REPORTER_NOTE = '记者活动折扣为100美元/4周（按每周25美元计算，4周起报）；每天额外增加1节一对一课程；国内社交平台（小红书、抖音、快手等）需有500粉丝，每周发帖且每篇不少于100字；亲子家庭不参加。记者优惠在淡季折扣前计算，由中介预收，完成活动毕业后退叠加淡季及思达折扣后的实际差价。';
 export const BCEBU_LONG_STAY_NOTE = '8周50美元、12周100美元、16周200美元、20周300美元、24周400美元；之后每满4周增加100美元，可与其他符合条件的优惠叠加。';
 export const BCEBU_LOCAL_FEE_INTRO = '学杂费为到校后学校及相关部门收取的费用，与思达游学无关，仅供参考，以到校比索现金实收为准。接机费和可退房间押金另列，不计入学杂费合计。';
 export const bcebuMultiplier = (weeks: number) => ({ 1: 0.4, 2: 0.6, 3: 0.8 }[weeks] ?? weeks / 4);

@@ -26,6 +26,8 @@ export function estimateCgLocalFees(
   visaType: CgVisaType = 'tourist59',
   editableRules?: CiaLocalFeeRule[],
   entryStartDate = '',
+  textbookCount = 1,
+  textbookUnitPrice?: number,
 ) {
   const configured = (id: string) => editableRules?.find(rule => rule.id === id && rule.enabled);
   // Only the three weekly utilities change on the published 2027 effective date.
@@ -97,7 +99,7 @@ export function estimateCgLocalFees(
   const arpQuantity = longTermVisa || visaExtensionCount > 0 ? 1 : 0;
   const note = '学杂费均为预估金额，仅供准备比索现金参考，具体以学校及相关部门到校实收为准。' +
     (uses2027WeeklyFees
-      ? `本报价已按2027年1月4日起入学新生标准计算；报价中的${CG_2027_LOCAL_FEE_EFFECTIVE_ARRIVAL_DATE.replaceAll('-', '/')}周日入住对应次日开课。校方周数总额另含1,200比索接机及每周250比索可退押金，本站合计沿用既有口径不含这两项及按实际购买的教材。`
+      ? `本报价已按2027年1月4日起入学新生标准计算；报价中的${CG_2027_LOCAL_FEE_EFFECTIVE_ARRIVAL_DATE.replaceAll('-', '/')}周日入住对应次日开课。校方周数总额另含1,200比索接机及每周250比索可退押金，本站学杂费合计不含这两项；教材按每位学生填写的数量和单价计入。`
       : `证件、签证、教材、接机和按周押金已按学校最新明细计算；水费、综合管理费和基础电费仍按${CG_2027_LOCAL_FEE_EFFECTIVE_CLASS_DATE.replaceAll('-', '/')}前标准，届时自动切换为每周300、750和500比索；具体以学校及相关部门实际收费为准。`) +
     (!uses2027WeeklyFees && accommodationWeeks === 3 ? '3周管理费、电费和水费按4周预估。' : '') +
     (weeks !== accommodationWeeks ? `签证按${weeks}周停留跨度（含间隔）预估；管理费、电费和水费按${accommodationWeeks}周住宿预估。` : '') +
@@ -111,6 +113,8 @@ export function estimateCgLocalFees(
   const booksMaximum = usesFutureRule(booksRule)
     ? booksRule?.futureSecondaryAmount ?? booksRule?.secondaryAmount ?? 450
     : booksRule?.secondaryAmount ?? 450;
+  const normalizedTextbookCount = Number.isFinite(textbookCount) ? Math.max(0, Math.floor(textbookCount)) : 0;
+  const normalizedTextbookUnitPrice = Number.isFinite(textbookUnitPrice) ? Math.max(0, textbookUnitPrice!) : books;
   const depositQuantity = accommodationWeeks;
   const periodLabel = (id: string) => usesFutureRule(configured(id))
     ? configured(id)?.futurePeriodWeeks ?? 1
@@ -144,7 +148,7 @@ export function estimateCgLocalFees(
     { id: 'electricity', item: ruleName('electricity', '电费', '基础电费（不含空调）'), amount: `${electricity.toLocaleString('zh-CN')} 比索 / ${periodLabel('electricity')}周`, quantity: electricityPeriods, total: electricity * electricityPeriods, note: ruleNote('electricity', '预估金额；空调或超额用电按学校计量另收，参考25比索/度', '每周500比索；空调用电按实际使用另收25比索／千瓦时，并从押金中结算。') },
     { id: 'water', item: ruleName('water', '水费'), amount: `${water.toLocaleString('zh-CN')} 比索 / ${periodLabel('water')}周`, quantity: waterPeriods, total: water * waterPeriods, note: ruleNote('water', '每4周预估1份，具体以学校实收为准', '2027年1月4日起入学新生按每周300比索计算。') },
     { id: 'visa-extension', item: ruleName('visa-extension', '旅游签证续签'), amount: visaRate, quantity: visaExtensionCount, total: visaExtensionFee, note: longTermVisa?`${ruleNote('visa-extension', confirmation)} ${confirmation}`:visaNote },
-    { id: 'books', item: ruleName('books', '教材费'), amount: `${books.toLocaleString('zh-CN')}–${booksMaximum.toLocaleString('zh-CN')} 比索 / 本`, quantity: 0, total: 0, note: ruleNote('books', '每本250–450比索，按课程及实际购买数量结算；校方周数总额未计教材。') },
+    { id: 'books', item: ruleName('books', '教材费'), amount: `${normalizedTextbookUnitPrice.toLocaleString('zh-CN')} 比索 / 本`, quantity: normalizedTextbookCount, total: normalizedTextbookUnitPrice * normalizedTextbookCount, note: ruleNote('books', `校方参考每本${books.toLocaleString('zh-CN')}–${booksMaximum.toLocaleString('zh-CN')}比索；本次按已填写数量及单价计入学杂费合计，实际以课程及到校购买为准。`) },
     { id: 'pickup', item: ruleName('pickup', '宿务马克坦机场接机（可选）'), amount: `${pickup.toLocaleString('zh-CN')} 比索 / 次`, quantity: includeAirportPickup ? 1 : 0, total: includeAirportPickup ? pickup : 0, note: ruleNote('pickup', '校方最新明细列一次1,200比索接机；本站保留为可选参考，不计入默认合计。'), excluded: true },
     { id: 'deposit', item: ruleName('deposit', '住宿押金（可退）'), amount: `${deposit.toLocaleString('zh-CN')} 比索 / 住宿周`, quantity: depositQuantity, total: deposit * depositQuantity, note: ruleNote('deposit', '每住宿周250比索；离校时扣除空调等实际费用后按校规退还，本站不计入学杂费合计。'), excluded: true },
   ].filter(row => !editableRules || !!configured(row.id!));

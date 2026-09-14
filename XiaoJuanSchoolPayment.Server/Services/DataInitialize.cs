@@ -598,7 +598,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "四人套房 SR-4", 4, 1100m, "套房房型，预算和空间较平衡", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；一次性报名注册费", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/14-8/8、2027/1/17-2/14期间按 USD 40 / 周计算", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/06/14–08/08、2027/01/17–02/13（寒假4周）、2027/06/13–08/07（暑假8周）期间按课程与住宿实际覆盖周去重计收USD40/周；不参与折扣", now);
       UpsertFee(context, schoolId, "SSP", 8000m, PhpCurrencyId, "到校支付费用；没有菲律宾学生签证、工签或退休签等长期签证者需办理", now);
       RemoveFee(context, schoolId, "SSP E-card");
       UpsertFee(context, schoolId, "SSP E-CARD", 4500m, PhpCurrencyId, "到校支付费用；办理SSP时同时办理", now);

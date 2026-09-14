@@ -816,11 +816,11 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get localFees(): LocalFee[] {
     const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
       .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
-    const optional=estimateCgLocalFees(this.quotePlan.stayWeeks,this.includeAirportPickup,this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate).fees.filter(f=>f.excluded);
+    const optional=estimateCgLocalFees(this.quotePlan.stayWeeks,this.includeAirportPickup,this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate,this.students[0].textbookCount,this.students[0].textbookUnitPrice).fees.filter(f=>f.excluded);
     return [...included,...optional];
   }
 
-  private get localFeeEstimate() { return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate); }
+  private get localFeeEstimate() { return estimateCgLocalFees(this.quotePlan.stayWeeks, this.includeAirportPickup, this.quotePlan.roomWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate,this.students[0].textbookCount,this.students[0].textbookUnitPrice); }
 
   get localFeesTotal(): number {
     return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0);
@@ -856,7 +856,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     const quote=buildPhilippinesDetailedQuote({
       fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG BANILAD',schoolName:'菲律宾宿务CG Academy Banilad校区',filePrefix:'CG-Banilad',
       heroSrc:'/assets/philippines/cg-banilad-campus-hero.webp',weeks:this.selectedWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
-      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),
+      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:id==='books'?f.note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),
       localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,
       optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes,
     });

@@ -9,7 +9,7 @@ import { BCebuSchoolComponent } from './bcebu-school.component';
 import { BCebuQuote } from './bcebu-quote';
 import { BCEBU_COURSES, BCEBU_ROOMS, BCEBU_REGISTRATION_NOTE, bcebuLongStay, bcebuOffSeason } from './bcebu-pricing';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
-import { createDefaultBCebuContentConfig } from './bcebu-content-config';
+import { cloneBCebuContentConfig, createDefaultBCebuContentConfig } from './bcebu-content-config';
 
 const calculator = () => new BCebuQuote(() => BCEBU_COURSES, () => BCEBU_ROOMS, () => 100, '2026-09-06');
 const duration = (quote: BCebuQuote, weeks: number) => { quote.plan.courses[0].weeks = weeks; quote.plan.rooms[0].weeks = weeks; };
@@ -45,6 +45,33 @@ describe("B'Cebu confirmed 2026 pricing", () => {
     expect(quote.paymentItems[0].amount).toBe('100 美元');
     expect(quote.paymentItems[1].amount).toBe('− 100 美元');
     expect(quote.paymentItems[0].note).toBe(BCEBU_REGISTRATION_NOTE);
+  });
+
+  it('calculates the supplied four-week fall promotion in the confirmed order', () => {
+    const quote = calculator(); quote.reporter = true;
+    expect(quote.entryDate).toBe('2026-09-07');
+    expect(quote.reporterDiscount).toBe(100);
+    expect(quote.offSeasonDiscount).toBe(232.5);
+    expect(quote.sidaDiscount).toBe(131.75);
+    expect(quote.total).toBe(1185.75);
+    expect(quote.prepaid).toBe(1262.25);
+    expect(quote.refund).toBe(76.5);
+    expect(quote.paymentItems.find(row => row.label === '记者活动优惠')?.note).toContain('100美元/4周');
+  });
+
+  it('adds the confirmed policy to older published content without replacing saved edits', () => {
+    const old = createDefaultBCebuContentConfig();
+    old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => ['bcebu-registration-waiver', 'bcebu-sida-90'].includes(rule.id));
+    old.quoteSettings.promotions.find(rule => rule.id === 'bcebu-sida-90')!.discountValue = 8;
+    const migrated = cloneBCebuContentConfig(old);
+    expect(migrated.quoteSettings.promotions.map(rule => rule.id)).toContain('bcebu-reporter');
+    expect(migrated.quoteSettings.promotions.map(rule => rule.id)).toContain('bcebu-off-season-fall');
+    expect(migrated.quoteSettings.promotions.map(rule => rule.id)).toContain('bcebu-long-stay');
+    expect(migrated.quoteSettings.promotions.find(rule => rule.id === 'bcebu-sida-90')!.discountValue).toBe(8);
+    const quote = new BCebuQuote(() => BCEBU_COURSES, () => BCEBU_ROOMS, () => 100, '2026-09-06', () => migrated);
+    quote.reporter = true;
+    expect(quote.reporterDiscount).toBe(100);
+    expect(quote.offSeasonDiscount).toBe(232.5);
   });
 
   it('uses family 10% off with any room and excludes the reporter activity', () => {
@@ -162,7 +189,7 @@ describe("B'Cebu confirmed 2026 pricing", () => {
     expect(quote.plan.options('room').find(row => row.id === 'single-garden-view')!.details).toContain('50岁以上');
   });
 
-  it('preserves confirmed catalog notes and missing rows after a partial API response', () => {
+  it('preserves confirmed catalog notes and renders the reporter details in the public quote image', async () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
@@ -176,7 +203,25 @@ describe("B'Cebu confirmed 2026 pricing", () => {
     expect(component.courseFees[0].tuition).toBe(950);
     expect(component.courseFees[0].suitable).toBe(BCEBU_COURSES[0].suitable);
     expect(component.roomFees.length).toBe(7);
-  });
+    expect(component.promotionPolicyCards.length).toBe(5);
+    component.calculator.plan.courses[0].startDate = '2026-09-06';
+    component.calculator.plan.rooms[0].startDate = '2026-09-06';
+    component.calculator.reporter = true;
+    const reporterImage = component.quoteImageData;
+    expect(reporterImage.paymentItems.find(row => row.label === '记者活动优惠')?.note).toContain('每周发帖');
+    expect(reporterImage.totalLabel).toBe('完成记者活动后学校费用');
+    expect(reporterImage.totalNote).toContain('预计退76.5美元');
+    expect(reporterImage.importantNotes).toContain('预收1,300.5美元；完成活动毕业后预计退76.5美元。');
+    const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = reporterImage;
+    const draw = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
+    const blob = await renderer['createQuoteImageBlob'](1);
+    const text = draw.calls.allArgs().map(args => String(args[0])).join('').replace(/\s/g, '');
+    expect(blob.size).toBeGreaterThan(50000);
+    expect(text).toContain('记者活动优惠');
+    expect(text).toContain('每周发帖且每篇不少于100字');
+    expect(text).toContain('完成活动毕业后预计退76.5美元');
+    renderer.ngOnDestroy();
+  }, 30000);
 
   it('shares all webpage/image notes and adds both optional renminbi estimates', () => {
     const quote = calculator(); quote.pickup = 'weekday'; quote.reporter = true;

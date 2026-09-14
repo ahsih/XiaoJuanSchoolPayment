@@ -1,9 +1,13 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { CiaSchoolComponent } from './cia-school.component';
 import { CiaStudentQuote } from './cia-student-quote';
+import { cloneCiaContentConfig, createDefaultCiaContentConfig } from './cia-content-config';
 import { groupPaymentLines } from '../../../components/school-group-quote';
 
 describe('CIA per-person quote pilot', () => {
@@ -17,7 +21,10 @@ describe('CIA per-person quote pilot', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({providers:[
       {provide:SchoolService,useValue:{getSchools:()=>of([])}},
+      {provide:SchoolContentService,useValue:{getPublished:()=>of(null)}},
       {provide:ExchangeRateService,useValue:{getLatestCnyRates:()=>EMPTY}},
+      {provide:ElementRef,useValue:new ElementRef(document.createElement('div'))},
+      {provide:ActivatedRoute,useValue:{snapshot:{queryParamMap:{get:()=>null}}}},
     ]});
     c = TestBed.runInInjectionContext(()=>new CiaSchoolComponent());
     configure(c.students[0]);
@@ -47,6 +54,54 @@ describe('CIA per-person quote pilot', () => {
     const course=c.courseFees.find(x=>x.id==='regular-esl')!;
     expect(c.students[0].tuition).toBe(course.tuition);
     expect(c.students[1].tuition).toBe(course.tuition2027);
+  });
+  it('uses the confirmed 2027 winter and summer peak-season boundaries everywhere', () => {
+    const ranges = c.peakSeasonCalendarRanges;
+    expect(ranges.map(range => [range.id, range.start, range.end])).toEqual([
+      ['winter-2027', '2027-01-17', '2027-02-13'],
+      ['summer-2027', '2027-06-13', '2027-08-07'],
+    ]);
+    expect(ranges.map(range => c.peakSeasonWeekCount(range))).toEqual([4, 8]);
+
+    configure(c.students[0], 4, '2027-01-17');
+    expect(c.students[0].peakWeeks).toBe(4);
+    expect(c.seasonalSurcharge).toBe(160);
+    expect(c.students[0].sidaDiscount).toBeCloseTo(
+      (c.students[0].tuition + c.students[0].accommodation) * 0.05,
+    );
+    const winterImageLine = c.quoteImageData.paymentItems!.find(item => item.label === '旺季附加费')!;
+    expect(winterImageLine.amount).toBe('160 美元');
+    expect(winterImageLine.note).toContain('2027寒假 2027/01/17–2027/02/13');
+    expect(winterImageLine.note).not.toContain('02/14');
+    expect(winterImageLine.note).toContain('不参与折扣');
+
+    configure(c.students[0], 8, '2027-06-13');
+    expect(c.students[0].peakWeeks).toBe(8);
+    expect(c.seasonalSurcharge).toBe(320);
+    expect(c.quoteImageData.paymentItems!.find(item => item.label === '旺季附加费')!.note)
+      .toContain('2027暑假 2027/06/13–2027/08/07');
+
+    for (const outsideDate of ['2027-01-10', '2027-02-14', '2027-06-06', '2027-08-08']) {
+      configure(c.students[0], 1, outsideDate);
+      expect(c.students[0].peakWeeks).withContext(outsideDate).toBe(0);
+      expect(c.quoteImageData.paymentItems!.some(item => item.label === '旺季附加费'))
+        .withContext(outsideDate).toBeFalse();
+    }
+  });
+  it('upgrades older published CIA content to the confirmed 2027 peak-season policy', () => {
+    const legacy = createDefaultCiaContentConfig();
+    delete legacy.quoteSettings.peakSeasonPolicyVersion;
+    legacy.quoteSettings.peakSeasonRanges = legacy.quoteSettings.peakSeasonRanges
+      .filter(range => range.id !== 'summer-2027')
+      .map(range => range.id === 'winter-2027' ? { ...range, end: '2027-02-14' } : range);
+
+    const upgraded = cloneCiaContentConfig(legacy);
+    expect(upgraded.quoteSettings.peakSeasonFeePerWeek).toBe(40);
+    expect(upgraded.quoteSettings.peakSeasonRanges.find(range => range.id === 'winter-2027')?.end)
+      .toBe('2027-02-13');
+    expect(upgraded.quoteSettings.peakSeasonRanges.find(range => range.id === 'summer-2027'))
+      .toEqual(jasmine.objectContaining({ start: '2027-06-13', end: '2027-08-07', enabled: true }));
+    expect(upgraded.quoteSettings.peakSeasonPolicyVersion).toBe(2027);
   });
   it('charges registration per new student, never per course or room', () => {
     c.setQuoteMode('group');
@@ -97,7 +152,7 @@ describe('CIA per-person quote pilot', () => {
         expect(fee(s,name).note).toContain('须由顾问向学校确认政策是否调整及是否免收');
       }
       expect(fee(s,'ARP').total).toBe(300);
-      expect(fee(s,'ARP').note).toContain('长期签证仍计收');
+      expect(fee(s,'ARP').note).toContain('长期签证');
     });
   }
   it('uses 30/59 initial days and adds ARP only on first tourist extension', () => {
@@ -152,7 +207,7 @@ describe('CIA per-person quote pilot', () => {
   it('charges known per-person deposits but keeps pickup as a reference', () => {
     c.setQuoteMode('group'); c.studentCount=3;
     expect(c.optionalFeeItems[1].amount).toBe('7,500 比索');
-    expect(c.optionalFeeItems[0].amount).toBe('周末1,000比索／工作日1,500比索');
+    expect(c.optionalFeeItems[0].amount).toBe('1,000 比索／工作日1,500 比索');
     expect(c.optionalFeeItems.every(f=>f.cnyAmount.includes('人民币'))).toBeTrue();
   });
   it('keeps names ahead of prices and one common template for 1/3/4 periods', () => {

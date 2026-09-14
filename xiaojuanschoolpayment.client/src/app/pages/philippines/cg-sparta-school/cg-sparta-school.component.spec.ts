@@ -60,7 +60,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.summerSurcharge).toBe(0);
     expect(component.offSeasonDiscount).toBe(150);
     expect(component.quoteUsd).toBe(1255);
-    expect(component.localFeesTotal).toBe(16800);
+    expect(component.localFeesTotal).toBe(17050);
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '暑假附加费')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '长期优惠')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.find(item => item.icon === '宿')?.detailTitle).toBe('斯巴达 4人房');
@@ -69,11 +69,32 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.quoteImageData.localFeeItems?.find(item => item.label === '旅游签证续签')?.amount).toBe('0 比索');
   });
 
+  it('includes each student textbook estimate in the webpage and generated image', () => {
+    const student = component.activeStudents[0];
+    student.textbookCount = 2;
+    student.textbookUnitPrice = 450;
+    const textbook = component.localFees.find(row => row.item === '教材费')!;
+    expect(textbook.amount).toBe('450 比索 / 本');
+    expect(textbook.quantity).toBe(2);
+    expect(textbook.total).toBe(900);
+    expect(component.localFeesTotal).toBe(17700);
+    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({
+      unit: '450 比索 / 本', quantity: '2', amount: '900 比索',
+    }));
+
+    student.textbookCount = 51;
+    expect(component.quoteError).toContain('教材数量请输入0–50本的整数');
+    student.textbookCount = 0;
+    expect(component.quoteError).toBe('');
+    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(0);
+  });
+
   it('uses the latest non-utility fees in 2026 and switches only the three weekly utilities in 2027', () => {
     component.selectedStartDate = '2026-12-27';
     expect(component.localFees.find(row => row.item === '维护管理费')?.amount).toContain('/ 4周');
     expect(component.localFees.find(row => row.item === 'ACR E-CARD（SSP）')?.total).toBe(4500);
-    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('250–450 比索 / 本');
+    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('250 比索 / 本');
+    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
     expect(component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')?.total).toBe(1000);
     component.activeStudents[0].visaType = 'tourist30';
     component.selectedWeeks = 21;
@@ -86,8 +107,8 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.localFees.find(row => row.item === '综合管理费')?.total).toBe(750);
     expect(component.localFees.find(row => row.item === '基础电费（不含空调）')?.total).toBe(500);
     expect(component.localFees.find(row => row.item === '水费')?.total).toBe(300);
-    expect(component.localFeesTotal).toBe(13850);
-    expect(component.localFeesTotal + component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')!.total + 1200).toBe(15300);
+    expect(component.localFeesTotal).toBe(14100);
+    expect(component.localFeesTotal - 250 + component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')!.total + 1200).toBe(15300);
 
     for (const [weeks, visaTotal, publishedTotal] of [
       [12, 6390, 46290], [16, 10850, 57950], [20, 15310, 69610], [24, 19770, 81270],
@@ -95,7 +116,8 @@ describe('CG斯巴达校区 quote adjustments', () => {
       component.selectedWeeks = weeks;
       expect(component.visaExtensionFee).withContext(`${weeks} weeks`).toBe(visaTotal);
       const deposit = component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')!;
-      expect(component.localFeesTotal + deposit.total + 1200).toBe(publishedTotal);
+      const books = component.localFees.find(row => row.item === '教材费')!;
+      expect(component.localFeesTotal - books.total + deposit.total + 1200).toBe(publishedTotal);
       expect(component.quoteImageData.localFeeItems?.find(row => row.label === '旅游签证续签')?.amount).toBe(component.formatPhp(visaTotal));
     }
     expect(component.quoteImageData.localFeeNote).toContain('2027年1月4日起入学新生标准');
@@ -123,6 +145,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(migrated.localFees.find(row => row.id === 'ssp-i-card')?.name).toBe('ACR E-CARD（SSP）');
     expect(migrated.localFees.find(row => row.id === 'visa-extension')?.rates).toEqual([6390, 4460, 4460, 4460, 4460]);
     expect(migrated.localFees.find(row => row.id === 'books')?.secondaryAmount).toBe(450);
+    expect(migrated.localFees.find(row => row.id === 'books')?.includeInTotal).toBeTrue();
     expect(migrated.localFees.find(row => row.id === 'deposit')?.periodWeeks).toBe(1);
     expect(migrated.localFees.find(row => row.id === 'management')?.amount).toBe(2000);
     expect(migrated.localFees.find(row => row.id === 'management')?.futureAmount).toBe(750);
@@ -233,14 +256,14 @@ describe('CG斯巴达校区 quote adjustments', () => {
         expect(fee.total).toBe(periods * unit);
         expect(fee.amount).toContain('/ 4周');
       }
-      expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(0);
+      expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
     }
     component.selectedWeeks = 3;
     expect(component.localFeeEstimateNote).toContain('3周管理费、电费和水费按4周预估。');
   });
 
   it('uses 30-day extensions after a 59-day visa and the public cumulative fee tiers', () => {
-    for (const [weeks, count, visaFee, total] of [[3, 0, 0, 16800], [4, 0, 0, 16800], [8, 0, 0, 21300], [12, 1, 6390, 36990], [16, 2, 10850, 45950], [20, 3, 15310, 54910], [24, 4, 19770, 63870]] as const) {
+    for (const [weeks, count, visaFee, total] of [[3, 0, 0, 17050], [4, 0, 0, 17050], [8, 0, 0, 21550], [12, 1, 6390, 37240], [16, 2, 10850, 46200], [20, 3, 15310, 55160], [24, 4, 19770, 64120]] as const) {
       component.selectedWeeks = weeks;
       const visa = component.localFees.find(row => row.item === '旅游签证续签')!;
       expect(component.visaExtensionCount).toBe(count);
@@ -335,7 +358,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.tuitionForSelectedWeeks).toBe(1650);
     expect(component.roomFeeForSelectedWeeks).toBe(1300);
     expect(component.quoteUsd).toBe(2455);
-    expect(component.localFeesTotal).toBe(21300);
+    expect(component.localFeesTotal).toBe(21550);
     expect(component.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
     const items = component.quoteImageData.paymentItems.filter(row => row.detailTitle);
     expect(items.map(row => row.label)).toEqual(['课程名称1', '课程名称2', '住宿名称']);
@@ -494,7 +517,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
       expect(visa.amount).toBe(component.formatPhp(fee));
       expect(visa.note.includes('第6次起沿用第5次费用估算')).toBe(count > 5);
     }
-    expect(component.localFeesTotal).toBe(126590);
+    expect(component.localFeesTotal).toBe(126840);
     expect(component.longStayDiscount).toBe(200);
     expect(component.courseQuoteRows[0].endDate).toBe('2027/09/04');
   });
@@ -664,6 +687,10 @@ describe('CG斯巴达校区 quote adjustments', () => {
     minor.selectedAgeGroup = 'minor';
     minor.returningStudent = true;
     minor.quotePlan.courses[0].optionId = 'ielts-basic';
+    adult.textbookCount = 2;
+    adult.textbookUnitPrice = 400;
+    minor.textbookCount = 1;
+    minor.textbookUnitPrice = 400;
     expect(component.payableRegistrationFee).toBe(100);
     expect(component.schoolPaymentItems[0].amount).toBe('100 美元');
     expect(component.quoteUsd).toBeCloseTo(adult.quoteUsd + minor.quoteUsd);
@@ -673,6 +700,8 @@ describe('CG斯巴达校区 quote adjustments', () => {
     ]);
     expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达折扣').length).toBe(1);
     expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toContain('2人适用');
+    expect(component.includedLocalFees.find(row => row.item === '教材费')).toEqual(jasmine.objectContaining({ quantity: 3, total: 1200 }));
+    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({ quantity: '3', amount: '1,200 比索' }));
   });
 
   it('applies visa rules per person, including ARP for first tourist renewal and long-term visas', () => {

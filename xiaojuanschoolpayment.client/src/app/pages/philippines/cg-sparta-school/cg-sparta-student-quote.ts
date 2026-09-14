@@ -18,8 +18,11 @@ export class CgSpartaStudentQuote {
   selectedRegistrationDate=new Date().toLocaleDateString('en-CA');
   readonly visaOptions=SCHOOL_VISA_OPTIONS;
   visaType:CgVisaType='tourist59';
+  textbookCount=1;
+  textbookUnitPrice=250;
   readonly quotePlan:SchoolQuotePlan;
   constructor(private readonly p:SpartaPrices){
+    this.textbookUnitPrice=this.textbookMinimumPrice;
     this.quotePlan=new SchoolQuotePlan('sparta','quad','2026-09-06',p.weekOptions,
       kind=>kind==='course'?p.courseOptions.map(x=>({id:x.id,name:x.name,details:x.lessons})):p.roomOptions.map(x=>({id:x.id,name:x.name,details:''})),
       (kind,row)=>{
@@ -32,8 +35,12 @@ export class CgSpartaStudentQuote {
     if(this.quotePlan.error)return this.quotePlan.error;
     if(this.quotePlan.date(this.selectedRegistrationDate)===null)return '请选择有效的报名注册日期。';
     if(!['adult','minor'].includes(this.selectedAgeGroup))return '请选择抵达时年龄段。';
+    if(!Number.isInteger(this.textbookCount)||this.textbookCount<0||this.textbookCount>50)return '教材数量请输入0–50本的整数。';
+    if(!Number.isFinite(this.textbookUnitPrice)||this.textbookUnitPrice<this.textbookMinimumPrice||this.textbookUnitPrice>this.textbookMaximumPrice)return `教材单价请输入${this.textbookMinimumPrice}–${this.textbookMaximumPrice}比索。`;
     return this.visaOptions.some(x=>x.value===this.visaType)?'':'请选择有效的签证类型。';
   }
+  get textbookMinimumPrice(){return this.p.localFeeRules.find(rule=>rule.id==='books'&&rule.enabled)?.amount??250;}
+  get textbookMaximumPrice(){return this.p.localFeeRules.find(rule=>rule.id==='books'&&rule.enabled)?.secondaryAmount??450;}
   private promotion(id:string){return this.p.promotionRules.find(rule=>rule.id===id&&rule.enabled);}
   get registration(){return this.returningStudent&&this.promotion('cg-sparta-returning-registration')?.waiveRegistration?0:this.p.registrationFee;}
   get tuition(){return this.quotePlan.total('course');}
@@ -56,7 +63,7 @@ export class CgSpartaStudentQuote {
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-sparta-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-sparta-long-stay')?.description??'',promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.p.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.p.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周；不参与9折`}]:[]),
   ];}
-  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.p.localFeeRules,this.quotePlan.startDate).fees;}
+  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.p.localFeeRules,this.quotePlan.startDate,this.textbookCount,this.textbookUnitPrice).fees;}
   warning(row:QuotePlanRow){
     return row.optionId==='ielts-intensive'&&row.weeks<12?'雅思密集课程12周起报，当前安排需学校确认。':row.optionId==='business-english'&&row.weeks<4?'商务英语4周起报，当前安排需学校确认。':row.optionId==='ielts-guarantee'?'保证班入学分数、周期及转课规则需学校确认。':'';
   }
