@@ -99,6 +99,8 @@ The Angular services use relative URLs so the development proxy and production s
 
 The supported visual editors and embedded public pages use a same-origin, source-checked preview-message handshake. Selecting an item or focusing its form field reveals the real public section (including nested disclosures), scrolls only the iframe, and keeps an orange highlight; clicking a preview item selects its form. Tab changes must not reload the iframe or reset the quote scenario. Hidden items and inapplicable promotions fall back to their section with an explicit status message. Preview annotations never appear on the normal public page. Focused CIA navigation tests run with `npx ng test --watch=false --browsers=ChromeHeadless --ts-config=tsconfig.cia-preview-spec.json --include=src/app/pages/philippines/cia-school/cia-content-preview.spec.ts`; PINES calculation/component tests use `tsconfig.pines.spec.json`, MONOL tests use `tsconfig.monol.spec.json`, I.BREEZE tests use `tsconfig.ibreeze.spec.json`, A&J tests use `tsconfig.anj-spec.json`, and JIC quote-rule tests use `tsconfig.jic.spec.json`.
 
+IU and ICL are also supported by both unified employee editors. Their independent versioned content documents drive each public page, calculator, local-fee table, generated quote image, and real-page editor preview without sharing prices or room-opening rules.
+
 ## Content/data layers
 
 Do not assume all visible information comes from the database:

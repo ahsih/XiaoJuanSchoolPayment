@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import { buildIuIclGroupImageData, IuIclQuote, iuIclGroupLocalFees, iuIclGroupPaymentItems } from '../iu-school/iu-icl-quote';
+import { CiaContentConfig } from '../cia-school/cia-content-config';
+import { cloneIclContentConfig, createDefaultIclContentConfig } from '../iu-school/iu-icl-content-config';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
 
@@ -39,10 +43,15 @@ interface SideNavItem { label: string; target: string; icon: string; }
     '../iu-school/iu-icl-quote-layout.css',
   ],
 })
-export class IclSchoolComponent implements OnInit {
+export class IclSchoolComponent implements OnInit, AfterViewInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
   private readonly pricingSchoolName = '菲律宾宿务ICL English Academy';
+  private contentConfig = createDefaultIclContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
   readonly weekOptions = Array.from({ length: 24 }, (_, index) => index + 1);
   readonly registrationFeeUsd = 100;
   readonly quoteCalculator = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
@@ -67,7 +76,7 @@ export class IclSchoolComponent implements OnInit {
     { icon: 'family_restroom', title: '亲子与Junior课程', text: '学校提供Junior、Parents和短期亲子方案，搭配儿童活动区和学生发表活动。' },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     {
       category: '校区',
       title: 'ICL学校外观',
@@ -149,6 +158,7 @@ export class IclSchoolComponent implements OnInit {
       new Map(this.quoteCalculator.courses.map(courseItem => [courseItem.name, courseItem.tuition])),
       new Map(this.quoteCalculator.rooms.map(roomItem => [roomItem.name, roomItem.fee])),
     );
+    quote.applyContentConfig(this.contentConfig);
     return quote;
   }
 
@@ -186,6 +196,7 @@ export class IclSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
     this.loadPricingFromDatabase();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(snapshot => {
       if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
@@ -194,6 +205,44 @@ export class IclSchoolComponent implements OnInit {
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isEditorPreview) window.parent.postMessage({ type: 'icl-content-ready' }, window.location.origin);
+  }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: { kind?: string; id?: string }; scroll?: boolean };
+    if (message.type !== 'icl-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    const target = message.target;
+    if (target?.kind && target.id) {
+      const sectionId = target.kind === 'course' || target.kind === 'room' ? 'fee-structure' : target.kind === 'fee' ? 'local-fees' : target.kind === 'promotion' ? 'quote' : this.previewSectionId(target.id);
+      if (message.scroll) document.getElementById(sectionId)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      window.parent.postMessage({ type: 'icl-content-located', target, status: '已定位到ICL官网对应板块，修改会即时显示。' }, window.location.origin);
+    }
+  }
+
+  private previewSectionId(id: string): string {
+    if (id.startsWith('course') || id.startsWith('room') || id === 'stay-policy') return 'fee-structure';
+    if (id.startsWith('local')) return 'local-fees';
+    return 'quote';
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (!this.isEditorPreview || typeof sessionStorage === 'undefined') return null;
+    try {
+      const value = JSON.parse(sessionStorage.getItem('icl-content-preview') ?? 'null') as CiaContentConfig | null;
+      return value?.schoolCode === 'ICL' ? value : null;
+    } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schoolCode !== 'ICL') return;
+    this.contentConfig = cloneIclContentConfig(value);
+    this.students.forEach(student => student.applyContentConfig(this.contentConfig));
   }
 
   private loadPricingFromDatabase(): void {
@@ -205,10 +254,37 @@ export class IclSchoolComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms }) => this.applyPricingData(lessons, rooms));
+    ).subscribe(({ lessons, rooms, published, photos }) => {
+      this.applyPricingData(lessons, rooms);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
+    });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = photos.filter(photo => !!photo.url && !existing.has(photo.url!)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'ICL 学校媒体',
+      text: photo.altText || photo.caption || 'ICL 学校实景内容',
+      src: photo.url!,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('life') || value.includes('生活') || value.includes('facility')) return '生活';
+    return '校区';
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[]): void {

@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { buildIuIclGroupImageData, IuIclQuote, iuIclGroupLocalFees, iuIclGroupPaymentItems } from './iu-icl-quote';
+import { CiaContentConfig } from '../cia-school/cia-content-config';
+import { cloneIuContentConfig, createDefaultIuContentConfig } from './iu-icl-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -130,10 +134,15 @@ interface SourceLink {
     './iu-icl-quote-layout.css',
   ],
 })
-export class IuSchoolComponent implements OnInit {
+export class IuSchoolComponent implements OnInit, AfterViewInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
   private readonly pricingSchoolName = '菲律宾宿务IU English Academy';
+  private contentConfig = createDefaultIuContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
+    && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
   private readonly courseFeeOrder = [
     'Light ESL',
     'Power Speaking 4',
@@ -221,7 +230,7 @@ export class IuSchoolComponent implements OnInit {
     },
   ];
 
-  readonly galleryImages: GalleryImage[] = [
+  galleryImages: GalleryImage[] = [
     {
       category: '校园',
       title: 'IU English Academy校区外观',
@@ -448,6 +457,7 @@ export class IuSchoolComponent implements OnInit {
       new Map(this.quoteCalculator.courses.map(courseItem => [courseItem.name, courseItem.tuition])),
       new Map(this.quoteCalculator.rooms.map(roomItem => [roomItem.name, roomItem.fee])),
     );
+    quote.applyContentConfig(this.contentConfig);
     return quote;
   }
 
@@ -575,6 +585,7 @@ export class IuSchoolComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
     this.loadPricingFromDatabase();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
       if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
@@ -583,6 +594,46 @@ export class IuSchoolComponent implements OnInit {
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isEditorPreview) window.parent.postMessage({ type: 'iu-content-ready' }, window.location.origin);
+  }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: { kind?: string; id?: string }; scroll?: boolean };
+    if (message.type !== 'iu-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    const target = message.target;
+    if (target?.kind && target.id) {
+      const sectionId = target.kind === 'course' ? 'course-fees' : target.kind === 'room' ? 'room-fees' : target.kind === 'fee' ? 'local-fees' : target.kind === 'promotion' ? 'quote' : this.previewSectionId(target.id);
+      if (message.scroll) document.getElementById(sectionId)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      window.parent.postMessage({ type: 'iu-content-located', target, status: '已定位到IU官网对应板块，修改会即时显示。' }, window.location.origin);
+    }
+  }
+
+  private previewSectionId(id: string): string {
+    if (id.startsWith('course')) return 'course-fees';
+    if (id.startsWith('room') || id === 'stay-policy') return 'room-fees';
+    if (id.startsWith('local')) return 'local-fees';
+    return 'quote';
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (!this.isEditorPreview || typeof sessionStorage === 'undefined') return null;
+    try {
+      const value = JSON.parse(sessionStorage.getItem('iu-content-preview') ?? 'null') as CiaContentConfig | null;
+      return value?.schoolCode === 'IU' ? value : null;
+    } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schoolCode !== 'IU') return;
+    this.contentConfig = cloneIuContentConfig(value);
+    this.registrationFee = this.contentConfig.quoteSettings.registrationFee;
+    this.students.forEach(student => student.applyContentConfig(this.contentConfig));
   }
 
   private loadPricingFromDatabase(): void {
@@ -601,12 +652,38 @@ export class IuSchoolComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
+          photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => {
+    ).subscribe(({ lessons, rooms, fees, published, photos }) => {
       this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+      this.applyGalleryPhotos(photos);
     });
+  }
+
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const existing = new Set(this.galleryImages.map(item => item.src));
+    const uploaded = photos.filter(photo => !!photo.url && !existing.has(photo.url!)).map(photo => ({
+      category: this.resolveMediaCategory(photo.category),
+      title: photo.caption || photo.altText || photo.originalFileName || 'IU 学校媒体',
+      description: photo.altText || photo.caption || 'IU 学校实景内容',
+      src: photo.url!,
+    }));
+    if (uploaded.length) this.galleryImages = [...this.galleryImages, ...uploaded];
+  }
+
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
+    const value = (category ?? '').toLowerCase();
+    if (value.includes('class') || value.includes('教室')) return '教室';
+    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
+    if (value.includes('food') || value.includes('dining') || value.includes('餐')) return '餐厅';
+    if (value.includes('facility') || value.includes('设施')) return '设施';
+    return '校园';
   }
 
   private applyPricingData(

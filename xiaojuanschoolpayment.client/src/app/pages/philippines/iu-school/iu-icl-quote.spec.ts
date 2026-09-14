@@ -10,6 +10,7 @@ import {
   iuIclGroupPaymentItems,
 } from './iu-icl-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { createDefaultIclContentConfig, createDefaultIuContentConfig } from './iu-icl-content-config';
 
 describe('IU and ICL 2026 quote rules', () => {
   const align = (quote: IuIclQuote, weeks: number, startDate: string) => {
@@ -24,6 +25,30 @@ describe('IU and ICL 2026 quote rules', () => {
     expect(ICL_COURSES.map(item => item.tuition)).toEqual([750, 850, 1000, 1150, 950, 1000, 1200, 1133, 950, 1100, 900, 900]);
     expect(IU_ROOMS.filter(item => item.accommodation).map(item => item.fee)).toEqual([950, 800, 700, 600, 1400, 950]);
     expect(ICL_ROOMS.filter(item => item.accommodation).map(item => item.fee)).toEqual([850, 750, 700, 600, 1450, 1050, 950]);
+  });
+
+  it('keeps IU and ICL employee content versions independent and applies published prices', () => {
+    const iuConfig = createDefaultIuContentConfig();
+    const iclConfig = createDefaultIclContentConfig();
+    iuConfig.courses.find(item => item.id === 'power-speaking-4')!.tuition = 901;
+    iuConfig.rooms.find(item => item.id === 'campus-triple')!.fee = 701;
+    iuConfig.localFees.find(item => item.id === 'maintenance')!.amount = 450;
+    iuConfig.quoteSettings.iuIclPackagePrices!['power4']['triple'] = 1100;
+    iuConfig.quoteImageSettings.footerNotes[0] = 'IU独立报价说明。';
+
+    const iu = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
+    const icl = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
+    iu.applyContentConfig(iuConfig);
+    icl.applyContentConfig(iclConfig);
+
+    expect(iu.courses.find(item => item.id === 'power-speaking-4')?.tuition).toBe(901);
+    expect(iu.rooms.find(item => item.id === 'campus-triple')?.fee).toBe(701);
+    expect(iu.localFees.find(item => item.item === '维护费')?.total).toBe(1800);
+    expect(iu.total).toBe(1100);
+    expect(iu.imageData(7.2, 7.8, undefined, '/assets/philippines/iu-campus-hero.webp').importantNotes).toContain('IU独立报价说明。');
+    expect(icl.courses.find(item => item.id === 'power-speaking-4')?.tuition).toBe(850);
+    expect(icl.rooms.find(item => item.id === 'campus-quad')?.fee).toBe(600);
+    expect(icl.total).toBe(1050);
   });
 
   it('uses 40/60/80 percent for regular short stays and never adds an intermediary discount', () => {

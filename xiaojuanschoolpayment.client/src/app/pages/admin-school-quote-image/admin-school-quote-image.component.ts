@@ -84,6 +84,13 @@ import {
   cloneJicContentConfig,
   createDefaultJicContentConfig,
 } from '../philippines/jic-school/jic-content-config';
+import {
+  cloneIclContentConfig,
+  cloneIuContentConfig,
+  createDefaultIclContentConfig,
+  createDefaultIuContentConfig,
+} from '../philippines/iu-school/iu-icl-content-config';
+import { IuIclQuote } from '../philippines/iu-school/iu-icl-quote';
 import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
 
 @Component({
@@ -150,8 +157,10 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   get isImsSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return name.includes('ims academy')||name.includes('宿务ims'); }
   get isBeciSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return !this.isBCebuSelected&&(name.includes('beci')||name.includes('api beci')); }
   get isJicSelected(): boolean { return !!this.selectedSchool?.name.toLowerCase().includes('jic'); }
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected; }
-  get schoolShortName(): string { return this.isJicSelected ? 'JIC' : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA'; }
+  get isIuSelected(): boolean { return (this.selectedSchool?.name.toLowerCase() ?? '').includes('iu english academy'); }
+  get isIclSelected(): boolean { return (this.selectedSchool?.name.toLowerCase() ?? '').includes('icl english academy'); }
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected; }
+  get schoolShortName(): string { return this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA'; }
   get imageFeeRows(): CiaLocalFeeRule[] {
     return this.content.localFees.filter(fee => fee.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
   }
@@ -164,7 +173,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     this.selectedSchool = school;
     void this.router.navigate([], { relativeTo: this.route, queryParams: { schoolId: school.id }, queryParamsHandling: 'merge', replaceUrl: true });
     if (this.isSupportedSchool) this.loadEditor(school.id);
-    else { this.isLoading = false; this.statusKind = 'warning'; this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区与 JIC 报价图片；其他学校会在计算器核对完成后再接入。"; }
+    else { this.isLoading = false; this.statusKind = 'warning'; this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区、JIC、IU 与 ICL 报价图片；其他学校会在计算器核对完成后再接入。"; }
   }
 
   selectBeciCampus(campus: BeciCampus): void {
@@ -337,6 +346,12 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   private buildPreviewQuote(): QuoteImageCardData {
+    if (this.isIuSelected || this.isIclSelected) {
+      const campus = this.isIuSelected ? 'IU' : 'ICL';
+      const quote = new IuIclQuote(campus, 'power-speaking-4', campus === 'IU' ? 'campus-triple' : 'campus-quad', campus === 'IU' ? '2026-09-13' : '2026-10-04');
+      quote.applyContentConfig(this.content);
+      return quote.imageData(6.71, 9.33566, '2026-09-14', campus === 'IU' ? '/assets/philippines/iu-campus-hero.webp' : '/assets/philippines/icl-campus-hero.webp');
+    }
     const settings = this.content.quoteImageSettings;
     const schoolCode = this.content.schoolCode;
     const isPines = schoolCode === 'PINES';
@@ -481,6 +496,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   private createSelectedDefaults(): CiaContentConfig {
+    if (this.isIclSelected) return createDefaultIclContentConfig();
+    if (this.isIuSelected) return createDefaultIuContentConfig();
     if (this.isJicSelected) return createDefaultJicContentConfig();
     if (this.isBeciSelected) return createDefaultBeciContentConfig();
     if (this.isAnjSelected) return createDefaultAnjContentConfig();
@@ -501,6 +518,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    if (this.isIclSelected) return cloneIclContentConfig(value);
+    if (this.isIuSelected) return cloneIuContentConfig(value);
     if (this.isJicSelected) return cloneJicContentConfig(value);
     if (this.isBeciSelected) return cloneBeciContentConfig(value);
     if (this.isAnjSelected) return cloneAnjContentConfig(value);

@@ -92,6 +92,12 @@ import {
   cloneJicContentConfig,
   createDefaultJicContentConfig,
 } from '../philippines/jic-school/jic-content-config';
+import {
+  cloneIclContentConfig,
+  cloneIuContentConfig,
+  createDefaultIclContentConfig,
+  createDefaultIuContentConfig,
+} from '../philippines/iu-school/iu-icl-content-config';
 import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
 import { AdminSchoolPhotosComponent } from '../admin-school-photos/admin-school-photos.component';
 
@@ -127,6 +133,8 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicBeciSpartaPath = '/philippines-study/baguio/beci-sparta-campus';
   private readonly publicBeciCityPath = '/philippines-study/baguio/api-beci-city-campus';
   private readonly publicJicPath = '/philippines-study/baguio/baguio-jic';
+  private readonly publicIuPath = '/philippines-study/cebu/iu-english-academy';
+  private readonly publicIclPath = '/philippines-study/cebu/icl';
 
   schools: SchoolDTO[] = [];
   schoolSearch = '';
@@ -160,6 +168,24 @@ export class AdminSchoolContentComponent implements OnInit {
     { id: 'fees', label: '当地杂费', icon: 'receipt_long', anchor: 'local-fees' },
     { id: 'rules', label: '报价规则与优惠', icon: 'percent', anchor: 'quote' },
     { id: 'media', label: '照片与视频', icon: 'perm_media', anchor: 'gallery' },
+  ];
+
+  readonly iuIclPackageCourses = [
+    { id: 'power4', label: 'Power Speaking 4' },
+    { id: 'power6', label: 'Power Speaking 6' },
+    { id: 'power8', label: 'Power Speaking 8' },
+    { id: 'light', label: 'Light' },
+    { id: 'junior', label: 'Junior' },
+    { id: 'ielts', label: 'IELTS' },
+    { id: 'toeic', label: 'TOEIC' },
+    { id: 'guarantee8', label: 'IELTS保证班 8周' },
+    { id: 'guarantee12', label: 'IELTS保证班 12周' },
+  ];
+  readonly iuIclPackageRooms = [
+    { id: 'single', label: '单人房' },
+    { id: 'double', label: '双人房' },
+    { id: 'triple', label: '三人房' },
+    { id: 'quad', label: '四人房' },
   ];
 
   readonly feeBillingOptions = [
@@ -214,6 +240,7 @@ export class AdminSchoolContentComponent implements OnInit {
       'cia', 'pines', 'monol', 'evacademy', '宿务ev', 'smeagcapital', 'philinter',
       'cgacademybanilad', 'cgacademysparta', 'cpi', 'bcebu', 'cpils',
       'globallanguagecebu', '宿务glc', 'ibreeze', 'anjeedu', 'imsacademy', '宿务ims', 'beci', 'jic',
+      'iuenglishacademy', 'iclenglishacademy',
     ].some(token => name.includes(token));
   }
 
@@ -300,6 +327,14 @@ export class AdminSchoolContentComponent implements OnInit {
     return name.includes('jic') || name.includes('菲律宾碧瑶jic');
   }
 
+  get isIuSelected(): boolean {
+    return (this.selectedSchool?.name.toLowerCase() ?? '').includes('iu english academy');
+  }
+
+  get isIclSelected(): boolean {
+    return (this.selectedSchool?.name.toLowerCase() ?? '').includes('icl english academy');
+  }
+
   get visibleCourses(): CiaCourseContent[] {
     return this.isBeciSelected ? this.content.courses.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.courses;
   }
@@ -308,9 +343,9 @@ export class AdminSchoolContentComponent implements OnInit {
     return this.isBeciSelected ? this.content.rooms.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.rooms;
   }
 
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected; }
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected; }
   get schoolCode(): CiaContentConfig['schoolCode'] {
-    return this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
+    return this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
   }
   get schoolShortName(): string { return this.schoolCode; }
   get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
@@ -321,6 +356,8 @@ export class AdminSchoolContentComponent implements OnInit {
   get supportsShortStay(): boolean { return !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isGlcSelected; }
   get currentPublicPath(): string {
+    if (this.isIclSelected) return this.publicIclPath;
+    if (this.isIuSelected) return this.publicIuPath;
     if (this.isJicSelected) return this.publicJicPath;
     if (this.isBeciSelected) return this.beciCampus === 'sparta' ? this.publicBeciSpartaPath : this.beciCampus === 'city' ? this.publicBeciCityPath : this.publicBeciEopPath;
     return this.isImsSelected ? this.publicImsPath : this.isAnjSelected ? this.publicAnjPath : this.isIbreezeSelected ? this.publicIbreezePath : this.isGlcSelected ? this.publicGlcPath : this.isCpilsSelected ? this.publicCpilsPath : this.isBCebuSelected ? this.publicBCebuPath : this.isCpiSelected ? this.publicCpiPath : this.isCgSpartaSelected ? this.publicCgSpartaPath : this.isCgBaniladSelected ? this.publicCgBaniladPath : this.isPhilinterSelected ? this.publicPhilinterPath : this.isSmeagSelected ? this.publicSmeagPath : this.isEvSelected ? this.publicEvPath : this.isMonolSelected ? this.publicMonolPath : this.isPinesSelected ? this.publicPinesPath : this.publicCiaPath;
@@ -378,7 +415,7 @@ export class AdminSchoolContentComponent implements OnInit {
     } else {
       this.editor = undefined;
       this.statusKind = 'warning';
-      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区与 JIC。这所学校会在价格和报价计算器核对完成后再接入。";
+      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区、JIC、IU 与 ICL。这所学校会在价格和报价计算器核对完成后再接入。";
       this.isLoading = false;
     }
   }
@@ -523,6 +560,17 @@ export class AdminSchoolContentComponent implements OnInit {
 
   updatePromotionTiers(item: CiaPromotionRule, value: string): void {
     item.discountTiers = this.parseNumberMap(value);
+    this.contentChanged();
+  }
+
+  iuIclPackagePrice(courseId: string, roomId: string): number {
+    return this.content.quoteSettings.iuIclPackagePrices?.[courseId]?.[roomId] ?? 0;
+  }
+
+  updateIuIclPackagePrice(courseId: string, roomId: string, value: number): void {
+    this.content.quoteSettings.iuIclPackagePrices ??= {};
+    this.content.quoteSettings.iuIclPackagePrices[courseId] ??= {};
+    this.content.quoteSettings.iuIclPackagePrices[courseId][roomId] = Math.max(0, Number(value) || 0);
     this.contentChanged();
   }
 
@@ -981,6 +1029,8 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   private createSelectedDefaults(): CiaContentConfig {
+    if (this.isIclSelected) return createDefaultIclContentConfig();
+    if (this.isIuSelected) return createDefaultIuContentConfig();
     if (this.isJicSelected) return createDefaultJicContentConfig();
     if (this.isBeciSelected) return createDefaultBeciContentConfig();
     if (this.isAnjSelected) return createDefaultAnjContentConfig();
@@ -1001,6 +1051,8 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    if (this.isIclSelected) return cloneIclContentConfig(value);
+    if (this.isIuSelected) return cloneIuContentConfig(value);
     if (this.isJicSelected) return cloneJicContentConfig(value);
     if (this.isBeciSelected) return cloneBeciContentConfig(value);
     if (this.isAnjSelected) return cloneAnjContentConfig(value);

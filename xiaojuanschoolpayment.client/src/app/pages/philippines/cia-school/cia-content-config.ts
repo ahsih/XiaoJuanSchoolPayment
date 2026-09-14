@@ -17,6 +17,10 @@ export interface CiaCourseContent {
   allowedWeeks?: number[];
   /** Optional public course grouping/type label. */
   courseType?: string;
+  /** IU/ICL course grouping and school-package metadata. */
+  category?: string;
+  promoCourse?: 'power4' | 'power6' | 'power8' | 'light' | 'junior' | 'ielts' | 'guarantee8' | 'guarantee12' | 'toeic';
+  fixedWeeks?: 8 | 12;
   /** Campus partition for one school brand with multiple independently displayed campuses. */
   campus?: string;
   /** Minimum duration used by guarantee courses. */
@@ -53,6 +57,9 @@ export interface CiaRoomContent {
   single?: boolean;
   /** Optional reduced per-person price when a qualifying couple shares this room. */
   coupleRate?: number;
+  /** IU/ICL school-package room category and walk-in marker. */
+  promoRoom?: 'single' | 'double' | 'triple' | 'quad';
+  accommodation?: boolean;
   note: string;
   enabled: boolean;
   sortOrder: number;
@@ -165,6 +172,8 @@ export interface CiaQuoteSettings {
   roomDepositUnder8Weeks?: number;
   roomDeposit8WeeksOrMore?: number;
   courseChangeFeePerPeriod?: number;
+  /** IU/ICL official package totals keyed by course category and room category. */
+  iuIclPackagePrices?: Record<string, Record<string, number>>;
   /** Optional weekly unaccompanied-minor rates used by B'Cebu. */
   minorManagementFeeUnder15PerWeek?: number;
   minorManagementFeeAge15To17PerWeek?: number;
@@ -234,7 +243,7 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL';
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];

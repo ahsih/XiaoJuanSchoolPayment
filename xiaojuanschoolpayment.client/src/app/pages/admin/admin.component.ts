@@ -180,8 +180,16 @@ export class AdminComponent implements OnInit {
     return this.normalizeSchoolName(school.name).includes('jic');
   }
 
+  isIuSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('iuenglishacademy');
+  }
+
+  isIclSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('iclenglishacademy');
+  }
+
   isUnifiedSchool(school: SchoolDTO): boolean {
-    return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school);
+    return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school) || this.isIuSchool(school) || this.isIclSchool(school);
   }
 
   managementRoute(school: SchoolDTO): string {
