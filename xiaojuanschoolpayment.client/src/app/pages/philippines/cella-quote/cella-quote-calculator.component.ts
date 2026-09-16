@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { EMPTY, catchError } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { EMPTY, catchError, of, switchMap } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import {
   QuoteImageDownloadButtonComponent,
   QuoteImageLocalFeeItem,
   QuoteImagePaymentItem,
 } from '../../../components/quote-image-download-button.component';
-import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { CiaContentConfig, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { cloneCellaContentConfig, createDefaultCellaContentConfig } from './cella-content-config';
 import {
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
@@ -40,8 +44,12 @@ type QuoteMode = 'single' | 'group';
     './cella-quote-calculator.component.css',
   ],
 })
-export class CellaQuoteCalculatorComponent implements OnInit {
+export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly host = inject(ElementRef<HTMLElement>);
 
   @Input() initialCampus: CellaCampus = 'uni';
 
@@ -54,6 +62,9 @@ export class CellaQuoteCalculatorComponent implements OnInit {
     registrationFee: CELLA_REGISTRATION_FEE,
     peakSeasonWeeklyFee: CELLA_PEAK_SEASON_WEEKLY_FEE,
   };
+  private contentConfig = createDefaultCellaContentConfig('uni');
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.contentConfig.quoteImageSettings);
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
 
   quoteMode: QuoteMode = 'single';
   studentCount = 2;
@@ -65,13 +76,29 @@ export class CellaQuoteCalculatorComponent implements OnInit {
   exchangeRateLive = false;
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? createDefaultCellaContentConfig(this.initialCampus));
     this.ensureStudents(2);
+    this.loadPublishedContent();
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
       this.usdToCny = snapshot.usdToCny;
       this.phpPerCny = snapshot.phpPerCny;
       this.exchangeRateDate = snapshot.date;
       this.exchangeRateLive = true;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isEditorPreview) window.parent.postMessage({ type: `${this.contentConfig.schoolCode.toLowerCase()}-content-ready` }, window.location.origin);
+  }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; scroll?: boolean };
+    if (message?.type !== `${this.contentConfig.schoolCode.toLowerCase()}-content-preview` || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (message.scroll) this.host.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.parent.postMessage({ type: `${this.contentConfig.schoolCode.toLowerCase()}-content-located`, target: event.data?.target, status: '已同步到CELLA公开报价器；当前校区的课程、住宿和报价图片使用这份草稿。' }, window.location.origin);
   }
 
   get activeStudents(): CellaStudentQuote[] {
@@ -151,19 +178,19 @@ export class CellaQuoteCalculatorComponent implements OnInit {
     const items: QuoteImagePaymentItem[] = [
       {
         icon: '注', label: `${prefix}注册费`, amount: `${this.formatMoney(this.catalog.registrationFee)} 美元`,
-        note: '每名学生一次性收取；转校或延期学生是否再次收取需向学校确认。',
+        note: this.quoteImageSettings.paymentNotes.registration,
       },
       {
         icon: '课', label: `${prefix}课程名称`, amount: `${this.formatMoney(student.coursePriceBeforePromotions)} 美元`,
         detailTitle: student.selectedCourse?.name ?? '请选择课程',
         detailSubtitle: `${this.formatDate(student.startDate)}–${this.formatDate(student.endDate)} · 实际就读${student.actualWeeks}周`,
-        note: `${student.selectedCourse?.lessons ?? ''}。4周课程费${this.formatMoney(student.selectedCourse?.tuition ?? 0)}美元。`,
+        note: [student.selectedCourse?.lessons ?? '', this.quoteImageSettings.paymentNotes.course].filter(Boolean).join('；'),
       },
       {
         icon: '宿', label: `${prefix}住宿名称`, amount: `${this.formatMoney(student.roomPriceBeforePromotions)} 美元`,
         detailTitle: student.selectedRoom?.name ?? '请选择房型',
         detailSubtitle: `${this.formatDate(student.startDate)}–${this.formatDate(student.endDate)} · 实际住宿${student.actualWeeks}周`,
-        note: `${student.selectedRoom?.note ?? ''} 4周住宿费${this.formatMoney(student.selectedRoom?.fee ?? 0)}美元。`,
+        note: [student.selectedRoom?.note ?? '', this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；'),
       },
     ];
 
@@ -174,22 +201,26 @@ export class CellaQuoteCalculatorComponent implements OnInit {
       items.push({ icon: '监', label: `${prefix}未成年人管理费`, amount: `${this.formatMoney(student.minorManagementFee)} 美元`, note: `25美元／周／人，本次按${student.actualWeeks}周计算。` });
     }
     if (student.socialPromotionDiscount) {
-      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，且不可与其他优惠叠加。`, accent: true });
+      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，且不可与其他优惠叠加。`, promotionKey: student.promotionMode === 'social-6-plus-2' ? 'cella-social-6-plus-2' : 'cella-social-9-plus-3', accent: true });
     }
     if (student.lowSeasonDiscount) {
-      items.push({ icon: '惠', label: `${prefix}淡季优惠`, amount: `− ${this.formatMoney(student.lowSeasonDiscount)} 美元`, note: `活动期内每个完整4周优惠100美元，本次${student.lowSeasonBlocks}个计费周期；课程与住宿不重复扣减。`, accent: true });
+      items.push({ icon: '惠', label: `${prefix}淡季优惠`, amount: `− ${this.formatMoney(student.lowSeasonDiscount)} 美元`, note: `活动期内每个完整4周优惠100美元，本次${student.lowSeasonBlocks}个计费周期；课程与住宿不重复扣减。`, promotionKey: 'cella-low-season', accent: true });
     }
     if (student.premiumSixPersonDiscount) {
-      items.push({ icon: '惠', label: `${prefix}Premium六人间特价`, amount: `− ${this.formatMoney(student.premiumSixPersonDiscount)} 美元`, note: `活动期内住宿费由600美元／4周调整为499美元／4周；不可再叠加淡季100美元优惠。`, accent: true });
+      items.push({ icon: '惠', label: `${prefix}Premium六人间特价`, amount: `− ${this.formatMoney(student.premiumSixPersonDiscount)} 美元`, note: `活动期内住宿费由600美元／4周调整为499美元／4周；不可再叠加淡季100美元优惠。`, promotionKey: 'cella-premium-six-person', accent: true });
     }
     if (student.longStayDiscount) {
-      items.push({ icon: '惠', label: `${prefix}长期报名优惠`, amount: `− ${this.formatMoney(student.longStayDiscount)} 美元`, note: `${student.actualWeeks}周符合活动期长期报名档位；可与当前淡季或六人间优惠同时使用。`, accent: true });
+      items.push({ icon: '惠', label: `${prefix}长期报名优惠`, amount: `− ${this.formatMoney(student.longStayDiscount)} 美元`, note: `${student.actualWeeks}周符合活动期长期报名档位；可与当前淡季或六人间优惠同时使用。`, promotionKey: 'cella-long-stay', accent: true });
     }
     return items;
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
-    return this.activeStudents.flatMap((student, index) => this.paymentItemsFor(student, index));
+    return applyEditableQuotePaymentItems(
+      this.activeStudents.flatMap((student, index) => this.paymentItemsFor(student, index)),
+      this.quoteImageSettings,
+      this.contentConfig.quoteSettings.promotions,
+    );
   }
 
   get localFeeRows(): Array<QuoteImageLocalFeeItem & { totalValue: number }> {
@@ -282,7 +313,18 @@ export class CellaQuoteCalculatorComponent implements OnInit {
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
     });
-    const result = applySchoolQuoteImageLayout(quote, 'CELLA', first?.actualWeeks ?? 4, earliest, this.schoolTotal, this.usdToCny);
+    const result = applyEditableQuoteImageCopy({
+      ...applySchoolQuoteImageLayout(quote, 'CELLA', first?.actualWeeks ?? 4, earliest, this.schoolTotal, this.usdToCny),
+      paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.quoteImageSettings.benefits,
+      serviceLocations: this.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.quoteImageSettings.noteSectionTitle,
+      importantNotes: this.quoteImageSettings.footerNotes,
+    }, this.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
     return {
       ...result,
       headingText: this.quoteHeading,
@@ -301,5 +343,49 @@ export class CellaQuoteCalculatorComponent implements OnInit {
 
   private ensureStudents(count: number): void {
     while (this.students.length < count) this.students.push(new CellaStudentQuote(this.catalog, this.initialCampus));
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (!this.isEditorPreview || typeof sessionStorage === 'undefined') return null;
+    try {
+      const code = this.initialCampus === 'uni' ? 'cella-uni' : 'cella-premium';
+      const raw = sessionStorage.getItem(`${code}-content-preview`);
+      return raw ? JSON.parse(raw) as CiaContentConfig : null;
+    } catch { return null; }
+  }
+
+  private loadPublishedContent(): void {
+    const exactName = this.initialCampus === 'uni' ? '菲律宾宿务CELLA Uni Sparta Campus' : '菲律宾宿务CELLA Premium Campus';
+    this.schoolService.getSchools({ name: exactName }).pipe(
+      switchMap(schools => {
+        const school = schools.find(item => item.name === exactName) ?? schools.find(item => item.name.toLowerCase().includes('cella'));
+        return school?.id ? this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))) : of(null);
+      }),
+      catchError(() => of(null)),
+    ).subscribe(published => {
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+    });
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    const content = cloneCellaContentConfig(value, this.initialCampus);
+    this.contentConfig = content;
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    const originalCourses = new Map(CELLA_COURSES.map(item => [item.id, item]));
+    const originalRooms = new Map(CELLA_ROOMS.map(item => [item.id, item]));
+    this.catalog.courses.splice(0, this.catalog.courses.length, ...content.courses.filter(item => item.enabled).map(item => ({
+      ...(originalCourses.get(item.id) ?? CELLA_COURSES.find(course => course.campus === this.initialCampus)!),
+      id: item.id, campus: this.initialCampus, name: item.name, tuition: item.tuition,
+      lessons: item.schedule, note: item.note,
+    })));
+    this.catalog.rooms.splice(0, this.catalog.rooms.length, ...content.rooms.filter(item => item.enabled).map(item => ({
+      ...(originalRooms.get(item.id) ?? CELLA_ROOMS.find(room => room.campus === this.initialCampus)!),
+      id: item.id, campus: this.initialCampus, name: item.label || item.name, fee: item.fee, note: item.note,
+    })));
+    this.catalog.registrationFee = content.quoteSettings.registrationFee;
+    this.catalog.peakSeasonWeeklyFee = content.quoteSettings.peakSeasonFeePerWeek;
+    for (const student of this.students) student.setCampus(this.initialCampus);
   }
 }

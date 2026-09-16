@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { SchoolQuotePlan, QuotePlanRow, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
@@ -712,7 +712,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   get quoteImageData() {
     const settings = this.quoteImageSettings;
     const paymentItems: QuoteImagePaymentItem[] = [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration || this.schoolPaymentItems[0].note },
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration ?? this.schoolPaymentItems[0].note },
       ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({
         ...item,
         label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程').replace(/^住宿费/, '住宿')}`,
@@ -744,7 +744,8 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     const mismatchNotes = this.activeStudents.map((student, index) => student.quotePlan.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}` : '').filter(Boolean);
     const ageNotes = this.activeStudents.map((student, index) => student.selectedAgeGroup === 'minor' ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}未成年学生按所选课程收费，入学及监护要求须顾问确认。` : '').filter(Boolean);
     const importantNotes = [...mismatchNotes, ...ageNotes, ...settings.footerNotes];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'CPILS', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPILS', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,

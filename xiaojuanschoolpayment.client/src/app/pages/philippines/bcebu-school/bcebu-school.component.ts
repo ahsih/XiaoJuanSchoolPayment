@@ -17,7 +17,7 @@ import { BCEBU_COURSES, BCEBU_ROOMS, BCEBU_LOCAL_FEE_INTRO, BCEBU_LONG_STAY_NOTE
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
-import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
@@ -364,7 +364,8 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.calculator.plan.shortStayNotes(weeks => this.shortTermRatios[String(weeks)] ?? weeks / 4)))];
     const importantNotes = [...warnings, ...shortNotes, ...this.reporterSettlementNotes, ...this.quoteImageSettings.footerNotes];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, "B'Cebu", this.selectedWeeks, start, this.quoteTotal, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, "B'Cebu", this.selectedWeeks, start, this.quoteTotal, this.usdToCny);
     return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${start.replace(/-/g, '')}.png`,
       totalLabel: this.reporterSettlementNotes.length ? '完成记者活动后学校费用' : result.totalLabel,
       totalNote: this.reporterSettlementNotes.join('；'),

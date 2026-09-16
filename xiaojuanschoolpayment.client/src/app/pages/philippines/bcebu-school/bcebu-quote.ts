@@ -1,6 +1,6 @@
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
-import { SchoolQuotePlan, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, SchoolQuotePlan, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
 import { BCebuCourse, BCebuRoom, BCEBU_LOCAL_FEE_INTRO, BCEBU_LONG_STAY_NOTE, BCEBU_PROMOTION_DATES, BCEBU_REGISTRATION_NOTE, BCEBU_REPORTER_NOTE, bcebuLongStay, bcebuMultiplier, bcebuOffSeason } from './bcebu-pricing';
 import { SchoolVisaType } from '../../../components/school-group-quote';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
@@ -137,7 +137,7 @@ export class BCebuQuote {
     const longStay = this.promotion('bcebu-long-stay');
     const offSeason = [this.promotion('bcebu-off-season-spring'), this.promotion('bcebu-off-season-fall')].filter(Boolean) as CiaPromotionRule[];
     return [
-      { icon: '注', label: '注册费', amount: `${quoteMoney(this.registration())} 美元`, note: this.imageSettings.paymentNotes.registration || BCEBU_REGISTRATION_NOTE },
+      { icon: '注', label: '注册费', amount: `${quoteMoney(this.registration())} 美元`, note: this.imageSettings.paymentNotes.registration ?? BCEBU_REGISTRATION_NOTE },
       { icon: '免', label: this.promotion('bcebu-registration-waiver')?.name ?? '免注册费优惠', amount: `− ${quoteMoney(this.registration())} 美元`, note: this.promotion('bcebu-registration-waiver')?.description ?? '通过思达报名免注册费', accent: true },
       { icon: '记', label: reporter?.name ?? '记者活动优惠', amount: this.reporterDiscount ? `− ${quoteMoney(this.reporterDiscount)} 美元` : '未参与', note: reporter?.description ?? `${BCEBU_PROMOTION_DATES}；${BCEBU_REPORTER_NOTE}`, accent: this.reporterDiscount > 0 },
       { icon: '淡', label: '淡季优惠', amount: this.offSeason ? `− ${quoteMoney(this.offSeasonDiscount)} 美元` : '不适用', note: `${offSeason.map(rule => rule.description).join('；')}${this.family ? '；本次按亲子计算，每位学员分别报价' : ''}`, accent: this.offSeason },
@@ -158,7 +158,8 @@ export class BCebuQuote {
       optionalFeeItems: this.optionalFees.map(fee => { const id = this.feeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币预计约 ${Math.round(fee.total / phpPerCny).toLocaleString('zh-CN')} 元`, note: settings.localFeeNotes[id] || fee.note }; }),
       ruleNotes: settings.footerNotes,
     });
-    return presentSchoolQuote({ ...quote,
+    const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.settings.promotions, this.feeRules);
+    return presentSchoolQuote({ ...editedQuote,
       totalLabel: this.reporterDiscount ? '完成记者活动后学校费用' : '最终应付学校金额',
       totalNote: this.settlementNote,
       exchangeRateText: '',

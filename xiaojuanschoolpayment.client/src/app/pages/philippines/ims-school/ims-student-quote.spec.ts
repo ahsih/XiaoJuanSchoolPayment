@@ -1,4 +1,4 @@
-import { IMS_COURSES, IMS_OFFICIAL_LOCAL_TOTALS, IMS_ROOMS, IMS_WEEK_OPTIONS } from './ims-pricing';
+import { IMS_ADDITIONAL_CLASSES, IMS_COURSES, IMS_OFFICIAL_LOCAL_TOTALS, IMS_ROOMS, IMS_WEEK_OPTIONS } from './ims-pricing';
 import { imsEffectiveDailyOneToOne, ImsStudentQuote, validateImsFamily } from './ims-student-quote';
 
 describe('IMS 2026 price catalog and quote rules', () => {
@@ -39,13 +39,16 @@ describe('IMS 2026 price catalog and quote rules', () => {
 
   it('never discounts the 100-dollar registration fee and applies 95% only after school discounts', () => {
     const quote = new ImsStudentQuote();
+    quote.quotePlan.courses[0].startDate = '2026-09-06';
+    quote.quotePlan.rooms[0].startDate = '2026-09-06';
     expect(quote.registration).toBe(100);
     expect(quote.originalStudyStay).toBe(1350);
-    expect(quote.sidaDiscountAmount).toBe(67.5);
-    expect(quote.quoteUsd).toBe(1382.5);
+    expect(quote.lowSeasonDiscountAmount).toBe(300);
+    expect(quote.sidaDiscountAmount).toBe(52.5);
+    expect(quote.quoteUsd).toBe(1097.5);
     quote.enrollmentStatus = 'returning';
     expect(quote.registration).toBe(100);
-    expect(quote.quoteUsd).toBe(1382.5);
+    expect(quote.quoteUsd).toBe(1097.5);
   });
 
   it('rejects unpublished guarantee durations', () => {
@@ -66,21 +69,53 @@ describe('IMS 2026 price catalog and quote rules', () => {
     quote.quotePlan.courses[0].weeks = 8;
     quote.quotePlan.rooms[0].weeks = 8;
     quote.setPromotion(quote.quotePlan.courses[0].id, 1, 'two-plus-two');
-    expect(quote.quoteError).toContain('最多只能选择一次');
+    expect(quote.promotionBlocks.map((block) => block.twoPlusTwoEligible)).toEqual([true, false]);
+    expect(quote.quoteError).toContain('只能用于本次学习的首个连续4周');
   });
 
-  it('allows first 4-week block 2+2 and second block 300, but never on the same block', () => {
+  it('automatically applies the 300-dollar offer to a four-week low-season stay', () => {
+    const quote = new ImsStudentQuote();
+    quote.quotePlan.courses[0].startDate = '2026-09-06';
+    quote.quotePlan.rooms[0].startDate = '2026-09-06';
+    expect(quote.promotionBlocks[0].lowSeasonEligible).toBeTrue();
+    expect(quote.promotionBlocks[0].promotion).toBe('low-season-300');
+    expect(quote.lowSeasonDiscountAmount).toBe(300);
+    expect(quote.quoteUsd).toBe(1097.5);
+    expect(quote.quoteError).toBe('');
+  });
+
+  it('allows an eight-week stay to use 2+2 first and 300 on the second block', () => {
+    const quote = new ImsStudentQuote();
+    quote.quotePlan.courses[0].startDate = '2026-09-06';
+    quote.quotePlan.rooms[0].startDate = '2026-09-06';
+    quote.quotePlan.courses[0].weeks = 8;
+    quote.quotePlan.rooms[0].weeks = 8;
+    quote.setPromotion(quote.quotePlan.courses[0].id, 0, 'two-plus-two');
+    expect(quote.promotionBlocks.map((block) => [block.startDate, block.endDate])).toEqual([
+      ['2026-09-06', '2026-10-03'],
+      ['2026-10-04', '2026-10-31'],
+    ]);
+    expect(quote.promotionBlocks.map((block) => block.promotion)).toEqual(['two-plus-two', 'low-season-300']);
+    expect(quote.promotionBlocks.map((block) => block.lowSeasonEligible)).toEqual([true, true]);
+    expect(quote.twoPlusTwoDiscountAmount).toBe(540);
+    expect(quote.lowSeasonDiscountAmount).toBe(300);
+    expect(quote.quoteUsd).toBe(1867);
+    expect(quote.quoteError).toBe('');
+  });
+
+  it('uses paid course weeks after 2+2 for the long-stay tier while allowing a later 300-dollar block', () => {
     const quote = new ImsStudentQuote();
     quote.quotePlan.courses[0].startDate = '2026-09-06';
     quote.quotePlan.rooms[0].startDate = '2026-09-06';
     quote.quotePlan.courses[0].weeks = 12;
     quote.quotePlan.rooms[0].weeks = 12;
     quote.setPromotion(quote.quotePlan.courses[0].id, 0, 'two-plus-two');
-    quote.setPromotion(quote.quotePlan.courses[0].id, 1, 'low-season-300');
-    expect(quote.promotionBlocks.map((block) => block.promotion)).toEqual(['two-plus-two', 'low-season-300', 'none']);
+    expect(quote.promotionBlocks.map((block) => block.promotion)).toEqual(['two-plus-two', 'low-season-300', 'low-season-300']);
+    expect(quote.promotionBlocks.map((block) => block.twoPlusTwoEligible)).toEqual([true, false, false]);
+    expect(quote.promotionBlocks.map((block) => block.lowSeasonEligible)).toEqual([true, true, true]);
     expect(quote.paidCourseWeeks).toBe(10);
     expect(quote.longStayDiscountAmount).toBe(50);
-    expect(quote.lowSeasonDiscountAmount).toBe(300);
+    expect(quote.lowSeasonDiscountAmount).toBe(600);
     expect(quote.quoteError).toBe('');
   });
 
@@ -90,17 +125,26 @@ describe('IMS 2026 price catalog and quote rules', () => {
       quote.quotePlan.courses[0].startDate = date;
       quote.quotePlan.rooms[0].startDate = date;
       quote.setPromotion(quote.quotePlan.courses[0].id, 0, 'two-plus-two');
-      expect(quote.quoteError).toContain('活动排除月份');
+      expect(quote.quoteError).toContain('不属于淡季活动');
     }
   });
 
   it('matches every official 1–24 week local-fee total', () => {
+    expect(Object.values(IMS_OFFICIAL_LOCAL_TOTALS)).toEqual([
+      20550, 21800, 23050, 24300, 30600, 31850, 33100, 34350,
+      46400, 47650, 48900, 50150, 55850, 57100, 58350, 59600,
+      65300, 66550, 67800, 69050, 74750, 76000, 77250, 78500,
+    ]);
     for (let weeks = 1; weeks <= 24; weeks++) {
       const quote = new ImsStudentQuote();
       quote.quotePlan.courses[0].weeks = weeks;
       quote.quotePlan.rooms[0].weeks = weeks;
       expect(quote.localFeeTotal).withContext(`${weeks}周`).toBe(IMS_OFFICIAL_LOCAL_TOTALS[weeks]);
     }
+    expect(IMS_ADDITIONAL_CLASSES.map((item) => [item.name, item.price4w])).toEqual([
+      ['ESL额外一对一', 150], ['ESL额外团体课', 120], ['ESL团体课转一对一', 100],
+      ['Special额外一对一', 200], ['Special额外团体课', 150], ['Special团体课转一对一', 130],
+    ]);
   });
 
   it('handles parent transfer only to Junior ESL 6 and caps the child at nine one-to-one classes', () => {
@@ -121,9 +165,13 @@ describe('IMS 2026 price catalog and quote rules', () => {
   it('calculates independent people without counting inactive saved students', () => {
     const first = new ImsStudentQuote();
     const second = new ImsStudentQuote();
+    first.quotePlan.courses[0].startDate = '2026-09-06';
+    first.quotePlan.rooms[0].startDate = '2026-09-06';
+    second.quotePlan.courses[0].startDate = '2026-09-06';
+    second.quotePlan.rooms[0].startDate = '2026-09-06';
     second.quotePlan.courses[0].optionId = 'premium-esl';
     second.quotePlan.rooms[0].optionId = 'single';
-    expect(first.quoteUsd + second.quoteUsd).toBe(1382.5 + 1857.5);
-    expect(first.quoteUsd).toBe(1382.5);
+    expect(first.quoteUsd + second.quoteUsd).toBe(1097.5 + 1572.5);
+    expect(first.quoteUsd).toBe(1097.5);
   });
 });

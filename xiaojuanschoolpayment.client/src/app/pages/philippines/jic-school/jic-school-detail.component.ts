@@ -14,7 +14,7 @@ import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { CiaContentConfig } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
@@ -607,7 +607,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
         icon: '注',
         label: '注册费',
         amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: imageSettings.paymentNotes.registration || `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；符合条件时在“注册费优惠”行抵扣。`,
+        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；符合条件时在“注册费优惠”行抵扣。`,
       },
       ...groupPaymentLines(this.activeStudents, false),
     ];
@@ -684,8 +684,9 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       // in the school-payment table instead of being repeated in the footer.
       ruleNotes: [],
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, imageSettings, this.currentContentConfig.quoteSettings.promotions, this.currentContentConfig.localFees);
     const result = applySchoolQuoteImageLayout({
-      ...quote,
+      ...editedQuote,
       paymentSectionTitle: imageSettings.paymentSectionTitle,
       localFeeTitle: imageSettings.localFeeSectionTitle,
       serviceSectionTitle: imageSettings.serviceSectionTitle,

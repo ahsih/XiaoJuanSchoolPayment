@@ -3,8 +3,153 @@ import { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-downloa
 export type QuotePlanKind = 'course' | 'room';
 export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; occupant?: number; }
 export interface QuotePlanOption { id: string; name: string; details: string; group?: string; }
+
+export interface EditableQuoteImageCopySettings {
+  paymentNotes: { registration: string; course: string; accommodation: string; promotion: string };
+  promotionNotes?: Record<string, string>;
+  localFeeNotes: Record<string, string>;
+  supplementalFeeNotes?: Record<string, string>;
+}
+
+export interface QuoteImageCopyPromotion {
+  id: string;
+  name: string;
+  description?: string;
+  ruleKind?: string;
+  waiveRegistration?: boolean;
+}
+
+export interface QuoteImageCopyLocalFee {
+  id: string;
+  name: string;
+  futureName?: string;
+  note?: string;
+}
+
 const DAY = 86400000;
 export const quoteMoney = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
+
+const owns = (record: Record<string, string> | undefined, key: string): boolean =>
+  !!record && Object.prototype.hasOwnProperty.call(record, key);
+
+/** Stable key for image-only rows that are not backed by an ordinary local-fee rule. */
+export const quoteImageSupplementalKey = (kind: 'payment' | 'optional', label: string): string => {
+  const normalized = label
+    .replace(/^学生[\d、]+\s*[·：]\s*/, '')
+    .replace(/（\d+人(?:合计|适用)?）/g, '')
+    .trim();
+  return `${kind}:${normalized}`;
+};
+
+const plainQuoteImageLabel = (label: string): string => label
+  .replace(/^学生[\d、]+\s*[·：]\s*/, '')
+  .replace(/（\d+人(?:合计|适用)?）/g, '')
+  .trim();
+
+const promotionsForImageItem = (
+  item: QuoteImagePaymentItem,
+  promotions: readonly QuoteImageCopyPromotion[],
+): QuoteImageCopyPromotion[] => {
+  const label = quoteImageSupplementalKey('payment', item.label).slice('payment:'.length);
+  const note = item.note ?? '';
+  if (item.promotionKey) {
+    const keyed = promotions.filter(rule => rule.id === item.promotionKey);
+    if (keyed.length) return keyed;
+  }
+  const exact = promotions.filter(rule => label === rule.name || label.includes(rule.name));
+  if (exact.length) return exact;
+  const described = promotions.filter(rule => note.includes(rule.name) || (!!rule.description && note.includes(rule.description)));
+  if (described.length) return described;
+  if (label.includes('注册费') && item.amount.trim().startsWith('−')) return promotions.filter(rule => rule.waiveRegistration);
+  const aliases: Array<[string, (rule: QuoteImageCopyPromotion) => boolean]> = [
+    ['思达', rule => rule.name.includes('思达')],
+    ['学校优惠', rule => rule.name.includes('学校') || rule.id.startsWith('glc-school-window-')],
+    ['淡季', rule => rule.name.includes('淡季') || (rule.ruleKind ?? '').includes('off-season')],
+    ['长期', rule => rule.name.includes('长期') || (rule.ruleKind ?? '').includes('long-stay')],
+    ['圣诞', rule => rule.name.includes('圣诞') || (rule.ruleKind ?? '').includes('christmas')],
+    ['生日', rule => rule.name.includes('生日') || (rule.ruleKind ?? '').includes('birthday')],
+  ];
+  const alias = aliases.find(([text]) => label.includes(text));
+  return alias ? promotions.filter(alias[1]) : [];
+};
+
+const preserveScopePrefix = (original: string | undefined, replacement: string): string => {
+  if (!replacement) return '';
+  const prefix = original?.match(/^(?:学生[\d、]+(?:适用)?|\d+人适用)[：；]\s*/)?.[0] ?? '';
+  return `${prefix}${replacement}`;
+};
+
+const mergeEditableFeeNote = (original: string, defaultNote: string | undefined, editedNote: string): string => {
+  // An unchanged default must not replace student-specific visa, quantity or date text.
+  if (editedNote === (defaultNote ?? '')) return original;
+  if (editedNote && original.includes(editedNote)) return original;
+  if (defaultNote && original.includes(defaultNote)) {
+    return original.replace(defaultNote, editedNote).replace(/^[；;\s]+|[；;\s]+$/g, '').replace(/[；;]{2,}/g, '；');
+  }
+  if (!editedNote) return original === defaultNote ? '' : original;
+  return [editedNote, original].filter(Boolean).join('；');
+};
+
+/**
+ * Apply employee-edited image copy after a school has finished its calculation.
+ * Amounts, dates and eligibility remain owned by the school calculator.
+ */
+export function applyEditableQuoteImageCopy<T extends QuoteImageCardData>(
+  quote: T,
+  settings: EditableQuoteImageCopySettings | undefined,
+  promotions: readonly QuoteImageCopyPromotion[] = [],
+  localFees: readonly QuoteImageCopyLocalFee[] = [],
+): T {
+  if (!settings) return quote;
+  const paymentItems = applyEditableQuotePaymentItems(quote.paymentItems, settings, promotions);
+  const localFeeItems = quote.localFeeItems?.map(item => {
+    const label = plainQuoteImageLabel(item.label);
+    const fee = localFees.find(rule => label === rule.name || label === rule.futureName);
+    return fee && owns(settings.localFeeNotes, fee.id)
+      ? { ...item, note: mergeEditableFeeNote(item.note, fee.note, settings.localFeeNotes[fee.id]) }
+      : item;
+  });
+  const optionalFeeItems = quote.optionalFeeItems?.map(item => {
+    const label = plainQuoteImageLabel(item.label);
+    const fee = localFees.find(rule => label === rule.name || label === rule.futureName);
+    if (fee && owns(settings.localFeeNotes, fee.id)) {
+      return { ...item, note: mergeEditableFeeNote(item.note, fee.note, settings.localFeeNotes[fee.id]) };
+    }
+    const key = quoteImageSupplementalKey('optional', item.label);
+    if (owns(settings.supplementalFeeNotes, key)) return { ...item, note: settings.supplementalFeeNotes![key] };
+    if (label.startsWith('教材价格参考') && owns(settings.supplementalFeeNotes, 'optional:教材价格参考')) {
+      return { ...item, note: settings.supplementalFeeNotes!['optional:教材价格参考'] };
+    }
+    if (item.label.includes('额外住宿') && owns(settings.supplementalFeeNotes, 'extra-night-0')) {
+      return { ...item, note: settings.supplementalFeeNotes!['extra-night-0'] };
+    }
+    return item;
+  });
+  return { ...quote, paymentItems, localFeeItems, optionalFeeItems };
+}
+
+/** Apply only employee-owned promotion and supplemental explanations to a visible webpage payment list. */
+export function applyEditableQuotePaymentItems<T extends QuoteImagePaymentItem>(
+  items: readonly T[],
+  settings: EditableQuoteImageCopySettings | undefined,
+  promotions: readonly QuoteImageCopyPromotion[] = [],
+): T[] {
+  if (!settings) return [...items];
+  return items.map(item => {
+    if (item.icon === '注' || item.icon === '课' || item.icon === '宿') return item;
+    const matchedPromotions = promotionsForImageItem(item, promotions);
+    const editedPromotionNotes = matchedPromotions
+      .filter(promotion => owns(settings.promotionNotes, promotion.id))
+      .map(promotion => settings.promotionNotes![promotion.id]);
+    if (editedPromotionNotes.length) {
+      return { ...item, note: preserveScopePrefix(item.note, editedPromotionNotes.filter(Boolean).join('；')) };
+    }
+    const key = quoteImageSupplementalKey('payment', item.label);
+    return owns(settings.supplementalFeeNotes, key)
+      ? { ...item, note: preserveScopePrefix(item.note, settings.supplementalFeeNotes![key]) }
+      : item;
+  }) as T[];
+}
 
 /** Independent selections; school adapters retain ownership of prices and fee rules. */
 export class SchoolQuotePlan {

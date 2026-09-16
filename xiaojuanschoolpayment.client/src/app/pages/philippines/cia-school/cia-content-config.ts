@@ -212,10 +212,14 @@ export interface CiaQuoteImagePaymentNotes {
 export interface CiaQuoteImageSettings {
   paymentSectionTitle: string;
   paymentNotes: CiaQuoteImagePaymentNotes;
+  /** Image-only promotion copy keyed by the stable promotion id. */
+  promotionNotes?: Record<string, string>;
   localFeeSectionTitle: string;
   localFeeIntro: string;
   /** Image-only note overrides keyed by the stable CiaLocalFeeRule id. */
   localFeeNotes: Record<string, string>;
+  /** Image-only notes for calculated rows that are not CiaLocalFeeRule records. */
+  supplementalFeeNotes?: Record<string, string>;
   serviceSectionTitle: string;
   benefits: CiaQuoteImageBenefit[];
   serviceLocations: string[];
@@ -243,12 +247,14 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES';
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];
   quoteSettings: CiaQuoteSettings;
   quoteImageSettings: CiaQuoteImageSettings;
+  /** Optional campus-specific image copy for a single school record that serves several campuses. */
+  campusQuoteImageSettings?: Record<string, CiaQuoteImageSettings>;
   /** Optional for backwards compatibility with revisions created before media review was introduced. */
   media?: CiaMediaContent[];
 }

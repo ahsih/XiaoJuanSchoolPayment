@@ -13,7 +13,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImageOptionalFeeItem, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { MonolStudentQuote } from './monol-student-quote';
@@ -692,8 +692,9 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
     return {
-      ...applySchoolQuoteImageLayout(quote, 'MONOL', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny),
+      ...applySchoolQuoteImageLayout(editedQuote, 'MONOL', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny),
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading.replace(/\s+/g, '')}-${this.quoteStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,

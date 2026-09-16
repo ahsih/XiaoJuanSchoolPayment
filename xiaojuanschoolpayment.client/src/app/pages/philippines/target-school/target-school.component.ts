@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { EMPTY, catchError } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import {
   QuoteImageDownloadButtonComponent,
@@ -12,7 +14,7 @@ import {
   QuoteImagePaymentItem,
 } from '../../../components/quote-image-download-button.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import {
   TARGET_COURSES,
@@ -25,6 +27,8 @@ import {
   targetRoom,
 } from './target-pricing';
 import { TargetPackageRow, TargetStudentQuote } from './target-student-quote';
+import { cloneTargetContentConfig, createDefaultTargetContentConfig } from '../remaining-content-config';
+import { connectUnifiedSchoolContent, notifyUnifiedPreviewLocated, notifyUnifiedPreviewReady, unifiedPreviewContent } from '../unified-school-content-bridge';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '生活';
 
@@ -86,13 +90,16 @@ interface SourceLink {
     './target-school.component.css',
   ],
 })
-export class TargetSchoolComponent implements OnInit {
+export class TargetSchoolComponent implements OnInit, AfterViewInit {
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly schoolService = inject(SchoolService);
+  private readonly contentService = inject(SchoolContentService);
+  private contentConfig = createDefaultTargetContentConfig();
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '生活'];
   selectedGalleryCategory: GalleryCategory = '全部';
 
-  readonly courses = TARGET_COURSES;
-  readonly roomOptions = TARGET_ROOMS;
+  readonly courses = TARGET_COURSES.map(course => ({ ...course }));
+  readonly roomOptions = TARGET_ROOMS.map(room => ({ ...room }));
   readonly officialPriceWeeks = TARGET_OFFICIAL_PRICE_WEEKS;
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
@@ -341,6 +348,11 @@ export class TargetSchoolComponent implements OnInit {
       this.exchangeRateDate = rates.date;
       this.usingLiveExchangeRate = true;
     });
+    connectUnifiedSchoolContent({
+      code: 'TARGET', schoolService: this.schoolService, contentService: this.contentService,
+      matchesSchool: name => /target/i.test(name), clone: cloneTargetContentConfig,
+      apply: content => this.applyContentConfig(content),
+    });
   }
 
   get studentCount(): number { return this.requestedStudentCount; }
@@ -401,8 +413,8 @@ export class TargetSchoolComponent implements OnInit {
     return `${this.formatUsd(targetOfficialPackagePrice(courseId, roomId, weeks))}美元`;
   }
 
-  packageCourse(row: TargetPackageRow) { return targetCourse(row.courseId) ?? this.courses[0]; }
-  packageRoom(row: TargetPackageRow) { return targetRoom(row.roomId) ?? this.roomOptions[0]; }
+  packageCourse(row: TargetPackageRow) { return this.courses.find(course => course.id === row.courseId) ?? targetCourse(row.courseId) ?? this.courses[0]; }
+  packageRoom(row: TargetPackageRow) { return this.roomOptions.find(room => room.id === row.roomId) ?? targetRoom(row.roomId) ?? this.roomOptions[0]; }
 
   private packagePaymentItems(): QuoteImagePaymentItem[] {
     return this.activeStudents.flatMap((student, studentIndex) => [...student.packages]
@@ -417,7 +429,7 @@ export class TargetSchoolComponent implements OnInit {
           amount: `${this.formatUsd(student.packagePrice(row))} 美元`,
           detailTitle: `${course.name}｜${room.name}`,
           detailSubtitle: `${row.startDate.replace(/-/g, '/')}–${student.end(row).replace(/-/g, '/')} · ${row.weeks}周`,
-          note: `${course.arrangement}；课程与住宿按学校套餐合并计价，不拆分金额。`,
+          note: [this.contentConfig.quoteImageSettings.paymentNotes.course, this.contentConfig.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；'),
         };
       }));
   }
@@ -431,12 +443,12 @@ export class TargetSchoolComponent implements OnInit {
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
-    return [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFeeUsd * this.activeStudents.length)} 美元`, note: `150美元／人，一次性费用；本次共${this.activeStudents.length}人。` },
+    return applyEditableQuotePaymentItems([
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFeeUsd * this.activeStudents.length)} 美元`, note: this.contentConfig.quoteImageSettings.paymentNotes.registration },
       ...this.packagePaymentItems(),
       ...groupPaymentLines(this.activeStudents, true),
       ...this.groupedStatusItems(true),
-    ];
+    ], this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions);
   }
 
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
@@ -509,16 +521,45 @@ export class TargetSchoolComponent implements OnInit {
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
     });
-    return {
+    return applyEditableQuoteImageCopy({
       ...applySchoolQuoteImageLayout(quote, 'TARGET', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny),
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading.replace(/\s+/g, '')}-${this.quoteStartDate.replace(/-/g, '')}.png`,
-      noteTitle: '报价说明',
-      importantNotes: [...warnings, ...this.quoteImageFooterNotes],
+      paymentSectionTitle: this.contentConfig.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.contentConfig.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.contentConfig.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.contentConfig.quoteImageSettings.benefits,
+      serviceLocations: this.contentConfig.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.contentConfig.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.contentConfig.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.contentConfig.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.contentConfig.quoteImageSettings.noteSectionTitle,
+      importantNotes: [...warnings, ...this.contentConfig.quoteImageSettings.footerNotes],
       finalConfirmationText: '最终以学校价格、空房及优惠确认为准。',
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
       exchangeRateText: `学杂费按1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}比索估算`,
-    };
+    }, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
+  }
+
+  ngAfterViewInit(): void { notifyUnifiedPreviewReady('TARGET'); }
+
+  @HostListener('window:message', ['$event'])
+  onContentPreviewMessage(event: MessageEvent): void {
+    const content = unifiedPreviewContent(event, 'TARGET');
+    if (!content) return;
+    this.applyContentConfig(cloneTargetContentConfig(content));
+    notifyUnifiedPreviewLocated('TARGET', event.data?.target);
+  }
+
+  private applyContentConfig(content: ReturnType<typeof createDefaultTargetContentConfig>): void {
+    this.contentConfig = content;
+    for (const course of this.courses) {
+      const edited = content.courses.find(item => item.id === course.id);
+      if (edited) Object.assign(course, { name: edited.name, arrangement: edited.schedule, note: edited.note });
+    }
+    for (const room of this.roomOptions) {
+      const edited = content.rooms.find(item => item.id === room.id);
+      if (edited) Object.assign(room, { name: edited.name, note: edited.note });
+    }
   }
 
   setGalleryCategory(category: GalleryCategory): void {

@@ -72,14 +72,14 @@ export const createDefaultImsContentConfig = (): CiaContentConfig => ({
     peakSeasonFeePerWeek: 0,
     peakSeasonRanges: [],
     promotions: [
-      promotion('ims-two-plus-two', '2+2达人活动', `淡季完整连续4周段按明确2周课程价和2周住宿价收费；每次连续学习最多一次。${IMS_OFF_SEASON_SOCIAL_REQUIREMENTS.join('')}`, 0, 'ims-two-plus-two'),
-      { ...promotion('ims-low-season-300', '淡季立减300美元', '总学习期至少12周；每个符合淡季月份的连续4周段减300美元，不能与同段2+2叠加。', 1, 'ims-low-season-300'), minimumCourseWeeks: 12 },
+      promotion('ims-two-plus-two', '2+2达人活动', `只能由用户手动选择，并且只适用于每名学生本次连续学习的首个完整4周：按明确2周课程价和2周住宿价收费。改选2+2后，该段不再重复计算自动淡季立减300美元；每名学生单次最多一次。${IMS_OFF_SEASON_SOCIAL_REQUIREMENTS.join('')}`, 0, 'ims-two-plus-two'),
+      { ...promotion('ims-low-season-300', '淡季立减300美元', '每个符合淡季月份的完整连续4周段自动减300美元，不需要用户手动选择，也不要求总学习期达到12周；手动改选2+2的同一段不再重复减300美元。', 1, 'ims-low-season-300'), minimumCourseWeeks: 4 },
       { ...promotion('ims-long-stay', '长期优惠', '全年适用；按2+2折算后的付费课程周数，一次性从课程费减50／100／200／300／400美元。', 2, 'ims-long-stay'), discountTiers: { 8: 50, 12: 100, 16: 200, 20: 300, 24: 400 }, appliesTo: 'tuition' },
       { ...promotion('ims-sida-95', '思达课程及住宿95折', '先扣学校活动和固定减免，再对剩余课程费与住宿费按95折；注册费、比索当地费和其他服务不参加。', 3, 'ims-sida-95'), discountType: 'percentage', discountValue: 5 },
     ],
     localFeeIntro: '2026年7月1日起当地费用；官方TOTAL AMOUNT包含一次接机和可退押金。可选送机、走读午餐、超额用电及额外课程另列。',
     courseTableTitle: 'IMS 2026课程费（美元）',
-    courseTableNote: '课程费与住宿费分开；1、2、3、4、8、12、16、20、24周使用价目表明确价格。保证班空白周数不可报价。',
+    courseTableNote: '先按学习目标和每天课量选择课程；课程费与住宿费分开报价，保证班仅开放学校已经公布价格的学习周期。',
     groupClassNote: `淡季课程权益：2节团体课可换1节一对一，不直接改变学费。有效期${IMS_OFF_SEASON_CLASS_EXCHANGE_PERIODS.map((period) => `${period.start.replace(/-/g, '/')}–${period.end.replace(/-/g, '/')}`).join('；')}。`,
     roomTableTitle: 'IMS 2026住宿费（美元）',
     roomTableNote: '住宿费与课程费独立保存和计算；按价目表明确周数价格。',
@@ -111,7 +111,7 @@ export const createDefaultImsContentConfig = (): CiaContentConfig => ({
     ],
     serviceLocations: ['深圳总部', '菲律宾宿务驻点', '欧洲驻点'],
     alumniBenefitTitle: 'IMS优惠提醒',
-    alumniBenefitText: '2+2、淡季立减和长期优惠均按每名学生及每个4周段独立判断，最终资格须由学校确认。',
+    alumniBenefitText: '符合条件的淡季4周段自动立减300美元；2+2仅首个连续4周可手动改选且每名学生单次最多一次，同段不重复优惠，最终资格须由学校确认。',
     noteSectionTitle: '报价说明',
     footerNotes: [
       '课程和住宿按周日开始、周六结束；分段日期不得重叠。',
@@ -125,6 +125,24 @@ export const createDefaultImsContentConfig = (): CiaContentConfig => ({
 
 export const cloneImsContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const cloned = structuredClone(value);
+  if (/1、2、3、4、8、12、16、20、24周/.test(cloned.quoteSettings.courseTableNote ?? '')) {
+    cloned.quoteSettings.courseTableNote = '先按学习目标和每天课量选择课程；课程费与住宿费分开报价，保证班仅开放学校已经公布价格的学习周期。';
+  }
+  const twoPlusTwo = cloned.quoteSettings.promotions.find((item) => item.ruleKind === 'ims-two-plus-two');
+  if (twoPlusTwo && !/手动/.test(twoPlusTwo.description ?? '')) {
+    twoPlusTwo.description = `只能由用户手动选择，并且只适用于每名学生本次连续学习的首个完整4周：按明确2周课程价和2周住宿价收费。改选2+2后，该段不再重复计算自动淡季立减300美元；每名学生单次最多一次。${IMS_OFF_SEASON_SOCIAL_REQUIREMENTS.join('')}`;
+  }
+  const lowSeason = cloned.quoteSettings.promotions.find((item) => item.ruleKind === 'ims-low-season-300');
+  if (lowSeason) {
+    lowSeason.minimumCourseWeeks = 4;
+    if (!/自动/.test(lowSeason.description ?? '') || /总学习期(?:至少|不少于)12周/.test(lowSeason.description ?? '')) {
+      lowSeason.description = '每个符合淡季月份的完整连续4周段自动减300美元，不需要用户手动选择，也不要求总学习期达到12周；手动改选2+2的同一段不再重复减300美元。';
+    }
+  }
+  const legacyImageNote = cloned.quoteImageSettings.promotionNotes?.['ims-low-season-300'];
+  if (legacyImageNote && (!/自动/.test(legacyImageNote) || /总学习期(?:至少|不少于)12周/.test(legacyImageNote))) {
+    cloned.quoteImageSettings.promotionNotes!['ims-low-season-300'] = '符合条件的淡季4周段由系统自动计算；手动改选2+2的同一段不重复减300美元。';
+  }
   if (!cloned.quoteImageSettings.localFeeNotes) cloned.quoteImageSettings.localFeeNotes = {};
   if (!cloned.media) cloned.media = [];
   return cloned;

@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": ["src/app/components/school-quote-plan-copy.spec.ts", "src/**/*.d.ts"]
+}

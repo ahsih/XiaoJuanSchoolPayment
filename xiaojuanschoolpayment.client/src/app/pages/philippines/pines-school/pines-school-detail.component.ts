@@ -13,7 +13,7 @@ import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -1167,8 +1167,9 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       }),
       ruleNotes: [],
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
     const result = applySchoolQuoteImageLayout({
-      ...quote,
+      ...editedQuote,
       importantNotes: [
         ...warnings,
         ...shortStayNotes,

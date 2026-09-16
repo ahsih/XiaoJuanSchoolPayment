@@ -293,7 +293,7 @@
               </div>
               <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.returningStudent" />老学员返校（免注册费）</label><label class="option-check">机场接机<select [(ngModel)]="student.calculator.pickup"><option value="none">不需要接机</option><option value="weekend">周六／周日06:00–24:00团体接机</option><option value="other">其他时间团体接机</option></select></label></div>
               <label class="option-check" *ngIf="student.calculator.isMinor"><input type="checkbox" [(ngModel)]="student.calculator.guardianSameRoom" />已确认与年满18岁的监护人同住一间房（不可分房）</label>
-              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
+              <app-school-quote-plan [plan]="student.calculator.plan" [lockRoomScheduleToCourses]="true"></app-school-quote-plan>
               <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.calculator.totalUsd) }} 美元</strong></div>
             </article>
             <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown"><div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div></div>
@@ -328,6 +328,56 @@
             <div *ngFor="let fee of optionalFeeItems" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.label)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.label))">
               <span>{{ fee.label }}<small>{{ fee.note }}</small></span>
               <strong>{{ fee.amount }}<small *ngIf="fee.cnyAmount">{{ fee.cnyAmount }}</small></strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="philinter-holiday-section" id="holidays-2027" aria-labelledby="philinter-holiday-title">
+          <div class="section-heading">
+            <span>PHILINTER 2027 SCHOOL CALENDAR</span>
+            <h2 id="philinter-holiday-title">2027年菲律宾假期与停课安排</h2>
+            <p>规划入学日期和学习周数时，可先参考Philinter发布的2027年假期表。点击海报可放大查看每个月的日期。</p>
+          </div>
+
+          <div class="philinter-holiday-layout">
+            <figure class="philinter-holiday-poster">
+              <app-expandable-image
+                src="assets/philinter/philinter-2027-philippine-holidays.jpg"
+                alt="Philinter Academy 2027年菲律宾假期表，列出各月节假日、调休日及待公告假期"
+                title="PHILINTER 2027年菲律宾假期表"
+                caption="点击图片可放大查看。假期与停课安排以菲律宾政府公告及Philinter学校的最新通知为准。"
+                loading="lazy"
+                previewFit="contain"
+              ></app-expandable-image>
+              <figcaption><mat-icon>zoom_in</mat-icon>点击海报放大查看完整校历</figcaption>
+            </figure>
+
+            <div class="philinter-holiday-notes">
+              <article class="holiday-note holiday-note--important">
+                <mat-icon>event_busy</mat-icon>
+                <div>
+                  <h3>调休假期没有课程</h3>
+                  <p>学校海报中标注为“Swapped Holiday”的日期无课，包括4月30日、9月3日、9月10日、11月29日及12月10日。</p>
+                </div>
+              </article>
+
+              <article class="holiday-note">
+                <mat-icon>history_edu</mat-icon>
+                <div>
+                  <h3>补课规则</h3>
+                  <p>当某个月的上课日少于19天时，学校才会安排补课；具体课表以当月校方通知为准。</p>
+                </div>
+              </article>
+
+              <article class="holiday-note">
+                <mat-icon>campaign</mat-icon>
+                <div>
+                  <h3>仍待官方公告的假期</h3>
+                  <p>春节（暂定2月）、EDSA纪念日（2月25日）、开斋节与宰牲节，以及拉普拉普市宪章日（6月17日）仍待公告。</p>
+                </div>
+              </article>
+
+              <p class="holiday-source-note">菲律宾政府或学校可能新增、调整假期及补课安排，报名和出发前请向顾问确认最新校历。</p>
             </div>
           </div>
         </section>

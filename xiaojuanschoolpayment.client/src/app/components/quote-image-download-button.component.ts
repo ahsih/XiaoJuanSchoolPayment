@@ -19,6 +19,8 @@ export interface QuoteImagePaymentItem {
   label: string;
   amount: string;
   note?: string;
+  /** Stable calculator-owned promotion id used only to select its editable image copy. */
+  promotionKey?: string;
   /** Optional title and date/week line, displayed above the concise fee note. */
   detailTitle?: string;
   detailSubtitle?: string;

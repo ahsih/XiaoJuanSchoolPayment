@@ -26,6 +26,7 @@ export class SidaWhySectionComponent {
   @Input() schoolName = '菲律宾学校';
   @Input() supportTitle = '深圳总部 + 菲律宾当地支持';
   @Input() supportBadge = '深圳总部 + 菲律宾支持';
+  @Input() detailed = false;
 
   readonly mainImage = 'assets/cia/sida-why-main-branded.webp';
 
@@ -69,9 +70,9 @@ export class SidaWhySectionComponent {
       {
         number: '06',
         title: this.supportTitle,
-        text: '国内顾问与菲律宾工作人员协作，重要情况有人跟进。',
+        text: this.detailed ? '国内统筹与境外工作人员协作，重要情况有人跟进。' : '国内顾问与菲律宾工作人员协作，重要情况有人跟进。',
         image: 'assets/cia/sida-why-action-team.webp',
-        alt: '思达启航菲律宾和深圳服务团队',
+        alt: this.detailed ? '思达启航菲律宾和欧洲驻点团队' : '思达启航菲律宾和深圳服务团队',
       },
     ];
   }

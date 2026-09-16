@@ -1,4 +1,4 @@
-import { QuotePlanRow, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, QuotePlanRow, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
 import { GlcQuotePlan } from './glc-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -253,8 +253,9 @@ export class GlcQuoteCalculator {
       })),
       ruleNotes: imageSettings?.footerNotes ?? ['学费需到校前2周交齐，可由思达代收或自行转美元给学校。', '所有学生不收取寒暑假附加费。', exchangeNote],
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, imageSettings, this.content?.().quoteSettings.promotions, this.content?.().localFees);
     return presentSchoolQuote({
-      ...quote,
+      ...editedQuote,
       paymentSectionTitle: imageSettings?.paymentSectionTitle ?? quote.paymentSectionTitle,
       localFeeTitle: imageSettings?.localFeeSectionTitle ?? quote.localFeeTitle,
       serviceSectionTitle: imageSettings?.serviceSectionTitle ?? quote.serviceSectionTitle,

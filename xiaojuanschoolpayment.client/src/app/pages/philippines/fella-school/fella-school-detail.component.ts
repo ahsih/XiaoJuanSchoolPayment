@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { catchError, EMPTY, forkJoin, switchMap } from 'rxjs';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { CiaContentConfig, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import {
   FELLA_CAMPUS_OPTIONS,
   FELLA_COURSE_FEES,
@@ -23,6 +25,7 @@ import {
   FellaRoomFee,
 } from './fella-pricing';
 import { FellaStudentQuote } from './fella-student-quote';
+import { cloneFellaContentConfig, createDefaultFellaContentConfig, fellaQuoteImageSettings } from './fella-content-config';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -62,13 +65,18 @@ interface CampusPriceGroup<T> { campus: FellaCampus; eyebrow: string; title: str
     './fella-school-detail.component.css',
   ],
 })
-export class FellaSchoolDetailComponent implements OnInit {
+export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly host = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolSearchName = 'English Fella';
   private readonly pricingSchoolNames = ['菲律宾宿务English Fella语言学校', 'English Fella'];
   private readonly courseFeeOrder = ['pic-4', 'pic-5', 'pic-6', 'toeic-esl', 'toeic-practice', 'toeic-guarantee', 'pift-e', 'pift', 'pirc', 'pigi', 'ppt', 'ptft', 'ssc', 'p-jec', 'jec', 'gec', 'ebc'];
   private readonly roomFeeOrder = ['premium-1p', 'single-1a', 'single-1b', 'twin-2a', 'triple-3a'];
+  private contentConfig = createDefaultFellaContentConfig();
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -280,8 +288,25 @@ export class FellaSchoolDetailComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
+    const requestedCampus = this.route.snapshot.queryParamMap.get('fellaCampus');
+    if (requestedCampus === 'campus1' || requestedCampus === 'campus2') this.students[0].setCampus(requestedCampus);
     this.loadPricingFromDatabase();
     this.loadExchangeRate();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isEditorPreview) window.parent.postMessage({ type: 'fella-content-ready' }, window.location.origin);
+  }
+
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; scroll?: boolean; target?: unknown };
+    if (message?.type !== 'fella-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (message.scroll) this.host.nativeElement.querySelector('#quote')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.parent.postMessage({ type: 'fella-content-located', target: message.target, status: '已同步到English Fella公开页面；当前校区课程、住宿和报价图片使用这份草稿。' }, window.location.origin);
   }
 
   private loadExchangeRate(): void {
@@ -306,10 +331,16 @@ export class FellaSchoolDetailComponent implements OnInit {
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),
           rooms: this.schoolService.getSchoolRooms({ schoolId: school.id, week: 4 }),
           fees: this.schoolService.getSchoolFees({ schoolId: school.id }),
+          published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),
         });
       }),
       catchError(() => EMPTY),
-    ).subscribe(({ lessons, rooms, fees }) => this.applyPricingData(lessons, rooms, fees));
+    ).subscribe(({ lessons, rooms, fees, published }) => {
+      this.applyPricingData(lessons, rooms, fees);
+      const preview = this.readSessionPreview();
+      if (preview) this.applyContentConfig(preview);
+      else if (published?.content) this.applyContentConfig(published.content);
+    });
   }
 
   private applyPricingData(lessons: SchoolLessonDTO[], rooms: SchoolRoomDTO[], fees: SchoolFeeDTO[]): void {
@@ -425,12 +456,17 @@ export class FellaSchoolDetailComponent implements OnInit {
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
 
   get quoteImageData() {
+    const quoteCampus = this.activeStudents.every(student => student.campus === this.activeStudents[0]?.campus)
+      ? this.activeStudents[0]?.campus ?? 'campus1'
+      : 'campus1';
+    const settings: CiaQuoteImageSettings = fellaQuoteImageSettings(this.contentConfig, quoteCampus);
     const planItems = (['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems()
       .filter((item) => item.icon === icon)
       .map((item) => ({
         ...item,
         label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
         detailTitle: `${student.campusLabel}｜${item.detailTitle ?? ''}`,
+        note: [item.note, icon === '课' ? settings.paymentNotes.course : settings.paymentNotes.accommodation].filter(Boolean).join('；'),
       }))));
     const paymentItems = [
       ...planItems,
@@ -456,22 +492,27 @@ export class FellaSchoolDetailComponent implements OnInit {
       localFeeTotal: this.estimatedLocalFeeTotal,
       localCurrencyName: '比索',
       localFeeCny: this.estimatedLocalFeeCny,
-      localFeeNote: '学杂费按学生独立计算；不含可退房间押金、接机费及挂锁押金。',
+      localFeeNote: settings.localFeeIntro,
       optionalFeeItems: this.optionalFeeItems,
       ruleNotes: [],
     });
-    const result = applySchoolQuoteImageLayout({
+    const result = applyEditableQuoteImageCopy(applySchoolQuoteImageLayout({
       ...quote,
-      localFeeTitle: '到校后学杂费明细',
+      paymentSectionTitle: settings.paymentSectionTitle,
+      localFeeTitle: settings.localFeeSectionTitle,
+      serviceSectionTitle: settings.serviceSectionTitle,
+      benefitItems: settings.benefits,
+      serviceLocations: settings.serviceLocations,
+      alumniBenefitTitle: settings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
+      noteTitle: settings.noteSectionTitle,
       importantNotes: [
         ...warnings,
         ...pendingVisa,
-        '学校费用需在到校前2周交齐，可交由思达游学代收或自行转美元给学校；人民币支付按支付宝实时汇率结算。',
-        '学杂费由学校及菲律宾相关部门到校收取，本报价仅供参考，具体以学校实际收取为准。',
-        '课程及住宿按周日开始、周六结束；所选校区只显示该校区可选课程和房型。',
+        ...settings.footerNotes,
       ],
       footerNotesVerbatim: true,
-    }, 'English Fella', this.selectedWeeks, this.earliestStartDate, this.quoteUsd, this.usdToCny);
+    }, 'English Fella', this.selectedWeeks, this.earliestStartDate, this.quoteUsd, this.usdToCny), settings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
     return {
       ...result,
       headingText: this.quoteHeading,
@@ -504,5 +545,29 @@ export class FellaSchoolDetailComponent implements OnInit {
     if (name.includes('标准单人')) return 'standard-single';
     if (name.includes('单人')) return 'standard-single';
     return this.slugifyPriceKey(name);
+  }
+
+  private readSessionPreview(): CiaContentConfig | null {
+    if (!this.isEditorPreview || typeof sessionStorage === 'undefined') return null;
+    try { const raw = sessionStorage.getItem('fella-content-preview'); return raw ? JSON.parse(raw) as CiaContentConfig : null; } catch { return null; }
+  }
+
+  private applyContentConfig(value: CiaContentConfig): void {
+    const content = cloneFellaContentConfig(value);
+    this.contentConfig = content;
+    const originalCourses = new Map(FELLA_COURSE_FEES.map(item => [item.id, item]));
+    const originalRooms = new Map(FELLA_ROOM_FEES.map(item => [item.id, item]));
+    this.courseFees.splice(0, this.courseFees.length, ...content.courses.filter(item => item.enabled).map(item => {
+      const original = originalCourses.get(item.id);
+      const campuses = item.campus === 'campus1' || item.campus === 'campus2' ? [item.campus] : original?.campuses ?? ['campus1', 'campus2'];
+      return { ...(original ?? FELLA_COURSE_FEES[0]), id: item.id, name: item.name, tuition: item.tuition, campuses, schedule: item.schedule, requirement: item.suitable || item.note } as FellaCourseFee;
+    }));
+    this.roomFees.splice(0, this.roomFees.length, ...content.rooms.filter(item => item.enabled).map(item => {
+      const original = originalRooms.get(item.id);
+      const campuses = item.campus === 'campus1' || item.campus === 'campus2' ? [item.campus] : original?.campuses ?? ['campus1', 'campus2'];
+      return { ...(original ?? FELLA_ROOM_FEES[0]), id: item.id, name: item.label || item.name, fee: item.fee, campuses, note: item.note } as FellaRoomFee;
+    }));
+    this.registrationFee = content.quoteSettings.registrationFee;
+    for (const student of this.students) student.setCampus(student.campus);
   }
 }

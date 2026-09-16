@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  AfterViewInit,
+  HostListener,
   OnInit,
   inject,
 } from '@angular/core';
@@ -14,12 +16,13 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import {
   groupLocalFees,
   groupPaymentLines,
 } from '../../../components/school-group-quote';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import {
   QuoteImageDownloadButtonComponent,
@@ -33,6 +36,8 @@ import {
   BlueOceanStudentQuote,
   blueOceanPriceMultiplier,
 } from './blue-ocean-student-quote';
+import { cloneBlueOceanContentConfig, createDefaultBlueOceanContentConfig } from '../remaining-content-config';
+import { connectUnifiedSchoolContent, notifyUnifiedPreviewLocated, notifyUnifiedPreviewReady, unifiedPreviewContent } from '../unified-school-content-bridge';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 interface QuickInfo {
@@ -131,10 +136,12 @@ interface SourceLink {
   ],
 })
 export class CebuBlueOceanSchoolComponent
-  implements OnInit, BlueOceanQuotePrices
+  implements OnInit, AfterViewInit, BlueOceanQuotePrices
 {
   private readonly schoolService = inject(SchoolService);
+  private readonly contentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private contentConfig = createDefaultBlueOceanContentConfig();
   private readonly pricingSchoolSearchName = 'Cebu Blue Ocean Academy';
 
   readonly galleryCategories: GalleryCategory[] = [
@@ -750,8 +757,26 @@ export class CebuBlueOceanSchoolComponent
         catchError(() => of(null)),
       )
       .subscribe((data) => {
-        if (data) this.applyPricingData(data.lessons, data.rooms, data.fees);
+        if (data) {
+          this.applyPricingData(data.lessons, data.rooms, data.fees);
+          this.applyContentConfig(this.contentConfig);
+        }
       });
+    connectUnifiedSchoolContent({
+      code: 'BLUE-OCEAN', schoolService: this.schoolService, contentService: this.contentService,
+      matchesSchool: name => /cebu blue ocean|cboa|宿务蓝海/i.test(name), clone: cloneBlueOceanContentConfig,
+      apply: content => this.applyContentConfig(content),
+    });
+  }
+
+  ngAfterViewInit(): void { notifyUnifiedPreviewReady('BLUE-OCEAN'); }
+
+  @HostListener('window:message', ['$event'])
+  onContentPreviewMessage(event: MessageEvent): void {
+    const content = unifiedPreviewContent(event, 'BLUE-OCEAN');
+    if (!content) return;
+    this.applyContentConfig(cloneBlueOceanContentConfig(content));
+    notifyUnifiedPreviewLocated('BLUE-OCEAN', event.data?.target);
   }
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -912,23 +937,24 @@ export class CebuBlueOceanSchoolComponent
         label: `${
           this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''
         }${item.label.replace(/^课程费/u, '课程名称').replace(/^住宿费/u, '住宿名称')}`,
+        note: item.icon === '课' ? this.contentConfig.quoteImageSettings.paymentNotes.course : item.icon === '宿' ? this.contentConfig.quoteImageSettings.paymentNotes.accommodation : item.note,
       })),
     );
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
-    return [
+    return applyEditableQuotePaymentItems([
       {
         icon: '注',
         label: '注册费',
         amount: `${this.formatUsd(
           this.activeStudents.length * this.registrationFee,
         )} 美元`,
-        note: `100美元／人；下方按思达启航长期优惠全额减免。`,
+        note: this.contentConfig.quoteImageSettings.paymentNotes.registration,
       },
       ...this.planPaymentItems,
       ...groupPaymentLines(this.activeStudents, false),
-    ];
+    ], this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions);
   }
 
   get quoteError(): string {
@@ -1146,15 +1172,22 @@ export class CebuBlueOceanSchoolComponent
       this.usdToCny,
     );
 
-    return {
+    return applyEditableQuoteImageCopy({
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(
         /-/g,
         '',
       )}.png`,
-      localFeeTitle: '到校后学杂费明细参考（学校及政府相关部门收取）',
-      importantNotes: [this.schoolFeeImageNote, this.localFeeImageNote],
+      paymentSectionTitle: this.contentConfig.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.contentConfig.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.contentConfig.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.contentConfig.quoteImageSettings.benefits,
+      serviceLocations: this.contentConfig.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.contentConfig.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.contentConfig.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.contentConfig.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.contentConfig.quoteImageSettings.noteSectionTitle,
+      importantNotes: this.contentConfig.quoteImageSettings.footerNotes,
       footerNotesVerbatim: true,
       appendFinalConfirmationNote: false,
       appendExchangeRateNote: true,
@@ -1165,7 +1198,19 @@ export class CebuBlueOceanSchoolComponent
           ? this.exchangeRateDate
           : undefined,
       },
-    };
+    }, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
+  }
+
+  private applyContentConfig(content: ReturnType<typeof createDefaultBlueOceanContentConfig>): void {
+    this.contentConfig = content;
+    for (const course of this.courseOptions) {
+      const edited = content.courses.find(item => item.id === course.id);
+      if (edited) Object.assign(course, { name: edited.name, lessons: edited.schedule, suitable: edited.suitable });
+    }
+    for (const room of this.dormOptions) {
+      const edited = content.rooms.find(item => item.id === room.id);
+      if (edited) Object.assign(room, { name: edited.name, note: edited.note });
+    }
   }
 
   formatPhp(value: number): string {

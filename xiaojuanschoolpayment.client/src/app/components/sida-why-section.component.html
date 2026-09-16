@@ -1,4 +1,4 @@
-<section class="sida-why-section" id="service-process">
+<section *ngIf="!detailed" class="sida-why-section" id="service-process">
   <div class="sida-why-heading">
     <span>WHY SIDA QIHANG</span>
     <h2>为什么通过思达启航报名{{ schoolName }}？</h2>
@@ -28,4 +28,56 @@
       <strong>{{ item.label }}</strong>
     </article>
   </div>
+</section>
+
+<section *ngIf="detailed" class="sida-cia-section" id="service-process">
+  <div class="sida-cia-heading">
+    <span>SIDA SERVICE GUARANTEE</span>
+    <h2>为什么学生更放心找思达启航报名{{ schoolName }}？</h2>
+    <p>不是一句“全程服务”，而是把选校判断、费用、合同和境内外支持做成看得见的保障。</p>
+  </div>
+
+  <aside class="sida-cia-gratitude" aria-label="思达启航服务初心">
+    <figure class="sida-cia-main-photo">
+      <img [src]="mainImage" [alt]="'思达启航顾问为' + schoolName + '学生讲解报名方案'" />
+      <figcaption>每一份 {{ schoolName }} 方案，都从听懂你的目标和顾虑开始</figcaption>
+    </figure>
+    <div class="sida-cia-gratitude-content">
+      <div class="sida-cia-gratitude-heading">
+        <span><mat-icon>favorite</mat-icon></span>
+        <div><small>我们的初心 · 极致利他，成人达己</small><strong>感恩每一份信任，我们会认真接住你的托付</strong></div>
+      </div>
+      <blockquote>我们始终相信：只有学生真正选对学校、学有所获、走得更远，思达启航才能走得长久。谢谢你把这段重要的旅程交给我们。</blockquote>
+      <p>我们不会用漂亮话代替服务：该说明的费用和规则提前说清楚，该落实的合同、材料与境外衔接逐项落实；报名之后，也会继续关注你的学习和生活。</p>
+      <div class="sida-cia-values" aria-label="思达启航服务态度">
+        <span><mat-icon>record_voice_over</mat-icon>先认真听你说</span>
+        <span><mat-icon>handshake</mat-icon>答应你的认真做到</span>
+        <span><mat-icon>volunteer_activism</mat-icon>报名之后继续负责</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sida-cia-reason-grid">
+    <article *ngFor="let item of reasons">
+      <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+      <div><span>{{ item.number }}</span><h3>{{ item.title }}</h3><p>{{ item.text }}</p></div>
+    </article>
+  </div>
+
+  <div class="sida-cia-trust-bar" aria-label="思达启航报名保障">
+    <article *ngFor="let item of trustBadges"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.label }}</strong></article>
+  </div>
+
+  <aside class="sida-cia-alumni-benefits" [attr.aria-labelledby]="'sida-alumni-benefits-title'">
+    <div class="sida-cia-alumni-heading">
+      <span><mat-icon>workspace_premium</mat-icon></span>
+      <div><small>学习结束，服务继续</small><h3 id="sida-alumni-benefits-title">老学员回国后福利</h3><p>继续学习英语或规划下一阶段升学时，可申请思达老学员专属权益。</p></div>
+    </div>
+    <div class="sida-cia-alumni-grid">
+      <article><span>01</span><mat-icon>record_voice_over</mat-icon><div><strong>一对一线上英语</strong><p>老学员可享线上一对一英语课程专属优惠。</p></div></article>
+      <article><span>02</span><mat-icon>school</mat-icon><div><strong>爱尔兰继续深造</strong><p>申请爱尔兰留学，可享思达专属奖学金或项目优惠。</p></div></article>
+      <article><span>03</span><mat-icon>flight_takeoff</mat-icon><div><strong>欧美国家英语进修</strong><p>继续到欧美国家学习英语，部分合作学校可免注册费或享专属优惠。</p></div></article>
+    </div>
+    <small class="sida-cia-alumni-note">具体奖学金、减免范围和适用条件，以申请时合作学校及思达启航确认的当期政策为准。</small>
+  </aside>
 </section>

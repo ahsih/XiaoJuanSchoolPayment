@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
@@ -10,6 +11,7 @@ describe('FellaSchoolDetailComponent', () => {
     await TestBed.configureTestingModule({
       imports: [FellaSchoolDetailComponent],
       providers: [
+        provideHttpClient(),
         provideRouter([]),
         {
           provide: SchoolService,

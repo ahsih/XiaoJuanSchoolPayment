@@ -13,6 +13,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { applyEditableQuoteImageCopy } from '../../../components/school-quote-plan';
 import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
 import { BeciCampus } from '../beci-quote/beci-pricing';
 import { CiaContentConfig, CiaLocalFeeRule } from '../cia-school/cia-content-config';
@@ -725,8 +726,8 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
         { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationFee)} 美元`, note: settings.paymentNotes.registration },
         { icon: '课', label: '课程费', amount: `${this.formatUsd(this.tuitionForSelectedWeeks)} 美元`, note: [this.selectedCourse.name, this.selectedCourse.suitable, settings.paymentNotes.course].filter(Boolean).join('；') },
         { icon: '宿', label: '住宿费', amount: `${this.formatUsd(this.roomFeeForSelectedWeeks)} 美元`, note: [this.selectedRoom.name, settings.paymentNotes.accommodation].filter(Boolean).join('；') },
-        { icon: '淡', label: '淡季折扣', amount: this.offSeasonDiscountAmount ? `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元` : '未适用', note: [this.activeOffSeasonPromotion?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), accent: this.offSeasonDiscountAmount > 0 },
-        { icon: '长', label: '长期优惠', amount: this.longStayDiscount ? `- ${this.formatUsd(this.longStayDiscount)} 美元` : '未适用', note: [this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === 'beci-long-stay')?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), accent: this.longStayDiscount > 0 },
+        { icon: '淡', label: '淡季折扣', amount: this.offSeasonDiscountAmount ? `- ${this.formatUsd(this.offSeasonDiscountAmount)} 美元` : '未适用', note: [this.activeOffSeasonPromotion?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), promotionKey: this.activeOffSeasonPromotion?.id, accent: this.offSeasonDiscountAmount > 0 },
+        { icon: '长', label: '长期优惠', amount: this.longStayDiscount ? `- ${this.formatUsd(this.longStayDiscount)} 美元` : '未适用', note: [this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === 'beci-long-stay')?.description, settings.paymentNotes.promotion].filter(Boolean).join('；'), promotionKey: this.currentContentConfig.quoteSettings.promotions.find(item => item.ruleKind === 'beci-long-stay')?.id, accent: this.longStayDiscount > 0 },
         { icon: '惠', label: '优惠合计', amount: `- ${this.formatUsd(this.totalDiscountAmount)} 美元`, note: settings.paymentNotes.promotion, accent: true },
       ],
       localFeeItems: includedFees.map((fee) => ({ label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: php(fee.total), note: fee.note })),
@@ -736,8 +737,9 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
       optionalFeeItems: optionalFees.slice(0, 2).map((fee) => ({ label: fee.item, amount: fee.amount, note: fee.note })),
       ruleNotes: settings.footerNotes,
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.currentContentConfig.quoteSettings.promotions, this.currentContentConfig.localFees);
     return {
-      ...quote,
+      ...editedQuote,
       paymentSectionTitle: settings.paymentSectionTitle,
       localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle,

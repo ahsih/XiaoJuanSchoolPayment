@@ -14,7 +14,7 @@ import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { IbreezeStudentQuote } from './ibreeze-student-quote';
 import { IBREEZE_COURSES, IBREEZE_ROOMS, IBREEZE_MINOR_POLICY, IBREEZE_OFF_CAMPUS_INFO } from './ibreeze-catalog';
-import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { CiaContentConfig, CiaQuoteImageSettings, CiaStayPolicyCard } from '../cia-school/cia-content-config';
@@ -1039,7 +1039,8 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? '学生' + (index + 1) + '：' : ''}${student.quotePlan.warning}`] : []);
-    const result = applySchoolQuoteImageLayout({ ...quote, paymentItems,
+    const editedQuote = applyEditableQuoteImageCopy({ ...quote, paymentItems }, imageSettings, this.currentContentConfig.quoteSettings.promotions, this.currentContentConfig.localFees);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote,
       importantNotes: [...warnings, ...(quote.importantNotes ?? [])] }, 'I.BREEZE', this.selectedWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return { ...result, headingText: this.quoteHeading, paymentSectionTitle: imageSettings.paymentSectionTitle,
       localFeeTitle: imageSettings.localFeeSectionTitle, serviceSectionTitle: imageSettings.serviceSectionTitle,

@@ -12,6 +12,7 @@ export interface SchoolPaymentLine { icon: string; label: string; value: number;
 export const moneyLine = (line: SchoolPaymentLine): QuoteImagePaymentItem => ({
   icon: line.icon, label: line.label,
   amount: `${line.value < 0 ? '− ' : ''}${quoteMoney(Math.abs(line.value))} 美元`, note: line.note,
+  promotionKey: line.promotionKey,
   accent: line.value < 0,
 });
 

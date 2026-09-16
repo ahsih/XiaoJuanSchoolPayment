@@ -6,6 +6,9 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { PhilinterSchoolDetailComponent } from './philinter-school-detail.component';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { AdminSchoolQuoteImageComponent } from '../../admin-school-quote-image/admin-school-quote-image.component';
 import { createDefaultPhilinterContentConfig } from './philinter-content-config';
 import { PHILINTER_SUMMER_PERIODS } from './philinter-quote';
 
@@ -60,7 +63,10 @@ describe('PHILINTER supplied catalog and quote rules', () => {
   });
   it('counts complete eligible study weeks and rejects excluded rooms, guarantee courses and gaps', () => {
     setPlan(16); expect(c.offSeasonDiscountAmount).toBe(600);
-    setPlan(8, '2026-11-01'); expect(c.offSeasonDiscountAmount).toBe(0);
+    setPlan(8, '2026-11-01');
+    c.quotePlan.courses[0].optionId = 'ielts-intensive';
+    expect(c.offSeasonDiscountAmount).toBe(300);
+    c.quotePlan.courses[0].optionId = 'light-esl';
     setPlan(8); c.quotePlan.rooms[0].optionId = 'azon-triple'; expect(c.offSeasonDiscountAmount).toBe(0);
     c.quotePlan.rooms[0].optionId = 'azon-twin'; expect(c.offSeasonDiscountAmount).toBe(300);
     c.quotePlan.courses[0].optionId = 'ielts-guarantee-8-weeks'; expect(c.offSeasonDiscountAmount).toBe(0);
@@ -69,6 +75,27 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.offSeasonDiscountAmount).toBe(300);
     c.quotePlan.courses[1].startDate = c.quotePlan.rooms[1].startDate = '2026-09-20';
     expect(c.offSeasonDiscountAmount).toBe(0);
+  });
+  it('keeps quote-image promotion notes concise and shows the low-season date limit', () => {
+    setPlan(8, '2026-11-01');
+    const sida = c.quoteImageData.paymentItems.find(item => item.label === '思达启航折扣');
+    const lowSeason = c.quoteImageData.paymentItems.find(item => item.label === '淡季优惠');
+    expect(sida?.note).toBe('课程费及住宿费按思达启航9折计算。');
+    expect(lowSeason?.note).toBe('活动日期：2026/08/16–2026/12/25；指定课程及房型每满8周减300美元。');
+    expect(lowSeason?.note).not.toContain('IELTS');
+  });
+  it('keeps accommodation weeks and dates synchronized with each course period', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = c.quotePlan;
+    editor.lockRoomScheduleToCourses = true;
+    editor.updateWeeks('course', 0, 8);
+    editor.updateStartDate('course', 0, '2026-11-01', { value: '' } as HTMLInputElement);
+    expect(c.quotePlan.rooms[0].weeks).toBe(8);
+    expect(c.quotePlan.rooms[0].startDate).toBe('2026-11-01');
+    editor.add('course');
+    expect(c.quotePlan.rooms.length).toBe(c.quotePlan.courses.length);
+    expect(c.quotePlan.rooms[1].weeks).toBe(c.quotePlan.courses[1].weeks);
+    expect(c.quotePlan.rooms[1].startDate).toBe(c.quotePlan.courses[1].startDate);
   });
   it('blocks under-age, adult-course and separate-room Junior quotes', () => {
     c.selectedAgeGroup = 'under12'; expect(c.quoteError).toContain('12岁');
@@ -96,6 +123,51 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.localFees.find(row => row.item === '管理费')?.total).toBe(3000);
     expect(c.quoteImageData.paymentSectionTitle).toBe('自定义学校费用说明');
     expect(c.quoteImageData.importantNotes).toContain('自定义报价备注');
+  });
+  it('uses employee-edited image notes for every Philinter explanation area', () => {
+    const edited = createDefaultPhilinterContentConfig();
+    edited.quoteImageSettings.paymentNotes.registration = '自定义注册费图片说明';
+    edited.quoteImageSettings.paymentNotes.course = '自定义课程图片说明';
+    edited.quoteImageSettings.paymentNotes.accommodation = '自定义住宿图片说明';
+    edited.quoteImageSettings.promotionNotes!['philinter-sida-90'] = '自定义思达启航优惠说明';
+    edited.quoteImageSettings.promotionNotes!['philinter-low-season'] = '自定义淡季优惠说明';
+    edited.quoteImageSettings.localFeeNotes['ssp'] = '自定义SSP图片备注';
+    edited.quoteImageSettings.supplementalFeeNotes!['extra-night-0'] = '自定义额外住宿图片备注';
+    edited.quoteImageSettings.footerNotes = ['自定义底部报价说明'];
+
+    (c as any).applyContentConfig(edited);
+    setPlan(8, '2026-11-01');
+
+    const image = c.quoteImageData;
+    expect(image.paymentItems.find(row => row.label === '注册费')?.note).toContain('自定义注册费图片说明');
+    expect(image.paymentItems.find(row => row.detailTitle === '轻量综合英语 Light ESL')?.note).toContain('自定义课程图片说明');
+    expect(image.paymentItems.find(row => row.detailTitle === '校内三人房')?.note).toContain('自定义住宿图片说明');
+    expect(image.paymentItems.find(row => row.label === '思达启航折扣')?.note).toBe('自定义思达启航优惠说明');
+    expect(image.paymentItems.find(row => row.label === '淡季优惠')?.note).toBe('自定义淡季优惠说明');
+    expect(image.localFeeItems?.find(row => row.label === 'SSP特殊学习许可证')?.note).toBe('自定义SSP图片备注');
+    expect(image.optionalFeeItems?.find(row => row.label === '额外住宿')?.note).toBe('自定义额外住宿图片备注');
+    expect(image.importantNotes).toContain('自定义底部报价说明');
+  });
+  it('renders the complete Philinter quote image preview as a PNG', async () => {
+    setPlan(8, '2026-11-01');
+    const renderer = new QuoteImageDownloadButtonComponent();
+    renderer.quote = c.quoteImageData;
+
+    const dataUrl = await renderer.createPreviewDataUrl(0.5);
+
+    expect(dataUrl).toMatch(/^data:image\/png;base64,/);
+  });
+  it('renders the Philinter employee-editor preview as a PNG', async () => {
+    const editor = new AdminSchoolQuoteImageComponent({} as any, {} as any, {} as any, {} as any, {} as any);
+    editor.selectedSchool = { id: 'philinter', name: '菲律宾宿务Philinter语言学校' } as any;
+    editor.content = createDefaultPhilinterContentConfig();
+    editor.previewQuote = (editor as any).buildPreviewQuote();
+    const renderer = new QuoteImageDownloadButtonComponent();
+    renderer.quote = editor.previewQuote;
+
+    const dataUrl = await renderer.createPreviewDataUrl(0.5);
+
+    expect(dataUrl).toMatch(/^data:image\/png;base64,/);
   });
   it('calculates mixed returning, visa and pickup choices per student', () => {
     c.setQuoteMode('group');

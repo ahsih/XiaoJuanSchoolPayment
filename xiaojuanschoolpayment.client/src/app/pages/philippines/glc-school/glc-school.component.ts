@@ -16,7 +16,7 @@ import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { GlcCourse, GLC_COURSES, GLC_ROOMS, GLC_REGISTRATION_NOTE, GLC_LOCAL_FEE_INTRO, glcCourseName } from './glc-pricing';
-import { QuotePlanRow, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolVisaType, groupLocalFees } from '../../../components/school-group-quote';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { CiaContentConfig, CiaQuoteImageSettings, CiaStayPolicyCard } from '../cia-school/cia-content-config';
@@ -398,7 +398,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     .filter(course => !['power-speaking', 'intensive-power-speaking', 'ultra7-power-speaking'].includes(course.id))
     .map(course => ({ label: course.name, lessons: course.lessons, weeklyTuition: course.weeklyTuition, note: course.suitable || '住宿费与学杂费另计。' }));
 
-  get registrationNote() { return this.quoteImageSettings.paymentNotes.registration || GLC_REGISTRATION_NOTE; }
+  get registrationNote() { return this.quoteImageSettings.paymentNotes.registration ?? GLC_REGISTRATION_NOTE; }
 
   readonly schedule: ScheduleItem[] = [
     {
@@ -526,7 +526,8 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shared = this.activeStudents.flatMap((student, index) => student.sharedCourseOwner ? [`学生${student.sharedCourseOwner}与学生${index + 1}共享一份家庭课程套餐；住宿、注册费和学杂费分别按人计算。`] : []);
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...warnings, ...shared, ...imageSettings.footerNotes] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, imageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes: [...warnings, ...shared, ...imageSettings.footerNotes] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,

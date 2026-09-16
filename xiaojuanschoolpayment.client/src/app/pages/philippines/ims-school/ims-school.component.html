@@ -1,30 +1,30 @@
 <app-cia-school>
-  <div class="school-detail-page ims-page">
+  <div class="cia-page ims-page">
+    <div class="page-grid">
+      <main class="page-main">
     <section class="hero-section" id="top">
       <div class="hero-copy">
         <a class="back-link" routerLink="/philippines-study/cebu-schools"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
         <p class="breadcrumb">菲律宾游学 / 宿务学校 / IMS Academy</p>
-        <h1>IMS Academy<br /><em>每一项费用，都能核验</em></h1>
-        <p class="hero-lead">IMS位于宿务市Banilad生活圈。页面已按2026最新美元价目表和7月1日起当地费用重建，支持单人、2–20人、分段课程住宿、亲子转课与完整明细报价图片。</p>
-        <div class="hero-tags"><span>宿务 Banilad</span><span>成人 · 考试 · 亲子</span><span>2026独立价格目录</span></div>
+        <h1>IMS Academy<em>宿务 Banilad 城市型校园</em></h1>
+        <p class="hero-lead">课程、住宿与学生服务集中在同一校园，适合成人英语、考试备考与亲子同行。价格按2026年学校美元价目表及7月1日起当地费用逐项计算。</p>
+        <div class="hero-tags"><span>宿务 Banilad</span><span>26门课程</span><span>校内1–4人房</span></div>
         <div class="hero-actions">
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即精确报价<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询IMS空位<mat-icon>support_agent</mat-icon></a>
         </div>
-        <p class="trust-note"><mat-icon>verified</mat-icon>注册费100美元／人始终保留；内部佣金信息不会出现在网页或报价图片。</p>
+        <p class="trust-note"><mat-icon>verified</mat-icon>注册费100美元／人始终保留；学校活动与思达95折仅按规则作用于课程费和住宿费。</p>
       </div>
       <div class="hero-media">
-        <img src="/assets/ims/campus-hero.webp" alt="IMS Academy Banilad校园" />
+        <img src="/assets/ims/campus-video-cover.webp" alt="IMS Academy Banilad校园泳池与校舍" fetchpriority="high" />
+        <span class="hero-campus-label"><mat-icon>videocam</mat-icon>校园实拍</span>
         <div class="hero-price-card"><span>4周公开起价（含不可减注册费）</span><strong>{{ fourWeekStartingText }}</strong><small>Essential ESL 4 + 四人房 + 思达95折；当地比索费用另计</small></div>
       </div>
     </section>
 
-    <div class="quick-grid">
+    <div class="quick-info ims-quick-grid">
       <article class="quick-card" *ngFor="let item of quickInfo"><mat-icon>{{ item.icon }}</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article>
     </div>
-
-    <div class="detail-layout">
-      <main>
         <section class="panel intro-panel" id="overview">
           <div class="section-heading"><span>学校概况</span><h2>城市便利、课程路线完整，适合成人与亲子同行</h2></div>
           <div class="highlight-list"><article *ngFor="let item of highlights"><mat-icon>check_circle</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
@@ -38,19 +38,48 @@
 
         <section class="section-block" id="courses" data-cia-preview-kind="section" data-cia-preview-id="courses" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'courses')">
           <div class="section-heading"><span>课程目录与课表</span><h2>{{ courseTableTitle }}</h2><p>{{ courseTableNote }}</p></div>
-          <div class="course-grid ims-course-grid">
-            <article class="course-card" *ngFor="let course of courses" [attr.data-cia-preview-kind]="'course'" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
-              <span>{{ course.category }}</span><h3>{{ course.name }}</h3><p class="course-lessons">{{ course.schedule }}</p><p>{{ course.suitable }}</p>
-              <small>可选周数：{{ course.allowedWeeks.join('、') }}周</small>
+          <div class="ims-course-choice-grid" aria-label="IMS课程方向">
+            <article *ngFor="let group of courseGroups">
+              <mat-icon>{{ group.icon }}</mat-icon>
+              <span>{{ group.category }}</span>
+              <h3>{{ group.label }}</h3>
+              <p>{{ group.description }}</p>
+              <small>{{ group.courses.length }}门课程 · {{ group.courses[0].name }}<ng-container *ngIf="group.courses.length > 1"> 等</ng-container></small>
             </article>
           </div>
-          <div class="ims-price-table desktop-price-table" role="table" aria-label="IMS 2026课程费完整价目表">
-            <div class="price-row price-head" role="row"><span>课程</span><span *ngFor="let week of weekOptions">{{ week }}周</span></div>
-            <div class="price-row" *ngFor="let course of courses" role="row"><strong>{{ course.name }}</strong><span *ngFor="let week of weekOptions">{{ course.prices[week] === undefined ? '—' : (course.prices[week] | number:'1.0-0') }}</span></div>
-          </div>
-          <div class="mobile-price-cards">
-            <article *ngFor="let course of courses"><h3>{{ course.name }}</h3><p>{{ course.schedule }}</p><div><span *ngFor="let week of course.allowedWeeks"><b>{{ week }}周</b>{{ course.prices[week] | number:'1.0-0' }}美元</span></div></article>
-          </div>
+          <details class="course-detail-disclosure">
+            <summary>
+              <span class="disclosure-icon"><mat-icon>fact_check</mat-icon></span>
+              <span><strong>查看26门课程细节与每日课表</strong><small>按课程方向分组，展开后核对每天课量和适合人群</small></span>
+              <mat-icon class="disclosure-chevron">expand_more</mat-icon>
+            </summary>
+            <div class="course-detail-body">
+              <section class="ims-course-group" *ngFor="let group of courseGroups">
+                <header><span><mat-icon>{{ group.icon }}</mat-icon></span><div><small>{{ group.category }}</small><h3>{{ group.label }}</h3><p>{{ group.description }}</p></div></header>
+                <div class="ims-course-detail-grid">
+                  <article *ngFor="let course of group.courses" [attr.data-cia-preview-kind]="'course'" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
+                    <h4>{{ course.name }}</h4>
+                    <p class="course-lessons"><mat-icon>schedule</mat-icon>{{ course.schedule }}</p>
+                    <p><strong>适合：</strong>{{ course.suitable }}</p>
+                  </article>
+                </div>
+              </section>
+              <section class="ims-daily-schedule" aria-labelledby="ims-daily-schedule-title">
+                <div><span>DAILY TIMETABLE</span><h3 id="ims-daily-schedule-title">IMS 每日学习节奏</h3><p>每节课45分钟、课间10分钟；具体顺序及考试课程安排以入学后课表为准。</p></div>
+                <div class="ims-schedule-strip"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article></div>
+              </section>
+            </div>
+          </details>
+          <details class="price-disclosure">
+            <summary><span>查看26门课程完整价格表</span><small>短期价格使用学校明确金额，保证班空白项不可报价</small></summary>
+            <div class="ims-price-table desktop-price-table" role="table" aria-label="IMS 2026课程费完整价目表">
+              <div class="price-row price-head" role="row"><span>课程</span><span *ngFor="let week of weekOptions">{{ week }}周</span></div>
+              <div class="price-row" *ngFor="let course of courses" role="row"><strong>{{ course.name }}</strong><span *ngFor="let week of weekOptions">{{ course.prices[week] === undefined ? '—' : (course.prices[week] | number:'1.0-0') }}</span></div>
+            </div>
+            <div class="mobile-price-cards">
+              <article *ngFor="let course of courses"><h3>{{ course.name }}</h3><p>{{ course.schedule }}</p><div><span *ngFor="let week of course.allowedWeeks"><b>{{ week }}周</b>{{ course.prices[week] | number:'1.0-0' }}美元</span></div></article>
+            </div>
+          </details>
           <p class="policy-note">{{ groupClassNote }}</p>
         </section>
 
@@ -110,12 +139,13 @@
             </div>
 
             <div class="promotion-blocks" *ngIf="student.promotionBlocks.length">
-              <h4>逐个连续4周段选择活动</h4>
+              <h4>淡季立减自动计算；仅首个4周可手动改选2+2</h4>
               <article *ngFor="let block of student.promotionBlocks; trackBy: trackPromotionBlock">
-                <div><strong>{{ block.startDate | date:'yyyy/MM/dd':'UTC' }}–{{ block.endDate | date:'yyyy/MM/dd':'UTC' }}</strong><p>{{ block.reason }}</p></div>
-                <select [ngModel]="block.promotion" (ngModelChange)="promotionChange(student, block.rowId, block.index, $event)">
-                  <option value="none">不参加活动</option><option value="two-plus-two" [disabled]="!block.twoPlusTwoEligible">2+2达人活动</option><option value="low-season-300" [disabled]="!block.lowSeasonEligible">淡季立减300美元</option>
+                <div><strong>{{ formatIsoDate(block.startDate) }}–{{ formatIsoDate(block.endDate) }}</strong><p>{{ block.reason }}</p></div>
+                <select *ngIf="block.twoPlusTwoEligible || block.promotion === 'two-plus-two'; else automaticPromotion" [ngModel]="block.promotion === 'two-plus-two' ? 'two-plus-two' : 'none'" (ngModelChange)="promotionChange(student, block.rowId, block.index, $event)">
+                  <option value="none">自动应用淡季立减300美元</option><option value="two-plus-two" [disabled]="!block.twoPlusTwoEligible">手动选择2+2达人活动</option>
                 </select>
+                <ng-template #automaticPromotion><span class="automatic-promotion" [class.ineligible]="!block.lowSeasonEligible">{{ block.lowSeasonEligible ? '已自动应用淡季立减300美元' : '本段无淡季活动' }}</span></ng-template>
               </article>
             </div>
 
@@ -151,9 +181,39 @@
 
         <section class="section-block video-section" id="video"><div class="section-heading"><span>校园视频</span><h2>IMS校园实拍视频</h2><p>视频作为独立内容展示，不会自动播放，也不会作为首屏背景。</p></div><video controls preload="none" poster="/assets/ims/campus-video-cover.webp"><source src="/assets/ims/ims-campus-tour.mp4" type="video/mp4" />浏览器暂不支持播放此视频。</video></section>
 
-        <section class="section-block" id="gallery"><div class="section-heading"><span>相册</span><h2>校园、教室、住宿与活动</h2></div><div class="gallery-tabs"><button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button></div><div class="gallery-grid"><figure *ngFor="let item of filteredGalleryItems"><img [src]="item.src" [alt]="item.title" loading="lazy" /><figcaption><strong>{{ item.title }}</strong><span>{{ item.description }}</span></figcaption></figure></div></section>
+        <section class="section-block ims-gallery-section" id="gallery">
+          <div class="section-heading"><span>相册</span><h2>按区域查看IMS校园环境</h2><p>“全部”先按区域进入相册；选择分类后可用缩略图切换实景，查看校园、教室、住宿与学生活动。</p></div>
+          <div class="gallery-tabs" role="tablist" aria-label="IMS环境分类"><button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button></div>
+          <div *ngIf="selectedGalleryCategory === '全部'" class="ims-gallery-album-grid" aria-label="IMS环境相册入口">
+            <button type="button" *ngFor="let category of galleryAlbumCategories" (click)="setGalleryCategory(category)" [attr.aria-label]="'进入' + category + '相册'">
+              <span class="ims-gallery-album-cover" [class.single]="galleryItemsForCategory(category).length === 1" [class.double]="galleryItemsForCategory(category).length === 2" aria-hidden="true">
+                <ng-container *ngFor="let item of galleryItemsForCategory(category).slice(0, 3)">
+                  <img *ngIf="!isGalleryVideo(item)" [src]="item.src" alt="" loading="lazy" />
+                  <span *ngIf="isGalleryVideo(item)" class="ims-gallery-video-cover"><mat-icon>play_circle</mat-icon></span>
+                </ng-container>
+              </span>
+              <span class="ims-gallery-album-copy"><span><strong>{{ category }}相册</strong><small>{{ galleryItemsForCategory(category).length }}项实景</small></span><mat-icon>arrow_forward</mat-icon></span>
+              <em>{{ galleryAlbumDescription(category) }}</em>
+            </button>
+          </div>
+          <div *ngIf="selectedGalleryCategory !== '全部' && selectedGalleryItem as item" class="ims-environment-showcase" id="gallery-category-panel">
+            <div class="ims-gallery-toolbar"><div><strong>{{ selectedGalleryCategory }}相册</strong><span>第 {{ selectedGalleryImageIndex + 1 }} / {{ filteredGalleryItems.length }} 张</span></div><nav [attr.aria-label]="selectedGalleryCategory + '相册切换'"><button type="button" (click)="previousGalleryImage()"><mat-icon>chevron_left</mat-icon>上一张</button><button type="button" (click)="nextGalleryImage()">下一张<mat-icon>chevron_right</mat-icon></button></nav></div>
+            <figure class="ims-gallery-stage">
+              <img *ngIf="!isGalleryVideo(item)" [src]="item.src" [alt]="item.title" loading="lazy" />
+              <video *ngIf="isGalleryVideo(item)" controls preload="metadata"><source [src]="item.src" [type]="item.contentType" /></video>
+              <figcaption><strong>{{ item.title }}</strong><span>{{ item.description }}</span></figcaption>
+            </figure>
+            <div class="ims-gallery-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'">
+              <button type="button" *ngFor="let thumb of filteredGalleryItems; let imageIndex = index" [class.active]="imageIndex === selectedGalleryImageIndex" (click)="selectGalleryImage(imageIndex)" [attr.aria-label]="'查看' + thumb.title">
+                <img *ngIf="!isGalleryVideo(thumb)" [src]="thumb.src" [alt]="thumb.title" loading="lazy" />
+                <span *ngIf="isGalleryVideo(thumb)" class="ims-gallery-video-cover"><mat-icon>play_circle</mat-icon></span>
+                <small>{{ thumb.title }}</small>
+              </button>
+            </div>
+          </div>
+        </section>
 
-        <app-sida-why-section [schoolName]="'菲律宾宿务IMS Academy'" [supportTitle]="'深圳总部 + 宿务驻点支持'" [supportBadge]="'深圳总部 + 宿务驻点'"></app-sida-why-section>
+        <app-sida-why-section [schoolName]="'IMS Academy'" [supportTitle]="'深圳总部 + 菲律宾·欧洲驻点支持'" [supportBadge]="'深圳总部 + 菲律宾·欧洲驻点'" [detailed]="true"></app-sida-why-section>
         <section class="section-block" id="faq"><div class="section-heading"><span>FAQ</span><h2>报名前最容易算错的规则</h2></div><div class="faq-section"><details *ngFor="let item of faqs"><summary>{{ item.title }}</summary><p>{{ item.text }}</p></details></div></section>
       </main>
 

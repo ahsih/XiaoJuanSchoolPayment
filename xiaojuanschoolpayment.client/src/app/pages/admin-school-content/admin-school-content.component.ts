@@ -98,6 +98,9 @@ import {
   createDefaultIclContentConfig,
   createDefaultIuContentConfig,
 } from '../philippines/iu-school/iu-icl-content-config';
+import { cloneCellaContentConfig, createDefaultCellaContentConfig } from '../philippines/cella-quote/cella-content-config';
+import { cloneFellaContentConfig, createDefaultFellaContentConfig } from '../philippines/fella-school/fella-content-config';
+import { cloneBtesContentConfig, cloneBlueOceanContentConfig, cloneTargetContentConfig, cloneWalesContentConfig, createDefaultBtesContentConfig, createDefaultBlueOceanContentConfig, createDefaultTargetContentConfig, createDefaultWalesContentConfig } from '../philippines/remaining-content-config';
 import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
 import { AdminSchoolPhotosComponent } from '../admin-school-photos/admin-school-photos.component';
 
@@ -135,6 +138,13 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicJicPath = '/philippines-study/baguio/baguio-jic';
   private readonly publicIuPath = '/philippines-study/cebu/iu-english-academy';
   private readonly publicIclPath = '/philippines-study/cebu/icl';
+  private readonly publicCellaUniPath = '/philippines-study/cebu/cella-uni-sparta-campus';
+  private readonly publicCellaPremiumPath = '/philippines-study/cebu/cella-premium-campus';
+  private readonly publicFellaPath = '/philippines-study/cebu/english-fella';
+  private readonly publicBtesPath = '/philippines-study/cebu/btes-english-academy';
+  private readonly publicBlueOceanPath = '/philippines-study/cebu/cebu-blue-ocean-academy';
+  private readonly publicTargetPath = '/philippines-study/cebu/target-global-english-academy';
+  private readonly publicWalesPath = '/philippines-study/baguio/wales-academy';
 
   schools: SchoolDTO[] = [];
   schoolSearch = '';
@@ -148,6 +158,7 @@ export class AdminSchoolContentComponent implements OnInit {
   selectedFeeId = this.content.localFees[0].id;
   selectedPromotionId = this.content.quoteSettings.promotions[0].id;
   beciCampus: BeciCampus = 'eop';
+  fellaCampus: 'campus1' | 'campus2' = 'campus1';
   changeSummary = '';
   statusMessage = '';
   statusKind: 'success' | 'warning' | 'error' | '' = '';
@@ -220,6 +231,8 @@ export class AdminSchoolContentComponent implements OnInit {
     }
     const requestedCampus = this.route.snapshot.queryParamMap.get('campus');
     if (requestedCampus === 'eop' || requestedCampus === 'sparta' || requestedCampus === 'city') this.beciCampus = requestedCampus;
+    const requestedFellaCampus = this.route.snapshot.queryParamMap.get('fellaCampus');
+    if (requestedFellaCampus === 'campus1' || requestedFellaCampus === 'campus2') this.fellaCampus = requestedFellaCampus;
     this.loadSchools();
   }
 
@@ -240,7 +253,8 @@ export class AdminSchoolContentComponent implements OnInit {
       'cia', 'pines', 'monol', 'evacademy', '宿务ev', 'smeagcapital', 'philinter',
       'cgacademybanilad', 'cgacademysparta', 'cpi', 'bcebu', 'cpils',
       'globallanguagecebu', '宿务glc', 'ibreeze', 'anjeedu', 'imsacademy', '宿务ims', 'beci', 'jic',
-      'iuenglishacademy', 'iclenglishacademy',
+      'iuenglishacademy', 'iclenglishacademy', 'cellaunisparta', 'cellapremium', 'englishfella',
+      'btes', 'brainytutelage', 'cebublueocean', 'targetglobalenglish', 'wales',
     ].some(token => name.includes(token));
   }
 
@@ -335,17 +349,39 @@ export class AdminSchoolContentComponent implements OnInit {
     return (this.selectedSchool?.name.toLowerCase() ?? '').includes('icl english academy');
   }
 
+  get isCellaUniSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('cella') && (name.includes('uni') || name.includes('sparta'));
+  }
+
+  get isCellaPremiumSelected(): boolean {
+    const name = this.selectedSchool?.name.toLowerCase() ?? '';
+    return name.includes('cella') && name.includes('premium');
+  }
+
+  get isFellaSelected(): boolean {
+    return (this.selectedSchool?.name.toLowerCase() ?? '').includes('english fella');
+  }
+  get isBtesSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('btes')||n.includes('brainy tutelage'); }
+  get isBlueOceanSelected(): boolean { return (this.selectedSchool?.name.toLowerCase()??'').includes('cebu blue ocean'); }
+  get isTargetSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('target')&&n.includes('english'); }
+  get isWalesSelected(): boolean { return (this.selectedSchool?.name.toLowerCase()??'').includes('wales'); }
+
   get visibleCourses(): CiaCourseContent[] {
-    return this.isBeciSelected ? this.content.courses.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.courses;
+    if (this.isBeciSelected) return this.content.courses.filter(item => (item.campus ?? 'eop') === this.beciCampus);
+    if (this.isFellaSelected) return this.content.courses.filter(item => !item.campus || item.campus === 'both' || item.campus === this.fellaCampus);
+    return this.content.courses;
   }
 
   get visibleRooms(): CiaRoomContent[] {
-    return this.isBeciSelected ? this.content.rooms.filter(item => (item.campus ?? 'eop') === this.beciCampus) : this.content.rooms;
+    if (this.isBeciSelected) return this.content.rooms.filter(item => (item.campus ?? 'eop') === this.beciCampus);
+    if (this.isFellaSelected) return this.content.rooms.filter(item => !item.campus || item.campus === 'both' || item.campus === this.fellaCampus);
+    return this.content.rooms;
   }
 
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected; }
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected; }
   get schoolCode(): CiaContentConfig['schoolCode'] {
-    return this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
+    return this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'BLUE-OCEAN' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? 'FELLA' : this.isCellaPremiumSelected ? 'CELLA-PREMIUM' : this.isCellaUniSelected ? 'CELLA-UNI' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
   }
   get schoolShortName(): string { return this.schoolCode; }
   get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
@@ -356,6 +392,13 @@ export class AdminSchoolContentComponent implements OnInit {
   get supportsShortStay(): boolean { return !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isGlcSelected; }
   get currentPublicPath(): string {
+    if (this.isWalesSelected) return this.publicWalesPath;
+    if (this.isTargetSelected) return this.publicTargetPath;
+    if (this.isBlueOceanSelected) return this.publicBlueOceanPath;
+    if (this.isBtesSelected) return this.publicBtesPath;
+    if (this.isFellaSelected) return this.publicFellaPath;
+    if (this.isCellaPremiumSelected) return this.publicCellaPremiumPath;
+    if (this.isCellaUniSelected) return this.publicCellaUniPath;
     if (this.isIclSelected) return this.publicIclPath;
     if (this.isIuSelected) return this.publicIuPath;
     if (this.isJicSelected) return this.publicJicPath;
@@ -409,13 +452,13 @@ export class AdminSchoolContentComponent implements OnInit {
     }
     if (this.isSupportedSchool) {
       this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-        `${this.currentPublicPath}?contentPreview=1`,
+        `${this.currentPublicPath}?contentPreview=1${this.isFellaSelected ? `&fellaCampus=${this.fellaCampus}` : ''}`,
       );
       this.loadEditor(school.id);
     } else {
       this.editor = undefined;
       this.statusKind = 'warning';
-      this.statusMessage = "目前已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG Banilad、CG斯巴达、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI 三校区、JIC、IU 与 ICL。这所学校会在价格和报价计算器核对完成后再接入。";
+      this.statusMessage = "目前统一后台已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI、JIC、IU、ICL、CELLA、English Fella、BTES、Cebu Blue Ocean、TARGET 与 WALES。这所学校尚未接入。";
       this.isLoading = false;
     }
   }
@@ -431,6 +474,16 @@ export class AdminSchoolContentComponent implements OnInit {
     this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.currentPublicPath}?contentPreview=1`);
     void this.router.navigate([], { relativeTo: this.route, queryParams: { campus }, queryParamsHandling: 'merge', replaceUrl: true });
     this.persistPreview();
+  }
+
+  selectFellaCampus(campus: 'campus1' | 'campus2'): void {
+    if (!this.isFellaSelected || this.fellaCampus === campus) return;
+    this.fellaCampus = campus;
+    this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
+    this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
+    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.currentPublicPath}?contentPreview=1&fellaCampus=${campus}`);
+    this.persistPreview();
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { fellaCampus: campus }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
   selectTab(tab: EditorTab): void {
@@ -1029,6 +1082,13 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   private createSelectedDefaults(): CiaContentConfig {
+    if (this.isWalesSelected) return createDefaultWalesContentConfig();
+    if (this.isTargetSelected) return createDefaultTargetContentConfig();
+    if (this.isBlueOceanSelected) return createDefaultBlueOceanContentConfig();
+    if (this.isBtesSelected) return createDefaultBtesContentConfig();
+    if (this.isFellaSelected) return createDefaultFellaContentConfig();
+    if (this.isCellaPremiumSelected) return createDefaultCellaContentConfig('premium');
+    if (this.isCellaUniSelected) return createDefaultCellaContentConfig('uni');
     if (this.isIclSelected) return createDefaultIclContentConfig();
     if (this.isIuSelected) return createDefaultIuContentConfig();
     if (this.isJicSelected) return createDefaultJicContentConfig();
@@ -1051,6 +1111,13 @@ export class AdminSchoolContentComponent implements OnInit {
   }
 
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    if (this.isWalesSelected) return cloneWalesContentConfig(value);
+    if (this.isTargetSelected) return cloneTargetContentConfig(value);
+    if (this.isBlueOceanSelected) return cloneBlueOceanContentConfig(value);
+    if (this.isBtesSelected) return cloneBtesContentConfig(value);
+    if (this.isFellaSelected) return cloneFellaContentConfig(value);
+    if (this.isCellaPremiumSelected) return cloneCellaContentConfig(value, 'premium');
+    if (this.isCellaUniSelected) return cloneCellaContentConfig(value, 'uni');
     if (this.isIclSelected) return cloneIclContentConfig(value);
     if (this.isIuSelected) return cloneIuContentConfig(value);
     if (this.isJicSelected) return cloneJicContentConfig(value);

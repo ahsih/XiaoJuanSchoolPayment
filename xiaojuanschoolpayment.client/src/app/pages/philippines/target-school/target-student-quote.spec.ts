@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
@@ -111,7 +112,7 @@ describe('TARGET 2026 package quote', () => {
   });
 
   it('uses the CIA detailed image layout with TARGET content and complete footer notes', () => {
-    TestBed.configureTestingModule({ providers: [
+    TestBed.configureTestingModule({ providers: [provideHttpClient(),
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
     ] });
     const component = TestBed.runInInjectionContext(() => new TargetSchoolComponent());
@@ -141,7 +142,7 @@ describe('TARGET 2026 package quote', () => {
   });
 
   it('hides an inapplicable cash discount from the image but keeps every zero-value local-fee detail', () => {
-    TestBed.configureTestingModule({ providers: [
+    TestBed.configureTestingModule({ providers: [provideHttpClient(),
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
     ] });
     const component = TestBed.runInInjectionContext(() => new TargetSchoolComponent());
@@ -165,7 +166,7 @@ describe('TARGET 2026 package quote', () => {
   it('renders the complete TARGET quote image as a valid dynamic-height PNG', async () => {
     TestBed.configureTestingModule({
       imports: [QuoteImageDownloadButtonComponent],
-      providers: [{ provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
+      providers: [provideHttpClient(), { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
     });
     const school = TestBed.runInInjectionContext(() => new TargetSchoolComponent());
     const renderer = TestBed.createComponent(QuoteImageDownloadButtonComponent).componentInstance;
@@ -187,7 +188,7 @@ describe('TARGET 2026 package quote', () => {
   it('supports 2–20 students, retains inactive edits and renders the full group image', async () => {
     TestBed.configureTestingModule({
       imports: [QuoteImageDownloadButtonComponent],
-      providers: [{ provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
+      providers: [provideHttpClient(), { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
     });
     const component = TestBed.runInInjectionContext(() => new TargetSchoolComponent());
     component.setQuoteMode('group');

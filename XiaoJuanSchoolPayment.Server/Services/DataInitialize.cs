@@ -2050,8 +2050,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "每名注册学生一次性收取；绝不参加学校活动、思达95折或返校减免", now);
-      UpsertFee(context, schoolId, "IMS 2+2达人活动", 0m, UsdCurrencyId, "淡季完整连续4周段按明确2周课程价与2周住宿价收费；同一次连续学习最多一次；1月及6–8月不适用；须完成学校社交媒体要求", now);
-      UpsertFee(context, schoolId, "IMS淡季立减", 300m, UsdCurrencyId, "总学习期至少12周；每个符合淡季月份的连续4周段减300美元；同一段不能与2+2叠加", now);
+      UpsertFee(context, schoolId, "IMS 2+2达人活动", 0m, UsdCurrencyId, "仅首个淡季完整连续4周段可手动选择，按明确2周课程价与2周住宿价收费；同一次连续学习最多一次；1月及6–8月不适用；须完成学校社交媒体要求", now);
+      UpsertFee(context, schoolId, "IMS淡季立减", 300m, UsdCurrencyId, "每个符合淡季月份的完整连续4周段自动减300美元，无需手动选择且不要求总学习期达到12周；手动改选2+2的同一段不重复减免", now);
       UpsertFee(context, schoolId, "IMS长期优惠", 0m, UsdCurrencyId, "按2+2折算后的付费课程周数一次性从课程费减免：8–11周50、12–15周100、16–19周200、20–23周300、24–27周400美元", now);
       UpsertFee(context, schoolId, "思达课程住宿95折", 5m, UsdCurrencyId, "学校活动与固定减免后，仅对剩余课程费和住宿费减5%；内部佣金不在公开页面或图片展示", now);
       UpsertFee(context, schoolId, "SSP", 8000m, PhpCurrencyId, "2026/07/01起当地费用；强制费用", now);

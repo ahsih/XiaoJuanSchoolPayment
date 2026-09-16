@@ -10,7 +10,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
-import { applySchoolQuoteImageLayout, QuotePlanRow } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, QuotePlanRow } from '../../../components/school-quote-plan';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
@@ -833,8 +833,9 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       optionalFeeItems: this.optionalFeeItems,
       ruleNotes: [],
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.currentContentConfig.quoteSettings.promotions, this.currentContentConfig.localFees);
     const result = applySchoolQuoteImageLayout({
-      ...quote,
+      ...editedQuote,
       importantNotes: [...warnings, ...this.priceYearWarnings, ...settings.footerNotes],
     }, 'A&J', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
     return {

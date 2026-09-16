@@ -14,7 +14,7 @@ import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
-import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
 import { EvStudentCalculator, evPriceMultiplier } from './ev-quote';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
@@ -857,7 +857,8 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       ruleNotes: [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes],
     });
     const importantNotes = [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'EV主校区', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'EV主校区', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,

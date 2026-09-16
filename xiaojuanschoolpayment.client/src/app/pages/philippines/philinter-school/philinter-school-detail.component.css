@@ -130,8 +130,98 @@
 :host(.philinter-editor-preview) [data-cia-preview-kind] { cursor: pointer; }
 :host(.philinter-editor-preview) .cia-preview-highlight { position: relative; z-index: 1; outline: 3px solid #ff5a1f; outline-offset: -3px; box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.14); }
 :host .mobile-fee-hint, :host .mobile-fee-total { display: none; }
+:host .philinter-holiday-section {
+  padding: clamp(24px, 4vw, 42px);
+  border: 1px solid #d8e6e1;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #f7fbf9 0%, #fff9f2 100%);
+}
+:host .philinter-holiday-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(320px, 1.1fr);
+  gap: clamp(24px, 4vw, 46px);
+  align-items: start;
+}
+:host .philinter-holiday-poster {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #d9e2ea;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(9, 32, 71, 0.12);
+}
+:host .philinter-holiday-poster app-expandable-image {
+  --expandable-image-radius: 14px 14px 0 0;
+}
+:host .philinter-holiday-poster figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 14px;
+  color: #405269;
+  font-size: 13px;
+  font-weight: 750;
+}
+:host .philinter-holiday-poster figcaption mat-icon {
+  width: 19px;
+  height: 19px;
+  color: #087343;
+  font-size: 19px;
+}
+:host .philinter-holiday-notes {
+  display: grid;
+  gap: 14px;
+}
+:host .holiday-note {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #dce9e4;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+}
+:host .holiday-note > mat-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e4f3ed;
+  color: #087343;
+  font-size: 22px;
+}
+:host .holiday-note h3 {
+  margin: 0 0 6px;
+  color: #10233b;
+  font-size: 17px;
+}
+:host .holiday-note p,
+:host .holiday-source-note {
+  margin: 0;
+  color: #526176;
+  line-height: 1.7;
+}
+:host .holiday-note--important {
+  border-color: #f0c3b1;
+  background: #fff8f4;
+}
+:host .holiday-note--important > mat-icon {
+  background: #ffe6dc;
+  color: #e94f16;
+}
+:host .holiday-source-note {
+  padding: 14px 16px;
+  border-left: 4px solid #f3b22f;
+  border-radius: 8px;
+  background: #fffaf0;
+  font-size: 13px;
+}
 @media (max-width: 760px) {
   :host .philinter-stay-policy-grid { grid-template-columns: 1fr; }
+  :host .philinter-holiday-section { padding: 22px 16px; }
+  :host .philinter-holiday-layout { grid-template-columns: minmax(0, 1fr); }
   :host .mobile-fee-hint { display: block; color: #526176; font-size: 13px; }
   :host .mobile-fee-total { display: grid; gap: 6px; padding: 16px 0; color: #526176; }
   :host .mobile-fee-total strong { color: #e94f16; font-size: 24px; }

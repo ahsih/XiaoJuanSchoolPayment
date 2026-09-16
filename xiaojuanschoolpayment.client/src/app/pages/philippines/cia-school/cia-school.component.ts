@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { CiaStudentQuote, ciaPriceMultiplier } from './cia-student-quote';
@@ -3088,8 +3088,9 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       localFeeNote:this.quoteImageSettings.localFeeIntro,
       optionalFeeItems:this.optionalFeeItems.map(fee=>({...fee,note:this.quoteImageLocalFeeNote(fee.label,fee.note)})), ruleNotes:[],
     });
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotions, this.localFeeRules);
     const result = applySchoolQuoteImageLayout({
-      ...quote, totalNote:this.iauRegistrationFeeNote, expandTotalNote:true,
+      ...editedQuote, totalNote:this.iauRegistrationFeeNote, expandTotalNote:true,
       paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,
       localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle:this.quoteImageSettings.serviceSectionTitle,

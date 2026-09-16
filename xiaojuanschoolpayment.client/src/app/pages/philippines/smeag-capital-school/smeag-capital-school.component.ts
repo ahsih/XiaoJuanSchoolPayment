@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { SchoolQuotePlan, QuotePlanRow, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import {
@@ -1234,7 +1234,8 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     const ageNotes = this.activeStudents.map((student, index) => student.selectedAgeGroup === 'minor' ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}未成年学生按所选课程收费，入学及监护要求须顾问确认。` : '').filter(Boolean);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.quotePlan.shortStayNotes(weeks => this.durationPriceMultiplier(weeks))))];
     const importantNotes = [...mismatchNotes, ...ageNotes, ...shortNotes, ...this.quoteImageSettings.footerNotes];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'SMEAG Capital', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'SMEAG Capital', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,

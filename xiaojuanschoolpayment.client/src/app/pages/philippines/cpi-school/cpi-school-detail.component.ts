@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { SchoolQuotePlan, QuotePlanRow, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
@@ -781,7 +781,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const settings = this.quoteImageSettings;
     const extraClassRule = this.promotionRule('cpi-extra-class');
     const paymentItems = [
-      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration || this.schoolPaymentItems[0].note },
+      { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration ?? this.schoolPaymentItems[0].note },
       ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({
         ...item,
         label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${item.label.replace(/^课程费/, '课程').replace(/^住宿费/, '住宿')}`,
@@ -815,7 +815,8 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const juniorNotes = this.activeStudents.flatMap((student, index) => student.quotePlan.courses.some(row => row.optionId === 'junior-6-15') ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}青少年课程说明：${this.juniorCourseNote}。`] : []);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks])))];
     const importantNotes = [...mismatchNotes, ...ageNotes, ...juniorNotes, ...shortNotes, ...settings.footerNotes];
-    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, 'CPI', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPI', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,

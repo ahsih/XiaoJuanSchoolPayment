@@ -82,9 +82,16 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
   quoteImageSettings: {
     paymentSectionTitle: '学校费用明细',
     paymentNotes: { registration: '一次性费用，老学员返校免费', course: '按所选课程、周数及日期计算', accommodation: '按所选房型、周数及日期计算', promotion: '优惠按当前有效规则自动计算' },
+    promotionNotes: {
+      'philinter-sida-90': '课程费及住宿费按思达启航9折计算。',
+      'philinter-low-season': '活动日期：2026/08/16–2026/12/25；指定课程及房型每满8周减300美元。',
+    },
     localFeeSectionTitle: '到校后学杂费明细',
     localFeeIntro: '学杂费由学校及相关部门到校收取；页面按当前选择预估，最终以学校现场实收为准。',
     localFeeNotes: {},
+    supplementalFeeNotes: {
+      'extra-night-0': '3,000比索／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。',
+    },
     serviceSectionTitle: '为什么选择思达启航？',
     benefits: [
       { title: '0中介费', text: '学校合作价格，不额外加收服务费' },
@@ -110,6 +117,10 @@ export const clonePhilinterContentConfig = (value: CiaContentConfig): CiaContent
   clone.quoteSettings.stayPolicies ??= defaults.quoteSettings.stayPolicies.map(item => ({ ...item }));
   clone.quoteSettings.extraNightRates ??= defaults.quoteSettings.extraNightRates.map(item => ({ ...item }));
   clone.quoteImageSettings ??= structuredClone(defaults.quoteImageSettings);
+  clone.quoteImageSettings.paymentNotes = { ...defaults.quoteImageSettings.paymentNotes, ...(clone.quoteImageSettings.paymentNotes ?? {}) };
+  clone.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(clone.quoteImageSettings.promotionNotes ?? {}) };
+  clone.quoteImageSettings.localFeeNotes = { ...defaults.quoteImageSettings.localFeeNotes, ...(clone.quoteImageSettings.localFeeNotes ?? {}) };
+  clone.quoteImageSettings.supplementalFeeNotes = { ...defaults.quoteImageSettings.supplementalFeeNotes, ...(clone.quoteImageSettings.supplementalFeeNotes ?? {}) };
   clone.localFees ??= defaults.localFees.map(item => ({ ...item }));
   clone.media ??= [];
   return clone;

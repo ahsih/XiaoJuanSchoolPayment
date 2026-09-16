@@ -14,6 +14,12 @@
     <button type="button" [class.active]="beciCampus === 'city'" (click)="selectBeciCampus('city')">City</button>
     <span>文字说明共用，右侧金额按所选校区生成。</span>
   </section>
+  <section class="beci-campus-switch" *ngIf="isFellaSelected">
+    <strong>报价图片预览校区</strong>
+    <button type="button" [class.active]="fellaCampus === 'campus1'" (click)="selectFellaCampus('campus1')">第一校区</button>
+    <button type="button" [class.active]="fellaCampus === 'campus2'" (click)="selectFellaCampus('campus2')">第二校区</button>
+    <span>两个校区的图片说明分别保存。</span>
+  </section>
   <p class="status" *ngIf="statusMessage" [class.error]="statusKind === 'error'">{{ statusMessage }}</p>
   <div class="loading" *ngIf="isLoading">正在加载报价图片设置…</div>
   <section class="unsupported" *ngIf="selectedSchool && !isSupportedSchool">{{ statusMessage }}</section>
@@ -76,10 +82,24 @@
           <div><strong>住宿名称</strong><small>日期、房型和金额由报价计算器自动生成</small></div>
           <label>说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.accommodation" maxlength="300" placeholder="可留空；例如：房型与空房以学校最终确认为准"></textarea></label>
         </div>
-        <div class="row-note">
-          <div><strong>优惠／附加费</strong><small>优惠名称、金额与适用条件自动保留</small></div>
-          <label>补充说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.promotion" maxlength="300" placeholder="可留空；例如：优惠资格以学校最终确认为准"></textarea></label>
-        </div>
+        <ng-container *ngIf="imagePromotionRows.length; else genericPromotionNote">
+          <div class="row-note" *ngFor="let promotion of imagePromotionRows">
+            <div><strong>{{ promotion.name }}</strong><small>优惠金额由报价计算器自动生成；这里可完整修改图片说明</small></div>
+            <label>报价图片说明<textarea rows="2" [ngModel]="promotionImageNote(promotion)" (ngModelChange)="setPromotionImageNote(promotion.id, $event)" maxlength="400"></textarea></label>
+          </div>
+        </ng-container>
+        <ng-template #genericPromotionNote>
+          <div class="row-note">
+            <div><strong>优惠／附加费</strong><small>优惠名称、金额与适用条件自动保留</small></div>
+            <label>补充说明<textarea rows="2" [(ngModel)]="settings.paymentNotes.promotion" maxlength="300" placeholder="可留空；例如：优惠资格以学校最终确认为准"></textarea></label>
+          </div>
+        </ng-template>
+        <ng-container *ngFor="let item of supplementalNoteRows">
+          <div class="row-note" *ngIf="item.section === '学校费用'">
+            <div><strong>{{ item.label }}</strong><small>金额和适用条件由报价计算器生成；这里可完整修改图片说明</small></div>
+            <label>报价图片说明<textarea rows="2" [ngModel]="supplementalFeeImageNote(item.id, item.fallback)" (ngModelChange)="setSupplementalFeeImageNote(item.id, $event)" maxlength="400"></textarea></label>
+          </div>
+        </ng-container>
       </article>
 
       <article id="image-section-02">
@@ -92,8 +112,17 @@
             <span>{{ i + 1 }}</span>
             <div><strong>{{ fee.name }}</strong><small>{{ feeBillingText(fee) }}</small></div>
           </div>
-          <label>图片备注<textarea rows="2" [(ngModel)]="settings.localFeeNotes[fee.id]" maxlength="400"></textarea></label>
+          <label>图片备注<textarea rows="2" [ngModel]="localFeeImageNote(fee)" (ngModelChange)="setLocalFeeImageNote(fee.id, $event)" maxlength="400"></textarea></label>
         </div>
+        <ng-container *ngFor="let item of supplementalNoteRows">
+          <div class="fee-note" *ngIf="item.section === '参考费用'">
+            <div class="fee-name">
+              <span>＋</span>
+              <div><strong>{{ item.label }}</strong><small>金额按当前报价规则显示；这里可完整修改图片备注</small></div>
+            </div>
+            <label>图片备注<textarea rows="2" [ngModel]="supplementalFeeImageNote(item.id, item.fallback)" (ngModelChange)="setSupplementalFeeImageNote(item.id, $event)" maxlength="400"></textarea></label>
+          </div>
+        </ng-container>
       </article>
 
       <article id="image-section-03">

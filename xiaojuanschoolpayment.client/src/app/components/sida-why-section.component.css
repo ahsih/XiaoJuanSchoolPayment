@@ -272,3 +272,312 @@
     border-top: 1px solid #dde7ec;
   }
 }
+
+/* Detailed layout mirrors the current CIA service-guarantee section. */
+.sida-cia-section {
+  margin-top: 38px;
+}
+
+.sida-cia-heading {
+  max-width: 860px;
+  margin: 0 auto 24px;
+  color: #0a432f;
+  text-align: center;
+}
+
+.sida-cia-heading span {
+  display: block;
+  margin-bottom: 10px;
+  color: #173b2d;
+  font-size: 17px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.sida-cia-heading h2 {
+  margin: 0;
+  color: #06422e;
+  font-size: 44px;
+  font-weight: 950;
+  line-height: 1.18;
+}
+
+.sida-cia-heading p {
+  margin: 14px 0 0;
+  color: #394453;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.sida-cia-gratitude {
+  display: grid;
+  grid-template-columns: minmax(360px, .9fr) minmax(0, 1.1fr);
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #d7e2e7;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fffdf8 0%, #f3faf6 100%);
+  box-shadow: 0 10px 26px rgba(20, 34, 49, .05);
+}
+
+.sida-cia-main-photo {
+  position: relative;
+  min-height: 350px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #e9f0ec;
+}
+
+.sida-cia-main-photo img,
+.sida-cia-reason-grid img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sida-cia-main-photo figcaption {
+  position: absolute;
+  inset: auto 18px 18px;
+  padding: 12px 15px;
+  border-radius: 6px;
+  background: rgba(4, 66, 46, .9);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.sida-cia-gratitude-content {
+  display: grid;
+  align-content: center;
+  padding: 34px 38px;
+}
+
+.sida-cia-gratitude-heading {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.sida-cia-gratitude-heading > span {
+  display: grid;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ff6a2b;
+  color: #fff;
+}
+
+.sida-cia-gratitude-heading small,
+.sida-cia-gratitude-heading strong {
+  display: block;
+}
+
+.sida-cia-gratitude-heading small {
+  color: #cf571d;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.sida-cia-gratitude-heading strong {
+  margin-top: 5px;
+  color: #06422e;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.sida-cia-gratitude-content blockquote {
+  margin: 24px 0 0;
+  color: #4e321f;
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1.8;
+}
+
+.sida-cia-gratitude-content > p {
+  margin: 14px 0 0;
+  color: #586772;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.sida-cia-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.sida-cia-values span {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 9px 12px;
+  border: 1px solid #dce8e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #174b39;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sida-cia-values mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.sida-cia-reason-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.sida-cia-reason-grid article {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  min-height: 120px;
+  overflow: hidden;
+  border: 1px solid #dfe7ed;
+  border-radius: 7px;
+  background: #fff;
+}
+
+.sida-cia-reason-grid article > div {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-content: center;
+  column-gap: 9px;
+  padding: 14px 16px;
+}
+
+.sida-cia-reason-grid span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #06422e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.sida-cia-reason-grid h3 {
+  align-self: center;
+  margin: 0;
+  color: #063f2c;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1.35;
+}
+
+.sida-cia-reason-grid p {
+  grid-column: 1 / -1;
+  margin: 12px 0 0;
+  color: #536174;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.65;
+}
+
+.sida-cia-trust-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 14px;
+  border: 1px solid #dde7ec;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sida-cia-trust-bar article {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  padding: 12px 18px;
+  color: #073f2d;
+}
+
+.sida-cia-trust-bar article + article { border-left: 1px solid #dde7ec; }
+.sida-cia-trust-bar mat-icon { width: 34px; height: 34px; color: #06422e; font-size: 34px; }
+.sida-cia-trust-bar strong { color: #073f2d; font-size: 17px; font-weight: 950; line-height: 1.35; }
+
+.sida-cia-alumni-benefits {
+  margin-top: 18px;
+  padding: 24px;
+  border: 1px solid #cfe2d9;
+  border-radius: 12px;
+  background: radial-gradient(circle at 100% 0, rgba(255, 190, 79, .18), transparent 32%), linear-gradient(135deg, #f1faf6 0%, #fffaf2 100%);
+}
+
+.sida-cia-alumni-heading { display: flex; align-items: center; gap: 14px; }
+.sida-cia-alumni-heading > span { display: grid; width: 52px; height: 52px; flex: 0 0 52px; place-items: center; border-radius: 50%; background: #ff6a2a; color: #fff; box-shadow: 0 10px 22px rgba(255, 106, 42, .2); }
+.sida-cia-alumni-heading mat-icon { width: 27px; height: 27px; font-size: 27px; }
+.sida-cia-alumni-heading small { display: block; color: #db541d; font-size: 12px; font-weight: 900; letter-spacing: .08em; }
+.sida-cia-alumni-heading h3 { margin: 3px 0 0; color: #073f2d; font-size: clamp(22px, 2vw, 28px); line-height: 1.2; }
+.sida-cia-alumni-heading p { margin: 6px 0 0; color: #596778; font-size: 14px; line-height: 1.55; }
+
+.sida-cia-alumni-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.sida-cia-alumni-grid article { position: relative; display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; min-width: 0; padding: 20px 18px; border: 1px solid rgba(7, 63, 45, .13); border-radius: 10px; background: rgba(255, 255, 255, .88); box-shadow: 0 8px 22px rgba(27, 57, 48, .06); }
+.sida-cia-alumni-grid article > span { position: absolute; top: 10px; right: 12px; color: rgba(7, 63, 45, .22); font-size: 13px; font-weight: 950; }
+.sida-cia-alumni-grid mat-icon { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 10px; background: #e7f5ef; color: #087b58; font-size: 23px; }
+.sida-cia-alumni-grid strong { display: block; padding-right: 18px; color: #073f2d; font-size: 17px; font-weight: 950; line-height: 1.35; }
+.sida-cia-alumni-grid p { margin: 7px 0 0; color: #536174; font-size: 14px; line-height: 1.6; }
+.sida-cia-alumni-note { display: block; margin-top: 14px; color: #687587; font-size: 12px; line-height: 1.55; }
+
+@media (max-width: 1160px) {
+  .sida-cia-gratitude { grid-template-columns: 1fr; }
+  .sida-cia-main-photo { min-height: 330px; }
+  .sida-cia-reason-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1040px) {
+  .sida-cia-alumni-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sida-cia-alumni-grid article:last-child { grid-column: 1 / -1; }
+  .sida-cia-trust-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sida-cia-trust-bar article + article { border-left: 0; }
+  .sida-cia-trust-bar article:nth-child(even) { border-left: 1px solid #dde7ec; }
+  .sida-cia-trust-bar article:nth-child(n + 3) { border-top: 1px solid #dde7ec; }
+}
+
+@media (max-width: 760px) {
+  .sida-cia-section { margin-top: 30px; }
+  .sida-cia-heading { margin-bottom: 18px; text-align: left; }
+  .sida-cia-heading span { margin-bottom: 8px; font-size: 14px; }
+  .sida-cia-heading h2 { font-size: 31px; }
+  .sida-cia-heading p { font-size: 16px; line-height: 1.65; }
+  .sida-cia-gratitude { padding: 8px; }
+  .sida-cia-main-photo { min-height: 245px; }
+  .sida-cia-gratitude-content { padding: 24px 18px; }
+  .sida-cia-gratitude-heading strong { font-size: 19px; }
+  .sida-cia-gratitude-content blockquote { font-size: 16px; }
+  .sida-cia-reason-grid { grid-template-columns: 1fr; }
+  .sida-cia-reason-grid article { grid-template-columns: 106px minmax(0, 1fr); min-height: 128px; }
+  .sida-cia-reason-grid article > div { padding: 13px 14px; }
+  .sida-cia-reason-grid span { width: 28px; height: 28px; font-size: 12px; }
+  .sida-cia-reason-grid h3 { font-size: 16px; }
+  .sida-cia-reason-grid p { margin-top: 9px; font-size: 14px; line-height: 1.55; }
+  .sida-cia-alumni-benefits { padding: 20px 16px; }
+  .sida-cia-alumni-grid { grid-template-columns: 1fr; }
+  .sida-cia-alumni-grid article:last-child { grid-column: auto; }
+  .sida-cia-alumni-heading { align-items: flex-start; }
+  .sida-cia-alumni-heading > span { width: 44px; height: 44px; flex-basis: 44px; }
+  .sida-cia-alumni-grid article { padding: 17px 15px; }
+  .sida-cia-trust-bar strong { font-size: 15px; }
+}
+
+@media (max-width: 430px) {
+  .sida-cia-reason-grid article { grid-template-columns: 92px minmax(0, 1fr); }
+  .sida-cia-trust-bar { grid-template-columns: 1fr; }
+  .sida-cia-trust-bar article:nth-child(even) { border-left: 0; }
+  .sida-cia-trust-bar article:nth-child(n + 2) { border-top: 1px solid #dde7ec; }
+}

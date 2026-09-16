@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { catchError, EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import {
@@ -25,6 +27,8 @@ import {
   BtesRoom,
 } from './btes-pricing';
 import { BtesStudentQuote } from './btes-student-quote';
+import { cloneBtesContentConfig, createDefaultBtesContentConfig } from '../remaining-content-config';
+import { connectUnifiedSchoolContent, notifyUnifiedPreviewLocated, notifyUnifiedPreviewReady, unifiedPreviewContent } from '../unified-school-content-bridge';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '生活';
 
@@ -74,12 +78,15 @@ interface SideNavItem {
     './btes-school.component.css',
   ],
 })
-export class BtesSchoolComponent implements OnInit {
+export class BtesSchoolComponent implements OnInit, AfterViewInit {
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly schoolService = inject(SchoolService);
+  private readonly contentService = inject(SchoolContentService);
+  private contentConfig = createDefaultBtesContentConfig();
 
-  readonly courses = BTES_COURSES;
-  readonly rooms = BTES_ROOMS;
-  readonly roomOptions = this.rooms.filter((room) => !room.walkIn);
+  readonly courses = BTES_COURSES.map(course => ({ ...course }));
+  readonly rooms = BTES_ROOMS.map(room => ({ ...room }));
+  get roomOptions() { return this.rooms.filter((room) => !room.walkIn); }
   readonly weekOptions = BTES_WEEK_OPTIONS;
   readonly registrationFee = BTES_REGISTRATION_FEE;
   readonly sidaDiscountRate = BTES_SIDA_DISCOUNT_RATE;
@@ -187,7 +194,24 @@ export class BtesSchoolComponent implements OnInit {
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
   ];
 
-  ngOnInit(): void { this.loadExchangeRate(); }
+  ngOnInit(): void {
+    this.loadExchangeRate();
+    connectUnifiedSchoolContent({
+      code: 'BTES', schoolService: this.schoolService, contentService: this.contentService,
+      matchesSchool: name => /btes|brainy tutelage/i.test(name), clone: cloneBtesContentConfig,
+      apply: content => this.applyContentConfig(content),
+    });
+  }
+
+  ngAfterViewInit(): void { notifyUnifiedPreviewReady('BTES'); }
+
+  @HostListener('window:message', ['$event'])
+  onContentPreviewMessage(event: MessageEvent): void {
+    const content = unifiedPreviewContent(event, 'BTES');
+    if (!content) return;
+    this.applyContentConfig(cloneBtesContentConfig(content));
+    notifyUnifiedPreviewLocated('BTES', event.data?.target);
+  }
 
   private loadExchangeRate(): void {
     this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
@@ -258,14 +282,14 @@ export class BtesSchoolComponent implements OnInit {
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
-    return [
+    return applyEditableQuotePaymentItems([
       {
         icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.length * this.registrationFee)} 美元`,
         note: '一次性100美元／人；老学员免费，ALL IN ONE套餐已经包含。',
       },
       ...this.planPaymentItems,
       ...groupPaymentLines(this.activeStudents, false),
-    ];
+    ], this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions);
   }
 
   get planPaymentItems(): QuoteImagePaymentItem[] {
@@ -376,7 +400,7 @@ export class BtesSchoolComponent implements OnInit {
       this.schoolPaymentItems[0],
       ...this.planPaymentItems,
       ...groupPaymentLines(this.activeStudents.map((student) => ({ paymentLines: student.applicablePaymentLines })), true),
-    ];
+    ].map(item => ({ ...item, note: item.icon === '注' ? this.contentConfig.quoteImageSettings.paymentNotes.registration : item.icon === '课' ? this.contentConfig.quoteImageSettings.paymentNotes.course : item.icon === '宿' ? this.contentConfig.quoteImageSettings.paymentNotes.accommodation : item.note }));
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning
       ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`]
       : []);
@@ -417,7 +441,7 @@ export class BtesSchoolComponent implements OnInit {
         '当地费用按2026正式价目与当前选择估算；最终以学校、移民局、空房及正式账单为准。',
       ],
     }, 'BTES', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
-    return {
+    return applyEditableQuoteImageCopy({
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`,
@@ -426,7 +450,28 @@ export class BtesSchoolComponent implements OnInit {
         phpPerCny: this.phpPerCny,
         date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined,
       },
-    };
+      paymentSectionTitle: this.contentConfig.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.contentConfig.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.contentConfig.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.contentConfig.quoteImageSettings.benefits,
+      serviceLocations: this.contentConfig.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.contentConfig.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.contentConfig.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.contentConfig.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.contentConfig.quoteImageSettings.noteSectionTitle,
+      importantNotes: [...warnings, ...this.priceYearWarnings, ...this.contentConfig.quoteImageSettings.footerNotes],
+    }, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
+  }
+
+  private applyContentConfig(content: ReturnType<typeof createDefaultBtesContentConfig>): void {
+    this.contentConfig = content;
+    for (const course of this.courses) {
+      const edited = content.courses.find(item => item.id === course.id);
+      if (edited) Object.assign(course, { name: edited.name, lessons: edited.schedule, suitable: edited.suitable, note: edited.note });
+    }
+    for (const room of this.rooms) {
+      const edited = content.rooms.find(item => item.id === room.id);
+      if (edited) Object.assign(room, { name: edited.name, note: edited.note });
+    }
   }
 
   formatUsd(value: number): string {

@@ -1,5 +1,5 @@
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
-import { applySchoolQuoteImageLayout, quoteMoney, SchoolQuotePlan } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { QuoteImageCardData, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import type { CiaContentConfig, CiaLocalFeeRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 
@@ -217,6 +217,8 @@ export class IuIclQuote {
   }
 
   get quoteImageSettings(): CiaQuoteImageSettings | undefined { return this.contentConfig?.quoteImageSettings; }
+  get quoteImagePromotions() { return this.contentConfig?.quoteSettings.promotions ?? []; }
+  get quoteImageLocalFeeRules() { return this.contentConfig?.localFees ?? []; }
 
   private get lowSeasonRule() {
     return this.contentConfig?.quoteSettings.promotions.find(item => item.ruleKind === 'iu-icl-low-season');
@@ -416,7 +418,7 @@ export class IuIclQuote {
   formatImagePaymentItem(item: QuoteImagePaymentItem): QuoteImagePaymentItem {
     const settings = this.quoteImageSettings?.paymentNotes;
     if (!settings) return item;
-    const note = item.label === '注册费' ? settings.registration || item.note
+    const note = item.label === '注册费' ? settings.registration ?? item.note
       : item.label.includes('课程名称') ? [item.note, settings.course].filter(Boolean).join('；')
         : item.label.includes('住宿名称') ? [item.note, settings.accommodation].filter(Boolean).join('；')
           : item.accent ? [item.note, settings.promotion].filter(Boolean).join('；') : item.note;
@@ -458,8 +460,9 @@ export class IuIclQuote {
       '全部费用须在抵达前28天付清，注册费不退；取消与改期按校方政策执行。',
       '入学/入住按周日，结业/退房按周六。',
     ];
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.quoteImagePromotions, this.quoteImageLocalFeeRules);
     const result = applySchoolQuoteImageLayout({
-      ...quote,
+      ...editedQuote,
       hideAlumniBenefit: true,
       alumniBenefitItems: [],
       totalIncludedLabel: this.promoPairCount ? '校方淡季价已计入' : '按校方常规价计算',
@@ -583,7 +586,7 @@ export function buildIuIclGroupImageData(
   const eligibleCount = students.filter(student => student.promoPairCount > 0).length;
   const quoteDate = base.studentItems.find(item => item.label === '报价日期');
 
-  return {
+  const result: QuoteImageCardData = {
     ...base,
     headingText: `${campus} ${students.length}人报价`,
     title: `${students.length}人`,
@@ -622,4 +625,5 @@ export function buildIuIclGroupImageData(
       ],
     conversionRates: { usdToCny, phpPerCny, date: exchangeDate },
   };
+  return applyEditableQuoteImageCopy(result, students[0].quoteImageSettings, students[0].quoteImagePromotions, students[0].quoteImageLocalFeeRules);
 }

@@ -171,6 +171,11 @@ export class AdminComponent implements OnInit {
     return name.includes('a&jeedu') || name.includes('ajeedu') || name.includes('anjedu');
   }
 
+  isImsSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return name.includes('imsacademy') || name.includes('宿务ims');
+  }
+
   isBeciSchool(school: SchoolDTO): boolean {
     const name = this.normalizeSchoolName(school.name);
     return !this.isBCebuSchool(school) && name.includes('beci');
@@ -188,8 +193,21 @@ export class AdminComponent implements OnInit {
     return this.normalizeSchoolName(school.name).includes('iclenglishacademy');
   }
 
+  isCellaSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('cella');
+  }
+
+  isFellaSchool(school: SchoolDTO): boolean {
+    return this.normalizeSchoolName(school.name).includes('englishfella');
+  }
+
+  isRemainingQuoteSchool(school: SchoolDTO): boolean {
+    const name = this.normalizeSchoolName(school.name);
+    return ['btes', 'brainytutelage', 'cebublueocean', 'targetglobalenglish', 'wales'].some(token => name.includes(token));
+  }
+
   isUnifiedSchool(school: SchoolDTO): boolean {
-    return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school) || this.isIuSchool(school) || this.isIclSchool(school);
+    return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isImsSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school) || this.isIuSchool(school) || this.isIclSchool(school) || this.isCellaSchool(school) || this.isFellaSchool(school) || this.isRemainingQuoteSchool(school);
   }
 
   managementRoute(school: SchoolDTO): string {

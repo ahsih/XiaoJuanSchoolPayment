@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
@@ -13,6 +14,7 @@ describe('WalesSchoolDetailComponent shared group quote', () => {
     await TestBed.configureTestingModule({
       imports: [WalesSchoolDetailComponent],
       providers: [
+        provideHttpClient(),
         provideRouter([]),
         { provide: SchoolService, useValue: { getSchools: () => of([]) } },
         { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },

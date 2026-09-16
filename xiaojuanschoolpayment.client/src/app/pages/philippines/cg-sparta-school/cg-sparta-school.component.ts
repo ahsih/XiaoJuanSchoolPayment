@@ -11,7 +11,7 @@ import { ExchangeRateService } from '../../../../services/exchange-rate.service'
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { CgSpartaStudentQuote } from './cg-sparta-student-quote';
@@ -1185,7 +1185,8 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.webp',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
       localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:id==='books'?f.note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
     const importantNotes=[...warnings,...short,...prorated,...long,...this.quoteImageSettings.footerNotes];
-    const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
+    const editedQuote=applyEditableQuoteImageCopy(quote,this.quoteImageSettings,this.promotionRules,this.localFeeRules);
+    const result=applySchoolQuoteImageLayout({...editedQuote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
     return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
       paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle:this.quoteImageSettings.serviceSectionTitle,benefitItems:this.quoteImageSettings.benefits,

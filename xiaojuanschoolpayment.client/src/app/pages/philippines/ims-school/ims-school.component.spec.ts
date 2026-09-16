@@ -37,6 +37,22 @@ describe('ImsSchoolComponent', () => {
     expect(element.textContent).toContain('Junior ESL 9');
   });
 
+  it('uses the grouped CIA-style course, gallery and service hierarchy without repeated week labels', () => {
+    const fixture = TestBed.createComponent(ImsSchoolComponent);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelectorAll('.ims-course-choice-grid article').length).toBe(7);
+    expect(element.querySelector('#courses')?.textContent).not.toContain('可选周数：');
+    expect(element.querySelectorAll('.ims-gallery-album-grid > button').length).toBe(4);
+    expect(element.querySelectorAll('#service-process .sida-cia-reason-grid article').length).toBe(6);
+    expect(element.querySelector('#service-process h2')?.textContent).toContain('报名IMS Academy');
+
+    fixture.componentInstance.setGalleryCategory('校园');
+    fixture.detectChanges();
+    expect(element.querySelector('.ims-gallery-stage figcaption strong')?.textContent).toContain('IMS Banilad校园');
+  });
+
   it('uses the same totals and fee rows on the webpage and quote image', () => {
     const student = component.activeStudents[0];
     student.quotePlan.courses[0].startDate = '2026-09-06';
@@ -44,7 +60,6 @@ describe('ImsSchoolComponent', () => {
     student.quotePlan.courses[0].weeks = 12;
     student.quotePlan.rooms[0].weeks = 12;
     student.setPromotion(student.quotePlan.courses[0].id, 0, 'two-plus-two');
-    student.setPromotion(student.quotePlan.courses[0].id, 1, 'low-season-300');
 
     const image = component.quoteImageData;
     expect(image.totalUsd).toBe(component.formatUsd(component.quoteUsd));
@@ -52,6 +67,24 @@ describe('ImsSchoolComponent', () => {
     expect(image.localFeeItems?.map((item) => item.label)).toEqual(component.estimatedLocalFees.map((item) => item.item));
     expect(image.paymentItems.find((item) => item.label === 'IMS 2+2达人活动')?.note).toContain('明确2周价');
     expect(image.paymentItems.find((item) => item.label === '不可减免注册费')?.amount).toBe('100 美元');
+  });
+
+  it('shows only the first-block 2+2 choice and automatically applies later low-season blocks', () => {
+    const fixture = TestBed.createComponent(ImsSchoolComponent);
+    const renderedComponent = fixture.componentInstance;
+    const student = renderedComponent.activeStudents[0];
+    student.quotePlan.courses[0].startDate = '2026-09-06';
+    student.quotePlan.rooms[0].startDate = '2026-09-06';
+    student.quotePlan.courses[0].weeks = 8;
+    student.quotePlan.rooms[0].weeks = 8;
+    fixture.detectChanges();
+
+    const blocks = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.promotion-blocks article'));
+    expect(blocks.length).toBe(2);
+    expect(blocks[0].querySelector('select')?.textContent).toContain('手动选择2+2达人活动');
+    expect(blocks[1].querySelector('select')).toBeNull();
+    expect(blocks[1].textContent).toContain('已自动应用淡季立减300美元');
+    expect(student.lowSeasonDiscountAmount).toBe(600);
   });
 
   it('keeps inactive group edits but excludes them from current totals and image labels', () => {

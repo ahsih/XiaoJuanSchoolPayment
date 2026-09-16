@@ -43,7 +43,9 @@ export class QuoteImageInlinePreviewComponent implements AfterViewInit, OnChange
     this.busy = true;
     this.error = '';
     try {
-      const src = await this.renderer?.createPreviewDataUrl(.8);
+      // Keep the embedded employee preview compact enough for long, full-detail
+      // quotes. The downloadable customer image still uses its production scale.
+      const src = await this.renderer?.createPreviewDataUrl(.5);
       if (sequence === this.sequence && src) this.src = src;
     } catch {
       if (sequence === this.sequence) this.error = '报价图片预览暂时无法生成，请稍后重试。';

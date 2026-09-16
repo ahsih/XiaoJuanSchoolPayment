@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -861,7 +861,8 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes,
     });
     const importantNotes=[...warnings,...short,...this.quoteImageSettings.footerNotes];
-    const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG Banilad',this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
+    const editedQuote=applyEditableQuoteImageCopy(quote,this.quoteImageSettings,this.promotionRules,this.localFeeRules);
+    const result=applySchoolQuoteImageLayout({...editedQuote,importantNotes},'CG Banilad',this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
     return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
       paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle:this.quoteImageSettings.serviceSectionTitle,benefitItems:this.quoteImageSettings.benefits,

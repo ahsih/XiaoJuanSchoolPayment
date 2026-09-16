@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -9,6 +9,7 @@ import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import {
@@ -16,9 +17,11 @@ import {
   QuoteImageOptionalFeeItem,
   QuoteImagePaymentItem,
 } from '../../../components/quote-image-download-button.component';
-import { applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { WalesCoursePrice, WalesQuotePrices, WalesRoomPrice, WalesStudentQuote } from './wales-student-quote';
+import { cloneWalesContentConfig, createDefaultWalesContentConfig } from '../remaining-content-config';
+import { connectUnifiedSchoolContent, notifyUnifiedPreviewLocated, notifyUnifiedPreviewReady, unifiedPreviewContent } from '../unified-school-content-bridge';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -52,9 +55,11 @@ interface SidaWalesTrustBadge { icon: string; label: string; }
     './wales-school-detail.component.css',
   ],
 })
-export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
+export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQuotePrices {
   private readonly schoolService = inject(SchoolService);
+  private readonly contentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
+  private contentConfig = createDefaultWalesContentConfig();
   private readonly pricingSchoolSearchName = 'WALES';
   private readonly pricingSchoolNames = ['菲律宾碧瑶WALES语言学校', 'WALES Academy', 'Widest Asian Learners English School Inc.', 'WALES'];
   private readonly courseFeeOrder = [
@@ -274,6 +279,21 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
   ngOnInit(): void {
     this.loadPricingFromDatabase();
     this.loadExchangeRate();
+    connectUnifiedSchoolContent({
+      code: 'WALES', schoolService: this.schoolService, contentService: this.contentService,
+      matchesSchool: name => /wales|widest asian learners/i.test(name), clone: cloneWalesContentConfig,
+      apply: content => this.applyContentConfig(content),
+    });
+  }
+
+  ngAfterViewInit(): void { notifyUnifiedPreviewReady('WALES'); }
+
+  @HostListener('window:message', ['$event'])
+  onContentPreviewMessage(event: MessageEvent): void {
+    const content = unifiedPreviewContent(event, 'WALES');
+    if (!content) return;
+    this.applyContentConfig(cloneWalesContentConfig(content));
+    notifyUnifiedPreviewLocated('WALES', event.data?.target);
   }
 
   private loadExchangeRate(): void {
@@ -339,6 +359,7 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
 
     const registrationFee = fees.find((fee) => (fee.name === '注册费' || fee.name === '报名费') && fee.fee > 0);
     if (registrationFee) this.registrationFee = registrationFee.fee;
+    this.applyContentConfig(this.contentConfig);
   }
 
   setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
@@ -429,18 +450,19 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
-    return [
+    return applyEditableQuotePaymentItems([
       {
         icon: '注', label: '报名费', amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: `${this.registrationFee}美元／人；本次${this.activeStudents.length}人均计收。\n${this.studentProfileNotes.join('\n')}`,
+        note: this.contentConfig.quoteImageSettings.paymentNotes.registration,
       },
       ...(['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, studentIndex) =>
         student.quotePlan.paymentItems().filter((item) => item.icon === icon).map((item) => ({
           ...item,
           label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
+          note: icon === '课' ? this.contentConfig.quoteImageSettings.paymentNotes.course : this.contentConfig.quoteImageSettings.paymentNotes.accommodation,
         })))),
       ...groupPaymentLines(this.activeStudents, true),
-    ];
+    ], this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions);
   }
   get studentProfileNotes(): string[] {
     return this.activeStudents.map((student, index) =>
@@ -477,13 +499,22 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
       ...quote,
       importantNotes: this.quoteImageNotes,
     }, 'WALES', this.selectedWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
-    return {
+    return applyEditableQuoteImageCopy({
       ...result,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined },
       exchangeRateText: `${this.usingLiveExchangeRate ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索`,
-    };
+      paymentSectionTitle: this.contentConfig.quoteImageSettings.paymentSectionTitle,
+      localFeeTitle: this.contentConfig.quoteImageSettings.localFeeSectionTitle,
+      serviceSectionTitle: this.contentConfig.quoteImageSettings.serviceSectionTitle,
+      benefitItems: this.contentConfig.quoteImageSettings.benefits,
+      serviceLocations: this.contentConfig.quoteImageSettings.serviceLocations,
+      alumniBenefitTitle: this.contentConfig.quoteImageSettings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: this.contentConfig.quoteImageSettings.alumniBenefitTitle, subtitle: '', text: this.contentConfig.quoteImageSettings.alumniBenefitText }],
+      noteTitle: this.contentConfig.quoteImageSettings.noteSectionTitle,
+      importantNotes: [...this.quoteImageNotes.slice(0, -1), ...this.contentConfig.quoteImageSettings.footerNotes],
+    }, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
   }
 
   get quoteImageNotes(): string[] {
@@ -503,6 +534,18 @@ export class WalesSchoolDetailComponent implements OnInit, WalesQuotePrices {
 
   private statusLabel(student: WalesStudentQuote): string {
     return ({ new: '新生', current: 'WALES在校生', returning: 'WALES返校生' } as const)[student.studentStatus];
+  }
+
+  private applyContentConfig(content: ReturnType<typeof createDefaultWalesContentConfig>): void {
+    this.contentConfig = content;
+    this.courseFees = this.courseFees.map(course => {
+      const edited = content.courses.find(item => item.id === course.id);
+      return edited ? { ...course, name: edited.name, suitable: edited.suitable, note: edited.note } : course;
+    });
+    this.roomFees = this.roomFees.map(room => {
+      const edited = content.rooms.find(item => item.id === room.id);
+      return edited ? { ...room, name: edited.name, note: edited.note } : room;
+    });
   }
 
   formatUsd(value: number): string {

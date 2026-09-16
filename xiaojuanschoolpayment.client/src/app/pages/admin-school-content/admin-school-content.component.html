@@ -57,6 +57,13 @@
         <button type="button" [class.active]="beciCampus === 'city'" (click)="selectBeciCampus('city')">City 校区</button>
       </nav>
     </section>
+    <section class="campus-switcher" *ngIf="isFellaSelected" aria-label="English Fella校区选择">
+      <div><strong>先选择 English Fella 校区</strong><span>课程、住宿、预览和报价图片说明按校区分别编辑。</span></div>
+      <nav>
+        <button type="button" [class.active]="fellaCampus === 'campus1'" (click)="selectFellaCampus('campus1')">第一校区（斯巴达）</button>
+        <button type="button" [class.active]="fellaCampus === 'campus2'" (click)="selectFellaCampus('campus2')">第二校区（自律型／半斯巴达）</button>
+      </nav>
+    </section>
     <nav class="editor-tabs" aria-label="学校内容板块">
       <button *ngFor="let tab of tabs" type="button" [class.active]="activeTab === tab.id" (click)="selectTab(tab.id)">
         <mat-icon>{{ tab.icon }}</mat-icon>{{ tab.label }}

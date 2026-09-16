@@ -13,10 +13,11 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { PHILINTER_COURSES, PHILINTER_ROOMS } from './philinter-catalog';
 import { PHILINTER_AGE_RULE, PHILINTER_FAMILY_RULE, PHILINTER_PROMOTION, PhilinterStudentCalculator, philinterMultiplier } from './philinter-quote';
-import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { ExpandableImageComponent } from '../../../components/expandable-image.component';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
@@ -48,7 +49,7 @@ interface PhilinterStudentQuote { calculator: PhilinterStudentCalculator; }
 @Component({
   selector: 'app-philinter-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent, ExpandableImageComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './philinter-school-detail.component.html',
   styleUrls: [
@@ -299,6 +300,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
+    { label: '2027年假期', target: 'holidays-2027', icon: 'event_busy' },
     { label: '报名流程', target: 'service-process', icon: 'task_alt' },
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];
@@ -308,7 +310,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     { label: '环境', target: 'gallery', icon: 'image' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '费用', target: 'quote', icon: 'calculate' },
-    { label: '服务', target: 'service-process', icon: 'support_agent' },
+    { label: '假期', target: 'holidays-2027', icon: 'event_busy' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
@@ -567,6 +569,22 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   }
   get quoteImageData() {
     const items = this.schoolPaymentItems;
+    const sidaRule = this.promotionRules.find(item => item.id === 'philinter-sida-90' && item.enabled);
+    const lowSeasonRule = this.promotionRules.find(item => item.id === 'philinter-low-season' && item.enabled);
+    const sidaRate = sidaRule?.discountType === 'percentage'
+      ? `${Number(((100 - sidaRule.discountValue) / 10).toFixed(1))}折`
+      : '优惠价';
+    const lowSeasonDates = lowSeasonRule?.coverageStart && lowSeasonRule.coverageEnd
+      ? `${lowSeasonRule.coverageStart.replaceAll('-', '/')}–${lowSeasonRule.coverageEnd.replaceAll('-', '/')}`
+      : '';
+    const discountedStudents = this.activeStudents
+      .map((student, index) => student.calculator.schoolDiscount ? index + 1 : 0)
+      .filter(Boolean);
+    const lowSeasonStudentPrefix = this.quoteMode === 'group' && discountedStudents.length
+      ? `学生${discountedStudents.join('、')}适用；`
+      : '';
+    const newStudents = this.activeStudents.filter(student => !student.calculator.returningStudent).length;
+    const registrationCountNote = `本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}。`;
     const courseItems: any[] = [], roomItems: any[] = [];
     this.activeStudents.forEach((student, index) => {
       const prefix = this.quoteMode === 'group' ? `学生${index + 1} · ` : '';
@@ -580,19 +598,33 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       weeks: this.selectedWeeks, startDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', localCurrencyName: '比索',
       paymentItems: [
-        { ...items[0], note: [items[0]?.note, this.quoteImageSettings.paymentNotes.registration].filter(Boolean).join('；') },
+        { ...items[0], note: [this.quoteImageSettings.paymentNotes.registration, registrationCountNote].filter(Boolean).join('；') },
         ...courseItems,
         ...roomItems,
-        ...items.slice(1).map(item => ({ ...item, note: [item.note, this.quoteImageSettings.paymentNotes.promotion].filter(Boolean).join('；') })),
+        ...items.slice(1).map(item => {
+          if (sidaRule && item.label === sidaRule.name) {
+            const fallback = `课程费及住宿费按思达启航${sidaRate}计算。`;
+            return { ...item, note: this.quoteImageSettings.promotionNotes?.[sidaRule.id] ?? fallback };
+          }
+          if (lowSeasonRule && item.label === lowSeasonRule.name) {
+            const dateNote = lowSeasonDates ? `活动日期：${lowSeasonDates}；` : '';
+            const fallback = `${dateNote}指定课程及房型每满${lowSeasonRule.minimumCourseWeeks || 8}周减${this.formatUsd(lowSeasonRule.discountValue)}美元。`;
+            return { ...item, note: `${lowSeasonStudentPrefix}${this.quoteImageSettings.promotionNotes?.[lowSeasonRule.id] ?? fallback}` };
+          }
+          return { ...item, note: [item.note, this.quoteImageSettings.paymentNotes.promotion].filter(Boolean).join('；') };
+        }),
       ],
       localFeeItems: this.localFees.map(fee => {
         const id = this.localFeeRules.find(rule => rule.name === fee.item.replace(/^学生\d+ · /, ''))?.id ?? '';
-        return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+        return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: this.formatPhp(fee.total), note: this.quoteImageSettings.localFeeNotes[id] ?? fee.note };
       }),
       localFeeTotal: this.localFeesTotal, localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny), localFeeNote: this.quoteImageSettings.localFeeIntro,
       optionalFeeItems: this.optionalFeeItems.map(fee => {
         const id = this.localFeeRules.find(rule => rule.name === fee.label)?.id ?? '';
-        return { ...fee, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+        const note = id
+          ? this.quoteImageSettings.localFeeNotes[id] ?? fee.note
+          : this.quoteImageSettings.supplementalFeeNotes?.['extra-night-0'] ?? fee.note;
+        return { ...fee, note };
       }),
       ruleNotes: this.quoteImageSettings.footerNotes,
     });
@@ -601,7 +633,8 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       ...student.calculator.plan.shortStayNotes(weeks => philinterMultiplier(weeks, this.shortStayRatios)),
     ]);
     const importantNotes = [...new Set([...warnings, ...this.policyNotes, ...this.quoteImageSettings.footerNotes])];
-    const result = applySchoolQuoteImageLayout({ ...quote, totalNote: '', exchangeRateText: '', importantNotes }, 'PHILINTER', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, totalNote: '', exchangeRateText: '', importantNotes }, 'PHILINTER', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: `PHILINTER${this.selectedWeeks}周报价`,

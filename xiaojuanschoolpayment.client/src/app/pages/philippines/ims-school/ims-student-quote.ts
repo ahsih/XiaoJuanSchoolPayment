@@ -143,7 +143,7 @@ export class ImsStudentQuote {
   }
 
   get promotionBlocks(): ImsPromotionBlock[] {
-    return this.quotePlan.courses.flatMap((row) => {
+    const candidates = this.quotePlan.courses.flatMap((row) => {
       const start = this.quotePlan.date(row.startDate);
       if (start === null) return [];
       return Array.from({ length: Math.floor(row.weeks / 4) }, (_, index) => {
@@ -154,27 +154,38 @@ export class ImsStudentQuote {
         const selectedCourse = this.course(row.optionId);
         const roomRow = this.roomRowCovering(blockStart, blockEnd);
         const twoWeekPricesAvailable = selectedCourse?.prices[2] !== undefined && !!roomRow && this.room(roomRow.optionId)?.prices[2] !== undefined;
-        const twoPlusTwoEligible = offSeason && twoWeekPricesAvailable;
-        const lowSeasonEligible = offSeason && this.quotePlan.courseWeeks >= 12;
-        const reason = !offSeason
-          ? '该4周段跨入1月、6月、7月或8月，属于活动排除月份。'
-          : !twoWeekPricesAvailable
-            ? '课程或对应住宿没有可用于2+2的明确2周价格。'
-            : this.quotePlan.courseWeeks < 12
-              ? '立减300美元要求总学习期至少12周；2+2资格本身不受此限制。'
-              : '符合淡季月份与连续4周要求，可在2+2和立减300美元中二选一。';
         return {
           key: `${row.id}:${index}`,
           rowId: row.id,
           index,
+          blockStart,
           startDate: iso(blockStart),
           endDate: iso(blockEnd),
           promotion: this.promotionFor(row.id, index),
-          twoPlusTwoEligible,
-          lowSeasonEligible,
-          reason,
+          offSeason,
+          twoWeekPricesAvailable,
         };
       });
+    }).sort((left, right) => left.blockStart - right.blockStart || left.rowId - right.rowId || left.index - right.index);
+
+    const firstBlockKey = candidates[0]?.key;
+    return candidates.map(({ blockStart: _blockStart, offSeason, twoWeekPricesAvailable, ...block }) => {
+      const firstFourWeeks = block.key === firstBlockKey;
+      const twoPlusTwoEligible = firstFourWeeks && offSeason && twoWeekPricesAvailable;
+      const lowSeasonEligible = offSeason;
+      const promotion: ImsBlockPromotion = block.promotion === 'two-plus-two'
+        ? 'two-plus-two'
+        : lowSeasonEligible ? 'low-season-300' : 'none';
+      const reason = !offSeason
+        ? '该4周段跨入1月、6月、7月或8月，不属于淡季活动，不自动减免。'
+        : !firstFourWeeks
+          ? '本段符合淡季条件，已自动立减300美元；2+2只能用于本次学习的首个连续4周。'
+          : !twoWeekPricesAvailable
+            ? '本段符合淡季条件，已自动立减300美元；因课程或对应住宿没有公布明确2周价格，不能改选2+2。'
+            : promotion === 'two-plus-two'
+              ? '本段已手动改选2+2，自动淡季立减300美元已被替代；同段不会重复优惠。'
+              : '本段已自动立减300美元；如参加达人活动，可手动改选一次2+2替代本段淡季优惠。';
+      return { ...block, promotion, twoPlusTwoEligible, lowSeasonEligible, reason };
     });
   }
 
@@ -241,11 +252,11 @@ export class ImsStudentQuote {
     return [
       ...(this.twoPlusTwoDiscountAmount ? [{
         icon: '2+2', label: 'IMS 2+2达人活动', value: -this.twoPlusTwoDiscountAmount,
-        note: `按所选课程明确2周价与对应房型明确2周价计算；本次减少${this.twoPlusTwoDiscountAmount}美元，不减注册费。`, promotionKey: 'ims-two-plus-two',
+        note: `仅用于本次学习的首个连续4周，按所选课程明确2周价与对应房型明确2周价计算；本次减少${this.twoPlusTwoDiscountAmount}美元，不减注册费。`, promotionKey: 'ims-two-plus-two',
       }] : []),
       ...(this.lowSeasonDiscountAmount ? [{
         icon: '淡', label: 'IMS淡季立减', value: -this.lowSeasonDiscountAmount,
-        note: `总学习期不少于12周；${this.promotionBlocks.filter((block) => block.promotion === 'low-season-300' && block.lowSeasonEligible).length}个独立淡季4周段 × ${this.catalog.lowSeasonPerBlock ?? 300}美元，同段未与2+2叠加。`, promotionKey: 'ims-low-season-300',
+        note: `${this.promotionBlocks.filter((block) => block.promotion === 'low-season-300' && block.lowSeasonEligible).length}个符合条件的淡季4周段已自动计算 × ${this.catalog.lowSeasonPerBlock ?? 300}美元；改选2+2的首段不再重复减300美元。`, promotionKey: 'ims-low-season-300',
       }] : []),
       ...(this.longStayDiscountAmount ? [{
         icon: '长', label: 'IMS长期优惠', value: -this.longStayDiscountAmount,

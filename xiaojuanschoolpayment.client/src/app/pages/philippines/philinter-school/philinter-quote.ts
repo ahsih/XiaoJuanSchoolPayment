@@ -6,7 +6,7 @@ export const PHILINTER_AGE_RULE = '成人课程按就读当年度满18岁判断�
 export const PHILINTER_FAMILY_RULE = '亲子预付定金500美元／人，属于学费预付款，不额外加收。';
 export const PHILINTER_WINTER_RULE = '寒假：校内宿舍需注册至少6周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
 export const PHILINTER_SUMMER_RULE = '就读区间只要部分涵盖暑假高峰：校内宿舍需注册至少8周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
-export const PHILINTER_PROMOTION = '2026/08/16–12/25期间，每完成8个连续合资格课程周优惠300美元；仅校内三人房、Azon单人房及双人房，IELTS及TOEIC保证班、走读不参加。不得与其他校方优惠或Voucher并用；思达课程及住宿9折另计。';
+export const PHILINTER_PROMOTION = '活动期间为2026/08/16–12/25（最后一周可于12/26周六退房）。入住校内三人房、Azon单人房或Azon双人房，每完成8周课程优惠300美元：8–15周减300美元，16–23周减600美元，依此类推。适用于除IELTS保证班及TOEIC保证班外的所有课程；走读、校内单人房及校内双人房不参加。不得与其他校方优惠或Voucher并用；思达课程及住宿9折另计。';
 // Match Sunday arrival / Saturday departure and preserve the eight-week season.
 export const PHILINTER_SUMMER_PERIODS = [
   { start: '2026-07-05', end: '2026-08-29', estimated: false },
@@ -31,7 +31,9 @@ export function philinterPromotion(plan: SchoolQuotePlan, rule?: CiaPromotionRul
   const day = 86400000, week = 7 * day;
   let last = 0, run = 0, blocks = 0;
   for (const start of weeks) {
-    const eligible = start >= from && start + 6 * day <= to &&
+    // The published end date is the final Friday of class. Saturday checkout
+    // belongs to that same school week and may fall one day after the period.
+    const eligible = start >= from && start + 5 * day <= to &&
       Array.from({ length: 7 }, (_, index) => start + index * day).every(date => eligibleRooms.has(date));
     if (!eligible) { run = 0; last = 0; continue; }
     run = start === last + week ? run + 1 : 1;
