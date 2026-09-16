@@ -593,6 +593,26 @@
           <span class="calendar-priority"><mat-icon>event_available</mat-icon>2027年优先展示</span>
         </div>
 
+        <aside class="peak-season-calendar" aria-labelledby="peak-season-calendar-title">
+          <div class="peak-season-calendar-intro">
+            <span class="peak-season-calendar-icon"><mat-icon>wb_sunny</mat-icon></span>
+            <div>
+              <span class="section-eyebrow">2027 PEAK SEASON</span>
+              <h4 id="peak-season-calendar-title">2027年寒暑假高峰期</h4>
+              <p>课程或住宿计划覆盖以下完整学习周时，每名学生按实际重叠周数计收旺季附加费。</p>
+            </div>
+            <strong class="peak-season-rate"><b>{{ seasonalFeePerWeek }}</b> 美元<small>每周／每人</small></strong>
+          </div>
+          <div class="peak-season-period-grid">
+            <article *ngFor="let range of peakSeasonCalendarRanges">
+              <span class="peak-season-name">{{ range.label }}</span>
+              <time>{{ formatPeakSeasonRange(range) }}</time>
+              <span class="peak-season-weeks">{{ peakSeasonWeekCount(range) }}周</span>
+            </article>
+          </div>
+          <p class="peak-season-calendar-note"><mat-icon>calculate</mat-icon>入学按周日、离校按周六；课程与住宿在同一周重叠只计一次，旺季附加费不参与思达折扣。</p>
+        </aside>
+
         <div class="holiday-calendar-list">
           <details
             *ngFor="let calendar of holidayCalendars"
@@ -901,6 +921,20 @@
       </div>
     </details>
 
+    <details class="cia-section cia-collapsible-section secondary-info-disclosure" open>
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
+        <span>
+          <strong>2027年假期与旺季安排</strong>
+          <small>寒暑假附加费档期、学校假期与雅思官方考期参考</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <ng-container *ngTemplateOutlet="calendarPlanningSections"></ng-container>
+      </div>
+    </details>
+
     <details class="cia-section cia-collapsible-section media-disclosure">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>play_circle</mat-icon></span>
@@ -937,6 +971,14 @@
           <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
           <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
         </article>
+        <aside class="peak-season-quote-note" *ngIf="peakSeasonCalendarRanges.length" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">
+          <span class="peak-season-quote-icon"><mat-icon>date_range</mat-icon></span>
+          <div>
+            <strong>2027旺季附加费：{{ seasonalFeePerWeek }}美元／周／人</strong>
+            <p>{{ peakSeason2027RangeText }}</p>
+            <small>{{ peakSeasonStatusText }} 同一学生课程与住宿重叠周只计一次，且不参与折扣。</small>
+          </div>
+        </aside>
         <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
           <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
             <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>

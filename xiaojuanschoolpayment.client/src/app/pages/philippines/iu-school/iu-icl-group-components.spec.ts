@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { IclSchoolComponent } from '../icl-school/icl-school.component';
 import { IuSchoolComponent } from './iu-school.component';
 
@@ -14,6 +15,7 @@ describe('IU and ICL group quote pages', () => {
       providers: [
         provideRouter([]),
         { provide: SchoolService, useValue: { getSchools: () => EMPTY } },
+        { provide: SchoolContentService, useValue: { getPublished: () => EMPTY } },
         { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
       ],
     }).compileComponents();

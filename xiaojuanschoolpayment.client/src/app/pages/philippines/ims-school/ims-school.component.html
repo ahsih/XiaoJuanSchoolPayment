@@ -1,462 +1,164 @@
 <app-cia-school>
-  <div class="cia-page ims-page">
-    <div class="page-grid">
-      <main class="page-main">
-        <section class="hero-section" id="top">
-          <div class="hero-copy">
-            <a class="back-link" routerLink="/philippines-study/cebu">
-              <mat-icon>arrow_back</mat-icon>
-              返回宿务学校列表
-            </a>
-            <p class="breadcrumb">菲律宾游学 / 宿务学校 / IMS Academy</p>
-            <h1>菲律宾宿务IMS Academy</h1>
-            <p class="hero-lead">
-              IMS Academy是位于宿务Banilad / Ma. Luisa生活圈的韩资多国籍学校，课程覆盖ESL、IELTS、TOEIC、
-              Business、Working Holiday、Senior、Junior和Parents ESL。它不像CIA那样偏大型度假新校区，
-              但胜在市区便利、课程路线完整，适合想把成人、亲子、考试和住宿预算放在同一张表里比较的学生。
-            </p>
-            <div class="hero-tags" aria-label="IMS Academy特点">
-              <span><mat-icon>location_city</mat-icon>Banilad生活圈</span>
-              <span><mat-icon>groups</mat-icon>韩资多国籍</span>
-              <span><mat-icon>school</mat-icon>ESL / IELTS / TOEIC</span>
-              <span><mat-icon>family_restroom</mat-icon>Junior / Parents ESL</span>
-            </div>
-            <div class="hero-actions">
-              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
-                立即计算我的费用
-                <mat-icon>calculate</mat-icon>
-              </a>
-              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看公开价格
-                <mat-icon>menu_book</mat-icon>
-              </a>
-              <a class="secondary-action" routerLink="/about-sida/contact">
-                获取顾问确认报价
-                <mat-icon>support_agent</mat-icon>
-              </a>
-            </div>
-            <p class="trust-note">
-              <mat-icon>verified</mat-icon>
-              校区、课程与设施参考IMS官方公开页面；费用以近期公开2026美元套餐表为预算口径，并附官方费用页供复核。
-              正式报名仍需按开课日、房型空位、学生年龄和学校当期invoice确认。
-            </p>
-          </div>
-
-          <div class="hero-media" aria-label="IMS Academy校园图片展示">
-            <figure class="feature-photo">
-              <img [src]="galleryImages[0].src" alt="菲律宾宿务IMS Academy Banilad校园外观" />
-              <figcaption>IMS Academy Cebu，Banilad / Ma. Luisa生活圈综合型英语学校</figcaption>
-            </figure>
-            <div class="media-strip" aria-label="IMS Academy缩略图">
-              <figure *ngFor="let image of galleryImages.slice(1, 4)">
-                <img [src]="image.src" [alt]="image.title" />
-                <figcaption>{{ image.title }}</figcaption>
-              </figure>
-            </div>
-            <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>{{ fourWeekStartingText }}</strong>
-              <p>Essential ESL 4 + 4人房 + 注册费USD 100</p>
-              <ul>
-                <li>
-                  <mat-icon>check_circle</mat-icon>
-                  Premium ESL 4周4人房参考 {{ premiumFourWeekText }}
-                </li>
-                <li>
-                  <mat-icon>info</mat-icon>
-                  SSP、签证、教材、水电、押金、接送、机票和保险另计
-                </li>
-              </ul>
-            </aside>
-            <p class="photo-source">图片来自公开学校图库与游学资料页面；正式环境以学校当期实景和空房资料为准。</p>
-          </div>
-        </section>
-
-        <nav class="mobile-anchor-nav" aria-label="IMS Academy手机端快捷导航">
-          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            {{ item.label }}
-          </a>
-        </nav>
-
-        <section class="quick-info" aria-label="IMS Academy快速信息卡">
-          <article class="quick-card" *ngFor="let item of quickInfo">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <div>
-              <span>{{ item.label }}</span>
-              <strong>{{ item.value }}</strong>
-              <p>{{ item.note }}</p>
-            </div>
-          </article>
-        </section>
-
-        <section class="section-block" id="gallery">
-          <div class="section-heading">
-            <span>图片 / 环境展示</span>
-            <h2>先看IMS的Banilad校区、教室、住宿和生活空间</h2>
-            <p>
-              IMS和CIA的差异主要在学校气质：CIA更像大型半斯巴达度假校区，IMS更像宿务市区生活圈里的多路线综合校。
-              如果你想把上课、住宿、亲子和考试安排放在一个城市校区里完成，IMS会是一个值得比较的选项。
-            </p>
-          </div>
-          <div class="gallery-tabs" role="tablist" aria-label="IMS Academy图片分类">
-            <button
-              type="button"
-              *ngFor="let category of galleryCategories"
-              [class.active]="selectedGalleryCategory === category"
-              (click)="setGalleryCategory(category)"
-            >
-              {{ category }}
-            </button>
-          </div>
-          <div class="gallery-grid">
-            <figure *ngFor="let image of filteredGalleryImages">
-              <img [src]="image.src" [alt]="image.title" loading="lazy" />
-              <figcaption>
-                <strong>{{ image.title }}</strong>
-                <span>{{ image.description }}</span>
-              </figcaption>
-            </figure>
-          </div>
-        </section>
-
-        <div class="info-trio">
-          <section class="panel basic-panel" id="basic-info">
-            <div class="compact-heading">
-              <span>学校基本信息</span>
-              <h2>IMS Academy 基本资料</h2>
-            </div>
-            <dl class="info-list">
-              <div *ngFor="let row of basicInfo">
-                <dt>{{ row.label }}</dt>
-                <dd>{{ row.value }}</dd>
-              </div>
-            </dl>
-          </section>
-
-          <section class="panel advisor-panel" id="advisor-review">
-            <div class="quote-mark">"</div>
-            <div class="compact-heading">
-              <span>思达顾问点评</span>
-              <h2>IMS适合想住Banilad，并需要多路线课程选择的人</h2>
-            </div>
-            <p>
-              IMS的优势不是“最豪华”，而是课程路线广、城市生活便利、亲子和成人可以一起安排。
-              费用资料有韩元和美元两种公开口径，所以我们会建议先用本页做预算，再用学校正式报价单核对币种、房型和当地费用。
-            </p>
-            <div class="advisor-card">
-              <div class="advisor-avatar">IMS</div>
-              <div>
-                <strong>顾问建议</strong>
-                <span>如果你在意市区安全生活圈、多国籍环境和ESL/考试/亲子同校安排，IMS可以和CIA、CIEC、CG Banilad一起比较。</span>
-              </div>
-            </div>
-            <a class="primary-action full-action" routerLink="/about-sida/contact">
-              让顾问判断是否适合我
-              <mat-icon>chat</mat-icon>
-            </a>
-          </section>
-
-          <section class="panel highlight-panel" id="highlights">
-            <div class="compact-heading">
-              <span>IMS 核心亮点</span>
-              <h2>为什么会把IMS列入宿务候选？</h2>
-            </div>
-            <div class="highlight-list">
-              <article *ngFor="let item of highlights">
-                <mat-icon>check_circle</mat-icon>
-                <div>
-                  <strong>{{ item.title }}</strong>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
-            </div>
-          </section>
+  <div class="school-detail-page ims-page">
+    <section class="hero-section" id="top">
+      <div class="hero-copy">
+        <a class="back-link" routerLink="/philippines-study/cebu-schools"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
+        <p class="breadcrumb">菲律宾游学 / 宿务学校 / IMS Academy</p>
+        <h1>IMS Academy<br /><em>每一项费用，都能核验</em></h1>
+        <p class="hero-lead">IMS位于宿务市Banilad生活圈。页面已按2026最新美元价目表和7月1日起当地费用重建，支持单人、2–20人、分段课程住宿、亲子转课与完整明细报价图片。</p>
+        <div class="hero-tags"><span>宿务 Banilad</span><span>成人 · 考试 · 亲子</span><span>2026独立价格目录</span></div>
+        <div class="hero-actions">
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即精确报价<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询IMS空位<mat-icon>support_agent</mat-icon></a>
         </div>
+        <p class="trust-note"><mat-icon>verified</mat-icon>注册费100美元／人始终保留；内部佣金信息不会出现在网页或报价图片。</p>
+      </div>
+      <div class="hero-media">
+        <img src="/assets/ims/campus-hero.webp" alt="IMS Academy Banilad校园" />
+        <div class="hero-price-card"><span>4周公开起价（含不可减注册费）</span><strong>{{ fourWeekStartingText }}</strong><small>Essential ESL 4 + 四人房 + 思达95折；当地比索费用另计</small></div>
+      </div>
+    </section>
 
-        <section class="fit-section" id="fit">
-          <div class="section-heading">
-            <span>适合 / 不太适合</span>
-            <h2>先判断IMS是不是你的优先学校</h2>
-          </div>
-          <div class="fit-grid">
-            <div>
-              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 IMS</h3>
-              <article *ngFor="let item of suitableFor">
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.text }}</p>
-              </article>
-            </div>
-            <div>
-              <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
-              <article *ngFor="let item of lessSuitableFor">
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.text }}</p>
-              </article>
-            </div>
-          </div>
+    <div class="quick-grid">
+      <article class="quick-card" *ngFor="let item of quickInfo"><mat-icon>{{ item.icon }}</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article>
+    </div>
+
+    <div class="detail-layout">
+      <main>
+        <section class="panel intro-panel" id="overview">
+          <div class="section-heading"><span>学校概况</span><h2>城市便利、课程路线完整，适合成人与亲子同行</h2></div>
+          <div class="highlight-list"><article *ngFor="let item of highlights"><mat-icon>check_circle</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
+          <dl class="info-list">
+            <div><dt>成立年份</dt><dd>2013年</dd></div><div><dt>地址</dt><dd>Paseo Saturnino Street, Banilad, Ma. Luisa, Cebu City</dd></div>
+            <div><dt>学校规模</dt><dd>住宿容量约153人，课堂容量约180人</dd></div><div><dt>设施</dt><dd>一对一教室、小组教室、自习室、餐厅、泳池、健身及校内宿舍</dd></div>
+          </dl>
         </section>
 
-        <section class="section-block" id="courses">
-          <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
-            <h2>IMS 2026公开4周套餐价</h2>
-            <p>
-              下表按公开2026美元套餐资料整理，金额为4周学费+住宿，不含注册费、SSP、签证、水电、教材和押金。
-              报价器会在套餐价外加入注册费USD 100，方便先估算报名总预算。
-            </p>
-          </div>
+        <section class="fit-section" id="fit"><div class="section-heading"><span>适合人群</span><h2>先判断IMS和你的学习方式是否匹配</h2></div><div class="fit-grid"><article *ngFor="let item of fitCards"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article></div></section>
 
+        <section class="section-block" id="courses" data-cia-preview-kind="section" data-cia-preview-id="courses" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'courses')">
+          <div class="section-heading"><span>课程目录与课表</span><h2>{{ courseTableTitle }}</h2><p>{{ courseTableNote }}</p></div>
           <div class="course-grid ims-course-grid">
-            <article class="course-card" *ngFor="let course of courses">
-              <span>{{ course.type }}</span>
-              <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
-              <p>{{ course.suitable }}</p>
+            <article class="course-card" *ngFor="let course of courses" [attr.data-cia-preview-kind]="'course'" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
+              <span>{{ course.category }}</span><h3>{{ course.name }}</h3><p class="course-lessons">{{ course.schedule }}</p><p>{{ course.suitable }}</p>
+              <small>可选周数：{{ course.allowedWeeks.join('、') }}周</small>
             </article>
           </div>
-
-          <div class="data-table ims-course-table" role="table" aria-label="IMS Academy 4周套餐公开价格">
-            <div class="table-row table-head" role="row">
-              <span role="columnheader">课程</span>
-              <span role="columnheader">4人房</span>
-              <span role="columnheader">3人房</span>
-              <span role="columnheader">2人房</span>
-              <span role="columnheader">1人房</span>
-              <span role="columnheader">课程结构</span>
-            </div>
-            <div class="table-row" role="row" *ngFor="let row of courseFeeRows">
-              <span role="cell">{{ row.course }}</span>
-              <span role="cell">{{ row.quad }}</span>
-              <span role="cell">{{ row.triple }}</span>
-              <span role="cell">{{ row.twin }}</span>
-              <span role="cell">{{ row.single }}</span>
-              <span role="cell">{{ row.lessons }}</span>
-            </div>
+          <div class="ims-price-table desktop-price-table" role="table" aria-label="IMS 2026课程费完整价目表">
+            <div class="price-row price-head" role="row"><span>课程</span><span *ngFor="let week of weekOptions">{{ week }}周</span></div>
+            <div class="price-row" *ngFor="let course of courses" role="row"><strong>{{ course.name }}</strong><span *ngFor="let week of weekOptions">{{ course.prices[week] === undefined ? '—' : (course.prices[week] | number:'1.0-0') }}</span></div>
           </div>
+          <div class="mobile-price-cards">
+            <article *ngFor="let course of courses"><h3>{{ course.name }}</h3><p>{{ course.schedule }}</p><div><span *ngFor="let week of course.allowedWeeks"><b>{{ week }}周</b>{{ course.prices[week] | number:'1.0-0' }}美元</span></div></article>
+          </div>
+          <p class="policy-note">{{ groupClassNote }}</p>
+        </section>
 
-          <div class="mobile-card-list mobile-course-fees" aria-label="IMS Academy 4周套餐手机卡片">
-            <article *ngFor="let row of courseFeeRows">
-              <span>{{ row.course }}</span>
-              <div>
-                <em>4人房</em>
-                <strong>{{ row.quad }}</strong>
+        <section class="section-block" id="rooms" data-cia-preview-kind="section" data-cia-preview-id="rooms" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'rooms')">
+          <div class="section-heading"><span>住宿</span><h2>{{ roomTableTitle }}</h2><p>{{ roomTableNote }}</p></div>
+          <div class="ims-price-table room-price-table desktop-price-table" role="table" aria-label="IMS 2026住宿费完整价目表">
+            <div class="price-row price-head"><span>房型</span><span *ngFor="let week of weekOptions">{{ week }}周</span></div>
+            <div class="price-row" *ngFor="let room of rooms" [attr.data-cia-preview-kind]="'room'" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"><strong>{{ room.name }}</strong><span *ngFor="let week of weekOptions">{{ room.prices[week] | number:'1.0-0' }}</span></div>
+          </div>
+          <div class="mobile-price-cards room-cards"><article *ngFor="let room of rooms"><h3>{{ room.name }}</h3><p>{{ room.note }}</p><div><span *ngFor="let week of weekOptions"><b>{{ week }}周</b>{{ room.prices[week] | number:'1.0-0' }}美元</span></div></article></div>
+        </section>
+
+        <section class="section-block family-rules" id="family">
+          <div class="section-heading"><span>亲子课程规则</span><h2>家长必须报名Parents ESL，转课只改变上课人，不改变价格</h2></div>
+          <div class="rule-grid">
+            <article><strong>家长课程</strong><p>Parents ESL每天3节一对一 + 1节团体课；每名家长仍收100美元注册费。</p></article>
+            <article><strong>允许的转课</strong><p>家长3节一对一可转给指定Junior ESL 6孩子，使孩子从6节增加到每天最多9节。</p></article>
+            <article><strong>不能转的内容</strong><p>家长团体课只能本人参加或自行放弃，不能转给孩子；Junior ESL 8或9不能再接收3节。</p></article>
+            <article><strong>价格不变</strong><p>家长、孩子都按所选课程付费并分别注册；转课不减少双方课程费或注册费。</p></article>
+          </div>
+        </section>
+
+        <section class="section-block promotion-section" id="promotions" data-cia-preview-kind="section" data-cia-preview-id="promotions" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'promotions')">
+          <div class="section-heading"><span>优惠活动</span><h2>学校活动先算，思达95折随后只作用于剩余课程与住宿</h2></div>
+          <div class="rule-grid">
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-two-plus-two" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-two-plus-two')"><strong>2+2达人活动</strong><p>{{ promotionDescription('ims-two-plus-two') }}</p><ul><li *ngFor="let item of socialRequirements">{{ item }}</li></ul></article>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-low-season-300" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-low-season-300')"><strong>淡季每4周减300美元</strong><p>{{ promotionDescription('ims-low-season-300') }}</p></article>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-long-stay" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-long-stay')"><strong>全年长期优惠</strong><p>{{ promotionDescription('ims-long-stay') }}</p></article>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-sida-95" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-sida-95')"><strong>思达95折</strong><p>{{ promotionDescription('ims-sida-95') }}</p></article>
+          </div>
+          <p class="policy-note">淡季不含1月、6月、7月、8月。团体课权益：2节团体课可换1节一对一，不直接改变学费；有效期为即日起至2026年12月31日，以及2027年2月1日至5月30日。</p>
+        </section>
+
+        <section class="quote-panel group-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
+          <div class="section-heading"><span>完整报价</span><h2>单人或2–20人，每名学生独立设置</h2><p>课程、住宿、日期、身份、亲子关系、每个4周段优惠与当地费用共用同一套计算结果，并直接用于报价图片。</p></div>
+          <div class="quote-mode"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">人数<input type="number" min="2" max="20" [(ngModel)]="studentCount" /></label></div>
+          <p class="group-hint">减少人数后，未激活学生的编辑内容仍会保留，但不会计入当前合计。</p>
+
+          <article class="student-quote" *ngFor="let student of activeStudents; let studentIndex = index; trackBy: trackStudent">
+            <h3>{{ quoteMode === 'group' ? '学生' + (studentIndex + 1) : '学生信息与方案' }}</h3>
+            <div class="student-fields">
+              <label>姓名／标记<input [(ngModel)]="student.name" [placeholder]="quoteMode === 'group' ? '学生' + (studentIndex + 1) : '选填'" /></label>
+              <label>抵达时年龄<input type="number" min="3" max="100" [(ngModel)]="student.age" /></label>
+              <label>身份<select [(ngModel)]="student.travelerRole"><option value="adult">成人学生</option><option value="parent">亲子家长</option><option value="child">亲子孩子</option></select></label>
+              <label>报名状态<select [(ngModel)]="student.enrollmentStatus"><option value="new">新生</option><option value="returning">返校生（注册费仍收）</option></select></label>
+              <label>报名日期<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+              <label>独立服务<select [(ngModel)]="student.optionalService"><option value="none">不自动加入</option><option value="guardian">Guardian Service {{ guardianServiceRate | number:'1.0-2' }}美元／4周</option><option value="school-management">国际学生学校管理 {{ schoolManagementRate | number:'1.0-2' }}美元／4周</option></select></label>
+            </div>
+            <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+
+            <div class="family-options" *ngIf="student.travelerRole === 'parent'">
+              <label class="option-check"><input type="checkbox" [(ngModel)]="student.transferParentOneToOne" /><span>把家长每天3节一对一转给同行Junior ESL 6孩子（价格不变）</span></label>
+              <div class="student-fields" *ngIf="student.transferParentOneToOne">
+                <label>指定孩子<select [(ngModel)]="student.linkedStudentIndex"><option *ngFor="let option of familyTargetOptions(studentIndex)" [ngValue]="option.index">学生{{ option.index + 1 }}{{ option.student.name ? ' · ' + option.student.name : '' }}</option></select></label>
+                <label>家长1节团体课<select [(ngModel)]="student.attendParentGroupClass"><option [ngValue]="true">家长参加</option><option [ngValue]="false">家长自行放弃</option></select></label>
               </div>
-              <div>
-                <em>2人房</em>
-                <strong>{{ row.twin }}</strong>
-              </div>
-              <div>
-                <em>1人房</em>
-                <strong>{{ row.single }}</strong>
-              </div>
-              <p>{{ row.lessons }}</p>
-            </article>
-          </div>
-
-          <div class="local-fee-grid ims-special-grid" aria-label="IMS Academy保证班和特殊项目">
-            <article *ngFor="let program of specialPrograms">
-              <span>{{ program.item }}</span>
-              <strong>{{ program.amount }}</strong>
-              <p>{{ program.note }}</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="section-block" id="study-life">
-          <div class="section-heading">
-            <span>学习生活节奏</span>
-            <h2>IMS的一天更适合稳定学习和市区生活平衡</h2>
-          </div>
-          <div class="timeline">
-            <article *ngFor="let item of scheduleItems">
-              <time>{{ item.time }}</time>
-              <div>
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.text }}</p>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section class="quote-panel" id="quote">
-          <div class="section-heading">
-            <span>费用快速报价</span>
-            <h2>用公开价格表先估算IMS课程住宿费</h2>
-            <p>
-              这个计算器按公开2026美元套餐价估算课程+住宿，并加入注册费USD 100。1-3周按公开短期比例折算；
-              5周以上按4周价比例估算，正式报价仍需学校确认。
-            </p>
-          </div>
-          <div class="quote-form" aria-label="IMS Academy费用快速报价选项">
-            <label>
-              课程
-              <select [(ngModel)]="selectedCourseId">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label>
-              房型
-              <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label>
-              周数
-              <select [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
-              </select>
-            </label>
-            <label>
-              预计入学日
-              <input type="date" [(ngModel)]="selectedStartDate" />
-            </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="includeGuardianService" />
-              <span>加入Guardian Service参考 USD 450 / 4周</span>
-            </label>
-          </div>
-
-          <div class="quote-breakdown ims-quote-breakdown">
-            <div>
-              <span>课程+住宿</span>
-              <strong>{{ studyStayUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
             </div>
-            <div>
-              <span>注册费</span>
-              <strong>USD 100</strong>
-              <p>通常报名时收取；SSP、签证、水电、教材和押金另计。</p>
+
+            <div class="promotion-blocks" *ngIf="student.promotionBlocks.length">
+              <h4>逐个连续4周段选择活动</h4>
+              <article *ngFor="let block of student.promotionBlocks; trackBy: trackPromotionBlock">
+                <div><strong>{{ block.startDate | date:'yyyy/MM/dd':'UTC' }}–{{ block.endDate | date:'yyyy/MM/dd':'UTC' }}</strong><p>{{ block.reason }}</p></div>
+                <select [ngModel]="block.promotion" (ngModelChange)="promotionChange(student, block.rowId, block.index, $event)">
+                  <option value="none">不参加活动</option><option value="two-plus-two" [disabled]="!block.twoPlusTwoEligible">2+2达人活动</option><option value="low-season-300" [disabled]="!block.lowSeasonEligible">淡季立减300美元</option>
+                </select>
+              </article>
             </div>
-            <div>
-              <span>Guardian Service</span>
-              <strong>{{ guardianServiceText }}</strong>
-              <p>未成年或特殊照护需求是否需要购买，需按年龄和学校规则确认。</p>
-            </div>
-            <div>
-              <span>预计USD合计</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>平均每周约 {{ weeklyAverageText }}，不含菲律宾当地费用和机票保险。</p>
-            </div>
-          </div>
 
-          <div class="quote-actions">
-            <button type="button" class="primary-action" (click)="calculateQuote()">
-              标记为已估算
-              <mat-icon>done</mat-icon>
-            </button>
-            <a class="secondary-action" routerLink="/about-sida/contact">
-              发送给顾问复核
-              <mat-icon>send</mat-icon>
-            </a>
-          </div>
-          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认IMS正式报价、币种、房型空位、当地费用和未成年规则。</p>
-        </section>
-
-        <section class="section-block" id="local-fees">
-          <div class="section-heading">
-            <span>菲律宾当地费用</span>
-            <h2>IMS报价外还要准备的费用</h2>
-            <p>以下按公开2026费用资料整理。菲律宾政府费用、学校当地费用和宿舍规则可能调整，报名时需再次确认。</p>
-          </div>
-          <div class="local-fee-grid ims-local-grid desktop-local-fees">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-          <div class="mobile-card-list mobile-only">
-            <article *ngFor="let fee of localFees">
-              <span>{{ fee.item }}</span>
-              <strong>{{ fee.amount }}</strong>
-              <p>{{ fee.note }}</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>IMS页面公开资料来源</h2>
-            <p>学校定位、校区、课程、设施、公开费用和当地费用参考IMS官方页面与近期公开费用资料。</p>
-          </div>
-          <div class="source-grid section-nav">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
-        </section>
-
-        <app-sida-why-section
-          [schoolName]="'菲律宾宿务IMS Academy'"
-          [supportTitle]="'深圳总部 + 宿务驻点支持'"
-          [supportBadge]="'深圳总部 + 宿务驻点'"
-        ></app-sida-why-section>
-
-        <section class="section-block" id="faq">
-          <div class="section-heading">
-            <span>报名前常见问题</span>
-            <h2>确认IMS前，建议先核对这些信息</h2>
-          </div>
-          <div class="faq-section">
-            <details *ngFor="let item of faqs">
-              <summary>{{ item.title }}</summary>
-              <p>{{ item.text }}</p>
+            <details class="extra-options"><summary>额外课程与当地可选项目</summary>
+              <div class="extra-class-grid"><label *ngFor="let item of additionalClassOptions">{{ item.name }}（{{ item.price4w }}美元／4周）<input type="number" min="0" max="9" [(ngModel)]="student.additionalClassQuantities[item.id]" /></label></div>
+              <div class="check-grid"><label><input type="checkbox" [(ngModel)]="student.includePickup" />计入一次接机1,000比索（官方TOTAL默认包含）</label><label><input type="checkbox" [(ngModel)]="student.includeDropoff" />加入可选送机1,000比索</label><label><input type="checkbox" [(ngModel)]="student.includeWalkInLunch" />加入走读午餐6,000比索／4周</label></div>
             </details>
+            <div class="student-subtotal"><span>课程住宿原价 {{ formatUsd(student.originalStudyStay) }} · 学校活动 −{{ formatUsd(student.schoolDiscountAmount) }} · 思达95折 −{{ formatUsd(student.sidaDiscountAmount) }}</span><strong>该学生USD应付 {{ formatUsd(student.quoteUsd) }}</strong></div>
+          </article>
+
+          <p class="quote-error" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+          <div class="quote-breakdown">
+            <div><span>注册费、课程住宿及所选项目原价<small>注册费{{ registrationFee }}美元／人，始终不可减免</small></span><strong>{{ formatUsd(quoteBeforeDiscounts) }}</strong></div>
+            <div class="discount-line"><span>学校活动与长期优惠<small>2+2、淡季300及长期阶梯按每名学生独立计算</small></span><strong>− {{ formatUsd(schoolDiscountAmount) }}</strong></div>
+            <div class="discount-line"><span>思达95折<small>只对学校活动后的剩余课程费与住宿费</small></span><strong>− {{ formatUsd(sidaDiscountAmount) }}</strong></div>
           </div>
+          <div class="group-result"><span>最终应付学校金额</span><strong>{{ formatUsd(quoteUsd) }}</strong><em>到校比索费用：{{ formatPhp(estimatedLocalFeeTotal) }}（约人民币{{ estimatedLocalFeeCny | number:'1.0-0' }}元）</em><small>美元与比索分开支付；人民币仅为参考汇率估算。</small></div>
+          <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>核验当前报价</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>send</mat-icon>发给顾问复核</a></div>
+          <p class="quote-status" *ngIf="quoteCalculated">当前课程、住宿、优惠、亲子关系与当地费用已通过页面校验；最终空房和学校账单仍需顾问确认。</p>
         </section>
 
-        <section class="bottom-cta">
-          <div>
-            <span>获取 IMS 完整资料与报价单</span>
-            <h2>把课程、周数、房型和是否亲子告诉思达，我们帮你核对正式报价</h2>
-            <p>
-              顾问会协助确认IMS当期币种、开课日、房型空位、未成年规则、SSP/签证/水电/教材等当地费用，
-              也可以同步比较CIA、CG Banilad、CIEC和ELSA。
-            </p>
+        <section class="section-block" id="local-fees" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">
+          <div class="section-heading"><span>2026当地费用</span><h2>按每名学生1–24周逐周计算</h2><p>{{ localFeeIntro }}</p></div>
+          <div class="local-fee-table">
+            <div class="local-fee-row local-fee-head"><span>项目</span><span>单价／规则</span><span>数量</span><span>当前合计</span><span>说明</span></div>
+            <div class="local-fee-row" *ngFor="let fee of estimatedLocalFees"><strong>{{ fee.item }}</strong><span>{{ fee.unitLabel }}</span><span>{{ formatFeeQuantity(fee.quantity) }}</span><b>{{ formatPhp(fee.total) }}</b><p>{{ fee.note }}</p></div>
           </div>
-          <ul>
-            <li><mat-icon>check_circle</mat-icon> 免费确认IMS空位与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分USD套餐价与PHP当地费用</li>
-            <li><mat-icon>check_circle</mat-icon> 可同步比较宿务亲子、考试和市区学校</li>
-          </ul>
-          <a class="primary-action" routerLink="/about-sida/contact">
-            联系思达顾问
-            <mat-icon>support_agent</mat-icon>
-          </a>
+          <div class="local-summary"><span>当前{{ activeStudents.length }}人到校费用合计</span><strong>{{ formatPhp(estimatedLocalFeeTotal) }}</strong></div>
+          <div class="rule-grid local-notes"><article><strong>可退押金</strong><p>3,000比索／人，官方TOTAL包含；无损坏并归还钥匙后按学校规则退还。</p></article><article><strong>空调超额</strong><p>250比索／周包含100kW／4周；超过后30比索／kW按实际使用另收。</p></article><article><strong>长期停留参考</strong><p>超过6个月的ECC 1,000比索、CRTV 2,000比索，以及跨年度Annual Report 500比索只作条件性参考，不自动加入1–24周普通报价。</p></article></div>
         </section>
+
+        <section class="section-block" id="study-life"><div class="section-heading"><span>学习生活</span><h2>一天的课程、用餐与校园生活</h2></div><div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div></section>
+
+        <section class="section-block video-section" id="video"><div class="section-heading"><span>校园视频</span><h2>IMS校园实拍视频</h2><p>视频作为独立内容展示，不会自动播放，也不会作为首屏背景。</p></div><video controls preload="none" poster="/assets/ims/campus-video-cover.webp"><source src="/assets/ims/ims-campus-tour.mp4" type="video/mp4" />浏览器暂不支持播放此视频。</video></section>
+
+        <section class="section-block" id="gallery"><div class="section-heading"><span>相册</span><h2>校园、教室、住宿与活动</h2></div><div class="gallery-tabs"><button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button></div><div class="gallery-grid"><figure *ngFor="let item of filteredGalleryItems"><img [src]="item.src" [alt]="item.title" loading="lazy" /><figcaption><strong>{{ item.title }}</strong><span>{{ item.description }}</span></figcaption></figure></div></section>
+
+        <app-sida-why-section [schoolName]="'菲律宾宿务IMS Academy'" [supportTitle]="'深圳总部 + 宿务驻点支持'" [supportBadge]="'深圳总部 + 宿务驻点'"></app-sida-why-section>
+        <section class="section-block" id="faq"><div class="section-heading"><span>FAQ</span><h2>报名前最容易算错的规则</h2></div><div class="faq-section"><details *ngFor="let item of faqs"><summary>{{ item.title }}</summary><p>{{ item.text }}</p></details></div></section>
       </main>
 
-      <aside class="side-panel" aria-label="IMS Academy页面快捷导航">
-        <div class="current-card">
-          <span>IMS Academy</span>
-          <strong class="side-price">{{ fourWeekStartingText }}</strong>
-          <p>Essential ESL 4 + 4人房 + 注册费，SSP、签证、教材、水电、押金等另计。</p>
-          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
-            估算费用
-            <mat-icon>calculate</mat-icon>
-          </a>
-        </div>
-        <nav class="section-nav">
-          <a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            {{ item.label }}
-          </a>
-        </nav>
-      </aside>
+      <aside class="side-panel"><div class="current-card"><span>IMS Academy</span><strong class="side-price">{{ fourWeekStartingText }}</strong><p>含不可减注册费；当地比索费用另计。</p><a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">开始完整报价<mat-icon>calculate</mat-icon></a></div><nav class="section-nav"><a href="#courses" (click)="scrollToSection('courses', $event)"><mat-icon>menu_book</mat-icon>课程</a><a href="#rooms" (click)="scrollToSection('rooms', $event)"><mat-icon>hotel</mat-icon>房型</a><a href="#promotions" (click)="scrollToSection('promotions', $event)"><mat-icon>sell</mat-icon>优惠</a><a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>报价</a><a href="#local-fees" (click)="scrollToSection('local-fees', $event)"><mat-icon>receipt_long</mat-icon>当地费</a><a href="#gallery" (click)="scrollToSection('gallery', $event)"><mat-icon>photo_library</mat-icon>相册</a></nav></aside>
     </div>
-
-    <div class="mobile-bottom-actions" aria-label="IMS Academy手机端固定操作">
-      <a href="#quote" (click)="scrollToSection('quote', $event)">
-        <mat-icon>calculate</mat-icon>
-        估算费用
-      </a>
-      <a routerLink="/about-sida/contact">
-        <mat-icon>support_agent</mat-icon>
-        联系顾问
-      </a>
-    </div>
+    <div class="mobile-bottom-actions"><a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>完整报价</a><a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>联系顾问</a></div>
   </div>
 </app-cia-school>

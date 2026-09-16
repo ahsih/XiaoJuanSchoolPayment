@@ -1136,12 +1136,12 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get localFees(): LocalFee[] {
     const included=groupLocalFees(this.activeStudents.map(student=>({localFees:student.localFees.filter(f=>!f.excluded).map(f=>({item:f.item,unitLabel:f.amount,quantity:f.quantity,total:f.total,note:f.note}))})))
       .map(f=>({item:f.item,amount:f.unitLabel,quantity:f.quantity,total:f.total,note:f.note}));
-    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate).fees.filter(f=>f.excluded);
+    const optional=estimateCgLocalFees(this.stayWeeks,this.includeAirportPickup,this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate,this.students[0].textbookCount,this.students[0].textbookUnitPrice).fees.filter(f=>f.excluded);
     return [...included,...optional];
   }
 
   private get localFeeEstimate() {
-    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate);
+    return estimateCgLocalFees(this.stayWeeks, this.includeAirportPickup, this.roomTotalWeeks,this.students[0].visaType,this.localFeeRules,this.quotePlan.startDate,this.students[0].textbookCount,this.students[0].textbookUnitPrice);
   }
 
   get localFeesTotal(): number {
@@ -1183,7 +1183,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     const defaultImageFeeIntro = this.initialContent.quoteImageSettings.localFeeIntro;
     const imageFeeIntro = this.quoteImageSettings.localFeeIntro === defaultImageFeeIntro ? this.localFeeEstimateNote : this.quoteImageSettings.localFeeIntro;
     const quote=buildPhilippinesDetailedQuote({fullFeeDetails:true,localFeeTableLayout:'web',schoolCode:'CG斯巴达校区',schoolName:'CG斯巴达校区',filePrefix:'CG斯巴达校区',heroSrc:'/assets/philippines/cg-sparta-campus-hero.webp',weeks:this.totalWeeks,startDate:this.selectedStartDate,usdToCny:this.usdToCny,totalUsd:this.quoteUsd,paymentItems,
-      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
+      localFeeItems:this.includedLocalFees.map(f=>{const id=this.feeRule(f.item)?.id??'';return {label:f.item,unit:f.amount,quantity:this.formatFeeQuantity(f.quantity),amount:this.formatPhp(f.total),note:id==='books'?f.note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),localFeeTotal:this.localFeesTotal,localCurrencyName:'比索',localFeeCny:Math.round(this.localFeesTotal/this.phpPerCny),localFeeNote:imageFeeIntro,optionalFeeItems:this.optionalFeeItems.map(f=>{const id=this.feeRule(f.label)?.id??'';return {...f,note:this.quoteImageSettings.localFeeNotes[id]||f.note};}),ruleNotes:this.quoteImageSettings.footerNotes});
     const importantNotes=[...warnings,...short,...prorated,...long,...this.quoteImageSettings.footerNotes];
     const result=applySchoolQuoteImageLayout({...quote,importantNotes},'CG斯巴达校区',this.totalWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
     return {...result,headingText:this.quoteHeading,fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,

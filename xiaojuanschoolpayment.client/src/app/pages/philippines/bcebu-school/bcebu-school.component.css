@@ -60,6 +60,34 @@
   color: #e94f16;
 }
 
+:host .promotion-policy {
+  margin-top: 24px;
+  padding: 26px;
+  border: 1px solid #ead9bd;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fffaf2 0%, #fff 68%);
+}
+
+:host .promotion-policy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .promotion-policy-grid article {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #efdfc8;
+  border-radius: 14px;
+  background: #fff;
+}
+
+:host .promotion-policy-grid span { display: block; color: #93643a; font-size: 13px; font-weight: 700; }
+:host .promotion-policy-grid strong { display: block; margin-top: 7px; color: #174f3d; font-size: 18px; line-height: 1.35; }
+:host .promotion-policy-grid p { margin: 10px 0 0; color: #65574d; font-size: 13px; line-height: 1.7; }
+:host .promotion-settlement-note { margin: 16px 0 0; padding: 13px 16px; border-radius: 10px; background: #fff3e4; color: #734b2e; line-height: 1.7; }
+
 :host .local-fee-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
@@ -101,6 +129,9 @@
 }
 
 @media (max-width: 680px) {
+  :host .promotion-policy { padding: 20px 16px; }
+  :host .promotion-policy-grid { grid-template-columns: 1fr; }
+
   :host .full-width-quote {
     margin-top: 18px;
   }

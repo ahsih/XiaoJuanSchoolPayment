@@ -1,526 +1,255 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
+import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
+import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
+import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
+import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
+import { CiaContentConfig, CiaLocalFeeRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
+import { cloneImsContentConfig, createDefaultImsContentConfig } from './ims-content-config';
+import {
+  IMS_ADDITIONAL_CLASSES, IMS_COURSES, IMS_LONG_STAY_DISCOUNTS, IMS_OFF_SEASON_CLASS_EXCHANGE_PERIODS,
+  IMS_OFF_SEASON_SOCIAL_REQUIREMENTS, IMS_PHP_PER_CNY, IMS_REGISTRATION_FEE, IMS_ROOMS, IMS_SIDA_RATE,
+  IMS_WEEK_OPTIONS, ImsCourse, ImsRoom,
+} from './ims-pricing';
+import { ImsBlockPromotion, ImsStudentQuote, validateImsFamily } from './ims-student-quote';
 
-type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
-type CourseId =
-  | 'essential-esl-4'
-  | 'premium-esl'
-  | 'intensive-esl'
-  | 'senior-esl'
-  | 'exam-business'
-  | 'working-holiday'
-  | 'junior-esl-6'
-  | 'parents-esl';
-type RoomId = 'quad' | 'triple' | 'twin' | 'single';
-
-interface QuickInfo {
-  icon: string;
-  label: string;
-  value: string;
-  note: string;
-}
-
-interface GalleryImage {
-  category: Exclude<GalleryCategory, '全部'>;
-  title: string;
-  description: string;
-  src: string;
-}
-
-interface BasicInfoRow {
-  label: string;
-  value: string;
-}
-
-interface TextCard {
-  title: string;
-  text: string;
-}
-
-interface CourseOption {
-  id: CourseId;
-  name: string;
-  type: string;
-  lessons: string;
-  suitable: string;
-  fourWeekFeesUsd: Record<RoomId, number>;
-}
-
-interface RoomOption {
-  id: RoomId;
-  name: string;
-  shortName: string;
-  note: string;
-}
-
-interface FeeRow {
-  item: string;
-  amount: string;
-  note: string;
-}
-
-interface ScheduleItem {
-  time: string;
-  title: string;
-  text: string;
-}
-
-interface SideNavItem {
-  label: string;
-  target: string;
-  icon: string;
-}
-
-interface SourceLink {
-  label: string;
-  url: string;
-}
+type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '活动';
+interface GalleryItem { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; contentType?: string; }
+interface InfoCard { icon?: string; title: string; text: string; }
 
 @Component({
-  selector: 'app-ims-school',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './ims-school.component.html',
-  styleUrls: [
-    '../cebu-school-detail-layout.css',
-    '../cebu-school-detail-content.css',
-    '../cebu-school-detail-responsive.css',
-    '../ev-school/ev-school-detail.component.css',
-    './ims-school.component.css',
-  ],
+  selector: 'app-ims-school', standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, SchoolQuotePlanComponent, QuoteImageDownloadButtonComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], templateUrl: './ims-school.component.html',
+  styleUrls: ['../cebu-school-detail-layout.css', '../cebu-school-detail-content.css', '../cebu-school-detail-responsive.css', '../ev-school/ev-school-detail.component.css', '../school-quote-rollout.css', '../philippines-local-fee-table.css', '../../../components/school-group-quote.css', './ims-school.component.css'],
 })
-export class ImsSchoolComponent {
-  readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
+export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly schoolService = inject(SchoolService);
+  private readonly schoolContentService = inject(SchoolContentService);
+  private readonly exchangeRateService = inject(ExchangeRateService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly previewHost = inject(ElementRef<HTMLElement>);
+  private readonly initialContent = createDefaultImsContentConfig();
+  private currentContentConfig = cloneImsContentConfig(this.initialContent);
+  private previewContent?: CiaContentConfig;
+  private previewTarget?: CiaPreviewTarget;
+  private previewHighlightTarget?: CiaPreviewTarget;
+  private previewFocusTimer?: ReturnType<typeof setTimeout>;
+
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+  readonly contentConfig = () => this.currentContentConfig;
+  readonly weekOptions = IMS_WEEK_OPTIONS;
+  additionalClassOptions: Array<{ id: string; name: string; price4w: number }> = IMS_ADDITIONAL_CLASSES.map((item) => ({ ...item }));
+  readonly socialRequirements = IMS_OFF_SEASON_SOCIAL_REQUIREMENTS;
+  readonly classExchangePeriods = IMS_OFF_SEASON_CLASS_EXCHANGE_PERIODS;
+  readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '活动'];
   selectedGalleryCategory: GalleryCategory = '全部';
-
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  selectedCourseId: CourseId = 'essential-esl-4';
-  selectedRoomId: RoomId = 'quad';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
-  includeGuardianService = false;
+  courses: ImsCourse[] = IMS_COURSES.map((item) => ({ ...item, prices: { ...item.prices }, allowedWeeks: [...item.allowedWeeks] }));
+  rooms: ImsRoom[] = IMS_ROOMS.map((item) => ({ ...item, prices: { ...item.prices } }));
+  registrationFee = IMS_REGISTRATION_FEE;
+  sidaRate = IMS_SIDA_RATE;
+  lowSeasonPerBlock = 300;
+  longStayDiscounts: Array<{ min: number; max: number; amount: number }> = IMS_LONG_STAY_DISCOUNTS.map((item) => ({ ...item }));
+  localFeeRules: CiaLocalFeeRule[] = structuredClone(this.currentContentConfig.localFees);
+  guardianServiceRate = 450;
+  schoolManagementRate = 2100;
+  quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.currentContentConfig.quoteImageSettings);
+  readonly students: ImsStudentQuote[] = [new ImsStudentQuote(this)];
+  quoteMode: 'single' | 'group' = 'single';
+  private requestedStudentCount = 2;
   quoteCalculated = false;
+  usdToCny = 7.2;
+  readonly phpPerCny = IMS_PHP_PER_CNY;
+  exchangeRateDate = '';
+  usingLiveExchangeRate = false;
 
-  readonly registrationFeeUsd = 100;
-  readonly guardianServiceFourWeeksUsd = 450;
-  readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
-    1: 0.3,
-    2: 0.6,
-    3: 0.8,
-  };
-
-  readonly quickInfo: QuickInfo[] = [
-    {
-      icon: 'location_city',
-      label: '所在区域',
-      value: 'Banilad / Ma. Luisa',
-      note: 'Banilad校区位于宿务市区北部生活圈，公开资料强调Maria Luisa周边安全与便利性。',
-    },
-    {
-      icon: 'groups',
-      label: '学校定位',
-      value: '韩资多国籍综合校',
-      note: '课程覆盖ESL、IELTS、TOEIC、Business、Working Holiday、Senior、Junior和Parents ESL。',
-    },
-    {
-      icon: 'school',
-      label: '学习体系',
-      value: '12阶段水平管理',
-      note: '公开资料提到入学分级、定期测试和按水平配置教材与老师，适合中长期稳定学习。',
-    },
-    {
-      icon: 'home_work',
-      label: '住宿',
-      value: '校内1-4人房',
-      note: '公开2026价格表按1人、2人、3人、4人房计算，套餐价含学费和住宿。',
-    },
-    {
-      icon: 'menu_book',
-      label: '主力课程',
-      value: 'ESL + 考试 + 亲子',
-      note: '成人ESL、雅思/多益、商务、Senior、Junior、Parents ESL都能在同一校区内比较。',
-    },
-    {
-      icon: 'paid',
-      label: '公开价格',
-      value: 'USD套餐价',
-      note: '本页报价器按近期公开2026美元套餐表估算；学校官方费用页另有韩元口径，报名时需核对正式报价。',
-    },
+  readonly quickInfo: InfoCard[] = [
+    { icon: 'location_city', title: 'Banilad城市校区', text: '位于宿务市Banilad / Maria Luisa生活圈，上课、住宿和学生服务集中。' },
+    { icon: 'groups', title: '约153人住宿容量', text: '资料列课堂容量约180人，适合成人、考试、青少年及亲子共同安排。' },
+    { icon: 'schedule', title: '45分钟课堂', text: '一对一与团体课每节45分钟，课间10分钟；按课程选择每天课量。' },
+    { icon: 'home_work', title: '校内1–4人房', text: '住宿费与课程费分开报价，并使用1、2、3、4、8、12、16、20、24周明确价格。' },
   ];
-
-  readonly galleryImages: GalleryImage[] = [
-    {
-      category: '校区',
-      title: 'IMS Banilad校园外观',
-      description: 'Banilad / Ma. Luisa生活圈，适合想住宿务市区又重视安全感的学生。',
-      src: 'https://www.ausbiznet.com/wp/wp-content/uploads/2018/09/cebu_ims-banilad00.jpg',
-    },
-    {
-      category: '生活',
-      title: 'IMS校园与泳池参考',
-      description: '校内学习、住宿和公共空间集中，适合成人、亲子和青少年中长期学习。',
-      src: 'https://www.eslpass.com/upload/tw/products/PIC_thumb_20241212231744.webp',
-    },
-    {
-      category: '教室',
-      title: '一对一与小组教室',
-      description: 'IMS课程以Man-to-Man和Group组合为主，ESL、IELTS、TOEIC等方向都有对应课表。',
-      src: 'https://cdn-ak.f.st-hatena.com/images/fotolife/g/goryugaku/20191030/20191030024300.jpg',
-    },
-    {
-      category: '校区',
-      title: '学生服务与接待空间',
-      description: '适合需要学校统一管理、生活支持和多课程路线选择的学生。',
-      src: 'https://cebu-sakura.com/uploads/shop/7f6fe82003d9408eeea67c46502faf3b.jpg',
-    },
-    {
-      category: '住宿',
-      title: '校内宿舍参考',
-      description: '公开资料列1人、2人、3人、4人房，房型需按入学日和性别空位确认。',
-      src: 'https://www.ryugaku-onebridge.com/api/pict/5804',
-    },
-    {
-      category: '生活',
-      title: '餐厅与自习生活',
-      description: '公开资料提到3餐、学生休息区、自习空间、清洁和洗衣支持。',
-      src: 'https://cebu21.jp/school_visit/ims/img/ph_ims_17.jpg',
-    },
+  readonly highlights: InfoCard[] = [
+    { title: '完整课程路线', text: '从Essential、Premium、Intensive ESL，到Business、Working Holiday、IELTS、TOEIC、TOEFL、SAT、Senior与亲子课程。' },
+    { title: '亲子关系按人核算', text: '家长和孩子分别注册、分别购买课程；Parents ESL的一对一转课不改变任何一方的学费或注册费。' },
+    { title: '优惠逐段看得懂', text: '报价器把每个连续4周段的2+2、淡季立减资格、长期优惠和思达95折分开列出。' },
   ];
-
-  readonly basicInfo: BasicInfoRow[] = [
-    { label: '学校名称', value: '菲律宾宿务IMS Academy' },
-    { label: '英文名称', value: 'IMS Academy Cebu / International Maekyung School Academy' },
-    { label: '校区', value: 'Banilad Campus / Ayala Campus（本页以Banilad公开资料和费用口径整理）' },
-    { label: '地址', value: 'Paseo Saturnino St, Banilad, Ma. Luisa, Cebu City, Philippines' },
-    { label: '学校规模', value: '官方资料列住宿容量约153人、课堂容量约180人。' },
-    { label: '设施', value: '1:1教室、小组教室、Junior教室、图书馆、自习室、食堂、休息区、宿舍和Wi-Fi。' },
-    { label: '4周起价', value: 'USD 1,500起：Essential ESL 4 + 4人房 + 注册费USD 100。' },
+  readonly fitCards: InfoCard[] = [
+    { title: '适合：课程目标不同的同行家庭', text: '成人、家长与孩子可以独立选课程、房型和日期，并明确亲子转课关系。' },
+    { title: '适合：需要较多一对一的学生', text: 'Essential 4–6、Junior 6–9、SAT等课程可按目标选择不同一对一强度。' },
+    { title: '先比较：想要海边度假校园', text: 'IMS是Banilad城市型校区，不是Mactan海边度假村型学校。' },
   ];
-
-  readonly highlights: TextCard[] = [
-    {
-      title: 'Banilad生活圈，城市便利度高',
-      text: 'IMS Banilad靠近Ma. Luisa、Streetscape、Asmara和Gaisano Country Mall一带，适合想在市区安全生活圈学习的人。',
-    },
-    {
-      title: '课程路线很完整',
-      text: '成人ESL、IELTS、TOEIC、Business、Working Holiday、Senior、Junior和Parents ESL都能选择，适合家庭成员目标不同的报名组合。',
-    },
-    {
-      title: '适合低日本比例和多国籍环境偏好',
-      text: '第三方公开资料把IMS描述为韩国资本、多国籍学校，日本学生比例相对不高，适合想避开日系大比例环境的学生。',
-    },
+  readonly schedule = [
+    { time: '07:00–08:00', title: '早餐与早间准备', text: '具体早课和测试安排以入学后的课程表为准。' },
+    { time: '08:00–12:00', title: '上午课程', text: '一对一与团体课按课程组合交错安排，每节45分钟、课间10分钟。' },
+    { time: '12:00–13:00', title: '午餐', text: '校内学生按学校餐厅安排；走读午餐为独立可选项目。' },
+    { time: '13:00–17:50', title: '下午课程', text: '继续完成课程组合；保证班、考试课程和亲子课程按各自课表执行。' },
+    { time: '晚间', title: '自习、活动与免费晚间托管', text: '免费晚间托管、Guardian Service和国际学生学校管理服务是不同项目，资格与内容须学校确认。' },
   ];
-
-  readonly suitableFor: TextCard[] = [
-    {
-      title: '想住Banilad市区生活圈',
-      text: '如果你希望平日学习、周末购物和餐饮都比较方便，IMS比偏远度假村型学校更贴近日常宿务生活。',
-    },
-    {
-      title: '家长、孩子、成人目标不同',
-      text: 'Junior、Parents、Senior、ESL和考试路线可以放在同一学校比较，亲子或多人同行更容易统一安排。',
-    },
-    {
-      title: '想要一对一课量和考试选择',
-      text: 'Premium ESL、Intensive ESL、IELTS、TOEIC和保证班等路线适合从口语到分数目标逐步升级。',
-    },
+  readonly faqs = [
+    { title: '注册费能用优惠免掉吗？', text: '不能。每名注册学生一次性100美元，包括家长和孩子；学校活动、思达95折、返校状态和其他促销都不能减少注册费。' },
+    { title: '2+2是不是四周价格除以二？', text: '不是。必须分别使用所选课程明确2周课程价和所选房型明确2周住宿价；同一次连续学习最多参加一次。' },
+    { title: '第一段2+2，第二段减300美元可以吗？', text: '可以，只要两个4周段分别符合资格。同一个4周段不能同时选择两项活动。' },
+    { title: '家长可以只陪读不上课吗？', text: '不能。亲子报名家长必须注册并购买Parents ESL；不想上3节一对一时，可按规则转给选择Junior ESL 6的孩子。' },
+    { title: '当地费用合计包含什么？', text: '官方TOTAL AMOUNT包含SSP、E-Card、教材、学生证、可退押金、水电空调、适用的签证延长、9周起ACR I-Card和一次接机；送机、走读午餐、超额用电与额外课程另列。' },
   ];
-
-  readonly lessSuitableFor: TextCard[] = [
-    {
-      title: '只想度假海边校园',
-      text: 'IMS是Banilad市区校区，不是Mactan海边度假型学校；如果海景和度假感优先，可比较Cebu Blue Ocean或Genius。',
-    },
-    {
-      title: '需要完全统一币种报价',
-      text: '公开资料存在官方韩元表与第三方美元表两种口径，本页可做预算，但正式报名一定要拿学校当期invoice确认。',
-    },
-    {
-      title: '想要最严格斯巴达管理',
-      text: 'IMS更像综合型市区学校；若需要高度管控、强制晚自习和更严格门禁，可同步比较CG斯巴达校区、EV SP1或CELLA Uni。',
-    },
+  private readonly builtInGallery: GalleryItem[] = [
+    { category: '校园', title: 'IMS Banilad校园', description: '学校资料封面中的IMS城市校区与泳池景观。', src: '/assets/ims/campus-hero.webp' },
+    { category: '校园', title: 'IMS师生与校园团队', description: '多国籍学生与校园团队实景。', src: '/assets/ims/campus-team.webp' },
+    { category: '教室', title: '一对一与学习空间', description: '课程以一对一教学为核心，并配合团体互动与自习。', src: '/assets/ims/facility-classroom.webp' },
+    { category: '校园', title: '泳池与公共设施', description: '校内公共活动空间，具体开放安排以学校管理为准。', src: '/assets/ims/facility-pool.webp' },
+    { category: '校园', title: '运动设施', description: '校园运动与休闲设施参考。', src: '/assets/ims/facility-gym.webp' },
+    { category: '住宿', title: '校内宿舍', description: '1–4人房按价目表独立计价，空房按日期与性别确认。', src: '/assets/ims/dorm-room.webp' },
+    { category: '活动', title: '学生课外活动', description: '学校活动、城市体验与同学交流。', src: '/assets/ims/student-activities.webp' },
+    { category: '活动', title: 'IMS学生社区', description: '毕业、活动与多国籍学生共同学习生活。', src: '/assets/ims/student-community.webp' },
   ];
+  galleryItems: GalleryItem[] = this.builtInGallery.map((item) => ({ ...item }));
 
-  readonly courses: CourseOption[] = [
-    {
-      id: 'essential-esl-4',
-      name: 'Essential ESL 4',
-      type: 'ESL / 轻量',
-      lessons: '4节Man-to-Man + optional morning/night class',
-      suitable: '想控制预算、以一对一口语基础为主的成人学生。',
-      fourWeekFeesUsd: { quad: 1400, triple: 1450, twin: 1550, single: 1700 },
-    },
-    {
-      id: 'premium-esl',
-      name: 'Premium ESL',
-      type: 'ESL / 标准',
-      lessons: 'Morning + 4节Man-to-Man + 4节Group + Night',
-      suitable: '想兼顾一对一、互动小组和全天学习节奏的学生。',
-      fourWeekFeesUsd: { quad: 1700, triple: 1750, twin: 1850, single: 2000 },
-    },
-    {
-      id: 'intensive-esl',
-      name: 'Intensive ESL',
-      type: 'ESL / 强化',
-      lessons: 'Morning + 6节Man-to-Man + 3节Group + Night',
-      suitable: '想把一对一课量拉高、短期集中提升口语输出的人。',
-      fourWeekFeesUsd: { quad: 1900, triple: 1950, twin: 2050, single: 2200 },
-    },
-    {
-      id: 'senior-esl',
-      name: 'Senior ESL',
-      type: 'Senior / 慢节奏',
-      lessons: 'Senior 4或5：以Man-to-Man为主，节奏更柔和',
-      suitable: '适合熟龄学生、退休体验、慢速口语和旅行英文需求。',
-      fourWeekFeesUsd: { quad: 1500, triple: 1550, twin: 1650, single: 1800 },
-    },
-    {
-      id: 'exam-business',
-      name: 'IELTS / TOEIC / Business / Power Speaking',
-      type: '考试与专项',
-      lessons: '4节Man-to-Man + 4节Group（按方向配置）',
-      suitable: '有考试、商务或输出训练目标，想使用更专项课表的学生。',
-      fourWeekFeesUsd: { quad: 1900, triple: 1950, twin: 2050, single: 2200 },
-    },
-    {
-      id: 'working-holiday',
-      name: 'Working Holiday',
-      type: '就业准备',
-      lessons: '4节Man-to-Man + 4节Group',
-      suitable: '准备打工度假、面试、履历和职场沟通的学生。',
-      fourWeekFeesUsd: { quad: 1900, triple: 1950, twin: 2050, single: 2200 },
-    },
-    {
-      id: 'junior-esl-6',
-      name: 'Junior ESL 6',
-      type: 'Junior / 青少年',
-      lessons: 'Junior Man-to-Man + Group组合',
-      suitable: '适合青少年英文基础、口语输出和暑寒假学习安排。',
-      fourWeekFeesUsd: { quad: 2000, triple: 2050, twin: 2150, single: 2300 },
-    },
-    {
-      id: 'parents-esl',
-      name: 'Parents ESL',
-      type: 'Guardian / 家长',
-      lessons: '3节Man-to-Man + 1节Group',
-      suitable: '陪读家长轻量学习英文，同时配合孩子在校学习生活。',
-      fourWeekFeesUsd: { quad: 1500, triple: 1550, twin: 1650, single: 1800 },
-    },
-  ];
-
-  readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: '4人房', shortName: '4人房', note: '预算最低，适合同性同行或能接受多人房的学生。' },
-    { id: 'triple', name: '3人房', shortName: '3人房', note: '兼顾价格和生活空间，常见于成人和青少年报名。' },
-    { id: 'twin', name: '2人房', shortName: '2人房', note: '预算中等，适合想降低室友人数的人。' },
-    { id: 'single', name: '1人房', shortName: '单人房', note: '价格最高，适合重视隐私、睡眠和长期学习稳定度的人。' },
-  ];
-
-  readonly specialPrograms: FeeRow[] = [
-    {
-      item: 'Junior ESL 8 / 9',
-      amount: 'USD 2,400 / 2,600 起',
-      note: '4周4人房参考；1人房公开价分别为USD 2,700 / 2,900，适合需要更高课量的青少年。',
-    },
-    {
-      item: 'IELTS Guarantee 12周',
-      amount: 'USD 6,000 起',
-      note: '4人房12周套餐参考；公开资料列1人房USD 6,900、2人房USD 6,450、3人房USD 6,150。',
-    },
-    {
-      item: 'TOEIC Guarantee 12周',
-      amount: 'USD 5,850 起',
-      note: '4人房12周套餐参考；公开资料列1人房USD 6,750、2人房USD 6,300、3人房USD 6,000。',
-    },
-    {
-      item: 'Guardian Service',
-      amount: 'USD 450 / 4周',
-      note: '公开资料列未成年学生可选监护服务；实际是否必须购买需按年龄和报名条件确认。',
-    },
-  ];
-
-  readonly localFees: FeeRow[] = [
-    { item: '注册费', amount: 'USD 100', note: '通常报名时收取；本页报价器已加入。' },
-    { item: 'SSP', amount: 'PHP 8,000', note: '菲律宾Special Study Permit，按公开2026费用资料整理。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,000', note: '近期公开资料列为额外政府费用，需按当期政策确认。' },
-    { item: '签证延长', amount: 'PHP 5,050起', note: '5-7周约PHP 5,050；8-11周约PHP 11,850；长期继续递增。' },
-    { item: 'ACR-I Card', amount: 'PHP 3,500', note: '通常9周以上需要，按公开费用资料整理。' },
-    { item: '学生ID', amount: 'PHP 200', note: '到校当地费用。' },
-    { item: '教材费', amount: '约PHP 3,000', note: '按课程和等级不同会变化。' },
-    { item: '押金', amount: 'PHP 3,000', note: '离校时按房间检查、水电等情况结算退还。' },
-    { item: '电费', amount: 'PHP 1,680 / 4周', note: '另有空调用电按表计或实际使用规则收取。' },
-    { item: '水费 / 设施费', amount: 'PHP 1,400 / 4周', note: '公开2026资料列为每4周当地费用。' },
-    { item: '接机 / 送机', amount: 'PHP 1,000 / 次', note: '机场接送通常按航班、抵达日和学校规则确认。' },
-    { item: '提前或延后住宿', amount: 'PHP 1,000 / 晚', note: '公开资料列含餐食；是否可安排需看宿舍空位。' },
-  ];
-
-  readonly scheduleItems: ScheduleItem[] = [
-    {
-      time: '07:00',
-      title: '早餐与晨间准备',
-      text: '校内住宿和三餐让学生减少通勤压力，适合想把精力放在课程和复习上的人。',
-    },
-    {
-      time: 'Morning',
-      title: '晨间课或第一轮一对一',
-      text: 'Premium / Intensive等ESL课程可搭配Morning Class，考试和专项课程则按目标配置。',
-    },
-    {
-      time: 'Daytime',
-      title: 'Man-to-Man + Group循环',
-      text: 'IMS课程核心是一对一纠错与小组输出，适合先补弱项、再练表达与讨论。',
-    },
-    {
-      time: 'Evening',
-      title: 'Night Class / 自习 / 模考',
-      text: '公开资料提到自习空间、定期测试和考试课程管理，适合中长期保持学习节奏。',
-    },
-  ];
-
-  readonly faqs: TextCard[] = [
-    {
-      title: 'IMS和CIA怎么选？',
-      text: 'CIA更像大型度假综合校区，设施和半斯巴达系统更强；IMS更适合想住Banilad生活圈、需要ESL/考试/亲子/Senior多路线，并接受韩资多国籍氛围的人。',
-    },
-    {
-      title: '页面报价是否等于正式invoice？',
-      text: '不是。本页按公开2026美元套餐表估算课程和住宿，加上注册费；SSP、签证、教材、水电、押金、接送、机票、保险和个人花费另计。',
-    },
-    {
-      title: '为什么资料里有韩元和美元两种价格？',
-      text: 'IMS官方费用页可见韩元口径，第三方公开2026资料给出美元套餐表。本页为了和其他宿务学校页面便于比较，先用美元表做预算，并保留官方资料链接。',
-    },
-    {
-      title: '亲子或未成年可以报名吗？',
-      text: 'IMS有Junior ESL和Parents ESL路线，公开资料也提到Guardian Service。未成年单独或亲子报名要按年龄、监护、房型和开课日正式确认。',
-    },
-  ];
-
-  readonly sideNavItems: SideNavItem[] = [
-    { label: '校区亮点', target: 'highlights', icon: 'stars' },
-    { label: '课程费用', target: 'courses', icon: 'payments' },
-    { label: '快速报价', target: 'quote', icon: 'calculate' },
-    { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
-  ];
-
-  readonly mobileAnchors: SideNavItem[] = [
-    { label: '图片', target: 'gallery', icon: 'photo_library' },
-    { label: '课程', target: 'courses', icon: 'menu_book' },
-    { label: '报价', target: 'quote', icon: 'calculate' },
-    { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'IMS Academy官方首页', url: 'https://www.ims7.com/' },
-    { label: 'IMS Academy官方Banilad校区介绍', url: 'https://www.ims7.com/pp/sub/03/03_eng.php' },
-    { label: 'IMS Academy官方费用页', url: 'https://www.ims7.com/pp/sub/05/01_eng.php' },
-    { label: 'IMS Academy官方学校设施资料', url: 'https://www.ims7.com/1812/sub/01/01_eng.php' },
-    { label: 'IMS Academy官方ESL课程资料', url: 'https://www.ims7.com/1812/sub/02/03_eng.php' },
-    { label: 'IMS Academy官方IELTS课程资料', url: 'https://www.ims7.com/1812/sub/02/05_eng.php' },
-    { label: 'IMS Academy 2026公开美元费用资料', url: 'https://cebu-english.com/school/ims/' },
-    { label: 'BEACL IMS费用与课程参考', url: 'https://beacl.com/school/cebu/ims/' },
-  ];
-
-  get filteredGalleryImages(): GalleryImage[] {
-    if (this.selectedGalleryCategory === '全部') {
-      return this.galleryImages;
-    }
-
-    return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
+  ngOnInit(): void {
+    this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
+    this.loadPublishedContent();
+    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
+      if (rates.usdToCny > 0) { this.usdToCny = rates.usdToCny; this.exchangeRateDate = rates.date; this.usingLiveExchangeRate = true; }
+    });
   }
+  ngAfterViewInit(): void { if (this.isEditorPreview) { this.previewHost.nativeElement.classList.add('ims-editor-preview'); window.parent.postMessage({ type: 'ims-content-ready' }, window.location.origin); } }
+  ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
 
-  get selectedCourse(): CourseOption {
-    return this.courses.find((course) => course.id === this.selectedCourseId) ?? this.courses[0];
+  @HostListener('window:message', ['$event'])
+  applyEditorPreview(event: MessageEvent): void {
+    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) return;
+    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
+    if (message?.type !== 'ims-content-preview' || !message.content) return;
+    this.applyContentConfig(message.content);
+    if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
+    this.queuePreviewFocus(message.scroll === true);
   }
-
-  get selectedRoom(): RoomOption {
-    return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
+  @HostListener('click', ['$event'])
+  selectPreviewEditorItem(event: MouseEvent): void {
+    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
+    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
+    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
+    if (!isCiaPreviewTarget(target)) return;
+    this.previewTarget = target; this.queuePreviewFocus(false);
+    window.parent.postMessage({ type: 'ims-content-select', ...target }, window.location.origin);
   }
-
-  get studyStayUsd(): number {
-    const fourWeekFee = this.selectedCourse.fourWeekFeesUsd[this.selectedRoomId];
-    const ratio = this.shortTermRatios[this.selectedWeeks];
-
-    if (ratio) {
-      return Math.round(fourWeekFee * ratio);
-    }
-
-    return Math.round((fourWeekFee / 4) * this.selectedWeeks);
+  isPreviewHighlighted(kind: string, id: string): boolean { return this.isEditorPreview && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id; }
+  private queuePreviewFocus(scroll: boolean): void {
+    if (!this.isEditorPreview || !this.previewTarget) return;
+    clearTimeout(this.previewFocusTimer);
+    this.previewFocusTimer = setTimeout(() => {
+      const target = this.previewTarget!; const result = resolveCiaPreviewTarget(this.previewHost.nativeElement, target); const fallback = result.elements[0]?.dataset;
+      this.previewHighlightTarget = result.exact ? target : fallback ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
+      for (const element of result.elements) if (scroll) revealCiaPreviewElement(element);
+      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
+      const item = target.kind === 'course' ? this.previewContent?.courses.find((entry) => entry.id === target.id) : target.kind === 'room' ? this.previewContent?.rooms.find((entry) => entry.id === target.id) : target.kind === 'fee' ? this.previewContent?.localFees.find((entry) => entry.id === target.id) : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find((entry) => entry.id === target.id) : undefined;
+      const status = item?.enabled === false ? '此项已停用，公开页面不会显示；已定位到所属板块。' : result.exact ? '橙色框内就是对应的公开页面内容。' : '当前试算未显示此项，已定位到所属板块。';
+      window.parent.postMessage({ type: 'ims-content-located', target, status }, window.location.origin);
+    }, 80);
   }
-
-  get guardianServiceUsd(): number {
-    if (!this.includeGuardianService) {
-      return 0;
-    }
-
-    const ratio = this.shortTermRatios[this.selectedWeeks];
-    if (ratio) {
-      return Math.round(this.guardianServiceFourWeeksUsd * ratio);
-    }
-
-    return Math.round((this.guardianServiceFourWeeksUsd / 4) * this.selectedWeeks);
+  private readSessionPreview(): CiaContentConfig | null {
+    if (typeof sessionStorage === 'undefined' || !this.isEditorPreview) return null;
+    try { const raw = sessionStorage.getItem('ims-content-preview'); if (!raw) return null; const value = JSON.parse(raw) as CiaContentConfig; return value?.schemaVersion === 1 && value.schoolCode === 'IMS' ? value : null; } catch { return null; }
   }
-
-  get quoteUsd(): number {
-    return this.registrationFeeUsd + this.studyStayUsd + this.guardianServiceUsd;
+  private loadPublishedContent(): void {
+    this.schoolService.getSchools({ name: 'IMS' }).pipe(switchMap((schools) => {
+      const school = schools.find((item) => item.name === '菲律宾宿务IMS Academy') ?? schools.find((item) => item.name.toLowerCase().includes('ims')) ?? schools[0];
+      if (!school?.id) return EMPTY;
+      return forkJoin({ published: this.schoolContentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))), photos: this.schoolService.getSchoolPhotos({ schoolId: school.id, isActive: true }).pipe(catchError(() => of([]))) });
+    }), catchError(() => EMPTY)).subscribe(({ published, photos }) => {
+      const preview = this.readSessionPreview(); if (preview) this.applyContentConfig(preview); else if (published?.content) this.applyContentConfig(published.content); this.applyGalleryPhotos(photos);
+    });
   }
-
-  get studyStayUsdText(): string {
-    return this.formatUsd(this.studyStayUsd);
+  private applyContentConfig(value: CiaContentConfig): void {
+    if (value?.schemaVersion !== 1 || value.schoolCode !== 'IMS') return;
+    const content = cloneImsContentConfig(value); this.currentContentConfig = content; this.previewContent = content;
+    this.courses = content.courses.filter((item) => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => ({ id: item.id, name: item.name, category: (item.courseType || 'ESL') as ImsCourse['category'], schedule: item.schedule, suitable: item.suitable || item.note, prices: Object.fromEntries(Object.entries(item.feeByWeeks ?? { 4: item.tuition }).map(([weeks, amount]) => [Number(weeks), amount])) as ImsCourse['prices'], allowedWeeks: (item.allowedWeeks ?? Object.keys(item.feeByWeeks ?? { 4: item.tuition }).map(Number)) as ImsCourse['allowedWeeks'] }));
+    this.rooms = content.rooms.filter((item) => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => ({ id: item.id, name: item.label || item.name, note: item.note, prices: Object.fromEntries(Object.entries(item.feeByWeeks ?? { 4: item.fee }).map(([weeks, amount]) => [Number(weeks), amount])) as ImsRoom['prices'] }));
+    this.registrationFee = content.quoteSettings.registrationFee;
+    const sida = content.quoteSettings.promotions.find((item) => item.enabled && item.ruleKind === 'ims-sida-95'); this.sidaRate = sida?.discountType === 'percentage' ? Math.max(0, 1 - sida.discountValue / 100) : 1;
+    const low = content.quoteSettings.promotions.find((item) => item.enabled && item.ruleKind === 'ims-low-season-300'); this.lowSeasonPerBlock = low?.discountValue || 300;
+    const long = content.quoteSettings.promotions.find((item) => item.enabled && item.ruleKind === 'ims-long-stay'); if (long?.discountTiers) this.longStayDiscounts = Object.entries(long.discountTiers).map(([min, amount], index, entries) => ({ min: Number(min), max: (Number(entries[index + 1]?.[0]) || 28) - 1, amount }));
+    this.localFeeRules = content.localFees.filter((item) => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+    this.additionalClassOptions = IMS_ADDITIONAL_CLASSES.map((fallback) => {
+      const rule = this.localFeeRules.find((item) => item.id === `additional-${fallback.id}`);
+      return { ...fallback, price4w: rule?.amount ?? fallback.price4w };
+    });
+    this.guardianServiceRate = this.localFeeRules.find((item) => item.id === 'guardian-service')?.amount ?? 450;
+    this.schoolManagementRate = this.localFeeRules.find((item) => item.id === 'school-management')?.amount ?? 2100;
+    this.quoteImageSettings = structuredClone(content.quoteImageSettings);
+    this.galleryItems = [...this.builtInGallery.map((item) => ({ ...item })), ...(content.media ?? []).filter((item) => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder).map((item) => ({ category: this.resolveMediaCategory(item.category), title: item.caption || item.originalFileName || 'IMS校园媒体', description: item.altText || item.caption || 'IMS Academy实景内容', src: item.url, contentType: item.contentType }))];
+    for (const student of this.students) { for (const row of student.quotePlan.courses) if (!this.courses.some((item) => item.id === row.optionId)) row.optionId = this.courses[0]?.id ?? ''; for (const row of student.quotePlan.rooms) if (!this.rooms.some((item) => item.id === row.optionId)) row.optionId = this.rooms[0]?.id ?? ''; }
   }
-
-  get quoteUsdText(): string {
-    return this.formatUsd(this.quoteUsd);
+  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    const urls = new Set(this.galleryItems.map((item) => item.src)); const uploaded = (photos ?? []).filter((item) => !!item.url && !urls.has(item.url)).map((item) => ({ category: this.resolveMediaCategory(item.category), title: item.caption || item.originalFileName || 'IMS校园媒体', description: item.altText || item.caption || 'IMS Academy实景内容', src: item.url ?? '', contentType: item.contentType })); if (uploaded.length) this.galleryItems = [...this.galleryItems, ...uploaded];
   }
+  private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> { const value = (category ?? '').toLowerCase(); if (value.includes('class') || value.includes('教室')) return '教室'; if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿'; if (value.includes('activity') || value.includes('活动')) return '活动'; return '校园'; }
 
-  get guardianServiceText(): string {
-    return this.includeGuardianService ? this.formatUsd(this.guardianServiceUsd) : '未加入';
+  get filteredGalleryItems() { return this.selectedGalleryCategory === '全部' ? this.galleryItems : this.galleryItems.filter((item) => item.category === this.selectedGalleryCategory); }
+  setGalleryCategory(category: GalleryCategory): void { this.selectedGalleryCategory = category; }
+  get roomOptions() { return this.rooms; }
+  get additionalClasses() { return this.additionalClassOptions; }
+  get studentCount() { return this.requestedStudentCount; }
+  set studentCount(value: number) { this.requestedStudentCount = Number(value); if (Number.isInteger(value) && value >= 2 && value <= 20) while (this.students.length < value) this.students.push(new ImsStudentQuote(this)); }
+  setQuoteMode(mode: 'single' | 'group'): void { this.quoteMode = mode; if (mode === 'group') this.studentCount = this.requestedStudentCount; }
+  get activeStudents() { return this.quoteMode === 'single' ? this.students.slice(0, 1) : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2))); }
+  trackStudent(_: number, student: ImsStudentQuote) { return student; }
+  trackPromotionBlock(_: number, block: { key: string }) { return block.key; }
+  get selectedWeeks() { return this.activeStudents[0]?.quotePlan.courseWeeks ?? 4; }
+  get quoteStartDate() { return this.activeStudents.map((student) => student.firstCourseStart).filter(Boolean).sort()[0] ?? ''; }
+  get quoteError(): string { if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。'; const index = this.activeStudents.findIndex((student) => !!student.quoteError); if (index >= 0) return `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${this.activeStudents[index].quoteError}`; return validateImsFamily(this.activeStudents); }
+  get quoteBeforeDiscounts() { return this.activeStudents.reduce((sum, item) => sum + item.registration + item.originalStudyStay + item.additionalClassTotal + item.optionalServiceTotal, 0); }
+  get schoolDiscountAmount() { return this.activeStudents.reduce((sum, item) => sum + item.schoolDiscountAmount, 0); }
+  get sidaDiscountAmount() { return this.activeStudents.reduce((sum, item) => sum + item.sidaDiscountAmount, 0); }
+  get quoteUsd() { return this.activeStudents.reduce((sum, item) => sum + item.quoteUsd, 0); }
+  get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
+  get estimatedLocalFeeTotal() { return this.estimatedLocalFees.reduce((sum, item) => sum + item.total, 0); }
+  get estimatedLocalFeeCny() { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
+  get quoteHeading() { return this.quoteMode === 'single' ? `IMS ${this.selectedWeeks}周报价` : `IMS ${this.activeStudents.length}人报价`; }
+  get fourWeekStartingText() { return `${quoteMoney(100 + (700 + 650) * this.sidaRate)} 美元`; }
+  get courseTableTitle() { return this.currentContentConfig.quoteSettings.courseTableTitle; }
+  get courseTableNote() { return this.currentContentConfig.quoteSettings.courseTableNote; }
+  get roomTableTitle() { return this.currentContentConfig.quoteSettings.roomTableTitle; }
+  get roomTableNote() { return this.currentContentConfig.quoteSettings.roomTableNote; }
+  get localFeeIntro() { return this.currentContentConfig.quoteSettings.localFeeIntro; }
+  get groupClassNote() { return this.currentContentConfig.quoteSettings.groupClassNote; }
+  promotionDescription(id: string) { return this.currentContentConfig.quoteSettings.promotions.find((item) => item.id === id)?.description ?? ''; }
+  promotionChange(student: ImsStudentQuote, rowId: number, index: number, value: string): void { student.setPromotion(rowId, index, value as ImsBlockPromotion); this.quoteCalculated = false; }
+  familyTargetOptions(parentIndex: number) { return this.activeStudents.map((student, index) => ({ student, index })).filter(({ student, index }) => index !== parentIndex && student.travelerRole === 'child'); }
+  calculateQuote(): void { this.quoteCalculated = !this.quoteError; }
+  scrollToSection(id: string, event?: Event): void { event?.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  formatUsd(value: number) { return `${quoteMoney(value)} 美元`; }
+  formatPhp(value: number) { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
+  formatFeeQuantity(value: number) { return Number.isInteger(value) ? String(value) : value.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+  get planPaymentItems(): QuoteImagePaymentItem[] { return this.activeStudents.flatMap((student, studentIndex) => student.quotePlan.paymentItems().map((item) => ({ ...item, label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}${item.label}` }))); }
+  get schoolPaymentItems(): QuoteImagePaymentItem[] { return [...this.planPaymentItems, ...groupPaymentLines(this.activeStudents, true), { icon: '注', label: '不可减免注册费', amount: this.formatUsd(this.activeStudents.length * this.registrationFee), note: `每人一次性${this.registrationFee}美元；任何活动、95折或返校状态均不能减少。` }]; }
+  get optionalFeeItems() { return [
+    { label: '超额空调用电', amount: '30 比索／kW', cnyAmount: '按实际用量结算', note: '基础空调费包含100kW／4周，超额部分才另收。' },
+    { label: '免费晚间托管', amount: '资格待学校确认', cnyAmount: '不自动计入', note: '与Guardian Service、国际学生学校管理服务为三个独立项目。' },
+    { label: 'Guardian Service', amount: `${quoteMoney(this.guardianServiceRate)} 美元／4周`, cnyAmount: '按选择计入美元总额', note: '独立可选服务，仅公布4周倍数价格。' },
+    { label: '国际学生学校管理服务', amount: `${quoteMoney(this.schoolManagementRate)} 美元／4周`, cnyAmount: '按选择计入美元总额', note: '独立可选服务，仅公布4周倍数价格。' },
+  ]; }
+  get familyTransferNotes(): string[] { return this.activeStudents.flatMap((parent, index) => !parent.transferParentOneToOne ? [] : [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}家长仍注册并购买Parents ESL；3节一对一转给学生${parent.linkedStudentIndex + 1}的Junior ESL 6；家长1节团体课${parent.attendParentGroupClass ? '参加' : '自行放弃'}。`]); }
+  get selectedPromotionNotes(): string[] {
+    const blocks = this.activeStudents.flatMap((student, index) => student.promotionBlocks.filter((block) => block.promotion !== 'none').map((block) => `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${block.startDate.replace(/-/g, '/')}–${block.endDate.replace(/-/g, '/')}使用${block.promotion === 'two-plus-two' ? '2+2达人活动（按明确2周课程价与2周房价）' : '淡季立减300美元'}。`));
+    return this.activeStudents.some((student) => student.promotionBlocks.some((block) => block.promotion === 'two-plus-two'))
+      ? [...blocks, ...this.socialRequirements.map((item) => `2+2要求：${item}`)] : blocks;
   }
-
-  get fourWeekStartingText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[0].fourWeekFeesUsd.quad);
-  }
-
-  get premiumFourWeekText(): string {
-    return this.formatUsd(this.registrationFeeUsd + this.courses[1].fourWeekFeesUsd.quad);
-  }
-
-  get weeklyAverageText(): string {
-    return this.formatUsd(Math.round(this.quoteUsd / this.selectedWeeks));
-  }
-
-  get courseFeeRows() {
-    return this.courses.map((course) => ({
-      course: course.name,
-      lessons: course.lessons,
-      quad: this.formatUsd(course.fourWeekFeesUsd.quad),
-      triple: this.formatUsd(course.fourWeekFeesUsd.triple),
-      twin: this.formatUsd(course.fourWeekFeesUsd.twin),
-      single: this.formatUsd(course.fourWeekFeesUsd.single),
-    }));
-  }
-
-  setGalleryCategory(category: GalleryCategory): void {
-    this.selectedGalleryCategory = category;
-  }
-
-  calculateQuote(): void {
-    this.quoteCalculated = true;
-  }
-
-  scrollToSection(id: string, event?: Event): void {
-    event?.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  formatUsd(value: number): string {
-    return `USD ${value.toLocaleString('en-US')}`;
+  get quoteImageData() {
+    const settings = this.quoteImageSettings;
+    const quote = buildPhilippinesDetailedQuote({ schoolCode: 'IMS', schoolName: '菲律宾宿务IMS Academy', filePrefix: 'IMS', heroSrc: '/assets/ims/campus-hero.webp', weeks: this.selectedWeeks, startDate: this.quoteStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd, fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems: this.schoolPaymentItems, localFeeItems: this.estimatedLocalFees.map((item) => ({ label: item.item, unit: item.unitLabel, quantity: this.formatFeeQuantity(item.quantity), amount: this.formatPhp(item.total), note: item.note })), localFeeTotal: this.estimatedLocalFeeTotal, localCurrencyName: '比索', localFeeCny: this.estimatedLocalFeeCny, localFeeNote: settings.localFeeIntro, optionalFeeItems: this.optionalFeeItems, ruleNotes: [...this.familyTransferNotes, ...this.selectedPromotionNotes] });
+    const result = applySchoolQuoteImageLayout({ ...quote, importantNotes: [...this.familyTransferNotes, ...this.selectedPromotionNotes, ...settings.footerNotes] }, 'IMS', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
+    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle, serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations, alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }], noteTitle: settings.noteSectionTitle, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined } };
   }
 }

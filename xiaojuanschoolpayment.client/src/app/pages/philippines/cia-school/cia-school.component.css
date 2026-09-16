@@ -840,6 +840,351 @@
   scroll-margin-top: 144px;
 }
 
+:host .school-calendar-section {
+  padding: clamp(22px, 3vw, 38px);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 177, 104, 0.16), transparent 27%),
+    linear-gradient(180deg, #fbfefd 0%, #f6fbf8 100%);
+}
+
+:host .calendar-section-heading {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+:host .calendar-section-heading > div {
+  max-width: 920px;
+}
+
+:host .calendar-section-heading h3,
+:host .calendar-section-heading p {
+  margin: 0;
+}
+
+:host .calendar-section-heading h3 {
+  margin-top: 6px;
+  color: #073f30;
+  font-size: clamp(25px, 2.6vw, 36px);
+  line-height: 1.25;
+}
+
+:host .calendar-section-heading p {
+  margin-top: 10px;
+  color: #60736a;
+  line-height: 1.75;
+}
+
+:host .calendar-priority,
+:host .exam-fee {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 7px;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid #cfe3d8;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #08714f;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+:host .calendar-priority mat-icon,
+:host .exam-fee mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+:host .peak-season-calendar {
+  margin-top: 24px;
+  padding: clamp(18px, 2.3vw, 28px);
+  border: 1px solid #ffd3bb;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fffaf5, #fff3e9);
+  box-shadow: 0 14px 30px rgba(129, 55, 14, 0.07);
+}
+
+:host .peak-season-calendar-intro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+:host .peak-season-calendar-icon,
+:host .peak-season-quote-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #ff642b;
+  color: #ffffff;
+}
+
+:host .peak-season-calendar-intro h4,
+:host .peak-season-calendar-intro p,
+:host .peak-season-rate,
+:host .peak-season-rate small {
+  margin: 0;
+}
+
+:host .peak-season-calendar-intro h4 {
+  margin-top: 3px;
+  color: #073f30;
+  font-size: clamp(20px, 2vw, 27px);
+}
+
+:host .peak-season-calendar-intro p {
+  margin-top: 5px;
+  color: #68776f;
+  line-height: 1.6;
+}
+
+:host .peak-season-rate {
+  display: grid;
+  justify-items: end;
+  color: #ff5a1f;
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+:host .peak-season-rate b {
+  font-size: 34px;
+}
+
+:host .peak-season-rate small {
+  margin-top: 5px;
+  color: #7b6b62;
+  font-size: 12px;
+}
+
+:host .peak-season-period-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .peak-season-period-grid article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 64px;
+  padding: 12px 14px;
+  border: 1px solid #f1dfd4;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+:host .peak-season-name {
+  color: #073f30;
+  font-weight: 900;
+}
+
+:host .peak-season-period-grid time {
+  color: #374b43;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+:host .peak-season-weeks {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #e8f5ee;
+  color: #08714f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+:host .peak-season-calendar-note,
+:host .calendar-footnote {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 14px 0 0;
+  color: #6c756f;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+:host .peak-season-calendar-note mat-icon,
+:host .calendar-footnote mat-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: #ff642b;
+  font-size: 18px;
+}
+
+:host .holiday-calendar-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+:host .holiday-calendar-list details {
+  overflow: hidden;
+  border: 1px solid #d8e7df;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+:host .holiday-calendar-list summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 66px;
+  padding: 12px 15px;
+  cursor: pointer;
+  list-style: none;
+}
+
+:host .holiday-calendar-list summary::-webkit-details-marker {
+  display: none;
+}
+
+:host .holiday-year {
+  display: grid;
+  width: 52px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  background: #0a7454;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host .holiday-calendar-list summary > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+:host .holiday-calendar-list summary strong {
+  color: #0a3c2f;
+}
+
+:host .holiday-calendar-list summary small {
+  color: #6c7c74;
+}
+
+:host .holiday-calendar-list summary mat-icon {
+  transition: transform 180ms ease;
+}
+
+:host .holiday-calendar-list details[open] summary {
+  border-bottom: 1px solid #e1ebe6;
+  background: #f7fbf9;
+}
+
+:host .holiday-calendar-list details[open] summary mat-icon {
+  transform: rotate(180deg);
+}
+
+:host .holiday-month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px;
+}
+
+:host .holiday-month-grid article {
+  padding: 13px;
+  border: 1px solid #e5ece8;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+:host .holiday-month-grid h4 {
+  display: flex;
+  align-items: baseline;
+  margin: 0 0 9px;
+  color: #08714f;
+}
+
+:host .holiday-month-grid h4 span {
+  margin-right: 3px;
+  font-size: 25px;
+}
+
+:host .holiday-month-grid ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:host .holiday-month-grid li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: baseline;
+  color: #405249;
+}
+
+:host .holiday-month-grid time {
+  color: #ff5a1f;
+  font-weight: 900;
+}
+
+:host .holiday-month-grid li small {
+  grid-column: 2;
+  color: #9b6d44;
+  font-size: 11px;
+}
+
+:host .peak-season-quote-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 13px;
+  align-items: center;
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid #ffd0b7;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffaf5, #fff3e9);
+}
+
+:host .peak-season-quote-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+:host .peak-season-quote-note div {
+  display: grid;
+  gap: 4px;
+}
+
+:host .peak-season-quote-note strong {
+  color: #70320f;
+}
+
+:host .peak-season-quote-note p,
+:host .peak-season-quote-note small {
+  margin: 0;
+  line-height: 1.55;
+}
+
+:host .peak-season-quote-note p {
+  color: #3e5249;
+  font-weight: 700;
+}
+
+:host .peak-season-quote-note small {
+  color: #776b64;
+}
+
 @media (max-width: 1099px) {
   :host .decision-summary-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -856,6 +1201,10 @@
   :host .campus-volunteer-highlight > img {
     aspect-ratio: 16 / 8;
     min-height: 0;
+  }
+
+  :host .holiday-month-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -939,6 +1288,55 @@
 
   :host .secondary-info-disclosure .collapsible-panel-body {
     padding: 12px;
+  }
+
+  :host .school-calendar-section {
+    padding: 16px;
+  }
+
+  :host .calendar-section-heading {
+    display: grid;
+    gap: 12px;
+  }
+
+  :host .calendar-priority,
+  :host .exam-fee {
+    justify-self: start;
+  }
+
+  :host .peak-season-calendar-intro {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  :host .peak-season-rate {
+    grid-column: 1 / -1;
+    grid-template-columns: auto auto;
+    gap: 7px;
+    align-items: baseline;
+    justify-content: start;
+  }
+
+  :host .peak-season-rate b {
+    font-size: 28px;
+  }
+
+  :host .peak-season-period-grid,
+  :host .holiday-month-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .peak-season-period-grid article {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  :host .peak-season-period-grid time {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  :host .peak-season-weeks {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
 
   :host .campus-introduction--compact + #gallery {

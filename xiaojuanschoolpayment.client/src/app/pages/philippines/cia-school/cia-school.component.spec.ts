@@ -1,7 +1,10 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { CiaSchoolComponent } from './cia-school.component';
 
@@ -11,7 +14,10 @@ describe('CIA IAU registration fee note', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
     ] });
     component = TestBed.runInInjectionContext(() => new CiaSchoolComponent());
   });

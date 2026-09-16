@@ -21,8 +21,11 @@ export class CgBaniladStudentQuote {
   selectedRegistrationDate=new Date().toLocaleDateString('en-CA');
   readonly visaOptions=SCHOOL_VISA_OPTIONS;
   visaType:CgVisaType='tourist59';
+  textbookCount=1;
+  textbookUnitPrice=250;
   readonly quotePlan:SchoolQuotePlan;
   constructor(private readonly prices:BaniladPrices) {
+    this.textbookUnitPrice=this.textbookMinimumPrice;
     this.quotePlan=new SchoolQuotePlan('general-esl','quad','2026-09-06',prices.weekOptions,
       kind=>kind==='course'?prices.courses.map(x=>({id:x.id,name:x.name,details:x.lessons})):prices.roomOptions.map(x=>({id:x.id,name:x.name,details:''})),
       (kind,row)=>{
@@ -34,8 +37,12 @@ export class CgBaniladStudentQuote {
     if(this.quotePlan.error)return this.quotePlan.error;
     if(this.quotePlan.date(this.selectedRegistrationDate)===null)return '请选择有效的报名注册日期。';
     if(!['adult','minor'].includes(this.selectedAgeGroup))return '请选择抵达时年龄段。';
+    if(!Number.isInteger(this.textbookCount)||this.textbookCount<0||this.textbookCount>50)return '教材数量请输入0–50本的整数。';
+    if(!Number.isFinite(this.textbookUnitPrice)||this.textbookUnitPrice<this.textbookMinimumPrice||this.textbookUnitPrice>this.textbookMaximumPrice)return `教材单价请输入${this.textbookMinimumPrice}–${this.textbookMaximumPrice}比索。`;
     return this.visaOptions.some(x=>x.value===this.visaType)?'':'请选择有效的签证类型。';
   }
+  get textbookMinimumPrice(){return this.prices.localFeeRules.find(rule=>rule.id==='books'&&rule.enabled)?.amount??250;}
+  get textbookMaximumPrice(){return this.prices.localFeeRules.find(rule=>rule.id==='books'&&rule.enabled)?.secondaryAmount??450;}
   private promotion(id:string){return this.prices.promotionRules.find(rule=>rule.id===id&&rule.enabled);}
   get registration(){return this.returningStudent&&this.promotion('cg-banilad-returning-registration')?.waiveRegistration?0:this.prices.registrationFeeUsd;}
   get tuition(){return this.quotePlan.total('course');}
@@ -53,5 +60,5 @@ export class CgBaniladStudentQuote {
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-banilad-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-banilad-long-stay')?.description??`本次${this.quotePlan.courseWeeks}周，按已公布档位优惠`,promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.prices.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.prices.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周`}]:[]),
   ];}
-  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.prices.localFeeRules,this.quotePlan.startDate).fees;}
+  get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.prices.localFeeRules,this.quotePlan.startDate,this.textbookCount,this.textbookUnitPrice).fees;}
 }

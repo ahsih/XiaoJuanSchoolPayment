@@ -13,7 +13,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { BCebuQuote } from './bcebu-quote';
-import { BCEBU_COURSES, BCEBU_ROOMS, BCEBU_LOCAL_FEE_INTRO, bcebuMultiplier } from './bcebu-pricing';
+import { BCEBU_COURSES, BCEBU_ROOMS, BCEBU_LOCAL_FEE_INTRO, BCEBU_LONG_STAY_NOTE, bcebuMultiplier } from './bcebu-pricing';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -26,6 +26,7 @@ import { cloneBCebuContentConfig, createDefaultBCebuContentConfig } from './bceb
 interface QuickInfo { icon: string; label: string; value: string; note: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 interface BCebuStudentQuote { calculator: BCebuQuote; }
+interface BCebuPromotionCard { id: string; title: string; value: string; description: string; }
 interface BCebuMedia { title: string; description: string; src: string; contentType?: string; }
 
 @Component({
@@ -103,6 +104,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   readonly sideNav: SideNavItem[] = [
+    { label: '优惠政策', target: 'promotions', icon: 'sell' },
     { label: '2026课程费', target: 'course-fees', icon: 'menu_book' },
     { label: '2026住宿费', target: 'room-fees', icon: 'bed' },
     { label: '费用计算器', target: 'quote', icon: 'calculate' },
@@ -293,10 +295,31 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
   }
   promotionRule(id: string) { return this.promotionRules.find(rule => rule.id === id && rule.enabled); }
+  get promotionPolicyCards(): BCebuPromotionCard[] {
+    const waiver = this.promotionRule('bcebu-registration-waiver');
+    const reporter = this.promotionRule('bcebu-reporter');
+    const spring = this.promotionRule('bcebu-off-season-spring');
+    const fall = this.promotionRule('bcebu-off-season-fall');
+    const family = this.promotionRule('bcebu-family-off-season');
+    const sida = this.promotionRule('bcebu-sida-90');
+    const longStay = this.promotionRule('bcebu-long-stay');
+    return [
+      { id: waiver?.id ?? 'bcebu-registration-waiver', title: '免注册费', value: '减免100美元', description: waiver?.description ?? '通过思达报名免收新生一次性注册费。' },
+      { id: fall?.id ?? spring?.id ?? 'bcebu-off-season-fall', title: '淡季优惠', value: '成人85折 · 亲子9折', description: `${[spring?.description, fall?.description, family?.description].filter(Boolean).map(text => text!.replace(/[。；]+$/, '')).join('；')}。` },
+      { id: reporter?.id ?? 'bcebu-reporter', title: '记者活动', value: '每4周优惠100美元', description: reporter?.description ?? '每周25美元，4周起报；须满足粉丝、发帖和结业要求。' },
+      { id: longStay?.id ?? 'bcebu-long-stay', title: '长期优惠', value: '8周起减50美元', description: longStay?.description ?? BCEBU_LONG_STAY_NOTE },
+      { id: sida?.id ?? 'bcebu-sida-90', title: '思达启航专属折扣', value: '课程及住宿9折', description: sida?.description ?? '课程及住宿在适用优惠后再享9折。' },
+    ];
+  }
   get newStudentCount() { return this.activeStudents.filter(student => !student.calculator.returningStudent).length; }
   get registrationCharge() { return this.registrationFee * this.newStudentCount; }
   get tuitionTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.total('course'), 0); }
   get accommodationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.total('room'), 0); }
+  get reporterSettlementNotes() {
+    return this.activeStudents.flatMap((student, index) => student.calculator.settlementNote
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.settlementNote}`]
+      : []);
+  }
   get paymentItems() {
     const total = (key: 'reporterDiscount' | 'offSeasonDiscount' | 'sidaDiscount' | 'longStayDiscount' | 'peakFee' | 'minorFee') => this.activeStudents.reduce((sum, student) => sum + student.calculator[key], 0);
     const waiver = this.promotionRule('bcebu-registration-waiver');
@@ -340,9 +363,11 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.calculator.plan.shortStayNotes(weeks => this.shortTermRatios[String(weeks)] ?? weeks / 4)))];
-    const importantNotes = [...warnings, ...shortNotes, ...this.quoteImageSettings.footerNotes];
+    const importantNotes = [...warnings, ...shortNotes, ...this.reporterSettlementNotes, ...this.quoteImageSettings.footerNotes];
     const result = applySchoolQuoteImageLayout({ ...quote, importantNotes }, "B'Cebu", this.selectedWeeks, start, this.quoteTotal, this.usdToCny);
     return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${start.replace(/-/g, '')}.png`,
+      totalLabel: this.reporterSettlementNotes.length ? '完成记者活动后学校费用' : result.totalLabel,
+      totalNote: this.reporterSettlementNotes.join('；'),
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle, localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle, benefitItems: this.quoteImageSettings.benefits,
       serviceLocations: this.quoteImageSettings.serviceLocations, alumniBenefitTitle: this.quoteImageSettings.alumniBenefitTitle,

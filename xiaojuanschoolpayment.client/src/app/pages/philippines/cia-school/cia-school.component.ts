@@ -33,6 +33,7 @@ import { CIA_STUDENT_REVIEWS } from './cia-student-reviews.data';
 import {
   CiaContentConfig,
   CiaLocalFeeRule,
+  CiaPeakSeasonRange,
   CiaPromotionRule,
   CiaQuoteImageSettings,
   CiaStayPolicyCard,
@@ -2929,17 +2930,13 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get coveredPeakSeasonLabels(): string {
-    const studyStart = this.parseDate(this.selectedStartDate);
-    const studyEnd = this.addDays(studyStart, this.selectedWeeks * 7 - 1);
-
     return this.peakSeasonRanges
-      .filter(({ enabled, start, end }) => enabled &&
-        this.dateRangesOverlap(
-          studyStart,
-          studyEnd,
-          this.parseDate(start),
-          this.parseDate(end),
-        ),
+      .filter(({ enabled, start, end }) => enabled !== false &&
+        this.activeStudents.some(student => student.quotePlan.overlapWeeks(
+          start,
+          end,
+          [...student.quotePlan.courses, ...student.quotePlan.rooms],
+        ) > 0),
       )
       .map(({ label }) => label)
       .join('、');
@@ -2950,7 +2947,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       return '当前选择的入学日期与学习周数未覆盖旺季，附加费为0美元。';
     }
 
-    return `当前方案覆盖${this.coveredPeakSeasonLabels}共${this.peakSeasonWeeks}周，已自动计入${this.formatUsd(this.seasonalSurcharge)}美元。`;
+    const scope = this.quoteMode === 'group' ? '当前多人方案合计' : '当前方案';
+    return `${scope}覆盖${this.coveredPeakSeasonLabels}共${this.peakSeasonWeeks}个学生周，已自动计入${this.formatUsd(this.seasonalSurcharge)}美元。`;
   }
 
   get peakSeasonRangeText(): string {
@@ -2960,6 +2958,29 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         `${label} ${start.replace(/-/g, '/')}–${end.replace(/-/g, '/')}`,
       )
       .join('；');
+  }
+
+  get peakSeasonCalendarRanges(): CiaPeakSeasonRange[] {
+    return this.peakSeasonRanges
+      .filter(({ enabled, start }) => enabled !== false && start.startsWith('2027-'))
+      .slice()
+      .sort((a, b) => a.start.localeCompare(b.start));
+  }
+
+  get peakSeason2027RangeText(): string {
+    return this.peakSeasonCalendarRanges
+      .map(range => `${range.label} ${this.formatPeakSeasonRange(range)}`)
+      .join('；');
+  }
+
+  peakSeasonWeekCount(range: CiaPeakSeasonRange): number {
+    const start = this.parseDate(range.start).getTime();
+    const end = this.parseDate(range.end).getTime();
+    return Math.max(0, Math.round((end - start + 86400000) / (7 * 86400000)));
+  }
+
+  formatPeakSeasonRange(range: CiaPeakSeasonRange): string {
+    return `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`;
   }
 
   get isChristmasPromotionEligible(): boolean { return this.activeStudents.some(student=>student.christmasEligible); }
@@ -3213,20 +3234,5 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private parseDate(value: string): Date {
     return new Date(`${value}T00:00:00`);
-  }
-
-  private addDays(date: Date, days: number): Date {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
-  private dateRangesOverlap(
-    firstStart: Date,
-    firstEnd: Date,
-    secondStart: Date,
-    secondEnd: Date,
-  ): boolean {
-    return firstStart <= secondEnd && firstEnd >= secondStart;
   }
 }

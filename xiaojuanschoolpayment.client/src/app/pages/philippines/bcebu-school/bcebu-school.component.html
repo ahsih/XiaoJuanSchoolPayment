@@ -68,6 +68,21 @@
           <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的{{ (shortTermRatios['1'] || 0) * 100 }}%/{{ (shortTermRatios['2'] || 0) * 100 }}%/{{ (shortTermRatios['3'] || 0) * 100 }}%计算。成人淡季入学可享85折、亲子9折；通过思达报名再享9折并免100美元注册费；8周起长期优惠可叠加。</p></div>
         </section>
 
+        <section class="promotion-policy" id="promotions" aria-labelledby="promotion-policy-title">
+          <div class="section-heading">
+            <span>2026年B'Cebu优惠</span>
+            <h2 id="promotion-policy-title">五项优惠政策</h2>
+            <p>符合条件时可叠加；系统依次计算记者活动、淡季折扣、思达专属9折和长期优惠。</p>
+          </div>
+          <div class="promotion-policy-grid">
+            <article *ngFor="let promotion of promotionPolicyCards" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="promotion.id"
+              [class.cia-editor-highlight]="isPreviewHighlighted('promotion', promotion.id)">
+              <span>{{ promotion.title }}</span><strong>{{ promotion.value }}</strong><p>{{ promotion.description }}</p>
+            </article>
+          </div>
+          <p class="promotion-settlement-note">记者活动由中介按未扣记者优惠的金额预收；学生完成活动并毕业后，再退还实际优惠差价。亲子家庭不参加记者活动。</p>
+        </section>
+
         <section class="split-layout" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-heading"
           [class.cia-editor-highlight]="isPreviewHighlighted('section', 'course-heading')">
           <div class="section-block">
@@ -149,6 +164,7 @@
             <span>最终应付学校金额</span>
             <strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
             <small>{{ exchangeRateText }}</small>
+            <p class="reporter-settlement" *ngFor="let note of reporterSettlementNotes">{{ note }}</p>
             <p *ngIf="quoteCalculated">已按当前选择更新。</p>
           </div>
           <div class="quote-actions">
