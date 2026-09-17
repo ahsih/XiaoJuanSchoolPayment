@@ -135,17 +135,30 @@ export class BaguioStudyComponent {
       consultantNote: '优先确认校区、课程强度和门禁制度；如果目标是短期体验，需评估能否适应密集日程。',
     },
     {
-      name: '菲律宾碧瑶JIC语言学校',
+      name: '菲律宾碧瑶JIC挑战校区',
       image: '/assets/philippines/jic-campus-hero.webp',
-      location: 'Challenger / Premium Campus',
-      style: '斯巴达 / 半斯巴达可选',
-      route: '/philippines-study/baguio/baguio-jic',
-      startingPrice: 'Challenger 4周约USD 1,460起',
-      courses: ['ESL', 'IELTS', 'Speaking Focused', 'TOEIC', 'Business Master', 'Working Holiday Prep'],
-      accommodation: '不同校区对应不同学习强度和住宿环境，适合按目标分流。',
-      facilities: '官网列有 Challenger 与 Premium 两个校区，报名时应确认具体地址、房型和课程。',
-      bestFor: '需要雅思冲刺、口语训练、打工度假准备或希望学习强度与舒适度平衡的学生。',
-      consultantNote: 'JIC 很适合做“目标导向选校”：先定分数/口语/打工度假，再选校区。',
+      location: 'Challenger Campus / 主校区',
+      style: 'ESL强化 / IELTS备考',
+      route: '/philippines-study/baguio/baguio-jic-challenger',
+      startingPrice: 'ESL Lite + 四人间4周约USD 1,460起',
+      courses: ['ESL Lite / Core / Standard', 'IELTS Lite / Core / Standard', 'IELTS Guarantee'],
+      accommodation: '标准单人、双人、复式四人及上下铺四人房。',
+      facilities: '课程、模拟考试、词汇测试、自习、住宿与餐厅集中在Challenger校区。',
+      bestFor: '需要ESL基础强化、雅思冲刺或希望用明确制度推动学习的学生。',
+      consultantNote: '先按目标课时、雅思要求和管理强度选课程，再同步确认房型。',
+    },
+    {
+      name: '菲律宾碧瑶JIC高级校区',
+      image: '/assets/philippines/jic-premium-campus-overview.jpg',
+      location: 'Premium Campus / 高级校区',
+      style: '口语输出 / 职业应用 / 舒适生活',
+      route: '/philippines-study/baguio/baguio-jic-premium',
+      startingPrice: 'Speaking Starter 7 + 四人间4周约USD 1,550起',
+      courses: ['Speaking', 'TEP', 'Active Senior', 'TOEIC', 'Business', 'Junior / Guardian'],
+      accommodation: '无阳台或带阳台的单人、双人及四人房。',
+      facilities: '课堂、学生中心、咖啡空间、餐厅与多种住宿集中在Premium校区。',
+      bestFor: '重视口语、职场英语、打工度假、成人课程或亲子学习体验的学生。',
+      consultantNote: '课程选择更丰富，需同时核对教材费、阳台房型和淡季优惠资格。',
     },
     {
       name: '菲律宾碧瑶BECI斯巴达校区',
@@ -196,7 +209,7 @@ export class BaguioStudyComponent {
         '先确认学生要的是API BECI City Campus、BECI EOP/Sparta，还是宿务B Cebu；这三类学习节奏和城市体验不同。',
     },
     {
-      name: '菲律宾碧瑶MONOL语言学校',
+      name: 'MONOL主校区',
       image: '/assets/philippines/monol-campus-building.webp',
       location: 'Pinsao Proper, Baguio City',
       style: '长期学习与生活配套型',
@@ -207,6 +220,19 @@ export class BaguioStudyComponent {
       facilities: '屋顶健身房、桑拿、高尔夫练习区、咖啡厅、共享厨房、自助洗衣和自习空间。',
       bestFor: '计划 8 周以上长期学习、重视生活稳定度和住宿舒适度的成人学生。',
       consultantNote: '如果学生担心高压管理过重，MONOL 可作为“稳态学习型”候选；仍需核对房型、餐费和当地费用。',
+    },
+    {
+      name: 'MONOL斯巴达校区',
+      image: '/assets/philippines/monol-sparta/campus-building.webp',
+      location: '187 Naguilian Road, Baguio City',
+      style: '全斯巴达沉浸式学习与强制自习管理',
+      route: '/philippines-study/baguio/monol-sparta-campus',
+      startingPrice: '1,550美元／4周活动期起（Booster ESL + 三人间 + 注册费，已计课程与住宿优惠）',
+      courses: ['Booster ESL', 'Master IELTS'],
+      accommodation: '高级单人间、标准单人间、单人雅房、双人间与三人间；住宿费包含平日三餐及周末、节假日一餐。',
+      facilities: '一对一及团体教室、ESL/IELTS自习室、运动场、健身房、屋顶花园、餐厅与学生休息区。',
+      bestFor: '需要每天至少10节学习安排、强制自习、EOP、每日测试和严格门禁推动的ESL或IELTS学生。',
+      consultantNote: '与MONOL主校区完全分开核价；报名前先确认学生能接受补自习、门禁与纪律处分制度。',
     },
     {
       name: '菲律宾碧瑶WALES语言学校',
@@ -330,7 +356,7 @@ export class BaguioStudyComponent {
     { label: 'API BECI City Campus公开费用与学校资料', url: 'https://global-click.jp/contents/school/api-beci-city-campus/' },
     { label: 'API BECI City Campus 2026学校资料', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
     { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
-    { label: '菲律宾碧瑶MONOL语言学校 官方网站', url: 'https://mymonol.com/en/' },
+    { label: 'MONOL主校区 官方网站', url: 'https://mymonol.com/en/' },
     { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
     { label: '菲律宾碧瑶A&J e-Edu语言学校 官方网站', url: 'https://www.anjedudc.com/' },
     { label: 'HELP English Baguio / Longlong官方页面', url: 'https://www.helpenglish.org/p/baguio-campus.html' },
@@ -359,7 +385,7 @@ export class BaguioStudyComponent {
       { icon: 'schedule', label: '长期友好' },
     ],
     stats: [
-      { value: '8所+', label: '学校资料', icon: 'workspace_premium' },
+      { value: '9所+', label: '学校资料', icon: 'workspace_premium' },
       { value: '课程丰富', label: '口语 · 考试 · 商务' },
       { value: '双模式', label: '管理可选' },
       { value: '4-24周', label: '常见周期' },
@@ -376,7 +402,8 @@ export class BaguioStudyComponent {
         school.name === '菲律宾碧瑶BECI EOP校区' ? 'BECI EOP校区' :
         school.name === '菲律宾碧瑶API BECI（City Campus）' ? 'API BECI City Campus' :
         school.name === '菲律宾碧瑶JIC语言学校' ? 'JIC' :
-        school.name === '菲律宾碧瑶MONOL语言学校' ? 'MONOL' :
+        school.name === 'MONOL主校区' ? 'MONOL主校区' :
+        school.name === 'MONOL斯巴达校区' ? 'MONOL斯巴达校区' :
         school.name === '菲律宾碧瑶WALES语言学校' ? 'WALES' :
         school.name === '菲律宾碧瑶A&J e-Edu English Academy' ? 'A&J e-Edu' : 'HELP English',
       categories:
@@ -385,8 +412,9 @@ export class BaguioStudyComponent {
         school.name.includes('API BECI') ? ['高性价比学校'] :
         school.name.includes('BECI EOP') ? ['强化管理型'] :
         school.name.includes('BECI') ? ['强化管理型', '考试备考型', '亲子与青少年型'] :
+        school.name === 'MONOL斯巴达校区' ? ['强化管理型', '考试备考型'] :
         school.name.includes('MONOL') || school.name.includes('WALES') || school.name.includes('A&J')
-          ? ['高性价比学校', '亲子与青少年型']
+          ? ['高性价比学校']
           : ['强化管理型', '亲子与青少年型'],
     })),
     highlights: this.highlights,

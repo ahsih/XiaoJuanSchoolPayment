@@ -51,9 +51,9 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>{{ selectedWeeks }}周当前选择参考</span>
+              <span>{{ quoteMode === 'single' ? selectedWeeks + '周' : quoteScope }}当前选择参考</span>
               <strong>{{ formatUsd(quoteUsd) }} 美元</strong>
-              <p>PHILINTER{{ selectedWeeks }}周报价</p>
+              <p>{{ quoteHeading }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -282,7 +282,7 @@
           </div>
 
           <section class="quote-panel" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">
-            <div class="section-heading"><h2>PHILINTER{{ selectedWeeks }}周报价</h2></div>
+            <div class="section-heading"><h2>{{ quoteHeading }}</h2></div>
             <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
             <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿、日期、年龄、签证、返校状态和接机。</p>
             <article class="student-quote" *ngFor="let student of activeStudents; let i = index">

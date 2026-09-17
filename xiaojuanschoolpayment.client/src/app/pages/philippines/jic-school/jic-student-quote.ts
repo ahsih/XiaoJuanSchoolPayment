@@ -28,6 +28,8 @@ interface JicQuotePrices {
 
 const DAY = 86_400_000;
 const money = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
+const SHORT_STAY_MULTIPLIERS: Record<number, number> = { 1: 0.4, 2: 0.65, 3: 0.85 };
+const durationMultiplier = (weeks: number): number => SHORT_STAY_MULTIPLIERS[weeks] ?? weeks / 4;
 const today = () => {
   const date = new Date();
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -39,13 +41,13 @@ export class JicStudentQuote {
   selectedRegistrationDate = today();
   returningStudent = false;
   isExtensionStudent = false;
-  visaType: JicVisaType = 'tourist59';
+  visaType: JicVisaType = 'tourist30';
   airportPickup: JicAirportPickup = 'none';
   includeChallengerSpecialElective = false;
 
   readonly visaOptions = [
-    { value: 'tourist59' as const, label: '59天旅游签证（默认）' },
-    { value: 'tourist30' as const, label: '30天旅游签证' },
+    { value: 'tourist30' as const, label: '30天旅游签证（默认）' },
+    { value: 'tourist59' as const, label: '59天旅游签证' },
   ];
   readonly airportPickupOptions = [
     { value: 'none' as const, label: '不需要接机' },
@@ -65,7 +67,7 @@ export class JicStudentQuote {
       const fourWeekRate = kind === 'course'
         ? this.prices.courseFees.find((course) => course.id === row.optionId)?.tuition
         : this.prices.roomFees.find((room) => room.id === row.optionId)?.fee;
-      return (fourWeekRate ?? 0) * row.weeks / 4;
+      return (fourWeekRate ?? 0) * durationMultiplier(row.weeks);
     },
   );
 
@@ -220,18 +222,36 @@ export class JicStudentQuote {
 
   get visaLabel(): string { return this.visaType === 'tourist30' ? '30天旅游签证' : '59天旅游签证'; }
   get visaExtensionCount(): number {
-    const initialDays = this.visaType === 'tourist30' ? 30 : 59;
-    return Math.max(0, Math.ceil((this.quotePlan.stayWeeks * 7 - initialDays) / 30));
+    const weeks = this.quotePlan.stayWeeks;
+    if (this.visaType === 'tourist30') return weeks > 4 ? Math.ceil((weeks - 4) / 4) : 0;
+    return weeks >= 8 ? Math.ceil((weeks - 4) / 4) : 0;
   }
   get localFees(): SchoolLocalFee[] {
     const extensions = this.visaExtensionCount;
     const fees = this.prices.rules?.localFees.filter(fee => fee.enabled && fee.includeInTotal) ?? this.fallbackLocalFees;
     return fees.map(fee => {
       const periodWeeks = Math.max(1, fee.periodWeeks ?? 4);
-      const periodQuantity = (weeks: number) => fee.rounding === 'ceil' ? Math.ceil(weeks / periodWeeks) : weeks / periodWeeks;
+      const periodQuantity = (weeks: number) => {
+        if (weeks <= 0) return 0;
+        return fee.rounding === 'ceil' ? Math.ceil(weeks / periodWeeks) : Math.max(1, weeks / periodWeeks);
+      };
       let quantity = 0;
+      if (fee.id === 'books') {
+        const selected = this.quotePlan.courses.map(row => ({ row, course: this.prices.courseFees.find(course => course.id === row.optionId) }));
+        const quantity = selected.reduce((sum, item) => sum + (item.course?.materialFee ? Math.ceil(item.row.weeks / 4) : 0), 0);
+        const total = selected.reduce((sum, item) => sum + (item.course?.materialFee ?? 0) * Math.ceil(item.row.weeks / 4), 0);
+        const missing = selected.filter(item => !item.course?.materialFee).map(item => item.course?.displayName ?? item.row.optionId);
+        const details = selected.filter(item => item.course?.materialFee).map(item => `${item.course?.displayName} ${money(item.course?.materialFee ?? 0)}比索／4周`).join('；');
+        return {
+          item: fee.name,
+          unitLabel: '按所选课程／每开始4周',
+          quantity,
+          total,
+          note: `${details || '按学校课程教材表计算。'}${missing.length ? `；${missing.join('、')}在最新表中未列教材金额，本次暂计0比索并需顾问确认。` : ''}`,
+        };
+      }
       if (fee.id === 'challenger-elective') quantity = this.campus === 'challenger' && this.includeChallengerSpecialElective ? periodQuantity(this.courseWeeks) : 0;
-      else if (fee.id === 'ielts-guarantee') quantity = this.quotePlan.courses.some(row => row.optionId === 'challenger-ielts-guarantee') ? 1 : 0;
+      else if (fee.id === 'ielts-guarantee') quantity = this.quotePlan.courses.filter(row => row.optionId === 'challenger-ielts-guarantee').reduce((sum, row) => sum + Math.ceil(row.weeks / 8), 0);
       else if (fee.billingRule === 'once') quantity = 1;
       else if (fee.billingRule === 'first-visa-extension') quantity = extensions > 0 ? 1 : 0;
       else if (fee.billingRule === 'per-accommodation-period') quantity = periodQuantity(this.roomWeeks);
@@ -242,7 +262,7 @@ export class JicStudentQuote {
       const total = fee.billingRule === 'visa-extension-schedule' && fee.rates?.length
         ? Array.from({ length: extensions }, (_, index) => fee.rates?.[Math.min(index, fee.rates.length - 1)] ?? fee.amount).reduce((sum, amount) => sum + amount, 0)
         : fee.amount * quantity;
-      const unit = fee.billingRule === 'visa-extension-schedule' ? '每30天' : fee.billingRule.includes('period') ? `${periodWeeks}周` : '次';
+      const unit = fee.billingRule === 'visa-extension-schedule' ? '按学校累计表' : fee.billingRule.includes('period') ? `${periodWeeks}周` : '次';
       return { item: fee.name, unitLabel: `${money(fee.amount)} 比索／${unit}`, quantity, total, note: fee.note };
     });
   }
@@ -281,9 +301,9 @@ export class JicStudentQuote {
     return [
       fee('ssp', 'SSP特殊学习许可证', 7800, 'once', 0), fee('ssp-e-card', 'SSP-E CARD', 4500, 'once', 1), fee('acr-i-card', 'ACR-I CARD 外国人身份证', 4000, 'first-visa-extension', 2),
       fee('maintenance', '维护管理费', 1000, 'per-accommodation-period', 3, 4), fee('utilities', '水电费', 3000, 'per-accommodation-period', 4, 4),
-      fee('manila-pickup', '马尼拉机场接机', 3000, 'selected-manila-pickup', 5), fee('clark-pickup', '克拉克机场接机', 3000, 'selected-clark-pickup', 6),
-      { ...fee('visa-extension', '签证续签', 4940, 'visa-extension-schedule', 7), rates: [4940] },
-      { ...fee('books', '教材费', 1900, 'per-course-period', 8, 8), rounding: 'ceil' }, fee('student-card', '学生证', 200, 'once', 9),
+      fee('manila-pickup', '马尼拉机场接机', 3000, 'selected-manila-pickup', 5), fee('clark-pickup', '克拉克机场接机', 2500, 'selected-clark-pickup', 6),
+      { ...fee('visa-extension', '签证续签', 4940, 'visa-extension-schedule', 7), rates: [4940, 6210, 4240, 4240, 4240] },
+      { ...fee('books', '教材费', 0, 'per-course-period', 8, 4), rounding: 'ceil' }, fee('student-card', '学生证', 200, 'once', 9),
       fee('laundry', '洗衣服务', 1200, 'per-accommodation-period', 10, 4), fee('challenger-elective', 'Challenger特别选修课', 2000, 'per-course-period', 11, 4), fee('ielts-guarantee', 'IELTS保分班额外费用', 18000, 'once', 12),
     ];
   }

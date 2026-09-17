@@ -180,6 +180,21 @@ const routes: Routes = [
         component: WhyPhilippinesStudyComponent,
       },
       {
+        path: 'philippines-study/bohol/english-mint-international-academy/quote',
+        loadComponent: () =>
+          import('./pages/philippines/english-mint-school/english-mint-school.component').then(
+            (m) => m.EnglishMintSchoolComponent,
+          ),
+        data: { quoteOnly: true },
+      },
+      {
+        path: 'philippines-study/bohol/english-mint-international-academy',
+        loadComponent: () =>
+          import('./pages/philippines/english-mint-school/english-mint-school.component').then(
+            (m) => m.EnglishMintSchoolComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/cia-cebu-international-academy/student-reviews/:slug',
         loadComponent: () =>
           import('./pages/philippines/cia-student-review/cia-student-review.component').then(
@@ -438,6 +453,18 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/baguio/baguio-jic-challenger',
+        data: { campus: 'challenger' },
+        loadComponent: () =>
+          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+      },
+      {
+        path: 'philippines-study/baguio/baguio-jic-premium',
+        data: { campus: 'premium' },
+        loadComponent: () =>
+          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+      },
+      {
         path: 'philippines-study/baguio/baguio-jic',
         loadComponent: () =>
           import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
@@ -451,6 +478,13 @@ const routes: Routes = [
         path: 'philippines-study/baguio/monol',
         loadComponent: () =>
           import('./pages/philippines/monol-school/monol-school-detail.component').then((m) => m.MonolSchoolDetailComponent),
+      },
+      {
+        path: 'philippines-study/baguio/monol-sparta-campus',
+        loadComponent: () =>
+          import('./pages/philippines/monol-sparta-school/monol-sparta-school-detail.component').then(
+            (m) => m.MonolSpartaSchoolDetailComponent,
+          ),
       },
       {
         path: 'philippines-study/baguio/wales-academy',

@@ -328,6 +328,64 @@ describe('CPI pricing and complete quote export', () => {
     expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
   });
 
+  it('keeps single-person weeks synchronized across the page and image metadata', () => {
+    component.selectedWeeks = 12;
+    const date = component.selectedStartDate.replace(/-/g, '');
+
+    expect(component.quoteHeading).toBe('CPI12周报价');
+    expect(component.quoteImageData.headingText).toBe('CPI12周报价');
+    expect(component.quoteImageData.title).toBe('12周');
+    expect(component.quoteImageData.fileName).toBe(`CPI12周报价-${date}.png`);
+  });
+
+  it('describes equal and mixed two-person weeks without using person-week totals', () => {
+    component.selectedWeeks = 12;
+    const singleTotal = component.quoteUsd;
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.students[1].quotePlan.courses[0].weeks = 12;
+    component.students[1].quotePlan.rooms[0].weeks = 12;
+
+    expect(component.quoteHeading).toBe('CPI 2人·每人12周报价');
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('2人·每人12周');
+    expect(component.quoteImageData.fileName).toBe(`CPI 2人·每人12周报价-${component.selectedStartDate.replace(/-/g, '')}.png`);
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+    expect(component.quoteUsd).toBe(singleTotal * 2);
+
+    component.students[1].quotePlan.courses[0].weeks = 8;
+    component.students[1].quotePlan.rooms[0].weeks = 8;
+    const mixedQuote = component.quoteImageData;
+    expect(component.quoteHeading).toBe('CPI 2人·不同周数报价');
+    expect(mixedQuote.headingText).toBe(component.quoteHeading);
+    expect(mixedQuote.title).toBe('2人·不同周数');
+    expect(mixedQuote.fileName).toBe(`CPI 2人·不同周数报价-${component.selectedStartDate.replace(/-/g, '')}.png`);
+    expect(`${mixedQuote.headingText}${mixedQuote.title}`).not.toContain('20周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('12周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('8周');
+    expect(component.quoteUsd).toBe(component.activeStudents.reduce((sum, student) => sum + component.studentQuoteUsd(student), 0));
+  });
+
+  it('uses the actual three-person week pattern instead of a summed duration', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 3;
+    component.activeStudents.forEach(student => {
+      student.quotePlan.courses[0].weeks = 8;
+      student.quotePlan.rooms[0].weeks = 8;
+    });
+
+    expect(component.quoteHeading).toBe('CPI 3人·每人8周报价');
+    expect(component.quoteImageData.title).toBe('3人·每人8周');
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+
+    component.students[2].quotePlan.courses[0].weeks = 12;
+    component.students[2].quotePlan.rooms[0].weeks = 12;
+    expect(component.quoteHeading).toBe('CPI 3人·不同周数报价');
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('3人·不同周数');
+    expect(component.quoteImageData.fileName).toBe(`CPI 3人·不同周数报价-${component.selectedStartDate.replace(/-/g, '')}.png`);
+  });
+
   it('uses employee-edited CPI prices, rules, local fees and quote-image copy together', () => {
     const edited = createDefaultCpiContentConfig();
     edited.courses.find(course => course.id === 'esl-general-15')!.tuition = 1000;

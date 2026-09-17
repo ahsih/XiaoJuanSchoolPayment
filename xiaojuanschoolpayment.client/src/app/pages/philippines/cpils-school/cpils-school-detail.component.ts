@@ -599,7 +599,6 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   get payableRegistrationFee() { return this.activeStudents.reduce((sum, student) => sum + this.studentRegistration(student), 0); }
   studentQuoteUsd(student: CpilsStudentQuote): number { return Math.max(0, this.roundMoney(this.studentRegistration(student) + this.studentBase(student) - this.studentSidaDiscount(student) - this.studentOffSeasonDiscount(student) + this.studentPeakWeeks(student) * this.seasonalFeePerWeek - this.studentNoWindowDiscount(student) - this.studentHolidayDiscount(student))); }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentQuoteUsd(student), 0); }
-  get totalCourseWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.courseWeeks, 0); }
   get localFeePeriodLabel(): string { return this.quoteMode === 'single' ? `${this.quotePlan.stayWeeks}周` : `${this.activeStudents.length}人`; }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元`; }
@@ -624,7 +623,15 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   }
   get applicableExamBenefitText(): string { return this.applicableExamBenefits.join('；'); }
 
-  get quoteHeading() { return `CPILS${this.totalCourseWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.quotePlan.courseWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.quotePlan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading() { return `CPILS${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get quoteError(): string {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
     const index = this.activeStudents.findIndex(student => !!student.quotePlan.error || !this.visaOptions.some(option => option.value === student.visaType));
@@ -711,6 +718,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
 
   get quoteImageData() {
     const settings = this.quoteImageSettings;
+    const layoutWeeks = this.activeStudents[0]?.quotePlan.courseWeeks ?? 0;
     const paymentItems: QuoteImagePaymentItem[] = [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration ?? this.schoolPaymentItems[0].note },
       ...(['课', '宿'] as const).flatMap(icon => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems().filter(item => item.icon === icon).map(item => ({
@@ -728,7 +736,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       schoolName: '菲律宾宿务CPILS语言学校',
       filePrefix: 'CPILS',
       heroSrc: '/assets/cpils/campus-main.webp',
-      weeks: this.selectedWeeks,
+      weeks: layoutWeeks,
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
@@ -745,9 +753,9 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     const ageNotes = this.activeStudents.map((student, index) => student.selectedAgeGroup === 'minor' ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}未成年学生按所选课程收费，入学及监护要求须顾问确认。` : '').filter(Boolean);
     const importantNotes = [...mismatchNotes, ...ageNotes, ...settings.footerNotes];
     const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPILS', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPILS', layoutWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
-      ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
+      ...result, title: this.quoteScope, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],

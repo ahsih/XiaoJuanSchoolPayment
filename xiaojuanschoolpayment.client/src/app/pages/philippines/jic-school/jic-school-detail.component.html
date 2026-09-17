@@ -8,12 +8,10 @@
               <mat-icon>arrow_back</mat-icon>
               返回碧瑶学校列表
             </a>
-            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶JIC语言学校</p>
-            <h1>菲律宾碧瑶JIC语言学校</h1>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / {{ pageTitle }}</p>
+            <h1>{{ pageTitle }}</h1>
             <p class="hero-lead">
-              <span>碧瑶双校区目标导向语言学校。</span>
-              <span>官方Main Campus页面现称Baguio JIC Challenger Campus，适合ESL、IELTS和更清楚的学习制度。</span>
-              <span>Premium适合口语、职场英文和成人学习。</span>
+              <span *ngFor="let line of pageLead">{{ line }}</span>
             </p>
             <div class="hero-tags" aria-label="JIC特点">
               <span><mat-icon>terrain</mat-icon>碧瑶双校区</span>
@@ -27,8 +25,12 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看JIC校区和课程
+                查看本校区课程
                 <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" *ngIf="lockedCampus" [routerLink]="otherCampusRoute">
+                {{ otherCampusLabel }}
+                <mat-icon>swap_horiz</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
                 获取顾问确认报价
@@ -43,19 +45,20 @@
 
           <div class="hero-media" aria-label="JIC校园图片展示">
             <figure class="feature-photo">
-              <img src="assets/philippines/jic-campus-hero.webp" alt="Baguio JIC Challenger Campus校园航拍" />
-              <figcaption>Baguio JIC Challenger / Main Campus官方校园航拍</figcaption>
+              <img [src]="heroImageSrc" [alt]="pageEnglishName + '校园环境'" />
+              <figcaption>{{ heroImageCaption }}</figcaption>
             </figure>
             <div class="media-strip" aria-label="JIC校园缩略图">
-              <figure *ngFor="let image of galleryImages.slice(1, 4)">
-                <img [src]="image.src" [alt]="image.title" />
+              <figure *ngFor="let image of campusGalleryImages.slice(1, 4)">
+                <video *ngIf="image.contentType?.startsWith('video/')" controls preload="metadata"><source [src]="image.src" [type]="image.contentType" /></video>
+                <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" />
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>USD {{ formatUsd(quoteUsd) }} <small>起</small></strong>
-              <p>Challenger ESL Lite + Challenger 四人间（上下铺）</p>
+              <p>{{ lockedCampus === 'premium' ? 'Premium Speaking Starter 7 + Premium 四人间（无阳台）' : 'Challenger ESL Lite + Challenger 四人间（上下铺）' }}</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
@@ -92,8 +95,8 @@
         <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'gallery')">
           <div class="section-heading">
             <span>图片 / 环境展示</span>
-            <h2>按校区和空间查看 JIC 环境</h2>
-            <p>先看校区、教室、住宿、餐厅和学习资源，再判断Challenger或Premium哪一种节奏适合你。</p>
+            <h2>查看 {{ campusLabel }} 环境</h2>
+            <p>从校区、教室、住宿、餐厅和学习资源了解本校区的真实学习与生活空间。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="JIC图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -103,7 +106,7 @@
           <div class="gallery-grid">
             <figure *ngFor="let image of filteredGalleryImages">
               <video *ngIf="image.contentType?.startsWith('video/')" controls preload="metadata"><source [src]="image.src" [type]="image.contentType" /></video>
-              <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" />
+              <img *ngIf="!image.contentType?.startsWith('video/')" [src]="image.src" [alt]="image.title" loading="lazy" />
               <figcaption>
                 <strong>{{ image.title }}</strong>
                 <span>{{ image.description }}</span>
@@ -195,7 +198,7 @@
             <p>Challenger偏ESL和IELTS强化，Premium偏口语、主题式英语、职业英语和成人学习体验。</p>
           </div>
           <div class="course-grid">
-            <article class="course-card" *ngFor="let course of courses">
+            <article class="course-card" *ngFor="let course of visibleCourses">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
@@ -297,20 +300,21 @@
               <div class="section-heading">
                 <span>菲律宾碧瑶JIC语言学校完整费用报价</span>
                 <h2>{{ quoteFormHeading }}</h2>
-                <p>课程与住宿最低4周，可分别添加日期段；到校日期、报名日期、房型、周数和是否为在校延长会共同决定优惠。</p>
+                <p>学校公布1／2／3周短期比例，4周起可分别添加日期段；到校日期、报名日期、房型、周数和是否为在校延长会共同决定优惠。</p>
               </div>
               <div class="quote-mode" role="group" aria-label="JIC报价人数模式">
                 <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
                 <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
                 <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
               </div>
-              <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生独立选择Challenger或Premium、课程、住宿、签证与接机；未启用的学生资料会保留但不计入合计。</p>
+              <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生独立选择课程、住宿、签证与接机；未启用的学生资料会保留但不计入合计。</p>
 
               <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
-                <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) + ' · 双校区报价设置' : '双校区报价设置（Challenger / Premium）' }}</h3>
-                <p class="campus-switch-hint">请在下方选择 Challenger 挑战校区或 Premium 高级校区，课程与住宿选项会随校区自动切换。</p>
+                <h3>{{ quoteMode === 'group' ? '学生' + (i + 1) + ' · ' + campusLabel : campusLabel + '报价设置' }}</h3>
+                <p class="campus-switch-hint" *ngIf="!lockedCampus">请在下方选择 Challenger 挑战校区或 Premium 高级校区，课程与住宿选项会随校区自动切换。</p>
+                <p class="campus-switch-hint" *ngIf="lockedCampus">本页面已锁定为{{ campusLabel }}，课程、住宿和报价图片均只使用本校区资料。</p>
                 <div class="student-fields jic-student-fields">
-                  <label>选择校区（Challenger / Premium）<select [ngModel]="student.campus" (ngModelChange)="setStudentCampus(student, $event)"><option value="challenger">Challenger 挑战校区（主校区）</option><option value="premium">Premium 高级校区</option></select></label>
+                  <label *ngIf="!lockedCampus">选择校区（Challenger / Premium）<select [ngModel]="student.campus" (ngModelChange)="setStudentCampus(student, $event)"><option value="challenger">Challenger 挑战校区（主校区）</option><option value="premium">Premium 高级校区</option></select></label>
                   <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
                   <label>旅游签证<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
                   <label>机场接机<select [(ngModel)]="student.airportPickup"><option *ngFor="let option of student.airportPickupOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
@@ -386,42 +390,12 @@
           <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
         </section>
 
-        <section class="sida-ev-section" id="service-process">
-          <div class="sida-ev-heading">
-            <span>WHY SIDA QIHANG</span>
-            <h2>为什么通过思达启航报名菲律宾碧瑶JIC语言学校?</h2>
-            <p>
-              不只是提交报名，更重要的是帮你判断菲律宾碧瑶JIC语言学校哪个校区适合、算清费用，并持续协助到完成学习回国。
-            </p>
-          </div>
-
-          <div class="sida-ev-panel">
-            <figure class="sida-ev-main-photo">
-              <img
-                src="assets/cia/sida-why-main-branded.webp"
-                alt="思达启航顾问为菲律宾碧瑶JIC语言学校学生讲解报名方案"
-              />
-            </figure>
-
-            <div class="sida-ev-reason-grid">
-              <article *ngFor="let item of sidaJicReasons">
-                <img [src]="item.image" [alt]="item.alt" />
-                <div>
-                  <span>{{ item.number }}</span>
-                  <h3>{{ item.title }}</h3>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          <div class="sida-ev-trust-bar" aria-label="思达启航报名JIC保障">
-            <article *ngFor="let item of sidaJicTrustBadges">
-              <mat-icon>{{ item.icon }}</mat-icon>
-              <strong>{{ item.label }}</strong>
-            </article>
-          </div>
-        </section>
+        <app-sida-why-section
+          [schoolName]="pageTitle"
+          [supportTitle]="'深圳总部 + 菲律宾·欧洲驻点支持'"
+          [supportBadge]="'深圳总部 + 菲律宾·欧洲驻点'"
+          [detailed]="true"
+        ></app-sida-why-section>
 
         <section class="section-block" id="service-flow">
           <div class="section-heading">

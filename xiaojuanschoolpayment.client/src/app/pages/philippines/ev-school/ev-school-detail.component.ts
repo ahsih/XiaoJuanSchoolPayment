@@ -609,7 +609,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   set selectedCourseId(value: string) { this.updateSelection('course', this.courseSelections[0].id, { optionId: value }); }
   get selectedRoomId(): string { return this.roomSelections[0].optionId; }
   set selectedRoomId(value: string) { this.updateSelection('room', this.roomSelections[0].id, { optionId: value }); }
-  get selectedWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.courseWeeks, 0); }
+  get selectedWeeks(): number { return this.totalWeeks; }
   set selectedWeeks(value: number) {
     this.updateSelection('course', this.courseSelections[0].id, { weeks: value });
     this.updateSelection('room', this.roomSelections[0].id, { weeks: value });
@@ -624,7 +624,15 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   get totalWeeks(): number { return this.courseSelections.reduce((sum, row) => sum + row.weeks, 0); }
   get roomTotalWeeks(): number { return this.roomSelections.reduce((sum, row) => sum + row.weeks, 0); }
   get isCombinedPlan(): boolean { return this.courseSelections.length > 1 || this.roomSelections.length > 1 || this.dateCoverageMismatch; }
-  get quoteHeading(): string { return `EV主校区${this.selectedWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.totalWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.calculator.plan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading(): string { return `EV主校区${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get durationMismatch(): boolean { return this.totalWeeks !== this.roomTotalWeeks; }
 
   private validDate(value: string): boolean {
@@ -812,6 +820,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
     ];
   }
   get quoteImageData() {
+    const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
     const includedFees = this.includedLocalFees;
     const optionalFees = this.excludedLocalFees;
     const courseItems: QuoteImagePaymentItem[] = [], roomItems: QuoteImagePaymentItem[] = [];
@@ -835,7 +844,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       schoolName: '菲律宾宿务EV Academy',
       filePrefix: 'EV',
       heroSrc: '/assets/ev/campus-exterior.webp',
-      weeks: this.selectedWeeks,
+      weeks: layoutWeeks,
       startDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
@@ -858,9 +867,10 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
     });
     const importantNotes = [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes];
     const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'EV主校区', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'EV主校区', layoutWeeks, startDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
+      title: this.quoteScope,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${startDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,

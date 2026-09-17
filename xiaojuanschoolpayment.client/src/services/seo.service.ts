@@ -37,6 +37,18 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾留学优势, 菲律宾游学优势, 菲律宾英语学习, 菲律宾语言学校, 菲律宾一对一英语',
     image: '/assets/philippines/baguio-study-hero.webp',
   },
+  '/philippines-study/bohol/english-mint-international-academy': {
+    title: '菲律宾薄荷岛English MINT语言学校 | 课程住宿与费用报价',
+    description: 'English MINT薄荷岛语言学校介绍，查看成人ESL、青少年英语、口语强化、住宿、餐食、家庭项目、当地费用和完整报价。',
+    keywords: 'English MINT, 薄荷岛语言学校, 菲律宾薄荷岛游学, 邦劳英语学校, 薄荷岛亲子游学, English MINT费用',
+    image: '/assets/english-mint/campus-building.webp',
+  },
+  '/philippines-study/bohol/english-mint-international-academy/quote': {
+    title: 'English MINT费用报价 | 课程住宿家庭套餐计算',
+    description: '按English MINT已公布的课程、房型、周数、当地费用、2周全包和家庭项目价格生成网页报价与可保存报价图片。',
+    keywords: 'English MINT报价, English MINT学费, 薄荷岛游学费用, English MINT家庭套餐',
+    image: '/assets/english-mint/deluxe-twin.webp',
+  },
   '/philippines-study/schools/by-city': {
     title: '菲律宾语言学校城市选择 | 宿务碧瑶克拉克马尼拉',
     description:
@@ -114,12 +126,31 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.webp',
   },
+  '/philippines-study/baguio/baguio-jic-challenger': {
+    title: '菲律宾碧瑶JIC挑战校区 | Challenger课程住宿费用与报价',
+    description: 'JIC Challenger挑战校区独立页面，整理ESL与IELTS课程、每日课表、四种住宿、最新短期比例、学杂费、优惠和单人多人报价图片。',
+    keywords: 'JIC挑战校区, Baguio JIC Challenger Campus, JIC ESL, JIC IELTS, 碧瑶语言学校',
+    image: '/assets/philippines/jic-main-campus-overview.webp',
+  },
+  '/philippines-study/baguio/baguio-jic-premium': {
+    title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
+    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Active Senior及亲子课程、六种住宿、最新学杂费、优惠和报价图片。',
+    keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
+    image: '/assets/philippines/jic-premium-campus-overview.jpg',
+  },
   '/philippines-study/baguio/monol': {
-    title: '菲律宾碧瑶MONOL语言学校 | 课程费用住宿与报名咨询',
+    title: '菲律宾碧瑶MONOL主校区 | 课程费用住宿与报名咨询',
     description:
       '菲律宾碧瑶MONOL语言学校页面，整理MONOL的ESL 4、General ESL、IELTS、LEAP课程、Hotel-style住宿房型、课程住宿费用、餐费说明和当地费用。',
     keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
     image: '/assets/philippines/monol-campus-building.webp',
+  },
+  '/philippines-study/baguio/monol-sparta-campus': {
+    title: '菲律宾碧瑶MONOL斯巴达校区 | 2026课程住宿费用与报价',
+    description:
+      '菲律宾碧瑶MONOL斯巴达校区独立页面，整理Booster ESL、Master IELTS、每天至少10节学习安排、五种校内房型、2026课程住宿优惠、护照地区签证费用、接机、校规、相册视频与单人多人报价。',
+    keywords: 'MONOL斯巴达校区, MONOL Sparta Campus, 碧瑶斯巴达学校, Booster ESL, Master IELTS, 菲律宾雅思学校, 碧瑶语言学校',
+    image: '/assets/philippines/monol-sparta/campus-building.webp',
   },
   '/philippines-study/baguio/wales-academy': {
     title: '菲律宾碧瑶WALES语言学校 | 课程费用住宿与报名咨询',

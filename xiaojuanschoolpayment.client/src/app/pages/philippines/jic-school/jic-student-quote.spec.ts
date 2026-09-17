@@ -36,9 +36,18 @@ describe('JicStudentQuote', () => {
     expect(student.quotePlan.paymentItems().find((item) => item.icon === '课')?.detailTitle).toBe(JIC_COURSE_FEES[0].displayName);
   });
 
-  it('starts at four weeks and prorates a six-week plan and periodic local fees', () => {
+  it('uses the latest one-to-three-week ratios and prorates a six-week plan', () => {
     const student = quote();
-    expect(student.quotePlan.allowedWeeks).toEqual([4, 6, 8, 12, 16, 20, 24]);
+    expect(student.quotePlan.allowedWeeks).toEqual([1, 2, 3, 4, 6, 8, 12, 16, 20, 24]);
+    setPlan(student, 1, '2026-09-06');
+    expect(student.tuition).toBe(304);
+    expect(student.accommodation).toBe(240);
+    setPlan(student, 2, '2026-09-06');
+    expect(student.tuition).toBe(494);
+    expect(student.accommodation).toBe(390);
+    setPlan(student, 3, '2026-09-06');
+    expect(student.tuition).toBe(646);
+    expect(student.accommodation).toBe(510);
     setPlan(student, 6, '2026-09-06');
     expect(student.tuition).toBe(1140);
     expect(student.accommodation).toBe(900);
@@ -47,24 +56,37 @@ describe('JicStudentQuote', () => {
     expect(student.localFees.find((item) => item.item === '洗衣服务')?.total).toBe(1800);
   });
 
-  it('uses one textbook set for up to eight weeks and another set after that', () => {
+  it('calculates the latest course-specific textbook amount every started four weeks', () => {
     const student = quote();
     setPlan(student, 8, '2026-09-06');
-    expect(student.localFees.find((item) => item.item === '教材费')?.quantity).toBe(1);
-    setPlan(student, 12, '2026-09-06');
     expect(student.localFees.find((item) => item.item === '教材费')?.quantity).toBe(2);
+    expect(student.localFees.find((item) => item.item === '教材费')?.total).toBe(3000);
+    setPlan(student, 12, '2026-09-06');
+    expect(student.localFees.find((item) => item.item === '教材费')?.quantity).toBe(3);
+    expect(student.localFees.find((item) => item.item === '教材费')?.total).toBe(4500);
   });
 
-  it('estimates tourist extensions every thirty days and adds ACR only once', () => {
+  it('applies the confirmed 30-day and 59-day tourist visa thresholds and adds ACR only once', () => {
     const student = quote();
-    setPlan(student, 8, '2026-09-06');
+    setPlan(student, 4, '2026-09-06');
     expect(student.visaExtensionCount).toBe(0);
-    student.visaType = 'tourist30';
+    setPlan(student, 6, '2026-09-06');
+    expect(student.visaExtensionCount).toBe(1);
+    setPlan(student, 8, '2026-09-06');
     expect(student.visaExtensionCount).toBe(1);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(1);
+    student.visaType = 'tourist59';
+    setPlan(student, 6, '2026-09-06');
+    expect(student.visaExtensionCount).toBe(0);
+    expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(0);
+    setPlan(student, 8, '2026-09-06');
+    expect(student.visaExtensionCount).toBe(1);
+    setPlan(student, 12, '2026-09-06');
+    expect(student.visaExtensionCount).toBe(2);
     setPlan(student, 24, '2026-09-06');
     expect(student.visaExtensionCount).toBe(5);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(1);
+    expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(23870);
   });
 
   it('charges the confirmed 2026 peak surcharge only for covered course weeks', () => {
@@ -139,7 +161,7 @@ describe('JicStudentQuote', () => {
     const manila = student.localFees.find((item) => item.item === '马尼拉机场接机');
     const clark = student.localFees.find((item) => item.item === '克拉克机场接机');
     expect(manila?.total).toBe(0);
-    expect(clark?.total).toBe(3000);
+    expect(clark?.total).toBe(2500);
     expect(student.localFees.some((item) => item.item.includes('押金'))).toBeFalse();
   });
 

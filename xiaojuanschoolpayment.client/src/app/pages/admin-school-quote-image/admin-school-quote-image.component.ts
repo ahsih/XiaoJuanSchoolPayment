@@ -29,6 +29,8 @@ import {
   cloneMonolContentConfig,
   createDefaultMonolContentConfig,
 } from '../philippines/monol-school/monol-content-config';
+import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
+import { MonolSpartaStudentQuote } from '../philippines/monol-sparta-school/monol-sparta-student-quote';
 import {
   cloneEvContentConfig,
   createDefaultEvContentConfig,
@@ -84,6 +86,7 @@ import {
 import {
   cloneJicContentConfig,
   createDefaultJicContentConfig,
+  jicQuoteImageSettings,
 } from '../philippines/jic-school/jic-content-config';
 import {
   cloneIclContentConfig,
@@ -93,9 +96,11 @@ import {
 } from '../philippines/iu-school/iu-icl-content-config';
 import { IuIclQuote } from '../philippines/iu-school/iu-icl-quote';
 import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
+import { JicCampus } from '../philippines/jic-school/jic-pricing';
 import { cloneCellaContentConfig, createDefaultCellaContentConfig } from '../philippines/cella-quote/cella-content-config';
 import { cloneFellaContentConfig, createDefaultFellaContentConfig, fellaQuoteImageSettings } from '../philippines/fella-school/fella-content-config';
 import { cloneBtesContentConfig, cloneBlueOceanContentConfig, cloneTargetContentConfig, cloneWalesContentConfig, createDefaultBtesContentConfig, createDefaultBlueOceanContentConfig, createDefaultTargetContentConfig, createDefaultWalesContentConfig } from '../philippines/remaining-content-config';
+import { cloneMintContentConfig, createDefaultMintContentConfig } from '../philippines/english-mint-school/mint-content-config';
 
 @Component({
   selector: 'app-admin-school-quote-image',
@@ -120,6 +125,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   isSubmitting = false;
   hasUnsavedChanges = false;
   beciCampus: BeciCampus = 'eop';
+  jicCampus: JicCampus = 'challenger';
   fellaCampus: 'campus1' | 'campus2' = 'campus1';
   supplementalNoteRows: Array<{ id: string; label: string; fallback: string; section: '学校费用' | '参考费用' }> = [];
   private previewTimer?: ReturnType<typeof setTimeout>;
@@ -135,6 +141,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const campus = this.route.snapshot.queryParamMap.get('campus');
     if (campus === 'eop' || campus === 'sparta' || campus === 'city') this.beciCampus = campus;
+    const jicCampus = this.route.snapshot.queryParamMap.get('jicCampus');
+    if (jicCampus === 'challenger' || jicCampus === 'premium') this.jicCampus = jicCampus;
     const fellaCampus = this.route.snapshot.queryParamMap.get('fellaCampus');
     if (fellaCampus === 'campus1' || fellaCampus === 'campus2') this.fellaCampus = fellaCampus;
     this.loadSchools();
@@ -144,10 +152,15 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   get canPublish(): boolean {
     return this.authService.getRoles().some(role => ['admin', 'manager'].includes(role.toLowerCase()));
   }
-  get settings(): CiaQuoteImageSettings { return this.isFellaSelected ? fellaQuoteImageSettings(this.content, this.fellaCampus) : this.content.quoteImageSettings; }
+  get settings(): CiaQuoteImageSettings {
+    if (this.isFellaSelected) return fellaQuoteImageSettings(this.content, this.fellaCampus);
+    if (this.isJicSelected) return jicQuoteImageSettings(this.content, this.jicCampus);
+    return this.content.quoteImageSettings;
+  }
   get isCiaSelected(): boolean { return this.selectedSchool?.name === this.ciaSchoolName || !!this.selectedSchool?.name.toLowerCase().includes('cia'); }
   get isPinesSelected(): boolean { return !!this.selectedSchool?.name.toLowerCase().includes('pines'); }
-  get isMonolSelected(): boolean { return !!this.selectedSchool?.name.toLowerCase().includes('monol'); }
+  get isMonolSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return name.includes('monol')&&!name.includes('sparta')&&!name.includes('斯巴达'); }
+  get isMonolSpartaSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return name.includes('monol')&&(name.includes('sparta')||name.includes('斯巴达')); }
   get isEvSelected(): boolean {
     const name = this.selectedSchool?.name.toLowerCase() ?? '';
     return name === 'ev academy' || name.includes('宿务ev') || name.includes('ev academy');
@@ -174,8 +187,9 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   get isBlueOceanSelected(): boolean { return (this.selectedSchool?.name.toLowerCase()??'').includes('cebu blue ocean'); }
   get isTargetSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('target')&&n.includes('english'); }
   get isWalesSelected(): boolean { return (this.selectedSchool?.name.toLowerCase()??'').includes('wales'); }
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected; }
-  get schoolShortName(): string { return this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'Cebu Blue Ocean' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : this.isCellaPremiumSelected ? 'CELLA Premium' : this.isCellaUniSelected ? 'CELLA Uni Sparta' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA'; }
+  get isMintSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('english mint')||n.includes('englishmint')||(n.includes('薄荷岛')&&n.includes('mint')); }
+  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isMonolSpartaSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected || this.isMintSelected; }
+  get schoolShortName(): string { return this.isMonolSpartaSelected ? 'MONOL斯巴达校区' : this.isMintSelected ? 'English MINT' : this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'Cebu Blue Ocean' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : this.isCellaPremiumSelected ? 'CELLA Premium' : this.isCellaUniSelected ? 'CELLA Uni Sparta' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}` : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL主校区' : this.isPinesSelected ? 'PINES' : 'CIA'; }
   get imageFeeRows(): CiaLocalFeeRule[] {
     return this.content.localFees.filter(fee => fee.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
   }
@@ -217,14 +231,21 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       if (school.name.toLowerCase().includes('city')) this.beciCampus = 'city';
       else if (requestedCampus !== 'sparta' && requestedCampus !== 'city') this.beciCampus = 'eop';
     }
-    void this.router.navigate([], { relativeTo: this.route, queryParams: { schoolId: school.id, campus: this.isBeciSelected ? this.beciCampus : null }, queryParamsHandling: 'merge', replaceUrl: true });
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { schoolId: school.id, campus: this.isBeciSelected ? this.beciCampus : null, jicCampus: this.isJicSelected ? this.jicCampus : null }, queryParamsHandling: 'merge', replaceUrl: true });
     if (this.isSupportedSchool) this.loadEditor(school.id);
-    else { this.isLoading = false; this.statusKind = 'warning'; this.statusMessage = "目前统一报价图片后台已接通 CIA、PINES、MONOL、EV、SMEAG Capital、Philinter、CG、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI、JIC、IU、ICL、CELLA、English Fella、BTES、Cebu Blue Ocean、TARGET 与 WALES；这所学校尚未接入。"; }
+    else { this.isLoading = false; this.statusKind = 'warning'; this.statusMessage = "目前统一报价图片后台已接通 English MINT、CIA、PINES、MONOL主校区、MONOL斯巴达校区、EV、SMEAG Capital、Philinter、CG、CPI、B'Cebu、CPILS、GLC、I.BREEZE、A&J、IMS、BECI、JIC、IU、ICL、CELLA、English Fella、BTES、Cebu Blue Ocean、TARGET 与 WALES；这所学校尚未接入。"; }
   }
 
   selectBeciCampus(campus: BeciCampus): void {
     this.beciCampus = campus;
     void this.router.navigate([], { relativeTo: this.route, queryParams: { campus }, queryParamsHandling: 'merge', replaceUrl: true });
+    this.refreshPreview();
+  }
+
+  selectJicCampus(campus: JicCampus): void {
+    if (this.jicCampus === campus) return;
+    this.jicCampus = campus;
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { jicCampus: campus }, queryParamsHandling: 'merge', replaceUrl: true });
     this.refreshPreview();
   }
 
@@ -261,7 +282,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
 
   openContentTab(tab: 'courses' | 'rooms' | 'fees' | 'rules' | 'media'): void {
     void this.router.navigate(['/admin/school-content'], {
-      queryParams: { schoolId: this.selectedSchool?.id, tab, campus: this.isBeciSelected ? this.beciCampus : undefined },
+      queryParams: { schoolId: this.selectedSchool?.id, tab, campus: this.isBeciSelected ? this.beciCampus : undefined, jicCampus: this.isJicSelected ? this.jicCampus : undefined },
     });
   }
 
@@ -277,7 +298,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     const summary = this.changeSummary.trim() || `更新 ${this.schoolShortName} 报价图片说明`;
     const request = !hasInitialVersion && this.canPublish
       ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
-      : this.isFellaSelected
+      : this.isFellaSelected || this.isJicSelected
         ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
         : this.contentService.saveQuoteImageDraft<CiaContentConfig, CiaQuoteImageSettings>(this.selectedSchool.id, this.settings, summary);
     request
@@ -305,7 +326,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     this.statusMessage = '';
     const saveRequest = !hasInitialVersion && this.canPublish
       ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
-      : this.isFellaSelected
+      : this.isFellaSelected || this.isJicSelected
         ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
         : this.contentService.saveQuoteImageDraft<CiaContentConfig, CiaQuoteImageSettings>(this.selectedSchool.id, this.settings, summary);
     saveRequest
@@ -344,7 +365,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       ? this.contentService.publish<CiaContentConfig>(this.selectedSchool.id)
       : (!hasInitialVersion
           ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
-          : this.isFellaSelected
+          : this.isFellaSelected || this.isJicSelected
             ? this.contentService.saveDraft(this.selectedSchool.id, this.content, summary)
             : this.contentService.saveQuoteImageDraft<CiaContentConfig, CiaQuoteImageSettings>(this.selectedSchool.id, this.settings, summary)
         ).pipe(switchMap(() => this.contentService.publish<CiaContentConfig>(this.selectedSchool!.id, summary)));
@@ -398,6 +419,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   private buildPreviewQuote(): QuoteImageCardData {
+    if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
       const quote = new IuIclQuote(campus, 'power-speaking-4', campus === 'IU' ? 'campus-triple' : 'campus-quad', campus === 'IU' ? '2026-09-13' : '2026-10-04');
@@ -429,11 +451,12 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     const isBlueOcean = schoolCode === 'BLUE-OCEAN';
     const isTarget = schoolCode === 'TARGET';
     const isWales = schoolCode === 'WALES';
+    const isMint = schoolCode === 'MINT';
     const beciName = this.beciCampus === 'eop' ? '菲律宾碧瑶BECI EOP校区' : this.beciCampus === 'sparta' ? '菲律宾碧瑶BECI斯巴达校区' : '菲律宾碧瑶API BECI City校区';
-    const schoolName = isWales ? '菲律宾碧瑶WALES语言学校' : isTarget ? '菲律宾宿务TARGET Global English Academy' : isBlueOcean ? '菲律宾宿务Cebu Blue Ocean Academy' : isBtes ? '菲律宾宿务BTES语言学校' : isFella ? `菲律宾宿务English Fella${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : isCellaPremium ? '菲律宾宿务CELLA Premium Campus' : isCellaUni ? '菲律宾宿务CELLA Uni Sparta Campus' : isJic ? '菲律宾碧瑶JIC语言学校' : isBeci ? beciName : isIms ? '菲律宾宿务IMS Academy' : isAnj ? '菲律宾碧瑶A&J语言学校' : isIbreeze ? '菲律宾宿务I.BREEZE语言学校' : isGlc ? '菲律宾宿务Global Language Cebu' : isCpils ? '菲律宾宿务CPILS语言学校' : isBCebu ? "菲律宾宿务B'Cebu语言学校" : isCpi ? '菲律宾宿务CPI语言学校' : isCgSparta ? '菲律宾宿务CG Academy斯巴达校区' : isCgBanilad ? '菲律宾宿务CG Academy Banilad校区' : isPhilinter ? '菲律宾宿务Philinter语言学校' : isSmeag ? '菲律宾宿务SMEAG Capital语言学校' : isEv ? '菲律宾宿务EV Academy' : isMonol ? '菲律宾碧瑶MONOL语言学校' : isPines ? '菲律宾碧瑶PINES语言学校' : 'CIA';
-    const heroSrc = isWales ? '/assets/philippines/wales-school-building.webp' : isTarget ? '/assets/philippines/target-campus-hero.webp' : isBlueOcean ? '/assets/philippines/cebu-study-hero.webp' : isBtes ? '/assets/philippines/btes/campus-gate.webp' : isFella ? '/assets/fella/campus-main.webp' : (isCellaUni || isCellaPremium) ? '/assets/philippines/cebu-study-hero.webp' : isJic ? '/assets/philippines/jic-main-campus-overview.webp' : isBeci ? (this.beciCampus === 'eop' ? '/assets/philippines/beci-eop-campus.webp' : this.beciCampus === 'sparta' ? '/assets/philippines/beci-campus-blue-roof.webp' : '/assets/philippines/beci-city-study-lounge.webp') : isIms ? '/assets/ims/campus-hero.webp' : isAnj ? '/assets/philippines/anj-campus-hero.jpg' : isIbreeze ? '/assets/ibreeze/campus-main.webp' : isGlc ? '/assets/glc/campus-main.webp' : isCpils ? '/assets/cpils/campus-main.webp' : isBCebu ? '/assets/philippines/bcebu-campus-hero.webp' : isCpi ? '/assets/cpi/campus-exterior.webp' : isCgSparta ? '/assets/philippines/cg-sparta-campus-hero.webp' : isCgBanilad ? '/assets/philippines/cg-banilad-campus-hero.webp' : isPhilinter ? '/assets/philinter/campus-main.webp' : isSmeag ? '/assets/philippines/smeag-capital-building.webp' : isEv ? '/assets/ev/campus-exterior.webp' : isMonol ? '/assets/philippines/monol-campus-building.webp' : isPines ? '/assets/philippines/pines-campus-hero.webp' : '/assets/cia/campus-building.webp';
-    const courseId = isJic ? 'challenger-esl-lite' : isBeci ? (this.beciCampus === 'eop' ? 'eop-lite-esl' : this.beciCampus === 'sparta' ? 'sparta-24-esl' : 'city-lite-esl') : isIms ? 'essential-esl-4' : isAnj ? 'eco-relax-lite' : isIbreeze ? 'intensive-speaking' : isGlc ? 'power-speaking' : isCpils ? 'general-esl' : isBCebu ? 'speed-esl' : isCpi ? 'esl-general-15' : isCgSparta ? 'sparta' : isCgBanilad ? 'general-esl' : isPhilinter ? 'light-esl' : isSmeag ? 'esl-regular-ket-pet-fce' : isEv ? 'semi-sparta-esl' : isMonol ? 'esl-4' : isPines ? 'light-esl-4' : 'regular-esl';
-    const roomId = isJic ? 'challenger-quad-bunk' : isBeci ? (this.beciCampus === 'eop' ? 'eop-quad-female' : this.beciCampus === 'sparta' ? 'sparta-quad' : 'city-studio-quad') : isIms ? 'quadruple' : isAnj ? 'deluxe-triple' : isIbreeze ? 'quad-main' : isGlc ? 'annex-double' : isCpils ? 'regular-quad' : isBCebu ? 'triple-bunk' : isCpi ? 'building-a-quad' : isCgSparta ? 'quad' : isCgBanilad ? 'quad' : isPhilinter ? 'in-campus-triple' : isSmeag ? 'campus-quad' : isEv ? 'quad-bunk' : isMonol ? 'quad-room' : isPines ? 'main-sextuple' : 'd4';
+    const schoolName = isMint ? '菲律宾薄荷岛English MINT International Academy' : isWales ? '菲律宾碧瑶WALES语言学校' : isTarget ? '菲律宾宿务TARGET Global English Academy' : isBlueOcean ? '菲律宾宿务Cebu Blue Ocean Academy' : isBtes ? '菲律宾宿务BTES语言学校' : isFella ? `菲律宾宿务English Fella${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : isCellaPremium ? '菲律宾宿务CELLA Premium Campus' : isCellaUni ? '菲律宾宿务CELLA Uni Sparta Campus' : isJic ? `菲律宾碧瑶JIC${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}` : isBeci ? beciName : isIms ? '菲律宾宿务IMS Academy' : isAnj ? '菲律宾碧瑶A&J语言学校' : isIbreeze ? '菲律宾宿务I.BREEZE语言学校' : isGlc ? '菲律宾宿务Global Language Cebu' : isCpils ? '菲律宾宿务CPILS语言学校' : isBCebu ? "菲律宾宿务B'Cebu语言学校" : isCpi ? '菲律宾宿务CPI语言学校' : isCgSparta ? '菲律宾宿务CG Academy斯巴达校区' : isCgBanilad ? '菲律宾宿务CG Academy Banilad校区' : isPhilinter ? '菲律宾宿务Philinter语言学校' : isSmeag ? '菲律宾宿务SMEAG Capital语言学校' : isEv ? '菲律宾宿务EV Academy' : isMonol ? '菲律宾碧瑶MONOL语言学校' : isPines ? '菲律宾碧瑶PINES语言学校' : 'CIA';
+    const heroSrc = isMint ? '/assets/english-mint/campus-building.webp' : isWales ? '/assets/philippines/wales-school-building.webp' : isTarget ? '/assets/philippines/target-campus-hero.webp' : isBlueOcean ? '/assets/philippines/cebu-study-hero.webp' : isBtes ? '/assets/philippines/btes/campus-gate.webp' : isFella ? '/assets/fella/campus-main.webp' : (isCellaUni || isCellaPremium) ? '/assets/philippines/cebu-study-hero.webp' : isJic ? (this.jicCampus === 'premium' ? '/assets/philippines/jic-premium-campus-overview.jpg' : '/assets/philippines/jic-main-campus-overview.webp') : isBeci ? (this.beciCampus === 'eop' ? '/assets/philippines/beci-eop-campus.webp' : this.beciCampus === 'sparta' ? '/assets/philippines/beci-campus-blue-roof.webp' : '/assets/philippines/beci-city-study-lounge.webp') : isIms ? '/assets/ims/campus-hero.webp' : isAnj ? '/assets/philippines/anj-campus-hero.jpg' : isIbreeze ? '/assets/ibreeze/campus-main.webp' : isGlc ? '/assets/glc/campus-main.webp' : isCpils ? '/assets/cpils/campus-main.webp' : isBCebu ? '/assets/philippines/bcebu-campus-hero.webp' : isCpi ? '/assets/cpi/campus-exterior.webp' : isCgSparta ? '/assets/philippines/cg-sparta-campus-hero.webp' : isCgBanilad ? '/assets/philippines/cg-banilad-campus-hero.webp' : isPhilinter ? '/assets/philinter/campus-main.webp' : isSmeag ? '/assets/philippines/smeag-capital-building.webp' : isEv ? '/assets/ev/campus-exterior.webp' : isMonol ? '/assets/philippines/monol-campus-building.webp' : isPines ? '/assets/philippines/pines-campus-hero.webp' : '/assets/cia/campus-building.webp';
+    const courseId = isMint ? 'lite-esl' : isJic ? (this.jicCampus === 'premium' ? 'premium-speaking-starter-7' : 'challenger-esl-lite') : isBeci ? (this.beciCampus === 'eop' ? 'eop-lite-esl' : this.beciCampus === 'sparta' ? 'sparta-24-esl' : 'city-lite-esl') : isIms ? 'essential-esl-4' : isAnj ? 'eco-relax-lite' : isIbreeze ? 'intensive-speaking' : isGlc ? 'power-speaking' : isCpils ? 'general-esl' : isBCebu ? 'speed-esl' : isCpi ? 'esl-general-15' : isCgSparta ? 'sparta' : isCgBanilad ? 'general-esl' : isPhilinter ? 'light-esl' : isSmeag ? 'esl-regular-ket-pet-fce' : isEv ? 'semi-sparta-esl' : isMonol ? 'esl-4' : isPines ? 'light-esl-4' : 'regular-esl';
+    const roomId = isMint ? 'deluxe-twin' : isJic ? (this.jicCampus === 'premium' ? 'premium-quad-no-balcony' : 'challenger-quad-bunk') : isBeci ? (this.beciCampus === 'eop' ? 'eop-quad-female' : this.beciCampus === 'sparta' ? 'sparta-quad' : 'city-studio-quad') : isIms ? 'quadruple' : isAnj ? 'deluxe-triple' : isIbreeze ? 'quad-main' : isGlc ? 'annex-double' : isCpils ? 'regular-quad' : isBCebu ? 'triple-bunk' : isCpi ? 'building-a-quad' : isCgSparta ? 'quad' : isCgBanilad ? 'quad' : isPhilinter ? 'in-campus-triple' : isSmeag ? 'campus-quad' : isEv ? 'quad-bunk' : isMonol ? 'quad-room' : isPines ? 'main-sextuple' : 'd4';
     const course = this.content.courses.find(item => item.id === courseId) ?? this.content.courses[0];
     const room = this.content.rooms.find(item => item.id === roomId) ?? this.content.rooms[0];
     const registration = this.content.quoteSettings.registrationFee;
@@ -523,7 +546,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     });
     return applyEditableQuoteImageCopy({
       ...applySchoolQuoteImageLayout(base, schoolCode, 4, '2026-09-06', totalUsd, 6.71),
-      headingText: isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? 'JIC 挑战校区4周报价' : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE4周报价' : isBCebu ? "B'Cebu4周报价" : isCgSparta ? 'CG斯巴达校区4周报价' : isCgBanilad ? 'CG Banilad4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
+      headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE4周报价' : isBCebu ? "B'Cebu4周报价" : isCgSparta ? 'CG斯巴达校区4周报价' : isCgBanilad ? 'CG Banilad4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
       noteTitle: settings.noteSectionTitle, importantNotes: settings.footerNotes,
@@ -650,11 +673,78 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
   }
 
+  private buildMonolSpartaPreviewQuote(): QuoteImageCardData {
+    const settings = this.content.quoteImageSettings;
+    const student = new MonolSpartaStudentQuote({
+      courseFees: this.content.courses.filter(item => item.enabled).map(item => ({ id: item.id, name: item.name, tuition: item.tuition, suitable: item.schedule, note: item.note })),
+      roomFees: this.content.rooms.filter(item => item.enabled).map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note })),
+      registrationFee: this.content.quoteSettings.registrationFee,
+      promotionRules: this.content.quoteSettings.promotions,
+      localFeeRules: this.content.localFees,
+    });
+    student.selectedRegistrationDate = '2026-09-17';
+    student.quotePlan.courses[0].startDate = '2026-09-20';
+    student.quotePlan.rooms[0].startDate = '2026-09-20';
+    student.pickup = 'manila-group';
+    const localFeeItems = student.localFees.map(fee => ({
+      label: fee.item,
+      unit: fee.unitLabel,
+      quantity: this.previewMoney(fee.quantity),
+      amount: `${this.previewMoney(fee.total)} 比索`,
+      note: fee.note,
+    }));
+    const localFeeTotal = student.localFees.reduce((sum, fee) => sum + fee.total, 0);
+    const deposit = this.content.localFees.find(item => item.id === 'security-deposit' && item.enabled);
+    const tvv = this.content.localFees.find(item => item.id === 'tvv-acr' && item.enabled);
+    const quote = buildPhilippinesDetailedQuote({
+      schoolCode: 'MONOL-SPARTA',
+      schoolName: '菲律宾碧瑶MONOL斯巴达校区',
+      filePrefix: 'MONOL-SPARTA',
+      heroSrc: '/assets/philippines/monol-sparta/campus-building.webp',
+      weeks: 4,
+      startDate: '2026-09-20',
+      usdToCny: 6.71,
+      totalUsd: student.quoteUsd,
+      paymentItems: [
+        { icon: '注', label: '注册费', amount: `${this.previewMoney(student.registration)} 美元`, note: settings.paymentNotes.registration },
+        ...student.quotePlan.paymentItems().map(item => ({ ...item, label: item.icon === '课' ? item.label.replace('课程费', '课程名称') : item.label.replace('住宿费', '住宿名称') })),
+        ...student.paymentLines.map(line => ({ icon: line.icon, label: line.label, amount: `− ${this.previewMoney(Math.abs(line.value))} 美元`, note: line.note, promotionKey: line.promotionKey, accent: true })),
+      ],
+      localFeeItems,
+      localFeeTotal,
+      localCurrencyName: '比索',
+      localFeeCny: Math.round(localFeeTotal / 9.33566),
+      localFeeNote: settings.localFeeIntro,
+      optionalFeeItems: [
+        ...(deposit ? [{ label: deposit.name, amount: `${this.previewMoney(deposit.amount)} 美元`, cnyAmount: `约人民币 ${Math.round(deposit.amount * 6.71)} 元`, note: this.localFeeImageNote(deposit) }] : []),
+        ...(tvv ? [{ label: tvv.name, amount: `${this.previewMoney(tvv.amount)} 比索（条件恢复时）`, cnyAmount: `约人民币 ${Math.round(tvv.amount / 9.33566)} 元`, note: this.localFeeImageNote(tvv) }] : []),
+      ],
+      ruleNotes: settings.footerNotes,
+      fullFeeDetails: true,
+      localFeeTableLayout: 'web',
+    });
+    return applyEditableQuoteImageCopy({
+      ...applySchoolQuoteImageLayout(quote, 'MONOL-SPARTA', 4, '2026-09-20', student.quoteUsd, 6.71),
+      headingText: 'MONOL斯巴达校区 4周报价',
+      paymentSectionTitle: settings.paymentSectionTitle,
+      localFeeTitle: settings.localFeeSectionTitle,
+      serviceSectionTitle: settings.serviceSectionTitle,
+      benefitItems: settings.benefits,
+      serviceLocations: settings.serviceLocations,
+      alumniBenefitTitle: settings.alumniBenefitTitle,
+      alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
+      noteTitle: settings.noteSectionTitle,
+      importantNotes: settings.footerNotes,
+    }, settings, this.content.quoteSettings.promotions, this.content.localFees);
+  }
+
   private joinNotes(...parts: Array<string | undefined>): string {
     return parts.map(part => part?.trim()).filter(Boolean).join('；');
   }
 
   private createSelectedDefaults(): CiaContentConfig {
+    if (this.isMonolSpartaSelected) return createDefaultMonolSpartaContentConfig();
+    if (this.isMintSelected) return createDefaultMintContentConfig();
     if (this.isWalesSelected) return createDefaultWalesContentConfig();
     if (this.isTargetSelected) return createDefaultTargetContentConfig();
     if (this.isBlueOceanSelected) return createDefaultBlueOceanContentConfig();
@@ -684,6 +774,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   }
 
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    if (this.isMonolSpartaSelected) return cloneMonolSpartaContentConfig(value);
+    if (this.isMintSelected) return cloneMintContentConfig(value);
     if (this.isWalesSelected) return cloneWalesContentConfig(value);
     if (this.isTargetSelected) return cloneTargetContentConfig(value);
     if (this.isBlueOceanSelected) return cloneBlueOceanContentConfig(value);

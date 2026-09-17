@@ -43,6 +43,15 @@ export class CitySchoolsComponent {
 
   readonly cities: CityStudyLink[] = [
     {
+      name: '薄荷岛',
+      englishName: 'Bohol / Panglao',
+      route: '/philippines-study/bohol/english-mint-international-academy',
+      summary: '邦劳海岛学习环境，English MINT提供成人、青少年、亲子与家庭项目。',
+      bestFor: '海岛游学 / 亲子 / 一对一英语',
+      icon: 'waves',
+      group: 'popular',
+    },
+    {
       name: '宿务',
       englishName: 'Cebu',
       route: '/philippines-study/cebu',
@@ -126,8 +135,8 @@ export class CitySchoolsComponent {
   ];
 
   readonly stats = [
-    { value: '9', label: '城市入口' },
-    { value: '9', label: '已定位' },
+    { value: '10', label: '城市入口' },
+    { value: '10', label: '已定位' },
     { value: '0', label: '待补充' },
   ];
 

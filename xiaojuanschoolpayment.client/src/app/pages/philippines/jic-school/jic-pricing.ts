@@ -10,6 +10,8 @@ export interface JicCourseFee {
   /** Stable database lookup name. */
   name: string;
   tuition: number;
+  /** Latest school-published textbook/material estimate per started four course weeks. */
+  materialFee?: number;
   suitable: string;
 }
 
@@ -24,32 +26,32 @@ export interface JicRoomFee {
   premium2027SingleEligible?: boolean;
 }
 
-export const JIC_WEEK_OPTIONS = [4, 6, 8, 12, 16, 20, 24] as const;
+export const JIC_WEEK_OPTIONS = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24] as const;
 export const JIC_REGISTRATION_FEE = 100;
 export const JIC_PEAK_FEE_PER_WEEK = 40;
 export const JIC_DEFAULT_START_DATE = '2026-09-06';
 
 export const JIC_COURSE_FEES: JicCourseFee[] = [
-  { id: 'challenger-esl-lite', campus: 'challenger', displayName: 'ESL Lite · 轻量英语课程', name: 'Challenger ESL Lite', tuition: 760, suitable: '4节一对一 + 2节小组课' },
-  { id: 'challenger-esl-core', campus: 'challenger', displayName: 'ESL Core · 核心英语课程', name: 'Challenger ESL Core', tuition: 860, suitable: '5节一对一 + 2节小组课' },
-  { id: 'challenger-esl-standard', campus: 'challenger', displayName: 'ESL Standard · 标准英语课程', name: 'Challenger ESL Standard', tuition: 960, suitable: '6节一对一 + 2节小组课' },
-  { id: 'challenger-ielts-lite', campus: 'challenger', displayName: 'IELTS Lite · 雅思轻量课程', name: 'Challenger IELTS Lite', tuition: 960, suitable: '4节一对一 + 2节小组课；每周六强制模拟考试' },
-  { id: 'challenger-ielts-core', campus: 'challenger', displayName: 'IELTS Core · 雅思核心课程', name: 'Challenger IELTS Core', tuition: 1010, suitable: '5节一对一 + 2节小组课；每周六强制模拟考试' },
-  { id: 'challenger-ielts-standard', campus: 'challenger', displayName: 'IELTS Standard · 雅思标准课程', name: 'Challenger IELTS Standard', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六强制模拟考试' },
-  { id: 'challenger-ielts-guarantee', campus: 'challenger', displayName: 'IELTS Guarantee · 雅思保分班', name: 'Challenger IELTS Guarantee 雅思保分班', tuition: 1060, suitable: '6节一对一 + 2节小组课 + 强制自习及30分钟词汇测试；每周六强制模拟考试，保分班另付18,000比索' },
-  { id: 'premium-speaking-starter-7', campus: 'premium', displayName: 'Speaking Starter 7 · 口语入门课程', name: 'Premium Speaking Starter 7', tuition: 800, suitable: '4节一对一 + 1节团体课 + 2节选修课；适合初学者到中级ESL学习者' },
-  { id: 'premium-speaking-pro-8', campus: 'premium', displayName: 'Speaking Pro 8 · 口语进阶课程', name: 'Premium Speaking Pro 8', tuition: 975, suitable: '5节一对一 + 1节团体课 + 2节选修课；适合初学者到中级ESL学习者' },
-  { id: 'premium-speaking-master-8', campus: 'premium', displayName: 'Speaking Master 8 · 口语大师课程', name: 'Premium Speaking Master 8', tuition: 1150, suitable: '6节一对一 + 1节团体课 + 2节选修课；适合初学者到中级ESL学习者' },
-  { id: 'premium-tep-8', campus: 'premium', displayName: 'TEP 8 · 主题英语课程8', name: 'Premium 主题英语 TEP 8', tuition: 800, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-  { id: 'premium-tep-9', campus: 'premium', displayName: 'TEP 9 · 主题英语课程9', name: 'Premium 主题英语 TEP 9', tuition: 900, suitable: '4节一对一 + 3节团体课 + 2节选修课' },
-  { id: 'premium-tep-10', campus: 'premium', displayName: 'TEP 10 · 主题英语课程10', name: 'Premium 主题英语 TEP 10', tuition: 1000, suitable: '5节一对一 + 3节团体课 + 2节选修课' },
-  { id: 'premium-active-senior-5', campus: 'premium', displayName: 'Active Senior 5 · 活力银发课程5', name: 'Premium Active Senior 5', tuition: 600, suitable: '3节一对一 + 2节选修课；适合40岁以上学生，兼顾旅游与休闲' },
-  { id: 'premium-active-senior-6', campus: 'premium', displayName: 'Active Senior 6 · 活力银发课程6', name: 'Premium Active Senior 6', tuition: 700, suitable: '4节一对一 + 2节选修课；适合40岁以上学生，兼顾旅游与休闲' },
-  { id: 'premium-working-holiday-8', campus: 'premium', displayName: 'Working Holiday 8 · 打工度假英语课程', name: 'Premium Working Holiday 8', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-  { id: 'premium-toeic', campus: 'premium', displayName: 'TOEIC · 托业课程', name: 'Premium 托业 TOEIC', tuition: 900, suitable: '3节一对一 + 3节团体课 + 2节选修课' },
-  { id: 'premium-business-master-8', campus: 'premium', displayName: 'Business Master 8 · 商务英语大师课程', name: 'Premium Business Master 8', tuition: 1150, suitable: '6节一对一 + 2节选修课' },
-  { id: 'premium-junior', campus: 'premium', displayName: 'Junior · 青少年课程', name: 'Premium 青少年课程 Junior', tuition: 1200, suitable: '4节一对一 + 2节团体课 + 1小时写作活动 + 2小时监控晚自习' },
-  { id: 'premium-guardian', campus: 'premium', displayName: 'Guardian · 监护人课程', name: 'Premium 监护人课程 Guardian', tuition: 600, suitable: '2节一对一' },
+  { id: 'challenger-esl-lite', campus: 'challenger', displayName: 'ESL Lite · 轻量英语课程', name: 'Challenger ESL Lite', tuition: 760, materialFee: 1500, suitable: '2节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日共8节）' },
+  { id: 'challenger-esl-core', campus: 'challenger', displayName: 'ESL Core · 核心英语课程', name: 'Challenger ESL Core', tuition: 860, materialFee: 1600, suitable: '3节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日共9节）' },
+  { id: 'challenger-esl-standard', campus: 'challenger', displayName: 'ESL Standard · 标准英语课程', name: 'Challenger ESL Standard', tuition: 960, materialFee: 1700, suitable: '4节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日共10节）' },
+  { id: 'challenger-ielts-lite', campus: 'challenger', displayName: 'IELTS Lite · 雅思轻量课程', name: 'Challenger IELTS Lite', tuition: 960, materialFee: 1900, suitable: '4节一对一 + 2节团体课 + 2节特别课程（每日共8节）；每周六强制模拟考试' },
+  { id: 'challenger-ielts-core', campus: 'challenger', displayName: 'IELTS Core · 雅思核心课程', name: 'Challenger IELTS Core', tuition: 1010, materialFee: 1900, suitable: '5节一对一 + 2节团体课 + 2节特别课程（每日共9节）；每周六强制模拟考试' },
+  { id: 'challenger-ielts-standard', campus: 'challenger', displayName: 'IELTS Standard · 雅思标准课程', name: 'Challenger IELTS Standard', tuition: 1060, materialFee: 1900, suitable: '6节一对一 + 2节团体课 + 2节特别课程（每日共10节）+ 强制自习及30分钟词汇测试；每周六强制模拟考试' },
+  { id: 'challenger-ielts-guarantee', campus: 'challenger', displayName: 'IELTS Guarantee · 雅思保分班', name: 'Challenger IELTS Guarantee 雅思保分班', tuition: 1060, materialFee: 1900, suitable: '6节一对一 + 2节团体课 + 2节特别课程（每日共10节）+ 强制自习及30分钟词汇测试；每周六强制模拟考试，保分班每8周另付18,000比索' },
+  { id: 'premium-speaking-starter-7', campus: 'premium', displayName: 'Speaking Starter 7 · 口语入门课程', name: 'Premium Speaking Starter 7', tuition: 800, materialFee: 1500, suitable: '4节一对一 + 1节团体课 + 2节选修课（每日共7节）；适合初学者到中级ESL学习者' },
+  { id: 'premium-speaking-pro-8', campus: 'premium', displayName: 'Speaking Pro 8 · 口语进阶课程', name: 'Premium Speaking Pro 8', tuition: 975, suitable: '5节一对一 + 1节团体课 + 2节选修课（每日共8节）；最新学杂费表未单列教材金额，需由顾问确认' },
+  { id: 'premium-speaking-master-8', campus: 'premium', displayName: 'Speaking Master 8 · 口语大师课程', name: 'Premium Speaking Master 8', tuition: 1150, materialFee: 1900, suitable: '6节一对一 + 1节团体课 + 2节选修课（每日共9节）；适合初学者到中级ESL学习者' },
+  { id: 'premium-tep-8', campus: 'premium', displayName: 'TEP 8 · 主题英语课程8', name: 'Premium 主题英语 TEP 8', tuition: 800, materialFee: 1500, suitable: '3节一对一 + 3节团体课 + 2节选修课（每日共8节）' },
+  { id: 'premium-tep-9', campus: 'premium', displayName: 'TEP 9 · 主题英语课程9', name: 'Premium 主题英语 TEP 9', tuition: 900, materialFee: 1600, suitable: '4节一对一 + 3节团体课 + 2节选修课（每日共9节）' },
+  { id: 'premium-tep-10', campus: 'premium', displayName: 'TEP 10 · 主题英语课程10', name: 'Premium 主题英语 TEP 10', tuition: 1000, materialFee: 1700, suitable: '5节一对一 + 3节团体课 + 2节选修课（每日共10节）' },
+  { id: 'premium-active-senior-5', campus: 'premium', displayName: 'Active Senior 5 · 活力银发课程5', name: 'Premium Active Senior 5', tuition: 600, materialFee: 1100, suitable: '3节一对一 + 2节选修课（每日共5节）；适合40岁以上学生，兼顾旅游与休闲' },
+  { id: 'premium-active-senior-6', campus: 'premium', displayName: 'Active Senior 6 · 活力银发课程6', name: 'Premium Active Senior 6', tuition: 700, materialFee: 1200, suitable: '4节一对一 + 2节选修课（每日共6节）；适合40岁以上学生，兼顾旅游与休闲' },
+  { id: 'premium-working-holiday-8', campus: 'premium', displayName: 'Working Holiday 8 · 打工度假英语课程', name: 'Premium Working Holiday 8', tuition: 900, materialFee: 1600, suitable: '3节一对一 + 3节团体课 + 2节选修课（每日共8节）' },
+  { id: 'premium-toeic', campus: 'premium', displayName: 'TOEIC · 托业课程', name: 'Premium 托业 TOEIC', tuition: 900, materialFee: 1600, suitable: '3节一对一 + 3节团体课 + 2节选修课（每日共8节）' },
+  { id: 'premium-business-master-8', campus: 'premium', displayName: 'Business Master 8 · 商务英语大师课程', name: 'Premium Business Master 8', tuition: 1150, materialFee: 1900, suitable: '6节一对一 + 2节选修课（每日共8节）' },
+  { id: 'premium-junior', campus: 'premium', displayName: 'Junior · 青少年课程', name: 'Premium 青少年课程 Junior', tuition: 1200, materialFee: 1700, suitable: '4节一对一 + 2节团体课 + 1小时写作活动 + 2小时监控晚自习' },
+  { id: 'premium-guardian', campus: 'premium', displayName: 'Guardian · 监护人课程', name: 'Premium 监护人课程 Guardian', tuition: 600, materialFee: 900, suitable: '2节一对一' },
 ];
 
 export const JIC_ROOM_FEES: JicRoomFee[] = [

@@ -652,7 +652,6 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return Math.max(0, Math.round(total * 100) / 100);
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentQuoteUsd(student), 0); }
-  get totalCourseWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.courseWeeks, 0); }
   get localFeePeriodLabel(): string { return this.quoteMode === 'single' ? `${this.quotePlan.stayWeeks}周` : `${this.activeStudents.length}人`; }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string {
@@ -663,7 +662,15 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
   }
 
-  get quoteHeading(): string { return `CPI${this.totalCourseWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.quotePlan.courseWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.quotePlan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading(): string { return `CPI${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get quoteError(): string {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
     const index = this.activeStudents.findIndex(student => !!student.quotePlan.error || !this.visaOptions.some(option => option.value === student.visaType));
@@ -779,6 +786,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
 
   get quoteImageData() {
     const settings = this.quoteImageSettings;
+    const layoutWeeks = this.activeStudents[0]?.quotePlan.courseWeeks ?? 0;
     const extraClassRule = this.promotionRule('cpi-extra-class');
     const paymentItems = [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.payableRegistrationFee)} 美元`, note: settings.paymentNotes.registration ?? this.schoolPaymentItems[0].note },
@@ -795,7 +803,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       schoolName: '菲律宾宿务CPI语言学校',
       filePrefix: 'CPI',
       heroSrc: '/assets/cpi/campus-exterior.webp',
-      weeks: this.selectedWeeks,
+      weeks: layoutWeeks,
       startDate: this.selectedStartDate,
       usdToCny: this.usdToCny,
       totalUsd: this.quoteUsd,
@@ -816,9 +824,9 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.quotePlan.shortStayNotes(weeks => this.shortTermRatios[weeks])))];
     const importantNotes = [...mismatchNotes, ...ageNotes, ...juniorNotes, ...shortNotes, ...settings.footerNotes];
     const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPI', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'CPI', layoutWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
-      ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
+      ...result, title: this.quoteScope, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],

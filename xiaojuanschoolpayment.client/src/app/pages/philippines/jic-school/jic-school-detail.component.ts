@@ -16,9 +16,10 @@ import { QuoteImageDownloadButtonComponent } from '../../../components/quote-ima
 import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
+import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import { CiaContentConfig } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
-import { cloneJicContentConfig, createDefaultJicContentConfig } from './jic-content-config';
+import { cloneJicContentConfig, createDefaultJicContentConfig, jicQuoteImageSettings } from './jic-content-config';
 import {
   JIC_COURSE_FEES,
   JIC_LOCAL_FEE_COPY,
@@ -44,14 +45,12 @@ interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 interface SourceLink { label: string; url: string; }
-interface SidaJicReason { number: string; title: string; text: string; image: string; alt: string; }
-interface SidaJicTrustBadge { icon: string; label: string; }
 interface CampusPriceGroup<T> { campus: JicCampus; eyebrow: string; title: string; description: string; items: T[]; }
 
 @Component({
   selector: 'app-jic-school-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent, SidaWhySectionComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './jic-school-detail.component.html',
   styleUrls: [
@@ -69,6 +68,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   private readonly schoolContentService = inject(SchoolContentService);
   private readonly exchangeRateService = inject(ExchangeRateService);
   private readonly route = inject(ActivatedRoute);
+  readonly lockedCampus = (this.route.snapshot.data['campus'] as JicCampus | undefined) ?? null;
   private readonly previewHost = inject(ElementRef) as ElementRef<HTMLElement>;
   private readonly initialContent = createDefaultJicContentConfig();
   private currentContentConfig = cloneJicContentConfig(this.initialContent);
@@ -84,6 +84,11 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       promotions: this.currentContentConfig.quoteSettings.promotions,
       peakSeasonRanges: this.currentContentConfig.quoteSettings.peakSeasonRanges,
     };
+  }
+  private get currentQuoteImageSettings() {
+    const campuses = new Set((this.students ?? []).slice(0, this.quoteMode === 'group' ? this.studentCount : 1).map(student => student.campus));
+    const campus = this.lockedCampus ?? (campuses.size === 1 ? [...campuses][0] : undefined);
+    return campus ? jicQuoteImageSettings(this.currentContentConfig, campus) : this.currentContentConfig.quoteImageSettings;
   }
   readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
   private readonly pricingSchoolSearchName = 'JIC';
@@ -144,10 +149,51 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
+    { category: '校区', title: 'Challenger 挑战校区官方介绍片', description: '学校最新有声官方介绍片，完整展示挑战校区的学习与生活环境。', src: 'assets/philippines/jic-challenger-campus-intro.mp4', contentType: 'video/mp4' },
     { category: '校区', title: '菲律宾碧瑶JIC语言学校Challenger校园航拍', description: '菲律宾碧瑶JIC语言学校官方Challenger Campus页面展示的碧瑶Main / Challenger校区环境。', src: 'assets/philippines/jic-campus-hero.webp' },
     { category: '校区', title: 'Baguio JIC Main Campus全景', description: 'Main Photos页面展示的Challenger / Main校区整体视角。', src: 'assets/philippines/jic-main-campus-overview.webp' },
+    { category: '校区', title: 'Challenger 校园中庭', description: '学校最新环境资料中的校舍、中庭与户外休息空间。', src: 'assets/philippines/jic-challenger-campus-courtyard.webp' },
+    { category: '教室', title: 'Challenger 一对一教室', description: '学校Classroom资料中的独立一对一教室实景。', src: 'assets/philippines/jic-challenger-one-on-one-classroom.webp' },
+    { category: '教室', title: 'Challenger 一对一教学区', description: '多间独立一对一教室组成的教学区，可看到实际上课状态。', src: 'assets/philippines/jic-challenger-one-on-one-area.webp' },
+    { category: '教室', title: 'Challenger 团体教室', description: '学校Classroom资料中的标准团体课教室。', src: 'assets/philippines/jic-challenger-group-classroom.webp' },
+    { category: '教室', title: 'Challenger 团体课堂实景', description: '团体课教室与学生课堂活动实景。', src: 'assets/philippines/jic-challenger-active-group-class.webp' },
+    { category: '教室', title: 'Challenger 小组课教室', description: '适合小组讨论与互动课程的教室空间。', src: 'assets/philippines/jic-challenger-small-group-classroom.webp' },
+    { category: '教室', title: 'Challenger 教学实景', description: '学校East Building Classrooms资料中的教师授课场景。', src: 'assets/philippines/jic-challenger-teaching-scene.webp' },
+    { category: '教室', title: 'Challenger 电脑教室', description: '配备电脑的学习与测试空间。', src: 'assets/philippines/jic-challenger-computer-room.webp' },
+    { category: '教室', title: 'Challenger 口语测试区', description: '学校Speaking Test Area资料中的独立电脑测试席位。', src: 'assets/philippines/jic-challenger-speaking-test-room.webp' },
+    { category: '住宿', title: 'Challenger 标准单人房（R1 Studio）', description: '学校最新房型资料中的标准单人房实景。', src: 'assets/philippines/jic-challenger-single-room.webp' },
+    { category: '住宿', title: 'Challenger 标准单人房视频', description: 'R1 Studio学校原始房型实拍（原素材无配音）。', src: 'assets/philippines/jic-challenger-room-tour.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Challenger 标准双人房（R2 Studio）', description: '学校最新房型资料中的标准双人房实景。', src: 'assets/philippines/jic-challenger-double-room.webp' },
+    { category: '住宿', title: 'Challenger 标准双人房视频', description: 'R2 Studio学校原始房型实拍（原素材无配音）。', src: 'assets/philippines/jic-challenger-double-room-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Challenger 四人复式房（R4 Loft）', description: '上下层复式四人房实景，适合比较空间和预算。', src: 'assets/philippines/jic-challenger-quad-duplex-room.webp' },
+    { category: '住宿', title: 'Challenger 四人复式房视频', description: 'R4 Loft学校原始房型实拍（原素材无配音）。', src: 'assets/philippines/jic-challenger-quad-duplex-room-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Challenger 四人上下铺房（R4 Studio）', description: '标准四人上下铺房实景，为常用预算参考房型。', src: 'assets/philippines/jic-challenger-quad-bunk-room.webp' },
+    { category: '住宿', title: 'Challenger 四人上下铺房视频', description: 'R4 Studio学校原始房型实拍（原素材无配音）。', src: 'assets/philippines/jic-challenger-quad-bunk-room-video.mp4', contentType: 'video/mp4' },
+    { category: '餐厅', title: 'Challenger 室内餐厅', description: '学校Cafeteria资料中的室内用餐空间。', src: 'assets/philippines/jic-challenger-cafeteria-indoor.webp' },
+    { category: '餐厅', title: 'Challenger 户外用餐区', description: '餐厅旁的半户外用餐与交流空间。', src: 'assets/philippines/jic-challenger-cafeteria-outdoor.webp' },
+    { category: '餐厅', title: 'Challenger 校餐实拍', description: '学校Main Food资料中的一餐实拍，实际菜单以学校当期安排为准。', src: 'assets/philippines/jic-challenger-meal-set.webp' },
+    { category: '餐厅', title: 'Challenger 餐食参考', description: '学校Main Food资料展示的餐食搭配与菜品，实际供应会随菜单调整。', src: 'assets/philippines/jic-challenger-meal-variety.webp' },
+    { category: '设施', title: 'Challenger 公共厨房', description: '公共厨房配有烹饪区、水槽、餐具及常用电器。', src: 'assets/philippines/jic-challenger-common-kitchen.webp' },
+    { category: '设施', title: 'Challenger 公共厨房使用场景', description: '学生可使用公共厨房自行进行简单烹饪，具体开放规则以校方当期规定为准。', src: 'assets/philippines/jic-challenger-common-kitchen-use.webp' },
+    { category: '设施', title: 'Challenger 健身房', description: '校内健身房配有跑步机、综合训练器和自由重量器材。', src: 'assets/philippines/jic-challenger-gym.webp' },
+    { category: '设施', title: 'Challenger 运动场', description: '校内设有篮球、羽毛球等户外活动场地。', src: 'assets/philippines/jic-challenger-sports-court.webp' },
+    { category: '设施', title: 'Challenger K-Mart校内商店', description: '校内商店提供零食、饮料及常用生活用品。', src: 'assets/philippines/jic-challenger-campus-store.webp' },
+    { category: '设施', title: 'Challenger Terminal Cafe', description: '校内咖啡厅是课后休息、交流和购买饮品的空间。', src: 'assets/philippines/jic-challenger-terminal-cafe.webp' },
+    { category: '设施', title: 'Challenger West Garden安静区', description: 'West Garden设有户外桌椅与安静交流区域。', src: 'assets/philippines/jic-challenger-west-garden.webp' },
+    { category: '校区', title: 'Premium 高级校区官方介绍片', description: '学校最新有声官方介绍片，完整展示Premium校区的课堂、住宿与生活环境。', src: 'assets/philippines/jic-premium-campus-intro.mp4', contentType: 'video/mp4' },
     { category: '校区', title: 'JIC Premium Campus环境', description: 'Premium Photos页面展示的Premium校区学习生活环境。', src: 'assets/philippines/jic-premium-campus-overview.jpg' },
-    { category: '教室', title: 'Challenger IELTS一对一课堂', description: 'Main Campus Classes照片展示的IELTS备考与一对一辅导场景。', src: 'assets/philippines/jic-main-ielts-class.webp' },
+    { category: '住宿', title: 'Premium 单人间（无阳台）', description: 'Semi Single无阳台单人雅房实景，共享部分生活空间。', src: 'assets/philippines/jic-premium-single-no-balcony.webp' },
+    { category: '住宿', title: 'Premium 单人间（无阳台）视频', description: 'Semi Single学校原始房型实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-room-tour.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Premium 单人间（带阳台）', description: '独立单人房实景，带阳台房型报名前需确认空位。', src: 'assets/philippines/jic-premium-single-balcony.webp' },
+    { category: '住宿', title: 'Premium 单人间（带阳台）视频', description: '学校原始Premium Single Room房型实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-single-balcony-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Premium 双人间（无阳台）', description: '无阳台双人房实景。', src: 'assets/philippines/jic-premium-twin-no-balcony.webp' },
+    { category: '住宿', title: 'Premium 双人间（无阳台）视频', description: '学校原始双人房实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-twin-no-balcony-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Premium 双人间（带阳台）', description: '带阳台双人房实景。', src: 'assets/philippines/jic-premium-twin-balcony.webp' },
+    { category: '住宿', title: 'Premium 双人间（带阳台）视频', description: '学校原始双人房实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-twin-balcony-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Premium 四人间（无阳台）', description: '无阳台四人上下铺房实景。', src: 'assets/philippines/jic-premium-quad-no-balcony.webp' },
+    { category: '住宿', title: 'Premium 四人间（无阳台）视频', description: '学校原始四人房实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-quad-no-balcony-video.mp4', contentType: 'video/mp4' },
+    { category: '住宿', title: 'Premium 四人间（带阳台）', description: '带阳台四人上下铺房实景。', src: 'assets/philippines/jic-premium-quad-balcony.webp' },
+    { category: '住宿', title: 'Premium 四人间（带阳台）视频', description: '学校原始四人房实拍（原素材无配音）。', src: 'assets/philippines/jic-premium-quad-balcony-video.mp4', contentType: 'video/mp4' },
     { category: '教室', title: 'Premium小组互动课堂', description: 'Premium Campus Classes照片展示的Active Learning小组课堂。', src: 'assets/philippines/jic-premium-group-class.webp' },
     { category: '住宿', title: 'Challenger Loft房型', description: 'Main Campus Rooms照片展示的loft住宿空间，适合先比较预算与生活习惯。', src: 'assets/philippines/jic-main-room-loft.webp' },
     { category: '住宿', title: 'Premium四人房', description: 'Premium Campus Rooms照片展示的四人房，报名需同步确认校区、性别与空房。', src: 'assets/philippines/jic-premium-quad-room.webp' },
@@ -172,7 +218,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/jic-campus-hero.webp', title: '两个校区定位很清楚', text: 'Challenger适合想要ESL强化、IELTS备考和更明确学习制度的学生；Premium适合口语、职业英语、成人和更重视生活舒适度的学生。' },
-    { image: 'assets/philippines/jic-main-ielts-class.webp', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
+    { image: 'assets/philippines/jic-challenger-teaching-scene.webp', title: 'IELTS与备考资源突出', text: 'JIC公开资料强调IELTS师资、模拟考试、词汇测试和自习制度，适合目标分数明确的学生。' },
     { image: 'assets/philippines/jic-premium-group-class.webp', title: 'Premium主打Active Learning', text: 'Premium课程覆盖Speaking、TEP ESL、TOEIC、Working Holiday和Business Master，适合想把英语用在真实表达与职业场景的人。' },
     { image: 'assets/philippines/jic-premium-quad-room.webp', title: '房型差异直接影响预算', text: '从Challenger上下铺四人间到Premium带阳台单人间，4周住宿差距很大，建议报价时同步确认学习目标与生活期待。' },
   ];
@@ -185,7 +231,6 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '只想看一个统一报价', text: 'JIC必须先分Challenger和Premium，再看课程、房型和旺季档期，不适合只凭学校名做决定。' },
     { title: '不想接受测试或晚间自习', text: 'Challenger的ESL/IELTS路线会更强调词汇测试、自习和课堂纪律，报名应先确认能否适应。' },
     { title: '旺季临近才想锁定单人房', text: 'Premium单人间和热门Challenger房型容易紧张，建议提前核空房。' },
     { title: '只想要海边度假感', text: 'JIC在碧瑶，优势是学习氛围、凉爽气候和长期投入，不是海岛度假型学校。' },
@@ -208,7 +253,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   roomFees: JicRoomFee[] = JIC_ROOM_FEES.map((room) => ({ ...room }));
 
   get courseFeeGroups(): CampusPriceGroup<JicCourseFee>[] {
-    return [
+    const groups: CampusPriceGroup<JicCourseFee>[] = [
       {
         campus: 'challenger',
         eyebrow: 'CHALLENGER CAMPUS',
@@ -224,10 +269,11 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
         items: this.courseFees.filter((course) => course.campus === 'premium'),
       },
     ];
+    return groups.filter(group => !this.lockedCampus || group.campus === this.lockedCampus);
   }
 
   get roomFeeGroups(): CampusPriceGroup<JicRoomFee>[] {
-    return [
+    const groups: CampusPriceGroup<JicRoomFee>[] = [
       {
         campus: 'challenger',
         eyebrow: 'CHALLENGER CAMPUS',
@@ -243,6 +289,33 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
         items: this.roomFees.filter((room) => room.campus === 'premium'),
       },
     ];
+    return groups.filter(group => !this.lockedCampus || group.campus === this.lockedCampus);
+  }
+
+  get campusLabel(): string { return this.lockedCampus === 'premium' ? 'Premium 高级校区' : this.lockedCampus === 'challenger' ? 'Challenger 挑战校区（主校区）' : 'Challenger / Premium 双校区'; }
+  get pageTitle(): string { return this.lockedCampus === 'premium' ? '菲律宾碧瑶JIC高级校区' : this.lockedCampus === 'challenger' ? '菲律宾碧瑶JIC挑战校区' : '菲律宾碧瑶JIC语言学校'; }
+  get pageEnglishName(): string { return this.lockedCampus === 'premium' ? 'Baguio JIC Premium Campus' : this.lockedCampus === 'challenger' ? 'Baguio JIC Challenger Campus' : 'Baguio JIC'; }
+  get pageLead(): string[] {
+    if (this.lockedCampus === 'premium') return ['以口语输出、主题英语、职业应用与舒适生活为核心。', '课程覆盖Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior与亲子项目。', '单人、双人和四人房均有无阳台或带阳台选择。'];
+    if (this.lockedCampus === 'challenger') return ['以ESL基础强化与IELTS备考为核心。', '每日密集一对一、团体课、特别课程，以及词汇测试、模拟考试和自习制度。', '适合目标清楚、希望用制度推动学习进度的学生。'];
+    return ['碧瑶双校区目标导向语言学校。', 'Challenger适合ESL、IELTS和更清楚的学习制度。', 'Premium适合口语、职场英文和成人学习。'];
+  }
+  get heroImageSrc(): string { return this.lockedCampus === 'premium' ? 'assets/philippines/jic-premium-campus-overview.jpg' : 'assets/philippines/jic-campus-hero.webp'; }
+  get heroImageCaption(): string { return `${this.pageEnglishName} 校园环境`; }
+  get otherCampusRoute(): string { return this.lockedCampus === 'premium' ? '/philippines-study/baguio/baguio-jic-challenger' : '/philippines-study/baguio/baguio-jic-premium'; }
+  get otherCampusLabel(): string { return this.lockedCampus === 'premium' ? '查看 Challenger 挑战校区' : '查看 Premium 高级校区'; }
+  get visibleCourses(): CourseItem[] {
+    if (!this.lockedCampus) return this.courses;
+    const marker = this.lockedCampus === 'premium' ? 'Premium' : 'Challenger';
+    return this.courses.filter(course => course.type.includes(marker));
+  }
+  get campusGalleryImages(): GalleryImage[] {
+    if (!this.lockedCampus) return this.galleryImages;
+    const premium = this.lockedCampus === 'premium';
+    return this.galleryImages.filter(image => {
+      const text = `${image.title} ${image.description}`.toLowerCase();
+      return premium ? text.includes('premium') : !text.includes('premium');
+    });
   }
 
   readonly students: JicStudentQuote[] = [new JicStudentQuote(this)];
@@ -267,22 +340,6 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     { icon: 'location_on', title: '国内顾问与当地协作', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
-  readonly sidaJicReasons: SidaJicReason[] = [
-    { number: '01', title: '先判断菲律宾碧瑶JIC语言学校哪个校区适合', text: '不会只按学校名推荐，会把Challenger和Premium的学习强度、课程目标、生活舒适度和预算拆开比较。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生选择菲律宾碧瑶JIC语言学校校区' },
-    { number: '02', title: '课程、住宿和当地费用提前算清', text: '0中介服务费，课程费、住宿费、旺季附加费、保证班费用和到校PHP费用逐项说明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问核算菲律宾碧瑶JIC语言学校费用' },
-    { number: '03', title: '正式文件与收费可核对', text: '国内公司签约，报价、录取、付款节点和学校文件都可逐项核验。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
-    { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、付款、接机、换汇和当地费用准备都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习回国', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
-    { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
-  ];
-
-  readonly sidaJicTrustBadges: SidaJicTrustBadge[] = [
-    { icon: 'description', label: '国内正式公司合同' },
-    { icon: 'verified_user', label: '学校合作与文件核验' },
-    { icon: 'local_offer', label: '费用透明与同条件保价' },
-    { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
-  ];
-
   readonly schoolServices = ['机场接机', '入学说明', '分级测试', '课程咨询', '词汇测试', '晚间自习', '宿舍清洁', '洗衣服务', '证件协助', '校区活动'];
   readonly campusActivities = ['新生说明会', '英语口语活动', 'IELTS模拟考试', '职业主题活动', '跨国学生交流'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Mines View Park', 'Camp John Hay'];
@@ -293,6 +350,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     '课程费与住宿费按JIC 2026价格逐项核对，最终会随学校政策、优惠和房型空位变化。',
     '斯巴达课程每周强制模拟考；半斯巴达课程双周强制模拟考。',
     'Challenger校区特别选修课每4周另付PHP 2,000。',
+    '标准报价固定周日到校、周六离校，因此不计非标准周费用；若需非标准日期，学校最新表列PHP 8,000／非标准周，须另行确认。',
     '2026旺季附加费为USD 40/周，适用期间为2026/6/28—8/22；页面按实际覆盖旺季的学习周数自动计算。',
     '淡季优惠按入学日期、房型和每满4周自动计算；长期优惠、圣诞及节日优惠可按规则叠加，校内延长不适用淡季优惠。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
@@ -331,6 +389,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   ngOnInit(): void {
+    if (this.lockedCampus) this.students.forEach(student => student.setCampus(this.lockedCampus!));
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent, this.isEditorPreview);
     this.loadPricingFromDatabase();
     this.loadPublishedContent();
@@ -435,6 +494,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       displayName: item.name,
       name: item.englishName || item.name,
       tuition: item.tuition,
+      materialFee: JIC_COURSE_FEES.find(course => course.id === item.id)?.materialFee,
       suitable: item.schedule || item.suitable || item.note,
     }));
     this.roomFees = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
@@ -448,17 +508,19 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     }));
     this.registrationFee = content.quoteSettings.registrationFee;
     this.seasonalFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
-    for (const student of this.students) student.setCampus(student.campus);
-    this.galleryImages = [
-      ...this.builtInGalleryImages.map(item => ({ ...item })),
-      ...(content.media ?? []).filter(item => item.isActive && !!item.url).sort((a, b) => a.displayOrder - b.displayOrder).map(item => ({
-        category: this.resolveMediaCategory(item.category),
-        title: item.caption || item.altText || item.originalFileName || 'JIC学校媒体',
-        description: item.altText || item.caption || 'JIC学校实景内容',
-        src: item.url,
-        contentType: item.contentType,
-      })),
-    ];
+    for (const student of this.students) student.setCampus(this.lockedCampus ?? student.campus);
+    const configuredMedia = (content.media ?? [])
+      .filter(item => item.isActive && !!item.url)
+      .sort((a, b) => a.displayOrder - b.displayOrder);
+    this.galleryImages = configuredMedia.length
+      ? configuredMedia.map(item => ({
+          category: this.resolveMediaCategory(item.category),
+          title: item.caption || item.altText || item.originalFileName || 'JIC学校媒体',
+          description: item.altText || item.caption || 'JIC学校实景内容',
+          src: item.url,
+          contentType: item.contentType,
+        }))
+      : this.builtInGalleryImages.map(item => ({ ...item }));
     this.queuePreviewFocus(false);
   }
 
@@ -477,8 +539,8 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   private resolveMediaCategory(category?: string): Exclude<GalleryCategory, '全部'> {
     const value = (category ?? '').toLowerCase();
     if (value.includes('class') || value.includes('教室')) return '教室';
-    if (value.includes('room') || value.includes('dorm') || value.includes('住宿')) return '住宿';
-    if (value.includes('餐')) return '餐厅';
+    if (value.includes('room') || value.includes('dorm') || value.includes('accommodation') || value.includes('住宿')) return '住宿';
+    if (value.includes('dining') || value.includes('meal') || value.includes('餐')) return '餐厅';
     if (value.includes('facility') || value.includes('设施')) return '设施';
     return '校区';
   }
@@ -561,26 +623,30 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   set studentCount(value: number) {
     this.requestedStudentCount = value;
     if (Number.isInteger(value) && value >= 2 && value <= 20) {
-      while (this.students.length < value) this.students.push(new JicStudentQuote(this));
+      while (this.students.length < value) {
+        const student = new JicStudentQuote(this);
+        if (this.lockedCampus) student.setCampus(this.lockedCampus);
+        this.students.push(student);
+      }
     }
   }
   setQuoteMode(value: 'single' | 'group'): void {
     this.quoteMode = value;
     if (value === 'group') this.studentCount = this.requestedStudentCount;
   }
-  setStudentCampus(student: JicStudentQuote, campus: JicCampus): void { student.setCampus(campus); }
+  setStudentCampus(student: JicStudentQuote, campus: JicCampus): void { student.setCampus(this.lockedCampus ?? campus); }
   get activeStudents(): JicStudentQuote[] {
     return this.quoteMode === 'single'
       ? this.students.slice(0, 1)
       : this.students.slice(0, Math.max(2, Math.min(20, Math.floor(this.studentCount) || 2)));
   }
   get quoteHeading(): string {
-    return this.quoteMode === 'single' ? `JIC ${this.students[0].campus === 'challenger' ? '挑战校区' : '高级校区'}${this.selectedWeeks}周报价` : `JIC ${this.activeStudents.length}人报价`;
+    const campus = this.students[0].campus === 'challenger' ? '挑战校区' : '高级校区';
+    return this.quoteMode === 'single' ? `JIC ${campus}${this.selectedWeeks}周报价` : `JIC ${campus}${this.activeStudents.length}人报价`;
   }
   get quoteFormHeading(): string {
-    return this.quoteMode === 'single'
-      ? 'JIC Challenger / Premium 两校区报价'
-      : `JIC Challenger / Premium ${this.activeStudents.length}人报价`;
+    const campus = this.lockedCampus === 'premium' ? 'Premium 高级校区' : this.lockedCampus === 'challenger' ? 'Challenger 挑战校区' : 'Challenger / Premium 两校区';
+    return this.quoteMode === 'single' ? `JIC ${campus}报价` : `JIC ${campus}${this.activeStudents.length}人报价`;
   }
   get quoteError(): string {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
@@ -591,6 +657,8 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get selectedStartDate(): string { return this.students[0].arrivalDate; }
   get earliestStartDate(): string { return this.activeStudents.map((student) => student.arrivalDate).filter(Boolean).sort()[0] ?? ''; }
   get quoteImageHeroSrc(): string {
+    if (this.lockedCampus === 'premium') return '/assets/philippines/jic-premium-campus-overview.jpg';
+    if (this.lockedCampus === 'challenger') return '/assets/philippines/jic-main-campus-overview.webp';
     const campuses = new Set(this.activeStudents.map((student) => student.campus));
     if (campuses.size === 1 && campuses.has('premium')) {
       return '/assets/philippines/jic-premium-campus-overview.jpg';
@@ -601,7 +669,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return '/assets/philippines/jic-campus-hero.webp';
   }
   get schoolPaymentItems() {
-    const imageSettings = this.currentContentConfig.quoteImageSettings;
+    const imageSettings = this.currentQuoteImageSettings;
     return [
       {
         icon: '注',
@@ -624,15 +692,15 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
   get optionalFeeItems() {
     const count = this.activeStudents.length;
-    const deposit = this.currentContentConfig.localFees.find(fee => fee.enabled && !fee.includeInTotal && fee.id === 'room-deposit');
-    if (!deposit) return [];
-    const total = deposit.amount * (deposit.multiplyByStudents === false ? 1 : count);
-    return [{
-      label: deposit.name,
-      amount: `${this.formatPhp(total)}${count > 1 && deposit.multiplyByStudents !== false ? `（${this.formatPhp(deposit.amount)}／人 × ${count}人）` : ''}`,
-      cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
-      note: this.currentContentConfig.quoteImageSettings.localFeeNotes[deposit.id] || deposit.note,
-    }];
+    return this.currentContentConfig.localFees.filter(fee => fee.enabled && !fee.includeInTotal && fee.id !== 'odd-week-arrival').map(fee => {
+      const total = fee.amount * (fee.multiplyByStudents === false ? 1 : count);
+      return {
+        label: fee.name,
+        amount: `${this.formatPhp(total)}${count > 1 && fee.multiplyByStudents !== false ? `（${this.formatPhp(fee.amount)}／人 × ${count}人）` : ''}`,
+        cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        note: this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note,
+      };
+    });
   }
   scrollToSection(target: string, event?: Event): void {
     event?.preventDefault();
@@ -646,11 +714,11 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
 
   get filteredGalleryImages(): GalleryImage[] {
     return this.selectedGalleryCategory === '全部'
-      ? this.galleryImages
-      : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
+      ? this.campusGalleryImages
+      : this.campusGalleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
   get quoteImageData() {
-    const imageSettings = this.currentContentConfig.quoteImageSettings;
+    const imageSettings = this.currentQuoteImageSettings;
     const paymentItems = [
       this.schoolPaymentItems[0],
       ...(['课', '宿'] as const).flatMap((icon) => this.activeStudents.flatMap((student, index) => student.quotePlan.paymentItems()
@@ -664,8 +732,8 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`] : []);
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'JIC',
-      schoolName: '菲律宾碧瑶JIC语言学校',
-      filePrefix: 'JIC',
+      schoolName: this.pageTitle,
+      filePrefix: this.lockedCampus === 'premium' ? 'JIC-Premium' : this.lockedCampus === 'challenger' ? 'JIC-Challenger' : 'JIC',
       heroSrc: this.quoteImageHeroSrc,
       weeks: this.selectedWeeks,
       startDate: this.earliestStartDate,
@@ -713,7 +781,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
 
   private quoteImageFeeNote(itemName: string, fallback: string): string {
     const fee = this.currentContentConfig.localFees.find(item => item.name === itemName);
-    return fee ? this.currentContentConfig.quoteImageSettings.localFeeNotes[fee.id] || fee.note : fallback;
+    return fee ? this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note : fallback;
   }
 
   formatUsd(value: number): string {

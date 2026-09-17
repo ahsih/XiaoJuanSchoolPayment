@@ -152,6 +152,8 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
 {
   ("/", "weekly", "1.0"),
   ("/philippines-study/why-philippines", "monthly", "0.9"),
+  ("/philippines-study/bohol/english-mint-international-academy", "monthly", "0.85"),
+  ("/philippines-study/bohol/english-mint-international-academy/quote", "monthly", "0.75"),
   ("/philippines-study/schools/by-city", "weekly", "0.95"),
   ("/philippines-study/cebu", "weekly", "0.95"),
   ("/philippines-study/baguio", "weekly", "0.95"),
@@ -201,6 +203,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/baguio/api-beci-city-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/baguio-jic", "monthly", "0.8"),
   ("/philippines-study/baguio/monol", "monthly", "0.8"),
+  ("/philippines-study/baguio/monol-sparta-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/wales-academy", "monthly", "0.8"),
   ("/philippines-study/baguio/anj-e-edu-english-academy", "monthly", "0.8"),
   ("/philippines-study/baguio/help-english-longlong-campus", "monthly", "0.8"),

@@ -195,7 +195,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get quotePlan() { return this.calculator.plan; }
   get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
   get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
-  get selectedWeeks() { return this.totalCourseWeeks; }
+  get selectedWeeks() { return this.quotePlan.courseWeeks; }
   get selectedStartDate() { return this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? ''; }
   get quoteCourses() {
     return this.allQuoteCourses;
@@ -477,8 +477,15 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get accommodationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.accommodation, 0); }
   get schoolDiscountTotal() { return this.activeStudents.reduce((sum, student) => sum + (student.sharedCourseOwner ? 0 : student.calculator.schoolDiscount), 0); }
   get sidaDiscountTotal() { return this.activeStudents.reduce((sum, student) => sum + (student.sharedCourseOwner ? 0 : student.calculator.sidaDiscount), 0); }
-  get totalCourseWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.courseWeeks, 0); }
-  get quoteHeading() { return `GLC${this.totalCourseWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.quotePlan.courseWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.calculator.plan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading() { return `GLC${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get quoteError() {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
     const index = this.activeStudents.findIndex(student => !!student.calculator.error);
@@ -497,6 +504,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get quoteImageData() {
     const imageSettings = this.quoteImageSettings;
+    const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
     const courseItems: QuoteImagePaymentItem[] = [];
     const roomItems: QuoteImagePaymentItem[] = [];
     this.activeStudents.forEach((student, index) => {
@@ -517,7 +525,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'GLC', schoolName: 'GLC', filePrefix: 'GLC', heroSrc: '/assets/glc/campus-main.webp',
-      weeks: this.totalCourseWeeks, startDate: this.selectedStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
+      weeks: layoutWeeks, startDate: this.selectedStartDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
       localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
       localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: imageSettings.localFeeIntro,
@@ -527,9 +535,10 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shared = this.activeStudents.flatMap((student, index) => student.sharedCourseOwner ? [`学生${student.sharedCourseOwner}与学生${index + 1}共享一份家庭课程套餐；住宿、注册费和学杂费分别按人计算。`] : []);
     const editedQuote = applyEditableQuoteImageCopy(quote, imageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes: [...warnings, ...shared, ...imageSettings.footerNotes] }, 'GLC', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes: [...warnings, ...shared, ...imageSettings.footerNotes] }, 'GLC', layoutWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
+      title: this.quoteScope,
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: imageSettings.paymentSectionTitle,

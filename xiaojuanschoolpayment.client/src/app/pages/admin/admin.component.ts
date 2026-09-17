@@ -203,7 +203,7 @@ export class AdminComponent implements OnInit {
 
   isRemainingQuoteSchool(school: SchoolDTO): boolean {
     const name = this.normalizeSchoolName(school.name);
-    return ['btes', 'brainytutelage', 'cebublueocean', 'targetglobalenglish', 'wales'].some(token => name.includes(token));
+    return ['btes', 'brainytutelage', 'cebublueocean', 'targetglobalenglish', 'wales', 'englishmint', '薄荷岛mint'].some(token => name.includes(token));
   }
 
   isUnifiedSchool(school: SchoolDTO): boolean {

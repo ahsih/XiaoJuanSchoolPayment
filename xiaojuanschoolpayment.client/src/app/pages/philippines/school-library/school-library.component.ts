@@ -34,6 +34,13 @@ const libraryPages: Record<string, LibraryPage> = {
     cardsTitle: '常见课程类型',
     cards: [
       {
+        icon: 'waves',
+        title: 'English MINT International Academy',
+        tag: '薄荷岛 / 成人与亲子',
+        text: '适合想在邦劳学习、选择成人ESL、口语强化、Lite ESL、Junior或家庭全包项目的学生与家长。',
+        route: '/philippines-study/bohol/english-mint-international-academy',
+      },
+      {
         icon: 'record_voice_over',
         title: '一般英语 ESL',
         tag: 'Speaking / Listening',

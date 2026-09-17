@@ -151,6 +151,93 @@ describe('SMEAG Capital textbook estimates', () => {
     expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
   });
 
+  it('keeps the single-person heading, image title and dated filename based on that student\'s course weeks', () => {
+    component.selectedWeeks = 12;
+    component.selectedStartDate = '2026-09-20';
+
+    expect(component.quoteHeading).toBe('SMEAG Capital12周报价');
+    expect(component.quoteImageData.headingText).toBe('SMEAG Capital12周报价');
+    expect(component.quoteImageData.title).toBe('12周');
+    expect(component.quoteImageData.fileName).toBe('SMEAG Capital12周报价-20260920.png');
+  });
+
+  it('labels equal-duration group quotes by headcount and per-person weeks without summing them', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.activeStudents.forEach(student => {
+      student.quotePlan.courses[0].weeks = 12;
+      student.quotePlan.rooms[0].weeks = 12;
+    });
+    const eachStudentUsd = component.studentQuoteUsd(component.activeStudents[0]);
+    const image = component.quoteImageData;
+
+    expect(component.quoteHeading).toBe('SMEAG Capital 2人·每人12周报价');
+    expect(image.headingText).toBe('SMEAG Capital 2人·每人12周报价');
+    expect(image.title).toBe('2人·每人12周');
+    expect(image.fileName).toBe('SMEAG Capital 2人·每人12周报价-20260906.png');
+    expect(JSON.stringify(image)).not.toContain('24周报价');
+    expect(component.quoteUsd).toBe(eachStudentUsd * 2);
+  });
+
+  it('labels mixed-duration group quotes without showing the summed course weeks', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.activeStudents[0].quotePlan.courses[0].weeks = 12;
+    component.activeStudents[0].quotePlan.rooms[0].weeks = 12;
+    component.activeStudents[1].quotePlan.courses[0].weeks = 8;
+    component.activeStudents[1].quotePlan.rooms[0].weeks = 8;
+    const image = component.quoteImageData;
+    const coursePeriods = image.paymentItems.filter(item => item.icon === '课').map(item => item.detailSubtitle);
+
+    expect(component.quoteHeading).toBe('SMEAG Capital 2人·不同周数报价');
+    expect(image.headingText).toBe('SMEAG Capital 2人·不同周数报价');
+    expect(image.title).toBe('2人·不同周数');
+    expect(image.fileName).toBe('SMEAG Capital 2人·不同周数报价-20260906.png');
+    expect(JSON.stringify(image)).not.toContain('20周报价');
+    expect(coursePeriods).toEqual([
+      jasmine.stringContaining('12周'),
+      jasmine.stringContaining('8周'),
+    ]);
+  });
+
+  it('applies the same group heading rules to three or more students', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 3;
+    component.activeStudents.forEach(student => {
+      student.quotePlan.courses[0].weeks = 8;
+      student.quotePlan.rooms[0].weeks = 8;
+    });
+
+    expect(component.quoteHeading).toBe('SMEAG Capital 3人·每人8周报价');
+    expect(component.quoteImageData.headingText).toBe('SMEAG Capital 3人·每人8周报价');
+    expect(JSON.stringify(component.quoteImageData)).not.toContain('24周报价');
+
+    component.activeStudents[2].quotePlan.courses[0].weeks = 4;
+    component.activeStudents[2].quotePlan.rooms[0].weeks = 4;
+
+    expect(component.quoteHeading).toBe('SMEAG Capital 3人·不同周数报价');
+    expect(component.quoteImageData.headingText).toBe('SMEAG Capital 3人·不同周数报价');
+    expect(JSON.stringify(component.quoteImageData)).not.toContain('20周报价');
+  });
+
+  it('renders the equal-duration group heading on the real quote canvas without a summed-week heading', async () => {
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    component.activeStudents.forEach(student => {
+      student.quotePlan.courses[0].weeks = 12;
+      student.quotePlan.rooms[0].weeks = 12;
+    });
+    const renderer = new QuoteImageDownloadButtonComponent();
+    renderer.quote = component.quoteImageData;
+    const canvasText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
+
+    await renderer['createQuoteImageBlob'](1);
+
+    const renderedText = canvasText.calls.allArgs().map(args => String(args[0])).join('\n');
+    expect(renderedText).toContain('SMEAG Capital 2人·每人12周报价');
+    expect(renderedText).not.toContain('SMEAG Capital24周报价');
+  }, 30000);
+
   it('uses employee-edited SMEAG prices, fee rules, discounts and image notes together', () => {
     const edited = createDefaultSmeagContentConfig();
     edited.courses[0].tuition = 900;

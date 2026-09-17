@@ -1,0 +1,451 @@
+<app-cia-school>
+  <div class="cia-page">
+    <div class="page-grid">
+      <main class="page-main">
+        <section class="hero-section" id="top">
+          <div class="hero-copy">
+            <a class="back-link" routerLink="/philippines-study/baguio">
+              <mat-icon>arrow_back</mat-icon>
+              返回碧瑶学校列表
+            </a>
+            <p class="breadcrumb">菲律宾游学 / 碧瑶学校 / 菲律宾碧瑶MONOL斯巴达校区</p>
+            <h1><span>菲律宾碧瑶</span><span>MONOL斯巴达校区</span></h1>
+            <p class="hero-lead">
+              <span>每天至少10节学习安排的全斯巴达沉浸式校区。</span>
+              <span>Booster ESL密集训练综合英语。</span>
+              <span>Master IELTS结合五科一对一与每日模拟考试。</span>
+            </p>
+            <div class="hero-tags" aria-label="MONOL斯巴达校区特点">
+              <span><mat-icon>terrain</mat-icon>碧瑶山城</span>
+              <span><mat-icon>school</mat-icon>Booster ESL</span>
+              <span><mat-icon>assignment</mat-icon>Master IELTS</span>
+              <span><mat-icon>lock_clock</mat-icon>强制自习与EOP</span>
+            </div>
+            <div class="hero-actions">
+              <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+                立即计算我的费用
+                <mat-icon>calculate</mat-icon>
+              </a>
+              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+                查看MONOL斯巴达校区课程
+                <mat-icon>menu_book</mat-icon>
+              </a>
+              <a class="secondary-action" routerLink="/about-sida/contact">
+                获取顾问确认报价
+                <mat-icon>support_agent</mat-icon>
+              </a>
+            </div>
+            <p class="trust-note">
+              <mat-icon>verified</mat-icon>
+              提交英语基础、目标课程、房型、护照地区和入学日期后，思达顾问会协助确认空房、校规、签证费用和正式报价。
+            </p>
+          </div>
+
+          <div class="hero-media" aria-label="MONOL斯巴达校区校园图片展示">
+            <figure class="feature-photo">
+              <img src="assets/philippines/monol-sparta/campus-building.webp" alt="菲律宾碧瑶MONOL斯巴达校区语言学校校舍外观" />
+              <figcaption>MONOL斯巴达校区实景建筑</figcaption>
+            </figure>
+            <div class="media-strip" aria-label="MONOL斯巴达校区校园缩略图">
+              <figure *ngFor="let image of heroGalleryPreviewImages">
+                <img [src]="image.src" [alt]="image.title" />
+                <figcaption>{{ image.title }}</figcaption>
+              </figure>
+            </div>
+            <p class="photo-source">图片与视频来源：本次提供的MONOL Sparta Campus资料包；课程、住宿、签证与活动分别按费用表、签证Excel和2026活动海报整理。</p>
+          </div>
+        </section>
+
+        <nav class="mobile-anchor-nav" aria-label="MONOL斯巴达校区手机端快捷导航">
+          <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            {{ item.label }}
+          </a>
+        </nav>
+
+        <section class="quick-info" aria-label="MONOL斯巴达校区快速信息卡">
+          <article class="quick-card" *ngFor="let item of quickInfo">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <p>{{ item.note }}</p>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block" id="gallery" data-cia-preview-kind="section" data-cia-preview-id="gallery" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'gallery')">
+          <div class="section-heading">
+            <span>图片 / 环境展示</span>
+            <h2>按学习和生活空间查看 MONOL斯巴达校区 环境</h2>
+            <p>“全部”先按区域进入相册；每个房型和设施相册均可左右滑动缩略图、切换大图或播放含原声视频，空素材目录不显示。</p>
+          </div>
+          <div class="gallery-tabs" role="tablist" aria-label="MONOL斯巴达校区图片分类">
+            <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
+              {{ category }}
+            </button>
+          </div>
+          <div *ngIf="selectedGalleryCategory === '全部'" class="gallery-album-grid" aria-label="MONOL斯巴达校区环境相册入口">
+            <button type="button" *ngFor="let category of galleryAlbumCategories" [attr.aria-label]="'进入' + category + '相册'" (click)="setGalleryCategory(category)">
+              <span class="gallery-album-cover" aria-hidden="true">
+                <ng-container *ngFor="let image of galleryImagesForCategory(category).slice(0, 3)">
+                  <video *ngIf="image.contentType?.startsWith('video/'); else albumPhoto" [src]="image.src" [poster]="image.poster || ''" muted playsinline preload="metadata"></video>
+                  <ng-template #albumPhoto><img [src]="image.src" alt="" loading="lazy" /></ng-template>
+                </ng-container>
+              </span>
+              <span class="gallery-album-copy"><span><strong>{{ category }}相册</strong><small>{{ galleryImagesForCategory(category).length }}项实景</small></span><mat-icon>arrow_forward</mat-icon></span>
+              <em>{{ galleryAlbumDescription(category) }}</em>
+            </button>
+          </div>
+
+          <div *ngIf="selectedGalleryCategory !== '全部'" class="environment-showcase" id="gallery-category-panel">
+            <div class="environment-album-toolbar">
+              <div><strong>{{ selectedGalleryCategory }}相册</strong><span>第 {{ selectedGalleryImageIndex + 1 }} / {{ displayedGalleryImages.length }} 项</span></div>
+              <nav [attr.aria-label]="selectedGalleryCategory + '相册切换'">
+                <button type="button" aria-label="上一项" (click)="previousGalleryImage()"><mat-icon>chevron_left</mat-icon>上一项</button>
+                <button type="button" aria-label="下一项" (click)="nextGalleryImage()">下一项<mat-icon>chevron_right</mat-icon></button>
+              </nav>
+            </div>
+
+            <div class="environment-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'">
+              <button type="button" role="tab" *ngFor="let image of displayedGalleryImages; let imageIndex = index" [class.active]="selectedGalleryImageIndex === imageIndex" [attr.aria-selected]="selectedGalleryImageIndex === imageIndex" [attr.aria-label]="'查看' + image.title" (click)="selectGalleryImage(imageIndex)">
+                <video *ngIf="image.contentType?.startsWith('video/'); else stripPhoto" [src]="image.src" [poster]="image.poster || ''" muted playsinline preload="metadata"></video>
+                <ng-template #stripPhoto><img [src]="image.src" [alt]="image.title + '缩略图'" loading="lazy" /></ng-template>
+                <span>{{ image.contentType?.startsWith('video/') ? '▶ ' : '' }}{{ image.title }}</span>
+              </button>
+            </div>
+
+            <article class="environment-profile-panel" role="tabpanel" aria-live="polite">
+              <div class="environment-profile-photo">
+                <video *ngIf="selectedGalleryImage.contentType?.startsWith('video/'); else selectedPhoto" [src]="selectedGalleryImage.src" [poster]="selectedGalleryImage.poster || ''" controls playsinline preload="metadata" [attr.aria-label]="selectedGalleryImage.title"></video>
+                <ng-template #selectedPhoto>
+                  <app-expandable-image [src]="selectedGalleryImage.src" [images]="displayedGalleryImageSources" [imageAlts]="displayedGalleryImageAlts" [imageTitles]="displayedGalleryImageTitles" [imageCaptions]="displayedGalleryImageCaptions" [alt]="selectedGalleryImage.title" [title]="selectedGalleryImage.title" [caption]="selectedGalleryImage.description" loading="eager" previewHeight="clamp(280px, 31vw, 420px)" previewFit="cover"></app-expandable-image>
+                </ng-template>
+                <span><mat-icon>{{ selectedGalleryImage.contentType?.startsWith('video/') ? 'volume_up' : 'collections' }}</mat-icon>{{ selectedGalleryImage.contentType?.startsWith('video/') ? '含原声 · 点击播放' : displayedGalleryPhotos.length + '张 · 点击放大并前后浏览' }}</span>
+              </div>
+              <div class="environment-profile-copy">
+                <span class="section-eyebrow">{{ selectedGalleryImage.category }} · MONOL SPARTA CAMPUS</span>
+                <h3>{{ selectedGalleryImage.title }}</h3>
+                <p>{{ selectedGalleryImage.description }}</p>
+                <p class="environment-profile-note"><mat-icon>info</mat-icon>图片、视频、设备与开放安排以实际到校情况为准；视频为资料包原始音轨，播放后可在控制栏调节音量。</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <div class="info-trio">
+          <section class="panel basic-panel" id="basic-info">
+            <div class="compact-heading">
+              <span>学校基本信息</span>
+              <h2>MONOL斯巴达校区 基本资料</h2>
+            </div>
+            <dl class="info-list">
+              <div *ngFor="let row of basicInfo">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel advisor-panel" id="advisor-review">
+            <div class="quote-mark">“</div>
+            <div class="compact-heading">
+              <span>思达顾问点评</span>
+              <h2>MONOL斯巴达校区的关键是高密度学习与纪律管理</h2>
+            </div>
+            <p>
+              这不是主校区的延伸页面，而是一套独立的全斯巴达方案。学生需要能接受强制自习、EOP、每日测试、门禁和补自习制度，再从Booster ESL或Master IELTS中选择。
+            </p>
+            <div class="advisor-card">
+              <div class="advisor-avatar">Ivy</div>
+              <div>
+                <strong>Ivy 顾问建议</strong>
+                <span>适合希望由制度推动学习的人；若需要大量自由时间，MONOL主校区会是完全不同的选择。</span>
+              </div>
+            </div>
+            <a class="primary-action full-action" routerLink="/about-sida/contact">
+              让顾问判断是否适合我
+              <mat-icon>chat</mat-icon>
+            </a>
+          </section>
+
+          <section class="panel highlight-panel" id="highlights">
+            <div class="compact-heading">
+              <span>MONOL斯巴达校区 核心亮点</span>
+              <h2>为什么需要高强度推进的学生会考虑这里？</h2>
+            </div>
+            <div class="highlight-list">
+              <article *ngFor="let item of highlights">
+                <img [src]="item.image" [alt]="item.title" />
+                <div>
+                  <strong>{{ item.title }}</strong>
+                  <p>{{ item.text }}</p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <section class="fit-section" id="fit">
+          <div class="section-heading">
+            <span>适合 / 不太适合</span>
+            <h2>先判断 MONOL斯巴达校区 是否适合你</h2>
+          </div>
+          <div class="fit-grid">
+            <div>
+              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 MONOL斯巴达校区</h3>
+              <article *ngFor="let item of suitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+            <div>
+              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
+              <article *ngFor="let item of notSuitableFor">
+                <strong>{{ item.title }}</strong>
+                <p>{{ item.text }}</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block" id="courses">
+          <div class="section-heading">
+            <span>课程类型介绍</span>
+            <h2>Booster ESL 与 Master IELTS 两条课程线</h2>
+            <p>只展示资料明确确认的两种课程，不复制MONOL主校区的ESL 4、General ESL或LEAP。</p>
+          </div>
+          <div class="course-grid">
+            <article class="course-card" *ngFor="let course of courses">
+              <span>{{ course.type }}</span>
+              <h3>{{ course.name }}</h3>
+              <p class="course-lessons">{{ course.lessons }}</p>
+              <p>{{ course.suitable }}</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block catalog-section" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
+          <div class="section-heading" data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')">
+            <span>MONOL斯巴达校区 2026 年 4 周课程费</span>
+            <h2>{{ courseTableTitle }}</h2>
+            <p data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')">{{ courseTableNote }}</p>
+            <p data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')">{{ groupClassNote }}</p>
+          </div>
+          <div class="data-table course-fee-table" role="table" aria-label="MONOL斯巴达校区 2026年4周课程费">
+            <div class="table-row table-head" role="row">
+              <span role="columnheader">课程名称</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排</span><span role="columnheader">备注</span>
+            </div>
+            <div class="table-row" role="row" *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
+              <span role="cell">{{ fee.name }}</span><span role="cell">{{ formatUsd(fee.tuition) }} 美元</span><span role="cell">{{ fee.suitable }}</span><span role="cell">{{ fee.note || '—' }}</span>
+            </div>
+          </div>
+          <div class="mobile-card-list mobile-course-fees" aria-label="MONOL斯巴达校区 2026年4周课程费手机卡片">
+            <article *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
+              <span>课程名称</span><strong>{{ fee.name }}</strong>
+              <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
+              <p>{{ fee.suitable }}<ng-container *ngIf="fee.note">；{{ fee.note }}</ng-container></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block" id="daily-schedule">
+          <div class="section-heading"><span>MONOL斯巴达校区一天学习生活安排</span><h2>课程、自习和测试组成完整学习日</h2></div>
+          <div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div>
+        </section>
+
+        <section class="section-block catalog-section" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-fees')">
+          <div class="section-heading" data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')">
+            <span>MONOL斯巴达校区 2026 年 4 周住宿费（含规定餐次）</span>
+            <h2>{{ roomTableTitle }}</h2>
+            <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
+          </div>
+          <div class="data-table room-fee-table" role="table" aria-label="MONOL斯巴达校区 2026年4周住宿费">
+            <div class="table-row table-head" role="row"><span role="columnheader">房间类型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
+            <div class="table-row" role="row" *ngFor="let room of roomFees" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }} 美元</span><span role="cell">{{ room.note || '—' }}</span></div>
+          </div>
+          <div class="mobile-card-list mobile-room-fees" aria-label="MONOL斯巴达校区 2026年4周住宿费手机卡片">
+            <article *ngFor="let room of roomFees" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"><span>房间类型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b></div><p>{{ room.note || '—' }}</p></article>
+          </div>
+          <div class="monol-stay-policy" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
+            <h3>{{ stayPolicyTitle }}</h3>
+            <div><article *ngFor="let policy of stayPolicies"><span>{{ policy.label }}</span><strong>{{ policy.value }}</strong><p>{{ policy.note }}</p></article></div>
+          </div>
+        </section>
+
+        <section class="quote-results-section group-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">
+          <div class="quote-form-card">
+            <div class="section-heading">
+              <span>MONOL斯巴达校区 完整费用报价</span>
+              <h2>{{ quoteHeading }}</h2>
+              <p>可按每位学生分别添加多段课程和住宿，学校付款、优惠与到校学杂费会和当前选择同步更新。</p>
+            </div>
+            <div class="quote-mode" role="group" aria-label="报价人数模式">
+              <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
+              <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
+              <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+            </div>
+            <p class="group-hint" *ngIf="quoteMode === 'group'">支持2–20人；每位学生独立选择课程、住宿日期、护照／签证类型、接机和SNS活动，费用分别计算后汇总。</p>
+
+            <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+              <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+              <div class="student-fields">
+                <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+                <label>护照／入境停留<select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [value]="option.value">{{ option.label }}</option></select></label>
+                <label>机场接机<select [(ngModel)]="student.pickup"><option value="none">不需要学校接机</option><option value="manila-group">马尼拉常规团体接机</option><option value="clark-group">克拉克常规团体接机</option><option value="manila-special">马尼拉特别个人接机（整车参考）</option><option value="clark-special">克拉克特别个人接机（整车参考）</option></select></label>
+              </div>
+              <label class="option-check"><input type="checkbox" [(ngModel)]="student.applySnsPromotion" />预估参加SNS在校故事活动：2026年12月31日前报名并在校学习、住宿；每完整4周在小红书、TikTok、Facebook、Messenger、Instagram、Google Map、Threads等平台发布1条在校故事，可减100美元；所有房型适用。活动可能随报名人数结束，开放及叠加资格须学校确认。</label>
+              <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+            </article>
+
+            <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
+              <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)">
+                <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
+              </div>
+            </div>
+            <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+            <div class="group-result">
+              <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small>{{ exchangeRateSummary }}</small>
+              <small *ngIf="quoteCalculated">已按当前选择更新；正式报价仍以MONOL斯巴达校区账单、空房和优惠确认为准。</small>
+            </div>
+            <div class="group-actions">
+              <button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
+              <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+              <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
+            </div>
+            <div class="quote-general-notes">
+              <strong>报价说明</strong>
+              <ul><li *ngFor="let note of quoteGeneralNotes">{{ note }}</li></ul>
+            </div>
+          </div>
+
+          <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">
+            <div class="local-fee-heading"><div><span>到校支付费用参考</span><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+            <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
+            <div class="local-fee-table-wrap">
+              <table class="local-fee-table">
+                <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+                <tbody><tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
+                <tfoot>
+                  <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含下方另行准备、条件收取及资料未列金额的待确认项目</td></tr>
+                  <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ localFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币≈9比索；最终以实际兑换或支付汇率为准</td></tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="excluded-fee-list">
+              <h4>另行准备／待学校确认（不计入上方学杂费及人民币预估合计）</h4>
+              <div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div>
+            </div>
+          </section>
+        </section>
+
+        <section class="notice-panel" id="price-note">
+          <mat-icon>info</mat-icon>
+          <div>
+            <h2>价格更新时间与资料说明</h2>
+            <p>本页资料更新时间：2026年9月17日。课程与校规来自《MONOL Sparta校区手册》，美元价格、房型、餐食和接机来自《MONOL Sparta校区费用明细表》，签证按《MONOL签证及移民局相关费用算法》并结合本次确认的中国护照30天／59天旅游签证口径计算，优惠按《MONOL斯巴达校区优惠活动》海报录入。资料未提供的年龄限制、短期比例、水电费、教材费、Academic Admin Fee金额和SNS叠加规则不作推测。</p>
+          </div>
+        </section>
+
+        <section class="materials-panel" id="materials">
+          <div>
+            <div class="section-heading">
+              <span>获取 MONOL斯巴达校区 完整资料与报价单</span>
+              <h2>让顾问把课程、房型、空房、签证和活动资格一次核清</h2>
+              <p>通过思达报名MONOL斯巴达校区，顾问会协助确认Booster ESL或Master IELTS、五种房型、空房、餐食安排、接机和正式报价，并协助办理菲律宾入境及签证相关手续。</p>
+            </div>
+            <ul class="check-list"><li>课程与房型建议</li><li>餐食与当地费用预算</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
+          </div>
+          <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
+        </section>
+
+        <app-sida-why-section
+          schoolName="MONOL斯巴达校区"
+          supportTitle="深圳总部 + 菲律宾·欧洲驻点支持"
+          supportBadge="深圳总部 + 菲律宾·欧洲驻点"
+          [detailed]="true"
+        ></app-sida-why-section>
+
+        <section class="section-block" id="service-flow">
+          <div class="section-heading">
+            <span>通过思达报名 MONOL斯巴达校区 的免费协助流程</span>
+            <h2>从选校到回国，顾问持续跟进</h2>
+            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。</p>
+          </div>
+          <div class="process-grid desktop-process-grid">
+            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+          </div>
+          <details class="mobile-only mobile-details">
+            <summary>查看报名流程</summary>
+            <div class="process-grid mobile-process-grid">
+              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
+            </div>
+          </details>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading"><span>到校后的学校服务</span><h2>住宿和生活支持是MONOL斯巴达校区重点</h2></div>
+            <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
+            <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验碧瑶生活</h2></div>
+            <div class="activity-columns desktop-activity-columns">
+              <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+              <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周末生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+                <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="section-block" id="enrollment-notes">
+          <div class="section-heading"><span>报名注意事项</span><h2>确认 MONOL斯巴达校区 前，建议先核对这些信息</h2></div>
+          <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+        </section>
+
+        <section class="faq-section" id="faq">
+          <div class="section-heading"><span>常见问题</span><h2>报名 MONOL斯巴达校区 前常被问到的问题</h2></div>
+          <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+        </section>
+      </main>
+
+      <aside class="side-panel" aria-label="MONOL斯巴达校区页面快捷导航">
+        <div class="current-card">
+          <span>当前参考</span>
+          <strong>{{ selectedWeeks }}周</strong>
+          <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
+          <div class="side-price">{{ quoteUsdText }}</div>
+          <small>{{ quoteCnyText }}</small>
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
+        </div>
+        <nav class="section-nav" aria-label="页面目录">
+          <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a>
+          <a href="#top" (click)="scrollToSection('top', $event)"><mat-icon>arrow_upward</mat-icon>返回顶部</a>
+        </nav>
+      </aside>
+    </div>
+
+    <section class="bottom-cta">
+      <div>
+        <h2>想知道 MONOL斯巴达校区 当前是否有空房和优惠？</h2>
+        <p>把入学日期、学习周数、英语基础、目标课程、房型和餐食需求发给顾问，可以更快得到准确报价。</p>
+        <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
+      </div>
+      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+    </section>
+
+    <div class="mobile-bottom-actions" aria-label="MONOL斯巴达校区手机端固定操作">
+      <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>计算费用</a>
+      <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>咨询</a>
+    </div>
+  </div>
+</app-cia-school>

@@ -477,7 +477,7 @@
       <aside class="side-panel" aria-label="GLC页面快捷导航">
         <div class="current-card">
           <span>当前参考</span>
-          <strong>{{ selectedWeeks }}周</strong>
+          <strong>{{ quoteMode === 'single' ? selectedWeeks + '周' : quoteScope }}</strong>
           <p>{{ quotePlan.courses.length }}项课程 · {{ quotePlan.rooms.length }}项住宿{{ calculator.family ? ' · 亲子2人' : '' }}</p>
           <div class="side-price">{{ quoteUsdText }}</div>
           <small>{{ quoteCnyText }}</small>

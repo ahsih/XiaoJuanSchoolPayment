@@ -18,6 +18,10 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     c.quotePlan.courses[0].weeks = c.quotePlan.rooms[0].weeks = weeks;
     c.quotePlan.courses[0].startDate = c.quotePlan.rooms[0].startDate = start;
   };
+  const setStudentWeeks = (index: number, weeks: number) => {
+    const plan = c.students[index].calculator.plan;
+    plan.courses[0].weeks = plan.rooms[0].weeks = weeks;
+  };
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
@@ -83,6 +87,54 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(sida?.note).toBe('课程费及住宿费按思达启航9折计算。');
     expect(lowSeason?.note).toBe('活动日期：2026/08/16–2026/12/25；指定课程及房型每满8周减300美元。');
     expect(lowSeason?.note).not.toContain('IELTS');
+  });
+  it('keeps single-person page and image titles synchronized', () => {
+    setPlan(12, '2026-09-06');
+    const date = c.quotePlan.startDate.replace(/-/g, '');
+
+    expect(c.quoteHeading).toBe('PHILINTER12周报价');
+    expect(c.quoteImageData.headingText).toBe(c.quoteHeading);
+    expect(c.quoteImageData.title).toBe('12周');
+    expect(c.quoteImageData.fileName).toBe(`PHILINTER12周报价-${date}.png`);
+  });
+  it('describes equal and mixed two-person weeks without using person-week totals', () => {
+    setPlan(12, '2026-09-06');
+    const singleTotal = c.quoteUsd;
+    c.setQuoteMode('group');
+    c.studentCount = 2;
+    setStudentWeeks(1, 12);
+
+    expect(c.quoteHeading).toBe('PHILINTER 2人·每人12周报价');
+    expect(c.quoteImageData.headingText).toBe(c.quoteHeading);
+    expect(c.quoteImageData.title).toBe('2人·每人12周');
+    expect(c.quoteImageData.headingText).not.toContain('24周报价');
+    expect(c.quoteUsd).toBe(singleTotal * 2);
+
+    setStudentWeeks(1, 8);
+    const mixedQuote = c.quoteImageData;
+    expect(c.quoteHeading).toBe('PHILINTER 2人·不同周数报价');
+    expect(mixedQuote.headingText).toBe(c.quoteHeading);
+    expect(mixedQuote.title).toBe('2人·不同周数');
+    expect(mixedQuote.fileName).toBe(`PHILINTER 2人·不同周数报价-${c.quotePlan.startDate.replace(/-/g, '')}.png`);
+    expect(`${mixedQuote.headingText}${mixedQuote.title}`).not.toContain('20周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('12周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('8周');
+    expect(c.quoteUsd).toBe(c.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0));
+  });
+  it('uses the actual three-person week pattern instead of a summed duration', () => {
+    c.setQuoteMode('group');
+    c.studentCount = 3;
+    c.activeStudents.forEach((_, index) => setStudentWeeks(index, 8));
+
+    expect(c.quoteHeading).toBe('PHILINTER 3人·每人8周报价');
+    expect(c.quoteImageData.title).toBe('3人·每人8周');
+    expect(c.quoteImageData.headingText).not.toContain('24周报价');
+
+    setStudentWeeks(2, 12);
+    expect(c.quoteHeading).toBe('PHILINTER 3人·不同周数报价');
+    expect(c.quoteImageData.headingText).toBe(c.quoteHeading);
+    expect(c.quoteImageData.title).toBe('3人·不同周数');
+    expect(c.quoteImageData.fileName).toBe(`PHILINTER 3人·不同周数报价-${c.quotePlan.startDate.replace(/-/g, '')}.png`);
   });
   it('keeps accommodation weeks and dates synchronized with each course period', () => {
     const editor = new SchoolQuotePlanComponent();

@@ -265,7 +265,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     if (registration && Number.isFinite(registration.fee) && registration.fee >= 0) this.registrationFee = registration.fee;
   }
 
-  get selectedWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.courseWeeks, 0); }
+  get selectedWeeks() { return this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0; }
   get selectedCoursesText() { return this.activeStudents.flatMap(student => student.calculator.plan.courses.map(row => this.courseFees.find(course => course.id === row.optionId)?.name)).filter(Boolean).join(' / '); }
   get selectedRoomsText() { return this.activeStudents.flatMap(student => student.calculator.plan.rooms.map(row => this.roomFees.find(room => room.id === row.optionId)?.name)).filter(Boolean).join(' / '); }
   get quoteTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.total, 0); }
@@ -274,7 +274,15 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get exchangeRateText() {
     return `${this.exchangeRateLive ? `参考汇率日期 ${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索；以支付当日汇率为准。`;
   }
-  get quoteHeading() { return `B'Cebu${this.selectedWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.selectedWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.calculator.plan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading() { return `B'Cebu${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get quoteError() {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
     const index = this.activeStudents.findIndex(student => !!student.calculator.error);
@@ -340,6 +348,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
   }
   get quoteImageData() {
+    const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
     const courseItems: QuoteImagePaymentItem[] = [], roomItems: QuoteImagePaymentItem[] = [];
     this.activeStudents.forEach((student, index) => student.calculator.plan.paymentItems().forEach(item => {
       const target = item.icon === '课' ? courseItems : roomItems;
@@ -355,7 +364,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const start = this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? '';
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: "B'Cebu", schoolName: "B'Cebu", filePrefix: 'BCEBU', heroSrc: '/assets/philippines/bcebu-campus-hero.webp',
-      weeks: this.selectedWeeks, startDate: start, usdToCny: this.usdToCny, totalUsd: this.quoteTotal,
+      weeks: layoutWeeks, startDate: start, usdToCny: this.usdToCny, totalUsd: this.quoteTotal,
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems: rows,
       localFeeItems: this.localFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note }; }),
       localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: this.quoteImageSettings.localFeeIntro,
@@ -365,8 +374,8 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.calculator.plan.shortStayNotes(weeks => this.shortTermRatios[String(weeks)] ?? weeks / 4)))];
     const importantNotes = [...warnings, ...shortNotes, ...this.reporterSettlementNotes, ...this.quoteImageSettings.footerNotes];
     const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, "B'Cebu", this.selectedWeeks, start, this.quoteTotal, this.usdToCny);
-    return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${start.replace(/-/g, '')}.png`,
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, "B'Cebu", layoutWeeks, start, this.quoteTotal, this.usdToCny);
+    return { ...result, title: this.quoteScope, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${start.replace(/-/g, '')}.png`,
       totalLabel: this.reporterSettlementNotes.length ? '完成记者活动后学校费用' : result.totalLabel,
       totalNote: this.reporterSettlementNotes.join('；'),
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle, localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,

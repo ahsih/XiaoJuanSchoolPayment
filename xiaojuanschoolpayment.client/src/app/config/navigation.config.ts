@@ -234,6 +234,24 @@ export const mainNavigation: NavigationItem[] = [
         ],
       },
       {
+        id: 'bohol-study',
+        label: '薄荷岛游学',
+        route: '/philippines-study/bohol/english-mint-international-academy',
+        type: '学校页',
+        children: [
+          {
+            id: 'english-mint-international-academy',
+            label: '菲律宾薄荷岛English MINT语言学校',
+            route: '/philippines-study/bohol/english-mint-international-academy',
+          },
+          {
+            id: 'english-mint-quote',
+            label: 'English MINT费用报价',
+            route: '/philippines-study/bohol/english-mint-international-academy/quote',
+          },
+        ],
+      },
+      {
         id: 'cebu-study',
         label: '宿务游学',
         route: '/philippines-study/cebu',
@@ -433,14 +451,24 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/baguio/api-beci-city-campus',
           },
           {
-            id: 'baguio-jic',
-            label: '菲律宾碧瑶JIC语言学校',
-            route: '/philippines-study/baguio/baguio-jic',
+            id: 'baguio-jic-challenger',
+            label: 'JIC挑战校区（Challenger）',
+            route: '/philippines-study/baguio/baguio-jic-challenger',
+          },
+          {
+            id: 'baguio-jic-premium',
+            label: 'JIC高级校区（Premium）',
+            route: '/philippines-study/baguio/baguio-jic-premium',
           },
           {
             id: 'monol',
-            label: '菲律宾碧瑶MONOL语言学校',
+            label: 'MONOL主校区',
             route: '/philippines-study/baguio/monol',
+          },
+          {
+            id: 'monol-sparta-campus',
+            label: 'MONOL斯巴达校区',
+            route: '/philippines-study/baguio/monol-sparta-campus',
           },
           {
             id: 'wales-academy',

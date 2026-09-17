@@ -493,7 +493,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   }
 
   get filteredGalleryImages(): GalleryImage[] { return this.selectedGalleryCategory === '全部' ? this.galleryImages : this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory); }
-  get selectedWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.plan.courseWeeks, 0); }
+  get selectedWeeks() { return this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0; }
   get isMinor() { return this.selectedAgeGroup === 'junior'; }
   get courseAndRoomBase() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.base, 0); }
   get sidaDiscountAmount() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.sidaDiscount, 0); }
@@ -520,6 +520,15 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText() { return `约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元人民币`; }
   get exchangeRateText() { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.selectedWeeks}周`;
+    const students = this.activeStudents;
+    const courseWeeks = [...new Set(students.map(student => student.calculator.plan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${students.length}人·每人${courseWeeks[0]}周`
+      : `${students.length}人·不同周数`;
+  }
+  get quoteHeading() { return `PHILINTER${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`; }
   get minimumStayWarning() { return ''; }
   get quoteError(): string {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
@@ -568,6 +577,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       cnyAmount: `人民币预计约 ${Math.round(item.value / this.phpPerCny).toLocaleString('zh-CN')} 元` }));
   }
   get quoteImageData() {
+    const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
     const items = this.schoolPaymentItems;
     const sidaRule = this.promotionRules.find(item => item.id === 'philinter-sida-90' && item.enabled);
     const lowSeasonRule = this.promotionRules.find(item => item.id === 'philinter-low-season' && item.enabled);
@@ -595,7 +605,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     const startDate = this.activeStudents.map(student => student.calculator.plan.startDate).filter(Boolean).sort()[0] ?? '';
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'PHILINTER', schoolName: 'PHILINTER', filePrefix: 'PHILINTER', heroSrc: '/assets/philinter/campus-main.webp',
-      weeks: this.selectedWeeks, startDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
+      weeks: layoutWeeks, startDate, usdToCny: this.usdToCny, totalUsd: this.quoteUsd,
       fullFeeDetails: true, localFeeTableLayout: 'web', localCurrencyName: '比索',
       paymentItems: [
         { ...items[0], note: [this.quoteImageSettings.paymentNotes.registration, registrationCountNote].filter(Boolean).join('；') },
@@ -634,11 +644,12 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     ]);
     const importantNotes = [...new Set([...warnings, ...this.policyNotes, ...this.quoteImageSettings.footerNotes])];
     const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, totalNote: '', exchangeRateText: '', importantNotes }, 'PHILINTER', this.selectedWeeks, startDate, this.quoteUsd, this.usdToCny);
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, totalNote: '', exchangeRateText: '', importantNotes }, 'PHILINTER', layoutWeeks, startDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
-      headingText: `PHILINTER${this.selectedWeeks}周报价`,
-      fileName: `PHILINTER${this.selectedWeeks}周报价-${startDate.replace(/-/g, '')}.png`,
+      title: this.quoteScope,
+      headingText: this.quoteHeading,
+      fileName: `${this.quoteHeading}-${startDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
       localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle: this.quoteImageSettings.serviceSectionTitle,

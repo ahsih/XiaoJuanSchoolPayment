@@ -14,6 +14,12 @@
     <button type="button" [class.active]="beciCampus === 'city'" (click)="selectBeciCampus('city')">City</button>
     <span>文字说明共用，右侧金额按所选校区生成。</span>
   </section>
+  <section class="beci-campus-switch" *ngIf="isJicSelected">
+    <strong>报价图片预览校区</strong>
+    <button type="button" [class.active]="jicCampus === 'challenger'" (click)="selectJicCampus('challenger')">Challenger 挑战校区</button>
+    <button type="button" [class.active]="jicCampus === 'premium'" (click)="selectJicCampus('premium')">Premium 高级校区</button>
+    <span>右侧课程、住宿、标题和主图均随校区切换；优惠与学杂费规则保持一致。</span>
+  </section>
   <section class="beci-campus-switch" *ngIf="isFellaSelected">
     <strong>报价图片预览校区</strong>
     <button type="button" [class.active]="fellaCampus === 'campus1'" (click)="selectFellaCampus('campus1')">第一校区</button>

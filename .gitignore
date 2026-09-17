@@ -38,3 +38,6 @@ xiaojuanschoolpayment.client/pnpm-workspace.yaml
 outputs/cg-sparta-web-390.png
 outputs/cg-sparta-web-1440.png
 xiaojuan-sql.sql
+
+# Local source downloads, media processing, and temporary review files.
+/tmp/

@@ -62,7 +62,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   private readonly route = inject(ActivatedRoute);
   private readonly previewHost = inject(ElementRef<HTMLElement>);
   private readonly pricingSchoolSearchName = 'MONOL';
-  private readonly pricingSchoolNames = ['菲律宾碧瑶MONOL语言学校', 'MONOL', 'Models of Nonpareil and Outstanding Learning'];
+  private readonly pricingSchoolNames = ['菲律宾碧瑶MONOL主校区', '菲律宾碧瑶MONOL语言学校', 'MONOL', 'Models of Nonpareil and Outstanding Learning'];
   private readonly initialContent = createDefaultMonolContentConfig();
   readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window
     && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
@@ -405,7 +405,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       switchMap((schools) => {
         const school =
           this.pricingSchoolNames.map((name) => schools.find((item) => item.name === name)).find(Boolean) ??
-          schools.find((item) => item.name.toUpperCase().includes('MONOL')) ??
+          schools.find((item) => item.name.toUpperCase().includes('MONOL') && !item.name.toLowerCase().includes('sparta') && !item.name.includes('斯巴达')) ??
           schools[0];
         if (!school?.id) return EMPTY;
         return forkJoin({

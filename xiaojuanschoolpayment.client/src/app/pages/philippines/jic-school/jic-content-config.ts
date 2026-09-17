@@ -1,4 +1,4 @@
-import { CiaContentConfig, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { CiaContentConfig, CiaMediaContent, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import {
   JIC_COURSE_FEES,
   JIC_LOCAL_FEE_COPY,
@@ -6,6 +6,7 @@ import {
   JIC_PROMOTION_COPY,
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
+  JicCampus,
 } from './jic-pricing';
 
 const promotion = (id: string, name: string, ruleKind: string, sortOrder: number): CiaPromotionRule => ({
@@ -29,7 +30,86 @@ const promotion = (id: string, name: string, ruleKind: string, sortOrder: number
 
 const twinAndQuadRoomIds = JIC_ROOM_FEES.filter(room => room.category !== 'single').map(room => room.id);
 
-export const createDefaultJicContentConfig = (): CiaContentConfig => ({
+const staticMedia = (
+  order: number,
+  campus: 'challenger' | 'premium',
+  category: 'Campus' | 'Classroom' | 'Accommodation' | 'Dining' | 'Facility',
+  caption: string,
+  altText: string,
+  url: string,
+  contentType = 'image/webp',
+): CiaMediaContent => ({
+  id: `jic-static-${String(order + 1).padStart(3, '0')}`,
+  schoolId: 'b9eb0a1e-1b2a-4e9f-8f63-0bd6f0c4417a',
+  url,
+  originalFileName: url.split('/').pop(),
+  contentType,
+  category,
+  caption,
+  altText,
+  displayOrder: order,
+  campus,
+  isActive: true,
+});
+
+/** School-issued September 2026 media, partitioned so both JIC pages are manageable from one school record. */
+export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
+  staticMedia(0, 'challenger', 'Campus', 'Challenger 挑战校区官方介绍片', '学校最新有声官方介绍片，完整展示挑战校区的学习与生活环境。', '/assets/philippines/jic-challenger-campus-intro.mp4', 'video/mp4'),
+  staticMedia(1, 'challenger', 'Campus', 'Challenger 校园航拍', '菲律宾碧瑶JIC语言学校 Challenger 校区整体环境。', '/assets/philippines/jic-campus-hero.webp'),
+  staticMedia(2, 'challenger', 'Campus', 'Challenger 校区全景', 'Challenger／Main校区整体视角。', '/assets/philippines/jic-main-campus-overview.webp'),
+  staticMedia(3, 'challenger', 'Campus', 'Challenger 校园中庭', '校舍、中庭与户外休息空间。', '/assets/philippines/jic-challenger-campus-courtyard.webp'),
+  staticMedia(4, 'challenger', 'Classroom', 'Challenger 一对一教室', '学校课堂资料中的独立一对一教室实景。', '/assets/philippines/jic-challenger-one-on-one-classroom.webp'),
+  staticMedia(5, 'challenger', 'Classroom', 'Challenger 一对一教学区', '多间独立一对一教室组成的教学区。', '/assets/philippines/jic-challenger-one-on-one-area.webp'),
+  staticMedia(6, 'challenger', 'Classroom', 'Challenger 团体教室', '学校课堂资料中的标准团体课教室。', '/assets/philippines/jic-challenger-group-classroom.webp'),
+  staticMedia(7, 'challenger', 'Classroom', 'Challenger 团体课堂实景', '团体课教室与学生课堂活动实景。', '/assets/philippines/jic-challenger-active-group-class.webp'),
+  staticMedia(8, 'challenger', 'Classroom', 'Challenger 小组课教室', '适合小组讨论与互动课程的教室空间。', '/assets/philippines/jic-challenger-small-group-classroom.webp'),
+  staticMedia(9, 'challenger', 'Classroom', 'Challenger 教学实景', 'East Building Classrooms资料中的教师授课场景。', '/assets/philippines/jic-challenger-teaching-scene.webp'),
+  staticMedia(10, 'challenger', 'Classroom', 'Challenger 电脑教室', '配备电脑的学习与测试空间。', '/assets/philippines/jic-challenger-computer-room.webp'),
+  staticMedia(11, 'challenger', 'Classroom', 'Challenger 口语测试区', '独立电脑口语测试席位。', '/assets/philippines/jic-challenger-speaking-test-room.webp'),
+  staticMedia(12, 'challenger', 'Accommodation', 'Challenger 标准单人房（R1 Studio）', '标准单人房实景。', '/assets/philippines/jic-challenger-single-room.webp'),
+  staticMedia(13, 'challenger', 'Accommodation', 'Challenger 标准单人房视频', 'R1 Studio学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-room-tour.mp4', 'video/mp4'),
+  staticMedia(14, 'challenger', 'Accommodation', 'Challenger 标准双人房（R2 Studio）', '标准双人房实景。', '/assets/philippines/jic-challenger-double-room.webp'),
+  staticMedia(15, 'challenger', 'Accommodation', 'Challenger 标准双人房视频', 'R2 Studio学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-double-room-video.mp4', 'video/mp4'),
+  staticMedia(16, 'challenger', 'Accommodation', 'Challenger 四人复式房（R4 Loft）', '上下层复式四人房实景。', '/assets/philippines/jic-challenger-quad-duplex-room.webp'),
+  staticMedia(17, 'challenger', 'Accommodation', 'Challenger 四人复式房视频', 'R4 Loft学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-quad-duplex-room-video.mp4', 'video/mp4'),
+  staticMedia(18, 'challenger', 'Accommodation', 'Challenger 四人上下铺房（R4 Studio）', '标准四人上下铺房实景。', '/assets/philippines/jic-challenger-quad-bunk-room.webp'),
+  staticMedia(19, 'challenger', 'Accommodation', 'Challenger 四人上下铺房视频', 'R4 Studio学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-quad-bunk-room-video.mp4', 'video/mp4'),
+  staticMedia(20, 'challenger', 'Dining', 'Challenger 室内餐厅', '学校餐厅资料中的室内用餐空间。', '/assets/philippines/jic-challenger-cafeteria-indoor.webp'),
+  staticMedia(21, 'challenger', 'Dining', 'Challenger 户外用餐区', '餐厅旁的半户外用餐与交流空间。', '/assets/philippines/jic-challenger-cafeteria-outdoor.webp'),
+  staticMedia(22, 'challenger', 'Dining', 'Challenger 校餐实拍', '学校餐食资料中的一餐实拍，实际菜单以当期安排为准。', '/assets/philippines/jic-challenger-meal-set.webp'),
+  staticMedia(23, 'challenger', 'Dining', 'Challenger 餐食参考', '学校展示的餐食搭配与菜品，实际供应会随菜单调整。', '/assets/philippines/jic-challenger-meal-variety.webp'),
+  staticMedia(24, 'challenger', 'Facility', 'Challenger 公共厨房', '公共厨房配有烹饪区、水槽、餐具及常用电器。', '/assets/philippines/jic-challenger-common-kitchen.webp'),
+  staticMedia(25, 'challenger', 'Facility', 'Challenger 公共厨房使用场景', '学生使用公共厨房进行简单烹饪的实景。', '/assets/philippines/jic-challenger-common-kitchen-use.webp'),
+  staticMedia(26, 'challenger', 'Facility', 'Challenger 健身房', '校内健身房配有跑步机、综合训练器和自由重量器材。', '/assets/philippines/jic-challenger-gym.webp'),
+  staticMedia(27, 'challenger', 'Facility', 'Challenger 运动场', '校内篮球、羽毛球等户外活动场地。', '/assets/philippines/jic-challenger-sports-court.webp'),
+  staticMedia(28, 'challenger', 'Facility', 'Challenger K-Mart校内商店', '校内商店提供零食、饮料及常用生活用品。', '/assets/philippines/jic-challenger-campus-store.webp'),
+  staticMedia(29, 'challenger', 'Facility', 'Challenger Terminal Cafe', '校内咖啡厅与课后交流空间。', '/assets/philippines/jic-challenger-terminal-cafe.webp'),
+  staticMedia(30, 'challenger', 'Facility', 'Challenger West Garden安静区', 'West Garden户外桌椅与安静交流区域。', '/assets/philippines/jic-challenger-west-garden.webp'),
+  staticMedia(31, 'challenger', 'Accommodation', 'Challenger Loft房型', 'Main Campus Rooms资料展示的Loft住宿空间。', '/assets/philippines/jic-main-room-loft.webp'),
+  staticMedia(32, 'challenger', 'Facility', 'Challenger 自习与Library', '适合IELTS与长期备考学生的Library学习空间。', '/assets/philippines/jic-main-library.webp'),
+  staticMedia(33, 'premium', 'Campus', 'Premium 高级校区官方介绍片', '学校最新有声官方介绍片，完整展示Premium校区的课堂、住宿与生活环境。', '/assets/philippines/jic-premium-campus-intro.mp4', 'video/mp4'),
+  staticMedia(34, 'premium', 'Campus', 'JIC Premium Campus环境', 'Premium校区学习生活环境。', '/assets/philippines/jic-premium-campus-overview.jpg', 'image/jpeg'),
+  staticMedia(35, 'premium', 'Classroom', 'Premium 小组互动课堂', 'Active Learning小组课堂实景。', '/assets/philippines/jic-premium-group-class.webp'),
+  staticMedia(36, 'premium', 'Accommodation', 'Premium 单人间（无阳台）', 'Semi Single无阳台单人雅房实景。', '/assets/philippines/jic-premium-single-no-balcony.webp'),
+  staticMedia(37, 'premium', 'Accommodation', 'Premium 单人间（无阳台）视频', 'Semi Single学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-premium-room-tour.mp4', 'video/mp4'),
+  staticMedia(38, 'premium', 'Accommodation', 'Premium 单人间（带阳台）', '带阳台独立单人房实景。', '/assets/philippines/jic-premium-single-balcony.webp'),
+  staticMedia(39, 'premium', 'Accommodation', 'Premium 单人间（带阳台）视频', '学校原始Premium Single Room房型实拍（原素材无配音）。', '/assets/philippines/jic-premium-single-balcony-video.mp4', 'video/mp4'),
+  staticMedia(40, 'premium', 'Accommodation', 'Premium 双人间（无阳台）', '无阳台双人房实景。', '/assets/philippines/jic-premium-twin-no-balcony.webp'),
+  staticMedia(41, 'premium', 'Accommodation', 'Premium 双人间（无阳台）视频', '学校原始双人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-twin-no-balcony-video.mp4', 'video/mp4'),
+  staticMedia(42, 'premium', 'Accommodation', 'Premium 双人间（带阳台）', '带阳台双人房实景。', '/assets/philippines/jic-premium-twin-balcony.webp'),
+  staticMedia(43, 'premium', 'Accommodation', 'Premium 双人间（带阳台）视频', '学校原始双人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-twin-balcony-video.mp4', 'video/mp4'),
+  staticMedia(44, 'premium', 'Accommodation', 'Premium 四人间（无阳台）', '无阳台四人上下铺房实景。', '/assets/philippines/jic-premium-quad-no-balcony.webp'),
+  staticMedia(45, 'premium', 'Accommodation', 'Premium 四人间（无阳台）视频', '学校原始四人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-quad-no-balcony-video.mp4', 'video/mp4'),
+  staticMedia(46, 'premium', 'Accommodation', 'Premium 四人间（带阳台）', '带阳台四人上下铺房实景。', '/assets/philippines/jic-premium-quad-balcony.webp'),
+  staticMedia(47, 'premium', 'Accommodation', 'Premium 四人间（带阳台）视频', '学校原始四人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-quad-balcony-video.mp4', 'video/mp4'),
+  staticMedia(48, 'premium', 'Accommodation', 'Premium 四人房', 'Premium Campus Rooms资料展示的四人房。', '/assets/philippines/jic-premium-quad-room.webp'),
+  staticMedia(49, 'premium', 'Dining', 'Premium 校区餐食', 'Premium Cafeteria & Meals资料展示的学校餐食。', '/assets/philippines/jic-premium-meal.webp'),
+  staticMedia(50, 'premium', 'Dining', 'Premium Cafe', '校内Cafe课后休息和交流空间。', '/assets/philippines/jic-premium-cafe.webp'),
+  staticMedia(51, 'premium', 'Facility', 'Premium Student Center', '学生中心与休息空间。', '/assets/philippines/jic-premium-student-center.webp'),
+];
+
+export const createDefaultJicContentConfig = (): CiaContentConfig => {
+  const content: CiaContentConfig = {
   schemaVersion: 1,
   schoolCode: 'JIC',
   courses: JIC_COURSE_FEES.map((item, index) => ({
@@ -43,8 +123,8 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => ({
     schedule: item.suitable,
     suitable: item.suitable,
     note: item.suitable,
-    minimumWeeks: 4,
-    allowedWeeks: [4, 6, 8, 12, 16, 20, 24],
+    minimumWeeks: 1,
+    allowedWeeks: [1, 2, 3, 4, 6, 8, 12, 16, 20, 24],
     enabled: true,
     sortOrder: index,
   })),
@@ -65,24 +145,25 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => ({
   localFees: [
     { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 7800, billingRule: 'once', includeInTotal: true, note: '移民局收取，按报名学习时长办理；续费及换校需要重新办理。', enabled: true, sortOrder: 0 },
     { id: 'ssp-e-card', name: 'SSP-E CARD', currency: 'PHP', amount: 4500, billingRule: 'once', includeInTotal: true, note: '移民局收取，入学时与SSP同时办理，只收一次。', enabled: true, sortOrder: 1 },
-    { id: 'acr-i-card', name: 'ACR-I CARD 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '按所选旅游签证预估，第一次续签时办理，只收一次。', enabled: true, sortOrder: 2 },
+    { id: 'acr-i-card', name: 'ACR-I CARD 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '30天旅游签证学习超过4周，或59天旅游签证学习达到8周时，在首次续签时办理，只收一次。', enabled: true, sortOrder: 2 },
     { id: 'maintenance', name: '维护管理费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '校内教学楼及其他设施维护费；超过4周按实际周数比例预估。', enabled: true, sortOrder: 3 },
     { id: 'utilities', name: '水电费', currency: 'PHP', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '超过4周按实际周数比例预估。', enabled: true, sortOrder: 4 },
-    { id: 'manila-pickup', name: '马尼拉机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-manila-pickup', includeInTotal: true, note: '自由选择是否需要；周日固定时间团体接机，选择后计入学杂费预估。', enabled: true, sortOrder: 5 },
-    { id: 'clark-pickup', name: '克拉克机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-clark-pickup', includeInTotal: true, note: '自由选择是否需要；周日固定时间团体接机，选择后计入学杂费预估。', enabled: true, sortOrder: 6 },
-    { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 4940, rates: [4940], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '按所选旅游签证及完整停留跨度预估；每次续签增加30天。', enabled: true, sortOrder: 7 },
-    { id: 'books', name: '教材费', currency: 'PHP', amount: 1900, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '按每套教材约使用8周预估；实际按学习进度购买。', enabled: true, sortOrder: 8 },
+    { id: 'manila-pickup', name: '马尼拉机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-manila-pickup', includeInTotal: true, note: '周日BESA团体接机3,000比索；非BESA接机参考：1人12,000、2人6,000／人、3人以上4,000／人，需顾问确认班次。', enabled: true, sortOrder: 5 },
+    { id: 'clark-pickup', name: '克拉克机场接机', currency: 'PHP', amount: 2500, billingRule: 'selected-clark-pickup', includeInTotal: true, note: '周日BESA团体接机2,500比索；非BESA接机参考：1人7,000、2人4,000／人、3人以上3,000／人，需顾问确认班次。', enabled: true, sortOrder: 6 },
+    { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 4940, rates: [4940, 6210, 4240, 4240, 4240], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '30天旅游签证学习超过4周开始续签；59天旅游签证学习达到8周开始续签。之后每增加4周再估算1次；各次参考为4,940／6,210／4,240／4,240／4,240比索。', enabled: true, sortOrder: 7 },
+    { id: 'books', name: '教材费', currency: 'PHP', amount: 0, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '按所选课程的学校教材表及每开始4周计算；不同课程金额不同，实际以到校领用为准。', enabled: true, sortOrder: 8 },
     { id: 'student-card', name: '学生证', currency: 'PHP', amount: 200, billingRule: 'once', includeInTotal: true, note: '一次性费用，包含拍摄照片。', enabled: true, sortOrder: 9 },
     { id: 'laundry', name: '洗衣服务', currency: 'PHP', amount: 1200, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '每周2次洗衣服务；超过4周按实际周数比例预估。', enabled: true, sortOrder: 10 },
     { id: 'challenger-elective', name: 'Challenger特别选修课', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '仅主动勾选Challenger特别选修课时计入。', enabled: true, sortOrder: 11 },
-    { id: 'ielts-guarantee', name: 'IELTS保分班额外费用', currency: 'PHP', amount: 18000, billingRule: 'once', includeInTotal: true, note: '仅选择IELTS Guarantee时计入；保证条件需由顾问确认。', enabled: true, sortOrder: 12 },
+    { id: 'ielts-guarantee', name: 'IELTS保分班额外费用', currency: 'PHP', amount: 18000, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '仅选择IELTS Guarantee时按每开始8周计入；保证条件需由顾问确认。', enabled: true, sortOrder: 12 },
     { id: 'room-deposit', name: '宿舍押金（可退）', currency: 'PHP', amount: 3000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: JIC_LOCAL_FEE_COPY.deposit, enabled: true, sortOrder: 13 },
+    { id: 'odd-week-arrival', name: '非标准周抵离校参考费', currency: 'PHP', amount: 8000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '学校最新表列8,000比索／非标准周；仅非周日抵达或非周六离校时参考，标准周日报到、周六离校不收取。', enabled: true, sortOrder: 14 },
   ],
   quoteSettings: {
     registrationFee: JIC_REGISTRATION_FEE,
     futurePriceRegistrationStart: '',
     futurePriceArrivalStart: '',
-    shortStayRatios: {},
+    shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
     peakSeasonFeePerWeek: JIC_PEAK_FEE_PER_WEEK,
     peakSeasonRanges: [
       { id: 'jic-peak-2026', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
@@ -167,7 +248,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => ({
     ],
     localFeeIntro: JIC_LOCAL_FEE_COPY.intro,
     courseTableTitle: 'JIC 2026年课程费 / 4周',
-    courseTableNote: 'Challenger与Premium课程分校区显示；课程与住宿最低4周，6周及更长按周数比例计算。',
+    courseTableNote: '两个校区分别展示；1／2／3周按4周价的40%／65%／85%，4周起按周数比例计算。',
     groupClassNote: 'Challenger偏ESL与IELTS强化，Premium偏口语、主题与职业英语；具体安排以所选课程说明为准。',
     roomTableTitle: 'JIC 2026年住宿费 / 4周',
     roomTableNote: 'Challenger与Premium房型不可跨校区混选；Premium 2027淡季单人房优惠仅适用于无阳台房型。',
@@ -197,18 +278,83 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => ({
     alumniBenefitText: '淡季、长期、BESA与节日优惠按报名日、入学日、房型及周数自动核对；最终资格以学校确认为准。',
     noteSectionTitle: '报价说明',
     footerNotes: [
-      '课程和住宿最低4周；周日入住、周六退房。',
-      'Challenger与Premium的课程和住宿须按同一校区选择。',
+      '1／2／3周按4周价的40%／65%／85%；周日入住、周六退房。',
+      '当前页面只提供对应校区的课程和住宿，不跨校区混选。',
       '人民币金额按生成当日参考汇率估算，最终以实际支付汇率为准。',
       '最终以学校价格、空房、优惠资格、移民局政策及顾问确认结果为准。',
     ],
   },
-  media: [],
-});
+    media: structuredClone(JIC_DEFAULT_MEDIA),
+  };
+  content.campusQuoteImageSettings = {
+    challenger: structuredClone(content.quoteImageSettings),
+    premium: structuredClone(content.quoteImageSettings),
+  };
+  return content;
+};
+
+export const jicQuoteImageSettings = (content: CiaContentConfig, campus: JicCampus): CiaQuoteImageSettings =>
+  content.campusQuoteImageSettings?.[campus] ?? content.quoteImageSettings;
 
 export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const cloned = structuredClone(value);
-  if (!cloned.quoteImageSettings.localFeeNotes) cloned.quoteImageSettings.localFeeNotes = {};
-  if (!cloned.media) cloned.media = [];
+  const latest = createDefaultJicContentConfig();
+  // Published employee content may predate the September 2026 school files.
+  // Preserve editorial visibility/order, but always upgrade school-issued facts.
+  cloned.courses = latest.courses.map((fallback) => {
+    const existing = cloned.courses.find(item => item.id === fallback.id);
+    return existing ? {
+      ...fallback,
+      ...existing,
+      name: fallback.name,
+      englishName: fallback.englishName,
+      tuition: fallback.tuition,
+      tuition2027: fallback.tuition2027,
+      schedule: fallback.schedule,
+      suitable: fallback.suitable,
+      note: fallback.note,
+      minimumWeeks: fallback.minimumWeeks,
+      allowedWeeks: fallback.allowedWeeks,
+    } : fallback;
+  });
+  cloned.rooms = latest.rooms.map((fallback) => {
+    const existing = cloned.rooms.find(item => item.id === fallback.id);
+    return existing ? { ...fallback, ...existing, fee: fallback.fee, note: fallback.note, campus: fallback.campus } : fallback;
+  });
+  cloned.localFees = latest.localFees.map((fallback) => {
+    const existing = cloned.localFees.find(item => item.id === fallback.id);
+    return existing ? {
+      ...fallback,
+      ...existing,
+      name: fallback.name,
+      amount: fallback.amount,
+      rates: fallback.rates,
+      billingRule: fallback.billingRule,
+      periodWeeks: fallback.periodWeeks,
+      rounding: fallback.rounding,
+      includeInTotal: fallback.includeInTotal,
+      multiplyByStudents: fallback.multiplyByStudents,
+      note: fallback.note,
+    } : fallback;
+  });
+  cloned.quoteSettings.shortStayRatios = { ...latest.quoteSettings.shortStayRatios };
+  cloned.quoteSettings.courseTableNote = latest.quoteSettings.courseTableNote;
+  cloned.campusQuoteImageSettings ??= {};
+  for (const campus of ['challenger', 'premium'] as const) {
+    const base = latest.campusQuoteImageSettings![campus];
+    const saved = cloned.campusQuoteImageSettings[campus] ?? (campus === 'challenger' ? cloned.quoteImageSettings : undefined);
+    cloned.campusQuoteImageSettings[campus] = {
+      ...structuredClone(base),
+      ...(saved ?? {}),
+      paymentNotes: { ...base.paymentNotes, ...(saved?.paymentNotes ?? {}) },
+      promotionNotes: { ...base.promotionNotes, ...(saved?.promotionNotes ?? {}) },
+      localFeeNotes: { ...base.localFeeNotes, ...(saved?.localFeeNotes ?? {}) },
+      supplementalFeeNotes: { ...base.supplementalFeeNotes, ...(saved?.supplementalFeeNotes ?? {}) },
+      footerNotes: [...(saved?.footerNotes?.length ? saved.footerNotes : base.footerNotes)],
+    };
+    for (const fee of latest.localFees) delete cloned.campusQuoteImageSettings[campus].localFeeNotes[fee.id];
+  }
+  cloned.quoteImageSettings = cloned.campusQuoteImageSettings['challenger'];
+  if (!cloned.media?.length) cloned.media = structuredClone(JIC_DEFAULT_MEDIA);
   return cloned;
 };

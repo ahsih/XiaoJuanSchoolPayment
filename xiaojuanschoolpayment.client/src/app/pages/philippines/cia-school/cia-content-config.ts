@@ -247,7 +247,7 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'MONOL-SPARTA' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES' | 'MINT';
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];

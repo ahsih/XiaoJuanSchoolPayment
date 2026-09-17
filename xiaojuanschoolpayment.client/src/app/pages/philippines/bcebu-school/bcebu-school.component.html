@@ -29,7 +29,7 @@
               <figcaption>B'Cebu语言学校校区实景</figcaption>
             </figure>
             <aside class="hero-price-card">
-              <span>{{ selectedWeeks }}周当前选择参考</span>
+              <span>{{ quoteMode === 'single' ? selectedWeeks + '周' : quoteScope }}当前选择参考</span>
               <strong>{{ quoteUsdText }}</strong>
               <p>{{ selectedCoursesText }} + {{ selectedRoomsText }}，已计入适用优惠</p>
               <ul>
@@ -223,7 +223,7 @@
 
       <aside class="side-panel" aria-label="B'Cebu页面快捷导航">
         <div class="current-card">
-          <span>当前选择</span><strong>{{ selectedWeeks }}周</strong><p>{{ selectedCoursesText }}<br />{{ selectedRoomsText }}</p>
+          <span>当前选择</span><strong>{{ quoteMode === 'single' ? selectedWeeks + '周' : quoteScope }}</strong><p>{{ selectedCoursesText }}<br />{{ selectedRoomsText }}</p>
           <div class="side-price">{{ quoteUsdText }}</div><small>{{ quoteCnyText }}</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
         </div>

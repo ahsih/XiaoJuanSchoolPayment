@@ -1052,7 +1052,6 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   get payableRegistrationFee(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentRegistration(student), 0); }
   studentQuoteUsd(student: SmeagStudentQuote): number { return Math.max(0, this.studentRegistration(student) + student.quotePlan.total('course') + student.quotePlan.total('room') - this.studentSidaDiscount(student) - this.studentLowSeasonWeeks(student) * this.lowSeasonDiscountPerWeek); }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + this.studentQuoteUsd(student), 0); }
-  get totalCourseWeeks(): number { return this.activeStudents.reduce((sum, student) => sum + student.quotePlan.courseWeeks, 0); }
   get localFeePeriodLabel(): string { return this.quoteMode === 'single' ? `${this.quotePlan.stayWeeks}周` : `${this.activeStudents.length}人`; }
 
   get quoteUsdText(): string {
@@ -1073,7 +1072,16 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
   }
 
-  get quoteHeading(): string { return `SMEAG Capital${this.totalCourseWeeks}周报价`; }
+  get quoteScope(): string {
+    if (this.quoteMode === 'single') return `${this.quotePlan.courseWeeks}周`;
+    const courseWeeks = [...new Set(this.activeStudents.map(student => student.quotePlan.courseWeeks))];
+    return courseWeeks.length === 1
+      ? `${this.activeStudents.length}人·每人${courseWeeks[0]}周`
+      : `${this.activeStudents.length}人·不同周数`;
+  }
+  get quoteHeading(): string {
+    return `SMEAG Capital${this.quoteMode === 'group' ? ' ' : ''}${this.quoteScope}报价`;
+  }
   get quoteError(): string {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
     const index = this.activeStudents.findIndex(student => !!student.quotePlan.error || !this.visaOptions.some(option => option.value === student.visaType));
@@ -1235,10 +1243,12 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.quotePlan.shortStayNotes(weeks => this.durationPriceMultiplier(weeks))))];
     const importantNotes = [...mismatchNotes, ...ageNotes, ...shortNotes, ...this.quoteImageSettings.footerNotes];
     const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotionRules, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'SMEAG Capital', this.totalCourseWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
+    const layoutWeeks = this.activeStudents[0]?.quotePlan.courseWeeks ?? 0;
+    const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes }, 'SMEAG Capital', layoutWeeks, this.selectedStartDate, this.quoteUsd, this.usdToCny);
     return {
       ...result,
       headingText: this.quoteHeading,
+      title: this.quoteScope,
       fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       paymentSectionTitle: this.quoteImageSettings.paymentSectionTitle,
       localFeeTitle: this.quoteImageSettings.localFeeSectionTitle,

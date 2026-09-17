@@ -13,6 +13,16 @@ import { cloneBCebuContentConfig, createDefaultBCebuContentConfig } from './bceb
 
 const calculator = () => new BCebuQuote(() => BCEBU_COURSES, () => BCEBU_ROOMS, () => 100, '2026-09-06');
 const duration = (quote: BCebuQuote, weeks: number) => { quote.plan.courses[0].weeks = weeks; quote.plan.rooms[0].weeks = weeks; };
+const pageComponent = () => {
+  TestBed.configureTestingModule({ providers: [
+    { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+    { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+    { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+    { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+    { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
+  ] });
+  return TestBed.runInInjectionContext(() => new BCebuSchoolComponent());
+};
 
 describe("B'Cebu confirmed 2026 pricing", () => {
   it('includes all eleven course and seven room prices and full schedules', () => {
@@ -190,14 +200,7 @@ describe("B'Cebu confirmed 2026 pricing", () => {
   });
 
   it('preserves confirmed catalog notes and renders the reporter details in the public quote image', async () => {
-    TestBed.configureTestingModule({ providers: [
-      { provide: SchoolService, useValue: { getSchools: () => of([]) } },
-      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
-      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
-      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
-      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
-    ] });
-    const component = TestBed.runInInjectionContext(() => new BCebuSchoolComponent());
+    const component = pageComponent();
     component['applyPricingData']([{ name: 'Speed ESL', week: 4, price: 950, description: '旧课表' } as any], [], []);
     expect(component.courseFees.length).toBe(11);
     expect(component.courseFees[0].tuition).toBe(950);
@@ -222,6 +225,60 @@ describe("B'Cebu confirmed 2026 pricing", () => {
     expect(text).toContain('完成活动毕业后预计退76.5美元');
     renderer.ngOnDestroy();
   }, 30000);
+
+  it('keeps single-person page and image titles synchronized', () => {
+    const component = pageComponent();
+    duration(component.students[0].calculator, 12);
+    const date = component.students[0].calculator.plan.startDate.replace(/-/g, '');
+
+    expect(component.quoteHeading).toBe("B'Cebu12周报价");
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('12周');
+    expect(component.quoteImageData.fileName).toBe(`B'Cebu12周报价-${date}.png`);
+  });
+
+  it('describes equal and mixed two-person weeks without using person-week totals', () => {
+    const component = pageComponent();
+    duration(component.students[0].calculator, 12);
+    const singleTotal = component.quoteTotal;
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    duration(component.students[1].calculator, 12);
+
+    expect(component.quoteHeading).toBe("B'Cebu 2人·每人12周报价");
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('2人·每人12周');
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+    expect(component.quoteTotal).toBe(singleTotal * 2);
+
+    duration(component.students[1].calculator, 8);
+    const mixedQuote = component.quoteImageData;
+    expect(component.quoteHeading).toBe("B'Cebu 2人·不同周数报价");
+    expect(mixedQuote.headingText).toBe(component.quoteHeading);
+    expect(mixedQuote.title).toBe('2人·不同周数');
+    expect(mixedQuote.fileName).toBe(`B'Cebu 2人·不同周数报价-${component.students[0].calculator.plan.startDate.replace(/-/g, '')}.png`);
+    expect(`${mixedQuote.headingText}${mixedQuote.title}`).not.toContain('20周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('12周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('8周');
+    expect(component.quoteTotal).toBe(component.activeStudents.reduce((sum, student) => sum + student.calculator.total, 0));
+  });
+
+  it('uses the actual three-person week pattern instead of a summed duration', () => {
+    const component = pageComponent();
+    component.setQuoteMode('group');
+    component.studentCount = 3;
+    component.activeStudents.forEach(student => duration(student.calculator, 8));
+
+    expect(component.quoteHeading).toBe("B'Cebu 3人·每人8周报价");
+    expect(component.quoteImageData.title).toBe('3人·每人8周');
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+
+    duration(component.students[2].calculator, 12);
+    expect(component.quoteHeading).toBe("B'Cebu 3人·不同周数报价");
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('3人·不同周数');
+    expect(component.quoteImageData.fileName).toBe(`B'Cebu 3人·不同周数报价-${component.students[0].calculator.plan.startDate.replace(/-/g, '')}.png`);
+  });
 
   it('shares all webpage/image notes and adds both optional renminbi estimates', () => {
     const quote = calculator(); quote.pickup = 'weekday'; quote.reporter = true;

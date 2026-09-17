@@ -23,6 +23,12 @@ describe('EV accommodation management fees', () => {
     component = TestBed.runInInjectionContext(() => new EvSchoolDetailComponent());
   });
 
+  function setStudentWeeks(index: number, weeks: number): void {
+    const plan = component.students[index].calculator.plan;
+    plan.courses[0].weeks = weeks;
+    plan.rooms[0].weeks = weeks;
+  }
+
   it('puts the monetary discount in the amount column and actual conversion rates below totals', async () => {
     component.addSelection('course'); component.addSelection('room');
     component.usdToCny = 6.719075;
@@ -73,6 +79,57 @@ describe('EV accommodation management fees', () => {
     expect(component.includedLocalFees.find(item => item.item === 'SSP特殊学习许可证')?.total).toBe(9000);
     expect(component.quoteImageData.paymentItems.find(item => item.label === '思达折扣')?.amount).toBe('− 300 美元');
     expect(component.quoteImageData.paymentItems.find(item => item.label.startsWith('课程费'))?.note).toContain('员工修改后的课程图片说明');
+  });
+
+  it('keeps single-person page and image titles synchronized', () => {
+    component.selectedWeeks = 12;
+    const date = component.selectedStartDate.replace(/-/g, '');
+
+    expect(component.quoteHeading).toBe('EV主校区12周报价');
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('12周');
+    expect(component.quoteImageData.fileName).toBe(`EV主校区12周报价-${date}.png`);
+  });
+
+  it('describes equal and mixed two-person weeks without using person-week totals', () => {
+    component.selectedWeeks = 12;
+    const singleTotal = component.quoteUsd;
+    component.setQuoteMode('group');
+    component.studentCount = 2;
+    setStudentWeeks(1, 12);
+
+    expect(component.quoteHeading).toBe('EV主校区 2人·每人12周报价');
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('2人·每人12周');
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+    expect(component.quoteUsd).toBe(singleTotal * 2);
+
+    setStudentWeeks(1, 8);
+    const mixedQuote = component.quoteImageData;
+    expect(component.quoteHeading).toBe('EV主校区 2人·不同周数报价');
+    expect(mixedQuote.headingText).toBe(component.quoteHeading);
+    expect(mixedQuote.title).toBe('2人·不同周数');
+    expect(mixedQuote.fileName).toBe(`EV主校区 2人·不同周数报价-${component.selectedStartDate.replace(/-/g, '')}.png`);
+    expect(`${mixedQuote.headingText}${mixedQuote.title}`).not.toContain('20周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('12周');
+    expect(JSON.stringify(mixedQuote.paymentItems)).toContain('8周');
+    expect(component.quoteUsd).toBe(component.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0));
+  });
+
+  it('uses the actual three-person week pattern instead of a summed duration', () => {
+    component.setQuoteMode('group');
+    component.studentCount = 3;
+    component.activeStudents.forEach((_, index) => setStudentWeeks(index, 8));
+
+    expect(component.quoteHeading).toBe('EV主校区 3人·每人8周报价');
+    expect(component.quoteImageData.title).toBe('3人·每人8周');
+    expect(component.quoteImageData.headingText).not.toContain('24周报价');
+
+    setStudentWeeks(2, 12);
+    expect(component.quoteHeading).toBe('EV主校区 3人·不同周数报价');
+    expect(component.quoteImageData.headingText).toBe(component.quoteHeading);
+    expect(component.quoteImageData.title).toBe('3人·不同周数');
+    expect(component.quoteImageData.fileName).toBe(`EV主校区 3人·不同周数报价-${component.selectedStartDate.replace(/-/g, '')}.png`);
   });
 
   it('uses the high-resolution brand master and the requested deposit wording', async () => {
@@ -446,6 +503,6 @@ describe('EV accommodation management fees', () => {
     expect(component.excludedLocalFees[0].total).toBe(1200);
     expect(component.localFees.filter(row => row.item.endsWith('ARP外国人登记')).reduce((sum, row) => sum + row.total, 0)).toBe(300);
     expect(component.localFees.filter(row => row.item.startsWith('学生2') && ['SSP特殊学习许可证', 'SSP E-CARD', 'ACR-I Card 外国人身份证', '签证续签'].some(name => row.item.endsWith(name))).every(row => row.total === 0)).toBeTrue();
-    expect(component.quoteImageData.headingText).toBe('EV主校区8周报价');
+    expect(component.quoteImageData.headingText).toBe('EV主校区 2人·每人4周报价');
   });
 });
