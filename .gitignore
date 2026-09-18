@@ -42,3 +42,4 @@ xiaojuan-sql.sql
 # Local source downloads, media processing, and temporary review files.
 /tmp/
 *.mp4
+/cos.env
