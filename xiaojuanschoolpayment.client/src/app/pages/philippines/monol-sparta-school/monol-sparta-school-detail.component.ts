@@ -633,13 +633,11 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
   get selectedWeeks() { return this.quotePlan.courseWeeks; }
   set selectedWeeks(value: number) {
-    this.quotePlan.courses[0].weeks = value;
-    this.quotePlan.rooms[0].weeks = value;
+    this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value);
   }
   get selectedStartDate() { return this.quotePlan.startDate; }
   set selectedStartDate(value: string) {
-    this.quotePlan.courses[0].startDate = value;
-    this.quotePlan.rooms[0].startDate = value;
+    this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value);
   }
   get applySnsPromotion() { return this.students[0].applySnsPromotion; }
   set applySnsPromotion(value: boolean) { this.students[0].applySnsPromotion = value; }

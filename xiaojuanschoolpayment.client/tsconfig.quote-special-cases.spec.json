@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": [
+    "src/app/pages/philippines/iu-school/*.spec.ts",
+    "src/app/pages/philippines/jic-school/*.spec.ts",
+    "src/app/pages/philippines/glc-school/*.spec.ts",
+    "src/app/pages/philippines/unified-school-content-config.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

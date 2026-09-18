@@ -46,9 +46,18 @@ export class EvStudentCalculator {
         : this.rooms().map(room => ({ id: room.id, name: room.name, details: room.note })),
       (kind, row) => (kind === 'course'
         ? this.courses().find(course => course.id === row.optionId)?.tuition ?? 0
-        : this.rooms().find(room => room.id === row.optionId)?.fee ?? 0) * evPriceMultiplier(row.weeks, this.shortStayRatios()));
+        : this.rooms().find(room => room.id === row.optionId)?.fee ?? 0) * this.priceMultiplier(row.weeks),
+      24, true);
   }
 
+  get usesFourWeekAverage() {
+    // A change of course or room does not turn part of a four-week quote into a short stay.
+    // Keep the duration local to this student, without adding course and room weeks or date gaps.
+    return this.plan.courseWeeks >= 4;
+  }
+  priceMultiplier(weeks: number) {
+    return this.usesFourWeekAverage ? weeks / 4 : evPriceMultiplier(weeks, this.shortStayRatios());
+  }
   get longTermVisa() { return !['tourist30', 'tourist59'].includes(this.visaType); }
   get initialVisaDays() { return this.visaType === 'tourist30' ? 30 : 59; }
   get tuition() { return this.plan.total('course'); }

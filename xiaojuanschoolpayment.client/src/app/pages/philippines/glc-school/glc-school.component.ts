@@ -179,7 +179,11 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       const owner = student.sharedCourseOwner ? active[student.sharedCourseOwner - 1] : undefined;
       const valid = !!owner && student.sharedCourseOwner! <= index && owner.sharedCourseOwner === null && owner.calculator.family;
       if (!valid) student.sharedCourseOwner = null;
-      student.calculator.plan.courses = valid ? owner!.calculator.plan.courses : student.ownCourses;
+      const courses = valid ? owner!.calculator.plan.courses : student.ownCourses;
+      if (student.calculator.plan.courses !== courses) {
+        student.calculator.plan.courses = courses;
+        student.calculator.plan.alignWithSharedCourse();
+      }
       student.calculator.returningStudents = student.calculator.returningStudents ? 1 : 0;
       student.calculator.peopleOverride = 1;
     });
@@ -188,6 +192,12 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private createStudent(): GlcStudentQuote {
     const calculator = new GlcQuoteCalculator(() => this.quoteCourses, () => this.roomOptions, () => this.registrationFee, () => this.contentConfig);
     calculator.peopleOverride = 1;
+    calculator.plan.scheduleChanged = () => {
+      for (const student of this.students) {
+        const other = student.calculator.plan;
+        if (other !== calculator.plan && other.courses === calculator.plan.courses) other.alignWithSharedCourse();
+      }
+    };
     const ownCourses = calculator.plan.courses;
     return { calculator, ageGroup: 'adult', sharedCourseOwner: null, ownCourses };
   }

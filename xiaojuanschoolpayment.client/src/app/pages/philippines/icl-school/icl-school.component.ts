@@ -317,9 +317,9 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
   get selectedRoomId(): string { return this.quoteCalculator.plan.rooms[0].optionId; }
   set selectedRoomId(value: string) { this.quoteCalculator.plan.rooms[0].optionId = value; }
   get selectedWeeks(): number { return this.quoteCalculator.plan.courseWeeks; }
-  set selectedWeeks(value: number) { this.quoteCalculator.plan.courses[0].weeks = value; this.quoteCalculator.plan.rooms[0].weeks = value; }
+  set selectedWeeks(value: number) { this.quoteCalculator.plan.updateWeeks('course', this.quoteCalculator.plan.courses[0].id, value); }
   get selectedStartDate(): string { return this.quoteCalculator.plan.startDate; }
-  set selectedStartDate(value: string) { this.quoteCalculator.plan.courses[0].startDate = value; this.quoteCalculator.plan.rooms[0].startDate = value; }
+  set selectedStartDate(value: string) { this.quoteCalculator.plan.updateStartDate('course', this.quoteCalculator.plan.courses[0].id, value); }
   ensureValidStudyLength(): void {
     const fixedWeeks = this.selectedCourse.fixedWeeks;
     if (fixedWeeks) this.selectedWeeks = fixedWeeks;

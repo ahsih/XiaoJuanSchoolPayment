@@ -895,8 +895,7 @@ export class CebuBlueOceanSchoolComponent
   }
 
   set selectedWeeks(value: number) {
-    this.quotePlan.courses[0].weeks = value;
-    this.quotePlan.rooms[0].weeks = value;
+    this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value);
   }
 
   get selectedStartDate(): string {
@@ -904,8 +903,7 @@ export class CebuBlueOceanSchoolComponent
   }
 
   set selectedStartDate(value: string) {
-    this.quotePlan.courses[0].startDate = value;
-    this.quotePlan.rooms[0].startDate = value;
+    this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value);
   }
 
   get selectedCourse(): BlueOceanCoursePrice {

@@ -144,13 +144,13 @@ describe('GLC weekly, promotion and family quotes', () => {
     q.plan.add('course'); q.plan.courses[1].optionId = 'general-ielts'; q.plan.courses[1].startDate = '2026-12-06';
     expect(q.visaCount).toBe(2);
     expect(q.localFees.filter(fee => fee.item.startsWith('教材费')).map(fee => fee.total)).toEqual([3000, 5000]);
-    expect(q.plan.warning).toContain('日期不一致');
+    expect(q.plan.error).toContain('日期须连续');
   });
 
-  it('blocks main-building rooms overlapping a Sparta course, but permits nonoverlapping periods', () => {
+  it('blocks incompatible Sparta rooms and unmatched accommodation dates', () => {
     const q = create(); q.plan.courses[0].optionId = 'ultra-sparta-esl'; q.plan.rooms[0].optionId = 'main-double';
     expect(q.error).toContain('副楼');
-    q.plan.rooms[0].startDate = '2026-10-04'; expect(q.error).toBe('');
+    q.plan.rooms[0].startDate = '2026-10-04'; expect(q.error).toContain('相同日期');
     q.plan.rooms[0].startDate = '2026-09-06'; q.plan.rooms[0].optionId = 'annex-single'; expect(q.error).toBe('');
   });
 
@@ -173,6 +173,17 @@ describe('GLC weekly, promotion and family quotes', () => {
     dates(q, '2026-09-06', 24);
     expect(q.plan.roomWeeks).toBe(48); expect(q.error).toBe(''); expect(q.plan.canAdd('room')).toBeFalse();
     expect(q.localFees.find(fee => fee.item === '签证续签')!.total).toBe(8 * 4670);
+  });
+
+  it('synchronizes a shared family course with each occupant without adding their room weeks together', () => {
+    const q = create(); q.plan.courses[0].optionId = 'family-package-2'; q.plan.add('room');
+    q.plan.updateWeeks('room', q.plan.rooms[1].id, 8);
+    expect(q.plan.courseWeeks).toBe(8);
+    expect(q.plan.rooms.map(row => row.weeks)).toEqual([8, 8]);
+    q.plan.updateStartDate('room', q.plan.rooms[1].id, '2026-10-04');
+    expect(q.plan.courses[0].startDate).toBe('2026-10-04');
+    expect(q.plan.rooms.every(row => row.startDate === '2026-10-04')).toBeTrue();
+    expect(q.error).toBe('');
   });
 
   it('blocks same-person overlapping rooms and retains unique row IDs when switching family mode', () => {

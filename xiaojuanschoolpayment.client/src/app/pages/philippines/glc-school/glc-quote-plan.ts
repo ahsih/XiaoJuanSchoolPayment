@@ -3,8 +3,20 @@ import { SchoolQuotePlan, QuotePlanKind } from '../../../components/school-quote
 /** GLC family packages share tuition; each person's room periods remain independently billable. */
 export class GlcQuotePlan extends SchoolQuotePlan {
   travellers = () => 1;
+  scheduleChanged?: () => void;
+
+  protected override synchronizeSchedule(kind: QuotePlanKind, id?: number, startDate?: string): void {
+    super.synchronizeSchedule(kind, id, startDate);
+    this.scheduleChanged?.();
+  }
+  alignWithSharedCourse(): void { super.synchronizeSchedule('course'); }
 
   roomsFor(person: number) { return this.travellers() === 1 ? this.rooms : this.rooms.filter(row => (row.occupant || 1) === person); }
+  protected override rowGroups(kind: QuotePlanKind) {
+    return kind === 'room' && this.travellers() > 1
+      ? Array.from({ length: this.travellers() }, (_, index) => [...this.roomsFor(index + 1)])
+      : super.rowGroups(kind);
+  }
 
   private personPlan(person: number) {
     const plan = new SchoolQuotePlan(this.courses[0]?.optionId ?? '', this.rooms[0]?.optionId ?? '', this.startDate, this.allowedWeeks, this.options, this.price, this.maxWeeks);
@@ -47,6 +59,7 @@ export class GlcQuotePlan extends SchoolQuotePlan {
       weeks: Math.min(4, remaining), occupant: person,
       startDate: latest ? new Date(this.date(latest)! + 86400000).toISOString().slice(0, 10) : this.courses[0].startDate,
     });
+    this.synchronizeSchedule('room', this.rooms.at(-1)!.id);
   }
 
   override paymentItems() {

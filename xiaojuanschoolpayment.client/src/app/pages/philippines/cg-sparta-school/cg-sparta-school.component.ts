@@ -213,7 +213,6 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   set roomSelections(value:QuoteSelection[]){this.quotePlan.rooms=value;}
   private nextSelectionId = 3;
   readonly combinedPlanNote = '注册费只计一次；每行按自己的周数和日期估算。连续课程合并初筛优惠，有间隔则分段判断。签证按最早开始至最晚结束的停留时间（含间隔）预估，管理费与水电按住宿周数预估；换课、换房及额外教材或差价以学校确认为准。';
-  readonly durationPriceNote = '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。换课、换房和非标准周期的实际收费以学校确认为准。';
   get longPlanNote() { return this.longPlanNoteFor(this.students[0]); }
 
   longPlanNoteFor(student: CgSpartaStudentQuote) {
@@ -721,8 +720,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get selectedStartDate(): string { return [...this.courseSelections].sort((a, b) => a.startDate.localeCompare(b.startDate))[0].startDate; }
   // Legacy single-plan callers; the page edits each row through setRowStartDate instead.
   set selectedStartDate(value: string) {
-    this.courseSelections = this.courseSelections.map((row, index) => index === 0 ? { ...row, startDate: value } : row);
-    this.roomSelections = this.roomSelections.map((row, index) => index === 0 ? { ...row, startDate: value } : row);
+    this.quotePlan.updateStartDate('course', this.courseSelections[0].id, value);
   }
 
   private validDate(value: string): boolean {
@@ -760,30 +758,15 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   private selections(kind: QuoteListKind): QuoteSelection[] { return kind === 'course' ? this.courseSelections : this.roomSelections; }
   canAddSelection(kind: QuoteListKind): boolean { return this.selections(kind).reduce((sum, row) => sum + row.weeks, 0) < this.maxQuoteWeeks; }
 
-  addSelection(kind: QuoteListKind): void {
-    if (!this.canAddSelection(kind)) return;
-    const rows = this.selections(kind);
-    const weeks = Math.min(4, this.maxQuoteWeeks - rows.reduce((sum, row) => sum + row.weeks, 0));
-    const last = [...rows].sort((a, b) => this.dateAt(a.startDate, a.weeks * 7).localeCompare(this.dateAt(b.startDate, b.weeks * 7))).at(-1)!;
-    const next = [...rows, { ...last, id: this.nextSelectionId++, weeks, startDate: this.dateAt(last.startDate, last.weeks * 7) }];
-    if (kind === 'course') this.courseSelections = next; else this.roomSelections = next;
-  }
+  addSelection(kind: QuoteListKind): void { this.quotePlan.add(kind); }
 
-  removeSelection(kind: QuoteListKind, id: number): void {
-    const rows = this.selections(kind);
-    if (rows.length <= 1) return;
-    if (kind === 'course') this.courseSelections = rows.filter(row => row.id !== id);
-    else this.roomSelections = rows.filter(row => row.id !== id);
-    this.rowDateCache.delete(id);
-    this.dateErrors.delete(id);
-  }
+  removeSelection(kind: QuoteListKind, id: number): void { this.quotePlan.remove(kind, id); this.dateErrors.delete(id); }
 
   updateSelection(kind: QuoteListKind, id: number, changes: Partial<Pick<QuoteSelection, 'weeks' | 'optionId'>>): void {
-    const next = this.selections(kind).map(row => row.id === id ? { ...row, ...changes } : row);
-    const options = kind === 'course' ? this.courseOptions : this.roomOptions;
-    if (next.reduce((sum, row) => sum + row.weeks, 0) > this.maxQuoteWeeks ||
-      next.some(row => !this.weekOptions.includes(row.weeks) || !options.some(option => option.id === row.optionId))) return;
-    if (kind === 'course') this.courseSelections = next; else this.roomSelections = next;
+    const row = this.quotePlan.rows(kind).find(item => item.id === id);
+    if (!row) return;
+    if (changes.optionId !== undefined && this.quotePlan.options(kind).some(item => item.id === changes.optionId)) row.optionId = changes.optionId;
+    if (changes.weeks !== undefined) this.quotePlan.updateWeeks(kind, id, changes.weeks);
   }
 
   selectionWeekOptions(kind: QuoteListKind, row: QuoteSelection): WeekOption[] {
@@ -812,8 +795,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       return;
     }
     const startDate = `${date!.getFullYear()}-${String(date!.getMonth() + 1).padStart(2, '0')}-${String(date!.getDate()).padStart(2, '0')}`;
-    const next = this.selections(kind).map(row => row.id === id ? { ...row, startDate } : row);
-    if (kind === 'course') this.courseSelections = next; else this.roomSelections = next;
+    this.quotePlan.updateStartDate(kind, id, startDate);
     this.dateErrors.delete(id);
   }
 
@@ -830,7 +812,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       return { ...row, index: index + 1, name: course?.name ?? room!.name, englishName: course?.name.split('（')[1]?.replace('）', '') ?? '', lessons: course?.lessons ?? '',
         lessonMain: lessonParts.slice(0, 2).join(' · '), lessonExtra: lessonParts.slice(2).join(' · '),
         startDateText, endDate, dateRange: `${startDateText}–${endDate}`, warning,
-        amount: (course?.tuitionUsd ?? room!.feeUsd) * this.durationMultiplier(row.weeks) };
+        amount: this.quotePlan.price(kind, row) };
     });
   }
   get courseQuoteRows() { return this.quoteRows('course'); }
@@ -1196,14 +1178,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.exchangeRateLive?this.exchangeRateDate:undefined}};
   }
 
-  get applicablePriceNote(): string {
-    const rows = [...this.courseSelections, ...this.roomSelections];
-    const shortWeeks = [...new Set(rows.map(row => row.weeks).filter(weeks => weeks < 4))].sort((a, b) => a - b);
-    const short = shortWeeks.map(weeks => `${weeks}周按4周价的${this.durationMultiplier(weeks) * 100}%`).join('，');
-    const prorated = rows.some(row => row.weeks > 4 && row.weeks % 4 !== 0) ? '非4周整期的费用按周折算' : '';
-    const note = [short, prorated].filter(Boolean).join('；');
-    return note ? `${note}，均为预估。` : '';
-  }
+  get applicablePriceNote(): string { return ''; }
 
   formatUsd(value: number): string {
     const rounded = Math.round((value + Number.EPSILON) * 100) / 100;

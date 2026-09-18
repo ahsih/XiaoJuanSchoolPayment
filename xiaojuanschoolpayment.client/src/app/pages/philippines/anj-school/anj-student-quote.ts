@@ -75,6 +75,7 @@ export class AnjStudentQuote {
       ? this.prices.courses.map((course) => ({ id: course.id, name: course.name, details: `${course.type}｜${course.lessons}` }))
       : this.prices.rooms.map((room) => ({ id: room.id, name: room.name, details: room.note })),
     (kind, row) => kind === 'course' ? this.coursePrice(row) : this.roomPrice(row),
+    24, true, false,
   );
 
   get quoteError(): string {

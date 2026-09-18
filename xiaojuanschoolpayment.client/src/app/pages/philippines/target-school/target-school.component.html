@@ -315,8 +315,8 @@
                 <div class="target-package-fields">
                   <label class="target-course-field"><span class="target-field-label"><mat-icon>menu_book</mat-icon>课程名称与安排</span><select [(ngModel)]="row.courseId"><option *ngFor="let course of courses" [value]="course.id">{{ course.name }}｜{{ course.arrangement }}</option></select></label>
                   <label><span class="target-field-label"><mat-icon>bed</mat-icon>房型</span><select [(ngModel)]="row.roomId"><option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option></select></label>
-                  <label><span class="target-field-label"><mat-icon>date_range</mat-icon>周数</span><select [(ngModel)]="row.weeks"><option *ngFor="let week of student.weekOptions" [ngValue]="week">{{ week }}周</option></select></label>
-                  <label><span class="target-field-label"><mat-icon>flight_land</mat-icon>周日入学／入住</span><input type="date" [(ngModel)]="row.startDate" /></label>
+                  <label><span class="target-field-label"><mat-icon>date_range</mat-icon>周数</span><select [ngModel]="row.weeks" (ngModelChange)="student.updateWeeks(row, $event)"><option *ngFor="let week of student.weekOptions" [ngValue]="week">{{ week }}周</option></select></label>
+                  <label><span class="target-field-label"><mat-icon>flight_land</mat-icon>周日入学／入住</span><input #packageStart type="date" min="2020-01-05" step="7" [disabled]="row !== student.packages[0]" [ngModel]="row.startDate" (ngModelChange)="student.updateStartDate($event, packageStart)" /></label>
                 </div>
               </article>
               <button type="button" class="target-add-package" (click)="student.addPackage()" [disabled]="!student.canAddPackage()">

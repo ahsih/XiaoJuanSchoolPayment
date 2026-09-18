@@ -56,7 +56,7 @@ export const createDefaultCgSpartaContentConfig = (): CiaContentConfig => ({
     ],
     localFeeIntro: '证件、签证、教材、接机和按周押金已按学校最新明细更新；仅水费、综合管理费和基础电费于2027年1月4日起切换新标准。',
     courseTableTitle: 'CG斯巴达校区 2026课程费 / 4周',
-    courseTableNote: '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。',
+    courseTableNote: '',
     groupClassNote: '雅思保证班、雅思密集和商务英语的入学门槛与最短周期请按课程确认。',
     roomTableTitle: 'CG斯巴达校区 2026住宿费 / 4周',
     roomTableNote: '校内房型与校外M&J Pension分开计价，热门档期请先确认空房。',
@@ -93,6 +93,7 @@ export const createDefaultCgSpartaContentConfig = (): CiaContentConfig => ({
 export const cloneCgSpartaContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const defaults = createDefaultCgSpartaContentConfig();
   const clone = structuredClone(value);
+  if (clone.quoteSettings.courseTableNote === '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。') clone.quoteSettings.courseTableNote = '';
   const legacyFeeIntros = new Set([
     '学杂费均为预估金额，仅供准备比索现金参考，具体以学校及相关部门到校实收为准。',
     '学杂费均为预估金额，仅供准备比索现金参考；系统按入学日期自动切换2027年1月4日起生效的新标准。',

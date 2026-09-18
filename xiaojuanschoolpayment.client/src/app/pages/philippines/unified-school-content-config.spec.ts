@@ -1,4 +1,6 @@
 import { cloneCellaContentConfig, createDefaultCellaContentConfig } from './cella-quote/cella-content-config';
+import { cloneCgSpartaContentConfig, createDefaultCgSpartaContentConfig } from './cg-sparta-school/cg-sparta-content-config';
+import { cloneJicContentConfig, createDefaultJicContentConfig } from './jic-school/jic-content-config';
 import { cloneFellaContentConfig, createDefaultFellaContentConfig, fellaQuoteImageSettings } from './fella-school/fella-content-config';
 import {
   cloneBtesContentConfig,
@@ -12,6 +14,19 @@ import {
 } from './remaining-content-config';
 
 describe('new unified employee school content configs', () => {
+  it('removes the old per-row short-stay explanation from published CG Sparta content', () => {
+    const config = createDefaultCgSpartaContentConfig();
+    config.quoteSettings.courseTableNote = '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。';
+    expect(cloneCgSpartaContentConfig(config).quoteSettings.courseTableNote).toBe('');
+  });
+  it('removes only the legacy JIC image formula and preserves independent campus copy', () => {
+    const config = createDefaultJicContentConfig();
+    config.campusQuoteImageSettings!['challenger'].footerNotes = ['1／2／3周按4周价的40%／65%／85%；周日入住、周六退房。', '付款需提前确认。'];
+    config.campusQuoteImageSettings!['premium'].footerNotes = [];
+    const migrated = cloneJicContentConfig(config);
+    expect(migrated.campusQuoteImageSettings!['challenger'].footerNotes).toEqual(['付款需提前确认。']);
+    expect(migrated.campusQuoteImageSettings!['premium'].footerNotes).toEqual([]);
+  });
   it('keeps CELLA campuses in independent versioned documents', () => {
     const uni = createDefaultCellaContentConfig('uni');
     const premium = createDefaultCellaContentConfig('premium');

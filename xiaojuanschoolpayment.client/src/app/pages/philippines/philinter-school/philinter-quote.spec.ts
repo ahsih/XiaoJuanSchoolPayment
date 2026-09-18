@@ -136,7 +136,7 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.quoteImageData.title).toBe('3人·不同周数');
     expect(c.quoteImageData.fileName).toBe(`PHILINTER 3人·不同周数报价-${c.quotePlan.startDate.replace(/-/g, '')}.png`);
   });
-  it('keeps accommodation weeks and dates synchronized with each course period', () => {
+  it('synchronizes the complete stay while allowing different course and room segment counts', () => {
     const editor = new SchoolQuotePlanComponent();
     editor.plan = c.quotePlan;
     editor.lockRoomScheduleToCourses = true;
@@ -145,9 +145,9 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.quotePlan.rooms[0].weeks).toBe(8);
     expect(c.quotePlan.rooms[0].startDate).toBe('2026-11-01');
     editor.add('course');
-    expect(c.quotePlan.rooms.length).toBe(c.quotePlan.courses.length);
-    expect(c.quotePlan.rooms[1].weeks).toBe(c.quotePlan.courses[1].weeks);
-    expect(c.quotePlan.rooms[1].startDate).toBe(c.quotePlan.courses[1].startDate);
+    expect(c.quotePlan.rooms.length).toBe(1);
+    expect(c.quotePlan.rooms[0].weeks).toBe(12);
+    expect(c.quotePlan.end(c.quotePlan.rooms[0])).toBe(c.quotePlan.end(c.quotePlan.courses[1]));
   });
   it('blocks under-age, adult-course and separate-room Junior quotes', () => {
     c.selectedAgeGroup = 'under12'; expect(c.quoteError).toContain('12岁');
@@ -268,7 +268,8 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.quoteImageData.paymentItems.some(row => row.label === '暑期附加费')).toBeFalse();
   });
   it('keeps every image row, dates, local fee note and optional renminbi amount', () => {
-    for (let i = 0; i < 3; i++) { c.quotePlan.add('course'); c.quotePlan.add('room'); }
+    for (let i = 0; i < 3; i++) c.quotePlan.add('course');
+    c.quotePlan.rooms = c.quotePlan.courses.map((row, index) => ({ ...row, id: index + 20, optionId: c.quotePlan.rooms[0].optionId }));
     const q = c.quoteImageData;
     expect(q.headingText).toBe('PHILINTER16周报价');
     expect(q.fullFeeDetails).toBeTrue();

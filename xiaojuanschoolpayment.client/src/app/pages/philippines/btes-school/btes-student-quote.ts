@@ -70,6 +70,7 @@ export class BtesStudentQuote {
           }))
         : this.rooms.map((room) => ({ id: room.id, name: room.name, details: room.note })),
       (kind, row) => kind === 'course' ? this.coursePrice(row) : this.roomPrice(row),
+    24, true, false,
     );
   }
 
@@ -91,10 +92,6 @@ export class BtesStudentQuote {
     if (!['none', 'weekend', 'weekday'].includes(this.pickupType)) return '请选择有效的接机安排。';
     if (this.age < 8 && !this.guardianAccompanied) return '5至7岁学生须由家长或监护人同行。';
 
-    if (!this.hasPairedPeriods) {
-      return 'BTES课程与住宿（或走读）须逐段使用相同周数和日期，请补齐对应安排。';
-    }
-
     for (const row of this.quotePlan.courses) {
       const course = this.course(row.optionId);
       if (!course) return '请选择有效的BTES课程。';
@@ -104,8 +101,9 @@ export class BtesStudentQuote {
       if (course.ageMax !== undefined && this.age > course.ageMax) return `${course.name}仅适用于${course.ageMin}-${course.ageMax}岁。`;
 
       const room = this.pairedRoom(row);
-      if (course.id === 'junior-5-9' && room?.id === 'single') return 'Junior (5-9Y)官方价格表不提供校内单人房组合。';
-      if (course.id === 'parents' && room?.id === 'single') return 'Parents / Guardian官方价格表不提供校内单人房组合。';
+      const hasSingle = this.quotePlan.rooms.some(item => item.optionId === 'single' && this.overlap(row, item) > 0);
+      if (course.id === 'junior-5-9' && hasSingle) return 'Junior (5-9Y)官方价格表不提供校内单人房组合。';
+      if (course.id === 'parents' && hasSingle) return 'Parents / Guardian官方价格表不提供校内单人房组合。';
       if (course.allInOne) {
         if (this.quotePlan.courses.length !== 1 || this.quotePlan.rooms.length !== 1) return 'ALL IN ONE套餐不能与其他课程或住宿段混用。';
         if (row.weeks !== 4 || room?.id !== 'quad') return 'ALL IN ONE套餐固定4周并须选择四人房。';
@@ -336,25 +334,25 @@ export class BtesStudentQuote {
     return roomRow ? this.room(roomRow.optionId) : undefined;
   }
 
-  private get hasPairedPeriods(): boolean {
-    if (this.quotePlan.courses.length !== this.quotePlan.rooms.length) return false;
-    const coursePeriods = this.quotePlan.courses.map((row) => `${row.startDate}|${row.weeks}`).sort();
-    const roomPeriods = this.quotePlan.rooms.map((row) => `${row.startDate}|${row.weeks}`).sort();
-    return coursePeriods.every((period, index) => period === roomPeriods[index]);
+  private overlap(a: QuotePlanRow, b: QuotePlanRow): number {
+    const start = Math.max(this.quotePlan.date(a.startDate) ?? Infinity, this.quotePlan.date(b.startDate) ?? Infinity);
+    const end = Math.min(this.quotePlan.date(this.quotePlan.end(a)) ?? -Infinity, this.quotePlan.date(this.quotePlan.end(b)) ?? -Infinity);
+    return Math.max(0, (end - start + 86400000) / (7 * 86400000));
   }
 
-  private durationMultiplier(weeks: number): number {
-    return BTES_SHORT_STAY_MULTIPLIERS[weeks] ?? weeks / 4;
+  private durationPrice(base: number, weeks: number): number {
+    const total = this.quotePlan.courseWeeks;
+    return total >= 4 ? rounded(base * weeks / 4)
+      : rounded(Math.round(base * (BTES_SHORT_STAY_MULTIPLIERS[total] ?? total / 4)) * weeks / total);
   }
 
   private coursePrice(row: QuotePlanRow): number {
     const course = this.course(row.optionId);
     if (!course) return 0;
     if (course.allInOne) return row.weeks === 4 ? 1000 : 0;
-    const room = this.pairedRoom(row);
-    if (room?.walkIn) return rounded(course.walkInFee1w * row.weeks);
-    const value = course.fee4w * this.durationMultiplier(row.weeks);
-    return row.weeks < 4 ? Math.round(value) : rounded(value);
+    const walkInWeeks = this.quotePlan.rooms.filter(room => this.room(room.optionId)?.walkIn)
+      .reduce((sum, room) => sum + this.overlap(row, room), 0);
+    return rounded(course.walkInFee1w * walkInWeeks + this.durationPrice(course.fee4w, row.weeks - walkInWeeks));
   }
 
   private roomPrice(row: QuotePlanRow): number {
@@ -362,7 +360,6 @@ export class BtesStudentQuote {
     if (!room || room.walkIn) return 0;
     const courseRow = this.quotePlan.courses.find((course) => course.startDate === row.startDate && course.weeks === row.weeks);
     if (courseRow && this.course(courseRow.optionId)?.allInOne) return 0;
-    const value = room.fee4w * this.durationMultiplier(row.weeks);
-    return row.weeks < 4 ? Math.round(value) : rounded(value);
+    return this.durationPrice(room.fee4w, row.weeks);
   }
 }

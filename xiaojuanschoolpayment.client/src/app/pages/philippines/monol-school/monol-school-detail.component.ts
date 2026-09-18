@@ -536,13 +536,11 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
   get selectedWeeks() { return this.quotePlan.courseWeeks; }
   set selectedWeeks(value: number) {
-    this.quotePlan.courses[0].weeks = value;
-    this.quotePlan.rooms[0].weeks = value;
+    this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value);
   }
   get selectedStartDate() { return this.quotePlan.startDate; }
   set selectedStartDate(value: string) {
-    this.quotePlan.courses[0].startDate = value;
-    this.quotePlan.rooms[0].startDate = value;
+    this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value);
   }
   get selectedVisaInitialDays(): 30 | 59 { return this.students[0].visaType === 'tourist30' ? 30 : 59; }
   set selectedVisaInitialDays(value: 30 | 59) { this.students[0].visaType = value === 30 ? 'tourist30' : 'tourist59'; }

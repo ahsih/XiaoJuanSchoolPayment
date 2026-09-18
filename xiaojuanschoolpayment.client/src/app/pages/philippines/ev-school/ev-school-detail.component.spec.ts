@@ -29,8 +29,18 @@ describe('EV accommodation management fees', () => {
     plan.rooms[0].weeks = weeks;
   }
 
+  function appendPeriodPair(weeks = 4): void {
+    const plan = component.quotePlan;
+    let id = Math.max(...[...plan.courses, ...plan.rooms].map(row => row.id)) + 1;
+    for (const kind of ['course', 'room'] as const) {
+      const rows = plan.rows(kind), last = rows[rows.length - 1];
+      const startDate = new Date(plan.date(plan.end(last))! + 86400000).toISOString().slice(0, 10);
+      rows.push({ ...last, id: id++, weeks, startDate });
+    }
+  }
+
   it('puts the monetary discount in the amount column and actual conversion rates below totals', async () => {
-    component.addSelection('course'); component.addSelection('room');
+    appendPeriodPair();
     component.usdToCny = 6.719075;
     component.phpPerCny = 9.3037;
     component.exchangeRateDate = '2026-09-03'; component.exchangeRateLive = true;
@@ -224,23 +234,163 @@ describe('EV accommodation management fees', () => {
     }
   }, 30000);
 
-  it('adds independent consecutive course and accommodation rows and totals each selection', () => {
+  it('prices consecutive course and accommodation rows using the four-week average', () => {
     const firstCourseAmount = component.courseQuoteRows[0].amount;
     const firstRoomAmount = component.roomQuoteRows[0].amount;
-    component.addSelection('course');
-    component.addSelection('room');
+    appendPeriodPair();
     expect(component.courseSelections[1].startDate).toBe('2026-10-04');
     expect(component.roomSelections[1].startDate).toBe('2026-10-04');
     component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-intensive-esl', weeks: 2 });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single', weeks: 2 });
     expect(component.totalWeeks).toBe(6);
     expect(component.roomTotalWeeks).toBe(6);
-    expect(component.tuitionForSelectedWeeks).toBe(firstCourseAmount + component.courseFees.find(course => course.id === 'sparta-intensive-esl')!.tuition * .65);
-    expect(component.roomFeeForSelectedWeeks).toBe(firstRoomAmount + component.roomFees.find(room => room.id === 'off-campus-single')!.fee * .65);
+    expect(component.tuitionForSelectedWeeks).toBe(firstCourseAmount + component.courseFees.find(course => course.id === 'sparta-intensive-esl')!.tuition * .5);
+    expect(component.roomFeeForSelectedWeeks).toBe(firstRoomAmount + component.roomFees.find(room => room.id === 'off-campus-single')!.fee * .5);
     expect(component.quoteImageData.paymentItems.filter(item => item.label.startsWith('课程费')).length).toBe(2);
     expect(component.quoteImageData.paymentItems.filter(item => item.label.startsWith('住宿费')).length).toBe(2);
     expect(component.quoteImageData.paymentItems.filter(item => item.label === '注册费').length).toBe(1);
     expect(component.canExportQuote).toBeTrue();
+  });
+
+  it('prorates the four-week quote with one week in a triple and three weeks in a quad on the page and image', async () => {
+    component.selectedStartDate = '2026-11-08';
+    component.updateSelection('room', component.roomSelections[0].id, { optionId: 'triple', weeks: 1 });
+    component.addSelection('room');
+    component.updateSelection('room', component.roomSelections[1].id, { optionId: 'quad-bunk', weeks: 3 });
+
+    expect(component.totalWeeks).toBe(4);
+    expect(component.roomTotalWeeks).toBe(4);
+    expect(component.roomQuoteRows.map(row => row.amount)).toEqual([237.5, 675]);
+    expect(component.quotePlan.rooms.map(row => component.quotePlan.price('room', row))).toEqual([237.5, 675]);
+    expect(component.accommodationTotal).toBe(912.5);
+    expect(component.tuitionTotal).toBe(980);
+    expect(component.discountTotal).toBeCloseTo(94.625, 6);
+    expect(component.quoteUsd).toBeCloseTo(1897.875, 6);
+    expect(component.localFeesTotal).toBe(20000);
+    expect(component.canExportQuote).toBeTrue();
+
+    const quote = component.quoteImageData;
+    expect(quote.headingText).toBe('EV主校区4周报价');
+    expect(quote.paymentItems.filter(row => row.icon === '宿').map(row => row.amount)).toEqual(['237.5 美元', '675 美元']);
+    expect(quote.totalUsd).toBe('1,897.88 美元');
+    expect(quote.importantNotes?.join('')).not.toMatch(/40%|85%/);
+
+    const renderer = new QuoteImageDownloadButtonComponent();
+    renderer.quote = quote;
+    const draw = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
+    const blob = await renderer['createQuoteImageBlob'](1);
+    const text = draw.calls.allArgs().map(args => args[0]).join('').replace(/\s/g, '');
+    expect(text).toContain('237.5美元');
+    expect(text).toContain('675美元');
+    expect(text).toContain('1,897.88美元');
+    expect(text).not.toMatch(/40%|85%/);
+    expect(blob.type).toBe('image/png');
+  }, 30000);
+
+  it('uses each course four-week rate when four weeks are split across three courses', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    editor.updateWeeks('course', 0, 1);
+    editor.add('course');
+    editor.updateWeeks('course', 1, 1);
+    component.courseSelections[1].optionId = 'sparta-intensive-esl';
+    editor.add('course');
+    editor.updateWeeks('course', 2, 2);
+    component.courseSelections[2].optionId = 'sparta-power-speaking-6';
+
+    expect(component.roomSelections.length).toBe(1);
+    expect(component.roomTotalWeeks).toBe(4);
+    expect(component.quotePlan.mismatch).toBeFalse();
+    expect(component.courseQuoteRows.map(row => row.amount)).toEqual([245, 257.5, 615]);
+    expect(component.tuitionTotal).toBe(1117.5);
+    expect(component.tuitionForSelectedWeeks).toBe(component.tuitionTotal);
+    expect(component.quoteImageData.paymentItems.filter(row => row.icon === '课').map(row => row.amount))
+      .toEqual(['245 美元', '257.5 美元', '615 美元']);
+    expect(component.quoteRuleNotes.join('')).not.toMatch(/40%|65%|85%/);
+    expect(component.canExportQuote).toBeTrue();
+  });
+
+  it('keeps genuine one-to-three-week quotes at their configured short-stay prices', () => {
+    for (const [weeks, ratio] of [[1, .4], [2, .65], [3, .85]]) {
+      component.selectedWeeks = weeks;
+      expect(component.tuitionTotal).toBe(980 * ratio);
+      expect(component.accommodationTotal).toBe(900 * ratio);
+      expect(component.quoteRuleNotes).toEqual([]);
+    }
+  });
+
+  it('recalculates both fee types when the student crosses the four-week threshold', () => {
+    component.selectedWeeks = 2;
+    component.addSelection('course');
+    component.updateSelection('course', component.courseSelections[1].id, { weeks: 2 });
+    expect(component.tuitionTotal).toBe(980);
+    expect(component.accommodationTotal).toBe(900);
+
+    component.removeSelection('course', component.courseSelections[1].id);
+    expect(component.tuitionTotal).toBe(637);
+    expect(component.accommodationTotal).toBe(585);
+
+    component.updateSelection('room', component.roomSelections[0].id, { weeks: 4 });
+    expect(component.tuitionTotal).toBe(980);
+    expect(component.accommodationTotal).toBe(900);
+    expect(component.quoteRuleNotes.join('')).not.toContain('65%');
+  });
+
+  it('does not treat gaps in a short quote as paid weeks toward four-week pricing', () => {
+    component.selectedWeeks = 1;
+    appendPeriodPair(1);
+    component.courseSelections[1].startDate = '2026-09-27';
+    component.roomSelections[1].startDate = '2026-09-27';
+    expect(component.stayWeeks).toBe(4);
+    expect(component.totalWeeks).toBe(2);
+    expect(component.roomTotalWeeks).toBe(2);
+    expect(component.tuitionTotal).toBe(637);
+    expect(component.accommodationTotal).toBe(585);
+    expect(component.quoteRuleNotes).toEqual([]);
+  });
+
+  it('uses published four-week prices for split stays while retaining edited genuine short-stay ratios', () => {
+    const edited = createDefaultEvContentConfig();
+    edited.courses.find(item => item.id === 'semi-sparta-esl')!.tuition = 2000;
+    edited.rooms.find(item => item.id === 'quad-bunk')!.fee = 1200;
+    edited.quoteSettings.shortStayRatios['1'] = .5;
+    component['applyContentConfig'](edited);
+
+    component.selectedWeeks = 1;
+    expect(component.tuitionTotal).toBe(1000);
+    expect(component.accommodationTotal).toBe(600);
+    appendPeriodPair();
+    component.updateSelection('course', component.courseSelections[1].id, { weeks: 3 });
+    component.updateSelection('room', component.roomSelections[1].id, { weeks: 3 });
+    expect(component.courseQuoteRows.map(row => row.amount)).toEqual([500, 1500]);
+    expect(component.roomQuoteRows.map(row => row.amount)).toEqual([300, 900]);
+    expect(component.tuitionTotal).toBe(2000);
+    expect(component.accommodationTotal).toBe(1200);
+    expect(component.quoteRuleNotes.join('')).not.toContain('50%');
+  });
+
+  it('does not combine different students or inactive students to qualify for four-week prices', () => {
+    component.setQuoteMode('group');
+    setStudentWeeks(0, 2);
+    setStudentWeeks(1, 2);
+    expect(component.tuitionTotal).toBe(1274);
+    expect(component.accommodationTotal).toBe(1170);
+
+    setStudentWeeks(1, 4);
+    const second = component.students[1].calculator;
+    second.plan.rooms = [
+      { id: 2, optionId: 'triple', weeks: 1, startDate: '2026-09-06' },
+      { id: 3, optionId: 'quad-bunk', weeks: 3, startDate: '2026-09-13' },
+    ];
+    expect(component.calculator.accommodation).toBe(585);
+    expect(second.accommodation).toBe(912.5);
+    expect(component.quoteImageData.paymentItems.filter(row => row.icon === '宿').map(row => row.amount))
+      .toEqual(['585 美元', '237.5 美元', '675 美元']);
+
+    component.setQuoteMode('single');
+    expect(component.accommodationTotal).toBe(585);
+    expect(component.quoteRuleNotes).toEqual([]);
+    expect(component.quoteRuleNotes.join('')).not.toMatch(/40%|85%/);
   });
 
   it('charges both management rows for mixed campus and off-campus stays', () => {
@@ -254,8 +404,7 @@ describe('EV accommodation management fees', () => {
   });
 
   it('renders every course and accommodation row with dates in a combined quote image', async () => {
-    component.addSelection('course');
-    component.addSelection('room');
+    appendPeriodPair();
     component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-intensive-esl', weeks: 2 });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single', weeks: 2 });
     const renderer = new QuoteImageDownloadButtonComponent();
@@ -278,12 +427,12 @@ describe('EV accommodation management fees', () => {
 
   it('uses the full stay span for visas and blocks overlapping rows', () => {
     component.addSelection('course');
-    component.updateSelection('course', component.courseSelections[1].id, { startDate: '2026-11-01' });
+    component.courseSelections[1].startDate = '2026-11-01';
     expect(component.totalWeeks).toBe(8);
     expect(component.stayWeeks).toBe(12);
     expect(component.visaExtensionCount).toBe(1);
-    expect(component.canExportQuote).toBeTrue();
-    component.updateSelection('course', component.courseSelections[1].id, { startDate: '2026-09-20' });
+    expect(component.canExportQuote).toBeFalse();
+    component.courseSelections[1].startDate = '2026-09-20';
     expect(component.hasOverlappingRows).toBeTrue();
     expect(component.canExportQuote).toBeFalse();
     expect(component.planError).toContain('日期有重叠');
@@ -293,13 +442,13 @@ describe('EV accommodation management fees', () => {
     component.updateSelection('course', component.courseSelections[0].id, { weeks: 3 });
     component.updateSelection('room', component.roomSelections[0].id, { weeks: 2 });
     const quote = component.quoteImageData;
-    expect(quote.title).toBe('3周');
-    expect(quote.headingText).toBe('EV主校区3周报价');
+    expect(quote.title).toBe('2周');
+    expect(quote.headingText).toBe('EV主校区2周报价');
     expect(quote.subtitle).toBe('');
     expect(quote.localFeeTitle).toBe('到校后学杂费明细');
-    expect(quote.fileName).toContain('EV主校区3周报价');
-    expect(quote.importantNotes?.join('')).toContain('2周按4周价的65%，3周按4周价的85%');
-    expect(quote.importantNotes?.join('')).toContain('课程与住宿日期不完全一致');
+    expect(quote.fileName).toContain('EV主校区2周报价');
+    expect(quote.importantNotes?.join('')).not.toMatch(/4周价的|均价|自动同步/);
+    expect(quote.importantNotes?.join('')).not.toContain('课程与住宿日期不完全一致');
     expect(quote.importantNotes?.join('')).toContain(component.paymentDeadlineNote);
     expect(quote.importantNotes?.join('')).not.toContain('旺季附加费');
     expect(quote.importantNotes?.join('')).not.toContain('未成年管理费');
@@ -335,7 +484,6 @@ describe('EV accommodation management fees', () => {
   it('syncs an EV course Sunday to the matching room and rejects non-Sunday dates', () => {
     const editor = new SchoolQuotePlanComponent();
     editor.plan = component.quotePlan;
-    editor.syncCourseDatesToRooms = true;
     const input = document.createElement('input');
 
     editor.updateStartDate('course', 0, '2027-07-04', input);
@@ -347,6 +495,101 @@ describe('EV accommodation management fees', () => {
     expect(component.courseSelections[0].startDate).toBe('2027-07-04');
     expect(component.roomSelections[0].startDate).toBe('2027-07-04');
     expect(input.value).toBe('2027-07-04');
+  });
+
+  it('syncs dates in both directions without forcing one course to have one room segment', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    const input = document.createElement('input');
+    editor.updateWeeks('room', 0, 1);
+    component.roomSelections[0].optionId = 'triple';
+    editor.add('room');
+    editor.updateWeeks('room', 1, 3);
+    component.roomSelections[1].optionId = 'quad-bunk';
+
+    expect(component.courseSelections.length).toBe(1);
+    expect(component.totalWeeks).toBe(4);
+    expect(component.roomSelections.map(row => row.weeks)).toEqual([1, 3]);
+    editor.updateStartDate('course', 0, '2026-11-08', input);
+    expect(component.roomSelections.map(row => row.startDate)).toEqual(['2026-11-08', '2026-11-15']);
+    expect(component.quotePlan.endDate).toBe('2026-12-05');
+    expect(component.quotePlan.mismatch).toBeFalse();
+
+    editor.updateStartDate('room', 0, '2026-11-15', input);
+    expect(component.courseSelections[0].startDate).toBe('2026-11-15');
+    expect(component.roomSelections[1].startDate).toBe('2026-11-22');
+    expect(component.quotePlan.endDate).toBe('2026-12-12');
+    expect(component.roomSelections.map(row => row.optionId)).toEqual(['triple', 'quad-bunk']);
+    expect(component.accommodationTotal).toBe(912.5);
+    expect(editor.isStartDateLocked('room', 0)).toBeFalse();
+    expect(editor.isStartDateLocked('room', 1)).toBeTrue();
+    editor.updateStartDate('room', 1, '2026-12-06', input);
+    expect(input.value).toBe('2026-11-22');
+    expect(component.quotePlan.mismatch).toBeFalse();
+  });
+
+  it('preserves earlier room choices when extending or shortening the synchronized course', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    editor.updateWeeks('room', 0, 1);
+    component.roomSelections[0].optionId = 'triple';
+    editor.add('room');
+    editor.updateWeeks('room', 1, 3);
+    component.roomSelections[1].optionId = 'quad-bunk';
+
+    editor.updateWeeks('course', 0, 6);
+    expect(component.roomSelections.map(row => row.weeks)).toEqual([1, 5]);
+    expect(component.roomSelections.map(row => row.optionId)).toEqual(['triple', 'quad-bunk']);
+    expect(component.quotePlan.mismatch).toBeFalse();
+    editor.updateWeeks('course', 0, 2);
+    expect(component.roomSelections.map(row => row.weeks)).toEqual([1, 1]);
+    editor.updateWeeks('course', 0, 1);
+    expect(component.roomSelections.length).toBe(1);
+    expect(component.roomSelections[0].optionId).toBe('triple');
+    expect(component.quotePlan.mismatch).toBeFalse();
+  });
+
+  it('reflows both lists after deleting a segment without moving the arrival date', () => {
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    editor.add('course');
+    editor.updateWeeks('course', 0, 2);
+    editor.add('room');
+    editor.updateWeeks('room', 0, 1);
+    component.courseSelections[1].optionId = 'sparta-intensive-esl';
+    component.roomSelections[1].optionId = 'triple';
+
+    editor.remove('course', 0);
+    expect(component.selectedStartDate).toBe('2026-09-06');
+    expect(component.courseSelections[0].optionId).toBe('sparta-intensive-esl');
+    expect(component.totalWeeks).toBe(component.roomTotalWeeks);
+    expect(component.quotePlan.mismatch).toBeFalse();
+    editor.remove('room', 0);
+    expect(component.roomSelections[0].optionId).toBe('triple');
+    expect(component.roomSelections[0].startDate).toBe('2026-09-06');
+    expect(component.totalWeeks).toBe(component.roomTotalWeeks);
+    expect(component.quotePlan.mismatch).toBeFalse();
+    expect(component.canExportQuote).toBeTrue();
+  });
+
+  it('limits synchronized lists to 24 weeks and only changes the edited student', () => {
+    component.setQuoteMode('group');
+    const second = component.students[1].calculator;
+    const originalSecond = JSON.stringify(second.plan);
+    const editor = new SchoolQuotePlanComponent();
+    editor.plan = component.quotePlan;
+    editor.updateWeeks('course', 0, 2);
+    editor.add('course');
+    expect(editor.weekOptions('course', 4).at(-1)).toBe(22);
+    editor.updateWeeks('course', 1, 23);
+    expect(component.totalWeeks).toBe(6);
+    editor.updateWeeks('course', 1, 22);
+    expect(component.totalWeeks).toBe(24);
+    expect(component.roomTotalWeeks).toBe(24);
+    expect(editor.canAdd('course')).toBeFalse();
+    expect(editor.canAdd('room')).toBeFalse();
+    expect(component.quotePlan.mismatch).toBeFalse();
+    expect(JSON.stringify(second.plan)).toBe(originalSecond);
   });
 
   it('groups the EV course selector into Sparta and Semi-Sparta sections', () => {
@@ -381,8 +624,7 @@ describe('EV accommodation management fees', () => {
     component.isMinorStudent = true;
     component.selectedWeeks = 2;
     for (let index = 0; index < 2; index++) {
-      component.addSelection('course');
-      component.addSelection('room');
+      appendPeriodPair();
     }
     component.updateSelection('room', component.roomSelections[2].id, { optionId: 'off-campus-single' });
     const renderer = new QuoteImageDownloadButtonComponent();
@@ -441,17 +683,19 @@ describe('EV accommodation management fees', () => {
     expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeFalse();
   });
 
-  it('requires Sunday starts and leaves other rows unchanged when editing or deleting', () => {
+  it('requires Sunday starts and keeps every segment consecutive when editing or deleting', () => {
     component.addSelection('course');
     const second = component.courseSelections[1];
     component.updateSelection('course', component.courseSelections[0].id, { startDate: '2026-09-13' });
-    expect(component.courseSelections[1].startDate).toBe(second.startDate);
+    expect(component.courseSelections[1].startDate).toBe('2026-10-11');
+    expect(component.roomSelections[0].startDate).toBe('2026-09-13');
     component.updateSelection('course', second.id, { startDate: '2026-10-05' });
-    expect(component.validSundayStart).toBeFalse();
-    expect(component.canExportQuote).toBeFalse();
+    expect(component.validSundayStart).toBeTrue();
+    expect(component.canExportQuote).toBeTrue();
     component.removeSelection('course', second.id);
     expect(component.courseSelections.length).toBe(1);
     expect(component.courseSelections[0].startDate).toBe('2026-09-13');
+    expect(component.roomTotalWeeks).toBe(4);
   });
 
   it('keeps the highest 24-week total inside the quote amount column', async () => {
@@ -473,8 +717,7 @@ describe('EV accommodation management fees', () => {
   }, 30000);
 
   it('uses the requested eight-week title without restating durations or calculations', async () => {
-    component.addSelection('course');
-    component.addSelection('room');
+    appendPeriodPair();
     component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-power-speaking-6' });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single' });
     const renderer = new QuoteImageDownloadButtonComponent();

@@ -293,7 +293,7 @@
               </div>
               <div class="student-options"><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.returningStudent" />老学员返校（免注册费）</label><label class="option-check">机场接机<select [(ngModel)]="student.calculator.pickup"><option value="none">不需要接机</option><option value="weekend">周六／周日06:00–24:00团体接机</option><option value="other">其他时间团体接机</option></select></label></div>
               <label class="option-check" *ngIf="student.calculator.isMinor"><input type="checkbox" [(ngModel)]="student.calculator.guardianSameRoom" />已确认与年满18岁的监护人同住一间房（不可分房）</label>
-              <app-school-quote-plan [plan]="student.calculator.plan" [lockRoomScheduleToCourses]="true"></app-school-quote-plan>
+              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
               <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.calculator.totalUsd) }} 美元</strong></div>
             </article>
             <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown"><div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)"><span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div></div>

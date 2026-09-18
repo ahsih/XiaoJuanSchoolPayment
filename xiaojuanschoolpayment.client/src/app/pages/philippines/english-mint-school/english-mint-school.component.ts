@@ -10,7 +10,8 @@ import { SchoolService } from '../../../../services/school.service';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
-import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
+import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoolQuoteImageLayout, SchoolQuotePlan } from '../../../components/school-quote-plan';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 import { CiaContentConfig } from '../cia-school/cia-content-config';
 import { connectUnifiedSchoolContent, notifyUnifiedPreviewLocated, notifyUnifiedPreviewReady, unifiedPreviewContent } from '../unified-school-content-bridge';
@@ -96,7 +97,7 @@ const MINT_COMPLETE_GALLERY: GalleryImage[] = [
 @Component({
   selector: 'app-english-mint-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent, SidaWhySectionComponent, QuoteImageDownloadButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, ExpandableImageComponent, SidaWhySectionComponent, QuoteImageDownloadButtonComponent, SchoolQuotePlanComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './english-mint-school.component.html',
   styleUrls: [
@@ -130,10 +131,20 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   selectedGalleryImageIndex = 0;
 
   quoteMode: MintQuoteMode = 'standard';
-  selectedCourseId = 'lite-esl';
-  selectedRoomId = 'deluxe-twin';
-  selectedWeeks: MintQuoteWeeks = 4;
-  startDate = '2026-09-20';
+  readonly quotePlan = new SchoolQuotePlan('lite-esl', 'deluxe-twin', '2026-09-20', MINT_WEEK_OPTIONS,
+    kind => kind === 'course'
+      ? this.courses.map(course => ({ id: course.id, name: course.name, details: course.schedule }))
+      : this.rooms.map(room => ({ id: room.id, name: room.name, details: room.note })),
+    (kind, row) => (kind === 'course' ? this.coursePrice(row.optionId, row.weeks) : this.roomPrice(row.optionId, row.weeks)) ?? 0);
+  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
+  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
+  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get selectedWeeks(): MintQuoteWeeks { return this.quotePlan.courseWeeks as MintQuoteWeeks; }
+  set selectedWeeks(value: MintQuoteWeeks) { this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value - this.quotePlan.courseWeeks + this.quotePlan.courses[0].weeks); }
+  private packageStart = '2026-09-20';
+  get startDate() { return this.quoteMode === 'standard' ? this.quotePlan.startDate : this.packageStart; }
+  set startDate(value: string) { if (this.quoteMode === 'standard') this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); else this.packageStart = value; }
   registrationDate = '2026-09-17';
   selectedBenefit: 'ssp' | 'ow' = 'ssp';
   familyCombination: FamilyCombination = 'one-one';
@@ -278,13 +289,13 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
     return this.quoteMode === 'standard'
       && this.registrationDate >= '2026-08-15' && this.registrationDate <= '2026-11-30'
       && this.startDate <= '2026-12-31' && this.startDate >= this.registrationDate
-      && (this.selectedRoomId === 'premium-twin' || this.selectedRoomId === 'deluxe-twin');
+      && this.quotePlan.rooms.every(row => row.optionId === 'premium-twin' || row.optionId === 'deluxe-twin');
   }
   get cashDiscount(): number { return this.lowSeasonEligible ? mintLowSeasonCashDiscount(this.selectedWeeks) : 0; }
   get benefitEligible(): boolean { return this.lowSeasonEligible && this.selectedWeeks >= 5; }
 
   get standardSubtotal(): number {
-    return MINT_REGISTRATION_FEE + (this.coursePrice(this.selectedCourseId, this.selectedWeeks) ?? 0) + (this.roomPrice(this.selectedRoomId, this.selectedWeeks) ?? 0);
+    return MINT_REGISTRATION_FEE + this.quotePlan.total('course') + this.quotePlan.total('room');
   }
   get familyBase(): number { return MINT_FAMILY_PRICES[this.familyCombination][this.selectedFamilyWeeks] ?? 0; }
   get familyUpgradeAmount(): number {
@@ -303,7 +314,11 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
     if (this.quoteMode === 'family') return `English MINT ${this.selectedFamilyWeeks}周家庭项目报价`;
     return `English MINT ${this.selectedWeeks}周报价`;
   }
+  get hasConfirmedLocalFees(): boolean { return MINT_WEEK_OPTIONS.includes(this.selectedWeeks); }
   get quoteError(): string {
+    if (this.quoteMode === 'standard' && this.quotePlan.error) return this.quotePlan.error;
+    if (this.quoteMode === 'standard' && !this.hasConfirmedLocalFees) return '当前周数的完整学杂费尚未确认，请联系顾问。';
+    if (this.quoteMode === 'family' && !this.familyWeeks.includes(this.selectedFamilyWeeks)) return '请选择已公布的家庭套餐周数。';
     if (!this.startDate || !isSunday(this.startDate)) return '入学及入住日期请选择周日。';
     if (this.quoteMode === 'standard' && this.registrationDate > this.startDate) return '报名注册日不能晚于入学日期。';
     if (this.quoteMode === 'family' && (this.startDate < '2026-12-01' || this.endDate > '2027-02-28')) return '家庭项目须完整安排在2026年12月1日至2027年2月28日项目期内。';
@@ -313,7 +328,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   }
 
   get localFeeRows() {
-    if (this.quoteMode !== 'standard') return [];
+    if (this.quoteMode !== 'standard' || !this.hasConfirmedLocalFees) return [];
     return MINT_LOCAL_FEES.map(row => {
       const configured = this.contentConfig.localFees.find(item => item.id === row.id);
       const amount = row.amounts[this.selectedWeeks as MintLocalFeeWeeks] ?? 0;
@@ -328,8 +343,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
     if (this.quoteMode === 'standard') {
       items = [
         { icon: '注', label: '注册费', amount: `${this.formatMoney(MINT_REGISTRATION_FEE)} 美元`, note: '一次性费用。' },
-        { icon: '课', label: '课程名称', amount: `${this.formatMoney(this.coursePrice(this.selectedCourseId, this.selectedWeeks) ?? 0)} 美元`, detailTitle: this.course?.name, detailSubtitle: `${this.selectedWeeks}周`, note: this.course?.schedule },
-        { icon: '宿', label: '住宿名称', amount: `${this.formatMoney(this.roomPrice(this.selectedRoomId, this.selectedWeeks) ?? 0)} 美元`, detailTitle: this.room?.name, detailSubtitle: `${this.selectedWeeks}周`, note: this.room?.note },
+        ...this.quotePlan.paymentItems().map(item => ({ ...item, label: item.label.replace('课程费', '课程名称').replace('住宿费', '住宿名称') })),
       ];
       if (this.cashDiscount) items.push({ icon: '惠', label: '2026下半年淡季现金优惠', amount: `−${this.formatMoney(this.cashDiscount)} 美元`, note: '双人房且报名、最迟入学日期符合，按当前周数档位扣减。', promotionKey: 'mint-low-season', accent: true });
       if (this.benefitEligible) items.push({ icon: '礼', label: this.selectedBenefit === 'ssp' ? '首次SSP权益' : 'OW潜水课程权益', amount: '报名时确认', note: this.selectedBenefit === 'ssp' ? '官方学杂费表仍按原额展示；符合资格后的减免以学校账单为准。' : '年龄、健康、保险、监护与合作潜店条件须确认；不可折现或转让。', promotionKey: 'mint-ssp-benefit' });

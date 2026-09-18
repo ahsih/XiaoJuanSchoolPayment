@@ -54,7 +54,7 @@ describe('IMS 2026 price catalog and quote rules', () => {
   it('rejects unpublished guarantee durations', () => {
     const quote = new ImsStudentQuote();
     quote.quotePlan.courses[0].optionId = 'toeic-guarantee';
-    quote.quotePlan.courses[0].weeks = 8;
+    quote.quotePlan.updateWeeks('course', quote.quotePlan.courses[0].id, 8);
     expect(quote.quoteError).toContain('没有公布8周价格');
   });
 

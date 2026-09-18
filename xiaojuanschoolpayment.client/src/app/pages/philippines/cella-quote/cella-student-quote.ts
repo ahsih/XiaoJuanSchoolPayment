@@ -9,6 +9,7 @@ import {
   CellaRoom,
   cellaDurationPrice,
 } from './cella-pricing';
+import { SchoolQuotePlan, QuotePlanRow } from '../../../components/school-quote-plan';
 
 const DAY_MS = 86_400_000;
 
@@ -37,10 +38,15 @@ export function cellaDefaultSunday(now = new Date()): string {
 /** One student's independent CELLA selection and all derived prices. */
 export class CellaStudentQuote {
   campus: CellaCampus;
-  courseId = '';
-  roomId = '';
-  weeks = 4;
-  startDate = cellaDefaultSunday();
+  readonly quotePlan: SchoolQuotePlan;
+  get courseId() { return this.quotePlan.courses[0].optionId; }
+  set courseId(value: string) { this.quotePlan.courses[0].optionId = value; }
+  get roomId() { return this.quotePlan.rooms[0].optionId; }
+  set roomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
+  get weeks() { return this.quotePlan.courseWeeks; }
+  set weeks(value: number) { this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value - this.weeks + this.quotePlan.courses[0].weeks); }
+  get startDate() { return this.quotePlan.courses[0].startDate; }
+  set startDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
   enrollmentStatus: CellaEnrollmentStatus = 'new';
   promotionMode: CellaPromotionMode = 'standard';
   initialVisaDays: 30 | 59 = 59;
@@ -48,6 +54,13 @@ export class CellaStudentQuote {
 
   constructor(readonly catalog: CellaQuoteCatalog, campus: CellaCampus) {
     this.campus = campus;
+    this.quotePlan = new SchoolQuotePlan('', '', cellaDefaultSunday(), Array.from({ length: 24 }, (_, i) => i + 1),
+      kind => kind === 'course'
+        ? this.courseOptions.map(course => ({ id: course.id, name: course.name, details: course.lessons }))
+        : this.roomOptions.map(room => ({ id: room.id, name: room.name, details: room.note })),
+      (kind, row) => cellaDurationPrice(kind === 'course'
+        ? this.courseOptions.find(course => course.id === row.optionId)?.tuition ?? 0
+        : this.roomOptions.find(room => room.id === row.optionId)?.fee ?? 0, row.weeks));
     this.resetCampusSelections();
   }
 
@@ -86,12 +99,12 @@ export class CellaStudentQuote {
 
   get coursePriceBeforePromotions(): number {
     if (this.isFamilyPackage) return this.familyPackagePrice;
-    return cellaDurationPrice(this.selectedCourse?.tuition ?? 0, this.actualWeeks);
+    return this.quotePlan.total('course');
   }
 
   get roomPriceBeforePromotions(): number {
     if (this.isFamilyPackage) return 0;
-    return cellaDurationPrice(this.selectedRoom?.fee ?? 0, this.actualWeeks);
+    return this.quotePlan.total('room');
   }
 
   get socialPromotionDiscount(): number {
@@ -102,17 +115,18 @@ export class CellaStudentQuote {
   }
 
   get lowSeasonBlocks(): number {
-    if (this.isFamilyPackage || this.isSocialPromotion || !this.selectedRoom?.lowSeasonEligible) return 0;
-    return this.countLowSeasonBlocks();
+    if (this.isFamilyPackage || this.isSocialPromotion) return 0;
+    return this.quotePlan.mergedRows('room').filter(row => this.roomOptions.find(room => room.id === row.optionId)?.lowSeasonEligible)
+      .reduce((sum, row) => sum + this.countLowSeasonBlocks(row), 0);
   }
 
-  private countLowSeasonBlocks(): number {
-    const start = this.dateValue(this.startDate);
+  private countLowSeasonBlocks(row?: QuotePlanRow): number {
+    const start = this.dateValue(row?.startDate ?? this.startDate);
     const campaignStart = this.dateValue(CELLA_LOW_SEASON_START);
     const campaignEnd = this.dateValue(CELLA_LOW_SEASON_END);
     if (start === null || campaignStart === null || campaignEnd === null) return 0;
     let eligibleWeeks = 0;
-    for (let week = 0; week < this.actualWeeks; week++) {
+    for (let week = 0; week < (row?.weeks ?? this.actualWeeks); week++) {
       const weekStart = start + week * 7 * DAY_MS;
       const weekEnd = weekStart + 6 * DAY_MS;
       if (weekStart >= campaignStart && weekEnd <= campaignEnd) eligibleWeeks++;
@@ -123,8 +137,11 @@ export class CellaStudentQuote {
   get lowSeasonDiscount(): number { return this.lowSeasonBlocks * 100; }
 
   get premiumSixPersonDiscount(): number {
-    if (this.isFamilyPackage || this.isSocialPromotion || !this.selectedRoom?.premiumSixPerson) return 0;
-    return this.lowSeasonBlocksForAnyRoom * (this.selectedRoom.fee - 499);
+    if (this.isFamilyPackage || this.isSocialPromotion) return 0;
+    return this.quotePlan.mergedRows('room').reduce((sum, row) => {
+      const room = this.roomOptions.find(item => item.id === row.optionId);
+      return sum + (room?.premiumSixPerson ? this.countLowSeasonBlocks(row) * (room.fee - 499) : 0);
+    }, 0);
   }
 
   get longStayDiscount(): number {
@@ -202,6 +219,10 @@ export class CellaStudentQuote {
   }
 
   get error(): string {
+    if (this.quotePlan.error) return this.quotePlan.error;
+    if (this.quotePlan.courses.some(row => this.courseOptions.find(course => course.id === row.optionId)?.familyPackage)
+      && (this.quotePlan.courses.length !== 1 || this.quotePlan.rooms.length !== 1)) return '家庭套餐须使用完整方案，请单独报价。';
+    if (this.isSocialPromotion && (this.quotePlan.courses.length !== 1 || this.quotePlan.rooms.length !== 1)) return '6+2／9+3换课换房方案须由顾问确认。';
     if (!Number.isInteger(this.actualWeeks) || this.actualWeeks < 1 || this.actualWeeks > 24) return '学习周数请输入1–24周的整数。';
     const start = this.dateValue(this.startDate);
     if (start === null || new Date(start).getUTCDay() !== 0) return '入学和入住日期请选择周日。';

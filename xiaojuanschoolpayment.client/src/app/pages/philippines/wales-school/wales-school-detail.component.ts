@@ -525,9 +525,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
         ...(student.promotionWarning ? [`${prefix}${student.promotionWarning}`] : []),
       ];
     });
-    if (this.activeStudents.some((student) => student.hasSixWeekPeriod)) {
-      notes.push('当前方案含6周课程或住宿，按对应4周价格的1.5倍估算。');
-    }
+
     notes.push('价格、优惠名额、房型空位、实际上课天数和当地费用以WALES正式账单为准。');
     return [...new Set(notes)];
   }

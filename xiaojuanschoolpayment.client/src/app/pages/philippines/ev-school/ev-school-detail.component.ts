@@ -16,7 +16,7 @@ import { QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, groupLocalFees } from '../../../components/school-group-quote';
-import { EvStudentCalculator, evPriceMultiplier } from './ev-quote';
+import { EvStudentCalculator } from './ev-quote';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
 import { cloneEvContentConfig, createDefaultEvContentConfig } from './ev-content-config';
@@ -164,7 +164,6 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   set courseSelections(value: QuoteSelection[]) { this.quotePlan.courses = value; }
   get roomSelections() { return this.quotePlan.rooms; }
   set roomSelections(value: QuoteSelection[]) { this.quotePlan.rooms = value; }
-  private nextSelectionId = 3;
   get isMinorStudent() { return this.calculator.isMinorStudent; }
   set isMinorStudent(value: boolean) { this.calculator.isMinorStudent = value; }
 
@@ -612,12 +611,10 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   get selectedWeeks(): number { return this.totalWeeks; }
   set selectedWeeks(value: number) {
     this.updateSelection('course', this.courseSelections[0].id, { weeks: value });
-    this.updateSelection('room', this.roomSelections[0].id, { weeks: value });
   }
   get selectedStartDate(): string { return this.courseSelections[0].startDate; }
   set selectedStartDate(value: string) {
-    this.courseSelections = this.courseSelections.map((row, index) => index === 0 ? { ...row, startDate: value } : row);
-    this.roomSelections = this.roomSelections.map((row, index) => index === 0 ? { ...row, startDate: value } : row);
+    this.quotePlan.updateStartDate('course', this.courseSelections[0].id, value);
   }
   get selectedCourse(): CourseFee { return this.courseFees.find((course) => course.id === this.selectedCourseId) ?? this.courseFees[0]; }
   get selectedRoom(): RoomFee { return this.roomFees.find((room) => room.id === this.selectedRoomId) ?? this.roomFees[this.roomFees.length - 1]; }
@@ -682,27 +679,20 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   }
   get canExportQuote(): boolean { return !this.planError; }
   private selections(kind: QuoteListKind): QuoteSelection[] { return kind === 'course' ? this.courseSelections : this.roomSelections; }
-  canAddSelection(kind: QuoteListKind): boolean { return this.selections(kind).reduce((sum, row) => sum + row.weeks, 0) < this.maxQuoteWeeks; }
+  canAddSelection(kind: QuoteListKind): boolean { return this.quotePlan.canAdd(kind); }
   addSelection(kind: QuoteListKind): void {
-    if (!this.canAddSelection(kind)) return;
-    const rows = this.selections(kind);
-    const weeks = Math.min(4, this.maxQuoteWeeks - rows.reduce((sum, row) => sum + row.weeks, 0));
-    const last = [...rows].sort((a, b) => this.dateAt(a.startDate, a.weeks * 7).localeCompare(this.dateAt(b.startDate, b.weeks * 7))).at(-1)!;
-    const next = [...rows, { ...last, id: this.nextSelectionId++, weeks, startDate: this.dateAt(last.startDate, last.weeks * 7) }];
-    if (kind === 'course') this.courseSelections = next; else this.roomSelections = next;
+    this.quotePlan.add(kind);
   }
   removeSelection(kind: QuoteListKind, id: number): void {
-    const rows = this.selections(kind);
-    if (rows.length <= 1) return;
-    if (kind === 'course') this.courseSelections = rows.filter(row => row.id !== id);
-    else this.roomSelections = rows.filter(row => row.id !== id);
+    this.quotePlan.remove(kind, id);
   }
   updateSelection(kind: QuoteListKind, id: number, changes: Partial<Pick<QuoteSelection, 'weeks' | 'optionId' | 'startDate'>>): void {
-    const next = this.selections(kind).map(row => row.id === id ? { ...row, ...changes } : row);
+    const row = this.selections(kind).find(item => item.id === id);
+    if (!row) return;
     const validOptions = kind === 'course' ? this.courseFees : this.roomFees;
-    if (next.reduce((sum, row) => sum + row.weeks, 0) > this.maxQuoteWeeks ||
-      next.some(row => !this.weekOptions.includes(row.weeks) || !validOptions.some(option => option.id === row.optionId))) return;
-    if (kind === 'course') this.courseSelections = next; else this.roomSelections = next;
+    if (changes.optionId !== undefined && validOptions.some(option => option.id === changes.optionId)) row.optionId = changes.optionId;
+    if (changes.weeks !== undefined) this.quotePlan.updateWeeks(kind, id, changes.weeks);
+    if (changes.startDate !== undefined) this.quotePlan.updateStartDate(kind, id, changes.startDate);
   }
   selectionWeekOptions(kind: QuoteListKind, row: QuoteSelection): number[] {
     const total = this.selections(kind).reduce((sum, item) => sum + item.weeks, 0);
@@ -717,7 +707,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       const endDate = this.dateAt(row.startDate, row.weeks * 7 - 1).replace(/-/g, '/') || '待确认';
       return { ...row, index: index + 1, name: course?.name ?? room!.name, details: course?.suitable ?? room!.note,
         startDateText, endDate, dateRange: `${startDateText}–${endDate}`,
-        amount: (course?.tuition ?? room!.fee) * this.durationPriceMultiplier(row.weeks) };
+        amount: this.quotePlan.price(kind, row) };
     });
   }
   get courseQuoteRows() { return this.quoteRows('course'); }
@@ -807,18 +797,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       { label: '未成年管理费', amount: `${this.formatUsd(this.minorTotal)} 美元`, note: minorNote },
     ];
   }
-  get quoteRuleNotes(): string[] {
-    const rows = this.activeStudents.flatMap(student => [...student.calculator.plan.courses, ...student.calculator.plan.rooms]);
-    const shortWeeks = [...new Set(rows.map(row => row.weeks).filter(weeks => weeks < 4))].sort((a, b) => a - b);
-    const shortNote = shortWeeks.map(weeks => `${weeks}周按4周价的${evPriceMultiplier(weeks, this.shortStayRatios) * 100}%`).join('，');
-    const proratedNote = rows.some(row => row.weeks > 4 && row.weeks % 4 !== 0) ? '非4周整期的费用按周折算' : '';
-    const priceNote = [shortNote, proratedNote].filter(Boolean).join('；');
-    const mismatches = this.activeStudents.flatMap((student, index) => student.calculator.plan.mismatch ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}课程与住宿日期不完全一致，未覆盖或额外住宿需另行确认。`] : []);
-    return [
-      ...(priceNote ? [`${priceNote}，均为预估。`] : []),
-      ...mismatches,
-    ];
-  }
+  get quoteRuleNotes(): string[] { return []; }
   get quoteImageData() {
     const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
     const includedFees = this.includedLocalFees;
@@ -900,7 +879,6 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 2 }); }
   formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
-  private durationPriceMultiplier(weeks: number): number { return evPriceMultiplier(weeks, this.shortStayRatios); }
   private parseLocalDate(value: string): Date | null { const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value); return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null; }
   private createCourseId(name: string): string {
     const normalizedName = name.toLowerCase();

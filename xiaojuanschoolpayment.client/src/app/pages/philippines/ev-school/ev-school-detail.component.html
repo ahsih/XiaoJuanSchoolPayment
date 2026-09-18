@@ -250,7 +250,7 @@
                   </div>
                 </section>
               </div>
-              <p class="pricing-note" data-cia-preview-kind="section" data-cia-preview-id="short-stay">以上单价均为4周费用；1周按{{ shortStayRatios['1'] * 100 }}%、2周按{{ shortStayRatios['2'] * 100 }}%、3周按{{ shortStayRatios['3'] * 100 }}%换算，4周以下价格会偏贵。4周以上按4周均价按比例累加。{{ discountText }}；注册费、未成年管理费及当地费用不打折。</p>
+              <p class="pricing-note" data-cia-preview-kind="section" data-cia-preview-id="short-stay">以上单价均为4周费用。{{ discountText }}；注册费、未成年管理费及当地费用不打折。</p>
               <div class="mobile-card-list mobile-course-fees" aria-label="EV 2026年4周课程费手机卡片">
                 <section class="mobile-course-fee-group">
                   <h3>斯巴达课程</h3>
@@ -384,7 +384,6 @@
             <div class="section-heading ev-quote-heading">
               <span>EV 费用快速报价</span>
               <h2>{{ quoteHeading }}</h2>
-              <p>课程与住宿可以分别添加多行；选择课程的周日开始日期后，会自动同步到对应住宿，结束日期自动计算至周六。</p>
             </div>
             <div class="quote-mode" role="group" aria-label="报价人数模式"><button type="button" [class.active]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button><button type="button" [class.active]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button><label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label></div>
             <p class="group-hint" *ngIf="quoteMode === 'group'">每位学生分别选择课程、住宿、日期、年龄、签证、返校状态和接机。</p>
@@ -407,7 +406,7 @@
                 </label>
               </div>
               <div class="student-options ev-student-toggles"><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.isMinorStudent" /><span>未成年学生<small>每4周自动加收{{ minorManagementFeePerPeriod }}美元</small></span></label><label class="option-check"><input type="checkbox" [(ngModel)]="student.calculator.returningStudent" /><span>老学员返校<small>自动免除一次性注册费</small></span></label></div>
-              <app-school-quote-plan [plan]="student.calculator.plan" [syncCourseDatesToRooms]="true"></app-school-quote-plan>
+              <app-school-quote-plan [plan]="student.calculator.plan"></app-school-quote-plan>
               <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(studentSubtotal(student)) }} 美元</strong></div>
             </article>
             <p *ngIf="planError" class="ev-plan-warning" role="alert">{{ planError }}</p>

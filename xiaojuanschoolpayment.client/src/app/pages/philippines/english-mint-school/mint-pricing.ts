@@ -84,12 +84,12 @@ export const mintLowSeasonCashDiscount = (weeks: number): number => weeks >= 20 
 
 export const mintEndDate = (startDate: string, weeks: number): string => {
   const date = new Date(`${startDate}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) return '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== startDate || !Number.isInteger(weeks) || weeks <= 0) return '';
   date.setUTCDate(date.getUTCDate() + weeks * 7 - 1);
   return date.toISOString().slice(0, 10);
 };
 
 export const isSunday = (value: string): boolean => {
   const date = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(date.getTime()) && date.getUTCDay() === 0;
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value && date.getUTCDay() === 0;
 };

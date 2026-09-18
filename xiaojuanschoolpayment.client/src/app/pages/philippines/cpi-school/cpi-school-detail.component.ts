@@ -149,9 +149,9 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
   set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
   get selectedWeeks() { return this.quotePlan.courseWeeks; }
-  set selectedWeeks(value: number) { this.quotePlan.courses[0].weeks = value; this.quotePlan.rooms[0].weeks = value; }
+  set selectedWeeks(value: number) { this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value); }
   get selectedStartDate() { return this.quotePlan.startDate; }
-  set selectedStartDate(value: string) { this.quotePlan.courses[0].startDate = value; this.quotePlan.rooms[0].startDate = value; }
+  set selectedStartDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
   get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
   set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
   quoteCalculated = false;

@@ -112,10 +112,10 @@ describe('IU and ICL 2026 quote rules', () => {
       quote.plan.courses[0].weeks = 8;
       quote.plan.rooms[0].weeks = 8;
       quote.plan.add('course');
-      quote.plan.add('room');
 
       expect(quote.plan.courses[1].startDate).toBe(expectedNextSunday);
-      expect(quote.plan.rooms[1].startDate).toBe(quote.plan.courses[1].startDate);
+      expect(quote.plan.rooms[0].weeks).toBe(12);
+      expect(quote.plan.mismatch).toBeFalse();
       expect(new Date(`${quote.plan.courses[1].startDate}T00:00:00Z`).getUTCDay()).toBe(0);
     }
   });
@@ -124,12 +124,34 @@ describe('IU and ICL 2026 quote rules', () => {
     const quote = new IuIclQuote('ICL', 'power-speaking-6', 'campus-double', '2026-10-04');
     quote.plan.rooms[0].startDate = '2026-10-11';
     expect(quote.lowSeasonDiscount).toBe(0);
-    expect(quote.warning).toContain('没有与同日期、同周数');
+    expect(quote.error).not.toBe('');
+    align(quote, 4, '2026-10-04');
     quote.plan.courses[0].optionId = 'ielts-guarantee-8';
     expect(quote.error).toContain('固定8周');
     align(quote, 8, '2026-10-04');
     expect(quote.error).toBe('');
     expect(quote.total).toBe(3100);
+  });
+
+  it('keeps an identical split package eligible and blocks an unconfirmed mixed-room package', () => {
+    const quote = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
+    const original = { ...quote.plan.rooms[0] };
+    quote.plan.rooms = [{ ...original, weeks: 1 }, { ...original, id: 99, weeks: 3, startDate: '2026-09-20' }];
+    expect(quote.error).toBe('');
+    expect(quote.total).toBe(1150);
+    quote.plan.rooms[1].optionId = 'campus-double';
+    expect(quote.error).toContain('顾问确认套餐价格');
+  });
+
+  it('applies a published campus short-stay ratio only to the under-four-week student', () => {
+    const config = createDefaultIuContentConfig();
+    config.quoteSettings.shortStayRatios['3'] = 0.83;
+    const quote = new IuIclQuote('IU', 'power-speaking-4', 'walk-in', '2026-09-13');
+    quote.applyContentConfig(config);
+    align(quote, 3, '2026-09-13');
+    expect(quote.regularCourseTotal).toBe(Math.round(850 * 0.83));
+    align(quote, 4, '2026-09-13');
+    expect(quote.regularCourseTotal).toBe(850);
   });
 
   it('matches every supplied local-fee checkpoint', () => {

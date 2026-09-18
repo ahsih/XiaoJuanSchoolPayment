@@ -177,7 +177,7 @@ export class IuIclQuote {
       (kind, row) => {
         const item = (kind === 'course' ? this.courses : this.rooms).find(option => option.id === row.optionId);
         const price = item ? ('tuition' in item ? item.tuition : item.fee) : 0;
-        return Math.round(price * multiplier(row.weeks));
+        return Math.round(price * (this.contentConfig?.quoteSettings.shortStayRatios[String(row.weeks)] ?? multiplier(row.weeks)));
       },
       24,
     );
@@ -244,14 +244,14 @@ export class IuIclQuote {
   get total(): number { return this.registrationFee + this.regularCourseTotal + this.regularRoomTotal - this.lowSeasonDiscount - this.registrationWaiver; }
   get selectedStartDate(): string { return this.plan.startDate; }
 
-  private get promoAdjustments(): Array<{ discount: number; course: IuIclCourse; room: IuIclRoom; weeks: number }> {
+  private get promoAdjustments(): Array<{ discount: number; course: IuIclCourse; room: IuIclRoom; weeks: number; startDate: string }> {
     if (this.lowSeasonRule?.enabled === false) return [];
     const promoStart = this.lowSeasonRule?.coverageStart || PROMO_START;
     const promoEnd = this.lowSeasonRule?.coverageEnd || PROMO_LAST_DEPARTURE;
     const minimumWeeks = Math.max(this.lowSeasonRule?.minimumCourseWeeks ?? 4, this.lowSeasonRule?.minimumAccommodationWeeks ?? 4);
-    const availableRooms = this.plan.rooms.map(row => ({ row, used: false }));
-    const adjustments: Array<{ discount: number; course: IuIclCourse; room: IuIclRoom; weeks: number }> = [];
-    for (const courseRow of this.plan.courses) {
+    const availableRooms = this.plan.mergedRows('room').map(row => ({ row, used: false }));
+    const adjustments: Array<{ discount: number; course: IuIclCourse; room: IuIclRoom; weeks: number; startDate: string }> = [];
+    for (const courseRow of this.plan.mergedRows('course')) {
       const selectedCourse = this.courses.find(courseItem => courseItem.id === courseRow.optionId);
       if (!selectedCourse?.promoCourse || courseRow.weeks < minimumWeeks) continue;
       const roomMatch = availableRooms.find(item => !item.used && item.row.startDate === courseRow.startDate && item.row.weeks === courseRow.weeks);
@@ -274,13 +274,25 @@ export class IuIclQuote {
       if (promoPrice === undefined) continue;
       roomMatch.used = true;
       const regular = Math.round(selectedCourse.tuition * multiplier(courseRow.weeks)) + Math.round(selectedRoom.fee * multiplier(courseRow.weeks));
-      adjustments.push({ discount: Math.max(0, regular - promoPrice), course: selectedCourse, room: selectedRoom, weeks: courseRow.weeks });
+      adjustments.push({ discount: Math.max(0, regular - promoPrice), course: selectedCourse, room: selectedRoom, weeks: courseRow.weeks, startDate: courseRow.startDate });
     }
     return adjustments;
   }
 
   get error(): string {
     if (this.plan.error) return this.plan.error;
+    const rule = this.lowSeasonRule;
+    const mixed = this.plan.courses.length > 1 || this.plan.rooms.length > 1;
+    if (mixed && rule?.enabled !== false) {
+      const rooms = new Set(this.plan.weekStarts(this.plan.rooms.filter(row => !!this.rooms.find(room => room.id === row.optionId)?.promoRoom)));
+      const from = this.plan.date(rule?.coverageStart || PROMO_START)!;
+      const to = this.plan.date(rule?.coverageEnd || PROMO_LAST_DEPARTURE)!;
+      const eligible = this.plan.weekStarts(this.plan.courses.filter(row => !!this.courses.find(course => course.id === row.optionId)?.promoCourse))
+        .filter(start => rooms.has(start) && start >= from && start + 6 * 86400000 <= to);
+      const priced = new Set(this.promoAdjustments.flatMap(item => this.plan.weekStarts([{ id: 0, optionId: item.course.id, weeks: item.weeks, startDate: item.startDate }])));
+      if (eligible.length >= Math.max(rule?.minimumCourseWeeks ?? 4, rule?.minimumAccommodationWeeks ?? 4)
+        && eligible.some(start => !priced.has(start))) return '淡季组合涉及换课或换房，请由顾问确认套餐价格。';
+    }
     for (const row of this.plan.courses) {
       const selected = this.courses.find(item => item.id === row.optionId);
       if (selected?.fixedWeeks && row.weeks !== selected.fixedWeeks) return `${selected.name}为固定${selected.fixedWeeks}周课程，请把该课程周期改为${selected.fixedWeeks}周。`;

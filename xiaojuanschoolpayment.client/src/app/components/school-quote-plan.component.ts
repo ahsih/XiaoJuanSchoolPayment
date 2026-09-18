@@ -19,40 +19,36 @@ export class SchoolQuotePlanComponent {
   readonly money = quoteMoney;
   trackRow(_: number, row: { id: number }) { return row.id; }
   details(kind: 'course' | 'room', id: string) { return this.plan.options(kind).find(option => option.id === id)?.details ?? ''; }
-  isRoomScheduleLocked(kind: QuotePlanKind) { return this.lockRoomScheduleToCourses && kind === 'room'; }
+  isRoomScheduleLocked(_kind: QuotePlanKind) { return false; }
+  isStartDateLocked(kind: QuotePlanKind, index: number) {
+    return this.plan.syncSchedules && !this.plan.isFirstRow(kind, this.plan.rows(kind)[index].id);
+  }
+  weekOptions(kind: QuotePlanKind, currentWeeks: number, id = this.plan.rows(kind)[0].id) {
+    const otherWeeks = this.plan.scheduleRows(kind, id).reduce((sum, row) => sum + row.weeks, 0) - currentWeeks;
+    return this.plan.segmentWeeks.filter(weeks => otherWeeks + weeks <= this.plan.maxWeeks);
+  }
   canAdd(kind: QuotePlanKind) {
-    if (this.isRoomScheduleLocked(kind)) return false;
-    return this.plan.canAdd(kind) && (!this.lockRoomScheduleToCourses || kind !== 'course' || this.plan.canAdd('room'));
+    return this.plan.canAdd(kind);
   }
   add(kind: QuotePlanKind): void {
     if (!this.canAdd(kind)) return;
-    const before = this.plan.rows(kind).length;
     this.plan.add(kind);
-    if (this.lockRoomScheduleToCourses && kind === 'course' && this.plan.courses.length > before) {
-      this.plan.add('room');
-      this.syncRoomSchedule(before);
-    }
   }
   remove(kind: QuotePlanKind, index: number): void {
     if (this.isRoomScheduleLocked(kind)) return;
     const row = this.plan.rows(kind)[index];
     if (!row) return;
     this.plan.remove(kind, row.id);
-    if (this.lockRoomScheduleToCourses && kind === 'course') {
-      const room = this.plan.rooms[index];
-      if (room) this.plan.remove('room', room.id);
-    }
   }
   updateWeeks(kind: QuotePlanKind, index: number, weeks: number): void {
     if (this.isRoomScheduleLocked(kind)) return;
     const row = this.plan.rows(kind)[index];
     if (!row) return;
-    row.weeks = weeks;
-    if (this.lockRoomScheduleToCourses && kind === 'course') this.syncRoomSchedule(index);
+    this.plan.updateWeeks(kind, row.id, weeks);
   }
   updateStartDate(kind: QuotePlanKind, index: number, value: string, input: HTMLInputElement): void {
     const row = this.plan.rows(kind)[index];
-    if (this.isRoomScheduleLocked(kind)) {
+    if (this.isStartDateLocked(kind, index)) {
       input.value = row?.startDate ?? '';
       return;
     }
@@ -61,19 +57,7 @@ export class SchoolQuotePlanComponent {
       input.value = row?.startDate ?? '';
       return;
     }
-    row.startDate = value;
-    if (this.lockRoomScheduleToCourses && kind === 'course') {
-      this.syncRoomSchedule(index);
-    } else if (this.syncCourseDatesToRooms) {
-      const matchingRow = this.plan.rows(kind === 'course' ? 'room' : 'course')[index];
-      if (matchingRow) matchingRow.startDate = value;
-    }
-  }
-  private syncRoomSchedule(index: number): void {
-    const course = this.plan.courses[index], room = this.plan.rooms[index];
-    if (!course || !room) return;
-    room.weeks = course.weeks;
-    room.startDate = course.startDate;
+    this.plan.updateStartDate(kind, row.id, value);
   }
   optionGroups(kind: QuotePlanKind): { label: string; options: QuotePlanOption[] }[] {
     const options = this.plan.options(kind);

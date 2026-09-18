@@ -119,34 +119,31 @@
         </ng-container>
 
         <section class="quote-panel" id="quote">
-          <div class="section-heading"><span>English MINT费用报价</span><h2>{{ quoteHeading }}</h2><p>网页与下载图片共用同一份计算结果；常规报价支持4、8、12、16、20、24周。</p></div>
+          <div class="section-heading"><span>English MINT费用报价</span><h2>{{ quoteHeading }}</h2><p>常规报价支持4、8、12、16、20、24周。</p></div>
           <div class="quote-form-card mint-quote-form">
             <div class="quote-mode" role="group" aria-label="报价类型"><button type="button" [class.active]="quoteMode === 'standard'" (click)="setQuoteMode('standard')">常规课程</button><button type="button" [class.active]="quoteMode === 'two-week-adult'" (click)="setQuoteMode('two-week-adult')">成人2周全包</button><button type="button" [class.active]="quoteMode === 'two-week-family'" (click)="setQuoteMode('two-week-family')">亲子2周全包</button><button type="button" [class.active]="quoteMode === 'family'" (click)="setQuoteMode('family')">家庭项目</button></div>
 
             <div class="mint-fields" *ngIf="quoteMode === 'standard'">
               <label>报名注册日<input type="date" [(ngModel)]="registrationDate" /></label>
-              <label>入学及入住（周日）<input type="date" [(ngModel)]="startDate" /></label>
-              <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of quoteWeeks" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-              <label>课程<select [(ngModel)]="selectedCourseId"><option *ngFor="let item of courses" [value]="item.id">{{ item.name }}</option></select></label>
-              <label>住宿<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of rooms" [value]="item.id">{{ item.name }}</option></select></label>
               <label *ngIf="benefitEligible">5周起权益（二选一）<select [(ngModel)]="selectedBenefit"><option value="ssp">首次SSP免费</option><option value="ow">OW潜水课程</option></select></label>
             </div>
-            <div class="mint-fields" *ngIf="quoteMode === 'two-week-adult' || quoteMode === 'two-week-family'"><label>入学及入住（周日）<input type="date" [(ngModel)]="startDate" /></label><div class="fixed-choice"><span>固定组合</span><strong>{{ quoteMode === 'two-week-adult' ? '成人1人＋Deluxe Twin' : '1位家长＋1位10岁以上孩子＋Deluxe Twin' }}</strong></div></div>
+            <div class="mint-fields" *ngIf="quoteMode === 'two-week-adult' || quoteMode === 'two-week-family'"><label>入学及入住（周日）<input type="date" min="2020-01-05" step="7" [(ngModel)]="startDate" /></label><div class="fixed-choice"><span>固定组合</span><strong>{{ quoteMode === 'two-week-adult' ? '成人1人＋Deluxe Twin' : '1位家长＋1位10岁以上孩子＋Deluxe Twin' }}</strong></div></div>
             <div class="mint-fields" *ngIf="quoteMode === 'family'">
-              <label>入学及入住（周日）<input type="date" [(ngModel)]="startDate" /></label>
+              <label>入学及入住（周日）<input type="date" min="2020-01-05" step="7" [(ngModel)]="startDate" /></label>
               <label>项目周数<select [(ngModel)]="selectedFamilyWeeks"><option *ngFor="let weeks of familyWeeks" [ngValue]="weeks">{{ weeks }}周</option></select></label>
               <label>家庭组合<select [(ngModel)]="familyCombination" (ngModelChange)="familyUpgrade = familyCombination === 'one-one' ? familyUpgrade : 'none'; nonStudyingGuardians = 0"><option value="one-one">1位家长＋1位孩子</option><option value="one-two">1位家长＋2位孩子</option><option value="two-two">2位家长＋2位孩子</option></select></label>
               <label *ngIf="familyCombination === 'one-one'">房型升级<select [(ngModel)]="familyUpgrade"><option value="none">不升级｜Deluxe Twin</option><option value="premium-twin">升级Premium Twin</option><option value="premium-single">升级Premium Single</option></select></label>
               <label>不参加课程的家长人数<input type="number" min="0" [max]="parentCount" step="1" [(ngModel)]="nonStudyingGuardians" /></label>
             </div>
 
+            <app-school-quote-plan *ngIf="quoteMode === 'standard'" [plan]="quotePlan"></app-school-quote-plan>
             <div class="date-summary" *ngIf="startDate"><span>学习与住宿日期</span><strong>{{ formatDate(startDate) }}–{{ formatDate(endDate) }}</strong><em>周日入住，周六离校</em></div>
             <div class="quote-breakdown"><div *ngFor="let item of paymentItems" [class.discount-line]="item.amount.startsWith('−')"><span>{{ item.label }}<small *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong></div></div>
             <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
             <div class="group-result"><span>最终应付学校金额</span><strong>{{ formatMoney(quoteUsd) }} 美元</strong><em>人民币预计金额：约 {{ formatMoney(quoteUsd * usdToCny) }} 元</em><small>{{ usingLiveExchangeRate ? '按' + formatDate(exchangeRateDate) + '参考汇率' : '按备用参考汇率' }} 1美元≈{{ usdToCny }}元人民币</small><small *ngIf="quoteCalculated">已按当前选择重新计算；正式报名仍须确认房型、名额与学校账单。</small></div>
             <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存完整报价图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>顾问确认</a></div>
 
-            <div class="quote-local-fees" *ngIf="quoteMode === 'standard'">
+            <div class="quote-local-fees" *ngIf="quoteMode === 'standard' && hasConfirmedLocalFees">
               <h3>到校后学杂费</h3><p>金额直接引用上方学校学杂费表；当前{{ selectedWeeks }}周合计为{{ formatMoney(localFeeReferenceTotals[selectedWeeks]) }}比索。</p>
               <div class="local-fee-table-wrap"><table class="local-fee-table"><thead><tr><th>费用</th><th>金额</th><th>说明</th></tr></thead><tbody><tr *ngFor="let row of localFeeRows"><th>{{ row.name }}</th><td>{{ formatMoney(row.amount) }} 比索</td><td>{{ row.note }}</td></tr></tbody><tfoot><tr><th>当地费用合计</th><td>{{ formatMoney(localFeeTotal) }} 比索</td><td>约人民币{{ formatMoney(localFeeCny) }}元；教材及超额用电另计</td></tr></tfoot></table></div>
             </div>

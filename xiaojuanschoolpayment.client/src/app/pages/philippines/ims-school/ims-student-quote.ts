@@ -92,17 +92,23 @@ export class ImsStudentQuote {
       ? this.catalog.courses.map((item) => ({ id: item.id, name: item.name, details: `${item.category}｜${item.schedule}`, group: item.category }))
       : this.catalog.rooms.map((item) => ({ id: item.id, name: item.name, details: item.note })),
     (kind, row) => kind === 'course' ? this.coursePrice(row) : this.roomPrice(row),
+    24, true, false,
   );
 
   course(id: string) { return this.catalog.courses.find((item) => item.id === id); }
   room(id: string) { return this.catalog.rooms.find((item) => item.id === id); }
 
   coursePrice(row: QuotePlanRow): number {
-    return this.course(row.optionId)?.prices[row.weeks as ImsWeekOption] ?? 0;
+    const prices = this.course(row.optionId)?.prices;
+    if (!prices) return 0;
+    if (prices[4] === undefined) return prices[row.weeks as ImsWeekOption] ?? 0;
+    const tier = this.quotePlan.courseWeeks >= 4 ? 4 : this.quotePlan.courseWeeks as ImsWeekOption;
+    return Math.round((prices[tier as ImsWeekOption] ?? 0) / tier * row.weeks * 100) / 100;
   }
 
   roomPrice(row: QuotePlanRow): number {
-    return this.room(row.optionId)?.prices[row.weeks as ImsWeekOption] ?? 0;
+    const tier = this.quotePlan.courseWeeks >= 4 ? 4 : this.quotePlan.courseWeeks as ImsWeekOption;
+    return Math.round((this.room(row.optionId)?.prices[tier as ImsWeekOption] ?? 0) / tier * row.weeks * 100) / 100;
   }
 
   get quoteError(): string {
@@ -111,7 +117,7 @@ export class ImsStudentQuote {
     if (this.quotePlan.date(this.selectedRegistrationDate) === null) return '请选择有效的报名日期。';
     for (const row of this.quotePlan.courses) {
       const selected = this.course(row.optionId);
-      if (!selected || !selected.allowedWeeks.includes(row.weeks as ImsWeekOption)) {
+      if (!selected || (selected.prices[4] === undefined && !selected.allowedWeeks.includes(row.weeks as ImsWeekOption))) {
         return `${selected?.name ?? '所选课程'}没有公布${row.weeks}周价格，不能生成报价。`;
       }
     }

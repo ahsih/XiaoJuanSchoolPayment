@@ -160,13 +160,30 @@ export class SchoolQuotePlan {
     courseId: string, roomId: string, startDate: string,
     readonly allowedWeeks: readonly number[],
     readonly options: (kind: QuotePlanKind) => QuotePlanOption[],
-    readonly price: (kind: QuotePlanKind, row: QuotePlanRow) => number,
+    private readonly basePrice: (kind: QuotePlanKind, row: QuotePlanRow) => number,
     readonly maxWeeks = 24,
+    readonly syncSchedules = true,
+    private readonly proratePrice = true,
   ) {
     this.courses = [{ id: 1, optionId: courseId, weeks: 4, startDate }];
     this.rooms = [{ id: 2, optionId: roomId, weeks: 4, startDate }];
   }
   rows(kind: QuotePlanKind) { return kind === 'course' ? this.courses : this.rooms; }
+  /** School adapters supply catalogue prices; the duration tier belongs to one student. */
+  price = (kind: QuotePlanKind, row: QuotePlanRow): number => {
+    if (!this.proratePrice) return this.basePrice(kind, row);
+    const weeks = this.courseWeeks;
+    if (!Number.isInteger(weeks) || weeks < 1) return 0;
+    const tier = weeks >= 4 ? 4 : weeks;
+    return Math.round(this.basePrice(kind, { ...row, weeks: tier }) / tier * row.weeks * 100) / 100;
+  };
+  get segmentWeeks(): readonly number[] { return Array.from({ length: this.maxWeeks }, (_, i) => i + 1); }
+  protected rowGroups(kind: QuotePlanKind): QuotePlanRow[][] { return [[...this.rows(kind)]]; }
+  scheduleRows(kind: QuotePlanKind, id: number): QuotePlanRow[] {
+    return this.rowGroups(kind).find(rows => rows.some(row => row.id === id)) ?? [];
+  }
+  isFirstRow(kind: QuotePlanKind, id: number) { return this.scheduleRows(kind, id)[0]?.id === id; }
+  private validWeeks(weeks: number) { return Number.isInteger(weeks) && weeks > 0 && weeks <= this.maxWeeks; }
   get courseWeeks() { return this.courses.reduce((sum, row) => sum + row.weeks, 0); }
   get roomWeeks() { return this.rooms.reduce((sum, row) => sum + row.weeks, 0); }
   date(value: string): number | null {
@@ -176,7 +193,7 @@ export class SchoolQuotePlan {
   }
   end(row: QuotePlanRow) {
     const start = this.date(row.startDate);
-    return start === null ? '' : new Date(start + (row.weeks * 7 - 1) * DAY).toISOString().slice(0, 10);
+    return start === null || !this.validWeeks(row.weeks) ? '' : new Date(start + (row.weeks * 7 - 1) * DAY).toISOString().slice(0, 10);
   }
   get startDate() { return [...this.courses, ...this.rooms].map(row => row.startDate).filter(value => this.date(value) !== null).sort()[0] ?? ''; }
   get endDate() { return [...this.courses, ...this.rooms].map(row => this.end(row)).filter(Boolean).sort().at(-1) ?? ''; }
@@ -188,7 +205,7 @@ export class SchoolQuotePlan {
     const days = new Set<number>();
     for (const row of rows) {
       const start = this.date(row.startDate);
-      if (start === null || !this.allowedWeeks.includes(row.weeks)) continue;
+      if (start === null || !this.validWeeks(row.weeks)) continue;
       for (let day = 0; day < row.weeks * 7; day++) days.add(start + day * DAY);
     }
     return days;
@@ -197,7 +214,7 @@ export class SchoolQuotePlan {
     const starts = new Set<number>();
     for (const row of rows) {
       const start = this.date(row.startDate);
-      if (start === null || !this.allowedWeeks.includes(row.weeks)) continue;
+      if (start === null || !this.validWeeks(row.weeks)) continue;
       for (let week = 0; week < row.weeks; week++) starts.add(start + week * 7 * DAY);
     }
     return [...starts].sort((a, b) => a - b);
@@ -219,37 +236,97 @@ export class SchoolQuotePlan {
   }
   get error(): string {
     for (const kind of ['course', 'room'] as const) {
-      const rows = this.rows(kind), label = kind === 'course' ? '课程' : '住宿';
+      const label = kind === 'course' ? '课程' : '住宿';
+      for (const rows of this.rowGroups(kind)) {
       if (!rows.length) return `请至少选择一项${label}。`;
       if (rows.some(row => !this.options(kind).some(option => option.id === row.optionId))) return `请重新选择有效的${label}类型。`;
-      if (rows.some(row => !this.allowedWeeks.includes(row.weeks))) return `请在${label}周数选项中选择。`;
+      if (rows.some(row => !this.validWeeks(row.weeks))) return `请在${label}周数选项中选择。`;
       if (rows.reduce((sum, row) => sum + row.weeks, 0) > this.maxWeeks) return `${label}累计不能超过${this.maxWeeks}周。`;
       if (rows.some(row => this.date(row.startDate) === null || new Date(this.date(row.startDate)!).getUTCDay() !== 0)) return `${label}开始日期请选择周日。`;
       if (this.days(rows).size !== rows.reduce((sum, row) => sum + row.weeks * 7, 0)) return `${label}日期有重叠，请调整后再保存报价。`;
+      if (rows.some((row, index) => index > 0 && this.date(row.startDate)! !== this.date(this.end(rows[index - 1]))! + DAY)) return `${label}日期须连续。`;
+      }
     }
+    if (this.courseWeeks < 4 && !this.allowedWeeks.includes(this.courseWeeks)) return `暂不支持${this.courseWeeks}周报价，请联系顾问。`;
+    if (this.mismatch) return '请补齐相同日期的课程和住宿。';
     return this.stayWeeks > this.maxWeeks ? `所选日期超出${this.maxWeeks}周报价范围，请缩短日期间隔。` : '';
   }
   get warning() { return !this.error && this.mismatch ? '课程与住宿日期不一致，请确认未安排的住宿或课程。' : ''; }
-  canAdd(kind: QuotePlanKind) { return this.maxWeeks - this.rows(kind).reduce((sum, row) => sum + row.weeks, 0) >= Math.min(...this.allowedWeeks); }
+  canAdd(kind: QuotePlanKind) { return this.maxWeeks - this.rows(kind).reduce((sum, row) => sum + row.weeks, 0) >= 1; }
   add(kind: QuotePlanKind) {
     if (!this.canAdd(kind)) return;
     const rows = this.rows(kind), last = rows[rows.length - 1];
     const remaining = this.maxWeeks - rows.reduce((sum, row) => sum + row.weeks, 0);
-    const weeks = this.allowedWeeks.filter(week => week <= Math.min(4, remaining)).at(-1)!;
+    const weeks = Math.min(4, remaining);
     const latest = rows.map(row => this.end(row)).sort().at(-1)!;
     const next = this.date(latest);
     rows.push({ id: this.nextId++, optionId: last.optionId, weeks, startDate: next === null ? last.startDate : new Date(next + DAY).toISOString().slice(0, 10) });
+    if (this.syncSchedules) this.synchronizeSchedule(kind, rows.at(-1)!.id);
   }
   remove(kind: QuotePlanKind, id: number) {
-    const rows = this.rows(kind);
+    const rows = this.rows(kind), group = this.scheduleRows(kind, id);
     const index = rows.findIndex(row => row.id === id);
-    if (rows.length > 1 && index >= 0) rows.splice(index, 1);
+    if (group.length > 1 && index >= 0) {
+      const startDate = group[0].startDate;
+      rows.splice(index, 1);
+      if (this.syncSchedules) this.synchronizeSchedule(kind, group.find(row => row.id !== id)!.id, startDate);
+    }
+  }
+  updateWeeks(kind: QuotePlanKind, id: number, weeks: number): void {
+    const rows = this.scheduleRows(kind, id), row = rows.find(item => item.id === id);
+    if (!row) return;
+    if (this.syncSchedules && (!this.validWeeks(weeks)
+      || rows.reduce((sum, item) => sum + item.weeks, 0) - row.weeks + weeks > this.maxWeeks)) return;
+    row.weeks = weeks;
+    if (this.syncSchedules) this.synchronizeSchedule(kind, id);
+  }
+  updateStartDate(kind: QuotePlanKind, id: number, value: string): void {
+    const rows = this.scheduleRows(kind, id), row = rows.find(item => item.id === id);
+    if (!row) return;
+    if (this.syncSchedules && (row !== rows[0] || this.date(value) === null
+      || new Date(this.date(value)!).getUTCDay() !== 0)) return;
+    row.startDate = value;
+    if (this.syncSchedules) this.synchronizeSchedule(kind, id);
+  }
+  protected synchronizeSchedule(kind: QuotePlanKind, id = this.rows(kind)[0].id, startDate = this.scheduleRows(kind, id)[0].startDate): void {
+    const start = this.date(startDate);
+    if (start === null) return;
+    const source = this.scheduleRows(kind, id);
+    const total = source.reduce((sum, row) => sum + row.weeks, 0);
+    for (const targetKind of ['course', 'room'] as const) for (const rows of this.rowGroups(targetKind)) {
+      let remaining = total;
+      for (let index = 0; index < rows.length; index++) {
+        const row = rows[index];
+        if (remaining <= 0) {
+          const all = this.rows(targetKind);
+          all.splice(all.indexOf(row), 1);
+          continue;
+        }
+        row.weeks = index === rows.length - 1 ? remaining : Math.min(row.weeks, remaining);
+        remaining -= row.weeks;
+      }
+    }
+    for (const rows of [...this.rowGroups('course'), ...this.rowGroups('room')]) {
+      let next = start;
+      for (const row of rows) {
+        row.startDate = new Date(next).toISOString().slice(0, 10);
+        next += row.weeks * 7 * DAY;
+      }
+    }
   }
   total(kind: QuotePlanKind) { return this.rows(kind).reduce((sum, row) => sum + this.price(kind, row), 0); }
-  shortStayNotes(multiplier: (weeks: number) => number): string[] {
-    const weeks = [...new Set([...this.courses, ...this.rooms].map(row => row.weeks).filter(week => week < 4))].sort((a, b) => a - b);
-    return weeks.map(week => `${week}周课程或住宿按对应4周价格的${quoteMoney(multiplier(week) * 100)}%计费。`);
+  /** Equivalent adjacent selections must not change a package's eligibility. */
+  mergedRows(kind: QuotePlanKind): QuotePlanRow[] {
+    const result: QuotePlanRow[] = [];
+    for (const row of this.rows(kind)) {
+      const last = result.at(-1);
+      if (last && last.optionId === row.optionId && last.occupant === row.occupant
+        && this.date(row.startDate) === (this.date(this.end(last)) ?? NaN) + DAY) last.weeks += row.weeks;
+      else result.push({ ...row });
+    }
+    return result;
   }
+  shortStayNotes(_multiplier: (weeks: number) => number): string[] { return []; }
   paymentItems(): QuoteImagePaymentItem[] {
     return (['course', 'room'] as const).flatMap(kind => [...this.rows(kind)].sort((a, b) => a.startDate.localeCompare(b.startDate)).map((row, index) => {
       const option = this.options(kind).find(option => option.id === row.optionId);

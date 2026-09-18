@@ -1,3 +1,4 @@
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -36,7 +37,7 @@ type QuoteMode = 'single' | 'group';
 @Component({
   selector: 'app-cella-quote-calculator',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
+  imports: [SchoolQuotePlanComponent, CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
   templateUrl: './cella-quote-calculator.component.html',
   styleUrls: [
     '../../../components/school-group-quote.css',
@@ -180,18 +181,10 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
         icon: '注', label: `${prefix}注册费`, amount: `${this.formatMoney(this.catalog.registrationFee)} 美元`,
         note: this.quoteImageSettings.paymentNotes.registration,
       },
-      {
-        icon: '课', label: `${prefix}课程名称`, amount: `${this.formatMoney(student.coursePriceBeforePromotions)} 美元`,
-        detailTitle: student.selectedCourse?.name ?? '请选择课程',
-        detailSubtitle: `${this.formatDate(student.startDate)}–${this.formatDate(student.endDate)} · 实际就读${student.actualWeeks}周`,
-        note: [student.selectedCourse?.lessons ?? '', this.quoteImageSettings.paymentNotes.course].filter(Boolean).join('；'),
-      },
-      {
-        icon: '宿', label: `${prefix}住宿名称`, amount: `${this.formatMoney(student.roomPriceBeforePromotions)} 美元`,
-        detailTitle: student.selectedRoom?.name ?? '请选择房型',
-        detailSubtitle: `${this.formatDate(student.startDate)}–${this.formatDate(student.endDate)} · 实际住宿${student.actualWeeks}周`,
-        note: [student.selectedRoom?.note ?? '', this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；'),
-      },
+      ...student.quotePlan.paymentItems().map(item => ({ ...item,
+        label: prefix + item.label.replace('课程费', '课程名称').replace('住宿费', '住宿名称'),
+        note: [item.note, item.icon === '课' ? this.quoteImageSettings.paymentNotes.course : this.quoteImageSettings.paymentNotes.accommodation].filter(Boolean).join('；'),
+      })),
     ];
 
     if (student.peakSeasonSurcharge) {
@@ -285,7 +278,6 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     const socialSelected = this.activeStudents.some((student) => student.isSocialPromotion);
     const ruleNotes = [
       `淡季活动期：${this.formatDate(this.lowSeasonStart)}–${this.formatDate(this.lowSeasonEnd)}；入学和入住按周日，离校和退房按周六。`,
-      ...(this.hasRegularQuotes ? ['1／2／3周暂沿用现有4周价格的40%／65%／85%估算；本次附件未确认短期比例，需向学校确认。'] : []),
       ...(socialSelected ? [`6+2／9+3仅限首次报名新生及${CELLA_CAMPUS_NAMES[this.initialCampus]}四人间；课程和住宿按6／9周收费、实际就读8／12周，当地费用按实际周数，不与任何其他优惠叠加。`] : []),
       ...(socialSelected ? [...this.socialPromotionNotes] : []),
       ...this.activeStudents.flatMap((student, index) => student.exchangeConfirmationNote

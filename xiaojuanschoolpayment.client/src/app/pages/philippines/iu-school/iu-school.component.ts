@@ -823,13 +823,11 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
   set selectedRoomId(value: string) { this.quoteCalculator.plan.rooms[0].optionId = value; }
   get selectedWeeks(): number { return this.quoteCalculator.plan.courseWeeks; }
   set selectedWeeks(value: number) {
-    this.quoteCalculator.plan.courses[0].weeks = value;
-    this.quoteCalculator.plan.rooms[0].weeks = value;
+    this.quoteCalculator.plan.updateWeeks('course', this.quoteCalculator.plan.courses[0].id, value);
   }
   get selectedStartDate(): string { return this.quoteCalculator.plan.startDate; }
   set selectedStartDate(value: string) {
-    this.quoteCalculator.plan.courses[0].startDate = value;
-    this.quoteCalculator.plan.rooms[0].startDate = value;
+    this.quoteCalculator.plan.updateStartDate('course', this.quoteCalculator.plan.courses[0].id, value);
   }
   get quoteHeading(): string {
     return this.quoteMode === 'single' ? `IU${this.quoteCalculator.courseWeeks}周报价` : `IU ${this.activeStudents.length}人报价`;

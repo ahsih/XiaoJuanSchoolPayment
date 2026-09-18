@@ -278,7 +278,6 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     alumniBenefitText: '淡季、长期、BESA与节日优惠按报名日、入学日、房型及周数自动核对；最终资格以学校确认为准。',
     noteSectionTitle: '报价说明',
     footerNotes: [
-      '1／2／3周按4周价的40%／65%／85%；周日入住、周六退房。',
       '当前页面只提供对应校区的课程和住宿，不跨校区混选。',
       '人民币金额按生成当日参考汇率估算，最终以实际支付汇率为准。',
       '最终以学校价格、空房、优惠资格、移民局政策及顾问确认结果为准。',
@@ -350,7 +349,7 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
       promotionNotes: { ...base.promotionNotes, ...(saved?.promotionNotes ?? {}) },
       localFeeNotes: { ...base.localFeeNotes, ...(saved?.localFeeNotes ?? {}) },
       supplementalFeeNotes: { ...base.supplementalFeeNotes, ...(saved?.supplementalFeeNotes ?? {}) },
-      footerNotes: [...(saved?.footerNotes?.length ? saved.footerNotes : base.footerNotes)],
+      footerNotes: [...(saved?.footerNotes ?? base.footerNotes)].filter(note => note !== '1／2／3周按4周价的40%／65%／85%；周日入住、周六退房。'),
     };
     for (const fee of latest.localFees) delete cloned.campusQuoteImageSettings[campus].localFeeNotes[fee.id];
   }

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": [
+    "src/app/pages/philippines/ev-school/ev-school-detail.component.spec.ts",
+    "src/app/pages/philippines/ims-school/ims-student-quote.spec.ts",
+    "src/app/pages/philippines/btes-school/btes-student-quote.spec.ts",
+    "src/app/pages/philippines/btes-school/btes-school.component.spec.ts",
+    "src/app/pages/philippines/english-mint-school/mint-pricing.spec.ts",
+    "src/app/pages/philippines/glc-school/*.spec.ts",
+    "src/app/pages/philippines/philinter-school/*.spec.ts",
+    "src/app/pages/philippines/cella-quote/cella-student-quote.spec.ts",
+    "src/app/pages/philippines/anj-school/anj-student-quote.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

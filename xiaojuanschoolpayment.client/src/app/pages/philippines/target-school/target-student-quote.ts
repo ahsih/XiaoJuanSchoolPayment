@@ -82,6 +82,7 @@ export class TargetStudentQuote {
     if (this.packages.some((row) => !Number.isInteger(row.weeks) || row.weeks < 1 || row.weeks > 52)) return '每段套餐请选择1–52个完整周。';
     if (this.packages.some((row) => this.date(row.startDate) === null || new Date(this.date(row.startDate)!).getUTCDay() !== 0)) return '套餐开始日期请选择周日。';
     if (this.occupiedDays().size !== this.packageWeeks * 7) return '套餐日期有重叠，请调整后再保存报价。';
+    if (this.packages.some((row, index) => index > 0 && this.date(row.startDate)! !== this.date(this.end(this.packages[index - 1]))! + DAY)) return '套餐日期须连续。';
     if (this.date(this.selectedRegistrationDate) === null) return '请选择有效的报名注册日期。';
     if (!['tourist30', 'tourist59'].includes(this.visaType)) return '请选择30天或59天初始旅游签证。';
     if (this.packages.some((row) => row.courseId === 'ielts-guarantee' && row.weeks !== 12)) return 'IELTS Guarantee请按12周完整方案选择。';
@@ -112,7 +113,24 @@ export class TargetStudentQuote {
   removePackage(id: number): void {
     if (this.packages.length <= 1) return;
     const index = this.packages.findIndex((row) => row.id === id);
-    if (index >= 0) this.packages.splice(index, 1);
+    const start = this.packages[0].startDate;
+    if (index >= 0) { this.packages.splice(index, 1); this.reflow(start); }
+  }
+
+  updateWeeks(row: TargetPackageRow, weeks: number): void {
+    if (!Number.isInteger(weeks) || weeks < 1 || weeks > 52) return;
+    row.weeks = weeks;
+    this.reflow();
+  }
+  updateStartDate(value: string, input: HTMLInputElement): void {
+    const date = this.date(value);
+    if (date === null || new Date(date).getUTCDay() !== 0) { input.value = this.packages[0].startDate; return; }
+    this.reflow(value);
+  }
+  private reflow(start = this.packages[0].startDate): void {
+    let date = this.date(start);
+    if (date === null) return;
+    for (const row of this.packages) { row.startDate = new Date(date).toISOString().slice(0, 10); date += row.weeks * 7 * DAY; }
   }
 
   packagePrice(row: TargetPackageRow): number {
