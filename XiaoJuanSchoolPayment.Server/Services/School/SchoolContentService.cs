@@ -18,10 +18,12 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
     private const int MaxContentBytes = 1024 * 1024;
 
     private readonly AppDbContext _context;
+    private readonly ISchoolMediaStorage _mediaStorage;
 
-    public SchoolContentService(AppDbContext context)
+    public SchoolContentService(AppDbContext context, ISchoolMediaStorage mediaStorage)
     {
       _context = context;
+      _mediaStorage = mediaStorage;
     }
 
     public async Task<SchoolContentRevisionDTO?> GetPublished(
@@ -34,7 +36,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         .OrderByDescending(x => x.Version)
         .FirstOrDefaultAsync(cancellationToken);
 
-      return revision == null ? null : ToRevisionDto(revision);
+      return revision == null ? null : ToRevisionDto(revision, includeMediaPreviewTokens: false);
     }
 
     public async Task<SchoolContentEditorDTO?> GetEditor(
@@ -63,13 +65,13 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         SchoolId = school.Id,
         SchoolName = school.Name,
         Draft = revisions.Where(x => x.Status == DraftStatus)
-          .Select(ToRevisionDto)
+          .Select(x => ToRevisionDto(x, includeMediaPreviewTokens: true))
           .FirstOrDefault(),
         PendingReview = revisions.Where(x => x.Status == PendingReviewStatus)
-          .Select(ToRevisionDto)
+          .Select(x => ToRevisionDto(x, includeMediaPreviewTokens: true))
           .FirstOrDefault(),
         Published = revisions.Where(x => x.Status == PublishedStatus)
-          .Select(ToRevisionDto)
+          .Select(x => ToRevisionDto(x, includeMediaPreviewTokens: true))
           .FirstOrDefault(),
         History = revisions
           .Where(x => x.Status != DraftStatus && x.Status != PendingReviewStatus)
@@ -161,7 +163,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       draft.UpdatedAt = now;
 
       await _context.SaveChangesAsync(cancellationToken);
-      return ToRevisionDto(draft);
+      return ToRevisionDto(draft, includeMediaPreviewTokens: true);
     }
 
     public async Task<SchoolContentRevisionDTO> SaveQuoteImageSettingsDraft(
@@ -328,7 +330,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       await _context.SaveChangesAsync(cancellationToken);
       await transaction.CommitAsync(cancellationToken);
-      return ToRevisionDto(draft);
+      return ToRevisionDto(draft, includeMediaPreviewTokens: false);
     }
 
     public async Task<SchoolContentRevisionDTO?> SubmitForReview(
@@ -361,7 +363,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       draft.UpdatedByName = userName;
       draft.UpdatedAt = DateTime.UtcNow;
       await _context.SaveChangesAsync(cancellationToken);
-      return ToRevisionDto(draft);
+      return ToRevisionDto(draft, includeMediaPreviewTokens: true);
     }
 
     private async Task ApplyPublishedMediaSettingsAsync(
@@ -431,7 +433,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       pending.UpdatedByName = userName;
       pending.UpdatedAt = DateTime.UtcNow;
       await _context.SaveChangesAsync(cancellationToken);
-      return ToRevisionDto(pending);
+      return ToRevisionDto(pending, includeMediaPreviewTokens: true);
     }
 
     public async Task<SchoolContentRevisionDTO?> RestoreToDraft(
@@ -469,7 +471,10 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         throw new ArgumentException("School content must be a JSON object.");
       }
 
-      var json = content.GetRawText();
+      var root = JsonNode.Parse(content.GetRawText()) as JsonObject
+        ?? throw new ArgumentException("School content must be a JSON object.");
+      NormalizeStoredMediaUrls(root);
+      var json = root.ToJsonString();
       if (Encoding.UTF8.GetByteCount(json) > MaxContentBytes)
       {
         throw new ArgumentException("School content must be 1MB or smaller.");
@@ -532,17 +537,65 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       return changed.Count > 0 ? changed : ["内容说明"];
     }
 
-    private static SchoolContentRevisionDTO ToRevisionDto(SchoolContentRevision revision) => new()
+    private SchoolContentRevisionDTO ToRevisionDto(
+      SchoolContentRevision revision,
+      bool includeMediaPreviewTokens) => new()
     {
       Id = revision.Id,
       Version = revision.Version,
       Status = revision.Status,
-      Content = JsonSerializer.Deserialize<JsonElement>(revision.ContentJson),
+      Content = CreateContentForResponse(revision.ContentJson, includeMediaPreviewTokens),
       ChangeSummary = revision.ChangeSummary,
       UpdatedByName = revision.UpdatedByName,
       UpdatedAt = revision.UpdatedAt,
       PublishedAt = revision.PublishedAt,
     };
+
+    private JsonElement CreateContentForResponse(string contentJson, bool includeMediaPreviewTokens)
+    {
+      var root = JsonNode.Parse(contentJson) as JsonObject;
+      if (root == null)
+      {
+        return JsonSerializer.Deserialize<JsonElement>(contentJson);
+      }
+
+      if (includeMediaPreviewTokens && _mediaStorage.Enabled && root["media"] is JsonArray media)
+      {
+        foreach (var item in media.OfType<JsonObject>())
+        {
+          if (!TryGetCosMediaId(item, out var id)) continue;
+          item["url"] = _mediaStorage.CreatePreviewUrl(id);
+        }
+      }
+
+      return JsonSerializer.Deserialize<JsonElement>(root.ToJsonString());
+    }
+
+    private static void NormalizeStoredMediaUrls(JsonObject root)
+    {
+      if (root["media"] is not JsonArray media) return;
+      foreach (var item in media.OfType<JsonObject>())
+      {
+        if (!TryGetCosMediaId(item, out var id)) continue;
+        item["url"] = $"/school/media-file/{id:N}";
+      }
+    }
+
+    private static bool TryGetCosMediaId(JsonObject item, out Guid id)
+    {
+      id = Guid.Empty;
+      if (item["id"] is not JsonValue idValue ||
+          !idValue.TryGetValue<string>(out var idText) ||
+          item["url"] is not JsonValue urlValue ||
+          !urlValue.TryGetValue<string>(out var url))
+      {
+        return false;
+      }
+
+      return Guid.TryParse(idText, out id) &&
+        !string.IsNullOrWhiteSpace(url) &&
+        url.StartsWith("/school/media-file/", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static SchoolContentRevisionSummaryDTO ToSummaryDto(SchoolContentRevision revision) => new()
     {

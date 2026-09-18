@@ -44,10 +44,18 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
     private readonly AppDbContext _appDbContext;
     private readonly IWebHostEnvironment _environment;
+    private readonly ISchoolMediaStorage _mediaStorage;
+    private readonly ILogger<SchoolService> _logger;
 
-    public SchoolService(AppDbContext context, IWebHostEnvironment environment) {
+    public SchoolService(
+      AppDbContext context,
+      IWebHostEnvironment environment,
+      ISchoolMediaStorage mediaStorage,
+      ILogger<SchoolService> logger) {
       _appDbContext = context;
       _environment = environment;
+      _mediaStorage = mediaStorage;
+      _logger = logger;
     }
     public async Task<bool> SaveSchool(SchoolDTO school, CancellationToken cancellationToken)
     {
@@ -239,36 +247,59 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
         throw new ArgumentException("视频文件不能超过 200MB。");
       }
 
-      var webRootPath = GetWebRootPath();
       var schoolFolderName = photo.SchoolId.ToString("N");
-      var uploadFolder = Path.Combine(webRootPath, "uploads", "schools", schoolFolderName);
-      Directory.CreateDirectory(uploadFolder);
-
       var storedFileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
-      var physicalFilePath = Path.Combine(uploadFolder, storedFileName);
+      var mediaId = Guid.NewGuid();
+      string filePath;
+      string url;
 
-      await using (var stream = new FileStream(physicalFilePath, FileMode.CreateNew))
+      if (_mediaStorage.Enabled)
       {
-        await photo.File.CopyToAsync(stream, cancellationToken);
+        filePath = _mediaStorage.BuildObjectKey(photo.SchoolId, storedFileName);
+        await using var source = photo.File.OpenReadStream();
+        await _mediaStorage.UploadAsync(
+          filePath,
+          source,
+          photo.File.Length,
+          photo.File.ContentType,
+          cancellationToken);
+        url = $"/school/media-file/{mediaId:N}";
+      }
+      else
+      {
+        var webRootPath = GetWebRootPath();
+        var uploadFolder = Path.Combine(webRootPath, "uploads", "schools", schoolFolderName);
+        Directory.CreateDirectory(uploadFolder);
+        var physicalFilePath = Path.Combine(uploadFolder, storedFileName);
+
+        await using (var stream = new FileStream(physicalFilePath, FileMode.CreateNew))
+        {
+          await photo.File.CopyToAsync(stream, cancellationToken);
+        }
+
+        filePath = Path.Combine("uploads", "schools", schoolFolderName, storedFileName)
+          .Replace(Path.DirectorySeparatorChar, '/');
+        url = $"/{filePath}";
       }
 
-      var relativePath = Path.Combine("uploads", "schools", schoolFolderName, storedFileName)
-        .Replace(Path.DirectorySeparatorChar, '/');
       var now = DateTime.UtcNow;
       var schoolPhoto = new Data.Models.SchoolPhoto
       {
+        Id = mediaId,
         SchoolId = photo.SchoolId,
         OriginalFileName = Path.GetFileName(photo.File.FileName),
         StoredFileName = storedFileName,
-        FilePath = relativePath,
-        Url = $"/{relativePath}",
+        FilePath = filePath,
+        Url = url,
         ContentType = photo.File.ContentType,
         SizeBytes = photo.File.Length,
         Category = TrimToNull(photo.Category),
         Caption = TrimToNull(photo.Caption),
         AltText = TrimToNull(photo.AltText),
         DisplayOrder = photo.DisplayOrder,
-        IsActive = photo.IsActive,
+        // Uploads enter the revision workflow as drafts. Visibility changes only
+        // when a revision is published (or an Admin/Manager edits the record).
+        IsActive = false,
         CreatedAt = now,
         LastUpdated = now,
       };
@@ -280,7 +311,21 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
       }
       catch
       {
-        DeletePhysicalPhotoFile(relativePath);
+        if (_mediaStorage.IsCosObjectKey(filePath))
+        {
+          try
+          {
+            await _mediaStorage.DeleteAsync(filePath, CancellationToken.None);
+          }
+          catch (Exception cleanupException)
+          {
+            _logger.LogWarning(cleanupException, "Failed to remove COS object {ObjectKey} after database failure.", filePath);
+          }
+        }
+        else
+        {
+          DeletePhysicalPhotoFile(filePath);
+        }
         throw;
       }
 
@@ -316,7 +361,21 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       _appDbContext.SchoolPhotos.Remove(dbPhoto);
       await _appDbContext.SaveChangesAsync(cancellationToken);
-      DeletePhysicalPhotoFile(dbPhoto.FilePath);
+      if (_mediaStorage.IsCosObjectKey(dbPhoto.FilePath))
+      {
+        try
+        {
+          await _mediaStorage.DeleteAsync(dbPhoto.FilePath, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+          _logger.LogWarning(ex, "Database row was removed but COS object {ObjectKey} could not be deleted.", dbPhoto.FilePath);
+        }
+      }
+      else
+      {
+        DeletePhysicalPhotoFile(dbPhoto.FilePath);
+      }
       return true;
     }
 

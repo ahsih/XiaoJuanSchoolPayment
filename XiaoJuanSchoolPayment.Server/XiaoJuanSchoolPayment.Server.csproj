@@ -7,6 +7,7 @@
     <SpaRoot>..\xiaojuanschoolpayment.client</SpaRoot>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:53747</SpaProxyServerUrl>
+    <UserSecretsId>7cc5cf3a-27d2-4aa9-8a01-c7ec25748caa</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.19.2" />
+    <PackageReference Include="Tencent.QCloud.Cos.Sdk" Version="5.4.51" />
   </ItemGroup>
 
   <ItemGroup>

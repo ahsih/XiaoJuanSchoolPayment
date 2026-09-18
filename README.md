@@ -5,7 +5,7 @@ This repository contains the public website and admin system for 思达启航教
 The application has two projects:
 
 - `xiaojuanschoolpayment.client`: Angular 19 frontend with public content pages, school calculators, authentication, and admin screens.
-- `XiaoJuanSchoolPayment.Server`: ASP.NET Core 10 API using EF Core 9, MySQL, ASP.NET Identity/JWT, SMTP email delivery, and local school-photo storage.
+- `XiaoJuanSchoolPayment.Server`: ASP.NET Core 10 API using EF Core 9, MySQL, ASP.NET Identity/JWT, SMTP email delivery, and optional private Tencent COS school-media storage with a local fallback.
 
 For an architecture map, local setup, change workflows, verification commands, and guidance for AI coding assistants, read [AGENTS.md](AGENTS.md) before making changes.
 
@@ -20,7 +20,7 @@ dotnet run --project XiaoJuanSchoolPayment.Server --launch-profile https
 
 The server applies EF Core migrations and seed data at startup. The development frontend normally opens at `https://localhost:53747`, and Swagger is available at `https://localhost:7209/swagger`.
 
-Use environment variables or .NET user secrets for the database connection, JWT key, registration access code, and SMTP settings. Do not add credentials to source control.
+Use environment variables or .NET user secrets for the database connection, JWT key, registration access code, SMTP settings, and Tencent COS credentials. Do not add credentials to source control. To enable COS for new school-media uploads, configure `TencentCos__Enabled=true`, `TencentCos__SecretId`, and `TencentCos__SecretKey`; the non-secret bucket defaults are in `appsettings.json`.
 
 ## Verification
 
@@ -29,4 +29,4 @@ npm --prefix xiaojuanschoolpayment.client run build
 dotnet build XiaoJuanSchoolPayment.Server/XiaoJuanSchoolPayment.Server.csproj
 ```
 
-The production `Dockerfile` builds both projects and serves the Angular output from ASP.NET Core on port 8080. An external MySQL database and persistent storage for `wwwroot/uploads` are required in production.
+The production `Dockerfile` builds both projects and serves the Angular output from ASP.NET Core on port 8080. An external MySQL database is required. Keep persistent storage for legacy `wwwroot/uploads` records; when Tencent COS is enabled, new school photos and videos are stored in the private bucket instead.

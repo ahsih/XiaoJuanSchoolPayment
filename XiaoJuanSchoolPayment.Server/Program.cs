@@ -13,6 +13,7 @@ using XiaoJuanSchoolPayment.Server.Interface;
 using XiaoJuanSchoolPayment.Server.Services;
 using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
+using XiaoJuanSchoolPayment.Server.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,8 +86,31 @@ builder.Services.AddScoped<ISchoolContentService, SchoolContentService>();
 builder.Services.AddScoped<IStaffPermissionService, StaffPermissionService>();
 builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 builder.Services.Configure<ContactFormOptions>(builder.Configuration.GetSection("ContactForm"));
+builder.Services.AddOptions<TencentCosOptions>()
+  .Bind(builder.Configuration.GetSection(TencentCosOptions.SectionName))
+  .Validate(options => !options.Enabled ||
+    (!string.IsNullOrWhiteSpace(options.AppId) &&
+     !string.IsNullOrWhiteSpace(options.Region) &&
+     !string.IsNullOrWhiteSpace(options.Bucket) &&
+     !string.IsNullOrWhiteSpace(options.SecretId) &&
+     !string.IsNullOrWhiteSpace(options.SecretKey)),
+    "启用腾讯云 COS 时必须配置 AppId、Region、Bucket、SecretId 和 SecretKey。")
+  .Validate(options =>
+    string.Equals(options.DeliveryMode, "Proxy", StringComparison.OrdinalIgnoreCase) ||
+    string.Equals(options.DeliveryMode, "Redirect", StringComparison.OrdinalIgnoreCase),
+    "TencentCos:DeliveryMode 只能是 Proxy 或 Redirect。")
+  .Validate(options => !options.Enabled ||
+    !string.Equals(options.DeliveryMode, "Redirect", StringComparison.OrdinalIgnoreCase) ||
+    Uri.TryCreate(options.CustomDomain, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps,
+    "COS Redirect 模式必须配置 HTTPS 自定义域名。")
+  .ValidateOnStart();
+builder.Services.AddSingleton<ISchoolMediaStorage, TencentCosSchoolMediaStorage>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient("TencentCosMedia", client =>
+{
+  client.Timeout = TimeSpan.FromMinutes(30);
+});
 builder.Services.AddHttpClient("PinesPortal", client =>
 {
   client.BaseAddress = new Uri("https://pinesportal.com/");

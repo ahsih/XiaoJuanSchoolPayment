@@ -52,10 +52,11 @@ MySQL/MariaDB database
   - `Controllers/`: HTTP endpoints for auth, school data, currency, contact email, and quote email.
   - `Data/Models/`: EF Core and Identity entities.
   - `Data/DTO/` and `Data/Filter/`: API contracts and query filters.
-  - `Services/School/SchoolService.cs`: school CRUD/query logic and physical photo storage.
+  - `Services/School/SchoolService.cs`: school CRUD/query logic and school-media persistence, using Tencent COS when configured and local disk as the development/legacy fallback.
+  - `Services/Storage/TencentCosSchoolMediaStorage.cs`: private Tencent COS upload/delete/signing support plus short-lived employee-preview tokens.
   - `Services/DataInitialize.cs`: large, insert-only startup seed routine for currencies, schools, pricing, rooms, lessons, fees, and notes. It adds missing baseline records but never updates or deletes existing production records.
   - `Migrations/`: EF Core schema history. Do not hand-edit the model snapshot.
-  - `wwwroot/uploads/`: runtime school-photo storage; only `.gitkeep` is source controlled.
+  - `wwwroot/uploads/`: legacy/local-development school-photo storage; only `.gitkeep` is source controlled. New production uploads use COS when `TencentCos__Enabled=true`.
 - `Dockerfile`: multi-stage production build.
 - `.github/workflows/deploy-github-pages.yml`: builds and publishes the static Angular frontend to GitHub Pages. API-dependent features require a separate reachable backend and will not work from a static-only deployment without additional configuration.
 - `Logo/`, the Chinese `.docx` files, and the Chinese `.xlsx` files at the root are reference/source material, not runtime code.
@@ -70,7 +71,7 @@ MySQL/MariaDB database
 - `SchoolRoom`: accommodation option, duration, price, currency, and description.
 - `SchoolFee`: additional fee, currency, description, and last-updated time.
 - `SchoolNote`: free-form school note.
-- `SchoolPhoto`: metadata for a file stored under `wwwroot/uploads/schools/<school-id>/`.
+- `SchoolPhoto`: school photo/video metadata. For COS-backed records `FilePath` is the object key and `Url` is the stable same-origin `/school/media-file/<id>` route; legacy/local records still point under `wwwroot/uploads/schools/<school-id>/`.
 - `Currency`: code and symbol.
 - `SchoolUser`: ASP.NET Identity user with first and last name. Admin accounts use the employee backend; Student accounts use the student portal.
 - `InvitationCode`: single-use, expiring role invitation. Admin users create Staff/Consultant or Manager invitations; Manager and Staff users create Student invitations.
@@ -206,6 +207,8 @@ $env:Authentication__PublicOrigin = "https://www.example.com"
 
 SMTP is required to exercise contact delivery, quote-email delivery, and password recovery. Configure it with `ContactForm__RecipientEmail`, `ContactForm__SenderEmail`, `ContactForm__Smtp__Host`, `__Port`, `__Username`, `__Password`, and `__EnableSsl` environment variables or .NET user secrets.
 
+Production school media can use the private Tencent COS bucket configured by `TencentCos`. Set `TencentCos__Enabled=true`, `TencentCos__SecretId`, and `TencentCos__SecretKey` outside source control; `AppId`, `Region`, and `Bucket` may also be overridden with environment variables. The default `Proxy` delivery mode streams signed private objects through `/school/media-file/<id>` and does not require a browser-usable COS default domain or CORS. `Redirect` mode is optional and requires an HTTPS `TencentCos__CustomDomain`. Uploaded COS objects remain inaccessible through the stable route while inactive; authenticated editor responses receive short-lived preview URLs, and publishing activates the database record. Keep stable URLs, not signed COS URLs or preview-token URLs, in `SchoolContentRevision` JSON.
+
 Start from Visual Studio by opening the solution and launching the HTTPS profile, or run:
 
 ```powershell
@@ -303,7 +306,7 @@ Keep `/admin` under `RoleGuard`, use the narrowest server role set required by t
 - JWT lifetime validation is enabled. CORS still allows any origin and should be restricted to trusted production domains before exposing the API publicly. Registration codes are HMAC-hashed and invitations are SHA-256-hashed in storage; the configured `AccessCode` grants Admin registration whenever supplied and must be protected as an administrator credential.
 - Swagger is enabled only in Development.
 - The Docker image does not contain MySQL; supply `ConnectionStrings__DefaultConnection` at runtime.
-- Uploaded school photos are written to the container/local filesystem. Mount persistent storage in production or uploads will disappear when the container is replaced.
+- With `TencentCos__Enabled=true`, new school photos and videos are written to the configured private COS bucket; keep its credentials out of source control and grant only the required object permissions for the `school-media/` prefix. Existing local records continue to be served from `wwwroot/uploads`, so preserve or migrate that directory before removing its production volume. Without COS enabled, all new school media still uses local storage and therefore requires a persistent mount.
 - The GitHub Pages workflow deploys only static frontend files. Same-origin relative API requests will target GitHub Pages and fail unless a backend/base-URL strategy is added.
 
 ## B'Cebu employee content

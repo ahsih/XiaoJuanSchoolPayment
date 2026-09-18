@@ -14,13 +14,19 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
   {
     private readonly ISchoolService _schoolService;
     private readonly IStaffPermissionService _permissions;
+    private readonly ISchoolMediaStorage _mediaStorage;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly AppDbContext _context;
     public SchoolController(
       ISchoolService schoolService,
       IStaffPermissionService permissions,
+      ISchoolMediaStorage mediaStorage,
+      IHttpClientFactory httpClientFactory,
       AppDbContext context) {
       _schoolService = schoolService;
       _permissions = permissions;
+      _mediaStorage = mediaStorage;
+      _httpClientFactory = httpClientFactory;
       _context = context;
     }
     [Authorize(Roles = "Admin,Manager")]
@@ -79,6 +85,10 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       try
       {
         var result = await _schoolService.UploadSchoolPhoto(photo, ct);
+        if (_mediaStorage.Enabled && !result.IsActive)
+        {
+          result.Url = _mediaStorage.CreatePreviewUrl(result.Id);
+        }
         return Ok(result);
       }
       catch (ArgumentException ex)
@@ -108,6 +118,92 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       if (!await _permissions.HasAsync(User, schoolId.Value, StaffPermissionScopes.Media, ct)) return Forbid();
       var result = await _schoolService.DeleteSchoolPhoto(id, ct);
       return result ? Ok(result) : NotFound();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("media-file/{id:guid}")]
+    [HttpHead("media-file/{id:guid}")]
+    public async Task<IActionResult> GetSchoolMediaFile(
+      Guid id,
+      [FromQuery] long? previewExpires,
+      [FromQuery] string? previewSignature,
+      CancellationToken ct)
+    {
+      var photo = await _context.SchoolPhotos.AsNoTracking()
+        .Where(item => item.Id == id)
+        .Select(item => new
+        {
+          item.FilePath,
+          item.ContentType,
+          item.IsActive,
+        })
+        .FirstOrDefaultAsync(ct);
+      if (photo == null || !_mediaStorage.Enabled || !_mediaStorage.IsCosObjectKey(photo.FilePath))
+      {
+        return NotFound();
+      }
+
+      var hasValidPreviewToken = previewExpires.HasValue &&
+        !string.IsNullOrWhiteSpace(previewSignature) &&
+        _mediaStorage.IsValidPreviewToken(id, previewExpires.Value, previewSignature);
+      if (!photo.IsActive && !hasValidPreviewToken)
+      {
+        return NotFound();
+      }
+
+      var method = HttpMethods.IsHead(Request.Method) ? HttpMethod.Head : HttpMethod.Get;
+      var signedUrl = _mediaStorage.CreateSignedReadUrl(photo.FilePath, method.Method);
+      // Draft media always stays behind our no-store proxy. Redirect delivery is
+      // reserved for published objects so a browser/CDN cannot retain a draft.
+      if (_mediaStorage.UsesRedirectDelivery && photo.IsActive)
+      {
+        return Redirect(signedUrl);
+      }
+
+      using var cosRequest = new HttpRequestMessage(method, signedUrl);
+      CopyRequestHeader("Range");
+      CopyRequestHeader("If-None-Match");
+      CopyRequestHeader("If-Modified-Since");
+
+      var client = _httpClientFactory.CreateClient("TencentCosMedia");
+      using var cosResponse = await client.SendAsync(
+        cosRequest,
+        HttpCompletionOption.ResponseHeadersRead,
+        ct);
+
+      Response.StatusCode = (int)cosResponse.StatusCode;
+      Response.ContentType = cosResponse.Content.Headers.ContentType?.ToString() ?? photo.ContentType;
+      Response.ContentLength = cosResponse.Content.Headers.ContentLength;
+      CopyResponseHeader("Content-Range");
+      CopyResponseHeader("Accept-Ranges");
+      CopyResponseHeader("ETag");
+      CopyResponseHeader("Last-Modified");
+      Response.Headers.CacheControl = photo.IsActive
+        ? "public, max-age=300"
+        : "private, no-store";
+
+      if (!HttpMethods.IsHead(Request.Method))
+      {
+        await cosResponse.Content.CopyToAsync(Response.Body, ct);
+      }
+      return new EmptyResult();
+
+      void CopyRequestHeader(string name)
+      {
+        if (Request.Headers.TryGetValue(name, out var values))
+        {
+          cosRequest.Headers.TryAddWithoutValidation(name, values.ToString());
+        }
+      }
+
+      void CopyResponseHeader(string name)
+      {
+        if (cosResponse.Headers.TryGetValues(name, out var values) ||
+            cosResponse.Content.Headers.TryGetValues(name, out values))
+        {
+          Response.Headers[name] = values.ToArray();
+        }
+      }
     }
 
     [HttpGet("get-schools")]
@@ -147,7 +243,20 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     [HttpGet("get-school-photos")]
     public async Task<IActionResult> GetSchoolPhotos([FromQuery] SchoolPhotoFilter filter, CancellationToken ct)
     {
+      var isEmployee = User.Identity?.IsAuthenticated == true &&
+        (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Staff"));
+      if (!isEmployee)
+      {
+        filter.IsActive = true;
+      }
       var result = await _schoolService.GetSchoolPhotos(filter, ct);
+      if (isEmployee && _mediaStorage.Enabled)
+      {
+        foreach (var photo in result.Where(item => !item.IsActive))
+        {
+          photo.Url = _mediaStorage.CreatePreviewUrl(photo.Id);
+        }
+      }
       return Ok(result);
     }
   }
