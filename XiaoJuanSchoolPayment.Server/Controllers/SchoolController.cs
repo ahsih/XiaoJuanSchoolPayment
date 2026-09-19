@@ -77,8 +77,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     [Authorize(Roles = "Admin,Manager,Staff")]
     [HttpPost("upload-photo")]
     [HttpPost("upload-media")]
-    [RequestSizeLimit(210 * 1024 * 1024)]
-    [RequestFormLimits(MultipartBodyLengthLimit = 210 * 1024 * 1024)]
+    [RequestSizeLimit(512L * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 512L * 1024 * 1024)]
     public async Task<IActionResult> UploadSchoolPhoto([FromForm] SchoolPhotoUploadDTO photo, CancellationToken ct)
     {
       if (!await _permissions.HasAsync(User, photo.SchoolId, StaffPermissionScopes.Media, ct)) return Forbid();

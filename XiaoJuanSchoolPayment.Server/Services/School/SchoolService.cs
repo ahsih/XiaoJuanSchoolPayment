@@ -11,7 +11,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
   public class SchoolService : ISchoolService
   {
     private const long MaxImageSizeBytes = 10 * 1024 * 1024;
-    private const long MaxVideoSizeBytes = 200 * 1024 * 1024;
+    private const long MaxVideoSizeBytes = 500L * 1024 * 1024;
     private static readonly HashSet<string> AllowedImageExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
       ".jpg",
@@ -244,7 +244,7 @@ namespace XiaoJuanSchoolPayment.Server.Services.School
 
       if (isVideo && photo.File.Length > MaxVideoSizeBytes)
       {
-        throw new ArgumentException("视频文件不能超过 200MB。");
+        throw new ArgumentException("视频文件不能超过 500MB。");
       }
 
       var schoolFolderName = photo.SchoolId.ToString("N");
