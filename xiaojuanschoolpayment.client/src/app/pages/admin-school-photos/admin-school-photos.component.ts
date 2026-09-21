@@ -72,7 +72,7 @@ export class AdminSchoolPhotosComponent implements OnInit, OnChanges {
   get fileHelp(): string {
     return this.mediaType === 'image'
       ? '支持 JPG、PNG、WebP、GIF，单张不超过 10MB'
-      : '支持 MP4、WebM、MOV、M4V，单个不超过 200MB';
+      : '支持 MP4、WebM、MOV、M4V，单个不超过 500MB';
   }
 
   readonly categoryOptions: PhotoCategoryOption[] = [
@@ -161,11 +161,11 @@ export class AdminSchoolPhotosComponent implements OnInit, OnChanges {
 
     const expectsVideo = this.mediaType === 'video';
     const validKind = expectsVideo ? file.type.startsWith('video/') : file.type.startsWith('image/');
-    const maxBytes = expectsVideo ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxBytes = expectsVideo ? 500 * 1024 * 1024 : 10 * 1024 * 1024;
     if (!validKind || file.size > maxBytes) {
       this.selectedFile = undefined;
       input.value = '';
-      this.snackBar.open(expectsVideo ? '请选择不超过 200MB 的视频文件' : '请选择不超过 10MB 的照片文件', '关闭', { duration: 3500 });
+      this.snackBar.open(expectsVideo ? '请选择不超过 500MB 的视频文件' : '请选择不超过 10MB 的照片文件', '关闭', { duration: 3500 });
       return;
     }
     this.selectedFile = file;
