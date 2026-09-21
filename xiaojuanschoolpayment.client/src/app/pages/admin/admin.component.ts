@@ -7,6 +7,7 @@ import { SchoolDTO } from '../../../interfaces/school.dto';
 import { MatDialog } from '@angular/material/dialog';
 import { EditSchoolDialogComponent } from './edit-school-dialog/edit-school-dialog.component';
 import { firstValueFrom } from 'rxjs';
+import { isLaMerSchool } from '../philippines/la-mer-school/la-mer-content-config';
 
 type SchoolCity = 'all' | 'cebu' | 'baguio' | 'clark' | 'manila' | 'iloilo' | 'bacolod' | 'other';
 
@@ -24,6 +25,7 @@ export class AdminComponent implements OnInit {
   private readonly popularityOrder: readonly (readonly string[])[] = [
     ['cia cebu international academy', '菲律宾宿务 cia 语言学校', '菲律宾宿务cia语言学校'],
     ['ev academy', '菲律宾宿务ev语言学校'],
+    ['ev academy la mer', 'ev la mer'],
     ['菲律宾宿务cpi语言学校', 'cpi cebu pelis institute'],
     ['菲律宾宿务cpils语言学校', 'cpils'],
     ['smeag capital', '菲律宾宿务smeag capital语言学校'],
@@ -207,6 +209,7 @@ export class AdminComponent implements OnInit {
   }
 
   isUnifiedSchool(school: SchoolDTO): boolean {
+    if (isLaMerSchool(school.name)) return true;
     return this.isCiaSchool(school) || this.isPinesSchool(school) || this.isMonolSchool(school) || this.isEvSchool(school) || this.isSmeagSchool(school) || this.isPhilinterSchool(school) || this.isCgBaniladSchool(school) || this.isCgSpartaSchool(school) || this.isCpiSchool(school) || this.isBCebuSchool(school) || this.isCpilsSchool(school) || this.isGlcSchool(school) || this.isIbreezeSchool(school) || this.isAnjSchool(school) || this.isImsSchool(school) || this.isBeciSchool(school) || this.isJicSchool(school) || this.isIuSchool(school) || this.isIclSchool(school) || this.isCellaSchool(school) || this.isFellaSchool(school) || this.isRemainingQuoteSchool(school);
   }
 
@@ -307,6 +310,7 @@ export class AdminComponent implements OnInit {
   }
 
   private getPopularityIndex(school: SchoolDTO): number {
+    if (isLaMerSchool(school.name)) return 2;
     const schoolName = this.normalizeSchoolName(school.name);
     return this.popularityOrder.findIndex((aliases) =>
       aliases.some((alias) => schoolName.includes(this.normalizeSchoolName(alias)))

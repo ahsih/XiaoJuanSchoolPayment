@@ -1,0 +1,36 @@
+<div class="calculator">
+  <header class="calculator-heading"><div><h3>选择你的学习与住宿安排</h3><p>每位学员分别选择课程、房型和签证。家庭合住及酒店多人入住须顾问核对。</p></div>
+    <div class="mode-control" role="group" aria-label="报价人数模式"><button type="button" [attr.aria-pressed]="quoteMode === 'single'" (click)="changeMode('single')">单人报价</button><button type="button" [attr.aria-pressed]="quoteMode === 'group'" (click)="changeMode('group')">多人报价</button></div>
+  </header>
+  <label class="count-field" *ngIf="quoteMode === 'group'">报价人数<select aria-label="报价人数" [ngModel]="studentCount" (ngModelChange)="changeCount($event)"><option *ngFor="let count of counts" [ngValue]="count">{{ count }}人</option></select></label>
+  <details class="student-card" *ngFor="let student of activeStudents; let i = index" [open]="i === 0">
+    <summary><span>{{ person(i) }} · {{ student.plan.courseWeeks }}周 <small>{{ student.returningStudent ? '老学员返校' : '新学员' }} · {{ student.visaLabel }}</small></span><strong>{{ student.total === null ? '需调整或确认' : money(student.total!) + '元' }}</strong></summary>
+    <div class="student-body">
+      <div class="student-fields">
+        <label>抵达时年龄<input type="number" min="7" max="99" step="1" [(ngModel)]="student.age" [attr.aria-label]="person(i) + '抵达时年龄'"></label>
+        <label>签证类型<select [(ngModel)]="student.visaType" [attr.aria-label]="person(i) + '签证类型'"><option *ngFor="let visa of student.visaOptions" [value]="visa.value">{{ visa.label }}</option></select></label>
+        <label>报名注册日期<input type="date" [(ngModel)]="student.registrationDate" [attr.aria-label]="person(i) + '报名注册日期'"></label>
+        <label class="check"><input type="checkbox" [(ngModel)]="student.returningStudent" [attr.aria-label]="person(i) + '老学员返校'">老学员返校，免注册费</label>
+      </div>
+      <p class="visa-note">{{ student.visaNote }}</p>
+      <app-school-quote-plan [plan]="student.plan" currencyLabel="元" [amountLabel]="student.amountLabel" [allowedRowWeeks]="student.allowedWeeks" (optionChange)="student.onOptionChange($event)" />
+      <label class="check family-check" *ngIf="student.hasFamilyRoom"><input type="checkbox" [(ngModel)]="student.familyStay" [attr.aria-label]="person(i) + '确认家庭入住'">确认按家庭入住，本项仅为该就读成员的参考费用</label>
+      <ul class="issues" role="status" *ngIf="student.issues.length"><li *ngFor="let issue of student.issues">{{ issue }}</li></ul>
+      <dl class="student-breakdown" *ngIf="student.total !== null"><div><dt>课程学费</dt><dd>{{ money(student.tuition) }}元</dd></div><div><dt>住宿费</dt><dd>{{ money(student.accommodation) }}元</dd></div><div><dt>注册费</dt><dd>{{ money(student.registration) }}元</dd></div><div *ngIf="student.discount"><dt>长期学习优惠</dt><dd>−{{ money(student.discount) }}元</dd></div></dl>
+      <p class="small">{{ student.registrationNote }} 未成年须选择适龄课程，出勤和监护要求仍适用。</p>
+    </div>
+  </details>
+  <div class="quote-result" aria-live="polite"><div><p class="eyebrow">YOUR CIP PLAN</p><h3>{{ title }}</h3><p>{{ budgetNote }}</p></div><div class="grand-total"><span>人民币主费合计</span><strong *ngIf="total !== null" data-testid="quote-total">{{ money(total!) }}<small>元</small></strong><strong *ngIf="total === null" class="pending-total">需调整或由顾问确认</strong></div></div>
+  <section class="local-section">
+    <h3>当地费用参考</h3><p>按所选签证及住宿分别计算，单位为比索。可退押金、教材及接机在下方单列。</p>
+    <ng-container *ngIf="localTotal !== null; else localPending">
+      <table class="fee-table"><caption class="sr-only">当前报价当地费用明细</caption><thead><tr><th>项目</th><th>适用学员</th><th>金额（比索）</th></tr></thead><tbody><tr *ngFor="let fee of localRows"><th scope="row">{{ fee.label }}<small>{{ fee.note }}</small></th><td>{{ feeScope(fee.students) }}</td><td>{{ money(fee.amount) }}</td></tr><tr class="subtotal"><th scope="row">当地费用小计</th><td>不含押金</td><td data-testid="local-total">{{ money(localTotal!) }}</td></tr></tbody></table>
+    </ng-container>
+    <ng-template #localPending><p class="issues">请完成所有学员的有效安排；没有完整当地费资料的周数需顾问确认。</p></ng-template>
+    <div class="local-extra" *ngFor="let student of activeStudents; let i = index"><p><strong>{{ person(i) }} · 可退宿舍押金：</strong>{{ student.local.deposit === null ? '需确认' : student.local.deposit === 0 ? '酒店不收此项' : money(student.local.deposit!) + '比索' }}</p><p class="issues" *ngFor="let issue of student.local.issues">{{ issue }}</p></div>
+    <p class="small">{{ depositNote }}</p>
+    <div class="pickup-fields"><label>接机安排<select aria-label="接机安排" [(ngModel)]="pickupAirport"><option value="none">暂不安排</option><option value="clark">克拉克机场</option><option value="manila">马尼拉机场</option></select></label><label *ngIf="pickupAirport !== 'none'">同航班接机人数<input type="number" min="1" step="1" aria-label="同航班接机人数" [(ngModel)]="pickupPeople"></label><p *ngIf="pickup !== null" data-testid="pickup-total"><strong>{{ money(pickup!) }}比索／组</strong><small>{{ pickupNote }}</small></p><p class="issues" *ngIf="pickupAirport !== 'none' && pickup === null">请填写有效的接机人数。</p></div>
+    <ul class="budget-notes"><li *ngFor="let note of extras">{{ note }}</li></ul>
+  </section>
+  <footer class="quote-actions"><div><p>{{ seasonalNote }}</p><p class="small" *ngIf="!canExport">请先调整提示项或由顾问确认费用，再生成完整报价图片。</p></div><app-quote-image-download-button [quote]="quoteImage" [previewBeforeDownload]="true" [disabled]="!canExport" label="预览与下载报价图片" /></footer>
+</div>

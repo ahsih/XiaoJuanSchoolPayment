@@ -1,0 +1,52 @@
+<div class="policy-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">仅管理者可见 · 内部结算</span>
+      <h1>学校佣金政策</h1>
+      <p>仅记录学校发给合作伙伴的内部通知，不同步到学校网页、学生报价或顾问工作台。</p>
+    </div>
+    <button type="button" (click)="load()" [disabled]="isLoading"><mat-icon>refresh</mat-icon>刷新</button>
+  </header>
+
+  <p *ngIf="errorMessage" class="message error">{{ errorMessage }}</p>
+  <p *ngIf="isLoading" class="message">正在读取内部政策…</p>
+  <p *ngIf="!isLoading && !errorMessage && !policies.length" class="message">暂无内部佣金政策记录。</p>
+
+  <article *ngFor="let policy of policies" class="policy-card">
+    <div class="card-heading">
+      <div><small>{{ policy.schoolName }}</small><h2>{{ policy.title }}</h2></div>
+      <span>生效报名日 {{ policy.effectiveRegistrationDate | date:'yyyy/MM/dd' }} 起</span>
+    </div>
+
+    <div class="facts">
+      <div><small>适用对象</small><strong>{{ policy.newStudentsOnly ? '新生报名' : '以学校通知为准' }}</strong></div>
+      <div><small>佣金比例</small><strong>{{ policy.commissionRate * 100 | number:'1.0-2' }}%</strong></div>
+      <div *ngIf="policy.roomBases.length"><small>单人间统一计算基数</small><strong>{{ policy.roomBases[0].commissionBasisFourWeeks | number:'1.0-0' }} 美元</strong></div>
+    </div>
+
+    <p class="formula">{{ policy.formulaNote }}</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>单人间房型</th><th>公布房价／4周</th><th>佣金计算基数／4周</th><th>核对提醒</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let room of policy.roomBases">
+            <td>{{ room.roomName }}</td>
+            <td>{{ room.publishedRoomPriceFourWeeks | number:'1.0-0' }} 美元</td>
+            <td>{{ room.commissionBasisFourWeeks | number:'1.0-0' }} 美元</td>
+            <td>{{ room.note || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="scope"><strong>尚待学校确认：</strong>{{ policy.scopeNote }}</p>
+    <details>
+      <summary>通知来源与记录原文</summary>
+      <p><strong>来源：</strong>{{ policy.source }}</p>
+      <p>{{ policy.sourceNotice }}</p>
+      <small>后台记录时间：{{ policy.recordedAt | date:'yyyy/MM/dd HH:mm' }} · 规则编号 {{ policy.policyCode }}</small>
+    </details>
+    <p class="future-note">当前只保存政策，尚未启用中介发票上传与自动核对；没有足够明确的学校规则时，不会自动判定佣金正确或错误。</p>
+  </article>
+</div>

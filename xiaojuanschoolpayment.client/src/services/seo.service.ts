@@ -24,6 +24,12 @@ const DEFAULT_SEO: SeoPage = {
 
 const SEO_PAGES: Record<string, SeoPage> = {
   '/': DEFAULT_SEO,
+  '/philippines-study/cebu/ev-la-mer': {
+    title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
+    description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',
+    keywords: 'EV La Mer, EV Academy La Mer, 宿务亲子游学, 麦克坦英语学校, La Mer费用, La Mer亲子套餐, 熟龄英语',
+    image: '/assets/la-mer/campus-sunset.webp',
+  },
   '/philippines-study/cebu/cg-academy-sparta-campus': {
     title: 'CG斯巴达校区 | 宿务课程、住宿费用与报价',
     description: '菲律宾宿务CG斯巴达校区介绍，查看斯巴达课程、高阶斯巴达、考试课程、住宿房型与费用报价，学杂费单独列示预估明细。',
@@ -185,7 +191,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark/cip-english-kepos': {
     title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
     description:
-      '菲律宾克拉克 CIP语言学校页面，整理CIP English Kepos的Native speaker一对一、ESL、IELTS、TOEIC、Business、亲子青少年课程、2026人民币课程住宿费用和报名注意事项。',
+      '了解克拉克CIP的母语外教一对一、ESL、雅思及亲子课程，比较宿舍和酒店实景、2026年9月人民币价格与当地费用，查看入学测试、假期、学习管理及参考报价。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
     image: '/assets/philippines/cip-campus-intro.webp',
   },

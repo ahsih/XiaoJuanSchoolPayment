@@ -1,499 +1,91 @@
-<div class="cia-page cip-page">
-  <main class="cia-shell">
-    <section class="cia-hero" id="top">
+<div class="cip-page">
+  <main class="cip-shell">
+    <section id="overview" class="cip-hero">
       <div class="hero-copy">
-        <p class="breadcrumb">
-          <mat-icon>home</mat-icon>
-          菲律宾游学 / 克拉克学校 / CIP
-        </p>
-        <h1>菲律宾克拉克 <span>CIP语言学校</span></h1>
-        <p class="hero-lead">
-          CIP English Kepos 位于Clark / Angeles，主打外教一对一、ESL、IELTS、TOEIC、商务英语和亲子青少年课程。
-        </p>
-
-        <div class="hero-tags" aria-label="CIP 关键词">
-          <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
-          <span><mat-icon>record_voice_over</mat-icon>Native 1:1</span>
-          <span><mat-icon>calendar_month</mat-icon>6天课程</span>
-          <span><mat-icon>hotel</mat-icon>宿舍 / Hotel住宿</span>
-        </div>
-
-        <div class="hero-actions">
-          <a
-            class="primary-action"
-            href="#quote"
-            (click)="scrollToSection('quote', $event)"
-          >
-            获取 CIP 最新报价
-            <mat-icon>chevron_right</mat-icon>
-          </a>
-          <a
-            class="secondary-action"
-            href="#fee-structure"
-            (click)="scrollToSection('fee-structure', $event)"
-          >
-            查看费用明细
-            <mat-icon>receipt_long</mat-icon>
-          </a>
-          <a
-            class="secondary-action"
-            href="https://cipenglish.com/"
-            target="_blank"
-            rel="noopener"
-          >
-            学校官网
-            <mat-icon>open_in_new</mat-icon>
-          </a>
-        </div>
+        <a class="back-link" routerLink="/philippines-study/clark">克拉克游学 / 学校介绍</a>
+        <p class="eyebrow">CIP ENGLISH KEPOS · SINCE 2007</p>
+        <h1>克拉克 CIP<br>语言学校</h1>
+        <p class="hero-intro">克拉克地区 CIP 语言学校位于安吉利斯，提供一对一英语、母语外教口语、考试备考及亲子课程。从轻量学习到斯巴达管理，可按目标和生活节奏选择。</p>
+        <div class="tags"><span>母语外教课程可选</span><span>校内宿舍 / 校外酒店</span><span>多元学生群体</span></div>
+        <div class="hero-price"><span>成人四周参考</span><strong>8,940<small> 元起</small></strong><p>Light ESL + 校内三人间 + 注册费600元<br>课程与住宿主费8,340元；当地费、教材及接机另计。</p></div>
+        <a class="primary-action" href="#quote" (click)="scrollToSection($event, 'quote')">查看费用与报价 <span aria-hidden="true">↗</span></a>
       </div>
+      <figure class="hero-photo"><img src="/assets/philippines/cip-campus-intro.webp" alt="CIP花园式校园与步道" fetchpriority="high"><figcaption>学习、生活与交流，在同一座校园里。</figcaption></figure>
+    </section>
 
-      <div class="hero-media" aria-label="CIP 校园图片">
-        <div class="hero-collage">
-          <figure *ngFor="let image of heroGalleryPreviewImages">
-            <img [src]="image.src" [alt]="image.title" />
-          </figure>
-        </div>
-        <aside class="hero-price-card">
-          <span>4周参考</span>
-          <strong>RMB 7,740 <small>起</small></strong>
-          <p>Light ESL + 校内四人间</p>
-          <ul>
-            <li>
-              <mat-icon>check_circle</mat-icon>
-              课程注册费RMB 600、住宿注册费RMB 500另计
-            </li>
-            <li>
-              <mat-icon>info</mat-icon>
-              1/2/3周按4周价的40%/65%/85%计算
-            </li>
-          </ul>
-        </aside>
+    <nav class="section-nav" aria-label="CIP页面导航"><a *ngFor="let anchor of anchors" [href]="'#' + anchor.id" (click)="scrollToSection($event, anchor.id)">{{ anchor.label }}</a></nav>
+
+    <section class="section campus-section" aria-labelledby="campus-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / MEET CIP</p><h2 id="campus-title">先看看，你会在哪里学习</h2></div><p>适合希望多开口的成人、目标明确的考试生，以及需要兼顾孩子学习与住宿的家庭。</p></div>
+      <div class="gallery-grid"><article *ngFor="let item of gallery"><app-expandable-image [src]="item.src" [alt]="item.title" [title]="item.title" previewHeight="210px" previewFit="cover"/><h3>{{ item.title }}</h3><p>{{ item.caption }}</p></article></div>
+      <div class="video-card">
+        <div><p class="eyebrow">CAMPUS FILM</p><h3>看看宿舍、泳池与餐厅</h3><p>2025校园实景节选 · 无声 · 32秒<br>实景供了解环境，设施及房间安排以入住时为准。</p></div>
+        <button *ngIf="!videoPlaying" type="button" class="video-cover" (click)="videoPlaying = true" aria-label="播放CIP校园实景视频（无声）"><img src="/assets/cip/campus-poster.webp" alt="CIP校园视频封面" loading="lazy"><span>▶ 点击播放</span></button>
+        <video *ngIf="videoPlaying" controls autoplay [muted]="true" playsinline preload="none" poster="/assets/cip/campus-poster.webp" aria-label="CIP校园实景无声节选"><source src="/assets/cip/campus-2025-silent.mp4" type="video/mp4">您的浏览器暂不支持视频播放。</video>
       </div>
     </section>
 
-    <nav class="section-tabs" aria-label="CIP 页面导航">
-      <a
-        *ngFor="let item of mobileAnchors"
-        [href]="'#' + item.target"
-        (click)="scrollToSection(item.target, $event)"
-      >
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-      </a>
-    </nav>
-
-    <section class="overview-grid" aria-label="30 秒看懂 CIP">
-      <div class="overview-main">
-        <div class="section-heading">
-          <h2>30 秒看懂 CIP</h2>
-        </div>
-        <div class="snapshot-grid">
-          <article *ngFor="let item of snapshotCards">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <div>
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.text }}</p>
-            </div>
-          </article>
-        </div>
+    <section id="courses" class="section">
+      <div class="section-heading"><div><p class="eyebrow">02 / FIND YOUR COURSE</p><h2>先选目标，再选学习强度</h2></div><p>日间课量与晚间安排分开列明。表中学费不含住宿和注册费，具体水平由学校评估。</p></div>
+      <div class="intensity-grid">
+        <article><span class="tag">轻量</span><h3>每天5节日间课</h3><p>Light ESL与Premium Native Light，保留更多自主安排时间。</p></article>
+        <article><span class="tag">半斯巴达</span><h3>通常7—8节日间课</h3><p>课程密度较高；周一至周四19:00—22:00可选监督自习。Speak Up适合1—2周集中练习。</p></article>
+        <article><span class="tag">斯巴达</span><h3>日间课 + 必修晚间安排</h3><p>晚课、自习及周六上午课程须参加；周一至周四不能外出。</p></article>
       </div>
-
-      <aside class="mini-quote-card">
-        <h2>CIP费用快速报价</h2>
-        <label>
-          周数
-          <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">
-              {{ weeks }}周
-            </option>
-          </select>
-        </label>
-        <label>
-          课程
-          <select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidWeeks()">
-            <option *ngFor="let course of courseFees" [value]="course.id">
-              {{ course.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          房型
-          <select [(ngModel)]="selectedRoomId">
-            <option *ngFor="let room of roomFees" [value]="room.id">
-              {{ room.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          入学日期
-          <input type="date" [(ngModel)]="selectedStartDate" />
-        </label>
-        <a
-          class="primary-action"
-          href="#quote"
-          (click)="scrollToSection('quote', $event)"
-          >立即计算我的费用</a
-        >
-        <p>课程与住宿为人民币4周价；短期比例和两项注册费已纳入报价</p>
-      </aside>
+      <div class="filter-bar" aria-label="课程类别"><button *ngFor="let group of courseGroups" type="button" [class.active]="selectedGroup === group" [attr.aria-pressed]="selectedGroup === group" (click)="selectedGroup = group">{{ group }}</button></div>
+      <table class="comparison course-table"><caption class="sr-only">CIP课程、日间配置、报名周数及学费</caption><thead><tr><th scope="col">课程 / 强度</th><th scope="col">每日配置与适合人群</th><th scope="col">学习周期</th><th scope="col">课程学费</th></tr></thead><tbody>
+        <tr *ngFor="let course of filteredCourses"><th scope="row">{{ course.name }}<span class="subtext">{{ course.mode }}</span></th><td data-label="日间课">{{ course.schedule }}<span class="subtext">{{ course.note }}</span></td><td data-label="周期">{{ duration(course) }}</td><td data-label="学费" class="amount">{{ coursePrice(course) }}</td></tr>
+      </tbody></table>
+      <p class="fine-print">小组课参考1:5、大组课参考1:12；实际按水平和开班情况安排。固定项目按标注周数报名，保分班须确认目标分数、入学条件及履约要求。</p>
     </section>
 
-    <section class="advisor-review" id="advisor-review">
-      <h2>思达启航顾问点评</h2>
-      <p>
-        CIP适合把Native speaker一对一、口语纠音和Clark舒适生活放在重点的学生。它不是最新大型度假型校区，但官方强调Kepos花园式、安静、自然的学习氛围，适合想认真提升表达的人。
-      </p>
-      <div class="fit-columns">
-        <div>
-          <h3><mat-icon>check_circle</mat-icon>适合优先看 CIP</h3>
-          <ul>
-            <li *ngFor="let item of suitableFor">{{ item.title }}</li>
-          </ul>
-        </div>
-        <div>
-          <h3><mat-icon>cancel</mat-icon>不太适合的情况</h3>
-          <ul>
-            <li *ngFor="let item of notSuitableFor">{{ item.title }}</li>
-          </ul>
-        </div>
+    <section id="rooms" class="section">
+      <div class="section-heading"><div><p class="eyebrow">03 / MAKE YOURSELF AT HOME</p><h2>校内便利，或酒店空间</h2></div><p>校内步行上课；Clover酒店约5分钟车程，提供免费往返学校班车。餐食主要在学校餐厅享用，酒店另点餐自付。</p></div>
+      <div class="room-intro"><p><strong>校内宿舍</strong>有空调、独立卫浴和热水。单人A/B以不同布局及价位区分，照片可放大比较；双人、三人间适合合住。家庭四人房为三人房加床，仅限家庭。</p><p><strong>校外酒店</strong>King约28㎡、1张大床；Twin约28㎡、1张双人床+1张单人床；双卧套房约63㎡、两卧两卫及小厨房。套房可住3—5人不代表已有五人售价。</p></div>
+      <div class="filter-bar" aria-label="住宿类别"><button type="button" [class.active]="!showHotelRooms" [attr.aria-pressed]="!showHotelRooms" (click)="showHotelRooms = false">校内宿舍</button><button type="button" [class.active]="showHotelRooms" [attr.aria-pressed]="showHotelRooms" (click)="showHotelRooms = true">校外酒店</button></div>
+      <div class="room-gallery"><figure *ngFor="let room of displayedRoomPhotos"><app-expandable-image [src]="room.src" [alt]="room.title + '实景照片'" [title]="room.title" previewHeight="150px" previewFit="cover"/><figcaption>{{ room.title }}</figcaption></figure></div>
+      <table class="comparison"><caption>四周住宿参考（人民币）</caption><thead><tr><th scope="col">房型</th><th scope="col">费用</th><th scope="col">入住说明</th></tr></thead><tbody><tr *ngFor="let room of displayedRooms"><th scope="row">{{ room.name }}</th><td data-label="四周费用" class="amount">{{ money(room.fee) }}元<span *ngIf="room.sharedHotel" class="subtext">原表参考，收费单位待确认</span></td><td data-label="说明">{{ room.detail }}</td></tr></tbody></table>
+      <p class="notice">校内住宿按每位学生列示。酒店多人入住须确认每人或整房费用及同住安排后再报价；斯巴达课程本期只提供校内住宿报价。房型照片为学校提供的样例，房号与配置可能不同。</p>
+      <details><summary>入住、离房与酒店安排</summary><p>酒店周日14:00入住、周六12:00退房；校内宿舍周六13:00离房。酒店未列宿舍门禁，但学生仍须遵守课表、出勤及未成年监护规定。超住须提前确认空房和费用。</p></details>
+    </section>
+
+    <section id="quote" class="section">
+      <div class="section-heading"><div><p class="eyebrow">04 / PLAN YOUR BUDGET</p><h2>把学习预算看清楚</h2></div><p>课程与住宿采用2026年9月人民币资料，当地费用采用2026年6月比索表。两种币种分开列示。</p></div>
+      <div class="promotion-grid">
+        <article class="promotion"><span class="tag">已计入适用报价</span><h3>长期学习优惠</h3><p>16 / 20 / 24周分别优惠<strong>300 / 600 / 900元</strong>。仅在课程可报名周数内适用，每位学生独立适用，只扣一次。</p></article>
+        <article class="promotion pending"><span class="tag">适用条件需确认</span><h3>淡季现金优惠与学习权益</h3><p>海报列每4周<strong>50美元学费优惠</strong>；另有一节菲师一对一替换升级为母语外教一对一、克拉克免费接机，以及可申请25分钟免费体验课。</p><p class="small">海报写2026/12/31前，排除1、2、6、7、8月。日期按报名还是入学判断、跨季、人民币抵扣及叠加规则尚待确认，以下报价暂不扣减。升级为替换一节课。</p></article>
+      </div>
+      <app-cip-quote-calculator />
+      <details><summary>其他周数的当地费总览</summary><table class="comparison"><caption>按30天旅游签证预估，均不含教材、接机；其他签证请使用上方报价。</caption><thead><tr><th scope="col">周数</th><th scope="col">校内合计（含押金）</th><th scope="col">其中可退押金</th><th scope="col">酒店合计</th></tr></thead><tbody><tr *ngFor="let row of localReferences"><th scope="row">{{ row.weeks }}周</th><td data-label="校内合计">{{ money(row.dorm) }}</td><td data-label="其中押金">{{ money(row.deposit) }}</td><td data-label="酒店合计">{{ money(row.hotel) }}</td></tr></tbody></table></details>
+      <details><summary>接机费用：按同行人数选一个档位</summary><p>以下为每组参考费用，不按每人重复相乘。家庭及多人同行请提前确认航班、行李与车辆安排。</p><table class="comparison"><thead><tr><th scope="col">机场</th><th scope="col">1人</th><th scope="col">2人同行</th><th scope="col">3人及以上</th></tr></thead><tbody><tr><th scope="row">克拉克</th><td data-label="1人">1,000比索</td><td data-label="2人">1,500比索</td><td data-label="3人及以上">2,000比索</td></tr><tr><th scope="row">马尼拉</th><td data-label="1人">4,500比索</td><td data-label="2人">5,500比索</td><td data-label="3人及以上">6,500比索</td></tr></tbody></table></details>
+    </section>
+
+    <section id="admission" class="section">
+      <div class="section-heading"><div><p class="eyebrow">05 / READY FOR YOUR FIRST WEEK</p><h2>提前完成分级，更早进入课堂</h2></div><p>以下入学流程采用2026年4月新通知。专业课程的面试与普通ESL分级分别安排。</p></div>
+      <ol class="timeline"><li><span>出发前</span><h3>完成ESL线上分级</h3><p>听力、阅读、写作约60分钟，须在入学前两周的周四前完成。每人仅一次，须独立作答，不使用AI或辅助工具，完成后告知顾问。</p></li><li><span>报名专业课程</span><h3>预约20—30分钟专业面试</h3><p>IELTS Intensive / Native / Guarantee、TOEIC Regular、Advanced Business须参加，即使已有官方成绩。按通知在注册后24小时内完成面试，须提前协调预约，面试时段为平日10:00—16:00（菲律宾时间）。有条件通过者须先修学校指定的2—4周衔接课程。</p></li><li><span>周日抵达</span><h3>入住、熟悉校园</h3><p>提前确认接机及入住安排。雅思学生按学校要求携带电脑和耳机，用于校内练习。</p></li><li><span>周一开学</span><h3>完成线上测试者09:40开课</h3><p>08:00—09:00说明会，09:00—09:30领取教材和课表，09:40上课，17:00安排购物换汇。抵校参加纸笔测试者周二开始上课。</p></li><li><span>第一周周六起</span><h3>IELTS / TOEIC每周模考</h3><p>从第一周开始。学校以101—601共11级进行分级，每4周安排进度测试，并提供成绩单与结业证明；学习进度因人而异。</p></li></ol>
+      <p class="notice">IELTS Basic与TOEFL的最新测试、面试流程须单独确认；不要直接按免试安排。校内练习自备电脑的要求不代表官方考试要求自带电脑。</p>
+      <div class="study-grid"><article><h3>晚间课与自习</h3><p>Intensive ESL及TOEFL Intensive周一至周四19:00—21:00：1小时课+1小时自习。IELTS系列周一至周四19:00—22:00：2小时课+1小时自习，周五19:00—20:00。斯巴达学生须参加，其他项目依课程安排选修。</p></article><article><h3>一周的复习节奏</h3><p>周一、周二词汇测验；周三语法；周四复习测验。设满分免复习考及最高分证书等激励，未达要求须参加周六监督自习。斯巴达周六上午必修，非斯巴达按项目选修。</p></article><article><h3>出勤与外出</h3><p>斯巴达周一至周四不能外出。校内成人一般周日至周四22:00、周五及周六次日01:00前返校；次日有课及具体课程限制优先。未经许可缺席晚间安排会受到监督自习等处理。</p></article></div>
+      <div class="holiday-block"><div class="section-heading compact"><div><h3>2026假期与学校课程安排</h3><p>默认显示后续日期。政府假日和学校是否上课分别标注，补课日期另依学校通知。</p></div><button type="button" class="text-button" (click)="showAllHolidays = !showAllHolidays" [attr.aria-expanded]="showAllHolidays">{{ showAllHolidays ? '仅看后续日期' : '查看全年' }}</button></div>
+        <p class="notice"><strong>每自然月保证19天课程</strong>：因假期不足19天时安排补课，通常在周末；该自然月达到19天后不另补。个人原因或疾病缺课不补。每月最后一个周五上课日15:30—17:00全校活动不另补课。此规则不是任意连续4周保证19天。</p>
+        <table class="comparison"><thead><tr><th scope="col">日期</th><th scope="col">节日 / 官方类型</th><th scope="col">学校安排</th></tr></thead><tbody><tr *ngFor="let day of holidays"><th scope="row">{{ day.date }}<span class="subtext">{{ weekday(day.date) }}</span></th><td data-label="节日">{{ day.name }}<span class="subtext">{{ day.official }}</span></td><td data-label="学校安排">{{ day.school }}</td></tr></tbody></table><p *ngIf="!holidays.length">本年度没有后续已列日期，可查看全年安排。下一年度待学校公布。</p>
+        <p class="fine-print">日期参照<a href="https://lawphil.net/executive/proc/proc2025/proc_1006_2025.html" target="_blank" rel="noopener noreferrer">2026假日公告</a>及后续官方公告核对。Speak Up手册另列节假日授课特色，须确认具体课表，不适用于所有课程。</p>
       </div>
     </section>
 
-    <section class="cia-section" id="highlights">
-      <div class="section-heading">
-        <h2>CIP 核心亮点</h2>
-        <p>选CIP重点看Native课程比例、学习连续性、住宿选择和Clark生活节奏。</p>
-      </div>
-      <div class="feature-card-grid">
-        <article *ngFor="let item of coreHighlights">
-          <img [src]="item.image" [alt]="item.title" />
-          <span><mat-icon>{{ item.icon }}</mat-icon></span>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
+    <section id="life" class="section">
+      <div class="section-heading"><div><p class="eyebrow">06 / LIFE BEYOND THE CLASSROOM</p><h2>日常生活，也能过得从容</h2></div><p>课后休息、运动和交流，都是游学体验的一部分。活动与服务按当期安排开放。</p></div>
+      <div class="life-grid"><article><h3>餐食与清洁</h3><p>周一至周六提供三餐；周日及假日为早午餐加晚餐。宿舍房间每周清洁两次，校园设Wi-Fi与自习空间。</p></article><article><h3>洗衣有两种选择</h3><p>免费使用自助洗衣机，自备洗衣液。可选付费送洗：5kg以内150比索、6—8kg 200比索、9—10kg 300比索，开放和取送时间依校方安排。</p></article><article><h3>运动与兴趣社团</h3><p>泳池、运动场，以及体育、阅读、音乐社团。English Day提供课堂外交流机会；周末短途活动的日期、成团及费用依当期公告，不包含在普通学费中。</p></article><article><h3>免费商场单程接驳</h3><p>平日17:05到Goals Gym / Nepo Mall；周六13:00到SM City Clark，周六须提前报名。<strong>仅送达，回程自理。</strong>平日法定假日停运；周六按公布安排，可能因司机情况调整。酒店往返学校班车为另一项服务。</p></article></div>
+      <div class="nearby"><h3>需要买东西、喝咖啡或就医时</h3><dl><div><dt>Coffee Cat</dt><dd>步行约2—3分钟</dd></div><div><dt>便利店</dt><dd>步行约3—5分钟</dd></div><div><dt>Nepo Mall</dt><dd>车程约5—7分钟</dd></div><div><dt>SM City Clark</dt><dd>车程约20—25分钟</dd></div><div><dt>St. Catherine医院</dt><dd>车程约10分钟</dd></div><div><dt>AUF医疗中心</dt><dd>车程约20分钟</dd></div></dl><p class="fine-print">以上为学校资料中的位置参考，实际路线、营业及车程会变化；不含商户消费和就医费用。</p></div>
     </section>
 
-    <section class="cia-section" id="gallery">
-      <div class="section-heading">
-        <h2>按区域查看 CIP 环境</h2>
-        <p>以下图片来自CIP官方School、Dormitory、Hotel、Features和Programs页面。</p>
-      </div>
-      <div class="gallery-tabs" role="tablist" aria-label="CIP 环境分类">
-        <button
-          type="button"
-          *ngFor="let category of galleryCategories"
-          [class.active]="selectedGalleryCategory === category"
-          (click)="setGalleryCategory(category)"
-        >
-          {{ category }}
-        </button>
-      </div>
-      <div class="environment-grid">
-        <figure *ngFor="let image of filteredGalleryImages">
-          <app-expandable-image
-            [src]="image.src"
-            [alt]="image.title"
-            [title]="image.title"
-            [caption]="image.description"
-            previewHeight="220px"
-          ></app-expandable-image>
-          <figcaption>
-            <span>{{ image.category }}</span>
-            <strong>{{ image.title }}</strong>
-            <p>{{ image.description }}</p>
-            <ul *ngIf="image.details?.length">
-              <li *ngFor="let detail of image.details">{{ detail }}</li>
-            </ul>
-          </figcaption>
-        </figure>
-      </div>
+    <section id="faq" class="section">
+      <div class="section-heading"><div><p class="eyebrow">07 / BEFORE YOU DECIDE</p><h2>到校后退费与常见问题</h2></div></div>
+      <div class="refund-note"><h3>到校后需要提前结束学习</h3><p>请尽早通过顾问向学校提交书面申请，由学校核对剩余课程、住宿及已使用优惠后给出书面结果。现有资料的剩余周数门槛存在不同口径，可退金额、优惠扣回及办理时间须个案书面确认，本页不承诺固定退费比例。</p><p>走读、已开始的加课及课程降级适用各自规则，请在调整前确认。</p></div>
+      <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
+      <details><summary>加课、换课需要多少钱？</summary><p>下表为学校公布的额外项目参考价，单位为美元／4周；须确认当期人民币适用金额和空位，不直接计入上方人民币报价。加课开始后不退费，节假日亦不退加课费。</p><table class="comparison"><thead><tr><th scope="col">项目</th><th scope="col">参考费用</th></tr></thead><tbody><tr><th scope="row">新增母语外教一对一</th><td data-label="美元／4周">360</td></tr><tr><th scope="row">新增菲师ESL / Business / TOEIC一对一</th><td data-label="美元／4周">180</td></tr><tr><th scope="row">新增菲师IELTS / TOEFL一对一</th><td data-label="美元／4周">210</td></tr><tr><th scope="row">新增小组课</th><td data-label="美元／4周">100</td></tr><tr><th scope="row">菲师一对一转母语外教一对一</th><td data-label="美元／4周">250</td></tr><tr><th scope="row">小组课转母语外教一对一 / 菲师一对一</th><td data-label="美元／4周">260 / 120</td></tr></tbody></table></details>
     </section>
 
-    <section class="cia-section" id="courses">
-      <div class="section-heading">
-        <h2>CIP 课程怎么选？</h2>
-        <p>
-          先判断你是否需要Native 1:1，再按轻量ESL、强化ESL、考试、商务或亲子路线匹配课程。
-        </p>
-      </div>
-      <div class="course-choice-grid">
-        <article *ngFor="let item of courseChoiceCards">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-      <div class="course-match-cta" aria-label="CIP 课程顾问匹配">
-        <div class="course-match-intro">
-          <mat-icon>support_agent</mat-icon>
-          <div>
-            <h2>不确定选哪种 CIP 课程？</h2>
-            <p>
-              把英文基础、学习周数、年龄、是否需要Native课和住宿偏好发给顾问，我们会帮你确认CIP是否比EG、WE或碧瑶学校更适合。
-            </p>
-          </div>
-        </div>
-
-        <div class="course-match-action">
-          <a class="primary-action" routerLink="/about-sida/contact">
-            帮我匹配课程和费用
-            <mat-icon>chevron_right</mat-icon>
-          </a>
-          <small>备注“CIP”，顾问会按目标课程、房型和预算给建议</small>
-        </div>
-
-        <p class="course-match-note">
-          <mat-icon>verified_user</mat-icon>
-          本页已按提供的2026 CIP人民币价目表更新；正式报名仍需确认价格适用期、空房和当地费用。
-        </p>
-      </div>
-    </section>
-
-    <section class="quote-results-section" id="quote">
-      <div class="quote-form-card">
-        <h2><mat-icon>calculate</mat-icon>CIP 费用快速报价</h2>
-        <label>
-          学习周数
-          <select [(ngModel)]="selectedWeeks">
-            <option *ngFor="let weeks of availableWeekOptions" [ngValue]="weeks">
-              {{ weeks }}周
-            </option>
-          </select>
-        </label>
-        <label>
-          课程
-          <select [(ngModel)]="selectedCourseId" (ngModelChange)="ensureValidWeeks()">
-            <option *ngFor="let course of courseFees" [value]="course.id">
-              {{ course.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          房型
-          <select [(ngModel)]="selectedRoomId">
-            <option *ngFor="let room of roomFees" [value]="room.id">
-              {{ room.name }}
-            </option>
-          </select>
-        </label>
-        <label>
-          入学日期
-          <input type="date" [(ngModel)]="selectedStartDate" />
-        </label>
-        <div class="radio-row">
-          <span>周数计价规则</span>
-          <strong>{{ durationRuleText }}</strong>
-        </div>
-      </div>
-
-      <div class="quote-result-card">
-        <div class="quote-result-head">
-          <div>
-            <h2>报价结果 <small>价格参考</small></h2>
-            <p>
-              {{ selectedCourse.name }} + {{ selectedRoom.name }} +
-              {{ selectedWeeks }}周
-            </p>
-          </div>
-          <strong
-            >入学日期：{{ selectedStartDate | date: "yyyy/MM/dd" }}</strong
-          >
-        </div>
-        <div class="result-lines">
-          <div>
-            <span>注册费（课程RMB 600 + 住宿RMB 500）</span>
-            <strong>RMB {{ formatCny(registrationFee) }}</strong>
-          </div>
-          <div>
-            <span>课程费（{{ selectedWeeks }}周）</span>
-            <strong>RMB {{ formatCny(tuitionForSelectedWeeks) }}</strong>
-          </div>
-          <div>
-            <span>住宿费（{{ selectedWeeks }}周）</span>
-            <strong>RMB {{ formatCny(roomFeeForSelectedWeeks) }}</strong>
-          </div>
-          <div class="discount-line" *ngIf="longTermDiscount > 0">
-            <span>长期优惠（16周RMB 300 / 20周RMB 600 / 24周RMB 900）</span>
-            <strong>- RMB {{ formatCny(longTermDiscount) }}</strong>
-          </div>
-        </div>
-        <div class="quote-total">
-          <span>前期支付参考合计</span>
-          <strong>{{ quoteCnyText }}</strong>
-          <em>已包含课程与住宿注册费RMB 1,100</em>
-        </div>
-        <div class="quote-tool-row">
-          <a class="primary-action" routerLink="/about-sida/contact">
-            <mat-icon>headset_mic</mat-icon>获取顾问确认报价
-          </a>
-          <small class="cip-price-warning">
-            学校价格、空房、入住限制和当地费用可能调整，报名以确认报价为准。
-          </small>
-        </div>
-      </div>
-    </section>
-
-    <section class="cia-section" id="fee-structure">
-      <div class="section-heading">
-        <h2>费用结构更清楚</h2>
-        <p>课程费与住宿费均以人民币4周价为基准；1/2/3周分别按40%/65%/85%计算。</p>
-      </div>
-      <div class="fee-structure-grid">
-        <article *ngFor="let group of feeStructureCards">
-          <h3>
-            <mat-icon>{{ group.icon }}</mat-icon>
-            {{ group.title }}
-          </h3>
-          <dl>
-            <div *ngFor="let row of group.rows">
-              <dt>{{ row.label }}</dt>
-              <dd>{{ row.value }}</dd>
-            </div>
-          </dl>
-          <strong>{{ group.note }}</strong>
-        </article>
-      </div>
-    </section>
-
-    <section class="tables-section" id="course-fees">
-      <div class="course-table-block">
-        <h2><mat-icon>menu_book</mat-icon>CIP 2026课程费 / 4周</h2>
-        <div
-          class="data-table course-fee-table"
-          role="table"
-          aria-label="CIP 2026年人民币课程费"
-        >
-          <div class="table-row table-head" role="row">
-            <span role="columnheader">课程方向</span>
-            <span role="columnheader">课程名称</span>
-            <span role="columnheader">4周课程费（RMB）</span>
-            <span role="columnheader">说明</span>
-            <span role="columnheader">备注</span>
-          </div>
-          <div class="table-row" role="row" *ngFor="let fee of courseFees">
-            <span role="cell">{{ fee.suitable }}</span>
-            <span role="cell"><strong>{{ fee.name }}</strong></span>
-            <span role="cell">RMB {{ formatCny(fee.tuition) }}</span>
-            <span role="cell">{{ fee.schedule }}</span>
-            <span role="cell">{{ fee.note }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="room-table-block" id="room-fees">
-        <h2><mat-icon>bed</mat-icon>CIP 2026住宿费 / 4周</h2>
-        <div
-          class="data-table room-fee-table"
-          role="table"
-          aria-label="CIP 2026年人民币住宿费"
-        >
-          <div class="table-row table-head" role="row">
-            <span role="columnheader">房型</span>
-            <span role="columnheader">英文</span>
-            <span role="columnheader">4周住宿费（RMB）</span>
-            <span role="columnheader">备注</span>
-          </div>
-          <div class="table-row" role="row" *ngFor="let room of roomFees">
-            <span role="cell">{{ room.name }}</span>
-            <span role="cell">{{ room.englishName }}</span>
-            <span role="cell">RMB {{ formatCny(room.fee) }}</span>
-            <span role="cell">{{ room.note }}</span>
-          </div>
-        </div>
-        <p>住宿注册费RMB 500另计；房型空位、人数限制和校外住宿安排需报名时确认。</p>
-      </div>
-    </section>
-
-    <section class="cia-section" id="campus-life">
-      <div class="section-heading">
-        <h2>住宿与生活</h2>
-      </div>
-      <div class="life-grid">
-        <article *ngFor="let item of lifeCards">
-          <img [src]="item.image" [alt]="item.title" />
-          <h3>
-            <mat-icon>{{ item.icon }}</mat-icon>
-            {{ item.title }}
-          </h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-      <div class="price-note">
-        <h3>价格说明</h3>
-        <ol>
-          <li>本页课程费、住宿费和注册费已按提供的2026 CIP人民币价目表更新。</li>
-          <li>1周按4周价40%、2周按65%、3周按85%；4周以上按4周价格成倍计算。</li>
-          <li>长期优惠：16周减RMB 300、20周减RMB 600、24周减RMB 900。</li>
-          <li>最终报价仍需按价格适用期、房型空位、入住限制和当地费用确认。</li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="cia-section" id="enrollment-notes">
-      <div class="section-heading">
-        <h2><mat-icon>assignment_turned_in</mat-icon>报名 CIP 前建议确认</h2>
-      </div>
-      <div class="check-grid">
-        <article *ngFor="let item of enrollmentChecks">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
-      </div>
-    </section>
-
-    <app-sida-why-section [schoolName]="'菲律宾克拉克 CIP语言学校'"></app-sida-why-section>
-
-    <section class="faq-section" id="faq">
-      <div class="section-heading">
-        <h2><mat-icon>help</mat-icon>常见问题 FAQ</h2>
-      </div>
-      <details *ngFor="let faq of faqs">
-        <summary>{{ faq.question }}</summary>
-        <p>{{ faq.answer }}</p>
-      </details>
-    </section>
-
-    <section class="final-cta">
-      <div class="final-cta-head">
-        <div class="final-cta-icon" aria-hidden="true">
-          <mat-icon>headset_mic</mat-icon>
-        </div>
-        <div class="final-cta-copy">
-          <h2>想知道 CIP 现在是否适合你？</h2>
-          <p>
-            把入学日期、学习周数、英文程度、是否需要Native课、房型偏好和预算发给顾问，我们帮你确认CIP是否值得优先申请。
-          </p>
-        </div>
-        <div class="final-actions">
-          <a class="primary-action" routerLink="/about-sida/contact">
-            <mat-icon>description</mat-icon>获取 CIP 报价确认
-            <mat-icon>chevron_right</mat-icon>
-          </a>
-          <a class="secondary-action" routerLink="/philippines-study/clark">
-            <mat-icon>arrow_back</mat-icon>返回克拉克学校
-          </a>
-        </div>
-      </div>
-
-      <ul>
-        <li *ngFor="let badge of ctaBadges">
-          <mat-icon>check_circle</mat-icon>{{ badge }}
-        </li>
-      </ul>
-    </section>
-
-    <div class="mobile-bottom-actions" aria-label="CIP 手机端固定操作">
-      <a href="#quote" (click)="scrollToSection('quote', $event)">
-        <mat-icon>calculate</mat-icon>
-        计算费用
-      </a>
-      <a routerLink="/about-sida/contact">
-        <mat-icon>support_agent</mat-icon>
-        咨询顾问
-      </a>
-    </div>
+    <section class="contact-section"><div><p class="eyebrow">LET’S PLAN YOUR CIP STAY</p><h2>把目标、日期和预算告诉我们</h2><p>思达启航协助核对课程门槛、床位、家庭安排与适用优惠，再确认完整费用。</p></div><a class="primary-action" routerLink="/about-sida/contact">咨询思达启航 <span aria-hidden="true">↗</span></a></section>
+    <p class="page-footnote">资料核对：2026年9月20日。报价为所列项目参考，具体入学条件、床位与特殊组合以学校书面确认为准。</p>
   </main>
 </div>

@@ -70,6 +70,8 @@ export interface QuoteImageCardData {
   layout?: 'standard' | 'cia-detailed';
   /** Preserve every payment/local/optional fee and size the detailed image to its contents. */
   fullFeeDetails?: boolean;
+  /** Size shorter package fee sections to their content without changing other schools. */
+  compactDetailedSections?: boolean;
   /** Show fee reference, quantity, subtotal and verbatim webpage notes in separate columns. */
   localFeeTableLayout?: 'web';
   fileName: string;
@@ -87,6 +89,8 @@ export interface QuoteImageCardData {
   studentSectionTitle?: string;
   studentItems: QuoteImageInfoItem[];
   paymentSectionTitle?: string;
+  /** School-native currency for the detailed payment column; other schools retain dollars. */
+  paymentCurrencyLabel?: string;
   paymentItems: QuoteImagePaymentItem[];
   totalLabel: string;
   totalUsd: string;
@@ -355,6 +359,8 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   @Input() buttonClass = 'secondary-action';
   @Input() icon = 'image';
   @Input() disabled = false;
+  /** Optional desktop preview using the existing mobile image-save dialog. */
+  @Input() previewBeforeDownload = false;
   @Input() mode: QuoteImageActionMode = 'download';
   @Input() emailEndpoint = '/quote-email/send';
 
@@ -512,13 +518,13 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const sequence = ++this.saveSequence;
     const environment = quoteImageEnvironment();
     this.isWeChat = environment.wechat;
-    this.isPreviewOpen = environment.mobile;
+    this.isPreviewOpen = environment.mobile || this.previewBeforeDownload;
     const fileName = this.quote.fileName || 'quote-image.png';
 
     try {
       const blob = await this.createQuoteImageBlob();
       if (sequence !== this.saveSequence || this.destroyed) return;
-      if (environment.mobile) {
+      if (environment.mobile || this.previewBeforeDownload) {
         const src = await quoteBlobDataUrl(blob);
         if (sequence !== this.saveSequence || this.destroyed) return;
         this.previewFile = new File([blob], fileName, { type: 'image/png' });
@@ -651,7 +657,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     ));
     const locals = this.quote.localFeeItems ?? [];
     const webTable = this.quote.localFeeTableLayout === 'web';
-    const localNoteHeight = webTable
+    const localNoteHeight = webTable && (!this.quote.compactDetailedSections || !!this.quote.localFeeNote.trim())
       ? lineCount(this.quote.localFeeNote, 932, font(13, 400)) * 18 + 20 : 0;
     const localHeights = locals.map(row => webTable ? Math.max(54,
       lineCount(row.label, 170, font(14, 700)) * 18 + 20,
@@ -689,7 +695,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       paymentHeights, paymentDetails, paymentProjects, localHeights, optionalHeights, noteHeights, localNoteHeight,
       importantNotes, footerHeight, benefitsHeight, alumniHeight, serviceHeight,
       paymentExtra: (hasItemDetails ? sum(paymentHeights) - 358 : Math.max(0, sum(paymentHeights) - 358)) + totalHeight - 64,
-      localExtra: Math.max(0, localNoteHeight + sum(localHeights) + 64 + 6 + sum(optionalHeights) + 14 - 622),
+      localExtra: Math.max(this.quote.compactDetailedSections ? -622 : 0, localNoteHeight + sum(localHeights) + 64 + 6 + sum(optionalHeights) + 14 - 622),
       notesExtra: footerHeight - 106 + serviceHeight - 174,
     };
   }
@@ -873,7 +879,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     if (admissionDate) {
       context.fillText(`${admissionDate.label}：${admissionDate.value}`, 54, 180);
     }
-    if (headerContact) {
+    if (headerContact?.phone.trim()) {
       context.fillText(`·  电话/微信：${headerContact.phone.replace(/\s/g, '')}`, 258, 180);
     }
     this.drawRoundedImageCover(context, assets.hero, 590, 86, 422, 106, 10);
@@ -885,7 +891,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const paymentColumns = [36, 236, grid.noteBoundary, 992];
     context.fillStyle = '#f3f6f4';
     context.fillRect(36, 262, 956, 36);
-    ['项目', '金额（美元）', '说明'].forEach((label, index) => {
+    ['项目', `金额（${this.quote.paymentCurrencyLabel ?? '美元'}）`, '说明'].forEach((label, index) => {
       const centers = [136, (236 + grid.noteBoundary) / 2, (grid.noteBoundary + 992) / 2];
       context.font = '850 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
       context.fillStyle = green;
@@ -991,7 +997,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const webTable = !!fullLayout && this.quote.localFeeTableLayout === 'web';
     const localColumns = webTable ? [36, 236, 376, 432, 556, 992] : [36, 236, 420, 992];
     const localHeaderTop = 784 + (fullLayout?.localNoteHeight ?? 0);
-    if (webTable) {
+    if (webTable && fullLayout!.localNoteHeight > 0) {
       context.fillStyle = '#fffaf5';
       context.fillRect(36, 780, 956, fullLayout!.localNoteHeight - 8);
       drawTableText(this.quote.localFeeNote, 48, 799, 932, '#475569', '400 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1000, 18);

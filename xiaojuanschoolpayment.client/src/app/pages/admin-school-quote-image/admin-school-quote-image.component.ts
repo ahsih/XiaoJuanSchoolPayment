@@ -1,3 +1,6 @@
+import { cloneLaMerContentConfig, createDefaultLaMerContentConfig, isLaMerSchool, LA_MER_PATH } from '../philippines/la-mer-school/la-mer-content-config';
+import { LaMerStudentQuote, LaMerFamilyQuote } from '../philippines/la-mer-school/la-mer-quote';
+import { buildLaMerQuoteImage, LA_MER_FALLBACK_RATES } from '../philippines/la-mer-school/la-mer-quote-image';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -161,7 +164,9 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   get isPinesSelected(): boolean { return !!this.selectedSchool?.name.toLowerCase().includes('pines'); }
   get isMonolSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return name.includes('monol')&&!name.includes('sparta')&&!name.includes('斯巴达'); }
   get isMonolSpartaSelected(): boolean { const name=this.selectedSchool?.name.toLowerCase()??''; return name.includes('monol')&&(name.includes('sparta')||name.includes('斯巴达')); }
+  get isLaMerSelected(): boolean { return isLaMerSchool(this.selectedSchool?.name ?? ''); }
   get isEvSelected(): boolean {
+    if (this.isLaMerSelected) return false;
     const name = this.selectedSchool?.name.toLowerCase() ?? '';
     return name === 'ev academy' || name.includes('宿务ev') || name.includes('ev academy');
   }
@@ -188,8 +193,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   get isTargetSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('target')&&n.includes('english'); }
   get isWalesSelected(): boolean { return (this.selectedSchool?.name.toLowerCase()??'').includes('wales'); }
   get isMintSelected(): boolean { const n=this.selectedSchool?.name.toLowerCase()??''; return n.includes('english mint')||n.includes('englishmint')||(n.includes('薄荷岛')&&n.includes('mint')); }
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isMonolSpartaSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected || this.isMintSelected; }
-  get schoolShortName(): string { return this.isMonolSpartaSelected ? 'MONOL斯巴达校区' : this.isMintSelected ? 'English MINT' : this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'Cebu Blue Ocean' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : this.isCellaPremiumSelected ? 'CELLA Premium' : this.isCellaUniSelected ? 'CELLA Uni Sparta' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}` : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL主校区' : this.isPinesSelected ? 'PINES' : 'CIA'; }
+  get isSupportedSchool(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isMonolSpartaSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected || this.isMintSelected; }
+  get schoolShortName(): string { if (this.isLaMerSelected) return 'EV La Mer'; return this.isMonolSpartaSelected ? 'MONOL斯巴达校区' : this.isMintSelected ? 'English MINT' : this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'Cebu Blue Ocean' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : this.isCellaPremiumSelected ? 'CELLA Premium' : this.isCellaUniSelected ? 'CELLA Uni Sparta' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}` : this.isBeciSelected ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'}` : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'A&J' : this.isIbreezeSelected ? 'I.BREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? "B'Cebu" : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG斯巴达' : this.isCgBaniladSelected ? 'CG Banilad' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL主校区' : this.isPinesSelected ? 'PINES' : 'CIA'; }
   get imageFeeRows(): CiaLocalFeeRule[] {
     return this.content.localFees.filter(fee => fee.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
   }
@@ -418,7 +423,9 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     });
   }
 
+  laMerPreviewMode = 'ordinary';
   private buildPreviewQuote(): QuoteImageCardData {
+    if (this.isLaMerSelected) return buildLaMerQuoteImage(this.content, [new LaMerStudentQuote(() => this.content)], this.laMerPreviewMode === 'family' ? new LaMerFamilyQuote(() => this.content) : null, LA_MER_FALLBACK_RATES);
     if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
@@ -767,6 +774,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     if (this.isCgBaniladSelected) return createDefaultCgBaniladContentConfig();
     if (this.isPhilinterSelected) return createDefaultPhilinterContentConfig();
     if (this.isSmeagSelected) return createDefaultSmeagContentConfig();
+    if (this.isLaMerSelected) return createDefaultLaMerContentConfig();
     if (this.isEvSelected) return createDefaultEvContentConfig();
     if (this.isMonolSelected) return createDefaultMonolContentConfig();
     if (this.isPinesSelected) return createDefaultPinesContentConfig();
@@ -798,6 +806,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     if (this.isCgBaniladSelected) return cloneCgBaniladContentConfig(value);
     if (this.isPhilinterSelected) return clonePhilinterContentConfig(value);
     if (this.isSmeagSelected) return cloneSmeagContentConfig(value);
+    if (this.isLaMerSelected) return cloneLaMerContentConfig(value);
     if (this.isEvSelected) return cloneEvContentConfig(value);
     if (this.isMonolSelected) return cloneMonolContentConfig(value);
     if (this.isPinesSelected) return clonePinesContentConfig(value);

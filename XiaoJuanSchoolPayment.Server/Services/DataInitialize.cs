@@ -4,7 +4,7 @@ using XiaoJuanSchoolPayment.Server.Data.Models;
 
 namespace XiaoJuanSchoolPayment.Server.Services
 {
-  public static class DataInitialize
+  public static partial class DataInitialize
   {
     private const int UsdCurrencyId = 1;
     private const int CnyCurrencyId = 3;
@@ -135,6 +135,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedCiaPricingAsync(context);
       await SeedBtesPricingAsync(context);
       await SeedEvPricingAsync(context);
+      await SeedLaMerPricingAsync(context);
       await SeedSmeagCapitalPricingAsync(context);
       await SeedCpiPricingAsync(context);
       await SeedBCebuPricingAsync(context);
@@ -151,6 +152,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       await SeedMonolSpartaPricingAsync(context);
       await SeedWalesPricingAsync(context);
       await SeedAnjPricingAsync(context);
+      await SeedAnjSingleRoomCommissionPolicyAsync(context);
       await SeedImsPricingAsync(context);
       await SeedEgPricingAsync(context);
       await SeedWePricingAsync(context);
@@ -270,6 +272,84 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "家庭项目家长不参加课程减免｜8至10周", 375m, UsdCurrencyId, "每位不参加课程的家长减375美元；须报名时确定，不能恢复、增加或转让", now);
       UpsertFee(context, schoolId, "家庭项目家长不参加课程减免｜12周起", 500m, UsdCurrencyId, "每位不参加课程的家长减500美元；须报名时确定，不能恢复、增加或转让", now);
 
+      await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedAnjSingleRoomCommissionPolicyAsync(AppDbContext context)
+    {
+      const string policyCode = "ANJ_SINGLE_ROOM_2026_11_01";
+      if (context.SchoolCommissionPolicies.Any(x => x.PolicyCode == policyCode)) return;
+
+      var school = context.Schools.FirstOrDefault(x => x.Id == AnjSchoolId ||
+        x.Name == AnjSchoolName || x.Name == LegacyAnjSchoolName);
+      if (school == null) return;
+
+      var policy = new SchoolCommissionPolicy
+      {
+        Id = Guid.NewGuid(),
+        SchoolId = school.Id,
+        PolicyCode = policyCode,
+        Title = "A&J 单人间佣金基数调整",
+        EffectiveRegistrationDate = new DateTime(2026, 11, 1),
+        NewStudentsOnly = true,
+        CommissionRate = 0.30m,
+        CurrencyCode = "USD",
+        FormulaNote = "[学费 + 单人间佣金基数1,350美元 − 学校优惠] × 30%；1,350美元为通知所列单人间4周房价对应的佣金计算基数，不是学生住宿收费。",
+        ScopeNote = "仅记录通知明确的2026年11月1日及以后新生报名、所列单人间房型。续课、其他房型、多人共住套房、跨周数/分段、学校优惠的具体归属及思达95折是否影响佣金，通知未明确；自动核对前须与学校确认，不能自行推断。",
+        Source = "A&J e-Edu Academy 中文经理 Darren 的合作伙伴通知（2026年9月收到）",
+        SourceNotice = """
+          各位合作伙伴，大家好！🌻
+
+          这里有一份关于 A&J e-Edu Academy 单人间宿舍佣金政策调整的官方通知。
+
+          鉴于目前学校单人间房源非常有限且需求持续走高，为了保证学校运营的可持续性与高效性，我们将对单人间的佣金计算结构进行调整。具体内容如下：
+
+          生效日期：本次调整适用于自2026年11月1日及以后的所有新生报名。
+
+          单人间佣金计算调整方案：
+          佣金比例：30%
+          佣金计算基数：统一调整为1,350美元（此基数对应目前最高价位的双人间标准）
+
+          各单人间房型计算明细对照：
+          Deluxe Single：房间价格1,450美元 → 佣金计算基数1,350美元
+          Premium Suite Single：房间价格2,100美元 → 佣金计算基数1,350美元
+          Premium Single：房间价格1,650美元 → 佣金计算基数1,350美元
+          Premium Studio Single：房间价格1,650美元 → 佣金计算基数1,350美元
+          Eco Villa Single：房间价格2,300美元 → 佣金计算基数1,350美元
+
+          佣金计算公式参考：[学费 + 1,350美元 − 学校优惠] × 30%
+
+          非常感谢各位一直以来对A&J的理解与配合！我们将一如既往地与大家保持公平且长久的合作，为学生们提供最优质的服务。
+
+          如有任何关于新政策的疑问，欢迎大家随时在群里或私聊与我沟通！
+
+          Darren
+          A&J e-Edu Academy 中文经理
+          """,
+        RecordedAt = DateTime.UtcNow,
+      };
+
+      foreach (var room in new (string Code, string Name, decimal Price, string? Note)[]
+      {
+        ("deluxe-single", "Deluxe Single", 1450m, null),
+        ("premium-suite", "Premium Suite Single", 2100m, "仅单人入住适用；该房型在公开报价中还支持两人共住，双人情形未获本通知确认。"),
+        ("premium-single", "Premium Single", 1650m, null),
+        ("premium-studio-single", "Premium Studio Single", 1650m, null),
+        ("eco-villa-single", "Eco Villa Single", 2300m, null),
+      })
+      {
+        policy.RoomBases.Add(new SchoolCommissionRoomBasis
+        {
+          Id = Guid.NewGuid(),
+          RoomCode = room.Code,
+          RoomName = room.Name,
+          PublishedRoomPriceFourWeeks = room.Price,
+          CommissionBasisFourWeeks = 1350m,
+          Note = room.Note,
+        });
+      }
+
+      context.SchoolCommissionPolicies.Add(policy);
       await context.SaveChangesAsync();
     }
 
@@ -3107,7 +3187,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed(AnjSchoolName, 1377.5m, UsdCurrencyId, "1,377.5美元／4周起（Eco Relax Lite＋Deluxe三人房，已免100美元注册费并按95折计算）", Established(2008), new[] { LegacyAnjSchoolName, "A&J" }),
         new RegionalStartingPriceSeed("HELP English（Longlong Campus）", 1580m, UsdCurrencyId, "4周USD 1,580起（ESL + 双人间；注册费USD 100另计）", Established(1996), new[] { "HELP English Longlong Campus", "HELP Longlong" }),
 
-        new RegionalStartingPriceSeed("菲律宾克拉克 CIP语言学校", 7740m, CnyCurrencyId, "CNY 7,740 / 4周主费起（Light ESL + 校内四人间，注册费另计）", Established(2007), new[] { "CIP", "CIP English", "CIP English Kepos" }),
+        new RegionalStartingPriceSeed("菲律宾克拉克 CIP语言学校", 8340m, CnyCurrencyId, "人民币8,340元 / 4周主费起（Light ESL + 校内三人间）；另加注册费600元，合计8,940元，当地费另计", Established(2007), new[] { "CIP", "CIP English", "CIP English Kepos" }),
         new RegionalStartingPriceSeed(EgSchoolName, 1540m, UsdCurrencyId, "USD 1,540 / 4周起（ESL 4 + 宿舍1&2四人间 + 注册费）", Established(2013), new[] { LegacyEgSchoolName, EgFullSchoolName }),
         new RegionalStartingPriceSeed(WeSchoolName, 1500m, UsdCurrencyId, "USD 1,500 / 4周起（ESL 4 + 四人间 + 注册费）", Established(2016), new[] { LegacyWeSchoolName }),
         new RegionalStartingPriceSeed("菲律宾克拉克TALK Academy语言学校", 1280m, UsdCurrencyId, "USD 1,280 / 4周主费起参考", Established(2022), new[] { "TALK Academy Clark", "Clark TALK Academy" }),

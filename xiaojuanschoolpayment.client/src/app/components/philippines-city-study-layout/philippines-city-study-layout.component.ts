@@ -49,6 +49,7 @@ export interface CityStudyDirectorySchool {
   tag: string;
   location: string;
   summary: string;
+  priceReference?: string;
   image: string;
   imagePosition?: string;
   highlights: string[];
@@ -103,6 +104,7 @@ export interface CityStudySourceProfile {
   route?: string;
   courses: string[];
   bestFor: string;
+  priceReference?: string;
   categories?: string[];
 }
 
@@ -207,6 +209,7 @@ export function createCityStudyPage(source: CityStudyPageSource): CityStudyPageC
     tag: compactStyle(profile.style),
     location: profile.location,
     summary: profile.bestFor,
+    priceReference: profile.priceReference,
     image: profile.image,
     highlights: profile.courses.slice(0, 5),
     categories: categoryForProfile(profile, index),

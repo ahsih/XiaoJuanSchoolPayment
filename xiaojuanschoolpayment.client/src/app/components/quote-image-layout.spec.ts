@@ -1,4 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ElementRef } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
 import { CgBaniladSchoolComponent } from '../pages/philippines/cg-banilad-school/cg-banilad-school.component';
@@ -7,6 +11,9 @@ import { QuoteImageDownloadButtonComponent } from './quote-image-download-button
 describe('quote image visual hierarchy', () => {
   function rendererForEightWeeks() {
     TestBed.configureTestingModule({ providers: [
+      provideHttpClient(), provideHttpClientTesting(),
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
     ] });
     const component = TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent());
@@ -22,12 +29,12 @@ describe('quote image visual hierarchy', () => {
 
   it('places names in the project column and reserves orange bars for highlights', async () => {
     const renderer = rendererForEightWeeks();
-    const paint: { text: string; x: number; align: string; font: string; color: string | CanvasGradient | CanvasPattern }[] = [];
+    const paint: { text: string; x: number; y: number; align: string; font: string; color: string | CanvasGradient | CanvasPattern }[] = [];
     const rectangles: { x: number; y: number; width: number; color: string | CanvasGradient | CanvasPattern }[] = [];
     const originalText = CanvasRenderingContext2D.prototype.fillText;
     const originalRect = CanvasRenderingContext2D.prototype.fillRect;
     spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callFake(function(this: CanvasRenderingContext2D, text, x, y) {
-      paint.push({ text, x, align: this.textAlign, font: this.font, color: this.fillStyle });
+      paint.push({ text, x, y, align: this.textAlign, font: this.font, color: this.fillStyle });
       originalText.call(this, text, x, y);
     });
     spyOn(CanvasRenderingContext2D.prototype, 'fillRect').and.callFake(function(this: CanvasRenderingContext2D, x, y, width, height) {
@@ -62,11 +69,12 @@ describe('quote image visual hierarchy', () => {
     const context = document.createElement('canvas').getContext('2d')!;
     const layout = renderer['measureFullFeeLayout'](context);
     expect(layout.paymentHeights[1]).toBeLessThan(84);
-    expect(layout.footerHeight).toBeLessThan(106);
     expect(layout.serviceHeight).toBeLessThan(174);
     expect(layout.importantNotes.some(note => note.includes('85%') || note.includes('不一致'))).toBeFalse();
     const bitmap = await createImageBitmap(blob);
     expect(bitmap.height).toBe((1764 + layout.paymentExtra + layout.localExtra + layout.notesExtra) * 2);
+    // School notes may grow after publication; every drawn line must remain inside the PNG.
+    expect(Math.max(...paint.map(item => item.y))).toBeLessThan(bitmap.height / 2 - 12);
     bitmap.close();
   }, 30000);
 

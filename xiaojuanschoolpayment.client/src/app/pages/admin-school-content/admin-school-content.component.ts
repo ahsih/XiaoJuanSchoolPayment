@@ -1,3 +1,5 @@
+import { LaMerContentFieldsComponent } from '../philippines/la-mer-school/la-mer-content-fields.component';
+import { cloneLaMerContentConfig, createDefaultLaMerContentConfig, isLaMerSchool, LA_MER_PATH } from '../philippines/la-mer-school/la-mer-content-config';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -112,7 +114,7 @@ type EditorTab = 'courses' | 'rooms' | 'fees' | 'rules' | 'media';
 @Component({
   selector: 'app-admin-school-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminSchoolPhotosComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, AdminSchoolPhotosComponent, LaMerContentFieldsComponent],
   templateUrl: './admin-school-content.component.html',
   styleUrl: './admin-school-content.component.css',
 })
@@ -288,7 +290,10 @@ export class AdminSchoolContentComponent implements OnInit {
     return name.includes('monol') && (name.includes('sparta') || name.includes('斯巴达'));
   }
 
+  get isLaMerSelected(): boolean { return isLaMerSchool(this.selectedSchool?.name ?? ''); }
+  get laMerFeeBillingOptions() { return this.feeBillingOptions.filter(option => ['once', 'per-accommodation-period', 'per-course-period', 'optional'].includes(option.value)); }
   get isEvSelected(): boolean {
+    if (this.isLaMerSelected) return false;
     const name = this.selectedSchool?.name.toLowerCase() ?? '';
     return name === 'ev academy' || name.includes('宿务ev') || name.includes('ev academy');
   }
@@ -396,8 +401,9 @@ export class AdminSchoolContentComponent implements OnInit {
     return this.content.rooms;
   }
 
-  get isSupportedSchool(): boolean { return this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isMonolSpartaSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected || this.isMintSelected; }
+  get isSupportedSchool(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isPinesSelected || this.isMonolSelected || this.isMonolSpartaSelected || this.isEvSelected || this.isSmeagSelected || this.isPhilinterSelected || this.isCgBaniladSelected || this.isCgSpartaSelected || this.isCpiSelected || this.isBCebuSelected || this.isCpilsSelected || this.isGlcSelected || this.isIbreezeSelected || this.isAnjSelected || this.isImsSelected || this.isBeciSelected || this.isJicSelected || this.isIuSelected || this.isIclSelected || this.isCellaUniSelected || this.isCellaPremiumSelected || this.isFellaSelected || this.isBtesSelected || this.isBlueOceanSelected || this.isTargetSelected || this.isWalesSelected || this.isMintSelected; }
   get schoolCode(): CiaContentConfig['schoolCode'] {
+    if (this.isLaMerSelected) return 'EV-LAMER';
     return this.isMonolSpartaSelected ? 'MONOL-SPARTA' : this.isMintSelected ? 'MINT' : this.isWalesSelected ? 'WALES' : this.isTargetSelected ? 'TARGET' : this.isBlueOceanSelected ? 'BLUE-OCEAN' : this.isBtesSelected ? 'BTES' : this.isFellaSelected ? 'FELLA' : this.isCellaPremiumSelected ? 'CELLA-PREMIUM' : this.isCellaUniSelected ? 'CELLA-UNI' : this.isIclSelected ? 'ICL' : this.isIuSelected ? 'IU' : this.isJicSelected ? 'JIC' : this.isBeciSelected ? 'BECI' : this.isImsSelected ? 'IMS' : this.isAnjSelected ? 'ANJ' : this.isIbreezeSelected ? 'IBREEZE' : this.isGlcSelected ? 'GLC' : this.isCpilsSelected ? 'CPILS' : this.isBCebuSelected ? 'BCEBU' : this.isCpiSelected ? 'CPI' : this.isCgSpartaSelected ? 'CG-SPARTA' : this.isCgBaniladSelected ? 'CG-BANILAD' : this.isPhilinterSelected ? 'PHILINTER' : this.isSmeagSelected ? 'SMEAG' : this.isEvSelected ? 'EV' : this.isMonolSelected ? 'MONOL' : this.isPinesSelected ? 'PINES' : 'CIA';
   }
   get schoolShortName(): string {
@@ -406,13 +412,14 @@ export class AdminSchoolContentComponent implements OnInit {
       : this.schoolCode;
   }
   get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
-  get supportsOneWeekShortStay(): boolean { return this.isCiaSelected || this.isBCebuSelected; }
+  get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected; }
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
   get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
   get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isMonolSpartaSelected && !this.isGlcSelected; }
   get currentPublicPath(): string {
+    if (this.isLaMerSelected) return LA_MER_PATH;
     if (this.isMonolSpartaSelected) return this.publicMonolSpartaPath;
     if (this.isMintSelected) return this.publicMintPath;
     if (this.isWalesSelected) return this.publicWalesPath;
@@ -539,7 +546,7 @@ export class AdminSchoolContentComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-    if (tab === 'media') return;
+    if (tab === 'media') { if (this.isLaMerSelected) this.selectItem('section', 'lamer-gallery'); return; }
     const kind = { courses: 'course', rooms: 'room', fees: 'fee', rules: 'promotion' } as const;
     const id = { courses: this.selectedCourseId, rooms: this.selectedRoomId, fees: this.selectedFeeId, rules: this.selectedPromotionId }[tab];
     this.selectItem(id ? kind[tab] : 'section', id || this.tabs.find(item => item.id === tab)!.anchor);
@@ -619,8 +626,13 @@ export class AdminSchoolContentComponent implements OnInit {
     this.selectItem(message.kind, message.id, false);
     setTimeout(() => {
       const selector = message.kind === 'section' ? `[data-editor-section="${message.id}"]` : '[data-selected-editor]';
+      if (this.isLaMerSelected) {
+        for (let node = document.querySelector<HTMLElement>(selector); node; node = node.parentElement) {
+          if (node.tagName === 'DETAILS') (node as HTMLDetailsElement).open = true;
+        }
+      }
       document.querySelector<HTMLElement>(selector)?.scrollIntoView({ block: 'center', behavior: 'instant' });
-    });
+    }, this.isLaMerSelected ? 80 : 0);
   }
 
   updateFeeRates(item: CiaLocalFeeRule, value: string): void {
@@ -1155,6 +1167,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isCgBaniladSelected) return createDefaultCgBaniladContentConfig();
     if (this.isPhilinterSelected) return createDefaultPhilinterContentConfig();
     if (this.isSmeagSelected) return createDefaultSmeagContentConfig();
+    if (this.isLaMerSelected) return createDefaultLaMerContentConfig();
     if (this.isEvSelected) return createDefaultEvContentConfig();
     if (this.isMonolSelected) return createDefaultMonolContentConfig();
     if (this.isPinesSelected) return createDefaultPinesContentConfig();
@@ -1186,6 +1199,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isCgBaniladSelected) return cloneCgBaniladContentConfig(value);
     if (this.isPhilinterSelected) return clonePhilinterContentConfig(value);
     if (this.isSmeagSelected) return cloneSmeagContentConfig(value);
+    if (this.isLaMerSelected) return cloneLaMerContentConfig(value);
     if (this.isEvSelected) return cloneEvContentConfig(value);
     if (this.isMonolSelected) return cloneMonolContentConfig(value);
     if (this.isPinesSelected) return clonePinesContentConfig(value);

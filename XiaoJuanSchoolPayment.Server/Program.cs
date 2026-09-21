@@ -215,6 +215,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/cebu/iu-english-academy", "monthly", "0.8"),
   ("/philippines-study/cebu/cg-academy-banilad-campus", "monthly", "0.8"),
   ("/philippines-study/cebu/ev-academy", "monthly", "0.8"),
+  ("/philippines-study/cebu/ev-la-mer", "monthly", "0.8"),
   ("/philippines-study/cebu/cpi-cebu-pelis-institute", "monthly", "0.8"),
   ("/philippines-study/cebu/bcebu", "monthly", "0.8"),
   ("/philippines-study/cebu/btes-english-academy", "monthly", "0.8"),

@@ -207,6 +207,7 @@
             <p class="directory-school-location"><mat-icon>location_on</mat-icon>{{ school.location }}</p>
             <h3>{{ school.name }}</h3>
             <p class="directory-school-summary">{{ school.summary }}</p>
+            <p class="directory-price-reference" *ngIf="school.priceReference">{{ school.priceReference }}</p>
             <div class="directory-school-tags" aria-label="主要课程">
               <span class="directory-course-label"><mat-icon>menu_book</mat-icon>课程</span>
               <span *ngFor="let item of school.highlights">{{ item }}</span>

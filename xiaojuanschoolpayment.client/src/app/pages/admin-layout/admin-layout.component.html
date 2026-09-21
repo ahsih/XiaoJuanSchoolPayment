@@ -23,6 +23,10 @@
           <mat-icon>fact_check</mat-icon>
           <span>审核与发布</span>
         </a>
+        <a *ngIf="isPublisher" routerLink="/admin/commission-policies" routerLinkActive="active">
+          <mat-icon>lock</mat-icon>
+          <span>内部佣金政策</span>
+        </a>
       </section>
 
       <section class="nav-section">

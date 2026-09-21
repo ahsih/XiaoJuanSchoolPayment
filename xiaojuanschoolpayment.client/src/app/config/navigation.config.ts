@@ -393,6 +393,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/cella-premium-campus',
           },
           {
+            id: 'ev-la-mer',
+            label: 'EV Academy La Mer 校区',
+            route: '/philippines-study/cebu/ev-la-mer',
+          },
+          {
             id: 'ev-academy',
             label: '菲律宾宿务EV语言学校',
             route: '/philippines-study/cebu/ev-academy',

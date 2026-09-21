@@ -1,3 +1,5 @@
+import type { LaMerPageContent, LaMerPolicy } from '../la-mer-school/la-mer-types';
+
 export interface CiaCourseContent {
   id: string;
   name: string;
@@ -163,6 +165,8 @@ export interface CiaExtraNightRate {
 }
 
 export interface CiaQuoteSettings {
+  /** Independent La Mer whole-family packages; never ordinary per-person rows. */
+  laMer?: LaMerPolicy;
   registrationFee: number;
   /** Optional school-payment fee used by EV for unaccompanied minors. */
   minorManagementFeePerPeriod?: number;
@@ -247,7 +251,8 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'MONOL-SPARTA' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES' | 'MINT';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'MONOL-SPARTA' | 'EV' | 'EV-LAMER' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES' | 'MINT';
+  laMerPage?: LaMerPageContent;
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];

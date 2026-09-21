@@ -1,0 +1,55 @@
+{
+  "checks": [
+    "public SEO and exact route",
+    "ordinary sample equals 1791 USD",
+    "public page has no editor highlights",
+    "quote-single-4w has a complete PNG preview",
+    "inactive people are excluded",
+    "inactive choices are preserved",
+    "quote-group-3 has a complete PNG preview",
+    "family 2-person reference equals 3800 USD",
+    "two guardians plus child are accepted",
+    "quote-family-3-4w has a complete PNG preview",
+    "cross-season quote blocks image export",
+    "gallery category and thumbnail navigation",
+    "768px no page overflow",
+    "390px no page overflow",
+    "320px no page overflow",
+    "quote-family-mobile has a complete PNG preview",
+    "20 independent students remain operable",
+    "quote-group-20 has a complete PNG preview",
+    "all campus page images load",
+    "Cebu directory entry opens independent La Mer route",
+    "SEO share image belongs to La Mer",
+    "navigation configuration contains the independent campus",
+    "no browser exceptions"
+  ],
+  "errors": [],
+  "images": [
+    {
+      "name": "quote-single-4w",
+      "width": 2064,
+      "height": 3584
+    },
+    {
+      "name": "quote-group-3",
+      "width": 2064,
+      "height": 4416
+    },
+    {
+      "name": "quote-family-3-4w",
+      "width": 2064,
+      "height": 3140
+    },
+    {
+      "name": "quote-family-mobile",
+      "width": 1985,
+      "height": 3021
+    },
+    {
+      "name": "quote-group-20",
+      "width": 1799,
+      "height": 8890
+    }
+  ]
+}

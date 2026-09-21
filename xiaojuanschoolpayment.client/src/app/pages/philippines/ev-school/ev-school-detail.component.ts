@@ -535,7 +535,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   private loadPricingFromDatabase(): void {
     this.schoolService.getSchools({ name: this.pricingSchoolName }).pipe(
       switchMap((schools) => {
-        const school = schools.find((item) => item.name === this.pricingSchoolName) ?? schools[0];
+        const school = schools.find((item) => item.name === this.pricingSchoolName);
         if (!school?.id) return EMPTY;
         return forkJoin({
           lessons: this.schoolService.getSchoolLessons({ schoolId: school.id, week: 4 }),

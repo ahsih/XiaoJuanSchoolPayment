@@ -36,4 +36,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Seed\ev-la-mer-content.json" />
+  </ItemGroup>
+
 </Project>

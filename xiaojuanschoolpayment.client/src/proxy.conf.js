@@ -9,7 +9,7 @@ const target = httpsUrl ?? httpUrl ?? "https://localhost:7209";
 
 const PROXY_CONFIG = [
   {
-    context: ["/weatherforecast", "/auth", "/school", "/school-content", "/staff-permissions", "/student-applications", "/Account", "/currency", "/contact-form", "/quote-email", "/pines-room-availability", "/uploads"],
+    context: ["/weatherforecast", "/auth", "/school", "/school-content", "/internal-commission-policies", "/staff-permissions", "/student-applications", "/Account", "/currency", "/contact-form", "/quote-email", "/pines-room-availability", "/uploads"],
     target,
     secure: false,
     logLevel: "debug",

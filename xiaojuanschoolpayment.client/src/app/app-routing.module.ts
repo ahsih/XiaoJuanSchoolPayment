@@ -389,6 +389,10 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/cebu/ev-la-mer',
+        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school.component').then(m => m.LaMerSchoolComponent),
+      },
+      {
         path: 'philippines-study/cebu/ev-academy',
         loadComponent: () =>
           import('./pages/philippines/ev-school/ev-school-detail.component').then((m) => m.EvSchoolDetailComponent),
@@ -1116,6 +1120,15 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin-content-reviews/admin-content-reviews.component').then(
             (m) => m.AdminContentReviewsComponent,
+          ),
+      },
+      {
+        path: 'commission-policies',
+        data: { roles: ['admin', 'manager'] },
+        canActivate: [RoleGuard],
+        loadComponent: () =>
+          import('./pages/admin-commission-policies/admin-commission-policies.component').then(
+            (m) => m.AdminCommissionPoliciesComponent,
           ),
       },
       {

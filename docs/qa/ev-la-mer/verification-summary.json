@@ -1,0 +1,18 @@
+{
+  "verifiedOn": "2026-09-20",
+  "ordinaryExampleUsd": 1791,
+  "familyTwoPersonFourWeekUsd": 3800,
+  "familyBookingDepositUsd": 1000,
+  "familyBalanceUsd": 2800,
+  "pricingTestsPassed": 38,
+  "sharedImageTestsPassed": 4,
+  "publicBrowserChecksPassed": 23,
+  "employeeBrowserChecksPassed": 12,
+  "workflowChecksPassed": 9,
+  "mediaChecksPassed": 4,
+  "frontendProductionBuild": "passed",
+  "backendBuild": "passed with four existing SchoolService nullable warnings",
+  "startupPreservesPublishedContent": true,
+  "defaultSeedParity": true,
+  "deployed": false
+}

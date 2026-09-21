@@ -163,7 +163,7 @@ export class CebuStudyComponent {
       subtitle: '亲子、青少年与家庭住宿路线集中比较',
       category: '亲子友好',
       tone: 'blue',
-      image: '/assets/philippines/ev-la-mer-campus.webp',
+      image: '/assets/la-mer/campus-sunset.webp',
       schools: [
         'EV La Mer',
         'CPI',
@@ -574,9 +574,9 @@ export class CebuStudyComponent {
       image: '/assets/ev/campus-exterior.webp', highlights: ['斯巴达 / 半斯巴达综合英语', '强化口语', '雅思', '托业', '商务英语'],
     },
     {
-      name: 'EV La Mer', route: '/about-sida/contact', tag: '麦克坦亲子度假校区',
+      name: 'EV La Mer', route: '/philippines-study/cebu/ev-la-mer', tag: '麦克坦亲子度假校区',
       location: 'Cordova · Mactan', summary: 'EV第二校区，以泳池度假环境、亲子课程和青少年项目为主要特色。',
-      image: '/assets/philippines/ev-la-mer-campus.webp', highlights: ['经典综合英语', '强化口语6 / 8节', '亲子课程', '熟龄英语'],
+      image: '/assets/la-mer/campus-sunset.webp', highlights: ['经典综合英语', '强化口语6 / 8节', '亲子课程', '熟龄英语'],
       linkLabel: '咨询学校资料',
     },
     {
