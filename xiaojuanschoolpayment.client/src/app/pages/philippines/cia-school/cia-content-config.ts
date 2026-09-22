@@ -15,6 +15,9 @@ export interface CiaCourseContent {
   tuition2027: number;
   /** Optional fixed-duration prices used by guarantee courses such as A&J. */
   feeByWeeks?: Record<string, number>;
+  /** CPILS's dated catalogue: exact short stays and fixed guarantee packages. */
+  feeByWeeks2027?: Record<string, number>;
+  allowedWeeks2027?: number[];
   /** Optional duration restriction paired with feeByWeeks. */
   allowedWeeks?: number[];
   /** Optional public course grouping/type label. */
@@ -42,6 +45,8 @@ export interface CiaRoomContent {
   location: '校内' | '校外';
   group: string;
   fee: number;
+  fee2027?: number;
+  feeByWeeks2027?: Record<string, number>;
   /** Optional exact-duration accommodation prices used by IMS and other non-proportional catalogs. */
   feeByWeeks?: Record<string, number>;
   /** Optional duration restriction paired with feeByWeeks. */
@@ -188,6 +193,15 @@ export interface CiaQuoteSettings {
   peakSeasonRanges: CiaPeakSeasonRange[];
   /** Lets older published CIA documents inherit confirmed peak-season rules once. */
   peakSeasonPolicyVersion?: number;
+  /** CPILS September 2026 notice and the user-confirmed registration cutoff. */
+  cpilsPolicy?: {
+    version: number;
+    grandfatherCourseStartEnd: string;
+    promotionBlackoutStart: string;
+    promotionBlackoutEnd: string;
+    earlySummerRegistrationEnd: string;
+    earlySummerMinimumWeeks: number;
+  };
   promotions: CiaPromotionRule[];
   localFeeIntro: string;
   courseTableTitle: string;

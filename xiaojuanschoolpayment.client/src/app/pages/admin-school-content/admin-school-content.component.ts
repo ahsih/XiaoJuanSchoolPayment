@@ -411,7 +411,7 @@ export class AdminSchoolContentComponent implements OnInit {
       ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}`
       : this.schoolCode;
   }
-  get usesFutureCoursePrices(): boolean { return this.isCiaSelected; }
+  get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected; }
   get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected; }
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
@@ -645,6 +645,21 @@ export class AdminSchoolContentComponent implements OnInit {
 
   formatNumberMap(value?: Record<string, number>): string {
     return Object.entries(value ?? {}).sort((a, b) => Number(a[0]) - Number(b[0])).map(([key, amount]) => `${key}:${amount}`).join(', ');
+  }
+
+  updateCpilsFuturePrices(item: CiaCourseContent | CiaRoomContent, value: string): void {
+    item.feeByWeeks2027 = this.parseNumberMap(value);
+    this.contentChanged();
+  }
+
+  updateCpilsFutureWeeks(item: CiaCourseContent, value: string): void {
+    item.allowedWeeks2027 = value.split(/[,，、]/).map(part => Number(part.trim())).filter(week => Number.isInteger(week) && week > 0);
+    this.contentChanged();
+  }
+
+  updateCpilsFutureFeeRates(item: CiaLocalFeeRule, value: string): void {
+    item.futureRates = value.split(/[,，、]/).map(part => Number(part.trim())).filter(rate => Number.isFinite(rate) && rate >= 0);
+    this.contentChanged();
   }
 
   updateCourseWeekPrices(item: CiaCourseContent, value: string): void {

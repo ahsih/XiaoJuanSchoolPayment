@@ -130,6 +130,8 @@
               <label>内部编号<input [(ngModel)]="item.id" disabled /></label>
               <label>{{ coursePriceLabel }}<input type="number" min="0" [(ngModel)]="item.tuition" /></label>
               <label *ngIf="usesFutureCoursePrices">2027 新价（美元/4周）<input type="number" min="0" [(ngModel)]="item.tuition2027" /></label>
+              <label *ngIf="isCpilsSelected">2027短住／保分整套价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
+              <label *ngIf="isCpilsSelected && item.allowedWeeks2027 !== undefined">2027限定课程周数（空白表示待确认）<input [ngModel]="item.allowedWeeks2027.join(', ')" (ngModelChange)="updateCpilsFutureWeeks(item, $event)" /></label>
               <label *ngIf="isGlcSelected">英文显示名称<input [(ngModel)]="item.englishName" /></label>
               <label *ngIf="isGlcSelected">中文名称<input [(ngModel)]="item.chineseName" /></label>
               <label *ngIf="isGlcSelected">课程分组<input [(ngModel)]="item.group" /></label>
@@ -177,6 +179,8 @@
               <label *ngIf="!isLaMerSelected">页面短名称<input [(ngModel)]="item.label" /></label>
               <label *ngIf="!isLaMerSelected">房型编号<input [(ngModel)]="item.code" /></label>
               <label>{{ roomPriceLabel }}<input type="number" min="0" [(ngModel)]="item.fee" /></label>
+              <label *ngIf="isCpilsSelected">2027住宿价格（美元/4周）<input type="number" min="0" [(ngModel)]="item.fee2027" /></label>
+              <label *ngIf="isCpilsSelected">2027短住价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
               <label *ngIf="!isLaMerSelected">住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
               <label *ngIf="!isLaMerSelected">页面分组<input [(ngModel)]="item.group" /></label>
               <label *ngIf="isImsSelected && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateRoomWeekPrices(item, $event)" placeholder="1:195, 2:390, 3:520, 4:650" /></label>
@@ -255,6 +259,17 @@
               <label *ngIf="!isLaMerSelected"><input type="checkbox" [(ngModel)]="item.multiplyByStudents" />多人报价按人数计算</label>
             </div>
             <label>官网及图片备注<textarea rows="4" [(ngModel)]="item.note"></textarea></label>
+            <div class="nested-card" *ngIf="isCpilsSelected && item.futureEffectiveStart">
+              <strong>2027年生效标准</strong>
+              <div class="field-grid two">
+                <label>生效日期<input type="date" [(ngModel)]="item.futureEffectiveStart" /></label>
+                <label>生效后名称<input [(ngModel)]="item.futureName" /></label>
+                <label>生效后金额（比索）<input type="number" min="0" [(ngModel)]="item.futureAmount" /></label>
+                <label *ngIf="item.periodWeeks">生效后每几周收费<input type="number" min="1" [(ngModel)]="item.futurePeriodWeeks" /></label>
+                <label *ngIf="item.futureRates">每次续签金额（比索，逗号分隔）<input [ngModel]="item.futureRates.join(', ')" (ngModelChange)="updateCpilsFutureFeeRates(item, $event)" /></label>
+              </div>
+              <label>生效后备注<textarea rows="3" [(ngModel)]="item.futureNote"></textarea></label>
+            </div>
             <div class="row-actions">
               <button type="button" (click)="move('fee', item.id, -1)"><mat-icon>arrow_upward</mat-icon>上移</button>
               <button type="button" (click)="move('fee', item.id, 1)"><mat-icon>arrow_downward</mat-icon>下移</button>
@@ -288,6 +303,17 @@
             </div>
           </div>
 
+          <div class="edit-card" *ngIf="isCpilsSelected && content.quoteSettings.cpilsPolicy as policy" (focusin)="focusEditorItem('section', 'promotions')">
+            <h3>CPILS 2027报名政策</h3>
+            <div class="field-grid two">
+              <label>旧报名保留旧价的最后开课日<input type="date" [(ngModel)]="policy.grandfatherCourseStartEnd" /></label>
+              <label>优惠排除开课起始日<input type="date" [(ngModel)]="policy.promotionBlackoutStart" /></label>
+              <label>优惠排除开课结束日<input type="date" [(ngModel)]="policy.promotionBlackoutEnd" /></label>
+              <label>暑期提前报名截止日<input type="date" [(ngModel)]="policy.earlySummerRegistrationEnd" /></label>
+              <label>暑期提前报名最低周数<input type="number" min="1" [(ngModel)]="policy.earlySummerMinimumWeeks" /></label>
+            </div>
+            <p>开课日按周一判断；下方旺季日期使用对应周日入住至周六离校的学习周。</p>
+          </div>
           <div class="edit-card" *ngIf="supportsPeakSeason" data-editor-section="quote-season" (focusin)="focusEditorItem('section', 'quote-season')">
             <div class="edit-card-title"><h3>旺季日期</h3><button class="inline-add" type="button" (click)="addPeakRange()"><mat-icon>add</mat-icon>新增旺季</button></div>
             <div class="rule-row" *ngFor="let range of content.quoteSettings.peakSeasonRanges; trackBy: trackById">
