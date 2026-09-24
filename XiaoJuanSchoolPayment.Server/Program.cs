@@ -245,6 +245,8 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/manila/manila-business-college", "monthly", "0.75"),
   ("/philippines-study/manila/legacy-esl-candidates", "monthly", "0.75"),
   ("/about-sida/contact", "monthly", "0.8"),
+  ("/student-feedback/study-tour", "monthly", "0.7"),
+  ("/student-feedback/study-tour/philippines-study-mid-autumn", "yearly", "0.7"),
 };
 
 app.MapGet("/robots.txt", (HttpRequest request) =>
@@ -254,6 +256,7 @@ app.MapGet("/robots.txt", (HttpRequest request) =>
   {
     "User-agent: *",
     "Allow: /",
+    "Allow: /student-feedback/",
     "Disallow: /admin",
     "Disallow: /student",
     "Disallow: /login",

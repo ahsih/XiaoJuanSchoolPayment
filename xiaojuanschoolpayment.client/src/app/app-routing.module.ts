@@ -1030,6 +1030,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'student-feedback/study-tour/philippines-study-mid-autumn',
+        loadComponent: () =>
+          import('./pages/student-feedback/mid-autumn/mid-autumn.component').then(
+            (m) => m.MidAutumnComponent,
+          ),
+      },
+      {
         path: 'student-feedback/study-tour',
         loadComponent: () =>
           import('./pages/student-feedback/study-tour-feedback/study-tour-feedback.component').then(

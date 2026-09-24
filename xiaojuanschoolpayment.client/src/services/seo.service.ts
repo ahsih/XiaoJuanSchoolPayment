@@ -9,6 +9,7 @@ interface SeoPage {
   description: string;
   keywords: string;
   image?: string;
+  type?: 'article';
 }
 
 const SITE_NAME = '思达启航游学';
@@ -24,6 +25,19 @@ const DEFAULT_SEO: SeoPage = {
 
 const SEO_PAGES: Record<string, SeoPage> = {
   '/': DEFAULT_SEO,
+  '/student-feedback/study-tour': {
+    title: '游学故事与学员反馈 | 思达启航游学',
+    description: '记录思达启航学员在海外学习和生活的片段，从菲律宾英语游学的节日问候，到出发后的持续陪伴。',
+    keywords: '菲律宾英语游学, 思达启航, 游学反馈, 海外学员, 学员关怀',
+    image: '/assets/student-stories/mid-autumn/student-moments.png',
+  },
+  '/student-feedback/study-tour/philippines-study-mid-autumn': {
+    title: '思达启航菲律宾英语游学中秋记录｜离家很远也有人惦记',
+    description: '这个中秋，思达启航把心意送到在菲律宾学习的学生手中。从宿务、碧瑶到克拉克，记录礼物转交的细节，以及学生、家长和老师的温暖回应。愿每一位在海外学习的人，都能感受到被惦记的温暖。',
+    keywords: '菲律宾英语游学, 思达启航, 海外游学, 宿务游学, 碧瑶游学, 克拉克游学, 海外学员中秋记录',
+    image: '/assets/student-stories/mid-autumn/gift-bags.png',
+    type: 'article',
+  },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
     description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',
@@ -438,7 +452,7 @@ export class SeoService {
   private applySeoForUrl(rawUrl: string): void {
     const path = this.normalizePath(rawUrl);
     const page = SEO_PAGES[path] ?? this.findSectionSeo(path) ?? DEFAULT_SEO;
-    const title = page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
+    const title = page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
     const canonicalUrl = this.absoluteUrl(path);
     const imageUrl = this.absoluteUrl(page.image ?? DEFAULT_IMAGE);
 
@@ -447,7 +461,7 @@ export class SeoService {
     this.upsertTag('name', 'keywords', page.keywords);
     this.upsertTag('name', 'robots', 'index, follow, max-image-preview:large');
     this.upsertTag('property', 'og:site_name', SITE_NAME);
-    this.upsertTag('property', 'og:type', 'website');
+    this.upsertTag('property', 'og:type', page.type ?? 'website');
     this.upsertTag('property', 'og:title', title);
     this.upsertTag('property', 'og:description', page.description);
     this.upsertTag('property', 'og:url', canonicalUrl);
@@ -457,7 +471,7 @@ export class SeoService {
     this.upsertTag('name', 'twitter:description', page.description);
     this.upsertTag('name', 'twitter:image', imageUrl);
     this.setCanonical(canonicalUrl);
-    this.setStructuredData(path, canonicalUrl, title, page.description, imageUrl);
+    this.setStructuredData(path, canonicalUrl, title, page.description, imageUrl, page.type);
   }
 
   private findSectionSeo(path: string): SeoPage | undefined {
@@ -557,7 +571,7 @@ export class SeoService {
     link.setAttribute('href', url);
   }
 
-  private setStructuredData(path: string, canonicalUrl: string, title: string, description: string, imageUrl: string): void {
+  private setStructuredData(path: string, canonicalUrl: string, title: string, description: string, imageUrl: string, type?: 'article'): void {
     let script = this.document.getElementById('seo-json-ld') as HTMLScriptElement | null;
     if (!script) {
       script = this.document.createElement('script');
@@ -594,6 +608,20 @@ export class SeoService {
       },
     ];
 
+    if (type === 'article') {
+      graph.push({
+        '@type': 'Article',
+        '@id': `${canonicalUrl}#article`,
+        headline: title,
+        description,
+        image: imageUrl,
+        mainEntityOfPage: { '@id': `${canonicalUrl}#webpage` },
+        author: { '@id': `${origin}/#organization` },
+        publisher: { '@id': `${origin}/#organization` },
+        inLanguage: 'zh-CN',
+      });
+    }
+
     if (path !== '/') {
       graph.push({
         '@type': 'BreadcrumbList',
@@ -612,6 +640,9 @@ export class SeoService {
     const labels: Record<string, string> = {
       'philippines-study': '菲律宾留学',
       'study-tour-guide': '游学攻略',
+      'student-feedback': '学员反馈',
+      'study-tour': '游学反馈',
+      'philippines-study-mid-autumn': '中秋关怀记录',
       recommendations: '学校推荐',
       schools: '语言学校',
       cebu: '宿务',
@@ -659,7 +690,7 @@ export class SeoService {
         '@type': 'ListItem',
         position: index + 2,
         name: labels[segment] ?? this.humanizeSegment(segment),
-        item: `${origin}${nextPath}`,
+        item: `${origin}${nextPath === '/student-feedback' ? '/student-feedback/study-tour' : nextPath}`,
       });
 
       return nextPath;

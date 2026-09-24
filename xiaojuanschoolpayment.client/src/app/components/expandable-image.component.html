@@ -9,6 +9,8 @@
   <img
     [src]="src"
     [alt]="alt || title"
+    [attr.width]="width ?? null"
+    [attr.height]="height ?? null"
     [style.height]="previewHeight || null"
     [style.min-height]="previewMinHeight || null"
     [style.object-fit]="previewFit || null"

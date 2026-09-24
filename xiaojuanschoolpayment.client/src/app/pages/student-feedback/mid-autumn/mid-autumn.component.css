@@ -1,0 +1,115 @@
+:host { display: block; --forest: #174b37; --ink: #263e34; --muted: #69746b; --amber: #ac5c25; --line: #e5e3d9; color: var(--ink); background: #fbfaf6; }
+.page-shell { max-width: 1140px; margin: auto; padding: 26px 32px 56px; }
+h2, h3 { text-wrap: balance; }
+.breadcrumb { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted); }
+.breadcrumb a { text-decoration: none; }
+.breadcrumb a:hover, .article-footer a:hover { color: var(--amber); }
+.article-header { text-align: center; padding: 36px 16px 30px; }
+.eyebrow { color: var(--amber); font-size: 12px; font-weight: 700; letter-spacing: .15em; line-height: 1.7; }
+.article-header .eyebrow { display: flex; justify-content: center; align-items: center; gap: 10px; }
+.little-moon { width: 15px; height: 15px; border-radius: 50%; background: #e3b96e; box-shadow: inset -4px 0 #f8ead1; }
+h1 { color: var(--forest); font-size: clamp(27px, 3.5vw, 44px); font-weight: 700; line-height: 1.5; margin: 19px 0 15px; letter-spacing: .025em; }
+h1 span { display: block; }
+.article-subtitle { font-family: Georgia, 'Songti SC', SimSun, serif; font-size: clamp(20px, 2.1vw, 26px); margin: 14px 0 24px; color: #8b6337; letter-spacing: .09em; }
+.article-meta { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 13px; font-size: 12px; color: var(--muted); }
+.meta-divider { width: 3px; height: 3px; border-radius: 50%; background: #b6b6a6; }
+figure { margin: 0; }
+.hero-figure { max-width: 780px; margin-inline: auto; --expandable-image-radius: 12px; }
+.hero-figure app-expandable-image { aspect-ratio: 4 / 3; }
+figcaption { text-align: center; font-size: 12px; line-height: 1.8; color: var(--muted); padding: 13px 12px 0; }
+.article-body { max-width: 780px; margin: auto; }
+.article-body p { font-size: 17px; line-height: 2; margin: 0 0 20px; }
+.article-intro { padding: 39px 0 10px; }
+.article-body section { margin-top: 49px; }
+.section-kicker { display: flex; gap: 11px; align-items: center; color: var(--amber); font-size: 12px; letter-spacing: .1em; }
+.section-kicker span { width: 28px; height: 1px; background: #c2a777; }
+.article-body h2 { color: var(--forest); font-size: clamp(22px, 2.3vw, 29px); line-height: 1.55; margin: 12px 0 24px; letter-spacing: .01em; }
+.story-figure { margin: 30px 0; --expandable-image-radius: 10px; }
+.story-figure app-expandable-image { background: #f1eee5; border-radius: 10px; }
+.message-figure figcaption span { display: block; color: var(--amber); }
+.student-quote { margin: 26px 0 30px; padding: 26px 35px 29px; border-left: 3px solid #c68d42; background: #f2ede1; border-radius: 0 12px 12px 0; position: relative; }
+.student-quote > span { font-family: Georgia, serif; font-size: 65px; line-height: .8; display: block; color: #c0a16b; }
+.student-quote p { font-family: 'Songti SC', SimSun, serif; font-size: clamp(24px, 3vw, 32px); color: var(--forest); margin: 4px 0 8px; font-weight: 700; }
+.student-quote cite { font-size: 12px; font-style: normal; color: var(--muted); }
+.article-body .closing-thought { margin: 27px 0 0; padding: 5px 0 5px 23px; border-left: 3px solid #c9a25d; font-size: 24px; line-height: 1.8; font-family: 'Songti SC', SimSun, serif; color: var(--forest); }
+.festival-wish { position: relative; text-align: center; padding: 50px 32px 31px; border-block: 1px solid #e4d9bd; background: radial-gradient(ellipse at top, #fcf1d5, transparent 72%); }
+.wish-moon { display: block; width: 55px; height: 55px; margin: 0 auto 23px; background: radial-gradient(circle at 40% 38%, #fff1c4, #e9c779); border-radius: 50%; box-shadow: 0 0 35px #f1dca86b; }
+.festival-wish .eyebrow { font-size: 12px; }
+.festival-wish h2 { font-size: 24px; }
+.festival-wish p { max-width: 590px; margin-inline: auto; }
+.greeting-figure { margin-top: 28px; --expandable-image-radius: 8px; }
+.festival-wish .happy-festival { color: var(--forest); font-family: 'Songti SC', SimSun, serif; font-size: 34px; letter-spacing: .16em; margin-top: 28px; }
+.sida-service { max-width: 900px; margin: auto; padding-top: 52px; }
+.service-heading { text-align: center; max-width: 740px; margin: 0 auto 26px; }
+.service-heading h2 { font-size: clamp(25px, 2.6vw, 30px); color: var(--forest); line-height: 1.5; margin: 10px 0; }
+.service-heading > p:last-child { color: var(--muted); margin: 0; line-height: 1.9; }
+.mobile-break { display: none; }
+.service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.service-card { border: 1px solid var(--line); border-radius: 12px; padding: 20px 23px; background: #fff; }
+.service-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.service-card-top span { display: grid; place-items: center; background: var(--forest); color: white; border-radius: 50%; width: 29px; height: 29px; font-size: 12px; font-weight: 700; }
+.service-card-top mat-icon { color: #97ac99; }
+.service-card h3 { color: var(--forest); font-size: 17px; margin: 0 0 8px; }
+.service-card p { margin: 0; font-size: 14px; line-height: 1.8; color: var(--muted); }
+.consultation { background: var(--forest); color: white; border-radius: 14px; padding: 26px; margin-top: 22px; }
+.consultation-heading { margin-bottom: 20px; }
+.consultation h3 { margin: 0 0 8px; font-size: 24px; line-height: 1.5; }
+.consultation-heading p { margin: 0; font-size: 14px; color: #d3e0d5; }
+.consultant-card { display: grid; grid-template-columns: 64px minmax(0, 1fr) 84px; align-items: center; gap: 20px; background: white; color: var(--forest); border-radius: 12px; padding: 20px; }
+.avatar { display: block; border-radius: 50%; object-fit: cover; width: 64px; height: 64px; }
+.consultant-copy h4 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 13px; margin: 0 0 5px; font-size: 14px; }
+.consultant-copy h4 span { font-size: 21px; color: #b35c20; }
+.consultant-copy p { color: var(--muted); font-size: 13px; line-height: 1.7; margin: 0 0 7px; }
+.consultant-copy > a { text-decoration: none; font-weight: 700; font-size: 16px; }
+.consultant-qr figcaption { padding: 4px 0 0; font-size: 10px; }
+.all-consultants { display: flex; width: fit-content; gap: 15px; align-items: center; margin: 17px 0 0 auto; font-size: 13px; color: #e6eadb; text-decoration: none; }
+.all-consultants:hover { text-decoration: underline; text-underline-offset: 5px; }
+.article-footer { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--line); margin-top: 40px; padding-top: 24px; font-size: 13px; color: #607261; }
+.article-footer a { text-decoration: none; }
+a:focus-visible { outline: 3px solid #b88636; outline-offset: 5px; border-radius: 3px; }
+@media (max-width: 600px) {
+  .page-shell { padding: 22px 18px 36px; }
+  .breadcrumb { gap: 8px; font-size: 11px; }
+  .article-header { padding: 28px 0 25px; }
+  h1 { font-size: 27px; }
+  .article-meta { font-size: 11px; gap: 9px; }
+  .article-subtitle { font-size: 20px; }
+  .hero-figure { margin-inline: -6px; --expandable-image-radius: 8px; }
+  figcaption { font-size: 11px; padding: 10px 0 0; }
+  .article-intro { padding-top: 26px; }
+  .article-body p { font-size: 16px; line-height: 1.95; }
+  .article-body h2 { font-size: 23px; margin-bottom: 19px; }
+  .article-body section { margin-top: 38px; }
+  .story-figure { margin: 24px 0; }
+  .student-quote { padding: 24px; }
+  .student-quote p { font-size: 25px; }
+  .article-body .closing-thought { font-size: 21px; padding-left: 16px; }
+  .festival-wish { padding: 35px 12px 20px; }
+  .festival-wish h2 { font-size: 22px; }
+  .festival-wish .eyebrow { font-size: 11px; }
+  .festival-wish .happy-festival { font-size: 30px; }
+  .sida-service { padding-top: 52px; }
+  .mobile-break { display: block; }
+  .service-heading > p:last-child { font-size: 14px; }
+  .service-grid { gap: 10px; }
+  .service-card { padding: 16px 13px; }
+  .service-card h3 { font-size: 16px; }
+  .service-card p { font-size: 13px; }
+  .service-card-top { margin-bottom: 13px; }
+  .service-card-top mat-icon { display: none; }
+  .consultation { padding: 24px 14px; }
+  .consultation h3 { font-size: 22px; }
+  .consultation-heading { padding: 0 5px; }
+  .consultant-card { grid-template-columns: 42px minmax(0, 1fr) 66px; gap: 10px; padding: 15px 12px; }
+  .avatar { width: 42px; height: 42px; }
+  .consultant-copy h4 { font-size: 12px; gap: 2px; }
+  .consultant-copy h4 span { width: 100%; font-size: 18px; }
+  .consultant-copy p { font-size: 11px; }
+  .consultant-copy > a { font-size: 14px; }
+  .article-footer { font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .service-grid { grid-template-columns: 1fr; }
+  .consultant-card { grid-template-columns: minmax(0, 1fr) 65px; }
+  .avatar { display: none; }
+}
