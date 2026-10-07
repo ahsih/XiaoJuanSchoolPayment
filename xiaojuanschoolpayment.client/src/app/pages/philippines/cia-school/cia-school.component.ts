@@ -1164,6 +1164,23 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
+  // Transcribed from CIA's user-supplied 2027 IOC official test-date poster.
+  // Keep separate from the 2026 exam types, fees and registration conditions.
+  readonly ieltsComputerExamDates2027 = [
+    { month: 1, days: [2, 9, 16, 23, 30] },
+    { month: 2, days: [6, 13, 20, 27] },
+    { month: 3, days: [6, 13, 20, 27] },
+    { month: 4, days: [3, 10, 17, 24] },
+    { month: 5, days: [1, 8, 15, 22, 29] },
+    { month: 6, days: [5, 12, 19, 26] },
+    { month: 7, days: [3, 10, 17, 24, 31] },
+    { month: 8, days: [7, 14, 21, 28] },
+    { month: 9, days: [4, 11, 18, 25] },
+    { month: 10, days: [2, 9, 16, 23, 30] },
+    { month: 11, days: [6, 13, 20, 27] },
+    { month: 12, days: [4, 11, 18, 25] },
+  ];
+
   readonly ieltsExamDates2026: IeltsExamDate[] = [
     { month: 1, academic: { day: '31日', weekday: '周六' }, general: { day: '15日', weekday: '周四' } },
     { month: 2, academic: { day: '14日', weekday: '周六' }, general: { day: '21日', weekday: '周六' } },

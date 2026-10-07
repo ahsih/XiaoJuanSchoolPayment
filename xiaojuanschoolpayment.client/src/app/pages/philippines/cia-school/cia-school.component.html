@@ -651,58 +651,84 @@
       <section class="ielts-exam-section" id="ielts-exam-dates" aria-labelledby="ielts-exam-title">
         <div class="calendar-section-heading">
           <div>
-            <span class="section-eyebrow">IDP IELTS TEST DATES</span>
-            <h3 id="ielts-exam-title">2026年 CIA Mactan 雅思官方考期</h3>
-            <p>CIA是IDP雅思官方考场资源之一。以下日期仅供行程规划参考，报名及考试日期可能调整，最终以IDP Philippines官方开放日期和CIA当期通知为准。</p>
+            <span class="section-eyebrow">2027 IELTS ON COMPUTER</span>
+            <h3 id="ielts-exam-title">2027年 CIA 雅思机考日期</h3>
+            <p>根据CIA公布的2027年雅思机考（IOC）考期整理，考试安排在每周六。报名开放情况及考位请联系顾问确认，最终以CIA和IDP当期通知为准。</p>
           </div>
-          <span class="exam-fee"><mat-icon>payments</mat-icon>参考考费 PHP 13,660（菲律宾比索）</span>
+          <span class="calendar-priority"><mat-icon>event_available</mat-icon>每周六 · 全年52个考期</span>
         </div>
 
-        <div class="ielts-date-columns">
-          <article class="ielts-date-column">
-            <header>
-              <span>ACADEMIC</span>
-              <h4>学术类考期</h4>
-            </header>
-            <div class="ielts-date-grid">
-              <div *ngFor="let exam of ieltsExamDates2026">
-                <span>{{ exam.month }}月</span>
-                <strong>{{ exam.academic.day }}</strong>
-                <small>{{ exam.academic.weekday }}</small>
-              </div>
-            </div>
-          </article>
-
-          <article class="ielts-date-column ielts-date-column--recommended">
-            <header>
-              <span>ACADEMIC &amp; GENERAL</span>
-              <h4>学术类及一般培训类</h4>
-              <small>学校资料推荐考期</small>
-            </header>
-            <div class="ielts-date-grid">
-              <div *ngFor="let exam of ieltsExamDates2026">
-                <span>{{ exam.month }}月</span>
-                <strong>{{ exam.general.day }}</strong>
-                <small>{{ exam.general.weekday }}</small>
-              </div>
+        <div class="ielts-computer-calendar" aria-label="2027年CIA雅思机考月历">
+          <article *ngFor="let exam of ieltsComputerExamDates2027" class="ielts-computer-month">
+            <h4>{{ exam.month }}月</h4>
+            <div class="ielts-computer-days">
+              <time
+                *ngFor="let day of exam.days"
+                [attr.datetime]="'2027-' + exam.month.toString().padStart(2, '0') + '-' + day.toString().padStart(2, '0')"
+                [attr.aria-label]="'2027年' + exam.month + '月' + day + '日，周六'"
+              >{{ day }}日</time>
             </div>
           </article>
         </div>
 
-        <div class="ielts-exam-notes">
-          <article>
-            <mat-icon>location_on</mat-icon>
-            <div><strong>校内考场安排</strong><p>如报名人数少于10人，考场可能调整至宿务市区；建议优先选择学校资料标注的推荐日期。</p></div>
-          </article>
-          <article>
-            <mat-icon>edit_calendar</mat-icon>
-            <div><strong>提前两周报名</strong><p>学生到校后可前往教务办公室报名，学校会提前准备参加考试所需的SSP文件。</p></div>
-          </article>
-          <article>
-            <mat-icon>verified</mat-icon>
-            <div><strong>仅供参考，以IDP为准</strong><p>报名日期、考试日期与考费均可能调整，须以报名时IDP Philippines官方页面实际开放信息为准。</p></div>
-          </article>
-        </div>
+        <details class="ielts-previous-year">
+          <summary>查看2026年雅思考期与报名参考</summary>
+          <div class="ielts-previous-year-body">
+            <div class="calendar-section-heading">
+              <div>
+                <h4 class="ielts-previous-year-title">2026年 CIA Mactan 雅思官方考期</h4>
+                <p>CIA是IDP雅思官方考场资源之一。以下日期仅供行程规划参考，报名及考试日期可能调整，最终以IDP Philippines官方开放日期和CIA当期通知为准。</p>
+              </div>
+              <span class="exam-fee"><mat-icon>payments</mat-icon>2026年参考考费：13,660比索</span>
+            </div>
+
+            <div class="ielts-date-columns">
+              <article class="ielts-date-column">
+                <header>
+                  <span>ACADEMIC</span>
+                  <h4>学术类考期</h4>
+                </header>
+                <div class="ielts-date-grid">
+                  <div *ngFor="let exam of ieltsExamDates2026">
+                    <span>{{ exam.month }}月</span>
+                    <strong>{{ exam.academic.day }}</strong>
+                    <small>{{ exam.academic.weekday }}</small>
+                  </div>
+                </div>
+              </article>
+
+              <article class="ielts-date-column ielts-date-column--recommended">
+                <header>
+                  <span>ACADEMIC &amp; GENERAL</span>
+                  <h4>学术类及一般培训类</h4>
+                  <small>学校资料推荐考期</small>
+                </header>
+                <div class="ielts-date-grid">
+                  <div *ngFor="let exam of ieltsExamDates2026">
+                    <span>{{ exam.month }}月</span>
+                    <strong>{{ exam.general.day }}</strong>
+                    <small>{{ exam.general.weekday }}</small>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="ielts-exam-notes">
+              <article>
+                <mat-icon>location_on</mat-icon>
+                <div><strong>校内考场安排</strong><p>如报名人数少于10人，考场可能调整至宿务市区；建议优先选择学校资料标注的推荐日期。</p></div>
+              </article>
+              <article>
+                <mat-icon>edit_calendar</mat-icon>
+                <div><strong>提前两周报名</strong><p>学生到校后可前往教务办公室报名，学校会提前准备参加考试所需的SSP文件。</p></div>
+              </article>
+              <article>
+                <mat-icon>verified</mat-icon>
+                <div><strong>仅供参考，以IDP为准</strong><p>报名日期、考试日期与考费均可能调整，须以报名时IDP Philippines官方页面实际开放信息为准。</p></div>
+              </article>
+            </div>
+          </div>
+        </details>
         <a
           class="ielts-official-link"
           href="https://ielts.idp.com/philippines"
@@ -925,8 +951,8 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
         <span>
-          <strong>2027年假期与旺季安排</strong>
-          <small>寒暑假附加费档期、学校假期与雅思官方考期参考</small>
+          <strong>2027年假期、旺季与雅思考期</strong>
+          <small>寒暑假附加费档期、学校假期与每周六雅思机考日期</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>

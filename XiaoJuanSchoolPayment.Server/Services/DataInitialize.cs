@@ -3195,7 +3195,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务 CIA 语言学校", 1750m, UsdCurrencyId, "4周USD 1,750起（2026课程价：Regular ESL + 四人房 + 注册费）；符合2027新价条件时USD 1,850起", Established(2003), new[] { CiaSchoolName, "菲律宾宿务CIA语言学校" }),
         new RegionalStartingPriceSeed(BtesSchoolName, 1000m, UsdCurrencyId, "4周1,000美元限时ALL IN ONE套餐（完整就学于2026/08/23–2027/01/16；电费、接机、押金等另计）", Established(2022), new[] { "BTES English Academy", "Brainy Tutelage English School", "BTES" }),
         new RegionalStartingPriceSeed("菲律宾宿务First English Global College", 198000m, JpyCurrencyId, "JPY 198,000 / 4周起", Established(2013), new[] { "First English Global College", "First English" }),
-        new RegionalStartingPriceSeed("菲律宾宿务CIEC", 1650m, UsdCurrencyId, "USD 1,650 / 4周起", Established(2012), new[] { "CIEC", "CIEC Global" }),
+        new RegionalStartingPriceSeed("菲律宾宿务CIEC", 1905m, UsdCurrencyId, "1,905美元 / 4周起（幼儿园＋三人房95折及新生注册费）", Established(2012), new[] { "CIEC", "CIEC Global" }),
         new RegionalStartingPriceSeed("菲律宾宿务ELSA International Language School", 1850m, UsdCurrencyId, "USD 1,850 / 4周起（Super Basic ESL + 五人间 + 注册费）", Established(2004), new[] { "ELSA International Language School", "ELSA" }),
         new RegionalStartingPriceSeed("菲律宾宿务ETHOS Language School", 1438m, UsdCurrencyId, "USD 1,438 / 4周起", Established(2013), new[] { "ETHOS Language School", "ETHOS" }),
         new RegionalStartingPriceSeed(ImsSchoolName, 1382.5m, UsdCurrencyId, "USD 1,382.50 / 4周起（Essential ESL 4 + 四人房 + 95折 + 不可减注册费）", Established(2013), new[] { "IMS Academy", "IMS Academy Cebu" }),
