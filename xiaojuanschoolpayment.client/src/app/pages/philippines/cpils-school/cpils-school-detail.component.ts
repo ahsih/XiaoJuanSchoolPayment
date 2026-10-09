@@ -1,3 +1,4 @@
+import { textbookPeriods } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
@@ -651,6 +652,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
         const weeks = rule.billingRule === 'per-course-period' ? plan.courseWeeks : plan.roomWeeks;
         quantity = weeks / Math.max(1, rule.periodWeeks ?? 4);
         if (rule.rounding === 'ceil') quantity = Math.ceil(quantity);
+        if (base.id === 'books') quantity = textbookPeriods(plan.courses, rule.periodWeeks ?? 4, rule.rounding === 'ceil' ? 'ceil' : 'proportional');
         unitLabel = `${this.formatPhp(rule.amount)}／${rule.periodWeeks ?? 4}周`;
         // Only the management rate changes during an existing stay. Split on the
         // actual effective date, without moving January 1 to a different weekday.

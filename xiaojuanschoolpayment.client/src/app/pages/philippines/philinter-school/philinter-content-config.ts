@@ -45,7 +45,7 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
     fee({ id: 'electricity', name: '电费', amount: 2800, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '按住宿周数预估；超出基础用电另计。', sortOrder: 5 }),
     fee({ id: 'water', name: '水费', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '按住宿周数预估，不足4周暂按一期。', sortOrder: 6 }),
     fee({ id: 'visa-extension', name: '旅游签续签', amount: 6920, rates: [6920, 6920, 6920, 6920, 6920], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '按签证类型和完整停留时间预估；实际以学校及移民局收费为准。', sortOrder: 7 }),
-    fee({ id: 'books', name: '书本教材费', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每个课程暂计一套；课程所需教材不同，以实际购买为准。', sortOrder: 8 }),
+    fee({ id: 'books', name: '书本教材费', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每种课程类型按累计周数、每开始4周预估教材费用；以实际购买为准。', sortOrder: 8 }),
     fee({ id: 'student-id', name: '学生证', amount: 400, billingRule: 'once', includeInTotal: true, note: '一次性费用。', sortOrder: 9 }),
     fee({ id: 'pickup', name: '宿务马克坦机场团体接机', amount: 1200, secondaryAmount: 1500, secondaryLabel: '其他时间', billingRule: 'optional', includeInTotal: false, note: '周末06:00–24:00为1,200比索／人，其他时间1,500比索／人；学校团体接机可能需要等候同批学生。', sortOrder: 10 }),
     fee({ id: 'deposit', name: '宿舍押金', amount: 2000, secondaryAmount: 5000, secondaryLabel: '12–24周', billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '按停留周数分档计收，退房检查后可退。', sortOrder: 11 }),

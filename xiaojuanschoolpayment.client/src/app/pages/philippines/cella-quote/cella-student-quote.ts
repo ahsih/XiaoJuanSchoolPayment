@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import {
   CELLA_CAMPUS_NAMES,
   CELLA_LOW_SEASON_END,
@@ -11,9 +12,12 @@ import {
 } from './cella-pricing';
 import { SchoolQuotePlan, QuotePlanRow } from '../../../components/school-quote-plan';
 
+import type { CiaLocalFeeRule } from '../cia-school/cia-content-config';
+
 const DAY_MS = 86_400_000;
 
 export interface CellaQuoteCatalog {
+  localFeeRules?: CiaLocalFeeRule[];
   courses: CellaCourse[];
   rooms: CellaRoom[];
   registrationFee: number;
@@ -182,6 +186,10 @@ export class CellaStudentQuote {
 
   get localFees(): CellaCalculatedLocalFee[] {
     if (this.isFamilyPackage) return [];
+    const bookRule = this.catalog.localFeeRules?.find(fee => fee.id === 'books');
+    const bookAmount = bookRule?.amount ?? 2000;
+    const bookQuantity = bookRule?.periodWeeks ? textbookPeriods(this.quotePlan.courses, bookRule.periodWeeks, bookRule.rounding === 'proportional' ? 'proportional' : 'ceil') : textbookGroups(this.quotePlan.courses).length;
+    const includeBooks = !bookRule || (bookRule.enabled && bookRule.includeInTotal);
     const periods = Math.max(1, Math.ceil(this.actualWeeks / 4));
     const extensions = this.visaExtensionCount;
     const laterExtensionWarning = extensions > 1
@@ -197,7 +205,7 @@ export class CellaStudentQuote {
       { item: '电费', unit: '2,000比索／4周', quantity: String(periods), total: 2000 * periods, note: '每周含15度电，超出部分另收25比索／度；校外宿舍计费口径需确认。' },
       { item: '水费', unit: '1,200比索／4周', quantity: String(periods), total: 1200 * periods, note: '公共用水和房间用水；校外宿舍计费口径需确认。' },
       { item: '签证续签', unit: '首次5,140比索', quantity: extensions > 0 ? '1' : '0', total: extensions > 0 ? 5140 : 0, note: laterExtensionWarning },
-      { item: '教材费', unit: '2,000比索／套', quantity: '1', total: 2000, note: '不同课程教材不同，学习完成后是否购买新教材按实际进度确定。' },
+      ...(includeBooks ? [{ item: bookRule?.name ?? '教材费', unit: bookAmount.toLocaleString('en-US') + (bookRule?.periodWeeks ? '比索／' + bookRule.periodWeeks + '课程周' : '比索／课程类型预估'), quantity: String(bookQuantity), total: bookAmount * bookQuantity, note: bookRule?.note || '每种课程类型分别预估教材费用；后续更新教材按实际进度购买。' }] : []),
       { item: '学生证', unit: '200比索／张', quantity: '1', total: 200, note: '一次性费用。' },
     ];
   }

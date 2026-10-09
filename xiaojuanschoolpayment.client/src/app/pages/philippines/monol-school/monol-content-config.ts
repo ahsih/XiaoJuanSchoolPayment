@@ -106,6 +106,7 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
       { id: 'meals', name: '餐费', currency: 'PHP', amount: 14000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: false, note: '参考约150–250比索／餐，按实际点餐付费；不计入学杂费合计。', enabled: true, sortOrder: 9 },
     ],
     quoteSettings: {
+      monolPromotionPolicyVersion: 20261008,
       registrationFee: 100,
       futurePriceRegistrationStart: '',
       futurePriceArrivalStart: '',
@@ -114,11 +115,10 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
       peakSeasonRanges: [],
       promotions: [
         { id: 'monol-registration-waiver', name: '思达注册费优惠', description: '所有通过思达报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
-        { id: 'monol-off-season-course-early', name: '淡季课程优惠（上半年）', description: '课程在2026年6月27日前结束，每个完整4周课程减100美元', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, coverageEnd: '2026-06-27', coverageTarget: 'course' },
-        { id: 'monol-off-season-room-early', name: '淡季住宿优惠（上半年）', description: '住宿在2026年6月27日前结束，每个完整4周住宿减100美元', enabled: true, sortOrder: 2, priority: 21, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 4, coverageEnd: '2026-06-27', coverageTarget: 'course-and-accommodation' },
-        { id: 'monol-off-season-course-late', name: '淡季课程优惠（下半年）', description: '课程从2026年8月23日起并在2026年内入学，每个完整4周课程减100美元', enabled: true, sortOrder: 3, priority: 22, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, arrivalStart: '2026-08-23', arrivalEnd: '2026-12-31', coverageTarget: 'none' },
-        { id: 'monol-off-season-room-late', name: '淡季住宿优惠（下半年）', description: '住宿从2026年8月23日起并在2026年内入住，每个完整4周住宿减100美元', enabled: true, sortOrder: 4, priority: 23, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 4, arrivalStart: '2026-08-23', arrivalEnd: '2026-12-31', coverageTarget: 'none' },
-        { id: 'monol-sns', name: 'SNS特别活动', description: '2026年1月1日至6月27日，指定单人房每完整4周减100美元；须完成小红书和抖音发布要求，活动可能随时结束', enabled: true, sortOrder: 5, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, coverageStart: '2026-01-01', coverageEnd: '2026-06-27', coverageTarget: 'course-and-accommodation', eligibleRoomIds: ['premium-single-room', 'standard-single-room', 'small-single-room'] },
+        ...(['course', 'room'] as const).map((kind, index) => ({ id: `monol-off-season-${kind}-2026`, name: kind === 'course' ? '淡季课程优惠' : '淡季住宿优惠', description: '2026年12月31日或之前报名并在MONOL主校区学习及住宿，每完整4周减100美元；2027年6月27日至8月21日不适用。' + (kind === 'course' ? 'IELTS的100美元及LEAP的250美元学术费不减免。' : ''), enabled: true, sortOrder: index + 1, priority: 20 + index, stackable: true, newStudentsOnly: false, discountType: 'fixed' as const, discountValue: 100, appliesTo: kind === 'course' ? 'tuition' as const : 'accommodation' as const, waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' as const })),
+        { id: 'monol-sns', name: 'SNS特别活动', description: '2026年12月31日或之前报名，仅标准单人间及小单间（Semi-single）每完整4周减100美元；须在Instagram、个人博客、Facebook、Threads、小红书或TikTok等一个平台发布一篇在校故事。2027年6月27日至8月21日不适用；活动可能提前关闭，报名时须确认。', enabled: true, sortOrder: 3, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', eligibleRoomIds: ['standard-single-room', 'small-single-room'] },
+        { id: 'monol-long-term', name: '长住优惠', description: '2026年9月7日至12月31日报名，学习及住宿16／20／24周分别减150／200／300美元；取消或缩短学习期间则失效。', enabled: true, sortOrder: 4, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 16, minimumAccommodationWeeks: 16, registrationStart: '2026-09-07', registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' },
+        { id: 'monol-christmas', name: '圣诞新年优惠', description: '2026年11月29日至2027年1月10日周日抵达，在主校区学习及住宿至少4周，每人一次减100美元；学校保障假日期间学习日。', enabled: true, sortOrder: 5, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, arrivalStart: '2026-11-29', arrivalEnd: '2027-01-10', coverageTarget: 'none' },
       ],
       localFeeIntro: '已按每位学生各自的完整停留跨度、签证与接机选择估算；不同签证说明按学生分别保留。房间押金与餐费另行准备，不计入学杂费和人民币预估合计。',
       courseTableTitle: 'MONOL 2026年课程费 / 4周',
@@ -130,7 +130,7 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
       stayPolicies: [
         { label: '入住日期', value: '周日入住', note: '按学校公布的周日入学档期入住，并提前确认接机和空房。' },
         { label: '离校日期', value: '课程结束后的周六', note: '课程与住宿按完整周日至周六计算。' },
-        { label: '餐费', value: '住宿费不含餐费', note: '餐费按实际选择另行准备，淡季早餐福利以学校确认结果为准。' },
+        { label: '餐费', value: '住宿费不含餐费', note: '餐费按实际选择另行准备，上课日免费早餐有效至2027/12/31，周末及节假日除外。' },
       ],
       extraNightRates: [],
     },
@@ -147,6 +147,22 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
 export const cloneMonolContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const clone = JSON.parse(JSON.stringify(value)) as CiaContentConfig;
   const defaults = createDefaultMonolContentConfig();
+  // Upgrade superseded poster rules without overwriting other employee content.
+  const versioned = clone.quoteSettings;
+  if ((versioned.monolPromotionPolicyVersion ?? 0) < 20261008) {
+    clone.quoteSettings.promotions = [
+      ...clone.quoteSettings.promotions.filter(rule => !rule.id.startsWith('monol-off-season-') && !['monol-sns', 'monol-long-term', 'monol-christmas'].includes(rule.id)),
+      ...defaults.quoteSettings.promotions.filter(rule => rule.id !== 'monol-registration-waiver'),
+    ];
+    if (clone.quoteImageSettings?.promotionNotes) {
+      for (const key of Object.keys(clone.quoteImageSettings.promotionNotes)) {
+        if (key.startsWith('monol-off-season-') || ['monol-sns', 'monol-long-term', 'monol-christmas'].includes(key)) {
+          delete clone.quoteImageSettings.promotionNotes[key];
+        }
+      }
+    }
+    versioned.monolPromotionPolicyVersion = 20261008;
+  }
   const savedSettings = clone.quoteImageSettings;
   clone.quoteImageSettings = {
     ...defaults.quoteImageSettings,

@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="/assets/cebu-study-page.css" />
+<main class="pickup-page">
+  <header class="pickup-hero">
+    <nav aria-label="面包屑"><a routerLink="/">首页</a> / <a routerLink="/philippines-study/baguio">碧瑶游学</a> / 接机指南</nav>
+    <p class="kicker">思达启航 · 行前准备</p>
+    <h1>2026–2027 碧瑶游学接机指南</h1>
+    <p class="subtitle">马尼拉、克拉克接机日期、费用与注意事项</p>
+    <p>BESA 是碧瑶英语学校协会，组织参与学校学生的定期共同接机。您可能与其他学校学生一起乘车；并非全部碧瑶学校都适用。</p>
+    <p class="notice">请先联系思达启航顾问确认学校、接机日期、班次和集合点，再购买机票。最终安排以学校发送的接机确认通知为准。</p>
+    <a class="contact" routerLink="/about-sida/contact">联系思达启航顾问</a>
+    <p class="muted">资料核对：2026 年 10 月 9 日 · 全部接机时间为菲律宾 UTC+8，与北京时间相同</p>
+  </header>
+  <nav class="jump" aria-label="页面目录"><a href="#fees">快速概览</a><a href="#calendar">年度日期</a><a href="#flight-times">订票看班次</a><a href="#airports">落地找人</a><a href="#prepare">出发准备</a><a href="#problems">遇到问题</a><a href="#faq">常见问题</a></nav>
+  <section id="fees"><h2>接机快速概览</h2><div class="cards"><article><h3>马尼拉机场 MNL</h3><p>参考车程约 5–6 小时</p><strong class="price">₱3,000</strong></article><article><h3>克拉克机场 CRK</h3><p>参考车程约 3–4 小时</p><strong class="price">₱3,000</strong></article></div>
+    <p>币种为菲律宾比索。以上为现行定期团体接机费用，不默认包含返程送机、私人包车、陪同家属或任意时间抵达的接送。</p>
+    <p class="muted">计费单位、付款时间及方式以学校账单和顾问确认结果为准。非指定日、私人接送、超量行李、误机补接及额外住宿等费用需另行确认。</p>
+  </section>
+  <section id="calendar"><h2>接机日期：2026 年与 2027 年</h2>
+    <p class="notice">{{ nextDate ? '下一次指定接机日：' + nextDate + '（星期日，须提前确认预约）' : '请联系顾问获取新的接机安排。' }}</p>
+    <p>不是每个星期日都有接机。下列日期均为指定星期日，克拉克周一凌晨班对应各指定周日的次日。</p>
+    <div class="year-calendar" *ngFor="let year of [2026,2027]">
+      <h3>{{ year }} 年{{ year === 2026 ? '剩余' : '全年' }}接机日期</h3>
+      <p class="muted">{{ year === 2026 ? '仅显示今天及之后的日期。2026 日期供行程规划参考，具体班次请向顾问确认。' : '以下直接展示 1 月至 12 月的全年接机日期。' }}</p>
+      <p *ngIf="monthsFor(year).length === 0">2026 年已无剩余接机日期，请查看下方 2027 年安排。</p>
+      <div class="calendar-grid"><article *ngFor="let month of monthsFor(year)"><h3>{{ year }} 年 {{ month.month }} 月</h3><div *ngFor="let date of month.dates" class="date-row" [class.past]="date < today" [class.upcoming]="date === nextDate"><time [attr.datetime]="date">{{ +date.slice(5,7) }}月{{ +date.slice(8) }}日（星期日）</time><span>{{ date < today ? '已结束' : date === nextDate ? '下一次' : '指定日' }}</span></div></article></div>
+    </div>
+  </section>
+  <section id="flight-times"><h2>买机票前，先核对班次</h2><p>马尼拉指定周日：01:00、08:00、14:00、20:00。克拉克指定周日：01:30、12:00、17:00；次日周一：01:30。</p><p><b>克拉克凌晨分组：</b>周日为 WALES、PINES、MONOL；周一为 JIC、BECI、A&amp;J。中午及下午班次请顾问确认所读学校。</p><p>建议计划落地与接机至少间隔 2 小时。这是本页出行建议，最终由学校确认航班适配。</p></section>
+  <section><h2>凌晨班次：日期别看错</h2><div class="notice"><p>2026 年 10 月 18 日周日 01:30，是 <b>10 月 17 日周六深夜过后</b>。</p><p>该轮周一 01:30，实际为 <b>10 月 19 日</b>。</p></div><div class="notice"><p>2027 年 1 月 10 日周日 01:00 / 01:30，是 <b>1 月 9 日周六深夜过后</b>。</p><p>该轮克拉克周一 01:30，实际为 <b>1 月 11 日</b>。</p></div><p>示例只解释日期，不代表可自行选择班次。转机机场的时间按机票当地时间核对。</p></section>
+  <section id="prepare"><h2>预约接机与出发准备</h2><ul><li>核对机场、航站楼、航班号及实际落地日期，特别注意跨午夜航班。</li><li>落地还需入境、取行李、海关及走到集合点。</li><li>不默认延误后能自动改乘下一班。</li><li>家属陪同、儿童、未成年人独自出行、行动不便、大件或超量行李，提前报备安排及费用。</li></ul>
+    <h3>请把这些信息发送给思达启航顾问</h3><p>护照英文姓名、学校及校区、航班号、抵达日期及当地时间、机场及航站楼、同行人数与陪同家属、行李数量及特殊行李、可联系到学生的通讯方式。发送行程后，请取得接机确认。</p>
+    <article class="etravel"><h3>入境二维码（eTravel）：由思达启航顾问协助办理</h3><p>请提前联系思达启航顾问，并提供办理所需的个人及航班信息。顾问会在您出发前 3 天内，在线为您填写 eTravel 入境申报，并将生成的二维码发送给您。</p><p>收到后，请核对姓名、护照及航班信息，保存二维码截图，方便登机或抵达菲律宾时出示。如航班或行程发生变化，请及时告知顾问。</p><p class="muted">官方申报免费，顾问会根据行程在适用的 72 小时窗口内办理。</p></article>
+    <h3>出发前保存好</h3><p>接机确认、集合点图片、学校地址、顾问及学校联系方式、必要入境资料、航班行程、eTravel 二维码，建议离线截图。手机保持有电，准备可用网络、充电宝、少量比索现金、饮水、零食和外套；晕车者按自身需要准备。</p>
+    <h3>落地后的顺序</h3><ol class="steps"><li>完成入境检查。</li><li>领取全部行李，完成海关手续。</li><li>联系顾问，告知已经到达。</li><li>按最终通知前往集合点。</li><li>核对 BESA / 学校人员、自己的姓名和学校。</li><li>按工作人员安排上车或转乘。</li></ol>
+  </section>
+  <section id="airports"><h2>落地后：按机场找到集合点</h2><p>这是接机时刻，不是航班落地时刻。各航站楼报到及接驳时间以接机通知为准。</p>
+    <h3>对照图片，找到集合点</h3>
+    <div class="meeting-images"><article *ngFor="let item of [['manila-t1-reference.webp','马尼拉 T1 · B6','指定周日 01:00 / 08:00 / 14:00 / 20:00'],['manila-t3-reference.webp','马尼拉 T3 · BAY 7','指定周日 01:00 / 08:00 / 14:00 / 20:00'],['clark-reference.jpg','克拉克 Terminal 2 · BAY 3','指定周日 01:30 / 12:00 / 17:00；次日周一 01:30']]"><h3>{{ item[1] }}</h3><p>{{ item[2] }}</p><p *ngIf="item[0] === 'manila-t3-reference.webp'" class="notice">BAY 7 曾因施工临时调整至 BAY 6，请按学校最新接机通知集合。</p><p *ngIf="item[0] === 'clark-reference.jpg'">凌晨班次：周日 WALES、PINES、MONOL；周一 JIC、BECI、A&amp;J。</p><app-expandable-image [src]="'/assets/baguio-pickup/' + item[0]" [alt]="item[1] + '集合路线及现场柱号参考图片'" [title]="item[1]"/><p class="muted">集合路线及现场标识参考，点击放大。其他航站楼安排请提前确认，不要自行跨航站楼找车。</p></article></div>
+    <figure class="sign-image"><h3>认准 BESA 接机牌，再核对姓名与学校</h3><app-expandable-image src="/assets/baguio-pickup/besa-sign.webp" alt="BESA 接机人员举牌及接机牌图案参考" title="BESA 接机牌"/><figcaption>接机牌外观参考。还需核对人员身份与学生名单，不要仅凭牌子就跟随离开。</figcaption></figure>
+    <p>离接机时间还很久时，先联系接机人员确认等待地点，不要急着离开到达区。</p><h3>到达后，可复制这段信息报到</h3><blockquote>我是【姓名】，就读【学校及校区】，已到达【机场及航站楼】，目前在【出口或柱号】。请确认集合安排。</blockquote>
+  </section>
+  <section id="problems"><h2>遇到问题怎么办</h2><div class="cards"><article><h3>延误、改签或错过班次</h3><p>立即联系顾问和学校，发送更新行程，重新确认安排。不保证无限等待、自动顺延或免费补接。</p></article><article><h3>找不到接机人员</h3><p>在安全且容易描述的位置等待，发送航站楼、出口或柱号及现场照片，不反复自行换地点。</p></article><article><h3>手机没有网络</h3><p>尝试机场网络，或向机场服务台寻求联系协助。</p></article><article><h3>行李遗失或延迟</h3><p>向航空公司登记，同时及时告知接机联系人。</p></article><article><h3>非指定日抵达</h3><p>出发前落实另行接送、交通及住宿，费用和入住安排另行确认。</p></article></div></section>
+  <section><h2>车程与到校安排</h2><p><b>马尼拉至碧瑶约 5–6 小时；克拉克至碧瑶约 3–4 小时。</b>不包含机场等待及可能的换乘时间，交通、天气及道路情况可能延长行程。</p><p>马尼拉安排可能包含机场接驳及碧瑶换乘学校车辆。车型、换乘点、是否直达校区，以当次通知为准。入住、首餐、提前入住及次日测试由学校确认。</p><p><b>上车、换乘及下车时都清点行李。</b>护照、手机和贵重物品随身保管。</p><figure class="transfer-image"><h3>抵达碧瑶后，按安排换乘学校车辆</h3><app-expandable-image src="/assets/baguio-pickup/baguio-transfer.jpg" alt="BESA 指南中的碧瑶 Marcos Highway KIA 换乘点历史参考图" title="碧瑶换乘参考"/><figcaption>指南中的历史换乘点参考，不代表每次固定使用此地点；请跟随接机人员安排。</figcaption></figure></section>
+  <section id="faq"><h2>常见问题</h2><details *ngFor="let faq of faqs"><summary>{{ faq[0] }}</summary><p>{{ faq[1] }}</p></details></section>
+  <section><h2>出发前，再确认一次</h2><p>请将航班行程发给思达启航顾问，确认接机日期、适用班次、集合点、同行人数及行李安排。具体费用和付款方式以学校账单及确认结果为准。</p><details><summary>查看 2027 BESA 接机日历海报</summary><div class="poster"><app-expandable-image src="/assets/baguio-pickup/besa-calendar-2027.png" alt="BESA 2027 全年接机日历、班次、集合点及学校分组海报" title="2027 BESA 接机日历" previewHeight="320px" previewFit="contain"/></div><p class="muted">点击海报可放大，实际安排以学校接机确认通知为准。</p></details><a class="contact" routerLink="/about-sida/contact">发送行程，确认接机安排</a></section>
+</main>
+

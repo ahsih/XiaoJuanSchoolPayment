@@ -513,6 +513,10 @@ const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'philippines-study/baguio/airport-pickup',
+        loadComponent: () => import('./pages/philippines/baguio-pickup/baguio-pickup.component').then(m => m.BaguioPickupComponent),
+      },
+      {
         path: 'philippines-study/baguio',
         loadComponent: () =>
           import('./pages/philippines/baguio-study/baguio-study.component').then((m) => m.BaguioStudyComponent),

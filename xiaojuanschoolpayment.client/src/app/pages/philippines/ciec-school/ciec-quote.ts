@@ -103,7 +103,7 @@ export class CiecPerson {
       { label: '管理费', amount: 2400, note: '四周参考金额。' },
       { label: '学生卡', amount: 200, note: '一次性费用。' },
       { label: '水费', amount: 1200, note: '四周参考金额；不含电费。' },
-      { label: this.kindergarten ? '幼儿园教材' : '教材估算', amount: this.kindergarten ? 1000 : this.bookCount * this.bookPrice, note: this.kindergarten ? '四周参考金额。' : `${this.bookCount}本；按实际购买结算。` },
+      { label: this.kindergarten ? '幼儿园教材' : '教材估算', amount: this.kindergarten ? 1000 : this.bookCount * this.bookPrice, note: this.kindergarten ? '四周参考金额。' : `${this.bookCount}本；不同课程类型教材分别购买，请填写全部课程所需教材的总本数，按实际购买结算。` },
     ];
     if (this.kindergarten && this.stationery) rows.push({ label: '幼儿园文具套装', amount: 2000, note: '可选，四周参考金额。' });
     return rows;

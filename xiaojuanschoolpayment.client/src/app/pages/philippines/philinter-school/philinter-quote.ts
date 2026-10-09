@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods, textbookRuleQuantity } from '../school-textbook-estimate';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolVisaType } from '../../../components/school-group-quote';
 import { CiaLocalFeeRule, CiaPromotionRule, CiaQuoteSettings } from '../cia-school/cia-content-config';
@@ -129,7 +130,7 @@ export class PhilinterStudentCalculator {
       row('electricity', periodFor('electricity')),
       row('water', periodFor('water')),
       row('visa-extension', this.visaExtensions, visaTotal, this.visaNote),
-      row('books', this.plan.courses.length),
+      row('books', textbookRuleQuantity(this.plan.courses, this.feeRule('books'), 4)),
       row('student-id', 1),
     ].filter((item): item is PhilinterLocalFee => item !== null);
   }

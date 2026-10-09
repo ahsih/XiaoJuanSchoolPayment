@@ -2,6 +2,7 @@
   "extends": "./tsconfig.spec.json",
   "include": [
     "src/app/pages/philippines/jic-school/jic-student-quote.spec.ts",
+    "src/app/pages/philippines/baguio-study/baguio-study.component.spec.ts",
     "src/**/*.d.ts"
   ]
 }

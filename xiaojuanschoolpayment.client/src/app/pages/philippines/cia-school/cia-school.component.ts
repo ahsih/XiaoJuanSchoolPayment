@@ -216,6 +216,7 @@ interface CourseDetailGuide {
   imageAlt?: string;
   imageCaption?: string;
   notice?: string;
+  levels?: Array<{ code: string; name: string; score: string; cefr: string }>;
 }
 
 interface LocalFee {
@@ -255,6 +256,7 @@ interface CampusPracticalGuide {
   title: string;
   facts: Array<{ label: string; value: string }>;
   note: string;
+  points?: string[];
 }
 
 interface FaqItem {
@@ -1222,16 +1224,49 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         { label: '入学分级', value: '入学测试决定L0–L10等级，并对应CEFR Pre-A1至C2' },
         { label: '程度测验', value: '通常每4周1次；仅读4周者第4周可选择不参加' },
         { label: '选修方式', value: '提交第一、第二、第三志愿，每周可申请换课' },
+        { label: '晨考与写作', value: '晨考每日3分起；写作按等级约30–120词，须在图书馆完成并交老师检查' },
       ],
       points: [
         'Regular、Intensive与Power Intensive通过不同数量的一对一课，训练听、说、读、写、语法和词汇。',
         '学校按实际应上课日统计出勤；请假同样计入出勤率。总出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
-        '一周内缺席超过5节课（请假除外），学校资料列明下一周末可能暂停外出。晨考、写作字数与合格分数会随课程和级别不同。',
-        'Light ESL需提前特别申请；可申请放弃不超过50%的课程，但不退被放弃课程费用。',
-        'Light ESL的晨考和写作可选择参加；连续两次未参加会自动取消，需向教务申请并在两周后恢复。到校后改为Light ESL，学校资料列明需另付200美元。',
+        '一周内缺席超过5节课（请假除外），下一周末可能暂停外出；写作未达到要求也计作缺席。',
+        '晨考缺考或未达当日分数要求时，当天不可外出。周累计参考门槛为24分，Novice学生为16分；学校资料注明，每天均参加晨考者，即使周累计未达门槛，仍可在周末外出，具体以教务考勤记录确认。',
         '选修方向包括IELTS / TOEIC / Business Open、Conversation Club、Public Speaking、Reel English、Movie Class、Dance、Hello Pops、Guitar、Uke ’n’ Talk、Callan训练、商务经济英语和母语外教课等；名额已满时会按后续志愿或自由时间安排。',
+        '不参加选修时可选Free Time。Callan训练选修适合L2左右的学生；母语外教选修不向Regular ESL（RE）学生开放，需按实际课程资格选择。',
+      ],
+      levels: [
+        { code: 'L0', name: 'Novice 1', score: '80–99', cefr: 'Pre-A1' },
+        { code: 'L1', name: 'Novice 2', score: '100–119', cefr: 'A1' },
+        { code: 'L2', name: 'KET Grade C', score: '120–132', cefr: 'A2' },
+        { code: 'L3', name: 'KET Grade B', score: '133–139', cefr: 'A2' },
+        { code: 'L4', name: 'PET Grade C', score: '140–152', cefr: 'B1' },
+        { code: 'L5', name: 'PET Grade B', score: '153–159', cefr: 'B1' },
+        { code: 'L6', name: 'FCE Grade C', score: '160–172', cefr: 'B2' },
+        { code: 'L7', name: 'FCE Grade B', score: '173–179', cefr: 'B2' },
+        { code: 'L8', name: 'CAE Grade C', score: '180–192', cefr: 'C1' },
+        { code: 'L9', name: 'CAE Grade B', score: '193–199', cefr: 'C1' },
+        { code: 'L10', name: 'CPE', score: '200+', cefr: 'C2' },
       ],
       notice: '课程、选修名额、晨考分数与外出规则可能按等级和学期调整，以入学测试、教务排课及当期校规为准。',
+    },
+    {
+      icon: 'tune',
+      title: 'Light ESL 特别申请与出勤安排',
+      subtitle: '适用于需要兼顾工作的成年学生及年长学生，未成年人不可申请',
+      facts: [
+        { label: '申请对象', value: '商人、内容创作者、工作安排较多的成年学生及年长学生，须提前确认资格' },
+        { label: '课程调整', value: '最多可申请取消4节课；连续2次无故旷课，该课程会被自动取消' },
+        { label: '恢复课程', value: '向教务处申请，两周后可重新参加' },
+        { label: '程度测验', value: '就读1–6周以入学测试作为毕业考；超过6周须再参加一次程度考' },
+        { label: '晨考与写作', value: '可选择参加；晨考连续2次未参加会自动取消，申请后两周可恢复' },
+        { label: '到校后转课', value: '既有学校资料列明转为Light ESL需另付200美元，须先确认当期条件' },
+      ],
+      points: [
+        '出勤率仍须达到50%；低于50%会被开除且不退款，获准取消的课程也不退费。',
+        'Light ESL采用警告制，不采用一般学生的禁足和扣点机制；违反门禁记1次警告，累计2次警告会被开除且不退款。',
+        '周末旅行无需申请；周中旅行仍须提前申请并提供机票或船票，不能理解为可自行缺课或随时外出。',
+      ],
+      notice: 'Light ESL需学校审核，并非任何学生都可直接改选；取消课节、转课费用和警告处理以确认的课程安排及当期校规为准。',
     },
     {
       icon: 'workspace_premium',
@@ -1257,13 +1292,18 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       facts: [
         { label: 'Pre-IELTS', value: '入学测试3.0分及以下；后续模考达3.5分可转常规雅思' },
         { label: 'Regular IELTS', value: '入学测试3.5分及以上' },
-        { label: '常规模考', value: '通常每周四15:30–19:00；口语时间另行通知' },
+        { label: '预备 / 常规模考', value: '每周四15:30–19:00；口语时间另行通知' },
         { label: '保证目标', value: '5.5 / 6.0 / 6.5 / 7.0分' },
         { label: '入学分数', value: '3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分' },
       ],
       points: [
         '预备雅思晨考通常需达到4分、周累计16分，写作约80–200词；常规雅思晨考通常需达到7分、周累计26分，写作约100–250词。',
-        '保证班需读满12周，出勤率达到95%，每周四模考出勤率100%，并在读期间参加一次官方考试。',
+        '晨考缺考或未达到当日要求时，当天不可外出；学校资料注明，每天均参加晨考者，即使周累计分数未达标，仍可在周末外出。写作须在图书馆完成并交老师检查，未达到要求计作缺席。',
+        '预备与常规雅思的小团体课分别侧重ESL对话、雅思语法与口语；中团体课用于练习与纠错，选修不包括雅思公开课。普通班出勤与结业要求同上方ESL说明，保证班另按下列条件执行。',
+        '保证班需读满12周，并在读期间参加一次官方雅思机考，考试收据请自行保存。',
+        '保证班按整个就读期的应上课课节累计出勤；病假也会影响出勤，低于95%即失去保分资格。每周四模考出勤率须达到100%，即使因病请假也会失去保分资格。',
+        '周一至周三每晚另有1.5小时强制晚自习，并计入出勤；校规及扣点仍与一般学生相同。',
+        '入学时未达保证班门槛、后续模考达标者，可申请延长相应周数以满足12周保证班就读要求，由教务确认转班及资格。',
         '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为13,660比索，需提交考试收据。',
         '符合全部条件但未达到目标分数时，学校资料列明可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
       ],
@@ -1280,9 +1320,12 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         { label: 'Working Holiday', value: '无入学门槛；4周为一个单元' },
       ],
       points: [
-        '商务英语覆盖英文简报、谈判、商务书写、主持英文会议与商业咨询等实用场景。',
+        '商务英语围绕商务词汇、对话、语法、写作和商业场景训练英文表达；课程重点是英语沟通，不是商业经营技能培训。',
         '商务英语晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
-        '商务英语学生毕业周需在小礼堂完成商务主题PPT发表；不参加时学校资料列明可能收取₱2,500。',
+        '强制写作约120词，须在图书馆完成并交老师检查。晨考缺考或未达当日要求影响当天外出，周末外出例外按教务考勤记录确认。',
+        '选修可在符合资格的学术或非学术课程中选择，但不包括雅思公开课。',
+        '每4周的程度考须参加；无故缺考会影响下一周末外出，若下一周为离校前最后一周，则改为周一至周五禁足。',
+        '就读4周及以上的商务英语学生，最后一周须完成自选主题的商务PPT演讲；不参加时学校资料列明罚款2,500比索，少于4周者除外。',
         'Working Holiday包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
       ],
     },
@@ -1329,14 +1372,15 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         { label: '上课时间', value: '周一至周四19:00–21:00' },
         { label: '课程周期', value: '每2周一期，每晚2小时集中训练' },
         { label: '课程级别', value: '可按当前水平选择初级或中级班' },
-        { label: '课程费用', value: '课程本身免费；报名时需缴₱2,000可退押金' },
+        { label: '课程费用', value: '课程本身免费；报名时需缴2,000比索押金' },
         { label: '适合人群', value: '英语基础较弱、希望系统巩固或学有余力的学生' },
       ],
       points: [
-        '课程通过集中的晚间训练进一步巩固英语；学生可根据自身水平选择对应班级。',
+        '每期均包含听、说、读、写与语法；相邻两期使用不同课文，两个周期共4周完成一轮内容循环。',
         '报名地点为学校3号楼教务处；每期是否开班取决于报名人数，以教务处公告为准。',
-        '报名确认后通常不可撤销；未按时上课会计入最终出勤。迟到每次可能扣₱100，缺席每次可能扣₱200。',
+        '报名确认后不可撤销；未按时上课会计入最终出勤。迟到每次扣100比索，缺席每次扣200比索。',
         '累计缺席3次或主动退出课程时，学校资料列明可能不退押金并取消课程资格。',
+        '全程满足出勤要求和课程考核标准，课程结束后押金全额退还；未达要求时按教务规定扣除部分或全部押金。',
       ],
       notice: '开班人数、报名方式、押金退还与扣费规则可能调整，仅供参考，最终以到校后教务处公告和现场说明为准。',
     },
@@ -1822,7 +1866,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       number: '01',
       title: 'CRO 客户关系办公室',
       subtitle: '24小时学生支援',
-      text: '学生在校期间遇到生活不便、突发状况或一般咨询时，可由 CRO 团队协调处理；紧急情况可联系对应国家经理并协助安排救护车等支援。',
+      text: '房间设施报修、物品遗失、行李称重或生活咨询可找CRO。非办公时间联系不到相关人员，或报修后仍未处理，也可到前台继续反映；紧急情况由值班人员协助处理。',
       location: '2号楼前台区域',
       schedule: '每天',
       points: ['一般学生服务', '邮局快递协助'],
@@ -1842,7 +1886,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       number: '03',
       title: 'SNS 线上沟通服务',
       subtitle: '公告与经理联络',
-      text: '学校会通过线上渠道发布校内活动、生活提醒和重要公告；学生出发前及到校后，也可通过对应国家常用通讯软件联系国际经理。',
+      text: '学校会通过线上渠道发布校内活动、生活提醒和重要公告；中国学生可通过微信公众号查询日常办事流程，需要进一步沟通时联系国际经理。',
       location: '线上 SNS',
       schedule: '每天',
       points: ['校内信息通知', '国际经理沟通'],
@@ -1894,34 +1938,39 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly campusPracticalGuides: CampusPracticalGuide[] = [
     {
-      icon: 'airport_shuttle',
-      eyebrow: 'AIRPORT PICKUP',
-      title: '机场接机与到校迎新',
-      facts: [
-        { label: '接机地点', value: '宿务麦克坦机场到达区，按学校确认的接机指引集合' },
-        { label: '周末接机', value: '费用参考约₱1,000，以航班与学校确认安排为准' },
-        { label: '工作日接机', value: '费用参考约₱1,500，需提前提交完整航班信息' },
-      ],
-      note: '到校后会安排基础说明与迎新资料；接机时段、集合点、费用及可否安排须以报名后的正式确认单为准。',
-    },
-    {
       icon: 'confirmation_number',
       eyebrow: 'ADMIN OFFICE',
-      title: '行政办公室办事指引',
+      title: '行政办事与外出申请',
       facts: [
-        { label: '位置', value: '1号楼入口处，先取号再到对应窗口办理' },
+        { label: '位置与流程', value: 'B2教学楼一楼入口处，先取号再到对应窗口办理' },
         { label: '办公时间', value: '08:00–18:00；午休11:50–13:00' },
         { label: '表格截止', value: '旅行、退房、Free Day等申请通常需在17:00前提交' },
       ],
-      note: '签证延长、护照、退款与押金、延长住宿、旅行申请、课本领取、志愿者活动及出勤确认等业务由不同窗口负责。',
+      points: [
+        '1号窗口：签证延长、取回护照、退房与押金、延长住宿及送机预约；2号窗口：晨考成绩、外出限制、Free Day、旅行及特别外出申请。',
+        '3号窗口：课本选购与课表领取；4号窗口：咨询及志愿者活动；5–7号窗口：出勤确认；8号窗口：美元或日元兑换。人员与窗口安排以现场指引为准。',
+        '一般课程学生工作日不能自行安排搭船或搭车的短途旅游，尤其不能在周五下午提前离校去薄荷岛。需要工作日旅行时须事先申请并按要求提供机票；Light ESL按课程区列出的单独规则执行。',
+      ],
+      note: '请先完成申请和校方确认，再安排出行；提交表格不等于已获准外出。',
+    },
+    {
+      icon: 'chat',
+      eyebrow: 'STUDENT WECHAT',
+      title: '微信公众号查询办事流程',
+      facts: [
+        { label: '公众号名称', value: 'CIA CHINA 学生服务' },
+        { label: '可查询内容', value: '打车地址、换课、校车、校园活动，以及菜单内的请假、缴费和老师换勤等流程' },
+        { label: '查询方式', value: '在公众号输入“打车”“换课”等简短关键词，或通过菜单查找' },
+      ],
+      note: '尽量使用简短关键词，完整问句可能无法识别；涉及个人课表、申请进度或紧急问题时，请联系教务或CRO。',
     },
     {
       icon: 'sim_card',
       eyebrow: 'SIM & INTERNET',
       title: '校内SIM卡与充值',
       facts: [
-        { label: '未注册SIM', value: '约₱50，需本人使用护照和基本信息完成注册' },
-        { label: '已注册SIM', value: '约₱150，可直接充值使用，通常无需再次注册' },
+        { label: '未注册SIM', value: '约50比索，需本人使用护照和基本信息完成注册后充值使用' },
+        { label: '已注册SIM', value: '学校资料列约150比索，可直接充值使用；购买时确认当前实名及使用要求' },
         { label: '充值方式', value: '校内小卖铺现场充值，或使用“菲速充”微信小程序' },
       ],
       note: '学校资料显示小卖铺电话卡为Smart卡；套餐、售价和注册要求可能随电信政策调整。',
@@ -1942,11 +1991,24 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       eyebrow: 'LAUNDRY',
       title: '免费洗衣与自助付费洗衣',
       facts: [
-        { label: '免费洗衣', value: '每周可送洗2次；通常在07:00–15:00收取脏衣，约2–3天后领取' },
-        { label: '付费自助', value: '洗涤及烘干约₱200；可洗内衣裤并使用自己的洗衣液' },
+        { label: '服务地点', value: '一楼洗衣部，位于B2与B3之间' },
+        { label: '免费送洗', value: '07:00–15:00收取脏衣，通常2–3天后领取；仅使用学校默认洗衣液' },
+        { label: '干净衣物领取', value: '周一至周五10:00–20:00；周六、周日10:00–17:00' },
+        { label: '付费自助', value: '洗涤及烘干200比索，可洗内衣裤并使用自己的洗衣液；较早送洗有机会当天领取' },
         { label: '付费开放', value: '周一至周五07:00–21:00；周末07:00–17:00；节假日08:00–17:00' },
       ],
-      note: '学校资料另列遗失物品赔偿参考标准（约₱50–₱500）；送洗前后请自行核对衣物，最终处理以校方规定为准。',
+      note: '送洗和领取时请检查衣物；学校资料注明不承担洗衣损坏责任。遗失赔偿参考为上衣500比索、短裤300比索、衬衫或外套200比索、毛巾100比索、其他50比索，具体认定与处理以校方规定为准。',
+    },
+    {
+      icon: 'local_post_office',
+      eyebrow: 'CRO & MAIL',
+      title: 'CRO联系电话与包裹邮寄',
+      facts: [
+        { label: 'CRO值班电话', value: '+63-919-332-1737（学校资料所列24小时服务电话）' },
+        { label: '邮寄联系电话', value: '+63-32-255-4493' },
+        { label: '英文邮寄地址', value: 'CIA Building Vistamar Avenue, Sitio Dapdap, Barangay Mactan, Lapu-Lapu City, Cebu, Philippines 6015' },
+      ],
+      note: '寄出前向CRO确认收件人姓名、房间信息和可接收的包裹类型；联系电话和收件安排以到校后的最新通知为准。',
     },
   ];
 

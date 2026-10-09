@@ -72,7 +72,7 @@ describe('CG Banilad verified quote', () => {
     expect(component.sidaDiscountAmount).toBeCloseTo(135);
     expect(component.offSeasonDiscount).toBe(150);
     expect(component.quoteUsd).toBe(1165);
-    expect(component.localFeesTotal).toBe(17050);
+    expect(component.localFeesTotal).toBe(18800);
   });
 
   it('includes each student textbook estimate in the webpage and generated image', () => {
@@ -80,16 +80,16 @@ describe('CG Banilad verified quote', () => {
     student.textbookCount = 3;
     student.textbookUnitPrice = 400;
     const textbook = component.localFees.find(row => row.item === '教材费')!;
-    expect(textbook.amount).toBe('400 比索 / 本');
+    expect(textbook.amount).toBe('400 比索 / 1–8周');
     expect(textbook.quantity).toBe(3);
     expect(textbook.total).toBe(1200);
     expect(component.localFeesTotal).toBe(18000);
     expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({
-      unit: '400 比索 / 本', quantity: '3', amount: '1,200 比索',
+      unit: '400 比索 / 1–8周', quantity: '3', amount: '1,200 比索',
     }));
 
-    student.textbookUnitPrice = 451;
-    expect(component.quoteError).toContain('教材单价请输入250–450比索');
+    student.textbookUnitPrice = 50001;
+    expect(component.quoteError).toContain('教材单价请输入0–50000比索');
     student.textbookUnitPrice = 450;
     student.textbookCount = 0;
     expect(component.quoteError).toBe('');
@@ -101,8 +101,8 @@ describe('CG Banilad verified quote', () => {
     expect(component.localFees.find(row => row.item === '水费')?.total).toBe(500);
     expect(component.localFees.find(row => row.item === '维护管理费')?.total).toBe(2000);
     expect(component.localFees.find(row => row.item === 'ACR E-CARD（SSP）')?.total).toBe(4500);
-    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('250 比索 / 本');
-    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
+    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('2,000 比索 / 1–8周');
+    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(2000 * Math.ceil(component.selectedWeeks / 8));
     expect(component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')?.total).toBe(1000);
     expect(component.localFeeEstimateNote).toContain('证件、签证、教材、接机和按周押金已按学校最新明细');
 
@@ -116,17 +116,17 @@ describe('CG Banilad verified quote', () => {
       expect(component.localFees.find(row => row.item === '综合管理费')?.total).toBe(750 * weeks);
       expect(component.localFees.find(row => row.item === '基础电费（不含空调）')?.total).toBe(500 * weeks);
       expect(component.localFees.find(row => row.item === '水费')?.total).toBe(300 * weeks);
-      expect(component.localFeesTotal).withContext(`${weeks} weeks`).toBe(includedTotal);
+      expect(component.localFeesTotal).withContext(`${weeks} weeks`).toBe(includedTotal - 250 + 2000 * Math.ceil(weeks / 8));
       const deposit = component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')!;
       expect(deposit.total).toBe(250 * weeks);
       const books = component.localFees.find(row => row.item === '教材费')!;
       expect(component.localFeesTotal - books.total + deposit.total + 1200).toBe(publishedTotal);
-      expect(component.quoteImageData.localFeeAmount).toBe(component.formatPhp(includedTotal));
+      expect(component.quoteImageData.localFeeAmount).toBe(component.formatPhp(includedTotal - 250 + 2000 * Math.ceil(weeks / 8)));
       expect(component.quoteImageData.localFeeItems?.find(row => row.label === '综合管理费')?.amount).toBe(component.formatPhp(750 * weeks));
     }
     expect(component.quoteImageData.localFeeNote).toContain('2027年1月4日起入学新生标准');
-    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')?.unit).toBe('250 比索 / 本');
-    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')?.amount).toBe('250 比索');
+    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')?.unit).toBe('2,000 比索 / 1–8周');
+    expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')?.amount).toBe('6,000 比索');
     expect(component.quoteImageData.optionalFeeItems?.find(row => row.label === '住宿押金（可退）')?.amount).toBe('6,000 比索');
   });
 
@@ -142,7 +142,8 @@ describe('CG Banilad verified quote', () => {
     const migrated = cloneCgBaniladContentConfig(legacy);
     expect(migrated.localFees.find(row => row.id === 'ssp-i-card')?.name).toBe('ACR E-CARD（SSP）');
     expect(migrated.localFees.find(row => row.id === 'visa-extension')?.rates).toEqual([6390, 4460, 4460, 4460, 4460]);
-    expect(migrated.localFees.find(row => row.id === 'books')?.secondaryAmount).toBe(450);
+    expect(migrated.localFees.find(row => row.id === 'books')?.amount).toBe(2000);
+    expect(migrated.localFees.find(row => row.id === 'books')?.periodWeeks).toBe(8);
     expect(migrated.localFees.find(row => row.id === 'books')?.includeInTotal).toBeTrue();
     expect(migrated.localFees.find(row => row.id === 'deposit')?.periodWeeks).toBe(1);
     expect(migrated.localFees.find(row => row.id === 'management')?.amount).toBe(2000);
@@ -161,7 +162,7 @@ describe('CG Banilad verified quote', () => {
     expect(text).toContain('综合管理费');
     expect(text).toContain('水费');
     expect(text).toContain('旅游签证续签');
-    expect(text).toContain('42,340 比索');
+    expect(text).toContain('46,090 比索');
     expect(text).toContain('2027年1月4日起入学新生标准');
   });
 
@@ -202,11 +203,11 @@ describe('CG Banilad verified quote', () => {
   it('does not confuse the eight-week example with four-week management fees', () => {
     component.selectedWeeks = 8;
     expect(component.localFees.find(row => row.item === '维护管理费')?.total).toBe(4000);
-    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
+    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(2000 * Math.ceil(component.selectedWeeks / 8));
     // Eight weeks are covered by the default 59-day visa; no extension or ACR fee yet.
-    expect(component.localFeesTotal).toBe(21550);
+    expect(component.localFeesTotal).toBe(23300);
     component.selectedWeeks = 12;
-    expect(component.localFeesTotal).toBe(37240);
+    expect(component.localFeesTotal).toBe(40990);
     expect(component.localFees.find(row => row.item === 'ACR I-CARD（旅游签证）')?.quantity).toBe(1);
   });
 
@@ -222,7 +223,7 @@ describe('CG Banilad verified quote', () => {
   });
 
   it('updates all local-fee and image totals for the 59-day visa estimate', () => {
-    for (const [weeks, total] of [[3, 17050], [4, 17050], [8, 21550], [12, 37240], [16, 46200], [20, 55160], [24, 64120]] as const) {
+    for (const [weeks, total] of [[3, 18800], [4, 18800], [8, 23300], [12, 40990], [16, 49950], [20, 60910], [24, 69870]] as const) {
       component.selectedWeeks = weeks;
       expect(component.localFeesTotal).withContext(`${weeks} weeks`).toBe(total);
       expect(component.quoteImageData.localFeeAmount).toBe(component.formatPhp(total));
@@ -309,7 +310,8 @@ describe('CG Banilad verified quote', () => {
 
   it('does not apply date-based adjustments to invalid dates', () => {
     for (const date of ['', 'invalid', '2026-02-30', '2026-09-31']) {
-      component.selectedStartDate = date;
+      component.quotePlan.courses[0].startDate = date;
+      component.quotePlan.rooms[0].startDate = date;
       expect(component.summerWeeks).toBe(0);
       expect(component.offSeasonDiscount).toBe(0);
     }
@@ -473,7 +475,7 @@ describe('CG Banilad verified quote', () => {
     expect(quote.paymentItems.length).toBe(7);
     expect(JSON.stringify(quote)).not.toMatch(/\b(?:USD|PHP|CNY)\b/);
     expect(JSON.stringify(component.localFees)).not.toMatch(/\b(?:USD|PHP|CNY)\b/);
-    expect(quote.localFeeAmount).toBe('37,240 比索');
+    expect(quote.localFeeAmount).toBe('40,990 比索');
     expect(quote.totalUsd).toBe('3,285 美元');
     expect(quote.paymentItems.some(row => /美元\s*美元/.test(`${row.amount} ${row.note}`))).toBeFalse();
     const visa = quote.localFeeItems?.find(row => row.label === '旅游签证续签');

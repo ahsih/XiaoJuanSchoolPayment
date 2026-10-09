@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import {
   SCHOOL_VISA_OPTIONS,
@@ -345,7 +346,7 @@ export class CiaStudentQuote {
         }
         case 'per-course-period': {
           const periodWeeks = Math.max(1, rule.periodWeeks ?? 4);
-          const rawQuantity = this.quotePlan.courseWeeks / periodWeeks;
+          const rawQuantity = rule.id === 'books' ? textbookPeriods(this.quotePlan.courses, periodWeeks, rule.rounding === 'ceil' ? 'ceil' : 'proportional') : this.quotePlan.courseWeeks / periodWeeks;
           quantity = rule.rounding === 'ceil' ? Math.ceil(rawQuantity) : rawQuantity;
           total = rule.amount * quantity;
           unitLabel = `${quoteMoney(rule.amount)} 比索／套`;

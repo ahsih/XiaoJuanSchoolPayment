@@ -1,3 +1,4 @@
+<aside style="max-width:1160px;margin:20px auto;padding:16px 24px;background:#eaf4f3;border-radius:12px"><a href="/philippines-study/baguio/airport-pickup" style="color:#125e66;font-weight:600">行前准备：查看 2026–2027 碧瑶接机日期、班次与注意事项 →</a><p style="margin:6px 0 0">请先联系思达启航顾问确认学校、接机日期、班次和集合点，再购买机票。最终安排以学校发送的接机确认通知为准。</p></aside>
 <app-cia-school>
   <div class="cia-page">
     <div class="page-grid">
@@ -297,6 +298,11 @@
               <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
             </div>
             <div class="quote-general-notes">
+              <strong>MONOL主校区优惠详细说明</strong>
+              <p>上课日免费早餐有效至2027年12月31日，周末及节假日除外。</p>
+              <ul><ng-container *ngFor="let rule of promotionRules"><li *ngIf="rule.enabled" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="rule.id" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', rule.id)"><strong>{{ rule.name }}</strong>：{{ rule.description }}</li></ng-container></ul>
+            </div>
+            <div class="quote-general-notes">
               <strong>报价说明</strong>
               <ul><li *ngFor="let note of quoteGeneralNotes">{{ note }}</li></ul>
             </div>
@@ -326,7 +332,7 @@
           <mat-icon>info</mat-icon>
           <div>
             <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。课程结构已与MONOL官方Program及Admission页面核对；美元价格、房型、淡季/SNS优惠和到校学杂费按思达顾问本次收到的MONOL 2026价表录入。价表中的小单间和四人胶囊房与学校公开页的部分房型名称可能不同，报价单按本次价表计算，报名仍以学校书面账单和优惠确认为准。</p>
+            <p>本页价格更新时间：2026年9月1日；优惠已按2026年10月8日收到的MONOL主校区海报更新。课程结构已与MONOL官方Program及Admission页面核对；美元价格、房型、淡季/SNS优惠和到校学杂费按思达顾问本次收到的MONOL 2026价表录入。价表中的小单间和四人胶囊房与学校公开页的部分房型名称可能不同，报价单按本次价表计算，报名仍以学校书面账单和优惠确认为准。</p>
           </div>
         </section>
 

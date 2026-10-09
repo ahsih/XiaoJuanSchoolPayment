@@ -436,6 +436,11 @@ export const mainNavigation: NavigationItem[] = [
         type: '城市页',
         children: [
           {
+            id: 'baguio-airport-pickup',
+            label: '碧瑶接机指南',
+            route: '/philippines-study/baguio/airport-pickup',
+          },
+          {
             id: 'pines-international-academy',
             label: '菲律宾碧瑶PINES语言学校',
             route: '/philippines-study/baguio/pines-international-academy',

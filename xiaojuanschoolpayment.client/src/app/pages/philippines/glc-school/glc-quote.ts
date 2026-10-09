@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { applyEditableQuoteImageCopy, QuotePlanRow, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
 import { GlcQuotePlan } from './glc-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
@@ -201,8 +202,8 @@ export class GlcQuoteCalculator {
     ];
     const eslBooks = this.feeRule('books-esl', { name: '教材费（英语课程）', amount: 3000, periodWeeks: 8 });
     const ieltsBooks = this.feeRule('books-ielts', { name: '教材费（雅思）', amount: 5000, periodWeeks: 4 });
-    if (eslWeeks && eslBooks.enabled) { const quantity = Math.ceil(eslWeeks / (eslBooks.periodWeeks ?? 8)) * this.people; fees.push({ item: eslBooks.name, unit: `${eslBooks.amount.toLocaleString('en-US')} 比索 / ${eslBooks.periodWeeks ?? 8}周 / 人预估`, quantity, total: eslBooks.amount * quantity, note: eslBooks.note }); }
-    if (ieltsWeeks && ieltsBooks.enabled) { const quantity = Math.ceil(ieltsWeeks / (ieltsBooks.periodWeeks ?? 4)) * this.people; fees.push({ item: ieltsBooks.name, unit: `${ieltsBooks.amount.toLocaleString('en-US')} 比索 / ${ieltsBooks.periodWeeks ?? 4}周 / 人预估`, quantity, total: ieltsBooks.amount * quantity, note: ieltsBooks.note }); }
+    if (eslWeeks && eslBooks.enabled) { const quantity = textbookPeriods(this.plan.courses.filter(row => this.course(row)?.textbook === 'esl'), eslBooks.periodWeeks ?? 8) * this.people; fees.push({ item: eslBooks.name, unit: `${eslBooks.amount.toLocaleString('en-US')} 比索 / ${eslBooks.periodWeeks ?? 8}周 / 人预估`, quantity, total: eslBooks.amount * quantity, note: eslBooks.note }); }
+    if (ieltsWeeks && ieltsBooks.enabled) { const quantity = textbookPeriods(this.plan.courses.filter(row => this.course(row)?.textbook === 'ielts'), ieltsBooks.periodWeeks ?? 4) * this.people; fees.push({ item: ieltsBooks.name, unit: `${ieltsBooks.amount.toLocaleString('en-US')} 比索 / ${ieltsBooks.periodWeeks ?? 4}周 / 人预估`, quantity, total: ieltsBooks.amount * quantity, note: ieltsBooks.note }); }
     const hidden = new Set((this.content?.().localFees ?? []).filter(rule => !rule.enabled).map(rule => rule.name));
     return fees.filter(fee => !hidden.has(fee.item));
   }

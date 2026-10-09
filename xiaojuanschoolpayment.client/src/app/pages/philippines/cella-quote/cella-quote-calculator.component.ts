@@ -376,6 +376,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
       ...(originalRooms.get(item.id) ?? CELLA_ROOMS.find(room => room.campus === this.initialCampus)!),
       id: item.id, campus: this.initialCampus, name: item.label || item.name, fee: item.fee, note: item.note,
     })));
+    this.catalog.localFeeRules = content.localFees;
     this.catalog.registrationFee = content.quoteSettings.registrationFee;
     this.catalog.peakSeasonWeeklyFee = content.quoteSettings.peakSeasonFeePerWeek;
     for (const student of this.students) student.setCampus(this.initialCampus);

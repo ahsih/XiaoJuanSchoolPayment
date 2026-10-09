@@ -496,7 +496,7 @@
           <span class="collapsible-summary-icon"><mat-icon>fact_check</mat-icon></span>
           <span>
             <strong>查看课程细节与每日课表</strong>
-            <small>选修方向、保证班规则、亲子项目和周一至周五作息</small>
+            <small>分级与出勤、Light ESL、雅思保证班、晚间强化及每日作息</small>
           </span>
           <mat-icon class="collapsible-chevron">expand_more</mat-icon>
         </summary>
@@ -512,8 +512,8 @@
         <article>
           <mat-icon>apps</mat-icon>
           <div>
-            <h3>14类选修方向，可提交3个志愿</h3>
-            <p>除IELTS、TOEIC、商务英语公开课外，还包括会话、演讲、影音创作、舞蹈、歌唱、乐器、Callan训练、商务经济英语与母语外教课等；名额不足时按后续志愿或自由时间安排。</p>
+            <h3>选修课按兴趣与课程资格选择</h3>
+            <p>入学时填写选修志愿，学术与非学术方向均有选择；具体课程、名额及限制见下方“ESL一般英语与选修课”。</p>
           </div>
         </article>
         <article>
@@ -531,6 +531,72 @@
           </div>
         </article>
       </div>
+
+      <section class="course-detail-guides" id="course-detail-guides" aria-labelledby="course-detail-guide-title">
+        <div class="course-detail-guide-heading">
+          <div>
+            <span class="section-eyebrow">IMPORTANT COURSE NOTES</span>
+            <h3 id="course-detail-guide-title">报名前值得确认的课程细节</h3>
+            <p>下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。</p>
+          </div>
+          <mat-icon>tips_and_updates</mat-icon>
+        </div>
+
+        <div class="course-detail-guide-list">
+          <details *ngFor="let guide of courseDetailGuides">
+            <summary>
+              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
+              <div>
+                <strong>{{ guide.title }}</strong>
+                <small>{{ guide.subtitle }}</small>
+              </div>
+              <div class="course-detail-toggle" aria-hidden="true">
+                <b class="course-detail-toggle-closed">点击查看详情</b>
+                <b class="course-detail-toggle-open">收起详情</b>
+                <mat-icon class="course-detail-chevron">expand_more</mat-icon>
+              </div>
+            </summary>
+            <div class="course-detail-guide-body">
+              <dl>
+                <div *ngFor="let fact of guide.facts">
+                  <dt>{{ fact.label }}</dt>
+                  <dd>{{ fact.value }}</dd>
+                </div>
+              </dl>
+              <ul>
+                <li *ngFor="let point of guide.points">{{ point }}</li>
+              </ul>
+              <div *ngIf="guide.levels" class="cia-level-table-wrap">
+                <table class="cia-level-table">
+                  <caption>入学分级对照（CIA校内测试）</caption>
+                  <thead>
+                    <tr><th scope="col">等级</th><th scope="col">对应级别</th><th scope="col">分数</th><th scope="col">CEFR</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let level of guide.levels">
+                      <th scope="row">{{ level.code }}</th><td>{{ level.name }}</td><td>{{ level.score }}</td><td>{{ level.cefr }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <figure *ngIf="guide.image" class="course-detail-evidence">
+                <img [src]="guide.image" [alt]="guide.imageAlt || ''" loading="lazy" />
+                <figcaption>{{ guide.imageCaption }}</figcaption>
+              </figure>
+              <p *ngIf="guide.notice" class="course-detail-notice">
+                <mat-icon>verified_user</mat-icon>{{ guide.notice }}
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
+      <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
+        <mat-icon>info</mat-icon>
+        <div>
+          <strong>学校规则参考说明</strong>
+          <p>课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。</p>
+        </div>
+      </aside>
 
       <section class="daily-schedule-section" aria-labelledby="daily-schedule-title">
         <div class="daily-schedule-heading">
@@ -892,58 +958,6 @@
 
       </div>
 
-      <section class="course-detail-guides" aria-labelledby="course-detail-guide-title">
-        <div class="course-detail-guide-heading">
-          <div>
-            <span class="section-eyebrow">IMPORTANT COURSE NOTES</span>
-            <h3 id="course-detail-guide-title">报名前值得确认的课程细节</h3>
-            <p>下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。</p>
-          </div>
-          <mat-icon>tips_and_updates</mat-icon>
-        </div>
-
-        <div class="course-detail-guide-list">
-          <details *ngFor="let guide of courseDetailGuides; let first = first" [open]="first">
-            <summary>
-              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
-              <div>
-                <strong>{{ guide.title }}</strong>
-                <small>{{ guide.subtitle }}</small>
-              </div>
-              <div class="course-detail-toggle" aria-hidden="true">
-                <b class="course-detail-toggle-closed">点击查看详情</b>
-                <b class="course-detail-toggle-open">收起详情</b>
-                <mat-icon class="course-detail-chevron">expand_more</mat-icon>
-              </div>
-            </summary>
-            <div class="course-detail-guide-body">
-              <dl>
-                <div *ngFor="let fact of guide.facts">
-                  <dt>{{ fact.label }}</dt>
-                  <dd>{{ fact.value }}</dd>
-                </div>
-              </dl>
-              <ul>
-                <li *ngFor="let point of guide.points">{{ point }}</li>
-              </ul>
-              <figure *ngIf="guide.image" class="course-detail-evidence">
-                <img [src]="guide.image" [alt]="guide.imageAlt || ''" loading="lazy" />
-                <figcaption>{{ guide.imageCaption }}</figcaption>
-              </figure>
-              <p *ngIf="guide.notice" class="course-detail-notice">
-                <mat-icon>verified_user</mat-icon>{{ guide.notice }}
-              </p>
-            </div>
-          </details>
-        </div>
-      </section>
-      <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
-        <mat-icon>info</mat-icon>
-        <div>
-          <strong>学校规则参考说明</strong>
-          <p>课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。</p>
-        </div>
-      </aside>
       </div>
     </details>
 
@@ -1158,6 +1172,35 @@
       </div>
 
     </section>
+
+    <details class="cia-section cia-collapsible-section" id="campus-practical-guide">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>info</mat-icon></span>
+        <span>
+          <strong>到校后办事与生活指南</strong>
+          <small>行政与外出申请、微信查询、电话卡、用餐、洗衣及包裹邮寄</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <p class="campus-guide-intro">先了解去哪里办事，再查看日常生活安排。以下根据CIA学生服务资料整理，办公窗口、服务时间及规则以到校后的最新通知为准。</p>
+        <div class="campus-practical-grid">
+          <article *ngFor="let guide of campusPracticalGuides">
+            <header>
+              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
+              <div><small>{{ guide.eyebrow }}</small><h3>{{ guide.title }}</h3></div>
+            </header>
+            <dl>
+              <div *ngFor="let fact of guide.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+            </dl>
+            <ul *ngIf="guide.points" class="campus-guide-points">
+              <li *ngFor="let point of guide.points">{{ point }}</li>
+            </ul>
+            <p><mat-icon>info</mat-icon>{{ guide.note }}</p>
+          </article>
+        </div>
+      </div>
+    </details>
 
     <section class="student-track-section">
       <div class="section-heading">

@@ -151,7 +151,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get summerFeePerWeek() { return this.seasonalFeePerWeek; }
   seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
   get summerDateRange() { return this.peakSeasonRanges.filter(item => item.enabled).map(item => `${item.start.replace(/-/g, '/')}—${item.end.replace(/-/g, '/')}`).join('；'); }
-  get offSeasonRuleText() { return this.promotionRules.find(item => item.id === 'cg-banilad-off-season' && item.enabled)?.description ?? '当前未启用淡季优惠'; }
+  get offSeasonRuleText() { return this.promotionRules.filter(item => item.enabled && (item.id === 'cg-banilad-off-season' || item.id === 'cg-banilad-off-season-2027')).map(item => item.description).join('；') || '当前未启用淡季优惠'; }
   get longStayRuleText() { return this.promotionRules.find(item => item.id === 'cg-banilad-long-stay' && item.enabled)?.description ?? '当前未启用长期优惠'; }
   usdToCny = 7.2;
   phpPerCny = 7.75;

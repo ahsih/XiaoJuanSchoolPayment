@@ -5,7 +5,7 @@ import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
-import { createDefaultMonolContentConfig } from './monol-content-config';
+import { cloneMonolContentConfig, createDefaultMonolContentConfig } from './monol-content-config';
 import { MonolSchoolDetailComponent } from './monol-school-detail.component';
 
 describe('MONOL 2026 pricing and quote', () => {
@@ -20,6 +20,8 @@ describe('MONOL 2026 pricing and quote', () => {
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
     component = TestBed.runInInjectionContext(() => new MonolSchoolDetailComponent());
+    component.students.forEach(student => { student.selectedRegistrationDate = '2026-10-08'; });
+    component.selectedStartDate = '2026-10-11';
   });
 
   it('keeps the supplied course and accommodation catalog in display order', () => {
@@ -39,7 +41,7 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.offSeasonRoomDiscountAmount).toBe(100);
     expect(component.quoteUsd).toBe(950);
     expect(component.quoteUsdText).toBe('950 美元');
-    expect(component.schoolPaymentItems.find(item => item.label === '淡季课程优惠')?.note).toContain('2026年8月23日起');
+    expect(component.schoolPaymentItems.find(item => item.label === '淡季课程优惠')?.note).toContain('2026年12月31日');
     expect(component.schoolPaymentItems.find(item => item.label === '淡季课程优惠')?.note).not.toContain('6月27日前结束');
   });
 
@@ -116,7 +118,7 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.schoolPaymentItems.filter(item => item.label.includes('SNS特别活动')).length).toBe(1);
     expect(component.estimatedLocalFees.find(item => item.item === 'SSP特殊学习许可证')?.quantity).toBe(2);
     expect(component.quoteImageData.paymentItems?.some(item => item.amount === '未适用')).toBeFalse();
-    expect(component.quoteImageData.paymentItems?.filter(item => item.label.includes('淡季工作日免费早餐')).length).toBe(1);
+    expect(component.quoteImageData.paymentItems?.filter(item => item.label.includes('上课日免费早餐')).length).toBe(1);
     expect(component.quoteImageData.importantNotes).toEqual(component.quoteImageSettings.footerNotes);
     expect(component.quoteImageData.importantNotes?.join('')).not.toContain('淡季');
     expect(component.quoteImageData.importantNotes?.join('')).not.toContain('SNS');
@@ -125,7 +127,7 @@ describe('MONOL 2026 pricing and quote', () => {
 
   it('uses the employee-editable MONOL price and promotion configuration', () => {
     component.courseFees.find(item => item.id === 'esl-4')!.tuition = 800;
-    component.promotionRules.find(item => item.id === 'monol-off-season-course-late')!.discountValue = 120;
+    component.promotionRules.find(item => item.id === 'monol-off-season-course-2026')!.discountValue = 120;
 
     expect(component.students[0].tuition).toBe(800);
     expect(component.students[0].offSeasonCourseDiscount).toBe(120);
@@ -147,4 +149,51 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.galleryImages.find(item => item.src === '/uploads/monol-tour.mp4')?.contentType).toBe('video/mp4');
     expect(component.galleryImages.some(item => item.src === '/uploads/hidden.jpg')).toBeFalse();
   });
+  it('honors registration cutoff, excluded summer weeks and SNS room restriction', () => {
+    const student = component.students[0];
+    component.selectedStartDate = '2027-06-13';
+    component.selectedWeeks = 12;
+    expect(student.offSeasonCourseDiscount).toBe(100);
+    expect(student.offSeasonRoomDiscount).toBe(100);
+    component.selectedRoomId = 'premium-single-room';
+    student.applySnsPromotion = true;
+    expect(student.snsDiscount).toBe(0);
+    component.selectedRoomId = 'standard-single-room';
+    expect(student.snsDiscount).toBe(100);
+    student.selectedRegistrationDate = '2027-01-01';
+    expect(student.offSeasonCourseDiscount).toBe(0);
+    expect(student.snsDiscount).toBe(0);
+  });
+
+  it('applies long stay tiers and Christmas once with matching image amounts', () => {
+    const student = component.students[0];
+    component.selectedStartDate = '2026-11-29';
+    for (const [weeks, amount] of [[16, 150], [20, 200], [24, 300]]) {
+      component.selectedWeeks = weeks;
+      expect(student.longTermDiscount).toBe(amount);
+      expect(student.christmasDiscount).toBe(100);
+      expect(component.quoteImageData.paymentItems?.find(item => item.label === '长住优惠')?.amount).toBe(`− ${amount} 美元`);
+      expect(component.quoteImageData.totalUsd).toBe(component.quoteUsdText);
+    }
+    student.selectedRegistrationDate = '2026-09-06';
+    expect(student.longTermDiscount).toBe(0);
+    component.selectedWeeks = 3;
+    expect(student.christmasDiscount).toBe(0);
+    component.selectedWeeks = 4;
+    component.selectedStartDate = '2027-01-10';
+    expect(student.christmasDiscount).toBe(100);
+    component.selectedStartDate = '2027-01-17';
+    expect(student.christmasDiscount).toBe(0);
+  });
+
+  it('upgrades old published rules once and preserves later employee changes', () => {
+    const old = createDefaultMonolContentConfig();
+    delete old.quoteSettings.monolPromotionPolicyVersion;
+    old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => rule.id === 'monol-registration-waiver');
+    const upgraded = cloneMonolContentConfig(old);
+    expect(upgraded.quoteSettings.promotions.some(rule => rule.id === 'monol-christmas')).toBeTrue();
+    upgraded.quoteSettings.promotions.find(rule => rule.id === 'monol-sns')!.enabled = false;
+    expect(cloneMonolContentConfig(upgraded).quoteSettings.promotions.find(rule => rule.id === 'monol-sns')?.enabled).toBeFalse();
+  });
+
 });

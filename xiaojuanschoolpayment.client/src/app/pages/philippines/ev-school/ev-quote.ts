@@ -1,3 +1,4 @@
+import { textbookGroups, textbookRuleQuantity } from '../school-textbook-estimate';
 import { SchoolVisaType } from '../../../components/school-group-quote';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule } from '../cia-school/cia-content-config';
@@ -94,7 +95,7 @@ export class EvStudentCalculator {
   }
   get localFees(): EvLocalFee[] {
     const roomPeriods = Math.max(1, Math.ceil(this.plan.roomWeeks / 4));
-    const textbookPeriods = Math.max(1, Math.ceil(this.plan.courseWeeks / 4));
+    const textbookPeriods = textbookRuleQuantity(this.plan.courses, this.rule('books'), 4);
     const acr = !this.longTermVisa && this.visaExtensionCount > 0 ? 1 : 0;
     const arp = this.longTermVisa || this.visaExtensionCount > 0 ? 1 : 0;
     const onCampus = this.onCampusWeeks ? Math.ceil(this.onCampusWeeks / 4) : 0;

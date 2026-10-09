@@ -38,7 +38,7 @@ export const createDefaultCgSpartaContentConfig = (): CiaContentConfig => ({
     fee({ id: 'electricity', name: '电费', amount: 2000, futureEffectiveStart: futureStart, futureName: '基础电费（不含空调）', futureAmount: 500, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '预估金额；空调或超额用电按学校计量另收，参考25比索/度', futureNote: '每周500比索；空调用电按实际使用另收25比索／千瓦时，并从押金中结算。', sortOrder: 5 }),
     fee({ id: 'water', name: '水费', amount: 500, futureEffectiveStart: futureStart, futureAmount: 300, futurePeriodWeeks: 1, futureRounding: 'proportional', billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周预估1份，具体以学校实收为准', futureNote: '2027年1月4日起入学新生按每周300比索计算。', sortOrder: 6 }),
     fee({ id: 'visa-extension', name: '旅游签证续签', amount: 6390, rates: [6390, 4460, 4460, 4460, 4460], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '59天签证：9–12周6,390比索，之后每增加30天按4,460比索预估；30天签证第5次续签按5,870比索。', sortOrder: 7 }),
-    fee({ id: 'books', name: '教材费', amount: 250, secondaryAmount: 450, billingRule: 'once', includeInTotal: true, note: '校方参考每本250–450比索；本次按已填写数量及单价计入学杂费合计，实际以课程及到校购买为准。', sortOrder: 8 }),
+    fee({ id: 'books', name: '教材费', amount: 2000, billingRule: 'once', includeInTotal: true, note: '每种课程类型每开始8周预计2,000比索；同类课程累计周数，最终按实际购买确认。', sortOrder: 8 }),
     fee({ id: 'pickup', name: '宿务马克坦机场接机（可选）', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '校方最新明细列一次1,200比索接机；本站保留为可选参考，不计入默认合计。', sortOrder: 9 }),
     fee({ id: 'deposit', name: '住宿押金（可退）', amount: 250, periodWeeks: 1, rounding: 'proportional', billingRule: 'optional', includeInTotal: false, note: '每住宿周250比索；离校时扣除空调等实际费用后按校规退还，本站不计入学杂费合计。', sortOrder: 10 }),
   ],
@@ -51,6 +51,7 @@ export const createDefaultCgSpartaContentConfig = (): CiaContentConfig => ({
     promotions: [
       { id: 'cg-sparta-sida-90', name: '思达折扣', description: '课程费和住宿费享9折', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       { id: 'cg-sparta-off-season', name: '淡季优惠', description: '2026/08/30–2026/12/27入学，每满4周优惠150美元', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 150, coverageStart: '2026-08-30', coverageEnd: '2026-12-27', coverageTarget: 'course' },
+      { id: 'cg-sparta-off-season-2027', name: '淡季优惠', description: '2027/02/14–2027/05/23入学，每满4周优惠150美元', enabled: true, sortOrder: 4, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 150, coverageStart: '2027-02-14', coverageEnd: '2027-05-23', coverageTarget: 'course' },
       { id: 'cg-sparta-long-stay', name: '长期优惠', description: '12周优惠50美元；16周100美元；20周150美元；24周及以上最高200美元', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 50, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 12, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 50, coverageTarget: 'none' },
       { id: 'cg-sparta-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', enabled: true, sortOrder: 3, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
@@ -148,6 +149,8 @@ export const cloneCgSpartaContentConfig = (value: CiaContentConfig): CiaContentC
   clone.quoteImageSettings.localFeeNotes ??= {};
   clone.quoteImageSettings.benefits ??= structuredClone(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= structuredClone(defaults.quoteImageSettings.footerNotes);
+  const confirmedPromotion = defaults.quoteSettings.promotions.find(rule => rule.id === 'cg-sparta-off-season-2027')!;
+  if (!clone.quoteSettings.promotions.some(rule => rule.id === confirmedPromotion.id)) clone.quoteSettings.promotions.push(structuredClone(confirmedPromotion));
   clone.media ??= [];
   return clone;
 };

@@ -76,6 +76,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   private readonly courseFeeOrder = ['pic-4', 'pic-5', 'pic-6', 'toeic-esl', 'toeic-practice', 'toeic-guarantee', 'pift-e', 'pift', 'pirc', 'pigi', 'ppt', 'ptft', 'ssc', 'p-jec', 'jec', 'gec', 'ebc'];
   private readonly roomFeeOrder = ['premium-1p', 'single-1a', 'single-1b', 'twin-2a', 'triple-3a'];
   private contentConfig = createDefaultFellaContentConfig();
+  get localFeeRules() { return this.contentConfig.localFees; }
   readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
 
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];

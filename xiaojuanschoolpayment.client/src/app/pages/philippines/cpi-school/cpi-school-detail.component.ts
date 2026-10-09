@@ -1,3 +1,4 @@
+import { textbookPeriods } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
@@ -695,7 +696,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const acrQuantity = longTerm ? 0 : extensionQuantity > 0 ? 1 : 0;
     const arpQuantity = longTerm || extensionQuantity > 0 ? 1 : 0;
     const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
-    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 8));
+    const books = textbookPeriods(student.quotePlan.courses, this.localFeeRules.find(rule => rule.id === 'books')?.periodWeeks ?? 8);
     return [
       { item: 'SSP特殊学习许可证', unitLabel: '7,800 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 7800, note: longTerm ? visaNote : '移民局收取；按报名学习时长办理，续费及换校需重新办理。' },
       { item: 'SSP E-CARD', unitLabel: '4,500 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 4500, note: longTerm ? visaNote : '入学时与SSP同时办理，只收一次。' },
@@ -716,7 +717,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const acrQuantity = longTerm ? 0 : extensionQuantity > 0 ? 1 : 0;
     const arpQuantity = longTerm || extensionQuantity > 0 ? 1 : 0;
     const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
-    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 8));
+    const books = textbookPeriods(student.quotePlan.courses, this.localFeeRules.find(rule => rule.id === 'books')?.periodWeeks ?? 8);
     const create = (id: string, quantity: number, note?: string, total?: number): SchoolLocalFee[] => {
       const rule = this.localFeeRule(id);
       if (!rule) return [];

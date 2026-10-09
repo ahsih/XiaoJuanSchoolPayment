@@ -932,14 +932,14 @@ app-cia-school .course-detail-guide-body dd {
 
 app-cia-school .course-detail-guide-body dt {
   color: #0a7251;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 950;
 }
 
 app-cia-school .course-detail-guide-body dd {
   margin-top: 4px;
   color: #3d5562;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.55;
 }
@@ -950,8 +950,44 @@ app-cia-school .course-detail-guide-body ul {
   margin: 15px 0 0;
   padding-left: 18px;
   color: #52636c;
-  font-size: 12px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+app-cia-school .cia-level-table-wrap {
+  margin-top: 20px;
+}
+
+app-cia-school .cia-level-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #3d5562;
+  font-size: 13px;
+  text-align: left;
+}
+
+app-cia-school .cia-level-table caption {
+  padding-bottom: 10px;
+  color: #075d43;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+}
+
+app-cia-school .cia-level-table th,
+app-cia-school .cia-level-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #dbe7e1;
+  overflow-wrap: anywhere;
+}
+
+app-cia-school .cia-level-table thead {
+  background: #edf6f1;
+}
+
+app-cia-school .course-detail-guide-list summary:focus-visible {
+  outline: 2px solid #08714f;
+  outline-offset: -3px;
 }
 
 app-cia-school .course-detail-evidence {
@@ -2126,6 +2162,7 @@ app-cia-school .campus-practical-grid header > span {
 }
 
 app-cia-school .campus-practical-grid header small,
+app-cia-school .campus-practical-grid header h3,
 app-cia-school .campus-practical-grid header h4 {
   display: block;
 }
@@ -2137,6 +2174,7 @@ app-cia-school .campus-practical-grid header small {
   letter-spacing: 0.09em;
 }
 
+app-cia-school .campus-practical-grid header h3,
 app-cia-school .campus-practical-grid header h4 {
   margin: 4px 0 0;
   color: #193a4b;
@@ -2160,8 +2198,9 @@ app-cia-school .campus-practical-grid dl > div {
 app-cia-school .campus-practical-grid dt,
 app-cia-school .campus-practical-grid dd {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 app-cia-school .campus-practical-grid dt {
@@ -2182,7 +2221,7 @@ app-cia-school .campus-practical-grid article > p {
   border-radius: 9px;
   background: #fff6ef;
   color: #8b5536;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -2193,6 +2232,32 @@ app-cia-school .campus-practical-grid article > p mat-icon {
   margin-top: 1px;
   color: #df6c2b;
   font-size: 17px;
+}
+
+app-cia-school .campus-guide-intro {
+  margin: 0;
+  color: #52636c;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+app-cia-school .campus-guide-points {
+  display: grid;
+  gap: 10px;
+  padding-left: 18px;
+  color: #4e606a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  app-cia-school .course-detail-toggle b {
+    display: none !important;
+  }
+
+  app-cia-school .cia-level-table {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 760px) {

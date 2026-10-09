@@ -24,16 +24,56 @@ describe('JicStudentQuote', () => {
   };
 
   it('keeps the confirmed two-campus course and room catalog', () => {
-    expect(JIC_COURSE_FEES.length).toBe(20);
+    const expectedTuition: Record<string, number> = {
+      'challenger-esl-lite': 760,
+      'challenger-esl-core': 860,
+      'challenger-esl-standard': 960,
+      'challenger-ielts-lite': 960,
+      'challenger-ielts-core': 1010,
+      'challenger-ielts-standard': 1060,
+      'challenger-ielts-guarantee': 1060,
+      'premium-speaking-starter-7': 800,
+      'premium-speaking-pro-8': 975,
+      'premium-speaking-master-8': 1150,
+      'premium-tep-8': 800,
+      'premium-tep-9': 900,
+      'premium-tep-10': 1000,
+      'premium-active-senior-5': 600,
+      'premium-active-senior-6': 700,
+      'premium-working-holiday-8': 900,
+      'premium-toeic': 900,
+      'premium-business-master-8': 1150,
+    };
+    expect(JIC_COURSE_FEES.length).toBe(18);
+    expect(Object.fromEntries(JIC_COURSE_FEES.map((item) => [item.id, item.tuition]))).toEqual(expectedTuition);
     expect(JIC_ROOM_FEES.length).toBe(10);
     expect(JIC_COURSE_FEES.find((item) => item.id === 'challenger-esl-lite')?.tuition).toBe(760);
     expect(JIC_COURSE_FEES.find((item) => item.id === 'premium-speaking-master-8')?.tuition).toBe(1150);
+    expect(JIC_COURSE_FEES.find((item) => item.id === 'premium-junior')).toBeUndefined();
+    expect(JIC_COURSE_FEES.find((item) => item.id === 'premium-guardian')).toBeUndefined();
     expect(JIC_ROOM_FEES.find((item) => item.id === 'challenger-quad-bunk')?.fee).toBe(600);
     expect(JIC_ROOM_FEES.find((item) => item.id === 'premium-single-balcony')?.fee).toBe(1450);
     expect(JIC_COURSE_FEES.every((item) => /[A-Za-z]/.test(item.displayName) && /[\u4e00-\u9fff]/.test(item.displayName))).toBeTrue();
     const student = quote();
     expect(student.quotePlan.options('course')[0].name).toBe(JIC_COURSE_FEES[0].displayName);
     expect(student.quotePlan.paymentItems().find((item) => item.icon === '课')?.detailTitle).toBe(JIC_COURSE_FEES[0].displayName);
+  });
+
+  it('keeps the latest Challenger class counts and guarantee supplement cadence', () => {
+    const lite = JIC_COURSE_FEES.find((item) => item.id === 'challenger-esl-lite')!;
+    const standard = JIC_COURSE_FEES.find((item) => item.id === 'challenger-ielts-standard')!;
+    expect(lite.suitable).toContain('每日共8节');
+    expect(standard.suitable).toContain('每日共10节');
+    expect(standard.suitable).toContain('半斯巴达每两周模考');
+
+    const student = quote();
+    student.quotePlan.courses[0].optionId = 'challenger-ielts-guarantee';
+    setPlan(student, 8, '2026-09-06');
+    expect(student.localFees.find((item) => item.item === 'IELTS保分班额外费用')?.quantity).toBe(1);
+    expect(student.localFees.find((item) => item.item === 'IELTS保分班额外费用')?.total).toBe(18000);
+    setPlan(student, 12, '2026-09-06');
+    expect(student.localFees.find((item) => item.item === 'IELTS保分班额外费用')?.quantity).toBe(2);
+    expect(student.localFees.find((item) => item.item === 'IELTS保分班额外费用')?.total).toBe(36000);
   });
 
   it('uses the latest one-to-three-week ratios and prorates a six-week plan', () => {

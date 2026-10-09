@@ -60,7 +60,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.summerSurcharge).toBe(0);
     expect(component.offSeasonDiscount).toBe(150);
     expect(component.quoteUsd).toBe(1255);
-    expect(component.localFeesTotal).toBe(17050);
+    expect(component.localFeesTotal).toBe(18800);
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '暑假附加费')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '长期优惠')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.find(item => item.icon === '宿')?.detailTitle).toBe('斯巴达 4人房');
@@ -74,16 +74,16 @@ describe('CG斯巴达校区 quote adjustments', () => {
     student.textbookCount = 2;
     student.textbookUnitPrice = 450;
     const textbook = component.localFees.find(row => row.item === '教材费')!;
-    expect(textbook.amount).toBe('450 比索 / 本');
+    expect(textbook.amount).toBe('450 比索 / 1–8周');
     expect(textbook.quantity).toBe(2);
     expect(textbook.total).toBe(900);
     expect(component.localFeesTotal).toBe(17700);
     expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({
-      unit: '450 比索 / 本', quantity: '2', amount: '900 比索',
+      unit: '450 比索 / 1–8周', quantity: '2', amount: '900 比索',
     }));
 
     student.textbookCount = 51;
-    expect(component.quoteError).toContain('教材数量请输入0–50本的整数');
+    expect(component.quoteError).toContain('教材数量请输入0–50个教材计费周期的整数');
     student.textbookCount = 0;
     expect(component.quoteError).toBe('');
     expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(0);
@@ -93,8 +93,8 @@ describe('CG斯巴达校区 quote adjustments', () => {
     component.selectedStartDate = '2026-12-27';
     expect(component.localFees.find(row => row.item === '维护管理费')?.amount).toContain('/ 4周');
     expect(component.localFees.find(row => row.item === 'ACR E-CARD（SSP）')?.total).toBe(4500);
-    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('250 比索 / 本');
-    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
+    expect(component.localFees.find(row => row.item === '教材费')?.amount).toBe('2,000 比索 / 1–8周');
+    expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(2000 * Math.ceil(component.selectedWeeks / 8));
     expect(component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')?.total).toBe(1000);
     component.activeStudents[0].visaType = 'tourist30';
     component.selectedWeeks = 21;
@@ -107,7 +107,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.localFees.find(row => row.item === '综合管理费')?.total).toBe(750);
     expect(component.localFees.find(row => row.item === '基础电费（不含空调）')?.total).toBe(500);
     expect(component.localFees.find(row => row.item === '水费')?.total).toBe(300);
-    expect(component.localFeesTotal).toBe(14100);
+    expect(component.localFeesTotal).toBe(15850);
     expect(component.localFeesTotal - 250 + component.excludedLocalFees.find(row => row.item === '住宿押金（可退）')!.total + 1200).toBe(15300);
 
     for (const [weeks, visaTotal, publishedTotal] of [
@@ -256,14 +256,14 @@ describe('CG斯巴达校区 quote adjustments', () => {
         expect(fee.total).toBe(periods * unit);
         expect(fee.amount).toContain('/ 4周');
       }
-      expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(250);
+      expect(component.localFees.find(row => row.item === '教材费')?.total).toBe(2000 * Math.ceil(component.selectedWeeks / 8));
     }
     component.selectedWeeks = 3;
     expect(component.localFeeEstimateNote).toContain('3周管理费、电费和水费按4周预估。');
   });
 
   it('uses 30-day extensions after a 59-day visa and the public cumulative fee tiers', () => {
-    for (const [weeks, count, visaFee, total] of [[3, 0, 0, 17050], [4, 0, 0, 17050], [8, 0, 0, 21550], [12, 1, 6390, 37240], [16, 2, 10850, 46200], [20, 3, 15310, 55160], [24, 4, 19770, 64120]] as const) {
+    for (const [weeks, count, visaFee, total] of [[3, 0, 0, 18800], [4, 0, 0, 18800], [8, 0, 0, 23300], [12, 1, 6390, 40990], [16, 2, 10850, 49950], [20, 3, 15310, 60910], [24, 4, 19770, 69870]] as const) {
       component.selectedWeeks = weeks;
       const visa = component.localFees.find(row => row.item === '旅游签证续签')!;
       expect(component.visaExtensionCount).toBe(count);
@@ -358,7 +358,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.tuitionForSelectedWeeks).toBe(1650);
     expect(component.roomFeeForSelectedWeeks).toBe(1300);
     expect(component.quoteUsd).toBe(2455);
-    expect(component.localFeesTotal).toBe(21550);
+    expect(component.localFeesTotal).toBe(23300);
     expect(component.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
     const items = component.quoteImageData.paymentItems.filter(row => row.detailTitle);
     expect(items.map(row => row.label)).toEqual(['课程名称1', '课程名称2', '住宿名称']);
@@ -517,7 +517,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
       expect(visa.amount).toBe(component.formatPhp(fee));
       expect(visa.note.includes('第6次起沿用第5次费用估算')).toBe(count > 5);
     }
-    expect(component.localFeesTotal).toBe(126840);
+    expect(component.localFeesTotal).toBe(140590);
     expect(component.longStayDiscount).toBe(200);
     expect(component.courseQuoteRows[0].endDate).toBe('2027/09/04');
   });

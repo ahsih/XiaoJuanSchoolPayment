@@ -1,3 +1,4 @@
+import { textbookGroups } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -1089,19 +1090,11 @@ export class CebuBlueOceanSchoolComponent
         )}–${fees.electiveMaximum.toLocaleString('en-US')} 比索／2周`,
         note: '4周学杂费参考项目，按学生实际选择结算。',
       },
-      {
-        label: '书本费',
-        amount: hasIelts
-          ? `${fees.ieltsTextbook.toLocaleString('en-US')} 比索／4周`
-          : `${fees.textbookMinimum.toLocaleString(
-              'en-US',
-            )}–${fees.textbookMaximum.toLocaleString('en-US')} 比索／4周`,
-        note: hasIelts
-          ? `本次含IELTS课程，按IELTS教材${fees.ieltsTextbook.toLocaleString(
-              'en-US',
-            )}比索／4周参考。`
-          : '普通课程约1,100–1,500比索／4周。',
-      },
+      ...this.activeStudents.flatMap((student, index) => textbookGroups(student.quotePlan.courses).map(group => ({
+        label: '书本费 · 学生' + (index + 1) + ' · ' + (group.type === 'ielts' ? '雅思' : group.type === 'business' ? '商务英语' : group.type === 'toeic' ? '托业' : '英语课程'),
+        amount: group.type === 'ielts' ? fees.ieltsTextbook.toLocaleString('en-US') + ' 比索／4周' : fees.textbookMinimum.toLocaleString('en-US') + '–' + fees.textbookMaximum.toLocaleString('en-US') + ' 比索／4周',
+        note: '该课程类型累计' + group.weeks + '周；各课程类型教材分别购买，按实际结算，未计入学杂费合计。',
+      }))),
       {
         label: '洗衣费',
         amount: `${fees.laundryPerLoad.toLocaleString(

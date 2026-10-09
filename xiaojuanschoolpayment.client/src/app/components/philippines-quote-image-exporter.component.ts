@@ -545,6 +545,15 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
     const includedRows = rawRows.filter((row) => hasExplicitOptionalState ? !row.optional : !/接机|押金/u.test(row.label));
     let total = 0;
     const items = includedRows.slice(0, 10).map((row) => {
+      if (/教材|书本/u.test(row.label) && !Number.isFinite(row.total)) {
+        return {
+          label: row.label,
+          unit: row.unit,
+          quantity: '—',
+          amount: '待确认',
+          note: '不同课程类型需分别购买教材；请确认各类型教材数量及预算，未计入合计。',
+        };
+      }
       const amount = Number.isFinite(row.total) ? row.total : this.calculateLocalFeeAmount(row.label, row.unit, row.note, weeks);
       const quantity = Number.isFinite(row.quantity) ? row.quantity : amount > 0 ? 1 : 0;
       total += amount;
@@ -593,7 +602,6 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
     }
     if (/\/\s*周|每周/u.test(source)) return baseAmount * weeks;
     if (/\/\s*月|每月/u.test(source)) return baseAmount * Math.max(1, Math.ceil(weeks / 4));
-    if (/教材/u.test(label)) return baseAmount * Math.max(1, Math.ceil(weeks / 8));
     return baseAmount;
   }
 

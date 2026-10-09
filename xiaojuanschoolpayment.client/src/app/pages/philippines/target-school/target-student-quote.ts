@@ -1,3 +1,4 @@
+import { textbookGroups, textbookType } from '../school-textbook-estimate';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import {
@@ -265,12 +266,11 @@ export class TargetStudentQuote {
     return VISA_CUMULATIVE_FEES[listedExtensions] + (this.visaExtensionCount - listedExtensions) * 4440;
   }
   get textbookTotal(): number {
-    if (this.packageWeeks <= 0) return 0;
-    if (this.packageWeeks === 1) return 500;
-    if (this.packageWeeks === 2) return 1000;
-    if (this.packageWeeks <= 4) return 2000;
-    if (this.packageWeeks <= 8) return 3000;
-    return 3000 + Math.ceil((this.packageWeeks - 8) / 4) * 1000;
+    const rows = this.packages.map(row => ({ ...row, optionId: row.courseId }));
+    return textbookGroups(rows, id => /^(target[0-9]|lite[0-9]|ultimate[0-9])/.test(id) ? 'esl' : textbookType(id)).reduce((sum, group) => {
+      const weeks = group.weeks;
+      return sum + (weeks === 1 ? 500 : weeks === 2 ? 1000 : weeks <= 4 ? 2000 : weeks <= 8 ? 3000 : 3000 + Math.ceil((weeks - 8) / 4) * 1000);
+    }, 0);
   }
 
   get localFees(): SchoolLocalFee[] {
@@ -280,7 +280,7 @@ export class TargetStudentQuote {
       { item: 'SSP E-CARD', unitLabel: '4,500比索／次', quantity: 1, total: 4500, note: '由移民局收取，入学时与SSP同时办理，只收一次。' },
       { item: 'ACR I-CARD外国人身份证', unitLabel: '4,300比索／次', quantity: acrQuantity, total: 4300 * acrQuantity, note: `按${this.visaLabel}和${this.stayWeeks}周完整停留跨度估算；学校费用页列明9周及以上需要办理。` },
       { item: '签证续签', unitLabel: '学校累计档位', quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: this.visaExtensionNote },
-      { item: '教材费', unitLabel: '按学习周数', quantity: 1, total: this.textbookTotal, note: `按${this.packageWeeks}周估算：1周500、2周1,000、3–4周2,000、5–8周3,000比索，之后每增加4周加1,000比索；实际按购买教材为准。` },
+      { item: '教材费', unitLabel: '按学习周数', quantity: 1, total: this.textbookTotal, note: `各课程类型分别按累计周数估算：1周500、2周1,000、3–4周2,000、5–8周3,000比索，之后每增加4周加1,000比索；实际按购买教材为准。` },
       { item: '电费', unitLabel: '600比索／周', quantity: this.packageWeeks, total: 600 * this.packageWeeks, note: '每周基本费用；超过学校规定用量时会追加收费。' },
       { item: '水费', unitLabel: '200比索／周', quantity: this.packageWeeks, total: 200 * this.packageWeeks, note: '按套餐住宿周数计算。' },
       { item: '共益费', unitLabel: '500比索／周', quantity: this.packageWeeks, total: 500 * this.packageWeeks, note: '校园公共设施及维护费用，按套餐住宿周数计算。' },

@@ -142,7 +142,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/baguio-jic': {
     title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
     description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、青少年与监护人课程、2026课程费、住宿房型、优惠规则和报名注意事项。',
+      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、2026课程费、住宿房型、优惠规则和报名注意事项。',
     keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.webp',
   },
@@ -154,7 +154,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/philippines-study/baguio/baguio-jic-premium': {
     title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
-    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Active Senior及亲子课程、六种住宿、最新学杂费、优惠和报价图片。',
+    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior、六种住宿、最新学杂费、优惠和报价图片。',
     keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
@@ -345,6 +345,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾留学和英语游学费用说明，拆解学费、住宿、当地费用、机票、签证、保险和不同城市学校的预算差异。',
     keywords: '菲律宾留学费用, 菲律宾游学费用, 菲律宾语言学校费用, 宿务游学费用, 菲律宾英语学校价格',
     image: '/assets/philippines/home-school-ev.webp',
+  },
+  '/philippines-study/baguio/airport-pickup': {
+    title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',
+    description: '查看2026及2027碧瑶BESA指定接机日期、马尼拉和克拉克班次、集合点、现行3000比索费用、eTravel顾问办理及航班延误处理。',
+    keywords: '碧瑶接机,BESA接机,2026碧瑶接机,2027碧瑶接机,马尼拉接机,克拉克接机',
+    image: '/assets/baguio-pickup/besa-calendar-2027.png',
+    type: 'article',
   },
   '/philippines-study/faq': {
     title: '菲律宾留学常见问题 | 英语游学报名与行前准备',
@@ -647,6 +654,7 @@ export class SeoService {
       schools: '语言学校',
       cebu: '宿务',
       baguio: '碧瑶',
+      'airport-pickup': '碧瑶接机指南',
       clark: '克拉克',
       iloilo: '伊洛伊洛',
       bacolod: '巴科洛德',

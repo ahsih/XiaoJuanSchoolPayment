@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, quoteMoney, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { QuoteImageCardData, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -364,13 +365,13 @@ export class IuIclQuote {
       { item: 'SSP E-Card', amount: '4,500 比索／次', quantity: 1, total: 4500, note: '一次性办理。' },
       ...(this.accommodationWeeks ? [
         { item: '机场接机', amount: '800 比索／次', quantity: 1, total: 800, note: '校方价目表的一次性接机参考。' },
-        { item: '教材费预估', amount: '2,000 比索／人', quantity: 1, total: 2000, note: '按每本250–600比索估算；实际以领取教材为准。' },
+        { item: '教材费预估', amount: '2,000 比索／人', quantity: textbookGroups(this.plan.courses).length, total: 2000 * textbookGroups(this.plan.courses).length, note: '各课程类型分别预估；按每本250–600比索估算，实际以领取教材为准。' },
         { item: '宿舍押金', amount: '3,000 比索／人', quantity: 1, total: 3000, note: '退房无损坏且无欠费时按学校规则退还；本表计入到校需准备金额。' },
         { item: '维护费', amount: '400 比索／周', quantity: this.accommodationWeeks, total: 400 * this.accommodationWeeks, note: '按实际住宿周数计算。' },
         { item: '电费', amount: '500 比索／周', quantity: this.accommodationWeeks, total: 500 * this.accommodationWeeks, note: '含每周25千瓦时；超出部分按25比索／千瓦时收取，已付电费不退。' },
         { item: '洗衣费', amount: '300 比索／周', quantity: this.accommodationWeeks, total: 300 * this.accommodationWeeks, note: '每周2次。' },
       ] : [
-        { item: '教材费预估', amount: '2,000 比索／人', quantity: 1, total: 2000, note: '按每本250–600比索估算；实际以领取教材为准。' },
+        { item: '教材费预估', amount: '2,000 比索／人', quantity: textbookGroups(this.plan.courses).length, total: 2000 * textbookGroups(this.plan.courses).length, note: '各课程类型分别预估；按每本250–600比索估算，实际以领取教材为准。' },
       ]),
     ];
     if (this.visaExtensionCount >= 1) fees.push({ item: '第1次签证延长', amount: '5,500 比索／次', quantity: 1, total: 5500, note: '5–8周参考，延长29天。' });
@@ -389,7 +390,8 @@ export class IuIclQuote {
     const result: IuIclLocalFee[] = [];
     const add = (id: string, quantity: number, fallbackUnit: string) => {
       const rule = this.feeRule(id);
-      if (!rule || quantity <= 0) return;
+      if (!rule || quantity <= 0 || (id === 'textbooks' && !rule.includeInTotal)) return;
+      if (id === 'textbooks' && rule.periodWeeks) quantity = textbookPeriods(this.plan.courses, rule.periodWeeks, rule.rounding === 'proportional' ? 'proportional' : 'ceil');
       const unit = rule.periodWeeks ? `${quoteMoney(rule.amount)} 比索／${rule.periodWeeks === 1 ? '周' : `${rule.periodWeeks}周`}` : fallbackUnit;
       result.push({ item: rule.name, amount: unit, quantity, total: rule.amount * quantity, note: rule.note });
     };
@@ -397,13 +399,13 @@ export class IuIclQuote {
     add('ssp-e-card', 1, `${quoteMoney(this.feeRule('ssp-e-card')?.amount ?? 0)} 比索／次`);
     if (this.accommodationWeeks) {
       add('airport-pickup', 1, `${quoteMoney(this.feeRule('airport-pickup')?.amount ?? 0)} 比索／次`);
-      add('textbooks', 1, `${quoteMoney(this.feeRule('textbooks')?.amount ?? 0)} 比索／人`);
+      add('textbooks', textbookGroups(this.plan.courses).length, `${quoteMoney(this.feeRule('textbooks')?.amount ?? 0)} 比索／人`);
       add('room-deposit', 1, `${quoteMoney(this.feeRule('room-deposit')?.amount ?? 0)} 比索／人`);
       add('maintenance', this.accommodationWeeks, '比索／周');
       add('electricity', this.accommodationWeeks, '比索／周');
       add('laundry', this.accommodationWeeks, '比索／周');
     } else {
-      add('textbooks', 1, `${quoteMoney(this.feeRule('textbooks')?.amount ?? 0)} 比索／人`);
+      add('textbooks', textbookGroups(this.plan.courses).length, `${quoteMoney(this.feeRule('textbooks')?.amount ?? 0)} 比索／人`);
     }
     if (this.visaExtensionCount >= 1) add('visa-extension-1', 1, `${quoteMoney(this.feeRule('visa-extension-1')?.amount ?? 0)} 比索／次`);
     if (this.visaExtensionCount >= 2) {

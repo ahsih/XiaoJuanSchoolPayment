@@ -1,3 +1,4 @@
+import { textbookGroups, textbookType } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
@@ -237,7 +238,16 @@ export class JicStudentQuote {
       };
       let quantity = 0;
       if (fee.id === 'books') {
-        const selected = this.quotePlan.courses.map(row => ({ row, course: this.prices.courseFees.find(course => course.id === row.optionId) }));
+        const selected = textbookGroups(this.quotePlan.courses, id => {
+          const course = this.prices.courseFees.find(course => course.id === id);
+          return textbookType(id) + ':' + (course?.materialFee ?? 0);
+        }).map(group => {
+          const row = this.quotePlan.courses.find(row => {
+            const course = this.prices.courseFees.find(course => course.id === row.optionId);
+            return textbookType(row.optionId) + ':' + (course?.materialFee ?? 0) === group.type;
+          })!;
+          return { row: { ...row, weeks: group.weeks }, course: this.prices.courseFees.find(course => course.id === row.optionId) };
+        });
         const quantity = selected.reduce((sum, item) => sum + (item.course?.materialFee ? Math.ceil(item.row.weeks / 4) : 0), 0);
         const total = selected.reduce((sum, item) => sum + (item.course?.materialFee ?? 0) * Math.ceil(item.row.weeks / 4), 0);
         const missing = selected.filter(item => !item.course?.materialFee).map(item => item.course?.displayName ?? item.row.optionId);

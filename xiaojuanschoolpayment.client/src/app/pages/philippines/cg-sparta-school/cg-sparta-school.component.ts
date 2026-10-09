@@ -190,7 +190,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get sidaDiscountRate() { return 1 - (this.promotionRules.find(item => item.id === 'cg-sparta-sida-90' && item.enabled)?.discountValue ?? 0) / 100; }
   get offSeasonDiscountPerFourWeeks() { return this.promotionRules.find(item => item.id === 'cg-sparta-off-season' && item.enabled)?.discountValue ?? 0; }
   get summerDateRange() { return this.peakSeasonRanges.filter(item => item.enabled).map(item => `${item.start.replace(/-/g, '/')}–${item.end.replace(/-/g, '/')}`).join('；'); }
-  get offSeasonRuleText() { return this.promotionRules.find(item => item.id === 'cg-sparta-off-season' && item.enabled)?.description ?? '当前未启用淡季优惠'; }
+  get offSeasonRuleText() { return this.promotionRules.filter(item => item.enabled && (item.id === 'cg-sparta-off-season' || item.id === 'cg-sparta-off-season-2027')).map(item => item.description).join('；') || '当前未启用淡季优惠'; }
   get longStayRuleText() { return this.promotionRules.find(item => item.id === 'cg-sparta-long-stay' && item.enabled)?.description ?? '当前未启用长期优惠'; }
   usdToCny = 7.2;
   phpPerCny = 7.75;

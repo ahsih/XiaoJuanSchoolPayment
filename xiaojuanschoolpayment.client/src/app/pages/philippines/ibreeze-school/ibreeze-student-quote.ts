@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 import { IBREEZE_COURSES, IBREEZE_ROOMS } from './ibreeze-catalog';
@@ -199,7 +200,7 @@ export class IbreezeStudentQuote {
     const periodWeeks = fee.periodWeeks ?? 4;
     const relevantWeeks = ['electricity', 'water'].includes(fee.id) ? this.campusWeeks
       : fee.billingRule === 'per-course-period' ? this.quotePlan.courseWeeks : this.quotePlan.roomWeeks;
-    const periodQuantity = fee.rounding === 'proportional' ? relevantWeeks / periodWeeks : Math.ceil(relevantWeeks / periodWeeks);
+    const periodQuantity = fee.id === 'books' ? textbookPeriods(this.quotePlan.courses, periodWeeks, fee.rounding === 'proportional' ? 'proportional' : 'ceil') : fee.rounding === 'proportional' ? relevantWeeks / periodWeeks : Math.ceil(relevantWeeks / periodWeeks);
     const extensions = this.visaExtensionCount;
     const waived = this.isLongTermVisa && fee.waiveForLongTermVisa;
     let quantity = 1;

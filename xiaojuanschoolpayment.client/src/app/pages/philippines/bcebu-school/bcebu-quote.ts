@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods, textbookRuleQuantity } from '../school-textbook-estimate';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { applyEditableQuoteImageCopy, SchoolQuotePlan, presentSchoolQuote, quoteMoney } from '../../../components/school-quote-plan';
@@ -99,11 +100,12 @@ export class BCebuQuote {
   get visaCount() { return this.longTermVisa ? 0 : Math.max(0, Math.ceil((this.plan.stayWeeks * 7 - this.initialVisaDays) / 30)); }
   get visaNote() { const amount = this.feeRule('visa-extension')?.amount ?? 5130; return this.longTermVisa ? '长期签证相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。' : `按${this.initialVisaDays}天初始签证预估，本次续签${this.visaCount}次，每次${amount.toLocaleString('en-US')}比索、有效期30天。学校统一办理，如遇上课时间不额外补课；实际以学校及移民局收费为准。`; }
   get localFees(): BCebuLocalFee[] {
-    const roomPeriods = Math.ceil(this.plan.roomWeeks / 4), coursePeriods = Math.ceil(this.plan.courseWeeks / 4);
+    const roomPeriods = Math.ceil(this.plan.roomWeeks / 4), coursePeriods = textbookRuleQuantity(this.plan.courses, this.feeRule('books'), 4);
     const acr = !this.longTermVisa && this.visaCount > 0 ? 1 : 0;
     const arp = this.longTermVisa || this.visaCount > 0 ? 1 : 0;
     const create = (id: string, quantity: number, fallbackAmount: number, fallbackName: string, fallbackNote: string, period?: number): BCebuLocalFee[] => {
       const rule = this.feeRule(id);
+      if (id === 'books' && rule?.includeInTotal === false) return [];
       if (this.feeRules.length && !rule) return [];
       const amount = rule?.amount ?? fallbackAmount;
       return [{ item: rule?.name ?? fallbackName, amount: `${amount.toLocaleString('en-US')} 比索 / ${period ? `${period}周` : '次'}`, quantity, total: amount * quantity, note: rule?.note ?? fallbackNote }];

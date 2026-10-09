@@ -1878,10 +1878,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "Challenger ESL Lite", 4, 760m, "2节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日8节）", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Challenger ESL Core", 4, 860m, "3节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日9节）", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Challenger ESL Standard", 4, 960m, "4节一对一主课 + 2节一对一核心课 + 2节团体课 + 2节特别课程（每日10节）", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Lite", 4, 960m, "4节一对一 + 2节团体课 + 2节特别课程（每日8节）；每周六模拟考试", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Core", 4, 1010m, "5节一对一 + 2节团体课 + 2节特别课程（每日9节）；每周六模拟考试", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Standard", 4, 1060m, "6节一对一 + 2节团体课 + 2节特别课程（每日10节）+ 强制自习及30分钟词汇测试；每周六模拟考试", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Challenger IELTS Guarantee 雅思保分班", 4, 1060m, "6节一对一 + 2节团体课 + 2节特别课程（每日10节）+ 强制自习及30分钟词汇测试；保分班每8周另付PHP 18,000", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Lite", 4, 960m, "4节一对一 + 2节团体课 + 2节特别课程（每日8节）；词汇测试与夜间任务按管理模式为必修或选修；斯巴达每周模考，半斯巴达每两周模考", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Core", 4, 1010m, "5节一对一 + 2节团体课 + 2节特别课程（每日9节）；词汇测试与夜间任务按管理模式为必修或选修；斯巴达每周模考，半斯巴达每两周模考", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Standard", 4, 1060m, "6节一对一 + 2节团体课 + 2节特别课程（每日10节）；词汇测试与夜间任务按管理模式为必修或选修；斯巴达每周模考，半斯巴达每两周模考", now, jicLessonNote);
+      UpsertLesson(context, schoolId, "Challenger IELTS Guarantee 雅思保分班", 4, 1060m, "6节一对一 + 2节团体课 + 2节特别课程（每日10节）；词汇测试、夜间任务及模考按管理模式执行；保分班每开始8周另付PHP 18,000", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Premium Speaking Starter 7", 4, 800m, "4节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Premium Speaking Pro 8", 4, 975m, "5节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Premium Speaking Master 8", 4, 1150m, "6节一对一 + 1节团体课 + 2节选修课", now, jicLessonNote);
@@ -1893,8 +1893,6 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "Premium Working Holiday 8", 4, 900m, "3节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Premium 托业 TOEIC", 4, 900m, "3节一对一 + 3节团体课 + 2节选修课", now, jicLessonNote);
       UpsertLesson(context, schoolId, "Premium Business Master 8", 4, 1150m, "6节一对一 + 2节选修课", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium 青少年课程 Junior", 4, 1200m, "4节一对一 + 2节团体课 + 1小时写作活动 + 2小时监控晚自习", now, jicLessonNote);
-      UpsertLesson(context, schoolId, "Premium 监护人课程 Guardian", 4, 600m, "2节一对一", now, jicLessonNote);
 
       RemoveLesson(context, schoolId, "Premium Speaking Starter", 4);
       RemoveLesson(context, schoolId, "Premium Speaking Pro", 4);
@@ -1912,6 +1910,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       RemoveLesson(context, schoolId, "Premium 托业", 4);
       RemoveLesson(context, schoolId, "Premium 青少年课程", 4);
       RemoveLesson(context, schoolId, "Premium 监护人课程", 4);
+      RemoveLesson(context, schoolId, "Premium 青少年课程 Junior", 4);
+      RemoveLesson(context, schoolId, "Premium 监护人课程 Guardian", 4);
 
       UpsertRoom(context, schoolId, "Challenger 单人间（标准）", 4, 1300m, "主校区标准单人间", now);
       UpsertRoom(context, schoolId, "Challenger 双人间（标准）", 4, 800m, "主校区标准双人间", now);
@@ -1967,8 +1967,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "Premium教材费 Active Senior 6", 1200m, PhpCurrencyId, "每开始4周", now);
       UpsertFee(context, schoolId, "Premium教材费 TOEIC / Working Holiday 8", 1600m, PhpCurrencyId, "每开始4周", now);
       UpsertFee(context, schoolId, "Premium教材费 Business Master 8", 1900m, PhpCurrencyId, "每开始4周", now);
-      UpsertFee(context, schoolId, "Premium教材费 Junior", 1700m, PhpCurrencyId, "每开始4周", now);
-      UpsertFee(context, schoolId, "Premium教材费 Guardian", 900m, PhpCurrencyId, "每开始4周", now);
+      RemoveFee(context, schoolId, "Premium教材费 Junior");
+      RemoveFee(context, schoolId, "Premium教材费 Guardian");
       UpsertFee(context, schoolId, "学生证", 200m, PhpCurrencyId, "到校支付费用；一次性费用，包含拍摄照片", now);
       UpsertFee(context, schoolId, "洗衣服务", 1200m, PhpCurrencyId, "到校支付费用；每4周参考，每周2次，包含洗涤、烘干和折叠；6周按1.5个单位预估", now);
       UpsertFee(context, schoolId, "宿舍押金", 3000m, PhpCurrencyId, "到校支付费用；每人一次，不计入学杂费合计；无损坏及欠费时按校规退还", now);
@@ -2033,10 +2033,14 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；MONOL 2026年价目表列出的一次性注册费", now);
       UpsertFee(context, schoolId, "思达免注册费优惠", 100m, UsdCurrencyId, "前期支付优惠；通过思达报名免100美元注册费", now);
-      UpsertFee(context, schoolId, "淡季课程优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周课程费减100美元；课程须在2026/6/28前结束，或于2026/8/23后开始且在2026年内入学；旺季不适用", now);
-      UpsertFee(context, schoolId, "淡季住宿优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周住宿费减100美元；课程须在2026/6/28前结束，或于2026/8/23后开始且在2026年内入学；旺季不适用", now);
-      UpsertFee(context, schoolId, "SNS单人房活动优惠", 100m, UsdCurrencyId, "前期支付优惠；2026/1/1—6/27，仅限单人房和小单间；每4周在小红书及抖音发布一篇在校故事，可减100美元；活动可能随时结束", now);
-      UpsertFee(context, schoolId, "淡季工作日早餐", 0m, UsdCurrencyId, "优惠说明；符合淡季条件者2026/12/31前工作日提供免费早餐", now);
+      UpsertFee(context, schoolId, "淡季课程优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周课程费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/21不适用", now);
+      UpsertFee(context, schoolId, "淡季住宿优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周住宿费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/21不适用", now);
+      UpsertFee(context, schoolId, "SNS单人房活动优惠", 100m, UsdCurrencyId, "前期支付优惠；2026/12/31或之前报名，仅标准单人间和小单间，每完整4周减100美元；任一指定社交平台发布一篇在校故事；2027/6/27—8/21不适用，活动可能提前关闭", now);
+      UpsertFee(context, schoolId, "淡季工作日早餐", 0m, UsdCurrencyId, "优惠说明；2027/12/31前上课日提供免费早餐，周末及节假日除外", now);
+      UpsertFee(context, schoolId, "16周长住优惠", 150m, UsdCurrencyId, "2026/9/7—12/31报名，在主校区学习及住宿16周；取消或缩短学期则失效", now);
+      UpsertFee(context, schoolId, "20周长住优惠", 200m, UsdCurrencyId, "2026/9/7—12/31报名，在主校区学习及住宿20周；取消或缩短学期则失效", now);
+      UpsertFee(context, schoolId, "24周长住优惠", 300m, UsdCurrencyId, "2026/9/7—12/31报名，在主校区学习及住宿24周；取消或缩短学期则失效", now);
+      UpsertFee(context, schoolId, "圣诞新年优惠", 100m, UsdCurrencyId, "2026/11/29—2027/1/10抵达，在主校区学习及住宿至少4周，每人一次", now);
       UpsertFee(context, schoolId, "追加一对一（ESL）", 150m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，ESL 4周参考", now);
       UpsertFee(context, schoolId, "追加一对一（IELTS）", 165m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，IELTS 4周参考", now);
       UpsertFee(context, schoolId, "追加一对一（LEAP）", 180m, UsdCurrencyId, "前期支付费用；Additional One-on-One Classes，LEAP 4周参考", now);
