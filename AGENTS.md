@@ -400,3 +400,5 @@ Baby accommodation is free through 24 months and half at 25–47 months; half-pr
 
 The pickup guide displays saved BESA T1 B6, T3 BAY 7 and Clark Terminal 2 BAY 3 maps/photos at user request. Preserve originals, source manifest and the temporary T3 BAY 6 caveat.
 
+
+The Baguio pickup guide menu entry is under 游学指南 beside 菲律宾游学指南 (not the Baguio school menu); its route and school-page links remain unchanged.
