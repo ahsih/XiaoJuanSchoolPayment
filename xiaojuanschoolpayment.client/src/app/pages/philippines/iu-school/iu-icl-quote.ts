@@ -37,7 +37,7 @@ export interface IuIclLocalFee {
 }
 
 const COMMON_COURSES: Record<string, Omit<IuIclCourse, 'id' | 'category' | 'name' | 'tuition'>> = {
-  light: { schedule: '一对一4课时 + 选修课或自习', note: 'Light课程本身不参与课程优惠；淡季住宿组合仍按校方组合价表计算。', promoCourse: 'light' },
+  light: { schedule: '一对一4课时 + 选修课或自习', note: '旺季常规价享9折；淡季住宿组合按校方组合价表计算，不叠加9折。', promoCourse: 'light' },
   power4: { schedule: '一对一4课时 + 团体课4课时 + 选修课或自习', note: '每周二或周四需参加口语训练。', promoCourse: 'power4' },
   power6: { schedule: '一对一6课时 + 团体课2课时 + 选修课或自习', note: '每周二或周四需参加口语训练。', promoCourse: 'power6' },
   power8: { schedule: '一对一8课时 + 选修课或自习', note: '每周二或周四需参加口语训练。', promoCourse: 'power8' },
@@ -191,7 +191,14 @@ export class IuIclQuote {
 
   applyContentConfig(value: CiaContentConfig): void {
     if (value?.schemaVersion !== 1 || value.schoolCode !== this.campus) return;
-    this.contentConfig = value;
+    this.contentConfig = structuredClone(value);
+    if (this.contentConfig.quoteImageSettings.paymentNotes.promotion === '只采用校方公布的组合价，不叠加思达启航或其它中介优惠。') {
+      this.contentConfig.quoteImageSettings.paymentNotes.promotion = '校方淡季套餐不叠加9折；旺季常规课程与住宿享9折。';
+    }
+    this.contentConfig.courses.forEach(item => {
+      if (item.note === 'Light课程本身不参与课程优惠；淡季住宿组合仍按校方组合价表计算。') item.note = '旺季常规价享9折；淡季住宿组合按校方组合价表计算，不叠加9折。';
+    });
+    value = this.contentConfig;
     this.registrationFee = value.quoteSettings.registrationFee;
     const courses = value.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
       id: item.id,
@@ -242,7 +249,14 @@ export class IuIclQuote {
   get promoPairCount(): number { return this.promoAdjustments.length; }
   get lowSeasonDiscount(): number { return this.promoAdjustments.reduce((sum, item) => sum + item.discount, 0); }
   get registrationWaiver(): number { return this.promoPairCount > 0 && (this.lowSeasonRule?.waiveRegistration ?? true) ? this.registrationFee : 0; }
-  get total(): number { return this.registrationFee + this.regularCourseTotal + this.regularRoomTotal - this.lowSeasonDiscount - this.registrationWaiver; }
+  get intermediaryDiscount(): number {
+    // Package-covered course/room charges are excluded before applying the confirmed 90% rate.
+    const packageBase = this.promoAdjustments.reduce((sum, item) => sum
+      + Math.round(item.course.tuition * multiplier(item.weeks))
+      + Math.round(item.room.fee * multiplier(item.weeks)), 0);
+    return Math.round(Math.max(0, this.regularCourseTotal + this.regularRoomTotal - packageBase) * 0.1 * 100) / 100;
+  }
+  get total(): number { return this.registrationFee + this.regularCourseTotal + this.regularRoomTotal - this.lowSeasonDiscount - this.registrationWaiver - this.intermediaryDiscount; }
   get selectedStartDate(): string { return this.plan.startDate; }
 
   private get promoAdjustments(): Array<{ discount: number; course: IuIclCourse; room: IuIclRoom; weeks: number; startDate: string }> {
@@ -316,8 +330,8 @@ export class IuIclQuote {
 
   get promotionNote(): string {
     return this.promoPairCount
-      ? `已按校方淡季组合价计算${this.promoPairCount}组同日期课程与校内住宿，并免收一次注册费；思达启航不再叠加任何额外优惠。`
-      : '当前按校方2026常规价计算；思达启航不提供或叠加其它价格优惠。';
+      ? `已按校方淡季组合价计算${this.promoPairCount}组同日期课程与校内住宿，并免收一次注册费；淡季套餐不叠加9折，其余旺季常规课程与住宿享9折。`
+      : '旺季常规课程与住宿享思达启航9折优惠；校方淡季套餐不叠加9折，注册费和到校学杂费不参与折扣。';
   }
 
   get availabilityNote(): string {
@@ -334,6 +348,7 @@ export class IuIclQuote {
     return [
       { icon: '注', label: '注册费', amount: `${quoteMoney(this.registrationFee)} 美元`, note: '一次性、不可退；仅符合本次校方淡季住宿组合价时免收。' },
       ...planItems,
+      ...(this.intermediaryDiscount > 0 ? [{ icon: '惠', label: '思达启航9折优惠', amount: `− ${quoteMoney(this.intermediaryDiscount)} 美元`, note: '旺季常规课程与住宿享9折；校方淡季套餐、注册费及到校学杂费不参与。', accent: true }] : []),
       ...(this.lowSeasonDiscount > 0 ? [{ icon: '惠', label: '校方淡季组合价调整', amount: `− ${quoteMoney(this.lowSeasonDiscount)} 美元`, note: '海报有效期为2026/08/23–2027/01/09，且须在2027/01/16前结业；同日期课程与校内住宿满4周，按校方组合价表计算；不与其它优惠叠加。', accent: true }] : []),
       ...(this.registrationWaiver > 0 ? [{ icon: '免', label: '校方免注册费', amount: `− ${quoteMoney(this.registrationWaiver)} 美元`, note: '本次淡季住宿组合价已含免注册费；不再叠加思达启航或其它中介优惠。', accent: true }] : []),
     ];
@@ -435,7 +450,7 @@ export class IuIclQuote {
     const note = item.label === '注册费' ? settings.registration ?? item.note
       : item.label.includes('课程名称') ? [item.note, settings.course].filter(Boolean).join('；')
         : item.label.includes('住宿名称') ? [item.note, settings.accommodation].filter(Boolean).join('；')
-          : item.accent ? [item.note, settings.promotion].filter(Boolean).join('；') : item.note;
+          : item.accent && item.label !== '思达启航9折优惠' ? [item.note, settings.promotion].filter(Boolean).join('；') : item.note;
     return { ...item, note };
   }
 
@@ -479,7 +494,7 @@ export class IuIclQuote {
       ...editedQuote,
       hideAlumniBenefit: true,
       alumniBenefitItems: [],
-      totalIncludedLabel: this.promoPairCount ? '校方淡季价已计入' : '按校方常规价计算',
+      totalIncludedLabel: this.intermediaryDiscount > 0 ? '9折优惠已计入' : this.promoPairCount ? '校方淡季价已计入' : '按校方常规价计算',
       finalConfirmationText: '最终以学校书面确认的价格与空房为准。',
       noteTitle: '报价说明',
       importantNotes,
@@ -528,6 +543,9 @@ export function iuIclGroupPaymentItems(
       label: `学生${index + 1} · ${item.label.replace(/^课程费/, '课程名称').replace(/^住宿费/, '住宿名称')}`,
     })));
   });
+
+  const discounted = students.map((student, index) => ({ student, index: index + 1 })).filter(entry => entry.student.intermediaryDiscount > 0);
+  if (discounted.length) items.push({ icon: '惠', label: '思达启航9折优惠', amount: `− ${quoteMoney(discounted.reduce((sum, entry) => sum + entry.student.intermediaryDiscount, 0))} 美元`, note: `${groupScope(discounted.map(entry => entry.index), students.length)}；旺季常规课程与住宿享9折，校方淡季套餐、注册费及到校学杂费不参与。`, accent: true });
 
   const promotionStudents = students
     .map((student, index) => ({ student, index: index + 1 }))
@@ -613,7 +631,7 @@ export function buildIuIclGroupImageData(
     paymentItems: iuIclGroupPaymentItems(students, true).map(item => students[0].formatImagePaymentItem(item)),
     totalUsd: `${quoteMoney(totalUsd)} 美元`,
     totalCny: `人民币预计金额：约 ${Math.round(totalUsd * usdToCny).toLocaleString('zh-CN')} 元`,
-    totalIncludedLabel: eligibleCount ? `${eligibleCount}人校方淡季价已计入` : '按校方常规价计算',
+    totalIncludedLabel: students.some(student => student.intermediaryDiscount > 0) ? '9折优惠已计入' : eligibleCount ? `${eligibleCount}人校方淡季价已计入` : '按校方常规价计算',
     localFeeTitle: '到校后学杂费明细',
     localFeeItems: localFees.map(fee => ({
       label: fee.item,

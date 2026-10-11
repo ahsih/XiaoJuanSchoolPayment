@@ -340,6 +340,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/cebu/smeag-encanto',
+        loadComponent: () =>
+          import('./pages/philippines/smeag-encanto-school/smeag-encanto-school.component').then(
+            (m) => m.SmeagEncantoSchoolComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/genius-english-academy',
         loadComponent: () =>
           import('./pages/philippines/genius-school/genius-school.component').then(

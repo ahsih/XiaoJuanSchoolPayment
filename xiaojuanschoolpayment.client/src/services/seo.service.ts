@@ -50,6 +50,18 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: 'CG斯巴达校区, CG斯巴达校区, 宿务CG语言学校, 斯巴达课程, CG费用, 菲律宾游学',
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
   },
+  '/philippines-study/cebu/smeag-capital': {
+    title: '菲律宾宿务SMEAG Capital校区 | 课程费用与2027假期表',
+    description: '查看SMEAG Capital市区校区课程、住宿、费用报价和2027假期上课安排，清楚区分全天停课与TOEFL、IELTS、TOEIC等假日特别课程。',
+    keywords: 'SMEAG Capital, SMEAG Capital假期, 宿务SMEAG, SMEAG 2027校历, 宿务雅思学校',
+    image: '/assets/philippines/smeag-capital-building.webp',
+  },
+  '/philippines-study/cebu/smeag-encanto': {
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
+    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    image: '/assets/philippines/smeag-encanto-campus-official.webp',
+  },
   '/philippines-study/why-philippines': {
     title: '菲律宾留学为什么选择菲律宾 | 英语游学优势',
     description:

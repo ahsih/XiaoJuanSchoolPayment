@@ -1,0 +1,57 @@
+<section class="holiday-calendar" aria-labelledby="smeag-holiday-calendar-title">
+  <header class="holiday-header">
+    <div>
+      <span class="eyebrow">SMEAG 2027 HOLIDAY SCHEDULE</span>
+      <h2 id="smeag-holiday-calendar-title">{{ campusName }}2027年假期与上课安排</h2>
+      <p>先看“全天停课”还是“假日特别课程”，再展开查看当天上午、下午的具体安排。</p>
+    </div>
+    <div class="holiday-summary" aria-label="假期安排摘要">
+      <article class="summary-closed"><strong>{{ closedCount }}天</strong><span>全天停课</span></article>
+      <article class="summary-special"><strong>{{ specialCount }}天</strong><span>安排特别课程</span></article>
+    </div>
+  </header>
+
+  <div class="calendar-tip">
+    <mat-icon>info</mat-icon>
+    <p *ngIf="campus === 'capital'">
+      Capital在部分假日照常安排主题课；上午为09:00–12:00，下午为13:00–16:00。红色标记才是全天停课。
+    </p>
+    <p *ngIf="campus === 'encanto'">
+      Encanto除1月1日元旦全天停课外，海报中的其余日期均安排Best Holiday Classes；具体主题和教室由学校另行通知。
+    </p>
+  </div>
+
+  <div class="month-list">
+    <section class="month-card" *ngFor="let group of monthGroups" [attr.aria-label]="group.label + '假期安排'">
+      <h3><span>{{ group.month }}</span>{{ group.label }}</h3>
+      <article class="holiday-row" *ngFor="let holiday of group.holidays">
+        <div class="date-block">
+          <strong>{{ holiday.day }}</strong>
+          <span>{{ holiday.weekday }}</span>
+        </div>
+        <div class="holiday-name">
+          <strong>{{ holiday.holidayZh }}</strong>
+          <span>{{ holiday.holidayEn }}</span>
+        </div>
+        <div class="schedule-block" [class.is-closed]="scheduleFor(holiday, campus).status === 'closed'">
+          <span class="status-pill">{{ scheduleFor(holiday, campus).label }}</span>
+          <div class="session-list" *ngIf="scheduleFor(holiday, campus).sessions.length">
+            <div *ngFor="let session of scheduleFor(holiday, campus).sessions">
+              <span>{{ session.period }} · {{ session.time }}</span>
+              <strong>{{ session.title }}</strong>
+              <small>{{ session.titleEn }}</small>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <footer class="calendar-note">
+    <mat-icon>event_note</mat-icon>
+    <div>
+      <strong>学校提醒</strong>
+      <p>课程主题和教室可能调整；部分假期也可能因菲律宾国家或地方政府公告而变化。最终以SMEAG到校前或当日通知为准。</p>
+    </div>
+  </footer>
+</section>

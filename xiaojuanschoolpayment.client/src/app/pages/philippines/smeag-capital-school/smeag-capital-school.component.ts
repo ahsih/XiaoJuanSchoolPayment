@@ -28,6 +28,7 @@ import { QuoteImageDownloadButtonComponent } from '../../../components/quote-ima
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
 import { cloneSmeagContentConfig, createDefaultSmeagContentConfig } from './smeag-content-config';
+import { SmeagHolidayCalendarComponent } from '../smeag-holiday-calendar/smeag-holiday-calendar.component';
 
 type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -132,7 +133,7 @@ interface SidaTrustBadge {
 @Component({
   selector: 'app-smeag-capital-school',
   standalone: true,
-  imports: [SchoolQuotePlanComponent,CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent],
+  imports: [SchoolQuotePlanComponent, CommonModule, FormsModule, RouterModule, MatIconModule, QuoteImageDownloadButtonComponent, SmeagHolidayCalendarComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './smeag-capital-school.component.html',
   styleUrls: [
@@ -698,6 +699,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
+    { label: '2027假期表', target: 'holidays', icon: 'event' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
     { label: '报名流程', target: 'service-process', icon: 'task_alt' },
@@ -707,6 +709,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     { label: '概览', target: 'top', icon: 'dashboard' },
     { label: '环境', target: 'gallery', icon: 'image' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
+    { label: '校历', target: 'holidays', icon: 'event' },
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },

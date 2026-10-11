@@ -358,6 +358,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/smeag-capital',
           },
           {
+            id: 'smeag-encanto',
+            label: '菲律宾宿务SMEAG Encanto海滨校区',
+            route: '/philippines-study/cebu/smeag-encanto',
+          },
+          {
             id: 'genius-english-academy',
             label: '菲律宾宿务Genius English Academy语言学校',
             route: '/philippines-study/cebu/genius-english-academy',

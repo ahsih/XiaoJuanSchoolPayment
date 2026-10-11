@@ -563,7 +563,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     {
       question: '为什么不同网站价格不同？',
       answer:
-        '不同资料会因更新时间、适用日期、房型和包含项目不同而出现差异。本页把常规价、校方淡季组合价和当地费分开展示，思达不再叠加其它价格优惠。',
+        '不同资料会因更新时间、适用日期、房型和包含项目不同而出现差异。本页把常规价、校方淡季组合价和当地费分开展示，旺季常规课程与住宿享9折，淡季套餐不叠加9折。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -849,8 +849,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     if (this.quoteMode === 'single') return this.quoteCalculator.promotionNote;
     const eligible = this.activeStudents.filter(student => student.promoPairCount > 0).length;
     return eligible
-      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；不叠加思达启航或其它中介优惠。`
-      : '当前所有学生均按校方2026常规价计算；思达启航不提供或叠加其它价格优惠。';
+      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；淡季套餐不叠加9折，其余旺季常规课程与住宿享9折。`
+      : '当前所有学生均按校方2026常规价计算；旺季常规课程与住宿享9折，淡季套餐不叠加9折。';
   }
   get localFeesTotal(): number { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
   get optionalFees() {

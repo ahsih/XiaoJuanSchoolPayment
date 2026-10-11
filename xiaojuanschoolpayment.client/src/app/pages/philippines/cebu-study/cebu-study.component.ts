@@ -528,10 +528,10 @@ export class CebuStudyComponent {
       image: '/assets/philippines/smeag-capital-building.webp', highlights: ['剑桥综合英语', '口语大师', '雅思保证班', '托业 / 托福', '商务英语', '亲子课程'],
     },
     {
-      name: 'SMEAG Encanto 海滨校区', route: '/about-sida/contact', tag: '麦克坦海滨亲子校区',
+      name: 'SMEAG Encanto 海滨校区', route: '/philippines-study/cebu/smeag-encanto', tag: '麦克坦海滨亲子校区',
       location: 'Mactan · Lapu-Lapu', summary: '海滨度假型校区，亲子课程、Cambridge体系与家庭住宿是主要特色。',
       image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['亲子营', '剑桥综合英语', '综合英语1 / 2', '商务英语'],
-      linkLabel: '咨询学校资料',
+      linkLabel: '查看学校假期与资料',
     },
     {
       name: 'Genius English', route: '/philippines-study/cebu/genius-english-academy', tag: '海边多国籍',
