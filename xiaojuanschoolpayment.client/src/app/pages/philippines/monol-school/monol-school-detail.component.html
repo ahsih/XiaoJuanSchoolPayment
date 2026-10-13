@@ -317,7 +317,7 @@
                 <tbody><tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
                 <tfoot>
                   <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含房间押金及餐费</td></tr>
-                  <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ localFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币≈9比索；最终以实际兑换或支付汇率为准</td></tr>
+                  <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(localFeeCny, 'zh-CN') }} 元</td><td>参考汇率：1元人民币≈{{ quoteCurrencyText(phpPerCny) }}比索；最终以实际兑换或支付汇率为准</td></tr>
                 </tfoot>
               </table>
             </div>

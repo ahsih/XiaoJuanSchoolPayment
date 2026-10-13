@@ -1,3 +1,5 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, ProviderToken, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -149,7 +151,8 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
 
   readonly registrationFee = 100;
   readonly seasonalFeePerWeek = 40;
-  readonly usdToCny = 7.2;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
 
   selectedCourseId = 'city-lite-esl';
@@ -855,4 +858,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
   formatUsd(amount: number): string {
     return amount.toLocaleString('en-US');
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

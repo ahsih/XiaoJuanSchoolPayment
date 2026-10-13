@@ -1,5 +1,7 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -135,7 +137,8 @@ export class ClarkTalkSchoolComponent {
   readonly priceWeeksForTable: WeekOption[] = [1, 4, 8, 12];
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 5, 6, 7, 8, 12, 24];
   readonly registrationFee = 100;
-  readonly usdToCny = 7.2;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
 
   selectedGalleryCategory: GalleryCategory = '全部';
   selectedCourseId = 'talk4';
@@ -687,4 +690,7 @@ export class ClarkTalkSchoolComponent {
       maximumFractionDigits: amount % 1 === 0 ? 0 : 1,
     });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

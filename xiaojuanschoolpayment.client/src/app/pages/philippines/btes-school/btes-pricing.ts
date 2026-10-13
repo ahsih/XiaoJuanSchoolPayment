@@ -130,7 +130,6 @@ export const BTES_ALL_IN_ONE_START = '2026-08-23';
 export const BTES_ALL_IN_ONE_END = '2027-01-16';
 export const BTES_REGISTRATION_FEE = 100;
 export const BTES_SIDA_DISCOUNT_RATE = 0.95;
-export const BTES_PHP_PER_CNY = 9;
 export const BTES_SHORT_STAY_MULTIPLIERS: Readonly<Record<number, number>> = { 1: 0.4, 2: 0.65, 3: 0.85 };
 
 export const BTES_HOLIDAYS_2026 = [

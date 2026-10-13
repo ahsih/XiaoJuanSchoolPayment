@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -168,8 +169,8 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
   registrationFee = 150;
   readonly sidaDiscountRate = 0.9;
   seasonalFeePerWeek = 40;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = [4, 8, 12, 16, 20, 24];
@@ -666,12 +667,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -920,8 +916,8 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     return index < 0 ? '' : `${this.quoteMode === 'group' ? '学生' + (index + 1) + '：' : ''}${this.activeStudents[index].quoteError}`;
   }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText() { return `约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
-  get localFeesCnyText() { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText() { return `约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
+  get localFeesCnyText() { return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
   get schoolPaymentItems() {
     if (this.quoteMode === 'single') return this.students[0].schoolPaymentItems;
     const newStudents = this.activeStudents.filter(student => !student.returningStudent).length;
@@ -955,7 +951,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
         cnyAmount: pickupIncluded ? '' : `约人民币 ${Math.round(30 * this.usdToCny)}／${Math.round(50 * this.usdToCny)} 元`,
         note: `多人接机按实际安排确认，不按人数累加。${this.activeStudents.some(s => s.guardianRequired) ? '已选未成年管理费的学生含接机，不重复收费。' : ''}` },
       { label: '房间押金（价格参考）', amount: `${deposits.map(amount => quoteMoney(amount)).join('／')} 比索`,
-        cnyAmount: `约人民币 ${deposits.map(amount => Math.round(amount / this.phpPerCny).toLocaleString('zh-CN')).join('／')} 元`,
+        cnyAmount: `约人民币 ${deposits.map(amount => quoteCurrencyText(Math.round(amount / this.phpPerCny), 'zh-CN')).join('／')} 元`,
         note: '不足8周3,000比索，8周及以上5,000比索；共住房间按学校确认，不按人数累加。无损坏及无欠费时可退' },
     ];
   }
@@ -1053,10 +1049,10 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateLive ? this.exchangeRateDate : undefined } };
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return quoteMoney(value);
   }
-  formatPhp(value: number): string { return `${quoteMoney(value)} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${quoteMoney(value)} 比索`; }
   private joinNotes(...parts: Array<string | undefined>): string { return [...new Set(parts.map(part => part?.trim()).filter((part): part is string => !!part))].join('；'); }
   private roundMoney(value: number): number { return Math.round(value * 10) / 10; }
   private isDateBetween(value: string, start: string, end: string): boolean { return value >= start && value <= end; }
@@ -1081,4 +1077,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     if (name.includes('家庭')) return 'off-campus-family';
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

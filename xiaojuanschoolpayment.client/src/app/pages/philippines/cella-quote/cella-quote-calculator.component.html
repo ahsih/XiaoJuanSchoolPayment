@@ -92,7 +92,7 @@
   <div class="group-result">
     <span>最终应付学校金额</span>
     <strong>{{ formatMoney(schoolTotal) }}美元</strong>
-    <em>约人民币{{ schoolTotalCny.toLocaleString('zh-CN') }}元</em>
+    <em>约人民币{{ quoteCurrencyText(schoolTotalCny, 'zh-CN') }}元</em>
     <small>{{ exchangeRateText }}；最终以支付当日汇率、学校空房和正式账单为准。</small>
   </div>
   <div class="group-actions">
@@ -113,7 +113,7 @@
       </tr></tbody>
       <tfoot>
         <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ localFeeTotalText }}</td><td>{{ localFeeTotalNote }}</td></tr>
-        <tr *ngIf="hasRegularQuotes"><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约{{ localFeeTotalCny.toLocaleString('zh-CN') }}元</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
+        <tr *ngIf="hasRegularQuotes"><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约{{ quoteCurrencyText(localFeeTotalCny, 'zh-CN') }}元</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
       </tfoot>
     </table>
   </div>

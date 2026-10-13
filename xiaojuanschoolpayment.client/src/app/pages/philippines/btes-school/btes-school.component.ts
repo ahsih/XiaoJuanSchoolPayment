@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +20,6 @@ import {
   BTES_COURSES,
   BTES_HOLIDAYS_2026,
   BTES_LOW_SEASON_PERIODS,
-  BTES_PHP_PER_CNY,
   BTES_REGISTRATION_FEE,
   BTES_ROOMS,
   BTES_SIDA_DISCOUNT_RATE,
@@ -98,8 +98,8 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   private requestedStudentCount = 2;
   quoteCalculated = false;
 
-  usdToCny = 7.2;
-  readonly phpPerCny = BTES_PHP_PER_CNY;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
 
@@ -214,12 +214,7 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -270,7 +265,7 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   }
   get quoteUsd() { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText() { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText() { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get quoteHeading() { return this.quoteMode === 'single' ? `BTES ${this.selectedWeeks}周报价` : `BTES ${this.activeStudents.length}人报价`; }
 
   get quoteError(): string {
@@ -334,7 +329,7 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
 
   get optionalFeeItems() {
     const deposit = this.activeStudents.length * 2000;
-    const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    const cny = (value: number) => `约人民币 ${quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')} 元`;
     return [
       {
         label: '学校押金（可退）', amount: this.formatPhp(deposit), cnyAmount: cny(deposit),
@@ -360,7 +355,7 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
     const dollarRate = this.usingLiveExchangeRate && this.exchangeRateDate
       ? `美元按${this.exchangeRateDate.replace(/-/g, '/')}参考汇率`
       : '美元按备用参考汇率';
-    return `${dollarRate}1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币；当地费按1元人民币≈${this.phpPerCny}比索参考。`;
+    return `${dollarRate}1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币；当地费按1元人民币≈${this.phpPerCny}比索参考。`;
   }
 
   get fourWeekStartingText() { return '1,000 美元'; }
@@ -474,10 +469,13 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
     }
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   formatRoomFee(room: BtesRoom): string { return `${this.formatUsd(room.fee4w)} 美元／人／4周`; }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

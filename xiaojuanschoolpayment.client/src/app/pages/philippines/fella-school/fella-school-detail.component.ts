@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -82,8 +83,8 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  usdToCny = 7.2;
-  phpPerCny = 8;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
@@ -311,13 +312,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.phpPerCny = rates.phpPerCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -411,10 +406,10 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
-    return `参考汇率：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元，1元≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
+    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新';
+    return `参考汇率：1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元，1元≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
   }
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
@@ -426,19 +421,19 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
       const rows = [
         {
           label: `${prefix}房间押金（可退）`, amount: this.formatPhp(student.roomDeposit),
-          cnyAmount: `约人民币 ${Math.round(student.roomDeposit / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+          cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(student.roomDeposit / this.phpPerCny), 'zh-CN')} 元`,
           note: `${student.roomWeeks >= 12 ? '12周及以上为4,000比索' : '12周以下为3,000比索'}；退房时扣除损坏、毕业日后空调电费后退还，超出押金需补齐，电费20比索／千瓦时。`,
         },
         {
           label: `${prefix}挂锁押金（可退）`, amount: this.formatPhp(100),
-          cnyAmount: `约人民币 ${Math.round(100 / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+          cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(100 / this.phpPerCny), 'zh-CN')} 元`,
           note: '无损坏及丢失，毕业时可退。',
         },
       ];
       if (student.pickupFee) rows.splice(1, 0, {
         label: `${prefix}${student.airportPickup === 'sunday' ? '周日' : '其他时间'}宿务机场接机`,
         amount: this.formatPhp(student.pickupFee),
-        cnyAmount: `约人民币 ${Math.round(student.pickupFee / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(student.pickupFee / this.phpPerCny), 'zh-CN')} 元`,
         note: student.airportPickup === 'sunday' ? '周日接机1,000比索／人；也可自行打车。' : '非周日或其他时间接机1,500比索／次／人。',
       });
       return rows;
@@ -522,8 +517,8 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
     };
   }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private createCourseId(name: string): string {
@@ -571,4 +566,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
     this.registrationFee = content.quoteSettings.registrationFee;
     for (const student of this.students) student.setCampus(student.campus);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

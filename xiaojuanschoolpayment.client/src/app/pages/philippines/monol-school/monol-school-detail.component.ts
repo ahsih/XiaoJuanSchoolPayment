@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -88,8 +89,8 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
   stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
   localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
-  usdToCny = 7.2;
-  readonly phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly quoteGeneralNotes = [
     '学校付款部分须在到校前2周交齐，可由思达代收或由学生直接向MONOL支付；人民币结算按支付当日汇率换算。',
     '到校后学杂费由学校或相关部门直接收取，本报价仅作预算参考，具体以实际收取为准。',
@@ -324,12 +325,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   private readSessionPreview(): CiaContentConfig | null {
@@ -586,7 +582,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   get localFeeTotal() { return this.estimatedLocalFees.reduce((total, fee) => total + fee.total, 0); }
   get localFeeCny(): number { return Math.round(this.localFeeTotal / this.phpPerCny); }
   get localFeeCnyText(): string {
-    return `人民币预计金额：约 ${this.localFeeCny.toLocaleString('zh-CN')} 元`;
+    return `人民币预计金额：约 ${quoteCurrencyText(this.localFeeCny, 'zh-CN')} 元`;
   }
 
   private studentPlanPaymentItems(): QuoteImagePaymentItem[] {
@@ -647,8 +643,8 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     const mealQuantity = this.activeStudents.reduce((sum, student) => sum + student.mealQuantity, 0);
     const meals = this.activeStudents.reduce((sum, student) => sum + student.mealEstimate, 0);
     return [
-      ...(roomDepositRule ? [{ label: roomDepositRule.name, amount: this.formatPhp(roomDeposit), cnyAmount: `约 ${Math.round(roomDeposit / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `${roomDepositRule.amount.toLocaleString()}比索／人 × ${this.activeStudents.length}；${this.quoteImageSettings.localFeeNotes[roomDepositRule.id] || roomDepositRule.note}` }] : []),
-      ...(mealRule ? [{ label: mealRule.name, amount: this.formatPhp(meals), cnyAmount: `约 ${Math.round(meals / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: `${mealRule.amount.toLocaleString()}比索／${mealRule.periodWeeks ?? 4}周 × ${this.formatFeeQuantity(mealQuantity)}；${this.quoteImageSettings.localFeeNotes[mealRule.id] || mealRule.note}` }] : []),
+      ...(roomDepositRule ? [{ label: roomDepositRule.name, amount: this.formatPhp(roomDeposit), cnyAmount: `约 ${quoteCurrencyText(Math.round(roomDeposit / this.phpPerCny), 'zh-CN')} 元`, note: `${roomDepositRule.amount.toLocaleString()}比索／人 × ${this.activeStudents.length}；${this.quoteImageSettings.localFeeNotes[roomDepositRule.id] || roomDepositRule.note}` }] : []),
+      ...(mealRule ? [{ label: mealRule.name, amount: this.formatPhp(meals), cnyAmount: `约 ${quoteCurrencyText(Math.round(meals / this.phpPerCny), 'zh-CN')} 元`, note: `${mealRule.amount.toLocaleString()}比索／${mealRule.periodWeeks ?? 4}周 × ${this.formatFeeQuantity(mealQuantity)}；${this.quoteImageSettings.localFeeNotes[mealRule.id] || mealRule.note}` }] : []),
     ];
   }
 
@@ -732,10 +728,10 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
   formatFeeQuantity(value: number): string {
     return value.toLocaleString('zh-CN', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
@@ -754,4 +750,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     if (name.includes('Quad')) return 'quad-room';
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

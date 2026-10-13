@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -104,8 +105,8 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
   readonly students: TargetStudentQuote[] = [new TargetStudentQuote(), new TargetStudentQuote()];
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
@@ -341,13 +342,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.phpPerCny = rates.phpPerCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
     connectUnifiedSchoolContent({
       code: 'TARGET', schoolService: this.schoolService, contentService: this.contentService,
       matchesSchool: name => /target/i.test(name), clone: cloneTargetContentConfig,
@@ -393,7 +388,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
 
   get packageUsdText(): string { return `${this.formatUsd(this.packageUsd)}美元`; }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)}美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
     return this.usingLiveExchangeRate
       ? `人民币金额按${this.exchangeRateDate.replace(/-/g, '/')}参考汇率估算，最终以付款当日汇率为准`
@@ -454,7 +449,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get localFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get localFeeCny(): number { return Math.round(this.localFeeTotal / this.phpPerCny); }
-  get localFeeCnyText(): string { return `约 ${this.localFeeCny.toLocaleString('zh-CN')} 元`; }
+  get localFeeCnyText(): string { return `约 ${quoteCurrencyText(this.localFeeCny, 'zh-CN')} 元`; }
 
   get optionalFeeItems(): QuoteImageOptionalFeeItem[] {
     const studentCount = this.activeStudents.length;
@@ -465,19 +460,19 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     return [
       {
         label: '房间押金（可退）', amount: this.formatPhp(deposit),
-        cnyAmount: `约 ${Math.round(deposit / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        cnyAmount: `约 ${quoteCurrencyText(Math.round(deposit / this.phpPerCny), 'zh-CN')} 元`,
         note: `2,500比索／人 × ${studentCount}；退宿时设施和物品无损坏、遗失时退还，不计入学杂费合计。`,
       },
       {
         label: '宿务机场接机', amount: pickupStudents ? this.formatPhp(pickupEstimate) : '未选择',
-        cnyAmount: pickupStudents ? `约 ${Math.round(pickupEstimate / this.phpPerCny).toLocaleString('zh-CN')} 元` : undefined,
+        cnyAmount: pickupStudents ? `约 ${quoteCurrencyText(Math.round(pickupEstimate / this.phpPerCny), 'zh-CN')} 元` : undefined,
         note: pickupStudents
           ? `${pickupStudents}人选择；基本费1,200比索、每组最多2人，当前按${pickupGroups}组参考，实际拼车和安排由学校确认。指定时段外或临近报名可能各加1,000比索。`
           : '基本费1,200比索，每组最多2人；指定时段外或临近报名可能各加1,000比索，不计入学杂费合计。',
       },
       {
         label: '洗衣服务', amount: '150比索／次',
-        cnyAmount: `约 ${Math.round(150 / this.phpPerCny).toLocaleString('zh-CN')} 元／次`,
+        cnyAmount: `约 ${quoteCurrencyText(Math.round(150 / this.phpPerCny), 'zh-CN')} 元／次`,
         note: '每次最多6公斤，学校列明每周最多使用3天；按实际次数支付，不计入学杂费合计。',
       },
     ];
@@ -536,7 +531,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
       importantNotes: [...warnings, ...this.contentConfig.quoteImageSettings.footerNotes],
       finalConfirmationText: '最终以学校价格、空房及优惠确认为准。',
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate || undefined },
-      exchangeRateText: `学杂费按1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}比索估算`,
+      exchangeRateText: `学杂费按1元人民币≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 2 })}比索估算`,
     }, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions, this.contentConfig.localFees);
   }
 
@@ -575,11 +570,14 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}比索`; }
   formatFeeQuantity(value: number): string {
     return value.toLocaleString('zh-CN', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

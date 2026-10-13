@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -103,8 +104,8 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
   stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
   localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
-  usdToCny = 7.2;
-  readonly phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly quoteGeneralNotes = [
     '通过思达启航报名的学生全部免除学校原价100美元／人的注册费。',
     '学校付款时间与收款方式须以MONOL斯巴达校区正式账单为准；人民币结算按支付当日汇率换算。',
@@ -353,12 +354,7 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   private readSessionPreview(): CiaContentConfig | null {
@@ -675,7 +671,7 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   get localFeeTotal() { return this.estimatedLocalFees.reduce((total, fee) => total + fee.total, 0); }
   get localFeeCny(): number { return Math.round(this.localFeeTotal / this.phpPerCny); }
   get localFeeCnyText(): string {
-    return `人民币预计金额：约 ${this.localFeeCny.toLocaleString('zh-CN')} 元`;
+    return `人民币预计金额：约 ${quoteCurrencyText(this.localFeeCny, 'zh-CN')} 元`;
   }
 
   private studentPlanPaymentItems(): QuoteImagePaymentItem[] {
@@ -750,12 +746,12 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     const specialPickups = this.activeStudents.flatMap((student, index) => student.selectedSpecialPickup ? [{
       label: `${this.quoteMode === 'group' ? `学生${index + 1} · ` : ''}${student.selectedSpecialPickup.name}`,
       amount: this.formatPhp(student.selectedSpecialPickup.amount),
-      cnyAmount: `约 ${Math.round(student.selectedSpecialPickup.amount / this.phpPerCny).toLocaleString('zh-CN')} 元／车`,
+      cnyAmount: `约 ${quoteCurrencyText(Math.round(student.selectedSpecialPickup.amount / this.phpPerCny), 'zh-CN')} 元／车`,
       note: this.quoteImageSettings.localFeeNotes[student.selectedSpecialPickup.id] || student.selectedSpecialPickup.note,
     }] : []);
     return [
-      ...(depositRule ? [{ label: depositRule.name, amount: `${this.formatUsd(deposit)} 美元`, cnyAmount: `约 ${Math.round(deposit * this.usdToCny).toLocaleString('zh-CN')} 元`, note: `${depositRule.amount.toLocaleString()}美元／人 × ${this.activeStudents.length}；${this.quoteImageSettings.localFeeNotes[depositRule.id] || depositRule.note}` }] : []),
-      ...(tvvRule ? [{ label: tvvRule.name, amount: `${this.formatPhp(tvvRule.amount * this.activeStudents.length)}（条件恢复时）`, cnyAmount: `约 ${Math.round(tvvRule.amount * this.activeStudents.length / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[tvvRule.id] || tvvRule.note }] : []),
+      ...(depositRule ? [{ label: depositRule.name, amount: `${this.formatUsd(deposit)} 美元`, cnyAmount: `约 ${quoteCurrencyText(Math.round(deposit * this.usdToCny), 'zh-CN')} 元`, note: `${depositRule.amount.toLocaleString()}美元／人 × ${this.activeStudents.length}；${this.quoteImageSettings.localFeeNotes[depositRule.id] || depositRule.note}` }] : []),
+      ...(tvvRule ? [{ label: tvvRule.name, amount: `${this.formatPhp(tvvRule.amount * this.activeStudents.length)}（条件恢复时）`, cnyAmount: `约 ${quoteCurrencyText(Math.round(tvvRule.amount * this.activeStudents.length / this.phpPerCny), 'zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[tvvRule.id] || tvvRule.note }] : []),
       ...referenceRules,
       ...specialPickups,
     ];
@@ -839,10 +835,10 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
   formatFeeQuantity(value: number): string {
     return value.toLocaleString('zh-CN', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
@@ -861,4 +857,7 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     if (name.includes('Triple')) return 'triple-room';
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

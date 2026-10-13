@@ -404,3 +404,8 @@ The pickup guide displays saved BESA T1 B6, T3 BAY 7 and Clark Terminal 2 BAY 3 
 
 
 The Baguio pickup guide menu entry is under 游学指南 beside 菲律宾游学指南 (not the Baguio school menu); its route and school-page links remain unchanged.
+
+
+## Unified quote exchange rates (2026-10-14)
+
+User restored the existing free Frankfurter/ECB source; do not use Baidu, paid API keys, or fixed currency fallbacks. ExchangeRateService fetches the latest CNY-based daily rates directly from the existing v1 endpoint, with all supported ECB currencies and no backend configuration. connectQuoteRates owns each public/employee quote's USD/CNY and PHP/CNY updates, actual observation date, validity flags and component teardown. Both webpage and image use the same rates. Valid recent business-day observations (up to seven calendar days) are allowed, including weekends; never relabel them as today's tick/live intraday rate. Refresh hourly, cache genuine validated responses for at most six hours, and reject malformed, future, older-than-seven-day or non-positive/non-finite rates. With no usable received/cached data, show conversion pending and block image export. All prior fixed PHP/CNY rules (IMS/MINT 8; A&J/MONOL/BTES 9) are superseded. No school pricing/discount rules, seeds or published revisions are changed by this conversion layer. Source behavior, inventory and validation are in docs/quote-exchange-rates-2026-10-14.md. Focused tests use tsconfig.exchange-rate.spec.json.

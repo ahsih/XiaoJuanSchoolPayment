@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -92,8 +93,8 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
   seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
   peakSeasonRanges = this.initialContent.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = Array.from({ length: 24 }, (_, i) => i + 1);
@@ -411,12 +412,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPricingFromDatabase();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -518,8 +514,8 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   get seasonalSurcharge() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.summerSurcharge, 0); }
   get quoteUsd() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0); }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText() { return `约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元人民币`; }
-  get exchangeRateText() { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+  get quoteCnyText() { return `约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元人民币`; }
+  get exchangeRateText() { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'; }
   get quoteScope(): string {
     if (this.quoteMode === 'single') return `${this.selectedWeeks}周`;
     const students = this.activeStudents;
@@ -561,7 +557,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   }
   private localFeeRule(id: string): CiaLocalFeeRule | undefined { return this.localFeeRules.find(item => item.id === id && item.enabled); }
   get localFeesTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
-  get localFeesCnyText() { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元人民币`; }
+  get localFeesCnyText() { return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元人民币`; }
   get optionalFeeItems() {
     const pickupCount = this.activeStudents.filter(student => student.calculator.pickup !== 'none').length;
     const pickup = this.activeStudents.reduce((sum, student) => sum + student.calculator.pickupAmount, 0);
@@ -574,7 +570,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       ...(depositRule ? [{ label: depositRule.name, value: deposit, note: `${depositRule.note} 1–2周${this.formatPhp(depositRule.amount)}，3–7周增加1,000比索，8–11周增加2,000比索，12–24周按最高档。` }] : []),
       ...(extraNight ? [{ label: extraNight.label, value: extraNight.amount, note: `${this.formatPhp(extraNight.amount)}／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。` }] : []),
     ].map(item => ({ label: item.label, amount: this.formatPhp(item.value), note: item.note,
-      cnyAmount: `人民币预计约 ${Math.round(item.value / this.phpPerCny).toLocaleString('zh-CN')} 元` }));
+      cnyAmount: `人民币预计约 ${quoteCurrencyText(Math.round(item.value / this.phpPerCny), 'zh-CN')} 元` }));
   }
   get quoteImageData() {
     const layoutWeeks = this.activeStudents[0]?.calculator.plan.courseWeeks ?? 0;
@@ -668,7 +664,10 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || (item.note ?? '').includes(rule.description));
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
-  formatUsd(value: number) { return quoteMoney(value); }
-  formatPhp(value: number) { return `${quoteMoney(value)} 比索`; }
+  formatUsd(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return quoteMoney(value); }
+  formatPhp(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return `${quoteMoney(value)} 比索`; }
 
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

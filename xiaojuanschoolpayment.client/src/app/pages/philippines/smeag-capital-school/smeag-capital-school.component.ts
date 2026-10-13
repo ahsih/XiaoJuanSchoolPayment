@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
@@ -211,8 +212,8 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   get lowSeasonRule(): CiaPromotionRule | undefined { return this.promotionRules.find(item => item.id === 'smeag-low-season' && item.enabled); }
   get lowSeasonDiscountPerWeek(): number { return this.lowSeasonRule?.discountValue ?? 0; }
   get returningRegistrationWaiverEnabled(): boolean { return this.promotionRules.some(item => item.id === 'smeag-returning-registration' && item.enabled && item.waiveRegistration); }
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
@@ -823,12 +824,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   }
 
   private loadExchangeRates(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -1072,7 +1068,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   }
 
   get exchangeRateText(): string {
-    return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
+    return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新';
   }
 
   get quoteScope(): string {
@@ -1184,7 +1180,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   }
 
   get localFeesCnyText(): string {
-    return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`;
   }
 
   private studentPaymentLines(student: SmeagStudentQuote): SchoolPaymentLine[] {
@@ -1235,7 +1231,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
       optionalFeeItems: [
         ...this.excludedLocalFees.map(fee => {
           const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? '';
-          return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+          return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元` : '', note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
         }),
         ...this.textbookPrices.map(book => ({ label: `教材价格参考 · ${book.label}`, amount: `${this.formatPhp(book.price)}／套`, note: '价格参考，不重复计入上方学杂费合计。' })),
       ],
@@ -1275,14 +1271,14 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 2,
     });
   }
 
-  formatPhp(value: number): string {
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${value.toLocaleString('en-US')} 比索`;
   }
 
@@ -1346,4 +1342,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
 
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -60,20 +61,14 @@ export class BeciQuoteCalculatorComponent implements OnInit {
   students: BeciStudentQuote[] = [new BeciStudentQuote(BECI_CAMPUS_PRICING.eop)];
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRates = false;
   quoteCalculated = false;
 
   ngOnInit(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.phpPerCny = rates.phpPerCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRates = true;
-    });
+
   }
 
   get studentCount(): number { return this.requestedStudentCount; }
@@ -134,10 +129,10 @@ export class BeciQuoteCalculatorComponent implements OnInit {
 
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText(): string { return `${quoteMoney(this.quoteUsd)} 美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    const source = this.usingLiveExchangeRates && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
-    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币（${source}）`;
+    const source = this.usingLiveExchangeRates && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新';
+    return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币（${source}）`;
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
@@ -164,8 +159,8 @@ export class BeciQuoteCalculatorComponent implements OnInit {
   get localFeeIntro(): string { return this.currentContent.quoteSettings.localFeeIntro; }
 
   calculateQuote(): void { this.quoteCalculated = true; }
-  formatUsd(value: number): string { return quoteMoney(value); }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return quoteMoney(value); }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   trackIndex(index: number): number { return index; }
   feeId(name: string): string {
@@ -216,7 +211,7 @@ export class BeciQuoteCalculatorComponent implements OnInit {
       optionalFeeItems: [{
         label: '房间押金',
         amount: this.formatPhp(this.depositTotal),
-        cnyAmount: `约人民币 ${this.depositCny.toLocaleString('zh-CN')} 元`,
+        cnyAmount: `约人民币 ${quoteCurrencyText(this.depositCny, 'zh-CN')} 元`,
         note: `${this.activeStudents.length}人 × ${this.depositPerPerson.toLocaleString('zh-CN')}比索；无损坏、无欠费并按学校规则完成退房后可退，不计入学杂费合计。`,
       }],
       ruleNotes: [
@@ -260,4 +255,7 @@ export class BeciQuoteCalculatorComponent implements OnInit {
     this.requestedStudentCount = 2;
     this.quoteMode = 'single';
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

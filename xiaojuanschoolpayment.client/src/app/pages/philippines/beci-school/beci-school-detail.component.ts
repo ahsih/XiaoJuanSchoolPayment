@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, ProviderToken, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -113,8 +114,8 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   registrationFee = 100;
   readonly registrationDiscount = 100;
   readonly offSeasonDiscountRate = 0.9;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
@@ -533,13 +534,7 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
 
   private loadExchangeRate(): void {
     if (!this.exchangeRateService) return;
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.phpPerCny = rates.phpPerCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -699,7 +694,7 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   get localFeeTotal(): number { return this.localFees.filter((fee) => !fee.optional).reduce((total, fee) => total + fee.total, 0); }
   get localFeeCnyText(): string {
     if (this.phpPerCny <= 0) return '人民币金额正在按最新参考汇率更新';
-    return `人民币预计金额：约 ${Math.round(this.localFeeTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.localFeeTotal / this.phpPerCny), 'zh-CN')} 元`;
   }
 
   get quoteImageData() {
@@ -751,7 +746,7 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
     };
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 });
   }
   private localFeeAmount(unit: number, quantity: number): string { return `PHP ${(unit * quantity).toLocaleString('en-US')}`; }
@@ -807,4 +802,7 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   private cleanFeeDescription(description?: string): string {
     return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准';
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

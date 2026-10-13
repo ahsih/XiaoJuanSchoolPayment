@@ -1,8 +1,10 @@
+import { ExchangeRateService } from '../../../services/exchange-rate.service';
+import { connectQuoteRates } from '../../../services/quote-exchange-rates';
 import { cloneLaMerContentConfig, createDefaultLaMerContentConfig, isLaMerSchool, LA_MER_PATH } from '../philippines/la-mer-school/la-mer-content-config';
 import { LaMerStudentQuote, LaMerFamilyQuote } from '../philippines/la-mer-school/la-mer-quote';
 import { buildLaMerQuoteImage, LA_MER_FALLBACK_RATES } from '../philippines/la-mer-school/la-mer-quote-image';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -113,6 +115,11 @@ import { cloneMintContentConfig, createDefaultMintContentConfig } from '../phili
   styleUrl: './admin-school-quote-image.component.css',
 })
 export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
+  exchangeRateDate = '';
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+
   private readonly ciaSchoolName = 'CIA Cebu International Academy';
   schools: SchoolDTO[] = [];
   selectedSchool?: SchoolDTO;
@@ -431,7 +438,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
       const quote = new IuIclQuote(campus, 'power-speaking-4', campus === 'IU' ? 'campus-triple' : 'campus-quad', campus === 'IU' ? '2026-09-13' : '2026-10-04');
       quote.applyContentConfig(this.content);
-      return quote.imageData(6.71, 9.33566, '2026-09-14', campus === 'IU' ? '/assets/philippines/iu-campus-hero.webp' : '/assets/philippines/icl-campus-hero.webp');
+      return quote.imageData(this.usdToCny, this.phpPerCny, this.exchangeRateDate, campus === 'IU' ? '/assets/philippines/iu-campus-hero.webp' : '/assets/philippines/icl-campus-hero.webp');
     }
     const settings = this.content.quoteImageSettings;
     const schoolCode = this.content.schoolCode;
@@ -509,7 +516,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     ];
     const base = buildPhilippinesDetailedQuote({
       schoolCode, schoolName, filePrefix: schoolCode, heroSrc, weeks: 4,
-      startDate: '2026-09-06', usdToCny: 6.71, totalUsd, fullFeeDetails: true, localFeeTableLayout: 'web',
+      startDate: '2026-09-06', usdToCny: this.usdToCny, totalUsd, fullFeeDetails: true, localFeeTableLayout: 'web',
       paymentItems: [
         ...corePaymentItems,
         ...(registrationWaiver ? [{ icon: '免', label: '免注册费', amount: `− ${this.previewMoney(registrationWaiver)} 美元`, note: settings.paymentNotes.registration, accent: true }] : []),
@@ -519,7 +526,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
           .map(item => ({ icon: '惠', label: item.name, amount: `− ${this.previewMoney(previewFixedAmount(item))} 美元`, note: this.promotionImageNote(item), accent: true })),
       ],
       localFeeItems,
-      localFeeTotal, localCurrencyName: '比索', localFeeCny: Math.round(localFeeTotal / 9.33566), localFeeNote: settings.localFeeIntro,
+      localFeeTotal, localCurrencyName: '比索', localFeeCny: Math.round(localFeeTotal / this.phpPerCny), localFeeNote: settings.localFeeIntro,
       optionalFeeItems: [...optionalFees.map(fee => ({
         label: fee.name,
         amount: fee.currency === 'USD'
@@ -530,13 +537,13 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
         cnyAmount: fee.currency === 'USD'
           ? '按实际选择计入学校美元应付'
           : fee.secondaryAmount
-          ? `约人民币 ${Math.round(fee.amount / 9.33566)}／${Math.round(fee.secondaryAmount / 9.33566)} 元`
-          : `约人民币 ${Math.round(fee.amount / 9.33566)} 元`,
+          ? `约人民币 ${Math.round(fee.amount / this.phpPerCny)}／${Math.round(fee.secondaryAmount / this.phpPerCny)} 元`
+          : `约人民币 ${Math.round(fee.amount / this.phpPerCny)} 元`,
         note: this.localFeeImageNote(fee),
       })), ...(isPhilinter ? this.imageSupplementalFeeRows.map((item, index) => ({
         label: item.label,
         amount: `${this.previewMoney(item.amount)} 比索`,
-        cnyAmount: `约人民币 ${Math.round(item.amount / 9.33566)} 元`,
+        cnyAmount: `约人民币 ${Math.round(item.amount / this.phpPerCny)} 元`,
         note: this.supplementalFeeImageNote(`extra-night-${index}`, `${this.previewMoney(item.amount)}比索／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。`),
       })) : []), ...(isIbreeze ? [
         {
@@ -552,7 +559,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       ] : [])], ruleNotes: [],
     });
     return applyEditableQuoteImageCopy({
-      ...applySchoolQuoteImageLayout(base, schoolCode, 4, '2026-09-06', totalUsd, 6.71),
+      ...applySchoolQuoteImageLayout(base, schoolCode, 4, '2026-09-06', totalUsd, this.usdToCny),
       headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE4周报价' : isBCebu ? "B'Cebu4周报价" : isCgSparta ? 'CG斯巴达校区4周报价' : isCgBanilad ? 'CG Banilad4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
@@ -710,7 +717,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       heroSrc: '/assets/philippines/monol-sparta/campus-building.webp',
       weeks: 4,
       startDate: '2026-09-20',
-      usdToCny: 6.71,
+      usdToCny: this.usdToCny,
       totalUsd: student.quoteUsd,
       paymentItems: [
         { icon: '注', label: '注册费', amount: `${this.previewMoney(student.registration)} 美元`, note: settings.paymentNotes.registration },
@@ -720,18 +727,18 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       localFeeItems,
       localFeeTotal,
       localCurrencyName: '比索',
-      localFeeCny: Math.round(localFeeTotal / 9.33566),
+      localFeeCny: Math.round(localFeeTotal / this.phpPerCny),
       localFeeNote: settings.localFeeIntro,
       optionalFeeItems: [
-        ...(deposit ? [{ label: deposit.name, amount: `${this.previewMoney(deposit.amount)} 美元`, cnyAmount: `约人民币 ${Math.round(deposit.amount * 6.71)} 元`, note: this.localFeeImageNote(deposit) }] : []),
-        ...(tvv ? [{ label: tvv.name, amount: `${this.previewMoney(tvv.amount)} 比索（条件恢复时）`, cnyAmount: `约人民币 ${Math.round(tvv.amount / 9.33566)} 元`, note: this.localFeeImageNote(tvv) }] : []),
+        ...(deposit ? [{ label: deposit.name, amount: `${this.previewMoney(deposit.amount)} 美元`, cnyAmount: `约人民币 ${Math.round(deposit.amount * this.usdToCny)} 元`, note: this.localFeeImageNote(deposit) }] : []),
+        ...(tvv ? [{ label: tvv.name, amount: `${this.previewMoney(tvv.amount)} 比索（条件恢复时）`, cnyAmount: `约人民币 ${Math.round(tvv.amount / this.phpPerCny)} 元`, note: this.localFeeImageNote(tvv) }] : []),
       ],
       ruleNotes: settings.footerNotes,
       fullFeeDetails: true,
       localFeeTableLayout: 'web',
     });
     return applyEditableQuoteImageCopy({
-      ...applySchoolQuoteImageLayout(quote, 'MONOL-SPARTA', 4, '2026-09-20', student.quoteUsd, 6.71),
+      ...applySchoolQuoteImageLayout(quote, 'MONOL-SPARTA', 4, '2026-09-20', student.quoteUsd, this.usdToCny),
       headingText: 'MONOL斯巴达校区 4周报价',
       paymentSectionTitle: settings.paymentSectionTitle,
       localFeeTitle: settings.localFeeSectionTitle,

@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
@@ -501,8 +502,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   stayPolicyTitle = this.defaultContentConfig.quoteSettings.stayPolicyTitle;
   stayPolicies: CiaStayPolicyCard[] = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.stayPolicies;
   extraNightRates: CiaExtraNightRate[] = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.extraNightRates;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRates = false;
   readonly weekOptions = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
@@ -560,8 +561,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
           ? `${this.formatPhp(rule.amount)}／${rule.secondaryLabel || '另一时段'}${this.formatPhp(rule.secondaryAmount)}`
           : this.formatPhp(total);
         const cnyAmount = rule.secondaryAmount
-          ? `约人民币 ${Math.round(rule.amount / this.phpPerCny).toLocaleString('zh-CN')}／${Math.round(rule.secondaryAmount / this.phpPerCny).toLocaleString('zh-CN')} 元`
-          : `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+          ? `约人民币 ${quoteCurrencyText(Math.round(rule.amount / this.phpPerCny), 'zh-CN')}／${quoteCurrencyText(Math.round(rule.secondaryAmount / this.phpPerCny), 'zh-CN')} 元`
+          : `约人民币 ${quoteCurrencyText(Math.round(total / this.phpPerCny), 'zh-CN')} 元`;
         const groupNote = rule.multiplyByStudents && count > 1 ? `（${count}人）` : '';
         return { label: rule.name, amount, cnyAmount, note: `${rule.note}${groupNote}` };
       });
@@ -2368,19 +2369,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadExchangeRates(): void {
-    this.exchangeRateService
-      .getLatestCnyRates()
-      .pipe(catchError(() => EMPTY))
-      .subscribe((rates) => {
-        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) {
-          return;
-        }
 
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-        this.usingLiveExchangeRates = true;
-      });
   }
 
   private loadPricingFromDatabase(): void {
@@ -3083,14 +3072,14 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get exchangeRateDateText(): string {
     if (!this.exchangeRateDate) {
-      return '备用参考值';
+      return '最新参考汇率待更新';
     }
 
     return this.exchangeRateDate.replace(/-/g, '/');
   }
 
   get exchangeRateSummary(): string {
-    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币（${this.usingLiveExchangeRates ? this.exchangeRateDateText : '备用参考值'}）`;
+    return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币（${this.usingLiveExchangeRates ? this.exchangeRateDateText : '最新参考汇率待更新'}）`;
   }
 
   get estimatedLocalFees(): LocalFeeEstimate[] { return groupLocalFees(this.activeStudents); }
@@ -3103,7 +3092,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny);
   }
 
-  formatPhp(value: number): string {
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${Math.round(value).toLocaleString('en-US')} 比索`;
   }
 
@@ -3130,7 +3119,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return rule ? `${100 - rule.discountValue}折` : '无固定折扣';
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 2,
@@ -3315,4 +3304,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private parseDate(value: string): Date {
     return new Date(`${value}T00:00:00`);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

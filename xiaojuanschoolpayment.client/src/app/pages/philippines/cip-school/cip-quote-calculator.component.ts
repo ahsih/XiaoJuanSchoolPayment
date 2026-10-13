@@ -1,5 +1,7 @@
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageCardData, QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -13,6 +15,11 @@ import { CipStudentQuote, cipGroupLocalFees } from './cip-student-quote';
   templateUrl: './cip-quote-calculator.component.html', styleUrl: './cip-quote-calculator.component.css',
 })
 export class CipQuoteCalculatorComponent {
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
+  exchangeRateDate = '';
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+
   quoteMode: 'single' | 'group' = 'single';
   studentCount = 2;
   readonly counts = Array.from({ length: 19 }, (_, i) => i + 2);
@@ -86,6 +93,8 @@ export class CipQuoteCalculatorComponent {
       paymentSectionTitle: '课程、住宿及注册费', paymentCurrencyLabel: '人民币', paymentItems: this.canExport ? this.paymentItems : [],
       totalLabel: '人民币主费合计', totalUsd: this.total === null ? '需顾问确认' : `${this.money(this.total)}元`, totalCny: '',
       totalIncludedLabel: '含所列课程、住宿及注册费', totalNote: this.budgetNote, expandTotalNote: true,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate },
+      localFeeCny: this.localTotal === null ? '' : '人民币预计金额：约 ' + quoteCurrencyText(Math.round(this.localTotal / this.phpPerCny)) + ' 元',
       localFeeTitle: '当地费用参考', localFeeAmount: this.localTotal === null ? '需顾问确认' : `${this.money(this.localTotal)}比索`,
       localFeeDescription: '按每位学员的签证、周数与住宿分别核算，不含可退押金、教材及接机。', localFeeNote: '实际费用按护照、签证及在菲停留情况由学校确认。',
       localFeeItems: this.localRows.map(row => ({ label: row.label, unit: `${this.money(row.amount / row.students.length)}比索／人`, quantity: `${row.students.length}人`, amount: `${this.money(row.amount)}比索`, note: `${this.feeScope(row.students)}；${row.note}` })),

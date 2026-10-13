@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -117,8 +118,8 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   stayPolicyTitle = this.initialContent.quoteSettings.stayPolicyTitle;
   stayPolicies = this.initialContent.quoteSettings.stayPolicies.map(item => ({ ...item }));
   localFeeIntro = this.initialContent.quoteSettings.localFeeIntro;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly maxQuoteWeeks = 24;
@@ -524,12 +525,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private loadExchangeRates(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -733,7 +729,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0); }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元人民币`; }
-  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'; }
   get discountText(): string {
     return this.discountPercent > 0 ? `课程费、住宿费和旺季附加费按${100 - this.discountPercent}%计费` : '当前没有百分比折扣';
   }
@@ -761,11 +757,11 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
     ];
   }
   get localFeesTotal(): number { return this.localFees.filter((fee) => !fee.excluded).reduce((sum, fee) => sum + fee.total, 0); }
-  get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  get localFeesCnyText(): string { return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
   get localFeeEstimateNote(): string {
     return this.localFeeIntro;
   }
-  readonly paymentDeadlineNote = '1、学费部分需在到校前2周交齐，可交由思达游学代收，或自行直接向学校转付美元；本报价单所列学校费用即为最终价格，人民币支付时按照支付宝实时汇率将美元换算为人民币结算。';
+  readonly paymentDeadlineNote = '1、学费部分需在到校前2周交齐，可交由思达游学代收，或自行直接向学校转付美元；本报价单所列学校费用即为最终价格，人民币支付时按照支付宝最新参考汇率将美元换算为人民币结算。';
   get registrationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.registration, 0); }
   get tuitionTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.tuition, 0); }
   get accommodationTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.accommodation, 0); }
@@ -840,7 +836,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
       localFeeNote: this.quoteImageSettings.localFeeIntro,
       optionalFeeItems: optionalFees.map((fee) => {
         const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? '';
-        return { label: fee.item, amount: this.formatPhp(fee.total), cnyAmount: `人民币预计约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
+        return { label: fee.item, amount: this.formatPhp(fee.total), cnyAmount: `人民币预计约 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note };
       }),
       ruleNotes: [...this.quoteRuleNotes, ...this.quoteImageSettings.footerNotes],
     });
@@ -876,8 +872,8 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
     const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || item.note.includes(rule.description));
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
-  formatUsd(value: number): string { const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 2 }); }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; return roundedValue.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(roundedValue) ? 0 : 1, maximumFractionDigits: 2 }); }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private parseLocalDate(value: string): Date | null { const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value); return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null; }
   private createCourseId(name: string): string {
@@ -905,4 +901,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
   private createRoomId(name: string): string { if (name.includes('四人间（上下铺）')) return 'quad-bunk'; if (name.includes('校外公寓单')) return 'off-campus-single'; if (name.includes('校外公寓双')) return 'off-campus-double'; if (name.includes('单人') || name.includes('单间')) return 'single'; if (name.includes('双人')) return 'double'; if (name.includes('三人')) return 'triple'; if (name.includes('四人')) return 'quad-bunk'; return this.slugifyPriceKey(name); }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

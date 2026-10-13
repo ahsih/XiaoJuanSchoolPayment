@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -130,8 +131,8 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = JIC_REGISTRATION_FEE;
   seasonalFeePerWeek = JIC_PEAK_FEE_PER_WEEK;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
@@ -427,16 +428,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService
-      .getLatestCnyRates()
-      .pipe(catchError(() => EMPTY))
-      .subscribe((rates) => {
-        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-        this.usingLiveExchangeRate = true;
-      });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -679,10 +671,10 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
-    return `参考汇率：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元，1元≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
+    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新';
+    return `参考汇率：1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元，1元≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
   }
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
@@ -694,7 +686,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       return {
         label: fee.name,
         amount: `${this.formatPhp(total)}${count > 1 && fee.multiplyByStudents !== false ? `（${this.formatPhp(fee.amount)}／人 × ${count}人）` : ''}`,
-        cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(total / this.phpPerCny), 'zh-CN')} 元`,
         note: this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note,
       };
     });
@@ -781,10 +773,10 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return fee ? this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note : fallback;
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -810,4 +802,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     if (name.includes('Premium') && name.includes('四人') && name.includes('带阳台')) return 'premium-quad-balcony';
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

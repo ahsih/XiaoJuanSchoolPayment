@@ -1,5 +1,7 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ExchangeRateService, CnyExchangeRateSnapshot, isUsableExchangeRates, unavailableRates } from '../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { QuoteImagePreviewComponent } from './quote-image-preview.component';
@@ -135,8 +137,9 @@ export interface QuoteImageCardData {
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent],
   template: `
-    <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving" (click)="handleButtonClick()">
-      <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ isSaving ? savingLabel : label }}
+    <p *ngIf="!ratesReady" role="status">最新参考汇率暂不可用，人民币金额待更新；汇率更新后可保存报价图片。</p>
+    <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving || !ratesReady" (click)="handleButtonClick()">
+      <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ !ratesReady ? '最新参考汇率待更新' : isSaving ? savingLabel : label }}
     </button>
 
     <p *ngIf="saveError && !isPreviewOpen" class="quote-email-message error" role="alert">{{ saveError }}</p>
@@ -353,6 +356,11 @@ export interface QuoteImageCardData {
   ],
 })
 export class QuoteImageDownloadButtonComponent implements OnDestroy {
+  private ratesSnapshot: CnyExchangeRateSnapshot = unavailableRates();
+  protected get ratesReady(): boolean { return isUsableExchangeRates(this.ratesSnapshot); }
+  private readonly rateSubscription = inject(ExchangeRateService).getLatestCnyRates().pipe(takeUntilDestroyed()).subscribe(r => {
+    this.ratesSnapshot = r;
+  });
   @Input({ required: true }) quote!: QuoteImageCardData;
   @Input() label = '保存报价单图片';
   @Input() savingLabel = '生成中...';
@@ -435,7 +443,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   }
 
   protected openEmailDialog(): void {
-    if (this.disabled || this.isSaving) {
+    if (this.disabled || this.isSaving || !this.ratesReady) {
       return;
     }
 
@@ -506,7 +514,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   }
 
   async saveQuoteImage(): Promise<void> {
-    if (this.disabled || this.destroyed || this.isSaving || !this.quote) {
+    if (this.disabled || this.destroyed || this.isSaving || !this.quote || !this.ratesReady) {
       return;
     }
 
@@ -547,6 +555,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   }
 
   private async createQuoteImageBlob(scaleOverride?: number): Promise<Blob> {
+    if (!this.ratesReady || /NaN|Infinity/.test(JSON.stringify(this.quote))) throw new Error('最新参考汇率暂不可用，请稍后重试。');
     const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
     const [logo, hero, consultantAssets] = await Promise.all([
       this.loadCanvasImage(this.useHighResolutionBrandHeader ? '/assets/sida-qihang-navbar-logo.jpg' : this.quote.logoSrc),
@@ -723,7 +732,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
 
   private withoutExchangeNote(text: string): string {
     return text.split(/(?<=。)/).filter(sentence =>
-      !(/汇率/.test(sentence) && /^(?:人民币|按实时汇率|参考汇率|汇率日期|暂按备用汇率|最终以支付当日汇率)/.test(sentence.trim())),
+      !(/汇率/.test(sentence) && /^(?:人民币|按最新参考汇率|参考汇率|汇率日期|暂按备用汇率|最终以支付当日汇率)/.test(sentence.trim())),
     ).join('').trim();
   }
 
@@ -733,7 +742,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       ? source.map(note => note.trim())
       : source.map(note => this.withoutExchangeNote(note));
     const notes = [...new Set(prepared.filter(note => note && !this.isGeneralConfirmation(note)))];
-    const exchangeNote = `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '本次采用备用汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`;
+    const exchangeNote = `${this.quote.conversionRates ? (this.quote.conversionRates.date ? `汇率日期：${this.quote.conversionRates.date}；` : '最新参考汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`;
     return [
       ...notes.filter(note => this.isDateMismatchNote(note)),
       ...notes.filter(note => !this.isDateMismatchNote(note)),
@@ -979,7 +988,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     context.fillText(this.quote.totalUsd, grid.amountRight, paymentRowTop + 39);
     context.textAlign = 'left';
     context.font = '900 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    const schoolRate = fullLayout && this.quote.conversionRates
+    const schoolRate = fullLayout && this.quote.paymentCurrencyLabel !== '人民币' && this.quote.conversionRates
       ? `参考汇率：1美元 ≈ ${this.quote.conversionRates.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币`
       : '';
     const totalNote = [schoolRate, fullLayout ? this.withoutExchangeNote(this.quote.totalNote ?? '') : this.quote.totalNote ?? ''].filter(Boolean).join('；');
@@ -1072,7 +1081,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       : '';
     context.fillText(this.quote.localFeeCny ?? '', grid.noteLeft, localRowTop + (fullLayout && !localRate ? 38 : 27));
     if (localRate) drawTableText(localRate, grid.noteLeft, localRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
-    if (!fullLayout) drawTableText('按实时汇率预估，实际以到校缴费为准', 438, localRowTop + 49, 530, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
+    if (!fullLayout) drawTableText('按最新参考汇率预估，实际以到校缴费为准', 438, localRowTop + 49, 530, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
 
     const optionalFees = (fullLayout ? this.quote.optionalFeeItems : this.quote.optionalFeeItems?.slice(0, 2)) ?? [];
     const optionalTop = localRowTop + 70;

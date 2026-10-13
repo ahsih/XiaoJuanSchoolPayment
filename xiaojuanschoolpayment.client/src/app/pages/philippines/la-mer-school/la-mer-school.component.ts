@@ -71,7 +71,7 @@ export class LaMerSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   scroll(id: string, event?: Event) { event?.preventDefault(); const el = this.host.nativeElement.querySelector<HTMLElement>(`#${id}`); if (el) { revealCiaPreviewElement(el); window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - 140, behavior: 'smooth' }); } }
   ngOnInit() {
     if (this.isEditorPreview) { try { const value = JSON.parse(sessionStorage.getItem('ev-lamer-content-preview') || 'null'); if (value?.schoolCode === 'EV-LAMER') { this.content = cloneLaMerContentConfig(value); this.previewReceived = true; } } catch {} }
-    this.subscriptions.add(this.exchange.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(r => { if (r.usdToCny > 0 && r.phpPerCny > 0) this.rates = { ...r, source: 'Frankfurter参考汇率' }; }));
+    this.subscriptions.add(this.exchange.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(r => { this.rates = { ...r, source: r.source || '最新参考汇率待更新' }; }));
     this.subscriptions.add(this.schoolService.getSchools({ name: 'La Mer' }).pipe(switchMap(schools => {
       const school = schools.find(s => isLaMerSchool(s.name)); if (!school?.id) return EMPTY;
       return forkJoin({ published: this.contentService.getPublished<CiaContentConfig>(school.id).pipe(catchError(() => of(null))),

@@ -197,4 +197,3 @@ export const ANJ_SIDA_DISCOUNT_RATE = 0.95;
 export const ANJ_SEASONAL_FEE_PER_WEEK = 40;
 export const ANJ_BIRTHDAY_DISCOUNT = 100;
 export const ANJ_BIRTHDAY_REGISTRATION_START = '2025-12-15';
-export const ANJ_PHP_PER_CNY = 9;

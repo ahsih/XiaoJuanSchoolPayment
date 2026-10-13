@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -180,8 +181,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 100;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = Array.from({ length: 24 }, (_, index) => index + 1);
@@ -587,13 +588,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
     this.loadPricingFromDatabase();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -859,8 +854,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       note: '按每位学生超出标准入住安排的实际晚数另计；多人共住及空房须向学校确认。',
     }];
   }
-  get localFeesCnyText(): string { return `人民币预计约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
-  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
+  get localFeesCnyText(): string { return `人民币预计约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
+  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '最新参考汇率待更新'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
   get quoteImageData() {
     return buildIuIclGroupImageData(
       this.activeStudents,
@@ -870,12 +865,15 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       '/assets/philippines/iu-campus-hero.webp',
     );
   }
-  formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${this.formatUsd(value)} 比索`; }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

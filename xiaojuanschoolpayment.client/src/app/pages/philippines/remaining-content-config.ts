@@ -93,7 +93,7 @@ const blueRooms: RoomSeed[] = [
 export const createDefaultBlueOceanContentConfig = (): CiaContentConfig => {
   const settings = image('Cebu Blue Ocean', {'registration-waiver':'所有通过思达启航报名的学生免收100美元注册费。','sida-95':'课程与住宿先计算95折，再扣学校固定优惠。','off-season':'每满4个非旺季课程周优惠150美元。','twelve-week':'课程累计满12周额外优惠100美元。','long-stay':'16周起按当前长期优惠档位自动计算。'}, {'payment:旺季附加费':'按每个重叠课程周40美元计算；Family Course除外。'});
   settings.footerNotes = [
-    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行实时汇率，把美元换算为人民币结算。',
+    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行最新参考汇率，把美元换算为人民币结算。',
     '2、学杂费是到菲律宾当地需要交纳的费用，是学校直接收取的，我们的报价只作为参考，因菲律宾政策变动当地费用可能会有浮动，具体以到校后收取的为准。',
   ];
   return base('BLUE-OCEAN', blueCourses, blueRooms, [

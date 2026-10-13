@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -58,8 +59,8 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
   readonly students: IuIclQuote[] = [this.quoteCalculator];
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -198,13 +199,7 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
     this.loadPricingFromDatabase();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(snapshot => {
-      if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -348,9 +343,9 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
       : '当前所有学生均按校方2026常规价计算；旺季常规课程与住宿享9折，淡季套餐不叠加9折。';
   }
   get localFeesTotal(): number { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
-  get quoteCnyText(): string { return `人民币预计约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
-  get localFeesCnyText(): string { return `人民币预计约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
-  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
+  get quoteCnyText(): string { return `人民币预计约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
+  get localFeesCnyText(): string { return `人民币预计约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
+  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '最新参考汇率待更新'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
   get optionalFees() {
     return this.quoteMode === 'single' ? this.quoteCalculator.optionalFees : [{
       ...this.quoteCalculator.optionalFees[0],
@@ -366,7 +361,7 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
       '/assets/philippines/icl-campus-hero.webp',
     );
   }
-  formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${this.formatUsd(value)} 比索`; }
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
@@ -386,7 +381,10 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`);
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { maximumFractionDigits: 0 });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

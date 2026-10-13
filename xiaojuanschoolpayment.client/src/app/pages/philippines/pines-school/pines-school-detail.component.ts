@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
@@ -130,8 +131,8 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
   promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
   quoteImageSettings: CiaQuoteImageSettings = this.initialContent.quoteImageSettings;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
@@ -791,16 +792,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService
-      .getLatestCnyRates()
-      .pipe(catchError(() => EMPTY))
-      .subscribe((rates) => {
-        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-        this.usingLiveExchangeRate = true;
-      });
+
   }
 
   private readSessionPreview(): CiaContentConfig | null {
@@ -1030,9 +1022,9 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币；1元人民币 ≈ ${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${this.usingLiveExchangeRate && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值'}）`;
+    return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币；1元人民币 ≈ ${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索（${this.usingLiveExchangeRate && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新'}）`;
   }
   get registrationNote(): string {
     return `一次性费用，100美元／人；所有通过思达报名的学生均免收，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`;
@@ -1086,14 +1078,14 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get estimatedLocalFeeCny(): number { return this.phpPerCny > 0 ? Math.round(this.estimatedLocalFeeTotal / this.phpPerCny) : 0; }
   get localFeeTotal(): number { return this.estimatedLocalFeeTotal; }
-  get localFeeCnyText(): string { return `人民币预计金额：约 ${this.estimatedLocalFeeCny.toLocaleString('zh-CN')} 元`; }
+  get localFeeCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(this.estimatedLocalFeeCny, 'zh-CN')} 元`; }
   get optionalFeeItems() {
     const campusDepositQuantity = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.quantity, 0);
     const campusDepositTotal = this.activeStudents.reduce((sum, student) => sum + student.campusDeposit.total, 0);
     const roomDeposit = this.localFeeRules.find(item => item.id === 'room-deposit' && item.enabled);
     const laundry = this.localFeeRules.find(item => item.id === 'laundry' && item.enabled);
     const roomDepositTotal = (roomDeposit?.amount ?? 0) * this.activeStudents.length;
-    const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    const cny = (value: number) => `约人民币 ${quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')} 元`;
     return [
       {
         label: '校内预存款', amount: this.formatPhp(campusDepositTotal), cnyAmount: cny(campusDepositTotal),
@@ -1109,7 +1101,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       }] : []),
     ];
   }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   previewFeeId(name: string): string {
     return this.localFeeRules.find(item => item.name === name)?.id ?? 'local-fees';
@@ -1206,7 +1198,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return [item.note, extra].filter(Boolean).filter((value, index, all) => all.indexOf(value) === index).join('；');
   }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 1 }); }
   campusCode(id: string): PinesCampusCode { return id.includes('ielts') ? 'ielts' : 'main'; }
   private slugifyPriceKey(value: string): string { return value.toLowerCase().replace(/&/g, 'and').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
   private orderIndex(order: string[], value: string): number { const index = order.indexOf(value); return index === -1 ? Number.MAX_SAFE_INTEGER : index; }
@@ -1242,4 +1234,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   private currencyCodeForDisplay(code?: string): string { return !code ? 'USD' : code.toUpperCase() === 'PESO' ? 'PHP' : code.toUpperCase(); }
   private formatCurrencyAmount(fee: SchoolFeeDTO): string { return `${this.currencyCodeForDisplay(fee.currencyCode)} ${fee.fee.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(fee.fee) ? 0 : 1, maximumFractionDigits: 1 })}`; }
   private cleanFeeDescription(description?: string): string { return description ? description.replace(/^到校支付费用；/, '').replace(/^前期支付费用；/, '') : '以学校现场收费为准'; }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

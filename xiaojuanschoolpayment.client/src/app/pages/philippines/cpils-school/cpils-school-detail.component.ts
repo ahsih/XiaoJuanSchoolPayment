@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { textbookPeriods } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
@@ -98,8 +99,8 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return 1 - (rule?.discountValue ?? 0) / 100;
   }
   seasonalFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = Array.from({ length: 24 }, (_, i) => i + 1);
@@ -335,12 +336,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -572,7 +568,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   get localFeePeriodLabel(): string { return this.quoteMode === 'single' ? `${this.quotePlan.stayWeeks}周` : `${this.activeStudents.length}人`; }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元`; }
-  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
+  get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'; }
   get studyEndDate(): string { return this.quotePlan.endDate; }
   get examBenefitText(): string {
     return this.currentPromotions.filter(rule => rule.id.includes('-exam-')).map(rule => rule.description).join('；');
@@ -689,7 +685,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return groupLocalFees(references).map(fee => ({ item: fee.item, amount: fee.quantity ? this.formatPhp(fee.total) : fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note, excluded: true }));
   }
   get localFeesTotal(): number { return this.includedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
-  get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  get localFeesCnyText(): string { return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
 
   private studentPaymentLines(student: CpilsStudentQuote): SchoolPaymentLine[] {
     const sidaRule = this.promotionRule('cpils-sida');
@@ -754,7 +750,7 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
       localFeeNote: settings.localFeeIntro,
-      optionalFeeItems: this.excludedLocalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: fee.note }; }),
+      optionalFeeItems: this.excludedLocalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元` : '', note: fee.note }; }),
       ruleNotes: settings.footerNotes,
     });
     const mismatchNotes = this.activeStudents.map((student, index) => student.quotePlan.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}` : '').filter(Boolean);
@@ -779,12 +775,15 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 }); }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US')} 比索`; }
   private roundMoney(value: number): number { return cpilsMoney(value); }
   private isDateBetween(value: string, start: string, end: string): boolean { return value >= start && value <= end; }
   private parseDate(value: string): Date | null {
     const parsed = new Date(`${value}T00:00:00Z`);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +22,6 @@ import {
   ANJ_CONTINUATION_PERIODS,
   ANJ_NEW_PROMOTION_PERIODS,
   ANJ_PEAK_SEASON_RANGES,
-  ANJ_PHP_PER_CNY,
   ANJ_REGISTRATION_FEE,
   ANJ_ROOMS,
   ANJ_SEASONAL_FEE_PER_WEEK,
@@ -138,8 +138,8 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private requestedStudentCount = 2;
   quoteCalculated = false;
 
-  usdToCny = 7.2;
-  readonly phpPerCny = ANJ_PHP_PER_CNY;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
 
@@ -530,12 +530,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -606,7 +601,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   get quoteUsd() { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText() { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText() { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get courseTableTitle() { return this.currentContentConfig.quoteSettings.courseTableTitle; }
   get courseTableNote() { return this.currentContentConfig.quoteSettings.courseTableNote; }
   get roomTableTitle() { return this.currentContentConfig.quoteSettings.roomTableTitle; }
@@ -698,7 +693,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
     const sharedDepositTotal = this.sharedRoomReservations.reduce((sum, reservation) => sum + reservation.room.deposit, 0);
     const depositTotal = standardDepositTotal + sharedDepositTotal;
-    const cny = (value: number) => `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    const cny = (value: number) => `约人民币 ${quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')} 元`;
     const laundry = this.localFeeRules.find(item => item.id === 'laundry' && item.enabled);
     return [
       {
@@ -724,7 +719,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get exchangeRateSummary() {
     const dollarRate = this.usingLiveExchangeRate && this.exchangeRateDate
       ? `美元按${this.exchangeRateDate.replace(/-/g, '/')}参考汇率` : '美元按备用参考汇率';
-    return `${dollarRate}1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币；当地费固定按1元人民币≈9比索参考。`;
+    return `${dollarRate}1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币；当地费按参考汇率1元人民币≈${quoteCurrencyText(this.phpPerCny)}比索估算。`;
   }
 
   get fourWeekStartingText() {
@@ -893,11 +888,11 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return parts.map(part => part?.trim()).filter(Boolean).join('；');
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
 
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
 
   formatDiscountTiers(discounts: Readonly<Partial<Record<number, number>>>): string {
@@ -943,4 +938,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
     return reservations.sort((a, b) => a.row.startDate.localeCompare(b.row.startDate) || a.room.name.localeCompare(b.room.name));
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

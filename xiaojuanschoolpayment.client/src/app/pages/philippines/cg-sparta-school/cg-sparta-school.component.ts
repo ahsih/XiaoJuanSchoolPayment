@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -192,8 +193,8 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get summerDateRange() { return this.peakSeasonRanges.filter(item => item.enabled).map(item => `${item.start.replace(/-/g, '/')}–${item.end.replace(/-/g, '/')}`).join('；'); }
   get offSeasonRuleText() { return this.promotionRules.filter(item => item.enabled && (item.id === 'cg-sparta-off-season' || item.id === 'cg-sparta-off-season-2027')).map(item => item.description).join('；') || '当前未启用淡季优惠'; }
   get longStayRuleText() { return this.promotionRules.find(item => item.id === 'cg-sparta-long-stay' && item.enabled)?.description ?? '当前未启用长期优惠'; }
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly maxQuoteWeeks = 52;
@@ -848,14 +849,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(
-      catchError(() => EMPTY),
-    ).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -1089,7 +1083,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get exchangeRateText(): string {
     return this.exchangeRateLive && this.exchangeRateDate
       ? `汇率日期 ${this.exchangeRateDate}`
-      : '暂按备用汇率估算';
+      : '最新参考汇率待更新';
   }
 
   get seasonalNote(): string {
@@ -1139,12 +1133,12 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   get localFeesCnyText(): string {
-    return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`;
   }
 
   get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
   get schoolPaymentItems(){const paid=this.activeStudents.filter(s=>s.registration>0).length;return [{icon:'注',label:'注册费',amount:`${this.formatUsd(this.payableRegistrationFee)} 美元`,note:`一次性费用，老学员返校免费；本次计收${paid}人 × ${this.registrationFee}美元${paid<this.activeStudents.length?'，其余已免':''}`},...groupPaymentLines(this.activeStudents,false)];}
-  get optionalFeeItems(){return this.excludedLocalFees.map(f=>{const rule=this.feeRule(f.item);const value=f.total||rule?.amount||0;return {label:f.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:f.note};});}
+  get optionalFeeItems(){return this.excludedLocalFees.map(f=>{const rule=this.feeRule(f.item);const value=f.total||rule?.amount||0;return {label:f.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${quoteCurrencyText(Math.round(value/this.phpPerCny), 'zh-CN')} 元`,note:f.note};});}
   get quoteImageData() {
     const planRows=(['课','宿'] as const).flatMap(icon=>this.activeStudents.flatMap((student,index)=>{
       const rows=[...(icon==='课'?student.quotePlan.courses:student.quotePlan.rooms)].sort((a,b)=>a.startDate.localeCompare(b.startDate));
@@ -1180,7 +1174,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
 
   get applicablePriceNote(): string { return ''; }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     const rounded = Math.round((value + Number.EPSILON) * 100) / 100;
     return rounded.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(rounded) ? 0 : 1,
@@ -1188,7 +1182,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  formatPhp(value: number): string {
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${value.toLocaleString('en-US')} 比索`;
   }
 
@@ -1208,4 +1202,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     const promotion=this.promotionRules.find(rule=>item.label.includes(rule.name)||(item.note??'').includes(rule.description));
     return promotion?{kind:'promotion',id:promotion.id}:{kind:'section',id:'quote-breakdown'};
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

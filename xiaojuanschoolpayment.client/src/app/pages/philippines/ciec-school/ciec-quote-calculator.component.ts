@@ -1,5 +1,7 @@
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageCardData, QuoteImageDownloadButtonComponent, QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
@@ -12,6 +14,11 @@ import { CIEC_CAMPAIGNS, CIEC_COURSES, CIEC_ROOMS, CIEC_POLICY_NOTES, CiecPerson
   styleUrls: ['../cip-school/cip-quote-calculator.component.css', './ciec-quote-calculator.component.css'],
 })
 export class CiecQuoteCalculatorComponent {
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
+  exchangeRateDate = '';
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+
   mode: 'single' | 'family' | 'group' = 'single';
   count = 2;
   readonly people = [new CiecPerson()];
@@ -105,8 +112,10 @@ export class CiecQuoteCalculatorComponent {
         { icon: '日', label: `${this.label(index)}日期`, value: `${person.plan.startDate} 至 ${person.plan.endDate} · ${person.plan.courseWeeks}周` },
       ]),
       paymentItems: this.canExport ? this.paymentItems : [], paymentSectionTitle: '学校费用明细', paymentCurrencyLabel: '美元',
-      totalLabel: '美元费用合计', totalUsd: this.total === null ? '待顾问确认' : `${this.money(this.total)}美元`, totalCny: '',
+      totalLabel: '美元费用合计', totalUsd: this.total === null ? '待顾问确认' : `${this.money(this.total)}美元`, totalCny: this.total === null ? '' : '人民币预计金额：约 ' + quoteCurrencyText(Math.round(this.total * this.usdToCny)) + ' 元',
       totalNote: '含所列课程、住宿、注册费及已选接机／监护费；比索费用另计。',
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate },
+      localFeeCny: this.localTotal === null ? '' : '人民币预计金额：约 ' + quoteCurrencyText(Math.round(this.localTotal / this.phpPerCny)) + ' 元',
       localFeeTitle: '到校后学杂费明细', localFeeAmount: this.localTotal === null ? '待顾问确认' : `${this.money(this.localTotal)}比索`,
       localFeeDescription: '按各成员分别核算；不含电费、可退押金与个人消费。', localFeeNote: '教材按实际购买、电费按实际用量结算。',
       localFeeItems: this.active.flatMap((person, index) => person.localIssues.length ? [{

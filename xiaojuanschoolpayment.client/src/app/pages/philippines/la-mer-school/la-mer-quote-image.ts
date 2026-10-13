@@ -7,7 +7,7 @@ import { LaMerFamilyQuote, LaMerStudentQuote, laMerMoney } from './la-mer-quote'
 import { LA_MER_HERO, LA_MER_SCHOOL_NAME } from './la-mer-content-config';
 
 export interface LaMerRates { usdToCny: number; phpPerCny: number; date?: string; source: string; }
-export const LA_MER_FALLBACK_RATES: LaMerRates = { usdToCny: 7.2, phpPerCny: 9, source: '备用汇率' };
+export const LA_MER_FALLBACK_RATES: LaMerRates = { usdToCny: Number.NaN, phpPerCny: Number.NaN, source: '最新参考汇率待更新' };
 export function buildLaMerQuoteImage(c: CiaContentConfig, students: LaMerStudentQuote[], family: LaMerFamilyQuote | null, rates: LaMerRates): QuoteImageCardData {
   const results = family ? [family.result] : students.map(s => s.result), first = results[0];
   const total = laMerMoney(results.reduce((n, r) => n + r.total, 0)), people = family ? family.people : students.length;

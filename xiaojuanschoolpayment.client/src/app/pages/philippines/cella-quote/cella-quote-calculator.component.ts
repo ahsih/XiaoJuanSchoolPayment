@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, inject } from '@angular/core';
@@ -71,8 +72,8 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   studentCount = 2;
   students: CellaStudentQuote[] = [];
   quoteCalculated = false;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
 
@@ -80,12 +81,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     this.applyContentConfig(this.readSessionPreview() ?? createDefaultCellaContentConfig(this.initialCampus));
     this.ensureStudents(2);
     this.loadPublishedContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -143,7 +139,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   get exchangeRateText(): string {
     return this.exchangeRateLive && this.exchangeRateDate
       ? `汇率日期：${this.exchangeRateDate}；1美元≈${this.usdToCny.toFixed(4)}人民币，1人民币≈${this.phpPerCny.toFixed(4)}比索`
-      : '实时汇率暂不可用，本次采用备用汇率：1美元≈7.2人民币，1人民币≈9比索';
+      : '最新参考汇率暂不可用，人民币换算待更新';
   }
 
   setQuoteMode(mode: QuoteMode): void {
@@ -250,7 +246,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
       : `${knownDeposits.map((value) => this.formatMoney(value)).join('／')} 比索`;
     const depositCny = depositNeedsConfirmation
       ? ''
-      : `约人民币 ${knownDeposits.map((value) => Math.round(value / this.phpPerCny).toLocaleString('zh-CN')).join('／')} 元`;
+      : `约人民币 ${knownDeposits.map((value) => quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')).join('／')} 元`;
     const items = [];
     if (this.hasRegularQuotes) {
       items.push(
@@ -325,7 +321,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     };
   }
 
-  formatMoney(value: number): string { return quoteMoney(value); }
+  formatMoney(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return quoteMoney(value); }
   formatDate(value: string): string { return value ? value.replace(/-/g, '/') : '待确认'; }
   courseOptionLabel(course: CellaCourse): string {
     const familyPackage = course.familyPackage;
@@ -381,4 +377,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     this.catalog.peakSeasonWeeklyFee = content.quoteSettings.peakSeasonFeePerWeek;
     for (const student of this.students) student.setCampus(this.initialCampus);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

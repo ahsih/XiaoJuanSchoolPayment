@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -97,8 +98,8 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   readonly weekOptions = [4, 6, 8, 12, 16, 20, 24];
@@ -297,13 +298,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-      this.usdToCny = rates.usdToCny;
-      this.phpPerCny = rates.phpPerCny;
-      this.exchangeRateDate = rates.date;
-      this.usingLiveExchangeRate = true;
-    });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -426,7 +421,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
   get exchangeRateSummary(): string {
-    return `${this.usingLiveExchangeRate ? `参考汇率日期 ${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币，1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索；以支付当日汇率为准。`;
+    return `${this.usingLiveExchangeRate ? `参考汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'}：1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币，1元人民币≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索；以支付当日汇率为准。`;
   }
   get localFees() {
     const grouped = groupLocalFees(this.activeStudents);
@@ -441,11 +436,11 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   get localFeeCny(): number { return Math.round(this.localFeeTotal / this.phpPerCny); }
   get optionalFeeItems(): QuoteImageOptionalFeeItem[] {
     return [
-      { label: '追加一对一（EEP / Infinity）', amount: '7,000 比索／4周', cnyAmount: `约人民币 ${Math.round(7000 / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: '按需申请；是否有名额及具体课程安排以学校为准。' },
-      { label: '追加一对一（IELTS）', amount: '8,000 比索／4周', cnyAmount: `约人民币 ${Math.round(8000 / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: '按需申请；是否有名额及具体课程安排以学校为准。' },
-      { label: '追加一对一（Junior）', amount: '9,000 比索／4周', cnyAmount: `约人民币 ${Math.round(9000 / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: '按需申请；年龄及课程安排须由学校确认。' },
-      { label: '追加团体课（EEP / Infinity）', amount: '5,000 比索／4周', cnyAmount: `约人民币 ${Math.round(5000 / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: '按需申请；是否开班以学校为准。' },
-      { label: '延住宿参考', amount: 'Share 1,000／其他2,000 比索／晚', cnyAmount: `约人民币 ${Math.round(1000 / this.phpPerCny).toLocaleString('zh-CN')}／${Math.round(2000 / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: '均不含餐；须确认延住空房。' },
+      { label: '追加一对一（EEP / Infinity）', amount: '7,000 比索／4周', cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(7000 / this.phpPerCny), 'zh-CN')} 元`, note: '按需申请；是否有名额及具体课程安排以学校为准。' },
+      { label: '追加一对一（IELTS）', amount: '8,000 比索／4周', cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(8000 / this.phpPerCny), 'zh-CN')} 元`, note: '按需申请；是否有名额及具体课程安排以学校为准。' },
+      { label: '追加一对一（Junior）', amount: '9,000 比索／4周', cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(9000 / this.phpPerCny), 'zh-CN')} 元`, note: '按需申请；年龄及课程安排须由学校确认。' },
+      { label: '追加团体课（EEP / Infinity）', amount: '5,000 比索／4周', cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(5000 / this.phpPerCny), 'zh-CN')} 元`, note: '按需申请；是否开班以学校为准。' },
+      { label: '延住宿参考', amount: 'Share 1,000／其他2,000 比索／晚', cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(1000 / this.phpPerCny), 'zh-CN')}／${quoteCurrencyText(Math.round(2000 / this.phpPerCny), 'zh-CN')} 元`, note: '均不含餐；须确认延住空房。' },
     ];
   }
 
@@ -504,7 +499,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
       headingText: this.quoteHeading,
       fileName: `${this.quoteHeading}-${this.selectedStartDate.replace(/-/g, '')}.png`,
       conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined },
-      exchangeRateText: `${this.usingLiveExchangeRate ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1元人民币≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索`,
+      exchangeRateText: `${this.usingLiveExchangeRate ? `参考汇率日期${this.exchangeRateDate}` : '最新参考汇率待更新'}：1元人民币≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索`,
       paymentSectionTitle: this.contentConfig.quoteImageSettings.paymentSectionTitle,
       localFeeTitle: this.contentConfig.quoteImageSettings.localFeeSectionTitle,
       serviceSectionTitle: this.contentConfig.quoteImageSettings.serviceSectionTitle,
@@ -546,10 +541,10 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     });
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private courseIdFromName(name: string): string {
     const value = name.toLowerCase();
@@ -567,4 +562,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     return index === -1 ? Number.MAX_SAFE_INTEGER : index;
   }
 
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

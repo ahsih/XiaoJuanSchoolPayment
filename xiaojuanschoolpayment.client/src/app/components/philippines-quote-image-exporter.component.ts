@@ -172,8 +172,9 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
   quote: QuoteImageCardData | null = null;
 
   private readonly destroyed$ = new Subject<void>();
-  private usdToCny = 0;
-  private phpPerCny = 0;
+  private usdToCny = Number.NaN;
+  private phpPerCny = Number.NaN;
+  private exchangeRateDate = "";
   private refreshTimer: number | undefined;
 
   private readonly documentInteractionHandler = (): void => this.scheduleRefresh(30);
@@ -196,6 +197,7 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
       .subscribe((rates) => {
         this.usdToCny = rates.usdToCny;
         this.phpPerCny = rates.phpPerCny;
+        this.exchangeRateDate = rates.date;
         this.scheduleRefresh(0);
       });
 
@@ -267,8 +269,8 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
       quoteSection.querySelector<HTMLElement>('.quote-result em')?.textContent ?? '',
     );
     const cnyAmount = this.usdToCny > 0
-      ? Math.round((totalMoney.value * this.usdToCny) / 100) * 100
-      : this.parseFirstNumber(displayedCny);
+      ? Math.round(totalMoney.value * this.usdToCny)
+      : Number.NaN;
     const fileSafeCode = schoolCode.replace(/[\\/:*?"<>|\s]+/g, '-');
 
     return {
@@ -295,8 +297,8 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
       totalUsd: `${this.formatNumber(totalMoney.value)} 美元`,
       totalCny: cnyAmount > 0
         ? `人民币预计金额：约 ${Math.round(cnyAmount).toLocaleString('zh-CN')} 元`
-        : '人民币预计金额：生成时按实时汇率核算',
-      totalNote: '按实时汇率预估，最终以支付当日汇率为准',
+        : '人民币预计金额：生成时按最新参考汇率核算',
+      totalNote: '按最新参考汇率预估，最终以支付当日汇率为准',
       localFeeTitle: `到校后${weeks}周学杂费明细参考（学校及政府相关部门收取）`,
       localFeeAmount: localFeeData.total > 0
         ? `₱${Math.round(localFeeData.total).toLocaleString('en-US')}`
@@ -309,8 +311,9 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
       localFeeCny:
         localFeeData.total > 0 && this.phpPerCny > 0
           ? `人民币预计金额：约 ${Math.round(localFeeData.total / this.phpPerCny).toLocaleString('zh-CN')} 元`
-          : '人民币预计金额：以实时汇率预估',
-      exchangeRateText: '按实时汇率预估',
+          : '人民币预计金额：以最新参考汇率预估',
+      exchangeRateText: `参考汇率（${this.exchangeRateDate}）：1美元≈${this.usdToCny}人民币，1人民币≈${this.phpPerCny}比索`,
+      conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate },
       optionalFeeItems: localFeeData.optionalItems,
       benefitItems: [
         { title: '0中介费', text: '学校合作价格，不额外加收服务费' },
@@ -327,11 +330,11 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
         },
       ],
       importantNotes: [
-        '人民币金额按实时汇率预估，最终以支付当日汇率为准。',
+        '人民币金额按最新参考汇率预估，最终以支付当日汇率为准。',
         '学杂费为到校后比索现金参考，实际以学校及相关部门收费为准。',
         `本报价最终以 ${schoolCode} 最新价格、空房、优惠及思达启航顾问确认为准。`,
       ],
-      note: `人民币金额按实时汇率预估；本报价最终以 ${schoolCode} 最新价格、空房、优惠及思达启航顾问确认为准。`,
+      note: `人民币金额按最新参考汇率预估；本报价最终以 ${schoolCode} 最新价格、空房、优惠及思达启航顾问确认为准。`,
       contact: {
         name: 'Jenny',
         phone: '132 4982 7686',

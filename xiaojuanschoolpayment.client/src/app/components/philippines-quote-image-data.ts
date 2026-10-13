@@ -65,7 +65,7 @@ export function buildPhilippinesDetailedQuote(
     totalLabel: '最终应付学校金额',
     totalUsd: `${input.fullFeeDetails ? input.totalUsd.toLocaleString('en-US', { maximumFractionDigits: 2 }) : formatUsd(input.totalUsd)} 美元`,
     totalCny: `人民币预计金额：约 ${quoteCny.toLocaleString('zh-CN')} 元`,
-    totalNote: '按实时汇率预估，最终以支付当日汇率为准',
+    totalNote: '按最新参考汇率预估，最终以支付当日汇率为准',
     localFeeTitle: `到校后${input.weeks}周学杂费明细参考（学校及政府相关部门收取）`,
     localFeeAmount: input.localCurrencyName
       ? `${input.localFeeTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} ${input.localCurrencyName}`
@@ -74,7 +74,7 @@ export function buildPhilippinesDetailedQuote(
     localFeeNote: input.localFeeNote,
     localFeeItems: input.fullFeeDetails ? input.localFeeItems : input.localFeeItems.slice(0, 10),
     localFeeCny: `人民币预计金额：约 ${input.localFeeCny.toLocaleString('zh-CN')} 元`,
-    exchangeRateText: '按实时汇率预估',
+    exchangeRateText: '按最新参考汇率预估',
     optionalFeeItems: input.fullFeeDetails ? input.optionalFeeItems : input.optionalFeeItems?.slice(0, 2),
     benefitItems: [
       { title: '0中介费', text: '学校合作价格，不额外加收服务费' },
@@ -94,7 +94,7 @@ export function buildPhilippinesDetailedQuote(
       ...(input.fullFeeDetails ? input.ruleNotes : input.ruleNotes.slice(0, 2)),
       `本报价最终以${input.schoolName}最新价格、空房、优惠及思达启航顾问确认为准。`,
     ],
-    note: `人民币金额按实时汇率预估；学杂费为到校后比索现金参考；最终以${input.schoolName}及相关部门实收为准。`,
+    note: `人民币金额按最新参考汇率预估；学杂费为到校后比索现金参考；最终以${input.schoolName}及相关部门实收为准。`,
     contact: {
       name: 'Jenny',
       phone: '132 4982 7686',

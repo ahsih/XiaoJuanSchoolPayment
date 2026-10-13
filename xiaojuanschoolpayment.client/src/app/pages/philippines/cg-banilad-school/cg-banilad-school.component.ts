@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
@@ -153,8 +154,8 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get summerDateRange() { return this.peakSeasonRanges.filter(item => item.enabled).map(item => `${item.start.replace(/-/g, '/')}—${item.end.replace(/-/g, '/')}`).join('；'); }
   get offSeasonRuleText() { return this.promotionRules.filter(item => item.enabled && (item.id === 'cg-banilad-off-season' || item.id === 'cg-banilad-off-season-2027')).map(item => item.description).join('；') || '当前未启用淡季优惠'; }
   get longStayRuleText() { return this.promotionRules.find(item => item.id === 'cg-banilad-long-stay' && item.enabled)?.description ?? '当前未启用长期优惠'; }
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions: WeekOption[] = [3, 4, 8, 12, 16, 20, 24];
@@ -532,14 +533,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(
-      catchError(() => EMPTY),
-    ).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -763,7 +757,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get exchangeRateText(): string {
     return this.exchangeRateLive && this.exchangeRateDate
       ? `汇率日期 ${this.exchangeRateDate}`
-      : '暂按备用汇率估算';
+      : '最新参考汇率待更新';
   }
 
   get fourWeekLightQuadText(): string {
@@ -827,7 +821,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   get localFeesCnyText(): string {
-    return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`;
   }
 
   get payableRegistrationFee(){return this.activeStudents.reduce((sum,s)=>sum+s.registration,0);}
@@ -839,7 +833,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     return this.excludedLocalFees.map(fee=>{
       const rule=this.feeRule(fee.item);
       const value=fee.total||rule?.amount||0;
-      return {label:fee.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${Math.round(value/this.phpPerCny).toLocaleString('zh-CN')} 元`,note:fee.note};
+      return {label:fee.item,amount:this.formatPhp(value),cnyAmount:`约人民币 ${quoteCurrencyText(Math.round(value/this.phpPerCny), 'zh-CN')} 元`,note:fee.note};
     });
   }
   get quoteImageData() {
@@ -897,14 +891,17 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${value.toLocaleString('en-US', {
       maximumFractionDigits: 2,
     })} 美元`;
   }
 
-  formatPhp(value: number): string {
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${value.toLocaleString('en-US')} 比索`;
   }
   formatFeeQuantity(value:number){return value.toLocaleString('zh-CN',{maximumFractionDigits:2});}
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }
