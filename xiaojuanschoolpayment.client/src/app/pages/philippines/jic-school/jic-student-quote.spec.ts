@@ -4,8 +4,9 @@ import {
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
 } from './jic-pricing';
-import { createDefaultJicContentConfig } from './jic-content-config';
+import { cloneJicContentConfig, createDefaultJicContentConfig } from './jic-content-config';
 import { JicStudentQuote } from './jic-student-quote';
+import { groupPaymentLines } from '../../../components/school-group-quote';
 
 describe('JicStudentQuote', () => {
   const prices = () => ({
@@ -155,7 +156,7 @@ describe('JicStudentQuote', () => {
     expect(premium.offSeasonDiscount).toBe(50);
   });
 
-  it('applies long-term tiers and waives registration for every twelve-week student', () => {
+  it('applies long-term tiers while keeping the Sida registration waiver', () => {
     const student = quote();
     student.selectedRegistrationDate = '2026-03-08';
     for (const [weeks, discount] of [[12, 300], [16, 400], [20, 500], [24, 600]] as const) {
@@ -165,13 +166,34 @@ describe('JicStudentQuote', () => {
     }
   });
 
-  it('charges a new short-term student once and waives a returning student', () => {
+  it('waives registration for every Sida student and identifies returning students separately', () => {
     const student = quote();
     setPlan(student, 4, '2026-09-06');
-    expect(student.registrationDiscount).toBe(0);
+    expect(student.registrationDiscount).toBe(100);
+    expect(student.registrationDiscountNote).toContain('思达启航');
+    const registrationLine = student.paymentLines.find((line) => line.promotionKey === 'jic-registration');
+    expect(registrationLine?.label).toBe('思达注册费减免');
+    expect(registrationLine?.value).toBe(-100);
     student.returningStudent = true;
     expect(student.registrationDiscount).toBe(100);
     expect(student.registrationDiscountNote).toContain('老学员');
+  });
+
+  it('shows the full waiver for both campuses and aggregates it in a group quote image', () => {
+    const challenger = quote();
+    const premium = quote();
+    premium.setCampus('premium');
+    premium.returningStudent = true;
+    setPlan(challenger, 4, '2026-09-06');
+    setPlan(premium, 4, '2026-09-06', 'premium-quad-no-balcony');
+
+    expect(challenger.registrationDiscount).toBe(100);
+    expect(premium.registrationDiscount).toBe(100);
+    const imageRows = groupPaymentLines([challenger, premium], true);
+    const registrationRow = imageRows.find((row) => row.promotionKey === 'jic-registration');
+    expect(registrationRow?.amount).toBe('− 200 美元');
+    expect(registrationRow?.note).toContain('学生1');
+    expect(registrationRow?.note).toContain('学生2');
   });
 
   it('calculates BESA by complete four-week blocks and does not apply it to extensions', () => {
@@ -242,6 +264,25 @@ describe('JicStudentQuote', () => {
     setPlan(student, 4, '2026-09-06');
     expect(student.localFees.find((item) => item.item === '水电费')?.total).toBe(3600);
     expect(student.registrationDiscount).toBe(125);
+  });
+
+  it('upgrades a published legacy registration rule to the universal Sida waiver', () => {
+    const legacy = createDefaultJicContentConfig();
+    const registration = legacy.quoteSettings.promotions.find((item) => item.ruleKind === 'jic-registration')!;
+    registration.name = '注册费优惠';
+    registration.description = '仅12周及以上学生免注册费。';
+    registration.minimumCourseWeeks = 12;
+    registration.enabled = false;
+    legacy.quoteImageSettings.paymentNotes.registration = '每名学生一次；符合条件时在优惠行抵扣';
+    legacy.campusQuoteImageSettings = undefined;
+
+    const upgraded = cloneJicContentConfig(legacy);
+    const upgradedRegistration = upgraded.quoteSettings.promotions.find((item) => item.ruleKind === 'jic-registration')!;
+    expect(upgradedRegistration.enabled).toBeTrue();
+    expect(upgradedRegistration.minimumCourseWeeks).toBe(0);
+    expect(upgradedRegistration.description).toContain('所有通过思达启航报名');
+    expect(upgraded.campusQuoteImageSettings?.['challenger']?.paymentNotes.registration).toContain('全额减免');
+    expect(upgraded.campusQuoteImageSettings?.['premium']?.paymentNotes.registration).toContain('全额减免');
   });
 
   it('stops applying an offer after an employee disables it', () => {

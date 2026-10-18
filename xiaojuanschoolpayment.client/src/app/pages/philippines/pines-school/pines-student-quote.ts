@@ -74,12 +74,14 @@ export class PinesStudentQuote {
       ? this.prices.courseFees.map((course) => ({
           id: course.id,
           name: course.name,
+          selectionLabel: `${course.id.includes('ielts') ? '雅思校区' : '主校区'}｜${course.name}`,
           details: stripCampusPrefix(course.suitable),
           group: campusGroup(course.id),
         }))
       : this.prices.roomFees.map((room) => ({
           id: room.id,
           name: stripCampusPrefix(room.name),
+          selectionLabel: `${room.id.includes('ielts') ? '雅思校区' : '主校区'}｜${stripCampusPrefix(room.name)}`,
           details: room.note,
           group: campusGroup(room.id),
         })),

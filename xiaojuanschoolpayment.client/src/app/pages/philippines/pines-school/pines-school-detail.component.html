@@ -320,7 +320,6 @@
                   <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
                 </div>
               </div>
-              <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
               <div class="group-result">
                 <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
                 <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
@@ -329,8 +328,10 @@
               <div class="group-actions">
                 <button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
                 <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+                <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" [previewBeforeDownload]="true" label="预览图片" icon="visibility" buttonClass="secondary-action"></app-quote-image-download-button>
                 <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
               </div>
+              <p class="fee-alert" role="alert" id="pines-quote-error" *ngIf="quoteError"><strong>暂时无法保存报价图片：</strong>{{ quoteError }}</p>
               <p class="fee-alert" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">2周课程费及住宿费按4周价的{{ shortStayRatios['2'] * 100 }}%计算，3周按{{ shortStayRatios['3'] * 100 }}%；4–24周按对应4周价格和实际周数等比例计算。雅思保证班每段至少选择8周或12周。</p>
               <p class="season-note">2027年旺季预计为2027/06/27–08/21，开始为周日、结束为周六；实际覆盖的每个学习周加收40美元。</p>
             </div>

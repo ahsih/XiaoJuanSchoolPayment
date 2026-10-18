@@ -662,9 +662,9 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return [
       {
         icon: '注',
-        label: '注册费',
+        label: '注册费原价',
         amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；符合条件时在“注册费优惠”行抵扣。`,
+        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；通过思达报名在“思达注册费减免”行全额抵扣，老学员返校免费。`,
       },
       ...groupPaymentLines(this.activeStudents, false),
     ];

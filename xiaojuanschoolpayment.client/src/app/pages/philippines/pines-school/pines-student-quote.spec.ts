@@ -36,6 +36,20 @@ const prices = {
 };
 
 describe('PinesStudentQuote', () => {
+  it('keeps the selected campus visible without changing payment names or bypassing campus validation', () => {
+    const quote = new PinesStudentQuote(prices);
+    const course = quote.quotePlan.options('course').find(item => item.id === 'ielts-regular')!;
+    const room = quote.quotePlan.options('room').find(item => item.id === 'ielts-sextuple')!;
+    expect(course.selectionLabel).toBe('雅思校区｜IELTS');
+    expect(room.selectionLabel).toContain('雅思校区｜');
+    expect(room.name).not.toContain('｜');
+    quote.quotePlan.courses[0].optionId = 'ielts-regular';
+    quote.quotePlan.rooms[0].optionId = 'main-sextuple';
+    expect(quote.quoteError).toContain('校区不一致');
+    quote.quotePlan.rooms[0].optionId = 'ielts-sextuple';
+    expect(quote.quoteError).toBe('');
+  });
+
   it('uses 65% for two weeks, 85% for three weeks and proportional rates from four weeks', () => {
     expect(pinesPriceMultiplier(2)).toBe(0.65);
     expect(pinesPriceMultiplier(3)).toBe(0.85);

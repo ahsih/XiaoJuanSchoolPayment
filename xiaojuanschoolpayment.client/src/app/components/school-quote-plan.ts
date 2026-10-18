@@ -2,7 +2,7 @@ import { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-downloa
 
 export type QuotePlanKind = 'course' | 'room';
 export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; occupant?: number; }
-export interface QuotePlanOption { id: string; name: string; details: string; group?: string; }
+export interface QuotePlanOption { id: string; name: string; details: string; group?: string; selectionLabel?: string; }
 
 export interface EditableQuoteImageCopySettings {
   paymentNotes: { registration: string; course: string; accommodation: string; promotion: string };
