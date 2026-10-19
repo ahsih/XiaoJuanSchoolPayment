@@ -332,10 +332,10 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       ...(waiver ? [{ label: waiver.name, amount: `− ${this.formatUsd(this.registrationCharge)} 美元`, note: waiver.description }] : []),
       { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: '按每位学生实际选择的课程和日期计算。' },
       { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: '按每位学生实际选择的房型和日期计算。' },
+      ...(total('longStayDiscount') ? [{ label: longStay?.name ?? '长期优惠', amount: `− ${this.formatUsd(total('longStayDiscount'))} 美元`, note: longStay?.description ?? '按各学生累计课程周数分别计算。' }] : []),
       ...(total('reporterDiscount') ? [{ label: reporter?.name ?? '记者活动优惠', amount: `− ${this.formatUsd(total('reporterDiscount'))} 美元`, note: reporter?.description ?? '只合并实际参加且符合条件学生的优惠金额。' }] : []),
       ...(total('offSeasonDiscount') ? [{ label: '淡季优惠', amount: `− ${this.formatUsd(total('offSeasonDiscount'))} 美元`, note: '成人85折、亲子9折；按各学生实际方案分别计算。' }] : []),
       ...(total('sidaDiscount') ? [{ label: sida?.name ?? '思达启航专属折扣', amount: `− ${this.formatUsd(total('sidaDiscount'))} 美元`, note: sida?.description ?? '课程及住宿在适用优惠后再享9折。' }] : []),
-      ...(total('longStayDiscount') ? [{ label: longStay?.name ?? '长期优惠', amount: `− ${this.formatUsd(total('longStayDiscount'))} 美元`, note: longStay?.description ?? '按各学生累计课程周数分别计算。' }] : []),
       ...(total('peakFee') ? [{ label: '旺季附加费', amount: `${this.formatUsd(total('peakFee'))} 美元`, note: '按各学生实际覆盖的旺季周数计算。' }] : []),
       ...(total('minorFee') ? [{ label: '未成年单独在校管理费', amount: `${this.formatUsd(total('minorFee'))} 美元`, note: '按各未成年学生年龄和住宿周数分别计算。' }] : []),
     ];

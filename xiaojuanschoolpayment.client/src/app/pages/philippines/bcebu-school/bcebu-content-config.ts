@@ -71,7 +71,7 @@ export const createDefaultBCebuContentConfig = (): CiaContentConfig => ({
       { id: 'bcebu-off-season-spring', name: '春季淡季优惠', description: '2026/2/16–6/29入学；成人课程及住宿85折，亲子9折。', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 15, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, arrivalStart: '2026-02-16', arrivalEnd: '2026-06-29', coverageTarget: 'none' },
       { id: 'bcebu-off-season-fall', name: '秋冬淡季优惠', description: '2026/8/17–12/28入学；成人课程及住宿85折，亲子9折。', enabled: true, sortOrder: 3, priority: 31, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 15, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, arrivalStart: '2026-08-17', arrivalEnd: '2026-12-28', coverageTarget: 'none' },
       { id: 'bcebu-family-off-season', name: '亲子淡季比例', description: '符合淡季入学日期的亲子方案按课程及住宿9折。', enabled: true, sortOrder: 4, priority: 32, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
-      { id: 'bcebu-sida-90', name: '思达启航专属折扣', description: '课程及住宿在记者、淡季优惠后再享9折。', enabled: true, sortOrder: 5, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+      { id: 'bcebu-sida-90', name: '思达启航专属折扣', description: '课程及住宿在长期、记者活动和淡季优惠后再享9折。', enabled: true, sortOrder: 5, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       { id: 'bcebu-long-stay', name: '长期优惠', description: BCEBU_LONG_STAY_NOTE, enabled: true, sortOrder: 6, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 50, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 8, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 100, coverageTarget: 'none' },
       { id: 'bcebu-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', enabled: true, sortOrder: 7, priority: 60, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
@@ -125,6 +125,10 @@ export const cloneBCebuContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteSettings.promotions.push(...structuredClone(
     defaults.quoteSettings.promotions.filter(rule => !savedPromotionIds.has(rule.id)),
   ));
+  const sidaRule = clone.quoteSettings.promotions.find(rule => rule.id === 'bcebu-sida-90');
+  if (sidaRule?.description === '课程及住宿在记者、淡季优惠后再享9折。') {
+    sidaRule.description = defaults.quoteSettings.promotions.find(rule => rule.id === 'bcebu-sida-90')!.description;
+  }
   clone.quoteSettings.promotions.sort((a, b) => a.sortOrder - b.sortOrder);
   clone.quoteSettings.stayPolicies ??= structuredClone(defaults.quoteSettings.stayPolicies);
   clone.quoteSettings.extraNightRates ??= [];

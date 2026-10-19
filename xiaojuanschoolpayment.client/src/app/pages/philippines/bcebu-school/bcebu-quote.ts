@@ -64,8 +64,6 @@ export class BCebuQuote {
   get reporterEligible() { const rule = this.promotion('bcebu-reporter'); return !!rule && !this.family && this.adultEligible && !!this.activeOffSeasonRule && this.plan.courseWeeks >= rule.minimumCourseWeeks; }
   get reporterDiscount() { return this.reporter && this.reporterEligible ? this.plan.courseWeeks * (this.promotion('bcebu-reporter')?.discountValue ?? 25) : 0; }
   get base() { return this.plan.total('course') + this.plan.total('room'); }
-  get offSeasonDiscount() { return money((this.base - this.reporterDiscount) * (1 - this.seasonRate)); }
-  get sidaDiscount() { return money((this.base - this.reporterDiscount - this.offSeasonDiscount) * ((this.promotion('bcebu-sida-90')?.discountValue ?? 10) / 100)); }
   get longStayDiscount() {
     const rule = this.promotion('bcebu-long-stay');
     if (!rule || this.plan.courseWeeks < rule.minimumCourseWeeks) return 0;
@@ -73,16 +71,21 @@ export class BCebuQuote {
     const step = Math.max(1, rule.incrementWeeks ?? 4), value = rule.incrementValue ?? 100;
     return value * (1 + Math.floor((this.plan.courseWeeks - 12) / step));
   }
+  // Confirmed order: long-stay, reporter, off-season percentage, then Sida percentage.
+  get percentageDiscountBase() { return Math.max(0, this.base - this.longStayDiscount - this.reporterDiscount); }
+  get offSeasonDiscount() { return money(this.percentageDiscountBase * (1 - this.seasonRate)); }
+  get sidaDiscount() { return money(Math.max(0, this.percentageDiscountBase - this.offSeasonDiscount) * ((this.promotion('bcebu-sida-90')?.discountValue ?? 10) / 100)); }
   get peakWeeks() { return (this.settings?.peakSeasonRanges.filter(range => range.enabled) ?? [{ start: '2026-07-05', end: '2026-08-15' }]).reduce((sum, range) => sum + this.plan.overlapWeeks(range.start, range.end), 0); }
   get peakFee() { return this.peakWeeks * (this.settings?.peakSeasonFeePerWeek ?? 40); }
   get minorRate() { return this.family || this.minorCare === 'none' ? 0 : this.minorCare === 'under15' ? this.settings?.minorManagementFeeUnder15PerWeek ?? 100 : this.settings?.minorManagementFeeAge15To17PerWeek ?? 50; }
   get minorFee() { return this.minorRate * this.plan.roomWeeks; }
   get payableRegistration() { return this.returningStudent || this.promotion('bcebu-registration-waiver')?.waiveRegistration ? 0 : this.registration(); }
-  get total() { return money(this.payableRegistration + Math.max(0, this.base - this.reporterDiscount - this.offSeasonDiscount - this.sidaDiscount - this.longStayDiscount) + this.peakFee + this.minorFee); }
+  get total() { return money(this.payableRegistration + Math.max(0, this.percentageDiscountBase - this.offSeasonDiscount - this.sidaDiscount) + this.peakFee + this.minorFee); }
   get prepaid() {
-    const off = money(this.base * (1 - this.seasonRate));
+    const percentageBase = Math.max(0, this.base - this.longStayDiscount);
+    const off = money(percentageBase * (1 - this.seasonRate));
     const sidaPercent = (this.promotion('bcebu-sida-90')?.discountValue ?? 10) / 100;
-    return money(this.payableRegistration + Math.max(0, this.base - off - money((this.base - off) * sidaPercent) - this.longStayDiscount) + this.peakFee + this.minorFee);
+    return money(this.payableRegistration + Math.max(0, percentageBase - off - money((percentageBase - off) * sidaPercent)) + this.peakFee + this.minorFee);
   }
   get refund() { return money(this.prepaid - this.total); }
   get settlementNote() {
@@ -141,10 +144,10 @@ export class BCebuQuote {
     return [
       { icon: '注', label: '注册费', amount: `${quoteMoney(this.registration())} 美元`, note: this.imageSettings.paymentNotes.registration ?? BCEBU_REGISTRATION_NOTE },
       { icon: '免', label: this.promotion('bcebu-registration-waiver')?.name ?? '免注册费优惠', amount: `− ${quoteMoney(this.registration())} 美元`, note: this.promotion('bcebu-registration-waiver')?.description ?? '通过思达报名免注册费', accent: true },
+      { icon: '长', label: longStay?.name ?? '长期优惠', amount: this.longStayDiscount ? `− ${quoteMoney(this.longStayDiscount)} 美元` : `未满${longStay?.minimumCourseWeeks ?? 8}周`, note: longStay?.description ?? BCEBU_LONG_STAY_NOTE, accent: this.longStayDiscount > 0 },
       { icon: '记', label: reporter?.name ?? '记者活动优惠', amount: this.reporterDiscount ? `− ${quoteMoney(this.reporterDiscount)} 美元` : '未参与', note: reporter?.description ?? `${BCEBU_PROMOTION_DATES}；${BCEBU_REPORTER_NOTE}`, accent: this.reporterDiscount > 0 },
       { icon: '淡', label: '淡季优惠', amount: this.offSeason ? `− ${quoteMoney(this.offSeasonDiscount)} 美元` : '不适用', note: `${offSeason.map(rule => rule.description).join('；')}${this.family ? '；本次按亲子计算，每位学员分别报价' : ''}`, accent: this.offSeason },
-      { icon: '思', label: sida?.name ?? '思达启航专属折扣', amount: `− ${quoteMoney(this.sidaDiscount)} 美元`, note: sida?.description ?? '课程及住宿在记者、淡季优惠后再享9折', accent: true },
-      { icon: '长', label: longStay?.name ?? '长期优惠', amount: this.longStayDiscount ? `− ${quoteMoney(this.longStayDiscount)} 美元` : `未满${longStay?.minimumCourseWeeks ?? 8}周`, note: longStay?.description ?? BCEBU_LONG_STAY_NOTE, accent: this.longStayDiscount > 0 },
+      { icon: '思', label: sida?.name ?? '思达启航专属折扣', amount: `− ${quoteMoney(this.sidaDiscount)} 美元`, note: sida?.description ?? '课程及住宿在长期、记者活动和淡季优惠后再享9折', accent: true },
       ...(this.peakFee ? [{ icon: '旺', label: '旺季附加费', amount: `${quoteMoney(this.peakFee)} 美元`, note: this.peakNote }] : []),
       ...(this.minorFee ? [{ icon: '管', label: '未成年单独在校管理费', amount: `${quoteMoney(this.minorFee)} 美元`, note: this.minorNote }] : []),
     ];
