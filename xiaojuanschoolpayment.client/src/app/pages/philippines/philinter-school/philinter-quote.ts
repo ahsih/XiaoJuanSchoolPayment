@@ -2,17 +2,20 @@ import { textbookGroups, textbookPeriods, textbookRuleQuantity } from '../school
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolVisaType } from '../../../components/school-group-quote';
 import { CiaLocalFeeRule, CiaPromotionRule, CiaQuoteSettings } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export const PHILINTER_AGE_RULE = '成人课程按就读当年度满18岁判断；未满18岁仅可报名Junior课程（12–17岁），须与已满18岁的监护人同住一间房，不可分房。';
 export const PHILINTER_FAMILY_RULE = '亲子预付定金500美元／人，属于学费预付款，不额外加收。';
 export const PHILINTER_WINTER_RULE = '寒假：校内宿舍需注册至少6周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
 export const PHILINTER_SUMMER_RULE = '就读区间只要部分涵盖暑假高峰：校内宿舍需注册至少8周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
 export const PHILINTER_PROMOTION = '活动期间为2026/08/16–12/25（最后一周可于12/26周六退房）。入住校内三人房、Azon单人房或Azon双人房，每完成8周课程优惠300美元：8–15周减300美元，16–23周减600美元，依此类推。适用于除IELTS保证班及TOEIC保证班外的所有课程；走读、校内单人房及校内双人房不参加。不得与其他校方优惠或Voucher并用；思达课程及住宿9折另计。';
-// Match Sunday arrival / Saturday departure and preserve the eight-week season.
+// Confirmed school-specific date. The former aligned 2027 estimate is kept
+// separately for audit/editor display and must not participate in quotes.
 export const PHILINTER_SUMMER_PERIODS = [
   { start: '2026-07-05', end: '2026-08-29', estimated: false },
-  { start: '2027-07-04', end: '2027-08-28', estimated: true },
 ] as const;
+export const PHILINTER_UNCONFIRMED_2027_SUMMER_PERIOD =
+  { start: '2027-07-04', end: '2027-08-28', estimated: true } as const;
 export const philinterMultiplier = (weeks: number, ratios: Record<string, number> = { '1': 0.45, '2': 0.65, '3': 0.85 }) => ratios[String(weeks)] ?? weeks / 4;
 export const nextPhilinterSunday = () => {
   const now = new Date();
@@ -87,9 +90,18 @@ export class PhilinterStudentCalculator {
   get base() { return this.plan.total('course') + this.plan.total('room'); }
   get sidaDiscount() { return Math.round(this.base * (this.sidaRule?.discountValue ?? 0)) / 100; }
   get schoolDiscount() { return this.schoolPromotionRule ? philinterPromotion(this.plan, this.schoolPromotionRule) : 0; }
-  get summerPeriods() { return this.quoteSettings().peakSeasonRanges.filter(period => period.enabled).map(period => ({ ...period, estimated: period.id.includes('2027') || period.label.includes('预估'), weeks: this.plan.overlapWeeks(period.start, period.end) })); }
-  get summerWeeks() { return this.summerPeriods.reduce((sum, period) => sum + period.weeks, 0); }
-  get summerSurcharge() { return this.summerWeeks * this.seasonalFeePerWeek(); }
+  get summerPeriods() { return this.quoteSettings().peakSeasonRanges.filter(period => period.enabled).map(period => ({ ...period, estimated: period.id.includes('2027') || period.label.includes('预估'), weeks: this.plan.overlapWeeks(period.start, period.end, [...this.plan.courses, ...this.plan.rooms]) })); }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'PHILINTER',
+      this.plan.weekStarts([...this.plan.courses, ...this.plan.rooms]),
+      this.quoteSettings().peakSeasonRanges.filter(period => period.enabled),
+      this.seasonalFeePerWeek(),
+    );
+  }
+  get summerWeeks() { return this.peakCalculation.weeks; }
+  get summerSurcharge() { return this.peakCalculation.total; }
+  get summerSurchargeNote() { return associationPeakBreakdownText(this.peakCalculation); }
   get totalUsd() { return Math.round(Math.max(0, this.registration + this.base - this.sidaDiscount - this.schoolDiscount + this.summerSurcharge) * 100) / 100; }
   get visaExtensions() { return this.longTermVisa ? 0 : Math.ceil(Math.max(0, this.plan.stayWeeks * 7 - this.initialVisaDays) / 30); }
   get roomDeposit() {

@@ -810,7 +810,6 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
     const ranges = [
       [new Date('2026-06-28T00:00:00'), new Date('2026-08-22T23:59:59')],
-      [new Date('2027-06-27T00:00:00'), new Date('2027-08-22T23:59:59')],
     ];
 
     return ranges.some(([from, to]) => start >= from && start <= to)

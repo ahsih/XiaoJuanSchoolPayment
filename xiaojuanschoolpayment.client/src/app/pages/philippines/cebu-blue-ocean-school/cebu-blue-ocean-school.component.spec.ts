@@ -2,6 +2,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolService } from '../../../../services/school.service';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
 import { CebuBlueOceanSchoolComponent } from './cebu-blue-ocean-school.component';
 
 describe('CebuBlueOceanSchoolComponent pricing', () => {
@@ -9,7 +11,11 @@ describe('CebuBlueOceanSchoolComponent pricing', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), { provide: SchoolService, useValue: {} }],
+      providers: [
+        provideHttpClient(),
+        { provide: SchoolService, useValue: {} },
+        { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
+      ],
     });
     component = TestBed.runInInjectionContext(
       () => new CebuBlueOceanSchoolComponent(),
@@ -104,13 +110,16 @@ describe('CebuBlueOceanSchoolComponent pricing', () => {
     const student = component.students[0];
 
     expect(student.peakWeeks).toBe(6);
-    expect(student.seasonalSurcharge).toBe(240);
+    expect(student.seasonalSurcharge).toBe(360);
     expect(student.offSeasonBlocks).toBe(3);
     expect(student.offSeasonDiscount).toBe(450);
     expect(student.twelveWeekDiscount).toBe(100);
     expect(student.longStayDiscount).toBe(150);
     expect(student.sidaDiscount).toBe(522.5);
-    expect(student.quoteUsd).toBe(9467.5);
+    expect(student.quoteUsd).toBe(9587.5);
+    const imageRow = component.quoteImageData.paymentItems.find(row => row.label === '旺季附加费');
+    expect(imageRow?.amount).toBe('360 美元');
+    expect(imageRow?.note).toContain('60美元／周 × 6周');
   });
 
   it('uses cumulative visa-extension estimates for 30- and 59-day visas', () => {
@@ -138,9 +147,7 @@ describe('CebuBlueOceanSchoolComponent pricing', () => {
     expect(component.quotePlan.courses.length).toBe(2);
     expect(component.quotePlan.rooms.length).toBe(2);
     expect(component.quotePlan.courses[1].startDate).toBe('2027-10-03');
-    expect(component.quotePlan.end(component.quotePlan.courses[1])).toBe(
-      '2027-10-30',
-    );
+    expect(component.quotePlan.end(component.quotePlan.courses[1])).toBe('2027-11-27');
 
     component.studentCount = 20;
     component.setQuoteMode('group');
@@ -164,7 +171,7 @@ describe('CebuBlueOceanSchoolComponent pricing', () => {
     expect(image.appendFinalConfirmationNote).toBeFalse();
     expect(image.localFeeNote).toBe('');
 
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = image;
     const renderedNotes = (renderer as unknown as {
       quoteFooterNotes(): string[];

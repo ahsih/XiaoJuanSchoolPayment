@@ -1,10 +1,10 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
+import { of } from 'rxjs';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { PhilinterSchoolDetailComponent } from './philinter-school-detail.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
@@ -25,7 +25,7 @@ describe('PHILINTER supplied catalog and quote rules', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
-      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
       { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
@@ -51,13 +51,13 @@ describe('PHILINTER supplied catalog and quote rules', () => {
       expect(c.quoteUsd).toBeCloseTo(120 + 1600 * ratio * 0.9, 2);
     });
   });
-  it('matches the eight-week 26,700 peso example and separates optional payments', () => {
+  it('matches the current eight-week local-fee rules and separates optional payments', () => {
     setPlan(8, '2026-09-06');
-    expect(c.localFeesTotal).toBe(26700);
+    expect(c.localFeesTotal).toBe(28700);
     expect(c.visaExtensionCount).toBe(0);
     c.initialVisaDays = 30;
     expect(c.visaExtensionCount).toBe(1);
-    expect(c.localFeesTotal).toBe(37920);
+    expect(c.localFeesTotal).toBe(39920);
     expect(c.localFees.filter(row => row.item.endsWith('ARP外国人登记')).reduce((sum, row) => sum + row.total, 0)).toBe(300);
     expect(c.optionalFeeItems[2].amount).toBe('3,000 比索');
     expect(c.optionalFeeItems[0].amount).toBe('0 比索');
@@ -202,7 +202,7 @@ describe('PHILINTER supplied catalog and quote rules', () => {
   });
   it('renders the complete Philinter quote image preview as a PNG', async () => {
     setPlan(8, '2026-11-01');
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = c.quoteImageData;
 
     const dataUrl = await renderer.createPreviewDataUrl(0.5);
@@ -210,11 +210,11 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(dataUrl).toMatch(/^data:image\/png;base64,/);
   });
   it('renders the Philinter employee-editor preview as a PNG', async () => {
-    const editor = new AdminSchoolQuoteImageComponent({} as any, {} as any, {} as any, {} as any, {} as any);
+    const editor = TestBed.runInInjectionContext(() => new AdminSchoolQuoteImageComponent({} as any, {} as any, {} as any, {} as any, {} as any));
     editor.selectedSchool = { id: 'philinter', name: '菲律宾宿务Philinter语言学校' } as any;
     editor.content = createDefaultPhilinterContentConfig();
     editor.previewQuote = (editor as any).buildPreviewQuote();
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = editor.previewQuote;
 
     const dataUrl = await renderer.createPreviewDataUrl(0.5);
@@ -233,14 +233,14 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.optionalFeeItems[0].amount).toBe('2,700 比索');
     expect(c.optionalFeeItems[0].note).toContain('2人选择接机');
   });
-  it('keeps summer surcharges without blocking short stays', () => {
+  it('keeps the historical 2027 estimate disabled instead of inventing dates', () => {
     expect(c.quoteError).toBe('');
     expect(c.policyNotes.join(' ')).not.toContain('至少8周');
-    setPlan(4, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(160);
+    setPlan(4, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(0);
     c.quotePlan.rooms[0].optionId = 'azon-twin'; expect(c.quoteError).toBe('');
-    setPlan(3, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(120);
+    setPlan(3, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(0);
   });
-  it('keeps both summer seasons at eight weeks from Sunday through Saturday', () => {
+  it('keeps the confirmed 2026 summer at eight weeks from Sunday through Saturday', () => {
     for (const period of PHILINTER_SUMMER_PERIODS) {
       const start = Date.parse(`${period.start}T00:00:00Z`), end = Date.parse(`${period.end}T00:00:00Z`);
       expect(new Date(start).getUTCDay()).toBe(0);
@@ -252,16 +252,16 @@ describe('PHILINTER supplied catalog and quote rules', () => {
       expect(c.quoteUsd).toBe(120 + 3200 * 0.9 + 320);
     }
   });
-  it('charges only overlapping course weeks at summer boundaries and across separate rows', () => {
-    for (const [start, weeks] of [['2027-06-27', 0], ['2027-07-04', 1], ['2027-08-22', 1], ['2027-08-29', 0]] as const) {
+  it('charges each unique course or accommodation week once at summer boundaries and across separate rows', () => {
+    for (const [start, weeks] of [['2026-06-28', 0], ['2026-07-05', 1], ['2026-08-23', 1], ['2026-08-30', 0]] as const) {
       setPlan(1, start); expect(c.peakSeasonWeeks).toBe(weeks);
     }
-    setPlan(10, '2027-06-27'); expect(c.peakSeasonWeeks).toBe(8);
-    setPlan(4, '2027-06-27'); c.quotePlan.add('course');
-    c.quotePlan.courses[1].startDate = '2027-08-08';
-    expect(c.peakSeasonWeeks).toBe(6);
-    expect(c.seasonalSurcharge).toBe(240);
-    expect(c.quoteImageData.paymentItems.find(row => row.label === '暑期附加费')?.note).toContain('实际覆盖暑期周数');
+    setPlan(10, '2026-06-28'); expect(c.peakSeasonWeeks).toBe(8);
+    setPlan(4, '2026-06-28'); c.quotePlan.add('course');
+    c.quotePlan.courses[1].startDate = '2026-08-09';
+    expect(c.peakSeasonWeeks).toBe(8);
+    expect(c.seasonalSurcharge).toBe(320);
+    expect(c.quoteImageData.paymentItems.find(row => row.label === '暑期附加费')?.note).toContain('40美元／周');
     c.quotePlan.courses = [{ id: 1, optionId: 'light-esl', weeks: 4, startDate: '2027-05-30' }];
     c.quotePlan.rooms[0].startDate = '2027-07-04';
     expect(c.seasonalSurcharge).toBe(0);

@@ -108,6 +108,7 @@
             <div class="group-result btes-quote-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small class="exchange-rate-summary">{{ exchangeRateSummary }}</small><small *ngIf="quoteCalculated">已按当前选择重新核算；正式报名仍须确认房型、名额及学校最终账单。</small></div>
             <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a></div>
             <p class="season-note">优惠顺序：老学员或ALL IN ONE免重复注册费；符合淡季时只取个人或团体一档，再对优惠后的普通课程与住宿计算思达95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
+            <p class="season-note"><strong>2027旺季附加费：</strong>CALA成员校统一费率为60美元／周；BTES具体旺季日期尚待学校确认，当前报价不会自动计收。</p>
           </div>
         </section>
 

@@ -30,13 +30,14 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { EMPTY, of } from 'rxjs';
+import { of } from 'rxjs';
 import { SchoolContentService } from '../../../services/school-content.service';
 import { SchoolService } from '../../../services/school.service';
-import { ExchangeRateService } from '../../../services/exchange-rate.service';
+import { chinaToday, ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolQuotePlan, QuotePlanKind, quoteMoney } from '../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
 import { TargetStudentQuote } from './target-school/target-student-quote';
+import { associationPeakRateForWeek, calculateAssociationPeakSurcharge } from './association-peak-surcharge';
 const schools = [
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolDetailComponent(); p.quotePlan.courses[0].optionId = 'pre-ielts'; p.quotePlan.rooms[0].optionId = 'ielts-quad'; return p; } },
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
@@ -98,7 +99,7 @@ describe('confirmed common quote rules across completed routes', () => {
     provideRouter([]), provideHttpClient(), provideHttpClientTesting(),
     { provide: SchoolService, useValue: { getSchools: () => of([]) } },
     { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
-    { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+    { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
     { provide: ActivatedRoute, useValue: { snapshot: { data: {}, queryParamMap: { get: () => null }, paramMap: { get: () => null } }, data: of({}), queryParams: of({}) } },
     { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
   ] }));
@@ -214,7 +215,9 @@ describe('confirmed common quote rules across completed routes', () => {
   for (const factory of [() => new CellaQuoteCalculatorComponent(), () => new EnglishMintSchoolComponent()]) it('renders split course/room amounts into a real PNG without internal algorithms', async () => {
     const page = initialize(factory), plan = planOf(page);
     split(plan, 'course', [4]); split(plan, 'room', [1,3]);
-    const quote = page.quoteImageData, renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = quote;
+    const quote = page.quoteImageData;
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
+    renderer.quote = quote;
     const drawn = spyOn(CanvasRenderingContext2D.prototype,'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
     expect(blob.type).toBe('image/png'); expect(blob.size).toBeGreaterThan(10000);
@@ -238,5 +241,31 @@ describe('confirmed common quote rules across completed routes', () => {
     editor.updateStartDate('room',0,'2026-11-09',input);
     expect(plan.startDate).toBe('2026-11-08');
     expect(input.value).toBe('2026-11-08');
+  });
+});
+
+describe('BESA/CALA 2027 peak-surcharge policy', () => {
+  const sunday = (value: string) => Date.parse(`${value}T00:00:00Z`);
+  const ranges = [
+    { start: '2026-06-28', end: '2026-08-22', enabled: true },
+    { start: '2027-07-04', end: '2027-08-28', enabled: true },
+  ];
+
+  it('keeps 2026 at USD 40 and changes confirmed 2027 weeks to USD 60', () => {
+    expect(associationPeakRateForWeek('EV', '2026-07-05', 999)).toBe(40);
+    expect(associationPeakRateForWeek('EV', '2027-07-04', 40)).toBe(60);
+    expect(calculateAssociationPeakSurcharge('EV', [sunday('2026-07-05')], ranges, 40).total).toBe(40);
+    expect(calculateAssociationPeakSurcharge('EV', [sunday('2027-07-04')], ranges, 40).total).toBe(60);
+  });
+
+  it('charges only unique overlapping weeks across course and accommodation segments', () => {
+    const weeks = [sunday('2027-06-27'), sunday('2027-07-04'), sunday('2027-07-04'), sunday('2027-07-11'), sunday('2027-08-29')];
+    const result = calculateAssociationPeakSurcharge('CELLA-UNI', weeks, ranges, 40);
+    expect(result.weeks).toBe(2);
+    expect(result.total).toBe(120);
+  });
+
+  it('leaves non-association schools on their configured rate', () => {
+    expect(calculateAssociationPeakSurcharge('CIA', [sunday('2027-07-04')], ranges, 47).total).toBe(47);
   });
 });

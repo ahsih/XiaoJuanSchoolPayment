@@ -505,11 +505,20 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     return `${period.start.replace(/-/g, '/')}（周日）–${period.end.replace(/-/g, '/')}（周六）${period.estimated ? '，参照2026年同为8周预估' : ''}`;
   }
   get summerSurchargeRule() {
-    return `暑期附加费${this.seasonalFeePerWeek}美元／周，按课程覆盖周数计收。${this.peakSeasonRanges.filter(period => period.enabled).map(period => this.summerPeriodLabel(period)).join('；')}。`;
+    return `2026年暑期附加费40美元／周；2027年起在学校确认具体档期后按60美元／周。${this.peakSeasonRanges.filter(period => period.enabled).map(period => this.summerPeriodLabel(period)).join('；')}。同一周课程与住宿只计一次。`;
   }
   get peakSeasonWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.summerWeeks, 0); }
+  get peakSeasonBreakdownText() {
+    const totals = new Map<number, number>();
+    for (const student of this.activeStudents) {
+      for (const item of student.calculator.peakCalculation.breakdown) {
+        totals.set(item.rate, (totals.get(item.rate) ?? 0) + item.weeks);
+      }
+    }
+    return [...totals.entries()].map(([rate, weeks]) => `${rate}美元／周 × ${weeks}人周`).join('；');
+  }
   get summerSurchargeNote() {
-    return `${this.summerPeriods.filter(period => period.weeks > 0).map(period => this.summerPeriodLabel(period)).join('；')}；${this.peakSeasonWeeks}周×${this.seasonalFeePerWeek}美元。`;
+    return `${this.summerPeriods.filter(period => period.weeks > 0).map(period => this.summerPeriodLabel(period)).join('；')}；按各学生适用年度费率计算，共${this.peakSeasonWeeks}人周。`;
   }
   get seasonalSurcharge() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.summerSurcharge, 0); }
   get quoteUsd() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0); }
@@ -546,7 +555,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.reduce((sum, student) => sum + student.calculator.registration, 0))} 美元`, note: `一次性费用，老学员返校免费；本次计收${newStudents}人${newStudents < this.activeStudents.length ? `，${this.activeStudents.length - newStudents}人免收` : ''}。` },
       ...(sidaRule ? [{ icon: '折', label: sidaRule.name, amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: sidaRule.description, accent: true }] : []),
       ...(schoolRule ? [{ icon: '淡', label: schoolRule.name, amount: `${this.offSeasonDiscountAmount ? '− ' : ''}${this.formatUsd(this.offSeasonDiscountAmount)} 美元`, note: schoolDiscountNote, accent: this.offSeasonDiscountAmount > 0 }] : []),
-      ...(this.seasonalSurcharge ? [{ icon: '旺', label: '暑期附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `按各学生实际覆盖暑期周数计收，共${this.peakSeasonWeeks}人周；不限制最低学习周数。` }] : []),
+      ...(this.seasonalSurcharge ? [{ icon: '旺', label: '暑期附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.peakSeasonBreakdownText}；同一周课程与住宿只计一次，不参与优惠。` }] : []),
     ];
   }
   get visaExtensionCount() { return this.calculator.visaExtensions; }

@@ -1,6 +1,7 @@
 import { QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import {
   ANJ_BIRTHDAY_DISCOUNT,
   ANJ_BIRTHDAY_REGISTRATION_START,
@@ -41,7 +42,6 @@ export interface AnjQuotePrices {
   sidaDiscountShare?: (student: AnjStudentQuote, exactDiscount: number) => number;
 }
 
-const DAY = 86_400_000;
 const rounded = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 const localToday = () => {
   const date = new Date();
@@ -175,15 +175,16 @@ export class AnjStudentQuote {
     return this.prices.sidaDiscountShare?.(this, exactDiscount) ?? rounded(exactDiscount);
   }
 
-  get peakWeeks(): number {
-    return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) => this.prices.peakSeasonRanges.some((range) => {
-      const start = this.quotePlan.date(range.start);
-      const end = this.quotePlan.date(range.end);
-      return start !== null && end !== null && week <= end && week + 6 * DAY >= start;
-    })).length;
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'ANJ',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      this.prices.peakSeasonRanges,
+      this.prices.seasonalFeePerWeek,
+    );
   }
-
-  get seasonalSurcharge() { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   get quoteUsd() {
     return Math.max(0, rounded(
@@ -193,11 +194,11 @@ export class AnjStudentQuote {
   }
 
   get paymentLines(): SchoolPaymentLine[] {
-    const peakRanges = this.prices.peakSeasonRanges.filter((range) => this.quotePlan.overlapWeeks(range.start, range.end, this.quotePlan.courses) > 0);
+    const peakRanges = this.prices.peakSeasonRanges.filter((range) => this.quotePlan.overlapWeeks(range.start, range.end, [...this.quotePlan.courses, ...this.quotePlan.rooms]) > 0);
     return [
       ...(this.seasonalSurcharge ? [{
         icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
-        note: `${this.prices.seasonalFeePerWeek}美元／学习周 × ${this.peakWeeks}周；${peakRanges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；不参与优惠`,
+        note: `${associationPeakBreakdownText(this.peakCalculation)}；${peakRanges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；同一周课程与住宿只计一次，不参与优惠`,
       }] : []),
       { icon: '免', label: '思达免注册费', value: -this.registrationDiscount, note: `通过思达报名，免收一次性${this.prices.registrationFee}美元注册费`, promotionKey: 'registration' },
       {

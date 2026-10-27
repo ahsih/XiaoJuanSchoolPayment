@@ -286,7 +286,8 @@
             <div class="risk-note"><mat-icon>warning_amber</mat-icon>日期、比例和优惠会改变最终金额，发布时需要管理员再次确认。</div>
             <div class="field-grid two">
               <label data-editor-section="quote-registration" (focusin)="focusEditorItem('section', 'quote-registration')">注册费（美元）<input type="number" min="0" [(ngModel)]="content.quoteSettings.registrationFee" /></label>
-              <label *ngIf="supportsPeakSeason" (focusin)="focusEditorItem('section', 'quote-season')">旺季附加费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.peakSeasonFeePerWeek" /></label>
+              <label *ngIf="supportsPeakSeason && !usesAssociationPeakRatePolicy" (focusin)="focusEditorItem('section', 'quote-season')">旺季附加费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.peakSeasonFeePerWeek" /></label>
+              <div *ngIf="supportsPeakSeason && usesAssociationPeakRatePolicy" class="risk-note" (focusin)="focusEditorItem('section', 'quote-season')"><mat-icon>verified</mat-icon><span>协会统一费率：2026年及以前40美元／周，2027年起60美元／周。费率已锁定；下方只维护学校确认的旺季日期。</span></div>
               <label *ngIf="isEvSelected || isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">未成年管理费（美元/4周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeePerPeriod" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">周日接机（美元）<input type="number" min="0" [(ngModel)]="content.quoteSettings.airportPickupSundayUsd" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">周六接机（美元）<input type="number" min="0" [(ngModel)]="content.quoteSettings.airportPickupSaturdayUsd" /></label>

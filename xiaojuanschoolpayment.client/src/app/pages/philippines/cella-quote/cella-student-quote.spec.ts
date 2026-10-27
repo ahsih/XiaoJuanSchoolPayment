@@ -46,6 +46,18 @@ describe('CellaStudentQuote', () => {
     expect(quote.lowSeasonDiscount).toBe(0);
   });
 
+  it('keeps 2026 at 40 dollars and charges confirmed 2027 weeks at 60 dollars', () => {
+    const in2026 = uniQuote(4, '2026-07-05');
+    const in2027 = uniQuote(4, '2027-07-04');
+
+    expect(in2026.peakSeasonWeeks).toBe(4);
+    expect(in2026.peakSeasonSurcharge).toBe(160);
+    expect(in2026.peakSeasonNote).toBe('40美元／周 × 4周');
+    expect(in2027.peakSeasonWeeks).toBe(4);
+    expect(in2027.peakSeasonSurcharge).toBe(240);
+    expect(in2027.peakSeasonNote).toBe('60美元／周 × 4周');
+  });
+
   it('counts complete eligible weeks even when the stay starts before the campaign', () => {
     const quote = uniQuote(6, '2026-08-16');
 

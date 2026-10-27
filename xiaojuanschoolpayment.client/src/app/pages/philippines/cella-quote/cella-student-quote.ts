@@ -13,6 +13,7 @@ import {
 import { SchoolQuotePlan, QuotePlanRow } from '../../../components/school-quote-plan';
 
 import type { CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 const DAY_MS = 86_400_000;
 
@@ -22,6 +23,7 @@ export interface CellaQuoteCatalog {
   rooms: CellaRoom[];
   registrationFee: number;
   peakSeasonWeeklyFee: number;
+  peakSeasonRanges?: ReadonlyArray<{ start: string; end: string; enabled?: boolean }>;
 }
 
 export interface CellaCalculatedLocalFee {
@@ -156,13 +158,23 @@ export class CellaStudentQuote {
     return 0;
   }
 
-  get peakSeasonWeeks(): number {
-    if (this.isFamilyPackage) return 0;
-    return this.countOverlappingWeeks('2026-07-05', '2026-08-29')
-      + this.countOverlappingWeeks('2027-07-04', '2027-08-28');
+  get peakSeasonCalculation() {
+    if (this.isFamilyPackage) return { weeks: 0, total: 0, breakdown: [] };
+    const start = this.dateValue(this.startDate);
+    const weekStarts = start === null ? [] : Array.from({ length: this.actualWeeks }, (_, index) => start + index * 7 * DAY_MS);
+    return calculateAssociationPeakSurcharge(
+      this.campus === 'uni' ? 'CELLA-UNI' : 'CELLA-PREMIUM',
+      weekStarts,
+      this.catalog.peakSeasonRanges ?? [
+        { start: '2026-07-05', end: '2026-08-29' },
+        { start: '2027-07-04', end: '2027-08-28' },
+      ],
+      this.catalog.peakSeasonWeeklyFee,
+    );
   }
-
-  get peakSeasonSurcharge(): number { return this.peakSeasonWeeks * this.catalog.peakSeasonWeeklyFee; }
+  get peakSeasonWeeks(): number { return this.peakSeasonCalculation.weeks; }
+  get peakSeasonSurcharge(): number { return this.peakSeasonCalculation.total; }
+  get peakSeasonNote(): string { return associationPeakBreakdownText(this.peakSeasonCalculation); }
   get minorManagementFee(): number { return !this.isFamilyPackage && this.minorManagementSelected ? this.actualWeeks * 25 : 0; }
 
   get schoolTotal(): number {

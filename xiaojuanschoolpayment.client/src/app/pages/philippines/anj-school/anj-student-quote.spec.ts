@@ -101,9 +101,9 @@ describe('AnjStudentQuote', () => {
     expect(quote.quoteUsd).toBe(3182.5);
   });
 
-  it('counts the full eight-week peak period in both aligned years', () => {
+  it('keeps the confirmed 2026 peak and does not invent an unconfirmed 2027 period', () => {
     expect(quoteAt('2026-06-28', 8).peakWeeks).toBe(8);
-    expect(quoteAt('2027-06-27', 8).peakWeeks).toBe(8);
+    expect(quoteAt('2027-06-27', 8).peakWeeks).toBe(0);
   });
 
   it('uses the selected initial tourist-visa duration for extensions', () => {

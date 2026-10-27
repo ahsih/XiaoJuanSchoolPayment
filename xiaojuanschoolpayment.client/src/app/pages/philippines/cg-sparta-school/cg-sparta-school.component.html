@@ -283,6 +283,7 @@
           <p class="fee-alert" *ngIf="quoteError">{{quoteError}}</p>
           <div class="quote-result"><span>最终应付学校金额</span><strong>{{quoteUsdText}}</strong><em>人民币预计金额：{{quoteCnyText}}</em><small>参考汇率：1美元 ≈ {{usdToCny}}元人民币（{{exchangeRateText}}）</small></div>
           <div class="quote-actions"><button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError">立即计算我的费用<mat-icon>calculate</mat-icon></button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a></div>
+          <p class="season-note"><strong>旺季附加费：</strong>2026/07/05–08/30按40美元／周；2027年起为60美元／周，但CG Sparta具体日期尚待学校确认，当前不会自动计收2027旺季费。同一周课程与住宿只计一次，附加费不参与优惠。</p>
         </section>
         <section class="local-fee-estimate" id="local-fees" data-cia-preview-kind="section" data-cia-preview-id="local-fees"
           [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">

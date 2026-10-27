@@ -3,6 +3,7 @@ import { SchoolQuotePlan, QuotePlanRow } from '../../../components/school-quote-
 import { SCHOOL_VISA_OPTIONS, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { CgVisaType, estimateCgLocalFees } from '../cg-local-fees';
 import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 interface SpartaPrices {
   courseOptions:{id:string;name:string;lessons:string;tuitionUsd:number}[];
@@ -58,14 +59,15 @@ export class CgSpartaStudentQuote {
   }
   get offSeasonDiscount(){return this.p.promotionRules.filter(rule=>rule.enabled&&(rule.id==='cg-sparta-off-season'||rule.id==='cg-sparta-off-season-2027')).reduce((total,rule)=>total+this.coursePeriods.filter(x=>(!rule.coverageStart||x.startDate>=rule.coverageStart)&&(!rule.coverageEnd||x.startDate<=rule.coverageEnd)).reduce((s,x)=>s+Math.floor(x.weeks/Math.max(1,rule.incrementWeeks??rule.minimumCourseWeeks??4))*(rule.incrementValue??rule.discountValue),0),0);}
   get longStayDiscount(){const rule=this.promotion('cg-sparta-long-stay');if(!rule)return 0;const step=Math.max(1,rule.incrementWeeks??4),increment=rule.incrementValue??0,cap=rule.discountValue+3*increment;return this.coursePeriods.reduce((sum,period)=>period.weeks<rule.minimumCourseWeeks?sum:sum+Math.min(cap,rule.discountValue+Math.floor((period.weeks-rule.minimumCourseWeeks)/step)*increment),0);}
-  get summerWeeks(){return this.p.peakSeasonRanges.filter(range=>range.enabled).reduce((sum,range)=>sum+this.quotePlan.overlapWeeks(range.start,range.end,[...this.quotePlan.courses,...this.quotePlan.rooms]),0);}
-  get summerSurcharge(){return this.summerWeeks*this.p.summerFeePerWeek;}
+  get summerCalculation(){return calculateAssociationPeakSurcharge('CG-SPARTA',this.quotePlan.weekStarts([...this.quotePlan.courses,...this.quotePlan.rooms]),this.p.peakSeasonRanges.filter(range=>range.enabled),this.p.summerFeePerWeek);}
+  get summerWeeks(){return this.summerCalculation.weeks;}
+  get summerSurcharge(){return this.summerCalculation.total;}
   get quoteUsd(){return Math.max(0,rounded(this.registration+this.packageFee-this.sidaDiscount+this.summerSurcharge-this.offSeasonDiscount-this.longStayDiscount));}
   get paymentLines():SchoolPaymentLine[]{return [
     ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-sparta-sida-90')?.name??'思达折扣',value:-this.sidaDiscount,note:this.promotion('cg-sparta-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
     ...(this.offSeasonDiscount?[{icon:'淡',label:this.promotion('cg-sparta-off-season')?.name??'淡季优惠',value:-this.offSeasonDiscount,note:this.p.promotionRules.filter(rule=>rule.enabled&&(rule.id==='cg-sparta-off-season'||rule.id==='cg-sparta-off-season-2027')).map(rule=>rule.description).join('；'),promotionKey:'offseason'}]:[]),
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-sparta-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-sparta-long-stay')?.description??'',promotionKey:'longstay'}]:[]),
-    ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.p.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${this.p.summerFeePerWeek}美元／周／人 × ${this.summerWeeks}周；不参与9折`}]:[]),
+    ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.p.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${associationPeakBreakdownText(this.summerCalculation)}；同一周课程与住宿只计一次，不参与优惠`}]:[]),
   ];}
   get localFees(){return estimateCgLocalFees(this.quotePlan.stayWeeks,false,this.quotePlan.roomWeeks,this.visaType,this.p.localFeeRules,this.quotePlan.startDate,this.textbookCount,this.textbookUnitPrice).fees;}
   warning(row:QuotePlanRow){

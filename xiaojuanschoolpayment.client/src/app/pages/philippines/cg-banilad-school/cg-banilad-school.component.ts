@@ -746,7 +746,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
   get summerWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.summerWeeks,0); }
 
   get summerSurcharge(): number {
-    return this.summerWeeks * this.summerFeePerWeek;
+    return this.activeStudents.reduce((sum, student) => sum + student.summerSurcharge, 0);
   }
 
   get quoteCnyText(): string {

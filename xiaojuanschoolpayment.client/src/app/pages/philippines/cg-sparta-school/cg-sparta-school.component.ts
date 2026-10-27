@@ -1065,7 +1065,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   get summerWeeks(): number { return this.activeStudents.reduce((sum,s)=>sum+s.summerWeeks,0); }
 
   get summerSurcharge(): number {
-    return this.summerWeeks * this.summerFeePerWeek;
+    return this.activeStudents.reduce((sum, student) => sum + student.summerSurcharge, 0);
   }
 
   get quoteUsd(): number { return this.activeStudents.reduce((sum,s)=>sum+s.quoteUsd,0); }

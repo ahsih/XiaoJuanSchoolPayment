@@ -2,6 +2,7 @@ import { textbookGroups, textbookType } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import {
   JIC_DEFAULT_START_DATE,
   JIC_WEEK_OPTIONS,
@@ -27,7 +28,6 @@ interface JicQuotePrices {
   rules?: JicQuoteRules;
 }
 
-const DAY = 86_400_000;
 const money = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 const SHORT_STAY_MULTIPLIERS: Record<number, number> = { 1: 0.4, 2: 0.65, 3: 0.85 };
 const durationMultiplier = (weeks: number): number => SHORT_STAY_MULTIPLIERS[weeks] ?? weeks / 4;
@@ -104,13 +104,19 @@ export class JicStudentQuote {
   }
 
   get fourWeekBlocks(): number { return Math.floor(Math.min(this.courseWeeks, this.roomWeeks) / 4); }
-  get peakWeeks(): number {
+  get peakCalculation() {
     const ranges = this.prices.rules?.peakSeasonRanges.filter(range => range.enabled) ?? [
       { id: 'fallback', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
     ];
-    return ranges.reduce((sum, range) => sum + this.quotePlan.overlapWeeks(range.start, range.end), 0);
+    return calculateAssociationPeakSurcharge(
+      'JIC',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      ranges,
+      this.prices.seasonalFeePerWeek,
+    );
   }
-  get seasonalSurcharge(): number { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get seasonalSurcharge(): number { return this.peakCalculation.total; }
 
   get longTermEligible(): boolean {
     const rule = this.promotion('jic-long-term');
@@ -204,7 +210,7 @@ export class JicStudentQuote {
 
   get paymentLines(): SchoolPaymentLine[] {
     return [
-      { icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: this.peakWeeks ? `实际覆盖${this.peakWeeks}个已启用旺季课程周 × ${this.prices.seasonalFeePerWeek}美元；优惠不抵扣旺季费。` : '当前课程日期未覆盖已启用旺季。' },
+      { icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: this.peakWeeks ? `${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，优惠不抵扣旺季费。` : '当前日期未覆盖已启用旺季。' },
       { icon: '免', label: '思达注册费减免', value: -this.registrationDiscount, note: this.registrationDiscountNote, promotionKey: 'jic-registration' },
       { icon: '淡', label: this.offSeasonRule?.name ?? '淡季优惠', value: -this.offSeasonDiscount, note: this.offSeasonNote, promotionKey: this.offSeasonRule?.id ?? 'jic-off-season-none' },
       { icon: '长', label: '长期优惠', value: -this.longTermDiscount, note: this.longTermNote, promotionKey: 'jic-long-term' },

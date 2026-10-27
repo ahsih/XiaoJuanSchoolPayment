@@ -315,6 +315,7 @@
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认报价</a>
             </div>
+            <p class="season-note"><strong>2027旺季附加费：</strong>BESA成员校统一费率为60美元／周；MONOL斯巴达校区具体旺季日期尚待学校确认，当前报价不会自动计收。</p>
             <div class="quote-general-notes">
               <strong>报价说明</strong>
               <ul><li *ngFor="let note of quoteGeneralNotes">{{ note }}</li></ul>

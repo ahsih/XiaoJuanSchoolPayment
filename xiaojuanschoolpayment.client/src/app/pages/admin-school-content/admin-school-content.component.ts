@@ -30,6 +30,7 @@ import {
   createDefaultCiaContentConfig,
 } from '../philippines/cia-school/cia-content-config';
 import { CIA_PREVIEW_SECTIONS, CiaPreviewKind, CiaPreviewTarget, isCiaPreviewTarget } from '../philippines/cia-school/cia-content-preview';
+import { isAssociationPeakSchool } from '../philippines/association-peak-surcharge';
 import {
   clonePinesContentConfig,
   createDefaultPinesContentConfig,
@@ -418,6 +419,7 @@ export class AdminSchoolContentComponent implements OnInit {
   get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
   get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isMonolSpartaSelected && !this.isGlcSelected; }
+  get usesAssociationPeakRatePolicy(): boolean { return isAssociationPeakSchool(this.schoolCode); }
   get currentPublicPath(): string {
     if (this.isLaMerSelected) return LA_MER_PATH;
     if (this.isMonolSpartaSelected) return this.publicMonolSpartaPath;

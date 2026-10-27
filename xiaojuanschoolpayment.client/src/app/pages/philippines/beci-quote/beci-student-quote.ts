@@ -2,6 +2,7 @@ import { textbookGroups, textbookPeriods as countTextbookPeriods, textbookRuleQu
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import {
   BECI_OFF_SEASON_RANGES,
   BECI_PEAK_RANGES,
@@ -23,7 +24,6 @@ export interface BeciQuoteRules {
   localFees: CiaLocalFeeRule[];
 }
 
-const DAY = 86400000;
 const rounded = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 
 function nextSunday(): string {
@@ -129,17 +129,16 @@ export class BeciStudentQuote {
     return promotion?.discountTiers?.[String(this.quotePlan.courseWeeks)] ?? 0;
   }
 
-  get peakWeeks(): number {
-    return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) =>
-      this.peakRanges.some((range) => {
-        const start = this.quotePlan.date(range.start)!;
-        const end = this.quotePlan.date(range.end)!;
-        return week <= end && week + 6 * DAY >= start;
-      }),
-    ).length;
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'BECI',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      this.peakRanges,
+      this.rules?.peakSeasonFeePerWeek ?? 40,
+    );
   }
-
-  get peakSurcharge(): number { return this.peakWeeks * (this.rules?.peakSeasonFeePerWeek ?? 40); }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get peakSurcharge(): number { return this.peakCalculation.total; }
 
   get quoteUsd(): number {
     return Math.max(0, rounded(
@@ -169,7 +168,7 @@ export class BeciStudentQuote {
     });
     if (this.peakSurcharge > 0) result.push({
       icon: '旺', label: '碧瑶旺季附加费', value: this.peakSurcharge,
-      note: `${quoteMoney(this.rules?.peakSeasonFeePerWeek ?? 40)}美元／课程重叠周 × ${this.peakWeeks}周；不参与折扣。`,
+      note: `${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与折扣。`,
     });
     return result;
   }

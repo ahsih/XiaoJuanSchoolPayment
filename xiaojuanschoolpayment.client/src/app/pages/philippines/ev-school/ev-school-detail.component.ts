@@ -717,13 +717,13 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   trackQuoteList(_index: number, list: { kind: QuoteListKind }): string { return list.kind; }
   get tuitionForSelectedWeeks(): number { return this.courseQuoteRows.reduce((sum, row) => sum + row.amount, 0); }
   get roomFeeForSelectedWeeks(): number { return this.roomQuoteRows.reduce((sum, row) => sum + row.amount, 0); }
-  get discountBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks + this.seasonalSurcharge; }
+  get discountBase(): number { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get discountAmount(): number { return this.discountBase * (1 - this.discount); }
   get discountedCourseAndRoom(): number { return this.discountBase * this.discount; }
   get peakSeasonWeeks(): number { return this.calculator.peakWeeks; }
   get isPeakSeason(): boolean { return this.peakSeasonWeeks > 0; }
-  get seasonalSurcharge(): number { return this.peakSeasonWeeks * this.seasonalFeePerWeek; }
-  get seasonalFeePerFourWeeks(): number { return this.seasonalFeePerWeek * 4; }
+  get seasonalSurcharge(): number { return this.calculator.peakSurcharge; }
+  get seasonalFeePerFourWeeks(): number { return (this.calculator.peakCalculation.breakdown[0]?.rate ?? this.seasonalFeePerWeek) * 4; }
   get minorManagementPeriods(): number { return this.isMinorStudent ? Math.ceil(this.totalWeeks / 4) : 0; }
   get minorManagementFee(): number { return this.minorManagementPeriods * this.minorManagementFeePerPeriod; }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.calculator.totalUsd, 0); }
@@ -731,7 +731,7 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
   get quoteCnyText(): string { const rounded = Math.round(this.quoteUsd * this.usdToCny); return `约 ${rounded.toLocaleString('zh-CN')} 元人民币`; }
   get exchangeRateText(): string { return this.exchangeRateLive && this.exchangeRateDate ? `参考汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'; }
   get discountText(): string {
-    return this.discountPercent > 0 ? `课程费、住宿费和旺季附加费按${100 - this.discountPercent}%计费` : '当前没有百分比折扣';
+    return this.discountPercent > 0 ? `课程费和住宿费按${100 - this.discountPercent}%计费；旺季附加费不参与折扣` : '当前没有百分比折扣';
   }
   get localFeePeriods(): number { return Math.max(1, Math.ceil(this.roomTotalWeeks / 4)); }
   get textbookPeriods(): number { return Math.max(1, Math.ceil(this.totalWeeks / 4)); }
@@ -775,8 +775,8 @@ export class EvSchoolDetailComponent implements OnInit, AfterViewInit, OnDestroy
     const discountRule = this.promotionRules.find(item => item.id === 'ev-sida-95' && item.enabled);
     const returningRule = this.promotionRules.find(item => item.id === 'ev-returning-registration');
     const peakNote = this.peakTotal
-      ? `${this.peakSeasonDateRange}，按各学生实际覆盖周数计收。`
-      : `当前方案未覆盖旺季；2027年旺季为${this.peakSeasonDateRange}，适用时每周${this.formatUsd(this.seasonalFeePerWeek)}美元。`;
+      ? `${this.peakSeasonDateRange}，按各学生实际覆盖周数计收；2027年60美元／周，同一周课程与住宿只计一次，不参与折扣。`
+      : `当前方案未覆盖旺季；2027年旺季为${this.peakSeasonDateRange}，适用时每周60美元。`;
     const minorNote = this.minorTotal
       ? `${minors}名未成年学生适用；每4周${this.minorManagementFeePerPeriod}美元，不足4周按一期。`
       : `当前方案无未成年学生；未满18岁时每4周${this.minorManagementFeePerPeriod}美元，不足4周按一期。`;

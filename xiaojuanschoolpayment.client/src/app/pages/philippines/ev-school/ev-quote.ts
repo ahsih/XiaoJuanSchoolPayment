@@ -2,12 +2,12 @@ import { textbookGroups, textbookRuleQuantity } from '../school-textbook-estimat
 import { SchoolVisaType } from '../../../components/school-group-quote';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export interface EvCoursePrice { id: string; name: string; tuition: number; suitable: string; }
 export interface EvRoomPrice { id: string; name: string; fee: number; note: string; }
 export interface EvLocalFee { item: string; unitLabel: string; quantity: number; total: number; note: string; }
 
-const DAY = 86_400_000;
 export const EV_PEAK_SEASONS = [
   { start: '2027-07-04', end: '2027-08-28', label: '2027/07/04–2027/08/28' },
 ] as const;
@@ -63,14 +63,22 @@ export class EvStudentCalculator {
   get initialVisaDays() { return this.visaType === 'tourist30' ? 30 : 59; }
   get tuition() { return this.plan.total('course'); }
   get accommodation() { return this.plan.total('room'); }
-  get peakWeeks() { return this.overlapUniqueWeeks(this.peakSeasons()); }
-  get peakSurcharge() { return this.peakWeeks * this.seasonalFeePerWeek(); }
-  get discountBase() { return this.tuition + this.accommodation + this.peakSurcharge; }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'EV',
+      this.plan.weekStarts([...this.plan.courses, ...this.plan.rooms]),
+      this.peakSeasons(),
+      this.seasonalFeePerWeek(),
+    );
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get peakSurcharge() { return this.peakCalculation.total; }
+  get discountBase() { return this.tuition + this.accommodation; }
   get discountAmount() { return this.discountBase * Math.max(0, this.discountPercent()) / 100; }
   get minorPeriods() { return this.isMinorStudent ? Math.ceil(this.plan.courseWeeks / 4) : 0; }
   get minorFee() { return this.minorPeriods * this.minorFeePerPeriod(); }
   get registration() { return this.returningStudent && this.returningRegistrationWaiver() ? 0 : this.registrationFee(); }
-  get totalUsd() { return this.registration + this.discountBase - this.discountAmount + this.minorFee; }
+  get totalUsd() { return this.registration + this.discountBase - this.discountAmount + this.peakSurcharge + this.minorFee; }
   get onCampusWeeks() { return this.plan.rooms.filter(row => !row.optionId.startsWith('off-campus')).reduce((sum, row) => sum + row.weeks, 0); }
   get offCampusWeeks() { return this.plan.rooms.filter(row => row.optionId.startsWith('off-campus')).reduce((sum, row) => sum + row.weeks, 0); }
   get visaExtensionCount() { return this.longTermVisa ? 0 : Math.max(0, Math.ceil((this.plan.stayWeeks * 7 - this.initialVisaDays) / 30)); }
@@ -153,21 +161,4 @@ export class EvStudentCalculator {
     return `${amount} 比索／人`;
   }
 
-  private overlapUniqueWeeks(seasons: ReadonlyArray<{ start: string; end: string }>) {
-    const ranges = seasons.map(season => ({
-      from: Date.parse(`${season.start}T00:00:00Z`),
-      to: Date.parse(`${season.end}T00:00:00Z`),
-    }));
-    const weeks = new Set<number>();
-    for (const row of [...this.plan.courses, ...this.plan.rooms]) {
-      const rowStart = this.plan.date(row.startDate);
-      if (rowStart === null) continue;
-      for (let index = 0; index < row.weeks; index++) {
-        const weekStart = rowStart + index * 7 * DAY;
-        const weekEnd = weekStart + 6 * DAY;
-        if (ranges.some(range => weekStart <= range.to && weekEnd >= range.from)) weeks.add(weekStart);
-      }
-    }
-    return weeks.size;
-  }
 }

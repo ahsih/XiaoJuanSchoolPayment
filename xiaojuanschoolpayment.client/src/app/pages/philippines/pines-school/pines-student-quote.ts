@@ -1,6 +1,7 @@
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 interface PinesQuotePrices {
   courseFees: { id: string; name: string; tuition: number; suitable: string }[];
@@ -131,17 +132,16 @@ export class PinesStudentQuote {
     return this.prices.registrationWaiverEnabled && rule?.waiveRegistration && this.isPromotionEligible(rule) ? this.prices.registrationFee : 0;
   }
 
-  get peakWeeks(): number {
-    return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) =>
-      this.prices.peakSeasonRanges.some((range) => {
-        const start = this.quotePlan.date(range.start);
-        const end = this.quotePlan.date(range.end);
-        return start !== null && end !== null && week <= end && week + 6 * DAY >= start;
-      }),
-    ).length;
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'PINES',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      this.prices.peakSeasonRanges,
+      this.prices.seasonalFeePerWeek,
+    );
   }
-
-  get seasonalSurcharge() { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   get offSeasonBlocks(): number {
     const registrationDeadline = this.quotePlan.date(this.prices.offSeasonRegistrationEnd);
@@ -201,7 +201,7 @@ export class PinesStudentQuote {
   }
 
   get paymentLines(): SchoolPaymentLine[] {
-    const ranges = this.prices.peakSeasonRanges.filter((range) => this.quotePlan.overlapWeeks(range.start, range.end, this.quotePlan.courses) > 0);
+    const ranges = this.prices.peakSeasonRanges.filter((range) => this.quotePlan.overlapWeeks(range.start, range.end, [...this.quotePlan.courses, ...this.quotePlan.rooms]) > 0);
     const registration = this.promotion('pines-registration-waiver');
     const offSeason = this.promotion('pines-off-season');
     const twelveWeek = this.promotion('pines-twelve-week');
@@ -210,7 +210,7 @@ export class PinesStudentQuote {
     return [
       ...(this.seasonalSurcharge ? [{
         icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
-        note: `${this.prices.seasonalFeePerWeek}美元／学习周 × ${this.peakWeeks}周；${ranges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；不参与折扣`,
+        note: `${associationPeakBreakdownText(this.peakCalculation)}；${ranges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；同一周课程与住宿只计一次，不参与折扣`,
       }] : []),
       ...(this.registrationDiscount ? [{ icon: '免', label: registration?.name ?? '免注册费', value: -this.registrationDiscount, note: registration?.description ?? '', promotionKey: 'registration' }] : []),
       ...(this.offSeasonDiscount ? [{ icon: '惠', label: offSeason?.name ?? '常规淡季优惠', value: -this.offSeasonDiscount, note: `${offSeason?.description ?? ''}；本次符合${this.offSeasonBlocks}个完整周期`, promotionKey: 'off-season' }] : []),
@@ -286,7 +286,9 @@ export class PinesStudentQuote {
   private promotionBase(rule: CiaPromotionRule): number {
     if (rule.appliesTo === 'tuition') return this.tuition;
     if (rule.appliesTo === 'accommodation') return this.accommodation;
-    if (rule.appliesTo === 'school-total') return this.registration + this.tuition + this.accommodation + this.seasonalSurcharge;
+    // The association surcharge is always added after every school or agent
+    // discount, including legacy rules whose scope was saved as school-total.
+    if (rule.appliesTo === 'school-total') return this.registration + this.tuition + this.accommodation;
     return this.tuition + this.accommodation;
   }
 

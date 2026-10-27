@@ -1,8 +1,8 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
@@ -16,7 +16,7 @@ describe('EV accommodation management fees', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
-      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
     ] });
@@ -47,10 +47,10 @@ describe('EV accommodation management fees', () => {
     const quote = component.quoteImageData;
     const discount = quote.paymentItems.find(row => row.label === '思达折扣')!;
     expect(discount.amount).toBe('− 188 美元');
-    expect(discount.note).toBe('课程费、住宿费和旺季附加费享95折');
+    expect(discount.note).toBe('课程费和住宿费享95折；旺季附加费不参与折扣');
     expect(quote.totalUsd).toBe('3,672 美元');
     expect(quote.conversionRates).toEqual({ usdToCny: 6.719075, phpPerCny: 9.3037, date: '2026-09-03' });
-    const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = quote;
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent()); renderer.quote = quote;
     const paint: { text: string; x: number; color: string; font: string }[] = [];
     const original = CanvasRenderingContext2D.prototype.fillText;
     spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callFake(function(this: CanvasRenderingContext2D, text, x, y, maxWidth) {
@@ -68,7 +68,7 @@ describe('EV accommodation management fees', () => {
     expect(text).not.toContain('共优惠188');
     component.exchangeRateLive = false;
     renderer.quote = component.quoteImageData;
-    expect(renderer['quoteFooterNotes']().join('')).toContain('本次采用备用汇率');
+    expect(renderer['quoteFooterNotes']().join('')).toContain('人民币金额按参考汇率估算');
     expect(renderer['quoteFooterNotes']().join('')).not.toContain('2026-09-03');
   });
 
@@ -145,7 +145,7 @@ describe('EV accommodation management fees', () => {
   it('uses the high-resolution brand master and the requested deposit wording', async () => {
     expect(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note).toBe('1至8周3,000比索，9至24周5,000比索；无损坏及无欠费时可退');
     expect(component.quoteImageData.optionalFeeItems?.find(fee => fee.label === '房间押金')?.note).toBe(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note);
-    const renderer = new QuoteImageDownloadButtonComponent(); renderer.quote = component.quoteImageData;
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent()); renderer.quote = component.quoteImageData;
     const loaded = spyOn<any>(renderer, 'loadCanvasImage').and.callThrough();
     const images: { sourceWidth: number; cropWidth: number }[] = [];
     const drawImage = CanvasRenderingContext2D.prototype.drawImage;
@@ -213,7 +213,7 @@ describe('EV accommodation management fees', () => {
   });
 
   it('renders all ten fees including the zero-amount off-campus row without clipping', async () => {
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     const drawnText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     for (const roomId of ['quad-bunk', 'off-campus-single']) {
       component.selectedRoomId = roomId;
@@ -275,7 +275,7 @@ describe('EV accommodation management fees', () => {
     expect(quote.totalUsd).toBe('1,897.88 美元');
     expect(quote.importantNotes?.join('')).not.toMatch(/40%|85%/);
 
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = quote;
     const draw = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
@@ -407,7 +407,7 @@ describe('EV accommodation management fees', () => {
     appendPeriodPair();
     component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-intensive-esl', weeks: 2 });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single', weeks: 2 });
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     const drawnText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
@@ -473,10 +473,10 @@ describe('EV accommodation management fees', () => {
     component.selectedWeeks = 4;
     component.isMinorStudent = true;
 
-    expect(component.schoolPaymentItems.find(row => row.label === '旺季附加费')?.amount).toBe('160 美元');
+    expect(component.schoolPaymentItems.find(row => row.label === '旺季附加费')?.amount).toBe('240 美元');
     expect(component.schoolPaymentItems.find(row => row.label === '未成年管理费')?.amount).toBe('100 美元');
-    expect(component.schoolPaymentItems.find(row => row.label === '思达折扣')?.amount).toBe('− 102 美元');
-    expect(component.quoteUsd).toBe(2138);
+    expect(component.schoolPaymentItems.find(row => row.label === '思达折扣')?.amount).toBe('− 94 美元');
+    expect(component.quoteUsd).toBe(2226);
     expect(component.quoteImageData.paymentItems.some(row => row.label === '旺季附加费')).toBeTrue();
     expect(component.quoteImageData.paymentItems.some(row => row.label === '未成年管理费')).toBeTrue();
   });
@@ -627,10 +627,10 @@ describe('EV accommodation management fees', () => {
       appendPeriodPair();
     }
     component.updateSelection('room', component.roomSelections[2].id, { optionId: 'off-campus-single' });
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     expect(renderer.quote.paymentItems.length).toBe(10);
-    expect(renderer.quote.paymentItems.find(row => row.label === '旺季附加费')?.amount).toBe('320 美元');
+    expect(renderer.quote.paymentItems.find(row => row.label === '旺季附加费')?.amount).toBe('480 美元');
     expect(renderer.quote.paymentItems.find(row => row.label === '未成年管理费')?.amount).toBe('300 美元');
     const draw = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
@@ -641,7 +641,7 @@ describe('EV accommodation management fees', () => {
     expect(text).toContain('旺季附加费');
     expect(text).toContain('未成年管理费');
     expect(text).toContain('到校前2周交齐');
-    expect(text).toContain('支付宝实时汇率');
+    expect(text).toContain('支付宝最新参考汇率');
     const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
     expect(layout.paymentHeights.length).toBe(10);
     expect(layout.paymentExtra).toBeGreaterThan(0);
@@ -655,18 +655,18 @@ describe('EV accommodation management fees', () => {
     component.selectedWeeks = 8;
 
     expect(component.peakSeasonWeeks).toBe(8);
-    expect(component.peakTotal).toBe(320);
-    expect(component.discountTotal).toBe(204);
-    expect(component.quoteUsd).toBe(3976);
+    expect(component.peakTotal).toBe(480);
+    expect(component.discountTotal).toBe(188);
+    expect(component.quoteUsd).toBe(4152);
     const webpageRow = component.schoolPaymentItems.find(row => row.label === '旺季附加费');
     const imageRow = component.quoteImageData.paymentItems.find(row => row.label === '旺季附加费');
-    expect(webpageRow?.amount).toBe('320 美元');
+    expect(webpageRow?.amount).toBe('480 美元');
     expect(webpageRow?.note).toContain('2027/07/04–2027/08/28');
     expect(webpageRow?.note).not.toContain('2026');
     expect(webpageRow?.note).not.toContain('95折');
-    expect(imageRow?.amount).toBe('320 美元');
+    expect(imageRow?.amount).toBe('480 美元');
     expect(imageRow?.note).toBe(webpageRow?.note);
-    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('课程费、住宿费和旺季附加费享95折');
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('课程费和住宿费享95折；旺季附加费不参与折扣');
 
     component.selectedStartDate = '2027-08-29';
     expect(component.peakSeasonWeeks).toBe(0);
@@ -703,7 +703,7 @@ describe('EV accommodation management fees', () => {
     component.selectedRoomId = [...component.roomFees].sort((a, b) => b.fee - a.fee)[0].id;
     component.selectedWeeks = 24;
     component.isMinorStudent = true;
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     const original = CanvasRenderingContext2D.prototype.fillText;
     let totalWidth = 0;
@@ -720,7 +720,7 @@ describe('EV accommodation management fees', () => {
     appendPeriodPair();
     component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-power-speaking-6' });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single' });
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     const draw = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     await renderer['createQuoteImageBlob'](1);
@@ -731,7 +731,7 @@ describe('EV accommodation management fees', () => {
     expect(renderer.quote.localFeeItems?.length).toBe(11);
     expect(renderer.quote.importantNotes?.join('')).toContain('最终以学校价格');
     expect(renderer.quote.importantNotes?.join('')).toContain('到校前2周交齐');
-    expect(renderer.quote.importantNotes?.join('')).toContain('支付宝实时汇率');
+    expect(renderer.quote.importantNotes?.join('')).toContain('支付宝最新参考汇率');
     expect(renderer.quote.totalUsd).toBe('4,527 美元');
   }, 30000);
 

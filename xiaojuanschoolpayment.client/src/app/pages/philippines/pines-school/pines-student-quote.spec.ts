@@ -103,7 +103,7 @@ describe('PinesStudentQuote', () => {
     expect(quote.offSeasonDiscount).toBe(0);
   });
 
-  it('counts the aligned 2026 and 2027 peak seasons as eight weeks', () => {
+  it('keeps 2026 at 40 dollars and applies 60 dollars to a confirmed 2027 range', () => {
     const quote = new PinesStudentQuote(prices);
     quote.quotePlan.courses[0].startDate = '2026-06-28';
     quote.quotePlan.rooms[0].startDate = '2026-06-28';
@@ -115,6 +115,7 @@ describe('PinesStudentQuote', () => {
     quote.quotePlan.courses[0].startDate = '2027-06-27';
     quote.quotePlan.rooms[0].startDate = '2027-06-27';
     expect(quote.peakWeeks).toBe(8);
+    expect(quote.seasonalSurcharge).toBe(480);
   });
 
   it('calculates extensions from the selected 30 or 59 day entry visa', () => {

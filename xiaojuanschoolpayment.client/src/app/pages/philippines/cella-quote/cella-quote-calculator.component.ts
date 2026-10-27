@@ -63,6 +63,10 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     rooms: CELLA_ROOMS.map((item) => ({ ...item })),
     registrationFee: CELLA_REGISTRATION_FEE,
     peakSeasonWeeklyFee: CELLA_PEAK_SEASON_WEEKLY_FEE,
+    peakSeasonRanges: [
+      { start: '2026-07-05', end: '2026-08-29', enabled: true },
+      { start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ],
   };
   private contentConfig = createDefaultCellaContentConfig('uni');
   quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.contentConfig.quoteImageSettings);
@@ -184,7 +188,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     ];
 
     if (student.peakSeasonSurcharge) {
-      items.push({ icon: '附', label: `${prefix}暑期附加费`, amount: `${this.formatMoney(student.peakSeasonSurcharge)} 美元`, note: `40美元／周，本次覆盖${student.peakSeasonWeeks}周；按实际课程周计算。` });
+      items.push({ icon: '附', label: `${prefix}暑期附加费`, amount: `${this.formatMoney(student.peakSeasonSurcharge)} 美元`, note: `${student.peakSeasonNote}；同一周课程与住宿只计一次，不参与优惠。` });
     }
     if (student.minorManagementFee) {
       items.push({ icon: '监', label: `${prefix}未成年人管理费`, amount: `${this.formatMoney(student.minorManagementFee)} 美元`, note: `25美元／周／人，本次按${student.actualWeeks}周计算。` });
@@ -375,6 +379,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     this.catalog.localFeeRules = content.localFees;
     this.catalog.registrationFee = content.quoteSettings.registrationFee;
     this.catalog.peakSeasonWeeklyFee = content.quoteSettings.peakSeasonFeePerWeek;
+    this.catalog.peakSeasonRanges = content.quoteSettings.peakSeasonRanges.filter(range => range.enabled);
     for (const student of this.students) student.setCampus(this.initialCampus);
   }
 

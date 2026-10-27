@@ -191,7 +191,7 @@ export interface CiaQuoteSettings {
   shortStayRatios: Record<string, number>;
   peakSeasonFeePerWeek: number;
   peakSeasonRanges: CiaPeakSeasonRange[];
-  /** Lets older published CIA documents inherit confirmed peak-season rules once. */
+  /** Lets older published documents inherit a confirmed peak-season policy once. */
   peakSeasonPolicyVersion?: number;
   monolPromotionPolicyVersion?: number;
   /** CPILS September 2026 notice and the user-confirmed registration cutoff. */

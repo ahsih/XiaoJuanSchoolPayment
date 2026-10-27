@@ -4,6 +4,7 @@ import {
   CiaPromotionRule,
   CiaQuoteImageSettings,
 } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 import {
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
@@ -46,7 +47,7 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
   localFeeIntro: '当地费用按每名学生实际就读周数预估；家庭套餐已包含的项目不重复计费。',
   localFeeNotes: {},
   supplementalFeeNotes: {
-    'payment:暑期附加费': '40美元／周，按实际课程周与旺季重叠周数计算。',
+    'payment:暑期附加费': '2026年40美元／周，2027年起60美元／周；同一周课程与住宿只计一次，不参与优惠。',
     'payment:未成年人管理费': '25美元／周／人，仅在当前学生选择并符合条件时计入。',
     'optional:洗衣服务（价格参考）': '按实际重量和学校现场标准结算，不计入学杂费合计。',
     'optional:宿务麦克坦机场周日接机（价格参考）': '可选，须确认航班与车辆安排，不计入学杂费合计。',
@@ -103,7 +104,11 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
     peakSeasonFeePerWeek: CELLA_PEAK_SEASON_WEEKLY_FEE,
-    peakSeasonRanges: [],
+    peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+    peakSeasonRanges: [
+      { id: 'cella-peak-2026', label: '2026暑期旺季', start: '2026-07-05', end: '2026-08-29', enabled: true },
+      { id: 'cella-peak-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ],
     promotions: [
       promotion({ id: 'cella-social-6-plus-2', name: '6+2限时活动', description: '按6周课程和四人房收费，实际就读8周。', sortOrder: 0, ruleKind: 'cella-social-6-plus-2', stackable: false, newStudentsOnly: true }),
       promotion({ id: 'cella-social-9-plus-3', name: '9+3限时活动', description: '按9周课程和四人房收费，实际就读12周。', sortOrder: 1, ruleKind: 'cella-social-9-plus-3', stackable: false, newStudentsOnly: true }),
@@ -126,16 +131,30 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
 });
 
 export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCampus): CiaContentConfig => {
+  const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
   const defaults = createDefaultCellaContentConfig(campus);
   const clone = structuredClone(value);
   if (clone?.schemaVersion !== 1 || clone.schoolCode !== defaults.schoolCode) return defaults;
   clone.quoteSettings = { ...defaults.quoteSettings, ...(clone.quoteSettings ?? {}) };
+  if (!clone.quoteSettings.peakSeasonRanges?.length) {
+    clone.quoteSettings.peakSeasonRanges = structuredClone(defaults.quoteSettings.peakSeasonRanges);
+  }
+  if (needsPeakMigration) {
+    const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027')!;
+    const saved2027 = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027' || range.label.includes('2027'));
+    if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
+    else clone.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
+    clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   clone.quoteSettings.promotions = clone.quoteSettings.promotions ?? structuredClone(defaults.quoteSettings.promotions);
   clone.quoteImageSettings = { ...structuredClone(defaults.quoteImageSettings), ...(clone.quoteImageSettings ?? {}) };
   clone.quoteImageSettings.paymentNotes = { ...defaults.quoteImageSettings.paymentNotes, ...(clone.quoteImageSettings.paymentNotes ?? {}) };
   clone.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(clone.quoteImageSettings.promotionNotes ?? {}) };
   clone.quoteImageSettings.localFeeNotes = { ...defaults.quoteImageSettings.localFeeNotes, ...(clone.quoteImageSettings.localFeeNotes ?? {}) };
   clone.quoteImageSettings.supplementalFeeNotes = { ...defaults.quoteImageSettings.supplementalFeeNotes, ...(clone.quoteImageSettings.supplementalFeeNotes ?? {}) };
+  if (clone.quoteImageSettings.supplementalFeeNotes?.['payment:暑期附加费'] === '40美元／周，按实际课程周与旺季重叠周数计算。') {
+    clone.quoteImageSettings.supplementalFeeNotes['payment:暑期附加费'] = defaults.quoteImageSettings.supplementalFeeNotes!['payment:暑期附加费'];
+  }
   clone.courses ??= structuredClone(defaults.courses);
   clone.rooms ??= structuredClone(defaults.rooms);
   clone.localFees ??= structuredClone(defaults.localFees);

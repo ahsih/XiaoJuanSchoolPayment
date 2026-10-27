@@ -1,5 +1,6 @@
 import { CiaContentConfig } from '../cia-school/cia-content-config';
-import { BECI_CAMPUS_PRICING, BeciCampus, BeciCampusPricing } from '../beci-quote/beci-pricing';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
+import { BECI_CAMPUS_PRICING, BECI_UNCONFIRMED_2027_PEAK_RANGE, BeciCampus, BeciCampusPricing } from '../beci-quote/beci-pricing';
 
 const campusOrder: BeciCampus[] = ['eop', 'sparta', 'city'];
 
@@ -59,9 +60,10 @@ export const createDefaultBeciContentConfig = (): CiaContentConfig => ({
     futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.6, '3': 0.8 },
     peakSeasonFeePerWeek: 40,
+    peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
     peakSeasonRanges: [
       { id: 'beci-summer-2026', label: '2026暑期', start: '2026-06-28', end: '2026-08-22', enabled: true },
-      { id: 'beci-summer-2027', label: '2027暑期（星期对齐估算）', start: '2027-06-27', end: '2027-08-21', enabled: true },
+      { id: 'beci-summer-2027', ...BECI_UNCONFIRMED_2027_PEAK_RANGE, enabled: false },
     ],
     promotions: [
       { id: 'beci-registration-waiver', name: '思达免注册费', description: '所有通过思达报名的学生免100美元注册费。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
@@ -112,6 +114,13 @@ export const createDefaultBeciContentConfig = (): CiaContentConfig => ({
 
 export const cloneBeciContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const cloned = structuredClone(value);
+  if ((cloned.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    cloned.quoteSettings.peakSeasonRanges = cloned.quoteSettings.peakSeasonRanges.map(range =>
+      range.id === 'beci-summer-2027' || range.label.includes('星期对齐估算')
+        ? { ...range, label: BECI_UNCONFIRMED_2027_PEAK_RANGE.label, enabled: false }
+        : range);
+    cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   if (!cloned.quoteImageSettings.localFeeNotes) cloned.quoteImageSettings.localFeeNotes = {};
   if (!cloned.media) cloned.media = [];
   return cloned;

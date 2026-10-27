@@ -5,6 +5,7 @@ import {
   CiaQuoteImageSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 
 const course = (
   id: string,
@@ -123,11 +124,12 @@ export const createDefaultEvContentConfig = (): CiaContentConfig => {
       futurePriceArrivalStart: '',
       shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
       peakSeasonFeePerWeek: 40,
+      peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
       peakSeasonRanges: [
         { id: 'ev-peak-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
       ],
       promotions: [
-        { id: 'ev-sida-95', name: '思达折扣', description: '课程费、住宿费和旺季附加费享95折', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+        { id: 'ev-sida-95', name: '思达折扣', description: '课程费和住宿费享95折；旺季附加费不参与折扣', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
         { id: 'ev-returning-registration', name: '老学员注册费减免', description: '老学员返校免收一次性注册费', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       ],
       localFeeIntro: '以下费用以比索计价，本报价仅供学生参考，具体以到校后实际产生及学校收取为准；接机与可退押金另列。',
@@ -158,6 +160,21 @@ export const cloneEvContentConfig = (value: CiaContentConfig): CiaContentConfig 
   const defaults = createDefaultEvContentConfig();
   const savedSettings = clone.quoteImageSettings;
   clone.quoteSettings.minorManagementFeePerPeriod ??= defaults.quoteSettings.minorManagementFeePerPeriod;
+  clone.quoteSettings.peakSeasonRanges ??= [];
+  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'ev-peak-2027')!;
+    const saved2027 = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'ev-peak-2027' || range.label.includes('2027'));
+    if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
+    else clone.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
+    clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
+  const sidaRule = clone.quoteSettings.promotions.find(rule => rule.id === 'ev-sida-95');
+  if (sidaRule) {
+    sidaRule.appliesTo = 'tuition-and-accommodation';
+    if (sidaRule.description === '课程费、住宿费和旺季附加费享95折') {
+      sidaRule.description = '课程费和住宿费享95折；旺季附加费不参与折扣';
+    }
+  }
   clone.quoteImageSettings = {
     ...defaults.quoteImageSettings,
     ...(savedSettings ?? {}),

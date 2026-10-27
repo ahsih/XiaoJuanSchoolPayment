@@ -1,6 +1,7 @@
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from './cia-school/cia-content-config';
 import { BTES_COURSES, BTES_LOW_SEASON_PERIODS, BTES_REGISTRATION_FEE, BTES_ROOMS } from './btes-school/btes-pricing';
 import { TARGET_COURSES, TARGET_ROOMS, targetOfficialPackagePrice } from './target-school/target-pricing';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from './association-peak-surcharge';
 
 type SchoolCode = Extract<CiaContentConfig['schoolCode'], 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES'>;
 type CourseSeed = { id: string; name: string; price: number; schedule: string; note: string };
@@ -91,16 +92,36 @@ const blueRooms: RoomSeed[] = [
   ['egi-triple-ocean','校内三人间（海景）',850,'预算型海景三人房','校内'],['egi-twin-city','校内双人间（城景）',900,'市景双人房','校内'],['egi-twin-ocean','校内双人间（海景）',1120,'海景双人房','校内'],['ocean-suite-superior','校外高级房型',1250,'Ocean Suites单人住宿','校外'],['ocean-suite-deluxe','校外豪华房型',1400,'Ocean Suites豪华单人住宿','校外'],['ocean-suite-ocean','校外单人间（海景）',1600,'Ocean Suites海景单人住宿','校外'],
 ].map(([id,name,price,note,location]) => ({ id:String(id), name:String(name), price:Number(price), note:String(note), location:location as '校内'|'校外' }));
 export const createDefaultBlueOceanContentConfig = (): CiaContentConfig => {
-  const settings = image('Cebu Blue Ocean', {'registration-waiver':'所有通过思达启航报名的学生免收100美元注册费。','sida-95':'课程与住宿先计算95折，再扣学校固定优惠。','off-season':'每满4个非旺季课程周优惠150美元。','twelve-week':'课程累计满12周额外优惠100美元。','long-stay':'16周起按当前长期优惠档位自动计算。'}, {'payment:旺季附加费':'按每个重叠课程周40美元计算；Family Course除外。'});
+  const settings = image('Cebu Blue Ocean', {'registration-waiver':'所有通过思达启航报名的学生免收100美元注册费。','sida-95':'课程与住宿先计算95折，再扣学校固定优惠。','off-season':'每满4个非旺季课程周优惠150美元。','twelve-week':'课程累计满12周额外优惠100美元。','long-stay':'16周起按当前长期优惠档位自动计算。'});
   settings.footerNotes = [
     '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行最新参考汇率，把美元换算为人民币结算。',
     '2、学杂费是到菲律宾当地需要交纳的费用，是学校直接收取的，我们的报价只作为参考，因菲律宾政策变动当地费用可能会有浮动，具体以到校后收取的为准。',
   ];
-  return base('BLUE-OCEAN', blueCourses, blueRooms, [
+  const config = base('BLUE-OCEAN', blueCourses, blueRooms, [
   fee('ssp','SSP特殊学习许可证',7800,'once','与本次学习时间对应，续费需重新办理。',0), fee('ssp-e-card','SSP-E CARD',4500,'once','入学时办理。',1), fee('acr','ACR-I CARD',4000,'first-visa-extension','按签证及停留时间办理。',2), fee('visa','签证续签费用',5140,'visa-extension-schedule','按累计续签档位计算。',3), fee('student-id','学生证',300,'once','一次性费用。',4), fee('management','管理费',500,'per-accommodation-period','按住宿周数计算。',5),
 ], [promo('registration-waiver','思达启航免注册费','通过思达启航报名免100美元注册费。',0,'blue-registration-waiver',{waiveRegistration:true}), promo('sida-95','思达启航95折','课程与住宿先按95折计算。',1,'blue-sida-95',{discountType:'percentage',discountValue:5,appliesTo:'tuition-and-accommodation'}), promo('off-season','常规淡季优惠','每满4个合资格课程周优惠150美元。',2,'blue-off-season'), promo('twelve-week','12周额外优惠','课程累计满12周额外优惠100美元。',3,'blue-twelve-week'), promo('long-stay','长期优惠','16周起按长期档位优惠。',4,'blue-long-stay')], 100, {'1':.4,'2':.65,'3':.85}, 40, [{id:'2026',label:'2026旺季',start:'2026-06-28',end:'2026-08-22',enabled:true},{id:'2027',label:'2027旺季',start:'2027-06-27',end:'2027-08-21',enabled:true}], settings);
+  config.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  return config;
 };
-export const cloneBlueOceanContentConfig = (value:CiaContentConfig)=>clone(value,createDefaultBlueOceanContentConfig());
+export const cloneBlueOceanContentConfig = (value:CiaContentConfig) => {
+  const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
+  const defaults = createDefaultBlueOceanContentConfig();
+  const result = clone(value, defaults);
+  result.quoteSettings.peakSeasonRanges ??= [];
+  if (needsPeakMigration) {
+    const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === '2027')!;
+    const saved2027 = result.quoteSettings.peakSeasonRanges.find(range => range.id === '2027' || range.label.includes('2027'));
+    if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
+    else result.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
+    result.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
+  const savedPeakNote = result.quoteImageSettings.supplementalFeeNotes?.['payment:旺季附加费'];
+  if (savedPeakNote === '按每个重叠课程周40美元计算；Family Course除外。'
+    || savedPeakNote === '2026年40美元／周，2027年起60美元／周；同一周课程与住宿只计一次，不参与优惠；Family Course除外。') {
+    delete result.quoteImageSettings.supplementalFeeNotes!['payment:旺季附加费'];
+  }
+  return result;
+};
 
 export const createDefaultTargetContentConfig = (): CiaContentConfig => {
   const settings = image('TARGET',{'target-campaign':'按非旺季合资格学习周及当前档位自动计算。','sida-90-percent':'学校现金优惠后剩余套餐金额计算思达启航9折。','target-upgrade':'报名期限、入学日期、课程、房型和名额须由学校确认。'});

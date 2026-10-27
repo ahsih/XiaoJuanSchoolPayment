@@ -361,7 +361,7 @@
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
             </div>
-            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">旺季附加费：每个实际重叠课程周加收{{ seasonalFeePerWeek }}美元，不参与优惠；日期按已启用的旺季范围计算。</p>
+            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">旺季附加费：2026年已确认日期按40美元／周计收；2027年起费率为60美元／周，但A&amp;J具体日期待学校确认，当前不自动计费。同一周课程与住宿只计一次，且不参与优惠。</p>
             <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">优惠顺序：{{ registrationWaiverEnabled ? '免注册费；' : '' }}A&amp;J新生或续课固定优惠先扣除；剩余课程费和住宿费再按{{ (sidaDiscountRate * 100) | number:'1.0-2' }}%计算。新生优惠与续课优惠不叠加。</p>
           </div>
         </section>
