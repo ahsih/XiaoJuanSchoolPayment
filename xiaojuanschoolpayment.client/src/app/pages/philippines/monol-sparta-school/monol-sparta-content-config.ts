@@ -5,6 +5,7 @@ import {
   CiaQuoteImageSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 
 const course = (id: string, name: string, schedule: string, suitable: string, note: string, sortOrder: number): CiaCourseContent => ({
   id, name, tuition: 950, tuition2027: 950, schedule, suitable, note, enabled: true, sortOrder,
@@ -76,7 +77,9 @@ export const createDefaultMonolSpartaContentConfig = (): CiaContentConfig => {
     ],
     quoteSettings: {
       registrationFee: 100,
-      futurePriceRegistrationStart: '', futurePriceArrivalStart: '', shortStayRatios: {}, peakSeasonFeePerWeek: 0, peakSeasonRanges: [],
+      futurePriceRegistrationStart: '', futurePriceArrivalStart: '', shortStayRatios: {}, peakSeasonFeePerWeek: 60,
+      peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+      peakSeasonRanges: [{ id: 'monol-sparta-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true }],
       promotions: [
         { id: 'sparta-course-2026', name: '2026课程优惠', description: '2026年12月31日或之前报名，且在斯巴达校区学习与住宿，每完整4周课程费减100美元', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'monol-sparta-course' },
         { id: 'sparta-room-2026', name: '2026住宿优惠', description: '2026年12月31日或之前报名，且在斯巴达校区学习与住宿，每完整4周住宿费减100美元', enabled: true, sortOrder: 1, priority: 11, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'monol-sparta-room' },
@@ -107,6 +110,13 @@ export const createDefaultMonolSpartaContentConfig = (): CiaContentConfig => {
 export const cloneMonolSpartaContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const clone = JSON.parse(JSON.stringify(value)) as CiaContentConfig;
   const defaults = createDefaultMonolSpartaContentConfig();
+  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = defaults.quoteSettings.peakSeasonRanges[0];
+    const saved = clone.quoteSettings.peakSeasonRanges?.find(range => range.id === confirmed.id || range.label.includes('2027'));
+    if (saved) Object.assign(saved, confirmed); else (clone.quoteSettings.peakSeasonRanges ??= []).push(structuredClone(confirmed));
+    clone.quoteSettings.peakSeasonFeePerWeek = 60;
+    clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   const existingFeeIds = new Set((clone.localFees ?? []).map(fee => fee.id));
   clone.localFees = [
     ...(clone.localFees ?? []),

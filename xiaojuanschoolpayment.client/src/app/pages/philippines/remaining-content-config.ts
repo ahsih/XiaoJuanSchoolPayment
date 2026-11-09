@@ -80,10 +80,23 @@ export const createDefaultBtesContentConfig = (): CiaContentConfig => base(
     fee('management', '宿舍管理费', 500, 'per-accommodation-period', '按住宿周数计算。', 7), fee('electricity', '宿舍电费', 200, 'per-accommodation-period', '按房型和住宿周数计算，超额用电另计。', 8), fee('pickup', '宿务机场接机', 1200, 'optional', '按所选接机时段计算。', 9), fee('ecc', 'ECC费用', 700, 'long-term-or-first-extension', '超过6个月时按规定办理。', 10),
   ],
   [promo('btes-group-low-season', 'BTES多人淡季优惠', '3人或以上符合活动条件时按学校规则计算。', 0, 'btes-group-low-season'), promo('btes-individual-low-season', 'BTES个人淡季优惠', '个人3周或4周以上符合活动条件时计算。', 1, 'btes-individual-low-season'), promo('sida', '思达启航95折', '学校优惠后对普通课程与住宿计算95折。', 2, 'btes-sida-95', { discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation' })],
-  BTES_REGISTRATION_FEE, { '1': .4, '2': .65, '3': .85 }, 0, [],
-  image('BTES', { 'btes-group-low-season': '符合多人活动条件时按学校规则自动计算。', 'btes-individual-low-season': '符合个人淡季活动条件时按学校规则自动计算。', sida: '普通方案先扣学校活动，再对剩余课程与住宿计算思达启航95折。' }, { 'payment:未成年人管理费': '按学生年龄和实际课程周数自动计算。' }),
+  BTES_REGISTRATION_FEE, { '1': .4, '2': .65, '3': .85 }, 60,
+  [{ id: 'btes-peak-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true }],
+  image('BTES', { 'btes-group-low-season': '符合多人活动条件时按学校规则自动计算。', 'btes-individual-low-season': '符合个人淡季活动条件时按学校规则自动计算。', sida: '普通方案先扣学校活动，再对剩余课程与住宿计算思达启航95折。' }, { 'payment:未成年人管理费': '按学生年龄和实际课程周数自动计算。', 'payment:旺季附加费': '2027/07/04–08/28按每名学生实际重叠学习周收取60美元／周；同一周课程与住宿只计一次，不参与优惠。' }),
 );
-export const cloneBtesContentConfig = (value: CiaContentConfig) => clone(value, createDefaultBtesContentConfig());
+export const cloneBtesContentConfig = (value: CiaContentConfig) => {
+  const defaults = createDefaultBtesContentConfig();
+  const result = clone(value, defaults);
+  if ((result.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = defaults.quoteSettings.peakSeasonRanges[0];
+    const saved = result.quoteSettings.peakSeasonRanges?.find(range => range.id === confirmed.id || range.label.includes('2027'));
+    if (saved) Object.assign(saved, confirmed);
+    else (result.quoteSettings.peakSeasonRanges ??= []).push(structuredClone(confirmed));
+    result.quoteSettings.peakSeasonFeePerWeek = 60;
+    result.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
+  return result;
+};
 
 const blueCourses: CourseSeed[] = [
   ['light-esl','Light ESL',870,'一对一4节','轻量口语综合'],['survival-esl','Survival ESL',1050,'一对一4节＋小组课2节','初学者生活英语'],['intensive-esl','Intensive ESL',970,'一对一5节＋小组课2节','标准综合英语'],['power-esl-5','Power ESL 5',930,'一对一5节','一对一强化'],['power-esl-7','Power ESL 7',1170,'一对一7节','高密度一对一'],['business','Business English',1200,'一对一5节＋小组课2节','商务英语'],['toeic','TOEIC',1050,'一对一5节＋小组课2节','多益备考'],['ielts','IELTS',1130,'一对一5节＋小组课2节','雅思备考'],['junior','青少年课程（未满15岁）',1500,'一对一5节＋小组课2节','青少年课程'],['parents','监护人课程',750,'一对一3节','亲子监护人课程'],['senior','Senior Course',1050,'一对一4节＋特色小组课','40岁以上特色课程'],
@@ -99,7 +112,7 @@ export const createDefaultBlueOceanContentConfig = (): CiaContentConfig => {
   ];
   const config = base('BLUE-OCEAN', blueCourses, blueRooms, [
   fee('ssp','SSP特殊学习许可证',7800,'once','与本次学习时间对应，续费需重新办理。',0), fee('ssp-e-card','SSP-E CARD',4500,'once','入学时办理。',1), fee('acr','ACR-I CARD',4000,'first-visa-extension','按签证及停留时间办理。',2), fee('visa','签证续签费用',5140,'visa-extension-schedule','按累计续签档位计算。',3), fee('student-id','学生证',300,'once','一次性费用。',4), fee('management','管理费',500,'per-accommodation-period','按住宿周数计算。',5),
-], [promo('registration-waiver','思达启航免注册费','通过思达启航报名免100美元注册费。',0,'blue-registration-waiver',{waiveRegistration:true}), promo('sida-95','思达启航95折','课程与住宿先按95折计算。',1,'blue-sida-95',{discountType:'percentage',discountValue:5,appliesTo:'tuition-and-accommodation'}), promo('off-season','常规淡季优惠','每满4个合资格课程周优惠150美元。',2,'blue-off-season'), promo('twelve-week','12周额外优惠','课程累计满12周额外优惠100美元。',3,'blue-twelve-week'), promo('long-stay','长期优惠','16周起按长期档位优惠。',4,'blue-long-stay')], 100, {'1':.4,'2':.65,'3':.85}, 40, [{id:'2026',label:'2026旺季',start:'2026-06-28',end:'2026-08-22',enabled:true},{id:'2027',label:'2027旺季',start:'2027-06-27',end:'2027-08-21',enabled:true}], settings);
+], [promo('registration-waiver','思达启航免注册费','通过思达启航报名免100美元注册费。',0,'blue-registration-waiver',{waiveRegistration:true}), promo('sida-95','思达启航95折','课程与住宿先按95折计算。',1,'blue-sida-95',{discountType:'percentage',discountValue:5,appliesTo:'tuition-and-accommodation'}), promo('off-season','常规淡季优惠','每满4个合资格课程周优惠150美元。',2,'blue-off-season'), promo('twelve-week','12周额外优惠','课程累计满12周额外优惠100美元。',3,'blue-twelve-week'), promo('long-stay','长期优惠','16周起按长期档位优惠。',4,'blue-long-stay')], 100, {'1':.4,'2':.65,'3':.85}, 40, [{id:'2026',label:'2026旺季',start:'2026-06-28',end:'2026-08-22',enabled:true},{id:'2027',label:'2027旺季',start:'2027-07-04',end:'2027-08-28',enabled:true}], settings);
   config.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   return config;
 };
@@ -138,6 +151,16 @@ const walesRooms:RoomSeed[]=[['lower-studio-single','Lower Studio｜单人房',1
 export const createDefaultWalesContentConfig=():CiaContentConfig=>{
   const settings=image('WALES',{'wales-year-end-2026':'指定入学日期及周数的住宿按六折计算；限额及资格须确认。','wales-long-stay':'连续课程周按当前长期档位计算，旺季重叠会减少优惠。'},{'optional:教材费':'按课程类型和课程周数计算。','optional:机场接机':'按所选接机地点、团体或个人安排计算。'});
   settings.footerNotes=['价格、优惠名额、房型空位、实际上课天数和当地费用以WALES正式账单为准。'];
-  return base('WALES',walesCourses,walesRooms,[fee('ssp','SSP特殊学习许可证',7800,'once','学校价表列示的一次性费用。',0),fee('ssp-card','SSP I-CARD',4500,'once','一次性身份卡费用。',1),fee('visa','签证续签',6410,'visa-extension-schedule','按初始签证与停留时间预估。',2),fee('acr','ACR I-CARD',4000,'first-visa-extension','首次需要续签时计入。',3),fee('management','管理费',1000,'per-accommodation-period','按住宿周数比例计算。',4),fee('utilities','水电费',3500,'per-accommodation-period','按住宿周数比例计算。',5),fee('student-id','学生证',300,'once','一次性费用。',6),fee('deposit','宿舍保证金',5000,'once','符合退还条件时按校方规定退回。',7)], [promo('wales-year-end-2026','2026年末住宿六折优惠','指定入学日期和周数的住宿按六折计算。',0,'wales-year-end'),promo('wales-long-stay','长周数优惠','连续课程周按8／12／16／20／24周档位优惠。',1,'wales-long-stay')],100,{},0,[],settings);
+  const config=base('WALES',walesCourses,walesRooms,[fee('ssp','SSP特殊学习许可证',7800,'once','学校价表列示的一次性费用。',0),fee('ssp-card','SSP I-CARD',4500,'once','一次性身份卡费用。',1),fee('visa','签证续签',6410,'visa-extension-schedule','按初始签证与停留时间预估。',2),fee('acr','ACR I-CARD',4000,'first-visa-extension','首次需要续签时计入。',3),fee('management','管理费',1000,'per-accommodation-period','按住宿周数比例计算。',4),fee('utilities','水电费',3500,'per-accommodation-period','按住宿周数比例计算。',5),fee('student-id','学生证',300,'once','一次性费用。',6),fee('deposit','宿舍保证金',5000,'once','符合退还条件时按校方规定退回。',7)], [promo('wales-year-end-2026','2026年末住宿六折优惠','指定入学日期和周数的住宿按六折计算。',0,'wales-year-end'),promo('wales-long-stay','长周数优惠','连续课程周按8／12／16／20／24周档位优惠。',1,'wales-long-stay')],100,{},60,[{id:'wales-peak-2027',label:'2027暑期旺季',start:'2027-06-27',end:'2027-08-22',enabled:true}],settings);
+  config.quoteSettings.peakSeasonPolicyVersion=ASSOCIATION_PEAK_POLICY_VERSION;
+  return config;
 };
-export const cloneWalesContentConfig=(value:CiaContentConfig)=>clone(value,createDefaultWalesContentConfig());
+export const cloneWalesContentConfig=(value:CiaContentConfig)=>{
+  const defaults=createDefaultWalesContentConfig(); const result=clone(value,defaults);
+  if((result.quoteSettings.peakSeasonPolicyVersion??0)<ASSOCIATION_PEAK_POLICY_VERSION){
+    const confirmed=defaults.quoteSettings.peakSeasonRanges[0]; const saved=result.quoteSettings.peakSeasonRanges?.find(range=>range.id===confirmed.id||range.label.includes('2027'));
+    if(saved) Object.assign(saved,confirmed); else (result.quoteSettings.peakSeasonRanges??=[]).push(structuredClone(confirmed));
+    result.quoteSettings.peakSeasonFeePerWeek=60; result.quoteSettings.peakSeasonPolicyVersion=ASSOCIATION_PEAK_POLICY_VERSION;
+  }
+  return result;
+};

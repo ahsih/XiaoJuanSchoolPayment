@@ -157,6 +157,9 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.summerSurcharge).toBe(160);
     expect(component.offSeasonDiscount).toBe(0);
     expect(component.quoteUsd).toBe(1565);
+    component.selectedStartDate = '2027-07-04';
+    expect(component.summerWeeks).toBe(4);
+    expect(component.summerSurcharge).toBe(240);
   });
 
   it('counts partial overlapping weeks but not a stay ending before summer begins', () => {

@@ -498,14 +498,14 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     return `${this.promotionRule}${this.offSeasonDiscountAmount ? '' : '当前所选期间未满8个连续合资格周。'}`;
   }
   get summerPeriods() {
-    return this.peakSeasonRanges.filter(period => period.enabled).map(period => ({ ...period, estimated: period.id.includes('2027') || period.label.includes('预估'),
+    return this.peakSeasonRanges.filter(period => period.enabled).map(period => ({ ...period, estimated: period.label.includes('预估'),
       weeks: this.quotePlan.overlapWeeks(period.start, period.end) }));
   }
   private summerPeriodLabel(period: { start: string; end: string; estimated?: boolean }) {
     return `${period.start.replace(/-/g, '/')}（周日）–${period.end.replace(/-/g, '/')}（周六）${period.estimated ? '，参照2026年同为8周预估' : ''}`;
   }
   get summerSurchargeRule() {
-    return `2026年暑期附加费40美元／周；2027年起在学校确认具体档期后按60美元／周。${this.peakSeasonRanges.filter(period => period.enabled).map(period => this.summerPeriodLabel(period)).join('；')}。同一周课程与住宿只计一次。`;
+    return `2026年暑期附加费40美元／周；2027/07/04–08/28按60美元／周。${this.peakSeasonRanges.filter(period => period.enabled).map(period => this.summerPeriodLabel(period)).join('；')}。同一周课程与住宿只计一次，且不参与优惠。`;
   }
   get peakSeasonWeeks() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.summerWeeks, 0); }
   get peakSeasonBreakdownText() {

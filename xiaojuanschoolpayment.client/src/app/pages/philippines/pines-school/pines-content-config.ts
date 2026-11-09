@@ -5,7 +5,9 @@ import {
   CiaQuoteImageSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
-import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
+
+/** User-confirmed PINES 2027 summer range; newer than the association-wide migration. */
+export const PINES_PEAK_POLICY_VERSION = 20271109;
 
 const course = (
   id: string,
@@ -141,10 +143,10 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
       futurePriceArrivalStart: '',
       shortStayRatios: { '2': 0.65, '3': 0.85 },
       peakSeasonFeePerWeek: 40,
-      peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+      peakSeasonPolicyVersion: PINES_PEAK_POLICY_VERSION,
       peakSeasonRanges: [
         { id: 'pines-peak-2026', label: '2026旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
-        { id: 'pines-peak-2027', label: '2027旺季（历史推算，待学校确认）', start: '2027-06-27', end: '2027-08-21', enabled: false },
+        { id: 'pines-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true },
       ],
       promotions: [
         { id: 'pines-registration-waiver', name: '思达免注册费', description: '所有通过思达报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
@@ -178,14 +180,15 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
 
 export const clonePinesContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const clone = JSON.parse(JSON.stringify(value)) as CiaContentConfig;
-  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
-    clone.quoteSettings.peakSeasonRanges = clone.quoteSettings.peakSeasonRanges.map(range =>
-      range.id === 'pines-peak-2027' || range.label.includes('推算')
-        ? { ...range, label: '2027旺季（历史推算，待学校确认）', enabled: false }
-        : range);
-    clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
-  }
   const defaults = createDefaultPinesContentConfig();
+  clone.quoteSettings.peakSeasonRanges ??= [];
+  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < PINES_PEAK_POLICY_VERSION) {
+    const confirmed2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'pines-peak-2027')!;
+    const saved2027 = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'pines-peak-2027' || range.label.includes('2027'));
+    if (saved2027) Object.assign(saved2027, confirmed2027);
+    else clone.quoteSettings.peakSeasonRanges.push({ ...confirmed2027 });
+    clone.quoteSettings.peakSeasonPolicyVersion = PINES_PEAK_POLICY_VERSION;
+  }
   const savedSettings = clone.quoteImageSettings;
   clone.quoteImageSettings = {
     ...defaults.quoteImageSettings,

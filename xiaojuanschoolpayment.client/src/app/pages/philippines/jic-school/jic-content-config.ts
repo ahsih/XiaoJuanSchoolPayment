@@ -1,4 +1,5 @@
 import { CiaContentConfig, CiaMediaContent, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 import {
   JIC_COURSE_FEES,
   JIC_LOCAL_FEE_COPY,
@@ -165,8 +166,10 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
     peakSeasonFeePerWeek: JIC_PEAK_FEE_PER_WEEK,
+    peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
     peakSeasonRanges: [
       { id: 'jic-peak-2026', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
+      { id: 'jic-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true },
     ],
     promotions: [
       {
@@ -338,6 +341,12 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
   });
   cloned.quoteSettings.shortStayRatios = { ...latest.quoteSettings.shortStayRatios };
   cloned.quoteSettings.courseTableNote = latest.quoteSettings.courseTableNote;
+  if ((cloned.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = latest.quoteSettings.peakSeasonRanges.find(range => range.id === 'jic-peak-2027')!;
+    const saved = cloned.quoteSettings.peakSeasonRanges.find(range => range.id === confirmed.id || range.label.includes('2027'));
+    if (saved) Object.assign(saved, confirmed); else cloned.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
+    cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   const latestRegistration = latest.quoteSettings.promotions.find(rule => rule.ruleKind === 'jic-registration')!;
   const registrationIndex = cloned.quoteSettings.promotions.findIndex(rule => rule.ruleKind === 'jic-registration');
   if (registrationIndex >= 0) {

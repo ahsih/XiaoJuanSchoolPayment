@@ -92,6 +92,8 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   selectedGalleryCategory: GalleryCategory = '全部';
   selectedGalleryImageIndex = 0;
   registrationFee = this.initialContent.quoteSettings.registrationFee;
+  peakSeasonFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  peakSeasonRanges = this.initialContent.quoteSettings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
   shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
   promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
   localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
@@ -389,6 +391,8 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     }
     const settings = content.quoteSettings;
     this.registrationFee = settings.registrationFee;
+    this.peakSeasonFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = settings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
     this.shortStayRatios = { ...settings.shortStayRatios };
     this.promotionRules = settings.promotions.map(item => ({ ...item, eligibleRoomIds: item.eligibleRoomIds ? [...item.eligibleRoomIds] : undefined }));
     this.localFeeRules = content.localFees.map(item => ({ ...item }));

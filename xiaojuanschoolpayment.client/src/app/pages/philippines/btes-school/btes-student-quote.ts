@@ -14,6 +14,7 @@ import {
   BtesCourse,
   BtesRoom,
 } from './btes-pricing';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export type BtesEnrollmentStatus = 'new' | 'returning';
 export type BtesVisaType = 'tourist30' | 'tourist59';
@@ -30,6 +31,8 @@ export interface BtesQuotePrices {
   registrationFee?: number;
   sidaDiscountRate?: number;
   groupDiscountRate?: (student: BtesStudentQuote) => number;
+  peakSeasonFeePerWeek?: number;
+  peakSeasonRanges?: readonly { start: string; end: string; enabled?: boolean }[];
 }
 
 const DAY = 86_400_000;
@@ -140,6 +143,11 @@ export class BtesStudentQuote {
   get tuition() { return this.quotePlan.total('course'); }
   get accommodation() { return this.quotePlan.total('room'); }
   get registration() { return this.registrationFee; }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge('BTES', this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]), this.prices.peakSeasonRanges ?? [], this.prices.peakSeasonFeePerWeek ?? 60);
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   get registrationDiscount(): number {
     return this.enrollmentStatus === 'returning' || this.isAllInOne ? this.registrationFee : 0;
@@ -180,13 +188,19 @@ export class BtesStudentQuote {
 
   get quoteUsd(): number {
     return Math.max(0, rounded(
-      this.registration + this.tuition + this.accommodation + this.minorCareFee
+      this.registration + this.tuition + this.accommodation + this.minorCareFee + this.seasonalSurcharge
       - this.registrationDiscount - this.btesDiscount - this.sidaDiscount,
     ));
   }
 
   get paymentLines(): SchoolPaymentLine[] {
     const lines: SchoolPaymentLine[] = [];
+    if (this.seasonalSurcharge) {
+      lines.push({
+        icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
+        note: `2027/07/04–08/28；${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与优惠。`,
+      });
+    }
     if (this.minorCareFee) {
       lines.push({
         icon: '未', label: '未成年管理费', value: this.minorCareFee,

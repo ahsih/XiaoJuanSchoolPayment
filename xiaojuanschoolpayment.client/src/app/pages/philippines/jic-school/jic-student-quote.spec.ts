@@ -130,13 +130,14 @@ describe('JicStudentQuote', () => {
     expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(23870);
   });
 
-  it('charges the confirmed 2026 peak surcharge only for covered course weeks', () => {
+  it('charges 2026 at 40 dollars and the confirmed 2027 BESA period at 60 dollars', () => {
     const student = quote();
     setPlan(student, 4, '2026-06-28');
     expect(student.peakWeeks).toBe(4);
     expect(student.seasonalSurcharge).toBe(160);
     setPlan(student, 4, '2027-06-27');
-    expect(student.peakWeeks).toBe(0);
+    expect(student.peakWeeks).toBe(4);
+    expect(student.seasonalSurcharge).toBe(240);
   });
 
   it('applies 2026 and 2027 low-season discounts by arrival date and room', () => {

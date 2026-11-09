@@ -3,6 +3,7 @@ import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-gr
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export interface MonolQuotePrices {
   courseFees: { id: string; name: string; tuition: number; suitable: string; note: string }[];
@@ -11,6 +12,8 @@ export interface MonolQuotePrices {
   shortStayRatios: Record<string, number>;
   promotionRules: CiaPromotionRule[];
   localFeeRules: CiaLocalFeeRule[];
+  peakSeasonFeePerWeek: number;
+  peakSeasonRanges: readonly { start: string; end: string; enabled?: boolean }[];
 }
 
 export const MONOL_VISA_OPTIONS = [
@@ -87,6 +90,11 @@ export class MonolStudentQuote {
     const rule = this.promotion('monol-registration-waiver');
     return rule?.waiveRegistration && (!rule.newStudentsOnly || !this.returningStudent) ? this.registration : 0;
   }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge('MONOL', this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]), this.prices.peakSeasonRanges, this.prices.peakSeasonFeePerWeek);
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
   get visaLabel() { return this.visaOptions.find((option) => option.value === this.visaType)?.label ?? ''; }
 
   private eligibleWeeks(kind: 'course' | 'room', rule: CiaPromotionRule, roomIds?: string[]): number {
@@ -104,7 +112,7 @@ export class MonolStudentQuote {
       for (let week = 0; week < row.weeks; week++) {
         const from = new Date(start + week * 7 * DAY).toISOString().slice(0, 10);
         const to = new Date(start + (week * 7 + 6) * DAY).toISOString().slice(0, 10);
-        if (from <= '2027-08-21' && to >= '2027-06-27') continue;
+        if (from <= '2027-08-22' && to >= '2027-06-27') continue;
         if (this.quotePlan.covers(from, to, other)) weeks++;
       }
     }
@@ -139,7 +147,7 @@ export class MonolStudentQuote {
       && this.quotePlan.rooms[0]?.startDate === arrival ? rule.discountValue : 0;
   }
 
-  get quoteBeforeDiscounts() { return this.registration + this.tuition + this.accommodation; }
+  get quoteBeforeDiscounts() { return this.registration + this.tuition + this.accommodation + this.seasonalSurcharge; }
   get quoteUsd() {
     return Math.max(0, rounded(this.quoteBeforeDiscounts - this.registrationDiscount
       - this.offSeasonCourseDiscount - this.offSeasonRoomDiscount - this.snsDiscount - this.longTermDiscount - this.christmasDiscount));
@@ -151,6 +159,7 @@ export class MonolStudentQuote {
     const roomSummary = this.offSeasonSummary('room');
     const snsRule = this.promotion('monol-sns');
     return [
+      ...(this.seasonalSurcharge ? [{ icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: `2027/06/27–08/22；${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与优惠。` }] : []),
       ...(['long-term', 'christmas'] as const).flatMap(key => {
         const rule = this.promotion(`monol-${key}`);
         const value = key === 'long-term' ? this.longTermDiscount : this.christmasDiscount;

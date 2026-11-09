@@ -1,6 +1,7 @@
 import {
   ANJ_COURSES,
   ANJ_PEAK_SEASON_RANGES,
+  ANJ_PEAK_2027_RANGE,
   ANJ_REGISTRATION_FEE,
   ANJ_ROOMS,
   ANJ_SEASONAL_FEE_PER_WEEK,
@@ -15,7 +16,7 @@ describe('AnjStudentQuote', () => {
     registrationFee: ANJ_REGISTRATION_FEE,
     sidaDiscountRate: ANJ_SIDA_DISCOUNT_RATE,
     seasonalFeePerWeek: ANJ_SEASONAL_FEE_PER_WEEK,
-    peakSeasonRanges: ANJ_PEAK_SEASON_RANGES,
+    peakSeasonRanges: [...ANJ_PEAK_SEASON_RANGES, ANJ_PEAK_2027_RANGE],
   };
 
   const quoteAt = (startDate: string, weeks = 4) => {
@@ -101,9 +102,11 @@ describe('AnjStudentQuote', () => {
     expect(quote.quoteUsd).toBe(3182.5);
   });
 
-  it('keeps the confirmed 2026 peak and does not invent an unconfirmed 2027 period', () => {
+  it('keeps 2026 at 40 dollars and charges the confirmed 2027 BESA period at 60 dollars', () => {
     expect(quoteAt('2026-06-28', 8).peakWeeks).toBe(8);
-    expect(quoteAt('2027-06-27', 8).peakWeeks).toBe(0);
+    const quote2027 = quoteAt('2027-06-27', 8);
+    expect(quote2027.peakWeeks).toBe(8);
+    expect(quote2027.seasonalSurcharge).toBe(480);
   });
 
   it('uses the selected initial tourist-visa duration for extensions', () => {

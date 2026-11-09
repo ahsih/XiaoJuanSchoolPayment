@@ -1,4 +1,5 @@
 import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
@@ -408,7 +409,7 @@ export class WinningSchoolComponent {
       label: 'Peak Season Surcharge',
       lessons: '2026-07-05至2026-08-29',
       four: 'USD 40 / 周',
-      note: '暑期旺季附加费不包含在本页报价器中，需报名时单独加总。',
+      note: '2027/07/04–08/28暑期旺季附加费为60美元／周，本页报价器按实际重叠学习周自动加总。',
     },
     {
       label: 'Daycare',
@@ -672,8 +673,22 @@ export class WinningSchoolComponent {
     return this.feeFor(this.selectedCourseId, this.selectedRoomId, this.selectedWeeks);
   }
 
+  get peakSeasonSurcharge(): number {
+    const start = new Date(`${this.selectedStartDate}T00:00:00`);
+    if (Number.isNaN(start.getTime())) return 0;
+    const weekStarts = Array.from({ length: this.selectedWeeks }, (_, index) => {
+      const value = new Date(start);
+      value.setDate(value.getDate() + index * 7);
+      return value.getTime();
+    });
+    return calculateAssociationPeakSurcharge('WINNING', weekStarts, [
+      { start: '2026-07-05', end: '2026-08-29', enabled: true },
+      { start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ], 40).total;
+  }
+
   get quoteUsd(): number {
-    return this.registrationFee + this.selectedPackageFee;
+    return this.registrationFee + this.selectedPackageFee + this.peakSeasonSurcharge;
   }
 
   get packageFeeText(): string {
@@ -697,11 +712,8 @@ export class WinningSchoolComponent {
       return '入学日期需要和学校确认，适用校区、价格、促销、房型空位和当地费用会影响最终报价。';
     }
 
-    const peakStart = new Date('2026-07-05T00:00:00');
-    const peakEnd = new Date('2026-08-29T23:59:59');
-
-    if (start >= peakStart && start <= peakEnd) {
-      return '当前入学日期落在2026暑期旺季区间，公开表列Peak Season Surcharge USD 40/周，本页报价器未自动加总。';
+    if (this.peakSeasonSurcharge > 0) {
+      return `已按实际重叠学习周计入旺季附加费 ${this.peakSeasonSurcharge} 美元；2026按40美元／周，2027/07/04–08/28按60美元／周。`;
     }
 
     return this.selectedWeeks >= 12

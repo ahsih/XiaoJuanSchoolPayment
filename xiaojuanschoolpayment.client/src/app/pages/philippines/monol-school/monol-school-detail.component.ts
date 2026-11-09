@@ -77,6 +77,8 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = this.initialContent.quoteSettings.registrationFee;
+  peakSeasonFeePerWeek = this.initialContent.quoteSettings.peakSeasonFeePerWeek;
+  peakSeasonRanges = this.initialContent.quoteSettings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
   shortStayRatios = { ...this.initialContent.quoteSettings.shortStayRatios };
   promotionRules: CiaPromotionRule[] = this.initialContent.quoteSettings.promotions.map(item => ({ ...item }));
   localFeeRules: CiaLocalFeeRule[] = this.initialContent.localFees.map(item => ({ ...item }));
@@ -237,8 +239,8 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { question: '菲律宾碧瑶MONOL语言学校是斯巴达学校吗？', answer: '更适合归类为半斯巴达或自律弹性型。它有高课时日课和学习支持，但不像典型高压斯巴达学校主要靠强制自习和门禁推动。' },
     { question: 'MONOL适合零基础学生吗？', answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、英语基础和是否需要先读ESL过渡。' },
     { question: '页面报价包含餐费吗？', answer: '不包含。餐费按约14,000比索/4周单独准备，房间押金也单列且不计入学杂费合计。2027年12月31日前上课日提供免费早餐，周末及节假日除外。' },
-    { question: 'MONOL淡季优惠如何自动计算？', answer: '2026年12月31日或之前报名，在主校区学习及住宿，每完整4周分别减课程费和住宿费100美元；2027年6月27日至8月21日不适用。IELTS及LEAP学术费保留。' },
-    { question: 'SNS活动优惠会自动计算吗？', answer: '确认活动开放并选择参加，且在2026年12月31日或之前报名才计算。仅标准单人间及小单间每完整4周减100美元；在指定任一平台发布一篇在校故事，2027年6月27日至8月21日不适用。' },
+    { question: 'MONOL淡季优惠如何自动计算？', answer: '2026年12月31日或之前报名，在主校区学习及住宿，每完整4周分别减课程费和住宿费100美元；2027年6月27日至8月22日不适用。IELTS及LEAP学术费保留。' },
+    { question: 'SNS活动优惠会自动计算吗？', answer: '确认活动开放并选择参加，且在2026年12月31日或之前报名才计算。仅标准单人间及小单间每完整4周减100美元；在指定任一平台发布一篇在校故事，2027年6月27日至8月22日不适用。' },
     { question: '页面的课程和住宿价格按什么周期计算？', answer: '注册费为一次性100美元；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名MONOL，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
@@ -360,6 +362,8 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     }
     const settings = content.quoteSettings;
     this.registrationFee = settings.registrationFee;
+    this.peakSeasonFeePerWeek = settings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = settings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
     this.shortStayRatios = { ...settings.shortStayRatios };
     this.promotionRules = settings.promotions.map(item => ({ ...item, eligibleRoomIds: item.eligibleRoomIds ? [...item.eligibleRoomIds] : undefined }));
     this.localFeeRules = content.localFees.map(item => ({ ...item }));

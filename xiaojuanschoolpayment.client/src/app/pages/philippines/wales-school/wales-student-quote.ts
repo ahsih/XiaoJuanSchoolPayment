@@ -5,6 +5,7 @@ import {
   SchoolVisaType,
 } from '../../../components/school-group-quote';
 import { QuotePlanRow, SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export interface WalesCoursePrice {
   id: string;
@@ -27,6 +28,8 @@ export interface WalesQuotePrices {
   courseFees: WalesCoursePrice[];
   roomFees: WalesRoomPrice[];
   registrationFee: number;
+  peakSeasonFeePerWeek: number;
+  peakSeasonRanges: readonly { start: string; end: string; enabled?: boolean }[];
 }
 
 export type WalesStudentStatus = 'new' | 'current' | 'returning';
@@ -71,6 +74,11 @@ export class WalesStudentQuote {
   get initialVisaDays(): 30 | 59 { return this.visaType === 'tourist30' ? 30 : 59; }
   get tuitionTotal() { return this.quotePlan.total('course'); }
   get accommodationTotal() { return this.quotePlan.total('room'); }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge('WALES', this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]), this.prices.peakSeasonRanges, this.prices.peakSeasonFeePerWeek);
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   get quoteError(): string {
     if (this.quotePlan.error) return this.quotePlan.error;
@@ -149,6 +157,10 @@ export class WalesStudentQuote {
 
   get paymentLines(): SchoolPaymentLine[] {
     return [
+      ...(this.seasonalSurcharge ? [{
+        icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
+        note: `2027/06/27–08/22；${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与优惠。`,
+      }] : []),
       ...(this.yearEndAccommodationDiscount > 0 ? [{
         icon: '惠',
         label: '2026年末住宿六折优惠',
@@ -170,7 +182,7 @@ export class WalesStudentQuote {
 
   get quoteUsd(): number {
     return Math.max(0, this.roundMoney(
-      this.registrationAmount + this.tuitionTotal + this.accommodationTotal
+      this.registrationAmount + this.tuitionTotal + this.accommodationTotal + this.seasonalSurcharge
       - this.yearEndAccommodationDiscount - this.longStayDiscountAmount,
     ));
   }

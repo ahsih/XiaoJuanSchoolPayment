@@ -98,6 +98,8 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '餐厅', '设施'];
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = 100;
+  peakSeasonFeePerWeek = this.contentConfig.quoteSettings.peakSeasonFeePerWeek;
+  peakSeasonRanges = this.contentConfig.quoteSettings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
   usdToCny = Number.NaN;
   phpPerCny = Number.NaN;
   exchangeRateDate = '';
@@ -531,6 +533,8 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
 
   private applyContentConfig(content: ReturnType<typeof createDefaultWalesContentConfig>): void {
     this.contentConfig = content;
+    this.peakSeasonFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
+    this.peakSeasonRanges = content.quoteSettings.peakSeasonRanges.filter(item => item.enabled).map(item => ({ ...item }));
     this.courseFees = this.courseFees.map(course => {
       const edited = content.courses.find(item => item.id === course.id);
       return edited ? { ...course, name: edited.name, suitable: edited.suitable, note: edited.note } : course;

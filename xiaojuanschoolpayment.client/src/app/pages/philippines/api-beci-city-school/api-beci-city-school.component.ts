@@ -9,6 +9,7 @@ import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
 import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
+import { associationPeakRateForWeek } from '../association-peak-surcharge';
 import { BeciQuoteCalculatorComponent } from '../beci-quote/beci-quote-calculator.component';
 import { CiaContentConfig } from '../cia-school/cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from '../cia-school/cia-content-preview';
@@ -810,11 +811,18 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     const start = new Date(`${this.selectedStartDate}T00:00:00`);
     const ranges = [
       [new Date('2026-06-28T00:00:00'), new Date('2026-08-22T23:59:59')],
+      [new Date('2027-06-27T00:00:00'), new Date('2027-08-22T23:59:59')],
     ];
-
-    return ranges.some(([from, to]) => start >= from && start <= to)
-      ? this.selectedWeeks * this.seasonalFeePerWeek
-      : 0;
+    if (Number.isNaN(start.getTime())) return 0;
+    let total = 0;
+    for (let index = 0; index < this.selectedWeeks; index += 1) {
+      const weekStart = new Date(start); weekStart.setDate(start.getDate() + index * 7);
+      const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 6);
+      if (ranges.some(([from, to]) => weekStart <= to && weekEnd >= from)) {
+        total += associationPeakRateForWeek('BECI', weekStart.toISOString().slice(0, 10), this.seasonalFeePerWeek);
+      }
+    }
+    return total;
   }
 
   get quoteUsd(): number {
@@ -847,6 +855,9 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
 
     if (start >= peakStart && start <= peakEnd) {
       return '当前入学日期落在公开2026暑期旺季区间，报价器已按USD 40/周计入旺季附加费。';
+    }
+    if (start >= new Date('2027-06-27T00:00:00') && start <= new Date('2027-08-22T23:59:59')) {
+      return '当前方案覆盖2027/06/27–08/22暑期旺季，报价器已按每个实际重叠学习周USD 60计入旺季附加费。';
     }
 
     return this.selectedWeeks >= 12

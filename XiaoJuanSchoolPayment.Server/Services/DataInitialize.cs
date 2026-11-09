@@ -401,6 +401,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "走读 / Walk-in", 1, 0m, "只参加课程、不住宿；按各课程官方走读每周价计费", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "一次性费用；老学员免收；ALL IN ONE已经包含；不参与淡季折扣", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28每名学生每个实际重叠学习周加收60美元；同一周课程与住宿只计一次；不参与任何优惠", now);
       UpsertFee(context, schoolId, "未成年管理费", 100m, UsdCurrencyId, "8至17岁无家长同行时每4周100美元；5至7岁须有家长或监护人同行", now);
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "每6个月；更换学校通常需要重新办理", now);
       UpsertFee(context, schoolId, "SSP E-Card", 4500m, PhpCurrencyId, "一次性办理", now);
@@ -594,7 +595,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "12周额外优惠", 100m, UsdCurrencyId, "每名学生课程累计满12周额外减100美元一次；旺季期间仍可使用", now);
       UpsertFee(context, schoolId, "长期优惠", 100m, UsdCurrencyId, "每名学生课程累计16周减100美元，之后每增加2周多减25美元；旺季期间仍可使用", now);
       UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/06/28–08/22每名学生每个重叠学习周加收40美元；同一周课程与住宿只计一次；Family Course除外；不参与优惠", now);
-      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/21每名学生每个重叠学习周加收60美元；同一周课程与住宿只计一次；Family Course除外；不参与优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28每名学生每个重叠学习周加收60美元；同一周课程与住宿只计一次；Family Course除外；不参与优惠", now);
 
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "与本次学习时间对应；续费需要重新办理", now);
       UpsertFee(context, schoolId, "SSP-E CARD", 4500m, PhpCurrencyId, "1年有效期", now);
@@ -1604,7 +1605,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "校外公寓三人房", 4, 890m, "Azon Condo三人房；接送、门禁和空房需顾问确认", now);
 
       UpsertFee(context, schoolId, "注册费", 120m, UsdCurrencyId, "每人固定120美元，一次性收取", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "暑期附加费40美元/周，按每名学生实际重叠学习周计收；仅确认2026/07/05（周日）–08/29（周六）；同一周课程与住宿只计一次；不参与优惠。2027具体日期待学校确认", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/07/05–08/29按每名学生实际重叠学习周计收40美元；同一周课程与住宿只计一次；不参与优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28按每名学生实际重叠学习周计收60美元；同一周课程与住宿只计一次；不参与任何优惠", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "特别学习许可；按报名学习时长办理，续费及换校需重新办理", now);
       UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "入学时与SSP同时办理，只收一次", now);
       UpsertFee(context, schoolId, "接机费", 1200m, PhpCurrencyId, "到校支付费用；周末接机参考，平日接机通常更高", now);
@@ -1711,7 +1713,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "常规淡季优惠", 150m, UsdCurrencyId, "前期支付优惠；2026/12/31前注册，未覆盖2026/6/28-8/22旺季的课程每满4周减USD 150", now);
       UpsertFee(context, schoolId, "12周以上额外优惠", 100m, UsdCurrencyId, "前期支付优惠；学习12周及以上一次性减USD 100", now);
       UpsertFee(context, schoolId, "长期优惠", 100m, UsdCurrencyId, "前期支付优惠；16周减USD 100，之后每增加2周叠加USD 25，可与其他优惠叠加", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；仅确认2026/6/28-8/22，按每名学生实际重叠学习周收取USD40/周；同一周课程与住宿只计一次；不参与优惠。2027具体日期待学校确认", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22按每名学生实际重叠学习周收取USD40/周；同一周课程与住宿只计一次；不参与优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "前期支付费用；2027/6/27-8/22按每名学生实际重叠学习周收取USD60/周；同一周课程与住宿只计一次；不参与优惠，旺季课程不享常规淡季优惠", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；一次办理通常有效6个月，更换学校需重新办理", now);
       UpsertFee(context, schoolId, "SSP-E Card", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，一次性费用", now);
       UpsertFee(context, schoolId, "ACR-I Card", 4000m, PhpCurrencyId, "到校支付费用；第一次签证续签时预计办理，以学校及移民局要求为准", now);
@@ -1760,7 +1763,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string beciLessonNote = "API BECI 2026年4周USD费用参考；所有思达学生优惠USD 100注册费；1/2/3周课程费和住宿费均按4周价的40%/60%/80%计算；2026/2/8-6/14或2026/9/6-12/27入学，整段课程费与住宿费9折；8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，可与淡季优惠叠加；仅确认2026/6/28-8/22按每名学生的实际重叠学习周收取USD 40，课程与住宿同周只计一次且不参与优惠；2027费率为USD 60/周，具体日期待学校确认；最终以学校正式报价为准";
+      const string beciLessonNote = "API BECI 2026年4周USD费用参考；所有思达学生优惠USD 100注册费；1/2/3周课程费和住宿费均按4周价的40%/60%/80%计算；2026/2/8-6/14或2026/9/6-12/27入学，整段课程费与住宿费9折；8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，可与淡季优惠叠加；2026/6/28-8/22按每名学生的实际重叠学习周收取USD40，2027/6/27-8/22收取USD60，课程与住宿同周只计一次且不参与优惠；最终以学校正式报价为准";
 
       RemoveLesson(context, schoolId, "EOP Working Holiday", 4);
       RemoveLesson(context, schoolId, "City SPEED ESL", 4);
@@ -1832,7 +1835,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "思达免注册费优惠", 100m, UsdCurrencyId, "前期支付优惠；所有通过思达报名的学生均优惠USD 100注册费", now);
       UpsertFee(context, schoolId, "2026淡季折扣", 0.9m, UsdCurrencyId, "前期支付优惠；2026/2/8-6/14或2026/9/6-12/27入学，整段课程费与住宿费按9折计算", now);
       UpsertFee(context, schoolId, "长期优惠", 50m, UsdCurrencyId, "前期支付优惠；8/12/16/20/24周分别减USD 50/100/200/300/400；淡季9折后再扣减", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；仅确认2026/6/28-8/22，按每名学生实际重叠学习周收取USD40/周；同一周课程与住宿只计一次，不参与折扣。2027具体日期待学校确认", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；2026/6/28-8/22按每名学生实际重叠学习周收取USD40/周；同一周课程与住宿只计一次，不参与折扣", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "前期支付费用；2027/6/27-8/22按每名学生实际重叠学习周收取USD60/周；同一周课程与住宿只计一次，不参与任何优惠", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，通常到校支付", now);
       UpsertFee(context, schoolId, "SSP E-Card", 4500m, PhpCurrencyId, "到校支付费用；与SSP相关的电子卡申请费用", now);
       UpsertFee(context, schoolId, "ACR I-Card", 4000m, PhpCurrencyId, "到校支付费用；长期学习或延签时通常需要", now);
@@ -1940,6 +1944,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；每位新生一次性USD 100；老学员、在校延长及通过思达报名12周以上学生免收", now);
       UpsertFee(context, schoolId, "1-3周短期课程与住宿比例", 40m, UsdCurrencyId, "学校2026年5月价目表：1周40%、2周65%、3周85%，均按对应4周课程费与住宿费计算", now);
       UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "前期支付费用；仅2026/06/28-08/22实际就读的课程周按USD 40/周收取", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "前期支付费用；2027/06/27–08/22按每名学生实际重叠学习周收取USD60/周；同一周课程与住宿只计一次，不参与任何优惠", now);
       UpsertFee(context, schoolId, "2026下半年淡季四人房优惠", 150m, UsdCurrencyId, "到校日2026/08/23-2027/01/09；每完整4周减USD 150；最低4周，不适用于在校延长", now);
       UpsertFee(context, schoolId, "2026下半年淡季单人双人房优惠", 50m, UsdCurrencyId, "到校日2026/08/23-2027/01/09；每完整4周减USD 50；最低4周，不适用于在校延长", now);
       UpsertFee(context, schoolId, "2027淡季四人房优惠", 100m, UsdCurrencyId, "到校日2027/02/21-06/26或2027/08/22-2028/01/08；每完整4周减USD 100；不适用于在校延长", now);
@@ -2035,9 +2040,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "前期支付费用；MONOL 2026年价目表列出的一次性注册费", now);
       UpsertFee(context, schoolId, "思达免注册费优惠", 100m, UsdCurrencyId, "前期支付优惠；通过思达报名免100美元注册费", now);
-      UpsertFee(context, schoolId, "淡季课程优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周课程费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/21不适用", now);
-      UpsertFee(context, schoolId, "淡季住宿优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周住宿费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/21不适用", now);
-      UpsertFee(context, schoolId, "SNS单人房活动优惠", 100m, UsdCurrencyId, "前期支付优惠；2026/12/31或之前报名，仅标准单人间和小单间，每完整4周减100美元；任一指定社交平台发布一篇在校故事；2027/6/27—8/21不适用，活动可能提前关闭", now);
+      UpsertFee(context, schoolId, "淡季课程优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周课程费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/22不适用", now);
+      UpsertFee(context, schoolId, "淡季住宿优惠", 100m, UsdCurrencyId, "前期支付优惠；每满4周住宿费减100美元；2026/12/31或之前报名并在主校区学习及住宿；2027/6/27—8/22不适用", now);
+      UpsertFee(context, schoolId, "SNS单人房活动优惠", 100m, UsdCurrencyId, "前期支付优惠；2026/12/31或之前报名，仅标准单人间和小单间，每完整4周减100美元；任一指定社交平台发布一篇在校故事；2027/6/27—8/22不适用，活动可能提前关闭", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/22按每名学生实际重叠学习周收取60美元；同一周课程与住宿只计一次；不参与任何优惠", now);
       UpsertFee(context, schoolId, "淡季工作日早餐", 0m, UsdCurrencyId, "优惠说明；2027/12/31前上课日提供免费早餐，周末及节假日除外", now);
       UpsertFee(context, schoolId, "16周长住优惠", 150m, UsdCurrencyId, "2026/9/7—12/31报名，在主校区学习及住宿16周；取消或缩短学期则失效", now);
       UpsertFee(context, schoolId, "20周长住优惠", 200m, UsdCurrencyId, "2026/9/7—12/31报名，在主校区学习及住宿20周；取消或缩短学期则失效", now);
@@ -2117,6 +2123,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "2026课程优惠", 100m, UsdCurrencyId, "2026/12/31或之前报名并在斯巴达校区学习与住宿，每完整4周课程费减100美元", now);
       UpsertFee(context, schoolId, "2026住宿优惠", 100m, UsdCurrencyId, "2026/12/31或之前报名并在斯巴达校区学习与住宿，每完整4周住宿费减100美元", now);
       UpsertFee(context, schoolId, "2026 SNS活动", 100m, UsdCurrencyId, "2026/12/31或之前报名并在校学习、住宿；每完整4周在小红书、TikTok、Facebook、Messenger、Instagram、Google Map、Threads等平台发布1条在校故事减100美元；所有房型适用，活动会按报名人数随时结束，叠加资格须确认", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/22按每名学生实际重叠学习周收取60美元；同一周课程与住宿只计一次；不参与任何优惠", now);
       UpsertFee(context, schoolId, "宿舍押金", 100m, UsdCurrencyId, "可退；退还以房间无损坏、无欠费及校规为准，不计入学杂费合计", now);
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "适用于1–24周", now);
       UpsertFee(context, schoolId, "SSP ACR I-CARD", 4500m, PhpCurrencyId, "所有学生均须办理，不因学习周数改变", now);
@@ -2254,6 +2261,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "报名费", 100m, UsdCurrencyId, "前期支付费用；WALES 2026年价目表列示的一次性100美元报名费", now);
       UpsertFee(context, schoolId, "2026年末住宿六折优惠", 0m, UsdCurrencyId, "优惠说明；2026/11/29入学4或6周、或12/13入学4周，所有房型住宿费六折；限10名，在校生不适用，不与其他优惠叠加", now);
       UpsertFee(context, schoolId, "长周数优惠", 0m, UsdCurrencyId, "优惠说明；2025/08/01后注册，并按公告四周一期的BESA开学日（网页按前一天周日抵达）入学，8/12/16/20/24周分别减200/300/400/550/700美元；2026/06/28–08/08旺季每重叠2周减少50美元优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/22按每名学生实际重叠学习周收取60美元；同一周课程与住宿只计一次；不参与任何优惠", now);
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "到校支付费用；一次性费用", now);
       UpsertFee(context, schoolId, "SSP I-CARD", 4500m, PhpCurrencyId, "到校支付费用；一次性费用", now);
       UpsertFee(context, schoolId, "签证续签（首次）", 6410m, PhpCurrencyId, "到校支付费用；按59天初始停留估算，首次延长30天", now);
@@ -2471,7 +2479,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "每位学生一次性100美元；通过思达报名免收", now);
       UpsertFee(context, schoolId, "思达95折", 0m, UsdCurrencyId, "先扣除A&J符合条件的固定优惠，再对剩余课程费和住宿费打95折；本项为比例规则，不是固定金额", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "仅确认2026/06/28–08/22；按每名学生实际重叠学习周每周40美元，同一周课程与住宿只计一次，不参与优惠。2027具体日期待学校确认", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/06/28–08/22按每名学生实际重叠学习周每周40美元，同一周课程与住宿只计一次，不参与优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/22按每名学生实际重叠学习周每周60美元，同一周课程与住宿只计一次，不参与任何优惠", now);
       UpsertFee(context, schoolId, "A&J新生常规优惠", 0m, UsdCurrencyId, "按入学日和累计课程周自动匹配：2026年7月、8–11月、12月至2027年2月各有不同4/8/12/16/20/24周固定档；详见公开报价页", now);
       UpsertFee(context, schoolId, "A&J生日优惠", 100m, UsdCurrencyId, "新生报名至少4周并提交生日证明；报名日须不早于2025/12/15；2026按季度出生日期尾数，2027起生日月份须与入学月份相同", now);
       UpsertFee(context, schoolId, "A&J淡季优惠", 100m, UsdCurrencyId, "2026/08/23–2027/01/09每完整4课程周减100美元；2027/03/01–06/20每完整4课程周减300美元；按入学日适用", now);

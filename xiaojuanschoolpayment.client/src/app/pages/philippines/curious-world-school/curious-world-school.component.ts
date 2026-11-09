@@ -1,4 +1,5 @@
 import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
@@ -609,8 +610,21 @@ export class CuriousWorldSchoolComponent {
     return this.feeFor(this.selectedCourseId, this.selectedRoomId, this.selectedWeeks);
   }
 
+  get peakSeasonSurcharge(): number {
+    const start = new Date(`${this.selectedStartDate}T00:00:00`);
+    if (Number.isNaN(start.getTime())) return 0;
+    const weekStarts = Array.from({ length: this.selectedWeeks }, (_, index) => {
+      const value = new Date(start);
+      value.setDate(value.getDate() + index * 7);
+      return value.getTime();
+    });
+    return calculateAssociationPeakSurcharge('CWA', weekStarts, [
+      { start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ], 60).total;
+  }
+
   get quoteUsd(): number {
-    return this.registrationFee + this.selectedPackageFee;
+    return this.registrationFee + this.selectedPackageFee + this.peakSeasonSurcharge;
   }
 
   get quoteUsdText(): string {
@@ -628,6 +642,10 @@ export class CuriousWorldSchoolComponent {
 
     if (Number.isNaN(start.getTime())) {
       return '入学日期需要和学校确认，旺季加价、假期和空房会影响最终报价。';
+    }
+
+    if (this.peakSeasonSurcharge > 0) {
+      return `已按2027/07/04–08/28实际重叠学习周计入旺季附加费 ${this.peakSeasonSurcharge} 美元（60美元／周）。`;
     }
 
     const isPeakSeason = this.isBetween(start, '2026-06-29', '2026-08-30');

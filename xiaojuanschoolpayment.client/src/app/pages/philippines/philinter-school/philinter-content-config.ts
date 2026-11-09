@@ -60,7 +60,7 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
     peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
     peakSeasonRanges: [
       { id: 'summer-2026', label: '2026暑期', start: '2026-07-05', end: '2026-08-29', enabled: true },
-      { id: 'summer-2027', label: '2027暑期（历史预估，待学校确认）', start: '2027-07-04', end: '2027-08-28', enabled: false },
+      { id: 'summer-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
     ],
     promotions: [
       { id: 'philinter-sida-90', name: '思达启航折扣', description: '课程费及住宿费9折；注册费、附加费不打折。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
@@ -116,10 +116,10 @@ export const clonePhilinterContentConfig = (value: CiaContentConfig): CiaContent
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= defaults.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
   if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
-    clone.quoteSettings.peakSeasonRanges = clone.quoteSettings.peakSeasonRanges.map(range =>
-      range.id === 'summer-2027' || range.label.includes('预估')
-        ? { ...range, label: '2027暑期（历史预估，待学校确认）', enabled: false }
-        : range);
+    const confirmed = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'summer-2027')!;
+    const saved = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'summer-2027' || range.label.includes('2027') || range.label.includes('预估'));
+    if (saved) Object.assign(saved, confirmed);
+    else clone.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
     clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
   clone.quoteSettings.promotions ??= defaults.quoteSettings.promotions.map(item => ({ ...item }));

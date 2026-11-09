@@ -276,6 +276,9 @@ describe('CG Banilad verified quote', () => {
     expect(component.summerWeeks).toBe(4);
     expect(component.summerSurcharge).toBe(160);
     expect(component.quoteUsd).toBe(1475);
+    component.selectedStartDate = '2027-07-04';
+    expect(component.summerWeeks).toBe(4);
+    expect(component.summerSurcharge).toBe(240);
     component.selectedStartDate = '2026-06-07';
     expect(component.summerWeeks).toBe(0);
     component.selectedStartDate = '2026-06-08';

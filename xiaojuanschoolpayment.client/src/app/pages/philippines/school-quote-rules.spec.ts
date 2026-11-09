@@ -258,6 +258,17 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
     expect(calculateAssociationPeakSurcharge('EV', [sunday('2027-07-04')], ranges, 40).total).toBe(60);
   });
 
+  it('applies the 2027 association rate to every named BESA and CALA brand code', () => {
+    const codes = [
+      'ANJ', 'BECI', 'MONOL', 'MONOL-SPARTA', 'PINES', 'JIC', 'WALES',
+      'BLUE-OCEAN', 'BTES', 'CWA', 'CELLA-UNI', 'CELLA-PREMIUM', 'CG-BANILAD', 'CG-SPARTA',
+      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING',
+    ];
+    for (const code of codes) {
+      expect(associationPeakRateForWeek(code, '2027-07-04', 40)).withContext(code).toBe(60);
+    }
+  });
+
   it('charges only unique overlapping weeks across course and accommodation segments', () => {
     const weeks = [sunday('2027-06-27'), sunday('2027-07-04'), sunday('2027-07-04'), sunday('2027-07-11'), sunday('2027-08-29')];
     const result = calculateAssociationPeakSurcharge('CELLA-UNI', weeks, ranges, 40);

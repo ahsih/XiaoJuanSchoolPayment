@@ -22,6 +22,7 @@ import {
   ANJ_CONTINUATION_PERIODS,
   ANJ_NEW_PROMOTION_PERIODS,
   ANJ_PEAK_SEASON_RANGES,
+  ANJ_PEAK_2027_RANGE,
   ANJ_REGISTRATION_FEE,
   ANJ_ROOMS,
   ANJ_SEASONAL_FEE_PER_WEEK,
@@ -129,7 +130,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   birthdayRegistrationStart = ANJ_BIRTHDAY_REGISTRATION_START;
   sidaDiscountRate = ANJ_SIDA_DISCOUNT_RATE;
   seasonalFeePerWeek = ANJ_SEASONAL_FEE_PER_WEEK;
-  peakSeasonRanges: Array<{ label: string; start: string; end: string }> = ANJ_PEAK_SEASON_RANGES.map(item => ({ ...item }));
+  peakSeasonRanges: Array<{ label: string; start: string; end: string }> = [...ANJ_PEAK_SEASON_RANGES, ANJ_PEAK_2027_RANGE].map(item => ({ ...item }));
   localFeeRules: CiaLocalFeeRule[] = structuredClone(this.currentContentConfig.localFees);
   localFeeIntro = this.currentContentConfig.quoteSettings.localFeeIntro;
   quoteImageSettings: CiaQuoteImageSettings = structuredClone(this.currentContentConfig.quoteImageSettings);

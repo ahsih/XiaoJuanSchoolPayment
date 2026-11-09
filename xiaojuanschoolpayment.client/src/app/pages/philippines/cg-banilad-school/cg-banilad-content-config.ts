@@ -1,4 +1,5 @@
 import { CiaContentConfig, CiaCourseContent, CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 
 const course = (id: string, name: string, tuition: number, schedule: string, suitable: string, sortOrder: number): CiaCourseContent => ({
   id, name, tuition, tuition2027: tuition, schedule, suitable, note: suitable, enabled: true, sortOrder,
@@ -57,7 +58,11 @@ export const createDefaultCgBaniladContentConfig = (): CiaContentConfig => ({
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '',
     shortStayRatios: { '3': 0.85 },
     peakSeasonFeePerWeek: 40,
-    peakSeasonRanges: [{ id: 'summer-2026', label: '2026暑期', start: '2026-07-05', end: '2026-08-30', enabled: true }],
+    peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+    peakSeasonRanges: [
+      { id: 'summer-2026', label: '2026暑期', start: '2026-07-05', end: '2026-08-30', enabled: true },
+      { id: 'summer-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ],
     promotions: [
       { id: 'cg-banilad-sida-90', name: '思达折扣', description: '课程费和住宿费享9折。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       { id: 'cg-banilad-off-season', name: '淡季优惠', description: '2026/08/30–2026/12/27入学，每满4周优惠150美元。', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, incrementWeeks: 4, incrementValue: 150, coverageStart: '2026-08-30', coverageEnd: '2026-12-27', coverageTarget: 'course' },
@@ -113,6 +118,12 @@ export const cloneCgBaniladContentConfig = (value: CiaContentConfig): CiaContent
   }
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= defaults.quoteSettings.peakSeasonRanges.map(item => ({ ...item }));
+  if ((clone.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'summer-2027')!;
+    const saved = clone.quoteSettings.peakSeasonRanges.find(range => range.id === confirmed.id || range.label.includes('2027'));
+    if (saved) Object.assign(saved, confirmed); else clone.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
+    clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   clone.quoteSettings.promotions ??= defaults.quoteSettings.promotions.map(item => ({ ...item }));
   clone.quoteSettings.stayPolicies ??= defaults.quoteSettings.stayPolicies.map(item => ({ ...item }));
   clone.quoteSettings.extraNightRates ??= [];

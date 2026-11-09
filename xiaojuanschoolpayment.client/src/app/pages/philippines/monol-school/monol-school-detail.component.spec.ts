@@ -196,4 +196,12 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(cloneMonolContentConfig(upgraded).quoteSettings.promotions.find(rule => rule.id === 'monol-sns')?.enabled).toBeFalse();
   });
 
+  it('charges the 2027 BESA peak once for overlapping course and room weeks', () => {
+    component.selectedStartDate = '2027-06-27';
+    component.selectedWeeks = 4;
+    expect(component.students[0].peakWeeks).toBe(4);
+    expect(component.students[0].seasonalSurcharge).toBe(240);
+    expect(component.quoteImageData.paymentItems?.find(item => item.label === '旺季附加费')?.amount).toBe('240 美元');
+  });
+
 });

@@ -83,15 +83,19 @@ describe('new unified employee school content configs', () => {
     expect(cloneCellaContentConfig(config, 'uni').quoteImageSettings.alumniBenefitText).toBe('');
   });
 
-  it('disables only historical unconfirmed 2027 peak dates in old published content', () => {
+  it('upgrades previously unconfirmed association dates to the confirmed 2027 policy', () => {
     const anj = createDefaultAnjContentConfig(); delete anj.quoteSettings.peakSeasonPolicyVersion; Object.assign(anj.quoteSettings.peakSeasonRanges.at(-1)!, { id: 'anj-peak-2', label: '2027旺季（按相同8周星期推算）', enabled: true });
     const beci = createDefaultBeciContentConfig(); delete beci.quoteSettings.peakSeasonPolicyVersion; beci.quoteSettings.peakSeasonRanges.at(-1)!.enabled = true;
-    const pines = createDefaultPinesContentConfig(); delete pines.quoteSettings.peakSeasonPolicyVersion; pines.quoteSettings.peakSeasonRanges.at(-1)!.enabled = true;
     const philinter = createDefaultPhilinterContentConfig(); delete philinter.quoteSettings.peakSeasonPolicyVersion; philinter.quoteSettings.peakSeasonRanges.at(-1)!.enabled = true;
-    expect(cloneAnjContentConfig(anj).quoteSettings.peakSeasonRanges.at(-1)!.enabled).toBeFalse();
-    expect(cloneBeciContentConfig(beci).quoteSettings.peakSeasonRanges.at(-1)!.enabled).toBeFalse();
-    expect(clonePinesContentConfig(pines).quoteSettings.peakSeasonRanges.at(-1)!.enabled).toBeFalse();
-    expect(clonePhilinterContentConfig(philinter).quoteSettings.peakSeasonRanges.at(-1)!.enabled).toBeFalse();
+    expect(cloneAnjContentConfig(anj).quoteSettings.peakSeasonRanges.at(-1)).toEqual(
+      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-22', enabled: true }),
+    );
+    expect(cloneBeciContentConfig(beci).quoteSettings.peakSeasonRanges.at(-1)).toEqual(
+      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-22', enabled: true }),
+    );
+    expect(clonePhilinterContentConfig(philinter).quoteSettings.peakSeasonRanges.at(-1)).toEqual(
+      jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
+    );
   });
 
   it('upgrades EV published discount scope without changing unrelated copy', () => {
@@ -114,15 +118,23 @@ describe('new unified employee school content configs', () => {
     const ev = createDefaultEvContentConfig();
     delete ev.quoteSettings.peakSeasonPolicyVersion;
     ev.quoteSettings.peakSeasonRanges = [];
+    const pines = createDefaultPinesContentConfig();
+    pines.quoteSettings.peakSeasonPolicyVersion = 20271026;
+    Object.assign(pines.quoteSettings.peakSeasonRanges.find(range => range.id === 'pines-peak-2027')!, {
+      label: '2027旺季（历史推算，待学校确认）', enabled: false,
+    });
 
     expect(cloneBlueOceanContentConfig(blue).quoteSettings.peakSeasonRanges.find(range => range.id === '2027')).toEqual(
-      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-21', enabled: true }),
+      jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
     );
     expect(cloneCellaContentConfig(cella, 'premium').quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027')).toEqual(
       jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
     );
     expect(cloneEvContentConfig(ev).quoteSettings.peakSeasonRanges.find(range => range.id === 'ev-peak-2027')).toEqual(
       jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
+    );
+    expect(clonePinesContentConfig(pines).quoteSettings.peakSeasonRanges.find(range => range.id === 'pines-peak-2027')).toEqual(
+      jasmine.objectContaining({ label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true }),
     );
   });
 

@@ -140,4 +140,12 @@ describe('MONOL Sparta independent pricing and quote', () => {
     expect(component.galleryImages.find(item => item.src === '/uploads/sparta-room.webp')?.category).toBe('高级单人间');
     expect(component.galleryImages.some(item => item.src === '/uploads/hidden.webp')).toBeFalse();
   });
+
+  it('charges the 2027 BESA peak once for overlapping course and room weeks', () => {
+    component.selectedStartDate = '2027-06-27';
+    component.selectedWeeks = 4;
+    expect(component.students[0].peakWeeks).toBe(4);
+    expect(component.students[0].seasonalSurcharge).toBe(240);
+    expect(component.quoteImageData.paymentItems?.find(item => item.label === '旺季附加费')?.amount).toBe('240 美元');
+  });
 });

@@ -92,6 +92,8 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   readonly sidaDiscountRate = BTES_SIDA_DISCOUNT_RATE;
   readonly lowSeasonPeriods = BTES_LOW_SEASON_PERIODS;
   readonly holidays = BTES_HOLIDAYS_2026;
+  get peakSeasonFeePerWeek() { return this.contentConfig.quoteSettings.peakSeasonFeePerWeek; }
+  get peakSeasonRanges() { return this.contentConfig.quoteSettings.peakSeasonRanges.filter(item => item.enabled); }
 
   readonly students: BtesStudentQuote[] = [new BtesStudentQuote(this)];
   quoteMode: 'single' | 'group' = 'single';

@@ -21,6 +21,7 @@ describe('PHILINTER supplied catalog and quote rules', () => {
   const setStudentWeeks = (index: number, weeks: number) => {
     const plan = c.students[index].calculator.plan;
     plan.courses[0].weeks = plan.rooms[0].weeks = weeks;
+    plan.courses[0].startDate = plan.rooms[0].startDate = c.quotePlan.startDate;
   };
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [
@@ -233,12 +234,12 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.optionalFeeItems[0].amount).toBe('2,700 比索');
     expect(c.optionalFeeItems[0].note).toContain('2人选择接机');
   });
-  it('keeps the historical 2027 estimate disabled instead of inventing dates', () => {
+  it('charges the confirmed 2027 CALA period at 60 dollars per covered week', () => {
     expect(c.quoteError).toBe('');
     expect(c.policyNotes.join(' ')).not.toContain('至少8周');
-    setPlan(4, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(0);
+    setPlan(4, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(240);
     c.quotePlan.rooms[0].optionId = 'azon-twin'; expect(c.quoteError).toBe('');
-    setPlan(3, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(0);
+    setPlan(3, '2027-07-04'); expect(c.quoteError).toBe(''); expect(c.seasonalSurcharge).toBe(180);
   });
   it('keeps the confirmed 2026 summer at eight weeks from Sunday through Saturday', () => {
     for (const period of PHILINTER_SUMMER_PERIODS) {
@@ -264,8 +265,8 @@ describe('PHILINTER supplied catalog and quote rules', () => {
     expect(c.quoteImageData.paymentItems.find(row => row.label === '暑期附加费')?.note).toContain('40美元／周');
     c.quotePlan.courses = [{ id: 1, optionId: 'light-esl', weeks: 4, startDate: '2027-05-30' }];
     c.quotePlan.rooms[0].startDate = '2027-07-04';
-    expect(c.seasonalSurcharge).toBe(0);
-    expect(c.quoteImageData.paymentItems.some(row => row.label === '暑期附加费')).toBeFalse();
+    expect(c.seasonalSurcharge).toBe(480);
+    expect(c.quoteImageData.paymentItems.find(row => row.label === '暑期附加费')?.amount).toBe('480 美元');
   });
   it('keeps every image row, dates, local fee note and optional renminbi amount', () => {
     for (let i = 0; i < 3; i++) c.quotePlan.add('course');

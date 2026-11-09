@@ -1164,7 +1164,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
         ...warnings,
         ...shortStayNotes,
         '4周以上按对应4周价格和实际周数等比例计算；每段课程及住宿最多24周。',
-        '2027年统一费率为60美元／周，但具体旺季日期待学校确认；未确认前不自动计费。',
+        '2027/06/27–08/22按60美元／周计收；同一周课程与住宿只计一次，旺季课程不享常规淡季优惠。',
         '最终以学校确认的价格、空房及优惠为准。',
       ],
     }, 'PINES', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);

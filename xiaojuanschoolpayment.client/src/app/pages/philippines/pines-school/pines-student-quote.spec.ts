@@ -28,7 +28,7 @@ const prices = {
   seasonalFeePerWeek: 40,
   peakSeasonRanges: [
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
-    { label: '2027旺季', start: '2027-06-27', end: '2027-08-21' },
+    { label: '2027旺季', start: '2027-06-27', end: '2027-08-22' },
   ],
   shortStayRatios: { '2': 0.65, '3': 0.85 },
   localFeeRules: defaultContent.localFees,

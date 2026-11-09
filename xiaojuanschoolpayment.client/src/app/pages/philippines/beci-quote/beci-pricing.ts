@@ -101,8 +101,8 @@ export const BECI_WEEK_OPTIONS = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24] as const;
 export const BECI_PEAK_RANGES = [
   { start: '2026-06-28', end: '2026-08-22', label: '2026/06/28–08/22' },
 ] as const;
-export const BECI_UNCONFIRMED_2027_PEAK_RANGE =
-  { start: '2027-06-27', end: '2027-08-21', label: '2027暑期（历史推算，待学校确认）' } as const;
+export const BECI_PEAK_2027_RANGE =
+  { start: '2027-06-27', end: '2027-08-22', label: '2027暑期旺季' } as const;
 export const BECI_OFF_SEASON_RANGES = [
   { start: '2026-02-08', end: '2026-06-14' },
   { start: '2026-09-06', end: '2026-12-27' },

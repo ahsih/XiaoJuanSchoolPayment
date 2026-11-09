@@ -109,17 +109,17 @@ describe('CebuBlueOceanSchoolComponent pricing', () => {
     component.selectedStartDate = '2027-07-11';
     const student = component.students[0];
 
-    expect(student.peakWeeks).toBe(6);
-    expect(student.seasonalSurcharge).toBe(360);
+    expect(student.peakWeeks).toBe(7);
+    expect(student.seasonalSurcharge).toBe(420);
     expect(student.offSeasonBlocks).toBe(3);
     expect(student.offSeasonDiscount).toBe(450);
     expect(student.twelveWeekDiscount).toBe(100);
     expect(student.longStayDiscount).toBe(150);
     expect(student.sidaDiscount).toBe(522.5);
-    expect(student.quoteUsd).toBe(9587.5);
+    expect(student.quoteUsd).toBe(9647.5);
     const imageRow = component.quoteImageData.paymentItems.find(row => row.label === '旺季附加费');
-    expect(imageRow?.amount).toBe('360 美元');
-    expect(imageRow?.note).toContain('60美元／周 × 6周');
+    expect(imageRow?.amount).toBe('420 美元');
+    expect(imageRow?.note).toContain('60美元／周 × 7周');
   });
 
   it('uses cumulative visa-extension estimates for 30- and 59-day visas', () => {

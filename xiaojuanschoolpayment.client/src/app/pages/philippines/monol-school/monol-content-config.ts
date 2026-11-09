@@ -5,6 +5,7 @@ import {
   CiaQuoteImageSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 
 const course = (
   id: string,
@@ -111,12 +112,13 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
       futurePriceRegistrationStart: '',
       futurePriceArrivalStart: '',
       shortStayRatios: { '2': 0.5, '3': 0.75 },
-      peakSeasonFeePerWeek: 0,
-      peakSeasonRanges: [],
+      peakSeasonFeePerWeek: 60,
+      peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+      peakSeasonRanges: [{ id: 'monol-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true }],
       promotions: [
         { id: 'monol-registration-waiver', name: '思达注册费优惠', description: '所有通过思达报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
-        ...(['course', 'room'] as const).map((kind, index) => ({ id: `monol-off-season-${kind}-2026`, name: kind === 'course' ? '淡季课程优惠' : '淡季住宿优惠', description: '2026年12月31日或之前报名并在MONOL主校区学习及住宿，每完整4周减100美元；2027年6月27日至8月21日不适用。' + (kind === 'course' ? 'IELTS的100美元及LEAP的250美元学术费不减免。' : ''), enabled: true, sortOrder: index + 1, priority: 20 + index, stackable: true, newStudentsOnly: false, discountType: 'fixed' as const, discountValue: 100, appliesTo: kind === 'course' ? 'tuition' as const : 'accommodation' as const, waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' as const })),
-        { id: 'monol-sns', name: 'SNS特别活动', description: '2026年12月31日或之前报名，仅标准单人间及小单间（Semi-single）每完整4周减100美元；须在Instagram、个人博客、Facebook、Threads、小红书或TikTok等一个平台发布一篇在校故事。2027年6月27日至8月21日不适用；活动可能提前关闭，报名时须确认。', enabled: true, sortOrder: 3, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', eligibleRoomIds: ['standard-single-room', 'small-single-room'] },
+        ...(['course', 'room'] as const).map((kind, index) => ({ id: `monol-off-season-${kind}-2026`, name: kind === 'course' ? '淡季课程优惠' : '淡季住宿优惠', description: '2026年12月31日或之前报名并在MONOL主校区学习及住宿，每完整4周减100美元；2027年6月27日至8月22日不适用。' + (kind === 'course' ? 'IELTS的100美元及LEAP的250美元学术费不减免。' : ''), enabled: true, sortOrder: index + 1, priority: 20 + index, stackable: true, newStudentsOnly: false, discountType: 'fixed' as const, discountValue: 100, appliesTo: kind === 'course' ? 'tuition' as const : 'accommodation' as const, waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' as const })),
+        { id: 'monol-sns', name: 'SNS特别活动', description: '2026年12月31日或之前报名，仅标准单人间及小单间（Semi-single）每完整4周减100美元；须在Instagram、个人博客、Facebook、Threads、小红书或TikTok等一个平台发布一篇在校故事。2027年6月27日至8月22日不适用；活动可能提前关闭，报名时须确认。', enabled: true, sortOrder: 3, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', eligibleRoomIds: ['standard-single-room', 'small-single-room'] },
         { id: 'monol-long-term', name: '长住优惠', description: '2026年9月7日至12月31日报名，学习及住宿16／20／24周分别减150／200／300美元；取消或缩短学习期间则失效。', enabled: true, sortOrder: 4, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 16, minimumAccommodationWeeks: 16, registrationStart: '2026-09-07', registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' },
         { id: 'monol-christmas', name: '圣诞新年优惠', description: '2026年11月29日至2027年1月10日周日抵达，在主校区学习及住宿至少4周，每人一次减100美元；学校保障假日期间学习日。', enabled: true, sortOrder: 5, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, arrivalStart: '2026-11-29', arrivalEnd: '2027-01-10', coverageTarget: 'none' },
       ],
@@ -162,6 +164,13 @@ export const cloneMonolContentConfig = (value: CiaContentConfig): CiaContentConf
       }
     }
     versioned.monolPromotionPolicyVersion = 20261008;
+  }
+  if ((versioned.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = defaults.quoteSettings.peakSeasonRanges[0];
+    const saved = versioned.peakSeasonRanges?.find(range => range.id === confirmed.id || range.label.includes('2027'));
+    if (saved) Object.assign(saved, confirmed); else (versioned.peakSeasonRanges ??= []).push(structuredClone(confirmed));
+    versioned.peakSeasonFeePerWeek = 60;
+    versioned.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
   const savedSettings = clone.quoteImageSettings;
   clone.quoteImageSettings = {

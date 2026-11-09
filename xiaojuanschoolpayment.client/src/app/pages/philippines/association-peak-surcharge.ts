@@ -1,7 +1,10 @@
 export const ASSOCIATION_PEAK_SURCHARGE_2026 = 40;
 export const ASSOCIATION_PEAK_SURCHARGE_FROM_2027 = 60;
-/** One-time Published-content migration introduced by the 2026-10-26 joint notice. */
-export const ASSOCIATION_PEAK_POLICY_VERSION = 20271026;
+/** User-confirmed activation of every range in the 2026-10-26 joint notice. */
+export const ASSOCIATION_PEAK_POLICY_VERSION = 20271109;
+
+export const BESA_PEAK_RANGE_2027 = { start: '2027-06-27', end: '2027-08-22' } as const;
+export const CALA_PEAK_RANGE_2027 = { start: '2027-07-04', end: '2027-08-28' } as const;
 
 export const ASSOCIATION_PEAK_SCHOOL_CODES = [
   'ANJ',
@@ -19,6 +22,9 @@ export const ASSOCIATION_PEAK_SCHOOL_CODES = [
   'CG-SPARTA',
   'EV',
   'PHILINTER',
+  'CWA',
+  'QQ-ENGLISH',
+  'WINNING',
 ] as const;
 
 export type AssociationPeakSchoolCode = (typeof ASSOCIATION_PEAK_SCHOOL_CODES)[number];

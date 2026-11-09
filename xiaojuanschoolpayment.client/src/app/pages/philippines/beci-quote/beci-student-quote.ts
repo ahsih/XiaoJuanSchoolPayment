@@ -6,6 +6,7 @@ import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from 
 import {
   BECI_OFF_SEASON_RANGES,
   BECI_PEAK_RANGES,
+  BECI_PEAK_2027_RANGE,
   BECI_WEEK_OPTIONS,
   BeciCampusPricing,
   beciLongStayDiscount,
@@ -237,7 +238,7 @@ export class BeciStudentQuote {
   }
 
   private get peakRanges(): Array<{ start: string; end: string }> {
-    return this.rules ? this.rules.peakSeasonRanges.filter(item => item.enabled) : [...BECI_PEAK_RANGES];
+    return this.rules ? this.rules.peakSeasonRanges.filter(item => item.enabled) : [...BECI_PEAK_RANGES, BECI_PEAK_2027_RANGE];
   }
 
   private priceMultiplier(weeks: number): number {

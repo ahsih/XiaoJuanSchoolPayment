@@ -83,11 +83,17 @@ describe('PinesSchoolDetailComponent pricing', () => {
     expect(component.quoteImageData.localFeeNote).toBe('PINES 到校后缴纳，金额以学校实收为准。');
   });
 
-  it('does not charge the historical 2027 estimate before the school confirms dates', () => {
+  it('charges the confirmed 2027 peak rate and suppresses the low-season discount', () => {
     component.selectedStartDate = '2027-06-27';
-    component.selectedWeeks = 4;
+    component.students[0].selectedRegistrationDate = '2026-11-08';
+    component.selectedWeeks = 8;
     const surcharge = component.quoteImageData.paymentItems.find(item => item.label.includes('旺季附加费'));
-    expect(component.seasonalSurcharge).toBe(0);
-    expect(surcharge).toBeUndefined();
+    const lowSeason = component.quoteImageData.paymentItems.find(item => item.label === '常规淡季优惠');
+    expect(component.peakSeasonWeeks).toBe(8);
+    expect(component.seasonalSurcharge).toBe(480);
+    expect(component.offSeasonDiscountAmount).toBe(0);
+    expect(surcharge?.amount).toBe('480 美元');
+    expect(surcharge?.note).toContain('60美元／周 × 8周');
+    expect(lowSeason).toBeUndefined();
   });
 });

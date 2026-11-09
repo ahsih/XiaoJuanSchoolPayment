@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
 import { BeciQuoteCalculatorComponent } from './beci-quote-calculator.component';
 import { BECI_CAMPUS_PRICING } from './beci-pricing';
 import { BeciStudentQuote } from './beci-student-quote';
@@ -57,6 +58,7 @@ describe('BECI confirmed 2026 quote rules', () => {
 
     setPlan(student, 4, '2027-06-27');
     expect(student.peakWeeks).toBe(4);
+    expect(student.peakSurcharge).toBe(240);
   });
 
   it('uses the selected visa and pickup in the shared local fees', () => {
@@ -90,7 +92,7 @@ describe('BECI confirmed 2026 quote rules', () => {
 
   it('restricts the City couple rate to two spouses with matching Studio twin stays', () => {
     TestBed.configureTestingModule({
-      providers: [{ provide: ExchangeRateService, useValue: {} }],
+      providers: [{ provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({}) } }],
     });
     const component = TestBed.runInInjectionContext(() => new BeciQuoteCalculatorComponent());
     component.campus = 'city';
@@ -105,6 +107,7 @@ describe('BECI confirmed 2026 quote rules', () => {
     expect(component.activeStudents.every((student) => student.accommodation === 750)).toBeTrue();
     expect(component.quoteUsd).toBe(2840);
 
+    component.activeStudents[1].quotePlan.courses[0].startDate = '2027-01-17';
     component.activeStudents[1].quotePlan.rooms[0].startDate = '2027-01-17';
     expect(component.quoteError).toContain('相同的Studio双人间入住日期和周数');
   });

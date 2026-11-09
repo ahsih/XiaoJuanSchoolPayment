@@ -2,7 +2,11 @@ import { textbookGroups, textbookType } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
-import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
+import {
+  associationPeakBreakdownText,
+  BESA_PEAK_RANGE_2027,
+  calculateAssociationPeakSurcharge,
+} from '../association-peak-surcharge';
 import {
   JIC_DEFAULT_START_DATE,
   JIC_WEEK_OPTIONS,
@@ -106,7 +110,8 @@ export class JicStudentQuote {
   get fourWeekBlocks(): number { return Math.floor(Math.min(this.courseWeeks, this.roomWeeks) / 4); }
   get peakCalculation() {
     const ranges = this.prices.rules?.peakSeasonRanges.filter(range => range.enabled) ?? [
-      { id: 'fallback', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
+      { id: 'jic-peak-2026', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
+      { id: 'jic-peak-2027', label: '2027暑期旺季', ...BESA_PEAK_RANGE_2027, enabled: true },
     ];
     return calculateAssociationPeakSurcharge(
       'JIC',
