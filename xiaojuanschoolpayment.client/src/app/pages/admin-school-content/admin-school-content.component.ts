@@ -412,7 +412,7 @@ export class AdminSchoolContentComponent implements OnInit {
       ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}`
       : this.schoolCode;
   }
-  get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected; }
+  get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
   get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected; }
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }

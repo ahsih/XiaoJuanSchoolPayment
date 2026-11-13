@@ -66,6 +66,7 @@ interface CourseOption {
   id: string;
   name: string;
   tuition: number;
+  tuition2027?: number;
   lessons: string;
   suitable: string;
 }
@@ -74,6 +75,7 @@ interface RoomOption {
   id: string;
   name: string;
   fee: number;
+  fee2027?: number;
   note: string;
 }
 
@@ -167,7 +169,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 150;
-  readonly sidaDiscountRate = 0.9;
+  readonly sidaDiscountRate = 0.95;
   seasonalFeePerWeek = 40;
   usdToCny = Number.NaN;
   phpPerCny = Number.NaN;
@@ -613,7 +615,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     '宿务城市短途活动',
   ];
   readonly notes = [
-    '本页费用使用I.BREEZE官方2026公开参考价，正式报价仍需按入学日期、性别、房型和校区确认。',
+    '本页保留2026及2027官方价目；2027年1月1日起报名使用2027价，房型和空房另行确认。',
     'IB2房型包含单人、双人和四人房；校外公寓另有单人、双人和3-5人家庭房。',
     '学校接受5-14岁青少年与家长参加；家长需选择成人常规课程。未满18岁按抵达日国际年龄判断，原则上按亲子/Junior课程规则报名。',
     '16–17岁可选择其他课程，但按青少年英语学费收取；无父母陪同的监护费为100美元／4周，包含接机及每4周一次的跳岛费用。',
@@ -783,10 +785,10 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     this.currentContentConfig = content;
     this.previewContent = content;
     this.courseOptions = content.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
-      id: item.id, name: item.name, tuition: item.tuition, lessons: item.schedule, suitable: item.suitable || item.note,
+      id: item.id, name: item.name, tuition: item.tuition, tuition2027: item.tuition2027, lessons: item.schedule, suitable: item.suitable || item.note,
     }));
     this.roomOptions = content.rooms.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder).map(item => ({
-      id: item.id, name: item.label || item.name, fee: item.fee, note: item.note,
+      id: item.id, name: item.label || item.name, fee: item.fee, fee2027: item.fee2027, note: item.note,
     }));
     this.registrationFee = content.quoteSettings.registrationFee;
     this.seasonalFeePerWeek = content.quoteSettings.peakSeasonFeePerWeek;
@@ -894,6 +896,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
   get septemberPromotionEligible() { return this.students[0].septemberPromotionEligible; }
   get septemberPromotionDiscount() { return this.students[0].septemberPromotionDiscount; }
   get septemberPromotionText() { return this.students[0].septemberPromotionText; }
+  get novemberPromotionText() { return this.students[0].novemberPromotionText; }
   get christmasPromotionDiscount() { return this.students[0].christmasPromotionDiscount; }
   get christmasPromotionText() { return this.students[0].christmasPromotionText; }
   get peakSeasonWeeks() { return this.students[0].peakSeasonWeeks; }
@@ -964,6 +967,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       const discounts: Record<string, number> = {
         '思达折扣': student.sidaDiscountAmount,
         '9月住宿优惠': student.septemberPromotionDiscount,
+        '11月住宿优惠': student.novemberPromotionDiscount,
         '圣诞特别优惠': student.christmasPromotionDiscount,
       };
       student.schoolPaymentItems.slice(1).forEach(item => {
@@ -1004,7 +1008,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     const label = item.label.replace(/^学生\d+\s*·\s*/, '');
     if (label === '注册费') return { kind: 'section', id: 'quote-registration' };
     const promotion = this.currentContentConfig.quoteSettings.promotions.find(rule => rule.enabled && (
-      label === rule.name || (rule.id.startsWith('september-') && label === '9月住宿优惠') || (rule.id === 'christmas-2026' && label === '圣诞特别优惠')
+      label === rule.name || (rule.id.startsWith('september-') && label === '9月住宿优惠') || (rule.id.startsWith('november-') && label === '11月住宿优惠') || (rule.id === 'christmas-2026' && label === '圣诞特别优惠')
     ));
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }

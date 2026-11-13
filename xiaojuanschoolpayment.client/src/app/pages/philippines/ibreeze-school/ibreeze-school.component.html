@@ -66,11 +66,11 @@
             <aside class="hero-price-card">
               <span>4周参考</span>
               <strong>{{ quoteUsdText }}</strong>
-              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}，已计思达9折</p>
+              <p>{{ selectedCourse.name }} + {{ selectedRoom.name }}，已计思达95折</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  课程费和住宿费享思达9折，注册费不参与折扣
+                  课程费和住宿费享思达95折，注册费不参与折扣
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -246,7 +246,7 @@
             <div
               class="data-table course-fee-table"
               role="table"
-              aria-label="I.BREEZE 2026年4周课程费"
+              aria-label="I.BREEZE 2026及2027年4周课程费"
             >
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span>
@@ -255,20 +255,21 @@
               </div>
               <div class="table-row" role="row" *ngFor="let course of courseOptions" data-cia-preview-kind="course" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
                 <span role="cell">{{ course.name }}</span>
-                <span role="cell">{{ formatUsd(course.tuition) }} 美元</span>
+                <span role="cell">2026：{{ formatUsd(course.tuition) }} 美元<br />2027：{{ formatUsd(course.tuition2027 ?? course.tuition) }} 美元</span>
                 <span role="cell">{{ course.lessons }}。{{ course.suitable }}</span>
               </div>
             </div>
             <div
               class="mobile-card-list mobile-course-fees"
-              aria-label="I.BREEZE 2026年4周课程费手机卡片"
+              aria-label="I.BREEZE 2026及2027年4周课程费手机卡片"
             >
               <article *ngFor="let course of courseOptions" data-cia-preview-kind="course" [attr.data-cia-preview-id]="course.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', course.id)">
                 <span>课程</span>
                 <strong>{{ course.name }}</strong>
                 <div>
-                  <em>4周课程费</em><b>{{ formatUsd(course.tuition) }} 美元</b>
+                  <em>2026 / 4周</em><b>{{ formatUsd(course.tuition) }} 美元</b>
                 </div>
+                <div><em>2027 / 4周</em><b>{{ formatUsd(course.tuition2027 ?? course.tuition) }} 美元</b></div>
                 <p>{{ course.lessons }}。{{ course.suitable }}</p>
               </article>
             </div>
@@ -284,9 +285,9 @@
               <section>
                 <h3>优惠与附加费</h3>
                 <dl>
-                  <div><dt>9月住宿优惠</dt><dd>{{ septemberPromotionText }}</dd></div>
+                  <div><dt>11月住宿优惠</dt><dd>{{ novemberPromotionText }}</dd></div>
                   <div><dt>圣诞特别优惠</dt><dd>{{ christmasPromotionText }}<br />特别补课：2026/12/24、12/30；常规补课：2027/01/09。</dd></div>
-                  <div><dt>暑期附加费</dt><dd>40美元／周。2026/06/28–08/15；2027年暂按06/27（周日）–08/14（周六）预估。</dd></div>
+                  <div><dt>暑期附加费</dt><dd>40美元／周。2026/06/28–08/15；2027/06/27（周日）–08/14（周六）。2027暑期最短4周，公寓仅限家庭学生；冬季无最低报名周数，按所选课程的可报时长确认。</dd></div>
                 </dl>
               </section>
             </div>
@@ -319,7 +320,7 @@
             <div
               class="data-table room-fee-table"
               role="table"
-              aria-label="I.BREEZE 2026年4周住宿费"
+              aria-label="I.BREEZE 2026及2027年4周住宿费"
             >
               <div class="table-row table-head" role="row">
                 <span role="columnheader">房型</span>
@@ -328,20 +329,21 @@
               </div>
               <div class="table-row" role="row" *ngFor="let room of roomOptions" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                 <span role="cell">{{ room.name }}</span>
-                <span role="cell">{{ formatUsd(room.fee) }} 美元</span>
+                <span role="cell">2026：{{ formatUsd(room.fee) }} 美元<br />2027：{{ formatUsd(room.fee2027 ?? room.fee) }} 美元</span>
                 <span role="cell">{{ room.note }}</span>
               </div>
             </div>
             <div
               class="mobile-card-list mobile-room-fees"
-              aria-label="I.BREEZE 2026年4周住宿费手机卡片"
+              aria-label="I.BREEZE 2026及2027年4周住宿费手机卡片"
             >
               <article *ngFor="let room of roomOptions" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
                 <span>房型</span>
                 <strong>{{ room.name }}</strong>
                 <div>
-                  <em>4周住宿费</em><b>{{ formatUsd(room.fee) }} 美元</b>
+                  <em>2026 / 4周</em><b>{{ formatUsd(room.fee) }} 美元</b>
                 </div>
+                <div><em>2027 / 4周</em><b>{{ formatUsd(room.fee2027 ?? room.fee) }} 美元</b></div>
                 <p>{{ room.note }}</p>
               </article>
             </div>
@@ -379,11 +381,13 @@
               <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
             </div>
             <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <label class="option-check"><input type="checkbox" [(ngModel)]="student.familyTravel" />家庭同行（2027暑期入住公寓须符合家庭资格）</label>
+            <p class="group-hint">当前使用{{ student.priceYearText }}；2027年1月1日起报名执行新价。</p>
             <label class="option-check" *ngIf="student.isMinor"><input type="checkbox" [(ngModel)]="student.minorWithoutParent" /><span>未成年管理费（100美元／4周）<small>{{ student.guardianNote }}</small></span></label>
 
               <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
               <p class="group-hint" *ngIf="student.isMinor">{{ student.courseEligibilityText }}</p>
-              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+              <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ student.quoteError ? '请先完善报价条件' : formatUsd(student.quoteUsd) + ' 美元' }}</strong></div>
             </article>
             <div class="quote-breakdown">
               <div *ngFor="let item of schoolPaymentItems" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="previewPaymentTarget(item).kind" [attr.data-cia-preview-id]="previewPaymentTarget(item).id" [class.cia-preview-highlight]="isPreviewHighlighted(previewPaymentTarget(item).kind, previewPaymentTarget(item).id)">
@@ -391,7 +395,7 @@
               </div>
             </div>
             <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
-            <div class="quote-result">
+            <div class="quote-result" *ngIf="!quoteError">
               <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
               <small>{{ exchangeRateText }}；人民币金额为预估</small>
             </div>

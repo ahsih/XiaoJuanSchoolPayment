@@ -131,6 +131,7 @@
               <label>{{ coursePriceLabel }}<input type="number" min="0" [(ngModel)]="item.tuition" /></label>
               <label *ngIf="usesFutureCoursePrices">2027 新价（美元/4周）<input type="number" min="0" [(ngModel)]="item.tuition2027" /></label>
               <label *ngIf="isCpilsSelected">2027短住／保分整套价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
+              <label *ngIf="isIbreezeSelected">2027官方分周价（周数:美元；不足4周按此表）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
               <label *ngIf="isCpilsSelected && item.allowedWeeks2027 !== undefined">2027限定课程周数（空白表示待确认）<input [ngModel]="item.allowedWeeks2027.join(', ')" (ngModelChange)="updateCpilsFutureWeeks(item, $event)" /></label>
               <label *ngIf="isGlcSelected">英文显示名称<input [(ngModel)]="item.englishName" /></label>
               <label *ngIf="isGlcSelected">中文名称<input [(ngModel)]="item.chineseName" /></label>
@@ -179,8 +180,8 @@
               <label *ngIf="!isLaMerSelected">页面短名称<input [(ngModel)]="item.label" /></label>
               <label *ngIf="!isLaMerSelected">房型编号<input [(ngModel)]="item.code" /></label>
               <label>{{ roomPriceLabel }}<input type="number" min="0" [(ngModel)]="item.fee" /></label>
-              <label *ngIf="isCpilsSelected">2027住宿价格（美元/4周）<input type="number" min="0" [(ngModel)]="item.fee2027" /></label>
-              <label *ngIf="isCpilsSelected">2027短住价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
+              <label *ngIf="isCpilsSelected || isIbreezeSelected">2027住宿价格（美元/4周）<input type="number" min="0" [(ngModel)]="item.fee2027" /></label>
+              <label *ngIf="isCpilsSelected || isIbreezeSelected">2027短住价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
               <label *ngIf="!isLaMerSelected">住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
               <label *ngIf="!isLaMerSelected">页面分组<input [(ngModel)]="item.group" /></label>
               <label *ngIf="isImsSelected && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateRoomWeekPrices(item, $event)" placeholder="1:195, 2:390, 3:520, 4:650" /></label>
@@ -294,8 +295,8 @@
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">不足8周押金（比索）<input type="number" min="0" [(ngModel)]="content.quoteSettings.roomDepositUnder8Weeks" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">8周及以上押金（比索）<input type="number" min="0" [(ngModel)]="content.quoteSettings.roomDeposit8WeeksOrMore" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">到校后换课费（美元/4周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.courseChangeFeePerPeriod" /></label>
-              <label *ngIf="usesFutureCoursePrices" (focusin)="focusEditorItem('section', 'quote')">新价格报名起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceRegistrationStart" /></label>
-              <label *ngIf="usesFutureCoursePrices" (focusin)="focusEditorItem('section', 'quote')">新价格入学起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceArrivalStart" /></label>
+              <label *ngIf="usesFutureCoursePrices" (focusin)="focusEditorItem('section', 'quote')">新价格报名起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceRegistrationStart" [readOnly]="isIbreezeSelected" /></label>
+              <label *ngIf="usesFutureCoursePrices && !isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote')">新价格入学起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceArrivalStart" /></label>
               <label *ngIf="supportsOneWeekShortStay" data-editor-section="short-stay" (focusin)="focusEditorItem('section', 'short-stay')">1周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['1']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">2周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['2']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">3周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['3']" /></label>

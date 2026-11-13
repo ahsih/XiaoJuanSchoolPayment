@@ -194,6 +194,8 @@ export interface CiaQuoteSettings {
   /** Lets older published documents inherit a confirmed peak-season policy once. */
   peakSeasonPolicyVersion?: number;
   monolPromotionPolicyVersion?: number;
+  /** I.BREEZE November policy and registration-dated 2027 catalogue upgrade. */
+  ibreezePolicyVersion?: number;
   /** CPILS September 2026 notice and the user-confirmed registration cutoff. */
   cpilsPolicy?: {
     version: number;
