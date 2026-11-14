@@ -37,7 +37,7 @@
               }
             ],
             "styles": [
-              
+              "src/fonts.css",
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
@@ -101,6 +101,7 @@
               }
             ],
             "styles": [
+              "src/fonts.css",
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
