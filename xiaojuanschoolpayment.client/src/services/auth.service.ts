@@ -59,18 +59,22 @@ export class AuthService {
   login(request: LoginRequestDTO): Observable<JWTLoginTokenDTO> {
     return this.http.post<JWTLoginTokenDTO>(`${this.apiUrl}/login`, request).pipe(
       map((response: JWTLoginTokenDTO) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem(
-          'user',
-          JSON.stringify({
-            account: response.account,
-            email: response.email,
-            phoneNumber: response.phoneNumber,
-            name: response.name,
-            role: response.roles,
-          })
-        );
+        this.storeSession(response);
         return response;
+      })
+    );
+  }
+
+  private storeSession(response: JWTLoginTokenDTO): void {
+    localStorage.setItem('token', response.token);
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        account: response.account,
+        email: response.email,
+        phoneNumber: response.phoneNumber,
+        name: response.name,
+        role: response.roles,
       })
     );
   }
@@ -96,12 +100,19 @@ export class AuthService {
     return (Array.isArray(value) ? value : [value]).map((role) => String(role));
   }
 
+  /** The server rotates the security stamp on success and returns a replacement token for this session. */
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
     const token = localStorage.getItem('token');
-    return this.http.post<void>(
+    return this.http.post<JWTLoginTokenDTO | null>(
       `${this.apiUrl}/change-password`,
       { currentPassword, newPassword },
       { headers: token ? { Authorization: `Bearer ${token}` } : {} },
+    ).pipe(
+      map((response) => {
+        if (response?.token) {
+          this.storeSession(response);
+        }
+      }),
     );
   }
 

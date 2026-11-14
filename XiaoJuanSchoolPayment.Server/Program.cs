@@ -13,9 +13,12 @@ using XiaoJuanSchoolPayment.Server.Interface;
 using XiaoJuanSchoolPayment.Server.Services;
 using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
+using XiaoJuanSchoolPayment.Server.Services.Security;
 using XiaoJuanSchoolPayment.Server.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtSigningKey = JwtSigningKey.FromConfiguration(builder.Configuration);
+builder.Services.AddSingleton(jwtSigningKey);
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -61,10 +64,12 @@ builder.Services.AddAuthentication(options =>
     ValidateIssuerSigningKey = true,
     ValidIssuer = builder.Configuration["Jwt:Issuer"],
     ValidAudience = builder.Configuration["Jwt:Audience"],
-    IssuerSigningKey = new SymmetricSecurityKey(
-          Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
-            ?? throw new InvalidOperationException("Jwt:Key is not configured."))),
+    IssuerSigningKey = jwtSigningKey.Key,
     RoleClaimType = System.Security.Claims.ClaimTypes.Role
+  };
+  options.Events = new JwtBearerEvents
+  {
+    OnTokenValidated = JwtSecurityStamp.ValidateAsync,
   };
 });
 
@@ -106,6 +111,7 @@ builder.Services.AddOptions<TencentCosOptions>()
   .ValidateOnStart();
 builder.Services.AddSingleton<ISchoolMediaStorage, TencentCosSchoolMediaStorage>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
+builder.Services.AddAbuseRateLimits();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient("TencentCosMedia", client =>
 {
@@ -132,6 +138,23 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseStartup");
+var securityLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("SecurityConfiguration");
+if (jwtSigningKey.Warning != null)
+{
+  securityLogger.LogCritical("{Warning}", jwtSigningKey.Warning);
+}
+if (RevokedSecrets.IsRevoked(app.Configuration["AccessCode"]))
+{
+  securityLogger.LogCritical(
+    "AccessCode matches a value that was committed to source control and is ignored. " +
+    "Set AccessCode to a new private value to re-enable administrator registration.");
+}
+if (!app.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(app.Configuration["Authentication:PublicOrigin"]))
+{
+  securityLogger.LogError(
+    "Authentication:PublicOrigin is not configured, so password-reset email is disabled. " +
+    "Set Authentication__PublicOrigin to the site's public https origin.");
+}
 
 app.UseCors("AllowAll");
 app.UseDefaultFiles();
@@ -168,6 +191,8 @@ for (var attempt = 1; attempt <= 5; attempt++)
 }
 
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -252,7 +277,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
 
 app.MapGet("/robots.txt", (HttpRequest request) =>
 {
-  var origin = GetPublicOrigin(request);
+  var origin = GetPublicOrigin(request, app.Configuration);
   var robots = string.Join('\n', new[]
   {
     "User-agent: *",
@@ -272,7 +297,7 @@ app.MapGet("/robots.txt", (HttpRequest request) =>
 
 app.MapGet("/sitemap.xml", (HttpRequest request) =>
 {
-  var origin = GetPublicOrigin(request);
+  var origin = GetPublicOrigin(request, app.Configuration);
   XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
   var urls = sitemapEntries.Select(entry =>
     new XElement(
@@ -291,8 +316,15 @@ app.MapFallbackToFile("/index.html");
 
 app.Run();
 
-static string GetPublicOrigin(HttpRequest request)
+static string GetPublicOrigin(HttpRequest request, IConfiguration configuration)
 {
+  // Prefer the configured canonical origin so request headers cannot change sitemap/robots URLs.
+  var configuredOrigin = configuration["Authentication:PublicOrigin"]?.Trim().TrimEnd('/');
+  if (!string.IsNullOrWhiteSpace(configuredOrigin) && Uri.TryCreate(configuredOrigin, UriKind.Absolute, out _))
+  {
+    return configuredOrigin;
+  }
+
   var forwardedProto = request.Headers["X-Forwarded-Proto"].FirstOrDefault();
   var scheme = string.IsNullOrWhiteSpace(forwardedProto) ? request.Scheme : forwardedProto.Split(',')[0].Trim();
 
