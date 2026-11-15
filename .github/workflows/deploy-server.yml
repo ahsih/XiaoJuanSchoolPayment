@@ -15,10 +15,20 @@ concurrency:
 
 jobs:
   deploy:
+    # Only ever deploy main, including manual runs.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
 
     steps:
+      # The runner fetches from GitHub and pushes to the server over SSH, so the
+      # production server never needs to reach GitHub or a third-party mirror.
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -30,15 +40,35 @@ jobs:
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      - name: Push commit to production server
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          GIT_SSH_COMMAND: ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes
+        run: |
+          # "deploy" is a transport branch in the server's working repository;
+          # the checked-out main branch is fast-forwarded in the next step.
+          git push --force "ssh://$SERVER_USER@$SERVER_HOST/opt/sida/app" "$GITHUB_SHA:refs/heads/deploy"
+
       - name: Update production server
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes "$SERVER_USER@$SERVER_HOST" 'bash -se' <<'REMOTE'
+          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER_USER@$SERVER_HOST" bash -se "$GITHUB_SHA" <<'REMOTE'
           set -Eeuo pipefail
+          target_sha="$1"
           cd /opt/sida/app
-          git pull --ff-only origin main
+
+          current_branch="$(git symbolic-ref --short HEAD)"
+          if [ "$current_branch" != "main" ]; then
+            echo "Server checkout is on '$current_branch', expected 'main'." >&2
+            exit 1
+          fi
+
+          git merge --ff-only "$target_sha"
+          test "$(git rev-parse HEAD)" = "$target_sha"
+
           sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml up -d --build app caddy
           sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml ps
 

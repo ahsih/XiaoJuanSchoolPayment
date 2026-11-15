@@ -58,6 +58,7 @@ MySQL/MariaDB database
   - `Migrations/`: EF Core schema history. Do not hand-edit the model snapshot.
   - `wwwroot/uploads/`: legacy/local-development school-photo storage; only `.gitkeep` is source controlled. New production uploads use COS when `TencentCos__Enabled=true`.
 - `Dockerfile`: multi-stage production build.
+- `.github/workflows/deploy-server.yml`: on every `main` push, the GitHub runner checks out the commit, pushes it over SSH to a `deploy` transport branch in the server's `/opt/sida/app` repository, fast-forwards the server's `main` to that exact commit, and rebuilds the Docker Compose `app` and `caddy` services. The mainland-China server deliberately never fetches from GitHub or a third-party GitHub mirror; do not reintroduce a server-side `git pull`.
 - `.github/workflows/deploy-github-pages.yml`: builds and publishes the static Angular frontend to GitHub Pages. API-dependent features require a separate reachable backend and will not work from a static-only deployment without additional configuration.
 - `Logo/`, the Chinese `.docx` files, and the Chinese `.xlsx` files at the root are reference/source material, not runtime code.
 - PNG files and `*.log` files near the client root are development screenshots/logs, not Angular source assets.
