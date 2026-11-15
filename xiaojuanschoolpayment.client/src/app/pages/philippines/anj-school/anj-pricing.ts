@@ -189,12 +189,13 @@ export const ANJ_CONTINUATION_PERIODS: readonly AnjContinuationPeriod[] = [
 
 export const ANJ_PEAK_SEASON_RANGES = [
   { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
-  { label: '2027旺季（按相同8周星期推算）', start: '2027-06-27', end: '2027-08-21' },
 ] as const;
+
+export const ANJ_PEAK_2027_RANGE =
+  { label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22' } as const;
 
 export const ANJ_REGISTRATION_FEE = 100;
 export const ANJ_SIDA_DISCOUNT_RATE = 0.95;
 export const ANJ_SEASONAL_FEE_PER_WEEK = 40;
 export const ANJ_BIRTHDAY_DISCOUNT = 100;
 export const ANJ_BIRTHDAY_REGISTRATION_START = '2025-12-15';
-export const ANJ_PHP_PER_CNY = 9;

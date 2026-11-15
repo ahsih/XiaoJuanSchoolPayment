@@ -1,6 +1,12 @@
+import { textbookGroups, textbookType } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule } from '../cia-school/cia-content-config';
+import {
+  associationPeakBreakdownText,
+  BESA_PEAK_RANGE_2027,
+  calculateAssociationPeakSurcharge,
+} from '../association-peak-surcharge';
 import {
   JIC_DEFAULT_START_DATE,
   JIC_WEEK_OPTIONS,
@@ -26,7 +32,6 @@ interface JicQuotePrices {
   rules?: JicQuoteRules;
 }
 
-const DAY = 86_400_000;
 const money = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 const SHORT_STAY_MULTIPLIERS: Record<number, number> = { 1: 0.4, 2: 0.65, 3: 0.85 };
 const durationMultiplier = (weeks: number): number => SHORT_STAY_MULTIPLIERS[weeks] ?? weeks / 4;
@@ -103,13 +108,20 @@ export class JicStudentQuote {
   }
 
   get fourWeekBlocks(): number { return Math.floor(Math.min(this.courseWeeks, this.roomWeeks) / 4); }
-  get peakWeeks(): number {
+  get peakCalculation() {
     const ranges = this.prices.rules?.peakSeasonRanges.filter(range => range.enabled) ?? [
-      { id: 'fallback', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
+      { id: 'jic-peak-2026', label: '2026暑期旺季', start: '2026-06-28', end: '2026-08-22', enabled: true },
+      { id: 'jic-peak-2027', label: '2027暑期旺季', ...BESA_PEAK_RANGE_2027, enabled: true },
     ];
-    return ranges.reduce((sum, range) => sum + this.quotePlan.overlapWeeks(range.start, range.end), 0);
+    return calculateAssociationPeakSurcharge(
+      'JIC',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      ranges,
+      this.prices.seasonalFeePerWeek,
+    );
   }
-  get seasonalSurcharge(): number { return this.peakWeeks * this.prices.seasonalFeePerWeek; }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get seasonalSurcharge(): number { return this.peakCalculation.total; }
 
   get longTermEligible(): boolean {
     const rule = this.promotion('jic-long-term');
@@ -193,22 +205,18 @@ export class JicStudentQuote {
   }
 
   get registrationDiscount(): number {
-    const rule = this.promotion('jic-registration');
-    return rule && (this.returningStudent || this.isExtensionStudent || this.courseWeeks >= rule.minimumCourseWeeks) ? this.prices.registrationFee : 0;
+    return this.prices.registrationFee;
   }
   get registrationDiscountNote(): string {
     if (this.isExtensionStudent) return '在校延长不重复收取注册费。';
     if (this.returningStudent) return '老学员返校免收一次性注册费。';
-    const rule = this.promotion('jic-registration');
-    if (!rule) return '注册费优惠目前已停用。';
-    if (this.courseWeeks >= rule.minimumCourseWeeks) return `${rule.minimumCourseWeeks}周及以上免收${money(this.prices.registrationFee)}美元注册费。`;
-    return `当前未满${rule.minimumCourseWeeks}周；新生一次性注册费${money(this.prices.registrationFee)}美元。`;
+    return `通过思达启航报名，免收一次性${money(this.prices.registrationFee)}美元注册费。`;
   }
 
   get paymentLines(): SchoolPaymentLine[] {
     return [
-      { icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: this.peakWeeks ? `实际覆盖${this.peakWeeks}个已启用旺季课程周 × ${this.prices.seasonalFeePerWeek}美元；优惠不抵扣旺季费。` : '当前课程日期未覆盖已启用旺季。' },
-      { icon: '免', label: '注册费优惠', value: -this.registrationDiscount, note: this.registrationDiscountNote, promotionKey: 'jic-registration' },
+      { icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: this.peakWeeks ? `${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，优惠不抵扣旺季费。` : '当前日期未覆盖已启用旺季。' },
+      { icon: '免', label: '思达注册费减免', value: -this.registrationDiscount, note: this.registrationDiscountNote, promotionKey: 'jic-registration' },
       { icon: '淡', label: this.offSeasonRule?.name ?? '淡季优惠', value: -this.offSeasonDiscount, note: this.offSeasonNote, promotionKey: this.offSeasonRule?.id ?? 'jic-off-season-none' },
       { icon: '长', label: '长期优惠', value: -this.longTermDiscount, note: this.longTermNote, promotionKey: 'jic-long-term' },
       { icon: '节', label: '圣诞及节日优惠', value: -this.holidayDiscount, note: this.holidayNote, promotionKey: 'jic-holiday' },
@@ -237,7 +245,16 @@ export class JicStudentQuote {
       };
       let quantity = 0;
       if (fee.id === 'books') {
-        const selected = this.quotePlan.courses.map(row => ({ row, course: this.prices.courseFees.find(course => course.id === row.optionId) }));
+        const selected = textbookGroups(this.quotePlan.courses, id => {
+          const course = this.prices.courseFees.find(course => course.id === id);
+          return textbookType(id) + ':' + (course?.materialFee ?? 0);
+        }).map(group => {
+          const row = this.quotePlan.courses.find(row => {
+            const course = this.prices.courseFees.find(course => course.id === row.optionId);
+            return textbookType(row.optionId) + ':' + (course?.materialFee ?? 0) === group.type;
+          })!;
+          return { row: { ...row, weeks: group.weeks }, course: this.prices.courseFees.find(course => course.id === row.optionId) };
+        });
         const quantity = selected.reduce((sum, item) => sum + (item.course?.materialFee ? Math.ceil(item.row.weeks / 4) : 0), 0);
         const total = selected.reduce((sum, item) => sum + (item.course?.materialFee ?? 0) * Math.ceil(item.row.weeks / 4), 0);
         const missing = selected.filter(item => !item.course?.materialFee).map(item => item.course?.displayName ?? item.row.optionId);
@@ -286,7 +303,7 @@ export class JicStudentQuote {
   private get fallbackPromotions(): CiaPromotionRule[] {
     const base = (id: string, ruleKind: string): CiaPromotionRule => ({ id, name: id, ruleKind, description: '', enabled: true, sortOrder: 0, priority: 0, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, coverageTarget: 'none' });
     return [
-      { ...base('jic-registration', 'jic-registration'), minimumCourseWeeks: 12, waiveRegistration: true },
+      { ...base('jic-registration', 'jic-registration'), name: '思达注册费减免', description: '所有通过思达启航报名的学生均免收一次性注册费；老学员返校同样免费。', minimumCourseWeeks: 0, waiveRegistration: true },
       { ...base('jic-off-season-2026', 'jic-off-season-2026'), name: '2026淡季优惠', discountValue: 150, incrementValue: 50, arrivalStart: '2026-08-23', arrivalEnd: '2027-01-09' },
       { ...base('jic-off-season-2027-a', 'jic-off-season-2027'), name: '2027淡季优惠', discountValue: 100, incrementValue: 50, arrivalStart: '2027-02-21', arrivalEnd: '2027-06-26' },
       { ...base('jic-off-season-2027-b', 'jic-off-season-2027'), name: '2027淡季优惠', discountValue: 100, incrementValue: 50, arrivalStart: '2027-08-22', arrivalEnd: '2028-01-08' },

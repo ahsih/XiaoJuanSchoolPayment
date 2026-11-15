@@ -66,7 +66,6 @@ export const MINT_LOCAL_TOTALS: Record<MintLocalFeeWeeks, number> = {
 };
 
 export const MINT_REGISTRATION_FEE = 100;
-export const MINT_PHP_PER_CNY = 8;
 
 export const MINT_FAMILY_PRICES: Record<'one-one' | 'one-two' | 'two-two', Record<number, number>> = {
   'one-one': { 4: 5000, 6: 7500, 8: 10000, 10: 12500, 12: 15000 },

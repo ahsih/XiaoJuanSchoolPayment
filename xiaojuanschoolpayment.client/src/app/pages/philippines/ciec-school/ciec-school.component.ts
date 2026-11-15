@@ -3,10 +3,11 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { CiecQuoteCalculatorComponent } from './ciec-quote-calculator.component';
+import { CIEC_COURSES, CIEC_ROOMS, CIEC_LOCAL_REFERENCE } from './ciec-quote';
 import { SidaWhySectionComponent } from '../../../components/sida-why-section.component';
 
 type GalleryCategory = '全部' | '校区' | '教室' | '住宿' | '生活';
-type WeekOption = 1 | 2 | 3 | 4 | 8 | 12 | 16 | 20 | 24;
 
 interface QuickInfo {
   icon: string;
@@ -74,7 +75,7 @@ interface SourceLink {
 @Component({
   selector: 'app-ciec-school',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, SidaWhySectionComponent, CiecQuoteCalculatorComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './ciec-school.component.html',
   styleUrls: [
@@ -90,28 +91,6 @@ export class CiecSchoolComponent {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   readonly registrationFeeUsd = 100;
-  readonly pickupUsd = 20;
-  readonly guardianCareUsd = 300;
-  readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12, 16, 20, 24];
-  readonly shortTermRatios: Partial<Record<WeekOption, number>> = {
-    1: 0.35,
-    2: 0.65,
-    3: 0.85,
-  };
-  readonly peakShortTermRatios: Partial<Record<WeekOption, number>> = {
-    1: 0.4,
-    2: 0.65,
-    3: 0.85,
-  };
-
-  selectedCourseId = 'junior-academic';
-  selectedRoomId = 'triple';
-  selectedWeeks: WeekOption = 4;
-  selectedStartDate = '2026-09-07';
-  isPeakSeason = false;
-  includeGuardianCare = false;
-  quoteCalculated = false;
-
   readonly quickInfo: QuickInfo[] = [
     {
       icon: 'family_restroom',
@@ -141,7 +120,7 @@ export class CiecSchoolComponent {
       icon: 'bed',
       label: '住宿',
       value: '2人房 / 3人房',
-      note: '2026公开价目表列出4周住宿费：2人房USD 930，3人房USD 850。',
+      note: '学校确认四周住宿费：双人间930美元，三人间850美元。',
     },
     {
       icon: 'pool',
@@ -197,7 +176,7 @@ export class CiecSchoolComponent {
     { label: '学校定位', value: '青少年、亲子、国际学校准备、Junior Sparta与陪读家长英文课程。' },
     { label: '公开规模', value: '公开资料显示学生定员约140名，韩资运营。' },
     { label: '课节长度', value: '1节45分钟；课程组合按年龄、目标和是否陪读调整。' },
-    { label: '4周起价', value: 'USD 1,650起：Guardian ESL + 3人房 + 注册费；儿童课程通常USD 2,000起。' },
+    { label: '4周起价', value: '幼儿园＋三人房＋新生注册费：1905美元／4周；淡季家庭优惠按条件另算。' },
   ];
 
   readonly highlights: TextCard[] = [
@@ -245,90 +224,12 @@ export class CiecSchoolComponent {
     },
   ];
 
-  readonly courses: CourseOption[] = [
-    {
-      id: 'kindergarten',
-      name: 'Kindergarten',
-      type: '幼儿英文',
-      lessons: '小班3节 + 1:1 2节 + 午休',
-      suitable: '48个月至6岁，适合亲子家庭低龄孩子。',
-      tuitionUsd: 1050,
-    },
-    {
-      id: 'junior-academic',
-      name: 'Junior Academic',
-      type: '青少年学术英文',
-      lessons: '1:1 4节 + 小班3节',
-      suitable: '想打英文基础、阅读写作和学术科目准备的学生。',
-      tuitionUsd: 1100,
-    },
-    {
-      id: 'junior-sparta',
-      name: 'Junior Sparta',
-      type: '青少年斯巴达',
-      lessons: '1:1 4节 + 小班4节 + 自习1节',
-      suitable: '单独留学或想要更强学习管理的青少年。',
-      tuitionUsd: 1400,
-    },
-    {
-      id: 'junior-ielts-toefl',
-      name: 'Junior IELTS / TOEFL',
-      type: '考试准备',
-      lessons: '1:1 4节 + 小班3节',
-      suitable: '准备雅思、托福或未来英语升学考试的青少年。',
-      tuitionUsd: 1400,
-    },
-    {
-      id: 'school-preparation',
-      name: 'School Preparation',
-      type: '国际学校入学准备',
-      lessons: '1:1 6节 + 自习',
-      suitable: '准备进入宿务国际学校或私立学校的学生。',
-      tuitionUsd: 1400,
-    },
-    {
-      id: 'overseas-school',
-      name: 'Overseas School',
-      type: '本地学校通学',
-      lessons: '当地学校 + 晚间1:1 3节',
-      suitable: '想体验英文授课学校并由CIEC做课后辅导的家庭。',
-      tuitionUsd: 1100,
-    },
-    {
-      id: 'guardian-esl',
-      name: 'Guardian ESL',
-      type: '陪读家长英文',
-      lessons: '1:1 3节',
-      suitable: '陪读家长想轻量学习日常英文。',
-      tuitionUsd: 700,
-    },
-    {
-      id: 'guardian-business-ielts',
-      name: 'Guardian Business / IELTS',
-      type: '陪读家长进阶',
-      lessons: '1:1 3节',
-      suitable: '陪读家长想学商务英文或雅思。',
-      tuitionUsd: 800,
-    },
-  ];
-
-  readonly roomOptions: RoomOption[] = [
-    { id: 'triple', name: '3人房', feeUsd: 850, note: '4周住宿费较低，适合亲子家庭或预算优先。' },
-    { id: 'twin', name: '2人房', feeUsd: 930, note: '空间与安静度更好，4周比3人房高USD 80。' },
-  ];
-
-  readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 100', note: '注册时一次性支付。' },
-    { item: '机场接机', amount: 'USD 20 / 单程', note: '往返接送公开参考为USD 40。' },
-    { item: 'Guardian Care', amount: 'USD 300 / 4周', note: '需要密切管理时按学校规则确认是否适用。' },
-    { item: '宿舍押金', amount: 'PHP 5,000 或 USD 100', note: '退房时按学校规则结算。' },
-    { item: 'SSP', amount: 'PHP 8,000', note: 'Special Student Permit，菲律宾合法学习许可。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: 'SSP相关卡证费用。' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '公开资料列示59日以上停留适用。' },
-    { item: '教材费', amount: 'PHP 600-1,500 / 4周起', note: '一对一教材按实际购买教材不同。' },
-    { item: '水电管理', amount: 'PHP 23/kw + 3,600/4周', note: '电费按用量，光热费PHP 2,400/4周，水费PHP 1,200/4周。' },
-    { item: '签证延长', amount: 'PHP 4,800起', note: '8周起按停留长度递增。' },
-  ];
+  readonly courses: CourseOption[] = CIEC_COURSES.map(course => ({
+    id: course.id, name: course.name, type: course.id.startsWith('guardian') || course.id === 'none' ? '家长／监护人' : '儿童与青少年',
+    lessons: course.details, suitable: '', tuitionUsd: course.price,
+  }));
+  readonly roomOptions: RoomOption[] = CIEC_ROOMS.map(room => ({ id: room.id, name: room.name, feeUsd: room.price, note: room.details }));
+  readonly localFees: LocalFee[] = CIEC_LOCAL_REFERENCE;
 
   readonly scheduleItems: ScheduleItem[] = [
     {
@@ -355,11 +256,11 @@ export class CiecSchoolComponent {
     },
     {
       title: '页面报价是否包含所有费用？',
-      text: '不是。报价器只估算学费、住宿费、注册费和可选Guardian Care；SSP、签证、押金、水电、教材、接送、活动、机票和保险另计。',
+      text: '报价分别列示美元费用及比索本地费用；电费按实际用量、教材按实际购买结算，可退押金和个人消费另计。',
     },
     {
-      title: '1-3周短期怎么计算？',
-      text: '1周淡季按4周费用的35%计算，旺季1月、2月、7月、8月按40%计算；2周和3周分别按4周费用的65%和85%计算。注册费另计。',
+      title: '短期报价可以直接导出吗？',
+      text: '一周价格尚未确认；短期本地费用须学校确认后才可导出完整报价。新生注册费每人100美元，老学员免费。',
     },
     {
       title: 'CIEC和CIA怎么选？',
@@ -399,77 +300,20 @@ export class CiecSchoolComponent {
     return this.galleryImages.filter((image) => image.category === this.selectedGalleryCategory);
   }
 
-  get selectedCourse(): CourseOption {
-    return this.courses.find((course) => course.id === this.selectedCourseId) ?? this.courses[0];
-  }
-
-  get selectedRoom(): RoomOption {
-    return this.roomOptions.find((room) => room.id === this.selectedRoomId) ?? this.roomOptions[0];
-  }
-
-  get fourWeekStudyStayUsd(): number {
-    return this.selectedCourse.tuitionUsd + this.selectedRoom.feeUsd;
-  }
-
-  get studyStayUsd(): number {
-    if (this.selectedWeeks < 4) {
-      const ratios = this.isPeakSeason ? this.peakShortTermRatios : this.shortTermRatios;
-      return Math.round(this.fourWeekStudyStayUsd * (ratios[this.selectedWeeks] ?? 1));
-    }
-
-    return this.fourWeekStudyStayUsd * (this.selectedWeeks / 4);
-  }
-
-  get quoteUsd(): number {
-    return (
-      this.registrationFeeUsd +
-      this.pickupUsd +
-      this.studyStayUsd +
-      (this.includeGuardianCare ? this.guardianCareUsd * (this.selectedWeeks / 4) : 0)
-    );
-  }
-
-  get quoteUsdText(): string {
-    return this.formatUsd(this.quoteUsd);
-  }
-
-  get fourWeekGuardianTripleText(): string {
-    return this.formatUsd(this.registrationFeeUsd + 700 + 850);
-  }
-
-  get fourWeekJuniorTripleText(): string {
-    return this.formatUsd(this.registrationFeeUsd + 1050 + 850);
-  }
-
-  get weeklyAverageText(): string {
-    return this.formatUsd(Math.round(this.quoteUsd / this.selectedWeeks));
-  }
-
-  get quoteNote(): string {
-    if (this.selectedWeeks < 4) {
-      return this.isPeakSeason
-        ? '已按旺季短期比例估算；旺季为1月、2月、7月、8月。'
-        : '已按淡季短期比例估算；当地PHP费用仍需另计。';
-    }
-
-    return '4周以上按4周学费住宿倍数估算；当地PHP费用、活动、保险、机票和个人消费另计。';
-  }
+  get fourWeekGuardianTripleText(): string { return this.formatUsd(100 + (700 + 850) * .95); }
+  get fourWeekJuniorTripleText(): string { return this.formatUsd(100 + (1050 + 850) * .95); }
 
   get courseFeeRows() {
-    return this.courses.map((course) => ({
+    return this.courses.filter(course => course.id !== 'none').map((course) => ({
       course: course.name,
       lessons: course.lessons,
-      triple: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[0].feeUsd),
-      twin: this.formatUsd(this.registrationFeeUsd + course.tuitionUsd + this.roomOptions[1].feeUsd),
+      triple: this.formatUsd(this.registrationFeeUsd + (course.tuitionUsd + 850) * .95 + (course.id === 'cidec' ? 2850 : 0)),
+      twin: this.formatUsd(this.registrationFeeUsd + (course.tuitionUsd + 930) * .95 + (course.id === 'cidec' ? 2850 : 0)),
     }));
   }
 
   setGalleryCategory(category: GalleryCategory): void {
     this.selectedGalleryCategory = category;
-  }
-
-  calculateQuote(): void {
-    this.quoteCalculated = true;
   }
 
   scrollToSection(id: string, event?: Event): void {
@@ -478,6 +322,6 @@ export class CiecSchoolComponent {
   }
 
   formatUsd(value: number): string {
-    return `USD ${value.toLocaleString('en-US')}`;
+    return `${value.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}美元`;
   }
 }

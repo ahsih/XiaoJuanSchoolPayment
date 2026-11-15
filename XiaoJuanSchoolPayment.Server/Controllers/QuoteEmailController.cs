@@ -3,9 +3,11 @@ using System.Net.Mail;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
+using XiaoJuanSchoolPayment.Server.Services.Security;
 
 namespace XiaoJuanSchoolPayment.Server.Controllers;
 
@@ -16,19 +18,24 @@ public class QuoteEmailController : ControllerBase
 {
   private const long MaxImageBytes = 12_000_000;
   private const long MaxMultipartBodyBytes = 14_000_000;
+  private static readonly byte[] PngSignature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
 
   private readonly ContactFormOptions _options;
+  private readonly OutboundMailThrottle _mailThrottle;
   private readonly ILogger<QuoteEmailController> _logger;
 
   public QuoteEmailController(
     IOptions<ContactFormOptions> options,
+    OutboundMailThrottle mailThrottle,
     ILogger<QuoteEmailController> logger)
   {
     _options = options.Value;
+    _mailThrottle = mailThrottle;
     _logger = logger;
   }
 
   [HttpPost("send")]
+  [EnableRateLimiting(AbuseRateLimits.QuoteEmailPolicy)]
   [Consumes("multipart/form-data")]
   [RequestSizeLimit(MaxMultipartBodyBytes)]
   [RequestFormLimits(MultipartBodyLengthLimit = MaxMultipartBodyBytes)]
@@ -58,6 +65,18 @@ public class QuoteEmailController : ControllerBase
     using var imageMemoryStream = new MemoryStream();
     await request.Image.CopyToAsync(imageMemoryStream, ct);
     var imageBytes = imageMemoryStream.ToArray();
+
+    // The browser renders quotes as PNG; refuse anything else so this endpoint cannot relay arbitrary attachments.
+    if (!imageBytes.AsSpan().StartsWith(PngSignature))
+    {
+      return BadRequest(new { message = "报价单图片格式不正确，请重新生成后再试。" });
+    }
+
+    if (!_mailThrottle.TryAcquireQuoteEmail())
+    {
+      _logger.LogWarning("Quote email site-wide hourly limit reached; request rejected.");
+      return StatusCode(StatusCodes.Status429TooManyRequests, new { message = "当前发送报价单的人数较多，请稍后再试，或直接保存图片发给顾问。" });
+    }
 
     try
     {

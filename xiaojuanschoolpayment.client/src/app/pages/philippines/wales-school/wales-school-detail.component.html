@@ -1,3 +1,4 @@
+<aside style="max-width:1160px;margin:20px auto;padding:16px 24px;background:#eaf4f3;border-radius:12px"><a href="/philippines-study/baguio/airport-pickup" style="color:#125e66;font-weight:600">行前准备：查看 2026–2027 碧瑶接机日期、班次与注意事项 →</a><p style="margin:6px 0 0">请先联系思达启航顾问确认学校、接机日期、班次和集合点，再购买机票。最终安排以学校发送的接机确认通知为准。</p></aside>
 <app-cia-school>
   <div class="cia-page">
     <div class="page-grid">
@@ -278,6 +279,7 @@
             </div>
             <p class="promotion-callout"><strong>年末限定：</strong>每名学生、每条住宿独立判断。2026/11/29入住4或6周，或12/13入住4周时住宿费六折；返校生可申请，在校生不适用，限10名且不得与长周数优惠叠加。</p>
             <p class="season-note"><strong>长周数优惠：</strong>2025/08/01后注册，并按公告四周一期的BESA开学日（网页按前一天周日抵达）入学，8/12/16/20/24周原优惠为200/300/400/550/700美元；与2026/06/28–08/08旺季重叠时，每满2周减少50美元优惠。</p>
+            <p class="season-note"><strong>2027旺季附加费：</strong>2027/06/27–08/22按60美元／周计收；同一周课程与住宿只计一次，附加费不参与优惠。2026旺季仍仅用于调整原长周数优惠。</p>
           </div>
 
           <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
@@ -287,7 +289,7 @@
               <table class="local-fee-table">
                 <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
                 <tbody><tr *ngFor="let fee of localFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
-                <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>含教材、所选接机、适用课程专属费及可退宿舍保证金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ localFeeCny.toLocaleString('zh-CN') }} 元</td><td>{{ usingLiveExchangeRate ? '参考汇率日期 ' + exchangeRateDate : '备用汇率估算' }}：1元人民币≈{{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr></tfoot>
+                <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>含教材、所选接机、适用课程专属费及可退宿舍保证金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(localFeeCny, 'zh-CN') }} 元</td><td>{{ usingLiveExchangeRate ? '参考汇率日期 ' + exchangeRateDate : '最新参考汇率待更新' }}：1元人民币≈{{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr></tfoot>
               </table>
             </div>
             <div class="excluded-fee-list">

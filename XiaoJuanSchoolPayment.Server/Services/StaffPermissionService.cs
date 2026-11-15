@@ -128,15 +128,23 @@ namespace XiaoJuanSchoolPayment.Server.Services
 
       var desiredRole = isManager ? "Manager" : "Staff";
       var otherRole = isManager ? "Staff" : "Manager";
+      var rolesChanged = false;
       if (currentRoles.Contains(otherRole))
       {
         var removeResult = await _userManager.RemoveFromRoleAsync(user, otherRole);
         if (!removeResult.Succeeded) throw new InvalidOperationException(string.Join("; ", removeResult.Errors.Select(error => error.Description)));
+        rolesChanged = true;
       }
       if (!currentRoles.Contains(desiredRole))
       {
         var addResult = await _userManager.AddToRoleAsync(user, desiredRole);
         if (!addResult.Succeeded) throw new InvalidOperationException(string.Join("; ", addResult.Errors.Select(error => error.Description)));
+        rolesChanged = true;
+      }
+      if (rolesChanged)
+      {
+        // Role claims live in the JWT; rotating the stamp revokes tokens that still carry the old role.
+        await _userManager.UpdateSecurityStampAsync(user);
       }
 
       return await BuildUserAsync(user, isManager ? "Manager" : "Consultant", cancellationToken);

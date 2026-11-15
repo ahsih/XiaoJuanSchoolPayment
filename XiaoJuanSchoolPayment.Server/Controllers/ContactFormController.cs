@@ -3,9 +3,11 @@ using System.Net.Mail;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
+using XiaoJuanSchoolPayment.Server.Services.Security;
 
 namespace XiaoJuanSchoolPayment.Server.Controllers;
 
@@ -15,17 +17,21 @@ namespace XiaoJuanSchoolPayment.Server.Controllers;
 public class ContactFormController : ControllerBase
 {
   private readonly ContactFormOptions _options;
+  private readonly OutboundMailThrottle _mailThrottle;
   private readonly ILogger<ContactFormController> _logger;
 
   public ContactFormController(
     IOptions<ContactFormOptions> options,
+    OutboundMailThrottle mailThrottle,
     ILogger<ContactFormController> logger)
   {
     _options = options.Value;
+    _mailThrottle = mailThrottle;
     _logger = logger;
   }
 
   [HttpPost("send")]
+  [EnableRateLimiting(AbuseRateLimits.ContactFormPolicy)]
   public async Task<IActionResult> Send([FromBody] ContactFormRequestDTO request, CancellationToken ct)
   {
     if (!ModelState.IsValid)
@@ -42,6 +48,12 @@ public class ContactFormController : ControllerBase
     {
       _logger.LogError("Contact form email settings are incomplete.");
       return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Email settings are incomplete." });
+    }
+
+    if (!_mailThrottle.TryAcquireContactForm())
+    {
+      _logger.LogWarning("Contact form site-wide hourly limit reached; request rejected.");
+      return StatusCode(StatusCodes.Status429TooManyRequests, new { message = AbuseRateLimits.RejectionMessage });
     }
 
     try

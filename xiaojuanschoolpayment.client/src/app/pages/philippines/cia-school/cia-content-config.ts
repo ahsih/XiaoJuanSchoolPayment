@@ -1,3 +1,5 @@
+import type { LaMerPageContent, LaMerPolicy } from '../la-mer-school/la-mer-types';
+
 export interface CiaCourseContent {
   id: string;
   name: string;
@@ -13,6 +15,9 @@ export interface CiaCourseContent {
   tuition2027: number;
   /** Optional fixed-duration prices used by guarantee courses such as A&J. */
   feeByWeeks?: Record<string, number>;
+  /** CPILS's dated catalogue: exact short stays and fixed guarantee packages. */
+  feeByWeeks2027?: Record<string, number>;
+  allowedWeeks2027?: number[];
   /** Optional duration restriction paired with feeByWeeks. */
   allowedWeeks?: number[];
   /** Optional public course grouping/type label. */
@@ -40,6 +45,8 @@ export interface CiaRoomContent {
   location: '校内' | '校外';
   group: string;
   fee: number;
+  fee2027?: number;
+  feeByWeeks2027?: Record<string, number>;
   /** Optional exact-duration accommodation prices used by IMS and other non-proportional catalogs. */
   feeByWeeks?: Record<string, number>;
   /** Optional duration restriction paired with feeByWeeks. */
@@ -163,6 +170,8 @@ export interface CiaExtraNightRate {
 }
 
 export interface CiaQuoteSettings {
+  /** Independent La Mer whole-family packages; never ordinary per-person rows. */
+  laMer?: LaMerPolicy;
   registrationFee: number;
   /** Optional school-payment fee used by EV for unaccompanied minors. */
   minorManagementFeePerPeriod?: number;
@@ -182,8 +191,20 @@ export interface CiaQuoteSettings {
   shortStayRatios: Record<string, number>;
   peakSeasonFeePerWeek: number;
   peakSeasonRanges: CiaPeakSeasonRange[];
-  /** Lets older published CIA documents inherit confirmed peak-season rules once. */
+  /** Lets older published documents inherit a confirmed peak-season policy once. */
   peakSeasonPolicyVersion?: number;
+  monolPromotionPolicyVersion?: number;
+  /** I.BREEZE November policy and registration-dated 2027 catalogue upgrade. */
+  ibreezePolicyVersion?: number;
+  /** CPILS September 2026 notice and the user-confirmed registration cutoff. */
+  cpilsPolicy?: {
+    version: number;
+    grandfatherCourseStartEnd: string;
+    promotionBlackoutStart: string;
+    promotionBlackoutEnd: string;
+    earlySummerRegistrationEnd: string;
+    earlySummerMinimumWeeks: number;
+  };
   promotions: CiaPromotionRule[];
   localFeeIntro: string;
   courseTableTitle: string;
@@ -247,7 +268,8 @@ export interface CiaMediaContent {
 
 export interface CiaContentConfig {
   schemaVersion: 1;
-  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'MONOL-SPARTA' | 'EV' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES' | 'MINT';
+  schoolCode: 'CIA' | 'PINES' | 'MONOL' | 'MONOL-SPARTA' | 'EV' | 'EV-LAMER' | 'SMEAG' | 'PHILINTER' | 'CG-BANILAD' | 'CG-SPARTA' | 'CPI' | 'BCEBU' | 'CPILS' | 'GLC' | 'IBREEZE' | 'ANJ' | 'BECI' | 'JIC' | 'IMS' | 'IU' | 'ICL' | 'CELLA-UNI' | 'CELLA-PREMIUM' | 'FELLA' | 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES' | 'MINT';
+  laMerPage?: LaMerPageContent;
   courses: CiaCourseContent[];
   rooms: CiaRoomContent[];
   localFees: CiaLocalFeeRule[];

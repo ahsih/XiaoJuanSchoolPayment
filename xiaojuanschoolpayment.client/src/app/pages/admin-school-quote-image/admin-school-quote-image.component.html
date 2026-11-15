@@ -157,6 +157,7 @@
 
     <aside class="preview-panel">
       <div class="preview-head"><div><strong>实际图片排版预览</strong><small>修改文字后自动重新生成</small></div><span>示例金额 · 不可编辑</span></div>
+      <label *ngIf="isLaMerSelected">报价预览方案<select [(ngModel)]="laMerPreviewMode" (ngModelChange)="contentChanged()"><option value="ordinary">普通4周</option><option value="family">亲子2人4周</option></select></label>
       <app-quote-image-inline-preview [quote]="previewQuote" />
     </aside>
   </main>

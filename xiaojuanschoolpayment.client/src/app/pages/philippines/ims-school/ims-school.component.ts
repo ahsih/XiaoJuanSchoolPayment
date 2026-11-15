@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +20,7 @@ import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCi
 import { cloneImsContentConfig, createDefaultImsContentConfig } from './ims-content-config';
 import {
   IMS_ADDITIONAL_CLASSES, IMS_COURSES, IMS_LONG_STAY_DISCOUNTS, IMS_OFF_SEASON_CLASS_EXCHANGE_PERIODS,
-  IMS_OFF_SEASON_SOCIAL_REQUIREMENTS, IMS_PHP_PER_CNY, IMS_REGISTRATION_FEE, IMS_ROOMS, IMS_SIDA_RATE,
+  IMS_OFF_SEASON_SOCIAL_REQUIREMENTS, IMS_REGISTRATION_FEE, IMS_ROOMS, IMS_SIDA_RATE,
   IMS_WEEK_OPTIONS, ImsCourse, ImsRoom,
 } from './ims-pricing';
 import { ImsBlockPromotion, ImsStudentQuote, validateImsFamily } from './ims-student-quote';
@@ -73,8 +74,8 @@ export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   quoteMode: 'single' | 'group' = 'single';
   private requestedStudentCount = 2;
   quoteCalculated = false;
-  usdToCny = 7.2;
-  readonly phpPerCny = IMS_PHP_PER_CNY;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
 
@@ -132,9 +133,7 @@ export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadPublishedContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((rates) => {
-      if (rates.usdToCny > 0) { this.usdToCny = rates.usdToCny; this.exchangeRateDate = rates.date; this.usingLiveExchangeRate = true; }
-    });
+
   }
   ngAfterViewInit(): void { if (this.isEditorPreview) { this.previewHost.nativeElement.classList.add('ims-editor-preview'); window.parent.postMessage({ type: 'ims-content-ready' }, window.location.origin); } }
   ngOnDestroy(): void { clearTimeout(this.previewFocusTimer); }
@@ -257,8 +256,8 @@ export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   familyTargetOptions(parentIndex: number) { return this.activeStudents.map((student, index) => ({ student, index })).filter(({ student, index }) => index !== parentIndex && student.travelerRole === 'child'); }
   calculateQuote(): void { this.quoteCalculated = !this.quoteError; }
   scrollToSection(id: string, event?: Event): void { event?.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  formatUsd(value: number) { return `${quoteMoney(value)} 美元`; }
-  formatPhp(value: number) { return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
+  formatUsd(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return `${quoteMoney(value)} 美元`; }
+  formatPhp(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US', { maximumFractionDigits: 0 })} 比索`; }
   formatFeeQuantity(value: number) { return Number.isInteger(value) ? String(value) : value.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
   get planPaymentItems(): QuoteImagePaymentItem[] { return this.activeStudents.flatMap((student, studentIndex) => student.quotePlan.paymentItems().map((item) => ({ ...item, label: `${this.quoteMode === 'group' ? `学生${studentIndex + 1} · ` : ''}${item.label}` }))); }
   get schoolPaymentItems(): QuoteImagePaymentItem[] { return [...this.planPaymentItems, ...groupPaymentLines(this.activeStudents, true), { icon: '注', label: '不可减免注册费', amount: this.formatUsd(this.activeStudents.length * this.registrationFee), note: `每人一次性${this.registrationFee}美元；任何活动、95折或返校状态均不能减少。` }]; }
@@ -281,4 +280,7 @@ export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const result = applySchoolQuoteImageLayout({ ...editedQuote, importantNotes: [...this.familyTransferNotes, ...this.selectedPromotionNotes, ...settings.footerNotes] }, 'IMS', this.selectedWeeks, this.quoteStartDate, this.quoteUsd, this.usdToCny);
     return { ...result, headingText: this.quoteHeading, fileName: `${this.quoteHeading}-${this.quoteStartDate.replace(/-/g, '')}.png`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle, serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations, alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }], noteTitle: settings.noteSectionTitle, conversionRates: { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.usingLiveExchangeRate ? this.exchangeRateDate : undefined } };
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

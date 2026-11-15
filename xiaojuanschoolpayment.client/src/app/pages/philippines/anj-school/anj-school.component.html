@@ -1,3 +1,4 @@
+<aside style="max-width:1160px;margin:20px auto;padding:16px 24px;background:#eaf4f3;border-radius:12px"><a href="/philippines-study/baguio/airport-pickup" style="color:#125e66;font-weight:600">行前准备：查看 2026–2027 碧瑶接机日期、班次与注意事项 →</a><p style="margin:6px 0 0">请先联系思达启航顾问确认学校、接机日期、班次和集合点，再购买机票。最终安排以学校发送的接机确认通知为准。</p></aside>
 <app-cia-school>
   <div class="cia-page anj-page">
     <div class="page-grid">
@@ -360,7 +361,7 @@
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
               <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
             </div>
-            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">旺季附加费：每个实际重叠课程周加收{{ seasonalFeePerWeek }}美元，不参与优惠；日期按已启用的旺季范围计算。</p>
+            <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">旺季附加费：2026年已确认日期按40美元／周计收；2027/06/27–08/22按60美元／周计收。同一周课程与住宿只计一次，且不参与优惠。</p>
             <p class="season-note" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">优惠顺序：{{ registrationWaiverEnabled ? '免注册费；' : '' }}A&amp;J新生或续课固定优惠先扣除；剩余课程费和住宿费再按{{ (sidaDiscountRate * 100) | number:'1.0-2' }}%计算。新生优惠与续课优惠不叠加。</p>
           </div>
         </section>
@@ -379,7 +380,7 @@
               </tr></tbody>
               <tfoot>
                 <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含住宿押金及按需洗衣服务</td></tr>
-                <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>固定参考：1元人民币 ≈ 9比索；最终以实际兑换或支付汇率为准</td></tr>
+                <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, 'zh-CN') }} 元</td><td>参考汇率：1元人民币≈{{ quoteCurrencyText(phpPerCny) }}比索；最终以实际兑换或支付汇率为准</td></tr>
               </tfoot>
             </table>
           </div>

@@ -1,3 +1,4 @@
+<aside style="max-width:1160px;margin:20px auto;padding:16px 24px;background:#eaf4f3;border-radius:12px"><a href="/philippines-study/baguio/airport-pickup" style="color:#125e66;font-weight:600">行前准备：查看 2026–2027 碧瑶接机日期、班次与注意事项 →</a><p style="margin:6px 0 0">请先联系思达启航顾问确认学校、接机日期、班次和集合点，再购买机票。最终安排以学校发送的接机确认通知为准。</p></aside>
 <app-cia-school>
   <div class="cia-page">
     <div class="page-grid">
@@ -319,7 +320,6 @@
                   <span>{{ item.label }}<small class="payment-detail-title" *ngIf="item.detailTitle">{{ item.detailTitle }}<ng-container *ngIf="item.detailSubtitle"> · {{ item.detailSubtitle }}</ng-container></small><small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
                 </div>
               </div>
-              <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
               <div class="group-result">
                 <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
                 <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
@@ -328,10 +328,12 @@
               <div class="group-actions">
                 <button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
                 <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
+                <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" [previewBeforeDownload]="true" label="预览图片" icon="visibility" buttonClass="secondary-action"></app-quote-image-download-button>
                 <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
               </div>
+              <p class="fee-alert" role="alert" id="pines-quote-error" *ngIf="quoteError"><strong>暂时无法保存报价图片：</strong>{{ quoteError }}</p>
               <p class="fee-alert" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">2周课程费及住宿费按4周价的{{ shortStayRatios['2'] * 100 }}%计算，3周按{{ shortStayRatios['3'] * 100 }}%；4–24周按对应4周价格和实际周数等比例计算。雅思保证班每段至少选择8周或12周。</p>
-              <p class="season-note">2027年旺季预计为2027/06/27–08/21，开始为周日、结束为周六；实际覆盖的每个学习周加收40美元。</p>
+              <p class="season-note">2026/06/28–08/22按40美元／周计收；2027/06/27–08/22按60美元／周计收。同一周课程与住宿只计一次，旺季费不参与优惠，旺季课程不享常规淡季优惠。</p>
             </div>
 
             <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')">
@@ -345,7 +347,7 @@
                   </tr></tbody>
                   <tfoot>
                     <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含校内预存款、房间押金及洗衣服务</td></tr>
-                    <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>参考汇率：1元人民币 ≈ {{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索；最终以实际兑换或支付汇率为准</td></tr>
+                    <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, 'zh-CN') }} 元</td><td>参考汇率：1元人民币 ≈ {{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索；最终以实际兑换或支付汇率为准</td></tr>
                   </tfoot>
                 </table>
               </div>

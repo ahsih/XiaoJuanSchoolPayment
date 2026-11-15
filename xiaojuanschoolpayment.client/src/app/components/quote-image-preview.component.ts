@@ -17,13 +17,13 @@ import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output
         <div class="instructions" aria-live="polite">
           <p *ngIf="busy">正在生成报价单，请稍候…</p>
           <ng-container *ngIf="src && !busy">
-            <strong>长按下方图片，选择“保存图片”</strong>
+            <strong>长按或右键点击下方图片，选择“保存图片”</strong>
             <p>{{ wechat ? '在微信内即可尝试保存到相册，无需下载文件。' : '也可使用下方按钮保存或分享。' }}</p>
           </ng-container>
           <p *ngIf="error" class="error" role="alert">{{ error }}</p>
         </div>
         <div class="image-scroll">
-          <img *ngIf="src" [src]="src" alt="完整报价单，长按可保存图片" (error)="imageFailed.emit()" />
+          <img *ngIf="src" [src]="src" alt="完整报价单，长按或右键可保存图片" (error)="imageFailed.emit()" />
           <div *ngIf="busy" class="loading" role="status">图片生成中…</div>
         </div>
         <footer>

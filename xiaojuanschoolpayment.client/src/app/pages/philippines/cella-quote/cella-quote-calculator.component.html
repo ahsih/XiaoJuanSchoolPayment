@@ -67,6 +67,10 @@
 
   <div class="promotion-guide" *ngIf="hasRegularQuotes || hasFamilyPackages">
     <section *ngIf="hasRegularQuotes">
+      <h3>暑期附加费</h3>
+      <p>2026/07/05–08/29按40美元／周／人，2027/07/04–08/28按60美元／周／人。课程与住宿同一周只计一次，附加费不参与淡季、长期或其他优惠；Family Package按整包规则，不另加普通课程旺季费。</p>
+    </section>
+    <section *ngIf="hasRegularQuotes">
       <h3>2026年淡季与长期报名优惠</h3>
       <p>{{ formatDate(lowSeasonStart) }}–{{ formatDate(lowSeasonEnd) }}。符合房型每个完整4周优惠100美元；Premium六人间活动价499美元／4周，与淡季100美元优惠互斥。8／12／16周长期优惠分别再减50／100／150美元。</p>
     </section>
@@ -92,7 +96,7 @@
   <div class="group-result">
     <span>最终应付学校金额</span>
     <strong>{{ formatMoney(schoolTotal) }}美元</strong>
-    <em>约人民币{{ schoolTotalCny.toLocaleString('zh-CN') }}元</em>
+    <em>约人民币{{ quoteCurrencyText(schoolTotalCny, 'zh-CN') }}元</em>
     <small>{{ exchangeRateText }}；最终以支付当日汇率、学校空房和正式账单为准。</small>
   </div>
   <div class="group-actions">
@@ -113,7 +117,7 @@
       </tr></tbody>
       <tfoot>
         <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ localFeeTotalText }}</td><td>{{ localFeeTotalNote }}</td></tr>
-        <tr *ngIf="hasRegularQuotes"><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约{{ localFeeTotalCny.toLocaleString('zh-CN') }}元</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
+        <tr *ngIf="hasRegularQuotes"><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约{{ quoteCurrencyText(localFeeTotalCny, 'zh-CN') }}元</td><td>{{ exchangeRateText }}；最终以实际兑换或支付汇率为准</td></tr>
       </tfoot>
     </table>
   </div>

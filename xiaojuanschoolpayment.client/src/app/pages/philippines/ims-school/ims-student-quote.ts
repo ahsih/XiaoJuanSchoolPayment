@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { CiaLocalFeeRule } from '../cia-school/cia-content-config';
@@ -288,13 +289,16 @@ export class ImsStudentQuote {
     const weeks = this.stayWeeks;
     const line = (item: string, unitLabel: string, quantity: number, total: number, note: string): SchoolLocalFee => ({ item, unitLabel, quantity, total, note });
     const fee = (id: string, fallback: number) => this.catalog.localFeeRules?.find((item) => item.id === id && item.enabled)?.amount ?? fallback;
+    const bookRule = this.catalog.localFeeRules?.find(rule => rule.id === 'books');
+    const bookQuantity = bookRule?.periodWeeks ? textbookPeriods(this.quotePlan.courses, bookRule.periodWeeks, bookRule.rounding === 'proportional' ? 'proportional' : 'ceil') : textbookGroups(this.quotePlan.courses).length;
+    const includeBooks = !bookRule || (bookRule.enabled && bookRule.includeInTotal);
     const ssp = fee('ssp', 8000), eCard = fee('e-card', 4000), books = fee('books', 3000), studentId = fee('student-id', 300);
     const deposit = fee('deposit', 3000), water = fee('water', 500), electricity = fee('electricity', 500), aircon = fee('aircon', 250);
     const acr = fee('acr-i-card', 4000), pickup = fee('pickup', 1000), dropoff = fee('dropoff', 1000), lunch = fee('walk-in-lunch', 6000);
     return [
       line('SSP特殊学习许可证', `${ssp.toLocaleString()}比索／次`, 1, ssp, '强制费用；按2026年7月1日起费用表估算。'),
       line('E-Card', `${eCard.toLocaleString()}比索／次`, 1, eCard, '强制费用；最终办理要求以学校及当期政策为准。'),
-      line('教材费', `${books.toLocaleString()}比索／套`, 1, books, '费用表预估；教材因课程和级别不同，最终按实际购买确认。'),
+      ...(includeBooks ? [line(bookRule?.name ?? '教材费', `${books.toLocaleString()}比索／课程类型预估`, bookQuantity, books * bookQuantity, bookRule?.note || '各课程类型分别按费用表预估；教材因课程和级别不同，最终按实际购买确认。')] : []),
       line('学生证', `${studentId.toLocaleString()}比索／次`, 1, studentId, '强制一次性费用。'),
       line('宿舍／钥匙押金（可退）', `${deposit.toLocaleString()}比索／人`, 1, deposit, '入住时支付；无损坏并归还钥匙后按学校规则退还。'),
       line('水费', `${water.toLocaleString()}比索／周`, weeks, water * weeks, '按住宿周数计算。'),

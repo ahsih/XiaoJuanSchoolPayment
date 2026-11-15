@@ -1,0 +1,44 @@
+<section class="calculator" aria-label="CIEC详细报价">
+  <header class="calculator-heading">
+    <div><h3>CIEC课程与住宿报价</h3><p>按成员填写学习安排；美元与比索分别合计。</p></div>
+    <div class="mode-control"><button *ngFor="let choice of ['single','family','group']" type="button" [attr.aria-pressed]="mode === choice" (click)="changeMode($any(choice))">{{choice === 'single' ? '单人' : choice === 'family' ? '亲子' : '多人'}}</button></div>
+  </header>
+  <label class="count-field" *ngIf="mode !== 'single'">人数<select [ngModel]="count" (ngModelChange)="changeCount($event)"><option *ngFor="let value of counts" [ngValue]="value">{{value}}人</option></select></label>
+  <details class="policy" open><summary>2026／2027淡季优惠与家庭条件</summary><p *ngFor="let campaign of campaigns">{{campaign.year}}学习日期：{{campaign.start}} 至 {{campaign.end}}</p><p *ngFor="let policy of policies">{{policy}}</p><p>学校优惠后，剩余课程及住宿叠加思达95折。注册费、监护费、接机及比索费用不打折。</p></details>
+  <details class="student-card" *ngFor="let person of active; let i = index" open>
+    <summary><span>{{label(i)}}<small>{{person.plan.startDate}} 至 {{person.plan.endDate}} · {{person.plan.courseWeeks}}周</small></span><strong>{{result(person).total === null ? '待确认' : money(result(person).total!) + '美元'}}</strong></summary>
+    <div class="student-body">
+      <div class="student-fields">
+        <label>成员身份<select [(ngModel)]="person.role"><option value="student">学员／无监护人陪同</option><option value="guardian">家长／监护人</option><option value="child">子女</option></select></label>
+        <label>抵达时年龄（岁）<input type="number" min="0" max="100" step="1" [(ngModel)]="person.age"/></label><label *ngIf="person.ageMonths < 48">婴幼儿准确月龄<input type="number" min="0" max="47" step="1" [(ngModel)]="person.ageMonths"/></label>
+        <label>签证<select [(ngModel)]="person.visa"><option value="30">30天旅游签证</option><option value="59">59天旅游签证</option><option value="student">学生签证</option><option value="work">工作签证</option><option value="srrv">SRRV</option><option value="sirv">SIRV</option></select></label>
+        <label class="check"><input type="checkbox" [(ngModel)]="person.returning"/>老学员返校，免注册费</label>
+        <label class="check"><input type="checkbox" [(ngModel)]="person.guardianCare"/>学校监护服务（300美元／4周）</label>
+        <label class="check"><input type="checkbox" [(ngModel)]="person.pickup"/>宿务机场接机（20美元／人）</label>
+      </div>
+      <app-school-quote-plan [plan]="person.plan"></app-school-quote-plan>
+      <div class="student-fields">
+        <label class="check" *ngIf="person.role === 'guardian'"><input type="checkbox" [(ngModel)]="person.eligibilityConfirmed"/>顾问已与学校确认家长课程／不上课资格</label>
+        <label *ngIf="!person.kindergarten">教材本数<input type="number" min="0" step="1" [(ngModel)]="person.bookCount"/></label>
+        <label *ngIf="!person.kindergarten">教材参考单价（比索／本）<input type="number" min="600" max="1500" [(ngModel)]="person.bookPrice"/></label>
+        <label class="check" *ngIf="person.kindergarten"><input type="checkbox" [(ngModel)]="person.stationery"/>幼儿园文具套装（2000比索／4周）</label>
+        <label>可退押金币种<select [(ngModel)]="person.deposit"><option value="php">5000比索</option><option value="usd">100美元</option></select></label>
+      </div>
+      <ul class="issues" *ngIf="result(person).issues.length"><li *ngFor="let issue of result(person).issues">{{issue}}</li></ul>
+      <div class="confirmation" *ngIf="result(person).pending.length">
+        <strong>顾问确认学校金额</strong><p>填写学校优惠后的课程与住宿合计，尚未打95折；不含注册费、CIDEC年级学费、监护费及接机。资格问题请先完成上方资格确认。</p>
+        <div class="student-fields"><label>课程与住宿（美元）<input type="number" min="0" [(ngModel)]="person.schoolAmount"/></label><label *ngIf="person.guardianCare">学校确认监护费（美元，另列）<input type="number" min="0" [(ngModel)]="person.confirmedCare"/></label><label class="confirmation-note">确认依据／适用条件<input [(ngModel)]="person.schoolConfirmation"/></label></div>
+        <button type="button" (click)="confirm(person,'school')">确认当前方案金额</button><p *ngIf="result(person).confirmed">已使用学校确认金额：{{person.schoolConfirmation}}</p>
+      </div>
+      <dl class="student-breakdown"><div><dt>注册费</dt><dd>{{person.registration}}美元</dd></div><div><dt>学校优惠／调整</dt><dd>{{money(result(person).schoolDiscount)}}美元</dd></div><div><dt>思达95折减免</dt><dd>{{money(result(person).sidaDiscount)}}美元</dd></div><div *ngIf="person.guardianCare"><dt>学校监护费</dt><dd>{{money(result(person).care)}}美元</dd></div><div *ngIf="person.annualFee"><dt>CIDEC年级学费（一次）</dt><dd>3000美元</dd></div></dl>
+      <p *ngFor="let note of result(person).promotionNotes" class="small">{{note}}</p><p *ngIf="result(person).craft" class="small">2026小学生免费一小时手作体验课，非现金权益。</p>
+      <h4>到校后学杂费</h4>
+      <ng-container *ngIf="!person.localIssues.length"><table class="fee-table"><thead><tr><th>项目／说明</th><th>比索</th></tr></thead><tbody><tr *ngFor="let fee of person.localRows"><th>{{fee.label}}<small>{{fee.note}}</small></th><td>{{money(fee.amount)}}</td></tr></tbody></table></ng-container>
+      <div class="confirmation" *ngIf="person.localIssues.length"><ul class="issues"><li *ngFor="let issue of person.localIssues">{{issue}}</li></ul><p>请按下方学校费用表确认本成员的本地费用，不含电费与可退押金。</p><div class="student-fields"><label>确认本地费用合计（比索）<input type="number" min="0" [(ngModel)]="person.localAmount"/></label><label class="confirmation-note">项目明细及确认依据<input [(ngModel)]="person.localConfirmation"/></label></div><button type="button" (click)="confirm(person,'local')">确认当前本地费用</button><p *ngIf="local(person) !== null">{{person.localConfirmation}}</p></div>
+      <p>本成员比索费用：<strong>{{local(person) === null ? '待顾问确认' : money(local(person)!) + '比索'}}</strong></p>
+      <p class="small">可退押金：{{person.deposit === 'php' ? '5000比索' : '100美元'}}，不计入合计。电费约23比索／kWh，按实际用量结算；教材按实际购买。婴幼儿仍须付水电。</p>
+    </div>
+  </details>
+  <div class="quote-result"><div><span class="eyebrow">CIEC报价</span><p>含所列课程、住宿、注册费及已选接机／监护费。比索费用另付；电费、可退押金及个人消费未计入。</p></div><div class="grand-total"><span>美元费用合计</span><strong [class.pending-total]="total === null">{{total === null ? '待顾问确认' : money(total) + '美元'}}</strong><p>本地费用：{{localTotal === null ? '待顾问确认' : money(localTotal) + '比索'}}</p></div></div>
+  <div class="quote-actions"><div><p>课程、床位和费用以学校最终确认为准。</p><p *ngIf="!canExport" role="status">请完成各成员的安排及费用确认后，再保存完整报价图片。</p></div><app-quote-image-download-button [quote]="quoteImage" [previewBeforeDownload]="true" [disabled]="!canExport" label="预览／保存报价图片"></app-quote-image-download-button></div>
+</section>

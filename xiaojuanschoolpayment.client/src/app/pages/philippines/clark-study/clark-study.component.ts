@@ -127,7 +127,7 @@ export class ClarkStudyComponent {
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
-      startingPrice: 'RMB 7,740 + 注册费 / 4周起参考',
+      startingPrice: '8,940元 / 4周起（Light ESL + 校内三人间 + 注册费600元；当地费另计）',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -138,7 +138,7 @@ export class ClarkStudyComponent {
         'Primary / Junior',
       ],
       accommodation:
-        '官网列有校内宿舍，常见单人、双人、三四人房；另有距离学校约 5 分钟车程的校外 Hotel 住宿选项。',
+        '校内单人A/B、双人、三人间及仅限家庭的四人房；校外酒店约5分钟车程，有免费往返学校班车。',
       facilities:
         '官网可确认一对一教室、小组教室、Academic Office、宿舍、Hotel、餐食服务和学习支持体系。',
       bestFor:
@@ -450,7 +450,10 @@ export class ClarkStudyComponent {
       ...type,
       icon: ['record_voice_over', 'family_restroom', 'school', 'business_center'][index],
     })),
-    schoolProfiles: this.schoolProfiles,
+    schoolProfiles: this.schoolProfiles.map(profile => ({
+      ...profile,
+      priceReference: profile.route === '/philippines-study/clark/cip-english-kepos' ? profile.startingPrice : undefined,
+    })),
     highlights: this.highlights,
     selectionImages: [
       '/assets/philippines/cip-campus-hero.webp',

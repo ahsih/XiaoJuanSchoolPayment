@@ -358,6 +358,11 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/smeag-capital',
           },
           {
+            id: 'smeag-encanto',
+            label: '菲律宾宿务SMEAG Encanto海滨校区',
+            route: '/philippines-study/cebu/smeag-encanto',
+          },
+          {
             id: 'genius-english-academy',
             label: '菲律宾宿务Genius English Academy语言学校',
             route: '/philippines-study/cebu/genius-english-academy',
@@ -391,6 +396,11 @@ export const mainNavigation: NavigationItem[] = [
             id: 'cella-premium-campus',
             label: '菲律宾宿务CELLA Premium Campus',
             route: '/philippines-study/cebu/cella-premium-campus',
+          },
+          {
+            id: 'ev-la-mer',
+            label: 'EV Academy La Mer 校区',
+            route: '/philippines-study/cebu/ev-la-mer',
           },
           {
             id: 'ev-academy',
@@ -834,6 +844,12 @@ export const mainNavigation: NavigationItem[] = [
         id: 'philippines-guide',
         label: '菲律宾游学指南',
         route: '/study-tour-guide/philippines',
+        type: 'SEO指南页',
+      },
+      {
+        id: 'baguio-airport-pickup',
+        label: '碧瑶接机指南',
+        route: '/philippines-study/baguio/airport-pickup',
         type: 'SEO指南页',
       },
       {

@@ -28,7 +28,7 @@ const prices = {
   seasonalFeePerWeek: 40,
   peakSeasonRanges: [
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
-    { label: '2027旺季', start: '2027-06-27', end: '2027-08-21' },
+    { label: '2027旺季', start: '2027-06-27', end: '2027-08-22' },
   ],
   shortStayRatios: { '2': 0.65, '3': 0.85 },
   localFeeRules: defaultContent.localFees,
@@ -36,6 +36,20 @@ const prices = {
 };
 
 describe('PinesStudentQuote', () => {
+  it('keeps the selected campus visible without changing payment names or bypassing campus validation', () => {
+    const quote = new PinesStudentQuote(prices);
+    const course = quote.quotePlan.options('course').find(item => item.id === 'ielts-regular')!;
+    const room = quote.quotePlan.options('room').find(item => item.id === 'ielts-sextuple')!;
+    expect(course.selectionLabel).toBe('雅思校区｜IELTS');
+    expect(room.selectionLabel).toContain('雅思校区｜');
+    expect(room.name).not.toContain('｜');
+    quote.quotePlan.courses[0].optionId = 'ielts-regular';
+    quote.quotePlan.rooms[0].optionId = 'main-sextuple';
+    expect(quote.quoteError).toContain('校区不一致');
+    quote.quotePlan.rooms[0].optionId = 'ielts-sextuple';
+    expect(quote.quoteError).toBe('');
+  });
+
   it('uses 65% for two weeks, 85% for three weeks and proportional rates from four weeks', () => {
     expect(pinesPriceMultiplier(2)).toBe(0.65);
     expect(pinesPriceMultiplier(3)).toBe(0.85);
@@ -89,7 +103,7 @@ describe('PinesStudentQuote', () => {
     expect(quote.offSeasonDiscount).toBe(0);
   });
 
-  it('counts the aligned 2026 and 2027 peak seasons as eight weeks', () => {
+  it('keeps 2026 at 40 dollars and applies 60 dollars to a confirmed 2027 range', () => {
     const quote = new PinesStudentQuote(prices);
     quote.quotePlan.courses[0].startDate = '2026-06-28';
     quote.quotePlan.rooms[0].startDate = '2026-06-28';
@@ -101,6 +115,7 @@ describe('PinesStudentQuote', () => {
     quote.quotePlan.courses[0].startDate = '2027-06-27';
     quote.quotePlan.rooms[0].startDate = '2027-06-27';
     expect(quote.peakWeeks).toBe(8);
+    expect(quote.seasonalSurcharge).toBe(480);
   });
 
   it('calculates extensions from the selected 30 or 59 day entry visa', () => {

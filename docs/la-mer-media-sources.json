@@ -1,0 +1,222 @@
+[
+  {
+    "asset": "campus-sunset.webp",
+    "key": "guide-1-1",
+    "source": "La Mer 课程指南.pdf",
+    "page": 1,
+    "size": [
+      2458,
+      1383
+    ]
+  },
+  {
+    "asset": "campus-pool.webp",
+    "key": "guide-2-1",
+    "source": "La Mer 课程指南.pdf",
+    "page": 2,
+    "size": [
+      3600,
+      2400
+    ]
+  },
+  {
+    "asset": "campus-bridge.webp",
+    "key": "family-3-4",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 3,
+    "size": [
+      1844,
+      1383
+    ]
+  },
+  {
+    "asset": "pool-access-room.webp",
+    "key": "guide-7-5",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "room-interior.webp",
+    "key": "guide-7-8",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "study-desks.webp",
+    "key": "guide-7-9",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "bathroom.webp",
+    "key": "guide-7-12",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "classroom-one.webp",
+    "key": "guide-7-15",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "classroom-group.webp",
+    "key": "guide-7-14",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      1200,
+      800
+    ]
+  },
+  {
+    "asset": "conference-room.webp",
+    "key": "family-8-13",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 8,
+    "size": [
+      307,
+      248
+    ]
+  },
+  {
+    "asset": "reception.webp",
+    "key": "guide-7-2",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      2868,
+      1613
+    ]
+  },
+  {
+    "asset": "garden-seating.webp",
+    "key": "guide-7-10",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      692,
+      922
+    ]
+  },
+  {
+    "asset": "restaurant.webp",
+    "key": "guide-7-11",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      800,
+      600
+    ]
+  },
+  {
+    "asset": "cafe.webp",
+    "key": "guide-7-13",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      820,
+      615
+    ]
+  },
+  {
+    "asset": "children-pool.webp",
+    "key": "oldfamily-7-30",
+    "source": "EV Academy La Mer 2026 Family Course (中国)_2602.pdf",
+    "page": 7,
+    "size": [
+      393,
+      239
+    ]
+  },
+  {
+    "asset": "gym.webp",
+    "key": "oldfamily-7-32",
+    "source": "EV Academy La Mer 2026 Family Course (中国)_2602.pdf",
+    "page": 7,
+    "size": [
+      393,
+      243
+    ]
+  },
+  {
+    "asset": "recreation.webp",
+    "key": "family-9-34",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 9,
+    "size": [
+      393,
+      239
+    ]
+  },
+  {
+    "asset": "table-tennis.webp",
+    "key": "guide-7-16",
+    "source": "La Mer 课程指南.pdf",
+    "page": 7,
+    "size": [
+      807,
+      605
+    ]
+  },
+  {
+    "asset": "family-learning.webp",
+    "key": "guide-6-7",
+    "source": "La Mer 课程指南.pdf",
+    "page": 6,
+    "size": [
+      1200,
+      800
+    ]
+  },
+  {
+    "asset": "wardrobe.webp",
+    "key": "family-8-23",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 8,
+    "size": [
+      307,
+      248
+    ]
+  },
+  {
+    "asset": "room-beds.webp",
+    "key": "family-8-25",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 8,
+    "size": [
+      307,
+      248
+    ]
+  },
+  {
+    "asset": "teaching-corridor.webp",
+    "key": "family-8-35",
+    "source": "EV Academy La Mer 2027 Family Course (International)-CN.pdf",
+    "page": 8,
+    "size": [
+      307,
+      251
+    ]
+  }
+]

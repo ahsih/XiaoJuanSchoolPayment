@@ -195,4 +195,15 @@ describe('WalesSchoolDetailComponent shared group quote', () => {
     bitmap.close();
     renderer.ngOnDestroy();
   }, 30000);
+
+  it('charges the 2027 BESA peak once for overlapping course and room weeks', () => {
+    const student = component.students[0];
+    student.quotePlan.courses[0].startDate = '2027-06-27';
+    student.quotePlan.rooms[0].startDate = '2027-06-27';
+    student.quotePlan.courses[0].weeks = 4;
+    student.quotePlan.rooms[0].weeks = 4;
+    expect(student.peakWeeks).toBe(4);
+    expect(student.seasonalSurcharge).toBe(240);
+    expect(component.quoteImageData.paymentItems?.find(item => item.label === '旺季附加费')?.amount).toBe('240 美元');
+  });
 });

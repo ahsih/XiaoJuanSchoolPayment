@@ -51,15 +51,30 @@ describe('IU and ICL 2026 quote rules', () => {
     expect(icl.total).toBe(1050);
   });
 
-  it('uses 40/60/80 percent for regular short stays and never adds an intermediary discount', () => {
+  it('uses 40/60/80 percent for regular short stays and discounts ordinary prices without discounting registration', () => {
     const quote = new IuIclQuote('IU', 'power-speaking-4', 'walk-in', '2026-09-13');
     [1, 2, 3].forEach((weeks, index) => {
       align(quote, weeks, '2026-09-13');
-      expect(quote.total).toBe(100 + [340, 510, 680][index]);
+      expect(quote.total).toBe(100 + [306, 459, 612][index]);
       expect(quote.lowSeasonDiscount).toBe(0);
       expect(quote.registrationWaiver).toBe(0);
     });
-    expect(quote.promotionNote).toContain('思达启航不提供或叠加其它价格优惠');
+    expect(quote.promotionNote).toContain('9折优惠');
+  });
+
+  it('applies the confirmed peak 90% rate to the screenshot family in both campuses and images', () => {
+    for (const campus of ['IU', 'ICL'] as const) {
+      const students = ['light-esl', 'kids', 'kids'].map(id => {
+        const quote = new IuIclQuote(campus, id, 'campus-triple', '2027-01-24');
+        quote.applyContentConfig(campus === 'IU' ? createDefaultIuContentConfig() : createDefaultIclContentConfig());
+        align(quote, 3, '2027-01-24');
+        return quote;
+      });
+      expect(students.reduce((sum, quote) => sum + quote.intermediaryDiscount, 0)).toBe(372);
+      expect(students.reduce((sum, quote) => sum + quote.total, 0)).toBe(3648);
+      expect(buildIuIclGroupImageData(students, 7, 8, undefined, '').totalUsd).toBe('3,648 美元');
+      expect(iuIclGroupPaymentItems(students).find(item => item.label === '思达启航9折优惠')?.amount).toBe('− 372 美元');
+    }
   });
 
   it('matches the school low-season packages and waives registration once', () => {
@@ -80,7 +95,7 @@ describe('IU and ICL 2026 quote rules', () => {
     expect(quote.total).toBe(1150);
     align(quote, 4, '2026-12-20');
     expect(quote.plan.end(quote.plan.courses[0])).toBe('2027-01-16');
-    expect(quote.total).toBe(1650);
+    expect(quote.total).toBe(1495);
     expect(quote.lowSeasonDiscount).toBe(0);
   });
 
@@ -213,7 +228,7 @@ describe('IU and ICL 2026 quote rules', () => {
     const first = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
     const second = new IuIclQuote('IU', 'power-speaking-6', 'off-campus-double', '2026-09-13');
     expect(first.total).toBe(1150);
-    expect(second.total).toBe(2050);
+    expect(second.total).toBe(1855);
 
     const rows = iuIclGroupPaymentItems([first, second]);
     expect(rows.find(item => item.label === '注册费')?.amount).toBe('200 美元');

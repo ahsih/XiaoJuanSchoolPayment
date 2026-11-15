@@ -2,6 +2,7 @@ import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-gr
 import { QuoteImagePaymentItem } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export interface MonolSpartaQuotePrices {
   courseFees: { id: string; name: string; tuition: number; suitable: string; note: string }[];
@@ -9,6 +10,8 @@ export interface MonolSpartaQuotePrices {
   registrationFee: number;
   promotionRules: CiaPromotionRule[];
   localFeeRules: CiaLocalFeeRule[];
+  peakSeasonFeePerWeek?: number;
+  peakSeasonRanges?: readonly { start: string; end: string; enabled?: boolean }[];
 }
 
 export const MONOL_SPARTA_VISA_OPTIONS = [
@@ -105,6 +108,11 @@ export class MonolSpartaStudentQuote {
   /** 思达启航为所有通过思达报名的学生免除学校原价注册费。 */
   get registration() { return 0; }
   get visaLabel() { return this.visaOptions.find(option => option.value === this.visaType)?.label ?? ''; }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge('MONOL-SPARTA', this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]), this.prices.peakSeasonRanges ?? [], this.prices.peakSeasonFeePerWeek ?? 60);
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   private rule(id: string) {
     return this.prices.promotionRules.find(item => item.id === id && item.enabled);
@@ -151,7 +159,7 @@ export class MonolSpartaStudentQuote {
   }
 
   get quoteUsd() {
-    return Math.max(0, rounded(this.registration + this.tuition + this.accommodation
+    return Math.max(0, rounded(this.registration + this.tuition + this.accommodation + this.seasonalSurcharge
       - this.coursePromotionDiscount - this.roomPromotionDiscount - this.snsDiscount));
   }
 
@@ -160,6 +168,7 @@ export class MonolSpartaStudentQuote {
     const roomRule = this.rule('sparta-room-2026');
     const snsRule = this.rule('sparta-sns-2026');
     return [
+      ...(this.seasonalSurcharge ? [{ icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: `2027/06/27–08/22；${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与优惠。` }] : []),
       ...(this.coursePromotionDiscount ? [{ icon: '惠', label: courseRule?.name ?? '课程优惠', value: -this.coursePromotionDiscount, note: `${this.coursePromotionBlocks}个完整4周；${courseRule?.description ?? ''}`, promotionKey: courseRule?.id }] : []),
       ...(this.roomPromotionDiscount ? [{ icon: '惠', label: roomRule?.name ?? '住宿优惠', value: -this.roomPromotionDiscount, note: `${this.roomPromotionBlocks}个完整4周；${roomRule?.description ?? ''}`, promotionKey: roomRule?.id }] : []),
       ...(this.snsDiscount ? [{ icon: '惠', label: snsRule?.name ?? 'SNS活动', value: -this.snsDiscount, note: `${this.snsEligibleBlocks}个完整4周；${snsRule?.description ?? ''}；活动是否开放及能否叠加须学校书面确认`, promotionKey: snsRule?.id }] : []),

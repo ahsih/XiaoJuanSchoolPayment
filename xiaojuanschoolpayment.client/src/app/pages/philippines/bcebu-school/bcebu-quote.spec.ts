@@ -45,16 +45,36 @@ describe("B'Cebu confirmed 2026 pricing", () => {
   it('stacks the five benefits and separates prepayment from actual refund', () => {
     const quote = calculator(); duration(quote, 8); quote.reporter = true;
     expect(quote.reporterDiscount).toBe(200);
-    expect(quote.offSeasonDiscount).toBe(465);
-    expect(quote.sidaDiscount).toBe(263.5);
     expect(quote.longStayDiscount).toBe(50);
-    expect(quote.total).toBe(2321.5);
-    expect(quote.prepaid).toBe(2474.5);
+    expect(quote.offSeasonDiscount).toBe(457.5);
+    expect(quote.sidaDiscount).toBe(259.25);
+    expect(quote.total).toBe(2333.25);
+    expect(quote.prepaid).toBe(2486.25);
     expect(quote.refund).toBe(153);
     expect(quote.total + quote.refund).toBe(quote.prepaid);
     expect(quote.paymentItems[0].amount).toBe('100 美元');
     expect(quote.paymentItems[1].amount).toBe('− 100 美元');
     expect(quote.paymentItems[0].note).toBe(BCEBU_REGISTRATION_NOTE);
+  });
+
+  it('matches the confirmed 12-week mixed-course written quote and image order', () => {
+    const quote = calculator();
+    quote.plan.courses = [
+      { id: 1, optionId: 'speed-esl', weeks: 4, startDate: '2026-09-06' },
+      { id: 3, optionId: 'business-english', weeks: 8, startDate: '2026-10-04' },
+    ];
+    quote.plan.rooms = [{ id: 2, optionId: 'triple-bunk', weeks: 12, startDate: '2026-09-06' }];
+    quote.reporter = true;
+
+    expect(quote.base).toBe(5250);
+    expect(quote.longStayDiscount).toBe(100);
+    expect(quote.reporterDiscount).toBe(300);
+    expect(quote.offSeasonDiscount).toBe(727.5);
+    expect(quote.sidaDiscount).toBe(412.25);
+    expect(quote.total).toBe(3710.25);
+    expect(quote.paymentItems.filter(row => ['长期优惠', '记者活动优惠', '淡季优惠', '思达启航专属折扣'].includes(row.label)).map(row => row.label))
+      .toEqual(['长期优惠', '记者活动优惠', '淡季优惠', '思达启航专属折扣']);
+    expect(quote.imageData(7, 9, '备用汇率估算').totalUsd).toBe('3,710.25 美元');
   });
 
   it('calculates the supplied four-week fall promotion in the confirmed order', () => {

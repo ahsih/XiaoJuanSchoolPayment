@@ -1,5 +1,7 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -132,7 +134,8 @@ export class CijPremiumSchoolComponent {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   readonly registrationFee = 150;
-  readonly usdToCny = 7.2;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 8, 12];
 
   selectedCourseId = 'esl4';
@@ -683,7 +686,7 @@ export class CijPremiumSchoolComponent {
     return 'CIJ公开资料存在不同年份和域名口径，房型、校区和正式价格请以学校当期确认书为准';
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
@@ -702,4 +705,7 @@ export class CijPremiumSchoolComponent {
 
     return multiplier[weeks];
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { QuotePlanKind, QuotePlanOption, SchoolQuotePlan, quoteMoney } from './school-quote-plan';
+import { QuotePlanKind, QuotePlanOption, QuotePlanRow, SchoolQuotePlan, quoteMoney } from './school-quote-plan';
 
 @Component({
   selector: 'app-school-quote-plan', standalone: true, imports: [CommonModule, FormsModule],
@@ -13,6 +13,10 @@ export class SchoolQuotePlanComponent {
   @Input() travellerCount = 1;
   @Input() syncCourseDatesToRooms = false;
   @Input() lockRoomScheduleToCourses = false;
+  @Input() currencyLabel = '美元';
+  @Input() amountLabel: ((kind: QuotePlanKind, row: QuotePlanRow) => string) | null = null;
+  @Input() allowedRowWeeks: ((kind: QuotePlanKind, row: QuotePlanRow) => readonly number[]) | null = null;
+  @Output() optionChange = new EventEmitter<{ kind: QuotePlanKind; row: QuotePlanRow }>();
   readonly sundayDateMinimum = '2020-01-05';
   get travellers() { return Array.from({ length: this.travellerCount }, (_, index) => index + 1); }
   readonly lists = [{ kind: 'course' as const, title: '课程' }, { kind: 'room' as const, title: '住宿' }];
@@ -25,7 +29,12 @@ export class SchoolQuotePlanComponent {
   }
   weekOptions(kind: QuotePlanKind, currentWeeks: number, id = this.plan.rows(kind)[0].id) {
     const otherWeeks = this.plan.scheduleRows(kind, id).reduce((sum, row) => sum + row.weeks, 0) - currentWeeks;
-    return this.plan.segmentWeeks.filter(weeks => otherWeeks + weeks <= this.plan.maxWeeks);
+    const row = this.plan.rows(kind).find(item => item.id === id)!;
+    return (this.allowedRowWeeks?.(kind, row) ?? this.plan.segmentWeeks).filter(weeks => otherWeeks + weeks <= this.plan.maxWeeks);
+  }
+  selectOption(kind: QuotePlanKind, row: QuotePlanRow, optionId: string): void {
+    row.optionId = optionId;
+    this.optionChange.emit({ kind, row });
   }
   canAdd(kind: QuotePlanKind) {
     return this.plan.canAdd(kind);

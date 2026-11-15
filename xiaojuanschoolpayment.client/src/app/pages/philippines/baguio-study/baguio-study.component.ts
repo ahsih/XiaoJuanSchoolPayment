@@ -57,6 +57,23 @@ interface SourceLink {
   url: string;
 }
 
+const BAGUIO_SCHOOL_SHORT_NAMES: Record<string, string> = {
+  '菲律宾碧瑶PINES语言学校': 'PINES',
+  '菲律宾碧瑶JIC挑战校区': 'Baguio JIC 挑战校区',
+  '菲律宾碧瑶JIC高级校区': 'Baguio JIC 高级校区',
+  '菲律宾碧瑶BECI斯巴达校区': 'BECI 斯巴达校区',
+  '菲律宾碧瑶BECI EOP校区': 'BECI EOP校区',
+  '菲律宾碧瑶API BECI（City Campus）': 'API BECI City Campus',
+  'MONOL主校区': 'MONOL主校区',
+  'MONOL斯巴达校区': 'MONOL斯巴达校区',
+  '菲律宾碧瑶WALES语言学校': 'WALES',
+  '菲律宾碧瑶A&J e-Edu English Academy': 'A&J e-Edu',
+  'HELP English（Longlong Campus）': 'HELP English',
+};
+
+export const getBaguioSchoolShortName = (schoolName: string): string =>
+  BAGUIO_SCHOOL_SHORT_NAMES[schoolName] ?? schoolName;
+
 @Component({
   selector: 'app-baguio-study',
   standalone: true,
@@ -153,11 +170,11 @@ export class BaguioStudyComponent {
       location: 'Premium Campus / 高级校区',
       style: '口语输出 / 职业应用 / 舒适生活',
       route: '/philippines-study/baguio/baguio-jic-premium',
-      startingPrice: 'Speaking Starter 7 + 四人间4周约USD 1,550起',
-      courses: ['Speaking', 'TEP', 'Active Senior', 'TOEIC', 'Business', 'Junior / Guardian'],
+      startingPrice: 'Speaking Starter + 四人间4周约USD 1,550起',
+      courses: ['Speaking', 'TEP', 'Active Senior', 'TOEIC', 'Business'],
       accommodation: '无阳台或带阳台的单人、双人及四人房。',
       facilities: '课堂、学生中心、咖啡空间、餐厅与多种住宿集中在Premium校区。',
-      bestFor: '重视口语、职场英语、打工度假、成人课程或亲子学习体验的学生。',
+      bestFor: '重视口语、职场英语、打工度假、成人课程或舒适学习环境的学生。',
       consultantNote: '课程选择更丰富，需同时核对教材费、阳台房型和淡季优惠资格。',
     },
     {
@@ -396,16 +413,7 @@ export class BaguioStudyComponent {
     })),
     schoolProfiles: this.schoolProfiles.map((school) => ({
       ...school,
-      shortName:
-        school.name === '菲律宾碧瑶PINES语言学校' ? 'PINES' :
-        school.name === '菲律宾碧瑶BECI斯巴达校区' ? 'BECI 斯巴达校区' :
-        school.name === '菲律宾碧瑶BECI EOP校区' ? 'BECI EOP校区' :
-        school.name === '菲律宾碧瑶API BECI（City Campus）' ? 'API BECI City Campus' :
-        school.name === '菲律宾碧瑶JIC语言学校' ? 'JIC' :
-        school.name === 'MONOL主校区' ? 'MONOL主校区' :
-        school.name === 'MONOL斯巴达校区' ? 'MONOL斯巴达校区' :
-        school.name === '菲律宾碧瑶WALES语言学校' ? 'WALES' :
-        school.name === '菲律宾碧瑶A&J e-Edu English Academy' ? 'A&J e-Edu' : 'HELP English',
+      shortName: getBaguioSchoolShortName(school.name),
       categories:
         school.name.includes('PINES') ? ['强化管理型', '考试备考型', '亲子与青少年型'] :
         school.name.includes('JIC') ? ['强化管理型', '考试备考型', '亲子与青少年型'] :

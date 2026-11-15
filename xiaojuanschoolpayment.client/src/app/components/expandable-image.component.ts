@@ -20,6 +20,8 @@ export class ExpandableImageComponent implements OnDestroy {
   @Input() imageCaptions: readonly string[] = [];
   @Input() disabled = false;
   @Input() loading: 'eager' | 'lazy' = 'lazy';
+  @Input() width?: number;
+  @Input() height?: number;
   @Input() previewHeight = '';
   @Input() previewMinHeight = '';
   @Input() previewFit = '';

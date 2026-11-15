@@ -1,0 +1,52 @@
+> Building...
+√ Building...
+Initial chunk files | Names                                |  Raw size
+main.js             | main                                 |   1.27 MB | 
+chunk-HUNGYLFZ.js   | -                                    | 896.01 kB | 
+chunk-WFJUZJL3.js   | -                                    | 410.03 kB | 
+chunk-7TEALUMN.js   | -                                    | 314.24 kB | 
+chunk-FZJZI7SI.js   | -                                    | 269.81 kB | 
+chunk-ZJ4LGOML.js   | -                                    | 224.48 kB | 
+chunk-B77XYE6T.js   | -                                    | 210.81 kB | 
+chunk-PVCE2BSF.js   | -                                    | 134.00 kB | 
+chunk-KF7CSAYE.js   | -                                    | 110.21 kB | 
+styles.css          | styles                               |  97.24 kB | 
+polyfills.js        | polyfills                            |  89.80 kB | 
+chunk-BCOYSBEQ.js   | -                                    |  73.01 kB | 
+chunk-MXE5MKPQ.js   | -                                    |  58.15 kB | 
+chunk-3TKTPAEO.js   | -                                    |  41.04 kB | 
+chunk-SFPGMIQL.js   | -                                    |  38.15 kB | 
+chunk-VRNM3VHU.js   | -                                    |  35.79 kB | 
+chunk-AL4XUGIC.js   | -                                    |  30.94 kB | 
+chunk-IGXZIOOC.js   | -                                    |  24.90 kB | 
+chunk-PX4MDDTR.js   | -                                    |  22.80 kB | 
+chunk-NRXOEBVG.js   | -                                    |  12.59 kB | 
+chunk-V7BROKMH.js   | -                                    |   7.17 kB | 
+chunk-6OJTGOG6.js   | -                                    |   4.35 kB | 
+chunk-3FOZ6F2Z.js   | -                                    |   1.93 kB | 
+chunk-ZKJSEJCY.js   | -                                    |   1.40 kB | 
+
+                    | Initial total                        |   4.38 MB
+
+Lazy chunk files    | Names                                |  Raw size
+chunk-IXYGWNFH.js   | cia-school-component                 | 506.54 kB | 
+chunk-P3ODBWWI.js   | pines-school-detail-component        | 468.89 kB | 
+chunk-7X4ECD5X.js   | admin-school-content-component       | 436.05 kB | 
+chunk-STXAQTTU.js   | cg-sparta-school-component           | 406.08 kB | 
+chunk-TP2PUWTL.js   | ims-school-component                 | 354.55 kB | 
+chunk-VLLRSACO.js   | ev-school-detail-component           | 343.79 kB | 
+chunk-QQKR7G22.js   | monol-sparta-school-detail-component | 342.12 kB | 
+chunk-AZEVME3B.js   | cpi-school-detail-component          | 341.51 kB | 
+chunk-ZJGSAPBV.js   | jic-school-detail-component          | 341.31 kB | 
+chunk-LONSG2SS.js   | monol-school-detail-component        | 333.07 kB | 
+chunk-YDTJFXFF.js   | anj-school-component                 | 329.78 kB | 
+chunk-VRB3XR4L.js   | glc-school-component                 | 328.23 kB | 
+chunk-GOH5PTY4.js   | btes-school-component                | 327.69 kB | 
+chunk-2Q474LAE.js   | cpils-school-detail-component        | 320.93 kB | 
+chunk-YFNWYHL6.js   | ibreeze-school-component             | 320.65 kB | 
+...and 178 more lazy chunks files. Use "--verbose" to show all the files.
+
+Application bundle generation complete. [39.660 seconds]
+
+Output location: C:\Github\sidaqihang\XiaoJuanSchoolPayment\xiaojuanschoolpayment.client\dist\xiaojuanschoolpayment.client
+

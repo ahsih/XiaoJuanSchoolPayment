@@ -1,3 +1,5 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { textbookGroups } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -166,7 +168,7 @@ export class CebuBlueOceanSchoolComponent
   seasonalFeePerWeek = 40;
   peakSeasonRanges = [
     { label: '2026旺季', start: '2026-06-28', end: '2026-08-22' },
-    { label: '2027旺季', start: '2027-06-27', end: '2027-08-21' },
+    { label: '2027旺季', start: '2027-07-04', end: '2027-08-28' },
   ];
   shortStayRatios: Record<string, number> = {
     '1': 0.4,
@@ -193,8 +195,8 @@ export class CebuBlueOceanSchoolComponent
     studentId: 300,
     managementPerWeek: 500,
   };
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRates = false;
   quoteCalculated = false;
@@ -548,7 +550,7 @@ export class CebuBlueOceanSchoolComponent
   readonly localFeeBottomNote =
     '学杂费是到菲律宾当地需要交纳的费用，是学校直接收取的，我们的报价只作为参考，因菲律宾政策变动当地费用可能会有浮动，具体以到校后收取的为准。';
   readonly schoolFeeImageNote =
-    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行实时汇率，把美元换算为人民币结算。';
+    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行最新参考汇率，把美元换算为人民币结算。';
   readonly localFeeImageNote = `2、${this.localFeeBottomNote}`;
 
   readonly serviceSteps: ProcessStep[] = [
@@ -729,14 +731,7 @@ export class CebuBlueOceanSchoolComponent
   ];
 
   ngOnInit(): void {
-    this.exchangeRateService.getLatestCnyRates().subscribe({
-      next: (rates) => {
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-        this.usingLiveExchangeRates = true;
-      },
-    });
+
 
     this.schoolService
       .getSchools({ name: this.pricingSchoolSearchName })
@@ -1001,20 +996,20 @@ export class CebuBlueOceanSchoolComponent
   }
 
   get quoteCnyText(): string {
-    return `人民币预计金额：约 ${Math.round(
+    return `人民币预计金额：约 ${quoteCurrencyText(Math.round(
       this.quoteUsd * this.usdToCny,
-    ).toLocaleString('zh-CN')} 元`;
+    ), 'zh-CN')} 元`;
   }
 
   get exchangeRateSummary(): string {
-    return `参考汇率：1美元 ≈ ${this.usdToCny.toLocaleString('zh-CN', {
+    return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', {
       maximumFractionDigits: 6,
-    })}元人民币；1元人民币 ≈ ${this.phpPerCny.toLocaleString('zh-CN', {
+    })}元人民币；1元人民币 ≈ ${quoteCurrencyText(this.phpPerCny, 'zh-CN', {
       maximumFractionDigits: 6,
     })}比索（${
       this.usingLiveExchangeRates && this.exchangeRateDate
         ? this.exchangeRateDate.replace(/-/g, '/')
-        : '备用参考值'
+        : '最新参考汇率待更新'
     }）`;
   }
 
@@ -1055,9 +1050,7 @@ export class CebuBlueOceanSchoolComponent
     const offCampusUtilitiesTotal =
       fees.offCampusUtilitiesPerWeek * totalOffCampusWeeks;
     const cny = (value: number) =>
-      `约人民币 ${Math.round(value / this.phpPerCny).toLocaleString(
-        'zh-CN',
-      )} 元`;
+      `约人民币 ${quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')} 元`;
 
     return [
       {
@@ -1089,19 +1082,11 @@ export class CebuBlueOceanSchoolComponent
         )}–${fees.electiveMaximum.toLocaleString('en-US')} 比索／2周`,
         note: '4周学杂费参考项目，按学生实际选择结算。',
       },
-      {
-        label: '书本费',
-        amount: hasIelts
-          ? `${fees.ieltsTextbook.toLocaleString('en-US')} 比索／4周`
-          : `${fees.textbookMinimum.toLocaleString(
-              'en-US',
-            )}–${fees.textbookMaximum.toLocaleString('en-US')} 比索／4周`,
-        note: hasIelts
-          ? `本次含IELTS课程，按IELTS教材${fees.ieltsTextbook.toLocaleString(
-              'en-US',
-            )}比索／4周参考。`
-          : '普通课程约1,100–1,500比索／4周。',
-      },
+      ...this.activeStudents.flatMap((student, index) => textbookGroups(student.quotePlan.courses).map(group => ({
+        label: '书本费 · 学生' + (index + 1) + ' · ' + (group.type === 'ielts' ? '雅思' : group.type === 'business' ? '商务英语' : group.type === 'toeic' ? '托业' : '英语课程'),
+        amount: group.type === 'ielts' ? fees.ieltsTextbook.toLocaleString('en-US') + ' 比索／4周' : fees.textbookMinimum.toLocaleString('en-US') + '–' + fees.textbookMaximum.toLocaleString('en-US') + ' 比索／4周',
+        note: '该课程类型累计' + group.weeks + '周；各课程类型教材分别购买，按实际结算，未计入学杂费合计。',
+      }))),
       {
         label: '洗衣费',
         amount: `${fees.laundryPerLoad.toLocaleString(
@@ -1211,7 +1196,7 @@ export class CebuBlueOceanSchoolComponent
     }
   }
 
-  formatPhp(value: number): string {
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${Math.round(value).toLocaleString('en-US')} 比索`;
   }
 
@@ -1219,7 +1204,7 @@ export class CebuBlueOceanSchoolComponent
     return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 2,
@@ -1320,4 +1305,7 @@ export class CebuBlueOceanSchoolComponent
   private roundMoney(value: number): number {
     return Math.round((value + Number.EPSILON) * 100) / 100;
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

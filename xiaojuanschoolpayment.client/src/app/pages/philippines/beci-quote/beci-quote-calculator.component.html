@@ -37,7 +37,7 @@
 
   <section class="promotion-panel" id="special-fees" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown">
     <div *ngFor="let promotion of activePromotions" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="promotion.id"><strong>{{ promotion.name }}</strong><span>{{ promotionSummary(promotion) }}</span></div>
-    <div data-cia-preview-kind="section" data-cia-preview-id="quote-season"><strong>旺季附加费</strong><span>实际重叠课程周每周{{ contentConfig.quoteSettings.peakSeasonFeePerWeek }}美元；启用日期按后台设置计算</span></div>
+    <div data-cia-preview-kind="section" data-cia-preview-id="quote-season"><strong>旺季附加费</strong><span>2026年及以前40美元／周，2027年起60美元／周；仅对后台已确认并启用的学校旺季日期计费，同一周课程与住宿只计一次</span></div>
   </section>
 
   <section class="quote-results-section group-quote" id="quote" data-cia-preview-kind="section" data-cia-preview-id="quote">
@@ -101,13 +101,13 @@
           </tbody>
           <tfoot>
             <tr><th colspan="3">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>已选择的接机计入；房间押金不计入</td></tr>
-            <tr><th colspan="3">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>参考汇率：1元人民币 ≈ {{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr>
+            <tr><th colspan="3">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, 'zh-CN') }} 元</td><td>参考汇率：1元人民币 ≈ {{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索</td></tr>
           </tfoot>
         </table>
       </div>
       <div class="excluded-fee-list">
         <h4>另行准备（不计入上方学杂费合计）</h4>
-        <div data-cia-preview-kind="fee" data-cia-preview-id="room-deposit"><span><strong>房间押金</strong><small>{{ activeStudents.length }}人 × {{ depositPerPerson.toLocaleString('zh-CN') }}比索；无损坏、无欠费并按学校规则完成退房后可退。</small></span><b>{{ formatPhp(depositTotal) }}<small>约人民币 {{ depositCny.toLocaleString('zh-CN') }} 元</small></b></div>
+        <div data-cia-preview-kind="fee" data-cia-preview-id="room-deposit"><span><strong>房间押金</strong><small>{{ activeStudents.length }}人 × {{ depositPerPerson.toLocaleString('zh-CN') }}比索；无损坏、无欠费并按学校规则完成退房后可退。</small></span><b>{{ formatPhp(depositTotal) }}<small>约人民币 {{ quoteCurrencyText(depositCny, 'zh-CN') }} 元</small></b></div>
       </div>
     </section>
   </section>

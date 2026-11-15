@@ -1,4 +1,5 @@
 import { CiaContentConfig, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 import {
   ANJ_BIRTHDAY_DISCOUNT,
   ANJ_BIRTHDAY_REGISTRATION_START,
@@ -10,6 +11,7 @@ import {
   ANJ_ROOMS,
   ANJ_SEASONAL_FEE_PER_WEEK,
   ANJ_SIDA_DISCOUNT_RATE,
+  ANJ_PEAK_2027_RANGE,
 } from './anj-pricing';
 
 const promotionBase = (id: string, name: string, sortOrder: number): CiaPromotionRule => ({
@@ -82,7 +84,11 @@ export const createDefaultAnjContentConfig = (): CiaContentConfig => ({
     futurePriceArrivalStart: '2027-01-01',
     shortStayRatios: {},
     peakSeasonFeePerWeek: ANJ_SEASONAL_FEE_PER_WEEK,
-    peakSeasonRanges: ANJ_PEAK_SEASON_RANGES.map((range, index) => ({ id: `anj-peak-${index + 1}`, ...range, enabled: true })),
+    peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
+    peakSeasonRanges: [
+      ...ANJ_PEAK_SEASON_RANGES.map((range, index) => ({ id: `anj-peak-${index + 1}`, ...range, enabled: true })),
+      { id: 'anj-peak-2027', ...ANJ_PEAK_2027_RANGE, enabled: true },
+    ],
     promotions: [
       {
         ...promotionBase('registration-waiver', '思达免注册费', 0),
@@ -170,6 +176,13 @@ export const createDefaultAnjContentConfig = (): CiaContentConfig => ({
 
 export const cloneAnjContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const cloned = structuredClone(value);
+  if ((cloned.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
+    const confirmed = { id: 'anj-peak-2027', ...ANJ_PEAK_2027_RANGE, enabled: true };
+    const saved = cloned.quoteSettings.peakSeasonRanges.find(range => range.id.includes('2027') || range.label.includes('2027') || range.label.includes('星期推算'));
+    if (saved) Object.assign(saved, confirmed);
+    else cloned.quoteSettings.peakSeasonRanges.push(confirmed);
+    cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
+  }
   if (!cloned.quoteImageSettings.localFeeNotes) cloned.quoteImageSettings.localFeeNotes = {};
   if (!cloned.media) cloned.media = [];
   return cloned;

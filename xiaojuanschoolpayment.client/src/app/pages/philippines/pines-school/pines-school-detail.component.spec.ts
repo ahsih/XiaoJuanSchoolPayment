@@ -1,5 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { EMPTY } from 'rxjs';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { PinesSchoolDetailComponent } from './pines-school-detail.component';
 
@@ -8,9 +11,10 @@ describe('PinesSchoolDetailComponent pricing', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), { provide: SchoolService, useValue: {} }],
+      providers: [provideHttpClient(), provideRouter([]), { provide: SchoolService, useValue: {} },
+        { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } }],
     });
-    component = TestBed.runInInjectionContext(() => new PinesSchoolDetailComponent());
+    component = TestBed.createComponent(PinesSchoolDetailComponent).componentInstance;
     component.selectedCourseId = 'light-esl-4';
     component.selectedRoomId = 'main-sextuple';
   });
@@ -72,15 +76,24 @@ describe('PinesSchoolDetailComponent pricing', () => {
     expect(component.quoteError).toBe('');
   });
 
-  it('shares the local-fee collection notice with the generated quote image', () => {
+  it('uses the employee-editable image notice while keeping the webpage collection guidance', () => {
     expect(component.localFeeIntro).toContain('抵达菲律宾后直接向学校缴纳');
     expect(component.localFeeIntro).toContain('以学校实际收取为准');
-    expect(component.quoteImageData.localFeeNote).toBe(component.localFeeIntro);
+    component.quoteImageSettings = { ...component.quoteImageSettings, localFeeIntro: 'PINES 到校后缴纳，金额以学校实收为准。' };
+    expect(component.quoteImageData.localFeeNote).toBe('PINES 到校后缴纳，金额以学校实收为准。');
   });
 
-  it('keeps only the current 2027 peak-season estimate in image notes', () => {
-    const notes = component.quoteImageData.importantNotes ?? [];
-    expect(notes.some((note) => note.includes('2027/06/27–08/21'))).toBeTrue();
-    expect(notes.some((note) => note.includes('2026/06/28–08/22'))).toBeFalse();
+  it('charges the confirmed 2027 peak rate and suppresses the low-season discount', () => {
+    component.selectedStartDate = '2027-06-27';
+    component.students[0].selectedRegistrationDate = '2026-11-08';
+    component.selectedWeeks = 8;
+    const surcharge = component.quoteImageData.paymentItems.find(item => item.label.includes('旺季附加费'));
+    const lowSeason = component.quoteImageData.paymentItems.find(item => item.label === '常规淡季优惠');
+    expect(component.peakSeasonWeeks).toBe(8);
+    expect(component.seasonalSurcharge).toBe(480);
+    expect(component.offSeasonDiscountAmount).toBe(0);
+    expect(surcharge?.amount).toBe('480 美元');
+    expect(surcharge?.note).toContain('60美元／周 × 8周');
+    expect(lowSeason).toBeUndefined();
   });
 });

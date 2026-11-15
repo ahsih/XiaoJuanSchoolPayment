@@ -877,6 +877,77 @@
   line-height: 1.75;
 }
 
+:host .ielts-computer-calendar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+:host .ielts-computer-month {
+  padding: 18px;
+  border: 1px solid #d8e6de;
+  border-radius: 12px;
+  background: #fff;
+}
+
+:host .ielts-computer-month h4 {
+  margin: 0 0 12px;
+  color: #073f30;
+  font-size: 19px;
+}
+
+:host .ielts-computer-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+:host .ielts-computer-days time {
+  min-width: 43px;
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: #eef6f1;
+  color: #075d43;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+:host .ielts-previous-year {
+  margin-top: 24px;
+  border: 1px solid #d8e6de;
+  border-radius: 12px;
+  background: #f8fbf9;
+}
+
+:host .ielts-previous-year > summary {
+  padding: 15px 18px;
+  color: #315b49;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+:host .ielts-previous-year > summary:focus-visible {
+  outline: 2px solid #08714f;
+  outline-offset: 3px;
+}
+
+:host .ielts-previous-year-body { padding: 6px 18px 20px; }
+:host .ielts-previous-year-title { margin: 0; color: #073f30; font-size: 20px; }
+
+@media (max-width: 1000px) {
+  :host .ielts-computer-calendar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  :host .ielts-computer-calendar { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  :host .ielts-computer-month { padding: 15px; }
+  :host .ielts-computer-month h4 { font-size: 17px; margin-bottom: 10px; }
+  :host .ielts-computer-days { gap: 6px; }
+  :host .ielts-computer-days time { min-width: 39px; padding: 6px; font-size: 14px; }
+}
+
 :host .calendar-priority,
 :host .exam-fee {
   display: inline-flex;

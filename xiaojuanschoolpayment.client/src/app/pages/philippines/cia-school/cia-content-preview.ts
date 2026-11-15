@@ -3,6 +3,14 @@ export type CiaPreviewKind = 'course' | 'room' | 'fee' | 'promotion' | 'section'
 export interface CiaPreviewTarget { kind: CiaPreviewKind; id: string; }
 
 export const CIA_PREVIEW_SECTIONS: Record<string, { tab: 'courses' | 'rooms' | 'fees' | 'rules'; label: string }> = {
+  'lamer-intro': { tab: 'rules', label: 'La Mer · 首屏' },
+  'lamer-overview': { tab: 'rules', label: 'La Mer · 学校概况' },
+  'lamer-family': { tab: 'rules', label: 'La Mer · 亲子课程与套餐' },
+  'lamer-schedule': { tab: 'rules', label: 'La Mer · 日常作息' },
+  'lamer-services': { tab: 'rules', label: 'La Mer · 校园服务' },
+  'lamer-gallery': { tab: 'rules', label: 'La Mer · 相册与视频' },
+  'lamer-rules': { tab: 'rules', label: 'La Mer · 入学须知' },
+  'lamer-faq': { tab: 'rules', label: 'La Mer · 常见问题' },
   'course-fees': { tab: 'courses', label: '完整课程费表' },
   'course-heading': { tab: 'courses', label: '课程表标题' },
   'course-note': { tab: 'courses', label: '课程价格切换说明' },

@@ -343,6 +343,7 @@
             <div class="quote-breakdown">
               <div><span>入学金参考</span><strong>USD {{ registrationFee }}</strong></div>
               <div><span>当前Ocean主费</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
+              <div><span>旺季附加费</span><strong>USD {{ formatUsd(peakSeasonSurcharge) }}</strong></div>
               <div><span>当前课程</span><strong>{{ selectedCourse.name }}</strong></div>
               <div><span>当前房型</span><strong>{{ selectedRoom.name }}</strong></div>
               <div><span>当地费用</span><strong>需另行确认</strong></div>
@@ -364,7 +365,7 @@
               </a>
             </div>
             <p class="fee-alert">
-              除主费和入学金外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、水电、教材、学生证、管理费、接机、旺季费和洗衣。
+              除已自动计算的旺季附加费外，到校后通常还需确认SSP、SSP E-Card、签证、ACR、押金、水电、教材、学生证、管理费、接机和洗衣。
             </p>
             <p class="season-note">{{ seasonalNote }}</p>
           </section>

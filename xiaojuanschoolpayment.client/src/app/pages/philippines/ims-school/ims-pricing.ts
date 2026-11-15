@@ -75,7 +75,6 @@ export const IMS_ROOMS: readonly ImsRoom[] = [
 
 export const IMS_REGISTRATION_FEE = 100;
 export const IMS_SIDA_RATE = 0.95;
-export const IMS_PHP_PER_CNY = 8;
 
 export const IMS_LONG_STAY_DISCOUNTS = [
   { min: 8, max: 11, amount: 50 },

@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -180,8 +181,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 100;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = Array.from({ length: 24 }, (_, index) => index + 1);
@@ -563,7 +564,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     {
       question: '为什么不同网站价格不同？',
       answer:
-        '不同资料会因更新时间、适用日期、房型和包含项目不同而出现差异。本页把常规价、校方淡季组合价和当地费分开展示，思达不再叠加其它价格优惠。',
+        '不同资料会因更新时间、适用日期、房型和包含项目不同而出现差异。本页把常规价、校方淡季组合价和当地费分开展示，旺季常规课程与住宿享9折，淡季套餐不叠加9折。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -587,13 +588,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.contentConfig);
     this.loadPricingFromDatabase();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -849,8 +844,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     if (this.quoteMode === 'single') return this.quoteCalculator.promotionNote;
     const eligible = this.activeStudents.filter(student => student.promoPairCount > 0).length;
     return eligible
-      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；不叠加思达启航或其它中介优惠。`
-      : '当前所有学生均按校方2026常规价计算；思达启航不提供或叠加其它价格优惠。';
+      ? `已按每位学生的课程与住宿分别判断，${eligible}人符合校方淡季组合价并各自免一次注册费；淡季套餐不叠加9折，其余旺季常规课程与住宿享9折。`
+      : '当前所有学生均按校方2026常规价计算；旺季常规课程与住宿享9折，淡季套餐不叠加9折。';
   }
   get localFeesTotal(): number { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
   get optionalFees() {
@@ -859,8 +854,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       note: '按每位学生超出标准入住安排的实际晚数另计；多人共住及空房须向学校确认。',
     }];
   }
-  get localFeesCnyText(): string { return `人民币预计约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
-  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
+  get localFeesCnyText(): string { return `人民币预计约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
+  get exchangeRateText(): string { return `${this.exchangeRateLive ? `参考汇率日期${this.exchangeRateDate}` : '最新参考汇率待更新'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索`; }
   get quoteImageData() {
     return buildIuIclGroupImageData(
       this.activeStudents,
@@ -870,12 +865,15 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       '/assets/philippines/iu-campus-hero.webp',
     );
   }
-  formatPhp(value: number): string { return `${this.formatUsd(value)} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${this.formatUsd(value)} 比索`; }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

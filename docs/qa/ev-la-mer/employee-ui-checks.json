@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "Staff La Mer editor reuses real public page",
+    "Staff has submit but no publish action",
+    "Editing ordinary price updates real quote immediately",
+    "Introduction fields drive the real public preview",
+    "Media tab retains the same iframe document",
+    "Tab switches preserve the eight-week student plan",
+    "Clicking page content selects and opens its editor",
+    "Preview target is highlighted",
+    "Public page ignores unsaved employee session draft",
+    "Public price remains 1791 USD",
+    "Image editor shares exact family calculation",
+    "No editor browser exceptions"
+  ],
+  "errors": []
+}

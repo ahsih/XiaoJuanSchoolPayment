@@ -1,0 +1,86 @@
+// UI and export checks against a local Angular server, using read-only API fixtures.
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs = require('fs'), path = require('path'), ts = require('typescript');
+require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText, filename);
+const { createDefaultCpilsContentConfig } = require('../src/app/pages/philippines/cpils-school/cpils-content-config.ts');
+const out = path.resolve(__dirname, '../../outputs/cpils-2027-qa');
+fs.mkdirSync(out, { recursive: true });
+const base = process.env.CPILS_BASE_URL || 'http://127.0.0.1:4287';
+const routePath = '/philippines-study/cebu/cpils';
+const report = { checks: [], errors: [] };
+const check = (name, value) => { if (!value) throw new Error(name); report.checks.push(name); };
+(async () => {
+  const browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--no-sandbox', '--disable-gpu'] });
+  try {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+    const old = createDefaultCpilsContentConfig();
+    delete old.quoteSettings.cpilsPolicy;
+    old.courses[0].tuition2027 = 935;
+    old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => !rule.id.endsWith('-2027'));
+    await context.route('**/school/**', request => request.fulfill({ json: request.request().url().includes('get-schools') ? [{ id: 'cpils-test', name: 'CPILS' }] : [] }));
+    await context.route('**/school-content/**', request => request.fulfill({ json: { content: old, version: 1, status: 'Published' } }));
+    await context.route('https://api.frankfurter.dev/**', request => request.fulfill({ json: { base: 'CNY', date: '2026-09-22', rates: { USD: 1 / 7.2, PHP: 7.75 } } }));
+    const page = await context.newPage();
+    page.setDefaultTimeout(30000);
+    page.on('pageerror', error => report.errors.push(error.message));
+    await page.goto(base + routePath, { waitUntil: 'networkidle' });
+    const school = page.locator('app-cpils-school-detail'), first = school.locator('.student-quote').first();
+    await school.locator('h1').waitFor();
+    const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    check('upgrades old published content to the confirmed 2027 price', await school.locator('.quote-result > strong').innerText() === '1,593.03 美元');
+    check('all 2027 promotion cards visible', await school.locator('#promotions .course-card').count() === 6);
+    check('2027 four-week local fees', (await school.locator('.local-fee-table tfoot').innerText()).includes('19,600'));
+    check('desktop no horizontal overflow', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.screenshot({ path: path.join(out, 'desktop-overview.png') });
+    await school.locator('#course-fees').scrollIntoViewIfNeeded(); await settle();
+    await page.screenshot({ path: path.join(out, 'desktop-prices.png') });
+    await first.getByLabel('预计报名日', { exact: true }).fill('2026-09-28'); await settle();
+    check('September 28 keeps old price without 2027 school offer', await school.locator('.quote-result > strong').innerText() === '1,596.5 美元');
+    await first.getByLabel('预计报名日', { exact: true }).fill('2026-09-29');
+    await first.getByLabel('课程1类型', { exact: true }).selectOption('ielts-guarantee-8-weeks'); await settle();
+    check('wrong guarantee duration blocks export and total', await school.locator('.quote-result').count() === 0 && await school.locator('app-quote-image-download-button > button').isDisabled());
+    await first.getByLabel('课程1周数', { exact: true }).selectOption({ label: '8周' }); await settle();
+    check('guarantee exact tuition', (await first.locator('.plan-list').first().innerText()).includes('2,750 美元'));
+    await first.getByLabel('课程1类型', { exact: true }).selectOption('ielts-course');
+    await first.getByLabel('课程1周数', { exact: true }).selectOption({ label: '12周' });
+    await first.getByLabel('住宿1类型', { exact: true }).selectOption('no-window-twin'); await settle();
+    check('IELTS exam appears as non-cash benefit', (await school.locator('.exam-benefit-card').innerText()).includes('赠1次'));
+    await school.locator('#quote').scrollIntoViewIfNeeded(); await settle();
+    await page.screenshot({ path: path.join(out, 'desktop-quote.png') });
+    const downloaded = page.waitForEvent('download');
+    await school.locator('app-quote-image-download-button > button').click();
+    const download = await downloaded;
+    await download.saveAs(path.join(out, 'ielts-12-week-quote.png'));
+    check('desktop export is a nonempty PNG', fs.statSync(path.join(out, 'ielts-12-week-quote.png')).size > 100000);
+    await school.getByRole('button', { name: '多人报价', exact: true }).click();
+    const second = school.locator('.student-quote').nth(1);
+    await second.getByLabel('预计报名日', { exact: true }).fill('2026-09-28');
+    await second.locator('.student-fields select').last().selectOption({ label: '工作签证' });
+    await second.getByLabel('老学员返校（免注册费）').check(); await settle();
+    check('group heading keeps differing durations', (await school.locator('#quote h2').innerText()).includes('不同周数'));
+    check('group visa note remains student-specific', (await school.locator('.local-fee-table').innerText()).includes('是否免收请由顾问向学校确认'));
+    const groupDownload = page.waitForEvent('download');
+    await school.locator('app-quote-image-download-button > button').click();
+    await (await groupDownload).saveAs(path.join(out, 'group-quote.png'));
+    await school.getByRole('button', { name: '单人报价', exact: true }).click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(base + routePath, { waitUntil: 'networkidle' });
+    check('mobile no horizontal overflow', await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.screenshot({ path: path.join(out, 'mobile-overview.png') });
+    await school.locator('#course-fees').scrollIntoViewIfNeeded(); await settle();
+    check('mobile price cards visible', await school.locator('.mobile-course-fees').isVisible());
+    await page.screenshot({ path: path.join(out, 'mobile-prices.png') });
+    await school.locator('#quote').scrollIntoViewIfNeeded(); await settle();
+    await page.screenshot({ path: path.join(out, 'mobile-quote.png') });
+    await school.locator('app-quote-image-download-button > button').click();
+    const dialog = page.getByRole('dialog', { name: '报价单图片预览' });
+    await dialog.locator('img').waitFor();
+    check('mobile real image decodes', await dialog.locator('img').evaluate(image => image.complete && image.naturalWidth > 1000 && image.naturalHeight > 1000));
+    await page.screenshot({ path: path.join(out, 'mobile-image-preview.png') });
+    check('no page errors', report.errors.length === 0);
+    console.log(JSON.stringify(report, null, 2));
+  } catch (error) { report.errors.push(error.stack); throw error; }
+  finally { fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2)); await browser.close(); }
+})().catch(error => { console.error(error); process.exit(1); });

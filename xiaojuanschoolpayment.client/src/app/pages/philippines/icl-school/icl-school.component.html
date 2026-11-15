@@ -72,7 +72,7 @@
           <label>房型<select [(ngModel)]="selectedRoomId"><option *ngFor="let item of roomFees" [value]="item.id">{{ item.name }} · {{ formatUsd(item.fee) }}美元/4周</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">查看费用拆分<mat-icon>chevron_right</mat-icon></a>
-          <p>{{ quoteUsdText }}；系统会判断校方淡季价，思达启航不再叠加其它价格优惠。</p>
+          <p>{{ quoteUsdText }}；系统会判断校方淡季价，旺季常规课程与住宿享9折，淡季套餐不叠加9折。</p>
         </aside>
       </section>
 
@@ -136,7 +136,7 @@
           <div class="quote-title-block">
             <span class="quote-eyebrow">ICL 2026完整报价</span>
             <h2>{{ quoteHeading }}</h2>
-            <p>系统自动判断校方淡季组合价，思达启航不再提供或叠加其它价格优惠。</p>
+            <p>系统自动判断校方淡季组合价，旺季常规课程与住宿享9折，淡季套餐不叠加9折。</p>
           </div>
           <div class="quote-mode" role="group" aria-label="报价人数模式">
             <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>

@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -159,8 +160,8 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   registrationFee = 120;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
 
   readonly visaOptions = SCHOOL_VISA_OPTIONS;
@@ -469,13 +470,13 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   pesoCnyText(amount: number): string {
-    return `人民币约 ${Math.round(amount / this.phpPerCny).toLocaleString('zh-CN')} 元`;
+    return `人民币约 ${quoteCurrencyText(Math.round(amount / this.phpPerCny), 'zh-CN')} 元`;
   }
 
   get exchangeRateNote(): string {
     return this.exchangeRateDate
       ? `参考汇率日期：${this.exchangeRateDate}；人民币预估仅供参考，最终以支付时汇率为准。`
-      : '人民币暂按备用汇率预估，最终以支付时汇率为准。';
+      : '最新参考汇率暂不可用，人民币金额待更新。';
   }
 
   studentSubtotal(student: GlcStudentQuote): number {
@@ -539,7 +540,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems,
       localFeeItems: this.localFees.map(fee => ({ label: fee.item, unit: fee.unit, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
       localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: imageSettings.localFeeIntro,
-      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
+      optionalFeeItems: this.optionalFees.map(fee => ({ label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币约 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元`, note: imageSettings.localFeeNotes[this.previewFeeId(fee.item)] ?? fee.note })),
       ruleNotes: [],
     });
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
@@ -708,13 +709,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(rates => {
-      if (Number.isFinite(rates.usdToCny) && Number.isFinite(rates.phpPerCny) && rates.usdToCny > 0 && rates.phpPerCny > 0) {
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-      }
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -971,4 +966,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   formatUsd(amount: number): string {
     return amount.toLocaleString('en-US');
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

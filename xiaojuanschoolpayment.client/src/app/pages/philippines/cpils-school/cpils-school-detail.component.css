@@ -2,6 +2,10 @@
   display: block;
 }
 
+:host .price-year-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; font-size: 14px; }
+:host .price-year-picker select { max-width: 100%; border: 1px solid #cbdcd4; border-radius: 8px; padding: 9px 12px; background: white; color: #164738; }
+:host .short-price-note { display: block; margin-top: 6px; color: #607083; line-height: 1.6; }
+
 :host .gallery-grid video {
   display: block;
   width: 100%;

@@ -12,6 +12,8 @@ describe('BtesStudentQuote', () => {
     rooms: BTES_ROOMS,
     registrationFee: BTES_REGISTRATION_FEE,
     sidaDiscountRate: BTES_SIDA_DISCOUNT_RATE,
+    peakSeasonFeePerWeek: 60,
+    peakSeasonRanges: [{ start: '2027-07-04', end: '2027-08-28', enabled: true }],
   };
 
   const quoteAt = (startDate: string, weeks = 4, courseId = 'speak-up', roomId = 'quad', overrides: BtesQuotePrices = {}) => {
@@ -103,6 +105,13 @@ describe('BtesStudentQuote', () => {
     expect(twelveWeeks.visaExtensionCount).toBe(2);
     expect(twelveWeeks.visaExtensionFee).toBe(11530);
     expect(twelveWeeks.localFees.find((fee) => fee.item.startsWith('ACR'))?.total).toBe(4000);
+  });
+
+  it('adds the 2027 CALA surcharge outside the percentage discounts', () => {
+    const quote = quoteAt('2027-07-04', 4);
+    expect(quote.peakWeeks).toBe(4);
+    expect(quote.seasonalSurcharge).toBe(240);
+    expect(quote.paymentLines.find(item => item.label === '旺季附加费')?.value).toBe(240);
   });
 
   it('enforces the official junior ages and guardian requirement', () => {

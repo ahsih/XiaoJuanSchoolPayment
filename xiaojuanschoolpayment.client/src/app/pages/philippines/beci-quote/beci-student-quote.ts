@@ -1,9 +1,12 @@
+import { textbookGroups, textbookPeriods as countTextbookPeriods, textbookRuleQuantity } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 import {
   BECI_OFF_SEASON_RANGES,
   BECI_PEAK_RANGES,
+  BECI_PEAK_2027_RANGE,
   BECI_WEEK_OPTIONS,
   BeciCampusPricing,
   beciLongStayDiscount,
@@ -22,7 +25,6 @@ export interface BeciQuoteRules {
   localFees: CiaLocalFeeRule[];
 }
 
-const DAY = 86400000;
 const rounded = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 
 function nextSunday(): string {
@@ -128,17 +130,16 @@ export class BeciStudentQuote {
     return promotion?.discountTiers?.[String(this.quotePlan.courseWeeks)] ?? 0;
   }
 
-  get peakWeeks(): number {
-    return this.quotePlan.weekStarts(this.quotePlan.courses).filter((week) =>
-      this.peakRanges.some((range) => {
-        const start = this.quotePlan.date(range.start)!;
-        const end = this.quotePlan.date(range.end)!;
-        return week <= end && week + 6 * DAY >= start;
-      }),
-    ).length;
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge(
+      'BECI',
+      this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]),
+      this.peakRanges,
+      this.rules?.peakSeasonFeePerWeek ?? 40,
+    );
   }
-
-  get peakSurcharge(): number { return this.peakWeeks * (this.rules?.peakSeasonFeePerWeek ?? 40); }
+  get peakWeeks(): number { return this.peakCalculation.weeks; }
+  get peakSurcharge(): number { return this.peakCalculation.total; }
 
   get quoteUsd(): number {
     return Math.max(0, rounded(
@@ -168,14 +169,14 @@ export class BeciStudentQuote {
     });
     if (this.peakSurcharge > 0) result.push({
       icon: '旺', label: '碧瑶旺季附加费', value: this.peakSurcharge,
-      note: `${quoteMoney(this.rules?.peakSeasonFeePerWeek ?? 40)}美元／课程重叠周 × ${this.peakWeeks}周；不参与折扣。`,
+      note: `${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与折扣。`,
     });
     return result;
   }
 
   get localFees(): SchoolLocalFee[] {
     const accommodationPeriods = Math.ceil(this.quotePlan.roomWeeks / 4);
-    const textbookPeriods = Math.ceil(this.quotePlan.courseWeeks / 8);
+    const textbookPeriods = countTextbookPeriods(this.quotePlan.courses, 8);
     const pickupSelected = this.pickup !== 'none';
     const pickupLabel = this.pickup === 'manila' ? '马尼拉机场接机' : this.pickup === 'clark' ? '克拉克机场接机' : '机场接机';
     const visaLabel = this.visaType === 'tourist30' ? '30天旅游签证' : '59天旅游签证';
@@ -183,11 +184,12 @@ export class BeciStudentQuote {
       const periodWeeks = fee.periodWeeks ?? 4;
       let quantity = 1;
       if (fee.billingRule === 'per-accommodation-period') quantity = Math.ceil(this.quotePlan.roomWeeks / periodWeeks);
-      if (fee.billingRule === 'per-course-period') quantity = Math.ceil(this.quotePlan.courseWeeks / periodWeeks);
+      if (fee.billingRule === 'per-course-period') quantity = fee.id === 'books' ? countTextbookPeriods(this.quotePlan.courses, periodWeeks, fee.rounding === 'proportional' ? 'proportional' : 'ceil') : Math.ceil(this.quotePlan.courseWeeks / periodWeeks);
       if (fee.billingRule === 'first-visa-extension') quantity = this.visaExtensionCount > 0 ? 1 : 0;
       if (fee.billingRule === 'visa-extension-schedule') quantity = this.visaExtensionCount;
       if (fee.billingRule === 'selected-manila-pickup') quantity = this.pickup === 'manila' ? 1 : 0;
       if (fee.billingRule === 'selected-clark-pickup') quantity = this.pickup === 'clark' ? 1 : 0;
+      if (fee.id === 'books') quantity = textbookRuleQuantity(this.quotePlan.courses, fee, 8);
       const rates = fee.rates ?? [];
       const total = fee.billingRule === 'visa-extension-schedule'
         ? Array.from({ length: quantity }, (_, index) => rates[index] ?? rates.at(-1) ?? fee.amount).reduce((sum, amount) => sum + amount, 0)
@@ -209,7 +211,7 @@ export class BeciStudentQuote {
       { item: '水电费', unitLabel: '3,000 比索／4周', quantity: accommodationPeriods, total: 3000 * accommodationPeriods, note: '按每开始4周预估；超过学校额度后按学校实际用量另收。' },
       { item: pickupLabel, unitLabel: '3,000 比索／次', quantity: pickupSelected ? 1 : 0, total: pickupSelected ? 3000 : 0, note: pickupSelected ? '学生已选择接机，计入学杂费合计；指定周日团体接机，最终安排需确认。' : '默认未选择，不计入学杂费合计；学生可选择马尼拉或克拉克机场接机。' },
       { item: '签证续签', unitLabel: '4,940 比索／30天', quantity: this.visaExtensionCount, total: 4940 * this.visaExtensionCount, note: `按${visaLabel}及完整停留跨度预估${this.visaExtensionCount}次；最终以移民局实际情况和实收金额为准。` },
-      { item: '教材费', unitLabel: '2,000 比索／套', quantity: textbookPeriods, total: 2000 * textbookPeriods, note: '暂按每开始8个课程周使用一套预估；不同课程教材不同，最终以学校发放为准。' },
+      { item: '教材费', unitLabel: '2,000 比索／套', quantity: textbookPeriods, total: 2000 * textbookPeriods, note: '按每种课程类型每开始8个课程周预估；不同课程教材不同，最终以学校发放为准。' },
       { item: '学生证', unitLabel: '200 比索／次', quantity: 1, total: 200, note: '一次性费用，含照片。' },
       { item: '洗衣服务', unitLabel: '1,500 比索／4周', quantity: accommodationPeriods, total: 1500 * accommodationPeriods, note: '按每开始4周预估；每周一至周四送洗，含洗涤、烘干和折叠。' },
     ];
@@ -236,7 +238,7 @@ export class BeciStudentQuote {
   }
 
   private get peakRanges(): Array<{ start: string; end: string }> {
-    return this.rules ? this.rules.peakSeasonRanges.filter(item => item.enabled) : [...BECI_PEAK_RANGES];
+    return this.rules ? this.rules.peakSeasonRanges.filter(item => item.enabled) : [...BECI_PEAK_RANGES, BECI_PEAK_2027_RANGE];
   }
 
   private priceMultiplier(weeks: number): number {

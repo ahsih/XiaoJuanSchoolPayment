@@ -49,7 +49,7 @@ const imageSettings = (): CiaQuoteImageSettings => ({
     registration: '一次性、不可退；符合校方淡季组合条件时免收。',
     course: '',
     accommodation: '',
-    promotion: '只采用校方公布的组合价，不叠加思达启航或其它中介优惠。',
+    promotion: '校方淡季套餐不叠加9折；旺季常规课程与住宿享9折。',
   },
   localFeeSectionTitle: '到校后学杂费明细',
   localFeeIntro: '学杂费抵达菲律宾后直接向学校缴纳，本报价按当前方案预估，具体以学校实收为准；宿舍押金计入准备金额，额外住宿另列。',

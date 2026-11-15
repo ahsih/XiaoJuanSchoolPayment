@@ -289,7 +289,7 @@
             <div class="local-fee-table-wrap"><table class="local-fee-table">
               <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
               <tbody><tr *ngFor="let fee of estimatedLocalFees"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
-              <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含可退房间押金、接机费和挂锁押金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ estimatedLocalFeeCny.toLocaleString('zh-CN') }} 元</td><td>1元人民币≈{{ phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 }) }}比索（{{ usingLiveExchangeRate ? exchangeRateDate.replaceAll('-', '/') : '备用参考值' }}）</td></tr></tfoot>
+              <tfoot><tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含可退房间押金、接机费和挂锁押金</td></tr><tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, 'zh-CN') }} 元</td><td>1元人民币≈{{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索（{{ usingLiveExchangeRate ? exchangeRateDate.replaceAll('-', '/') : '最新参考汇率待更新' }}）</td></tr></tfoot>
             </table></div>
             <div class="excluded-fee-list"><h4>另行准备（不计入学杂费合计）</h4><div *ngFor="let fee of optionalFeeItems"><span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span><b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b></div></div>
           </section>

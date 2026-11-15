@@ -1,5 +1,8 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -119,7 +122,8 @@ export class QqenglishBeachfrontSchoolComponent {
   selectedGalleryCategory: GalleryCategory = '全部';
 
   readonly registrationFee = 150;
-  readonly usdToCny = 7.2;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly weekOptions: WeekOption[] = [1, 2, 3, 4, 5, 6, 7, 8, 12];
 
   selectedCourseId = 'four-mtm-two-group';
@@ -619,8 +623,21 @@ export class QqenglishBeachfrontSchoolComponent {
     return this.feeFor(this.selectedCourseId, this.selectedRoomId, this.selectedWeeks);
   }
 
+  get peakSeasonSurcharge(): number {
+    const start = new Date(`${this.selectedStartDate}T00:00:00`);
+    if (Number.isNaN(start.getTime())) return 0;
+    const weekStarts = Array.from({ length: this.selectedWeeks }, (_, index) => {
+      const value = new Date(start);
+      value.setDate(value.getDate() + index * 7);
+      return value.getTime();
+    });
+    return calculateAssociationPeakSurcharge('QQ-ENGLISH', weekStarts, [
+      { start: '2027-07-04', end: '2027-08-28', enabled: true },
+    ], 60).total;
+  }
+
   get quoteUsd(): number {
-    return this.registrationFee + this.selectedPackageFee;
+    return this.registrationFee + this.selectedPackageFee + this.peakSeasonSurcharge;
   }
 
   get packageFeeText(): string {
@@ -644,6 +661,10 @@ export class QqenglishBeachfrontSchoolComponent {
       return '入学日期需要和学校确认，节假日、校区空位、住宿餐食和当地费用会影响最终报价。';
     }
 
+    if (this.peakSeasonSurcharge > 0) {
+      return `已按2027/07/04–08/28实际重叠学习周计入旺季附加费 ${this.peakSeasonSurcharge} 美元（60美元／周）。`;
+    }
+
     return this.selectedRoomId === 'lesson-only'
       ? '当前选择为只上课方案，住宿、餐食、通勤和接机需要另外安排并确认费用。'
       : '当前选择为含胶囊学生寮与餐食的套餐，仍需确认宿舍空位、节假日、SSP、签证和当地费用。';
@@ -652,4 +673,7 @@ export class QqenglishBeachfrontSchoolComponent {
   formatUsd(amount: number): string {
     return amount.toLocaleString('en-US');
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

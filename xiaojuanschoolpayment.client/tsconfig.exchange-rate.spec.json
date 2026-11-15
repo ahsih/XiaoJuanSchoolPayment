@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": ["src/services/exchange-rate.service.spec.ts", "src/**/*.d.ts"]
+}

@@ -1,4 +1,5 @@
 :host {
+  --city-price-color: #0b6249;
   display: block;
   --orange: #ff6828;
   --orange-dark: #f45116;
@@ -140,4 +141,13 @@
   .city-faq-list {
     grid-template-columns: 1fr;
   }
+}
+
+.directory-price-reference {
+  color: var(--city-price-color);
+  background: #eef4e9;
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.65;
 }

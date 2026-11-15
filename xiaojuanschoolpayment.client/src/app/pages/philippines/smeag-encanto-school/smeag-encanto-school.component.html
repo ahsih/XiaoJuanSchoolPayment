@@ -1,0 +1,67 @@
+<main class="encanto-page" id="top">
+  <section class="encanto-hero">
+    <div class="hero-copy">
+      <a class="back-link" routerLink="/philippines-study/cebu"><mat-icon>arrow_back</mat-icon>返回宿务学校列表</a>
+      <p class="breadcrumb">菲律宾游学 / 宿务学校 / SMEAG Encanto 海滨校区</p>
+      <span class="hero-badge">SMEAG ENCANTO · MACTAN</span>
+      <h1>菲律宾宿务SMEAG Encanto海滨校区</h1>
+      <p class="hero-lead">把学校最新发布的2027假期表整理成中文校历，清楚区分“全天停课”和“Best Holiday Classes假日特别课程”。</p>
+      <div class="hero-tags">
+        <span><mat-icon>beach_access</mat-icon>麦克坦海滨校区</span>
+        <span><mat-icon>family_restroom</mat-icon>亲子与家庭学习</span>
+        <span><mat-icon>event_available</mat-icon>2027假期特别课</span>
+      </div>
+      <div class="hero-actions">
+        <a class="primary-action" [routerLink]="[]" fragment="holidays"><mat-icon>calendar_month</mat-icon>查看2027假期表</a>
+        <a class="secondary-action" routerLink="/philippines-study/cebu/smeag-capital"><mat-icon>compare_arrows</mat-icon>对比Capital校区</a>
+        <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>获取顾问确认</a>
+      </div>
+    </div>
+    <div class="hero-gallery" aria-label="SMEAG Encanto海滨校区环境">
+      <figure class="hero-main-photo">
+        <img src="/assets/philippines/smeag-encanto-campus-official.webp" alt="SMEAG Encanto海滨校区校园环境" />
+        <figcaption>SMEAG Encanto Campus</figcaption>
+      </figure>
+      <figure class="hero-side-photo">
+        <img src="/assets/philippines/smeag-encanto-seaview.webp" alt="SMEAG Encanto海滨景观" />
+        <figcaption>麦克坦海滨学习与生活环境</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="quick-facts" aria-label="SMEAG Encanto校区快速信息">
+    <article *ngFor="let fact of quickFacts">
+      <mat-icon>{{ fact.icon }}</mat-icon>
+      <div><span>{{ fact.label }}</span><strong>{{ fact.value }}</strong><p>{{ fact.note }}</p></div>
+    </article>
+  </section>
+
+  <section class="how-to-read">
+    <div class="section-heading">
+      <span>先看懂这张表</span>
+      <h2>“学校假日”不等于“全天不上课”</h2>
+      <p>Encanto的海报以课程状态为核心：只有元旦明确停课，其余所列日期都有假日特别课程。</p>
+    </div>
+    <div class="reading-grid">
+      <article *ngFor="let item of readingTips">
+        <mat-icon>{{ item.icon }}</mat-icon><h3>{{ item.title }}</h3><p>{{ item.text }}</p>
+      </article>
+    </div>
+  </section>
+
+  <app-smeag-holiday-calendar id="holidays" campus="encanto"></app-smeag-holiday-calendar>
+
+  <section class="campus-compare">
+    <div>
+      <span>两个校区安排不同</span>
+      <h2>不要把Capital的课程主题套到Encanto</h2>
+      <p>Capital海报逐日列出TOEFL、IELTS、TOEIC、口语等主题，并有6天全天停课；Encanto则只有元旦停课，其余日期统一标注Best Holiday Classes。</p>
+    </div>
+    <a routerLink="/philippines-study/cebu/smeag-capital" fragment="holidays">查看Capital 2027假期表<mat-icon>arrow_forward</mat-icon></a>
+  </section>
+
+  <section class="encanto-cta">
+    <div><span>报名提醒</span><h2>入学周遇到假日，先确认当天课程安排</h2><p>顾问会结合入学日期、课程和校区，协助核对学校最新校历、房间及正式通知。</p></div>
+    <a routerLink="/about-sida/contact">获取顾问确认<mat-icon>support_agent</mat-icon></a>
+  </section>
+</main>

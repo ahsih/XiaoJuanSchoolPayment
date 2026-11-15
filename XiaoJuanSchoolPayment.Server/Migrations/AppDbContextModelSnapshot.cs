@@ -290,6 +290,111 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.ToTable("Schools");
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionPolicy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("CommissionRate")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("decimal(5,4)");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTime>("EffectiveRegistrationDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FormulaNote")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("NewStudentsOnly")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("PolicyCode")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("SchoolId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ScopeNote")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("SourceNotice")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PolicyCode")
+                        .IsUnique();
+
+                    b.HasIndex("SchoolId");
+
+                    b.ToTable("SchoolCommissionPolicies");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionRoomBasis", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("CommissionBasisFourWeeks")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal>("PublishedRoomPriceFourWeeks")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RoomCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("RoomName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<Guid>("SchoolCommissionPolicyId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SchoolCommissionPolicyId", "RoomCode")
+                        .IsUnique();
+
+                    b.ToTable("SchoolCommissionRoomBases");
+                });
+
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolContentRevision", b =>
                 {
                     b.Property<Guid>("Id")
@@ -968,6 +1073,28 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionPolicy", b =>
+                {
+                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.School", "School")
+                        .WithMany()
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("School");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionRoomBasis", b =>
+                {
+                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionPolicy", "SchoolCommissionPolicy")
+                        .WithMany("RoomBases")
+                        .HasForeignKey("SchoolCommissionPolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SchoolCommissionPolicy");
+                });
+
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolContentRevision", b =>
                 {
                     b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.School", "School")
@@ -1109,6 +1236,11 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.Navigation("SchoolPhotos");
 
                     b.Navigation("SchoolRooms");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionPolicy", b =>
+                {
+                    b.Navigation("RoomBases");
                 });
 
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", b =>

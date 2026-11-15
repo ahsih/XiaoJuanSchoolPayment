@@ -1,3 +1,5 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { textbookPeriods } from '../school-textbook-estimate';
 import { CommonModule } from '@angular/common';
 import { SchoolQuotePlan, QuotePlanRow, applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
 import { SCHOOL_VISA_OPTIONS, SchoolLocalFee, SchoolPaymentLine, SchoolVisaType, groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
@@ -111,8 +113,8 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get offSeasonRuleText() { return this.promotionRule('cpi-off-season')?.description ?? '当前未启用淡季优惠'; }
   get decemberRuleText() { return this.promotionRule('cpi-december')?.description ?? '当前未启用12月优惠'; }
   get extraClassRuleText() { return this.promotionRule('cpi-extra-class')?.description ?? '当前未启用加课优惠'; }
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
@@ -349,12 +351,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe((snapshot) => {
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -659,7 +656,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return `约 ${rounded.toLocaleString('zh-CN')} 元`;
   }
   get exchangeRateText(): string {
-    return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算';
+    return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新';
   }
 
   get quoteScope(): string {
@@ -695,7 +692,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const acrQuantity = longTerm ? 0 : extensionQuantity > 0 ? 1 : 0;
     const arpQuantity = longTerm || extensionQuantity > 0 ? 1 : 0;
     const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
-    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 8));
+    const books = textbookPeriods(student.quotePlan.courses, this.localFeeRules.find(rule => rule.id === 'books')?.periodWeeks ?? 8);
     return [
       { item: 'SSP特殊学习许可证', unitLabel: '7,800 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 7800, note: longTerm ? visaNote : '移民局收取；按报名学习时长办理，续费及换校需重新办理。' },
       { item: 'SSP E-CARD', unitLabel: '4,500 比索／次', quantity: longTerm ? 0 : 1, total: longTerm ? 0 : 4500, note: longTerm ? visaNote : '入学时与SSP同时办理，只收一次。' },
@@ -716,7 +713,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const acrQuantity = longTerm ? 0 : extensionQuantity > 0 ? 1 : 0;
     const arpQuantity = longTerm || extensionQuantity > 0 ? 1 : 0;
     const visaNote = `${this.visaLabel(student)}相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。`;
-    const books = Math.max(1, Math.ceil(student.quotePlan.courseWeeks / 8));
+    const books = textbookPeriods(student.quotePlan.courses, this.localFeeRules.find(rule => rule.id === 'books')?.periodWeeks ?? 8);
     const create = (id: string, quantity: number, note?: string, total?: number): SchoolLocalFee[] => {
       const rule = this.localFeeRule(id);
       if (!rule) return [];
@@ -743,7 +740,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get localFees(): LocalFee[] { return this.includedLocalFees; }
   get includedLocalFees(): LocalFee[] { return groupLocalFees(this.activeStudents.map(student => ({ localFees: this.configuredStudentLocalFees(student) }))).map(fee => ({ item: fee.item, amount: fee.unitLabel, quantity: fee.quantity, total: fee.total, note: fee.note })); }
   get localFeesTotal(): number { return this.includedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
-  get localFeesCnyText(): string { return `约 ${Math.round(this.localFeesTotal / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  get localFeesCnyText(): string { return `约 ${quoteCurrencyText(Math.round(this.localFeesTotal / this.phpPerCny), 'zh-CN')} 元`; }
   get excludedLocalFees(): LocalFee[] {
     const pickupCount = this.activeStudents.filter(student => student.pickupSelected).length;
     const count = this.activeStudents.length;
@@ -815,7 +812,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       localCurrencyName: '比索',
       localFeeCny: Math.round(this.localFeesTotal / this.phpPerCny),
       localFeeNote: settings.localFeeIntro,
-      optionalFeeItems: this.excludedLocalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元` : '', note: settings.localFeeNotes[id] || fee.note }; }),
+      optionalFeeItems: this.excludedLocalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: fee.amount, cnyAmount: fee.total ? `约人民币 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元` : '', note: settings.localFeeNotes[id] || fee.note }; }),
       ruleNotes: settings.footerNotes,
     });
     const mismatchNotes = this.activeStudents.map((student, index) => student.quotePlan.warning ? `${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}` : '').filter(Boolean);
@@ -842,8 +839,8 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
 
-  formatUsd(value: number): string { return value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
-  formatPhp(value: number): string { return `${value.toLocaleString('en-US')} 比索`; }
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }); }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${value.toLocaleString('en-US')} 比索`; }
   courseDisplayName(name: string): string {
     if (name === 'JUNIOR（6-15岁）') return '青少年 JUNIOR（6–15岁）';
     if (name === 'PARENTS') return '家长 PARENTS';
@@ -912,4 +909,7 @@ export class CpiSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

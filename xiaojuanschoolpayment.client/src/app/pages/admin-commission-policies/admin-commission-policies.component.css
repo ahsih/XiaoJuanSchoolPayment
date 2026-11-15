@@ -1,0 +1,17 @@
+:host { display: block; }
+.policy-page { max-width: 1180px; margin: 0 auto; color: #10233d; }
+.page-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 22px; }
+.eyebrow { color: #b54d1f; font-size: 13px; font-weight: 800; }
+h1 { margin: 5px 0 7px; font-size: 32px; }
+.page-heading p { margin: 0; color: #667085; line-height: 1.65; }
+.page-heading button { display: inline-flex; align-items: center; gap: 6px; padding: 10px 15px; border: 1px solid #bfd8ce; border-radius: 9px; background: #fff; color: #006b4f; font-weight: 750; cursor: pointer; }
+.message, .policy-card { padding: 22px; border: 1px solid #e1e7ea; border-radius: 14px; background: #fff; box-shadow: 0 8px 28px rgba(16,35,61,.05); }
+.message.error { color: #b42318; background: #fff4f2; }
+.policy-card + .policy-card { margin-top: 20px; }
+.card-heading { display: flex; justify-content: space-between; align-items: start; gap: 20px; }
+.card-heading small { color: #617982; }.card-heading h2 { margin: 5px 0 0; font-size: 23px; }.card-heading > span { padding: 7px 11px; border-radius: 99px; background: #edf7f3; color: #006b4f; font-size: 13px; font-weight: 750; white-space: nowrap; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }.facts div { display: grid; gap: 5px; padding: 16px; border-radius: 10px; background: #f5faf8; }.facts small { color: #647873; }.facts strong { font-size: 21px; }
+.formula { padding: 14px 16px; border-left: 4px solid #087a5b; background: #f6faf8; line-height: 1.65; }
+.table-wrap { overflow-x: auto; } table { width: 100%; border-collapse: collapse; min-width: 680px; } th,td { padding: 12px; border-bottom: 1px solid #e8ecee; text-align: left; vertical-align: top; line-height: 1.5; } th { background: #f5f7f8; font-size: 13px; } td:nth-child(2),td:nth-child(3) { white-space: nowrap; }
+.scope { padding: 13px 15px; border-radius: 9px; background: #fff8ea; color: #795400; line-height: 1.65; } details { margin-top: 17px; } summary { cursor: pointer; font-weight: 750; } details p { line-height: 1.7; white-space: pre-line; } details small { color: #7a8783; }.future-note { margin: 18px 0 0; color: #697782; font-size: 13px; }
+@media(max-width:720px) { .page-heading,.card-heading { flex-direction: column; align-items: stretch; }.facts { grid-template-columns: 1fr; } h1 { font-size: 27px; }.policy-card { padding: 16px; } }

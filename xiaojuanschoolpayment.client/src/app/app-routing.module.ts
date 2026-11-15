@@ -340,6 +340,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/cebu/smeag-encanto',
+        loadComponent: () =>
+          import('./pages/philippines/smeag-encanto-school/smeag-encanto-school.component').then(
+            (m) => m.SmeagEncantoSchoolComponent,
+          ),
+      },
+      {
         path: 'philippines-study/cebu/genius-english-academy',
         loadComponent: () =>
           import('./pages/philippines/genius-school/genius-school.component').then(
@@ -387,6 +394,10 @@ const routes: Routes = [
           import('./pages/philippines/cella-premium-school/cella-premium-school.component').then(
             (m) => m.CellaPremiumSchoolComponent,
           ),
+      },
+      {
+        path: 'philippines-study/cebu/ev-la-mer',
+        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school.component').then(m => m.LaMerSchoolComponent),
       },
       {
         path: 'philippines-study/cebu/ev-academy',
@@ -507,6 +518,10 @@ const routes: Routes = [
         path: 'philippines-study/baguio/talk-academy',
         redirectTo: '/philippines-study/baguio',
         pathMatch: 'full',
+      },
+      {
+        path: 'philippines-study/baguio/airport-pickup',
+        loadComponent: () => import('./pages/philippines/baguio-pickup/baguio-pickup.component').then(m => m.BaguioPickupComponent),
       },
       {
         path: 'philippines-study/baguio',
@@ -1026,6 +1041,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'student-feedback/study-tour/philippines-study-mid-autumn',
+        loadComponent: () =>
+          import('./pages/student-feedback/mid-autumn/mid-autumn.component').then(
+            (m) => m.MidAutumnComponent,
+          ),
+      },
+      {
         path: 'student-feedback/study-tour',
         loadComponent: () =>
           import('./pages/student-feedback/study-tour-feedback/study-tour-feedback.component').then(
@@ -1116,6 +1138,15 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin-content-reviews/admin-content-reviews.component').then(
             (m) => m.AdminContentReviewsComponent,
+          ),
+      },
+      {
+        path: 'commission-policies',
+        data: { roles: ['admin', 'manager'] },
+        canActivate: [RoleGuard],
+        loadComponent: () =>
+          import('./pages/admin-commission-policies/admin-commission-policies.component').then(
+            (m) => m.AdminCommissionPoliciesComponent,
           ),
       },
       {

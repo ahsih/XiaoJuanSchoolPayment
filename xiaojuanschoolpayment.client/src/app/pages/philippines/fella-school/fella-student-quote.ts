@@ -1,3 +1,4 @@
+import { textbookGroups, textbookPeriods, textbookType } from '../school-textbook-estimate';
 import { SchoolLocalFee, SchoolPaymentLine, SchoolVisaType } from '../../../components/school-group-quote';
 import { SchoolQuotePlan } from '../../../components/school-quote-plan';
 import {
@@ -11,7 +12,10 @@ import {
   FellaRoomFee,
 } from './fella-pricing';
 
+import type { CiaLocalFeeRule } from '../cia-school/cia-content-config';
+
 interface FellaQuotePrices {
+  localFeeRules?: CiaLocalFeeRule[];
   courseFees: FellaCourseFee[];
   roomFees: FellaRoomFee[];
   registrationFee: number;
@@ -160,7 +164,12 @@ export class FellaStudentQuote {
     const extensions = this.touristExtensionCount;
     const touristExtensionNote = `按${this.visaLabel}和${this.quotePlan.stayWeeks}周完整停留跨度预估；首次续签增加30天，实际以移民局发放与学校收取为准。`;
     const managementFee = this.roomWeeks > 0 ? 1000 + Math.max(0, this.roomWeeks - 1) * 500 : 0;
-    const bookSets = this.courseWeeks > 0 ? Math.ceil(this.courseWeeks / 8) : 0;
+    const bookRule = this.prices.localFeeRules?.find(rule => rule.id === 'books');
+    const bookPeriod = bookRule?.periodWeeks ?? 8;
+    const bookAmount = bookRule?.amount ?? 2500;
+    const fellaTypes: Record<string, string> = { 'pic-4':'esl', 'pic-5':'esl', 'pic-6':'esl', 'pift-e':'ielts', pift:'ielts', pirc:'ielts', pigi:'ielts', ppt:'toefl', ptft:'toefl', ssc:'senior', 'p-jec':'kids', jec:'kids', gec:'guardian', ebc:'business' };
+    const bookSets = this.courseWeeks > 0 ? textbookPeriods(this.quotePlan.courses, bookPeriod, bookRule?.rounding === 'proportional' ? 'proportional' : 'ceil', id => fellaTypes[id] ?? textbookType(id)) : 0;
+    const includeBooks = !bookRule || (bookRule.enabled && bookRule.includeInTotal);
     const visaRows: SchoolLocalFee[] = this.isLongTermVisa
       ? [
           { item: 'SSP特殊学习许可证', unitLabel: '金额待确认', quantity: 0, total: 0, note: longTermNote },
@@ -180,7 +189,7 @@ export class FellaStudentQuote {
     return [
       ...visaRows,
       { item: '管理费', unitLabel: '首周1,000；以后500比索／周', quantity: this.roomWeeks, total: managementFee, note: `校内教学楼及其他设施管理费；按住宿周数计算，${this.roomWeeks}周合计${money(managementFee)}比索。` },
-      { item: '教材费', unitLabel: '2,500 比索／每开始8周', quantity: bookSets, total: bookSets * 2500, note: '暂估；1–8周2,500比索，9–16周5,000比索，17–24周7,500比索；教材不同，以实际购买为准。' },
+      ...(includeBooks ? [{ item: bookRule?.name ?? '教材费', unitLabel: money(bookAmount) + ' 比索／每' + bookPeriod + '课程周', quantity: bookSets, total: bookSets * bookAmount, note: bookRule?.note || '各课程类型分别按累计周数预估，实际按课程教材购买结算。' }] : []),
       { item: '学生证', unitLabel: '200 比索／次', quantity: 1, total: 200, note: '一次性费用。' },
     ];
   }

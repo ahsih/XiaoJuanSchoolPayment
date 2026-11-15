@@ -1,3 +1,4 @@
+import { textbookGroups } from '../school-textbook-estimate';
 import { QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
 import {
@@ -13,6 +14,7 @@ import {
   BtesCourse,
   BtesRoom,
 } from './btes-pricing';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export type BtesEnrollmentStatus = 'new' | 'returning';
 export type BtesVisaType = 'tourist30' | 'tourist59';
@@ -29,6 +31,8 @@ export interface BtesQuotePrices {
   registrationFee?: number;
   sidaDiscountRate?: number;
   groupDiscountRate?: (student: BtesStudentQuote) => number;
+  peakSeasonFeePerWeek?: number;
+  peakSeasonRanges?: readonly { start: string; end: string; enabled?: boolean }[];
 }
 
 const DAY = 86_400_000;
@@ -139,6 +143,11 @@ export class BtesStudentQuote {
   get tuition() { return this.quotePlan.total('course'); }
   get accommodation() { return this.quotePlan.total('room'); }
   get registration() { return this.registrationFee; }
+  get peakCalculation() {
+    return calculateAssociationPeakSurcharge('BTES', this.quotePlan.weekStarts([...this.quotePlan.courses, ...this.quotePlan.rooms]), this.prices.peakSeasonRanges ?? [], this.prices.peakSeasonFeePerWeek ?? 60);
+  }
+  get peakWeeks() { return this.peakCalculation.weeks; }
+  get seasonalSurcharge() { return this.peakCalculation.total; }
 
   get registrationDiscount(): number {
     return this.enrollmentStatus === 'returning' || this.isAllInOne ? this.registrationFee : 0;
@@ -179,13 +188,19 @@ export class BtesStudentQuote {
 
   get quoteUsd(): number {
     return Math.max(0, rounded(
-      this.registration + this.tuition + this.accommodation + this.minorCareFee
+      this.registration + this.tuition + this.accommodation + this.minorCareFee + this.seasonalSurcharge
       - this.registrationDiscount - this.btesDiscount - this.sidaDiscount,
     ));
   }
 
   get paymentLines(): SchoolPaymentLine[] {
     const lines: SchoolPaymentLine[] = [];
+    if (this.seasonalSurcharge) {
+      lines.push({
+        icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
+        note: `2027/07/04–08/28；${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，不参与优惠。`,
+      });
+    }
     if (this.minorCareFee) {
       lines.push({
         icon: '未', label: '未成年管理费', value: this.minorCareFee,
@@ -255,7 +270,7 @@ export class BtesStudentQuote {
     const water = accommodationWeeks * 300;
     const maintenance = accommodationWeeks * 500;
     const electricity = campusRooms.reduce((sum, row) => sum + (this.room(row.optionId)?.electricityPerWeek ?? 0) * row.weeks, 0);
-    const books = this.quotePlan.courseWeeks <= 1 ? 1000 : this.quotePlan.courseWeeks === 2 ? 1400 : this.quotePlan.courseWeeks === 3 ? 1700 : 2000;
+    const books = textbookGroups(this.quotePlan.courses).reduce((sum, group) => sum + (group.weeks <= 1 ? 1000 : group.weeks === 2 ? 1400 : group.weeks === 3 ? 1700 : 2000), 0);
     const pickup = this.pickupType === 'weekend' ? 1200 : this.pickupType === 'weekday' ? 1500 : 0;
     const included = (value: number, allInOneIncluded: boolean) => this.isAllInOne && allInOneIncluded ? 0 : value;
     const includedNote = (note: string, allInOneIncluded: boolean) => this.isAllInOne && allInOneIncluded
@@ -286,9 +301,9 @@ export class BtesStudentQuote {
         total: included(300, true), note: includedNote('一次性费用；遗失补办另收300比索。', true),
       },
       {
-        item: '教材费', unitLabel: this.quotePlan.courseWeeks >= 5 ? '前4周2,000比索；后续教材实付' : `${books.toLocaleString('en-US')} 比索／本次`, quantity: 1,
+        item: '教材费', unitLabel: this.quotePlan.courseWeeks >= 5 ? '各课程类型前4周预算；后续教材实付' : `${books.toLocaleString('en-US')} 比索／本次`, quantity: 1,
         total: included(books, true),
-        note: includedNote(this.quotePlan.courseWeeks >= 5 ? '5周起可按需要购买教材，每本约250-500比索；本页先计入前4周2,000比索。' : '官方表：1/2/3/4周分别为1,000/1,400/1,700/2,000比索。', true),
+        note: includedNote(this.quotePlan.courseWeeks >= 5 ? '各课程类型分别按1/2/3/4周参考价预估首批教材；5周起新增教材按实际购买，每本约250–500比索。' : '官方表：1/2/3/4周分别为1,000/1,400/1,700/2,000比索。', true),
       },
       {
         item: '水费', unitLabel: '300 比索／住宿周', quantity: accommodationWeeks,

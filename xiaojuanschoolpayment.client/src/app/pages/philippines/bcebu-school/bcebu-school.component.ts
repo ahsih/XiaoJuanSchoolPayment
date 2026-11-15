@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -62,8 +63,8 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private previewContent?: CiaContentConfig;
   private readonly pricingSchoolNames = ["菲律宾宿务B'Cebu语言学校", "BECI B'Cebu", "B'Cebu"];
   registrationFee = this.initialContent.quoteSettings.registrationFee;
-  usdToCny = 7.2;
-  phpPerCny = 9;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   exchangeRateLive = false;
   quoteCalculated = false;
@@ -115,15 +116,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.applyContentConfig(this.readSessionPreview() ?? this.initialContent);
     this.loadSchoolContent();
-    this.exchangeRateService.getLatestCnyRates().pipe(
-      catchError(() => EMPTY),
-    ).subscribe((snapshot) => {
-      if (!Number.isFinite(snapshot.usdToCny) || snapshot.usdToCny <= 0 || !Number.isFinite(snapshot.phpPerCny) || snapshot.phpPerCny <= 0) return;
-      this.usdToCny = snapshot.usdToCny;
-      this.phpPerCny = snapshot.phpPerCny;
-      this.exchangeRateDate = snapshot.date;
-      this.exchangeRateLive = true;
-    });
+
   }
 
   ngAfterViewInit(): void {
@@ -270,9 +263,9 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get selectedRoomsText() { return this.activeStudents.flatMap(student => student.calculator.plan.rooms.map(row => this.roomFees.find(room => room.id === row.optionId)?.name)).filter(Boolean).join(' / '); }
   get quoteTotal() { return this.activeStudents.reduce((sum, student) => sum + student.calculator.total, 0); }
   get quoteUsdText() { return `${this.formatUsd(this.quoteTotal)} 美元`; }
-  get quoteCnyText() { return `人民币预计约 ${Math.round(this.quoteTotal * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText() { return `人民币预计约 ${quoteCurrencyText(Math.round(this.quoteTotal * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateText() {
-    return `${this.exchangeRateLive ? `参考汇率日期 ${this.exchangeRateDate}` : '备用汇率估算'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索；以支付当日汇率为准。`;
+    return `${this.exchangeRateLive ? `参考汇率日期 ${this.exchangeRateDate}` : '最新参考汇率待更新'}：1美元≈${this.formatUsd(this.usdToCny)}人民币，1人民币≈${this.formatUsd(this.phpPerCny)}比索；以支付当日汇率为准。`;
   }
   get quoteScope(): string {
     if (this.quoteMode === 'single') return `${this.selectedWeeks}周`;
@@ -339,10 +332,10 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       ...(waiver ? [{ label: waiver.name, amount: `− ${this.formatUsd(this.registrationCharge)} 美元`, note: waiver.description }] : []),
       { label: '课程费合计', amount: `${this.formatUsd(this.tuitionTotal)} 美元`, note: '按每位学生实际选择的课程和日期计算。' },
       { label: '住宿费合计', amount: `${this.formatUsd(this.accommodationTotal)} 美元`, note: '按每位学生实际选择的房型和日期计算。' },
+      ...(total('longStayDiscount') ? [{ label: longStay?.name ?? '长期优惠', amount: `− ${this.formatUsd(total('longStayDiscount'))} 美元`, note: longStay?.description ?? '按各学生累计课程周数分别计算。' }] : []),
       ...(total('reporterDiscount') ? [{ label: reporter?.name ?? '记者活动优惠', amount: `− ${this.formatUsd(total('reporterDiscount'))} 美元`, note: reporter?.description ?? '只合并实际参加且符合条件学生的优惠金额。' }] : []),
       ...(total('offSeasonDiscount') ? [{ label: '淡季优惠', amount: `− ${this.formatUsd(total('offSeasonDiscount'))} 美元`, note: '成人85折、亲子9折；按各学生实际方案分别计算。' }] : []),
       ...(total('sidaDiscount') ? [{ label: sida?.name ?? '思达启航专属折扣', amount: `− ${this.formatUsd(total('sidaDiscount'))} 美元`, note: sida?.description ?? '课程及住宿在适用优惠后再享9折。' }] : []),
-      ...(total('longStayDiscount') ? [{ label: longStay?.name ?? '长期优惠', amount: `− ${this.formatUsd(total('longStayDiscount'))} 美元`, note: longStay?.description ?? '按各学生累计课程周数分别计算。' }] : []),
       ...(total('peakFee') ? [{ label: '旺季附加费', amount: `${this.formatUsd(total('peakFee'))} 美元`, note: '按各学生实际覆盖的旺季周数计算。' }] : []),
       ...(total('minorFee') ? [{ label: '未成年单独在校管理费', amount: `${this.formatUsd(total('minorFee'))} 美元`, note: '按各未成年学生年龄和住宿周数分别计算。' }] : []),
     ];
@@ -368,7 +361,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       fullFeeDetails: true, localFeeTableLayout: 'web', paymentItems: rows,
       localFeeItems: this.localFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, unit: fee.amount, quantity: String(fee.quantity), amount: `${quoteMoney(fee.total)} 比索`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note }; }),
       localFeeTotal: this.localTotal, localCurrencyName: '比索', localFeeCny: Math.round(this.localTotal / this.phpPerCny), localFeeNote: this.quoteImageSettings.localFeeIntro,
-      optionalFeeItems: this.optionalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币预计约 ${Math.round(fee.total / this.phpPerCny).toLocaleString('zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note }; }), ruleNotes: this.quoteImageSettings.footerNotes,
+      optionalFeeItems: this.optionalFees.map(fee => { const id = this.localFeeRules.find(rule => rule.name === fee.item)?.id ?? ''; return { label: fee.item, amount: `${quoteMoney(fee.total)} 比索`, cnyAmount: `人民币预计约 ${quoteCurrencyText(Math.round(fee.total / this.phpPerCny), 'zh-CN')} 元`, note: this.quoteImageSettings.localFeeNotes[id] || fee.note }; }), ruleNotes: this.quoteImageSettings.footerNotes,
     });
     const warnings = this.activeStudents.flatMap((student, index) => student.calculator.plan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.calculator.plan.warning}`] : []);
     const shortNotes = [...new Set(this.activeStudents.flatMap(student => student.calculator.plan.shortStayNotes(weeks => this.shortTermRatios[String(weeks)] ?? weeks / 4)))];
@@ -391,9 +384,9 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const promotion = this.promotionRules.find(rule => item.label.includes(rule.name) || (item.note ?? '').includes(rule.description));
     return promotion ? { kind: 'promotion', id: promotion.id } : { kind: 'section', id: 'quote-breakdown' };
   }
-  formatUsd(value: number) { return value.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
-  formatPhp(value: number) { return `${this.formatUsd(value)} 比索`; }
-  phpCny(value: number) { return `人民币预计约 ${Math.round(value / this.phpPerCny).toLocaleString('zh-CN')} 元`; }
+  formatUsd(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+  formatPhp(value: number) { if (!Number.isFinite(value)) return '汇率待更新'; return `${this.formatUsd(value)} 比索`; }
+  phpCny(value: number) { return `人民币预计约 ${quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')} 元`; }
   private nextSunday() {
     const now = new Date();
     now.setDate(now.getDate() + ((7 - now.getDay()) % 7 || 7));
@@ -411,4 +404,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${target}`);
   }
 
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

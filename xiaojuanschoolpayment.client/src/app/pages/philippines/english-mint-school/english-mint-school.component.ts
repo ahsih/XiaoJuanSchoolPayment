@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +25,6 @@ import {
   MINT_FAMILY_UPGRADES,
   MINT_LOCAL_FEES,
   MINT_LOCAL_TOTALS,
-  MINT_PHP_PER_CNY,
   MINT_REGISTRATION_FEE,
   MINT_ROOMS,
   MINT_WEEK_OPTIONS,
@@ -152,8 +152,8 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   familyUpgrade: FamilyUpgrade = 'none';
   nonStudyingGuardians = 0;
   quoteCalculated = false;
-  usdToCny = 7.2;
-  phpPerCny = MINT_PHP_PER_CNY;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
 
@@ -226,10 +226,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
 
   private applyContentConfig(content: CiaContentConfig): void { this.contentConfig = content; }
   private loadExchangeRate(): void {
-    this.exchangeRateService.getLatestCnyRates().pipe(catchError(() => EMPTY)).subscribe(rates => {
-      if (rates.usdToCny <= 0) return;
-      this.usdToCny = rates.usdToCny; this.exchangeRateDate = rates.date; this.usingLiveExchangeRate = true;
-    });
+
   }
 
   get courses() { return this.contentConfig.courses.filter(item => item.enabled).sort((a, b) => a.sortOrder - b.sortOrder); }
@@ -438,6 +435,9 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
     const count = this.displayedGalleryImages.length;
     if (count) this.selectedGalleryImageIndex = (this.selectedGalleryImageIndex + 1) % count;
   }
-  formatMoney(value: number): string { return value.toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+  formatMoney(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return value.toLocaleString('en-US', { maximumFractionDigits: 0 }); }
   formatDate(value: string): string { return value ? value.replaceAll('-', '/') : ''; }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

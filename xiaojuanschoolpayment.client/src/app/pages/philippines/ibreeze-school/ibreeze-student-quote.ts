@@ -1,9 +1,13 @@
+import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
 import { IBREEZE_COURSES, IBREEZE_ROOMS } from './ibreeze-catalog';
 import { createDefaultIbreezeContentConfig } from './ibreeze-content-config';
+import { IBREEZE_PRICE_REGISTRATION_START, IBREEZE_PROMOTION_BLACKOUT } from './ibreeze-pricing-2027';
 
 const DEFAULT_IBREEZE_CONTENT = createDefaultIbreezeContentConfig();
+const localDate = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+const nextSunday = () => { const date = new Date(); date.setDate(date.getDate() + (7 - date.getDay()) % 7); return localDate(date); };
 
 export interface IbreezeQuotePrices {
   courseOptions: typeof IBREEZE_COURSES;
@@ -34,9 +38,10 @@ export class IbreezeStudentQuote {
   private promotion(id: string): CiaPromotionRule | undefined { return this.contentConfig.quoteSettings.promotions.find(item => item.id === id); }
   get sidaDiscountRate() {
     const rule = this.promotion('sida-discount');
-    return rule?.enabled === false ? 1 : 1 - ((rule?.discountValue ?? 10) / 100);
+    const percent = Number.isFinite(rule?.discountValue) ? rule!.discountValue : 5;
+    return rule?.enabled === false ? 1 : 1 - Math.min(5, Math.max(0, percent)) / 100;
   }
-  readonly weekOptions = [4, 8, 12, 16, 20, 24];
+  readonly weekOptions = [1, 2, 3, 4, 8, 12, 16, 20, 24];
   returningStudent = false;
   readonly visaOptions: { value: IbreezeVisaType; label: string }[] = [
     { value: 30, label: '30天旅游签证' }, { value: 59, label: '59天旅游签证' },
@@ -50,7 +55,10 @@ export class IbreezeStudentQuote {
   get isLongTermVisa() { return ['student', 'work', 'srrv', 'sirv'].includes(String(this.visaType)); }
   get visaExemptionNote() { return `${this.visaLabel}暂按免收预估；各校要求及政策可能不同，须由顾问向学校确认是否免收。`; }
   get selectedStartDate() { return this.quotePlan.startDate; }
-  selectedRegistrationDate = '2026-09-01';
+  selectedRegistrationDate = localDate();
+  familyTravel = false;
+  get uses2027Prices() { return this.selectedRegistrationDate >= IBREEZE_PRICE_REGISTRATION_START; }
+  get priceYearText() { return this.uses2027Prices ? '2027价目表' : '2026价目表'; }
   private ageGroup: 'adult' | '16-17' | 'under-16' = 'adult';
   get selectedAgeGroup() { return this.ageGroup; }
   set selectedAgeGroup(value: 'adult' | '16-17' | 'under-16') {
@@ -59,21 +67,27 @@ export class IbreezeStudentQuote {
   }
   minorWithoutParent = false;
 
-  readonly quotePlan = new SchoolQuotePlan('intensive-speaking', 'quad-main', '2026-09-06', this.weekOptions,
+  readonly quotePlan = new SchoolQuotePlan('intensive-speaking', 'quad-main', nextSunday(), this.weekOptions,
     kind => kind === 'course'
       ? this.courseOptions.map(course => ({ id: course.id, name: course.name, details: course.lessons }))
       : this.roomOptions.map(room => ({ id: room.id, name: room.name, details: room.note })),
     (kind, row) => {
+      const id = kind === 'course' && this.isMinor ? 'junior-english' : row.optionId;
+      const course = this.contentConfig.courses.find(item => item.id === id);
+      const room = this.contentConfig.rooms.find(item => item.id === id);
+      if (this.uses2027Prices && row.weeks < 4) {
+        return (kind === 'course' ? course?.feeByWeeks2027 : room?.feeByWeeks2027)?.[String(row.weeks)] ?? 0;
+      }
       const rate = kind === 'course'
-        ? (this.isMinor ? this.juniorTuitionPerFourWeeks : this.courseOptions.find(course => course.id === row.optionId)?.tuition ?? 0)
-        : this.roomOptions.find(room => room.id === row.optionId)?.fee ?? 0;
+        ? (this.uses2027Prices ? course?.tuition2027 : this.courseOptions.find(item => item.id === id)?.tuition) ?? 0
+        : (this.uses2027Prices ? room?.fee2027 : this.roomOptions.find(item => item.id === id)?.fee) ?? 0;
       return this.roundMoney(rate * row.weeks / 4);
     });
 
   get tuitionForSelectedWeeks() { return this.quotePlan.total('course'); }
   get roomFeeForSelectedWeeks() { return this.quotePlan.total('room'); }
   get isMinor() { return this.selectedAgeGroup !== 'adult'; }
-  get juniorTuitionPerFourWeeks() { return this.courseOptions.find(course => course.id === 'junior-english')?.tuition ?? 1290; }
+  get juniorTuitionPerFourWeeks() { return (this.uses2027Prices ? this.contentConfig.courses.find(course => course.id === 'junior-english')?.tuition2027 : this.courseOptions.find(course => course.id === 'junior-english')?.tuition) ?? 1290; }
   get courseAndRoomBase() { return this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get sidaDiscountAmount() { return this.roundMoney(this.courseAndRoomBase * (1 - this.sidaDiscountRate)); }
   get afterSidaDiscount() { return this.courseAndRoomBase - this.sidaDiscountAmount; }
@@ -104,6 +118,22 @@ export class IbreezeStudentQuote {
     const descriptions = this.septemberRules.filter(item => item.enabled).map(item => item.description);
     return descriptions.join(' ');
   }
+  private get novemberRules() { return this.contentConfig.quoteSettings.promotions.filter(rule => rule.id.startsWith('november-')); }
+  get novemberPromotionText() { return this.novemberRules.filter(rule => rule.enabled).map(rule => rule.description).join(' '); }
+  private get novemberQuoteNote() {
+    return this.novemberRules.filter(rule => rule.enabled && this.promotionDateEligible(rule)
+      && this.quotePlan.rooms.some(row => rule.eligibleRoomIds?.includes(row.optionId)))
+      .map(rule => rule.description).join(' ');
+  }
+  get novemberPromotionDiscount() {
+    if (this.quotePlan.roomWeeks < 4) return 0;
+    return this.roundMoney(this.novemberRules.filter(rule => rule.enabled && this.promotionDateEligible(rule)).reduce((total, rule) => {
+      const rows = this.quotePlan.rooms.filter(row => rule.eligibleRoomIds?.includes(row.optionId));
+      const eligibleWeeks = this.quotePlan.weekStarts(rows).length
+        - this.quotePlan.overlapWeeks(IBREEZE_PROMOTION_BLACKOUT.start, IBREEZE_PROMOTION_BLACKOUT.end, rows);
+      return total + eligibleWeeks * (rule.incrementValue ?? rule.discountValue) / (rule.incrementWeeks ?? 4);
+    }, 0));
+  }
   get christmasPromotionDiscount() {
     const rule = this.promotion('christmas-2026');
     return rule?.enabled && rule.coverageStart && rule.coverageEnd && this.quotePlan.covers(rule.coverageStart, rule.coverageEnd)
@@ -124,6 +154,25 @@ export class IbreezeStudentQuote {
     if (!this.visaOptions.some(option => option.value === this.visaType)) return '请选择有效的签证类型。';
     if (this.selectedAgeGroup === 'under-16' && this.quotePlan.courses.some(row => row.optionId !== 'junior-english')) return '未满16岁须选择青少年英语课程，请调整课程安排后再生成报价。';
     if (!this.quotePlan.date(this.selectedRegistrationDate)) return '请选择有效的报名注册日期。';
+    if (this.selectedRegistrationDate > this.selectedStartDate) return '报名日不能晚于入学日期，请核对日期。';
+    if (!this.uses2027Prices && this.quotePlan.courseWeeks < 4) return '2026价目表暂未确认不足4周的价格，请联系顾问。';
+    if (this.uses2027Prices) {
+      const tier = Math.min(4, this.quotePlan.courseWeeks);
+      for (const row of this.quotePlan.courses) {
+        const course = this.contentConfig.courses.find(item => item.id === (this.isMinor ? 'junior-english' : row.optionId));
+        if (!course?.feeByWeeks2027?.[String(tier)]) return '所选课程未公布该短期价格，请调整课程或周数。';
+      }
+      for (const row of this.quotePlan.rooms) {
+        const room = this.contentConfig.rooms.find(item => item.id === row.optionId);
+        if (!room?.feeByWeeks2027?.[String(tier)]) return '所选房型未公布该短期价格，请联系顾问确认。';
+      }
+      const courseWeeks = (id: string) => this.quotePlan.courses.filter(row => row.optionId === id).reduce((sum, row) => sum + row.weeks, 0);
+      if (courseWeeks('ielts-starter') > 8) return '2027价目表的IELTS Starter仅列至8周，请联系顾问确认更长课程安排。';
+      if (courseWeeks('general-business-and-bec') > 4) return '2027价目表的商务英语仅列至4周，请联系顾问确认更长课程安排。';
+    }
+    const summerWeeks = this.quotePlan.overlapWeeks('2027-06-27', '2027-08-14', [...this.quotePlan.courses, ...this.quotePlan.rooms]);
+    if (summerWeeks && this.quotePlan.courseWeeks < 4) return '2027暑期最短报名4周，请调整学习周数。';
+    if (!this.familyTravel && this.quotePlan.overlapWeeks('2027-06-27', '2027-08-14', this.quotePlan.rooms.filter(row => row.optionId.startsWith('off-campus-')))) return '2027暑期公寓仅接受家庭学生，请确认家庭同行或选择校内宿舍。';
     return '';
   }
   get courseEligibilityText() {
@@ -133,7 +182,7 @@ export class IbreezeStudentQuote {
   }
   get quoteUsd() {
     return Math.max(0, this.roundMoney(this.registrationAmount + this.afterSidaDiscount + this.seasonalSurcharge
-      + this.minorManagementFee - this.septemberPromotionDiscount - this.christmasPromotionDiscount));
+      + this.minorManagementFee - this.septemberPromotionDiscount - this.novemberPromotionDiscount - this.christmasPromotionDiscount));
   }
   get quoteUsdText() { return `${this.formatUsd(this.quoteUsd)} 美元`; }
   get quoteCnyText() { return `约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
@@ -185,8 +234,9 @@ export class IbreezeStudentQuote {
     const peakRanges = this.contentConfig.quoteSettings.peakSeasonRanges.filter(item => item.enabled);
     return [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationAmount)} 美元`, note: '一次性费用，老学员返校免费' },
-      ...(sidaRule?.enabled === false ? [] : [{ icon: '折', label: sidaRule?.name ?? '思达折扣', amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: sidaRule?.description ?? '课程费和住宿费享9折' }]),
+      ...(sidaRule?.enabled === false ? [] : [{ icon: '折', label: '思达折扣', amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: `官方课程费和住宿费合计优惠${Math.round((1 - this.sidaDiscountRate) * 100)}%；注册费、当地费用及其他费用不参与。` }]),
       ...(this.septemberPromotionDiscount ? [{ icon: '惠', label: '9月住宿优惠', amount: `− ${this.formatUsd(this.septemberPromotionDiscount)} 美元`, note: this.septemberPromotionText }] : []),
+      ...(this.novemberPromotionDiscount ? [{ icon: '惠', label: '11月住宿优惠', amount: `− ${this.formatUsd(this.novemberPromotionDiscount)} 美元`, note: this.novemberQuoteNote }] : []),
       ...(this.christmasPromotionDiscount ? [{ icon: '惠', label: christmasRule?.name ?? '圣诞特别优惠', amount: `− ${this.formatUsd(this.christmasPromotionDiscount)} 美元`, note: this.christmasPromotionText }] : []),
       ...(this.seasonalSurcharge ? [{ icon: '附', label: '暑期附加费', amount: `${this.formatUsd(this.seasonalSurcharge)} 美元`, note: `${this.formatUsd(this.seasonalFeePerWeek)}美元／周，本次覆盖${this.peakSeasonWeeks}周；${peakRanges.map(item => `${item.start.replace(/-/g, '/')}–${item.end.slice(5).replace('-', '/')}${item.label.includes('预估') ? '预估' : '适用'}`).join('；')}` }] : []),
       ...(this.isMinor ? [{ icon: '监', label: '未成年管理费', amount: `${this.formatUsd(this.minorManagementFee)} 美元`, note: `${this.formatUsd(this.contentConfig.quoteSettings.minorManagementFeePerPeriod ?? 100)}美元／4周；${this.guardianNote}` }] : []),
@@ -199,7 +249,7 @@ export class IbreezeStudentQuote {
     const periodWeeks = fee.periodWeeks ?? 4;
     const relevantWeeks = ['electricity', 'water'].includes(fee.id) ? this.campusWeeks
       : fee.billingRule === 'per-course-period' ? this.quotePlan.courseWeeks : this.quotePlan.roomWeeks;
-    const periodQuantity = fee.rounding === 'proportional' ? relevantWeeks / periodWeeks : Math.ceil(relevantWeeks / periodWeeks);
+    const periodQuantity = fee.id === 'books' ? textbookPeriods(this.quotePlan.courses, periodWeeks, fee.rounding === 'proportional' ? 'proportional' : 'ceil') : fee.rounding === 'proportional' ? relevantWeeks / periodWeeks : Math.ceil(relevantWeeks / periodWeeks);
     const extensions = this.visaExtensionCount;
     const waived = this.isLongTermVisa && fee.waiveForLongTermVisa;
     let quantity = 1;
@@ -221,6 +271,6 @@ export class IbreezeStudentQuote {
       : fee.billingRule === 'first-visa-extension' && !this.isLongTermVisa ? `${touristVisaNote}；${fee.note}` : fee.note;
     return { item: fee.name, amount, quantity, total: this.roundMoney(total), note };
   }
-  private roundMoney(value: number) { return Math.round(value * 10) / 10; }
+  private roundMoney(value: number) { return Math.round(value * 100) / 100; }
   private isDateBetween(value: string, start: string, end: string) { return value >= start && value <= end; }
 }

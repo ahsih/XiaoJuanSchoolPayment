@@ -1,5 +1,7 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
+import { ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -148,7 +150,8 @@ export class GeniusSchoolComponent {
 
   readonly registrationFee = 125;
   readonly discount = 1;
-  readonly usdToCny = 7.2;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   readonly weekOptions = [4, 8, 12, 16, 20, 24];
 
   selectedCourseId = 'general-english-a';
@@ -894,10 +897,13 @@ export class GeniusSchoolComponent {
       : '入学日不在价目表旺季区间内，已使用淡季价。正式报价仍需确认优惠和空房。';
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', {
       minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
       maximumFractionDigits: 1,
     });
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

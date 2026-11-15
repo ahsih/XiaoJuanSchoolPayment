@@ -1,9 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +13,7 @@ using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Services;
+using XiaoJuanSchoolPayment.Server.Services.Security;
 
 namespace MyProject.Controllers
 {
@@ -24,7 +27,12 @@ namespace MyProject.Controllers
     private readonly IConfiguration _config;
     private readonly IMemoryCache _memoryCache;
     private readonly IAccountEmailService _accountEmailService;
+    private readonly JwtSigningKey _jwtSigningKey;
+    private readonly IWebHostEnvironment _environment;
     private readonly ILogger<AuthController> _logger;
+
+    /// <summary>Upper bound on token lifetime regardless of configuration; revocation also relies on the security stamp.</summary>
+    private const double MaxTokenLifetimeMinutes = 30 * 24 * 60;
 
     public AuthController(
       UserManager<SchoolUser> userManager,
@@ -33,6 +41,8 @@ namespace MyProject.Controllers
       IConfiguration config,
       IMemoryCache memoryCache,
       IAccountEmailService accountEmailService,
+      JwtSigningKey jwtSigningKey,
+      IWebHostEnvironment environment,
       ILogger<AuthController> logger)
     {
       _userManager = userManager;
@@ -41,10 +51,13 @@ namespace MyProject.Controllers
       _config = config;
       _memoryCache = memoryCache;
       _accountEmailService = accountEmailService;
+      _jwtSigningKey = jwtSigningKey;
+      _environment = environment;
       _logger = logger;
     }
 
         [AllowAnonymous]
+        [EnableRateLimiting(AbuseRateLimits.AuthPolicy)]
         [HttpPost("register")]
         public async Task<IActionResult> Register(SchoolUserDTO request, CancellationToken cancellationToken)
         {
@@ -80,9 +93,12 @@ namespace MyProject.Controllers
             var now = DateTime.UtcNow;
             InvitationCode? invitation = null;
             var role = string.Empty;
-            var accessCode = _config["AccessCode"];
-            var usesAdminAccessCode = !string.IsNullOrWhiteSpace(accessCode)
-              && string.Equals(accessCode, request.AccessCode, StringComparison.Ordinal);
+            var accessCode = RevokedSecrets.UsableAccessCode(_config);
+            var usesAdminAccessCode = accessCode != null
+              && !string.IsNullOrEmpty(request.AccessCode)
+              && CryptographicOperations.FixedTimeEquals(
+                Encoding.UTF8.GetBytes(accessCode),
+                Encoding.UTF8.GetBytes(request.AccessCode));
 
             if (usesAdminAccessCode)
             {
@@ -162,6 +178,7 @@ namespace MyProject.Controllers
         }
 
     [AllowAnonymous]
+    [EnableRateLimiting(AbuseRateLimits.AuthPolicy)]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDTO request, CancellationToken cancellationToken)
     {
@@ -191,6 +208,7 @@ namespace MyProject.Controllers
     }
 
     [AllowAnonymous]
+    [EnableRateLimiting(AbuseRateLimits.AuthPolicy)]
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(
       ForgotPasswordDTO request,
@@ -199,6 +217,15 @@ namespace MyProject.Controllers
       if (!AccountIdentifier.TryCreate(request.Account, out var account, out var accountError) || account == null)
       {
         return BadRequest(accountError);
+      }
+
+      var resetOrigin = PasswordResetOrigin();
+      if (resetOrigin == null)
+      {
+        _logger.LogError(
+          "Password reset is disabled: set Authentication__PublicOrigin to the site's public https origin. " +
+          "Outside Development, reset links are never built from the request Host header.");
+        return StatusCode(StatusCodes.Status503ServiceUnavailable, "密码重置邮件暂时无法发送，请稍后重试。");
       }
 
       var cooldownKey = $"password-reset:{account.Type}:{account.Value}";
@@ -215,7 +242,7 @@ namespace MyProject.Controllers
       }
 
       var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-      var resetUrl = BuildPasswordResetUrl(user.Email, token);
+      var resetUrl = $"{resetOrigin}/reset-password?email={Uri.EscapeDataString(user.Email)}&token={Uri.EscapeDataString(token)}";
       var displayName = string.Join(" ", new[] { user.FirstName, user.LastName }
         .Where(x => !string.IsNullOrWhiteSpace(x)));
 
@@ -240,6 +267,7 @@ namespace MyProject.Controllers
     }
 
     [AllowAnonymous]
+    [EnableRateLimiting(AbuseRateLimits.AuthPolicy)]
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordDTO request)
     {
@@ -274,20 +302,41 @@ namespace MyProject.Controllers
       }
 
       var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-      return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(x => x.Description));
+      if (!result.Succeeded)
+      {
+        return BadRequest(result.Errors.Select(x => x.Description));
+      }
+
+      // Changing the password rotates the security stamp, which signs out every other session.
+      // Return a fresh token so the session that made the change stays signed in.
+      return Ok(await CreateTokenAsync(user));
     }
 
-    private string BuildPasswordResetUrl(string email, string token)
+    /// <summary>
+    /// The origin used in emailed reset links. Uses only configuration outside Development so an
+    /// attacker-supplied Host header can never redirect a victim's reset token to another site.
+    /// </summary>
+    private string? PasswordResetOrigin()
     {
       var configuredOrigin = _config["Authentication:PublicOrigin"]?.Trim().TrimEnd('/');
-      var origin = string.IsNullOrWhiteSpace(configuredOrigin)
-        ? $"{Request.Scheme}://{Request.Host}"
-        : configuredOrigin;
-      return $"{origin}/reset-password?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
+      if (!string.IsNullOrWhiteSpace(configuredOrigin))
+      {
+        return Uri.TryCreate(configuredOrigin, UriKind.Absolute, out var uri)
+          && (uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeHttp)
+          ? configuredOrigin
+          : null;
+      }
+
+      return _environment.IsDevelopment() ? $"{Request.Scheme}://{Request.Host}" : null;
     }
 
     private async Task<JWTLoginTokenDTO> CreateTokenAsync(SchoolUser user)
     {
+      if (string.IsNullOrEmpty(user.SecurityStamp))
+      {
+        await _userManager.UpdateSecurityStampAsync(user);
+      }
+
       var roles = await _userManager.GetRolesAsync(user);
       var displayName = string.Join(" ", new[] { user.FirstName, user.LastName }.Where(x => !string.IsNullOrWhiteSpace(x)));
       var claims = new List<Claim>
@@ -296,6 +345,7 @@ namespace MyProject.Controllers
         new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         new(ClaimTypes.NameIdentifier, user.Id),
         new(ClaimTypes.Name, displayName),
+        new(JwtSecurityStamp.ClaimType, JwtSecurityStamp.Hash(user.SecurityStamp!)),
       };
       if (!string.IsNullOrWhiteSpace(user.Email))
       {
@@ -310,17 +360,15 @@ namespace MyProject.Controllers
         claims.Add(new Claim(ClaimTypes.Role, role));
       }
 
-      var keyValue = _config["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured.");
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
-      var expiresMinutes = double.TryParse(_config["Jwt:ExpiresInMinutes"], out var configuredMinutes)
-        ? configuredMinutes
+      var expiresMinutes = double.TryParse(_config["Jwt:ExpiresInMinutes"], out var configuredMinutes) && configuredMinutes > 0
+        ? Math.Min(configuredMinutes, MaxTokenLifetimeMinutes)
         : 120;
       var token = new JwtSecurityToken(
         issuer: _config["Jwt:Issuer"],
         audience: _config["Jwt:Audience"],
         claims: claims,
         expires: DateTime.UtcNow.AddMinutes(expiresMinutes),
-        signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+        signingCredentials: new SigningCredentials(_jwtSigningKey.Key, SecurityAlgorithms.HmacSha256));
 
       return new JWTLoginTokenDTO
       {

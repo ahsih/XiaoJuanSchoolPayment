@@ -1,3 +1,4 @@
+import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -112,8 +113,6 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     'premium-working-holiday-8',
     'premium-toeic',
     'premium-business-master-8',
-    'premium-junior',
-    'premium-guardian',
   ];
   private readonly roomFeeOrder = [
     'challenger-single',
@@ -132,8 +131,8 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   selectedGalleryCategory: GalleryCategory = '全部';
   registrationFee = JIC_REGISTRATION_FEE;
   seasonalFeePerWeek = JIC_PEAK_FEE_PER_WEEK;
-  usdToCny = 7.2;
-  phpPerCny = 7.75;
+  usdToCny = Number.NaN;
+  phpPerCny = Number.NaN;
   exchangeRateDate = '';
   usingLiveExchangeRate = false;
   quoteCalculated = false;
@@ -210,7 +209,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     { label: 'Challenger地址', value: '73 Del Nacia Apt, Upper West Camp 7, Baguio City, Philippines' },
     { label: '主要校区', value: 'Challenger Campus（ESL / IELTS，官方main-campus页面）与 Premium Campus（Speaking / Career）' },
     { label: 'Challenger概况', value: '官方页面列容量约130人、2006年设立、最低年龄18岁。' },
-    { label: '课程方向', value: 'ESL Lite/Core/Standard、IELTS Lite/Core/Standard/Guarantee、Speaking、TEP、Active Senior、TOEIC、Business、Working Holiday、青少年与监护人课程' },
+    { label: '课程方向', value: 'ESL Lite/Core/Standard、IELTS Lite/Core/Standard/Guarantee、Speaking、TEP、Active Senior、TOEIC、Business、Working Holiday' },
     { label: '住宿方向', value: 'Challenger标准单人/双人、复式或上下铺四人间；Premium无阳台/带阳台单人、双人及四人间' },
     { label: '学习制度', value: 'Challenger更重视词汇测试、自习、IELTS和ESL体系；Premium更重视主题式学习、口语输出和职业场景' },
     { label: '报价说明', value: '课程费与住宿费按JIC 2026价格逐项核对；最终以学校正式报价为准' },
@@ -237,15 +236,14 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'ESL Lite / Core / Standard · 轻量 / 核心 / 标准英语课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节小组课', suitable: 'Lite/Core/Standard按一对一课时递增，适合从基础到密集提升的学生。' },
-    { name: 'IELTS Lite / Core / Standard · 雅思轻量 / 核心 / 标准课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节小组课', suitable: '雅思课程每周六安排模拟考试；Standard另含强制自习和30分钟词汇测试。' },
-    { name: 'IELTS Guarantee · 雅思保分班', type: 'Challenger 挑战校区（主校区）', lessons: '6节一对一 + 2节小组课 + 强制自习及词汇测试', suitable: '每周六模拟测试；保证班参加费另付PHP 18,000。' },
+    { name: 'ESL Lite / Core / Standard · 轻量 / 核心 / 标准英语课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节团体课 + 2节特别课程', suitable: 'Lite/Core/Standard按一对一课时递增，每日共8/9/10节。' },
+    { name: 'IELTS Lite / Core / Standard · 雅思轻量 / 核心 / 标准课程', type: 'Challenger 挑战校区（主校区）', lessons: '4-6节一对一 + 2节团体课 + 2节特别课程', suitable: '每日共8/9/10节；词汇测试、夜间任务和模考频率按斯巴达或半斯巴达模式执行。' },
+    { name: 'IELTS Guarantee · 雅思保分班', type: 'Challenger 挑战校区（主校区）', lessons: '6节一对一 + 2节团体课 + 2节特别课程', suitable: '词汇测试、夜间任务及模考按管理模式执行；每开始8周加收PHP 18,000。' },
     { name: 'Speaking Starter / Pro / Master · 口语入门 / 进阶 / 大师课程', type: 'Premium 高级校区', lessons: '4-6节一对一 + 1节团体课 + 2节选修课', suitable: 'Starter适合初学者；Pro/Master适合想提升流利度、逻辑表达、演讲和讨论的人。' },
     { name: 'TEP 8 / 9 / 10 · 主题英语课程', type: 'Premium 高级校区', lessons: '3-5节一对一 + 3节团体课 + 2节选修课', suitable: '适合喜欢通过生活主题练习英文表达的学生。' },
     { name: 'Active Senior 5 / 6 · 活力银发课程', type: 'Premium 高级校区', lessons: '3-4节一对一 + 2节选修课', suitable: '适合40岁以上学生，兼顾英语学习、旅游与休闲。' },
     { name: 'TOEIC / Working Holiday 8 · 托业 / 打工度假英语课程', type: 'Premium 高级校区', lessons: '3节一对一 + 3节团体课 + 2节选修课', suitable: '适合求职、打工度假、职场沟通或托业成绩目标。' },
     { name: 'Business Master 8 · 商务英语大师课程', type: 'Premium 高级校区', lessons: '6节一对一 + 2节选修课', suitable: '适合商务邮件、演示、会议、谈判和跨文化职场表达需求。' },
-    { name: 'Junior / Guardian · 青少年 / 监护人课程', type: 'Premium 高级校区', lessons: '青少年4节一对一 + 2节团体课；监护人2节一对一', suitable: '青少年课程另含1小时写作活动和2小时监控晚自习。' },
   ];
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
@@ -265,7 +263,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
         campus: 'premium',
         eyebrow: 'PREMIUM CAMPUS',
         title: '高级校区课程',
-        description: '口语、主题英语、职业英语、成人及亲子课程',
+        description: '口语、主题英语、职业英语与成人课程',
         items: this.courseFees.filter((course) => course.campus === 'premium'),
       },
     ];
@@ -296,7 +294,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   get pageTitle(): string { return this.lockedCampus === 'premium' ? '菲律宾碧瑶JIC高级校区' : this.lockedCampus === 'challenger' ? '菲律宾碧瑶JIC挑战校区' : '菲律宾碧瑶JIC语言学校'; }
   get pageEnglishName(): string { return this.lockedCampus === 'premium' ? 'Baguio JIC Premium Campus' : this.lockedCampus === 'challenger' ? 'Baguio JIC Challenger Campus' : 'Baguio JIC'; }
   get pageLead(): string[] {
-    if (this.lockedCampus === 'premium') return ['以口语输出、主题英语、职业应用与舒适生活为核心。', '课程覆盖Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior与亲子项目。', '单人、双人和四人房均有无阳台或带阳台选择。'];
+    if (this.lockedCampus === 'premium') return ['以口语输出、主题英语、职业应用与舒适生活为核心。', '现行价目表课程覆盖Speaking、TEP、TOEIC、Business、Working Holiday与Active Senior。', '单人、双人和四人房均有无阳台或带阳台选择。'];
     if (this.lockedCampus === 'challenger') return ['以ESL基础强化与IELTS备考为核心。', '每日密集一对一、团体课、特别课程，以及词汇测试、模拟考试和自习制度。', '适合目标清楚、希望用制度推动学习进度的学生。'];
     return ['碧瑶双校区目标导向语言学校。', 'Challenger适合ESL、IELTS和更清楚的学习制度。', 'Premium适合口语、职场英文和成人学习。'];
   }
@@ -351,15 +349,15 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     '斯巴达课程每周强制模拟考；半斯巴达课程双周强制模拟考。',
     'Challenger校区特别选修课每4周另付PHP 2,000。',
     '标准报价固定周日到校、周六离校，因此不计非标准周费用；若需非标准日期，学校最新表列PHP 8,000／非标准周，须另行确认。',
-    '2026旺季附加费为USD 40/周，适用期间为2026/6/28—8/22；页面按实际覆盖旺季的学习周数自动计算。',
+    '2026/06/28–08/22按USD 40/周计收；2027/06/27–08/22按USD 60/周计收。页面按每名学生实际覆盖的学习周去重计算，同一周课程与住宿只计一次，且附加费不参与优惠。',
     '淡季优惠按入学日期、房型和每满4周自动计算；长期优惠、圣诞及节日优惠可按规则叠加，校内延长不适用淡季优惠。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶JIC语言学校的Challenger和Premium怎么选？', answer: '目标是ESL基础强化、IELTS备考或需要更强制度，优先看Challenger；目标是口语、职场英文、打工度假、多益或更舒适生活，优先看Premium。' },
-    { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Lite适合从基础开始系统提升，Premium Speaking Starter 7也适合初学者；具体要按自律程度和生活偏好判断校区。' },
+    { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Lite适合从基础开始系统提升，Premium Speaking Starter也适合初学者；具体要按自律程度和生活偏好判断校区。' },
     { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后还需准备SSP、SSP I-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
-    { question: 'IELTS Guarantee是不是只付课程费就可以？', answer: '不是。IELTS Guarantee除4周课程费外，还需确认保证班参加费、出勤和分数保证规则，页面按公开资料列出PHP 18,000参加费参考。' },
+    { question: 'IELTS Guarantee是不是只付课程费就可以？', answer: '不是。IELTS Guarantee除课程费外，还需确认保证班参加费、出勤和分数保证规则，页面按学校最新价目表每开始8周计入PHP 18,000。' },
     { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名菲律宾碧瑶JIC语言学校，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -430,16 +428,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private loadExchangeRate(): void {
-    this.exchangeRateService
-      .getLatestCnyRates()
-      .pipe(catchError(() => EMPTY))
-      .subscribe((rates) => {
-        if (rates.usdToCny <= 0 || rates.phpPerCny <= 0) return;
-        this.usdToCny = rates.usdToCny;
-        this.phpPerCny = rates.phpPerCny;
-        this.exchangeRateDate = rates.date;
-        this.usingLiveExchangeRate = true;
-      });
+
   }
 
   private loadPricingFromDatabase(): void {
@@ -673,19 +662,19 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return [
       {
         icon: '注',
-        label: '注册费',
+        label: '注册费原价',
         amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；符合条件时在“注册费优惠”行抵扣。`,
+        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；通过思达报名在“思达注册费减免”行全额抵扣，老学员返校免费。`,
       },
       ...groupPaymentLines(this.activeStudents, false),
     ];
   }
   get quoteUsd(): number { return this.activeStudents.reduce((sum, student) => sum + student.quoteUsd, 0); }
   get quoteUsdText(): string { return `${this.formatUsd(this.quoteUsd)} 美元`; }
-  get quoteCnyText(): string { return `人民币预计金额：约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
+  get quoteCnyText(): string { return `人民币预计金额：约 ${quoteCurrencyText(Math.round(this.quoteUsd * this.usdToCny), 'zh-CN')} 元`; }
   get exchangeRateSummary(): string {
-    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '备用参考值';
-    return `参考汇率：1美元≈${this.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元，1元≈${this.phpPerCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
+    const source = this.usingLiveExchangeRate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新';
+    return `参考汇率：1美元≈${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元，1元≈${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索（${source}）`;
   }
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
@@ -697,7 +686,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
       return {
         label: fee.name,
         amount: `${this.formatPhp(total)}${count > 1 && fee.multiplyByStudents !== false ? `（${this.formatPhp(fee.amount)}／人 × ${count}人）` : ''}`,
-        cnyAmount: `约人民币 ${Math.round(total / this.phpPerCny).toLocaleString('zh-CN')} 元`,
+        cnyAmount: `约人民币 ${quoteCurrencyText(Math.round(total / this.phpPerCny), 'zh-CN')} 元`,
         note: this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note,
       };
     });
@@ -784,10 +773,10 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     return fee ? this.currentQuoteImageSettings.localFeeNotes[fee.id] || fee.note : fallback;
   }
 
-  formatUsd(value: number): string {
+  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return value.toLocaleString('en-US', { minimumFractionDigits: Number.isInteger(value) ? 0 : 1, maximumFractionDigits: 2 });
   }
-  formatPhp(value: number): string { return `${Math.round(value).toLocaleString('en-US')} 比索`; }
+  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新'; return `${Math.round(value).toLocaleString('en-US')} 比索`; }
   formatFeeQuantity(value: number): string { return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 }); }
   private slugifyPriceKey(value: string): string {
     return value.toLowerCase().replace(/&/g, 'and').replace(/\+/g, ' plus ').replace(/\//g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -798,8 +787,6 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   }
   private createCourseId(name: string): string {
     if (name.includes('托业')) return 'premium-toeic';
-    if (name.includes('青少年')) return 'premium-junior';
-    if (name.includes('监护人')) return 'premium-guardian';
     return this.slugifyPriceKey(name);
   }
   private createRoomId(name: string): string {
@@ -815,4 +802,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     if (name.includes('Premium') && name.includes('四人') && name.includes('带阳台')) return 'premium-quad-balcony';
     return this.slugifyPriceKey(name);
   }
+
+  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
+  readonly quoteCurrencyText = quoteCurrencyText;
 }

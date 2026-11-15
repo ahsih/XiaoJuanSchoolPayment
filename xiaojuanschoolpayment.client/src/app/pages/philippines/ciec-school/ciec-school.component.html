@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按公开2026 CIEC学费、住宿费和当地费用资料整理。正式报名仍需按入学日、是否旺季、孩子年龄、房型空位和学校当期报价确认。
+              费用按学校提供的最新学费、住宿费和当地费用资料整理。正式报名仍需按入学日、是否旺季、孩子年龄、房型空位和学校当期报价确认。
             </p>
           </div>
 
@@ -58,7 +58,7 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  儿童课程4周主费通常从USD 2,000起
+                  幼儿园＋三人房＋新生注册费四周1905美元
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -201,7 +201,7 @@
             <span>课程 / 公开参考费用</span>
             <h2>CIEC 2026课程与4周主费用</h2>
             <p>
-              下方按公开2026学费和住宿费整理，显示注册费、4周课程费和4周住宿费合计。
+              套餐参考含四周课程、住宿95折和新生注册费100美元。CIDEC另含一次年级学费3000美元；家庭优惠按实际条件另算。
               菲律宾当地费用、活动费、机票、保险和个人消费没有包含在主费用内。
             </p>
           </div>
@@ -263,83 +263,16 @@
           </div>
         </section>
 
-        <section class="quote-panel" id="quote">
-          <div class="section-heading">
-            <span>费用快速报价</span>
-            <h2>用公开价目表先估算CIEC主费用</h2>
-            <p>
-              这个计算器用于快速比较课程、房型、周数和旺季短期比例。正式报价还需要确认孩子年龄、入学日期、空房和学校最新规则。
-            </p>
-          </div>
-          <div class="quote-form" aria-label="CIEC费用快速报价选项">
-            <label>
-              课程
-              <select [(ngModel)]="selectedCourseId">
-                <option *ngFor="let course of courses" [value]="course.id">{{ course.name }}</option>
-              </select>
-            </label>
-            <label>
-              房型
-              <select [(ngModel)]="selectedRoomId">
-                <option *ngFor="let room of roomOptions" [value]="room.id">{{ room.name }}</option>
-              </select>
-            </label>
-            <label>
-              周数
-              <select [(ngModel)]="selectedWeeks">
-                <option *ngFor="let week of weekOptions" [ngValue]="week">{{ week }}周</option>
-              </select>
-            </label>
-            <label>
-              预计入学日
-              <input type="date" [(ngModel)]="selectedStartDate" />
-            </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="isPeakSeason" />
-              <span>按旺季短期比例估算（1、2、7、8月）</span>
-            </label>
-            <label class="toggle-row">
-              <input type="checkbox" [(ngModel)]="includeGuardianCare" />
-              <span>加入Guardian Care USD 300 / 4周</span>
-            </label>
-          </div>
-
-          <div class="quote-breakdown ciec-quote-breakdown">
-            <article>
-              <span>预计主费用</span>
-              <strong>{{ quoteUsdText }}</strong>
-              <p>{{ selectedCourse.name }} / {{ selectedRoom.name }} / {{ selectedWeeks }}周</p>
-            </article>
-            <article>
-              <span>平均每周</span>
-              <strong>{{ weeklyAverageText }}</strong>
-              <p>{{ quoteNote }}</p>
-            </article>
-            <article>
-              <span>房型备注</span>
-              <strong>{{ selectedRoom.note }}</strong>
-              <p>已含注册费USD 100和单程接机USD 20；PHP当地费用另计。</p>
-            </article>
-          </div>
-
-          <div class="quote-actions">
-            <button type="button" class="primary-action" (click)="calculateQuote()">
-              标记为已估算
-              <mat-icon>done</mat-icon>
-            </button>
-            <a class="secondary-action" routerLink="/about-sida/contact">
-              发送给顾问复核
-              <mat-icon>send</mat-icon>
-            </a>
-          </div>
-          <p class="quote-status" *ngIf="quoteCalculated">已按当前选择完成估算。下一步建议确认孩子年龄、课程资格、空房和当地PHP费用。</p>
+        <section class="section-block" id="quote">
+          <div class="section-heading"><span>详细费用报价</span><h2>CIEC课程、住宿与家庭报价</h2><p>按学习日期匹配2026／2027淡季政策；学校优惠后叠加思达95折。</p></div>
+          <app-ciec-quote-calculator></app-ciec-quote-calculator>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>到校后还要准备的费用</h2>
-            <p>以下按公开CIEC当地费用资料整理。不同周数、签证政策、教材数量和用电情况会影响最终金额。</p>
+            <p>以下采用学校最新费用表，以到校结算为准。约2700人民币／四周／人（不含押金）仅为学校参考，并非固定合计。</p>
           </div>
           <div class="local-fee-grid ciec-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -361,7 +294,7 @@
           <div class="section-heading">
             <span>公开资料来源</span>
             <h2>CIEC页面公开资料来源</h2>
-            <p>课程、地址、FAQ和费用信息优先参考CIEC官方页面和近期公开费用资料。</p>
+            <p>费用与优惠采用学校提供且已确认的最新资料；下方链接用于学校背景参考。</p>
           </div>
           <div class="source-grid">
             <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
@@ -400,7 +333,7 @@
           </div>
           <ul>
             <li><mat-icon>check_circle</mat-icon> 免费确认CIEC空房与正式报价</li>
-            <li><mat-icon>check_circle</mat-icon> 拆分USD主费与PHP当地费用</li>
+            <li><mat-icon>check_circle</mat-icon> 拆分美元主费与比索当地费用</li>
             <li><mat-icon>check_circle</mat-icon> 可同步比较CIA、First English、Howdy等亲子学校</li>
           </ul>
           <a class="primary-action" routerLink="/about-sida/contact">

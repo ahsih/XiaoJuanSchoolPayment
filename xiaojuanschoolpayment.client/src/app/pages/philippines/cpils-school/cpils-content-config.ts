@@ -1,4 +1,5 @@
 import { CiaContentConfig, CiaCourseContent, CiaLocalFeeRule } from '../cia-school/cia-content-config';
+import { upgradeCpils2027 } from './cpils-pricing';
 
 const course = (id: string, name: string, tuition: number, schedule: string, note: string, sortOrder: number): CiaCourseContent => ({
   id, name, tuition, tuition2027: tuition, schedule, suitable: note, note, enabled: true, sortOrder,
@@ -102,6 +103,7 @@ export const createDefaultCpilsContentConfig = (): CiaContentConfig => {
   },
   media: [],
   };
+  upgradeCpils2027(config);
   config.quoteImageSettings.localFeeNotes = Object.fromEntries(config.localFees.map(item => [item.id, item.note]));
   return config;
 };
@@ -126,5 +128,6 @@ export const cloneCpilsContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteImageSettings.benefits ??= structuredClone(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= structuredClone(defaults.quoteImageSettings.footerNotes);
   clone.media ??= [];
+  upgradeCpils2027(clone);
   return clone;
 };

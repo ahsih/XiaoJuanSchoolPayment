@@ -43,7 +43,7 @@ describe('RegisterComponent', () => {
   it('accepts a long access code for email registration', () => {
     component.registerForm.setValue({
       name: '测试学生',
-      invitationCode: 'XiaoJuanLove',
+      invitationCode: 'LongAccessCd',
       email: 'student@example.com',
       phoneNumber: '',
       password: 'Password1',

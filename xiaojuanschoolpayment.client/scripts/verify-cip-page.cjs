@@ -1,0 +1,184 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs = require('fs'), path = require('path');
+const out = path.resolve(__dirname, '../../docs/qa/cip');
+fs.mkdirSync(out, { recursive: true });
+const base = process.env.CIP_BASE_URL || 'http://127.0.0.1:4200';
+const route = '/philippines-study/clark/cip-english-kepos';
+const report = { checks: [], errors: [], failedRequests: [] };
+function check(name, value) { if (!value) throw new Error(name); report.checks.push(name); }
+(async () => {
+  const browser = await chromium.launch({ channel: 'chrome', headless: true });
+  let page;
+  try {
+    page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+    page.setDefaultTimeout(20000);
+    const settle = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    page.on('pageerror', e => report.errors.push(e.message));
+    page.on('requestfailed', r => report.failedRequests.push({ url: r.url(), error: r.failure()?.errorText }));
+    const mediaRequests = [];
+    page.on('request', r => { if (r.url().includes('/assets/cip/') && r.url().endsWith('.mp4')) mediaRequests.push(r.url()); });
+    await page.goto(base + route, { waitUntil: 'networkidle' });
+    const school = page.locator('app-cip-school');
+    await school.locator('h1').waitFor();
+    check('CIP route and SEO', (await page.title()).includes('CIP'));
+    check('one H1 and seven navigation entries', await school.locator('h1').count() === 1 && await school.locator('.section-nav a').count() === 7);
+    check('adult headline matches default total', (await school.locator('.hero-price').innerText()).includes('8,940') && await school.getByTestId('quote-total').innerText() === '8,940元');
+    check('dorm local subtotal excludes refundable deposit', await school.getByTestId('local-total').innerText() === '15,450');
+    check('video not requested at page load', mediaRequests.length === 0 && await school.locator('video').count() === 0);
+    await page.screenshot({ path: path.join(out, 'desktop-overview.png') });
+    await school.locator('.hero-copy .primary-action').click(); await settle();
+    check('hero quote link remains on the CIP route', new URL(page.url()).pathname === route);
+    await school.locator('.calculator').evaluate(el => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 160));
+    await page.screenshot({ path: path.join(out, 'desktop-quote.png') });
+    const calc = school.locator('app-cip-quote-calculator');
+    const first = calc.locator('.student-card').first();
+    const course = first.getByLabel('课程1类型', { exact: true });
+    const room = first.getByLabel('住宿1类型', { exact: true });
+    const weeks = first.getByLabel('课程1周数', { exact: true });
+    await first.getByLabel('学员老学员返校', { exact: true }).check(); await settle();
+    check('returning student waives only the registration', await calc.getByTestId('quote-total').innerText() === '8,340元' && await calc.getByTestId('local-total').innerText() === '15,450');
+    await first.getByLabel('学员老学员返校', { exact: true }).uncheck(); await settle();
+    await room.selectOption('deluxe-king-single'); await settle();
+    check('single hotel quoted from CNY catalog', await calc.getByTestId('quote-total').innerText() === '16,484元');
+    check('hotel local fee excludes dorm deposit and electricity', await calc.getByTestId('local-total').innerText() === '13,050' && !(await calc.locator('.fee-table').innerText()).includes('宿舍基础电费'));
+    await room.selectOption('d4'); await settle();
+    check('family quad cannot be used by ordinary default', await calc.getByTestId('quote-total').count() === 0);
+    await first.getByLabel('学员确认家庭入住').check(); await settle();
+    check('explicit family reference allowed', await calc.getByTestId('quote-total').innerText() === '8,340元');
+    await room.selectOption('in-campus-triple'); await settle();
+    await course.selectOption('speak-up'); await settle();
+    check('Speak Up exposes only 1 and 2 weeks', JSON.stringify(await weeks.locator('option').allTextContents()) === JSON.stringify(['1周', '2周']));
+    await course.selectOption('ielts-basic'); await settle();
+    check('IELTS Basic exposes only 4 weeks', JSON.stringify(await weeks.locator('option').allTextContents()) === JSON.stringify(['4周']));
+    await course.selectOption('ielts-guarantee-8'); await settle();
+    check('8-week guarantee duration locked', JSON.stringify(await weeks.locator('option').allTextContents()) === JSON.stringify(['8周']));
+    await course.selectOption('ielts-guarantee-12'); await settle();
+    check('conflicting 12-week guarantee blocks total and export', await calc.getByTestId('quote-total').count() === 0 && await calc.getByRole('button',{name:'预览与下载报价图片'}).isDisabled());
+    for (const id of ['native-master','toefl-intensive']) {
+      await course.selectOption(id); await settle(); check(id + ' blocks uncertain total', await calc.getByTestId('quote-total').count() === 0);
+    }
+    await course.selectOption('ielts-intensive'); await settle(); await room.selectOption('deluxe-king-single'); await settle();
+    check('Sparta hotel combination blocked', await calc.getByTestId('quote-total').count() === 0);
+    await course.selectOption('light-esl'); await settle(); await room.selectOption('deluxe-twin-double'); await settle();
+    check('uncertain shared hotel unit blocks total', await calc.getByTestId('quote-total').count() === 0);
+    await room.selectOption('in-campus-triple'); await settle(); await weeks.selectOption({label:'16周'}); await settle();
+    check('long-stay discount deducted once', await calc.getByTestId('quote-total').innerText() === '33,660元');
+    await weeks.selectOption({label:'8周'}); await settle();
+    const visa = first.getByLabel('学员签证类型');
+    check('30-day visa includes first extension ACR at eight weeks', await calc.getByTestId('local-total').innerText() === '29,490');
+    await visa.selectOption('tourist59'); await settle();
+    check('59-day visa has no renewal or ACR at eight weeks', await calc.getByTestId('local-total').innerText() === '19,850');
+    for(const type of ['student','work','srrv','sirv']) {
+      await visa.selectOption(type); await settle();
+      check(type+' has conditional exemptions with non-visa fees retained', await calc.getByTestId('local-total').innerText() === '9,050' && (await first.locator('.visa-note').innerText()).includes('须由顾问向学校核实'));
+    }
+    await visa.selectOption('tourist30'); await settle(); await weeks.selectOption({label:'4周'}); await settle();
+    const date=first.getByLabel('课程1开始日期（仅限周日）');
+    const prior = await date.inputValue(); await date.fill('2026-09-21'); await settle(); await date.blur(); await settle();
+    check('Monday input is rejected without changing Sunday plan', await date.inputValue() === prior);
+    await date.fill('2026-12-20'); await settle(); await date.blur(); await settle();
+    check('Saturday end date crosses year correctly', (await first.innerText()).includes('2027/01/16'));
+    await first.getByRole('button',{name:'＋ 添加课程',exact:true}).click(); await settle();
+    await first.getByLabel('课程2类型').selectOption('regular-esl'); await settle();
+    check('multi-period course and accommodation durations synchronize', await first.getByLabel('住宿1周数').locator('option:checked').innerText() === '8周');
+    await first.getByLabel('删除课程2').click(); await settle();
+    await calc.getByRole('button',{name:'多人报价',exact:true}).click(); await settle();
+    const second=calc.locator('.student-card').nth(1); await second.locator('summary').click(); await settle();
+    await second.getByLabel('学生2老学员返校').check(); await settle(); await second.getByLabel('学生2签证类型').selectOption('tourist59'); await settle();
+    check('two-person total charges only one registration', await calc.getByTestId('quote-total').innerText() === '17,280元');
+    await calc.getByLabel('接机安排',{exact:true}).selectOption('clark'); await settle();
+    check('pickup uses one two-person group rate', (await calc.getByTestId('pickup-total').innerText()).includes('1,500比索／组'));
+    await calc.getByLabel('报价人数',{exact:true}).selectOption({label:'3人'}); await settle();
+    check('third independent student is added', await calc.getByTestId('quote-total').innerText() === '26,220元');
+    await calc.getByRole('button',{name:'单人报价',exact:true}).click(); await settle();
+    check('inactive students excluded from single total', await calc.getByTestId('quote-total').innerText() === '8,940元');
+    await calc.getByRole('button',{name:'多人报价',exact:true}).click(); await settle();
+    check('group edits preserved when switching mode', await calc.getByTestId('quote-total').innerText() === '26,220元');
+    await calc.getByLabel('报价人数',{exact:true}).selectOption({label:'2人'}); await settle();
+    await first.getByLabel('课程1周数').selectOption({label:'8周'}); await settle();
+    await second.locator('summary').click(); await settle();
+    await second.getByLabel('课程1周数').selectOption({label:'8周'}); await settle();
+    check('different group visas retain separate renewal rows', await calc.getByTestId('local-total').innerText() === '49,340' && await calc.locator('.fee-table tr').filter({hasText:'签证延期'}).count() === 2);
+    await calc.locator('.calculator-heading').scrollIntoViewIfNeeded(); await page.screenshot({path:path.join(out,'desktop-group-quote.png')});
+    await calc.getByRole('button',{name:'预览与下载报价图片'}).click(); await settle();
+    const preview=page.getByRole('dialog',{name:'报价单图片预览'});
+    await preview.locator('img').waitFor({timeout:60000});
+    const image = await preview.locator('img').evaluate(img=>({src:img.src,width:img.naturalWidth,height:img.naturalHeight}));
+    check('existing detailed image renderer exports group quote', image.width > 1000 && image.height > 1000);
+    fs.writeFileSync(path.join(out,'group-quote.png'),Buffer.from(image.src.split(',')[1],'base64'));
+    await preview.getByRole('button',{name:'关闭图片预览'}).click(); await settle();
+    await calc.getByLabel('报价人数',{exact:true}).selectOption({label:'20人'}); await settle();
+    check('maximum group retains independent course totals', await calc.getByTestId('quote-total').innerText() === '194,880元');
+    await page.setViewportSize({width:320,height:960});
+    await calc.locator('.local-section').scrollIntoViewIfNeeded();
+    check('20-person local fee labels do not overflow at 320px', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
+    await page.setViewportSize({width:1440,height:1000});
+    await calc.getByLabel('报价人数',{exact:true}).selectOption({label:'2人'}); await settle();
+    await calc.getByRole('button',{name:'单人报价',exact:true}).click(); await settle(); await weeks.selectOption({label:'5周'}); await settle();
+    check('unlisted local-fee duration blocks image without inventing a total', await calc.getByRole('button',{name:'预览与下载报价图片'}).isDisabled() && await calc.getByTestId('local-total').count() === 0);
+    await weeks.selectOption({label:'4周'}); await settle(); await calc.getByLabel('接机安排',{exact:true}).selectOption('none'); await settle();
+    await school.getByRole('button', { name: '考试与商务', exact: true }).click(); await settle();
+    await school.locator('.course-table th', { hasText: 'TOEFL Intensive' }).waitFor();
+    check('course comparison shows TOEFL without an invented price', (await school.locator('.course-table').innerText()).includes('TOEFL Intensive') && (await school.locator('.course-table').innerText()).includes('费用待确认'));
+    await school.getByRole('button', { name: '日常英语', exact: true }).click(); await settle();
+    await school.getByRole('button', { name: '校外酒店', exact: true }).click(); await settle();
+    await school.locator('.room-gallery img[src="/assets/cip/hotel-king.webp"]').waitFor();
+    check('hotel room comparison and three actual photos', await school.locator('.room-gallery img').count() === 3 && (await school.locator('#rooms table').innerText()).includes('收费单位待确认'));
+    await school.getByRole('button', { name: '校内宿舍', exact: true }).click(); await settle();
+    await school.getByRole('button', { name: '查看全年', exact: true }).click(); await settle();
+    await school.locator('.holiday-block th', { hasText: '2026-03-20' }).waitFor();
+    const calendar = await school.locator('.holiday-block').innerText();
+    check('corrected holiday calendar', calendar.includes('2026-03-20') && calendar.includes('2026-12-25') && !calendar.includes('2026-03-17'));
+    await school.getByRole('button', { name: '仅看后续日期', exact: true }).click(); await settle();
+    await school.locator('details').evaluateAll(nodes => nodes.forEach(n => n.open = true));
+    const text = await school.innerText();
+    check('no restricted terms or internal formulas', !/台湾|臺灣|Taiwan|佣金|代理折扣|银行账号|Wi.?Fi密码|到校前.*退|40%|65%|85%|95折/i.test(text));
+    check('post-arrival refund does not promise a fixed percentage', (await school.locator('.refund-note').innerText()).includes('书面确认') && !/50%|4周|5周/.test(await school.locator('.refund-note').innerText()));
+    check('no original PDF links exposed', await school.locator('a[href$=".pdf"]').count() === 0);
+    await school.locator('details').evaluateAll(nodes => nodes.forEach(n => n.open = n.classList.contains('student-card')));
+    check('video remains unloaded after browsing the page', mediaRequests.length === 0);
+    await school.getByRole('button', { name: '播放CIP校园实景视频（无声）' }).click(); await settle();
+    await school.locator('video').evaluate(video => new Promise((resolve, reject) => {
+      if (video.readyState >= 2) return resolve();
+      video.addEventListener('loadeddata', resolve, { once: true });
+      video.addEventListener('error', () => reject(Error('video failed')), { once: true });
+    }));
+    report.video = await school.locator('video').evaluate(v => ({ muted: v.muted, duration: v.duration, url: v.currentSrc }));
+    check('optimized silent excerpt loads after click', mediaRequests.length > 0 && await school.locator('video').evaluate(v => v.muted && v.duration >= 31 && v.duration < 33));
+    await school.locator('video').evaluate(v => v.pause());
+    for (const width of [1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 960 });
+      for (const id of ['overview', 'rooms', 'quote', 'admission', 'faq']) {
+        await school.locator('#' + id).scrollIntoViewIfNeeded();
+        check(`no horizontal overflow at ${width}px / ${id}`, await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
+      }
+      if (width === 390) {
+        await school.locator('#overview').scrollIntoViewIfNeeded(); await page.screenshot({ path: path.join(out, 'mobile-overview.png') });
+        await school.locator('.calculator-heading').evaluate(el=>window.scrollTo(0,el.getBoundingClientRect().top+window.scrollY-82)); await page.screenshot({ path: path.join(out, 'mobile-quote.png') });
+        await school.locator('.quote-result').scrollIntoViewIfNeeded(); await page.screenshot({ path: path.join(out, 'mobile-result.png') });
+        await school.locator('#admission').scrollIntoViewIfNeeded(); await page.screenshot({ path: path.join(out, 'mobile-admission.png') });
+      }
+    }
+    await page.setViewportSize({ width:1440, height:1000 });
+    await school.locator('.section-nav a[href="#rooms"]').click(); await settle();
+    check('section navigation stays on CIP and clears sticky navigation', new URL(page.url()).pathname === route && await school.locator('#rooms h2').evaluate(el => el.getBoundingClientRect().top >= 135));
+    await page.screenshot({ path: path.join(out, 'desktop-rooms.png') });
+    const broken = await school.locator('img').evaluateAll(images => images.filter(i => i.complete && !i.naturalWidth).map(i => i.src));
+    check('no broken loaded images', broken.length === 0);
+    check('no JavaScript page errors', report.errors.length === 0);
+    await page.goto(base + '/philippines-study/clark', { waitUntil: 'networkidle' });
+    await page.locator('.directory-price-reference').waitFor();
+    await page.locator('.directory-price-reference').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(out, 'clark-directory.png') });
+    check('only CIP opts in to the new price reference', await page.locator('.directory-price-reference').count() === 1);
+    check('Clark directory has matching adult reference', (await page.locator('body').innerText()).includes('8,940元 / 4周起（Light ESL + 校内三人间 + 注册费600元；当地费另计）'));
+  } catch (e) {
+    report.failure = e.message;
+    if (page) await page.screenshot({ path: path.join(out, 'failure.png') }).catch(() => {});
+    process.exitCode = 1;
+  } finally {
+    fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2));
+    console.log(JSON.stringify({ checks: report.checks.length, errors: report.errors, failure: report.failure || null }));
+    await browser.close();
+  }
+})();

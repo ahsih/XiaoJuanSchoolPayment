@@ -3,6 +3,7 @@ import {
   SchoolLocalFee,
   SchoolPaymentLine,
 } from '../../../components/school-group-quote';
+import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
 
 export interface BlueOceanCoursePrice {
   id: string;
@@ -218,11 +219,23 @@ export class BlueOceanStudentQuote {
   }
 
   get peakWeeks(): number {
-    return this.peakCourseWeekStarts(false).length;
+    return this.peakCalculation.weeks;
+  }
+
+  get peakCalculation() {
+    const eligibleCourses = this.quotePlan.courses.filter(row =>
+      !this.prices.courseOptions.find(course => course.id === row.optionId)?.familyCourse);
+    if (!eligibleCourses.length) return { weeks: 0, total: 0, breakdown: [] };
+    return calculateAssociationPeakSurcharge(
+      'BLUE-OCEAN',
+      this.quotePlan.weekStarts([...eligibleCourses, ...this.quotePlan.rooms]),
+      this.prices.peakSeasonRanges,
+      this.prices.seasonalFeePerWeek,
+    );
   }
 
   get seasonalSurcharge(): number {
-    return this.peakWeeks * this.prices.seasonalFeePerWeek;
+    return this.peakCalculation.total;
   }
 
   get offSeasonBlocks(): number {
@@ -288,7 +301,7 @@ export class BlueOceanStudentQuote {
         this.quotePlan.overlapWeeks(
           range.start,
           range.end,
-          this.quotePlan.courses,
+          [...this.quotePlan.courses, ...this.quotePlan.rooms],
         ) > 0,
     );
 
@@ -299,12 +312,12 @@ export class BlueOceanStudentQuote {
               icon: '旺',
               label: '旺季附加费',
               value: this.seasonalSurcharge,
-              note: `${this.prices.seasonalFeePerWeek}美元／重叠课程周 × ${this.peakWeeks}周；${coveredRanges
+              note: `${associationPeakBreakdownText(this.peakCalculation)}；${coveredRanges
                 .map(
                   (range) =>
                     `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`,
                 )
-                .join('；')}；Family Course除外`,
+                .join('；')}；同一周课程与住宿只计一次，不参与优惠；Family Course除外`,
             },
           ]
         : []),

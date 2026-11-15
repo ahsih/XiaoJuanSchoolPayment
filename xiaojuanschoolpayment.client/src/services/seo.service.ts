@@ -9,6 +9,7 @@ interface SeoPage {
   description: string;
   keywords: string;
   image?: string;
+  type?: 'article';
 }
 
 const SITE_NAME = '思达启航游学';
@@ -24,11 +25,42 @@ const DEFAULT_SEO: SeoPage = {
 
 const SEO_PAGES: Record<string, SeoPage> = {
   '/': DEFAULT_SEO,
+  '/student-feedback/study-tour': {
+    title: '游学故事与学员反馈 | 思达启航游学',
+    description: '记录思达启航学员在海外学习和生活的片段，从菲律宾英语游学的节日问候，到出发后的持续陪伴。',
+    keywords: '菲律宾英语游学, 思达启航, 游学反馈, 海外学员, 学员关怀',
+    image: '/assets/student-stories/mid-autumn/student-moments.png',
+  },
+  '/student-feedback/study-tour/philippines-study-mid-autumn': {
+    title: '思达启航菲律宾英语游学中秋记录｜离家很远也有人惦记',
+    description: '这个中秋，思达启航把心意送到在菲律宾学习的学生手中。从宿务、碧瑶到克拉克，记录礼物转交的细节，以及学生、家长和老师的温暖回应。愿每一位在海外学习的人，都能感受到被惦记的温暖。',
+    keywords: '菲律宾英语游学, 思达启航, 海外游学, 宿务游学, 碧瑶游学, 克拉克游学, 海外学员中秋记录',
+    image: '/assets/student-stories/mid-autumn/gift-bags.png',
+    type: 'article',
+  },
+  '/philippines-study/cebu/ev-la-mer': {
+    title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
+    description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',
+    keywords: 'EV La Mer, EV Academy La Mer, 宿务亲子游学, 麦克坦英语学校, La Mer费用, La Mer亲子套餐, 熟龄英语',
+    image: '/assets/la-mer/campus-sunset.webp',
+  },
   '/philippines-study/cebu/cg-academy-sparta-campus': {
     title: 'CG斯巴达校区 | 宿务课程、住宿费用与报价',
     description: '菲律宾宿务CG斯巴达校区介绍，查看斯巴达课程、高阶斯巴达、考试课程、住宿房型与费用报价，学杂费单独列示预估明细。',
     keywords: 'CG斯巴达校区, CG斯巴达校区, 宿务CG语言学校, 斯巴达课程, CG费用, 菲律宾游学',
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
+  },
+  '/philippines-study/cebu/smeag-capital': {
+    title: '菲律宾宿务SMEAG Capital校区 | 课程费用与2027假期表',
+    description: '查看SMEAG Capital市区校区课程、住宿、费用报价和2027假期上课安排，清楚区分全天停课与TOEFL、IELTS、TOEIC等假日特别课程。',
+    keywords: 'SMEAG Capital, SMEAG Capital假期, 宿务SMEAG, SMEAG 2027校历, 宿务雅思学校',
+    image: '/assets/philippines/smeag-capital-building.webp',
+  },
+  '/philippines-study/cebu/smeag-encanto': {
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
+    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    image: '/assets/philippines/smeag-encanto-campus-official.webp',
   },
   '/philippines-study/why-philippines': {
     title: '菲律宾留学为什么选择菲律宾 | 英语游学优势',
@@ -122,7 +154,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/baguio-jic': {
     title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
     description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、青少年与监护人课程、2026课程费、住宿房型、优惠规则和报名注意事项。',
+      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、2026课程费、住宿房型、优惠规则和报名注意事项。',
     keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-campus-hero.webp',
   },
@@ -134,7 +166,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/philippines-study/baguio/baguio-jic-premium': {
     title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
-    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Active Senior及亲子课程、六种住宿、最新学杂费、优惠和报价图片。',
+    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior、六种住宿、最新学杂费、优惠和报价图片。',
     keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
@@ -185,7 +217,7 @@ const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/clark/cip-english-kepos': {
     title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
     description:
-      '菲律宾克拉克 CIP语言学校页面，整理CIP English Kepos的Native speaker一对一、ESL、IELTS、TOEIC、Business、亲子青少年课程、2026人民币课程住宿费用和报名注意事项。',
+      '了解克拉克CIP的母语外教一对一、ESL、雅思及亲子课程，比较宿舍和酒店实景、2026年9月人民币价格与当地费用，查看入学测试、假期、学习管理及参考报价。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
     image: '/assets/philippines/cip-campus-intro.webp',
   },
@@ -326,6 +358,13 @@ const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾留学费用, 菲律宾游学费用, 菲律宾语言学校费用, 宿务游学费用, 菲律宾英语学校价格',
     image: '/assets/philippines/home-school-ev.webp',
   },
+  '/philippines-study/baguio/airport-pickup': {
+    title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',
+    description: '查看2026及2027碧瑶BESA指定接机日期、马尼拉和克拉克班次、集合点、现行3000比索费用、eTravel顾问办理及航班延误处理。',
+    keywords: '碧瑶接机,BESA接机,2026碧瑶接机,2027碧瑶接机,马尼拉接机,克拉克接机',
+    image: '/assets/baguio-pickup/besa-calendar-2027.png',
+    type: 'article',
+  },
   '/philippines-study/faq': {
     title: '菲律宾留学常见问题 | 英语游学报名与行前准备',
     description:
@@ -432,7 +471,7 @@ export class SeoService {
   private applySeoForUrl(rawUrl: string): void {
     const path = this.normalizePath(rawUrl);
     const page = SEO_PAGES[path] ?? this.findSectionSeo(path) ?? DEFAULT_SEO;
-    const title = page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
+    const title = page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
     const canonicalUrl = this.absoluteUrl(path);
     const imageUrl = this.absoluteUrl(page.image ?? DEFAULT_IMAGE);
 
@@ -441,7 +480,7 @@ export class SeoService {
     this.upsertTag('name', 'keywords', page.keywords);
     this.upsertTag('name', 'robots', 'index, follow, max-image-preview:large');
     this.upsertTag('property', 'og:site_name', SITE_NAME);
-    this.upsertTag('property', 'og:type', 'website');
+    this.upsertTag('property', 'og:type', page.type ?? 'website');
     this.upsertTag('property', 'og:title', title);
     this.upsertTag('property', 'og:description', page.description);
     this.upsertTag('property', 'og:url', canonicalUrl);
@@ -451,7 +490,7 @@ export class SeoService {
     this.upsertTag('name', 'twitter:description', page.description);
     this.upsertTag('name', 'twitter:image', imageUrl);
     this.setCanonical(canonicalUrl);
-    this.setStructuredData(path, canonicalUrl, title, page.description, imageUrl);
+    this.setStructuredData(path, canonicalUrl, title, page.description, imageUrl, page.type);
   }
 
   private findSectionSeo(path: string): SeoPage | undefined {
@@ -551,7 +590,7 @@ export class SeoService {
     link.setAttribute('href', url);
   }
 
-  private setStructuredData(path: string, canonicalUrl: string, title: string, description: string, imageUrl: string): void {
+  private setStructuredData(path: string, canonicalUrl: string, title: string, description: string, imageUrl: string, type?: 'article'): void {
     let script = this.document.getElementById('seo-json-ld') as HTMLScriptElement | null;
     if (!script) {
       script = this.document.createElement('script');
@@ -588,6 +627,20 @@ export class SeoService {
       },
     ];
 
+    if (type === 'article') {
+      graph.push({
+        '@type': 'Article',
+        '@id': `${canonicalUrl}#article`,
+        headline: title,
+        description,
+        image: imageUrl,
+        mainEntityOfPage: { '@id': `${canonicalUrl}#webpage` },
+        author: { '@id': `${origin}/#organization` },
+        publisher: { '@id': `${origin}/#organization` },
+        inLanguage: 'zh-CN',
+      });
+    }
+
     if (path !== '/') {
       graph.push({
         '@type': 'BreadcrumbList',
@@ -606,10 +659,14 @@ export class SeoService {
     const labels: Record<string, string> = {
       'philippines-study': '菲律宾留学',
       'study-tour-guide': '游学攻略',
+      'student-feedback': '学员反馈',
+      'study-tour': '游学反馈',
+      'philippines-study-mid-autumn': '中秋关怀记录',
       recommendations: '学校推荐',
       schools: '语言学校',
       cebu: '宿务',
       baguio: '碧瑶',
+      'airport-pickup': '碧瑶接机指南',
       clark: '克拉克',
       iloilo: '伊洛伊洛',
       bacolod: '巴科洛德',
@@ -653,7 +710,7 @@ export class SeoService {
         '@type': 'ListItem',
         position: index + 2,
         name: labels[segment] ?? this.humanizeSegment(segment),
-        item: `${origin}${nextPath}`,
+        item: `${origin}${nextPath === '/student-feedback' ? '/student-feedback/study-tour' : nextPath}`,
       });
 
       return nextPath;

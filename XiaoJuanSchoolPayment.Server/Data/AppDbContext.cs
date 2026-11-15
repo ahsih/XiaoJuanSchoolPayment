@@ -22,6 +22,8 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<InvitationCode> InvitationCodes { get; set; }
     public DbSet<AccountVerificationCode> AccountVerificationCodes { get; set; }
     public DbSet<SchoolContentRevision> SchoolContentRevisions { get; set; }
+    public DbSet<SchoolCommissionPolicy> SchoolCommissionPolicies { get; set; }
+    public DbSet<SchoolCommissionRoomBasis> SchoolCommissionRoomBases { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -79,6 +81,26 @@ namespace XiaoJuanSchoolPayment.Server.Data
         .HasOne(x => x.School)
         .WithMany()
         .HasForeignKey(x => x.SchoolId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<SchoolCommissionPolicy>()
+        .HasIndex(x => x.PolicyCode)
+        .IsUnique();
+
+      builder.Entity<SchoolCommissionPolicy>()
+        .HasOne(x => x.School)
+        .WithMany()
+        .HasForeignKey(x => x.SchoolId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+      builder.Entity<SchoolCommissionRoomBasis>()
+        .HasIndex(x => new { x.SchoolCommissionPolicyId, x.RoomCode })
+        .IsUnique();
+
+      builder.Entity<SchoolCommissionRoomBasis>()
+        .HasOne(x => x.SchoolCommissionPolicy)
+        .WithMany(x => x.RoomBases)
+        .HasForeignKey(x => x.SchoolCommissionPolicyId)
         .OnDelete(DeleteBehavior.Cascade);
     }
   }
