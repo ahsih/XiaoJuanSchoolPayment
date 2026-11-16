@@ -300,6 +300,17 @@ For visual work, verify both desktop and narrow mobile layouts. Important public
 6. Put local browser images in `xiaojuanschoolpayment.client/public/assets/<feature-or-school>/` and reference them as `/assets/...`.
 7. Test direct navigation and the mobile navbar, not only in-app links.
 
+### Create or rework a school page (mini-program-ready, user decision 2026-11-17)
+
+Write every new or reworked school page so the WeChat mini program can reuse it later without a second refactor; extracting CIA's text and calculator after the fact, and proving the page unchanged, was the most expensive part of its port.
+
+1. Put the page's static text and data (headings, paragraphs, cards, schedules, FAQ, gallery lists) in a pure `<school>-page-content.ts` module, as `cia-page-content.ts` does. The component exposes it and the template reads it; do not leave copy inline in the template.
+2. Put the quote calculation and quote-image data in a pure module that takes the published content document, as `cia-quote-engine.ts` does: students, payment lines, local fees, totals and `QuoteImageCardData`. The component only binds form inputs and delegates. Prices and rules still come only from the versioned content document and its defaults.
+3. Keep these modules free of Angular, DOM, storage and regex lookbehind, so the mini program can bundle them.
+4. The website layout is the website's own choice. The mini program renders every school with one shared template (`utils/school-template.ts`), so layout decisions never need a mini program change.
+5. Order of work: the user first confirms the school's website layout, then its content. Only confirmed schools are synced to the mini program, several at a time (builder in `mini-program/school-pages.ts`, `detail` in `public/content/content.json`, calculator export in `mini-program/quote-engine.ts` plus `npm run quote:sync` in the mini program repo), with one mini program release per batch. After a sync, text and published price changes need no mini program release; calculation-rule changes need a resync and a release.
+6. When moving an existing page's code into these modules, prove the public page unchanged: compare quote data and the rendered quote image for several scenarios before and after, as was done for CIA.
+
 ### Change database-backed school pricing
 
 1. Find the page's `SchoolService` lookup and requested `week` filter.
