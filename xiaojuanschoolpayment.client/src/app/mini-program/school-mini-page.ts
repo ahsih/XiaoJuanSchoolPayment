@@ -141,7 +141,15 @@ export interface MiniPricing {
   };
   /** Published-content years the peak-season block lists, such as ["2027"]. */
   peakSeasonYears: string[];
-  /** Built-in fallback, used until (or unless) a published revision is available. */
+  /**
+   * Quote calculator the mini program runs for this school (a key of its bundled
+   * quote-engine.ts, currently only "cia"). Omit for schools without a mini program calculator.
+   */
+  quoteEngine?: 'cia';
+  /**
+   * Built-in fallback, used until (or unless) a published revision is available. Schools with a
+   * `quoteEngine` export the complete default content document here (same shape as a revision).
+   */
   defaults: MiniPricingConfig;
 }
 

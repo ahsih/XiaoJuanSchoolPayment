@@ -13,5 +13,4 @@ export function connectQuoteRates(target: object, service: ExchangeRateService):
     if ('exchangeRateDate' in page) page['exchangeRateDate'] = valid ? rates.date : '';
   });
 }
-export const quoteCurrencyText = (value: number, locales: string | string[] = 'zh-CN', options?: Intl.NumberFormatOptions): string =>
-  Number.isFinite(value) ? value.toLocaleString(locales, options) : '汇率待更新';
+export { quoteCurrencyText } from './quote-currency-text';

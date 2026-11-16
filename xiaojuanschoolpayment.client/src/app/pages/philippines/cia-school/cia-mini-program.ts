@@ -2,8 +2,10 @@
 // page renders (cia-page-content.ts, cia-student-reviews.data.ts and the default content
 // configuration). Sections are tagged with the standard template part (`kind`) they belong to;
 // the mini program decides order, titles and folding, so every school page looks the same.
-// The interactive quote calculator is not exported; its prices are, as `pricing` parts that the
-// mini program draws from the live published revision when there is one.
+// Prices are exported as `pricing` parts that the mini program draws from the live published
+// revision when there is one. `pricing.defaults` is the complete default content document, so the
+// mini program's quote calculator (the bundled cia-quote-engine.ts, named by `pricing.quoteEngine`)
+// can run on it exactly like on a published revision.
 import {
   MiniBlock,
   MiniImage,
@@ -49,33 +51,10 @@ const scheduleTable = (title: string, rows: DailyScheduleRow[]): MiniBlock => ({
   rows: rows.map(row => [row.time, row.activity]),
 });
 
+/** The whole default content document (a superset of MiniPricingConfig), without media. */
 function pricingDefaults(): MiniPricingConfig {
-  const config = cloneCiaContentConfig(createDefaultCiaContentConfig());
-  const s = config.quoteSettings;
-  return {
-    courses: config.courses.map(({ id, name, tuition, tuition2027, schedule, suitable, note, enabled, sortOrder }) =>
-      ({ id, name, tuition, tuition2027, schedule, suitable, note, enabled, sortOrder })),
-    rooms: config.rooms.map(({ id, name, label, code, location, group, fee, note, enabled, sortOrder }) =>
-      ({ id, name, label, code, location, group, fee, note, enabled, sortOrder })),
-    localFees: config.localFees.map(({ id, name, amount, secondaryAmount, secondaryLabel, billingRule, periodWeeks, includeInTotal, note, enabled, sortOrder }) =>
-      ({ id, name, amount, secondaryAmount, secondaryLabel, billingRule, periodWeeks, includeInTotal, note, enabled, sortOrder })),
-    quoteSettings: {
-      registrationFee: s.registrationFee,
-      shortStayRatios: s.shortStayRatios,
-      peakSeasonFeePerWeek: s.peakSeasonFeePerWeek,
-      peakSeasonRanges: s.peakSeasonRanges,
-      promotions: s.promotions.map(({ id, name, description, enabled, sortOrder }) => ({ id, name, description, enabled, sortOrder })),
-      localFeeIntro: s.localFeeIntro,
-      courseTableTitle: s.courseTableTitle,
-      courseTableNote: s.courseTableNote,
-      groupClassNote: s.groupClassNote,
-      roomTableTitle: s.roomTableTitle,
-      roomTableNote: s.roomTableNote,
-      stayPolicyTitle: s.stayPolicyTitle,
-      stayPolicies: s.stayPolicies,
-      extraNightRates: s.extraNightRates,
-    },
-  };
+  const { media: _media, ...config } = cloneCiaContentConfig(createDefaultCiaContentConfig());
+  return config;
 }
 
 /** 课程与价格：选课建议、价格、成人/亲子区分，以及折叠的课程细节和每日课表 */
@@ -421,6 +400,7 @@ export function buildCiaMiniProgramPage(): SchoolMiniPage {
         localFeesTitle: '到校后学杂费明细',
       },
       peakSeasonYears: ['2027'],
+      quoteEngine: 'cia',
       defaults: pricingDefaults(),
     },
   };

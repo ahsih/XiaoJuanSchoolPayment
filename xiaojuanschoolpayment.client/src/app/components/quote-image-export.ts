@@ -8,13 +8,9 @@ export function quoteImageEnvironment() {
   return { wechat, mobile };
 }
 
-export function quoteCanvasScale(width: number, height: number, requested: number, mobile: boolean): number {
-  // A conservative budget also covers older iOS/WKWebView canvases. Never crop rows.
-  const maxSide = mobile ? 4096 : 16384;
-  const maxPixels = mobile ? 6_000_000 : 16_000_000;
-  return Math.min(requested, mobile ? 2 : 3, maxSide / width, maxSide / height,
-    Math.sqrt(maxPixels / (width * height)));
-}
+// A conservative budget also covers older iOS/WKWebView canvases. Never crop rows.
+// The pure scale rule is shared with the WeChat mini program renderer.
+export { quoteCanvasScale } from './quote-image-detailed-renderer';
 
 export function loadQuoteImage(source: string, timeoutMs = 10_000): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {

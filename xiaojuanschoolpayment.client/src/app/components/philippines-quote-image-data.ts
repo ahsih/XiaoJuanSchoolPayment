@@ -1,9 +1,9 @@
-import {
+import type {
   QuoteImageCardData,
   QuoteImageLocalFeeItem,
   QuoteImageOptionalFeeItem,
   QuoteImagePaymentItem,
-} from './quote-image-download-button.component';
+} from './quote-image-types';
 
 export interface PhilippinesDetailedQuoteInput {
   schoolCode: string;

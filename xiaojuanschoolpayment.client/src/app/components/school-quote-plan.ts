@@ -1,4 +1,4 @@
-import { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-download-button.component';
+import type { QuoteImageCardData, QuoteImagePaymentItem } from './quote-image-types';
 
 export type QuotePlanKind = 'course' | 'room';
 export interface QuotePlanRow { id: number; optionId: string; weeks: number; startDate: string; textbookId?: string; occupant?: number; }

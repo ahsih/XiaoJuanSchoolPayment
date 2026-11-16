@@ -1,4 +1,4 @@
-import { QuoteImagePaymentItem } from './quote-image-download-button.component';
+import type { QuoteImagePaymentItem } from './quote-image-types';
 import { quoteMoney } from './school-quote-plan';
 
 export const SCHOOL_VISA_OPTIONS = [

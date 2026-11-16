@@ -125,6 +125,13 @@ builder.Services.AddHttpClient("PinesPortal", client =>
   client.Timeout = TimeSpan.FromSeconds(12);
   client.DefaultRequestHeaders.UserAgent.ParseAdd("SidaQihang-PublicRoomAvailability/1.0");
 });
+// CNY reference rates for the WeChat mini program quote calculator (see ExchangeRatesController).
+builder.Services.AddHttpClient("Frankfurter", client =>
+{
+  client.BaseAddress = new Uri("https://api.frankfurter.dev/");
+  client.Timeout = TimeSpan.FromSeconds(8);
+  client.DefaultRequestHeaders.UserAgent.ParseAdd("SidaQihang-QuoteRates/1.0");
+});
 
 builder.Services.AddCors(options =>
 {

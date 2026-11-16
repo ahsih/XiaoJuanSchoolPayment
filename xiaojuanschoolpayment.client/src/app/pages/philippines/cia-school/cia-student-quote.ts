@@ -11,7 +11,7 @@ import {
   CiaPromotionRule,
 } from './cia-content-config';
 
-interface CiaQuotePrices {
+export interface CiaQuotePrices {
   courseFees: { id: string; name: string; schedule: string; tuition: number; tuition2027: number }[];
   roomFees: { id: string; name: string; fee: number }[];
   registrationFee: number;

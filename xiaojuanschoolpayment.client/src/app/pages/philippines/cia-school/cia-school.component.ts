@@ -1,9 +1,6 @@
 import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
 import { CommonModule } from '@angular/common';
-import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout } from '../../../components/school-quote-plan';
-import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
-import { groupLocalFees, groupPaymentLines } from '../../../components/school-group-quote';
-import { CiaStudentQuote, ciaPriceMultiplier } from './cia-student-quote';
+import { CiaQuote, applyCiaQuoteContent } from './cia-quote-engine';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import {
   Component,
@@ -125,20 +122,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
   private readonly defaultContentConfig = createDefaultCiaContentConfig();
-  private readonly quoteImageAssets = {
-    logo: '/assets/sida-qihang-quote-header-logo-transparent.webp',
-    hero: '/assets/cia/campus-building.webp',
-    jennyAvatar: '/assets/contact/jenny-avatar.jpg',
-    jennyQr: '/assets/contact/jenny-wechat-qr.png',
-    lemonAvatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901',
-    lemonQr: '/assets/contact/lemon-wechat-qr.png',
-    peninAvatar: '/assets/contact/penin-avatar.jpg',
-    peninQr: '/assets/contact/penin-wechat-qr.png',
-    lisaAvatar: '/assets/contact/lisa-avatar-cartoon.webp',
-    lisaQr: '/assets/contact/lisa-wechat-qr.png',
-    irisAvatar: '/assets/contact/iris-avatar-cartoon.webp',
-    irisQr: '/assets/contact/iris-wechat-qr.png',
-  };
   private readonly courseFeeOrder = [
     'regular-esl',
     'intensive-esl',
@@ -293,65 +276,21 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   usingLiveExchangeRates = false;
   readonly weekOptions = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
 
-  readonly students: CiaStudentQuote[] = [new CiaStudentQuote(this)];
-  quoteMode: 'single' | 'group' = 'single';
-  private requestedStudentCount = 2;
-  get studentCount() { return this.requestedStudentCount; }
-  set studentCount(value: number) {
-    this.requestedStudentCount = value;
-    if (Number.isInteger(value) && value >= 2 && value <= 20) {
-      while (this.students.length < value) this.students.push(new CiaStudentQuote(this));
-    }
-  }
-  setQuoteMode(value: 'single' | 'group') {
-    this.quoteMode = value;
-    if (value === 'group') this.studentCount = this.requestedStudentCount;
-  }
-  get activeStudents() { return this.quoteMode === 'single' ? this.students.slice(0,1) : this.students.slice(0,Math.max(2,Math.min(20,Math.floor(this.studentCount)||2))); }
-  get quotePlan() { return this.students[0].quotePlan; }
-  get quoteHeading() { return this.quoteMode === 'single' ? `CIA${this.selectedWeeks}周报价` : `CIA ${this.activeStudents.length}人报价`; }
-  get quoteError() {
-    if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
-    const index = this.activeStudents.findIndex(student => !!student.quoteError);
-    return index < 0 ? '' : `${this.quoteMode === 'group' ? '学生' + (index+1) + '：' : ''}${this.activeStudents[index].quoteError}`;
-  }
-  get registrationNote() {
-    const base = '一次性费用，老学员返校免费';
-    if (this.quoteMode === 'single') {
-      const waiver = this.students[0].promotionResults.find(result => result.rule.waiveRegistration);
-      return base + (waiver && !this.students[0].returningStudent ? `；本次${waiver.rule.name}免收注册费` : '');
-    }
-    const paid = this.activeStudents.filter(student => student.registration > 0).length;
-    return `${base}；本次计收${paid}人 × ${this.formatUsd(this.registrationFee)}美元${paid < this.activeStudents.length ? '，其余已免' : ''}`;
-  }
-  get schoolPaymentItems() {
-    const sources = this.activeStudents.flatMap(student => student.paymentLines);
-    return [{ icon:'注', label:'注册费', amount:`${this.formatUsd(this.payableRegistrationFee)} 美元`, note:this.registrationNote,
-      previewKind: 'section', previewId: 'quote-registration' },
-      ...groupPaymentLines(this.activeStudents, false).map((line, index) => ({
-        ...line,
-        previewKind: sources[index].promotionKey ? 'promotion' : 'section',
-        previewId: sources[index].promotionKey ?? 'quote-season',
-      }))];
-  }
-  get optionalFeeItems() {
-    const count = this.activeStudents.length;
-    return this.localFeeRules
-      .filter(rule => rule.enabled && !rule.includeInTotal)
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map(rule => {
-        const quantity = rule.multiplyByStudents ? count : 1;
-        const total = rule.amount * quantity;
-        const amount = rule.secondaryAmount
-          ? `${this.formatPhp(rule.amount)}／${rule.secondaryLabel || '另一时段'}${this.formatPhp(rule.secondaryAmount)}`
-          : this.formatPhp(total);
-        const cnyAmount = rule.secondaryAmount
-          ? `约人民币 ${quoteCurrencyText(Math.round(rule.amount / this.phpPerCny), 'zh-CN')}／${quoteCurrencyText(Math.round(rule.secondaryAmount / this.phpPerCny), 'zh-CN')} 元`
-          : `约人民币 ${quoteCurrencyText(Math.round(total / this.phpPerCny), 'zh-CN')} 元`;
-        const groupNote = rule.multiplyByStudents && count > 1 ? `（${count}人）` : '';
-        return { label: rule.name, amount, cnyAmount, note: `${rule.note}${groupNote}` };
-      });
-  }
+  /** The calculator itself lives in cia-quote-engine.ts, shared with the WeChat mini program. */
+  readonly quote = new CiaQuote(this);
+  get students() { return this.quote.students; }
+  get quoteMode() { return this.quote.quoteMode; }
+  set quoteMode(value: 'single' | 'group') { this.quote.quoteMode = value; }
+  get studentCount() { return this.quote.studentCount; }
+  set studentCount(value: number) { this.quote.studentCount = value; }
+  setQuoteMode(value: 'single' | 'group') { this.quote.setQuoteMode(value); }
+  get activeStudents() { return this.quote.activeStudents; }
+  get quotePlan() { return this.quote.quotePlan; }
+  get quoteHeading() { return this.quote.quoteHeading; }
+  get quoteError() { return this.quote.quoteError; }
+  get registrationNote() { return this.quote.registrationNote; }
+  get schoolPaymentItems() { return this.quote.schoolPaymentItems; }
+  get optionalFeeItems() { return this.quote.optionalFeeItems; }
   get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
   set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
   get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
@@ -1058,30 +997,12 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const content = cloneCiaContentConfig(value);
     this.previewContent = content;
-    const courses = content.courses
-      .filter(item => item.enabled)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
+    // Prices and rules for the calculator; the mini program applies the same function.
+    applyCiaQuoteContent(this, content);
     const rooms = content.rooms
       .filter(item => item.enabled)
       .sort((a, b) => a.sortOrder - b.sortOrder);
-    if (courses.length > 0) {
-      this.courseFees = courses.map(item => ({
-        id: item.id,
-        name: item.name,
-        tuition: item.tuition,
-        tuition2027: item.tuition2027,
-        suitable: item.suitable,
-        schedule: item.schedule,
-        note: item.note,
-      }));
-    }
     if (rooms.length > 0) {
-      this.roomFees = rooms.map(item => ({
-        id: item.id,
-        name: item.name,
-        fee: item.fee,
-        note: item.note,
-      }));
       const groupNames = [...new Set(rooms.map(item => item.group))];
       this.roomRateGroups = groupNames.map(title => ({
         title,
@@ -1096,7 +1017,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       }));
     }
 
-    this.localFeeRules = content.localFees;
     this.localFees = content.localFees
       .filter(item => item.enabled)
       .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -1106,13 +1026,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         note: item.note,
       }));
     const settings = content.quoteSettings;
-    this.registrationFee = settings.registrationFee;
-    this.futurePriceRegistrationStart = settings.futurePriceRegistrationStart;
-    this.futurePriceArrivalStart = settings.futurePriceArrivalStart;
-    this.shortTermPriceRatios = { ...settings.shortStayRatios };
-    this.seasonalFeePerWeek = settings.peakSeasonFeePerWeek;
-    this.peakSeasonRanges = settings.peakSeasonRanges;
-    this.promotions = settings.promotions;
     this.localFeeIntro = settings.localFeeIntro;
     this.courseTableTitle = settings.courseTableTitle;
     this.courseTableNote = settings.courseTableNote;
@@ -1122,20 +1035,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stayPolicyTitle = settings.stayPolicyTitle;
     this.stayPolicies = settings.stayPolicies;
     this.extraNightRates = settings.extraNightRates;
-    this.quoteImageSettings = content.quoteImageSettings;
 
-    for (const student of this.students) {
-      for (const row of student.quotePlan.courses) {
-        if (!this.courseFees.some(item => item.id === row.optionId)) {
-          row.optionId = this.courseFees[0]?.id ?? row.optionId;
-        }
-      }
-      for (const row of student.quotePlan.rooms) {
-        if (!this.roomFees.some(item => item.id === row.optionId)) {
-          row.optionId = this.roomFees[0]?.id ?? row.optionId;
-        }
-      }
-    }
+    this.quote.retainValidSelections();
     this.queuePreviewFocus(false);
   }
 
@@ -1544,9 +1445,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  get iauRegistrationFeeNote(): string {
-    return this.activeStudents.flatMap((student,index) => student.iauNote ? [`${this.quoteMode === 'group' ? '学生'+(index+1)+'：' : ''}${student.iauNote}`] : []).join('\n');
-  }
+  get iauRegistrationFeeNote(): string { return this.quote.iauRegistrationFeeNote; }
 
   get selectedRoom(): RoomFee {
     return (
@@ -1555,7 +1454,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  get tuitionForSelectedWeeks(): number { return this.activeStudents.reduce((sum,student)=>sum+student.tuition,0); }
+  get tuitionForSelectedWeeks(): number { return this.quote.tuitionForSelectedWeeks; }
 
   get uses2027Tuition(): boolean {
     return (
@@ -1581,7 +1480,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       : '按当前报价日期与预计入学日期估算为2026原价格；最终以学校实际收到报名及确认入学日期为准。';
   }
 
-  get roomFeeForSelectedWeeks(): number { return this.activeStudents.reduce((sum,student)=>sum+student.accommodation,0); }
+  get roomFeeForSelectedWeeks(): number { return this.quote.roomFeeForSelectedWeeks; }
 
   private get priceRatioForSelectedWeeks(): number {
     return (
@@ -1589,37 +1488,11 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  get peakSeasonWeeks(): number { return this.activeStudents.reduce((sum,student)=>sum+student.peakWeeks,0); }
-
-  get isPeakSeason(): boolean {
-    return this.peakSeasonWeeks > 0;
-  }
-
-  get seasonalSurcharge(): number {
-    return this.peakSeasonWeeks * this.seasonalFeePerWeek;
-  }
-
-  get coveredPeakSeasonLabels(): string {
-    return this.peakSeasonRanges
-      .filter(({ enabled, start, end }) => enabled !== false &&
-        this.activeStudents.some(student => student.quotePlan.overlapWeeks(
-          start,
-          end,
-          [...student.quotePlan.courses, ...student.quotePlan.rooms],
-        ) > 0),
-      )
-      .map(({ label }) => label)
-      .join('、');
-  }
-
-  get peakSeasonStatusText(): string {
-    if (!this.isPeakSeason) {
-      return '当前选择的入学日期与学习周数未覆盖旺季，附加费为0美元。';
-    }
-
-    const scope = this.quoteMode === 'group' ? '当前多人方案合计' : '当前方案';
-    return `${scope}覆盖${this.coveredPeakSeasonLabels}共${this.peakSeasonWeeks}个学生周，已自动计入${this.formatUsd(this.seasonalSurcharge)}美元。`;
-  }
+  get peakSeasonWeeks(): number { return this.quote.peakSeasonWeeks; }
+  get isPeakSeason(): boolean { return this.quote.isPeakSeason; }
+  get seasonalSurcharge(): number { return this.quote.seasonalSurcharge; }
+  get coveredPeakSeasonLabels(): string { return this.quote.coveredPeakSeasonLabels; }
+  get peakSeasonStatusText(): string { return this.quote.peakSeasonStatusText; }
 
   get peakSeasonRangeText(): string {
     return this.peakSeasonRanges
@@ -1630,18 +1503,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       .join('；');
   }
 
-  get peakSeasonCalendarRanges(): CiaPeakSeasonRange[] {
-    return this.peakSeasonRanges
-      .filter(({ enabled, start }) => enabled !== false && start.startsWith('2027-'))
-      .slice()
-      .sort((a, b) => a.start.localeCompare(b.start));
-  }
-
-  get peakSeason2027RangeText(): string {
-    return this.peakSeasonCalendarRanges
-      .map(range => `${range.label} ${this.formatPeakSeasonRange(range)}`)
-      .join('；');
-  }
+  get peakSeasonCalendarRanges(): CiaPeakSeasonRange[] { return this.quote.peakSeasonCalendarRanges; }
+  get peakSeason2027RangeText(): string { return this.quote.peakSeason2027RangeText; }
 
   peakSeasonWeekCount(range: CiaPeakSeasonRange): number {
     const start = this.parseDate(range.start).getTime();
@@ -1649,62 +1512,28 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return Math.max(0, Math.round((end - start + 86400000) / (7 * 86400000)));
   }
 
-  formatPeakSeasonRange(range: CiaPeakSeasonRange): string {
-    return `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`;
-  }
+  formatPeakSeasonRange(range: CiaPeakSeasonRange): string { return this.quote.formatPeakSeasonRange(range); }
 
-  get isChristmasPromotionEligible(): boolean { return this.activeStudents.some(student=>student.christmasEligible); }
-  get payableRegistrationFee(): number { return this.activeStudents.reduce((sum,student)=>sum+student.registration,0); }
-  get sidaDiscountAmount(): number { return this.activeStudents.reduce((sum,student)=>sum+student.sidaDiscount,0); }
-  get christmasDiscountAmount(): number { return this.activeStudents.reduce((sum,student)=>sum+student.christmasDiscount,0); }
-  get totalDiscountAmount(): number {
-    return this.activeStudents.reduce((sum, student) => sum + student.promotionDiscountTotal, 0)
-      + this.activeStudents.length * this.registrationFee - this.payableRegistrationFee;
-  }
-  get quoteUsd(): number { return this.activeStudents.reduce((sum,student)=>sum+student.quoteUsd,0); }
-
-  get quoteUsdText(): string {
-    return `${this.formatUsd(this.quoteUsd)} 美元`;
-  }
-
-  get quoteCnyText(): string {
-    const rounded = Math.round(this.quoteUsd * this.usdToCny);
-    return `人民币预计金额：约 ${rounded.toLocaleString('zh-CN')} 元`;
-  }
-
-  get exchangeRateDateText(): string {
-    if (!this.exchangeRateDate) {
-      return '最新参考汇率待更新';
-    }
-
-    return this.exchangeRateDate.replace(/-/g, '/');
-  }
-
-  get exchangeRateSummary(): string {
-    return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币（${this.usingLiveExchangeRates ? this.exchangeRateDateText : '最新参考汇率待更新'}）`;
-  }
-
-  get estimatedLocalFees(): LocalFeeEstimate[] { return groupLocalFees(this.activeStudents); }
-
-  get estimatedLocalFeeTotal(): number {
-    return this.estimatedLocalFees.reduce((total, fee) => total + fee.total, 0);
-  }
-
-  get estimatedLocalFeeCny(): number {
-    return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny);
-  }
-
-  formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
-    return `${Math.round(value).toLocaleString('en-US')} 比索`;
-  }
+  get isChristmasPromotionEligible(): boolean { return this.quote.isChristmasPromotionEligible; }
+  get payableRegistrationFee(): number { return this.quote.payableRegistrationFee; }
+  get sidaDiscountAmount(): number { return this.quote.sidaDiscountAmount; }
+  get christmasDiscountAmount(): number { return this.quote.christmasDiscountAmount; }
+  get totalDiscountAmount(): number { return this.quote.totalDiscountAmount; }
+  get quoteUsd(): number { return this.quote.quoteUsd; }
+  get quoteUsdText(): string { return this.quote.quoteUsdText; }
+  get quoteCnyText(): string { return this.quote.quoteCnyText; }
+  get exchangeRateDateText(): string { return this.quote.exchangeRateDateText; }
+  get exchangeRateSummary(): string { return this.quote.exchangeRateSummary; }
+  get estimatedLocalFees(): LocalFeeEstimate[] { return this.quote.estimatedLocalFees; }
+  get estimatedLocalFeeTotal(): number { return this.quote.estimatedLocalFeeTotal; }
+  get estimatedLocalFeeCny(): number { return this.quote.estimatedLocalFeeCny; }
+  formatPhp(value: number): string { return this.quote.formatPhp(value); }
 
   formatPesoText(value: string): string {
     return value.replace(/₱\s*([0-9][0-9,]*)/g, '$1比索');
   }
 
-  formatFeeQuantity(value: number): string {
-    return value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
-  }
+  formatFeeQuantity(value: number): string { return this.quote.formatFeeQuantity(value); }
 
   shortStayPercent(weeks: number): string {
     return `${Math.round((this.shortTermPriceRatios[String(weeks)] ?? weeks / 4) * 100)}%`;
@@ -1721,84 +1550,9 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return rule ? `${100 - rule.discountValue}折` : '无固定折扣';
   }
 
-  formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
-    return value.toLocaleString('en-US', {
-      minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
-      maximumFractionDigits: 2,
-    });
-  }
+  formatUsd(value: number): string { return this.quote.formatUsd(value); }
 
-  get quoteImageData() {
-    const paymentItems = [{
-      ...this.schoolPaymentItems[0],
-      note: this.quoteImageRegistrationNote(),
-    },
-      ...(['课','宿'] as const).flatMap(icon => this.activeStudents.flatMap((student,index) => student.quotePlan.paymentItems().filter(item=>item.icon===icon).map(item=>({
-        ...item,
-        label:`${this.quoteMode === 'group' ? '学生'+(index+1)+' · ' : ''}${item.label.replace(/^课程费/,'课程名称').replace(/^住宿费/,'住宿名称')}`,
-        note:this.joinQuoteImageNotes(
-          item.note,
-          icon === '课' ? this.quoteImageSettings.paymentNotes.course : this.quoteImageSettings.paymentNotes.accommodation,
-        ),
-      })))),
-      ...groupPaymentLines(this.activeStudents,true).map(item => ({
-        ...item,
-        note:this.joinQuoteImageNotes(item.note, this.quoteImageSettings.paymentNotes.promotion),
-      }))];
-    const warnings = this.activeStudents.flatMap((student,index)=>student.quotePlan.warning ? [`${this.quoteMode==='group'?'学生'+(index+1)+'：':''}${student.quotePlan.warning}`] : []);
-    const notes = [...new Set(this.activeStudents.flatMap(student=>student.quotePlan.shortStayNotes(
-      weeks => ciaPriceMultiplier(weeks, this.shortTermPriceRatios),
-    )))];
-    const quote = buildPhilippinesDetailedQuote({
-      schoolCode:'CIA', schoolName:'CIA', filePrefix:'CIA', heroSrc:this.quoteImageAssets.hero,
-      weeks:this.selectedWeeks, startDate:this.selectedStartDate, usdToCny:this.usdToCny, totalUsd:this.quoteUsd,
-      fullFeeDetails:true, localFeeTableLayout:'web', paymentItems,
-      localFeeItems:this.estimatedLocalFees.map(fee=>({label:fee.item,unit:fee.unitLabel,quantity:this.formatFeeQuantity(fee.quantity),amount:this.formatPhp(fee.total),note:this.quoteImageLocalFeeNote(fee.item,fee.note)})),
-      localFeeTotal:this.estimatedLocalFeeTotal, localCurrencyName:'比索', localFeeCny:this.estimatedLocalFeeCny,
-      localFeeNote:this.quoteImageSettings.localFeeIntro,
-      optionalFeeItems:this.optionalFeeItems.map(fee=>({...fee,note:this.quoteImageLocalFeeNote(fee.label,fee.note)})), ruleNotes:[],
-    });
-    const editedQuote = applyEditableQuoteImageCopy(quote, this.quoteImageSettings, this.promotions, this.localFeeRules);
-    const result = applySchoolQuoteImageLayout({
-      ...editedQuote, totalNote:this.iauRegistrationFeeNote, expandTotalNote:true,
-      paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,
-      localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
-      serviceSectionTitle:this.quoteImageSettings.serviceSectionTitle,
-      benefitItems:this.quoteImageSettings.benefits,
-      serviceLocations:this.quoteImageSettings.serviceLocations,
-      alumniBenefitTitle:this.quoteImageSettings.alumniBenefitTitle,
-      alumniBenefitItems:[{title:this.quoteImageSettings.alumniBenefitTitle,subtitle:'',text:this.quoteImageSettings.alumniBenefitText}],
-      noteTitle:this.quoteImageSettings.noteSectionTitle,
-      importantNotes:[...warnings,...notes,...this.quoteImageSettings.footerNotes],
-    },'CIA',this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.usdToCny);
-    return {...result,
-      paymentSectionTitle:this.quoteImageSettings.paymentSectionTitle,
-      localFeeTitle:this.quoteImageSettings.localFeeSectionTitle,
-      headingText:this.quoteHeading, fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
-      conversionRates:{usdToCny:this.usdToCny,phpPerCny:this.phpPerCny,date:this.usingLiveExchangeRates?this.exchangeRateDate:undefined}};
-  }
-
-  private quoteImageRegistrationNote(): string {
-    const defaultText = '一次性费用，老学员返校免费';
-    const dynamicText = this.registrationNote.startsWith(defaultText)
-      ? this.registrationNote.slice(defaultText.length).replace(/^；/, '')
-      : this.registrationNote;
-    return this.joinQuoteImageNotes(this.quoteImageSettings.paymentNotes.registration, dynamicText);
-  }
-
-  private quoteImageLocalFeeNote(item: string, calculatedNote: string): string {
-    const name = item.replace(/^学生[\d、]+ · /, '');
-    const rule = this.localFeeRules.find(candidate => candidate.name === name);
-    if (!rule) return calculatedNote;
-    const editedNote = this.quoteImageSettings.localFeeNotes[rule.id];
-    if (editedNote === undefined || editedNote === rule.note) return calculatedNote;
-    if (calculatedNote.includes(rule.note)) return calculatedNote.replace(rule.note, editedNote);
-    return this.joinQuoteImageNotes(editedNote, calculatedNote);
-  }
-
-  private joinQuoteImageNotes(...parts: Array<string | undefined>): string {
-    return parts.map(part => part?.trim()).filter(Boolean).join('；');
-  }
+  get quoteImageData() { return this.quote.quoteImageData; }
 
   private resolveUploadedPhotoCategory(
     category?: string,
