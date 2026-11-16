@@ -40,6 +40,31 @@ jobs:
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
+      # Every --build leaves BuildKit cache and an untagged previous app image.
+      # Without pruning they fill the server disk, after which git push and
+      # docker builds fail. Cache still reused within 24 hours is kept so
+      # unchanged npm/NuGet restore layers stay fast.
+      - name: Free server disk space
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER_USER@$SERVER_HOST" 'bash -se' <<'REMOTE'
+          set -Eeuo pipefail
+          df -h /opt/sida
+          sudo -n docker builder prune -f --filter until=24h || echo "Build-cache prune failed; continuing." >&2
+          sudo -n docker image prune -f || echo "Dangling-image prune failed; continuing." >&2
+          df -h /opt/sida
+
+          min_free_kb=$((3 * 1024 * 1024))
+          free_kb="$(df --output=avail -k /opt/sida | tail -n 1 | tr -d ' ')"
+          if [ "$free_kb" -lt "$min_free_kb" ]; then
+            echo "Less than 3 GB free on the server after cleanup; deploy stopped before pushing or building." >&2
+            sudo -n docker system df >&2 || true
+            exit 1
+          fi
+          REMOTE
+
       - name: Push commit to production server
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
