@@ -103,7 +103,8 @@
       "tag": "雅思官方考场",
       "desc": "Mactan 度假型新校区，适合雅思、亲子和第一次菲律宾游学。",
       "image": "/assets/cia/campus-building.webp",
-      "path": "/philippines-study/cebu/cia-cebu-international-academy"
+      "path": "/philippines-study/cebu/cia-cebu-international-academy",
+      "detail": "/content/schools/cia.json"
     },
     {
       "id": "ev",

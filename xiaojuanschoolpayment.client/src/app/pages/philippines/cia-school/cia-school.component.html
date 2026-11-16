@@ -4,20 +4,15 @@
       <div class="hero-copy">
         <p class="breadcrumb">
           <mat-icon>home</mat-icon>
-          菲律宾游学 / 宿务学校 / CIA
+          {{ copy.hero.breadcrumb }}
         </p>
-        <h1>菲律宾宿务 CIA 语言学校</h1>
+        <h1>{{ copy.hero.title }}</h1>
         <p class="hero-lead">
-          宿务麦克坦岛半斯巴达英语学校，适合想兼顾学习强度、校园环境、考试资源和生活便利的学生。
+          {{ copy.hero.lead }}
         </p>
 
         <div class="hero-tags" aria-label="CIA 关键词">
-          <span><mat-icon>location_on</mat-icon>宿务麦克坦岛</span>
-          <span><mat-icon>verified</mat-icon>半斯巴达管理</span>
-          <span><mat-icon>fact_check</mat-icon>IDP IELTS 官方考场</span>
-          <span
-            ><mat-icon>family_restroom</mat-icon>成人英语 / 雅思 / 亲子营</span
-          >
+          <span *ngFor="let tag of copy.hero.tags"><mat-icon>{{ tag.icon }}</mat-icon>{{ tag.text }}</span>
         </div>
 
         <div class="hero-actions">
@@ -112,7 +107,7 @@
     <section class="overview-grid" aria-label="30 秒看懂 CIA">
       <div class="overview-main">
         <div class="section-heading">
-          <h2>30 秒看懂 CIA</h2>
+          <h2>{{ copy.overview.title }}</h2>
         </div>
         <div class="snapshot-grid">
           <article *ngFor="let item of snapshotCards">
@@ -127,21 +122,19 @@
     </section>
 
     <section class="advisor-review" id="advisor-review">
-      <h2>思达启航顾问点评</h2>
+      <h2>{{ copy.advisorReview.title }}</h2>
       <p>
-        CIA
-        适合想要设施舒适、学习有强度、考试资源完善的学生。第一次去菲律宾游学，希望学习和生活都在同一校园的人，可以优先看
-        CIA。
+        {{ copy.advisorReview.text }}
       </p>
       <div class="fit-columns">
         <div>
-          <h3><mat-icon>check_circle</mat-icon>适合优先看 CIA</h3>
+          <h3><mat-icon>check_circle</mat-icon>{{ copy.advisorReview.suitableTitle }}</h3>
           <ul>
             <li *ngFor="let item of suitableFor">{{ item.title }}</li>
           </ul>
         </div>
         <div>
-          <h3><mat-icon>cancel</mat-icon>不太适合的情况</h3>
+          <h3><mat-icon>cancel</mat-icon>{{ copy.advisorReview.notSuitableTitle }}</h3>
           <ul>
             <li *ngFor="let item of notSuitableFor">{{ item.title }}</li>
           </ul>
@@ -153,11 +146,11 @@
     <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction">
       <div class="section-heading section-heading-row">
         <div>
-          <span class="section-eyebrow">CAMPUS AT A GLANCE</span>
-          <h2>CIA 校园介绍</h2>
-          <p>麦克坦新校区把教学、考试、住宿、餐饮和运动空间集中在同一校园，日常动线更清楚。</p>
+          <span class="section-eyebrow">{{ copy.campus.eyebrow }}</span>
+          <h2>{{ copy.campus.title }}</h2>
+          <p>{{ copy.campus.intro }}</p>
         </div>
-        <span class="campus-capacity"><b>600</b>名学生容量 · 约<b>300</b>名教师</span>
+        <span class="campus-capacity"><b>{{ copy.campus.studentCapacity }}</b>名学生容量 · 约<b>{{ copy.campus.teacherCount }}</b>名教师</span>
       </div>
 
       <div class="campus-intro-layout">
@@ -183,16 +176,16 @@
       <aside class="campus-rule-note">
         <mat-icon>rule</mat-icon>
         <div>
-          <strong>半斯巴达学习规则</strong>
-          <p>周一至周四安排每日晨考；未通过当日晨考时，当天晚间通常不可外出。具体门禁、EOP与扣点规则以入学说明和当期校规为准。</p>
+          <strong>{{ copy.campus.ruleTitle }}</strong>
+          <p>{{ copy.campus.ruleText }}</p>
         </div>
       </aside>
     </section>
 
     <section class="cia-section" id="gallery">
       <div class="section-heading">
-        <h2>按区域查看 CIA 环境</h2>
-        <p>“全部”先按区域进入相册；各相册用缩略图切换实景，点击主图可放大并前后浏览，住宿相册还可直接比较7类房型。</p>
+        <h2>{{ copy.gallery.title }}</h2>
+        <p>{{ copy.gallery.intro }}</p>
       </div>
       <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
         <button
@@ -300,7 +293,7 @@
               </li>
             </ul>
             <p class="environment-profile-note">
-              <mat-icon>info</mat-icon>图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。
+              <mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}
             </p>
           </div>
         </article>
@@ -406,7 +399,7 @@
 
       <div class="room-comparison-table-wrap">
         <div class="room-comparison-table-heading">
-          <strong>7类房型快速对比</strong>
+          <strong>{{ copy.gallery.roomComparisonTitle }}</strong>
           <span>手机可左右滑动查看完整信息</span>
         </div>
         <table class="room-comparison-table">
@@ -435,7 +428,7 @@
 
       <p class="room-comparison-disclaimer">
         <mat-icon>tips_and_updates</mat-icon>
-        图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。
+        {{ copy.gallery.roomDisclaimer }}
       </p>
       </section>
     </section>
@@ -444,22 +437,22 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>360</mat-icon></span>
         <span>
-          <strong>在线走进 CIA 3D校园</strong>
-          <small>展开后可拖动查看教室、宿舍与校园动线</small>
+          <strong>{{ copy.vr.summaryTitle }}</strong>
+          <small>{{ copy.vr.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
       <div class="collapsible-panel-body campus-vr-body">
         <div class="campus-vr-copy">
-          <span class="section-eyebrow">53-SCENE VIRTUAL TOUR</span>
-          <h2>在线走进 CIA 3D 校园</h2>
-          <p>拖动视角查看教室、宿舍与校园动线；手机可横屏浏览，点击右上角全屏效果更清楚。</p>
+          <span class="section-eyebrow">{{ copy.vr.eyebrow }}</span>
+          <h2>{{ copy.vr.title }}</h2>
+          <p>{{ copy.vr.text }}</p>
           <a
-            href="https://www.720yun.com/vr/ac9j5puysw4"
+            [href]="copy.vr.url"
             target="_blank"
             rel="noopener noreferrer"
           >
-            在新窗口全屏参观
+            {{ copy.vr.linkLabel }}
             <mat-icon>open_in_new</mat-icon>
           </a>
         </div>
@@ -478,9 +471,9 @@
 
     <section class="cia-section" id="courses">
       <div class="section-heading">
-        <h2>CIA 课程怎么选？</h2>
+        <h2>{{ copy.courses.title }}</h2>
         <p>
-          根据你的目标和时间，选择最适合的课程组合，让学习更高效、成果更明显。
+          {{ copy.courses.intro }}
         </p>
       </div>
       <div class="course-choice-grid">
@@ -495,39 +488,18 @@
         <summary>
           <span class="collapsible-summary-icon"><mat-icon>fact_check</mat-icon></span>
           <span>
-            <strong>查看课程细节与每日课表</strong>
-            <small>分级与出勤、Light ESL、雅思保证班、晚间强化及每日作息</small>
+            <strong>{{ copy.courses.detailSummaryTitle }}</strong>
+            <small>{{ copy.courses.detailSummaryHint }}</small>
           </span>
           <mat-icon class="collapsible-chevron">expand_more</mat-icon>
         </summary>
         <div class="collapsible-panel-body">
       <div class="course-facts-grid" aria-label="CIA 课程重点说明">
-        <article>
-          <mat-icon>workspace_premium</mat-icon>
+        <article *ngFor="let fact of copy.courses.facts">
+          <mat-icon>{{ fact.icon }}</mat-icon>
           <div>
-            <h3>另有 Cambridge ESL 备考方向</h3>
-            <p>学校可提供 A2 Key、B1 Preliminary、B2 First、C1 Advanced 等方向的备考支持；新版通用价目表未列单独价格，需按实际开课与报价确认。</p>
-          </div>
-        </article>
-        <article>
-          <mat-icon>apps</mat-icon>
-          <div>
-            <h3>选修课按兴趣与课程资格选择</h3>
-            <p>入学时填写选修志愿，学术与非学术方向均有选择；具体课程、名额及限制见下方“ESL一般英语与选修课”。</p>
-          </div>
-        </article>
-        <article>
-          <mat-icon>verified</mat-icon>
-          <div>
-            <h3>雅思与托业保证班均为12周</h3>
-            <p>需达到对应入学分数，并满足95%出勤、每周模考及官方考试等要求；报名时按目标分数确认班级。</p>
-          </div>
-        </article>
-        <article>
-          <mat-icon>groups</mat-icon>
-          <div>
-            <h3>亲子与青少年项目按寒暑假档期开放</h3>
-            <p>主校区常规成人课与假期营并非同一套固定价格，年龄、营地、课程和住宿需按当期营队方案确认。</p>
+            <h3>{{ fact.title }}</h3>
+            <p>{{ fact.text }}</p>
           </div>
         </article>
       </div>
@@ -535,9 +507,9 @@
       <section class="course-detail-guides" id="course-detail-guides" aria-labelledby="course-detail-guide-title">
         <div class="course-detail-guide-heading">
           <div>
-            <span class="section-eyebrow">IMPORTANT COURSE NOTES</span>
-            <h3 id="course-detail-guide-title">报名前值得确认的课程细节</h3>
-            <p>下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。</p>
+            <span class="section-eyebrow">{{ copy.courses.guideEyebrow }}</span>
+            <h3 id="course-detail-guide-title">{{ copy.courses.guideTitle }}</h3>
+            <p>{{ copy.courses.guideIntro }}</p>
           </div>
           <mat-icon>tips_and_updates</mat-icon>
         </div>
@@ -568,7 +540,7 @@
               </ul>
               <div *ngIf="guide.levels" class="cia-level-table-wrap">
                 <table class="cia-level-table">
-                  <caption>入学分级对照（CIA校内测试）</caption>
+                  <caption>{{ copy.courses.levelTableCaption }}</caption>
                   <thead>
                     <tr><th scope="col">等级</th><th scope="col">对应级别</th><th scope="col">分数</th><th scope="col">CEFR</th></tr>
                   </thead>
@@ -593,26 +565,26 @@
       <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
         <mat-icon>info</mat-icon>
         <div>
-          <strong>学校规则参考说明</strong>
-          <p>课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。</p>
+          <strong>{{ copy.courses.ruleNoteTitle }}</strong>
+          <p>{{ copy.courses.ruleNoteText }}</p>
         </div>
       </aside>
 
       <section class="daily-schedule-section" aria-labelledby="daily-schedule-title">
         <div class="daily-schedule-heading">
           <div>
-            <span class="section-eyebrow">DAILY TIMETABLE</span>
-            <h3 id="daily-schedule-title">CIA 每日课程表</h3>
-            <p>周一至周四每节45分钟，周五每节40分钟；实际课节内容按所选课程分配。</p>
+            <span class="section-eyebrow">{{ copy.schedule.eyebrow }}</span>
+            <h3 id="daily-schedule-title">{{ copy.schedule.title }}</h3>
+            <p>{{ copy.schedule.intro }}</p>
           </div>
-          <span><mat-icon>schedule</mat-icon>从早餐到晚间自由时间</span>
+          <span><mat-icon>schedule</mat-icon>{{ copy.schedule.badge }}</span>
         </div>
 
         <div class="daily-schedule-grid">
           <article>
             <header>
-              <span>MON–THU</span>
-              <h4>周一至周四</h4>
+              <span>{{ copy.schedule.weekdayCode }}</span>
+              <h4>{{ copy.schedule.weekdayTitle }}</h4>
             </header>
             <div
               class="daily-schedule-row"
@@ -628,8 +600,8 @@
 
           <article>
             <header>
-              <span>FRIDAY</span>
-              <h4>周五</h4>
+              <span>{{ copy.schedule.fridayCode }}</span>
+              <h4>{{ copy.schedule.fridayTitle }}</h4>
             </header>
             <div
               class="daily-schedule-row"
@@ -643,7 +615,7 @@
             </div>
           </article>
         </div>
-        <p class="daily-schedule-note"><mat-icon>info</mat-icon>晨考与早餐时间有部分重叠，学生应按学校分组和入学说明安排用餐及考试；保证班晚间另有指定学习安排。</p>
+        <p class="daily-schedule-note"><mat-icon>info</mat-icon>{{ copy.schedule.note }}</p>
       </section>
         </div>
       </details>
@@ -652,20 +624,20 @@
       <section class="school-calendar-section" id="school-calendar" aria-labelledby="school-calendar-title">
         <div class="calendar-section-heading">
           <div>
-            <span class="section-eyebrow">ACADEMIC CALENDAR</span>
-            <h3 id="school-calendar-title">CIA 2026–2027年学校假期</h3>
-            <p>本表可用于初步规划入学日期与学习周数，但仅供参考。菲律宾国家或地方政府可能临时公布、新增或调整假期，CIA也可能相应调整停课、补课与校园安排，最终以政府公告及CIA当期正式通知为准。</p>
+            <span class="section-eyebrow">{{ copy.calendar.eyebrow }}</span>
+            <h3 id="school-calendar-title">{{ copy.calendar.title }}</h3>
+            <p>{{ copy.calendar.intro }}</p>
           </div>
-          <span class="calendar-priority"><mat-icon>event_available</mat-icon>2027年优先展示</span>
+          <span class="calendar-priority"><mat-icon>event_available</mat-icon>{{ copy.calendar.badge }}</span>
         </div>
 
         <aside class="peak-season-calendar" aria-labelledby="peak-season-calendar-title">
           <div class="peak-season-calendar-intro">
             <span class="peak-season-calendar-icon"><mat-icon>wb_sunny</mat-icon></span>
             <div>
-              <span class="section-eyebrow">2027 PEAK SEASON</span>
-              <h4 id="peak-season-calendar-title">2027年寒暑假高峰期</h4>
-              <p>课程或住宿计划覆盖以下完整学习周时，每名学生按实际重叠周数计收旺季附加费。</p>
+              <span class="section-eyebrow">{{ copy.calendar.peakEyebrow }}</span>
+              <h4 id="peak-season-calendar-title">{{ copy.calendar.peakTitle }}</h4>
+              <p>{{ copy.calendar.peakIntro }}</p>
             </div>
             <strong class="peak-season-rate"><b>{{ seasonalFeePerWeek }}</b> 美元<small>每周／每人</small></strong>
           </div>
@@ -676,7 +648,7 @@
               <span class="peak-season-weeks">{{ peakSeasonWeekCount(range) }}周</span>
             </article>
           </div>
-          <p class="peak-season-calendar-note"><mat-icon>calculate</mat-icon>入学按周日、离校按周六；课程与住宿在同一周重叠只计一次，旺季附加费不参与思达折扣。</p>
+          <p class="peak-season-calendar-note"><mat-icon>calculate</mat-icon>{{ copy.calendar.peakNote }}</p>
         </aside>
 
         <div class="holiday-calendar-list">
@@ -700,7 +672,7 @@
                   <li *ngFor="let holiday of month.holidays">
                     <time>{{ holiday.day }}</time>
                     <span>{{ holiday.name }}</span>
-                    <small *ngIf="holiday.provisional">日期待官方确认</small>
+                    <small *ngIf="holiday.provisional">{{ copy.calendar.provisionalLabel }}</small>
                   </li>
                 </ul>
               </article>
@@ -710,18 +682,18 @@
 
         <p class="calendar-footnote">
           <mat-icon>info</mat-icon>
-          页面根据CIA已发布的年度资料整理；除开斋节、宰牲节等日期需按宗教历法确认外，菲律宾政府也可能临时宣布全国或地方特别假期，请勿将本表视为最终停课日历。
+          {{ copy.calendar.footnote }}
         </p>
       </section>
 
       <section class="ielts-exam-section" id="ielts-exam-dates" aria-labelledby="ielts-exam-title">
         <div class="calendar-section-heading">
           <div>
-            <span class="section-eyebrow">2027 IELTS ON COMPUTER</span>
-            <h3 id="ielts-exam-title">2027年 CIA 雅思机考日期</h3>
-            <p>根据CIA公布的2027年雅思机考（IOC）考期整理，考试安排在每周六。报名开放情况及考位请联系顾问确认，最终以CIA和IDP当期通知为准。</p>
+            <span class="section-eyebrow">{{ copy.ielts.eyebrow }}</span>
+            <h3 id="ielts-exam-title">{{ copy.ielts.title }}</h3>
+            <p>{{ copy.ielts.intro }}</p>
           </div>
-          <span class="calendar-priority"><mat-icon>event_available</mat-icon>每周六 · 全年52个考期</span>
+          <span class="calendar-priority"><mat-icon>event_available</mat-icon>{{ copy.ielts.badge }}</span>
         </div>
 
         <div class="ielts-computer-calendar" aria-label="2027年CIA雅思机考月历">
@@ -738,21 +710,21 @@
         </div>
 
         <details class="ielts-previous-year">
-          <summary>查看2026年雅思考期与报名参考</summary>
+          <summary>{{ copy.ielts.previousSummary }}</summary>
           <div class="ielts-previous-year-body">
             <div class="calendar-section-heading">
               <div>
-                <h4 class="ielts-previous-year-title">2026年 CIA Mactan 雅思官方考期</h4>
-                <p>CIA是IDP雅思官方考场资源之一。以下日期仅供行程规划参考，报名及考试日期可能调整，最终以IDP Philippines官方开放日期和CIA当期通知为准。</p>
+                <h4 class="ielts-previous-year-title">{{ copy.ielts.previousTitle }}</h4>
+                <p>{{ copy.ielts.previousIntro }}</p>
               </div>
-              <span class="exam-fee"><mat-icon>payments</mat-icon>2026年参考考费：13,660比索</span>
+              <span class="exam-fee"><mat-icon>payments</mat-icon>{{ copy.ielts.previousFee }}</span>
             </div>
 
             <div class="ielts-date-columns">
               <article class="ielts-date-column">
                 <header>
-                  <span>ACADEMIC</span>
-                  <h4>学术类考期</h4>
+                  <span>{{ copy.ielts.academicCode }}</span>
+                  <h4>{{ copy.ielts.academicTitle }}</h4>
                 </header>
                 <div class="ielts-date-grid">
                   <div *ngFor="let exam of ieltsExamDates2026">
@@ -765,9 +737,9 @@
 
               <article class="ielts-date-column ielts-date-column--recommended">
                 <header>
-                  <span>ACADEMIC &amp; GENERAL</span>
-                  <h4>学术类及一般培训类</h4>
-                  <small>学校资料推荐考期</small>
+                  <span>{{ copy.ielts.generalCode }}</span>
+                  <h4>{{ copy.ielts.generalTitle }}</h4>
+                  <small>{{ copy.ielts.generalHint }}</small>
                 </header>
                 <div class="ielts-date-grid">
                   <div *ngFor="let exam of ieltsExamDates2026">
@@ -780,28 +752,20 @@
             </div>
 
             <div class="ielts-exam-notes">
-              <article>
-                <mat-icon>location_on</mat-icon>
-                <div><strong>校内考场安排</strong><p>如报名人数少于10人，考场可能调整至宿务市区；建议优先选择学校资料标注的推荐日期。</p></div>
-              </article>
-              <article>
-                <mat-icon>edit_calendar</mat-icon>
-                <div><strong>提前两周报名</strong><p>学生到校后可前往教务办公室报名，学校会提前准备参加考试所需的SSP文件。</p></div>
-              </article>
-              <article>
-                <mat-icon>verified</mat-icon>
-                <div><strong>仅供参考，以IDP为准</strong><p>报名日期、考试日期与考费均可能调整，须以报名时IDP Philippines官方页面实际开放信息为准。</p></div>
+              <article *ngFor="let note of copy.ielts.notes">
+                <mat-icon>{{ note.icon }}</mat-icon>
+                <div><strong>{{ note.title }}</strong><p>{{ note.text }}</p></div>
               </article>
             </div>
           </div>
         </details>
         <a
           class="ielts-official-link"
-          href="https://ielts.idp.com/philippines"
+          [href]="copy.ielts.officialUrl"
           target="_blank"
           rel="noopener noreferrer"
         >
-          查看 IDP Philippines 最新考试信息
+          {{ copy.ielts.officialLinkLabel }}
           <mat-icon>open_in_new</mat-icon>
         </a>
       </section>
@@ -815,11 +779,11 @@
     <section class="video-section" id="videos">
       <div class="section-heading section-heading-row">
         <div>
-          <span class="section-eyebrow">SCHOOL VIDEOS</span>
-          <h2>用视频了解 CIA 校园与课程</h2>
-          <p>课程介绍和员工发布的校园视频均可在线播放，帮助你更直观地了解课堂与校园环境。</p>
+          <span class="section-eyebrow">{{ copy.videos.eyebrow }}</span>
+          <h2>{{ copy.videos.title }}</h2>
+          <p>{{ copy.videos.intro }}</p>
         </div>
-        <span class="wechat-note"><mat-icon>verified</mat-icon>CIA 官方课程视频</span>
+        <span class="wechat-note"><mat-icon>verified</mat-icon>{{ copy.videos.badge }}</span>
       </div>
       <div class="video-grid">
         <article *ngFor="let item of displayedVideoCards">
@@ -858,8 +822,8 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>receipt_long</mat-icon></span>
         <span>
-          <strong>查看完整课程费、住宿费与入住规则</strong>
-          <small>适合已经初步选定课程或需要核对详细价目的学生</small>
+          <strong>{{ copy.fees.summaryTitle }}</strong>
+          <small>{{ copy.fees.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
@@ -896,7 +860,7 @@
         <aside class="class-size-note" aria-label="CIA团体课人数说明" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')">
           <mat-icon>groups</mat-icon>
           <div>
-            <strong>团体课人数说明</strong>
+            <strong>{{ copy.fees.classSizeTitle }}</strong>
             <p>{{ groupClassNote }}</p>
           </div>
         </aside>
@@ -930,7 +894,7 @@
         </div>
 
         <div class="short-stay-rate" aria-label="CIA短期住宿费率" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
-          <strong>短期就读费率</strong>
+          <strong>{{ copy.fees.shortStayTitle }}</strong>
           <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
@@ -940,7 +904,7 @@
           <div class="check-in-out-heading">
             <span><mat-icon>hotel</mat-icon></span>
             <div>
-              <small>住宿提醒</small>
+              <small>{{ copy.fees.stayPolicyEyebrow }}</small>
               <h3 id="check-in-out-title">{{ stayPolicyTitle }}</h3>
             </div>
           </div>
@@ -965,8 +929,8 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
         <span>
-          <strong>2027年假期、旺季与雅思考期</strong>
-          <small>寒暑假附加费档期、学校假期与每周六雅思机考日期</small>
+          <strong>{{ copy.planning.summaryTitle }}</strong>
+          <small>{{ copy.planning.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
@@ -979,8 +943,8 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>play_circle</mat-icon></span>
         <span>
-          <strong>观看 CIA 课程视频</strong>
-          <small>一般英语、雅思、托业和商务英语课堂介绍</small>
+          <strong>{{ copy.videos.summaryTitle }}</strong>
+          <small>{{ copy.videos.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
@@ -1066,49 +1030,29 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>policy</mat-icon></span>
         <span>
-          <strong>CIA 取消与退款规定</strong>
-          <small>报名前展开确认出发前、到校后与延长课程的退款规则</small>
+          <strong>{{ copy.refund.summaryTitle }}</strong>
+          <small>{{ copy.refund.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
       <div class="collapsible-panel-body">
       <div class="refund-policy-heading">
         <div>
-          <span class="section-eyebrow">CANCELLATION & REFUND</span>
-          <h2 id="refund-policy-title"><mat-icon>policy</mat-icon>CIA退款规定</h2>
-          <p>退款以4周为一个计算单位；即使剩余6周，也只按其中完整的4周单位核算。</p>
+          <span class="section-eyebrow">{{ copy.refund.eyebrow }}</span>
+          <h2 id="refund-policy-title"><mat-icon>policy</mat-icon>{{ copy.refund.title }}</h2>
+          <p>{{ copy.refund.intro }}</p>
         </div>
-        <span class="refund-policy-alert"><mat-icon>info</mat-icon>报名前请确认</span>
+        <span class="refund-policy-alert"><mat-icon>info</mat-icon>{{ copy.refund.alert }}</span>
       </div>
 
       <div class="refund-policy-grid">
-        <article>
-          <h3>出发之前取消</h3>
+        <article *ngFor="let group of copy.refund.groups">
+          <h3>{{ group.title }}</h3>
+          <p *ngIf="group.note" class="refund-card-note">{{ group.note }}</p>
           <dl>
-            <div><dt>提前4周通知</dt><dd>报名预付定金不可退；其他已付费用按学校核定退还。</dd></div>
-            <div><dt>提前2周通知</dt><dd>扣除2周住宿费后，退还其余费用。</dd></div>
-            <div><dt>提前1周通知</dt><dd>扣除4周住宿费后，退还其余费用。</dd></div>
-            <div><dt>提前3天通知</dt><dd>扣除4周课程费及4周住宿费后，退还其余费用。</dd></div>
+            <div *ngFor="let rule of group.rules"><dt>{{ rule.when }}</dt><dd>{{ rule.text }}</dd></div>
           </dl>
-        </article>
-
-        <article>
-          <h3>抵达学校之后</h3>
-          <p class="refund-card-note">以下均按每个完整4周单位计算：</p>
-          <dl>
-            <div><dt>课程进行25%</dt><dd>退还剩余课程费及住宿费的70%。</dd></div>
-            <div><dt>课程进行50%</dt><dd>退还剩余课程费及住宿费的50%。</dd></div>
-            <div><dt>课程进行75%</dt><dd>退还剩余课程费及住宿费的30%。</dd></div>
-          </dl>
-        </article>
-
-        <article>
-          <h3>延长课程学生取消延长部分</h3>
-          <dl>
-            <div><dt>延长课程4周前</dt><dd>扣除4周课程费及住宿费的50%，退还其余费用。</dd></div>
-            <div><dt>延长课程2周前</dt><dd>扣除4周课程费及住宿费的100%，退还其余费用。</dd></div>
-          </dl>
-          <p class="refund-card-footnote">退款金额及适用时间最终以CIA审核和正式账单为准。</p>
+          <p *ngIf="group.footnote" class="refund-card-footnote">{{ group.footnote }}</p>
         </article>
       </div>
       </div>
@@ -1120,17 +1064,17 @@
     >
       <div class="student-care-intro">
         <div class="section-heading">
-          <span class="section-eyebrow">STUDENT CARE SERVICES</span>
-          <h2>从抵达到课堂，7项学生关怀服务</h2>
+          <span class="section-eyebrow">{{ copy.studentCare.eyebrow }}</span>
+          <h2>{{ copy.studentCare.title }}</h2>
           <p>
-            CIA把生活协调、学业咨询、线上沟通、接机、测试和医疗支援连接起来，让学生知道“遇到什么问题、该找谁”。
+            {{ copy.studentCare.intro }}
           </p>
         </div>
         <div class="student-care-summary" aria-label="CIA学生关怀服务概览">
-          <span>7项</span>
+          <span>{{ copy.studentCare.count }}</span>
           <div>
-            <strong>校内支持网络</strong>
-            <small>生活 · 学习 · 安全 · 医疗</small>
+            <strong>{{ copy.studentCare.summaryTitle }}</strong>
+            <small>{{ copy.studentCare.summaryHint }}</small>
           </div>
         </div>
       </div>
@@ -1138,8 +1082,8 @@
       <div class="student-care-showcase">
         <article class="student-care-feature">
           <img
-            src="assets/cia/student-care-cro.webp"
-            alt="CIA客户关系办公室学生服务人员"
+            [src]="copy.studentCare.featureImage"
+            [alt]="copy.studentCare.featureImageAlt"
           />
           <div class="student-care-feature-copy">
             <span>{{ studentCareServices[0].subtitle }}</span>
@@ -1177,13 +1121,13 @@
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>info</mat-icon></span>
         <span>
-          <strong>到校后办事与生活指南</strong>
-          <small>行政与外出申请、微信查询、电话卡、用餐、洗衣及包裹邮寄</small>
+          <strong>{{ copy.practicalGuide.summaryTitle }}</strong>
+          <small>{{ copy.practicalGuide.summaryHint }}</small>
         </span>
         <mat-icon class="collapsible-chevron">expand_more</mat-icon>
       </summary>
       <div class="collapsible-panel-body">
-        <p class="campus-guide-intro">先了解去哪里办事，再查看日常生活安排。以下根据CIA学生服务资料整理，办公窗口、服务时间及规则以到校后的最新通知为准。</p>
+        <p class="campus-guide-intro">{{ copy.practicalGuide.intro }}</p>
         <div class="campus-practical-grid">
           <article *ngFor="let guide of campusPracticalGuides">
             <header>
@@ -1205,7 +1149,7 @@
     <section class="student-track-section">
       <div class="section-heading">
         <h2>
-          <mat-icon>groups</mat-icon>成人主校区与亲子 / 青少年营怎么区分？
+          <mat-icon>groups</mat-icon>{{ copy.studentTracks.title }}
         </h2>
       </div>
       <div class="student-track-grid">
@@ -1218,7 +1162,7 @@
         </article>
       </div>
       <a class="primary-action center-action" routerLink="/about-sida/contact">
-        咨询 CIA 亲子营档期
+        {{ copy.studentTracks.ctaLabel }}
         <mat-icon>chevron_right</mat-icon>
       </a>
     </section>
@@ -1230,15 +1174,15 @@
     >
       <div class="official-review-heading">
         <div class="section-heading">
-          <span class="section-eyebrow">OFFICIAL STUDENT REVIEWS</span>
-          <h2 id="student-reviews-title">在CIA学习与生活，学生怎么说？</h2>
+          <span class="section-eyebrow">{{ copy.reviews.eyebrow }}</span>
+          <h2 id="student-reviews-title">{{ copy.reviews.title }}</h2>
           <p>
-            课程表告诉你每天学什么，学生的真实经历则能帮助你理解：刚到校时会遇到什么、适应以后有什么变化，以及课堂之外的宿务生活是什么样子。
+            {{ copy.reviews.intro }}
           </p>
         </div>
         <span class="official-review-source">
           <mat-icon>verified</mat-icon>
-          CIA学生真实反馈整理
+          {{ copy.reviews.source }}
         </span>
       </div>
 
@@ -1256,7 +1200,7 @@
               [routerLink]="['/philippines-study/cebu/cia-cebu-international-academy/student-reviews', review.slug]"
               [attr.aria-label]="'查看学生反馈全文：' + review.title"
             >
-              查看完整反馈
+              {{ copy.reviews.linkLabel }}
               <mat-icon>arrow_forward</mat-icon>
             </a>
           </div>
@@ -1267,39 +1211,37 @@
 
     <section class="cia-section sida-cia-section" id="service-process">
       <div class="sida-cia-heading">
-        <span>SIDA SERVICE GUARANTEE</span>
-        <h2>为什么学生更放心找思达启航报名CIA？</h2>
+        <span>{{ copy.sida.eyebrow }}</span>
+        <h2>{{ copy.sida.title }}</h2>
         <p>
-          不是一句“全程服务”，而是把选校判断、费用、合同和境内外支持做成看得见的保障。
+          {{ copy.sida.intro }}
         </p>
       </div>
 
       <aside class="sida-cia-gratitude" aria-label="思达启航服务初心">
         <figure class="sida-cia-main-photo">
           <img
-            src="assets/cia/sida-why-main-branded.webp"
-            alt="思达启航顾问为CIA学生讲解报名方案"
+            [src]="copy.sida.photo"
+            [alt]="copy.sida.photoAlt"
           />
-          <figcaption>每一份 CIA 方案，都从听懂你的目标和顾虑开始</figcaption>
+          <figcaption>{{ copy.sida.photoCaption }}</figcaption>
         </figure>
         <div class="sida-cia-gratitude-content">
           <div class="sida-cia-gratitude-heading">
             <span><mat-icon>favorite</mat-icon></span>
             <div>
-              <small>我们的初心 · 极致利他，成人达己</small>
-              <strong>感恩每一份信任，我们会认真接住你的托付</strong>
+              <small>{{ copy.sida.gratitudeEyebrow }}</small>
+              <strong>{{ copy.sida.gratitudeTitle }}</strong>
             </div>
           </div>
           <blockquote>
-            我们始终相信：只有学生真正选对学校、学有所获、走得更远，思达启航才能走得长久。谢谢你把这段重要的旅程交给我们。
+            {{ copy.sida.quote }}
           </blockquote>
           <p>
-            我们不会用漂亮话代替服务：该说明的费用和规则提前说清楚，该落实的合同、材料与境外衔接逐项落实；报名之后，也会继续关注你的学习和生活。
+            {{ copy.sida.text }}
           </p>
           <div class="sida-cia-values" aria-label="思达启航服务态度">
-            <span><mat-icon>record_voice_over</mat-icon>先认真听你说</span>
-            <span><mat-icon>handshake</mat-icon>答应你的认真做到</span>
-            <span><mat-icon>volunteer_activism</mat-icon>报名之后继续负责</span>
+            <span *ngFor="let value of copy.sida.values"><mat-icon>{{ value.icon }}</mat-icon>{{ value.text }}</span>
           </div>
         </div>
       </aside>
@@ -1326,44 +1268,28 @@
         <div class="sida-cia-alumni-heading">
           <span><mat-icon>workspace_premium</mat-icon></span>
           <div>
-            <small>学习结束，服务继续</small>
-            <h3 id="cia-alumni-benefits-title">老学员回国后福利</h3>
-            <p>继续学习英语或规划下一阶段升学时，可申请思达老学员专属权益。</p>
+            <small>{{ copy.sida.alumni.eyebrow }}</small>
+            <h3 id="cia-alumni-benefits-title">{{ copy.sida.alumni.title }}</h3>
+            <p>{{ copy.sida.alumni.intro }}</p>
           </div>
         </div>
         <div class="sida-cia-alumni-grid">
-          <article>
-            <span>01</span>
-            <mat-icon>record_voice_over</mat-icon>
+          <article *ngFor="let item of copy.sida.alumni.items">
+            <span>{{ item.number }}</span>
+            <mat-icon>{{ item.icon }}</mat-icon>
             <div>
-              <strong>一对一线上英语</strong>
-              <p>老学员可享线上一对一英语课程专属优惠。</p>
-            </div>
-          </article>
-          <article>
-            <span>02</span>
-            <mat-icon>school</mat-icon>
-            <div>
-              <strong>爱尔兰继续深造</strong>
-              <p>申请爱尔兰留学，可享思达专属奖学金或项目优惠。</p>
-            </div>
-          </article>
-          <article>
-            <span>03</span>
-            <mat-icon>public</mat-icon>
-            <div>
-              <strong>欧美国家英语进修</strong>
-              <p>继续到欧美国家学习英语，部分合作学校可免注册费或享专属优惠。</p>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.text }}</p>
             </div>
           </article>
         </div>
-        <small class="sida-cia-alumni-note">具体奖学金、减免范围和适用条件，以申请时合作学校及思达启航确认的当期政策为准。</small>
+        <small class="sida-cia-alumni-note">{{ copy.sida.alumni.note }}</small>
       </aside>
     </section>
 
     <section class="faq-section" id="faq">
       <div class="section-heading">
-        <h2><mat-icon>help</mat-icon>常见问题 FAQ</h2>
+        <h2><mat-icon>help</mat-icon>{{ copy.faq.title }}</h2>
       </div>
       <details *ngFor="let faq of faqs">
         <summary>{{ faq.question }}</summary>
@@ -1377,18 +1303,18 @@
           <mat-icon>headset_mic</mat-icon>
         </div>
         <div class="final-cta-copy">
-          <h2>想知道 CIA 当前是否有空房和优惠？</h2>
+          <h2>{{ copy.finalCta.title }}</h2>
           <p>
-            把入学日期、学习周数、课程方向和房型偏好发给顾问，我们帮你确认正式报价、空房和入学建议。
+            {{ copy.finalCta.text }}
           </p>
         </div>
         <div class="final-actions">
           <a class="primary-action" routerLink="/about-sida/contact"
-            ><mat-icon>description</mat-icon>获取 CIA 完整报价单
+            ><mat-icon>description</mat-icon>{{ copy.finalCta.primaryLabel }}
             <mat-icon>chevron_right</mat-icon></a
           >
           <a class="secondary-action" routerLink="/about-sida/contact"
-            ><mat-icon>chat</mat-icon>咨询当前空房与优惠</a
+            ><mat-icon>chat</mat-icon>{{ copy.finalCta.secondaryLabel }}</a
           >
         </div>
       </div>
