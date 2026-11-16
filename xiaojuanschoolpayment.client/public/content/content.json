@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-17",
+  "stats": [
+    {
+      "num": "12",
+      "unit": "+",
+      "label": "年行业经验"
+    },
+    {
+      "num": "5000",
+      "unit": "+",
+      "label": "成功案例"
+    },
+    {
+      "num": "11",
+      "unit": "国",
+      "label": "游学目的地"
+    },
+    {
+      "num": "30",
+      "unit": "+",
+      "label": "院校资源"
+    }
+  ],
+  "values": {
+    "quote": "只有学生真正选对学校、学有所获、走得更远，思达启航才能走得长久。",
+    "pillars": [
+      "先认真听你说",
+      "答应你的认真做到",
+      "报名之后继续负责"
+    ]
+  },
+  "guarantees": [
+    {
+      "title": "保价服务",
+      "desc": "报名后比价更低，核实后退差价"
+    },
+    {
+      "title": "国内实体办公室",
+      "desc": "可到办公室面签正式服务合同"
+    },
+    {
+      "title": "海外驻点人员",
+      "desc": "欧洲与菲律宾均有当地衔接"
+    },
+    {
+      "title": "报价透明",
+      "desc": "费用与服务范围写进合同"
+    }
+  ],
+  "steps": [
+    {
+      "title": "免费评估",
+      "desc": "了解英语水平与需求"
+    },
+    {
+      "title": "定制方案",
+      "desc": "匹配国家、学校与课程"
+    },
+    {
+      "title": "申请指导",
+      "desc": "材料准备与申请递交"
+    },
+    {
+      "title": "进度跟进",
+      "desc": "录取、签证与住宿协调"
+    },
+    {
+      "title": "行前支持",
+      "desc": "行前提醒与入学支持"
+    }
+  ],
+  "services": [
+    {
+      "id": "study",
+      "label": "STUDY IN IRELAND",
+      "title": "爱尔兰留学",
+      "subtitle": "本科 · 硕士 · 预科 · 半工半读",
+      "badge": "奖学金最高 8000 元",
+      "image": "/assets/study-hero-collage.webp"
+    },
+    {
+      "id": "sea",
+      "label": "SOUTHEAST ASIA",
+      "title": "东南亚游学",
+      "subtitle": "菲律宾 · 马来西亚 · 新加坡 · 越南",
+      "image": "/assets/philippines/cebu-study-hero.webp"
+    },
+    {
+      "id": "west",
+      "label": "EUROPE & AMERICA",
+      "title": "欧美游学",
+      "subtitle": "英国 · 爱尔兰 · 美国 · 加拿大 · 澳洲",
+      "image": "/assets/philippines/service-ireland-cliffs.webp"
+    }
+  ],
+  "schools": [
+    {
+      "id": "cia",
+      "name": "CIA",
+      "city": "宿务 · Mactan",
+      "tag": "雅思官方考场",
+      "desc": "Mactan 度假型新校区，适合雅思、亲子和第一次菲律宾游学。",
+      "image": "/assets/cia/campus-building.webp",
+      "path": "/philippines-study/cebu/cia-cebu-international-academy"
+    },
+    {
+      "id": "ev",
+      "name": "EV Academy",
+      "city": "宿务",
+      "tag": "斯巴达 / 半斯巴达",
+      "desc": "宿务市区现代校园，斯巴达和半斯巴达强度可选。",
+      "image": "/assets/ev/campus-exterior.webp",
+      "path": "/philippines-study/cebu/ev-academy"
+    },
+    {
+      "id": "cpi",
+      "name": "CPI",
+      "city": "宿务",
+      "tag": "度假村式校园",
+      "desc": "Nivel Hills 度假村式校园，适合重视住宿、设施和舒适度的学生。",
+      "image": "/assets/cpi/campus-exterior.webp",
+      "path": "/philippines-study/cebu/cpi-cebu-pelis-institute"
+    },
+    {
+      "id": "cpils",
+      "name": "CPILS",
+      "city": "宿务",
+      "tag": "老牌名校",
+      "desc": "老牌综合学校，资源齐全，可选斯巴达与半斯巴达管理。",
+      "image": "/assets/cpils/campus-front.webp",
+      "path": "/philippines-study/cebu/cpils"
+    },
+    {
+      "id": "fella",
+      "name": "English Fella",
+      "city": "宿务",
+      "tag": "半斯巴达",
+      "desc": "双校区选择，课程与管理方式灵活，环境舒适。",
+      "image": "/assets/fella/campus-main.webp",
+      "path": "/philippines-study/cebu/english-fella"
+    }
+  ],
+  "universities": [
+    {
+      "abbr": "TCD",
+      "name": "圣三一大学",
+      "en": "Trinity College Dublin",
+      "city": "都柏林"
+    },
+    {
+      "abbr": "UCD",
+      "name": "都柏林大学",
+      "en": "University College Dublin",
+      "city": "都柏林"
+    },
+    {
+      "abbr": "UCC",
+      "name": "科克大学",
+      "en": "University College Cork",
+      "city": "科克"
+    },
+    {
+      "abbr": "GU",
+      "name": "高威大学",
+      "en": "University of Galway",
+      "city": "高威"
+    },
+    {
+      "abbr": "DCU",
+      "name": "都柏林城市大学",
+      "en": "Dublin City University",
+      "city": "都柏林"
+    }
+  ],
+  "programs": [
+    {
+      "no": "01",
+      "title": "本科申请",
+      "desc": "选校定位、材料与文书规划",
+      "path": "/ireland-study/undergraduate-application"
+    },
+    {
+      "no": "02",
+      "title": "硕士申请",
+      "desc": "专业匹配与院校申请递交",
+      "path": "/ireland-study/master-application"
+    },
+    {
+      "no": "03",
+      "title": "预科申请",
+      "desc": "语言与学术衔接，平稳过渡",
+      "path": "/ireland-study/foundation-application"
+    },
+    {
+      "no": "04",
+      "title": "半工半读",
+      "desc": "边学习边积累海外经验",
+      "path": "/ireland-study/work-study"
+    }
+  ],
+  "irelandTopics": [
+    {
+      "text": "教育体系",
+      "path": "/ireland-study/education-system"
+    },
+    {
+      "text": "体验爱尔兰",
+      "path": "/ireland-study/experience-ireland"
+    },
+    {
+      "text": "经济与就业",
+      "path": "/ireland-study/economy-careers"
+    },
+    {
+      "text": "在爱尔兰工作",
+      "path": "/ireland-study/working-in-ireland"
+    },
+    {
+      "text": "奖学金",
+      "path": "/ireland-study/schools/scholarships"
+    }
+  ],
+  "studyGuides": [
+    {
+      "text": "爱尔兰留学费用",
+      "path": "/study-abroad-guide/ireland-cost"
+    },
+    {
+      "text": "申请时间规划",
+      "path": "/study-abroad-guide/ireland-application-timeline"
+    },
+    {
+      "text": "如何选校选专业",
+      "path": "/study-abroad-guide/ireland-school-selection"
+    },
+    {
+      "text": "签证指南",
+      "path": "/ireland-study/visa-guide"
+    },
+    {
+      "text": "住宿指南",
+      "path": "/ireland-study/accommodation-guide"
+    },
+    {
+      "text": "行前准备",
+      "path": "/ireland-study/pre-departure"
+    }
+  ],
+  "phCities": [
+    {
+      "name": "宿务",
+      "en": "Cebu",
+      "fit": "首次游学 · 亲子 · 综合英语",
+      "image": "/assets/philippines/cebu-study-hero.webp",
+      "path": "/philippines-study/cebu"
+    },
+    {
+      "name": "碧瑶",
+      "en": "Baguio",
+      "fit": "雅思备考 · 斯巴达 · 长期强化",
+      "image": "/assets/philippines/baguio-study-hero.webp",
+      "path": "/philippines-study/baguio"
+    },
+    {
+      "name": "克拉克",
+      "en": "Clark",
+      "fit": "外教口语 · 亲子 · 青少年营",
+      "image": "/assets/philippines/clark-study-hero.webp",
+      "path": "/philippines-study/clark"
+    },
+    {
+      "name": "马尼拉",
+      "en": "Manila",
+      "fit": "商务英语 · 短期体验",
+      "image": "/assets/philippines/manila-study-hero.webp",
+      "path": "/philippines-study/manila"
+    }
+  ],
+  "seaCountries": [
+    {
+      "code": "MY",
+      "name": "马来西亚",
+      "en": "Malaysia",
+      "keywords": "英语环境 · 低成本 · 多元文化",
+      "path": "/overseas-study-tour/malaysia"
+    },
+    {
+      "code": "SG",
+      "name": "新加坡",
+      "en": "Singapore",
+      "keywords": "双语环境 · 短期营 · 低龄体验",
+      "path": "/overseas-study-tour/singapore"
+    },
+    {
+      "code": "VN",
+      "name": "越南",
+      "en": "Vietnam",
+      "keywords": "东南亚文化 · 低成本 · 城市探索",
+      "path": "/overseas-study-tour/vietnam"
+    }
+  ],
+  "schoolNeeds": [
+    {
+      "text": "斯巴达强化",
+      "path": "/philippines-study/recommendations/sparta-schools"
+    },
+    {
+      "text": "雅思备考",
+      "path": "/philippines-study/recommendations/ielts-schools"
+    },
+    {
+      "text": "亲子游学",
+      "path": "/philippines-study/recommendations/family-schools"
+    },
+    {
+      "text": "青少年营",
+      "path": "/philippines-study/recommendations/junior-camp"
+    },
+    {
+      "text": "高性价比",
+      "path": "/philippines-study/recommendations/budget-schools"
+    }
+  ],
+  "westCountries": [
+    {
+      "code": "UK",
+      "name": "英国",
+      "en": "United Kingdom",
+      "keywords": "名校参访 · 夏校 · 英式文化",
+      "path": "/overseas-study-tour/uk"
+    },
+    {
+      "code": "IE",
+      "name": "爱尔兰",
+      "en": "Ireland",
+      "keywords": "英语环境 · 大学参访 · 后续留学",
+      "path": "/overseas-study-tour/ireland"
+    },
+    {
+      "code": "US",
+      "name": "美国",
+      "en": "United States",
+      "keywords": "校园参访 · 夏校 · STEM",
+      "path": "/overseas-study-tour/usa"
+    },
+    {
+      "code": "CA",
+      "name": "加拿大",
+      "en": "Canada",
+      "keywords": "冬夏令营 · 多元文化 · 自然体验",
+      "path": "/overseas-study-tour/canada"
+    },
+    {
+      "code": "AU",
+      "name": "澳大利亚",
+      "en": "Australia",
+      "keywords": "ELICOS · 自然课堂 · 亲子",
+      "path": "/overseas-study-tour/australia"
+    },
+    {
+      "code": "FR",
+      "name": "法国",
+      "en": "France",
+      "keywords": "法语 · 艺术文化 · 设计",
+      "path": "/overseas-study-tour/france"
+    },
+    {
+      "code": "DE",
+      "name": "德国",
+      "en": "Germany",
+      "keywords": "德语 · 工程 · 职业教育",
+      "path": "/overseas-study-tour/germany"
+    }
+  ],
+  "tourGuides": [
+    {
+      "text": "游学费用说明",
+      "path": "/study-tour-guide/cost"
+    },
+    {
+      "text": "寒暑假游学",
+      "path": "/study-tour-guide/holiday"
+    },
+    {
+      "text": "亲子游学",
+      "path": "/study-tour-guide/family"
+    },
+    {
+      "text": "游学签证",
+      "path": "/study-tour-guide/visa"
+    },
+    {
+      "text": "行前准备",
+      "path": "/study-tour-guide/pre-departure"
+    }
+  ],
+  "links": {
+    "universities": "/ireland-study/schools/universities",
+    "tourOffers": "/overseas-study-tour/offers"
+  }
+}
