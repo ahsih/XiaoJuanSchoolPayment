@@ -47,6 +47,7 @@ MySQL/MariaDB database
   - `src/guard/role.guard.ts`: protects `/admin` by checking the JWT and the `Admin` role.
   - `public/assets/`: source-controlled images and other browser assets. Angular copies `public/` into the build output.
   - `public/content/content.json`: shared content read by the WeChat mini program (`../SiDaQiHangWeChat`) from `https://sidaqihang.com/content/content.json`. Format is defined in that repo's `docs/shared-content.md`: `schemaVersion` 1, all values strings, no empty lists, `path` values must be real site routes starting with `/`, images under `/assets/`. Keep it UTF-8 without BOM. Validate with `npm run content:check -- <path>` in the mini program repo before pushing; a renamed route or moved image here must be updated in this file too.
+  - `public/rlx9pIUtlg.txt`: WeChat mini program 业务域名 verification file. It proves ownership of `sidaqihang.com` so the mini program can open site pages in `web-view`. It must stay byte-for-byte unchanged and reachable at `https://sidaqihang.com/rlx9pIUtlg.txt`; never delete or rename it, or web-view pages may stop opening in the mini program.
   - `src/proxy.conf.js`: development proxy paths and backend target selection.
 - `XiaoJuanSchoolPayment.Server/`: ASP.NET Core API.
   - `Program.cs`: dependency setup, auth, CORS, middleware, database migration/seed startup, robots.txt, sitemap, and SPA fallback.
