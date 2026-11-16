@@ -14,6 +14,7 @@ using XiaoJuanSchoolPayment.Server.Services;
 using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
 using XiaoJuanSchoolPayment.Server.Services.Security;
+using XiaoJuanSchoolPayment.Server.Services.Seo;
 using XiaoJuanSchoolPayment.Server.Services.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -112,6 +113,7 @@ builder.Services.AddOptions<TencentCosOptions>()
 builder.Services.AddSingleton<ISchoolMediaStorage, TencentCosSchoolMediaStorage>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
 builder.Services.AddAbuseRateLimits();
+builder.Services.AddSingleton<SpaSeoHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient("TencentCosMedia", client =>
 {
@@ -157,6 +159,7 @@ if (!app.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(app.Configurat
 }
 
 app.UseCors("AllowAll");
+// "/" is served as the static index.html, whose built-in tags are already the home page's SEO.
 app.UseDefaultFiles();
 var staticContentTypes = new FileExtensionContentTypeProvider();
 staticContentTypes.Mappings[".mov"] = "video/quicktime";
@@ -248,18 +251,45 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/cebu/cpils", "monthly", "0.8"),
   ("/philippines-study/cebu/english-fella", "monthly", "0.8"),
   ("/philippines-study/cebu/philinter-academy", "monthly", "0.8"),
+  ("/philippines-study/cebu/cg-academy-sparta-campus", "monthly", "0.8"),
+  ("/philippines-study/cebu/smeag-capital", "monthly", "0.8"),
+  ("/philippines-study/cebu/smeag-encanto", "monthly", "0.75"),
+  ("/philippines-study/cebu/ibreeze", "monthly", "0.8"),
+  ("/philippines-study/cebu/icl", "monthly", "0.8"),
+  ("/philippines-study/cebu/global-language-cebu", "monthly", "0.8"),
+  ("/philippines-study/cebu/cella-uni-sparta-campus", "monthly", "0.8"),
+  ("/philippines-study/cebu/cella-premium-campus", "monthly", "0.8"),
+  ("/philippines-study/cebu/cebu-blue-ocean-academy", "monthly", "0.8"),
+  ("/philippines-study/cebu/glant", "monthly", "0.75"),
+  ("/philippines-study/cebu/cij-academy-premium-campus", "monthly", "0.75"),
+  ("/philippines-study/cebu/3d-academy", "monthly", "0.75"),
+  ("/philippines-study/cebu/curious-world-academy", "monthly", "0.75"),
+  ("/philippines-study/cebu/first-english-global-college", "monthly", "0.75"),
+  ("/philippines-study/cebu/genius-english-academy", "monthly", "0.75"),
+  ("/philippines-study/cebu/howdy-english-academy", "monthly", "0.75"),
+  ("/philippines-study/cebu/lapulapu", "monthly", "0.75"),
+  ("/philippines-study/cebu/qqenglish-beachfront-campus", "monthly", "0.75"),
+  ("/philippines-study/cebu/stargate-global-education", "monthly", "0.75"),
+  ("/philippines-study/cebu/winning-english-academy", "monthly", "0.75"),
+  ("/philippines-study/boracay/boracay-coco-english-academy", "monthly", "0.7"),
+  ("/philippines-study/boracay/paradise-english-boracay-language-institute", "monthly", "0.7"),
+  ("/philippines-study/iloilo/gitc-college-international-language-center", "monthly", "0.7"),
+  ("/philippines-study/iloilo/polyglot-international-academy", "monthly", "0.7"),
+  ("/philippines-study/iloilo/we-academy", "monthly", "0.7"),
   ("/philippines-study/baguio/pines-international-academy", "monthly", "0.8"),
   ("/philippines-study/baguio/beci-eop-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/beci-sparta-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/api-beci-city-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/baguio-jic", "monthly", "0.8"),
+  ("/philippines-study/baguio/baguio-jic-challenger", "monthly", "0.8"),
+  ("/philippines-study/baguio/baguio-jic-premium", "monthly", "0.8"),
   ("/philippines-study/baguio/monol", "monthly", "0.8"),
   ("/philippines-study/baguio/monol-sparta-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/wales-academy", "monthly", "0.8"),
   ("/philippines-study/baguio/anj-e-edu-english-academy", "monthly", "0.8"),
   ("/philippines-study/baguio/help-english-longlong-campus", "monthly", "0.8"),
-  ("/philippines-study/baguio/talk-academy", "monthly", "0.8"),
   ("/philippines-study/clark/cip-english-kepos", "monthly", "0.8"),
+  ("/philippines-study/clark/talk-academy", "monthly", "0.75"),
   ("/philippines-study/clark/eg-academy", "monthly", "0.8"),
   ("/philippines-study/clark/clark-we-academy", "monthly", "0.8"),
   ("/philippines-study/clark/help-english-clark", "monthly", "0.8"),
@@ -269,7 +299,6 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/manila/american-english-skills-development-center", "monthly", "0.75"),
   ("/philippines-study/manila/berlitz-philippines", "monthly", "0.75"),
   ("/philippines-study/manila/manila-business-college", "monthly", "0.75"),
-  ("/philippines-study/manila/legacy-esl-candidates", "monthly", "0.75"),
   ("/about-sida/contact", "monthly", "0.8"),
   ("/student-feedback/study-tour", "monthly", "0.7"),
   ("/student-feedback/study-tour/philippines-study-mid-autumn", "yearly", "0.7"),
@@ -312,7 +341,19 @@ app.MapGet("/sitemap.xml", (HttpRequest request) =>
 
 app.MapControllers();
 
-app.MapFallbackToFile("/index.html");
+// SPA fallback with each route's own <title>/description/Open Graph/canonical tags in the HTML, for
+// crawlers and link previews (Baidu, WeChat) that do not run JavaScript. See SpaSeoHtmlRenderer.
+app.MapFallback((HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
+{
+  var html = seoHtml.Render(context.Request.Path.Value ?? "/", GetPublicOrigin(context.Request, app.Configuration));
+  if (html == null)
+  {
+    return Results.NotFound();
+  }
+
+  context.Response.Headers.CacheControl = "no-cache";
+  return Results.Content(html, "text/html; charset=utf-8");
+});
 
 app.Run();
 

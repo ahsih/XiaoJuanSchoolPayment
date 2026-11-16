@@ -4,7 +4,10 @@ import { Meta, Title } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
-interface SeoPage {
+// SEO data below is also exported to seo-pages.json at build time (scripts/export-seo-pages.cjs)
+// so the ASP.NET server can put each page's title and description into the initial HTML for
+// crawlers and link previews that do not run JavaScript. Keep the data pure: no Angular or DOM use.
+export interface SeoPage {
   title: string;
   description: string;
   keywords: string;
@@ -12,10 +15,10 @@ interface SeoPage {
   type?: 'article';
 }
 
-const SITE_NAME = '思达启航游学';
-const DEFAULT_IMAGE = '/assets/sida-qihang-education-logo-rectangle.webp';
+export const SITE_NAME = '思达启航游学';
+export const DEFAULT_IMAGE = '/assets/sida-qihang-education-logo-rectangle.webp';
 
-const DEFAULT_SEO: SeoPage = {
+export const DEFAULT_SEO: SeoPage = {
   title: '思达启航游学 | 爱尔兰留学与菲律宾游学申请',
   description:
     '思达启航提供爱尔兰留学与菲律宾游学申请服务，覆盖语言学校选校、费用规划、雅思ESL课程和行前服务。',
@@ -23,7 +26,7 @@ const DEFAULT_SEO: SeoPage = {
   image: '/assets/study-hero-collage.webp',
 };
 
-const SEO_PAGES: Record<string, SeoPage> = {
+export const SEO_PAGES: Record<string, SeoPage> = {
   '/': DEFAULT_SEO,
   '/student-feedback/study-tour': {
     title: '游学故事与学员反馈 | 思达启航游学',
@@ -451,6 +454,151 @@ const SEO_PAGES: Record<string, SeoPage> = {
   },
 };
 
+const SCHOOL_CITY_NAMES: Record<string, string> = {
+  cebu: '宿务',
+  boracay: '长滩岛',
+  clark: '克拉克',
+  iloilo: '伊洛伊洛',
+};
+
+/**
+ * School detail pages that previously had only their city's generic title. `quote` marks pages
+ * with an online quote calculator, so descriptions never promise a calculator a page lacks.
+ * An explicit SEO_PAGES entry always wins over these generated ones.
+ */
+const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; aliases?: string; quote: boolean; image?: string }> = [
+  { path: '/philippines-study/cebu/cia-cebu-international-academy', name: '菲律宾宿务CIA语言学校', brand: 'CIA', aliases: 'CIA Cebu International Academy', quote: true, image: '/assets/cia/campus-building.webp' },
+  { path: '/philippines-study/cebu/ev-academy', name: '菲律宾宿务EV语言学校', brand: 'EV Academy', quote: true },
+  { path: '/philippines-study/cebu/cpi-cebu-pelis-institute', name: '菲律宾宿务CPI语言学校', brand: 'CPI', aliases: 'Cebu Pelis Institute', quote: true },
+  { path: '/philippines-study/cebu/cpils', name: '菲律宾宿务CPILS语言学校', brand: 'CPILS', quote: true },
+  { path: '/philippines-study/cebu/cg-academy-banilad-campus', name: '菲律宾宿务CG Academy Banilad校区', brand: 'CG Banilad', aliases: 'CG Academy', quote: true },
+  { path: '/philippines-study/cebu/philinter-academy', name: '菲律宾宿务Philinter语言学校', brand: 'Philinter', quote: true },
+  { path: '/philippines-study/cebu/english-fella', name: '菲律宾宿务English Fella语言学校', brand: 'English Fella', quote: true },
+  { path: '/philippines-study/cebu/ibreeze', name: '菲律宾宿务I.BREEZE语言学校', brand: 'I.BREEZE', quote: true },
+  { path: '/philippines-study/cebu/iu-english-academy', name: '菲律宾宿务IU English Academy语言学校', brand: 'IU', quote: true },
+  { path: '/philippines-study/cebu/icl', name: '菲律宾宿务ICL语言学校', brand: 'ICL', quote: true },
+  { path: '/philippines-study/cebu/ims-academy', name: '菲律宾宿务IMS Academy语言学校', brand: 'IMS', quote: true },
+  { path: '/philippines-study/cebu/cella-uni-sparta-campus', name: '菲律宾宿务CELLA Uni Sparta校区', brand: 'CELLA Uni Sparta', aliases: 'CELLA', quote: true },
+  { path: '/philippines-study/cebu/cella-premium-campus', name: '菲律宾宿务CELLA Premium校区', brand: 'CELLA Premium', aliases: 'CELLA', quote: true },
+  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务Cebu Blue Ocean Academy', brand: 'Cebu Blue Ocean', quote: true },
+  { path: '/philippines-study/cebu/target-global-english-academy', name: '菲律宾宿务TARGET Global English Academy', brand: 'TARGET', quote: true },
+  { path: '/philippines-study/cebu/global-language-cebu', name: '菲律宾宿务GLC语言学校（Global Language Cebu）', brand: 'GLC', aliases: 'Global Language Cebu', quote: true },
+  { path: '/philippines-study/cebu/ciec', name: '菲律宾宿务CIEC语言学校', brand: 'CIEC', quote: true },
+  { path: '/philippines-study/cebu/glant', name: '菲律宾宿务GLANT语言学校', brand: 'GLANT', quote: false },
+  { path: '/philippines-study/cebu/cij-academy-premium-campus', name: '菲律宾宿务CIJ Academy Premium校区', brand: 'CIJ Premium', aliases: 'CIJ Academy', quote: false },
+  { path: '/philippines-study/cebu/3d-academy', name: '菲律宾宿务3D Academy语言学校', brand: '3D Academy', quote: false },
+  { path: '/philippines-study/cebu/curious-world-academy', name: '菲律宾宿务Curious World Academy', brand: 'Curious World', quote: false },
+  { path: '/philippines-study/cebu/ethos-language-school', name: '菲律宾宿务ETHOS语言学校', brand: 'ETHOS', aliases: 'ETHOS Language School', quote: false },
+  { path: '/philippines-study/cebu/first-english-global-college', name: '菲律宾宿务First English Global College', brand: 'First English', quote: false },
+  { path: '/philippines-study/cebu/genius-english-academy', name: '菲律宾宿务Genius English Academy语言学校', brand: 'Genius English', quote: false },
+  { path: '/philippines-study/cebu/howdy-english-academy', name: '菲律宾宿务Howdy English Academy语言学校', brand: 'Howdy', quote: false },
+  { path: '/philippines-study/cebu/lapulapu', name: '菲律宾宿务LCIC大学英语项目', brand: 'LCIC', aliases: 'Lapulapu-Cebu International College', quote: false },
+  { path: '/philippines-study/cebu/qqenglish-beachfront-campus', name: '菲律宾宿务QQEnglish Beachfront校区', brand: 'QQEnglish', quote: false },
+  { path: '/philippines-study/cebu/stargate-global-education', name: '菲律宾宿务STARGATE Global Education', brand: 'STARGATE', quote: false },
+  { path: '/philippines-study/cebu/winning-english-academy', name: '菲律宾宿务Winning English Academy', brand: 'Winning', quote: false },
+  { path: '/philippines-study/boracay/boracay-coco-english-academy', name: '菲律宾长滩岛Boracay Coco English Academy', brand: 'Coco English', quote: false },
+  { path: '/philippines-study/boracay/paradise-english-boracay-language-institute', name: '菲律宾长滩岛Paradise English语言学校', brand: 'Paradise English', quote: false },
+  { path: '/philippines-study/clark/talk-academy', name: '菲律宾克拉克TALK Academy语言学校', brand: 'TALK Academy', quote: false },
+  { path: '/philippines-study/iloilo/gitc-college-international-language-center', name: '菲律宾伊洛伊洛GITC College语言学校', brand: 'GITC', quote: false },
+  { path: '/philippines-study/iloilo/we-academy', name: '菲律宾伊洛伊洛WE Academy语言学校', brand: 'WE Academy', quote: false },
+];
+
+for (const school of SCHOOL_DETAIL_SEO) {
+  if (SEO_PAGES[school.path]) {
+    continue;
+  }
+  const city = SCHOOL_CITY_NAMES[school.path.split('/')[2]] ?? '菲律宾';
+  SEO_PAGES[school.path] = {
+    title: `${school.name} | ${school.quote ? '课程住宿费用与报价' : '课程住宿与费用参考'}`,
+    description: school.quote
+      ? `${school.name}介绍：课程设置、住宿房型、费用明细与校园环境，可在线计算报价并保存报价图片；思达启航提供${city}游学选校与申请咨询。`
+      : `${school.name}介绍：课程设置、住宿房型、费用参考与校园环境；思达启航提供${city}游学选校与申请咨询。`,
+    keywords: [
+      school.brand,
+      school.aliases,
+      `${school.brand}费用`,
+      school.quote ? `${school.brand}报价` : `${school.brand}学费`,
+      `${city}语言学校`,
+      `菲律宾${city}游学`,
+    ]
+      .filter(Boolean)
+      .join(', '),
+    image: school.image,
+  };
+}
+
+/** City-level fallbacks for detail pages without their own entry, checked in order. */
+export const SECTION_SEO: Array<{ prefix: string; page: SeoPage }> = [
+  {
+    prefix: '/philippines-study/cebu/cia-cebu-international-academy/student-reviews/',
+    page: {
+      title: 'CIA学生反馈 | 宿务英语游学真实体验',
+      description: '阅读CIA学生在课堂适应、口语提升、宿务生活与文化体验方面的中文反馈整理。',
+      keywords: 'CIA学生反馈, 宿务游学体验, 菲律宾英语学习体验, CIA语言学校',
+      image: '/assets/cia/student-reviews/review-city-night.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/cebu/',
+    page: {
+      title: '宿务菲律宾语言学校详情 | 课程费用住宿咨询',
+      description: '查看宿务菲律宾语言学校详情，了解课程设置、住宿房型、费用组成、校园环境和适合人群。',
+      keywords: '宿务语言学校详情, 菲律宾语言学校费用, 宿务英语学校, 菲律宾留学咨询',
+      image: '/assets/cia/campus-building.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/baguio/',
+    page: {
+      title: '碧瑶菲律宾语言学校详情 | 斯巴达英语课程咨询',
+      description: '查看碧瑶菲律宾语言学校详情，了解斯巴达课程、雅思备考、住宿费用、校园管理和适合人群。',
+      keywords: '碧瑶语言学校详情, 菲律宾斯巴达学校, 碧瑶雅思学校, 菲律宾英语游学',
+      image: '/assets/philippines/baguio-study-hero.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/clark/',
+    page: {
+      title: '克拉克菲律宾语言学校详情 | 外师亲子英语课程咨询',
+      description: '查看克拉克菲律宾语言学校详情，了解外师比例、亲子课程、住宿环境、费用组成和适合人群。',
+      keywords: '克拉克语言学校详情, 菲律宾亲子游学, 克拉克英语学校, 菲律宾外教课程',
+      image: '/assets/philippines/clark-study-hero.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/manila/',
+    page: {
+      title: '马尼拉菲律宾语言学校详情 | 商务英语课程咨询',
+      description: '查看马尼拉菲律宾语言学校详情，了解商务英语、城市生活、课程设置、费用组成和申请建议。',
+      keywords: '马尼拉语言学校详情, 菲律宾商务英语, 马尼拉英语学校, 菲律宾留学咨询',
+      image: '/assets/philippines/manila-study-hero.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/iloilo/',
+    page: {
+      title: '伊洛伊洛菲律宾语言学校详情 | ESL课程费用住宿咨询',
+      description: '查看伊洛伊洛菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
+      keywords: '伊洛伊洛语言学校详情, Iloilo英语学校, 菲律宾ESL学校, 菲律宾英语游学',
+      image: '/assets/philippines/baguio-study-hero.webp',
+    },
+  },
+  {
+    prefix: '/philippines-study/bacolod/',
+    page: {
+      title: '巴科洛德菲律宾语言学校详情 | 低预算ESL课程咨询',
+      description: '查看巴科洛德菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
+      keywords: '巴科洛德语言学校详情, Bacolod英语学校, 菲律宾低预算ESL学校, 菲律宾英语游学',
+      image: '/assets/philippines/baguio-study-hero.webp',
+    },
+  },
+];
+
+/** The document title shown for a page: appends the site name unless already present or an article. */
+export function seoTitle(page: SeoPage): string {
+  return page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
+}
+
 @Injectable({ providedIn: 'root' })
 export class SeoService {
   constructor(
@@ -471,7 +619,7 @@ export class SeoService {
   private applySeoForUrl(rawUrl: string): void {
     const path = this.normalizePath(rawUrl);
     const page = SEO_PAGES[path] ?? this.findSectionSeo(path) ?? DEFAULT_SEO;
-    const title = page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
+    const title = seoTitle(page);
     const canonicalUrl = this.absoluteUrl(path);
     const imageUrl = this.absoluteUrl(page.image ?? DEFAULT_IMAGE);
 
@@ -494,70 +642,7 @@ export class SeoService {
   }
 
   private findSectionSeo(path: string): SeoPage | undefined {
-    if (path.startsWith('/philippines-study/cebu/cia-cebu-international-academy/student-reviews/')) {
-      return {
-        title: 'CIA学生反馈 | 宿务英语游学真实体验',
-        description: '阅读CIA学生在课堂适应、口语提升、宿务生活与文化体验方面的中文反馈整理。',
-        keywords: 'CIA学生反馈, 宿务游学体验, 菲律宾英语学习体验, CIA语言学校',
-        image: '/assets/cia/student-reviews/review-city-night.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/cebu/')) {
-      return {
-        title: '宿务菲律宾语言学校详情 | 课程费用住宿咨询',
-        description: '查看宿务菲律宾语言学校详情，了解课程设置、住宿房型、费用组成、校园环境和适合人群。',
-        keywords: '宿务语言学校详情, 菲律宾语言学校费用, 宿务英语学校, 菲律宾留学咨询',
-        image: '/assets/cia/campus-building.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/baguio/')) {
-      return {
-        title: '碧瑶菲律宾语言学校详情 | 斯巴达英语课程咨询',
-        description: '查看碧瑶菲律宾语言学校详情，了解斯巴达课程、雅思备考、住宿费用、校园管理和适合人群。',
-        keywords: '碧瑶语言学校详情, 菲律宾斯巴达学校, 碧瑶雅思学校, 菲律宾英语游学',
-        image: '/assets/philippines/baguio-study-hero.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/clark/')) {
-      return {
-        title: '克拉克菲律宾语言学校详情 | 外师亲子英语课程咨询',
-        description: '查看克拉克菲律宾语言学校详情，了解外师比例、亲子课程、住宿环境、费用组成和适合人群。',
-        keywords: '克拉克语言学校详情, 菲律宾亲子游学, 克拉克英语学校, 菲律宾外教课程',
-        image: '/assets/philippines/clark-study-hero.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/manila/')) {
-      return {
-        title: '马尼拉菲律宾语言学校详情 | 商务英语课程咨询',
-        description: '查看马尼拉菲律宾语言学校详情，了解商务英语、城市生活、课程设置、费用组成和申请建议。',
-        keywords: '马尼拉语言学校详情, 菲律宾商务英语, 马尼拉英语学校, 菲律宾留学咨询',
-        image: '/assets/philippines/manila-study-hero.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/iloilo/')) {
-      return {
-        title: '伊洛伊洛菲律宾语言学校详情 | ESL课程费用住宿咨询',
-        description: '查看伊洛伊洛菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
-        keywords: '伊洛伊洛语言学校详情, Iloilo英语学校, 菲律宾ESL学校, 菲律宾英语游学',
-        image: '/assets/philippines/baguio-study-hero.webp',
-      };
-    }
-
-    if (path.startsWith('/philippines-study/bacolod/')) {
-      return {
-        title: '巴科洛德菲律宾语言学校详情 | 低预算ESL课程咨询',
-        description: '查看巴科洛德菲律宾语言学校详情，了解ESL、考试课程、住宿费用、校园管理和适合人群。',
-        keywords: '巴科洛德语言学校详情, Bacolod英语学校, 菲律宾低预算ESL学校, 菲律宾英语游学',
-        image: '/assets/philippines/baguio-study-hero.webp',
-      };
-    }
-
-    return undefined;
+    return SECTION_SEO.find((section) => path.startsWith(section.prefix))?.page;
   }
 
   private normalizePath(rawUrl: string): string {
