@@ -354,7 +354,24 @@ app.MapControllers();
 // crawlers and link previews (Baidu, WeChat) that do not run JavaScript. See SpaSeoHtmlRenderer.
 app.MapFallback((HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
 {
-  var html = seoHtml.Render(context.Request.Path.Value ?? "/", GetPublicOrigin(context.Request, app.Configuration));
+  var path = context.Request.Path.Value ?? "/";
+
+  // A wwwroot folder with its own index.html (for example /study60/) is a separate static site.
+  // Endpoint routing picks this fallback before UseDefaultFiles can rewrite the directory request,
+  // so serve that index.html here, after redirecting to the trailing slash its relative links need.
+  var staticSiteIndex = FindStaticSiteIndex(app.Environment, path);
+  if (staticSiteIndex != null)
+  {
+    if (!path.EndsWith('/'))
+    {
+      return Results.Redirect($"{path}/{context.Request.QueryString}", permanent: true);
+    }
+
+    context.Response.Headers.CacheControl = "no-cache";
+    return Results.File(staticSiteIndex, "text/html; charset=utf-8");
+  }
+
+  var html = seoHtml.Render(path, GetPublicOrigin(context.Request, app.Configuration));
   if (html == null)
   {
     return Results.NotFound();
@@ -365,6 +382,19 @@ app.MapFallback((HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
 });
 
 app.Run();
+
+static string? FindStaticSiteIndex(IWebHostEnvironment environment, string requestPath)
+{
+  var directory = requestPath.Trim('/');
+  if (directory.Length == 0)
+  {
+    return null;
+  }
+
+  // The physical provider rejects ".." and absolute paths, so this cannot leave wwwroot.
+  var index = environment.WebRootFileProvider.GetFileInfo($"{directory}/index.html");
+  return index.Exists && !index.IsDirectory ? index.PhysicalPath : null;
+}
 
 static string GetPublicOrigin(HttpRequest request, IConfiguration configuration)
 {
