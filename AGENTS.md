@@ -453,6 +453,10 @@ The pickup guide displays saved BESA T1 B6, T3 BAY 7 and Clark Terminal 2 BAY 3 
 
 The Baguio pickup guide menu entry is under 游学指南 beside 菲律宾游学指南 (not the Baguio school menu); its route and school-page links remain unchanged.
 
+## Philippines service-process guide (2026-11-17)
+
+`/philippines-study/service-process` (menu 菲律宾游学 → 按需求选择, beside 菲律宾游学常见问题; the navbar's `getPhilippinesNeedLinks` lists it by id) is the compiled 菲律宾游学报名及抵达全流程指引: selling-point tags, 4 stages / 15 steps with optional timing tags, the key-date timeline (horizontal on desktop, vertical below 960px), closing strip and contact block, all as HTML text (the user's design image was a layout reference only; never replace it with a picture). Edit the text in the pure `pages/philippines/service-process/service-process-content.ts`; the component also adds a schema.org `HowTo` script built from that same data and removes it when the visitor leaves. Always write 思达启航, never 思达. The design's official-website line is deliberately omitted because visitors are already on the site. Its brand colours are page-local CSS variables; Noto Sans SC and Montserrat are only used when installed on the visitor's device and are not self-hosted. Route, navigation, SEO, breadcrumb label and sitemap are synchronized. No database, calculator or employee revision is involved.
+
 ## BESA / CALA 2027 peak surcharge (2026-10-26)
 
 The joint BESA/CALA notice changes the ordinary peak-season surcharge for member academies from 40 dollars per student/week through 2026 to 60 dollars per student/week from 2027. `association-peak-surcharge.ts` is the shared year-sensitive rate authority for completed member-school calculators. It de-duplicates each student's course and accommodation weeks, and the surcharge remains outside registration waivers, fixed promotions and percentage discounts. Employee-published content may define confirmed date ranges but cannot restore the old 40-dollar 2027 rate.

@@ -361,6 +361,14 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾留学费用, 菲律宾游学费用, 菲律宾语言学校费用, 宿务游学费用, 菲律宾英语学校价格',
     image: '/assets/philippines/home-school-ev.webp',
   },
+  '/philippines-study/service-process': {
+    title: '菲律宾游学报名及抵达全流程指引｜4阶段15步与关键时间节点',
+    description:
+      '思达启航菲律宾游学标准服务流程：从付定金、注册学位、办理签证与机票、E-travel代填、购买境外保险，到抵达报到和在校协助，4个阶段15个步骤，附入学前90天起办签证、入学前2–4周付尾款等关键时间节点。',
+    keywords:
+      '菲律宾游学流程, 菲律宾游学报名流程, 菲律宾游学签证, 菲律宾E-travel, 菲律宾游学行前准备, 菲律宾游学时间安排, 思达启航',
+    image: '/assets/philippines/cebu-study-hero.webp',
+  },
   '/philippines-study/baguio/airport-pickup': {
     title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',
     description: '查看2026及2027碧瑶BESA指定接机日期、马尼拉和克拉克班次、集合点、现行3000比索费用、eTravel顾问办理及航班延误处理。',
@@ -771,6 +779,7 @@ export class SeoService {
       'gitc-college-international-language-center': '菲律宾伊洛伊洛GITC College语言学校',
       'e-room-language-center': '菲律宾巴科洛德E-Room Language Center',
       cost: '费用',
+      'service-process': '服务流程',
       faq: '常见问题',
       offers: '优惠',
       'by-city': '按城市选校',

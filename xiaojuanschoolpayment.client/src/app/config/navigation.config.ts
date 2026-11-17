@@ -687,6 +687,12 @@ export const mainNavigation: NavigationItem[] = [
         type: '活动页',
       },
       {
+        id: 'philippines-service-process',
+        label: '菲律宾游学服务流程',
+        route: '/philippines-study/service-process',
+        type: '服务流程页',
+      },
+      {
         id: 'philippines-faq',
         label: '菲律宾游学常见问题',
         route: '/philippines-study/faq',
