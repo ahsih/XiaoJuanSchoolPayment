@@ -4,6 +4,8 @@ export interface NavigationItem {
   route: string;
   type?: string;
   note?: string;
+  /** A static page outside the Angular app (for example /study60/): link with a full page load. */
+  external?: boolean;
   children?: NavigationItem[];
 }
 
@@ -851,6 +853,13 @@ export const mainNavigation: NavigationItem[] = [
         label: '碧瑶接机指南',
         route: '/philippines-study/baguio/airport-pickup',
         type: 'SEO指南页',
+      },
+      {
+        id: 'study60-english-plan',
+        label: '游学前60天英语学习',
+        route: '/study60/',
+        type: '学习工具',
+        external: true,
       },
       {
         id: 'online-english-guide',

@@ -1,0 +1,5307 @@
+{
+"jobs": {
+"day01-try.mp3": [
+"My name is …",
+"af_heart",
+0.85
+],
+"day01-w1.mp3": [
+"name.",
+"af_heart",
+0.85
+],
+"day01-w2.mp3": [
+"work.",
+"af_heart",
+0.85
+],
+"day01-w3.mp3": [
+"from.",
+"af_heart",
+0.85
+],
+"day01-w4.mp3": [
+"learn.",
+"af_heart",
+0.85
+],
+"day01-w5.mp3": [
+"China.",
+"af_heart",
+0.85
+],
+"day01-w6.mp3": [
+"improve.",
+"af_heart",
+0.85
+],
+"day01-ex1.mp3": [
+"My name is Li Ming.",
+"af_heart",
+0.85
+],
+"day01-ex2.mp3": [
+"My name is Amy.",
+"af_heart",
+0.85
+],
+"day01-s2.mp3": [
+"I'm from China.",
+"af_heart",
+0.85
+],
+"day01-s3.mp3": [
+"I work in … I'm a …",
+"af_heart",
+0.85
+],
+"day01-s4.mp3": [
+"I want to improve my English.",
+"af_heart",
+0.85
+],
+"day01-d1.mp3": [
+"Hi! What's your name?",
+"am_michael",
+0.95
+],
+"day01-d2.mp3": [
+"My name is Jenny.",
+"af_heart",
+0.95
+],
+"day01-d3.mp3": [
+"Where are you from?",
+"am_michael",
+0.95
+],
+"day01-d4.mp3": [
+"I'm from China. I want to improve my English.",
+"af_heart",
+0.95
+],
+"day02-try.mp3": [
+"My phone number is …",
+"af_heart",
+0.85
+],
+"day02-w1.mp3": [
+"zero.",
+"af_heart",
+0.85
+],
+"day02-w2.mp3": [
+"thirty.",
+"af_heart",
+0.85
+],
+"day02-w3.mp3": [
+"ten.",
+"af_heart",
+0.85
+],
+"day02-w4.mp3": [
+"hundred.",
+"af_heart",
+0.85
+],
+"day02-w5.mp3": [
+"thirteen.",
+"af_heart",
+0.85
+],
+"day02-w6.mp3": [
+"room number.",
+"af_heart",
+0.85
+],
+"day02-ex1.mp3": [
+"My room number is three oh five.",
+"af_heart",
+0.85
+],
+"day02-s3.mp3": [
+"Could you repeat the number?",
+"af_heart",
+0.85
+],
+"day02-s4.mp3": [
+"Is that thirteen or thirty?",
+"af_heart",
+0.85
+],
+"day02-d1.mp3": [
+"What's your room number?",
+"am_michael",
+0.95
+],
+"day02-d2.mp3": [
+"Room three oh five.",
+"af_heart",
+0.95
+],
+"day02-d3.mp3": [
+"Three zero five?",
+"am_michael",
+0.95
+],
+"day02-d4.mp3": [
+"Yes, that's right.",
+"af_heart",
+0.95
+],
+"day03-try.mp3": [
+"Today is Monday.",
+"af_heart",
+0.85
+],
+"day03-w1.mp3": [
+"today.",
+"af_heart",
+0.85
+],
+"day03-w2.mp3": [
+"time.",
+"af_heart",
+0.85
+],
+"day03-w3.mp3": [
+"tomorrow.",
+"af_heart",
+0.85
+],
+"day03-w4.mp3": [
+"start.",
+"af_heart",
+0.85
+],
+"day03-w5.mp3": [
+"Monday.",
+"af_heart",
+0.85
+],
+"day03-w6.mp3": [
+"finish.",
+"af_heart",
+0.85
+],
+"day03-ex1.mp3": [
+"It starts at nine.",
+"af_heart",
+0.85
+],
+"day03-ex2.mp3": [
+"It finishes at five.",
+"af_heart",
+0.85
+],
+"day03-s2.mp3": [
+"My class starts at eight o'clock.",
+"af_heart",
+0.85
+],
+"day03-s3.mp3": [
+"What time does it finish?",
+"af_heart",
+0.85
+],
+"day03-s4.mp3": [
+"See you tomorrow.",
+"af_heart",
+0.85
+],
+"day03-d1.mp3": [
+"What day is it today?",
+"am_michael",
+0.95
+],
+"day03-d2.mp3": [
+"It's Monday.",
+"af_heart",
+0.95
+],
+"day03-d3.mp3": [
+"What time is your next class?",
+"am_michael",
+0.95
+],
+"day03-d4.mp3": [
+"It starts at ten.",
+"af_heart",
+0.95
+],
+"day04-try.mp3": [
+"Where is Arrivals?",
+"af_heart",
+0.85
+],
+"day04-w1.mp3": [
+"arrival.",
+"af_heart",
+0.85
+],
+"day04-w2.mp3": [
+"gate.",
+"af_heart",
+0.85
+],
+"day04-w3.mp3": [
+"departure.",
+"af_heart",
+0.85
+],
+"day04-w4.mp3": [
+"flight.",
+"af_heart",
+0.85
+],
+"day04-w5.mp3": [
+"terminal.",
+"af_heart",
+0.85
+],
+"day04-w6.mp3": [
+"transfer.",
+"af_heart",
+0.85
+],
+"day04-ex1.mp3": [
+"Where is Gate 5?",
+"af_heart",
+0.85
+],
+"day04-ex2.mp3": [
+"Where is the exit?",
+"af_heart",
+0.85
+],
+"day04-s2.mp3": [
+"Which terminal do I need?",
+"af_heart",
+0.85
+],
+"day04-s4.mp3": [
+"I have a connecting flight.",
+"af_heart",
+0.85
+],
+"day04-d1.mp3": [
+"Excuse me, where is Arrivals?",
+"af_heart",
+0.95
+],
+"day04-d2.mp3": [
+"Go straight and turn left.",
+"am_michael",
+0.95
+],
+"day04-d3.mp3": [
+"Is it far?",
+"af_heart",
+0.95
+],
+"day04-d4.mp3": [
+"No. It's about two minutes.",
+"am_michael",
+0.95
+],
+"day05-try.mp3": [
+"Here is my passport.",
+"af_heart",
+0.85
+],
+"day05-w1.mp3": [
+"passport.",
+"af_heart",
+0.85
+],
+"day05-w2.mp3": [
+"carousel.",
+"af_heart",
+0.85
+],
+"day05-w3.mp3": [
+"immigration.",
+"af_heart",
+0.85
+],
+"day05-w4.mp3": [
+"study.",
+"af_heart",
+0.85
+],
+"day05-w5.mp3": [
+"baggage.",
+"af_heart",
+0.85
+],
+"day05-w6.mp3": [
+"missing.",
+"af_heart",
+0.85
+],
+"day05-ex1.mp3": [
+"I'm here to study English.",
+"af_heart",
+0.85
+],
+"day05-ex2.mp3": [
+"I'm here to travel.",
+"af_heart",
+0.85
+],
+"day05-s3.mp3": [
+"Where is baggage claim?",
+"af_heart",
+0.85
+],
+"day05-s4.mp3": [
+"My bag is missing.",
+"af_heart",
+0.85
+],
+"day05-d1.mp3": [
+"What is the purpose of your visit?",
+"am_michael",
+0.95
+],
+"day05-d2.mp3": [
+"I'm here to study English.",
+"af_heart",
+0.95
+],
+"day05-d3.mp3": [
+"How long will you stay?",
+"am_michael",
+0.95
+],
+"day05-d4.mp3": [
+"For four weeks.",
+"af_heart",
+0.95
+],
+"day06-try.mp3": [
+"I'm at the pickup point.",
+"af_heart",
+0.85
+],
+"day06-w1.mp3": [
+"pickup point.",
+"af_heart",
+0.85
+],
+"day06-w2.mp3": [
+"address.",
+"af_heart",
+0.85
+],
+"day06-w3.mp3": [
+"car.",
+"af_heart",
+0.85
+],
+"day06-w4.mp3": [
+"right.",
+"af_heart",
+0.85
+],
+"day06-w5.mp3": [
+"get in.",
+"af_heart",
+0.85
+],
+"day06-w6.mp3": [
+"plate number.",
+"af_heart",
+0.85
+],
+"day06-ex1.mp3": [
+"I'm going to CIA.",
+"af_heart",
+0.85
+],
+"day06-ex2.mp3": [
+"I'm going to this hotel.",
+"af_heart",
+0.85
+],
+"day06-s2.mp3": [
+"I'm going to this address.",
+"af_heart",
+0.85
+],
+"day06-s3.mp3": [
+"Is this the right car?",
+"af_heart",
+0.85
+],
+"day06-s4.mp3": [
+"How long will it take?",
+"af_heart",
+0.85
+],
+"day06-d1.mp3": [
+"Hi, are you Jenny?",
+"am_michael",
+0.95
+],
+"day06-d2.mp3": [
+"Yes. Is this the car for CIA?",
+"af_heart",
+0.95
+],
+"day06-d3.mp3": [
+"Yes. Please get in.",
+"am_michael",
+0.95
+],
+"day06-d4.mp3": [
+"Thank you. How long will it take?",
+"af_heart",
+0.95
+],
+"day07-try.mp3": [
+"I'm here to check in.",
+"af_heart",
+0.85
+],
+"day07-w1.mp3": [
+"check in.",
+"af_heart",
+0.85
+],
+"day07-w2.mp3": [
+"booking.",
+"af_heart",
+0.85
+],
+"day07-w3.mp3": [
+"room.",
+"af_heart",
+0.85
+],
+"day07-w4.mp3": [
+"room key.",
+"af_heart",
+0.85
+],
+"day07-w5.mp3": [
+"orientation.",
+"af_heart",
+0.85
+],
+"day07-w6.mp3": [
+"welcome.",
+"af_heart",
+0.85
+],
+"day07-ex2.mp3": [
+"I'm here for orientation.",
+"af_heart",
+0.85
+],
+"day07-s2.mp3": [
+"I have a booking under …",
+"af_heart",
+0.85
+],
+"day07-s3.mp3": [
+"Where is my room?",
+"af_heart",
+0.85
+],
+"day07-s4.mp3": [
+"What time is orientation?",
+"af_heart",
+0.85
+],
+"day07-d1.mp3": [
+"Welcome! May I have your name?",
+"am_michael",
+0.95
+],
+"day07-d2.mp3": [
+"My name is Li Ming. I'm here to check in.",
+"af_heart",
+0.95
+],
+"day07-d3.mp3": [
+"Here is your room key.",
+"am_michael",
+0.95
+],
+"day07-d4.mp3": [
+"Thank you. What time is orientation?",
+"af_heart",
+0.95
+],
+"day08-try.mp3": [
+"The air conditioner isn't working.",
+"af_heart",
+0.85
+],
+"day08-w1.mp3": [
+"air conditioner.",
+"af_heart",
+0.85
+],
+"day08-w3.mp3": [
+"Wi-Fi.",
+"af_heart",
+0.85
+],
+"day08-w4.mp3": [
+"shower.",
+"af_heart",
+0.85
+],
+"day08-w5.mp3": [
+"hot water.",
+"af_heart",
+0.85
+],
+"day08-w6.mp3": [
+"broken.",
+"af_heart",
+0.85
+],
+"day08-ex1.mp3": [
+"The Wi-Fi isn't working.",
+"af_heart",
+0.85
+],
+"day08-ex2.mp3": [
+"The shower isn't working.",
+"af_heart",
+0.85
+],
+"day08-s2.mp3": [
+"What's the Wi-Fi password?",
+"af_heart",
+0.85
+],
+"day08-s3.mp3": [
+"There is no hot water.",
+"af_heart",
+0.85
+],
+"day08-s4.mp3": [
+"Could someone help me?",
+"af_heart",
+0.85
+],
+"day08-d1.mp3": [
+"Excuse me, my room key doesn't work.",
+"af_heart",
+0.95
+],
+"day08-d2.mp3": [
+"What is your room number?",
+"am_michael",
+0.95
+],
+"day08-d4.mp3": [
+"Okay. We'll check it now.",
+"am_michael",
+0.95
+],
+"day09-try.mp3": [
+"I'd like this, please.",
+"af_heart",
+0.85
+],
+"day09-w1.mp3": [
+"rice.",
+"af_heart",
+0.85
+],
+"day09-w2.mp3": [
+"chicken.",
+"af_heart",
+0.85
+],
+"day09-w3.mp3": [
+"water.",
+"af_heart",
+0.85
+],
+"day09-w4.mp3": [
+"spicy.",
+"af_heart",
+0.85
+],
+"day09-w5.mp3": [
+"allergic.",
+"af_heart",
+0.85
+],
+"day09-w6.mp3": [
+"nuts.",
+"af_heart",
+0.85
+],
+"day09-ex2.mp3": [
+"I'd like some water.",
+"af_heart",
+0.85
+],
+"day09-s2.mp3": [
+"Not spicy, please.",
+"af_heart",
+0.85
+],
+"day09-s3.mp3": [
+"I'm allergic to nuts.",
+"af_heart",
+0.85
+],
+"day09-s4.mp3": [
+"Can I have some water?",
+"af_heart",
+0.85
+],
+"day09-d1.mp3": [
+"What would you like?",
+"am_michael",
+0.95
+],
+"day09-d2.mp3": [
+"I'd like chicken and rice, please.",
+"af_heart",
+0.95
+],
+"day09-d3.mp3": [
+"Spicy?",
+"am_michael",
+0.95
+],
+"day09-d4.mp3": [
+"No, thank you. And some water, please.",
+"af_heart",
+0.95
+],
+"day10-try.mp3": [
+"Where can I find water?",
+"af_heart",
+0.85
+],
+"day10-w1.mp3": [
+"find.",
+"af_heart",
+0.85
+],
+"day10-w2.mp3": [
+"bottle.",
+"af_heart",
+0.85
+],
+"day10-w3.mp3": [
+"charger.",
+"af_heart",
+0.85
+],
+"day10-w4.mp3": [
+"tissue.",
+"af_heart",
+0.85
+],
+"day10-w5.mp3": [
+"pack.",
+"af_heart",
+0.85
+],
+"day10-w6.mp3": [
+"pay.",
+"af_heart",
+0.85
+],
+"day10-ex1.mp3": [
+"Where can I find tissues?",
+"af_heart",
+0.85
+],
+"day10-ex2.mp3": [
+"Where can I find a charger?",
+"af_heart",
+0.85
+],
+"day10-s2.mp3": [
+"I'd like two bottles.",
+"af_heart",
+0.85
+],
+"day10-s3.mp3": [
+"Do you have a phone charger?",
+"af_heart",
+0.85
+],
+"day10-s4.mp3": [
+"Can I pay by card?",
+"af_heart",
+0.85
+],
+"day10-d1.mp3": [
+"Excuse me, where can I find tissues?",
+"af_heart",
+0.95
+],
+"day10-d2.mp3": [
+"Aisle three, on the left.",
+"am_michael",
+0.95
+],
+"day10-d3.mp3": [
+"Thank you. I'll take two packs.",
+"af_heart",
+0.95
+],
+"day10-d4.mp3": [
+"Anything else?",
+"am_michael",
+0.95
+],
+"day11-try.mp3": [
+"How much is this?",
+"af_heart",
+0.85
+],
+"day11-w1.mp3": [
+"price.",
+"af_heart",
+0.85
+],
+"day11-w2.mp3": [
+"fitting room.",
+"af_heart",
+0.85
+],
+"day11-w3.mp3": [
+"size.",
+"af_heart",
+0.85
+],
+"day11-w4.mp3": [
+"expensive.",
+"af_heart",
+0.85
+],
+"day11-w5.mp3": [
+"medium.",
+"af_heart",
+0.85
+],
+"day11-w6.mp3": [
+"discount.",
+"af_heart",
+0.85
+],
+"day11-ex1.mp3": [
+"Do you have this in large?",
+"af_heart",
+0.85
+],
+"day11-ex2.mp3": [
+"Do you have a smaller size?",
+"af_heart",
+0.85
+],
+"day11-s2.mp3": [
+"Do you have this in medium?",
+"af_heart",
+0.85
+],
+"day11-s3.mp3": [
+"Can I try it on?",
+"af_heart",
+0.85
+],
+"day11-s4.mp3": [
+"It's too expensive.",
+"af_heart",
+0.85
+],
+"day11-d1.mp3": [
+"How much is this shirt?",
+"af_heart",
+0.95
+],
+"day11-d2.mp3": [
+"It's 800 pesos.",
+"am_michael",
+0.95
+],
+"day11-d3.mp3": [
+"Do you have it in medium?",
+"af_heart",
+0.95
+],
+"day11-d4.mp3": [
+"Yes. The fitting room is over there.",
+"am_michael",
+0.95
+],
+"day12-try.mp3": [
+"I'd like to pay in cash.",
+"af_heart",
+0.85
+],
+"day12-w1.mp3": [
+"cash.",
+"af_heart",
+0.85
+],
+"day12-w2.mp3": [
+"receipt.",
+"af_heart",
+0.85
+],
+"day12-w3.mp3": [
+"card.",
+"af_heart",
+0.85
+],
+"day12-w4.mp3": [
+"bill.",
+"af_heart",
+0.85
+],
+"day12-w5.mp3": [
+"change.",
+"af_heart",
+0.85
+],
+"day12-w6.mp3": [
+"coin.",
+"af_heart",
+0.85
+],
+"day12-s2.mp3": [
+"Do you accept cards?",
+"af_heart",
+0.85
+],
+"day12-s3.mp3": [
+"Here is 1, 000 pesos.",
+"af_heart",
+0.85
+],
+"day12-s4.mp3": [
+"Can I get a receipt?",
+"af_heart",
+0.85
+],
+"day12-d1.mp3": [
+"The total is 650 pesos.",
+"am_michael",
+0.95
+],
+"day12-d2.mp3": [
+"Here is 1, 000 pesos.",
+"af_heart",
+0.95
+],
+"day12-d3.mp3": [
+"Your change is 350 pesos.",
+"am_michael",
+0.95
+],
+"day12-d4.mp3": [
+"Thank you. Can I get a receipt?",
+"af_heart",
+0.95
+],
+"day13-try.mp3": [
+"Where is Room three oh five?",
+"af_heart",
+0.85
+],
+"day13-w1.mp3": [
+"left.",
+"af_heart",
+0.85
+],
+"day13-w2.mp3": [
+"near.",
+"af_heart",
+0.85
+],
+"day13-w4.mp3": [
+"far.",
+"af_heart",
+0.85
+],
+"day13-w5.mp3": [
+"straight.",
+"af_heart",
+0.85
+],
+"day13-w6.mp3": [
+"entrance.",
+"af_heart",
+0.85
+],
+"day13-ex1.mp3": [
+"Turn left.",
+"af_heart",
+0.85
+],
+"day13-ex2.mp3": [
+"Go straight and turn right.",
+"af_heart",
+0.85
+],
+"day13-s2.mp3": [
+"How can I get to the cafeteria?",
+"af_heart",
+0.85
+],
+"day13-s3.mp3": [
+"Is it far from here?",
+"af_heart",
+0.85
+],
+"day13-d1.mp3": [
+"Excuse me, where is the clinic?",
+"af_heart",
+0.95
+],
+"day13-d2.mp3": [
+"Go straight and turn right.",
+"am_michael",
+0.95
+],
+"day13-d3.mp3": [
+"Is it near the cafeteria?",
+"af_heart",
+0.95
+],
+"day13-d4.mp3": [
+"Yes. It's next to it.",
+"am_michael",
+0.95
+],
+"day14-try.mp3": [
+"I have a headache.",
+"af_heart",
+0.85
+],
+"day14-w1.mp3": [
+"headache.",
+"af_heart",
+0.85
+],
+"day14-w2.mp3": [
+"cough.",
+"af_heart",
+0.85
+],
+"day14-w3.mp3": [
+"fever.",
+"af_heart",
+0.85
+],
+"day14-w4.mp3": [
+"medicine.",
+"af_heart",
+0.85
+],
+"day14-w5.mp3": [
+"stomachache.",
+"af_heart",
+0.85
+],
+"day14-w6.mp3": [
+"clinic.",
+"af_heart",
+0.85
+],
+"day14-ex1.mp3": [
+"I have a fever.",
+"af_heart",
+0.85
+],
+"day14-ex2.mp3": [
+"I have a stomachache.",
+"af_heart",
+0.85
+],
+"day14-s2.mp3": [
+"I've had a fever since last night.",
+"af_heart",
+0.85
+],
+"day14-s3.mp3": [
+"Do you have medicine for a cough?",
+"af_heart",
+0.85
+],
+"day14-s4.mp3": [
+"How often should I take it?",
+"af_heart",
+0.85
+],
+"day14-d1.mp3": [
+"How can I help you?",
+"am_michael",
+0.95
+],
+"day14-d2.mp3": [
+"I have a stomachache.",
+"af_heart",
+0.95
+],
+"day14-d3.mp3": [
+"When did it start?",
+"am_michael",
+0.95
+],
+"day14-d4.mp3": [
+"This morning. How often should I take this?",
+"af_heart",
+0.95
+],
+"day15-try.mp3": [
+"Could you help me?",
+"af_heart",
+0.85
+],
+"day15-w1.mp3": [
+"help.",
+"af_heart",
+0.85
+],
+"day15-w2.mp3": [
+"please.",
+"af_heart",
+0.85
+],
+"day15-w3.mp3": [
+"lost.",
+"af_heart",
+0.85
+],
+"day15-w4.mp3": [
+"correct.",
+"af_heart",
+0.85
+],
+"day15-w5.mp3": [
+"repeat.",
+"af_heart",
+0.85
+],
+"day15-w6.mp3": [
+"emergency.",
+"af_heart",
+0.85
+],
+"day15-ex2.mp3": [
+"Could you say that again?",
+"af_heart",
+0.85
+],
+"day15-s2.mp3": [
+"I think I'm lost.",
+"af_heart",
+0.85
+],
+"day15-s4.mp3": [
+"Is this the correct place?",
+"af_heart",
+0.85
+],
+"day15-d1.mp3": [
+"Can I help you?",
+"am_michael",
+0.95
+],
+"day15-d2.mp3": [
+"Yes, please. I'm looking for the school pickup point.",
+"af_heart",
+0.95
+],
+"day15-d3.mp3": [
+"It's outside Gate 2.",
+"am_michael",
+0.95
+],
+"day15-d4.mp3": [
+"Could you say that again more slowly?",
+"af_heart",
+0.95
+],
+"day16-try.mp3": [
+"Let's start today's lesson.",
+"af_heart",
+0.85
+],
+"day16-w1.mp3": [
+"lesson.",
+"af_heart",
+0.85
+],
+"day16-w2.mp3": [
+"instruction.",
+"af_heart",
+0.85
+],
+"day16-w3.mp3": [
+"page.",
+"af_heart",
+0.85
+],
+"day16-w4.mp3": [
+"ready.",
+"af_heart",
+0.85
+],
+"day16-w5.mp3": [
+"question.",
+"af_heart",
+0.85
+],
+"day16-w6.mp3": [
+"understand.",
+"af_heart",
+0.85
+],
+"day16-ex1.mp3": [
+"Please read the text.",
+"af_heart",
+0.85
+],
+"day16-ex2.mp3": [
+"Please open your book.",
+"af_heart",
+0.85
+],
+"day16-s2.mp3": [
+"Open your book to page ten.",
+"af_heart",
+0.85
+],
+"day16-s3.mp3": [
+"Please answer the question.",
+"af_heart",
+0.85
+],
+"day16-s4.mp3": [
+"Are you ready? — Yes, I am.",
+"af_heart",
+0.85
+],
+"day16-d1.mp3": [
+"Good morning. Are you ready?",
+"am_michael",
+0.95
+],
+"day16-d2.mp3": [
+"Yes, I am.",
+"af_heart",
+0.95
+],
+"day16-d3.mp3": [
+"Open your book to page ten.",
+"am_michael",
+0.95
+],
+"day16-d4.mp3": [
+"Okay. Page ten.",
+"af_heart",
+0.95
+],
+"day17-try.mp3": [
+"Please read aloud.",
+"af_heart",
+0.85
+],
+"day17-w1.mp3": [
+"read.",
+"af_heart",
+0.85
+],
+"day17-w2.mp3": [
+"aloud.",
+"af_heart",
+0.85
+],
+"day17-w3.mp3": [
+"listen.",
+"af_heart",
+0.85
+],
+"day17-w4.mp3": [
+"point.",
+"af_heart",
+0.85
+],
+"day17-w6.mp3": [
+"underline.",
+"af_heart",
+0.85
+],
+"day17-ex1.mp3": [
+"Repeat after me.",
+"af_heart",
+0.85
+],
+"day17-ex2.mp3": [
+"Read aloud.",
+"af_heart",
+0.85
+],
+"day17-s2.mp3": [
+"Listen carefully.",
+"af_heart",
+0.85
+],
+"day17-s4.mp3": [
+"Underline the new words.",
+"af_heart",
+0.85
+],
+"day17-d1.mp3": [
+"Listen first. Then repeat after me.",
+"am_michael",
+0.95
+],
+"day17-d2.mp3": [
+"Okay.",
+"af_heart",
+0.95
+],
+"day17-d3.mp3": [
+"Comfortable.",
+"am_michael",
+0.95
+],
+"day17-d4.mp3": [
+"Comfortable.",
+"af_heart",
+0.95
+],
+"day18-try.mp3": [
+"Answer question one.",
+"af_heart",
+0.85
+],
+"day18-w1.mp3": [
+"answer.",
+"af_heart",
+0.85
+],
+"day18-w2.mp3": [
+"circle.",
+"af_heart",
+0.85
+],
+"day18-w3.mp3": [
+"write.",
+"af_heart",
+0.85
+],
+"day18-w4.mp3": [
+"match.",
+"af_heart",
+0.85
+],
+"day18-w5.mp3": [
+"choose.",
+"af_heart",
+0.85
+],
+"day18-w6.mp3": [
+"blank.",
+"af_heart",
+0.85
+],
+"day18-ex1.mp3": [
+"Choose one answer.",
+"af_heart",
+0.85
+],
+"day18-ex2.mp3": [
+"Write your answer here.",
+"af_heart",
+0.85
+],
+"day18-s3.mp3": [
+"Choose the best answer.",
+"af_heart",
+0.85
+],
+"day18-s4.mp3": [
+"Match the words and pictures.",
+"af_heart",
+0.85
+],
+"day18-d1.mp3": [
+"Choose the best answer.",
+"am_michael",
+0.95
+],
+"day18-d2.mp3": [
+"A or B?",
+"af_heart",
+0.95
+],
+"day18-d3.mp3": [
+"Just one. A or B?",
+"am_michael",
+0.95
+],
+"day18-d4.mp3": [
+"I choose B. Is that right?",
+"af_heart",
+0.95
+],
+"day19-try.mp3": [
+"I don't understand.",
+"af_heart",
+0.85
+],
+"day19-w2.mp3": [
+"explain.",
+"af_heart",
+0.85
+],
+"day19-w3.mp3": [
+"confused.",
+"af_heart",
+0.85
+],
+"day19-w5.mp3": [
+"part.",
+"af_heart",
+0.85
+],
+"day19-w6.mp3": [
+"example.",
+"af_heart",
+0.85
+],
+"day19-ex2.mp3": [
+"I don't understand this word.",
+"af_heart",
+0.85
+],
+"day19-s2.mp3": [
+"I don't understand this part.",
+"af_heart",
+0.85
+],
+"day19-s3.mp3": [
+"Could you explain it?",
+"af_heart",
+0.85
+],
+"day19-s4.mp3": [
+"I understand now.",
+"af_heart",
+0.85
+],
+"day19-d1.mp3": [
+"Do you understand the question?",
+"am_michael",
+0.95
+],
+"day19-d2.mp3": [
+"Not yet. I don't understand this part.",
+"af_heart",
+0.95
+],
+"day19-d3.mp3": [
+"Sure. Let me explain it.",
+"am_michael",
+0.95
+],
+"day19-d4.mp3": [
+"Thank you. I understand now.",
+"af_heart",
+0.95
+],
+"day20-try.mp3": [
+"Could you speak more slowly?",
+"af_heart",
+0.85
+],
+"day20-w1.mp3": [
+"slowly.",
+"af_heart",
+0.85
+],
+"day20-w2.mp3": [
+"clear.",
+"af_heart",
+0.85
+],
+"day20-w3.mp3": [
+"fast.",
+"af_heart",
+0.85
+],
+"day20-w4.mp3": [
+"sentence.",
+"af_heart",
+0.85
+],
+"day20-w5.mp3": [
+"speed.",
+"af_heart",
+0.85
+],
+"day20-w6.mp3": [
+"follow.",
+"af_heart",
+0.85
+],
+"day20-ex2.mp3": [
+"One sentence at a time, please.",
+"af_heart",
+0.85
+],
+"day20-s2.mp3": [
+"That was a little fast.",
+"af_heart",
+0.85
+],
+"day20-s4.mp3": [
+"I can follow now.",
+"af_heart",
+0.85
+],
+"day20-d1.mp3": [
+"First, read the text and tell me the main idea.",
+"am_michael",
+0.95
+],
+"day20-d2.mp3": [
+"Sorry, could you speak more slowly?",
+"af_heart",
+0.95
+],
+"day20-d3.mp3": [
+"Of course. First, read the text.",
+"am_michael",
+0.95
+],
+"day20-d4.mp3": [
+"Okay. I can follow now.",
+"af_heart",
+0.95
+],
+"day21-w1.mp3": [
+"again.",
+"af_heart",
+0.85
+],
+"day21-w2.mp3": [
+"hear.",
+"af_heart",
+0.85
+],
+"day21-w4.mp3": [
+"catch.",
+"af_heart",
+0.85
+],
+"day21-w5.mp3": [
+"miss.",
+"af_heart",
+0.85
+],
+"day21-w6.mp3": [
+"last.",
+"af_heart",
+0.85
+],
+"day21-ex2.mp3": [
+"Repeat the last word, please.",
+"af_heart",
+0.85
+],
+"day21-s2.mp3": [
+"Could you repeat the last word?",
+"af_heart",
+0.85
+],
+"day21-s3.mp3": [
+"I didn't catch that.",
+"af_heart",
+0.85
+],
+"day21-s4.mp3": [
+"One more time, please.",
+"af_heart",
+0.85
+],
+"day21-d1.mp3": [
+"What do you usually do after work?",
+"am_michael",
+0.95
+],
+"day21-d2.mp3": [
+"Sorry, I didn't catch that.",
+"af_heart",
+0.95
+],
+"day21-d3.mp3": [
+"What do you do after work?",
+"am_michael",
+0.95
+],
+"day21-d4.mp3": [
+"I usually go home and cook.",
+"af_heart",
+0.95
+],
+"day22-try.mp3": [
+"What does \"schedule\" mean?",
+"af_heart",
+0.85
+],
+"day22-w1.mp3": [
+"mean.",
+"af_heart",
+0.85
+],
+"day22-w2.mp3": [
+"phrase.",
+"af_heart",
+0.85
+],
+"day22-w3.mp3": [
+"meaning.",
+"af_heart",
+0.85
+],
+"day22-w5.mp3": [
+"word.",
+"af_heart",
+0.85
+],
+"day22-w6.mp3": [
+"use.",
+"af_heart",
+0.85
+],
+"day22-ex1.mp3": [
+"What does schedule mean?",
+"af_heart",
+0.85
+],
+"day22-ex2.mp3": [
+"What does this phrase mean?",
+"af_heart",
+0.85
+],
+"day22-s3.mp3": [
+"Can you use it in a sentence?",
+"af_heart",
+0.85
+],
+"day22-s4.mp3": [
+"I get it now.",
+"af_heart",
+0.85
+],
+"day22-d1.mp3": [
+"What does \"available\" mean?",
+"af_heart",
+0.95
+],
+"day22-d2.mp3": [
+"It means you can use or get something.",
+"am_michael",
+0.95
+],
+"day22-d3.mp3": [
+"Can you use it in a sentence?",
+"af_heart",
+0.95
+],
+"day22-d4.mp3": [
+"This room is available.",
+"am_michael",
+0.95
+],
+"day23-try.mp3": [
+"How do you pronounce this word?",
+"af_heart",
+0.85
+],
+"day23-w1.mp3": [
+"pronounce.",
+"af_heart",
+0.85
+],
+"day23-w4.mp3": [
+"syllable.",
+"af_heart",
+0.85
+],
+"day23-w5.mp3": [
+"stressed.",
+"af_heart",
+0.85
+],
+"day23-ex2.mp3": [
+"Please say it slowly.",
+"af_heart",
+0.85
+],
+"day23-s3.mp3": [
+"Which syllable is stressed?",
+"af_heart",
+0.85
+],
+"day23-s4.mp3": [
+"Let me repeat it.",
+"af_heart",
+0.85
+],
+"day23-d1.mp3": [
+"How do you pronounce \"comfortable\"?",
+"af_heart",
+0.95
+],
+"day23-d2.mp3": [
+"Comfortable. Three syllables.",
+"am_michael",
+0.95
+],
+"day23-d3.mp3": [
+"Please say it slowly.",
+"af_heart",
+0.95
+],
+"day23-d4.mp3": [
+"Comf, ta, ble.",
+"am_michael",
+0.95
+],
+"day24-try.mp3": [
+"Could you give me an example?",
+"af_heart",
+0.85
+],
+"day24-w2.mp3": [
+"situation.",
+"af_heart",
+0.85
+],
+"day24-w3.mp3": [
+"simple.",
+"af_heart",
+0.85
+],
+"day24-w5.mp3": [
+"another.",
+"af_heart",
+0.85
+],
+"day24-w6.mp3": [
+"like.",
+"af_heart",
+0.85
+],
+"day24-ex2.mp3": [
+"Another example, please.",
+"af_heart",
+0.85
+],
+"day24-s2.mp3": [
+"Could you give me a simple example?",
+"af_heart",
+0.85
+],
+"day24-s3.mp3": [
+"Can I have another example?",
+"af_heart",
+0.85
+],
+"day24-s4.mp3": [
+"Is my example correct?",
+"af_heart",
+0.85
+],
+"day24-d1.mp3": [
+"\"Usually\" means most of the time.",
+"am_michael",
+0.95
+],
+"day24-d2.mp3": [
+"Could you give me an example?",
+"af_heart",
+0.95
+],
+"day24-d3.mp3": [
+"I usually drink coffee in the morning.",
+"am_michael",
+0.95
+],
+"day24-d4.mp3": [
+"I usually take the bus. Is that correct?",
+"af_heart",
+0.95
+],
+"day25-try.mp3": [
+"Yes, I do. I like it because …",
+"af_heart",
+0.85
+],
+"day25-w1.mp3": [
+"because.",
+"af_heart",
+0.85
+],
+"day25-w2.mp3": [
+"prefer.",
+"af_heart",
+0.85
+],
+"day25-w3.mp3": [
+"usually.",
+"af_heart",
+0.85
+],
+"day25-w4.mp3": [
+"complete.",
+"af_heart",
+0.85
+],
+"day25-w5.mp3": [
+"sometimes.",
+"af_heart",
+0.85
+],
+"day25-w6.mp3": [
+"reason.",
+"af_heart",
+0.85
+],
+"day25-ex1.mp3": [
+"Yes, I do. I like it because it's relaxing.",
+"af_heart",
+0.85
+],
+"day25-s2.mp3": [
+"No, I don't. I prefer …",
+"af_heart",
+0.85
+],
+"day25-s3.mp3": [
+"I usually … after work.",
+"af_heart",
+0.85
+],
+"day25-s4.mp3": [
+"Sometimes I …",
+"af_heart",
+0.85
+],
+"day25-d1.mp3": [
+"Do you like cooking?",
+"am_michael",
+0.95
+],
+"day25-d2.mp3": [
+"Yes, I do. I cook on weekends.",
+"af_heart",
+0.95
+],
+"day25-d3.mp3": [
+"Why do you like it?",
+"am_michael",
+0.95
+],
+"day25-d4.mp3": [
+"Because it helps me relax.",
+"af_heart",
+0.95
+],
+"day26-try.mp3": [
+"Who do you live with?",
+"af_heart",
+0.85
+],
+"day26-w1.mp3": [
+"who.",
+"af_heart",
+0.85
+],
+"day26-w2.mp3": [
+"when.",
+"af_heart",
+0.85
+],
+"day26-w3.mp3": [
+"what.",
+"af_heart",
+0.85
+],
+"day26-w4.mp3": [
+"why.",
+"af_heart",
+0.85
+],
+"day26-w5.mp3": [
+"where.",
+"af_heart",
+0.85
+],
+"day26-w6.mp3": [
+"how.",
+"af_heart",
+0.85
+],
+"day26-ex1.mp3": [
+"Where do you work?",
+"af_heart",
+0.85
+],
+"day26-ex2.mp3": [
+"When do you study?",
+"af_heart",
+0.85
+],
+"day26-s2.mp3": [
+"What do you do?",
+"af_heart",
+0.85
+],
+"day26-s3.mp3": [
+"Where are you from?",
+"af_heart",
+0.85
+],
+"day26-s4.mp3": [
+"Why are you learning English?",
+"af_heart",
+0.85
+],
+"day26-d1.mp3": [
+"Where do you usually have lunch?",
+"am_michael",
+0.95
+],
+"day26-d2.mp3": [
+"Near my office.",
+"af_heart",
+0.95
+],
+"day26-d3.mp3": [
+"Who do you eat with?",
+"am_michael",
+0.95
+],
+"day26-d4.mp3": [
+"I usually eat with my coworkers.",
+"af_heart",
+0.95
+],
+"day27-try.mp3": [
+"Please correct me.",
+"af_heart",
+0.85
+],
+"day27-w2.mp3": [
+"grammar.",
+"af_heart",
+0.85
+],
+"day27-w3.mp3": [
+"pronunciation.",
+"af_heart",
+0.85
+],
+"day27-w4.mp3": [
+"naturally.",
+"af_heart",
+0.85
+],
+"day27-w5.mp3": [
+"writing.",
+"af_heart",
+0.85
+],
+"day27-ex1.mp3": [
+"Could you correct my grammar?",
+"af_heart",
+0.85
+],
+"day27-ex2.mp3": [
+"Could you correct my writing?",
+"af_heart",
+0.85
+],
+"day27-s2.mp3": [
+"Is my grammar correct?",
+"af_heart",
+0.85
+],
+"day27-s3.mp3": [
+"How can I say it more naturally?",
+"af_heart",
+0.85
+],
+"day27-s4.mp3": [
+"Could you correct my pronunciation?",
+"af_heart",
+0.85
+],
+"day27-d1.mp3": [
+"Yesterday I go to the mall.",
+"af_heart",
+0.95
+],
+"day27-d2.mp3": [
+"Say: Yesterday I went to the mall.",
+"am_michael",
+0.95
+],
+"day27-d3.mp3": [
+"Yesterday I went to the mall.",
+"af_heart",
+0.95
+],
+"day27-d4.mp3": [
+"Great! That's right.",
+"am_michael",
+0.95
+],
+"day28-try.mp3": [
+"Let me try again.",
+"af_heart",
+0.85
+],
+"day28-w1.mp3": [
+"try.",
+"af_heart",
+0.85
+],
+"day28-w2.mp3": [
+"think.",
+"af_heart",
+0.85
+],
+"day28-w5.mp3": [
+"moment.",
+"af_heart",
+0.85
+],
+"day28-ex2.mp3": [
+"Let me think.",
+"af_heart",
+0.85
+],
+"day28-s2.mp3": [
+"Give me a moment, please.",
+"af_heart",
+0.85
+],
+"day28-s3.mp3": [
+"I want to answer in a full sentence.",
+"af_heart",
+0.85
+],
+"day28-s4.mp3": [
+"Okay, I'm ready.",
+"af_heart",
+0.85
+],
+"day28-d1.mp3": [
+"Tell me about your hometown.",
+"am_michael",
+0.95
+],
+"day28-d2.mp3": [
+"Give me a moment, please.",
+"af_heart",
+0.95
+],
+"day28-d3.mp3": [
+"Sure.",
+"am_michael",
+0.95
+],
+"day28-d4.mp3": [
+"Okay, I'm ready. My hometown is …",
+"af_heart",
+0.95
+],
+"day29-try.mp3": [
+"What are we learning today?",
+"af_heart",
+0.85
+],
+"day29-w1.mp3": [
+"review.",
+"af_heart",
+0.85
+],
+"day29-w3.mp3": [
+"practice.",
+"af_heart",
+0.85
+],
+"day29-w4.mp3": [
+"paragraph.",
+"af_heart",
+0.85
+],
+"day29-w6.mp3": [
+"feedback.",
+"af_heart",
+0.85
+],
+"day29-ex1.mp3": [
+"Could you repeat the question?",
+"af_heart",
+0.85
+],
+"day29-ex2.mp3": [
+"Could you explain this word?",
+"af_heart",
+0.85
+],
+"day29-s4.mp3": [
+"What should I practice after class?",
+"af_heart",
+0.85
+],
+"day29-d1.mp3": [
+"Let's review yesterday's lesson.",
+"am_michael",
+0.95
+],
+"day29-d2.mp3": [
+"Okay. What should I read?",
+"af_heart",
+0.95
+],
+"day29-d3.mp3": [
+"Read the first paragraph aloud.",
+"am_michael",
+0.95
+],
+"day29-d4.mp3": [
+"Could you correct my pronunciation?",
+"af_heart",
+0.95
+],
+"day30-w1.mp3": [
+"compare.",
+"af_heart",
+0.85
+],
+"day30-w2.mp3": [
+"same.",
+"af_heart",
+0.85
+],
+"day30-w3.mp3": [
+"different.",
+"af_heart",
+0.85
+],
+"day30-w5.mp3": [
+"first.",
+"af_heart",
+0.85
+],
+"day30-w6.mp3": [
+"then.",
+"af_heart",
+0.85
+],
+"day30-ex1.mp3": [
+"First read, then answer.",
+"af_heart",
+0.85
+],
+"day30-ex2.mp3": [
+"First listen, then repeat.",
+"af_heart",
+0.85
+],
+"day30-d1.mp3": [
+"Please compare the two pictures.",
+"am_michael",
+0.95
+],
+"day30-d2.mp3": [
+"I don't understand \"compare.\" What does it mean?",
+"af_heart",
+0.95
+],
+"day30-d3.mp3": [
+"Tell me what is the same and what is different.",
+"am_michael",
+0.95
+],
+"day30-d4.mp3": [
+"I understand. Let me try.",
+"af_heart",
+0.95
+],
+"day31-try.mp3": [
+"Let me introduce myself.",
+"af_heart",
+0.85
+],
+"day31-w1.mp3": [
+"introduce.",
+"af_heart",
+0.85
+],
+"day31-w2.mp3": [
+"free time.",
+"af_heart",
+0.85
+],
+"day31-w3.mp3": [
+"goal.",
+"af_heart",
+0.85
+],
+"day31-w4.mp3": [
+"work as.",
+"af_heart",
+0.85
+],
+"day31-w5.mp3": [
+"education.",
+"af_heart",
+0.85
+],
+"day31-w6.mp3": [
+"nice to meet you.",
+"af_heart",
+0.85
+],
+"day31-ex1.mp3": [
+"I'm a teacher.",
+"af_heart",
+0.85
+],
+"day31-ex2.mp3": [
+"I work in education.",
+"af_heart",
+0.85
+],
+"day31-s2.mp3": [
+"I'm from …, and I work as a …",
+"af_heart",
+0.85
+],
+"day31-s3.mp3": [
+"In my free time, I like …",
+"af_heart",
+0.85
+],
+"day31-s4.mp3": [
+"My English goal is …",
+"af_heart",
+0.85
+],
+"day31-d1.mp3": [
+"Please introduce yourself.",
+"am_michael",
+0.95
+],
+"day31-d2.mp3": [
+"My name is … I'm from China and I work as a …",
+"af_heart",
+0.95
+],
+"day31-d3.mp3": [
+"What do you like to do?",
+"am_michael",
+0.95
+],
+"day31-d4.mp3": [
+"I like … Nice to meet you.",
+"af_heart",
+0.95
+],
+"day32-try.mp3": [
+"There are … people in my family.",
+"af_heart",
+0.85
+],
+"day32-w1.mp3": [
+"family.",
+"af_heart",
+0.85
+],
+"day32-w2.mp3": [
+"people.",
+"af_heart",
+0.85
+],
+"day32-w3.mp3": [
+"mother.",
+"af_heart",
+0.85
+],
+"day32-w4.mp3": [
+"live with.",
+"af_heart",
+0.85
+],
+"day32-w5.mp3": [
+"together.",
+"af_heart",
+0.85
+],
+"day32-w6.mp3": [
+"often.",
+"af_heart",
+0.85
+],
+"day32-ex1.mp3": [
+"There are three people in my family.",
+"af_heart",
+0.85
+],
+"day32-s2.mp3": [
+"I live with …",
+"af_heart",
+0.85
+],
+"day32-s3.mp3": [
+"My mother works as a …",
+"af_heart",
+0.85
+],
+"day32-s4.mp3": [
+"We often … together.",
+"af_heart",
+0.85
+],
+"day32-d1.mp3": [
+"How many people are in your family?",
+"am_michael",
+0.95
+],
+"day32-d2.mp3": [
+"There are four people in my family.",
+"af_heart",
+0.95
+],
+"day32-d3.mp3": [
+"What do you do together?",
+"am_michael",
+0.95
+],
+"day32-d4.mp3": [
+"We often have dinner together.",
+"af_heart",
+0.95
+],
+"day33-try.mp3": [
+"I work for a … company.",
+"af_heart",
+0.85
+],
+"day33-w1.mp3": [
+"company.",
+"af_heart",
+0.85
+],
+"day33-w2.mp3": [
+"responsible for.",
+"af_heart",
+0.85
+],
+"day33-w3.mp3": [
+"busy.",
+"af_heart",
+0.85
+],
+"day33-w4.mp3": [
+"sales.",
+"af_heart",
+0.85
+],
+"day33-w5.mp3": [
+"customer.",
+"af_heart",
+0.85
+],
+"day33-w6.mp3": [
+"report.",
+"af_heart",
+0.85
+],
+"day33-ex1.mp3": [
+"I work as a teacher.",
+"af_heart",
+0.85
+],
+"day33-s2.mp3": [
+"I'm responsible for …",
+"af_heart",
+0.85
+],
+"day33-s3.mp3": [
+"My work is busy, but …",
+"af_heart",
+0.85
+],
+"day33-s4.mp3": [
+"I'm studying … at …",
+"af_heart",
+0.85
+],
+"day33-d1.mp3": [
+"What do you do?",
+"am_michael",
+0.95
+],
+"day33-d2.mp3": [
+"I work in sales.",
+"af_heart",
+0.95
+],
+"day33-d3.mp3": [
+"What are you responsible for?",
+"am_michael",
+0.95
+],
+"day33-d4.mp3": [
+"I talk to customers and prepare reports.",
+"af_heart",
+0.95
+],
+"day34-try.mp3": [
+"My hometown is …",
+"af_heart",
+0.85
+],
+"day34-w1.mp3": [
+"hometown.",
+"af_heart",
+0.85
+],
+"day34-w2.mp3": [
+"famous.",
+"af_heart",
+0.85
+],
+"day34-w3.mp3": [
+"located.",
+"af_heart",
+0.85
+],
+"day34-w4.mp3": [
+"food.",
+"af_heart",
+0.85
+],
+"day34-w5.mp3": [
+"weather.",
+"af_heart",
+0.85
+],
+"day34-w6.mp3": [
+"visit.",
+"af_heart",
+0.85
+],
+"day34-ex1.mp3": [
+"My hometown is quiet.",
+"af_heart",
+0.85
+],
+"day34-ex2.mp3": [
+"It is famous for food.",
+"af_heart",
+0.85
+],
+"day34-s2.mp3": [
+"It's located in …",
+"af_heart",
+0.85
+],
+"day34-s3.mp3": [
+"It's famous for …",
+"af_heart",
+0.85
+],
+"day34-s4.mp3": [
+"You should visit …",
+"af_heart",
+0.85
+],
+"day34-d1.mp3": [
+"Where is your hometown?",
+"am_michael",
+0.95
+],
+"day34-d2.mp3": [
+"It's in southern China.",
+"af_heart",
+0.95
+],
+"day34-d3.mp3": [
+"What is it famous for?",
+"am_michael",
+0.95
+],
+"day34-d4.mp3": [
+"It's famous for food and warm weather.",
+"af_heart",
+0.95
+],
+"day35-try.mp3": [
+"I usually wake up at …",
+"af_heart",
+0.85
+],
+"day35-w1.mp3": [
+"wake up.",
+"af_heart",
+0.85
+],
+"day35-w4.mp3": [
+"after work.",
+"af_heart",
+0.85
+],
+"day35-w5.mp3": [
+"have dinner.",
+"af_heart",
+0.85
+],
+"day35-w6.mp3": [
+"go to bed.",
+"af_heart",
+0.85
+],
+"day35-ex1.mp3": [
+"I usually work from nine to six.",
+"af_heart",
+0.85
+],
+"day35-s2.mp3": [
+"Then I …",
+"af_heart",
+0.85
+],
+"day35-s3.mp3": [
+"After work, I usually …",
+"af_heart",
+0.85
+],
+"day35-s4.mp3": [
+"I go to bed around …",
+"af_heart",
+0.85
+],
+"day35-d1.mp3": [
+"What time do you wake up?",
+"am_michael",
+0.95
+],
+"day35-d2.mp3": [
+"I usually wake up at seven.",
+"af_heart",
+0.95
+],
+"day35-d4.mp3": [
+"I have dinner and study English.",
+"af_heart",
+0.95
+],
+"day36-try.mp3": [
+"My hobby is …",
+"af_heart",
+0.85
+],
+"day36-w1.mp3": [
+"hobby.",
+"af_heart",
+0.85
+],
+"day36-w2.mp3": [
+"once a week.",
+"af_heart",
+0.85
+],
+"day36-w4.mp3": [
+"relax.",
+"af_heart",
+0.85
+],
+"day36-ex1.mp3": [
+"I like music.",
+"af_heart",
+0.85
+],
+"day36-ex2.mp3": [
+"I like cooking.",
+"af_heart",
+0.85
+],
+"day36-s2.mp3": [
+"I do it once a week.",
+"af_heart",
+0.85
+],
+"day36-s3.mp3": [
+"I like it because …",
+"af_heart",
+0.85
+],
+"day36-s4.mp3": [
+"I want to get better at …",
+"af_heart",
+0.85
+],
+"day36-d1.mp3": [
+"What do you do in your free time?",
+"am_michael",
+0.95
+],
+"day36-d2.mp3": [
+"I like taking photos.",
+"af_heart",
+0.95
+],
+"day36-d3.mp3": [
+"How often do you do it?",
+"am_michael",
+0.95
+],
+"day36-d4.mp3": [
+"Almost every weekend.",
+"af_heart",
+0.95
+],
+"day37-try.mp3": [
+"My favorite food is …",
+"af_heart",
+0.85
+],
+"day37-w1.mp3": [
+"favorite.",
+"af_heart",
+0.85
+],
+"day37-w2.mp3": [
+"taste.",
+"af_heart",
+0.85
+],
+"day37-w4.mp3": [
+"vegetables.",
+"af_heart",
+0.85
+],
+"day37-w6.mp3": [
+"once a month.",
+"af_heart",
+0.85
+],
+"day37-ex1.mp3": [
+"My favorite drink is coffee.",
+"af_heart",
+0.85
+],
+"day37-s2.mp3": [
+"It tastes …",
+"af_heart",
+0.85
+],
+"day37-s3.mp3": [
+"It's made with …",
+"af_heart",
+0.85
+],
+"day37-s4.mp3": [
+"I prefer … to …",
+"af_heart",
+0.85
+],
+"day37-d1.mp3": [
+"What's your favorite food?",
+"am_michael",
+0.95
+],
+"day37-d2.mp3": [
+"Hot pot. It's spicy and full of vegetables.",
+"af_heart",
+0.95
+],
+"day37-d3.mp3": [
+"How often do you eat it?",
+"am_michael",
+0.95
+],
+"day37-d4.mp3": [
+"About once a month.",
+"af_heart",
+0.95
+],
+"day38-try.mp3": [
+"I visited … last year.",
+"af_heart",
+0.85
+],
+"day38-w1.mp3": [
+"trip.",
+"af_heart",
+0.85
+],
+"day38-w3.mp3": [
+"travel.",
+"af_heart",
+0.85
+],
+"day38-w4.mp3": [
+"hotel.",
+"af_heart",
+0.85
+],
+"day38-w5.mp3": [
+"visited.",
+"af_heart",
+0.85
+],
+"day38-w6.mp3": [
+"next time.",
+"af_heart",
+0.85
+],
+"day38-ex1.mp3": [
+"I went to Japan last year.",
+"af_heart",
+0.85
+],
+"day38-ex2.mp3": [
+"I traveled with friends.",
+"af_heart",
+0.85
+],
+"day38-s2.mp3": [
+"I went there with …",
+"af_heart",
+0.85
+],
+"day38-s3.mp3": [
+"My favorite part was …",
+"af_heart",
+0.85
+],
+"day38-s4.mp3": [
+"Next time, I want to visit …",
+"af_heart",
+0.85
+],
+"day38-d1.mp3": [
+"Tell me about your last trip.",
+"am_michael",
+0.95
+],
+"day38-d2.mp3": [
+"I went to Shanghai with my friends.",
+"af_heart",
+0.95
+],
+"day38-d3.mp3": [
+"What did you enjoy?",
+"am_michael",
+0.95
+],
+"day38-d4.mp3": [
+"I enjoyed the food and the night view.",
+"af_heart",
+0.95
+],
+"day39-try.mp3": [
+"On weekends, I usually …",
+"af_heart",
+0.85
+],
+"day39-w1.mp3": [
+"weekend.",
+"af_heart",
+0.85
+],
+"day39-w2.mp3": [
+"meet friends.",
+"af_heart",
+0.85
+],
+"day39-w4.mp3": [
+"rest.",
+"af_heart",
+0.85
+],
+"day39-w5.mp3": [
+"stay home.",
+"af_heart",
+0.85
+],
+"day39-w6.mp3": [
+"plan.",
+"af_heart",
+0.85
+],
+"day39-ex1.mp3": [
+"On weekends, I usually meet friends.",
+"af_heart",
+0.85
+],
+"day39-s3.mp3": [
+"This weekend, I'm going to …",
+"af_heart",
+0.85
+],
+"day39-s4.mp3": [
+"My ideal weekend is …",
+"af_heart",
+0.85
+],
+"day39-d1.mp3": [
+"What do you usually do on weekends?",
+"am_michael",
+0.95
+],
+"day39-d2.mp3": [
+"I usually stay home and rest.",
+"af_heart",
+0.95
+],
+"day39-d3.mp3": [
+"Any plans for this weekend?",
+"am_michael",
+0.95
+],
+"day39-d4.mp3": [
+"I'm going to meet a friend.",
+"af_heart",
+0.95
+],
+"day40-try.mp3": [
+"Yesterday, I went to …",
+"af_heart",
+0.85
+],
+"day40-w1.mp3": [
+"yesterday.",
+"af_heart",
+0.85
+],
+"day40-w2.mp3": [
+"worked.",
+"af_heart",
+0.85
+],
+"day40-w3.mp3": [
+"went.",
+"af_heart",
+0.85
+],
+"day40-w4.mp3": [
+"watched.",
+"af_heart",
+0.85
+],
+"day40-w5.mp3": [
+"had.",
+"af_heart",
+0.85
+],
+"day40-w6.mp3": [
+"felt.",
+"af_heart",
+0.85
+],
+"day40-ex1.mp3": [
+"I cooked dinner.",
+"af_heart",
+0.85
+],
+"day40-ex2.mp3": [
+"I went shopping.",
+"af_heart",
+0.85
+],
+"day40-s2.mp3": [
+"I had … for lunch.",
+"af_heart",
+0.85
+],
+"day40-s3.mp3": [
+"After work, I watched …",
+"af_heart",
+0.85
+],
+"day40-s4.mp3": [
+"I felt tired but happy.",
+"af_heart",
+0.85
+],
+"day40-d1.mp3": [
+"What did you do yesterday?",
+"am_michael",
+0.95
+],
+"day40-d2.mp3": [
+"I worked until six.",
+"af_heart",
+0.95
+],
+"day40-d3.mp3": [
+"What did you do after work?",
+"am_michael",
+0.95
+],
+"day40-d4.mp3": [
+"I went home and watched a movie.",
+"af_heart",
+0.95
+],
+"day41-try.mp3": [
+"One of my close friends is …",
+"af_heart",
+0.85
+],
+"day41-w1.mp3": [
+"close friend.",
+"af_heart",
+0.85
+],
+"day41-w2.mp3": [
+"met.",
+"af_heart",
+0.85
+],
+"day41-w3.mp3": [
+"university.",
+"af_heart",
+0.85
+],
+"day41-w4.mp3": [
+"both.",
+"af_heart",
+0.85
+],
+"day41-w5.mp3": [
+"in common.",
+"af_heart",
+0.85
+],
+"day41-w6.mp3": [
+"friendly.",
+"af_heart",
+0.85
+],
+"day41-ex1.mp3": [
+"She is friendly.",
+"af_heart",
+0.85
+],
+"day41-ex2.mp3": [
+"We met at work.",
+"af_heart",
+0.85
+],
+"day41-s2.mp3": [
+"We met at …",
+"af_heart",
+0.85
+],
+"day41-s3.mp3": [
+"He. She is very …",
+"af_heart",
+0.85
+],
+"day41-s4.mp3": [
+"We both like …",
+"af_heart",
+0.85
+],
+"day41-d1.mp3": [
+"Tell me about a close friend.",
+"am_michael",
+0.95
+],
+"day41-d2.mp3": [
+"Her name is … We met at university.",
+"af_heart",
+0.95
+],
+"day41-d3.mp3": [
+"What do you have in common?",
+"am_michael",
+0.95
+],
+"day41-d4.mp3": [
+"We both like traveling.",
+"af_heart",
+0.95
+],
+"day42-try.mp3": [
+"I like … movies.",
+"af_heart",
+0.85
+],
+"day42-w1.mp3": [
+"movie.",
+"af_heart",
+0.85
+],
+"day42-w2.mp3": [
+"singer.",
+"af_heart",
+0.85
+],
+"day42-w3.mp3": [
+"music.",
+"af_heart",
+0.85
+],
+"day42-w4.mp3": [
+"story.",
+"af_heart",
+0.85
+],
+"day42-w5.mp3": [
+"actor.",
+"af_heart",
+0.85
+],
+"day42-w6.mp3": [
+"recommend.",
+"af_heart",
+0.85
+],
+"day42-ex1.mp3": [
+"I like pop music because it gives me energy.",
+"af_heart",
+0.85
+],
+"day42-s2.mp3": [
+"My favorite singer is …",
+"af_heart",
+0.85
+],
+"day42-s3.mp3": [
+"The story is about …",
+"af_heart",
+0.85
+],
+"day42-s4.mp3": [
+"I recommend it because …",
+"af_heart",
+0.85
+],
+"day42-d1.mp3": [
+"What kind of music do you like?",
+"am_michael",
+0.95
+],
+"day42-d2.mp3": [
+"I like pop music.",
+"af_heart",
+0.95
+],
+"day42-d3.mp3": [
+"Can you recommend a song?",
+"am_michael",
+0.95
+],
+"day42-d4.mp3": [
+"Yes. I recommend … because it's relaxing.",
+"af_heart",
+0.95
+],
+"day43-try.mp3": [
+"I'm learning English because …",
+"af_heart",
+0.85
+],
+"day43-w1.mp3": [
+"communicate.",
+"af_heart",
+0.85
+],
+"day43-w2.mp3": [
+"challenge.",
+"af_heart",
+0.85
+],
+"day43-w3.mp3": [
+"difficult.",
+"af_heart",
+0.85
+],
+"day43-w4.mp3": [
+"client.",
+"af_heart",
+0.85
+],
+"day43-w5.mp3": [
+"quickly.",
+"af_heart",
+0.85
+],
+"day43-ex1.mp3": [
+"… because I need it for work.",
+"af_heart",
+0.85
+],
+"day43-ex2.mp3": [
+"… for travel.",
+"af_heart",
+0.85
+],
+"day43-s2.mp3": [
+"I want to communicate with …",
+"af_heart",
+0.85
+],
+"day43-s3.mp3": [
+"English can help me …",
+"af_heart",
+0.85
+],
+"day43-s4.mp3": [
+"My biggest challenge is …",
+"af_heart",
+0.85
+],
+"day43-d1.mp3": [
+"Why are you learning English?",
+"am_michael",
+0.95
+],
+"day43-d2.mp3": [
+"I want to speak with international clients.",
+"af_heart",
+0.95
+],
+"day43-d3.mp3": [
+"What's difficult for you?",
+"am_michael",
+0.95
+],
+"day43-d4.mp3": [
+"I know many words, but I can't make sentences quickly.",
+"af_heart",
+0.95
+],
+"day44-try.mp3": [
+"I chose the Philippines because …",
+"af_heart",
+0.85
+],
+"day44-w1.mp3": [
+"Philippines.",
+"af_heart",
+0.85
+],
+"day44-w3.mp3": [
+"one-to-one.",
+"af_heart",
+0.85
+],
+"day44-w4.mp3": [
+"teacher.",
+"af_heart",
+0.85
+],
+"day44-w5.mp3": [
+"environment.",
+"af_heart",
+0.85
+],
+"day44-w6.mp3": [
+"daily.",
+"af_heart",
+0.85
+],
+"day44-ex1.mp3": [
+"… because I want more speaking practice.",
+"af_heart",
+0.85
+],
+"day44-s2.mp3": [
+"I want more one-to-one classes.",
+"af_heart",
+0.85
+],
+"day44-s3.mp3": [
+"I need an English-speaking environment.",
+"af_heart",
+0.85
+],
+"day44-s4.mp3": [
+"I want to speak English every day.",
+"af_heart",
+0.85
+],
+"day44-d1.mp3": [
+"Why did you choose the Philippines?",
+"am_michael",
+0.95
+],
+"day44-d2.mp3": [
+"I want intensive speaking practice.",
+"af_heart",
+0.95
+],
+"day44-d3.mp3": [
+"What do you expect from your classes?",
+"am_michael",
+0.95
+],
+"day44-d4.mp3": [
+"I want corrections and more confidence.",
+"af_heart",
+0.95
+],
+"day45-try.mp3": [
+"In the future, I want to …",
+"af_heart",
+0.85
+],
+"day45-w1.mp3": [
+"future.",
+"af_heart",
+0.85
+],
+"day45-w2.mp3": [
+"hope.",
+"af_heart",
+0.85
+],
+"day45-w4.mp3": [
+"continue.",
+"af_heart",
+0.85
+],
+"day45-w5.mp3": [
+"after.",
+"af_heart",
+0.85
+],
+"day45-w6.mp3": [
+"achieve.",
+"af_heart",
+0.85
+],
+"day45-ex1.mp3": [
+"I want to use English at work.",
+"af_heart",
+0.85
+],
+"day45-s2.mp3": [
+"After this course, I plan to …",
+"af_heart",
+0.85
+],
+"day45-s3.mp3": [
+"I hope I can …",
+"af_heart",
+0.85
+],
+"day45-s4.mp3": [
+"My next step is …",
+"af_heart",
+0.85
+],
+"day45-d1.mp3": [
+"What will you do after studying in the Philippines?",
+"am_michael",
+0.95
+],
+"day45-d2.mp3": [
+"I plan to keep practicing every day.",
+"af_heart",
+0.95
+],
+"day45-d3.mp3": [
+"What do you hope to achieve?",
+"am_michael",
+0.95
+],
+"day45-d4.mp3": [
+"I hope I can speak with more confidence.",
+"af_heart",
+0.95
+],
+"day46-try.mp3": [
+"Could you show me my timetable?",
+"af_heart",
+0.85
+],
+"day46-w1.mp3": [
+"timetable.",
+"af_heart",
+0.85
+],
+"day46-w2.mp3": [
+"first class.",
+"af_heart",
+0.85
+],
+"day46-w3.mp3": [
+"classroom.",
+"af_heart",
+0.85
+],
+"day46-w4.mp3": [
+"break.",
+"af_heart",
+0.85
+],
+"day46-w5.mp3": [
+"wait.",
+"af_heart",
+0.85
+],
+"day46-w6.mp3": [
+"bring.",
+"af_heart",
+0.85
+],
+"day46-ex1.mp3": [
+"Where should I wait?",
+"af_heart",
+0.85
+],
+"day46-ex2.mp3": [
+"What should I bring?",
+"af_heart",
+0.85
+],
+"day46-s2.mp3": [
+"Which room is my first class in?",
+"af_heart",
+0.85
+],
+"day46-s3.mp3": [
+"Is this the right classroom?",
+"af_heart",
+0.85
+],
+"day46-s4.mp3": [
+"What time is the break?",
+"af_heart",
+0.85
+],
+"day46-d1.mp3": [
+"Excuse me, is this Room two ten?",
+"af_heart",
+0.95
+],
+"day46-d2.mp3": [
+"Yes. Are you here for the speaking class?",
+"am_michael",
+0.95
+],
+"day46-d3.mp3": [
+"Yes. I'm … Nice to meet you.",
+"af_heart",
+0.95
+],
+"day46-d4.mp3": [
+"Welcome. Please come in.",
+"am_michael",
+0.95
+],
+"day47-try.mp3": [
+"What time is the curfew?",
+"af_heart",
+0.85
+],
+"day47-w1.mp3": [
+"curfew.",
+"af_heart",
+0.85
+],
+"day47-w2.mp3": [
+"laundry room.",
+"af_heart",
+0.85
+],
+"day47-w3.mp3": [
+"contact.",
+"af_heart",
+0.85
+],
+"day47-w4.mp3": [
+"office.",
+"af_heart",
+0.85
+],
+"day47-w5.mp3": [
+"on time.",
+"af_heart",
+0.85
+],
+"day47-w6.mp3": [
+"sick.",
+"af_heart",
+0.85
+],
+"day47-ex1.mp3": [
+"Do I need to sign this?",
+"af_heart",
+0.85
+],
+"day47-ex2.mp3": [
+"Do I need to wait here?",
+"af_heart",
+0.85
+],
+"day47-s2.mp3": [
+"Where is the laundry room?",
+"af_heart",
+0.85
+],
+"day47-s3.mp3": [
+"Who should I contact if I need help?",
+"af_heart",
+0.85
+],
+"day47-s4.mp3": [
+"Do I need to bring my ID card?",
+"af_heart",
+0.85
+],
+"day47-d1.mp3": [
+"Please attend all classes on time.",
+"am_michael",
+0.95
+],
+"day47-d2.mp3": [
+"What should I do if I'm sick?",
+"af_heart",
+0.95
+],
+"day47-d3.mp3": [
+"Contact the office before class.",
+"am_michael",
+0.95
+],
+"day47-d4.mp3": [
+"Okay. Where is the office?",
+"af_heart",
+0.95
+],
+"day48-try.mp3": [
+"What sections are in the test?",
+"af_heart",
+0.85
+],
+"day48-w1.mp3": [
+"level test.",
+"af_heart",
+0.85
+],
+"day48-w2.mp3": [
+"level.",
+"af_heart",
+0.85
+],
+"day48-w3.mp3": [
+"section.",
+"af_heart",
+0.85
+],
+"day48-w4.mp3": [
+"nervous.",
+"af_heart",
+0.85
+],
+"day48-w5.mp3": [
+"result.",
+"af_heart",
+0.85
+],
+"day48-w6.mp3": [
+"skip.",
+"af_heart",
+0.85
+],
+"day48-ex1.mp3": [
+"How long does it take?",
+"af_heart",
+0.85
+],
+"day48-ex2.mp3": [
+"When will I get the result?",
+"af_heart",
+0.85
+],
+"day48-s3.mp3": [
+"I don't know this one.",
+"af_heart",
+0.85
+],
+"day48-s4.mp3": [
+"Can I skip this question?",
+"af_heart",
+0.85
+],
+"day48-d1.mp3": [
+"The test has listening, reading, writing and speaking sections.",
+"am_michael",
+0.95
+],
+"day48-d2.mp3": [
+"How long does it take?",
+"af_heart",
+0.95
+],
+"day48-d3.mp3": [
+"About ninety minutes.",
+"am_michael",
+0.95
+],
+"day48-d4.mp3": [
+"Okay. I'm nervous, but I'm ready.",
+"af_heart",
+0.95
+],
+"day49-w5.mp3": [
+"opinion.",
+"af_heart",
+0.85
+],
+"day49-w6.mp3": [
+"take your time.",
+"af_heart",
+0.85
+],
+"day49-ex1.mp3": [
+"I want to use English at work and while traveling.",
+"af_heart",
+0.85
+],
+"day49-s3.mp3": [
+"Let me think for a moment.",
+"af_heart",
+0.85
+],
+"day49-s4.mp3": [
+"In my opinion, …",
+"af_heart",
+0.85
+],
+"day49-d1.mp3": [
+"Why do you want to study English?",
+"am_michael",
+0.95
+],
+"day49-d2.mp3": [
+"Let me think for a moment.",
+"af_heart",
+0.95
+],
+"day49-d3.mp3": [
+"Take your time.",
+"am_michael",
+0.95
+],
+"day49-d4.mp3": [
+"I want to use English at work and while traveling.",
+"af_heart",
+0.95
+],
+"day50-try.mp3": [
+"Read the question first.",
+"af_heart",
+0.85
+],
+"day50-w1.mp3": [
+"audio.",
+"af_heart",
+0.85
+],
+"day50-w2.mp3": [
+"once.",
+"af_heart",
+0.85
+],
+"day50-w3.mp3": [
+"keyword.",
+"af_heart",
+0.85
+],
+"day50-ex1.mp3": [
+"Listen for places.",
+"af_heart",
+0.85
+],
+"day50-ex2.mp3": [
+"Listen for the time.",
+"af_heart",
+0.85
+],
+"day50-s2.mp3": [
+"Listen for names, numbers and places.",
+"af_heart",
+0.85
+],
+"day50-s3.mp3": [
+"I missed one word.",
+"af_heart",
+0.85
+],
+"day50-d1.mp3": [
+"You will hear the audio once.",
+"am_michael",
+0.95
+],
+"day50-d2.mp3": [
+"Can I read the questions first?",
+"af_heart",
+0.95
+],
+"day50-d3.mp3": [
+"Yes. You have thirty seconds.",
+"am_michael",
+0.95
+],
+"day50-d4.mp3": [
+"Okay. I'll look for keywords.",
+"af_heart",
+0.95
+],
+"day51-try.mp3": [
+"Read the title first.",
+"af_heart",
+0.85
+],
+"day51-w1.mp3": [
+"passage.",
+"af_heart",
+0.85
+],
+"day51-w2.mp3": [
+"main idea.",
+"af_heart",
+0.85
+],
+"day51-w3.mp3": [
+"title.",
+"af_heart",
+0.85
+],
+"day51-w4.mp3": [
+"detail.",
+"af_heart",
+0.85
+],
+"day51-w6.mp3": [
+"unknown word.",
+"af_heart",
+0.85
+],
+"day51-ex1.mp3": [
+"The passage is about school life.",
+"af_heart",
+0.85
+],
+"day51-s2.mp3": [
+"What is the main idea?",
+"af_heart",
+0.85
+],
+"day51-s3.mp3": [
+"Which paragraph has the answer?",
+"af_heart",
+0.85
+],
+"day51-s4.mp3": [
+"Don't stop at every new word.",
+"af_heart",
+0.85
+],
+"day51-d1.mp3": [
+"What is the passage mainly about?",
+"am_michael",
+0.95
+],
+"day51-d2.mp3": [
+"It's about a student's first week in Cebu.",
+"af_heart",
+0.95
+],
+"day51-d3.mp3": [
+"Where did you find the answer?",
+"am_michael",
+0.95
+],
+"day51-d4.mp3": [
+"In the second paragraph.",
+"af_heart",
+0.95
+],
+"day52-try.mp3": [
+"Which verb fits the sentence?",
+"af_heart",
+0.85
+],
+"day52-w1.mp3": [
+"verb.",
+"af_heart",
+0.85
+],
+"day52-w2.mp3": [
+"tense.",
+"af_heart",
+0.85
+],
+"day52-w3.mp3": [
+"simple past.",
+"af_heart",
+0.85
+],
+"day52-w5.mp3": [
+"fit.",
+"af_heart",
+0.85
+],
+"day52-ex1.mp3": [
+"Every day I go.",
+"af_heart",
+0.85
+],
+"day52-ex2.mp3": [
+"Yesterday I went.",
+"af_heart",
+0.85
+],
+"day52-s2.mp3": [
+"What tense do we need?",
+"af_heart",
+0.85
+],
+"day52-s3.mp3": [
+"I think the answer is B.",
+"af_heart",
+0.85
+],
+"day52-s4.mp3": [
+"Can you explain why?",
+"af_heart",
+0.85
+],
+"day52-d1.mp3": [
+"Yesterday I … to the mall. Go or went?",
+"am_michael",
+0.95
+],
+"day52-d2.mp3": [
+"Went, because it's yesterday.",
+"af_heart",
+0.95
+],
+"day52-d3.mp3": [
+"Correct. What tense is it?",
+"am_michael",
+0.95
+],
+"day52-d4.mp3": [
+"The simple past.",
+"af_heart",
+0.95
+],
+"day53-try.mp3": [
+"In the picture, I can see …",
+"af_heart",
+0.85
+],
+"day53-w1.mp3": [
+"picture.",
+"af_heart",
+0.85
+],
+"day53-w2.mp3": [
+"describe.",
+"af_heart",
+0.85
+],
+"day53-w3.mp3": [
+"on the left.",
+"af_heart",
+0.85
+],
+"day53-w4.mp3": [
+"wearing.",
+"af_heart",
+0.85
+],
+"day53-w5.mp3": [
+"talking.",
+"af_heart",
+0.85
+],
+"day53-w6.mp3": [
+"maybe.",
+"af_heart",
+0.85
+],
+"day53-ex1.mp3": [
+"On the left, there is a teacher.",
+"af_heart",
+0.85
+],
+"day53-s2.mp3": [
+"On the left, there is …",
+"af_heart",
+0.85
+],
+"day53-s3.mp3": [
+"The person is wearing …",
+"af_heart",
+0.85
+],
+"day53-s4.mp3": [
+"Maybe they are …",
+"af_heart",
+0.85
+],
+"day53-d1.mp3": [
+"Please describe the picture.",
+"am_michael",
+0.95
+],
+"day53-d2.mp3": [
+"I can see two people in a classroom.",
+"af_heart",
+0.95
+],
+"day53-d3.mp3": [
+"What are they doing?",
+"am_michael",
+0.95
+],
+"day53-d4.mp3": [
+"They are talking. Maybe they are having an English lesson.",
+"af_heart",
+0.95
+],
+"day54-try.mp3": [
+"Because …",
+"af_heart",
+0.85
+],
+"day54-w1.mp3": [
+"really.",
+"af_heart",
+0.85
+],
+"day54-w2.mp3": [
+"how often.",
+"af_heart",
+0.85
+],
+"day54-w5.mp3": [
+"tell me more.",
+"af_heart",
+0.85
+],
+"day54-ex1.mp3": [
+"Yes, I do. Because … For example, …",
+"af_heart",
+0.85
+],
+"day54-s2.mp3": [
+"For example, …",
+"af_heart",
+0.85
+],
+"day54-s3.mp3": [
+"I usually …",
+"af_heart",
+0.85
+],
+"day54-s4.mp3": [
+"Let me give you an example.",
+"af_heart",
+0.85
+],
+"day54-d1.mp3": [
+"Do you like traveling?",
+"am_michael",
+0.95
+],
+"day54-d2.mp3": [
+"Yes, I do.",
+"af_heart",
+0.95
+],
+"day54-d3.mp3": [
+"Why? Tell me more.",
+"am_michael",
+0.95
+],
+"day54-d4.mp3": [
+"Because I can see new places. For example, I visited … last year.",
+"af_heart",
+0.95
+],
+"day55-try.mp3": [
+"Could we talk about …?",
+"af_heart",
+0.85
+],
+"day55-w1.mp3": [
+"talk about.",
+"af_heart",
+0.85
+],
+"day55-w2.mp3": [
+"agree.",
+"af_heart",
+0.85
+],
+"day55-w3.mp3": [
+"experience.",
+"af_heart",
+0.85
+],
+"day55-w5.mp3": [
+"nature.",
+"af_heart",
+0.85
+],
+"day55-w6.mp3": [
+"interesting.",
+"af_heart",
+0.85
+],
+"day55-ex1.mp3": [
+"In my experience, …",
+"af_heart",
+0.85
+],
+"day55-ex2.mp3": [
+"I agree, but …",
+"af_heart",
+0.85
+],
+"day55-s2.mp3": [
+"I think …",
+"af_heart",
+0.85
+],
+"day55-d1.mp3": [
+"Could we talk about travel today?",
+"af_heart",
+0.95
+],
+"day55-d2.mp3": [
+"Sure. Do you prefer cities or nature?",
+"am_michael",
+0.95
+],
+"day55-d3.mp3": [
+"I prefer cities because I like local food.",
+"af_heart",
+0.95
+],
+"day55-d4.mp3": [
+"Interesting. Tell me about your last city trip.",
+"am_michael",
+0.95
+],
+"day56-try.mp3": [
+"Today I'd like to practice speaking.",
+"af_heart",
+0.85
+],
+"day56-w2.mp3": [
+"mistake.",
+"af_heart",
+0.85
+],
+"day56-w5.mp3": [
+"at the end.",
+"af_heart",
+0.85
+],
+"day56-w6.mp3": [
+"next.",
+"af_heart",
+0.85
+],
+"day56-ex1.mp3": [
+"I'd like to practice pronunciation today.",
+"af_heart",
+0.85
+],
+"day56-s2.mp3": [
+"Please correct my mistakes.",
+"af_heart",
+0.85
+],
+"day56-s3.mp3": [
+"Could I try that again?",
+"af_heart",
+0.85
+],
+"day56-s4.mp3": [
+"What should I practice next?",
+"af_heart",
+0.85
+],
+"day56-d1.mp3": [
+"What would you like to practice today?",
+"am_michael",
+0.95
+],
+"day56-d2.mp3": [
+"I'd like to practice speaking about work.",
+"af_heart",
+0.95
+],
+"day56-d3.mp3": [
+"Okay. I'll correct your grammar and pronunciation.",
+"am_michael",
+0.95
+],
+"day56-d4.mp3": [
+"Great. Please give me feedback at the end.",
+"af_heart",
+0.95
+],
+"day57-try.mp3": [
+"My main goal is …",
+"af_heart",
+0.85
+],
+"day57-w2.mp3": [
+"fluency.",
+"af_heart",
+0.85
+],
+"day57-w3.mp3": [
+"speaking.",
+"af_heart",
+0.85
+],
+"day57-w5.mp3": [
+"confidence.",
+"af_heart",
+0.85
+],
+"day57-w6.mp3": [
+"vocabulary.",
+"af_heart",
+0.85
+],
+"day57-ex1.mp3": [
+"My main goal is to improve my listening.",
+"af_heart",
+0.85
+],
+"day57-s2.mp3": [
+"I want to speak more fluently.",
+"af_heart",
+0.85
+],
+"day57-s3.mp3": [
+"I need help with pronunciation.",
+"af_heart",
+0.85
+],
+"day57-s4.mp3": [
+"Please give me more speaking time.",
+"af_heart",
+0.85
+],
+"day57-d1.mp3": [
+"What is your English goal?",
+"am_michael",
+0.95
+],
+"day57-d2.mp3": [
+"My main goal is to speak with more confidence.",
+"af_heart",
+0.95
+],
+"day57-d3.mp3": [
+"What should we focus on?",
+"am_michael",
+0.95
+],
+"day57-d4.mp3": [
+"Please correct my pronunciation and give me more speaking time.",
+"af_heart",
+0.95
+],
+"day58-try.mp3": [
+"I'd like to discuss my class.",
+"af_heart",
+0.85
+],
+"day58-w1.mp3": [
+"discuss.",
+"af_heart",
+0.85
+],
+"day58-w4.mp3": [
+"problem.",
+"af_heart",
+0.85
+],
+"day58-w6.mp3": [
+"trial class.",
+"af_heart",
+0.85
+],
+"day58-ex1.mp3": [
+"The level is difficult for me. Could I try another level?",
+"af_heart",
+0.85
+],
+"day58-s2.mp3": [
+"The class is a little too fast for me.",
+"af_heart",
+0.85
+],
+"day58-s3.mp3": [
+"Could I try a different level?",
+"af_heart",
+0.85
+],
+"day58-s4.mp3": [
+"Who should I speak to about this?",
+"af_heart",
+0.85
+],
+"day58-d1.mp3": [
+"I'd like to discuss my speaking class.",
+"af_heart",
+0.95
+],
+"day58-d2.mp3": [
+"Of course. What's the problem?",
+"am_michael",
+0.95
+],
+"day58-d3.mp3": [
+"The level is a little too difficult for me.",
+"af_heart",
+0.95
+],
+"day58-d4.mp3": [
+"We can arrange a trial class at another level.",
+"am_michael",
+0.95
+],
+"day59-try.mp3": [
+"Where should I go next?",
+"af_heart",
+0.85
+],
+"day59-w2.mp3": [
+"check.",
+"af_heart",
+0.85
+],
+"day59-w4.mp3": [
+"coordinator.",
+"af_heart",
+0.85
+],
+"day59-w5.mp3": [
+"first week.",
+"af_heart",
+0.85
+],
+"day59-ex1.mp3": [
+"Could you check my room number?",
+"af_heart",
+0.85
+],
+"day59-ex2.mp3": [
+"Could you check my class time?",
+"af_heart",
+0.85
+],
+"day59-s2.mp3": [
+"Could you check my timetable?",
+"af_heart",
+0.85
+],
+"day59-s3.mp3": [
+"I need help with my room.",
+"af_heart",
+0.85
+],
+"day59-s4.mp3": [
+"Who is my course coordinator?",
+"af_heart",
+0.85
+],
+"day59-d1.mp3": [
+"How was your first week?",
+"am_michael",
+0.95
+],
+"day59-d2.mp3": [
+"Busy, but good. I can find my classes now.",
+"af_heart",
+0.95
+],
+"day59-d3.mp3": [
+"Do you need any help?",
+"am_michael",
+0.95
+],
+"day59-d4.mp3": [
+"Yes. Could you check my timetable for Monday?",
+"af_heart",
+0.95
+],
+"day60-try.mp3": [
+"Now I can …",
+"af_heart",
+0.85
+],
+"day60-w1.mp3": [
+"now.",
+"af_heart",
+0.85
+],
+"day60-w2.mp3": [
+"strength.",
+"af_heart",
+0.85
+],
+"day60-w3.mp3": [
+"still.",
+"af_heart",
+0.85
+],
+"day60-w6.mp3": [
+"ask for help.",
+"af_heart",
+0.85
+],
+"day60-ex1.mp3": [
+"Now I can introduce myself.",
+"af_heart",
+0.85
+],
+"day60-ex2.mp3": [
+"I can follow instructions.",
+"af_heart",
+0.85
+],
+"day60-s2.mp3": [
+"My strength is …",
+"af_heart",
+0.85
+],
+"day60-s3.mp3": [
+"I still need to improve …",
+"af_heart",
+0.85
+],
+"day60-s4.mp3": [
+"I'm ready to start.",
+"af_heart",
+0.85
+],
+"day60-d1.mp3": [
+"How has your English changed?",
+"am_michael",
+0.95
+],
+"day60-d2.mp3": [
+"Now I can introduce myself and ask for help.",
+"af_heart",
+0.95
+],
+"day60-d3.mp3": [
+"What do you still want to improve?",
+"am_michael",
+0.95
+],
+"day60-d4.mp3": [
+"Listening. I want to understand faster speech.",
+"af_heart",
+0.95
+],
+"p10-1.mp3": [
+"What's your name?",
+"af_heart",
+0.85
+],
+"p10-4.mp3": [
+"Why do you want to learn English?",
+"af_heart",
+0.85
+],
+"p162-1.mp3": [
+"fill in.",
+"af_heart",
+0.85
+],
+"p162-2.mp3": [
+"select.",
+"af_heart",
+0.85
+],
+"p162-4.mp3": [
+"tick.",
+"af_heart",
+0.85
+],
+"p162-5.mp3": [
+"cross out.",
+"af_heart",
+0.85
+],
+"p162-6.mp3": [
+"true, false.",
+"af_heart",
+0.85
+],
+"p162-7.mp3": [
+"Write T if it is true and F if it is false.",
+"af_heart",
+0.85
+],
+"p163-1.mp3": [
+"arrange.",
+"af_heart",
+0.85
+],
+"p163-2.mp3": [
+"error.",
+"af_heart",
+0.85
+],
+"p163-4.mp3": [
+"rewrite.",
+"af_heart",
+0.85
+],
+"p163-6.mp3": [
+"read aloud.",
+"af_heart",
+0.85
+],
+"p164-1.mp3": [
+"Yesterday, I … to the mall.",
+"af_heart",
+0.85
+],
+"p164-2.mp3": [
+"A. go B. went C. going.",
+"af_heart",
+0.85
+],
+"p165-2.mp3": [
+"when, what time.",
+"af_heart",
+0.85
+],
+"p165-4.mp3": [
+"how many, much.",
+"af_heart",
+0.85
+],
+"p176-1.mp3": [
+"Directions.",
+"af_heart",
+0.85
+],
+"p176-2.mp3": [
+"Answer sheet.",
+"af_heart",
+0.85
+],
+"p176-3.mp3": [
+"Shade the circle.",
+"af_heart",
+0.85
+],
+"p176-4.mp3": [
+"Full name.",
+"af_heart",
+0.85
+],
+"p176-5.mp3": [
+"Time limit.",
+"af_heart",
+0.85
+],
+"p176-6.mp3": [
+"Next, Submit.",
+"af_heart",
+0.85
+],
+"p176-7.mp3": [
+"Time is up.",
+"af_heart",
+0.85
+],
+"p176-8.mp3": [
+"Excuse me, could you say that again?",
+"af_heart",
+0.85
+],
+"p180-1.mp3": [
+"Can you introduce yourself?",
+"af_heart",
+0.85
+],
+"p180-4.mp3": [
+"Have you studied English before?",
+"af_heart",
+0.85
+],
+"p180-5.mp3": [
+"Why do you want to study English?",
+"af_heart",
+0.85
+],
+"p180-6.mp3": [
+"Why did you choose the Philippines?",
+"af_heart",
+0.85
+],
+"p180-7.mp3": [
+"How long will you stay here?",
+"af_heart",
+0.85
+],
+"p180-8.mp3": [
+"What do you do in your free time?",
+"af_heart",
+0.85
+],
+"p180-9.mp3": [
+"What is difficult for you?",
+"af_heart",
+0.85
+],
+"p180-10.mp3": [
+"What is your goal?",
+"af_heart",
+0.85
+],
+"p180-11.mp3": [
+"Sorry, could you repeat the question?",
+"af_heart",
+0.85
+],
+"p185-1.mp3": [
+"Listen and choose.",
+"af_heart",
+0.85
+],
+"p185-2.mp3": [
+"hear it twice.",
+"af_heart",
+0.85
+],
+"p185-3.mp3": [
+"Listen and fill in.",
+"af_heart",
+0.85
+],
+"p185-4.mp3": [
+"Tell me about …",
+"af_heart",
+0.85
+],
+"p185-5.mp3": [
+"Describe …",
+"af_heart",
+0.85
+],
+"p185-6.mp3": [
+"What do you think?",
+"af_heart",
+0.85
+],
+"p185-7.mp3": [
+"Give an example.",
+"af_heart",
+0.85
+],
+"p189-1.mp3": [
+"According to …",
+"af_heart",
+0.85
+],
+"p189-2.mp3": [
+"Which is true?",
+"af_heart",
+0.85
+],
+"p189-3.mp3": [
+"NOT mentioned.",
+"af_heart",
+0.85
+],
+"p189-4.mp3": [
+"What happened first?",
+"af_heart",
+0.85
+],
+"p189-5.mp3": [
+"most likely.",
+"af_heart",
+0.85
+],
+"p193-1.mp3": [
+"Complete with the correct form of the verb.",
+"af_heart",
+0.85
+],
+"p193-2.mp3": [
+"She … (go) to school every day.",
+"af_heart",
+0.85
+],
+"p194-1.mp3": [
+"not, except.",
+"af_heart",
+0.85
+],
+"p194-2.mp3": [
+"correct form.",
+"af_heart",
+0.85
+],
+"p194-3.mp3": [
+"underlined.",
+"af_heart",
+0.85
+],
+"p194-4.mp3": [
+"complete sentences.",
+"af_heart",
+0.85
+],
+"p194-5.mp3": [
+"no more than 3 words.",
+"af_heart",
+0.85
+],
+"p194-6.mp3": [
+"at least 50 words.",
+"af_heart",
+0.85
+],
+"p195-1.mp3": [
+"Write about your hometown in 50–80 words.",
+"af_heart",
+0.85
+],
+"p195-2.mp3": [
+"Include: where it is, what it is famous for, why you like it.",
+"af_heart",
+0.85
+],
+"p196-2.mp3": [
+"Write at least 5 sentences. 5.",
+"af_heart",
+0.85
+],
+"p197-1.mp3": [
+"Introduce yourself.",
+"af_heart",
+0.85
+],
+"p197-2.mp3": [
+"Describe your family.",
+"af_heart",
+0.85
+],
+"p197-3.mp3": [
+"Describe your job or school.",
+"af_heart",
+0.85
+],
+"p197-4.mp3": [
+"Describe your hometown.",
+"af_heart",
+0.85
+],
+"p197-5.mp3": [
+"Write about your daily routine.",
+"af_heart",
+0.85
+],
+"p197-6.mp3": [
+"Write about your hobby.",
+"af_heart",
+0.85
+],
+"p197-8.mp3": [
+"What is your English goal?",
+"af_heart",
+0.85
+],
+"p224-1.mp3": [
+"Fill in the blank with the correct word.",
+"af_heart",
+0.85
+],
+"p224-2.mp3": [
+"Which of the following is NOT true?",
+"af_heart",
+0.85
+],
+"p224-3.mp3": [
+"Answer in complete sentences.",
+"af_heart",
+0.85
+],
+"p224-4.mp3": [
+"Underline the verb in each sentence.",
+"af_heart",
+0.85
+],
+"p224-5.mp3": [
+"Write T if the sentence is true and F if it is false.",
+"af_heart",
+0.85
+],
+"p224-6.mp3": [
+"Write no more than three words.",
+"af_heart",
+0.85
+],
+"p237-2.mp3": [
+"I need help with …",
+"af_heart",
+0.85
+],
+"p237-3.mp3": [
+"Please give me more … practice.",
+"af_heart",
+0.85
+],
+"p237-4.mp3": [
+"Please correct my …",
+"af_heart",
+0.85
+],
+"p237-5.mp3": [
+"At the end, please give me feedback.",
+"af_heart",
+0.85
+],
+"p239-1.mp3": [
+"Excuse me, can you help me?",
+"af_heart",
+0.85
+],
+"p239-2.mp3": [
+"Sorry, could you say that again?",
+"af_heart",
+0.85
+],
+"p239-4.mp3": [
+"Could you write it down?",
+"af_heart",
+0.85
+],
+"p239-5.mp3": [
+"I'm a student at …",
+"af_heart",
+0.85
+],
+"p239-7.mp3": [
+"Where is the C R, restroom?",
+"af_heart",
+0.85
+],
+"p239-9.mp3": [
+"I'm allergic to …",
+"af_heart",
+0.85
+],
+"p239-10.mp3": [
+"I don't feel well.",
+"af_heart",
+0.85
+],
+"p239-11.mp3": [
+"Please help me. It's an emergency.",
+"af_heart",
+0.85
+],
+"p239-12.mp3": [
+"I need a doctor.",
+"af_heart",
+0.85
+],
+"p240-3.mp3": [
+"What does \"…\" mean?",
+"af_heart",
+0.85
+],
+"p240-4.mp3": [
+"How do you pronounce this?",
+"af_heart",
+0.85
+],
+"p240-6.mp3": [
+"Could you spell it, please?",
+"af_heart",
+0.85
+],
+"p240-9.mp3": [
+"Is this correct?",
+"af_heart",
+0.85
+],
+"p240-10.mp3": [
+"What should I do here?",
+"af_heart",
+0.85
+],
+"p240-11.mp3": [
+"Excuse me, what should I do here?",
+"af_heart",
+0.85
+],
+"p240-12.mp3": [
+"Do I need to write a full sentence?",
+"af_heart",
+0.85
+],
+"p236-1.mp3": [
+"survival.",
+"af_heart",
+0.85
+],
+"p236-4.mp3": [
+"test ready.",
+"af_heart",
+0.85
+],
+"num1-2.mp3": [
+"one.",
+"af_heart",
+0.85
+],
+"num1-3.mp3": [
+"two.",
+"af_heart",
+0.85
+],
+"num1-4.mp3": [
+"three.",
+"af_heart",
+0.85
+],
+"num1-5.mp3": [
+"four.",
+"af_heart",
+0.85
+],
+"num1-6.mp3": [
+"five.",
+"af_heart",
+0.85
+],
+"num1-7.mp3": [
+"six.",
+"af_heart",
+0.85
+],
+"num1-8.mp3": [
+"seven.",
+"af_heart",
+0.85
+],
+"num1-9.mp3": [
+"eight.",
+"af_heart",
+0.85
+],
+"num1-10.mp3": [
+"nine.",
+"af_heart",
+0.85
+],
+"num1-12.mp3": [
+"eleven.",
+"af_heart",
+0.85
+],
+"num1-13.mp3": [
+"twelve.",
+"af_heart",
+0.85
+],
+"num1-15.mp3": [
+"fourteen.",
+"af_heart",
+0.85
+],
+"num1-16.mp3": [
+"fifteen.",
+"af_heart",
+0.85
+],
+"num1-17.mp3": [
+"sixteen.",
+"af_heart",
+0.85
+],
+"num1-18.mp3": [
+"seventeen.",
+"af_heart",
+0.85
+],
+"num1-19.mp3": [
+"eighteen.",
+"af_heart",
+0.85
+],
+"num1-20.mp3": [
+"nineteen.",
+"af_heart",
+0.85
+],
+"num1-21.mp3": [
+"twenty.",
+"af_heart",
+0.85
+],
+"num2-2.mp3": [
+"forty.",
+"af_heart",
+0.85
+],
+"num2-3.mp3": [
+"fifty.",
+"af_heart",
+0.85
+],
+"num2-4.mp3": [
+"sixty.",
+"af_heart",
+0.85
+],
+"num2-5.mp3": [
+"seventy.",
+"af_heart",
+0.85
+],
+"num2-6.mp3": [
+"eighty.",
+"af_heart",
+0.85
+],
+"num2-7.mp3": [
+"ninety.",
+"af_heart",
+0.85
+],
+"num2-8.mp3": [
+"one hundred.",
+"af_heart",
+0.85
+],
+"num3-1.mp3": [
+"twenty-one.",
+"af_heart",
+0.85
+],
+"num3-2.mp3": [
+"thirty-five.",
+"af_heart",
+0.85
+],
+"num3-3.mp3": [
+"forty-eight.",
+"af_heart",
+0.85
+],
+"num3-4.mp3": [
+"ninety-nine.",
+"af_heart",
+0.85
+],
+"num4-1.mp3": [
+"one thousand.",
+"af_heart",
+0.85
+],
+"num4-2.mp3": [
+"ten thousand.",
+"af_heart",
+0.85
+],
+"num4-3.mp3": [
+"one hundred thousand.",
+"af_heart",
+0.85
+],
+"num4-4.mp3": [
+"one million.",
+"af_heart",
+0.85
+],
+"num4-5.mp3": [
+"ten million.",
+"af_heart",
+0.85
+],
+"num4-6.mp3": [
+"one hundred million.",
+"af_heart",
+0.85
+],
+"num5-1.mp3": [
+"Room three oh five.",
+"af_heart",
+0.85
+],
+"num5-2.mp3": [
+"oh nine one seven, one two three, four five six seven.",
+"af_heart",
+0.85
+],
+"num5-3.mp3": [
+"six hundred fifty pesos.",
+"af_heart",
+0.85
+],
+"num5-4.mp3": [
+"one thousand two hundred fifty pesos.",
+"af_heart",
+0.85
+],
+"num5-5.mp3": [
+"eight thirty.",
+"af_heart",
+0.85
+],
+"num5-6.mp3": [
+"twenty twenty-six.",
+"af_heart",
+0.85
+],
+"g1-1.mp3": [
+"I am from China.",
+"af_heart",
+0.85
+],
+"g1-2.mp3": [
+"She is my teacher.",
+"af_heart",
+0.85
+],
+"g1-3.mp3": [
+"They are in Room 201.",
+"af_heart",
+0.85
+],
+"g2-2.mp3": [
+"See you on Monday.",
+"af_heart",
+0.85
+],
+"g2-3.mp3": [
+"Room 201 is on the second floor.",
+"af_heart",
+0.85
+],
+"g5-1.mp3": [
+"I have dinner and study English.",
+"af_heart",
+0.85
+],
+"g5-2.mp3": [
+"My work is busy, but I like it.",
+"af_heart",
+0.85
+],
+"g5-3.mp3": [
+"I was tired, so I went to bed early.",
+"af_heart",
+0.85
+],
+"g6-1.mp3": [
+"Do you like cooking?",
+"af_heart",
+0.85
+],
+"g6-2.mp3": [
+"Where do you usually have lunch?",
+"af_heart",
+0.85
+],
+"g7-1.mp3": [
+"There are four people in my family.",
+"af_heart",
+0.85
+],
+"g8-1.mp3": [
+"I work in sales.",
+"af_heart",
+0.85
+],
+"g8-2.mp3": [
+"She works in a hotel.",
+"af_heart",
+0.85
+],
+"g9-1.mp3": [
+"Yesterday I went to the mall.",
+"af_heart",
+0.85
+],
+"g9-2.mp3": [
+"I watched a movie.",
+"af_heart",
+0.85
+],
+"g9-3.mp3": [
+"I had rice for lunch.",
+"af_heart",
+0.85
+],
+"g10-1.mp3": [
+"They are talking.",
+"af_heart",
+0.85
+],
+"g10-2.mp3": [
+"The person is wearing a white shirt.",
+"af_heart",
+0.85
+],
+"g10-3.mp3": [
+"I'm looking for the pickup point.",
+"af_heart",
+0.85
+],
+"local-1.mp3": [
+"Where is the C R?",
+"af_heart",
+0.85
+],
+"local-2.mp3": [
+"Yes, Ma'am. Thank you, Sir.",
+"af_heart",
+0.85
+],
+"local-3.mp3": [
+"For a while, please.",
+"af_heart",
+0.85
+],
+"local-4.mp3": [
+"I need to buy load for my phone.",
+"af_heart",
+0.85
+],
+"local-5.mp3": [
+"For here or take out?",
+"af_heart",
+0.85
+],
+"local-6.mp3": [
+"Kindly fill out this form.",
+"af_heart",
+0.85
+],
+"local-7.mp3": [
+"There is a brownout in the dorm.",
+"af_heart",
+0.85
+],
+"local-8.mp3": [
+"Does this jeepney go to the mall?",
+"af_heart",
+0.85
+],
+"local-9.mp3": [
+"Tricycle, please. To the school.",
+"af_heart",
+0.85
+],
+"local-10.mp3": [
+"Please fall in line.",
+"af_heart",
+0.85
+],
+"local-11.mp3": [
+"The washing machine is out of order.",
+"af_heart",
+0.85
+],
+"local-12.mp3": [
+"How much is the fare?",
+"af_heart",
+0.85
+],
+"pron1-1b.mp3": [
+"sink.",
+"af_heart",
+0.85
+],
+"pron1-2b.mp3": [
+"tree.",
+"af_heart",
+0.85
+],
+"pron1-3a.mp3": [
+"thank.",
+"af_heart",
+0.85
+],
+"pron1-3b.mp3": [
+"tank.",
+"af_heart",
+0.85
+],
+"pron2-1a.mp3": [
+"very.",
+"af_heart",
+0.85
+],
+"pron2-1b.mp3": [
+"wary.",
+"af_heart",
+0.85
+],
+"pron2-2a.mp3": [
+"vest.",
+"af_heart",
+0.85
+],
+"pron2-2b.mp3": [
+"west.",
+"af_heart",
+0.85
+],
+"pron2-3a.mp3": [
+"vine.",
+"af_heart",
+0.85
+],
+"pron2-3b.mp3": [
+"wine.",
+"af_heart",
+0.85
+],
+"pron3-1a.mp3": [
+"light.",
+"af_heart",
+0.85
+],
+"pron3-2a.mp3": [
+"long.",
+"af_heart",
+0.85
+],
+"pron3-2b.mp3": [
+"wrong.",
+"af_heart",
+0.85
+],
+"pron3-3a.mp3": [
+"glass.",
+"af_heart",
+0.85
+],
+"pron3-3b.mp3": [
+"grass.",
+"af_heart",
+0.85
+],
+"pron4-1a.mp3": [
+"ship.",
+"af_heart",
+0.85
+],
+"pron4-1b.mp3": [
+"sheep.",
+"af_heart",
+0.85
+],
+"pron4-2a.mp3": [
+"live.",
+"af_heart",
+0.85
+],
+"pron4-2b.mp3": [
+"leave.",
+"af_heart",
+0.85
+],
+"pron4-3a.mp3": [
+"full.",
+"af_heart",
+0.85
+],
+"pron4-3b.mp3": [
+"fool.",
+"af_heart",
+0.85
+],
+"pron5-1a.mp3": [
+"bed.",
+"af_heart",
+0.85
+],
+"pron5-1b.mp3": [
+"bet.",
+"af_heart",
+0.85
+],
+"pron5-2b.mp3": [
+"cart.",
+"af_heart",
+0.85
+],
+"pron5-3a.mp3": [
+"bag.",
+"af_heart",
+0.85
+],
+"pron5-3b.mp3": [
+"back.",
+"af_heart",
+0.85
+],
+"pos-1.mp3": [
+"My teacher is from Cebu.",
+"af_heart",
+0.85
+],
+"pos-3.mp3": [
+"I study English every day.",
+"af_heart",
+0.85
+],
+"pos-4.mp3": [
+"This food is spicy.",
+"af_heart",
+0.85
+],
+"pos-6.mp3": [
+"The test is on Monday.",
+"af_heart",
+0.85
+],
+"pos-7.mp3": [
+"I like it because it is fun.",
+"af_heart",
+0.85
+],
+"pos-9.mp3": [
+"Where is the clinic?",
+"af_heart",
+0.85
+],
+"final-sq2.mp3": [
+"What do you usually do on weekdays?",
+"am_michael",
+0.95
+],
+"final-sq3.mp3": [
+"Why do you want to study in the Philippines?",
+"am_michael",
+0.95
+],
+"final-sq4.mp3": [
+"What is difficult for you in English?",
+"am_michael",
+0.95
+],
+"final-sq5.mp3": [
+"What do you want your teacher to help you with?",
+"am_michael",
+0.95
+],
+"final-cq1.mp3": [
+"Please read paragraph two.",
+"am_michael",
+0.95
+],
+"final-cq2.mp3": [
+"Do you understand this word?",
+"am_michael",
+0.95
+],
+"final-cq3.mp3": [
+"Your answer is not correct.",
+"am_michael",
+0.95
+]
+},
+"listen": [
+[
+"af_nova",
+"Part one. Listen to the announcement."
+],
+[
+"am_michael",
+"Good morning, new students, and welcome to the school."
+],
+[
+"am_michael",
+"Orientation starts at nine o'clock this morning. Not ten. Nine o'clock."
+],
+[
+"am_michael",
+"It is in Room two oh one."
+],
+[
+"am_michael",
+"Please bring your passport and a pen."
+],
+[
+"am_michael",
+"Room two oh one is on the second floor, next to the library. See you there."
+],
+[
+"af_nova",
+"Part two. Listen to the phone call."
+],
+[
+"am_eric",
+"Hi, is this Jenny? This is your school driver."
+],
+[
+"af_heart",
+"Yes, this is Jenny. Where are you?"
+],
+[
+"am_eric",
+"I'm outside Gate two. My car is white. The plate number is A, B, C, five, three, two."
+],
+[
+"af_heart",
+"Sorry, could you repeat the plate number?"
+],
+[
+"am_eric",
+"Sure. A, B, C, five, three, two."
+],
+[
+"af_heart",
+"Thank you. How long will it take to get to the school?"
+],
+[
+"am_eric",
+"About ten minutes."
+]
+]
+}

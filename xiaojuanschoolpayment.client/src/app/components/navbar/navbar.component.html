@@ -140,11 +140,21 @@
             <div class="mega-group__header">
               <a
                 class="mega-group__title"
+                *ngIf="!child.external; else externalGroupTitle"
                 [routerLink]="child.route"
                 (click)="closeMenus()"
               >
                 {{ child.label }}
               </a>
+              <ng-template #externalGroupTitle>
+                <a
+                  class="mega-group__title"
+                  [href]="child.route"
+                  (click)="closeMenus()"
+                >
+                  {{ child.label }}
+                </a>
+              </ng-template>
               <button
                 class="mega-group__header-toggle"
                 type="button"
@@ -178,16 +188,25 @@
               *ngIf="child.children?.length"
               [id]="getThirdLevelMenuId(item, child)"
             >
-              <a
+              <ng-container
                 *ngFor="
                   let subitem of getVisibleThirdLevelItems(item, child);
                   trackBy: trackById
                 "
-                [routerLink]="subitem.route"
-                (click)="closeMenus()"
               >
-                {{ subitem.label }}
-              </a>
+                <a
+                  *ngIf="!subitem.external; else externalSubitem"
+                  [routerLink]="subitem.route"
+                  (click)="closeMenus()"
+                >
+                  {{ subitem.label }}
+                </a>
+                <ng-template #externalSubitem>
+                  <a [href]="subitem.route" (click)="closeMenus()">
+                    {{ subitem.label }}
+                  </a>
+                </ng-template>
+              </ng-container>
 
               <button
                 class="mega-subitems__toggle"

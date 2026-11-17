@@ -1,0 +1,4 @@
+# Kokoro TTS model files (large downloads) and temporary wav output from tools/tts_run.py
+tools/kokoro/
+tools/_wav/
+__pycache__/

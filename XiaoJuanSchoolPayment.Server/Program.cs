@@ -238,6 +238,8 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/schools/by-style", "monthly", "0.85"),
   ("/philippines-study/schools/popular", "monthly", "0.85"),
   ("/study-tour-guide/philippines", "monthly", "0.85"),
+  // Static 60-day English plan served from wwwroot/study60/index.html (not an Angular route).
+  ("/study60/", "monthly", "0.7"),
   ("/philippines-study/cebu/cia-cebu-international-academy", "monthly", "0.8"),
   ("/philippines-study/cebu/cia-cebu-international-academy/student-reviews/cebu-city-night-with-friends", "monthly", "0.65"),
   ("/philippines-study/cebu/cia-cebu-international-academy/student-reviews/first-overseas-english-study", "monthly", "0.65"),
