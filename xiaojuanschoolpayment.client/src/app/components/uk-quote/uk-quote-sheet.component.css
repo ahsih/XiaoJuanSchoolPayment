@@ -1,0 +1,67 @@
+:host { display: block; }
+.uk-sheet { --uk-green: #0f4a2f; --uk-green-2: #1d6b45; --uk-soft: #f8faf8; --uk-line: #dde5df;
+  --uk-orange: #ee7d1a; --uk-muted: #6b766f; color: #1f2a24; }
+.uk-alert { display: flex; gap: 10px; align-items: flex-start; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; line-height: 1.6; }
+.uk-alert ul { margin: 0; padding-left: 16px; }
+.uk-alert--issue { background: #fff1ee; border: 1px solid #f3c2b6; color: #a23a1f; }
+.uk-alert--warning { background: #fff8e8; border: 1px solid #f0dcaa; color: #7a5a14; }
+.uk-alert mat-icon { flex: none; font-size: 20px; width: 20px; height: 20px; }
+
+.uk-heading { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 12px; flex-wrap: wrap; }
+.uk-heading:first-of-type { margin-top: 4px; }
+.uk-heading h3 { margin: 0; font-size: 20px; color: var(--uk-green); }
+.uk-heading small { color: var(--uk-muted); font-size: 13px; }
+.uk-no { background: var(--uk-orange); color: #fff; font-weight: 800; font-size: 13px; border-radius: 6px; padding: 1px 8px; }
+
+.uk-table-wrap { border: 1px solid var(--uk-line); border-radius: 12px; overflow: hidden; }
+.uk-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.uk-table th, .uk-table td { padding: 12px 14px; border-bottom: 1px solid var(--uk-line); vertical-align: middle; text-align: left; }
+.uk-table tbody tr:last-child td, .uk-table tbody tr:last-child th { border-bottom: none; }
+.uk-table thead th { background: var(--uk-green); color: #fff; font-size: 15px; font-weight: 700; }
+.plan-tag { display: block; font-size: 12px; font-weight: 400; color: #bfe0c9; }
+.uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included { text-align: right; width: 200px; }
+.uk-fees td strong { display: block; }
+.uk-fees .note { display: block; margin-top: 3px; font-size: 13px; color: var(--uk-muted); line-height: 1.5; }
+.uk-fees td.amount { font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.uk-fees td.amount.included { color: var(--uk-green-2); font-size: 14px; }
+.uk-fees td.amount.na { color: #9aa49d; font-weight: 400; font-size: 14px; }
+.uk-fees tr.total td { background: #fff3e6; }
+.uk-fees tr.total strong { color: #b4560a; font-size: 17px; }
+.uk-fees tr.total b { display: block; color: var(--uk-orange); font-size: 24px; }
+.uk-fees tr.total .cny { display: block; font-size: 12px; font-weight: 400; color: var(--uk-muted); }
+.uk-rate { margin: 8px 2px 0; font-size: 12px; color: var(--uk-muted); }
+
+.uk-includes tbody th { width: 110px; background: var(--uk-soft); color: var(--uk-green); font-weight: 700; font-size: 14px; }
+.uk-includes td { font-size: 14px; line-height: 1.65; }
+.uk-includes td .line { display: block; }
+.uk-includes td em { font-style: normal; font-weight: 800; color: var(--uk-orange); }
+.uk-includes td.muted { color: #a3aaa5; }
+
+.uk-examples { margin-top: 12px; background: var(--uk-soft); border: 1px solid var(--uk-line); border-radius: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.7; }
+.uk-examples strong { color: var(--uk-green-2); font-size: 13px; }
+.uk-examples p { margin: 2px 0 0; color: #3d4741; }
+
+.uk-optional { list-style: none; margin: 0; padding: 6px 16px; border: 1px dashed #cfd6d1; border-radius: 12px; }
+.uk-optional li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; color: #4f5953; font-size: 14px; }
+.uk-optional li + li { border-top: 1px solid #eef1ef; }
+.uk-optional small { display: block; color: #8a938d; font-size: 12px; margin-top: 2px; }
+.uk-optional i { font-style: normal; font-size: 11px; color: #9a6b2b; border: 1px solid #e6cfa7; border-radius: 4px; padding: 0 5px; margin-left: 6px; }
+.uk-optional .price { white-space: nowrap; }
+
+.uk-notes { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.75; color: #3d4741; }
+
+@media (max-width: 640px) {
+  .uk-table { font-size: 14px; }
+  .uk-table th, .uk-table td { padding: 10px; }
+  .uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included { width: auto; }
+  .uk-fees.two-plans td.amount { font-size: 15px; }
+  .uk-fees tr.total b { font-size: 20px; }
+  .uk-includes, .uk-includes tbody, .uk-includes tr, .uk-includes th, .uk-includes td { display: block; width: auto; }
+  .uk-includes thead { display: none; }
+  .uk-includes tbody th { border-bottom: none; padding-bottom: 2px; background: transparent; }
+  .uk-includes.two-plans td:not([colspan])::before { display: block; font-size: 12px; color: var(--uk-muted); }
+  .uk-includes.two-plans td:not([colspan]):nth-of-type(1)::before { content: '方案一'; }
+  .uk-includes.two-plans td:not([colspan]):nth-of-type(2)::before { content: '方案二'; }
+  .uk-includes td { border-bottom: none; padding-top: 2px; }
+  .uk-includes tr { border-bottom: 1px solid var(--uk-line); padding-bottom: 6px; }
+}

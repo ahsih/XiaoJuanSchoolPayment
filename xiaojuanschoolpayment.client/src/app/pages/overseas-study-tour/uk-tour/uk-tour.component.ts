@@ -52,6 +52,15 @@ export class UkTourComponent {
       '住宿方式、监护安排、接送范围和周末活动是否清楚。',
       '签证、保险、机票和开课日期要提前规划。',
     ],
+    schools: [
+      {
+        name: 'Burlington School（伦敦）',
+        route: '/overseas-study-tour/uk/burlington-school',
+        image: '/assets/burlington/campus-courtyard.jpg',
+        text: '1990年创办的伦敦寄宿式语言学校，学习、住宿、吃饭在同一栋楼；有青少年四季全包项目、成人课程和成人暑期公寓套餐。',
+        tags: ['青少年11–17岁', '成人16岁以上', '校内住宿', '巴斯城堡'],
+      },
+    ],
     sources: [
       { label: 'Study UK', url: 'https://study-uk.britishcouncil.org/' },
       { label: 'Study UK - Student Visas', url: 'https://study-uk.britishcouncil.org/moving-uk/student-visas' },

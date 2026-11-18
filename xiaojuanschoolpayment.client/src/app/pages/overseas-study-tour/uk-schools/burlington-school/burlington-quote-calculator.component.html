@@ -1,0 +1,150 @@
+<div class="bq">
+  <div class="bq-programmes" role="radiogroup" aria-label="报价项目">
+    <button type="button" *ngFor="let item of programmes" role="radio" [attr.aria-checked]="input.programme === item.id"
+      [class.active]="input.programme === item.id" (click)="selectProgramme(item.id)">
+      <strong>{{ item.name }}</strong><span>{{ item.note }}</span>
+    </button>
+  </div>
+
+  <div class="bq-grid bq-student">
+    <label>学生称呼（可选）
+      <input type="text" [(ngModel)]="input.studentName" maxlength="20" placeholder="例如：张同学" />
+    </label>
+    <label *ngIf="input.programme === 'junior'">入学时年龄
+      <select [(ngModel)]="input.juniorAge"><option *ngFor="let age of juniorAges" [ngValue]="age">{{ age }}岁</option></select>
+    </label>
+    <label *ngIf="input.programme !== 'junior'">入学时年龄
+      <select [(ngModel)]="input.adultAge">
+        <option ngValue="adult">18岁及以上</option>
+        <option ngValue="minor">16–17岁</option>
+      </select>
+    </label>
+    <label>接送机地点（参考价）
+      <select [(ngModel)]="input.airport"><option *ngFor="let airport of airports" [ngValue]="airport.id">{{ airport.name }}</option></select>
+    </label>
+    <label>报价顾问
+      <select [(ngModel)]="consultantName"><option *ngFor="let item of consultants" [ngValue]="item.name">{{ item.name }} · {{ item.title }}</option></select>
+    </label>
+  </div>
+
+  <div class="bq-plans" [class.two]="input.plans.length > 1">
+    <section class="bq-plan" *ngFor="let plan of input.plans; let index = index; trackBy: trackIndex">
+      <header>
+        <strong>{{ input.plans.length > 1 ? planTags[index] : '报价方案' }}</strong>
+        <button type="button" class="bq-link" *ngIf="input.plans.length > 1" (click)="removePlan(index)">
+          <mat-icon>close</mat-icon>删除
+        </button>
+      </header>
+
+      <ng-container *ngIf="input.programme === 'junior'">
+        <div class="bq-grid">
+          <label>季节
+            <select [(ngModel)]="plan.juniorSeason" (ngModelChange)="changeSeason(plan)">
+              <option *ngFor="let season of seasons" [ngValue]="season.id">{{ season.name }}（{{ dateText(season.start) }}–{{ dateText(season.end) }}）</option>
+            </select>
+          </label>
+          <label>住宿方式
+            <select [(ngModel)]="plan.juniorPackage">
+              <option *ngFor="let item of juniorPackages" [ngValue]="item.id">{{ item.name }}{{ item.minAge > 11 ? '（' + item.minAge + '岁以上）' : '' }}</option>
+            </select>
+          </label>
+          <label *ngIf="plan.juniorPackage === 'homestay'">寄宿家庭房间
+            <select [(ngModel)]="plan.juniorHomestayRoom"><option ngValue="single">单人间</option><option ngValue="twin">双人间</option></select>
+          </label>
+          <label>入住日期（周日）
+            <select [(ngModel)]="plan.arrival"><option *ngFor="let date of juniorArrivals(plan)" [ngValue]="date">{{ dateText(date) }}</option></select>
+          </label>
+          <label>周数
+            <select [(ngModel)]="plan.weeks"><option *ngFor="let weeks of juniorWeeks(plan)" [ngValue]="weeks">{{ weeks }}周</option></select>
+          </label>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="input.programme === 'adult-course'">
+        <div class="bq-grid">
+          <label>课程
+            <select [(ngModel)]="plan.course">
+              <option *ngFor="let course of courses" [ngValue]="course.id">{{ course.name }}（{{ course.hoursText }}）</option>
+              <option ngValue="one-to-one">只上一对一课程</option>
+            </select>
+          </label>
+          <label *ngIf="plan.course !== 'one-to-one'">课程方向
+            <select [(ngModel)]="plan.courseFocus"><option *ngFor="let focus of focuses" [ngValue]="focus.id">{{ focus.name }}</option></select>
+          </label>
+          <label>入住日期（周日）
+            <select [(ngModel)]="plan.arrival"><option *ngFor="let date of adultArrivals" [ngValue]="date">{{ fullDateText(date) }}</option></select>
+          </label>
+          <label>课程周数
+            <select [ngModel]="plan.weeks" (ngModelChange)="changeAdultWeeks(plan, $event)"><option *ngFor="let weeks of adultWeeks" [ngValue]="weeks">{{ weeks }}周</option></select>
+          </label>
+          <label>一对一课时（小时）
+            <input type="number" min="0" step="1" [(ngModel)]="plan.oneToOneHours" />
+          </label>
+          <label>住宿
+            <select [(ngModel)]="plan.accommodation">
+              <option ngValue="onsite">校内宿舍（含周一至五早晚餐）</option>
+              <option ngValue="homestay">寄宿家庭</option>
+              <option ngValue="apartment">Wandsworth公寓（18岁以上）</option>
+              <option ngValue="none">不需要住宿</option>
+            </select>
+          </label>
+          <ng-container *ngIf="plan.accommodation !== 'none'">
+            <label>住宿周数
+              <select [(ngModel)]="plan.accommodationWeeks"><option *ngFor="let weeks of adultWeeks" [ngValue]="weeks">{{ weeks }}周</option></select>
+            </label>
+          </ng-container>
+          <label *ngIf="plan.accommodation === 'onsite'">房型
+            <select [(ngModel)]="plan.onsiteRoom"><option *ngFor="let room of onsiteRooms" [ngValue]="room.id">{{ room.name }} · {{ room.price }}英镑/周</option></select>
+          </label>
+          <label *ngIf="plan.accommodation === 'apartment'">房型
+            <select [(ngModel)]="plan.apartmentRoom"><option *ngFor="let room of apartmentRooms" [ngValue]="room.id">{{ room.name }} · {{ room.price }}英镑/周</option></select>
+          </label>
+          <ng-container *ngIf="plan.accommodation === 'homestay'">
+            <label>寄宿家庭类型
+              <select [(ngModel)]="plan.homestayTier"><option *ngFor="let tier of homestayTiers" [ngValue]="tier.id">{{ tier.id === 'standard' ? '标准寄宿家庭' : '精选寄宿家庭' }}</option></select>
+            </label>
+            <label>房间
+              <select [(ngModel)]="plan.homestayRoom"><option ngValue="single">单人间</option><option ngValue="twin">双人间</option></select>
+            </label>
+            <label>餐食
+              <select [(ngModel)]="plan.homestayBoard"><option *ngFor="let board of homestayBoards" [ngValue]="board.id">{{ board.name }}</option></select>
+            </label>
+            <div class="bq-checks">
+              <label class="check"><input type="checkbox" [(ngModel)]="plan.homestayPrivateBathroom" />独立卫生间（每周加50英镑）</label>
+              <label class="check"><input type="checkbox" [(ngModel)]="plan.homestaySpecialDiet" />特殊饮食（每周加35英镑）</label>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="input.programme === 'summer-residence'">
+        <div class="bq-grid">
+          <label>入住日期（周日）
+            <select [(ngModel)]="plan.arrival"><option *ngFor="let date of residenceArrivals" [ngValue]="date">{{ dateText(date) }}</option></select>
+          </label>
+          <label>周数
+            <select [(ngModel)]="plan.weeks"><option *ngFor="let weeks of residenceWeeks" [ngValue]="weeks">{{ weeks }}周</option></select>
+          </label>
+          <label>课程方向
+            <select [(ngModel)]="plan.courseFocus"><option *ngFor="let focus of focuses" [ngValue]="focus.id">{{ focus.name }}</option></select>
+          </label>
+          <div class="bq-checks">
+            <label class="check"><input type="checkbox" [(ngModel)]="plan.intensiveUpgrade" />升级强化课程（每周加80英镑，每周22.5小时）</label>
+          </div>
+        </div>
+      </ng-container>
+    </section>
+
+    <button type="button" class="bq-add" *ngIf="input.plans.length < 2" (click)="addPlan()">
+      <mat-icon>add</mat-icon>添加方案二，并排对比
+    </button>
+  </div>
+
+  <app-uk-quote-sheet [sheet]="sheet"></app-uk-quote-sheet>
+
+  <div class="bq-actions">
+    <app-quote-image-download-button [quote]="quoteImage" [disabled]="!canExport" [previewBeforeDownload]="true"
+      label="预览／保存报价图片" buttonClass="primary-action"></app-quote-image-download-button>
+    <p *ngIf="sheet.issues.length">请先按上面的提示修改，再保存报价图片。</p>
+  </div>
+</div>

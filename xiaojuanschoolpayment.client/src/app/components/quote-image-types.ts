@@ -1,6 +1,7 @@
 // Quote image data shared by the website renderer (QuoteImageDownloadButtonComponent and
 // quote-image-detailed-renderer.ts) and the WeChat mini program, which bundles the renderer.
 // Keep this file free of Angular and DOM types.
+import type { UkQuoteSheet } from './uk-quote/uk-quote-sheet';
 
 export interface QuoteImageInfoItem {
   icon: string;
@@ -61,7 +62,9 @@ export interface QuoteImageContact {
 }
 
 export interface QuoteImageCardData {
-  layout?: 'standard' | 'cia-detailed';
+  /** `uk-package` draws `ukSheet` with uk-quote/uk-quote-image-renderer.ts; other fields are then unused. */
+  layout?: 'standard' | 'cia-detailed' | 'uk-package';
+  ukSheet?: UkQuoteSheet;
   /** Preserve every payment/local/optional fee and size the detailed image to its contents. */
   fullFeeDetails?: boolean;
   /** Size shorter package fee sections to their content without changing other schools. */

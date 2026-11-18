@@ -773,6 +773,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '英国游学',
         route: '/overseas-study-tour/uk',
         type: '国家页',
+        children: [
+          {
+            id: 'uk-tour-overview',
+            label: '英国游学总览',
+            route: '/overseas-study-tour/uk',
+          },
+          {
+            id: 'burlington-school',
+            label: 'Burlington School（伦敦）',
+            route: '/overseas-study-tour/uk/burlington-school',
+          },
+        ],
       },
       {
         id: 'singapore-tour',

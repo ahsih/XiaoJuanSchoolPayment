@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": [
+    "src/app/pages/overseas-study-tour/uk-schools/burlington-school/*.spec.ts",
+    "src/app/components/uk-quote/*.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

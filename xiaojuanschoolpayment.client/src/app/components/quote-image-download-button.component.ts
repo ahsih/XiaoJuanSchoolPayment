@@ -26,6 +26,7 @@ import {
   withoutExchangeNote,
   wrapCanvasText,
 } from './quote-image-detailed-renderer';
+import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote/uk-quote-image-renderer';
 
 export type QuoteImageActionMode = 'download' | 'email';
 
@@ -475,16 +476,19 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   private async createQuoteImageBlob(scaleOverride?: number): Promise<Blob> {
     if (!this.ratesReady || /NaN|Infinity/.test(JSON.stringify(this.quote))) throw new Error('最新参考汇率暂不可用，请稍后重试。');
     const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
-    const [logo, hero, consultantAssets] = await Promise.all([
+    const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
+    if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
+    const [logo, hero, consultantAssets, ukQr] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
-        (this.quote.layout === 'cia-detailed' ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
+        (this.quote.layout === 'cia-detailed' || ukSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
           consultant,
           avatar: await this.loadCanvasImage(consultant.avatarSrc),
           qr: await this.loadCanvasImage(consultant.qrSrc),
         })),
       ),
+      ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -494,9 +498,11 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       throw new Error('Canvas is not available');
     }
 
-    const height = this.quote.layout === 'cia-detailed'
-      ? detailedQuoteImageHeight(context, this.quote)
-      : 1848;
+    const height = ukSheet
+      ? ukQuoteImageHeight(context, ukSheet)
+      : this.quote.layout === 'cia-detailed'
+        ? detailedQuoteImageHeight(context, this.quote)
+        : 1848;
 
     const initialScale = quoteCanvasScale(width, height,
       scaleOverride ?? Math.max(2, window.devicePixelRatio || 2), quoteImageEnvironment().mobile);
@@ -510,7 +516,9 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
           context.scale(canvas.width / width, canvas.height / height);
           context.imageSmoothingEnabled = true;
           context.imageSmoothingQuality = 'high';
-          if (this.quote.layout === 'cia-detailed') {
+          if (ukSheet) {
+            drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
+          } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
               logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })),
             }, width, height);
@@ -532,7 +540,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 

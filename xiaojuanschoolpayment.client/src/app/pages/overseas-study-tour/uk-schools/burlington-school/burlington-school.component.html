@@ -1,0 +1,402 @@
+<app-cia-school>
+<div class="cia-page burlington-page">
+  <div class="page-grid">
+    <main class="page-main">
+      <section class="hero-section" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/overseas-study-tour/uk">
+            <mat-icon>arrow_back</mat-icon>
+            返回英国游学
+          </a>
+          <p class="breadcrumb">{{ copy.breadcrumb }}</p>
+          <h1>{{ copy.title }}</h1>
+          <p class="hero-lead">{{ copy.lead }}</p>
+          <div class="hero-tags" aria-label="Burlington School特点">
+            <span *ngFor="let tag of copy.tags"><mat-icon>{{ tag.icon }}</mat-icon>{{ tag.text }}</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+              立即计算我的费用
+              <mat-icon>calculate</mat-icon>
+            </a>
+            <a class="secondary-action" href="#programmes" (click)="scrollToSection('programmes', $event)">
+              查看项目和价格
+              <mat-icon>menu_book</mat-icon>
+            </a>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              联系顾问
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="trust-note"><mat-icon>verified</mat-icon>{{ copy.trustNote }}</p>
+        </div>
+
+        <div class="hero-media" aria-label="Burlington School图片展示">
+          <figure class="feature-photo">
+            <img [src]="heroImage.src" alt="伦敦Burlington School主楼和庭院" />
+            <figcaption>{{ heroImage.title }}：{{ heroImage.description }}</figcaption>
+          </figure>
+          <div class="media-strip" aria-label="Burlington School缩略图">
+            <figure *ngFor="let image of heroStrip">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>{{ image.title }}</figcaption>
+            </figure>
+          </div>
+          <aside class="hero-price-card">
+            <span>{{ copy.priceCard.label }}</span>
+            <strong>{{ copy.priceCard.price }}</strong>
+            <p>{{ copy.priceCard.caption }}</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>{{ copy.priceCard.points[0] }}</li>
+              <li><mat-icon>info</mat-icon>{{ copy.priceCard.points[1] }}</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="mobile-anchor-nav" aria-label="手机端快捷导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+
+      <section class="quick-info" aria-label="Burlington School快速信息">
+        <article class="quick-card" *ngFor="let item of quickInfo">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <div>
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+            <p>{{ item.note }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-block" id="gallery">
+        <div class="section-heading">
+          <span>图片 / 环境展示</span>
+          <h2>先看 Burlington 的校舍、宿舍、餐厅和城堡</h2>
+          <p>校舍由老建筑翻新，教室、餐厅、宿舍和休息室都在同一栋楼里；成人暑期公寓和巴斯城堡的照片也放在这里。</p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="图片分类">
+          <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedCategory === category"
+            (click)="selectedCategory = category">{{ category }}</button>
+        </div>
+        <div class="gallery-grid">
+          <figure *ngFor="let image of filteredGallery">
+            <img [src]="image.src" [alt]="image.title" loading="lazy" />
+            <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section-block" id="videos">
+        <div class="section-heading">
+          <span>视频 / 学校实拍</span>
+          <h2>看看学生在 Burlington 的一天</h2>
+          <p>完整视频，点击播放后才开始加载，不会提前消耗流量。</p>
+        </div>
+        <div class="bt-video-featured">
+          <figure *ngFor="let item of featuredVideos">
+            <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+            <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+          </figure>
+        </div>
+        <div class="bt-video-shorts">
+          <figure *ngFor="let item of shortVideos">
+            <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+            <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <div class="info-trio">
+        <section class="panel basic-panel" id="basic-info">
+          <div class="compact-heading"><span>学校基本信息</span><h2>Burlington School 基本资料</h2></div>
+          <dl class="info-list">
+            <div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+          </dl>
+        </section>
+
+        <section class="panel advisor-panel" id="advisor-review">
+          <div class="quote-mark">"</div>
+          <div class="compact-heading"><span>思达顾问点评</span><h2>{{ advisor.heading }}</h2></div>
+          <p>{{ advisor.text }}</p>
+          <div class="advisor-card">
+            <div class="advisor-avatar">{{ advisor.name }}</div>
+            <div><strong>{{ advisor.name }} 顾问建议</strong><span>{{ advisor.advice }}</span></div>
+          </div>
+          <a class="primary-action full-action" routerLink="/about-sida/contact">让顾问帮我选方案<mat-icon>chat</mat-icon></a>
+        </section>
+
+        <section class="panel highlight-panel" id="highlights">
+          <div class="compact-heading"><span>学校亮点</span><h2>为什么推荐 Burlington？</h2></div>
+          <div class="highlight-list">
+            <article *ngFor="let item of highlights">
+              <mat-icon>check_circle</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="fit-section" id="fit">
+        <div class="section-heading"><span>适合 / 需要考虑</span><h2>先判断 Burlington 是不是你的优先选择</h2></div>
+        <div class="fit-grid">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <article *ngFor="let item of fit.suitable"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+          </div>
+          <div>
+            <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+            <article *ngFor="let item of fit.lessSuitable"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="programmes">
+        <div class="section-heading">
+          <span>项目 / 2027年价格</span>
+          <h2>四类项目，先按年龄和时间选</h2>
+          <p>11–17岁报青少年项目；16岁以上可以报成人课程，暑期也可以选成人公寓套餐。以下均为2027年价格。</p>
+        </div>
+        <div class="course-grid bt-programme-grid">
+          <article class="course-card bt-programme" *ngFor="let item of programmes">
+            <span>{{ item.type }}</span>
+            <h3>{{ item.name }}</h3>
+            <p class="bt-dates"><mat-icon>event</mat-icon>{{ item.dates }}</p>
+            <p class="bt-weeks">{{ item.weeks }}</p>
+            <strong class="bt-price">{{ item.price }}</strong>
+            <p class="bt-sub">{{ item.sub }}</p>
+            <ul><li *ngFor="let point of item.points">{{ point }}</li></ul>
+          </article>
+        </div>
+
+        <h3 class="bt-subheading">青少年项目：三种住宿方式包含什么</h3>
+        <div class="bt-table-wrap">
+          <table class="bt-table">
+            <thead><tr><th>内容</th><th *ngFor="let header of juniorIncludes.headers">{{ header }}</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let row of juniorIncludes.rows">
+                <th scope="row">{{ row.label }}</th>
+                <td *ngFor="let value of row.values" [class.bt-muted]="value === '不含'">{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="bt-subheading">青少年项目：各季节日期和每周价格</h3>
+        <div class="bt-table-wrap">
+          <table class="bt-table bt-wide">
+            <thead><tr><th>季节</th><th>日期</th><th>周数</th><th>只上课</th><th>宿舍或寄宿家庭全包</th><th>巴斯城堡升级</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let row of juniorSeasons">
+                <th scope="row">{{ row.name }}</th><td>{{ row.dates }}</td><td>{{ row.weeks }}</td>
+                <td>{{ row.day }}</td><td class="bt-strong">{{ row.full }}</td><td>{{ row.castle }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bt-note">青少年项目另收一次性注册费55英镑。14岁以下接送机必须加付无人陪伴费（每程50英镑）。</p>
+
+        <h3 class="bt-subheading">青少年住校的一天（示例）</h3>
+        <div class="timeline">
+          <article *ngFor="let item of juniorDay"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article>
+        </div>
+        <p class="bt-note">{{ juniorDayNote }}</p>
+
+        <div class="bt-junior-grid">
+          <article class="bt-room-card">
+            <h3><mat-icon>lightbulb</mat-icon>项目课做什么</h3>
+            <p class="bt-lead-note">每一到两周换一个主题，分组完成后周五展示；英语 A2–C1 都能参加，青少年平均每班15人。</p>
+            <ul class="bt-price-list"><li *ngFor="let item of juniorProjects"><span>{{ item.group }}</span><b>{{ item.text }}</b></li></ul>
+          </article>
+          <article class="bt-room-card">
+            <h3><mat-icon>shield</mat-icon>安全和外出规定</h3>
+            <ul class="bt-check-list"><li *ngFor="let item of juniorSafety">{{ item }}</li></ul>
+          </article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+
+        <h3 class="bt-subheading">成人课程：学费按总周数分档</h3>
+        <div class="bt-table-wrap">
+          <table class="bt-table">
+            <thead><tr><th>报名周数</th><th>标准课程（每周15小时）</th><th>强化课程（每周22.5小时）</th><th>举例</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let row of adultTiers">
+                <th scope="row">{{ row.weeks }}</th><td class="bt-strong">{{ row.standard }}</td><td class="bt-strong">{{ row.intensive }}</td><td>{{ row.example }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bt-note">整段课程都按总周数对应的档位计价，例如报5周，5周都按每周295英镑算。成人另收注册费55英镑、教材每学期45英镑；订住宿再加住宿预订费55英镑。</p>
+        <div class="bt-extra-grid">
+          <article *ngFor="let item of adultExtras"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><p>{{ item.note }}</p></article>
+        </div>
+
+        <h3 class="bt-subheading">成人课程时间表</h3>
+        <div class="timeline">
+          <article *ngFor="let item of adultTimetable"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article>
+        </div>
+        <p class="bt-note bt-reference">课程时间和社交活动仅供参考，学校可能随时调整，以当期安排为准。</p>
+      </section>
+
+      <section class="section-block" id="accommodation">
+        <div class="section-heading">
+          <span>住宿 / 成人每周价格</span>
+          <h2>校内宿舍、公寓和寄宿家庭</h2>
+          <p>以下是成人课程单独订住宿的价格。青少年项目的住宿已经包含在套餐里，不用另算。</p>
+        </div>
+        <div class="bt-room-grid">
+          <article class="bt-room-card">
+            <h3><mat-icon>apartment</mat-icon>校内宿舍（16岁以上）</h3>
+            <ul class="bt-price-list"><li *ngFor="let row of onsiteRows"><span>{{ row.name }}</span><b>{{ row.price }}</b></li></ul>
+            <p>{{ accommodationNotes.onsite }}</p>
+          </article>
+          <article class="bt-room-card">
+            <h3><mat-icon>location_city</mat-icon>Wandsworth 公寓（18岁以上）</h3>
+            <ul class="bt-price-list"><li *ngFor="let row of apartmentRows"><span>{{ row.name }}</span><b>{{ row.price }}</b></li></ul>
+            <p>{{ accommodationNotes.apartment }}</p>
+          </article>
+        </div>
+        <h3 class="bt-subheading">寄宿家庭（16岁以上，每周价格）</h3>
+        <div class="bt-table-wrap">
+          <table class="bt-table">
+            <thead><tr><th>类型</th><th>不含餐</th><th>含早餐</th><th>含早晚餐</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let row of homestayRows"><th scope="row">{{ row.name }}</th><td>{{ row.self }}</td><td>{{ row.bb }}</td><td>{{ row.hb }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bt-note">{{ accommodationNotes.homestay }}标准寄宿家庭可能由合作住宿机构安排；精选寄宿家庭由学校挑选，位置更方便。</p>
+        <ul class="bt-price-list bt-supplements">
+          <li *ngFor="let row of homestaySupplements"><span>{{ row.label }}</span><b>{{ row.value }}</b></li>
+        </ul>
+        <article class="bt-room-card bt-vetting">
+          <h3><mat-icon>verified_user</mat-icon>精选寄宿家庭怎么审核</h3>
+          <ul class="bt-check-list"><li *ngFor="let item of homestayVetting">{{ item }}</li></ul>
+        </article>
+        <p class="bt-note bt-reference">住宿规定、设施和审核流程仅供参考，学校可能随时调整，以学校当期安排为准。</p>
+      </section>
+
+      <section class="section-block" id="summer-residence">
+        <div class="section-heading">
+          <span>成人暑期公寓套餐 · 2027年6月27日–8月22日</span>
+          <h2>16岁以上，课程＋公寓单人间一次包好</h2>
+          <p>住在 iQ Vega 公寓，每人一间卧室。报的周数越多，每周越便宜；套餐没有其他额外费用。</p>
+        </div>
+        <div class="bt-tier-row">
+          <div><span>2周起</span><strong>845英镑/周</strong></div>
+          <div class="active"><span>4周起</span><strong>795英镑/周</strong><em>4周共3,180英镑</em></div>
+          <div><span>6周起</span><strong>745英镑/周</strong></div>
+        </div>
+        <div class="bt-include-grid">
+          <article *ngFor="let group of residenceIncludes">
+            <h3>{{ group.title }}</h3>
+            <ul><li *ngFor="let item of group.items">{{ item }}</li></ul>
+          </article>
+        </div>
+        <p class="bt-note">{{ residenceRoomOnly }}</p>
+        <p class="bt-note bt-reference">公寓设施和服务仅供参考，学校可能随时调整，以学校当期安排为准。</p>
+      </section>
+
+      <section class="section-block" id="castle">
+        <div class="section-heading">
+          <span>Beyond the Classroom · 巴斯城堡体验</span>
+          <h2>在城堡住两晚，游览巴斯和英格兰乡村</h2>
+          <p>{{ castle.intro }}</p>
+        </div>
+        <div class="bt-castle">
+          <img [src]="castleImage.src" alt="Burlington巴斯城堡" loading="lazy" />
+          <div class="bt-castle-options">
+            <article *ngFor="let option of castle.options">
+              <div><span>{{ option.who }}</span><strong>{{ option.price }}</strong></div>
+              <p>{{ option.text }}</p>
+            </article>
+          </div>
+        </div>
+        <p class="bt-note">{{ castle.note }}</p>
+      </section>
+
+      <section class="section-block" id="quote">
+        <div class="section-heading">
+          <span>在线报价</span>
+          <h2>选项目、日期和住宿，马上算出费用</h2>
+          <p>必付费用和可选费用分开列，可以加一个方案并排对比；算好后可以直接保存报价图片发给家长。</p>
+        </div>
+        <app-burlington-quote-calculator></app-burlington-quote-calculator>
+      </section>
+
+      <section class="section-block" id="fees">
+        <div class="section-heading"><span>其他费用</span><h2>注册、教材、接送机和交通</h2></div>
+        <div class="local-fee-grid bt-fee-grid">
+          <article *ngFor="let fee of fees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+        </div>
+      </section>
+
+      <section class="section-block" id="calendar">
+        <div class="section-heading"><span>2027年日历</span><h2>开课日期和假期</h2></div>
+        <div class="bt-calendar">
+          <article *ngFor="let item of calendar"><time>{{ item.date }}</time><strong>{{ item.title }}</strong><span>{{ item.note }}</span></article>
+        </div>
+      </section>
+
+      <section class="section-block" id="service">
+        <div class="section-heading"><span>思达启航</span><h2>报名 Burlington，思达可以帮你做什么</h2></div>
+        <div class="bt-service-grid">
+          <article *ngFor="let item of service"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+        <div class="bt-contact">
+          <img class="bt-contact-qr" [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" loading="lazy" />
+          <div>
+            <span>英国游学顾问</span>
+            <strong>{{ consultant.name }} · {{ consultant.title }}</strong>
+            <p>电话 <a [href]="consultant.phoneHref">{{ consultant.phone }}</a>；扫码添加微信，发学生年龄、出发时间和预算，帮你确认学位和正式报价。</p>
+            <a class="secondary-action" routerLink="/about-sida/contact">查看全部顾问<mat-icon>arrow_forward</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="faq">
+        <div class="section-heading"><span>报名前常见问题</span><h2>报名 Burlington 前，先确认这些</h2></div>
+        <div class="faq-list">
+          <article *ngFor="let item of faqs"><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
+        </div>
+      </section>
+
+      <section class="bottom-cta">
+        <div>
+          <span>获取 Burlington 正式报价</span>
+          <h2>把学生年龄、出发时间、周数和住宿想法告诉思达，我们帮你确认学位和费用</h2>
+          <p>顾问会跟学校确认空位、房型和当期价格，并提醒签证、机票、保险和接机安排。</p>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>按2027年价格报价</li>
+          <li><mat-icon>check_circle</mat-icon>必付和可选费用分开列</li>
+          <li><mat-icon>check_circle</mat-icon>可以并排比较住宿方案</li>
+          <li><mat-icon>check_circle</mat-icon>出发前逐项提醒</li>
+        </ul>
+        <a class="primary-action" routerLink="/about-sida/contact">联系思达顾问<mat-icon>support_agent</mat-icon></a>
+      </section>
+    </main>
+
+    <aside class="side-panel" aria-label="页面快捷导航">
+      <div class="side-card">
+        <span>Burlington School</span>
+        <strong class="side-price">每周1,195英镑</strong>
+        <p>2027暑期青少年住校全包，注册费55英镑另付。</p>
+        <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">估算费用<mat-icon>calculate</mat-icon></a>
+      </div>
+      <nav class="side-nav">
+        <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+    </aside>
+  </div>
+
+  <div class="mobile-bottom-actions" aria-label="手机端固定操作">
+    <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>估算费用</a>
+    <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>联系顾问</a>
+  </div>
+</div>
+</app-cia-school>

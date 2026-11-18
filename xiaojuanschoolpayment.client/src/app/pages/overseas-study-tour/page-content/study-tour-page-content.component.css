@@ -260,3 +260,77 @@ mat-icon {
     width: 100%;
   }
 }
+
+.school-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.school-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  overflow: hidden;
+  border: 1px solid #e3e9ef;
+  border-radius: 8px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(17, 32, 56, 0.06);
+}
+
+.school-card img {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  object-fit: cover;
+}
+
+.school-card > div {
+  padding: 1rem;
+}
+
+.school-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.school-card p {
+  margin: 0.5rem 0;
+  color: #4b5a6c;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.school-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.school-tags span {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #eef5f0;
+  color: #1d6b45;
+  font-size: 0.75rem;
+}
+
+.school-card strong {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.75rem;
+  color: #ee7d1a;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .school-grid,
+  .school-card {
+    grid-template-columns: 1fr;
+  }
+
+  .school-card img {
+    height: 200px;
+  }
+}
