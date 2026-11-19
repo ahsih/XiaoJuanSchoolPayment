@@ -22,6 +22,11 @@ export type {
   CiaSchoolPaymentItem,
 } from '../pages/philippines/cia-school/cia-quote-engine';
 export type { CiaStudentQuote } from '../pages/philippines/cia-school/cia-student-quote';
+export { CIA_COURSE_COMPARE_GROUPS, CiaPlanComparison } from '../pages/philippines/cia-school/cia-plan-compare';
+export type { CiaCompareFocus, CiaComparePlanResult } from '../pages/philippines/cia-school/cia-plan-compare';
+export { planCompareReady } from '../components/plan-compare/plan-compare-sheet';
+export type { PlanCompareColumn, PlanCompareRow, PlanCompareSheet } from '../components/plan-compare/plan-compare-sheet';
+export { drawPlanCompareImage, planCompareImageHeight } from '../components/plan-compare/plan-compare-image-renderer';
 export { cloneCiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
 export type { CiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
 export { SCHOOL_VISA_OPTIONS } from '../components/school-group-quote';

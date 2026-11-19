@@ -143,346 +143,45 @@
     </section>
     </div>
 
-    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction">
-      <div class="section-heading section-heading-row">
+    <section class="cia-section" id="courses">
+      <div class="section-heading section-heading-row course-heading-row">
         <div>
-          <span class="section-eyebrow">{{ copy.campus.eyebrow }}</span>
-          <h2>{{ copy.campus.title }}</h2>
-          <p>{{ copy.campus.intro }}</p>
+          <h2>{{ copy.courses.title }}</h2>
+          <p>{{ copy.courses.intro }}</p>
         </div>
-        <span class="campus-capacity"><b>{{ copy.campus.studentCapacity }}</b>名学生容量 · 约<b>{{ copy.campus.teacherCount }}</b>名教师</span>
+        <span class="course-price-badge" data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')">{{ courseTableTitle }}</span>
       </div>
-
-      <div class="campus-intro-layout">
-        <div class="campus-building-grid">
-          <article *ngFor="let building of campusBuildings">
-            <span>{{ building.code }}</span>
-            <mat-icon>{{ building.icon }}</mat-icon>
-            <h3>{{ building.title }}</h3>
-            <ul>
-              <li *ngFor="let facility of building.facilities">{{ facility }}</li>
-            </ul>
+      <div class="course-catalog" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
+        <div class="course-group-grid">
+          <article class="course-group" *ngFor="let group of courseGroups; trackBy: trackCourseGroup">
+            <header>
+              <span class="course-group-icon"><mat-icon>{{ group.icon }}</mat-icon></span>
+              <div>
+                <h3>{{ group.title }}</h3>
+                <p *ngIf="group.text">{{ group.text }}</p>
+              </div>
+            </header>
+            <details class="course-line" *ngFor="let fee of group.courses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
+              <summary>
+                <span class="course-line-name">
+                  <strong>{{ fee.name }}</strong>
+                  <small>{{ fee.schedule }}</small>
+                </span>
+                <span class="course-line-price"><b>{{ formatUsd(fee.tuition2027) }}</b> 美元<small>{{ copy.courses.priceUnit }}</small></span>
+                <mat-icon class="course-line-chevron">expand_more</mat-icon>
+              </summary>
+              <dl class="course-line-detail">
+                <div *ngIf="fee.suitable"><dt>{{ copy.courses.fitLabel }}</dt><dd>{{ fee.suitable }}</dd></div>
+                <div *ngIf="fee.note"><dt>{{ copy.courses.noteLabel }}</dt><dd>{{ fee.note }}</dd></div>
+                <div><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(fee.tuition) }} 美元{{ copy.courses.priceUnit }}</dd></div>
+              </dl>
+            </details>
           </article>
         </div>
-      </div>
-
-      <div class="campus-fact-strip" aria-label="CIA校园基本资料">
-        <article *ngFor="let item of basicInfo">
-          <small>{{ item.label }}</small>
-          <strong>{{ item.value }}</strong>
-        </article>
-      </div>
-
-      <aside class="campus-rule-note">
-        <mat-icon>rule</mat-icon>
-        <div>
-          <strong>{{ copy.campus.ruleTitle }}</strong>
-          <p>{{ copy.campus.ruleText }}</p>
-        </div>
-      </aside>
-    </section>
-
-    <section class="cia-section" id="gallery">
-      <div class="section-heading">
-        <h2>{{ copy.gallery.title }}</h2>
-        <p>{{ copy.gallery.intro }}</p>
-      </div>
-      <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
-        <button
-          type="button"
-          *ngFor="let category of galleryCategories"
-          [class.active]="selectedGalleryCategory === category"
-          (click)="setGalleryCategory(category)"
-        >
-          {{ category }}
-        </button>
-      </div>
-
-      <div
-        *ngIf="selectedGalleryCategory === '全部'"
-        class="gallery-album-grid"
-        aria-label="CIA环境相册入口"
-      >
-        <button
-          type="button"
-          *ngFor="let category of galleryAlbumCategories"
-          [attr.aria-label]="'进入' + category + '相册'"
-          (click)="setGalleryCategory(category)"
-        >
-          <span class="gallery-album-cover" aria-hidden="true">
-            <img
-              *ngFor="let image of galleryImagesForCategory(category).slice(0, 3); let coverIndex = index"
-              [src]="image.src"
-              [alt]="''"
-              loading="lazy"
-            />
-          </span>
-          <span class="gallery-album-copy">
-            <span>
-              <strong>{{ category }}相册</strong>
-              <small>{{ galleryImagesForCategory(category).length }}项实景</small>
-            </span>
-            <mat-icon>arrow_forward</mat-icon>
-          </span>
-          <em>{{ galleryAlbumDescription(category) }}</em>
-        </button>
-      </div>
-
-      <div
-        *ngIf="selectedGalleryCategory !== '全部' && selectedGalleryCategory !== '住宿'"
-        class="environment-showcase"
-        id="gallery-category-panel"
-      >
-        <div class="environment-album-toolbar">
-          <div>
-            <strong>{{ selectedGalleryCategory }}相册</strong>
-            <span>第 {{ selectedGalleryImageIndex + 1 }} / {{ displayedGalleryImages.length }} 张</span>
-          </div>
-          <nav [attr.aria-label]="selectedGalleryCategory + '相册切换'">
-            <button type="button" aria-label="上一张" (click)="previousGalleryImage()">
-              <mat-icon>chevron_left</mat-icon>
-              上一张
-            </button>
-            <button type="button" aria-label="下一张" (click)="nextGalleryImage()">
-              下一张
-              <mat-icon>chevron_right</mat-icon>
-            </button>
-          </nav>
-        </div>
-
-        <div class="environment-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'">
-          <button
-            type="button"
-            role="tab"
-            *ngFor="let image of displayedGalleryImages; let imageIndex = index"
-            [class.active]="selectedGalleryImageIndex === imageIndex"
-            [attr.aria-selected]="selectedGalleryImageIndex === imageIndex"
-            [attr.aria-label]="'查看' + image.title"
-            (click)="selectGalleryImage(imageIndex)"
-          >
-            <img [src]="image.src" [alt]="image.title + '缩略图'" loading="lazy" />
-            <span>{{ image.title }}</span>
-          </button>
-        </div>
-
-        <article class="environment-profile-panel" role="tabpanel" aria-live="polite">
-          <div class="environment-profile-photo">
-            <app-expandable-image
-              [src]="selectedGalleryImage.src"
-              [images]="displayedGalleryImageSources"
-              [imageAlts]="displayedGalleryImageAlts"
-              [imageTitles]="displayedGalleryImageTitles"
-              [imageCaptions]="displayedGalleryImageCaptions"
-              [alt]="selectedGalleryImage.title"
-              [title]="selectedGalleryImage.title"
-              [caption]="selectedGalleryImage.description"
-              loading="eager"
-              previewHeight="clamp(280px, 31vw, 420px)"
-              previewFit="cover"
-            ></app-expandable-image>
-            <span><mat-icon>collections</mat-icon>{{ displayedGalleryImages.length }}张 · 点击放大并前后浏览</span>
-          </div>
-
-          <div class="environment-profile-copy">
-            <span class="section-eyebrow">{{ selectedGalleryImage.category }} · CIA CAMPUS</span>
-            <h3>{{ selectedGalleryImage.title }}</h3>
-            <p>{{ selectedGalleryImage.description }}</p>
-            <ul *ngIf="selectedGalleryImage.details?.length">
-              <li *ngFor="let detail of selectedGalleryImage.details">
-                <mat-icon>check_circle</mat-icon>{{ detail }}
-              </li>
-            </ul>
-            <p class="environment-profile-note">
-              <mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}
-            </p>
-          </div>
-        </article>
-
-      </div>
-
-      <section
-        *ngIf="selectedGalleryCategory === '住宿'"
-        class="room-comparison-section room-comparison-section--embedded"
-        id="room-comparison"
-        aria-label="CIA房型实景与差异"
-      >
-      <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
-        <button
-          type="button"
-          role="tab"
-          *ngFor="let profile of roomComparisonProfiles"
-          [class.active]="selectedRoomProfileId === profile.id"
-          [attr.aria-selected]="selectedRoomProfileId === profile.id"
-          [attr.aria-controls]="'room-panel-' + profile.id"
-          (click)="setRoomProfile(profile.id)"
-        >
-          <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
-          <span>
-            <strong>{{ profile.label }}</strong>
-            <small>{{ profile.bookingCode }} · {{ profile.location }}</small>
-          </span>
-        </button>
-      </div>
-
-      <article
-        class="room-profile-panel"
-        role="tabpanel"
-        [id]="'room-panel-' + selectedRoomProfile.id"
-        aria-live="polite"
-      >
-        <div class="room-profile-gallery">
-          <div class="room-profile-photo">
-            <app-expandable-image
-              [src]="selectedRoomProfile.image"
-              [images]="selectedRoomProfile.gallery"
-              [imageAlts]="selectedRoomGalleryAlts"
-              [imageTitles]="selectedRoomGalleryTitles"
-              [imageCaptions]="selectedRoomGalleryCaptions"
-              [alt]="selectedRoomProfile.imageAlt"
-              [title]="selectedRoomProfile.label + '实景'"
-              [caption]="selectedRoomProfile.note"
-              loading="eager"
-              previewHeight="clamp(250px, 30vw, 390px)"
-              previewFit="cover"
-            ></app-expandable-image>
-            <span><mat-icon>collections</mat-icon>{{ selectedRoomProfile.gallery.length }}张实景 · 点击前后浏览</span>
-          </div>
-
-          <div class="room-detail-thumbnails" [attr.aria-label]="selectedRoomProfile.label + '细节图片'">
-            <app-expandable-image
-              *ngFor="let detailImage of selectedRoomProfile.gallery.slice(1, 5); let imageIndex = index"
-              [src]="detailImage"
-              [images]="selectedRoomProfile.gallery"
-              [imageAlts]="selectedRoomGalleryAlts"
-              [imageTitles]="selectedRoomGalleryTitles"
-              [imageCaptions]="selectedRoomGalleryCaptions"
-              [alt]="selectedRoomProfile.label + '细节实景 ' + (imageIndex + 2)"
-              [title]="selectedRoomProfile.label + '多角度实景'"
-              [caption]="selectedRoomProfile.note"
-              previewHeight="76px"
-              previewFit="cover"
-            ></app-expandable-image>
-          </div>
-        </div>
-
-        <div class="room-profile-copy">
-          <header>
-            <div>
-              <span>{{ selectedRoomProfile.englishName }}</span>
-              <h4>{{ selectedRoomProfile.label }}</h4>
-            </div>
-            <div class="room-profile-badges">
-              <b>{{ selectedRoomProfile.bookingCode }}</b>
-              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
-            </div>
-          </header>
-
-          <dl class="room-profile-facts">
-            <div><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
-            <div><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
-            <div><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
-            <div><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
-          </dl>
-
-          <div class="room-profile-suitable">
-            <mat-icon>person_search</mat-icon>
-            <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
-          </div>
-
-          <ul class="room-profile-highlights">
-            <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
-          </ul>
-
-          <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
-        </div>
-      </article>
-
-      <div class="room-comparison-table-wrap">
-        <div class="room-comparison-table-heading">
-          <strong>{{ copy.gallery.roomComparisonTitle }}</strong>
-          <span>手机可左右滑动查看完整信息</span>
-        </div>
-        <table class="room-comparison-table">
-          <thead>
-            <tr>
-              <th scope="col">房型</th>
-              <th scope="col">报价对应</th>
-              <th scope="col">参考面积</th>
-              <th scope="col">可能景观</th>
-              <th scope="col">床尺寸</th>
-              <th scope="col">洗衣 / 清洁</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let profile of roomComparisonProfiles">
-              <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
-              <td><b>{{ profile.bookingCode }}</b></td>
-              <td>{{ profile.size }}</td>
-              <td>{{ profile.view }}</td>
-              <td>{{ profile.bed }}</td>
-              <td>{{ profile.service }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p class="room-comparison-disclaimer">
-        <mat-icon>tips_and_updates</mat-icon>
-        {{ copy.gallery.roomDisclaimer }}
-      </p>
-      </section>
-    </section>
-
-    <details class="cia-section cia-collapsible-section campus-vr-section" id="campus-vr">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>360</mat-icon></span>
-        <span>
-          <strong>{{ copy.vr.summaryTitle }}</strong>
-          <small>{{ copy.vr.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body campus-vr-body">
-        <div class="campus-vr-copy">
-          <span class="section-eyebrow">{{ copy.vr.eyebrow }}</span>
-          <h2>{{ copy.vr.title }}</h2>
-          <p>{{ copy.vr.text }}</p>
-          <a
-            [href]="copy.vr.url"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ copy.vr.linkLabel }}
-            <mat-icon>open_in_new</mat-icon>
-          </a>
-        </div>
-        <div class="campus-vr-frame">
-          <iframe
-            src="https://www.720yun.com/vr/ac9j5puysw4"
-            title="CIA 3D校园全景导览"
-            loading="lazy"
-            allow="fullscreen; accelerometer; gyroscope"
-            allowfullscreen
-            referrerpolicy="strict-origin-when-cross-origin"
-          ></iframe>
-        </div>
-      </div>
-    </details>
-
-    <section class="cia-section" id="courses">
-      <div class="section-heading">
-        <h2>{{ copy.courses.title }}</h2>
-        <p>
-          {{ copy.courses.intro }}
-        </p>
-      </div>
-      <div class="course-choice-grid">
-        <article *ngFor="let item of courseChoiceCards">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.label }}</span>
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.text }}</p>
-        </article>
+        <ul class="course-footnotes">
+          <li data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')"><mat-icon>event_available</mat-icon>{{ courseTableNote }}</li>
+          <li data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')"><mat-icon>groups</mat-icon>{{ copy.fees.classSizeTitle }}：{{ groupClassNote }}</li>
+        </ul>
       </div>
       <details class="cia-collapsible-section course-detail-disclosure">
         <summary>
@@ -619,6 +318,897 @@
       </section>
         </div>
       </details>
+    </section>
+
+    <section class="cia-section tables-section rooms-section" id="rooms">
+      <div class="room-table-block" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-fees')">
+        <div class="room-table-heading">
+          <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
+          <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
+        </div>
+        <div class="room-price-matrix" aria-label="CIA 2027年4周住宿费分组表">
+          <section *ngFor="let group of roomRateGroups">
+            <h3>{{ group.title }}</h3>
+            <div
+              class="room-price-matrix-grid"
+              [style.grid-template-columns]="'repeat(' + group.rooms.length + ', minmax(0, 1fr))'"
+            >
+              <article *ngFor="let room of roomsForRateGroup(group); trackBy: trackPreviewRow" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
+                <span
+                  class="room-location-badge"
+                  [class.room-location-badge--off-campus]="room.location === '校外'"
+                >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
+                <strong>{{ room.label }}</strong>
+                <small>{{ room.code }}</small>
+                <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
+                <em>/ 4周</em>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <details class="cia-collapsible-section stay-rules-disclosure">
+          <summary>
+            <span class="collapsible-summary-icon"><mat-icon>hotel</mat-icon></span>
+            <span>
+              <strong>{{ copy.rooms.rulesTitle }}</strong>
+              <small>{{ copy.rooms.rulesHint }}</small>
+            </span>
+            <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+          </summary>
+          <div class="collapsible-panel-body">
+        <div class="short-stay-rate" aria-label="CIA短期住宿费率" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
+          <strong>{{ copy.fees.shortStayTitle }}</strong>
+          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
+          <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
+          <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
+        </div>
+
+        <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
+          <div class="check-in-out-heading">
+            <span><mat-icon>hotel</mat-icon></span>
+            <div>
+              <small>{{ copy.fees.stayPolicyEyebrow }}</small>
+              <h3 id="check-in-out-title">{{ stayPolicyTitle }}</h3>
+            </div>
+          </div>
+          <div class="check-in-out-grid">
+            <article *ngFor="let policy of stayPolicies">
+              <span>{{ policy.label }}</span>
+              <strong>{{ policy.value }}</strong>
+              <p>{{ policy.note }}</p>
+            </article>
+          </div>
+          <div class="extra-night-rates">
+            <span *ngFor="let rate of extraNightRates"><b>{{ rate.label }}</b>{{ formatPhp(rate.amount) }} / 人 / 天</span>
+          </div>
+        </aside>
+          </div>
+        </details>
+
+      </div>
+
+      <div class="room-photo-heading">
+        <h3>{{ copy.rooms.photoTitle }}</h3>
+        <p>{{ copy.rooms.photoIntro }}</p>
+      </div>
+      <section
+        class="room-comparison-section room-comparison-section--embedded"
+        id="room-comparison"
+        aria-label="CIA房型实景与差异"
+      >
+      <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
+        <button
+          type="button"
+          role="tab"
+          *ngFor="let profile of roomComparisonProfiles"
+          [class.active]="selectedRoomProfileId === profile.id"
+          [attr.aria-selected]="selectedRoomProfileId === profile.id"
+          [attr.aria-controls]="'room-panel-' + profile.id"
+          (click)="setRoomProfile(profile.id)"
+        >
+          <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
+          <span>
+            <strong>{{ profile.label }}</strong>
+            <small>{{ profile.bookingCode }} · {{ profile.location }}<ng-container *ngIf="roomProfilePrice(profile) as price"> · {{ price }}</ng-container></small>
+          </span>
+        </button>
+      </div>
+
+      <article
+        class="room-profile-panel"
+        role="tabpanel"
+        [id]="'room-panel-' + selectedRoomProfile.id"
+        aria-live="polite"
+      >
+        <div class="room-profile-gallery">
+          <div class="room-profile-photo">
+            <app-expandable-image
+              [src]="selectedRoomProfile.image"
+              [images]="selectedRoomProfile.gallery"
+              [imageAlts]="selectedRoomGalleryAlts"
+              [imageTitles]="selectedRoomGalleryTitles"
+              [imageCaptions]="selectedRoomGalleryCaptions"
+              [alt]="selectedRoomProfile.imageAlt"
+              [title]="selectedRoomProfile.label + '实景'"
+              [caption]="selectedRoomProfile.note"
+              loading="eager"
+              previewHeight="clamp(250px, 30vw, 390px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <span><mat-icon>collections</mat-icon>{{ selectedRoomProfile.gallery.length }}张实景 · 点击前后浏览</span>
+          </div>
+
+          <div class="room-detail-thumbnails" [attr.aria-label]="selectedRoomProfile.label + '细节图片'">
+            <app-expandable-image
+              *ngFor="let detailImage of selectedRoomProfile.gallery.slice(1, 5); let imageIndex = index"
+              [src]="detailImage"
+              [images]="selectedRoomProfile.gallery"
+              [imageAlts]="selectedRoomGalleryAlts"
+              [imageTitles]="selectedRoomGalleryTitles"
+              [imageCaptions]="selectedRoomGalleryCaptions"
+              [alt]="selectedRoomProfile.label + '细节实景 ' + (imageIndex + 2)"
+              [title]="selectedRoomProfile.label + '多角度实景'"
+              [caption]="selectedRoomProfile.note"
+              previewHeight="76px"
+              previewFit="cover"
+            ></app-expandable-image>
+          </div>
+        </div>
+
+        <div class="room-profile-copy">
+          <header>
+            <div>
+              <span>{{ selectedRoomProfile.englishName }}</span>
+              <h4>{{ selectedRoomProfile.label }}</h4>
+            </div>
+            <div class="room-profile-badges">
+              <strong class="room-profile-price" *ngIf="roomProfilePrice(selectedRoomProfile) as price">{{ price }}<small>／4周</small></strong>
+              <b>{{ selectedRoomProfile.bookingCode }}</b>
+              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+            </div>
+          </header>
+
+          <dl class="room-profile-facts">
+            <div><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
+            <div><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
+            <div><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
+            <div><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
+          </dl>
+
+          <div class="room-profile-suitable">
+            <mat-icon>person_search</mat-icon>
+            <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
+          </div>
+
+          <ul class="room-profile-highlights">
+            <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
+          </ul>
+
+          <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
+        </div>
+      </article>
+
+      <details class="cia-collapsible-section room-table-disclosure">
+        <summary>
+          <span class="collapsible-summary-icon"><mat-icon>table_chart</mat-icon></span>
+          <span>
+            <strong>{{ copy.gallery.roomComparisonTitle }}</strong>
+            <small>{{ copy.rooms.tableHint }}</small>
+          </span>
+          <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+        </summary>
+      <div class="room-comparison-table-wrap">
+        <table class="room-comparison-table">
+          <thead>
+            <tr>
+              <th scope="col">房型</th>
+              <th scope="col">报价对应</th>
+              <th scope="col">参考面积</th>
+              <th scope="col">可能景观</th>
+              <th scope="col">床尺寸</th>
+              <th scope="col">洗衣 / 清洁</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let profile of roomComparisonProfiles">
+              <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
+              <td><b>{{ profile.bookingCode }}</b></td>
+              <td>{{ profile.size }}</td>
+              <td>{{ profile.view }}</td>
+              <td>{{ profile.bed }}</td>
+              <td>{{ profile.service }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </details>
+
+      <p class="room-comparison-disclaimer">
+        <mat-icon>tips_and_updates</mat-icon>
+        {{ copy.gallery.roomDisclaimer }}
+      </p>
+      </section>
+    </section>
+
+    <section class="quote-results-section group-quote" id="quote">
+      <div class="quote-form-card">
+        <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteView === 'compare' ? 'CIA 方案对比' : quoteHeading }}</h2>
+        <div class="quote-mode" role="group" aria-label="报价方式">
+          <button type="button" [class.active]="quoteView === 'single'" [attr.aria-pressed]="quoteView === 'single'" (click)="setQuoteView('single')">{{ copy.quote.modes.single }}</button>
+          <button type="button" [class.active]="quoteView === 'compare'" [attr.aria-pressed]="quoteView === 'compare'" (click)="setQuoteView('compare')">{{ copy.quote.modes.compare }}</button>
+          <button type="button" [class.active]="quoteView === 'group'" [attr.aria-pressed]="quoteView === 'group'" (click)="setQuoteView('group')">{{ copy.quote.modes.group }}</button>
+          <label *ngIf="quoteView === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
+        </div>
+
+        <ng-container *ngIf="quoteView !== 'compare'; else comparePanel">
+        <p class="group-hint" *ngIf="quoteMode === 'group'">每人分别安排课程和住宿；共住房型仍按各自床位报价。</p>
+        <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
+          <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
+          <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+          <p class="fee-alert course-length-alert" role="alert" *ngIf="student.courseLengthError">{{ student.courseLengthError }}</p>
+          <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: student }"></ng-container>
+          <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
+        </article>
+        <aside class="peak-season-quote-note" *ngIf="peakSeasonCalendarRanges.length" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">
+          <span class="peak-season-quote-icon"><mat-icon>date_range</mat-icon></span>
+          <div>
+            <strong>2027旺季附加费：{{ seasonalFeePerWeek }}美元／周／人</strong>
+            <p>{{ peakSeason2027RangeText }}</p>
+            <small>{{ peakSeasonStatusText }} 同一学生课程与住宿重叠周只计一次，且不参与折扣。</small>
+          </div>
+        </aside>
+        <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
+          <div class="quote-base-line"><span>课程费<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+          <div class="quote-base-line"><span>住宿费<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+          <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
+            <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
+          </div>
+        </div>
+        <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
+        <div class="group-result">
+          <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
+          <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
+          <small *ngIf="iauRegistrationFeeNote">{{ iauRegistrationFeeNote }}</small>
+        </div>
+        <div class="group-actions">
+          <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>
+          <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
+        </div>
+        </ng-container>
+
+        <ng-template #comparePanel>
+          <p class="compare-intro">{{ copy.quote.compareIntro }}</p>
+          <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: students[0] }"></ng-container>
+          <div class="compare-shortcuts" role="group" aria-label="对比方式">
+            <button type="button" *ngFor="let item of copy.quote.compareShortcuts" [class.active]="comparison.focus === item.focus" [attr.aria-pressed]="comparison.focus === item.focus" (click)="applyCompareFocus(item.focus)">
+              <strong>{{ item.label }}</strong><small>{{ item.hint }}</small>
+            </button>
+          </div>
+          <div class="compare-plans" [class.compare-plans--three]="comparison.plans.length > 2">
+            <article class="compare-plan" *ngFor="let plan of comparison.plans; let i = index">
+              <header>
+                <span class="compare-tag">{{ compareTags[i] }}</span>
+                <button type="button" class="compare-remove" *ngIf="comparison.canRemove()" (click)="comparison.removePlan(i)">{{ copy.quote.removePlanLabel }}</button>
+              </header>
+              <label>课程<select [ngModel]="comparison.courseId(plan)" (ngModelChange)="comparison.setCourse(plan, $event)"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>住宿<select [ngModel]="comparison.roomId(plan)" (ngModelChange)="comparison.setRoom(plan, $event)"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <div class="compare-plan-row">
+                <label>周数<select [ngModel]="comparison.weeks(plan)" (ngModelChange)="comparison.setWeeks(plan, $event)"><option *ngFor="let weeks of comparison.weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
+                <label>入学（周日）<input #compareDate type="date" step="7" [ngModel]="comparison.startDate(plan)" (ngModelChange)="setComparePlanDate(plan, $event, compareDate)" /></label>
+              </div>
+            </article>
+            <button type="button" class="compare-add" *ngIf="comparison.canAdd()" (click)="comparison.addPlan()">{{ copy.quote.addPlanLabel }}</button>
+          </div>
+          <app-plan-compare-table [sheet]="compareSheet"></app-plan-compare-table>
+          <div class="group-actions">
+            <app-quote-image-download-button [quote]="compareImageData" [disabled]="!comparison.ready" [label]="copy.quote.compareSaveLabel" buttonClass="primary-action"></app-quote-image-download-button>
+            <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
+          </div>
+        </ng-template>
+
+        <ng-template #studentConditions let-student>
+          <details class="quote-conditions">
+            <summary>
+              <span>{{ copy.quote.conditionsTitle }}</span>
+              <small>{{ conditionsSummary(student) }}</small>
+              <mat-icon>expand_more</mat-icon>
+            </summary>
+            <div class="student-fields">
+              <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+              <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+            </div>
+            <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">按所选课程收费；未成年入学及监护要求须顾问确认。</p>
+          </details>
+        </ng-template>
+      </div>
+      <section class="local-fee-estimate" id="local-fees" *ngIf="quoteView !== 'compare'" aria-labelledby="local-fee-title">
+        <div class="local-fee-heading" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')"><div><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
+        <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
+        <div class="local-fee-table-wrap">
+          <table class="local-fee-table">
+            <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
+            <tbody><tr *ngFor="let fee of estimatedLocalFees; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
+              <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
+            </tr></tbody>
+            <tfoot>
+              <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含接机及房间押金</td></tr>
+              <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, "zh-CN") }} 元</td><td>参考汇率：1元人民币 ≈ {{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索；最终以实际兑换或支付汇率为准</td></tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="excluded-fee-list">
+          <h4>另行准备（不计入上方学杂费合计）</h4>
+          <div *ngFor="let fee of optionalFeeItems; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.label)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.label))">
+            <span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span>
+            <b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction">
+      <div class="section-heading section-heading-row">
+        <div>
+          <span class="section-eyebrow">{{ copy.campus.eyebrow }}</span>
+          <h2>{{ copy.campus.title }}</h2>
+          <p>{{ copy.campus.intro }}</p>
+        </div>
+        <span class="campus-capacity"><b>{{ copy.campus.studentCapacity }}</b>名学生容量 · 约<b>{{ copy.campus.teacherCount }}</b>名教师</span>
+      </div>
+
+      <div class="campus-intro-layout">
+        <div class="campus-building-grid">
+          <article *ngFor="let building of campusBuildings">
+            <span>{{ building.code }}</span>
+            <mat-icon>{{ building.icon }}</mat-icon>
+            <h3>{{ building.title }}</h3>
+            <ul>
+              <li *ngFor="let facility of building.facilities">{{ facility }}</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="campus-fact-strip" aria-label="CIA校园基本资料">
+        <article *ngFor="let item of basicInfo">
+          <small>{{ item.label }}</small>
+          <strong>{{ item.value }}</strong>
+        </article>
+      </div>
+
+      <aside class="campus-rule-note">
+        <mat-icon>rule</mat-icon>
+        <div>
+          <strong>{{ copy.campus.ruleTitle }}</strong>
+          <p>{{ copy.campus.ruleText }}</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="cia-section" id="gallery">
+      <div class="section-heading">
+        <h2>{{ copy.gallery.title }}</h2>
+        <p>{{ copy.gallery.intro }}</p>
+      </div>
+      <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
+        <button
+          type="button"
+          *ngFor="let category of galleryCategories"
+          [class.active]="selectedGalleryCategory === category"
+          (click)="setGalleryCategory(category)"
+        >
+          {{ category }}
+        </button>
+      </div>
+
+      <div
+        *ngIf="selectedGalleryCategory === '全部'"
+        class="gallery-album-grid"
+        aria-label="CIA环境相册入口"
+      >
+        <button
+          type="button"
+          *ngFor="let category of galleryAlbumCategories"
+          [attr.aria-label]="'进入' + category + '相册'"
+          (click)="setGalleryCategory(category)"
+        >
+          <span class="gallery-album-cover" aria-hidden="true">
+            <img
+              *ngFor="let image of galleryImagesForCategory(category).slice(0, 3); let coverIndex = index"
+              [src]="image.src"
+              [alt]="''"
+              loading="lazy"
+            />
+          </span>
+          <span class="gallery-album-copy">
+            <span>
+              <strong>{{ category }}相册</strong>
+              <small>{{ galleryImagesForCategory(category).length }}项实景</small>
+            </span>
+            <mat-icon>arrow_forward</mat-icon>
+          </span>
+          <em>{{ galleryAlbumDescription(category) }}</em>
+        </button>
+      </div>
+
+      <div
+        *ngIf="selectedGalleryCategory !== '全部'"
+        class="environment-showcase"
+        id="gallery-category-panel"
+      >
+        <div class="environment-album-toolbar">
+          <div>
+            <strong>{{ selectedGalleryCategory }}相册</strong>
+            <span>第 {{ selectedGalleryImageIndex + 1 }} / {{ displayedGalleryImages.length }} 张</span>
+          </div>
+          <nav [attr.aria-label]="selectedGalleryCategory + '相册切换'">
+            <button type="button" aria-label="上一张" (click)="previousGalleryImage()">
+              <mat-icon>chevron_left</mat-icon>
+              上一张
+            </button>
+            <button type="button" aria-label="下一张" (click)="nextGalleryImage()">
+              下一张
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </nav>
+        </div>
+
+        <div class="environment-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'">
+          <button
+            type="button"
+            role="tab"
+            *ngFor="let image of displayedGalleryImages; let imageIndex = index"
+            [class.active]="selectedGalleryImageIndex === imageIndex"
+            [attr.aria-selected]="selectedGalleryImageIndex === imageIndex"
+            [attr.aria-label]="'查看' + image.title"
+            (click)="selectGalleryImage(imageIndex)"
+          >
+            <img [src]="image.src" [alt]="image.title + '缩略图'" loading="lazy" />
+            <span>{{ image.title }}</span>
+          </button>
+        </div>
+
+        <article class="environment-profile-panel" role="tabpanel" aria-live="polite">
+          <div class="environment-profile-photo">
+            <app-expandable-image
+              [src]="selectedGalleryImage.src"
+              [images]="displayedGalleryImageSources"
+              [imageAlts]="displayedGalleryImageAlts"
+              [imageTitles]="displayedGalleryImageTitles"
+              [imageCaptions]="displayedGalleryImageCaptions"
+              [alt]="selectedGalleryImage.title"
+              [title]="selectedGalleryImage.title"
+              [caption]="selectedGalleryImage.description"
+              loading="eager"
+              previewHeight="clamp(280px, 31vw, 420px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <span><mat-icon>collections</mat-icon>{{ displayedGalleryImages.length }}张 · 点击放大并前后浏览</span>
+          </div>
+
+          <div class="environment-profile-copy">
+            <span class="section-eyebrow">{{ selectedGalleryImage.category }} · CIA CAMPUS</span>
+            <h3>{{ selectedGalleryImage.title }}</h3>
+            <p>{{ selectedGalleryImage.description }}</p>
+            <ul *ngIf="selectedGalleryImage.details?.length">
+              <li *ngFor="let detail of selectedGalleryImage.details">
+                <mat-icon>check_circle</mat-icon>{{ detail }}
+              </li>
+            </ul>
+            <p class="environment-profile-note">
+              <mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+    </section>
+
+    <details class="cia-section cia-collapsible-section campus-vr-section" id="campus-vr">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>360</mat-icon></span>
+        <span>
+          <strong>{{ copy.vr.summaryTitle }}</strong>
+          <small>{{ copy.vr.summaryHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body campus-vr-body">
+        <div class="campus-vr-copy">
+          <span class="section-eyebrow">{{ copy.vr.eyebrow }}</span>
+          <h2>{{ copy.vr.title }}</h2>
+          <p>{{ copy.vr.text }}</p>
+          <a
+            [href]="copy.vr.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ copy.vr.linkLabel }}
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+        </div>
+        <div class="campus-vr-frame">
+          <iframe
+            src="https://www.720yun.com/vr/ac9j5puysw4"
+            title="CIA 3D校园全景导览"
+            loading="lazy"
+            allow="fullscreen; accelerometer; gyroscope"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+      </div>
+    </details>
+
+    <ng-container *ngTemplateOutlet="courseVideosSection"></ng-container>
+
+    <details class="cia-section cia-collapsible-section secondary-info-disclosure">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
+        <span>
+          <strong>{{ copy.planning.summaryTitle }}</strong>
+          <small>{{ copy.planning.summaryHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <ng-container *ngTemplateOutlet="calendarPlanningSections"></ng-container>
+      </div>
+    </details>
+
+    <details class="refund-policy-section cia-collapsible-section" id="refund-policy" aria-labelledby="refund-policy-title">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>policy</mat-icon></span>
+        <span>
+          <strong>{{ copy.refund.summaryTitle }}</strong>
+          <small>{{ copy.refund.summaryHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+      <div class="refund-policy-heading">
+        <div>
+          <span class="section-eyebrow">{{ copy.refund.eyebrow }}</span>
+          <h2 id="refund-policy-title"><mat-icon>policy</mat-icon>{{ copy.refund.title }}</h2>
+          <p>{{ copy.refund.intro }}</p>
+        </div>
+        <span class="refund-policy-alert"><mat-icon>info</mat-icon>{{ copy.refund.alert }}</span>
+      </div>
+
+      <div class="refund-policy-grid">
+        <article *ngFor="let group of copy.refund.groups">
+          <h3>{{ group.title }}</h3>
+          <p *ngIf="group.note" class="refund-card-note">{{ group.note }}</p>
+          <dl>
+            <div *ngFor="let rule of group.rules"><dt>{{ rule.when }}</dt><dd>{{ rule.text }}</dd></div>
+          </dl>
+          <p *ngIf="group.footnote" class="refund-card-footnote">{{ group.footnote }}</p>
+        </article>
+      </div>
+      </div>
+    </details>
+
+    <details class="cia-section cia-collapsible-section care-disclosure" id="student-care-services">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>support_agent</mat-icon></span>
+        <span>
+          <strong>{{ copy.studentCare.title }}</strong>
+          <small>{{ copy.studentCare.disclosureHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <div class="student-care-section">
+        <div class="student-care-intro">
+          <div class="section-heading">
+            <span class="section-eyebrow">{{ copy.studentCare.eyebrow }}</span>
+            <h2>{{ copy.studentCare.title }}</h2>
+            <p>
+              {{ copy.studentCare.intro }}
+            </p>
+          </div>
+          <div class="student-care-summary" aria-label="CIA学生关怀服务概览">
+            <span>{{ copy.studentCare.count }}</span>
+            <div>
+              <strong>{{ copy.studentCare.summaryTitle }}</strong>
+              <small>{{ copy.studentCare.summaryHint }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="student-care-showcase">
+          <article class="student-care-feature">
+            <img
+              [src]="copy.studentCare.featureImage"
+              [alt]="copy.studentCare.featureImageAlt"
+            />
+            <div class="student-care-feature-copy">
+              <span>{{ studentCareServices[0].subtitle }}</span>
+              <h3>{{ studentCareServices[0].title }}</h3>
+              <p>{{ studentCareServices[0].text }}</p>
+              <div>
+                <small><mat-icon>location_on</mat-icon>{{ studentCareServices[0].location }}</small>
+                <small><mat-icon>schedule</mat-icon>{{ studentCareServices[0].schedule }}</small>
+              </div>
+            </div>
+          </article>
+
+          <div class="student-care-list">
+            <article *ngFor="let service of studentCareServices.slice(1)">
+              <div class="care-card-head">
+                <span>{{ service.number }}</span>
+                <mat-icon>{{ service.icon }}</mat-icon>
+              </div>
+              <div class="student-care-card-title">
+                <h3>{{ service.title }}</h3>
+                <strong>{{ service.subtitle }}</strong>
+              </div>
+              <p>{{ service.text }}</p>
+              <div class="student-care-meta">
+                <span><mat-icon>location_on</mat-icon>{{ service.location }}</span>
+                <span><mat-icon>schedule</mat-icon>{{ service.schedule }}</span>
+              </div>
+            </article>
+          </div>
+        </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="cia-section cia-collapsible-section" id="campus-practical-guide">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>info</mat-icon></span>
+        <span>
+          <strong>{{ copy.practicalGuide.summaryTitle }}</strong>
+          <small>{{ copy.practicalGuide.summaryHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+        <p class="campus-guide-intro">{{ copy.practicalGuide.intro }}</p>
+        <div class="campus-practical-grid">
+          <article *ngFor="let guide of campusPracticalGuides">
+            <header>
+              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
+              <div><small>{{ guide.eyebrow }}</small><h3>{{ guide.title }}</h3></div>
+            </header>
+            <dl>
+              <div *ngFor="let fact of guide.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+            </dl>
+            <ul *ngIf="guide.points" class="campus-guide-points">
+              <li *ngFor="let point of guide.points">{{ point }}</li>
+            </ul>
+            <p><mat-icon>info</mat-icon>{{ guide.note }}</p>
+          </article>
+        </div>
+      </div>
+    </details>
+
+    <details class="cia-section cia-collapsible-section track-disclosure" id="student-tracks">
+      <summary>
+        <span class="collapsible-summary-icon"><mat-icon>groups</mat-icon></span>
+        <span>
+          <strong>{{ copy.studentTracks.title }}</strong>
+          <small>{{ copy.studentTracks.disclosureHint }}</small>
+        </span>
+        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
+      </summary>
+      <div class="collapsible-panel-body">
+      <div class="student-track-grid">
+        <article *ngFor="let item of studentTracks">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+          </div>
+        </article>
+      </div>
+      <a class="primary-action center-action" routerLink="/about-sida/contact">
+        {{ copy.studentTracks.ctaLabel }}
+        <mat-icon>chevron_right</mat-icon>
+      </a>
+      </div>
+    </details>
+
+    <section
+      class="cia-section official-student-reviews"
+      id="student-reviews"
+      aria-labelledby="student-reviews-title"
+    >
+      <div class="official-review-heading">
+        <div class="section-heading">
+          <span class="section-eyebrow">{{ copy.reviews.eyebrow }}</span>
+          <h2 id="student-reviews-title">{{ copy.reviews.title }}</h2>
+          <p>
+            {{ copy.reviews.intro }}
+          </p>
+        </div>
+        <span class="official-review-source">
+          <mat-icon>verified</mat-icon>
+          {{ copy.reviews.source }}
+        </span>
+      </div>
+
+      <div class="official-review-grid" aria-label="CIA学生反馈中文整理">
+        <article *ngFor="let review of officialStudentReviews">
+          <figure>
+            <img [src]="review.image" [alt]="review.imageAlt" loading="lazy" />
+            <figcaption>{{ review.focus }}</figcaption>
+          </figure>
+          <div class="official-review-card-copy">
+            <span class="official-review-number">STORY {{ review.number }}</span>
+            <h3>{{ review.title }}</h3>
+            <blockquote>{{ review.excerpt }}</blockquote>
+            <a
+              [routerLink]="['/philippines-study/cebu/cia-cebu-international-academy/student-reviews', review.slug]"
+              [attr.aria-label]="'查看学生反馈全文：' + review.title"
+            >
+              {{ copy.reviews.linkLabel }}
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <section class="cia-section sida-cia-section" id="service-process">
+      <div class="sida-cia-heading">
+        <span>{{ copy.sida.eyebrow }}</span>
+        <h2>{{ copy.sida.title }}</h2>
+        <p>
+          {{ copy.sida.intro }}
+        </p>
+      </div>
+
+      <aside class="sida-cia-gratitude" aria-label="思达启航服务初心">
+        <figure class="sida-cia-main-photo">
+          <img
+            [src]="copy.sida.photo"
+            [alt]="copy.sida.photoAlt"
+            loading="lazy"
+          />
+          <figcaption>{{ copy.sida.photoCaption }}</figcaption>
+        </figure>
+        <div class="sida-cia-gratitude-content">
+          <div class="sida-cia-gratitude-heading">
+            <span><mat-icon>favorite</mat-icon></span>
+            <div>
+              <small>{{ copy.sida.gratitudeEyebrow }}</small>
+              <strong>{{ copy.sida.gratitudeTitle }}</strong>
+            </div>
+          </div>
+          <blockquote>
+            {{ copy.sida.quote }}
+          </blockquote>
+          <p>
+            {{ copy.sida.text }}
+          </p>
+          <div class="sida-cia-values" aria-label="思达启航服务态度">
+            <span *ngFor="let value of copy.sida.values"><mat-icon>{{ value.icon }}</mat-icon>{{ value.text }}</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="sida-cia-reason-grid">
+        <article *ngFor="let item of sidaCiaReasons">
+          <img [src]="item.image" [alt]="item.alt" loading="lazy" />
+          <div>
+            <span>{{ item.number }}</span>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="sida-cia-trust-bar" aria-label="思达启航报名保障">
+        <article *ngFor="let item of sidaCiaTrustBadges">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <strong>{{ item.label }}</strong>
+        </article>
+      </div>
+
+      <aside class="sida-cia-alumni-benefits" aria-labelledby="cia-alumni-benefits-title">
+        <div class="sida-cia-alumni-heading">
+          <span><mat-icon>workspace_premium</mat-icon></span>
+          <div>
+            <small>{{ copy.sida.alumni.eyebrow }}</small>
+            <h3 id="cia-alumni-benefits-title">{{ copy.sida.alumni.title }}</h3>
+            <p>{{ copy.sida.alumni.intro }}</p>
+          </div>
+        </div>
+        <div class="sida-cia-alumni-grid">
+          <article *ngFor="let item of copy.sida.alumni.items">
+            <span>{{ item.number }}</span>
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div>
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.text }}</p>
+            </div>
+          </article>
+        </div>
+        <small class="sida-cia-alumni-note">{{ copy.sida.alumni.note }}</small>
+      </aside>
+    </section>
+
+    <section class="faq-section" id="faq">
+      <div class="section-heading">
+        <h2><mat-icon>help</mat-icon>{{ copy.faq.title }}</h2>
+      </div>
+      <details *ngFor="let faq of faqs">
+        <summary>{{ faq.question }}</summary>
+        <p>{{ faq.answer }}</p>
+      </details>
+    </section>
+
+    <section class="final-cta">
+      <div class="final-cta-head">
+        <div class="final-cta-icon" aria-hidden="true">
+          <mat-icon>headset_mic</mat-icon>
+        </div>
+        <div class="final-cta-copy">
+          <h2>{{ copy.finalCta.title }}</h2>
+          <p>
+            {{ copy.finalCta.text }}
+          </p>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" routerLink="/about-sida/contact"
+            ><mat-icon>description</mat-icon>{{ copy.finalCta.primaryLabel }}
+            <mat-icon>chevron_right</mat-icon></a
+          >
+          <a class="secondary-action" routerLink="/about-sida/contact"
+            ><mat-icon>chat</mat-icon>{{ copy.finalCta.secondaryLabel }}</a
+          >
+        </div>
+      </div>
+
+      <div class="final-consultant-grid">
+        <article
+          class="final-consultant-card"
+          *ngFor="let consultant of ctaConsultants"
+        >
+          <img
+            class="final-consultant-avatar"
+            [src]="consultant.avatarSrc"
+            [alt]="consultant.name + ' 顾问头像'"
+          />
+          <div class="final-consultant-copy">
+            <h3>
+              <span>{{ consultant.name }}</span
+              >{{ consultant.title }}
+            </h3>
+            <p>{{ consultant.description }}</p>
+          </div>
+          <figure class="final-consultant-qr">
+            <img
+              [src]="consultant.qrSrc"
+              [alt]="consultant.name + ' 微信二维码'"
+            />
+            <figcaption>扫码加微信</figcaption>
+          </figure>
+          <div class="final-consultant-actions">
+            <a class="final-consultant-phone" [href]="consultant.phoneHref">
+              <mat-icon>phone</mat-icon>{{ consultant.phone }}
+            </a>
+            <a class="final-consultant-button" [href]="consultant.phoneHref">
+              <mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}
+              <mat-icon>chevron_right</mat-icon>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <ul>
+        <li *ngFor="let badge of ctaBadges">
+          <mat-icon>check_circle</mat-icon>{{ badge }}
+        </li>
+      </ul>
+    </section>
 
       <ng-template #calendarPlanningSections>
       <section class="school-calendar-section" id="school-calendar" aria-labelledby="school-calendar-title">
@@ -771,10 +1361,6 @@
       </section>
       </ng-template>
 
-    </section>
-
-    <ng-container *ngTemplateOutlet="quoteSection"></ng-container>
-
     <ng-template #courseVideosSection>
     <section class="video-section" id="videos">
       <div class="section-heading section-heading-row">
@@ -817,548 +1403,6 @@
       </div>
     </section>
     </ng-template>
-
-    <details class="tables-section cia-collapsible-section detailed-fees-disclosure" id="course-fees">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>receipt_long</mat-icon></span>
-        <span>
-          <strong>{{ copy.fees.summaryTitle }}</strong>
-          <small>{{ copy.fees.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body">
-      <div class="course-table-block" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
-        <h2 data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')"><mat-icon>menu_book</mat-icon>{{ courseTableTitle }}</h2>
-        <p class="tuition-table-note" data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')">{{ courseTableNote }}</p>
-        <div
-          class="data-table course-fee-table"
-          role="table"
-          aria-label="CIA 2027年4周课程费及2026年内入学价对照"
-        >
-          <div class="table-row table-head" role="row">
-            <span role="columnheader">课程名称</span>
-            <span role="columnheader">每日课程安排</span>
-            <span role="columnheader">2027新价</span>
-            <span role="columnheader">2026年内入学价</span>
-            <span role="columnheader">课程定位与适合人群</span>
-          </div>
-          <div class="table-row" role="row" *ngFor="let fee of courseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
-            <span role="cell"
-              ><strong>{{ fee.name }}</strong></span
-            >
-            <span role="cell" class="course-schedule-cell">{{ fee.schedule }}</span>
-            <span role="cell"><strong>{{ formatUsd(fee.tuition2027) }} 美元</strong></span>
-            <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
-            <span role="cell" class="course-audience-cell">
-              <strong>{{ fee.suitable }}</strong>
-              <small>{{ fee.note }}</small>
-            </span>
-          </div>
-        </div>
-
-        <aside class="class-size-note" aria-label="CIA团体课人数说明" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')">
-          <mat-icon>groups</mat-icon>
-          <div>
-            <strong>{{ copy.fees.classSizeTitle }}</strong>
-            <p>{{ groupClassNote }}</p>
-          </div>
-        </aside>
-
-      </div>
-
-      <div class="room-table-block" id="room-fees" data-cia-preview-kind="section" data-cia-preview-id="room-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-fees')">
-        <div class="room-table-heading">
-          <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
-          <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
-        </div>
-        <div class="room-price-matrix" aria-label="CIA 2027年4周住宿费分组表">
-          <section *ngFor="let group of roomRateGroups">
-            <h3>{{ group.title }}</h3>
-            <div
-              class="room-price-matrix-grid"
-              [style.grid-template-columns]="'repeat(' + group.rooms.length + ', minmax(0, 1fr))'"
-            >
-              <article *ngFor="let room of roomsForRateGroup(group); trackBy: trackPreviewRow" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
-                <span
-                  class="room-location-badge"
-                  [class.room-location-badge--off-campus]="room.location === '校外'"
-                >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
-                <strong>{{ room.label }}</strong>
-                <small>{{ room.code }}</small>
-                <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
-                <em>/ 4周</em>
-              </article>
-            </div>
-          </section>
-        </div>
-
-        <div class="short-stay-rate" aria-label="CIA短期住宿费率" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
-          <strong>{{ copy.fees.shortStayTitle }}</strong>
-          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
-          <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
-          <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
-        </div>
-
-        <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
-          <div class="check-in-out-heading">
-            <span><mat-icon>hotel</mat-icon></span>
-            <div>
-              <small>{{ copy.fees.stayPolicyEyebrow }}</small>
-              <h3 id="check-in-out-title">{{ stayPolicyTitle }}</h3>
-            </div>
-          </div>
-          <div class="check-in-out-grid">
-            <article *ngFor="let policy of stayPolicies">
-              <span>{{ policy.label }}</span>
-              <strong>{{ policy.value }}</strong>
-              <p>{{ policy.note }}</p>
-            </article>
-          </div>
-          <div class="extra-night-rates">
-            <span *ngFor="let rate of extraNightRates"><b>{{ rate.label }}</b>{{ formatPhp(rate.amount) }} / 人 / 天</span>
-          </div>
-        </aside>
-
-      </div>
-
-      </div>
-    </details>
-
-    <details class="cia-section cia-collapsible-section secondary-info-disclosure" open>
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
-        <span>
-          <strong>{{ copy.planning.summaryTitle }}</strong>
-          <small>{{ copy.planning.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body">
-        <ng-container *ngTemplateOutlet="calendarPlanningSections"></ng-container>
-      </div>
-    </details>
-
-    <details class="cia-section cia-collapsible-section media-disclosure">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>play_circle</mat-icon></span>
-        <span>
-          <strong>{{ copy.videos.summaryTitle }}</strong>
-          <small>{{ copy.videos.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body">
-        <ng-container *ngTemplateOutlet="courseVideosSection"></ng-container>
-      </div>
-    </details>
-
-    <ng-template #quoteSection>
-    <section class="quote-results-section group-quote" id="quote">
-      <div class="quote-form-card">
-        <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteHeading }}</h2>
-        <div class="quote-mode" role="group" aria-label="报价人数模式">
-          <button type="button" [class.active]="quoteMode === 'single'" [attr.aria-pressed]="quoteMode === 'single'" (click)="setQuoteMode('single')">单人报价</button>
-          <button type="button" [class.active]="quoteMode === 'group'" [attr.aria-pressed]="quoteMode === 'group'" (click)="setQuoteMode('group')">多人报价</button>
-          <label *ngIf="quoteMode === 'group'">学生人数<input type="number" min="2" max="20" step="1" [(ngModel)]="studentCount" /></label>
-        </div>
-        <p class="group-hint" *ngIf="quoteMode === 'group'">每人分别安排课程和住宿；共住房型仍按各自床位报价。</p>
-        <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
-          <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
-          <div class="student-fields">
-            <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
-            <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
-            <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
-          </div>
-          <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
-          <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">按所选课程收费；未成年入学及监护要求须顾问确认。</p>
-          <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
-          <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
-        </article>
-        <aside class="peak-season-quote-note" *ngIf="peakSeasonCalendarRanges.length" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">
-          <span class="peak-season-quote-icon"><mat-icon>date_range</mat-icon></span>
-          <div>
-            <strong>2027旺季附加费：{{ seasonalFeePerWeek }}美元／周／人</strong>
-            <p>{{ peakSeason2027RangeText }}</p>
-            <small>{{ peakSeasonStatusText }} 同一学生课程与住宿重叠周只计一次，且不参与折扣。</small>
-          </div>
-        </aside>
-        <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
-          <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
-            <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
-          </div>
-        </div>
-        <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
-        <div class="group-result">
-          <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
-          <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
-          <small *ngIf="iauRegistrationFeeNote">{{ iauRegistrationFeeNote }}</small>
-        </div>
-        <div class="group-actions">
-          <button class="primary-action" type="button" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button>
-          <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button>
-          <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
-        </div>
-      </div>
-      <section class="local-fee-estimate" id="local-fees" aria-labelledby="local-fee-title">
-        <div class="local-fee-heading" data-cia-preview-kind="section" data-cia-preview-id="local-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fees')"><div><h3 id="local-fee-title">到校后学杂费明细</h3></div></div>
-        <p class="local-fee-intro" data-cia-preview-kind="section" data-cia-preview-id="local-fee-intro" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'local-fee-intro')">{{ localFeeIntro }}</p>
-        <div class="local-fee-table-wrap">
-          <table class="local-fee-table">
-            <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
-            <tbody><tr *ngFor="let fee of estimatedLocalFees; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))">
-              <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
-            </tr></tbody>
-            <tfoot>
-              <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含接机及房间押金</td></tr>
-              <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, "zh-CN") }} 元</td><td>参考汇率：1元人民币 ≈ {{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索；最终以实际兑换或支付汇率为准</td></tr>
-            </tfoot>
-          </table>
-        </div>
-        <div class="excluded-fee-list">
-          <h4>另行准备（不计入上方学杂费合计）</h4>
-          <div *ngFor="let fee of optionalFeeItems; trackBy: trackPreviewRow" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.label)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.label))">
-            <span><strong>{{ fee.label }}</strong><small>{{ fee.note }}</small></span>
-            <b>{{ fee.amount }}<small>{{ fee.cnyAmount }}</small></b>
-          </div>
-        </div>
-      </section>
-    </section>
-    </ng-template>
-
-    <details class="refund-policy-section cia-collapsible-section" id="refund-policy" aria-labelledby="refund-policy-title">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>policy</mat-icon></span>
-        <span>
-          <strong>{{ copy.refund.summaryTitle }}</strong>
-          <small>{{ copy.refund.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body">
-      <div class="refund-policy-heading">
-        <div>
-          <span class="section-eyebrow">{{ copy.refund.eyebrow }}</span>
-          <h2 id="refund-policy-title"><mat-icon>policy</mat-icon>{{ copy.refund.title }}</h2>
-          <p>{{ copy.refund.intro }}</p>
-        </div>
-        <span class="refund-policy-alert"><mat-icon>info</mat-icon>{{ copy.refund.alert }}</span>
-      </div>
-
-      <div class="refund-policy-grid">
-        <article *ngFor="let group of copy.refund.groups">
-          <h3>{{ group.title }}</h3>
-          <p *ngIf="group.note" class="refund-card-note">{{ group.note }}</p>
-          <dl>
-            <div *ngFor="let rule of group.rules"><dt>{{ rule.when }}</dt><dd>{{ rule.text }}</dd></div>
-          </dl>
-          <p *ngIf="group.footnote" class="refund-card-footnote">{{ group.footnote }}</p>
-        </article>
-      </div>
-      </div>
-    </details>
-
-    <section
-      class="cia-section student-care-section"
-      id="student-care-services"
-    >
-      <div class="student-care-intro">
-        <div class="section-heading">
-          <span class="section-eyebrow">{{ copy.studentCare.eyebrow }}</span>
-          <h2>{{ copy.studentCare.title }}</h2>
-          <p>
-            {{ copy.studentCare.intro }}
-          </p>
-        </div>
-        <div class="student-care-summary" aria-label="CIA学生关怀服务概览">
-          <span>{{ copy.studentCare.count }}</span>
-          <div>
-            <strong>{{ copy.studentCare.summaryTitle }}</strong>
-            <small>{{ copy.studentCare.summaryHint }}</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="student-care-showcase">
-        <article class="student-care-feature">
-          <img
-            [src]="copy.studentCare.featureImage"
-            [alt]="copy.studentCare.featureImageAlt"
-          />
-          <div class="student-care-feature-copy">
-            <span>{{ studentCareServices[0].subtitle }}</span>
-            <h3>{{ studentCareServices[0].title }}</h3>
-            <p>{{ studentCareServices[0].text }}</p>
-            <div>
-              <small><mat-icon>location_on</mat-icon>{{ studentCareServices[0].location }}</small>
-              <small><mat-icon>schedule</mat-icon>{{ studentCareServices[0].schedule }}</small>
-            </div>
-          </div>
-        </article>
-
-        <div class="student-care-list">
-          <article *ngFor="let service of studentCareServices.slice(1)">
-            <div class="care-card-head">
-              <span>{{ service.number }}</span>
-              <mat-icon>{{ service.icon }}</mat-icon>
-            </div>
-            <div class="student-care-card-title">
-              <h3>{{ service.title }}</h3>
-              <strong>{{ service.subtitle }}</strong>
-            </div>
-            <p>{{ service.text }}</p>
-            <div class="student-care-meta">
-              <span><mat-icon>location_on</mat-icon>{{ service.location }}</span>
-              <span><mat-icon>schedule</mat-icon>{{ service.schedule }}</span>
-            </div>
-          </article>
-        </div>
-      </div>
-
-    </section>
-
-    <details class="cia-section cia-collapsible-section" id="campus-practical-guide">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>info</mat-icon></span>
-        <span>
-          <strong>{{ copy.practicalGuide.summaryTitle }}</strong>
-          <small>{{ copy.practicalGuide.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body">
-        <p class="campus-guide-intro">{{ copy.practicalGuide.intro }}</p>
-        <div class="campus-practical-grid">
-          <article *ngFor="let guide of campusPracticalGuides">
-            <header>
-              <span><mat-icon>{{ guide.icon }}</mat-icon></span>
-              <div><small>{{ guide.eyebrow }}</small><h3>{{ guide.title }}</h3></div>
-            </header>
-            <dl>
-              <div *ngFor="let fact of guide.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
-            </dl>
-            <ul *ngIf="guide.points" class="campus-guide-points">
-              <li *ngFor="let point of guide.points">{{ point }}</li>
-            </ul>
-            <p><mat-icon>info</mat-icon>{{ guide.note }}</p>
-          </article>
-        </div>
-      </div>
-    </details>
-
-    <section class="student-track-section">
-      <div class="section-heading">
-        <h2>
-          <mat-icon>groups</mat-icon>{{ copy.studentTracks.title }}
-        </h2>
-      </div>
-      <div class="student-track-grid">
-        <article *ngFor="let item of studentTracks">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <div>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.text }}</p>
-          </div>
-        </article>
-      </div>
-      <a class="primary-action center-action" routerLink="/about-sida/contact">
-        {{ copy.studentTracks.ctaLabel }}
-        <mat-icon>chevron_right</mat-icon>
-      </a>
-    </section>
-
-    <section
-      class="cia-section official-student-reviews"
-      id="student-reviews"
-      aria-labelledby="student-reviews-title"
-    >
-      <div class="official-review-heading">
-        <div class="section-heading">
-          <span class="section-eyebrow">{{ copy.reviews.eyebrow }}</span>
-          <h2 id="student-reviews-title">{{ copy.reviews.title }}</h2>
-          <p>
-            {{ copy.reviews.intro }}
-          </p>
-        </div>
-        <span class="official-review-source">
-          <mat-icon>verified</mat-icon>
-          {{ copy.reviews.source }}
-        </span>
-      </div>
-
-      <div class="official-review-grid" aria-label="CIA学生反馈中文整理">
-        <article *ngFor="let review of officialStudentReviews">
-          <figure>
-            <img [src]="review.image" [alt]="review.imageAlt" loading="lazy" />
-            <figcaption>{{ review.focus }}</figcaption>
-          </figure>
-          <div class="official-review-card-copy">
-            <span class="official-review-number">STORY {{ review.number }}</span>
-            <h3>{{ review.title }}</h3>
-            <blockquote>{{ review.excerpt }}</blockquote>
-            <a
-              [routerLink]="['/philippines-study/cebu/cia-cebu-international-academy/student-reviews', review.slug]"
-              [attr.aria-label]="'查看学生反馈全文：' + review.title"
-            >
-              {{ copy.reviews.linkLabel }}
-              <mat-icon>arrow_forward</mat-icon>
-            </a>
-          </div>
-        </article>
-      </div>
-
-    </section>
-
-    <section class="cia-section sida-cia-section" id="service-process">
-      <div class="sida-cia-heading">
-        <span>{{ copy.sida.eyebrow }}</span>
-        <h2>{{ copy.sida.title }}</h2>
-        <p>
-          {{ copy.sida.intro }}
-        </p>
-      </div>
-
-      <aside class="sida-cia-gratitude" aria-label="思达启航服务初心">
-        <figure class="sida-cia-main-photo">
-          <img
-            [src]="copy.sida.photo"
-            [alt]="copy.sida.photoAlt"
-          />
-          <figcaption>{{ copy.sida.photoCaption }}</figcaption>
-        </figure>
-        <div class="sida-cia-gratitude-content">
-          <div class="sida-cia-gratitude-heading">
-            <span><mat-icon>favorite</mat-icon></span>
-            <div>
-              <small>{{ copy.sida.gratitudeEyebrow }}</small>
-              <strong>{{ copy.sida.gratitudeTitle }}</strong>
-            </div>
-          </div>
-          <blockquote>
-            {{ copy.sida.quote }}
-          </blockquote>
-          <p>
-            {{ copy.sida.text }}
-          </p>
-          <div class="sida-cia-values" aria-label="思达启航服务态度">
-            <span *ngFor="let value of copy.sida.values"><mat-icon>{{ value.icon }}</mat-icon>{{ value.text }}</span>
-          </div>
-        </div>
-      </aside>
-
-      <div class="sida-cia-reason-grid">
-        <article *ngFor="let item of sidaCiaReasons">
-          <img [src]="item.image" [alt]="item.alt" />
-          <div>
-            <span>{{ item.number }}</span>
-            <h3>{{ item.title }}</h3>
-            <p>{{ item.text }}</p>
-          </div>
-        </article>
-      </div>
-
-      <div class="sida-cia-trust-bar" aria-label="思达启航报名保障">
-        <article *ngFor="let item of sidaCiaTrustBadges">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <strong>{{ item.label }}</strong>
-        </article>
-      </div>
-
-      <aside class="sida-cia-alumni-benefits" aria-labelledby="cia-alumni-benefits-title">
-        <div class="sida-cia-alumni-heading">
-          <span><mat-icon>workspace_premium</mat-icon></span>
-          <div>
-            <small>{{ copy.sida.alumni.eyebrow }}</small>
-            <h3 id="cia-alumni-benefits-title">{{ copy.sida.alumni.title }}</h3>
-            <p>{{ copy.sida.alumni.intro }}</p>
-          </div>
-        </div>
-        <div class="sida-cia-alumni-grid">
-          <article *ngFor="let item of copy.sida.alumni.items">
-            <span>{{ item.number }}</span>
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <div>
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.text }}</p>
-            </div>
-          </article>
-        </div>
-        <small class="sida-cia-alumni-note">{{ copy.sida.alumni.note }}</small>
-      </aside>
-    </section>
-
-    <section class="faq-section" id="faq">
-      <div class="section-heading">
-        <h2><mat-icon>help</mat-icon>{{ copy.faq.title }}</h2>
-      </div>
-      <details *ngFor="let faq of faqs">
-        <summary>{{ faq.question }}</summary>
-        <p>{{ faq.answer }}</p>
-      </details>
-    </section>
-
-    <section class="final-cta">
-      <div class="final-cta-head">
-        <div class="final-cta-icon" aria-hidden="true">
-          <mat-icon>headset_mic</mat-icon>
-        </div>
-        <div class="final-cta-copy">
-          <h2>{{ copy.finalCta.title }}</h2>
-          <p>
-            {{ copy.finalCta.text }}
-          </p>
-        </div>
-        <div class="final-actions">
-          <a class="primary-action" routerLink="/about-sida/contact"
-            ><mat-icon>description</mat-icon>{{ copy.finalCta.primaryLabel }}
-            <mat-icon>chevron_right</mat-icon></a
-          >
-          <a class="secondary-action" routerLink="/about-sida/contact"
-            ><mat-icon>chat</mat-icon>{{ copy.finalCta.secondaryLabel }}</a
-          >
-        </div>
-      </div>
-
-      <div class="final-consultant-grid">
-        <article
-          class="final-consultant-card"
-          *ngFor="let consultant of ctaConsultants"
-        >
-          <img
-            class="final-consultant-avatar"
-            [src]="consultant.avatarSrc"
-            [alt]="consultant.name + ' 顾问头像'"
-          />
-          <div class="final-consultant-copy">
-            <h3>
-              <span>{{ consultant.name }}</span
-              >{{ consultant.title }}
-            </h3>
-            <p>{{ consultant.description }}</p>
-            <a class="final-consultant-phone" [href]="consultant.phoneHref">
-              <mat-icon>phone</mat-icon>{{ consultant.phone }}
-            </a>
-            <a class="final-consultant-button" [href]="consultant.phoneHref">
-              <mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}
-              <mat-icon>chevron_right</mat-icon>
-            </a>
-          </div>
-          <figure class="final-consultant-qr">
-            <img
-              [src]="consultant.qrSrc"
-              [alt]="consultant.name + ' 微信二维码'"
-            />
-            <figcaption>扫码加微信</figcaption>
-          </figure>
-        </article>
-      </div>
-
-      <ul>
-        <li *ngFor="let badge of ctaBadges">
-          <mat-icon>check_circle</mat-icon>{{ badge }}
-        </li>
-      </ul>
-    </section>
 
     <div class="mobile-bottom-actions" aria-label="CIA 手机端固定操作">
       <a href="#quote" (click)="scrollToSection('quote', $event)">

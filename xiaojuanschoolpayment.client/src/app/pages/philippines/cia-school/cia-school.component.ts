@@ -40,6 +40,11 @@ import {
   createDefaultCiaContentConfig,
 } from './cia-content-config';
 import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from './cia-content-preview';
+import { CiaCompareFocus, CiaPlanComparison } from './cia-plan-compare';
+import type { CiaStudentQuote } from './cia-student-quote';
+import { PlanCompareTableComponent } from '../../../components/plan-compare/plan-compare-table.component';
+import type { PlanCompareSheet } from '../../../components/plan-compare/plan-compare-sheet';
+import type { QuoteImageCardData } from '../../../components/quote-image-types';
 
 import {
   CIA_GALLERY_CATEGORIES,
@@ -59,7 +64,7 @@ import {
   CIA_MOBILE_ANCHORS,
   CIA_SNAPSHOT_CARDS,
   CIA_VIDEO_CARDS,
-  CIA_COURSE_CHOICE_CARDS,
+  CIA_COURSE_GROUPS,
   CIA_STUDENT_CARE_SERVICES,
   CIA_CAMPUS_PRACTICAL_GUIDES,
   CIA_ROOM_COMPARISON_PROFILES,
@@ -90,6 +95,13 @@ import {
   type SideNavItem,
 } from './cia-page-content';
 
+interface CourseGroupView {
+  icon: string;
+  title: string;
+  text: string;
+  courses: CourseFee[];
+}
+
 @Component({
   selector: 'app-cia-school',
   standalone: true,
@@ -100,9 +112,10 @@ import {
     MatIconModule,
     ExpandableImageComponent,
     QuoteImageDownloadButtonComponent,
+    PlanCompareTableComponent,
   ],
   templateUrl: './cia-school.component.html',
-  styleUrls: ['./cia-school.component.css', '../school-quote-rollout.css', '../../../components/school-group-quote.css'],
+  styleUrls: ['./cia-school.component.css', '../school-quote-rollout.css', '../../../components/school-group-quote.css', './cia-school-redesign.css'],
 })
 export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly previewHost: ElementRef<HTMLElement> = inject(ElementRef);
@@ -303,6 +316,64 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
   set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
   quoteCalculated = false;
+
+  /** Same-student plan comparison; it reuses the normal quote's prices and the first student's conditions. */
+  readonly comparison = new CiaPlanComparison(this, () => this.students[0]);
+  readonly compareTags = ['方案A', '方案B', '方案C'];
+  private compareView = false;
+  get quoteView(): 'single' | 'compare' | 'group' { return this.compareView ? 'compare' : this.quoteMode; }
+  setQuoteView(view: 'single' | 'compare' | 'group'): void {
+    this.compareView = view === 'compare';
+    if (view === 'compare') {
+      this.setQuoteMode('single');
+      if (!this.comparison.started) this.comparison.start();
+      return;
+    }
+    this.setQuoteMode(view);
+  }
+  applyCompareFocus(focus: string): void {
+    this.comparison.applyFocus(focus as CiaCompareFocus);
+  }
+  get compareSheet(): PlanCompareSheet { return this.comparison.sheet; }
+  get compareImageData(): QuoteImageCardData {
+    const sheet = this.compareSheet;
+    const start = this.comparison.plans[0] ? this.comparison.startDate(this.comparison.plans[0]) : '';
+    return {
+      ...this.quoteImageData,
+      layout: 'plan-compare',
+      planCompare: sheet,
+      headingText: sheet.heading,
+      fileName: `CIA方案对比报价-${start.replace(/-/g, '')}.png`,
+    };
+  }
+  setComparePlanDate(plan: CiaStudentQuote, value: string, input: HTMLInputElement): void {
+    if (!this.comparison.setStartDate(plan, value)) input.value = this.comparison.startDate(plan);
+  }
+  /** One line under “更多条件” so students see the assumptions without opening it. */
+  conditionsSummary(student: CiaStudentQuote): string {
+    return [
+      student.visaLabel,
+      student.selectedAgeGroup === 'minor' ? '未满18岁' : '18岁及以上',
+      student.returningStudent ? '老学员' : '新学员',
+      `报名日${student.selectedRegistrationDate.replace(/-/g, '/')}`,
+    ].filter(Boolean).join(' · ');
+  }
+
+  /** Four-week price of the rooms a room profile shows (the suite profile covers four codes). */
+  roomProfilePrice(profile: RoomComparisonProfile): string {
+    const codes = profile.bookingCode.split('/').map(code => code.trim());
+    const prices = this.roomRateGroups
+      .flatMap(group => group.rooms)
+      .filter(room => codes.includes(room.code))
+      .map(room => this.roomFeeFor(room.id))
+      .filter(value => value > 0);
+    return this.priceRangeText(prices);
+  }
+  private priceRangeText(prices: number[]): string {
+    if (!prices.length) return '';
+    const min = Math.min(...prices), max = Math.max(...prices);
+    return min === max ? `${this.formatUsd(min)} 美元` : `${this.formatUsd(min)}–${this.formatUsd(max)} 美元`;
+  }
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -777,7 +848,25 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return [...this.videoCards, ...this.uploadedVideoCards];
   }
 
-  readonly courseChoiceCards = CIA_COURSE_CHOICE_CARDS;
+  private courseGroupCache?: { source: CourseFee[]; groups: CourseGroupView[] };
+  /** Courses sorted into the website groups; a published course outside every group lands in “其他课程”. */
+  get courseGroups(): CourseGroupView[] {
+    if (this.courseGroupCache?.source !== this.courseFees) {
+      const used = new Set<string>();
+      const groups = CIA_COURSE_GROUPS.map(group => {
+        const courses = group.courseIds
+          .map(id => this.courseFees.find(course => course.id === id))
+          .filter((course): course is CourseFee => !!course);
+        courses.forEach(course => used.add(course.id));
+        return { icon: group.icon, title: group.title, text: group.text, courses };
+      }).filter(group => group.courses.length > 0);
+      const rest = this.courseFees.filter(course => !used.has(course.id));
+      if (rest.length) groups.push({ icon: 'more_horiz', title: '其他课程', text: '', courses: rest });
+      this.courseGroupCache = { source: this.courseFees, groups };
+    }
+    return this.courseGroupCache.groups;
+  }
+  trackCourseGroup(_index: number, group: CourseGroupView): string { return group.title; }
 
   readonly studentCareServices = CIA_STUDENT_CARE_SERVICES;
 

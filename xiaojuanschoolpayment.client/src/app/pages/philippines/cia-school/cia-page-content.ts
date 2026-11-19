@@ -965,10 +965,11 @@ export const CIA_FAQS: FaqItem[] = [
 ];
 
 export const CIA_MOBILE_ANCHORS: SideNavItem[] = [
-  { label: '概览', target: 'top', icon: 'dashboard' },
-  { label: '校园', target: 'campus-introduction', icon: 'apartment' },
+  { label: '概览', target: 'overview', icon: 'dashboard' },
   { label: '课程', target: 'courses', icon: 'menu_book' },
-  { label: '费用', target: 'quote', icon: 'calculate' },
+  { label: '住宿', target: 'rooms', icon: 'bed' },
+  { label: '报价', target: 'quote', icon: 'calculate' },
+  { label: '校园', target: 'campus-introduction', icon: 'apartment' },
   { label: '评价', target: 'student-reviews', icon: 'rate_review' },
   { label: 'FAQ', target: 'faq', icon: 'help' },
 ];
@@ -1081,36 +1082,70 @@ export const CIA_COURSE_CHOICE_CARDS = [
     label: '第一次游学',
     title: 'Regular ESL',
     text: '均衡提升英语听说读写，适合打基础的学生。',
+    courseIds: ['regular-esl'],
   },
   {
     icon: 'person_add',
     label: '想多上一对一',
     title: 'Intensive / Power Intensive',
     text: '增加一对一课时，适合短期快速提升英语能力。',
+    courseIds: ['intensive-esl', 'power-intensive'],
   },
   {
     icon: 'track_changes',
     label: '雅思目标',
     title: 'Pre-IELTS / IELTS Regular / IELTS Guarantee',
     text: '备考全套体系，可参加模考与官方考试资源。',
+    courseIds: ['pre-ielts', 'ielts-regular', 'ielts-guarantee'],
   },
   {
     icon: 'scoreboard',
     label: '托业目标',
     title: 'Pre-TOEIC / TOEIC Regular / TOEIC Guarantee',
     text: '听力、阅读强化，适合求职或升学分数目标。',
+    courseIds: ['pre-toeic', 'toeic-regular', 'toeic-guarantee'],
   },
   {
     icon: 'business_center',
     label: '职场英语',
     title: 'Business English',
     text: '商务沟通、会议、邮件和面试实用训练。',
+    courseIds: ['business'],
   },
   {
     icon: 'flight_takeoff',
     label: '特色项目',
     title: 'Working Holiday / Callan / College Immersion',
     text: '适合打工度假、口语训练或大学深度体验项目。',
+    courseIds: ['working-holiday', 'callan-esl', 'college-immersion'],
+  },
+];
+
+/** Website course list: one short line per group; each course opens to show its schedule and notes. */
+export const CIA_COURSE_GROUPS: ReadonlyArray<{ icon: string; title: string; text: string; courseIds: readonly string[] }> = [
+  {
+    icon: 'chat_bubble_outline',
+    title: '通用英语 ESL',
+    text: '打基础选 Regular，想多上一对一选 Intensive',
+    courseIds: ['regular-esl', 'intensive-esl', 'power-intensive'],
+  },
+  {
+    icon: 'track_changes',
+    title: '雅思 IELTS',
+    text: 'IDP官方考场，保证班须读满12周',
+    courseIds: ['pre-ielts', 'ielts-regular', 'ielts-guarantee'],
+  },
+  {
+    icon: 'scoreboard',
+    title: '托业 TOEIC',
+    text: '求职、升学需要分数，保证班须读满12周',
+    courseIds: ['pre-toeic', 'toeic-regular', 'toeic-guarantee'],
+  },
+  {
+    icon: 'business_center',
+    title: '商务与特色项目',
+    text: '商务英语、打工度假、Callan、大学体验',
+    courseIds: ['business', 'working-holiday', 'callan-esl', 'college-immersion'],
   },
 ];
 
@@ -1509,7 +1544,7 @@ export const CIA_PAGE_COPY = {
   },
   gallery: {
     title: '按区域查看 CIA 环境',
-    intro: '“全部”先按区域进入相册；各相册用缩略图切换实景，点击主图可放大并前后浏览，住宿相册还可直接比较7类房型。',
+    intro: '“全部”先按区域进入相册；各相册用缩略图切换实景，点击主图可放大并前后浏览。7类房型的价格与详细对比在上方“住宿”部分。',
     photoNote: '图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。',
     roomComparisonTitle: '7类房型快速对比',
     roomDisclaimer: '图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
@@ -1525,7 +1560,11 @@ export const CIA_PAGE_COPY = {
   },
   courses: {
     title: 'CIA 课程怎么选？',
-    intro: '根据你的目标和时间，选择最适合的课程组合，让学习更高效、成果更明显。',
+    intro: '按学习目标分成四类，每门课下面是每天的课程安排，点开可看适合人群和说明。',
+    priceUnit: '/4周',
+    oldPriceLabel: '2026年内入学',
+    fitLabel: '适合人群',
+    noteLabel: '课程说明',
     detailSummaryTitle: '查看课程细节与每日课表',
     detailSummaryHint: '分级与出勤、Light ESL、雅思保证班、晚间强化及每日作息',
     facts: [
@@ -1591,12 +1630,30 @@ export const CIA_PAGE_COPY = {
     officialUrl: 'https://ielts.idp.com/philippines',
   },
   videos: {
-    summaryTitle: '观看 CIA 课程视频',
-    summaryHint: '一般英语、雅思、托业和商务英语课堂介绍',
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CIA 校园与课程',
     intro: '课程介绍和员工发布的校园视频均可在线播放，帮助你更直观地了解课堂与校园环境。',
     badge: 'CIA 官方课程视频',
+  },
+  rooms: {
+    photoTitle: '房型实景与差异',
+    photoIntro: '点选房型查看多角度实景、面积、床尺寸和房务安排；价格为每4周住宿费。',
+    rulesTitle: '短期费率与入住退房规则',
+    rulesHint: '1–3周住宿费比例、入住与退房时间、额外住宿费用',
+    tableHint: '面积、景观、床尺寸与洗衣清洁，一表对比；手机可左右滑动',
+  },
+  quote: {
+    modes: { single: '单人报价', compare: '方案对比', group: '多人报价' },
+    conditionsTitle: '更多条件',
+    compareIntro: '同一位学生，最多3个方案并排比较。先选一种对比方式，再按需要修改每个方案。',
+    compareShortcuts: [
+      { focus: 'room', label: '比房型', hint: '课程和周数不变' },
+      { focus: 'course', label: '比同类课程', hint: '如通用英语三档、雅思三种课程' },
+      { focus: 'weeks', label: '比周数', hint: '如4周、8周、12周' },
+    ],
+    addPlanLabel: '＋ 添加方案',
+    removePlanLabel: '删除',
+    compareSaveLabel: '保存对比图片',
   },
   fees: {
     summaryTitle: '查看完整课程费、住宿费与入住规则',
@@ -1652,6 +1709,7 @@ export const CIA_PAGE_COPY = {
     count: '7项',
     summaryTitle: '校内支持网络',
     summaryHint: '生活 · 学习 · 安全 · 医疗',
+    disclosureHint: 'CRO、学业顾问、线上沟通、接机、每日测试与医疗支援',
     featureImage: 'assets/cia/student-care-cro.webp',
     featureImageAlt: 'CIA客户关系办公室学生服务人员',
   },
@@ -1662,6 +1720,7 @@ export const CIA_PAGE_COPY = {
   },
   studentTracks: {
     title: '成人主校区与亲子 / 青少年营怎么区分？',
+    disclosureHint: '年龄要求、开放档期与报名前需要确认的事项',
     ctaLabel: '咨询 CIA 亲子营档期',
   },
   reviews: {

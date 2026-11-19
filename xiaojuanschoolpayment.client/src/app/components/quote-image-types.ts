@@ -1,6 +1,7 @@
 // Quote image data shared by the website renderer (QuoteImageDownloadButtonComponent and
 // quote-image-detailed-renderer.ts) and the WeChat mini program, which bundles the renderer.
 // Keep this file free of Angular and DOM types.
+import type { PlanCompareSheet } from './plan-compare/plan-compare-sheet';
 
 export interface QuoteImageInfoItem {
   icon: string;
@@ -61,7 +62,9 @@ export interface QuoteImageContact {
 }
 
 export interface QuoteImageCardData {
-  layout?: 'standard' | 'cia-detailed';
+  /** `plan-compare` draws `planCompare` with plan-compare/plan-compare-image-renderer.ts; it reuses only the header fields. */
+  layout?: 'standard' | 'cia-detailed' | 'plan-compare';
+  planCompare?: PlanCompareSheet;
   /** Preserve every payment/local/optional fee and size the detailed image to its contents. */
   fullFeeDetails?: boolean;
   /** Size shorter package fee sections to their content without changing other schools. */

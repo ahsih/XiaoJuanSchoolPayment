@@ -1,5 +1,5 @@
 import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
-import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
+import { SchoolQuotePlan, nextQuoteSunday, quoteMoney } from '../../../components/school-quote-plan';
 import {
   SCHOOL_VISA_OPTIONS,
   SchoolVisaType,
@@ -12,7 +12,7 @@ import {
 } from './cia-content-config';
 
 export interface CiaQuotePrices {
-  courseFees: { id: string; name: string; schedule: string; tuition: number; tuition2027: number }[];
+  courseFees: { id: string; name: string; schedule: string; tuition: number; tuition2027: number; minimumWeeks?: number }[];
   roomFees: { id: string; name: string; fee: number }[];
   registrationFee: number;
   futurePriceRegistrationStart: string;
@@ -30,6 +30,15 @@ export interface CiaPromotionResult {
 }
 
 const defaultRatios: Readonly<Record<string, number>> = { '1': 0.4, '2': 0.6, '3': 0.8 };
+
+/**
+ * Courses CIA runs only as a complete block: the guarantee courses must be studied for 12
+ * consecutive weeks. A published course's own `minimumWeeks` takes precedence.
+ */
+export const CIA_COURSE_MINIMUM_WEEKS: Readonly<Record<string, number>> = {
+  'ielts-guarantee': 12,
+  'toeic-guarantee': 12,
+};
 
 export const ciaPriceMultiplier = (
   weeks: number,
@@ -58,7 +67,7 @@ export class CiaStudentQuote {
   readonly quotePlan = new SchoolQuotePlan(
     'regular-esl',
     'd4',
-    '2026-09-06',
+    nextQuoteSunday(),
     this.weekOptions,
     (kind) =>
       kind === 'course'
@@ -87,8 +96,26 @@ export class CiaStudentQuote {
     },
   );
 
+  minimumWeeks(courseId: string): number {
+    const course = this.prices.courseFees.find((item) => item.id === courseId);
+    return course?.minimumWeeks ?? CIA_COURSE_MINIMUM_WEEKS[courseId] ?? 0;
+  }
+
+  /** A guarantee course shorter than its required block cannot be quoted. */
+  get courseLengthError() {
+    for (const row of this.quotePlan.mergedRows('course')) {
+      const minimum = this.minimumWeeks(row.optionId);
+      if (minimum > 0 && row.weeks < minimum) {
+        const name = this.prices.courseFees.find((item) => item.id === row.optionId)?.name ?? '该课程';
+        return `${name}须连续就读至少${minimum}周，请把课程周数改为${minimum}周或以上。`;
+      }
+    }
+    return '';
+  }
+
   get quoteError() {
     if (this.quotePlan.error) return this.quotePlan.error;
+    if (this.courseLengthError) return this.courseLengthError;
     if (this.quotePlan.date(this.selectedRegistrationDate) === null) {
       return '请选择有效的报名注册日期。';
     }

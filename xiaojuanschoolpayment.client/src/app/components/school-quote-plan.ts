@@ -29,6 +29,12 @@ export interface QuoteImageCopyLocalFee {
 const DAY = 86400000;
 export const quoteMoney = (value: number) => value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 
+/** The first Sunday after the local date, as YYYY-MM-DD: the default arrival of a new quote. */
+export function nextQuoteSunday(now = new Date()): string {
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - now.getDay() || 7));
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 const owns = (record: Record<string, string> | undefined, key: string): boolean =>
   !!record && Object.prototype.hasOwnProperty.call(record, key);
 

@@ -23,6 +23,8 @@ export interface CiaQuoteCourse {
   suitable: string;
   schedule: string;
   note: string;
+  /** Only for courses run as a fixed block (guarantee courses); see CIA_COURSE_MINIMUM_WEEKS. */
+  minimumWeeks?: number;
 }
 
 export interface CiaQuoteRoom {
@@ -87,6 +89,7 @@ export function applyCiaQuoteContent(target: CiaQuotePricing, content: CiaConten
       suitable: item.suitable,
       schedule: item.schedule,
       note: item.note,
+      ...(item.minimumWeeks ? { minimumWeeks: item.minimumWeeks } : {}),
     }));
   }
   if (rooms.length > 0) {
@@ -305,6 +308,7 @@ export class CiaQuote {
   get estimatedLocalFeeCny(): number {
     return Math.round(this.estimatedLocalFeeTotal / this.pricing.phpPerCny);
   }
+
 
   formatPhp(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';
     return `${Math.round(value).toLocaleString('en-US')} 比索`;
