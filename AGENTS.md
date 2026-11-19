@@ -461,6 +461,12 @@ User decision: the CIA page is the fixed layout and design for every Philippine 
 
 Rules: a template change changes every migrated school at once, so before any design change ask the user whether it is for one school only or for all schools. A school with content no other school has gets its own extra section, added to the template behind an optional profile field. Room price-list columns follow each school's room counts (`roomMatrixColumns`). After template edits, compare the CIA quote data, rendered text and images before and after (the CIA page must stay identical unless the change is intended).
 
+## CIA page locked (2026-11-20)
+
+User decision: the CIA page is finished and locked. Do not change CIA content unless the user explicitly unlocks it for that change; ask first, in Chinese, every time, even for a one-word fix. Locked files are `pages/philippines/cia-school/`, `pages/philippines/cia-student-review/`, `public/assets/cia/` and `public/assets/cia-video/`. The project hook `.claude/hooks/cia-lock.cjs` (registered in `.claude/settings.json`) makes Claude Code show a permission prompt before any edit, file write or shell write to those paths and to the hook and settings files themselves; it takes effect in sessions started after the settings file exists. Allowing that prompt unlocks only that one change.
+
+Shared files also shape the CIA page: the `school-page/` template and styles, `components/sida-consultants.ts`, `components/sida-why-content.ts`, the global `app-cia-school` rules in `src/styles.css`, the quote-image renderers, `school-quote-plan*`, `plan-compare/` and `services/exchange-rate-rules.ts`. A change there for another school must leave the CIA page, quote data and quote images identical (compare before and after, as for the template). If it cannot, ask the user to unlock CIA before making it.
+
 ## UK schools and Burlington School (2026-11-19)
 
 UK school quotes differ from the Philippine ones (weekly all-inclusive packages, tiered tuition, accommodation and one-time fees in pounds; no peso local fees), so they use a separate shared template that every future UK school should reuse:
