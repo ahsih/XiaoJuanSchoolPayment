@@ -20,7 +20,7 @@ import { buildLaMerQuoteImage, LA_MER_FALLBACK_RATES, LaMerRates } from './la-me
   selector: 'app-la-mer-school', standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, ExpandableImageComponent, SchoolQuotePlanComponent, QuoteImageDownloadButtonComponent, SidaWhySectionComponent],
   templateUrl: './la-mer-school.component.html',
-  styleUrls: ['../cia-school/cia-school.component.css', '../school-quote-rollout.css', './la-mer-school.component.css'],
+  styleUrls: ['../school-page/ph-school-page.component.css', '../school-quote-rollout.css', './la-mer-school.component.css'],
 })
 export class LaMerSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly schoolService = inject(SchoolService);

@@ -1,0 +1,142 @@
+import { ElementRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { SchoolContentService } from '../../../../services/school-content.service';
+import { SchoolService } from '../../../../services/school.service';
+import { cloneEvContentConfig, createDefaultEvContentConfig } from './ev-content-config';
+import { EV_PAGE_PROFILE } from './ev-page-profile';
+import { EvSchoolPageComponent } from './ev-school-page.component';
+
+// The EV page on the shared Philippine school template: amounts must match the EV price list and
+// the 2026-08-10 local-fee sheets exactly as the former EV page did.
+describe('EV school page on the shared template', () => {
+  let page: EvSchoolPageComponent;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [
+      { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+      { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
+      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
+      { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
+      { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
+    ] });
+    page = TestBed.runInInjectionContext(() => new EvSchoolPageComponent());
+    page.selectedStartDate = '2026-09-13';
+  });
+
+  const student = () => page.students[0];
+  const localFee = (item: string) => page.estimatedLocalFees.find(fee => fee.item === item)?.total ?? 0;
+  const payment = (label: string) => page.schoolPaymentItems.find(row => row.label === label);
+
+  it('prices the default four-week Semi-Sparta ESL plan with the Sida 95% rate', () => {
+    expect(page.selectedCourseId).toBe('semi-sparta-esl');
+    expect(page.selectedRoomId).toBe('quad-bunk');
+    expect(page.quote.quoteUsd).toBe(1886);
+    expect(page.quote.estimatedLocalFeeTotal).toBe(20000);
+    expect(payment('思达启航折扣')?.amount).toBe('− 94 美元');
+    expect(page.quoteImageData.headingText).toBe('EV主校区4周报价');
+  });
+
+  it('charges the 2027 CALA peak season once per overlapping week, outside the discount', () => {
+    page.selectedStartDate = '2027-07-04';
+    page.selectedWeeks = 8;
+    expect(student().peakWeeks).toBe(8);
+    expect(student().seasonalSurcharge).toBe(480);
+    expect(student().promotionDiscountTotal).toBe(188);
+    expect(page.quote.quoteUsd).toBe(4152);
+    const row = payment('旺季附加费');
+    expect(row?.amount).toBe('480 美元');
+    expect(row?.note).toContain('2027/07/04–2027/08/28');
+    expect(row?.note).toContain('不参与折扣');
+
+    page.selectedStartDate = '2027-08-29';
+    expect(student().seasonalSurcharge).toBe(0);
+    expect(payment('旺季附加费')).toBeUndefined();
+  });
+
+  it('starts visa extensions at week 5 or 9 and adds ACR from week 9', () => {
+    student().visaType = 'tourist30';
+    page.selectedWeeks = 9;
+    expect(localFee('签证续签')).toBe(11830);
+    expect(localFee('ACR-I Card 外国人身份证')).toBe(4000);
+    student().visaType = 'tourist59';
+    expect(localFee('签证续签')).toBe(6700);
+    page.selectedWeeks = 8;
+    expect(localFee('签证续签')).toBe(0);
+    expect(localFee('ACR-I Card 外国人身份证')).toBe(0);
+  });
+
+  it('matches the 2026-08-10 dormitory and condo local-fee sheets without deposit or pickup', () => {
+    const cases: Array<[number, 'tourist30' | 'tourist59', string, number, number]> = [
+      [4, 'tourist30', 'quad-bunk', 18000, 3000],
+      [12, 'tourist30', 'quad-bunk', 44230, 5000],
+      [12, 'tourist59', 'quad-bunk', 39100, 5000],
+      [6, 'tourist59', 'off-campus-single', 23600, 3000],
+    ];
+    for (const [weeks, visa, room, local, deposit] of cases) {
+      page.selectedRoomId = room;
+      page.selectedWeeks = weeks;
+      student().visaType = visa;
+      const withoutBooks = page.estimatedLocalFees
+        .filter(fee => !['教材费', 'ARP外国人登记'].includes(fee.item))
+        .reduce((sum, fee) => sum + fee.total, 0);
+      expect(withoutBooks).withContext(`${weeks}周 ${visa} ${room}`).toBe(local);
+      expect(student().calculator.roomDeposit).withContext(`${weeks}周押金`).toBe(deposit);
+    }
+    expect(page.optionalFeeItems.map(item => item.label)).toEqual(jasmine.arrayContaining(['房间押金']));
+  });
+
+  it('requires at least eight weeks for the IELTS Guarantee course', () => {
+    page.selectedCourseId = 'sparta-ielts-guarantee';
+    page.selectedRoomId = 'single';
+    page.selectedWeeks = 4;
+    expect(page.quoteError).toContain('须至少就读8周');
+    page.selectedWeeks = 8;
+    expect(page.quoteError).toBe('');
+    expect(Math.round(student().registration + student().tuition + student().accommodation)).toBe(5600);
+  });
+
+  it('keeps the off-campus condo for Semi-Sparta course students only', () => {
+    page.selectedRoomId = 'off-campus-single';
+    expect(page.quoteError).toBe('');
+    page.selectedCourseId = 'sparta-intensive-esl';
+    expect(page.quoteError).toContain('校外公寓仅限半斯巴达课程');
+  });
+
+  it('adds the under-18 management fee per started four course weeks', () => {
+    const adult = page.quote.quoteUsd;
+    student().selectedAgeGroup = 'minor';
+    expect(page.quote.quoteUsd).toBe(adult + 100);
+    expect(payment('未成年管理费')?.amount).toBe('100 美元');
+    student().selectedAgeGroup = 'adult';
+    expect(payment('未成年管理费')).toBeUndefined();
+  });
+
+  it('quotes groups per student and waives registration for returning students', () => {
+    page.setQuoteView('group');
+    expect(page.activeStudents.length).toBe(2);
+    expect(page.quote.quoteUsd).toBe(3772);
+    page.activeStudents[1].returningStudent = true;
+    expect(page.quote.quoteUsd).toBe(3672);
+    expect(page.quoteImageData.headingText).toBe('EV主校区 2人报价');
+  });
+
+  it('compares room choices with the same rules as the single quote', () => {
+    page.setQuoteView('compare');
+    const totals = page.compareSheet.rows.find(row => row.label === '学校费用合计')?.values ?? [];
+    expect(totals[0]).toBe('1,886 美元');
+    expect(totals.length).toBeGreaterThan(1);
+  });
+
+  it('writes the brand in full and upgrades saved short brand names', () => {
+    const saved = createDefaultEvContentConfig();
+    saved.quoteSettings.promotions.find(rule => rule.id === 'ev-sida-95')!.name = '思达折扣';
+    saved.quoteImageSettings.footerNotes = ['学费可交由思达游学代收'];
+    const upgraded = cloneEvContentConfig(saved);
+    expect(upgraded.quoteSettings.promotions.find(rule => rule.id === 'ev-sida-95')!.name).toBe('思达启航折扣');
+    expect(upgraded.quoteImageSettings.footerNotes[0]).toBe('学费可交由思达启航代收');
+    expect(JSON.stringify(EV_PAGE_PROFILE.copy)).not.toMatch(/思达(?!启航)/);
+  });
+});

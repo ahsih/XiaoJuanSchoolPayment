@@ -1,4 +1,4 @@
-<div class="cia-page" aria-label="CIA学校详情页面">
+<div class="cia-page" [attr.aria-label]="schoolName + '学校详情页面'">
   <main class="cia-shell">
     <section class="cia-hero" id="top">
       <div class="hero-copy">
@@ -17,7 +17,7 @@
             href="#quote"
             (click)="scrollToSection('quote', $event)"
           >
-            获取 CIA 最新报价
+            获取 {{ schoolName }} 最新报价
             <mat-icon>chevron_right</mat-icon>
           </a>
           <a
@@ -39,14 +39,14 @@
         </div>
       </div>
 
-      <div class="hero-media" aria-label="CIA 校园图片">
+      <div class="hero-media" [attr.aria-label]="schoolName + ' 校园图片'">
         <div class="hero-collage hero-collage--desktop">
           <figure *ngFor="let image of heroGalleryPreviewImages.slice(0, 4)">
             <img [src]="image.src" [alt]="image.title" />
           </figure>
         </div>
 
-        <div class="hero-gallery-mobile" aria-label="CIA 校园图片浏览">
+        <div class="hero-gallery-mobile" [attr.aria-label]="schoolName + ' 校园图片浏览'">
           <div class="hero-gallery-mobile-stage">
             <app-expandable-image
               [src]="selectedHeroGalleryImage.src"
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="hero-gallery-mobile-thumbs" role="tablist" aria-label="切换CIA校园图片">
+          <div class="hero-gallery-mobile-thumbs" role="tablist" [attr.aria-label]="'切换' + schoolName + '校园图片'">
             <button
               type="button"
               role="tab"
@@ -88,7 +88,7 @@
       </div>
     </section>
 
-    <nav class="section-tabs" aria-label="CIA 页面导航">
+    <nav class="section-tabs" [attr.aria-label]="schoolName + ' 页面导航'">
       <a
         *ngFor="let item of mobileAnchors"
         [href]="'#' + item.target"
@@ -100,7 +100,7 @@
     </nav>
 
     <div class="decision-summary-grid" id="overview">
-    <section class="overview-grid" aria-label="30 秒看懂 CIA">
+    <section class="overview-grid" [attr.aria-label]="copy.overview.title">
       <div class="overview-main">
         <div class="section-heading">
           <h2>{{ copy.overview.title }}</h2>
@@ -139,7 +139,7 @@
     </section>
     </div>
 
-    <aside class="school-license-strip" aria-label="CIA办学资质">
+    <aside class="school-license-strip" *ngIf="copy.license" [attr.aria-label]="schoolName + '办学资质'">
       <mat-icon>verified_user</mat-icon>
       <div>
         <strong>{{ copy.license.title }}</strong>
@@ -148,17 +148,17 @@
       <small>{{ copy.license.note }}</small>
     </aside>
 
-    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction">
+    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction" *ngIf="copy.campus">
       <div class="section-heading section-heading-row">
         <div>
           <span class="section-eyebrow">{{ copy.campus.eyebrow }}</span>
           <h2>{{ copy.campus.title }}</h2>
           <p>{{ copy.campus.intro }}</p>
         </div>
-        <span class="campus-capacity"><b>{{ copy.campus.studentCapacity }}</b>名学生容量 · 约<b>{{ copy.campus.teacherCount }}</b>名教师</span>
+        <span class="campus-capacity" *ngIf="copy.campus.studentCapacity"><b>{{ copy.campus.studentCapacity }}</b>名学生容量<ng-container *ngIf="copy.campus.teacherCount"> · 约<b>{{ copy.campus.teacherCount }}</b>名教师</ng-container></span>
       </div>
 
-      <div class="campus-intro-layout">
+      <div class="campus-intro-layout" *ngIf="campusBuildings.length">
         <div class="campus-building-grid">
           <article *ngFor="let building of campusBuildings">
             <span>{{ building.code }}</span>
@@ -171,14 +171,14 @@
         </div>
       </div>
 
-      <div class="campus-fact-strip" aria-label="CIA校园基本资料">
+      <div class="campus-fact-strip" *ngIf="basicInfo.length" [attr.aria-label]="schoolName + '校园基本资料'">
         <article *ngFor="let item of basicInfo">
           <small>{{ item.label }}</small>
           <strong>{{ item.value }}</strong>
         </article>
       </div>
 
-      <aside class="campus-rule-note">
+      <aside class="campus-rule-note" *ngIf="copy.campus.ruleTitle">
         <mat-icon>rule</mat-icon>
         <div>
           <strong>{{ copy.campus.ruleTitle }}</strong>
@@ -192,7 +192,7 @@
         <h2>{{ copy.gallery.title }}</h2>
         <p>{{ copy.gallery.intro }}</p>
       </div>
-      <div class="gallery-tabs" role="tablist" aria-label="CIA 环境分类">
+      <div class="gallery-tabs" role="tablist" [attr.aria-label]="schoolName + ' 环境分类'">
         <button
           type="button"
           *ngFor="let category of galleryCategories"
@@ -206,7 +206,7 @@
       <div
         *ngIf="selectedGalleryCategory === '全部'"
         class="gallery-album-grid"
-        aria-label="CIA环境相册入口"
+        [attr.aria-label]="schoolName + '环境相册入口'"
       >
         <button
           type="button"
@@ -283,7 +283,7 @@
           </div>
 
           <div class="environment-profile-copy">
-            <span class="section-eyebrow">{{ selectedGalleryImage.category }} · CIA CAMPUS</span>
+            <span class="section-eyebrow">{{ selectedGalleryImage.category }} · {{ schoolName }} CAMPUS</span>
             <h3>{{ selectedGalleryImage.title }}</h3>
             <p>{{ selectedGalleryImage.description }}</p>
             <ul *ngIf="selectedGalleryImage.details?.length">
@@ -324,24 +324,49 @@
             <details class="course-line" *ngFor="let fee of group.courses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
               <summary>
                 <strong class="course-line-title">{{ fee.name }}</strong>
-                <span class="course-line-price"><b>{{ formatUsd(fee.tuition2027) }}</b> 美元<small>{{ copy.courses.priceUnit }}</small></span>
+                <span class="course-line-price"><b>{{ formatUsd(listPrice(fee)) }}</b> 美元<small>{{ copy.courses.priceUnit }}</small></span>
                 <mat-icon class="course-line-chevron">expand_more</mat-icon>
                 <span class="course-line-schedule"><span *ngFor="let part of scheduleParts(fee.schedule); let first = first" [class.is-key]="first">{{ part }}</span></span>
               </summary>
               <dl class="course-line-detail">
                 <div *ngIf="fee.suitable"><dt>{{ copy.courses.fitLabel }}</dt><dd>{{ fee.suitable }}</dd></div>
                 <div *ngIf="fee.note"><dt>{{ copy.courses.noteLabel }}</dt><dd>{{ fee.note }}</dd></div>
-                <div *ngIf="show2026Prices"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(fee.tuition) }} 美元{{ copy.courses.priceUnit }}</dd></div>
+                <div *ngIf="show2026Prices && copy.courses.oldPriceLabel"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(fee.tuition) }} 美元{{ copy.courses.priceUnit }}</dd></div>
               </dl>
             </details>
           </article>
         </div>
         <ul class="course-footnotes">
           <li *ngIf="show2026Prices" data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')"><mat-icon>event_available</mat-icon>{{ courseTableNote }}</li>
-          <li data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')"><mat-icon>groups</mat-icon>{{ copy.fees.classSizeTitle }}：{{ groupClassNote }}</li>
+          <li *ngIf="groupClassNote" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')"><mat-icon>groups</mat-icon>{{ copy.fees.classSizeTitle }}：{{ groupClassNote }}</li>
         </ul>
       </div>
-      <details class="cia-collapsible-section course-detail-disclosure">
+      <section class="study-mode-block" id="study-modes" *ngIf="copy.studyModes && studyModes.length" aria-labelledby="study-mode-title">
+        <div class="study-mode-heading">
+          <h3 id="study-mode-title"><mat-icon>rule</mat-icon>{{ copy.studyModes.title }}</h3>
+          <p>{{ copy.studyModes.intro }}</p>
+        </div>
+        <div class="study-mode-grid">
+          <article class="study-mode-card" *ngFor="let mode of studyModes; let first = first" [class.study-mode-card--strict]="first">
+            <header>
+              <span class="study-mode-code">{{ mode.code }}</span>
+              <div><strong>{{ mode.name }}</strong><p>{{ mode.title }}</p></div>
+            </header>
+            <h4>{{ mode.contrastTitle }}</h4>
+            <ul class="study-mode-times">
+              <li *ngFor="let block of mode.timeBlocks" [class.is-required]="block.type === 'required'">
+                <mat-icon>{{ block.icon }}</mat-icon>
+                <span><b>{{ block.label }}</b><small>{{ block.time }}</small><em>{{ block.text }}</em></span>
+              </li>
+            </ul>
+            <dl class="study-mode-curfew">
+              <div *ngFor="let item of mode.curfew"><dt>{{ item.day }}</dt><dd>{{ item.time }}</dd></div>
+            </dl>
+          </article>
+        </div>
+        <p class="study-mode-note" *ngIf="copy.studyModes.note"><mat-icon>info</mat-icon>{{ copy.studyModes.note }}</p>
+      </section>
+      <details class="cia-collapsible-section course-detail-disclosure" *ngIf="copy.courses.facts?.length || courseDetailGuides.length || (copy.schedule && scheduleColumns.length)">
         <summary>
           <span class="collapsible-summary-icon"><mat-icon>fact_check</mat-icon></span>
           <span>
@@ -351,7 +376,7 @@
           <mat-icon class="collapsible-chevron">expand_more</mat-icon>
         </summary>
         <div class="collapsible-panel-body">
-      <div class="course-facts-grid" aria-label="CIA 课程重点说明">
+      <div class="course-facts-grid" *ngIf="copy.courses.facts?.length" [attr.aria-label]="schoolName + ' 课程重点说明'">
         <article *ngFor="let fact of copy.courses.facts">
           <mat-icon>{{ fact.icon }}</mat-icon>
           <div>
@@ -361,12 +386,12 @@
         </article>
       </div>
 
-      <section class="course-detail-guides" id="course-detail-guides" aria-labelledby="course-detail-guide-title">
+      <section class="course-detail-guides" id="course-detail-guides" *ngIf="courseDetailGuides.length" aria-labelledby="course-detail-guide-title">
         <div class="course-detail-guide-heading">
           <div>
-            <span class="section-eyebrow">{{ copy.courses.guideEyebrow }}</span>
+            <span class="section-eyebrow" *ngIf="copy.courses.guideEyebrow">{{ copy.courses.guideEyebrow }}</span>
             <h3 id="course-detail-guide-title">{{ copy.courses.guideTitle }}</h3>
-            <p>{{ copy.courses.guideIntro }}</p>
+            <p *ngIf="copy.courses.guideIntro">{{ copy.courses.guideIntro }}</p>
           </div>
           <mat-icon>tips_and_updates</mat-icon>
         </div>
@@ -419,7 +444,7 @@
           </details>
         </div>
       </section>
-      <aside class="school-rule-reference-note" aria-label="CIA学校规则参考说明">
+      <aside class="school-rule-reference-note" *ngIf="copy.courses.ruleNoteTitle" [attr.aria-label]="schoolName + '学校规则参考说明'">
         <mat-icon>info</mat-icon>
         <div>
           <strong>{{ copy.courses.ruleNoteTitle }}</strong>
@@ -427,7 +452,7 @@
         </div>
       </aside>
 
-      <section class="daily-schedule-section" aria-labelledby="daily-schedule-title">
+      <section class="daily-schedule-section" *ngIf="copy.schedule && scheduleColumns.length" aria-labelledby="daily-schedule-title">
         <div class="daily-schedule-heading">
           <div>
             <span class="section-eyebrow">{{ copy.schedule.eyebrow }}</span>
@@ -438,32 +463,16 @@
         </div>
 
         <div class="daily-schedule-grid">
-          <article>
+          <article *ngFor="let column of scheduleColumns">
             <header>
-              <span>{{ copy.schedule.weekdayCode }}</span>
-              <h4>{{ copy.schedule.weekdayTitle }}</h4>
+              <span>{{ column.code }}</span>
+              <h4>{{ column.title }}</h4>
             </header>
             <div
               class="daily-schedule-row"
-              *ngFor="let row of weekdaySchedule"
+              *ngFor="let row of column.rows"
               [class.schedule-row-meal]="row.kind === 'meal'"
               [class.schedule-row-test]="row.kind === 'test'"
-              [class.schedule-row-free]="row.kind === 'free'"
-            >
-              <time>{{ row.time }}</time>
-              <strong>{{ row.activity }}</strong>
-            </div>
-          </article>
-
-          <article>
-            <header>
-              <span>{{ copy.schedule.fridayCode }}</span>
-              <h4>{{ copy.schedule.fridayTitle }}</h4>
-            </header>
-            <div
-              class="daily-schedule-row"
-              *ngFor="let row of fridaySchedule"
-              [class.schedule-row-meal]="row.kind === 'meal'"
               [class.schedule-row-activity]="row.kind === 'activity'"
               [class.schedule-row-free]="row.kind === 'free'"
             >
@@ -472,7 +481,7 @@
             </div>
           </article>
         </div>
-        <p class="daily-schedule-note"><mat-icon>info</mat-icon>{{ copy.schedule.note }}</p>
+        <p class="daily-schedule-note" *ngIf="copy.schedule.note"><mat-icon>info</mat-icon>{{ copy.schedule.note }}</p>
       </section>
         </div>
       </details>
@@ -484,7 +493,7 @@
           <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
           <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
         </div>
-        <div class="room-price-matrix" aria-label="CIA 2027年4周住宿费分组表">
+        <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
             <h3>{{ group.title }}</h3>
             <div
@@ -497,7 +506,7 @@
                   [class.room-location-badge--off-campus]="room.location === '校外'"
                 >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
                 <strong>{{ room.label }}</strong>
-                <small>{{ room.code }}</small>
+                <small *ngIf="showRoomCodes">{{ room.code }}</small>
                 <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
                 <em>/ 4周</em>
               </article>
@@ -515,7 +524,7 @@
             <mat-icon class="collapsible-chevron">expand_more</mat-icon>
           </summary>
           <div class="collapsible-panel-body">
-        <div class="short-stay-rate" aria-label="CIA短期住宿费率" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
+        <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
           <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
@@ -537,33 +546,34 @@
               <p>{{ policy.note }}</p>
             </article>
           </div>
-          <div class="extra-night-rates">
+          <div class="extra-night-rates" *ngIf="extraNightRates.length">
             <span *ngFor="let rate of extraNightRates"><b>{{ rate.label }}</b>{{ formatPhp(rate.amount) }} / 人 / 天</span>
           </div>
         </aside>
 
-        <section class="dorm-rules" aria-labelledby="dorm-rules-title">
+        <section class="dorm-rules" *ngIf="dormRules.length" aria-labelledby="dorm-rules-title">
           <h3 id="dorm-rules-title"><mat-icon>gavel</mat-icon>{{ copy.rooms.dormRulesTitle }}</h3>
           <ul>
             <li *ngFor="let rule of dormRules"><strong>{{ rule.title }}</strong>{{ rule.text }}</li>
           </ul>
-          <small>{{ copy.rooms.dormRulesNote }}</small>
+          <small *ngIf="copy.rooms.dormRulesNote">{{ copy.rooms.dormRulesNote }}</small>
         </section>
           </div>
         </details>
 
       </div>
 
+      <ng-container *ngIf="roomComparisonProfiles.length">
       <div class="room-photo-heading">
         <h3>{{ copy.rooms.photoTitle }}</h3>
-        <p>{{ copy.rooms.photoIntro }} <a class="room-video-link" href="#videos" (click)="scrollToSection('videos', $event)">{{ copy.rooms.videoLink }}</a></p>
+        <p>{{ copy.rooms.photoIntro }} <a class="room-video-link" *ngIf="copy.rooms.videoLink" href="#videos" (click)="scrollToSection('videos', $event)">{{ copy.rooms.videoLink }}</a></p>
       </div>
       <section
         class="room-comparison-section room-comparison-section--embedded"
         id="room-comparison"
-        aria-label="CIA房型实景与差异"
+        [attr.aria-label]="schoolName + '房型实景与差异'"
       >
-      <div class="room-profile-tabs" role="tablist" aria-label="选择要查看的CIA房型">
+      <div class="room-profile-tabs" role="tablist" [attr.aria-label]="'选择要查看的' + schoolName + '房型'">
         <button
           type="button"
           role="tab"
@@ -576,7 +586,7 @@
           <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
           <span>
             <strong>{{ profile.label }}</strong>
-            <small>{{ profile.bookingCode }} · {{ profile.location }}</small>
+            <small>{{ profile.bookingCode ? profile.bookingCode + ' · ' : '' }}{{ profile.location }}</small>
           </span>
         </button>
       </div>
@@ -609,7 +619,7 @@
             <span><mat-icon>collections</mat-icon>{{ selectedRoomPhotoIndex + 1 }} / {{ selectedRoomPhotos.length }} · 点击放大</span>
           </div>
 
-          <div class="room-detail-thumbnails" [attr.aria-label]="selectedRoomProfile.label + '实景缩略图'">
+          <div class="room-detail-thumbnails" *ngIf="selectedRoomPhotos.length > 1" [attr.aria-label]="selectedRoomProfile.label + '实景缩略图'">
             <button
               type="button"
               *ngFor="let photo of selectedRoomPhotos; let imageIndex = index"
@@ -626,20 +636,20 @@
         <div class="room-profile-copy">
           <header>
             <div>
-              <span>{{ selectedRoomProfile.englishName }}</span>
+              <span *ngIf="selectedRoomProfile.englishName">{{ selectedRoomProfile.englishName }}</span>
               <h4>{{ selectedRoomProfile.label }}</h4>
             </div>
             <div class="room-profile-badges">
-              <b>{{ selectedRoomProfile.bookingCode }}</b>
+              <b *ngIf="selectedRoomProfile.bookingCode">{{ selectedRoomProfile.bookingCode }}</b>
               <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
             </div>
           </header>
 
-          <dl class="room-profile-facts">
-            <div><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
-            <div><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
-            <div><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
-            <div><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
+          <dl class="room-profile-facts" *ngIf="selectedRoomProfile.size || selectedRoomProfile.bed || selectedRoomProfile.service">
+            <div *ngIf="selectedRoomProfile.size"><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
+            <div *ngIf="selectedRoomProfile.view"><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
+            <div *ngIf="selectedRoomProfile.bed"><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
+            <div *ngIf="selectedRoomProfile.service"><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
           </dl>
 
           <div class="room-profile-suitable">
@@ -647,7 +657,7 @@
             <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
           </div>
 
-          <ul class="room-profile-highlights">
+          <ul class="room-profile-highlights" *ngIf="selectedRoomProfile.highlights?.length">
             <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
           </ul>
 
@@ -655,7 +665,7 @@
         </div>
       </article>
 
-      <details class="cia-collapsible-section room-table-disclosure">
+      <details class="cia-collapsible-section room-table-disclosure" *ngIf="hasRoomFacts">
         <summary>
           <span class="collapsible-summary-icon"><mat-icon>table_chart</mat-icon></span>
           <span>
@@ -696,10 +706,12 @@
         {{ copy.gallery.roomDisclaimer }}
       </p>
       </section>
+      </ng-container>
     </section>
 
     <section
       class="cia-section official-student-reviews"
+      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length)"
       id="student-reviews"
       aria-labelledby="student-reviews-title"
     >
@@ -717,7 +729,7 @@
         </span>
       </div>
 
-      <div class="ielts-results" aria-labelledby="ielts-results-title">
+      <div class="ielts-results" *ngIf="ieltsResults.length" aria-labelledby="ielts-results-title">
         <div class="ielts-results-heading">
           <h3 id="ielts-results-title"><mat-icon>workspace_premium</mat-icon>{{ copy.reviews.scoresTitle }}</h3>
           <p>{{ copy.reviews.scoresIntro }}</p>
@@ -743,8 +755,9 @@
         <small class="ielts-results-note">{{ copy.reviews.scoresNote }}</small>
       </div>
 
+      <ng-container *ngIf="officialStudentReviews.length">
       <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ officialStudentReviews.length }}个</p>
-      <div class="official-review-grid" aria-label="CIA学生反馈中文整理">
+      <div class="official-review-grid" [attr.aria-label]="schoolName + '学生反馈中文整理'">
         <article *ngFor="let review of officialStudentReviews">
           <figure>
             <img [src]="review.image" [alt]="review.imageAlt" loading="lazy" />
@@ -755,7 +768,7 @@
             <h3>{{ review.title }}</h3>
             <blockquote>{{ review.excerpt }}</blockquote>
             <a
-              [routerLink]="['/philippines-study/cebu/cia-cebu-international-academy/student-reviews', review.slug]"
+              [routerLink]="[reviewPath, review.slug]"
               [attr.aria-label]="'查看学生反馈全文：' + review.title"
             >
               {{ copy.reviews.linkLabel }}
@@ -764,12 +777,13 @@
           </div>
         </article>
       </div>
+      </ng-container>
 
     </section>
 
     <section class="quote-results-section group-quote" id="quote">
       <div class="quote-form-card">
-        <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteView === 'compare' ? 'CIA 方案对比' : quoteHeading }}</h2>
+        <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteView === 'compare' ? schoolName + ' 方案对比' : quoteHeading }}</h2>
         <div class="quote-mode" role="group" aria-label="报价方式">
           <button type="button" [class.active]="quoteView === 'single'" [attr.aria-pressed]="quoteView === 'single'" (click)="setQuoteView('single')">{{ copy.quote.modes.single }}</button>
           <button type="button" [class.active]="quoteView === 'compare'" [attr.aria-pressed]="quoteView === 'compare'" (click)="setQuoteView('compare')">{{ copy.quote.modes.compare }}</button>
@@ -789,7 +803,7 @@
         <aside class="peak-season-quote-note" *ngIf="peakSeasonCalendarRanges.length" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">
           <span class="peak-season-quote-icon"><mat-icon>date_range</mat-icon></span>
           <div>
-            <strong>2027旺季附加费：{{ seasonalFeePerWeek }}美元／周／人</strong>
+            <strong>2027旺季附加费：{{ peakRate2027 }}美元／周／人</strong>
             <p>{{ peakSeason2027RangeText }}</p>
             <small>{{ peakSeasonStatusText }} 同一学生课程与住宿重叠周只计一次，且不参与折扣。</small>
           </div>
@@ -805,7 +819,7 @@
         <div class="group-result">
           <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
           <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
-          <small *ngIf="iauRegistrationFeeNote">{{ iauRegistrationFeeNote }}</small>
+          <small *ngIf="extraPaymentNote">{{ extraPaymentNote }}</small>
         </div>
         <div class="group-actions">
           <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>
@@ -851,12 +865,12 @@
               <mat-icon>expand_more</mat-icon>
             </summary>
             <div class="student-fields">
-              <label>报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+              <label *ngIf="student.selectedRegistrationDate !== undefined">报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
               <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
             </div>
             <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
-            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">按所选课程收费；未成年入学及监护要求须顾问确认。</p>
+            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">{{ student.minorNote }}</p>
           </details>
         </ng-template>
       </div>
@@ -964,7 +978,7 @@
       </aside>
     </section>
 
-    <details class="cia-section cia-collapsible-section secondary-info-disclosure">
+    <details class="cia-section cia-collapsible-section secondary-info-disclosure" *ngIf="copy.planning">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>calendar_month</mat-icon></span>
         <span>
@@ -978,7 +992,7 @@
       </div>
     </details>
 
-    <details class="refund-policy-section cia-collapsible-section" id="refund-policy" aria-labelledby="refund-policy-title">
+    <details class="refund-policy-section cia-collapsible-section" id="refund-policy" *ngIf="copy.refund" aria-labelledby="refund-policy-title">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>policy</mat-icon></span>
         <span>
@@ -1010,7 +1024,7 @@
       </div>
     </details>
 
-    <details class="cia-section cia-collapsible-section care-disclosure" id="student-care-services">
+    <details class="cia-section cia-collapsible-section care-disclosure" id="student-care-services" *ngIf="copy.studentCare && studentCareServices.length">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>support_agent</mat-icon></span>
         <span>
@@ -1029,7 +1043,7 @@
               {{ copy.studentCare.intro }}
             </p>
           </div>
-          <div class="student-care-summary" aria-label="CIA学生关怀服务概览">
+          <div class="student-care-summary" [attr.aria-label]="schoolName + '学生关怀服务概览'">
             <span>{{ copy.studentCare.count }}</span>
             <div>
               <strong>{{ copy.studentCare.summaryTitle }}</strong>
@@ -1077,7 +1091,7 @@
       </div>
     </details>
 
-    <details class="cia-section cia-collapsible-section" id="campus-practical-guide">
+    <details class="cia-section cia-collapsible-section" id="campus-practical-guide" *ngIf="copy.practicalGuide && campusPracticalGuides.length">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>info</mat-icon></span>
         <span>
@@ -1106,7 +1120,7 @@
       </div>
     </details>
 
-    <details class="cia-section cia-collapsible-section track-disclosure" id="student-tracks">
+    <details class="cia-section cia-collapsible-section track-disclosure" id="student-tracks" *ngIf="copy.studentTracks && studentTracks.length">
       <summary>
         <span class="collapsible-summary-icon"><mat-icon>groups</mat-icon></span>
         <span>
@@ -1208,17 +1222,17 @@
     </section>
 
       <ng-template #calendarPlanningSections>
-      <section class="school-calendar-section" id="school-calendar" aria-labelledby="school-calendar-title">
+      <section class="school-calendar-section" id="school-calendar" *ngIf="copy.calendar" aria-labelledby="school-calendar-title">
         <div class="calendar-section-heading">
           <div>
             <span class="section-eyebrow">{{ copy.calendar.eyebrow }}</span>
             <h3 id="school-calendar-title">{{ copy.calendar.title }}</h3>
             <p>{{ copy.calendar.intro }}</p>
           </div>
-          <span class="calendar-priority"><mat-icon>event_available</mat-icon>{{ copy.calendar.badge }}</span>
+          <span class="calendar-priority" *ngIf="copy.calendar.badge"><mat-icon>event_available</mat-icon>{{ copy.calendar.badge }}</span>
         </div>
 
-        <aside class="peak-season-calendar" aria-labelledby="peak-season-calendar-title">
+        <aside class="peak-season-calendar" *ngIf="peakSeasonCalendarRanges.length" aria-labelledby="peak-season-calendar-title">
           <div class="peak-season-calendar-intro">
             <span class="peak-season-calendar-icon"><mat-icon>wb_sunny</mat-icon></span>
             <div>
@@ -1226,7 +1240,7 @@
               <h4 id="peak-season-calendar-title">{{ copy.calendar.peakTitle }}</h4>
               <p>{{ copy.calendar.peakIntro }}</p>
             </div>
-            <strong class="peak-season-rate"><b>{{ seasonalFeePerWeek }}</b> 美元<small>每周／每人</small></strong>
+            <strong class="peak-season-rate"><b>{{ peakRate2027 }}</b> 美元<small>每周／每人</small></strong>
           </div>
           <div class="peak-season-period-grid">
             <article *ngFor="let range of peakSeasonCalendarRanges">
@@ -1238,7 +1252,7 @@
           <p class="peak-season-calendar-note"><mat-icon>calculate</mat-icon>{{ copy.calendar.peakNote }}</p>
         </aside>
 
-        <div class="holiday-calendar-list">
+        <div class="holiday-calendar-list" *ngIf="holidayCalendars.length">
           <details
             *ngFor="let calendar of holidayCalendars"
             [open]="calendar.year === 2027"
@@ -1267,13 +1281,13 @@
           </details>
         </div>
 
-        <p class="calendar-footnote">
+        <p class="calendar-footnote" *ngIf="copy.calendar.footnote">
           <mat-icon>info</mat-icon>
           {{ copy.calendar.footnote }}
         </p>
       </section>
 
-      <section class="ielts-exam-section" id="ielts-exam-dates" aria-labelledby="ielts-exam-title">
+      <section class="ielts-exam-section" id="ielts-exam-dates" *ngIf="copy.ielts" aria-labelledby="ielts-exam-title">
         <div class="calendar-section-heading">
           <div>
             <span class="section-eyebrow">{{ copy.ielts.eyebrow }}</span>
@@ -1283,7 +1297,7 @@
           <span class="calendar-priority"><mat-icon>event_available</mat-icon>{{ copy.ielts.badge }}</span>
         </div>
 
-        <div class="ielts-computer-calendar" aria-label="2027年CIA雅思机考月历">
+        <div class="ielts-computer-calendar" [attr.aria-label]="'2027年' + schoolName + '雅思机考月历'">
           <article *ngFor="let exam of ieltsComputerExamDates2027" class="ielts-computer-month">
             <h4>{{ exam.month }}月</h4>
             <div class="ielts-computer-days">
@@ -1369,7 +1383,7 @@
         <span class="wechat-note"><mat-icon>verified</mat-icon>{{ copy.videos.badge }}</span>
       </div>
       <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ displayedVideoCards.length }}个</p>
-      <div class="video-grid">
+      <div class="video-grid" *ngIf="displayedVideoCards.length">
         <article *ngFor="let item of displayedVideoCards">
           <div class="video-media">
             <span class="video-official-label"><mat-icon>smart_display</mat-icon>{{ item.label || item.code + ' COURSE' }}</span>
@@ -1400,8 +1414,8 @@
           </div>
         </article>
       </div>
-      <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: campusLifeVideos, title: copy.videos.lifeTitle, tall: true }"></ng-container>
-      <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: interviewVideos, title: copy.videos.interviewTitle, uniform: true }"></ng-container>
+      <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: campusLifeVideos, title: copy.videos.lifeTitle ?? '', tall: true }"></ng-container>
+      <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: interviewVideos, title: copy.videos.interviewTitle ?? '', uniform: true }"></ng-container>
     </section>
     </ng-template>
 
@@ -1426,7 +1440,7 @@
       </div>
     </ng-template>
 
-    <div class="mobile-bottom-actions" aria-label="CIA 手机端固定操作">
+    <div class="mobile-bottom-actions" [attr.aria-label]="schoolName + ' 手机端固定操作'">
       <a href="#quote" (click)="scrollToSection('quote', $event)">
         <mat-icon>calculate</mat-icon>
         计算费用

@@ -10,6 +10,8 @@ export interface EvCoursePrice {
   name: string;
   tuition: number;
   suitable: string;
+  /** Daily classes shown under the selected course; falls back to `suitable`. */
+  schedule?: string;
   /** Whole-course tuition for exact short guarantee lengths, keyed by total weeks. */
   feeByWeeks?: Record<string, number>;
   minimumWeeks?: number;
@@ -57,7 +59,7 @@ export class EvStudentCalculator {
         ? this.courses().map(course => ({
             id: course.id,
             name: course.name,
-            details: course.suitable,
+            details: course.schedule ?? course.suitable,
             group: isSparta(course.id) ? '斯巴达课程' : '半斯巴达课程',
           }))
         : this.rooms().map(room => ({ id: room.id, name: room.name, details: room.note })),

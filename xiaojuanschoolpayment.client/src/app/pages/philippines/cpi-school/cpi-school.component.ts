@@ -35,7 +35,7 @@ interface FaqItem {
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './cpi-school.component.html',
-  styleUrl: '../cia-school/cia-school.component.css',
+  styleUrl: '../school-page/ph-school-page.component.css',
 })
 export class CpiSchoolComponent {
   readonly quickFacts: QuickFact[] = [

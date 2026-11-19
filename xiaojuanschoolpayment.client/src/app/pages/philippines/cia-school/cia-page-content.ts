@@ -1700,7 +1700,7 @@ export const CIA_PAGE_COPY = {
     guideIntro: '下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。',
     levelTableCaption: '入学分级对照（CIA校内测试）',
     ruleNoteTitle: '学校规则参考说明',
-    ruleNoteText: '课程时间、开班人数、出勤、押金、扣费、外出与活动安排依据现有学校资料整理，仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。',
+    ruleNoteText: '课程时间、开班人数、出勤、押金、扣费、外出与活动安排仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。',
   },
   schedule: {
     eyebrow: 'DAILY TIMETABLE',
@@ -1725,9 +1725,9 @@ export const CIA_PAGE_COPY = {
     peakEyebrow: '2027 PEAK SEASON',
     peakTitle: '2027年寒暑假高峰期',
     peakIntro: '课程或住宿计划覆盖以下完整学习周时，每名学生按实际重叠周数计收旺季附加费。',
-    peakNote: '入学按周日、离校按周六；课程与住宿在同一周重叠只计一次，旺季附加费不参与思达折扣。',
+    peakNote: '入学按周日、离校按周六；课程与住宿在同一周重叠只计一次，旺季附加费不参与思达启航折扣。',
     provisionalLabel: '日期待官方确认',
-    footnote: '页面根据CIA已发布的年度资料整理；除开斋节、宰牲节等日期需按宗教历法确认外，菲律宾政府也可能临时宣布全国或地方特别假期，请勿将本表视为最终停课日历。',
+    footnote: '除开斋节、宰牲节等日期需按宗教历法确认外，菲律宾政府也可能临时宣布全国或地方特别假期，请勿将本表视为最终停课日历。',
   },
   ielts: {
     eyebrow: '2027 IELTS ON COMPUTER',
@@ -1843,7 +1843,7 @@ export const CIA_PAGE_COPY = {
   practicalGuide: {
     summaryTitle: '到校后办事与生活指南',
     summaryHint: '行政与外出申请、电话卡、用餐与洗衣',
-    intro: '先了解去哪里办事，再查看日常生活安排。以下根据CIA学生服务资料整理，办公窗口、服务时间及规则以到校后的最新通知为准。',
+    intro: '先了解去哪里办事，再查看日常生活安排。办公窗口、服务时间及规则以到校后的最新通知为准。',
   },
   studentTracks: {
     title: '成人主校区与亲子 / 青少年营怎么区分？',

@@ -38,7 +38,7 @@ export const SIDA_PHILIPPINES_CONSULTANTS: SidaConsultant[] = [
   {
     title: '菲律宾与东南亚游学',
     name: 'Penin',
-    description: '适合 CIA 菲律宾游学、马来西亚、新加坡、越南短期英语课程。',
+    description: '适合菲律宾游学，以及马来西亚、新加坡、越南短期英语课程。',
     phone: '153 6765 9331',
     phoneHref: 'tel:15367659331',
     avatarSrc: '/assets/contact/penin-avatar.jpg',

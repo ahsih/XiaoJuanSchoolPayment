@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.spec.json",
   "include": [
-    "src/app/pages/philippines/ev-school/ev-school-detail.component.spec.ts",
+    "src/app/pages/philippines/ev-school/ev-school-page.spec.ts",
     "src/**/*.d.ts"
   ]
 }

@@ -195,6 +195,16 @@ export class CiaStudentQuote {
     return this.returningStudent || waivedByPromotion ? 0 : this.prices.registrationFee;
   }
 
+  /** Name of the promotion that waives registration, for the shared quote's registration note. */
+  get registrationWaiverName(): string | undefined {
+    return this.promotionResults.find((result) => result.rule.waiveRegistration)?.rule.name;
+  }
+
+  /** Names of the discounts that apply, for the plan comparison. */
+  get discountNames(): string {
+    return this.promotionResults.filter((result) => result.amount > 0).map((result) => result.rule.name).join('、');
+  }
+
   get sidaDiscount() {
     return this.promotionResults.find((result) => result.rule.id === 'sida-discount')?.amount ?? 0;
   }
@@ -230,6 +240,14 @@ export class CiaStudentQuote {
     return this.quotePlan.courses.some((row) => row.optionId === 'college-immersion')
       ? 'IAU一次性注册费50美元另计（未计入上述合计）。'
       : '';
+  }
+
+  /** Shown under the quote conditions for students under 18. */
+  readonly minorNote = '按所选课程收费；未成年入学及监护要求须顾问确认。';
+
+  /** Paid outside the school total; the shared quote shows it beside the total. */
+  get extraPaymentNote() {
+    return this.iauNote;
   }
 
   get quoteUsd() {

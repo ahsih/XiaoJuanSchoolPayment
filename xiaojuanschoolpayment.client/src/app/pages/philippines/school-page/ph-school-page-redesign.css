@@ -1265,3 +1265,174 @@
     flex-basis: min(72vw, 320px);
   }
 }
+
+/* Study modes (EV: 斯巴达 / 半斯巴达). Shown only for schools whose profile lists study modes. */
+:host .study-mode-block {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #e1ebe6;
+  border-radius: 14px;
+  background: #f8fbf9;
+}
+
+:host .study-mode-heading h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  color: #043f2d;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+:host .study-mode-heading h3 mat-icon { color: #f25518; }
+
+:host .study-mode-heading p {
+  margin: 4px 0 14px;
+  color: #5f6f69;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+:host .study-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+:host .study-mode-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e1ebe6;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+:host .study-mode-card--strict { border-color: #f6c3a6; }
+
+:host .study-mode-card header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+:host .study-mode-code {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e8f3ee;
+  color: #0b5a40;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+:host .study-mode-card--strict .study-mode-code {
+  background: #fff1e8;
+  color: #c2410c;
+}
+
+:host .study-mode-card header strong {
+  color: #043f2d;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+:host .study-mode-card header p,
+:host .study-mode-card h4 {
+  margin: 2px 0 0;
+  color: #5f6f69;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+:host .study-mode-card h4 { margin-top: 12px; color: #043f2d; }
+
+:host .study-mode-times {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+:host .study-mode-times li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: #4b5c56;
+}
+
+:host .study-mode-times mat-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #7a8a84;
+}
+
+:host .study-mode-times li.is-required mat-icon { color: #f25518; }
+
+:host .study-mode-times span {
+  display: grid;
+  gap: 1px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+:host .study-mode-times b { color: #043f2d; font-size: 14px; }
+:host .study-mode-times em { font-style: normal; color: #7a8a84; }
+
+:host .study-mode-curfew {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px dashed #dbe5e0;
+}
+
+:host .study-mode-curfew div {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+}
+
+:host .study-mode-curfew dt { color: #7a8a84; }
+:host .study-mode-curfew dd { margin: 0; color: #043f2d; font-weight: 800; }
+
+:host .study-mode-note {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 12px 0 0;
+  color: #5f6f69;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+:host .study-mode-note mat-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #7a8a84;
+}
+
+@media (max-width: 760px) {
+  :host .study-mode-block { padding: 14px; }
+  :host .study-mode-grid { grid-template-columns: 1fr; }
+}
+
+/* Room price table: group widths follow each school's room counts (the global rule fits CIA's 3/3/4). */
+@media (min-width: 1041px) {
+  :host .room-price-matrix {
+    grid-template-columns: var(--room-matrix-columns, 3fr 3fr 4fr);
+  }
+}
+
+/* Long school names should not leave a single character on the hero title's last line. */
+:host .cia-hero h1 {
+  text-wrap: balance;
+}

@@ -78,7 +78,7 @@ const quoteImageSettings = (): CiaQuoteImageSettings => ({
   alumniBenefitText: '老学员返校可按学校当前规则免收注册费；其他课程或留学优惠由顾问另行确认。',
   noteSectionTitle: '报价说明',
   footerNotes: [
-    '1、学费部分需在到校前2周交齐，可交由思达游学代收，或自行直接向学校转付美元；本报价单所列学校费用即为最终价格，人民币支付时按照支付宝最新参考汇率将美元换算为人民币结算。',
+    '1、学费部分需在到校前2周交齐，可交由思达启航代收，或自行直接向学校转付美元；本报价单所列学校费用即为最终价格，人民币支付时按照支付宝最新参考汇率将美元换算为人民币结算。',
     '最终以学校价格、空房及优惠确认为准。',
   ],
 });
@@ -158,7 +158,7 @@ export const createDefaultEvContentConfig = (): CiaContentConfig => {
         { id: 'ev-peak-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
       ],
       promotions: [
-        { id: 'ev-sida-95', name: '思达折扣', description: '课程费和住宿费享95折；旺季附加费不参与折扣', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+        { id: 'ev-sida-95', name: '思达启航折扣', description: '课程费和住宿费享95折；旺季附加费不参与折扣', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
         { id: 'ev-returning-registration', name: '老学员注册费减免', description: '老学员返校免收一次性注册费', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       ],
       localFeeIntro: '以下费用以比索计价，入学第一天在学校前台缴纳；本报价仅供学生参考，具体以到校后实际产生及学校收取为准；接机与可退押金另列。',
@@ -228,6 +228,8 @@ export const cloneEvContentConfig = (value: CiaContentConfig): CiaContentConfig 
   const sidaRule = clone.quoteSettings.promotions.find(rule => rule.id === 'ev-sida-95');
   if (sidaRule) {
     sidaRule.appliesTo = 'tuition-and-accommodation';
+    // The brand is always written in full (user rule 2026-11-20).
+    if (sidaRule.name === '思达折扣') sidaRule.name = '思达启航折扣';
     if (sidaRule.description === '课程费、住宿费和旺季附加费享95折') {
       sidaRule.description = '课程费和住宿费享95折；旺季附加费不参与折扣';
     }
@@ -246,5 +248,6 @@ export const cloneEvContentConfig = (value: CiaContentConfig): CiaContentConfig 
       ...(savedSettings?.localFeeNotes ?? {}),
     },
   };
+  clone.quoteImageSettings.footerNotes = clone.quoteImageSettings.footerNotes.map(note => note.replace(/思达游学/g, '思达启航'));
   return clone;
 };

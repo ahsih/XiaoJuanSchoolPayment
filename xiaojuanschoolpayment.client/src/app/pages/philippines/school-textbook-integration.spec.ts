@@ -5,7 +5,7 @@ import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.com
 import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
 import { CpiSchoolDetailComponent } from './cpi-school/cpi-school-detail.component';
 import { CpilsSchoolDetailComponent } from './cpils-school/cpils-school-detail.component';
-import { EvSchoolDetailComponent } from './ev-school/ev-school-detail.component';
+import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
 import { PinesSchoolDetailComponent } from './pines-school/pines-school-detail.component';
 import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
 import { MonolSpartaSchoolDetailComponent } from './monol-sparta-school/monol-sparta-school-detail.component';
@@ -60,7 +60,7 @@ const schools = [
   { name: "SMEAG", create: () => new SmeagCapitalSchoolComponent() },
   { name: "CPI", create: () => new CpiSchoolDetailComponent() },
   { name: "CPILS", create: () => new CpilsSchoolDetailComponent() },
-  { name: "EV", create: () => new EvSchoolDetailComponent() },
+  { name: "EV", create: () => new EvSchoolPageComponent() },
   { name: "PINES", create: () => new PinesSchoolDetailComponent() },
   { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
   { name: "MONOL Sparta", create: () => new MonolSpartaSchoolDetailComponent() },

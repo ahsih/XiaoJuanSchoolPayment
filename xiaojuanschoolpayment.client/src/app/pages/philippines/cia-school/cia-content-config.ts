@@ -378,7 +378,7 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
     localFeePolicyVersion: CIA_LOCAL_FEE_POLICY_VERSION,
     promotions: [
       {
-        id: 'sida-discount', name: '思达折扣', description: '课程费和住宿费享95折', enabled: true, sortOrder: 0,
+        id: 'sida-discount', name: '思达启航折扣', description: '课程费和住宿费享95折', enabled: true, sortOrder: 0,
         priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5,
         appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0,
         minimumAccommodationWeeks: 0, coverageTarget: 'none',
@@ -481,6 +481,12 @@ export const cloneCiaContentConfig = (value: CiaContentConfig): CiaContentConfig
     const electricity = clone.localFees?.find(fee => fee.id === 'electricity');
     if (electricity && !electricity.futureEffectiveStart) Object.assign(electricity, CIA_ELECTRICITY_2027);
     clone.quoteSettings.localFeePolicyVersion = CIA_LOCAL_FEE_POLICY_VERSION;
+  }
+  // The brand is always written in full (思达启航); saved revisions may still carry the short name.
+  if (clone.schoolCode === 'CIA') {
+    for (const rule of clone.quoteSettings.promotions ?? []) {
+      if (rule.name === '思达折扣') rule.name = '思达启航折扣';
+    }
   }
   // Older saved revisions predate image-only copy; merge defaults without changing their prices or rules.
   const defaults = createDefaultCiaContentConfig().quoteImageSettings;

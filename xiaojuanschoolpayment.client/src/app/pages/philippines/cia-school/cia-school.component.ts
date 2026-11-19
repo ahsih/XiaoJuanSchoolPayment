@@ -1,145 +1,50 @@
-import { connectQuoteRates, quoteCurrencyText } from '../../../../services/quote-exchange-rates';
-import { CommonModule } from '@angular/common';
-import { CiaQuote, applyCiaQuoteContent } from './cia-quote-engine';
-import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
-import {
-  Component,
-  AfterViewInit,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { catchError, EMPTY, forkJoin, of, switchMap } from 'rxjs';
-import { ExpandableImageComponent } from '../../../components/expandable-image.component';
-import {
-  QuoteImageDownloadButtonComponent,
-} from '../../../components/quote-image-download-button.component';
+// The CIA page: the shared Philippine school page filled with CIA's profile and quote.
+// CIA-only members below (legacy lists, 2026/2027 price helpers, discount totals) stay for the
+// specs and the database price merge; the page template does not read them.
+import { Component } from '@angular/core';
 import { SchoolFeeDTO } from '../../../../interfaces/school-fees.dto';
 import { SchoolLessonDTO } from '../../../../interfaces/school-lessons.dto';
-import { SchoolPhotoDTO } from '../../../../interfaces/school-photo.dto';
 import { SchoolRoomDTO } from '../../../../interfaces/school-rooms.dto';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
-import { SchoolService } from '../../../../services/school.service';
-import { SchoolContentService } from '../../../../services/school-content.service';
-import { CIA_STUDENT_REVIEWS } from './cia-student-reviews.data';
-import {
-  CiaContentConfig,
-  CiaLocalFeeRule,
-  CiaPeakSeasonRange,
-  CiaPromotionRule,
-  CiaQuoteImageSettings,
-  CiaStayPolicyCard,
-  CiaExtraNightRate,
-  cloneCiaContentConfig,
-  createDefaultCiaContentConfig,
-} from './cia-content-config';
-import { CiaPreviewTarget, isCiaPreviewTarget, resolveCiaPreviewTarget, revealCiaPreviewElement, scrollCiaPreviewElement } from './cia-content-preview';
-import { CiaCompareFocus, CiaPlanComparison } from './cia-plan-compare';
-import type { CiaStudentQuote } from './cia-student-quote';
-import { PlanCompareTableComponent } from '../../../components/plan-compare/plan-compare-table.component';
-import type { PlanCompareSheet } from '../../../components/plan-compare/plan-compare-sheet';
-import type { QuoteImageCardData } from '../../../components/quote-image-types';
-
-import {
-  CIA_GALLERY_CATEGORIES,
-  CIA_GALLERY_ALBUM_CATEGORIES,
-  CIA_GALLERY_IMAGES,
-  CIA_BASIC_INFO,
-  CIA_SUITABLE_FOR,
-  CIA_NOT_SUITABLE_FOR,
-  CIA_CAMPUS_BUILDINGS,
-  CIA_WEEKDAY_SCHEDULE,
-  CIA_FRIDAY_SCHEDULE,
-  CIA_HOLIDAY_CALENDARS,
-  CIA_IELTS_COMPUTER_EXAM_DATES_2027,
-  CIA_IELTS_EXAM_DATES_2026,
-  CIA_COURSE_DETAIL_GUIDES,
-  ciaShows2026Prices,
-  currentCiaFaqs,
-  CIA_MOBILE_ANCHORS,
-  CIA_SNAPSHOT_CARDS,
-  CIA_VIDEO_CARDS,
-  CIA_CAMPUS_LIFE_VIDEOS,
-  CIA_DORM_RULES,
-  CIA_IELTS_RESULTS,
-  CIA_INTERVIEW_VIDEOS,
-  CIA_COURSE_GROUPS,
-  CIA_STUDENT_CARE_SERVICES,
-  CIA_CAMPUS_PRACTICAL_GUIDES,
-  CIA_ROOM_COMPARISON_PROFILES,
-  CIA_STUDENT_TRACKS,
-  CIA_SIDA_REASONS,
-  CIA_SIDA_TRUST_BADGES,
-  CIA_CTA_BADGES,
-  CIA_CTA_CONSULTANTS,
-  CIA_GALLERY_ALBUM_DESCRIPTIONS,
-  CIA_HERO_GALLERY_CATEGORIES,
-  CIA_PAGE_COPY,
-  type GalleryCategory,
-  type QuickInfo,
-  type GalleryImage,
-  type CiaVideoCard,
-  type Highlight,
-  type CourseItem,
-  type CourseFee,
-  type ScheduleItem,
-  type RoomFee,
-  type RoomRateOption,
-  type RoomRateGroup,
-  type RoomComparisonProfile,
-  type CampusMonthlyEvent,
-  type LocalFee,
-  type LocalFeeEstimate,
-  type ProcessStep,
-  type SideNavItem,
+import { SchoolDTO } from '../../../../interfaces/school.dto';
+import { PH_SCHOOL_PAGE_IMPORTS, PhSchoolPageComponent } from '../school-page/ph-school-page.component';
+import type { PhSchoolProfile } from '../school-page/ph-school-profile';
+import type { CiaContentConfig } from './cia-content-config';
+import type {
+  CampusMonthlyEvent,
+  CourseFee,
+  CourseItem,
+  Highlight,
+  LocalFee,
+  ProcessStep,
+  QuickInfo,
+  ScheduleItem,
+  SideNavItem,
 } from './cia-page-content';
-
-interface CourseGroupView {
-  icon: string;
-  title: string;
-  text: string;
-  courses: CourseFee[];
-}
+import { CIA_COURSE_FEE_DETAILS, CIA_PAGE_PROFILE } from './cia-page-profile';
+import { CiaPlanComparison } from './cia-plan-compare';
+import { CiaQuote } from './cia-quote-engine';
+import type { CiaStudentQuote } from './cia-student-quote';
 
 @Component({
   selector: 'app-cia-school',
   standalone: true,
-  imports: [SchoolQuotePlanComponent,
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MatIconModule,
-    ExpandableImageComponent,
-    QuoteImageDownloadButtonComponent,
-    PlanCompareTableComponent,
+  imports: PH_SCHOOL_PAGE_IMPORTS,
+  templateUrl: '../school-page/ph-school-page.component.html',
+  styleUrls: [
+    '../school-page/ph-school-page.component.css',
+    '../school-quote-rollout.css',
+    '../../../components/school-group-quote.css',
+    '../school-page/ph-school-page-redesign.css',
   ],
-  templateUrl: './cia-school.component.html',
-  styleUrls: ['./cia-school.component.css', '../school-quote-rollout.css', '../../../components/school-group-quote.css', './cia-school-redesign.css'],
 })
-export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
-  private readonly previewHost: ElementRef<HTMLElement> = inject(ElementRef);
-  private previewTarget?: CiaPreviewTarget;
-  private previewHighlightTarget?: CiaPreviewTarget;
-  private previewFocusTimer?: ReturnType<typeof setTimeout>;
-  private previewContent?: CiaContentConfig;
-  quoteImageSettings: CiaQuoteImageSettings = createDefaultCiaContentConfig().quoteImageSettings;
-
-  get isEditorPreview(): boolean {
-    return typeof window !== 'undefined' && window.parent !== window
-      && this.route.snapshot.queryParamMap.get('contentPreview') === '1';
+export class CiaSchoolComponent extends PhSchoolPageComponent<CiaStudentQuote> {
+  protected override getProfile(): PhSchoolProfile { return CIA_PAGE_PROFILE; }
+  protected override createQuote(): CiaQuote { return new CiaQuote(this); }
+  protected override createComparison(): CiaPlanComparison {
+    return new CiaPlanComparison(this, () => this.students[0]);
   }
-  private readonly schoolService = inject(SchoolService);
-  private readonly schoolContentService = inject(SchoolContentService);
-  private readonly exchangeRateService = inject(ExchangeRateService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly ciaPricingSchoolName = 'CIA Cebu International Academy';
-  private readonly defaultContentConfig = createDefaultCiaContentConfig();
+  private get ciaQuote(): CiaQuote { return this.quote as CiaQuote; }
+
   private readonly courseFeeOrder = [
     'regular-esl',
     'intensive-esl',
@@ -167,204 +72,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     'sr3',
     'sr4',
   ];
-  /** Page text shared with the WeChat mini program; see cia-page-content.ts. */
-  readonly copy = CIA_PAGE_COPY;
-  private readonly featuredGalleryCategories = CIA_HERO_GALLERY_CATEGORIES;
-  private readonly uploadedPhotoCategoryIndexes: Record<string, number> = {
-    campus: 1,
-    classroom: 2,
-    accommodation: 3,
-    dining: 4,
-    facility: 5,
-  };
-  private readonly courseFeeDetails: Record<
-    string,
-    Pick<CourseFee, 'schedule' | 'note' | 'suitable' | 'highlightNote'>
-  > = {
-    'regular-esl': {
-      suitable: '基础综合提升 / 可申请 Light ESL',
-      schedule:
-        '一对一4节 + 小组1节 + 中组1节 + 大组1节 + 选修1节 + 写作1节 + 自习1节',
-      note: 'Regular ESL 均衡提升听说读写；Light ESL 需在出发前申请，可按学校规则减少部分课程。',
-    },
-    'intensive-esl': {
-      suitable: '想增加一对一课时',
-      schedule:
-        '一对一5节 + 小组1节 + 中组1节 + 选修1节 + 写作1节 + 自习1节',
-      note: '比 Regular ESL 多1节一对一，适合短期加强口语输出和老师纠音。',
-    },
-    'power-intensive': {
-      suitable: '短期高强度口语突破',
-      schedule:
-        '一对一6节 + 小组1节 + 选修1节 + 写作1节 + 自习1节',
-      note: '一对一比例最高，适合时间有限、希望集中补弱项的学生。',
-    },
-    'pre-toeic': {
-      suitable: '托业预备 / 无入学分数要求',
-      schedule:
-        '托业一对一4节 + ESL小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
-      note: '4周为一个学习单元，每2周安排一次模拟考试，适合先建立托业基础。',
-    },
-    'toeic-regular': {
-      suitable: '托业常规备考',
-      schedule:
-        '托业一对一4节 + 托业小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
-      note: '4周为一个学习单元，每2周安排一次模拟考试。',
-    },
-    'toeic-guarantee': {
-      suitable: '托业600 / 700 / 800 / 900分保证班',
-      schedule:
-        '托业一对一4节 + 托业小组1节 + TOEIC Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
-      note: '12周课程；入学参考分数为400 / 500 / 650 / 790分，并有出勤、每周模考和官方考试要求。',
-    },
-    'pre-ielts': {
-      suitable: '雅思预备 / 无入学分数要求',
-      schedule:
-        '雅思一对一4节 + ESL小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
-      note: '4周为一个学习单元，每2周安排一次模拟考试，适合先补齐雅思基础。',
-    },
-    'ielts-regular': {
-      suitable: '雅思常规备考',
-      schedule:
-        '雅思一对一4节 + 雅思小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节',
-      note: '建议雅思3.5分以上，4周为一个学习单元，每2周安排一次模拟考试。',
-    },
-    'ielts-guarantee': {
-      suitable: '雅思5.5 / 6.0 / 6.5 / 7.0分保证班',
-      schedule:
-        '雅思一对一4节 + 雅思小组1节 + IELTS Clinic中组2节 + 选修1节 + 写作1节 + 自习2节；周一至周三另有强化晚课',
-      note: '12周课程；入学参考分数为3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分，并有出勤、每周四模考和官方考试要求。',
-    },
-    business: {
-      suitable: '商务沟通、演示与职场写作',
-      schedule:
-        '商务一对一5节 + 商务小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '入学参考为 CIA Level 4 或 TOEIC 400分；4或8周为一个单元，4周以上学生需完成商务PPT发表。',
-    },
-    'working-holiday': {
-      suitable: '海外生活与面试沟通',
-      schedule:
-        'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '4周为一个学习单元，内容覆盖生存英语、求职准备和海外生活沟通。',
-    },
-    'callan-esl': {
-      suitable: '高频问答与快速口语反应',
-      schedule:
-        'Callan一对一3节 + ESL一对一2节 + ESL小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '4周为一个学习单元，通过快速问答、即时纠错和系统复习训练英语反应速度。',
-    },
-    'college-immersion': {
-      suitable: '想参加IAU航空大学体验，报名时应选择此课程',
-      schedule:
-        'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
-      note: '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费50美元，详细旁听与证书说明见下方课程细节。',
-    },
-  };
-
-  readonly galleryCategories = CIA_GALLERY_CATEGORIES;
-  readonly galleryAlbumCategories = CIA_GALLERY_ALBUM_CATEGORIES;
-  selectedGalleryCategory: GalleryCategory = '全部';
-  selectedGalleryImageIndex = 0;
-  selectedHeroImageIndex = 0;
-  usingUploadedGallery = false;
-  uploadedVideoCards: CiaVideoCard[] = [];
-
-  registrationFee = this.defaultContentConfig.quoteSettings.registrationFee;
-  futurePriceRegistrationStart = this.defaultContentConfig.quoteSettings.futurePriceRegistrationStart;
-  futurePriceArrivalStart = this.defaultContentConfig.quoteSettings.futurePriceArrivalStart;
-  shortTermPriceRatios: Record<string, number> = {
-    ...this.defaultContentConfig.quoteSettings.shortStayRatios,
-  };
-  seasonalFeePerWeek = this.defaultContentConfig.quoteSettings.peakSeasonFeePerWeek;
-  peakSeasonRanges = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.peakSeasonRanges;
-  promotions: CiaPromotionRule[] = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.promotions;
-  localFeeRules: CiaLocalFeeRule[] = cloneCiaContentConfig(this.defaultContentConfig).localFees;
-  localFeeIntro = this.defaultContentConfig.quoteSettings.localFeeIntro;
-  courseTableTitle = this.defaultContentConfig.quoteSettings.courseTableTitle;
-  courseTableNote = this.defaultContentConfig.quoteSettings.courseTableNote;
-  groupClassNote = this.defaultContentConfig.quoteSettings.groupClassNote;
-  roomTableTitle = this.defaultContentConfig.quoteSettings.roomTableTitle;
-  roomTableNote = this.defaultContentConfig.quoteSettings.roomTableNote;
-  stayPolicyTitle = this.defaultContentConfig.quoteSettings.stayPolicyTitle;
-  stayPolicies: CiaStayPolicyCard[] = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.stayPolicies;
-  extraNightRates: CiaExtraNightRate[] = cloneCiaContentConfig(this.defaultContentConfig).quoteSettings.extraNightRates;
-  usdToCny = Number.NaN;
-  phpPerCny = Number.NaN;
-  exchangeRateDate = '';
-  usingLiveExchangeRates = false;
-  readonly weekOptions = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24];
-
-  /** The calculator itself lives in cia-quote-engine.ts, shared with the WeChat mini program. */
-  readonly quote = new CiaQuote(this);
-  get students() { return this.quote.students; }
-  get quoteMode() { return this.quote.quoteMode; }
-  set quoteMode(value: 'single' | 'group') { this.quote.quoteMode = value; }
-  get studentCount() { return this.quote.studentCount; }
-  set studentCount(value: number) { this.quote.studentCount = value; }
-  setQuoteMode(value: 'single' | 'group') { this.quote.setQuoteMode(value); }
-  get activeStudents() { return this.quote.activeStudents; }
-  get quotePlan() { return this.quote.quotePlan; }
-  get quoteHeading() { return this.quote.quoteHeading; }
-  get quoteError() { return this.quote.quoteError; }
-  get registrationNote() { return this.quote.registrationNote; }
-  get schoolPaymentItems() { return this.quote.schoolPaymentItems; }
-  get optionalFeeItems() { return this.quote.optionalFeeItems; }
-  get selectedCourseId() { return this.quotePlan.courses[0].optionId; }
-  set selectedCourseId(value: string) { this.quotePlan.courses[0].optionId = value; }
-  get selectedRoomId() { return this.quotePlan.rooms[0].optionId; }
-  set selectedRoomId(value: string) { this.quotePlan.rooms[0].optionId = value; }
-  get selectedWeeks() { return this.quotePlan.courseWeeks; }
-  set selectedWeeks(value: number) { this.quotePlan.updateWeeks('course', this.quotePlan.courses[0].id, value); }
-  get selectedStartDate() { return this.quotePlan.startDate; }
-  set selectedStartDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
-  selectedRoomProfileId = 'premium-single';
-  selectedRoomPhotoIndex = 0;
-  private photoSwipeOrigin: { x: number; y: number } | null = null;
-  get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
-  set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
-  quoteCalculated = false;
-
-  /** Same-student plan comparison; it reuses the normal quote's prices and the first student's conditions. */
-  readonly comparison = new CiaPlanComparison(this, () => this.students[0]);
-  readonly compareTags = ['方案A', '方案B', '方案C'];
-  private compareView = false;
-  get quoteView(): 'single' | 'compare' | 'group' { return this.compareView ? 'compare' : this.quoteMode; }
-  setQuoteView(view: 'single' | 'compare' | 'group'): void {
-    this.compareView = view === 'compare';
-    if (view === 'compare') {
-      this.setQuoteMode('single');
-      if (!this.comparison.started) this.comparison.start();
-      return;
-    }
-    this.setQuoteMode(view);
-  }
-  applyCompareFocus(focus: string): void {
-    this.comparison.applyFocus(focus as CiaCompareFocus);
-  }
-  get compareSheet(): PlanCompareSheet { return this.comparison.sheet; }
-  get compareImageData(): QuoteImageCardData {
-    const sheet = this.compareSheet;
-    const start = this.comparison.plans[0] ? this.comparison.startDate(this.comparison.plans[0]) : '';
-    return {
-      ...this.quoteImageData,
-      layout: 'plan-compare',
-      planCompare: sheet,
-      headingText: sheet.heading,
-      fileName: `CIA方案对比报价-${start.replace(/-/g, '')}.png`,
-    };
-  }
-  setComparePlanDate(plan: CiaStudentQuote, value: string, input: HTMLInputElement): void {
-    if (!this.comparison.setStartDate(plan, value)) input.value = this.comparison.startDate(plan);
-  }
-  /** One line under “更多条件” so students see the assumptions without opening it. */
-  conditionsSummary(student: CiaStudentQuote): string {
-    return [
-      student.visaLabel,
-      student.selectedAgeGroup === 'minor' ? '未满18岁' : '18岁及以上',
-      student.returningStudent ? '老学员' : '新学员',
-      `报名日${student.selectedRegistrationDate.replace(/-/g, '/')}`,
-    ].filter(Boolean).join(' · ');
-  }
+  private readonly courseFeeDetails = CIA_COURSE_FEE_DETAILS;
 
   readonly quickInfo: QuickInfo[] = [
     {
@@ -405,9 +113,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  galleryImages: GalleryImage[] = [...CIA_GALLERY_IMAGES];
-
-  readonly basicInfo = CIA_BASIC_INFO;
 
   readonly highlights: Highlight[] = [
     {
@@ -432,9 +137,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  readonly suitableFor = CIA_SUITABLE_FOR;
-
-  readonly notSuitableFor = CIA_NOT_SUITABLE_FOR;
 
   readonly courses: CourseItem[] = [
     {
@@ -509,19 +211,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  readonly campusBuildings = CIA_CAMPUS_BUILDINGS;
-
-  readonly weekdaySchedule = CIA_WEEKDAY_SCHEDULE;
-
-  readonly fridaySchedule = CIA_FRIDAY_SCHEDULE;
-
-  readonly holidayCalendars = CIA_HOLIDAY_CALENDARS;
-
-  // Transcribed from CIA's user-supplied 2027 IOC official test-date poster.
-  // Keep separate from the 2026 exam types, fees and registration conditions.
-  readonly ieltsComputerExamDates2027 = CIA_IELTS_COMPUTER_EXAM_DATES_2027;
-
-  readonly ieltsExamDates2026 = CIA_IELTS_EXAM_DATES_2026;
 
   readonly campusMonthlyEvents2026: CampusMonthlyEvent[] = [
     { month: 1, icon: 'festival', title: '菲律宾文化节', text: '通过节庆主题活动认识菲律宾文化。', image: 'assets/cia/events-2026/01-cultural-festival.webp', imageAlt: 'CIA菲律宾文化节传统服饰表演', imagePosition: 'center 24%' },
@@ -538,101 +227,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { month: 12, icon: 'card_giftcard', title: 'CIA圣诞派对', text: '以圣诞主题活动为全年校园生活收尾。', image: 'assets/cia/events-2026/12-white-christmas.webp', imageAlt: 'CIA白色圣诞主题舞台活动' },
   ];
 
-  readonly courseDetailGuides = CIA_COURSE_DETAIL_GUIDES;
-
-  courseFees: CourseFee[] = [
-    {
-      id: 'regular-esl',
-      name: 'Regular ESL',
-      tuition: 900,
-      tuition2027: 1000,
-      ...this.courseFeeDetails['regular-esl'],
-    },
-    {
-      id: 'intensive-esl',
-      name: 'Intensive ESL',
-      tuition: 1000,
-      tuition2027: 1100,
-      ...this.courseFeeDetails['intensive-esl'],
-    },
-    {
-      id: 'power-intensive',
-      name: 'Power Intensive',
-      tuition: 1100,
-      tuition2027: 1200,
-      ...this.courseFeeDetails['power-intensive'],
-    },
-    {
-      id: 'pre-toeic',
-      name: 'Pre-TOEIC',
-      tuition: 1000,
-      tuition2027: 1100,
-      ...this.courseFeeDetails['pre-toeic'],
-    },
-    {
-      id: 'toeic-regular',
-      name: 'TOEIC Regular',
-      tuition: 1000,
-      tuition2027: 1100,
-      ...this.courseFeeDetails['toeic-regular'],
-    },
-    {
-      id: 'toeic-guarantee',
-      name: 'TOEIC Guarantee',
-      tuition: 1000,
-      tuition2027: 1100,
-      ...this.courseFeeDetails['toeic-guarantee'],
-    },
-    {
-      id: 'pre-ielts',
-      name: 'Pre-IELTS',
-      tuition: 1050,
-      tuition2027: 1150,
-      ...this.courseFeeDetails['pre-ielts'],
-    },
-    {
-      id: 'ielts-regular',
-      name: 'IELTS Regular',
-      tuition: 1050,
-      tuition2027: 1150,
-      ...this.courseFeeDetails['ielts-regular'],
-    },
-    {
-      id: 'ielts-guarantee',
-      name: 'IELTS Guarantee',
-      tuition: 1050,
-      tuition2027: 1150,
-      ...this.courseFeeDetails['ielts-guarantee'],
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      tuition: 1050,
-      tuition2027: 1150,
-      ...this.courseFeeDetails['business'],
-    },
-    {
-      id: 'working-holiday',
-      name: 'Working Holiday',
-      tuition: 950,
-      tuition2027: 1050,
-      ...this.courseFeeDetails['working-holiday'],
-    },
-    {
-      id: 'callan-esl',
-      name: 'Callan ESL',
-      tuition: 1050,
-      tuition2027: 1050,
-      ...this.courseFeeDetails['callan-esl'],
-    },
-    {
-      id: 'college-immersion',
-      name: 'College Immersion（IAU大学沉浸）',
-      tuition: 1000,
-      tuition2027: 1100,
-      ...this.courseFeeDetails['college-immersion'],
-    },
-  ];
 
   readonly schedule: ScheduleItem[] = [
     {
@@ -672,63 +266,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   ];
 
-  roomFees: RoomFee[] = [
-    {
-      id: 'p1',
-      name: '豪华单人间 P-1',
-      fee: 1700,
-      note: '豪华单人间多了一个电磁炉，可以简单加热食物',
-    },
-    {
-      id: 's1',
-      name: '标准单人间 S-1',
-      fee: 1500,
-      note: '标准单人间，适合重视独立空间的学生',
-    },
-    {
-      id: 'pn1',
-      name: '校外单人间 PN-1',
-      fee: 1700,
-      note: '在学校对面的4号楼',
-    },
-    {
-      id: 'd2',
-      name: '双人间 D-2',
-      fee: 1100,
-      note: '双人间，适合朋友同行或希望平衡预算',
-    },
-    { id: 'd3', name: '三人间 D-3', fee: 850, note: '预算比双人间更低' },
-    {
-      id: 'd4',
-      name: '四人间 D-4',
-      fee: 750,
-      note: '默认报价参考，预算压力较低',
-    },
-    {
-      id: 'sr1',
-      name: '单人套房 SR-1',
-      fee: 2500,
-      note: '套房房型，空间更完整',
-    },
-    {
-      id: 'sr2',
-      name: '双人套房 SR-2',
-      fee: 1400,
-      note: '套房房型，适合两人入住',
-    },
-    {
-      id: 'sr3',
-      name: '三人套房 SR-3',
-      fee: 1200,
-      note: '套房房型，适合小组同行',
-    },
-    {
-      id: 'sr4',
-      name: '四人套房 SR-4',
-      fee: 1100,
-      note: '套房房型，预算和空间较平衡',
-    },
-  ];
 
   localFees: LocalFee[] = [
     { item: 'SSP', amount: '8,000比索', note: '无菲律宾长期签证者需办理' },
@@ -818,8 +355,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
 
-  readonly faqs = currentCiaFaqs();
-  readonly show2026Prices = ciaShows2026Prices();
 
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
@@ -830,308 +365,48 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];
 
-  readonly mobileAnchors = CIA_MOBILE_ANCHORS;
 
-  readonly snapshotCards = CIA_SNAPSHOT_CARDS;
+  get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
+  set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
+  get iauRegistrationFeeNote(): string { return this.ciaQuote.iauRegistrationFeeNote; }
 
-  readonly videoCards = CIA_VIDEO_CARDS;
-  readonly campusLifeVideos = CIA_CAMPUS_LIFE_VIDEOS;
-  readonly interviewVideos = CIA_INTERVIEW_VIDEOS;
-  readonly dormRules = CIA_DORM_RULES;
-  readonly ieltsResults = CIA_IELTS_RESULTS;
-  readonly ieltsResultImages = CIA_IELTS_RESULTS.map(item => item.image);
-  readonly ieltsResultTitles = CIA_IELTS_RESULTS.map(item => item.title + ' · 入学 ' + item.entrance + ' → 官方雅思 ' + item.overall);
-
-  get displayedVideoCards(): CiaVideoCard[] {
-    return [...this.videoCards, ...this.uploadedVideoCards];
+  get uses2027Tuition(): boolean {
+    return (
+      this.parseDate(this.selectedRegistrationDate) >=
+        this.parseDate(this.futurePriceRegistrationStart) &&
+      this.parseDate(this.selectedStartDate) >= this.parseDate(this.futurePriceArrivalStart)
+    );
   }
 
-  /**
-   * Plays a short clip fullscreen. Narrow players hide the browser's own fullscreen control in the "⋮" menu,
-   * so each short-clip card has this button; iPhone Safari and WeChat only offer the video's webkit fullscreen.
-   */
-  playFullscreen(video: HTMLVideoElement): void {
-    const clip = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
-    // Start playing inside the tap, so the clip still plays where fullscreen is refused.
-    video.play().catch(() => undefined);
-    const webkitFullscreen = () => {
-      try { clip.webkitEnterFullscreen?.(); } catch { /* stays inline and keeps playing */ }
-    };
-    if (typeof video.requestFullscreen === 'function' && document.fullscreenEnabled) {
-      video.requestFullscreen().catch(webkitFullscreen);
-    } else {
-      webkitFullscreen();
-    }
+  get selectedCourseBaseTuition(): number {
+    return this.uses2027Tuition
+      ? this.selectedCourse.tuition2027
+      : this.selectedCourse.tuition;
   }
 
-  private courseGroupCache?: { source: CourseFee[]; groups: CourseGroupView[] };
-  /** Courses sorted into the website groups; a published course outside every group lands in “其他课程”. */
-  get courseGroups(): CourseGroupView[] {
-    if (this.courseGroupCache?.source !== this.courseFees) {
-      const used = new Set<string>();
-      const groups = CIA_COURSE_GROUPS.map(group => {
-        const courses = group.courseIds
-          .map(id => this.courseFees.find(course => course.id === id))
-          .filter((course): course is CourseFee => !!course);
-        courses.forEach(course => used.add(course.id));
-        return { icon: group.icon, title: group.title, text: group.text, courses };
-      }).filter(group => group.courses.length > 0);
-      const rest = this.courseFees.filter(course => !used.has(course.id));
-      if (rest.length) groups.push({ icon: 'more_horiz', title: '其他课程', text: '', courses: rest });
-      this.courseGroupCache = { source: this.courseFees, groups };
-    }
-    return this.courseGroupCache.groups;
-  }
-  trackCourseGroup(_index: number, group: CourseGroupView): string { return group.title; }
-  private readonly schedulePartCache = new Map<string, string[]>();
-  /** A course's daily schedule split at “+” and “；” so the row can show it as short parts. */
-  scheduleParts(schedule: string): string[] {
-    let parts = this.schedulePartCache.get(schedule);
-    if (!parts) {
-      parts = schedule.split(/\s*[+＋;；]\s*/).map(part => part.trim()).filter(Boolean);
-      this.schedulePartCache.set(schedule, parts);
-    }
-    return parts;
+  get appliedTuitionLabel(): string {
+    return this.uses2027Tuition ? '2027新价格' : '2026原价格';
   }
 
-  readonly studentCareServices = CIA_STUDENT_CARE_SERVICES;
-
-  readonly campusPracticalGuides = CIA_CAMPUS_PRACTICAL_GUIDES;
-
-  roomRateGroups: RoomRateGroup[] = [
-    {
-      title: '单人间',
-      rooms: [
-        { id: 'p1', label: '豪华单人间', code: 'P-1', location: '校内' },
-        { id: 'pn1', label: '校外单人间', code: 'PN-1', location: '校外' },
-        { id: 's1', label: '标准单人间', code: 'S-1', location: '校内' },
-      ],
-    },
-    {
-      title: '普通多人间',
-      rooms: [
-        { id: 'd2', label: '双人间', code: 'D-2', location: '校内' },
-        { id: 'd3', label: '三人间', code: 'D-3', location: '校内' },
-        { id: 'd4', label: '四人间', code: 'D-4', location: '校内' },
-      ],
-    },
-    {
-      title: '家庭精致套房',
-      rooms: [
-        { id: 'sr1', label: '单人套房', code: 'SR-1', location: '校内' },
-        { id: 'sr2', label: '双人套房', code: 'SR-2', location: '校内' },
-        { id: 'sr3', label: '三人套房', code: 'SR-3', location: '校内' },
-        { id: 'sr4', label: '四人套房', code: 'SR-4', location: '校内' },
-      ],
-    },
-  ];
-
-  readonly roomComparisonProfiles = CIA_ROOM_COMPARISON_PROFILES;
-
-  readonly studentTracks = CIA_STUDENT_TRACKS;
-
-  readonly officialStudentReviews = CIA_STUDENT_REVIEWS;
-
-  readonly sidaCiaReasons = CIA_SIDA_REASONS;
-
-  readonly sidaCiaTrustBadges = CIA_SIDA_TRUST_BADGES;
-
-  readonly ctaBadges = CIA_CTA_BADGES;
-
-  readonly ctaConsultants = CIA_CTA_CONSULTANTS;
-
-  ngOnInit(): void {
-    this.loadExtendedPageStyles();
-    this.loadExchangeRates();
-    this.applySessionPreview();
-    this.loadPricingFromDatabase();
-    this.loadGalleryFromDatabase();
+  get tuitionRuleSummary(): string {
+    return this.uses2027Tuition
+      ? '按当前报价日期与预计入学日期估算为2027新课程费；最终以学校实际收到报名及确认入学日期为准。'
+      : '按当前报价日期与预计入学日期估算为2026原价格；最终以学校实际收到报名及确认入学日期为准。';
   }
 
-  ngAfterViewInit(): void {
-    if (this.isEditorPreview) {
-      this.previewHost.nativeElement.classList.add('cia-editor-preview');
-      window.parent.postMessage({ type: 'cia-content-ready' }, window.location.origin);
-    }
+  get isChristmasPromotionEligible(): boolean { return this.ciaQuote.isChristmasPromotionEligible; }
+  get sidaDiscountAmount(): number { return this.ciaQuote.sidaDiscountAmount; }
+  get christmasDiscountAmount(): number { return this.ciaQuote.christmasDiscountAmount; }
+  get totalDiscountAmount(): number { return this.ciaQuote.totalDiscountAmount; }
+
+  /** CIA keeps its older lookup: exact name, then any name containing “cia”, then the first result. */
+  protected override findSchool(schools: SchoolDTO[]): SchoolDTO | undefined {
+    return schools.find((school) => school.name === this.profile.pricingSchoolName)
+      ?? schools.find((school) => school.name.toLowerCase().includes('cia'))
+      ?? schools[0];
   }
 
-  ngOnDestroy(): void {
-    clearTimeout(this.previewFocusTimer);
-  }
-
-  @HostListener('window:message', ['$event'])
-  applyEditorPreview(event: MessageEvent): void {
-    if (!this.isEditorPreview || event.origin !== window.location.origin || event.source !== window.parent) {
-      return;
-    }
-    const message = event.data as { type?: string; content?: CiaContentConfig; target?: CiaPreviewTarget; scroll?: boolean };
-    if (message?.type === 'cia-content-preview' && message.content) {
-      this.applyContentConfig(message.content);
-      if (isCiaPreviewTarget(message.target)) this.previewTarget = message.target;
-      this.queuePreviewFocus(message.scroll === true);
-    }
-  }
-
-  private queuePreviewFocus(scroll: boolean): void {
-    if (!this.isEditorPreview || !this.previewTarget) return;
-    clearTimeout(this.previewFocusTimer);
-    // Wait for Angular to render the edited rows before measuring their position.
-    this.previewFocusTimer = setTimeout(() => {
-      const target = this.previewTarget!;
-      const root = this.previewHost.nativeElement;
-      const result = resolveCiaPreviewTarget(root, target);
-      const fallback = result.elements[0]?.dataset;
-      this.previewHighlightTarget = result.exact ? target : fallback
-        ? { kind: 'section', id: fallback['ciaPreviewId'] ?? '' } : undefined;
-      for (const element of result.elements) {
-        if (scroll) revealCiaPreviewElement(element);
-      }
-      if (scroll && result.elements[0]) scrollCiaPreviewElement(result.elements[0]);
-      const item = target.kind === 'course' ? this.previewContent?.courses.find(item => item.id === target.id)
-        : target.kind === 'room' ? this.previewContent?.rooms.find(item => item.id === target.id)
-          : target.kind === 'fee' ? this.previewContent?.localFees.find(item => item.id === target.id)
-            : target.kind === 'promotion' ? this.previewContent?.quoteSettings.promotions.find(item => item.id === target.id) : undefined;
-      const status = item?.enabled === false ? '此项已隐藏或停用，官网不会显示；已定位到所属板块。'
-        : !result.exact && target.kind === 'promotion' ? '当前试算未产生此优惠明细（请核对日期、方案及叠加条件）；已定位到优惠显示区域。'
-          : !result.exact && target.id === 'quote-season' ? '当前试算未产生旺季附加费；已定位到费用明细区域。'
-            : result.exact ? '橙色框内就是对应的官网内容。修改会在这里即时显示。'
-              : '当前试算未显示此项，已定位到所属板块。';
-      window.parent.postMessage({ type: 'cia-content-located', target, status }, window.location.origin);
-    });
-  }
-
-  isPreviewHighlighted(kind: string, id: string): boolean {
-    return this.isEditorPreview && this.previewHighlightTarget?.kind === kind && this.previewHighlightTarget?.id === id;
-  }
-
-  trackPreviewRow(index: number): number {
-    // Calculated getters return new objects; retain row DOM through focus/click/change detection.
-    return index;
-  }
-
-  @HostListener('click', ['$event'])
-  selectPreviewEditorItem(event: MouseEvent): void {
-    if (!this.isEditorPreview || !(event.target instanceof Element)) return;
-    const element = event.target.closest<HTMLElement>('[data-cia-preview-kind]');
-    const target = { kind: element?.dataset['ciaPreviewKind'], id: element?.dataset['ciaPreviewId'] };
-    if (!isCiaPreviewTarget(target)) return;
-    this.previewTarget = target;
-    this.queuePreviewFocus(false);
-    window.parent.postMessage({ type: 'cia-content-select', ...target }, window.location.origin);
-  }
-
-  private loadExtendedPageStyles(): void {
-    if (typeof document === 'undefined' || document.getElementById('cia-page-extended-styles')) {
-      return;
-    }
-
-    const stylesheet = document.createElement('link');
-    stylesheet.id = 'cia-page-extended-styles';
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = 'assets/cia/cia-page-extended.css';
-    document.head.appendChild(stylesheet);
-  }
-
-  private loadExchangeRates(): void {
-
-  }
-
-  private loadPricingFromDatabase(): void {
-    this.schoolService
-      .getSchools({ name: this.ciaPricingSchoolName })
-      .pipe(
-        switchMap((schools) => {
-          const ciaSchool =
-            schools.find(
-              (school) => school.name === this.ciaPricingSchoolName,
-            ) ??
-            schools.find((school) =>
-              school.name.toLowerCase().includes('cia'),
-            ) ??
-            schools[0];
-
-          if (!ciaSchool?.id) {
-            return EMPTY;
-          }
-
-          return forkJoin({
-            lessons: this.schoolService.getSchoolLessons({
-              schoolId: ciaSchool.id,
-              week: 4,
-            }),
-            rooms: this.schoolService.getSchoolRooms({
-              schoolId: ciaSchool.id,
-              week: 4,
-            }),
-            fees: this.schoolService.getSchoolFees({ schoolId: ciaSchool.id }),
-            published: this.schoolContentService
-              .getPublished<CiaContentConfig>(ciaSchool.id)
-              .pipe(catchError(() => of(null))),
-          });
-        }),
-        catchError(() => EMPTY),
-      )
-      .subscribe(({ lessons, rooms, fees, published }) => {
-        this.applyPricingData(lessons, rooms, fees);
-        const preview = this.readSessionPreview();
-        if (preview) {
-          this.applyContentConfig(preview);
-        } else if (published?.content) {
-          this.applyContentConfig(published.content);
-        }
-      });
-  }
-
-  private applySessionPreview(): void {
-    const preview = this.readSessionPreview();
-    if (preview) {
-      this.applyContentConfig(preview);
-    }
-  }
-
-  private readSessionPreview(): CiaContentConfig | null {
-    if (
-      typeof sessionStorage === 'undefined' ||
-      this.route.snapshot.queryParamMap.get('contentPreview') !== '1'
-    ) {
-      return null;
-    }
-    try {
-      const raw = sessionStorage.getItem('cia-content-preview');
-      if (!raw) return null;
-      const value = JSON.parse(raw) as CiaContentConfig;
-      return value?.schemaVersion === 1 && value.schoolCode === 'CIA' ? value : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private applyContentConfig(value: CiaContentConfig): void {
-    if (value?.schemaVersion !== 1 || value.schoolCode !== 'CIA') {
-      return;
-    }
-    const content = cloneCiaContentConfig(value);
-    this.previewContent = content;
-    // Prices and rules for the calculator; the mini program applies the same function.
-    applyCiaQuoteContent(this, content);
-    const rooms = content.rooms
-      .filter(item => item.enabled)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-    if (rooms.length > 0) {
-      const groupNames = [...new Set(rooms.map(item => item.group))];
-      this.roomRateGroups = groupNames.map(title => ({
-        title,
-        rooms: rooms
-          .filter(item => item.group === title)
-          .map(item => ({
-            id: item.id,
-            label: item.label,
-            code: item.code,
-            location: item.location,
-          })),
-      }));
-    }
-
+  protected override afterContentApplied(content: CiaContentConfig): void {
     this.localFees = content.localFees
       .filter(item => item.enabled)
       .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -1140,98 +415,9 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         amount: this.formatPhp(item.amount),
         note: item.note,
       }));
-    const settings = content.quoteSettings;
-    this.localFeeIntro = settings.localFeeIntro;
-    this.courseTableTitle = settings.courseTableTitle;
-    this.courseTableNote = settings.courseTableNote;
-    this.groupClassNote = settings.groupClassNote;
-    this.roomTableTitle = settings.roomTableTitle;
-    this.roomTableNote = settings.roomTableNote;
-    this.stayPolicyTitle = settings.stayPolicyTitle;
-    this.stayPolicies = settings.stayPolicies;
-    this.extraNightRates = settings.extraNightRates;
-
-    this.quote.retainValidSelections();
-    this.queuePreviewFocus(false);
   }
 
-  private loadGalleryFromDatabase(): void {
-    this.schoolService
-      .getSchools({ name: this.ciaPricingSchoolName })
-      .pipe(
-        switchMap((schools) => {
-          const ciaSchool =
-            schools.find(
-              (school) => school.name === this.ciaPricingSchoolName,
-            ) ??
-            schools.find((school) =>
-              school.name.toLowerCase().includes('cia'),
-            ) ??
-            schools[0];
-
-          if (!ciaSchool?.id) {
-            return EMPTY;
-          }
-
-          return this.schoolService.getSchoolPhotos({
-            schoolId: ciaSchool.id,
-            isActive: true,
-          });
-        }),
-        catchError(() => EMPTY),
-      )
-      .subscribe((photos) => this.applyGalleryPhotos(photos));
-  }
-
-  private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
-    const uploadedMedia = (photos ?? [])
-      .filter((photo) => Boolean(photo.url))
-      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
-
-    if (uploadedMedia.length === 0) {
-      return;
-    }
-
-    const uploadedPhotos = uploadedMedia.filter(photo =>
-      !photo.contentType || photo.contentType.toLowerCase().startsWith('image/'));
-    const uploadedVideos = uploadedMedia.filter(photo =>
-      photo.contentType?.toLowerCase().startsWith('video/'));
-
-    const existingSources = new Set(
-      this.galleryImages.map((image) => image.src),
-    );
-    const uploadedGalleryImages = uploadedPhotos
-      .map((photo) => ({
-        category: this.resolveUploadedPhotoCategory(photo.category),
-        title:
-          photo.caption ||
-          photo.altText ||
-          photo.originalFileName ||
-          'CIA Cebu photo',
-        description: photo.altText || photo.caption || 'CIA Cebu school photo',
-        src: photo.url ?? '',
-      }))
-      .filter((image) => !existingSources.has(image.src));
-
-    if (uploadedGalleryImages.length > 0) {
-      this.usingUploadedGallery = true;
-      this.galleryImages = [...this.galleryImages, ...uploadedGalleryImages];
-    }
-
-    const existingVideos = new Set(this.videoCards.map(item => item.videoSrc));
-    this.uploadedVideoCards = uploadedVideos
-      .filter(photo => !!photo.url && !existingVideos.has(photo.url))
-      .map(photo => ({
-        code: 'SCHOOL',
-        title: photo.caption || photo.originalFileName || 'CIA 学校视频',
-        text: photo.altText || `${this.resolveUploadedPhotoCategory(photo.category)}实景视频`,
-        videoSrc: photo.url ?? '',
-        contentType: photo.contentType ?? 'video/mp4',
-        details: [`官网分类：${this.resolveUploadedPhotoCategory(photo.category)}`],
-      }));
-  }
-
-  private applyPricingData(
+  protected override applyPricingData(
     lessons: SchoolLessonDTO[],
     rooms: SchoolRoomDTO[],
     fees: SchoolFeeDTO[],
@@ -1368,320 +554,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  setGalleryCategory(category: GalleryCategory): void {
-    this.selectedGalleryCategory = category;
-    this.selectedGalleryImageIndex = 0;
-  }
-
-  selectGalleryImage(index: number): void {
-    const lastIndex = Math.max(this.displayedGalleryImages.length - 1, 0);
-    this.selectedGalleryImageIndex = Math.min(Math.max(index, 0), lastIndex);
-  }
-
-  previousGalleryImage(): void {
-    const length = this.displayedGalleryImages.length;
-    if (length > 0) {
-      this.selectedGalleryImageIndex =
-        (this.selectedGalleryImageIndex - 1 + length) % length;
-    }
-  }
-
-  nextGalleryImage(): void {
-    const length = this.displayedGalleryImages.length;
-    if (length > 0) {
-      this.selectedGalleryImageIndex =
-        (this.selectedGalleryImageIndex + 1) % length;
-    }
-  }
-
-  openGalleryFromPreview(event?: Event): void {
-    this.setGalleryCategory(this.galleryCategories[0]);
-    this.scrollToSection('gallery', event);
-  }
-
-  calculateQuote(): void {
-    this.quoteCalculated = true;
-  }
-
-  scrollToSection(target: string, event?: Event): void {
-    event?.preventDefault();
-
-    const targetElement = document.getElementById(target);
-
-    if (!targetElement) {
-      return;
-    }
-
-    const headerOffset =
-      window.innerWidth <= 760 ? 136 : window.innerWidth <= 1099 ? 208 : 136;
-    const targetTop =
-      targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
-
-    window.scrollTo({
-      top: Math.max(targetTop, 0),
-      behavior: 'smooth',
-    });
-
-    window.history.replaceState(
-      null,
-      '',
-      `${window.location.pathname}${window.location.search}#${target}`,
-    );
-  }
-
-  get filteredGalleryImages(): GalleryImage[] {
-    if (this.selectedGalleryCategory === this.galleryCategories[0]) {
-      return this.galleryImages;
-    }
-
-    return this.galleryImages.filter(
-      (image) => image.category === this.selectedGalleryCategory,
-    );
-  }
-
-  selectHeroGalleryImage(index: number): void {
-    const lastIndex = Math.max(this.heroGalleryPreviewImages.length - 1, 0);
-    this.selectedHeroImageIndex = Math.min(Math.max(index, 0), lastIndex);
-  }
-
-  get displayedGalleryImages(): GalleryImage[] {
-    return this.filteredGalleryImages;
-  }
-
-  get selectedGalleryImage(): GalleryImage {
-    return (
-      this.displayedGalleryImages[this.selectedGalleryImageIndex] ??
-      this.displayedGalleryImages[0] ??
-      this.galleryImages[0]
-    );
-  }
-
-  get displayedGalleryImageSources(): string[] {
-    return this.displayedGalleryImages.map((image) => image.src);
-  }
-
-  get displayedGalleryImageTitles(): string[] {
-    return this.displayedGalleryImages.map((image) => image.title);
-  }
-
-  get displayedGalleryImageCaptions(): string[] {
-    return this.displayedGalleryImages.map((image) => image.description);
-  }
-
-  get displayedGalleryImageAlts(): string[] {
-    return this.displayedGalleryImages.map(
-      (image) => `${image.category}实景：${image.title}`,
-    );
-  }
-
-  get selectedRoomGalleryTitles(): string[] {
-    return this.selectedRoomProfile.gallery.map(
-      (_, index) =>
-        `${this.selectedRoomProfile.label} · ${index === 0 ? '主要空间' : `细节实景 ${index + 1}`}`,
-    );
-  }
-
-  get selectedRoomGalleryCaptions(): string[] {
-    return this.selectedRoomProfile.gallery.map(
-      (_, index) =>
-        `${this.selectedRoomProfile.bookingCode} ${this.selectedRoomProfile.location}房型 · 第${index + 1}张实景`,
-    );
-  }
-
-  get selectedRoomGalleryAlts(): string[] {
-    return this.selectedRoomGalleryTitles.map((title) => `${title}照片`);
-  }
-
-  galleryImagesForCategory(
-    category: Exclude<GalleryCategory, '全部'>,
-  ): GalleryImage[] {
-    return this.galleryImages.filter((image) => image.category === category);
-  }
-
-  galleryAlbumDescription(
-    category: Exclude<GalleryCategory, '全部'>,
-  ): string {
-    return CIA_GALLERY_ALBUM_DESCRIPTIONS[category];
-  }
-
-  get heroGalleryPreviewImages(): GalleryImage[] {
-    if (this.usingUploadedGallery) {
-      return this.galleryImages.slice(0, 4);
-    }
-
-    return this.galleryImages
-      .filter((image) =>
-        this.featuredGalleryCategories.includes(image.category),
-      )
-      .slice(0, 4);
-  }
-
-  get selectedHeroGalleryImage(): GalleryImage {
-    return (
-      this.heroGalleryPreviewImages[this.selectedHeroImageIndex] ??
-      this.heroGalleryPreviewImages[0] ??
-      this.galleryImages[0]
-    );
-  }
-
-  get selectedHeroGalleryImages(): GalleryImage[] {
-    const images = this.heroGalleryPreviewImages;
-    const selected = images[this.selectedHeroImageIndex] ?? images[0];
-
-    if (!selected) {
-      return [];
-    }
-
-    return [selected, ...images.filter((image) => image !== selected)];
-  }
-
-  get selectedHeroGallerySources(): string[] {
-    return this.selectedHeroGalleryImages.map((image) => image.src);
-  }
-
-  get selectedHeroGalleryTitles(): string[] {
-    return this.selectedHeroGalleryImages.map((image) => image.title);
-  }
-
-  get selectedHeroGalleryCaptions(): string[] {
-    return this.selectedHeroGalleryImages.map((image) => image.description);
-  }
-
-  get selectedHeroGalleryAlts(): string[] {
-    return this.selectedHeroGalleryImages.map(
-      (image) => `${image.category}实景：${image.title}`,
-    );
-  }
-
-  get selectedCourse(): CourseFee {
-    return (
-      this.courseFees.find((course) => course.id === this.selectedCourseId) ??
-      this.courseFees[0]
-    );
-  }
-
-  get iauRegistrationFeeNote(): string { return this.quote.iauRegistrationFeeNote; }
-
-  get selectedRoom(): RoomFee {
-    return (
-      this.roomFees.find((room) => room.id === this.selectedRoomId) ??
-      this.roomFees[this.roomFees.length - 1]
-    );
-  }
-
-  get tuitionForSelectedWeeks(): number { return this.quote.tuitionForSelectedWeeks; }
-
-  get uses2027Tuition(): boolean {
-    return (
-      this.parseDate(this.selectedRegistrationDate) >=
-        this.parseDate(this.futurePriceRegistrationStart) &&
-      this.parseDate(this.selectedStartDate) >= this.parseDate(this.futurePriceArrivalStart)
-    );
-  }
-
-  get selectedCourseBaseTuition(): number {
-    return this.uses2027Tuition
-      ? this.selectedCourse.tuition2027
-      : this.selectedCourse.tuition;
-  }
-
-  get appliedTuitionLabel(): string {
-    return this.uses2027Tuition ? '2027新价格' : '2026原价格';
-  }
-
-  get tuitionRuleSummary(): string {
-    return this.uses2027Tuition
-      ? '按当前报价日期与预计入学日期估算为2027新课程费；最终以学校实际收到报名及确认入学日期为准。'
-      : '按当前报价日期与预计入学日期估算为2026原价格；最终以学校实际收到报名及确认入学日期为准。';
-  }
-
-  get roomFeeForSelectedWeeks(): number { return this.quote.roomFeeForSelectedWeeks; }
-
-  private get priceRatioForSelectedWeeks(): number {
-    return (
-      this.shortTermPriceRatios[this.selectedWeeks] ?? this.selectedWeeks / 4
-    );
-  }
-
-  get peakSeasonWeeks(): number { return this.quote.peakSeasonWeeks; }
-  get isPeakSeason(): boolean { return this.quote.isPeakSeason; }
-  get seasonalSurcharge(): number { return this.quote.seasonalSurcharge; }
-  get coveredPeakSeasonLabels(): string { return this.quote.coveredPeakSeasonLabels; }
-  get peakSeasonStatusText(): string { return this.quote.peakSeasonStatusText; }
-
-  get peakSeasonRangeText(): string {
-    return this.peakSeasonRanges
-      .filter(({ enabled }) => enabled)
-      .map(({ label, start, end }) =>
-        `${label} ${start.replace(/-/g, '/')}–${end.replace(/-/g, '/')}`,
-      )
-      .join('；');
-  }
-
-  get peakSeasonCalendarRanges(): CiaPeakSeasonRange[] { return this.quote.peakSeasonCalendarRanges; }
-  get peakSeason2027RangeText(): string { return this.quote.peakSeason2027RangeText; }
-
-  peakSeasonWeekCount(range: CiaPeakSeasonRange): number {
-    const start = this.parseDate(range.start).getTime();
-    const end = this.parseDate(range.end).getTime();
-    return Math.max(0, Math.round((end - start + 86400000) / (7 * 86400000)));
-  }
-
-  formatPeakSeasonRange(range: CiaPeakSeasonRange): string { return this.quote.formatPeakSeasonRange(range); }
-
-  get isChristmasPromotionEligible(): boolean { return this.quote.isChristmasPromotionEligible; }
-  get payableRegistrationFee(): number { return this.quote.payableRegistrationFee; }
-  get sidaDiscountAmount(): number { return this.quote.sidaDiscountAmount; }
-  get christmasDiscountAmount(): number { return this.quote.christmasDiscountAmount; }
-  get totalDiscountAmount(): number { return this.quote.totalDiscountAmount; }
-  get quoteUsd(): number { return this.quote.quoteUsd; }
-  get quoteUsdText(): string { return this.quote.quoteUsdText; }
-  get quoteCnyText(): string { return this.quote.quoteCnyText; }
-  get exchangeRateDateText(): string { return this.quote.exchangeRateDateText; }
-  get exchangeRateSummary(): string { return this.quote.exchangeRateSummary; }
-  get estimatedLocalFees(): LocalFeeEstimate[] { return this.quote.estimatedLocalFees; }
-  get estimatedLocalFeeTotal(): number { return this.quote.estimatedLocalFeeTotal; }
-  get estimatedLocalFeeCny(): number { return this.quote.estimatedLocalFeeCny; }
-  formatPhp(value: number): string { return this.quote.formatPhp(value); }
-
-  formatPesoText(value: string): string {
-    return value.replace(/₱\s*([0-9][0-9,]*)/g, '$1比索');
-  }
-
-  formatFeeQuantity(value: number): string { return this.quote.formatFeeQuantity(value); }
-
-  shortStayPercent(weeks: number): string {
-    return `${Math.round((this.shortTermPriceRatios[String(weeks)] ?? weeks / 4) * 100)}%`;
-  }
-
-  previewFeeId(name: string): string {
-    return this.localFeeRules.find(rule => rule.name === name.replace(/^学生[\d、]+ · /, ''))?.id ?? '';
-  }
-
-  get discountText(): string {
-    const rule = this.promotions.find(item =>
-      item.enabled && item.discountType === 'percentage' &&
-      item.appliesTo === 'tuition-and-accommodation');
-    return rule ? `${100 - rule.discountValue}折` : '无固定折扣';
-  }
-
-  formatUsd(value: number): string { return this.quote.formatUsd(value); }
-
-  get quoteImageData() { return this.quote.quoteImageData; }
-
-  private resolveUploadedPhotoCategory(
-    category?: string,
-  ): Exclude<GalleryCategory, '全部'> {
-    const normalizedCategory = (category ?? '').trim().toLowerCase();
-    const categoryIndex =
-      this.uploadedPhotoCategoryIndexes[normalizedCategory] ?? 1;
-
-    return this.galleryCategories[categoryIndex] as Exclude<
-      GalleryCategory,
-      '全部'
-    >;
-  }
-
   private slugifyPriceKey(value: string): string {
     return value
       .toLowerCase()
@@ -1738,86 +610,4 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       .replace(/^到校支付费用；/, '')
       .replace(/^前期支付费用；/, '');
   }
-
-  roomFeeFor(id: string): number {
-    return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
-  }
-
-  roomsForRateGroup(group: RoomRateGroup): RoomRateOption[] {
-    return group.rooms;
-  }
-
-  setRoomProfile(profileId: string): void {
-    this.selectedRoomProfileId = profileId;
-    this.selectedRoomPhotoIndex = 0;
-  }
-
-  get selectedRoomPhotos(): readonly string[] {
-    const profile = this.selectedRoomProfile;
-    return profile.gallery.length ? profile.gallery : [profile.image];
-  }
-
-  get selectedRoomPhoto(): string {
-    const photos = this.selectedRoomPhotos;
-    return photos[Math.min(this.selectedRoomPhotoIndex, photos.length - 1)];
-  }
-
-  selectRoomPhoto(index: number): void {
-    this.selectedRoomPhotoIndex = Math.min(Math.max(index, 0), this.selectedRoomPhotos.length - 1);
-  }
-
-  stepRoomPhoto(step: number): void {
-    const length = this.selectedRoomPhotos.length;
-    this.selectedRoomPhotoIndex = (this.selectedRoomPhotoIndex + step + length) % length;
-  }
-
-  photoSwipeStart(event: TouchEvent): void {
-    const touch = event.changedTouches[0];
-    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
-  }
-
-  photoSwipeEnd(event: TouchEvent, album: 'gallery' | 'room'): void {
-    const origin = this.photoSwipeOrigin;
-    const touch = event.changedTouches[0];
-    this.photoSwipeOrigin = null;
-    if (!origin || !touch) return;
-    const dx = touch.clientX - origin.x;
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(touch.clientY - origin.y)) return;
-    const step = dx < 0 ? 1 : -1;
-    if (album === 'room') {
-      this.stepRoomPhoto(step);
-    } else if (step > 0) {
-      this.nextGalleryImage();
-    } else {
-      this.previousGalleryImage();
-    }
-  }
-
-  get selectedRoomProfile(): RoomComparisonProfile {
-    return (
-      this.roomComparisonProfiles.find((profile) => profile.id === this.selectedRoomProfileId) ??
-      this.roomComparisonProfiles[0]
-    );
-  }
-
-  private nextSundayDate(): string {
-    const date = new Date();
-    const daysUntilSunday = (7 - date.getDay()) % 7;
-    date.setDate(date.getDate() + daysUntilSunday);
-    return this.formatLocalDate(date);
-  }
-
-  private formatLocalDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  private parseDate(value: string): Date {
-    return new Date(`${value}T00:00:00`);
-  }
-
-  private readonly quoteRateSync = connectQuoteRates(this, inject(ExchangeRateService));
-  readonly quoteCurrencyText = quoteCurrencyText;
 }

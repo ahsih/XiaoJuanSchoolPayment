@@ -142,7 +142,7 @@ interface SourceLink {
     '../cebu-school-detail-content.css',
     '../cebu-school-detail-responsive.css',
     '../ev-school/ev-school-detail.component.css',
-    '../cia-school/cia-school.component.css',
+    '../school-page/ph-school-page.component.css',
     './cg-sparta-school.component.css',
     './cg-quote-plan.css',
     '../../../components/school-group-quote.css',
