@@ -1680,15 +1680,6 @@ export const CIA_PAGE_COPY = {
     roomComparisonTitle: '7类房型快速对比',
     roomDisclaimer: '图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
   },
-  vr: {
-    summaryTitle: '在线走进 CIA 3D校园',
-    summaryHint: '展开后可拖动查看教室、宿舍与校园动线',
-    eyebrow: '53-SCENE VIRTUAL TOUR',
-    title: '在线走进 CIA 3D 校园',
-    text: '拖动视角查看教室、宿舍与校园动线；手机可横屏浏览，点击右上角全屏效果更清楚。',
-    linkLabel: '在新窗口全屏参观',
-    url: 'https://www.720yun.com/vr/ac9j5puysw4',
-  },
   courses: {
     title: 'CIA 课程怎么选？',
     intro: '按学习目标分成四类，每门课下面是每天的课程安排，点开可看适合人群和说明。',

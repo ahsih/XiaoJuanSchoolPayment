@@ -301,42 +301,6 @@
 
     </section>
 
-    <details class="cia-section cia-collapsible-section campus-vr-section" id="campus-vr">
-      <summary>
-        <span class="collapsible-summary-icon"><mat-icon>360</mat-icon></span>
-        <span>
-          <strong>{{ copy.vr.summaryTitle }}</strong>
-          <small>{{ copy.vr.summaryHint }}</small>
-        </span>
-        <mat-icon class="collapsible-chevron">expand_more</mat-icon>
-      </summary>
-      <div class="collapsible-panel-body campus-vr-body">
-        <div class="campus-vr-copy">
-          <span class="section-eyebrow">{{ copy.vr.eyebrow }}</span>
-          <h2>{{ copy.vr.title }}</h2>
-          <p>{{ copy.vr.text }}</p>
-          <a
-            [href]="copy.vr.url"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ copy.vr.linkLabel }}
-            <mat-icon>open_in_new</mat-icon>
-          </a>
-        </div>
-        <div class="campus-vr-frame">
-          <iframe
-            src="https://www.720yun.com/vr/ac9j5puysw4"
-            title="CIA 3D校园全景导览"
-            loading="lazy"
-            allow="fullscreen; accelerometer; gyroscope"
-            allowfullscreen
-            referrerpolicy="strict-origin-when-cross-origin"
-          ></iframe>
-        </div>
-      </div>
-    </details>
-
     <ng-container *ngTemplateOutlet="courseVideosSection"></ng-container>
 
     <section class="cia-section" id="courses">

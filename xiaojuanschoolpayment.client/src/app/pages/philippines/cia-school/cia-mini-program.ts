@@ -142,7 +142,7 @@ function roomsSection(): MiniSection {
   };
 }
 
-/** 校园环境：校园介绍、楼栋、基本资料、学习规则、相册和 3D 全景链接 */
+/** 校园环境：校园介绍、楼栋、基本资料、学习规则和相册 */
 function campusSection(): MiniSection {
   // Accommodation photos are shown with the room types instead of as an album, like the website.
   const albums = CIA_GALLERY_ALBUM_CATEGORIES
@@ -167,7 +167,6 @@ function campusSection(): MiniSection {
       note(copy.campus.ruleText),
       { type: 'albums', albums },
       note(copy.gallery.photoNote),
-      { type: 'link', label: copy.vr.title, url: copy.vr.url, text: `${copy.vr.text}小程序内无法打开外部全景页面，可复制链接后在浏览器中打开。` },
     ],
   };
 }

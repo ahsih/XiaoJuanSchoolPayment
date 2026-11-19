@@ -728,7 +728,6 @@
   padding: 22px;
 }
 
-:host .campus-vr-section,
 :host .media-disclosure,
 :host .refund-policy-section {
   margin-top: 24px;
@@ -736,18 +735,6 @@
 
 :host .course-detail-disclosure .course-facts-grid {
   margin-top: 0;
-}
-
-:host .campus-vr-body {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
-  gap: 24px;
-  align-items: center;
-}
-
-:host .campus-vr-body .campus-vr-copy,
-:host .campus-vr-body .campus-vr-frame {
-  margin: 0;
 }
 
 :host .course-choice-grid {
@@ -1258,10 +1245,6 @@
 
 @media (max-width: 1099px) {
   :host .decision-summary-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  :host .campus-vr-body {
     grid-template-columns: minmax(0, 1fr);
   }
 

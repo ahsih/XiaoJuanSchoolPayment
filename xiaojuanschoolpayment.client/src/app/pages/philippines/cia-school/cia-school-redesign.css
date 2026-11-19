@@ -235,10 +235,6 @@
   }
 }
 
-:host .campus-vr-section:not([open]) {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 /* Six wide videos (campus, dormitory, four courses) sit in two rows of three. */
 @media (min-width: 1041px) {
   :host .video-grid {
