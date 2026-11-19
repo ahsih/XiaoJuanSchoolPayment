@@ -42,4 +42,6 @@ xiaojuan-sql.sql
 # Local source downloads, media processing, and temporary review files.
 /tmp/
 *.mp4
+# Videos the website serves must still be committed.
+!xiaojuanschoolpayment.client/public/assets/**/*.mp4
 /cos.env

@@ -51,6 +51,24 @@
     </div>
   </section>
 
+  <section class="tour-section" *ngIf="page.schools?.length">
+    <div class="section-heading">
+      <span class="section-kicker">Schools</span>
+      <h2>可报名的学校</h2>
+    </div>
+    <div class="school-grid">
+      <a class="school-card" *ngFor="let school of page.schools" [routerLink]="school.route">
+        <img [src]="school.image" [alt]="school.name" loading="lazy" />
+        <div>
+          <h3>{{ school.name }}</h3>
+          <p>{{ school.text }}</p>
+          <span class="school-tags"><span *ngFor="let tag of school.tags">{{ tag }}</span></span>
+          <strong>查看课程、价格和在线报价<mat-icon>chevron_right</mat-icon></strong>
+        </div>
+      </a>
+    </div>
+  </section>
+
   <section class="planning-section">
     <div>
       <span class="section-kicker">Planning</span>

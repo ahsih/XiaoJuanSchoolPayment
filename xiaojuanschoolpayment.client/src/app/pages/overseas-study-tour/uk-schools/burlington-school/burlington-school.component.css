@@ -1,0 +1,110 @@
+/* Burlington additions on top of the shared CIA/CIEC school-detail layout. */
+.burlington-page .hero-copy h1 { font-size: clamp(34px, 3.6vw, 54px); line-height: 1.12; }
+.burlington-page .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.burlington-page .course-grid.bt-programme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.burlington-page .bt-programme ul { margin: 10px 0 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.7; }
+.burlington-page .bt-dates { display: flex; gap: 6px; align-items: flex-start; color: #0f4a2f; font-weight: 700; }
+.burlington-page .bt-dates mat-icon { flex: none; font-size: 18px; width: 18px; height: 18px; margin-top: 2px; }
+.burlington-page .bt-weeks, .burlington-page .bt-sub { color: #64748b; font-size: 13px; }
+.burlington-page .bt-price { display: block; margin-top: 10px; color: #ee7d1a; font-size: 18px; font-weight: 900; }
+
+.burlington-page .bt-subheading { margin: 30px 0 12px; color: #102033; font-size: 18px; font-weight: 900; }
+.burlington-page .bt-note { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+
+.burlington-page .bt-table-wrap { overflow-x: auto; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; -webkit-overflow-scrolling: touch; }
+.burlington-page .bt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.burlington-page .bt-table.bt-wide { min-width: 680px; }
+.burlington-page .bt-table th, .burlington-page .bt-table td { padding: 12px 14px; border-top: 1px solid #e8eef3; text-align: left; vertical-align: top; color: #40506a; line-height: 1.5; }
+.burlington-page .bt-table thead th { border-top: 0; background: #0f4a2f; color: #fff; font-weight: 800; }
+.burlington-page .bt-table tbody th { color: #102033; font-weight: 800; background: #f8fbf9; white-space: nowrap; }
+.burlington-page .bt-table .bt-strong { color: #102033; font-weight: 800; }
+.burlington-page .bt-table .bt-muted { color: #a3aaa5; }
+
+.burlington-page .bt-extra-grid, .burlington-page .bt-service-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.burlington-page .bt-service-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.burlington-page .bt-extra-grid article, .burlington-page .bt-service-grid article { padding: 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-extra-grid span { color: #64748b; font-size: 13px; font-weight: 700; }
+.burlington-page .bt-extra-grid strong, .burlington-page .bt-service-grid strong { display: block; margin-top: 4px; color: #102033; }
+.burlington-page .bt-extra-grid p, .burlington-page .bt-service-grid p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.6; }
+.burlington-page .bt-service-grid mat-icon { color: #ee7d1a; }
+
+.burlington-page .bt-room-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.burlington-page .bt-room-card { padding: 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-room-card h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; color: #0f4a2f; font-size: 16px; }
+.burlington-page .bt-room-card p { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.burlington-page .bt-price-list { margin: 0; padding: 0; list-style: none; }
+.burlington-page .bt-price-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef2f5; font-size: 14px; color: #40506a; }
+.burlington-page .bt-price-list li:first-child { border-top: 0; }
+.burlington-page .bt-price-list b { color: #102033; white-space: nowrap; }
+.burlington-page .bt-supplements { margin-top: 12px; padding: 4px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+
+.burlington-page .bt-tier-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.burlington-page .bt-tier-row div { padding: 16px; border-radius: 8px; background: #eaf3ec; text-align: center; }
+.burlington-page .bt-tier-row div.active { background: #0f4a2f; color: #fff; }
+.burlington-page .bt-tier-row span { display: block; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
+.burlington-page .bt-tier-row strong { display: block; margin-top: 4px; font-size: 22px; font-weight: 900; }
+.burlington-page .bt-tier-row em { display: block; margin-top: 2px; font-style: normal; font-size: 12px; color: #f7c873; }
+.burlington-page .bt-include-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.burlington-page .bt-include-grid article { padding: 14px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-include-grid h3 { margin: 0 0 8px; color: #0f4a2f; font-size: 16px; }
+.burlington-page .bt-include-grid ul { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.7; }
+
+.burlington-page .bt-castle { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
+.burlington-page .bt-castle img { width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 4 / 3; }
+.burlington-page .bt-castle-options { display: grid; gap: 10px; }
+.burlington-page .bt-castle-options article { padding: 12px 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-castle-options div { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.burlington-page .bt-castle-options span { color: #102033; font-weight: 800; }
+.burlington-page .bt-castle-options strong { color: #ee7d1a; white-space: nowrap; }
+.burlington-page .bt-castle-options p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.6; }
+
+.burlington-page .bt-fee-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.burlington-page .bt-calendar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.burlington-page .bt-calendar article { padding: 12px 14px; border-left: 4px solid #ee7d1a; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #e8eef3; }
+.burlington-page .bt-calendar time { display: block; color: #0f4a2f; font-weight: 800; font-size: 14px; }
+.burlington-page .bt-calendar strong { display: block; margin-top: 2px; color: #102033; }
+.burlington-page .bt-calendar span { color: #64748b; font-size: 13px; }
+
+.burlington-page .bt-contact { display: flex; gap: 18px; align-items: center; margin-top: 16px; padding: 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #f6faf6; }
+.burlington-page .bt-contact-qr { flex: none; width: 128px; height: 128px; object-fit: cover; object-position: 50% 52%; border-radius: 8px; background: #fff; }
+.burlington-page .bt-contact span { color: #ee7d1a; font-size: 13px; font-weight: 800; }
+.burlington-page .bt-contact strong { display: block; margin-top: 2px; color: #0f4a2f; font-size: 18px; }
+.burlington-page .bt-contact p { margin: 6px 0 10px; color: #40506a; font-size: 14px; line-height: 1.6; }
+
+.burlington-page .bt-video-featured { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.burlington-page .bt-video-shorts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.burlington-page .bt-video-featured figure, .burlington-page .bt-video-shorts figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-video-featured video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #0f1d16; }
+.burlington-page .bt-video-shorts video { display: block; width: 100%; aspect-ratio: 9 / 16; background: #0f1d16; }
+.burlington-page .bt-video-featured figcaption, .burlington-page .bt-video-shorts figcaption { padding: 10px 12px; }
+.burlington-page .bt-video-featured strong, .burlington-page .bt-video-shorts strong { display: flex; justify-content: space-between; gap: 8px; color: #102033; font-size: 15px; }
+.burlington-page .bt-video-shorts strong { font-size: 14px; }
+.burlington-page .bt-video-featured em, .burlington-page .bt-video-shorts em { font-style: normal; color: #64748b; font-weight: 400; font-size: 12px; }
+.burlington-page .bt-video-featured span, .burlington-page .bt-video-shorts span { display: block; margin-top: 4px; color: #526176; font-size: 13px; line-height: 1.5; }
+.burlington-page .bt-junior-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.burlington-page .bt-lead-note { margin: 0 0 8px !important; }
+.burlington-page .bt-check-list { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.75; }
+.burlington-page .bt-vetting { margin-top: 12px; }
+
+.burlington-page .bt-reference { color: #8a6d3b; }
+
+@media (max-width: 980px) {
+  .burlington-page .bt-video-shorts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .burlington-page .bt-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .burlington-page .bt-calendar, .burlington-page .bt-fee-grid, .burlington-page .bt-extra-grid, .burlington-page .bt-include-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .burlington-page .bt-video-featured, .burlington-page .bt-junior-grid { grid-template-columns: 1fr; }
+  .burlington-page .bt-video-shorts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .burlington-page .timeline { grid-template-columns: 1fr; }
+  .burlington-page .course-grid.bt-programme-grid, .burlington-page .bt-room-grid, .burlington-page .bt-castle,
+  .burlington-page .bt-calendar, .burlington-page .bt-fee-grid, .burlington-page .bt-extra-grid,
+  .burlington-page .bt-include-grid, .burlington-page .bt-service-grid { grid-template-columns: 1fr; }
+  .burlington-page .bt-tier-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .burlington-page .bt-tier-row div { padding: 10px 4px; }
+  .burlington-page .bt-tier-row strong { font-size: 15px; }
+  .burlington-page .bt-table th, .burlington-page .bt-table td { padding: 10px; font-size: 13px; }
+  .burlington-page .bt-table tbody th { white-space: normal; }
+  .burlington-page .bt-contact { flex-direction: column; align-items: flex-start; }
+}

@@ -821,6 +821,13 @@ const routes: Routes = [
           import('./pages/overseas-study-tour/uk-tour/uk-tour.component').then((m) => m.UkTourComponent),
       },
       {
+        path: 'overseas-study-tour/uk/burlington-school',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/burlington-school/burlington-school.component').then(
+            (m) => m.BurlingtonSchoolComponent,
+          ),
+      },
+      {
         path: 'overseas-study-tour/singapore',
         loadComponent: () =>
           import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(

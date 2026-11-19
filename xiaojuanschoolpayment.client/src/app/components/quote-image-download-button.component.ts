@@ -28,6 +28,7 @@ import {
 } from './quote-image-detailed-renderer';
 import { drawPlanCompareImage, planCompareImageHeight } from './plan-compare/plan-compare-image-renderer';
 import { planCompareReady } from './plan-compare/plan-compare-sheet';
+import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote/uk-quote-image-renderer';
 
 export type QuoteImageActionMode = 'download' | 'email';
 
@@ -479,16 +480,19 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
     const compareSheet = this.quote.layout === 'plan-compare' ? this.quote.planCompare : undefined;
     if (this.quote.layout === 'plan-compare' && (!compareSheet || !planCompareReady(compareSheet))) throw new Error('对比方案还有需要修改的地方。');
-    const [logo, hero, consultantAssets] = await Promise.all([
+    const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
+    if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
+    const [logo, hero, consultantAssets, ukQr] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
-        (this.quote.layout === 'cia-detailed' || compareSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
+        (this.quote.layout === 'cia-detailed' || compareSheet || ukSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
           consultant,
           avatar: await this.loadCanvasImage(consultant.avatarSrc),
           qr: await this.loadCanvasImage(consultant.qrSrc),
         })),
       ),
+      ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -500,6 +504,8 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
 
     const height = compareSheet
       ? planCompareImageHeight(context, compareSheet)
+      : ukSheet
+        ? ukQuoteImageHeight(context, ukSheet)
       : this.quote.layout === 'cia-detailed'
         ? detailedQuoteImageHeight(context, this.quote)
         : 1848;
@@ -518,6 +524,8 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
           context.imageSmoothingQuality = 'high';
           if (compareSheet) {
             drawPlanCompareImage<HTMLImageElement>(context, this.quote, compareSheet, { logo, hero }, width, height);
+          } else if (ukSheet) {
+            drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
           } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
               logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })),
@@ -540,7 +548,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 

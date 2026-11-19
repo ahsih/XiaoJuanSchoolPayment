@@ -246,6 +246,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/cebu/cia-cebu-international-academy/student-reviews/cebu-nature-and-culture", "monthly", "0.65"),
   ("/philippines-study/cebu/cia-cebu-international-academy/student-reviews/memorable-cebu-trip-with-friends", "monthly", "0.65"),
   ("/philippines-study/cebu/ciec", "monthly", "0.8"),
+  ("/overseas-study-tour/uk/burlington-school", "monthly", "0.8"),
   ("/philippines-study/cebu/elsa-international-language-school", "monthly", "0.8"),
   ("/philippines-study/cebu/ethos-language-school", "monthly", "0.8"),
   ("/philippines-study/cebu/ims-academy", "monthly", "0.8"),

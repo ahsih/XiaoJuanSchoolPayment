@@ -17,6 +17,8 @@ interface StudyTourPageContent {
   checklistTitle: string;
   checklist: string[];
   sources: { label: string; url: string }[];
+  /** Optional school pages with their own course, price and quote details. */
+  schools?: { name: string; route: string; image: string; text: string; tags: string[] }[];
 }
 
 @Component({
