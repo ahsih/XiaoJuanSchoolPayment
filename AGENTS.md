@@ -433,6 +433,21 @@ Family prices are exact 1/2/3/4/6/8-week whole-package totals. The newer 2027-la
 
 Source/page/date/fee reconciliation is in `docs/la-mer-source-audit.md`; file hashes and media provenance are in the adjacent JSON records. Local delivery and verification are in `docs/la-mer-implementation.md`. Focused price and publication-data regressions: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.la-mer.spec.json --include=src/app/pages/philippines/la-mer-school/la-mer-quote.spec.ts --progress=false`. The optional `compactDetailedSections` image flag is enabled only for La Mer; existing school image layout defaults remain unchanged.
 
+## EV main campus update (2026-11-19)
+
+The user supplied the September 2026 EV pack (price list dated 2026-04-13, 2026-08-10 dormitory and condo local-fee sheets, 2026 Chinese brochure, orientation guide and rules). Tuition and room prices did not change. `ev-content-config.ts` now follows the 2026-08-10 sheets, and `quoteSettings.evPolicyVersion` upgrades older saved documents once while keeping edited prices:
+
+- Management is 500 pesos per week for the dorm and 1,000 per week for the condo; electricity is 500 and water 300 per week. All are charged by accommodation week, not in 4-week blocks.
+- ACR I-Card is 4,000 once the stay reaches 9 weeks, whatever the tourist visa. ARP (300 pesos, once at the first tourist-visa extension or for a long-term visa) is not on the sheets but the user confirmed it is charged; keep it.
+- Visa extensions start at week 5 (30-day visa, cumulative 5,430/11,830/16,260/20,690/25,120) or week 9 (59-day visa, 6,700/11,130/15,560/19,990), then every 4 weeks (`rates` and `tourist59Rates`).
+- The refundable deposit is 2,000 for 1–3 weeks, 3,000 for 4–8 and 5,000 from 9 weeks.
+- IELTS Guarantee (雅思保分班) starts at 8 weeks. Its whole-course tuition for 8–11 weeks is 2,700/2,987.5/3,275/3,562.5 dollars (`feeByWeeks`); from 12 weeks it is 1,290 per 4 weeks.
+- The off-campus condo is Semi-Sparta only, and the calculator blocks condo weeks that overlap a Sparta course.
+
+Course names follow the brochure: 密集ESL, 经典ESL, 口语强化6/8, 雅思, 雅思保分班, 托业, 商务英语, 社交媒体英语 (Digital English). The database still supplies 4-week prices only; names, schedules and notes come from the content document, so renamed seed rows are not needed.
+
+Page text and data live in the pure module `ev-page-content.ts` (mini-program-ready). Gallery photos added from the brochure (pages 24–26) are in `public/assets/ev/`. Seven main-campus videos are in `public/assets/ev/videos/` (720p H.264 with poster frames, about 94 MB, `preload="none"`): two are from EV's YouTube channel (campus tour, dinner buffet) and five are clips from the user's pack. Their end frames show only the EV logo. La Mer clips from the same pack were not used. Focused tests: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.ev.spec.json --include=src/app/pages/philippines/ev-school/ev-school-detail.component.spec.ts --progress=false`.
+
 ## UK schools and Burlington School (2026-11-19)
 
 UK school quotes differ from the Philippine ones (weekly all-inclusive packages, tiered tuition, accommodation and one-time fees in pounds; no peso local fees), so they use a separate shared template that every future UK school should reuse:

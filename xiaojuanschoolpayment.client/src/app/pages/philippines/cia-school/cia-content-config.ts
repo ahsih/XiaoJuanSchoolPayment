@@ -94,6 +94,8 @@ export interface CiaLocalFeeRule {
   periodWeeks?: number;
   rounding?: 'proportional' | 'ceil';
   rates?: number[];
+  /** EV: visa-extension sequence after a 59-day tourist entry; `rates` then holds the 30-day sequence. */
+  tourist59Rates?: number[];
   /** Optional dated replacement values. CG uses the Sunday arrival that corresponds to the published Monday effective date. */
   futureEffectiveStart?: string;
   futureName?: string;
@@ -196,6 +198,8 @@ export interface CiaQuoteSettings {
   /** CIA local-fee notices (free ARP from 2026-10-16, 2027 electricity) applied once to older published documents. */
   localFeePolicyVersion?: number;
   monolPromotionPolicyVersion?: number;
+  /** EV main campus: 2026-08-10 local-fee sheet and 2026 brochure course catalogue upgrade. */
+  evPolicyVersion?: number;
   /** I.BREEZE November policy and registration-dated 2027 catalogue upgrade. */
   ibreezePolicyVersion?: number;
   /** CPILS September 2026 notice and the user-confirmed registration cutoff. */

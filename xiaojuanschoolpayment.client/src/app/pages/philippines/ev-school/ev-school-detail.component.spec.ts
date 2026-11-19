@@ -7,7 +7,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
-import { createDefaultEvContentConfig } from './ev-content-config';
+import { cloneEvContentConfig, createDefaultEvContentConfig } from './ev-content-config';
 import { EvSchoolDetailComponent } from './ev-school-detail.component';
 
 describe('EV accommodation management fees', () => {
@@ -143,7 +143,7 @@ describe('EV accommodation management fees', () => {
   });
 
   it('uses the high-resolution brand master and the requested deposit wording', async () => {
-    expect(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note).toBe('1至8周3,000比索，9至24周5,000比索；无损坏及无欠费时可退');
+    expect(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note).toBe('1至3周2,000比索，4至8周3,000比索，9周以上5,000比索；无损坏、无欠费时退还。');
     expect(component.quoteImageData.optionalFeeItems?.find(fee => fee.label === '房间押金')?.note).toBe(component.excludedLocalFees.find(fee => fee.item === '房间押金')?.note);
     const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent()); renderer.quote = component.quoteImageData;
     const loaded = spyOn<any>(renderer, 'loadCanvasImage').and.callThrough();
@@ -168,18 +168,17 @@ describe('EV accommodation management fees', () => {
       component.selectedRoomId = room.id;
       for (const weeks of component.weekOptions) {
         component.selectedWeeks = weeks;
-        const periods = Math.ceil(weeks / 4);
         const offCampus = room.id.startsWith('off-campus');
         const onCampusFee = component.includedLocalFees.find(fee => fee.item === '校内管理费')!;
-        const offCampusFee = component.includedLocalFees.find(fee => fee.item === '校外宿舍管理费')!;
-        expect(onCampusFee.quantity).toBe(offCampus ? 0 : periods);
-        expect(onCampusFee.total).toBe(offCampus ? 0 : 2000 * periods);
-        expect(offCampusFee.quantity).toBe(offCampus ? periods : 0);
-        expect(offCampusFee.total).toBe(offCampus ? 4000 * periods : 0);
-        expect(offCampusFee.amount).toBe('4,000 比索／4周');
+        const offCampusFee = component.includedLocalFees.find(fee => fee.item === '校外公寓管理费')!;
+        expect(onCampusFee.quantity).toBe(offCampus ? 0 : weeks);
+        expect(onCampusFee.total).toBe(offCampus ? 0 : 500 * weeks);
+        expect(offCampusFee.quantity).toBe(offCampus ? weeks : 0);
+        expect(offCampusFee.total).toBe(offCampus ? 1000 * weeks : 0);
+        expect(offCampusFee.amount).toBe('1,000 比索／周');
         expect(component.includedLocalFees.length).toBe(11);
         const otherFees = component.includedLocalFees.filter(fee => !fee.item.includes('管理费'));
-        expect(component.localFeesTotal).toBe(otherFees.reduce((sum, fee) => sum + fee.total, 0) + (offCampus ? 4000 : 2000) * periods);
+        expect(component.localFeesTotal).toBe(otherFees.reduce((sum, fee) => sum + fee.total, 0) + (offCampus ? 1000 : 500) * weeks);
       }
     }
   });
@@ -221,11 +220,11 @@ describe('EV accommodation management fees', () => {
       drawnText.calls.reset();
       const blob = await renderer['createQuoteImageBlob'](1);
       const text = drawnText.calls.allArgs().map(args => args[0]).join('').replace(/\s/g, '');
-      expect(text).toContain('校外宿舍管理费');
+      expect(text).toContain('校外公寓管理费');
       expect(text).toContain('校内管理费');
       expect(text).toContain('学生证');
       expect(text).toContain(component.formatPhp(component.localFeesTotal).replace(/\s/g, ''));
-      expect(text.replace(/／/g, '/')).toContain('4,000比索/4周');
+      expect(text.replace(/／/g, '/')).toContain('1,000比索/周');
       expect(blob.type).toBe('image/png');
       const layout = renderer['measureFullFeeLayout'](document.createElement('canvas').getContext('2d')!);
       expect(layout.localHeights.length).toBe(11);
@@ -240,11 +239,11 @@ describe('EV accommodation management fees', () => {
     appendPeriodPair();
     expect(component.courseSelections[1].startDate).toBe('2026-10-04');
     expect(component.roomSelections[1].startDate).toBe('2026-10-04');
-    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-intensive-esl', weeks: 2 });
+    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'semi-sparta-business', weeks: 2 });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single', weeks: 2 });
     expect(component.totalWeeks).toBe(6);
     expect(component.roomTotalWeeks).toBe(6);
-    expect(component.tuitionForSelectedWeeks).toBe(firstCourseAmount + component.courseFees.find(course => course.id === 'sparta-intensive-esl')!.tuition * .5);
+    expect(component.tuitionForSelectedWeeks).toBe(firstCourseAmount + component.courseFees.find(course => course.id === 'semi-sparta-business')!.tuition * .5);
     expect(component.roomFeeForSelectedWeeks).toBe(firstRoomAmount + component.roomFees.find(room => room.id === 'off-campus-single')!.fee * .5);
     expect(component.quoteImageData.paymentItems.filter(item => item.label.startsWith('课程费')).length).toBe(2);
     expect(component.quoteImageData.paymentItems.filter(item => item.label.startsWith('住宿费')).length).toBe(2);
@@ -399,13 +398,13 @@ describe('EV accommodation management fees', () => {
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-double', weeks: 2 });
     expect(component.onCampusRoomWeeks).toBe(2);
     expect(component.offCampusRoomWeeks).toBe(2);
-    expect(component.includedLocalFees.find(fee => fee.item === '校内管理费')?.total).toBe(2000);
-    expect(component.includedLocalFees.find(fee => fee.item === '校外宿舍管理费')?.total).toBe(4000);
+    expect(component.includedLocalFees.find(fee => fee.item === '校内管理费')?.total).toBe(1000);
+    expect(component.includedLocalFees.find(fee => fee.item === '校外公寓管理费')?.total).toBe(2000);
   });
 
   it('renders every course and accommodation row with dates in a combined quote image', async () => {
     appendPeriodPair();
-    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-intensive-esl', weeks: 2 });
+    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'semi-sparta-business', weeks: 2 });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single', weeks: 2 });
     const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
@@ -718,7 +717,7 @@ describe('EV accommodation management fees', () => {
 
   it('uses the requested eight-week title without restating durations or calculations', async () => {
     appendPeriodPair();
-    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'sparta-power-speaking-6' });
+    component.updateSelection('course', component.courseSelections[1].id, { optionId: 'semi-sparta-power-speaking-6' });
     component.updateSelection('room', component.roomSelections[1].id, { optionId: 'off-campus-single' });
     const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
@@ -732,7 +731,7 @@ describe('EV accommodation management fees', () => {
     expect(renderer.quote.importantNotes?.join('')).toContain('最终以学校价格');
     expect(renderer.quote.importantNotes?.join('')).toContain('到校前2周交齐');
     expect(renderer.quote.importantNotes?.join('')).toContain('支付宝最新参考汇率');
-    expect(renderer.quote.totalUsd).toBe('4,527 美元');
+    expect(renderer.quote.totalUsd).toBe('4,479.5 美元');
   }, 30000);
 
   it('calculates mixed returning, long-visa and pickup choices per student', () => {
@@ -747,5 +746,83 @@ describe('EV accommodation management fees', () => {
     expect(component.localFees.filter(row => row.item.endsWith('ARP外国人登记')).reduce((sum, row) => sum + row.total, 0)).toBe(300);
     expect(component.localFees.filter(row => row.item.startsWith('学生2') && ['SSP特殊学习许可证', 'SSP E-CARD', 'ACR-I Card 外国人身份证', '签证续签'].some(name => row.item.endsWith(name))).every(row => row.total === 0)).toBeTrue();
     expect(component.quoteImageData.headingText).toBe('EV主校区 2人·每人4周报价');
+  });
+
+  it('matches the 2026-08-10 dormitory and condo local-fee sheets without deposit or pickup', () => {
+    // Sheet totals minus the refundable deposit and pickup, which the page lists separately; books and the
+    // user-confirmed 300-peso ARP (not on the sheet) are extra.
+    const cases: Array<[number, 'tourist30' | 'tourist59', string, number, number]> = [
+      [2, 'tourist30', 'quad-bunk', 15400, 2000],
+      [4, 'tourist30', 'quad-bunk', 18000, 3000],
+      [5, 'tourist30', 'quad-bunk', 24730, 3000],
+      [12, 'tourist30', 'quad-bunk', 44230, 5000],
+      [12, 'tourist59', 'quad-bunk', 39100, 5000],
+      [21, 'tourist59', 'quad-bunk', 64090, 5000],
+      [24, 'tourist30', 'quad-bunk', 73120, 5000],
+      [6, 'tourist59', 'off-campus-single', 23600, 3000],
+      [12, 'tourist30', 'off-campus-double', 50230, 5000],
+    ];
+    for (const [weeks, visa, room, local, deposit] of cases) {
+      component.selectedRoomId = room;
+      component.selectedWeeks = weeks;
+      component.calculator.visaType = visa;
+      const withoutBooks = component.includedLocalFees.filter(fee => !['教材费', 'ARP外国人登记'].includes(fee.item)).reduce((sum, fee) => sum + fee.total, 0);
+      expect(withoutBooks).withContext(`${weeks}周 ${visa} ${room}`).toBe(local);
+      expect(component.roomDeposit).withContext(`${weeks}周押金`).toBe(deposit);
+    }
+  });
+
+  it('starts visa extensions at week 5 or 9 and ACR from week 9 for both tourist visas', () => {
+    component.calculator.visaType = 'tourist30';
+    component.selectedWeeks = 8;
+    expect(component.visaExtensionCount).toBe(1);
+    expect(component.includedLocalFees.find(fee => fee.item === 'ACR-I Card 外国人身份证')?.total).toBe(0);
+    component.selectedWeeks = 9;
+    expect(component.visaExtensionFeeTotal).toBe(11830);
+    expect(component.includedLocalFees.find(fee => fee.item === 'ACR-I Card 外国人身份证')?.total).toBe(4000);
+    component.calculator.visaType = 'tourist59';
+    expect(component.visaExtensionCount).toBe(1);
+    expect(component.visaExtensionFeeTotal).toBe(6700);
+    component.selectedWeeks = 8;
+    expect(component.visaExtensionCount).toBe(0);
+  });
+
+  it('prices short IELTS Guarantee plans from the price list and blocks under eight weeks', () => {
+    component.selectedCourseId = 'sparta-ielts-guarantee';
+    component.selectedRoomId = 'single';
+    component.selectedWeeks = 4;
+    expect(component.planError).toBe('雅思保分班至少8周。');
+    const listed: Record<number, number> = { 8: 5600, 9: 6238, 10: 6875, 11: 7513, 12: 8170, 16: 10860 };
+    for (const [weeks, total] of Object.entries(listed)) {
+      component.selectedWeeks = Number(weeks);
+      expect(component.canExportQuote).withContext(`${weeks}周`).toBeTrue();
+      expect(Math.round(component.calculator.registration + component.calculator.tuition + component.calculator.accommodation)).withContext(`${weeks}周`).toBe(total);
+    }
+  });
+
+  it('keeps the off-campus condo for Semi-Sparta course students only', () => {
+    component.selectedRoomId = 'off-campus-single';
+    expect(component.canExportQuote).toBeTrue();
+    component.selectedCourseId = 'sparta-intensive-esl';
+    expect(component.planError).toContain('校外公寓仅限半斯巴达课程');
+    component.selectedRoomId = 'single';
+    expect(component.canExportQuote).toBeTrue();
+  });
+
+  it('upgrades older saved EV content to the 2026-08-10 fees while keeping edited prices', () => {
+    const saved = createDefaultEvContentConfig();
+    delete saved.quoteSettings.evPolicyVersion;
+    saved.courses.find(item => item.id === 'semi-sparta-esl')!.tuition = 999;
+    Object.assign(saved.courses.find(item => item.id === 'sparta-ielts-guarantee')!, { name: '雅思保证班（斯巴达）', feeByWeeks: undefined, minimumWeeks: 12 });
+    saved.localFees = saved.localFees.map(fee => fee.id === 'electricity' ? { ...fee, amount: 2000, periodWeeks: 4 } : fee);
+    saved.localFees.push({ id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '', enabled: true, sortOrder: 99 });
+    saved.quoteImageSettings.localFeeNotes = { ...saved.quoteImageSettings.localFeeNotes, 'room-deposit': '1至8周3,000比索' };
+    const upgraded = cloneEvContentConfig(saved);
+    expect(upgraded.courses.find(item => item.id === 'semi-sparta-esl')!.tuition).toBe(999);
+    expect(upgraded.courses.find(item => item.id === 'sparta-ielts-guarantee')).toEqual(jasmine.objectContaining({ name: '雅思保分班（斯巴达）', minimumWeeks: 8 }));
+    expect(upgraded.localFees.find(fee => fee.id === 'electricity')).toEqual(jasmine.objectContaining({ amount: 500, periodWeeks: 1 }));
+    expect(upgraded.localFees.find(fee => fee.id === 'arp')).toEqual(jasmine.objectContaining({ amount: 300, enabled: true }));
+    expect(upgraded.quoteImageSettings.localFeeNotes['room-deposit']).toContain('1至3周2,000比索');
+    expect(upgraded.quoteSettings.evPolicyVersion).toBe(1);
   });
 });

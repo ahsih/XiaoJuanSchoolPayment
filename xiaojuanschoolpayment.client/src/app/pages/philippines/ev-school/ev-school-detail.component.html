@@ -10,21 +10,13 @@
             </a>
             <p class="breadcrumb">菲律宾游学 / 宿务学校 / 菲律宾宿务EV语言学校</p>
             <h1>菲律宾宿务EV语言学校</h1>
-            <p class="hero-lead">
-              宿务市区代表性的斯巴达 / 半斯巴达双管理模式英语学校，拥有度假村式校园环境，适合想把学习纪律、现代校园、校内住宿和课程强度一起考虑的学生。
-            </p>
-            <div class="hero-tags" aria-label="EV特点">
-              <span><mat-icon>location_on</mat-icon>宿务市区</span>
-              <span><mat-icon>speed</mat-icon>斯巴达 / 半斯巴达双管理模式</span>
-              <span><mat-icon>fact_check</mat-icon>IDP雅思官方考点</span>
-              <span><mat-icon>villa</mat-icon>度假村式校园</span>
-            </div>
+            <p class="hero-lead">{{ copy.heroLead }}</p>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
                 立即计算我的费用
                 <mat-icon>calculate</mat-icon>
               </a>
-              <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+              <a class="secondary-action" href="#daily-schedule" (click)="scrollToSection('daily-schedule', $event)">
                 查看管理模式怎么选
                 <mat-icon>menu_book</mat-icon>
               </a>
@@ -35,14 +27,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              提交斯巴达或半斯巴达偏好、课程、房型和入学日期后，思达顾问会帮你确认空房、优惠和正式报价。
+              {{ copy.trustNote }}
             </p>
           </div>
 
           <div class="hero-media" aria-label="EV校园图片展示">
             <figure class="feature-photo">
               <img src="assets/ev/campus-exterior.webp" alt="菲律宾宿务EV语言学校校园外观" />
-              <figcaption>菲律宾宿务EV语言学校官方校园图</figcaption>
+              <figcaption>菲律宾宿务EV语言学校校园</figcaption>
             </figure>
             <div class="media-strip" aria-label="EV校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(1, 4)">
@@ -50,22 +42,6 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
-            <aside class="hero-price-card">
-              <span>4周参考</span>
-              <strong>{{ formatUsd(quoteUsd) }} 美元 <small>起</small></strong>
-              <p>半斯巴达 ESL + 四人间</p>
-              <ul>
-                <li>
-                  <mat-icon>check_circle</mat-icon>
-                  已含注册费、折扣后课程费和食宿费估算
-                </li>
-                <li>
-                  <mat-icon>info</mat-icon>
-                  2027旺季附加费按实际覆盖周数以60美元／周计收，不参与95折；到校费用需另行确认
-                </li>
-              </ul>
-            </aside>
-            <p class="photo-source">图片来源：菲律宾宿务EV语言学校官方网站校园、宿舍、教室与设施页面</p>
           </div>
         </section>
 
@@ -76,22 +52,62 @@
           </a>
         </nav>
 
-        <section class="quick-info" aria-label="EV快速信息卡">
-          <article class="quick-card" *ngFor="let item of quickInfo">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <div>
-              <span>{{ item.label }}</span>
-              <strong>{{ item.value }}</strong>
-              <p>{{ item.note }}</p>
+        <div class="decision-summary-grid" id="overview">
+          <section class="overview-grid" aria-label="30 秒看懂 EV">
+            <div class="overview-main">
+              <div class="section-heading">
+                <h2>{{ copy.overviewTitle }}</h2>
+              </div>
+              <div class="snapshot-grid">
+                <article *ngFor="let item of quickInfo">
+                  <mat-icon>{{ item.icon }}</mat-icon>
+                  <div>
+                    <strong>{{ item.title }}</strong>
+                    <p>{{ item.text }}</p>
+                  </div>
+                </article>
+              </div>
             </div>
-          </article>
+          </section>
+
+          <section class="advisor-review" id="advisor-review">
+            <h2>{{ copy.advisorTitle }}</h2>
+            <p>{{ copy.advisorText }}</p>
+            <div class="fit-columns">
+              <div>
+                <h3><mat-icon>check_circle</mat-icon>{{ copy.suitableTitle }}</h3>
+                <ul>
+                  <li *ngFor="let item of suitableFor">{{ item.title }}</li>
+                </ul>
+              </div>
+              <div>
+                <h3><mat-icon>cancel</mat-icon>{{ copy.notSuitableTitle }}</h3>
+                <ul>
+                  <li *ngFor="let item of notSuitableFor">{{ item.title }}</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="section-block" id="basic-info">
+          <div class="section-heading">
+            <span>学校基本信息</span>
+            <h2>EV 学校介绍</h2>
+          </div>
+          <dl class="info-list">
+            <div *ngFor="let row of basicInfo">
+              <dt>{{ row.label }}</dt>
+              <dd>{{ row.value }}</dd>
+            </div>
+          </dl>
         </section>
 
         <section class="section-block" id="gallery">
           <div class="section-heading">
             <span>图片 / 视频展示</span>
             <h2>按区域查看 EV 环境</h2>
-            <p>先看校园、教室、住宿和设施，再判断EV的学习与生活环境是否适合你。</p>
+            <p>{{ copy.galleryLead }}</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="EV图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -108,81 +124,28 @@
               </figcaption>
             </figure>
           </div>
+          <button type="button" class="secondary-action ev-gallery-more" *ngIf="hiddenPhotoCount" (click)="showAllPhotos = true">
+            查看全部 {{ galleryImages.length }} 张照片<mat-icon>expand_more</mat-icon>
+          </button>
         </section>
 
-        <div class="info-trio">
-          <section class="panel basic-panel" id="basic-info">
-            <div class="compact-heading">
-              <span>学校基本信息</span>
-              <h2>EV 基本资料</h2>
-            </div>
-            <dl class="info-list">
-              <div *ngFor="let row of basicInfo">
-                <dt>{{ row.label }}</dt>
-                <dd>{{ row.value }}</dd>
-              </div>
-            </dl>
-          </section>
-
-          <section class="panel advisor-panel" id="advisor-review">
-            <div class="quote-mark">“</div>
-            <div class="compact-heading">
-              <span>思达顾问点评</span>
-              <h2>先选管理强度，再选课程和房型</h2>
-            </div>
-            <p>
-              EV最重要的不是只看价格，而是先判断斯巴达还是半斯巴达。想冲刺考试、自律较弱或希望被学习节奏推动，优先看斯巴达；想兼顾学习和宿务生活，半斯巴达综合英语会更舒服。顾问会同时帮你核对课程强度、房型、到校费用和未成年规则。
-            </p>
-            <div class="advisor-card">
-              <div class="advisor-avatar">Ivy</div>
-              <div>
-                <strong>Ivy 顾问建议</strong>
-                <span>先确认斯巴达或半斯巴达，再算课程、房型和当地费用。</span>
-              </div>
-            </div>
-            <a class="primary-action full-action" routerLink="/about-sida/contact">
-              让顾问判断是否适合我
-              <mat-icon>chat</mat-icon>
-            </a>
-          </section>
-
-          <section class="panel highlight-panel" id="highlights">
-            <div class="compact-heading">
-              <span>EV 核心亮点</span>
-              <h2>为什么很多学生会把 EV 放进候选</h2>
-            </div>
-            <div class="highlight-list">
-              <article *ngFor="let item of highlights">
-                <img [src]="item.image" [alt]="item.title" />
-                <div>
-                  <strong>{{ item.title }}</strong>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
-            </div>
-          </section>
-        </div>
-
-        <section class="fit-section" id="fit">
+        <section class="section-block" id="videos">
           <div class="section-heading">
-            <span>适合 / 不太适合</span>
-            <h2>先判断 EV 是否适合你</h2>
+            <span>视频</span>
+            <h2>看看 EV 的校园与学生生活</h2>
+            <p>{{ copy.videoLead }}</p>
           </div>
-          <div class="fit-grid">
-            <div>
-              <h3><mat-icon>check_circle</mat-icon>适合优先考虑 EV</h3>
-              <article *ngFor="let item of suitableFor">
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.text }}</p>
-              </article>
-            </div>
-            <div>
-              <h3><mat-icon>error</mat-icon>这些情况要谨慎</h3>
-              <article *ngFor="let item of notSuitableFor">
-                <strong>{{ item.title }}</strong>
-                <p>{{ item.text }}</p>
-              </article>
-            </div>
+          <div class="ev-video-featured">
+            <figure *ngFor="let item of landscapeVideos">
+              <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+              <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+            </figure>
+          </div>
+          <div class="ev-video-shorts">
+            <figure *ngFor="let item of portraitVideos">
+              <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+              <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+            </figure>
           </div>
         </section>
 
@@ -190,15 +153,116 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按学习目标看</h2>
-            <p>半斯巴达综合英语适合平衡型学生，斯巴达强化英语和雅思保证班适合冲刺，强化口说6/8适合口语目标明确的人。</p>
+            <p>{{ copy.coursesLead }}</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
               <span>{{ course.type }}</span>
               <h3>{{ course.name }}</h3>
-              <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.suitable }}</p>
             </article>
+          </div>
+          <details class="ev-guarantee">
+            <summary>雅思保分班：入学分数与保分目标</summary>
+            <table>
+              <thead><tr><th scope="col">级别</th><th scope="col">入学分数</th><th scope="col">8周保分</th><th scope="col">12周保分</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let row of guaranteeTargets"><th scope="row">{{ row.level }}</th><td>{{ row.entry }}</td><td>{{ row.eightWeeks }}</td><td>{{ row.twelveWeeks }}</td></tr>
+              </tbody>
+            </table>
+            <p>{{ guaranteeNote }}</p>
+          </details>
+        </section>
+
+        <section class="section-block study-plan-section" id="daily-schedule">
+          <div class="section-heading">
+            <span>EV 斯巴达 / 半斯巴达管理模式</span>
+            <h2 style="font-size: clamp(30px, 4vw, 46px);">菲律宾游学宿务EV语言学校斯巴达和半斯巴达管理模式的区别</h2>
+            <p>{{ copy.studyPlanLead }}</p>
+          </div>
+
+          <div class="study-plan-cards" aria-label="EV斯巴达和半斯巴达管理模式对比">
+            <article *ngFor="let plan of studyPlans">
+              <div class="plan-title">
+                <strong>{{ plan.code }}</strong>
+                <span>{{ plan.name }}</span>
+              </div>
+              <h3>{{ plan.title }}</h3>
+              <div class="plan-time-blocks" [class.relaxed]="plan.code === '半斯巴达'">
+                <b>{{ plan.contrastTitle }}</b>
+                <div class="plan-time-grid">
+                  <div *ngFor="let block of plan.timeBlocks" [class.required]="block.type === 'required'" [class.flexible]="block.type === 'flexible'">
+                    <span><mat-icon>{{ block.icon }}</mat-icon>{{ block.label }}</span>
+                    <strong>{{ block.time }}</strong>
+                    <em>{{ block.text }}</em>
+                  </div>
+                </div>
+              </div>
+              <dl>
+                <div *ngFor="let curfew of plan.curfew">
+                  <dt>{{ curfew.day }}</dt>
+                  <dd>{{ curfew.time }}</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+
+          <ul class="ev-plan-notes">
+            <li><mat-icon>record_voice_over</mat-icon>{{ copy.eopNote }}</li>
+            <li><mat-icon>apartment</mat-icon>{{ copy.otherPlansNote }}</li>
+          </ul>
+
+          <div class="section-heading study-plan-subheading">
+            <span>EV一天学习生活安排</span>
+            <h2>白天行程与免费选修课</h2>
+            <p>{{ copy.dailyLead }}</p>
+          </div>
+
+          <div class="study-day-grid">
+            <div class="study-day-table" aria-label="EV白天行程">
+              <article *ngFor="let item of schedule" [class.highlighted]="item.highlighted">
+                <time>{{ item.time }}</time>
+                <div>
+                  <strong><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</strong>
+                  <span>{{ item.text }}</span>
+                </div>
+                <em>{{ item.appliesTo }}</em>
+              </article>
+            </div>
+
+            <aside class="elective-panel" aria-label="EV选修课程">
+              <h3><mat-icon>edit</mat-icon>免费选修课</h3>
+              <div *ngFor="let group of electiveCourseGroups">
+                <strong>{{ group.period }}</strong>
+                <span>{{ group.level }}</span>
+                <ul>
+                  <li *ngFor="let course of group.courses">{{ course }}</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+          <p class="minor-note">{{ referenceNote }}</p>
+        </section>
+
+        <section class="split-layout" id="campus-life">
+          <div class="section-block">
+            <div class="section-heading"><span>到校后的学校服务</span><h2>日常学习与生活支持比较完整</h2></div>
+            <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
+            <p class="minor-note">{{ referenceNote }}</p>
+          </div>
+          <div class="section-block">
+            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验宿务生活</h2></div>
+            <div class="activity-columns desktop-activity-columns">
+              <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+              <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+            </div>
+            <details class="mobile-only mobile-details">
+              <summary>查看校园活动与周末生活</summary>
+              <div class="activity-columns mobile-activity-columns">
+                <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
+                <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
+              </div>
+            </details>
           </div>
         </section>
 
@@ -224,7 +288,7 @@
                       <span role="columnheader">课程安排</span>
                     </div>
                     <div class="table-row" role="row" *ngFor="let fee of spartaCourseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
-                      <span role="cell">{{ fee.name }}</span>
+                      <span role="cell">{{ shortCourseName(fee.name) }}</span>
                       <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                       <span role="cell">{{ fee.suitable }}</span>
                     </div>
@@ -243,7 +307,7 @@
                       <span role="columnheader">课程安排</span>
                     </div>
                     <div class="table-row" role="row" *ngFor="let fee of semiSpartaCourseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
-                      <span role="cell">{{ fee.name }}</span>
+                      <span role="cell">{{ shortCourseName(fee.name) }}</span>
                       <span role="cell">{{ formatUsd(fee.tuition) }} 美元</span>
                       <span role="cell">{{ fee.suitable }}</span>
                     </div>
@@ -256,7 +320,7 @@
                   <h3>斯巴达课程</h3>
                   <article *ngFor="let fee of spartaCourseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                     <span>课程</span>
-                    <strong>{{ fee.name }}</strong>
+                    <strong>{{ shortCourseName(fee.name) }}</strong>
                     <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                     <p>{{ fee.suitable }}</p>
                   </article>
@@ -265,7 +329,7 @@
                   <h3>半斯巴达课程</h3>
                   <article *ngFor="let fee of semiSpartaCourseFees" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
                     <span>课程</span>
-                    <strong>{{ fee.name }}</strong>
+                    <strong>{{ shortCourseName(fee.name) }}</strong>
                     <div><em>4周课程费</em><b>{{ formatUsd(fee.tuition) }} 美元</b></div>
                     <p>{{ fee.suitable }}</p>
                   </article>
@@ -310,73 +374,6 @@
                 </div>
               </section>
             </div>
-          </div>
-        </section>
-
-        <section class="section-block study-plan-section" id="daily-schedule">
-          <div class="section-heading">
-            <span>EV 斯巴达 / 半斯巴达管理模式</span>
-            <h2 style="font-size: clamp(30px, 4vw, 46px);">菲律宾游学宿务EV语言学校斯巴达和半斯巴达管理模式的区别</h2>
-            <p>重点区别：斯巴达有早餐时段内约25分钟强制早课、晚饭后约25分钟强制晚课，以及20:00 - 22:00强制自习；半斯巴达不强制早晚课，周一至周四17:00后可外出。</p>
-          </div>
-
-          <div class="study-plan-cards" aria-label="EV斯巴达和半斯巴达管理模式对比">
-            <article *ngFor="let plan of studyPlans">
-              <div class="plan-title">
-                <strong>{{ plan.code }}</strong>
-                <span>{{ plan.name }}</span>
-              </div>
-              <h3>{{ plan.title }}</h3>
-              <div class="plan-time-blocks" [class.relaxed]="plan.code === '半斯巴达'">
-                <b>{{ plan.contrastTitle }}</b>
-                <div class="plan-time-grid">
-                  <div *ngFor="let block of plan.timeBlocks" [class.required]="block.type === 'required'" [class.flexible]="block.type === 'flexible'">
-                    <span><mat-icon>{{ block.icon }}</mat-icon>{{ block.label }}</span>
-                    <strong>{{ block.time }}</strong>
-                    <em>{{ block.text }}</em>
-                  </div>
-                </div>
-              </div>
-              <p>{{ plan.text }}</p>
-              <p class="plan-routine">{{ plan.routine }}</p>
-              <dl>
-                <div *ngFor="let curfew of plan.curfew">
-                  <dt>{{ curfew.day }}</dt>
-                  <dd>{{ curfew.time }}</dd>
-                </div>
-              </dl>
-            </article>
-          </div>
-
-          <div class="section-heading study-plan-subheading">
-            <span>EV一天学习生活安排</span>
-            <h2>白天行程与免费选修课</h2>
-            <p>每节正式课程45分钟。斯巴达和半斯巴达学生都可以参加免费选修课，具体开放课程和人数条件以学校当期安排为准。</p>
-          </div>
-
-          <div class="study-day-grid">
-            <div class="study-day-table" aria-label="EV白天行程">
-              <article *ngFor="let item of schedule" [class.highlighted]="item.highlighted">
-                <time>{{ item.time }}</time>
-                <div>
-                  <strong><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</strong>
-                  <span>{{ item.text }}</span>
-                </div>
-                <em>{{ item.appliesTo }}</em>
-              </article>
-            </div>
-
-            <aside class="elective-panel" aria-label="EV选修课程">
-              <h3><mat-icon>edit</mat-icon>选修课程</h3>
-              <p class="minor-note">以下为常见免费选修课方向，实际开放课程会随学校师资、人数和当期课表调整。</p>
-              <div *ngFor="let group of electiveCourseGroups">
-                <strong>{{ group.period }}</strong>
-                <span>{{ group.level }}</span>
-                <ul>
-                  <li *ngFor="let course of group.courses">{{ course }}</li>
-                </ul>
-              </div>
-            </aside>
           </div>
         </section>
 
@@ -425,7 +422,6 @@
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
               <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!exchangeRateLive || !canExportQuote" [label]="exchangeRateLive ? '保存报价单图片' : '正在获取最新参考汇率...'" buttonClass="secondary-action"></app-quote-image-download-button>
             </div>
-            <p class="fee-alert">教材按课程周数，管理费与水电费按住宿周数，签证费按完整停留时间估算。校内、校外住宿管理费分别计算；接机与可退房间押金单独列示。</p>
         </section>
 
         <section class="local-fee-estimate" id="local-fees" aria-labelledby="ev-local-fee-title" data-cia-preview-kind="section" data-cia-preview-id="local-fees">
@@ -486,105 +482,16 @@
           </div>
         </section>
 
-        <section class="notice-panel" id="price-note">
-          <mat-icon>info</mat-icon>
-          <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月1日。学校环境与课程结构参考菲律宾宿务EV语言学校官方网站，课程费、住宿费、当地费用及优惠规则按EV 2026年价目表与思达顾问资料更新。学校价格、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
-          </div>
-        </section>
-
-        <section class="materials-panel" id="materials">
-          <div>
-            <div class="section-heading">
-              <span>获取 EV 完整资料与报价单</span>
-              <h2>让顾问把斯巴达 / 半斯巴达、空房、优惠和费用一次核清</h2>
-              <p>通过思达报名 EV，思达顾问会免费协助确认课程、房型、空房、优惠和正式报价，并免费协助办理菲律宾入境及签证相关手续。学生只需按顾问指引准备个人资料。</p>
-            </div>
-            <ul class="check-list"><li>斯巴达 / 半斯巴达建议</li><li>课程与房型建议</li><li>空房和入学日期确认</li><li>前期支付与到校支付费用清单</li></ul>
-          </div>
-          <a class="primary-action" routerLink="/about-sida/contact">获取完整报价单<mat-icon>description</mat-icon></a>
-        </section>
-
-        <section class="sida-ev-section" id="service-process">
-          <div class="sida-ev-heading">
-            <span>WHY SIDA QIHANG</span>
-            <h2>为什么通过思达启航报名 EV?</h2>
-            <p>
-              不只是提交报名，更重要的是帮你判断EV是否适合、算清费用，并持续协助到完成学习回国。
-            </p>
-          </div>
-
-          <div class="sida-ev-panel">
-            <figure class="sida-ev-main-photo">
-              <img
-                src="assets/cia/sida-why-main-branded.webp"
-                alt="思达启航顾问为菲律宾宿务EV语言学校学生讲解报名方案"
-              />
-            </figure>
-
-            <div class="sida-ev-reason-grid">
-              <article *ngFor="let item of sidaEvReasons">
-                <img [src]="item.image" [alt]="item.alt" />
-                <div>
-                  <span>{{ item.number }}</span>
-                  <h3>{{ item.title }}</h3>
-                  <p>{{ item.text }}</p>
-                </div>
-              </article>
-            </div>
-          </div>
-
-          <div class="sida-ev-trust-bar" aria-label="思达启航报名EV保障">
-            <article *ngFor="let item of sidaEvTrustBadges">
-              <mat-icon>{{ item.icon }}</mat-icon>
-              <strong>{{ item.label }}</strong>
-            </article>
-          </div>
-        </section>
-
-        <section class="section-block" id="service-flow">
-          <div class="section-heading">
-            <span>通过思达报名 EV 的免费协助流程</span>
-            <h2>从选校到回国，顾问持续跟进</h2>
-            <p>入学前免费发送学习资料和行前清单；到校后如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。思达在宿务有工作人员驻点，可为学生提供当地支持，直到学生完成学习并顺利回国。</p>
-          </div>
-          <div class="process-grid desktop-process-grid">
-            <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
-          </div>
-          <details class="mobile-only mobile-details">
-            <summary>查看报名流程</summary>
-            <div class="process-grid mobile-process-grid">
-              <article *ngFor="let step of serviceSteps"><mat-icon>{{ step.icon }}</mat-icon><strong>{{ step.title }}</strong><p>{{ step.text }}</p></article>
-            </div>
-          </details>
-        </section>
-
-        <section class="split-layout" id="campus-life">
-          <div class="section-block">
-            <div class="section-heading"><span>到校后的学校服务</span><h2>日常学习与生活支持比较完整</h2></div>
-            <div class="service-icon-grid"><article *ngFor="let service of schoolServices"><mat-icon>check_circle</mat-icon><span>{{ service }}</span></article></div>
-            <p class="minor-note">具体服务细节以学校现场安排为准，思达顾问可协助学生和学校沟通。</p>
-          </div>
-          <div class="section-block">
-            <div class="section-heading"><span>校园活动与周末生活</span><h2>学习之外也能体验宿务生活</h2></div>
-            <div class="activity-columns desktop-activity-columns">
-              <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
-              <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
-            </div>
-            <details class="mobile-only mobile-details">
-              <summary>查看校园活动与周末生活</summary>
-              <div class="activity-columns mobile-activity-columns">
-                <div><h3>校内活动</h3><ul class="check-list"><li *ngFor="let item of campusActivities">{{ item }}</li></ul></div>
-                <div><h3>周末生活</h3><ul class="check-list"><li *ngFor="let item of weekendActivities">{{ item }}</li></ul></div>
-              </div>
-            </details>
-          </div>
-        </section>
+        <app-sida-why-section
+          [schoolName]="'菲律宾宿务EV语言学校'"
+          [supportTitle]="'深圳总部 + 宿务驻点支持'"
+          [supportBadge]="'深圳总部 + 宿务驻点'"
+        ></app-sida-why-section>
 
         <section class="section-block" id="enrollment-notes">
           <div class="section-heading"><span>报名注意事项</span><h2>确认 EV 前，建议先核对这些信息</h2></div>
           <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
+          <p class="minor-note" id="price-note">{{ copy.priceNote }}</p>
         </section>
 
         <section class="faq-section" id="faq">
@@ -610,13 +517,38 @@
       </aside>
     </div>
 
-    <section class="bottom-cta">
-      <div>
-        <h2>想知道 EV 当前是否有空房和优惠？</h2>
-        <p>把入学日期、学习周数、斯巴达或半斯巴达偏好、课程方向和房型发给顾问，可以更快得到准确报价。</p>
-        <ul><li>快速响应</li><li>专业顾问一对一</li><li>方案与报价免费</li><li>从申请到入学全程协助</li></ul>
+    <section class="final-cta" id="contact">
+      <div class="final-cta-head">
+        <div class="final-cta-icon" aria-hidden="true"><mat-icon>headset_mic</mat-icon></div>
+        <div class="final-cta-copy">
+          <h2>{{ copy.finalCtaTitle }}</h2>
+          <p>{{ copy.finalCtaText }}</p>
+        </div>
+        <div class="final-actions">
+          <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>先算我的费用<mat-icon>chevron_right</mat-icon></a>
+          <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>chat</mat-icon>查看全部顾问</a>
+        </div>
       </div>
-      <a class="primary-action" routerLink="/about-sida/contact">立即咨询顾问<mat-icon>chat</mat-icon></a>
+
+      <div class="final-consultant-grid">
+        <article class="final-consultant-card" *ngFor="let consultant of ctaConsultants">
+          <img class="final-consultant-avatar" [src]="consultant.avatarSrc" [alt]="consultant.name + ' 顾问头像'" loading="lazy" />
+          <div class="final-consultant-copy">
+            <h3><span>{{ consultant.name }}</span>{{ consultant.title }}</h3>
+            <p>{{ consultant.description }}</p>
+            <a class="final-consultant-phone" [href]="consultant.phoneHref"><mat-icon>phone</mat-icon>{{ consultant.phone }}</a>
+            <a class="final-consultant-button" [href]="consultant.phoneHref"><mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}<mat-icon>chevron_right</mat-icon></a>
+          </div>
+          <figure class="final-consultant-qr">
+            <img [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" loading="lazy" />
+            <figcaption>扫码加微信</figcaption>
+          </figure>
+        </article>
+      </div>
+
+      <ul>
+        <li *ngFor="let badge of finalCtaBadges"><mat-icon>check_circle</mat-icon>{{ badge }}</li>
+      </ul>
     </section>
 
     <div class="mobile-bottom-actions" aria-label="EV手机端固定操作">

@@ -833,7 +833,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "强化口说6（斯巴达）", 4, 1230m, "6节一对一 + 1节小团体课 + 1节大团体课 + 选修课", now, evLessonNote);
       UpsertLesson(context, schoolId, "强化口说8（斯巴达）", 4, 1410m, "8节一对一 + 自习 + 选修课", now, evLessonNote);
       UpsertLesson(context, schoolId, "常规雅思（斯巴达）", 4, 1150m, "4节一对一 + 2节小团体课 + 2节大团体课 + 选修课", now, evLessonNote);
-      UpsertLesson(context, schoolId, "雅思保证班（斯巴达）", 4, 1290m, "1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 选修课；入学需提交雅思官方成绩", now, evLessonNote);
+      UpsertLesson(context, schoolId, "雅思保证班（斯巴达）", 4, 1290m, "1节早课 + 4节一对一 + 4节团体课 + 1节晚课 + 2节强化辅导；学术类雅思，8周起", now, evLessonNote);
       UpsertLesson(context, schoolId, "多益（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
       UpsertLesson(context, schoolId, "社交媒体英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
       UpsertLesson(context, schoolId, "商务英语（斯巴达）", 4, 1150m, "4节一对一 + 4节团体课 + 自习 + 选修课", now, evLessonNote);
@@ -847,13 +847,13 @@ namespace XiaoJuanSchoolPayment.Server.Services
       RemoveRoom(context, schoolId, "双人间A（面对泳池）", 4);
       RemoveRoom(context, schoolId, "双人间B", 4);
       RemoveRoom(context, schoolId, "四人间", 4);
-      const string evRoomNote = "EV 2026年4周食宿费；热门房型建议提前6个月预定";
+      const string evRoomNote = "EV 2026年4周食宿费；含一日三餐和房间清洁";
       UpsertRoom(context, schoolId, "单人间", 4, 1400m, evRoomNote, now);
       UpsertRoom(context, schoolId, "双人间", 4, 1030m, evRoomNote, now);
       UpsertRoom(context, schoolId, "三人间", 4, 950m, "EV 2026年4周食宿费；校内住宿", now);
       UpsertRoom(context, schoolId, "四人间（上下铺）", 4, 900m, "EV 2026年4周食宿费；校内四人间，上下铺房型", now);
-      UpsertRoom(context, schoolId, "校外公寓单人间", 4, 1550m, "EV 2026年4周食宿费；另计校外公寓管理费", now);
-      UpsertRoom(context, schoolId, "校外公寓双人间", 4, 1150m, "EV 2026年4周食宿费；仅限两人同时预定，另计校外公寓管理费", now);
+      UpsertRoom(context, schoolId, "校外公寓单人间", 4, 1550m, "EV 2026年4周食宿费；仅限半斯巴达课程，另计校外公寓管理费", now);
+      UpsertRoom(context, schoolId, "校外公寓双人间", 4, 1150m, "EV 2026年4周食宿费；仅限半斯巴达课程，另计校外公寓管理费", now);
 
       RemoveFee(context, schoolId, "水电费");
       RemoveFee(context, schoolId, "设施维护费");
@@ -865,16 +865,17 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "未成年管理费", 100m, UsdCurrencyId, "前期支付费用；未满18岁学生USD100/4周，不参与95折", now);
       UpsertFee(context, schoolId, "SSP", 7800m, PhpCurrencyId, "到校支付费用；特别学习许可，按学习时长办理", now);
       UpsertFee(context, schoolId, "SSP E-card", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
-      UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；只要办理签证续签就需支付，由学校统一办理", now);
-      UpsertFee(context, schoolId, "校内管理费", 2000m, PhpCurrencyId, "到校支付费用；仅校内住宿计收，每4周2000比索，不足4周按4周预估", now);
-      UpsertFee(context, schoolId, "校外公寓管理费", 4000m, PhpCurrencyId, "到校支付费用；仅校外住宿计收，每4周4000比索，不足4周按4周预估", now);
-      UpsertFee(context, schoolId, "电费", 2000m, PhpCurrencyId, "到校支付费用；每4周参考，超过每周15kW另收PHP20/kW", now);
-      UpsertFee(context, schoolId, "水费", 1200m, PhpCurrencyId, "到校支付费用；公共用水和房间用水，每4周收取", now);
-      UpsertFee(context, schoolId, "签证续签", 5430m, PhpCurrencyId, "到校支付费用；首次续签约PHP5430，后续续签预计PHP4700/次，以移民局实收为准", now);
+      UpsertFee(context, schoolId, "ACR I-card", 4000m, PhpCurrencyId, "到校支付费用；在菲律宾停留超过59天（第9周起）须办理，只收一次", now);
+      UpsertFee(context, schoolId, "ARP外国人登记", 300m, PhpCurrencyId, "到校支付费用；旅游签证首次续签时收取一次，长期签证也收取一次", now);
+      UpsertFee(context, schoolId, "校内管理费", 500m, PhpCurrencyId, "到校支付费用；2026-08-10起仅校内住宿计收，每周500比索", now);
+      UpsertFee(context, schoolId, "校外公寓管理费", 1000m, PhpCurrencyId, "到校支付费用；2026-08-10起仅校外公寓计收，每周1000比索", now);
+      UpsertFee(context, schoolId, "电费", 500m, PhpCurrencyId, "到校支付费用；每周500比索含15kW，超出部分PHP20/kW", now);
+      UpsertFee(context, schoolId, "水费", 300m, PhpCurrencyId, "到校支付费用；每周300比索", now);
+      UpsertFee(context, schoolId, "签证续签", 5430m, PhpCurrencyId, "到校支付费用；30天签证第5周起续签，累计5430/11830/16260/20690/25120比索；59天签证第9周起续签，累计6700/11130/15560/19990比索", now);
       UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "到校支付费用；每4周预估，按实际购买教材调整", now);
       UpsertFee(context, schoolId, "学生证", 500m, PhpCurrencyId, "到校支付费用；一次性费用", now);
       UpsertFee(context, schoolId, "宿务马克坦机场周日接机", 1200m, PhpCurrencyId, "到校支付费用；可选，也可自行打车，不计入默认学杂费合计", now);
-      UpsertFee(context, schoolId, "房间押金", 3000m, PhpCurrencyId, "到校支付费用；1至8周PHP3000，9至24周PHP5000，无损坏及欠费时可退，不计入学杂费合计", now);
+      UpsertFee(context, schoolId, "房间押金", 3000m, PhpCurrencyId, "到校支付费用；1至3周PHP2000，4至8周PHP3000，9至24周PHP5000，无损坏及欠费时可退，不计入学杂费合计", now);
 
       await context.SaveChangesAsync();
     }

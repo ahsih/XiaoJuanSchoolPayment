@@ -120,10 +120,10 @@ export function sidaWhyContent(schoolName = '菲律宾学校', options: SidaWhyO
     alumni: {
       eyebrow: '学习结束，服务继续',
       title: '老学员回国后福利',
-      intro: '继续学习英语或规划下一阶段升学时，可申请思达老学员专属权益。',
+      intro: '继续学习英语或规划下一阶段升学时，可申请思达启航老学员专属权益。',
       items: [
         { number: '01', icon: 'record_voice_over', title: '一对一线上英语', text: '老学员可享线上一对一英语课程专属优惠。' },
-        { number: '02', icon: 'school', title: '爱尔兰继续深造', text: '申请爱尔兰留学，可享思达专属奖学金或项目优惠。' },
+        { number: '02', icon: 'school', title: '爱尔兰继续深造', text: '申请爱尔兰留学，可享思达启航专属奖学金或项目优惠。' },
         { number: '03', icon: 'flight_takeoff', title: '欧美国家英语进修', text: '继续到欧美国家学习英语，部分合作学校可免注册费或享专属优惠。' },
       ],
       note: '具体奖学金、减免范围和适用条件，以申请时合作学校及思达启航确认的当期政策为准。',

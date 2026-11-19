@@ -762,7 +762,7 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       icon: 'assignment_turned_in',
       title: '协助入境和签证手续',
-      text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。',
+      text: '思达启航免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。',
     },
     {
       icon: 'inventory',
@@ -772,12 +772,12 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       icon: 'support_agent',
       title: '到校后继续跟进',
-      text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。',
+      text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达启航协助。',
     },
     {
       icon: 'location_on',
       title: '宿务当地支持',
-      text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。',
+      text: '思达启航在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。',
     },
   ];
 

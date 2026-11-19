@@ -1,10 +1,19 @@
-import { textbookGroups, textbookRuleQuantity } from '../school-textbook-estimate';
+import { textbookRuleQuantity } from '../school-textbook-estimate';
 import { SchoolVisaType } from '../../../components/school-group-quote';
-import { SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
+import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan, quoteMoney } from '../../../components/school-quote-plan';
 import { CiaLocalFeeRule } from '../cia-school/cia-content-config';
 import { calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
+import { EV_IELTS_GUARANTEE_ID } from './ev-content-config';
 
-export interface EvCoursePrice { id: string; name: string; tuition: number; suitable: string; }
+export interface EvCoursePrice {
+  id: string;
+  name: string;
+  tuition: number;
+  suitable: string;
+  /** Whole-course tuition for exact short guarantee lengths, keyed by total weeks. */
+  feeByWeeks?: Record<string, number>;
+  minimumWeeks?: number;
+}
 export interface EvRoomPrice { id: string; name: string; fee: number; note: string; }
 export interface EvLocalFee { item: string; unitLabel: string; quantity: number; total: number; note: string; }
 
@@ -14,6 +23,13 @@ export const EV_PEAK_SEASONS = [
 export const EV_PEAK_SEASON_DATE_RANGE = EV_PEAK_SEASONS.map(season => season.label).join('；');
 export const evPriceMultiplier = (weeks: number, ratios: Record<string, number> = { '1': .4, '2': .65, '3': .85 }) =>
   weeks < 4 ? (ratios[String(weeks)] ?? weeks / 4) : weeks / 4;
+
+/** 2026-08-10 sheet: 30-day entries extend from week 5, 59-day entries from week 9, then every 4 weeks. */
+const EV_TOURIST30_EXTENSIONS = [5430, 6400, 4430, 4430, 4430];
+const EV_TOURIST59_EXTENSIONS = [6700, 4430, 4430, 4430];
+const EV_DEPOSIT_TIERS = [2000, 3000, 5000];
+const isOffCampus = (roomId: string) => roomId.startsWith('off-campus');
+const isSparta = (courseId: string) => courseId.startsWith('sparta-');
 
 export class EvStudentCalculator {
   readonly plan: SchoolQuotePlan;
@@ -42,13 +58,19 @@ export class EvStudentCalculator {
             id: course.id,
             name: course.name,
             details: course.suitable,
-            group: course.id.startsWith('sparta-') ? '斯巴达课程' : '半斯巴达课程',
+            group: isSparta(course.id) ? '斯巴达课程' : '半斯巴达课程',
           }))
         : this.rooms().map(room => ({ id: room.id, name: room.name, details: room.note })),
       (kind, row) => (kind === 'course'
         ? this.courses().find(course => course.id === row.optionId)?.tuition ?? 0
         : this.rooms().find(room => room.id === row.optionId)?.fee ?? 0) * this.priceMultiplier(row.weeks),
       24, true);
+    const ordinaryPrice = this.plan.price;
+    // Short guarantee courses use the school's exact whole-course amounts, shared across their rows.
+    this.plan.price = (kind: QuotePlanKind, row: QuotePlanRow) => {
+      const exact = kind === 'course' ? this.guaranteeRowPrice(row) : null;
+      return exact ?? ordinaryPrice(kind, row);
+    };
   }
 
   get usesFourWeekAverage() {
@@ -58,6 +80,17 @@ export class EvStudentCalculator {
   }
   priceMultiplier(weeks: number) {
     return this.usesFourWeekAverage ? weeks / 4 : evPriceMultiplier(weeks, this.shortStayRatios());
+  }
+  private course(id: string) { return this.courses().find(course => course.id === id); }
+  get guaranteeWeeks() {
+    return this.plan.courses.filter(row => row.optionId === EV_IELTS_GUARANTEE_ID).reduce((sum, row) => sum + row.weeks, 0);
+  }
+  private guaranteeRowPrice(row: QuotePlanRow): number | null {
+    const course = this.course(row.optionId);
+    const weeks = this.guaranteeWeeks;
+    const total = course?.feeByWeeks?.[String(weeks)];
+    if (row.optionId !== EV_IELTS_GUARANTEE_ID || total === undefined || !weeks) return null;
+    return Math.round(total * row.weeks / weeks * 100) / 100;
   }
   get longTermVisa() { return !['tourist30', 'tourist59'].includes(this.visaType); }
   get initialVisaDays() { return this.visaType === 'tourist30' ? 30 : 59; }
@@ -79,44 +112,46 @@ export class EvStudentCalculator {
   get minorFee() { return this.minorPeriods * this.minorFeePerPeriod(); }
   get registration() { return this.returningStudent && this.returningRegistrationWaiver() ? 0 : this.registrationFee(); }
   get totalUsd() { return this.registration + this.discountBase - this.discountAmount + this.peakSurcharge + this.minorFee; }
-  get onCampusWeeks() { return this.plan.rooms.filter(row => !row.optionId.startsWith('off-campus')).reduce((sum, row) => sum + row.weeks, 0); }
-  get offCampusWeeks() { return this.plan.rooms.filter(row => row.optionId.startsWith('off-campus')).reduce((sum, row) => sum + row.weeks, 0); }
-  get visaExtensionCount() { return this.longTermVisa ? 0 : Math.max(0, Math.ceil((this.plan.stayWeeks * 7 - this.initialVisaDays) / 30)); }
-  get visaExtensionTotal() {
+  get onCampusWeeks() { return this.plan.rooms.filter(row => !isOffCampus(row.optionId)).reduce((sum, row) => sum + row.weeks, 0); }
+  get offCampusWeeks() { return this.plan.rooms.filter(row => isOffCampus(row.optionId)).reduce((sum, row) => sum + row.weeks, 0); }
+  private get extensionRates(): number[] {
     const rule = this.rule('visa-extension');
-    const rates = rule?.rates?.length ? rule.rates : [rule?.amount ?? 5430, 4700];
+    if (this.visaType === 'tourist30') return rule?.rates?.length ? rule.rates : EV_TOURIST30_EXTENSIONS;
+    return rule?.tourist59Rates?.length ? rule.tourist59Rates : EV_TOURIST59_EXTENSIONS;
+  }
+  get visaExtensionCount() {
+    if (this.longTermVisa) return 0;
+    const coveredWeeks = this.visaType === 'tourist30' ? 4 : 8;
+    return Math.max(0, Math.ceil((this.plan.stayWeeks - coveredWeeks) / 4));
+  }
+  get visaExtensionTotal() {
+    const rates = this.extensionRates;
     return Array.from({ length: this.visaExtensionCount }, (_, index) => rates[Math.min(index, rates.length - 1)] ?? 0)
       .reduce((sum, amount) => sum + amount, 0);
   }
+  /** ACR I-Card is needed once a stay passes 59 days, whatever the entry visa. */
+  get needsAcr() { return !this.longTermVisa && this.plan.stayWeeks >= 9; }
   get roomDeposit() {
     const rule = this.rule('room-deposit');
-    return this.plan.stayWeeks <= 8 ? (rule?.amount ?? 3000) : (rule?.secondaryAmount ?? 5000);
+    const tiers = rule?.rates?.length === 3 ? rule.rates : EV_DEPOSIT_TIERS;
+    const weeks = this.plan.stayWeeks;
+    return weeks <= 3 ? tiers[0] : weeks <= 8 ? tiers[1] : tiers[2];
   }
   get visaNote() {
-    const visaRule = this.rule('visa-extension');
-    const rates = visaRule?.rates?.length ? visaRule.rates : [visaRule?.amount ?? 5430, 4700];
-    const firstRate = rates[0] ?? 0;
-    const laterRate = rates[Math.min(1, rates.length - 1)] ?? firstRate;
-    return this.longTermVisa
-      ? '长期签证相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。'
-      : `按${this.initialVisaDays}天旅游签证及当前完整停留时间预估，本次续签${this.visaExtensionCount}次；首次约${firstRate.toLocaleString()}比索，后续约${laterRate.toLocaleString()}比索／次，以移民局实收为准。`;
+    if (this.longTermVisa) return '长期签证相关费用暂按0估算，是否免收请由顾问向学校确认，以学校最新政策为准。';
+    return this.visaExtensionCount
+      ? `按${this.initialVisaDays}天旅游签证、停留${this.plan.stayWeeks}周预估续签${this.visaExtensionCount}次；以移民局实收为准。`
+      : `按${this.initialVisaDays}天旅游签证、停留${this.plan.stayWeeks}周，无需续签。`;
   }
   get localFees(): EvLocalFee[] {
-    const roomPeriods = Math.max(1, Math.ceil(this.plan.roomWeeks / 4));
     const textbookPeriods = textbookRuleQuantity(this.plan.courses, this.rule('books'), 4);
-    const acr = !this.longTermVisa && this.visaExtensionCount > 0 ? 1 : 0;
-    const arp = this.longTermVisa || this.visaExtensionCount > 0 ? 1 : 0;
-    const onCampus = this.onCampusWeeks ? Math.ceil(this.onCampusWeeks / 4) : 0;
-    const offCampus = this.offCampusWeeks ? Math.ceil(this.offCampusWeeks / 4) : 0;
+    const weeksFor = (id: string) => id === 'on-campus-management' ? this.onCampusWeeks
+      : id === 'off-campus-management' ? this.offCampusWeeks : this.plan.roomWeeks;
     const quantities: Record<string, number> = {
       'ssp': this.longTermVisa ? 0 : 1,
       'ssp-e-card': this.longTermVisa ? 0 : 1,
-      'acr-i-card': acr,
-      'arp': arp,
-      'on-campus-management': onCampus,
-      'off-campus-management': offCampus,
-      'electricity': roomPeriods,
-      'water': roomPeriods,
+      'acr-i-card': Number(this.needsAcr),
+      'arp': this.longTermVisa || this.visaExtensionCount > 0 ? 1 : 0,
       'visa-extension': this.visaExtensionCount,
       'books': textbookPeriods,
       'student-id': 1,
@@ -124,7 +159,9 @@ export class EvStudentCalculator {
     return this.localFeeRules()
       .filter(rule => rule.enabled && rule.includeInTotal)
       .map(rule => {
-        const quantity = quantities[rule.id] ?? this.quantityFor(rule, roomPeriods, textbookPeriods);
+        const quantity = quantities[rule.id] ?? (rule.billingRule === 'per-accommodation-period'
+          ? this.periodQuantity(weeksFor(rule.id), rule)
+          : this.quantityFor(rule, textbookPeriods));
         const total = rule.id === 'visa-extension' ? this.visaExtensionTotal : rule.amount * quantity;
         const note = this.longTermVisa && ['ssp', 'ssp-e-card', 'acr-i-card'].includes(rule.id) ? this.visaNote : rule.note;
         return { item: rule.name, unitLabel: this.unitLabel(rule), quantity, total, note };
@@ -132,10 +169,17 @@ export class EvStudentCalculator {
   }
   get localTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
   get pickupAmount() { return this.pickup === 'sunday' ? (this.rule('cebu-pickup')?.amount ?? 1200) : 0; }
+  /** The off-campus condo is only open to Semi-Sparta course students. */
+  get spartaInCondo(): boolean {
+    const sparta = new Set(this.plan.weekStarts(this.plan.courses.filter(row => isSparta(row.optionId))));
+    return this.plan.weekStarts(this.plan.rooms.filter(row => isOffCampus(row.optionId))).some(week => sparta.has(week));
+  }
   get error() {
     if (this.plan.error) return this.plan.error;
     if (!['tourist30', 'tourist59', 'student', 'work', 'srrv', 'sirv'].includes(this.visaType)) return '请选择有效的签证类型。';
-    if (this.plan.courses.some(row => row.optionId === 'sparta-ielts-guarantee' && row.weeks < 12)) return '雅思保证班需满足学校已确认的最低学习周数。';
+    const minimum = this.course(EV_IELTS_GUARANTEE_ID)?.minimumWeeks ?? 8;
+    if (this.guaranteeWeeks && this.guaranteeWeeks < minimum) return `雅思保分班至少${minimum}周。`;
+    if (this.spartaInCondo) return '校外公寓仅限半斯巴达课程，请改选半斯巴达课程或校内房型。';
     return '';
   }
   get paymentRows() { return this.plan.paymentItems(); }
@@ -145,10 +189,15 @@ export class EvStudentCalculator {
     return this.localFeeRules().find(item => item.id === id && item.enabled);
   }
 
-  private quantityFor(rule: CiaLocalFeeRule, roomPeriods: number, textbookPeriods: number): number {
-    if (rule.billingRule === 'per-accommodation-period') return roomPeriods;
+  private periodQuantity(weeks: number, rule: CiaLocalFeeRule): number {
+    if (!weeks) return 0;
+    const period = rule.periodWeeks ?? 4;
+    return rule.rounding === 'proportional' ? weeks / period : Math.ceil(weeks / period);
+  }
+
+  private quantityFor(rule: CiaLocalFeeRule, textbookPeriods: number): number {
     if (rule.billingRule === 'per-course-period') return textbookPeriods;
-    if (rule.billingRule === 'first-visa-extension') return this.longTermVisa ? 0 : Number(this.visaExtensionCount > 0);
+    if (rule.billingRule === 'first-visa-extension') return Number(this.needsAcr);
     if (rule.billingRule === 'long-term-or-first-extension') return Number(this.longTermVisa || this.visaExtensionCount > 0);
     if (rule.billingRule === 'visa-extension-schedule') return this.visaExtensionCount;
     return 1;
@@ -156,8 +205,11 @@ export class EvStudentCalculator {
 
   private unitLabel(rule: CiaLocalFeeRule): string {
     const amount = rule.amount.toLocaleString('en-US');
-    if (rule.billingRule === 'per-accommodation-period' || rule.billingRule === 'per-course-period') return `${amount} 比索／${rule.periodWeeks ?? 4}周`;
-    if (rule.billingRule === 'visa-extension-schedule') return `首续${amount}比索`;
+    if (rule.billingRule === 'per-accommodation-period' || rule.billingRule === 'per-course-period') {
+      const period = rule.periodWeeks ?? 4;
+      return period === 1 ? `${amount} 比索／周` : `${amount} 比索／${period}周`;
+    }
+    if (rule.billingRule === 'visa-extension-schedule') return '按签证与停留周数';
     return `${amount} 比索／人`;
   }
 
