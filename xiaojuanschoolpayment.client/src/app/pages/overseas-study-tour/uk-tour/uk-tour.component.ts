@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StudyTourPageContentComponent } from '../page-content/study-tour-page-content.component';
+import { stGilesTourSchools } from '../uk-schools/st-giles/st-giles-page-content';
 
 @Component({
   selector: 'app-uk-tour',
@@ -54,12 +55,15 @@ export class UkTourComponent {
     ],
     schools: [
       {
-        name: 'Burlington School（伦敦）',
+        name: 'Burlington School',
         route: '/overseas-study-tour/uk/burlington-school',
         image: '/assets/burlington/campus-courtyard.jpg',
         text: '1990年创办的伦敦寄宿式语言学校，学习、住宿、吃饭在同一栋楼；有青少年四季全包项目、成人课程和成人暑期公寓套餐。',
         tags: ['青少年11–17岁', '成人16岁以上', '校内住宿', '巴斯城堡'],
+        city: '伦敦',
       },
+      // Each St Giles campus under its own city; Canterbury and Oxford are summer-only centres.
+      ...stGilesTourSchools(),
     ],
     sources: [
       { label: 'Study UK', url: 'https://study-uk.britishcouncil.org/' },

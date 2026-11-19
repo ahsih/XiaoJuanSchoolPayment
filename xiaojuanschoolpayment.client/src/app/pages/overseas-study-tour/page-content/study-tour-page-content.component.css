@@ -261,10 +261,84 @@ mat-icon {
   }
 }
 
+.city-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.city-filter button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #d6e2dc;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1f3d33;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.city-filter button span {
+  min-width: 1.3rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #eef5f0;
+  color: #1d6b45;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.city-filter button.active {
+  border-color: #1d6b45;
+  background: #1d6b45;
+  color: #ffffff;
+}
+
+.city-filter button.active span {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.city-group + .city-group {
+  margin-top: 1.5rem;
+}
+
+.city-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0 0.75rem;
+  color: #1f3d33;
+  font-size: 1.05rem;
+}
+
+.city-heading mat-icon {
+  color: #ee7d1a;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.city-heading span {
+  margin-left: 0.25rem;
+  color: #6b7a8a;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
 .school-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.school-card.no-image {
+  grid-template-columns: 1fr;
 }
 
 .school-card {

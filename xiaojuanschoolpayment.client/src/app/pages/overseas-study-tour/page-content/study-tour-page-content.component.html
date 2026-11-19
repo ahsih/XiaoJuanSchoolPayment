@@ -56,16 +56,28 @@
       <span class="section-kicker">Schools</span>
       <h2>可报名的学校</h2>
     </div>
-    <div class="school-grid">
-      <a class="school-card" *ngFor="let school of page.schools" [routerLink]="school.route">
-        <img [src]="school.image" [alt]="school.name" loading="lazy" />
-        <div>
-          <h3>{{ school.name }}</h3>
-          <p>{{ school.text }}</p>
-          <span class="school-tags"><span *ngFor="let tag of school.tags">{{ tag }}</span></span>
-          <strong>查看课程、价格和在线报价<mat-icon>chevron_right</mat-icon></strong>
-        </div>
-      </a>
+    <div class="city-filter" *ngIf="cities.length > 1" role="group" aria-label="按城市筛选学校">
+      <button type="button" [class.active]="!selectedCity" (click)="selectedCity = ''">
+        全部城市<span>{{ page.schools?.length }}</span>
+      </button>
+      <button type="button" *ngFor="let city of cities" [class.active]="selectedCity === city.name" (click)="selectedCity = city.name">
+        {{ city.name }}<span>{{ city.count }}</span>
+      </button>
+    </div>
+    <div class="city-group" *ngFor="let group of schoolGroups">
+      <h3 class="city-heading" *ngIf="group.city"><mat-icon>location_on</mat-icon>{{ group.city }}<span>{{ group.schools.length }}所</span></h3>
+      <div class="school-grid">
+        <a class="school-card" *ngFor="let school of group.schools" [class.no-image]="!school.image"
+          [routerLink]="school.route" [fragment]="school.fragment">
+          <img *ngIf="school.image" [src]="school.image" [alt]="school.name" loading="lazy" />
+          <div>
+            <h3>{{ school.name }}</h3>
+            <p>{{ school.text }}</p>
+            <span class="school-tags"><span *ngFor="let tag of school.tags">{{ tag }}</span></span>
+            <strong>查看课程、价格和在线报价<mat-icon>chevron_right</mat-icon></strong>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 

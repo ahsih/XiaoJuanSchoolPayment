@@ -43,9 +43,45 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/overseas-study-tour/uk/burlington-school': {
     title: '英国伦敦Burlington School语言学校｜课程住宿费用与在线报价',
-    description: '伦敦Burlington School介绍：青少年春夏秋冬季全包项目、成人英语课程、成人暑期公寓套餐、校内宿舍与寄宿家庭价格和巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
-    keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
+    description: '伦敦Burlington School介绍：成人英语课程全年每周开课、成人暑期公寓套餐、青少年春夏秋冬季全包项目，校内宿舍、食堂、寄宿家庭和公寓价格，巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
+    keywords: 'Burlington School, 伦敦语言学校, 英国游学, 伦敦成人英语课程, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles': {
+    title: '英国St Giles语言学校｜伦敦、布莱顿、剑桥、伊斯特本5个校区与青少年夏校',
+    description: 'St Giles International 1955年创办，英国有伦敦中心、伦敦海格特、布莱顿、剑桥和伊斯特本5个全年校区，暑期另有6个青少年全包夏校和亲子课程。对比各校区年龄、规模、住宿和费用，在线计算夏校报价；思达启航提供英国游学选校与报名咨询。',
+    keywords: 'St Giles, St Giles International, 英国语言学校, 英国游学, 英国青少年夏校, 英国亲子游学, 伦敦语言学校, 剑桥语言学校',
+    image: '/assets/st-giles/london-central/london-central-36.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/london-central': {
+    title: 'St Giles伦敦中心校区｜课程、校内宿舍、费用与在线报价',
+    description: 'St Giles伦敦中心校区位于伦敦一区，步行可到大英博物馆，楼上就是校内宿舍。查看2027年英语课程、雅思和剑桥考试班、寄宿家庭和学生公寓价格，以及暑期亲子课程和伦敦青少年夏校，在线计算费用并保存报价图片。',
+    keywords: 'St Giles伦敦, St Giles London Central, 伦敦语言学校, 伦敦英语课程, 伦敦游学费用, 伦敦校内宿舍',
+    image: '/assets/st-giles/london-central/london-central-35.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/london-highgate': {
+    title: 'St Giles伦敦海格特校区｜14岁起全年课程、亲子课程与费用报价',
+    description: 'St Giles伦敦海格特校区在伦敦北部绿色住宅区，有大花园和玻璃花房咖啡厅，14岁起全年可报。查看2027年课程、16岁以下强化课程、寄宿家庭和公寓价格及暑期亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles海格特, St Giles Highgate, 伦敦语言学校, 伦敦青少年英语课程, 伦敦亲子游学',
+    image: '/assets/st-giles/london-highgate/london-highgate-4.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/brighton': {
+    title: 'St Giles布莱顿校区｜海边城市英语课程、学生公寓与费用报价',
+    description: 'St Giles布莱顿校区在英国南部海边城市市中心，学校专属George Street学生公寓步行4分钟。查看2027年英语课程、剑桥考试班、50岁以上课程、寄宿家庭和公寓价格、青少年寄宿家庭夏校和亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles布莱顿, St Giles Brighton, 布莱顿语言学校, 英国海边游学, 布莱顿英语课程',
+    image: '/assets/st-giles/brighton/brighton-36.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/cambridge': {
+    title: 'St Giles剑桥校区｜大学城英语课程、青少年夏校与费用报价',
+    description: 'St Giles剑桥校区是剑桥市中心约90名学生的精品校区，14岁起全年可报。查看2027年英语课程、剑桥考试班、寄宿家庭和公寓价格，以及St Mary\'s青少年夏校、STEM夏校和亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles剑桥, St Giles Cambridge, 剑桥语言学校, 剑桥夏校, 剑桥游学, 英国青少年夏令营',
+    image: '/assets/st-giles/cambridge/cambridge-14.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/eastbourne': {
+    title: 'St Giles伊斯特本校区｜海滨小城英语课程、亲子课程与费用报价',
+    description: 'St Giles伊斯特本校区位于英国南部安静的海滨小城，学费和寄宿家庭是5个校区里最实惠的，14岁起全年可报。查看2027年英语课程、剑桥考试班、寄宿家庭和学生屋价格及暑期亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles伊斯特本, St Giles Eastbourne, 伊斯特本语言学校, 英国海边游学, 英国游学费用',
+    image: '/assets/st-giles/eastbourne/eastbourne-87.jpg',
   },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',

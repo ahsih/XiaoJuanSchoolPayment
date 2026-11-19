@@ -784,6 +784,36 @@ export const mainNavigation: NavigationItem[] = [
             label: 'Burlington School（伦敦）',
             route: '/overseas-study-tour/uk/burlington-school',
           },
+          {
+            id: 'st-giles',
+            label: 'St Giles（5个校区）',
+            route: '/overseas-study-tour/uk/st-giles',
+          },
+          {
+            id: 'st-giles-london-central',
+            label: 'St Giles 伦敦中心校区',
+            route: '/overseas-study-tour/uk/st-giles/london-central',
+          },
+          {
+            id: 'st-giles-london-highgate',
+            label: 'St Giles 伦敦海格特校区',
+            route: '/overseas-study-tour/uk/st-giles/london-highgate',
+          },
+          {
+            id: 'st-giles-brighton',
+            label: 'St Giles 布莱顿校区',
+            route: '/overseas-study-tour/uk/st-giles/brighton',
+          },
+          {
+            id: 'st-giles-cambridge',
+            label: 'St Giles 剑桥校区',
+            route: '/overseas-study-tour/uk/st-giles/cambridge',
+          },
+          {
+            id: 'st-giles-eastbourne',
+            label: 'St Giles 伊斯特本校区',
+            route: '/overseas-study-tour/uk/st-giles/eastbourne',
+          },
         ],
       },
       {

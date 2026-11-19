@@ -5,26 +5,29 @@
 // sheet, so the page and the image always show the same rows.
 // Keep this file free of Angular, DOM, storage and regex lookbehind (mini program compatible).
 
-/** One compared plan. `tag` is 方案一/方案二, empty for a single-plan quote. */
+/** One compared plan (at most three). `tag` is 方案一/方案二/方案三, empty for a single-plan quote. */
 export interface UkQuotePlanHeader {
   tag: string;
   title: string;
 }
 
-/** `included` shows 已含, `null` shows 不适用. */
-export type UkQuoteAmount = number | 'included' | null;
+/** `included` shows 已含 (covered by a package or by tuition), `excluded` 不含, `null` 不适用. */
+export type UkQuoteAmount = number | 'included' | 'excluded' | null;
 
+/**
+ * One fee with what it covers. Items a package or tuition already covers (course, room, meals,
+ * activities) are rows of their own with an `included` amount, so every row explains itself.
+ */
 export interface UkQuoteMoneyRow {
   label: string;
+  /**
+   * The calculation and what the fee covers. Line breaks start new lines and `{{emphasis}}` markers
+   * are drawn in orange. Compared plans that differ get one 方案一：… line each.
+   */
   note?: string;
   amounts: UkQuoteAmount[];
-}
-
-/** Text with `{{emphasis}}` markers, which both renderers draw in orange. */
-export interface UkQuoteTextRow {
-  label: string;
-  /** One value per plan; a single value spans every plan column. */
-  values: string[];
+  /** An optional service the student chose to include; both renderers tag it 自选. */
+  optional?: boolean;
 }
 
 export interface UkQuoteOptionalRow {
@@ -46,7 +49,6 @@ export interface UkQuoteContact {
   title: string;
   phone: string;
   qrSrc: string;
-  website: string;
 }
 
 export interface UkQuoteSheet {
@@ -59,19 +61,25 @@ export interface UkQuoteSheet {
   currencyLabel: string;
   info: UkQuoteInfoItem[];
   plans: UkQuotePlanHeader[];
+  /** 必付费用, or 费用明细 once chosen optional services are included. */
+  feesTitle: string;
+  /** 必付合计, or 合计 once chosen optional services are included. */
+  totalLabel: string;
   requiredRows: UkQuoteMoneyRow[];
   /** Null when a plan cannot be priced. */
   requiredTotals: Array<number | null>;
   /** Renminbi estimates of the totals, null while the rate is unavailable. */
   requiredTotalsCny: Array<number | null>;
   rateNote: string;
-  includeRows: UkQuoteTextRow[];
+  /** Activity examples shown under the fee table. */
   examples: Array<{ label: string; text: string }>;
   examplesTitle: string;
   optionalRows: UkQuoteOptionalRow[];
   optionalNote: string;
   notes: string[];
-  contact: UkQuoteContact;
+  /** Consultants shown side by side on the image, each with a WeChat QR code. */
+  contacts: UkQuoteContact[];
+  website: string;
   /** Blocking problems; a sheet with issues must not be exported. */
   issues: string[];
   /** Non-blocking reminders shown on the page and, as notes, in the image. */
@@ -79,7 +87,8 @@ export interface UkQuoteSheet {
 }
 
 export const UK_QUOTE_WEBSITE = 'sidaqihang.com';
-export const UK_QUOTE_PLAN_TAGS = ['方案一', '方案二'];
+export const UK_QUOTE_PLAN_TAGS = ['方案一', '方案二', '方案三'];
+export const UK_QUOTE_MAX_PLANS = UK_QUOTE_PLAN_TAGS.length;
 
 export function ukMoney(value: number): string {
   return Math.round(value).toLocaleString('en-US');
@@ -87,6 +96,7 @@ export function ukMoney(value: number): string {
 
 export function ukAmountText(amount: UkQuoteAmount): string {
   if (amount === 'included') return '已含';
+  if (amount === 'excluded') return '不含';
   if (amount === null) return '不适用';
   return ukMoney(amount);
 }

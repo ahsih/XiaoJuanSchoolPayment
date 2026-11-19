@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-17",
+  "updatedAt": "2026-11-20",
   "stats": [
     {
       "num": "12",
@@ -373,6 +373,79 @@
       "en": "Germany",
       "keywords": "德语 · 工程 · 职业教育",
       "path": "/overseas-study-tour/germany"
+    }
+  ],
+  "westSchools": [
+    {
+      "id": "burlington",
+      "name": "Burlington School",
+      "country": "UK",
+      "city": "伦敦",
+      "tag": "成人和青少年项目",
+      "desc": "伦敦南部的英国文化协会认证学校，上课、吃饭、住宿在同一栋楼，还有自己的巴斯城堡。",
+      "image": "/assets/burlington/campus-courtyard.jpg",
+      "path": "/overseas-study-tour/uk/burlington-school",
+      "detail": "/content/schools/burlington.json"
+    },
+    {
+      "id": "st-giles-london-central",
+      "name": "St Giles 伦敦中心校区",
+      "country": "UK",
+      "city": "伦敦",
+      "tag": "16岁以上 · 校内宿舍",
+      "desc": "规模最大的校区，在伦敦一区，楼上就是校内宿舍；课程最全，有30岁以上、50岁以上和高管小班。",
+      "image": "/assets/st-giles/london-central/london-central-35.jpg",
+      "path": "/overseas-study-tour/uk/st-giles/london-central"
+    },
+    {
+      "id": "st-giles-london-highgate",
+      "name": "St Giles 伦敦海格特校区",
+      "country": "UK",
+      "city": "伦敦",
+      "tag": "14岁以上 · 花园校园",
+      "desc": "伦敦北部的花园校园，环境安静，14岁起全年可报；暑期亲子课程适合带5–11岁孩子的家庭。",
+      "image": "/assets/st-giles/london-highgate/london-highgate-4.jpg",
+      "path": "/overseas-study-tour/uk/st-giles/london-highgate"
+    },
+    {
+      "id": "st-giles-brighton",
+      "name": "St Giles 布莱顿校区",
+      "country": "UK",
+      "city": "布莱顿",
+      "tag": "16岁以上 · 海边城市",
+      "desc": "最受欢迎的校区，海边城市、离伦敦1小时；学校专属公寓步行4分钟，课程和伦敦中心校区一样全。",
+      "image": "/assets/st-giles/brighton/brighton-36.jpg",
+      "path": "/overseas-study-tour/uk/st-giles/brighton"
+    },
+    {
+      "id": "st-giles-cambridge",
+      "name": "St Giles 剑桥校区",
+      "country": "UK",
+      "city": "剑桥",
+      "tag": "14岁以上 · 大学城",
+      "desc": "大学城里的精品小校区，约90名学生；14岁起全年可报，暑期有St Mary's青少年夏校和STEM夏校。",
+      "image": "/assets/st-giles/cambridge/cambridge-14.jpg",
+      "path": "/overseas-study-tour/uk/st-giles/cambridge"
+    },
+    {
+      "id": "st-giles-eastbourne",
+      "name": "St Giles 伊斯特本校区",
+      "country": "UK",
+      "city": "伊斯特本",
+      "tag": "14岁以上 · 海滨小城",
+      "desc": "安静的海滨小城，学费和寄宿家庭是5个校区里最实惠的；14岁起全年可报，学生平均年龄最小。",
+      "image": "/assets/st-giles/eastbourne/eastbourne-87.jpg",
+      "path": "/overseas-study-tour/uk/st-giles/eastbourne"
+    },
+    {
+      "id": "st-giles-canterbury",
+      "name": "St Giles 坎特伯雷青少年夏校",
+      "country": "UK",
+      "city": "坎特伯雷",
+      "tag": "仅暑期 · 8–17岁",
+      "desc": "在The King's School寄宿学校，7月4日–8月8日暑期开放；课程、住宿、三餐、活动和出游全包。",
+      "image": "/assets/st-giles/junior/canterbury-junior-2.jpg",
+      "path": "/overseas-study-tour/uk/st-giles#junior-canterbury"
     }
   ],
   "tourGuides": [

@@ -29,10 +29,10 @@ export class UkQuoteSheetComponent {
   }
 
   get sectionOptionalNumber(): string {
-    return '03';
+    return '02';
   }
 
   get sectionNotesNumber(): string {
-    return this.sheet.optionalRows.length ? '04' : '03';
+    return this.sheet.optionalRows.length ? '03' : '02';
   }
 }
