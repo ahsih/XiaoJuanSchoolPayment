@@ -1326,7 +1326,7 @@ export const CIA_STUDENT_CARE_SERVICES: StudentCareService[] = [
     number: '03',
     title: 'SNS 线上沟通服务',
     subtitle: '公告与经理联络',
-    text: '学校会通过线上渠道发布校内活动、生活提醒和重要公告；中国学生可通过微信公众号查询日常办事流程，需要进一步沟通时联系国际经理。',
+    text: '学校会在线上发布校内活动、生活提醒和重要公告；在校期间遇到问题，可找国际经理沟通。',
     location: '线上 SNS',
     schedule: '每天',
     points: ['校内信息通知', '国际经理沟通'],
@@ -1394,26 +1394,15 @@ export const CIA_CAMPUS_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
     note: '请先完成申请和校方确认，再安排出行；提交表格不等于已获准外出。',
   },
   {
-    icon: 'chat',
-    eyebrow: 'STUDENT WECHAT',
-    title: '微信公众号查询办事流程',
-    facts: [
-      { label: '公众号名称', value: 'CIA CHINA 学生服务' },
-      { label: '可查询内容', value: '打车地址、换课、校车、校园活动，以及菜单内的请假、缴费和老师换勤等流程' },
-      { label: '查询方式', value: '在公众号输入“打车”“换课”等简短关键词，或通过菜单查找' },
-    ],
-    note: '尽量使用简短关键词，完整问句可能无法识别；涉及个人课表、申请进度或紧急问题时，请联系教务或CRO。',
-  },
-  {
     icon: 'sim_card',
     eyebrow: 'SIM & INTERNET',
     title: '校内SIM卡与充值',
     facts: [
       { label: '未注册SIM', value: '约50比索，需本人使用护照和基本信息完成注册后充值使用' },
-      { label: '已注册SIM', value: '学校资料列约150比索，可直接充值使用；购买时确认当前实名及使用要求' },
+      { label: '已注册SIM', value: '约150比索，可直接充值使用；购买时确认当前实名及使用要求' },
       { label: '充值方式', value: '校内小卖铺现场充值，或使用“菲速充”微信小程序' },
     ],
-    note: '学校资料显示小卖铺电话卡为Smart卡；套餐、售价和注册要求可能随电信政策调整。',
+    note: '小卖铺电话卡为Smart卡；套餐、售价和注册要求可能随电信政策调整。',
   },
   {
     icon: 'restaurant_menu',
@@ -1437,18 +1426,7 @@ export const CIA_CAMPUS_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
       { label: '付费自助', value: '洗涤及烘干200比索，可洗内衣裤并使用自己的洗衣液；较早送洗有机会当天领取' },
       { label: '付费开放', value: '周一至周五07:00–21:00；周末07:00–17:00；节假日08:00–17:00' },
     ],
-    note: '送洗和领取时请检查衣物；学校资料注明不承担洗衣损坏责任。遗失赔偿参考为上衣500比索、短裤300比索、衬衫或外套200比索、毛巾100比索、其他50比索，具体认定与处理以校方规定为准。',
-  },
-  {
-    icon: 'local_post_office',
-    eyebrow: 'CRO & MAIL',
-    title: 'CRO联系电话与包裹邮寄',
-    facts: [
-      { label: 'CRO值班电话', value: '+63-919-332-1737（学校资料所列24小时服务电话）' },
-      { label: '邮寄联系电话', value: '+63-32-255-4493' },
-      { label: '英文邮寄地址', value: 'CIA Building Vistamar Avenue, Sitio Dapdap, Barangay Mactan, Lapu-Lapu City, Cebu, Philippines 6015' },
-    ],
-    note: '寄出前向CRO确认收件人姓名、房间信息和可接收的包裹类型；联系电话和收件安排以到校后的最新通知为准。',
+    note: '送洗和领取时请检查衣物；学校不承担洗衣损坏责任。遗失赔偿参考为上衣500比索、短裤300比索、衬衫或外套200比索、毛巾100比索、其他50比索，具体认定与处理以校方规定为准。',
   },
 ];
 
@@ -1666,6 +1644,8 @@ export const CIA_GALLERY_ALBUM_DESCRIPTIONS: Record<Exclude<GalleryCategory, '�
 
 /** Text that used to be written directly in cia-school.component.html. */
 export const CIA_PAGE_COPY = {
+  /** Shown above swipe rows on phones, so visitors know more cards sit to the right. */
+  swipeHint: '左右滑动查看',
   hero: {
     breadcrumb: '菲律宾游学 / 宿务学校 / CIA',
     title: '菲律宾宿务 CIA 语言学校',
@@ -1790,13 +1770,13 @@ export const CIA_PAGE_COPY = {
   },
   rooms: {
     photoTitle: '房型实景与差异',
-    photoIntro: '点选房型查看多角度实景、面积、床尺寸和房务安排；价格为每4周住宿费。',
+    photoIntro: '点选房型查看多角度实景、面积、床尺寸和房务安排；各房型价格见上方住宿费表。',
     videoLink: '看宿舍实拍视频 →',
     rulesTitle: '短期费率、入住退房与宿舍规定',
     rulesHint: '1–3周住宿费比例、入住与退房时间、额外住宿费用、宿舍规定',
     dormRulesTitle: '宿舍规定',
     dormRulesNote: '校内宿舍和4号楼宿舍规定相同；仅供参考，学校可能随时调整。',
-    tableHint: '面积、景观、床尺寸与洗衣清洁，一表对比；手机可左右滑动',
+    tableHint: '面积、景观、床尺寸与洗衣清洁，一表对比',
   },
   quote: {
     modes: { single: '单人报价', compare: '方案对比', group: '多人报价' },
@@ -1871,7 +1851,7 @@ export const CIA_PAGE_COPY = {
   },
   practicalGuide: {
     summaryTitle: '到校后办事与生活指南',
-    summaryHint: '行政与外出申请、微信查询、电话卡、用餐、洗衣及包裹邮寄',
+    summaryHint: '行政与外出申请、电话卡、用餐与洗衣',
     intro: '先了解去哪里办事，再查看日常生活安排。以下根据CIA学生服务资料整理，办公窗口、服务时间及规则以到校后的最新通知为准。',
   },
   studentTracks: {

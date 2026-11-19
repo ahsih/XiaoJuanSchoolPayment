@@ -366,22 +366,6 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     ].filter(Boolean).join(' · ');
   }
 
-  /** Four-week price of the rooms a room profile shows (the suite profile covers four codes). */
-  roomProfilePrice(profile: RoomComparisonProfile): string {
-    const codes = profile.bookingCode.split('/').map(code => code.trim());
-    const prices = this.roomRateGroups
-      .flatMap(group => group.rooms)
-      .filter(room => codes.includes(room.code))
-      .map(room => this.roomFeeFor(room.id))
-      .filter(value => value > 0);
-    return this.priceRangeText(prices);
-  }
-  private priceRangeText(prices: number[]): string {
-    if (!prices.length) return '';
-    const min = Math.min(...prices), max = Math.max(...prices);
-    return min === max ? `${this.formatUsd(min)} 美元` : `${this.formatUsd(min)}–${this.formatUsd(max)} 美元`;
-  }
-
   readonly quickInfo: QuickInfo[] = [
     {
       icon: 'apartment',

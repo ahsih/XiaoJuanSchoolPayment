@@ -612,7 +612,7 @@
           <img [src]="profile.image" [alt]="profile.label + '缩略图'" loading="lazy" />
           <span>
             <strong>{{ profile.label }}</strong>
-            <small>{{ profile.bookingCode }} · {{ profile.location }}<ng-container *ngIf="roomProfilePrice(profile) as price"> · {{ price }}</ng-container></small>
+            <small>{{ profile.bookingCode }} · {{ profile.location }}</small>
           </span>
         </button>
       </div>
@@ -666,7 +666,6 @@
               <h4>{{ selectedRoomProfile.label }}</h4>
             </div>
             <div class="room-profile-badges">
-              <strong class="room-profile-price" *ngIf="roomProfilePrice(selectedRoomProfile) as price">{{ price }}<small>／4周</small></strong>
               <b>{{ selectedRoomProfile.bookingCode }}</b>
               <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
             </div>
@@ -701,6 +700,7 @@
           </span>
           <mat-icon class="collapsible-chevron">expand_more</mat-icon>
         </summary>
+      <p class="swipe-hint swipe-hint--table"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }}完整表格</p>
       <div class="room-comparison-table-wrap">
         <table class="room-comparison-table">
           <thead>
@@ -779,6 +779,7 @@
         <small class="ielts-results-note">{{ copy.reviews.scoresNote }}</small>
       </div>
 
+      <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ officialStudentReviews.length }}个</p>
       <div class="official-review-grid" aria-label="CIA学生反馈中文整理">
         <article *ngFor="let review of officialStudentReviews">
           <figure>
@@ -1403,6 +1404,7 @@
         </div>
         <span class="wechat-note"><mat-icon>verified</mat-icon>{{ copy.videos.badge }}</span>
       </div>
+      <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ displayedVideoCards.length }}个</p>
       <div class="video-grid">
         <article *ngFor="let item of displayedVideoCards">
           <div class="video-media">
@@ -1441,7 +1443,7 @@
 
     <ng-template #shortVideoRow let-videos let-title="title" let-tall="tall" let-uniform="uniform">
       <div class="short-video-block" *ngIf="videos.length">
-        <h3><mat-icon>smart_display</mat-icon>{{ title }}</h3>
+        <h3><mat-icon>smart_display</mat-icon>{{ title }}<span class="swipe-hint swipe-hint--row"><mat-icon>swipe</mat-icon>共{{ videos.length }}个</span></h3>
         <div class="short-video-row" [class.short-video-row--tall]="tall" [class.short-video-row--uniform]="uniform">
           <figure class="short-video-card" *ngFor="let video of videos" [class.is-wide]="video.shape === 'wide'">
             <div class="short-video-media">
