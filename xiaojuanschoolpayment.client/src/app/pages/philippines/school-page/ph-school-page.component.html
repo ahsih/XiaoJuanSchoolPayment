@@ -136,6 +136,7 @@
           </ul>
         </div>
       </div>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
     </div>
 
@@ -185,6 +186,7 @@
           <p>{{ copy.campus.ruleText }}</p>
         </div>
       </aside>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <section class="cia-section" id="gallery">
@@ -298,6 +300,7 @@
         </article>
 
       </div>
+      <p class="section-reference-note" *ngIf="copy.referenceNote && selectedGalleryCategory === '全部'"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
 
     </section>
 
@@ -312,7 +315,7 @@
         <span class="course-price-badge" data-cia-preview-kind="section" data-cia-preview-id="course-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-heading')">{{ courseTableTitle }}</span>
       </div>
       <div class="course-catalog" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
-        <div class="course-group-grid">
+        <div class="course-group-grid" *ngIf="!courseModeZones; else courseModeZoneGrid">
           <article class="course-group" *ngFor="let group of courseGroups; trackBy: trackCourseGroup">
             <header>
               <span class="course-group-icon"><mat-icon>{{ group.icon }}</mat-icon></span>
@@ -321,9 +324,29 @@
                 <p *ngIf="group.text">{{ group.text }}</p>
               </div>
             </header>
-            <details class="course-line" *ngFor="let fee of group.courses" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
+            <ng-container *ngFor="let fee of group.courses"><ng-container *ngTemplateOutlet="courseLine; context: { $implicit: fee }"></ng-container></ng-container>
+          </article>
+        </div>
+        <ng-template #courseModeZoneGrid>
+          <div class="course-mode-zones">
+            <article class="course-mode-zone" *ngFor="let zone of courseModeZones" [class.is-strict]="zone.strict">
+              <header>
+                <h3>{{ zone.title }}课程<small>{{ zone.count }}门</small></h3>
+                <p>{{ zone.hint }}</p>
+              </header>
+              <section class="course-mode-goal" *ngFor="let group of zone.groups">
+                <h4><mat-icon>{{ group.icon }}</mat-icon>{{ group.title }}<small *ngIf="group.text">{{ group.text }}</small></h4>
+                <p class="course-mode-missing" *ngIf="group.missingNote">{{ group.missingNote }}</p>
+                <ng-container *ngFor="let fee of group.courses"><ng-container *ngTemplateOutlet="courseLine; context: { $implicit: fee, mode: zone.title }"></ng-container></ng-container>
+              </section>
+            </article>
+          </div>
+          <a class="course-mode-compare-link" *ngIf="copy.studyModes" href="#study-modes" (click)="scrollToSection('study-modes', $event)"><mat-icon>compare_arrows</mat-icon>{{ copy.studyModes.title }}看两种模式的区别</a>
+        </ng-template>
+        <ng-template #courseLine let-fee let-mode="mode">
+            <details class="course-line" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
               <summary>
-                <strong class="course-line-title">{{ fee.name }}</strong>
+                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}</strong>
                 <span class="course-line-price"><b>{{ formatUsd(listPrice(fee)) }}</b> 美元<small>{{ copy.courses.priceUnit }}</small></span>
                 <mat-icon class="course-line-chevron">expand_more</mat-icon>
                 <span class="course-line-schedule"><span *ngFor="let part of scheduleParts(fee.schedule); let first = first" [class.is-key]="first">{{ part }}</span></span>
@@ -334,8 +357,7 @@
                 <div *ngIf="show2026Prices && copy.courses.oldPriceLabel"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(fee.tuition) }} 美元{{ copy.courses.priceUnit }}</dd></div>
               </dl>
             </details>
-          </article>
-        </div>
+        </ng-template>
         <ul class="course-footnotes">
           <li *ngIf="show2026Prices" data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')"><mat-icon>event_available</mat-icon>{{ courseTableNote }}</li>
           <li *ngIf="groupClassNote" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')"><mat-icon>groups</mat-icon>{{ copy.fees.classSizeTitle }}：{{ groupClassNote }}</li>
@@ -485,6 +507,7 @@
       </section>
         </div>
       </details>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <section class="cia-section tables-section rooms-section" id="rooms">
@@ -897,6 +920,7 @@
           </div>
         </div>
       </section>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <section class="cia-section sida-cia-section" id="service-process">
@@ -989,6 +1013,7 @@
       </summary>
       <div class="collapsible-panel-body">
         <ng-container *ngTemplateOutlet="calendarPlanningSections"></ng-container>
+        <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
       </div>
     </details>
 
@@ -1114,9 +1139,10 @@
             <ul *ngIf="guide.points" class="campus-guide-points">
               <li *ngFor="let point of guide.points">{{ point }}</li>
             </ul>
-            <p><mat-icon>info</mat-icon>{{ guide.note }}</p>
+            <p *ngIf="guide.note"><mat-icon>info</mat-icon>{{ guide.note }}</p>
           </article>
         </div>
+        <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
       </div>
     </details>
 
@@ -1154,6 +1180,7 @@
         <summary>{{ faq.question }}</summary>
         <p>{{ faq.answer }}</p>
       </details>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <section class="final-cta">
@@ -1416,6 +1443,7 @@
       </div>
       <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: campusLifeVideos, title: copy.videos.lifeTitle ?? '', tall: true }"></ng-container>
       <ng-container *ngTemplateOutlet="shortVideoRow; context: { $implicit: interviewVideos, title: copy.videos.interviewTitle ?? '', uniform: true }"></ng-container>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
     </ng-template>
 

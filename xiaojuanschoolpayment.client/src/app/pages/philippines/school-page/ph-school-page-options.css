@@ -1,0 +1,31 @@
+/*
+ * Blocks only some schools fill in through optional profile fields (copy.referenceNote, courseModes).
+ * CIA leaves those fields out, so none of these rules match on its page.
+ */
+
+/* One reference line closing each content section. */
+:host .section-reference-note { display: flex; gap: 6px; align-items: flex-start; grid-column: 1 / -1; margin: 14px 0 0; color: #7a8a84; font-size: 12px; line-height: 1.6; }
+:host .section-reference-note mat-icon { flex: none; width: 16px; height: 16px; font-size: 16px; }
+:host .video-section .section-reference-note { color: rgba(255, 255, 255, 0.75); }
+
+/* Course list by study mode: a green zone (relaxed) and an orange zone (strict), same colours as the study-mode cards. */
+:host .course-mode-zones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+:host .course-mode-zone { min-width: 0; overflow: hidden; border: 2px solid #9fd0b8; border-radius: 16px; background: #ffffff; box-shadow: 0 8px 22px rgba(13, 59, 47, 0.06); }
+:host .course-mode-zone.is-strict { border-color: #f4b48f; }
+:host .course-mode-zone > header { padding: 16px 18px; background: #0b5a40; color: #ffffff; }
+:host .course-mode-zone.is-strict > header { background: #c2410c; }
+:host .course-mode-zone h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: inherit; font-size: 21px; font-weight: 950; line-height: 1.3; }
+:host .course-mode-zone h3 small { padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.2); font-size: 13px; font-weight: 800; }
+:host .course-mode-zone > header p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; opacity: 0.92; }
+:host .course-mode-goal + .course-mode-goal { border-top: 6px solid #f2f5f4; }
+:host .course-mode-goal h4 { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin: 0; padding: 12px 18px 8px; color: #043f2d; font-size: 15px; font-weight: 900; }
+:host .course-mode-goal h4 mat-icon { width: 20px; height: 20px; font-size: 20px; color: #0b5a40; }
+:host .course-mode-zone.is-strict .course-mode-goal h4 mat-icon { color: #c2410c; }
+:host .course-mode-goal h4 small { color: #7a8a84; font-size: 12px; font-weight: 600; }
+:host .course-mode-missing { margin: 0; padding: 10px 18px 14px; border-top: 1px solid #eef2f0; color: #94a3b8; font-size: 13px; }
+:host .course-mode-compare-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; color: #0b5a40; font-size: 14px; font-weight: 800; text-decoration: none; }
+
+@media (max-width: 760px) {
+  :host .course-mode-zones { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  :host .course-mode-zone > header { padding: 14px 16px; }
+}
