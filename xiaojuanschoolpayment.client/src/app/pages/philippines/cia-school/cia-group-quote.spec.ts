@@ -145,14 +145,15 @@ describe('CIA per-person quote pilot', () => {
     expect(grouped[0].note).toContain('学生3：条件B');
   });
   for (const visa of ['student','work','srrv','sirv'] as const) {
-    it(visa+' zeroes only four fees and still charges ARP', () => {
+    it(visa+' zeroes only four fees and still lists ARP (free at CIA since October 2026)', () => {
       const s=c.students[0]; configure(s,24); s.visaType=visa;
       for (const name of ['SSP特殊','SSP-E','ACR-I','签证续签']) {
         expect(fee(s,name).quantity).toBe(0); expect(fee(s,name).total).toBe(0);
         expect(fee(s,name).note).toContain('须由顾问向学校确认政策是否调整及是否免收');
       }
-      expect(fee(s,'ARP').total).toBe(300);
-      expect(fee(s,'ARP').note).toContain('长期签证');
+      expect(fee(s,'ARP').quantity).toBe(1);
+      expect(fee(s,'ARP').total).toBe(0);
+      expect(fee(s,'ARP').note).toContain('免费');
     });
   }
   it('uses 30/59 initial days and adds ARP only on first tourist extension', () => {
@@ -160,9 +161,9 @@ describe('CIA per-person quote pilot', () => {
     for (const [weeks,thirty,fiftyNine] of [[4,0,0],[6,1,0],[8,1,0],[12,2,1],[24,5,4]]) {
       configure(s,weeks);
       s.visaType='tourist30'; expect(s.visaExtensionCount).toBe(thirty);
-      expect(fee(s,'ARP').total).toBe(thirty?300:0);
+      expect(fee(s,'ARP').quantity).toBe(thirty?1:0); expect(fee(s,'ARP').total).toBe(0);
       s.visaType='tourist59'; expect(s.visaExtensionCount).toBe(fiftyNine);
-      expect(fee(s,'ARP').total).toBe(fiftyNine?300:0);
+      expect(fee(s,'ARP').quantity).toBe(fiftyNine?1:0); expect(fee(s,'ARP').total).toBe(0);
     }
     expect(fee(s,'签证续签').total).toBe(6410+4540*3);
     expect(fee(s,'签证续签').note).not.toContain('12周');

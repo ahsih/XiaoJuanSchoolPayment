@@ -22,7 +22,7 @@ import {
   CIA_CAMPUS_PRACTICAL_GUIDES,
   CIA_COURSE_CHOICE_CARDS,
   CIA_COURSE_DETAIL_GUIDES,
-  CIA_FAQS,
+  currentCiaFaqs,
   CIA_FRIDAY_SCHEDULE,
   CIA_GALLERY_ALBUM_CATEGORIES,
   CIA_GALLERY_ALBUM_DESCRIPTIONS,
@@ -365,7 +365,7 @@ export function buildCiaMiniProgramPage(): SchoolMiniPage {
     },
     {
       kind: 'faq',
-      blocks: [{ type: 'details', items: CIA_FAQS.map(faq => ({ title: faq.question, blocks: [text(faq.answer)] })) }],
+      blocks: [{ type: 'details', items: currentCiaFaqs().map(faq => ({ title: faq.question, blocks: [text(faq.answer)] })) }],
     },
     contactSection('CIA', { title: copy.finalCta.title, text: copy.finalCta.text }, {
       detailed: true,

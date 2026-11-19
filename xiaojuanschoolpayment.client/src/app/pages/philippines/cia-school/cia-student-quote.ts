@@ -351,7 +351,26 @@ export class CiaStudentQuote {
     return 0;
   }
 
-  private calculateLocalFee(rule: CiaLocalFeeRule): SchoolLocalFee {
+  /** A fee's dated replacement (e.g. 2027 electricity) applies when the student's first arrival is on or after its start. */
+  private effectiveLocalFeeRule(rule: CiaLocalFeeRule): CiaLocalFeeRule {
+    const arrival = this.quotePlan.startDate;
+    if (!rule.futureEffectiveStart || rule.futureAmount === undefined || !arrival || arrival < rule.futureEffectiveStart) {
+      return rule;
+    }
+    return {
+      ...rule,
+      name: rule.futureName || rule.name,
+      amount: rule.futureAmount,
+      secondaryAmount: rule.futureSecondaryAmount ?? rule.secondaryAmount,
+      periodWeeks: rule.futurePeriodWeeks ?? rule.periodWeeks,
+      rounding: rule.futureRounding ?? rule.rounding,
+      rates: rule.futureRates ?? rule.rates,
+      note: rule.futureNote || rule.note,
+    };
+  }
+
+  private calculateLocalFee(sourceRule: CiaLocalFeeRule): SchoolLocalFee {
+    const rule = this.effectiveLocalFeeRule(sourceRule);
     const longTermWaiver = this.isLongTermVisa && rule.waiveForLongTermVisa;
     let quantity = 0;
     let total = 0;

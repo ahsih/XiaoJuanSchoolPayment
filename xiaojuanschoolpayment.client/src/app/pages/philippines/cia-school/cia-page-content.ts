@@ -28,6 +28,8 @@ export interface GalleryImage {
 
 export interface CiaVideoCard {
   code: string;
+  /** Badge on the player; defaults to “<code> COURSE”. */
+  label?: string;
   title: string;
   text: string;
   poster?: string;
@@ -36,6 +38,17 @@ export interface CiaVideoCard {
   videoSrc: string;
   contentType: string;
   details: string[];
+}
+
+/** A short clip from CIA's official YouTube channel, shown as a small card with a Chinese caption. */
+export interface CiaShortVideo {
+  title: string;
+  text: string;
+  src: string;
+  poster: string;
+  duration: string;
+  /** Most CIA clips are vertical phone videos; 'wide' is 16:9 and 'square' about 9:10. */
+  shape?: 'wide' | 'square';
 }
 
 const buildCiaRoomGallery = (folder: string, count: number): string[] =>
@@ -227,6 +240,25 @@ export interface CampusPracticalGuide {
 export interface FaqItem {
   question: string;
   answer: string;
+  /** Local date (YYYY-MM-DD) from which the item is hidden. */
+  until?: string;
+}
+
+/** From this local date every new CIA student pays 2027 tuition, so the 2026 price notes disappear. */
+export const CIA_2026_PRICES_UNTIL = '2027-01-01';
+
+function localIsoDate(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+export function ciaShows2026Prices(today: Date = new Date()): boolean {
+  return localIsoDate(today) < CIA_2026_PRICES_UNTIL;
+}
+
+export function currentCiaFaqs(today: Date = new Date()): FaqItem[] {
+  const iso = localIsoDate(today);
+  return CIA_FAQS.filter(faq => !faq.until || iso < faq.until);
 }
 
 export interface SideNavItem {
@@ -938,6 +970,7 @@ export const CIA_FAQS: FaqItem[] = [
       '适合。Regular ESL 可以从基础开始，但如果目标是短期快速开口，建议让顾问比较 Intensive 或 Power Intensive 是否更合适。',
   },
   {
+    until: CIA_2026_PRICES_UNTIL,
     question: 'CIA 2027年课程费从什么时候开始使用？',
     answer:
       '不是所有学生从2026年9月1日起统一涨价。只有在2026年9月1日或之后报名，并且在2027年1月1日或之后入学，才采用2027新课程费；2026年入学仍按原价。若原定2026年入学后改期到2027年，需要按改期日期再核对。',
@@ -966,11 +999,13 @@ export const CIA_FAQS: FaqItem[] = [
 
 export const CIA_MOBILE_ANCHORS: SideNavItem[] = [
   { label: '概览', target: 'overview', icon: 'dashboard' },
+  { label: '校园', target: 'campus-introduction', icon: 'apartment' },
+  { label: '图片', target: 'gallery', icon: 'photo_library' },
+  { label: '视频', target: 'videos', icon: 'smart_display' },
   { label: '课程', target: 'courses', icon: 'menu_book' },
   { label: '住宿', target: 'rooms', icon: 'bed' },
-  { label: '报价', target: 'quote', icon: 'calculate' },
-  { label: '校园', target: 'campus-introduction', icon: 'apartment' },
   { label: '评价', target: 'student-reviews', icon: 'rate_review' },
+  { label: '报价', target: 'quote', icon: 'calculate' },
   { label: 'FAQ', target: 'faq', icon: 'help' },
 ];
 
@@ -978,7 +1013,7 @@ export const CIA_SNAPSHOT_CARDS = [
   {
     icon: 'history_edu',
     title: '学校定位',
-    text: '2003年创校，2022年启用麦克坦新校区，采用半斯巴达管理',
+    text: '2003年创校，2022年启用宿务麦克坦岛新校区，采用半斯巴达管理',
   },
   {
     icon: 'workspace_premium',
@@ -988,7 +1023,7 @@ export const CIA_SNAPSHOT_CARDS = [
   {
     icon: 'menu_book',
     title: '课程覆盖',
-    text: 'ESL / IELTS / TOEIC / Business / Callan / College Immersion',
+    text: 'ESL / IELTS / TOEIC / Business / Callan / College Immersion，寒暑假另有亲子营和青少年营',
   },
   {
     icon: 'sports_basketball',
@@ -1008,6 +1043,34 @@ export const CIA_SNAPSHOT_CARDS = [
 ];
 
 export const CIA_VIDEO_CARDS: CiaVideoCard[] = [
+  {
+    code: 'CAMPUS',
+    label: 'CAMPUS TOUR',
+    title: '校园导览视频',
+    text: 'CIA官方拍摄的校园全景（2023年）',
+    poster: 'assets/cia/video-posters/campus-tour-2023.webp',
+    videoSrc: 'assets/cia-video/campus-tour-2023.mp4',
+    contentType: 'video/mp4',
+    details: [
+      '跟着工作人员走一遍校园',
+      '小卖部、办公区、图书馆',
+      '健身房、游泳池、篮球场',
+    ],
+  },
+  {
+    code: 'DORM',
+    label: 'DORMITORY',
+    title: '4号楼宿舍视频',
+    text: 'CIA官方2026年拍摄，学校对面的4号楼单人间',
+    poster: 'assets/cia/video-posters/building-4-dormitory.webp',
+    videoSrc: 'assets/cia-video/building-4-dormitory.mp4',
+    contentType: 'video/mp4',
+    details: [
+      '床、书桌、投影与无线充电',
+      '小厨房：电磁炉、油烟机、微波炉',
+      '独立卫浴与保险箱',
+    ],
+  },
   {
     code: 'ESL',
     title: '一般英语小组课程视频',
@@ -1073,6 +1136,94 @@ export const CIA_VIDEO_CARDS: CiaVideoCard[] = [
       '选修与写作各 1 节',
       '自习 2 节',
     ],
+  },
+];
+
+/**
+ * Official IELTS results of CIA students (August 2026), from CIA's score posters with the name, photo,
+ * birth date, candidate ID/number and report number pixelated. Never add an unmasked report.
+ */
+export const CIA_IELTS_RESULTS: ReadonlyArray<{ image: string; title: string; entrance: string; overall: string; detail: string }> = [
+  { image: 'assets/cia/ielts-results/ielts-taiwan-4w-7-5.webp', title: '台湾学员 · 4周', entrance: '5.5', overall: '7.5', detail: '学术类 · 听力8.5 阅读8.0 写作6.5 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-7-0.webp', title: '中国学员 · 4周', entrance: '5', overall: '7.0', detail: '学术类 · 听力8.0 阅读7.0 写作6.5 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-a.webp', title: '中国学员 · 4周', entrance: '4.5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语6.0' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-b.webp', title: '中国学员 · 4周', entrance: '5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语7.0' },
+  { image: 'assets/cia/ielts-results/ielts-china-10w-6-5.webp', title: '中国学员 · 10周', entrance: '4', overall: '6.5', detail: '学术类 · 听力6.0 阅读7.0 写作6.0 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-7w-5-5.webp', title: '中国学员 · 7周', entrance: '2.5', overall: '5.5', detail: '学术类 · 听力5.0 阅读5.5 写作5.5 口语5.5' },
+];
+
+/** Dormitory rules shown in the rooms section's rules panel (same for campus and Building 4 dorms). */
+export const CIA_DORM_RULES: ReadonlyArray<{ title: string; text: string }> = [
+  { title: '禁止访客：', text: '不能带任何人进自己房间（包括其他CIA学生），也不能进别人房间；第一次罚200美元或劝退不退费，第二次直接劝退不退费。' },
+  { title: '禁烟：', text: '所有房间禁止吸烟，违规罚5,000比索并扣10分；只能在指定吸烟区吸烟。' },
+  { title: '禁酒：', text: '不能把酒带进宿舍，保安会检查包并没收，违规扣10分。' },
+  { title: '房卡：', text: '离开房间时把房卡留在房内取电槽，罚5,000比索。' },
+  { title: '损坏赔偿：', text: '损坏房内物品须用比索现金照价赔偿。' },
+  { title: '入住与退房：', text: '入住时和工作人员一起检查房间设施并签确认单；离校前最后一个周五申请查房，查房后凭确认单领回护照和押金。' },
+];
+
+// Vertical clips from CIA's official YouTube channel (@cebuCIA), compressed for the website.
+export const CIA_CAMPUS_LIFE_VIDEOS: CiaShortVideo[] = [
+  {
+    title: '宿舍房型总览',
+    text: '单人间到三人间，2026年拍摄',
+    src: 'assets/cia-video/shorts/student-housing.mp4',
+    poster: 'assets/cia/video-posters/student-housing.webp',
+    duration: '1:00',
+  },
+  {
+    title: '单人间实拍',
+    text: '床、衣柜、卫生间和阳台景观',
+    src: 'assets/cia-video/shorts/single-room.mp4',
+    poster: 'assets/cia/video-posters/single-room.webp',
+    duration: '0:55',
+  },
+  {
+    title: '三人间实拍',
+    text: '三张床、书桌、卫浴和阳台',
+    src: 'assets/cia-video/shorts/triple-room.mp4',
+    poster: 'assets/cia/video-posters/triple-room.webp',
+    duration: '0:41',
+  },
+  {
+    title: '食堂自助餐',
+    text: '每天的自助午餐',
+    src: 'assets/cia-video/shorts/daily-meals.mp4',
+    poster: 'assets/cia/video-posters/daily-meals.webp',
+    duration: '0:23',
+  },
+  {
+    title: 'NUU 咖啡厅（校外）',
+    text: '离学校步行3–5分钟，咖啡和烘焙',
+    src: 'assets/cia-video/shorts/nuu-cafe.mp4',
+    poster: 'assets/cia/video-posters/nuu-cafe.webp',
+    duration: '0:42',
+  },
+];
+
+export const CIA_INTERVIEW_VIDEOS: CiaShortVideo[] = [
+  {
+    title: '台湾学员：读了7周ESL',
+    text: '两位台湾学员聊为什么选菲律宾、上课节奏和老师，以及会不会推荐给朋友。',
+    src: 'assets/cia-video/shorts/taiwanese-students.mp4',
+    poster: 'assets/cia/video-posters/taiwanese-students.webp',
+    duration: '1:47',
+  },
+  {
+    title: '毕业学员：最难忘的事',
+    text: '毕业当天泳池边的采访：各国朋友、同学、老师和英语进步。',
+    src: 'assets/cia-video/shorts/best-experience.mp4',
+    poster: 'assets/cia/video-posters/best-experience.webp',
+    duration: '0:57',
+    shape: 'square',
+  },
+  {
+    title: '日本学员：托业课程评价',
+    text: '每周模考看得到进步，喜欢小组课和校内咖啡厅，还参加了圣婴节。',
+    src: 'assets/cia-video/shorts/japanese-student-review.mp4',
+    poster: 'assets/cia/video-posters/japanese-student-review.webp',
+    duration: '3:26',
+    shape: 'wide',
   },
 ];
 
@@ -1544,7 +1695,7 @@ export const CIA_PAGE_COPY = {
   },
   gallery: {
     title: '按区域查看 CIA 环境',
-    intro: '“全部”先按区域进入相册；各相册用缩略图切换实景，点击主图可放大并前后浏览。7类房型的价格与详细对比在上方“住宿”部分。',
+    intro: '“全部”先按区域进入相册；相册内用左右箭头或缩略图切换，点击主图可放大。7类房型的价格与详细对比在下方“住宿”部分。',
     photoNote: '图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。',
     roomComparisonTitle: '7类房型快速对比',
     roomDisclaimer: '图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
@@ -1632,14 +1783,19 @@ export const CIA_PAGE_COPY = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CIA 校园与课程',
-    intro: '课程介绍和员工发布的校园视频均可在线播放，帮助你更直观地了解课堂与校园环境。',
-    badge: 'CIA 官方课程视频',
+    intro: '校园导览、宿舍和课程介绍都来自CIA官方账号，可在线播放，帮助你更直观地了解校园与课堂。',
+    badge: 'CIA 官方视频',
+    lifeTitle: '宿舍与校园生活实拍',
+    interviewTitle: '学员访谈（英文原声）',
   },
   rooms: {
     photoTitle: '房型实景与差异',
     photoIntro: '点选房型查看多角度实景、面积、床尺寸和房务安排；价格为每4周住宿费。',
-    rulesTitle: '短期费率与入住退房规则',
-    rulesHint: '1–3周住宿费比例、入住与退房时间、额外住宿费用',
+    videoLink: '看宿舍实拍视频 →',
+    rulesTitle: '短期费率、入住退房与宿舍规定',
+    rulesHint: '1–3周住宿费比例、入住与退房时间、额外住宿费用、宿舍规定',
+    dormRulesTitle: '宿舍规定',
+    dormRulesNote: '校内宿舍和4号楼宿舍规定相同；仅供参考，学校可能随时调整。',
     tableHint: '面积、景观、床尺寸与洗衣清洁，一表对比；手机可左右滑动',
   },
   quote: {
@@ -1729,6 +1885,17 @@ export const CIA_PAGE_COPY = {
     intro: '课程表告诉你每天学什么，学生的真实经历则能帮助你理解：刚到校时会遇到什么、适应以后有什么变化，以及课堂之外的宿务生活是什么样子。',
     source: 'CIA学生真实反馈整理',
     linkLabel: '查看完整反馈',
+    scoresTitle: 'CIA学员官方雅思成绩（2026年8月）',
+    scoresIntro: '入学测试 → 官方雅思总分。点击可查看成绩单。',
+    scoresNote: '已隐藏学员姓名、照片和证件信息；成绩因个人基础和投入而异，仅供参考。',
+  },
+  license: {
+    title: '办学资质已核验',
+    items: [
+      '2026年拉普拉普市营业执照（英语语言学校、学生宿舍，有效至2026年12月31日）',
+      '菲律宾移民局外国学生招收资格认证（学生据此办理SSP学习许可）',
+    ],
+    note: '证件可向思达顾问索取查看',
   },
   sida: {
     eyebrow: 'SIDA SERVICE GUARANTEE',

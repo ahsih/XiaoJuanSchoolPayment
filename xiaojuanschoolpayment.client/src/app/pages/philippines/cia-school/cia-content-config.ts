@@ -193,6 +193,8 @@ export interface CiaQuoteSettings {
   peakSeasonRanges: CiaPeakSeasonRange[];
   /** Lets older published documents inherit a confirmed peak-season policy once. */
   peakSeasonPolicyVersion?: number;
+  /** CIA local-fee notices (free ARP from 2026-10-16, 2027 electricity) applied once to older published documents. */
+  localFeePolicyVersion?: number;
   monolPromotionPolicyVersion?: number;
   /** I.BREEZE November policy and registration-dated 2027 catalogue upgrade. */
   ibreezePolicyVersion?: number;
@@ -281,6 +283,16 @@ export interface CiaContentConfig {
   media?: CiaMediaContent[];
 }
 
+// CIA partner notices: ARP is free at CIA from 2026-10-16 (until further notice), and students
+// arriving from 2027-01-01 pay 3,000 pesos electricity per four weeks instead of 2,000.
+export const CIA_LOCAL_FEE_POLICY_VERSION = 20261111;
+const CIA_ARP_NOTE = 'CIA目前免费办理：需续签的学生本人到移民局录指纹，约2–3小时，学校安排时间和往返交通；当天缺课不补。';
+const CIA_ELECTRICITY_2027: Pick<CiaLocalFeeRule, 'futureEffectiveStart' | 'futureAmount' | 'futureNote'> = {
+  futureEffectiveStart: '2027-01-01',
+  futureAmount: 3000,
+  futureNote: '2027年1月1日起入学按每4周3,000比索计算；超过基本用电额度时另行收费。',
+};
+
 const course = (
   id: string,
   name: string,
@@ -337,9 +349,9 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
     { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 8000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '按报名学习时长办理；续费或换校须学校确认。', enabled: true, sortOrder: 0 },
     { id: 'ssp-e-card', name: 'SSP-E Card', currency: 'PHP', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP同时办理，按一次性费用估算。', enabled: true, sortOrder: 1 },
     { id: 'acr-i-card', name: 'ACR-I Card 外国人身份证', currency: 'PHP', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '首次续签时计入一次；以学校办理要求为准。', enabled: true, sortOrder: 2 },
-    { id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '首次续签或长期签证计入一次；实际政策及收费须向学校确认。', enabled: true, sortOrder: 3 },
+    { id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 0, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: CIA_ARP_NOTE, enabled: true, sortOrder: 3 },
     { id: 'management', name: '综合管理费', currency: 'PHP', amount: 4000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '按每4周4,000比索／人计算。', enabled: true, sortOrder: 4 },
-    { id: 'electricity', name: '电费', currency: 'PHP', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '超过基本用电额度时另行收费，单价可能按当地电力公司调整。', enabled: true, sortOrder: 5 },
+    { id: 'electricity', name: '电费', currency: 'PHP', amount: 2000, ...CIA_ELECTRICITY_2027, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '超过基本用电额度时另行收费，单价可能按当地电力公司调整。', enabled: true, sortOrder: 5 },
     { id: 'water', name: '水费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '按每4周1,000比索／人计算。', enabled: true, sortOrder: 6 },
     { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 6410, rates: [6410, 4540, 4540, 4540, 5650], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '按签证类型和实际停留天数累计；最终以办理要求为准。', enabled: true, sortOrder: 7 },
     { id: 'books', name: '教材费', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '每套约使用8周；实际按课程与学习进度发放。', enabled: true, sortOrder: 8 },
@@ -359,6 +371,7 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
       { id: 'summer-2027', label: '2027暑假', start: '2027-06-13', end: '2027-08-07', enabled: true },
     ],
     peakSeasonPolicyVersion: 2027,
+    localFeePolicyVersion: CIA_LOCAL_FEE_POLICY_VERSION,
     promotions: [
       {
         id: 'sida-discount', name: '思达折扣', description: '课程费和住宿费享95折', enabled: true, sortOrder: 0,
@@ -450,6 +463,20 @@ export const cloneCiaContentConfig = (value: CiaContentConfig): CiaContentConfig
       }
     }
     clone.quoteSettings.peakSeasonPolicyVersion = 2027;
+  }
+  // Revisions published before CIA's October/November 2026 notices still charge 300 pesos ARP and
+  // have no 2027 electricity rate. Upgrade only those two fee rows, keeping other employee edits.
+  if ((clone.quoteSettings.localFeePolicyVersion ?? 0) < CIA_LOCAL_FEE_POLICY_VERSION) {
+    const savedNotes = clone.quoteImageSettings?.localFeeNotes;
+    const arp = clone.localFees?.find(fee => fee.id === 'arp');
+    if (arp) {
+      if (savedNotes?.['arp'] === arp.note) delete savedNotes['arp'];
+      arp.amount = 0;
+      arp.note = CIA_ARP_NOTE;
+    }
+    const electricity = clone.localFees?.find(fee => fee.id === 'electricity');
+    if (electricity && !electricity.futureEffectiveStart) Object.assign(electricity, CIA_ELECTRICITY_2027);
+    clone.quoteSettings.localFeePolicyVersion = CIA_LOCAL_FEE_POLICY_VERSION;
   }
   // Older saved revisions predate image-only copy; merge defaults without changing their prices or rules.
   const defaults = createDefaultCiaContentConfig().quoteImageSettings;

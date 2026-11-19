@@ -60,10 +60,15 @@ import {
   CIA_IELTS_COMPUTER_EXAM_DATES_2027,
   CIA_IELTS_EXAM_DATES_2026,
   CIA_COURSE_DETAIL_GUIDES,
-  CIA_FAQS,
+  ciaShows2026Prices,
+  currentCiaFaqs,
   CIA_MOBILE_ANCHORS,
   CIA_SNAPSHOT_CARDS,
   CIA_VIDEO_CARDS,
+  CIA_CAMPUS_LIFE_VIDEOS,
+  CIA_DORM_RULES,
+  CIA_IELTS_RESULTS,
+  CIA_INTERVIEW_VIDEOS,
   CIA_COURSE_GROUPS,
   CIA_STUDENT_CARE_SERVICES,
   CIA_CAMPUS_PRACTICAL_GUIDES,
@@ -313,6 +318,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   get selectedStartDate() { return this.quotePlan.startDate; }
   set selectedStartDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
   selectedRoomProfileId = 'premium-single';
+  selectedRoomPhotoIndex = 0;
+  private photoSwipeOrigin: { x: number; y: number } | null = null;
   get selectedRegistrationDate() { return this.students[0].selectedRegistrationDate; }
   set selectedRegistrationDate(value: string) { this.students[0].selectedRegistrationDate = value; }
   quoteCalculated = false;
@@ -827,7 +834,8 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
 
-  readonly faqs = CIA_FAQS;
+  readonly faqs = currentCiaFaqs();
+  readonly show2026Prices = ciaShows2026Prices();
 
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
@@ -843,9 +851,33 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly snapshotCards = CIA_SNAPSHOT_CARDS;
 
   readonly videoCards = CIA_VIDEO_CARDS;
+  readonly campusLifeVideos = CIA_CAMPUS_LIFE_VIDEOS;
+  readonly interviewVideos = CIA_INTERVIEW_VIDEOS;
+  readonly dormRules = CIA_DORM_RULES;
+  readonly ieltsResults = CIA_IELTS_RESULTS;
+  readonly ieltsResultImages = CIA_IELTS_RESULTS.map(item => item.image);
+  readonly ieltsResultTitles = CIA_IELTS_RESULTS.map(item => item.title + ' · 入学 ' + item.entrance + ' → 官方雅思 ' + item.overall);
 
   get displayedVideoCards(): CiaVideoCard[] {
     return [...this.videoCards, ...this.uploadedVideoCards];
+  }
+
+  /**
+   * Plays a short clip fullscreen. Narrow players hide the browser's own fullscreen control in the "⋮" menu,
+   * so each short-clip card has this button; iPhone Safari and WeChat only offer the video's webkit fullscreen.
+   */
+  playFullscreen(video: HTMLVideoElement): void {
+    const clip = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+    // Start playing inside the tap, so the clip still plays where fullscreen is refused.
+    video.play().catch(() => undefined);
+    const webkitFullscreen = () => {
+      try { clip.webkitEnterFullscreen?.(); } catch { /* stays inline and keeps playing */ }
+    };
+    if (typeof video.requestFullscreen === 'function' && document.fullscreenEnabled) {
+      video.requestFullscreen().catch(webkitFullscreen);
+    } else {
+      webkitFullscreen();
+    }
   }
 
   private courseGroupCache?: { source: CourseFee[]; groups: CourseGroupView[] };
@@ -867,6 +899,16 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.courseGroupCache.groups;
   }
   trackCourseGroup(_index: number, group: CourseGroupView): string { return group.title; }
+  private readonly schedulePartCache = new Map<string, string[]>();
+  /** A course's daily schedule split at “+” and “；” so the row can show it as short parts. */
+  scheduleParts(schedule: string): string[] {
+    let parts = this.schedulePartCache.get(schedule);
+    if (!parts) {
+      parts = schedule.split(/\s*[+＋;；]\s*/).map(part => part.trim()).filter(Boolean);
+      this.schedulePartCache.set(schedule, parts);
+    }
+    return parts;
+  }
 
   readonly studentCareServices = CIA_STUDENT_CARE_SERVICES;
 
@@ -1723,6 +1765,48 @@ export class CiaSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setRoomProfile(profileId: string): void {
     this.selectedRoomProfileId = profileId;
+    this.selectedRoomPhotoIndex = 0;
+  }
+
+  get selectedRoomPhotos(): readonly string[] {
+    const profile = this.selectedRoomProfile;
+    return profile.gallery.length ? profile.gallery : [profile.image];
+  }
+
+  get selectedRoomPhoto(): string {
+    const photos = this.selectedRoomPhotos;
+    return photos[Math.min(this.selectedRoomPhotoIndex, photos.length - 1)];
+  }
+
+  selectRoomPhoto(index: number): void {
+    this.selectedRoomPhotoIndex = Math.min(Math.max(index, 0), this.selectedRoomPhotos.length - 1);
+  }
+
+  stepRoomPhoto(step: number): void {
+    const length = this.selectedRoomPhotos.length;
+    this.selectedRoomPhotoIndex = (this.selectedRoomPhotoIndex + step + length) % length;
+  }
+
+  photoSwipeStart(event: TouchEvent): void {
+    const touch = event.changedTouches[0];
+    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
+  }
+
+  photoSwipeEnd(event: TouchEvent, album: 'gallery' | 'room'): void {
+    const origin = this.photoSwipeOrigin;
+    const touch = event.changedTouches[0];
+    this.photoSwipeOrigin = null;
+    if (!origin || !touch) return;
+    const dx = touch.clientX - origin.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(touch.clientY - origin.y)) return;
+    const step = dx < 0 ? 1 : -1;
+    if (album === 'room') {
+      this.stepRoomPhoto(step);
+    } else if (step > 0) {
+      this.nextGalleryImage();
+    } else {
+      this.previousGalleryImage();
+    }
   }
 
   get selectedRoomProfile(): RoomComparisonProfile {

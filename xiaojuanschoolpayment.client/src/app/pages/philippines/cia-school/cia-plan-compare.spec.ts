@@ -3,6 +3,7 @@ import { CiaPlanComparison } from './cia-plan-compare';
 import { cloneCiaContentConfig, createDefaultCiaContentConfig } from './cia-content-config';
 import { nextQuoteSunday } from '../../../components/school-quote-plan';
 import { planCompareReady } from '../../../components/plan-compare/plan-compare-sheet';
+import { ciaShows2026Prices, currentCiaFaqs } from './cia-page-content';
 
 describe('CIA plan comparison and quote defaults', () => {
   const setup = () => {
@@ -76,6 +77,32 @@ describe('CIA plan comparison and quote defaults', () => {
     expect(comparison.results.every(result => result.registration === 0)).toBeTrue();
   });
 
+  it('applies the 2026 CIA notices: free ARP and 3,000-peso electricity for 2027 arrivals', () => {
+    const { quote, student } = setup();
+    const fee = (name: string) => student.localFees.find(item => item.item === name);
+    student.quotePlan.updateWeeks('course', 1, 12);
+    expect(fee('ARP外国人登记')?.total).toBe(0);
+    expect(fee('电费')?.total).toBe(9000);
+    student.quotePlan.updateStartDate('course', 1, '2026-12-06');
+    expect(fee('电费')?.total).toBe(6000);
+    expect(quote.quoteError).toBe('');
+
+    const legacy = createDefaultCiaContentConfig();
+    delete legacy.quoteSettings.localFeePolicyVersion;
+    const legacyArp = legacy.localFees.find(item => item.id === 'arp')!;
+    Object.assign(legacyArp, { amount: 300, note: '首次续签或长期签证计入一次；实际政策及收费须向学校确认。' });
+    legacy.quoteImageSettings.localFeeNotes['arp'] = legacyArp.note;
+    const legacyElectricity = legacy.localFees.find(item => item.id === 'electricity')!;
+    delete legacyElectricity.futureEffectiveStart;
+    delete legacyElectricity.futureAmount;
+    legacy.localFees.find(item => item.id === 'water')!.amount = 1200;
+    const upgraded = cloneCiaContentConfig(legacy);
+    expect(upgraded.localFees.find(item => item.id === 'arp')?.amount).toBe(0);
+    expect(upgraded.quoteImageSettings.localFeeNotes['arp']).toContain('免费');
+    expect(upgraded.localFees.find(item => item.id === 'electricity')?.futureAmount).toBe(3000);
+    expect(upgraded.localFees.find(item => item.id === 'water')?.amount).toBe(1200);
+  });
+
   it('blocks the comparison image while a plan cannot be quoted', () => {
     const { comparison } = setup();
     comparison.start('room');
@@ -83,5 +110,16 @@ describe('CIA plan comparison and quote defaults', () => {
     comparison.plans[1].quotePlan.courses[0].optionId = 'unknown-course';
     expect(comparison.ready).toBeFalse();
     expect(planCompareReady(comparison.sheet)).toBeFalse();
+  });
+
+  it('hides the 2026 price notes from 2027-01-01', () => {
+    const lastDay = new Date(2026, 11, 31, 23, 59);
+    const firstDay = new Date(2027, 0, 1, 0, 0);
+    const hasPriceFaq = (date: Date) => currentCiaFaqs(date).some(faq => faq.question.includes('2027年课程费'));
+    expect(ciaShows2026Prices(lastDay)).toBeTrue();
+    expect(hasPriceFaq(lastDay)).toBeTrue();
+    expect(ciaShows2026Prices(firstDay)).toBeFalse();
+    expect(hasPriceFaq(firstDay)).toBeFalse();
+    expect(currentCiaFaqs(firstDay).length).toBe(currentCiaFaqs(lastDay).length - 1);
   });
 });

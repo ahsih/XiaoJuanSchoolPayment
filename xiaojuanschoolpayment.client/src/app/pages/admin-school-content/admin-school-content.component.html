@@ -260,7 +260,7 @@
               <label *ngIf="!isLaMerSelected"><input type="checkbox" [(ngModel)]="item.multiplyByStudents" />多人报价按人数计算</label>
             </div>
             <label>官网及图片备注<textarea rows="4" [(ngModel)]="item.note"></textarea></label>
-            <div class="nested-card" *ngIf="isCpilsSelected && item.futureEffectiveStart">
+            <div class="nested-card" *ngIf="(isCpilsSelected || isCiaSelected) && item.futureEffectiveStart">
               <strong>2027年生效标准</strong>
               <div class="field-grid two">
                 <label>生效日期<input type="date" [(ngModel)]="item.futureEffectiveStart" /></label>

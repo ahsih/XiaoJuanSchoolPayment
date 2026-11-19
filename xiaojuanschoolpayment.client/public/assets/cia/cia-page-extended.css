@@ -2876,6 +2876,8 @@ app-cia-school .room-detail-thumbnails app-expandable-image {
   --expandable-image-radius: 9px;
 }
 
+app-cia-school .environment-profile-photo .expandable-image__count,
+app-cia-school .room-profile-photo .expandable-image__count,
 app-cia-school .room-detail-thumbnails .expandable-image__count {
   display: none;
 }
