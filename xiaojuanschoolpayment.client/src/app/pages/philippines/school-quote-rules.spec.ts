@@ -4,7 +4,7 @@ import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.
 import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
 import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
 import { CpiSchoolDetailComponent } from './cpi-school/cpi-school-detail.component';
-import { CpilsSchoolDetailComponent } from './cpils-school/cpils-school-detail.component';
+import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
 import { PinesSchoolDetailComponent } from './pines-school/pines-school-detail.component';
 import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
@@ -50,7 +50,7 @@ const schools = [
   { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
   { name: "SMEAG", create: () => new SmeagCapitalSchoolComponent() },
   { name: "CPI", create: () => new CpiSchoolDetailComponent() },
-  { name: "CPILS", create: () => new CpilsSchoolDetailComponent() },
+  { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
   { name: "EV", create: () => new EvSchoolPageComponent() },
   { name: "PINES", create: () => new PinesSchoolDetailComponent() },
   { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
@@ -262,7 +262,7 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
     const codes = [
       'ANJ', 'BECI', 'MONOL', 'MONOL-SPARTA', 'PINES', 'JIC', 'WALES',
       'BLUE-OCEAN', 'BTES', 'CWA', 'CELLA-UNI', 'CELLA-PREMIUM', 'CG-BANILAD', 'CG-SPARTA',
-      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING',
+      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING', 'CPILS',
     ];
     for (const code of codes) {
       expect(associationPeakRateForWeek(code, '2027-07-04', 40)).withContext(code).toBe(60);

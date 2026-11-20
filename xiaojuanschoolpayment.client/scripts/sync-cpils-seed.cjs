@@ -8,9 +8,12 @@ require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileMo
 }).outputText, filename);
 const { createDefaultCpilsContentConfig } = require('../src/app/pages/philippines/cpils-school/cpils-content-config.ts');
 const config = createDefaultCpilsContentConfig();
+// Database lookup names stay English even where the page now shows a Chinese course name.
 const aliases = {
+  'general-esl': 'General ESL', 'general-esl-light': 'General ESL Light', 'general-esl-plus': 'General ESL Plus',
+  'toefl-course': 'TOEFL Course', 'business-english': 'Business English',
   'premier-sparta': 'Premier Sparta', 'toeic-course': 'TOEIC Course', 'toeic-guarantee': 'TOEIC Guarantee',
-  'ielts-course': 'IELTS Course', 'ielts-guarantee-8-weeks': 'IELTS Guarantee 8 Weeks', 'ielts-guarantee-12-weeks': 'IELTS Guarantee 12 Weeks',
+  'pre-ielts-course': 'Pre-IELTS Course', 'ielts-course': 'IELTS Course', 'ielts-guarantee-8-weeks': 'IELTS Guarantee 8 Weeks', 'ielts-guarantee-12-weeks': 'IELTS Guarantee 12 Weeks',
   'power-speaking-and-modern-communication': 'Power Speaking and Modern Communication',
 };
 const quote = value => JSON.stringify(value);
