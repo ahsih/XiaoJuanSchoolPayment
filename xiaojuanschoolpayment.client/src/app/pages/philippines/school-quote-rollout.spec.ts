@@ -1,11 +1,16 @@
+import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { SchoolContentService } from '../../../services/school-content.service';
 import { EMPTY, of } from 'rxjs';
 import { ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolService } from '../../../services/school.service';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
 import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
-import { CpiSchoolDetailComponent } from './cpi-school/cpi-school-detail.component';
+import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolDetailComponent } from './cpils-school/cpils-school-detail.component';
 import { SchoolQuotePlan } from '../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
@@ -13,8 +18,12 @@ import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-
 
 describe('five-school multi-row quote rollout', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [
+    provideRouter([]), provideHttpClient(), provideHttpClientTesting(),
     { provide: SchoolService, useValue: { getSchools: () => of([]) } },
+    { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
     { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+    { provide: ActivatedRoute, useValue: { snapshot: { data: {}, queryParamMap: { get: () => null }, paramMap: { get: () => null } }, data: of({}), queryParams: of({}) } },
+    { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
   ] }));
 
   it('exports every course and room with registration charged once', () => {
@@ -22,7 +31,7 @@ describe('five-school multi-row quote rollout', () => {
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
-      TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent()),
+      TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent()),
     ];
     for (const component of schools) {
@@ -50,9 +59,9 @@ describe('five-school multi-row quote rollout', () => {
     smeag.quotePlan.courses[1].optionId = 'business';
     expect(smeag.localFees.filter(row => row.item.startsWith('教材费')).length).toBe(2);
 
-    const cpi = TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent());
-    cpi.selectedRegistrationDate = '2026-09-03'; cpi.quotePlan.add('course'); cpi.quotePlan.add('room');
-    expect(cpi.quoteUsd).toBe(2906);
+    const cpi = TestBed.runInInjectionContext(() => new CpiSchoolPageComponent());
+    cpi.selectedStartDate = '2026-11-29'; cpi.quotePlan.add('course'); cpi.quotePlan.add('room');
+    expect(cpi.quoteUsd).toBe(4359); // synced 12 weeks: 100 + 2,700 + 2,310 − 501 (10%) − 5 × 25 off-season − 5 × 25 December
 
     const cpils = TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent());
     const firstPeriodDiscount = cpils.offSeasonDiscountAmount;
@@ -62,7 +71,7 @@ describe('five-school multi-row quote rollout', () => {
   });
 
   it('warns on gaps and blocks overlaps', () => {
-    const cpi = TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent());
+    const cpi = TestBed.runInInjectionContext(() => new CpiSchoolPageComponent());
     cpi.quotePlan.add('course'); cpi.quotePlan.add('room');
     cpi.quotePlan.rooms[1].startDate = '2026-11-01';
     expect(cpi.quotePlan.warning).toContain('日期不一致');
@@ -75,7 +84,7 @@ describe('five-school multi-row quote rollout', () => {
       { school: TestBed.runInInjectionContext(() => new CiaSchoolComponent()), ratio: '80%' },
       { school: TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()), ratio: '85%' },
       { school: TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()), ratio: '85%' },
-      { school: TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent()), ratio: '90%' },
+      { school: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()), ratio: '90%' },
     ];
     for (const { school, ratio } of schools) {
       school.quotePlan.rooms[0].weeks = 3;
@@ -106,7 +115,7 @@ describe('five-school multi-row quote rollout', () => {
         { key: 'cia', create: () => new CiaSchoolComponent() },
         { key: 'cg-banilad', create: () => new CgBaniladSchoolComponent() },
         { key: 'smeag-capital', create: () => new SmeagCapitalSchoolComponent() },
-        { key: 'cpi', create: () => new CpiSchoolDetailComponent() },
+        { key: 'cpi', create: () => new CpiSchoolPageComponent() },
         { key: 'cpils', create: () => new CpilsSchoolDetailComponent() },
       ];
       const paint: { text: string; x: number; y: number; color: string; align: string; font: string }[] = [];
@@ -220,7 +229,7 @@ describe('five-school multi-row quote rollout', () => {
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
-      TestBed.runInInjectionContext(() => new CpiSchoolDetailComponent()),
+      TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent()),
     ];
     for (const component of schools) {

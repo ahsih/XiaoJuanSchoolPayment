@@ -313,7 +313,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly showRoomCodes = this.profile.showRoomCodes;
   readonly reviewPath = this.profile.reviewPath;
 
-  // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA and EV so far) ----
+  // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV and CPI so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly courseHighlights = this.profile.courseHighlights ?? {};
