@@ -146,9 +146,10 @@ export interface RoomComparisonProfile {
   imageAlt: string;
   /**
    * One room type priced per occupancy (CIA's suite: SR-1 … SR-4). Keyed by booking code; the room panel
-   * shows the tapped code's name and fit and opens the gallery on its own photo (index into gallery).
+   * shows the tapped code's name and fit. Every code shows the same school photos in the school's order:
+   * the photos do not say which occupancy they show, so never pick a photo per code (user rule 2026-11-20).
    */
-  variants?: Readonly<Record<string, { label: string; suitable: string; firstPhoto: number }>>;
+  variants?: Readonly<Record<string, { label: string; suitable: string }>>;
 }
 
 export interface CampusBuildingCard {
@@ -1470,10 +1471,10 @@ export const CIA_ROOM_COMPARISON_PROFILES: RoomComparisonProfile[] = [
     gallery: ciaRoomGalleries.suite,
     imageAlt: 'CIA精致套房实景，配有大床、电视、餐桌及料理区',
     variants: {
-      'SR-1': { label: '单人套房', suitable: '想一个人住大床，并要完整起居空间和小厨房的学生。', firstPhoto: 1 },
-      'SR-2': { label: '双人套房', suitable: '两位同学或朋友同住一套，想要比普通双人间更完整的起居配置。', firstPhoto: 4 },
-      'SR-3': { label: '三人套房', suitable: '三位同学或朋友同住一套，价格比单人、双人套房低。', firstPhoto: 5 },
-      'SR-4': { label: '四人套房', suitable: '四人结伴同住一套，是套房中价格最低的选择。', firstPhoto: 0 },
+      'SR-1': { label: '单人套房', suitable: '想一个人住套房，并要完整起居空间和小厨房的学生。' },
+      'SR-2': { label: '双人套房', suitable: '两位同学或朋友同住一套，想要比普通双人间更完整的起居配置。' },
+      'SR-3': { label: '三人套房', suitable: '三位同学或朋友同住一套，价格比单人、双人套房低。' },
+      'SR-4': { label: '四人套房', suitable: '四人结伴同住一套，是套房中价格最低的选择。' },
     },
   },
 ];

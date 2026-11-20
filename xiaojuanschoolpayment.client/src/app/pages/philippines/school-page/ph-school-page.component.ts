@@ -434,8 +434,6 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     }
     this.selectedRateRoomId = room.id;
     this.setRoomProfile(profile.id);
-    const variant = profile.variants?.[room.code];
-    if (variant) this.selectedRoomPhotoIndex = Math.min(variant.firstPhoto, this.selectedRoomPhotos.length - 1);
   }
   /** The price card the room panel belongs to; a profile priced per occupancy shows that card's own name. */
   get roomVariant(): { code: string; label: string; suitable: string } | undefined {
