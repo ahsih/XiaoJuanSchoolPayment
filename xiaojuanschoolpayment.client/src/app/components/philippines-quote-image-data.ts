@@ -4,6 +4,7 @@ import type {
   QuoteImageOptionalFeeItem,
   QuoteImagePaymentItem,
 } from './quote-image-types';
+import { SIDA_CONSULTANT_MEDIA } from './sida-consultants';
 
 export interface PhilippinesDetailedQuoteInput {
   schoolCode: string;
@@ -98,8 +99,7 @@ export function buildPhilippinesDetailedQuote(
     contact: {
       name: 'Jenny',
       phone: '132 4982 7686',
-      avatarSrc: '/assets/contact/jenny-avatar.jpg',
-      qrSrc: '/assets/contact/jenny-wechat-qr.png',
+      ...SIDA_CONSULTANT_MEDIA.Jenny,
     },
   };
 }

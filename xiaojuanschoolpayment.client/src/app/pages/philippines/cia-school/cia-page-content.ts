@@ -7,6 +7,7 @@
 // and the published employee revision.
 
 import { SIDA_PHILIPPINES_CONSULTANTS } from '../../../components/sida-consultants';
+import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 
 export type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -273,11 +274,12 @@ export interface CtaConsultant {
   title: string;
   name: string;
   description: string;
-  phone: string;
-  phoneHref: string;
+  /** Left out for consultants who take enquiries by WeChat only. */
+  phone?: string;
+  phoneHref?: string;
   avatarSrc: string;
   qrSrc: string;
-  buttonLabel: string;
+  buttonLabel?: string;
 }
 
 export interface SidaCiaReason {
@@ -753,66 +755,111 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
   },
   {
     icon: 'workspace_premium',
-    title: 'TOEIC预备、常规与保证班',
-    subtitle: '明确目标分数、每周模考与12周保证班要求',
-    courseIds: ['toeic-guarantee', 'pre-toeic', 'toeic-regular'],
+    title: 'TOEIC Guarantee 保分要求',
+    subtitle: '12周保分班的目标分数、入学分数与保分条件',
+    courseIds: ['toeic-guarantee'],
     facts: [
-      { label: 'Pre-TOEIC', value: '无入学门槛；4周为单位；每2周1次模考' },
       { label: '保证目标', value: '600 / 700 / 800 / 900分' },
       { label: '入学分数', value: '分别为400 / 500 / 650 / 790分以上' },
     ],
     points: [
-      '保证班需读满12周，出勤率达到95%，每周模考出勤率100%，并在读期间参加一次官方考试。',
+      '需读满12周，出勤率达到95%，每周模考出勤率100%，并在读期间参加一次官方考试。',
       '周一至周三另有约1.5小时强制晚自习；校规和扣点规则与一般学生相同。',
-      '符合条件但校内模考未达到目标分数时，学校资料列明可承担延长4周的课程费；住宿及学杂费由学生承担。',
-      '符合保证班条件者可申请一次官方考试相关权益，需保留并提交正式考试收据。',
+      '符合条件但校内模考未达到目标分数时，学校可承担延长4周的课程费；住宿及学杂费由学生承担。',
+      '符合保分条件者可申请一次官方考试相关权益，需保留并提交正式考试收据；考试报名费以托业官方为准。',
     ],
     notice: '保证权益须满足全部条件，并以学校审核、当期考务安排和正式说明为准。',
   },
   {
-    icon: 'fact_check',
-    title: 'IELTS预备、常规与保证班',
-    subtitle: '校内IDP考试资源与分数分级入学',
-    courseIds: ['ielts-guarantee', 'pre-ielts', 'ielts-regular'],
+    icon: 'school',
+    title: 'Pre-TOEIC 预备班说明',
+    subtitle: '没有入学门槛，先打好TOEIC基础',
+    courseIds: ['pre-toeic'],
     facts: [
-      { label: 'Pre-IELTS', value: '入学测试3.0分及以下；后续模考达3.5分可转常规雅思' },
-      { label: 'Regular IELTS', value: '入学测试3.5分及以上' },
-      { label: '预备 / 常规模考', value: '每周四15:30–19:00；口语时间另行通知' },
+      { label: '入学门槛', value: '无' },
+      { label: '学习单位', value: '4周为单位' },
+      { label: '模考', value: '每2周1次' },
+    ],
+    points: [],
+  },
+  {
+    icon: 'workspace_premium',
+    title: 'IELTS Guarantee 保分要求',
+    subtitle: '12周保分班的目标分数、入学分数与保分条件',
+    courseIds: ['ielts-guarantee'],
+    facts: [
       { label: '保证目标', value: '5.5 / 6.0 / 6.5 / 7.0分' },
       { label: '入学分数', value: '3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分' },
     ],
     points: [
-      '预备雅思晨考通常需达到4分、周累计16分，写作约80–200词；常规雅思晨考通常需达到7分、周累计26分，写作约100–250词。',
-      '晨考缺考或未达到当日要求时，当天不可外出；学校资料注明，每天均参加晨考者，即使周累计分数未达标，仍可在周末外出。写作须在图书馆完成并交老师检查，未达到要求计作缺席。',
-      '预备与常规雅思的小团体课分别侧重ESL对话、雅思语法与口语；中团体课用于练习与纠错，选修不包括雅思公开课。普通班出勤与结业要求同上方ESL说明，保证班另按下列条件执行。',
-      '保证班需读满12周，并在读期间参加一次官方雅思机考，考试收据请自行保存。',
-      '保证班按整个就读期的应上课课节累计出勤；病假也会影响出勤，低于95%即失去保分资格。每周四模考出勤率须达到100%，即使因病请假也会失去保分资格。',
+      '需读满12周，并在读期间参加一次官方雅思机考，考试收据请自行保存。',
+      '按整个就读期的应上课课节累计出勤；病假也会影响出勤，低于95%即失去保分资格。每周四模考出勤率须达到100%，即使因病请假也会失去保分资格。',
       '周一至周三每晚另有1.5小时强制晚自习，并计入出勤；校规及扣点仍与一般学生相同。',
-      '入学时未达保证班门槛、后续模考达标者，可申请延长相应周数以满足12周保证班就读要求，由教务确认转班及资格。',
-      '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为13,660比索，需提交考试收据。',
-      '符合全部条件但未达到目标分数时，学校资料列明可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
+      '入学时未达保分班门槛、后续模考达标者，可申请延长相应周数以满足12周保分班就读要求，由教务确认转班及资格。',
+      '符合条件者可按学校流程申请一次官方考试费权益，需提交考试收据；考试报名费以雅思官方为准。',
+      '符合全部条件但未达到目标分数时，学校可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
     ],
-    notice: '考试费金额和保证权益会随官方考务政策调整，报名时须再次书面确认。',
+    notice: '保证权益须满足全部条件，以学校审核为准；学校和雅思官方可能随时调整规定，以最新通知为准。',
+  },
+  {
+    icon: 'school',
+    title: 'Pre-IELTS 预备雅思说明',
+    subtitle: '雅思基础较弱时先读预备班，模考达标可转常规雅思',
+    courseIds: ['pre-ielts'],
+    facts: [
+      { label: '入学分数', value: '入学测试3.0分及以下' },
+      { label: '转班', value: '后续模考达3.5分可转常规雅思' },
+      { label: '模考', value: '每周四15:30–19:00；口语时间另行通知' },
+    ],
+    points: [
+      '晨考通常需达到4分、周累计16分；写作约80–200词，须在图书馆完成并交老师检查，未达到要求计作缺席。',
+      '小团体课侧重ESL对话；中团体课用于练习与纠错；选修不包括雅思公开课。',
+    ],
+  },
+  {
+    icon: 'fact_check',
+    title: 'Regular IELTS 常规雅思说明',
+    subtitle: '入学测试3.5分及以上，系统准备雅思考试',
+    courseIds: ['ielts-regular'],
+    facts: [
+      { label: '入学分数', value: '入学测试3.5分及以上' },
+      { label: '模考', value: '每周四15:30–19:00；口语时间另行通知' },
+    ],
+    points: [
+      '晨考通常需达到7分、周累计26分；写作约100–250词，须在图书馆完成并交老师检查，未达到要求计作缺席。',
+      '小团体课侧重雅思语法与口语；中团体课用于练习与纠错；选修不包括雅思公开课。',
+    ],
   },
   {
     icon: 'business_center',
-    title: '商务英语与打工度假',
-    subtitle: '职场沟通、求职准备与毕业发表',
-    courseIds: ['business', 'working-holiday'],
+    title: '商务英语说明',
+    subtitle: '入学门槛、晨考、程度考与毕业演讲',
+    courseIds: ['business'],
     facts: [
-      { label: '商务英语门槛', value: 'CIA Level 4或TOEIC 400分以上' },
-      { label: '商务英语周期', value: '4周或8周为一个单元' },
+      { label: '入学门槛', value: 'CIA Level 4或TOEIC 400分以上' },
+      { label: '课程周期', value: '4周或8周为一个单元' },
       { label: '程度测验', value: '每4周1次，缺席可能影响下一周外出' },
-      { label: 'Working Holiday', value: '无入学门槛；4周为一个单元' },
     ],
     points: [
-      '商务英语围绕商务词汇、对话、语法、写作和商业场景训练英文表达；课程重点是英语沟通，不是商业经营技能培训。',
-      '商务英语晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
+      '课程围绕商务词汇、对话、语法、写作和商业场景训练英文表达；重点是英语沟通，不是商业经营技能培训。',
+      '晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
       '强制写作约120词，须在图书馆完成并交老师检查。晨考缺考或未达当日要求影响当天外出，周末外出例外按教务考勤记录确认。',
       '选修可在符合资格的学术或非学术课程中选择，但不包括雅思公开课。',
       '每4周的程度考须参加；无故缺考会影响下一周末外出，若下一周为离校前最后一周，则改为周一至周五禁足。',
-      '就读4周及以上的商务英语学生，最后一周须完成自选主题的商务PPT演讲；不参加时学校资料列明罚款2,500比索，少于4周者除外。',
-      'Working Holiday包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
+      '就读4周及以上的学生，最后一周须完成自选主题的商务PPT演讲；不参加时学校资料列明罚款2,500比索，少于4周者除外。',
+    ],
+  },
+  {
+    icon: 'luggage',
+    title: 'Working Holiday 打工度假英语说明',
+    subtitle: '生存英语与求职准备',
+    courseIds: ['working-holiday'],
+    facts: [
+      { label: '入学门槛', value: '无' },
+      { label: '学习单位', value: '4周为一个单元' },
+    ],
+    points: [
+      '包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
     ],
   },
   {
@@ -1573,6 +1620,8 @@ export const CIA_GALLERY_ALBUM_DESCRIPTIONS: Record<Exclude<GalleryCategory, '�
 export const CIA_PAGE_COPY = {
   /** Shown above swipe rows on phones, so visitors know more cards sit to the right. */
   swipeHint: '左右滑动查看',
+  /** Closes every content section and every opened course note. */
+  referenceNote: SCHOOL_REFERENCE_NOTE,
   hero: {
     breadcrumb: '菲律宾游学 / 宿务学校 / CIA',
     title: '菲律宾宿务 CIA 语言学校',
@@ -1603,9 +1652,9 @@ export const CIA_PAGE_COPY = {
   gallery: {
     title: '按区域查看 CIA 环境',
     intro: '“全部”先按区域进入相册；相册内用左右箭头或缩略图切换，点击主图可放大。7类房型的价格与详细对比在下方“住宿”部分。',
-    photoNote: '所有图片仅供参考，具体以学校安排为准。',
+    photoNote: '所有图片和视频仅供参考，具体安排以学校为准。',
     roomComparisonTitle: '7类房型快速对比',
-    roomDisclaimer: '面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
+    roomDisclaimer: '面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，最终以报名时确认、实际分房和到校说明为准；最终解释权归学校，学校可能随时调整规章制度。',
   },
   courses: {
     title: 'CIA 课程怎么选？',
@@ -1678,6 +1727,10 @@ export const CIA_PAGE_COPY = {
   quote: {
     modes: { single: '单人报价', compare: '方案对比', group: '多人报价' },
     conditionsTitle: '更多条件',
+    conditionsStepTitle: '学生情况',
+    conditionsStepHint: '会影响价格，请逐项确认',
+    summaryTitle: '费用明细',
+    localFeeLinkLabel: '到校后另付学杂费',
     compareIntro: '同一位学生，最多3个方案并排比较。先选一种对比方式，再按需要修改每个方案。',
     compareShortcuts: [
       { focus: 'room', label: '比房型', hint: '课程和周数不变' },

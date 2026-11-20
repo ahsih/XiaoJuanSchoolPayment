@@ -5,6 +5,7 @@
 import type {
   QuoteImageCardData,
   QuoteImageContact,
+  QuoteImageContactCard,
   QuoteImageLocalFeeItem,
   QuoteImagePaymentItem,
 } from './quote-image-types';
@@ -139,8 +140,13 @@ export function measureDetailedQuoteLayout(context: TextContext, quote: QuoteIma
   const footerHeight = Math.max(56, sum(noteHeights) + 24);
   const totalNoteLines = quote.expandTotalNote ? expandedTotalNoteLines(context, quote) : [];
   const totalHeight = 64 + Math.max(0, totalNoteLines.length - 1) * 16;
+  const conditionLines = quoteConditionLines(context, quote);
   return {
-    totalNoteLines, totalHeight,
+    totalNoteLines, totalHeight, conditionLines,
+    // layoutVersion 2: the conditions band under the heading; the title card also leaves room under the QR code.
+    headerExtra: headerQrOf(quote)
+      ? qrTitleCardHeight(conditionLines.length) - 122
+      : conditionLines.length ? 20 + conditionLines.length * 20 : 0,
     paymentHeights, paymentDetails, paymentProjects, localHeights, optionalHeights, noteHeights, localNoteHeight,
     importantNotes, footerHeight, benefitsHeight, alumniHeight, serviceHeight,
     paymentExtra: (hasItemDetails ? sum(paymentHeights) - 358 : Math.max(0, sum(paymentHeights) - 358)) + totalHeight - 64,
@@ -152,7 +158,85 @@ export function measureDetailedQuoteLayout(context: TextContext, quote: QuoteIma
 /** Logical height of a detailed quote image (multiply by the canvas scale for pixels). */
 export function detailedQuoteImageHeight(context: TextContext, quote: QuoteImageCardData): number {
   const fullLayout = quote.fullFeeDetails ? measureDetailedQuoteLayout(context, quote) : undefined;
-  return 1764 + (fullLayout?.paymentExtra ?? 0) + (fullLayout?.localExtra ?? 0) + (fullLayout?.notesExtra ?? 0);
+  return 1764 + (fullLayout?.paymentExtra ?? 0) + (fullLayout?.localExtra ?? 0) + (fullLayout?.notesExtra ?? 0)
+    + (fullLayout?.headerExtra ?? 0);
+}
+
+const CONDITIONS_LABEL = '报价条件：';
+const CONDITIONS_FONT = '600 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+
+/** layoutVersion 2 with a chosen consultant: the QR code goes in the title card. */
+export function headerQrOf(quote: QuoteImageCardData): QuoteImageContactCard | undefined {
+  return quote.layoutVersion === 2 ? quote.contactCard : undefined;
+}
+
+/** The 报价条件 band sits in the middle column, before the QR code, when there is one. */
+function conditionsBandWidth(quote: QuoteImageCardData): number {
+  return headerQrOf(quote) ? HEADER_QR_LEFT - 12 - (HEADER_TEXT_LEFT - 14) : 956;
+}
+
+/** Baselines of the layoutVersion 2 title card's middle column, and the top of its 报价条件 band. */
+const QR_TITLE = { heading: 128, info: 165, band: 179 };
+
+/** Height of the layoutVersion 2 title card (it starts at y 80) for `lines` wrapped 报价条件 lines. */
+function qrTitleCardHeight(lines: number): number {
+  const textBottom = lines ? QR_TITLE.band + lines * 20 + 12 : QR_TITLE.info + 6;
+  return Math.max(textBottom + 12 - 80, HEADER_QR_HEIGHT + 12);
+}
+
+/** layoutVersion 2: the wrapped 报价条件 lines under the heading (empty for other images). */
+function quoteConditionLines(context: TextContext, quote: QuoteImageCardData): string[] {
+  if (quote.layoutVersion !== 2 || !quote.quoteConditions?.length) return [];
+  context.font = '800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+  const width = conditionsBandWidth(quote) - 36 - context.measureText(CONDITIONS_LABEL).width;
+  context.font = CONDITIONS_FONT;
+  return quote.quoteConditions.flatMap(text => wrapCanvasText(context, text, width, 1000));
+}
+
+/** layoutVersion 2: `咨询顾问：Perrin · 电话/微信 153 6765 9331`; only the name for WeChat-only consultants. */
+export function quoteConsultantLine(card: QuoteImageContactCard): string {
+  const { name, phone } = card.consultant;
+  return `咨询顾问：${name}${phone.trim() ? ` · 电话/微信 ${phone.trim()}` : ''}`;
+}
+
+/**
+ * The layoutVersion 2 title card (user review 2026-11-21): the school photo on the left, the heading, date, consultant
+ * and conditions in the middle, and the chosen consultant's WeChat QR code on the right with 扫码加微信咨询 under it.
+ * The detailed and the plan-compare images share these columns.
+ */
+export const HEADER_PHOTO_LEFT = 24;
+export const HEADER_PHOTO_WIDTH = 244;
+export const HEADER_TEXT_LEFT = 296;
+export const HEADER_QR_SIZE = 106;
+export const HEADER_QR_LEFT = 902;
+/** Height of the QR code plus its caption, from the top of the box. */
+export const HEADER_QR_HEIGHT = HEADER_QR_SIZE + 22;
+
+/**
+ * Draws the layoutVersion 2 QR code box at (HEADER_QR_LEFT, top). `qr` may be missing (an image that did not
+ * load, or a host that does not load it); the box then says 微信二维码 instead.
+ */
+export function drawHeaderQr<TImage extends CanvasImage>(
+  context: NoInfer<Context<TImage>>,
+  qr: TImage | undefined,
+  top: number,
+): void {
+  const size = HEADER_QR_SIZE;
+  const center = HEADER_QR_LEFT + size / 2;
+  const font = (px: number, weight: number) => `${weight} ${px}px "Microsoft YaHei", "PingFang SC", Arial, sans-serif`;
+  drawRoundedRect(context, HEADER_QR_LEFT, top, size, size, 6, '#ffffff', '#dce4e7', 1);
+  context.textAlign = 'center';
+  if (qr) {
+    context.drawImage(qr, HEADER_QR_LEFT + 3, top + 3, size - 6, size - 6);
+  } else {
+    context.font = font(12, 400);
+    context.fillStyle = '#64748b';
+    context.fillText('微信二维码', center, top + size / 2 + 4);
+  }
+  context.font = font(12, 800);
+  context.fillStyle = '#06422e';
+  context.fillText('扫码加微信咨询', center, top + size + 16);
+  context.textAlign = 'left';
 }
 
 export function detailedLocalNote(quote: QuoteImageCardData, row: QuoteImageLocalFeeItem): string {
@@ -194,7 +278,10 @@ export function quoteFooterNotes(quote: QuoteImageCardData): string[] {
     ? source.map(note => note.trim())
     : source.map(note => withoutExchangeNote(note));
   const notes = [...new Set(prepared.filter(note => note && !isGeneralConfirmation(note)))];
-  const exchangeNote = `${quote.conversionRates ? (quote.conversionRates.date ? `汇率日期：${quote.conversionRates.date}；` : '最新参考汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`;
+  const rateDate = quote.layoutVersion === 2
+    ? quote.conversionRates?.date?.replace(/-/g, '/')
+    : quote.conversionRates?.date;
+  const exchangeNote = `${quote.conversionRates ? (rateDate ? `汇率日期：${rateDate}；` : '最新参考汇率；') : ''}人民币金额按参考汇率估算，最终以实际兑换或支付汇率为准。`;
   return [
     ...notes.filter(note => isDateMismatchNote(note)),
     ...notes.filter(note => !isDateMismatchNote(note)),
@@ -245,6 +332,8 @@ export function drawDetailedQuoteImage<TImage extends CanvasImage>(
     consultants: Array<{
       consultant: QuoteImageContact;
     }>;
+    /** QR code of `quote.contactCard.consultant` (layoutVersion 2); the card is drawn without it when missing. */
+    contactQr?: TImage;
   },
   width: number,
   height: number,
@@ -317,47 +406,93 @@ export function drawDetailedQuoteImage<TImage extends CanvasImage>(
 
   drawQuoteBrandHeader(context, quote, assets.logo, 252, 4);
 
-  drawRoundedRect(context, padding, 80, contentWidth, 122, 10, '#ffffff', border, 1);
-  context.font = '950 31px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-  context.fillStyle = green;
-  context.fillText(quote.headingText ?? `${quote.schoolCode}${quote.title}报价单`, 54, 140);
-  if (!quote.subtitle) {
+  const headerExtra = fullLayout?.headerExtra ?? 0;
+  const headerQr = headerQrOf(quote);
+  if (headerQr) {
+    const cardHeight = 122 + headerExtra;
+    drawRoundedRect(context, padding, 80, contentWidth, cardHeight, 10, '#ffffff', border, 1);
+    drawRoundedImageCover(context, assets.hero, HEADER_PHOTO_LEFT, 86, HEADER_PHOTO_WIDTH, cardHeight - 12, 8);
+    drawHeaderQr(context, assets.contactQr, 80 + (cardHeight - HEADER_QR_HEIGHT) / 2);
+    const left = HEADER_TEXT_LEFT;
+    context.font = '950 31px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = green;
+    context.fillText(quote.headingText ?? `${quote.schoolCode}${quote.title}报价单`, left, QR_TITLE.heading);
     context.fillStyle = orange;
-    context.fillRect(54, 151, 42, 3);
-  }
-  if (quote.subtitle) {
-    drawWrappedText(
-      context,
-      quote.subtitle,
-      54,
-      160,
-      510,
-      20,
-      '650 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
-      navy,
-      1,
+    context.fillRect(left, QR_TITLE.heading + 11, 42, 3);
+    const quoteDate = quote.studentItems[0];
+    context.font = '700 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = '#64748b';
+    context.fillText(
+      [quoteDate ? `${quoteDate.label}：${quoteDate.value}` : '', quoteConsultantLine(headerQr)].filter(Boolean).join('  ·  '),
+      left,
+      QR_TITLE.info,
     );
+    if (fullLayout?.conditionLines.length) {
+      drawRoundedRect(context, left - 14, QR_TITLE.band, conditionsBandWidth(quote), fullLayout.conditionLines.length * 20 + 12, 6, '#f7faf8');
+      context.font = '800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = green;
+      context.fillText(CONDITIONS_LABEL, left, QR_TITLE.band + 21);
+      const textLeft = left + context.measureText(CONDITIONS_LABEL).width;
+      context.font = CONDITIONS_FONT;
+      context.fillStyle = '#334155';
+      fullLayout.conditionLines.forEach((line, index) => context.fillText(line, textLeft, QR_TITLE.band + 21 + index * 20));
+    }
+  } else {
+    drawRoundedRect(context, padding, 80, contentWidth, 122 + headerExtra, 10, '#ffffff', border, 1);
+    context.font = '950 31px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = green;
+    context.fillText(quote.headingText ?? `${quote.schoolCode}${quote.title}报价单`, 54, 140);
+    if (!quote.subtitle) {
+      context.fillStyle = orange;
+      context.fillRect(54, 151, 42, 3);
+    }
+    if (quote.subtitle) {
+      drawWrappedText(
+        context,
+        quote.subtitle,
+        54,
+        160,
+        510,
+        20,
+        '650 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif',
+        navy,
+        1,
+      );
+    }
+    const admissionDate = quote.studentItems[0];
+    const headerContact = assets.consultants[0]?.consultant;
+    context.font = '700 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    context.fillStyle = '#64748b';
+    if (admissionDate) {
+      context.fillText(`${admissionDate.label}：${admissionDate.value}`, 54, 180);
+    }
+    if (headerContact?.phone.trim()) {
+      context.fillText(`·  电话/微信：${headerContact.phone.replace(/\s/g, '')}`, 258, 180);
+    }
+    drawRoundedImageCover(context, assets.hero, 590, 86, 422, 106, 10);
+    if (fullLayout?.conditionLines.length) {
+      drawRoundedRect(context, 36, 200, conditionsBandWidth(quote), fullLayout.conditionLines.length * 20 + 12, 6, '#f7faf8');
+      context.font = '800 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+      context.fillStyle = green;
+      context.fillText(CONDITIONS_LABEL, 50, 221);
+      const textLeft = 50 + context.measureText(CONDITIONS_LABEL).width;
+      context.font = CONDITIONS_FONT;
+      context.fillStyle = '#334155';
+      fullLayout.conditionLines.forEach((line, index) => context.fillText(line, textLeft, 221 + index * 20));
+    }
   }
-  const admissionDate = quote.studentItems[0];
-  const headerContact = assets.consultants[0]?.consultant;
-  context.font = '700 13px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-  context.fillStyle = '#64748b';
-  if (admissionDate) {
-    context.fillText(`${admissionDate.label}：${admissionDate.value}`, 54, 180);
-  }
-  if (headerContact?.phone.trim()) {
-    context.fillText(`·  电话/微信：${headerContact.phone.replace(/\s/g, '')}`, 258, 180);
-  }
-  drawRoundedImageCover(context, assets.hero, 590, 86, 422, 106, 10);
 
   context.save();
+  context.translate(0, headerExtra);
 
   drawRoundedRect(context, padding, 212, contentWidth, 510 + (fullLayout?.paymentExtra ?? 0), 9, '#ffffff', border, 1);
   drawSectionNumber('01', (quote.paymentSectionTitle ?? '学校费用明细').replace('（到校前支付给学校的费用）', ''), 246);
   const paymentColumns = [36, 236, grid.noteBoundary, 992];
   context.fillStyle = '#f3f6f4';
   context.fillRect(36, 262, 956, 36);
-  ['项目', `金额（${quote.paymentCurrencyLabel ?? '美元'}）`, '说明'].forEach((label, index) => {
+  // layoutVersion 2: every amount already names its currency, so the heading does not repeat it.
+  const amountHeading = quote.layoutVersion === 2 ? '金额' : `金额（${quote.paymentCurrencyLabel ?? '美元'}）`;
+  ['项目', amountHeading, '说明'].forEach((label, index) => {
     const centers = [136, (236 + grid.noteBoundary) / 2, (grid.noteBoundary + 992) / 2];
     context.font = '850 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
     context.fillStyle = green;
@@ -374,13 +509,18 @@ export function drawDetailedQuoteImage<TImage extends CanvasImage>(
   paymentRows.forEach((row, index) => {
     const rowHeight = fullLayout?.paymentHeights[index] ?? (compactPaymentRowHeight || paymentRowHeights[index] || 46);
     const top = paymentRowTop;
-    if (index % 2 === 1) {
+    if (row.subtotal) {
+      context.fillStyle = '#f1f7f3';
+      context.fillRect(36, top, 956, rowHeight);
+    } else if (index % 2 === 1) {
       context.fillStyle = '#fbfcfc';
       context.fillRect(36, top, 956, rowHeight);
     }
     drawSolidLine(context, 36, top, 992, top, '#e1e6e8');
     context.textAlign = 'center';
-    if (fullLayout && row.detailTitle) {
+    if (row.subtotal) {
+      drawCenteredTableText(row.label, 136, top, rowHeight, 170, green, '850 17px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 2, 21);
+    } else if (fullLayout && row.detailTitle) {
       const lines = fullLayout.paymentProjects[index];
       let lineTop = top + (rowHeight - lines.reduce((sum, line) => sum + line.lineHeight, 0)) / 2;
       for (const line of lines) {

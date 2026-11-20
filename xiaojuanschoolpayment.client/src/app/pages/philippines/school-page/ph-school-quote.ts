@@ -7,7 +7,7 @@
 import { applyEditableQuoteImageCopy, applySchoolQuoteImageLayout, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { buildPhilippinesDetailedQuote } from '../../../components/philippines-quote-image-data';
 import { groupLocalFees, groupPaymentLines, SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
-import type { QuoteImageCardData, QuoteImagePaymentItem } from '../../../components/quote-image-types';
+import type { QuoteImageCardData, QuoteImageContactCard, QuoteImageLocalFeeItem, QuoteImagePaymentItem } from '../../../components/quote-image-types';
 import { quoteCurrencyText } from '../../../../services/quote-currency-text';
 import type { CiaLocalFeeRule, CiaPeakSeasonRange, CiaPromotionRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 
@@ -30,6 +30,10 @@ export interface PhQuoteStudent {
   readonly registrationWaiverName?: string;
   /** An amount the student pays outside the school total (CIA's IAU fee), shown beside the total. */
   readonly extraPaymentNote?: string;
+  /** The conditions the price depends on, for the image's 报价条件 line (layoutVersion 2). */
+  readonly visaLabel?: string;
+  readonly selectedAgeGroup?: 'adult' | 'minor';
+  readonly selectedRegistrationDate?: string;
 }
 
 /** Prices and settings the shared quote reads; the page component is one, the mini program builds one. */
@@ -73,6 +77,12 @@ export interface PhSchoolQuoteOptions<S extends PhQuoteStudent> {
   optionalFeeItems?(students: readonly S[], quote: PhSchoolQuote<S>): PhOptionalFeeItem[];
   /** Show the students' extra-payment notes in full beside the image total (CIA). */
   expandTotalNote?: boolean;
+  /**
+   * The quote image template under the user's review (2026-11-21, CIA only until approved): `CIA 4周报价` with a
+   * space, the 报价条件 line, a 小计 row per student in group quotes, local-fee rows that do not apply this time
+   * merged into one 本次不产生 row, and the chosen consultant's contact card (see QuoteImageCardData.layoutVersion).
+   */
+  layoutVersion?: 2;
 }
 
 export const PH_REGISTRATION_NOTE = '一次性费用，老学员返校免费';
@@ -87,6 +97,10 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
     this.students = [options.createStudent()];
   }
   quoteMode: 'single' | 'group' = 'single';
+  /** The consultant chosen in the quote, for the contact card of layoutVersion 2 images. */
+  contactCard?: QuoteImageContactCard;
+  /** Whether the quote image shows the chosen consultant (layoutVersion 2), so the page offers the choice. */
+  get usesContactCard(): boolean { return this.options.layoutVersion === 2; }
   private requestedStudentCount = 2;
   get studentCount() { return this.requestedStudentCount; }
   set studentCount(value: number) {
@@ -105,7 +119,8 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
   get selectedStartDate() { return this.quotePlan.startDate; }
   get quoteHeading() {
     const prefix = this.options.headingPrefix;
-    return this.quoteMode === 'single' ? `${prefix}${this.selectedWeeks}周报价` : `${prefix} ${this.activeStudents.length}人报价`;
+    const space = this.options.layoutVersion === 2 ? ' ' : '';
+    return this.quoteMode === 'single' ? `${prefix}${space}${this.selectedWeeks}周报价` : `${prefix} ${this.activeStudents.length}人报价`;
   }
   get quoteError() {
     if (this.quoteMode === 'group' && (!Number.isInteger(this.studentCount) || this.studentCount < 2 || this.studentCount > 20)) return '多人报价人数请选择2–20人的整数。';
@@ -312,11 +327,78 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
       noteTitle:settings.noteSectionTitle,
       importantNotes:[...warnings,...notes,...settings.footerNotes],
     },image.schoolCode,this.selectedWeeks,this.selectedStartDate,this.quoteUsd,this.pricing.usdToCny);
-    return {...result,
+    const data: QuoteImageCardData = {...result,
       paymentSectionTitle:settings.paymentSectionTitle,
       localFeeTitle:settings.localFeeSectionTitle,
       headingText:this.quoteHeading, fileName:`${this.quoteHeading}-${this.selectedStartDate.replace(/-/g,'')}.png`,
       conversionRates:{usdToCny:this.pricing.usdToCny,phpPerCny:this.pricing.phpPerCny,date:this.pricing.usingLiveExchangeRates?this.pricing.exchangeRateDate:undefined}};
+    if (this.options.layoutVersion !== 2) return data;
+    return {
+      ...data,
+      layoutVersion: 2,
+      paymentItems: [...data.paymentItems, ...this.studentSubtotalItems()],
+      localFeeItems: this.mergeZeroLocalFees(data.localFeeItems ?? []),
+      quoteConditions: this.quoteConditions,
+      ...(this.contactCard ? { contactCard: this.contactCard } : {}),
+    };
+  }
+
+  /** One student's conditions, e.g. 新学员 · 18岁及以上 · 59天旅游签证 · 报名日 2026/11/21. */
+  studentConditionText(student: S): string {
+    return [
+      student.returningStudent ? '老学员' : '新学员',
+      student.selectedAgeGroup === 'minor' ? '未满18岁' : student.selectedAgeGroup === 'adult' ? '18岁及以上' : '',
+      student.visaLabel ?? '',
+      student.selectedRegistrationDate ? `报名日 ${student.selectedRegistrationDate.replace(/-/g, '/')}` : '',
+    ].filter(Boolean).join(' · ');
+  }
+
+  /** The 报价条件 lines: one for a single quote, and in a group one per set of students with the same conditions. */
+  get quoteConditions(): string[] {
+    const students = this.activeStudents;
+    const texts = students.map(student => this.studentConditionText(student));
+    if (this.quoteMode === 'single') return texts.slice(0, 1).filter(Boolean);
+    const groups = [...new Set(texts)];
+    if (groups.length === 1) return groups[0] ? [`${students.length}人相同：${groups[0]}`] : [];
+    return groups.map(text => {
+      const numbers = texts.flatMap((candidate, index) => candidate === text ? [index + 1] : []);
+      return `学生${numbers.join('、')}：${text}`;
+    });
+  }
+
+  /** Group quotes: each student's own school total (and local fees) for split payments (AA). */
+  private studentSubtotalItems(): QuoteImagePaymentItem[] {
+    if (this.quoteMode !== 'group') return [];
+    return this.activeStudents.map((student, index) => {
+      const localFees = student.localFees.reduce((sum, fee) => sum + fee.total, 0);
+      const cny = Math.round(student.quoteUsd * this.pricing.usdToCny);
+      return {
+        icon: '计',
+        label: `学生${index + 1} 小计`,
+        amount: `${this.formatUsd(student.quoteUsd)} 美元`,
+        note: `约人民币 ${cny.toLocaleString('zh-CN')} 元；到校学杂费另付约 ${this.formatPhp(localFees)}`,
+        subtotal: true,
+      };
+    });
+  }
+
+  /**
+   * Local-fee rows that do not apply to this plan (quantity 0) become one 本次不产生 row; amounts are unchanged.
+   * Rows waived for a long-term visa keep their own row, because their note asks the adviser to confirm the waiver.
+   */
+  private mergeZeroLocalFees(items: QuoteImageLocalFeeItem[]): QuoteImageLocalFeeItem[] {
+    const zero = this.estimatedLocalFees.filter(fee => fee.quantity === 0 && fee.total === 0 && !fee.waived);
+    if (zero.length === 0) return items;
+    const zeroNames = new Set(zero.map(fee => fee.item));
+    const kept = items.filter(item => !zeroNames.has(item.label));
+    const names = [...new Set(zero.map(fee => fee.item.replace(/^学生[\d、]+ · /, '')))];
+    return [...kept, {
+      label: '本次不产生',
+      unit: '—',
+      quantity: '0',
+      amount: this.formatPhp(0),
+      note: `${names.join('、')}：按本次周数和签证计算，不需要交；读得更久或换签证时会自动计入。`,
+    }];
   }
 
   private quoteImageRegistrationNote(): string {

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ExpandableImageComponent } from '../../../components/expandable-image.component';
+import { SIDA_CONSULTANT_MEDIA } from '../../../components/sida-consultants';
 
 @Component({
   selector: 'app-mid-autumn',
@@ -21,6 +22,6 @@ export class MidAutumnComponent {
 
   readonly consultant = {
     name: 'Perrin', title: '菲律宾英语游学顾问', description: '成人英语学习、亲子游学与菲律宾学校选择。',
-    phone: '153 6765 9331', href: 'tel:15367659331', avatar: '/assets/contact/penin-avatar.jpg', qr: '/assets/contact/penin-wechat-qr.png',
+    phone: '153 6765 9331', href: 'tel:15367659331', avatar: SIDA_CONSULTANT_MEDIA.Perrin.avatarSrc, qr: SIDA_CONSULTANT_MEDIA.Perrin.qrSrc,
   };
 }

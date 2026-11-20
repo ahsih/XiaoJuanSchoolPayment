@@ -78,10 +78,10 @@
     </div>
 
     <div class="advisor-grid">
-      <article class="advisor-card">
+      <article class="advisor-card" [style.order]="places.Jenny">
         <img
           class="avatar"
-          src="/assets/contact/jenny-avatar.jpg"
+          [src]="media.Jenny.avatarSrc"
           alt="Jenny 顾问头像"
         />
         <div class="advisor-copy">
@@ -94,7 +94,7 @@
         </div>
         <figure class="qr">
           <img
-            src="/assets/contact/jenny-wechat-qr.png"
+            [src]="media.Jenny.qrSrc"
             alt="Jenny 微信二维码"
           />
           <figcaption>扫码加微信</figcaption>
@@ -108,10 +108,10 @@
         >
       </article>
 
-      <article class="advisor-card">
+      <article class="advisor-card" [style.order]="places.Lemon">
         <img
           class="avatar"
-          src="/assets/contact/lemon-avatar-jpg.webp?v=20260901"
+          [src]="media.Lemon.avatarSrc"
           alt="Lemon 顾问头像"
         />
         <div class="advisor-copy">
@@ -123,7 +123,7 @@
         </div>
         <figure class="qr">
           <img
-            src="/assets/contact/lemon-wechat-qr.png"
+            [src]="media.Lemon.qrSrc"
             alt="Lemon 微信二维码"
           />
           <figcaption>扫码加微信</figcaption>
@@ -137,14 +137,14 @@
         >
       </article>
 
-      <article class="advisor-card">
+      <article class="advisor-card" [style.order]="places.Perrin">
         <img
           class="avatar"
-          src="/assets/contact/penin-avatar.jpg"
-          alt="Penin 顾问头像"
+          [src]="media.Perrin.avatarSrc"
+          alt="Perrin 顾问头像"
         />
         <div class="advisor-copy">
-          <p>Penin</p>
+          <p>Perrin</p>
           <h3>菲律宾与东南亚</h3>
           <span
             >菲律宾游学、东南亚短期英语课程、口语提升、游学报价与学校匹配。</span
@@ -152,8 +152,8 @@
         </div>
         <figure class="qr">
           <img
-            src="/assets/contact/penin-wechat-qr.png"
-            alt="Penin 微信二维码"
+            [src]="media.Perrin.qrSrc"
+            alt="Perrin 微信二维码"
           />
           <figcaption>扫码加微信</figcaption>
         </figure>
@@ -164,6 +164,50 @@
         <a class="card-btn" href="tel:15367659331"
           >咨询游学方案<mat-icon>chevron_right</mat-icon></a
         >
+      </article>
+
+      <article class="advisor-card" [style.order]="places.Iris">
+        <img
+          class="avatar"
+          [src]="media.Iris.avatarSrc"
+          alt="Iris 顾问头像"
+        />
+        <div class="advisor-copy">
+          <p>Iris</p>
+          <h3>菲律宾与东南亚</h3>
+          <span
+            >菲律宾及东南亚游学咨询：学校匹配、课程与住宿搭配、游学报价。</span
+          >
+        </div>
+        <figure class="qr">
+          <img
+            [src]="media.Iris.qrSrc"
+            alt="Iris 微信二维码"
+          />
+          <figcaption>扫码加微信</figcaption>
+        </figure>
+      </article>
+
+      <article class="advisor-card" [style.order]="places.Lisa">
+        <img
+          class="avatar"
+          [src]="media.Lisa.avatarSrc"
+          alt="Lisa 顾问头像"
+        />
+        <div class="advisor-copy">
+          <p>Lisa</p>
+          <h3>菲律宾与东南亚</h3>
+          <span
+            >菲律宾及东南亚游学咨询：学校匹配、课程与住宿搭配、游学报价。</span
+          >
+        </div>
+        <figure class="qr">
+          <img
+            [src]="media.Lisa.qrSrc"
+            alt="Lisa 微信二维码"
+          />
+          <figcaption>扫码加微信</figcaption>
+        </figure>
       </article>
     </div>
 
@@ -397,7 +441,7 @@
         >
       </address>
       <figure>
-        <img src="/assets/contact/jenny-wechat-qr.png" alt="顾问微信二维码" />
+        <img [src]="media.Jenny.qrSrc" alt="顾问微信二维码" />
         <figcaption>扫码添加顾问微信</figcaption>
       </figure>
     </div>

@@ -220,8 +220,46 @@ describe('CIA per-person quote pilot', () => {
       expect(rows.every(x=>!!x.detailTitle&&!!x.detailSubtitle)).toBeTrue();
       expect(rows.every(x=>/名称/.test(x.label))).toBeTrue();
       if(count===1)expect(rows.map(x=>x.label)).toEqual(['课程名称','住宿名称']);
-      expect(image.headingText).toBe('CIA'+(count*4)+'周报价');
+      expect(image.headingText).toBe('CIA '+(count*4)+'周报价');
       expect(image.conversionRates!.usdToCny).toBe(c.usdToCny);
     }
+  });
+  it('adds the reviewed image template: conditions, contact card, subtotals and one 本次不产生 row', () => {
+    c.quoteConsultantName = 'Lisa';
+    let image = c.quoteImageData;
+    expect(image.layoutVersion).toBe(2);
+    expect(image.quoteConditions).toEqual(['新学员 · 18岁及以上 · 59天旅游签证 · 报名日 2026/09/05']);
+    expect(image.contactCard!.consultant.name).toBe('Lisa');
+    expect(image.contactCard!.consultant.phone).toBe('');
+    expect(image.paymentItems.some(item => item.subtotal)).toBeFalse();
+    const zeroFees = c.estimatedLocalFees.filter(fee => fee.quantity === 0);
+    expect(zeroFees.length).toBeGreaterThan(0);
+    expect(image.localFeeItems!.length).toBe(c.estimatedLocalFees.length - zeroFees.length + 1);
+    const merged = image.localFeeItems![image.localFeeItems!.length - 1];
+    expect(merged.label).toBe('本次不产生');
+    expect(zeroFees.every(fee => merged.note.includes(fee.item))).toBeTrue();
+
+    c.quoteConsultantName = 'Perrin';
+    expect(c.quoteImageData.contactCard!.consultant.phone).toBe('153 6765 9331');
+
+    // Rows waived for a long-term visa keep their own row and adviser-confirmation note.
+    c.students[0].visaType = 'sirv';
+    const sirvRows = c.quoteImageData.localFeeItems!;
+    expect(sirvRows.find(item => item.label.includes('SSP特殊'))!.note).toContain('须由顾问向学校确认');
+    expect(sirvRows.some(item => item.label === '本次不产生' && item.note.includes('SSP'))).toBeFalse();
+    c.students[0].visaType = 'tourist59';
+
+    c.setQuoteMode('group');
+    c.studentCount = 2;
+    configure(c.students[1]);
+    c.students[1].returningStudent = true;
+    image = c.quoteImageData;
+    expect(image.quoteConditions).toEqual([
+      '学生1：新学员 · 18岁及以上 · 59天旅游签证 · 报名日 2026/09/05',
+      '学生2：老学员 · 18岁及以上 · 59天旅游签证 · 报名日 2026/09/05',
+    ]);
+    const subtotals = image.paymentItems.filter(item => item.subtotal);
+    expect(subtotals.map(item => item.label)).toEqual(['学生1 小计', '学生2 小计']);
+    expect(subtotals.map(item => item.amount)).toEqual(c.activeStudents.map(student => `${c.formatUsd(student.quoteUsd)} 美元`));
   });
 });

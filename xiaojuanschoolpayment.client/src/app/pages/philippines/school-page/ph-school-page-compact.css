@@ -158,10 +158,17 @@
   font-size: 14.5px;
 }
 
+/* Album tabs: a 视频 row and a 照片 row of quiet chips; only the open one is filled. */
+:host .hero-album-filters {
+  display: grid;
+  gap: 6px;
+}
+
 :host .hero-album-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  align-items: center;
 }
 
 :host .hero-album-chips::-webkit-scrollbar,
@@ -169,53 +176,48 @@
   display: none;
 }
 
+:host .hero-album-chips-label {
+  flex: 0 0 32px;
+  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
 :host .hero-album-chips button {
   display: inline-flex;
   flex: 0 0 auto;
-  gap: 4px;
-  align-items: center;
-  padding: 6px 12px;
-  border: 1px solid #d6e2dd;
+  gap: 5px;
+  align-items: baseline;
+  padding: 5px 13px;
+  border: 0;
   border-radius: 999px;
-  background: #ffffff;
+  background: #f1f5f3;
   color: #334155;
   font: inherit;
   font-size: 13.5px;
-  font-weight: 800;
+  font-weight: 700;
+  line-height: 20px;
   cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+:host .hero-album-chips button:hover {
+  background: #e3ece7;
 }
 
 :host .hero-album-chips small {
   color: #94a3b8;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 :host .hero-album-chips button.active {
-  border-color: #064d3b;
   background: #064d3b;
   color: #ffffff;
 }
 
 :host .hero-album-chips button.active small {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-:host .hero-album-chips button.is-video {
-  border-color: #fbd5c2;
-  color: #c2410c;
-}
-
-:host .hero-album-chips button.is-video.active {
-  border-color: #f25518;
-  background: #f25518;
-  color: #ffffff;
-}
-
-:host .hero-album-chips mat-icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 :host .hero-album-thumbs {
@@ -263,7 +265,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* 所有图片仅供参考: one line under the album and under the room photos. */
+/* 所有图片和视频仅供参考: one line under the album and under the room photos. */
 :host .photo-reference-note {
   display: flex;
   gap: 4px;
@@ -1196,15 +1198,49 @@
     aspect-ratio: 16 / 9;
   }
 
-  /* Vertical clips get a taller stage on phones, so they are not tiny. */
-  :host .hero-album-stage.is-video.is-tall {
-    aspect-ratio: 4 / 5;
+  /* Vertical clips fill the same 16:9 frame as the landscape videos; 全屏 shows the whole picture. */
+  :host .hero-album-stage.is-tall > video {
+    object-fit: cover;
+  }
+
+  :host .hero-album-stage.is-tall > video:fullscreen {
+    object-fit: contain;
+  }
+
+  :host .hero-album-stage.is-tall > video:-webkit-full-screen {
+    object-fit: contain;
+  }
+
+  /* The two hero buttons sit side by side. */
+  :host .cia-hero--compact .hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .cia-hero--compact .hero-actions .primary-action,
+  :host .cia-hero--compact .hero-actions .secondary-action {
+    grid-column: auto;
+    min-height: 48px;
+    padding-inline: 8px;
+    gap: 4px;
+    font-size: 14px;
+    white-space: nowrap;
   }
 
   :host .hero-album-chips {
     flex-wrap: nowrap;
+    gap: 4px;
     overflow-x: auto;
     scrollbar-width: none;
+  }
+
+  :host .hero-album-chips-label {
+    flex-basis: 26px;
+  }
+
+  :host .hero-album-chips button {
+    gap: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
   }
 
   :host .hero-album-stage .photo-step {
@@ -1287,4 +1323,16 @@
     padding: 7px 10px;
     font-size: 12.5px;
   }
+}
+
+/* Course notes: shared notes under the list get a heading; every opened course note ends with the school-rules line. */
+:host .course-extras-title {
+  margin: 4px 0 0;
+  color: #173b4b;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host .course-line .course-line-reference {
+  margin: 10px 14px 14px;
 }

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
+import { SIDA_CONSULTANT_MEDIA, consultantPlacesToday } from '../../../components/sida-consultants';
 
 interface ContactFormPayload {
   name: string;
@@ -19,6 +20,9 @@ interface ContactFormPayload {
 })
 export class ContactComponent implements AfterViewInit {
   private readonly http = inject(HttpClient);
+  readonly media = SIDA_CONSULTANT_MEDIA;
+  /** Each card's place today: the cards take turns leading, one day each (user decision 2026-11-21). */
+  readonly places = consultantPlacesToday();
 
   formSubmitted = false;
   isSubmitting = false;

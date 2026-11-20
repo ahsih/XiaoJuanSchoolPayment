@@ -12,6 +12,8 @@
 // Keep this module pure (no Angular, DOM, storage or regex lookbehind). Never write the phrases in
 // BRAND_FORBIDDEN_PHRASES; the build fails if the page or llms.txt contains one.
 
+import { SIDA_CONSULTANT_MEDIA } from '../../../components/sida-consultants';
+
 export const BRAND_SITE_ORIGIN = 'https://sidaqihang.com';
 export const BRAND_ABOUT_PATH = '/about-sida/about';
 export const BRAND_FACTS_UPDATED = '2026-11-19';
@@ -175,9 +177,9 @@ export interface BrandConsultant {
 }
 
 export const BRAND_CONSULTANTS: BrandConsultant[] = [
-  { name: 'Perrin 李老师', focus: '菲律宾及东南亚游学', phone: '15367659331', avatar: '/assets/contact/penin-avatar.jpg' },
-  { name: 'Lemon 李老师', focus: '多国规划', phone: '13298529856', avatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901' },
-  { name: 'Jenny 易老师', focus: '英国、爱尔兰留学', phone: '13249827686', avatar: '/assets/contact/jenny-avatar.jpg' },
+  { name: 'Perrin 李老师', focus: '菲律宾及东南亚游学', phone: '15367659331', avatar: SIDA_CONSULTANT_MEDIA.Perrin.avatarSrc },
+  { name: 'Lemon 李老师', focus: '多国规划', phone: '13298529856', avatar: SIDA_CONSULTANT_MEDIA.Lemon.avatarSrc },
+  { name: 'Jenny 易老师', focus: '英国、爱尔兰留学', phone: '13249827686', avatar: SIDA_CONSULTANT_MEDIA.Jenny.avatarSrc },
 ];
 
 export const BRAND_CONSULTANT_NOTE =

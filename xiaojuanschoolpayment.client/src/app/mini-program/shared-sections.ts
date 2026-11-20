@@ -1,6 +1,6 @@
 // Building blocks shared by every school page exported to the WeChat mini program.
 // Pure data code (bundled and run in Node by scripts/export-mini-program-content.cjs).
-import { SIDA_PHILIPPINES_CONSULTANTS } from '../components/sida-consultants';
+import { SIDA_CALLABLE_CONSULTANTS } from '../components/sida-consultants';
 import { SidaWhyOptions, sidaWhyContent } from '../components/sida-why-content';
 import { MiniBlock, MiniSection } from './school-mini-page';
 
@@ -56,7 +56,8 @@ export function contactSection(
       miniText(cta.text),
       {
         type: 'consultants',
-        items: SIDA_PHILIPPINES_CONSULTANTS.map(person => ({
+        // Only consultants with a phone number until the mini program card can hide its call button.
+        items: SIDA_CALLABLE_CONSULTANTS.map(person => ({
           name: person.name,
           title: person.title,
           text: person.description,

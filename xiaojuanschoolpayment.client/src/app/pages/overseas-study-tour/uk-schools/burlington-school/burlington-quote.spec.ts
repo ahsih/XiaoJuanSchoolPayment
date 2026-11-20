@@ -8,9 +8,10 @@ import {
   defaultBurlingtonPlan,
   defaultBurlingtonQuote,
 } from './burlington-quote';
+import { SIDA_CONSULTANT_MEDIA } from '../../../../components/sida-consultants';
 
 const TODAY = '2026-11-19';
-const CONTACT = { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: '/assets/contact/jenny-wechat-qr.png' };
+const CONTACT = { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: SIDA_CONSULTANT_MEDIA.Jenny.qrSrc };
 
 function quote(programme: BurlingtonProgramme, changes: Partial<BurlingtonQuoteInput> = {},
   plans: Array<Partial<BurlingtonPlanInput>> = [{}]): BurlingtonQuoteInput {
