@@ -655,41 +655,52 @@
         <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
             <h3>{{ group.title }}</h3>
+            <!-- Phones: the tapped room's photos open right under its own card, so the rest of the group continues below them. -->
             <div
               class="room-price-matrix-grid"
+              [class.is-split]="roomPanelSplit(group) >= 0"
               [style.grid-template-columns]="'repeat(' + group.rooms.length + ', minmax(0, 1fr))'"
             >
-              <article
-                *ngFor="let room of roomsForRateGroup(group); trackBy: trackPreviewRow"
-                data-cia-preview-kind="room"
-                [attr.data-cia-preview-id]="room.id"
-                [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"
-                [class.is-pickable]="compactLayout && !!roomProfileForRate(room)"
-                [class.is-selected]="compactLayout && (isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id"
-                [attr.role]="compactLayout && roomProfileForRate(room) ? 'button' : null"
-                [attr.tabindex]="compactLayout && roomProfileForRate(room) ? 0 : null"
-                [attr.aria-pressed]="compactLayout && roomProfileForRate(room) ? activeRateRoomId === room.id : null"
-                (click)="compactLayout && selectRateRoom(room)"
-                (keydown.enter)="compactLayout && selectRateRoom(room)"
-              >
-                <span
-                  class="room-location-badge"
-                  [class.room-location-badge--off-campus]="room.location === '校外'"
-                >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
-                <strong>{{ room.label }}</strong>
-                <small *ngIf="showRoomCodes">{{ room.code }}</small>
-                <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
-                <em>/ 4周</em>
-              </article>
+              <ng-container *ngFor="let room of roomsBeforePanel(group); trackBy: trackRateRoom">
+                <ng-container *ngTemplateOutlet="roomRateCard; context: { $implicit: room }"></ng-container>
+              </ng-container>
             </div>
-            <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && roomPanelAfterGroup(group)">
+            <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && roomPanelSplit(group) >= 0">
               <ng-container *ngTemplateOutlet="roomProfilePanel"></ng-container>
+              <div class="room-price-matrix-grid room-price-matrix-grid--rest" *ngIf="roomsAfterPanel(group).length">
+                <ng-container *ngFor="let room of roomsAfterPanel(group); trackBy: trackRateRoom">
+                  <ng-container *ngTemplateOutlet="roomRateCard; context: { $implicit: room }"></ng-container>
+                </ng-container>
+              </div>
             </ng-container>
           </section>
         </div>
         <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && !isNarrowViewport">
           <ng-container *ngTemplateOutlet="roomProfilePanel"></ng-container>
         </ng-container>
+        <ng-template #roomRateCard let-room>
+          <article
+            data-cia-preview-kind="room"
+            [attr.data-cia-preview-id]="room.id"
+            [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"
+            [class.is-pickable]="compactLayout && !!roomProfileForRate(room)"
+            [class.is-selected]="compactLayout && (isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id"
+            [attr.role]="compactLayout && roomProfileForRate(room) ? 'button' : null"
+            [attr.tabindex]="compactLayout && roomProfileForRate(room) ? 0 : null"
+            [attr.aria-pressed]="compactLayout && roomProfileForRate(room) ? activeRateRoomId === room.id : null"
+            (click)="compactLayout && selectRateRoom(room, $event)"
+            (keydown.enter)="compactLayout && selectRateRoom(room, $event)"
+          >
+            <span
+              class="room-location-badge"
+              [class.room-location-badge--off-campus]="room.location === '校外'"
+            >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
+            <strong>{{ room.label }}</strong>
+            <small *ngIf="showRoomCodes">{{ room.code }}</small>
+            <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
+            <em>/ 4周</em>
+          </article>
+        </ng-template>
 
         <details class="cia-collapsible-section stay-rules-disclosure">
           <summary>
@@ -872,11 +883,11 @@
           <tbody>
             <tr *ngFor="let profile of roomComparisonProfiles">
               <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
-              <td><b>{{ profile.bookingCode }}</b></td>
-              <td>{{ profile.size }}</td>
-              <td>{{ profile.view }}</td>
-              <td>{{ profile.bed }}</td>
-              <td>{{ profile.service }}</td>
+              <td class="room-comparison-code"><b>{{ profile.bookingCode }}</b></td>
+              <td data-label="参考面积">{{ profile.size }}</td>
+              <td data-label="可能景观">{{ profile.view }}</td>
+              <td data-label="床尺寸">{{ profile.bed }}</td>
+              <td data-label="洗衣 / 清洁">{{ profile.service }}</td>
             </tr>
           </tbody>
         </table>
