@@ -21,6 +21,8 @@ export interface QuoteImagePaymentItem {
   detailTitle?: string;
   detailSubtitle?: string;
   accent?: boolean;
+  /** One student's own total in a group quote (layoutVersion 2), drawn as a highlighted row. */
+  subtotal?: boolean;
 }
 
 export interface QuoteImageLocalFeeItem {
@@ -60,6 +62,15 @@ export interface QuoteImageContact {
   wechatLabel?: string;
   footerText?: string;
   placeholder?: boolean;
+}
+
+/**
+ * The consultant chosen in a layoutVersion 2 quote (user request 2026-11-21): named with their phone under the heading,
+ * with their WeChat QR code in the top right corner of the title card.
+ */
+export interface QuoteImageContactCard {
+  /** `phone` is empty for consultants who take enquiries by WeChat only (Iris and Lisa). */
+  consultant: QuoteImageContact;
 }
 
 export interface QuoteImageCardData {
@@ -127,4 +138,14 @@ export interface QuoteImageCardData {
   note: string;
   contact: QuoteImageContact;
   consultants?: QuoteImageContact[];
+  /**
+   * The quote image template under the user's review (2026-11-21), so far set only by CIA; other schools keep the
+   * current images until it is approved. It adds the consultant line under the heading, `quoteConditions`,
+   * `contactCard` and student subtotal rows, writes dates as 2026/11/20 and drops the currency from the amount
+   * column heading (every amount already names its currency).
+   */
+  layoutVersion?: 2;
+  /** The conditions the price depends on, one line per group of students with the same conditions. */
+  quoteConditions?: string[];
+  contactCard?: QuoteImageContactCard;
 }

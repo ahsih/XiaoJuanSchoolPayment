@@ -431,57 +431,6 @@
   }
 }
 
-:host .final-consultant-card {
-  grid-template-columns: 76px minmax(0, 1fr) 96px;
-  grid-template-areas: 'avatar copy qr' 'actions actions actions';
-  gap: 12px 14px;
-  align-items: start;
-  min-height: 0;
-}
-
-:host .final-consultant-avatar {
-  grid-area: avatar;
-  width: 76px;
-}
-
-:host .final-consultant-copy {
-  grid-area: copy;
-}
-
-:host .final-consultant-copy p {
-  margin-bottom: 0;
-}
-
-:host .final-consultant-qr {
-  grid-area: qr;
-}
-
-:host .final-consultant-qr img {
-  width: 96px;
-  height: 96px;
-}
-
-:host .final-consultant-actions {
-  display: flex;
-  flex-wrap: wrap;
-  grid-area: actions;
-  gap: 8px 12px;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid #e3ece7;
-}
-
-:host .final-consultant-actions .final-consultant-phone {
-  margin: 0;
-}
-
-:host .final-consultant-actions .final-consultant-button {
-  flex: 1 1 150px;
-  width: auto;
-  padding: 0 16px;
-}
-
 :host .rooms-section .room-table-block {
   padding-top: 0;
   border-top: 0;
@@ -776,24 +725,6 @@
   :host .course-line-detail div {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
-  }
-
-  :host .final-consultant-card {
-    grid-template-columns: 64px minmax(0, 1fr);
-    grid-template-areas: 'avatar copy' 'actions actions' 'qr qr';
-  }
-
-  :host .final-consultant-avatar {
-    width: 64px;
-  }
-
-  :host .final-consultant-qr img {
-    width: 168px;
-    height: 168px;
-  }
-
-  :host .final-consultant-actions .final-consultant-button {
-    flex: 1 1 160px;
   }
 
   :host .room-photo-heading h3 {
@@ -1205,15 +1136,6 @@
   :host .photo-step mat-icon { width: 24px; height: 24px; font-size: 24px; }
   :host .room-detail-thumbnails { grid-auto-columns: 60px; }
   :host .room-detail-thumbnails button { height: 48px; }
-}
-
-/* Three consultant cards: no lone card in a half-empty row on tablets */
-@media (min-width: 761px) and (max-width: 1099px) {
-  :host .final-consultant-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  :host .final-consultant-grid > .final-consultant-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
-}
-@media (min-width: 1100px) {
-  :host .final-consultant-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* Swipe rows on phones: the next card peeks in and a hint names the count. */

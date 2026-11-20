@@ -63,7 +63,8 @@ export interface PhPageCopy {
   ielts?: CiaCopy['ielts'];
   videos: Optional<CiaCopy['videos'], 'lifeTitle' | 'interviewTitle'>;
   rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'>;
-  quote: CiaCopy['quote'];
+  /** The step and summary labels are read only by the compact layout's quote (CIA). */
+  quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'>;
   fees: CiaCopy['fees'];
   refund?: CiaCopy['refund'];
   studentCare?: CiaCopy['studentCare'];
@@ -131,6 +132,11 @@ export interface PhSchoolProfile {
   videoTabs?: readonly PhVideoTab[];
   /** Compact layout: a tag beside a course name and a line in its details, e.g. 读满12周送1次官方考试. */
   courseHighlights?: Readonly<Record<string, { badge: string; label: string; text: string }>>;
+  /**
+   * Compact layout: the first item of a room's photo album, keyed by room profile id. Only a video of exactly that room
+   * type (user rule 2026-11-21); a video showing several room types stays in the hero album only.
+   */
+  roomVideos?: Readonly<Record<string, PhVideoItem>>;
   /** schoolCode of the content document, e.g. 'CIA'. */
   code: string;
   /** Short school name in headings, labels and the comparison image, e.g. 'CIA'. */

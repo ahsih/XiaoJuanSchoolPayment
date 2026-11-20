@@ -1652,7 +1652,7 @@ export const CIA_PAGE_COPY = {
   gallery: {
     title: '按区域查看 CIA 环境',
     intro: '“全部”先按区域进入相册；相册内用左右箭头或缩略图切换，点击主图可放大。7类房型的价格与详细对比在下方“住宿”部分。',
-    photoNote: '所有图片仅供参考，具体以学校安排为准。',
+    photoNote: '所有图片和视频仅供参考，具体安排以学校为准。',
     roomComparisonTitle: '7类房型快速对比',
     roomDisclaimer: '面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，最终以报名时确认、实际分房和到校说明为准；最终解释权归学校，学校可能随时调整规章制度。',
   },
@@ -1727,6 +1727,10 @@ export const CIA_PAGE_COPY = {
   quote: {
     modes: { single: '单人报价', compare: '方案对比', group: '多人报价' },
     conditionsTitle: '更多条件',
+    conditionsStepTitle: '学生情况',
+    conditionsStepHint: '会影响价格，请逐项确认',
+    summaryTitle: '费用明细',
+    localFeeLinkLabel: '到校后另付学杂费',
     compareIntro: '同一位学生，最多3个方案并排比较。先选一种对比方式，再按需要修改每个方案。',
     compareShortcuts: [
       { focus: 'room', label: '比房型', hint: '课程和周数不变' },

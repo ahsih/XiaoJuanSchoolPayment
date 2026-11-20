@@ -133,6 +133,8 @@ export class CiaQuote extends PhSchoolQuote<CiaStudentQuote> {
       image: { schoolCode: 'CIA', schoolName: 'CIA', filePrefix: 'CIA', heroSrc: CIA_QUOTE_IMAGE_HERO },
       priceMultiplier: weeks => ciaPriceMultiplier(weeks, pricing.shortTermPriceRatios),
       expandTotalNote: true,
+      // The quote image template under the user's review (2026-11-21); other schools adopt it once approved.
+      layoutVersion: 2,
     });
   }
 
