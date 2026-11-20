@@ -1,22 +1,9 @@
 # CPI dormitory photographs
 
-Source: user-supplied `CH_宿务CPI-宿舍照片.pdf`, pages 2–10.
-These 37 JPEGs are extracted original images, without generated or retouched content.
-Room labels follow the source photo guide. Its A/B labels are not automatically
-mapped to the current price list's building/room identifiers.
+Source: user-supplied `CH_宿务CPI-宿舍照片.pdf`, page 10 (the female six-bed room, B-6).
+These are extracted original images, without generated or retouched content. They match the B-6 room
+in CPI's 2026 brochure (wooden sleeping pods and the shared living room).
 
-| Asset prefix | Source page | Source image order used |
-| --- | --- | --- |
-| single-a | 3 | 1, 3, 2 |
-| single-b | 2 | 2, 3, 1, 4 |
-| double-a | 5 | 3, 1, 4, 2 |
-| double-b | 4 | 1, 3, 2 |
-| triple-a | 7 | 3, 1, 4, 5, 2 |
-| triple-b | 6 | 3, 4, 5, 1, 2 |
-| quad-a | 9 | 1, 4, 2, 3 |
-| quad-b | 8 | 1, 2, 3 |
-| six-female | 10 | 1, 5, 6, 4, 3, 2 |
-
-Image indices are one-based in the PDF page's `pypdf.PageObject.images` collection.
-The cover, the standalone pool photo on page 2, and the student gathering photo
-on page 9 are not part of the room gallery.
+Removed on 2026-11-21: every other room in that guide. It shows the rooms before renovation (dark wood
+furniture), while CPI's 2026 brochure shows white furniture or wood-panel walls, so those photos no longer
+match the rooms students book. The other room photos are in `../rooms/`, extracted from the 2026 brochure.

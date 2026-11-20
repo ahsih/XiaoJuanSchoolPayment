@@ -1675,7 +1675,7 @@
       </ng-template>
 
     <ng-template #courseVideosSection>
-    <section class="video-section" id="videos" *ngIf="!compactLayout">
+    <section class="video-section" id="videos" *ngIf="!compactLayout && (displayedVideoCards.length || campusLifeVideos.length || interviewVideos.length)">
       <div class="section-heading section-heading-row">
         <div>
           <span class="section-eyebrow">{{ copy.videos.eyebrow }}</span>
