@@ -302,7 +302,7 @@ For visual work, verify both desktop and narrow mobile layouts. Important public
 ### Add or change a public page
 
 1. Follow a nearby page's component pattern. Most newer content pages are standalone and lazy loaded; older shell pages are declared in `AppModule`.
-2. Add or update the route in `src/app/app-routing.module.ts`.
+2. Add or update the route in `src/app/app-routing.module.ts`. A page path must not start with an API prefix listed in `src/proxy.conf.js` (`/school`, `/auth`, `/currency`, ...): the development proxy matches by plain prefix, so `/school-compare` was sent to the backend.
 3. Update `src/app/config/navigation.config.ts` if the page belongs in the menu.
 4. Add/update metadata in `src/services/seo.service.ts` for an indexable page: an explicit `SEO_PAGES` entry, or a `SCHOOL_DETAIL_SEO` row for a school detail page (the row generates a school-named title/description; set `quote: true` only when the page has an online quote calculator). Otherwise the page falls back to its city's generic `SECTION_SEO` title.
 5. Add/update the manual `sitemapEntries` list in server `Program.cs`.
@@ -469,6 +469,17 @@ Rules: a template change changes every migrated school at once, so before any de
 User decision: the CIA page is finished and locked. Do not change CIA content unless the user explicitly unlocks it for that change; ask first, in Chinese, every time, even for a one-word fix. Locked files are `pages/philippines/cia-school/`, `pages/philippines/cia-student-review/`, `public/assets/cia/` and `public/assets/cia-video/`. The project hook `.claude/hooks/cia-lock.cjs` (registered in `.claude/settings.json`) makes Claude Code show a permission prompt before any edit, file write or shell write to those paths and to the hook and settings files themselves; it takes effect in sessions started after the settings file exists. Allowing that prompt unlocks only that one change.
 
 Shared files also shape the CIA page: the `school-page/` template and styles, `components/sida-consultants.ts`, `components/sida-why-content.ts`, the global `app-cia-school` rules in `src/styles.css`, the quote-image renderers, `school-quote-plan*`, `plan-compare/` and `services/exchange-rate-rules.ts`. A change there for another school must leave the CIA page, quote data and quote images identical (compare before and after, as for the template). If it cannot, ask the user to unlock CIA before making it.
+
+## Cross-school price comparison (2026-11-20)
+
+`/price-compare` (学校价格对比, menu 菲律宾游学 → 学校价格对比) puts two or three schools side by side for the same goal, room size, weeks, Sunday arrival and student conditions. Phase 1 compares CIA and EV; later phases are more Philippine schools, then other countries (Burlington), then the mini program. Files are in `src/app/pages/school-compare/`:
+
+- `school-compare.ts`: pure core (no Angular/DOM). `CompareSchool` is the adapter contract; `SchoolPriceComparison` holds the selection, matches each school's course by goal (`COMPARE_GOALS`) and room by bed count (standard on-campus rooms first, then the cheapest), and builds one `PlanCompareSheet` for both the web table and the `plan-compare` image. A school without a matching course or room gets the nearest one plus a visible note.
+- `ph-compare-school.ts`: adapter for schools on the shared Philippine template; it prices one student through the school's own student class (`CiaStudentQuote`, `EvPageStudent`), so the comparison never has its own prices or rules.
+- `compare-schools.ts`: one source per school (identity, goal-to-course map, database name, published-revision hook). Each starts from the same content defaults as its page, and the page applies the school's published revision when one exists, as the school page and mini program do.
+- `school-compare-page.component.*`: the page, with live Frankfurter rates through `connectQuoteRates`; image export is blocked without usable rates.
+
+Rules: school fees and local fees stay separate rows and are never added together; the 学校费用差价 row compares school fees only (in 美元 when all schools charge in dollars, otherwise in renminbi). Every school is quoted as a new student. The comparison must equal each school page's own quote; `school-compare.spec.ts` checks that for several scenarios. To add a school: write its source in `compare-schools.ts`, add it to `createCompareSchools()`, extend the equality test, and set `schoolCompareId` in its page profile so its quote shows the 和其他学校比一比 link (a query with `from`, `course`, `room`, `weeks`, `start`). CIA has no link yet because its page is locked; it can still be compared. Tests: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.school-compare.spec.json --include=src/app/pages/school-compare/school-compare.spec.ts --progress=false`.
 
 ## UK schools and Burlington School (2026-11-19)
 

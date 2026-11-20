@@ -1,0 +1,365 @@
+:host {
+  display: block;
+  background: #f4f7f5;
+  color: #14233e;
+}
+
+.compare-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+  line-height: 1.6;
+}
+
+.compare-hero {
+  padding: 34px 36px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #06422e, #0d6b4c);
+  color: #ffffff;
+}
+
+.crumbs {
+  font-size: 13px;
+  color: #cfe5db;
+}
+
+.crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.compare-hero h1 {
+  margin: 10px 0 8px;
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.25;
+}
+
+.compare-hero p {
+  margin: 0;
+  max-width: 680px;
+  color: #e6f2ec;
+  font-size: 16px;
+}
+
+.compare-card {
+  margin-top: 20px;
+  padding: 24px 26px;
+  border: 1px solid #dce7e1;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.compare-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  color: #06422e;
+  font-size: 21px;
+}
+
+.step {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f25518;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  flex: none;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  color: #06422e;
+}
+
+.field-label small,
+.hint,
+.field-row small {
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 6px 16px;
+  border: 1px solid #c9dbd2;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #14233e;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chip.active {
+  border-color: #06422e;
+  background: #06422e;
+  color: #ffffff;
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* A selected school that cannot be removed (the minimum) still looks selected. */
+.chip.active:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.school-chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 12px;
+  padding: 8px 16px;
+  line-height: 1.35;
+}
+
+.school-chip small {
+  font-size: 12px;
+  font-weight: 400;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 16px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #06422e;
+}
+
+select,
+input {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #c9dbd2;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #14233e;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.more-conditions {
+  margin-top: 16px;
+  border-top: 1px solid #e6ece9;
+  padding-top: 12px;
+}
+
+.more-conditions summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 800;
+  color: #06422e;
+}
+
+.more-conditions summary::-webkit-details-marker {
+  display: none;
+}
+
+.more-conditions summary small {
+  flex: 1;
+  min-width: 0;
+  color: #64748b;
+  font-weight: 400;
+  font-size: 12.5px;
+}
+
+.more-conditions[open] summary mat-icon {
+  transform: rotate(180deg);
+}
+
+.more-conditions .field-row {
+  margin-top: 12px;
+}
+
+.hint {
+  margin: 8px 0 0;
+}
+
+.compare-card > .hint {
+  margin: -8px 0 14px;
+}
+
+.school-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.school-plans--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.school-plan {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 16px;
+  border: 1px solid #dce7e1;
+  border-radius: 12px;
+  background: #f8fbf9;
+}
+
+.school-plan header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tag {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: #f25518;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.school-plan header a {
+  display: inline-flex;
+  align-items: center;
+  color: #0d6b4c;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.school-plan header mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.match-note {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff6f0;
+  color: #9a3412;
+  font-size: 12.5px;
+}
+
+.conditions-line {
+  margin: -6px 0 12px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.compare-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.compare-actions ::ng-deep .primary-action,
+.compare-actions .secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.compare-actions ::ng-deep .primary-action {
+  background: #ff5a1f;
+  color: #ffffff;
+}
+
+.compare-actions ::ng-deep .primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.compare-actions ::ng-deep p[role='status'] {
+  flex-basis: 100%;
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.compare-actions .secondary-action {
+  background: #ffffff;
+  color: #063f2f;
+  border-color: #8bb8a6;
+}
+
+@media (max-width: 760px) {
+  .compare-page {
+    padding: 16px 16px 40px;
+  }
+
+  .compare-hero {
+    padding: 24px 20px;
+  }
+
+  .compare-card {
+    padding: 18px 16px;
+  }
+
+  .compare-card h2 {
+    font-size: 18px;
+  }
+
+  .school-plans,
+  .school-plans--three {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-actions ::ng-deep .primary-action,
+  .compare-actions .secondary-action {
+    flex: 1 1 100%;
+  }
+}

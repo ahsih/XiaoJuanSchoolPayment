@@ -208,6 +208,12 @@ export const mainNavigation: NavigationItem[] = [
         type: 'SEO/转化页',
       },
       {
+        id: 'price-compare',
+        label: '学校价格对比',
+        route: '/price-compare',
+        type: '报价工具',
+      },
+      {
         id: 'philippines-schools',
         label: '菲律宾语言学校大全',
         route: placeholderRoute,

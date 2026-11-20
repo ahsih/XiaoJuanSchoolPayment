@@ -105,6 +105,11 @@ export interface PhSchoolProfile {
   previewPrefix: string;
   /** Database school name for prices, photos and the published content revision. */
   pricingSchoolName: string;
+  /**
+   * The school's id in the cross-school comparison (pages/school-compare/compare-schools.ts). When set,
+   * the quote area links to /price-compare with the current plan; CIA leaves it out while locked.
+   */
+  schoolCompareId?: string;
   copy: PhPageCopy;
   gallery: {
     categories: GalleryCategory[];

@@ -848,6 +848,7 @@
           <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>
           <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
         </div>
+        <ng-container *ngTemplateOutlet="schoolCompareLink"></ng-container>
         </ng-container>
 
         <ng-template #comparePanel>
@@ -878,6 +879,15 @@
             <app-quote-image-download-button [quote]="compareImageData" [disabled]="!comparison.ready" [label]="copy.quote.compareSaveLabel" buttonClass="primary-action"></app-quote-image-download-button>
             <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
           </div>
+          <ng-container *ngTemplateOutlet="schoolCompareLink"></ng-container>
+        </ng-template>
+
+        <!-- Only schools with profile.schoolCompareId show this link (CIA leaves it out). -->
+        <ng-template #schoolCompareLink>
+          <p class="school-compare-link" *ngIf="schoolCompareQuery as query">
+            同样的课程、房型和周数，其他学校要多少钱？
+            <a routerLink="/price-compare" [queryParams]="query"><mat-icon>compare_arrows</mat-icon>和其他学校比一比</a>
+          </p>
         </ng-template>
 
         <ng-template #studentConditions let-student>
