@@ -741,6 +741,11 @@ const routes: Routes = [
         data: { infoKey: 'cost' },
       },
       {
+        path: 'price-compare',
+        loadComponent: () =>
+          import('./pages/school-compare/school-compare-page.component').then((m) => m.SchoolComparePageComponent),
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },

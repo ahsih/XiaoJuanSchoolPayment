@@ -347,6 +347,7 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   name: 'EV',
   previewPrefix: 'ev',
   pricingSchoolName: 'EV Academy',
+  schoolCompareId: 'ev',
   copy: EV_COPY,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,

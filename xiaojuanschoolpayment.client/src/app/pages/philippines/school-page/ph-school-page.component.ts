@@ -266,6 +266,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       fileName: `${this.profile.name}方案对比报价-${start.replace(/-/g, '')}.png`,
     };
   }
+  /** Query for /price-compare with the shown plan (single quote: student 1; 方案对比: plan A); null hides the link. */
+  get schoolCompareQuery(): Record<string, string> | null {
+    const id = this.profile.schoolCompareId;
+    if (!id) return null;
+    const plan = (this.quoteView === 'compare' ? this.comparison.plans[0] : this.students[0])?.quotePlan;
+    const course = plan?.courses[0];
+    const room = plan?.rooms[0];
+    return {
+      from: id,
+      ...(course ? { course: course.optionId, weeks: String(plan.courseWeeks), start: course.startDate } : {}),
+      ...(room ? { room: room.optionId } : {}),
+    };
+  }
   setComparePlanDate(plan: S, value: string, input: HTMLInputElement): void {
     if (!this.comparison.setStartDate(plan, value)) input.value = this.comparison.startDate(plan);
   }

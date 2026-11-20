@@ -378,6 +378,13 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾留学费用, 菲律宾游学费用, 菲律宾语言学校费用, 宿务游学费用, 菲律宾英语学校价格',
     image: '/assets/philippines/home-school-ev.webp',
   },
+  '/price-compare': {
+    title: '菲律宾语言学校价格对比 | 课程住宿费用在线比较',
+    description:
+      '选好学习目标、房型、周数和入学日期，在线对比菲律宾宿务语言学校的课程费、住宿费、优惠和到校学杂费，可保存对比图片。',
+    keywords: '菲律宾语言学校价格对比, 菲律宾游学费用对比, 宿务语言学校对比, CIA和EV对比, 菲律宾游学报价',
+    image: '/assets/philippines/cebu-city-view.webp',
+  },
   '/philippines-study/baguio/airport-pickup': {
     title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',
     description: '查看2026及2027碧瑶BESA指定接机日期、马尼拉和克拉克班次、集合点、现行3000比索费用、eTravel顾问办理及航班延误处理。',
