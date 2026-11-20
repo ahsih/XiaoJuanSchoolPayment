@@ -411,7 +411,6 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   reviewPath: '',
   holidayCalendars: [],
   ieltsComputerExamDates2027: [],
-  ieltsExamDates2026: [],
   studentCareServices: [],
   campusPracticalGuides: EV_PRACTICAL_GUIDES,
   studentTracks: [],
