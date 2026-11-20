@@ -37,7 +37,7 @@ describe('EV school page on the shared template', () => {
     expect(page.quote.quoteUsd).toBe(1886);
     expect(page.quote.estimatedLocalFeeTotal).toBe(20000);
     expect(payment('思达启航折扣')?.amount).toBe('− 94 美元');
-    expect(page.quoteImageData.headingText).toBe('EV主校区4周报价');
+    expect(page.quoteImageData.headingText).toBe('EV主校区 4周报价');
   });
 
   it('charges the 2027 CALA peak season once per overlapping week, outside the discount', () => {
@@ -166,6 +166,21 @@ describe('EV school page on the shared template', () => {
     expect(names(0, '综合英语 ESL')).toEqual(['经典ESL']);
     expect(zones[0].groups.find(group => group.title === '雅思')!.missingNote).toBe('本类课程仅开设斯巴达');
     expect(page.copy.referenceNote).toContain('最终解释权归学校');
+  });
+
+  it('uses the CIA layout: videos first in the hero album, every room card opening its photos, the v2 image', () => {
+    expect(page.compactLayout).toBeTrue();
+    expect(page.heroAlbumItems[0].title).toBe('主校区导览');
+    expect(page.heroAlbumChipGroups.map(group => group.label)).toEqual(['视频', '照片']);
+    const rooms = page.roomRateGroups.flatMap(group => group.rooms);
+    expect(rooms.length).toBe(6);
+    expect(rooms.every(room => !!page.roomProfileForRate(room))).toBeTrue();
+    expect(page.roomProfileForRate(rooms.find(room => room.id === 'off-campus-double')!)?.id).toBe('off-campus');
+    expect(page.guidesForCourse('sparta-social-media-english').map(guide => guide.title)).toEqual(['社交媒体英语']);
+    expect(page.generalCourseGuides.map(guide => guide.title)).toEqual(['免费选修课', '测试、换课与教师培训日']);
+    expect(page.quoteImageData.layoutVersion).toBe(2);
+    page.setQuoteView('compare');
+    expect(page.compareSheet.rows[0].label).toBe('注册费');
   });
 });
 

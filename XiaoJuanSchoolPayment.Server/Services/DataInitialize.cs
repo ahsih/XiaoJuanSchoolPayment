@@ -1238,6 +1238,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "B栋三人间", 4, 950m, "B栋三人房", now);
       UpsertRoom(context, schoolId, "B栋四人间（3张床）", 4, 890m, "家庭房型；3张床，空房需单独确认", now);
       UpsertRoom(context, schoolId, "B栋六人间", 4, 770m, "仅限女生；空房需单独确认", now);
+      UpsertRoom(context, schoolId, "Premium单人间", 4, 1595m, "校外Premium公寓单人间；2026/08/31–2027/01/01、2027/03/01–07/02入住，限10间", now);
+      UpsertRoom(context, schoolId, "Premium双人间", 4, 1160m, "校外Premium公寓双人间；2026/08/31–2027/01/01、2027/03/01–07/02入住，限10间", now);
 
       RemoveFee(context, schoolId, "旺季附加费");
       RemoveFee(context, schoolId, "SSP");
