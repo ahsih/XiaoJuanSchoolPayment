@@ -7,7 +7,14 @@ export const SCHOOL_VISA_OPTIONS = [
   { value: 'srrv', label: 'SRRV绿卡' }, { value: 'sirv', label: 'SIRV卡' },
 ] as const;
 export type SchoolVisaType = typeof SCHOOL_VISA_OPTIONS[number]['value'];
-export interface SchoolLocalFee { item: string; unitLabel: string; quantity: number; total: number; note: string; }
+export interface SchoolLocalFee {
+  item: string; unitLabel: string; quantity: number; total: number; note: string;
+  /**
+   * Zero only because a long-term visa is provisionally treated as exempt; the row and its adviser-confirmation note
+   * must stay visible, so the image never merges it into 本次不产生 (CIA so far).
+   */
+  waived?: boolean;
+}
 export interface SchoolPaymentLine { icon: string; label: string; value: number; note: string; promotionKey?: string; }
 export const moneyLine = (line: SchoolPaymentLine): QuoteImagePaymentItem => ({
   icon: line.icon, label: line.label,

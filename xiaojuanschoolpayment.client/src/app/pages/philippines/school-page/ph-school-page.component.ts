@@ -33,6 +33,7 @@ import { PlanCompareTableComponent } from '../../../components/plan-compare/plan
 import type { PlanCompareSheet } from '../../../components/plan-compare/plan-compare-sheet';
 import type { QuoteImageCardData } from '../../../components/quote-image-types';
 import type { CtaConsultant } from '../cia-school/cia-page-content';
+import { consultantsInTodaysOrder, quoteContactCard } from '../../../components/sida-consultants';
 import {
   CiaContentConfig,
   CiaExtraNightRate,
@@ -126,16 +127,8 @@ interface CalendarMonthRow {
  * School subclasses keep the selector `app-cia-school`: the global styles (src/styles.css and
  * assets/cia/cia-page-extended.css) target that element, so every school shares them.
  */
-/**
- * Turns a list by one place per calendar day in China time (UTC+8), so on day N the item at N mod length leads.
- * Exported for tests.
- */
-export function rotateForDay<T>(items: readonly T[], timestamp: number): T[] {
-  if (!items.length) return [];
-  const chinaDay = Math.floor((timestamp + 8 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000));
-  const shift = chinaDay % items.length;
-  return [...items.slice(shift), ...items.slice(0, shift)];
-}
+/** The daily consultant rotation lives with the consultant list; re-exported for the EV page test. */
+export { rotateForDay } from '../../../components/sida-consultants';
 
 @Directive()
 export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStudent>
@@ -298,6 +291,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly notSuitableFor = this.profile.notSuitableFor;
   readonly campusBuildings = this.profile.campusBuildings;
   readonly scheduleColumns = this.profile.scheduleColumns;
+  /** Compact layout on phones: the timetable shows one day column at a time. */
+  scheduleDayIndex = 0;
   readonly studyModes = this.profile.studyModes;
   readonly holidayCalendars = this.profile.holidayCalendars;
   readonly ieltsComputerExamDates2027 = this.profile.ieltsComputerExamDates2027;
@@ -322,6 +317,30 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly courseHighlights = this.profile.courseHighlights ?? {};
+  readonly roomVideos = this.profile.roomVideos ?? {};
+  /**
+   * The open room's own video (same file as in the hero album), if the school has one of exactly that room type.
+   * It is the first item of the room's photo album; the arrows, a swipe or a thumbnail move on to the photos.
+   */
+  get selectedRoomVideo(): PhVideoItem | undefined {
+    return this.compactLayout ? this.roomVideos[this.selectedRoomProfile?.id ?? ''] : undefined;
+  }
+  /** False once a photo of the room is open; a newly chosen room starts on its video again. */
+  private roomVideoOpen = true;
+  get roomVideoActive(): boolean {
+    return this.roomVideoOpen && !!this.selectedRoomVideo;
+  }
+  /** Album length and 1-based position, counting the room's video as the first item. */
+  get roomAlbumLength(): number {
+    return this.selectedRoomPhotos.length + (this.selectedRoomVideo ? 1 : 0);
+  }
+  get roomAlbumPosition(): number {
+    if (!this.selectedRoomVideo) return this.selectedRoomPhotoIndex + 1;
+    return this.roomVideoActive ? 1 : this.selectedRoomPhotoIndex + 2;
+  }
+  showRoomVideo(): void {
+    this.roomVideoOpen = true;
+  }
 
   /** Hero album: every video by topic (the campus tour first), then every photo by album category. */
   heroAlbumIndex = 0;
@@ -357,6 +376,14 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       })
       .filter(chip => chip.count > 0);
   }
+  /** The album tabs as two rows, 视频 and 照片. A video topic drops its 视频 suffix because the row label says it. */
+  get heroAlbumChipGroups(): Array<{ label: string; chips: Array<{ category: string; label: string; count: number }> }> {
+    const chips = this.heroAlbumChips;
+    return [
+      { label: '视频', chips: chips.filter(chip => chip.video).map(chip => ({ ...chip, label: chip.category.replace(/视频$/, '') || chip.category })) },
+      { label: '照片', chips: chips.filter(chip => !chip.video).map(chip => ({ ...chip, label: chip.category })) },
+    ].filter(group => group.chips.length);
+  }
   /** Thumbnails of the current item's category, with their index in the whole album. */
   get heroAlbumThumbs(): Array<{ item: HeroAlbumItem; index: number }> {
     const category = this.heroAlbumItem?.category;
@@ -389,12 +416,6 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     }
     return tabs;
   }
-  /** Opens a video group in the hero album and scrolls to it, e.g. from the rooms section’s dormitory link. */
-  openVideoTab(label: string, event?: Event): void {
-    this.selectHeroAlbumChip(label);
-    this.scrollToSection('gallery', event);
-  }
-
   /** Course notes (Light ESL, guarantee rules …) shown inside the courses they belong to. */
   guidesForCourse(courseId: string): CourseDetailGuide[] {
     return this.courseDetailGuides.filter(guide => guide.courseIds?.includes(courseId));
@@ -611,15 +632,13 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   readonly ctaBadges = this.profile.ctaBadges;
 
-  readonly ctaConsultants = this.profile.ctaConsultants;
-  /** Base avatar order in the floating 免费咨询 panel (user decision 2026-11-21); consultants not listed go last. */
-  private static readonly floatConsultOrder = ['Perrin', 'Lemon', 'Iris', 'Lisa', 'Jenny'];
-
   /**
-   * Every consultant for the floating 免费咨询 button. The order turns by one place each day (China time), so each
-   * consultant leads in turn, and the first one's QR code is shown when the panel opens (user decision 2026-11-21).
+   * Every consultant in today's order, for the consultant cards and the floating 免费咨询 button alike. It starts
+   * from SIDA_CONSULTANT_DAILY_ORDER and turns by one place each day (China time), so each consultant leads in turn,
+   * and the first one's QR code is shown when the panel opens (user decisions 2026-11-21).
    */
-  readonly floatConsultants = this.consultantsInTodaysOrder();
+  readonly ctaConsultants = consultantsInTodaysOrder(this.profile.ctaConsultants, consultant => consultant.name);
+  readonly floatConsultants = this.ctaConsultants;
   floatConsultantIndex = 0;
   floatConsultOpen = false;
 
@@ -635,14 +654,18 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.floatConsultants[this.floatConsultantIndex];
   }
 
-  private consultantsInTodaysOrder(): readonly CtaConsultant[] {
-    const order = PhSchoolPageComponent.floatConsultOrder;
-    const rank = (consultant: CtaConsultant) => {
-      const index = order.indexOf(consultant.name);
-      return index < 0 ? order.length : index;
-    };
-    return rotateForDay([...this.ctaConsultants].sort((a, b) => rank(a) - rank(b)), Date.now());
+  /**
+   * 咨询顾问 chosen in the quote (user request 2026-11-21; layoutVersion 2 images, CIA so far): the quote image shows
+   * this consultant's phone and WeChat QR code. ngOnInit picks
+   * today's first consultant.
+   */
+  get usesQuoteConsultant(): boolean { return this.quote.usesContactCard; }
+  get quoteConsultantName(): string { return this.quote.contactCard?.consultant.name ?? ''; }
+  set quoteConsultantName(name: string) {
+    const consultant = this.ctaConsultants.find(item => item.name === name);
+    if (consultant) this.quote.contactCard = quoteContactCard(consultant);
   }
+
   @HostListener('document:click', ['$event'])
   closeFloatConsult(event: Event): void {
     if (this.floatConsultOpen && event.target instanceof Element && !event.target.closest('.float-consult')) {
@@ -651,6 +674,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   }
 
   ngOnInit(): void {
+    if (this.usesQuoteConsultant) this.quoteConsultantName = this.ctaConsultants[0]?.name ?? '';
     this.loadExtendedPageStyles();
     this.applySessionPreview();
     this.loadPricingFromDatabase();
@@ -1203,6 +1227,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   setRoomProfile(profileId: string): void {
     this.selectedRoomProfileId = profileId;
     this.selectedRoomPhotoIndex = 0;
+    this.roomVideoOpen = true;
   }
 
   get selectedRoomPhotos(): readonly string[] {
@@ -1217,20 +1242,31 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   selectRoomPhoto(index: number): void {
     this.selectedRoomPhotoIndex = Math.min(Math.max(index, 0), this.selectedRoomPhotos.length - 1);
+    this.roomVideoOpen = false;
   }
 
   stepRoomPhoto(step: number): void {
-    const length = this.selectedRoomPhotos.length;
-    this.selectedRoomPhotoIndex = (this.selectedRoomPhotoIndex + step + length) % length;
+    const length = this.roomAlbumLength;
+    const next = (this.roomAlbumPosition - 1 + step + length) % length;
+    if (!this.selectedRoomVideo) {
+      this.selectedRoomPhotoIndex = next;
+      return;
+    }
+    this.roomVideoOpen = next === 0;
+    if (next > 0) this.selectedRoomPhotoIndex = next - 1;
   }
 
   photoSwipeStart(event: TouchEvent): void {
-    // A drag on a video (its progress bar) seeks the video; it must not flip the album.
-    if (event.target instanceof HTMLVideoElement) {
-      this.photoSwipeOrigin = null;
-      return;
-    }
     const touch = event.changedTouches[0];
+    // A drag on a playing video, or on a video's control bar, seeks the video; it must not flip the album.
+    // A swipe across a paused video still moves on to the next photo.
+    if (event.target instanceof HTMLVideoElement) {
+      const box = event.target.getBoundingClientRect();
+      if (!event.target.paused || !touch || touch.clientY > box.bottom - 64) {
+        this.photoSwipeOrigin = null;
+        return;
+      }
+    }
     const arrow = event.target instanceof Element ? event.target.closest('.photo-step') : null;
     const arrowStep = arrow ? (arrow.classList.contains('photo-step--next') ? 1 : -1) : 0;
     this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY, arrowStep } : null;

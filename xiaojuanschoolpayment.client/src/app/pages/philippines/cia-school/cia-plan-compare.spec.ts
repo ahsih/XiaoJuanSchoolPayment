@@ -66,7 +66,30 @@ describe('CIA plan comparison and quote defaults', () => {
     expect(comparison.plans.map(plan => comparison.courseId(plan))).toEqual(['pre-ielts', 'ielts-regular', 'ielts-guarantee']);
     expect(comparison.plans.map(plan => comparison.weeks(plan))).toEqual([4, 4, 12]);
     expect(comparison.ready).toBeTrue();
-    expect(comparison.sheet.rows.some(row => row.label === '每日课程')).toBeTrue();
+    expect(comparison.sheet.rows.some(row => row.label === '课程安排')).toBeTrue();
+  });
+
+  it('always shows the daily course schedule, also when the plans share one course', () => {
+    const { comparison } = setup();
+    comparison.start('room');
+    const schedule = comparison.sheet.rows.find(row => row.label === '课程安排');
+    expect(schedule?.values.length).toBe(comparison.plans.length);
+    expect(schedule?.values.every(value => value.includes('一对一'))).toBeTrue();
+  });
+
+  it('lists the registration fee first and writes each course and room price beside its name', () => {
+    const { comparison } = setup();
+    comparison.start('room');
+    const labels = comparison.sheet.rows.map(row => row.label);
+    expect(labels[0]).toBe('注册费');
+    expect(labels).not.toContain('课程费');
+    expect(labels).not.toContain('住宿费');
+    const row = (label: string) => comparison.sheet.rows.find(item => item.label === label)!;
+    comparison.results.forEach((result, index) => {
+      const price = (value: number) => `${value.toLocaleString('en-US', { maximumFractionDigits: 2 })} 美元`;
+      expect(row('课程').values[index]).toBe(`${result.courseName} · ${price(result.tuition)}`);
+      expect(row('住宿').values[index]).toBe(`${result.roomName} · ${price(result.accommodation)}`);
+    });
   });
 
   it('follows the normal quote conditions such as returning students', () => {

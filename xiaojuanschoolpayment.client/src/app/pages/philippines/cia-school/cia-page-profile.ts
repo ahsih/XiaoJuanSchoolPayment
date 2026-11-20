@@ -373,6 +373,14 @@ export const CIA_PAGE_PROFILE: PhSchoolProfile = {
     'ielts-guarantee': CIA_GUARANTEE_HIGHLIGHT,
     'toeic-guarantee': CIA_GUARANTEE_HIGHLIGHT,
   },
+  // Checked frame by frame (2026-11-21): the single-room clip is the Premium Single P-1 (wall clock, two pillows,
+  // slatted headboard, mosaic shower), the Building 4 video the off-campus PN-1, the triple clip D-3.
+  // 宿舍房型总览 shows several room types, so it stays in the hero album only.
+  roomVideos: {
+    'premium-single': ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '单人间实拍'),
+    'pinnacle-single': ciaVideoCard('DORM'),
+    triple: ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '三人间实拍'),
+  },
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: CIA_GALLERY_ALBUM_CATEGORIES,

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { ScrollToDirective } from '../../directives/scroll-to.directive';
+import { SIDA_CONSULTANT_MEDIA, consultantsInTodaysOrder } from '../sida-consultants';
 
 export type CityCardTone = 'green' | 'orange' | 'violet' | 'blue' | 'teal' | 'navy';
 
@@ -405,13 +406,14 @@ export class PhilippinesCityStudyLayoutComponent {
     },
   ];
 
-  readonly advisors: Advisor[] = [
+  /** In today's order (sida-consultants.ts): each consultant leads in turn, one day each (user decision 2026-11-21). */
+  readonly advisors: Advisor[] = consultantsInTodaysOrder<Advisor>([
     {
       name: 'Perrin',
       focus: '菲律宾与东南亚',
       text: '菲律宾选校、课程报价与入学安排',
-      avatar: '/assets/contact/penin-avatar.jpg',
-      qr: '/assets/contact/penin-wechat-qr.png',
+      avatar: SIDA_CONSULTANT_MEDIA.Perrin.avatarSrc,
+      qr: SIDA_CONSULTANT_MEDIA.Perrin.qrSrc,
       phone: '15367659331',
       phoneDisplay: '153 6765 9331',
     },
@@ -419,22 +421,22 @@ export class PhilippinesCityStudyLayoutComponent {
       name: 'Iris',
       focus: '菲律宾与东南亚',
       text: '菲律宾与东南亚游学咨询，微信沟通选校和报价',
-      avatar: '/assets/contact/iris-avatar.webp',
-      qr: '/assets/contact/iris-wechat-qr.png',
+      avatar: SIDA_CONSULTANT_MEDIA.Iris.avatarSrc,
+      qr: SIDA_CONSULTANT_MEDIA.Iris.qrSrc,
     },
     {
       name: 'Lisa',
       focus: '菲律宾与东南亚',
       text: '菲律宾与东南亚游学咨询，微信沟通选校和报价',
-      avatar: '/assets/contact/lisa-avatar.webp',
-      qr: '/assets/contact/lisa-wechat-qr.png',
+      avatar: SIDA_CONSULTANT_MEDIA.Lisa.avatarSrc,
+      qr: SIDA_CONSULTANT_MEDIA.Lisa.qrSrc,
     },
     {
       name: 'Lemon',
       focus: '多国家方案规划',
       text: '费用、时间与升学路径综合比较',
-      avatar: '/assets/contact/lemon-avatar-jpg.webp?v=20260901',
-      qr: '/assets/contact/lemon-wechat-qr.png',
+      avatar: SIDA_CONSULTANT_MEDIA.Lemon.avatarSrc,
+      qr: SIDA_CONSULTANT_MEDIA.Lemon.qrSrc,
       phone: '13298529856',
       phoneDisplay: '132 9852 9856',
     },
@@ -442,12 +444,12 @@ export class PhilippinesCityStudyLayoutComponent {
       name: 'Jenny',
       focus: '英爱留学规划',
       text: '英语提升与英爱升学路径衔接',
-      avatar: '/assets/contact/jenny-avatar.jpg',
-      qr: '/assets/contact/jenny-wechat-qr.png',
+      avatar: SIDA_CONSULTANT_MEDIA.Jenny.avatarSrc,
+      qr: SIDA_CONSULTANT_MEDIA.Jenny.qrSrc,
       phone: '13249827686',
       phoneDisplay: '132 4982 7686',
     },
-  ];
+  ], advisor => advisor.name);
 
   get visibleSchools(): CityStudyDirectorySchool[] {
     const categorySchools = this.activeDirectoryFilter === '全部学校'
