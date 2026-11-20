@@ -126,7 +126,7 @@ function roomsSection(): MiniSection {
         })),
       },
       { type: 'pricing', part: 'stay' },
-      note(copy.gallery.roomDisclaimer),
+      note(`${copy.gallery.photoNote}${copy.gallery.roomDisclaimer}`),
     ],
   };
 }

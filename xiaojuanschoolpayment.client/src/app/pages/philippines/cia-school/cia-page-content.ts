@@ -146,9 +146,10 @@ export interface RoomComparisonProfile {
   imageAlt: string;
   /**
    * One room type priced per occupancy (CIA's suite: SR-1 … SR-4). Keyed by booking code; the room panel
-   * shows the tapped code's name and fit and opens the gallery on its own photo (index into gallery).
+   * shows the tapped code's name and fit. Every code shows the same school photos in the school's order:
+   * the photos do not say which occupancy they show, so never pick a photo per code (user rule 2026-11-20).
    */
-  variants?: Readonly<Record<string, { label: string; suitable: string; firstPhoto: number }>>;
+  variants?: Readonly<Record<string, { label: string; suitable: string }>>;
 }
 
 export interface CampusBuildingCard {
@@ -1470,10 +1471,10 @@ export const CIA_ROOM_COMPARISON_PROFILES: RoomComparisonProfile[] = [
     gallery: ciaRoomGalleries.suite,
     imageAlt: 'CIA精致套房实景，配有大床、电视、餐桌及料理区',
     variants: {
-      'SR-1': { label: '单人套房', suitable: '想一个人住大床，并要完整起居空间和小厨房的学生。', firstPhoto: 1 },
-      'SR-2': { label: '双人套房', suitable: '两位同学或朋友同住一套，想要比普通双人间更完整的起居配置。', firstPhoto: 4 },
-      'SR-3': { label: '三人套房', suitable: '三位同学或朋友同住一套，价格比单人、双人套房低。', firstPhoto: 5 },
-      'SR-4': { label: '四人套房', suitable: '四人结伴同住一套，是套房中价格最低的选择。', firstPhoto: 0 },
+      'SR-1': { label: '单人套房', suitable: '想一个人住套房，并要完整起居空间和小厨房的学生。' },
+      'SR-2': { label: '双人套房', suitable: '两位同学或朋友同住一套，想要比普通双人间更完整的起居配置。' },
+      'SR-3': { label: '三人套房', suitable: '三位同学或朋友同住一套，价格比单人、双人套房低。' },
+      'SR-4': { label: '四人套房', suitable: '四人结伴同住一套，是套房中价格最低的选择。' },
     },
   },
 ];
@@ -1602,9 +1603,9 @@ export const CIA_PAGE_COPY = {
   gallery: {
     title: '按区域查看 CIA 环境',
     intro: '“全部”先按区域进入相册；相册内用左右箭头或缩略图切换，点击主图可放大。7类房型的价格与详细对比在下方“住宿”部分。',
-    photoNote: '图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。',
+    photoNote: '所有图片仅供参考，具体以学校安排为准。',
     roomComparisonTitle: '7类房型快速对比',
-    roomDisclaimer: '图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
+    roomDisclaimer: '面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
   },
   courses: {
     title: 'CIA 课程怎么选？',

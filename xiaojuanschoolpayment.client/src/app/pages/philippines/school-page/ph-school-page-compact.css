@@ -263,6 +263,28 @@
   transform: translate(-50%, -50%);
 }
 
+/* 所有图片仅供参考: one line under the album and under the room photos. */
+:host .photo-reference-note {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 0;
+  color: #7a8a84;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+:host .photo-reference-note mat-icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
+:host .room-profile-gallery .photo-reference-note {
+  margin-top: 6px;
+}
+
 /* ---- Overview: key facts, building list, advisor review and licence in one block ---- */
 :host .compact-overview {
   display: grid;
