@@ -1,6 +1,8 @@
 import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import {
+  CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
+  CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
   CellaCampus,
@@ -9,6 +11,7 @@ import {
   CellaPromotionMode,
   CellaRoom,
   cellaDurationPrice,
+  cellaExtensionStages,
 } from './cella-pricing';
 import { SchoolQuotePlan, QuotePlanRow } from '../../../components/school-quote-plan';
 
@@ -158,6 +161,46 @@ export class CellaStudentQuote {
     return 0;
   }
 
+  /** 2027 offers need an arrival from 2027/02/14 to 2027/12/31. */
+  get arrivesIn2027PromotionWindow(): boolean {
+    return this.startDate >= CELLA_2027_PROMOTION.arrivalStart && this.startDate <= CELLA_2027_PROMOTION.arrivalEnd;
+  }
+
+  /** 2027 low season: 25 dollars per twin/triple/quad accommodation week outside 2027/05/30–08/28. */
+  get lowSeason2027Weeks(): number {
+    if (this.isFamilyPackage || this.isSocialPromotion || !this.arrivesIn2027PromotionWindow) return 0;
+    return this.accommodationWeeks
+      .filter(week => ['twin', 'triple', 'quad'].includes(week.room?.kind ?? '') && !this.inSummer2027(week.start)).length;
+  }
+
+  get lowSeason2027Discount(): number { return this.lowSeason2027Weeks * CELLA_2027_PROMOTION.lowSeasonPerWeek; }
+
+  /** 2027 Premium six-person offer before the long-stay comparison: course and room 25% off for 4/8/12-week stays. */
+  private get sixPerson2027Candidate(): number {
+    if (this.isFamilyPackage || this.isSocialPromotion || !this.arrivesIn2027PromotionWindow
+      || !CELLA_2027_PROMOTION.sixPersonWeeks.includes(this.actualWeeks)) return 0;
+    const eligible = this.accommodationWeeks.filter(week => week.room?.premiumSixPerson && !this.inSummer2027(week.start));
+    const base = eligible.reduce((sum, week) => sum + week.price + this.coursePriceForWeek(week.start), 0);
+    return this.roundMoney(base * (1 - CELLA_2027_PROMOTION.sixPersonRate));
+  }
+
+  /** 2027 long-stay offer (12/16/20/24 weeks) for arrivals during 2027, all year. */
+  private get longStay2027Candidate(): number {
+    if (this.isFamilyPackage || this.isSocialPromotion || this.startDate < '2027-01-01' || this.startDate > '2027-12-31') return 0;
+    return CELLA_2027_PROMOTION.longStayTiers.find(tier => this.actualWeeks >= tier.weeks)?.amount ?? 0;
+  }
+
+  /** The poster forbids combining the six-person and long-stay offers; the student keeps the larger one. */
+  get premiumSixPerson2027Discount(): number {
+    const six = this.sixPerson2027Candidate;
+    return six > 0 && six >= this.longStay2027Candidate ? six : 0;
+  }
+
+  get longStay2027Discount(): number {
+    const longStay = this.longStay2027Candidate;
+    return longStay > 0 && longStay > this.sixPerson2027Candidate ? longStay : 0;
+  }
+
   get peakSeasonCalculation() {
     if (this.isFamilyPackage) return { weeks: 0, total: 0, breakdown: [] };
     const start = this.dateValue(this.startDate);
@@ -168,6 +211,7 @@ export class CellaStudentQuote {
       this.catalog.peakSeasonRanges ?? [
         { start: '2026-07-05', end: '2026-08-29' },
         { start: '2027-07-04', end: '2027-08-28' },
+        { start: '2028-07-02', end: '2028-08-26' },
       ],
       this.catalog.peakSeasonWeeklyFee,
     );
@@ -188,48 +232,76 @@ export class CellaStudentQuote {
       - this.socialPromotionDiscount
       - this.lowSeasonDiscount
       - this.premiumSixPersonDiscount
-      - this.longStayDiscount,
+      - this.longStayDiscount
+      - this.lowSeason2027Discount
+      - this.premiumSixPerson2027Discount
+      - this.longStay2027Discount,
     ));
   }
 
+  /** Extension stages reached by the stay: 5–8 weeks, 9–12 weeks, then every further four weeks. */
+  get visaStages(): number { return cellaExtensionStages(this.actualWeeks); }
+
+  /** A 59-day entry already covers the first stage, so it starts at the 6,410-peso second stage. */
   get visaExtensionCount(): number {
-    return Math.max(0, Math.ceil((this.actualWeeks * 7 - this.initialVisaDays) / 30));
+    return this.initialVisaDays === 59 ? Math.max(0, this.visaStages - 1) : this.visaStages;
+  }
+
+  get visaExtensionTotal(): number {
+    return CELLA_LOCAL_FEES_2027.extensionStages
+      .slice(this.initialVisaDays === 59 ? 1 : 0, this.visaStages)
+      .reduce((sum, amount) => sum + amount, 0);
   }
 
   get localFees(): CellaCalculatedLocalFee[] {
     if (this.isFamilyPackage) return [];
+    const fees = CELLA_LOCAL_FEES_2027;
     const bookRule = this.catalog.localFeeRules?.find(fee => fee.id === 'books');
     const bookAmount = bookRule?.amount ?? 2000;
     const bookQuantity = bookRule?.periodWeeks ? textbookPeriods(this.quotePlan.courses, bookRule.periodWeeks, bookRule.rounding === 'proportional' ? 'proportional' : 'ceil') : textbookGroups(this.quotePlan.courses).length;
     const includeBooks = !bookRule || (bookRule.enabled && bookRule.includeInTotal);
-    const periods = Math.max(1, Math.ceil(this.actualWeeks / 4));
+    const weeks = this.accommodationWeeks;
+    const effectiveFrom = this.dateValue(fees.effectiveFrom) ?? Number.POSITIVE_INFINITY;
+    const water = weeks.map(week => week.start < effectiveFrom ? fees.waterPerWeekBefore2027 : fees.waterPerWeek);
+    const electricity = weeks.map(week => week.room?.stacia && week.start >= effectiveFrom ? fees.staciaElectricityPerWeek : fees.electricityPerWeek);
+    const staciaWeeks = weeks.filter(week => week.room?.stacia && week.start >= effectiveFrom).length;
     const extensions = this.visaExtensionCount;
-    const laterExtensionWarning = extensions > 1
-      ? `本次预计需续签${extensions}次；附件只确认首次续签5,140比索，后续续签金额未计入合计，需向学校确认。`
-      : extensions === 1
-        ? '首次续签参考；最终以学校及移民局实收为准。'
-        : `按${this.initialVisaDays}天旅游签证预估，本次无需续签。`;
+    const visaNote = extensions
+      ? `按${this.initialVisaDays}天旅游签证、就读${this.actualWeeks}周预估续签${extensions}次；以学校及移民局实收为准。`
+      : `按${this.initialVisaDays}天旅游签证预估，本次无需续签。`;
     return [
-      { item: 'SSP特殊学习许可证', unit: '7,800比索／次', quantity: '1', total: 7800, note: '移民局收取；按报名学习时长办理，续费及换校需要重新办理。' },
-      { item: 'SSP电子卡', unit: '4,500比索／次', quantity: '1', total: 4500, note: '入学时与SSP同时办理，只收一次。' },
-      { item: '外国人身份证', unit: '4,000比索／次', quantity: extensions > 0 ? '1' : '0', total: extensions > 0 ? 4000 : 0, note: '首次续签时办理；实际办理要求需向学校确认。' },
-      { item: '管理费', unit: '4,000比索／4周', quantity: String(periods), total: 4000 * periods, note: '校内教学楼及其他设施的维护费用。' },
-      { item: '电费', unit: '2,000比索／4周', quantity: String(periods), total: 2000 * periods, note: '每周含15度电，超出部分另收25比索／度；校外宿舍计费口径需确认。' },
-      { item: '水费', unit: '1,200比索／4周', quantity: String(periods), total: 1200 * periods, note: '公共用水和房间用水；校外宿舍计费口径需确认。' },
-      { item: '签证续签', unit: '首次5,140比索', quantity: extensions > 0 ? '1' : '0', total: extensions > 0 ? 5140 : 0, note: laterExtensionWarning },
+      { item: 'SSP特殊学习许可证', unit: '7,800比索／次', quantity: '1', total: fees.ssp, note: '移民局收取，有效期6个月；换校需重新办理。' },
+      { item: 'SSP电子卡', unit: '4,500比索／次', quantity: '1', total: fees.sspECard, note: '入学时与SSP同时办理，只收一次。' },
+      { item: '签证续签', unit: '5,140／6,410／4,440比索', quantity: `${extensions}次`, total: this.visaExtensionTotal, note: visaNote },
+      { item: 'ARP加急费', unit: '300比索／次', quantity: extensions ? '1' : '0', total: extensions ? fees.arp : 0, note: '首次续签时与签证一起办理。' },
+      { item: '外国人身份证', unit: '4,000比索／次', quantity: this.visaStages >= 2 ? '1' : '0', total: this.visaStages >= 2 ? fees.acrICard : 0, note: '停留超过59天（第9周起）时办理。' },
+      { item: '管理费', unit: '1,000比索／周', quantity: `${weeks.length}周`, total: fees.maintenancePerWeek * weeks.length, note: '公共区域、设施维护等费用，按住宿周数计算。' },
+      {
+        item: '电费', unit: this.rateText(electricity), quantity: `${weeks.length}周`, total: electricity.reduce((sum, value) => sum + value, 0),
+        note: staciaWeeks === weeks.length && weeks.length
+          ? 'STACIA校外宿舍2027年起固定收费，不另收超额电费。'
+          : `每周含15度电，超出部分另收25比索／度${staciaWeeks ? '；STACIA校外宿舍2027年起1,000比索／周、不另收超额电费' : ''}。`,
+      },
+      {
+        item: '水费', unit: this.rateText(water), quantity: `${weeks.length}周`, total: water.reduce((sum, value) => sum + value, 0),
+        note: water.some(value => value === fees.waterPerWeekBefore2027) ? '公共用水和房间用水；2027/01/01起500比索／周，此前300比索／周。' : '公共用水和房间用水。',
+      },
       ...(includeBooks ? [{ item: bookRule?.name ?? '教材费', unit: bookAmount.toLocaleString('en-US') + (bookRule?.periodWeeks ? '比索／' + bookRule.periodWeeks + '课程周' : '比索／课程类型预估'), quantity: String(bookQuantity), total: bookAmount * bookQuantity, note: bookRule?.note || '每种课程类型分别预估教材费用；后续更新教材按实际进度购买。' }] : []),
-      { item: '学生证', unit: '200比索／张', quantity: '1', total: 200, note: '一次性费用。' },
+      { item: '学生证', unit: '200比索／张', quantity: '1', total: fees.studentId, note: '一次性费用。' },
     ];
   }
 
   get localFeeTotal(): number { return this.localFees.reduce((sum, item) => sum + item.total, 0); }
 
+  /** Refundable deposit reference; STACIA charges none from 2027/01/01. */
   get depositAmount(): number | null {
     if (this.isFamilyPackage) return null;
+    const weeks = this.accommodationWeeks;
+    const effectiveFrom = this.dateValue(CELLA_LOCAL_FEES_2027.effectiveFrom) ?? Number.POSITIVE_INFINITY;
+    if (weeks.length && weeks.every(week => week.room?.stacia && week.start >= effectiveFrom)) return 0;
     if (this.actualWeeks < 4) return 2000;
     if (this.actualWeeks <= 8) return 5000;
     if (this.actualWeeks <= 12) return 8000;
-    if (this.actualWeeks < 16) return null;
     return 10000;
   }
 
@@ -251,6 +323,13 @@ export class CellaStudentQuote {
     if (this.isFamilyPackage && this.promotionMode !== 'standard') return '家庭套餐与其他优惠能否叠加未确认，请按附件整包价报价。';
     if (this.isFamilyPackage) return '';
     if (!this.selectedRoom) return '请选择当前校区的有效房型。';
+    for (const row of this.quotePlan.mergedRows('course')) {
+      const course = this.courseOptions.find(item => item.id === row.optionId);
+      if (course?.allowedWeeks && !course.allowedWeeks.includes(row.weeks)) return `${course.name}只开${course.allowedWeeks.join('／')}周，请调整周数。`;
+      if (course?.startDates2027 && row.startDate.startsWith('2027') && !course.startDates2027.includes(row.startDate)) {
+        return `${course.name}须在学校指定开课日入学：${course.startDates2027.map(date => date.slice(5).replace('-', '/').replace(/^0/, '').replace('/0', '/')).join('、')}。`;
+      }
+    }
     if (this.isSocialPromotion && this.enrollmentStatus !== 'new') return '6+2／9+3仅限首次报名新生，不适用于转校或延期学生。';
     if (this.isSocialPromotion && !this.selectedRoom.socialEligible) return '6+2／9+3仅适用于Uni或Premium校区四人间。';
     return '';
@@ -316,6 +395,36 @@ export class CellaStudentQuote {
       if (weekStart <= rangeEnd && weekEnd >= rangeStart) count++;
     }
     return count;
+  }
+
+  /** Every accommodation week with its room and that week's share of the row price. */
+  private get accommodationWeeks(): Array<{ start: number; room?: CellaRoom; price: number }> {
+    return this.quotePlan.rooms.flatMap(row => {
+      const start = this.dateValue(row.startDate);
+      if (start === null || !Number.isInteger(row.weeks) || row.weeks < 1) return [];
+      const room = this.roomOptions.find(item => item.id === row.optionId);
+      const price = this.quotePlan.price('room', row) / row.weeks;
+      return Array.from({ length: row.weeks }, (_, index) => ({ start: start + index * 7 * DAY_MS, room, price }));
+    });
+  }
+
+  private coursePriceForWeek(weekStart: number): number {
+    for (const row of this.quotePlan.courses) {
+      const start = this.dateValue(row.startDate);
+      if (start !== null && weekStart >= start && weekStart < start + row.weeks * 7 * DAY_MS) return this.quotePlan.price('course', row) / row.weeks;
+    }
+    return 0;
+  }
+
+  private inSummer2027(weekStart: number): boolean {
+    const from = this.dateValue(CELLA_2027_PROMOTION.summerStart)!;
+    const to = this.dateValue(CELLA_2027_PROMOTION.summerEnd)!;
+    return weekStart <= to && weekStart + 6 * DAY_MS >= from;
+  }
+
+  private rateText(rates: number[]): string {
+    const distinct = [...new Set(rates)].sort((a, b) => a - b);
+    return `${(distinct.length ? distinct : [0]).map(value => value.toLocaleString('en-US')).join('／')}比索／周`;
   }
 
   private dateValue(value: string): number | null {

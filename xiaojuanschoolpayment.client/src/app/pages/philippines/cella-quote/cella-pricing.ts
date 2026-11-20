@@ -1,6 +1,7 @@
 export type CellaCampus = 'uni' | 'premium';
 export type CellaEnrollmentStatus = 'new' | 'transfer' | 'extension';
 export type CellaPromotionMode = 'standard' | 'social-6-plus-2' | 'social-9-plus-3';
+export type CellaRoomKind = 'single' | 'semi-single' | 'twin' | 'triple' | 'quad' | 'six';
 
 export interface CellaCourse {
   id: string;
@@ -11,6 +12,10 @@ export interface CellaCourse {
   note: string;
   needsConfirmation?: boolean;
   familyPackage?: CellaFamilyPackage;
+  /** Durations the school price list offers for this course (IELTS Guarantee 8/12, TESOL 4). */
+  allowedWeeks?: readonly number[];
+  /** Fixed 2027 start Sundays (TESOL). */
+  startDates2027?: readonly string[];
 }
 
 export interface CellaRoom {
@@ -19,9 +24,13 @@ export interface CellaRoom {
   name: string;
   fee: number;
   note: string;
+  kind: CellaRoomKind;
+  /** 2026/08/30–2027/01/02 offer (all rooms except the six-person room). */
   lowSeasonEligible: boolean;
   socialEligible: boolean;
   premiumSixPerson?: boolean;
+  /** Premium outside dormitory STACIA HOTEL: own 2027 local fees. */
+  stacia?: boolean;
 }
 
 export interface CellaFamilyPackage {
@@ -37,9 +46,48 @@ export const CELLA_CAMPUS_NAMES: Record<CellaCampus, string> = {
 };
 
 export const CELLA_REGISTRATION_FEE = 150;
-export const CELLA_PEAK_SEASON_WEEKLY_FEE = 40;
+export const CELLA_PEAK_SEASON_WEEKLY_FEE = 60;
+/** 2026 second-half offer, kept for stays inside its window (user decision 2026-11-20). */
 export const CELLA_LOW_SEASON_START = '2026-08-30';
 export const CELLA_LOW_SEASON_END = '2027-01-02';
+
+/** CELLA 2027 promotion poster (CHN-2027 Promotion). */
+export const CELLA_2027_PROMOTION = {
+  arrivalStart: '2027-02-14',
+  arrivalEnd: '2027-12-31',
+  summerStart: '2027-05-30',
+  summerEnd: '2027-08-28',
+  lowSeasonPerWeek: 25,
+  sixPersonRate: 0.75,
+  sixPersonWeeks: [4, 8, 12] as readonly number[],
+  longStayTiers: [
+    { weeks: 24, amount: 250 },
+    { weeks: 20, amount: 200 },
+    { weeks: 16, amount: 150 },
+    { weeks: 12, amount: 100 },
+  ] as ReadonlyArray<{ weeks: number; amount: number }>,
+} as const;
+
+/** 2027 local payment sheets; the STACIA and water changes apply from 2027-01-01. */
+export const CELLA_LOCAL_FEES_2027 = {
+  effectiveFrom: '2027-01-01',
+  ssp: 7800,
+  sspECard: 4500,
+  arp: 300,
+  acrICard: 4000,
+  /** Cumulative extension stages by study week: 5–8, 9–12, then every further four weeks. */
+  extensionStages: [5140, 6410, 4440, 4440, 4440] as readonly number[],
+  maintenancePerWeek: 1000,
+  electricityPerWeek: 500,
+  staciaElectricityPerWeek: 1000,
+  waterPerWeek: 500,
+  waterPerWeekBefore2027: 300,
+  studentId: 200,
+  pickupWeekend: 1500,
+  pickupWeekday: 2000,
+  pickupFamilyWeekend: 3000,
+  pickupFamilyWeekday: 4000,
+} as const;
 
 export const CELLA_FAMILY_PACKAGE_NOTE = '整包价包含注册费、课程费、住宿费，以及SSP、电子卡、电费、水费、管理费、洗衣、周日接机、学生证和教材等附件列明的当地费用；不含汇款手续费及额外电费。家庭成员年龄、课程组合、床位、Main／Alicia安排和空房需向学校确认。';
 
@@ -50,81 +98,91 @@ export const CELLA_FAMILY_PACKAGES: readonly CellaFamilyPackage[] = [
   { id: 'premium-family-quad-1-3', room: 'Main／Alicia四人家庭房', occupants: '1位监护人＋3位青少年', prices: { 4: 11200, 6: 16800, 8: 22200 } },
 ];
 
+const PRICE_NOTE = '2027年4周课程费。';
+const TESOL_START_DATES_2027 = ['2027-01-03', '2027-01-31', '2027-02-28', '2027-03-28', '2027-04-25', '2027-05-23', '2027-06-20', '2027-07-18', '2027-08-15', '2027-09-05', '2027-10-03', '2027-10-31'];
+
 export const CELLA_COURSES: readonly CellaCourse[] = [
   {
     id: 'uni-power-speaking-1', campus: 'uni', name: 'Power Speaking 1', tuition: 930,
     lessons: '4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
-    id: 'uni-power-speaking-2', campus: 'uni', name: 'Power Speaking 2', tuition: 1080,
+    id: 'uni-power-speaking-2', campus: 'uni', name: 'Power Speaking 2', tuition: 1180,
     lessons: '6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'uni-toeic-pre', campus: 'uni', name: 'TOEIC Pre', tuition: 1080,
     lessons: '4节一对一课程＋3节ESL小组课＋1节ESL大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'uni-toeic-intensive', campus: 'uni', name: 'TOEIC Intensive', tuition: 1180,
     lessons: '4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'uni-ielts-pre', campus: 'uni', name: 'IELTS Pre', tuition: 1080,
     lessons: '4节一对一课程＋3节ESL小组课＋1节ESL大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'uni-ielts-intensive', campus: 'uni', name: 'IELTS Intensive', tuition: 1180,
     lessons: '4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'uni-ielts-guarantee', campus: 'uni', name: 'IELTS Guarantee', tuition: 1380,
     lessons: '6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习',
-    note: '保证班入学条件、保证分数及指定入学日需向学校确认。', needsConfirmation: true,
+    note: '只开8周或12周；保证班入学条件、保证分数及指定入学日需向学校确认。', needsConfirmation: true,
+    allowedWeeks: [8, 12],
   },
   {
     id: 'uni-tesol', campus: 'uni', name: 'TESOL', tuition: 1730,
     lessons: '6节2:8课程＋2节线上学习＋晚课＋跟读训练＋选修课＋自习',
-    note: '有固定入学时间，报名前需向学校确认。', needsConfirmation: true,
+    note: '每期4周，须先通过线上面试；2027开课日：1/3、1/31、2/28、3/28、4/25、5/23、6/20、7/18、8/15、9/5、10/3、10/31。', needsConfirmation: true,
+    allowedWeeks: [4], startDates2027: TESOL_START_DATES_2027,
   },
   {
     id: 'premium-light-esl', campus: 'premium', name: 'Light ESL', tuition: 830,
-    lessons: '3节一对一课程＋1节8人大团体课＋自习课',
-    note: '2026年4周课程费。',
+    lessons: '3节一对一课程＋1节8人大团体课＋自习课（上午班或下午班）',
+    note: PRICE_NOTE,
   },
   {
     id: 'premium-power-speaking-1', campus: 'premium', name: 'Power Speaking 1', tuition: 930,
     lessons: '4节一对一课程＋3节4人小组课＋1节8人大团体课＋2节自习课',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
-    id: 'premium-power-speaking-2', campus: 'premium', name: 'Power Speaking 2', tuition: 1080,
+    id: 'premium-power-speaking-2', campus: 'premium', name: 'Power Speaking 2', tuition: 1180,
     lessons: '6节一对一课程＋1节4人小组课＋1节8人大团体课＋2节自习课',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'premium-business-preparation', campus: 'premium', name: 'Business Preparation', tuition: 1080,
     lessons: '4节一对一课程＋3节4人ESL小组课＋1节8人ESL团体课＋2节自习课',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'premium-business-intensive', campus: 'premium', name: 'Business Intensive', tuition: 1180,
     lessons: '4节一对一课程＋4节4人小组课＋2节自习课',
-    note: '2026年4周课程费。',
+    note: PRICE_NOTE,
   },
   {
     id: 'premium-ace', campus: 'premium', name: 'ACE 空乘英语', tuition: 1180,
     lessons: '4节一对一课程＋3节4人小组课＋1节8人大团体课＋2节自习课',
-    note: '空乘类课程；入学条件及开课日期需向学校确认。', needsConfirmation: true,
+    note: '2027年起含外部专业培训中心的空乘及安全培训；带实习课程同价，2027实习开始日：1/10、2/7、3/7、4/4、5/2、5/30、6/27、7/25、8/22、9/19、10/17、11/14、12/12。入学条件需向学校确认。', needsConfirmation: true,
   },
   {
-    id: 'premium-working-holiday', campus: 'premium', name: 'Working Holiday', tuition: 930,
+    id: 'premium-working-holiday', campus: 'premium', name: 'Working Holiday 1', tuition: 930,
     lessons: '3节一对一课程＋4节小组课＋可选实习训练',
-    note: '本次附件未列2026课程价格，暂保留页面现有参考价；正式报价需向学校确认。', needsConfirmation: true,
+    note: PRICE_NOTE,
+  },
+  {
+    id: 'premium-working-holiday-2', campus: 'premium', name: 'Working Holiday 2', tuition: 1080,
+    lessons: '课表以学校最新课程介绍为准',
+    note: PRICE_NOTE,
   },
   ...CELLA_FAMILY_PACKAGES.map((familyPackage) => ({
     id: familyPackage.id,
@@ -138,21 +196,27 @@ export const CELLA_COURSES: readonly CellaCourse[] = [
   })),
 ];
 
+const room = (value: Omit<CellaRoom, 'lowSeasonEligible' | 'socialEligible'> & Partial<Pick<CellaRoom, 'lowSeasonEligible' | 'socialEligible'>>): CellaRoom => ({
+  lowSeasonEligible: value.kind !== 'six',
+  socialEligible: value.kind === 'quad',
+  ...value,
+});
+
 export const CELLA_ROOMS: readonly CellaRoom[] = [
-  { id: 'uni-single', campus: 'uni', name: 'Uni单人间', fee: 1300, lowSeasonEligible: true, socialEligible: false, note: 'Uni校内单人间。' },
-  { id: 'uni-twin', campus: 'uni', name: 'Uni双人间', fee: 900, lowSeasonEligible: true, socialEligible: false, note: 'Uni校内双人间。' },
-  { id: 'uni-triple', campus: 'uni', name: 'Uni三人间', fee: 800, lowSeasonEligible: true, socialEligible: false, note: 'Uni校内三人间。' },
-  { id: 'uni-quad', campus: 'uni', name: 'Uni四人间', fee: 700, lowSeasonEligible: true, socialEligible: true, note: '6+2／9+3活动指定房型。' },
-  { id: 'uni-jdn-single', campus: 'uni', name: 'JDN校外单人间', fee: 1300, lowSeasonEligible: true, socialEligible: false, note: 'JDN校外宿舍；空房与接驳需确认。' },
-  { id: 'uni-jdn-twin', campus: 'uni', name: 'JDN校外双人间', fee: 900, lowSeasonEligible: true, socialEligible: false, note: 'JDN校外宿舍；空房与接驳需确认。' },
-  { id: 'uni-jdn-triple', campus: 'uni', name: 'JDN校外三人间', fee: 800, lowSeasonEligible: true, socialEligible: false, note: 'JDN校外宿舍；空房与接驳需确认。' },
-  { id: 'premium-single', campus: 'premium', name: 'Premium单人间', fee: 1600, lowSeasonEligible: true, socialEligible: false, note: 'Premium校内单人间。' },
-  { id: 'premium-semi-single', campus: 'premium', name: 'Premium半单人间', fee: 1200, lowSeasonEligible: true, socialEligible: false, note: '附件列入淡季优惠适用房型。' },
-  { id: 'premium-twin', campus: 'premium', name: 'Premium双人间', fee: 1000, lowSeasonEligible: true, socialEligible: false, note: 'Premium校内双人间。' },
-  { id: 'premium-quad', campus: 'premium', name: 'Premium四人间', fee: 800, lowSeasonEligible: true, socialEligible: true, note: '6+2／9+3活动指定房型。' },
-  { id: 'premium-six', campus: 'premium', name: 'Premium六人间', fee: 600, lowSeasonEligible: false, socialEligible: false, premiumSixPerson: true, note: '原价600美元／4周；活动期特价499美元／4周。' },
-  { id: 'premium-alicia-single', campus: 'premium', name: 'Alicia校外单人间', fee: 1600, lowSeasonEligible: true, socialEligible: false, note: 'Alicia校外宿舍；空房与通勤需确认。' },
-  { id: 'premium-alicia-twin', campus: 'premium', name: 'Alicia校外双人间', fee: 1000, lowSeasonEligible: true, socialEligible: false, note: 'Alicia校外宿舍；空房与通勤需确认。' },
+  room({ id: 'uni-single', campus: 'uni', name: 'Uni单人间', fee: 1370, kind: 'single', note: 'Uni校内单人间。' }),
+  room({ id: 'uni-twin', campus: 'uni', name: 'Uni双人间', fee: 970, kind: 'twin', note: 'Uni校内双人间。' }),
+  room({ id: 'uni-triple', campus: 'uni', name: 'Uni三人间', fee: 870, kind: 'triple', note: 'Uni校内三人间。' }),
+  room({ id: 'uni-quad', campus: 'uni', name: 'Uni四人间', fee: 770, kind: 'quad', note: 'Uni校内四人间；6+2／9+3活动指定房型。' }),
+  room({ id: 'uni-jdn-single', campus: 'uni', name: 'JDN校外单人间', fee: 1370, kind: 'single', note: 'JDN校外宿舍；空房与接驳需确认。' }),
+  room({ id: 'uni-jdn-twin', campus: 'uni', name: 'JDN校外双人间', fee: 970, kind: 'twin', note: 'JDN校外宿舍；空房与接驳需确认。' }),
+  room({ id: 'uni-jdn-triple', campus: 'uni', name: 'JDN校外三人间', fee: 870, kind: 'triple', note: 'JDN校外宿舍；空房与接驳需确认。' }),
+  room({ id: 'premium-single', campus: 'premium', name: 'Premium单人间', fee: 1670, kind: 'single', note: 'Premium校内单人间。' }),
+  room({ id: 'premium-semi-single', campus: 'premium', name: 'Premium半单人间', fee: 1270, kind: 'semi-single', note: 'Premium校内半单人间。' }),
+  room({ id: 'premium-twin', campus: 'premium', name: 'Premium双人间', fee: 1070, kind: 'twin', note: 'Premium校内双人间。' }),
+  room({ id: 'premium-quad', campus: 'premium', name: 'Premium四人间', fee: 870, kind: 'quad', note: 'Premium校内四人间；6+2／9+3活动指定房型。' }),
+  room({ id: 'premium-six', campus: 'premium', name: 'Premium六人间', fee: 670, kind: 'six', premiumSixPerson: true, note: '2027/02/14–12/31入学并就读4／8／12周，课程和住宿七五折（暑期周除外）；2027/01/02前按活动价499美元／4周。' }),
+  room({ id: 'premium-alicia-single', campus: 'premium', name: 'STACIA校外单人间', fee: 1670, kind: 'single', stacia: true, note: 'STACIA HOTEL校外宿舍；空房与通勤需确认。' }),
+  room({ id: 'premium-alicia-twin', campus: 'premium', name: 'STACIA校外双人间', fee: 1070, kind: 'twin', stacia: true, note: 'STACIA HOTEL校外宿舍；空房与通勤需确认。' }),
 ];
 
 export const CELLA_SOCIAL_PROMOTION_NOTES = [
@@ -178,4 +242,9 @@ export function cellaDurationPrice(fourWeekPrice: number, weeks: number): number
   const remainder = safeWeeks % 4;
   const remainderMultiplier = [0, 0.4, 0.65, 0.85][remainder];
   return Math.round((fullPeriods + remainderMultiplier) * fourWeekPrice * 100) / 100;
+}
+
+/** Visa extension stages a stay of `weeks` reaches: 0 up to 4 weeks, 1 at 5–8, 2 at 9–12, … */
+export function cellaExtensionStages(weeks: number): number {
+  return weeks <= 4 ? 0 : Math.min(CELLA_LOCAL_FEES_2027.extensionStages.length, Math.ceil((weeks - 4) / 4));
 }

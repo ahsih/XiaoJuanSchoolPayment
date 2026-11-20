@@ -128,8 +128,8 @@ export class CellaPremiumSchoolComponent {
     {
       icon: 'bed',
       label: '住宿房型',
-      value: '校内1/半单/2/4/6人房 + Alicia外部寮',
-      note: '价格随房型差异明显，6人房最低，单人房和Alicia房型更舒适',
+      value: '校内1/半单/2/4/6人房 + STACIA校外宿舍',
+      note: '价格随房型差异明显，6人房最低，单人房和STACIA房型更舒适',
     },
     {
       icon: 'restaurant',
@@ -178,7 +178,7 @@ export class CellaPremiumSchoolComponent {
       category: '住宿',
       title: 'CELLA Premium双人房参考',
       description:
-        '改装酒店式房间，房型包含单人、半单人、双人、四人、六人和Alicia外部寮。',
+        '改装酒店式房间，房型包含单人、半单人、双人、四人、六人和STACIA校外宿舍。',
       src: 'https://storage.googleapis.com/outto-strapi-cms-gcp/cms/large_ROOM_06_e5031fa13c/large_ROOM_06_e5031fa13c.jpeg',
     },
     {
@@ -207,8 +207,8 @@ export class CellaPremiumSchoolComponent {
     { label: '学校定位', value: '宿务市区Premium型英语学校，强调口语强化、短期密集、商务英语和亲子课程' },
     { label: '学生规模', value: '公开资料显示约100-180名，国籍比例每月变化，日本比例约20-40%参考' },
     { label: '课程方向', value: 'Light ESL、Power Speaking 1/2、BPE、Working Holiday、ACE、Expresser、Family Package' },
-    { label: '住宿房型', value: '校内1人房、半单人房、2人房、4人房、6人房；Alicia外部寮1人/2人房' },
-    { label: '活动期4周起价', value: '1,479美元起：Light ESL＋六人房活动价＋注册费' },
+    { label: '住宿房型', value: '校内1人房、半单人房、2人房、4人房、6人房；STACIA校外宿舍1人/2人房' },
+    { label: '活动期4周起价', value: '1,275美元起：Light ESL＋六人房＋注册费，2027/02/14起入学按七五折计算' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -228,7 +228,7 @@ export class CellaPremiumSchoolComponent {
       image:
         'https://www.fujiyama-international.com/archives/004/202408/5ca9079e8300cc6666235b5474f5f073.jpg',
       title: '房型预算弹性大',
-      text: '6人房控制预算，半单人/单人房和Alicia外部寮更舒适，适合不同预算层级。',
+      text: '6人房控制预算，半单人/单人房和STACIA校外宿舍更舒适，适合不同预算层级。',
     },
     {
       image:
@@ -253,7 +253,7 @@ export class CellaPremiumSchoolComponent {
     },
     {
       title: '重视住宿舒适度和房型选择',
-      text: '校内房型和Alicia外部寮选择较多，适合从预算型到舒适型不同需求。',
+      text: '校内房型和STACIA校外宿舍选择较多，适合从预算型到舒适型不同需求。',
     },
   ];
 
@@ -402,7 +402,7 @@ export class CellaPremiumSchoolComponent {
     'Native Group',
     '食堂',
     '校内宿舍',
-    'Alicia外部寮',
+    'STACIA校外宿舍',
     '泳池',
     '自习室',
     '卖店',
@@ -425,7 +425,7 @@ export class CellaPremiumSchoolComponent {
     'Mactan一日游',
   ];
   readonly notes = [
-    '本页费用使用2026公开参考价；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
+    '本页课程费和住宿费使用2027年价格；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
     '套餐价通常含授课、住宿、餐食、清扫和洗衣；注册费、旺季费和当地费用仍需分开确认。',
     'Expresser为1周/2周短期密集路线，课程规则和可报名日期需单独核对。',
     'Family Package、Junior Camp和儿童课程需要按年龄、监护人、房型和档期确认。',

@@ -1076,39 +1076,41 @@ namespace XiaoJuanSchoolPayment.Server.Services
         if (premium.CreatedDate == default) premium.CreatedDate = new DateTime(2006, 1, 1, 0, 0, 0, DateTimeKind.Utc);
       }
 
-      const string commonLessonNote = "CELLA 2026年4周课程费；1/2/3周暂沿用页面现有40%/65%/85%短期计费口径，正式账单需向学校确认；2026下半年优惠按独立活动规则计算，不叠加未获确认的圣诞元旦优惠或思达折扣。";
+      const string commonLessonNote = "CELLA 2027年4周课程费（2026/11/01起报名适用）；1/2/3周按4周价格的40%/65%/85%计算；优惠按独立活动规则计算，不叠加思达折扣。";
       UpsertLesson(context, uni.Id, "Power Speaking 1", 4, 930m, "4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
-      UpsertLesson(context, uni.Id, "Power Speaking 2", 4, 1080m, "6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
+      UpsertLesson(context, uni.Id, "Power Speaking 2", 4, 1180m, "6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "TOEIC Pre", 4, 1080m, "4节一对一课程＋3节ESL小组课＋1节ESL大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "TOEIC Intensive", 4, 1180m, "4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "IELTS Pre", 4, 1080m, "4节一对一课程＋3节ESL小组课＋1节ESL大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "IELTS Intensive", 4, 1180m, "4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
-      UpsertLesson(context, uni.Id, "IELTS Guarantee", 4, 1380m, "6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote + "；入学条件、保证分数及指定入学日需向学校确认");
-      UpsertLesson(context, uni.Id, "TESOL", 4, 1730m, "6节2:8课程＋2节线上学习＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote + "；有固定入学时间，报名前需向学校确认");
+      UpsertLesson(context, uni.Id, "IELTS Guarantee", 4, 1380m, "6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote + "；只开8周或12周；入学条件、保证分数及指定入学日需向学校确认");
+      UpsertLesson(context, uni.Id, "TESOL", 4, 1730m, "6节2:8课程＋2节线上学习＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote + "；每期4周，须在指定开课日入学并先通过线上面试");
 
-      UpsertLesson(context, premium.Id, "Light ESL", 4, 830m, "3节一对一课程＋1节8人大团体课＋自习课", now, commonLessonNote);
+      UpsertLesson(context, premium.Id, "Light ESL", 4, 830m, "3节一对一课程＋1节8人大团体课＋自习课（上午班或下午班）", now, commonLessonNote);
       UpsertLesson(context, premium.Id, "Power Speaking 1", 4, 930m, "4节一对一课程＋3节4人小组课＋1节8人大团体课＋2节自习课", now, commonLessonNote);
-      UpsertLesson(context, premium.Id, "Power Speaking 2", 4, 1080m, "6节一对一课程＋1节4人小组课＋1节8人大团体课＋2节自习课", now, commonLessonNote);
+      UpsertLesson(context, premium.Id, "Power Speaking 2", 4, 1180m, "6节一对一课程＋1节4人小组课＋1节8人大团体课＋2节自习课", now, commonLessonNote);
       UpsertLesson(context, premium.Id, "Business Preparation", 4, 1080m, "4节一对一课程＋3节4人ESL小组课＋1节8人ESL团体课＋2节自习课", now, commonLessonNote);
       UpsertLesson(context, premium.Id, "Business Intensive", 4, 1180m, "4节一对一课程＋4节4人小组课＋2节自习课", now, commonLessonNote);
-      UpsertLesson(context, premium.Id, "ACE 空乘英语", 4, 1180m, "4节一对一课程＋3节4人小组课＋1节8人大团体课＋2节自习课", now, commonLessonNote + "；空乘类课程入学条件及开课日期需向学校确认");
-      UpsertLesson(context, premium.Id, "Working Holiday", 4, 930m, "3节一对一课程＋4节小组课＋可选实习训练", now, "本次附件未列2026课程价格，暂保留页面现有参考价；正式报价需向学校确认");
+      UpsertLesson(context, premium.Id, "ACE 空乘英语", 4, 1180m, "4节一对一课程＋3节4人小组课＋1节8人大团体课＋2节自习课", now, commonLessonNote + "；2027年起含外部专业培训中心的空乘及安全培训，带实习课程同价；入学条件需向学校确认");
+      UpsertLesson(context, premium.Id, "Working Holiday", 4, 930m, "Working Holiday 1：3节一对一课程＋4节小组课＋可选实习训练", now, commonLessonNote);
+      UpsertLesson(context, premium.Id, "Working Holiday 2", 4, 1080m, "课表以学校最新课程介绍为准", now, commonLessonNote);
 
-      UpsertRoom(context, uni.Id, "Uni单人间", 4, 1300m, "Uni校内单人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, uni.Id, "Uni双人间", 4, 900m, "Uni校内双人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, uni.Id, "Uni三人间", 4, 800m, "Uni校内三人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, uni.Id, "Uni四人间", 4, 700m, "Uni校内四人间；适用淡季优惠，并为6+2／9+3指定房型", now);
-      UpsertRoom(context, uni.Id, "JDN校外单人间", 4, 1300m, "JDN校外宿舍；适用淡季优惠；空房与接驳需向学校确认", now);
-      UpsertRoom(context, uni.Id, "JDN校外双人间", 4, 900m, "JDN校外宿舍；适用淡季优惠；空房与接驳需向学校确认", now);
-      UpsertRoom(context, uni.Id, "JDN校外三人间", 4, 800m, "JDN校外宿舍；适用淡季优惠；空房与接驳需向学校确认", now);
+      UpsertRoom(context, uni.Id, "Uni单人间", 4, 1370m, "Uni校内单人间；2027年4周住宿费", now);
+      UpsertRoom(context, uni.Id, "Uni双人间", 4, 970m, "Uni校内双人间；2027年4周住宿费；适用2027淡季优惠", now);
+      UpsertRoom(context, uni.Id, "Uni三人间", 4, 870m, "Uni校内三人间；2027年4周住宿费；适用2027淡季优惠", now);
+      UpsertRoom(context, uni.Id, "Uni四人间", 4, 770m, "Uni校内四人间；2027年4周住宿费；适用2027淡季优惠，并为6+2／9+3指定房型", now);
+      UpsertRoom(context, uni.Id, "JDN校外单人间", 4, 1370m, "JDN校外宿舍；2027年4周住宿费；空房与接驳需向学校确认", now);
+      UpsertRoom(context, uni.Id, "JDN校外双人间", 4, 970m, "JDN校外宿舍；2027年4周住宿费；空房与接驳需向学校确认", now);
+      UpsertRoom(context, uni.Id, "JDN校外三人间", 4, 870m, "JDN校外宿舍；2027年4周住宿费；空房与接驳需向学校确认", now);
 
-      UpsertRoom(context, premium.Id, "Premium单人间", 4, 1600m, "Premium校内单人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, premium.Id, "Premium半单人间", 4, 1200m, "Premium校内半单人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, premium.Id, "Premium双人间", 4, 1000m, "Premium校内双人间；适用2026下半年淡季优惠", now);
-      UpsertRoom(context, premium.Id, "Premium四人间", 4, 800m, "Premium校内四人间；适用淡季优惠，并为6+2／9+3指定房型", now);
-      UpsertRoom(context, premium.Id, "Premium六人间", 4, 600m, "原价600美元／4周；活动期住宿费499美元／4周，可叠加长期优惠，不与淡季100美元优惠同用", now);
-      UpsertRoom(context, premium.Id, "Alicia校外单人间", 4, 1600m, "Alicia校外宿舍；适用淡季优惠；空房与通勤需向学校确认", now);
-      UpsertRoom(context, premium.Id, "Alicia校外双人间", 4, 1000m, "Alicia校外宿舍；适用淡季优惠；空房与通勤需向学校确认", now);
+      UpsertRoom(context, premium.Id, "Premium单人间", 4, 1670m, "Premium校内单人间；2027年4周住宿费", now);
+      UpsertRoom(context, premium.Id, "Premium半单人间", 4, 1270m, "Premium校内半单人间；2027年4周住宿费", now);
+      UpsertRoom(context, premium.Id, "Premium双人间", 4, 1070m, "Premium校内双人间；2027年4周住宿费；适用2027淡季优惠", now);
+      UpsertRoom(context, premium.Id, "Premium四人间", 4, 870m, "Premium校内四人间；2027年4周住宿费；适用2027淡季优惠，并为6+2／9+3指定房型", now);
+      UpsertRoom(context, premium.Id, "Premium六人间", 4, 670m, "2027年4周住宿费；2027/02/14–12/31入学并就读4／8／12周，课程和住宿七五折（暑期周除外，不与2027长期优惠同用）；2027/01/02前按活动价499美元／4周", now);
+      // Lookup names keep the former Alicia label; the outside dormitory is STACIA HOTEL from 2027.
+      UpsertRoom(context, premium.Id, "Alicia校外单人间", 4, 1670m, "STACIA HOTEL校外宿舍单人间；2027年4周住宿费；2027年起免押金，电费1,000比索／周；空房与通勤需向学校确认", now);
+      UpsertRoom(context, premium.Id, "Alicia校外双人间", 4, 1070m, "STACIA HOTEL校外宿舍双人间；2027年4周住宿费；2027年起免押金，电费1,000比索／周；空房与通勤需向学校确认", now);
 
       const string familyNote = "CELLA Family Package附件确认价，包含注册费、课程费、住宿费，以及SSP、电子卡、电费、水费、管理费、洗衣、接机、学生证和教材等当地费用；不含汇款手续费及超额电费。具体家庭成员年龄、分房、可用校区和费用口径需向学校确认。";
       UpsertLesson(context, premium.Id, "Family Package双人家庭房", 4, 5600m, "Main／Alicia家庭套餐；双人房", now, familyNote);
@@ -1130,25 +1132,29 @@ namespace XiaoJuanSchoolPayment.Server.Services
       {
         UpsertFee(context, schoolId, "注册费", 150m, UsdCurrencyId, "每名学生一次性费用；转校、延期或续读是否再次收取需向学校确认", now);
         UpsertFee(context, schoolId, "暑期附加费", 40m, UsdCurrencyId, "2026/07/05–08/29按每名学生实际重叠学习周收取40美元/周；同一周课程与住宿只计一次；不参与优惠", now);
-        UpsertFee(context, schoolId, "2027暑期附加费", 60m, UsdCurrencyId, "2027/07/04–08/28按每名学生实际重叠学习周收取60美元/周；同一周课程与住宿只计一次；不参与优惠", now);
-        UpsertFee(context, schoolId, "未成年人管理费", 25m, UsdCurrencyId, "每周25美元／人；是否适用需按年龄向学校确认，由顾问选择是否计入", now);
-        UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "到校支付费用；按报名学习时长办理，续费及换校需要重新办理", now);
+        UpsertFee(context, schoolId, "2027暑期附加费", 60m, UsdCurrencyId, "2027/07/04–08/28、2028/07/02–08/26按每名学生实际重叠学习周收取60美元/周；同一周课程与住宿只计一次；不参与优惠", now);
+        UpsertFee(context, schoolId, "未成年人管理费", 25m, UsdCurrencyId, "每周25美元／人；15–17岁且无监护人陪同时收取", now);
+        UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "到校支付费用；有效期6个月，换校需要重新办理", now);
         UpsertFee(context, schoolId, "SSP电子卡", 4500m, PhpCurrencyId, "到校支付费用；入学时与SSP同时办理，只收一次", now);
-        UpsertFee(context, schoolId, "外国人身份证", 4000m, PhpCurrencyId, "首次旅游签证续签时参考办理，实际要求需向学校确认", now);
-        UpsertFee(context, schoolId, "管理费", 4000m, PhpCurrencyId, "每4周4,000比索；不足4周按一个计费期预估", now);
-        UpsertFee(context, schoolId, "电费", 2000m, PhpCurrencyId, "每4周2,000比索；每周含15度电，超出另收25比索／度；校外宿舍口径需确认", now);
-        UpsertFee(context, schoolId, "水费", 1200m, PhpCurrencyId, "每4周1,200比索；校外宿舍口径需确认", now);
-        UpsertFee(context, schoolId, "签证续签", 5140m, PhpCurrencyId, "附件只确认首次续签5,140比索；后续续签金额未计入报价，需向学校确认", now);
+        UpsertFee(context, schoolId, "外国人身份证", 4000m, PhpCurrencyId, "停留超过59天（第9周起）时办理", now);
+        UpsertFee(context, schoolId, "ARP加急费", 300m, PhpCurrencyId, "首次续签时与签证一起办理", now);
+        UpsertFee(context, schoolId, "管理费", 1000m, PhpCurrencyId, "2027年起1,000比索／周，按住宿周数计算", now);
+        UpsertFee(context, schoolId, "电费", 500m, PhpCurrencyId, "500比索／周；每周含15度电，超出另收25比索／度；STACIA校外宿舍2027年起1,000比索／周、不另收超额电费", now);
+        UpsertFee(context, schoolId, "水费", 500m, PhpCurrencyId, "2027/01/01起500比索／周，此前300比索／周", now);
+        UpsertFee(context, schoolId, "签证续签", 5140m, PhpCurrencyId, "30天签证：5–8周5,140、9–12周累计11,550、此后每4周再加4,440比索；59天签证：9–12周6,410、此后每4周再加4,440比索", now);
         UpsertFee(context, schoolId, "教材费", 2000m, PhpCurrencyId, "每套约2,000比索；按课程及学习进度实际购买", now);
         UpsertFee(context, schoolId, "学生证", 200m, PhpCurrencyId, "一次性费用", now);
         UpsertFee(context, schoolId, "洗衣服务", 100m, PhpCurrencyId, "50比索／公斤、最少2公斤，最低100比索；按实际使用和学校现场标准结算，不计入当地费用合计", now);
-        UpsertFee(context, schoolId, "宿务麦克坦机场周日接机", 1200m, PhpCurrencyId, "可选参考费用；多人按车辆和实际安排确认，不自动按人数相乘", now);
-        UpsertFee(context, schoolId, "房间押金", 5000m, PhpCurrencyId, "4–8周5,000比索，9–12周8,000比索，16–24周10,000比索；13–15周附件未列，需确认；共住房间不自动按人数相乘", now);
+        UpsertFee(context, schoolId, "宿务麦克坦机场接机", 1500m, PhpCurrencyId, "可选参考费用；周末1,500比索、工作日2,000比索；家庭最多4人同车周末3,000、工作日4,000比索", now);
+        UpsertFee(context, schoolId, "房间押金", 5000m, PhpCurrencyId, "1–3周2,000比索，4–8周5,000比索，9–12周8,000比索，13周以上10,000比索；STACIA校外宿舍2027年起免押金；共住房间不自动按人数相乘", now);
         UpsertFee(context, schoolId, "淡季优惠", 100m, UsdCurrencyId, "2026/08/30–2027/01/02；指定房型每个完整4周减100美元，每名学生每4周只扣一次，不在课程和住宿重复扣减", now);
         UpsertFee(context, schoolId, "长期报名优惠", 50m, UsdCurrencyId, "活动期内8／12／16周分别额外减50／100／150美元；可与淡季优惠或Premium六人房活动价叠加", now);
+        UpsertFee(context, schoolId, "2027淡季优惠", 25m, UsdCurrencyId, "2027/02/14–12/31入学；双人、三人、四人间每周减25美元；2027/05/30–08/28暑期周除外", now);
+        UpsertFee(context, schoolId, "2027长期优惠", 100m, UsdCurrencyId, "2027年入学满12／16／20／24周分别减100／150／200／250美元；全年适用", now);
         UpsertFee(context, schoolId, "6+2／9+3限时限额活动", 0m, UsdCurrencyId, "仅限首次报名新生及两个校区四人间；实际8／12周，课程和住宿按6／9周收费；当地费用按实际周数；不可与任何其他优惠叠加；须完成小红书与抖音分享义务，资格和名额需学校确认", now);
       }
       UpsertFee(context, premium.Id, "六人房活动价", 499m, UsdCurrencyId, "2026/08/30–2027/01/02为499美元／4周；可叠加长期报名优惠，不与淡季100美元优惠同用", now);
+      UpsertFee(context, premium.Id, "2027六人间七五折", 0m, UsdCurrencyId, "2027/02/14–12/31入学并就读4／8／12周，六人间住宿周的课程费和住宿费七五折；暑期周除外，不与2027长期优惠同用", now);
 
       await context.SaveChangesAsync();
     }
@@ -3225,7 +3231,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务GLANT English Academy语言学校", 303m, UsdCurrencyId, "USD 303 / 1周起", Established(2023), new[] { "GLANT English Academy", "GLANT" }),
         new RegionalStartingPriceSeed("菲律宾宿务ICL English Academy", 1050m, UsdCurrencyId, "1,050美元 / 4周淡季校方组合价起（符合日期与住宿条件，不叠加中介优惠）", Established(2022), new[] { "ICL English Academy", "I Crazy Learning Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务3D Academy", 1189m, UsdCurrencyId, "USD 1,189 / 4周起（课程 + 住宿）", Established(2002), new[] { "3D Academy", "3D Universal English Institute" }),
-        new RegionalStartingPriceSeed(CellaUniSchoolName, 1680m, UsdCurrencyId, "1,680美元／4周活动期起（Power Speaking 1＋四人房＋注册费，已计淡季优惠）", Established(2006), new[] { "CELLA Uni Sparta Campus", "CELLA Uni" }),
+        new RegionalStartingPriceSeed(CellaUniSchoolName, 1750m, UsdCurrencyId, "1,750美元／4周活动期起（Power Speaking 1＋四人间＋注册费，已计淡季优惠）", Established(2006), new[] { "CELLA Uni Sparta Campus", "CELLA Uni" }),
         new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Sparta Campus）", 1405m, UsdCurrencyId, "USD 1,405 / 4周起（课程住宿思达9折，含注册费；淡季再减USD 150）", Established(2004), new[] { "CG Academy Sparta Campus", "CG Sparta" }),
         new RegionalStartingPriceSeed("菲律宾宿务CG Academy（Banilad Campus）", 1270m, UsdCurrencyId, "USD 1,270 / 4周起（课程住宿思达9折，含注册费；淡季再减USD 150）", Established(2004), new[] { "CG Academy Banilad Campus", "CG Banilad" }),
         new RegionalStartingPriceSeed("菲律宾宿务SMEAG Capital语言学校", 1458m, UsdCurrencyId, "USD 1,458 / 4周淡季起（ESL常规＋校内四人间，9折后再减淡季优惠）", Established(2006), new[] { "SMEAG Capital", "SMEAG Capital Campus" }),
@@ -3235,7 +3241,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾宿务IU English Academy", 1050m, UsdCurrencyId, "1,050美元 / 4周淡季校方组合价起（符合日期与住宿条件，不叠加中介优惠）", Established(2024), new[] { "IU English Academy" }),
         new RegionalStartingPriceSeed("菲律宾宿务Lapulapu", 2080m, UsdCurrencyId, "USD 2,080 / 4周起", Established(2024), new[] { "Lapulapu", "LCIC" }),
         new RegionalStartingPriceSeed("菲律宾宿务Cebu Blue Ocean Academy", 1820m, UsdCurrencyId, "USD 1,820 / 4周起", Established(2015), new[] { "Cebu Blue Ocean Academy", "CBOA" }),
-        new RegionalStartingPriceSeed(CellaPremiumSchoolName, 1479m, UsdCurrencyId, "1,479美元／4周活动期起（Light ESL＋六人房活动价＋注册费）", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
+        new RegionalStartingPriceSeed(CellaPremiumSchoolName, 1275m, UsdCurrencyId, "1,275美元／4周活动期起（Light ESL＋六人房＋注册费，2027/02/14起入学按七五折计算）", Established(2006), new[] { "CELLA Premium Campus", "CELLA Premium" }),
         new RegionalStartingPriceSeed("菲律宾宿务EV语言学校", 1886m, UsdCurrencyId, "USD 1,886 / 4周起（半斯巴达ESL＋四人间，课程及住宿95折）", Established(2002), new[] { EvSchoolName, "菲律宾宿务EV Academy" }),
         new RegionalStartingPriceSeed(CpiSchoolName, 1503m, UsdCurrencyId, "USD 1,503 / 4周起（ESL GENERAL + A栋四人间，思达9折并计入当前淡季优惠）", Established(2015), new[] { LegacyCpiSchoolName }),
         new RegionalStartingPriceSeed(BCebuSchoolName, 1262.25m, UsdCurrencyId, "1,262.25美元 / 4周起（淡季Speed ESL + 三人间，已计思达优惠）", Established(2026), new[] { LegacyBCebuSchoolName, "B'Cebu" }),

@@ -3,11 +3,14 @@ import {
   CiaLocalFeeRule,
   CiaPromotionRule,
   CiaQuoteImageSettings,
+  CiaQuoteSettings,
 } from '../cia-school/cia-content-config';
 import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 import {
+  CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
+  CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
   CELLA_PEAK_SEASON_WEEKLY_FEE,
@@ -15,6 +18,14 @@ import {
   CELLA_ROOMS,
   CellaCampus,
 } from './cella-pricing';
+
+/** Bumped when CELLA's school price list changes; older saved documents take the new prices once. */
+export const CELLA_POLICY_VERSION = 20271101;
+type CellaQuoteSettings = CiaQuoteSettings & { cellaPolicyVersion?: number };
+const CELLA_POLICY_MARK = { cellaPolicyVersion: CELLA_POLICY_VERSION };
+
+/** Rooms renamed in 2027 (the Alicia outside dormitory became STACIA HOTEL). */
+const CELLA_RENAMED_ROOMS = new Set(['premium-alicia-single', 'premium-alicia-twin']);
 
 const fee = (id: string, name: string, amount: number, billingRule: CiaLocalFeeRule['billingRule'], note: string, sortOrder: number): CiaLocalFeeRule => ({
   id, name, amount, billingRule, note, sortOrder,
@@ -50,7 +61,7 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
     'payment:暑期附加费': '2026年40美元／周，2027年起60美元／周；同一周课程与住宿只计一次，不参与优惠。',
     'payment:未成年人管理费': '25美元／周／人，仅在当前学生选择并符合条件时计入。',
     'optional:洗衣服务（价格参考）': '按实际重量和学校现场标准结算，不计入学杂费合计。',
-    'optional:宿务麦克坦机场周日接机（价格参考）': '可选，须确认航班与车辆安排，不计入学杂费合计。',
+    'optional:宿务麦克坦机场接机（价格参考）': '可选，须确认航班与车辆安排，不计入学杂费合计。',
     'optional:房间押金（可退参考）': '按住宿周数及学校规则收取；退房检查后按规定退还。',
     'optional:房间押金（需确认）': '家庭套餐资料未单列押金，是否另收及退还规则须向学校确认。',
   },
@@ -89,17 +100,19 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
     note: item.note, enabled: true, sortOrder,
   })),
   localFees: [
-    fee('ssp', 'SSP特殊学习许可证', 7800, 'once', '移民局收取；按报名学习时长办理，续费及换校需要重新办理。', 0),
-    fee('ssp-e-card', 'SSP电子卡', 4500, 'once', '入学时与SSP同时办理，只收一次。', 1),
-    fee('acr-i-card', '外国人身份证', 4000, 'first-visa-extension', '首次续签时办理；实际办理要求需向学校确认。', 2),
-    fee('management', '管理费', 4000, 'per-accommodation-period', '校内教学楼及其他设施的维护费用。', 3),
-    fee('electricity', '电费', 2000, 'per-accommodation-period', '每周含15度电，超出部分另收25比索／度。', 4),
-    fee('water', '水费', 1200, 'per-accommodation-period', '公共用水和房间用水；校外宿舍计费口径需确认。', 5),
-    fee('visa-extension', '签证续签', 5140, 'visa-extension-schedule', '按签证类型和停留时间预估，最终以实际收取为准。', 6),
-    fee('books', '教材费', 2000, 'per-course-period', '不同课程教材不同，以实际购买为准。', 7),
-    fee('student-id', '学生证', 200, 'once', '一次性费用。', 8),
+    fee('ssp', 'SSP特殊学习许可证', CELLA_LOCAL_FEES_2027.ssp, 'once', '移民局收取，有效期6个月；换校需重新办理。', 0),
+    fee('ssp-e-card', 'SSP电子卡', CELLA_LOCAL_FEES_2027.sspECard, 'once', '入学时与SSP同时办理，只收一次。', 1),
+    { ...fee('visa-extension', '签证续签', 5140, 'visa-extension-schedule', '30天签证第5周起续签，59天签证第9周起续签；以学校及移民局实收为准。', 2), rates: [...CELLA_LOCAL_FEES_2027.extensionStages] },
+    fee('arp', 'ARP加急费', CELLA_LOCAL_FEES_2027.arp, 'long-term-or-first-extension', '首次续签时与签证一起办理。', 3),
+    fee('acr-i-card', '外国人身份证', CELLA_LOCAL_FEES_2027.acrICard, 'first-visa-extension', '停留超过59天（第9周起）时办理。', 4),
+    fee('management', '管理费', CELLA_LOCAL_FEES_2027.maintenancePerWeek, 'per-accommodation-period', '1,000比索／周，按住宿周数计算。', 5),
+    fee('electricity', '电费', CELLA_LOCAL_FEES_2027.electricityPerWeek, 'per-accommodation-period', '500比索／周，每周含15度电，超出部分另收25比索／度；STACIA校外宿舍2027年起1,000比索／周。', 6),
+    fee('water', '水费', CELLA_LOCAL_FEES_2027.waterPerWeek, 'per-accommodation-period', '2027/01/01起500比索／周，此前300比索／周。', 7),
+    fee('books', '教材费', 2000, 'per-course-period', '不同课程教材不同（每本200–600比索），以实际购买为准。', 8),
+    fee('student-id', '学生证', CELLA_LOCAL_FEES_2027.studentId, 'once', '一次性费用。', 9),
   ],
   quoteSettings: {
+    ...CELLA_POLICY_MARK,
     registrationFee: CELLA_REGISTRATION_FEE,
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
@@ -108,6 +121,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
     peakSeasonRanges: [
       { id: 'cella-peak-2026', label: '2026暑期旺季', start: '2026-07-05', end: '2026-08-29', enabled: true },
       { id: 'cella-peak-2027', label: '2027暑期旺季', start: '2027-07-04', end: '2027-08-28', enabled: true },
+      { id: 'cella-peak-2028', label: '2028暑期旺季', start: '2028-07-02', end: '2028-08-26', enabled: true },
     ],
     promotions: [
       promotion({ id: 'cella-social-6-plus-2', name: '6+2限时活动', description: '按6周课程和四人房收费，实际就读8周。', sortOrder: 0, ruleKind: 'cella-social-6-plus-2', stackable: false, newStudentsOnly: true }),
@@ -115,10 +129,13 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
       promotion({ id: 'cella-low-season', name: '淡季优惠', description: '活动期内每个完整4周优惠100美元。', sortOrder: 2, ruleKind: 'cella-low-season', discountValue: 100, coverageStart: CELLA_LOW_SEASON_START, coverageEnd: CELLA_LOW_SEASON_END, coverageTarget: 'course-and-accommodation' }),
       promotion({ id: 'cella-premium-six-person', name: 'Premium六人间特价', description: '活动期内六人房按499美元／4周计价。', sortOrder: 3, ruleKind: 'cella-premium-six-person' }),
       promotion({ id: 'cella-long-stay', name: '长期报名优惠', description: '8／12／16周长期报名分别按学校档位优惠。', sortOrder: 4, ruleKind: 'cella-long-stay' }),
+      promotion({ id: 'cella-low-season-2027', name: '2027淡季优惠', description: '2027/02/14–12/31入学，双人、三人、四人间每周优惠25美元（每4周100美元）；2027/05/30–08/28暑期周除外。', sortOrder: 5, ruleKind: 'cella-low-season-2027', coverageStart: CELLA_2027_PROMOTION.arrivalStart, coverageEnd: CELLA_2027_PROMOTION.arrivalEnd }),
+      promotion({ id: 'cella-premium-six-person-2027', name: '2027 Premium六人间七五折', description: '2027/02/14–12/31入学并就读4／8／12周，课程和六人间住宿七五折；暑期周除外，不与2027长期优惠同用。', sortOrder: 6, ruleKind: 'cella-premium-six-person-2027', stackable: false }),
+      promotion({ id: 'cella-long-stay-2027', name: '2027长期优惠', description: '2027年入学满12／16／20／24周分别优惠100／150／200／250美元；全年适用。', sortOrder: 7, ruleKind: 'cella-long-stay-2027' }),
     ],
     localFeeIntro: '当地费用按每名学生实际就读周数预估；家庭套餐已包含的项目不重复计费。',
     courseTableTitle: `${CELLA_CAMPUS_NAMES[campus]}课程与学费`,
-    courseTableNote: '课程价格、课量和家庭套餐内容以当前学校资料为准。',
+    courseTableNote: '2027年课程价格；课量和家庭套餐内容以学校最新资料为准。',
     groupClassNote: '课程、家庭组合、年龄与入学条件须按所选方案确认。',
     roomTableTitle: `${CELLA_CAMPUS_NAMES[campus]}住宿费`,
     roomTableNote: '住宿按每人计价；家庭套餐按整包价计算。',
@@ -131,6 +148,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
 });
 
 export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCampus): CiaContentConfig => {
+  const upgrade = ((value?.quoteSettings as CellaQuoteSettings | undefined)?.cellaPolicyVersion ?? 0) < CELLA_POLICY_VERSION;
   const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
   const defaults = createDefaultCellaContentConfig(campus);
   const clone = structuredClone(value);
@@ -147,6 +165,7 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
     clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
   clone.quoteSettings.promotions = clone.quoteSettings.promotions ?? structuredClone(defaults.quoteSettings.promotions);
+
   clone.quoteImageSettings = { ...structuredClone(defaults.quoteImageSettings), ...(clone.quoteImageSettings ?? {}) };
   clone.quoteImageSettings.paymentNotes = { ...defaults.quoteImageSettings.paymentNotes, ...(clone.quoteImageSettings.paymentNotes ?? {}) };
   clone.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(clone.quoteImageSettings.promotionNotes ?? {}) };
@@ -159,5 +178,39 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   clone.rooms ??= structuredClone(defaults.rooms);
   clone.localFees ??= structuredClone(defaults.localFees);
   clone.media ??= [];
+  if (upgrade) upgradeTo2027(clone, defaults);
   return clone;
 };
+
+/** Moves a saved 2026 document onto the 2027 price list once; other employee copy and media stay as saved. */
+function upgradeTo2027(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  const courses = new Map(defaults.courses.map(item => [item.id, item]));
+  for (const course of clone.courses) {
+    const current = courses.get(course.id);
+    if (current) Object.assign(course, { name: current.name, tuition: current.tuition, tuition2027: current.tuition2027, schedule: current.schedule, suitable: current.suitable, note: current.note });
+  }
+  for (const course of defaults.courses) {
+    if (!clone.courses.some(item => item.id === course.id)) clone.courses.push(structuredClone(course));
+  }
+  const rooms = new Map(defaults.rooms.map(item => [item.id, item]));
+  for (const room of clone.rooms) {
+    const current = rooms.get(room.id);
+    if (!current) continue;
+    Object.assign(room, { fee: current.fee, note: current.note });
+    if (CELLA_RENAMED_ROOMS.has(room.id)) Object.assign(room, { name: current.name, label: current.label });
+  }
+  const books = clone.localFees.find(item => item.id === 'books');
+  clone.localFees = structuredClone(defaults.localFees).map(item => item.id === 'books' && books ? books : item);
+  const ranges = clone.quoteSettings.peakSeasonRanges;
+  for (const range of defaults.quoteSettings.peakSeasonRanges) {
+    if (!ranges.some(item => item.id === range.id)) ranges.push(structuredClone(range));
+  }
+  for (const promotion of defaults.quoteSettings.promotions) {
+    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(structuredClone(promotion));
+  }
+  clone.quoteSettings.registrationFee = defaults.quoteSettings.registrationFee;
+  clone.quoteSettings.courseTableNote = defaults.quoteSettings.courseTableNote;
+  const notes = clone.quoteImageSettings.supplementalFeeNotes;
+  if (notes) delete notes['optional:宿务麦克坦机场周日接机（价格参考）'];
+  (clone.quoteSettings as CellaQuoteSettings).cellaPolicyVersion = CELLA_POLICY_VERSION;
+}

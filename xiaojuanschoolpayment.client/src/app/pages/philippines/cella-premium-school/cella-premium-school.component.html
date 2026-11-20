@@ -54,12 +54,12 @@
             </div>
             <aside class="hero-price-card">
               <span>活动期4周参考</span>
-              <strong>1,479美元起</strong>
-              <p>Light ESL + 6人房 + 注册费</p>
+              <strong>1,275美元起</strong>
+              <p>Light ESL + 6人房 + 注册费，2027/02/14起入学</p>
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  六人房活动价499美元＋课程830美元＋注册费150美元
+                  课程830美元＋六人房670美元，七五折后1,125美元＋注册费150美元
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -208,7 +208,7 @@
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of pricingCourses">
-              <span>2026课程</span>
+              <span>2027课程</span>
               <h3>{{ course.name }}</h3>
               <p class="course-lessons">{{ course.lessons }}</p>
               <p>{{ course.note }}</p>
@@ -219,27 +219,27 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>CELLA Premium 2026公开参考价</span>
+              <span>CELLA Premium 2027年价格</span>
               <h2>课程费与住宿费分开核对</h2>
               <p>
-                以下为附件确认的2026年4周价格，币种为美元。注册费、优惠、旺季费和当地费用由报价器另行计算。
+                以下为2027年4周价格，币种为美元。注册费、优惠、旺季费和当地费用由报价器另行计算。
               </p>
-              <p>暑期附加费：2026/07/05–08/29按40美元／周／人；2027/07/04–08/28按60美元／周／人。同一周课程与住宿只计一次，且不参与优惠。</p>
+              <p>暑期附加费：2027/07/04–08/28、2028/07/02–08/26按60美元／周／人。同一周课程与住宿只计一次，且不参与优惠。</p>
             </div>
-            <div class="data-table premium-pricing-table" role="table" aria-label="CELLA Premium 2026年课程费">
+            <div class="data-table premium-pricing-table" role="table" aria-label="CELLA Premium 2027年课程费">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排／备注</span>
               </div>
               <div class="table-row" role="row" *ngFor="let course of pricingCourses"><span role="cell">{{ course.name }}</span><span role="cell">{{ formatUsd(course.tuition) }}美元</span><span role="cell">{{ course.lessons }}。{{ course.note }}</span></div>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="CELLA Premium 2026年课程费手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="CELLA Premium 2027年课程费手机卡片">
               <article *ngFor="let course of pricingCourses"><span>课程</span><strong>{{ course.name }}</strong><div><em>4周课程费</em><b>{{ formatUsd(course.tuition) }}美元</b></div><p>{{ course.lessons }}。{{ course.note }}</p></article>
             </div>
-            <div class="data-table premium-pricing-table room-pricing-table" role="table" aria-label="CELLA Premium 2026年住宿费">
+            <div class="data-table premium-pricing-table room-pricing-table" role="table" aria-label="CELLA Premium 2027年住宿费">
               <div class="table-row table-head" role="row"><span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
               <div class="table-row" role="row" *ngFor="let room of pricingRooms"><span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }}美元</span><span role="cell">{{ room.note }}</span></div>
             </div>
-            <div class="mobile-card-list mobile-room-fees" aria-label="CELLA Premium 2026年住宿费手机卡片">
+            <div class="mobile-card-list mobile-room-fees" aria-label="CELLA Premium 2027年住宿费手机卡片">
               <article *ngFor="let room of pricingRooms"><span>房型</span><strong>{{ room.name }}</strong><div><em>4周住宿费</em><b>{{ formatUsd(room.fee) }}美元</b></div><p>{{ room.note }}</p></article>
             </div>
           </div>
@@ -279,7 +279,7 @@
             <ul class="check-list">
               <li>Walk-In课程4周参考：监护人700美元，青少年英语1,300美元。</li>
               <li>Family Package的家庭成员组合、课程、年龄、房型和档期均需确认。</li>
-              <li>Alicia外部寮房型与校内宿舍不同，需同步确认通勤和空房。</li>
+              <li>STACIA校外宿舍房型与校内宿舍不同，需同步确认通勤和空房。</li>
             </ul>
           </div>
 
@@ -291,7 +291,7 @@
           <div>
             <h2>价格更新时间与资料说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考公开2026套餐价、CELLA Premium学校资料和当地费用说明整理。
+              本页价格更新时间：2026年11月。课程费、住宿费和当地费用为2027年价格；家庭套餐仍为2026年价格，2027年价格待学校确认。
               学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
             </p>
           </div>
@@ -309,7 +309,7 @@
             </div>
             <ul class="check-list">
               <li>Light ESL、Power Speaking、BPE、Working Holiday、ACE、Expresser和Family课程匹配</li>
-              <li>校内1人/半单/2人/4人/6人房与Alicia外部寮空房确认</li>
+              <li>校内1人/半单/2人/4人/6人房与STACIA校外宿舍空房确认</li>
               <li>旺季加价、短期密集和亲子规则确认</li>
               <li>前期支付与到校支付费用清单</li>
             </ul>
@@ -324,7 +324,7 @@
             <span>资料来源</span>
             <h2>CELLA Premium页面公开资料来源</h2>
             <p>
-              CELLA官网当前需要真人验证，本页主要参考可公开访问的近期代理资料和2026费用表；正式报名以前请以学校确认书和最新报价单为准。
+              CELLA官网当前需要真人验证，本页主要参考可公开访问的近期代理资料和学校2027年价格表；正式报名以前请以学校确认书和最新报价单为准。
             </p>
           </div>
           <div class="source-grid">
@@ -476,10 +476,10 @@
 
       <aside class="side-panel" aria-label="CELLA Premium页面快捷导航">
         <div class="current-card">
-          <span>2026下半年活动期</span>
+          <span>2027年活动</span>
           <strong>4周起</strong>
-          <p>Light ESL<br />Premium六人房活动价</p>
-          <div class="side-price">1,479美元起</div>
+          <p>Light ESL<br />Premium六人房七五折</p>
+          <div class="side-price">1,275美元起</div>
           <small>人民币参考额请以报价器最新参考汇率为准</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>

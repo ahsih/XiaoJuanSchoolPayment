@@ -35,8 +35,8 @@
           </div>
           <aside class="hero-price-card">
             <span>活动期4周参考</span>
-            <strong>1,680美元 <small>起</small></strong>
-            <p>Power Speaking 1＋四人房＋注册费，已计淡季优惠100美元。</p>
+            <strong>1,750美元 <small>起</small></strong>
+            <p>Power Speaking 1＋四人间＋注册费，已计淡季优惠100美元。</p>
             <ul>
               <li><mat-icon>check_circle</mat-icon>课程学费、宿舍、餐食为主价，按公开美元费用整理</li>
               <li><mat-icon>info</mat-icon>SSP、签证、教材、水电管理、押金和接机等比索费用另计</li>
@@ -66,8 +66,9 @@
           </div>
         </div>
         <aside class="mini-quote-card">
-          <h2><mat-icon>sell</mat-icon>2026下半年优惠</h2>
-          <p>2026/08/30–2027/01/02期间，指定房型每个完整4周减100美元；8／12／16周再减50／100／150美元。</p>
+          <h2><mat-icon>sell</mat-icon>2027年优惠</h2>
+          <p>2027/02/14–12/31入学，双人、三人、四人间每周减25美元（2027/05/30–08/28暑期周除外）；2027年入学满12／16／20／24周再减100／150／200／250美元。</p>
+          <p>2027/01/02前的现行活动：指定房型每个完整4周减100美元，全程在活动期内的8／12／16周再减50／100／150美元。</p>
           <p>四人房首次报名新生还可选择6+2或9+3活动，课程与住宿按6周或9周收费，当地费用按实际8周或12周计算。</p>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">进入完整报价<mat-icon>chevron_right</mat-icon></a>
           <p>优惠名额、社交媒体账号审核和最终资格均需学校确认。</p>
@@ -126,9 +127,9 @@
 
       <section class="tables-section" id="fee-structure">
         <div>
-          <h2><mat-icon>receipt_long</mat-icon>CELLA Uni Sparta 2026年课程费</h2>
-          <p class="table-intro">以下为附件确认的4周课程费，币种为美元；住宿费、注册费和当地费用另计。</p>
-          <div class="data-table cella-fee-table" role="table" aria-label="CELLA Uni Sparta 2026年课程费">
+          <h2><mat-icon>receipt_long</mat-icon>CELLA Uni Sparta 2027年课程费</h2>
+          <p class="table-intro">以下为2027年4周课程费，币种为美元；住宿费、注册费和当地费用另计。</p>
+          <div class="data-table cella-fee-table" role="table" aria-label="CELLA Uni Sparta 2027年课程费">
             <div class="table-row table-head" role="row"><span role="columnheader">课程</span><span role="columnheader">4周课程费</span><span role="columnheader">课程安排／备注</span></div>
             <div class="table-row" role="row" *ngFor="let course of pricingCourses">
               <span role="cell">{{ course.name }}</span><span role="cell">{{ formatUsd(course.tuition) }}美元</span><span role="cell">{{ course.lessons }}<small>{{ course.note }}</small></span>
@@ -136,9 +137,9 @@
           </div>
         </div>
         <div>
-          <h2><mat-icon>bed</mat-icon>CELLA Uni Sparta 2026年住宿费</h2>
-          <p class="table-intro">以下为附件确认的4周住宿费。JDN校外宿舍同样参加淡季优惠，空房和接驳需向学校确认。</p>
-          <div class="data-table cella-fee-table" role="table" aria-label="CELLA Uni Sparta 2026年住宿费">
+          <h2><mat-icon>bed</mat-icon>CELLA Uni Sparta 2027年住宿费</h2>
+          <p class="table-intro">以下为2027年4周住宿费。JDN校外宿舍的空房和接驳需向学校确认。</p>
+          <div class="data-table cella-fee-table" role="table" aria-label="CELLA Uni Sparta 2027年住宿费">
             <div class="table-row table-head" role="row"><span role="columnheader">房型</span><span role="columnheader">4周住宿费</span><span role="columnheader">备注</span></div>
             <div class="table-row" role="row" *ngFor="let room of pricingRooms">
               <span role="cell">{{ room.name }}</span><span role="cell">{{ formatUsd(room.fee) }}美元</span><span role="cell">{{ room.note }}</span>
@@ -149,9 +150,9 @@
           <h3>费用阅读重点</h3>
           <ul>
             <li>注册费为150美元／人，每名学生一次性收取。</li>
-            <li>1／2／3周课程与住宿沿用页面现有40%／65%／85%短期计费口径；正式账单需顾问确认。</li>
-            <li>暑期附加费：2026/07/05–08/29为40美元／周／人；2027/07/04–08/28为60美元／周／人。</li>
-            <li>TESOL、IELTS Guarantee与附件未提供价格的短期课程须按入学日向学校确认。</li>
+            <li>1／2／3周课程与住宿按4周价格的40%／65%／85%计算。</li>
+            <li>暑期附加费：2027/07/04–08/28、2028/07/02–08/26为60美元／周／人。</li>
+            <li>TESOL每期4周，须在指定开课日入学并先通过线上面试；IELTS Guarantee只开8周或12周。</li>
           </ul>
         </aside>
       </section>
