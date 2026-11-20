@@ -444,6 +444,7 @@ export class CiaStudentQuote {
       quantity,
       total: rounded(total),
       note,
+      ...(longTermWaiver ? { waived: true } : {}),
     };
   }
 }

@@ -1,0 +1,108 @@
+<main class="compare-page">
+  <header class="compare-hero">
+    <nav class="crumbs" aria-label="面包屑"><a routerLink="/">首页</a> / <a routerLink="/philippines-study/why-philippines">菲律宾游学</a> / 学校价格对比</nav>
+    <h1>学校价格对比</h1>
+    <p>选好学习目标、房型、周数和入学日期，每所学校按自己的最新价格和优惠同时算出费用。</p>
+  </header>
+
+  <section class="compare-card" aria-labelledby="compare-setup-title">
+    <h2 id="compare-setup-title"><span class="step">1</span>选学校和条件</h2>
+
+    <div class="field">
+      <span class="field-label">对比学校<small>{{ comparison.schools.length > comparison.minSchools ? '选' + comparison.minSchools + '–' + comparison.maxSchools + '所' : '更多学校陆续加入' }}</small></span>
+      <div class="chips" role="group" aria-label="对比学校">
+        <button type="button" class="chip school-chip" *ngFor="let school of comparison.schools"
+          [class.active]="comparison.isSelected(school.id)" [attr.aria-pressed]="comparison.isSelected(school.id)"
+          [disabled]="!comparison.canToggle(school.id)" (click)="comparison.toggleSchool(school.id)">
+          <strong>{{ school.tag }}</strong><small>{{ school.location }}</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">学习目标</span>
+      <div class="chips" role="group" aria-label="学习目标">
+        <button type="button" class="chip" *ngFor="let goal of goals"
+          [class.active]="comparison.goal === goal.id" [attr.aria-pressed]="comparison.goal === goal.id"
+          (click)="comparison.setGoal(goal.id)">{{ goal.label }}</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">房型</span>
+      <div class="chips" role="group" aria-label="房型">
+        <button type="button" class="chip" *ngFor="let size of roomSizes"
+          [class.active]="comparison.beds === size.beds" [attr.aria-pressed]="comparison.beds === size.beds"
+          (click)="comparison.setBeds(size.beds)">{{ size.label }}</button>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <label>周数
+        <select [ngModel]="comparison.conditions.weeks" (ngModelChange)="comparison.setWeeks($event)">
+          <option *ngFor="let weeks of comparison.weekOptions" [ngValue]="weeks">{{ weeks }}周</option>
+        </select>
+      </label>
+      <label>入学日期（周日）
+        <input #startInput type="date" step="7" [ngModel]="comparison.conditions.startDate" (ngModelChange)="setStartDate($event, startInput)" />
+        <small>{{ endDateText }}</small>
+      </label>
+    </div>
+
+    <details class="more-conditions">
+      <summary><span>更多条件</span><small>{{ conditionsSummary }}</small><mat-icon>expand_more</mat-icon></summary>
+      <div class="field-row">
+        <label>抵达时年龄段
+          <select [(ngModel)]="comparison.conditions.ageGroup">
+            <option value="adult">18岁及以上</option>
+            <option value="minor">未满18岁</option>
+          </select>
+        </label>
+        <label>签证类型
+          <select [(ngModel)]="comparison.conditions.visaType">
+            <option *ngFor="let option of visaOptions" [ngValue]="option.value">{{ option.label }}</option>
+          </select>
+        </label>
+        <label>报名日期
+          <input type="date" [(ngModel)]="comparison.conditions.registrationDate" />
+        </label>
+      </div>
+      <p class="hint">各校均按新学员报价；老学员返校请到学校页面单独报价。</p>
+    </details>
+  </section>
+
+  <section class="compare-card" aria-labelledby="compare-plans-title">
+    <h2 id="compare-plans-title"><span class="step">2</span>核对各校课程和房型</h2>
+    <p class="hint">已按学习目标和房型自动选好，也可以手动换。</p>
+    <div class="school-plans" [class.school-plans--three]="comparison.selections.length > 2">
+      <article class="school-plan" *ngFor="let selection of comparison.selections; trackBy: trackSelection">
+        <header>
+          <span class="tag">{{ selection.school.tag }}</span>
+          <a [routerLink]="selection.school.pagePath">学校介绍<mat-icon>chevron_right</mat-icon></a>
+        </header>
+        <label>课程
+          <select [ngModel]="selection.plan.courseId" (ngModelChange)="comparison.setCourse(selection, $event)">
+            <option *ngFor="let course of selection.school.courses" [value]="course.id">{{ course.name }}</option>
+          </select>
+        </label>
+        <label>住宿
+          <select [ngModel]="selection.plan.roomId" (ngModelChange)="comparison.setRoom(selection, $event)">
+            <option *ngFor="let room of selection.school.rooms" [value]="room.id">{{ room.name }}</option>
+          </select>
+        </label>
+        <p class="match-note" *ngIf="selection.courseNote">{{ selection.courseNote }}</p>
+        <p class="match-note" *ngIf="selection.roomNote">{{ selection.roomNote }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="compare-card" aria-labelledby="compare-result-title">
+    <h2 id="compare-result-title"><span class="step">3</span>{{ sheet.heading }}</h2>
+    <p class="conditions-line">{{ sheet.conditions }}</p>
+    <app-plan-compare-table [sheet]="sheet"></app-plan-compare-table>
+    <div class="compare-actions">
+      <app-quote-image-download-button [quote]="compareImageData" [disabled]="!comparison.ready" label="保存对比图片" buttonClass="primary-action"></app-quote-image-download-button>
+      <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>请顾问核对报价</a>
+    </div>
+  </section>
+</main>

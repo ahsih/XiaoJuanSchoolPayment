@@ -7,6 +7,7 @@
 // and the published employee revision.
 
 import { SIDA_PHILIPPINES_CONSULTANTS } from '../../../components/sida-consultants';
+import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 
 export type GalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
@@ -144,6 +145,12 @@ export interface RoomComparisonProfile {
   image: string;
   gallery: readonly string[];
   imageAlt: string;
+  /**
+   * One room type priced per occupancy (CIA's suite: SR-1 … SR-4). Keyed by booking code; the room panel
+   * shows the tapped code's name and fit. Every code shows the same school photos in the school's order:
+   * the photos do not say which occupancy they show, so never pick a photo per code (user rule 2026-11-20).
+   */
+  variants?: Readonly<Record<string, { label: string; suitable: string }>>;
 }
 
 export interface CampusBuildingCard {
@@ -168,12 +175,6 @@ export interface HolidayCalendar {
   }>;
 }
 
-export interface IeltsExamDate {
-  month: number;
-  academic: { day: string; weekday: string };
-  general: { day: string; weekday: string };
-}
-
 export interface CampusMonthlyEvent {
   month: number;
   icon: string;
@@ -188,6 +189,8 @@ export interface CourseDetailGuide {
   icon: string;
   title: string;
   subtitle: string;
+  /** The courses whose details show this guide; a guide without courses applies to every course. */
+  courseIds?: readonly string[];
   facts: Array<{ label: string; value: string }>;
   points: string[];
   image?: string;
@@ -271,11 +274,12 @@ export interface CtaConsultant {
   title: string;
   name: string;
   description: string;
-  phone: string;
-  phoneHref: string;
+  /** Left out for consultants who take enquiries by WeChat only. */
+  phone?: string;
+  phoneHref?: string;
   avatarSrc: string;
   qrSrc: string;
-  buttonLabel: string;
+  buttonLabel?: string;
 }
 
 export interface SidaCiaReason {
@@ -416,8 +420,8 @@ export const CIA_GALLERY_IMAGES: GalleryImage[] = [
   },
   {
     category: '住宿',
-    title: '家庭精致套房 SR',
-    description: '同一套房体系按实际入住人数对应SR-1至SR-4，适合亲子和家庭。',
+    title: '精致套房 SR',
+    description: '同一种套房按入住人数对应SR-1至SR-4，有厨房、电视和阳台。',
     src: ciaRoomGalleries.suite[0],
     gallery: ciaRoomGalleries.suite,
     details: ['约31.18㎡，海景参考', '大冰箱、电视、微波炉及料理区'],
@@ -534,7 +538,7 @@ export const CIA_BASIC_INFO: BasicInfoRow[] = [
   { label: '学生容量', value: '约600名学生' },
   { label: '教师规模', value: '约300名教师' },
   { label: '管理模式', value: '半斯巴达：每日测试、出勤、门禁和EOP管理' },
-  { label: '住宿房型', value: '单人、双人、三人、四人及家庭精致套房；另有PN-1校外单人间' },
+  { label: '住宿房型', value: '单人、双人、三人、四人间及精致套房；另有PN-1校外单人间' },
   {
     label: '核心资源',
     value: 'IDP IELTS官方考点、Cambridge ESL备考体系、24小时CRO学生支援',
@@ -697,67 +701,6 @@ export const CIA_HOLIDAY_CALENDARS: HolidayCalendar[] = [
       },
     ],
   },
-  {
-    year: 2026,
-    label: '2026年在读学生参考',
-    months: [
-      { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
-      { month: 2, holidays: [{ day: '17日', name: '农历新年' }] },
-      {
-        month: 3,
-        holidays: [{ day: '20日', name: '开斋节', provisional: true }],
-      },
-      {
-        month: 4,
-        holidays: [
-          { day: '2日', name: '濯足节' },
-          { day: '3日', name: '耶稣受难日' },
-          { day: '10日', name: '勇士日' },
-          { day: '27日', name: '拉普拉普胜利纪念日' },
-        ],
-      },
-      {
-        month: 5,
-        holidays: [
-          { day: '1日', name: '劳动节' },
-          { day: '29日', name: '宰牲节', provisional: true },
-        ],
-      },
-      {
-        month: 6,
-        holidays: [
-          { day: '12日', name: '独立日' },
-          { day: '17日', name: '拉普拉普市宪章日' },
-        ],
-      },
-      {
-        month: 8,
-        holidays: [
-          { day: '7日', name: '宿务省宪章日' },
-          { day: '21日', name: '尼诺·阿基诺日' },
-          { day: '31日', name: '国家英雄日' },
-        ],
-      },
-      { month: 9, holidays: [{ day: '9日', name: '奥斯梅尼亚日' }] },
-      {
-        month: 11,
-        holidays: [
-          { day: '2日', name: '万灵节' },
-          { day: '30日', name: '博尼法西奥日' },
-        ],
-      },
-      {
-        month: 12,
-        holidays: [
-          { day: '8日', name: '圣母无染原罪瞻礼' },
-          { day: '24日', name: '平安夜' },
-          { day: '25日', name: '圣诞节' },
-          { day: '30日', name: '黎刹日' },
-          { day: '31日', name: '除夕' },
-        ],
-      },
-    ],
-  },
 ];
 
 export const CIA_IELTS_COMPUTER_EXAM_DATES_2027 = [
@@ -775,34 +718,12 @@ export const CIA_IELTS_COMPUTER_EXAM_DATES_2027 = [
   { month: 12, days: [4, 11, 18, 25] },
 ];
 
-export const CIA_IELTS_EXAM_DATES_2026: IeltsExamDate[] = [
-  { month: 1, academic: { day: '31日', weekday: '周六' }, general: { day: '15日', weekday: '周四' } },
-  { month: 2, academic: { day: '14日', weekday: '周六' }, general: { day: '21日', weekday: '周六' } },
-  { month: 3, academic: { day: '14日', weekday: '周六' }, general: { day: '21日', weekday: '周六' } },
-  { month: 4, academic: { day: '23日', weekday: '周四' }, general: { day: '25日', weekday: '周六' } },
-  { month: 5, academic: { day: '16日', weekday: '周六' }, general: { day: '23日', weekday: '周六' } },
-  { month: 6, academic: { day: '27日', weekday: '周六' }, general: { day: '20日', weekday: '周六' } },
-  { month: 7, academic: { day: '18日', weekday: '周六' }, general: { day: '25日', weekday: '周六' } },
-  { month: 8, academic: { day: '29日', weekday: '周六' }, general: { day: '22日', weekday: '周六' } },
-  { month: 9, academic: { day: '26日', weekday: '周六' }, general: { day: '17日', weekday: '周四' } },
-  { month: 10, academic: { day: '10日', weekday: '周六' }, general: { day: '17日', weekday: '周六' } },
-  { month: 11, academic: { day: '14日', weekday: '周六' }, general: { day: '28日', weekday: '周六' } },
-  { month: 12, academic: { day: '19日', weekday: '周六' }, general: { day: '12日', weekday: '周六' } },
-];
-
 export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
   {
     icon: 'record_voice_over',
-    title: 'ESL一般英语与选修课',
-    subtitle: '综合英语能力、强制写作与14类选修方向',
-    facts: [
-      { label: '团体人数', value: '小团体1–6人 / 中团体6–15人 / 大团体15–20人' },
-      { label: '写作安排', value: '按程度指定题目与字数，隔日由老师批改' },
-      { label: '入学分级', value: '入学测试决定L0–L10等级，并对应CEFR Pre-A1至C2' },
-      { label: '程度测验', value: '通常每4周1次；仅读4周者第4周可选择不参加' },
-      { label: '选修方式', value: '提交第一、第二、第三志愿，每周可申请换课' },
-      { label: '晨考与写作', value: '晨考每日3分起；写作按等级约30–120词，须在图书馆完成并交老师检查' },
-    ],
+    title: '上课、出勤与选修规则',
+    subtitle: '出勤率、晨考与外出、选修课怎么选',
+    facts: [],
     points: [
       'Regular、Intensive与Power Intensive通过不同数量的一对一课，训练听、说、读、写、语法和词汇。',
       '学校按实际应上课日统计出勤；请假同样计入出勤率。总出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
@@ -811,25 +732,12 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
       '选修方向包括IELTS / TOEIC / Business Open、Conversation Club、Public Speaking、Reel English、Movie Class、Dance、Hello Pops、Guitar、Uke ’n’ Talk、Callan训练、商务经济英语和母语外教课等；名额已满时会按后续志愿或自由时间安排。',
       '不参加选修时可选Free Time。Callan训练选修适合L2左右的学生；母语外教选修不向Regular ESL（RE）学生开放，需按实际课程资格选择。',
     ],
-    levels: [
-      { code: 'L0', name: 'Novice 1', score: '80–99', cefr: 'Pre-A1' },
-      { code: 'L1', name: 'Novice 2', score: '100–119', cefr: 'A1' },
-      { code: 'L2', name: 'KET Grade C', score: '120–132', cefr: 'A2' },
-      { code: 'L3', name: 'KET Grade B', score: '133–139', cefr: 'A2' },
-      { code: 'L4', name: 'PET Grade C', score: '140–152', cefr: 'B1' },
-      { code: 'L5', name: 'PET Grade B', score: '153–159', cefr: 'B1' },
-      { code: 'L6', name: 'FCE Grade C', score: '160–172', cefr: 'B2' },
-      { code: 'L7', name: 'FCE Grade B', score: '173–179', cefr: 'B2' },
-      { code: 'L8', name: 'CAE Grade C', score: '180–192', cefr: 'C1' },
-      { code: 'L9', name: 'CAE Grade B', score: '193–199', cefr: 'C1' },
-      { code: 'L10', name: 'CPE', score: '200+', cefr: 'C2' },
-    ],
     notice: '课程、选修名额、晨考分数与外出规则可能按等级和学期调整，以入学测试、教务排课及当期校规为准。',
   },
   {
     icon: 'tune',
-    title: 'Light ESL 特别申请与出勤安排',
-    subtitle: '适用于需要兼顾工作的成年学生及年长学生，未成年人不可申请',
+    title: 'Light ESL 减课申请',
+    subtitle: '不是单独开班的课程：在职或年长的成年学生可申请少上几节课，学费按所报课程收取',
     facts: [
       { label: '申请对象', value: '商人、内容创作者、工作安排较多的成年学生及年长学生，须提前确认资格' },
       { label: '课程调整', value: '最多可申请取消4节课；连续2次无故旷课，该课程会被自动取消' },
@@ -847,69 +755,118 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
   },
   {
     icon: 'workspace_premium',
-    title: 'TOEIC预备、常规与保证班',
-    subtitle: '明确目标分数、每周模考与12周保证班要求',
+    title: 'TOEIC Guarantee 保分要求',
+    subtitle: '12周保分班的目标分数、入学分数与保分条件',
+    courseIds: ['toeic-guarantee'],
     facts: [
-      { label: 'Pre-TOEIC', value: '无入学门槛；4周为单位；每2周1次模考' },
       { label: '保证目标', value: '600 / 700 / 800 / 900分' },
       { label: '入学分数', value: '分别为400 / 500 / 650 / 790分以上' },
     ],
     points: [
-      '保证班需读满12周，出勤率达到95%，每周模考出勤率100%，并在读期间参加一次官方考试。',
+      '需读满12周，出勤率达到95%，每周模考出勤率100%，并在读期间参加一次官方考试。',
       '周一至周三另有约1.5小时强制晚自习；校规和扣点规则与一般学生相同。',
-      '符合条件但校内模考未达到目标分数时，学校资料列明可承担延长4周的课程费；住宿及学杂费由学生承担。',
-      '符合保证班条件者可申请一次官方考试相关权益，需保留并提交正式考试收据。',
+      '符合条件但校内模考未达到目标分数时，学校可承担延长4周的课程费；住宿及学杂费由学生承担。',
+      '符合保分条件者可申请一次官方考试相关权益，需保留并提交正式考试收据；考试报名费以托业官方为准。',
     ],
     notice: '保证权益须满足全部条件，并以学校审核、当期考务安排和正式说明为准。',
   },
   {
-    icon: 'fact_check',
-    title: 'IELTS预备、常规与保证班',
-    subtitle: '校内IDP考试资源与分数分级入学',
+    icon: 'school',
+    title: 'Pre-TOEIC 预备班说明',
+    subtitle: '没有入学门槛，先打好TOEIC基础',
+    courseIds: ['pre-toeic'],
     facts: [
-      { label: 'Pre-IELTS', value: '入学测试3.0分及以下；后续模考达3.5分可转常规雅思' },
-      { label: 'Regular IELTS', value: '入学测试3.5分及以上' },
-      { label: '预备 / 常规模考', value: '每周四15:30–19:00；口语时间另行通知' },
+      { label: '入学门槛', value: '无' },
+      { label: '学习单位', value: '4周为单位' },
+      { label: '模考', value: '每2周1次' },
+    ],
+    points: [],
+  },
+  {
+    icon: 'workspace_premium',
+    title: 'IELTS Guarantee 保分要求',
+    subtitle: '12周保分班的目标分数、入学分数与保分条件',
+    courseIds: ['ielts-guarantee'],
+    facts: [
       { label: '保证目标', value: '5.5 / 6.0 / 6.5 / 7.0分' },
       { label: '入学分数', value: '3.5–4.5 / 5.0–5.5 / 6.0 / 6.5分' },
     ],
     points: [
-      '预备雅思晨考通常需达到4分、周累计16分，写作约80–200词；常规雅思晨考通常需达到7分、周累计26分，写作约100–250词。',
-      '晨考缺考或未达到当日要求时，当天不可外出；学校资料注明，每天均参加晨考者，即使周累计分数未达标，仍可在周末外出。写作须在图书馆完成并交老师检查，未达到要求计作缺席。',
-      '预备与常规雅思的小团体课分别侧重ESL对话、雅思语法与口语；中团体课用于练习与纠错，选修不包括雅思公开课。普通班出勤与结业要求同上方ESL说明，保证班另按下列条件执行。',
-      '保证班需读满12周，并在读期间参加一次官方雅思机考，考试收据请自行保存。',
-      '保证班按整个就读期的应上课课节累计出勤；病假也会影响出勤，低于95%即失去保分资格。每周四模考出勤率须达到100%，即使因病请假也会失去保分资格。',
+      '需读满12周，并在读期间参加一次官方雅思机考，考试收据请自行保存。',
+      '按整个就读期的应上课课节累计出勤；病假也会影响出勤，低于95%即失去保分资格。每周四模考出勤率须达到100%，即使因病请假也会失去保分资格。',
       '周一至周三每晚另有1.5小时强制晚自习，并计入出勤；校规及扣点仍与一般学生相同。',
-      '入学时未达保证班门槛、后续模考达标者，可申请延长相应周数以满足12周保证班就读要求，由教务确认转班及资格。',
-      '符合条件者可按学校流程申请一次官方考试费权益；学校资料中的参考金额为13,660比索，需提交考试收据。',
-      '符合全部条件但未达到目标分数时，学校资料列明可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
+      '入学时未达保分班门槛、后续模考达标者，可申请延长相应周数以满足12周保分班就读要求，由教务确认转班及资格。',
+      '符合条件者可按学校流程申请一次官方考试费权益，需提交考试收据；考试报名费以雅思官方为准。',
+      '符合全部条件但未达到目标分数时，学校可承担延长4周课程费及一次官方考试费；住宿与其他费用由学生承担。',
     ],
-    notice: '考试费金额和保证权益会随官方考务政策调整，报名时须再次书面确认。',
+    notice: '保证权益须满足全部条件，以学校审核为准；学校和雅思官方可能随时调整规定，以最新通知为准。',
+  },
+  {
+    icon: 'school',
+    title: 'Pre-IELTS 预备雅思说明',
+    subtitle: '雅思基础较弱时先读预备班，模考达标可转常规雅思',
+    courseIds: ['pre-ielts'],
+    facts: [
+      { label: '入学分数', value: '入学测试3.0分及以下' },
+      { label: '转班', value: '后续模考达3.5分可转常规雅思' },
+      { label: '模考', value: '每周四15:30–19:00；口语时间另行通知' },
+    ],
+    points: [
+      '晨考通常需达到4分、周累计16分；写作约80–200词，须在图书馆完成并交老师检查，未达到要求计作缺席。',
+      '小团体课侧重ESL对话；中团体课用于练习与纠错；选修不包括雅思公开课。',
+    ],
+  },
+  {
+    icon: 'fact_check',
+    title: 'Regular IELTS 常规雅思说明',
+    subtitle: '入学测试3.5分及以上，系统准备雅思考试',
+    courseIds: ['ielts-regular'],
+    facts: [
+      { label: '入学分数', value: '入学测试3.5分及以上' },
+      { label: '模考', value: '每周四15:30–19:00；口语时间另行通知' },
+    ],
+    points: [
+      '晨考通常需达到7分、周累计26分；写作约100–250词，须在图书馆完成并交老师检查，未达到要求计作缺席。',
+      '小团体课侧重雅思语法与口语；中团体课用于练习与纠错；选修不包括雅思公开课。',
+    ],
   },
   {
     icon: 'business_center',
-    title: '商务英语与打工度假',
-    subtitle: '职场沟通、求职准备与毕业发表',
+    title: '商务英语说明',
+    subtitle: '入学门槛、晨考、程度考与毕业演讲',
+    courseIds: ['business'],
     facts: [
-      { label: '商务英语门槛', value: 'CIA Level 4或TOEIC 400分以上' },
-      { label: '商务英语周期', value: '4周或8周为一个单元' },
+      { label: '入学门槛', value: 'CIA Level 4或TOEIC 400分以上' },
+      { label: '课程周期', value: '4周或8周为一个单元' },
       { label: '程度测验', value: '每4周1次，缺席可能影响下一周外出' },
-      { label: 'Working Holiday', value: '无入学门槛；4周为一个单元' },
     ],
     points: [
-      '商务英语围绕商务词汇、对话、语法、写作和商业场景训练英文表达；课程重点是英语沟通，不是商业经营技能培训。',
-      '商务英语晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
+      '课程围绕商务词汇、对话、语法、写作和商业场景训练英文表达；重点是英语沟通，不是商业经营技能培训。',
+      '晨考通常要求每日7分、周累计26分；出勤低于90%可能无法取得结业证，低于50%可能被开除且不退款。',
       '强制写作约120词，须在图书馆完成并交老师检查。晨考缺考或未达当日要求影响当天外出，周末外出例外按教务考勤记录确认。',
       '选修可在符合资格的学术或非学术课程中选择，但不包括雅思公开课。',
       '每4周的程度考须参加；无故缺考会影响下一周末外出，若下一周为离校前最后一周，则改为周一至周五禁足。',
-      '就读4周及以上的商务英语学生，最后一周须完成自选主题的商务PPT演讲；不参加时学校资料列明罚款2,500比索，少于4周者除外。',
-      'Working Holiday包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
+      '就读4周及以上的学生，最后一周须完成自选主题的商务PPT演讲；不参加时学校资料列明罚款2,500比索，少于4周者除外。',
+    ],
+  },
+  {
+    icon: 'luggage',
+    title: 'Working Holiday 打工度假英语说明',
+    subtitle: '生存英语与求职准备',
+    courseIds: ['working-holiday'],
+    facts: [
+      { label: '入学门槛', value: '无' },
+      { label: '学习单位', value: '4周为一个单元' },
+    ],
+    points: [
+      '包含ESL听说、生存英语与求职准备，并搭配小组、中组及外教/CNN课程。',
     ],
   },
   {
     icon: 'speed',
     title: 'Callan快速口语课程',
     subtitle: '通过高频问答训练英语反应速度',
+    courseIds: ['callan-esl'],
     facts: [
       { label: '对应报名课程', value: 'Callan ESL' },
       { label: '学习单位', value: '无入学门槛；4周为单位' },
@@ -923,6 +880,7 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     icon: 'flight_takeoff',
     title: 'IAU大学沉浸课程',
     subtitle: '想旁听Indiana Aerospace University课程，请选College Immersion',
+    courseIds: ['college-immersion'],
     facts: [
       { label: '对应报名课程', value: 'College Immersion（IAU大学沉浸）' },
       { label: '基本安排', value: '4周为单位；每4周至少6小时IAU旁听' },
@@ -943,7 +901,7 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
   },
   {
     icon: 'nightlight_round',
-    title: 'Evening Intensive 晚间强化课',
+    title: 'Evening Intensive 免费晚间强化课',
     subtitle: '两周一期的免费加课，适合希望利用晚间增加学习量的学生',
     facts: [
       { label: '上课时间', value: '周一至周四19:00–21:00' },
@@ -998,15 +956,25 @@ export const CIA_FAQS: FaqItem[] = [
 ];
 
 export const CIA_MOBILE_ANCHORS: SideNavItem[] = [
+  { label: '视频', target: 'gallery', icon: 'smart_display' },
   { label: '概览', target: 'overview', icon: 'dashboard' },
-  { label: '校园', target: 'campus-introduction', icon: 'apartment' },
-  { label: '图片', target: 'gallery', icon: 'photo_library' },
-  { label: '视频', target: 'videos', icon: 'smart_display' },
   { label: '课程', target: 'courses', icon: 'menu_book' },
   { label: '住宿', target: 'rooms', icon: 'bed' },
   { label: '评价', target: 'student-reviews', icon: 'rate_review' },
   { label: '报价', target: 'quote', icon: 'calculate' },
   { label: 'FAQ', target: 'faq', icon: 'help' },
+];
+
+/** 30 秒看懂 CIA on the website: snapshot cards and campus facts merged into one short list. */
+export const CIA_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string; value: string }> = [
+  { icon: 'location_on', label: '位置', value: '宿务麦克坦岛 Lapu-Lapu City' },
+  { icon: 'history_edu', label: '创校', value: '2003年创校，新校区2022年开课' },
+  { icon: 'groups', label: '规模', value: '约600名学生、300名教师' },
+  { icon: 'rule', label: '管理', value: '半斯巴达：周一至周四晨考，未通过当晚通常不可外出' },
+  { icon: 'menu_book', label: '课程', value: 'ESL、雅思、托业、商务、Callan、大学沉浸；寒暑假有亲子营' },
+  { icon: 'workspace_premium', label: '考试', value: 'IDP雅思官方考场，定期模考' },
+  { icon: 'bed', label: '住宿', value: '单人到四人间、精致套房，另有校外单人间' },
+  { icon: 'support_agent', label: '支持', value: 'CRO学生服务、学业顾问、医务室、24小时安保' },
 ];
 
 export const CIA_SNAPSHOT_CARDS = [
@@ -1048,7 +1016,7 @@ export const CIA_VIDEO_CARDS: CiaVideoCard[] = [
     label: 'CAMPUS TOUR',
     title: '校园导览视频',
     text: 'CIA官方拍摄的校园全景（2023年）',
-    poster: 'assets/cia/video-posters/campus-tour-2023.webp',
+    poster: 'assets/cia/video-posters/campus-aerial-cover.webp',
     videoSrc: 'assets/cia-video/campus-tour-2023.mp4',
     contentType: 'video/mp4',
     details: [
@@ -1247,14 +1215,14 @@ export const CIA_COURSE_CHOICE_CARDS = [
     label: '雅思目标',
     title: 'Pre-IELTS / IELTS Regular / IELTS Guarantee',
     text: '备考全套体系，可参加模考与官方考试资源。',
-    courseIds: ['pre-ielts', 'ielts-regular', 'ielts-guarantee'],
+    courseIds: ['ielts-guarantee', 'pre-ielts', 'ielts-regular'],
   },
   {
     icon: 'scoreboard',
     label: '托业目标',
     title: 'Pre-TOEIC / TOEIC Regular / TOEIC Guarantee',
     text: '听力、阅读强化，适合求职或升学分数目标。',
-    courseIds: ['pre-toeic', 'toeic-regular', 'toeic-guarantee'],
+    courseIds: ['toeic-guarantee', 'pre-toeic', 'toeic-regular'],
   },
   {
     icon: 'business_center',
@@ -1284,13 +1252,13 @@ export const CIA_COURSE_GROUPS: ReadonlyArray<{ icon: string; title: string; tex
     icon: 'track_changes',
     title: '雅思 IELTS',
     text: 'IDP官方考场，保证班须读满12周',
-    courseIds: ['pre-ielts', 'ielts-regular', 'ielts-guarantee'],
+    courseIds: ['ielts-guarantee', 'pre-ielts', 'ielts-regular'],
   },
   {
     icon: 'scoreboard',
     title: '托业 TOEIC',
     text: '求职、升学需要分数，保证班须读满12周',
-    courseIds: ['pre-toeic', 'toeic-regular', 'toeic-guarantee'],
+    courseIds: ['toeic-guarantee', 'pre-toeic', 'toeic-regular'],
   },
   {
     icon: 'business_center',
@@ -1535,7 +1503,7 @@ export const CIA_ROOM_COMPARISON_PROFILES: RoomComparisonProfile[] = [
   },
   {
     id: 'suite',
-    label: '家庭精致套房',
+    label: '精致套房',
     englishName: 'Suite Room',
     bookingCode: 'SR-1 / SR-2 / SR-3 / SR-4',
     location: '校内',
@@ -1543,12 +1511,18 @@ export const CIA_ROOM_COMPARISON_PROFILES: RoomComparisonProfile[] = [
     view: '海景',
     bed: '主床约193 × 203cm',
     service: '免费洗衣每周2次 · 房间清洁每周1次',
-    suitable: '亲子、家庭或希望获得更完整起居与料理配置的学生。',
+    suitable: '希望获得更完整起居与料理配置的学生。',
     highlights: ['电视、大冰箱、微波炉与电磁炉', '洗手池、餐具、浴袍及茶几', '阳台及更完整的起居空间'],
-    note: '同一套房硬件对应SR-1至SR-4的不同入住人数报价；实际加床、床型及可住人数须按家庭人数和余房确认。',
+    note: 'SR-1至SR-4是同一种套房，按入住人数分别报价；多人入住时的加床、床型及可住人数以学校安排和余房为准。',
     image: ciaRoomGalleries.suite[0],
     gallery: ciaRoomGalleries.suite,
-    imageAlt: 'CIA家庭精致套房实景，配有大床、电视、餐桌及料理区',
+    imageAlt: 'CIA精致套房实景，配有大床、电视、餐桌及料理区',
+    variants: {
+      'SR-1': { label: '单人套房', suitable: '想一个人住套房，并要完整起居空间和小厨房的学生。' },
+      'SR-2': { label: '双人套房', suitable: '两位同学或朋友同住一套，想要比普通双人间更完整的起居配置。' },
+      'SR-3': { label: '三人套房', suitable: '三位同学或朋友同住一套，价格比单人、双人套房低。' },
+      'SR-4': { label: '四人套房', suitable: '四人结伴同住一套，是套房中价格最低的选择。' },
+    },
   },
 ];
 
@@ -1646,6 +1620,8 @@ export const CIA_GALLERY_ALBUM_DESCRIPTIONS: Record<Exclude<GalleryCategory, '�
 export const CIA_PAGE_COPY = {
   /** Shown above swipe rows on phones, so visitors know more cards sit to the right. */
   swipeHint: '左右滑动查看',
+  /** Closes every content section and every opened course note. */
+  referenceNote: SCHOOL_REFERENCE_NOTE,
   hero: {
     breadcrumb: '菲律宾游学 / 宿务学校 / CIA',
     title: '菲律宾宿务 CIA 语言学校',
@@ -1676,9 +1652,9 @@ export const CIA_PAGE_COPY = {
   gallery: {
     title: '按区域查看 CIA 环境',
     intro: '“全部”先按区域进入相册；相册内用左右箭头或缩略图切换，点击主图可放大。7类房型的价格与详细对比在下方“住宿”部分。',
-    photoNote: '图片与开放安排仅供参考，实际场地、使用时间及学校规则以到校时通知为准。',
+    photoNote: '所有图片和视频仅供参考，具体安排以学校为准。',
     roomComparisonTitle: '7类房型快速对比',
-    roomDisclaimer: '图片为学校房型资料中的代表性实景。面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，学校规则可能调整，最终以报名时确认、实际分房和到校说明为准。',
+    roomDisclaimer: '面积、景观、房号、家具、设备、服务频率及可住人数仅供选房参考，最终以报名时确认、实际分房和到校说明为准；最终解释权归学校，学校可能随时调整规章制度。',
   },
   courses: {
     title: 'CIA 课程怎么选？',
@@ -1688,17 +1664,10 @@ export const CIA_PAGE_COPY = {
     fitLabel: '适合人群',
     noteLabel: '课程说明',
     detailSummaryTitle: '查看课程细节与每日课表',
-    detailSummaryHint: '分级与出勤、Light ESL、雅思保证班、晚间强化及每日作息',
-    facts: [
-      { icon: 'workspace_premium', title: '另有 Cambridge ESL 备考方向', text: '学校可提供 A2 Key、B1 Preliminary、B2 First、C1 Advanced 等方向的备考支持；新版通用价目表未列单独价格，需按实际开课与报价确认。' },
-      { icon: 'apps', title: '选修课按兴趣与课程资格选择', text: '入学时填写选修志愿，学术与非学术方向均有选择；具体课程、名额及限制见下方“ESL一般英语与选修课”。' },
-      { icon: 'verified', title: '雅思与托业保证班均为12周', text: '需达到对应入学分数，并满足95%出勤、每周模考及官方考试等要求；报名时按目标分数确认班级。' },
-      { icon: 'groups', title: '亲子与青少年项目按寒暑假档期开放', text: '主校区常规成人课与假期营并非同一套固定价格，年龄、营地、课程和住宿需按当期营队方案确认。' },
-    ],
+    detailSummaryHint: '出勤与选修、Light ESL、保证班、晚间强化及每日作息',
     guideEyebrow: 'IMPORTANT COURSE NOTES',
     guideTitle: '报名前值得确认的课程细节',
     guideIntro: '下方每个课程组都可以点击展开；建议重点核对保证班权益、选修方向和学习安排。',
-    levelTableCaption: '入学分级对照（CIA校内测试）',
     ruleNoteTitle: '学校规则参考说明',
     ruleNoteText: '课程时间、开班人数、出勤、押金、扣费、外出与活动安排仅供报名前和行前参考；校规可能随时调整，最终以报名确认、到校说明及CIA当期公告为准。',
   },
@@ -1719,35 +1688,21 @@ export const CIA_PAGE_COPY = {
   },
   calendar: {
     eyebrow: 'ACADEMIC CALENDAR',
-    title: 'CIA 2026–2027年学校假期',
-    intro: '本表可用于初步规划入学日期与学习周数，但仅供参考。菲律宾国家或地方政府可能临时公布、新增或调整假期，CIA也可能相应调整停课、补课与校园安排，最终以政府公告及CIA当期正式通知为准。',
+    title: 'CIA 2027年日历',
+    intro: '学校假期、旺季和雅思机考日期一表看完，用于规划入学日期和周数。',
     badge: '2027年优先展示',
     peakEyebrow: '2027 PEAK SEASON',
     peakTitle: '2027年寒暑假高峰期',
     peakIntro: '课程或住宿计划覆盖以下完整学习周时，每名学生按实际重叠周数计收旺季附加费。',
     peakNote: '入学按周日、离校按周六；课程与住宿在同一周重叠只计一次，旺季附加费不参与思达启航折扣。',
     provisionalLabel: '日期待官方确认',
-    footnote: '除开斋节、宰牲节等日期需按宗教历法确认外，菲律宾政府也可能临时宣布全国或地方特别假期，请勿将本表视为最终停课日历。',
+    footnote: '开斋节、宰牲节日期待官方确认；政府可能临时增加或调整假期，以CIA当期通知为准。',
   },
   ielts: {
     eyebrow: '2027 IELTS ON COMPUTER',
     title: '2027年 CIA 雅思机考日期',
-    intro: '根据CIA公布的2027年雅思机考（IOC）考期整理，考试安排在每周六。报名开放情况及考位请联系顾问确认，最终以CIA和IDP当期通知为准。',
+    intro: '雅思机考每周六举行。到校后提前两周到教务办公室报名；考生不足10人时考场可能改到宿务市区。考位以CIA和IDP当期通知为准。',
     badge: '每周六 · 全年52个考期',
-    previousSummary: '查看2026年雅思考期与报名参考',
-    previousTitle: '2026年 CIA Mactan 雅思官方考期',
-    previousIntro: 'CIA是IDP雅思官方考场资源之一。以下日期仅供行程规划参考，报名及考试日期可能调整，最终以IDP Philippines官方开放日期和CIA当期通知为准。',
-    previousFee: '2026年参考考费：13,660比索',
-    academicCode: 'ACADEMIC',
-    academicTitle: '学术类考期',
-    generalCode: 'ACADEMIC & GENERAL',
-    generalTitle: '学术类及一般培训类',
-    generalHint: '学校资料推荐考期',
-    notes: [
-      { icon: 'location_on', title: '校内考场安排', text: '如报名人数少于10人，考场可能调整至宿务市区；建议优先选择学校资料标注的推荐日期。' },
-      { icon: 'edit_calendar', title: '提前两周报名', text: '学生到校后可前往教务办公室报名，学校会提前准备参加考试所需的SSP文件。' },
-      { icon: 'verified', title: '仅供参考，以IDP为准', text: '报名日期、考试日期与考费均可能调整，须以报名时IDP Philippines官方页面实际开放信息为准。' },
-    ],
     officialLinkLabel: '查看 IDP Philippines 最新考试信息',
     officialUrl: 'https://ielts.idp.com/philippines',
   },
@@ -1772,6 +1727,10 @@ export const CIA_PAGE_COPY = {
   quote: {
     modes: { single: '单人报价', compare: '方案对比', group: '多人报价' },
     conditionsTitle: '更多条件',
+    conditionsStepTitle: '学生情况',
+    conditionsStepHint: '会影响价格，请逐项确认',
+    summaryTitle: '费用明细',
+    localFeeLinkLabel: '到校后另付学杂费',
     compareIntro: '同一位学生，最多3个方案并排比较。先选一种对比方式，再按需要修改每个方案。',
     compareShortcuts: [
       { focus: 'room', label: '比房型', hint: '课程和周数不变' },

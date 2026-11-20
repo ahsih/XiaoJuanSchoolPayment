@@ -32,6 +32,8 @@ import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.
 import { PlanCompareTableComponent } from '../../../components/plan-compare/plan-compare-table.component';
 import type { PlanCompareSheet } from '../../../components/plan-compare/plan-compare-sheet';
 import type { QuoteImageCardData } from '../../../components/quote-image-types';
+import type { CtaConsultant } from '../cia-school/cia-page-content';
+import { consultantsInTodaysOrder, quoteContactCard } from '../../../components/sida-consultants';
 import {
   CiaContentConfig,
   CiaExtraNightRate,
@@ -52,6 +54,7 @@ import { applyCiaQuoteContent } from '../cia-school/cia-quote-engine';
 import { associationPeakRateForWeek } from '../association-peak-surcharge';
 import type {
   CiaVideoCard,
+  CourseDetailGuide,
   CourseFee,
   GalleryCategory,
   GalleryImage,
@@ -62,7 +65,14 @@ import type {
 } from '../cia-school/cia-page-content';
 import type { PhCompareFocus, PhPlanComparison } from './ph-plan-compare';
 import type { PhSchoolQuote } from './ph-school-quote';
-import type { PhAlbumCategory, PhPageStudent, PhRoomProfile, PhSchoolProfile } from './ph-school-profile';
+import type {
+  PhAlbumCategory,
+  PhPageStudent,
+  PhRoomProfile,
+  PhSchoolProfile,
+  PhVideoItem,
+  PhVideoTab,
+} from './ph-school-profile';
 
 /** Imports of every school page component that renders ph-school-page.component.html. */
 export const PH_SCHOOL_PAGE_IMPORTS = [
@@ -93,10 +103,33 @@ interface CourseModeZone {
   groups: Array<CourseGroupView & { missingNote: string }>;
 }
 
+/** Compact layout: one entry of the hero album (the videos by topic, then the photos by area). */
+interface HeroAlbumItem {
+  kind: 'video' | 'photo';
+  category: string;
+  title: string;
+  description: string;
+  src: string;
+  poster?: string;
+  duration?: string;
+  shape?: PhVideoItem['shape'];
+}
+
+/** Compact layout: one month of the calendar table. */
+interface CalendarMonthRow {
+  month: number;
+  holidays: ReadonlyArray<{ day: string; name: string; provisional?: boolean }>;
+  exams: readonly number[];
+  peak: boolean;
+}
+
 /**
  * School subclasses keep the selector `app-cia-school`: the global styles (src/styles.css and
  * assets/cia/cia-page-extended.css) target that element, so every school shares them.
  */
+/** The daily consultant rotation lives with the consultant list; re-exported for the EV page test. */
+export { rotateForDay } from '../../../components/sida-consultants';
+
 @Directive()
 export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStudent>
   implements OnInit, AfterViewInit, OnDestroy
@@ -194,7 +227,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   set selectedStartDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
   selectedRoomProfileId = this.profile.roomProfiles[0]?.id ?? '';
   selectedRoomPhotoIndex = 0;
-  private photoSwipeOrigin: { x: number; y: number } | null = null;
+  private photoSwipeOrigin: { x: number; y: number; arrowStep: number } | null = null;
   quoteCalculated = false;
 
   /** Same-student plan comparison; it reuses the normal quote's prices and the first student's conditions. */
@@ -226,6 +259,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       fileName: `${this.profile.name}方案对比报价-${start.replace(/-/g, '')}.png`,
     };
   }
+  /** Query for /price-compare with the shown plan (single quote: student 1; 方案对比: plan A); null hides the link. */
+  get schoolCompareQuery(): Record<string, string> | null {
+    const id = this.profile.schoolCompareId;
+    if (!id) return null;
+    const plan = (this.quoteView === 'compare' ? this.comparison.plans[0] : this.students[0])?.quotePlan;
+    const course = plan?.courses[0];
+    const room = plan?.rooms[0];
+    return {
+      from: id,
+      ...(course ? { course: course.optionId, weeks: String(plan.courseWeeks), start: course.startDate } : {}),
+      ...(room ? { room: room.optionId } : {}),
+    };
+  }
   setComparePlanDate(plan: S, value: string, input: HTMLInputElement): void {
     if (!this.comparison.setStartDate(plan, value)) input.value = this.comparison.startDate(plan);
   }
@@ -245,10 +291,11 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly notSuitableFor = this.profile.notSuitableFor;
   readonly campusBuildings = this.profile.campusBuildings;
   readonly scheduleColumns = this.profile.scheduleColumns;
+  /** Compact layout on phones: the timetable shows one day column at a time. */
+  scheduleDayIndex = 0;
   readonly studyModes = this.profile.studyModes;
   readonly holidayCalendars = this.profile.holidayCalendars;
   readonly ieltsComputerExamDates2027 = this.profile.ieltsComputerExamDates2027;
-  readonly ieltsExamDates2026 = this.profile.ieltsExamDates2026;
   readonly courseDetailGuides = this.profile.courseDetailGuides;
   courseFees: CourseFee[] = this.profile.initialCourseFees.map(course => ({ ...course }));
   roomFees: RoomFee[] = this.profile.initialRoomFees.map(room => ({ ...room }));
@@ -265,6 +312,211 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly ieltsResultTitles = this.profile.ieltsResults.map(item => item.title + ' · 入学 ' + item.entrance + ' → 官方雅思 ' + item.overall);
   readonly showRoomCodes = this.profile.showRoomCodes;
   readonly reviewPath = this.profile.reviewPath;
+
+  // ---- Compact layout (profile.compactLayout; CIA only for now) ----
+  readonly compactLayout = !!this.profile.compactLayout;
+  readonly overviewFacts = this.profile.overviewFacts ?? [];
+  readonly courseHighlights = this.profile.courseHighlights ?? {};
+  readonly roomVideos = this.profile.roomVideos ?? {};
+  /**
+   * The open room's own video (same file as in the hero album), if the school has one of exactly that room type.
+   * It is the first item of the room's photo album; the arrows, a swipe or a thumbnail move on to the photos.
+   */
+  get selectedRoomVideo(): PhVideoItem | undefined {
+    return this.compactLayout ? this.roomVideos[this.selectedRoomProfile?.id ?? ''] : undefined;
+  }
+  /** False once a photo of the room is open; a newly chosen room starts on its video again. */
+  private roomVideoOpen = true;
+  get roomVideoActive(): boolean {
+    return this.roomVideoOpen && !!this.selectedRoomVideo;
+  }
+  /** Album length and 1-based position, counting the room's video as the first item. */
+  get roomAlbumLength(): number {
+    return this.selectedRoomPhotos.length + (this.selectedRoomVideo ? 1 : 0);
+  }
+  get roomAlbumPosition(): number {
+    if (!this.selectedRoomVideo) return this.selectedRoomPhotoIndex + 1;
+    return this.roomVideoActive ? 1 : this.selectedRoomPhotoIndex + 2;
+  }
+  showRoomVideo(): void {
+    this.roomVideoOpen = true;
+  }
+
+  /** Hero album: every video by topic (the campus tour first), then every photo by album category. */
+  heroAlbumIndex = 0;
+  private heroAlbumCache?: { photos: GalleryImage[]; videos: CiaVideoCard[]; items: HeroAlbumItem[] };
+  get heroAlbumItems(): HeroAlbumItem[] {
+    if (this.heroAlbumCache?.photos !== this.galleryImages || this.heroAlbumCache.videos !== this.uploadedVideoCards) {
+      const items: HeroAlbumItem[] = [];
+      for (const tab of this.videoTabs) {
+        for (const video of tab.items) {
+          items.push({ kind: 'video', category: tab.label, title: video.title, description: video.text, src: video.src,
+            poster: video.poster, duration: video.duration, shape: video.shape });
+        }
+      }
+      for (const category of this.galleryAlbumCategories) {
+        for (const image of this.galleryImagesForCategory(category)) {
+          items.push({ kind: 'photo', category, title: image.title, description: image.description, src: image.src });
+        }
+      }
+      this.heroAlbumCache = { photos: this.galleryImages, videos: this.uploadedVideoCards, items };
+    }
+    return this.heroAlbumCache.items;
+  }
+  get heroAlbumItem(): HeroAlbumItem {
+    const items = this.heroAlbumItems;
+    return items[Math.min(this.heroAlbumIndex, items.length - 1)];
+  }
+  get heroAlbumChips(): Array<{ category: string; count: number; video: boolean }> {
+    const categories = [...this.videoTabs.map(tab => tab.label), ...this.galleryAlbumCategories];
+    return categories
+      .map(category => {
+        const items = this.heroAlbumItems.filter(item => item.category === category);
+        return { category, count: items.length, video: items[0]?.kind === 'video' };
+      })
+      .filter(chip => chip.count > 0);
+  }
+  /** The album tabs as two rows, 视频 and 照片. A video topic drops its 视频 suffix because the row label says it. */
+  get heroAlbumChipGroups(): Array<{ label: string; chips: Array<{ category: string; label: string; count: number }> }> {
+    const chips = this.heroAlbumChips;
+    return [
+      { label: '视频', chips: chips.filter(chip => chip.video).map(chip => ({ ...chip, label: chip.category.replace(/视频$/, '') || chip.category })) },
+      { label: '照片', chips: chips.filter(chip => !chip.video).map(chip => ({ ...chip, label: chip.category })) },
+    ].filter(group => group.chips.length);
+  }
+  /** Thumbnails of the current item's category, with their index in the whole album. */
+  get heroAlbumThumbs(): Array<{ item: HeroAlbumItem; index: number }> {
+    const category = this.heroAlbumItem?.category;
+    return this.heroAlbumItems
+      .map((item, index) => ({ item, index }))
+      .filter(entry => entry.item.category === category);
+  }
+  get heroAlbumPhotos(): HeroAlbumItem[] { return this.heroAlbumItems.filter(item => item.kind === 'photo'); }
+  get heroAlbumPhotoSources(): string[] { return this.heroAlbumPhotos.map(item => item.src); }
+  get heroAlbumPhotoTitles(): string[] { return this.heroAlbumPhotos.map(item => item.title); }
+  get heroAlbumPhotoCaptions(): string[] { return this.heroAlbumPhotos.map(item => item.description); }
+  get heroAlbumPhotoAlts(): string[] { return this.heroAlbumPhotos.map(item => `${item.category}实景：${item.title}`); }
+  selectHeroAlbumChip(category: string): void {
+    const index = this.heroAlbumItems.findIndex(item => item.category === category);
+    if (index >= 0) this.heroAlbumIndex = index;
+  }
+  stepHeroAlbum(step: number): void {
+    const length = this.heroAlbumItems.length;
+    if (length > 0) this.heroAlbumIndex = (this.heroAlbumIndex + step + length) % length;
+  }
+  /** Video groups of the album; uploaded videos without a topic go last as 更多视频. */
+  get videoTabs(): PhVideoTab[] {
+    const tabs = [...(this.profile.videoTabs ?? [])];
+    if (this.uploadedVideoCards.length) {
+      tabs.push({
+        label: '更多视频',
+        icon: 'videocam',
+        items: this.uploadedVideoCards.map(card => ({ title: card.title, text: card.text, src: card.videoSrc, shape: 'wide' as const })),
+      });
+    }
+    return tabs;
+  }
+  /** Course notes (Light ESL, guarantee rules …) shown inside the courses they belong to. */
+  guidesForCourse(courseId: string): CourseDetailGuide[] {
+    return this.courseDetailGuides.filter(guide => guide.courseIds?.includes(courseId));
+  }
+  /** Notes for every course (study rules, the free evening class), listed once under the course list. */
+  readonly generalCourseGuides = this.courseDetailGuides.filter(guide => !guide.courseIds?.length);
+
+  /** The 2027 calendar as one row per month: holidays, IELTS dates and whether the month has peak weeks. */
+  get calendarMonths(): CalendarMonthRow[] {
+    const calendar = this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0];
+    if (!calendar) return [];
+    const year = calendar.year;
+    const ranges = this.peakSeasonCalendarRanges.filter(range => range.enabled !== false);
+    return Array.from({ length: 12 }, (_, offset) => {
+      const month = offset + 1;
+      const first = `${year}-${String(month).padStart(2, '0')}-01`;
+      const last = `${year}-${String(month).padStart(2, '0')}-31`;
+      return {
+        month,
+        holidays: calendar.months.find(item => item.month === month)?.holidays ?? [],
+        exams: year === 2027 ? this.ieltsComputerExamDates2027.find(item => item.month === month)?.days ?? [] : [],
+        peak: ranges.some(range => range.start <= last && range.end >= first),
+      };
+    });
+  }
+  /** Peak ranges that touch the calendar year, for the line above the calendar table. */
+  get calendarPeakRanges(): CiaPeakSeasonRange[] {
+    const year = this.calendarYear;
+    return this.peakSeasonCalendarRanges.filter(range =>
+      range.enabled !== false && range.end >= `${year}-01-01` && range.start <= `${year}-12-31`);
+  }
+  get calendarYear(): number {
+    return (this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0])?.year ?? 2027;
+  }
+
+  /** Rooms: a price card opens that room's photos and details below its group. */
+  selectedRateRoomId = '';
+  isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
+  @HostListener('window:resize')
+  updateViewportWidth(): void {
+    this.isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
+  }
+  roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
+    return this.roomComparisonProfiles.find(profile =>
+      (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+  }
+  get activeRateRoomId(): string {
+    if (this.selectedRateRoomId) return this.selectedRateRoomId;
+    for (const group of this.roomRateGroups) {
+      const room = group.rooms.find(item => this.roomProfileForRate(item)?.id === this.selectedRoomProfile?.id);
+      if (room) return room.id;
+    }
+    return '';
+  }
+  selectRateRoom(room: RoomRateOption, event?: Event): void {
+    const profile = this.roomProfileForRate(room);
+    if (!profile) return;
+    // Phones: the open panel moves under the tapped card, so keep that card where the finger left it.
+    const card = event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    const cardTop = this.isNarrowViewport && card ? card.getBoundingClientRect().top : null;
+    // Phones: tapping the open room again closes its details.
+    if (this.isNarrowViewport && this.selectedRateRoomId === room.id) {
+      this.selectedRateRoomId = '';
+    } else {
+      this.selectedRateRoomId = room.id;
+      this.setRoomProfile(profile.id);
+    }
+    if (cardTop !== null && typeof window !== 'undefined') {
+      setTimeout(() => {
+        const moved = document.querySelector(`#rooms .room-price-matrix [data-cia-preview-id="${room.id}"]`);
+        if (moved) window.scrollBy(0, moved.getBoundingClientRect().top - cardTop);
+      });
+    }
+  }
+  /** The price card the room panel belongs to; a profile priced per occupancy shows that card's own name. */
+  get roomVariant(): { code: string; label: string; suitable: string } | undefined {
+    const id = this.activeRateRoomId;
+    const room = this.roomRateGroups.flatMap(group => group.rooms).find(item => item.id === id);
+    const variant = room ? this.selectedRoomProfile.variants?.[room.code] : undefined;
+    return room && variant ? { code: room.code, label: variant.label, suitable: variant.suitable } : undefined;
+  }
+  /**
+   * Phones show a room's details right under the tapped card, only after a tap, so the page stays short
+   * and the photos clearly belong to that room; wider screens always show the selected room under the
+   * whole price list. Returns the tapped card's position in the group, or -1 when the panel is elsewhere.
+   */
+  roomPanelSplit(group: RoomRateGroup): number {
+    if (!this.compactLayout || !this.isNarrowViewport || !this.selectedRateRoomId) return -1;
+    return group.rooms.findIndex(room => room.id === this.selectedRateRoomId);
+  }
+  roomsBeforePanel(group: RoomRateGroup): RoomRateOption[] {
+    const split = this.roomPanelSplit(group);
+    return split < 0 ? group.rooms : group.rooms.slice(0, split + 1);
+  }
+  roomsAfterPanel(group: RoomRateGroup): RoomRateOption[] {
+    const split = this.roomPanelSplit(group);
+    return split < 0 ? [] : group.rooms.slice(split + 1);
+  }
+  trackRateRoom(_index: number, room: RoomRateOption): string {
+    return room.id;
+  }
 
   get displayedVideoCards(): CiaVideoCard[] {
     return [...this.videoCards, ...this.uploadedVideoCards];
@@ -307,6 +559,18 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.courseGroupCache.groups;
   }
   trackCourseGroup(_index: number, group: CourseGroupView): string { return group.title; }
+  private courseGroupColumnCache?: { source: CourseGroupView[]; columns: Array<Array<{ group: CourseGroupView; index: number }>> };
+  /** Compact layout: groups 1, 3 … on the left and 2, 4 … on the right; index keeps the phone order. */
+  get courseGroupColumns(): Array<Array<{ group: CourseGroupView; index: number }>> {
+    const groups = this.courseGroups;
+    if (this.courseGroupColumnCache?.source !== groups) {
+      const columns: Array<Array<{ group: CourseGroupView; index: number }>> = [[], []];
+      groups.forEach((group, index) => columns[index % 2].push({ group, index }));
+      this.courseGroupColumnCache = { source: groups, columns };
+    }
+    return this.courseGroupColumnCache.columns;
+  }
+  trackCourseGroupEntry(_index: number, entry: { group: CourseGroupView }): string { return entry.group.title; }
   private courseModeZoneCache?: { source: CourseGroupView[]; zones?: CourseModeZone[] };
   /** Profiles with courseModes list courses by study mode first; undefined keeps the normal goal groups. */
   get courseModeZones(): CourseModeZone[] | undefined {
@@ -368,9 +632,49 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   readonly ctaBadges = this.profile.ctaBadges;
 
-  readonly ctaConsultants = this.profile.ctaConsultants;
+  /**
+   * Every consultant in today's order, for the consultant cards and the floating 免费咨询 button alike. It starts
+   * from SIDA_CONSULTANT_DAILY_ORDER and turns by one place each day (China time), so each consultant leads in turn,
+   * and the first one's QR code is shown when the panel opens (user decisions 2026-11-21).
+   */
+  readonly ctaConsultants = consultantsInTodaysOrder(this.profile.ctaConsultants, consultant => consultant.name);
+  readonly floatConsultants = this.ctaConsultants;
+  floatConsultantIndex = 0;
+  floatConsultOpen = false;
+
+  /** Opens the floating panel on one consultant's QR code (the button on a WeChat-only consultant card). */
+  openFloatConsult(consultant: CtaConsultant, event: Event): void {
+    event.stopPropagation();
+    const index = this.floatConsultants.findIndex(item => item.name === consultant.name);
+    if (index >= 0) this.floatConsultantIndex = index;
+    this.floatConsultOpen = true;
+  }
+
+  get floatConsultant(): CtaConsultant | undefined {
+    return this.floatConsultants[this.floatConsultantIndex];
+  }
+
+  /**
+   * 咨询顾问 chosen in the quote (user request 2026-11-21; layoutVersion 2 images, CIA so far): the quote image shows
+   * this consultant's phone and WeChat QR code. ngOnInit picks
+   * today's first consultant.
+   */
+  get usesQuoteConsultant(): boolean { return this.quote.usesContactCard; }
+  get quoteConsultantName(): string { return this.quote.contactCard?.consultant.name ?? ''; }
+  set quoteConsultantName(name: string) {
+    const consultant = this.ctaConsultants.find(item => item.name === name);
+    if (consultant) this.quote.contactCard = quoteContactCard(consultant);
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeFloatConsult(event: Event): void {
+    if (this.floatConsultOpen && event.target instanceof Element && !event.target.closest('.float-consult')) {
+      this.floatConsultOpen = false;
+    }
+  }
 
   ngOnInit(): void {
+    if (this.usesQuoteConsultant) this.quoteConsultantName = this.ctaConsultants[0]?.name ?? '';
     this.loadExtendedPageStyles();
     this.applySessionPreview();
     this.loadPricingFromDatabase();
@@ -915,10 +1219,6 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
   }
 
-  roomsForRateGroup(group: RoomRateGroup): RoomRateOption[] {
-    return group.rooms;
-  }
-
   /** Desktop room price table: each group is as wide as its number of rooms (CIA 3/3/4, EV 4/2). */
   get roomMatrixColumns(): string {
     return this.roomRateGroups.map(group => `${Math.max(1, group.rooms.length)}fr`).join(' ');
@@ -927,6 +1227,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   setRoomProfile(profileId: string): void {
     this.selectedRoomProfileId = profileId;
     this.selectedRoomPhotoIndex = 0;
+    this.roomVideoOpen = true;
   }
 
   get selectedRoomPhotos(): readonly string[] {
@@ -941,27 +1242,58 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   selectRoomPhoto(index: number): void {
     this.selectedRoomPhotoIndex = Math.min(Math.max(index, 0), this.selectedRoomPhotos.length - 1);
+    this.roomVideoOpen = false;
   }
 
   stepRoomPhoto(step: number): void {
-    const length = this.selectedRoomPhotos.length;
-    this.selectedRoomPhotoIndex = (this.selectedRoomPhotoIndex + step + length) % length;
+    const length = this.roomAlbumLength;
+    const next = (this.roomAlbumPosition - 1 + step + length) % length;
+    if (!this.selectedRoomVideo) {
+      this.selectedRoomPhotoIndex = next;
+      return;
+    }
+    this.roomVideoOpen = next === 0;
+    if (next > 0) this.selectedRoomPhotoIndex = next - 1;
   }
 
   photoSwipeStart(event: TouchEvent): void {
     const touch = event.changedTouches[0];
-    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    // A drag on a playing video, or on a video's control bar, seeks the video; it must not flip the album.
+    // A swipe across a paused video still moves on to the next photo.
+    if (event.target instanceof HTMLVideoElement) {
+      const box = event.target.getBoundingClientRect();
+      if (!event.target.paused || !touch || touch.clientY > box.bottom - 64) {
+        this.photoSwipeOrigin = null;
+        return;
+      }
+    }
+    const arrow = event.target instanceof Element ? event.target.closest('.photo-step') : null;
+    const arrowStep = arrow ? (arrow.classList.contains('photo-step--next') ? 1 : -1) : 0;
+    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY, arrowStep } : null;
   }
 
-  photoSwipeEnd(event: TouchEvent, album: 'gallery' | 'room'): void {
+  photoSwipeEnd(event: TouchEvent, album: 'gallery' | 'room' | 'hero'): void {
     const origin = this.photoSwipeOrigin;
     const touch = event.changedTouches[0];
     this.photoSwipeOrigin = null;
     if (!origin || !touch) return;
     const dx = touch.clientX - origin.x;
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(touch.clientY - origin.y)) return;
-    const step = dx < 0 ? 1 : -1;
-    if (album === 'room') {
+    const dy = touch.clientY - origin.y;
+    // A tap on an arrow steps here: in iPhone WeChat the arrow's own click sometimes never arrives.
+    // Cancelling the touch stops that click (and a double-tap zoom), so the album moves once.
+    if (origin.arrowStep && Math.abs(dx) < 12 && Math.abs(dy) < 12 && event.cancelable) {
+      event.preventDefault();
+      this.stepPhotoAlbum(album, origin.arrowStep);
+      return;
+    }
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    this.stepPhotoAlbum(album, dx < 0 ? 1 : -1);
+  }
+
+  private stepPhotoAlbum(album: 'gallery' | 'room' | 'hero', step: number): void {
+    if (album === 'hero') {
+      this.stepHeroAlbum(step);
+    } else if (album === 'room') {
       this.stepRoomPhoto(step);
     } else if (step > 0) {
       this.nextGalleryImage();

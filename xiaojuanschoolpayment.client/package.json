@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "run-script-os",
-    "build": "ng build && node scripts/export-seo-pages.cjs && node scripts/export-mini-program-content.cjs",
+    "build": "node scripts/check-consultant-media.cjs && ng build && node scripts/export-seo-pages.cjs && node scripts/export-mini-program-content.cjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "prestart": "node aspnetcore-https",

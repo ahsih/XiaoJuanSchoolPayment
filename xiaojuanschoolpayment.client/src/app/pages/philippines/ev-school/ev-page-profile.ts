@@ -337,7 +337,7 @@ const EV_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [...new Set(defaults.rooms.
     .map(room => ({ id: room.id, label: room.label, code: room.code, location: room.location })),
 }));
 
-const EV_CTA_CONSULTANTS = ['Lemon', 'Penin', 'Jenny']
+const EV_CTA_CONSULTANTS = ['Lemon', 'Perrin', 'Iris', 'Lisa', 'Jenny']
   .map(name => SIDA_PHILIPPINES_CONSULTANTS.find(item => item.name === name))
   .filter(item => !!item)
   .map(item => item!);
@@ -347,6 +347,7 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   name: 'EV',
   previewPrefix: 'ev',
   pricingSchoolName: 'EV Academy',
+  schoolCompareId: 'ev',
   copy: EV_COPY,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
@@ -411,7 +412,6 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   reviewPath: '',
   holidayCalendars: [],
   ieltsComputerExamDates2027: [],
-  ieltsExamDates2026: [],
   studentCareServices: [],
   campusPracticalGuides: EV_PRACTICAL_GUIDES,
   studentTracks: [],

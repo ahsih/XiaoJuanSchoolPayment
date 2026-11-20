@@ -8,6 +8,7 @@ import { SchoolService } from '../../../../services/school.service';
 import { cloneEvContentConfig, createDefaultEvContentConfig } from './ev-content-config';
 import { EV_PAGE_PROFILE } from './ev-page-profile';
 import { EvSchoolPageComponent } from './ev-school-page.component';
+import { rotateForDay } from '../school-page/ph-school-page.component';
 
 // The EV page on the shared Philippine school template: amounts must match the EV price list and
 // the 2026-08-10 local-fee sheets exactly as the former EV page did.
@@ -164,6 +165,21 @@ describe('EV school page on the shared template', () => {
     expect(names(1, '口语强化')).toEqual(['口语强化6', '口语强化8']);
     expect(names(0, '综合英语 ESL')).toEqual(['经典ESL']);
     expect(zones[0].groups.find(group => group.title === '雅思')!.missingNote).toBe('本类课程仅开设斯巴达');
-    expect(page.copy.referenceNote).toContain('实际以学校为准');
+    expect(page.copy.referenceNote).toContain('最终解释权归学校');
+  });
+});
+
+describe('floating 免费咨询 panel order', () => {
+  const consultants = ['Perrin', 'Lemon', 'Iris', 'Lisa', 'Jenny'];
+  const day = 24 * 60 * 60 * 1000;
+
+  it('puts a different consultant first on each of five days, in China time', () => {
+    const start = Date.UTC(2026, 10, 20, 16, 0, 0); // 2026-11-21 00:00 in China
+    const leads = [0, 1, 2, 3, 4].map(offset => rotateForDay(consultants, start + offset * day)[0]);
+    expect([...leads].sort()).toEqual([...consultants].sort());
+    expect(rotateForDay(consultants, start + 5 * day)[0]).toBe(leads[0]);
+    // Still the same lead until midnight in China, and every list keeps all five consultants.
+    expect(rotateForDay(consultants, start + day - 1)[0]).toBe(leads[0]);
+    expect(rotateForDay(consultants, start + 2 * day).length).toBe(5);
   });
 });

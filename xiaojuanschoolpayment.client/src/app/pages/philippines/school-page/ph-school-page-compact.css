@@ -1,0 +1,1338 @@
+/*
+ * The compact school-page layout (profile.compactLayout). Only CIA lists this file (user decision
+ * 2026-11-20: shorter CIA page, less white space); other schools keep their layout unchanged.
+ */
+
+/* ---- Tighter section rhythm ---- */
+:host .cia-section,
+:host .video-section,
+:host .advisor-review,
+:host .student-track-section,
+:host .faq-section,
+:host .final-cta,
+:host .cia-collapsible-section {
+  margin-top: 22px;
+}
+
+:host .section-heading h2 {
+  font-size: clamp(22px, 2.2vw, 30px);
+}
+
+:host .section-heading p {
+  margin-top: 6px;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+/* ---- Hero: title on the left, one album (video first) on the right ---- */
+:host .cia-hero--compact {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: start;
+  min-height: 0;
+  padding: 14px 0 6px;
+}
+
+:host .cia-hero--compact .breadcrumb {
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+:host .cia-hero--compact .hero-copy h1 {
+  font-size: clamp(34px, 3.6vw, 56px);
+}
+
+:host .cia-hero--compact .hero-lead {
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+:host .cia-hero--compact .hero-actions {
+  margin-top: 20px;
+}
+
+:host .hero-album {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+:host .hero-album-stage {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  background: #0b1f19;
+}
+
+:host .hero-album-stage > video,
+:host .hero-album-stage > app-expandable-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host .hero-album-stage > video {
+  object-fit: contain;
+  background: #000000;
+}
+
+:host .hero-album-stage ::ng-deep .expandable-image__trigger {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host .hero-album-stage ::ng-deep .expandable-image__trigger img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The album shows its own counter. */
+:host .hero-album-stage ::ng-deep .expandable-image__count {
+  display: none;
+}
+
+:host .hero-album-stage .photo-step {
+  top: 50%;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  transform: translateY(-50%);
+}
+
+:host .hero-album-count {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(8, 22, 41, 0.7);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+:host .hero-album-stage.is-video .hero-album-count {
+  top: 10px;
+  bottom: auto;
+}
+
+/* Videos: the arrows sit higher so they never cover the player's controls. */
+:host .hero-album-stage.is-video .photo-step {
+  top: 42%;
+}
+
+:host .hero-album-stage .video-fullscreen-button {
+  position: absolute;
+  top: 10px;
+  right: auto;
+  left: 10px;
+  z-index: 3;
+}
+
+:host .hero-album-caption small {
+  margin-left: 6px;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+:host .hero-album-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  align-items: baseline;
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+:host .hero-album-caption strong {
+  color: #102033;
+  font-size: 14.5px;
+}
+
+/* Album tabs: a 视频 row and a 照片 row of quiet chips; only the open one is filled. */
+:host .hero-album-filters {
+  display: grid;
+  gap: 6px;
+}
+
+:host .hero-album-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+:host .hero-album-chips::-webkit-scrollbar,
+:host .hero-album-thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+:host .hero-album-chips-label {
+  flex: 0 0 32px;
+  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+:host .hero-album-chips button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 5px;
+  align-items: baseline;
+  padding: 5px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: #f1f5f3;
+  color: #334155;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+:host .hero-album-chips button:hover {
+  background: #e3ece7;
+}
+
+:host .hero-album-chips small {
+  color: #94a3b8;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+:host .hero-album-chips button.active {
+  background: #064d3b;
+  color: #ffffff;
+}
+
+:host .hero-album-chips button.active small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:host .hero-album-thumbs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+:host .hero-album-thumbs button {
+  position: relative;
+  flex: 0 0 64px;
+  height: 46px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #e2e8f0;
+  cursor: pointer;
+  opacity: 0.72;
+}
+
+:host .hero-album-thumbs button.active {
+  border-color: #f25518;
+  opacity: 1;
+}
+
+:host .hero-album-thumbs img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+:host .hero-album-thumbs mat-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #ffffff;
+  font-size: 22px;
+  transform: translate(-50%, -50%);
+}
+
+/* 所有图片和视频仅供参考: one line under the album and under the room photos. */
+:host .photo-reference-note {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin: 0;
+  color: #7a8a84;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+:host .photo-reference-note mat-icon {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
+:host .room-profile-gallery .photo-reference-note {
+  margin-top: 6px;
+}
+
+/* ---- Overview: key facts, building list, advisor review and licence in one block ---- */
+:host .compact-overview {
+  display: grid;
+  gap: 14px;
+}
+
+:host .compact-overview .section-heading {
+  margin: 0;
+}
+
+:host .overview-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+:host .overview-facts > div {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 2px 8px;
+  align-content: start;
+  padding: 10px 12px;
+  border: 1px solid #e5ebef;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+:host .overview-facts mat-icon {
+  grid-row: 1 / span 2;
+  width: 22px;
+  height: 22px;
+  color: #087050;
+  font-size: 22px;
+}
+
+:host .overview-facts dt {
+  color: #7a8a84;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+:host .overview-facts dd {
+  margin: 0;
+  color: #102033;
+  font-size: 13.5px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+/* Hero facts: two columns under the title, beside the album. */
+:host .cia-hero--compact {
+  grid-template-rows: auto 1fr;
+}
+
+:host .cia-hero--compact > .hero-album {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+:host .cia-hero--compact > .hero-facts {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+:host .hero-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+  align-self: start;
+}
+
+:host .hero-facts > div {
+  padding: 8px 0;
+  border: 0;
+  border-top: 1px solid #e3eae6;
+  border-radius: 0;
+  background: none;
+}
+
+:host .compact-more {
+  border: 1px solid #e5ebef;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+:host .compact-more > summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  color: #102033;
+  font-size: 14px;
+  font-weight: 850;
+  list-style: none;
+  cursor: pointer;
+}
+
+:host .compact-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+:host .compact-more > summary > mat-icon:first-child {
+  width: 20px;
+  height: 20px;
+  color: #087050;
+  font-size: 20px;
+}
+
+:host .compact-more > summary > span {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+:host .compact-more > summary small {
+  color: #7a8a84;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+:host .compact-more-arrow {
+  width: 20px;
+  height: 20px;
+  color: #a3b1ab;
+  font-size: 20px;
+  transition: transform 160ms ease;
+}
+
+:host .compact-more[open] .compact-more-arrow {
+  transform: rotate(180deg);
+}
+
+:host .compact-more-body {
+  padding: 0 14px 12px;
+}
+
+:host .compact-buildings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+:host .compact-buildings article {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f6f9f7;
+}
+
+:host .compact-buildings strong {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #102033;
+  font-size: 13.5px;
+}
+
+:host .compact-buildings strong span {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #064d3b;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+:host .compact-buildings p {
+  margin: 4px 0 0;
+  color: #475569;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+:host .compact-advisor {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f1f7f3;
+}
+
+:host .compact-advisor h3 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0;
+  color: #043f2d;
+  font-size: 16px;
+}
+
+:host .compact-advisor h3 mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+:host .compact-advisor > p {
+  margin: 6px 0 10px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+:host .compact-fit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+:host .compact-fit strong {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  color: #102033;
+  font-size: 13.5px;
+}
+
+:host .compact-fit strong mat-icon {
+  width: 18px;
+  height: 18px;
+  color: #087050;
+  font-size: 18px;
+}
+
+:host .compact-fit > div + div strong mat-icon {
+  color: #c2410c;
+}
+
+:host .compact-fit ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+:host .compact-overview .school-license-strip {
+  margin: 0;
+}
+
+/* ---- Courses: free-exam badge, notes inside each course, flat extra rows ---- */
+:host .course-group-column {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  min-width: 0;
+}
+
+:host .course-line-badge {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 8px 1px 5px;
+  border-radius: 999px;
+  background: #fff1e8;
+  color: #c2410c;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
+:host .course-line-badge mat-icon {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
+:host .course-line-detail .course-line-highlight dt {
+  color: #c2410c;
+  font-weight: 800;
+}
+
+:host .course-line-guide {
+  margin: -6px 18px 14px;
+  padding: 10px 14px;
+  border-left: 3px solid #087050;
+  border-radius: 0 10px 10px 0;
+  background: #fbfcfc;
+}
+
+:host .course-line-guide h4 {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 0 0 4px;
+  color: #043f2d;
+  font-size: 14px;
+}
+
+:host .course-line-guide h4 mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+:host .course-line-guide ul,
+:host .course-extras .compact-more-body ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+:host .course-line-guide dl,
+:host .course-extras .compact-more-body dl {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+:host .course-line-guide dl div,
+:host .course-extras .compact-more-body dl div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 8px;
+}
+
+:host .course-line-guide dt,
+:host .course-extras .compact-more-body dt {
+  color: #7a8a84;
+}
+
+:host .course-line-guide dd,
+:host .course-extras .compact-more-body dd {
+  margin: 0;
+  color: #334155;
+}
+
+:host .course-line-guide .course-detail-notice,
+:host .course-extras .course-detail-notice {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+:host .course-line-guide .course-detail-notice mat-icon,
+:host .course-extras .course-detail-notice mat-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+:host .course-line-guide .course-detail-evidence {
+  margin: 8px 0 0;
+}
+
+:host .course-line-guide .course-detail-evidence img {
+  max-width: min(100%, 360px);
+  border-radius: 8px;
+}
+
+:host .course-line-guide .course-detail-evidence figcaption {
+  color: #7a8a84;
+  font-size: 12px;
+}
+
+:host .course-extras {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+:host .course-extras .compact-more[open] {
+  grid-column: 1 / -1;
+}
+
+:host .course-extras .daily-schedule-section {
+  margin: 0;
+  padding-top: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+:host .compact-rule-note {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 6px;
+  margin: 2px 0 0;
+  color: #7a8a84;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+:host .compact-rule-note mat-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+/* ---- Rooms: price cards pick the room shown below ---- */
+:host .rooms-section .room-table-heading {
+  flex-wrap: wrap;
+  row-gap: 4px;
+  margin-bottom: 10px;
+}
+
+:host .rooms-section .room-table-heading .room-pick-hint {
+  flex-basis: 100%;
+  max-width: none;
+  text-align: left;
+}
+
+:host .rooms-section .room-table-heading .room-pick-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: center;
+  margin: 6px 0 0;
+  color: #087050;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+:host .room-pick-hint mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+:host .room-pick-hint a {
+  color: #c2410c;
+  text-decoration: none;
+}
+
+:host .room-price-matrix-grid article.is-pickable {
+  cursor: pointer;
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+
+:host .room-price-matrix-grid article.is-pickable:hover {
+  background: #eef6f1;
+}
+
+:host .room-price-matrix-grid article.is-selected {
+  background: #e3f2ea;
+  box-shadow: inset 0 -3px 0 #087050;
+}
+
+:host .room-price-matrix + .room-profile-panel {
+  margin-top: 12px;
+}
+
+:host .room-price-matrix-grid ~ .room-profile-panel {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #dce4e7;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The room comparison table is the only thing left in its wrapper, so drop the wrapper's padding. */
+:host .rooms-section .room-comparison-section {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* The section's grid gap already separates the blocks; keep the two folded rows close together. */
+:host .rooms-section {
+  row-gap: 14px;
+}
+
+:host .rooms-section .room-comparison-section .room-table-disclosure {
+  margin-top: 0;
+}
+
+:host .stay-rules-disclosure,
+:host .room-table-disclosure {
+  margin-top: 10px;
+}
+
+/* Stay rules: rates, check-in/out and dorm rules as tight blocks. */
+:host .stay-rules-disclosure .collapsible-panel-body {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+:host .stay-rules-disclosure .short-stay-rate,
+:host .stay-rules-disclosure .check-in-out-policy,
+:host .stay-rules-disclosure .dorm-rules {
+  margin: 0;
+}
+
+:host .stay-rules-disclosure .short-stay-rate {
+  grid-template-columns: auto repeat(3, minmax(0, 1fr));
+}
+
+:host .stay-rules-disclosure .short-stay-rate > * {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  align-items: baseline;
+  justify-content: center;
+  min-height: 0;
+  padding: 7px 12px;
+}
+
+:host .stay-rules-disclosure .check-in-out-policy {
+  padding: 12px 14px;
+  background: #fbfdfc;
+}
+
+:host .stay-rules-disclosure .check-in-out-heading {
+  margin-bottom: 8px;
+}
+
+:host .stay-rules-disclosure .check-in-out-heading > span,
+:host .stay-rules-disclosure .check-in-out-heading small {
+  display: none;
+}
+
+:host .stay-rules-disclosure .check-in-out-heading h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+:host .stay-rules-disclosure .check-in-out-grid {
+  gap: 8px;
+}
+
+:host .stay-rules-disclosure .check-in-out-grid article {
+  padding: 10px 12px;
+}
+
+:host .stay-rules-disclosure .check-in-out-grid p {
+  margin-top: 4px;
+  line-height: 1.55;
+}
+
+:host .stay-rules-disclosure .extra-night-rates {
+  margin-top: 8px;
+}
+
+:host .stay-rules-disclosure .extra-night-rates span {
+  padding: 6px 8px;
+}
+
+:host .stay-rules-disclosure .dorm-rules {
+  padding: 12px 14px;
+}
+
+:host .stay-rules-disclosure .dorm-rules h3 {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+:host .stay-rules-disclosure .dorm-rules ul {
+  display: block;
+  columns: 2;
+  column-gap: 28px;
+}
+
+:host .stay-rules-disclosure .dorm-rules li {
+  margin-bottom: 4px;
+  break-inside: avoid;
+}
+
+/* Folded rows: lower headers than the template's 84px. */
+:host .cia-collapsible-section > summary {
+  gap: 12px;
+  min-height: 0;
+  padding: 12px 16px;
+}
+
+:host .cia-collapsible-section > summary strong {
+  font-size: 16.5px;
+}
+
+:host .cia-collapsible-section .collapsible-summary-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+:host .cia-collapsible-section .collapsible-summary-icon mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+/* ---- Reviews and quote: smaller frames and portraits ---- */
+:host .official-student-reviews {
+  padding: clamp(18px, 2.2vw, 28px);
+}
+
+:host .official-review-heading {
+  margin-bottom: 14px;
+}
+
+:host .official-review-grid figure {
+  padding: 14px 14px 10px;
+}
+
+:host .official-review-grid figure::after {
+  top: 14px;
+  width: 124px;
+  height: 124px;
+}
+
+:host .official-review-grid figure img {
+  width: 124px;
+  height: 124px;
+}
+
+:host .official-review-card-copy {
+  padding: 4px 16px 16px;
+}
+
+:host .official-review-card-copy blockquote {
+  margin: 10px 0 12px;
+  line-height: 1.7;
+}
+
+:host .quote-results-section {
+  margin-top: 22px;
+}
+
+/* ---- Calendar: one table for the year ---- */
+:host .school-calendar-section.compact-calendar {
+  margin: 0;
+  padding: 4px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+:host .compact-calendar h3 {
+  margin: 0;
+  color: #043f2d;
+  font-size: 18px;
+}
+
+:host .compact-calendar-intro {
+  margin: 4px 0 10px;
+  color: #64748b;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+:host .compact-peak {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff6ec;
+}
+
+:host .compact-peak > mat-icon {
+  flex: 0 0 auto;
+  color: #e94f16;
+}
+
+:host .compact-peak > div {
+  display: grid;
+  gap: 2px;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+:host .compact-peak strong {
+  color: #c2410c;
+  font-size: 14px;
+}
+
+:host .compact-peak small {
+  color: #7a8a84;
+  font-size: 12px;
+}
+
+:host .compact-calendar-table {
+  overflow: hidden;
+  border: 1px solid #dce4e7;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+:host .compact-calendar-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 7px 12px;
+  border-top: 1px solid #eef2f0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+:host .compact-calendar-row--head {
+  border-top: 0;
+  background: #374b52;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+:host .compact-calendar-row.is-peak {
+  background: #fff9f3;
+}
+
+:host .cal-month {
+  color: #102033;
+  font-weight: 850;
+}
+
+:host .cal-month em {
+  display: block;
+  width: fit-content;
+  margin-top: 1px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: #fde3d3;
+  color: #c2410c;
+  font-size: 11px;
+  font-style: normal;
+}
+
+:host .cal-holidays {
+  display: grid;
+  gap: 1px;
+  color: #334155;
+}
+
+:host .cal-holidays b {
+  margin-right: 6px;
+  color: #102033;
+}
+
+:host .cal-holidays small {
+  margin-left: 4px;
+  color: #b45309;
+  font-size: 11px;
+}
+
+:host .cal-holidays i,
+:host .cal-exams {
+  color: #64748b;
+  font-style: normal;
+}
+
+:host .compact-calendar .calendar-footnote {
+  display: flex;
+  gap: 6px;
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+:host .compact-calendar .calendar-footnote mat-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+:host .compact-calendar .calendar-footnote a {
+  color: #087050;
+  font-weight: 800;
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 761px) and (max-width: 1099px) {
+  :host .cia-hero--compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .cia-hero--compact > .hero-album,
+  :host .cia-hero--compact > .hero-facts {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  :host .overview-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 760px) {
+  /* One column: the cards follow their group order again. */
+  :host .course-group-column {
+    display: contents;
+  }
+
+  :host .stay-rules-disclosure .collapsible-panel-body {
+    padding: 10px;
+  }
+
+  :host .stay-rules-disclosure .dorm-rules ul {
+    columns: 1;
+  }
+
+  :host .stay-rules-disclosure .short-stay-rate {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  :host .stay-rules-disclosure .short-stay-rate > strong {
+    grid-column: 1 / -1;
+    padding: 6px 10px;
+  }
+
+  :host .stay-rules-disclosure .short-stay-rate > span {
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 4px;
+    border-top: 1px solid #d7e0e3;
+  }
+
+  :host .stay-rules-disclosure .short-stay-rate > span:nth-child(2) {
+    border-left: 0;
+  }
+
+  :host .stay-rules-disclosure .short-stay-rate > span + span {
+    border-left: 1px solid #d7e0e3;
+  }
+
+  /* On phones the bordered cards are enough; drop the box around them. */
+  :host .stay-rules-disclosure .check-in-out-policy {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  :host .stay-rules-disclosure .extra-night-rates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: #d4e3dc;
+  }
+
+  :host .stay-rules-disclosure .extra-night-rates span {
+    border: 0;
+    background: #eef7f2;
+  }
+
+  :host .cia-collapsible-section > summary {
+    padding: 10px 12px;
+  }
+
+  :host .cia-section,
+  :host .video-section,
+  :host .advisor-review,
+  :host .student-track-section,
+  :host .faq-section,
+  :host .final-cta,
+  :host .cia-collapsible-section {
+    margin-top: 16px;
+  }
+
+  :host .cia-hero--compact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 4px 0 4px;
+  }
+
+  :host .cia-hero--compact > .hero-album,
+  :host .cia-hero--compact > .hero-facts {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  :host .hero-facts > div {
+    padding: 8px 12px;
+  }
+
+  :host .cia-hero--compact .breadcrumb {
+    margin-bottom: 8px;
+    font-size: 12px;
+  }
+
+  :host .cia-hero--compact .hero-copy h1 {
+    font-size: clamp(28px, 8vw, 34px);
+  }
+
+  :host .cia-hero--compact .hero-lead {
+    margin-top: 8px;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+
+  :host .cia-hero--compact .hero-actions {
+    margin-top: 12px;
+    gap: 8px;
+  }
+
+  :host .hero-album-stage {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+  }
+
+  :host .hero-album-stage.is-video {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Vertical clips fill the same 16:9 frame as the landscape videos; 全屏 shows the whole picture. */
+  :host .hero-album-stage.is-tall > video {
+    object-fit: cover;
+  }
+
+  :host .hero-album-stage.is-tall > video:fullscreen {
+    object-fit: contain;
+  }
+
+  :host .hero-album-stage.is-tall > video:-webkit-full-screen {
+    object-fit: contain;
+  }
+
+  /* The two hero buttons sit side by side. */
+  :host .cia-hero--compact .hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .cia-hero--compact .hero-actions .primary-action,
+  :host .cia-hero--compact .hero-actions .secondary-action {
+    grid-column: auto;
+    min-height: 48px;
+    padding-inline: 8px;
+    gap: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  :host .hero-album-chips {
+    flex-wrap: nowrap;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  :host .hero-album-chips-label {
+    flex-basis: 26px;
+  }
+
+  :host .hero-album-chips button {
+    gap: 4px;
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+  :host .hero-album-stage .photo-step {
+    width: 32px;
+    height: 32px;
+  }
+
+  :host .overview-facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid #e5ebef;
+    border-radius: 10px;
+    background: #ffffff;
+  }
+
+  :host .overview-facts > div {
+    grid-template-columns: 20px 40px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 0;
+  }
+
+  :host .overview-facts > div + div {
+    border-top: 1px solid #eef2f0;
+  }
+
+  :host .overview-facts mat-icon {
+    grid-row: auto;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  :host .overview-facts dt {
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  :host .overview-facts dd {
+    font-size: 13.5px;
+  }
+
+  :host .compact-buildings,
+  :host .compact-fit,
+  :host .course-extras {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :host .compact-advisor {
+    padding: 12px 14px;
+  }
+
+  :host .course-line-badge {
+    margin: 2px 0 0;
+  }
+
+  :host .course-line-guide {
+    margin: -6px 12px 12px;
+  }
+
+  :host .room-price-matrix-grid ~ .room-profile-panel {
+    padding: 12px;
+  }
+
+  :host .room-price-matrix-grid ~ .room-profile-panel .room-profile-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  :host .room-price-matrix-grid ~ .room-profile-panel .room-profile-facts > div {
+    padding: 8px 10px;
+  }
+
+  :host .compact-calendar-row {
+    grid-template-columns: 46px minmax(0, 1fr) 84px;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+  }
+}
+
+/* Course notes: shared notes under the list get a heading; every opened course note ends with the school-rules line. */
+:host .course-extras-title {
+  margin: 4px 0 0;
+  color: #173b4b;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host .course-line .course-line-reference {
+  margin: 10px 14px 14px;
+}

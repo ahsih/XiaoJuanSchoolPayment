@@ -5,12 +5,20 @@
 // it with a browser canvas. Keep this file free of Angular, DOM types and regex lookbehind so the
 // WeChat mini program can bundle it.
 import {
+  HEADER_PHOTO_LEFT,
+  HEADER_PHOTO_WIDTH,
+  HEADER_QR_HEIGHT,
+  HEADER_QR_LEFT,
+  HEADER_TEXT_LEFT,
   QuoteCanvasContext,
   QuoteCanvasImage,
+  drawHeaderQr,
   drawQuoteBrandHeader,
   drawRoundedImageCover,
   drawRoundedRect,
   drawSolidLine,
+  headerQrOf,
+  quoteConsultantLine,
   wrapCanvasText,
 } from '../quote-image-detailed-renderer';
 import type { QuoteImageCardData } from '../quote-image-types';
@@ -111,9 +119,15 @@ interface Layout {
   height: number;
 }
 
-function layout(context: TextContext, sheet: PlanCompareSheet): Layout {
-  const conditionLines = lines(context, sheet.conditions, 520, { font: font(15, 700), color: COLORS.navy, lineHeight: 21 }).slice(0, 3);
-  const titleHeight = Math.max(122, 74 + conditionLines.length * 21 + 34);
+function layout(context: TextContext, sheet: PlanCompareSheet, quote?: QuoteImageCardData): Layout {
+  // A layoutVersion 2 quote (CIA so far) uses the three-column title card of the detailed image: school photo,
+  // heading and conditions, and the consultant's QR code with its caption.
+  const qr = quote ? headerQrOf(quote) : undefined;
+  const conditionWidth = qr ? HEADER_QR_LEFT - 16 - HEADER_TEXT_LEFT : 520;
+  const conditionLines = lines(context, sheet.conditions, conditionWidth, { font: font(15, 700), color: COLORS.navy, lineHeight: 21 }).slice(0, 3);
+  const titleHeight = qr
+    ? Math.max(HEADER_QR_HEIGHT + 12, 106 + conditionLines.length * 21)
+    : Math.max(122, 74 + conditionLines.length * 21 + 34);
   const headerHeight = TAG_HEIGHT + 8 + Math.max(...headerCells(context, sheet).map(blockHeight)) + CELL_PAD_Y * 2;
   const rowHeights = sheet.rows.map(row => {
     const labelHeight = lines(context, row.label, LABEL_W - 28, LABEL).length * LABEL.lineHeight;
@@ -127,20 +141,22 @@ function layout(context: TextContext, sheet: PlanCompareSheet): Layout {
   return { titleHeight, conditionLines, headerHeight, rowHeights, noteLines, height: Math.ceil(height) };
 }
 
-export function planCompareImageHeight(context: TextContext, sheet: PlanCompareSheet): number {
-  return layout(context, sheet).height;
+/** Pass the quote too when it can carry a layoutVersion 2 consultant, whose QR code makes the title card taller. */
+export function planCompareImageHeight(context: TextContext, sheet: PlanCompareSheet, quote?: QuoteImageCardData): number {
+  return layout(context, sheet, quote).height;
 }
 
 export function drawPlanCompareImage<TImage extends QuoteCanvasImage>(
   context: QuoteCanvasContext<TImage>,
   quote: QuoteImageCardData,
   sheet: PlanCompareSheet,
-  assets: { logo: TImage; hero: TImage },
+  assets: { logo: TImage; hero: TImage; contactQr?: TImage },
   width: number,
   height: number,
 ): void {
   const text = context as unknown as TextContext;
-  const plan = layout(text, sheet);
+  const plan = layout(text, sheet, quote);
+  const contactCard = headerQrOf(quote);
   const cols = columns(sheet);
 
   context.fillStyle = COLORS.white;
@@ -150,24 +166,32 @@ export function drawPlanCompareImage<TImage extends QuoteCanvasImage>(
   // Title card: heading, shared conditions, quote date and contact, campus photo.
   const titleTop = 80;
   drawRoundedRect(text, PAD, titleTop, width - PAD * 2, plan.titleHeight, 10, COLORS.white, COLORS.border, 1);
+  const left = contactCard ? HEADER_TEXT_LEFT : 54;
+  const headingTop = contactCard ? 48 : 54;
   context.font = font(31, 950);
   context.fillStyle = COLORS.green;
-  context.fillText(sheet.heading, 54, titleTop + 54);
+  context.fillText(sheet.heading, left, titleTop + headingTop);
   context.fillStyle = COLORS.orange;
-  context.fillRect(54, titleTop + 65, 42, 3);
-  let y = titleTop + 92;
+  context.fillRect(left, titleTop + headingTop + 11, 42, 3);
+  let y = titleTop + headingTop + 38;
   context.font = font(15, 700);
   context.fillStyle = COLORS.navy;
   for (const line of plan.conditionLines) {
-    context.fillText(line, 54, y);
+    context.fillText(line, left, y);
     y += 21;
   }
   const date = quote.studentItems.find(item => item.label === '报价日期');
   const phone = quote.contact?.phone?.replace(/\s/g, '');
   context.font = font(13, 700);
   context.fillStyle = COLORS.gray;
-  context.fillText([date ? `${date.label}：${date.value}` : '', phone ? `电话/微信：${phone}` : ''].filter(Boolean).join('  ·  '), 54, y + 4);
-  drawRoundedImageCover(context, assets.hero, 590, titleTop + 6, 422, plan.titleHeight - 12, 10);
+  const contact = contactCard ? quoteConsultantLine(contactCard) : phone ? `电话/微信：${phone}` : '';
+  context.fillText([date ? `${date.label}：${date.value}` : '', contact].filter(Boolean).join('  ·  '), left, y + 4);
+  if (contactCard) {
+    drawRoundedImageCover(context, assets.hero, HEADER_PHOTO_LEFT, titleTop + 6, HEADER_PHOTO_WIDTH, plan.titleHeight - 12, 8);
+    drawHeaderQr(context, assets.contactQr, titleTop + (plan.titleHeight - HEADER_QR_HEIGHT) / 2);
+  } else {
+    drawRoundedImageCover(context, assets.hero, 590, titleTop + 6, 422, plan.titleHeight - 12, 10);
+  }
 
   // 01 comparison table.
   const tableCardTop = titleTop + plan.titleHeight + 10;

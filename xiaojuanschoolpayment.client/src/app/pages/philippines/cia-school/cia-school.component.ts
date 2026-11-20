@@ -36,6 +36,8 @@ import type { CiaStudentQuote } from './cia-student-quote';
     '../../../components/school-group-quote.css',
     '../school-page/ph-school-page-redesign.css',
     '../school-page/ph-school-page-options.css',
+    '../school-page/ph-school-page-compact.css',
+    '../school-page/ph-school-page-compact-tools.css',
   ],
 })
 export class CiaSchoolComponent extends PhSchoolPageComponent<CiaStudentQuote> {

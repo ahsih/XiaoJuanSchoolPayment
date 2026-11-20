@@ -482,7 +482,9 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     if (this.quote.layout === 'plan-compare' && (!compareSheet || !planCompareReady(compareSheet))) throw new Error('对比方案还有需要修改的地方。');
     const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
     if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
-    const [logo, hero, consultantAssets, ukQr] = await Promise.all([
+    // layoutVersion 2 (CIA so far): only the chosen consultant's QR code is loaded, for the title card.
+    const contactCard = this.quote.layoutVersion === 2 ? this.quote.contactCard : undefined;
+    const [logo, hero, consultantAssets, ukQr, contactQr] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
@@ -493,6 +495,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
         })),
       ),
       ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
+      contactCard?.consultant.qrSrc ? this.loadCanvasImage(contactCard.consultant.qrSrc) : Promise.resolve(undefined),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -503,7 +506,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     }
 
     const height = compareSheet
-      ? planCompareImageHeight(context, compareSheet)
+      ? planCompareImageHeight(context, compareSheet, this.quote)
       : ukSheet
         ? ukQuoteImageHeight(context, ukSheet)
       : this.quote.layout === 'cia-detailed'
@@ -523,12 +526,12 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
           context.imageSmoothingEnabled = true;
           context.imageSmoothingQuality = 'high';
           if (compareSheet) {
-            drawPlanCompareImage<HTMLImageElement>(context, this.quote, compareSheet, { logo, hero }, width, height);
+            drawPlanCompareImage<HTMLImageElement>(context, this.quote, compareSheet, { logo, hero, contactQr }, width, height);
           } else if (ukSheet) {
             drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
           } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
-              logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })),
+              logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })), contactQr,
             }, width, height);
           } else {
             this.drawQuoteImage(context, { logo, hero, consultants: consultantAssets }, width, height);
@@ -548,7 +551,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...(contactQr ? [contactQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 
@@ -950,7 +953,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
 
   private drawDetailedQuoteImage(
     context: CanvasRenderingContext2D,
-    assets: { logo: HTMLImageElement; hero: HTMLImageElement; consultants: Array<{ consultant: QuoteImageContact }> },
+    assets: { logo: HTMLImageElement; hero: HTMLImageElement; consultants: Array<{ consultant: QuoteImageContact }>; contactQr?: HTMLImageElement },
     width: number,
     height: number,
   ): void {

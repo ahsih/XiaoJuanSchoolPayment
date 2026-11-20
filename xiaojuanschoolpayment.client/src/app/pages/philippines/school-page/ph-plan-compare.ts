@@ -34,6 +34,12 @@ export interface PhPlanComparisonOptions<S extends PhCompareStudent> {
   peakRate?(): number;
   /** School-specific notes placed after the surcharge note. */
   extraNotes?(results: readonly PhComparePlanResult[]): string[];
+  /**
+   * The table under the user's review (2026-11-21, CIA only until approved): 注册费 comes first, the 课程 and 住宿
+   * rows carry their price (no separate 课程费 and 住宿费 rows), and a 课程安排 row always shows each plan's daily
+   * schedule. Otherwise a 每日课程 row appears only when the courses differ.
+   */
+  layoutVersion?: 2;
 }
 
 /** Courses a student usually weighs against each other; the “同类课程” shortcut picks from one group. */
@@ -191,22 +197,31 @@ export class PhPlanComparison<S extends PhCompareStudent> {
     const base = results[0];
     const usd = (value: number) => `${this.formatUsd(value)} 美元`;
     const cny = (value: number) => Number.isFinite(value) ? `${quoteCurrencyText(value, 'zh-CN')} 元` : '人民币待更新';
+    const v2 = this.options.layoutVersion === 2;
+    const registration: PlanCompareRow = {
+      label: '注册费', style: 'money', values: results.map(result => result.registration > 0 ? usd(result.registration) : '免收'),
+    };
     const rows: PlanCompareRow[] = [
+      ...(v2 ? [registration] : []),
       {
         label: '课程', style: 'text',
-        values: results.map(result => result.courseName),
+        values: results.map(result => v2 ? `${result.courseName} · ${usd(result.tuition)}` : result.courseName),
         ...(sameCourse ? {} : { subValues: results.map(result => result.courseSuitable) }),
       },
-      ...(sameCourse ? [] : [{ label: '每日课程', style: 'detail' as const, values: results.map(result => result.courseSchedule) }]),
-      { label: '住宿', style: 'text', values: results.map(result => result.roomName) },
+      ...(v2
+        ? [{ label: '课程安排', style: 'detail' as const, values: results.map(result => result.courseSchedule || '—') }]
+        : sameCourse ? [] : [{ label: '每日课程', style: 'detail' as const, values: results.map(result => result.courseSchedule) }]),
+      { label: '住宿', style: 'text', values: results.map(result => v2 ? `${result.roomName} · ${usd(result.accommodation)}` : result.roomName) },
       {
         label: '周数与日期', style: 'text',
         values: results.map(result => `${result.weeks}周`),
         subValues: results.map(result => `${date(result.startDate)}–${date(result.endDate)}`),
       },
-      { label: '课程费', style: 'money', values: results.map(result => usd(result.tuition)) },
-      { label: '住宿费', style: 'money', values: results.map(result => usd(result.accommodation)) },
-      { label: '注册费', style: 'money', values: results.map(result => result.registration > 0 ? usd(result.registration) : '免收') },
+      ...(v2 ? [] : [
+        { label: '课程费', style: 'money' as const, values: results.map(result => usd(result.tuition)) },
+        { label: '住宿费', style: 'money' as const, values: results.map(result => usd(result.accommodation)) },
+        registration,
+      ]),
       {
         label: '优惠', style: 'money',
         values: results.map(result => result.discount > 0 ? `− ${usd(result.discount)}` : '—'),

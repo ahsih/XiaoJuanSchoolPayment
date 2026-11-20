@@ -11,6 +11,7 @@ import {
 import { NavigationEnd, Router } from '@angular/router';
 import { EMPTY, Subject, catchError, filter, takeUntil } from 'rxjs';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
+import { SIDA_CONSULTANT_MEDIA } from './sida-consultants';
 import {
   QuoteImageCardData,
   QuoteImageLocalFeeItem,
@@ -338,8 +339,7 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
       contact: {
         name: 'Jenny',
         phone: '132 4982 7686',
-        avatarSrc: '/assets/contact/jenny-avatar.jpg',
-        qrSrc: '/assets/contact/jenny-wechat-qr.png',
+        ...SIDA_CONSULTANT_MEDIA.Jenny,
       },
     };
   }

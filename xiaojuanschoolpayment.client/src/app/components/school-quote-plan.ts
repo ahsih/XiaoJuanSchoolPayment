@@ -320,6 +320,87 @@ export class SchoolQuotePlan {
       }
     }
   }
+  // ---- One stay (the plan component's singleStay mode, user decision 2026-11-21) ----
+  // At Philippine schools a student lives on campus only while studying, so the course and room lists cover the
+  // same dates and the student picks them once: the arrival Sunday and the stay length. A second course or room
+  // type splits that stay; nothing here moves its first or last day except setStayStart and setStayWeeks.
+
+  /** Moves the whole stay to a new arrival Sunday; each later period starts the day after the one before. */
+  setStayStart(value: string): void {
+    const start = this.date(value);
+    if (start === null || new Date(start).getUTCDay() !== 0) return;
+    this.restack(start);
+  }
+
+  /** Sets the stay length: the last period of each list grows or shrinks, and periods beyond the end drop out. */
+  setStayWeeks(total: number): void {
+    if (!this.validWeeks(total)) return;
+    for (const kind of ['course', 'room'] as const) {
+      const rows = this.rows(kind);
+      let remaining = total;
+      for (let index = 0; index < rows.length; index++) {
+        if (remaining <= 0) {
+          rows.splice(index);
+          break;
+        }
+        rows[index].weeks = index === rows.length - 1 ? remaining : Math.min(rows[index].weeks, remaining);
+        remaining -= rows[index].weeks;
+      }
+    }
+    const start = this.date(this.courses[0]?.startDate ?? '');
+    if (start !== null) this.restack(start);
+  }
+
+  /** A second course or room type takes the last weeks (at most four) of the list's last period. */
+  canSplitStay(kind: QuotePlanKind): boolean { return (this.rows(kind).at(-1)?.weeks ?? 0) >= 2; }
+  splitStay(kind: QuotePlanKind): void {
+    const rows = this.rows(kind), last = rows.at(-1), start = this.date(rows[0]?.startDate ?? '');
+    if (!last || last.weeks < 2 || start === null) return;
+    const weeks = Math.min(4, Math.floor(last.weeks / 2));
+    last.weeks -= weeks;
+    rows.push({ id: this.nextId++, optionId: last.optionId, weeks, startDate: last.startDate });
+    this.restack(start);
+  }
+
+  /** The other period whose length changes with this one, so the stay keeps its dates: the next one, else the one before. */
+  private stayNeighbour(kind: QuotePlanKind, id: number): { row: QuotePlanRow; neighbour: QuotePlanRow } | null {
+    const rows = this.rows(kind), index = rows.findIndex(row => row.id === id);
+    const neighbour = rows[index + 1] ?? rows[index - 1];
+    return index < 0 || !neighbour ? null : { row: rows[index], neighbour };
+  }
+  stayPeriodWeekOptions(kind: QuotePlanKind, id: number): number[] {
+    const pair = this.stayNeighbour(kind, id);
+    const pool = pair ? pair.row.weeks + pair.neighbour.weeks : 0;
+    return Array.from({ length: Math.max(0, pool - 1) }, (_, index) => index + 1);
+  }
+  setStayPeriodWeeks(kind: QuotePlanKind, id: number, weeks: number): void {
+    const pair = this.stayNeighbour(kind, id), start = this.date(this.rows(kind)[0]?.startDate ?? '');
+    if (!pair || start === null || !Number.isInteger(weeks) || weeks < 1) return;
+    const pool = pair.row.weeks + pair.neighbour.weeks;
+    if (weeks >= pool) return;
+    pair.row.weeks = weeks;
+    pair.neighbour.weeks = pool - weeks;
+    this.restack(start);
+  }
+  /** Removes a period; the period before it (or after it, for the first) takes over its weeks. */
+  removeStayPeriod(kind: QuotePlanKind, id: number): void {
+    const rows = this.rows(kind), index = rows.findIndex(row => row.id === id), start = this.date(rows[0]?.startDate ?? '');
+    const heir = rows[index - 1] ?? rows[index + 1];
+    if (index < 0 || !heir || start === null) return;
+    heir.weeks += rows[index].weeks;
+    rows.splice(index, 1);
+    this.restack(start);
+  }
+  private restack(start: number): void {
+    for (const kind of ['course', 'room'] as const) {
+      let next = start;
+      for (const row of this.rows(kind)) {
+        row.startDate = new Date(next).toISOString().slice(0, 10);
+        next += row.weeks * 7 * DAY;
+      }
+    }
+  }
+
   total(kind: QuotePlanKind) { return this.rows(kind).reduce((sum, row) => sum + this.price(kind, row), 0); }
   /** Equivalent adjacent selections must not change a package's eligibility. */
   mergedRows(kind: QuotePlanKind): QuotePlanRow[] {

@@ -344,10 +344,10 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
     { id: 'd2', name: '双人间 D-2', label: '双人间', code: 'D-2', location: '校内', group: '普通多人间', fee: 1100, note: '适合朋友同行或希望平衡预算', enabled: true, sortOrder: 3 },
     { id: 'd3', name: '三人间 D-3', label: '三人间', code: 'D-3', location: '校内', group: '普通多人间', fee: 850, note: '预算比双人间更低', enabled: true, sortOrder: 4 },
     { id: 'd4', name: '四人间 D-4', label: '四人间', code: 'D-4', location: '校内', group: '普通多人间', fee: 750, note: '默认报价参考，预算压力较低', enabled: true, sortOrder: 5 },
-    { id: 'sr1', name: '单人套房 SR-1', label: '单人套房', code: 'SR-1', location: '校内', group: '家庭精致套房', fee: 2500, note: '套房房型，空间更完整', enabled: true, sortOrder: 6 },
-    { id: 'sr2', name: '双人套房 SR-2', label: '双人套房', code: 'SR-2', location: '校内', group: '家庭精致套房', fee: 1400, note: '套房房型，适合两人入住', enabled: true, sortOrder: 7 },
-    { id: 'sr3', name: '三人套房 SR-3', label: '三人套房', code: 'SR-3', location: '校内', group: '家庭精致套房', fee: 1200, note: '套房房型，适合小组同行', enabled: true, sortOrder: 8 },
-    { id: 'sr4', name: '四人套房 SR-4', label: '四人套房', code: 'SR-4', location: '校内', group: '家庭精致套房', fee: 1100, note: '套房房型，预算和空间较平衡', enabled: true, sortOrder: 9 },
+    { id: 'sr1', name: '单人套房 SR-1', label: '单人套房', code: 'SR-1', location: '校内', group: '精致套房', fee: 2500, note: '套房房型，空间更完整', enabled: true, sortOrder: 6 },
+    { id: 'sr2', name: '双人套房 SR-2', label: '双人套房', code: 'SR-2', location: '校内', group: '精致套房', fee: 1400, note: '套房房型，适合两人入住', enabled: true, sortOrder: 7 },
+    { id: 'sr3', name: '三人套房 SR-3', label: '三人套房', code: 'SR-3', location: '校内', group: '精致套房', fee: 1200, note: '套房房型，适合小组同行', enabled: true, sortOrder: 8 },
+    { id: 'sr4', name: '四人套房 SR-4', label: '四人套房', code: 'SR-4', location: '校内', group: '精致套房', fee: 1100, note: '套房房型，预算和空间较平衡', enabled: true, sortOrder: 9 },
   ],
   localFees: [
     { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 8000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '按报名学习时长办理；续费或换校须学校确认。', enabled: true, sortOrder: 0 },
@@ -486,6 +486,10 @@ export const cloneCiaContentConfig = (value: CiaContentConfig): CiaContentConfig
   if (clone.schoolCode === 'CIA') {
     for (const rule of clone.quoteSettings.promotions ?? []) {
       if (rule.name === '思达折扣') rule.name = '思达启航折扣';
+    }
+    // CIA's main campus rarely takes families (user decision 2026-11-20), so the suites are 精致套房, not 家庭精致套房.
+    for (const room of clone.rooms ?? []) {
+      if (room.group === '家庭精致套房') room.group = '精致套房';
     }
   }
   // Older saved revisions predate image-only copy; merge defaults without changing their prices or rules.

@@ -240,6 +240,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/davao", "monthly", "0.75"),
   ("/philippines-study/subic", "monthly", "0.75"),
   ("/philippines-study/cost", "monthly", "0.9"),
+  ("/price-compare", "weekly", "0.85"),
   ("/philippines-study/faq", "monthly", "0.85"),
   ("/philippines-study/offers", "weekly", "0.85"),
   ("/philippines-study/recommendations/ielts-schools", "monthly", "0.85"),

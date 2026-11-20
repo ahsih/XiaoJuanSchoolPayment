@@ -16,6 +16,12 @@ export class SchoolQuotePlanComponent {
   @Input() currencyLabel = '美元';
   @Input() amountLabel: ((kind: QuotePlanKind, row: QuotePlanRow) => string) | null = null;
   @Input() allowedRowWeeks: ((kind: QuotePlanKind, row: QuotePlanRow) => readonly number[]) | null = null;
+  /**
+   * One stay for course and room (user decision 2026-11-21; the shared Philippine school template sets it): the
+   * arrival Sunday and the end Saturday are picked once above the lists, and a second course or room type splits
+   * that stay instead of adding weeks. Other schools keep a start date on every period.
+   */
+  @Input() singleStay = false;
   @Output() optionChange = new EventEmitter<{ kind: QuotePlanKind; row: QuotePlanRow }>();
   readonly sundayDateMinimum = '2020-01-05';
   get travellers() { return Array.from({ length: this.travellerCount }, (_, index) => index + 1); }
@@ -37,17 +43,53 @@ export class SchoolQuotePlanComponent {
     this.optionChange.emit({ kind, row });
   }
   canAdd(kind: QuotePlanKind) {
-    return this.plan.canAdd(kind);
+    return this.singleStay ? this.plan.canSplitStay(kind) : this.plan.canAdd(kind);
   }
   add(kind: QuotePlanKind): void {
     if (!this.canAdd(kind)) return;
-    this.plan.add(kind);
+    if (this.singleStay) this.plan.splitStay(kind);
+    else this.plan.add(kind);
   }
   remove(kind: QuotePlanKind, index: number): void {
     if (this.isRoomScheduleLocked(kind)) return;
     const row = this.plan.rows(kind)[index];
     if (!row) return;
-    this.plan.remove(kind, row.id);
+    if (this.singleStay) this.plan.removeStayPeriod(kind, row.id);
+    else this.plan.remove(kind, row.id);
+  }
+  /** Stay lengths for the end-date list: every whole week, and under four weeks only where the school prices it. */
+  get stayWeekOptions(): number[] {
+    return this.plan.segmentWeeks.filter(weeks => weeks >= 4 || this.plan.allowedWeeks.includes(weeks));
+  }
+  /** The stay's arrival Sunday (the first course period starts the stay). */
+  get stayStart(): string {
+    return this.plan.courses[0]?.startDate ?? '';
+  }
+  stayEndLabel(weeks: number): string {
+    const start = this.plan.date(this.stayStart);
+    if (start === null) return `${weeks}周`;
+    return `${new Date(start + (weeks * 7 - 1) * 86400000).toISOString().slice(0, 10).replace(/-/g, '/')}（${weeks}周）`;
+  }
+  updateStayStart(value: string, input: HTMLInputElement): void {
+    const timestamp = this.plan.date(value);
+    if (timestamp === null || new Date(timestamp).getUTCDay() !== 0) {
+      input.value = this.stayStart;
+      return;
+    }
+    this.plan.setStayStart(value);
+  }
+  setStayWeeks(weeks: number): void {
+    this.plan.setStayWeeks(Number(weeks));
+  }
+  setPeriodWeeks(kind: QuotePlanKind, row: QuotePlanRow, weeks: number): void {
+    this.plan.setStayPeriodWeeks(kind, row.id, Number(weeks));
+  }
+  /** A split period's own dates, e.g. 2026/11/22–12/19 (the year again only when it changes). */
+  periodLabel(row: QuotePlanRow): string {
+    const start = row.startDate, end = this.plan.end(row);
+    if (!start || !end) return '—';
+    const tail = end.slice(0, 4) === start.slice(0, 4) ? end.slice(5) : end;
+    return `${start.replace(/-/g, '/')}–${tail.replace(/-/g, '/')}`;
   }
   updateWeeks(kind: QuotePlanKind, index: number, weeks: number): void {
     if (this.isRoomScheduleLocked(kind)) return;

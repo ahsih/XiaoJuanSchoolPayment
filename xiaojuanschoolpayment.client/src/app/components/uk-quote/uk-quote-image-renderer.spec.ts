@@ -4,8 +4,9 @@ import {
   defaultBurlingtonQuote,
 } from '../../pages/overseas-study-tour/uk-schools/burlington-school/burlington-quote';
 import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote-image-renderer';
+import { SIDA_CONSULTANT_MEDIA } from '../sida-consultants';
 
-const CONTACT = { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: '/assets/contact/jenny-wechat-qr.png' };
+const CONTACT = { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: SIDA_CONSULTANT_MEDIA.Jenny.qrSrc };
 
 function sheet(plans: number, programme: 'junior' | 'adult-course' | 'summer-residence' = 'junior') {
   const input = defaultBurlingtonQuote('2026-11-19', programme);

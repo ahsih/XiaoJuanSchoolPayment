@@ -1,6 +1,6 @@
 <div class="cia-page" [attr.aria-label]="schoolName + '学校详情页面'">
   <main class="cia-shell">
-    <section class="cia-hero" id="top">
+    <section class="cia-hero" id="top" [class.cia-hero--compact]="compactLayout">
       <div class="hero-copy">
         <p class="breadcrumb">
           <mat-icon>home</mat-icon>
@@ -31,6 +31,7 @@
           <a
             class="secondary-action"
             href="#gallery"
+            *ngIf="!compactLayout"
             (click)="scrollToSection('gallery', $event)"
           >
             查看校园环境
@@ -39,7 +40,7 @@
         </div>
       </div>
 
-      <div class="hero-media" [attr.aria-label]="schoolName + ' 校园图片'">
+      <div class="hero-media" *ngIf="!compactLayout" [attr.aria-label]="schoolName + ' 校园图片'">
         <div class="hero-collage hero-collage--desktop">
           <figure *ngFor="let image of heroGalleryPreviewImages.slice(0, 4)">
             <img [src]="image.src" [alt]="image.title" />
@@ -86,6 +87,87 @@
           </div>
         </div>
       </div>
+
+      <!-- Compact layout: one album, every video by topic first, then every photo by area. -->
+      <div class="hero-album" id="gallery" *ngIf="compactLayout && heroAlbumItem" [attr.aria-label]="schoolName + ' 校园视频与照片'">
+        <div class="hero-album-stage" [class.is-video]="heroAlbumItem.kind === 'video'" [class.is-tall]="heroAlbumItem.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'hero')">
+          <ng-container *ngIf="heroAlbumItem.kind === 'video'">
+            <video
+              #heroPlayer
+              controls
+              playsinline
+              preload="metadata"
+              [src]="heroAlbumItem.src"
+              [poster]="heroAlbumItem.poster || ''"
+              [attr.aria-label]="heroAlbumItem.title"
+            ></video>
+            <button type="button" class="video-fullscreen-button" (click)="playFullscreen(heroPlayer)" [attr.aria-label]="'全屏播放：' + heroAlbumItem.title"><mat-icon>fullscreen</mat-icon>全屏</button>
+          </ng-container>
+          <app-expandable-image
+            *ngIf="heroAlbumItem.kind === 'photo'"
+            [src]="heroAlbumItem.src"
+            [images]="heroAlbumPhotoSources"
+            [imageAlts]="heroAlbumPhotoAlts"
+            [imageTitles]="heroAlbumPhotoTitles"
+            [imageCaptions]="heroAlbumPhotoCaptions"
+            [alt]="heroAlbumItem.title"
+            [title]="heroAlbumItem.title"
+            [caption]="heroAlbumItem.description"
+            loading="eager"
+            previewHeight="100%"
+            previewFit="cover"
+          ></app-expandable-image>
+          <button type="button" class="photo-step photo-step--prev" aria-label="上一项" (click)="stepHeroAlbum(-1)"><mat-icon>chevron_left</mat-icon></button>
+          <button type="button" class="photo-step photo-step--next" aria-label="下一项" (click)="stepHeroAlbum(1)"><mat-icon>chevron_right</mat-icon></button>
+          <span class="hero-album-count">{{ heroAlbumIndex + 1 }} / {{ heroAlbumItems.length }}</span>
+        </div>
+        <p class="hero-album-caption"><strong>{{ heroAlbumItem.title }}<small *ngIf="heroAlbumItem.duration">{{ heroAlbumItem.duration }}</small></strong><span>{{ heroAlbumItem.description }}</span></p>
+        <!-- Two labelled rows, 视频 then 照片, so the topics line up instead of wrapping at random. -->
+        <div class="hero-album-filters">
+          <div class="hero-album-chips" role="tablist" *ngFor="let group of heroAlbumChipGroups" [attr.aria-label]="schoolName + group.label + '分类'">
+            <span class="hero-album-chips-label" aria-hidden="true">{{ group.label }}</span>
+            <button
+              type="button"
+              role="tab"
+              *ngFor="let chip of group.chips"
+              [class.active]="heroAlbumItem.category === chip.category"
+              [attr.aria-selected]="heroAlbumItem.category === chip.category"
+              [attr.aria-label]="chip.category + '，' + chip.count + '项'"
+              (click)="selectHeroAlbumChip(chip.category)"
+            >{{ chip.label }}<small>{{ chip.count }}</small></button>
+          </div>
+        </div>
+        <div class="hero-album-thumbs" *ngIf="heroAlbumThumbs.length > 1">
+          <button
+            type="button"
+            *ngFor="let thumb of heroAlbumThumbs"
+            [class.active]="heroAlbumIndex === thumb.index"
+            [attr.aria-label]="'查看' + thumb.item.title"
+            (click)="heroAlbumIndex = thumb.index"
+          ><img [src]="thumb.item.kind === 'video' ? thumb.item.poster : thumb.item.src" [alt]="''" loading="lazy" /><mat-icon *ngIf="thumb.item.kind === 'video'">play_arrow</mat-icon></button>
+        </div>
+        <p class="photo-reference-note" *ngIf="copy.gallery.photoNote"><mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}</p>
+      </div>
+
+      <!-- Compact layout: key facts fill the space under the title on wide screens, and follow the album on phones. -->
+      <dl class="overview-facts hero-facts" *ngIf="compactLayout && overviewFacts.length" [attr.aria-label]="copy.overview.title">
+        <div *ngFor="let fact of overviewFacts">
+          <mat-icon>{{ fact.icon }}</mat-icon>
+          <dt>{{ fact.label }}</dt>
+          <dd>{{ fact.value }}</dd>
+        </div>
+      </dl>
+
+      <!-- Compact layout: what each building has, right under the key facts (user request 2026-11-21). -->
+      <div class="hero-buildings" *ngIf="compactLayout && campusBuildings.length">
+        <h2><mat-icon>apartment</mat-icon>校园分布</h2>
+        <ul>
+          <li *ngFor="let building of campusBuildings">
+            <mat-icon>{{ building.icon }}</mat-icon>
+            <p><strong>{{ building.title }}</strong>{{ building.facilities.join('、') }}</p>
+          </li>
+        </ul>
+      </div>
     </section>
 
     <nav class="section-tabs" [attr.aria-label]="schoolName + ' 页面导航'">
@@ -99,7 +181,32 @@
       </a>
     </nav>
 
-    <div class="decision-summary-grid" id="overview">
+    <section class="cia-section compact-overview" id="overview" *ngIf="compactLayout">
+      <div class="compact-advisor" id="advisor-review">
+        <h3><mat-icon>support_agent</mat-icon>{{ copy.advisorReview.title }}</h3>
+        <p>{{ copy.advisorReview.text }}</p>
+        <div class="compact-fit">
+          <div>
+            <strong><mat-icon>check_circle</mat-icon>{{ copy.advisorReview.suitableTitle }}</strong>
+            <ul><li *ngFor="let item of suitableFor">{{ item.title }}</li></ul>
+          </div>
+          <div>
+            <strong><mat-icon>cancel</mat-icon>{{ copy.advisorReview.notSuitableTitle }}</strong>
+            <ul><li *ngFor="let item of notSuitableFor">{{ item.title }}</li></ul>
+          </div>
+        </div>
+      </div>
+      <aside class="school-license-strip" *ngIf="copy.license" [attr.aria-label]="schoolName + '办学资质'">
+        <mat-icon>verified_user</mat-icon>
+        <div>
+          <strong>{{ copy.license.title }}</strong>
+          <span *ngFor="let item of copy.license.items">{{ item }}</span>
+        </div>
+        <small>{{ copy.license.note }}</small>
+      </aside>
+    </section>
+
+    <div class="decision-summary-grid" id="overview" *ngIf="!compactLayout">
     <section class="overview-grid" [attr.aria-label]="copy.overview.title">
       <div class="overview-main">
         <div class="section-heading">
@@ -140,7 +247,7 @@
     </section>
     </div>
 
-    <aside class="school-license-strip" *ngIf="copy.license" [attr.aria-label]="schoolName + '办学资质'">
+    <aside class="school-license-strip" *ngIf="copy.license && !compactLayout" [attr.aria-label]="schoolName + '办学资质'">
       <mat-icon>verified_user</mat-icon>
       <div>
         <strong>{{ copy.license.title }}</strong>
@@ -149,7 +256,7 @@
       <small>{{ copy.license.note }}</small>
     </aside>
 
-    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction" *ngIf="copy.campus">
+    <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction" *ngIf="copy.campus && !compactLayout">
       <div class="section-heading section-heading-row">
         <div>
           <span class="section-eyebrow">{{ copy.campus.eyebrow }}</span>
@@ -189,7 +296,7 @@
       <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
-    <section class="cia-section" id="gallery">
+    <section class="cia-section" id="gallery" *ngIf="!compactLayout">
       <div class="section-heading">
         <h2>{{ copy.gallery.title }}</h2>
         <p>{{ copy.gallery.intro }}</p>
@@ -316,7 +423,18 @@
       </div>
       <div class="course-catalog" id="course-fees" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
         <div class="course-group-grid" *ngIf="!courseModeZones; else courseModeZoneGrid">
-          <article class="course-group" *ngFor="let group of courseGroups; trackBy: trackCourseGroup">
+          <!-- Compact layout: two independent columns, so an opened course never leaves a gap beside it. -->
+          <ng-container *ngIf="compactLayout; else courseGroupList">
+            <div class="course-group-column" *ngFor="let column of courseGroupColumns">
+              <ng-container *ngFor="let entry of column; trackBy: trackCourseGroupEntry"><ng-container *ngTemplateOutlet="courseGroupCard; context: { $implicit: entry.group, order: entry.index }"></ng-container></ng-container>
+            </div>
+          </ng-container>
+          <ng-template #courseGroupList>
+            <ng-container *ngFor="let group of courseGroups; trackBy: trackCourseGroup"><ng-container *ngTemplateOutlet="courseGroupCard; context: { $implicit: group }"></ng-container></ng-container>
+          </ng-template>
+        </div>
+        <ng-template #courseGroupCard let-group let-order="order">
+          <article class="course-group" [style.order]="order ?? null">
             <header>
               <span class="course-group-icon"><mat-icon>{{ group.icon }}</mat-icon></span>
               <div>
@@ -326,7 +444,7 @@
             </header>
             <ng-container *ngFor="let fee of group.courses"><ng-container *ngTemplateOutlet="courseLine; context: { $implicit: fee }"></ng-container></ng-container>
           </article>
-        </div>
+        </ng-template>
         <ng-template #courseModeZoneGrid>
           <div class="course-mode-zones">
             <article class="course-mode-zone" *ngFor="let zone of courseModeZones" [class.is-strict]="zone.strict">
@@ -346,7 +464,7 @@
         <ng-template #courseLine let-fee let-mode="mode">
             <details class="course-line" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
               <summary>
-                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}</strong>
+                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}<em class="course-line-badge" *ngIf="courseHighlights[fee.id] as highlight"><mat-icon>card_giftcard</mat-icon>{{ highlight.badge }}</em></strong>
                 <span class="course-line-price"><b>{{ formatUsd(listPrice(fee)) }}</b> 美元<small>{{ copy.courses.priceUnit }}</small></span>
                 <mat-icon class="course-line-chevron">expand_more</mat-icon>
                 <span class="course-line-schedule"><span *ngFor="let part of scheduleParts(fee.schedule); let first = first" [class.is-key]="first">{{ part }}</span></span>
@@ -354,14 +472,60 @@
               <dl class="course-line-detail">
                 <div *ngIf="fee.suitable"><dt>{{ copy.courses.fitLabel }}</dt><dd>{{ fee.suitable }}</dd></div>
                 <div *ngIf="fee.note"><dt>{{ copy.courses.noteLabel }}</dt><dd>{{ fee.note }}</dd></div>
+                <div *ngIf="courseHighlights[fee.id] as highlight" class="course-line-highlight"><dt>{{ highlight.label }}</dt><dd>{{ highlight.text }}</dd></div>
                 <div *ngIf="show2026Prices && copy.courses.oldPriceLabel"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(fee.tuition) }} 美元{{ copy.courses.priceUnit }}</dd></div>
               </dl>
+              <ng-container *ngIf="compactLayout">
+                <div class="course-line-guide" *ngFor="let guide of guidesForCourse(fee.id)">
+                  <h4><mat-icon>{{ guide.icon }}</mat-icon>{{ guide.title }}</h4>
+                  <ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container>
+                </div>
+                <p class="section-reference-note course-line-reference" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
+              </ng-container>
             </details>
         </ng-template>
         <ul class="course-footnotes">
           <li *ngIf="show2026Prices" data-cia-preview-kind="section" data-cia-preview-id="course-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-note')"><mat-icon>event_available</mat-icon>{{ courseTableNote }}</li>
           <li *ngIf="groupClassNote" data-cia-preview-kind="section" data-cia-preview-id="class-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'class-note')"><mat-icon>groups</mat-icon>{{ copy.fees.classSizeTitle }}：{{ groupClassNote }}</li>
         </ul>
+      </div>
+      <div class="course-extras" *ngIf="compactLayout">
+        <!-- The daily timetable is always open (user request 2026-11-21); phones show one day at a time. -->
+        <section class="compact-schedule" *ngIf="copy.schedule && scheduleColumns.length" aria-labelledby="compact-schedule-title">
+          <header>
+            <h3 id="compact-schedule-title"><mat-icon>schedule</mat-icon>{{ copy.schedule.title }}</h3>
+            <p>{{ copy.schedule.intro }}</p>
+            <div class="schedule-day-switch" role="tablist" *ngIf="scheduleColumns.length > 1" [attr.aria-label]="copy.schedule.title">
+              <button
+                type="button"
+                role="tab"
+                *ngFor="let column of scheduleColumns; let dayIndex = index"
+                [class.active]="scheduleDayIndex === dayIndex"
+                [attr.aria-selected]="scheduleDayIndex === dayIndex"
+                (click)="scheduleDayIndex = dayIndex"
+              >{{ column.title }}</button>
+            </div>
+          </header>
+          <div class="compact-schedule-days">
+            <article *ngFor="let column of scheduleColumns; let dayIndex = index" [class.is-active]="scheduleDayIndex === dayIndex">
+              <h4>{{ column.title }}</h4>
+              <ol>
+                <li *ngFor="let row of column.rows" [class]="'is-' + row.kind"><time>{{ row.time }}</time><span>{{ row.activity }}</span></li>
+              </ol>
+            </article>
+          </div>
+          <p class="compact-schedule-note" *ngIf="copy.schedule.note"><mat-icon>info</mat-icon>{{ copy.schedule.note }}</p>
+        </section>
+        <!-- Each course row explains only its own course; notes shared by several courses sit here. -->
+        <h3 class="course-extras-title" *ngIf="generalCourseGuides.length">所有课程通用说明</h3>
+        <details class="compact-more" *ngFor="let guide of generalCourseGuides">
+          <summary><mat-icon>{{ guide.icon }}</mat-icon><span>{{ guide.title }}<small>{{ guide.subtitle }}</small></span><mat-icon class="compact-more-arrow">expand_more</mat-icon></summary>
+          <div class="compact-more-body">
+            <ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container>
+            <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
+          </div>
+        </details>
+        <p class="compact-rule-note" *ngIf="copy.courses.ruleNoteText && !copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.courses.ruleNoteText }}</p>
       </div>
       <section class="study-mode-block" id="study-modes" *ngIf="copy.studyModes && studyModes.length" aria-labelledby="study-mode-title">
         <div class="study-mode-heading">
@@ -388,7 +552,7 @@
         </div>
         <p class="study-mode-note" *ngIf="copy.studyModes.note"><mat-icon>info</mat-icon>{{ copy.studyModes.note }}</p>
       </section>
-      <details class="cia-collapsible-section course-detail-disclosure" *ngIf="copy.courses.facts?.length || courseDetailGuides.length || (copy.schedule && scheduleColumns.length)">
+      <details class="cia-collapsible-section course-detail-disclosure" *ngIf="!compactLayout && (copy.courses.facts?.length || courseDetailGuides.length || (copy.schedule && scheduleColumns.length))">
         <summary>
           <span class="collapsible-summary-icon"><mat-icon>fact_check</mat-icon></span>
           <span>
@@ -433,13 +597,40 @@
               </div>
             </summary>
             <div class="course-detail-guide-body">
-              <dl>
+              <ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container>
+            </div>
+          </details>
+        </div>
+      </section>
+      <aside class="school-rule-reference-note" *ngIf="copy.courses.ruleNoteTitle" [attr.aria-label]="schoolName + '学校规则参考说明'">
+        <mat-icon>info</mat-icon>
+        <div>
+          <strong>{{ copy.courses.ruleNoteTitle }}</strong>
+          <p>{{ copy.courses.ruleNoteText }}</p>
+        </div>
+      </aside>
+
+      <section class="daily-schedule-section" *ngIf="copy.schedule && scheduleColumns.length" aria-labelledby="daily-schedule-title">
+        <div class="daily-schedule-heading">
+          <div>
+            <span class="section-eyebrow">{{ copy.schedule.eyebrow }}</span>
+            <h3 id="daily-schedule-title">{{ copy.schedule.title }}</h3>
+            <p>{{ copy.schedule.intro }}</p>
+          </div>
+          <span><mat-icon>schedule</mat-icon>{{ copy.schedule.badge }}</span>
+        </div>
+        <ng-container *ngTemplateOutlet="dailyScheduleGrid"></ng-container>
+      </section>
+        </div>
+      </details>
+      <ng-template #guideBody let-guide>
+              <dl *ngIf="!compactLayout || guide.facts.length">
                 <div *ngFor="let fact of guide.facts">
                   <dt>{{ fact.label }}</dt>
                   <dd>{{ fact.value }}</dd>
                 </div>
               </dl>
-              <ul>
+              <ul *ngIf="guide.points.length">
                 <li *ngFor="let point of guide.points">{{ point }}</li>
               </ul>
               <div *ngIf="guide.levels" class="cia-level-table-wrap">
@@ -462,28 +653,8 @@
               <p *ngIf="guide.notice" class="course-detail-notice">
                 <mat-icon>verified_user</mat-icon>{{ guide.notice }}
               </p>
-            </div>
-          </details>
-        </div>
-      </section>
-      <aside class="school-rule-reference-note" *ngIf="copy.courses.ruleNoteTitle" [attr.aria-label]="schoolName + '学校规则参考说明'">
-        <mat-icon>info</mat-icon>
-        <div>
-          <strong>{{ copy.courses.ruleNoteTitle }}</strong>
-          <p>{{ copy.courses.ruleNoteText }}</p>
-        </div>
-      </aside>
-
-      <section class="daily-schedule-section" *ngIf="copy.schedule && scheduleColumns.length" aria-labelledby="daily-schedule-title">
-        <div class="daily-schedule-heading">
-          <div>
-            <span class="section-eyebrow">{{ copy.schedule.eyebrow }}</span>
-            <h3 id="daily-schedule-title">{{ copy.schedule.title }}</h3>
-            <p>{{ copy.schedule.intro }}</p>
-          </div>
-          <span><mat-icon>schedule</mat-icon>{{ copy.schedule.badge }}</span>
-        </div>
-
+      </ng-template>
+      <ng-template #dailyScheduleGrid>
         <div class="daily-schedule-grid">
           <article *ngFor="let column of scheduleColumns">
             <header>
@@ -503,10 +674,8 @@
             </div>
           </article>
         </div>
-        <p class="daily-schedule-note" *ngIf="copy.schedule.note"><mat-icon>info</mat-icon>{{ copy.schedule.note }}</p>
-      </section>
-        </div>
-      </details>
+        <p class="daily-schedule-note" *ngIf="copy.schedule?.note"><mat-icon>info</mat-icon>{{ copy.schedule?.note }}</p>
+      </ng-template>
       <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
@@ -515,27 +684,64 @@
         <div class="room-table-heading">
           <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
           <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
+          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>点任一房型，看它的实拍照片和介绍</span></p>
         </div>
         <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
             <h3>{{ group.title }}</h3>
+            <!-- Phones: the tapped room's photos open right under its own card, so the rest of the group continues below them. -->
             <div
               class="room-price-matrix-grid"
+              [class.is-split]="roomPanelSplit(group) >= 0"
               [style.grid-template-columns]="'repeat(' + group.rooms.length + ', minmax(0, 1fr))'"
             >
-              <article *ngFor="let room of roomsForRateGroup(group); trackBy: trackPreviewRow" data-cia-preview-kind="room" [attr.data-cia-preview-id]="room.id" [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)">
-                <span
-                  class="room-location-badge"
-                  [class.room-location-badge--off-campus]="room.location === '校外'"
-                >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
-                <strong>{{ room.label }}</strong>
-                <small *ngIf="showRoomCodes">{{ room.code }}</small>
-                <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
-                <em>/ 4周</em>
-              </article>
+              <ng-container *ngFor="let room of roomsBeforePanel(group); trackBy: trackRateRoom">
+                <ng-container *ngTemplateOutlet="roomRateCard; context: { $implicit: room }"></ng-container>
+              </ng-container>
             </div>
+            <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && roomPanelSplit(group) >= 0">
+              <ng-container *ngTemplateOutlet="roomProfilePanel"></ng-container>
+              <div class="room-price-matrix-grid room-price-matrix-grid--rest" *ngIf="roomsAfterPanel(group).length">
+                <ng-container *ngFor="let room of roomsAfterPanel(group); trackBy: trackRateRoom">
+                  <ng-container *ngTemplateOutlet="roomRateCard; context: { $implicit: room }"></ng-container>
+                </ng-container>
+              </div>
+            </ng-container>
           </section>
         </div>
+        <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && !isNarrowViewport">
+          <ng-container *ngTemplateOutlet="roomProfilePanel"></ng-container>
+        </ng-container>
+        <ng-template #roomRateCard let-room>
+          <article
+            data-cia-preview-kind="room"
+            [attr.data-cia-preview-id]="room.id"
+            [class.cia-preview-highlight]="isPreviewHighlighted('room', room.id)"
+            [class.is-pickable]="compactLayout && !!roomProfileForRate(room)"
+            [class.is-selected]="compactLayout && (isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id"
+            [attr.role]="compactLayout && roomProfileForRate(room) ? 'button' : null"
+            [attr.tabindex]="compactLayout && roomProfileForRate(room) ? 0 : null"
+            [attr.aria-pressed]="compactLayout && roomProfileForRate(room) ? activeRateRoomId === room.id : null"
+            (click)="compactLayout && selectRateRoom(room, $event)"
+            (keydown.enter)="compactLayout && selectRateRoom(room, $event)"
+          >
+            <span
+              class="room-location-badge"
+              [class.room-location-badge--off-campus]="room.location === '校外'"
+            >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
+            <strong>{{ room.label }}</strong>
+            <small *ngIf="showRoomCodes">{{ room.code }}</small>
+            <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
+            <em>/ 4周</em>
+            <!-- Compact layout: every card says it opens that room's photos (user request 2026-11-21). -->
+            <span class="room-card-cue" *ngIf="compactLayout && roomProfileForRate(room)">
+              <ng-container *ngIf="(isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id; else roomCueIdle">
+                <mat-icon>{{ isNarrowViewport ? 'expand_less' : 'visibility' }}</mat-icon>{{ isNarrowViewport ? '收起照片' : '正在查看' }}
+              </ng-container>
+              <ng-template #roomCueIdle><mat-icon>photo_camera</mat-icon>看照片</ng-template>
+            </span>
+          </article>
+        </ng-template>
 
         <details class="cia-collapsible-section stay-rules-disclosure">
           <summary>
@@ -586,8 +792,113 @@
 
       </div>
 
+      <ng-template #roomProfilePanel>
+      <article
+        class="room-profile-panel"
+        role="tabpanel"
+        [id]="'room-panel-' + selectedRoomProfile.id"
+        aria-live="polite"
+      >
+        <div class="room-profile-gallery">
+          <!-- The room's own video (profile.roomVideos, only a video of exactly this room type) is the album's first item;
+               the arrows, a swipe or a thumbnail move on to the photos. Same file as the hero album, so it is cached once. -->
+          <div class="room-profile-photo" [class.is-video]="roomVideoActive" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
+            <ng-container *ngIf="roomVideoActive && selectedRoomVideo as video">
+              <video
+                #roomClip
+                class="room-album-video"
+                controls
+                playsinline
+                preload="none"
+                [src]="video.src"
+                [attr.poster]="video.poster"
+                [attr.aria-label]="video.title"
+              ></video>
+              <button type="button" class="video-fullscreen-button" (click)="playFullscreen(roomClip)" [attr.aria-label]="'全屏播放：' + video.title"><mat-icon>fullscreen</mat-icon>全屏</button>
+              <b class="room-album-video-label"><mat-icon>videocam</mat-icon>房型视频 · {{ roomAlbumPosition }} / {{ roomAlbumLength }}</b>
+            </ng-container>
+            <app-expandable-image
+              *ngIf="!roomVideoActive"
+              [src]="selectedRoomPhoto"
+              [images]="selectedRoomPhotos"
+              [imageAlts]="selectedRoomGalleryAlts"
+              [imageTitles]="selectedRoomGalleryTitles"
+              [imageCaptions]="selectedRoomGalleryCaptions"
+              [alt]="selectedRoomProfile.imageAlt"
+              [title]="selectedRoomProfile.label + '实景'"
+              [caption]="selectedRoomProfile.note"
+              loading="eager"
+              previewHeight="clamp(250px, 30vw, 390px)"
+              previewFit="cover"
+            ></app-expandable-image>
+            <ng-container *ngIf="roomAlbumLength > 1">
+              <button type="button" class="photo-step photo-step--prev" aria-label="上一张" (click)="stepRoomPhoto(-1)"><mat-icon>chevron_left</mat-icon></button>
+              <button type="button" class="photo-step photo-step--next" aria-label="下一张" (click)="stepRoomPhoto(1)"><mat-icon>chevron_right</mat-icon></button>
+            </ng-container>
+            <span *ngIf="!roomVideoActive"><mat-icon>collections</mat-icon>{{ roomAlbumPosition }} / {{ roomAlbumLength }} · 点击放大</span>
+          </div>
+
+          <div class="room-detail-thumbnails" *ngIf="roomAlbumLength > 1" [attr.aria-label]="selectedRoomProfile.label + '实景缩略图'">
+            <button
+              type="button"
+              class="room-video-thumb"
+              *ngIf="selectedRoomVideo as video"
+              [class.active]="roomVideoActive"
+              [attr.aria-pressed]="roomVideoActive"
+              [attr.aria-label]="'播放' + selectedRoomProfile.label + '实拍视频'"
+              (click)="showRoomVideo()"
+            >
+              <img [src]="video.poster" [alt]="''" loading="lazy" /><mat-icon>play_arrow</mat-icon>
+            </button>
+            <button
+              type="button"
+              *ngFor="let photo of selectedRoomPhotos; let imageIndex = index"
+              [class.active]="!roomVideoActive && selectedRoomPhotoIndex === imageIndex"
+              [attr.aria-pressed]="!roomVideoActive && selectedRoomPhotoIndex === imageIndex"
+              [attr.aria-label]="'查看' + selectedRoomProfile.label + '第' + (imageIndex + 1) + '张实景'"
+              (click)="selectRoomPhoto(imageIndex)"
+            >
+              <img [src]="photo" [alt]="selectedRoomProfile.label + '实景缩略图 ' + (imageIndex + 1)" loading="lazy" />
+            </button>
+          </div>
+          <p class="photo-reference-note" *ngIf="compactLayout && copy.gallery.photoNote"><mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}</p>
+        </div>
+
+        <div class="room-profile-copy">
+          <header>
+            <div>
+              <span *ngIf="selectedRoomProfile.englishName">{{ selectedRoomProfile.englishName }}</span>
+              <h4>{{ roomVariant?.label ?? selectedRoomProfile.label }}</h4>
+            </div>
+            <div class="room-profile-badges">
+              <b *ngIf="roomVariant?.code ?? selectedRoomProfile.bookingCode as code">{{ code }}</b>
+              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+            </div>
+          </header>
+
+          <dl class="room-profile-facts" *ngIf="selectedRoomProfile.size || selectedRoomProfile.bed || selectedRoomProfile.service">
+            <div *ngIf="selectedRoomProfile.size"><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
+            <div *ngIf="selectedRoomProfile.view"><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
+            <div *ngIf="selectedRoomProfile.bed"><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
+            <div *ngIf="selectedRoomProfile.service"><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
+          </dl>
+
+          <div class="room-profile-suitable">
+            <mat-icon>person_search</mat-icon>
+            <p><strong>更适合：</strong>{{ roomVariant?.suitable ?? selectedRoomProfile.suitable }}</p>
+          </div>
+
+          <ul class="room-profile-highlights" *ngIf="selectedRoomProfile.highlights?.length">
+            <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
+          </ul>
+
+          <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
+        </div>
+      </article>
+      </ng-template>
+
       <ng-container *ngIf="roomComparisonProfiles.length">
-      <div class="room-photo-heading">
+      <div class="room-photo-heading" *ngIf="!compactLayout">
         <h3>{{ copy.rooms.photoTitle }}</h3>
         <p>{{ copy.rooms.photoIntro }} <a class="room-video-link" *ngIf="copy.rooms.videoLink" href="#videos" (click)="scrollToSection('videos', $event)">{{ copy.rooms.videoLink }}</a></p>
       </div>
@@ -596,7 +907,7 @@
         id="room-comparison"
         [attr.aria-label]="schoolName + '房型实景与差异'"
       >
-      <div class="room-profile-tabs" role="tablist" [attr.aria-label]="'选择要查看的' + schoolName + '房型'">
+      <div class="room-profile-tabs" *ngIf="!compactLayout" role="tablist" [attr.aria-label]="'选择要查看的' + schoolName + '房型'">
         <button
           type="button"
           role="tab"
@@ -614,79 +925,7 @@
         </button>
       </div>
 
-      <article
-        class="room-profile-panel"
-        role="tabpanel"
-        [id]="'room-panel-' + selectedRoomProfile.id"
-        aria-live="polite"
-      >
-        <div class="room-profile-gallery">
-          <div class="room-profile-photo" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
-            <app-expandable-image
-              [src]="selectedRoomPhoto"
-              [images]="selectedRoomPhotos"
-              [imageAlts]="selectedRoomGalleryAlts"
-              [imageTitles]="selectedRoomGalleryTitles"
-              [imageCaptions]="selectedRoomGalleryCaptions"
-              [alt]="selectedRoomProfile.imageAlt"
-              [title]="selectedRoomProfile.label + '实景'"
-              [caption]="selectedRoomProfile.note"
-              loading="eager"
-              previewHeight="clamp(250px, 30vw, 390px)"
-              previewFit="cover"
-            ></app-expandable-image>
-            <ng-container *ngIf="selectedRoomPhotos.length > 1">
-              <button type="button" class="photo-step photo-step--prev" aria-label="上一张" (click)="stepRoomPhoto(-1)"><mat-icon>chevron_left</mat-icon></button>
-              <button type="button" class="photo-step photo-step--next" aria-label="下一张" (click)="stepRoomPhoto(1)"><mat-icon>chevron_right</mat-icon></button>
-            </ng-container>
-            <span><mat-icon>collections</mat-icon>{{ selectedRoomPhotoIndex + 1 }} / {{ selectedRoomPhotos.length }} · 点击放大</span>
-          </div>
-
-          <div class="room-detail-thumbnails" *ngIf="selectedRoomPhotos.length > 1" [attr.aria-label]="selectedRoomProfile.label + '实景缩略图'">
-            <button
-              type="button"
-              *ngFor="let photo of selectedRoomPhotos; let imageIndex = index"
-              [class.active]="selectedRoomPhotoIndex === imageIndex"
-              [attr.aria-pressed]="selectedRoomPhotoIndex === imageIndex"
-              [attr.aria-label]="'查看' + selectedRoomProfile.label + '第' + (imageIndex + 1) + '张实景'"
-              (click)="selectRoomPhoto(imageIndex)"
-            >
-              <img [src]="photo" [alt]="selectedRoomProfile.label + '实景缩略图 ' + (imageIndex + 1)" loading="lazy" />
-            </button>
-          </div>
-        </div>
-
-        <div class="room-profile-copy">
-          <header>
-            <div>
-              <span *ngIf="selectedRoomProfile.englishName">{{ selectedRoomProfile.englishName }}</span>
-              <h4>{{ selectedRoomProfile.label }}</h4>
-            </div>
-            <div class="room-profile-badges">
-              <b *ngIf="selectedRoomProfile.bookingCode">{{ selectedRoomProfile.bookingCode }}</b>
-              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
-            </div>
-          </header>
-
-          <dl class="room-profile-facts" *ngIf="selectedRoomProfile.size || selectedRoomProfile.bed || selectedRoomProfile.service">
-            <div *ngIf="selectedRoomProfile.size"><dt><mat-icon>straighten</mat-icon>参考面积</dt><dd>{{ selectedRoomProfile.size }}</dd></div>
-            <div *ngIf="selectedRoomProfile.view"><dt><mat-icon>landscape</mat-icon>可能景观</dt><dd>{{ selectedRoomProfile.view }}</dd></div>
-            <div *ngIf="selectedRoomProfile.bed"><dt><mat-icon>bed</mat-icon>床尺寸</dt><dd>{{ selectedRoomProfile.bed }}</dd></div>
-            <div *ngIf="selectedRoomProfile.service"><dt><mat-icon>cleaning_services</mat-icon>房务频率</dt><dd>{{ selectedRoomProfile.service }}</dd></div>
-          </dl>
-
-          <div class="room-profile-suitable">
-            <mat-icon>person_search</mat-icon>
-            <p><strong>更适合：</strong>{{ selectedRoomProfile.suitable }}</p>
-          </div>
-
-          <ul class="room-profile-highlights" *ngIf="selectedRoomProfile.highlights?.length">
-            <li *ngFor="let highlight of selectedRoomProfile.highlights"><mat-icon>done</mat-icon>{{ highlight }}</li>
-          </ul>
-
-          <p class="room-profile-note"><mat-icon>info</mat-icon>{{ selectedRoomProfile.note }}</p>
-        </div>
-      </article>
+      <ng-container *ngIf="!compactLayout"><ng-container *ngTemplateOutlet="roomProfilePanel"></ng-container></ng-container>
 
       <details class="cia-collapsible-section room-table-disclosure" *ngIf="hasRoomFacts">
         <summary>
@@ -713,11 +952,11 @@
           <tbody>
             <tr *ngFor="let profile of roomComparisonProfiles">
               <th scope="row">{{ profile.label }}<small>{{ profile.location }}</small></th>
-              <td><b>{{ profile.bookingCode }}</b></td>
-              <td>{{ profile.size }}</td>
-              <td>{{ profile.view }}</td>
-              <td>{{ profile.bed }}</td>
-              <td>{{ profile.service }}</td>
+              <td class="room-comparison-code"><b>{{ profile.bookingCode }}</b></td>
+              <td data-label="参考面积">{{ profile.size }}</td>
+              <td data-label="可能景观">{{ profile.view }}</td>
+              <td data-label="床尺寸">{{ profile.bed }}</td>
+              <td data-label="洗衣 / 清洁">{{ profile.service }}</td>
             </tr>
           </tbody>
         </table>
@@ -815,14 +1054,49 @@
         </div>
 
         <ng-container *ngIf="quoteView !== 'compare'; else comparePanel">
+        <ng-container *ngIf="!compactLayout; else compactQuote">
         <p class="group-hint" *ngIf="quoteMode === 'group'">每人分别安排课程和住宿；共住房型仍按各自床位报价。</p>
         <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
           <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
-          <app-school-quote-plan [plan]="student.quotePlan"></app-school-quote-plan>
+          <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true"></app-school-quote-plan>
           <p class="fee-alert course-length-alert" role="alert" *ngIf="student.courseLengthError">{{ student.courseLengthError }}</p>
           <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: student }"></ng-container>
           <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
         </article>
+        <ng-container *ngTemplateOutlet="peakSeasonNote"></ng-container>
+        <ng-container *ngTemplateOutlet="quoteTotals"></ng-container>
+        </ng-container>
+
+        <!-- Compact layout (CIA, user redesign 2026-11-21): choices on the left, the price list on the right. On phones a
+             single quote reads as one receipt: each choice with its amount, then the price list, then 学生情况. -->
+        <ng-template #compactQuote>
+          <div class="cq-layout" [class.cq-layout--single]="quoteMode === 'single'">
+            <div class="cq-inputs">
+              <p class="cq-group-hint" *ngIf="quoteMode === 'group'"><mat-icon>groups</mat-icon>每人分别安排课程和住宿；共住房型仍按各自床位报价。</p>
+              <article class="cq-student" *ngFor="let student of activeStudents; let i = index">
+                <h3 class="cq-student-title" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}</span><small>学校费用小计 <b>{{ formatUsd(student.quoteUsd) }} 美元</b></small></h3>
+                <!-- 学生情况 first: these choices change the price, so they are set before the dates and choices (user request 2026-11-21). -->
+                <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: student }"></ng-container>
+                <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true"></app-school-quote-plan>
+                <p class="fee-alert course-length-alert" role="alert" *ngIf="student.courseLengthError">{{ student.courseLengthError }}</p>
+              </article>
+              <ng-container *ngTemplateOutlet="peakSeasonNote"></ng-container>
+            </div>
+            <aside class="cq-summary" id="quote-summary" [attr.aria-label]="copy.quote.summaryTitle">
+              <h3 *ngIf="copy.quote.summaryTitle">{{ copy.quote.summaryTitle }}</h3>
+              <ng-container *ngTemplateOutlet="quoteTotals"></ng-container>
+              <a class="cq-local-link" *ngIf="copy.quote.localFeeLinkLabel" href="#local-fees" (click)="scrollToSection('local-fees', $event)">
+                <mat-icon>receipt_long</mat-icon>
+                <span>{{ copy.quote.localFeeLinkLabel }}<b>约 {{ formatPhp(estimatedLocalFeeTotal) }}</b></span>
+                <mat-icon>south</mat-icon>
+              </a>
+            </aside>
+          </div>
+        </ng-template>
+        <ng-container *ngTemplateOutlet="schoolCompareLink"></ng-container>
+        </ng-container>
+
+        <ng-template #peakSeasonNote>
         <aside class="peak-season-quote-note" *ngIf="peakSeasonCalendarRanges.length" data-cia-preview-kind="section" data-cia-preview-id="quote-season" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-season')">
           <span class="peak-season-quote-icon"><mat-icon>date_range</mat-icon></span>
           <div>
@@ -831,6 +1105,9 @@
             <small>{{ peakSeasonStatusText }} 同一学生课程与住宿重叠周只计一次，且不参与折扣。</small>
           </div>
         </aside>
+        </ng-template>
+
+        <ng-template #quoteTotals>
         <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
           <div class="quote-base-line"><span>课程费<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
           <div class="quote-base-line"><span>住宿费<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
@@ -844,11 +1121,20 @@
           <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
           <small *ngIf="extraPaymentNote">{{ extraPaymentNote }}</small>
         </div>
+        <ng-container *ngTemplateOutlet="quoteConsultantPicker"></ng-container>
         <div class="group-actions">
           <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>
           <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
         </div>
-        </ng-container>
+        </ng-template>
+
+        <!-- 咨询顾问 on the quote image (user request 2026-11-21; schools with a layoutVersion 2 image, CIA so far). -->
+        <ng-template #quoteConsultantPicker>
+          <label class="quote-consultant" *ngIf="usesQuoteConsultant">
+            <span>咨询顾问<small>图片显示该顾问的电话和微信二维码</small></span>
+            <select [(ngModel)]="quoteConsultantName" aria-label="报价图片上的咨询顾问"><option *ngFor="let consultant of ctaConsultants" [value]="consultant.name">{{ consultant.name }} · {{ consultant.title }}</option></select>
+          </label>
+        </ng-template>
 
         <ng-template #comparePanel>
           <p class="compare-intro">{{ copy.quote.compareIntro }}</p>
@@ -874,13 +1160,35 @@
             <button type="button" class="compare-add" *ngIf="comparison.canAdd()" (click)="comparison.addPlan()">{{ copy.quote.addPlanLabel }}</button>
           </div>
           <app-plan-compare-table [sheet]="compareSheet"></app-plan-compare-table>
+          <ng-container *ngTemplateOutlet="quoteConsultantPicker"></ng-container>
           <div class="group-actions">
             <app-quote-image-download-button [quote]="compareImageData" [disabled]="!comparison.ready" [label]="copy.quote.compareSaveLabel" buttonClass="primary-action"></app-quote-image-download-button>
             <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a>
           </div>
+          <ng-container *ngTemplateOutlet="schoolCompareLink"></ng-container>
+        </ng-template>
+
+        <!-- Only schools with profile.schoolCompareId show this link (CIA leaves it out). -->
+        <ng-template #schoolCompareLink>
+          <p class="school-compare-link" *ngIf="schoolCompareQuery as query">
+            同样的课程、房型和周数，其他学校要多少钱？
+            <a routerLink="/price-compare" [queryParams]="query"><mat-icon>compare_arrows</mat-icon>和其他学校比一比</a>
+          </p>
         </ng-template>
 
         <ng-template #studentConditions let-student>
+          <!-- Compact layout: always open, because these choices change the price (user request 2026-11-21). -->
+          <div class="cq-conditions" *ngIf="compactLayout; else foldedConditions">
+            <h4>{{ copy.quote.conditionsStepTitle || copy.quote.conditionsTitle }}<small *ngIf="copy.quote.conditionsStepHint">{{ copy.quote.conditionsStepHint }}</small></h4>
+            <div class="cq-fields">
+              <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
+              <label><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
+              <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
+            </div>
+            <p class="cq-minor-note" *ngIf="student.selectedAgeGroup === 'minor'"><mat-icon>info</mat-icon>{{ student.minorNote }}</p>
+          </div>
+          <ng-template #foldedConditions>
           <details class="quote-conditions">
             <summary>
               <span>{{ copy.quote.conditionsTitle }}</span>
@@ -895,6 +1203,7 @@
             <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
             <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">{{ student.minorNote }}</p>
           </details>
+          </ng-template>
         </ng-template>
       </div>
       <section class="local-fee-estimate" id="local-fees" *ngIf="quoteView !== 'compare'" aria-labelledby="local-fee-title">
@@ -1205,39 +1514,25 @@
         </div>
       </div>
 
-      <div class="final-consultant-grid">
-        <article
-          class="final-consultant-card"
-          *ngFor="let consultant of ctaConsultants"
-        >
-          <img
-            class="final-consultant-avatar"
-            [src]="consultant.avatarSrc"
-            [alt]="consultant.name + ' 顾问头像'"
-          />
-          <div class="final-consultant-copy">
-            <h3>
-              <span>{{ consultant.name }}</span
-              >{{ consultant.title }}
-            </h3>
-            <p>{{ consultant.description }}</p>
-          </div>
-          <figure class="final-consultant-qr">
-            <img
-              [src]="consultant.qrSrc"
-              [alt]="consultant.name + ' 微信二维码'"
-            />
+      <!-- Consultant cards (user redesign 2026-11-21): one simple card per consultant, all the same. Wide screens show
+           them in one row, phones as a list. The last line is the phone number, or 微信咨询 for WeChat-only
+           consultants, which opens the floating panel on their QR code. -->
+      <div class="team-grid">
+        <article class="team-card" *ngFor="let consultant of ctaConsultants">
+          <img class="team-avatar" [src]="consultant.avatarSrc" [alt]="consultant.name + ' 顾问头像'" width="76" height="76" loading="lazy" />
+          <h3 class="team-name">{{ consultant.name }}</h3>
+          <p class="team-title">{{ consultant.title }}</p>
+          <p class="team-text">{{ consultant.description }}</p>
+          <figure class="team-qr">
+            <img [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" width="116" height="116" loading="lazy" />
             <figcaption>扫码加微信</figcaption>
           </figure>
-          <div class="final-consultant-actions">
-            <a class="final-consultant-phone" [href]="consultant.phoneHref">
-              <mat-icon>phone</mat-icon>{{ consultant.phone }}
-            </a>
-            <a class="final-consultant-button" [href]="consultant.phoneHref">
-              <mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}
-              <mat-icon>chevron_right</mat-icon>
-            </a>
-          </div>
+          <a class="team-contact" *ngIf="consultant.phone; else wechatOnly" [href]="consultant.phoneHref"
+            ><mat-icon>call</mat-icon>{{ consultant.phone }}</a
+          >
+          <ng-template #wechatOnly>
+            <button type="button" class="team-contact" (click)="openFloatConsult(consultant, $event)"><mat-icon>chat</mat-icon>微信咨询</button>
+          </ng-template>
         </article>
       </div>
 
@@ -1249,7 +1544,37 @@
     </section>
 
       <ng-template #calendarPlanningSections>
-      <section class="school-calendar-section" id="school-calendar" *ngIf="copy.calendar" aria-labelledby="school-calendar-title">
+      <!-- Compact layout: the year in one table, a row per month with holidays, IELTS dates and peak weeks. -->
+      <section class="school-calendar-section compact-calendar" id="school-calendar" *ngIf="compactLayout && copy.calendar" aria-labelledby="school-calendar-title">
+        <h3 id="school-calendar-title">{{ copy.calendar.title }}</h3>
+        <p class="compact-calendar-intro">{{ copy.calendar.intro }}</p>
+        <div class="compact-peak" *ngIf="calendarPeakRanges.length">
+          <mat-icon>wb_sunny</mat-icon>
+          <div>
+            <strong>旺季附加费 {{ peakRate2027 }} 美元／人／周</strong>
+            <span *ngFor="let range of calendarPeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
+            <small>{{ copy.calendar.peakNote }}</small>
+          </div>
+        </div>
+        <div class="compact-calendar-table" role="table" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">
+          <div class="compact-calendar-row compact-calendar-row--head" role="row">
+            <span role="columnheader">月份</span>
+            <span role="columnheader">学校假期</span>
+            <span role="columnheader" *ngIf="copy.ielts">雅思机考</span>
+          </div>
+          <div class="compact-calendar-row" role="row" *ngFor="let month of calendarMonths" [class.is-peak]="month.peak">
+            <span class="cal-month" role="rowheader">{{ month.month }}月<em *ngIf="month.peak">旺季</em></span>
+            <span class="cal-holidays" role="cell">
+              <span *ngFor="let holiday of month.holidays"><b>{{ holiday.day }}</b>{{ holiday.name }}<small *ngIf="holiday.provisional">待定</small></span>
+              <i *ngIf="!month.holidays.length">—</i>
+            </span>
+            <span class="cal-exams" role="cell" *ngIf="copy.ielts">{{ month.exams.length ? month.exams.join('、') + '日' : '—' }}</span>
+          </div>
+        </div>
+        <p class="calendar-footnote" *ngIf="copy.calendar.footnote"><mat-icon>info</mat-icon>{{ copy.calendar.footnote }}</p>
+        <p class="calendar-footnote" *ngIf="copy.ielts"><mat-icon>edit_calendar</mat-icon><span>{{ copy.ielts.intro }} <a [href]="copy.ielts.officialUrl" target="_blank" rel="noopener noreferrer">{{ copy.ielts.officialLinkLabel }}</a></span></p>
+      </section>
+      <section class="school-calendar-section" id="school-calendar" *ngIf="!compactLayout && copy.calendar" aria-labelledby="school-calendar-title">
         <div class="calendar-section-heading">
           <div>
             <span class="section-eyebrow">{{ copy.calendar.eyebrow }}</span>
@@ -1314,7 +1639,7 @@
         </p>
       </section>
 
-      <section class="ielts-exam-section" id="ielts-exam-dates" *ngIf="copy.ielts" aria-labelledby="ielts-exam-title">
+      <section class="ielts-exam-section" id="ielts-exam-dates" *ngIf="copy.ielts && !compactLayout" aria-labelledby="ielts-exam-title">
         <div class="calendar-section-heading">
           <div>
             <span class="section-eyebrow">{{ copy.ielts.eyebrow }}</span>
@@ -1337,56 +1662,6 @@
           </article>
         </div>
 
-        <details class="ielts-previous-year">
-          <summary>{{ copy.ielts.previousSummary }}</summary>
-          <div class="ielts-previous-year-body">
-            <div class="calendar-section-heading">
-              <div>
-                <h4 class="ielts-previous-year-title">{{ copy.ielts.previousTitle }}</h4>
-                <p>{{ copy.ielts.previousIntro }}</p>
-              </div>
-              <span class="exam-fee"><mat-icon>payments</mat-icon>{{ copy.ielts.previousFee }}</span>
-            </div>
-
-            <div class="ielts-date-columns">
-              <article class="ielts-date-column">
-                <header>
-                  <span>{{ copy.ielts.academicCode }}</span>
-                  <h4>{{ copy.ielts.academicTitle }}</h4>
-                </header>
-                <div class="ielts-date-grid">
-                  <div *ngFor="let exam of ieltsExamDates2026">
-                    <span>{{ exam.month }}月</span>
-                    <strong>{{ exam.academic.day }}</strong>
-                    <small>{{ exam.academic.weekday }}</small>
-                  </div>
-                </div>
-              </article>
-
-              <article class="ielts-date-column ielts-date-column--recommended">
-                <header>
-                  <span>{{ copy.ielts.generalCode }}</span>
-                  <h4>{{ copy.ielts.generalTitle }}</h4>
-                  <small>{{ copy.ielts.generalHint }}</small>
-                </header>
-                <div class="ielts-date-grid">
-                  <div *ngFor="let exam of ieltsExamDates2026">
-                    <span>{{ exam.month }}月</span>
-                    <strong>{{ exam.general.day }}</strong>
-                    <small>{{ exam.general.weekday }}</small>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div class="ielts-exam-notes">
-              <article *ngFor="let note of copy.ielts.notes">
-                <mat-icon>{{ note.icon }}</mat-icon>
-                <div><strong>{{ note.title }}</strong><p>{{ note.text }}</p></div>
-              </article>
-            </div>
-          </div>
-        </details>
         <a
           class="ielts-official-link"
           [href]="copy.ielts.officialUrl"
@@ -1400,7 +1675,7 @@
       </ng-template>
 
     <ng-template #courseVideosSection>
-    <section class="video-section" id="videos">
+    <section class="video-section" id="videos" *ngIf="!compactLayout">
       <div class="section-heading section-heading-row">
         <div>
           <span class="section-eyebrow">{{ copy.videos.eyebrow }}</span>
@@ -1477,6 +1752,43 @@
         <mat-icon>support_agent</mat-icon>
         咨询顾问
       </a>
+    </div>
+
+    <!-- Free consultation: a small button fixed on the right edge. It opens every consultant as a row of avatars,
+         Philippine ones first (a random one of them picked first, so enquiries spread across the team), and the picked
+         one's WeChat QR code. -->
+    <div class="float-consult" *ngIf="floatConsultant as consultant">
+      <div class="float-consult-panel" id="float-consult-panel" *ngIf="floatConsultOpen" role="dialog" aria-label="免费咨询">
+        <button type="button" class="float-consult-close" aria-label="关闭" (click)="floatConsultOpen = false"><mat-icon>close</mat-icon></button>
+        <strong>免费咨询 · 添加顾问微信</strong>
+        <div class="float-consult-people" *ngIf="floatConsultants.length > 1" role="tablist" aria-label="选择顾问">
+          <button
+            type="button"
+            role="tab"
+            *ngFor="let person of floatConsultants; let i = index"
+            [class.is-active]="i === floatConsultantIndex"
+            [attr.aria-selected]="i === floatConsultantIndex"
+            (click)="floatConsultantIndex = i"
+          >
+            <span class="float-consult-avatar"><img [src]="person.avatarSrc" alt="" width="44" height="44" /></span>
+            <span>{{ person.name }}</span>
+          </button>
+        </div>
+        <img class="float-consult-qr" [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" width="168" height="168" />
+        <p>长按识别二维码，添加{{ consultant.name }}<small>{{ consultant.title }}顾问</small></p>
+        <a *ngIf="consultant.phone" [href]="consultant.phoneHref"><mat-icon>call</mat-icon>{{ consultant.phone }}</a>
+      </div>
+      <button
+        type="button"
+        class="float-consult-toggle"
+        [class.is-open]="floatConsultOpen"
+        [attr.aria-expanded]="floatConsultOpen"
+        aria-controls="float-consult-panel"
+        (click)="floatConsultOpen = !floatConsultOpen"
+      >
+        <mat-icon>{{ floatConsultOpen ? 'close' : 'forum' }}</mat-icon>
+        <span>免费<br />咨询</span>
+      </button>
     </div>
   </main>
 </div>
