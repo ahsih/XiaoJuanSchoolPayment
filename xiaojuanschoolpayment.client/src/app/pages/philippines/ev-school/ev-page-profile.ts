@@ -17,7 +17,7 @@ import {
   type GalleryImage,
   type RoomRateGroup,
 } from '../cia-school/cia-page-content';
-import type { PhPageCopy, PhRoomProfile, PhSchoolProfile } from '../school-page/ph-school-profile';
+import type { PhPageCopy, PhRoomProfile, PhSchoolProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 import { cloneEvContentConfig, createDefaultEvContentConfig, EV_IELTS_GUARANTEE_ID } from './ev-content-config';
 import {
   EV_ACTIVITY_TIMES,
@@ -87,7 +87,8 @@ const EV_COPY: PhPageCopy = {
   gallery: {
     title: '按区域查看 EV 环境',
     intro: `${EV_PAGE_COPY.galleryLead}相册内用左右箭头或缩略图切换，点击主图可放大。`,
-    photoNote: EV_REFERENCE_NOTE,
+    // The template's line under the photo albums, the same on every school page.
+    photoNote: CIA_PAGE_COPY.gallery.photoNote,
     roomComparisonTitle: '房型对比',
     roomDisclaimer: EV_REFERENCE_NOTE,
   },
@@ -242,6 +243,40 @@ const VIDEO_CARDS: Record<string, { label: string; text: string; details: string
 };
 const videosIn = (section: EvVideo['section']) => EV_VIDEOS.filter(video => video.section === section);
 
+/** One EV video in the hero album (compact layout). */
+const albumVideo = (src: string): PhVideoItem => {
+  const video = EV_VIDEOS.find(item => item.src === `/assets/ev/videos/${src}.mp4`) as EvVideo;
+  return {
+    title: video.title,
+    text: video.description,
+    src: video.src,
+    poster: video.poster,
+    duration: video.duration,
+    shape: video.orientation === 'landscape' ? 'wide' : 'tall',
+  };
+};
+/**
+ * Videos in the hero album, one chip per topic; the campus tour opens the album. No EV video shows only one
+ * room type, so the room albums have photos only.
+ */
+const EV_VIDEO_TABS: PhVideoTab[] = [
+  { label: '校园视频', icon: 'videocam', items: ['campus-tour', 'promo-film', 'dinner-buffet'].map(albumVideo) },
+  { label: '生活视频', icon: 'videocam', items: ['yoga-class', 'dance-challenge', 'eop-tik-talk', 'graduation', 'oslob-tour'].map(albumVideo) },
+  { label: '学员访谈', icon: 'videocam', items: ['power-speaking', 'ielts-student', 'ielts-nili', 'tik-talk-student'].map(albumVideo) },
+];
+
+/** 30 秒看懂 EV: the key facts under the hero title (compact layout). */
+const EV_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string; value: string }> = [
+  { icon: 'location_on', label: '位置', value: '宿务市区 Talamban 区，去市中心和商场都方便' },
+  { icon: 'history_edu', label: '创校', value: '2004年创办，2017年启用现校区；CALA会员' },
+  { icon: 'groups', label: '规模', value: '最多380名学生，175间一对一教室' },
+  { icon: 'rule', label: '管理', value: '斯巴达或半斯巴达，按自律程度和学习目标选择' },
+  { icon: 'menu_book', label: '课程', value: '综合英语、口语、雅思、托业、商务、社交媒体英语' },
+  { icon: 'workspace_premium', label: '考试', value: '校内IDP雅思官方考点，可考机考和纸笔考试' },
+  { icon: 'bed', label: '住宿', value: '校内单人到四人间，含三餐和清洁；半斯巴达可选校外公寓' },
+  { icon: 'translate', label: '英语环境', value: '教学区English Only，说母语一次周五加1小时自习' },
+];
+
 const guaranteePoint = (target: typeof EV_IELTS_GUARANTEE_TARGETS[number]): string => {
   const goals = [
     target.eightWeeks !== '—' ? `8周保${target.eightWeeks}分` : '',
@@ -250,17 +285,28 @@ const guaranteePoint = (target: typeof EV_IELTS_GUARANTEE_TARGETS[number]): stri
   return `${target.level} 入学${target.entry}分：${goals}`;
 };
 
+// A guide with courseIds opens inside those course rows and explains only them; the others are listed once
+// under 所有课程通用说明 (compact layout, as on the CIA page).
 const EV_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
   {
     icon: 'workspace_premium',
     title: '雅思保分班',
     subtitle: '学术类雅思 · 8周起 · 仅开设斯巴达',
+    courseIds: [EV_IELTS_GUARANTEE_ID],
     facts: [
       { label: '入学分级', value: '按入学雅思分数分G1至G8' },
       { label: '最高目标', value: '8.0分；6.0分以上每提高0.5分需要8周' },
     ],
     points: EV_IELTS_GUARANTEE_TARGETS.map(guaranteePoint),
     notice: EV_IELTS_GUARANTEE_NOTE,
+  },
+  {
+    icon: 'smartphone',
+    title: '社交媒体英语',
+    subtitle: 'Digital English · 需E3以上水平',
+    courseIds: ['semi-sparta-social-media-english', 'sparta-social-media-english'],
+    facts: [],
+    points: ['需要E3以上水平（约雅思5分），每期4周。'],
   },
   {
     icon: 'apps',
@@ -280,7 +326,7 @@ const EV_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
       { label: '换管理模式', value: '斯巴达改半斯巴达5,000比索；半斯巴达改斯巴达每4周2,500比索，周五前申请，下周一生效' },
       { label: '教师培训日', value: '每月最后一个周五每节课20分钟，12:05下课，之后可以外出' },
     ],
-    points: ['社交媒体英语（Digital English）需要E3以上水平（约雅思5分），每期4周。'],
+    points: [],
   },
 ];
 
@@ -310,10 +356,12 @@ const roomGallery = (main: string, prefix: string, extraCount: number, shared: r
   [main, ...Array.from({ length: extraCount }, (_, index) => `rooms/${prefix}-0${index + 2}`), ...shared].map(roomPhoto);
 const DORM_BATHROOM = ['rooms/dorm-bathroom', 'rooms/dorm-shower'];
 const EV_DORM_HIGHLIGHTS = ['一日三餐，周末也供应', '空调、热水器和保险箱', '浴室干湿分离', '每周两次清洁、每周换床单'];
+/** rateIds: the room price cards (content room ids) that open this profile's photos. */
 const roomProfile = (
   id: string, label: string, location: '校内' | '校外', gallery: string[], suitable: string, note: string, highlights: string[],
+  rateIds: readonly string[] = [id],
 ): PhRoomProfile => ({
-  id, label, location, suitable, note, highlights,
+  id, label, location, suitable, note, highlights, rateIds,
   image: gallery[0],
   gallery,
   imageAlt: `EV${label}实景`,
@@ -327,6 +375,8 @@ const EV_ROOM_PROFILES: PhRoomProfile[] = [
     'off-campus', '校外公寓', '校外', roomGallery('condo', 'condo', 7), '选半斯巴达、喜欢独立生活的学生',
     '仅限半斯巴达课程；每周清洁一次，到校管理费比校内宿舍高。',
     ['无门禁，带小厨房和冰箱', '空调、保险箱和饮水机', '住户泳池06:00–22:00', '平日接驳车往返学校'],
+    // The condo photos do not say whether they show a single or a double unit, so both cards open them.
+    ['off-campus-single', 'off-campus-double'],
   ),
 ];
 
@@ -349,6 +399,10 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   pricingSchoolName: 'EV Academy',
   schoolCompareId: 'ev',
   copy: EV_COPY,
+  // The CIA layout, the fixed template for every Philippine school (user decision 2026-11-21).
+  compactLayout: true,
+  overviewFacts: EV_OVERVIEW_FACTS,
+  videoTabs: EV_VIDEO_TABS,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
@@ -419,11 +473,10 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   sidaTrustBadges: CIA_SIDA_TRUST_BADGES,
   ctaBadges: EV_FINAL_CTA_BADGES,
   ctaConsultants: EV_CTA_CONSULTANTS,
+  // Same tabs and order as CIA; EV has no student-review section yet, so 评价 is left out.
   mobileAnchors: [
+    { label: '视频', target: 'gallery', icon: 'smart_display' },
     { label: '概览', target: 'overview', icon: 'dashboard' },
-    { label: '校园', target: 'campus-introduction', icon: 'apartment' },
-    { label: '图片', target: 'gallery', icon: 'photo_library' },
-    { label: '视频', target: 'videos', icon: 'smart_display' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '住宿', target: 'rooms', icon: 'bed' },
     { label: '报价', target: 'quote', icon: 'calculate' },

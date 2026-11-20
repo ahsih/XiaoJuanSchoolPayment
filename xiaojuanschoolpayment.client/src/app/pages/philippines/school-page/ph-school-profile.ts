@@ -93,11 +93,15 @@ export interface PhStudyMode {
   curfew: ReadonlyArray<{ day: string; time: string }>;
 }
 
-/** Room photos and facts; schools without measured sizes or booking codes leave those out. */
+/**
+ * Room photos and facts; schools without measured sizes or booking codes leave those out.
+ * A price card opens the profile whose bookingCode lists the card's code (CIA's P-1 …), or, for a school
+ * without booking codes, the profile whose rateIds list the card's room id (EV).
+ */
 export type PhRoomProfile = Optional<
   RoomComparisonProfile,
   'englishName' | 'bookingCode' | 'size' | 'view' | 'bed' | 'service' | 'highlights'
->;
+> & { rateIds?: readonly string[] };
 
 export type PhAlbumCategory = Exclude<GalleryCategory, '全部'>;
 
@@ -122,8 +126,9 @@ export interface PhSchoolProfile {
   /**
    * The shorter layout first made for CIA (user request 2026-11-20): one album in the hero holding every
    * video and photo instead of separate gallery and video sections, one merged overview, course notes inside
-   * each course, room photos under the room price list and a one-table 2027 calendar. Only CIA sets it
-   * so far (user decision: CIA only); its styles are ph-school-page-compact.css, listed by CIA alone.
+   * each course, room photos under the room price list and a one-table 2027 calendar. It is the fixed layout
+   * for every Philippine school (user decision 2026-11-21; CIA and EV so far). Its styles are
+   * ph-school-page-compact.css and ph-school-page-compact-tools.css, which each such school lists.
    */
   compactLayout?: boolean;
   /** Compact layout: the overview's key facts (location, size, management, courses …). */
