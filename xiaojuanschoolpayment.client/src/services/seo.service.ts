@@ -3,6 +3,17 @@ import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import {
+  BRAND,
+  BRAND_ABOUT_PATH,
+  BRAND_FACTS_UPDATED,
+  BRAND_LOGO,
+  BRAND_SITE_ORIGIN,
+  BRAND_SUMMARY_ZH,
+  brandFaqNode,
+  brandOrganizationNode,
+  renderBrandFactsHtml,
+} from '../app/pages/about-sida/about/brand-facts';
 
 // SEO data below is also exported to seo-pages.json at build time (scripts/export-seo-pages.cjs)
 // so the ASP.NET server can put each page's title and description into the initial HTML for
@@ -451,6 +462,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾游学攻略, 菲律宾留学攻略, 菲律宾英语游学攻略, 菲律宾语言学校怎么选',
     image: '/assets/philippines/wales-school-building.webp',
   },
+  [BRAND_ABOUT_PATH]: {
+    title: '关于思达启航 | 公司信息、服务流程与常见问题',
+    description: BRAND_SUMMARY_ZH,
+    keywords: '思达启航, 深圳市思达启航文化交流有限公司, SIDA QIHANG, 思达游学, 思达启航怎么样, 菲律宾英语游学, 菲律宾游学中介',
+    image: BRAND_LOGO,
+  },
   '/about-sida/contact': {
     title: '联系思达启航 | 菲律宾留学英语游学咨询',
     description:
@@ -605,6 +622,164 @@ export function seoTitle(page: SeoPage): string {
   return page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
 }
 
+/**
+ * Body HTML the server puts inside <app-root> for these routes, so their text is in the page source
+ * for crawlers and AI tools that do not run JavaScript (scripts/export-seo-pages.cjs → seo-pages.json
+ * → SpaSeoHtmlRenderer). The Angular page for each route renders the same HTML.
+ */
+export const PRERENDERED_PAGE_HTML: Record<string, () => string> = {
+  [BRAND_ABOUT_PATH]: renderBrandFactsHtml,
+};
+
+const BREADCRUMB_LABELS: Record<string, string> = {
+  'philippines-study': '菲律宾留学',
+  'study-tour-guide': '游学攻略',
+  'student-feedback': '学员反馈',
+  'study-tour': '游学反馈',
+  'philippines-study-mid-autumn': '中秋关怀记录',
+  recommendations: '学校推荐',
+  schools: '语言学校',
+  cebu: '宿务',
+  baguio: '碧瑶',
+  'airport-pickup': '碧瑶接机指南',
+  clark: '克拉克',
+  iloilo: '伊洛伊洛',
+  bacolod: '巴科洛德',
+  'eg-academy': '菲律宾克拉克EG语言学校',
+  'clark-we-academy': '菲律宾克拉克WE Academy语言学校',
+  'help-english-clark': '菲律宾克拉克HELP English语言学校',
+  'help-english-longlong-campus': 'HELP English Longlong Campus',
+  'aelc-native-focused-clark-schools': '菲律宾克拉克AELC语言学校',
+  'hana-academy': '菲律宾克拉克HANA Academy',
+  manila: '马尼拉',
+  'enderun-extension': '菲律宾马尼拉Enderun语言学校',
+  'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',
+  'berlitz-philippines': '菲律宾马尼拉Berlitz语言学校',
+  'manila-business-college': '菲律宾马尼拉Business College学校',
+  'mk-language-training-center': '菲律宾伊洛伊洛MK Language Training Center',
+  'polyglot-international-academy': '菲律宾伊洛伊洛PIA语言学校',
+  'gitc-college-international-language-center': '菲律宾伊洛伊洛GITC College语言学校',
+  'e-room-language-center': '菲律宾巴科洛德E-Room Language Center',
+  cost: '费用',
+  faq: '常见问题',
+  offers: '优惠',
+  'by-city': '按城市选校',
+  'by-course': '按课程选校',
+  'by-style': '按风格选校',
+  popular: '热门学校',
+  'about-sida': '关于思达启航',
+  about: '关于思达启航',
+  contact: '联系我们',
+};
+
+/** Breadcrumb parents that are not pages themselves link to this page instead. */
+const BREADCRUMB_ROUTES: Record<string, string> = {
+  '/student-feedback': '/student-feedback/study-tour',
+  '/about-sida': BRAND_ABOUT_PATH,
+};
+
+function humanizeSegment(segment: string): string {
+  return segment
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function breadcrumbItems(path: string, origin: string): Array<Record<string, unknown>> {
+  const items: Array<{ name: string; url: string }> = [{ name: '首页', url: `${origin}/` }];
+  let current = '';
+  for (const segment of path.split('/').filter(Boolean)) {
+    current += `/${segment}`;
+    const url = `${origin}${BREADCRUMB_ROUTES[current] ?? current}`;
+    const name = BREADCRUMB_LABELS[segment] ?? humanizeSegment(segment);
+    // A parent that links to its child's page would list that page twice; keep one entry.
+    if (items[items.length - 1].url === url) {
+      items[items.length - 1] = { name, url };
+    } else {
+      items.push({ name, url });
+    }
+  }
+
+  return items.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: item.url }));
+}
+
+/**
+ * schema.org JSON-LD for a page. The browser SeoService and the build (which puts it in the initial
+ * HTML) both call this with the canonical origin, so they produce the same data. The home page and the
+ * about page carry the full Organization from the brand fact card (brand-facts.ts); other pages refer
+ * to it by @id.
+ */
+export function buildSeoStructuredData(path: string, page: SeoPage, origin = BRAND_SITE_ORIGIN): Record<string, unknown> {
+  const pageUrl = `${origin}${path}`;
+  const title = seoTitle(page);
+  const imagePath = page.image ?? DEFAULT_IMAGE;
+  const image = /^https?:\/\//i.test(imagePath) ? imagePath : `${origin}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+  const websiteId = `${origin}/#website`;
+  const organizationId = `${origin}/#organization`;
+  const isAbout = path === BRAND_ABOUT_PATH;
+
+  const graph: Array<Record<string, unknown>> = [
+    {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      url: `${origin}/`,
+      name: SITE_NAME,
+      alternateName: BRAND.name,
+      publisher: { '@id': organizationId },
+      inLanguage: 'zh-CN',
+    },
+    path === '/' || isAbout
+      ? brandOrganizationNode(origin)
+      : {
+          '@type': 'EducationalOrganization',
+          '@id': organizationId,
+          name: BRAND.name,
+          url: `${origin}/`,
+          logo: `${origin}${BRAND_LOGO}`,
+        },
+    {
+      '@type': isAbout ? 'AboutPage' : 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description: page.description,
+      image,
+      isPartOf: { '@id': websiteId },
+      inLanguage: 'zh-CN',
+      ...(isAbout ? { about: { '@id': organizationId }, mainEntity: { '@id': organizationId }, dateModified: BRAND_FACTS_UPDATED } : {}),
+    },
+  ];
+
+  if (page.type === 'article') {
+    graph.push({
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: title,
+      description: page.description,
+      image,
+      mainEntityOfPage: { '@id': `${pageUrl}#webpage` },
+      author: { '@id': organizationId },
+      publisher: { '@id': organizationId },
+      inLanguage: 'zh-CN',
+    });
+  }
+
+  if (isAbout) {
+    graph.push(brandFaqNode(pageUrl));
+  }
+
+  if (path !== '/') {
+    graph.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: breadcrumbItems(path, origin),
+    });
+  }
+
+  return { '@context': 'https://schema.org', '@graph': graph };
+}
+
 @Injectable({ providedIn: 'root' })
 export class SeoService {
   constructor(
@@ -644,7 +819,7 @@ export class SeoService {
     this.upsertTag('name', 'twitter:description', page.description);
     this.upsertTag('name', 'twitter:image', imageUrl);
     this.setCanonical(canonicalUrl);
-    this.setStructuredData(path, canonicalUrl, title, page.description, imageUrl, page.type);
+    this.setStructuredData(path, page);
   }
 
   private findSectionSeo(path: string): SeoPage | undefined {
@@ -681,7 +856,7 @@ export class SeoService {
     link.setAttribute('href', url);
   }
 
-  private setStructuredData(path: string, canonicalUrl: string, title: string, description: string, imageUrl: string, type?: 'article'): void {
+  private setStructuredData(path: string, page: SeoPage): void {
     let script = this.document.getElementById('seo-json-ld') as HTMLScriptElement | null;
     if (!script) {
       script = this.document.createElement('script');
@@ -690,131 +865,7 @@ export class SeoService {
       this.document.head.appendChild(script);
     }
 
-    const origin = this.document.location.origin;
-    const graph: Array<Record<string, unknown>> = [
-      {
-        '@type': 'WebSite',
-        '@id': `${origin}/#website`,
-        url: origin,
-        name: SITE_NAME,
-        inLanguage: 'zh-CN',
-      },
-      {
-        '@type': 'EducationalOrganization',
-        '@id': `${origin}/#organization`,
-        name: SITE_NAME,
-        url: origin,
-        logo: this.absoluteUrl('/assets/sida-qihang-education-logo-rectangle.webp'),
-      },
-      {
-        '@type': 'WebPage',
-        '@id': `${canonicalUrl}#webpage`,
-        url: canonicalUrl,
-        name: title,
-        description,
-        image: imageUrl,
-        isPartOf: { '@id': `${origin}/#website` },
-        inLanguage: 'zh-CN',
-      },
-    ];
-
-    if (type === 'article') {
-      graph.push({
-        '@type': 'Article',
-        '@id': `${canonicalUrl}#article`,
-        headline: title,
-        description,
-        image: imageUrl,
-        mainEntityOfPage: { '@id': `${canonicalUrl}#webpage` },
-        author: { '@id': `${origin}/#organization` },
-        publisher: { '@id': `${origin}/#organization` },
-        inLanguage: 'zh-CN',
-      });
-    }
-
-    if (path !== '/') {
-      graph.push({
-        '@type': 'BreadcrumbList',
-        '@id': `${canonicalUrl}#breadcrumb`,
-        itemListElement: this.buildBreadcrumbItems(path, origin),
-      });
-    }
-
-    script.textContent = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@graph': graph,
-    });
-  }
-
-  private buildBreadcrumbItems(path: string, origin: string): Array<Record<string, unknown>> {
-    const labels: Record<string, string> = {
-      'philippines-study': '菲律宾留学',
-      'study-tour-guide': '游学攻略',
-      'student-feedback': '学员反馈',
-      'study-tour': '游学反馈',
-      'philippines-study-mid-autumn': '中秋关怀记录',
-      recommendations: '学校推荐',
-      schools: '语言学校',
-      cebu: '宿务',
-      baguio: '碧瑶',
-      'airport-pickup': '碧瑶接机指南',
-      clark: '克拉克',
-      iloilo: '伊洛伊洛',
-      bacolod: '巴科洛德',
-      'eg-academy': '菲律宾克拉克EG语言学校',
-      'clark-we-academy': '菲律宾克拉克WE Academy语言学校',
-      'help-english-clark': '菲律宾克拉克HELP English语言学校',
-      'help-english-longlong-campus': 'HELP English Longlong Campus',
-      'aelc-native-focused-clark-schools': '菲律宾克拉克AELC语言学校',
-      'hana-academy': '菲律宾克拉克HANA Academy',
-      manila: '马尼拉',
-      'enderun-extension': '菲律宾马尼拉Enderun语言学校',
-      'american-english-skills-development-center': '菲律宾马尼拉American-English-Skill语言学校',
-      'berlitz-philippines': '菲律宾马尼拉Berlitz语言学校',
-      'manila-business-college': '菲律宾马尼拉Business College学校',
-      'mk-language-training-center': '菲律宾伊洛伊洛MK Language Training Center',
-      'polyglot-international-academy': '菲律宾伊洛伊洛PIA语言学校',
-      'gitc-college-international-language-center': '菲律宾伊洛伊洛GITC College语言学校',
-      'e-room-language-center': '菲律宾巴科洛德E-Room Language Center',
-      cost: '费用',
-      faq: '常见问题',
-      offers: '优惠',
-      'by-city': '按城市选校',
-      'by-course': '按课程选校',
-      'by-style': '按风格选校',
-      popular: '热门学校',
-    };
-
-    const segments = path.split('/').filter(Boolean);
-    const items: Array<Record<string, unknown>> = [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: '首页',
-        item: `${origin}/`,
-      },
-    ];
-
-    segments.reduce((currentPath, segment, index) => {
-      const nextPath = `${currentPath}/${segment}`;
-      items.push({
-        '@type': 'ListItem',
-        position: index + 2,
-        name: labels[segment] ?? this.humanizeSegment(segment),
-        item: `${origin}${nextPath === '/student-feedback' ? '/student-feedback/study-tour' : nextPath}`,
-      });
-
-      return nextPath;
-    }, '');
-
-    return items;
-  }
-
-  private humanizeSegment(segment: string): string {
-    return segment
-      .split('-')
-      .filter(Boolean)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+    // The server already put the same JSON-LD in the initial HTML for pages listed in SEO_PAGES.
+    script.textContent = JSON.stringify(buildSeoStructuredData(path, page));
   }
 }

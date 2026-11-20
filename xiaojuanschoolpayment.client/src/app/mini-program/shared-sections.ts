@@ -13,7 +13,7 @@ export const miniNote = (text: string): MiniBlock => ({ type: 'text', text, styl
 export const miniHeading = (text: string, eyebrow?: string): MiniBlock => ({ type: 'heading', text, eyebrow });
 
 /**
- * The closing "思达保障与联系顾问" part: the school's call to action, the shared
+ * The closing "思达启航保障与联系顾问" part: the school's call to action, the shared
  * "为什么通过思达启航报名…" text (same source as the website's SidaWhySectionComponent) and the
  * shared consultant cards. Every school uses this, so a consultant or guarantee change is made once.
  */

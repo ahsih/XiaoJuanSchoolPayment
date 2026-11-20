@@ -234,7 +234,7 @@ export class IbreezeStudentQuote {
     const peakRanges = this.contentConfig.quoteSettings.peakSeasonRanges.filter(item => item.enabled);
     return [
       { icon: '注', label: '注册费', amount: `${this.formatUsd(this.registrationAmount)} 美元`, note: '一次性费用，老学员返校免费' },
-      ...(sidaRule?.enabled === false ? [] : [{ icon: '折', label: '思达折扣', amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: `官方课程费和住宿费合计优惠${Math.round((1 - this.sidaDiscountRate) * 100)}%；注册费、当地费用及其他费用不参与。` }]),
+      ...(sidaRule?.enabled === false ? [] : [{ icon: '折', label: '思达启航折扣', amount: `− ${this.formatUsd(this.sidaDiscountAmount)} 美元`, note: `官方课程费和住宿费合计优惠${Math.round((1 - this.sidaDiscountRate) * 100)}%；注册费、当地费用及其他费用不参与。` }]),
       ...(this.septemberPromotionDiscount ? [{ icon: '惠', label: '9月住宿优惠', amount: `− ${this.formatUsd(this.septemberPromotionDiscount)} 美元`, note: this.septemberPromotionText }] : []),
       ...(this.novemberPromotionDiscount ? [{ icon: '惠', label: '11月住宿优惠', amount: `− ${this.formatUsd(this.novemberPromotionDiscount)} 美元`, note: this.novemberQuoteNote }] : []),
       ...(this.christmasPromotionDiscount ? [{ icon: '惠', label: christmasRule?.name ?? '圣诞特别优惠', amount: `− ${this.formatUsd(this.christmasPromotionDiscount)} 美元`, note: this.christmasPromotionText }] : []),

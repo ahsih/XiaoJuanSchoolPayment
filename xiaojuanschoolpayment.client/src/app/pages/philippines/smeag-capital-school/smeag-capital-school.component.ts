@@ -577,7 +577,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     {
       icon: 'location_on',
       title: '宿务当地支持',
-      text: '思达在宿务有工作人员驻点，可按情况提供当地支持和沟通协助。',
+      text: '思达启航在宿务有工作人员驻点，可按情况提供当地支持和沟通协助。',
     },
   ];
 
@@ -1064,7 +1064,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   }
 
   get discountText(): string {
-    return this.promotionRules.find(item => item.id === 'smeag-sida-90' && item.enabled)?.description ?? '当前未启用思达折扣';
+    return this.promotionRules.find(item => item.id === 'smeag-sida-90' && item.enabled)?.description ?? '当前未启用思达启航折扣';
   }
 
   get exchangeRateText(): string {

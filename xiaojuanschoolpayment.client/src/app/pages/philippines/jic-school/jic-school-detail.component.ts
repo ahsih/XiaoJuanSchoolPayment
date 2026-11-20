@@ -332,9 +332,9 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先做校区匹配', text: '根据英语基础、目标分数、口语需求、职业规划、预算和房型偏好，先判断Challenger还是Premium。' },
     { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认JIC课程、房型、空房、入学日、旺季附加费、保证班规则和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达启航免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提供学习资料、费用清单、行李清单、接机和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、学习方法或学校沟通问题，可继续联系思达协助。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、学习方法或学校沟通问题，可继续联系思达启航协助。' },
     { icon: 'location_on', title: '国内顾问与当地协作', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
@@ -358,7 +358,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
     { question: '菲律宾碧瑶JIC语言学校适合零基础学生吗？', answer: '可以。Challenger ESL Lite适合从基础开始系统提升，Premium Speaking Starter也适合初学者；具体要按自律程度和生活偏好判断校区。' },
     { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费、住宿费和旺季附加费；到校后还需准备SSP、SSP I-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'IELTS Guarantee是不是只付课程费就可以？', answer: '不是。IELTS Guarantee除课程费外，还需确认保证班参加费、出勤和分数保证规则，页面按学校最新价目表每开始8周计入PHP 18,000。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名菲律宾碧瑶JIC语言学校，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名菲律宾碧瑶JIC语言学校，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
@@ -664,7 +664,7 @@ export class JicSchoolDetailComponent implements OnInit, AfterViewInit, OnDestro
         icon: '注',
         label: '注册费原价',
         amount: `${this.formatUsd(this.registrationFee * this.activeStudents.length)} 美元`,
-        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；通过思达报名在“思达注册费减免”行全额抵扣，老学员返校免费。`,
+        note: imageSettings.paymentNotes.registration ?? `${this.formatUsd(this.registrationFee)}美元／人且每人只收一次；通过思达启航报名在“思达启航注册费减免”行全额抵扣，老学员返校免费。`,
       },
       ...groupPaymentLines(this.activeStudents, false),
     ];

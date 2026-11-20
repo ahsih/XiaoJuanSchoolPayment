@@ -8,7 +8,7 @@ export const PHILINTER_AGE_RULE = '成人课程按就读当年度满18岁判断�
 export const PHILINTER_FAMILY_RULE = '亲子预付定金500美元／人，属于学费预付款，不额外加收。';
 export const PHILINTER_WINTER_RULE = '寒假：校内宿舍需注册至少6周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
 export const PHILINTER_SUMMER_RULE = '就读区间只要部分涵盖暑假高峰：校内宿舍需注册至少8周，校外Azon公寓至少4周；临近日期可能弹性开放短周数，须学校确认。';
-export const PHILINTER_PROMOTION = '活动期间为2026/08/16–12/25（最后一周可于12/26周六退房）。入住校内三人房、Azon单人房或Azon双人房，每完成8周课程优惠300美元：8–15周减300美元，16–23周减600美元，依此类推。适用于除IELTS保证班及TOEIC保证班外的所有课程；走读、校内单人房及校内双人房不参加。不得与其他校方优惠或Voucher并用；思达课程及住宿9折另计。';
+export const PHILINTER_PROMOTION = '活动期间为2026/08/16–12/25（最后一周可于12/26周六退房）。入住校内三人房、Azon单人房或Azon双人房，每完成8周课程优惠300美元：8–15周减300美元，16–23周减600美元，依此类推。适用于除IELTS保证班及TOEIC保证班外的所有课程；走读、校内单人房及校内双人房不参加。不得与其他校方优惠或Voucher并用；思达启航课程及住宿9折另计。';
 // Confirmed 2026 school period. The separately configured 2027 CALA period is
 // loaded through the versioned Philinter content document.
 export const PHILINTER_SUMMER_PERIODS = [

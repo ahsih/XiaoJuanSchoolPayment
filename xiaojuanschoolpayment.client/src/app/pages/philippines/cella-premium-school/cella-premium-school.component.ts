@@ -338,7 +338,7 @@ export class CellaPremiumSchoolComponent {
     {
       icon: 'location_on',
       title: '宿务当地支持',
-      text: '思达在宿务有工作人员驻点，可按情况提供当地沟通支持。',
+      text: '思达启航在宿务有工作人员驻点，可按情况提供当地沟通支持。',
     },
   ];
 

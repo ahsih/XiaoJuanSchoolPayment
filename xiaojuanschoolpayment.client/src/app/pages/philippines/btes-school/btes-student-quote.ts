@@ -240,10 +240,10 @@ export class BtesStudentQuote {
   get promotionNote(): string {
     if (!this.promotionPeriod) return '当前课程未完整落在BTES公布的淡季就学期间。';
     const period = `${this.promotionPeriod.start.replace(/-/g, '/')}–${this.promotionPeriod.end.replace(/-/g, '/')}`;
-    if (this.groupDiscountRate) return `${period}内完整就学；3人或以上同时报名、同时入学及结业，课程费与住宿费先减40%（付6折），优惠后再计算思达95折。`;
-    if (this.individualDiscountRate === 0.25) return `${period}内完整就学；个人3周课程与住宿先减25%（付75折），优惠后再计算思达95折。`;
-    if (this.individualDiscountRate === 0.3) return `${period}内完整就学；个人4周及以上课程与住宿先减30%（付7折），优惠后再计算思达95折。`;
-    return `${period}为淡季活动期；当前周数不符合3周或4周以上优惠，普通课程与住宿仍计算思达95折。`;
+    if (this.groupDiscountRate) return `${period}内完整就学；3人或以上同时报名、同时入学及结业，课程费与住宿费先减40%（付6折），优惠后再计算思达启航95折。`;
+    if (this.individualDiscountRate === 0.25) return `${period}内完整就学；个人3周课程与住宿先减25%（付75折），优惠后再计算思达启航95折。`;
+    if (this.individualDiscountRate === 0.3) return `${period}内完整就学；个人4周及以上课程与住宿先减30%（付7折），优惠后再计算思达启航95折。`;
+    return `${period}为淡季活动期；当前周数不符合3周或4周以上优惠，普通课程与住宿仍计算思达启航95折。`;
   }
 
   get visaLabel() { return this.visaOptions.find((option) => option.value === this.visaType)?.label ?? ''; }

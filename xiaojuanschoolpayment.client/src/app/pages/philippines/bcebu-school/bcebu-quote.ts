@@ -143,7 +143,7 @@ export class BCebuQuote {
     const offSeason = [this.promotion('bcebu-off-season-spring'), this.promotion('bcebu-off-season-fall')].filter(Boolean) as CiaPromotionRule[];
     return [
       { icon: '注', label: '注册费', amount: `${quoteMoney(this.registration())} 美元`, note: this.imageSettings.paymentNotes.registration ?? BCEBU_REGISTRATION_NOTE },
-      { icon: '免', label: this.promotion('bcebu-registration-waiver')?.name ?? '免注册费优惠', amount: `− ${quoteMoney(this.registration())} 美元`, note: this.promotion('bcebu-registration-waiver')?.description ?? '通过思达报名免注册费', accent: true },
+      { icon: '免', label: this.promotion('bcebu-registration-waiver')?.name ?? '免注册费优惠', amount: `− ${quoteMoney(this.registration())} 美元`, note: this.promotion('bcebu-registration-waiver')?.description ?? '通过思达启航报名免注册费', accent: true },
       { icon: '长', label: longStay?.name ?? '长期优惠', amount: this.longStayDiscount ? `− ${quoteMoney(this.longStayDiscount)} 美元` : `未满${longStay?.minimumCourseWeeks ?? 8}周`, note: longStay?.description ?? BCEBU_LONG_STAY_NOTE, accent: this.longStayDiscount > 0 },
       { icon: '记', label: reporter?.name ?? '记者活动优惠', amount: this.reporterDiscount ? `− ${quoteMoney(this.reporterDiscount)} 美元` : '未参与', note: reporter?.description ?? `${BCEBU_PROMOTION_DATES}；${BCEBU_REPORTER_NOTE}`, accent: this.reporterDiscount > 0 },
       { icon: '淡', label: '淡季优惠', amount: this.offSeason ? `− ${quoteMoney(this.offSeasonDiscount)} 美元` : '不适用', note: `${offSeason.map(rule => rule.description).join('；')}${this.family ? '；本次按亲子计算，每位学员分别报价' : ''}`, accent: this.offSeason },

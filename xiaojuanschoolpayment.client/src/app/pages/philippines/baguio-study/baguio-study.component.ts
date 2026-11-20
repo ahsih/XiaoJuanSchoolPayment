@@ -321,7 +321,7 @@ export class BaguioStudyComponent {
     {
       icon: 'support_agent',
       label: '用顾问做排除法',
-      text: '思达教育会先排除不适合的学校，再给出 2-3 个可比较方案，避免只看热门校名报名。',
+      text: '思达启航会先排除不适合的学校，再给出 2-3 个可比较方案，避免只看热门校名报名。',
     },
   ];
 

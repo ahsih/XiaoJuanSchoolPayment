@@ -140,7 +140,7 @@ export class CpilsSchoolComponent {
     },
     {
       question: 'CPILS 的起价是多少？',
-      answer: '2026原价表中，General ESL四人房4周课程费与住宿费合计1,635美元，另收125美元注册费。当符合思达9折与淡季95折时，页面报价为1,522.9美元。',
+      answer: '2026原价表中，General ESL四人房4周课程费与住宿费合计1,635美元，另收125美元注册费。当符合思达启航9折与淡季95折时，页面报价为1,522.9美元。',
     },
     {
       question: 'CPILS 的 IELTS / TOEIC 优势是什么？',

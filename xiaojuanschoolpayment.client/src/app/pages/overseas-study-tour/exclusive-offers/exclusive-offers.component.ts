@@ -9,7 +9,7 @@ import { StudyTourPageContentComponent } from '../page-content/study-tour-page-c
 })
 export class ExclusiveOffersComponent {
   readonly page = {
-    title: '思达独家最新优惠',
+    title: '思达启航独家最新优惠',
     englishTitle: 'STAR Exclusive Offers',
     positioning: '活动页，适合作为放第一的转化入口',
     keywords: '限时优惠、学校活动、游学套餐、奖学金、早鸟价',

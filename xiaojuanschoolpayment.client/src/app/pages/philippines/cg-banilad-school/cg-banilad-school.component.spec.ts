@@ -322,11 +322,11 @@ describe('CG Banilad verified quote', () => {
 
   it('omits unapplied discounts and surcharges from image payment rows', () => {
     const labels = () => component.quoteImageData.paymentItems.map(row => row.label);
-    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣', '淡季优惠']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达启航折扣', '淡季优惠']);
     component.selectedStartDate = '2027-01-04';
-    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达启航折扣']);
     component.selectedStartDate = '2026-07-05';
-    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达折扣', '暑假附加费']);
+    expect(labels()).toEqual(['注册费', '课程名称', '住宿名称', '思达启航折扣', '暑假附加费']);
   });
 
   it('preserves all ten local fee details, including zero amounts, and the estimate disclaimer', () => {
@@ -391,8 +391,8 @@ describe('CG Banilad verified quote', () => {
     expect(component.quoteImageData.paymentItems.filter(row => row.icon === '课').map(row => row.label)).toEqual([
       '学生1 · 课程名称', '学生2 · 课程名称',
     ]);
-    expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达折扣').length).toBe(1);
-    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toContain('2人适用');
+    expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达启航折扣').length).toBe(1);
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达启航折扣')?.note).toContain('2人适用');
     expect(component.includedLocalFees.find(row => row.item === '教材费')).toEqual(jasmine.objectContaining({ quantity: 3, total: 1200 }));
     expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({ quantity: '3', amount: '1,200 比索' }));
   });
@@ -432,7 +432,7 @@ describe('CG Banilad verified quote', () => {
     second.quotePlan.courses[0].startDate = '2026-09-06';
     second.quotePlan.rooms[0].startDate = '2026-09-06';
     const lines = component.quoteImageData.paymentItems;
-    expect(lines.filter(row => row.label === '思达折扣').length).toBe(1);
+    expect(lines.filter(row => row.label === '思达启航折扣').length).toBe(1);
     expect(lines.find(row => row.label === '学生2 · 淡季优惠')?.amount).toBe('− 150 美元');
     expect(lines.some(row => row.label === '学生1 · 淡季优惠')).toBeFalse();
   });

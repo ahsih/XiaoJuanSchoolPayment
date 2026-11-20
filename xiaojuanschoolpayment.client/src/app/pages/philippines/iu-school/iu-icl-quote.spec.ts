@@ -260,6 +260,6 @@ describe('IU and ICL 2026 quote rules', () => {
     expect(image.paymentItems.some(item => item.label.startsWith('学生1 · 课程名称'))).toBeTrue();
     expect(image.paymentItems.some(item => item.label.startsWith('学生2 · 课程名称'))).toBeTrue();
     expect(image.importantNotes).toEqual(jasmine.arrayContaining(IU_ICL_GUARANTEE_RULES));
-    expect(JSON.stringify(image)).not.toContain('思达折扣');
+    expect(JSON.stringify(image)).not.toContain('思达启航折扣');
   });
 });

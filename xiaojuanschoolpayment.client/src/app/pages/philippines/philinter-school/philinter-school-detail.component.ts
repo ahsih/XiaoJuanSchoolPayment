@@ -215,10 +215,10 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '判断Philinter是否适合', text: '先了解学习目标、年龄、住宿偏好、是否接受半斯巴达管理和预算。' },
     { icon: 'fact_check', title: '确认课程、房型和空房', text: '免费协助确认课程、校内/校外住宿、空房、优惠和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达启航免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前免费发送学习资料、行李清单、费用清单和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。' },
-    { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可为学生提供当地支持，直到完成学习并顺利回国。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达启航协助。' },
+    { icon: 'location_on', title: '宿务当地支持', text: '思达启航在宿务有工作人员驻点，可为学生提供当地支持，直到完成学习并顺利回国。' },
   ];
 
   readonly sidaPhilinterReasons: SidaPhilinterReason[] = [
@@ -293,7 +293,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     { question: 'Philinter适合口说强化吗？', answer: '适合。Intensive Power Speaking是Philinter常被关注的口说方向，适合想提升流利度、准确度和表达自信的学生。' },
     { question: 'Philinter短期1至3周怎么计算？', answer: '课程费和住宿费均以4周价格为基准：1周按45%、2周按65%、3周按85%计算；注册费每人120美元另计。' },
     { question: '2026年下半年淡季优惠怎么计算？', answer: PHILINTER_PROMOTION },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名Philinter，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名Philinter，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
 
   readonly sideNav: SideNavItem[] = [

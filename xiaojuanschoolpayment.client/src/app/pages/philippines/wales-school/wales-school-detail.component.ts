@@ -220,16 +220,16 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     { icon: 'fact_check', title: '确认课程与房型', text: '免费协助核对EEP、Infinity、IELTS、Junior课程，房型空位、餐费、优惠和正式报价。' },
     { icon: 'assignment_turned_in', title: '协助报名文件', text: '按学校流程准备报名信息、入学日期、护照资料、航班和付款节点。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提醒菲律宾入境、签证、行李、换汇、接机、到校费用和学习准备。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、房间、费用或生活适应问题，可继续联系思达协助沟通。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、房间、费用或生活适应问题，可继续联系思达启航协助沟通。' },
     { icon: 'location_on', title: '国内顾问与当地协作', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
   readonly sidaWalesReasons: SidaWalesReason[] = [
-    { number: '01', title: '先把WALES放进正确比较组', text: '会把它和MONOL、BECI City、JIC Premium等更弹性的碧瑶学校一起比较，而不是只看城市。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达顾问帮助学生判断WALES是否适合' },
-    { number: '02', title: '课程、房型、餐费和当地费用一次算清', text: 'WALES费用需要拆成课程、住宿、meal fee、当地PHP费用和优惠，顾问会逐项列明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达顾问核算菲律宾碧瑶WALES语言学校费用' },
-    { number: '03', title: '正式文件与收费节点可核对', text: '报价、录取、付款节点和学校确认文件都按流程核验，避免只靠网页价格做决定。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达正式合同与学校文件核验' },
+    { number: '01', title: '先把WALES放进正确比较组', text: '会把它和MONOL、BECI City、JIC Premium等更弹性的碧瑶学校一起比较，而不是只看城市。', image: 'assets/cia/sida-why-action-selection.webp', alt: '思达启航顾问帮助学生判断WALES是否适合' },
+    { number: '02', title: '课程、房型、餐费和当地费用一次算清', text: 'WALES费用需要拆成课程、住宿、meal fee、当地PHP费用和优惠，顾问会逐项列明。', image: 'assets/cia/sida-why-action-fees.webp', alt: '思达启航顾问核算菲律宾碧瑶WALES语言学校费用' },
+    { number: '03', title: '正式文件与收费节点可核对', text: '报价、录取、付款节点和学校确认文件都按流程核验，避免只靠网页价格做决定。', image: 'assets/cia/sida-why-action-contract.webp', alt: '思达启航正式合同与学校文件核验' },
     { number: '04', title: '出发前每一步有人提醒', text: '签证、eTravel、入学文件、航班、接机、换汇和到校PHP费用都会提前提醒。', image: 'assets/cia/sida-why-action-departure.webp', alt: '菲律宾游学出发前文件和行李准备' },
-    { number: '05', title: '服务持续到完成学习', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助沟通。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达顾问持续跟进学生学习情况' },
+    { number: '05', title: '服务持续到完成学习', text: '换老师、调课、住宿、账单、续读或转校问题都可以继续协助沟通。', image: 'assets/cia/sida-why-action-followup.webp', alt: '思达启航顾问持续跟进学生学习情况' },
     { number: '06', title: '深圳总部 + 菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，遇到重要节点有人跟进。', image: 'assets/cia/sida-why-action-team.webp', alt: '思达启航菲律宾和深圳服务团队' },
   ];
 
@@ -260,7 +260,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     { question: 'WALES长周数优惠如何计算？', answer: '注册日在2025年8月1日或之后，并选择公告列明的BESA四周一期开学日（网页按前一天周日抵达）时，8/12/16/20/24周分别减200/300/400/550/700美元；若与2026年6月28日至8月8日旺季重叠，每满2周减少50美元优惠。' },
     { question: 'WALES的房型怎么选？', answer: '预算优先可先看Share Type双人房或家庭房；重视隐私可看Studio单人房，重视生活设备可看Premium Studio。热门档期须尽早确认空房。' },
     { question: 'WALES适合亲子吗？', answer: '可以进入候选，尤其是重视房型和市区便利的家庭。但要先确认儿童年龄、家长课程、监护规则、房型和餐费。' },
-    { question: '思达会怎么建议WALES？', answer: '如果学生是成人、工作者、家庭或想在市中心附近轻松但认真地学英文，WALES值得比较；若目标是短期高压冲刺分数，则建议同时看更强管理的碧瑶学校。' },
+    { question: '思达启航会怎么建议WALES？', answer: '如果学生是成人、工作者、家庭或想在市中心附近轻松但认真地学英文，WALES值得比较；若目标是短期高压冲刺分数，则建议同时看更强管理的碧瑶学校。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },

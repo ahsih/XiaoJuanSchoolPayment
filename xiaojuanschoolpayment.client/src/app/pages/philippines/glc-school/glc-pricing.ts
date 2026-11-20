@@ -54,5 +54,5 @@ export const GLC_ROOMS: readonly GlcRoom[] = [
 ];
 
 export const GLC_REGISTRATION_NOTE = '一次性费用，老学员返校免费';
-export const GLC_LOCAL_FEE_INTRO = '学杂费由学校及相关部门直接收取，和思达游学无关；均为预估金额，仅供准备比索现金参考，具体以到校实收为准。';
+export const GLC_LOCAL_FEE_INTRO = '学杂费由学校及相关部门直接收取，和思达启航无关；均为预估金额，仅供准备比索现金参考，具体以到校实收为准。';
 export const glcCourseName = (course: GlcCourse) => `${course.chineseName}（${course.englishName ?? course.name}）`;

@@ -66,7 +66,7 @@ export const createDefaultBeciContentConfig = (): CiaContentConfig => ({
       { id: 'beci-summer-2027', ...BECI_PEAK_2027_RANGE, enabled: true },
     ],
     promotions: [
-      { id: 'beci-registration-waiver', name: '思达免注册费', description: '所有通过思达报名的学生免100美元注册费。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+      { id: 'beci-registration-waiver', name: '思达启航免注册费', description: '所有通过思达启航报名的学生免100美元注册费。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       { id: 'beci-off-season-1', name: '2026上半年淡季九折', description: '2026/02/08–06/14入学，整段课程费与住宿费减10%。', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, arrivalStart: '2026-02-08', arrivalEnd: '2026-06-14', coverageTarget: 'none' },
       { id: 'beci-off-season-2', name: '2026下半年淡季九折', description: '2026/09/06–12/27入学，整段课程费与住宿费减10%。', enabled: true, sortOrder: 2, priority: 21, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, arrivalStart: '2026-09-06', arrivalEnd: '2026-12-27', coverageTarget: 'none' },
       { id: 'beci-long-stay', name: '长期学习优惠', description: '8/12/16/20/24周分别减50/100/200/300/400美元；可与淡季优惠叠加。', enabled: true, sortOrder: 3, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 50, discountTiers: { '8': 50, '12': 100, '16': 200, '20': 300, '24': 400 }, ruleKind: 'beci-long-stay', appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 8, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
@@ -87,7 +87,7 @@ export const createDefaultBeciContentConfig = (): CiaContentConfig => ({
   },
   quoteImageSettings: {
     paymentSectionTitle: '学校费用明细',
-    paymentNotes: { registration: '每名学生一次；思达学生免收', course: '', accommodation: '', promotion: '符合条件时由系统自动计算' },
+    paymentNotes: { registration: '每名学生一次；思达启航学生免收', course: '', accommodation: '', promotion: '符合条件时由系统自动计算' },
     localFeeSectionTitle: '到校后学杂费明细',
     localFeeIntro: '以下费用以比索计价；接机按选择计入，房间押金另列且不计入学杂费合计。',
     localFeeNotes: {},
@@ -99,8 +99,8 @@ export const createDefaultBeciContentConfig = (): CiaContentConfig => ({
       { title: '海外驻点售后', text: '学习期间持续跟进，问题有人协助' },
     ],
     serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
-    alumniBenefitTitle: '思达学员优惠',
-    alumniBenefitText: '通过思达报名免一次性注册费；其他优惠按入学日期和课程周数自动核对。',
+    alumniBenefitTitle: '思达启航学员优惠',
+    alumniBenefitText: '通过思达启航报名免一次性注册费；其他优惠按入学日期和课程周数自动核对。',
     noteSectionTitle: '报价说明',
     footerNotes: [
       '课程与住宿按完整周计算，周日入住、周六退房。',

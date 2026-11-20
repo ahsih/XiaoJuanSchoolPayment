@@ -38,7 +38,7 @@
 
         <div class="info-trio">
           <section class="panel basic-panel" id="basic-info"><div class="compact-heading"><span>学校基本信息</span><h2>BTES基本资料</h2></div><dl class="info-list"><div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div></dl></section>
-          <section class="panel advisor-panel" id="advisor-review"><div class="quote-mark">“</div><div class="compact-heading"><span>思达顾问点评</span><h2>BTES适合看重课量、预算与市区生活的人</h2></div><p>它的优势是课程梯度清楚：Chill保留自由时间、Speak Up最均衡、Speak More增加一对一、Talkative把每天8节全部用于个别课。亲子和考试课程也能在同一校区安排。</p><div class="advisor-card"><div class="advisor-avatar">BT</div><div><strong>顾问建议</strong><span>先确定住宿还是走读，再根据一对一课量、年龄、考试目标和房型预算选择。</span></div></div><a class="primary-action full-action" routerLink="/about-sida/contact">让顾问判断是否适合我<mat-icon>chat</mat-icon></a></section>
+          <section class="panel advisor-panel" id="advisor-review"><div class="quote-mark">“</div><div class="compact-heading"><span>思达启航顾问点评</span><h2>BTES适合看重课量、预算与市区生活的人</h2></div><p>它的优势是课程梯度清楚：Chill保留自由时间、Speak Up最均衡、Speak More增加一对一、Talkative把每天8节全部用于个别课。亲子和考试课程也能在同一校区安排。</p><div class="advisor-card"><div class="advisor-avatar">BT</div><div><strong>顾问建议</strong><span>先确定住宿还是走读，再根据一对一课量、年龄、考试目标和房型预算选择。</span></div></div><a class="primary-action full-action" routerLink="/about-sida/contact">让顾问判断是否适合我<mat-icon>chat</mat-icon></a></section>
           <section class="panel highlight-panel" id="highlights"><div class="compact-heading"><span>BTES核心亮点</span><h2>为什么把BTES列入宿务候选？</h2></div><div class="highlight-list"><article *ngFor="let item of highlights"><mat-icon>check_circle</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div></section>
         </div>
 
@@ -89,7 +89,7 @@
               <p>宿舍电费、符合条件时的ACR与签证延期费、接机、可退押金，以及个人实际发生的其他费用。</p>
             </div>
           </div>
-          <p class="offer-rule-note"><mat-icon>info</mat-icon><span><strong>折扣说明：</strong>只有1,000美元套餐不再计算思达95折；其他普通方案在BTES活动折扣后仍正常计算思达95折。</span></p>
+          <p class="offer-rule-note"><mat-icon>info</mat-icon><span><strong>折扣说明：</strong>只有1,000美元套餐不再计算思达启航95折；其他普通方案在BTES活动折扣后仍正常计算思达启航95折。</span></p>
         </section>
 
         <section class="quote-panel" id="quote">
@@ -107,7 +107,7 @@
             <p class="fee-alert" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
             <div class="group-result btes-quote-result"><span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em><small class="exchange-rate-summary">{{ exchangeRateSummary }}</small><small *ngIf="quoteCalculated">已按当前选择重新核算；正式报名仍须确认房型、名额及学校最终账单。</small></div>
             <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>立即计算我的费用</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>获取顾问确认报价</a></div>
-            <p class="season-note">优惠顺序：老学员或ALL IN ONE免重复注册费；符合淡季时只取个人或团体一档，再对优惠后的普通课程与住宿计算思达95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
+            <p class="season-note">优惠顺序：老学员或ALL IN ONE免重复注册费；符合淡季时只取个人或团体一档，再对优惠后的普通课程与住宿计算思达启航95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
             <p class="season-note"><strong>2027旺季附加费：</strong>2027/07/04–08/28按60美元／周计收；同一周课程与住宿只计一次，附加费不参与优惠。</p>
           </div>
         </section>
@@ -122,7 +122,7 @@
           <div class="section-heading"><span>BTES 2026淡季优惠</span><h2>个人3周75折、个人4周以上7折、3人以上团体6折</h2><p>优惠仅作用于课程费与住宿费，报名费及SSP、签证、宿舍管理、电费、教材、机票等当地费用不参与。三档优惠互斥，不叠加。</p></div>
           <div class="btes-period-grid"><article *ngFor="let period of lowSeasonPeriods"><span>{{ period.label }}</span><strong>{{ period.start.replaceAll('-', '/') }}–{{ period.end.replaceAll('-', '/') }}</strong><p>所选课程与住宿须完整落在这段就学期间。</p></article></div>
           <div class="btes-promotion-grid"><article><mat-icon>looks_one</mat-icon><span>个人3周</span><strong>减25%｜付75折</strong><p>淡季期间个人报名3周，课程费与住宿费减25%。</p></article><article><mat-icon>looks_two</mat-icon><span>个人4周及以上</span><strong>减30%｜付7折</strong><p>淡季期间个人报名4周（含）以上，课程费与住宿费减30%。</p></article><article><mat-icon>groups</mat-icon><span>3人及以上</span><strong>减40%｜付6折</strong><p>全体成员须同时报名、同时入学并同时结业；中国大陆团签优先，个签也可享受。</p></article></div>
-          <p class="source-review-note">本页按思达确认的报价规则计算：个人与团体淡季优惠先从课程费和住宿费中扣除，再对优惠后金额计算思达95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
+          <p class="source-review-note">本页按思达启航确认的报价规则计算：个人与团体淡季优惠先从课程费和住宿费中扣除，再对优惠后金额计算思达启航95折；只有1,000美元ALL IN ONE套餐不再计算95折。</p>
         </section>
 
         <section class="section-block" id="holidays">
@@ -134,7 +134,7 @@
 
         <app-sida-why-section [schoolName]="'菲律宾宿务BTES English Academy'"></app-sida-why-section>
         <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认BTES前，建议先看这些问题</h2></div><div class="faq-section"><details *ngFor="let item of faqs"><summary>{{ item.title }}</summary><p>{{ item.text }}</p></details></div></section>
-        <section class="bottom-cta"><div><span>获取BTES完整资料与确认报价</span><h2>把日期、周数、课程、住宿或走读告诉思达，我们帮你核对</h2><p>顾问会协助确认BTES当期名额、房型、年龄要求、淡季资格、签证与当地费用，也可同步比较其他宿务语言学校。</p></div><ul><li><mat-icon>check_circle</mat-icon>免费核对BTES空位与正式账单</li><li><mat-icon>check_circle</mat-icon>拆分美元学校费用与比索当地费用</li><li><mat-icon>check_circle</mat-icon>按单人或2–20人生成可保存报价图片</li></ul><a class="primary-action" routerLink="/about-sida/contact">联系思达顾问<mat-icon>support_agent</mat-icon></a></section>
+        <section class="bottom-cta"><div><span>获取BTES完整资料与确认报价</span><h2>把日期、周数、课程、住宿或走读告诉思达启航，我们帮你核对</h2><p>顾问会协助确认BTES当期名额、房型、年龄要求、淡季资格、签证与当地费用，也可同步比较其他宿务语言学校。</p></div><ul><li><mat-icon>check_circle</mat-icon>免费核对BTES空位与正式账单</li><li><mat-icon>check_circle</mat-icon>拆分美元学校费用与比索当地费用</li><li><mat-icon>check_circle</mat-icon>按单人或2–20人生成可保存报价图片</li></ul><a class="primary-action" routerLink="/about-sida/contact">联系思达启航顾问<mat-icon>support_agent</mat-icon></a></section>
       </main>
 
       <aside class="side-panel" aria-label="BTES页面快捷导航"><div class="current-card"><span>BTES 4周ALL IN ONE</span><strong class="side-price">{{ fourWeekStartingText }}</strong><p>限定日期内的ESL＋四人房全包套餐；电费、接机和可退押金等另计。</p><a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">估算费用<mat-icon>calculate</mat-icon></a></div><nav class="section-nav"><a *ngFor="let item of sideNavItems" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)"><mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}</a></nav></aside>

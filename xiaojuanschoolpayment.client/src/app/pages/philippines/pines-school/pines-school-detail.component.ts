@@ -319,9 +319,9 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '判断Main或IELTS校区', text: '先了解英语基础、雅思目标、预算、入学日期和能接受的管理强度。' },
     { icon: 'fact_check', title: '确认课程、房型和费用', text: '免费协助确认PINES课程、房型、校区、空房、优惠和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达启航免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前发送学习资料、行李清单、费用清单、接机和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，可继续联系思达协助。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，可继续联系思达启航协助。' },
     { icon: 'location_on', title: '菲律宾当地支持', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
@@ -356,7 +356,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { question: 'Main Campus和IELTS Campus怎么选？', answer: '想提升基础口语、综合英语、TOEIC或亲子方向，优先看Main Campus；已有雅思目标和一定基础，再考虑IELTS Campus。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。学校付款部分显示课程、住宿、附加费和优惠；到校后学杂费另列SSP、SSP-E Card、ACR-I Card、签证续签、水电和学生证，可选接机也会按当前选择计入。校内预存款、房间押金和洗衣服务需另行准备，不计入学杂费合计。' },
     { question: 'PINES雅思保证班有什么要求？', answer: '官方资料列出8或12周、5.5到7.0目标分数、入学分数门槛、每周六模考、95%出勤、100%参加模考等规则，报名时需按目标分数逐项确认。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名PINES，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名PINES，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },
@@ -1027,7 +1027,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     return `参考汇率：1美元 ≈ ${quoteCurrencyText(this.usdToCny, 'zh-CN', { maximumFractionDigits: 6 })}元人民币；1元人民币 ≈ ${quoteCurrencyText(this.phpPerCny, 'zh-CN', { maximumFractionDigits: 6 })}比索（${this.usingLiveExchangeRate && this.exchangeRateDate ? this.exchangeRateDate.replace(/-/g, '/') : '最新参考汇率待更新'}）`;
   }
   get registrationNote(): string {
-    return `一次性费用，100美元／人；所有通过思达报名的学生均免收，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`;
+    return `一次性费用，100美元／人；所有通过思达启航报名的学生均免收，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`;
   }
   get campusPlanPaymentItems(): QuoteImagePaymentItem[] {
     const entries = this.activeStudents.flatMap((student, studentIndex) =>

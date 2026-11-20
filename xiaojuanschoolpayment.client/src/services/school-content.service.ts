@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import {
   SchoolContentEditorDTO,
   SchoolContentReviewDTO,
   SchoolContentRevisionDTO,
 } from '../interfaces/school-content.dto';
+import { withFullBrandName } from './brand-name';
 
 @Injectable({ providedIn: 'root' })
 export class SchoolContentService {
@@ -13,10 +14,17 @@ export class SchoolContentService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /** Published content with the brand written in full (思达启航). The CIA page is kept exactly as published. */
   getPublished<TContent>(schoolId: string): Observable<SchoolContentRevisionDTO<TContent>> {
-    return this.http.get<SchoolContentRevisionDTO<TContent>>(
-      `${this.apiUrl}/${schoolId}/published`,
-    );
+    return this.http
+      .get<SchoolContentRevisionDTO<TContent>>(`${this.apiUrl}/${schoolId}/published`)
+      .pipe(
+        map(revision =>
+          !revision || (revision.content as { schoolCode?: string } | null)?.schoolCode === 'CIA'
+            ? revision
+            : { ...revision, content: withFullBrandName(revision.content) },
+        ),
+      );
   }
 
   getEditor<TContent>(schoolId: string): Observable<SchoolContentEditorDTO<TContent>> {

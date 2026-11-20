@@ -7,12 +7,14 @@ namespace XiaoJuanSchoolPayment.Server.Services.Seo;
 
 /// <summary>
 /// Serves the Angular index.html for client routes with that route's own title, description,
-/// keywords, Open Graph/Twitter tags and canonical link already in the HTML.
-/// Baidu and WeChat link previews usually do not run JavaScript, so without this every URL showed
-/// the homepage metadata. The data is wwwroot/seo-pages.json, generated at build time from the
-/// client's seo.service.ts (scripts/export-seo-pages.cjs); the Angular SeoService keeps updating
-/// the same tags during in-app navigation. Missing files fail safe: no index.html → 404 (as before),
-/// no seo-pages.json → the original index.html.
+/// keywords, Open Graph/Twitter tags, canonical link and schema.org JSON-LD already in the HTML, and,
+/// for routes that have one (the 关于思达启航 page), the page body as static HTML inside &lt;app-root&gt;.
+/// Baidu, WeChat link previews and most AI crawlers do not run JavaScript, so without this every URL
+/// showed the homepage metadata and no body text. The data is wwwroot/seo-pages.json, generated at
+/// build time from the client's seo.service.ts and brand-facts.ts (scripts/export-seo-pages.cjs); the
+/// Angular SeoService keeps updating the same tags during in-app navigation, and Angular replaces the
+/// static body with the same content when it starts. Missing files fail safe: no index.html → 404
+/// (as before), no seo-pages.json → the original index.html.
 /// </summary>
 public sealed partial class SpaSeoHtmlRenderer
 {
@@ -68,7 +70,22 @@ public sealed partial class SpaSeoHtmlRenderer
       .Append(Meta("name", "twitter:image", image))
       .Append("<link rel=\"canonical\" href=\"").Append(Encode(canonical)).Append("\" />\n");
 
-    return template.BeforeHeadEnd + tags + template.FromHeadEnd;
+    // Build output from seo.service.ts: JSON with "<" escaped, and HTML whose values are escaped.
+    if (!string.IsNullOrEmpty(page.JsonLd))
+    {
+      tags.Append("<script type=\"application/ld+json\" id=\"seo-json-ld\">").Append(page.JsonLd).Append("</script>\n");
+    }
+
+    if (string.IsNullOrEmpty(page.BodyHtml) || template.AppRootContentStart < 0)
+    {
+      return template.BeforeHeadEnd + tags + template.FromHeadEnd;
+    }
+
+    var fromHeadEnd = template.FromHeadEnd;
+    return template.BeforeHeadEnd + tags
+      + fromHeadEnd[..template.AppRootContentStart]
+      + page.BodyHtml
+      + fromHeadEnd[template.AppRootContentEnd..];
   }
 
   private static string NormalizePath(string rawPath)
@@ -84,7 +101,7 @@ public sealed partial class SpaSeoHtmlRenderer
   private static string Encode(string value) => WebUtility.HtmlEncode(value ?? string.Empty);
 
   [GeneratedRegex(
-    """<title>[\s\S]*?</title>\s*|<meta\s[^>]*?(?:name|property)="(?:description|keywords|og:[a-z_:]+|twitter:[a-z_:]+)"[^>]*>\s*|<link\s[^>]*?rel="canonical"[^>]*>\s*""",
+    """<title>[\s\S]*?</title>\s*|<meta\s[^>]*?(?:name|property)="(?:description|keywords|og:[a-z_:]+|twitter:[a-z_:]+)"[^>]*>\s*|<link\s[^>]*?rel="canonical"[^>]*>\s*|<script\s[^>]*?id="seo-json-ld"[^>]*>[\s\S]*?</script>\s*""",
     RegexOptions.IgnoreCase)]
   private static partial Regex SeoTagPattern();
 
@@ -121,15 +138,34 @@ public sealed partial class SpaSeoHtmlRenderer
     if (data?.Default == null || headEnd < 0)
     {
       _logger.LogWarning("Per-page SEO tags are disabled: seo-pages.json is missing or index.html has no </head>.");
-      return new Template(originalHtml, null, originalHtml, string.Empty);
+      return new Template(originalHtml, null, originalHtml, string.Empty, -1, -1);
     }
 
     data.Sections ??= [];
     data.Pages ??= new Dictionary<string, SeoEntry>(StringComparer.Ordinal);
-    return new Template(originalHtml, data, stripped[..headEnd], stripped[headEnd..]);
+
+    // Where a static page body goes: between <app-root> and </app-root>, which Angular empties on start.
+    var fromHeadEnd = stripped[headEnd..];
+    var appRootOpen = fromHeadEnd.IndexOf("<app-root", StringComparison.OrdinalIgnoreCase);
+    var appRootContentStart = appRootOpen < 0 ? -1 : fromHeadEnd.IndexOf('>', appRootOpen) + 1;
+    var appRootContentEnd = appRootContentStart <= 0
+      ? -1
+      : fromHeadEnd.IndexOf("</app-root>", appRootContentStart, StringComparison.OrdinalIgnoreCase);
+    if (appRootContentEnd < 0)
+    {
+      appRootContentStart = -1;
+    }
+
+    return new Template(originalHtml, data, stripped[..headEnd], fromHeadEnd, appRootContentStart, appRootContentEnd);
   }
 
-  private sealed record Template(string OriginalHtml, SeoData? Data, string BeforeHeadEnd, string FromHeadEnd);
+  private sealed record Template(
+    string OriginalHtml,
+    SeoData? Data,
+    string BeforeHeadEnd,
+    string FromHeadEnd,
+    int AppRootContentStart,
+    int AppRootContentEnd);
 
   private sealed class SeoData
   {
@@ -146,6 +182,8 @@ public sealed partial class SpaSeoHtmlRenderer
     public string Keywords { get; set; } = string.Empty;
     public string Image { get; set; } = string.Empty;
     public string Type { get; set; } = "website";
+    public string JsonLd { get; set; } = string.Empty;
+    public string BodyHtml { get; set; } = string.Empty;
   }
 
   private sealed class SeoSection : SeoEntry

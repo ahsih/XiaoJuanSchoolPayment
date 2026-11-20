@@ -250,7 +250,7 @@ describe('SMEAG Capital textbook estimates', () => {
 
     expect(component.tuitionForSelectedWeeks).toBe(900);
     expect(component.roomFeeForSelectedWeeks).toBe(800);
-    expect(component.schoolPaymentItems.find(row => row.label === '思达折扣')?.amount).toBe('− 204 美元');
+    expect(component.schoolPaymentItems.find(row => row.label === '思达启航折扣')?.amount).toBe('− 204 美元');
     expect(component.includedLocalFees.find(row => row.item === '设施使用费（Utilities）')?.total).toBe(3500);
     expect(component.quoteImageData.importantNotes).toContain('员工修改后的SMEAG报价说明');
   });

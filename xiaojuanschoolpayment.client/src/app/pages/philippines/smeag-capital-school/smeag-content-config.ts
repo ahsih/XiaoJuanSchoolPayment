@@ -63,7 +63,7 @@ export const createDefaultSmeagContentConfig = (): CiaContentConfig => ({
     shortStayRatios: { '1': 0.45, '2': 0.65, '3': 0.85 },
     peakSeasonFeePerWeek: 0, peakSeasonRanges: [],
     promotions: [
-      { id: 'smeag-sida-90', name: '思达折扣', description: '课程费及校内住宿9折，校外酒店住宿不打折。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+      { id: 'smeag-sida-90', name: '思达启航折扣', description: '课程费及校内住宿9折，校外酒店住宿不打折。', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 10, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       { id: 'smeag-low-season', name: '淡季优惠', description: '2026/08/23–2027/01/01期间重叠学习周，每周优惠25美元。', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'per-course-week', discountValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageStart: '2026-08-23', coverageEnd: '2027-01-01', coverageTarget: 'course' },
       { id: 'smeag-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
@@ -72,7 +72,7 @@ export const createDefaultSmeagContentConfig = (): CiaContentConfig => ({
     courseTableNote: '以下为2026参考价，币种为美元；短期比例、优惠和最终价格以学校确认结果为准。',
     groupClassNote: '课程安排、早晚斯巴达课和保证班条件须按所选课程确认。',
     roomTableTitle: '住宿费 / 4周',
-    roomTableNote: '校外酒店住宿不参与思达折扣，热门档期请先确认空房。',
+    roomTableNote: '校外酒店住宿不参与思达启航折扣，热门档期请先确认空房。',
     stayPolicyTitle: 'SMEAG 入住与退房提醒',
     stayPolicies: [
       { label: '入住日期', value: '周日入住', note: '按学校确认的周日抵达日期为准。' },

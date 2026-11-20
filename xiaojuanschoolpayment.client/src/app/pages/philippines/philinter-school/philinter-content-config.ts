@@ -67,7 +67,7 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
       { id: 'philinter-low-season', name: '淡季优惠', description: PHILINTER_PROMOTION, enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 300, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 8, minimumAccommodationWeeks: 8, eligibleRoomIds: ['in-campus-triple', 'azon-single', 'azon-twin'], coverageStart: '2026-08-16', coverageEnd: '2026-12-25', coverageTarget: 'course-and-accommodation' },
       { id: 'philinter-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
-    localFeeIntro: '学杂费为到校后由学校及相关部门收取的当地费用，与思达游学无关；以下为预估，以到校实收为准。',
+    localFeeIntro: '学杂费为到校后由学校及相关部门收取的当地费用，与思达启航无关；以下为预估，以到校实收为准。',
     courseTableTitle: 'Philinter 2026年4周课程费',
     courseTableNote: '以下为4周课程费参考，币种为美元。短期比例、课程规则和最终价格以学校当期确认为准。',
     groupClassNote: '课程安排、考试保证班、年龄与监护条件须按所选课程确认。',

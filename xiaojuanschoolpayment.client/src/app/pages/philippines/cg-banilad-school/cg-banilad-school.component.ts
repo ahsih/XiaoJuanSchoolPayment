@@ -284,7 +284,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     },
     {
       label: '4周起价',
-      value: '原价1,400美元：Light ESL + 4人房 + 注册费；思达9折后1,270美元，符合淡季活动再减150美元。',
+      value: '原价1,400美元：Light ESL + 4人房 + 注册费；思达启航9折后1,270美元，符合淡季活动再减150美元。',
     },
   ];
 
@@ -474,7 +474,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     {
       icon: 'receipt_long',
       title: '拆分海外主费与当地费用',
-      text: '课程、住宿与注册费用美元计价，当地费用用比索计价，思达会帮你做成一张更直观的总预算。',
+      text: '课程、住宿与注册费用美元计价，当地费用用比索计价，思达启航会帮你做成一张更直观的总预算。',
     },
     {
       icon: 'flight_land',

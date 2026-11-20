@@ -56,7 +56,7 @@ const localFee = (value: CiaLocalFeeRule): CiaLocalFeeRule => value;
 const quoteImageSettings = (): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
   paymentNotes: {
-    registration: '一次性费用；所有通过思达报名的学生均免收',
+    registration: '一次性费用；所有通过思达启航报名的学生均免收',
     course: '课程所属校区、日期与课表以学生当前选择为准',
     accommodation: '房型须与课程校区一致，最终以学校空房确认为准',
     promotion: '系统按报名日期、学习日期、周数及叠加条件自动计算',
@@ -149,11 +149,11 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
         { id: 'pines-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true },
       ],
       promotions: [
-        { id: 'pines-registration-waiver', name: '思达免注册费', description: '所有通过思达报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+        { id: 'pines-registration-waiver', name: '思达启航免注册费', description: '所有通过思达启航报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
         { id: 'pines-off-season', name: '常规淡季优惠', description: '2026年12月31日前注册，未覆盖旺季的课程每满4周减150美元', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, registrationEnd: '2026-12-31', coverageTarget: 'none' },
         { id: 'pines-twelve-week', name: '12周以上额外优惠', description: '累计课程达到12周，一次减100美元', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 12, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
         { id: 'pines-long-stay', name: '长期优惠', description: '16周减100美元，之后每增加2周叠加25美元', enabled: true, sortOrder: 3, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, incrementWeeks: 2, incrementValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 16, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
-        { id: 'pines-sida-discount', name: '思达95折', description: '课程和住宿先减固定优惠，再按95折计算', enabled: true, sortOrder: 4, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+        { id: 'pines-sida-discount', name: '思达启航95折', description: '课程和住宿先减固定优惠，再按95折计算', enabled: true, sortOrder: 4, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
       ],
       localFeeIntro: '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。本页及报价单仅提供预估参考，具体收费项目和金额以学校实际收取为准；校内预存款、房间押金和洗衣服务另列，不计入学杂费及人民币预估合计。',
       courseTableTitle: 'PINES 2026课程费 / 4周',

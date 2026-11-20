@@ -216,7 +216,7 @@ export class JicStudentQuote {
   get paymentLines(): SchoolPaymentLine[] {
     return [
       { icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge, note: this.peakWeeks ? `${associationPeakBreakdownText(this.peakCalculation)}；同一周课程与住宿只计一次，优惠不抵扣旺季费。` : '当前日期未覆盖已启用旺季。' },
-      { icon: '免', label: '思达注册费减免', value: -this.registrationDiscount, note: this.registrationDiscountNote, promotionKey: 'jic-registration' },
+      { icon: '免', label: '思达启航注册费减免', value: -this.registrationDiscount, note: this.registrationDiscountNote, promotionKey: 'jic-registration' },
       { icon: '淡', label: this.offSeasonRule?.name ?? '淡季优惠', value: -this.offSeasonDiscount, note: this.offSeasonNote, promotionKey: this.offSeasonRule?.id ?? 'jic-off-season-none' },
       { icon: '长', label: '长期优惠', value: -this.longTermDiscount, note: this.longTermNote, promotionKey: 'jic-long-term' },
       { icon: '节', label: '圣诞及节日优惠', value: -this.holidayDiscount, note: this.holidayNote, promotionKey: 'jic-holiday' },
@@ -303,7 +303,7 @@ export class JicStudentQuote {
   private get fallbackPromotions(): CiaPromotionRule[] {
     const base = (id: string, ruleKind: string): CiaPromotionRule => ({ id, name: id, ruleKind, description: '', enabled: true, sortOrder: 0, priority: 0, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, coverageTarget: 'none' });
     return [
-      { ...base('jic-registration', 'jic-registration'), name: '思达注册费减免', description: '所有通过思达启航报名的学生均免收一次性注册费；老学员返校同样免费。', minimumCourseWeeks: 0, waiveRegistration: true },
+      { ...base('jic-registration', 'jic-registration'), name: '思达启航注册费减免', description: '所有通过思达启航报名的学生均免收一次性注册费；老学员返校同样免费。', minimumCourseWeeks: 0, waiveRegistration: true },
       { ...base('jic-off-season-2026', 'jic-off-season-2026'), name: '2026淡季优惠', discountValue: 150, incrementValue: 50, arrivalStart: '2026-08-23', arrivalEnd: '2027-01-09' },
       { ...base('jic-off-season-2027-a', 'jic-off-season-2027'), name: '2027淡季优惠', discountValue: 100, incrementValue: 50, arrivalStart: '2027-02-21', arrivalEnd: '2027-06-26' },
       { ...base('jic-off-season-2027-b', 'jic-off-season-2027'), name: '2027淡季优惠', discountValue: 100, incrementValue: 50, arrivalStart: '2027-08-22', arrivalEnd: '2028-01-08' },

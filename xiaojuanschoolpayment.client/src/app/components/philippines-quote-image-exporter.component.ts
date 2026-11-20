@@ -423,14 +423,14 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
     }
 
     const sectionText = this.cleanText(quoteSection.textContent ?? '');
-    if (/95折/u.test(sectionText) && !rows.some((row) => row.label === '思达折扣')) {
+    if (/95折/u.test(sectionText) && !rows.some((row) => row.label === '思达启航折扣')) {
       const preDiscount = rows
         .filter((row) => !row.accent)
         .reduce((total, row) => total + this.parseMoney(row.amount).value, 0);
       const discount = Math.max(0, preDiscount - finalTotal);
       rows.push({
         icon: '折',
-        label: '思达折扣',
+        label: '思达启航折扣',
         amount: '95折',
         note: discount > 0
           ? `优惠金额：${this.formatNumber(discount)}美元`
@@ -471,7 +471,7 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
   }
 
   private normalizePaymentLabel(label: string): string {
-    if (/95折/u.test(label)) return '思达折扣';
+    if (/95折/u.test(label)) return '思达启航折扣';
     if (/注册.*优惠/u.test(label)) return '注册费优惠';
     if (/淡季.*优惠/u.test(label)) return '淡季优惠';
     if (/长期.*优惠/u.test(label)) return '长期学习优惠';
@@ -482,7 +482,7 @@ export class PhilippinesQuoteImageExporterComponent implements OnInit, OnDestroy
     if (/课程/u.test(label)) return '课程费';
     if (/食宿|住宿/u.test(label)) return '住宿费';
     if (/旺季/u.test(label)) return '旺季附加费';
-    if (/折扣|优惠/u.test(label)) return '思达折扣';
+    if (/折扣|优惠/u.test(label)) return '思达启航折扣';
     return label.replace(/[：:]$/u, '').slice(0, 16);
   }
 

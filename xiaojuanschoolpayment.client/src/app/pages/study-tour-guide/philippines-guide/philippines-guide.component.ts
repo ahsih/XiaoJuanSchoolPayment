@@ -53,7 +53,7 @@ export class PhilippinesGuideComponent {
       '亲子或青少年项目要优先确认安全照顾和住宿条件。',
     ],
     sources: [
-      { label: '菲律宾游学 - 思达页面', url: '/philippines-study/why-philippines' },
+      { label: '菲律宾游学 - 思达启航页面', url: '/philippines-study/why-philippines' },
       { label: 'iOutback 澳贝客', url: 'https://www.ioutback.com/' },
       { label: 'StudyTourA Cebu Schools', url: 'https://www.studytoura.com/cebu-schools/' },
     ],

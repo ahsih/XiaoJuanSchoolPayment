@@ -173,7 +173,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     ],
     promotions: [
       {
-        ...promotion('jic-registration', '思达注册费减免', 'jic-registration', 0),
+        ...promotion('jic-registration', '思达启航注册费减免', 'jic-registration', 0),
         description: '所有通过思达启航报名的学生均免收一次性注册费；老学员返校同样免费。',
         discountType: 'none',
         waiveRegistration: true,
@@ -265,7 +265,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
   },
   quoteImageSettings: {
     paymentSectionTitle: '学校费用明细',
-    paymentNotes: { registration: '学校原价每名学生一次；通过思达报名全额减免，老学员返校免费', course: '', accommodation: '', promotion: '按当前日期、房型和周数自动核算' },
+    paymentNotes: { registration: '学校原价每名学生一次；通过思达启航报名全额减免，老学员返校免费', course: '', accommodation: '', promotion: '按当前日期、房型和周数自动核算' },
     localFeeSectionTitle: '到校后学杂费明细',
     localFeeIntro: '以下按当前签证、课程、住宿与接机选择预估；可退宿舍押金另列。',
     localFeeNotes: {},
@@ -278,7 +278,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     ],
     serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
     alumniBenefitTitle: 'JIC优惠提醒',
-    alumniBenefitText: '所有通过思达报名的学生均免一次性注册费；老学员返校免费。淡季、长期、BESA与节日优惠按报名日、入学日、房型及周数自动核对。',
+    alumniBenefitText: '所有通过思达启航报名的学生均免一次性注册费；老学员返校免费。淡季、长期、BESA与节日优惠按报名日、入学日、房型及周数自动核对。',
     noteSectionTitle: '报价说明',
     footerNotes: [
       '当前页面只提供对应校区的课程和住宿，不跨校区混选。',

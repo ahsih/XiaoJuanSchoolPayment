@@ -463,7 +463,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     {
       icon: 'location_on',
       title: '菲律宾当地支持',
-      text: '思达会按学生所在城市和校区安排后续沟通支持。',
+      text: '思达启航会按学生所在城市和校区安排后续沟通支持。',
     },
   ];
 

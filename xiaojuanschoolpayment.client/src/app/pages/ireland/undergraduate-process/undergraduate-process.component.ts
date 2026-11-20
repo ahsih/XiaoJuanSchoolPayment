@@ -35,7 +35,7 @@ export class UndergraduateProcessComponent {
     kicker: 'Ireland Undergraduate Application Process',
     title: '爱尔兰本科课程申请流程',
     summary:
-      '本科申请要先判断“能不能直入本科”，再决定是否需要预科、语言课、桥梁课程或转学分路径。思达教育会把院校官网要求、英语水平、成绩背景、预算和签证时间线放在同一张规划表里，避免只看学校名就仓促递交。',
+      '本科申请要先判断“能不能直入本科”，再决定是否需要预科、语言课、桥梁课程或转学分路径。思达启航会把院校官网要求、英语水平、成绩背景、预算和签证时间线放在同一张规划表里，避免只看学校名就仓促递交。',
     image:
       'https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=80',
     imageAlt: '学生在图书馆准备爱尔兰本科申请材料',

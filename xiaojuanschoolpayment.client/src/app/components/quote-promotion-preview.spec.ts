@@ -26,7 +26,7 @@ describe('CPILS promotion color proposal', () => {
     const promoBands: { top: number; bottom: number }[] = [];
     renderer.quote.paymentItems.forEach((row, index) => {
       const bottom = top + layout.paymentHeights[index];
-      if (['思达折扣', '淡季入学优惠', '无对外窗房优惠'].includes(row.label)) promoBands.push({ top, bottom });
+      if (['思达启航折扣', '淡季入学优惠', '无对外窗房优惠'].includes(row.label)) promoBands.push({ top, bottom });
       top = bottom;
     });
     expect(promoBands.length).toBe(3);

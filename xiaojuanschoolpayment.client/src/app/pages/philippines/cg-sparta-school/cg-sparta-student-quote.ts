@@ -64,7 +64,7 @@ export class CgSpartaStudentQuote {
   get summerSurcharge(){return this.summerCalculation.total;}
   get quoteUsd(){return Math.max(0,rounded(this.registration+this.packageFee-this.sidaDiscount+this.summerSurcharge-this.offSeasonDiscount-this.longStayDiscount));}
   get paymentLines():SchoolPaymentLine[]{return [
-    ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-sparta-sida-90')?.name??'思达折扣',value:-this.sidaDiscount,note:this.promotion('cg-sparta-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
+    ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-sparta-sida-90')?.name??'思达启航折扣',value:-this.sidaDiscount,note:this.promotion('cg-sparta-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
     ...(this.offSeasonDiscount?[{icon:'淡',label:this.promotion('cg-sparta-off-season')?.name??'淡季优惠',value:-this.offSeasonDiscount,note:this.p.promotionRules.filter(rule=>rule.enabled&&(rule.id==='cg-sparta-off-season'||rule.id==='cg-sparta-off-season-2027')).map(rule=>rule.description).join('；'),promotionKey:'offseason'}]:[]),
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-sparta-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-sparta-long-stay')?.description??'',promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.p.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${associationPeakBreakdownText(this.summerCalculation)}；同一周课程与住宿只计一次，不参与优惠`}]:[]),

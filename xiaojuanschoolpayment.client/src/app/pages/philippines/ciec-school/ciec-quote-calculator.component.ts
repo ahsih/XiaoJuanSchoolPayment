@@ -88,7 +88,7 @@ export class CiecQuoteCalculatorComponent {
       if (person.annualFee) items.push({ icon: '课', label: prefix + 'CIDEC年级学费', amount: '3000美元', note: '一次；包含项目物料及课程模块费用，不按四周重复收取。' });
       if (result.schoolDiscount || result.confirmed) items.push({ icon: '惠', label: prefix + (result.confirmed ? '学校费用确认调整' : '学校淡季优惠'),
         amount: `${result.schoolDiscount >= 0 ? '−' : '+'}${this.money(Math.abs(result.schoolDiscount))}美元`, note: result.confirmed ? person.schoolConfirmation : result.promotionNotes.join('；') });
-      items.push({ icon: '惠', label: prefix + '思达95折优惠', amount: `−${this.money(result.sidaDiscount)}美元`, note: `学校优惠后的课程及住宿适用${person.annualFee ? '，含一次CIDEC年级学费' : ''}。` });
+      items.push({ icon: '惠', label: prefix + '思达启航95折优惠', amount: `−${this.money(result.sidaDiscount)}美元`, note: `学校优惠后的课程及住宿适用${person.annualFee ? '，含一次CIDEC年级学费' : ''}。` });
       if (person.guardianCare) {
         items.push({ icon: '护', label: prefix + '学校监护费', amount: `${this.money(result.originalCare)}美元`, note: '与家长课程、食宿分别列示。' });
         if (result.care !== result.originalCare) items.push({ icon: '惠', label: prefix + (result.waivedCare ? '淡季免监护费' : '学校监护费确认调整'),

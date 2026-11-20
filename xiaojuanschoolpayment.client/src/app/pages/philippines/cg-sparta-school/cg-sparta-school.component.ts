@@ -332,7 +332,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     { label: '学生规模', value: '公开资料显示约150-152名学生容量，国籍比例按月份变化' },
     { label: '课程方向', value: '斯巴达、高阶斯巴达、TOEIC、IELTS Basic / Intensive / Guarantee、Business、Short-Term ESL' },
     { label: '住宿房型', value: '校内1人房、2人房、3人房、4人房；另有M&J Pension外部寮1人房参考' },
-    { label: '4周起价', value: '原价1,550美元：斯巴达课程 + 4人房 + 注册费；思达9折后1,405美元，符合淡季活动再减150美元' },
+    { label: '4周起价', value: '原价1,550美元：斯巴达课程 + 4人房 + 注册费；思达启航9折后1,405美元，符合淡季活动再减150美元' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -1087,7 +1087,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   get seasonalNote(): string {
-    return `${this.offSeasonRuleText}；可与思达9折及长期优惠叠加。`;
+    return `${this.offSeasonRuleText}；可与思达启航9折及长期优惠叠加。`;
   }
 
   get localFeePeriods(): number {

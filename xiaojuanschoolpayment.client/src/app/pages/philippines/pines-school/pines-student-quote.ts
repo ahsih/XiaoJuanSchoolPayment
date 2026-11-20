@@ -216,7 +216,7 @@ export class PinesStudentQuote {
       ...(this.offSeasonDiscount ? [{ icon: '惠', label: offSeason?.name ?? '常规淡季优惠', value: -this.offSeasonDiscount, note: `${offSeason?.description ?? ''}；本次符合${this.offSeasonBlocks}个完整周期`, promotionKey: 'off-season' }] : []),
       ...(this.twelveWeekDiscount ? [{ icon: '惠', label: twelveWeek?.name ?? '长期课程优惠', value: -this.twelveWeekDiscount, note: twelveWeek?.description ?? '', promotionKey: 'twelve-week' }] : []),
       ...(this.longStayDiscount ? [{ icon: '长', label: longStay?.name ?? '长期优惠', value: -this.longStayDiscount, note: `${longStay?.description ?? ''}；本次累计课程${this.quotePlan.courseWeeks}周`, promotionKey: `long-stay-${this.longStayDiscount}` }] : []),
-      ...(this.sidaDiscount ? [{ icon: '折', label: sida?.name ?? '思达折扣', value: -this.sidaDiscount, note: sida?.description ?? '', promotionKey: 'sida' }] : []),
+      ...(this.sidaDiscount ? [{ icon: '折', label: sida?.name ?? '思达启航折扣', value: -this.sidaDiscount, note: sida?.description ?? '', promotionKey: 'sida' }] : []),
     ];
   }
 

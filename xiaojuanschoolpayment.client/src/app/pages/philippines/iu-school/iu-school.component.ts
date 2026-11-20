@@ -470,7 +470,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     { icon: 'payments', title: '拆清前期和到校费用', text: '把课程、住宿、注册费、SSP、押金、水电、洗衣、签证和接机分开列清。' },
     { icon: 'assignment_turned_in', title: '准备入学文件', text: '协助整理护照、入学文件、eTravel、保险、接机和到校现金清单。' },
     { icon: 'support_agent', title: '到校后继续跟进', text: '如需沟通课程、老师、宿舍、账单或校规问题，可继续联系顾问协助。' },
-    { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可按情况提供当地沟通支持。' },
+    { icon: 'location_on', title: '宿务当地支持', text: '思达启航在宿务有工作人员驻点，可按情况提供当地沟通支持。' },
   ];
 
   readonly sidaReasons: SidaReason[] = [

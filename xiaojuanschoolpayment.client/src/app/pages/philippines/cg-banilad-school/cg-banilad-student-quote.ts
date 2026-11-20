@@ -66,7 +66,7 @@ export class CgBaniladStudentQuote {
   get summerSurcharge(){return this.summerCalculation.total;}
   get quoteUsd(){return Math.max(0,rounded(this.registration+this.studyStay-this.sidaDiscount-this.offSeasonDiscount-this.longStayDiscount+this.summerSurcharge));}
   get paymentLines():SchoolPaymentLine[]{return [
-    ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-banilad-sida-90')?.name??'思达折扣',value:-this.sidaDiscount,note:this.promotion('cg-banilad-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
+    ...(this.sidaDiscount?[{icon:'折',label:this.promotion('cg-banilad-sida-90')?.name??'思达启航折扣',value:-this.sidaDiscount,note:this.promotion('cg-banilad-sida-90')?.description??'课程费和住宿费享9折',promotionKey:'sida'}]:[]),
     ...(this.offSeasonDiscount?[{icon:'淡',label:this.promotion('cg-banilad-off-season')?.name??'淡季优惠',value:-this.offSeasonDiscount,note:this.prices.promotionRules.filter(rule=>rule.enabled&&(rule.id==='cg-banilad-off-season'||rule.id==='cg-banilad-off-season-2027')).map(rule=>rule.description).join('；'),promotionKey:'offseason'}]:[]),
     ...(this.longStayDiscount?[{icon:'长',label:this.promotion('cg-banilad-long-stay')?.name??'长期优惠',value:-this.longStayDiscount,note:this.promotion('cg-banilad-long-stay')?.description??`本次${this.quotePlan.courseWeeks}周，按已公布档位优惠`,promotionKey:'longstay'}]:[]),
     ...(this.summerSurcharge?[{icon:'暑',label:'暑假附加费',value:this.summerSurcharge,note:`${this.prices.peakSeasonRanges.filter(range=>range.enabled).map(range=>range.label).join('、')}；${associationPeakBreakdownText(this.summerCalculation)}；同一周课程与住宿只计一次，不参与优惠`}]:[]),

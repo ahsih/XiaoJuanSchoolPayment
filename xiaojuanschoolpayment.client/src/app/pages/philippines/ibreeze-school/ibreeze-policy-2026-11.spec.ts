@@ -137,7 +137,7 @@ describe('I.BREEZE November 2026 policy and 2027 registration prices', () => {
       c.activeStudents.forEach((s,i)=>{s.selectedRegistrationDate=i?'2027-01-01':'2026-12-31';s.quotePlan.updateStartDate('course',1,'2027-02-07');s.quotePlan.courses[0].optionId='power-esl';s.quotePlan.rooms[0].optionId='twin-main';});
       expect(c.activeStudents.map(s=>s.quoteUsd)).toEqual([1845.5,2040.5]); expect(c.quoteUsd).toBe(3886);
       const image=c.quoteImageData;
-      expect(image.paymentItems.find(row=>row.label==='思达折扣')!.amount).toBe('− 194 美元');
+      expect(image.paymentItems.find(row=>row.label==='思达启航折扣')!.amount).toBe('− 194 美元');
       expect(image.paymentItems.find(row=>row.label==='学生1 · 11月住宿优惠')!.amount).toBe('− 100 美元');
       expect(image.paymentItems.filter(row=>row.icon==='课').map(row=>row.amount)).toEqual(['990 美元','1,040 美元']);
       expect(JSON.stringify(image)).not.toContain('9折'); expect(JSON.stringify(image)).not.toContain('退差价');

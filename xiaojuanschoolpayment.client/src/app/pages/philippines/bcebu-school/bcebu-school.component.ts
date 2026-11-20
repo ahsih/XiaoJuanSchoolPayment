@@ -305,7 +305,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const sida = this.promotionRule('bcebu-sida-90');
     const longStay = this.promotionRule('bcebu-long-stay');
     return [
-      { id: waiver?.id ?? 'bcebu-registration-waiver', title: '免注册费', value: '减免100美元', description: waiver?.description ?? '通过思达报名免收新生一次性注册费。' },
+      { id: waiver?.id ?? 'bcebu-registration-waiver', title: '免注册费', value: '减免100美元', description: waiver?.description ?? '通过思达启航报名免收新生一次性注册费。' },
       { id: fall?.id ?? spring?.id ?? 'bcebu-off-season-fall', title: '淡季优惠', value: '成人85折 · 亲子9折', description: `${[spring?.description, fall?.description, family?.description].filter(Boolean).map(text => text!.replace(/[。；]+$/, '')).join('；')}。` },
       { id: reporter?.id ?? 'bcebu-reporter', title: '记者活动', value: '每4周优惠100美元', description: reporter?.description ?? '每周25美元，4周起报；须满足粉丝、发帖和结业要求。' },
       { id: longStay?.id ?? 'bcebu-long-stay', title: '长期优惠', value: '8周起减50美元', description: longStay?.description ?? BCEBU_LONG_STAY_NOTE },

@@ -114,7 +114,7 @@ describe('MONOL 2026 pricing and quote', () => {
     expect(component.quoteUsd).toBe(2500);
     expect(component.quoteImageData.headingText).toBe('MONOL 2人报价');
     expect(component.schoolPaymentItems.some(item => item.label === '学生2 · 课程名称')).toBeTrue();
-    expect(component.schoolPaymentItems.find(item => item.label === '思达注册费优惠（2人合计）')?.amount).toBe('− 200 美元');
+    expect(component.schoolPaymentItems.find(item => item.label === '思达启航注册费优惠（2人合计）')?.amount).toBe('− 200 美元');
     expect(component.schoolPaymentItems.filter(item => item.label.includes('SNS特别活动')).length).toBe(1);
     expect(component.estimatedLocalFees.find(item => item.item === 'SSP特殊学习许可证')?.quantity).toBe(2);
     expect(component.quoteImageData.paymentItems?.some(item => item.amount === '未适用')).toBeFalse();

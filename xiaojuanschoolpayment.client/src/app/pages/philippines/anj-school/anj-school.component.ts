@@ -229,7 +229,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '认证与合作', value: '官网列BESA、DOT、British Council、Immigration、TESDA、PECA等认证与伙伴。' },
     { label: '课程方向', value: 'ESL、IELTS、TOEIC、TOEFL、PTE、Guarantee Course、Junior、Working Holiday。' },
     { label: '设施', value: 'Admin Building、Main Building、Dining Hall、Cafe、Eco Mart、Fitness Gym、Golf Driving Range、Indoor Gymnasium、BBQ & Camping Zone。' },
-    { label: '4周起价', value: '思达折后1,377.5美元起：Eco Relax Lite + Deluxe三人房，已免100美元注册费；当地比索费用另计。' },
+    { label: '4周起价', value: '思达启航折后1,377.5美元起：Eco Relax Lite + Deluxe三人房，已免100美元注册费；当地比索费用另计。' },
   ];
 
   readonly highlights: TextCard[] = [
@@ -307,7 +307,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: '页面报价包含所有费用吗？',
-      text: '不包含全部当地费用。美元报价已自动计入思达免注册费、95折、A&J适用优惠和按入学日判定的旺季附加费；SSP、签证、教材、水电、接机等比索费用在下方单独估算，押金和洗衣不计入学杂费合计。',
+      text: '不包含全部当地费用。美元报价已自动计入思达启航免注册费、95折、A&J适用优惠和按入学日判定的旺季附加费；SSP、签证、教材、水电、接机等比索费用在下方单独估算，押金和洗衣不计入学杂费合计。',
     },
     {
       title: 'Eco Relax Lite和Eco Sparta怎么选？',
@@ -631,7 +631,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     return [
       {
         icon: '注', label: '注册费', amount: `${this.formatUsd(this.activeStudents.length * this.registrationFee)} 美元`,
-        note: `一次性费用，${this.formatUsd(this.registrationFee)}美元／人；${this.registrationWaiverEnabled ? '通过思达报名全部免收' : '当前未启用免注册费优惠'}，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`,
+        note: `一次性费用，${this.formatUsd(this.registrationFee)}美元／人；${this.registrationWaiverEnabled ? '通过思达启航报名全部免收' : '当前未启用免注册费优惠'}，本次原价共${this.formatUsd(this.activeStudents.length * this.registrationFee)}美元。`,
       },
       ...this.planPaymentItems,
       ...groupPaymentLines(this.activeStudents, false),

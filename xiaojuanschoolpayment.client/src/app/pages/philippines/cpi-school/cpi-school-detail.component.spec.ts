@@ -103,8 +103,8 @@ describe('CPI pricing and complete quote export', () => {
     component.selectedRegistrationDate = '2027-01-02';
     component.selectedStartDate = '2027-02-01';
     const quote = component.quoteImageData;
-    expect(quote.paymentItems.map(row => row.label)).toEqual(['注册费', '课程', '住宿', '思达折扣']);
-    expect(quote.paymentItems.find(row => row.label === '思达折扣')?.note).toBe('1人适用；课程费和住宿费享9折');
+    expect(quote.paymentItems.map(row => row.label)).toEqual(['注册费', '课程', '住宿', '思达启航折扣']);
+    expect(quote.paymentItems.find(row => row.label === '思达启航折扣')?.note).toBe('1人适用；课程费和住宿费享9折');
     expect(quote.localFeeItems?.length).toBe(10);
     expect(quote.localFeeItems?.find(row => row.label.includes('ARP'))?.amount).toBe('0 比索');
     expect(quote.optionalFeeItems?.length).toBe(3);

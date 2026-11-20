@@ -171,7 +171,20 @@ app.UseDefaultFiles();
 var staticContentTypes = new FileExtensionContentTypeProvider();
 staticContentTypes.Mappings[".mov"] = "video/quicktime";
 staticContentTypes.Mappings[".m4v"] = "video/x-m4v";
-app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = staticContentTypes });
+app.UseStaticFiles(new StaticFileOptions
+{
+  ContentTypeProvider = staticContentTypes,
+  OnPrepareResponse = context =>
+  {
+    // llms.txt (written by scripts/export-seo-pages.cjs) is Chinese text; without a charset many HTTP
+    // clients decode text/plain as Latin-1. Other .txt files, such as the WeChat check file, keep their headers.
+    if (context.File.Name == "llms.txt")
+    {
+      context.Context.Response.ContentType = "text/plain; charset=utf-8";
+      context.Context.Response.Headers.CacheControl = "no-cache";
+    }
+  },
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -309,6 +322,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/manila/american-english-skills-development-center", "monthly", "0.75"),
   ("/philippines-study/manila/berlitz-philippines", "monthly", "0.75"),
   ("/philippines-study/manila/manila-business-college", "monthly", "0.75"),
+  ("/about-sida/about", "monthly", "0.9"),
   ("/about-sida/contact", "monthly", "0.8"),
   ("/student-feedback/study-tour", "monthly", "0.7"),
   ("/student-feedback/study-tour/philippines-study-mid-autumn", "yearly", "0.7"),

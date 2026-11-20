@@ -252,7 +252,7 @@ export class GlcQuoteCalculator {
         cnyAmount: `人民币约 ${Math.round(fee.total / phpPerCny).toLocaleString('zh-CN')} 元`,
         note: imageSettings?.localFeeNotes[this.content?.().localFees.find(item => item.name === fee.item)?.id ?? ''] ?? fee.note,
       })),
-      ruleNotes: imageSettings?.footerNotes ?? ['学费需到校前2周交齐，可由思达代收或自行转美元给学校。', '所有学生不收取寒暑假附加费。', exchangeNote],
+      ruleNotes: imageSettings?.footerNotes ?? ['学费需到校前2周交齐，可由思达启航代收或自行转美元给学校。', '所有学生不收取寒暑假附加费。', exchangeNote],
     });
     const editedQuote = applyEditableQuoteImageCopy(quote, imageSettings, this.content?.().quoteSettings.promotions, this.content?.().localFees);
     return presentSchoolQuote({
@@ -265,7 +265,7 @@ export class GlcQuoteCalculator {
       alumniBenefitTitle: imageSettings?.alumniBenefitTitle ?? quote.alumniBenefitTitle,
       alumniBenefitItems: imageSettings ? [{ title: imageSettings.alumniBenefitTitle, subtitle: '', text: imageSettings.alumniBenefitText }] : quote.alumniBenefitItems,
       noteTitle: imageSettings?.noteSectionTitle ?? quote.noteTitle,
-      totalNote: imageSettings?.footerNotes[0] ?? '学费需到校前2周交齐，可由思达代收或自行转美元给学校。',
+      totalNote: imageSettings?.footerNotes[0] ?? '学费需到校前2周交齐，可由思达启航代收或自行转美元给学校。',
       importantNotes: [...(imageSettings?.footerNotes ?? ['所有学生不收取寒暑假附加费。']), exchangeNote],
     }, this.plan, 'GLC', this.totalUsd, usdToCny);
   }

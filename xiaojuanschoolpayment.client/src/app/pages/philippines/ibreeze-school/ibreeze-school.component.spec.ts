@@ -436,7 +436,7 @@ describe('I.BREEZE confirmed pricing and shared quote presentation', () => {
       const before = c.quoteUsd;
       const rows = c.quoteImageData.paymentItems;
       const promos = rows.filter(row => row.icon === '折' || row.icon === '惠');
-      expect(promos.map(row => row.label)).toEqual(['思达折扣', '9月住宿优惠', '圣诞特别优惠']);
+      expect(promos.map(row => row.label)).toEqual(['思达启航折扣', '9月住宿优惠', '圣诞特别优惠']);
       expect(promos.map(row => row.amount)).toEqual([`− ${c.formatUsd(149 * count)} 美元`, `− ${c.formatUsd(200 * count)} 美元`, `− ${c.formatUsd(100 * count)} 美元`]);
       promos.forEach(row => expect(row.note).toContain(`${count}人适用`));
       expect(rows.filter(row => row.detailTitle).length).toBe(count * 2);

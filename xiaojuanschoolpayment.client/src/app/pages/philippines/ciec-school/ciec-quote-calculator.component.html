@@ -4,7 +4,7 @@
     <div class="mode-control"><button *ngFor="let choice of ['single','family','group']" type="button" [attr.aria-pressed]="mode === choice" (click)="changeMode($any(choice))">{{choice === 'single' ? '单人' : choice === 'family' ? '亲子' : '多人'}}</button></div>
   </header>
   <label class="count-field" *ngIf="mode !== 'single'">人数<select [ngModel]="count" (ngModelChange)="changeCount($event)"><option *ngFor="let value of counts" [ngValue]="value">{{value}}人</option></select></label>
-  <details class="policy" open><summary>2026／2027淡季优惠与家庭条件</summary><p *ngFor="let campaign of campaigns">{{campaign.year}}学习日期：{{campaign.start}} 至 {{campaign.end}}</p><p *ngFor="let policy of policies">{{policy}}</p><p>学校优惠后，剩余课程及住宿叠加思达95折。注册费、监护费、接机及比索费用不打折。</p></details>
+  <details class="policy" open><summary>2026／2027淡季优惠与家庭条件</summary><p *ngFor="let campaign of campaigns">{{campaign.year}}学习日期：{{campaign.start}} 至 {{campaign.end}}</p><p *ngFor="let policy of policies">{{policy}}</p><p>学校优惠后，剩余课程及住宿叠加思达启航95折。注册费、监护费、接机及比索费用不打折。</p></details>
   <details class="student-card" *ngFor="let person of active; let i = index" open>
     <summary><span>{{label(i)}}<small>{{person.plan.startDate}} 至 {{person.plan.endDate}} · {{person.plan.courseWeeks}}周</small></span><strong>{{result(person).total === null ? '待确认' : money(result(person).total!) + '美元'}}</strong></summary>
     <div class="student-body">
@@ -30,7 +30,7 @@
         <div class="student-fields"><label>课程与住宿（美元）<input type="number" min="0" [(ngModel)]="person.schoolAmount"/></label><label *ngIf="person.guardianCare">学校确认监护费（美元，另列）<input type="number" min="0" [(ngModel)]="person.confirmedCare"/></label><label class="confirmation-note">确认依据／适用条件<input [(ngModel)]="person.schoolConfirmation"/></label></div>
         <button type="button" (click)="confirm(person,'school')">确认当前方案金额</button><p *ngIf="result(person).confirmed">已使用学校确认金额：{{person.schoolConfirmation}}</p>
       </div>
-      <dl class="student-breakdown"><div><dt>注册费</dt><dd>{{person.registration}}美元</dd></div><div><dt>学校优惠／调整</dt><dd>{{money(result(person).schoolDiscount)}}美元</dd></div><div><dt>思达95折减免</dt><dd>{{money(result(person).sidaDiscount)}}美元</dd></div><div *ngIf="person.guardianCare"><dt>学校监护费</dt><dd>{{money(result(person).care)}}美元</dd></div><div *ngIf="person.annualFee"><dt>CIDEC年级学费（一次）</dt><dd>3000美元</dd></div></dl>
+      <dl class="student-breakdown"><div><dt>注册费</dt><dd>{{person.registration}}美元</dd></div><div><dt>学校优惠／调整</dt><dd>{{money(result(person).schoolDiscount)}}美元</dd></div><div><dt>思达启航95折减免</dt><dd>{{money(result(person).sidaDiscount)}}美元</dd></div><div *ngIf="person.guardianCare"><dt>学校监护费</dt><dd>{{money(result(person).care)}}美元</dd></div><div *ngIf="person.annualFee"><dt>CIDEC年级学费（一次）</dt><dd>3000美元</dd></div></dl>
       <p *ngFor="let note of result(person).promotionNotes" class="small">{{note}}</p><p *ngIf="result(person).craft" class="small">2026小学生免费一小时手作体验课，非现金权益。</p>
       <h4>到校后学杂费</h4>
       <ng-container *ngIf="!person.localIssues.length"><table class="fee-table"><thead><tr><th>项目／说明</th><th>比索</th></tr></thead><tbody><tr *ngFor="let fee of person.localRows"><th>{{fee.label}}<small>{{fee.note}}</small></th><td>{{money(fee.amount)}}</td></tr></tbody></table></ng-container>

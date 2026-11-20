@@ -35,7 +35,7 @@ export class PostgraduateProcessComponent {
     kicker: 'Ireland Postgraduate Application Process',
     title: '爱尔兰研究生课程申请流程',
     summary:
-      '研究生申请的核心不是“多投几所学校”，而是把本科背景、均分、专业匹配、语言条件、文书逻辑和职业目标串起来。思达教育会先判断可冲、匹配和稳妥课程，再安排递交、补件、押金、住宿与签证节点。',
+      '研究生申请的核心不是“多投几所学校”，而是把本科背景、均分、专业匹配、语言条件、文书逻辑和职业目标串起来。思达启航会先判断可冲、匹配和稳妥课程，再安排递交、补件、押金、住宿与签证节点。',
     image:
       'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80',
     imageAlt: '学生讨论爱尔兰研究生申请方案',

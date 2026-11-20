@@ -200,7 +200,7 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   }
   get campusNotes(): string[] {
     const common = [
-      '所有思达学生优惠100美元注册费；1/2/3周课程费和住宿费均按4周价的40%/60%/80%计算。',
+      '所有思达启航学生优惠100美元注册费；1/2/3周课程费和住宿费均按4周价的40%/60%/80%计算。',
       '2026/02/08–06/14或09/06–12/27入学，整段课程与住宿九折；淡季优惠后再减长期优惠。',
       '2026/06/28–08/22按40美元／周计收；2027/06/27–08/22按60美元／周计收。同一周课程与住宿只计一次，且不参与优惠。',
       '最终报名以学校正式录取、空房、账单和顾问确认报价为准。',
@@ -328,9 +328,9 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先做校区匹配', text: '根据英语基础、自律程度、目标课程、年龄、是否工作和生活偏好，先判断EOP、Sparta或City。' },
     { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认BECI课程、房型、空房、入学日、校区规则、适用优惠和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达启航免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提供学习资料、费用清单、行李清单、接机和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、学习方法或学校沟通问题，可继续联系思达协助。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、学习方法或学校沟通问题，可继续联系思达启航协助。' },
     { icon: 'location_on', title: '国内顾问与当地协作', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
@@ -365,10 +365,10 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶BECI语言学校适合零基础吗？', answer: '可以。零基础或怕开口的学生优先看EOP Lite ESL或EOP SPEED ESL，先用全英文环境建立开口习惯；如果自律弱，也可以让顾问评估是否适合Sparta。' },
     { question: 'BECI的EOP、Sparta、City怎么选？', answer: '想沉浸式口语和英语环境看EOP；想强管理、高学习量、短期冲刺看Sparta；成人、工作者、需要弹性和无宵禁看City。' },
-    { question: 'BECI短期、淡季和长期优惠怎么计算？', answer: '思达优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。2026/9/6—12/27入学，课程费与住宿费按9折；8/12/16/20/24周再分别减USD 50/100/200/300/400，长期折扣可与淡季9折叠加。' },
+    { question: 'BECI短期、淡季和长期优惠怎么计算？', answer: '思达启航优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。2026/9/6—12/27入学，课程费与住宿费按9折；8/12/16/20/24周再分别减USD 50/100/200/300/400，长期折扣可与淡季9折叠加。' },
     { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含课程费和住宿费，并自动扣除免注册费、符合条件的2026淡季9折及长期折扣；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'BECI City Campus适合边工作边学习吗？', answer: '更适合。City Campus面向成人与工作者，有弹性安排、无宵禁和工作空间，但仍建议先按工作时间确认可选课程。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名BECI，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名BECI，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },

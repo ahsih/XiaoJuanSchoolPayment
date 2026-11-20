@@ -238,10 +238,10 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '判断CPILS是否适合', text: '先了解学习目标、当前程度、考试分数、预算、房型和可接受管理强度。' },
     { icon: 'fact_check', title: '确认课程、房型和优惠', text: '免费协助确认课程、房型、空房、优惠和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达启航免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前免费发送学习资料、行李清单、费用清单和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。' },
-    { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达启航协助。' },
+    { icon: 'location_on', title: '宿务当地支持', text: '思达启航在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
   ];
 
   readonly sidaCpilsReasons: SidaCpilsReason[] = [
@@ -310,9 +310,9 @@ export class CpilsSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { question: 'CPILS适合第一次菲律宾游学吗？', answer: '适合目标清楚、可以接受一定学习管理的学生。若第一次游学但希望有人督促学习，CPILS会比自由型学校更有节奏。' },
     { question: 'CPILS更适合考试还是口语？', answer: '两者都有，但CPILS的老牌考试资源和管理体系更突出。若目标是雅思、托业或托福，建议优先核对当前分数、目标分数和可读周数。' },
     { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、课程费、住宿费、已计入优惠和可能的暑假附加费；到校学杂费会按周数另行计算。' },
-    { question: 'CPILS优惠有哪些？', answer: '2027年有学费及住宿费5%奖学金、无对外窗单／双人房优惠，以及雅思和托业官方考试赠送。另有思达优惠；具体报名日、开课日、课程和房型条件请查看上方优惠板块，计算器会显示本次适用项目。' },
+    { question: 'CPILS优惠有哪些？', answer: '2027年有学费及住宿费5%奖学金、无对外窗单／双人房优惠，以及雅思和托业官方考试赠送。另有思达启航优惠；具体报名日、开课日、课程和房型条件请查看上方优惠板块，计算器会显示本次适用项目。' },
     { question: 'CPILS住宿有哪些房型？', answer: '官方资料列出单人、双人、三人和四人房，也有Main Building Regular、Premium和Extension等住宿方向。具体空房需按入学日期确认。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名CPILS，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名CPILS，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },

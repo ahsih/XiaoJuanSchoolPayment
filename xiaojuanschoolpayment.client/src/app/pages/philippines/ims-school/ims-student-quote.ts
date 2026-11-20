@@ -269,7 +269,7 @@ export class ImsStudentQuote {
         icon: '长', label: 'IMS长期优惠', value: -this.longStayDiscountAmount,
         note: `2+2折算后实际付费课程${this.paidCourseWeeks}周，按长期阶梯一次性从课程费减免。`, promotionKey: 'ims-long-stay',
       }] : []),
-      { icon: '95', label: '思达95折', value: -this.sidaDiscountAmount, note: '先扣学校活动与固定减免，再对剩余课程费和住宿费按95折；注册费及比索费用不参加。', promotionKey: 'ims-sida-95' },
+      { icon: '95', label: '思达启航95折', value: -this.sidaDiscountAmount, note: '先扣学校活动与固定减免，再对剩余课程费和住宿费按95折；注册费及比索费用不参加。', promotionKey: 'ims-sida-95' },
       ...(this.additionalClassTotal ? [{ icon: '加', label: '额外课程', value: this.additionalClassTotal, note: `按当地费用表美元价、每4周计费；共${Math.ceil(this.quotePlan.courseWeeks / 4)}个4周计费周期。` }] : []),
       ...(this.optionalServiceTotal ? [{ icon: '服', label: this.optionalService === 'guardian' ? 'Guardian Service' : '国际学生学校管理服务', value: this.optionalServiceTotal, note: '独立可选服务，不与免费晚间托管混为一项；是否需要由学校确认。' }] : []),
     ];

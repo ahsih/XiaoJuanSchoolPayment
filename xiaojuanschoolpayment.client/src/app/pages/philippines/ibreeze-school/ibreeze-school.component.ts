@@ -528,7 +528,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     {
       icon: 'location_on',
       title: '宿务当地支持',
-      text: '思达在宿务有工作人员驻点，可按情况提供当地沟通支持。',
+      text: '思达启航在宿务有工作人员驻点，可按情况提供当地沟通支持。',
     },
   ];
 
@@ -965,7 +965,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     const groups = new Map<string, { item: QuoteImagePaymentItem; total: number; students: number[]; notes: Map<string, number[]> }>();
     this.activeStudents.forEach((student, index) => {
       const discounts: Record<string, number> = {
-        '思达折扣': student.sidaDiscountAmount,
+        '思达启航折扣': student.sidaDiscountAmount,
         '9月住宿优惠': student.septemberPromotionDiscount,
         '11月住宿优惠': student.novemberPromotionDiscount,
         '圣诞特别优惠': student.christmasPromotionDiscount,

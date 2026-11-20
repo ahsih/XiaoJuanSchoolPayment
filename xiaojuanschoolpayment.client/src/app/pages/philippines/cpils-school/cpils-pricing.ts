@@ -109,7 +109,7 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
     registrationStart: '2026-09-29', registrationEnd: '2027-12-27', arrivalStart: '2027-01-01', arrivalEnd: '2027-12-27', ...extra,
   });
   const promos = [
-    promotion('cpils-scholarship-2027', '2027年奖学金优惠', `${terms}至少注册4周，学费及住宿费减免5%，可与思达优惠叠加。`, 7, { discountType: 'percentage', discountValue: 5 }),
+    promotion('cpils-scholarship-2027', '2027年奖学金优惠', `${terms}至少注册4周，学费及住宿费减免5%，可与思达启航优惠叠加。`, 7, { discountType: 'percentage', discountValue: 5 }),
     promotion('cpils-no-window-2027', '2027年无对外窗房优惠', `${terms}无对外窗单人／双人房：4–7周50美元、8–11周100美元、12–15周150美元、16–19周200美元、20–23周250美元、24周300美元；可与其他优惠同享。`, 8, { discountType: 'fixed', discountValue: 50, appliesTo: 'accommodation', eligibleRoomIds: ['no-window-single', 'no-window-twin'], minimumAccommodationWeeks: 4, incrementWeeks: 4, incrementValue: 50 }),
     promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程一次注册12周及以上，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: ['ielts-course', 'ielts-guarantee-12-weeks'], discountValue: 1 }),
     promotion('cpils-toeic-exam-2027', '2027年托业官方考试赠送', `${terms}托业课程4–7周赠1次，每满4周增加1次，24周赠6次；可与其他优惠同享。`, 10, { eligibleCourseIds: ['toeic-course', 'toeic-guarantee'], discountValue: 1, incrementWeeks: 4, incrementValue: 1 }),

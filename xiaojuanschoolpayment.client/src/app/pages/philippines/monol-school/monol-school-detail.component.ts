@@ -94,7 +94,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   usdToCny = Number.NaN;
   phpPerCny = Number.NaN;
   readonly quoteGeneralNotes = [
-    '学校付款部分须在到校前2周交齐，可由思达代收或由学生直接向MONOL支付；人民币结算按支付当日汇率换算。',
+    '学校付款部分须在到校前2周交齐，可由思达启航代收或由学生直接向MONOL支付；人民币结算按支付当日汇率换算。',
     '到校后学杂费由学校或相关部门直接收取，本报价仅作预算参考，具体以实际收取为准。',
     '课程与住宿日期按周日入住、周六离校计算；房型、名额及住宿安排需由学校最终确认。',
     '本报价根据当前选择生成，最终以MONOL正式账单及思达启航顾问确认为准。',
@@ -201,9 +201,9 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先判断是否适合MONOL', text: '确认学生是否需要舒适住宿、长期稳定学习、饮食弹性和半斯巴达节奏。' },
     { icon: 'fact_check', title: '确认课程和房型', text: '免费协助确认ESL 4、General ESL、IELTS或LEAP，房型、空房、餐食预算和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证', text: '思达启航免费协助菲律宾入境及签证相关手续，学生按顾问指引准备资料。' },
     { icon: 'inventory', title: '发送行前清单', text: '出发前提供学习资料、费用清单、行李清单、接机和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、费用、生活适应或学校沟通问题，可继续联系思达协助。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '如遇到调课、住宿、费用、生活适应或学校沟通问题，可继续联系思达启航协助。' },
     { icon: 'location_on', title: '国内顾问与当地协作', text: '国内顾问与菲律宾当地工作人员协作，重要节点持续跟进。' },
   ];
 
@@ -228,11 +228,11 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Camp John Hay', 'Mines View Park'];
   readonly notes = [
     'MONOL 2026年价目表说明除注册费外，课程费和住宿费以4周为单位列示。',
-    '通过思达报名免100美元注册费；符合淡季条件时，每满4周课程费减100美元、住宿费减100美元。',
+    '通过思达启航报名免100美元注册费；符合淡季条件时，每满4周课程费减100美元、住宿费减100美元。',
     'SNS仅限标准单人间及小单间；在指定任一社交平台发布一篇在校故事，活动可能提前关闭，需确认后勾选。',
     '餐费约14,000比索/4周，房间押金4,000比索，均不计入学杂费合计。',
     '本页课程费按2026年价目表列示：ESL 4 / General ESL / IELTS / LEAP分别为750 / 900 / 1,000 / 1,150美元。',
-    '课程结构已与学校公开Program页核对；报价采用思达收到的2026价目表。',
+    '课程结构已与学校公开Program页核对；报价采用思达启航收到的2026价目表。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
@@ -242,7 +242,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { question: 'MONOL淡季优惠如何自动计算？', answer: '2026年12月31日或之前报名，在主校区学习及住宿，每完整4周分别减课程费和住宿费100美元；2027年6月27日至8月22日不适用。IELTS及LEAP学术费保留。' },
     { question: 'SNS活动优惠会自动计算吗？', answer: '确认活动开放并选择参加，且在2026年12月31日或之前报名才计算。仅标准单人间及小单间每完整4周减100美元；在指定任一平台发布一篇在校故事，2027年6月27日至8月22日不适用。' },
     { question: '页面的课程和住宿价格按什么周期计算？', answer: '注册费为一次性100美元；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名MONOL，思达顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名MONOL，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },

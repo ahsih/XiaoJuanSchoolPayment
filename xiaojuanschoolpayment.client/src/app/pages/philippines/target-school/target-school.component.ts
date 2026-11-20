@@ -113,7 +113,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
 
   readonly registrationFeeUsd = 150;
   readonly quoteGeneralNotes = [
-    '学费部分需到校前2周交齐，可以交由思达游学代收或直接自行转美元给学校；报价以最终确认金额及付款时实际汇率为准。',
+    '学费部分需到校前2周交齐，可以交由思达启航代收或直接自行转美元给学校；报价以最终确认金额及付款时实际汇率为准。',
     '学杂费为到菲律宾当地需要缴纳的费用，由学校直接收取；报价仅供参考，具体以学校实际收取为准。',
     '课程与住宿作为同一套餐计价，不拆分金额；入学／入住按周日，离校／退房按周六。',
     '课程、房型、名额、升级活动及最终账单以TARGET书面确认为准。',

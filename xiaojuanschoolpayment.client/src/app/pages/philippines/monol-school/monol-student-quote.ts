@@ -165,7 +165,7 @@ export class MonolStudentQuote {
         const value = key === 'long-term' ? this.longTermDiscount : this.christmasDiscount;
         return rule && value ? [{ icon: '惠', label: rule.name, value: -value, note: rule.description, promotionKey: key }] : [];
       }),
-      ...(this.registrationDiscount ? [{ icon: '免', label: registration?.name ?? '思达注册费优惠', value: -this.registrationDiscount, note: registration?.description ?? '通过思达报名免注册费。', promotionKey: 'registration' }] : []),
+      ...(this.registrationDiscount ? [{ icon: '免', label: registration?.name ?? '思达启航注册费优惠', value: -this.registrationDiscount, note: registration?.description ?? '通过思达启航报名免注册费。', promotionKey: 'registration' }] : []),
       ...(this.offSeasonCourseDiscount ? [{
         icon: '惠', label: '淡季课程优惠', value: -this.offSeasonCourseDiscount,
         note: `${this.offSeasonCourseBlocks}个完整4周；${courseSummary.rules.map(rule => rule.description).join('；') || '按当前淡季规则计算。'}`, promotionKey: 'off-season-course',

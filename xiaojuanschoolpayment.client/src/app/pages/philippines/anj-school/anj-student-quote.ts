@@ -200,7 +200,7 @@ export class AnjStudentQuote {
         icon: '旺', label: '旺季附加费', value: this.seasonalSurcharge,
         note: `${associationPeakBreakdownText(this.peakCalculation)}；${peakRanges.map((range) => `${range.start.replace(/-/g, '/')}–${range.end.replace(/-/g, '/')}`).join('；')}；同一周课程与住宿只计一次，不参与优惠`,
       }] : []),
-      { icon: '免', label: '思达免注册费', value: -this.registrationDiscount, note: `通过思达报名，免收一次性${this.prices.registrationFee}美元注册费`, promotionKey: 'registration' },
+      { icon: '免', label: '思达启航免注册费', value: -this.registrationDiscount, note: `通过思达启航报名，免收一次性${this.prices.registrationFee}美元注册费`, promotionKey: 'registration' },
       {
         icon: '惠', label: 'A&J常规优惠', value: -this.regularDiscount,
         note: this.regularDiscountNote, promotionKey: 'anj-regular',
@@ -217,7 +217,7 @@ export class AnjStudentQuote {
         icon: '续', label: 'A&J续课优惠', value: -this.continuationDiscount,
         note: this.continuationDiscountNote, promotionKey: 'anj-continuation',
       },
-      { icon: '折', label: `思达${Math.round(this.prices.sidaDiscountRate * 100)}折`, value: -this.sidaDiscount, note: `先扣A&J固定优惠，再对剩余课程费和住宿费按${Math.round(this.prices.sidaDiscountRate * 100)}%计算`, promotionKey: 'sida' },
+      { icon: '折', label: `思达启航${Math.round(this.prices.sidaDiscountRate * 100)}折`, value: -this.sidaDiscount, note: `先扣A&J固定优惠，再对剩余课程费和住宿费按${Math.round(this.prices.sidaDiscountRate * 100)}%计算`, promotionKey: 'sida' },
     ];
   }
 

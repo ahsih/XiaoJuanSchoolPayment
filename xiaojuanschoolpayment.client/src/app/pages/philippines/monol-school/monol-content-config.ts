@@ -52,7 +52,7 @@ const room = (
 const quoteImageSettings = (): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
   paymentNotes: {
-    registration: '一次性费用；通过思达报名可按当前优惠规则减免',
+    registration: '一次性费用；通过思达启航报名可按当前优惠规则减免',
     course: '课程日期、周数和课程安排以学生当前选择为准',
     accommodation: '住宿费不含餐费，房型最终以学校空房确认为准',
     promotion: '系统按报名日期、学习日期、房型及活动条件自动计算',
@@ -116,7 +116,7 @@ export const createDefaultMonolContentConfig = (): CiaContentConfig => {
       peakSeasonPolicyVersion: ASSOCIATION_PEAK_POLICY_VERSION,
       peakSeasonRanges: [{ id: 'monol-peak-2027', label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true }],
       promotions: [
-        { id: 'monol-registration-waiver', name: '思达注册费优惠', description: '所有通过思达报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
+        { id: 'monol-registration-waiver', name: '思达启航注册费优惠', description: '所有通过思达启航报名的学生免收100美元注册费', enabled: true, sortOrder: 0, priority: 10, stackable: true, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
         ...(['course', 'room'] as const).map((kind, index) => ({ id: `monol-off-season-${kind}-2026`, name: kind === 'course' ? '淡季课程优惠' : '淡季住宿优惠', description: '2026年12月31日或之前报名并在MONOL主校区学习及住宿，每完整4周减100美元；2027年6月27日至8月22日不适用。' + (kind === 'course' ? 'IELTS的100美元及LEAP的250美元学术费不减免。' : ''), enabled: true, sortOrder: index + 1, priority: 20 + index, stackable: true, newStudentsOnly: false, discountType: 'fixed' as const, discountValue: 100, appliesTo: kind === 'course' ? 'tuition' as const : 'accommodation' as const, waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' as const })),
         { id: 'monol-sns', name: 'SNS特别活动', description: '2026年12月31日或之前报名，仅标准单人间及小单间（Semi-single）每完整4周减100美元；须在Instagram、个人博客、Facebook、Threads、小红书或TikTok等一个平台发布一篇在校故事。2027年6月27日至8月22日不适用；活动可能提前关闭，报名时须确认。', enabled: true, sortOrder: 3, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'accommodation', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', eligibleRoomIds: ['standard-single-room', 'small-single-room'] },
         { id: 'monol-long-term', name: '长住优惠', description: '2026年9月7日至12月31日报名，学习及住宿16／20／24周分别减150／200／300美元；取消或缩短学习期间则失效。', enabled: true, sortOrder: 4, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 16, minimumAccommodationWeeks: 16, registrationStart: '2026-09-07', registrationEnd: '2026-12-31', coverageTarget: 'course-and-accommodation' },

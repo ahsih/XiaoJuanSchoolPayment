@@ -33,8 +33,8 @@
               <strong>{{ quoteUsdText }}</strong>
               <p>{{ selectedCoursesText }} + {{ selectedRoomsText }}，已计入适用优惠</p>
               <ul>
-                <li><mat-icon>check_circle</mat-icon>思达9折并免100美元注册费</li>
-                <li><mat-icon>info</mat-icon>长期优惠可与思达及淡季优惠叠加</li>
+                <li><mat-icon>check_circle</mat-icon>思达启航9折并免100美元注册费</li>
+                <li><mat-icon>info</mat-icon>长期优惠可与思达启航及淡季优惠叠加</li>
               </ul>
             </aside>
           </div>
@@ -65,14 +65,14 @@
         <section class="notice-panel ratio-notice" data-cia-preview-kind="section" data-cia-preview-id="short-stay"
           [class.cia-editor-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <mat-icon>percent</mat-icon>
-          <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的{{ (shortTermRatios['1'] || 0) * 100 }}%/{{ (shortTermRatios['2'] || 0) * 100 }}%/{{ (shortTermRatios['3'] || 0) * 100 }}%计算。成人淡季入学可享85折、亲子9折；通过思达报名再享9折并免100美元注册费；8周起长期优惠可叠加。</p></div>
+          <div><h2>2026优惠与短期计算规则</h2><p>1/2/3周分别按4周课程费和住宿费的{{ (shortTermRatios['1'] || 0) * 100 }}%/{{ (shortTermRatios['2'] || 0) * 100 }}%/{{ (shortTermRatios['3'] || 0) * 100 }}%计算。成人淡季入学可享85折、亲子9折；通过思达启航报名再享9折并免100美元注册费；8周起长期优惠可叠加。</p></div>
         </section>
 
         <section class="promotion-policy" id="promotions" aria-labelledby="promotion-policy-title">
           <div class="section-heading">
             <span>2026年B'Cebu优惠</span>
             <h2 id="promotion-policy-title">五项优惠政策</h2>
-            <p>符合条件时可叠加；系统依次计算长期优惠、记者活动、淡季折扣和思达专属9折。</p>
+            <p>符合条件时可叠加；系统依次计算长期优惠、记者活动、淡季折扣和思达启航专属9折。</p>
           </div>
           <div class="promotion-policy-grid">
             <article *ngFor="let promotion of promotionPolicyCards" data-cia-preview-kind="promotion" [attr.data-cia-preview-id]="promotion.id"

@@ -157,7 +157,7 @@ export class BeciStudentQuote {
     const result: SchoolPaymentLine[] = [
       { icon: '注', label: '注册费原价', value: this.registrationOriginal, note: `每名学生一次；符合条件时另列${quoteMoney(this.registrationDiscount)}美元优惠。` },
     ];
-    if (this.registrationDiscount > 0) result.push({ icon: '惠', label: '思达注册费优惠', value: -this.registrationDiscount, note: this.registrationWaiverPromotion?.description ?? '所有通过思达报名的学生均优惠注册费。', promotionKey: 'beci-registration-waiver' });
+    if (this.registrationDiscount > 0) result.push({ icon: '惠', label: '思达启航注册费优惠', value: -this.registrationDiscount, note: this.registrationWaiverPromotion?.description ?? '所有通过思达启航报名的学生均优惠注册费。', promotionKey: 'beci-registration-waiver' });
     if (this.offSeasonDiscount > 0) result.push({
       icon: '淡', label: this.activeOffSeasonPromotion?.name ?? '2026淡季九折优惠', value: -this.offSeasonDiscount,
       note: this.activeOffSeasonPromotion?.description ?? `入学日${this.entryDate.replace(/-/g, '/')}符合优惠；整段课程费与住宿费减10%。`,

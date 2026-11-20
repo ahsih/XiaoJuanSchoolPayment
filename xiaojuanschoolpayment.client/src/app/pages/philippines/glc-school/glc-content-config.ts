@@ -132,7 +132,7 @@ export const createDefaultGlcContentConfig = (): CiaContentConfig => {
       alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
       noteSectionTitle: '报价说明',
       footerNotes: [
-        '学费需到校前2周交齐，可由思达代收或自行转美元给学校。',
+        '学费需到校前2周交齐，可由思达启航代收或自行转美元给学校。',
         '所有学生不收取寒暑假附加费。',
         '课程与住宿按周日入学、周六离校计算，最终以学校价格、空房及优惠确认为准。',
       ],

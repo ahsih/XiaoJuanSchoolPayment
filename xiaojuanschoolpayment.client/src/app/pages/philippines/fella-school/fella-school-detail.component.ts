@@ -195,10 +195,10 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '判断Fella是否适合', text: '先了解学习目标、年龄、同行人、校区偏好、管理强度和住宿预算。' },
     { icon: 'fact_check', title: '确认课程、校区和房型', text: '免费协助确认课程、校区、房型、空房、优惠和正式报价。' },
-    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
+    { icon: 'assignment_turned_in', title: '协助入境和签证手续', text: '思达启航免费协助办理菲律宾入境及签证相关手续，学生只需按顾问指引准备个人资料。' },
     { icon: 'inventory', title: '发送学习资料和行前清单', text: '入学前免费发送学习资料、行李清单、费用清单和到校注意事项。' },
-    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达协助。' },
-    { icon: 'location_on', title: '宿务当地支持', text: '思达在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
+    { icon: 'support_agent', title: '到校后继续跟进', text: '遇到换老师、调课、学习方法、宿舍生活或学校沟通问题，也可以继续联系思达启航协助。' },
+    { icon: 'location_on', title: '宿务当地支持', text: '思达启航在宿务有工作人员驻点，可提供当地支持，直到学生完成学习并顺利回国。' },
   ];
 
   readonly sidaFellaReasons: SidaFellaReason[] = [
@@ -270,7 +270,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
     { question: 'English Fella是斯巴达学校吗？', answer: 'Fella有两个校区：第一校区为斯巴达，第二校区为自律型／半斯巴达。报价器会按所选校区过滤课程与房型。' },
     { question: '页面上的报价包含全部费用吗？', answer: '学校费用与到校学杂费会分开计算；房间押金、接机费和挂锁押金另列且不计入学杂费合计。第二次及以后签证续签金额因资料未明确而暂不计价。' },
     { question: 'English Fella适合亲子吗？', answer: '可以考虑。课程表包含P-JEC、JEC儿童课程和GEC家长课程，但要先确认孩子年龄、陪同家长、监护规则、房型和校区。' },
-    { question: '思达会协助签证和入境吗？', answer: '会。通过思达报名English Fella，思达顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
+    { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名English Fella，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
   readonly sideNav: SideNavItem[] = [
     { label: '学校环境', target: 'gallery', icon: 'image' },

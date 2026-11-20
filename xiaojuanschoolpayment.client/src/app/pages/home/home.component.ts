@@ -118,10 +118,10 @@ export class HomeComponent {
   ];
 
   readonly whyPoints = [
-    '深耕留学与语言培训领域，经验扎实',
-    '个性化定制方案，兼顾预算和目标',
-    '专业团队全程陪伴，服务透明安心',
-    '真实案例与院校资源，申请路径清晰',
+    '0 中介服务费，价格不高于学校官方报价',
+    '费用逐项说明，报名前讲清每一项',
+    '负责菲律宾的顾问都在菲律宾语言学校学习过',
+    '菲律宾、英国、杭州有驻点人员，服务到学生回国为止',
   ];
 
   readonly processSteps: ProcessStep[] = [
@@ -146,17 +146,17 @@ export class HomeComponent {
       description: '录取、签证与住宿协调',
     },
     {
-      marker: '30+',
+      marker: '05',
       title: '后续确认',
       description: '行前提醒与入学支持',
     },
   ];
 
   readonly stats: Statistic[] = [
-    { value: '12+', label: '行业经验' },
-    { value: '5000+', label: '成功案例' },
-    { value: '98%', label: '申请成功率' },
-    { value: '30+', label: '合作院校' },
+    { value: '2018', label: '成立于深圳' },
+    { value: '0', label: '中介服务费' },
+    { value: '全程', label: '保价' },
+    { value: '免费', label: '签证协助' },
   ];
 
   readonly projects: ProjectCard[] = [

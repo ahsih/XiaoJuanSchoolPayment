@@ -74,6 +74,6 @@ export const JIC_PROMOTION_COPY = {
 } as const;
 
 export const JIC_LOCAL_FEE_COPY = {
-  intro: '学杂费由学校及菲律宾相关部门到校收取，与思达游学无关；页面仅按附件金额预估，最终以学校现场实收为准。',
+  intro: '学杂费由学校及菲律宾相关部门到校收取，与思达启航无关；页面仅按附件金额预估，最终以学校现场实收为准。',
   deposit: '3,000比索／人，退房时无损坏且无其他欠费可按校规退还；不计入学杂费合计。',
 } as const;

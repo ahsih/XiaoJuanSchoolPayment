@@ -13,12 +13,12 @@
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">立即精确报价<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询IMS空位<mat-icon>support_agent</mat-icon></a>
         </div>
-        <p class="trust-note"><mat-icon>verified</mat-icon>注册费100美元／人始终保留；学校活动与思达95折仅按规则作用于课程费和住宿费。</p>
+        <p class="trust-note"><mat-icon>verified</mat-icon>注册费100美元／人始终保留；学校活动与思达启航95折仅按规则作用于课程费和住宿费。</p>
       </div>
       <div class="hero-media">
         <img src="/assets/ims/campus-video-cover.webp" alt="IMS Academy Banilad校园泳池与校舍" fetchpriority="high" />
         <span class="hero-campus-label"><mat-icon>videocam</mat-icon>校园实拍</span>
-        <div class="hero-price-card"><span>4周公开起价（含不可减注册费）</span><strong>{{ fourWeekStartingText }}</strong><small>Essential ESL 4 + 四人房 + 思达95折；当地比索费用另计</small></div>
+        <div class="hero-price-card"><span>4周公开起价（含不可减注册费）</span><strong>{{ fourWeekStartingText }}</strong><small>Essential ESL 4 + 四人房 + 思达启航95折；当地比索费用另计</small></div>
       </div>
     </section>
 
@@ -103,12 +103,12 @@
         </section>
 
         <section class="section-block promotion-section" id="promotions" data-cia-preview-kind="section" data-cia-preview-id="promotions" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'promotions')">
-          <div class="section-heading"><span>优惠活动</span><h2>学校活动先算，思达95折随后只作用于剩余课程与住宿</h2></div>
+          <div class="section-heading"><span>优惠活动</span><h2>学校活动先算，思达启航95折随后只作用于剩余课程与住宿</h2></div>
           <div class="rule-grid">
             <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-two-plus-two" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-two-plus-two')"><strong>2+2达人活动</strong><p>{{ promotionDescription('ims-two-plus-two') }}</p><ul><li *ngFor="let item of socialRequirements">{{ item }}</li></ul></article>
             <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-low-season-300" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-low-season-300')"><strong>淡季每4周减300美元</strong><p>{{ promotionDescription('ims-low-season-300') }}</p></article>
             <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-long-stay" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-long-stay')"><strong>全年长期优惠</strong><p>{{ promotionDescription('ims-long-stay') }}</p></article>
-            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-sida-95" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-sida-95')"><strong>思达95折</strong><p>{{ promotionDescription('ims-sida-95') }}</p></article>
+            <article data-cia-preview-kind="promotion" data-cia-preview-id="ims-sida-95" [class.cia-preview-highlight]="isPreviewHighlighted('promotion', 'ims-sida-95')"><strong>思达启航95折</strong><p>{{ promotionDescription('ims-sida-95') }}</p></article>
           </div>
           <p class="policy-note">淡季不含1月、6月、7月、8月。团体课权益：2节团体课可换1节一对一，不直接改变学费；有效期为即日起至2026年12月31日，以及2027年2月1日至5月30日。</p>
         </section>
@@ -153,14 +153,14 @@
               <div class="extra-class-grid"><label *ngFor="let item of additionalClassOptions">{{ item.name }}（{{ item.price4w }}美元／4周）<input type="number" min="0" max="9" [(ngModel)]="student.additionalClassQuantities[item.id]" /></label></div>
               <div class="check-grid"><label><input type="checkbox" [(ngModel)]="student.includePickup" />计入一次接机1,000比索（官方TOTAL默认包含）</label><label><input type="checkbox" [(ngModel)]="student.includeDropoff" />加入可选送机1,000比索</label><label><input type="checkbox" [(ngModel)]="student.includeWalkInLunch" />加入走读午餐6,000比索／4周</label></div>
             </details>
-            <div class="student-subtotal"><span>课程住宿原价 {{ formatUsd(student.originalStudyStay) }} · 学校活动 −{{ formatUsd(student.schoolDiscountAmount) }} · 思达95折 −{{ formatUsd(student.sidaDiscountAmount) }}</span><strong>该学生USD应付 {{ formatUsd(student.quoteUsd) }}</strong></div>
+            <div class="student-subtotal"><span>课程住宿原价 {{ formatUsd(student.originalStudyStay) }} · 学校活动 −{{ formatUsd(student.schoolDiscountAmount) }} · 思达启航95折 −{{ formatUsd(student.sidaDiscountAmount) }}</span><strong>该学生USD应付 {{ formatUsd(student.quoteUsd) }}</strong></div>
           </article>
 
           <p class="quote-error" role="alert" *ngIf="quoteError">{{ quoteError }}</p>
           <div class="quote-breakdown">
             <div><span>注册费、课程住宿及所选项目原价<small>注册费{{ registrationFee }}美元／人，始终不可减免</small></span><strong>{{ formatUsd(quoteBeforeDiscounts) }}</strong></div>
             <div class="discount-line"><span>学校活动与长期优惠<small>2+2、淡季300及长期阶梯按每名学生独立计算</small></span><strong>− {{ formatUsd(schoolDiscountAmount) }}</strong></div>
-            <div class="discount-line"><span>思达95折<small>只对学校活动后的剩余课程费与住宿费</small></span><strong>− {{ formatUsd(sidaDiscountAmount) }}</strong></div>
+            <div class="discount-line"><span>思达启航95折<small>只对学校活动后的剩余课程费与住宿费</small></span><strong>− {{ formatUsd(sidaDiscountAmount) }}</strong></div>
           </div>
           <div class="group-result"><span>最终应付学校金额</span><strong>{{ formatUsd(quoteUsd) }}</strong><em>到校比索费用：{{ formatPhp(estimatedLocalFeeTotal) }}（约人民币{{ estimatedLocalFeeCny | number:'1.0-0' }}元）</em><small>美元与比索分开支付；人民币仅为参考汇率估算。</small></div>
           <div class="group-actions"><button type="button" class="primary-action" (click)="calculateQuote()" [disabled]="!!quoteError"><mat-icon>calculate</mat-icon>核验当前报价</button><app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="secondary-action"></app-quote-image-download-button><a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>send</mat-icon>发给顾问复核</a></div>

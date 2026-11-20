@@ -64,7 +64,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '暑假附加费')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.some(item => item.label === '长期优惠')).toBeFalse();
     expect(component.quoteImageData.paymentItems?.find(item => item.icon === '宿')?.detailTitle).toBe('斯巴达 4人房');
-    expect(component.quoteImageData.paymentItems?.find(item => item.label === '思达折扣')?.note).toBe('课程费和住宿费享9折');
+    expect(component.quoteImageData.paymentItems?.find(item => item.label === '思达启航折扣')?.note).toBe('课程费和住宿费享9折');
     expect(component.quoteImageData.localFeeItems?.find(item => item.label === 'ACR I-CARD（旅游签证）')?.amount).toBe('0 比索');
     expect(component.quoteImageData.localFeeItems?.find(item => item.label === '旅游签证续签')?.amount).toBe('0 比索');
   });
@@ -179,7 +179,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.longStayDiscount).toBe(50);
     expect(component.quoteUsd).toBe(3555);
     expect(component.quoteImageData.paymentItems?.length).toBe(7);
-    expect(component.quoteImageData.paymentItems?.find(item => item.label === '思达折扣')?.note).toBe('课程费和住宿费享9折');
+    expect(component.quoteImageData.paymentItems?.find(item => item.label === '思达启航折扣')?.note).toBe('课程费和住宿费享9折');
     expect(component.quoteImageData.paymentItems?.find(item => item.label === '暑假附加费')?.amount).toBe('40 美元');
     expect(component.quoteImageData.totalUsd).toBe('3,555 美元');
   });
@@ -616,7 +616,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(quote.paymentItems.length).toBe(11);
     expect(quote.paymentItems.map(row => row.label)).toEqual([
       '注册费', '课程名称1', '课程名称2', '课程名称3', '住宿名称1', '住宿名称2', '住宿名称3',
-      '思达折扣', '淡季优惠', '长期优惠', '暑假附加费',
+      '思达启航折扣', '淡季优惠', '长期优惠', '暑假附加费',
     ]);
     expect(quote.totalUsd).toBe('3,555 美元');
     expect(JSON.stringify(quote)).not.toContain('见上表');
@@ -701,8 +701,8 @@ describe('CG斯巴达校区 quote adjustments', () => {
     expect(component.quoteImageData.paymentItems.filter(row => row.icon === '课').map(row => row.label)).toEqual([
       '学生1 · 课程名称', '学生2 · 课程名称',
     ]);
-    expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达折扣').length).toBe(1);
-    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达折扣')?.note).toContain('2人适用');
+    expect(component.quoteImageData.paymentItems.filter(row => row.label === '思达启航折扣').length).toBe(1);
+    expect(component.quoteImageData.paymentItems.find(row => row.label === '思达启航折扣')?.note).toContain('2人适用');
     expect(component.includedLocalFees.find(row => row.item === '教材费')).toEqual(jasmine.objectContaining({ quantity: 3, total: 1200 }));
     expect(component.quoteImageData.localFeeItems?.find(row => row.label === '教材费')).toEqual(jasmine.objectContaining({ quantity: '3', amount: '1,200 比索' }));
   });
@@ -745,7 +745,7 @@ describe('CG斯巴达校区 quote adjustments', () => {
     second.quotePlan.courses[0].startDate = '2026-09-06';
     second.quotePlan.rooms[0].startDate = '2026-09-06';
     const lines = component.quoteImageData.paymentItems;
-    expect(lines.filter(row => row.label === '思达折扣').length).toBe(1);
+    expect(lines.filter(row => row.label === '思达启航折扣').length).toBe(1);
     expect(lines.find(row => row.label === '学生2 · 淡季优惠')?.amount).toBe('− 150 美元');
     expect(lines.some(row => row.label === '学生1 · 淡季优惠')).toBeFalse();
   });

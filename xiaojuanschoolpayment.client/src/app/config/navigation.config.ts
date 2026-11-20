@@ -758,7 +758,7 @@ export const mainNavigation: NavigationItem[] = [
     children: [
       {
         id: 'exclusive-offers',
-        label: '思达独家最新优惠',
+        label: '思达启航独家最新优惠',
         route: '/overseas-study-tour/offers',
         type: '活动页',
       },
@@ -1031,13 +1031,13 @@ export const mainNavigation: NavigationItem[] = [
   },
   {
     id: 'about-sida',
-    label: '关于思达',
+    label: '关于思达启航',
     route: '/about-sida/about',
     note: '品牌与团队信息',
     children: [
       {
         id: 'about',
-        label: '关于思达',
+        label: '关于思达启航',
         route: '/about-sida/about',
         type: '品牌页',
       },

@@ -90,7 +90,7 @@ export type MiniSectionKind =
   | 'policies' // 学校规定（折叠）
   | 'reviews' // 学生评价
   | 'faq' // 常见问题
-  | 'contact'; // 思达保障与联系顾问
+  | 'contact'; // 思达启航保障与联系顾问
 
 export interface MiniSection {
   kind: MiniSectionKind;

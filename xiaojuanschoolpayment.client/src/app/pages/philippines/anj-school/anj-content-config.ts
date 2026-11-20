@@ -91,8 +91,8 @@ export const createDefaultAnjContentConfig = (): CiaContentConfig => ({
     ],
     promotions: [
       {
-        ...promotionBase('registration-waiver', '思达免注册费', 0),
-        description: '通过思达报名，每名学生免收一次性注册费。',
+        ...promotionBase('registration-waiver', '思达启航免注册费', 0),
+        description: '通过思达启航报名，每名学生免收一次性注册费。',
         discountType: 'none',
         waiveRegistration: true,
       },
@@ -126,7 +126,7 @@ export const createDefaultAnjContentConfig = (): CiaContentConfig => ({
         minimumCourseWeeks: 4,
       },
       {
-        ...promotionBase('sida-discount', '思达95折', 14),
+        ...promotionBase('sida-discount', '思达启航95折', 14),
         description: '先扣A&J固定优惠，再对剩余课程费和住宿费按95折计算。',
         discountType: 'percentage',
         discountValue: Math.round((1 - ANJ_SIDA_DISCOUNT_RATE) * 100),
@@ -149,7 +149,7 @@ export const createDefaultAnjContentConfig = (): CiaContentConfig => ({
   },
   quoteImageSettings: {
     paymentSectionTitle: '学校费用明细',
-    paymentNotes: { registration: '一次性费用；通过思达报名免收', course: '', accommodation: '', promotion: '' },
+    paymentNotes: { registration: '一次性费用；通过思达启航报名免收', course: '', accommodation: '', promotion: '' },
     localFeeSectionTitle: '到校后学杂费明细',
     localFeeIntro: '以下为按当前签证、课程、住宿与接机选择计算的比索费用预估，最终以学校和移民局实收为准。',
     localFeeNotes: {},

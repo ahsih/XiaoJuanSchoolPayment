@@ -105,7 +105,7 @@ export class MonolSpartaStudentQuote {
 
   get tuition() { return this.quotePlan.total('course'); }
   get accommodation() { return this.quotePlan.total('room'); }
-  /** 思达启航为所有通过思达报名的学生免除学校原价注册费。 */
+  /** 思达启航为所有通过思达启航报名的学生免除学校原价注册费。 */
   get registration() { return 0; }
   get visaLabel() { return this.visaOptions.find(option => option.value === this.visaType)?.label ?? ''; }
   get peakCalculation() {

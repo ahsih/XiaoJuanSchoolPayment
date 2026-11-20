@@ -173,7 +173,7 @@ describe('JicStudentQuote', () => {
     expect(student.registrationDiscount).toBe(100);
     expect(student.registrationDiscountNote).toContain('思达启航');
     const registrationLine = student.paymentLines.find((line) => line.promotionKey === 'jic-registration');
-    expect(registrationLine?.label).toBe('思达注册费减免');
+    expect(registrationLine?.label).toBe('思达启航注册费减免');
     expect(registrationLine?.value).toBe(-100);
     student.returningStudent = true;
     expect(student.registrationDiscount).toBe(100);
