@@ -172,6 +172,8 @@ export class EvQuote extends PhSchoolQuote<EvPageStudent> {
       image: { schoolCode: 'EV主校区', schoolName: '菲律宾宿务EV Academy', filePrefix: 'EV', heroSrc: EV_QUOTE_IMAGE_HERO },
       priceMultiplier: weeks => evPriceMultiplier(weeks, pricing.shortTermPriceRatios),
       optionalFeeItems: (students, quote) => evOptionalFeeItems(pricing, students, quote),
+      // The CIA quote image, the fixed template for every school (user decision 2026-11-21).
+      layoutVersion: 2,
     });
   }
 }
@@ -188,6 +190,7 @@ export class EvPlanComparison extends PhPlanComparison<EvPageStudent> {
       heading: 'EV主校区 方案对比报价',
       courseGroups: EV_COMPARE_COURSE_GROUPS,
       peakRate: () => associationPeakRateForWeek('EV', '2027-01-03', pricing.seasonalFeePerWeek),
+      layoutVersion: 2,
     });
   }
 }
