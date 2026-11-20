@@ -313,7 +313,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly showRoomCodes = this.profile.showRoomCodes;
   readonly reviewPath = this.profile.reviewPath;
 
-  // ---- Compact layout (profile.compactLayout; CIA only for now) ----
+  // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA and EV so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly courseHighlights = this.profile.courseHighlights ?? {};
@@ -460,7 +460,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   }
   roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
     return this.roomComparisonProfiles.find(profile =>
-      (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+      profile.rateIds?.includes(room.id)
+      || (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
   }
   get activeRateRoomId(): string {
     if (this.selectedRateRoomId) return this.selectedRateRoomId;

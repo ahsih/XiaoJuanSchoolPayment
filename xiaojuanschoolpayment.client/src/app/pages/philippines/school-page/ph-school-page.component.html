@@ -1556,7 +1556,7 @@
             <small>{{ copy.calendar.peakNote }}</small>
           </div>
         </div>
-        <div class="compact-calendar-table" role="table" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">
+        <div class="compact-calendar-table" role="table" *ngIf="calendarMonths.length" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">
           <div class="compact-calendar-row compact-calendar-row--head" role="row">
             <span role="columnheader">月份</span>
             <span role="columnheader">学校假期</span>
