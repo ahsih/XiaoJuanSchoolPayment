@@ -142,6 +142,7 @@
             (click)="heroAlbumIndex = thumb.index"
           ><img [src]="thumb.item.kind === 'video' ? thumb.item.poster : thumb.item.src" [alt]="''" loading="lazy" /><mat-icon *ngIf="thumb.item.kind === 'video'">play_arrow</mat-icon></button>
         </div>
+        <p class="photo-reference-note" *ngIf="copy.gallery.photoNote"><mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}</p>
       </div>
 
       <!-- Compact layout: key facts fill the space under the title on wide screens, and follow the album on phones. -->
@@ -780,6 +781,7 @@
               <img [src]="photo" [alt]="selectedRoomProfile.label + '实景缩略图 ' + (imageIndex + 1)" loading="lazy" />
             </button>
           </div>
+          <p class="photo-reference-note" *ngIf="compactLayout && copy.gallery.photoNote"><mat-icon>info</mat-icon>{{ copy.gallery.photoNote }}</p>
         </div>
 
         <div class="room-profile-copy">
