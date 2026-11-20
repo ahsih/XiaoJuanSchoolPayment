@@ -83,6 +83,16 @@ interface CourseGroupView {
   courses: CourseFee[];
 }
 
+/** One colour-coded block of the course list per study mode (EV: 半斯巴达 / 斯巴达). */
+interface CourseModeZone {
+  title: string;
+  hint: string;
+  strict: boolean;
+  count: number;
+  /** Every course group, so both zones list the goals in the same order; missingNote fills an empty one. */
+  groups: Array<CourseGroupView & { missingNote: string }>;
+}
+
 /**
  * School subclasses keep the selector `app-cia-school`: the global styles (src/styles.css and
  * assets/cia/cia-page-extended.css) target that element, so every school shares them.
@@ -297,6 +307,36 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.courseGroupCache.groups;
   }
   trackCourseGroup(_index: number, group: CourseGroupView): string { return group.title; }
+  private courseModeZoneCache?: { source: CourseGroupView[]; zones?: CourseModeZone[] };
+  /** Profiles with courseModes list courses by study mode first; undefined keeps the normal goal groups. */
+  get courseModeZones(): CourseModeZone[] | undefined {
+    const groups = this.courseGroups;
+    if (this.courseModeZoneCache?.source !== groups) {
+      this.courseModeZoneCache = { source: groups, zones: this.buildCourseModeZones(groups) };
+    }
+    return this.courseModeZoneCache.zones;
+  }
+  private buildCourseModeZones(groups: CourseGroupView[]): CourseModeZone[] | undefined {
+    const modes = this.profile.courseModes;
+    if (!modes?.length) return undefined;
+    const modeOf = (course: CourseFee) => modes.find(mode => course.id.startsWith(mode.idPrefix));
+    // A course outside every mode would vanish from the zones, so keep the normal list instead.
+    if (!groups.every(group => group.courses.every(course => !!modeOf(course)))) return undefined;
+    return modes.map(mode => {
+      const zoneGroups = groups.map(group => {
+        const courses = group.courses.filter(course => modeOf(course) === mode);
+        const offered = [...new Set(group.courses.map(course => modeOf(course)!.title))];
+        return { ...group, courses, missingNote: courses.length ? '' : `本类课程仅开设${offered.join('、')}` };
+      });
+      const count = zoneGroups.reduce((sum, group) => sum + group.courses.length, 0);
+      return { title: mode.title, hint: mode.hint, strict: !!mode.strict, count, groups: zoneGroups };
+    });
+  }
+  /** Inside a mode zone the row drops the name's “（mode）” suffix, which the zone heading already says. */
+  courseLineName(name: string, mode?: string): string {
+    const suffix = mode ? `（${mode}）` : '';
+    return suffix && name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
+  }
   private readonly schedulePartCache = new Map<string, string[]>();
   /** A course's daily schedule split at “+” and “；” so the row can show it as short parts. */
   scheduleParts(schedule: string): string[] {

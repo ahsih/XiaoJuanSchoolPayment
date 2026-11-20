@@ -39,6 +39,8 @@ type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 /** Page text. Optional blocks hide their section when a school leaves them out. */
 export interface PhPageCopy {
   swipeHint: string;
+  /** A school-only line closing each content section, e.g. EV: 仅供参考，实际以学校为准. CIA leaves it out (styles: ph-school-page-options.css). */
+  referenceNote?: string;
   hero: CiaCopy['hero'];
   overview: CiaCopy['overview'];
   advisorReview: CiaCopy['advisorReview'];
@@ -51,7 +53,7 @@ export interface PhPageCopy {
   >;
   /** A school-only block between the course list and the course details (EV: 斯巴达 / 半斯巴达). */
   studyModes?: { title: string; intro: string; note?: string };
-  schedule?: Pick<CiaCopy['schedule'], 'eyebrow' | 'title' | 'intro' | 'badge' | 'note'>;
+  schedule?: Optional<Pick<CiaCopy['schedule'], 'eyebrow' | 'title' | 'intro' | 'badge' | 'note'>, 'note'>;
   planning?: CiaCopy['planning'];
   calendar?: Optional<CiaCopy['calendar'], 'badge' | 'provisionalLabel' | 'footnote'>;
   ielts?: CiaCopy['ielts'];
@@ -123,6 +125,12 @@ export interface PhSchoolProfile {
   campusLifeVideos: readonly CiaShortVideo[];
   interviewVideos: readonly CiaShortVideo[];
   courseGroups: ReadonlyArray<{ icon: string; title: string; text: string; courseIds: readonly string[] }>;
+  /**
+   * School-only: list the courses in one colour-coded zone per study mode (EV: 半斯巴达 / 斯巴达), each
+   * holding the course groups in order; courses match by id prefix and drop a trailing “（mode title）”.
+   * Styles are in ph-school-page-options.css. CIA leaves it out.
+   */
+  courseModes?: ReadonlyArray<{ title: string; hint: string; idPrefix: string; strict?: boolean }>;
   studyModes: readonly PhStudyMode[];
   courseDetailGuides: readonly CourseDetailGuide[];
   scheduleColumns: readonly PhScheduleColumn[];

@@ -7,8 +7,12 @@ import {
 } from '../cia-school/cia-content-config';
 import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
 
-/** 2026-08-10 local-fee sheet and the 2026 brochure course catalogue. */
-export const EV_POLICY_VERSION = 1;
+/**
+ * 1: 2026-08-10 local-fee sheet and the 2026 brochure course catalogue.
+ * 2: condo shuttle runs on weekdays only, condo check-in rules, 2,000-peso extra night,
+ *    and no school promotion besides the agent 95% rate (user decision 2026-11-20).
+ */
+export const EV_POLICY_VERSION = 2;
 export const EV_IELTS_GUARANTEE_ID = 'sparta-ielts-guarantee';
 
 const course = (
@@ -109,8 +113,8 @@ const defaultRooms = (): CiaRoomContent[] => [
   room('double', '双人间', 1030, '两人一间', '校内', 1),
   room('triple', '三人间', 950, '三人一间', '校内', 2),
   room('quad-bunk', '四人间（上下铺）', 900, '上下铺，预算较低', '校内', 3),
-  room('off-campus-single', '校外公寓单人间', 1550, '仅限半斯巴达课程；无门禁，每天有接驳车往返学校', '校外', 4),
-  room('off-campus-double', '校外公寓双人间', 1150, '仅限半斯巴达课程；无门禁，每天有接驳车往返学校', '校外', 5),
+  room('off-campus-single', '校外公寓单人间', 1550, '仅限半斯巴达课程；无门禁，平日有接驳车往返学校', '校外', 4),
+  room('off-campus-double', '校外公寓双人间', 1150, '仅限半斯巴达课程；无门禁，平日有接驳车往返学校', '校外', 5),
 ];
 
 const defaultLocalFees = (): CiaLocalFeeRule[] => [
@@ -133,10 +137,15 @@ const defaultLocalFees = (): CiaLocalFeeRule[] => [
 const EV_UPGRADED_FEE_IDS = ['ssp', 'ssp-e-card', 'acr-i-card', 'arp', 'on-campus-management', 'off-campus-management', 'electricity', 'water', 'visa-extension', 'books', 'student-id', 'cebu-pickup', 'room-deposit'];
 
 const defaultStayPolicies = () => [
-  { label: '入住日期', value: '周六或周日入住', note: '周一上午分级测试和新生说明会。' },
-  { label: '离校日期', value: '最后一周周六12:00前退房', note: '毕业典礼在最后一个周五。' },
+  { label: '入住日期', value: '周六或周日入住', note: '校外公寓周六15:00后入住；周一上午分级测试和新生说明会。' },
+  { label: '离校日期', value: '最后一周周六12:00前退房', note: '毕业典礼在最后一个周五；延住须提前一周申请，视空房而定。' },
   { label: '未成年学生', value: '外出须监护人陪同', note: '平日不可外出，周末无监护人不可外出，门禁21:00。' },
 ];
+
+const defaultExtraNightRates = () => [{ label: '延住（所有房型）', amount: 2000 }];
+
+/** Promotions the main campus may show: the agent 95% rate and the returning-student registration waiver. */
+const EV_ALLOWED_PROMOTION_IDS = ['ev-sida-95', 'ev-returning-registration'];
 
 export const createDefaultEvContentConfig = (): CiaContentConfig => {
   const config: CiaContentConfig = {
@@ -169,7 +178,7 @@ export const createDefaultEvContentConfig = (): CiaContentConfig => {
       roomTableNote: '校内宿舍费含住宿、一日三餐和房间清洁；校外公寓仅限半斯巴达课程。',
       stayPolicyTitle: 'EV入住与离校',
       stayPolicies: defaultStayPolicies(),
-      extraNightRates: [],
+      extraNightRates: defaultExtraNightRates(),
     },
     quoteImageSettings: quoteImageSettings(),
   };
@@ -180,9 +189,16 @@ export const createDefaultEvContentConfig = (): CiaContentConfig => {
   return config;
 };
 
-/** Brings older saved documents onto the 2026-08-10 fees and corrected course facts once, keeping edited prices. */
+/** Brings older saved documents up to the current EV policy once per version, keeping edited prices. */
 const upgradeEvPolicy = (clone: CiaContentConfig, defaults: CiaContentConfig): void => {
-  if ((clone.quoteSettings.evPolicyVersion ?? 0) >= EV_POLICY_VERSION) return;
+  const saved = clone.quoteSettings.evPolicyVersion ?? 0;
+  if (saved < 1) upgradeEvFeeSheet(clone, defaults);
+  if (saved < 2) upgradeEvStayRules(clone, defaults);
+  clone.quoteSettings.evPolicyVersion = EV_POLICY_VERSION;
+};
+
+/** Version 1: the 2026-08-10 fee sheet and corrected course facts. */
+const upgradeEvFeeSheet = (clone: CiaContentConfig, defaults: CiaContentConfig): void => {
   const kept = (clone.localFees ?? []).filter(fee => !EV_UPGRADED_FEE_IDS.includes(fee.id));
   clone.localFees = [...defaults.localFees.map(fee => structuredClone(fee)), ...kept];
   for (const item of clone.courses ?? []) {
@@ -209,7 +225,20 @@ const upgradeEvPolicy = (clone: CiaContentConfig, defaults: CiaContentConfig): v
     for (const id of EV_UPGRADED_FEE_IDS) delete notes[id];
     clone.quoteImageSettings.localFeeNotes = notes;
   }
-  settings.evPolicyVersion = EV_POLICY_VERSION;
+};
+
+/** Version 2: weekday-only condo shuttle, stay rules, extra-night rate, and only the agent 95% offer. */
+const upgradeEvStayRules = (clone: CiaContentConfig, defaults: CiaContentConfig): void => {
+  for (const item of clone.rooms ?? []) {
+    const fallback = defaults.rooms.find(entry => entry.id === item.id);
+    if (fallback) item.note = fallback.note;
+  }
+  const settings = clone.quoteSettings;
+  settings.stayPolicies = defaultStayPolicies();
+  settings.extraNightRates = defaultExtraNightRates();
+  for (const rule of settings.promotions ?? []) {
+    if (!EV_ALLOWED_PROMOTION_IDS.includes(rule.id)) rule.enabled = false;
+  }
 };
 
 export const cloneEvContentConfig = (value: CiaContentConfig): CiaContentConfig => {

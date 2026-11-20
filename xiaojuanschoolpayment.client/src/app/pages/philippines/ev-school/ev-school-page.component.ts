@@ -61,6 +61,7 @@ function slugifyPriceKey(value: string): string {
     '../school-quote-rollout.css',
     '../../../components/school-group-quote.css',
     '../school-page/ph-school-page-redesign.css',
+    '../school-page/ph-school-page-options.css',
   ],
 })
 export class EvSchoolPageComponent extends PhSchoolPageComponent<EvPageStudent> {

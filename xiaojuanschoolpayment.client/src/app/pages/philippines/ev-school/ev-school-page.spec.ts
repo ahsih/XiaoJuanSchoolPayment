@@ -139,4 +139,31 @@ describe('EV school page on the shared template', () => {
     expect(upgraded.quoteImageSettings.footerNotes[0]).toBe('学费可交由思达启航代收');
     expect(JSON.stringify(EV_PAGE_PROFILE.copy)).not.toMatch(/思达(?!启航)/);
   });
+
+  it('upgrades saved content to the weekday-only condo shuttle and the agent 95% offer only', () => {
+    const saved = createDefaultEvContentConfig();
+    saved.quoteSettings.evPolicyVersion = 1;
+    saved.rooms.find(room => room.id === 'off-campus-single')!.note = '仅限半斯巴达课程；无门禁，每天有接驳车往返学校';
+    saved.quoteSettings.extraNightRates = [];
+    saved.quoteSettings.promotions.push({
+      ...saved.quoteSettings.promotions[0], id: 'ev-old-school-offer', name: '学校旧优惠', enabled: true,
+    });
+    const upgraded = cloneEvContentConfig(saved);
+    expect(upgraded.rooms.find(room => room.id === 'off-campus-single')!.note).toContain('平日有接驳车');
+    expect(upgraded.quoteSettings.extraNightRates).toEqual([{ label: '延住（所有房型）', amount: 2000 }]);
+    expect(upgraded.quoteSettings.promotions.filter(rule => rule.enabled).map(rule => rule.id))
+      .toEqual(['ev-sida-95', 'ev-returning-registration']);
+    expect(JSON.stringify(EV_PAGE_PROFILE)).not.toContain('每天有接驳车');
+  });
+
+  it('lists courses in a 半斯巴达 zone and a 斯巴达 zone and closes sections with a reference note', () => {
+    const zones = page.courseModeZones!;
+    expect(zones.map(zone => `${zone.title}:${zone.count}`)).toEqual(['半斯巴达:6', '斯巴达:8']);
+    const names = (zone: number, title: string) => zones[zone].groups.find(group => group.title === title)!
+      .courses.map(course => page.courseLineName(course.name, zones[zone].title));
+    expect(names(1, '口语强化')).toEqual(['口语强化6', '口语强化8']);
+    expect(names(0, '综合英语 ESL')).toEqual(['经典ESL']);
+    expect(zones[0].groups.find(group => group.title === '雅思')!.missingNote).toBe('本类课程仅开设斯巴达');
+    expect(page.copy.referenceNote).toContain('实际以学校为准');
+  });
 });
