@@ -4,6 +4,8 @@
  * Prices, fees and quote rules live in ev-content-config.ts.
  */
 
+import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
+
 export type EvGalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
 
 export interface EvQuickInfo { icon: string; title: string; text: string; }
@@ -29,8 +31,8 @@ export interface EvFaqItem { question: string; answer: string; }
 export interface EvNavItem { label: string; target: string; icon: string; }
 export interface EvRule { title: string; text: string; }
 
-/** Closes every content section of the EV page (user decision 2026-11-20). */
-export const EV_REFERENCE_NOTE = '以上内容仅供参考，实际以学校为准；学校可能随时调整规则。';
+/** Closes every content section of the EV page (user decisions 2026-11-20 and 2026-11-21). */
+export const EV_REFERENCE_NOTE = SCHOOL_REFERENCE_NOTE;
 
 export const EV_PAGE_COPY = {
   heroLead: '2004年创办的宿务老牌英语学校，学习强度可严可松，课后生活在度假村式校园里就能解决。',

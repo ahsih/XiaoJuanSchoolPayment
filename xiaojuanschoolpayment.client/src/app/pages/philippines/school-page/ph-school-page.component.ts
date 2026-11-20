@@ -32,6 +32,7 @@ import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.
 import { PlanCompareTableComponent } from '../../../components/plan-compare/plan-compare-table.component';
 import type { PlanCompareSheet } from '../../../components/plan-compare/plan-compare-sheet';
 import type { QuoteImageCardData } from '../../../components/quote-image-types';
+import type { CtaConsultant } from '../cia-school/cia-page-content';
 import {
   CiaContentConfig,
   CiaExtraNightRate,
@@ -125,6 +126,17 @@ interface CalendarMonthRow {
  * School subclasses keep the selector `app-cia-school`: the global styles (src/styles.css and
  * assets/cia/cia-page-extended.css) target that element, so every school shares them.
  */
+/**
+ * Turns a list by one place per calendar day in China time (UTC+8), so on day N the item at N mod length leads.
+ * Exported for tests.
+ */
+export function rotateForDay<T>(items: readonly T[], timestamp: number): T[] {
+  if (!items.length) return [];
+  const chinaDay = Math.floor((timestamp + 8 * 60 * 60 * 1000) / (24 * 60 * 60 * 1000));
+  const shift = chinaDay % items.length;
+  return [...items.slice(shift), ...items.slice(0, shift)];
+}
+
 @Directive()
 export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStudent>
   implements OnInit, AfterViewInit, OnDestroy
@@ -600,6 +612,43 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly ctaBadges = this.profile.ctaBadges;
 
   readonly ctaConsultants = this.profile.ctaConsultants;
+  /** Base avatar order in the floating 免费咨询 panel (user decision 2026-11-21); consultants not listed go last. */
+  private static readonly floatConsultOrder = ['Perrin', 'Lemon', 'Iris', 'Lisa', 'Jenny'];
+
+  /**
+   * Every consultant for the floating 免费咨询 button. The order turns by one place each day (China time), so each
+   * consultant leads in turn, and the first one's QR code is shown when the panel opens (user decision 2026-11-21).
+   */
+  readonly floatConsultants = this.consultantsInTodaysOrder();
+  floatConsultantIndex = 0;
+  floatConsultOpen = false;
+
+  /** Opens the floating panel on one consultant's QR code (the button on a WeChat-only consultant card). */
+  openFloatConsult(consultant: CtaConsultant, event: Event): void {
+    event.stopPropagation();
+    const index = this.floatConsultants.findIndex(item => item.name === consultant.name);
+    if (index >= 0) this.floatConsultantIndex = index;
+    this.floatConsultOpen = true;
+  }
+
+  get floatConsultant(): CtaConsultant | undefined {
+    return this.floatConsultants[this.floatConsultantIndex];
+  }
+
+  private consultantsInTodaysOrder(): readonly CtaConsultant[] {
+    const order = PhSchoolPageComponent.floatConsultOrder;
+    const rank = (consultant: CtaConsultant) => {
+      const index = order.indexOf(consultant.name);
+      return index < 0 ? order.length : index;
+    };
+    return rotateForDay([...this.ctaConsultants].sort((a, b) => rank(a) - rank(b)), Date.now());
+  }
+  @HostListener('document:click', ['$event'])
+  closeFloatConsult(event: Event): void {
+    if (this.floatConsultOpen && event.target instanceof Element && !event.target.closest('.float-consult')) {
+      this.floatConsultOpen = false;
+    }
+  }
 
   ngOnInit(): void {
     this.loadExtendedPageStyles();
