@@ -1,6 +1,6 @@
 // CIA's content for the shared Philippine school page (school-page/ph-school-page.component.*).
 // Text and data come from cia-page-content.ts, which the WeChat mini program also reads.
-import type { PhSchoolProfile } from '../school-page/ph-school-profile';
+import type { PhSchoolProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 import { cloneCiaContentConfig, createDefaultCiaContentConfig } from './cia-content-config';
 import {
   CIA_BASIC_INFO,
@@ -20,11 +20,11 @@ import {
   CIA_HERO_GALLERY_CATEGORIES,
   CIA_HOLIDAY_CALENDARS,
   CIA_IELTS_COMPUTER_EXAM_DATES_2027,
-  CIA_IELTS_EXAM_DATES_2026,
   CIA_IELTS_RESULTS,
   CIA_INTERVIEW_VIDEOS,
   CIA_MOBILE_ANCHORS,
   CIA_NOT_SUITABLE_FOR,
+  CIA_OVERVIEW_FACTS,
   CIA_PAGE_COPY,
   CIA_ROOM_COMPARISON_PROFILES,
   CIA_SIDA_REASONS,
@@ -37,6 +37,8 @@ import {
   CIA_WEEKDAY_SCHEDULE,
   ciaShows2026Prices,
   currentCiaFaqs,
+  type CiaShortVideo,
+  type CiaVideoCard,
   type CourseFee,
   type RoomFee,
   type RoomRateGroup,
@@ -296,7 +298,7 @@ const CIA_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [
     ],
   },
   {
-    title: '家庭精致套房',
+    title: '精致套房',
     rooms: [
       { id: 'sr1', label: '单人套房', code: 'SR-1', location: '校内' },
       { id: 'sr2', label: '双人套房', code: 'SR-2', location: '校内' },
@@ -306,12 +308,71 @@ const CIA_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [
   },
 ];
 
+/** Lengths of the landscape videos; the vertical clips carry their own. */
+const CIA_VIDEO_DURATIONS: Record<string, string> = {
+  CAMPUS: '3:15',
+  DORM: '1:05',
+  ESL: '15:50',
+  IELTS: '7:12',
+  TOEIC: '5:31',
+  BUSINESS: '6:26',
+};
+
+const ciaVideoCard = (code: string): PhVideoItem => {
+  const card = CIA_VIDEO_CARDS.find(item => item.code === code) as CiaVideoCard;
+  return { title: card.title, text: card.text, src: card.videoSrc, poster: card.poster, duration: CIA_VIDEO_DURATIONS[code], shape: 'wide' };
+};
+const ciaShortVideo = (video: CiaShortVideo): PhVideoItem => ({
+  title: video.title,
+  text: video.text,
+  src: video.src,
+  poster: video.poster,
+  duration: video.duration,
+  shape: video.shape ?? 'tall',
+});
+const ciaShort = (list: readonly CiaShortVideo[], title: string): PhVideoItem =>
+  ciaShortVideo(list.find(video => video.title === title) as CiaShortVideo);
+
+/** Videos in the hero album, one chip per topic; the campus tour opens the album. */
+const CIA_VIDEO_TABS: PhVideoTab[] = [
+  {
+    label: '校园视频',
+    icon: 'videocam',
+    items: [ciaVideoCard('CAMPUS'), ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '食堂自助餐'), ciaShort(CIA_CAMPUS_LIFE_VIDEOS, 'NUU 咖啡厅（校外）')],
+  },
+  {
+    label: '宿舍视频',
+    icon: 'videocam',
+    items: [
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '宿舍房型总览'),
+      ciaVideoCard('DORM'),
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '单人间实拍'),
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '三人间实拍'),
+    ],
+  },
+  { label: '课程视频', icon: 'videocam', items: ['ESL', 'IELTS', 'TOEIC', 'BUSINESS'].map(ciaVideoCard) },
+  { label: '学员访谈', icon: 'videocam', items: CIA_INTERVIEW_VIDEOS.map(ciaShortVideo) },
+];
+
+const CIA_GUARANTEE_HIGHLIGHT = {
+  badge: '读满12周送1次官方考试',
+  label: '考试福利',
+  text: '须达到对应入学分数，读满12周并满足95%出勤、每周模考等要求；报名时按目标分数确认班级，符合条件可申请1次官方考试费。',
+};
+
 export const CIA_PAGE_PROFILE: PhSchoolProfile = {
   code: 'CIA',
   name: 'CIA',
   previewPrefix: 'cia',
   pricingSchoolName: 'CIA Cebu International Academy',
   copy: CIA_PAGE_COPY,
+  compactLayout: true,
+  overviewFacts: CIA_OVERVIEW_FACTS,
+  videoTabs: CIA_VIDEO_TABS,
+  courseHighlights: {
+    'ielts-guarantee': CIA_GUARANTEE_HIGHLIGHT,
+    'toeic-guarantee': CIA_GUARANTEE_HIGHLIGHT,
+  },
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: CIA_GALLERY_ALBUM_CATEGORIES,
@@ -348,7 +409,6 @@ export const CIA_PAGE_PROFILE: PhSchoolProfile = {
   reviewPath: '/philippines-study/cebu/cia-cebu-international-academy/student-reviews',
   holidayCalendars: CIA_HOLIDAY_CALENDARS,
   ieltsComputerExamDates2027: CIA_IELTS_COMPUTER_EXAM_DATES_2027,
-  ieltsExamDates2026: CIA_IELTS_EXAM_DATES_2026,
   studentCareServices: CIA_STUDENT_CARE_SERVICES,
   campusPracticalGuides: CIA_CAMPUS_PRACTICAL_GUIDES,
   studentTracks: CIA_STUDENT_TRACKS,
