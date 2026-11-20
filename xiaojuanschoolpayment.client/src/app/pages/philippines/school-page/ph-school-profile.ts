@@ -21,7 +21,6 @@ import type {
   GalleryCategory,
   GalleryImage,
   HolidayCalendar,
-  IeltsExamDate,
   RoomComparisonProfile,
   RoomFee,
   RoomRateGroup,
@@ -49,8 +48,13 @@ export interface PhPageCopy {
   gallery: CiaCopy['gallery'];
   courses: Optional<
     CiaCopy['courses'],
-    'facts' | 'oldPriceLabel' | 'guideEyebrow' | 'guideTitle' | 'guideIntro' | 'levelTableCaption' | 'ruleNoteTitle' | 'ruleNoteText'
-  >;
+    'oldPriceLabel' | 'guideEyebrow' | 'guideTitle' | 'guideIntro' | 'ruleNoteTitle' | 'ruleNoteText'
+  > & {
+    /** Fact cards above the course notes; CIA dropped them (2026-11-20). */
+    facts?: ReadonlyArray<{ icon: string; title: string; text: string }>;
+    /** Caption of a course note's level table (guide.levels). */
+    levelTableCaption?: string;
+  };
   /** A school-only block between the course list and the course details (EV: 斯巴达 / 半斯巴达). */
   studyModes?: { title: string; intro: string; note?: string };
   schedule?: Optional<Pick<CiaCopy['schedule'], 'eyebrow' | 'title' | 'intro' | 'badge' | 'note'>, 'note'>;
@@ -96,7 +100,37 @@ export type PhRoomProfile = Optional<
 
 export type PhAlbumCategory = Exclude<GalleryCategory, '全部'>;
 
+/** One video of the compact layout's hero album; 'tall' is a vertical phone clip. */
+export interface PhVideoItem {
+  title: string;
+  text: string;
+  src: string;
+  poster?: string;
+  duration?: string;
+  shape: 'wide' | 'tall' | 'square';
+}
+
+/** A video group (one chip) of the hero album, e.g. 宿舍视频 or 课程视频. */
+export interface PhVideoTab {
+  label: string;
+  icon: string;
+  items: readonly PhVideoItem[];
+}
+
 export interface PhSchoolProfile {
+  /**
+   * The shorter layout first made for CIA (user request 2026-11-20): one album in the hero holding every
+   * video and photo instead of separate gallery and video sections, one merged overview, course notes inside
+   * each course, room photos under the room price list and a one-table 2027 calendar. Only CIA sets it
+   * so far (user decision: CIA only); its styles are ph-school-page-compact.css, listed by CIA alone.
+   */
+  compactLayout?: boolean;
+  /** Compact layout: the overview's key facts (location, size, management, courses …). */
+  overviewFacts?: ReadonlyArray<{ icon: string; label: string; value: string }>;
+  /** Compact layout: video groups, shown first in the hero album (the first video opens it). */
+  videoTabs?: readonly PhVideoTab[];
+  /** Compact layout: a tag beside a course name and a line in its details, e.g. 读满12周送1次官方考试. */
+  courseHighlights?: Readonly<Record<string, { badge: string; label: string; text: string }>>;
   /** schoolCode of the content document, e.g. 'CIA'. */
   code: string;
   /** Short school name in headings, labels and the comparison image, e.g. 'CIA'. */
@@ -153,7 +187,6 @@ export interface PhSchoolProfile {
   reviewPath: string;
   holidayCalendars: readonly HolidayCalendar[];
   ieltsComputerExamDates2027: ReadonlyArray<{ month: number; days: number[] }>;
-  ieltsExamDates2026: readonly IeltsExamDate[];
   studentCareServices: readonly StudentCareService[];
   campusPracticalGuides: readonly CampusPracticalGuide[];
   studentTracks: ReadonlyArray<{ icon: string; title: string; text: string }>;

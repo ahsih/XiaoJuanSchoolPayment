@@ -30,7 +30,6 @@ import {
   CIA_HERO_GALLERY_CATEGORIES,
   CIA_HOLIDAY_CALENDARS,
   CIA_IELTS_COMPUTER_EXAM_DATES_2027,
-  CIA_IELTS_EXAM_DATES_2026,
   CIA_NOT_SUITABLE_FOR,
   CIA_PAGE_COPY as copy,
   CIA_ROOM_COMPARISON_PROFILES,
@@ -72,22 +71,12 @@ function coursesSection(): MiniSection {
       {
         type: 'details',
         items: [
-          {
-            title: '课程重点说明',
-            blocks: [{ type: 'cards', layout: 'list', items: copy.courses.facts.map(fact => ({ title: fact.title, text: fact.text })) }],
-          },
           ...CIA_COURSE_DETAIL_GUIDES.map(guide => ({
             title: guide.title,
             subtitle: guide.subtitle,
             blocks: [
-              { type: 'facts' as const, items: guide.facts },
+              ...(guide.facts.length ? [{ type: 'facts' as const, items: guide.facts }] : []),
               { type: 'list' as const, style: 'dot' as const, items: guide.points },
-              ...(guide.levels ? [{
-                type: 'table' as const,
-                title: copy.courses.levelTableCaption,
-                columns: ['等级', '对应级别', '分数', 'CEFR'],
-                rows: guide.levels.map(level => [level.code, level.name, level.score, level.cefr]),
-              }] : []),
               ...(guide.image ? [{ type: 'image' as const, image: { src: asset(guide.image), caption: guide.imageCaption } }] : []),
               ...(guide.notice ? [note(guide.notice)] : []),
             ],
@@ -137,7 +126,7 @@ function roomsSection(): MiniSection {
         })),
       },
       { type: 'pricing', part: 'stay' },
-      note(copy.gallery.roomDisclaimer),
+      note(`${copy.gallery.photoNote}${copy.gallery.roomDisclaimer}`),
     ],
   };
 }
@@ -215,27 +204,6 @@ function calendarSections(): MiniSection[] {
             title: `${exam.month}月`,
             dates: exam.days.map(day => ({ day: `${day}日` })),
           })),
-        },
-        {
-          type: 'details',
-          items: [{
-            title: copy.ielts.previousSummary,
-            blocks: [
-              heading(copy.ielts.previousTitle),
-              text(copy.ielts.previousIntro),
-              { type: 'facts', items: [{ label: '参考考费', value: copy.ielts.previousFee.replace(/^.*：/, '') }] },
-              {
-                type: 'table',
-                columns: ['月份', copy.ielts.academicTitle, `${copy.ielts.generalTitle}（${copy.ielts.generalHint}）`],
-                rows: CIA_IELTS_EXAM_DATES_2026.map(exam => [
-                  `${exam.month}月`,
-                  `${exam.academic.day} ${exam.academic.weekday}`,
-                  `${exam.general.day} ${exam.general.weekday}`,
-                ]),
-              },
-              { type: 'cards', layout: 'list', items: copy.ielts.notes.map(item => ({ title: item.title, text: item.text })) },
-            ],
-          }],
         },
         { type: 'link', label: copy.ielts.officialLinkLabel, url: copy.ielts.officialUrl },
       ],
