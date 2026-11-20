@@ -969,7 +969,7 @@ export const CIA_VIDEO_CARDS: CiaVideoCard[] = [
     label: 'CAMPUS TOUR',
     title: '校园导览视频',
     text: 'CIA官方拍摄的校园全景（2023年）',
-    poster: 'assets/cia/video-posters/campus-tour-2023.webp',
+    poster: 'assets/cia/video-posters/campus-aerial-cover.webp',
     videoSrc: 'assets/cia-video/campus-tour-2023.mp4',
     contentType: 'video/mp4',
     details: [

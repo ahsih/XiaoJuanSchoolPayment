@@ -222,7 +222,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   set selectedStartDate(value: string) { this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); }
   selectedRoomProfileId = this.profile.roomProfiles[0]?.id ?? '';
   selectedRoomPhotoIndex = 0;
-  private photoSwipeOrigin: { x: number; y: number } | null = null;
+  private photoSwipeOrigin: { x: number; y: number; arrowStep: number } | null = null;
   quoteCalculated = false;
 
   /** Same-student plan comparison; it reuses the normal quote's prices and the first student's conditions. */
@@ -424,16 +424,25 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     }
     return '';
   }
-  selectRateRoom(room: RoomRateOption): void {
+  selectRateRoom(room: RoomRateOption, event?: Event): void {
     const profile = this.roomProfileForRate(room);
     if (!profile) return;
+    // Phones: the open panel moves under the tapped card, so keep that card where the finger left it.
+    const card = event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+    const cardTop = this.isNarrowViewport && card ? card.getBoundingClientRect().top : null;
     // Phones: tapping the open room again closes its details.
     if (this.isNarrowViewport && this.selectedRateRoomId === room.id) {
       this.selectedRateRoomId = '';
-      return;
+    } else {
+      this.selectedRateRoomId = room.id;
+      this.setRoomProfile(profile.id);
     }
-    this.selectedRateRoomId = room.id;
-    this.setRoomProfile(profile.id);
+    if (cardTop !== null && typeof window !== 'undefined') {
+      setTimeout(() => {
+        const moved = document.querySelector(`#rooms .room-price-matrix [data-cia-preview-id="${room.id}"]`);
+        if (moved) window.scrollBy(0, moved.getBoundingClientRect().top - cardTop);
+      });
+    }
   }
   /** The price card the room panel belongs to; a profile priced per occupancy shows that card's own name. */
   get roomVariant(): { code: string; label: string; suitable: string } | undefined {
@@ -443,12 +452,24 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return room && variant ? { code: room.code, label: variant.label, suitable: variant.suitable } : undefined;
   }
   /**
-   * Phones show a room's details right under its group, only after a tap, so the page stays short;
-   * wider screens always show the selected room under the whole price list.
+   * Phones show a room's details right under the tapped card, only after a tap, so the page stays short
+   * and the photos clearly belong to that room; wider screens always show the selected room under the
+   * whole price list. Returns the tapped card's position in the group, or -1 when the panel is elsewhere.
    */
-  roomPanelAfterGroup(group: RoomRateGroup): boolean {
-    return this.isNarrowViewport && !!this.selectedRateRoomId
-      && group.rooms.some(room => room.id === this.selectedRateRoomId);
+  roomPanelSplit(group: RoomRateGroup): number {
+    if (!this.compactLayout || !this.isNarrowViewport || !this.selectedRateRoomId) return -1;
+    return group.rooms.findIndex(room => room.id === this.selectedRateRoomId);
+  }
+  roomsBeforePanel(group: RoomRateGroup): RoomRateOption[] {
+    const split = this.roomPanelSplit(group);
+    return split < 0 ? group.rooms : group.rooms.slice(0, split + 1);
+  }
+  roomsAfterPanel(group: RoomRateGroup): RoomRateOption[] {
+    const split = this.roomPanelSplit(group);
+    return split < 0 ? [] : group.rooms.slice(split + 1);
+  }
+  trackRateRoom(_index: number, room: RoomRateOption): string {
+    return room.id;
   }
 
   get displayedVideoCards(): CiaVideoCard[] {
@@ -1112,10 +1133,6 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
   }
 
-  roomsForRateGroup(group: RoomRateGroup): RoomRateOption[] {
-    return group.rooms;
-  }
-
   /** Desktop room price table: each group is as wide as its number of rooms (CIA 3/3/4, EV 4/2). */
   get roomMatrixColumns(): string {
     return this.roomRateGroups.map(group => `${Math.max(1, group.rooms.length)}fr`).join(' ');
@@ -1152,7 +1169,9 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       return;
     }
     const touch = event.changedTouches[0];
-    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    const arrow = event.target instanceof Element ? event.target.closest('.photo-step') : null;
+    const arrowStep = arrow ? (arrow.classList.contains('photo-step--next') ? 1 : -1) : 0;
+    this.photoSwipeOrigin = touch ? { x: touch.clientX, y: touch.clientY, arrowStep } : null;
   }
 
   photoSwipeEnd(event: TouchEvent, album: 'gallery' | 'room' | 'hero'): void {
@@ -1161,8 +1180,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     this.photoSwipeOrigin = null;
     if (!origin || !touch) return;
     const dx = touch.clientX - origin.x;
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(touch.clientY - origin.y)) return;
-    const step = dx < 0 ? 1 : -1;
+    const dy = touch.clientY - origin.y;
+    // A tap on an arrow steps here: in iPhone WeChat the arrow's own click sometimes never arrives.
+    // Cancelling the touch stops that click (and a double-tap zoom), so the album moves once.
+    if (origin.arrowStep && Math.abs(dx) < 12 && Math.abs(dy) < 12 && event.cancelable) {
+      event.preventDefault();
+      this.stepPhotoAlbum(album, origin.arrowStep);
+      return;
+    }
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+    this.stepPhotoAlbum(album, dx < 0 ? 1 : -1);
+  }
+
+  private stepPhotoAlbum(album: 'gallery' | 'room' | 'hero', step: number): void {
     if (album === 'hero') {
       this.stepHeroAlbum(step);
     } else if (album === 'room') {

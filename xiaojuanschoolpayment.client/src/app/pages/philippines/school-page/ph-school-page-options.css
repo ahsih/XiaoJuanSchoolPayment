@@ -1,6 +1,7 @@
 /*
- * Blocks only some schools fill in through optional profile fields (copy.referenceNote, courseModes).
- * CIA leaves those fields out, so none of these rules match on its page.
+ * Styles every school page lists after the redesign file (the other stylesheets are at the 30 kB budget).
+ * The first blocks are optional profile fields (copy.referenceNote, courseModes) that CIA leaves out;
+ * the photo arrow, room list and room comparison rules at the end apply to every school.
  */
 
 /* One reference line closing each content section. */
@@ -28,4 +29,30 @@
 @media (max-width: 760px) {
   :host .course-mode-zones { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   :host .course-mode-zone > header { padding: 14px 16px; }
+}
+
+/* Photo arrows: on top of the photo, and a quick second tap is not taken as a page zoom. */
+:host .photo-step { z-index: 3; touch-action: manipulation; }
+
+/* Room price list on phones: the rooms after the tapped card continue below its photos. */
+:host .room-price-matrix-grid.is-split,
+:host .room-price-matrix-grid--rest { min-height: 0; }
+:host .room-price-matrix-grid--rest { border-top: 1px solid #dce4e7; }
+
+/* Room comparison on phones: one card per room type instead of a wide table to swipe. */
+@media (max-width: 760px) {
+  :host .swipe-hint--table { display: none; }
+  :host .room-comparison-table-wrap { overflow: visible; }
+  :host .room-comparison-table { min-width: 0; }
+  :host .room-comparison-table thead { display: none; }
+  :host .room-comparison-table tbody { display: block; }
+  :host .room-comparison-table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; padding: 12px 14px; border-bottom: 1px solid #e8efeb; }
+  :host .room-comparison-table tr:last-child { border-bottom: 0; }
+  :host .room-comparison-table th,
+  :host .room-comparison-table td { padding: 0; border: 0; font-size: 13px; line-height: 1.5; }
+  :host .room-comparison-table tbody th { font-size: 15px; }
+  :host .room-comparison-table tbody th small { font-size: 12px; }
+  :host .room-comparison-table .room-comparison-code { align-self: start; text-align: right; }
+  :host .room-comparison-table td[data-label]::before { content: attr(data-label); display: block; color: #74827c; font-size: 11.5px; font-weight: 700; }
+  :host .room-comparison-table td[data-label]:empty { display: none; }
 }
