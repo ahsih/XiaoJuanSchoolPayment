@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ExchangeRateService, isUsableExchangeRates } from '../../../../../services/exchange-rate.service';
 import { QuoteImageCardData, QuoteImageDownloadButtonComponent } from '../../../../components/quote-image-download-button.component';
-import { SIDA_PHILIPPINES_CONSULTANTS } from '../../../../components/sida-consultants';
+import { SIDA_CALLABLE_CONSULTANTS } from '../../../../components/sida-consultants';
 import { UkQuoteSheetComponent } from '../../../../components/uk-quote/uk-quote-sheet.component';
 import { UkQuoteSheet, ukAddDays, ukDateText, ukShortDateText } from '../../../../components/uk-quote/uk-quote-sheet';
 import {
@@ -62,7 +62,7 @@ export class BurlingtonQuoteCalculatorComponent {
   readonly homestayTiers = BURLINGTON_HOMESTAY_TIERS;
   readonly homestayBoards = BURLINGTON_HOMESTAY_BOARDS;
   readonly airports = BURLINGTON_AIRPORTS;
-  readonly consultants = SIDA_PHILIPPINES_CONSULTANTS;
+  readonly consultants = SIDA_CALLABLE_CONSULTANTS;
   readonly juniorAges = [11, 12, 13, 14, 15, 16, 17];
   readonly adultWeeks = Array.from({ length: BURLINGTON_MAX_COURSE_WEEKS }, (_, index) => index + 1);
   readonly adultArrivals = sundays(burlingtonNextSunday(this.today), ukAddDays(burlingtonNextSunday(this.today), 7 * 78));

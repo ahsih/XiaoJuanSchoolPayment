@@ -76,7 +76,7 @@ function coursesSection(): MiniSection {
             subtitle: guide.subtitle,
             blocks: [
               ...(guide.facts.length ? [{ type: 'facts' as const, items: guide.facts }] : []),
-              { type: 'list' as const, style: 'dot' as const, items: guide.points },
+              ...(guide.points.length ? [{ type: 'list' as const, style: 'dot' as const, items: guide.points }] : []),
               ...(guide.image ? [{ type: 'image' as const, image: { src: asset(guide.image), caption: guide.imageCaption } }] : []),
               ...(guide.notice ? [note(guide.notice)] : []),
             ],

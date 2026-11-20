@@ -6,12 +6,17 @@ export interface SidaConsultant {
   title: string;
   name: string;
   description: string;
-  phone: string;
-  phoneHref: string;
+  /** Left out for consultants who take enquiries by WeChat only (Iris and Lisa, user decision 2026-11-21). */
+  phone?: string;
+  phoneHref?: string;
+  /** Card button: calls the consultant, or opens the floating panel on their QR code when there is no phone. */
+  buttonLabel?: string;
   avatarSrc: string;
   qrSrc: string;
-  buttonLabel: string;
 }
+
+/** A consultant who also takes phone calls. */
+export type CallableSidaConsultant = SidaConsultant & { phone: string; phoneHref: string; buttonLabel: string };
 
 export const SIDA_PHILIPPINES_CONSULTANTS: SidaConsultant[] = [
   {
@@ -37,7 +42,7 @@ export const SIDA_PHILIPPINES_CONSULTANTS: SidaConsultant[] = [
   },
   {
     title: '菲律宾与东南亚游学',
-    name: 'Penin',
+    name: 'Perrin',
     description: '适合菲律宾游学，以及马来西亚、新加坡、越南短期英语课程。',
     phone: '153 6765 9331',
     phoneHref: 'tel:15367659331',
@@ -45,4 +50,28 @@ export const SIDA_PHILIPPINES_CONSULTANTS: SidaConsultant[] = [
     qrSrc: '/assets/contact/penin-wechat-qr.png',
     buttonLabel: '咨询游学方案',
   },
+  {
+    title: '菲律宾与东南亚游学',
+    name: 'Iris',
+    description: '菲律宾及东南亚游学咨询：学校匹配、课程与住宿搭配、游学报价。',
+    avatarSrc: '/assets/contact/iris-avatar.webp',
+    qrSrc: '/assets/contact/iris-wechat-qr.png',
+    buttonLabel: '咨询游学方案',
+  },
+  {
+    title: '菲律宾与东南亚游学',
+    name: 'Lisa',
+    description: '菲律宾及东南亚游学咨询：学校匹配、课程与住宿搭配、游学报价。',
+    avatarSrc: '/assets/contact/lisa-avatar.webp',
+    qrSrc: '/assets/contact/lisa-wechat-qr.png',
+    buttonLabel: '咨询游学方案',
+  },
 ];
+
+/**
+ * Consultants with a phone number. Quote images and the mini program always print a phone line,
+ * so they use this list (the mini program until its consultant card can hide the call button).
+ */
+export const SIDA_CALLABLE_CONSULTANTS: CallableSidaConsultant[] = SIDA_PHILIPPINES_CONSULTANTS.filter(
+  (consultant): consultant is CallableSidaConsultant => !!consultant.phone && !!consultant.phoneHref && !!consultant.buttonLabel,
+);

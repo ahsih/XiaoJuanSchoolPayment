@@ -474,6 +474,7 @@
                   <h4><mat-icon>{{ guide.icon }}</mat-icon>{{ guide.title }}</h4>
                   <ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container>
                 </div>
+                <p class="section-reference-note course-line-reference" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
               </ng-container>
             </details>
         </ng-template>
@@ -483,15 +484,20 @@
         </ul>
       </div>
       <div class="course-extras" *ngIf="compactLayout">
+        <!-- Each course row explains only its own course; notes shared by several courses sit here. -->
+        <h3 class="course-extras-title" *ngIf="generalCourseGuides.length">所有课程通用说明</h3>
         <details class="compact-more" *ngFor="let guide of generalCourseGuides">
           <summary><mat-icon>{{ guide.icon }}</mat-icon><span>{{ guide.title }}<small>{{ guide.subtitle }}</small></span><mat-icon class="compact-more-arrow">expand_more</mat-icon></summary>
-          <div class="compact-more-body"><ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container></div>
+          <div class="compact-more-body">
+            <ng-container *ngTemplateOutlet="guideBody; context: { $implicit: guide }"></ng-container>
+            <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
+          </div>
         </details>
         <details class="compact-more" *ngIf="copy.schedule && scheduleColumns.length">
           <summary><mat-icon>schedule</mat-icon><span>{{ copy.schedule.title }}<small>{{ copy.schedule.badge }}</small></span><mat-icon class="compact-more-arrow">expand_more</mat-icon></summary>
           <div class="compact-more-body daily-schedule-section"><ng-container *ngTemplateOutlet="dailyScheduleGrid"></ng-container></div>
         </details>
-        <p class="compact-rule-note" *ngIf="copy.courses.ruleNoteText"><mat-icon>info</mat-icon>{{ copy.courses.ruleNoteText }}</p>
+        <p class="compact-rule-note" *ngIf="copy.courses.ruleNoteText && !copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.courses.ruleNoteText }}</p>
       </div>
       <section class="study-mode-block" id="study-modes" *ngIf="copy.studyModes && studyModes.length" aria-labelledby="study-mode-title">
         <div class="study-mode-heading">
@@ -596,7 +602,7 @@
                   <dd>{{ fact.value }}</dd>
                 </div>
               </dl>
-              <ul>
+              <ul *ngIf="guide.points.length">
                 <li *ngFor="let point of guide.points">{{ point }}</li>
               </ul>
               <div *ngIf="guide.levels" class="cia-level-table-wrap">
@@ -1399,14 +1405,23 @@
             />
             <figcaption>扫码加微信</figcaption>
           </figure>
+          <!-- Every card has the same contact row. WeChat-only consultants show 微信扫码咨询 instead of a phone
+               number, and their button opens the floating panel on their QR code. -->
           <div class="final-consultant-actions">
-            <a class="final-consultant-phone" [href]="consultant.phoneHref">
+            <a class="final-consultant-phone" *ngIf="consultant.phone; else wechatOnly" [href]="consultant.phoneHref">
               <mat-icon>phone</mat-icon>{{ consultant.phone }}
             </a>
-            <a class="final-consultant-button" [href]="consultant.phoneHref">
+            <ng-template #wechatOnly>
+              <span class="final-consultant-phone"><mat-icon>chat</mat-icon>微信扫码咨询</span>
+            </ng-template>
+            <a class="final-consultant-button" *ngIf="consultant.phone" [href]="consultant.phoneHref">
               <mat-icon>chat</mat-icon>{{ consultant.buttonLabel }}
               <mat-icon>chevron_right</mat-icon>
             </a>
+            <button type="button" class="final-consultant-button" *ngIf="!consultant.phone" (click)="openFloatConsult(consultant, $event)">
+              <mat-icon>chat</mat-icon>{{ consultant.buttonLabel || '加微信咨询' }}
+              <mat-icon>chevron_right</mat-icon>
+            </button>
           </div>
         </article>
       </div>
@@ -1627,6 +1642,43 @@
         <mat-icon>support_agent</mat-icon>
         咨询顾问
       </a>
+    </div>
+
+    <!-- Free consultation: a small button fixed on the right edge. It opens every consultant as a row of avatars,
+         Philippine ones first (a random one of them picked first, so enquiries spread across the team), and the picked
+         one's WeChat QR code. -->
+    <div class="float-consult" *ngIf="floatConsultant as consultant">
+      <div class="float-consult-panel" id="float-consult-panel" *ngIf="floatConsultOpen" role="dialog" aria-label="免费咨询">
+        <button type="button" class="float-consult-close" aria-label="关闭" (click)="floatConsultOpen = false"><mat-icon>close</mat-icon></button>
+        <strong>免费咨询 · 添加顾问微信</strong>
+        <div class="float-consult-people" *ngIf="floatConsultants.length > 1" role="tablist" aria-label="选择顾问">
+          <button
+            type="button"
+            role="tab"
+            *ngFor="let person of floatConsultants; let i = index"
+            [class.is-active]="i === floatConsultantIndex"
+            [attr.aria-selected]="i === floatConsultantIndex"
+            (click)="floatConsultantIndex = i"
+          >
+            <span class="float-consult-avatar"><img [src]="person.avatarSrc" alt="" width="44" height="44" /></span>
+            <span>{{ person.name }}</span>
+          </button>
+        </div>
+        <img class="float-consult-qr" [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" width="168" height="168" />
+        <p>长按识别二维码，添加{{ consultant.name }}<small>{{ consultant.title }}顾问</small></p>
+        <a *ngIf="consultant.phone" [href]="consultant.phoneHref"><mat-icon>call</mat-icon>{{ consultant.phone }}</a>
+      </div>
+      <button
+        type="button"
+        class="float-consult-toggle"
+        [class.is-open]="floatConsultOpen"
+        [attr.aria-expanded]="floatConsultOpen"
+        aria-controls="float-consult-panel"
+        (click)="floatConsultOpen = !floatConsultOpen"
+      >
+        <mat-icon>{{ floatConsultOpen ? 'close' : 'forum' }}</mat-icon>
+        <span>免费<br />咨询</span>
+      </button>
     </div>
   </main>
 </div>

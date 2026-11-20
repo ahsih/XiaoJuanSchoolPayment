@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { SIDA_PHILIPPINES_CONSULTANTS } from '../../../../components/sida-consultants';
+import { SIDA_CALLABLE_CONSULTANTS } from '../../../../components/sida-consultants';
 import { BurlingtonQuoteCalculatorComponent } from './burlington-quote-calculator.component';
 import {
   BURLINGTON_ACCOMMODATION_NOTES,
@@ -97,7 +97,7 @@ export class BurlingtonSchoolComponent {
   readonly faqs = BURLINGTON_FAQ;
   readonly sideNav = BURLINGTON_SIDE_NAV;
   readonly mobileAnchors = BURLINGTON_MOBILE_ANCHORS;
-  readonly consultant = SIDA_PHILIPPINES_CONSULTANTS.find(item => item.name === this.advisor.name) ?? SIDA_PHILIPPINES_CONSULTANTS[0];
+  readonly consultant = SIDA_CALLABLE_CONSULTANTS.find(item => item.name === this.advisor.name) ?? SIDA_CALLABLE_CONSULTANTS[0];
   readonly heroImage = this.photo('campus-courtyard');
   readonly heroStrip = [this.photo('residence-dorm-hero'), this.photo('dining-coffee-bar'), this.photo('castle-exterior')];
   readonly castleImage = this.photo('castle-exterior');

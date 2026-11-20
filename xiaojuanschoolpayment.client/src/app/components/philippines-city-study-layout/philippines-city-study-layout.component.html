@@ -377,7 +377,7 @@
             <span>{{ advisor.focus }}</span>
             <h3>{{ advisor.name }}</h3>
             <p>{{ advisor.text }}</p>
-            <a [href]="'tel:' + advisor.phone"><mat-icon>phone_in_talk</mat-icon>{{ advisor.phoneDisplay }}</a>
+            <a *ngIf="advisor.phone" [href]="'tel:' + advisor.phone"><mat-icon>phone_in_talk</mat-icon>{{ advisor.phoneDisplay }}</a>
           </div>
           <figure>
             <img [src]="advisor.qr" [alt]="advisor.name + '顾问微信二维码'" />

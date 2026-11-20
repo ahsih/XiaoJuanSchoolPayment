@@ -1196,9 +1196,32 @@
     aspect-ratio: 16 / 9;
   }
 
-  /* Vertical clips get a taller stage on phones, so they are not tiny. */
-  :host .hero-album-stage.is-video.is-tall {
-    aspect-ratio: 4 / 5;
+  /* Vertical clips fill the same 16:9 frame as the landscape videos; 全屏 shows the whole picture. */
+  :host .hero-album-stage.is-tall > video {
+    object-fit: cover;
+  }
+
+  :host .hero-album-stage.is-tall > video:fullscreen {
+    object-fit: contain;
+  }
+
+  :host .hero-album-stage.is-tall > video:-webkit-full-screen {
+    object-fit: contain;
+  }
+
+  /* The two hero buttons sit side by side. */
+  :host .cia-hero--compact .hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :host .cia-hero--compact .hero-actions .primary-action,
+  :host .cia-hero--compact .hero-actions .secondary-action {
+    grid-column: auto;
+    min-height: 48px;
+    padding-inline: 8px;
+    gap: 4px;
+    font-size: 14px;
+    white-space: nowrap;
   }
 
   :host .hero-album-chips {
@@ -1287,4 +1310,16 @@
     padding: 7px 10px;
     font-size: 12.5px;
   }
+}
+
+/* Course notes: shared notes under the list get a heading; every opened course note ends with the school-rules line. */
+:host .course-extras-title {
+  margin: 4px 0 0;
+  color: #173b4b;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host .course-line .course-line-reference {
+  margin: 10px 14px 14px;
 }

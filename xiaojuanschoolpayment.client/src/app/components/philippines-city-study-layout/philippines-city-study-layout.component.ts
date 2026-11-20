@@ -287,8 +287,9 @@ interface Advisor {
   text: string;
   avatar: string;
   qr: string;
-  phone: string;
-  phoneDisplay: string;
+  /** Left out for consultants who take enquiries by WeChat only. */
+  phone?: string;
+  phoneDisplay?: string;
 }
 
 @Component({
@@ -406,13 +407,27 @@ export class PhilippinesCityStudyLayoutComponent {
 
   readonly advisors: Advisor[] = [
     {
-      name: 'Penin',
+      name: 'Perrin',
       focus: '菲律宾与东南亚',
       text: '菲律宾选校、课程报价与入学安排',
       avatar: '/assets/contact/penin-avatar.jpg',
       qr: '/assets/contact/penin-wechat-qr.png',
       phone: '15367659331',
       phoneDisplay: '153 6765 9331',
+    },
+    {
+      name: 'Iris',
+      focus: '菲律宾与东南亚',
+      text: '菲律宾与东南亚游学咨询，微信沟通选校和报价',
+      avatar: '/assets/contact/iris-avatar.webp',
+      qr: '/assets/contact/iris-wechat-qr.png',
+    },
+    {
+      name: 'Lisa',
+      focus: '菲律宾与东南亚',
+      text: '菲律宾与东南亚游学咨询，微信沟通选校和报价',
+      avatar: '/assets/contact/lisa-avatar.webp',
+      qr: '/assets/contact/lisa-wechat-qr.png',
     },
     {
       name: 'Lemon',
