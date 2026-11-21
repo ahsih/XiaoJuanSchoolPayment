@@ -127,7 +127,7 @@ export interface PhSchoolProfile {
    * The shorter layout first made for CIA (user request 2026-11-20): one album in the hero holding every
    * video and photo instead of separate gallery and video sections, one merged overview, course notes inside
    * each course, room photos under the room price list and a one-table 2027 calendar. It is the fixed layout
-   * for every Philippine school (user decision 2026-11-21; CIA, EV and CPI so far). Its styles are
+   * for every Philippine school (user decision 2026-11-21; CIA, EV, CPI and CPILS so far). Its styles are
    * ph-school-page-compact.css and ph-school-page-compact-tools.css, which each such school lists.
    */
   compactLayout?: boolean;

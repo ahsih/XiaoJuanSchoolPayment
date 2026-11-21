@@ -7,6 +7,9 @@
 import { cloneCiaContentConfig, createDefaultCiaContentConfig, type CiaContentConfig } from '../philippines/cia-school/cia-content-config';
 import { applyCiaQuoteContent, createCiaQuotePricing, isCiaContentConfig, type CiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import { CiaStudentQuote } from '../philippines/cia-school/cia-student-quote';
+import { cloneCpilsContentConfig, createDefaultCpilsContentConfig } from '../philippines/cpils-school/cpils-content-config';
+import { CpilsPageStudent, type CpilsQuotePricing } from '../philippines/cpils-school/cpils-page-quote';
+import { cpilsRooms2027, cpilsVisibleCourses } from '../philippines/cpils-school/cpils-pricing';
 import { cloneEvContentConfig, createDefaultEvContentConfig, EV_IELTS_GUARANTEE_ID } from '../philippines/ev-school/ev-content-config';
 import { EvPageStudent, type EvQuotePricing } from '../philippines/ev-school/ev-page-quote';
 import { PhCompareSchool } from './ph-compare-school';
@@ -104,7 +107,55 @@ export function createEvCompareSource(): CompareSchoolSource {
   };
 }
 
+export function createCpilsCompareSource(): CompareSchoolSource {
+  const pricing: CiaQuotePricing & { cpilsContent: CiaContentConfig } = {
+    ...createCiaQuotePricing(createDefaultCpilsContentConfig()),
+    cpilsContent: createDefaultCpilsContentConfig(),
+  };
+  // Same course and room lists as the CPILS page: priced 2027 courses (no add-ons) and 2027 room prices.
+  const applyContent = (content: CiaContentConfig) => {
+    applyCiaQuoteContent(pricing, content);
+    pricing.cpilsContent = content;
+    pricing.courseFees = cpilsVisibleCourses(content, pricing.courseFees);
+    pricing.roomFees = cpilsRooms2027(content, pricing.roomFees);
+  };
+  applyContent(pricing.cpilsContent);
+  const cpilsPricing: CpilsQuotePricing = pricing;
+  const school = new PhCompareSchool<CpilsPageStudent>({
+    id: 'cpils',
+    tag: 'CPILS',
+    name: '菲律宾宿务 CPILS 语言学校',
+    city: '宿务',
+    location: '宿务市区老城区',
+    pagePath: '/philippines-study/cebu/cpils',
+    pricing,
+    createStudent: () => new CpilsPageStudent(cpilsPricing),
+    applyConditions: (student, conditions) => {
+      student.selectedAgeGroup = conditions.ageGroup;
+      student.visaType = conditions.visaType;
+      student.selectedRegistrationDate = conditions.registrationDate;
+      student.returningStudent = false;
+    },
+    goals: {
+      general: { ids: ['general-esl', 'general-esl-plus', 'esl-premium', 'premier-sparta'] },
+      // CPILS has no speaking-only course; ESL Premium has the most one-to-one classes.
+      speaking: { ids: ['esl-premium'], closest: true },
+      ielts: { ids: ['ielts-course', 'pre-ielts-course'] },
+      'ielts-guarantee': { ids: ['ielts-guarantee-12-weeks', 'ielts-guarantee-8-weeks'] },
+      toeic: { ids: ['toeic-course'] },
+      business: { ids: ['business-english'] },
+    },
+  });
+  return {
+    school,
+    pricingSchoolName: 'CPILS',
+    applyPublished: value => {
+      if (isContentFor('CPILS', value)) applyContent(cloneCpilsContentConfig(value));
+    },
+  };
+}
+
 /** Every school that can be compared, in the order the page lists them. */
 export function createCompareSchools(): CompareSchoolSource[] {
-  return [createCiaCompareSource(), createEvCompareSource()];
+  return [createCiaCompareSource(), createEvCompareSource(), createCpilsCompareSource()];
 }

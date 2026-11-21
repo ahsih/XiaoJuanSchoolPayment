@@ -8,9 +8,12 @@ require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileMo
 }).outputText, filename);
 const { createDefaultCpilsContentConfig } = require('../src/app/pages/philippines/cpils-school/cpils-content-config.ts');
 const config = createDefaultCpilsContentConfig();
+// Database lookup names stay English even where the page now shows a Chinese course name.
 const aliases = {
+  'general-esl': 'General ESL', 'general-esl-light': 'General ESL Light', 'general-esl-plus': 'General ESL Plus',
+  'toefl-course': 'TOEFL Course', 'business-english': 'Business English',
   'premier-sparta': 'Premier Sparta', 'toeic-course': 'TOEIC Course', 'toeic-guarantee': 'TOEIC Guarantee',
-  'ielts-course': 'IELTS Course', 'ielts-guarantee-8-weeks': 'IELTS Guarantee 8 Weeks', 'ielts-guarantee-12-weeks': 'IELTS Guarantee 12 Weeks',
+  'pre-ielts-course': 'Pre-IELTS Course', 'ielts-course': 'IELTS Course', 'ielts-guarantee-8-weeks': 'IELTS Guarantee 8 Weeks', 'ielts-guarantee-12-weeks': 'IELTS Guarantee 12 Weeks',
   'power-speaking-and-modern-communication': 'Power Speaking and Modern Communication',
 };
 const quote = value => JSON.stringify(value);
@@ -26,7 +29,7 @@ for (const room of config.rooms) for (const [weeks, price] of Object.entries({ .
   lines.push(`      UpsertRoom(context, schoolId, ${quote(room.name)}, ${weeks}, ${price}m, ${quote(room.note)}, now);`);
 }
 lines.push('      UpsertFee(context, schoolId, "注册费", 125m, UsdCurrencyId, "一次性报名注册费；老学员返校免收", now);',
-  '      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2027/07/05–08/29学习周收取40美元/周；官网使用对应周日入住日期", now);');
+  '      UpsertFee(context, schoolId, "旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28学习周按CALA联合通知收取60美元/周", now);');
 for (const fee of config.localFees) {
   const amount = fee.futureAmount ?? fee.amount;
   lines.push(`      UpsertFee(context, schoolId, ${quote(fee.futureName || fee.name)}, ${amount}m, PhpCurrencyId, ${quote(fee.futureNote || fee.note)}, now);`);
