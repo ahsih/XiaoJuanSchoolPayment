@@ -42,7 +42,7 @@ export class ThreeDAcademySchoolComponent {
     { icon: 'location_on', title: 'JY Square市中心位置', text: '学校位于Lahug的JY Square商业区，教室、宿舍、餐厅和日常生活设施集中，通勤成本低。' },
     { icon: 'payments', title: '宿务高性价比', text: '当前费用表中，General ESL加校内六人房的4周课程住宿费为USD 1,189。' },
     { icon: 'record_voice_over', title: '一对一课时充足', text: 'General ESL每天安排4节一对一和3节团体课；Intensive ESL与Power MTM可进一步增加一对一课时。' },
-    { icon: 'groups', title: '多国籍环境', text: '官方资料列出日本、韩国、台湾、中国、俄罗斯、中东、欧洲等来源学生，适合想提高英文使用频率的人。' },
+    { icon: 'groups', title: '多国籍环境', text: '官方资料列出日本、韩国、中国台湾、中国大陆、俄罗斯、中东、欧洲等来源学生，适合想提高英文使用频率的人。' },
     { icon: 'restaurant', title: '三餐与洗衣打包', text: '多数食宿方案包含课程、住宿、每日三餐、洗衣、清洁、Wi-Fi和健身房使用。' },
     { icon: 'directions_walk', title: 'Walk-in通学方案', text: '如果学生自己安排住宿，可以选择Walk-in课程，保留上课和学校设施，预算更灵活。' },
   ];

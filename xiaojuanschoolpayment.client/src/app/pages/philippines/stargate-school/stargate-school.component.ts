@@ -270,7 +270,7 @@ export class StargateSchoolComponent {
     },
     {
       title: '需要大型多国籍校园',
-      text: 'STARGATE是小规模学校，日本和台湾学生较多；想要更大规模可比较CIA、EV、CPI或GLC。',
+      text: 'STARGATE是小规模学校，日本和中国台湾学生较多；想要更大规模可比较CIA、EV、CPI或GLC。',
     },
     {
       title: '需要强制斯巴达管理',

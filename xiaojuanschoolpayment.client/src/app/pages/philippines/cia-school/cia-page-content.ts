@@ -1110,14 +1110,15 @@ export const CIA_VIDEO_CARDS: CiaVideoCard[] = [
 /**
  * Official IELTS results of CIA students (August 2026), from CIA's score posters with the name, photo,
  * birth date, candidate ID/number and report number pixelated. Never add an unmasked report.
+ * The 中国台湾 report's nationality field ("TAIWAN") is pixelated too (user decision 2026-11-21).
  */
 export const CIA_IELTS_RESULTS: ReadonlyArray<{ image: string; title: string; entrance: string; overall: string; detail: string }> = [
-  { image: 'assets/cia/ielts-results/ielts-taiwan-4w-7-5.webp', title: '台湾学员 · 4周', entrance: '5.5', overall: '7.5', detail: '学术类 · 听力8.5 阅读8.0 写作6.5 口语6.5' },
-  { image: 'assets/cia/ielts-results/ielts-china-4w-7-0.webp', title: '中国学员 · 4周', entrance: '5', overall: '7.0', detail: '学术类 · 听力8.0 阅读7.0 写作6.5 口语6.5' },
-  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-a.webp', title: '中国学员 · 4周', entrance: '4.5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语6.0' },
-  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-b.webp', title: '中国学员 · 4周', entrance: '5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语7.0' },
-  { image: 'assets/cia/ielts-results/ielts-china-10w-6-5.webp', title: '中国学员 · 10周', entrance: '4', overall: '6.5', detail: '学术类 · 听力6.0 阅读7.0 写作6.0 口语6.5' },
-  { image: 'assets/cia/ielts-results/ielts-china-7w-5-5.webp', title: '中国学员 · 7周', entrance: '2.5', overall: '5.5', detail: '学术类 · 听力5.0 阅读5.5 写作5.5 口语5.5' },
+  { image: 'assets/cia/ielts-results/ielts-4w-7-5.webp', title: '中国台湾学员 · 4周', entrance: '5.5', overall: '7.5', detail: '学术类 · 听力8.5 阅读8.0 写作6.5 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-7-0.webp', title: '中国大陆学员 · 4周', entrance: '5', overall: '7.0', detail: '学术类 · 听力8.0 阅读7.0 写作6.5 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-a.webp', title: '中国大陆学员 · 4周', entrance: '4.5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语6.0' },
+  { image: 'assets/cia/ielts-results/ielts-china-4w-6-5-b.webp', title: '中国大陆学员 · 4周', entrance: '5', overall: '6.5', detail: '学术类 · 听力6.5 阅读7.0 写作6.0 口语7.0' },
+  { image: 'assets/cia/ielts-results/ielts-china-10w-6-5.webp', title: '中国大陆学员 · 10周', entrance: '4', overall: '6.5', detail: '学术类 · 听力6.0 阅读7.0 写作6.0 口语6.5' },
+  { image: 'assets/cia/ielts-results/ielts-china-7w-5-5.webp', title: '中国大陆学员 · 7周', entrance: '2.5', overall: '5.5', detail: '学术类 · 听力5.0 阅读5.5 写作5.5 口语5.5' },
 ];
 
 /** Dormitory rules shown in the rooms section's rules panel (same for campus and Building 4 dorms). */
@@ -1171,10 +1172,12 @@ export const CIA_CAMPUS_LIFE_VIDEOS: CiaShortVideo[] = [
 
 export const CIA_INTERVIEW_VIDEOS: CiaShortVideo[] = [
   {
-    title: '台湾学员：读了7周ESL',
-    text: '两位台湾学员聊为什么选菲律宾、上课节奏和老师，以及会不会推荐给朋友。',
-    src: 'assets/cia-video/shorts/taiwanese-students.mp4',
-    poster: 'assets/cia/video-posters/taiwanese-students.webp',
+    // The flag beside each student's name caption (0.9–5.0 s and 6.7–10.7 s) and on the poster is
+    // covered with a gray mosaic (user decision 2026-11-21); never restore the original file.
+    title: '中国台湾学员：读了7周ESL',
+    text: '两位中国台湾学员聊为什么选菲律宾、上课节奏和老师，以及会不会推荐给朋友。',
+    src: 'assets/cia-video/shorts/student-interview-esl.mp4',
+    poster: 'assets/cia/video-posters/student-interview-esl.webp',
     duration: '1:47',
   },
   {
