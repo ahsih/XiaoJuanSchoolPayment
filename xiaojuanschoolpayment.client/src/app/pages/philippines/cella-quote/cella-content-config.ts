@@ -17,6 +17,7 @@ import {
   CELLA_REGISTRATION_FEE,
   CELLA_ROOMS,
   CellaCampus,
+  CellaRoom,
 } from './cella-pricing';
 
 /** Bumped when CELLA's school price list changes; older saved documents take the new prices once. */
@@ -26,6 +27,80 @@ const CELLA_POLICY_MARK = { cellaPolicyVersion: CELLA_POLICY_VERSION };
 
 /** Rooms renamed in 2027 (the Alicia outside dormitory became STACIA HOTEL). */
 const CELLA_RENAMED_ROOMS = new Set(['premium-alicia-single', 'premium-alicia-twin']);
+
+/**
+ * Bumped when the page copy defaults change with the move onto the shared school template (2026-11-21); a saved
+ * document then takes the new defaults once, but only for lines nobody has edited.
+ */
+export const CELLA_PAGE_VERSION = 1;
+type CellaPageSettings = { cellaPageVersion?: number };
+
+const LOCAL_FEE_INTRO = '以下费用以比索计价，到校后在学校缴纳；接机、洗衣和可退押金另列。';
+/** The company's own lines on the quote image, the same for every school (CIA's wording). */
+const ALUMNI_BENEFIT_TEXT = '老学员结业后可享线上一对一英语课程专属优惠，留学爱尔兰及欧美英语学校专属奖学金和优惠。';
+const FOOTER_NOTES = ['到校学杂费、签证与教材按实际发生和学校最新政策确认。', '最终以学校价格、空房、活动名额及优惠资格确认为准。'];
+const SHORT_STAY_NOTE = '住宿按每人4周计价；1–3周按4周价格的40%／65%／85%计算。';
+// Short titles: the page already names its campus, and a 375px phone cuts off longer ones.
+const tableCopy = (campus: CellaCampus) => ({
+  courseTableTitle: '2027年4周课程费',
+  courseTableNote: '2027年课程价格；课量以学校最新资料为准。',
+  groupClassNote: campus === 'premium' ? '小组课每班最多4人，大团体课每班最多8人。' : '',
+  roomTableTitle: '2027年4周住宿费',
+  roomTableNote: campus === 'uni'
+    ? `${SHORT_STAY_NOTE}JDN是校外宿舍，到校上课需通勤，空房和接驳请先让顾问确认。`
+    : `${SHORT_STAY_NOTE}STACIA HOTEL是校外宿舍，空房和通勤请先让顾问确认。`,
+});
+
+/** Defaults saved before CELLA_PAGE_VERSION 1, so only untouched lines are replaced. */
+const OLD_PAGE_COPY = {
+  localFeeIntro: '当地费用按每名学生实际就读周数预估；家庭套餐已包含的项目不重复计费。',
+  paymentNotes: {
+    registration: '每名普通课程学生一次性收取；家庭套餐整包价已包含注册费。',
+    course: '课程名称、课量、日期及金额按当前选择自动计算。',
+    accommodation: '房型、日期及金额按当前选择自动计算；空房以学校确认为准。',
+    promotion: '优惠金额和资格由当前报价规则自动计算。',
+  } as Record<string, string>,
+  alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
+  footerNotes: (campus: CellaCampus) => [
+    `${CELLA_CAMPUS_NAMES[campus]}课程与住宿按周日开始、周六结束。`,
+    '当地费用及签证费用为预估，最终以学校及移民局实际收取为准。',
+    '最终以学校价格、空房、活动名额及优惠资格确认为准。',
+  ],
+  table: (campus: CellaCampus) => ({
+    courseTableTitle: `${CELLA_CAMPUS_NAMES[campus]}课程与学费`,
+    courseTableNote: '2027年课程价格；课量和家庭套餐内容以学校最新资料为准。',
+    groupClassNote: '课程、家庭组合、年龄与入学条件须按所选方案确认。',
+    roomTableTitle: `${CELLA_CAMPUS_NAMES[campus]}住宿费`,
+    roomTableNote: '住宿按每人计价；家庭套餐按整包价计算。',
+  }) as Record<string, string>,
+};
+
+/** Moves a document saved before the template page onto its copy defaults; edited lines stay as saved. */
+function upgradePageCopy(clone: CiaContentConfig, defaults: CiaContentConfig, campus: CellaCampus): void {
+  const settings = clone.quoteSettings as CiaQuoteSettings & CellaPageSettings;
+  const oldGroup = CELLA_CAMPUS_NAMES[campus];
+  const rooms = new Map(defaults.rooms.map(item => [item.id, item]));
+  for (const room of clone.rooms) {
+    const fresh = rooms.get(room.id);
+    if (fresh && room.group === oldGroup) Object.assign(room, { group: fresh.group, location: fresh.location });
+  }
+  if (settings.localFeeIntro === OLD_PAGE_COPY.localFeeIntro) settings.localFeeIntro = LOCAL_FEE_INTRO;
+  const table = settings as unknown as Record<string, string>;
+  const freshTable = tableCopy(campus) as Record<string, string>;
+  for (const [key, old] of Object.entries(OLD_PAGE_COPY.table(campus))) {
+    if (table[key] === old) table[key] = freshTable[key];
+  }
+  const image = clone.quoteImageSettings;
+  const notes = image.paymentNotes as unknown as Record<string, string>;
+  for (const [key, old] of Object.entries(OLD_PAGE_COPY.paymentNotes)) {
+    if (notes[key] === old) notes[key] = (defaults.quoteImageSettings.paymentNotes as unknown as Record<string, string>)[key];
+  }
+  if (image.localFeeIntro === OLD_PAGE_COPY.localFeeIntro) image.localFeeIntro = LOCAL_FEE_INTRO;
+  if (image.alumniBenefitText === OLD_PAGE_COPY.alumniBenefitText) image.alumniBenefitText = ALUMNI_BENEFIT_TEXT;
+  if (JSON.stringify(image.footerNotes) === JSON.stringify(OLD_PAGE_COPY.footerNotes(campus))) image.footerNotes = [...FOOTER_NOTES];
+  if (image.supplementalFeeNotes) delete image.supplementalFeeNotes['optional:房间押金（需确认）'];
+  settings.cellaPageVersion = CELLA_PAGE_VERSION;
+}
 
 const fee = (id: string, name: string, amount: number, billingRule: CiaLocalFeeRule['billingRule'], note: string, sortOrder: number): CiaLocalFeeRule => ({
   id, name, amount, billingRule, note, sortOrder,
@@ -42,10 +117,10 @@ const promotion = (value: Partial<CiaPromotionRule> & Pick<CiaPromotionRule, 'id
 const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
   paymentNotes: {
-    registration: '每名普通课程学生一次性收取；家庭套餐整包价已包含注册费。',
-    course: '课程名称、课量、日期及金额按当前选择自动计算。',
-    accommodation: '房型、日期及金额按当前选择自动计算；空房以学校确认为准。',
-    promotion: '优惠金额和资格由当前报价规则自动计算。',
+    registration: '一次性费用，老学员返校免费',
+    course: '',
+    accommodation: '',
+    promotion: '',
   },
   promotionNotes: {
     'cella-social-6-plus-2': '课程与四人房按6周收费、实际就读8周；须完成活动要求，不与其他优惠叠加。',
@@ -55,7 +130,7 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
     'cella-long-stay': '符合活动期长期报名档位时自动计算，可与当前允许的住宿优惠叠加。',
   },
   localFeeSectionTitle: '到校后学杂费明细',
-  localFeeIntro: '当地费用按每名学生实际就读周数预估；家庭套餐已包含的项目不重复计费。',
+  localFeeIntro: LOCAL_FEE_INTRO,
   localFeeNotes: {},
   supplementalFeeNotes: {
     'payment:暑期附加费': '2026年40美元／周，2027年起60美元／周；同一周课程与住宿只计一次，不参与优惠。',
@@ -63,7 +138,6 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
     'optional:洗衣服务（价格参考）': '按实际重量和学校现场标准结算，不计入学杂费合计。',
     'optional:宿务麦克坦机场接机（价格参考）': '可选，须确认航班与车辆安排，不计入学杂费合计。',
     'optional:房间押金（可退参考）': '按住宿周数及学校规则收取；退房检查后按规定退还。',
-    'optional:房间押金（需确认）': '家庭套餐资料未单列押金，是否另收及退还规则须向学校确认。',
   },
   serviceSectionTitle: '为什么选择思达启航？',
   benefits: [
@@ -74,13 +148,16 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
   ],
   serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
   alumniBenefitTitle: '老学员专属优惠',
-  alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
+  alumniBenefitText: ALUMNI_BENEFIT_TEXT,
   noteSectionTitle: '报价说明',
-  footerNotes: [
-    `${CELLA_CAMPUS_NAMES[campus]}课程与住宿按周日开始、周六结束。`,
-    '当地费用及签证费用为预估，最终以学校及移民局实际收取为准。',
-    '最终以学校价格、空房、活动名额及优惠资格确认为准。',
-  ],
+  footerNotes: [...FOOTER_NOTES],
+});
+
+/** Rooms by building: campus dormitory first, then the outside dormitory (JDN for Uni, STACIA HOTEL for Premium). */
+/** Price-list groups by occupancy, as CIA's; each card's 校内／校外 badge tells the JDN and STACIA rooms apart. */
+const roomGroup = (room: CellaRoom): { group: string; location: '校内' | '校外' } => ({
+  group: room.id.includes('single') ? '单人间' : '多人间',
+  location: room.stacia || room.id.startsWith('uni-jdn-') ? '校外' : '校内',
 });
 
 export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContentConfig => ({
@@ -96,7 +173,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
   })),
   rooms: CELLA_ROOMS.filter(item => item.campus === campus).map((item, sortOrder) => ({
     id: item.id, name: item.name, label: item.name, code: item.id,
-    location: '校内', group: CELLA_CAMPUS_NAMES[campus], fee: item.fee,
+    ...roomGroup(item), fee: item.fee,
     note: item.note, enabled: true, sortOrder,
   })),
   localFees: [
@@ -113,6 +190,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
   ],
   quoteSettings: {
     ...CELLA_POLICY_MARK,
+    ...{ cellaPageVersion: CELLA_PAGE_VERSION },
     registrationFee: CELLA_REGISTRATION_FEE,
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
@@ -133,12 +211,8 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
       promotion({ id: 'cella-premium-six-person-2027', name: '2027 Premium六人间七五折', description: '2027/02/14–12/31入学并就读4／8／12周，课程和六人间住宿七五折；暑期周除外，不与2027长期优惠同用。', sortOrder: 6, ruleKind: 'cella-premium-six-person-2027', stackable: false }),
       promotion({ id: 'cella-long-stay-2027', name: '2027长期优惠', description: '2027年入学满12／16／20／24周分别优惠100／150／200／250美元；全年适用。', sortOrder: 7, ruleKind: 'cella-long-stay-2027' }),
     ],
-    localFeeIntro: '当地费用按每名学生实际就读周数预估；家庭套餐已包含的项目不重复计费。',
-    courseTableTitle: `${CELLA_CAMPUS_NAMES[campus]}课程与学费`,
-    courseTableNote: '2027年课程价格；课量和家庭套餐内容以学校最新资料为准。',
-    groupClassNote: '课程、家庭组合、年龄与入学条件须按所选方案确认。',
-    roomTableTitle: `${CELLA_CAMPUS_NAMES[campus]}住宿费`,
-    roomTableNote: '住宿按每人计价；家庭套餐按整包价计算。',
+    localFeeIntro: LOCAL_FEE_INTRO,
+    ...tableCopy(campus),
     stayPolicyTitle: '入住与报价提醒',
     stayPolicies: [{ label: '入住日期', value: '周日入住', note: '离校和退房按周六计算。' }],
     extraNightRates: [],
@@ -149,6 +223,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
 
 export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCampus): CiaContentConfig => {
   const upgrade = ((value?.quoteSettings as CellaQuoteSettings | undefined)?.cellaPolicyVersion ?? 0) < CELLA_POLICY_VERSION;
+  const pageUpgrade = ((value?.quoteSettings as CellaPageSettings | undefined)?.cellaPageVersion ?? 0) < CELLA_PAGE_VERSION;
   const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
   const defaults = createDefaultCellaContentConfig(campus);
   const clone = structuredClone(value);
@@ -179,6 +254,7 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   clone.localFees ??= structuredClone(defaults.localFees);
   clone.media ??= [];
   if (upgrade) upgradeTo2027(clone, defaults);
+  if (pageUpgrade) upgradePageCopy(clone, defaults, campus);
   return clone;
 };
 

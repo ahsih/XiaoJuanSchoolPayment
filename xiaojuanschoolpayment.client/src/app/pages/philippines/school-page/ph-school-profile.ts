@@ -40,7 +40,8 @@ export interface PhPageCopy {
   swipeHint: string;
   /** A school-only line closing each content section, e.g. EV: 仅供参考，实际以学校为准. CIA leaves it out (styles: ph-school-page-options.css). */
   referenceNote?: string;
-  hero: CiaCopy['hero'];
+  /** quoteLabel: a shorter hero quote button for a long name (CELLA Premium); default 获取 <name> 最新报价. */
+  hero: CiaCopy['hero'] & { quoteLabel?: string };
   overview: CiaCopy['overview'];
   advisorReview: CiaCopy['advisorReview'];
   license?: CiaCopy['license'];
@@ -214,6 +215,20 @@ export interface PhSchoolProfile {
   cloneContent(value: CiaContentConfig): CiaContentConfig;
 }
 
+/**
+ * A school-only choice under 学生情况 that changes the price (CELLA: the 6+2／9+3 offer and the minor management fee).
+ * The array and its items must stay the same objects between checks; a choice may hide itself and show a note.
+ */
+export interface PhExtraChoice {
+  readonly label: string;
+  readonly options: ReadonlyArray<{ value: unknown; label: string }>;
+  readonly visible: boolean;
+  readonly note: string;
+  /** false: left out of 方案对比, whose plans compare standard prices (CELLA's 6+2 offer fixes the weeks). */
+  readonly inComparison?: boolean;
+  value: unknown;
+}
+
 /** The quote student the page template binds: conditions, course-length warning and plan. */
 export interface PhPageStudent extends PhCompareStudent {
   readonly courseLengthError?: string;
@@ -225,4 +240,6 @@ export interface PhPageStudent extends PhCompareStudent {
   selectedRegistrationDate?: string;
   /** Shown under the conditions when the student is under 18. */
   readonly minorNote: string;
+  /** School-only choices after the standard conditions; CIA, EV and CPI have none. */
+  readonly extraChoices?: readonly PhExtraChoice[];
 }
