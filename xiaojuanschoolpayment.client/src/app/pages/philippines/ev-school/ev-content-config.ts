@@ -6,6 +6,7 @@ import {
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
 import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
+import { copyContentData } from '../copy-content-data';
 
 /**
  * 1: 2026-08-10 local-fee sheet and the 2026 brochure course catalogue.
@@ -200,7 +201,7 @@ const upgradeEvPolicy = (clone: CiaContentConfig, defaults: CiaContentConfig): v
 /** Version 1: the 2026-08-10 fee sheet and corrected course facts. */
 const upgradeEvFeeSheet = (clone: CiaContentConfig, defaults: CiaContentConfig): void => {
   const kept = (clone.localFees ?? []).filter(fee => !EV_UPGRADED_FEE_IDS.includes(fee.id));
-  clone.localFees = [...defaults.localFees.map(fee => structuredClone(fee)), ...kept];
+  clone.localFees = [...defaults.localFees.map(fee => copyContentData(fee)), ...kept];
   for (const item of clone.courses ?? []) {
     const fallback = defaults.courses.find(entry => entry.id === item.id);
     if (!fallback) continue;
@@ -250,7 +251,7 @@ export const cloneEvContentConfig = (value: CiaContentConfig): CiaContentConfig 
     const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'ev-peak-2027')!;
     const saved2027 = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'ev-peak-2027' || range.label.includes('2027'));
     if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
-    else clone.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
+    else clone.quoteSettings.peakSeasonRanges.push(copyContentData(official2027));
     clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
   upgradeEvPolicy(clone, defaults);

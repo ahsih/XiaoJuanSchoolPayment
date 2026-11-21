@@ -21,6 +21,7 @@ import {
   CellaCampus,
   CellaRoom,
 } from './cella-pricing';
+import { copyContentData } from '../copy-content-data';
 
 /** Bumped when CELLA's school price list changes; older saved documents take the new prices once. */
 export const CELLA_POLICY_VERSION = 20271101;
@@ -248,22 +249,22 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   const familyUpgrade = ((value?.quoteSettings as CellaFamilySettings | undefined)?.cellaFamilyVersion ?? 0) < CELLA_FAMILY_VERSION;
   const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
   const defaults = createDefaultCellaContentConfig(campus);
-  const clone = structuredClone(value);
+  const clone = copyContentData(value);
   if (clone?.schemaVersion !== 1 || clone.schoolCode !== defaults.schoolCode) return defaults;
   clone.quoteSettings = { ...defaults.quoteSettings, ...(clone.quoteSettings ?? {}) };
   if (!clone.quoteSettings.peakSeasonRanges?.length) {
-    clone.quoteSettings.peakSeasonRanges = structuredClone(defaults.quoteSettings.peakSeasonRanges);
+    clone.quoteSettings.peakSeasonRanges = copyContentData(defaults.quoteSettings.peakSeasonRanges);
   }
   if (needsPeakMigration) {
     const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027')!;
     const saved2027 = clone.quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027' || range.label.includes('2027'));
     if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
-    else clone.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
+    else clone.quoteSettings.peakSeasonRanges.push(copyContentData(official2027));
     clone.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
-  clone.quoteSettings.promotions = clone.quoteSettings.promotions ?? structuredClone(defaults.quoteSettings.promotions);
+  clone.quoteSettings.promotions = clone.quoteSettings.promotions ?? copyContentData(defaults.quoteSettings.promotions);
 
-  clone.quoteImageSettings = { ...structuredClone(defaults.quoteImageSettings), ...(clone.quoteImageSettings ?? {}) };
+  clone.quoteImageSettings = { ...copyContentData(defaults.quoteImageSettings), ...(clone.quoteImageSettings ?? {}) };
   clone.quoteImageSettings.paymentNotes = { ...defaults.quoteImageSettings.paymentNotes, ...(clone.quoteImageSettings.paymentNotes ?? {}) };
   clone.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(clone.quoteImageSettings.promotionNotes ?? {}) };
   clone.quoteImageSettings.localFeeNotes = { ...defaults.quoteImageSettings.localFeeNotes, ...(clone.quoteImageSettings.localFeeNotes ?? {}) };
@@ -271,9 +272,9 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   if (clone.quoteImageSettings.supplementalFeeNotes?.['payment:暑期附加费'] === '40美元／周，按实际课程周与旺季重叠周数计算。') {
     clone.quoteImageSettings.supplementalFeeNotes['payment:暑期附加费'] = defaults.quoteImageSettings.supplementalFeeNotes!['payment:暑期附加费'];
   }
-  clone.courses ??= structuredClone(defaults.courses);
-  clone.rooms ??= structuredClone(defaults.rooms);
-  clone.localFees ??= structuredClone(defaults.localFees);
+  clone.courses ??= copyContentData(defaults.courses);
+  clone.rooms ??= copyContentData(defaults.rooms);
+  clone.localFees ??= copyContentData(defaults.localFees);
   clone.media ??= [];
   if (upgrade) upgradeTo2027(clone, defaults);
   if (pageUpgrade) upgradePageCopy(clone, defaults, campus);
@@ -284,9 +285,9 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
 /** Replaces the 2026 family packages with the 2027 table, adds the 思达启航折扣 rule and updates untouched 6+2／9+3 notes once. */
 function upgradeFamilyPackages(clone: CiaContentConfig, defaults: CiaContentConfig): void {
   const isFamily = (course: CiaContentConfig['courses'][number]) => course.courseType === '家庭套餐' || course.id.includes('-family-');
-  clone.courses = [...clone.courses.filter(course => !isFamily(course)), ...structuredClone(defaults.courses.filter(isFamily))];
+  clone.courses = [...clone.courses.filter(course => !isFamily(course)), ...copyContentData(defaults.courses.filter(isFamily))];
   for (const promotion of defaults.quoteSettings.promotions) {
-    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(structuredClone(promotion));
+    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(copyContentData(promotion));
   }
   const notes = (clone.quoteImageSettings.promotionNotes ??= {});
   for (const [id, old] of Object.entries(OLD_SOCIAL_NOTES)) {
@@ -303,7 +304,7 @@ function upgradeTo2027(clone: CiaContentConfig, defaults: CiaContentConfig): voi
     if (current) Object.assign(course, { name: current.name, tuition: current.tuition, tuition2027: current.tuition2027, schedule: current.schedule, suitable: current.suitable, note: current.note });
   }
   for (const course of defaults.courses) {
-    if (!clone.courses.some(item => item.id === course.id)) clone.courses.push(structuredClone(course));
+    if (!clone.courses.some(item => item.id === course.id)) clone.courses.push(copyContentData(course));
   }
   const rooms = new Map(defaults.rooms.map(item => [item.id, item]));
   for (const room of clone.rooms) {
@@ -313,13 +314,13 @@ function upgradeTo2027(clone: CiaContentConfig, defaults: CiaContentConfig): voi
     if (CELLA_RENAMED_ROOMS.has(room.id)) Object.assign(room, { name: current.name, label: current.label });
   }
   const books = clone.localFees.find(item => item.id === 'books');
-  clone.localFees = structuredClone(defaults.localFees).map(item => item.id === 'books' && books ? books : item);
+  clone.localFees = copyContentData(defaults.localFees).map(item => item.id === 'books' && books ? books : item);
   const ranges = clone.quoteSettings.peakSeasonRanges;
   for (const range of defaults.quoteSettings.peakSeasonRanges) {
-    if (!ranges.some(item => item.id === range.id)) ranges.push(structuredClone(range));
+    if (!ranges.some(item => item.id === range.id)) ranges.push(copyContentData(range));
   }
   for (const promotion of defaults.quoteSettings.promotions) {
-    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(structuredClone(promotion));
+    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(copyContentData(promotion));
   }
   clone.quoteSettings.registrationFee = defaults.quoteSettings.registrationFee;
   clone.quoteSettings.courseTableNote = defaults.quoteSettings.courseTableNote;

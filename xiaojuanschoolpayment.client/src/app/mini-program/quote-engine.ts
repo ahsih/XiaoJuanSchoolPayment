@@ -33,6 +33,14 @@ export { CPI_COMPARE_COURSE_GROUPS, CPI_QUOTE_IMAGE_HERO, CpiPlanComparison, Cpi
 export type { CpiPageStudent, CpiQuotePricing } from '../pages/philippines/cpi-school/cpi-page-quote';
 export { cloneCpiContentConfig, isCpiContentConfig } from '../pages/philippines/cpi-school/cpi-content-config';
 export type { CiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
+// Schools on the shared Philippine page template (2026-11-22): EV, CPILS, CELLA Uni and CELLA Premium, each
+// building its pricing object like its page component (template-quote-schools.ts).
+export { MINI_TEMPLATE_QUOTE_SCHOOLS } from './template-quote-schools';
+export type { MiniQuoteSchool, MiniTemplateQuoteEngine } from './template-quote-schools';
+export type { PhSchoolQuote } from '../pages/philippines/school-page/ph-school-quote';
+export type { PhExtraChoice, PhPageStudent } from '../pages/philippines/school-page/ph-school-profile';
+// The 2027 peak rate the website shows (60 dollars for BESA/CALA members; other schools keep their own rate).
+export { associationPeakRateForWeek } from '../pages/philippines/association-peak-surcharge';
 export { SCHOOL_VISA_OPTIONS } from '../components/school-group-quote';
 export type { SchoolLocalFee, SchoolVisaType } from '../components/school-group-quote';
 export { quoteMoney } from '../components/school-quote-plan';

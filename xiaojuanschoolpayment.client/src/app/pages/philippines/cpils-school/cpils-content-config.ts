@@ -1,5 +1,6 @@
 import { CiaContentConfig, CiaCourseContent, CiaLocalFeeRule } from '../cia-school/cia-content-config';
 import { upgradeCpils2027 } from './cpils-pricing';
+import { copyContentData } from '../copy-content-data';
 
 const course = (id: string, name: string, tuition: number, schedule: string, note: string, sortOrder: number): CiaCourseContent => ({
   id, name, tuition, tuition2027: tuition, schedule, suitable: note, note, enabled: true, sortOrder,
@@ -110,23 +111,23 @@ export const createDefaultCpilsContentConfig = (): CiaContentConfig => {
 
 export const cloneCpilsContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const defaults = createDefaultCpilsContentConfig();
-  const clone = structuredClone(value);
-  clone.localFees ??= structuredClone(defaults.localFees);
-  clone.quoteSettings ??= structuredClone(defaults.quoteSettings);
+  const clone = copyContentData(value);
+  clone.localFees ??= copyContentData(defaults.localFees);
+  clone.quoteSettings ??= copyContentData(defaults.quoteSettings);
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
-  clone.quoteSettings.peakSeasonRanges ??= structuredClone(defaults.quoteSettings.peakSeasonRanges);
-  clone.quoteSettings.promotions ??= structuredClone(defaults.quoteSettings.promotions);
-  clone.quoteSettings.stayPolicies ??= structuredClone(defaults.quoteSettings.stayPolicies);
+  clone.quoteSettings.peakSeasonRanges ??= copyContentData(defaults.quoteSettings.peakSeasonRanges);
+  clone.quoteSettings.promotions ??= copyContentData(defaults.quoteSettings.promotions);
+  clone.quoteSettings.stayPolicies ??= copyContentData(defaults.quoteSettings.stayPolicies);
   clone.quoteSettings.extraNightRates ??= [];
-  clone.quoteImageSettings ??= structuredClone(defaults.quoteImageSettings);
-  clone.quoteImageSettings.paymentNotes ??= structuredClone(defaults.quoteImageSettings.paymentNotes);
+  clone.quoteImageSettings ??= copyContentData(defaults.quoteImageSettings);
+  clone.quoteImageSettings.paymentNotes ??= copyContentData(defaults.quoteImageSettings.paymentNotes);
   clone.quoteImageSettings.localFeeNotes = {
     ...defaults.quoteImageSettings.localFeeNotes,
     ...Object.fromEntries((clone.localFees ?? []).map(item => [item.id, item.note])),
     ...(clone.quoteImageSettings.localFeeNotes ?? {}),
   };
-  clone.quoteImageSettings.benefits ??= structuredClone(defaults.quoteImageSettings.benefits);
-  clone.quoteImageSettings.footerNotes ??= structuredClone(defaults.quoteImageSettings.footerNotes);
+  clone.quoteImageSettings.benefits ??= copyContentData(defaults.quoteImageSettings.benefits);
+  clone.quoteImageSettings.footerNotes ??= copyContentData(defaults.quoteImageSettings.footerNotes);
   clone.media ??= [];
   upgradeCpils2027(clone);
   return clone;

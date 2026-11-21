@@ -38,16 +38,8 @@ import {
 } from './cpils-page-content';
 
 // Shared with the cross-school comparison, so they live in the pure pricing module.
-export { CPILS_HIDDEN_COURSE_IDS, cpilsRooms2027, cpilsVisibleCourses } from './cpils-pricing';
+export { CPILS_HIDDEN_COURSE_IDS, cpilsRooms2027, cpilsShortStayRatios, cpilsVisibleCourses } from './cpils-pricing';
 
-/** 1/2/3-week share of the 4-week price shown above the room list (CPILS lists exact short-stay prices). */
-export function cpilsShortStayRatios(content: CiaContentConfig): Record<string, number> {
-  const course = content.courses.find(item => item.id === 'general-esl');
-  const four = course?.tuition2027 ?? 0;
-  const rows = course?.feeByWeeks2027 ?? {};
-  if (!four) return { ...content.quoteSettings.shortStayRatios };
-  return Object.fromEntries(['1', '2', '3'].filter(week => rows[week]).map(week => [week, rows[week] / four]));
-}
 
 const defaults = createDefaultCpilsContentConfig();
 const initialPricing = createCiaQuotePricing(defaults);
