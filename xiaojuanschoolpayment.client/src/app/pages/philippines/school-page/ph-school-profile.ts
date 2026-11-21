@@ -188,6 +188,8 @@ export interface PhSchoolProfile {
   initialCourseFees: CourseFee[];
   initialRoomFees: RoomFee[];
   initialRoomRateGroups: RoomRateGroup[];
+  /** Optional short note under a room price group's cards, keyed by group title; a line break (\n) starts a new line (CPI: when Premium is open). */
+  roomGroupNotes?: Readonly<Record<string, string>>;
   /** Show room codes (CIA's P-1, D-4 …) in the room price list. */
   showRoomCodes: boolean;
   dormRules: ReadonlyArray<{ title: string; text: string }>;

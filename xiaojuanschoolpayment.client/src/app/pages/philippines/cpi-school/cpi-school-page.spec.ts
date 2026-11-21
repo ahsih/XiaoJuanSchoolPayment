@@ -114,6 +114,23 @@ describe('CPI school page on the shared template', () => {
     expect(upgraded.quoteSettings.promotions.some(rule => rule.id === 'cpi-premium-opening-2026')).toBeTrue();
   });
 
+  it('replaces only untouched version-1 exam course lines and the 8-week textbook estimate', () => {
+    const old = createDefaultCpiContentConfig();
+    const general = old.courses.find(item => item.id === 'ielts-general')!;
+    general.schedule = '4节考试一对一 + 2节小组课（1:4，考试与ESL各1节）+ 2节考试团体课';
+    general.note = '一对一全部为考试课，每天另有2节考试团体课。';
+    const edited = old.courses.find(item => item.id === 'toeic-general')!;
+    edited.schedule = '员工改过的课表';
+    Object.assign(old.localFees.find(rule => rule.id === 'books')!, { periodWeeks: 8 });
+    (old.quoteSettings as { cpiPolicyVersion?: number }).cpiPolicyVersion = 1;
+    const upgraded = cloneCpiContentConfig(old);
+    const course = (id: string) => upgraded.courses.find(item => item.id === id)!;
+    expect(course('ielts-general').schedule).toBe('4节一对一（雅思全科目）+ 2节小组课（1:4，雅思与ESL各1节）+ 2节团体考试课');
+    expect(course('ielts-general').note).toContain('听说读写');
+    expect(course('toeic-general').schedule).toBe('员工改过的课表');
+    expect(upgraded.localFees.find(rule => rule.id === 'books')!.periodWeeks).toBe(12);
+  });
+
   it('shows the official videos with a poster and the year they were filmed', () => {
     expect(CPI_PAGE_PROFILE.videoCards.length).toBe(5);
     expect(CPI_PAGE_PROFILE.campusLifeVideos.length).toBe(4);

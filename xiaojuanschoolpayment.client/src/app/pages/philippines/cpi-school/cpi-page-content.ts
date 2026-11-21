@@ -97,6 +97,8 @@ export const CPI_GALLERY_IMAGES: GalleryImage[] = [
   { category: '住宿', title: 'B栋双人间A', description: '两张加大床。', src: rooms('b-double-a-01') },
   { category: '住宿', title: 'B栋女生六人间', description: '六张床，带客厅，仅限女生。', src: dorm('six-female-01.jpg') },
   { category: '住宿', title: 'Premium公寓卧室', description: '校外酒店式公寓，距学校约3分钟车程。', src: premium('bedroom') },
+  { category: '住宿', title: 'Premium双人间（学生实拍）', description: '学生入住时拍的房间，两张单人床。', src: premium('student-twin') },
+  { category: '住宿', title: 'Premium公寓客厅和厨房（学生实拍）', description: '小厨房有电磁炉、微波炉、冰箱和饮水机，里面是客厅。', src: premium('student-living') },
   { category: '住宿', title: 'Premium公寓所在大楼', description: 'Hayat Sky Tower酒店大楼。', src: premium('building') },
   { category: '住宿', title: 'Premium公寓无边泳池', description: '住户免费使用。', src: premium('infinity-pool') },
   { category: '住宿', title: 'Premium公寓大堂', description: '24小时前台和保安。', src: premium('lobby') },
@@ -184,7 +186,8 @@ const dormRoom = (
   image: gallery[0], gallery, imageAlt: `CPI${label}实景`,
 });
 const PREMIUM_GALLERY = [
-  premium('bedroom'), premium('room-01'), premium('room-05'), premium('living'),
+  // Two student photos (2026-11-21) follow the brochure bedroom, so the album shows the rooms as students find them.
+  premium('bedroom'), premium('student-twin'), premium('student-living'), premium('room-01'), premium('room-05'), premium('living'),
   premium('room-06'), premium('room-03'), premium('room-07'), premium('room-08'),
   premium('building'), premium('lobby'), premium('infinity-pool'), premium('pool-sunset'),
   premium('gym'), premium('gym-02'), premium('restaurant'),
@@ -228,7 +231,7 @@ export const CPI_ROOM_PROFILES: PhRoomProfile[] = [
     bed: '单人间1张大床；双人间按入住安排',
     service: '每周打扫3次、换床单1次',
     suitable: '夫妻、亲子家庭、上班族和长期学生',
-    note: '在Hayat Sky Tower酒店大楼内，距学校约3分钟车程。只接受2026/08/31–2027/01/01、2027/03/01–07/02入住，共10间，先到先得。',
+    note: '在Hayat Sky Tower酒店大楼内，距学校约3分钟车程。共10间，先到先得。',
     highlights: ['无门禁，有小厨房和客厅', '免费健身房和无边泳池', '24小时前台和保安，楼下有便利店', '平日7班、周末6班免费接驳车'],
     image: PREMIUM_GALLERY[0],
     gallery: PREMIUM_GALLERY,
@@ -380,7 +383,7 @@ export const CPI_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
     eyebrow: 'OTHER FEES',
     title: '其他收费',
     facts: [
-      { label: '加课', value: 'ESL一对一每4周7,000比索，考试一对一每4周7,500比索' },
+      { label: '加课', value: '一对一：ESL 7,000、专业科目7,500比索；1:4小组课：ESL 3,000、专业科目4,000比索（计费周期报名时向学校确认）' },
       { label: '电风扇租借', value: '1–12周300比索；13周以上每4周100比索' },
       { label: '额外住宿', value: '单人2,000、双人1,800、三人1,500、四人1,200比索／晚' },
       { label: '送机', value: '平日1,000比索' },
@@ -402,7 +405,6 @@ export const CPI_FAQS: FaqItem[] = [
   { question: 'CPI是斯巴达还是半斯巴达？', answer: '默认半斯巴达：有课的前一晚21:00前回校，周五、周六23:00前。想更严格可以申请斯巴达，周一至周四不能外出，发音课和晚间辅导必须参加。' },
   { question: 'Premium公寓和校内宿舍有什么不同？', answer: 'Premium公寓在校外的酒店大楼里，约3分钟车程，有小厨房、客厅、无边泳池和健身房，没有门禁，坐免费接驳车上学。价格和B栋同房型一样，电费和管理费照常另收。目前只接受2026/08/31–2027/01/01、2027/03/01–07/02入住，共10间。' },
   { question: '2026–2027年有什么优惠？', answer: '淡季（2026/08/24–2027/01/01、2027/02/22–06/04、2027/08/30–12/31）每个学习周减25美元；12月额外每周再减25美元；住Premium公寓每周再减25美元；2027年2–3月和8–9月开课前20名可加1节一对一。报价器会按你的日期自动计算。' },
-  { question: '只读1–2周可以吗？', answer: '可以。2027年起有1–2周速成班：Rapid Progress 30只读1周，480美元；Rapid Progress 60只读2周，780美元；每天6节一对一和3节1:4小组课，住宿费另按1–2周房价计算。速成班暂不在页面报价里，请联系顾问报价。' },
   { question: 'CPI适合带孩子去吗？', answer: '适合。6–15岁可读青少年课程，家长可读课量较轻的家长课程；亲子可住双人间、三人间、B栋家庭房或Premium双人间。' },
   { question: '页面上的报价包含全部费用吗？', answer: '学校费用包含注册费、课程费和住宿费，并自动扣除优惠；到校学杂费单独列出，接机和押金另外准备。两者分开显示，不相加。' },
   { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名，顾问会免费协助菲律宾入境和签证相关手续，你只需要按顾问指引准备个人资料。' },

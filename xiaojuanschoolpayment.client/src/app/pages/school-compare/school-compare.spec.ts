@@ -8,6 +8,7 @@ import { SchoolService } from '../../../services/school.service';
 import { planCompareReady } from '../../components/plan-compare/plan-compare-sheet';
 import { cloneEvContentConfig, createDefaultEvContentConfig } from '../philippines/ev-school/ev-content-config';
 import { CiaSchoolComponent } from '../philippines/cia-school/cia-school.component';
+import { CpiSchoolPageComponent } from '../philippines/cpi-school/cpi-school-page.component';
 import { EvSchoolPageComponent } from '../philippines/ev-school/ev-school-page.component';
 import { CpilsSchoolPageComponent } from '../philippines/cpils-school/cpils-school-page.component';
 import type { PhSchoolPageComponent } from '../philippines/school-page/ph-school-page.component';
@@ -18,10 +19,10 @@ import { compareRoomFacts, SchoolPriceComparison, type CompareConditions } from 
 // same plan; it never prices anything itself.
 describe('Cross-school price comparison', () => {
   const rates = { usdToCny: 7, phpPerCny: 8.2, date: '2026-11-20', live: true };
-  const setup = () => {
+  const setup = (schoolIds: readonly string[] = []) => {
     const sources = createCompareSchools();
     const comparison = new SchoolPriceComparison(() => sources.map(source => source.school), () => rates);
-    comparison.start();
+    comparison.start(schoolIds);
     comparison.conditions.registrationDate = '2026-11-20';
     comparison.setStartDate('2027-03-07');
     return { sources, comparison };
@@ -59,11 +60,11 @@ describe('Cross-school price comparison', () => {
       cia: TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       ev: TestBed.runInInjectionContext(() => new EvSchoolPageComponent()),
       cpils: TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
+      cpi: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
     };
-    for (const scenario of scenarios) {
-      const { comparison } = setup();
-      comparison.toggleSchool('cpils');
-      expect(comparison.selections.length).toBe(3);
+    for (const scenario of scenarios) for (const schoolIds of [['cia', 'ev', 'cpils'], ['cpi', 'cia']]) {
+      const { comparison } = setup(schoolIds);
+      expect(comparison.selections.length).toBe(schoolIds.length);
       comparison.setGoal(scenario.goal);
       comparison.setBeds(scenario.beds);
       comparison.setWeeks(scenario.weeks);
@@ -101,8 +102,9 @@ describe('Cross-school price comparison', () => {
       cia: TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       ev: TestBed.runInInjectionContext(() => new EvSchoolPageComponent()),
       cpils: TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
+      cpi: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
     };
-    expect(createCompareSchools().map(source => source.school.id)).toEqual(['cia', 'ev', 'cpils']);
+    expect(createCompareSchools().map(source => source.school.id)).toEqual(['cia', 'ev', 'cpils', 'cpi']);
     for (const source of createCompareSchools()) {
       const page = pages[source.school.id];
       expect(source.school.rooms.map(room => `${room.id}:${room.fee}`).sort())
@@ -126,6 +128,11 @@ describe('Cross-school price comparison', () => {
     expect(comparison.results.every(result => !result.error)).toBeTrue();
     comparison.setCourse(comparison.selections[0], 'business');
     expect(comparison.selections[0].courseNote).toBe('');
+    const cpi = setup(['cpi', 'cia']).comparison;
+    cpi.setBeds(2);
+    expect(cpi.selections[0].plan.roomId).toBe('building-a-double');
+    cpi.setGoal('speaking');
+    expect(cpi.selections[0].courseNote).toBe('CPI没有单独的口语强化课程，已选最接近的密集英语 ESL INTENSIVE');
     expect(compareRoomFacts('校外公寓双人间')).toEqual({ beds: 2, offCampus: true, suite: false });
     expect(compareRoomFacts('单人套房 SR-1')).toEqual({ beds: 1, offCampus: false, suite: true });
   });

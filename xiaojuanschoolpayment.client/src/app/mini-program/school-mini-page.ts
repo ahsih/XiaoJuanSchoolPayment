@@ -143,9 +143,10 @@ export interface MiniPricing {
   peakSeasonYears: string[];
   /**
    * Quote calculator the mini program runs for this school (a key of its bundled
-   * quote-engine.ts, currently only "cia"). Omit for schools without a mini program calculator.
+   * quote-engine.ts: "cia" or "cpi"). Omit for schools without a mini program calculator. A mini program
+   * that does not know the engine shows the page without the quote button.
    */
-  quoteEngine?: 'cia';
+  quoteEngine?: 'cia' | 'cpi';
   /**
    * Built-in fallback, used until (or unless) a published revision is available. Schools with a
    * `quoteEngine` export the complete default content document here (same shape as a revision).
