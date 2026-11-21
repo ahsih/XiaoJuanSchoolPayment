@@ -23,6 +23,7 @@ export const ASSOCIATION_PEAK_SCHOOL_CODES = [
   'EV',
   'PHILINTER',
   'CWA',
+  'CPILS',
   'QQ-ENGLISH',
   'WINNING',
 ] as const;

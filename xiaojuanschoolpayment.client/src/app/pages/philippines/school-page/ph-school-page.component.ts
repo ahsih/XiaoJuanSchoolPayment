@@ -315,7 +315,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly showRoomCodes = this.profile.showRoomCodes;
   readonly reviewPath = this.profile.reviewPath;
 
-  // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV and CPI so far) ----
+  // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly courseHighlights = this.profile.courseHighlights ?? {};
@@ -1207,6 +1207,12 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   formatUsd(value: number): string { return this.quote.formatUsd(value); }
   /** Four-week price in the course list: the 2027 price (equal to the 2026 one where prices did not change). */
   listPrice(fee: CourseFee): number { return fee.tuition2027; }
+  /** Unit after a course-list price; a school with fixed-length packages (CPILS guarantee courses) overrides it. */
+  coursePriceUnit(_fee: CourseFee): string { return this.copy.courses.priceUnit; }
+  /** The 2026 price inside an opened course, or null to leave that row out. */
+  oldListPrice(fee: CourseFee): number | null {
+    return this.show2026Prices && this.copy.courses.oldPriceLabel ? fee.tuition : null;
+  }
 
   get quoteImageData() { return this.quote.quoteImageData; }
 

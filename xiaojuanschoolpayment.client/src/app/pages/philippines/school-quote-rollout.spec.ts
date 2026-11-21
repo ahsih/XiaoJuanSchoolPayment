@@ -11,7 +11,7 @@ import { CiaSchoolComponent } from './cia-school/cia-school.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
 import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
-import { CpilsSchoolDetailComponent } from './cpils-school/cpils-school-detail.component';
+import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { SchoolQuotePlan } from '../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
 import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-download-button.component';
@@ -32,7 +32,7 @@ describe('five-school multi-row quote rollout', () => {
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
-      TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent()),
+      TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
     ];
     for (const component of schools) {
       component.quotePlan.add('course');
@@ -63,11 +63,12 @@ describe('five-school multi-row quote rollout', () => {
     cpi.selectedStartDate = '2026-11-29'; cpi.quotePlan.add('course'); cpi.quotePlan.add('room');
     expect(cpi.quoteUsd).toBe(4359); // synced 12 weeks: 100 + 2,700 + 2,310 − 501 (10%) − 5 × 25 off-season − 5 × 25 December
 
-    const cpils = TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent());
-    const firstPeriodDiscount = cpils.offSeasonDiscountAmount;
-    cpils.quotePlan.add('course');
-    cpils.quotePlan.courses[1].startDate = '2027-01-03';
-    expect(cpils.offSeasonDiscountAmount).toBe(firstPeriodDiscount);
+    const cpils = TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent());
+    cpils.students[0].selectedRegistrationDate = '2026-09-01';
+    cpils.selectedStartDate = '2026-11-29';
+    const firstPeriodDiscount = cpils.students[0].offSeasonDiscount;
+    cpils.quotePlan.courses.push({ ...cpils.quotePlan.courses[0], id: 101, startDate: '2027-01-03' });
+    expect(cpils.students[0].offSeasonDiscount).toBe(firstPeriodDiscount);
   });
 
   it('warns on gaps and blocks overlaps', () => {
@@ -116,7 +117,7 @@ describe('five-school multi-row quote rollout', () => {
         { key: 'cg-banilad', create: () => new CgBaniladSchoolComponent() },
         { key: 'smeag-capital', create: () => new SmeagCapitalSchoolComponent() },
         { key: 'cpi', create: () => new CpiSchoolPageComponent() },
-        { key: 'cpils', create: () => new CpilsSchoolDetailComponent() },
+        { key: 'cpils', create: () => new CpilsSchoolPageComponent() },
       ];
       const paint: { text: string; x: number; y: number; color: string; align: string; font: string }[] = [];
       const originalText = CanvasRenderingContext2D.prototype.fillText;
@@ -230,7 +231,7 @@ describe('five-school multi-row quote rollout', () => {
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
-      TestBed.runInInjectionContext(() => new CpilsSchoolDetailComponent()),
+      TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
     ];
     for (const component of schools) {
       component.quotePlan.add('course'); component.quotePlan.add('room');
