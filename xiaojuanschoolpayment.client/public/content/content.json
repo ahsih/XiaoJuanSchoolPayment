@@ -122,7 +122,8 @@
       "tag": "度假村式校园",
       "desc": "Nivel Hills 度假村式校园，适合重视住宿、设施和舒适度的学生。",
       "image": "/assets/cpi/campus-exterior.webp",
-      "path": "/philippines-study/cebu/cpi-cebu-pelis-institute"
+      "path": "/philippines-study/cebu/cpi-cebu-pelis-institute",
+      "detail": "/content/schools/cpi.json"
     },
     {
       "id": "cpils",
@@ -373,6 +374,18 @@
       "en": "Germany",
       "keywords": "德语 · 工程 · 职业教育",
       "path": "/overseas-study-tour/germany"
+    }
+  ],
+  "westSchools": [
+    {
+      "id": "burlington",
+      "name": "Burlington School",
+      "country": "UK",
+      "city": "伦敦",
+      "tag": "成人和青少年项目",
+      "desc": "伦敦南部的英国文化协会认证学校，上课、吃饭、住宿在同一栋楼，还有自己的巴斯城堡。",
+      "image": "/assets/burlington/campus-courtyard.jpg",
+      "path": "/overseas-study-tour/uk/burlington-school"
     }
   ],
   "tourGuides": [
