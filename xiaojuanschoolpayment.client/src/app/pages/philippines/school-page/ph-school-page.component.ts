@@ -210,6 +210,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get studentCount() { return this.quote.studentCount; }
   set studentCount(value: number) { this.quote.studentCount = value; }
   setQuoteMode(value: 'single' | 'group') { this.quote.setQuoteMode(value); }
+  /** A school may react to a course or room choice (CELLA's family packages); others ignore it. */
+  planOptionChanged(student: S): void { student.planOptionChanged?.(); }
   get activeStudents() { return this.quote.activeStudents; }
   get quotePlan() { return this.quote.quotePlan; }
   get quoteHeading() { return this.quote.quoteHeading; }

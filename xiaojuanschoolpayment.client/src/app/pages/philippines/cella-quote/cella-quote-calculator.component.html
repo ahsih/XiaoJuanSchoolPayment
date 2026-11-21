@@ -1,6 +1,6 @@
 <section class="cella-quote-shell" id="quote">
   <div class="section-heading">
-    <span>CELLA 2026年完整报价</span>
+    <span>CELLA 2027年完整报价</span>
     <h2>{{ quoteHeading }}</h2>
     <p>本页面只生成当前校区报价；每名学生可独立选择课程、房型、日期、报名身份和优惠。</p>
   </div>
@@ -32,7 +32,7 @@
         <input type="date" min="2020-01-05" step="7" [(ngModel)]="student.startDate" />
       </label>
       <label *ngIf="student.isFamilyPackage || student.isSocialPromotion">{{ student.isFamilyPackage ? '家庭套餐周数' : '实际就读周数' }}
-        <select *ngIf="student.isFamilyPackage" [(ngModel)]="student.weeks"><option [ngValue]="4">4周</option><option [ngValue]="6">6周</option><option [ngValue]="8">8周</option></select>
+        <select *ngIf="student.isFamilyPackage" [(ngModel)]="student.weeks"><option [ngValue]="1">1周</option><option [ngValue]="2">2周</option><option [ngValue]="3">3周</option><option [ngValue]="4">4周</option></select>
         <input *ngIf="!student.isFamilyPackage" type="number" min="1" max="24" step="1" [(ngModel)]="student.weeks" [disabled]="student.isSocialPromotion" />
       </label>
       <label *ngIf="!student.isFamilyPackage">旅游签证初始停留期
@@ -54,7 +54,7 @@
       </label>
     </div>
     <app-school-quote-plan *ngIf="!student.isFamilyPackage && !student.isSocialPromotion" [plan]="student.quotePlan"></app-school-quote-plan>
-    <label class="option-check" *ngIf="!student.isFamilyPackage"><input type="checkbox" [(ngModel)]="student.minorManagementSelected" /><span>计入未成年人管理费（25美元／周／人）<small>是否适用需按学生年龄向学校确认。</small></span></label>
+    <label class="option-check" *ngIf="!student.isFamilyPackage"><input type="checkbox" [(ngModel)]="student.minorManagementSelected" /><span>计入未成年人管理费（25美元／周／人）<small>15–17岁且无监护人陪同时收取。</small></span></label>
     <p class="family-package-notice" *ngIf="student.isFamilyPackage"><strong>家庭套餐按整包价计算：</strong>{{ student.selectedCourse?.note }}</p>
 
     <div class="student-summary">
@@ -68,15 +68,19 @@
   <div class="promotion-guide" *ngIf="hasRegularQuotes || hasFamilyPackages">
     <section *ngIf="hasRegularQuotes">
       <h3>暑期附加费</h3>
-      <p>2026/07/05–08/29按40美元／周／人，2027/07/04–08/28按60美元／周／人。课程与住宿同一周只计一次，附加费不参与淡季、长期或其他优惠；Family Package按整包规则，不另加普通课程旺季费。</p>
+      <p>2027/07/04–08/28、2028/07/02–08/26按60美元／周／人（2026/07/05–08/29为40美元）。课程与住宿同一周只计一次，附加费不参与任何优惠；Family Package按整包规则，不另加普通课程旺季费。</p>
     </section>
     <section *ngIf="hasRegularQuotes">
-      <h3>2026年淡季与长期报名优惠</h3>
-      <p>{{ formatDate(lowSeasonStart) }}–{{ formatDate(lowSeasonEnd) }}。符合房型每个完整4周优惠100美元；Premium六人间活动价499美元／4周，与淡季100美元优惠互斥。8／12／16周长期优惠分别再减50／100／150美元。</p>
+      <h3>2027年优惠</h3>
+      <p>2027/02/14–12/31入学：双人、三人、四人间每周优惠25美元（每4周100美元），2027/05/30–08/28暑期周除外；<ng-container *ngIf="initialCampus === 'premium'">Premium六人间就读4／8／12周，课程和住宿七五折（暑期周除外，不与长期优惠同用）；</ng-container>2027年入学满12／16／20／24周再减100／150／200／250美元。</p>
+    </section>
+    <section *ngIf="hasRegularQuotes">
+      <h3>现行活动（至{{ formatDate(lowSeasonEnd) }}）</h3>
+      <p>{{ formatDate(lowSeasonStart) }}–{{ formatDate(lowSeasonEnd) }}期间，符合房型每个完整4周优惠100美元<ng-container *ngIf="initialCampus === 'premium'">；Premium六人间活动价499美元／4周，与淡季100美元优惠互斥</ng-container>。全程在此期间内的8／12／16周再减50／100／150美元。</p>
     </section>
     <section *ngIf="hasRegularQuotes">
       <h3>6+2／9+3社交媒体活动</h3>
-      <p>仅限本页面对应校区四人间及首次报名新生；课程和住宿分别按6周／9周收费，实际就读8周／12周，当地费用按实际周数收取，不与任何其他优惠同用。不同校区请分别进入各自页面生成报价。</p>
+      <p>仅限本页面对应校区四人间及首次报名新生；课程和住宿分别按6周／9周收费，实际就读8周／12周，当地费用按实际周数收取，只可与思达启航9折和圣诞优惠同享。不同校区请分别进入各自页面生成报价。</p>
       <ul><li *ngFor="let note of socialPromotionNotes">{{ note }}</li></ul>
     </section>
     <section *ngIf="hasFamilyPackages" class="family-package-guide">

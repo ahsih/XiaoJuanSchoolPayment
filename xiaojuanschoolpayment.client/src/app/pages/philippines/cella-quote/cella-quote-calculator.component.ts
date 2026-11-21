@@ -19,8 +19,10 @@ import { applyEditableQuoteImageCopy, applyEditableQuotePaymentItems, applySchoo
 import { CiaContentConfig, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { cloneCellaContentConfig, createDefaultCellaContentConfig } from './cella-content-config';
 import {
+  CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
+  CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
   CELLA_PEAK_SEASON_WEEKLY_FEE,
@@ -66,6 +68,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     peakSeasonRanges: [
       { start: '2026-07-05', end: '2026-08-29', enabled: true },
       { start: '2027-07-04', end: '2027-08-28', enabled: true },
+      { start: '2028-07-02', end: '2028-08-26', enabled: true },
     ],
   };
   private contentConfig = createDefaultCellaContentConfig('uni');
@@ -136,7 +139,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   get localFeeIntro(): string {
     if (!this.hasRegularQuotes) return '家庭套餐整包价已包含附件列明的当地费用，下表标示为“已包含”；汇款手续费、额外电费、签证续签及未列项目仍需向学校确认。';
     if (this.hasFamilyPackages) return '普通课程按每名学生的实际就读总周数预估当地费用；家庭套餐已包含附件列明的当地费用。合计不重复加入家庭套餐所含项目。';
-    return '当地费用按每名学生的实际就读总周数计算。合计不含接机、洗衣、可退押金和附件未确认的后续签证续签金额。';
+    return '当地费用按每名学生的实际就读和住宿周数计算。合计不含接机、洗衣和可退押金。';
   }
   get localFeeTotalText(): string { return this.hasRegularQuotes ? `${this.formatMoney(this.localFeeTotal)}比索` : '套餐已包含'; }
   get localFeeTotalNote(): string { return this.hasRegularQuotes ? '仅汇总已有明确金额且未包含在家庭套餐内的项目' : '不再重复计入学校费用'; }
@@ -194,16 +197,28 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
       items.push({ icon: '监', label: `${prefix}未成年人管理费`, amount: `${this.formatMoney(student.minorManagementFee)} 美元`, note: `25美元／周／人，本次按${student.actualWeeks}周计算。` });
     }
     if (student.socialPromotionDiscount) {
-      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，且不可与其他优惠叠加。`, promotionKey: student.promotionMode === 'social-6-plus-2' ? 'cella-social-6-plus-2' : 'cella-social-9-plus-3', accent: true });
+      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，只可与思达启航9折和圣诞优惠同享。`, promotionKey: student.promotionMode === 'social-6-plus-2' ? 'cella-social-6-plus-2' : 'cella-social-9-plus-3', accent: true });
     }
     if (student.lowSeasonDiscount) {
-      items.push({ icon: '惠', label: `${prefix}淡季优惠`, amount: `− ${this.formatMoney(student.lowSeasonDiscount)} 美元`, note: `活动期内每个完整4周优惠100美元，本次${student.lowSeasonBlocks}个计费周期；课程与住宿不重复扣减。`, promotionKey: 'cella-low-season', accent: true });
+      items.push({ icon: '惠', label: `${prefix}淡季优惠`, amount: `− ${this.formatMoney(student.lowSeasonDiscount)} 美元`, note: `${this.formatDate(this.lowSeasonStart)}–${this.formatDate(this.lowSeasonEnd)}期间每个完整4周优惠100美元，本次${student.lowSeasonBlocks}个计费周期；课程与住宿不重复扣减。`, promotionKey: 'cella-low-season', accent: true });
     }
     if (student.premiumSixPersonDiscount) {
-      items.push({ icon: '惠', label: `${prefix}Premium六人间特价`, amount: `− ${this.formatMoney(student.premiumSixPersonDiscount)} 美元`, note: `活动期内住宿费由600美元／4周调整为499美元／4周；不可再叠加淡季100美元优惠。`, promotionKey: 'cella-premium-six-person', accent: true });
+      items.push({ icon: '惠', label: `${prefix}Premium六人间特价`, amount: `− ${this.formatMoney(student.premiumSixPersonDiscount)} 美元`, note: `${this.formatDate(this.lowSeasonStart)}–${this.formatDate(this.lowSeasonEnd)}期间六人间按499美元／4周计算；不可再叠加淡季100美元优惠。`, promotionKey: 'cella-premium-six-person', accent: true });
     }
     if (student.longStayDiscount) {
-      items.push({ icon: '惠', label: `${prefix}长期报名优惠`, amount: `− ${this.formatMoney(student.longStayDiscount)} 美元`, note: `${student.actualWeeks}周符合活动期长期报名档位；可与当前淡季或六人间优惠同时使用。`, promotionKey: 'cella-long-stay', accent: true });
+      items.push({ icon: '惠', label: `${prefix}长期报名优惠`, amount: `− ${this.formatMoney(student.longStayDiscount)} 美元`, note: `${student.actualWeeks}周全程在${this.formatDate(this.lowSeasonEnd)}前结束，符合长期报名档位；可与淡季或六人间优惠同时使用。`, promotionKey: 'cella-long-stay', accent: true });
+    }
+    if (student.lowSeason2027Discount) {
+      items.push({ icon: '惠', label: `${prefix}2027淡季优惠`, amount: `− ${this.formatMoney(student.lowSeason2027Discount)} 美元`, note: `双人、三人、四人间每周优惠${CELLA_2027_PROMOTION.lowSeasonPerWeek}美元，本次${student.lowSeason2027Weeks}周；2027/05/30–08/28暑期周除外。`, promotionKey: 'cella-low-season-2027', accent: true });
+    }
+    if (student.premiumSixPerson2027Discount) {
+      items.push({ icon: '惠', label: `${prefix}Premium六人间七五折`, amount: `− ${this.formatMoney(student.premiumSixPerson2027Discount)} 美元`, note: `就读${student.actualWeeks}周，六人间住宿周的课程费和住宿费七五折；暑期周除外，不与2027长期优惠同用。`, promotionKey: 'cella-premium-six-person-2027', accent: true });
+    }
+    if (student.longStay2027Discount) {
+      items.push({ icon: '惠', label: `${prefix}2027长期优惠`, amount: `− ${this.formatMoney(student.longStay2027Discount)} 美元`, note: `2027年入学、就读${student.actualWeeks}周；12／16／20／24周分别优惠100／150／200／250美元。`, promotionKey: 'cella-long-stay-2027', accent: true });
+    }
+    if (student.sidaDiscount) {
+      items.push({ icon: '惠', label: `${prefix}思达启航折扣`, amount: `− ${this.formatMoney(student.sidaDiscount)} 美元`, note: student.isFamilyPackage ? '家庭套餐整包价扣除已含的500美元注册费后打9折。' : '课程费和住宿费在学校优惠后再打9折；注册费、暑期附加费不打折。', promotionKey: 'cella-sida', accent: true });
     }
     return items;
   }
@@ -245,17 +260,21 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     const deposits = regularStudents.map((student, index) => ({ index, amount: student.depositAmount }));
     const knownDeposits = [...new Set(deposits.map((item) => item.amount).filter((value): value is number => value !== null))];
     const depositNeedsConfirmation = this.hasFamilyPackages || deposits.some((item) => item.amount === null);
+    const chargedDeposits = knownDeposits.filter((value) => value > 0);
     const depositText = depositNeedsConfirmation
       ? '部分学生需向学校确认'
-      : `${knownDeposits.map((value) => this.formatMoney(value)).join('／')} 比索`;
-    const depositCny = depositNeedsConfirmation
+      : chargedDeposits.length
+        ? `${knownDeposits.map((value) => value ? this.formatMoney(value) : '免收').join('／')} 比索`
+        : '免收';
+    const depositCny = depositNeedsConfirmation || !chargedDeposits.length
       ? ''
-      : `约人民币 ${knownDeposits.map((value) => quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')).join('／')} 元`;
+      : `约人民币 ${chargedDeposits.map((value) => quoteCurrencyText(Math.round(value / this.phpPerCny), 'zh-CN')).join('／')} 元`;
+    const pickup = CELLA_LOCAL_FEES_2027;
     const items = [];
     if (this.hasRegularQuotes) {
       items.push(
         { label: '洗衣服务（价格参考）', amount: '最低100比索（50比索／公斤）', cnyAmount: `最低约人民币${Math.round(100 / this.phpPerCny)}元`, note: '最少2公斤；自由选择是否使用，按实际重量和学校现场标准结算，不计入学杂费合计。' },
-        { label: '宿务麦克坦机场周日接机（价格参考）', amount: '1,200比索／次', cnyAmount: `约人民币${Math.round(1200 / this.phpPerCny)}元`, note: this.quoteMode === 'group' ? '多人接机按车辆和实际安排确认，不按人数自动累加。' : '可选，也可自行前往；不计入学杂费合计。' },
+        { label: '宿务麦克坦机场接机（价格参考）', amount: `周末${this.formatMoney(pickup.pickupWeekend)}／工作日${this.formatMoney(pickup.pickupWeekday)}比索`, cnyAmount: `约人民币${Math.round(pickup.pickupWeekend / this.phpPerCny)}／${Math.round(pickup.pickupWeekday / this.phpPerCny)}元`, note: this.quoteMode === 'group' ? `家庭最多4人同车：周末${this.formatMoney(pickup.pickupFamilyWeekend)}／工作日${this.formatMoney(pickup.pickupFamilyWeekday)}比索；多人接机按车辆安排确认，不按人数自动累加。` : '可选，也可自行前往；不计入学杂费合计。' },
       );
     }
     if (this.hasFamilyPackages) {
@@ -266,8 +285,8 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
       amount: depositText,
       cnyAmount: depositCny,
       note: this.hasFamilyPackages
-        ? '家庭套餐附件未单列房间押金，是否另收及退还规则需向学校确认；普通方案参考4–8周5,000比索、9–12周8,000比索、16–24周10,000比索。'
-        : '4–8周5,000比索，9–12周8,000比索，16–24周10,000比索；13–15周附件未列，需向学校确认。多人或共住房间不得直接按人数累加。',
+        ? '家庭套餐附件未单列房间押金，是否另收及退还规则需向学校确认；普通方案参考1–3周2,000比索、4–8周5,000比索、9–12周8,000比索、13周以上10,000比索。'
+        : '1–3周2,000比索，4–8周5,000比索，9–12周8,000比索，13周以上10,000比索；STACIA校外宿舍2027年起免押金。退房检查后退还，多人或共住房间不得直接按人数累加。',
     });
     return items;
   }
@@ -277,8 +296,8 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     const earliest = this.activeStudents.map((student) => student.startDate).sort()[0] ?? '';
     const socialSelected = this.activeStudents.some((student) => student.isSocialPromotion);
     const ruleNotes = [
-      `淡季活动期：${this.formatDate(this.lowSeasonStart)}–${this.formatDate(this.lowSeasonEnd)}；入学和入住按周日，离校和退房按周六。`,
-      ...(socialSelected ? [`6+2／9+3仅限首次报名新生及${CELLA_CAMPUS_NAMES[this.initialCampus]}四人间；课程和住宿按6／9周收费、实际就读8／12周，当地费用按实际周数，不与任何其他优惠叠加。`] : []),
+      '入学和入住按周日，离校和退房按周六。',
+      ...(socialSelected ? [`6+2／9+3仅限首次报名新生及${CELLA_CAMPUS_NAMES[this.initialCampus]}四人间；课程和住宿按6／9周收费、实际就读8／12周，当地费用按实际周数，只可与思达启航9折和圣诞优惠同享。`] : []),
       ...(socialSelected ? [...this.socialPromotionNotes] : []),
       ...this.activeStudents.flatMap((student, index) => student.exchangeConfirmationNote
         ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.exchangeConfirmationNote}`]
@@ -330,7 +349,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   courseOptionLabel(course: CellaCourse): string {
     const familyPackage = course.familyPackage;
     if (!familyPackage) return `${course.name} · ${this.formatMoney(course.tuition)}美元／4周`;
-    return `${course.name} · 4周${this.formatMoney(familyPackage.prices[4])}／6周${this.formatMoney(familyPackage.prices[6])}／8周${this.formatMoney(familyPackage.prices[8])}美元整包`;
+    return `${course.name} · 1–4周${this.formatMoney(familyPackage.prices[1])}–${this.formatMoney(familyPackage.prices[4])}美元整包`;
   }
 
   private ensureStudents(count: number): void {
