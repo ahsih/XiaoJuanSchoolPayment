@@ -57,4 +57,7 @@ export {
   quoteCanvasScale,
 } from '../components/quote-image-detailed-renderer';
 export type { QuoteCanvasContext, QuoteCanvasImage, QuoteTextMetrics } from '../components/quote-image-detailed-renderer';
-export type { QuoteImageCardData } from '../components/quote-image-types';
+export type { QuoteImageCardData, QuoteImageContactCard } from '../components/quote-image-types';
+// The consultant chosen in a quote (layoutVersion 2 title card: name, phone, WeChat QR), in today's order like the website.
+export { SIDA_PHILIPPINES_CONSULTANTS, consultantsInTodaysOrder, quoteContactCard } from '../components/sida-consultants';
+export type { SidaConsultant } from '../components/sida-consultants';
