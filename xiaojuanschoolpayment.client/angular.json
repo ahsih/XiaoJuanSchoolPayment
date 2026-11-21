@@ -57,7 +57,12 @@
                   "maximumError": "48kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "server": "src/main.server.ts",
+              "prerender": {
+                "routesFile": "prerender-routes.txt",
+                "discoverRoutes": false
+              }
             },
             "development": {
               "optimization": false,

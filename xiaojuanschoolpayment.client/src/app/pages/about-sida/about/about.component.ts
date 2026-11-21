@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { BRAND_ABOUT_PATH, renderBrandFactsHtml } from './brand-facts';
 
 /**
- * 关于思达启航. Renders the same HTML the server already puts in the page source for this route
- * (see brand-facts.ts), so visitors, crawlers and AI tools read identical text.
+ * 关于思达启航. Renders the brand fact card (brand-facts.ts); the build prerenders this route, so
+ * visitors, crawlers and AI tools read identical text.
  */
 @Component({
   selector: 'app-about',
