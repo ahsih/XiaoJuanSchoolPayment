@@ -66,6 +66,7 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
   - student score posters;
   - trailing black frames.
 - The 11 older WebP files in `assets/cpils/` are untouched because the Cebu directory uses them.
+- Taiwan wording rule (2026-11-21): the student-source lines say 中国大陆 and 中国台湾 and 国家和地区. The lobby photo `gallery/campus-lobby.webp` shows a world map made of flags, so the Taiwan island on it is covered with a small gray mosaic. The same map appears briefly in the intro video, but there it is only one or two pixels and cannot be read.
 
 ## Verification
 

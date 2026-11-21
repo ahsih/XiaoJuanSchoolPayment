@@ -274,7 +274,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'groups',
       label: '学生组成',
       value: '日本学生比例较高，多国籍环境',
-      note: '官方资料列日本、台湾、韩国、泰国、俄罗斯等学生来源，适合想要日系支持的人群。',
+      note: '官方资料列日本、中国台湾、韩国、泰国、俄罗斯等学生来源，适合想要日系支持的人群。',
     },
     {
       icon: 'restaurant',

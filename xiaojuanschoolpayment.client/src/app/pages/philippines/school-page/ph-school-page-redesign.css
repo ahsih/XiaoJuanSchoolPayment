@@ -867,8 +867,12 @@
   line-height: 1.55;
 }
 
-:host .school-license-strip > mat-icon {
+:host .school-license-strip strong mat-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
   color: #087050;
+  font-size: 20px;
 }
 
 :host .school-license-strip > div {
@@ -878,6 +882,9 @@
 }
 
 :host .school-license-strip strong {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   color: #043f2d;
   font-weight: 950;
 }

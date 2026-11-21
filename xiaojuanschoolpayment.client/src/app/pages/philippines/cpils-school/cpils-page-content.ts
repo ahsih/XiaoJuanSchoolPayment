@@ -51,7 +51,7 @@ export const CPILS_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string; 
   { icon: 'menu_book', label: '课程', value: 'ESL、雅思、托业、托福、商务、职业英语和亲子课程' },
   { icon: 'workspace_premium', label: '考试', value: '校内有英国文化协会雅思考场（含机考）和ETS托业考场' },
   { icon: 'bed', label: '住宿', value: '普通房、无对外窗房和高级房，单人到四人间；含三餐和每周清洁' },
-  { icon: 'public', label: '学生', value: '日本、韩国、台湾、越南、中国学生为主' },
+  { icon: 'public', label: '学生', value: '日本、韩国、越南及中国大陆、中国台湾学生为主' },
   { icon: 'door_front', label: '门禁', value: '周日至周四22:00，周五、周六24:00；累计扣分会限制外出' },
 ];
 
@@ -60,7 +60,7 @@ export const CPILS_BASIC_INFO: BasicInfoRow[] = [
   { label: '所在地区', value: '菲律宾宿务市区（老城区）' },
   { label: '办学背景', value: '2001年开办；2009年起为圣何塞-雷科莱托斯大学（USJ-R）的英语中心' },
   { label: '学习强度', value: '普通ESL每天9小时（含2小时选修）；斯巴达、ESL Premium和考试课每天12小时' },
-  { label: '学生国籍', value: '日本、韩国、台湾、越南、中国学生为主，另有泰国、俄罗斯、蒙古等' },
+  { label: '学生来源', value: '日本、韩国、越南及中国大陆、中国台湾学生为主，另有泰国、俄罗斯、蒙古等国家和地区' },
   { label: '分级', value: '6个大级各分低、中、高，共18级，约对应CEFR A1至C1' },
 ];
 

@@ -546,7 +546,7 @@ export class CuriousWorldSchoolComponent {
     { label: 'Cebu English CWA 2026费用与课程', url: 'https://cebu-english.com/school/curiousworld-academy/' },
     { label: '菲律宾留学中心 CWA Main Campus', url: 'https://www.ph-ryugaku.com/school/curious-world-main/' },
     { label: 'Cebu留学Academy CWA Mabolo费用', url: 'https://www.cebu-55.com/school/cebu/curious-world-academy-mabolo/' },
-    { label: 'DEOW台湾 CWA费用参考', url: 'https://philippines-study.tw/school/curious-world-academy/' },
+    { label: 'DEOW（中国台湾）CWA费用参考', url: 'https://philippines-study.tw/school/curious-world-academy/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

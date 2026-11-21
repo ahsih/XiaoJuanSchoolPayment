@@ -207,7 +207,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       icon: 'groups',
       label: '学生比例',
       value: '多国籍混合',
-      note: '官方公开比例含日本、台湾、韩国、越南、中国和其他国籍',
+      note: '官方公开比例含日本、中国台湾、韩国、越南、中国大陆和其他国家和地区',
     },
     {
       icon: 'school',
@@ -297,7 +297,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       value: 'Tres Borces Street, Mabolo, Cebu City',
     },
     { label: '学校定位', value: '宿务市区度假式综合英语学校，强调口语、外教、多国籍和生活便利度' },
-    { label: '学生比例', value: '官方公开比例：日本35%、台湾26%、韩国20%、越南9%、中国2%、其他8%' },
+    { label: '学生比例', value: '官方公开比例：日本35%、中国台湾26%、韩国20%、越南9%、中国大陆2%、其他8%' },
     {
       label: '课程方向',
       value: 'Power ESL、Intensive Beginner、Light ESL、Intensive Speaking、IELTS、TOEIC、Business、Junior ESL & YLE',
@@ -353,7 +353,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     },
     {
       title: '想接触多国籍学生',
-      text: '官方国籍比例显示日本、台湾、韩国、越南等学生都有一定占比。',
+      text: '官方生源比例显示日本、中国台湾、韩国、越南等地学生都有一定占比。',
     },
   ];
 
