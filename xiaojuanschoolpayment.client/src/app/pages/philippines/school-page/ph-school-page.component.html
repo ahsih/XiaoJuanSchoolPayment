@@ -1058,7 +1058,7 @@
         <p class="group-hint" *ngIf="quoteMode === 'group'">每人分别安排课程和住宿；共住房型仍按各自床位报价。</p>
         <article class="student-quote" *ngFor="let student of activeStudents; let i = index">
           <h3 *ngIf="quoteMode === 'group'">学生{{ i + 1 }}</h3>
-          <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true"></app-school-quote-plan>
+          <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true" (optionChange)="planOptionChanged(student)"></app-school-quote-plan>
           <p class="fee-alert course-length-alert" role="alert" *ngIf="student.courseLengthError">{{ student.courseLengthError }}</p>
           <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: student }"></ng-container>
           <div class="student-subtotal" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}学校费用小计</span><strong>{{ formatUsd(student.quoteUsd) }} 美元</strong></div>
@@ -1077,7 +1077,7 @@
                 <h3 class="cq-student-title" *ngIf="quoteMode === 'group'"><span>学生{{ i + 1 }}</span><small>学校费用小计 <b>{{ formatUsd(student.quoteUsd) }} 美元</b></small></h3>
                 <!-- 学生情况 first: these choices change the price, so they are set before the dates and choices (user request 2026-11-21). -->
                 <ng-container *ngTemplateOutlet="studentConditions; context: { $implicit: student }"></ng-container>
-                <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true"></app-school-quote-plan>
+                <app-school-quote-plan [plan]="student.quotePlan" [singleStay]="true" (optionChange)="planOptionChanged(student)"></app-school-quote-plan>
                 <p class="fee-alert course-length-alert" role="alert" *ngIf="student.courseLengthError">{{ student.courseLengthError }}</p>
               </article>
               <ng-container *ngTemplateOutlet="peakSeasonNote"></ng-container>

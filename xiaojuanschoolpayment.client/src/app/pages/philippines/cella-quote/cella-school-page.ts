@@ -5,7 +5,8 @@ import { SchoolDTO } from '../../../../interfaces/school.dto';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import { PhSchoolPageComponent } from '../school-page/ph-school-page.component';
 import type { PhSchoolProfile } from '../school-page/ph-school-profile';
-import { CellaPageStudent, CellaPlanComparison, CellaQuote } from './cella-page-quote';
+import type { CiaQuoteCourse } from '../cia-school/cia-quote-engine';
+import { CellaPageStudent, CellaPlanComparison, CellaQuote, isCellaFamilyPackage } from './cella-page-quote';
 import { CELLA_SCHOOL_NAMES, cellaPageProfile, cellaWithoutFamilyPackages } from './cella-page-profile';
 import type { CellaCampus } from './cella-pricing';
 
@@ -13,6 +14,9 @@ const PROFILES: Partial<Record<CellaCampus, PhSchoolProfile>> = {};
 
 @Directive()
 export abstract class CellaSchoolPageComponent extends PhSchoolPageComponent<CellaPageStudent> {
+  /** Premium's family packages: quoted, but not in the course list or 方案对比 (CellaQuotePricing). No initializer: set with the content. */
+  familyPackageFees?: CiaQuoteCourse[];
+
   /** A method, not a field: the base class reads the profile and builds the quote before subclass fields exist. */
   protected abstract cellaCampus(): CellaCampus;
 
@@ -33,8 +37,9 @@ export abstract class CellaSchoolPageComponent extends PhSchoolPageComponent<Cel
   /** CELLA prices come only from its content document (published revision or defaults), as before the template. */
   protected override applyPricingData(): void {}
 
-  /** Family packages stay out of the page until the school sends its 2027 package prices. */
+  /** Family packages are whole-family totals: offered in the quote only, not beside the ordinary courses. */
   protected override afterContentApplied(_content: CiaContentConfig): void {
+    this.familyPackageFees = this.courseFees.filter(item => isCellaFamilyPackage(item.id));
     this.courseFees = cellaWithoutFamilyPackages(this.courseFees);
   }
 }

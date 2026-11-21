@@ -197,7 +197,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
       items.push({ icon: '监', label: `${prefix}未成年人管理费`, amount: `${this.formatMoney(student.minorManagementFee)} 美元`, note: `25美元／周／人，本次按${student.actualWeeks}周计算。` });
     }
     if (student.socialPromotionDiscount) {
-      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，且不可与其他优惠叠加。`, promotionKey: student.promotionMode === 'social-6-plus-2' ? 'cella-social-6-plus-2' : 'cella-social-9-plus-3', accent: true });
+      items.push({ icon: '惠', label: `${prefix}${student.promotionMode === 'social-6-plus-2' ? '6+2限时活动' : '9+3限时活动'}`, amount: `− ${this.formatMoney(student.socialPromotionDiscount)} 美元`, note: `${student.paidWeeks}周课程和四人间收费，赠送${student.giftWeeks}周；当地费用按实际${student.actualWeeks}周收取。须完成社交媒体分享，只可与思达启航9折和圣诞优惠同享。`, promotionKey: student.promotionMode === 'social-6-plus-2' ? 'cella-social-6-plus-2' : 'cella-social-9-plus-3', accent: true });
     }
     if (student.lowSeasonDiscount) {
       items.push({ icon: '惠', label: `${prefix}淡季优惠`, amount: `− ${this.formatMoney(student.lowSeasonDiscount)} 美元`, note: `${this.formatDate(this.lowSeasonStart)}–${this.formatDate(this.lowSeasonEnd)}期间每个完整4周优惠100美元，本次${student.lowSeasonBlocks}个计费周期；课程与住宿不重复扣减。`, promotionKey: 'cella-low-season', accent: true });
@@ -216,6 +216,9 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     }
     if (student.longStay2027Discount) {
       items.push({ icon: '惠', label: `${prefix}2027长期优惠`, amount: `− ${this.formatMoney(student.longStay2027Discount)} 美元`, note: `2027年入学、就读${student.actualWeeks}周；12／16／20／24周分别优惠100／150／200／250美元。`, promotionKey: 'cella-long-stay-2027', accent: true });
+    }
+    if (student.sidaDiscount) {
+      items.push({ icon: '惠', label: `${prefix}思达启航折扣`, amount: `− ${this.formatMoney(student.sidaDiscount)} 美元`, note: student.isFamilyPackage ? '家庭套餐整包价扣除已含的500美元注册费后打9折。' : '课程费和住宿费在学校优惠后再打9折；注册费、暑期附加费不打折。', promotionKey: 'cella-sida', accent: true });
     }
     return items;
   }
@@ -294,7 +297,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
     const socialSelected = this.activeStudents.some((student) => student.isSocialPromotion);
     const ruleNotes = [
       '入学和入住按周日，离校和退房按周六。',
-      ...(socialSelected ? [`6+2／9+3仅限首次报名新生及${CELLA_CAMPUS_NAMES[this.initialCampus]}四人间；课程和住宿按6／9周收费、实际就读8／12周，当地费用按实际周数，不与任何其他优惠叠加。`] : []),
+      ...(socialSelected ? [`6+2／9+3仅限首次报名新生及${CELLA_CAMPUS_NAMES[this.initialCampus]}四人间；课程和住宿按6／9周收费、实际就读8／12周，当地费用按实际周数，只可与思达启航9折和圣诞优惠同享。`] : []),
       ...(socialSelected ? [...this.socialPromotionNotes] : []),
       ...this.activeStudents.flatMap((student, index) => student.exchangeConfirmationNote
         ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.exchangeConfirmationNote}`]
@@ -346,7 +349,7 @@ export class CellaQuoteCalculatorComponent implements OnInit, AfterViewInit {
   courseOptionLabel(course: CellaCourse): string {
     const familyPackage = course.familyPackage;
     if (!familyPackage) return `${course.name} · ${this.formatMoney(course.tuition)}美元／4周`;
-    return `${course.name} · 4周${this.formatMoney(familyPackage.prices[4])}／6周${this.formatMoney(familyPackage.prices[6])}／8周${this.formatMoney(familyPackage.prices[8])}美元整包`;
+    return `${course.name} · 1–4周${this.formatMoney(familyPackage.prices[1])}–${this.formatMoney(familyPackage.prices[4])}美元整包`;
   }
 
   private ensureStudents(count: number): void {

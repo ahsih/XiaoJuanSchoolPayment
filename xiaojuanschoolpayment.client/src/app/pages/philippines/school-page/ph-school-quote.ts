@@ -28,6 +28,8 @@ export interface PhQuoteStudent {
   returningStudent: boolean;
   /** Name of the promotion that waived this student's registration fee, if one did. */
   readonly registrationWaiverName?: string;
+  /** A single quote's registration note after the standard line (CELLA family packages: 整包价已含注册费). */
+  readonly registrationNote?: string;
   /** An amount the student pays outside the school total (CIA's IAU fee), shown beside the total. */
   readonly extraPaymentNote?: string;
   /** The conditions the price depends on, for the image's 报价条件 line (layoutVersion 2). */
@@ -146,6 +148,8 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
 
   get registrationNote() {
     if (this.quoteMode === 'single') {
+      const own = this.students[0].registrationNote;
+      if (own) return `${PH_REGISTRATION_NOTE}；${own}`;
       const waiver = this.students[0].registrationWaiverName;
       return PH_REGISTRATION_NOTE + (waiver !== undefined && !this.students[0].returningStudent ? `；本次${waiver}免收注册费` : '');
     }

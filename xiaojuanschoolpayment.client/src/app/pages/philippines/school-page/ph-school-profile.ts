@@ -242,4 +242,6 @@ export interface PhPageStudent extends PhCompareStudent {
   readonly minorNote: string;
   /** School-only choices after the standard conditions; CIA, EV and CPI have none. */
   readonly extraChoices?: readonly PhExtraChoice[];
+  /** Called after a course or room is picked in the quote form (CELLA: a family package brings its own family room). */
+  planOptionChanged?(): void;
 }

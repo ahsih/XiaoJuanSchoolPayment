@@ -13,10 +13,12 @@ import {
   CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
+  CELLA_FAMILY_REGISTRATION_FEE,
   CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
   CELLA_ROOMS,
+  CELLA_SIDA_RATE,
   CellaCampus,
   CellaCourse,
   CellaPromotionMode,
@@ -28,7 +30,15 @@ import { CellaQuoteCatalog, CellaStudentQuote } from './cella-student-quote';
 export interface CellaQuotePricing extends PhComparePricing {
   courseFees: CiaQuoteCourse[];
   roomFees: CiaQuoteRoom[];
+  /**
+   * Premium's family packages from the content document. They are quoted but kept out of courseFees, so the
+   * course list and 方案对比 show only ordinary courses; undefined until the content document is applied.
+   */
+  familyPackageFees?: CiaQuoteCourse[];
 }
+
+/** 思达启航折扣 rule of the content document; switching it off in the editor leaves the school price. */
+export const CELLA_SIDA_RULE_ID = 'cella-sida';
 
 export const CELLA_QUOTE_IMAGE_HERO: Record<CellaCampus, string> = {
   uni: '/assets/cella-uni/campus-exterior.webp',
@@ -49,9 +59,9 @@ export const CELLA_COMPARE_COURSE_GROUPS: Record<CellaCampus, ReadonlyArray<{ id
   ],
 };
 
-/** Family packages are whole-family prices still pending the school's 2027 table; the page quote leaves them out. */
+/** Family packages are whole-family prices; ids of 2026 packages left in an older saved document count too. */
 export const isCellaFamilyPackage = (courseId: string): boolean =>
-  !!CELLA_COURSES.find(course => course.id === courseId)?.familyPackage;
+  !!CELLA_COURSES.find(course => course.id === courseId)?.familyPackage || courseId.includes('-family-');
 
 /** Multiple of the four-week price for a row of this many weeks (1/2/3 weeks: 40/65/85%). */
 export const cellaPriceMultiplier = (weeks: number): number =>
@@ -88,6 +98,7 @@ const date = (value: string) => value.replace(/-/g, '/');
  */
 class CellaCatalogView implements CellaQuoteCatalog {
   private courseSource?: readonly CiaQuoteCourse[];
+  private familySource?: readonly CiaQuoteCourse[];
   private roomSource?: readonly CiaQuoteRoom[];
   private courseCache: CellaCourse[] = [];
   private roomCache: CellaRoom[] = [];
@@ -96,19 +107,33 @@ class CellaCatalogView implements CellaQuoteCatalog {
 
   get courses(): CellaCourse[] {
     // The page builds its quote before its price lists; until then the compiled catalog gives the first selections.
-    if (!this.pricing.courseFees) return CELLA_COURSES.filter(course => course.campus === this.campus && !course.familyPackage);
-    if (this.courseSource !== this.pricing.courseFees) {
+    if (!this.pricing.courseFees) return CELLA_COURSES.filter(course => course.campus === this.campus);
+    const families = this.pricing.familyPackageFees;
+    if (this.courseSource !== this.pricing.courseFees || this.familySource !== families) {
       this.courseSource = this.pricing.courseFees;
+      this.familySource = families;
       const fallback = CELLA_COURSES.find(course => course.campus === this.campus && !course.familyPackage)!;
-      this.courseCache = this.pricing.courseFees.filter(item => !isCellaFamilyPackage(item.id)).map(item => ({
-        ...(CELLA_COURSES.find(course => course.id === item.id) ?? fallback),
+      const course = (item: CiaQuoteCourse, base: CellaCourse): CellaCourse => ({
+        ...base,
         id: item.id,
         campus: this.campus,
         name: item.name,
         tuition: item.tuition2027 || item.tuition,
         lessons: item.schedule,
         note: item.note,
-      }));
+      });
+      // A family package needs its compiled table entry; an obsolete saved one is left out.
+      const familyCourses = families
+        ? families.flatMap(item => {
+          const base = CELLA_COURSES.find(entry => entry.id === item.id && entry.familyPackage);
+          return base ? [course(item, base)] : [];
+        })
+        : CELLA_COURSES.filter(entry => entry.campus === this.campus && entry.familyPackage);
+      this.courseCache = [
+        ...this.pricing.courseFees.filter(item => !isCellaFamilyPackage(item.id))
+          .map(item => course(item, CELLA_COURSES.find(entry => entry.id === item.id) ?? fallback)),
+        ...familyCourses,
+      ];
     }
     return this.courseCache;
   }
@@ -134,6 +159,11 @@ class CellaCatalogView implements CellaQuoteCatalog {
   get registrationFee() { return this.pricing.registrationFee; }
   get peakSeasonWeeklyFee() { return this.pricing.seasonalFeePerWeek; }
   get peakSeasonRanges() { return this.pricing.peakSeasonRanges.filter(range => range.enabled !== false); }
+  get sidaRate() {
+    const rule = this.pricing.promotions?.find(item => item.id === CELLA_SIDA_RULE_ID);
+    if (!rule) return CELLA_SIDA_RATE;
+    return rule.enabled ? Math.max(0, 1 - rule.discountValue / 100) : 1;
+  }
 }
 
 /** One CELLA student as the template binds it: conditions, CELLA's own choices and every amount. */
@@ -152,10 +182,10 @@ export class CellaPageStudent implements PhPageStudent {
       label: '分享活动（四人间新学员）',
       options: PROMOTION_OPTIONS,
       inComparison: false,
-      get visible() { return !student.returningStudent; },
+      get visible() { return !student.returningStudent && !student.quote.isFamilyPackage; },
       get note() {
         return student.quote.promotionMode === 'standard' ? ''
-          : '须在入学第一个月发4篇小红书和抖音内容，先经CELLA中文经理审核；不可与其他优惠同用，未完成学校可追回优惠。';
+          : '须在入学第一个月发4篇小红书和抖音内容，先经CELLA中文经理审核；只可与思达启航9折和圣诞优惠同享，未完成学校可追回优惠。';
       },
       get value() { return student.quote.promotionMode; },
       set value(mode: CellaPromotionMode) { student.quote.selectPromotion(mode); },
@@ -163,7 +193,7 @@ export class CellaPageStudent implements PhPageStudent {
     const minor: CellaExtraChoice<boolean> = {
       label: '未成年人管理费',
       options: MINOR_OPTIONS,
-      get visible() { return student.ageGroup === 'minor'; },
+      get visible() { return student.ageGroup === 'minor' && !student.quote.isFamilyPackage; },
       note: '',
       get value() { return student.quote.minorManagementSelected; },
       set value(selected: boolean) { student.quote.minorManagementSelected = selected; },
@@ -172,6 +202,9 @@ export class CellaPageStudent implements PhPageStudent {
   }
 
   get quotePlan(): SchoolQuotePlan { return this.quote.quotePlan; }
+
+  /** A course change may pick or leave a family package, which brings its own family room (template hook). */
+  planOptionChanged(): void { this.quote.syncFamilyRoom(); }
   /** CELLA's course-length rules (IELTS Guarantee 8 or 12 weeks, TESOL 4) come through quoteError. */
   readonly courseLengthError = '';
 
@@ -217,13 +250,18 @@ export class CellaPageStudent implements PhPageStudent {
 
   // ---- school payment ---------------------------------------------------------------------------
 
-  get registration(): number { return this.returningStudent ? 0 : this.catalog.registrationFee; }
+  get registration(): number { return this.returningStudent || this.quote.isFamilyPackage ? 0 : this.catalog.registrationFee; }
+  /** The family package price already holds the 500-dollar family registration (school answer 2026-11-21). */
+  get registrationNote(): string | undefined {
+    return this.quote.isFamilyPackage ? '家庭套餐整包价已含注册费（每户500美元）' : undefined;
+  }
   get tuition(): number { return this.quote.coursePriceBeforePromotions; }
   get accommodation(): number { return this.quote.roomPriceBeforePromotions; }
   get peakWeeks(): number { return this.quote.peakSeasonWeeks; }
   get seasonalSurcharge(): number { return this.quote.peakSeasonSurcharge; }
 
   get quoteUsd(): number {
+    if (this.quote.isFamilyPackage) return this.quote.schoolTotal;
     return Math.max(0, round(this.quote.schoolTotal - (this.returningStudent ? this.catalog.registrationFee : 0)));
   }
 
@@ -234,7 +272,7 @@ export class CellaPageStudent implements PhPageStudent {
     return [
       {
         label: `${social}限时活动`, key: `cella-${quote.promotionMode}`, amount: quote.socialPromotionDiscount,
-        note: `${quote.paidWeeks}周课程和四人间收费，赠送${quote.giftWeeks}周；到校学杂费按实际${weeks}周收取。须完成社交媒体分享，不可与其他优惠同用。`,
+        note: `${quote.paidWeeks}周课程和四人间收费，赠送${quote.giftWeeks}周；到校学杂费按实际${weeks}周收取。须完成社交媒体分享，只可与思达启航9折和圣诞优惠同享。`,
       },
       {
         label: '淡季优惠', key: 'cella-low-season', amount: quote.lowSeasonDiscount,
@@ -259,6 +297,12 @@ export class CellaPageStudent implements PhPageStudent {
       {
         label: '2027长期优惠', key: 'cella-long-stay-2027', amount: quote.longStay2027Discount,
         note: `2027年入学、就读${weeks}周；12／16／20／24周分别优惠100／150／200／250美元。`,
+      },
+      {
+        label: '思达启航折扣', key: CELLA_SIDA_RULE_ID, amount: quote.sidaDiscount,
+        note: quote.isFamilyPackage
+          ? `家庭套餐整包价扣除已含的${CELLA_FAMILY_REGISTRATION_FEE}美元注册费后打${Math.round((this.catalog.sidaRate ?? CELLA_SIDA_RATE) * 100) / 10}折。`
+          : `课程费和住宿费在学校优惠后再打${Math.round((this.catalog.sidaRate ?? CELLA_SIDA_RATE) * 100) / 10}折；注册费、暑期附加费不打折。`,
       },
     ].filter(item => item.amount > 0);
   }
@@ -301,9 +345,18 @@ export class CellaPageStudent implements PhPageStudent {
 function cellaOptionalFees(students: readonly CellaPageStudent[], quote: PhSchoolQuote<CellaPageStudent>, phpPerCny: number): PhOptionalFeeItem[] {
   const cny = (php: number) => quoteCurrencyText(Math.round(php / phpPerCny), 'zh-CN');
   const fees = CELLA_LOCAL_FEES_2027;
-  const deposits = [...new Set(students.map(student => student.quote.depositAmount ?? 0))].sort((a, b) => a - b);
+  const regular = students.filter(student => !student.quote.isFamilyPackage);
+  if (!regular.length) {
+    return [{
+      label: '房间押金（可退参考）',
+      amount: '以学校通知为准',
+      cnyAmount: '',
+      note: '家庭套餐已含接机和洗衣；可退押金是否另收、金额多少，以学校通知为准。',
+    }];
+  }
+  const deposits = [...new Set(regular.map(student => student.quote.depositAmount ?? 0))].sort((a, b) => a - b);
   const charged = deposits.filter(value => value > 0);
-  const group = students.length > 1;
+  const group = regular.length > 1;
   return [
     {
       label: '洗衣服务（价格参考）',

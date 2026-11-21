@@ -2,9 +2,13 @@ import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import {
   CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
+  CELLA_FAMILY_PACKAGE_WEEKS,
+  CELLA_FAMILY_ROOM,
   CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
+  CELLA_FAMILY_REGISTRATION_FEE,
+  CELLA_SIDA_RATE,
   CellaCampus,
   CellaCourse,
   CellaEnrollmentStatus,
@@ -27,6 +31,8 @@ export interface CellaQuoteCatalog {
   registrationFee: number;
   peakSeasonWeeklyFee: number;
   peakSeasonRanges?: ReadonlyArray<{ start: string; end: string; enabled?: boolean }>;
+  /** Share of course and room the student pays after the 思达启航 discount; default CELLA_SIDA_RATE (0.9). */
+  sidaRate?: number;
 }
 
 export interface CellaCalculatedLocalFee {
@@ -75,14 +81,17 @@ export class CellaStudentQuote {
 
   get campusName(): string { return CELLA_CAMPUS_NAMES[this.campus]; }
   get courseOptions(): CellaCourse[] { return this.catalog.courses.filter((item) => item.campus === this.campus); }
-  get roomOptions(): CellaRoom[] { return this.catalog.rooms.filter((item) => item.campus === this.campus); }
+  /** A family package includes its family room, so the room list then holds only that choice. */
+  get roomOptions(): CellaRoom[] {
+    return this.isFamilyPackage ? [CELLA_FAMILY_ROOM] : this.catalog.rooms.filter((item) => item.campus === this.campus);
+  }
   get selectedCourse(): CellaCourse | undefined { return this.courseOptions.find((item) => item.id === this.courseId); }
   get selectedRoom(): CellaRoom | undefined { return this.roomOptions.find((item) => item.id === this.roomId); }
   get isFamilyPackage(): boolean { return !!this.selectedCourse?.familyPackage; }
+  /** Whole-family total: 1–3 weeks are 40/65/85% of the four-week package, exactly as the 2027 table lists them. */
   get familyPackagePrice(): number {
-    const familyPackage = this.selectedCourse?.familyPackage;
-    if (!familyPackage || ![4, 6, 8].includes(this.actualWeeks)) return 0;
-    return familyPackage.prices[this.actualWeeks as 4 | 6 | 8];
+    if (!this.isFamilyPackage || !CELLA_FAMILY_PACKAGE_WEEKS.includes(this.actualWeeks)) return 0;
+    return this.roundMoney(this.quotePlan.total('course'));
   }
 
   get actualWeeks(): number {
@@ -219,10 +228,31 @@ export class CellaStudentQuote {
   get peakSeasonWeeks(): number { return this.peakSeasonCalculation.weeks; }
   get peakSeasonSurcharge(): number { return this.peakSeasonCalculation.total; }
   get peakSeasonNote(): string { return associationPeakBreakdownText(this.peakSeasonCalculation); }
+  /**
+   * 思达启航折扣: course and room after every school offer (fixed amounts first, then the six-person 25%), as in
+   * CELLA's own formula. Registration, the summer surcharge and the minor fee stay at full price. A family
+   * package takes it on the package price less the 500-dollar registration it already holds (user decision 2026-11-21).
+   */
+  get sidaDiscount(): number {
+    const rate = 1 - (this.catalog.sidaRate ?? CELLA_SIDA_RATE);
+    if (this.isFamilyPackage) {
+      return this.familyPackagePrice > 0 ? this.roundMoney(Math.max(0, this.familyPackagePrice - CELLA_FAMILY_REGISTRATION_FEE) * rate) : 0;
+    }
+    const base = this.coursePriceBeforePromotions + this.roomPriceBeforePromotions
+      - this.socialPromotionDiscount
+      - this.lowSeasonDiscount
+      - this.premiumSixPersonDiscount
+      - this.longStayDiscount
+      - this.lowSeason2027Discount
+      - this.premiumSixPerson2027Discount
+      - this.longStay2027Discount;
+    return this.roundMoney(Math.max(0, base) * rate);
+  }
+
   get minorManagementFee(): number { return !this.isFamilyPackage && this.minorManagementSelected ? this.actualWeeks * 25 : 0; }
 
   get schoolTotal(): number {
-    if (this.isFamilyPackage) return this.familyPackagePrice;
+    if (this.isFamilyPackage) return this.roundMoney(this.familyPackagePrice - this.sidaDiscount);
     return Math.max(0, this.roundMoney(
       this.catalog.registrationFee
       + this.coursePriceBeforePromotions
@@ -235,7 +265,8 @@ export class CellaStudentQuote {
       - this.longStayDiscount
       - this.lowSeason2027Discount
       - this.premiumSixPerson2027Discount
-      - this.longStay2027Discount,
+      - this.longStay2027Discount
+      - this.sidaDiscount,
     ));
   }
 
@@ -319,7 +350,7 @@ export class CellaStudentQuote {
     const start = this.dateValue(this.startDate);
     if (start === null || new Date(start).getUTCDay() !== 0) return '入学和入住日期请选择周日。';
     if (!this.selectedCourse) return '请选择当前校区的有效课程。';
-    if (this.isFamilyPackage && ![4, 6, 8].includes(this.actualWeeks)) return '家庭套餐仅有附件确认的4周、6周或8周整包价格。';
+    if (this.isFamilyPackage && !CELLA_FAMILY_PACKAGE_WEEKS.includes(this.actualWeeks)) return '家庭套餐只有1–4周的整包价，更长时间请联系思达启航顾问。';
     if (this.isFamilyPackage && this.promotionMode !== 'standard') return '家庭套餐与其他优惠能否叠加未确认，请按附件整包价报价。';
     if (this.isFamilyPackage) return '';
     if (!this.selectedRoom) return '请选择当前校区的有效房型。';
@@ -346,10 +377,21 @@ export class CellaStudentQuote {
 
   selectCourse(courseId: string): void {
     this.courseId = courseId;
-    if (!this.isFamilyPackage) return;
-    this.promotionMode = 'standard';
-    this.minorManagementSelected = false;
-    if (![4, 6, 8].includes(this.weeks)) this.weeks = 4;
+    if (this.isFamilyPackage && this.weeks > 4) this.weeks = 4;
+    this.syncFamilyRoom();
+  }
+
+  /** After a course change: a family package takes its family room and drops the student-only choices; leaving one restores a normal room. */
+  syncFamilyRoom(): void {
+    const family = this.isFamilyPackage;
+    if (family) {
+      this.promotionMode = 'standard';
+      this.minorManagementSelected = false;
+    }
+    for (const row of this.quotePlan.rooms) {
+      if (family && row.optionId !== CELLA_FAMILY_ROOM.id) row.optionId = CELLA_FAMILY_ROOM.id;
+      if (!family && !this.roomOptions.some(room => room.id === row.optionId)) row.optionId = this.defaultRoomId();
+    }
   }
 
   selectPromotion(mode: CellaPromotionMode): void {
@@ -369,14 +411,17 @@ export class CellaStudentQuote {
     const courses = this.courseOptions;
     const rooms = this.roomOptions;
     if (!courses.some((item) => item.id === this.courseId)) this.courseId = courses[0]?.id ?? '';
-    if (!rooms.some((item) => item.id === this.roomId)) {
-      const preferredRoom = this.isSocialPromotion
-        ? rooms.find((item) => item.socialEligible)
-        : this.campus === 'premium'
-          ? rooms.find((item) => item.premiumSixPerson)
-          : rooms.find((item) => item.socialEligible);
-      this.roomId = preferredRoom?.id ?? rooms[0]?.id ?? '';
-    }
+    if (!rooms.some((item) => item.id === this.roomId)) this.roomId = this.defaultRoomId();
+  }
+
+  private defaultRoomId(): string {
+    const rooms = this.roomOptions;
+    const preferredRoom = this.isSocialPromotion
+      ? rooms.find((item) => item.socialEligible)
+      : this.campus === 'premium'
+        ? rooms.find((item) => item.premiumSixPerson)
+        : rooms.find((item) => item.socialEligible);
+    return preferredRoom?.id ?? rooms[0]?.id ?? '';
   }
 
   private get lowSeasonBlocksForAnyRoom(): number {

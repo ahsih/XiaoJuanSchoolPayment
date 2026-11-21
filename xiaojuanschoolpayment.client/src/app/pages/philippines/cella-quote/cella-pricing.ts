@@ -1,7 +1,7 @@
 export type CellaCampus = 'uni' | 'premium';
 export type CellaEnrollmentStatus = 'new' | 'transfer' | 'extension';
 export type CellaPromotionMode = 'standard' | 'social-6-plus-2' | 'social-9-plus-3';
-export type CellaRoomKind = 'single' | 'semi-single' | 'twin' | 'triple' | 'quad' | 'six';
+export type CellaRoomKind = 'single' | 'semi-single' | 'twin' | 'triple' | 'quad' | 'six' | 'family';
 
 export interface CellaCourse {
   id: string;
@@ -35,9 +35,12 @@ export interface CellaRoom {
 
 export interface CellaFamilyPackage {
   id: string;
+  /** Premium campus dormitory, or the STACIA HOTEL outside dormitory (no guardian class). */
+  dormitory: 'premium' | 'stacia';
   room: string;
   occupants: string;
-  prices: Record<4 | 6 | 8, number>;
+  /** Whole-family dollar totals of the 2027 table; there is no published price beyond four weeks. */
+  prices: Record<1 | 2 | 3 | 4, number>;
 }
 
 export const CELLA_CAMPUS_NAMES: Record<CellaCampus, string> = {
@@ -89,14 +92,48 @@ export const CELLA_LOCAL_FEES_2027 = {
   pickupFamilyWeekday: 4000,
 } as const;
 
-export const CELLA_FAMILY_PACKAGE_NOTE = '整包价包含注册费、课程费、住宿费，以及SSP、电子卡、电费、水费、管理费、洗衣、周日接机、学生证和教材等附件列明的当地费用；不含汇款手续费及额外电费。家庭成员年龄、课程组合、床位、Main／Alicia安排和空房需向学校确认。';
+/**
+ * 思达启航折扣 (user decision 2026-11-21, following CELLA's own formula for the six-person offer): course and room
+ * 10% off after every school offer; registration, the summer surcharge and the minor fee are not discounted.
+ */
+export const CELLA_SIDA_RATE = 0.9;
+/** The family registration inside every family package price; it stays out of the 思达启航折扣 (user decision 2026-11-21). */
+export const CELLA_FAMILY_REGISTRATION_FEE = 500;
 
+export const CELLA_FAMILY_PACKAGE_NOTE = '全家整包价，已含每户500美元注册费、课程、住宿、三餐，以及SSP、电子卡、电费、水费、管理费、洗衣、接机、学生证和教材；不含汇款手续费和超额电费。价格只有1–4周；家庭成员年龄和空房须由顾问向学校确认。';
+
+/** Durations of the 2027 family package table (school answer 2026-11-21: the price is the whole amount). */
+export const CELLA_FAMILY_PACKAGE_WEEKS: readonly number[] = [1, 2, 3, 4];
+
+const familyPackage = (
+  dormitory: CellaFamilyPackage['dormitory'], beds: 'twin' | 'triple' | 'quad', guardians: number, juniors: number,
+  [one, two, three, four]: readonly [number, number, number, number],
+): CellaFamilyPackage => ({
+  id: `premium-${dormitory === 'stacia' ? 'stacia-' : ''}family-${beds}${beds === 'twin' ? '' : `-${guardians}-${juniors}`}`,
+  dormitory,
+  room: `${dormitory === 'stacia' ? 'STACIA校外' : '校内'}${{ twin: '双', triple: '三', quad: '四' }[beds]}人家庭房`,
+  occupants: `${guardians}位家长＋${juniors}位孩子`,
+  prices: { 1: one, 2: two, 3: three, 4: four },
+});
+
+/** 2027 CELLA Family Package (Premium campus): whole-family totals for 1/2/3/4 weeks. */
 export const CELLA_FAMILY_PACKAGES: readonly CellaFamilyPackage[] = [
-  { id: 'premium-family-twin', room: 'Main／Alicia双人家庭房', occupants: '家庭组合需确认', prices: { 4: 5600, 6: 8400, 8: 11000 } },
-  { id: 'premium-family-triple', room: 'Main／Alicia三人家庭房', occupants: '家庭组合需确认', prices: { 4: 8750, 6: 13125, 8: 17300 } },
-  { id: 'premium-family-quad-2-2', room: 'Main／Alicia四人家庭房', occupants: '2位监护人＋2位青少年', prices: { 4: 10700, 6: 16050, 8: 21200 } },
-  { id: 'premium-family-quad-1-3', room: 'Main／Alicia四人家庭房', occupants: '1位监护人＋3位青少年', prices: { 4: 11200, 6: 16800, 8: 22200 } },
+  familyPackage('premium', 'twin', 1, 1, [2360, 3835, 5015, 5900]),
+  familyPackage('premium', 'triple', 2, 1, [3320, 5395, 7055, 8300]),
+  familyPackage('premium', 'triple', 1, 2, [3560, 5785, 7565, 8900]),
+  familyPackage('premium', 'quad', 2, 2, [4400, 7150, 9350, 11000]),
+  familyPackage('premium', 'quad', 1, 3, [4640, 7540, 9860, 11600]),
+  familyPackage('stacia', 'twin', 1, 1, [1960, 3185, 4165, 4900]),
+  familyPackage('stacia', 'triple', 2, 1, [2520, 4095, 5355, 6300]),
+  familyPackage('stacia', 'triple', 1, 2, [3160, 5135, 6715, 7900]),
+  familyPackage('stacia', 'quad', 2, 2, [3600, 5850, 7650, 9000]),
+  familyPackage('stacia', 'quad', 1, 3, [4240, 6890, 9010, 10600]),
 ];
+
+const FAMILY_LESSONS: Record<CellaFamilyPackage['dormitory'], string> = {
+  premium: '孩子和家长都上课；含注册费、住宿、三餐和到校学杂费，不含汇款手续费和超额电费',
+  stacia: '只含孩子课程，家长上课须另付课程费、SSP和电子卡；含注册费、住宿、三餐和到校学杂费，不含汇款手续费和超额电费',
+};
 
 const PRICE_NOTE = '2027年4周课程费。';
 const TESOL_START_DATES_2027 = ['2027-01-03', '2027-01-31', '2027-02-28', '2027-03-28', '2027-04-25', '2027-05-23', '2027-06-20', '2027-07-18', '2027-08-15', '2027-09-05', '2027-10-03', '2027-10-31'];
@@ -187,14 +224,19 @@ export const CELLA_COURSES: readonly CellaCourse[] = [
   ...CELLA_FAMILY_PACKAGES.map((familyPackage) => ({
     id: familyPackage.id,
     campus: 'premium' as const,
-    name: `Family Package｜${familyPackage.room}｜${familyPackage.occupants}`,
+    name: `家庭套餐｜${familyPackage.room}｜${familyPackage.occupants}`,
     tuition: familyPackage.prices[4],
-    lessons: '家庭成员课程、家庭房及附件列明的当地费用整包报价',
+    lessons: FAMILY_LESSONS[familyPackage.dormitory],
     note: CELLA_FAMILY_PACKAGE_NOTE,
-    needsConfirmation: true,
     familyPackage,
   })),
 ];
+
+/** The only room choice while a family package is selected: the package already includes its family room. */
+export const CELLA_FAMILY_ROOM: CellaRoom = {
+  id: 'premium-family-room', campus: 'premium', name: '家庭房（含在家庭套餐内）', fee: 0, kind: 'family',
+  note: '房型和入住人数按所选家庭套餐安排。', lowSeasonEligible: false, socialEligible: false,
+};
 
 const room = (value: Omit<CellaRoom, 'lowSeasonEligible' | 'socialEligible'> & Partial<Pick<CellaRoom, 'lowSeasonEligible' | 'socialEligible'>>): CellaRoom => ({
   lowSeasonEligible: value.kind !== 'six',

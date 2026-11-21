@@ -32,7 +32,7 @@
         <input type="date" min="2020-01-05" step="7" [(ngModel)]="student.startDate" />
       </label>
       <label *ngIf="student.isFamilyPackage || student.isSocialPromotion">{{ student.isFamilyPackage ? '家庭套餐周数' : '实际就读周数' }}
-        <select *ngIf="student.isFamilyPackage" [(ngModel)]="student.weeks"><option [ngValue]="4">4周</option><option [ngValue]="6">6周</option><option [ngValue]="8">8周</option></select>
+        <select *ngIf="student.isFamilyPackage" [(ngModel)]="student.weeks"><option [ngValue]="1">1周</option><option [ngValue]="2">2周</option><option [ngValue]="3">3周</option><option [ngValue]="4">4周</option></select>
         <input *ngIf="!student.isFamilyPackage" type="number" min="1" max="24" step="1" [(ngModel)]="student.weeks" [disabled]="student.isSocialPromotion" />
       </label>
       <label *ngIf="!student.isFamilyPackage">旅游签证初始停留期
@@ -80,7 +80,7 @@
     </section>
     <section *ngIf="hasRegularQuotes">
       <h3>6+2／9+3社交媒体活动</h3>
-      <p>仅限本页面对应校区四人间及首次报名新生；课程和住宿分别按6周／9周收费，实际就读8周／12周，当地费用按实际周数收取，不与任何其他优惠同用。不同校区请分别进入各自页面生成报价。</p>
+      <p>仅限本页面对应校区四人间及首次报名新生；课程和住宿分别按6周／9周收费，实际就读8周／12周，当地费用按实际周数收取，只可与思达启航9折和圣诞优惠同享。不同校区请分别进入各自页面生成报价。</p>
       <ul><li *ngFor="let note of socialPromotionNotes">{{ note }}</li></ul>
     </section>
     <section *ngIf="hasFamilyPackages" class="family-package-guide">

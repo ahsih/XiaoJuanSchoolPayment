@@ -1,5 +1,7 @@
 import {
   CELLA_COURSES,
+  CELLA_FAMILY_PACKAGES,
+  CELLA_FAMILY_ROOM,
   CELLA_PEAK_SEASON_WEEKLY_FEE,
   CELLA_REGISTRATION_FEE,
   CELLA_ROOMS,
@@ -53,7 +55,9 @@ describe('CellaStudentQuote', () => {
     expect(first.endDate).toBe('2026-09-26');
     expect(first.lowSeasonBlocks).toBe(1);
     expect(first.lowSeasonDiscount).toBe(100);
-    expect(first.schoolTotal).toBe(1750);
+    // 150 registration + (930 + 770 − 100) × 0.9 思达启航折扣
+    expect(first.sidaDiscount).toBe(160);
+    expect(first.schoolTotal).toBe(1590);
     expect(last.endDate).toBe('2027-01-02');
     expect(last.lowSeasonDiscount).toBe(100);
   });
@@ -94,14 +98,14 @@ describe('CellaStudentQuote', () => {
     expect(quote.roomPriceBeforePromotions).toBe(670);
     expect(quote.premiumSixPersonDiscount).toBe(171);
     expect(quote.lowSeasonDiscount).toBe(0);
-    expect(quote.schoolTotal).toBe(1479);
+    expect(quote.schoolTotal).toBe(1346.1);
   });
 
   it('stacks every 2026 long-stay tier with low season', () => {
     const cases = [
-      { weeks: 8, lowSeason: 200, longStay: 50, total: 3300 },
-      { weeks: 12, lowSeason: 300, longStay: 100, total: 4850 },
-      { weeks: 16, lowSeason: 400, longStay: 150, total: 6400 },
+      { weeks: 8, lowSeason: 200, longStay: 50, total: 2985 },
+      { weeks: 12, lowSeason: 300, longStay: 100, total: 4380 },
+      { weeks: 16, lowSeason: 400, longStay: 150, total: 5775 },
     ];
 
     for (const item of cases) {
@@ -116,7 +120,7 @@ describe('CellaStudentQuote', () => {
     const february = uniQuote(4, '2027-02-14');
     expect(february.lowSeason2027Weeks).toBe(4);
     expect(february.lowSeason2027Discount).toBe(100);
-    expect(february.schoolTotal).toBe(1750);
+    expect(february.schoolTotal).toBe(1590);
 
     const intoSummer = uniQuote(4, '2027-05-23');
     expect(intoSummer.lowSeason2027Weeks).toBe(1);
@@ -140,69 +144,78 @@ describe('CellaStudentQuote', () => {
     }
     const twelve = uniQuote(12, '2027-02-14');
     expect(twelve.lowSeason2027Discount).toBe(300);
-    expect(twelve.schoolTotal).toBe(4850);
+    expect(twelve.schoolTotal).toBe(4380);
     expect(uniQuote(8, '2027-02-14').longStay2027Discount).toBe(0);
   });
 
   it('takes 25% off Premium six-person course and room for 4, 8 or 12 weeks without the long-stay offer', () => {
     const four = premiumQuote(4, '2027-02-14');
     expect(four.premiumSixPerson2027Discount).toBe(375);
-    expect(four.schoolTotal).toBe(1275);
+    // CELLA's formula: (tuition + room) × 0.75 × 0.9 + registration = 1,500 × 0.675 + 150
+    expect(four.schoolTotal).toBe(1162.5);
 
     const twelve = premiumQuote(12, '2027-02-14');
     expect(twelve.premiumSixPerson2027Discount).toBe(1125);
     expect(twelve.longStay2027Discount).toBe(0);
-    expect(twelve.schoolTotal).toBe(3525);
+    expect(twelve.schoolTotal).toBe(3187.5);
 
     const sixteen = premiumQuote(16, '2027-02-14');
     expect(sixteen.premiumSixPerson2027Discount).toBe(0);
     expect(sixteen.longStay2027Discount).toBe(150);
-    expect(sixteen.schoolTotal).toBe(6000);
+    expect(sixteen.schoolTotal).toBe(5415);
 
     const summer = premiumQuote(4, '2027-06-06');
     expect(summer.premiumSixPerson2027Discount).toBe(0);
   });
 
-  it('offers the four confirmed family packages only on the Premium campus', () => {
+  it('leaves the school price when the 思达启航 discount is switched off', () => {
+    catalog.sidaRate = 1;
+    expect(uniQuote(4, '2026-08-30').schoolTotal).toBe(1750);
+  });
+
+  it('offers the ten 2027 family packages only on the Premium campus', () => {
     const uni = new CellaStudentQuote(catalog, 'uni');
     const premium = new CellaStudentQuote(catalog, 'premium');
 
     expect(uni.courseOptions.filter((course) => course.familyPackage).length).toBe(0);
-    expect(premium.courseOptions.filter((course) => course.familyPackage).length).toBe(4);
+    expect(premium.courseOptions.filter((course) => course.familyPackage).length).toBe(10);
   });
 
-  it('uses exact 4, 6 and 8 week family-package totals without duplicating included fees', () => {
-    const expected: Record<string, [number, number, number]> = {
-      'premium-family-twin': [5600, 8400, 11000],
-      'premium-family-triple': [8750, 13125, 17300],
-      'premium-family-quad-2-2': [10700, 16050, 21200],
-      'premium-family-quad-1-3': [11200, 16800, 22200],
-    };
-
-    for (const [courseId, totals] of Object.entries(expected)) {
+  it('uses the exact 1–4 week family-package totals, 9折 on all but the included 500-dollar registration', () => {
+    for (const familyPackage of CELLA_FAMILY_PACKAGES) {
       const quote = new CellaStudentQuote(catalog, 'premium');
-      quote.selectCourse(courseId);
-      [4, 6, 8].forEach((weeks, index) => {
+      quote.startDate = '2027-03-07';
+      quote.selectCourse(familyPackage.id);
+      expect(quote.roomId).toBe(CELLA_FAMILY_ROOM.id);
+      ([1, 2, 3, 4] as const).forEach((weeks) => {
         quote.weeks = weeks;
-        expect(quote.schoolTotal).withContext(`${courseId} ${weeks}周`).toBe(totals[index]);
+        expect(quote.error).withContext(`${familyPackage.id} ${weeks}周`).toBe('');
+        const price = familyPackage.prices[weeks];
+        expect(quote.familyPackagePrice).withContext(`${familyPackage.id} ${weeks}周`).toBe(price);
+        expect(quote.sidaDiscount).withContext(`${familyPackage.id} ${weeks}周`).toBeCloseTo((price - 500) * 0.1, 2);
+        expect(quote.schoolTotal).withContext(`${familyPackage.id} ${weeks}周`).toBeCloseTo(price - (price - 500) * 0.1, 2);
         expect(quote.roomPriceBeforePromotions).toBe(0);
         expect(quote.localFeeTotal).toBe(0);
-        expect(quote.lowSeasonDiscount).toBe(0);
-        expect(quote.longStayDiscount).toBe(0);
+        expect(quote.lowSeason2027Discount).toBe(0);
       });
     }
   });
 
-  it('limits family packages to confirmed durations and does not apply social promotions', () => {
+  it('limits family packages to the 1–4 week table and gives back a normal room when leaving one', () => {
     const quote = new CellaStudentQuote(catalog, 'premium');
     quote.selectCourse('premium-family-twin');
     quote.weeks = 5;
-    expect(quote.error).toContain('4周、6周或8周');
+    expect(quote.error).toContain('1–4周');
 
     quote.weeks = 4;
     quote.selectPromotion('social-6-plus-2');
     expect(quote.promotionMode).toBe('standard');
-    expect(quote.schoolTotal).toBe(5600);
+    // 5,900 − (5,900 − 500 registration) × 10%
+    expect(quote.schoolTotal).toBe(5360);
+
+    quote.selectCourse('premium-light-esl');
+    expect(quote.roomId).toBe('premium-six');
+    expect(quote.error).toBe('');
   });
 
   it('charges six weeks of course and quad room but eight weeks of local fees for 6+2', () => {
@@ -213,7 +226,7 @@ describe('CellaStudentQuote', () => {
     expect(quote.paidWeeks).toBe(6);
     expect(quote.giftWeeks).toBe(2);
     expect(quote.socialPromotionDiscount).toBe(595);
-    expect(quote.schoolTotal).toBe(2955);
+    expect(quote.schoolTotal).toBe(2674.5);
     expect(quote.lowSeasonDiscount).toBe(0);
     expect(quote.longStayDiscount).toBe(0);
     expect(fee(quote, '管理费')?.quantity).toBe('8周');
@@ -226,7 +239,7 @@ describe('CellaStudentQuote', () => {
     expect(quote.actualWeeks).toBe(12);
     expect(quote.paidWeeks).toBe(9);
     expect(quote.giftWeeks).toBe(3);
-    expect(quote.schoolTotal).toBe(4230);
+    expect(quote.schoolTotal).toBe(3822);
     expect(fee(quote, '水费')?.quantity).toBe('12周');
   });
 
@@ -247,8 +260,8 @@ describe('CellaStudentQuote', () => {
     first.selectPromotion('social-6-plus-2');
     const second = uniQuote(8, '2026-08-30', 'uni-twin');
 
-    expect(first.schoolTotal).toBe(2955);
-    expect(second.schoolTotal).toBe(3700);
+    expect(first.schoolTotal).toBe(2674.5);
+    expect(second.schoolTotal).toBe(3345);
     expect(first.campus).toBe('uni');
     expect(second.campus).toBe('uni');
   });

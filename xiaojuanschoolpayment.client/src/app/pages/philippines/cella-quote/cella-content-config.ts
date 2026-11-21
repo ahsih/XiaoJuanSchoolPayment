@@ -10,12 +10,14 @@ import {
   CELLA_2027_PROMOTION,
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
+  CELLA_FAMILY_PACKAGE_WEEKS,
   CELLA_LOCAL_FEES_2027,
   CELLA_LOW_SEASON_END,
   CELLA_LOW_SEASON_START,
   CELLA_PEAK_SEASON_WEEKLY_FEE,
   CELLA_REGISTRATION_FEE,
   CELLA_ROOMS,
+  CELLA_SIDA_RATE,
   CellaCampus,
   CellaRoom,
 } from './cella-pricing';
@@ -34,6 +36,13 @@ const CELLA_RENAMED_ROOMS = new Set(['premium-alicia-single', 'premium-alicia-tw
  */
 export const CELLA_PAGE_VERSION = 1;
 type CellaPageSettings = { cellaPageVersion?: number };
+
+/**
+ * Bumped with the 2027 family package table and the 思达启航折扣 (2026-11-21): a saved document takes the new family
+ * packages (the 2026 ones are removed) and any missing default offer once; other courses and edits stay as saved.
+ */
+export const CELLA_FAMILY_VERSION = 2027;
+type CellaFamilySettings = { cellaFamilyVersion?: number };
 
 const LOCAL_FEE_INTRO = '以下费用以比索计价，到校后在学校缴纳；接机、洗衣和可退押金另列。';
 /** The company's own lines on the quote image, the same for every school (CIA's wording). */
@@ -114,6 +123,17 @@ const promotion = (value: Partial<CiaPromotionRule> & Pick<CiaPromotionRule, 'id
   ...value,
 });
 
+/** CELLA (2026-11-21): 6+2／9+3 combine only with the agent 9折 (思达启航折扣) and the Christmas offer. */
+const SOCIAL_NOTES: Record<string, string> = {
+  'cella-social-6-plus-2': '课程与四人房按6周收费、实际就读8周；须完成活动要求，只可与思达启航9折和圣诞优惠同享。',
+  'cella-social-9-plus-3': '课程与四人房按9周收费、实际就读12周；须完成活动要求，只可与思达启航9折和圣诞优惠同享。',
+};
+/** The image notes saved before CELLA_FAMILY_VERSION; untouched ones take the wording above. */
+const OLD_SOCIAL_NOTES: Record<string, string> = {
+  'cella-social-6-plus-2': '课程与四人房按6周收费、实际就读8周；须完成活动要求，不与其他优惠叠加。',
+  'cella-social-9-plus-3': '课程与四人房按9周收费、实际就读12周；须完成活动要求，不与其他优惠叠加。',
+};
+
 const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
   paymentNotes: {
@@ -123,8 +143,8 @@ const quoteImageSettings = (campus: CellaCampus): CiaQuoteImageSettings => ({
     promotion: '',
   },
   promotionNotes: {
-    'cella-social-6-plus-2': '课程与四人房按6周收费、实际就读8周；须完成活动要求，不与其他优惠叠加。',
-    'cella-social-9-plus-3': '课程与四人房按9周收费、实际就读12周；须完成活动要求，不与其他优惠叠加。',
+    'cella-social-6-plus-2': SOCIAL_NOTES['cella-social-6-plus-2'],
+    'cella-social-9-plus-3': SOCIAL_NOTES['cella-social-9-plus-3'],
     'cella-low-season': '活动期内每个完整4周优惠100美元，课程与住宿不重复扣减。',
     'cella-premium-six-person': 'Premium六人房活动期内按499美元／4周计算，不再叠加淡季100美元优惠。',
     'cella-long-stay': '符合活动期长期报名档位时自动计算，可与当前允许的住宿优惠叠加。',
@@ -168,7 +188,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
     courseType: item.familyPackage ? '家庭套餐' : '英语课程',
     schedule: item.lessons, suitable: item.note, note: item.note,
     feeByWeeks: item.familyPackage ? Object.fromEntries(Object.entries(item.familyPackage.prices)) : undefined,
-    allowedWeeks: item.familyPackage ? [4, 6, 8] : undefined,
+    allowedWeeks: item.familyPackage ? [...CELLA_FAMILY_PACKAGE_WEEKS] : undefined,
     enabled: true, sortOrder,
   })),
   rooms: CELLA_ROOMS.filter(item => item.campus === campus).map((item, sortOrder) => ({
@@ -190,7 +210,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
   ],
   quoteSettings: {
     ...CELLA_POLICY_MARK,
-    ...{ cellaPageVersion: CELLA_PAGE_VERSION },
+    ...{ cellaPageVersion: CELLA_PAGE_VERSION, cellaFamilyVersion: CELLA_FAMILY_VERSION },
     registrationFee: CELLA_REGISTRATION_FEE,
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.4, '2': 0.65, '3': 0.85 },
@@ -210,6 +230,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
       promotion({ id: 'cella-low-season-2027', name: '2027淡季优惠', description: '2027/02/14–12/31入学，双人、三人、四人间每周优惠25美元（每4周100美元）；2027/05/30–08/28暑期周除外。', sortOrder: 5, ruleKind: 'cella-low-season-2027', coverageStart: CELLA_2027_PROMOTION.arrivalStart, coverageEnd: CELLA_2027_PROMOTION.arrivalEnd }),
       promotion({ id: 'cella-premium-six-person-2027', name: '2027 Premium六人间七五折', description: '2027/02/14–12/31入学并就读4／8／12周，课程和六人间住宿七五折；暑期周除外，不与2027长期优惠同用。', sortOrder: 6, ruleKind: 'cella-premium-six-person-2027', stackable: false }),
       promotion({ id: 'cella-long-stay-2027', name: '2027长期优惠', description: '2027年入学满12／16／20／24周分别优惠100／150／200／250美元；全年适用。', sortOrder: 7, ruleKind: 'cella-long-stay-2027' }),
+      promotion({ id: 'cella-sida', name: '思达启航折扣', description: '课程费、住宿费和家庭套餐在学校优惠后再打9折；注册费（含家庭套餐内的500美元）、暑期附加费和未成年人管理费不打折。', sortOrder: 8, ruleKind: 'cella-sida', discountType: 'percentage', discountValue: Math.round((1 - CELLA_SIDA_RATE) * 100), appliesTo: 'tuition-and-accommodation' }),
     ],
     localFeeIntro: LOCAL_FEE_INTRO,
     ...tableCopy(campus),
@@ -224,6 +245,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
 export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCampus): CiaContentConfig => {
   const upgrade = ((value?.quoteSettings as CellaQuoteSettings | undefined)?.cellaPolicyVersion ?? 0) < CELLA_POLICY_VERSION;
   const pageUpgrade = ((value?.quoteSettings as CellaPageSettings | undefined)?.cellaPageVersion ?? 0) < CELLA_PAGE_VERSION;
+  const familyUpgrade = ((value?.quoteSettings as CellaFamilySettings | undefined)?.cellaFamilyVersion ?? 0) < CELLA_FAMILY_VERSION;
   const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
   const defaults = createDefaultCellaContentConfig(campus);
   const clone = structuredClone(value);
@@ -255,8 +277,23 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   clone.media ??= [];
   if (upgrade) upgradeTo2027(clone, defaults);
   if (pageUpgrade) upgradePageCopy(clone, defaults, campus);
+  if (familyUpgrade) upgradeFamilyPackages(clone, defaults);
   return clone;
 };
+
+/** Replaces the 2026 family packages with the 2027 table, adds the 思达启航折扣 rule and updates untouched 6+2／9+3 notes once. */
+function upgradeFamilyPackages(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  const isFamily = (course: CiaContentConfig['courses'][number]) => course.courseType === '家庭套餐' || course.id.includes('-family-');
+  clone.courses = [...clone.courses.filter(course => !isFamily(course)), ...structuredClone(defaults.courses.filter(isFamily))];
+  for (const promotion of defaults.quoteSettings.promotions) {
+    if (!clone.quoteSettings.promotions.some(item => item.id === promotion.id)) clone.quoteSettings.promotions.push(structuredClone(promotion));
+  }
+  const notes = (clone.quoteImageSettings.promotionNotes ??= {});
+  for (const [id, old] of Object.entries(OLD_SOCIAL_NOTES)) {
+    if (notes[id] === old) notes[id] = SOCIAL_NOTES[id];
+  }
+  (clone.quoteSettings as CellaFamilySettings).cellaFamilyVersion = CELLA_FAMILY_VERSION;
+}
 
 /** Moves a saved 2026 document onto the 2027 price list once; other employee copy and media stay as saved. */
 function upgradeTo2027(clone: CiaContentConfig, defaults: CiaContentConfig): void {

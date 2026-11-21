@@ -1076,7 +1076,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         if (premium.CreatedDate == default) premium.CreatedDate = new DateTime(2006, 1, 1, 0, 0, 0, DateTimeKind.Utc);
       }
 
-      const string commonLessonNote = "CELLA 2027年4周课程费（2026/11/01起报名适用）；1/2/3周按4周价格的40%/65%/85%计算；优惠按独立活动规则计算，不叠加思达折扣。";
+      const string commonLessonNote = "CELLA 2027年4周课程费（2026/11/01起报名适用）；1/2/3周按4周价格的40%/65%/85%计算；学校优惠后课程费、住宿费和家庭套餐再享思达启航9折（注册费除外）。";
       UpsertLesson(context, uni.Id, "Power Speaking 1", 4, 930m, "4节一对一课程＋3节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "Power Speaking 2", 4, 1180m, "6节一对一课程＋1节小组课＋1节大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
       UpsertLesson(context, uni.Id, "TOEIC Pre", 4, 1080m, "4节一对一课程＋3节ESL小组课＋1节ESL大团体课＋晚课＋跟读训练＋选修课＋自习", now, commonLessonNote);
@@ -1112,21 +1112,30 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, premium.Id, "Alicia校外单人间", 4, 1670m, "STACIA HOTEL校外宿舍单人间；2027年4周住宿费；2027年起免押金，电费1,000比索／周；空房与通勤需向学校确认", now);
       UpsertRoom(context, premium.Id, "Alicia校外双人间", 4, 1070m, "STACIA HOTEL校外宿舍双人间；2027年4周住宿费；2027年起免押金，电费1,000比索／周；空房与通勤需向学校确认", now);
 
-      const string familyNote = "CELLA Family Package附件确认价，包含注册费、课程费、住宿费，以及SSP、电子卡、电费、水费、管理费、洗衣、接机、学生证和教材等当地费用；不含汇款手续费及超额电费。具体家庭成员年龄、分房、可用校区和费用口径需向学校确认。";
-      UpsertLesson(context, premium.Id, "Family Package双人家庭房", 4, 5600m, "Main／Alicia家庭套餐；双人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package双人家庭房", 6, 8400m, "Main／Alicia家庭套餐；双人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package双人家庭房", 8, 11000m, "Main／Alicia家庭套餐；双人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package三人家庭房", 4, 8750m, "Main／Alicia家庭套餐；三人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package三人家庭房", 6, 13125m, "Main／Alicia家庭套餐；三人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package三人家庭房", 8, 17300m, "Main／Alicia家庭套餐；三人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（2位监护人＋2位青少年）", 4, 10700m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（2位监护人＋2位青少年）", 6, 16050m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（2位监护人＋2位青少年）", 8, 21200m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（1位监护人＋3位青少年）", 4, 11200m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（1位监护人＋3位青少年）", 6, 16800m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Family Package四人家庭房（1位监护人＋3位青少年）", 8, 22200m, "Main／Alicia家庭套餐；四人房", now, familyNote);
-      UpsertLesson(context, premium.Id, "Walk-In监护人课程", 4, 700m, "家庭套餐外的监护人走读课程", now, familyNote);
-      UpsertLesson(context, premium.Id, "Walk-In青少年英语", 4, 1300m, "家庭套餐外的青少年英语走读课程", now, familyNote);
+      // 2027 CELLA Family Package (school answer 2026-11-21: the 500-dollar family registration is inside the package price).
+      const string familyNote = "CELLA 2027家庭套餐全家整包价，已含每户500美元注册费、课程、住宿、三餐，以及SSP、电子卡、电费、水费、管理费、洗衣、接机、学生证和教材；不含汇款手续费和超额电费；价格只有1–4周。";
+      var familyPackages = new (string Name, string Description, decimal[] Prices)[]
+      {
+        ("家庭套餐校内双人家庭房（1位家长＋1位孩子）", "Premium校内宿舍家庭套餐；家长和孩子都上课", new[] { 2360m, 3835m, 5015m, 5900m }),
+        ("家庭套餐校内三人家庭房（2位家长＋1位孩子）", "Premium校内宿舍家庭套餐；家长和孩子都上课", new[] { 3320m, 5395m, 7055m, 8300m }),
+        ("家庭套餐校内三人家庭房（1位家长＋2位孩子）", "Premium校内宿舍家庭套餐；家长和孩子都上课", new[] { 3560m, 5785m, 7565m, 8900m }),
+        ("家庭套餐校内四人家庭房（2位家长＋2位孩子）", "Premium校内宿舍家庭套餐；家长和孩子都上课", new[] { 4400m, 7150m, 9350m, 11000m }),
+        ("家庭套餐校内四人家庭房（1位家长＋3位孩子）", "Premium校内宿舍家庭套餐；家长和孩子都上课", new[] { 4640m, 7540m, 9860m, 11600m }),
+        ("家庭套餐STACIA校外双人家庭房（1位家长＋1位孩子）", "STACIA HOTEL家庭套餐；只含孩子课程", new[] { 1960m, 3185m, 4165m, 4900m }),
+        ("家庭套餐STACIA校外三人家庭房（2位家长＋1位孩子）", "STACIA HOTEL家庭套餐；只含孩子课程", new[] { 2520m, 4095m, 5355m, 6300m }),
+        ("家庭套餐STACIA校外三人家庭房（1位家长＋2位孩子）", "STACIA HOTEL家庭套餐；只含孩子课程", new[] { 3160m, 5135m, 6715m, 7900m }),
+        ("家庭套餐STACIA校外四人家庭房（2位家长＋2位孩子）", "STACIA HOTEL家庭套餐；只含孩子课程", new[] { 3600m, 5850m, 7650m, 9000m }),
+        ("家庭套餐STACIA校外四人家庭房（1位家长＋3位孩子）", "STACIA HOTEL家庭套餐；只含孩子课程", new[] { 4240m, 6890m, 9010m, 10600m }),
+      };
+      foreach (var (name, description, prices) in familyPackages)
+      {
+        for (var weeks = 1; weeks <= prices.Length; weeks++)
+        {
+          UpsertLesson(context, premium.Id, name, weeks, prices[weeks - 1], description, now, familyNote);
+        }
+      }
+      UpsertLesson(context, premium.Id, "Walk-In监护人课程", 4, 700m, "家庭套餐外的监护人走读课程", now, "CELLA 2027家庭套餐价目表中的4周走读课程费，不含住宿和到校学杂费");
+      UpsertLesson(context, premium.Id, "Walk-In青少年英语", 4, 1300m, "家庭套餐外的青少年英语走读课程", now, "CELLA 2027家庭套餐价目表中的4周走读课程费，不含住宿和到校学杂费");
 
       foreach (var schoolId in new[] { uni.Id, premium.Id })
       {
@@ -1151,7 +1160,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
         UpsertFee(context, schoolId, "长期报名优惠", 50m, UsdCurrencyId, "活动期内8／12／16周分别额外减50／100／150美元；可与淡季优惠或Premium六人房活动价叠加", now);
         UpsertFee(context, schoolId, "2027淡季优惠", 25m, UsdCurrencyId, "2027/02/14–12/31入学；双人、三人、四人间每周减25美元；2027/05/30–08/28暑期周除外", now);
         UpsertFee(context, schoolId, "2027长期优惠", 100m, UsdCurrencyId, "2027年入学满12／16／20／24周分别减100／150／200／250美元；全年适用", now);
-        UpsertFee(context, schoolId, "6+2／9+3限时限额活动", 0m, UsdCurrencyId, "仅限首次报名新生及两个校区四人间；实际8／12周，课程和住宿按6／9周收费；当地费用按实际周数；不可与任何其他优惠叠加；须完成小红书与抖音分享义务，资格和名额需学校确认", now);
+        UpsertFee(context, schoolId, "思达启航折扣", 0.9m, UsdCurrencyId, "学校优惠后，课程费、住宿费和家庭套餐再打9折；注册费（含家庭套餐内的500美元）、暑期附加费、未成年人管理费不打折", now);
+        UpsertFee(context, schoolId, "6+2／9+3限时限额活动", 0m, UsdCurrencyId, "仅限首次报名新生及两个校区四人间；实际8／12周，课程和住宿按6／9周收费；当地费用按实际周数；只可与思达启航9折和圣诞优惠同享；须完成小红书与抖音分享义务，资格和名额需学校确认", now);
       }
       UpsertFee(context, premium.Id, "六人房活动价", 499m, UsdCurrencyId, "2026/08/30–2027/01/02为499美元／4周；可叠加长期报名优惠，不与淡季100美元优惠同用", now);
       UpsertFee(context, premium.Id, "2027六人间七五折", 0m, UsdCurrencyId, "2027/02/14–12/31入学并就读4／8／12周，六人间住宿周的课程费和住宿费七五折；暑期周除外，不与2027长期优惠同用", now);

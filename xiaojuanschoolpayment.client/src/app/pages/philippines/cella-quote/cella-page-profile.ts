@@ -120,7 +120,7 @@ function cellaCopy(campus: CellaCampus): PhPageCopy {
   };
 }
 
-/** The page's course list: the content document's courses without the family packages (2027 prices pending). */
+/** The page's course list and 方案对比: the content document's courses without the family packages (quote only). */
 function withoutFamilyPackages<T extends { id: string }>(items: T[]): T[] {
   return items.filter(item => !isCellaFamilyPackage(item.id));
 }
