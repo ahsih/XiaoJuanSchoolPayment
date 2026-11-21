@@ -41,6 +41,18 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
   - 59-day visa: the first extension counts as the second (6,400 pesos).
   - ACR I-CARD and ARP (200 pesos) are added with the second extension.
 
+## Quote rules added 2026-11-21 (user decisions)
+
+- Light ESL does not run in July or August. A course row with any Monday–Friday class day in those months blocks the quote with “轻松ESL（Light）7、8月不开课”. Its course note says so.
+- Stays over 24 weeks pay the SSP again (7,800 pesos a second time) and the CRTV once (1,400 pesos). Both count in the local-fee total; for long-term visas both stay at zero with the adviser-confirmation note. The quote now allows up to 48 weeks, the length a second SSP covers. Up to 24 weeks the CRTV row is zero, and the image merges it into 本次不产生.
+- Parent-child child course: CPILS's sheet did not date the off-season, so every week outside the peak surcharge dates (2027-07-04 to 08-28) is off-season.
+  - Off-season (all one-to-one): 1,197 dollars per four weeks, 491/778/1,017 for 1/2/3 weeks.
+  - Peak: 1,092, 448/710/928.
+  - A plan across both is priced week by week at the student's own duration tier, and the peak weeks also pay the 60-dollar surcharge.
+  - The parent course keeps one price all year.
+- The no-window room discount is capped at the supplied 24-week tier (300 dollars), so longer stays do not add more.
+- CPILS is the third school on `/price-compare`. Its page shows the 和其他学校比一比 link. The comparison applies the same course and room filters as the page (`cpilsVisibleCourses`, `cpilsRooms2027`, now in `cpils-pricing.ts`).
+
 ## Media
 
 - `public/assets/cpils/gallery/`: 68 WebP images.
@@ -58,11 +70,12 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
 ## Verification
 
 - `npm run build`, the server `.csproj` build and `node scripts/sync-cpils-seed.cjs --check` pass.
-- CPILS tests pass (50):
+- CPILS tests pass (53 after the 2026-11-21 rules):
   ```
   npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.cpils.spec.json --include=src/app/pages/philippines/cpils-school/cpils-school-page.spec.ts --progress=false
   ```
 - Results of other test suites:
+  - The school comparison suite (`tsconfig.school-compare.spec.json`) passes, including the CPILS equality checks.
   - The quote-rules, EV and CIA plan-compare/preview suites pass.
   - The textbook-integration, school-quote-rollout and CIA group suites fail exactly as on unchanged code, with the same tests and the same injection errors.
   - The CPILS promotion-preview spec, which already failed on unchanged code, now uses a fixed scenario and passes.

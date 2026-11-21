@@ -1400,10 +1400,10 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "亲子强化课程（家长）", 2, 638m, "4堂1:1 + 2堂1:4 + 1堂1:12，每天7小时；陪孩子一起学习、自己也想认真学的家长", now, cpilsLessonNote);
       UpsertLesson(context, schoolId, "亲子强化课程（家长）", 3, 834m, "4堂1:1 + 2堂1:4 + 1堂1:12，每天7小时；陪孩子一起学习、自己也想认真学的家长", now, cpilsLessonNote);
       UpsertLesson(context, schoolId, "亲子强化课程（家长）", 4, 982m, "4堂1:1 + 2堂1:4 + 1堂1:12，每天7小时；陪孩子一起学习、自己也想认真学的家长", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 1, 448m, "5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，每天9小时；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 2, 710m, "5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，每天9小时；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 3, 928m, "5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，每天9小时；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
-      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 4, 1092m, "5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，每天9小时；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 1, 491m, "7堂1:1，不设团体课（淡季）；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 2, 778m, "7堂1:1，不设团体课（淡季）；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 3, 1017m, "7堂1:1，不设团体课（淡季）；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
+      UpsertLesson(context, schoolId, "亲子强化课程（孩子）", 4, 1197m, "7堂1:1，不设团体课（淡季）；9岁及以上、和家长同行的孩子", now, cpilsLessonNote);
       UpsertLesson(context, schoolId, "亲子基础课程", 1, 287m, "3堂1:1 + 1堂1:4 + 1堂1:12，每天5小时；想轻松一起学的家长和9岁及以上的孩子", now, cpilsLessonNote);
       UpsertLesson(context, schoolId, "亲子基础课程", 2, 455m, "3堂1:1 + 1堂1:4 + 1堂1:12，每天5小时；想轻松一起学的家长和9岁及以上的孩子", now, cpilsLessonNote);
       UpsertLesson(context, schoolId, "亲子基础课程", 3, 595m, "3堂1:1 + 1堂1:4 + 1堂1:12，每天5小时；想轻松一起学的家长和9岁及以上的孩子", now, cpilsLessonNote);
@@ -1447,8 +1447,8 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "高级四人房", 3, 696m, "高级多人房中预算压力较低。", now);
       UpsertRoom(context, schoolId, "高级四人房", 4, 819m, "高级多人房中预算压力较低。", now);
       UpsertFee(context, schoolId, "注册费", 125m, UsdCurrencyId, "一次性报名注册费；老学员返校免收", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2027/07/05–08/29学习周收取40美元/周；官网使用对应周日入住日期", now);
-      UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "移民局收取；按报名学习时长办理，续费及换校需重新办理。", now);
+      UpsertFee(context, schoolId, "旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28学习周按CALA联合通知收取60美元/周", now);
+      UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "入学时办理；学习超过24周须重新办理，再交一次。", now);
       UpsertFee(context, schoolId, "SSP I-CARD", 4000m, PhpCurrencyId, "入学时与SSP同时办理，只收一次。", now);
       UpsertFee(context, schoolId, "ACR-I CARD 外国人身份证", 4000m, PhpCurrencyId, "第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。", now);
       UpsertFee(context, schoolId, "ARP外国人登记", 200m, PhpCurrencyId, "2027年ARP参考200比索；首次续签或长期签证按学校要求办理。", now);
@@ -1461,7 +1461,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "宿务麦克坦机场团体接机", 1200m, PhpCurrencyId, "2027年接机参考1,200比索；学校团体接机及同行收费单位须确认。", now);
       UpsertFee(context, schoolId, "宿舍押金", 2000m, PhpCurrencyId, "每人收取；无损坏及无欠费时可退。", now);
       UpsertFee(context, schoolId, "ID-Load预存", 1000m, PhpCurrencyId, "2027年价目表列为ID-Load预存1,000比索；用途及退还条件须由学校确认。", now);
-      UpsertFee(context, schoolId, "CRTV（超过24周）", 1400m, PhpCurrencyId, "2027年超过24周参考1,400比索；当前报价最多24周，不计入合计。", now);
+      UpsertFee(context, schoolId, "CRTV（超过24周）", 1400m, PhpCurrencyId, "学习超过24周时交一次。", now);
 
       await context.SaveChangesAsync();
     }

@@ -29,7 +29,7 @@ for (const room of config.rooms) for (const [weeks, price] of Object.entries({ .
   lines.push(`      UpsertRoom(context, schoolId, ${quote(room.name)}, ${weeks}, ${price}m, ${quote(room.note)}, now);`);
 }
 lines.push('      UpsertFee(context, schoolId, "注册费", 125m, UsdCurrencyId, "一次性报名注册费；老学员返校免收", now);',
-  '      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2027/07/05–08/29学习周收取40美元/周；官网使用对应周日入住日期", now);');
+  '      UpsertFee(context, schoolId, "旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28学习周按CALA联合通知收取60美元/周", now);');
 for (const fee of config.localFees) {
   const amount = fee.futureAmount ?? fee.amount;
   lines.push(`      UpsertFee(context, schoolId, ${quote(fee.futureName || fee.name)}, ${amount}m, PhpCurrencyId, ${quote(fee.futureNote || fee.note)}, now);`);

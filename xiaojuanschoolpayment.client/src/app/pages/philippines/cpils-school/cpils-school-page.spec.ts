@@ -316,7 +316,7 @@ describe('CPILS school page on the shared template', () => {
       expect(page.quoteError).toContain('高级双人');
       page.selectedRoomId = 'premium-triple';
       expect(page.quoteError).toBe('');
-      expect(student().tuition).toBe(1092);
+      expect(student().tuition).toBe(1197);
       expect(student().accommodation).toBe(893);
       page.selectedCourseId = 'pcp-basic';
       page.selectedWeeks = 2;
@@ -324,6 +324,79 @@ describe('CPILS school page on the shared template', () => {
       student().selectedRegistrationDate = '2026-09-01';
       page.selectedStartDate = '2026-11-01';
       expect(page.quoteError).toContain('暂无');
+    });
+
+    it('prices the parent-child child course at the off-season rate except in the summer peak weeks', () => {
+      page.selectedCourseId = 'pcp-intensive-child';
+      page.selectedRoomId = 'premium-twin';
+      page.selectedStartDate = '2027-06-20';
+      page.selectedWeeks = 8;
+      // 06/20 and 06/27 are off-season; 07/04–08/08 are six peak weeks.
+      expect(page.quoteError).toBe('');
+      expect(student().tuition).toBe(1197 / 4 * 2 + 1092 / 4 * 6);
+      expect(student().seasonalSurcharge).toBe(360);
+      student().selectedRegistrationDate = '2027-01-05';
+      page.selectedStartDate = '2027-07-04';
+      page.selectedWeeks = 2;
+      expect(student().tuition).toBe(710);
+      page.selectedStartDate = '2027-06-27';
+      expect(student().tuition).toBe(778 / 2 + 710 / 2);
+      page.selectedStartDate = '2027-09-05';
+      expect(student().tuition).toBe(778);
+      // The parent course keeps one price all year.
+      page.selectedCourseId = 'pcp-intensive-parent';
+      page.selectedStartDate = '2027-07-04';
+      const peak = student().tuition;
+      page.selectedStartDate = '2027-09-05';
+      expect(student().tuition).toBe(peak);
+    });
+
+    it('blocks Light ESL for any class day in July or August', () => {
+      page.selectedCourseId = 'general-esl-light';
+      page.selectedStartDate = '2027-05-30';
+      page.selectedWeeks = 4;
+      expect(page.quoteError).toBe('');
+      page.selectedStartDate = '2027-06-27';
+      expect(page.quoteError).toContain('7、8月不开课');
+      page.selectedStartDate = '2027-08-29';
+      expect(page.quoteError).toContain('7、8月不开课');
+      page.selectedStartDate = '2027-09-05';
+      expect(page.quoteError).toBe('');
+      student().selectedRegistrationDate = '2026-06-01';
+      page.selectedStartDate = '2026-08-02';
+      expect(page.quoteError).toContain('7、8月不开课');
+      // A Light row before July with another course over the summer is fine.
+      page.selectedStartDate = '2027-05-30';
+      student().selectedRegistrationDate = '2026-09-29';
+      page.selectedWeeks = 8;
+      split('course', [4, 4], ['general-esl-light', 'general-esl']);
+      expect(page.quoteError).toBe('');
+    });
+
+    it('charges a second SSP and the CRTV only for stays over 24 weeks', () => {
+      const ssp = () => localFee('SSP特殊')!;
+      const crtv = () => localFee('CRTV')!;
+      page.selectedWeeks = 24;
+      expect(page.quoteError).toBe('');
+      expect(ssp().quantity).toBe(1);
+      expect(crtv().total).toBe(0);
+      expect(page.quoteImageData.localFeeItems!.find(row => row.label === '本次不产生')?.note).toContain('CRTV');
+      const total24 = page.estimatedLocalFeeTotal;
+      page.selectedWeeks = 25;
+      expect(page.quoteError).toBe('');
+      expect(ssp().quantity).toBe(2);
+      expect(ssp().total).toBe(15600);
+      expect(crtv().total).toBe(1400);
+      expect(crtv().note).toContain('超过24周');
+      expect(page.quoteImageData.localFeeItems!.some(row => row.label.includes('CRTV'))).toBeTrue();
+      expect(page.estimatedLocalFeeTotal).toBeGreaterThan(total24 + 7800 + 1400 - 1);
+      page.selectedWeeks = 48;
+      expect(page.quoteError).toBe('');
+      expect(ssp().quantity).toBe(2);
+      expect(crtv().quantity).toBe(1);
+      student().visaType = 'work';
+      expect(crtv().total).toBe(0);
+      expect(crtv().note).toContain('是否免收请由顾问向学校确认');
     });
 
     it('never gives a 2027 exam gift to grandfathered registrations', () => {

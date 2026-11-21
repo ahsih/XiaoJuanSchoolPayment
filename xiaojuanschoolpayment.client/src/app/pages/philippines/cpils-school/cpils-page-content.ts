@@ -142,10 +142,10 @@ export const CPILS_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     subtitle: '家长和孩子同校学习 · 孩子9岁及以上',
     courseIds: ['pcp-intensive-parent', 'pcp-intensive-child', 'pcp-basic'],
     facts: [
-      { label: '强化课程', value: '家长每天7小时（4节1:1），孩子每天9小时（5节1:1）' },
+      { label: '强化课程', value: '家长每天7小时（4节1:1）；孩子淡季每天7节1:1、不设团体课，旺季每天9小时（5节1:1加团体课）' },
       { label: '基础课程', value: '家长和孩子每天各5小时（3节1:1），课程费同价' },
       { label: '房型', value: '高级双人、三人或四人房，含Wi-Fi、智能电视、冰箱和翻新卫浴' },
-      { label: '淡季', value: '孩子可改为每天7节1:1、不设团体课，4周1,197美元' },
+      { label: '孩子学费', value: '旺季（2027/07/04–08/28）4周1,092美元，其余日期都是淡季，4周1,197美元；跨季按周分开算' },
     ],
     points: ['每人按自己的课程和床位报价，注册费每人125美元。'],
   },

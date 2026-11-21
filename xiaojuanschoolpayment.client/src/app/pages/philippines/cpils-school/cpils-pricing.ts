@@ -61,7 +61,7 @@ const NEW_2027 = '2027年新增价格项目；2026年价格须确认。';
 const guaranteeNote = (weeks: number) => `须一次注册${weeks}周；入学门槛及保分条件请向顾问确认。`;
 const COURSE_TEXT_V2: Record<string, { oldNote: string; name?: [string, string]; schedule?: string; suitable: string; note: string }> = {
   'general-esl': { oldNote: '适合基础到进阶综合提升。', name: ['General ESL', '普通ESL'], suitable: '想全面提升听说读写、晚上想自由安排的学生', note: '每天9小时，含2小时选修课，没有强制晚自习。' },
-  'general-esl-light': { oldNote: '仅限淡季入学。', name: ['General ESL Light', '轻松ESL（Light）'], suitable: '只想轻松学、下午想自由安排的学生', note: '每天5节课，13:15下课；仅限淡季入学，7、8月不能报名。' },
+  'general-esl-light': { oldNote: '仅限淡季入学。', name: ['General ESL Light', '轻松ESL（Light）'], suitable: '只想轻松学、下午想自由安排的学生', note: '每天5节课，13:15下课；7、8月不开课。' },
   'general-esl-plus': { oldNote: '适合希望增加一对一课时的学生。', name: ['General ESL Plus', '普通ESL Plus'], suitable: '想多上一对一的学生', note: '每天9小时，比普通ESL多1节1:1。' },
   'esl-premium': { oldNote: NEW_2027, schedule: '5堂1:1 + 2堂1:4 + 2堂1:12 + 3堂选修课', suitable: '想多上课、但不想被强制晚自习的学生', note: '每天12小时，第10–12节为选修课。' },
   'premier-sparta': { oldNote: '适合需要明确管理和高强度学习节奏的学生。', suitable: '自律较弱、需要学校管住节奏的学生', note: '每天12小时，含2小时强制自习。' },
@@ -82,6 +82,19 @@ const COURSE_TEXT_V2: Record<string, { oldNote: string; name?: [string, string];
 };
 
 export const CPILS_PARENT_CHILD_COURSE_IDS =['pcp-intensive-parent', 'pcp-intensive-child', 'pcp-basic'];
+/**
+ * 2027 courses with a separate summer-peak price. The PCP child course costs 1,092 dollars per 4 weeks in the
+ * peak weeks (the weeks the CALA peak surcharge counts) and the content document's off-season price (1,197)
+ * in every other week (user decision 2026-11-21); a stay across both is split by week.
+ */
+export const CPILS_PEAK_COURSE_PRICES: Readonly<Record<string, { price: number; prices: Record<string, number> }>> = {
+  'pcp-intensive-child': { price: 1092, prices: short(448, 710, 928) },
+};
+/** Weeks over this need a second SSP and the CRTV (user decision 2026-11-21); quotes go up to CPILS_MAX_WEEKS. */
+export const CPILS_SSP_WEEKS = 24;
+export const CPILS_MAX_WEEKS = 48;
+/** ESL Light is not offered in July and August (orientation handbook; user decision 2026-11-21). */
+export const CPILS_LIGHT_COURSE_ID = 'general-esl-light';
 export const CPILS_PARENT_CHILD_ROOM_IDS = ['premium-twin', 'premium-triple', 'premium-quad'];
 
 /** 2027 PCP price list (no 2026 PCP prices, so those registrations need an adviser) and handbook fee corrections. */
@@ -91,10 +104,11 @@ function addCpilsVersion2(config: CiaContentConfig): void {
       '4堂1:1 + 2堂1:4 + 1堂1:12，每天7小时',
       '陪孩子一起学习、自己也想认真学的家长',
       '家长与孩子同校学习；须入住高级双人、三人或四人房。'],
-    ['pcp-intensive-child', '亲子强化课程（孩子）', 1092, short(448, 710, 928),
-      '5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，每天9小时',
+    // Off-season price and timetable; the summer peak weeks use CPILS_PEAK_COURSE_PRICES.
+    ['pcp-intensive-child', '亲子强化课程（孩子）', 1197, short(491, 778, 1017),
+      '7堂1:1，不设团体课（淡季）',
       '9岁及以上、和家长同行的孩子',
-      '淡季可改为每天7堂1:1、不设团体课，4周1,197美元，开设时间请向顾问确认。'],
+      '旺季（2027/07/04–08/28）每天9小时：5堂1:1 + 1堂1:4 + 2堂1:12 + 1堂艺术音乐团体课，4周1,092美元；其余日期都是淡季。'],
     ['pcp-basic', '亲子基础课程', 700, short(287, 455, 595),
       '3堂1:1 + 1堂1:4 + 1堂1:12，每天5小时',
       '想轻松一起学的家长和9岁及以上的孩子',
@@ -147,6 +161,10 @@ function addCpilsVersion2(config: CiaContentConfig): void {
   for (const item of config.localFees) {
     const oldNote = item.note;
     if (item.id === 'arp' && item.amount === 300) item.amount = 200;
+    if (item.id === 'ssp' && item.note === '移民局收取；按报名学习时长办理，续费及换校需重新办理。') item.note = '入学时办理；学习超过24周须重新办理，再交一次。';
+    if (item.id === 'crtv' && item.note === '2027年超过24周参考1,400比索；当前报价最多24周，不计入合计。') {
+      Object.assign(item, { billingRule: 'once', includeInTotal: true, waiveForLongTermVisa: true, note: '学习超过24周时交一次。' });
+    }
     const change = notes[item.id];
     if (change && item.note === change[0]) item.note = change[1];
     if (item.id === 'visa-extension' && item.futureNote?.startsWith('按学校30天续签收费方案预估')) {
@@ -268,9 +286,27 @@ export function cpilsRowPrice(config: CiaContentConfig, student: CpilsPlanContex
     return cpilsMoney(cpilsMoney(exact[merged.weeks] * (offset + row.weeks) / merged.weeks) - cpilsMoney(exact[merged.weeks] * offset / merged.weeks));
   }
   const tier = student.quotePlan.courseWeeks < 4 ? student.quotePlan.courseWeeks : 4;
-  if (tier < 4) return exact?.[tier] === undefined ? 0 : cpilsMoney(exact[tier] / tier * row.weeks);
+  const peak = kind === 'course' && year === 2027 ? CPILS_PEAK_COURSE_PRICES[row.optionId] : undefined;
+  const peakWeeks = peak ? cpilsPeakWeeks(config, student.quotePlan, row) : 0;
+  const offWeeks = row.weeks - peakWeeks;
+  if (tier < 4) {
+    if (exact?.[tier] === undefined) return 0;
+    return cpilsMoney(exact[tier] / tier * offWeeks + (peak ? peak.prices[tier] / tier * peakWeeks : 0));
+  }
   const price = 'tuition' in item ? year === 2027 ? course.tuition2027 : course.tuition : year === 2027 ? item.fee2027 ?? 0 : item.fee;
-  return cpilsMoney(price / 4 * row.weeks);
+  return cpilsMoney(price / 4 * offWeeks + (peak ? peak.price / 4 * peakWeeks : 0));
+}
+
+/** Weeks of a row that touch an enabled peak range, counted like the peak surcharge. */
+export function cpilsPeakWeeks(config: CiaContentConfig, plan: SchoolQuotePlan, row: QuotePlanRow): number {
+  const ranges = config.quoteSettings.peakSeasonRanges.filter(range => range.enabled)
+    .map(range => [Date.parse(`${range.start}T00:00:00Z`), Date.parse(`${range.end}T00:00:00Z`)]);
+  return plan.weekStarts([row]).filter(week => ranges.some(([start, end]) => week <= end && week + 6 * DAY >= start)).length;
+}
+
+/** Whether a row has a class day (Monday to Friday) in July or August. */
+function cpilsTouchesSummerMonths(plan: SchoolQuotePlan, row: QuotePlanRow): boolean {
+  return plan.weekStarts([row]).some(sunday => [1, 2, 3, 4, 5].some(day => [6, 7].includes(new Date(sunday + day * DAY).getUTCMonth())));
 }
 
 export function cpilsPolicyError(config: CiaContentConfig, student: CpilsPlanContext): string {
@@ -287,6 +323,8 @@ export function cpilsPolicyError(config: CiaContentConfig, student: CpilsPlanCon
     if (cpilsRowPrice(config, student, 'course', row) <= 0) return `${item.name}暂无所选年份及周数价格，请联系顾问。`;
   }
   for (const row of plan.rooms) if (cpilsRowPrice(config, student, 'room', row) <= 0) return '所选房型暂无该年份及短住周数价格，请联系顾问。';
+  const light = plan.courses.find(row => row.optionId === CPILS_LIGHT_COURSE_ID && cpilsTouchesSummerMonths(plan, row));
+  if (light) return `${config.courses.find(course => course.id === CPILS_LIGHT_COURSE_ID)?.name ?? '轻松ESL（Light）'}7、8月不开课，请改选其他课程或调整日期。`;
   if (plan.courses.some(row => CPILS_PARENT_CHILD_COURSE_IDS.includes(row.optionId))
     && plan.rooms.some(row => !CPILS_PARENT_CHILD_ROOM_IDS.includes(row.optionId))) return '亲子课程须入住高级双人、三人或四人房，请调整房型。';
   const policy = config.quoteSettings.cpilsPolicy!;
@@ -304,4 +342,24 @@ export function cpils2027Eligible(config: CiaContentConfig, student: CpilsPlanCo
     && (!rule.registrationEnd || student.selectedRegistrationDate <= rule.registrationEnd)
     && (!rule.arrivalStart || start >= rule.arrivalStart) && (!rule.arrivalEnd || start <= rule.arrivalEnd)
     && student.quotePlan.courseWeeks >= rule.minimumCourseWeeks && student.quotePlan.roomWeeks >= rule.minimumAccommodationWeeks;
+}
+
+/** Courses kept off the page and out of the quote: Practicum is an add-on that cannot stand alone. */
+export const CPILS_HIDDEN_COURSE_IDS = ['practicum'];
+
+/** Courses the page and the quote offer: enabled, priced for 2027 (a 4-week price or an exact package) and not hidden. */
+export function cpilsVisibleCourses<T extends { id: string }>(content: CiaContentConfig, courses: readonly T[]): T[] {
+  return courses.filter(course => {
+    if (CPILS_HIDDEN_COURSE_IDS.includes(course.id)) return false;
+    const source = content.courses.find(item => item.id === course.id);
+    return !!source && (source.tuition2027 > 0 || Object.values(source.feeByWeeks2027 ?? {}).some(value => value > 0));
+  });
+}
+
+/** Rooms in the quote and the price list carry their 2027 four-week price. */
+export function cpilsRooms2027<T extends { id: string; fee: number }>(content: CiaContentConfig, rooms: readonly T[]): T[] {
+  return rooms.map(room => {
+    const source = content.rooms.find(item => item.id === room.id);
+    return source?.fee2027 ? { ...room, fee: source.fee2027 } : room;
+  });
 }

@@ -15,6 +15,7 @@ import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import type { PhPageCopy, PhSchoolProfile } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 import { cloneCpilsContentConfig, createDefaultCpilsContentConfig } from './cpils-content-config';
+import { cpilsRooms2027, cpilsVisibleCourses } from './cpils-pricing';
 import {
   CPILS_BASIC_INFO,
   CPILS_CAMPUS_BUILDINGS,
@@ -36,25 +37,8 @@ import {
   CPILS_VIDEO_TABS,
 } from './cpils-page-content';
 
-/** Courses kept off the page and out of the quote: Practicum is an add-on that cannot stand alone. */
-export const CPILS_HIDDEN_COURSE_IDS = ['practicum'];
-
-/** Courses the page and the quote offer: enabled, priced for 2027 (a 4-week price or an exact package) and not hidden. */
-export function cpilsVisibleCourses<T extends { id: string }>(content: CiaContentConfig, courses: readonly T[]): T[] {
-  return courses.filter(course => {
-    if (CPILS_HIDDEN_COURSE_IDS.includes(course.id)) return false;
-    const source = content.courses.find(item => item.id === course.id);
-    return !!source && (source.tuition2027 > 0 || Object.values(source.feeByWeeks2027 ?? {}).some(value => value > 0));
-  });
-}
-
-/** Rooms in the quote and the price list carry their 2027 four-week price. */
-export function cpilsRooms2027<T extends { id: string; fee: number }>(content: CiaContentConfig, rooms: readonly T[]): T[] {
-  return rooms.map(room => {
-    const source = content.rooms.find(item => item.id === room.id);
-    return source?.fee2027 ? { ...room, fee: source.fee2027 } : room;
-  });
-}
+// Shared with the cross-school comparison, so they live in the pure pricing module.
+export { CPILS_HIDDEN_COURSE_IDS, cpilsRooms2027, cpilsVisibleCourses } from './cpils-pricing';
 
 /** 1/2/3-week share of the 4-week price shown above the room list (CPILS lists exact short-stay prices). */
 export function cpilsShortStayRatios(content: CiaContentConfig): Record<string, number> {
@@ -204,6 +188,7 @@ export const CPILS_PAGE_PROFILE: PhSchoolProfile = {
   name: 'CPILS',
   previewPrefix: 'cpils',
   pricingSchoolName: 'CPILS',
+  schoolCompareId: 'cpils',
   copy: CPILS_COPY,
   compactLayout: true,
   overviewFacts: CPILS_OVERVIEW_FACTS,

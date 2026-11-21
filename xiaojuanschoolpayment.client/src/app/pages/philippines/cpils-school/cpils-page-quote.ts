@@ -14,7 +14,9 @@ import { PhComparePricing, PhPlanComparison } from '../school-page/ph-plan-compa
 import { PhOptionalFeeItem, PhSchoolPaymentItem, PhSchoolQuote } from '../school-page/ph-school-quote';
 import type { PhPageStudent } from '../school-page/ph-school-profile';
 import {
+  CPILS_MAX_WEEKS,
   CPILS_PARENT_CHILD_COURSE_IDS,
+  CPILS_SSP_WEEKS,
   cpils2027Eligible,
   cpilsMergedCourses,
   cpilsMonday,
@@ -25,7 +27,7 @@ import {
 } from './cpils-pricing';
 
 export const CPILS_QUOTE_IMAGE_HERO = '/assets/cpils/campus-main.webp';
-export const CPILS_WEEK_OPTIONS = Array.from({ length: 24 }, (_, index) => index + 1);
+export const CPILS_WEEK_OPTIONS = Array.from({ length: CPILS_MAX_WEEKS }, (_, index) => index + 1);
 const DAY = 86400000;
 const MINOR_NOTE = '未成年学生按所选课程收费，入学及监护要求须顾问确认。';
 const EXTENSION_ITEMS = ['acr-i-card', 'arp', 'visa-extension'];
@@ -81,7 +83,7 @@ export class CpilsPageStudent implements PhPageStudent {
       kind => kind === 'course'
         ? pricing.courseFees.map(course => ({ id: course.id, name: course.name, details: this.courseDetails(course) }))
         : pricing.roomFees.map(room => ({ id: room.id, name: room.name, details: room.note })),
-      (kind, row) => cpilsRowPrice(pricing.cpilsContent, this, kind, row), 24, true, false);
+      (kind, row) => cpilsRowPrice(pricing.cpilsContent, this, kind, row), CPILS_MAX_WEEKS, true, false);
   }
 
   private get content() { return this.pricing.cpilsContent; }
@@ -159,7 +161,9 @@ export class CpilsPageStudent implements PhPageStudent {
       const rule = this.rule('cpils-no-window-2027');
       if (!rule || !cpils2027Eligible(this.content, this, rule)) return 0;
       const weeks = this.quotePlan.rooms.filter(row => rule.eligibleRoomIds?.includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
-      return Math.floor(weeks / Math.max(1, rule.incrementWeeks ?? 4)) * rule.discountValue;
+      // The notice's tiers end at 24 weeks (300 dollars); longer stays keep that amount.
+      const step = Math.max(1, rule.incrementWeeks ?? 4);
+      return Math.floor(Math.min(weeks, 24) / step) * rule.discountValue;
     }
     const rule = this.rule('cpils-no-window');
     if (!rule) return 0;
@@ -321,6 +325,10 @@ export class CpilsPageStudent implements PhPageStudent {
           note = future.note;
         }
       }
+      // Over 24 weeks the SSP is issued a second time and the CRTV is due (user decision 2026-11-21).
+      const longStay = plan.stayWeeks > CPILS_SSP_WEEKS;
+      if (base.id === 'ssp') quantity = longStay ? 2 : 1;
+      if (base.id === 'crtv') quantity = longStay ? 1 : 0;
       if (base.id === 'acr-i-card') {
         quantity = !longTerm && secondStep ? 1 : 0;
         note = longTerm ? visaNote : `按${this.visaLabel}预估；${rule.note}`;
@@ -337,7 +345,7 @@ export class CpilsPageStudent implements PhPageStudent {
           : extensions ? `按${this.visaLabel}预估，本次${extensions}次；${rule.note}`
             : `按${this.visaLabel}预估，本次无需续签。`;
       }
-      if (longTerm && rule.waiveForLongTermVisa) {
+      if (longTerm && rule.waiveForLongTermVisa && !(base.id === 'crtv' && quantity === 0)) {
         quantity = 0;
         total = 0;
         note = visaNote;
