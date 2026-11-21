@@ -15,9 +15,11 @@ const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
 /**
  * Raised when saved documents must inherit a school notice once (cloneCpiContentConfig):
- * 1 = 2027 price list, Premium Residence and the 2026-11-04 promotion notice (added 2026-11-21).
+ * 1 = 2027 price list, Premium Residence and the 2026-11-04 promotion notice (added 2026-11-21);
+ * 2 = exam-course class lines in the school's wording (all one-to-one classes cover the exam's
+ *     subjects) and textbooks estimated per 12 weeks as the orientation's fee table (2026-11-21).
  */
-export const CPI_POLICY_VERSION = 1;
+export const CPI_POLICY_VERSION = 2;
 type CpiQuoteSettings = CiaQuoteSettings & { cpiPolicyVersion?: number };
 
 export const CPI_IELTS_GUARANTEE_ID = 'ielts-guarantee';
@@ -68,26 +70,29 @@ const promotion = (value: Partial<CiaPromotionRule> & Pick<CiaPromotionRule, 'id
   ...value,
 });
 
-const EXAM_PREP = '4节一对一（考试2节、ESL 2节）+ 2节ESL小组课（1:4）+ 1节团体课（1:8）';
-const EXAM_GENERAL = '4节考试一对一 + 2节小组课（1:4，考试与ESL各1节）+ 2节考试团体课';
-const EXAM_INTENSIVE = '5节考试一对一 + 2节小组课（1:4，考试与ESL各1节）+ 2节考试团体课';
+// Class lines from the 2026 brochure: preparatory one-to-one is half exam subjects, half general English;
+// general, intensive and guarantee one-to-one classes all teach the exam's subjects (全專業課目).
+const examPrep = (exam: string) => `4节一对一（${exam}专业课2节、一般英语2节）+ 2节一般英语小组课（1:4）+ 1节团体课（1:8）`;
+const examFull = (exam: string, oneToOne: number) => `${oneToOne}节一对一（${exam}全科目）+ 2节小组课（1:4，${exam}与ESL各1节）+ 2节团体考试课`;
+const PREP_NOTE = '一对一专业课和一般英语各占一半，先打基础。';
+const EXAM_CLASS_NOTE = '团体考试课每节90分钟，按星期轮换：周一阅读测验、周二阅读题型、周三听力、周四写作、周五口语。';
 
 const createCourses = (): CiaCourseContent[] => [
   course('esl-general-15', '一般英语 ESL GENERAL', 900, '4节一对一 + 2节小组课（1:4）+ 1节团体课（1:8）', '15岁以上、想全面打好英语基础的学生', '听说读写综合提升，适合第一次游学。', 0),
   course('esl-intensive', '密集英语 ESL INTENSIVE', 1020, '5节一对一 + 2节小组课（1:4）+ 1节团体课（1:8）', '想多上一对一、口语提升更快的学生', '比一般英语每天多1节一对一。', 1),
-  course('ielts-preparatory', '雅思预备 IELTS PREPARATORY', 950, EXAM_PREP, '雅思基础较弱、想先打基础再备考的学生', '考试课与ESL各占一半。', 2),
-  course('ielts-general', '雅思常规 IELTS GENERAL', 1020, EXAM_GENERAL, '已有基础、准备参加雅思考试的学生', '一对一全部为考试课，每天另有2节考试团体课。', 3),
-  course('ielts-intensive', '雅思强化 IELTS INTENSIVE', 1070, EXAM_INTENSIVE, '考试日期临近、想加强冲刺的学生', '比雅思常规每天多1节一对一。', 4),
-  course(CPI_IELTS_GUARANTEE_ID, '雅思保证班 IELTS GUARANTEE', 1120, EXAM_INTENSIVE, '有明确目标分、能保证出勤的学生', '至少12周；入学分数与目标分见下方保证班说明。', 5, { minimumWeeks: 12 }),
-  course('toeic-preparatory', '托业预备 TOEIC PREPARATORY', 950, EXAM_PREP, '托业基础较弱的学生', '考试课与ESL各占一半。', 6),
-  course('toeic-general', '托业常规 TOEIC GENERAL', 1020, EXAM_GENERAL, '准备参加托业考试的学生', '一对一全部为考试课。', 7),
-  course('toeic-intensive', '托业强化 TOEIC INTENSIVE', 1070, EXAM_INTENSIVE, '想短期冲刺托业分数的学生', '比托业常规每天多1节一对一。', 8),
-  course('toeic-guarantee', '托业保证班 TOEIC GUARANTEE', 1120, EXAM_INTENSIVE, '有托业目标分的学生', '入学门槛、目标分数和最低周数报名前向学校确认。', 9),
-  course('toefl-preparatory', '托福预备 TOEFL PREPARATORY', 950, EXAM_PREP, '托福基础较弱的学生', '考试课与ESL各占一半。', 10),
-  course('toefl-general', '托福常规 TOEFL GENERAL', 1020, EXAM_GENERAL, '准备参加托福考试的学生', '一对一全部为考试课。', 11),
-  course('toefl-intensive', '托福强化 TOEFL INTENSIVE', 1070, EXAM_INTENSIVE, '想短期冲刺托福分数的学生', '比托福常规每天多1节一对一。', 12),
-  course('toefl-guarantee', '托福保证班 TOEFL GUARANTEE', 1120, EXAM_INTENSIVE, '有托福目标分的学生', '入学门槛、目标分数和最低周数报名前向学校确认。', 13),
-  course('esp-bridge', '初级商务英语 ESP BRIDGE', 950, '4节一对一（ESL与商务各2节）+ 2节小组课（1:4）+ 1节团体课（1:8）', '想从基础过渡到职场英语的学生', '面试、会议、邮件等职场场景。', 14),
+  course('ielts-preparatory', '雅思预备 IELTS PREPARATORY', 950, examPrep('雅思'), '雅思基础较弱、想先打基础再备考的学生', PREP_NOTE, 2),
+  course('ielts-general', '雅思常规 IELTS GENERAL', 1020, examFull('雅思', 4), '已有基础、准备参加雅思考试的学生', `一对一覆盖雅思听说读写各科。${EXAM_CLASS_NOTE}`, 3),
+  course('ielts-intensive', '雅思强化 IELTS INTENSIVE', 1070, examFull('雅思', 5), '考试日期临近、想加强冲刺的学生', '比雅思常规每天多1节一对一。', 4),
+  course(CPI_IELTS_GUARANTEE_ID, '雅思保证班 IELTS GUARANTEE', 1120, examFull('雅思', 5), '有明确目标分、能保证出勤的学生', '至少12周；入学分数与目标分见下方保证班说明。', 5, { minimumWeeks: 12 }),
+  course('toeic-preparatory', '托业预备 TOEIC PREPARATORY', 950, examPrep('托业'), '托业基础较弱的学生', PREP_NOTE, 6),
+  course('toeic-general', '托业常规 TOEIC GENERAL', 1020, examFull('托业', 4), '准备参加托业考试的学生', EXAM_CLASS_NOTE, 7),
+  course('toeic-intensive', '托业强化 TOEIC INTENSIVE', 1070, examFull('托业', 5), '想短期冲刺托业分数的学生', '比托业常规每天多1节一对一。', 8),
+  course('toeic-guarantee', '托业保证班 TOEIC GUARANTEE', 1120, examFull('托业', 5), '有托业目标分的学生', '入学门槛、目标分数和最低周数报名前向学校确认。', 9),
+  course('toefl-preparatory', '托福预备 TOEFL PREPARATORY', 950, examPrep('托福'), '托福基础较弱的学生', PREP_NOTE, 10),
+  course('toefl-general', '托福常规 TOEFL GENERAL', 1020, examFull('托福', 4), '准备参加托福考试的学生', EXAM_CLASS_NOTE, 11),
+  course('toefl-intensive', '托福强化 TOEFL INTENSIVE', 1070, examFull('托福', 5), '想短期冲刺托福分数的学生', '比托福常规每天多1节一对一。', 12),
+  course('toefl-guarantee', '托福保证班 TOEFL GUARANTEE', 1120, examFull('托福', 5), '有托福目标分的学生', '入学门槛、目标分数和最低周数报名前向学校确认。', 13),
+  course('esp-bridge', '初级商务英语 ESP BRIDGE', 950, '4节一对一（商务英语与一般英语各2节）+ 2节小组课（1:4，商务英语与一般英语各1节）+ 1节团体课（1:8）', '想从基础过渡到职场英语的学生', '面试、会议、邮件等职场场景。', 14),
   course('esp-general', '商务英语 ESP GENERAL', 1020, '4节商务一对一 + 2节小组课（1:4）+ 1节团体课（1:8）', '工作中需要用英语沟通的学生', '面试、会议、谈判与职场写作。', 15),
   course(CPI_JUNIOR_COURSE_ID, '青少年课程 JUNIOR（6–15岁）', 1320, '5节一对一 + 2节小组课（1:4）+ 1节团体课（1:8）', '6–15岁的孩子', '可将1节一对一转给同行家长；可选平日游泳或尤克里里课（每门500比索，满10人开课），晚间有作业辅导和才艺课。', 16),
   course(CPI_PARENTS_COURSE_ID, '家长课程 PARENTS（DIET）', 780, '2节一对一 + 1节小组课（1:4）+ 1节团体课（1:8）', '陪孩子来、自己也想学一点的家长', '课量较轻，方便照顾孩子。', 17),
@@ -117,7 +122,7 @@ const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'water', name: '水费', amount: 1500, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周计费，不足4周按4周计算。', sortOrder: 5 }),
   fee({ id: 'electricity', name: '基本电费', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '超出用量按房型每千瓦时另收：单人20、双人15、三人10、四人8、六人6比索，从押金结算。', sortOrder: 6 }),
   fee({ id: 'visa-extension', name: '签证续签', amount: 5140, rates: [5140, 6410, 4440], tourist59Rates: [6410, 4440], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '30天签证依次约5,140／6,410／4,440比索，59天签证从6,410比索起，之后每次约4,440比索；以实际办理为准。', sortOrder: 7 }),
-  fee({ id: 'books', name: '教材费', amount: 2000, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '每本约400比索，按每8周约2,000比索预估；按实际购买结算。', sortOrder: 8 }),
+  fee({ id: 'books', name: '教材费', amount: 2000, billingRule: 'per-course-period', periodWeeks: 12, rounding: 'ceil', includeInTotal: true, note: '每本约400比索，按每12周约2,000比索预估；按实际购买结算。', sortOrder: 8 }),
   fee({ id: 'student-id', name: '学生证', amount: 350, billingRule: 'once', includeInTotal: true, note: '一次性费用。', sortOrder: 9 }),
   fee({ id: 'pickup', name: '宿务机场接机', amount: 1000, secondaryAmount: 1500, secondaryLabel: '平日', billingRule: 'optional', includeInTotal: false, note: '周末1,000比索、平日1,500比索；每人计费，可能需等候同批学生。', sortOrder: 10 }),
   fee({ id: 'deposit', name: '房间押金', amount: 3000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '每人收取；超出的电费从押金结算，无损坏、无欠费时退还。', sortOrder: 11 }),
@@ -138,7 +143,7 @@ const createPromotions = (): CiaPromotionRule[] => [
   promotion({ id: 'cpi-returning-registration', name: '老学员返校', description: '老学员返校免收一次性注册费。', sortOrder: 10, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, coverageTarget: 'none' }),
 ];
 
-const LOCAL_FEE_INTRO = '以下费用由学校、移民局及相关部门收取，到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；教材按每8周约2,000比索预估；管理费、水费和基本电费不足4周按4周计算。请准备2张5.1×5.1厘米、白底的美签规格照片。';
+const LOCAL_FEE_INTRO = '以下费用由学校、移民局及相关部门收取，到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；教材按每12周约2,000比索预估；管理费、水费和基本电费不足4周按4周计算。请准备2张5.1×5.1厘米、白底的美签规格照片。';
 
 const createExtraNightRates = () => [
   { label: '单人间', amount: 2000 },
@@ -230,10 +235,44 @@ const OLD_GROUP_CLASS_NOTES = ['青少年课程（6–15岁）可将1节一对�
 /** Promotions the 2026-11-04 notice replaced; saved copies are swapped for the new defaults once. */
 const REPLACED_PROMOTION_IDS = ['cpi-off-season', 'cpi-december', 'cpi-extra-class'];
 
+/** Course lines and notes saved by version 1; version 2 replaces them only where nobody has edited them. */
+const V1_COURSE_TEXT = new Set([
+  '4节一对一（考试2节、ESL 2节）+ 2节ESL小组课（1:4）+ 1节团体课（1:8）',
+  '4节考试一对一 + 2节小组课（1:4，考试与ESL各1节）+ 2节考试团体课',
+  '5节考试一对一 + 2节小组课（1:4，考试与ESL各1节）+ 2节考试团体课',
+  '4节一对一（ESL与商务各2节）+ 2节小组课（1:4）+ 1节团体课（1:8）',
+  '考试课与ESL各占一半。', '一对一全部为考试课，每天另有2节考试团体课。', '一对一全部为考试课。',
+]);
+/** Local-fee introductions that still estimate textbooks per 8 weeks (before version 1, and version 1). */
+const OLD_LOCAL_FEE_INTROS = [
+  '以下费用由学校、移民局及相关部门收取，仅供准备比索现金参考，最终以到校缴费为准。签证费用按每位学生当前选择的签证类型及停留时间预估；教材按每次约用8周预估；水费不足4周按4周计算。请准备2张5.1×5.1厘米、白色背景的美签规格照片。',
+  LOCAL_FEE_INTRO.replace('每12周', '每8周'),
+];
+
 /** Brings a document saved before the 2027 notice onto it, keeping every other employee edit. */
 function upgradeCpiPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): void {
   const settings = clone.quoteSettings as CpiQuoteSettings;
-  if ((settings.cpiPolicyVersion ?? 0) >= CPI_POLICY_VERSION) return;
+  const version = settings.cpiPolicyVersion ?? 0;
+  if (version >= CPI_POLICY_VERSION) return;
+  if (version < 1) upgradeToVersion1(clone, defaults);
+  // Version 2: exam-course class lines in the school's wording, textbooks per 12 weeks.
+  const defaultCourses = new Map(defaults.courses.map(item => [item.id, item]));
+  for (const item of clone.courses ?? []) {
+    const fresh = defaultCourses.get(item.id);
+    if (!fresh) continue;
+    if (V1_COURSE_TEXT.has(item.schedule)) item.schedule = fresh.schedule;
+    if (V1_COURSE_TEXT.has(item.note)) item.note = fresh.note;
+  }
+  const books = clone.localFees?.find(rule => rule.id === 'books');
+  const freshBooks = defaults.localFees.find(rule => rule.id === 'books')!;
+  if (books && books.amount === 2000 && books.periodWeeks === 8) Object.assign(books, { periodWeeks: 12, note: freshBooks.note });
+  if (OLD_LOCAL_FEE_INTROS.includes(settings.localFeeIntro)) settings.localFeeIntro = LOCAL_FEE_INTRO;
+  settings.cpiPolicyVersion = CPI_POLICY_VERSION;
+}
+
+/** Version 1: the 2027 price list, Premium Residence and the 2026-11-04 promotion notice. */
+function upgradeToVersion1(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  const settings = clone.quoteSettings as CpiQuoteSettings;
   const defaultCourses = new Map(defaults.courses.map(item => [item.id, item]));
   for (const item of clone.courses ?? []) {
     const fresh = defaultCourses.get(item.id);
@@ -275,7 +314,6 @@ function upgradeCpiPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): 
   }
   settings.extraNightRates = createExtraNightRates();
   if (OLD_GROUP_CLASS_NOTES.includes(settings.groupClassNote)) settings.groupClassNote = defaults.quoteSettings.groupClassNote;
-  settings.cpiPolicyVersion = CPI_POLICY_VERSION;
 }
 
 /** A CPI content document (default or published revision), as the mini program's calculator checks it. */
@@ -307,7 +345,10 @@ export const cloneCpiContentConfig = (value: CiaContentConfig): CiaContentConfig
   clone.quoteImageSettings.benefits ??= copyJson(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
   clone.quoteImageSettings.footerNotes = clone.quoteImageSettings.footerNotes.map(note => note.replace(/思达游学/g, '思达启航'));
-  if (upgrading) upgradeCpiImageCopy(clone.quoteImageSettings);
+  if (upgrading) {
+    upgradeCpiImageCopy(clone.quoteImageSettings);
+    if (OLD_LOCAL_FEE_INTROS.includes(clone.quoteImageSettings.localFeeIntro)) clone.quoteImageSettings.localFeeIntro = LOCAL_FEE_INTRO;
+  }
   clone.media ??= [];
   return clone;
 };

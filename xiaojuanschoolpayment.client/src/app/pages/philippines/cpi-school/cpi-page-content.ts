@@ -97,6 +97,8 @@ export const CPI_GALLERY_IMAGES: GalleryImage[] = [
   { category: '住宿', title: 'B栋双人间A', description: '两张加大床。', src: rooms('b-double-a-01') },
   { category: '住宿', title: 'B栋女生六人间', description: '六张床，带客厅，仅限女生。', src: dorm('six-female-01.jpg') },
   { category: '住宿', title: 'Premium公寓卧室', description: '校外酒店式公寓，距学校约3分钟车程。', src: premium('bedroom') },
+  { category: '住宿', title: 'Premium双人间（学生实拍）', description: '学生入住时拍的房间，两张单人床。', src: premium('student-twin') },
+  { category: '住宿', title: 'Premium公寓客厅和厨房（学生实拍）', description: '小厨房有电磁炉、微波炉、冰箱和饮水机，里面是客厅。', src: premium('student-living') },
   { category: '住宿', title: 'Premium公寓所在大楼', description: 'Hayat Sky Tower酒店大楼。', src: premium('building') },
   { category: '住宿', title: 'Premium公寓无边泳池', description: '住户免费使用。', src: premium('infinity-pool') },
   { category: '住宿', title: 'Premium公寓大堂', description: '24小时前台和保安。', src: premium('lobby') },
@@ -184,7 +186,8 @@ const dormRoom = (
   image: gallery[0], gallery, imageAlt: `CPI${label}实景`,
 });
 const PREMIUM_GALLERY = [
-  premium('bedroom'), premium('room-01'), premium('room-05'), premium('living'),
+  // Two student photos (2026-11-21) follow the brochure bedroom, so the album shows the rooms as students find them.
+  premium('bedroom'), premium('student-twin'), premium('student-living'), premium('room-01'), premium('room-05'), premium('living'),
   premium('room-06'), premium('room-03'), premium('room-07'), premium('room-08'),
   premium('building'), premium('lobby'), premium('infinity-pool'), premium('pool-sunset'),
   premium('gym'), premium('gym-02'), premium('restaurant'),
@@ -380,7 +383,7 @@ export const CPI_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
     eyebrow: 'OTHER FEES',
     title: '其他收费',
     facts: [
-      { label: '加课', value: 'ESL一对一每4周7,000比索，考试一对一每4周7,500比索' },
+      { label: '加课', value: '一对一：ESL 7,000、专业科目7,500比索；1:4小组课：ESL 3,000、专业科目4,000比索（计费周期报名时向学校确认）' },
       { label: '电风扇租借', value: '1–12周300比索；13周以上每4周100比索' },
       { label: '额外住宿', value: '单人2,000、双人1,800、三人1,500、四人1,200比索／晚' },
       { label: '送机', value: '平日1,000比索' },
