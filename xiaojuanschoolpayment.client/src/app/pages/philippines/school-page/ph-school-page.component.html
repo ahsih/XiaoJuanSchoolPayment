@@ -707,6 +707,8 @@
                 </ng-container>
               </div>
             </ng-container>
+            <!-- Under the cards, so a narrow group's cards stay level with the other groups' cards. -->
+            <p class="room-group-note" *ngIf="roomGroupNotes[group.title]"><mat-icon>event_available</mat-icon>{{ roomGroupNotes[group.title] }}</p>
           </section>
         </div>
         <ng-container *ngIf="compactLayout && roomComparisonProfiles.length && !isNarrowViewport">

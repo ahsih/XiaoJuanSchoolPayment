@@ -17,6 +17,7 @@ import {
   CPI_IELTS_GUARANTEE_ID,
   CPI_JUNIOR_COURSE_ID,
   CPI_PARENTS_COURSE_ID,
+  CPI_PREMIUM_STAY_WINDOWS,
   cloneCpiContentConfig,
   createDefaultCpiContentConfig,
 } from './cpi-content-config';
@@ -89,7 +90,7 @@ const CPI_COPY: PhPageCopy = {
     fitLabel: '适合人群',
     noteLabel: '课程说明',
     detailSummaryTitle: '查看课程细节与每日作息',
-    detailSummaryHint: '雅思保证班、1–2周速成班、免费课程、亲子课程、上课规定和每日作息',
+    detailSummaryHint: '雅思保证班、免费课程、亲子课程、上课规定和每日作息',
     guideTitle: '报名前值得确认的课程细节',
   },
   schedule: {
@@ -250,12 +251,18 @@ export const CPI_PAGE_PROFILE: PhSchoolProfile = {
   initialCourseFees: initialPricing.courseFees,
   initialRoomFees: initialPricing.roomFees,
   initialRoomRateGroups: CPI_INITIAL_ROOM_RATE_GROUPS,
+  // User decision 2026-11-21: say on the price list when Premium is open; other dates cannot be quoted.
+  roomGroupNotes: {
+    // One period per line, so a narrow price column never splits a date.
+    'Premium公寓': `只接受以下日期入住：\n${CPI_PREMIUM_STAY_WINDOWS.map(period => period.label).join('\n')}\n其他日期不能报价。`,
+  },
   showRoomCodes: false,
   dormRules: CPI_DORM_RULES,
   roomProfiles: CPI_ROOM_PROFILES,
   ieltsResults: [],
   studentReviews: [],
   reviewPath: '',
+  schoolCompareId: 'cpi',
   holidayCalendars: [],
   ieltsComputerExamDates2027: [],
   studentCareServices: [],

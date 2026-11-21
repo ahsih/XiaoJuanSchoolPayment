@@ -10,6 +10,9 @@ import {
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
 
+/** Deep copy of plain content data. Not structuredClone, which the WeChat mini program runtime lacks. */
+const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
 /**
  * Raised when saved documents must inherit a school notice once (cloneCpiContentConfig):
  * 1 = 2027 price list, Premium Residence and the 2026-11-04 promotion notice (added 2026-11-21).
@@ -251,11 +254,11 @@ function upgradeCpiPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): 
     }
   }
   for (const id of CPI_PREMIUM_ROOM_IDS) {
-    if (!clone.rooms.some(item => item.id === id)) clone.rooms.push(structuredClone(defaultRooms.get(id)!));
+    if (!clone.rooms.some(item => item.id === id)) clone.rooms.push(copyJson(defaultRooms.get(id)!));
   }
   const promotions = settings.promotions.filter(rule => !REPLACED_PROMOTION_IDS.includes(rule.id));
   for (const rule of defaults.quoteSettings.promotions) {
-    if (!promotions.some(item => item.id === rule.id)) promotions.push(structuredClone(rule));
+    if (!promotions.some(item => item.id === rule.id)) promotions.push(copyJson(rule));
   }
   settings.promotions = promotions.sort((a, b) => a.sortOrder - b.sortOrder);
   const defaultFees = new Map(defaults.localFees.map(item => [item.id, item]));
@@ -275,25 +278,34 @@ function upgradeCpiPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): 
   settings.cpiPolicyVersion = CPI_POLICY_VERSION;
 }
 
+/** A CPI content document (default or published revision), as the mini program's calculator checks it. */
+export function isCpiContentConfig(value: unknown): value is CiaContentConfig {
+  const content = value as Partial<CiaContentConfig> | null;
+  return !!content && content.schemaVersion === 1 && content.schoolCode === 'CPI'
+    && Array.isArray(content.courses) && Array.isArray(content.rooms) && Array.isArray(content.localFees)
+    && !!content.quoteSettings && Array.isArray(content.quoteSettings.promotions)
+    && !!content.quoteImageSettings;
+}
+
 export const cloneCpiContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const defaults = createDefaultCpiContentConfig();
-  const clone = structuredClone(value);
-  clone.courses ??= structuredClone(defaults.courses);
-  clone.rooms ??= structuredClone(defaults.rooms);
-  clone.localFees ??= structuredClone(defaults.localFees);
-  clone.quoteSettings ??= structuredClone(defaults.quoteSettings);
+  const clone = copyJson(value);
+  clone.courses ??= copyJson(defaults.courses);
+  clone.rooms ??= copyJson(defaults.rooms);
+  clone.localFees ??= copyJson(defaults.localFees);
+  clone.quoteSettings ??= copyJson(defaults.quoteSettings);
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= [];
-  clone.quoteSettings.promotions ??= structuredClone(defaults.quoteSettings.promotions);
-  clone.quoteSettings.stayPolicies ??= structuredClone(defaults.quoteSettings.stayPolicies);
-  clone.quoteSettings.extraNightRates ??= structuredClone(defaults.quoteSettings.extraNightRates);
+  clone.quoteSettings.promotions ??= copyJson(defaults.quoteSettings.promotions);
+  clone.quoteSettings.stayPolicies ??= copyJson(defaults.quoteSettings.stayPolicies);
+  clone.quoteSettings.extraNightRates ??= copyJson(defaults.quoteSettings.extraNightRates);
   const upgrading = ((clone.quoteSettings as CpiQuoteSettings).cpiPolicyVersion ?? 0) < CPI_POLICY_VERSION;
   upgradeCpiPolicy(clone, defaults);
-  clone.quoteImageSettings ??= structuredClone(defaults.quoteImageSettings);
-  clone.quoteImageSettings.paymentNotes ??= structuredClone(defaults.quoteImageSettings.paymentNotes);
+  clone.quoteImageSettings ??= copyJson(defaults.quoteImageSettings);
+  clone.quoteImageSettings.paymentNotes ??= copyJson(defaults.quoteImageSettings.paymentNotes);
   clone.quoteImageSettings.localFeeNotes ??= {};
-  clone.quoteImageSettings.benefits ??= structuredClone(defaults.quoteImageSettings.benefits);
-  clone.quoteImageSettings.footerNotes ??= structuredClone(defaults.quoteImageSettings.footerNotes);
+  clone.quoteImageSettings.benefits ??= copyJson(defaults.quoteImageSettings.benefits);
+  clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
   clone.quoteImageSettings.footerNotes = clone.quoteImageSettings.footerNotes.map(note => note.replace(/思达游学/g, '思达启航'));
   if (upgrading) upgradeCpiImageCopy(clone.quoteImageSettings);
   clone.media ??= [];

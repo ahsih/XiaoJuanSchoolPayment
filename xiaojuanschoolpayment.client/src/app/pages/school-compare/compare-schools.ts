@@ -7,6 +7,8 @@
 import { cloneCiaContentConfig, createDefaultCiaContentConfig, type CiaContentConfig } from '../philippines/cia-school/cia-content-config';
 import { applyCiaQuoteContent, createCiaQuotePricing, isCiaContentConfig, type CiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import { CiaStudentQuote } from '../philippines/cia-school/cia-student-quote';
+import { cloneCpiContentConfig, createDefaultCpiContentConfig, CPI_IELTS_GUARANTEE_ID } from '../philippines/cpi-school/cpi-content-config';
+import { CpiPageStudent } from '../philippines/cpi-school/cpi-page-quote';
 import { cloneEvContentConfig, createDefaultEvContentConfig, EV_IELTS_GUARANTEE_ID } from '../philippines/ev-school/ev-content-config';
 import { EvPageStudent, type EvQuotePricing } from '../philippines/ev-school/ev-page-quote';
 import { PhCompareSchool } from './ph-compare-school';
@@ -104,7 +106,42 @@ export function createEvCompareSource(): CompareSchoolSource {
   };
 }
 
+export function createCpiCompareSource(): CompareSchoolSource {
+  const pricing = createCiaQuotePricing(cloneCpiContentConfig(createDefaultCpiContentConfig()));
+  const school = new PhCompareSchool<CpiPageStudent>({
+    id: 'cpi',
+    tag: 'CPI',
+    name: '菲律宾宿务 CPI 语言学校',
+    city: '宿务',
+    location: '宿务市区 Lahug',
+    pagePath: '/philippines-study/cebu/cpi-cebu-pelis-institute',
+    pricing,
+    createStudent: () => new CpiPageStudent(pricing),
+    applyConditions: (student, conditions) => {
+      student.selectedAgeGroup = conditions.ageGroup;
+      student.visaType = conditions.visaType;
+      student.returningStudent = false;
+    },
+    goals: {
+      general: { ids: ['esl-general-15', 'esl-intensive'] },
+      // CPI has no speaking-only course; ESL Intensive has the most one-to-one classes.
+      speaking: { ids: ['esl-intensive'], closest: true },
+      ielts: { ids: ['ielts-general', 'ielts-intensive', 'ielts-preparatory'] },
+      'ielts-guarantee': { ids: [CPI_IELTS_GUARANTEE_ID] },
+      toeic: { ids: ['toeic-general', 'toeic-intensive', 'toeic-preparatory'] },
+      business: { ids: ['esp-general', 'esp-bridge'] },
+    },
+  });
+  return {
+    school,
+    pricingSchoolName: '菲律宾宿务CPI语言学校',
+    applyPublished: value => {
+      if (isContentFor('CPI', value)) applyCiaQuoteContent(pricing, cloneCpiContentConfig(value));
+    },
+  };
+}
+
 /** Every school that can be compared, in the order the page lists them. */
 export function createCompareSchools(): CompareSchoolSource[] {
-  return [createCiaCompareSource(), createEvCompareSource()];
+  return [createCiaCompareSource(), createEvCompareSource(), createCpiCompareSource()];
 }

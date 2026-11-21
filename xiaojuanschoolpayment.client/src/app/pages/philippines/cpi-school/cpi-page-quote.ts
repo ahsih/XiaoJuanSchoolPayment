@@ -96,10 +96,10 @@ export class CpiPageStudent implements PhPageStudent {
     const rows = this.quotePlan.rooms.filter(row => CPI_PREMIUM_ROOM_IDS.includes(row.optionId));
     const outside = rows.some(row => {
       const end = this.quotePlan.end(row);
-      return !CPI_PREMIUM_STAY_WINDOWS.some(window => row.startDate >= window.start && !!end && end <= window.end);
+      return !CPI_PREMIUM_STAY_WINDOWS.some(period => row.startDate >= period.start && !!end && end <= period.end);
     });
     return outside
-      ? `Premium公寓目前只接受${CPI_PREMIUM_STAY_WINDOWS.map(window => window.label).join('、')}入住，请调整日期或改选校内宿舍。`
+      ? `Premium公寓目前只接受${CPI_PREMIUM_STAY_WINDOWS.map(period => period.label).join('、')}入住，请调整日期或改选校内宿舍。`
       : '';
   }
 

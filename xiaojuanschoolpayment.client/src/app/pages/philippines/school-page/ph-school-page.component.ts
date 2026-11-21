@@ -618,6 +618,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly campusPracticalGuides = this.profile.campusPracticalGuides;
 
   roomRateGroups: RoomRateGroup[] = this.profile.initialRoomRateGroups;
+  readonly roomGroupNotes: Readonly<Record<string, string>> = this.profile.roomGroupNotes ?? {};
 
   readonly roomComparisonProfiles: readonly PhRoomProfile[] = this.profile.roomProfiles;
   /** The room comparison table needs measured facts; schools without them leave it out. */

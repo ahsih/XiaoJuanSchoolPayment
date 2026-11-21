@@ -1,6 +1,6 @@
 // Entry point the WeChat mini program bundles as miniprogram/vendor/quote-engine.js
 // (SiDaQiHangWeChat: `npm run quote:sync`, checked with `npm run quote:check`). Everything exported
-// here is the same code the website runs: the CIA calculator, the exchange-rate rules and the
+// here is the same code the website runs: the CIA and CPI calculators, the exchange-rate rules and the
 // full-detail quote image renderer. Only export pure modules (no Angular, DOM or storage).
 // After changing any of them, run the sync in the mini program repo and release a new version.
 
@@ -28,6 +28,10 @@ export { planCompareReady } from '../components/plan-compare/plan-compare-sheet'
 export type { PlanCompareColumn, PlanCompareRow, PlanCompareSheet } from '../components/plan-compare/plan-compare-sheet';
 export { drawPlanCompareImage, planCompareImageHeight } from '../components/plan-compare/plan-compare-image-renderer';
 export { cloneCiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
+// CPI (2026-11-21): the same pricing object as CIA (createCiaQuotePricing / applyCiaQuoteContent on a CPI document).
+export { CPI_COMPARE_COURSE_GROUPS, CPI_QUOTE_IMAGE_HERO, CpiPlanComparison, CpiQuote } from '../pages/philippines/cpi-school/cpi-page-quote';
+export type { CpiPageStudent, CpiQuotePricing } from '../pages/philippines/cpi-school/cpi-page-quote';
+export { cloneCpiContentConfig, isCpiContentConfig } from '../pages/philippines/cpi-school/cpi-content-config';
 export type { CiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
 export { SCHOOL_VISA_OPTIONS } from '../components/school-group-quote';
 export type { SchoolLocalFee, SchoolVisaType } from '../components/school-group-quote';
