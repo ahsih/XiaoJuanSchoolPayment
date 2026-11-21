@@ -197,9 +197,8 @@
         </div>
       </div>
       <aside class="school-license-strip" *ngIf="copy.license" [attr.aria-label]="schoolName + '办学资质'">
-        <mat-icon>verified_user</mat-icon>
         <div>
-          <strong>{{ copy.license.title }}</strong>
+          <strong><mat-icon>verified_user</mat-icon>{{ copy.license.title }}</strong>
           <span *ngFor="let item of copy.license.items">{{ item }}</span>
         </div>
         <small>{{ copy.license.note }}</small>
@@ -248,9 +247,8 @@
     </div>
 
     <aside class="school-license-strip" *ngIf="copy.license && !compactLayout" [attr.aria-label]="schoolName + '办学资质'">
-      <mat-icon>verified_user</mat-icon>
       <div>
-        <strong>{{ copy.license.title }}</strong>
+        <strong><mat-icon>verified_user</mat-icon>{{ copy.license.title }}</strong>
         <span *ngFor="let item of copy.license.items">{{ item }}</span>
       </div>
       <small>{{ copy.license.note }}</small>
