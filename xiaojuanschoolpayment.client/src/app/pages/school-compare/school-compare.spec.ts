@@ -10,6 +10,7 @@ import { cloneEvContentConfig, createDefaultEvContentConfig } from '../philippin
 import { CiaSchoolComponent } from '../philippines/cia-school/cia-school.component';
 import { CpiSchoolPageComponent } from '../philippines/cpi-school/cpi-school-page.component';
 import { EvSchoolPageComponent } from '../philippines/ev-school/ev-school-page.component';
+import { CpilsSchoolPageComponent } from '../philippines/cpils-school/cpils-school-page.component';
 import type { PhSchoolPageComponent } from '../philippines/school-page/ph-school-page.component';
 import { createCompareSchools, createEvCompareSource } from './compare-schools';
 import { compareRoomFacts, SchoolPriceComparison, type CompareConditions } from './school-compare';
@@ -58,10 +59,12 @@ describe('Cross-school price comparison', () => {
     const pages: Record<string, PhSchoolPageComponent> = {
       cia: TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       ev: TestBed.runInInjectionContext(() => new EvSchoolPageComponent()),
+      cpils: TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
       cpi: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
     };
-    for (const scenario of scenarios) for (const schoolIds of [['cia', 'ev'], ['cpi', 'cia']]) {
+    for (const scenario of scenarios) for (const schoolIds of [['cia', 'ev', 'cpils'], ['cpi', 'cia']]) {
       const { comparison } = setup(schoolIds);
+      expect(comparison.selections.length).toBe(schoolIds.length);
       comparison.setGoal(scenario.goal);
       comparison.setBeds(scenario.beds);
       comparison.setWeeks(scenario.weeks);
@@ -74,6 +77,12 @@ describe('Cross-school price comparison', () => {
         const quote = quoteOnPage(page, selection.plan.courseId, selection.plan.roomId, comparison.conditions);
         const result = results[index];
         const label = `${selection.school.tag} ${JSON.stringify(scenario)}`;
+        // CPILS has no 2026 short-stay prices; the comparison shows the same message as its page.
+        if (selection.school.id === 'cpils' && scenario.start < '2027-01-01' && scenario.weeks < 4) {
+          expect(result.error).withContext(label).toContain('暂无');
+          expect(result.error).withContext(label).toBe(quote.quoteError);
+          return;
+        }
         expect(result.error).withContext(label).toBe('');
         expect(result.schoolTotal).withContext(label).toBeGreaterThan(0);
         expect(result.localTotal).withContext(label).toBeGreaterThan(0);
@@ -92,9 +101,10 @@ describe('Cross-school price comparison', () => {
     const pages: Record<string, PhSchoolPageComponent> = {
       cia: TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       ev: TestBed.runInInjectionContext(() => new EvSchoolPageComponent()),
+      cpils: TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
       cpi: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
     };
-    expect(createCompareSchools().map(source => source.school.id)).toEqual(['cia', 'ev', 'cpi']);
+    expect(createCompareSchools().map(source => source.school.id)).toEqual(['cia', 'ev', 'cpils', 'cpi']);
     for (const source of createCompareSchools()) {
       const page = pages[source.school.id];
       expect(source.school.rooms.map(room => `${room.id}:${room.fee}`).sort())
@@ -125,6 +135,31 @@ describe('Cross-school price comparison', () => {
     expect(cpi.selections[0].courseNote).toBe('CPI没有单独的口语强化课程，已选最接近的密集英语 ESL INTENSIVE');
     expect(compareRoomFacts('校外公寓双人间')).toEqual({ beds: 2, offCampus: true, suite: false });
     expect(compareRoomFacts('单人套房 SR-1')).toEqual({ beds: 1, offCampus: false, suite: true });
+  });
+
+  it('adds CPILS as a third school with its own matches', () => {
+    const { comparison } = setup();
+    comparison.toggleSchool('cpils');
+    const cpils = () => comparison.selections[2];
+    const pick = () => `${cpils().plan.courseId}/${cpils().plan.roomId}`;
+    expect(pick()).toBe('general-esl/regular-twin');
+    comparison.setBeds(4);
+    expect(pick()).toBe('general-esl/regular-quad');
+    comparison.setGoal('speaking');
+    expect(pick()).toBe('esl-premium/regular-quad');
+    expect(cpils().courseNote).toContain('CPILS没有单独的口语强化课程');
+    comparison.setGoal('ielts-guarantee');
+    expect(comparison.conditions.weeks).toBe(12);
+    expect(pick()).toBe('ielts-guarantee-12-weeks/regular-quad');
+    expect(comparison.results.every(result => !result.error)).toBeTrue();
+    expect(comparison.sheet.plans.map(plan => plan.tag)).toEqual(['CIA', 'EV主校区', 'CPILS']);
+    comparison.toggleSchool('ev');
+    expect(comparison.selections.map(selection => selection.school.id)).toEqual(['cia', 'cpils']);
+    comparison.applyLink({ from: 'cpils', course: 'toeic-course', room: 'premium-single', weeks: '8', start: '2027-01-10' });
+    expect(comparison.selections[0].school.id).toBe('cpils');
+    expect(comparison.selections[0].plan.courseId).toBe('toeic-course');
+    expect(comparison.selections[0].plan.roomId).toBe('premium-single');
+    expect(comparison.goal).toBe('toeic');
   });
 
   it('builds one sheet for the table and image, with school fees and local fees kept apart', () => {

@@ -43,7 +43,10 @@ jobs:
       # Every --build leaves BuildKit cache and an untagged previous app image.
       # Without pruning they fill the server disk, after which git push and
       # docker builds fail. Cache still reused within 24 hours is kept so
-      # unchanged npm/NuGet restore layers stay fast.
+      # unchanged npm/NuGet restore layers stay fast, unless free space is still
+      # under 10 GB: a day with many deploys once left 44 GB of fresh cache and
+      # 2.4 GB free. Then all unused build cache goes; the next build is slower
+      # but containers, images and volumes are untouched.
       - name: Free server disk space
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
@@ -54,6 +57,10 @@ jobs:
           df -h /opt/sida
           sudo -n docker builder prune -f --filter until=24h || echo "Build-cache prune failed; continuing." >&2
           sudo -n docker image prune -f || echo "Dangling-image prune failed; continuing." >&2
+          low_kb=$((10 * 1024 * 1024))
+          if [ "$(df --output=avail -k /opt/sida | tail -n 1 | tr -d ' ')" -lt "$low_kb" ]; then
+            sudo -n docker builder prune -af || echo "Full build-cache prune failed; continuing." >&2
+          fi
           df -h /opt/sida
 
           min_free_kb=$((3 * 1024 * 1024))
