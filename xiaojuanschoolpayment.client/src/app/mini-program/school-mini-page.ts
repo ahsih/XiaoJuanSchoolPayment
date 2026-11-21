@@ -8,6 +8,8 @@
 // Compatibility: adding a block type, field or section is safe (older mini programs skip unknown
 // block types and ignore unknown fields). Renaming or retyping a field needs a new schemaVersion.
 
+import type { MiniTemplateQuoteEngine } from './template-quote-schools';
+
 export const SCHOOL_MINI_PAGE_SCHEMA_VERSION = 1;
 
 export interface MiniImage {
@@ -142,11 +144,12 @@ export interface MiniPricing {
   /** Published-content years the peak-season block lists, such as ["2027"]. */
   peakSeasonYears: string[];
   /**
-   * Quote calculator the mini program runs for this school (a key of its bundled
-   * quote-engine.ts: "cia" or "cpi"). Omit for schools without a mini program calculator. A mini program
-   * that does not know the engine shows the page without the quote button.
+   * Quote calculator the mini program runs for this school (a key of its bundled quote-engine.ts:
+   * "cia", "cpi", or a template school's key in template-quote-schools.ts). Omit for schools without a
+   * mini program calculator. A mini program that does not know the engine shows the page without the
+   * quote button.
    */
-  quoteEngine?: 'cia' | 'cpi';
+  quoteEngine?: 'cia' | 'cpi' | MiniTemplateQuoteEngine;
   /**
    * Built-in fallback, used until (or unless) a published revision is available. Schools with a
    * `quoteEngine` export the complete default content document here (same shape as a revision).
