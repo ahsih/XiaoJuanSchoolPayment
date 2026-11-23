@@ -683,7 +683,7 @@
         <div class="room-table-heading">
           <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
           <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
-          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>点任一房型，看它的实拍照片和介绍</span></p>
+          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>{{ everyRateRoomHasPhotos ? '点任一房型，看它的实拍照片和介绍' : '点“看照片”，看该房型的实拍照片和介绍' }}</span></p>
         </div>
         <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
@@ -974,7 +974,7 @@
 
     <section
       class="cia-section official-student-reviews"
-      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length)"
+      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length || textReviews.length)"
       id="student-reviews"
       aria-labelledby="student-reviews-title"
     >
@@ -1041,6 +1041,19 @@
           </div>
         </article>
       </div>
+      </ng-container>
+
+      <!-- School-only (HANA): short written reviews without names; styles in ph-school-page-options.css. -->
+      <ng-container *ngIf="textReviews.length">
+      <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ textReviews.length }}条</p>
+      <div class="text-review-grid" [attr.aria-label]="schoolName + '学员评价'">
+        <article *ngFor="let review of textReviews">
+          <mat-icon class="text-review-quote" aria-hidden="true">format_quote</mat-icon>
+          <blockquote>{{ review.text }}</blockquote>
+          <span class="text-review-who">— {{ review.who }}</span>
+        </article>
+      </div>
+      <small class="text-review-note" *ngIf="copy.reviews.textNote">{{ copy.reviews.textNote }}</small>
       </ng-container>
 
     </section>
@@ -1586,6 +1599,14 @@
             <strong>旺季附加费 {{ peakRate2027 }} 美元／人／周</strong>
             <span *ngFor="let range of calendarPeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
             <small>{{ copy.calendar.peakNote }}</small>
+          </div>
+        </div>
+        <!-- School-only (HANA): peak seasons without a surcharge. -->
+        <div class="compact-peak compact-peak--free" *ngIf="calendarFreePeakRanges.length">
+          <mat-icon>wb_sunny</mat-icon>
+          <div>
+            <strong>{{ freePeakTitle }}</strong>
+            <span *ngFor="let range of calendarFreePeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
           </div>
         </div>
         <div class="compact-calendar-table" role="table" *ngIf="calendarMonths.length" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">

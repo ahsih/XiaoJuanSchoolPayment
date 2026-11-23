@@ -563,7 +563,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/hana-academy',
         loadComponent: () =>
-          import('./pages/philippines/hana-school/hana-school.component').then((m) => m.HanaSchoolComponent),
+          import('./pages/philippines/hana-school/hana-school-page.component').then((m) => m.HanaSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/gitc-college-international-language-center',
