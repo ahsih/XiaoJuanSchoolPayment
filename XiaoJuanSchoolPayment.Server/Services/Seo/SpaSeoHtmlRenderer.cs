@@ -14,9 +14,10 @@ namespace XiaoJuanSchoolPayment.Server.Services.Seo;
 /// do not run JavaScript, so without this every URL showed the homepage metadata and no body text.
 /// The data is wwwroot/seo-pages.json, generated at build time from the client's seo.service.ts and the
 /// prerendered pages (scripts/export-seo-pages.cjs); the Angular SeoService keeps updating the same tags
-/// during in-app navigation, and Angular replaces the prerendered body when it starts. "/" is the
-/// prerendered index.html, served as a static file. Missing files fail safe: no index.csr.html or
-/// index.html → 404 (as before), no seo-pages.json → the original HTML.
+/// during in-app navigation, and Angular replaces the prerendered body when it starts. "/" comes here
+/// too (endpoint routing picks the SPA fallback before the static index.html), so the home page is in
+/// seo-pages.json like the others. Missing files fail safe: no index.csr.html or index.html → 404
+/// (as before), no seo-pages.json → the original HTML.
 /// School pages are prerendered with the prices published when the site was built; each lists the
 /// schools whose data it shows, and is served only while <see cref="SchoolDataFreshness"/> reports that
 /// none of them has changed since. After a new publish the route gets the shell until the next build.

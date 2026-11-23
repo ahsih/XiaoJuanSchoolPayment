@@ -6,9 +6,10 @@
 //   → prerender, src/main.server.ts) to <route>/index.html with the page body in the HTML, because Baidu,
 //   WeChat link previews and most AI crawlers do not run JavaScript. This script checks each page (no
 //   render error, real body text) and moves it into seo-pages.json, because the server treats a wwwroot
-//   folder with its own index.html as a separate static site (FindStaticSiteIndex in Program.cs). "/"
-//   stays as the prerendered index.html, which the server serves as a static file; index.csr.html is the
-//   empty shell for every other route.
+//   folder with its own index.html as a separate static site (FindStaticSiteIndex in Program.cs). The
+//   home page is also kept as the prerendered index.html, but "/" itself is served through the same
+//   renderer (the SPA fallback runs before the static file), so it is in seo-pages.json too;
+//   index.csr.html is the empty shell for every route without a prerendered page.
 // - Prerendered school pages: scripts/prerender-school-pages.cjs renders the school pages with their
 //   latest published prices into prerendered-school-pages.json; they are added the same way, with the
 //   schools each one shows and when it was rendered (prerenderedSchools), so the server stops serving a
@@ -16,8 +17,8 @@
 // - seo-pages.json: each route's title, description, Open Graph data and schema.org JSON-LD, plus the
 //   prerendered pages. The ASP.NET host (SpaSeoHtmlRenderer) serves a route's prerendered page, or the
 //   shell, with that route's own tags.
-// - index.html: the home page's JSON-LD (the full Organization from the brand fact card), because "/"
-//   is served as this static file.
+// - index.html: the home page's JSON-LD (the full Organization from the brand fact card), for direct
+//   requests of this static file and the GitHub Pages copy.
 // - llms.txt: the brand fact card as Markdown for AI tools.
 //
 // The data is SEO_PAGES / SECTION_SEO / DEFAULT_SEO / buildSeoStructuredData in
@@ -172,8 +173,10 @@ for (const route of prerenderedRoutes) {
   }
   const html = fs.readFileSync(file, 'utf8');
   checkPrerendered(route, html);
+  // "/" also goes through the SEO renderer (endpoint routing picks the SPA fallback before the static
+  // index.html), so it needs its entry too; index.html itself stays for direct /index.html requests.
+  prerendered[route] = html;
   if (route !== '/') {
-    prerendered[route] = html;
     prerenderedFiles.push(file);
   }
 }
@@ -230,7 +233,7 @@ for (const file of prerenderedFiles) {
   removeEmptyDirectories(path.dirname(file));
 }
 
-// "/" is served as the static index.html, so its JSON-LD goes into that file (replacing an earlier run's).
+// The static index.html (direct requests, GitHub Pages) gets the home JSON-LD too (replacing an earlier run's).
 const homeScript = `<script type="application/ld+json" id="seo-json-ld">${jsonLd('/', SEO_PAGES['/'])}</script>`;
 const indexHtml = fs
   .readFileSync(indexPath, 'utf8')

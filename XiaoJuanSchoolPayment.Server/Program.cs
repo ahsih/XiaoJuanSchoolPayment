@@ -167,7 +167,8 @@ if (!app.Environment.IsDevelopment() && string.IsNullOrWhiteSpace(app.Configurat
 }
 
 app.UseCors("AllowAll");
-// "/" is served as the static index.html, whose built-in tags are already the home page's SEO.
+// "/" itself reaches the SPA fallback below (endpoint routing runs first), which serves the prerendered
+// home page with its tags; the static index.html answers only direct /index.html requests.
 app.UseDefaultFiles();
 var staticContentTypes = new FileExtensionContentTypeProvider();
 staticContentTypes.Mappings[".mov"] = "video/quicktime";
