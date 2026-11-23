@@ -173,11 +173,12 @@ export const LA_MER_VIDEOS = {
 } as const;
 
 /**
- * Hero album video chips, named like the photo chips; the campus tour opens the album. The three room clips each
- * show exactly one room type (checked frame by frame 2026-11-24), so they also open that room's photos.
+ * Hero album video chips, named like the photo chips; the promo film opens the album (its aerial poster looks best,
+ * user decision 2026-11-24). The three room clips each show exactly one room type (checked frame by frame
+ * 2026-11-24), so they also open that room's photos.
  */
 export const LA_MER_VIDEO_TABS: readonly PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: [LA_MER_VIDEOS.campusTour, LA_MER_VIDEOS.promo] },
+  { label: '校园视频', icon: 'videocam', items: [LA_MER_VIDEOS.promo, LA_MER_VIDEOS.campusTour] },
   { label: '教室视频', icon: 'videocam', items: [LA_MER_VIDEOS.classes] },
   { label: '住宿视频', icon: 'videocam', items: [LA_MER_VIDEOS.roomPoolDouble, LA_MER_VIDEOS.roomDouble, LA_MER_VIDEOS.roomQuad] },
   { label: '餐厅视频', icon: 'videocam', items: [LA_MER_VIDEOS.diningHall, LA_MER_VIDEOS.lunch, LA_MER_VIDEOS.shop] },
