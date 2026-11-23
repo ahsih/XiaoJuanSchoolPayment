@@ -67,6 +67,7 @@ import type { PhCompareFocus, PhPlanComparison } from './ph-plan-compare';
 import type { PhSchoolQuote } from './ph-school-quote';
 import type {
   PhAlbumCategory,
+  PhOfferCard,
   PhPageStudent,
   PhRoomProfile,
   PhSchoolProfile,
@@ -297,6 +298,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   scheduleDayIndex = 0;
   readonly studyModes = this.profile.studyModes;
   readonly holidayCalendars = this.profile.holidayCalendars;
+  private readonly offerCards = this.profile.offers ?? [];
+  /** Offers above the quote that have not ended and whose promotion rules the applied content still enables. */
+  get visibleOffers(): readonly PhOfferCard[] {
+    if (!this.offerCards.length) return this.offerCards;
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return this.offerCards.filter(card => (!card.until || today < card.until)
+      && (!card.promotionIds?.length || card.promotionIds.some(id => this.promotions.some(rule => rule.id === id && rule.enabled))));
+  }
   readonly ieltsComputerExamDates2027 = this.profile.ieltsComputerExamDates2027;
   readonly courseDetailGuides = this.profile.courseDetailGuides;
   courseFees: CourseFee[] = this.profile.initialCourseFees.map(course => ({ ...course }));

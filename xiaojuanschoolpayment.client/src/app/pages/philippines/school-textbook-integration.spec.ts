@@ -10,7 +10,7 @@ import { PinesSchoolPageComponent } from './pines-school/pines-school-page.compo
 import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
 import { MonolSpartaSchoolDetailComponent } from './monol-sparta-school/monol-sparta-school-detail.component';
 import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
-import { BCebuSchoolComponent } from './bcebu-school/bcebu-school.component';
+import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
 import { GlcSchoolComponent } from './glc-school/glc-school.component';
 import { IbreezeSchoolComponent } from './ibreeze-school/ibreeze-school.component';
 import { AnjSchoolComponent } from './anj-school/anj-school.component';
@@ -39,13 +39,13 @@ import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.com
 import { TargetStudentQuote } from './target-school/target-student-quote';
 import { TargetSchoolComponent } from './target-school/target-school.component';
 import { CipQuoteCalculatorComponent } from './cip-school/cip-quote-calculator.component';
-import { LaMerSchoolComponent } from './la-mer-school/la-mer-school.component';
+import { LaMerSchoolPageComponent } from './la-mer-school/la-mer-school-page.component';
 import { PhilippinesQuoteImageExporterComponent } from '../../components/philippines-quote-image-exporter.component';
 const imageAlias = (page: any) => { Object.defineProperty(page, 'quoteImageData', { get: () => page.quoteImage }); return page; };
 const schools = [
   { name: 'TARGET', create: () => new TargetSchoolComponent() },
   { name: 'CIP', create: () => imageAlias(new CipQuoteCalculatorComponent()) },
-  { name: 'EV La Mer', create: () => imageAlias(new LaMerSchoolComponent()) },
+  { name: 'EV La Mer', create: () => new LaMerSchoolPageComponent() },
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
   { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
@@ -63,7 +63,7 @@ const schools = [
   { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
   { name: "MONOL Sparta", create: () => new MonolSpartaSchoolDetailComponent() },
   { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
-  { name: "B'Cebu", create: () => new BCebuSchoolComponent() },
+  { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
   { name: "GLC", create: () => new GlcSchoolComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolComponent() },
   { name: "A&J", create: () => new AnjSchoolComponent() },
