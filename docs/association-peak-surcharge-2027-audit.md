@@ -16,7 +16,7 @@
 | --- | --- | --- | --- |
 | BESA | A&J | 06/27–08/22，60 美元／周 | `anj-school/anj-student-quote.ts` |
 | BESA | BECI EOP / Sparta / City | 06/27–08/22，60 美元／周 | `beci-quote/beci-student-quote.ts`、City 独立页 |
-| BESA | MONOL Main / Sparta | 06/27–08/22，60 美元／周 | `monol-school/monol-student-quote.ts`、`monol-sparta-school/monol-sparta-student-quote.ts` |
+| BESA | MONOL Main / Sparta | 06/27–08/22，60 美元／周 | `monol-school/monol-student-quote.ts`、`monol-sparta-school/monol-sparta-page-quote.ts` |
 | BESA | PINES Main / IELTS | 06/27–08/22，60 美元／周 | `pines-school/pines-student-quote.ts` |
 | BESA | JIC Challenger / Premium | 06/27–08/22，60 美元／周 | `jic-school/jic-student-quote.ts` |
 | BESA | WALES | 06/27–08/22，60 美元／周 | `wales-school/wales-student-quote.ts` |
