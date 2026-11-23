@@ -14,10 +14,19 @@ import { copyContentData } from '../copy-content-data';
  *    and no school promotion besides the agent 95% rate (user decision 2026-11-20).
  * 3: 2026-11 school pack: check-in from Saturday 15:00 for every student, no students under 15,
  *    and the student pays any electricity beyond the deposit (2026-10 orientation guide).
+ * 4: colleague review 2026-11-24: ACR I-Card with the first tourist-visa extension (2026-10 orientation guide),
+ *    the condo shuttle also runs at weekends, and a condo double needs two students who enrol together.
  */
-export const EV_POLICY_VERSION = 3;
+export const EV_POLICY_VERSION = 4;
 export const EV_IELTS_GUARANTEE_ID = 'sparta-ielts-guarantee';
 const EV_ELECTRICITY_NOTE = '每周含15度电；超出部分每度20比索，从押金中扣除，超过押金须补交差额。';
+const EV_ACR_NOTE = '旅游签证首次续签时办理（30天签证第5周起，59天签证第9周起），只收一次。';
+const EV_V3_ACR_NOTE = '在菲律宾停留超过59天（第9周起）须办理，只收一次。';
+const EV_V3_CONDO_NOTE = '仅限半斯巴达课程；无门禁，平日有接驳车往返学校';
+const EV_CONDO_NOTES: Record<string, string> = {
+  'off-campus-single': '仅限半斯巴达课程；无门禁，有接驳车往返学校',
+  'off-campus-double': '仅限半斯巴达课程；须两位学生同时报名一起入住（如夫妻或朋友）；无门禁，有接驳车往返学校',
+};
 
 const course = (
   id: string,
@@ -117,14 +126,14 @@ const defaultRooms = (): CiaRoomContent[] => [
   room('double', '双人间', 1030, '两人一间', '校内', 1),
   room('triple', '三人间', 950, '三人一间', '校内', 2),
   room('quad-bunk', '四人间（上下铺）', 900, '上下铺，预算较低', '校内', 3),
-  room('off-campus-single', '校外公寓单人间', 1550, '仅限半斯巴达课程；无门禁，平日有接驳车往返学校', '校外', 4),
-  room('off-campus-double', '校外公寓双人间', 1150, '仅限半斯巴达课程；无门禁，平日有接驳车往返学校', '校外', 5),
+  room('off-campus-single', '校外公寓单人间', 1550, EV_CONDO_NOTES['off-campus-single'], '校外', 4),
+  room('off-campus-double', '校外公寓双人间', 1150, EV_CONDO_NOTES['off-campus-double'], '校外', 5),
 ];
 
 const defaultLocalFees = (): CiaLocalFeeRule[] => [
   { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '有效期至课程结束；延长课程需重新办理。', enabled: true, sortOrder: 0 },
   { id: 'ssp-e-card', name: 'SSP E-CARD', currency: 'PHP', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP一起办理，有效期1年。', enabled: true, sortOrder: 1 },
-  { id: 'acr-i-card', name: 'ACR-I Card 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '在菲律宾停留超过59天（第9周起）须办理，只收一次。', enabled: true, sortOrder: 2 },
+  { id: 'acr-i-card', name: 'ACR-I Card 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: EV_ACR_NOTE, enabled: true, sortOrder: 2 },
   { id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '旅游签证首次续签时收取一次；长期签证也收取一次。', enabled: true, sortOrder: 3 },
   { id: 'on-campus-management', name: '校内管理费', currency: 'PHP', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '仅校内住宿计收，按住宿周数。', enabled: true, sortOrder: 4 },
   { id: 'off-campus-management', name: '校外公寓管理费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '仅校外公寓计收，按住宿周数。', enabled: true, sortOrder: 5 },
@@ -206,7 +215,19 @@ const upgradeEvPolicy = (clone: CiaContentConfig, defaults: CiaContentConfig): v
   if (saved < 1) upgradeEvFeeSheet(clone, defaults);
   if (saved < 2) upgradeEvStayRules(clone, defaults);
   if (saved < 3) upgradeEvSchoolPack2026Nov(clone);
+  if (saved < 4) upgradeEvReview2026Nov(clone);
   clone.quoteSettings.evPolicyVersion = EV_POLICY_VERSION;
+};
+
+/** Version 4: replaces only the version-3 ACR and condo wording that staff left unchanged. */
+const upgradeEvReview2026Nov = (clone: CiaContentConfig): void => {
+  for (const item of clone.rooms ?? []) {
+    if (EV_CONDO_NOTES[item.id] && item.note === EV_V3_CONDO_NOTE) item.note = EV_CONDO_NOTES[item.id];
+  }
+  const acr = (clone.localFees ?? []).find(fee => fee.id === 'acr-i-card');
+  if (acr?.note === EV_V3_ACR_NOTE) acr.note = EV_ACR_NOTE;
+  const imageNotes = clone.quoteImageSettings?.localFeeNotes;
+  if (imageNotes?.['acr-i-card'] === EV_V3_ACR_NOTE) imageNotes['acr-i-card'] = EV_ACR_NOTE;
 };
 
 /** Version 3: replaces only the version-2 wording that staff left unchanged. */

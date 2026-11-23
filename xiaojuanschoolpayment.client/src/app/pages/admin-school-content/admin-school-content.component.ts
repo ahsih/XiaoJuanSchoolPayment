@@ -548,7 +548,7 @@ export class AdminSchoolContentComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-    if (tab === 'media') { if (this.isLaMerSelected) this.selectItem('section', 'lamer-gallery'); return; }
+    if (tab === 'media') return;
     const kind = { courses: 'course', rooms: 'room', fees: 'fee', rules: 'promotion' } as const;
     const id = { courses: this.selectedCourseId, rooms: this.selectedRoomId, fees: this.selectedFeeId, rules: this.selectedPromotionId }[tab];
     this.selectItem(id ? kind[tab] : 'section', id || this.tabs.find(item => item.id === tab)!.anchor);
