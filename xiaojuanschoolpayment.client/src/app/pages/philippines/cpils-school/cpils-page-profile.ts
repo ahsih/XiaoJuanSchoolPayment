@@ -32,6 +32,7 @@ import {
   CPILS_PRACTICAL_GUIDES,
   CPILS_QUICK_INFO,
   CPILS_ROOM_PROFILES,
+  CPILS_ROOM_VIDEOS,
   CPILS_SCHEDULE,
   CPILS_SUITABLE_FOR,
   CPILS_VIDEO_CARDS,
@@ -177,9 +178,9 @@ const CPILS_IELTS_EXAM_HIGHLIGHT = {
   text: `${CPILS_EXAM_TERMS}，雅思课程（含预备雅思）一次注册12周及以上，赠1次雅思官方考试。`,
 };
 const CPILS_IELTS_GUARANTEE8_EXAM_HIGHLIGHT = {
-  badge: '送1次官方考试',
+  badge: '注册8周送1次官方考试',
   label: '考试福利',
-  text: `${CPILS_EXAM_TERMS}，8周雅思保分班赠1次雅思官方考试。`,
+  text: `${CPILS_EXAM_TERMS}，雅思保分班一次性注册8周，送1次雅思官方考试。`,
 };
 const CPILS_TOEIC_EXAM_HIGHLIGHT = {
   badge: '每满4周送1次官方考试',
@@ -206,6 +207,7 @@ export const CPILS_PAGE_PROFILE: PhSchoolProfile = {
   compactLayout: true,
   overviewFacts: CPILS_OVERVIEW_FACTS,
   videoTabs: CPILS_VIDEO_TABS,
+  roomVideos: CPILS_ROOM_VIDEOS,
   courseHighlights: {
     'pre-ielts-course': CPILS_IELTS_EXAM_HIGHLIGHT,
     'ielts-course': CPILS_IELTS_EXAM_HIGHLIGHT,

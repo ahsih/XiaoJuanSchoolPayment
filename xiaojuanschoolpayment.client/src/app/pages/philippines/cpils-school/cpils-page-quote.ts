@@ -312,7 +312,7 @@ export class CpilsPageStudent implements PhPageStudent {
       const toeicWeeks = courses.filter(row => toeic?.eligibleCourseIds?.includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
       const toeicEligible = !!toeic && cpils2027Eligible(this.content, this, toeic) && toeicWeeks >= toeic.minimumCourseWeeks;
       return [
-        ...(ieltsEligible ? [`${ieltsLong ? '雅思课程（含预备雅思）一次注册12周及以上' : '雅思保分班（8周）'}：赠${ielts.discountValue}次雅思官方考试`] : []),
+        ...(ieltsEligible ? [`${ieltsLong ? `雅思课程（含预备雅思）一次注册12周及以上：赠${ielts.discountValue}次` : `雅思保分班（8周）：一次性注册8周送${ielts.discountValue}次`}雅思官方考试`] : []),
         ...(toeicEligible ? [`托业课程：赠${Math.min(6, Math.floor(toeicWeeks / Math.max(1, toeic.incrementWeeks ?? 4)) * toeic.discountValue)}次官方考试`] : []),
       ];
     }

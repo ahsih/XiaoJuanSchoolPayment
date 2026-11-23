@@ -103,7 +103,7 @@ function addCpilsVersion3(config: CiaContentConfig): void {
   const ielts = settings.promotions.find(item => item.id === 'cpils-ielts-exam-2027');
   if (ielts) {
     ielts.eligibleCourseIds = [...new Set([...(ielts.eligibleCourseIds ?? []), ...CPILS_IELTS_COURSE_IDS])];
-    ielts.description = ielts.description.replace('雅思课程一次注册12周及以上，', '雅思课程（含预备雅思）一次注册12周及以上，或报名8周雅思保分班，');
+    ielts.description = ielts.description.replace('雅思课程一次注册12周及以上，', '雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，');
   }
   settings.cpilsPolicy = { ...settings.cpilsPolicy!, version: 3 };
 }
@@ -287,7 +287,7 @@ function addCpils2027Notice(config: CiaContentConfig): void {
   const promos = [
     promotion('cpils-scholarship-2027', '2027年奖学金优惠', `${terms}至少注册4周，学费及住宿费减免5%，可与思达启航优惠叠加。`, 7, { discountType: 'percentage', discountValue: 5 }),
     promotion('cpils-no-window-2027', '2027年无对外窗房优惠', `${terms}无对外窗单人／双人房：4–7周50美元、8–11周100美元、12–15周150美元、16–19周200美元、20–23周250美元、24周300美元；可与其他优惠同享。`, 8, { discountType: 'fixed', discountValue: 50, appliesTo: 'accommodation', eligibleRoomIds: ['no-window-single', 'no-window-twin'], minimumAccommodationWeeks: 4, incrementWeeks: 4, incrementValue: 50 }),
-    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程（含预备雅思）一次注册12周及以上，或报名8周雅思保分班，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: [...CPILS_IELTS_COURSE_IDS], discountValue: 1 }),
+    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: [...CPILS_IELTS_COURSE_IDS], discountValue: 1 }),
     promotion('cpils-toeic-exam-2027', '2027年托业官方考试赠送', `${terms}托业课程4–7周赠1次，每满4周增加1次，24周赠6次；可与其他优惠同享。`, 10, { eligibleCourseIds: ['toeic-course', 'toeic-guarantee'], discountValue: 1, incrementWeeks: 4, incrementValue: 1 }),
   ];
   for (const rule of promos) if (!settings.promotions.some(item => item.id === rule.id)) settings.promotions.push(rule);

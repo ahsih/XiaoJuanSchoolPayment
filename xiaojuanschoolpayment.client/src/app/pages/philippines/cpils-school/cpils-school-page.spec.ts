@@ -558,7 +558,7 @@ describe('CPILS school page on the shared template', () => {
       page.selectedCourseId = 'ielts-guarantee-8-weeks';
       page.selectedWeeks = 8;
       expect(page.quoteError).toBe('');
-      expect(student().examBenefits).toEqual(['雅思保分班（8周）：赠1次雅思官方考试']);
+      expect(student().examBenefits).toEqual(['雅思保分班（8周）：一次性注册8周送1次雅思官方考试']);
       expect(page.quoteImageData.paymentItems.find(row => row.label.includes('考试'))?.amount).toBe('按课程赠送');
       page.selectedWeeks = 12;
       split('course', [8, 4], ['ielts-guarantee-8-weeks', 'ielts-course']);
@@ -567,7 +567,7 @@ describe('CPILS school page on the shared template', () => {
       page.selectedWeeks = 8;
       page.selectedStartDate = '2027-06-06';
       expect(student().examBenefits).toEqual([]);
-      expect(page.courseHighlights['ielts-guarantee-8-weeks']?.badge).toBe('送1次官方考试');
+      expect(page.courseHighlights['ielts-guarantee-8-weeks']?.badge).toBe('注册8周送1次官方考试');
     });
 
     it('adds Pre-IELTS to the IELTS exam gift of version-2 content once', () => {
@@ -578,7 +578,7 @@ describe('CPILS school page on the shared template', () => {
       exam.description = '雅思课程一次注册12周及以上，赠1次官方考试，可与其他优惠同享。';
       const migrated = cloneCpilsContentConfig(old).quoteSettings.promotions.find(rule => rule.id === 'cpils-ielts-exam-2027')!;
       expect(migrated.eligibleCourseIds).toEqual(['ielts-course', 'ielts-guarantee-12-weeks', 'pre-ielts-course', 'ielts-guarantee-8-weeks']);
-      expect(migrated.description).toBe('雅思课程（含预备雅思）一次注册12周及以上，或报名8周雅思保分班，赠1次官方考试，可与其他优惠同享。');
+      expect(migrated.description).toBe('雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，赠1次官方考试，可与其他优惠同享。');
     });
   });
 

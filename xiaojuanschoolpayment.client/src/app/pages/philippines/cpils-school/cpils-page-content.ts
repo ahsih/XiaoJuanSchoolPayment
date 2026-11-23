@@ -15,7 +15,7 @@ import type {
   GalleryImage,
   HolidayCalendar,
 } from '../cia-school/cia-page-content';
-import type { PhOfferCard, PhRoomProfile, PhVideoTab } from '../school-page/ph-school-profile';
+import type { PhOfferCard, PhRoomProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 
 export const CPILS_PAGE_COPY = {
   heroLead: '2001年开办的宿务市区老牌英语学校，2009年起是圣何塞-雷科莱托斯大学（USJ-R）的英语中心。课程多、考试资源全，适合目标明确、想被学习节奏推动的学生。',
@@ -25,7 +25,7 @@ export const CPILS_PAGE_COPY = {
   suitableTitle: '适合优先看 CPILS',
   notSuitableTitle: '不太适合的情况',
   galleryLead: '先看校园、教室、宿舍、餐厅和设施，再判断CPILS的学习与生活环境是否适合你。',
-  videoLead: '学校拍摄的校园、课堂和学生生活片段。',
+  videoLead: '校园、课堂、考场、宿舍和餐厅的实拍视频。',
   campusIntro: '宿务市区校园，教学楼、宿舍、餐厅、泳池和健身房都在校内。',
   ruleTitle: '门禁与扣分',
   ruleText: '周日至周四22:00门禁，周五、周六24:00；未成年人一律22:00。迟到、上课说非英语、晚归等会扣分，累计6分起限制周末外出，10分开除。',
@@ -70,7 +70,7 @@ export const CPILS_OFFERS: PhOfferCard[] = [
     until: '2027-12-28', promotionIds: ['cpils-no-window-2027'],
   },
   {
-    icon: 'workspace_premium', title: '官方考试赠送', amount: '雅思1次 · 托业最多6次', text: `雅思课程（含预备雅思）一次报名12周及以上赠1次，8周雅思保分班也赠1次；托业课程每满4周赠1次。${SCHOLARSHIP_TERMS}。`,
+    icon: 'workspace_premium', title: '官方考试赠送', amount: '雅思1次 · 托业最多6次', text: `雅思课程（含预备雅思）一次报名12周及以上赠1次，雅思保分班一次性注册8周送1次；托业课程每满4周赠1次。${SCHOLARSHIP_TERMS}。`,
     until: '2027-12-28', promotionIds: ['cpils-ielts-exam-2027', 'cpils-toeic-exam-2027'],
   },
   { icon: 'replay', title: '老学员返校', amount: '免注册费', text: '在CPILS读过书的学生再次报名，免收一次性注册费。', promotionIds: ['cpils-returning-registration'] },
@@ -452,31 +452,93 @@ export const CPILS_GALLERY_IMAGES: GalleryImage[] = [
   { category: '住宿', title: '走廊饮水机', description: '宿舍走廊里的饮水机。', src: 'assets/cpils/rooms/hallway-03.webp' },
 ];
 
-export const CPILS_VIDEO_CARDS: CiaVideoCard[] = [
+/** One video in public/assets/cpils/videos/: <name>.mp4 with its poster-<name>.jpg. */
+export interface CpilsVideo {
+  name: string;
+  title: string;
+  description: string;
+  duration: string;
+  orientation: 'landscape' | 'portrait';
+  label?: string;
+  details?: string[];
+}
+
+export const cpilsVideoSrc = (video: CpilsVideo) => `/assets/cpils/videos/${video.name}.mp4`;
+export const cpilsVideoPoster = (video: CpilsVideo) => `/assets/cpils/videos/poster-${video.name}.jpg`;
+
+/**
+ * The school film plus the clips the user supplied on 2026-11-24 (CPILS 视频号). Five of them were landscape footage
+ * inside a vertical frame with caption bars and are cropped to the footage; the vertical ones keep their captions.
+ */
+export const CPILS_VIDEOS: CpilsVideo[] = [
   {
-    code: 'CPILS',
-    label: 'SCHOOL FILM',
-    title: 'CPILS 学校介绍',
-    text: '学校2027年介绍片：教学楼、课堂、考场、食堂、宿舍和课外活动。',
-    poster: '/assets/cpils/videos/poster-cpils-intro-2027.jpg',
-    videoSrc: '/assets/cpils/videos/cpils-intro-2027.mp4',
-    contentType: 'video/mp4',
-    details: ['一对一与团体课堂', '雅思与托业官方考场', '宿舍各房型与高级房', '时长 2:30'],
+    name: 'cpils-intro-2027', title: 'CPILS 学校介绍', duration: '2:30', orientation: 'landscape', label: 'SCHOOL FILM',
+    description: '学校2027年介绍片：教学楼、课堂、考场、食堂、宿舍和课外活动。',
+    details: ['一对一与团体课堂', '雅思与托业官方考场', '宿舍各房型与高级房'],
   },
+  { name: 'cpils-campus-tour', title: '校园导览', duration: '1:56', orientation: 'portrait', description: '一支片子走一遍校园：主楼、前台、考场、教室、自习室、餐厅、宿舍、泳池和毕业演讲。' },
+  { name: 'cpils-campus', title: '校门、前台与咖啡厅', duration: '0:30', orientation: 'landscape', label: 'CAMPUS', description: '从校门进到大堂前台，再看校内的咖啡厅和台球桌。' },
+  { name: 'cpils-pool-gym', title: '泳池与健身房', duration: '0:21', orientation: 'landscape', label: 'POOL & GYM', description: '校内泳池，以及有跑步机、动感单车和力量器械的健身房。' },
+  { name: 'cpils-study-lounge', title: '自习室与休息区', duration: '0:12', orientation: 'portrait', description: '带隔板的自习座位，以及摆着竹木桌椅的休息区。' },
+  { name: 'cpils-twin-room', title: '双人间', duration: '0:23', orientation: 'landscape', label: 'TWIN ROOM', description: '普通双人间：两张单人床、书桌、窗户和独立卫浴。' },
+  { name: 'cpils-quad-room', title: '四人间', duration: '0:17', orientation: 'portrait', description: '普通四人间：单人床、书桌、窗户和独立卫浴。' },
+  { name: 'cpils-premium-twin', title: '高级双人间', duration: '0:26', orientation: 'portrait', description: '高级双人间：木地板、壁挂电视、衣柜、书桌和独立卫浴。' },
+  { name: 'cpils-premium-triple', title: '高级三人间', duration: '0:12', orientation: 'portrait', description: '高级三人间：木地板、壁挂电视、衣柜和大窗户。' },
+  { name: 'cpils-classes', title: '上课实拍', duration: '0:29', orientation: 'landscape', label: 'CLASSES', description: '一对一课和小组课的课堂实拍。' },
+  { name: 'cpils-ielts-test-centre', title: '雅思官方考场', duration: '0:21', orientation: 'portrait', description: '校内的雅思官方考场：纸笔考试大厅、口语考试间和机考教室。' },
+  { name: 'cpils-ielts-resource-centre', title: '雅思资源中心', duration: '0:09', orientation: 'portrait', description: '雅思备考资料室，有沙发座位和讨论桌。' },
+  { name: 'cpils-graduation', title: '毕业典礼演讲', duration: '0:11', orientation: 'landscape', label: 'GRADUATION', description: '结业学员在毕业典礼上发言。' },
+  { name: 'cpils-dining', title: '餐厅自助餐', duration: '0:23', orientation: 'portrait', description: '学生餐厅的自助餐：米饭、炒面、蔬菜、肉菜和汤。' },
 ];
 
-export const CPILS_LIFE_VIDEOS: CiaShortVideo[] = [];
+const cpilsVideo = (name: string) => CPILS_VIDEOS.find(video => video.name === name) as CpilsVideo;
+const albumVideo = (name: string): PhVideoItem => {
+  const video = cpilsVideo(name);
+  return {
+    title: video.title,
+    text: video.description,
+    src: cpilsVideoSrc(video),
+    poster: cpilsVideoPoster(video),
+    duration: video.duration,
+    shape: video.orientation === 'landscape' ? 'wide' : 'tall',
+  };
+};
 
-/** Videos of the hero album (compact layout); the school film opens it. */
+export const CPILS_VIDEO_CARDS: CiaVideoCard[] = CPILS_VIDEOS.filter(video => video.orientation === 'landscape').map(video => ({
+  code: 'CPILS',
+  label: video.label ?? 'CPILS',
+  title: video.title,
+  text: video.description,
+  poster: cpilsVideoPoster(video),
+  videoSrc: cpilsVideoSrc(video),
+  contentType: 'video/mp4',
+  details: [...(video.details ?? []), `时长 ${video.duration}`],
+}));
+
+export const CPILS_LIFE_VIDEOS: CiaShortVideo[] = CPILS_VIDEOS.filter(video => video.orientation === 'portrait').map(video => ({
+  title: video.title,
+  text: video.description,
+  src: cpilsVideoSrc(video),
+  poster: cpilsVideoPoster(video),
+  duration: video.duration,
+}));
+
+/** Videos of the hero album (compact layout), one chip per topic; the school film opens it. */
 export const CPILS_VIDEO_TABS: PhVideoTab[] = [
-  {
-    label: '校园视频',
-    icon: 'videocam',
-    items: CPILS_VIDEO_CARDS.map(card => ({
-      title: card.title, text: card.text, src: card.videoSrc, poster: card.poster, duration: '2:30', shape: 'wide' as const,
-    })),
-  },
+  { label: '校园视频', icon: 'videocam', items: ['cpils-intro-2027', 'cpils-campus-tour', 'cpils-campus', 'cpils-pool-gym', 'cpils-study-lounge'].map(albumVideo) },
+  { label: '宿舍视频', icon: 'videocam', items: ['cpils-twin-room', 'cpils-quad-room', 'cpils-premium-twin', 'cpils-premium-triple'].map(albumVideo) },
+  { label: '课堂视频', icon: 'videocam', items: ['cpils-classes', 'cpils-ielts-test-centre', 'cpils-ielts-resource-centre', 'cpils-graduation'].map(albumVideo) },
+  { label: '餐厅视频', icon: 'videocam', items: ['cpils-dining'].map(albumVideo) },
 ];
+
+/**
+ * First item of a room's photo album: only a clip of exactly that room type. The 高级房 profile opens from all four
+ * premium price cards, so neither premium clip goes there; both stay in the hero album's 宿舍 chip.
+ */
+export const CPILS_ROOM_VIDEOS: Record<string, PhVideoItem> = {
+  twin: albumVideo('cpils-twin-room'),
+  quad: albumVideo('cpils-quad-room'),
+};
 
 const roomPhotos = (...files: string[]) => files.map(file => `assets/cpils/rooms/${file}.webp`);
 const SHARED_BATH = ['twin-05', 'twin-06'];
