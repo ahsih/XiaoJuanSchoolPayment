@@ -255,11 +255,10 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/we-hero.webp',
   },
   '/philippines-study/clark/help-english-clark': {
-    title: '菲律宾克拉克HELP English语言学校 | Sparta课程费用住宿与报名咨询',
-    description:
-      '菲律宾克拉克HELP English语言学校页面，整理HELP Clark Campus的Sparta管理、EOP、ESL、IELTS、TOEIC、Business、Family课程、宿舍、4周USD课程住宿费用、PHP当地费用和报名注意事项。',
-    keywords: '菲律宾克拉克HELP English语言学校, HELP Clark Campus, HELP English Academy, Clark Sparta school, 菲律宾IELTS学校, 克拉克语言学校',
-    image: '/assets/philippines/help-clark-main-building.webp',
+    title: '菲律宾克拉克HELP English语言学校 | 斯巴达课程、住宿与在线报价',
+    description: '查看HELP克拉克校区的斯巴达管理、ESL、雅思、托业、商务英语和亲子营课程，2026年新房间实拍，开课日和淡季优惠，在线报价；学杂费单独列示。',
+    keywords: 'HELP克拉克, HELP English Clark, 克拉克斯巴达学校, 菲律宾亲子游学, 克拉克雅思学校, HELP开课日',
+    image: '/assets/help-clark/campus/main-building.webp',
   },
   '/philippines-study/clark/aelc-native-focused-clark-schools': {
     title: '菲律宾克拉克AELC语言学校 | Native口语课程费用住宿与报名咨询',
