@@ -318,6 +318,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
+  readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};
   readonly roomVideos = this.profile.roomVideos ?? {};
   /**
@@ -461,9 +462,11 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     this.isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
   }
   roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
+    // A room without a booking code (PINES) links only through `rateIds`; an empty code would match every profile
+    // without a booking code and open the first room's photos.
     return this.roomComparisonProfiles.find(profile =>
       profile.rateIds?.includes(room.id)
-      || (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+      || (!!room.code && (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code)));
   }
   get activeRateRoomId(): string {
     if (this.selectedRateRoomId) return this.selectedRateRoomId;

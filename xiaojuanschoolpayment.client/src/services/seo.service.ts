@@ -145,9 +145,9 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶PINES语言学校页面，整理Main Campus、IELTS Campus、ESL、Power Speaking、IELTS、TOEIC、住宿房型、2026费用和报名注意事项。',
+      '菲律宾碧瑶PINES语言学校：口语和雅思分区上课，校内有雅思、托业官方考点；2026–2027课程费、房费、优惠和到校学杂费，支持单人、多人和方案对比报价。',
     keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/pines-campus-hero.webp',
+    image: '/assets/pines/campus/exterior.webp',
   },
   '/philippines-study/baguio/beci-eop-campus': {
     title: '菲律宾碧瑶BECI EOP校区 | 课程住宿费用与多人报价',
