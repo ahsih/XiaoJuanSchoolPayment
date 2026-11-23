@@ -2,7 +2,7 @@ import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
 import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
-import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
+import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
@@ -39,14 +39,12 @@ import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.com
 import { TargetStudentQuote } from './target-school/target-student-quote';
 import { TargetSchoolComponent } from './target-school/target-school.component';
 import { CipQuoteCalculatorComponent } from './cip-school/cip-quote-calculator.component';
-import { CiecQuoteCalculatorComponent } from './ciec-school/ciec-quote-calculator.component';
 import { LaMerSchoolComponent } from './la-mer-school/la-mer-school.component';
 import { PhilippinesQuoteImageExporterComponent } from '../../components/philippines-quote-image-exporter.component';
 const imageAlias = (page: any) => { Object.defineProperty(page, 'quoteImageData', { get: () => page.quoteImage }); return page; };
 const schools = [
   { name: 'TARGET', create: () => new TargetSchoolComponent() },
   { name: 'CIP', create: () => imageAlias(new CipQuoteCalculatorComponent()) },
-  { name: 'CIEC', create: () => imageAlias(new CiecQuoteCalculatorComponent()) },
   { name: 'EV La Mer', create: () => imageAlias(new LaMerSchoolComponent()) },
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
@@ -57,7 +55,7 @@ const schools = [
   { name: "CIA", create: () => new CiaSchoolComponent() },
   { name: "CG Banilad", create: () => new CgBaniladSchoolComponent() },
   { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
-  { name: "SMEAG", create: () => new SmeagCapitalSchoolComponent() },
+  { name: "SMEAG", create: () => new SmeagCapitalSchoolPageComponent() },
   { name: "CPI", create: () => new CpiSchoolPageComponent() },
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
   { name: "EV", create: () => new EvSchoolPageComponent() },

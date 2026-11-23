@@ -311,7 +311,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly dormRules = this.profile.dormRules;
   readonly ieltsResults = this.profile.ieltsResults;
   readonly ieltsResultImages = this.profile.ieltsResults.map(item => item.image);
-  readonly ieltsResultTitles = this.profile.ieltsResults.map(item => item.title + ' · 入学 ' + item.entrance + ' → 官方雅思 ' + item.overall);
+  readonly ieltsResultTitles = this.profile.ieltsResults.map(item =>
+    item.title + ' · ' + (item.summary ?? '入学 ' + item.entrance + ' → 官方雅思 ' + item.overall));
   readonly showRoomCodes = this.profile.showRoomCodes;
   readonly reviewPath = this.profile.reviewPath;
 

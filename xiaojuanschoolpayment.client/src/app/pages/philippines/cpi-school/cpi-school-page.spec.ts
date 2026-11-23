@@ -133,13 +133,24 @@ describe('CPI school page on the shared template', () => {
 
   it('shows the official videos with a poster and the year they were filmed', () => {
     expect(CPI_PAGE_PROFILE.videoCards.length).toBe(5);
-    expect(CPI_PAGE_PROFILE.campusLifeVideos.length).toBe(4);
+    expect(CPI_PAGE_PROFILE.campusLifeVideos.length).toBe(12);
     for (const card of CPI_PAGE_PROFILE.videoCards) {
       expect(card.videoSrc).toMatch(/^\/assets\/cpi\/videos\/[a-z-]+\.mp4$/);
       expect(card.poster).toBe(card.videoSrc.replace(/([a-z-]+)\.mp4$/, 'poster-$1.jpg'));
       expect(card.details.some(detail => /20\d\d年/.test(detail))).withContext(card.title).toBeTrue();
     }
+    for (const clip of CPI_PAGE_PROFILE.campusLifeVideos) {
+      expect(clip.poster).toBe(clip.src.replace(/([a-z-]+)\.mp4$/, 'poster-$1.jpg'));
+    }
     expect(page.copy.rooms.videoLink).toBeTruthy();
+  });
+
+  it('lists every video once in the hero album and opens the A-2 photos with its own clip', () => {
+    const albumSources = (CPI_PAGE_PROFILE.videoTabs ?? []).flatMap(tab => tab.items.map(item => item.src));
+    const allSources = [...CPI_PAGE_PROFILE.videoCards.map(card => card.videoSrc), ...CPI_PAGE_PROFILE.campusLifeVideos.map(clip => clip.src)];
+    expect([...albumSources].sort()).toEqual([...allSources].sort());
+    expect(CPI_PAGE_PROFILE.roomVideos?.['a-double']?.src).toBe('/assets/cpi/videos/room-a-double.mp4');
+    expect(CPI_PAGE_PROFILE.roomProfiles.some(profile => profile.id === 'a-double')).toBeTrue();
   });
 
   it('maps database names to content ids and lists every room profile', () => {
