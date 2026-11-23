@@ -821,6 +821,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/ireland/atc-language-schools',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/ireland-schools/atc/atc-school.component').then((m) => m.AtcSchoolComponent),
+      },
+      {
         path: 'overseas-study-tour/uk',
         loadComponent: () =>
           import('./pages/overseas-study-tour/uk-tour/uk-tour.component').then((m) => m.UkTourComponent),

@@ -51,6 +51,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/student-stories/mid-autumn/gift-bags.png',
     type: 'article',
   },
+  '/overseas-study-tour/ireland/atc-language-schools': {
+    title: '爱尔兰ATC语言学校｜布雷、都柏林校区课程住宿费用与在线报价',
+    description: 'ATC Language Schools 1973年创办，布雷海边校区和都柏林市中心校区，成人英语课程1周起报、每周一开课；查看2027年学费、寄宿家庭和学生公寓价格、25周半工半读，在线计算费用并保存报价图片。',
+    keywords: 'ATC Language Schools, ATC语言学校, 爱尔兰语言学校, 爱尔兰游学, 都柏林语言学校, 布雷语言学校, 爱尔兰半工半读, ATC报价',
+    image: '/assets/atc/bray-aerial.webp',
+  },
   '/overseas-study-tour/uk/burlington-school': {
     title: '英国伦敦Burlington School语言学校｜课程住宿费用与在线报价',
     description: '伦敦Burlington School介绍：青少年春夏秋冬季全包项目、成人英语课程、成人暑期公寓套餐、校内宿舍与寄宿家庭价格和巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
