@@ -4,6 +4,7 @@ import {
   JIC_COURSE_FEES,
   JIC_LOCAL_FEE_COPY,
   JIC_PEAK_FEE_PER_WEEK,
+  JIC_POLICY_VERSION,
   JIC_PROMOTION_COPY,
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
@@ -28,6 +29,10 @@ const promotion = (id: string, name: string, ruleKind: string, sortOrder: number
   minimumAccommodationWeeks: 0,
   coverageTarget: 'none',
 });
+
+/** The company's own lines on the quote image, the same for every school (CIA's wording). */
+const JIC_ALUMNI_BENEFIT_TEXT = '老学员结业后可享线上一对一英语课程专属优惠，留学爱尔兰及欧美英语学校专属奖学金和优惠。';
+const JIC_FOOTER_NOTES = ['到校学杂费、签证与教材按实际发生和学校最新政策确认。', '最终以学校价格、空房、活动名额及优惠资格确认为准。'];
 
 const twinAndQuadRoomIds = JIC_ROOM_FEES.filter(room => room.category !== 'single').map(room => room.id);
 
@@ -91,8 +96,8 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(33, 'premium', 'Campus', 'Premium 高级校区官方介绍片', '学校最新有声官方介绍片，完整展示Premium校区的课堂、住宿与生活环境。', '/assets/philippines/jic-premium-campus-intro.mp4', 'video/mp4'),
   staticMedia(34, 'premium', 'Campus', 'JIC Premium Campus环境', 'Premium校区学习生活环境。', '/assets/philippines/jic-premium-campus-overview.jpg', 'image/jpeg'),
   staticMedia(35, 'premium', 'Classroom', 'Premium 小组互动课堂', 'Active Learning小组课堂实景。', '/assets/philippines/jic-premium-group-class.webp'),
-  staticMedia(36, 'premium', 'Accommodation', 'Premium 单人间（无阳台）', 'Semi Single无阳台单人雅房实景。', '/assets/philippines/jic-premium-single-no-balcony.webp'),
-  staticMedia(37, 'premium', 'Accommodation', 'Premium 单人间（无阳台）视频', 'Semi Single学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-premium-room-tour.mp4', 'video/mp4'),
+  staticMedia(36, 'premium', 'Campus', 'Premium 校园一角', 'Premium校区户外一角。', '/assets/philippines/jic-premium-single-no-balcony.webp'),
+  staticMedia(37, 'premium', 'Accommodation', 'Premium 单人雅房视频', '第二宿舍单人雅房实拍（原素材无配音）。', '/assets/philippines/jic-premium-room-tour.mp4', 'video/mp4'),
   staticMedia(38, 'premium', 'Accommodation', 'Premium 单人间（带阳台）', '带阳台独立单人房实景。', '/assets/philippines/jic-premium-single-balcony.webp'),
   staticMedia(39, 'premium', 'Accommodation', 'Premium 单人间（带阳台）视频', '学校原始Premium Single Room房型实拍（原素材无配音）。', '/assets/philippines/jic-premium-single-balcony-video.mp4', 'video/mp4'),
   staticMedia(40, 'premium', 'Accommodation', 'Premium 双人间（无阳台）', '无阳台双人房实景。', '/assets/philippines/jic-premium-twin-no-balcony.webp'),
@@ -109,6 +114,8 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(51, 'premium', 'Facility', 'Premium Student Center', '学生中心与休息空间。', '/assets/philippines/jic-premium-student-center.webp'),
 ];
 
+type JicQuoteSettings = CiaContentConfig['quoteSettings'] & { jicPolicyVersion?: number };
+
 export const createDefaultJicContentConfig = (): CiaContentConfig => {
   const content: CiaContentConfig = {
   schemaVersion: 1,
@@ -121,10 +128,10 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     campus: item.campus,
     tuition: item.tuition,
     tuition2027: item.tuition,
-    schedule: item.suitable,
+    schedule: item.schedule,
     suitable: item.suitable,
-    note: item.suitable,
-    minimumWeeks: 1,
+    note: item.note,
+    minimumWeeks: item.minimumWeeks ?? 1,
     allowedWeeks: [1, 2, 3, 4, 6, 8, 12, 16, 20, 24],
     enabled: true,
     sortOrder: index,
@@ -135,7 +142,8 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     label: item.name,
     code: item.category,
     location: '校内',
-    group: item.campus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区',
+    // Price-list groups by occupancy, as CIA's; each campus page lists only its own rooms.
+    group: item.category === 'single' ? '单人间' : '多人间',
     campus: item.campus,
     fee: item.fee,
     single: item.category === 'single',
@@ -147,18 +155,18 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 7800, billingRule: 'once', includeInTotal: true, note: '移民局收取，按报名学习时长办理；续费及换校需要重新办理。', enabled: true, sortOrder: 0 },
     { id: 'ssp-e-card', name: 'SSP-E CARD', currency: 'PHP', amount: 4500, billingRule: 'once', includeInTotal: true, note: '移民局收取，入学时与SSP同时办理，只收一次。', enabled: true, sortOrder: 1 },
     { id: 'acr-i-card', name: 'ACR-I CARD 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '30天旅游签证学习超过4周，或59天旅游签证学习达到8周时，在首次续签时办理，只收一次。', enabled: true, sortOrder: 2 },
-    { id: 'maintenance', name: '维护管理费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '校内教学楼及其他设施维护费；超过4周按实际周数比例预估。', enabled: true, sortOrder: 3 },
-    { id: 'utilities', name: '水电费', currency: 'PHP', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '超过4周按实际周数比例预估。', enabled: true, sortOrder: 4 },
-    { id: 'manila-pickup', name: '马尼拉机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-manila-pickup', includeInTotal: true, note: '周日BESA团体接机3,000比索；非BESA接机参考：1人12,000、2人6,000／人、3人以上4,000／人，需顾问确认班次。', enabled: true, sortOrder: 5 },
-    { id: 'clark-pickup', name: '克拉克机场接机', currency: 'PHP', amount: 2500, billingRule: 'selected-clark-pickup', includeInTotal: true, note: '周日BESA团体接机2,500比索；非BESA接机参考：1人7,000、2人4,000／人、3人以上3,000／人，需顾问确认班次。', enabled: true, sortOrder: 6 },
+    { id: 'maintenance', name: '维护管理费', currency: 'PHP', amount: 1200, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '设施管理及维护，每4周计算；超过4周按实际周数比例预估。', enabled: true, sortOrder: 3 },
+    { id: 'utilities', name: '水电费', currency: 'PHP', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '每4周固定收取；超过4周按实际周数比例预估。', enabled: true, sortOrder: 4 },
+    { id: 'manila-pickup', name: '马尼拉机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-manila-pickup', includeInTotal: true, note: '周日BESA团体接机（01:00、08:00、14:00、20:00，一号航站楼B6／三号航站楼B7），航班须提前1小时以上落地；其他日子单独派车1人12,000、2人每人6,000、3人以上每人4,000比索。', enabled: true, sortOrder: 5 },
+    { id: 'clark-pickup', name: '克拉克机场接机', currency: 'PHP', amount: 3000, billingRule: 'selected-clark-pickup', includeInTotal: true, note: '周日BESA团体接机（周日12:00、17:00及周一01:30，3号候车区），航班须提前1小时以上落地；其他日子单独派车1人7,000、2人每人4,000、3人以上每人3,000比索。', enabled: true, sortOrder: 6 },
     { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 4940, rates: [4940, 6210, 4240, 4240, 4240], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '30天旅游签证学习超过4周开始续签；59天旅游签证学习达到8周开始续签。之后每增加4周再估算1次；各次参考为4,940／6,210／4,240／4,240／4,240比索。', enabled: true, sortOrder: 7 },
     { id: 'books', name: '教材费', currency: 'PHP', amount: 0, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '按所选课程的学校教材表及每开始4周计算；不同课程金额不同，实际以到校领用为准。', enabled: true, sortOrder: 8 },
     { id: 'student-card', name: '学生证', currency: 'PHP', amount: 200, billingRule: 'once', includeInTotal: true, note: '一次性费用，包含拍摄照片。', enabled: true, sortOrder: 9 },
-    { id: 'laundry', name: '洗衣服务', currency: 'PHP', amount: 1200, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '每周2次洗衣服务；超过4周按实际周数比例预估。', enabled: true, sortOrder: 10 },
-    { id: 'challenger-elective', name: 'Challenger特别选修课', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '仅主动勾选Challenger特别选修课时计入。', enabled: true, sortOrder: 11 },
-    { id: 'ielts-guarantee', name: 'IELTS保分班额外费用', currency: 'PHP', amount: 18000, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '仅选择IELTS Guarantee时按每开始8周计入；保证条件需由顾问确认。', enabled: true, sortOrder: 12 },
+    { id: 'laundry', name: '洗衣服务', currency: 'PHP', amount: 1200, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '洗、烘、叠，每周2次，不使用也照收；超过4周按实际周数比例预估。', enabled: true, sortOrder: 10 },
+    { id: 'challenger-elective', name: '付费特别课', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '周一至周四每天30分钟（单词、新闻听力、打工度假、雅思机考模拟等），每两周在公告栏报名；只在选择时计入。', enabled: true, sortOrder: 11 },
+    { id: 'ielts-guarantee', name: 'IELTS保分班额外费用', currency: 'PHP', amount: 18000, billingRule: 'per-course-period', periodWeeks: 8, rounding: 'ceil', includeInTotal: true, note: '雅思保分班到校符合条件后申请时缴交，每8周一次。', enabled: true, sortOrder: 12 },
     { id: 'room-deposit', name: '宿舍押金（可退）', currency: 'PHP', amount: 3000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: JIC_LOCAL_FEE_COPY.deposit, enabled: true, sortOrder: 13 },
-    { id: 'odd-week-arrival', name: '非标准周抵离校参考费', currency: 'PHP', amount: 8000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '学校最新表列8,000比索／非标准周；仅非周日抵达或非周六离校时参考，标准周日报到、周六离校不收取。', enabled: true, sortOrder: 14 },
+    { id: 'odd-week-arrival', name: '非开学日入学／结业', currency: 'PHP', amount: 8000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: 'JIC每两周开一次新学期；不在开学日入学或不在学期末结业，每次另收8,000比索，以学校确认为准。', enabled: true, sortOrder: 14 },
   ],
   quoteSettings: {
     registrationFee: JIC_REGISTRATION_FEE,
@@ -180,7 +188,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
         minimumCourseWeeks: 0,
       },
       {
-        ...promotion('jic-off-season-2026', '2026下半年淡季住宿优惠', 'jic-off-season-2026', 1),
+        ...promotion('jic-off-season-2026', '淡季优惠', 'jic-off-season-2026', 1),
         description: JIC_PROMOTION_COPY.offSeason,
         discountValue: 150,
         incrementValue: 50,
@@ -192,7 +200,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
         minimumAccommodationWeeks: 4,
       },
       {
-        ...promotion('jic-off-season-2027-a', '2027上半年淡季住宿优惠', 'jic-off-season-2027', 2),
+        ...promotion('jic-off-season-2027-a', '淡季优惠', 'jic-off-season-2027', 2),
         description: JIC_PROMOTION_COPY.offSeason,
         discountValue: 100,
         incrementValue: 50,
@@ -204,7 +212,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
         minimumAccommodationWeeks: 4,
       },
       {
-        ...promotion('jic-off-season-2027-b', '2027下半年淡季住宿优惠', 'jic-off-season-2027', 3),
+        ...promotion('jic-off-season-2027-b', '淡季优惠', 'jic-off-season-2027', 3),
         description: JIC_PROMOTION_COPY.offSeason,
         discountValue: 100,
         incrementValue: 50,
@@ -234,11 +242,10 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
         arrivalEnd: '2026-12-13',
         newStudentsOnly: true,
       },
+      // Arrival must also be a term-start Sunday (2026: 11/29, 12/13, 12/27, 1/10; 2027: 11/28, 12/12, 12/26, 1/9).
       ...[
-        ['jic-holiday-2026-a', '2026圣诞优惠第一档', '2026-11-29', '2026-12-13', 200],
-        ['jic-holiday-2026-b', '2026圣诞优惠第二档', '2026-12-27', '2027-01-10', 200],
-        ['jic-holiday-2027-a', '2027圣诞优惠第一档', '2027-11-28', '2027-12-12', 150],
-        ['jic-holiday-2027-b', '2027圣诞优惠第二档', '2027-12-26', '2028-01-09', 150],
+        ['jic-holiday-2026', '2026圣诞优惠', '2026-11-29', '2027-01-10', 200],
+        ['jic-holiday-2027', '2027圣诞优惠', '2027-11-28', '2028-01-09', 150],
       ].map(([id, name, start, end, amount], index) => ({
         ...promotion(String(id), String(name), 'jic-holiday', 6 + index),
         description: JIC_PROMOTION_COPY.holiday,
@@ -250,24 +257,24 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
       })),
     ],
     localFeeIntro: JIC_LOCAL_FEE_COPY.intro,
-    courseTableTitle: 'JIC 2026年课程费 / 4周',
-    courseTableNote: '两个校区分别展示；1／2／3周按4周价的40%／65%／85%，4周起按周数比例计算。',
-    groupClassNote: 'Challenger偏ESL与IELTS强化，Premium偏口语、主题与职业英语；具体安排以所选课程说明为准。',
-    roomTableTitle: 'JIC 2026年住宿费 / 4周',
-    roomTableNote: 'Challenger与Premium房型不可跨校区混选；Premium 2027淡季单人房优惠仅适用于无阳台房型。',
-    stayPolicyTitle: 'JIC入住与校区提醒',
+    courseTableTitle: '2027年4周课程费',
+    courseTableNote: '2027年价格和2026年相同；1–3周按4周价格的40%／65%／85%计算。',
+    groupClassNote: '',
+    roomTableTitle: '2027年4周住宿费',
+    roomTableNote: '住宿按每人4周计价；1–3周按4周价格的40%／65%／85%计算。',
+    stayPolicyTitle: 'JIC入住与退房',
     stayPolicies: [
-      { label: '入住日期', value: '周日入住', note: '课程与住宿按完整周计算。' },
-      { label: '退房日期', value: '周六退房', note: '延住及额外住宿需先确认空房和费用。' },
-      { label: '双校区', value: 'Challenger / Premium', note: '每名学生须在同一校区选择课程和住宿。' },
+      { label: '入住', value: '周日12:00后', note: 'JIC每两周开一次新学期，按开学日入学；其他日子入学另收8,000比索。' },
+      { label: '退房', value: '周六13:00前', note: '提前到或延后走，每人每天2,000比索，需先确认空房。' },
+      { label: '短期住宿', value: '1–3周', note: '按4周价格的40%／65%／85%计算。' },
     ],
     extraNightRates: [],
   },
   quoteImageSettings: {
     paymentSectionTitle: '学校费用明细',
-    paymentNotes: { registration: '学校原价每名学生一次；通过思达启航报名全额减免，老学员返校免费', course: '', accommodation: '', promotion: '按当前日期、房型和周数自动核算' },
+    paymentNotes: { registration: '一次性费用，老学员返校免费', course: '', accommodation: '', promotion: '' },
     localFeeSectionTitle: '到校后学杂费明细',
-    localFeeIntro: '以下按当前签证、课程、住宿与接机选择预估；可退宿舍押金另列。',
+    localFeeIntro: JIC_LOCAL_FEE_COPY.intro,
     localFeeNotes: {},
     serviceSectionTitle: '为什么选择思达启航？',
     benefits: [
@@ -277,17 +284,14 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
       { title: '海外驻点售后', text: '学习期间持续跟进，问题有人协助' },
     ],
     serviceLocations: ['深圳总部', '菲律宾驻点', '欧洲驻点'],
-    alumniBenefitTitle: 'JIC优惠提醒',
-    alumniBenefitText: '所有通过思达启航报名的学生均免一次性注册费；老学员返校免费。淡季、长期、BESA与节日优惠按报名日、入学日、房型及周数自动核对。',
+    alumniBenefitTitle: '老学员专属优惠',
+    alumniBenefitText: JIC_ALUMNI_BENEFIT_TEXT,
     noteSectionTitle: '报价说明',
-    footerNotes: [
-      '当前页面只提供对应校区的课程和住宿，不跨校区混选。',
-      '人民币金额按生成当日参考汇率估算，最终以实际支付汇率为准。',
-      '最终以学校价格、空房、优惠资格、移民局政策及顾问确认结果为准。',
-    ],
+    footerNotes: [...JIC_FOOTER_NOTES],
   },
     media: structuredClone(JIC_DEFAULT_MEDIA),
   };
+  (content.quoteSettings as JicQuoteSettings).jicPolicyVersion = JIC_POLICY_VERSION;
   content.campusQuoteImageSettings = {
     challenger: structuredClone(content.quoteImageSettings),
     premium: structuredClone(content.quoteImageSettings),
@@ -321,7 +325,11 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
   });
   cloned.rooms = latest.rooms.map((fallback) => {
     const existing = cloned.rooms.find(item => item.id === fallback.id);
-    return existing ? { ...fallback, ...existing, fee: fallback.fee, note: fallback.note, campus: fallback.campus } : fallback;
+    return existing ? {
+      ...fallback, ...existing,
+      name: fallback.name, label: fallback.label, group: fallback.group, location: fallback.location,
+      fee: fallback.fee, note: fallback.note, campus: fallback.campus,
+    } : fallback;
   });
   cloned.localFees = latest.localFees.map((fallback) => {
     const existing = cloned.localFees.find(item => item.id === fallback.id);
@@ -347,6 +355,8 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
     if (saved) Object.assign(saved, confirmed); else cloned.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
     cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
+  const settings = cloned.quoteSettings as JicQuoteSettings;
+  if ((settings.jicPolicyVersion ?? 0) < JIC_POLICY_VERSION) upgradeJicPolicy(cloned, latest);
   const latestRegistration = latest.quoteSettings.promotions.find(rule => rule.ruleKind === 'jic-registration')!;
   const registrationIndex = cloned.quoteSettings.promotions.findIndex(rule => rule.ruleKind === 'jic-registration');
   if (registrationIndex >= 0) {
@@ -384,3 +394,50 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
   if (!cloned.media?.length) cloned.media = structuredClone(JIC_DEFAULT_MEDIA);
   return cloned;
 };
+
+/**
+ * The 2026-11 school pack (JIC_POLICY_VERSION): the off-season, long-term and holiday rules (now counted by study
+ * week and exact term-start arrival dates) replace the saved ones, and the page and quote-image copy move to the
+ * template's wording. Course and room facts always come from the defaults; employee prices and other edits stay.
+ */
+function upgradeJicPolicy(cloned: CiaContentConfig, latest: CiaContentConfig): void {
+  const settings = cloned.quoteSettings as JicQuoteSettings;
+  const replaced = (rule: CiaPromotionRule) => rule.ruleKind === 'jic-holiday' || rule.ruleKind === 'jic-long-term'
+    || (rule.ruleKind ?? '').startsWith('jic-off-season');
+  settings.promotions = [
+    ...settings.promotions.filter(rule => !replaced(rule)),
+    ...latest.quoteSettings.promotions.filter(replaced).map(rule => structuredClone(rule)),
+  ].sort((a, b) => a.sortOrder - b.sortOrder);
+  settings.localFeeIntro = latest.quoteSettings.localFeeIntro;
+  settings.courseTableTitle = latest.quoteSettings.courseTableTitle;
+  settings.courseTableNote = latest.quoteSettings.courseTableNote;
+  settings.groupClassNote = latest.quoteSettings.groupClassNote;
+  settings.roomTableTitle = latest.quoteSettings.roomTableTitle;
+  settings.roomTableNote = latest.quoteSettings.roomTableNote;
+  settings.stayPolicyTitle = latest.quoteSettings.stayPolicyTitle;
+  settings.stayPolicies = structuredClone(latest.quoteSettings.stayPolicies);
+  const image = latest.quoteImageSettings;
+  for (const target of [cloned.quoteImageSettings, ...Object.values(cloned.campusQuoteImageSettings ?? {})]) {
+    if (!target) continue;
+    target.paymentNotes = { ...target.paymentNotes, registration: image.paymentNotes.registration, promotion: image.paymentNotes.promotion };
+    target.localFeeIntro = image.localFeeIntro;
+    target.alumniBenefitTitle = image.alumniBenefitTitle;
+    target.alumniBenefitText = image.alumniBenefitText;
+    target.footerNotes = [...image.footerNotes];
+  }
+  settings.jicPolicyVersion = JIC_POLICY_VERSION;
+}
+
+/**
+ * One campus page's view of the shared JIC document: only that campus's courses, rooms and quote-image copy.
+ * The document itself keeps both campuses (one school record, one editor). Media stay whole: the page reads
+ * their campus tags to keep only its own uploaded photos and videos.
+ */
+export function jicCampusContent(value: CiaContentConfig, campus: JicCampus): CiaContentConfig {
+  const content = cloneJicContentConfig(value);
+  content.courses = content.courses.filter(item => (item.campus ?? 'challenger') === campus);
+  content.rooms = content.rooms.filter(item => (item.campus ?? 'challenger') === campus);
+  if (campus !== 'challenger') content.localFees = content.localFees.filter(fee => fee.id !== 'challenger-elective');
+  content.quoteImageSettings = jicQuoteImageSettings(content, campus);
+  return content;
+}

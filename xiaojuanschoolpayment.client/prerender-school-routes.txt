@@ -49,7 +49,6 @@
 /philippines-study/baguio/beci-eop-campus
 /philippines-study/baguio/beci-sparta-campus
 /philippines-study/baguio/api-beci-city-campus
-/philippines-study/baguio/baguio-jic
 /philippines-study/baguio/baguio-jic-challenger
 /philippines-study/baguio/baguio-jic-premium
 /philippines-study/baguio/monol

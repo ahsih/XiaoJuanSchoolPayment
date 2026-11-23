@@ -16,7 +16,8 @@ import { IbreezeSchoolComponent } from './ibreeze-school/ibreeze-school.componen
 import { AnjSchoolComponent } from './anj-school/anj-school.component';
 import { ImsSchoolComponent } from './ims-school/ims-school.component';
 import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
-import { JicSchoolDetailComponent } from './jic-school/jic-school-detail.component';
+import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
+import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
 import { IuSchoolComponent } from './iu-school/iu-school.component';
 import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
@@ -42,7 +43,7 @@ const schools = [
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolDetailComponent(); p.quotePlan.courses[0].optionId = 'pre-ielts'; p.quotePlan.rooms[0].optionId = 'ielts-quad'; return p; } },
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
   { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
-  { name: 'JIC Premium', create: () => { const p = new JicSchoolDetailComponent(); p.students[0].setCampus('premium'); return p; } },
+  { name: 'JIC Premium', create: () => new JicPremiumSchoolComponent() },
   { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
@@ -62,7 +63,7 @@ const schools = [
   { name: "A&J", create: () => new AnjSchoolComponent() },
   { name: "IMS", create: () => new ImsSchoolComponent() },
   { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
-  { name: "JIC", create: () => new JicSchoolDetailComponent() },
+  { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
   { name: "ICL", create: () => new IclSchoolComponent() },
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },

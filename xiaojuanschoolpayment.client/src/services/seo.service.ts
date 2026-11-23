@@ -170,23 +170,16 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶API BECI City校区, BECI City Campus, API BECI课程费用, BECI夫妻房, 碧瑶语言学校',
     image: '/assets/philippines/beci-city-workspace.webp',
   },
-  '/philippines-study/baguio/baguio-jic': {
-    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
-    description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、2026课程费、住宿房型、优惠规则和报名注意事项。',
-    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/jic-campus-hero.webp',
-  },
   '/philippines-study/baguio/baguio-jic-challenger': {
     title: '菲律宾碧瑶JIC挑战校区 | Challenger课程住宿费用与报价',
-    description: 'JIC Challenger挑战校区独立页面，整理ESL与IELTS课程、每日课表、四种住宿、最新短期比例、学杂费、优惠和单人多人报价图片。',
-    keywords: 'JIC挑战校区, Baguio JIC Challenger Campus, JIC ESL, JIC IELTS, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Challenger挑战校区：雅思保分班和三种强度的雅思、一般英语课程，斯巴达或半斯巴达，四种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC挑战校区, 菲律宾碧瑶JIC语言学校, Baguio JIC Challenger Campus, JIC雅思保分班, JIC ESL, JIC IELTS, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-main-campus-overview.webp',
   },
   '/philippines-study/baguio/baguio-jic-premium': {
     title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
-    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior、六种住宿、最新学杂费、优惠和报价图片。',
-    keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Premium高级校区：口语、主题英语TEP、托业、商务、打工度假和银发课程，半斯巴达管理，六种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC高级校区, 菲律宾碧瑶JIC语言学校, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
   '/philippines-study/baguio/monol': {

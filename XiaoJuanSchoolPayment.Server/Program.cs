@@ -306,7 +306,6 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/baguio/beci-eop-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/beci-sparta-campus", "monthly", "0.8"),
   ("/philippines-study/baguio/api-beci-city-campus", "monthly", "0.8"),
-  ("/philippines-study/baguio/baguio-jic", "monthly", "0.8"),
   ("/philippines-study/baguio/baguio-jic-challenger", "monthly", "0.8"),
   ("/philippines-study/baguio/baguio-jic-premium", "monthly", "0.8"),
   ("/philippines-study/baguio/monol", "monthly", "0.8"),
