@@ -70,8 +70,8 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
   },
   '/philippines-study/cebu/smeag-capital': {
-    title: '菲律宾宿务SMEAG Capital校区 | 课程费用与2027假期表',
-    description: '查看SMEAG Capital市区校区课程、住宿、费用报价和2027假期上课安排，清楚区分全天停课与TOEFL、IELTS、TOEIC等假日特别课程。',
+    title: '菲律宾宿务SMEAG Capital校区 | 课程、住宿与在线报价',
+    description: '查看SMEAG Capital宿务市区校区的雅思、托福、托业和剑桥体系ESL课程，校内宿舍与合作酒店实拍，在线报价和2027假期；学杂费单独列示。',
     keywords: 'SMEAG Capital, SMEAG Capital假期, 宿务SMEAG, SMEAG 2027校历, 宿务雅思学校',
     image: '/assets/philippines/smeag-capital-building.webp',
   },

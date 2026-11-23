@@ -335,8 +335,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/smeag-capital',
         loadComponent: () =>
-          import('./pages/philippines/smeag-capital-school/smeag-capital-school.component').then(
-            (m) => m.SmeagCapitalSchoolComponent,
+          import('./pages/philippines/smeag-capital-school/smeag-capital-school-page.component').then(
+            (m) => m.SmeagCapitalSchoolPageComponent,
           ),
       },
       {
