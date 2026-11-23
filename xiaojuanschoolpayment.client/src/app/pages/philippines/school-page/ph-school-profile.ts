@@ -72,9 +72,29 @@ export interface PhPageCopy {
   practicalGuide?: CiaCopy['practicalGuide'];
   studentTracks?: CiaCopy['studentTracks'];
   reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'>;
+  /** School-only: heading of the offers section above the quote (profile.offers; CPILS). */
+  offers?: { eyebrow: string; title: string; intro: string; note?: string };
   sida: CiaCopy['sida'];
   faq: CiaCopy['faq'];
   finalCta: CiaCopy['finalCta'];
+}
+
+/**
+ * One card of the optional offers section above the quote (CPILS). It hides itself from `until`, or when
+ * none of its `promotionIds` is enabled in the applied content document, so an ended offer leaves the page.
+ */
+export interface PhOfferCard {
+  icon: string;
+  title: string;
+  /** The headline amount, e.g. 立减75美元. */
+  amount: string;
+  /** Who qualifies and when, one short line. */
+  text: string;
+  /** An optional second line, e.g. the week tiers. */
+  detail?: string;
+  /** Local date (YYYY-MM-DD) from which the card is hidden. */
+  until?: string;
+  promotionIds?: readonly string[];
 }
 
 /** One column of the daily timetable, e.g. 周一至周四 / 周五, or 半斯巴达 / 斯巴达. */
@@ -206,6 +226,8 @@ export interface PhSchoolProfile {
   studentReviews: readonly CiaStudentReview[];
   /** Route of the full student stories; each review's slug is appended. */
   reviewPath: string;
+  /** School-only: current offers shown above the quote with copy.offers (CPILS; styles in ph-school-page-options.css). CIA leaves it out. */
+  offers?: readonly PhOfferCard[];
   holidayCalendars: readonly HolidayCalendar[];
   ieltsComputerExamDates2027: ReadonlyArray<{ month: number; days: number[] }>;
   studentCareServices: readonly StudentCareService[];
