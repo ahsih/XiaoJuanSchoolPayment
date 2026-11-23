@@ -157,17 +157,39 @@ const video = (name: string, title: string, text: string, duration: string, shap
   shape,
 });
 
+// campus-tour, promo and lunch are the school's own; the rest were filmed on campus by 思达启航 (2026-11).
 export const LA_MER_VIDEOS = {
   campusTour: video('campus-tour', 'La Mer 校园导览', '跟着镜头走一遍校园和泳池。', '0:31', 'wide'),
   promo: video('promo', 'La Mer 宣传片', '课堂、宿舍、餐厅和课后活动。', '2:49', 'wide'),
+  pool: video('pool', '学校泳池', '思达启航实拍：泳池和花园。', '0:16', 'tall'),
+  classes: video('classes', '教室和课堂', '思达启航实拍：教学走廊、一对一和团体课。', '0:29', 'tall'),
+  roomPoolDouble: video('room-pool-double', '直通泳池双人间实拍', '思达启航实拍：从阳台就能下到泳池。', '0:33', 'tall'),
+  roomDouble: video('room-double', '标准双人间实拍', '思达启航实拍：两张单人床、书桌和阳台。', '0:22', 'tall'),
+  roomQuad: video('room-quad', '四人间实拍', '思达启航实拍：床位、书桌、卫浴和阳台。', '0:33', 'tall'),
+  diningHall: video('dining-hall', '学生餐厅', '思达启航实拍：一楼学生餐厅。', '0:13', 'tall'),
   lunch: video('lunch', '学生餐厅的午餐', '餐厅的一顿午饭。', '0:12', 'tall'),
+  shop: video('shop', '校园小卖部', '思达启航实拍：零食、饮料和日用品。', '0:25', 'tall'),
+  gym: video('gym', '健身房', '思达启航实拍：健身房器械。', '0:07', 'tall'),
 } as const;
 
-/** Hero album video chips; the campus tour opens the album. No clip shows exactly one room type yet. */
+/**
+ * Hero album video chips, named like the photo chips; the campus tour opens the album. The three room clips each
+ * show exactly one room type (checked frame by frame 2026-11-24), so they also open that room's photos.
+ */
 export const LA_MER_VIDEO_TABS: readonly PhVideoTab[] = [
   { label: '校园视频', icon: 'videocam', items: [LA_MER_VIDEOS.campusTour, LA_MER_VIDEOS.promo] },
-  { label: '餐厅视频', icon: 'videocam', items: [LA_MER_VIDEOS.lunch] },
+  { label: '教室视频', icon: 'videocam', items: [LA_MER_VIDEOS.classes] },
+  { label: '住宿视频', icon: 'videocam', items: [LA_MER_VIDEOS.roomPoolDouble, LA_MER_VIDEOS.roomDouble, LA_MER_VIDEOS.roomQuad] },
+  { label: '餐厅视频', icon: 'videocam', items: [LA_MER_VIDEOS.diningHall, LA_MER_VIDEOS.lunch, LA_MER_VIDEOS.shop] },
+  { label: '设施视频', icon: 'videocam', items: [LA_MER_VIDEOS.pool, LA_MER_VIDEOS.gym] },
 ];
+
+/** The first item of a room's photo album. */
+export const LA_MER_ROOM_VIDEOS: Readonly<Record<string, PhVideoItem>> = {
+  'pool-double': LA_MER_VIDEOS.roomPoolDouble,
+  double: LA_MER_VIDEOS.roomDouble,
+  quad: LA_MER_VIDEOS.roomQuad,
+};
 
 const DORM_HIGHLIGHTS = ['一日三餐，周末也供应', '空调、热水、冰箱和吹风机', '每周打扫两次、每周换床单', '宿舍有 Wi-Fi，24小时保安'];
 const roomProfile = (
@@ -183,7 +205,7 @@ const roomGallery = (prefix: string, count: number) => Array.from({ length: coun
 export const LA_MER_ROOM_PROFILES: readonly PhRoomProfile[] = [
   roomProfile('single', '单人间', roomGallery('single', 5), '重视隐私、想有自己空间的学员', '一人一间，带浴缸。', ['独立浴缸', ...DORM_HIGHLIGHTS]),
   roomProfile('pool-double', '直通泳池双人间', roomGallery('pool-double', 4), '朋友或夫妻同行、喜欢下楼就能游泳的学员', '两人一间，房门外就是泳池；按每人计价。', ['房门直通泳池', ...DORM_HIGHLIGHTS]),
-  roomProfile('double', '标准双人间', roomGallery('double', 6), '朋友同行或想兼顾预算的学员', '两人一间；按每人计价。'),
+  roomProfile('double', '标准双人间', roomGallery('double', 6), '朋友同行或想兼顾预算的学员', '两人一间；按每人计价。部分房间带浴缸，以学校实际分配为准。'),
   roomProfile('triple', '三人间', roomGallery('triple', 6), '想控制预算的学员', '三人一间；按每人计价。'),
   roomProfile('quad', '四人间', roomGallery('quad', 7), '预算优先的学员', '四人一间；按每人计价。'),
 ];

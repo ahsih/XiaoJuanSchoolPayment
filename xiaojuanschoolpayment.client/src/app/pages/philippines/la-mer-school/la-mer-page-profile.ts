@@ -29,6 +29,7 @@ import {
   LA_MER_QUICK_INFO,
   LA_MER_REFERENCE_NOTE,
   LA_MER_ROOM_PROFILES,
+  LA_MER_ROOM_VIDEOS,
   LA_MER_SCHEDULE,
   LA_MER_SUITABLE_FOR,
   LA_MER_VIDEO_TABS,
@@ -152,6 +153,7 @@ export const LA_MER_PAGE_PROFILE: PhSchoolProfile = {
   compactLayout: true,
   overviewFacts: LA_MER_OVERVIEW_FACTS,
   videoTabs: LA_MER_VIDEO_TABS,
+  roomVideos: LA_MER_ROOM_VIDEOS,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
