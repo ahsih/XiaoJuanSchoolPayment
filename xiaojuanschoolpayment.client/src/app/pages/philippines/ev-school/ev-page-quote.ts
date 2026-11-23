@@ -108,7 +108,7 @@ export class EvPageStudent implements PhPageStudent {
   get selectedAgeGroup(): 'adult' | 'minor' { return this.calculator.isMinorStudent ? 'minor' : 'adult'; }
   set selectedAgeGroup(value: 'adult' | 'minor') { this.calculator.isMinorStudent = value === 'minor'; }
   get minorNote(): string {
-    return `未满18岁每4周加收未成年管理费${this.pricing.minorManagementFeePerPeriod}美元，不足4周按一期；平日不可外出，周末须监护人陪同。`;
+    return `未满18岁每4周加收未成年管理费${this.pricing.minorManagementFeePerPeriod}美元，不足4周按一期；平日不可外出，周末须监护人陪同。未满15岁学校不接收。`;
   }
 
   get paymentLines(): SchoolPaymentLine[] {

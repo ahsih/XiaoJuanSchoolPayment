@@ -12,9 +12,12 @@ import { copyContentData } from '../copy-content-data';
  * 1: 2026-08-10 local-fee sheet and the 2026 brochure course catalogue.
  * 2: condo shuttle runs on weekdays only, condo check-in rules, 2,000-peso extra night,
  *    and no school promotion besides the agent 95% rate (user decision 2026-11-20).
+ * 3: 2026-11 school pack: check-in from Saturday 15:00 for every student, no students under 15,
+ *    and the student pays any electricity beyond the deposit (2026-10 orientation guide).
  */
-export const EV_POLICY_VERSION = 2;
+export const EV_POLICY_VERSION = 3;
 export const EV_IELTS_GUARANTEE_ID = 'sparta-ielts-guarantee';
+const EV_ELECTRICITY_NOTE = '每周含15度电；超出部分每度20比索，从押金中扣除，超过押金须补交差额。';
 
 const course = (
   id: string,
@@ -125,7 +128,7 @@ const defaultLocalFees = (): CiaLocalFeeRule[] => [
   { id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '旅游签证首次续签时收取一次；长期签证也收取一次。', enabled: true, sortOrder: 3 },
   { id: 'on-campus-management', name: '校内管理费', currency: 'PHP', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '仅校内住宿计收，按住宿周数。', enabled: true, sortOrder: 4 },
   { id: 'off-campus-management', name: '校外公寓管理费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '仅校外公寓计收，按住宿周数。', enabled: true, sortOrder: 5 },
-  { id: 'electricity', name: '电费', currency: 'PHP', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '每周含15度电；超出部分每度20比索，从押金中扣除。', enabled: true, sortOrder: 6 },
+  { id: 'electricity', name: '电费', currency: 'PHP', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: EV_ELECTRICITY_NOTE, enabled: true, sortOrder: 6 },
   { id: 'water', name: '水费', currency: 'PHP', amount: 300, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '按住宿周数。', enabled: true, sortOrder: 7 },
   { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 5430, rates: [5430, 6400, 4430, 4430, 4430], tourist59Rates: [6700, 4430, 4430, 4430], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '30天签证第5周起、59天签证第9周起需续签，之后每4周一次；以移民局实收为准。', enabled: true, sortOrder: 8 },
   { id: 'books', name: '教材费', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '按课程实际购买，每本约150–500比索；此处按每4周2,000比索预估。', enabled: true, sortOrder: 9 },
@@ -138,10 +141,17 @@ const defaultLocalFees = (): CiaLocalFeeRule[] => [
 const EV_UPGRADED_FEE_IDS = ['ssp', 'ssp-e-card', 'acr-i-card', 'arp', 'on-campus-management', 'off-campus-management', 'electricity', 'water', 'visa-extension', 'books', 'student-id', 'cebu-pickup', 'room-deposit'];
 
 const defaultStayPolicies = () => [
-  { label: '入住日期', value: '周六或周日入住', note: '校外公寓周六15:00后入住；周一上午分级测试和新生说明会。' },
+  { label: '入住日期', value: '周六15:00后或周日入住', note: '其他时间不能入住；周一上午分级测试和新生说明会。' },
   { label: '离校日期', value: '最后一周周六12:00前退房', note: '毕业典礼在最后一个周五；延住须提前一周申请，视空房而定。' },
-  { label: '未成年学生', value: '外出须监护人陪同', note: '平日不可外出，周末无监护人不可外出，门禁21:00。' },
+  { label: '未成年学生', value: '15至17岁可报名，外出须监护人陪同', note: '未满15岁学校不接收；平日不可外出，周末无监护人不可外出，门禁21:00。' },
 ];
+
+/** Version-2 stay rules; version 3 replaces them only where staff left them unchanged. */
+const EV_V2_STAY_POLICIES: Record<string, { value: string; note: string }> = {
+  入住日期: { value: '周六或周日入住', note: '校外公寓周六15:00后入住；周一上午分级测试和新生说明会。' },
+  未成年学生: { value: '外出须监护人陪同', note: '平日不可外出，周末无监护人不可外出，门禁21:00。' },
+};
+const EV_V2_ELECTRICITY_NOTE = '每周含15度电；超出部分每度20比索，从押金中扣除。';
 
 const defaultExtraNightRates = () => [{ label: '延住（所有房型）', amount: 2000 }];
 
@@ -195,7 +205,22 @@ const upgradeEvPolicy = (clone: CiaContentConfig, defaults: CiaContentConfig): v
   const saved = clone.quoteSettings.evPolicyVersion ?? 0;
   if (saved < 1) upgradeEvFeeSheet(clone, defaults);
   if (saved < 2) upgradeEvStayRules(clone, defaults);
+  if (saved < 3) upgradeEvSchoolPack2026Nov(clone);
   clone.quoteSettings.evPolicyVersion = EV_POLICY_VERSION;
+};
+
+/** Version 3: replaces only the version-2 wording that staff left unchanged. */
+const upgradeEvSchoolPack2026Nov = (clone: CiaContentConfig): void => {
+  const current = defaultStayPolicies();
+  clone.quoteSettings.stayPolicies = (clone.quoteSettings.stayPolicies ?? []).map(policy => {
+    const old = EV_V2_STAY_POLICIES[policy.label];
+    const next = current.find(entry => entry.label === policy.label);
+    return old && next && policy.value === old.value && policy.note === old.note ? { ...next } : policy;
+  });
+  const electricity = (clone.localFees ?? []).find(fee => fee.id === 'electricity');
+  if (electricity?.note === EV_V2_ELECTRICITY_NOTE) electricity.note = EV_ELECTRICITY_NOTE;
+  const imageNotes = clone.quoteImageSettings?.localFeeNotes;
+  if (imageNotes?.['electricity'] === EV_V2_ELECTRICITY_NOTE) imageNotes['electricity'] = EV_ELECTRICITY_NOTE;
 };
 
 /** Version 1: the 2026-08-10 fee sheet and corrected course facts. */

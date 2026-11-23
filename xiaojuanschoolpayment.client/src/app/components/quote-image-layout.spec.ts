@@ -109,7 +109,7 @@ describe('quote image visual hierarchy', () => {
     const renderer = rendererForEightWeeks();
     const context = document.createElement('canvas').getContext('2d')!;
     context.font = '750 15px "Microsoft YaHei", Arial, sans-serif';
-    for (const title of ['ESL常规（KET/PET/FCE）', 'College Immersion（IAU大学沉浸）']) {
+    for (const title of ['ESL常规（KET/PET/FCE）', 'College Immersion 大学沉浸式课程（IAU航空航天大学旁听）']) {
       const lines = renderer['wrapCanvasText'](context, title, 170, 1000);
       expect(lines.join('')).toBe(title);
       expect(lines.every(line => !/^[）)]/.test(line) && !/[（(]$/.test(line))).toBeTrue();

@@ -297,6 +297,18 @@ const CIA_ELECTRICITY_2027: Pick<CiaLocalFeeRule, 'futureEffectiveStart' | 'futu
   futureNote: '2027年1月1日起入学按每4周3,000比索计算；超过基本用电额度时另行收费。',
 };
 
+/**
+ * College Immersion wording, taken only from CIA's own files (user decision 2026-11-23): the course name
+ * 大学沉浸式课程 and the 4-week unit and one-time 50-dollar IAU fee paid on arrival come from CIA's 2026 Chinese
+ * agency presentation; the classroom experience at Indiana Aerospace University from the
+ * “CIA & IAU Immersion Program” file. The website keeps this name and fit over the older database row.
+ */
+export const CIA_IMMERSION_COURSE_TEXT = {
+  name: 'College Immersion 大学沉浸式课程（IAU航空航天大学旁听）',
+  suitable: '在CIA学英语，同时到IAU（印第安纳航空航天大学）体验大学课堂',
+  note: '4周为单位；IAU一次性注册费50美元，到校后付，不含在课程费里。',
+} as const;
+
 const course = (
   id: string,
   name: string,
@@ -335,7 +347,7 @@ export const createDefaultCiaContentConfig = (): CiaContentConfig => {
     course('business', 'Business', 1050, 1150, '商务一对一5节 + 商务小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节', '商务沟通、演示与职场写作', '入学参考为 CIA Level 4 或 TOEIC 400分；4或8周为一个单元，4周以上学生需完成商务PPT发表。', 9),
     course('working-holiday', 'Working Holiday', 950, 1050, 'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节', '海外生活与面试沟通', '4周为一个学习单元，内容覆盖生存英语、求职准备和海外生活沟通。', 10),
     course('callan-esl', 'Callan ESL', 1050, 1050, 'Callan一对一3节 + ESL一对一2节 + ESL小组1节 + 综合中组1节 + 选修1节 + 写作1节 + 自习2节', '高频问答与快速口语反应', '4周为一个学习单元，通过快速问答、即时纠错和系统复习训练英语反应速度。', 11),
-    course('college-immersion', 'College Immersion（IAU大学沉浸）', 1000, 1100, 'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节', '想参加IAU航空大学体验，报名时应选择此课程', '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费50美元。', 12),
+    course('college-immersion', CIA_IMMERSION_COURSE_TEXT.name, 1000, 1100, 'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节', CIA_IMMERSION_COURSE_TEXT.suitable, CIA_IMMERSION_COURSE_TEXT.note, 12),
   ],
   rooms: [
     { id: 'p1', name: '豪华单人间 P-1', label: '豪华单人间', code: 'P-1', location: '校内', group: '单人间', fee: 1700, note: '豪华单人间多了一个电磁炉，可以简单加热食物', enabled: true, sortOrder: 0 },

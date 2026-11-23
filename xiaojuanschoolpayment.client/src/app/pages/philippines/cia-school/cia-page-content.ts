@@ -877,27 +877,27 @@ export const CIA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     ],
   },
   {
+    // Only what CIA's “CIA & IAU Immersion Program” file says (user decision 2026-11-23); the course note
+    // above already gives the 4-week unit and the 50-dollar IAU fee from CIA's 2026 agency presentation.
     icon: 'flight_takeoff',
-    title: 'IAU大学沉浸课程',
-    subtitle: '想旁听Indiana Aerospace University课程，请选College Immersion',
+    title: 'IAU大学沉浸式课程',
+    subtitle: 'CIA与Indiana Aerospace University（IAU）合作的大学沉浸项目',
     courseIds: ['college-immersion'],
     facts: [
-      { label: '对应报名课程', value: 'College Immersion（IAU大学沉浸）' },
-      { label: '基本安排', value: '4周为单位；每4周至少6小时IAU旁听' },
-      { label: 'IAU注册费', value: '一次性50美元，课程费以入学年份价格表为准' },
-      { label: '预约时间', value: '建议至少提前4周确认方向、课表与名额' },
+      { label: '旁听时间', value: '每4周至少6小时；每次3小时，旁听1–3门课' },
+      { label: '课表安排', value: 'CIA提前4周与IAU安排科目、课表和交通' },
+      { label: '证书', value: '每4周旁听满6小时，获IAU观察证明' },
     ],
     points: [
-      'College Immersion是独立的CIA课程安排，不是报名Regular ESL后临时增加的一节选修课；报名时应明确备注“IAU大学沉浸”。',
-      'CIA日常英语课程包括ESL一对一4节、小组1节、中组1节、大组1节、选修1节、写作1节与自习2节。',
-      'IAU旁听通常分为2次、每次3小时，每次可能旁听1–3门课；CIA负责协调日期、课表和往返交通。',
-      '可申请航空航天工程、飞机维修、航空公司管理、飞行方向航空技术、航空电子、旅游管理、酒店管理及教育等方向，实际以IAU当期课表为准。',
-      '常规4周旁听完成后对应观察与参与类证明；如目标是60小时完成证明或大学学分，必须在报名时单独提出并确认，不可默认包含。',
+      'IAU 1992年创校，是宿务历史最久的航空航天大学。',
+      '可旁听的专业：航空航天工程、飞机维修技术、航空公司管理、航空技术（飞行方向）、航空电子、旅游管理、酒店管理、中小学教育。',
+      '出发前告诉CIA经理想旁听哪些课；CIA提供往返IAU的交通。',
+      'CIA在学生CIA课程的最后一周把IAU证书交给学生。',
+      '想拿IAU学分：须在IAU正式注册2学分或以上；学分能否转到自己的大学，由学生和原学校确认，CIA和IAU协助。',
     ],
     image: 'assets/cia/iau-immersion-certificate-sample.webp',
-    imageAlt: 'IAU六十小时沉浸项目完成证书样式',
-    imageCaption: 'IAU 60小时完成证书样式仅作类型说明；常规4周旁听不等同于默认获得该证书。',
-    notice: '旁听科目、开课日期、名额、证书类型及学分认可均可能调整；最终以CIA与IAU书面确认，以及学生原就读院校的学分认定结果为准。',
+    imageAlt: 'IAU沉浸项目完成证书样本',
+    imageCaption: 'IAU沉浸项目完成证书样本（样本写的是完成60小时）',
   },
   {
     icon: 'nightlight_round',
@@ -1238,7 +1238,7 @@ export const CIA_COURSE_CHOICE_CARDS = [
     icon: 'flight_takeoff',
     label: '特色项目',
     title: 'Working Holiday / Callan / College Immersion',
-    text: '适合打工度假、口语训练或大学深度体验项目。',
+    text: '适合打工度假、口语训练，或到IAU航空航天大学旁听。',
     courseIds: ['working-holiday', 'callan-esl', 'college-immersion'],
   },
 ];
@@ -1266,7 +1266,7 @@ export const CIA_COURSE_GROUPS: ReadonlyArray<{ icon: string; title: string; tex
   {
     icon: 'business_center',
     title: '商务与特色项目',
-    text: '商务英语、打工度假、Callan、大学体验',
+    text: '商务英语、打工度假、Callan、IAU大学沉浸',
     courseIds: ['business', 'working-holiday', 'callan-esl', 'college-immersion'],
   },
 ];
