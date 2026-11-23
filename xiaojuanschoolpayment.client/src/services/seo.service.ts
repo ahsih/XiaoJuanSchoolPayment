@@ -65,8 +65,8 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/philippines-study/cebu/cg-academy-sparta-campus': {
     title: 'CG斯巴达校区 | 宿务课程、住宿费用与报价',
-    description: '菲律宾宿务CG斯巴达校区介绍，查看斯巴达课程、高阶斯巴达、考试课程、住宿房型与费用报价，学杂费单独列示预估明细。',
-    keywords: 'CG斯巴达校区, CG斯巴达校区, 宿务CG语言学校, 斯巴达课程, CG费用, 菲律宾游学',
+    description: '菲律宾宿务CG斯巴达校区介绍：全斯巴达管理，斯巴达、托业、雅思保分班和雅思强化课程，校内宿舍实拍、2027假期和在线报价；学杂费单独列示。',
+    keywords: 'CG斯巴达校区, 宿务CG语言学校, CG雅思保分班, 斯巴达课程, CG费用, 菲律宾游学',
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
   },
   '/philippines-study/cebu/smeag-capital': {

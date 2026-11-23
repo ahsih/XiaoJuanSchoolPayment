@@ -1,7 +1,7 @@
 import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-download-button.component';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
-import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
-import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
+import { CgBaniladSchoolPageComponent } from './cg-banilad-school/cg-banilad-school-page.component';
+import { CgSpartaSchoolPageComponent } from './cg-sparta-school/cg-sparta-school-page.component';
 import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
@@ -53,8 +53,8 @@ const schools = [
   { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
-  { name: "CG Banilad", create: () => new CgBaniladSchoolComponent() },
-  { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
+  { name: "CG Banilad", create: () => new CgBaniladSchoolPageComponent() },
+  { name: "CG Sparta", create: () => new CgSpartaSchoolPageComponent() },
   { name: "SMEAG", create: () => new SmeagCapitalSchoolPageComponent() },
   { name: "CPI", create: () => new CpiSchoolPageComponent() },
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
