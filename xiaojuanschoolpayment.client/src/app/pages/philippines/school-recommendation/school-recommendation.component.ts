@@ -6,7 +6,6 @@ interface RecommendationPage {
   title: string;
   englishTitle: string;
   route: string;
-  audience: string;
   intro: string;
   keywords: string;
   selectionFocus: string;
@@ -29,7 +28,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
     title: '雅思备考学校推荐',
     englishTitle: 'IELTS School Recommendations',
     route: '/philippines-study/recommendations/ielts-schools',
-    audience: '高转化课程入口',
     intro:
       '菲律宾雅思备考适合想用 8-12 周集中冲刺分数的学生。选校时不要只看课时多不多，更要确认是否有模考体系、写作口语反馈、保证班规则和官方考试安排。',
     keywords: '雅思保证班、斯巴达管理、模考体系、写作口语反馈',
@@ -93,7 +91,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
     title: '性价比学校推荐',
     englishTitle: 'Best Value School Recommendations',
     route: '/philippines-study/recommendations/budget-schools',
-    audience: '承接预算敏感用户',
     intro:
       '性价比学校不是单纯找最低价，而是在预算内拿到合适的一对一课时、住宿餐食、校区管理和学习效果。适合预算敏感、计划长期学习，或第一次菲律宾游学想控制风险的学生。',
     keywords: '多人房、淡季报名、长期优惠、碧瑶低成本、克拉克机票',
@@ -157,7 +154,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
     title: '亲子学校推荐',
     englishTitle: 'Family Study Recommendations',
     route: '/philippines-study/recommendations/family-schools',
-    audience: '家庭用户入口',
     intro:
       '菲律宾亲子游学适合家长陪读、孩子短期英语体验、寒暑假营队或低龄长期适应。选校时要优先确认孩子年龄、家长课程、家庭房、接送照顾、安全管理和周末活动安排。',
     keywords: '亲子游学、家庭房、Junior课程、家长ESL、寒暑假营队',
@@ -215,7 +211,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
     title: '斯巴达学校推荐',
     englishTitle: 'Sparta School Recommendations',
     route: '/philippines-study/recommendations/sparta-schools',
-    audience: '适合冲刺型、管理型需求',
     intro:
       '斯巴达学校适合目标明确、想用较强管理推动学习的学生。常见安排包括门禁、晚自习、单词测试、出勤规则和较密集课表，特别适合雅思、多益冲刺或自律较弱的人群。',
     keywords: '斯巴达管理、半斯巴达、门禁、晚自习、考试冲刺',
@@ -279,7 +274,6 @@ const recommendationPages: Record<string, RecommendationPage> = {
     title: '青少年夏令营',
     englishTitle: 'Junior English Camp',
     route: '/philippines-study/recommendations/junior-camp',
-    audience: '寒暑假重点项目',
     intro:
       '菲律宾青少年夏令营适合希望在寒暑假集中提升英语、培养独立生活能力和体验海外课堂的学生。选项目时要同时看课程强度、年龄分班、住宿照顾、安全管理、接送安排和周末活动。',
     keywords: 'Junior ESL、寒暑假营队、青少年英语、封闭管理、活动课程',

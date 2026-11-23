@@ -11,7 +11,6 @@ export class ApplicationMaterialsComponent {
   readonly page = {
     title: '申请材料清单',
     englishTitle: 'Application Materials Checklist',
-    audience: '工具页，适合做下载资料',
     keywords: '申请材料、成绩单、毕业证明、推荐信、个人陈述、护照、语言成绩',
     heroImage:
       'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class IrelandStudyCostComponent {
   readonly page = {
     title: '爱尔兰留学费用',
     englishTitle: 'Ireland Study Cost Guide',
-    audience: 'SEO指南页，爱尔兰留学核心关键词',
     keywords: '爱尔兰留学费用、学费、生活费、住宿、签证资金、奖学金',
     heroImage:
       'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',

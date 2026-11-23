@@ -11,7 +11,6 @@ export class LivingInIrelandComponent {
   readonly page = {
     title: '住在爱尔兰',
     englishTitle: 'Living In Ireland',
-    audience: '指南页',
     keywords: '爱尔兰生活、城市选择、生活成本、交通、住宿、学生适应',
     heroImage:
       'https://images.unsplash.com/photo-1549918864-48ac978761a4?auto=format&fit=crop&w=1200&q=80',
@@ -45,9 +44,9 @@ export class LivingInIrelandComponent {
         text: '预算应覆盖住宿、餐食、交通、手机、保险、教材、社交和紧急备用金。',
       },
     ],
-    guideTitle: '适合承接生活疑虑',
+    guideTitle: '到爱尔兰生活要准备什么',
     guideText:
-      '这一页可以降低学生和家长对海外生活的焦虑。与其只说“安全友好”，更应具体说明到达前后要准备什么、怎么适应、哪里能获得帮助。',
+      '与其只听一句“安全友好”，不如具体了解到达前后要准备什么、怎么适应、遇到问题去哪里求助。',
     checklist: [
       '确认目标城市的住宿、交通和生活成本是否适合预算。',
       '提前了解学校迎新、国际学生支持和紧急联系方式。',

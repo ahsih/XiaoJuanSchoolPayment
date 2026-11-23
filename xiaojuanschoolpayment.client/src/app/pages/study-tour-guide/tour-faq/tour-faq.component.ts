@@ -11,7 +11,6 @@ export class TourFaqComponent {
   readonly page = {
     title: '游学常见问题',
     englishTitle: 'Study Tour FAQ',
-    positioning: 'FAQ页，适合结构化FAQ',
     keywords: '游学常见问题、安全吗、费用、签证、住宿、效果、适合年龄',
     heroImage:
       'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',

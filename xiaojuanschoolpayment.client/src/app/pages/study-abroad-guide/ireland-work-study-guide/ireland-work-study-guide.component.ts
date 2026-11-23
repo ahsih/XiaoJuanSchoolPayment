@@ -11,7 +11,6 @@ export class IrelandWorkStudyGuideComponent {
   readonly page = {
     title: '爱尔兰半工半读指南',
     englishTitle: 'Ireland Work And Study Guide',
-    audience: 'SEO指南页，支撑半工半读落地页',
     keywords: '爱尔兰半工半读、学生兼职、语言学校、Stamp 2、毕业工签',
     heroImage:
       'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80',

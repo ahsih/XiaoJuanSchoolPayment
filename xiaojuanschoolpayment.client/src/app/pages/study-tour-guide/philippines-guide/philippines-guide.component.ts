@@ -11,7 +11,6 @@ export class PhilippinesGuideComponent {
   readonly page = {
     title: '菲律宾游学指南',
     englishTitle: 'Philippines Study Tour Guide',
-    positioning: 'SEO指南页，与收入主业务关联',
     keywords: '菲律宾游学、一对一英语、宿务、碧瑶、雅思、亲子',
     heroImage:
       'https://images.unsplash.com/photo-1542213493895-edf5b94f5a96?auto=format&fit=crop&w=1200&q=80',

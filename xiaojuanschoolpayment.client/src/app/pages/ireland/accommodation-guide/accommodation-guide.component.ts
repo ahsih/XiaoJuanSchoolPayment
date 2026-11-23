@@ -11,7 +11,6 @@ export class AccommodationGuideComponent {
   readonly page = {
     title: '住宿指南',
     englishTitle: 'Ireland Accommodation Guide',
-    audience: '指南页',
     keywords: '学生宿舍、寄宿家庭、校外租房、住宿预算、通勤、安全',
     heroImage:
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80',
@@ -47,7 +46,7 @@ export class AccommodationGuideComponent {
     ],
     guideTitle: '咨询时要先问清楚',
     guideText:
-      '住宿是爱尔兰留学体验里非常关键的一环。页面需要帮助学生把预算、城市、通勤、安全、生活习惯和开学时间一起考虑。',
+      '住宿是爱尔兰留学体验里非常关键的一环。选住宿时要把预算、城市、通勤、安全、生活习惯和开学时间一起考虑。',
     checklist: [
       '确认学校是否提供住宿申请入口和申请截止日期。',
       '比较宿舍、寄宿家庭、学生公寓和校外租房的总成本。',

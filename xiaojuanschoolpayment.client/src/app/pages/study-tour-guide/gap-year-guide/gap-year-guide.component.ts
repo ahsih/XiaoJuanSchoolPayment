@@ -11,7 +11,6 @@ export class GapYearGuideComponent {
   readonly page = {
     title: 'Gap Year 游学指南',
     englishTitle: 'Gap Year Study Tour Guide',
-    positioning: 'SEO指南页，长期学习用户入口',
     keywords: 'Gap Year、长期游学、语言提升、海外体验、升学规划',
     heroImage:
       'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class HealthSafetyComponent {
   readonly page = {
     title: '健康与安全',
     englishTitle: 'Health And Safety In Ireland',
-    audience: '指南页',
     keywords: '健康保险、GP、紧急电话、安全、心理支持、学生服务',
     heroImage:
       'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&q=80',
@@ -45,9 +44,9 @@ export class HealthSafetyComponent {
         text: '外出、夜间通勤、租房、转账和社交活动都要保持基本安全意识，保存紧急联系人。',
       },
     ],
-    guideTitle: '适合家长关注',
+    guideTitle: '家长关心的健康与安全',
     guideText:
-      '这一页可以让家长看到你们不仅做申请，也关注学生抵达后的健康、安全和适应支持。内容要务实，不要制造恐慌。',
+      '思达启航不只帮学生申请，也关心学生到达后的健康、安全和适应。下面几项建议学生和家长提前了解。',
     checklist: [
       '确认学生医疗保险、常用药、过敏史和英文医疗说明。',
       '保存学校紧急电话、住宿联系人、当地报警急救电话和顾问联系方式。',

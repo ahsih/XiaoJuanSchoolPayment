@@ -5,7 +5,6 @@ import { map } from 'rxjs';
 interface InfoPage {
   title: string;
   englishTitle: string;
-  audience: string;
   intro: string;
   keywords: string;
   selectionFocus: string;
@@ -23,7 +22,6 @@ const infoPages: Record<string, InfoPage> = {
   cost: {
     title: '菲律宾游学费用',
     englishTitle: 'Philippines Study Cost',
-    audience: 'SEO/转化入口',
     intro:
       '菲律宾游学费用要按总预算来看，不只是学费。完整预算通常包含课程、住宿、餐食、当地费用、签证延签、SSP/ACR、教材、水电、接机、机票和个人生活费。',
     keywords: '学费、住宿、餐食、当地费用、签证、SSP、机票、生活费',
@@ -72,7 +70,6 @@ const infoPages: Record<string, InfoPage> = {
   offers: {
     title: '菲律宾游学最新优惠',
     englishTitle: 'Philippines Study Offers',
-    audience: '转化入口、可关联学校优惠',
     intro:
       '菲律宾语言学校的优惠会随学校、房型、课程、报名周数和淡旺季变化。这里先整理常见优惠类型，具体折扣、空房和截止日期以学校当期回复为准。',
     keywords: '早鸟优惠、长期报名优惠、淡季折扣、房型优惠、学校活动',
@@ -111,7 +108,6 @@ const infoPages: Record<string, InfoPage> = {
   faq: {
     title: '菲律宾游学常见问题',
     englishTitle: 'Philippines Study FAQ',
-    audience: '解除安全、费用、签证、住宿、效果等疑虑',
     intro:
       '第一次了解菲律宾游学时，用户通常最关心安全、总费用、签证、住宿、课程效果和适合人群。这个页面集中回答报名之前最常见的问题。',
     keywords: '安全、费用、签证、住宿、课程效果、适合人群',

@@ -11,7 +11,6 @@ export class HolidayTourGuideComponent {
   readonly page = {
     title: '寒暑假游学指南',
     englishTitle: 'Holiday Study Tour Guide',
-    positioning: 'SEO指南页，季节性强需求',
     keywords: '寒假游学、暑假游学、夏令营、冬令营、短期英语营',
     heroImage:
       'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',

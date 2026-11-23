@@ -11,7 +11,6 @@ export class StudyPreDepartureComponent {
   readonly page = {
     title: '住宿与行前准备',
     englishTitle: 'Accommodation And Pre Departure',
-    audience: 'SEO指南页',
     keywords: '爱尔兰住宿、学生宿舍、租房、行前准备、接机、保险、银行卡',
     heroImage:
       'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80',

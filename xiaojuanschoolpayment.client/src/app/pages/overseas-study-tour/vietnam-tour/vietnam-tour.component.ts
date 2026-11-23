@@ -11,7 +11,6 @@ export class VietnamTourComponent {
   readonly page = {
     title: '越南游学',
     englishTitle: 'Vietnam Study Tour',
-    positioning: '国家页，补充亚洲目的地',
     keywords: '东南亚文化、低成本、短期体验、城市探索、亲子',
     heroImage:
       'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class BankingComponent {
   readonly page = {
     title: '货币和银行服务',
     englishTitle: 'Money And Banking In Ireland',
-    audience: '指南页',
     keywords: '欧元、银行卡、开户、生活费、转账、预算管理',
     heroImage:
       'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80',
@@ -45,9 +44,9 @@ export class BankingComponent {
         text: '建议学生把房租、交通、餐食、电话、保险和教材分项记录，避免预算失控。',
       },
     ],
-    guideTitle: '页面定位',
+    guideTitle: '花钱和收付款先规划好',
     guideText:
-      '这个页面适合放在生活指南下，帮助学生和家长把“到当地怎么花钱、怎么收付款、怎么控制预算”讲清楚。',
+      '到爱尔兰后怎么花钱、怎么收付款、怎么控制预算，最好出发前就想清楚。下面几项可以帮你提前准备。',
     checklist: [
       '出发前准备可覆盖抵达初期的银行卡、现金或备用支付方式。',
       '确认住宿押金、首月房租和学费支付方式。',

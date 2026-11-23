@@ -213,7 +213,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     notifyUnifiedPreviewReady('MINT');
-    if (this.quoteOnly) setTimeout(() => document.getElementById('quote')?.scrollIntoView({ block: 'start' }));
+    if (this.quoteOnly && typeof document !== 'undefined') setTimeout(() => document.getElementById('quote')?.scrollIntoView({ block: 'start' }));
   }
 
   @HostListener('window:message', ['$event'])

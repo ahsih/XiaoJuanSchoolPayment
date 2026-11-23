@@ -11,7 +11,6 @@ export class StudyVisaGuideComponent {
   readonly page = {
     title: '签证申请指南',
     englishTitle: 'Ireland Student Visa Guide',
-    audience: 'SEO指南页',
     keywords: '爱尔兰学生签证、AVATS、资金证明、保险、入境注册、IRP',
     heroImage:
       'https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&w=1200&q=80',

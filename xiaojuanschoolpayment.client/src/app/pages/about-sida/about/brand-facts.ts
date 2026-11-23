@@ -4,10 +4,9 @@
 // The text follows the user's 2026-11-19 品牌事实卡（初稿）, plus a few verifiable facts taken from the
 // website itself (more Philippine cities, family/junior programmes, Vietnam, Ireland work-study and
 // visa/accommodation guidance, the free tools on the site). Change facts here; the page, JSON-LD and
-// llms.txt follow. The server puts renderBrandFactsHtml() into the initial HTML of /about-sida/about
-// (scripts/export-seo-pages.cjs → seo-pages.json → SpaSeoHtmlRenderer), so the text is visible in the
-// page source for crawlers and AI tools that do not run JavaScript, and the Angular page renders the
-// same HTML.
+// llms.txt follow. The page renders renderBrandFactsHtml(), and the build prerenders it like the other
+// pages in prerender-routes.txt, so the text is visible in the page source for crawlers and AI tools
+// that do not run JavaScript.
 //
 // Keep this module pure (no Angular, DOM, storage or regex lookbehind). Never write the phrases in
 // BRAND_FORBIDDEN_PHRASES; the build fails if the page or llms.txt contains one.

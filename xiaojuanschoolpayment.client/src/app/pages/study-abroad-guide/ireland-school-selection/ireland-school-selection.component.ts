@@ -11,7 +11,6 @@ export class IrelandSchoolSelectionComponent {
   readonly page = {
     title: '爱尔兰院校选择指南',
     englishTitle: 'Ireland School Selection Guide',
-    audience: 'SEO指南页，连接院校库',
     keywords: '爱尔兰院校、综合大学、理工大学、私立学院、语言学校、NCI',
     heroImage:
       'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',

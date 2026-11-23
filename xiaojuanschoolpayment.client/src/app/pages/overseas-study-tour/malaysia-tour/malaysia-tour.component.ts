@@ -11,7 +11,6 @@ export class MalaysiaTourComponent {
   readonly page = {
     title: '马来西亚游学',
     englishTitle: 'Malaysia Study Tour',
-    positioning: '国家页，成本适中，可与菲律宾做对比',
     keywords: '英语环境、低成本、亚洲多元文化、亲子、短期营',
     heroImage:
       'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=1200&q=80',

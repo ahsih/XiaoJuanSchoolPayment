@@ -11,7 +11,6 @@ export class PreDepartureComponent {
   readonly page = {
     title: '行前准备清单',
     englishTitle: 'Pre Departure Checklist',
-    audience: '工具页',
     keywords: '行前准备、机票、住宿、签证、保险、文件、到达安排',
     heroImage:
       'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80',
@@ -45,9 +44,9 @@ export class PreDepartureComponent {
         text: '安排国际漫游或临时网络方案，准备可用的银行卡、少量现金和备用支付方式。',
       },
     ],
-    guideTitle: '可以做成下载型工具',
+    guideTitle: '出发前按清单逐项核对',
     guideText:
-      '未来这页很适合扩展成可勾选清单或下载PDF。当前先作为内容页承接导航，后续可以把每项拆成可交互任务。',
+      '出发前把下面每一项逐个确认，可以减少到达后的慌乱。建议收藏这一页，随时对照。',
     checklist: [
       '确认签证、护照、录取信、住宿、保险和学费付款记录。',
       '确认航班、接机、住宿入住、学校报到和第一周行程。',

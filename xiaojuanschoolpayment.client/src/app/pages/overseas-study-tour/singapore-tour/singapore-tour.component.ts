@@ -11,7 +11,6 @@ export class SingaporeTourComponent {
   readonly page = {
     title: '新加坡游学',
     englishTitle: 'Singapore Study Tour',
-    positioning: '国家页，距离近，适合短期项目',
     keywords: '双语环境、亚洲教育、短期营、亲子、低龄体验',
     heroImage:
       'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1200&q=80',

@@ -12,7 +12,6 @@ import {
   BRAND_SUMMARY_ZH,
   brandFaqNode,
   brandOrganizationNode,
-  renderBrandFactsHtml,
 } from '../app/pages/about-sida/about/brand-facts';
 
 // SEO data below is also exported to seo-pages.json at build time (scripts/export-seo-pages.cjs)
@@ -628,15 +627,6 @@ export const SECTION_SEO: Array<{ prefix: string; page: SeoPage }> = [
 export function seoTitle(page: SeoPage): string {
   return page.type === 'article' || page.title.includes(SITE_NAME) ? page.title : `${page.title} | ${SITE_NAME}`;
 }
-
-/**
- * Body HTML the server puts inside <app-root> for these routes, so their text is in the page source
- * for crawlers and AI tools that do not run JavaScript (scripts/export-seo-pages.cjs → seo-pages.json
- * → SpaSeoHtmlRenderer). The Angular page for each route renders the same HTML.
- */
-export const PRERENDERED_PAGE_HTML: Record<string, () => string> = {
-  [BRAND_ABOUT_PATH]: renderBrandFactsHtml,
-};
 
 const BREADCRUMB_LABELS: Record<string, string> = {
   'philippines-study': '菲律宾留学',

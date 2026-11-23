@@ -8,7 +8,6 @@ interface IrelandPageContent {
   title: string;
   englishTitle: string;
   summary: string;
-  audience: string;
   keywords: string;
   heroImage: string;
   metrics: { value: string; label: string }[];

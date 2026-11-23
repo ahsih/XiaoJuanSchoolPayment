@@ -39,10 +39,13 @@ jobs:
         run: npm run build
 
       - name: Configure GitHub Pages base path
-        run: sed -i 's|<base href="/">|<base href="/XiaoJuanSchoolPayment/">|' xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/index.html
+        working-directory: xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser
+        run: sed -i 's|<base href="/">|<base href="/XiaoJuanSchoolPayment/">|' index.html index.csr.html
 
+      # index.html is the prerendered home page; index.csr.html is the empty shell for every other route.
       - name: Support direct links for Angular routes
-        run: cp xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/index.html xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser/404.html
+        working-directory: xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser
+        run: cp index.csr.html 404.html
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,15 +1,26 @@
 #!/usr/bin/env node
-// Writes the machine-readable copies of the site next to the built index.html (runs after `ng build`
-// via `npm run build`):
+// Writes the machine-readable copies of the site next to the built index.html and packs the prerendered
+// pages (runs after `ng build` via `npm run build`):
 //
-// - seo-pages.json: each route's title, description, Open Graph data, schema.org JSON-LD and, for a few
-//   routes, the page body as static HTML. The ASP.NET host (SpaSeoHtmlRenderer) puts these into the
-//   initial HTML, because Baidu, WeChat link previews and most AI crawlers do not run JavaScript.
+// - Prerendered pages: the production build renders every route in prerender-routes.txt (angular.json
+//   → prerender, src/main.server.ts) to <route>/index.html with the page body in the HTML, because Baidu,
+//   WeChat link previews and most AI crawlers do not run JavaScript. This script checks each page (no
+//   render error, real body text) and moves it into seo-pages.json, because the server treats a wwwroot
+//   folder with its own index.html as a separate static site (FindStaticSiteIndex in Program.cs). "/"
+//   stays as the prerendered index.html, which the server serves as a static file; index.csr.html is the
+//   empty shell for every other route.
+// - Prerendered school pages: scripts/prerender-school-pages.cjs renders the school pages with their
+//   latest published prices into prerendered-school-pages.json; they are added the same way, with the
+//   schools each one shows and when it was rendered (prerenderedSchools), so the server stops serving a
+//   page once one of its schools has newer data.
+// - seo-pages.json: each route's title, description, Open Graph data and schema.org JSON-LD, plus the
+//   prerendered pages. The ASP.NET host (SpaSeoHtmlRenderer) serves a route's prerendered page, or the
+//   shell, with that route's own tags.
 // - index.html: the home page's JSON-LD (the full Organization from the brand fact card), because "/"
 //   is served as this static file.
 // - llms.txt: the brand fact card as Markdown for AI tools.
 //
-// The data is SEO_PAGES / SECTION_SEO / DEFAULT_SEO / buildSeoStructuredData / PRERENDERED_PAGE_HTML in
+// The data is SEO_PAGES / SECTION_SEO / DEFAULT_SEO / buildSeoStructuredData in
 // src/services/seo.service.ts and the brand fact card in src/app/pages/about-sida/about/brand-facts.ts,
 // so the browser and the server use one source.
 //
@@ -20,6 +31,11 @@ const path = require('path');
 const clientDir = path.resolve(__dirname, '..');
 const outputDir = path.resolve(process.argv[2] || path.join(clientDir, 'dist', 'xiaojuanschoolpayment.client', 'browser'));
 const indexPath = path.join(outputDir, 'index.html');
+const shellPath = path.join(outputDir, 'index.csr.html');
+// Written by ng build next to the browser folder when it prerenders.
+const prerenderedRoutesPath = path.join(outputDir, '..', 'prerendered-routes.json');
+// Written by scripts/prerender-school-pages.cjs when it prerenders school pages.
+const prerenderedSchoolPagesPath = path.join(outputDir, '..', 'prerendered-school-pages.json');
 
 if (!fs.existsSync(indexPath)) {
   console.error(`export-seo-pages: ${outputDir} has no index.html; run ng build first.`);
@@ -64,16 +80,16 @@ const {
   SITE_NAME,
   seoTitle,
   buildSeoStructuredData,
-  PRERENDERED_PAGE_HTML,
   BRAND_SITE_ORIGIN,
   BRAND_FORBIDDEN_PHRASES,
+  renderBrandFactsHtml,
   renderBrandLlmsTxt,
 } = loaded.exports;
 
 if (
   !SEO_PAGES || !SECTION_SEO || !DEFAULT_SEO || !DEFAULT_IMAGE || !SITE_NAME || typeof seoTitle !== 'function'
-  || typeof buildSeoStructuredData !== 'function' || !PRERENDERED_PAGE_HTML || !BRAND_SITE_ORIGIN
-  || !Array.isArray(BRAND_FORBIDDEN_PHRASES) || typeof renderBrandLlmsTxt !== 'function'
+  || typeof buildSeoStructuredData !== 'function' || !BRAND_SITE_ORIGIN || !Array.isArray(BRAND_FORBIDDEN_PHRASES)
+  || typeof renderBrandFactsHtml !== 'function' || typeof renderBrandLlmsTxt !== 'function'
 ) {
   console.error('export-seo-pages: seo.service.ts or brand-facts.ts no longer exports the data this script needs.');
   process.exit(1);
@@ -105,22 +121,86 @@ function toEntry(page, where) {
   };
 }
 
+// A prerendered page must have rendered without errors (src/app/app.module.server.ts records them in
+// this meta tag) and must have real body text inside its <main>, not only the menu.
+const PRERENDER_ERROR_PATTERN = /<meta name="sida-prerender-error" content="([^"]*)"/g;
+const MIN_BODY_CHINESE_CHARACTERS = 100;
+
+function bodyChineseCharacters(html) {
+  const start = html.indexOf('<main');
+  const end = html.lastIndexOf('</main>');
+  if (start < 0 || end < start) {
+    return 0;
+  }
+  const text = html.slice(start, end).replace(/<(script|style)\b[\s\S]*?<\/\1>/g, '').replace(/<[^>]+>/g, '');
+  return (text.match(/[一-鿿]/g) || []).length;
+}
+
+function checkPrerendered(route, html) {
+  for (const [, message] of html.matchAll(PRERENDER_ERROR_PATTERN)) {
+    problems.push(`${route} threw while it was prerendered (${message}); guard browser-only code with isPlatformBrowser`);
+  }
+  const characters = bodyChineseCharacters(html);
+  if (characters < MIN_BODY_CHINESE_CHARACTERS) {
+    problems.push(`${route} was prerendered with only ${characters} Chinese characters in <main>`);
+  }
+}
+
+function removeEmptyDirectories(directory) {
+  for (let current = directory; current.startsWith(outputDir + path.sep); current = path.dirname(current)) {
+    if (fs.readdirSync(current).length > 0) {
+      return;
+    }
+    fs.rmdirSync(current);
+  }
+}
+
+const prerenderedRoutes = fs.existsSync(prerenderedRoutesPath)
+  ? Object.keys(JSON.parse(fs.readFileSync(prerenderedRoutesPath, 'utf8')).routes || {}).sort()
+  : [];
+if (prerenderedRoutes.length > 0 && !fs.existsSync(shellPath)) {
+  problems.push('ng build prerendered pages but wrote no index.csr.html shell');
+}
+
+const prerendered = {};
+const prerenderedFiles = [];
+for (const route of prerenderedRoutes) {
+  const file = route === '/' ? indexPath : path.join(outputDir, ...route.split('/').filter(Boolean), 'index.html');
+  if (!fs.existsSync(file)) {
+    problems.push(`${route} is listed in prerendered-routes.json but ${path.relative(outputDir, file)} is missing; run ng build again`);
+    continue;
+  }
+  const html = fs.readFileSync(file, 'utf8');
+  checkPrerendered(route, html);
+  if (route !== '/') {
+    prerendered[route] = html;
+    prerenderedFiles.push(file);
+  }
+}
+
+// Checked by prerender-school-pages.cjs, which leaves out any page that failed.
+const prerenderedSchools = {};
+const schoolPages = fs.existsSync(prerenderedSchoolPagesPath)
+  ? JSON.parse(fs.readFileSync(prerenderedSchoolPagesPath, 'utf8')).pages || {}
+  : {};
+for (const [route, page] of Object.entries(schoolPages)) {
+  if (route === '/' || prerenderedRoutes.includes(route)) {
+    problems.push(`${route} is in both prerender-routes.txt and prerender-school-routes.txt`);
+    continue;
+  }
+  if (!page || typeof page.html !== 'string' || !Array.isArray(page.schools) || !page.renderedAt) {
+    problems.push(`${route} in prerendered-school-pages.json is incomplete; run npm run build again`);
+    continue;
+  }
+  prerendered[route] = page.html;
+  prerenderedSchools[route] = { schools: page.schools, renderedAt: page.renderedAt };
+}
+
 const pages = {};
 for (const [route, page] of Object.entries(SEO_PAGES)) {
   const entry = toEntry(page, route);
   entry.jsonLd = jsonLd(route, page);
-  const render = PRERENDERED_PAGE_HTML[route];
-  if (render) {
-    const html = render();
-    checkForbidden(`the static HTML of ${route}`, html);
-    entry.bodyHtml = html;
-  }
   pages[route] = entry;
-}
-for (const route of Object.keys(PRERENDERED_PAGE_HTML)) {
-  if (!SEO_PAGES[route]) {
-    problems.push(`PRERENDERED_PAGE_HTML has ${route}, which needs an SEO_PAGES entry`);
-  }
 }
 
 const data = {
@@ -128,8 +208,11 @@ const data = {
   default: toEntry(DEFAULT_SEO, 'DEFAULT_SEO'),
   pages,
   sections: SECTION_SEO.map(({ prefix, page }) => ({ prefix, ...toEntry(page, `section ${prefix}`) })),
+  prerendered,
+  prerenderedSchools,
 };
 
+checkForbidden('the 关于思达启航 page', renderBrandFactsHtml());
 const llmsTxt = renderBrandLlmsTxt(BRAND_SITE_ORIGIN);
 checkForbidden('llms.txt', llmsTxt);
 
@@ -139,6 +222,13 @@ if (problems.length > 0) {
 }
 
 fs.writeFileSync(path.join(outputDir, 'seo-pages.json'), JSON.stringify(data, null, 2) + '\n', 'utf8');
+
+// The pages now live in seo-pages.json; a folder left with its own index.html would be served as a
+// separate static site instead of through the SEO renderer.
+for (const file of prerenderedFiles) {
+  fs.unlinkSync(file);
+  removeEmptyDirectories(path.dirname(file));
+}
 
 // "/" is served as the static index.html, so its JSON-LD goes into that file (replacing an earlier run's).
 const homeScript = `<script type="application/ld+json" id="seo-json-ld">${jsonLd('/', SEO_PAGES['/'])}</script>`;
@@ -154,8 +244,9 @@ fs.writeFileSync(indexPath, `${indexHtml.slice(0, headEnd)}${homeScript}\n${inde
 
 fs.writeFileSync(path.join(outputDir, 'llms.txt'), llmsTxt, 'utf8');
 
-const prerendered = Object.keys(PRERENDERED_PAGE_HTML).join(', ');
 console.log(
-  `export-seo-pages: wrote ${Object.keys(pages).length} pages and ${data.sections.length} sections to seo-pages.json `
-  + `(static body: ${prerendered}), the home JSON-LD to index.html, and llms.txt (${Buffer.byteLength(llmsTxt)} bytes)`,
+  `export-seo-pages: wrote ${Object.keys(pages).length} pages, ${data.sections.length} sections and `
+  + `${Object.keys(prerendered).length} prerendered pages (${Object.keys(prerenderedSchools).length} school pages) to seo-pages.json`
+  + `${prerenderedRoutes.includes('/') ? ' (home page prerendered in index.html)' : ''}, `
+  + `the home JSON-LD to index.html, and llms.txt (${Buffer.byteLength(llmsTxt)} bytes)`,
 );

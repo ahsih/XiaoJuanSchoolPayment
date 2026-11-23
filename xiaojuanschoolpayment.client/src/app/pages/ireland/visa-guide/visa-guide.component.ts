@@ -11,7 +11,6 @@ export class VisaGuideComponent {
   readonly page = {
     title: '签证指南',
     englishTitle: 'Ireland Student Visa Guide',
-    audience: '指南页',
     keywords: '学生签证、AVATS、录取信、学费支付、资金证明、入境注册',
     heroImage:
       'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80',
@@ -45,9 +44,9 @@ export class VisaGuideComponent {
         text: '非欧盟/非欧洲经济区等学生若学习超过90天，通常需要按要求注册居留许可。',
       },
     ],
-    guideTitle: '页面写法建议',
+    guideTitle: '签证前先确认这些',
     guideText:
-      '这一页不要写成固定承诺清单。更适合做成“签证前先确认”的顾问型页面，提醒学生按课程、国籍、资金和时间节点核对最新官方要求。',
+      '签证要求没有一份固定不变的清单。申请前请按自己的课程、国籍、资金和时间节点，核对爱尔兰官方的最新要求，有疑问可以先问顾问。',
     checklist: [
       '先确认学生国籍、课程长度、课程类型和入境时间。',
       '核对录取信、学费付款、资金证明、保险和护照有效期。',

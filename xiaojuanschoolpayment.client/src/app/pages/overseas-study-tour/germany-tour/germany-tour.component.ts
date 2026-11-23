@@ -11,7 +11,6 @@ export class GermanyTourComponent {
   readonly page = {
     title: '德国游学',
     englishTitle: 'Germany Study Tour',
-    positioning: '国家页，补充欧洲目的地',
     keywords: '德语、工程、职业教育、欧洲文化、大学参访',
     heroImage:
       'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=80',

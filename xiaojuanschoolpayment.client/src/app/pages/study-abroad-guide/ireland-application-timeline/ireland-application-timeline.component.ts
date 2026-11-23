@@ -11,7 +11,6 @@ export class IrelandApplicationTimelineComponent {
   readonly page = {
     title: '爱尔兰申请时间线',
     englishTitle: 'Ireland Application Timeline',
-    audience: 'SEO指南页，强决策内容',
     keywords: '爱尔兰申请时间、申请截止、offer、押金、住宿、签证、入学季',
     heroImage:
       'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1200&q=80',

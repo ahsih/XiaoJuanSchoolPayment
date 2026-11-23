@@ -11,7 +11,6 @@ export class FamilyTourGuideComponent {
   readonly page = {
     title: '亲子游学指南',
     englishTitle: 'Family Study Tour Guide',
-    positioning: 'SEO指南页，家庭用户入口',
     keywords: '亲子游学、低龄游学、家长陪读、住宿、安全、课堂体验',
     heroImage:
       'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1200&q=80',

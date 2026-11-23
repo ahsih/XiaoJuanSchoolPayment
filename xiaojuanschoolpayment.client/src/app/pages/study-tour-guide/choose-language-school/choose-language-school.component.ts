@@ -11,7 +11,6 @@ export class ChooseLanguageSchoolComponent {
   readonly page = {
     title: '如何选择语言学校',
     englishTitle: 'How To Choose A Language School',
-    positioning: 'SEO指南页，承接选校疑虑',
     keywords: '语言学校、课程强度、认证、住宿、师资、班级规模',
     heroImage:
       'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',

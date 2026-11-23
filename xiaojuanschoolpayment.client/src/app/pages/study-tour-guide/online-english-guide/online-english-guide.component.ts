@@ -11,7 +11,6 @@ export class OnlineEnglishGuideComponent {
   readonly page = {
     title: '线上英语怎么选',
     englishTitle: 'How To Choose Online English',
-    positioning: 'SEO指南页，承接线上英语引流',
     keywords: '线上英语、一对一外教、雅思口语、青少年英语、体验课',
     heroImage:
       'https://images.unsplash.com/photo-1584697964358-3e14ca57658b?auto=format&fit=crop&w=1200&q=80',

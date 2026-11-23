@@ -11,7 +11,6 @@ export class TourCostGuideComponent {
   readonly page = {
     title: '游学费用指南',
     englishTitle: 'Study Tour Cost Guide',
-    positioning: 'SEO指南页，费用是用户第一关心点',
     keywords: '游学费用、学费、住宿、机票、签证、当地费用、总预算',
     heroImage:
       'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class TourPreDepartureComponent {
   readonly page = {
     title: '行前准备清单',
     englishTitle: 'Study Tour Pre Departure Checklist',
-    positioning: '工具页，适合下载/收藏',
     keywords: '行前准备、游学清单、护照、签证、保险、行李、接机',
     heroImage:
       'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80',

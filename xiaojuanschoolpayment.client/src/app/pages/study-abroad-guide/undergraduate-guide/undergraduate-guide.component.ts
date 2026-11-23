@@ -11,7 +11,6 @@ export class UndergraduateGuideComponent {
   readonly page = {
     title: '本科申请指南',
     englishTitle: 'Undergraduate Application Guide',
-    audience: 'SEO指南页',
     keywords: '爱尔兰本科申请、高中成绩、预科、直入本科、转学分',
     heroImage:
       'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',

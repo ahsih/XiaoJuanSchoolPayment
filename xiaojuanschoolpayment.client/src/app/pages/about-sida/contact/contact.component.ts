@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
@@ -20,6 +21,7 @@ interface ContactFormPayload {
 })
 export class ContactComponent implements AfterViewInit {
   private readonly http = inject(HttpClient);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly media = SIDA_CONSULTANT_MEDIA;
   /** Each card's place today: the cards take turns leading, one day each (user decision 2026-11-21). */
   readonly places = consultantPlacesToday();
@@ -29,7 +31,8 @@ export class ContactComponent implements AfterViewInit {
   submitError = '';
 
   ngAfterViewInit(): void {
-    if (window.location.hash === '#faq') {
+    // The build also renders this page without a browser (prerendering), where there is no window.
+    if (this.isBrowser && window.location.hash === '#faq') {
       setTimeout(() => this.scrollToElement('faq', false));
     }
   }
