@@ -2,7 +2,7 @@ import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
 import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
-import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
+import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
@@ -55,7 +55,7 @@ const schools = [
   { name: "CIA", create: () => new CiaSchoolComponent() },
   { name: "CG Banilad", create: () => new CgBaniladSchoolComponent() },
   { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
-  { name: "SMEAG", create: () => new SmeagCapitalSchoolComponent() },
+  { name: "SMEAG", create: () => new SmeagCapitalSchoolPageComponent() },
   { name: "CPI", create: () => new CpiSchoolPageComponent() },
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
   { name: "EV", create: () => new EvSchoolPageComponent() },
