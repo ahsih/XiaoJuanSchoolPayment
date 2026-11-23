@@ -127,7 +127,7 @@ export class ClarkStudyComponent {
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
-      startingPrice: '8,940元 / 4周起（Light ESL + 校内三人间 + 注册费600元；当地费另计）',
+      startingPrice: '1,390美元 / 4周起（2027年入学：Light ESL + 校内四人间 + 注册费100美元；到校学杂费另计）',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -138,7 +138,7 @@ export class ClarkStudyComponent {
         'Primary / Junior',
       ],
       accommodation:
-        '校内单人A/B、双人、三人间及仅限家庭的四人房；校外酒店约5分钟车程，有免费往返学校班车。',
+        '校内单人间A/B、双人间、三人间和四人间；校外 Clover Hotel 约5分钟车程，学校有免费接送车。',
       facilities:
         '官网可确认一对一教室、小组教室、Academic Office、宿舍、Hotel、餐食服务和学习支持体系。',
       bestFor:

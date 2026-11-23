@@ -531,7 +531,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/cip-english-kepos',
         loadComponent: () =>
-          import('./pages/philippines/cip-school/cip-school.component').then((m) => m.CipSchoolComponent),
+          import('./pages/philippines/cip-school/cip-school-page.component').then((m) => m.CipSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/eg-academy',

@@ -234,11 +234,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/clark-study-hero.webp',
   },
   '/philippines-study/clark/cip-english-kepos': {
-    title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
+    title: '菲律宾克拉克 CIP语言学校 | 外教一对一课程费用住宿与在线报价',
     description:
-      '了解克拉克CIP的母语外教一对一、ESL、雅思及亲子课程，比较宿舍和酒店实景、2026年9月人民币价格与当地费用，查看入学测试、假期、学习管理及参考报价。',
+      '了解克拉克CIP的外籍老师一对一、ESL、口语、雅思保分和青少年课程，查看校园、宿舍和Clover Hotel实景视频，2027年美元课程住宿费、淡季优惠、到校学杂费和在线报价。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
-    image: '/assets/philippines/cip-campus-intro.webp',
+    image: '/assets/cip/campus/campus-01.webp',
   },
   '/philippines-study/clark/eg-academy': {
     title: '菲律宾克拉克EG语言学校 | 课程费用住宿与报名咨询',
