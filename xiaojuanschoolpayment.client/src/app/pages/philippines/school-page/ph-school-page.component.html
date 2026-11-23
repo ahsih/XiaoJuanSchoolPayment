@@ -203,6 +203,7 @@
         </div>
         <small>{{ copy.license.note }}</small>
       </aside>
+      <p class="section-reference-note" *ngIf="overviewReferenceNote && copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <div class="decision-summary-grid" id="overview" *ngIf="!compactLayout">
@@ -682,7 +683,7 @@
         <div class="room-table-heading">
           <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
           <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
-          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>{{ copy.rooms.pickHint || '点任一房型，看它的实拍照片和介绍' }}</span></p>
+          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>{{ everyRateRoomHasPhotos ? '点任一房型，看它的实拍照片和介绍' : '点“看照片”，看该房型的实拍照片和介绍' }}</span></p>
         </div>
         <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
@@ -755,7 +756,7 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
-          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
+          <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
         </div>
@@ -973,7 +974,7 @@
 
     <section
       class="cia-section official-student-reviews"
-      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length)"
+      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length || textReviews.length)"
       id="student-reviews"
       aria-labelledby="student-reviews-title"
     >
@@ -1002,14 +1003,15 @@
               [src]="item.image"
               [images]="ieltsResultImages"
               [imageTitles]="ieltsResultTitles"
-              [alt]="item.title + ' 官方雅思成绩单（已隐藏个人信息）'"
-              [title]="item.title + ' · 官方雅思' + item.overall"
+              [alt]="item.title + ' ' + (item.kind ?? '官方雅思成绩单') + '（已隐藏个人信息）'"
+              [title]="item.title + ' · ' + (item.summary ?? '官方雅思' + item.overall)"
               previewHeight="clamp(190px, 18vw, 250px)"
               previewFit="cover"
             ></app-expandable-image>
             <figcaption>
               <strong>{{ item.title }}</strong>
-              <span>入学 {{ item.entrance }} → <b>官方雅思 {{ item.overall }}</b></span>
+              <span *ngIf="item.summary; else officialIelts"><b>{{ item.summary }}</b></span>
+              <ng-template #officialIelts><span>入学 {{ item.entrance }} → <b>官方雅思 {{ item.overall }}</b></span></ng-template>
               <small>{{ item.detail }}</small>
             </figcaption>
           </figure>
@@ -1041,6 +1043,41 @@
       </div>
       </ng-container>
 
+      <!-- School-only (HANA): short written reviews without names; styles in ph-school-page-options.css. -->
+      <ng-container *ngIf="textReviews.length">
+      <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ textReviews.length }}条</p>
+      <div class="text-review-grid" [attr.aria-label]="schoolName + '学员评价'">
+        <article *ngFor="let review of textReviews">
+          <mat-icon class="text-review-quote" aria-hidden="true">format_quote</mat-icon>
+          <blockquote>{{ review.text }}</blockquote>
+          <span class="text-review-who">— {{ review.who }}</span>
+        </article>
+      </div>
+      <small class="text-review-note" *ngIf="copy.reviews.textNote">{{ copy.reviews.textNote }}</small>
+      </ng-container>
+
+    </section>
+
+    <!-- School-only (profile.offers, CPILS): the current offers, each with its conditions; an ended offer hides itself. -->
+    <section class="cia-section school-offers" id="offers" *ngIf="copy.offers && visibleOffers.length" aria-labelledby="school-offers-title">
+      <div class="section-heading">
+        <span class="section-eyebrow">{{ copy.offers.eyebrow }}</span>
+        <h2 id="school-offers-title">{{ copy.offers.title }}</h2>
+        <p>{{ copy.offers.intro }}</p>
+      </div>
+      <div class="offer-grid">
+        <article class="offer-card" *ngFor="let offer of visibleOffers">
+          <span class="offer-icon"><mat-icon>{{ offer.icon }}</mat-icon></span>
+          <div>
+            <h3>{{ offer.title }}</h3>
+            <strong class="offer-amount">{{ offer.amount }}</strong>
+            <p>{{ offer.text }}</p>
+            <small *ngIf="offer.detail">{{ offer.detail }}</small>
+          </div>
+        </article>
+      </div>
+      <p class="offer-note" *ngIf="copy.offers.note"><mat-icon>calculate</mat-icon>{{ copy.offers.note }}</p>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <section class="quote-results-section group-quote" id="quote">
@@ -1183,14 +1220,14 @@
             <h4>{{ copy.quote.conditionsStepTitle || copy.quote.conditionsTitle }}<small *ngIf="copy.quote.conditionsStepHint">{{ copy.quote.conditionsStepHint }}</small></h4>
             <div class="cq-fields">
               <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
-              <label><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label *ngIf="!student.hideAgeGroup"><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
               <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label class="cq-field-wide" *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)"><span>{{ choice.label }}</span><select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
-            <p class="cq-minor-note" *ngIf="student.selectedAgeGroup === 'minor'"><mat-icon>info</mat-icon>{{ student.minorNote }}</p>
+            <p class="cq-minor-note" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup"><mat-icon>info</mat-icon>{{ student.minorNote }}</p>
             <ng-container *ngFor="let choice of student.extraChoices ?? []"><p class="cq-minor-note" *ngIf="choice.visible && choice.note && (quoteView !== 'compare' || choice.inComparison !== false)"><mat-icon>info</mat-icon>{{ choice.note }}</p></ng-container>
           </div>
           <ng-template #foldedConditions>
@@ -1202,14 +1239,14 @@
             </summary>
             <div class="student-fields">
               <label *ngIf="student.selectedRegistrationDate !== undefined">报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
-              <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label *ngIf="!student.hideAgeGroup">抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)">{{ choice.label }}<select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
             <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
-            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">{{ student.minorNote }}</p>
+            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup">{{ student.minorNote }}</p>
           </details>
           </ng-template>
         </ng-template>
@@ -1562,6 +1599,14 @@
             <strong>旺季附加费 {{ peakRate2027 }} 美元／人／周</strong>
             <span *ngFor="let range of calendarPeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
             <small>{{ copy.calendar.peakNote }}</small>
+          </div>
+        </div>
+        <!-- School-only (HANA): peak seasons without a surcharge. -->
+        <div class="compact-peak compact-peak--free" *ngIf="calendarFreePeakRanges.length">
+          <mat-icon>wb_sunny</mat-icon>
+          <div>
+            <strong>{{ freePeakTitle }}</strong>
+            <span *ngFor="let range of calendarFreePeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
           </div>
         </div>
         <div class="compact-calendar-table" role="table" *ngIf="calendarMonths.length" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">

@@ -1,11 +1,12 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { detailedGrid } from '../../../components/quote-image-detailed-renderer';
 import { CiaSchoolComponent } from './cia-school.component';
 
 describe('CIA IAU registration fee note', () => {
@@ -15,7 +16,8 @@ describe('CIA IAU registration fee note', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
-      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      // Usable rates, because the image renderer refuses to draw without them.
+      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
     ] });
@@ -67,7 +69,7 @@ describe('CIA IAU registration fee note', () => {
 
   it('draws the complete note beside the total in the generated PNG', async () => {
     component.selectedCourseId = 'college-immersion';
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     const drawnText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
@@ -77,7 +79,8 @@ describe('CIA IAU registration fee note', () => {
     expect(noteDraw?.[2]).toBeLessThan(734); // Above the separate local-fee section.
     expect(blob.type).toBe('image/png');
     const context = document.createElement('canvas').getContext('2d')!;
-    context.font = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    expect(context.measureText(component.iauRegistrationFeeNote).width).toBeLessThanOrEqual(530);
+    // The note is drawn bold (emphasizeTotalNote) and must fit the note column on one line.
+    context.font = '700 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    expect(context.measureText(component.iauRegistrationFeeNote).width).toBeLessThanOrEqual(detailedGrid(component.quoteImageData).noteWidth);
   }, 30000);
 });

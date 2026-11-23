@@ -95,7 +95,6 @@ const ENCANTO_COPY: PhPageCopy = {
   rooms: {
     photoTitle: '房型实景',
     photoIntro: ENCANTO_PAGE.roomsPhotoIntro,
-    pickHint: '点三人间，看实拍照片和介绍',
     rulesTitle: '短期费率、入住离校与宿舍规定',
     rulesHint: '1–3周住宿费比例、入住离校、额外住宿、宿舍规定',
     dormRulesTitle: '宿舍与校内规定',
