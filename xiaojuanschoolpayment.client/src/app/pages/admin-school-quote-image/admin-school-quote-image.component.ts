@@ -1,8 +1,7 @@
 import { ExchangeRateService } from '../../../services/exchange-rate.service';
 import { connectQuoteRates } from '../../../services/quote-exchange-rates';
 import { cloneLaMerContentConfig, createDefaultLaMerContentConfig, isLaMerSchool, LA_MER_PATH } from '../philippines/la-mer-school/la-mer-content-config';
-import { LaMerStudentQuote, LaMerFamilyQuote } from '../philippines/la-mer-school/la-mer-quote';
-import { buildLaMerQuoteImage, LA_MER_FALLBACK_RATES } from '../philippines/la-mer-school/la-mer-quote-image';
+import { buildLaMerPreviewQuote } from '../philippines/la-mer-school/la-mer-page-quote';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit , inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -430,9 +429,9 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     });
   }
 
-  laMerPreviewMode = 'ordinary';
+  laMerPreviewMode: 'ordinary' | 'family' = 'ordinary';
   private buildPreviewQuote(): QuoteImageCardData {
-    if (this.isLaMerSelected) return buildLaMerQuoteImage(this.content, [new LaMerStudentQuote(() => this.content)], this.laMerPreviewMode === 'family' ? new LaMerFamilyQuote(() => this.content) : null, LA_MER_FALLBACK_RATES);
+    if (this.isLaMerSelected) return buildLaMerPreviewQuote(this.content, this.laMerPreviewMode, { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, exchangeRateDate: this.exchangeRateDate });
     if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
