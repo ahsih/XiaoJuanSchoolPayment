@@ -216,6 +216,9 @@ describe('EV school page on the shared template', () => {
     const condoShuttle = EV_PAGE_PROFILE.dormRules.find(rule => rule.title === '公寓接驳车')!.text;
     expect(condoShuttle).toContain('07:15、14:10');
     expect(page.copy.refund!.groups[0].rules[0].text).toContain('2,000元人民币');
+    const preEntry = page.copy.refund!.groups[0].rules.map(rule => `${rule.when} ${rule.text}`).join('\n');
+    expect(preEntry).toContain('入学前15–28天 取消或改期，注册费100美元作为违约金');
+    expect(preEntry).toContain('入学前14天内 取消或改期，违约金为注册费加1周学费和住宿费');
     expect(JSON.stringify(page.copy.refund)).not.toMatch(/中介|代办|佣金/);
     expect(page.copy.campus?.ruleText).toContain('周五17:10后或周六、周日');
   });
