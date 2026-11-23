@@ -109,6 +109,8 @@ export interface QuoteImageCardData {
   totalNote?: string;
   /** Opt-in for school-specific additional-payment warnings; preserve legacy layouts. */
   expandTotalNote?: boolean;
+  /** With expandTotalNote: the note is money paid outside the total (CIA's IAU fee), drawn bold dark orange. */
+  emphasizeTotalNote?: boolean;
   localFeeTitle?: string;
   localFeeAmount: string;
   localFeeDescription: string;

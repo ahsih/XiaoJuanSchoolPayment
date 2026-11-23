@@ -4,6 +4,7 @@
  * Prices, fees and quote rules live in ev-content-config.ts.
  */
 
+import type { HolidayCalendar } from '../cia-school/cia-page-content';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 
 export type EvGalleryCategory = '全部' | '校园' | '教室' | '住宿' | '餐厅' | '设施';
@@ -72,6 +73,8 @@ const photo = (category: EvGalleryImage['category'], title: string, description:
 export const EV_GALLERY_FEATURED_COUNT = 6;
 export const EV_GALLERY_IMAGES: EvGalleryImage[] = [
   photo('校园', 'EV校园外观', '2017年启用的新校区，度假村式校园。', 'campus-exterior', true),
+  photo('校园', '傍晚的校园', '主楼和校门，傍晚学生在草坪上休息。', 'campus-sunset'),
+  photo('校园', '夜晚的校园', '晚上主楼、餐厅和草坪步道都有照明。', 'campus-night'),
   photo('校园', '校园草坪', '开放式户外空间，课后休息和活动。', 'campus-lawn'),
   photo('校园', '大堂', '学生日常出入和办事的地方。', 'lobby'),
   photo('校园', '花园休闲区', '课间和课后可以在这里放松。', 'garden-lounge'),
@@ -148,6 +151,68 @@ export const EV_BASIC_INFO: EvInfoRow[] = [
   { label: '校园设施', value: '泳池、健身房、娱乐室、电影院、图书馆、咖啡店' },
 ];
 
+/** Text only; the documents themselves carry addresses and are never published (as on the CIA page). */
+export const EV_LICENSE = {
+  title: '办学资质已核验',
+  items: [
+    '2026–2027年度宿务市营业执照（英语教学、学生宿舍、餐厅，2026年5月11日签发）',
+    '菲律宾移民局外国学生招收资格认证（学生据此办理SSP学习许可）',
+  ],
+  note: '证件可向思达启航顾问索取查看',
+};
+
+/**
+ * EV's 2027 holiday poster: weekday holidays only, because the weekend ones (Lunar New Year 2/6, Black
+ * Saturday and Easter 3/27–28, Labor Day 5/1, Independence Day 6/12, Ninoy Aquino Day 8/21, Christmas
+ * 12/25) do not take a class day.
+ */
+export const EV_HOLIDAY_CALENDARS: HolidayCalendar[] = [
+  {
+    year: 2027,
+    label: '规划2027年入学时优先查看',
+    months: [
+      { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
+      { month: 2, holidays: [{ day: '24日', name: '宿务市宪章日（仅主校区）' }] },
+      {
+        month: 3,
+        holidays: [
+          { day: '10日', name: '开斋节', provisional: true },
+          { day: '25日', name: '濯足节' },
+          { day: '26日', name: '耶稣受难日' },
+        ],
+      },
+      { month: 4, holidays: [{ day: '9日', name: '勇士日' }] },
+      { month: 5, holidays: [{ day: '17日', name: '宰牲节', provisional: true }] },
+      {
+        month: 8,
+        holidays: [
+          { day: '6日', name: '宿务省宪章日' },
+          { day: '30日', name: '国家英雄日' },
+        ],
+      },
+      { month: 9, holidays: [{ day: '9日', name: '奥斯梅尼亚日' }] },
+      {
+        month: 11,
+        holidays: [
+          { day: '1日', name: '诸圣节' },
+          { day: '2日', name: '万灵节' },
+          { day: '30日', name: '博尼法西奥日' },
+        ],
+      },
+      {
+        month: 12,
+        holidays: [
+          { day: '8日', name: '圣母无染原罪瞻礼' },
+          { day: '24日', name: '平安夜' },
+          { day: '30日', name: '黎刹日' },
+          { day: '31日', name: '除夕' },
+        ],
+      },
+    ],
+  },
+];
+export const EV_HOLIDAY_FOOTNOTE = '只列平日的假期，周末的节日不影响上课；开斋节、宰牲节日期待官方确认，政府可能临时增加或调整假期，以EV当期通知为准。';
+
 export const EV_SUITABLE_FOR: EvFitItem[] = [
   { title: '目标清楚、想被学习节奏推动（选斯巴达）' },
   { title: '想兼顾学习和宿务市区生活（选半斯巴达）' },
@@ -159,7 +224,7 @@ export const EV_NOT_SUITABLE_FOR: EvFitItem[] = [
   { title: '只想轻松度假，不想守门禁和English Only' },
   { title: '预算非常紧：单人间、公寓较贵，到校还要付学杂费' },
   { title: '临近暑假才决定：热门房型易满，另收旺季附加费' },
-  { title: '未成年且周末没有监护人陪同' },
+  { title: '未满15岁（学校不接收），或未成年且周末没有监护人陪同' },
 ];
 
 /** Course chooser cards; class composition is shown once, in the fee tables. */
@@ -308,7 +373,7 @@ export const EV_FAQS: EvFaqItem[] = [
   { question: '雅思保分班要学多久？', answer: '8周起，只开设斯巴达，考学术类雅思。学校按入学分数设定目标分，例如入学4.0分，8周目标5.5分、12周目标6.0分；6.0分以上每提高0.5分需要8周。' },
   { question: '校外公寓和校内宿舍有什么不同？', answer: '校外公寓在IT Park附近，只接受半斯巴达课程学生，没有门禁，带小厨房和冰箱。平日有接驳车往返学校，周末和国定假日没有；可以使用校内设施，晚上最晚可在学校待到23:00。到校后的管理费比校内宿舍高。' },
   { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、95折后的课程费和住宿费，以及适用的旺季附加费和未成年管理费；到校后还要付SSP、SSP E-CARD、管理费、水电费、教材费和学生证，停留超过59天要办ACR I-Card，旅游签证按停留时间续签，首次续签另收ARP外国人登记费。接机和可退押金单独列示。' },
-  { question: 'EV适合未成年学生吗？', answer: '可以，但未成年学生平日不能外出，周末须监护人陪同，门禁21:00；未满18岁每4周另收100美元管理费。陪同和住宿安排请报名时与顾问确认。' },
+  { question: 'EV适合未成年学生吗？', answer: 'EV主要招收成人，15至17岁可以报名，未满15岁学校不接收。未成年学生平日不能外出，周末须监护人陪同，门禁21:00，监护人要签未成年学生协议书；每4周另收100美元管理费。陪同和住宿安排请报名时与顾问确认。' },
   { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名EV，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
 ];
 

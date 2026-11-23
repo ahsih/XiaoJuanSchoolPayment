@@ -1,11 +1,12 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
+import { detailedGrid } from '../../../components/quote-image-detailed-renderer';
 import { CiaSchoolComponent } from './cia-school.component';
 
 describe('CIA IAU registration fee note', () => {
@@ -15,7 +16,8 @@ describe('CIA IAU registration fee note', () => {
     TestBed.configureTestingModule({ providers: [
       { provide: SchoolService, useValue: { getSchools: () => of([]) } },
       { provide: SchoolContentService, useValue: { getPublished: () => of(null) } },
-      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
+      // Usable rates, because the image renderer refuses to draw without them.
+      { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => of({ date: chinaToday(), usdToCny: 7, phpPerCny: 8.2 }) } },
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: { get: () => null } } } },
     ] });
@@ -26,7 +28,7 @@ describe('CIA IAU registration fee note', () => {
     for (const course of component.courseFees) {
       component.selectedCourseId = course.id;
       if (course.id === 'college-immersion') {
-        expect(component.iauRegistrationFeeNote).toContain('IAU一次性注册费50美元另计');
+        expect(component.iauRegistrationFeeNote).toContain('另需支付IAU一次性注册费50美元');
         expect(component.quoteImageData.totalNote).toContain(component.iauRegistrationFeeNote);
       } else {
         expect(component.iauRegistrationFeeNote).toBe('');
@@ -41,7 +43,7 @@ describe('CIA IAU registration fee note', () => {
     component.selectedCourseId = 'college-immersion';
     for (const weeks of [4, 8, 12, 24]) {
       component.selectedWeeks = weeks;
-      expect(component.iauRegistrationFeeNote).toBe('IAU一次性注册费50美元另计（未计入上述合计）。');
+      expect(component.iauRegistrationFeeNote).toBe('另需支付IAU一次性注册费50美元（到校后付，未计入上述合计）。');
       expect(component.quoteUsd).toBeCloseTo(Math.max(0,
         component.payableRegistrationFee + component.tuitionForSelectedWeeks + component.roomFeeForSelectedWeeks
         + component.seasonalSurcharge - component.sidaDiscountAmount - component.christmasDiscountAmount));
@@ -49,9 +51,25 @@ describe('CIA IAU registration fee note', () => {
     }
   });
 
+  it('keeps the IAU course name and fit over the older database row, which only supplies the price', () => {
+    const lesson = (name: string, price: number, description: string) =>
+      ({ name, price, description, note: '', week: 4 }) as never;
+    component['applyPricingData']([
+      lesson('College Immersion', 1000, '大学校园沉浸体验；IAU一次性注册费另计50美元'),
+      lesson('Regular ESL', 900, ''),
+    ], [], []);
+    const immersion = component.courseFees.find(course => course.id === 'college-immersion')!;
+    expect(immersion.name).toBe('College Immersion 大学沉浸式课程（IAU航空航天大学旁听）');
+    expect(immersion.suitable).toContain('IAU（印第安纳航空航天大学）');
+    expect(immersion.tuition).toBe(1000);
+    expect(component.courseFees.find(course => course.id === 'regular-esl')!.name).toBe('Regular ESL');
+    expect(component.courseHighlights['college-immersion'].badge).toBe('每4周到IAU旁听至少6小时');
+    expect(component.guidesForCourse('college-immersion').map(guide => guide.title)).toEqual(['IAU大学沉浸式课程']);
+  });
+
   it('draws the complete note beside the total in the generated PNG', async () => {
     component.selectedCourseId = 'college-immersion';
-    const renderer = new QuoteImageDownloadButtonComponent();
+    const renderer = TestBed.runInInjectionContext(() => new QuoteImageDownloadButtonComponent());
     renderer.quote = component.quoteImageData;
     const drawnText = spyOn(CanvasRenderingContext2D.prototype, 'fillText').and.callThrough();
     const blob = await renderer['createQuoteImageBlob'](1);
@@ -61,7 +79,8 @@ describe('CIA IAU registration fee note', () => {
     expect(noteDraw?.[2]).toBeLessThan(734); // Above the separate local-fee section.
     expect(blob.type).toBe('image/png');
     const context = document.createElement('canvas').getContext('2d')!;
-    context.font = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-    expect(context.measureText(component.iauRegistrationFeeNote).width).toBeLessThanOrEqual(530);
+    // The note is drawn bold (emphasizeTotalNote) and must fit the note column on one line.
+    context.font = '700 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+    expect(context.measureText(component.iauRegistrationFeeNote).width).toBeLessThanOrEqual(detailedGrid(component.quoteImageData).noteWidth);
   }, 30000);
 });

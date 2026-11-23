@@ -209,3 +209,28 @@
   margin-top: 2px;
   font-size: 16px;
 }
+
+/* Money paid outside the school total (CIA's IAU fee), under the total so no student misses it (2026-11-23). */
+:host .extra-payment-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #fdba74;
+  border-left: 4px solid #f25518;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+:host .extra-payment-alert mat-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #f25518;
+}

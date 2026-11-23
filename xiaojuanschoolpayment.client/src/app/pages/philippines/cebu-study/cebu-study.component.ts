@@ -425,7 +425,7 @@ export class CebuStudyComponent {
     {
       name: 'CIEC', route: '/philippines-study/cebu/ciec', tag: '亲子青少年专门校',
       location: 'Talamban · Cebu City', summary: '专注低龄英语、国际学校衔接和青少年斯巴达管理。',
-      image: 'https://file.hstatic.net/200000456083/file/tham-quan-truong-anh-ngu-ciec-tai-cebu_88fb4e8e067c49e28c36a7212cee13f5_1024x1024.png', highlights: ['青少年学术英语', '青少年斯巴达', '青少年雅思 / 托福', '国际学校衔接', '家长英语 / 商务英语'],
+      image: '/assets/ciec/campus-entrance.webp', highlights: ['青少年学术英语', '青少年斯巴达', '青少年雅思 / 托福', '国际学校衔接', '家长英语 / 商务英语'],
     },
     {
       name: 'ELSA', route: '/philippines-study/cebu/elsa-international-language-school', tag: '自然度假校区',

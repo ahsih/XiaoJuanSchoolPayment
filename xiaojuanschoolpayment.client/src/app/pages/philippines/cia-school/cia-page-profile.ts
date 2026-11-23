@@ -1,7 +1,7 @@
 // CIA's content for the shared Philippine school page (school-page/ph-school-page.component.*).
 // Text and data come from cia-page-content.ts, which the WeChat mini program also reads.
 import type { PhSchoolProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
-import { cloneCiaContentConfig, createDefaultCiaContentConfig } from './cia-content-config';
+import { CIA_IMMERSION_COURSE_TEXT, cloneCiaContentConfig, createDefaultCiaContentConfig } from './cia-content-config';
 import {
   CIA_BASIC_INFO,
   CIA_CAMPUS_BUILDINGS,
@@ -120,10 +120,10 @@ export const CIA_COURSE_FEE_DETAILS: Record<string, Pick<CourseFee, 'schedule' |
     note: '4周为一个学习单元，通过快速问答、即时纠错和系统复习训练英语反应速度。',
   },
   'college-immersion': {
-    suitable: '想参加IAU航空大学体验，报名时应选择此课程',
+    suitable: CIA_IMMERSION_COURSE_TEXT.suitable,
     schedule:
       'ESL一对一4节 + ESL小组1节 + 综合中组1节 + 外教/CNN大组1节 + 选修1节 + 写作1节 + 自习2节',
-    note: '不是Regular ESL的临时加选课；4周为一个学习单元，另收IAU一次性注册费50美元，详细旁听与证书说明见下方课程细节。',
+    note: CIA_IMMERSION_COURSE_TEXT.note,
   },
 };
 
@@ -215,7 +215,7 @@ const CIA_INITIAL_COURSE_FEES: CourseFee[] = [
   },
   {
     id: 'college-immersion',
-    name: 'College Immersion（IAU大学沉浸）',
+    name: CIA_IMMERSION_COURSE_TEXT.name,
     tuition: 1000,
     tuition2027: 1100,
     ...CIA_COURSE_FEE_DETAILS['college-immersion'],
@@ -372,6 +372,8 @@ export const CIA_PAGE_PROFILE: PhSchoolProfile = {
   courseHighlights: {
     'ielts-guarantee': CIA_GUARANTEE_HIGHLIGHT,
     'toeic-guarantee': CIA_GUARANTEE_HIGHLIGHT,
+    // “minimum of 6 hours per 4 weeks” (CIA & IAU Immersion Program); the details are in the course note.
+    'college-immersion': { badge: '每4周到IAU旁听至少6小时', icon: 'flight_takeoff' },
   },
   // Checked frame by frame (2026-11-21): the single-room clip is the Premium Single P-1 (wall clock, two pillows,
   // slatted headboard, mosaic shower), the Building 4 video the off-campus PN-1, the triple clip D-3.
