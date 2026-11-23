@@ -161,6 +161,11 @@ export interface PhSchoolProfile {
    * ph-school-page-compact.css and ph-school-page-compact-tools.css, which each such school lists.
    */
   compactLayout?: boolean;
+  /**
+   * Compact layout: end the overview (key facts, building list and advisor review) with `copy.referenceNote`
+   * too (PINES, user request 2026-11-24: every detail is for reference only). Off by default, so CIA is unchanged.
+   */
+  overviewReferenceNote?: boolean;
   /** Compact layout: the overview's key facts (location, size, management, courses …). */
   overviewFacts?: ReadonlyArray<{ icon: string; label: string; value: string }>;
   /** Compact layout: video groups, shown first in the hero album (the first video opens it). */

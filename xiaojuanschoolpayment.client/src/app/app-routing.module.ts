@@ -437,7 +437,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/pines-international-academy',
         loadComponent: () =>
-          import('./pages/philippines/pines-school/pines-school-detail.component').then((m) => m.PinesSchoolDetailComponent),
+          import('./pages/philippines/pines-school/pines-school-page.component').then((m) => m.PinesSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/beci-eop-campus',
@@ -553,7 +553,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/help-english-clark',
         loadComponent: () =>
-          import('./pages/philippines/help-school/help-school-detail.component').then((m) => m.HelpSchoolDetailComponent),
+          import('./pages/philippines/help-school/help-school-page.component').then((m) => m.HelpSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/aelc-native-focused-clark-schools',
