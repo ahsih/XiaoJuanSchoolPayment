@@ -53,8 +53,8 @@ December 2026 holiday notice and the BESA pickup poster.
 
 ## Decisions and open points
 
-- Maintenance: the 2025-07 local-fee sheets say 1,000 pesos per 4 weeks; the newer 2026-09 OT deck says 1,200
-  ("设施管理及维护"). The page uses 1,200. Confirm with JIC if a student is billed differently.
+- Maintenance: 1,200 pesos per 4 weeks, confirmed by the user on 2026-11-24 (the 2026-09 OT deck says 1,200; the
+  older 2025-07 local-fee sheets said 1,000). The insert-only seed now also uses 1,200.
 - Clark pickup: the BESA poster lists Sunday 01:30 for WALES, PINES and MONOL only; JIC uses Sunday 12:00 and
   17:00 and the Monday 01:30 van (bay 3).
 - Not on the page: internal sales remarks from 重要提醒 (teacher quality, garbage burning), the refund rules
