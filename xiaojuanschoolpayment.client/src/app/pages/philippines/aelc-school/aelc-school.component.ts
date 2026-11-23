@@ -41,7 +41,7 @@ export class AelcSchoolComponent {
   readonly quickFacts: QuickFact[] = [
     { label: '城市', value: 'Clark / Angeles, Pampanga' },
     { label: '适合方向', value: 'Native口语、发音、家庭项目、商务沟通候选' },
-    { label: '资料状态', value: 'AELC与同类外教型学校需逐校复核当前招生资料' },
+    { label: '报名提醒', value: '报名前由思达启航顾问向学校确认当前招生状态' },
     { label: '选校重点', value: '外教比例、实际授课老师、住宿、年龄规则、费用和接送' },
     { label: '费用', value: '需以当期学校报价和房型空位确认' },
   ];
