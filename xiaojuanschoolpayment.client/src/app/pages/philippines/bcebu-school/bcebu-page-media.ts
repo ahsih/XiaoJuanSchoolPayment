@@ -1,6 +1,7 @@
-// Photos and videos of the B'Cebu page, all from B'Cebu's own media library (received 2026-11-23), in
-// public/assets/bcebu/. Every photo shows exactly what its label says; other businesses in the building, the
-// older campus photos and anything with contact details or another company's name were left out. Keep it pure data.
+// Photos and videos of the B'Cebu page, in public/assets/bcebu/: photos and the first nine videos from B'Cebu's own
+// media library (received 2026-11-23), plus the user's own vertical clips filmed at the school (received
+// 2026-11-24). Every item shows exactly what its label says; other businesses in the building, the older campus
+// photos and anything with contact details or another company's name were left out. Keep it pure data.
 import type { CiaShortVideo, CiaVideoCard, GalleryImage } from '../cia-school/cia-page-content';
 import type { PhAlbumCategory, PhRoomProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 
@@ -64,7 +65,7 @@ export const BCEBU_ALBUM_DESCRIPTIONS: Record<PhAlbumCategory, string> = {
 };
 
 /**
- * A video from B'Cebu's own library, transcoded to 720p H.264 in public/assets/bcebu/videos/. Opening and end
+ * A B'Cebu video, transcoded to 720p H.264 (30 fps) in public/assets/bcebu/videos/. Opening and end
  * cards with contact details and anything showing another company were cut; check every frame of a new clip.
  * Landscape clips are big cards ('tour'); vertical clips go in the short-clip row ('life').
  */
@@ -113,6 +114,23 @@ export const BCEBU_VIDEOS: BCebuVideo[] = [
   { name: 'island-day', title: '海岛活动日', duration: '0:23', orientation: 'portrait', section: 'life', description: '学生坐船出海去小岛，在沙滩上做游戏。' },
   { name: 'ace-teacher', title: '老师自我介绍', duration: '0:20', orientation: 'portrait', section: 'life', description: '一位老师在学生休息区用英语介绍自己。' },
   { name: 'teacher-poses', title: '师生合影', duration: '0:18', orientation: 'portrait', section: 'life', description: '学生和老师在教学楼走廊里一起摆姿势拍照。' },
+  // The user's own vertical clips filmed at B'Cebu (received 2026-11-24), checked frame by frame. Left out: the
+  // campus-surroundings clip (a street banner and the guard's visitor logbook), the golf range (a business in the
+  // building), and the one-to-one class and airport pickup clips, which repeat the school's videos above. The gym
+  // clip stops at 6.5 s, before the boxing room with its brand sign and string of national flags.
+  { name: 'room-single', title: '单人间实拍', duration: '0:14', orientation: 'portrait', section: 'life', description: '独立卫浴、单人床、书桌、小冰箱、衣帽架和带桌椅的阳台。' },
+  { name: 'room-twin', title: '双人间实拍', duration: '0:17', orientation: 'portrait', section: 'life', description: '两张单人床、书桌、小冰箱和衣帽架，阳台有桌椅。' },
+  { name: 'room-twin-living', title: '双人间+客厅实拍', duration: '0:33', orientation: 'portrait', section: 'life', description: '进门是客厅：长书桌、沙发和保险箱，阳台有桌椅；里面的卧室有两张单人床。' },
+  { name: 'room-triple', title: '三人间实拍', duration: '0:37', orientation: 'portrait', section: 'life', description: '上下铺加一张单人床，独立卫浴、书桌、小冰箱，阳台有桌椅。' },
+  { name: 'classes', title: '上课实拍', duration: '0:20', orientation: 'portrait', section: 'life', description: '一对一教室、小组课和大班课的上课场景。' },
+  { name: 'dining-hall', title: '餐厅自助餐', duration: '0:38', orientation: 'portrait', section: 'life', description: '学生餐厅自助取餐：米饭、炒饭、肉菜、蔬菜、汤、水果和饮料。' },
+  { name: 'reception', title: '教学区与前台', duration: '0:11', orientation: 'portrait', section: 'life', description: '教学区走廊、学生等候区和前台。' },
+  { name: 'library', title: '图书馆与自习区', duration: '0:20', orientation: 'portrait', section: 'life', description: '图书馆的书架和自习桌，以及靠窗的自习区。' },
+  { name: 'lounge', title: '二楼休息区', duration: '0:09', orientation: 'portrait', section: 'life', description: '二楼的沙发休息区。' },
+  { name: 'pool', title: '泳池', duration: '0:22', orientation: 'portrait', section: 'life', description: '校内泳池和池边的桌椅、躺椅。' },
+  { name: 'gym', title: '健身房', duration: '0:07', orientation: 'portrait', section: 'life', description: '健身房的器械区。' },
+  { name: 'courts', title: '篮球场与乒乓球', duration: '0:14', orientation: 'portrait', section: 'life', description: '户外篮球场和室内乒乓球区。' },
+  { name: 'sky-garden', title: '空中花园', duration: '0:20', orientation: 'portrait', section: 'life', description: '宿舍楼之间的空中花园，有草坪和桌椅。' },
 ];
 
 const videoCard = (video: BCebuVideo): CiaVideoCard => ({
@@ -149,19 +167,30 @@ const videosIn = (section: BCebuVideo['section']) => BCEBU_VIDEOS.filter(video =
 export const BCEBU_VIDEO_CARDS: CiaVideoCard[] = videosIn('tour').map(videoCard);
 export const BCEBU_CAMPUS_LIFE_VIDEOS: CiaShortVideo[] = videosIn('life').map(shortVideo);
 
-/** Videos in the hero album, one chip per topic; the school film opens the album. */
+/**
+ * Videos in the hero album, one chip per topic; the school film opens the album. Four short chip names, so the
+ * video chips stay on one row on a 360px phone.
+ */
 export const BCEBU_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', names: ['school-intro', 'campus-tour', 'teacher-poses'] },
-  { label: '课程视频', names: ['one-to-one-class', 'ace-teacher'] },
-  { label: '餐厅与活动视频', names: ['meals', 'student-vlog', 'island-day'] },
-  { label: '接机视频', names: ['airport-pickup'] },
+  {
+    label: '校园视频',
+    names: ['school-intro', 'campus-tour', 'reception', 'library', 'lounge', 'pool', 'gym', 'courts', 'sky-garden', 'teacher-poses'],
+  },
+  { label: '宿舍视频', names: ['room-single', 'room-twin', 'room-twin-living', 'room-triple'] },
+  { label: '课程视频', names: ['one-to-one-class', 'classes', 'ace-teacher'] },
+  { label: '生活视频', names: ['meals', 'dining-hall', 'student-vlog', 'island-day', 'airport-pickup'] },
 ].map(tab => ({ label: tab.label, icon: 'videocam', items: tab.names.map(albumVideo) }));
 
 /**
- * Room videos showing exactly one room type, keyed by room profile id. None so far: the school film shows
- * several room types and the campus tour and student vlog show a room only in passing.
+ * Room videos showing exactly one room type, keyed by room profile id; each opens that room's photo album. The
+ * triple-room clip also stands for the 2+1 dorm, which uses the same rooms.
  */
-export const BCEBU_ROOM_VIDEOS: Record<string, PhVideoItem> = {};
+export const BCEBU_ROOM_VIDEOS: Record<string, PhVideoItem> = {
+  single: albumVideo('room-single'),
+  'twin-living': albumVideo('room-twin-living'),
+  twin: albumVideo('room-twin'),
+  triple: albumVideo('room-triple'),
+};
 
 /**
  * No `variants`: B'Cebu has no booking codes, so the template would show a variant's internal room id as its badge.
