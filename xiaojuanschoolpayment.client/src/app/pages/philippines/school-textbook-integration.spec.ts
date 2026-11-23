@@ -10,7 +10,7 @@ import { PinesSchoolDetailComponent } from './pines-school/pines-school-detail.c
 import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
 import { MonolSpartaSchoolDetailComponent } from './monol-sparta-school/monol-sparta-school-detail.component';
 import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
-import { BCebuSchoolComponent } from './bcebu-school/bcebu-school.component';
+import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
 import { GlcSchoolComponent } from './glc-school/glc-school.component';
 import { IbreezeSchoolComponent } from './ibreeze-school/ibreeze-school.component';
 import { AnjSchoolComponent } from './anj-school/anj-school.component';
@@ -63,7 +63,7 @@ const schools = [
   { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
   { name: "MONOL Sparta", create: () => new MonolSpartaSchoolDetailComponent() },
   { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
-  { name: "B'Cebu", create: () => new BCebuSchoolComponent() },
+  { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
   { name: "GLC", create: () => new GlcSchoolComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolComponent() },
   { name: "A&J", create: () => new AnjSchoolComponent() },
