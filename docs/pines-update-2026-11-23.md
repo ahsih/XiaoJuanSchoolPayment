@@ -66,11 +66,11 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 | --- | --- |
 | SSP | 7,800 |
 | SSP I-Card | 4,500 |
-| ACR I-Card | 4,000 from week 9 |
+| ACR I-Card | 4,000 with the first visa extension (30-day visa from week 5, 59-day from week 9) |
 | Electricity/water | 3,800 per four weeks |
 | Maintenance | 500 per week |
 | Visa extensions | 4,940 / 6,210 / 4,240… |
-| Textbooks | 1,500 / 1,900 / 2,700 per started four course weeks, by book tier |
+| Textbooks | 1,500 / 1,900 per started 8 course weeks, IELTS 2,700 per started 12 weeks, by book tier (reference only) |
 | Student ID | 200 |
 
 **Reference rows, outside the total:**
@@ -85,7 +85,7 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 
 - **Photos.** Campus and room photos are WebP files in `public/assets/pines/campus/` and `rooms/`, taken from the school's 2026 Drive folder.
   - Left out: photos with British Council or TOEIC logo signs, and the pre-merge campus folder.
-  - The 4-bed and 6-bed photos cannot be told apart, so both prices open one shared album.
+  - The 4-bed and 6-bed rooms have the same beds and differ only in size (user answer 2026-11-24), so both albums share the photos.
   - The youth room has no album.
 - **Video.** `public/assets/pines/videos/campus-tour-2026.mp4` is the school's floor-by-floor tour, cut to 61 seconds. The cut removes:
   - the skit
@@ -107,16 +107,25 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 - **Room availability feed.** The `/pines-room-availability` feed is no longer shown. Its school source has served only a 2026-09-02 cache split by the former Main and IELTS campuses. The server endpoint is unchanged.
 - **Old export fallback.** The old page's desktop preview-before-download fallback and its Main/IELTS cross-campus check are gone. The template's shared save button is used instead.
 
+## User answers (2026-11-24)
+
+- **ACR.** ACR is charged whenever a visa extension is needed, at every Philippine school: a 30-day visa studying 5 or 6 weeks already pays it.
+- **Textbooks.** Only a reference; students buy books at school as they progress. A 1,500 or 1,900 set lasts about 4–8 weeks (estimated as one per 8 weeks), an IELTS 2,700 set about 12 weeks.
+- **4-bed and 6-bed rooms.** Same beds, different room sizes.
+- **Eid holiday.** Keep it provisional.
+- **Discount order.** Use the order that is better for the student (思达启航 95% first).
+- **Exchange rate.** Keep the live rate; no ICBC markup.
+- `PINES_FEE_NOTE_VERSION` replaces the untouched ACR and textbook notes in documents saved before these answers.
+
 ## Open points to confirm with the school
 
 - **Condo location.** The Condo rooms (Single A/B/C, Twin A, Family 3BR) carry the 校内 badge because the school's campus illustration draws the Condo on campus.
 - **2027 regular offer start.** The offer was read as starting from four course weeks.
-- **Visa extension table.** It was read as for a 30-day entry; a 59-day entry starts one step later. ACR is charged from week 9. The number of extensions follows the user rule of 2026-11-24: one per four weeks beyond the entry visa.
-- **Textbook tiers.** These are estimates.
+- **Visa extension table.** It was read as for a 30-day entry; a 59-day entry starts one step later. The number of extensions follows the user rule of 2026-11-24: one per four weeks beyond the entry visa.
 - **Hotel Deposit.** It was treated as the 100-dollar room deposit.
 - **Youth room size.** The price list says 3 students + 1 teacher (used), but the Global Youth PDF says a 6-bed room with 4 + 1.
 - **Official exam schedule.** The 2023 IELTS Q&A's official-exam schedule is marked 以考试中心当期安排为准.
-- **Eid holiday.** The Eid date (2027-03-10) is provisional.
+- **Eid holiday.** The Eid date (2027-03-10) is provisional (kept so, user 2026-11-24).
 
 ## Tests
 
