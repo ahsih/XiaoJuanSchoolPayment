@@ -121,9 +121,12 @@ export const SMEAG_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A dormitory clip from SMEAG's own pack (09_capital宣传视频 and the room folders), transcoded to 720p H.264 in
- * public/assets/smeag-capital/videos/. The partner-hotel clips are not used: their opening shows a booking banner
- * and the hotel address. Check every frame of a new clip for other companies or contact details.
+ * A clip of SMEAG Capital in public/assets/smeag-capital/videos/ (H.264 with a poster each). The four dormitory clips come
+ * from SMEAG's own pack (09_capital宣传视频 and the room folders); the partner-hotel clips there are not used, because their
+ * opening shows a booking banner and the hotel address. The other ten are SMEAG's own 主校区 WeChat Channels clips
+ * (user folder 2026-11-24); its 单人间 and 四人间 clips repeat the pack's room clips and are left out. Clips filmed
+ * landscape inside a vertical frame are cropped to their 16:9 picture, which also drops the added captions. Check every
+ * frame of a new clip for other companies or contact details.
  */
 export interface SmeagVideo {
   name: string;
@@ -131,16 +134,28 @@ export interface SmeagVideo {
   description: string;
   duration: string;
   orientation: 'landscape' | 'portrait';
+  /** Hero album group. */
+  topic: '校园' | '宿舍' | '课程' | '餐厅';
 }
 
 export const smeagVideoSrc = (video: SmeagVideo) => `/assets/smeag-capital/videos/${video.name}.mp4`;
 export const smeagVideoPoster = (video: SmeagVideo) => `/assets/smeag-capital/videos/poster-${video.name}.jpg`;
 
 export const SMEAG_VIDEOS: SmeagVideo[] = [
-  { name: 'triple-room', title: '校内三人间', description: '学校拍摄的三人间：三张床、书桌、衣柜和卫生间。', duration: '0:37', orientation: 'landscape' },
-  { name: 'quad-room', title: '校内四人间', description: '走一圈看四人间的两个睡眠区和公共空间。', duration: '0:29', orientation: 'landscape' },
-  { name: 'single-room', title: '校内单人间', description: '单人间的卧室。', duration: '0:10', orientation: 'portrait' },
-  { name: 'single-room-bath', title: '单人间的小厨房和卫生间', description: '两间单人卧室共用的小厨房和卫生间。', duration: '0:12', orientation: 'portrait' },
+  { name: 'lobby', title: '1楼大堂', description: '从大堂走过1楼走廊。', duration: '0:17', orientation: 'landscape', topic: '校园' },
+  { name: 'lounge', title: '课间休息', description: '课间的学生休息室。', duration: '0:18', orientation: 'landscape', topic: '校园' },
+  { name: 'office', title: '学校办公室', description: '学生到办公室办事。', duration: '0:21', orientation: 'landscape', topic: '校园' },
+  { name: 'single-room', title: '校内单人间', description: '单人间的卧室。', duration: '0:10', orientation: 'portrait', topic: '宿舍' },
+  { name: 'single-room-bath', title: '单人间的小厨房和卫生间', description: '两间单人卧室共用的小厨房和卫生间。', duration: '0:12', orientation: 'portrait', topic: '宿舍' },
+  { name: 'twin-room', title: '校内双人间', description: '从门口走进双人间：冰箱、卫生间和两张床。', duration: '0:23', orientation: 'portrait', topic: '宿舍' },
+  { name: 'triple-room', title: '校内三人间', description: '三人间：三张床、书桌、衣柜和卫生间。', duration: '0:37', orientation: 'landscape', topic: '宿舍' },
+  { name: 'triple-room-tour', title: '三人间实拍', description: '冰箱、衣柜、三张床、窗边空调和卫生间。', duration: '0:25', orientation: 'portrait', topic: '宿舍' },
+  { name: 'quad-room', title: '校内四人间', description: '走一圈看四人间的两个睡眠区和公共空间。', duration: '0:29', orientation: 'landscape', topic: '宿舍' },
+  { name: 'one-to-one', title: '一对一课堂', description: '一对一课堂和教室走廊。', duration: '0:11', orientation: 'portrait', topic: '课程' },
+  { name: 'group-class', title: '团体课', description: '团体课上课的样子。', duration: '0:15', orientation: 'landscape', topic: '课程' },
+  { name: 'classrooms', title: '教室区域', description: '教室走廊和服务台。', duration: '0:07', orientation: 'portrait', topic: '课程' },
+  { name: 'dining', title: '学生餐厅', description: '自助取餐区和用餐区。', duration: '0:13', orientation: 'portrait', topic: '餐厅' },
+  { name: 'cafe', title: '咖啡厅', description: '1楼咖啡厅，有饮料和零食。', duration: '0:20', orientation: 'landscape', topic: '餐厅' },
 ];
 
 const DORM_SERVICE = '每周打扫1次并换床单；洗衣每天收送';

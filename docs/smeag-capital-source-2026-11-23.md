@@ -12,7 +12,12 @@ the SMEAG Capital page and to ignore the Encanto material, so nothing from the E
   `smeag-page-quote.ts` calculates each student. `smeag-content-config.ts` (`SMEAG_POLICY_VERSION` 1) holds prices,
   offers and local fees; `cloneSmeagContentConfig` upgrades saved documents once.
 - Photos: `public/assets/smeag-capital/campus/` and `rooms/` (WebP, at most 1400 px). Videos:
-  `public/assets/smeag-capital/videos/` (four dormitory clips, 720p H.264 with posters).
+  `public/assets/smeag-capital/videos/` (H.264 with posters): four dormitory clips from the pack, plus ten clips from
+  SMEAG's 主校区 WeChat Channels (user folder, 2026-11-24): lobby, lounge, office, twin room, triple room, one-to-one,
+  group class, classroom area, canteen and cafe. Its 单人间 and 四人间 clips repeat the pack's room clips and are not
+  used. Clips filmed landscape inside a vertical frame are cropped to the 16:9 picture (1080×608), which also removes the
+  added 宿务SMEAG captions; vertical clips are 720×1280. The hero album groups them as 校园／宿舍／课程／餐厅, and the twin
+  room's photo album now opens with its video.
 
 ## Sources used
 

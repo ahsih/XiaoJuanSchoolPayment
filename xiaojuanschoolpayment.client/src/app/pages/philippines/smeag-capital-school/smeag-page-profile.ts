@@ -108,10 +108,10 @@ const SMEAG_COPY: PhPageCopy = {
   },
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
-    title: '用视频了解 SMEAG Capital 宿舍',
-    intro: '视频来自学校提供的资料，可以看到校内单人间、三人间和四人间。',
+    title: '用视频了解 SMEAG Capital',
+    intro: '校园、宿舍、课堂和餐厅的实拍视频。',
     badge: 'SMEAG 学校视频',
-    lifeTitle: '宿舍短片',
+    lifeTitle: '校园短片',
   },
   rooms: {
     photoTitle: '房型实景',
@@ -177,10 +177,12 @@ const shortVideo = (item: SmeagVideo): CiaShortVideo => ({
   ...(item.orientation === 'landscape' ? { shape: 'wide' as const } : {}),
 });
 
-/** Every SMEAG clip shows one dormitory room type, so each also opens that room's photo album. */
-const SMEAG_VIDEO_TABS: PhVideoTab[] = [
-  { label: '宿舍视频', icon: 'videocam', items: SMEAG_VIDEOS.map(item => albumVideo(item.name)) },
-];
+const SMEAG_VIDEO_TOPICS: ReadonlyArray<SmeagVideo['topic']> = ['校园', '宿舍', '课程', '餐厅'];
+const SMEAG_VIDEO_TABS: PhVideoTab[] = SMEAG_VIDEO_TOPICS.map(topic => ({
+  label: `${topic}视频`,
+  icon: 'videocam',
+  items: SMEAG_VIDEOS.filter(item => item.topic === topic).map(item => albumVideo(item.name)),
+}));
 
 export const SMEAG_PAGE_PROFILE: PhSchoolProfile = {
   code: 'SMEAG',
@@ -197,6 +199,7 @@ export const SMEAG_PAGE_PROFILE: PhSchoolProfile = {
   },
   roomVideos: {
     'campus-single': albumVideo('single-room'),
+    'campus-twin': albumVideo('twin-room'),
     'campus-triple': albumVideo('triple-room'),
     'campus-quad': albumVideo('quad-room'),
   },
