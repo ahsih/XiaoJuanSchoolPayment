@@ -99,7 +99,7 @@
 
     <div class="loading-state" *ngIf="isLoading"><span></span>正在加载 {{ schoolShortName }} 内容…</div>
 
-    <main class="workspace" *ngIf="!isLoading && (isLaMerSelected || activeTab !== 'media')">
+    <main class="workspace" *ngIf="!isLoading && activeTab !== 'media'">
       <section class="form-panel" (input)="contentChanged()" (change)="contentChanged()">
         <div class="panel-heading">
           <div>
@@ -115,7 +115,6 @@
           <div><strong>先从下面选择一项</strong><span>选中后左侧打开它的表单，右侧自动滚到官网对应位置并高亮。</span></div>
         </div>
 
-        <app-admin-school-photos *ngIf="isLaMerSelected && activeTab === 'media'" [embeddedSchoolId]="selectedSchool?.id" [draftMedia]="content.media" (draftMediaChange)="updateMedia($event)" />
         <ng-container *ngIf="activeTab === 'courses'">
           <div class="item-picker">
             <div class="picker-heading"><strong>课程列表</strong><button type="button" (click)="addCourse()"><mat-icon>add</mat-icon>新增课程</button></div>
@@ -170,20 +169,20 @@
           <div class="item-picker">
             <div class="picker-heading"><strong>房型列表</strong><button type="button" (click)="addRoom()"><mat-icon>add</mat-icon>新增房型</button></div>
             <button class="picker-item" *ngFor="let item of visibleRooms; trackBy: trackById" type="button" [class.active]="selectedRoomId === item.id" [class.hidden-item]="!item.enabled" (click)="selectEditorItem('room', item.id)">
-              <span>{{ isLaMerSelected ? item.name : item.label }}<small *ngIf="!isLaMerSelected">{{ item.code }} · {{ item.location }}</small></span><b>{{ item.fee | number }} 美元</b>
+              <span>{{ item.label }}<small>{{ item.code }} · {{ item.location }}</small></span><b>{{ item.fee | number }} 美元</b>
             </button>
           </div>
           <div class="edit-card" data-selected-editor *ngIf="selectedRoom as item" (focusin)="focusEditorItem('room', item.id)">
             <div class="edit-card-title"><h3>编辑房型</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>官网显示</span></label></div>
             <div class="field-grid two">
               <label>完整名称<input [(ngModel)]="item.name" /></label>
-              <label *ngIf="!isLaMerSelected">页面短名称<input [(ngModel)]="item.label" /></label>
-              <label *ngIf="!isLaMerSelected">房型编号<input [(ngModel)]="item.code" /></label>
+              <label>页面短名称<input [(ngModel)]="item.label" /></label>
+              <label>房型编号<input [(ngModel)]="item.code" /></label>
               <label>{{ roomPriceLabel }}<input type="number" min="0" [(ngModel)]="item.fee" /></label>
               <label *ngIf="isCpilsSelected || isIbreezeSelected">2027住宿价格（美元/4周）<input type="number" min="0" [(ngModel)]="item.fee2027" /></label>
               <label *ngIf="isCpilsSelected || isIbreezeSelected">2027短住价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
-              <label *ngIf="!isLaMerSelected">住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
-              <label *ngIf="!isLaMerSelected">页面分组<input [(ngModel)]="item.group" /></label>
+              <label>住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
+              <label>页面分组<input [(ngModel)]="item.group" /></label>
               <label *ngIf="isImsSelected && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateRoomWeekPrices(item, $event)" placeholder="1:195, 2:390, 3:520, 4:650" /></label>
               <label *ngIf="isImsSelected && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateRoomAllowedWeeks(item, $event)" placeholder="1, 2, 3, 4, 8, 12" /></label>
             </div>
@@ -414,7 +413,7 @@
       </aside>
     </main>
 
-    <section class="media-workspace" *ngIf="!isLoading && activeTab === 'media' && !isLaMerSelected">
+    <section class="media-workspace" *ngIf="!isLoading && activeTab === 'media'">
       <app-admin-school-photos
         [embeddedSchoolId]="selectedSchool?.id"
         [draftMedia]="content.media"
