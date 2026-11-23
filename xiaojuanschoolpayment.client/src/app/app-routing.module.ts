@@ -840,6 +840,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/singapore/canadian-education-college',
+        loadComponent: () =>
+          import(
+            './pages/overseas-study-tour/singapore-schools/canadian-education-college/canadian-education-college.component'
+          ).then((m) => m.CanadianEducationCollegeComponent),
+      },
+      {
         path: 'overseas-study-tour/malaysia',
         loadComponent: () =>
           import('./pages/overseas-study-tour/malaysia-tour/malaysia-tour.component').then(
