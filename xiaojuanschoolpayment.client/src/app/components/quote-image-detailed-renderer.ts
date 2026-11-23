@@ -244,12 +244,21 @@ export function detailedLocalNote(quote: QuoteImageCardData, row: QuoteImageLoca
   return quote.fullFeeDetails ? `计费：${row.unit} × ${row.quantity}；${row.note}` : row.note;
 }
 
-function expandedTotalNoteLines(context: TextContext, quote: QuoteImageCardData): string[] {
+const TOTAL_NOTE_FONT = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+const TOTAL_WARNING_FONT = '700 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
+
+/** The exchange-rate line in grey, then the total note; an emphasised note (CIA's IAU fee) is bold dark orange. */
+function expandedTotalNoteLines(context: TextContext, quote: QuoteImageCardData): { text: string; emphasis: boolean }[] {
   const rate = quote.conversionRates
     ? `参考汇率：1美元 ≈ ${quote.conversionRates.usdToCny.toLocaleString('zh-CN', { maximumFractionDigits: 6 })}元人民币` : '';
-  context.font = '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif';
-  return [rate, ...withoutExchangeNote(quote.totalNote ?? '').split('\n')].filter(Boolean)
-    .flatMap(text => wrapCanvasText(context, text, detailedGrid(quote).noteWidth, 1000));
+  const wrap = (text: string, emphasis: boolean) => {
+    context.font = emphasis ? TOTAL_WARNING_FONT : TOTAL_NOTE_FONT;
+    return wrapCanvasText(context, text, detailedGrid(quote).noteWidth, 1000).map(line => ({ text: line, emphasis }));
+  };
+  return [
+    ...(rate ? wrap(rate, false) : []),
+    ...withoutExchangeNote(quote.totalNote ?? '').split('\n').filter(Boolean).flatMap(text => wrap(text, !!quote.emphasizeTotalNote)),
+  ];
 }
 
 function isDateMismatchNote(note: string): boolean {
@@ -593,7 +602,7 @@ export function drawDetailedQuoteImage<TImage extends CanvasImage>(
   const totalNote = [schoolRate, fullLayout ? withoutExchangeNote(quote.totalNote ?? '') : quote.totalNote ?? ''].filter(Boolean).join('；');
   context.fillText(quote.totalCny, grid.noteLeft, paymentRowTop + (totalNote ? 27 : 38));
   if (quote.expandTotalNote && fullLayout) {
-    fullLayout.totalNoteLines.forEach((line, index) => drawTableText(line, grid.noteLeft, paymentRowTop + 49 + index * 16, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16));
+    fullLayout.totalNoteLines.forEach((line, index) => drawTableText(line.text, grid.noteLeft, paymentRowTop + 49 + index * 16, grid.noteWidth, line.emphasis ? '#c2410c' : '#64748b', line.emphasis ? TOTAL_WARNING_FONT : TOTAL_NOTE_FONT, 1, 16));
   } else {
     drawTableText(totalNote, grid.noteLeft, paymentRowTop + 49, grid.noteWidth, '#64748b', '400 12px "Microsoft YaHei", "PingFang SC", Arial, sans-serif', 1, 16);
   }

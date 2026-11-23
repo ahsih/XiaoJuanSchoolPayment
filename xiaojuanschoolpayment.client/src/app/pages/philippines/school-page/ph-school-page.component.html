@@ -1119,8 +1119,9 @@
         <div class="group-result">
           <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
           <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
-          <small *ngIf="extraPaymentNote">{{ extraPaymentNote }}</small>
         </div>
+        <!-- Money paid outside the school total (CIA's IAU fee), shown so no student can miss it (user request 2026-11-23). -->
+        <p class="extra-payment-alert" role="note" *ngIf="extraPaymentNote"><mat-icon>error_outline</mat-icon><span>{{ extraPaymentNote }}</span></p>
         <ng-container *ngTemplateOutlet="quoteConsultantPicker"></ng-container>
         <div class="group-actions">
           <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>

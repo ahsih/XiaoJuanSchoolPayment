@@ -26,7 +26,7 @@ describe('CIA IAU registration fee note', () => {
     for (const course of component.courseFees) {
       component.selectedCourseId = course.id;
       if (course.id === 'college-immersion') {
-        expect(component.iauRegistrationFeeNote).toContain('IAU一次性注册费50美元另计');
+        expect(component.iauRegistrationFeeNote).toContain('另需支付IAU一次性注册费50美元');
         expect(component.quoteImageData.totalNote).toContain(component.iauRegistrationFeeNote);
       } else {
         expect(component.iauRegistrationFeeNote).toBe('');
@@ -41,7 +41,7 @@ describe('CIA IAU registration fee note', () => {
     component.selectedCourseId = 'college-immersion';
     for (const weeks of [4, 8, 12, 24]) {
       component.selectedWeeks = weeks;
-      expect(component.iauRegistrationFeeNote).toBe('IAU一次性注册费50美元另计（未计入上述合计）。');
+      expect(component.iauRegistrationFeeNote).toBe('另需支付IAU一次性注册费50美元（到校后付，未计入上述合计）。');
       expect(component.quoteUsd).toBeCloseTo(Math.max(0,
         component.payableRegistrationFee + component.tuitionForSelectedWeeks + component.roomFeeForSelectedWeeks
         + component.seasonalSurcharge - component.sidaDiscountAmount - component.christmasDiscountAmount));

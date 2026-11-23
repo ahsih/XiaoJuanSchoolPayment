@@ -30,7 +30,7 @@ export class CiaPlanComparison extends PhPlanComparison<CiaStudentQuote> {
       courseGroups: CIA_COURSE_COMPARE_GROUPS,
       layoutVersion: 2,
       extraNotes: results => results.some(result => result.courseId === 'college-immersion')
-        ? ['College Immersion另收IAU一次性注册费50美元，未计入上述合计。'] : [],
+        ? ['College Immersion另需支付IAU一次性注册费50美元（到校后付，未计入上述合计）。'] : [],
     });
   }
 }

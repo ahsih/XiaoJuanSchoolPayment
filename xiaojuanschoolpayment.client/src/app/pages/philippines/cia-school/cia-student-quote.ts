@@ -238,7 +238,7 @@ export class CiaStudentQuote {
 
   get iauNote() {
     return this.quotePlan.courses.some((row) => row.optionId === 'college-immersion')
-      ? 'IAU一次性注册费50美元另计（未计入上述合计）。'
+      ? '另需支付IAU一次性注册费50美元（到校后付，未计入上述合计）。'
       : '';
   }
 
