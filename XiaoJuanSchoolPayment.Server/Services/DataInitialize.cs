@@ -3289,7 +3289,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
         new RegionalStartingPriceSeed("菲律宾克拉克TALK Academy语言学校", 1280m, UsdCurrencyId, "USD 1,280 / 4周主费起参考", Established(2022), new[] { "TALK Academy Clark", "Clark TALK Academy" }),
         new RegionalStartingPriceSeed(HelpSchoolName, 1500m, UsdCurrencyId, "USD 1,500 / 4周课程住宿起，注册费USD 100另计", Established(1996), new[] { LegacyHelpSchoolName, HelpClarkSchoolName }),
         new RegionalStartingPriceSeed(AelcSchoolName, 1387m, UsdCurrencyId, "USD 1,387 / 4周起历史参考", Established(2008), new[] { LegacyAelcSchoolName, AelcFullSchoolName }),
-        new RegionalStartingPriceSeed("菲律宾克拉克HANA Academy", 1430m, UsdCurrencyId, "USD 1,430 / 4周起（Light ESL + 双人房，2026注册费减免）", Established(2016), new[] { "HANA Academy", "Clark HANA Academy" }),
+        new RegionalStartingPriceSeed("菲律宾克拉克HANA Academy", 1470m, UsdCurrencyId, "4周1,470美元起（Light ESL + 双人间；注册费100美元和当地费用另计）", Established(2019), new[] { "HANA Academy", "Clark HANA Academy" }),
 
         new RegionalStartingPriceSeed(EnderunSchoolName, 40000m, PhpCurrencyId, "PHP 40,000 / 月起参考", Established(2005), new[] { LegacyEnderunSchoolName }),
         new RegionalStartingPriceSeed(AmericanEnglishSchoolName, 14800m, PhpCurrencyId, "PHP 14,800 / 40小时起参考", Established(2006), new[] { LegacyAmericanEnglishSchoolName }),
