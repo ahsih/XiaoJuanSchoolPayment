@@ -2,7 +2,7 @@ import { CiaContentConfig, CiaCourseContent, CiaPromotionRule } from '../cia-sch
 import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 
 const DAY = 86400000;
-export const CPILS_POLICY_VERSION = 2;
+export const CPILS_POLICY_VERSION = 3;
 export const cpilsMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const cpilsMonday = (sunday: string) => {
   const time = Date.parse(`${sunday}T00:00:00Z`);
@@ -54,6 +54,58 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
   const version = config.quoteSettings.cpilsPolicy?.version ?? 0;
   if (version < 1) addCpils2027Notice(config);
   if (version < 2) addCpilsVersion2(config);
+  if (version < 3) addCpilsVersion3(config);
+}
+
+/**
+ * Every CPILS IELTS course; their weeks together count toward the 12-week official IELTS exam gift
+ * (school answer 2026-11-23: Pre-IELTS too), and an IELTS Guarantee of either length gets it as well.
+ */
+export const CPILS_IELTS_COURSE_IDS = ['pre-ielts-course', 'ielts-course', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks'];
+
+/** The five career-training courses of the 2027 career offer (school poster, 2026-11-23). */
+export const CPILS_CAREER_COURSE_IDS = ['medical-english', 'tesol', 'barista-beverage', 'hotel-hospitality', 'working-holiday'];
+
+/**
+ * The school's four 2027 posters (received 2026-11-23): Easter and Christmas / New Year deductions for a
+ * study period covering the holiday week, a career-course deduction by course weeks, and two free weekend
+ * activities. All stack with the other offers; the activities and deductions cannot be cashed or transferred.
+ */
+function addCpilsVersion3(config: CiaContentConfig): void {
+  const settings = config.quoteSettings;
+  const rule = (id: string, name: string, description: string, sortOrder: number, extra: Partial<CiaPromotionRule>): CiaPromotionRule => ({
+    id, name, description, enabled: true, sortOrder, priority: sortOrder * 10, stackable: true, newStudentsOnly: false,
+    discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false,
+    minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none', ...extra,
+  });
+  const holidays = { registrationStart: '2026-11-23', coverageTarget: 'course' as const };
+  const rules = [
+    rule('cpils-easter-2027', '2027复活节优惠', '2026/11/23–2027/03/21报名，至少4周，学习期涵盖2027/03/21–03/27。', 11, {
+      ...holidays, discountValue: 75, minimumCourseWeeks: 4, registrationEnd: '2027-03-21', coverageStart: '2027-03-21', coverageEnd: '2027-03-27',
+    }),
+    rule('cpils-christmas-2027', '2027圣诞优惠', '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–12/25。', 12, {
+      ...holidays, discountValue: 50, registrationEnd: '2027-12-26', coverageStart: '2027-12-19', coverageEnd: '2027-12-25',
+    }),
+    rule('cpils-new-year-2027', '2027圣诞及新年优惠', '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–2028/01/01。', 13, {
+      ...holidays, discountValue: 100, registrationEnd: '2027-12-26', coverageStart: '2027-12-19', coverageEnd: '2028-01-01',
+    }),
+    rule('cpils-career-2027', '2027职业培训课程优惠', '2027年开课的职业培训课程：4–7周减50美元，8–11周减100美元，12–15周减150美元，16周及以上减200美元。', 14, {
+      appliesTo: 'tuition', minimumCourseWeeks: 4, eligibleCourseIds: [...CPILS_CAREER_COURSE_IDS],
+      discountValue: 50, discountTiers: { '4': 50, '8': 100, '12': 150, '16': 200 }, arrivalStart: '2027-01-01', arrivalEnd: '2027-12-31',
+    }),
+    rule('cpils-weekend-2027', '2027周末活动赠送', '2027/01/02–05/29开课、至少报名8周：免费参加奥斯洛布观鲸鲨1次、跳岛游1次（均含餐饮）。', 15, {
+      discountType: 'none', discountValue: 2, minimumCourseWeeks: 8, arrivalStart: '2027-01-02', arrivalEnd: '2027-05-29',
+    }),
+  ];
+  for (const item of rules) if (!settings.promotions.some(existing => existing.id === item.id)) settings.promotions.push(item);
+  // Every IELTS course, Pre-IELTS included, counts toward the 12-week exam gift, and the 8-week
+  // IELTS Guarantee gets the exam too (school answers 2026-11-23).
+  const ielts = settings.promotions.find(item => item.id === 'cpils-ielts-exam-2027');
+  if (ielts) {
+    ielts.eligibleCourseIds = [...new Set([...(ielts.eligibleCourseIds ?? []), ...CPILS_IELTS_COURSE_IDS])];
+    ielts.description = ielts.description.replace('雅思课程一次注册12周及以上，', '雅思课程（含预备雅思）一次注册12周及以上，或报名8周雅思保分班，');
+  }
+  settings.cpilsPolicy = { ...settings.cpilsPolicy!, version: 3 };
 }
 
 /** Courses of a family (PCP) quote; they may only use the premium twin, triple or quad rooms. */
@@ -172,7 +224,7 @@ function addCpilsVersion2(config: CiaContentConfig): void {
     }
     if (item.note !== oldNote && config.quoteImageSettings.localFeeNotes?.[item.id] === oldNote) config.quoteImageSettings.localFeeNotes[item.id] = item.note;
   }
-  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: CPILS_POLICY_VERSION };
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 2 };
 }
 
 function addCpils2027Notice(config: CiaContentConfig): void {
@@ -235,7 +287,7 @@ function addCpils2027Notice(config: CiaContentConfig): void {
   const promos = [
     promotion('cpils-scholarship-2027', '2027年奖学金优惠', `${terms}至少注册4周，学费及住宿费减免5%，可与思达启航优惠叠加。`, 7, { discountType: 'percentage', discountValue: 5 }),
     promotion('cpils-no-window-2027', '2027年无对外窗房优惠', `${terms}无对外窗单人／双人房：4–7周50美元、8–11周100美元、12–15周150美元、16–19周200美元、20–23周250美元、24周300美元；可与其他优惠同享。`, 8, { discountType: 'fixed', discountValue: 50, appliesTo: 'accommodation', eligibleRoomIds: ['no-window-single', 'no-window-twin'], minimumAccommodationWeeks: 4, incrementWeeks: 4, incrementValue: 50 }),
-    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程一次注册12周及以上，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: ['ielts-course', 'ielts-guarantee-12-weeks'], discountValue: 1 }),
+    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程（含预备雅思）一次注册12周及以上，或报名8周雅思保分班，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: [...CPILS_IELTS_COURSE_IDS], discountValue: 1 }),
     promotion('cpils-toeic-exam-2027', '2027年托业官方考试赠送', `${terms}托业课程4–7周赠1次，每满4周增加1次，24周赠6次；可与其他优惠同享。`, 10, { eligibleCourseIds: ['toeic-course', 'toeic-guarantee'], discountValue: 1, incrementWeeks: 4, incrementValue: 1 }),
   ];
   for (const rule of promos) if (!settings.promotions.some(item => item.id === rule.id)) settings.promotions.push(rule);

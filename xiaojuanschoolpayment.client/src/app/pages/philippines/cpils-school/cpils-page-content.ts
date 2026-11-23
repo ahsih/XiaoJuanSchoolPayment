@@ -13,8 +13,9 @@ import type {
   FaqItem,
   FitItem,
   GalleryImage,
+  HolidayCalendar,
 } from '../cia-school/cia-page-content';
-import type { PhRoomProfile, PhVideoTab } from '../school-page/ph-school-profile';
+import type { PhOfferCard, PhRoomProfile, PhVideoTab } from '../school-page/ph-school-profile';
 
 export const CPILS_PAGE_COPY = {
   heroLead: '2001年开办的宿务市区老牌英语学校，2009年起是圣何塞-雷科莱托斯大学（USJ-R）的英语中心。课程多、考试资源全，适合目标明确、想被学习节奏推动的学生。',
@@ -33,6 +34,90 @@ export const CPILS_PAGE_COPY = {
 } as const;
 
 export const CPILS_FINAL_CTA_BADGES = ['快速响应', '专业顾问一对一', '方案与报价免费', '从申请到入学全程协助'];
+
+/**
+ * Offers above the quote (school posters of 2026-09 and 2026-11-23). A card leaves the page from its `until`
+ * date or when its rules are disabled in the published content; the quote applies the rules themselves.
+ */
+const SCHOLARSHIP_TERMS = '2027/01/01–12/27开课（05/31–08/29开课除外）';
+export const CPILS_OFFERS: PhOfferCard[] = [
+  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，可与下面的学校优惠叠加。', promotionIds: ['cpils-sida'] },
+  {
+    icon: 'school', title: '学校奖学金', amount: '课程费和住宿费再减5%', text: `${SCHOLARSHIP_TERMS}、至少报名4周。`,
+    until: '2027-12-28', promotionIds: ['cpils-scholarship-2027'],
+  },
+  {
+    icon: 'work', title: '职业培训课程', amount: '最高减200美元',
+    text: '2027年开课的医学英语、TESOL（成人／少儿）、咖啡师与饮品英语、酒店与接待服务英语、打工度假英语。',
+    detail: '4–7周减50 · 8–11周减100 · 12–15周减150 · 16周及以上减200美元',
+    until: '2028-01-01', promotionIds: ['cpils-career-2027'],
+  },
+  {
+    icon: 'sailing', title: '周末活动', amount: '免费体验2项', text: '2027/01/02–05/29开课、至少报名8周：奥斯洛布观鲸鲨1次、跳岛游1次，均含餐饮。',
+    until: '2027-05-30', promotionIds: ['cpils-weekend-2027'],
+  },
+  {
+    icon: 'egg', title: '复活节优惠', amount: '立减75美元', text: '2026/11/23–2027/03/21报名、至少4周，学习期涵盖2027/03/21–03/27。',
+    until: '2027-03-22', promotionIds: ['cpils-easter-2027'],
+  },
+  {
+    icon: 'park', title: '圣诞及新年优惠', amount: '立减50–100美元', text: '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–12/25减50美元。',
+    detail: '涵盖2027/12/19–2028/01/01减100美元。',
+    until: '2027-12-27', promotionIds: ['cpils-christmas-2027', 'cpils-new-year-2027'],
+  },
+  {
+    icon: 'bed', title: '无对外窗房', amount: '每满4周减50美元', text: `住无对外窗单人／双人房，24周最多减300美元；${SCHOLARSHIP_TERMS}。`,
+    until: '2027-12-28', promotionIds: ['cpils-no-window-2027'],
+  },
+  {
+    icon: 'workspace_premium', title: '官方考试赠送', amount: '雅思1次 · 托业最多6次', text: `雅思课程（含预备雅思）一次报名12周及以上赠1次，8周雅思保分班也赠1次；托业课程每满4周赠1次。${SCHOLARSHIP_TERMS}。`,
+    until: '2027-12-28', promotionIds: ['cpils-ielts-exam-2027', 'cpils-toeic-exam-2027'],
+  },
+  { icon: 'replay', title: '老学员返校', amount: '免注册费', text: '在CPILS读过书的学生再次报名，免收一次性注册费。', promotionIds: ['cpils-returning-registration'] },
+  {
+    icon: 'event', title: '2026年内入学', amount: '淡季再享95折', text: '2026/12/27前入学，课程或住宿满4周的部分在9折后再享95折。',
+    detail: '学习期涵盖2026/12/21–12/26减75美元，涵盖至2027/01/01减150美元。',
+    until: '2026-12-28', promotionIds: ['cpils-off-season-fall'],
+  },
+];
+
+/** The school's 2027 academic calendar: public holidays (no classes). The two Islamic holidays follow the moon sighting. */
+export const CPILS_HOLIDAY_CALENDARS: HolidayCalendar[] = [{
+  year: 2027,
+  label: '2027年学校假期',
+  months: [
+    { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
+    { month: 2, holidays: [{ day: '6日', name: '春节' }, { day: '24日', name: '宿务市宪章日' }] },
+    {
+      month: 3,
+      holidays: [
+        { day: '10日', name: '开斋节', provisional: true },
+        { day: '25日', name: '濯足节' },
+        { day: '26日', name: '耶稣受难日' },
+        { day: '27日', name: '黑色星期六' },
+      ],
+    },
+    { month: 4, holidays: [{ day: '9日', name: '勇士日' }] },
+    { month: 5, holidays: [{ day: '1日', name: '劳动节' }, { day: '17日', name: '宰牲节', provisional: true }] },
+    { month: 6, holidays: [{ day: '12日', name: '独立日' }] },
+    {
+      month: 8,
+      holidays: [{ day: '6日', name: '宿务省宪章日' }, { day: '21日', name: '尼诺伊·阿基诺纪念日' }, { day: '30日', name: '国家英雄日' }],
+    },
+    { month: 9, holidays: [{ day: '9日', name: '奥斯梅尼亚日' }] },
+    { month: 11, holidays: [{ day: '1日', name: '诸圣节' }, { day: '2日', name: '万灵节' }, { day: '30日', name: '博尼法西奥日' }] },
+    {
+      month: 12,
+      holidays: [
+        { day: '8日', name: '圣母无染原罪瞻礼' },
+        { day: '24日', name: '平安夜' },
+        { day: '25日', name: '圣诞节' },
+        { day: '30日', name: '黎刹日' },
+        { day: '31日', name: '新年前夜' },
+      ],
+    },
+  ],
+}];
 
 export const CPILS_QUICK_INFO = [
   { icon: 'location_on', title: '位置', text: '宿务市区老城区，到麦克坦机场车程约40分钟' },
@@ -131,6 +216,7 @@ export const CPILS_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     courseIds: ['toeic-guarantee'],
     facts: [
       { label: '保分目标', value: '入学400分保600分；530分保700分；670分保800分；800分保900分' },
+      { label: '2027开课日', value: '1/4、2/1、3/8、4/12、5/3、6/7、7/5、8/2、9/6、10/4（均为周一，前一天周日入住）' },
       { label: '模考', value: '每月2次，周四晚；周六上午补考' },
     ],
     points: ['入学分数不够时，建议先读托业课程。'],
@@ -220,6 +306,7 @@ export const CPILS_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
     title: '校园活动',
     facts: [
       { label: '校内', value: '英语趣味活动、团队竞赛、万圣节、圣诞晚会、校庆、每周五毕业典礼' },
+      { label: '2027年', value: '每月一次英语主题活动；7/2校庆感恩弥撒、7/30校庆派对；12/17师生圣诞派对' },
       { label: '周末', value: '跳岛、海边度假村、宿务城市游、保龄球、溜冰等，自愿报名' },
     ],
     note: '',
@@ -267,7 +354,7 @@ export const CPILS_FAQS: FaqItem[] = [
   },
   {
     question: '现在报名有哪些优惠？',
-    answer: '所有学生都享思达启航课程费和住宿费9折。2027年开课：学校奖学金再减5%，无对外窗单人／双人房每满4周减50美元（24周最多减300美元），雅思一次注册12周赠1次官方考试，托业课程按周数赠1至6次官方考试；2027/05/31–08/29开课不适用学校优惠。2026年内开课：淡季入学再享95折，学习期覆盖圣诞或新年另减75或150美元。',
+    answer: '所有学生都享思达启航课程费和住宿费9折，还能叠加学校优惠：2027年开课有奖学金再减5%、无对外窗房每4周减50美元、雅思和托业官方考试赠送，职业培训课程最高减200美元，复活节和圣诞新年期间在读另有立减，2027/01/02–05/29开课读满8周送两项周末活动。各项条件见上方“报名优惠”，报价器会自动计算。',
   },
   {
     question: '暑假有附加费吗？',
