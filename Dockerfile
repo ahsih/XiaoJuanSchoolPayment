@@ -7,6 +7,10 @@ COPY xiaojuanschoolpayment.client/package*.json ./
 RUN npm ci
 
 COPY xiaojuanschoolpayment.client ./
+# School pages are prerendered with the latest published prices read from the live site
+# (scripts/prerender-school-pages.cjs). If the site cannot be reached, that step is skipped
+# and those pages are rendered in the browser as before.
+ENV SIDA_PRERENDER_API_ORIGIN=https://sidaqihang.com
 RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS server-build
