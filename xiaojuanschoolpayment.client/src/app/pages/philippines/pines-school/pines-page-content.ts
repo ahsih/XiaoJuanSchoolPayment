@@ -232,17 +232,17 @@ export const PINES_ROOM_PROFILES: PhRoomProfile[] = [
     gallery: ['five-br-solo-1', 'five-br-solo-2', 'five-br-solo-3', 'five-br-solo-common', 'five-br-solo-bathroom'].map(rooms),
     imageAlt: 'PINES五人间实景', rateIds: ['five-br-solo'],
   },
-  // Each opens with its own labelled video (roomVideos); the school's photos do not say whether a room has four or
-  // six beds, so both albums show the same photos and say so.
+  // Each opens with its own labelled video (roomVideos). Both rooms have the same beds and differ only in size (user
+  // 2026-11-24), so both albums show the same photos and say so.
   {
     id: 'dorm-4', label: '四人间', englishName: '4 BEDS', location: '校内', bed: '上床下桌',
-    suitable: '预算优先、喜欢热闹的学生', note: '主楼四人间，床在上层、书桌在下层。照片是主楼多人间，学校没有区分四人间和六人间。',
+    suitable: '预算优先、喜欢热闹的学生', note: '主楼四人间，床在上层、书桌在下层。四人间和六人间床型一样，只是房间大小不同，照片是同款多人间。',
     image: rooms('dorm-4-6-1'), gallery: DORM_PHOTOS.map(rooms),
     imageAlt: 'PINES多人间实景', rateIds: ['quad'],
   },
   {
     id: 'dorm-6', label: '六人间', englishName: '6 BEDS', location: '校内', bed: '上床下桌',
-    suitable: '预算最低、喜欢热闹的学生', note: '主楼六人间，床在上层、书桌在下层。照片是主楼多人间，学校没有区分四人间和六人间。',
+    suitable: '预算最低、喜欢热闹的学生', note: '主楼六人间，床在上层、书桌在下层。四人间和六人间床型一样，只是房间大小不同，照片是同款多人间。',
     image: rooms('dorm-4-6-1'), gallery: DORM_PHOTOS.map(rooms),
     imageAlt: 'PINES多人间实景', rateIds: ['sextuple'],
   },
