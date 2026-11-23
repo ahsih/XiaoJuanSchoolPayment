@@ -63,7 +63,10 @@ export interface PhPageCopy {
   calendar?: Optional<CiaCopy['calendar'], 'badge' | 'provisionalLabel' | 'footnote'>;
   ielts?: CiaCopy['ielts'];
   videos: Optional<CiaCopy['videos'], 'lifeTitle' | 'interviewTitle'>;
-  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'>;
+  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'> & {
+    /** Compact layout: the hint above the room price list; defaults to 点任一房型… (SMEAG Encanto has photos of one room only). */
+    pickHint?: string;
+  };
   /** The step and summary labels are read only by the compact layout's quote (CIA). */
   quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'>;
   fees: CiaCopy['fees'];
