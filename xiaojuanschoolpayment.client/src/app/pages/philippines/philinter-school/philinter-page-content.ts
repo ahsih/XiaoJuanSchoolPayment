@@ -21,6 +21,24 @@ import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 /** Closes every content section once; the same line as on every Philippine school page. */
 export const PHILINTER_REFERENCE_NOTE = SCHOOL_REFERENCE_NOTE;
 
+/** From this local date no one can still arrive in 2026, so every mention of 2026 prices disappears. */
+export const PHILINTER_2026_PRICES_UNTIL = '2027-01-01';
+
+function localIsoDate(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+export function philinterShows2026Prices(today: Date = new Date()): boolean {
+  return localIsoDate(today) < PHILINTER_2026_PRICES_UNTIL;
+}
+
+/** The FAQ without items whose `until` date has passed. */
+export function currentPhilinterFaqs(today: Date = new Date()): FaqItem[] {
+  const iso = localIsoDate(today);
+  return PHILINTER_FAQS.filter(faq => !faq.until || iso < faq.until).map(item => ({ ...item }));
+}
+
 export const PHILINTER_PAGE_TEXT = {
   heroLead: '2003年创办的老牌学校，在宿务麦克坦岛，离机场很近。斯巴达和半斯巴达课程都有，雅思、托业和口语课程完整，校内可考官方雅思。',
   advisorText: 'Philinter 适合重视老师和学习风气的成人：每位学生有一位一对一老师做 Buddy Teacher，跟进出勤和学习；雅思、托业都有保分班，雅思官方考试可以在校内考。强化ESL、雅思等斯巴达课程周一至周四晚上有必修晚自习，综合ESL、轻松ESL、商务和托业常规是半斯巴达，下课后时间自己安排。校内宿舍有门禁，想要更自由可以住校外的 Azon 公寓。',
@@ -622,6 +640,7 @@ export const PHILINTER_FAQS: FaqItem[] = [
   {
     question: '2027年价格有变化吗？',
     answer: '课程费不变；校内单人间、双人间、三人间和注册费上调，Azon公寓不变。2027年1月3日起入学按2027年价格计算，报价会自动区分。',
+    until: PHILINTER_2026_PRICES_UNTIL,
   },
   {
     question: '住校内宿舍还是 Azon 公寓？',

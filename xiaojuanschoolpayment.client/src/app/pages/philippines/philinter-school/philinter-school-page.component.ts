@@ -10,10 +10,23 @@ import {
   PHILINTER_PRICE_SWITCH_ARRIVAL,
   type PhilinterQuoteSettings,
 } from './philinter-content-config';
+import { philinterShows2026Prices } from './philinter-page-content';
 import { PhilinterPageStudent, PhilinterPlanComparison, PhilinterQuote } from './philinter-page-quote';
 import { PHILINTER_PAGE_PROFILE } from './philinter-page-profile';
 
 const DEFAULT_CONTENT = createDefaultPhilinterContentConfig();
+
+/** Until the end of 2026 the room note also gives the 2026 price of every room whose price changes in 2027. */
+export function roomNoteWith2026Prices(content: CiaContentConfig, today: Date = new Date()): string {
+  const note = content.quoteSettings.roomTableNote;
+  if (!philinterShows2026Prices(today)) return note;
+  const rooms = content.rooms.filter(room => room.enabled && typeof room.fee2027 === 'number' && room.fee2027 > 0);
+  const changed = rooms.filter(room => room.fee !== room.fee2027);
+  if (!changed.length) return note;
+  const prices = changed.map(room => `${room.name}${room.fee.toLocaleString('en-US')}`).join('、');
+  const others = rooms.length > changed.length ? '，其他房型价格不变' : '';
+  return `${note}2026年入学：${prices}美元${others}。`;
+}
 /** Database school names, newest first. */
 const PHILINTER_SCHOOL_NAMES = ['菲律宾宿务Philinter语言学校', 'Philinter Academy'];
 /** Courses sold as one fixed package; the course list shows the package price. */
@@ -47,6 +60,8 @@ export class PhilinterSchoolPageComponent extends PhSchoolPageComponent<Philinte
     return new PhilinterPlanComparison(this, () => this.students[0]);
   }
 
+  override roomTableNote = roomNoteWith2026Prices(DEFAULT_CONTENT);
+
   private appliedContent?: CiaContentConfig;
   /** The applied content document, or the defaults before any is applied. A getter, because the quote is built before this class's fields. */
   private get content(): CiaContentConfig { return this.appliedContent ?? DEFAULT_CONTENT; }
@@ -63,6 +78,7 @@ export class PhilinterSchoolPageComponent extends PhSchoolPageComponent<Philinte
 
   protected override afterContentApplied(content: CiaContentConfig): void {
     this.appliedContent = content;
+    this.roomTableNote = roomNoteWith2026Prices(content);
   }
 
   /** Philinter prices come only from its content document; the database's older 4-week rows are not used. */

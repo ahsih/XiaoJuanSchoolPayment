@@ -203,7 +203,8 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
     courseTableNote: '课程费2026年和2027年相同；1–3周按4周价的45%、65%、85%计算。',
     groupClassNote: '小组课1:4–6，大班课1:10–15；每节课40–45分钟。',
     roomTableTitle: 'Philinter 4周住宿费',
-    roomTableNote: '2027年1月3日起入学按上面的价格；2026年入学的校内单人间1,400、双人间970、三人间810美元，Azon公寓价格不变。',
+    // The page adds the 2026 prices behind this line until the end of 2026 (PhilinterSchoolPageComponent).
+    roomTableNote: '2027年1月3日起入学按上面的价格。',
     stayPolicyTitle: 'Philinter 入住与退房提醒',
     stayPolicies: [
       { label: '入住日期', value: '周日08:00起入住', note: '课程与住宿按周日至周六的完整周计算。' },

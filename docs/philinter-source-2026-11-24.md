@@ -27,7 +27,8 @@ Not published: the nationality chart, Wi-Fi passwords, the handbook's sensitive-
 
 ## Decisions
 
-- 2027 prices (rooms and the 150-dollar registration) apply to stays whose first arrival is on or after 2027-01-03. Course prices are the same in both years. **Open: the sheet says it is not yet in force; the user is asked to confirm.**
+- 2027 prices (rooms and the 150-dollar registration) apply to stays whose first arrival is on or after 2027-01-03. Course prices are the same in both years. **Open: the sheet says it is not yet in force and gives no start rule (by arrival or by registration date); the user is asked to confirm with the school.** The only dated rule in the pack is the 2027 peak surcharge, which goes by registration date: 60 dollars a week for students registered from 2026-11-02, 40 for those registered earlier. The quote charges 60 for every 2027 peak week, which is right for every new registration.
+- Until 2026-12-31 the room note lists the 2026 room prices (built from the content document's `fee`) and a FAQ explains the 2027 change; from local date 2027-01-01 both disappear (`PHILINTER_2026_PRICES_UNTIL`), because no one can arrive in 2026 any more.
 - Sida 10% on tuition and accommodation comes first; the 2026 low-season offer (300 dollars per 8 consecutive weeks in a campus triple or Azon single or twin, 2026-08-16 to 12-25, no guarantee courses) comes after it.
 - Booster Speaking and PTE can only start from 2027-01-03. IELTS Guarantee runs 8 or 12 weeks, the 16-week IELTS courses 16 weeks, Premium Speaking 8 weeks, Premium Junior Speaking 4 to 6 weeks, Booster Speaking 4 weeks, TOEIC Guarantee at least 12 weeks. Focus Industry cannot be booked directly.
 - Junior courses only for under-18s, never in a single room; adults cannot take junior courses.

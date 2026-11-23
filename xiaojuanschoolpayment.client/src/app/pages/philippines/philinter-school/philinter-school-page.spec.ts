@@ -7,8 +7,9 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import { clonePhilinterContentConfig, createDefaultPhilinterContentConfig } from './philinter-content-config';
+import { currentPhilinterFaqs } from './philinter-page-content';
 import { PHILINTER_PAGE_PROFILE } from './philinter-page-profile';
-import { PhilinterSchoolPageComponent } from './philinter-school-page.component';
+import { PhilinterSchoolPageComponent, roomNoteWith2026Prices } from './philinter-school-page.component';
 
 // Philinter on the shared Philippine school template: the 2026 and 2027 price lists, the 2026 low-season offer and
 // the 2026-10-19 local-fee sheet from Philinter's 2026-2027 Google Drive pack.
@@ -137,6 +138,20 @@ describe('Philinter page on the shared template', () => {
     const guarantee = page.courseFees.find(fee => fee.id === 'ielts-guarantee-8-weeks')!;
     expect(page.listPrice(guarantee)).toBe(3160);
     expect(page.coursePriceUnit(guarantee)).toBe('/8周');
+  });
+
+  it('drops every 2026 price from the page from 2027-01-01', () => {
+    const content = createDefaultPhilinterContentConfig();
+    const lastDay = new Date(2026, 11, 31);
+    const firstDay = new Date(2027, 0, 1);
+    expect(roomNoteWith2026Prices(content, lastDay))
+      .toBe('2027年1月3日起入学按上面的价格。2026年入学：校内单人间1,400、校内双人间970、校内三人间810美元，其他房型价格不变。');
+    expect(roomNoteWith2026Prices(content, firstDay)).toBe('2027年1月3日起入学按上面的价格。');
+    expect(page.roomTableNote).toBe(roomNoteWith2026Prices(content));
+    const priceFaq = (today: Date) => currentPhilinterFaqs(today).some(faq => faq.question === '2027年价格有变化吗？');
+    expect(priceFaq(lastDay)).toBeTrue();
+    expect(priceFaq(firstDay)).toBeFalse();
+    expect(currentPhilinterFaqs(firstDay).length).toBe(currentPhilinterFaqs(lastDay).length - 1);
   });
 
   it('links every course group, room profile and room price to the content document', () => {
