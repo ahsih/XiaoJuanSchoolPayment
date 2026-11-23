@@ -300,8 +300,8 @@
               <label *ngIf="supportsOneWeekShortStay" data-editor-section="short-stay" (focusin)="focusEditorItem('section', 'short-stay')">1周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['1']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">2周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['2']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">3周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['3']" /></label>
-              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">15岁以下管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeUnder15PerWeek" /></label>
-              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">15–17岁管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeAge15To17PerWeek" /></label>
+              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">小学或初中生管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeUnder15PerWeek" /></label>
+              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">高中生管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeAge15To17PerWeek" /></label>
             </div>
           </div>
 

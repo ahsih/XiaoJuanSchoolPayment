@@ -122,11 +122,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/baguio-study-hero.webp',
   },
   '/philippines-study/cebu/bcebu': {
-    title: "菲律宾宿务B'Cebu语言学校 | 2026课程住宿费用",
+    title: "菲律宾宿务B'Cebu语言学校 | 课程住宿费用与在线报价",
     description:
-      "菲律宾宿务B'Cebu语言学校2026费用页面，整理Speed ESL、Intensive ESL、IELTS、B'SPARTA、商务英语、Junior、幼儿园课程、住宿房型与1至3周短期比例。",
+      "菲律宾宿务B'Cebu语言学校（麦克坦岛拉普拉普市）：Speed ESL、B'Sparta斯巴达、雅思与雅思保证班、商务英语、青少年与幼儿课程，单人间到三人间住宿，2027淡季优惠、暑假附加费、在线报价与学杂费明细。",
     keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
-    image: '/assets/study-hero-collage.webp',
+    image: '/assets/bcebu/campus-building.webp',
   },
   '/philippines-study/cebu/btes-english-academy': {
     title: '菲律宾宿务BTES语言学校 | 课程、住宿与报名咨询',
