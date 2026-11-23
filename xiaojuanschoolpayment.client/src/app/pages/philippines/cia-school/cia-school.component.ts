@@ -461,14 +461,16 @@ export class CiaSchoolComponent extends PhSchoolPageComponent<CiaStudentQuote> {
           (item) => item.id === course.id,
         );
 
-        return databaseCourse
-          ? {
-              ...course,
-              name: databaseCourse.name,
-              tuition: databaseCourse.tuition,
-              suitable: databaseCourse.suitable || course.suitable,
-            }
-          : course;
+        if (!databaseCourse) return course;
+        // The database row only supplies College Immersion's price; its older English name and fit
+        // would hide that the course includes the IAU sit-in.
+        const websiteOwned = course.id === 'college-immersion';
+        return {
+          ...course,
+          name: websiteOwned ? course.name : databaseCourse.name,
+          tuition: databaseCourse.tuition,
+          suitable: websiteOwned ? course.suitable : databaseCourse.suitable || course.suitable,
+        };
       });
       const extraDatabaseCourseFees = databaseCourseFees.filter(
         (course) => !this.courseFees.some((item) => item.id === course.id),

@@ -203,7 +203,7 @@ describe('five-school multi-row quote rollout', () => {
           expect(paint.some(item => item.text === row.amount && item.x === 546 && item.color === '#14233e')).withContext(`${key} ${row.label}`).toBeTrue();
           expect(drawn).toContain(row.note.replace(/\s/g, ''));
         }
-        if (key === 'cia' && courseCount === 4) expect(drawn).toContain('IAU一次性注册费50美元另计（未计入上述合计）。');
+        if (key === 'cia' && courseCount === 4) expect(drawn).toContain('另需支付IAU一次性注册费50美元（到校后付，未计入上述合计）。');
         const capture = (window as unknown as { __karma__: { config: { args?: string[] } } }).__karma__.config.args?.includes('capture-rollout');
         if (capture) expect((await fetch(`/quote-rollout/${key}-${scenario}.png`, { method: 'POST', body: blob })).ok).toBeTrue();
       }

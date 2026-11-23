@@ -136,8 +136,11 @@ export interface PhSchoolProfile {
   overviewFacts?: ReadonlyArray<{ icon: string; label: string; value: string }>;
   /** Compact layout: video groups, shown first in the hero album (the first video opens it). */
   videoTabs?: readonly PhVideoTab[];
-  /** Compact layout: a tag beside a course name and a line in its details, e.g. 读满12周送1次官方考试. */
-  courseHighlights?: Readonly<Record<string, { badge: string; label: string; text: string }>>;
+  /**
+   * Compact layout: a tag beside a course name, e.g. 读满12周送1次官方考试, and a line in its details when it has
+   * `text`. The tag shows a gift icon unless it names another one (CIA's College Immersion uses flight_takeoff).
+   */
+  courseHighlights?: Readonly<Record<string, { badge: string; icon?: string; label?: string; text?: string }>>;
   /**
    * Compact layout: the first item of a room's photo album, keyed by room profile id. Only a video of exactly that room
    * type (user rule 2026-11-21); a video showing several room types stays in the hero album only.
