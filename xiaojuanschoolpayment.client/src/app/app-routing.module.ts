@@ -465,24 +465,23 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/baguio/baguio-jic-challenger',
-        data: { campus: 'challenger' },
         loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+          import('./pages/philippines/jic-school/jic-challenger-school.component').then((m) => m.JicChallengerSchoolComponent),
       },
       {
         path: 'philippines-study/baguio/baguio-jic-premium',
-        data: { campus: 'premium' },
         loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+          import('./pages/philippines/jic-school/jic-premium-school.component').then((m) => m.JicPremiumSchoolComponent),
       },
       {
+        // The former combined page; each campus now has its own page.
         path: 'philippines-study/baguio/baguio-jic',
-        loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+        redirectTo: '/philippines-study/baguio/baguio-jic-challenger',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/baguio/baguio-jic-academy',
-        redirectTo: '/philippines-study/baguio/baguio-jic',
+        redirectTo: '/philippines-study/baguio/baguio-jic-challenger',
         pathMatch: 'full',
       },
       {

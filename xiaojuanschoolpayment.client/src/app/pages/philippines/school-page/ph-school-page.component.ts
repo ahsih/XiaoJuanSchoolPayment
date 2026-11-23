@@ -923,9 +923,30 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       .subscribe((photos) => this.applyGalleryPhotos(photos));
   }
 
+  /**
+   * Whether an uploaded school photo or video belongs on this page. Every upload by default; a school whose
+   * campus pages share one school record (JIC) keeps only its own campus.
+   */
+  protected acceptUploadedMedia(_photo: SchoolPhotoDTO): boolean {
+    return true;
+  }
+
+  private uploadedMediaSource: SchoolPhotoDTO[] | null = null;
+  private galleryBeforeUploads: GalleryImage[] | null = null;
+
+  /** Applies the loaded uploads again after acceptUploadedMedia changed its answer (JIC: content with campus tags arrived). */
+  protected refreshUploadedMedia(): void {
+    if (!this.uploadedMediaSource) return;
+    if (this.galleryBeforeUploads) this.galleryImages = this.galleryBeforeUploads;
+    this.uploadedVideoCards = [];
+    this.applyGalleryPhotos(this.uploadedMediaSource);
+  }
+
   private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    this.uploadedMediaSource = photos ?? [];
+    this.galleryBeforeUploads ??= this.galleryImages;
     const uploadedMedia = (photos ?? [])
-      .filter((photo) => Boolean(photo.url))
+      .filter((photo) => Boolean(photo.url) && this.acceptUploadedMedia(photo))
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
     if (uploadedMedia.length === 0) {
