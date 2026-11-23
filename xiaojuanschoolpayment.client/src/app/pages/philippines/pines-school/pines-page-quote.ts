@@ -23,6 +23,7 @@ import {
   PINES_GLOBAL_YOUTH_COURSE_ID,
   PINES_GLOBAL_YOUTH_ROOM_ID,
   PINES_JUNIOR_COURSE_ID,
+  PINES_MATERIAL_SET_WEEKS,
   PINES_MATERIAL_TIERS,
 } from './pines-content-config';
 
@@ -347,11 +348,12 @@ export class PinesPageStudent implements PhPageStudent {
     return Array.from({ length: this.visaExtensionCount }, (_, index) => sequence[index] ?? sequence.at(-1) ?? amount);
   }
 
+  /** ACR I-Card comes with the first visa extension, at every Philippine school (user rule 2026-11-24). */
   get acrNeeded(): boolean {
-    return this.uses2027LocalFees ? this.quotePlan.stayWeeks >= 9 : this.visaExtensionCount > 0;
+    return this.visaExtensionCount > 0;
   }
 
-  /** 2027 textbooks: per started four weeks of each course, by the course's book tier. */
+  /** 2027 textbooks: one set per started 8 weeks of each course (IELTS 12 weeks), by the course's book tier. */
   private get materials(): { periods: number; total: number; rates: number[] } {
     const rule = this.rule('materials');
     if (!rule) return { periods: 0, total: 0, rates: [] };
@@ -364,8 +366,9 @@ export class PinesPageStudent implements PhPageStudent {
     let total = 0;
     const used = new Set<number>();
     for (const [id, weeks] of weeksByCourse) {
-      const count = Math.ceil(weeks / (rule.periodWeeks ?? 4));
-      const rate = tiers[PINES_MATERIAL_TIERS[id] ?? 0] ?? tiers[0];
+      const tier = PINES_MATERIAL_TIERS[id] ?? 0;
+      const count = Math.ceil(weeks / PINES_MATERIAL_SET_WEEKS[tier]);
+      const rate = tiers[tier] ?? tiers[0];
       periods += count;
       total += count * rate;
       used.add(rate);
@@ -404,7 +407,7 @@ export class PinesPageStudent implements PhPageStudent {
     }
     const books = this.materials;
     if (books.periods) {
-      add('materials', books.periods, `${books.rates.map(rate => Math.round(rate).toLocaleString('en-US')).join('／')} 比索／4周`, books.total);
+      add('materials', books.periods, `${books.rates.map(rate => Math.round(rate).toLocaleString('en-US')).join('／')} 比索／套`, books.total);
     }
     add('student-id', 1);
     return fees;

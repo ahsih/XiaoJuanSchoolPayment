@@ -111,8 +111,9 @@ describe('PINES school page on the shared template', () => {
     expect(localFee('宿舍维护费')).toBe(6000);
     expect(localFee('ACR')).toBe(4000);
     expect(localFee('签证续签')).toBe(6210);
-    expect(localFee('教材费')).toBe(5700);
-    expect(page.quote.estimatedLocalFeeTotal).toBe(7800 + 4500 + 4000 + 11400 + 6000 + 6210 + 5700 + 200);
+    // One 1,900-peso set per started 8 weeks (user answer 2026-11-24).
+    expect(localFee('教材费')).toBe(3800);
+    expect(page.quote.estimatedLocalFeeTotal).toBe(7800 + 4500 + 4000 + 11400 + 6000 + 6210 + 3800 + 200);
   });
 
   it('counts one visa extension per four weeks beyond the entry visa', () => {
@@ -126,6 +127,21 @@ describe('PINES school page on the shared template', () => {
     expect(student().visaExtensionCount).toBe(0);
     page.selectedWeeks = 9;
     expect(student().visaExtensionCount).toBe(1);
+  });
+
+  it('charges ACR with the first visa extension', () => {
+    student().visaType = 'tourist30';
+    page.selectedWeeks = 5;
+    expect(localFee('ACR')).toBe(4000);
+    page.selectedWeeks = 4;
+    expect(localFee('ACR')).toBe(0);
+    student().selectedRegistrationDate = '2027-02-15';
+    page.selectedStartDate = '2027-03-07';
+    page.selectedWeeks = 6;
+    expect(localFee('ACR')).toBe(4000);
+    student().visaType = 'tourist59';
+    page.selectedWeeks = 8;
+    expect(localFee('ACR')).toBe(0);
   });
 
   it('lists 2026 prices with the 2027 price inside each course until 2027-02-01', () => {
@@ -165,6 +181,17 @@ describe('PINES school page on the shared template', () => {
     expect(upgraded.rooms.length).toBe(createDefaultPinesContentConfig().rooms.length);
     expect((upgraded.quoteSettings as { pinesPolicyVersion?: number }).pinesPolicyVersion).toBe(PINES_POLICY_VERSION);
     expect(upgraded.quoteImageSettings.serviceSectionTitle).toBe('员工改过的标题');
+  });
+
+  it('moves untouched ACR and textbook notes saved on 2026-11-23 to the new wording', () => {
+    const saved = createDefaultPinesContentConfig();
+    const acr = saved.localFees.find(fee => fee.id === 'acr-i-card')!;
+    acr.note = '停留超过59天时办理，只收一次。';
+    saved.localFees.find(fee => fee.id === 'materials')!.futureNote = '员工改过的教材说明';
+    delete (saved.quoteSettings as { pinesFeeNoteVersion?: number }).pinesFeeNoteVersion;
+    const upgraded = clonePinesContentConfig(saved);
+    expect(upgraded.localFees.find(fee => fee.id === 'acr-i-card')!.note).toContain('第一次续签时办理');
+    expect(upgraded.localFees.find(fee => fee.id === 'materials')!.futureNote).toBe('员工改过的教材说明');
   });
 
   it('links every price card to a room album and shows the school video', () => {
