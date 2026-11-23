@@ -177,9 +177,8 @@ describe('five-school multi-row quote rollout', () => {
         expect(quote.subtitle).toBe('');
         const periods = quote.paymentItems.filter(row => row.detailTitle);
         expect(periods.length).toBe(courseCount + roomCount);
-        // SMEAG shortens 课程费/住宿费 to 课程/住宿; the others name the period.
-        const courseLabel = key === 'smeag-capital' ? '课程' : '课程名称';
-        const roomLabel = key === 'smeag-capital' ? '住宿' : '住宿名称';
+        const courseLabel = '课程名称';
+        const roomLabel = '住宿名称';
         expect(periods[0].label).toBe(courseCount === 1 ? courseLabel : courseLabel + '1');
         expect(periods[courseCount].label).toBe(roomCount === 1 ? roomLabel : roomLabel + '1');
         expect(quote.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
