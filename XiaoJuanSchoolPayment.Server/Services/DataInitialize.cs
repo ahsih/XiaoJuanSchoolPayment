@@ -568,7 +568,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       }
 
       var schoolId = school.Id;
-      const string priceNote = "Cebu Blue Ocean 2025年4周美元价目表继续作为基础价格；课程和住宿1/2/3周分别按4周价格的40%/65%/85%，4周以上按比例；所有思达学生免100美元注册费，课程与住宿先打95折，再扣淡季、12周和长期固定优惠。";
+      const string priceNote = "Cebu Blue Ocean 2026年4周美元价格（2027/01/31前报名适用；2027/02/01起报名按2027年价格，见网站内容文档）；课程和住宿1/2/3周分别按4周价格的40%/65%/85%，4周以上按比例；所有思达启航学生免100美元注册费，课程与住宿先打95折，再扣学校固定优惠。";
 
       UpsertLesson(context, schoolId, "Light ESL", 4, 870m, "一对一4节", now, priceNote);
       UpsertLesson(context, schoolId, "Survival ESL", 4, 1050m, "一对一4节 + 小组课2节", now, $"{priceNote} Survival ESL每段最多4周。");
@@ -581,6 +581,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertLesson(context, schoolId, "监护人课程", 4, 750m, "一对一3节（可转让一节课给小朋友）", now, priceNote);
       UpsertLesson(context, schoolId, "青少年课程（未满15岁）", 4, 1500m, "一对一5节 + 小组课2节", now, priceNote);
       UpsertLesson(context, schoolId, "Senior Course", 4, 1050m, "一对一4节 + 特色小组课", now, $"{priceNote} 适合40岁以上学生。");
+      UpsertLesson(context, schoolId, "EBE", 4, 1250m, "一对一6节", now, "English for Business Executives，2027年新课程；2027/02/01起报名才可选，4周1,250美元。");
 
       UpsertRoom(context, schoolId, "校内双人间（海景）", 4, 1120m, "Cebu Blue Ocean 2025年4周住宿基础价格；校内海景双人房。", now);
       UpsertRoom(context, schoolId, "校内双人间（城景）", 4, 900m, "Cebu Blue Ocean 2025年4周住宿基础价格；校内城景双人房。", now);
@@ -588,14 +589,15 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertRoom(context, schoolId, "校外单人间（海景）", 4, 1600m, "Cebu Blue Ocean 2025年4周住宿基础价格；校外单人海景房。", now);
       UpsertRoom(context, schoolId, "校外豪华房型", 4, 1400m, "Cebu Blue Ocean 2025年4周住宿基础价格；校外豪华房型。", now);
       UpsertRoom(context, schoolId, "校外高级房型", 4, 1250m, "Cebu Blue Ocean 2025年4周住宿基础价格；校外高级房型。", now);
+      UpsertRoom(context, schoolId, "校外情侣房（每人）", 4, 950m, "Cebu Blue Ocean 2027年新房型；每人4周950美元，须两人一起报名同住；2027/02/01起报名才可选。", now);
 
       UpsertFee(context, schoolId, "注册费", 100m, UsdCurrencyId, "一次性费用；所有通过思达启航报名的学生不限学习周数均减免100美元", now);
       UpsertFee(context, schoolId, "思达启航95折", 0.95m, UsdCurrencyId, "课程费与住宿费先按95折计算，再扣除学校固定优惠", now);
       UpsertFee(context, schoolId, "常规淡季优惠", 150m, UsdCurrencyId, "每名学生每满4个非旺季课程周减150美元；部分跨旺季时仅排除旺季课程周", now);
       UpsertFee(context, schoolId, "12周额外优惠", 100m, UsdCurrencyId, "每名学生课程累计满12周额外减100美元一次；旺季期间仍可使用", now);
       UpsertFee(context, schoolId, "长期优惠", 100m, UsdCurrencyId, "每名学生课程累计16周减100美元，之后每增加2周多减25美元；旺季期间仍可使用", now);
-      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/06/28–08/22每名学生每个重叠学习周加收40美元；同一周课程与住宿只计一次；Family Course除外；不参与优惠", now);
-      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28每名学生每个重叠学习周加收60美元；同一周课程与住宿只计一次；Family Course除外；不参与优惠", now);
+      UpsertFee(context, schoolId, "旺季附加费", 40m, UsdCurrencyId, "2026/06/28–08/22每名学生每个重叠学习或住宿周加收40美元；同一周课程与住宿只计一次；家庭课程旺季另行报价；不参与优惠", now);
+      UpsertFee(context, schoolId, "2027旺季附加费", 60m, UsdCurrencyId, "2027/06/27–08/21每名学生每个重叠学习或住宿周加收60美元；同一周课程与住宿只计一次；家庭课程旺季另行报价；不参与优惠", now);
 
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "与本次学习时间对应；续费需要重新办理", now);
       UpsertFee(context, schoolId, "SSP-E CARD", 4500m, PhpCurrencyId, "1年有效期", now);

@@ -384,8 +384,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cebu-blue-ocean-academy',
         loadComponent: () =>
-          import('./pages/philippines/cebu-blue-ocean-school/cebu-blue-ocean-school.component').then(
-            (m) => m.CebuBlueOceanSchoolComponent,
+          import('./pages/philippines/cebu-blue-ocean-school/cboa-school-page.component').then(
+            (m) => m.CboaSchoolPageComponent,
           ),
       },
       {
