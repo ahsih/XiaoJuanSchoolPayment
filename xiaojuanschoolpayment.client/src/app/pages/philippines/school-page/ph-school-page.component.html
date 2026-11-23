@@ -1057,6 +1057,28 @@
 
     </section>
 
+    <!-- School-only (profile.offers, CPILS): the current offers, each with its conditions; an ended offer hides itself. -->
+    <section class="cia-section school-offers" id="offers" *ngIf="copy.offers && visibleOffers.length" aria-labelledby="school-offers-title">
+      <div class="section-heading">
+        <span class="section-eyebrow">{{ copy.offers.eyebrow }}</span>
+        <h2 id="school-offers-title">{{ copy.offers.title }}</h2>
+        <p>{{ copy.offers.intro }}</p>
+      </div>
+      <div class="offer-grid">
+        <article class="offer-card" *ngFor="let offer of visibleOffers">
+          <span class="offer-icon"><mat-icon>{{ offer.icon }}</mat-icon></span>
+          <div>
+            <h3>{{ offer.title }}</h3>
+            <strong class="offer-amount">{{ offer.amount }}</strong>
+            <p>{{ offer.text }}</p>
+            <small *ngIf="offer.detail">{{ offer.detail }}</small>
+          </div>
+        </article>
+      </div>
+      <p class="offer-note" *ngIf="copy.offers.note"><mat-icon>calculate</mat-icon>{{ copy.offers.note }}</p>
+      <p class="section-reference-note" *ngIf="copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
+    </section>
+
     <section class="quote-results-section group-quote" id="quote">
       <div class="quote-form-card">
         <h2 data-cia-preview-kind="section" data-cia-preview-id="quote" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote')">{{ quoteView === 'compare' ? schoolName + ' 方案对比' : quoteHeading }}</h2>
