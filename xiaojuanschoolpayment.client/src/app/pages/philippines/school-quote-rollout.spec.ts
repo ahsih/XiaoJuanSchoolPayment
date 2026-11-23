@@ -9,7 +9,7 @@ import { ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolService } from '../../../services/school.service';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
 import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
-import { SmeagCapitalSchoolComponent } from './smeag-capital-school/smeag-capital-school.component';
+import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { SchoolQuotePlan } from '../../components/school-quote-plan';
@@ -30,7 +30,7 @@ describe('five-school multi-row quote rollout', () => {
     const schools = [
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
-      TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
+      TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
     ];
@@ -53,11 +53,11 @@ describe('five-school multi-row quote rollout', () => {
     cia.quotePlan.add('course'); cia.quotePlan.courses[1].optionId = 'college-immersion';
     expect(cia.quoteImageData.totalNote).toContain('IAU一次性注册费50美元');
 
-    const smeag = TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent());
+    const smeag = TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent());
     smeag.quotePlan.add('course');
-    expect(smeag.localFees.filter(row => row.item.startsWith('教材费')).length).toBe(1);
+    expect(smeag.estimatedLocalFees.filter(row => row.item.startsWith('教材费')).length).toBe(1);
     smeag.quotePlan.courses[1].optionId = 'business';
-    expect(smeag.localFees.filter(row => row.item.startsWith('教材费')).length).toBe(2);
+    expect(smeag.estimatedLocalFees.filter(row => row.item.startsWith('教材费')).length).toBe(2);
 
     const cpi = TestBed.runInInjectionContext(() => new CpiSchoolPageComponent());
     cpi.selectedStartDate = '2026-11-29'; cpi.quotePlan.add('course'); cpi.quotePlan.add('room');
@@ -84,7 +84,7 @@ describe('five-school multi-row quote rollout', () => {
     const schools = [
       { school: TestBed.runInInjectionContext(() => new CiaSchoolComponent()), ratio: '80%' },
       { school: TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()), ratio: '85%' },
-      { school: TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()), ratio: '85%' },
+      { school: TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()), ratio: '85%' },
       { school: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()), ratio: '90%' },
     ];
     for (const { school, ratio } of schools) {
@@ -115,7 +115,7 @@ describe('five-school multi-row quote rollout', () => {
       const factories = [
         { key: 'cia', create: () => new CiaSchoolComponent() },
         { key: 'cg-banilad', create: () => new CgBaniladSchoolComponent() },
-        { key: 'smeag-capital', create: () => new SmeagCapitalSchoolComponent() },
+        { key: 'smeag-capital', create: () => new SmeagCapitalSchoolPageComponent() },
         { key: 'cpi', create: () => new CpiSchoolPageComponent() },
         { key: 'cpils', create: () => new CpilsSchoolPageComponent() },
       ];
@@ -229,7 +229,7 @@ describe('five-school multi-row quote rollout', () => {
     const schools = [
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
       TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
-      TestBed.runInInjectionContext(() => new SmeagCapitalSchoolComponent()),
+      TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
     ];
