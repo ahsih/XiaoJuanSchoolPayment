@@ -216,7 +216,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ciec',
         loadComponent: () =>
-          import('./pages/philippines/ciec-school/ciec-school.component').then((m) => m.CiecSchoolComponent),
+          import('./pages/philippines/ciec-school/ciec-school-page.component').then((m) => m.CiecSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/elsa-international-language-school',
@@ -335,8 +335,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/smeag-capital',
         loadComponent: () =>
-          import('./pages/philippines/smeag-capital-school/smeag-capital-school.component').then(
-            (m) => m.SmeagCapitalSchoolComponent,
+          import('./pages/philippines/smeag-capital-school/smeag-capital-school-page.component').then(
+            (m) => m.SmeagCapitalSchoolPageComponent,
           ),
       },
       {

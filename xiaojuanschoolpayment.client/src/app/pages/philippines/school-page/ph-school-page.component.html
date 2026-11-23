@@ -462,7 +462,7 @@
         <ng-template #courseLine let-fee let-mode="mode">
             <details class="course-line" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
               <summary>
-                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}<em class="course-line-badge" *ngIf="courseHighlights[fee.id] as highlight"><mat-icon>card_giftcard</mat-icon>{{ highlight.badge }}</em></strong>
+                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}<em class="course-line-badge" *ngIf="courseHighlights[fee.id] as highlight"><mat-icon>{{ highlight.icon || 'card_giftcard' }}</mat-icon>{{ highlight.badge }}</em></strong>
                 <span class="course-line-price"><b>{{ formatUsd(listPrice(fee)) }}</b> 美元<small>{{ coursePriceUnit(fee) }}</small></span>
                 <mat-icon class="course-line-chevron">expand_more</mat-icon>
                 <span class="course-line-schedule"><span *ngFor="let part of scheduleParts(fee.schedule); let first = first" [class.is-key]="first">{{ part }}</span></span>
@@ -470,7 +470,7 @@
               <dl class="course-line-detail">
                 <div *ngIf="fee.suitable"><dt>{{ copy.courses.fitLabel }}</dt><dd>{{ fee.suitable }}</dd></div>
                 <div *ngIf="fee.note"><dt>{{ copy.courses.noteLabel }}</dt><dd>{{ fee.note }}</dd></div>
-                <div *ngIf="courseHighlights[fee.id] as highlight" class="course-line-highlight"><dt>{{ highlight.label }}</dt><dd>{{ highlight.text }}</dd></div>
+                <div *ngIf="courseHighlights[fee.id]?.text" class="course-line-highlight"><dt>{{ courseHighlights[fee.id].label }}</dt><dd>{{ courseHighlights[fee.id].text }}</dd></div>
                 <div *ngIf="oldListPrice(fee) !== null"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(oldListPrice(fee)!) }} 美元{{ coursePriceUnit(fee) }}</dd></div>
               </dl>
               <ng-container *ngIf="compactLayout">
@@ -1002,14 +1002,15 @@
               [src]="item.image"
               [images]="ieltsResultImages"
               [imageTitles]="ieltsResultTitles"
-              [alt]="item.title + ' 官方雅思成绩单（已隐藏个人信息）'"
-              [title]="item.title + ' · 官方雅思' + item.overall"
+              [alt]="item.title + ' ' + (item.kind ?? '官方雅思成绩单') + '（已隐藏个人信息）'"
+              [title]="item.title + ' · ' + (item.summary ?? '官方雅思' + item.overall)"
               previewHeight="clamp(190px, 18vw, 250px)"
               previewFit="cover"
             ></app-expandable-image>
             <figcaption>
               <strong>{{ item.title }}</strong>
-              <span>入学 {{ item.entrance }} → <b>官方雅思 {{ item.overall }}</b></span>
+              <span *ngIf="item.summary; else officialIelts"><b>{{ item.summary }}</b></span>
+              <ng-template #officialIelts><span>入学 {{ item.entrance }} → <b>官方雅思 {{ item.overall }}</b></span></ng-template>
               <small>{{ item.detail }}</small>
             </figcaption>
           </figure>
@@ -1119,8 +1120,9 @@
         <div class="group-result">
           <span>最终应付学校金额</span><strong>{{ quoteUsdText }}</strong><em>{{ quoteCnyText }}</em>
           <small class="exchange-rate-summary">{{ exchangeRateSummary }}</small>
-          <small *ngIf="extraPaymentNote">{{ extraPaymentNote }}</small>
         </div>
+        <!-- Money paid outside the school total (CIA's IAU fee), shown so no student can miss it (user request 2026-11-23). -->
+        <p class="extra-payment-alert" role="note" *ngIf="extraPaymentNote"><mat-icon>error_outline</mat-icon><span>{{ extraPaymentNote }}</span></p>
         <ng-container *ngTemplateOutlet="quoteConsultantPicker"></ng-container>
         <div class="group-actions">
           <app-quote-image-download-button [quote]="quoteImageData" [disabled]="!!quoteError" label="保存报价单图片" buttonClass="primary-action"></app-quote-image-download-button>
@@ -1182,14 +1184,14 @@
             <h4>{{ copy.quote.conditionsStepTitle || copy.quote.conditionsTitle }}<small *ngIf="copy.quote.conditionsStepHint">{{ copy.quote.conditionsStepHint }}</small></h4>
             <div class="cq-fields">
               <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
-              <label><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label *ngIf="!student.hideAgeGroup"><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
               <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label class="cq-field-wide" *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)"><span>{{ choice.label }}</span><select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
-            <p class="cq-minor-note" *ngIf="student.selectedAgeGroup === 'minor'"><mat-icon>info</mat-icon>{{ student.minorNote }}</p>
+            <p class="cq-minor-note" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup"><mat-icon>info</mat-icon>{{ student.minorNote }}</p>
             <ng-container *ngFor="let choice of student.extraChoices ?? []"><p class="cq-minor-note" *ngIf="choice.visible && choice.note && (quoteView !== 'compare' || choice.inComparison !== false)"><mat-icon>info</mat-icon>{{ choice.note }}</p></ng-container>
           </div>
           <ng-template #foldedConditions>
@@ -1201,14 +1203,14 @@
             </summary>
             <div class="student-fields">
               <label *ngIf="student.selectedRegistrationDate !== undefined">报名注册日<input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
-              <label>抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
+              <label *ngIf="!student.hideAgeGroup">抵达时年龄段<select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label>签证类型<select [(ngModel)]="student.visaType" aria-label="签证类型"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)">{{ choice.label }}<select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
             <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
-            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor'">{{ student.minorNote }}</p>
+            <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup">{{ student.minorNote }}</p>
           </details>
           </ng-template>
         </ng-template>

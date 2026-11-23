@@ -321,6 +321,8 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
     const editedQuote = applyEditableQuoteImageCopy(quote, settings, this.pricing.promotions, this.pricing.localFeeRules);
     const result = applySchoolQuoteImageLayout({
       ...editedQuote, totalNote:this.extraPaymentNote, ...(this.options.expandTotalNote ? { expandTotalNote:true } : {}),
+      // The note is money paid outside the total, so it must stand out (user request 2026-11-23).
+      ...(this.options.expandTotalNote && this.extraPaymentNote ? { emphasizeTotalNote:true } : {}),
       paymentSectionTitle:settings.paymentSectionTitle,
       localFeeTitle:settings.localFeeSectionTitle,
       serviceSectionTitle:settings.serviceSectionTitle,
