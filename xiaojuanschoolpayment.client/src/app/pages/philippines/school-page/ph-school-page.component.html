@@ -203,6 +203,7 @@
         </div>
         <small>{{ copy.license.note }}</small>
       </aside>
+      <p class="section-reference-note" *ngIf="overviewReferenceNote && copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <div class="decision-summary-grid" id="overview" *ngIf="!compactLayout">
@@ -755,7 +756,7 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
-          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
+          <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
         </div>

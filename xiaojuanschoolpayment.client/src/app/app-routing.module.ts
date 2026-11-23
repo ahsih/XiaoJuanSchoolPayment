@@ -437,7 +437,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/pines-international-academy',
         loadComponent: () =>
-          import('./pages/philippines/pines-school/pines-school-detail.component').then((m) => m.PinesSchoolDetailComponent),
+          import('./pages/philippines/pines-school/pines-school-page.component').then((m) => m.PinesSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/beci-eop-campus',
