@@ -31,11 +31,16 @@ export type PhilinterQuoteSettings = CiaQuoteSettings & {
   philinterPolicyVersion?: number;
   /** Registration fee for stays whose first arrival is on or after priceSwitchArrival (150 dollars in 2027). */
   registrationFee2027?: number;
-  /** First Sunday of the 2027 price list; earlier arrivals keep the 2026 prices for the whole stay. */
+  /**
+   * First Sunday arrival that pays the 2027 price list (rooms `fee2027`, registrationFee2027); earlier arrivals keep
+   * the 2026 prices for the whole stay. Empty while Philinter has not said when the 2027 list takes effect, so
+   * every student pays the 2026 prices whatever the arrival date (user decision 2026-11-24).
+   */
   priceSwitchArrival?: string;
 };
 
-export const PHILINTER_PRICE_SWITCH_ARRIVAL = '2027-01-03';
+/** Booster Speaking and PTE are new courses that run from this Sunday arrival. */
+export const PHILINTER_NEW_COURSE_START = '2027-01-03';
 export const PHILINTER_SIDA_RULE_ID = 'philinter-sida-90';
 export const PHILINTER_LOW_SEASON_RULE_ID = 'philinter-low-season';
 export const PHILINTER_RETURNING_RULE_ID = 'philinter-returning-registration';
@@ -187,7 +192,7 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
   quoteSettings: {
     registrationFee: 120,
     registrationFee2027: 150,
-    priceSwitchArrival: PHILINTER_PRICE_SWITCH_ARRIVAL,
+    priceSwitchArrival: '',
     futurePriceRegistrationStart: '',
     futurePriceArrivalStart: '',
     shortStayRatios: { '1': 0.45, '2': 0.65, '3': 0.85 },
@@ -200,11 +205,10 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
     promotions: createPromotions(),
     localFeeIntro: LOCAL_FEE_INTRO,
     courseTableTitle: 'Philinter 4周课程费',
-    courseTableNote: '课程费2026年和2027年相同；1–3周按4周价的45%、65%、85%计算。',
+    courseTableNote: '1–3周按4周价的45%、65%、85%计算。',
     groupClassNote: '小组课1:4–6，大班课1:10–15；每节课40–45分钟。',
     roomTableTitle: 'Philinter 4周住宿费',
-    // The page adds the 2026 prices behind this line until the end of 2026 (PhilinterSchoolPageComponent).
-    roomTableNote: '2027年1月3日起入学按上面的价格。',
+    roomTableNote: '2026年和2027年入学目前都按以上价格。',
     stayPolicyTitle: 'Philinter 入住与退房提醒',
     stayPolicies: [
       { label: '入住日期', value: '周日08:00起入住', note: '课程与住宿按周日至周六的完整周计算。' },

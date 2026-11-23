@@ -7,7 +7,7 @@ The user asked to update the Philinter (Cebu) page and supplied the school's Goo
 | File in the pack | Used for |
 | --- | --- |
 | 2027 tuition sheet (updated 2026-11-04, marked 搶鮮看，尚未實施) | 2027 course and room prices, fixed course lengths, the two new courses (Booster Speaking, PTE), registration 150 dollars, junior room rules |
-| 2026 tuition sheet | 2026 room prices and registration 120 dollars (course prices are unchanged in 2027) |
+| 2026 tuition sheet | Room prices and registration 120 dollars, used for every quote until the school says when the 2027 sheet starts (course prices are unchanged in 2027) |
 | Local-fee sheet, 2026-10-19 (dormitory and Azon) | SSP, E-card, ACR I-card, ARP, ID, visa extensions for 30-day and 59-day entries, water, electricity, maintenance, deposit tiers, pickup, early check-in and late check-out |
 | Student handbook, 2026-10-19 | Timetable, first week, attendance and warnings, tests, course changes, curfew, facilities, health, housekeeping, room charges, refund rules |
 | Dormitory and Azon new-student guides | Room and condo rules, shuttle, nearby shops, Azon Wi-Fi and gas |
@@ -27,10 +27,10 @@ Not published: the nationality chart, Wi-Fi passwords, the handbook's sensitive-
 
 ## Decisions
 
-- 2027 prices (rooms and the 150-dollar registration) apply to stays whose first arrival is on or after 2027-01-03. Course prices are the same in both years. **Open: the sheet says it is not yet in force and gives no start rule (by arrival or by registration date); the user is asked to confirm with the school.** The only dated rule in the pack is the 2027 peak surcharge, which goes by registration date: 60 dollars a week for students registered from 2026-11-02, 40 for those registered earlier. The quote charges 60 for every 2027 peak week, which is right for every new registration.
-- Until 2026-12-31 the room note lists the 2026 room prices (built from the content document's `fee`) and a FAQ explains the 2027 change; from local date 2027-01-01 both disappear (`PHILINTER_2026_PRICES_UNTIL`), because no one can arrive in 2026 any more.
+- The 2027 sheet is marked not yet in force and gives no start date or rule (by arrival or by registration). User decision 2026-11-24: until the school announces a start date, every student pays the 2026 prices (room `fee`, 120-dollar registration), whether arriving in 2026 or 2027. The page's room note and FAQ say so. Course prices are the same in both years. The 2027 room prices and the 150-dollar registration stay in the content document; setting `priceSwitchArrival` to the first Sunday arrival the school names makes stays from that date pay them and the room price list show them.
+- The only dated rule in the pack is the 2027 peak surcharge, which goes by registration date: 60 dollars a week for students registered from 2026-11-02, 40 for those registered earlier. The quote charges 60 for every 2027 peak week, which is right for every new registration.
 - Sida 10% on tuition and accommodation comes first; the 2026 low-season offer (300 dollars per 8 consecutive weeks in a campus triple or Azon single or twin, 2026-08-16 to 12-25, no guarantee courses) comes after it.
-- Booster Speaking and PTE can only start from 2027-01-03. IELTS Guarantee runs 8 or 12 weeks, the 16-week IELTS courses 16 weeks, Premium Speaking 8 weeks, Premium Junior Speaking 4 to 6 weeks, Booster Speaking 4 weeks, TOEIC Guarantee at least 12 weeks. Focus Industry cannot be booked directly.
+- Booster Speaking and PTE can only start from 2027-01-03 (`PHILINTER_NEW_COURSE_START`, separate from the price switch). IELTS Guarantee runs 8 or 12 weeks, the 16-week IELTS courses 16 weeks, Premium Speaking 8 weeks, Premium Junior Speaking 4 to 6 weeks, Booster Speaking 4 weeks, TOEIC Guarantee at least 12 weeks. Focus Industry cannot be booked directly.
 - Junior courses only for under-18s, never in a single room; adults cannot take junior courses.
 - Local fees follow the sheet exactly; textbooks are an estimate of 2,000 pesos per course type per started 4 weeks, because the sheet has none. Deposit and pickup stay outside the total.
 - Summer and winter minimum stays (campus 8 weeks, Azon 4 weeks in summer; campus 6 weeks in winter) are shown as stay rules, not enforced by the quote.
@@ -38,5 +38,5 @@ Not published: the nationality chart, Wi-Fi passwords, the handbook's sensitive-
 
 ## Checks
 
-- `tsconfig.philinter.spec.json`: 13 focused tests (prices, offers, 2027 switch, surcharge, fixed lengths, age rules, both local-fee sheets, long-term visa, upgrade of saved content).
+- `tsconfig.philinter.spec.json`: 13 focused tests (prices, offers, 2026 prices for 2027 arrivals and the optional 2027 switch, surcharge, fixed lengths, age rules, both local-fee sheets, long-term visa, upgrade of saved content).
 - `school-quote-rules.spec.ts` and `unified-school-content-config.spec.ts` pass. In `school-textbook-integration.spec.ts` every school, Philinter included, fails only the PNG renderer test with an `ExchangeRateService` injection error that also happens on unchanged code.

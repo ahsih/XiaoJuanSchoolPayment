@@ -23,7 +23,7 @@ import {
   PHILINTER_FIXED_WEEKS,
   PHILINTER_JUNIOR_COURSE_IDS,
   PHILINTER_LOW_SEASON_RULE_ID,
-  PHILINTER_PRICE_SWITCH_ARRIVAL,
+  PHILINTER_NEW_COURSE_START,
   PHILINTER_RETURNING_RULE_ID,
   PHILINTER_SIDA_RULE_ID,
 } from './philinter-content-config';
@@ -41,6 +41,7 @@ export interface PhilinterQuotePricing extends PhComparePricing {
   /** Four-week room prices for stays whose first arrival is on or after priceSwitchArrival. */
   roomFees2027: Record<string, number>;
   registrationFee2027: number;
+  /** Empty while the school has not said when its 2027 list takes effect: every stay pays the 2026 prices. */
   priceSwitchArrival: string;
 }
 
@@ -116,7 +117,8 @@ export class PhilinterPageStudent implements PhPageStudent {
   }
 
   get uses2027Prices(): boolean {
-    return this.firstArrival >= (this.pricing.priceSwitchArrival || PHILINTER_PRICE_SWITCH_ARRIVAL);
+    const start = this.pricing.priceSwitchArrival;
+    return !!start && this.firstArrival >= start;
   }
 
   private roomFee(id: string): number {
@@ -149,7 +151,7 @@ export class PhilinterPageStudent implements PhPageStudent {
       }
       const minimum = this.pricing.courseFees.find(item => item.id === id)?.minimumWeeks ?? 0;
       if (minimum && weeks < minimum) return `${this.courseName(id)}须至少报名${minimum}周。`;
-      if (PHILINTER_2027_ONLY_COURSE_IDS.includes(id) && !this.uses2027Prices) {
+      if (PHILINTER_2027_ONLY_COURSE_IDS.includes(id) && this.firstArrival < PHILINTER_NEW_COURSE_START) {
         return `${this.courseName(id)}是2027年新课程，须2027年1月3日或以后入学。`;
       }
     }

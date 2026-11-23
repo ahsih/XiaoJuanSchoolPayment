@@ -7,9 +7,8 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import { clonePhilinterContentConfig, createDefaultPhilinterContentConfig } from './philinter-content-config';
-import { currentPhilinterFaqs } from './philinter-page-content';
 import { PHILINTER_PAGE_PROFILE } from './philinter-page-profile';
-import { PhilinterSchoolPageComponent, roomNoteWith2026Prices } from './philinter-school-page.component';
+import { PhilinterSchoolPageComponent } from './philinter-school-page.component';
 
 // Philinter on the shared Philippine school template: the 2026 and 2027 price lists, the 2026 low-season offer and
 // the 2026-10-19 local-fee sheet from Philinter's 2026-2027 Google Drive pack.
@@ -51,18 +50,30 @@ describe('Philinter page on the shared template', () => {
     expect(payment('2026下半年淡季优惠')).toBeUndefined();
   });
 
-  it('uses the 2027 room prices and registration from a 2027-01-03 arrival', () => {
+  it('keeps the 2026 prices for 2027 arrivals until the school sets a start date for the 2027 list', () => {
+    page.selectedStartDate = '2027-01-03';
+    // 120 + 900 + 810 − 171
+    expect(page.quote.quoteUsd).toBe(1659);
+    expect(page.roomFeeFor('in-campus-single')).toBe(1400);
+    expect(page.roomFeeFor('azon-single')).toBe(1690);
+    expect(page.roomTableNote).toBe('2026年和2027年入学目前都按以上价格。');
+
+    const content = createDefaultPhilinterContentConfig();
+    (content.quoteSettings as { priceSwitchArrival?: string }).priceSwitchArrival = '2027-01-03';
+    page['applyContentConfig'](content);
     page.selectedStartDate = '2027-01-03';
     // 150 + 900 + 830 − 173
     expect(page.quote.quoteUsd).toBe(1707);
     expect(page.roomFeeFor('in-campus-single')).toBe(1600);
-    expect(page.roomFeeFor('azon-single')).toBe(1690);
+    page.selectedStartDate = '2026-12-27';
+    expect(student().registration).toBe(120);
   });
 
   it('adds the 60-dollar 2027 summer surcharge outside the discount', () => {
     page.selectedStartDate = '2027-07-04';
     expect(student().seasonalSurcharge).toBe(240);
-    expect(page.quote.quoteUsd).toBe(1947);
+    // 120 + 900 + 810 − 171 + 240
+    expect(page.quote.quoteUsd).toBe(1899);
   });
 
   it('waives registration for returning students', () => {
@@ -138,20 +149,6 @@ describe('Philinter page on the shared template', () => {
     const guarantee = page.courseFees.find(fee => fee.id === 'ielts-guarantee-8-weeks')!;
     expect(page.listPrice(guarantee)).toBe(3160);
     expect(page.coursePriceUnit(guarantee)).toBe('/8周');
-  });
-
-  it('drops every 2026 price from the page from 2027-01-01', () => {
-    const content = createDefaultPhilinterContentConfig();
-    const lastDay = new Date(2026, 11, 31);
-    const firstDay = new Date(2027, 0, 1);
-    expect(roomNoteWith2026Prices(content, lastDay))
-      .toBe('2027年1月3日起入学按上面的价格。2026年入学：校内单人间1,400、校内双人间970、校内三人间810美元，其他房型价格不变。');
-    expect(roomNoteWith2026Prices(content, firstDay)).toBe('2027年1月3日起入学按上面的价格。');
-    expect(page.roomTableNote).toBe(roomNoteWith2026Prices(content));
-    const priceFaq = (today: Date) => currentPhilinterFaqs(today).some(faq => faq.question === '2027年价格有变化吗？');
-    expect(priceFaq(lastDay)).toBeTrue();
-    expect(priceFaq(firstDay)).toBeFalse();
-    expect(currentPhilinterFaqs(firstDay).length).toBe(currentPhilinterFaqs(lastDay).length - 1);
   });
 
   it('links every course group, room profile and room price to the content document', () => {
