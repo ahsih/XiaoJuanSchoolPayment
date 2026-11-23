@@ -216,7 +216,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ciec',
         loadComponent: () =>
-          import('./pages/philippines/ciec-school/ciec-school.component').then((m) => m.CiecSchoolComponent),
+          import('./pages/philippines/ciec-school/ciec-school-page.component').then((m) => m.CiecSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/elsa-international-language-school',
