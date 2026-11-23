@@ -462,7 +462,7 @@
         <ng-template #courseLine let-fee let-mode="mode">
             <details class="course-line" data-cia-preview-kind="course" [attr.data-cia-preview-id]="fee.id" [class.cia-preview-highlight]="isPreviewHighlighted('course', fee.id)">
               <summary>
-                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}<em class="course-line-badge" *ngIf="courseHighlights[fee.id] as highlight"><mat-icon>card_giftcard</mat-icon>{{ highlight.badge }}</em></strong>
+                <strong class="course-line-title">{{ courseLineName(fee.name, mode) }}<em class="course-line-badge" *ngIf="courseHighlights[fee.id] as highlight"><mat-icon>{{ highlight.icon || 'card_giftcard' }}</mat-icon>{{ highlight.badge }}</em></strong>
                 <span class="course-line-price"><b>{{ formatUsd(listPrice(fee)) }}</b> 美元<small>{{ coursePriceUnit(fee) }}</small></span>
                 <mat-icon class="course-line-chevron">expand_more</mat-icon>
                 <span class="course-line-schedule"><span *ngFor="let part of scheduleParts(fee.schedule); let first = first" [class.is-key]="first">{{ part }}</span></span>
@@ -470,7 +470,7 @@
               <dl class="course-line-detail">
                 <div *ngIf="fee.suitable"><dt>{{ copy.courses.fitLabel }}</dt><dd>{{ fee.suitable }}</dd></div>
                 <div *ngIf="fee.note"><dt>{{ copy.courses.noteLabel }}</dt><dd>{{ fee.note }}</dd></div>
-                <div *ngIf="courseHighlights[fee.id] as highlight" class="course-line-highlight"><dt>{{ highlight.label }}</dt><dd>{{ highlight.text }}</dd></div>
+                <div *ngIf="courseHighlights[fee.id]?.text" class="course-line-highlight"><dt>{{ courseHighlights[fee.id].label }}</dt><dd>{{ courseHighlights[fee.id].text }}</dd></div>
                 <div *ngIf="oldListPrice(fee) !== null"><dt>{{ copy.courses.oldPriceLabel }}</dt><dd>{{ formatUsd(oldListPrice(fee)!) }} 美元{{ coursePriceUnit(fee) }}</dd></div>
               </dl>
               <ng-container *ngIf="compactLayout">

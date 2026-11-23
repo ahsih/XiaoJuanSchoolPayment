@@ -49,6 +49,22 @@ describe('CIA IAU registration fee note', () => {
     }
   });
 
+  it('keeps the IAU course name and fit over the older database row, which only supplies the price', () => {
+    const lesson = (name: string, price: number, description: string) =>
+      ({ name, price, description, note: '', week: 4 }) as never;
+    component['applyPricingData']([
+      lesson('College Immersion', 1000, '大学校园沉浸体验；IAU一次性注册费另计50美元'),
+      lesson('Regular ESL', 900, ''),
+    ], [], []);
+    const immersion = component.courseFees.find(course => course.id === 'college-immersion')!;
+    expect(immersion.name).toBe('College Immersion 大学沉浸式课程（IAU航空航天大学旁听）');
+    expect(immersion.suitable).toContain('IAU（印第安纳航空航天大学）');
+    expect(immersion.tuition).toBe(1000);
+    expect(component.courseFees.find(course => course.id === 'regular-esl')!.name).toBe('Regular ESL');
+    expect(component.courseHighlights['college-immersion'].badge).toBe('每4周到IAU旁听至少6小时');
+    expect(component.guidesForCourse('college-immersion').map(guide => guide.title)).toEqual(['IAU大学沉浸式课程']);
+  });
+
   it('draws the complete note beside the total in the generated PNG', async () => {
     component.selectedCourseId = 'college-immersion';
     const renderer = new QuoteImageDownloadButtonComponent();
