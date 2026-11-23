@@ -157,6 +157,37 @@ describe('EV school page on the shared template', () => {
     expect(JSON.stringify(EV_PAGE_PROFILE)).not.toContain('每天有接驳车');
   });
 
+  it('upgrades untouched version-2 check-in, minor and electricity wording from the 2026-11 school pack', () => {
+    const saved = createDefaultEvContentConfig();
+    saved.quoteSettings.evPolicyVersion = 2;
+    saved.quoteSettings.stayPolicies = [
+      { label: '入住日期', value: '周六或周日入住', note: '校外公寓周六15:00后入住；周一上午分级测试和新生说明会。' },
+      { label: '离校日期', value: '员工改过的离校说明', note: '' },
+      { label: '未成年学生', value: '外出须监护人陪同', note: '平日不可外出，周末无监护人不可外出，门禁21:00。' },
+    ];
+    const oldNote = '每周含15度电；超出部分每度20比索，从押金中扣除。';
+    saved.localFees.find(fee => fee.id === 'electricity')!.note = oldNote;
+    saved.quoteImageSettings.localFeeNotes['electricity'] = oldNote;
+    const upgraded = cloneEvContentConfig(saved);
+    const policies = upgraded.quoteSettings.stayPolicies;
+    expect(policies[0].value).toBe('周六15:00后或周日入住');
+    expect(policies[1].value).toBe('员工改过的离校说明');
+    expect(policies[2].note).toContain('未满15岁学校不接收');
+    expect(upgraded.localFees.find(fee => fee.id === 'electricity')!.note).toContain('超过押金须补交差额');
+    expect(upgraded.quoteImageSettings.localFeeNotes['electricity']).toContain('超过押金须补交差额');
+    expect(upgraded.quoteSettings.evPolicyVersion).toBe(3);
+  });
+
+  it('shows the 2027 holiday table and the checked licences', () => {
+    const months = page.calendarMonths;
+    expect(months.length).toBe(12);
+    expect(months[1].holidays.map(holiday => holiday.day)).toEqual(['24日']);
+    expect(months[5].holidays).toEqual([]);
+    expect(months.find(month => month.month === 7)!.peak).toBeTrue();
+    expect(page.copy.license!.items.length).toBe(2);
+    expect(JSON.stringify(EV_PAGE_PROFILE)).not.toMatch(/Cuenco|Nasipit|85177|AFF-2004/);
+  });
+
   it('lists courses in a 半斯巴达 zone and a 斯巴达 zone and closes sections with a reference note', () => {
     const zones = page.courseModeZones!;
     expect(zones.map(zone => `${zone.title}:${zone.count}`)).toEqual(['半斯巴达:6', '斯巴达:8']);
