@@ -185,7 +185,7 @@ export class HanaPageStudent implements PhPageStudent {
     const sum = this.rowWeekStarts(row).reduce((amount, week) => {
       const peak = hanaIsPeakWeek(week);
       const extra = campWeeks.indexOf(week) >= 4;
-      return amount + (extra ? (peak ? HANA_CAMP_RATES.extraPeak : HANA_CAMP_RATES.extraLow) : (peak ? rates.peak : rates.low));
+      return amount + (extra ? (peak ? rates.extraPeak : rates.extraLow) : (peak ? rates.peak : rates.low));
     }, 0);
     return round2(sum * scale);
   }

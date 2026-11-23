@@ -60,10 +60,9 @@ export const HANA_FAMILY_2_MONTHS: readonly number[] = [3, 4, 5, 6, 9, 10, 11, 1
 
 /** Junior Camp, an all-inclusive package priced per week by season (school calculator rules). */
 export const HANA_CAMP_RATES = {
-  'camp-a': { low: 500, peak: 700 },
-  'camp-b': { low: 525, peak: 725 },
-  extraLow: 400,
-  extraPeak: 600,
+  'camp-a': { low: 500, peak: 700, extraLow: 400, extraPeak: 600 },
+  // Camp B has no extra-week rate of its own: weeks after the fourth cost its 4-week price ÷ 4 (user decision 2026-11-24).
+  'camp-b': { low: 525, peak: 725, extraLow: 525, extraPeak: 725 },
 } as const;
 /** The camp's twin room is part of the package; it is a quote choice only, never on the room price list. */
 export const HANA_CAMP_ROOM = { id: 'camp-twin', name: '营地双人间（已含在营地费用内）', fee: 0, note: '青少年英语营的2人一间宿舍，含三餐和24小时监护。' };
@@ -141,7 +140,7 @@ const createCourses = (): CiaCourseContent[] => [
   course('kinder-half', '幼儿园 半日班', 600, '08:30–12:35 小班课（Nursery 3–4岁、Kinder 5–6岁）', '3岁（满3周岁）到6–7岁的孩子', '师生比1:3；淡季入读不需要办理SSP。', 15),
   course('kinder-full', '幼儿园 全日班', 1100, '08:30–12:35、13:30–16:45 小班课（Nursery 3–4岁、Kinder 5–6岁）', '3岁（满3周岁）到6–7岁的孩子', '师生比1:3；淡季入读不需要办理SSP。', 16),
   course('camp-a', '青少年英语营 A（无家长陪同）', 2000, '菲师一对一4节 + 菲师小班2节 + 活动课2节；2人一间，24小时监护', '7–17岁、独自来读的孩子', '全包：学费、住宿、三餐、当地费用、机场接送和周末活动；淡季4周2,000美元、旺季2,800美元，超过4周淡季每周加400、旺季每周加600美元；第5周起签证续签另付。', 17),
-  course('camp-b', '青少年英语营 B（无家长陪同）', 2100, '菲师一对一6节 + 菲师小班1节 + 外教小班1节；2人一间，24小时监护', '7–17岁、独自来读、想多上课的孩子', '营地A的学业型版本，每4周多100美元（旺季4周2,900美元）；第5周起签证续签另付。', 18),
+  course('camp-b', '青少年英语营 B（无家长陪同）', 2100, '菲师一对一6节 + 菲师小班1节 + 外教小班1节；2人一间，24小时监护', '7–17岁、独自来读、想多上课的孩子', '营地A的学业型版本，淡季4周2,100美元、旺季2,900美元；超过4周按4周均价每周加525美元（淡季）或725美元（旺季）；第5周起签证续签另付。', 18),
 ];
 
 const createRooms = (): CiaRoomContent[] => [

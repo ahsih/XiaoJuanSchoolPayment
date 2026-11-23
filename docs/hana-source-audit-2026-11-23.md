@@ -7,7 +7,7 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
 - `hana-school/hana-page-quote.ts`: per-student calculation (`HanaPageStudent`), `HanaQuote`, `HanaPlanComparison`.
 - `hana-school/hana-page-content.ts`: all page text and data (pure, mini-program-ready).
 - `hana-school/hana-page-profile.ts`, `hana-school/hana-school-page.component.ts`: template wiring.
-- Media: `public/assets/hana/` (17 campus and 5 room WebP photos, 2 videos with posters, about 30 MB).
+- Media: `public/assets/hana/` (17 campus and 8 room WebP photos, 2 videos with posters, about 30 MB).
 
 ## Sources used
 
@@ -32,7 +32,8 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
   peak weeks in the plan stay at full price. No agency discount is added (school rule).
 - Registration 100 dollars per person; returning students waive it. Camp registration is extra too.
 - Junior camp: all-inclusive season price (A: 2,000 low / 2,800 peak per 4 weeks, extra weeks 400 / 600;
-  B: plus 100 per 4 weeks); visa extensions from week 5 are extra.
+  B: 2,100 / 2,900 per 4 weeks, extra weeks at its 4-week average, 525 / 725, user decision 2026-11-24);
+  visa extensions from week 5 are extra.
 - Senior course: local fees included except the deposit (one 已含 row).
 - Local fees: SSP 7,500 and E-Card 4,000 (stays of 3+ weeks; not for a non-studying parent, a low-season kindergarten
   child, or a promotion stay of up to 4 weeks), ACR I-Card 4,000 (9+ weeks), visa extensions from 4,630, student ID
@@ -41,11 +42,14 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
 
 ## Open questions for the school
 
-- Visa extension sequence for a 59-day entry visa (estimated 5,900 then 4,130 each) and whether senior stays over
-  4 weeks include visa extensions.
-- Whether a winter-peak camp shorter or longer than the listed lengths is allowed; Junior Camp B extra-week price
-  (A's extra rates are used).
-- Single, triple and family room photos (only double-room photos were certain; the others are left out).
+- Whether senior stays over 4 weeks include visa extensions. Visa extensions are estimated by the user's rule
+  (2026-11-24): one extension per extra 30 days, from week 5 on a 30-day visa and from week 9 on a 59-day visa;
+  the 59-day sequence is estimated at 5,900 then 4,130 each.
+- Whether a winter-peak camp shorter or longer than the listed lengths is allowed.
+- Single and family room photos. The triple room uses the school's 2019 facility photos of a room with a single bed
+  and a bunk bed (the 2023 brochure lists 1-, 2- and 3-bed rooms and family rooms, so this is the 3-bed room).
+  The 2026 family brochure's 家庭房 photo carries Google Gemini's sparkle watermark (AI-made or AI-edited), so it is
+  not used; no single-room photo is certain (the one-bed shots also show two desk chairs).
 - The partner hotel dormitories and the early-study-abroad programs are not quoted online (adviser quote).
 - Golf course price: the message says 1,000 for golf; the brochures say 700 (leisure) and 1,000 (intensive). Both are listed.
 - Brochure refund wording (200,000 won) differs from the message (200 dollars); the page uses 200 dollars.

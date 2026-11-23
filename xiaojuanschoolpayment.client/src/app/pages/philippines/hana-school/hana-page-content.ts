@@ -165,6 +165,22 @@ export const HANA_ROOM_PROFILES: PhRoomProfile[] = [
     imageAlt: 'HANA双人间实景',
     rateIds: ['double'],
   },
+  {
+    // A single bed plus a bunk bed: HANA's dormitory has only 1-, 2- and 3-bed rooms besides family rooms.
+    id: 'triple',
+    label: '三人间',
+    englishName: 'TRIPLE ROOM',
+    location: '校内',
+    bed: '一张单人床 + 一张上下铺',
+    service: '每周2次清洁和洗衣',
+    suitable: '家长带孩子、青少年学员',
+    note: '供家长和孩子或青少年入住；成人学员住单人间或双人间。',
+    highlights: ['空调、WiFi、独立卫浴、书桌', '含餐'],
+    image: rooms('triple-01'),
+    gallery: [rooms('triple-01'), rooms('triple-02'), rooms('triple-03'), rooms('bathroom'), rooms('corridor')],
+    imageAlt: 'HANA三人间实景',
+    rateIds: ['triple'],
+  },
 ];
 
 export const HANA_DORM_RULES = [
@@ -300,7 +316,7 @@ export const HANA_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     courseIds: ['camp-a', 'camp-b'],
     facts: [
       { label: 'A营价格', value: '淡季4周2,000美元、旺季2,800美元；超过4周每周加400美元（淡季）或600美元（旺季）' },
-      { label: 'B营价格', value: '每4周比A营多100美元（淡季2,100、旺季2,900美元）' },
+      { label: 'B营价格', value: '淡季4周2,100美元、旺季2,900美元；超过4周每周加525美元（淡季）或725美元（旺季）' },
       { label: '已含', value: '学费、住宿、平日三餐和周末2餐、SSP等当地费用、机场接送、周末活动、每日照片和每周学习报告' },
       { label: '不含', value: '机票、零花钱、未成年人入境文件WEG、航空公司无陪伴儿童服务' },
       { label: '周末', value: '周六和老师外出（水上乐园、主题乐园、海滩等），周日逛商场' },
