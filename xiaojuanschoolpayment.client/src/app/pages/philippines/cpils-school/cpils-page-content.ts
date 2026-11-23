@@ -13,8 +13,9 @@ import type {
   FaqItem,
   FitItem,
   GalleryImage,
+  HolidayCalendar,
 } from '../cia-school/cia-page-content';
-import type { PhRoomProfile, PhVideoTab } from '../school-page/ph-school-profile';
+import type { PhOfferCard, PhRoomProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 
 export const CPILS_PAGE_COPY = {
   heroLead: '2001年开办的宿务市区老牌英语学校，2009年起是圣何塞-雷科莱托斯大学（USJ-R）的英语中心。课程多、考试资源全，适合目标明确、想被学习节奏推动的学生。',
@@ -24,7 +25,7 @@ export const CPILS_PAGE_COPY = {
   suitableTitle: '适合优先看 CPILS',
   notSuitableTitle: '不太适合的情况',
   galleryLead: '先看校园、教室、宿舍、餐厅和设施，再判断CPILS的学习与生活环境是否适合你。',
-  videoLead: '学校拍摄的校园、课堂和学生生活片段。',
+  videoLead: '校园、课堂、考场、宿舍和餐厅的实拍视频。',
   campusIntro: '宿务市区校园，教学楼、宿舍、餐厅、泳池和健身房都在校内。',
   ruleTitle: '门禁与扣分',
   ruleText: '周日至周四22:00门禁，周五、周六24:00；未成年人一律22:00。迟到、上课说非英语、晚归等会扣分，累计6分起限制周末外出，10分开除。',
@@ -33,6 +34,90 @@ export const CPILS_PAGE_COPY = {
 } as const;
 
 export const CPILS_FINAL_CTA_BADGES = ['快速响应', '专业顾问一对一', '方案与报价免费', '从申请到入学全程协助'];
+
+/**
+ * Offers above the quote (school posters of 2026-09 and 2026-11-23). A card leaves the page from its `until`
+ * date or when its rules are disabled in the published content; the quote applies the rules themselves.
+ */
+const SCHOLARSHIP_TERMS = '2027/01/01–12/27开课（05/31–08/29开课除外）';
+export const CPILS_OFFERS: PhOfferCard[] = [
+  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，可与下面的学校优惠叠加。', promotionIds: ['cpils-sida'] },
+  {
+    icon: 'school', title: '学校奖学金', amount: '课程费和住宿费再减5%', text: `${SCHOLARSHIP_TERMS}、至少报名4周。`,
+    until: '2027-12-28', promotionIds: ['cpils-scholarship-2027'],
+  },
+  {
+    icon: 'work', title: '职业培训课程', amount: '最高减200美元',
+    text: '2027年开课的医学英语、TESOL（成人／少儿）、咖啡师与饮品英语、酒店与接待服务英语、打工度假英语。',
+    detail: '4–7周减50 · 8–11周减100 · 12–15周减150 · 16周及以上减200美元',
+    until: '2028-01-01', promotionIds: ['cpils-career-2027'],
+  },
+  {
+    icon: 'sailing', title: '周末活动', amount: '免费体验2项', text: '2027/01/02–05/29开课、至少报名8周：奥斯洛布观鲸鲨1次、跳岛游1次，均含餐饮。',
+    until: '2027-05-30', promotionIds: ['cpils-weekend-2027'],
+  },
+  {
+    icon: 'egg', title: '复活节优惠', amount: '立减75美元', text: '2026/11/23–2027/03/21报名、至少4周，学习期涵盖2027/03/21–03/27。',
+    until: '2027-03-22', promotionIds: ['cpils-easter-2027'],
+  },
+  {
+    icon: 'park', title: '圣诞及新年优惠', amount: '立减50–100美元', text: '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–12/25减50美元。',
+    detail: '涵盖2027/12/19–2028/01/01减100美元。',
+    until: '2027-12-27', promotionIds: ['cpils-christmas-2027', 'cpils-new-year-2027'],
+  },
+  {
+    icon: 'bed', title: '无对外窗房', amount: '每满4周减50美元', text: `住无对外窗单人／双人房，24周最多减300美元；${SCHOLARSHIP_TERMS}。`,
+    until: '2027-12-28', promotionIds: ['cpils-no-window-2027'],
+  },
+  {
+    icon: 'workspace_premium', title: '官方考试赠送', amount: '雅思1次 · 托业最多6次', text: `雅思课程（含预备雅思）一次报名12周及以上赠1次，雅思保分班一次性注册8周送1次；托业课程每满4周赠1次。${SCHOLARSHIP_TERMS}。`,
+    until: '2027-12-28', promotionIds: ['cpils-ielts-exam-2027', 'cpils-toeic-exam-2027'],
+  },
+  { icon: 'replay', title: '老学员返校', amount: '免注册费', text: '在CPILS读过书的学生再次报名，免收一次性注册费。', promotionIds: ['cpils-returning-registration'] },
+  {
+    icon: 'event', title: '2026年内入学', amount: '淡季再享95折', text: '2026/12/27前入学，课程或住宿满4周的部分在9折后再享95折。',
+    detail: '学习期涵盖2026/12/21–12/26减75美元，涵盖至2027/01/01减150美元。',
+    until: '2026-12-28', promotionIds: ['cpils-off-season-fall'],
+  },
+];
+
+/** The school's 2027 academic calendar: public holidays (no classes). The two Islamic holidays follow the moon sighting. */
+export const CPILS_HOLIDAY_CALENDARS: HolidayCalendar[] = [{
+  year: 2027,
+  label: '2027年学校假期',
+  months: [
+    { month: 1, holidays: [{ day: '1日', name: '元旦' }] },
+    { month: 2, holidays: [{ day: '6日', name: '春节' }, { day: '24日', name: '宿务市宪章日' }] },
+    {
+      month: 3,
+      holidays: [
+        { day: '10日', name: '开斋节', provisional: true },
+        { day: '25日', name: '濯足节' },
+        { day: '26日', name: '耶稣受难日' },
+        { day: '27日', name: '黑色星期六' },
+      ],
+    },
+    { month: 4, holidays: [{ day: '9日', name: '勇士日' }] },
+    { month: 5, holidays: [{ day: '1日', name: '劳动节' }, { day: '17日', name: '宰牲节', provisional: true }] },
+    { month: 6, holidays: [{ day: '12日', name: '独立日' }] },
+    {
+      month: 8,
+      holidays: [{ day: '6日', name: '宿务省宪章日' }, { day: '21日', name: '尼诺伊·阿基诺纪念日' }, { day: '30日', name: '国家英雄日' }],
+    },
+    { month: 9, holidays: [{ day: '9日', name: '奥斯梅尼亚日' }] },
+    { month: 11, holidays: [{ day: '1日', name: '诸圣节' }, { day: '2日', name: '万灵节' }, { day: '30日', name: '博尼法西奥日' }] },
+    {
+      month: 12,
+      holidays: [
+        { day: '8日', name: '圣母无染原罪瞻礼' },
+        { day: '24日', name: '平安夜' },
+        { day: '25日', name: '圣诞节' },
+        { day: '30日', name: '黎刹日' },
+        { day: '31日', name: '新年前夜' },
+      ],
+    },
+  ],
+}];
 
 export const CPILS_QUICK_INFO = [
   { icon: 'location_on', title: '位置', text: '宿务市区老城区，到麦克坦机场车程约40分钟' },
@@ -131,6 +216,7 @@ export const CPILS_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     courseIds: ['toeic-guarantee'],
     facts: [
       { label: '保分目标', value: '入学400分保600分；530分保700分；670分保800分；800分保900分' },
+      { label: '2027开课日', value: '1/4、2/1、3/8、4/12、5/3、6/7、7/5、8/2、9/6、10/4（均为周一，前一天周日入住）' },
       { label: '模考', value: '每月2次，周四晚；周六上午补考' },
     ],
     points: ['入学分数不够时，建议先读托业课程。'],
@@ -220,6 +306,7 @@ export const CPILS_PRACTICAL_GUIDES: CampusPracticalGuide[] = [
     title: '校园活动',
     facts: [
       { label: '校内', value: '英语趣味活动、团队竞赛、万圣节、圣诞晚会、校庆、每周五毕业典礼' },
+      { label: '2027年', value: '每月一次英语主题活动；7/2校庆感恩弥撒、7/30校庆派对；12/17师生圣诞派对' },
       { label: '周末', value: '跳岛、海边度假村、宿务城市游、保龄球、溜冰等，自愿报名' },
     ],
     note: '',
@@ -267,7 +354,7 @@ export const CPILS_FAQS: FaqItem[] = [
   },
   {
     question: '现在报名有哪些优惠？',
-    answer: '所有学生都享思达启航课程费和住宿费9折。2027年开课：学校奖学金再减5%，无对外窗单人／双人房每满4周减50美元（24周最多减300美元），雅思一次注册12周赠1次官方考试，托业课程按周数赠1至6次官方考试；2027/05/31–08/29开课不适用学校优惠。2026年内开课：淡季入学再享95折，学习期覆盖圣诞或新年另减75或150美元。',
+    answer: '所有学生都享思达启航课程费和住宿费9折，还能叠加学校优惠：2027年开课有奖学金再减5%、无对外窗房每4周减50美元、雅思和托业官方考试赠送，职业培训课程最高减200美元，复活节和圣诞新年期间在读另有立减，2027/01/02–05/29开课读满8周送两项周末活动。各项条件见上方“报名优惠”，报价器会自动计算。',
   },
   {
     question: '暑假有附加费吗？',
@@ -365,31 +452,93 @@ export const CPILS_GALLERY_IMAGES: GalleryImage[] = [
   { category: '住宿', title: '走廊饮水机', description: '宿舍走廊里的饮水机。', src: 'assets/cpils/rooms/hallway-03.webp' },
 ];
 
-export const CPILS_VIDEO_CARDS: CiaVideoCard[] = [
+/** One video in public/assets/cpils/videos/: <name>.mp4 with its poster-<name>.jpg. */
+export interface CpilsVideo {
+  name: string;
+  title: string;
+  description: string;
+  duration: string;
+  orientation: 'landscape' | 'portrait';
+  label?: string;
+  details?: string[];
+}
+
+export const cpilsVideoSrc = (video: CpilsVideo) => `/assets/cpils/videos/${video.name}.mp4`;
+export const cpilsVideoPoster = (video: CpilsVideo) => `/assets/cpils/videos/poster-${video.name}.jpg`;
+
+/**
+ * The school film plus the clips the user supplied on 2026-11-24 (CPILS 视频号). Five of them were landscape footage
+ * inside a vertical frame with caption bars and are cropped to the footage; the vertical ones keep their captions.
+ */
+export const CPILS_VIDEOS: CpilsVideo[] = [
   {
-    code: 'CPILS',
-    label: 'SCHOOL FILM',
-    title: 'CPILS 学校介绍',
-    text: '学校2027年介绍片：教学楼、课堂、考场、食堂、宿舍和课外活动。',
-    poster: '/assets/cpils/videos/poster-cpils-intro-2027.jpg',
-    videoSrc: '/assets/cpils/videos/cpils-intro-2027.mp4',
-    contentType: 'video/mp4',
-    details: ['一对一与团体课堂', '雅思与托业官方考场', '宿舍各房型与高级房', '时长 2:30'],
+    name: 'cpils-intro-2027', title: 'CPILS 学校介绍', duration: '2:30', orientation: 'landscape', label: 'SCHOOL FILM',
+    description: '学校2027年介绍片：教学楼、课堂、考场、食堂、宿舍和课外活动。',
+    details: ['一对一与团体课堂', '雅思与托业官方考场', '宿舍各房型与高级房'],
   },
+  { name: 'cpils-campus-tour', title: '校园导览', duration: '1:56', orientation: 'portrait', description: '一支片子走一遍校园：主楼、前台、考场、教室、自习室、餐厅、宿舍、泳池和毕业演讲。' },
+  { name: 'cpils-campus', title: '校门、前台与咖啡厅', duration: '0:30', orientation: 'landscape', label: 'CAMPUS', description: '从校门进到大堂前台，再看校内的咖啡厅和台球桌。' },
+  { name: 'cpils-pool-gym', title: '泳池与健身房', duration: '0:21', orientation: 'landscape', label: 'POOL & GYM', description: '校内泳池，以及有跑步机、动感单车和力量器械的健身房。' },
+  { name: 'cpils-study-lounge', title: '自习室与休息区', duration: '0:12', orientation: 'portrait', description: '带隔板的自习座位，以及摆着竹木桌椅的休息区。' },
+  { name: 'cpils-twin-room', title: '双人间', duration: '0:23', orientation: 'landscape', label: 'TWIN ROOM', description: '普通双人间：两张单人床、书桌、窗户和独立卫浴。' },
+  { name: 'cpils-quad-room', title: '四人间', duration: '0:17', orientation: 'portrait', description: '普通四人间：单人床、书桌、窗户和独立卫浴。' },
+  { name: 'cpils-premium-twin', title: '高级双人间', duration: '0:26', orientation: 'portrait', description: '高级双人间：木地板、壁挂电视、衣柜、书桌和独立卫浴。' },
+  { name: 'cpils-premium-triple', title: '高级三人间', duration: '0:12', orientation: 'portrait', description: '高级三人间：木地板、壁挂电视、衣柜和大窗户。' },
+  { name: 'cpils-classes', title: '上课实拍', duration: '0:29', orientation: 'landscape', label: 'CLASSES', description: '一对一课和小组课的课堂实拍。' },
+  { name: 'cpils-ielts-test-centre', title: '雅思官方考场', duration: '0:21', orientation: 'portrait', description: '校内的雅思官方考场：纸笔考试大厅、口语考试间和机考教室。' },
+  { name: 'cpils-ielts-resource-centre', title: '雅思资源中心', duration: '0:09', orientation: 'portrait', description: '雅思备考资料室，有沙发座位和讨论桌。' },
+  { name: 'cpils-graduation', title: '毕业典礼演讲', duration: '0:11', orientation: 'landscape', label: 'GRADUATION', description: '结业学员在毕业典礼上发言。' },
+  { name: 'cpils-dining', title: '餐厅自助餐', duration: '0:23', orientation: 'portrait', description: '学生餐厅的自助餐：米饭、炒面、蔬菜、肉菜和汤。' },
 ];
 
-export const CPILS_LIFE_VIDEOS: CiaShortVideo[] = [];
+const cpilsVideo = (name: string) => CPILS_VIDEOS.find(video => video.name === name) as CpilsVideo;
+const albumVideo = (name: string): PhVideoItem => {
+  const video = cpilsVideo(name);
+  return {
+    title: video.title,
+    text: video.description,
+    src: cpilsVideoSrc(video),
+    poster: cpilsVideoPoster(video),
+    duration: video.duration,
+    shape: video.orientation === 'landscape' ? 'wide' : 'tall',
+  };
+};
 
-/** Videos of the hero album (compact layout); the school film opens it. */
+export const CPILS_VIDEO_CARDS: CiaVideoCard[] = CPILS_VIDEOS.filter(video => video.orientation === 'landscape').map(video => ({
+  code: 'CPILS',
+  label: video.label ?? 'CPILS',
+  title: video.title,
+  text: video.description,
+  poster: cpilsVideoPoster(video),
+  videoSrc: cpilsVideoSrc(video),
+  contentType: 'video/mp4',
+  details: [...(video.details ?? []), `时长 ${video.duration}`],
+}));
+
+export const CPILS_LIFE_VIDEOS: CiaShortVideo[] = CPILS_VIDEOS.filter(video => video.orientation === 'portrait').map(video => ({
+  title: video.title,
+  text: video.description,
+  src: cpilsVideoSrc(video),
+  poster: cpilsVideoPoster(video),
+  duration: video.duration,
+}));
+
+/** Videos of the hero album (compact layout), one chip per topic; the school film opens it. */
 export const CPILS_VIDEO_TABS: PhVideoTab[] = [
-  {
-    label: '校园视频',
-    icon: 'videocam',
-    items: CPILS_VIDEO_CARDS.map(card => ({
-      title: card.title, text: card.text, src: card.videoSrc, poster: card.poster, duration: '2:30', shape: 'wide' as const,
-    })),
-  },
+  { label: '校园视频', icon: 'videocam', items: ['cpils-intro-2027', 'cpils-campus-tour', 'cpils-campus', 'cpils-pool-gym', 'cpils-study-lounge'].map(albumVideo) },
+  { label: '宿舍视频', icon: 'videocam', items: ['cpils-twin-room', 'cpils-quad-room', 'cpils-premium-twin', 'cpils-premium-triple'].map(albumVideo) },
+  { label: '课堂视频', icon: 'videocam', items: ['cpils-classes', 'cpils-ielts-test-centre', 'cpils-ielts-resource-centre', 'cpils-graduation'].map(albumVideo) },
+  { label: '餐厅视频', icon: 'videocam', items: ['cpils-dining'].map(albumVideo) },
 ];
+
+/**
+ * First item of a room's photo album: only a clip of exactly that room type. The 高级房 profile opens from all four
+ * premium price cards, so neither premium clip goes there; both stay in the hero album's 宿舍 chip.
+ */
+export const CPILS_ROOM_VIDEOS: Record<string, PhVideoItem> = {
+  twin: albumVideo('cpils-twin-room'),
+  quad: albumVideo('cpils-quad-room'),
+};
 
 const roomPhotos = (...files: string[]) => files.map(file => `assets/cpils/rooms/${file}.webp`);
 const SHARED_BATH = ['twin-05', 'twin-06'];

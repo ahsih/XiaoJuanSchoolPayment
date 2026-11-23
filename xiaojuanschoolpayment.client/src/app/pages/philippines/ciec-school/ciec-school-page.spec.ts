@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
-import { cloneCiecContentConfig, createDefaultCiecContentConfig } from './ciec-content-config';
+import { CIEC_SIDA_DESCRIPTION, cloneCiecContentConfig, createDefaultCiecContentConfig } from './ciec-content-config';
 import { CiecPageStudent } from './ciec-page-quote';
 import { CiecSchoolPageComponent } from './ciec-school-page.component';
 
@@ -70,12 +70,13 @@ describe('CIEC school page on the shared template', () => {
     expect(parent.quotePlan.courses[0].optionId).toBe('guardian-esl');
     startOn(child, '2027-03-07');
     startOn(parent, '2027-03-07');
-    // Parent room 930 → 400 and course 700 → 400 per 4 weeks; Sida 5% on what is left (800).
+    // Parent room 930 → 400 and course 700 → 400 per 4 weeks; Sida 5% on the full 1,630 first.
     expect(parent.familyRoomOffer?.amount).toBe(530);
     expect(parent.guardianCourseOffer?.amount).toBe(300);
-    expect(parent.quoteUsd).toBe(860);
+    expect(parent.sidaDiscount).toBe(81.5);
+    expect(parent.quoteUsd).toBe(818.5);
     expect(child.quoteUsd).toBe(2028.5);
-    expect(page.quote.quoteUsd).toBe(2888.5);
+    expect(page.quote.quoteUsd).toBe(2847);
     expect(page.quoteError).toBe('');
   });
 
@@ -97,9 +98,9 @@ describe('CIEC school page on the shared template', () => {
     expect(page.quoteError).toBe('');
     // Child: 100 + 1,100 + 1,130 (930 + 200) − 5% of 2,230.
     expect(child.quoteUsd).toBe(2218.5);
-    // Parent room 1,130 − 530 = 600 (400 + 200); course 700 − 300; Sida 5% of 1,000.
+    // Parent room 1,130 − 530 = 600 (400 + 200); course 700 − 300; Sida 5% of the full 1,830.
     expect(parent.familyRoomOffer?.amount).toBe(530);
-    expect(parent.quoteUsd).toBe(1050);
+    expect(parent.quoteUsd).toBe(1008.5);
     startOn(child, '2027-06-06');
     startOn(parent, '2027-06-06');
     expect(page.quoteError).toContain('只在淡季提供');
@@ -114,8 +115,8 @@ describe('CIEC school page on the shared template', () => {
     startOn(child, '2027-03-07');
     startOn(parent, '2027-03-07');
     expect(parent.quoteError).toBe('');
-    // 100 + 930 − 530 − 5% of 400
-    expect(parent.quoteUsd).toBe(480);
+    // 100 + 930 − 530 − 5% of 930
+    expect(parent.quoteUsd).toBe(453.5);
     startOn(child, '2027-06-06');
     startOn(parent, '2027-06-06');
     expect(parent.quoteError).toContain('家长不上课');
@@ -133,6 +134,8 @@ describe('CIEC school page on the shared template', () => {
     }
     expect(parent.familySize).toBe(3);
     expect(parent.familyRoomOffer?.amount).toBe(850);
+    // The free room stays out of the Sida 5%: 100 + 700 − 300 + 850 − 850 − 5% of 700.
+    expect(parent.quoteUsd).toBe(465);
     expect(page.quoteError).toBe('');
   });
 
@@ -203,8 +206,9 @@ describe('CIEC school page on the shared template', () => {
   it('upgrades saved documents without losing the CIEC rules', () => {
     const saved = createDefaultCiecContentConfig();
     saved.courses = saved.courses.filter(course => course.id !== 'cidec');
+    saved.quoteSettings.promotions.find(rule => rule.id === 'ciec-sida-95')!.description = '课程费和住宿费（含CIDEC年级学费）在学校优惠后再享95折';
     const restored = cloneCiecContentConfig(saved);
     expect(restored.schoolCode).toBe('CIEC' as typeof restored.schoolCode);
-    expect(restored.quoteSettings.promotions.some(rule => rule.id === 'ciec-sida-95')).toBeTrue();
+    expect(restored.quoteSettings.promotions.find(rule => rule.id === 'ciec-sida-95')?.description).toBe(CIEC_SIDA_DESCRIPTION);
   });
 });
