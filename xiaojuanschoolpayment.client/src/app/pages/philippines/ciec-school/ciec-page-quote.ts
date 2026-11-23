@@ -398,14 +398,18 @@ export class CiecPageStudent implements PhPageStudent {
   get guardianFeeWaiver(): number { return money(this.guardianFeeWaiverWeeks * CIEC_GUARDIAN_FEE_PER_4_WEEKS / 4); }
   get pickupFee(): number { return this.pickup ? CIEC_PICKUP_USD : 0; }
 
-  /** School offers on tuition and room and board, before the Sida rate. */
+  /** School offers on tuition and room and board. */
   private get schoolOfferTotal(): number {
     return (this.familyRoomOffer?.amount ?? 0) + (this.guardianCourseOffer?.amount ?? 0);
   }
+  /** The Sida rate on the full tuition, room and CIDEC price, before the school offers (user rule 2026-11-24).
+   * A parent room the school makes free (3-person family) is left out, so it never drops below zero. */
   get sidaDiscount(): number {
     const rule = this.rule(CIEC_PROMOTION_IDS.sida);
     if (!rule) return 0;
-    const base = this.tuition + this.accommodation + this.cidecGradeTuition - this.schoolOfferTotal;
+    const room = this.familyRoomOffer;
+    const freeRoom = room?.size === 3 ? room.amount : 0;
+    const base = this.tuition + this.accommodation + this.cidecGradeTuition - freeRoom;
     return money(Math.max(0, base) * rule.discountValue / 100);
   }
 
@@ -425,6 +429,10 @@ export class CiecPageStudent implements PhPageStudent {
 
   private get discountLines(): SchoolPaymentLine[] {
     const lines: SchoolPaymentLine[] = [];
+    if (this.sidaDiscount > 0) {
+      const rule = this.rule(CIEC_PROMOTION_IDS.sida)!;
+      lines.push({ icon: '折', label: rule.name, value: -this.sidaDiscount, note: rule.description, promotionKey: rule.id });
+    }
     const room = this.familyRoomOffer;
     if (room) {
       const rule = this.rule(room.size === 2 ? CIEC_PROMOTION_IDS.family2 : CIEC_PROMOTION_IDS.family3)!;
@@ -438,10 +446,6 @@ export class CiecPageStudent implements PhPageStudent {
     if (this.guardianFeeWaiver > 0) {
       const rule = this.rule(CIEC_PROMOTION_IDS.soloGuardianFee)!;
       lines.push({ icon: '惠', label: rule.name, value: -this.guardianFeeWaiver, note: `${rule.description}；本次${this.guardianFeeWaiverWeeks}周`, promotionKey: rule.id });
-    }
-    if (this.sidaDiscount > 0) {
-      const rule = this.rule(CIEC_PROMOTION_IDS.sida)!;
-      lines.push({ icon: '折', label: rule.name, value: -this.sidaDiscount, note: rule.description, promotionKey: rule.id });
     }
     return lines;
   }

@@ -72,6 +72,11 @@ export const CIEC_PROMOTION_IDS = {
   returning: 'ciec-returning-registration',
 } as const;
 
+/** The Sida 95% comes off the full course and room price first, then the school offers (user rule 2026-11-24:
+ * CIEC's files give no order, so the order that is cheaper for the student applies). */
+export const CIEC_SIDA_DESCRIPTION = '课程费和住宿费（含CIDEC年级学费）按原价享95折，学校优惠另减';
+const CIEC_SIDA_DESCRIPTION_BEFORE = '课程费和住宿费（含CIDEC年级学费）在学校优惠后再享95折';
+
 const course = (
   id: string, name: string, tuition: number, schedule: string, suitable: string, note: string, sortOrder: number,
   extra: Partial<CiaCourseContent> = {},
@@ -161,7 +166,7 @@ const createLocalFees = (): CiaLocalFeeRule[] => [
 ];
 
 const createPromotions = (): CiaPromotionRule[] => [
-  promotion({ id: CIEC_PROMOTION_IDS.sida, name: '思达启航折扣', description: '课程费和住宿费（含CIDEC年级学费）在学校优惠后再享95折', sortOrder: 0, discountType: 'percentage', discountValue: 5, minimumCourseWeeks: 0 }),
+  promotion({ id: CIEC_PROMOTION_IDS.sida, name: '思达启航折扣', description: CIEC_SIDA_DESCRIPTION, sortOrder: 0, discountType: 'percentage', discountValue: 5, minimumCourseWeeks: 0 }),
   promotion({ id: CIEC_PROMOTION_IDS.soloGuardianFee, name: '淡季免监护费', description: '9岁及以上、没有家长陪同的学生，淡季学习周免收监护费（每4周300美元）', sortOrder: 1 }),
   promotion({ id: CIEC_PROMOTION_IDS.family2, name: '两人家庭家长食宿优惠', description: '1位家长 + 1个孩子住双人间，淡季家长食宿每4周930美元降到300美元（2026）／400美元（2027）；家长可以不上课', sortOrder: 2, appliesTo: 'accommodation' }),
   promotion({ id: CIEC_PROMOTION_IDS.family3, name: '三人家庭家长食宿免费', description: '1位家长 + 2个孩子住三人间，淡季家长食宿免费（原价每4周850美元）；家长可以不上课', sortOrder: 3, appliesTo: 'accommodation' }),
@@ -243,6 +248,9 @@ export const cloneCiecContentConfig = (value: CiaContentConfig): CiaContentConfi
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= [];
   clone.quoteSettings.promotions ??= copyJson(defaults.quoteSettings.promotions);
+  for (const rule of clone.quoteSettings.promotions) {
+    if (rule.id === CIEC_PROMOTION_IDS.sida && rule.description === CIEC_SIDA_DESCRIPTION_BEFORE) rule.description = CIEC_SIDA_DESCRIPTION;
+  }
   clone.quoteSettings.stayPolicies ??= copyJson(defaults.quoteSettings.stayPolicies);
   clone.quoteSettings.extraNightRates ??= copyJson(defaults.quoteSettings.extraNightRates);
   clone.quoteImageSettings ??= copyJson(defaults.quoteImageSettings);
