@@ -399,7 +399,7 @@ export const EV_FAQS: EvFaqItem[] = [
  */
 export const EV_REFUND_COPY = {
   summaryTitle: 'EV 取消、改期与退款规定',
-  summaryHint: '报名定金、到校后退款比例、不退款的情况',
+  summaryHint: '报名定金、改期与尾款、到校后退款比例、不退款的情况',
   eyebrow: 'CANCELLATION & REFUND',
   title: 'EV 取消与退款规定',
   intro: '到校后按剩余周数退部分学费和住宿费；注册费不退，剩余不足4周不退。',
@@ -410,7 +410,8 @@ export const EV_REFUND_COPY = {
       note: '',
       rules: [
         { when: '报名定金', text: '通过思达启航报名时预收定金2,000元人民币，为学生向学校订位；定金交了以后不退。' },
-        { when: '改期', text: '入学4周前告诉顾问，可以改入学日期，或把定金保留1年；入学前不足4周取消或改期，学校可能收取违约金，以学校确认为准。' },
+        { when: '改期与保留', text: '入学4周前告诉顾问，可以免费改入学日期，或申请把定金保留1年。' },
+        { when: '尾款', text: '入学前2周还没有给学校付清尾款的，学校会直接取消学位，已预付的报名定金全部扣除。' },
       ],
       footnote: '',
     },

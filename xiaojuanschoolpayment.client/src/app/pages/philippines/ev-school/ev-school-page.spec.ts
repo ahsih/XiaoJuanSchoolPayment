@@ -216,6 +216,9 @@ describe('EV school page on the shared template', () => {
     const condoShuttle = EV_PAGE_PROFILE.dormRules.find(rule => rule.title === '公寓接驳车')!.text;
     expect(condoShuttle).toContain('07:15、14:10');
     expect(page.copy.refund!.groups[0].rules[0].text).toContain('2,000元人民币');
+    const beforeEntry = page.copy.refund!.groups[0].rules.map(rule => `${rule.when} ${rule.text}`);
+    expect(beforeEntry).toContain('改期与保留 入学4周前告诉顾问，可以免费改入学日期，或申请把定金保留1年。');
+    expect(beforeEntry).toContain('尾款 入学前2周还没有给学校付清尾款的，学校会直接取消学位，已预付的报名定金全部扣除。');
     expect(JSON.stringify(page.copy.refund)).not.toMatch(/中介|代办|佣金/);
     expect(page.copy.campus?.ruleText).toContain('周五17:10后或周六、周日');
   });
