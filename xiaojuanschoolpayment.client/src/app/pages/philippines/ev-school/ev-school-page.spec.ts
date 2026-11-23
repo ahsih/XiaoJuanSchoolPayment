@@ -57,13 +57,20 @@ describe('EV school page on the shared template', () => {
     expect(payment('旺季附加费')).toBeUndefined();
   });
 
-  it('starts visa extensions at week 5 or 9 and adds ACR from week 9', () => {
+  it('starts visa extensions at week 5 or 9 and adds ACR with the first extension', () => {
     student().visaType = 'tourist30';
     page.selectedWeeks = 9;
     expect(localFee('签证续签')).toBe(11830);
     expect(localFee('ACR-I Card 外国人身份证')).toBe(4000);
+    page.selectedWeeks = 5;
+    expect(localFee('签证续签')).toBe(5430);
+    expect(localFee('ACR-I Card 外国人身份证')).toBe(4000);
+    page.selectedWeeks = 4;
+    expect(localFee('ACR-I Card 外国人身份证')).toBe(0);
     student().visaType = 'tourist59';
+    page.selectedWeeks = 9;
     expect(localFee('签证续签')).toBe(6700);
+    expect(localFee('ACR-I Card 外国人身份证')).toBe(4000);
     page.selectedWeeks = 8;
     expect(localFee('签证续签')).toBe(0);
     expect(localFee('ACR-I Card 外国人身份证')).toBe(0);
@@ -150,7 +157,7 @@ describe('EV school page on the shared template', () => {
       ...saved.quoteSettings.promotions[0], id: 'ev-old-school-offer', name: '学校旧优惠', enabled: true,
     });
     const upgraded = cloneEvContentConfig(saved);
-    expect(upgraded.rooms.find(room => room.id === 'off-campus-single')!.note).toContain('平日有接驳车');
+    expect(upgraded.rooms.find(room => room.id === 'off-campus-single')!.note).toContain('有接驳车往返学校');
     expect(upgraded.quoteSettings.extraNightRates).toEqual([{ label: '延住（所有房型）', amount: 2000 }]);
     expect(upgraded.quoteSettings.promotions.filter(rule => rule.enabled).map(rule => rule.id))
       .toEqual(['ev-sida-95', 'ev-returning-registration']);
@@ -175,7 +182,42 @@ describe('EV school page on the shared template', () => {
     expect(policies[2].note).toContain('未满15岁学校不接收');
     expect(upgraded.localFees.find(fee => fee.id === 'electricity')!.note).toContain('超过押金须补交差额');
     expect(upgraded.quoteImageSettings.localFeeNotes['electricity']).toContain('超过押金须补交差额');
-    expect(upgraded.quoteSettings.evPolicyVersion).toBe(3);
+    expect(upgraded.quoteSettings.evPolicyVersion).toBe(4);
+  });
+
+  it('upgrades untouched version-3 ACR and condo wording from the colleague review', () => {
+    const saved = createDefaultEvContentConfig();
+    saved.quoteSettings.evPolicyVersion = 3;
+    const oldAcr = '在菲律宾停留超过59天（第9周起）须办理，只收一次。';
+    const oldCondo = '仅限半斯巴达课程；无门禁，平日有接驳车往返学校';
+    saved.localFees.find(fee => fee.id === 'acr-i-card')!.note = oldAcr;
+    saved.quoteImageSettings.localFeeNotes['acr-i-card'] = oldAcr;
+    saved.rooms.find(room => room.id === 'off-campus-single')!.note = oldCondo;
+    saved.rooms.find(room => room.id === 'off-campus-double')!.note = '员工改过的公寓说明';
+    const upgraded = cloneEvContentConfig(saved);
+    expect(upgraded.localFees.find(fee => fee.id === 'acr-i-card')!.note).toContain('首次续签时办理');
+    expect(upgraded.quoteImageSettings.localFeeNotes['acr-i-card']).toContain('首次续签时办理');
+    expect(upgraded.rooms.find(room => room.id === 'off-campus-single')!.note).toBe('仅限半斯巴达课程；无门禁，有接驳车往返学校');
+    expect(upgraded.rooms.find(room => room.id === 'off-campus-double')!.note).toBe('员工改过的公寓说明');
+    expect(upgraded.quoteSettings.evPolicyVersion).toBe(4);
+  });
+
+  it('shows the colleague-review fixes: timetable, curfew, condo rules, refund rules', () => {
+    const sparta = page.scheduleColumns.find(column => column.title === '斯巴达')!.rows;
+    const semi = page.scheduleColumns.find(column => column.title === '半斯巴达')!.rows;
+    expect(semi.map(row => row.time)).toContain('07:00–08:00');
+    expect(semi.find(row => row.time === '07:00–08:00')!.kind).toBe('meal');
+    expect(sparta.find(row => row.time === '07:00–08:00')!.activity).toContain('早餐');
+    expect(sparta.filter(row => row.time === '07:00–08:00').length).toBe(1);
+    expect(sparta.filter(row => row.activity.includes('周一至')).every(row => row.kind === 'activity')).toBeTrue();
+    expect(semi.map(row => row.time)).toContain('17:10–18:00');
+    const fridays = EV_PAGE_PROFILE.studyModes!.flatMap(mode => mode.curfew.filter(entry => entry.day === '周五'));
+    expect(fridays.map(entry => entry.time)).toEqual(['05:00–24:00', '05:00–24:00']);
+    const condoShuttle = EV_PAGE_PROFILE.dormRules.find(rule => rule.title === '公寓接驳车')!.text;
+    expect(condoShuttle).toContain('07:15、14:10');
+    expect(page.copy.refund!.groups[0].rules[0].text).toContain('2,000元人民币');
+    expect(JSON.stringify(page.copy.refund)).not.toMatch(/中介|代办|佣金/);
+    expect(page.copy.campus?.ruleText).toContain('周五17:10后或周六、周日');
   });
 
   it('shows the 2027 holiday table and the checked licences', () => {
@@ -206,7 +248,10 @@ describe('EV school page on the shared template', () => {
     const rooms = page.roomRateGroups.flatMap(group => group.rooms);
     expect(rooms.length).toBe(6);
     expect(rooms.every(room => !!page.roomProfileForRate(room))).toBeTrue();
-    expect(page.roomProfileForRate(rooms.find(room => room.id === 'off-campus-double')!)?.id).toBe('off-campus');
+    expect(page.roomProfileForRate(rooms.find(room => room.id === 'off-campus-double')!)?.id).toBe('off-campus-double');
+    expect(Object.keys(EV_PAGE_PROFILE.roomVideos!)).toEqual(['off-campus-single']);
+    expect(EV_PAGE_PROFILE.videoTabs!.map(tab => tab.label)).toEqual(['校园视频', '课堂视频', '宿舍视频', '生活视频', '访谈视频']);
+    expect(EV_PAGE_PROFILE.videoTabs!.flatMap(tab => tab.items).length).toBe(23);
     expect(page.guidesForCourse('sparta-social-media-english').map(guide => guide.title)).toEqual(['社交媒体英语']);
     expect(page.generalCourseGuides.map(guide => guide.title)).toEqual(['免费选修课', '测试、换课与教师培训日']);
     expect(page.quoteImageData.layoutVersion).toBe(2);
