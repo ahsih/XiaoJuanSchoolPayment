@@ -268,14 +268,6 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾克拉克AELC语言学校, AELC, American English Learning Center, Clark AELC, 菲律宾外教口语学校, 克拉克语言学校, Native English Clark',
     image: '/assets/philippines/aelc-main.webp',
   },
-  '/philippines-study/clark/hana-academy': {
-    title: '菲律宾克拉克HANA Academy | Native亲子Golf课程费用住宿',
-    description:
-      '菲律宾克拉克HANA Academy页面，整理HANA Academy的Light ESL、General ESL、Native ESL、IELTS、TOEIC、Junior、Kindergarten、Golf、Senior课程、住宿房型、4周USD课程住宿费和PHP当地费用。',
-    keywords:
-      '菲律宾克拉克HANA Academy, HANA Academy Clark, Clark HANA, HARA AND HANAH INTERNATIONAL ACADEMY, 克拉克亲子游学, 菲律宾Native口语学校, Clark Golf English',
-    image: '/assets/philippines/clark-study-hero.webp',
-  },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
     description:
@@ -527,6 +519,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/winning-english-academy', name: '菲律宾宿务Winning English Academy', brand: 'Winning', quote: false },
   { path: '/philippines-study/boracay/boracay-coco-english-academy', name: '菲律宾长滩岛Boracay Coco English Academy', brand: 'Coco English', quote: false },
   { path: '/philippines-study/boracay/paradise-english-boracay-language-institute', name: '菲律宾长滩岛Paradise English语言学校', brand: 'Paradise English', quote: false },
+  { path: '/philippines-study/clark/hana-academy', name: '菲律宾克拉克HANA语言学校', brand: 'HANA Academy', aliases: 'HANA Academy Clark', quote: true, image: '/assets/hana/campus/pool-fountain.webp' },
   { path: '/philippines-study/clark/talk-academy', name: '菲律宾克拉克TALK Academy语言学校', brand: 'TALK Academy', quote: false },
   { path: '/philippines-study/iloilo/gitc-college-international-language-center', name: '菲律宾伊洛伊洛GITC College语言学校', brand: 'GITC', quote: false },
   { path: '/philippines-study/iloilo/we-academy', name: '菲律宾伊洛伊洛WE Academy语言学校', brand: 'WE Academy', quote: false },

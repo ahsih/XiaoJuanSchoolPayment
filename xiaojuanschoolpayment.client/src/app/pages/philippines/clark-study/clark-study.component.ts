@@ -263,28 +263,28 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克HANA Academy',
-      image: 'https://media.loveitopcdn.com/29958/campus-hana-min.jpg',
-      location: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City',
-      style: 'Native口语、亲子、Golf与Senior舒适型',
+      image: '/assets/hana/campus/pool-fountain.webp',
+      location: '克拉克－安吉利斯市，距克拉克国际机场约25分钟车程',
+      style: '菲师一对一＋美国外教，成人、亲子与乐龄舒适型',
       route: '/philippines-study/clark/hana-academy',
-      startingPrice: 'USD 1,430 / 4周起（Light ESL + 双人房，2026注册费减免）',
+      startingPrice: '4周1,470美元起（Light ESL＋双人间；注册费和当地费用另计）',
       courses: [
         'Light ESL / General ESL',
         'Native ESL / Native Only',
         'IELTS / TOEIC',
-        'Junior / Kindergarten',
-        'Guardian / Family',
-        'Golf Intensive / Leisure',
-        'Senior Course',
+        'Junior / 幼儿园',
+        '陪读家长 / 青少年英语营',
+        '高尔夫强化班 / 休闲班',
+        '乐龄课程（50岁以上）',
       ],
       accommodation:
-        '官网列普通宿舍与Hotel Dormitory；普通房型有1 bed、2 beds、3 beds和Family room，Hotel Dormitory距学校约3km并有接驳安排。',
+        '校内单人间、双人间、三人间和3–5人家庭房，每间有空调和独立卫浴；含餐、每周2次清洁和洗衣。',
       facilities:
-        '官网列宿舍、教室与自习区、餐厅、泳池、50米内Golf和Badminton、1km内健身房，周边100米内有咖啡、餐厅、超市和ATM。',
+        '校内有花园泳池、竹凉亭和自习室；出校门步行1分钟有高尔夫练习场、羽毛球场、超市和餐厅。',
       bestFor:
-        '想在Clark兼顾Native口语、亲子低龄、Senior、Golf English和生活便利的学生或家庭。',
+        '想轻松学英语的成人、带3–17岁孩子的亲子家庭、50岁以上乐龄学员和想边学英语边打高尔夫的学员。',
       consultantNote:
-        'HANA不是高压Sparta路线，适合舒适生活和多年龄课程组合；2026价目表注明注册费减免，报价时仍要把Native课比例、房型和PHP当地费用拆开核对。',
+        'HANA不是斯巴达路线，成人没有门禁；旺季不加价，淡季住得越久折扣越多，淡季成人Light ESL住双人间可付4周读8周。',
     },
   ];
 
@@ -412,7 +412,6 @@ export class ClarkStudyComponent {
     { label: '菲律宾克拉克HELP English语言学校官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
     { label: '菲律宾克拉克AELC语言学校资料页', url: 'https://philippine-english.jp/clark/aelc.php' },
     { label: 'AELC旧域名与位置记录', url: 'https://philippines.worldplaces.me/view-place/42879050-aelc-american-english-learning-center.html' },
-    { label: 'HANA Academy 官方网站', url: 'https://clarkhana.com/' },
     { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
     {
       label: 'StudyTourA 菲律宾学校分类参考',
