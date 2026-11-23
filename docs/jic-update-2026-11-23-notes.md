@@ -42,6 +42,8 @@ December 2026 holiday notice and the BESA pickup poster.
   leaving off the term dates is counted per time and shown as an 8,000-peso reference row (school confirms).
 - IELTS Guarantee: same tuition as IELTS Standard, at least 8 consecutive weeks (shorter plans are blocked),
   18,000 pesos at school per started 8 weeks.
+- Visa extensions (user rule 2026-11-24): a 30-day visa needs one per started four weeks beyond week 4, a 59-day
+  visa one per started four weeks beyond week 8; a 59-day visa's first extension is the school's second (6,210).
 - Local fees: SSP 7,800, SSP-E card 4,500, ACR 4,000 with the first extension, extensions 4,940 / 6,210 / 4,240…,
   utilities 3,000, maintenance 1,200 and laundry 1,200 per 4 accommodation weeks (proportional), ID 200,
   course textbooks per started 4 weeks, BESA Sunday pickup 3,000 (Manila or Clark), Challenger paid special

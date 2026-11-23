@@ -121,13 +121,19 @@ describe('JicStudentQuote', () => {
     setPlan(student, 6, '2026-09-06');
     expect(student.visaExtensionCount).toBe(0);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(0);
+    // A 59-day visa covers 8 weeks; each further 4 weeks needs one extension, starting at the school's second rate.
     setPlan(student, 8, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(1);
+    expect(student.visaExtensionCount).toBe(0);
+    expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(0);
     setPlan(student, 12, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(2);
+    expect(student.visaExtensionCount).toBe(1);
+    expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(6210);
     setPlan(student, 24, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(5);
+    expect(student.visaExtensionCount).toBe(4);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(1);
+    expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(18930);
+    student.visaType = 'tourist30';
+    expect(student.visaExtensionCount).toBe(5);
     expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(23870);
   });
 

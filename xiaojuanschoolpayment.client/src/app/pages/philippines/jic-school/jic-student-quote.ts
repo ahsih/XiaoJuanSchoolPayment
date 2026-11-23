@@ -276,11 +276,14 @@ export class JicStudentQuote {
   }
 
   get visaLabel(): string { return this.visaType === 'tourist30' ? '30天旅游签证' : '59天旅游签证'; }
+  /** One extension per further 30 days: a 30-day visa from week 5, a 59-day visa from week 9 (user rule 2026-11-24). */
   get visaExtensionCount(): number {
     const weeks = this.quotePlan.stayWeeks;
-    if (this.visaType === 'tourist30') return weeks > 4 ? Math.ceil((weeks - 4) / 4) : 0;
-    return weeks >= 8 ? Math.ceil((weeks - 4) / 4) : 0;
+    const covered = this.visaType === 'tourist30' ? 4 : 8;
+    return weeks > covered ? Math.ceil((weeks - covered) / 4) : 0;
   }
+  /** A 59-day visa's first extension is the school's second one (6,210 pesos). */
+  private get visaRateOffset(): number { return this.visaType === 'tourist59' ? 1 : 0; }
   get localFees(): SchoolLocalFee[] {
     const extensions = this.visaExtensionCount;
     const fees = this.prices.rules?.localFees.filter(fee => fee.enabled && fee.includeInTotal) ?? this.fallbackLocalFees;
@@ -324,7 +327,7 @@ export class JicStudentQuote {
       else if (fee.billingRule === 'selected-clark-pickup') quantity = this.airportPickup === 'clark' ? 1 : 0;
       else if (fee.billingRule === 'visa-extension-schedule') quantity = extensions;
       const total = fee.billingRule === 'visa-extension-schedule' && fee.rates?.length
-        ? Array.from({ length: extensions }, (_, index) => fee.rates?.[Math.min(index, fee.rates.length - 1)] ?? fee.amount).reduce((sum, amount) => sum + amount, 0)
+        ? Array.from({ length: extensions }, (_, index) => fee.rates?.[Math.min(index + this.visaRateOffset, fee.rates.length - 1)] ?? fee.amount).reduce((sum, amount) => sum + amount, 0)
         : fee.amount * quantity;
       const unit = fee.billingRule === 'visa-extension-schedule' ? '按学校累计表' : fee.billingRule.includes('period') ? `${periodWeeks}周` : '次';
       return { item: fee.name, unitLabel: `${money(fee.amount)} 比索／${unit}`, quantity, total, note: fee.note };
