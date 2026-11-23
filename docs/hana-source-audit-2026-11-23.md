@@ -53,6 +53,9 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
 - The partner hotel dormitories and the early-study-abroad programs are not quoted online (adviser quote).
 - Golf course price: the message says 1,000 for golf; the brochures say 700 (leisure) and 1,000 (intensive). Both are listed.
 - Brochure refund wording (200,000 won) differs from the message (200 dollars); the page uses 200 dollars.
+  Also unclear: which "deposit" the pre-arrival refund deducts (a booking deposit, or the 4,000-peso dormitory
+  deposit paid at school), and the no-refund minimum (orientation guide: 3 weeks; message: under 4 weeks left).
+  The page follows the message. English questions for the school were drafted on 2026-11-24.
 - The school film's narration was not checked word by word; its first seconds showed another company's logo and were cut.
 
 ## Shared template additions (CIA unchanged)
