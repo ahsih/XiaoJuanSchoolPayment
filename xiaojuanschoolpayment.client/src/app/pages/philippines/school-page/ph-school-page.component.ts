@@ -67,6 +67,7 @@ import type { PhCompareFocus, PhPlanComparison } from './ph-plan-compare';
 import type { PhSchoolQuote } from './ph-school-quote';
 import type {
   PhAlbumCategory,
+  PhOfferCard,
   PhPageStudent,
   PhRoomProfile,
   PhSchoolProfile,
@@ -297,6 +298,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   scheduleDayIndex = 0;
   readonly studyModes = this.profile.studyModes;
   readonly holidayCalendars = this.profile.holidayCalendars;
+  private readonly offerCards = this.profile.offers ?? [];
+  /** Offers above the quote that have not ended and whose promotion rules the applied content still enables. */
+  get visibleOffers(): readonly PhOfferCard[] {
+    if (!this.offerCards.length) return this.offerCards;
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return this.offerCards.filter(card => (!card.until || today < card.until)
+      && (!card.promotionIds?.length || card.promotionIds.some(id => this.promotions.some(rule => rule.id === id && rule.enabled))));
+  }
   readonly ieltsComputerExamDates2027 = this.profile.ieltsComputerExamDates2027;
   readonly courseDetailGuides = this.profile.courseDetailGuides;
   courseFees: CourseFee[] = this.profile.initialCourseFees.map(course => ({ ...course }));
@@ -319,6 +329,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
+  readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};
   readonly roomVideos = this.profile.roomVideos ?? {};
   /**
@@ -431,7 +442,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     const calendar = this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0];
     if (!calendar) return [];
     const year = calendar.year;
-    const ranges = this.peakSeasonCalendarRanges.filter(range => range.enabled !== false);
+    const ranges = [...this.peakSeasonCalendarRanges.filter(range => range.enabled !== false), ...this.calendarFreePeakRanges];
     return Array.from({ length: 12 }, (_, offset) => {
       const month = offset + 1;
       const first = `${year}-${String(month).padStart(2, '0')}-01`;
@@ -450,6 +461,14 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.peakSeasonCalendarRanges.filter(range =>
       range.enabled !== false && range.end >= `${year}-01-01` && range.start <= `${year}-12-31`);
   }
+  /** School-only peak ranges without a surcharge (HANA) that touch the calendar year; CIA has none. */
+  get calendarFreePeakRanges(): CiaPeakSeasonRange[] {
+    const year = this.calendarYear;
+    return (this.profile.peakSeasonsWithoutSurcharge?.ranges ?? [])
+      .filter(range => range.end >= `${year}-01-01` && range.start <= `${year}-12-31`)
+      .map(range => ({ id: range.start, label: range.label, start: range.start, end: range.end, enabled: true }));
+  }
+  readonly freePeakTitle = this.profile.peakSeasonsWithoutSurcharge?.title ?? '';
   get calendarYear(): number {
     return (this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0])?.year ?? 2027;
   }
@@ -462,9 +481,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     this.isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
   }
   roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
+    // An empty room code never matches: rooms without codes (PINES, HANA) link only through `rateIds`, and only
+    // HANA's double room has photos.
     return this.roomComparisonProfiles.find(profile =>
       profile.rateIds?.includes(room.id)
-      || (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+      || (!!room.code && (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code)));
+  }
+  /** False when some room cards have no photos (HANA), so the hint points at the 看照片 buttons instead. */
+  get everyRateRoomHasPhotos(): boolean {
+    return this.roomRateGroups.every(group => group.rooms.every(room => !!this.roomProfileForRate(room)));
   }
   get activeRateRoomId(): string {
     if (this.selectedRateRoomId) return this.selectedRateRoomId;
@@ -630,6 +655,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly studentTracks = this.profile.studentTracks;
 
   readonly officialStudentReviews = this.profile.studentReviews;
+  /** School-only short written reviews (HANA); CIA has none. */
+  readonly textReviews = this.profile.textReviews ?? [];
 
   readonly sidaCiaReasons = this.profile.sidaReasons;
 

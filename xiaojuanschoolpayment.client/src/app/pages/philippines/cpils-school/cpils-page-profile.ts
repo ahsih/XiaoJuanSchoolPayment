@@ -15,7 +15,7 @@ import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import type { PhPageCopy, PhSchoolProfile } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 import { cloneCpilsContentConfig, createDefaultCpilsContentConfig } from './cpils-content-config';
-import { cpilsRooms2027, cpilsVisibleCourses } from './cpils-pricing';
+import { CPILS_CAREER_COURSE_IDS, cpilsRooms2027, cpilsVisibleCourses } from './cpils-pricing';
 import {
   CPILS_BASIC_INFO,
   CPILS_CAMPUS_BUILDINGS,
@@ -24,12 +24,15 @@ import {
   CPILS_FAQS,
   CPILS_FINAL_CTA_BADGES,
   CPILS_GALLERY_IMAGES,
+  CPILS_HOLIDAY_CALENDARS,
   CPILS_NOT_SUITABLE_FOR,
+  CPILS_OFFERS,
   CPILS_OVERVIEW_FACTS,
   CPILS_PAGE_COPY,
   CPILS_PRACTICAL_GUIDES,
   CPILS_QUICK_INFO,
   CPILS_ROOM_PROFILES,
+  CPILS_ROOM_VIDEOS,
   CPILS_SCHEDULE,
   CPILS_SUITABLE_FOR,
   CPILS_VIDEO_CARDS,
@@ -98,17 +101,24 @@ const CPILS_COPY: PhPageCopy = {
     badge: '每周五16:10毕业典礼',
   },
   planning: {
-    summaryTitle: '2027年暑期旺季',
-    summaryHint: '旺季附加费档期与收费方式',
+    summaryTitle: '2027年校历与暑期旺季',
+    summaryHint: '学校假期、旺季附加费档期',
   },
   calendar: {
-    eyebrow: 'PEAK SEASON',
-    title: 'CPILS 2027年暑期旺季',
-    intro: '学习周与暑期旺季重叠时，每周加收旺季附加费；学校假期以CPILS当期通知为准。',
+    eyebrow: 'ACADEMIC CALENDAR',
+    title: 'CPILS 2027年校历',
+    intro: '学校假期和暑期旺季一表看完，规划入学日期和周数时先看这里。',
     peakEyebrow: '2027 PEAK SEASON',
     peakTitle: '2027年暑期旺季',
     peakIntro: '课程覆盖以下学习周时，每名学生按实际重叠的学习周计收旺季附加费。',
     peakNote: '入学按周日、离校按周六；旺季附加费不参与思达启航折扣。2026/12/31及之前报名2027年暑期的学生至少报8周。',
+    footnote: '开斋节、宰牲节以官方公布的日期为准，政府也可能临时调整假期。',
+  },
+  offers: {
+    eyebrow: 'OFFERS',
+    title: 'CPILS 报名优惠',
+    intro: '思达启航折扣和学校优惠可以叠加；每项优惠的报名日期、开课日期和周数条件写在卡片上。',
+    note: '报价器会按报名日、开课日和周数自动算出能用的优惠；学校优惠不能折现、出售或转让。',
   },
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
@@ -165,12 +175,24 @@ const CPILS_EXAM_TERMS = '2027/01/01–12/27开课（05/31–08/29开课除外�
 const CPILS_IELTS_EXAM_HIGHLIGHT = {
   badge: '注册12周送1次官方考试',
   label: '考试福利',
-  text: `${CPILS_EXAM_TERMS}，雅思课程一次注册12周及以上，赠1次雅思官方考试。`,
+  text: `${CPILS_EXAM_TERMS}，雅思课程（含预备雅思）一次注册12周及以上，赠1次雅思官方考试。`,
+};
+const CPILS_IELTS_GUARANTEE8_EXAM_HIGHLIGHT = {
+  badge: '注册8周送1次官方考试',
+  label: '考试福利',
+  text: `${CPILS_EXAM_TERMS}，雅思保分班一次性注册8周，送1次雅思官方考试。`,
 };
 const CPILS_TOEIC_EXAM_HIGHLIGHT = {
   badge: '每满4周送1次官方考试',
   label: '考试福利',
   text: `${CPILS_EXAM_TERMS}，托业课程4–7周赠1次，每满4周再加1次，24周最多6次。`,
+};
+
+/** 2027 career-course offer (school poster 2026-11-23). */
+const CPILS_CAREER_HIGHLIGHT = {
+  badge: '2027开课最高减200美元',
+  label: '课程优惠',
+  text: '2027年开课的职业培训课程，报名4–7周减50美元、8–11周减100美元、12–15周减150美元、16周及以上减200美元。',
 };
 
 const initialCourses: CiaQuoteCourse[] = cpilsVisibleCourses(defaults, initialPricing.courseFees);
@@ -185,12 +207,17 @@ export const CPILS_PAGE_PROFILE: PhSchoolProfile = {
   compactLayout: true,
   overviewFacts: CPILS_OVERVIEW_FACTS,
   videoTabs: CPILS_VIDEO_TABS,
+  roomVideos: CPILS_ROOM_VIDEOS,
   courseHighlights: {
+    'pre-ielts-course': CPILS_IELTS_EXAM_HIGHLIGHT,
     'ielts-course': CPILS_IELTS_EXAM_HIGHLIGHT,
+    'ielts-guarantee-8-weeks': CPILS_IELTS_GUARANTEE8_EXAM_HIGHLIGHT,
     'ielts-guarantee-12-weeks': CPILS_IELTS_EXAM_HIGHLIGHT,
     'toeic-course': CPILS_TOEIC_EXAM_HIGHLIGHT,
     'toeic-guarantee': CPILS_TOEIC_EXAM_HIGHLIGHT,
+    ...Object.fromEntries(CPILS_CAREER_COURSE_IDS.map(id => [id, CPILS_CAREER_HIGHLIGHT])),
   },
+  offers: CPILS_OFFERS,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
@@ -243,7 +270,7 @@ export const CPILS_PAGE_PROFILE: PhSchoolProfile = {
   ieltsResults: [],
   studentReviews: [],
   reviewPath: '',
-  holidayCalendars: [],
+  holidayCalendars: CPILS_HOLIDAY_CALENDARS,
   ieltsComputerExamDates2027: [],
   studentCareServices: [],
   campusPracticalGuides: CPILS_PRACTICAL_GUIDES,
@@ -257,6 +284,7 @@ export const CPILS_PAGE_PROFILE: PhSchoolProfile = {
     { label: '概览', target: 'overview', icon: 'dashboard' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '住宿', target: 'rooms', icon: 'bed' },
+    { label: '优惠', target: 'offers', icon: 'local_offer' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ],

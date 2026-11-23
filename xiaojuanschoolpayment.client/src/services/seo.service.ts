@@ -122,11 +122,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/baguio-study-hero.webp',
   },
   '/philippines-study/cebu/bcebu': {
-    title: "菲律宾宿务B'Cebu语言学校 | 2026课程住宿费用",
+    title: "菲律宾宿务B'Cebu语言学校 | 课程住宿费用与在线报价",
     description:
-      "菲律宾宿务B'Cebu语言学校2026费用页面，整理Speed ESL、Intensive ESL、IELTS、B'SPARTA、商务英语、Junior、幼儿园课程、住宿房型与1至3周短期比例。",
+      "菲律宾宿务B'Cebu语言学校（麦克坦岛拉普拉普市）：Speed ESL、B'Sparta斯巴达、雅思与雅思保证班、商务英语、青少年与幼儿课程，单人间到三人间住宿，2027淡季优惠、暑假附加费、在线报价与学杂费明细。",
     keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
-    image: '/assets/study-hero-collage.webp',
+    image: '/assets/bcebu/campus-building.webp',
   },
   '/philippines-study/cebu/btes-english-academy': {
     title: '菲律宾宿务BTES语言学校 | 课程、住宿与报名咨询',
@@ -145,9 +145,9 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶PINES语言学校页面，整理Main Campus、IELTS Campus、ESL、Power Speaking、IELTS、TOEIC、住宿房型、2026费用和报名注意事项。',
+      '菲律宾碧瑶PINES语言学校：口语和雅思分区上课，校内有雅思、托业官方考点；2026–2027课程费、房费、优惠和到校学杂费，支持单人、多人和方案对比报价。',
     keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/pines-campus-hero.webp',
+    image: '/assets/pines/campus/exterior.webp',
   },
   '/philippines-study/baguio/beci-eop-campus': {
     title: '菲律宾碧瑶BECI EOP校区 | 课程住宿费用与多人报价',
@@ -267,14 +267,6 @@ export const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾克拉克AELC语言学校页面，整理American English Learning Center的Native口语、ESL、TOEIC、IELTS、Business、Family方向、AELC照片、4周USD课程住宿参考费用和报名注意事项。',
     keywords: '菲律宾克拉克AELC语言学校, AELC, American English Learning Center, Clark AELC, 菲律宾外教口语学校, 克拉克语言学校, Native English Clark',
     image: '/assets/philippines/aelc-main.webp',
-  },
-  '/philippines-study/clark/hana-academy': {
-    title: '菲律宾克拉克HANA Academy | Native亲子Golf课程费用住宿',
-    description:
-      '菲律宾克拉克HANA Academy页面，整理HANA Academy的Light ESL、General ESL、Native ESL、IELTS、TOEIC、Junior、Kindergarten、Golf、Senior课程、住宿房型、4周USD课程住宿费和PHP当地费用。',
-    keywords:
-      '菲律宾克拉克HANA Academy, HANA Academy Clark, Clark HANA, HARA AND HANAH INTERNATIONAL ACADEMY, 克拉克亲子游学, 菲律宾Native口语学校, Clark Golf English',
-    image: '/assets/philippines/clark-study-hero.webp',
   },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
@@ -527,6 +519,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/winning-english-academy', name: '菲律宾宿务Winning English Academy', brand: 'Winning', quote: false },
   { path: '/philippines-study/boracay/boracay-coco-english-academy', name: '菲律宾长滩岛Boracay Coco English Academy', brand: 'Coco English', quote: false },
   { path: '/philippines-study/boracay/paradise-english-boracay-language-institute', name: '菲律宾长滩岛Paradise English语言学校', brand: 'Paradise English', quote: false },
+  { path: '/philippines-study/clark/hana-academy', name: '菲律宾克拉克HANA语言学校', brand: 'HANA Academy', aliases: 'HANA Academy Clark', quote: true, image: '/assets/hana/campus/pool-fountain.webp' },
   { path: '/philippines-study/clark/talk-academy', name: '菲律宾克拉克TALK Academy语言学校', brand: 'TALK Academy', quote: false },
   { path: '/philippines-study/iloilo/gitc-college-international-language-center', name: '菲律宾伊洛伊洛GITC College语言学校', brand: 'GITC', quote: false },
   { path: '/philippines-study/iloilo/we-academy', name: '菲律宾伊洛伊洛WE Academy语言学校', brand: 'WE Academy', quote: false },
