@@ -96,11 +96,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-hana-school',
   standalone: true,
@@ -132,13 +127,13 @@ export class HanaSchoolComponent {
       icon: 'location_on',
       label: '城市',
       value: 'Clark / Angeles City',
-      note: 'HANA Academy位于Angeles City, Pampanga，官网列地址为Lot 3-2a Cutcut, Friendship Highway。',
+      note: 'HANA Academy位于Pampanga省Angeles City，属于Clark生活圈。',
     },
     {
       icon: 'record_voice_over',
       label: '课程特色',
       value: 'Native + 1:1',
-      note: '官网强调Native 1:1、菲律宾老师一对一、小组课和灵活课程组合。',
+      note: '主打Native 1:1、菲律宾老师一对一、小组课和灵活课程组合。',
     },
     {
       icon: 'family_restroom',
@@ -150,19 +145,19 @@ export class HanaSchoolComponent {
       icon: 'golf_course',
       label: '特色项目',
       value: 'English + Golf',
-      note: '官网列高尔夫练习场约50米，Golf Intensive包含16次一对一高尔夫课。',
+      note: '高尔夫练习场距学校约50米，Golf Intensive包含16次一对一高尔夫课。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: '校内 / Hotel Dormitory',
-      note: '官网列普通宿舍和距离学校约3km、平日每日6班接驳的Hotel Dormitory。',
+      note: '有普通宿舍，以及距离学校约3km、平日每日6班接驳的Hotel Dormitory。',
     },
     {
       icon: 'payments',
       label: '4周起价',
       value: 'USD 1,430 / 4周起',
-      note: '2026价目表：Light ESL + 双人房4周课程住宿USD1,430，原注册费USD100当前减免。',
+      note: '2026年Light ESL + 双人房4周课程住宿USD1,430，原注册费USD100当前减免。',
     },
   ];
 
@@ -170,31 +165,31 @@ export class HanaSchoolComponent {
     {
       category: '校园',
       title: 'HANA Academy校园泳池',
-      description: 'HANA Academy公开图片中的校区泳池与热带庭院，体现Clark舒适型学习环境。',
+      description: 'HANA Academy校区泳池与热带庭院，体现Clark舒适型学习环境。',
       src: 'https://media.loveitopcdn.com/29958/campus-hana-min.jpg',
     },
     {
       category: '课堂',
       title: 'HANA Academy课堂走廊',
-      description: 'HANA官网图片展示的明亮教学空间走廊，适合核对1:1教室氛围。',
+      description: '明亮的教学空间走廊，可先了解1:1教室氛围。',
       src: 'https://static.readdy.ai/image/d000806ada85d387ffa3466a860b2591/57d72d54ebdb3ac912a1e0988751a611.png',
     },
     {
       category: '生活',
       title: 'Clark泳池休闲区',
-      description: 'HANA Hotel Dormitory相关页面展示的泳池休闲空间，住宿类型和接驳需按当期确认。',
+      description: 'Hotel Dormitory泳池休闲空间，住宿类型和接驳需按当期确认。',
       src: 'https://images.oyoroomscdn.com/uploads/hotel_image/249957/large/udtufewmbldj.jpg',
     },
     {
       category: '住宿',
       title: 'Clark住宿舒适度参考',
-      description: 'HANA公开资料列校内宿舍与Hotel Dormitory，房型空位、楼栋和接驳以学校回复为准。',
+      description: '有校内宿舍与Hotel Dormitory，房型空位、楼栋和接驳以学校回复为准。',
       src: 'assets/philippines/clark-study-hero.webp',
     },
     {
       category: '生活',
       title: 'Clark-Angeles生活圈',
-      description: '官网列学校周边100米内有咖啡、餐厅、超市、ATM等生活资源。',
+      description: '学校周边100米内有咖啡、餐厅、超市、ATM等生活资源。',
       src: 'assets/philippines/clark-study-hero.webp',
     },
   ];
@@ -203,10 +198,10 @@ export class HanaSchoolComponent {
     { label: '学校名称', value: 'HANA Academy' },
     { label: '公司名称', value: 'HARA AND HANAH INTERNATIONAL ACADEMY INC' },
     { label: '地址', value: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City, Pampanga, Philippines' },
-    { label: '官方定位', value: 'Clark-Angeles City英语学校，主打Native teachers、1-on-1 classes、family和senior友好路线。' },
+    { label: '学校定位', value: 'Clark-Angeles City英语学校，主打Native teachers、1-on-1 classes、family和senior友好路线。' },
     { label: '课程方向', value: 'Light ESL、General ESL、Native ESL、Native Only、TOEIC、IELTS、Guardian、Junior、Kindergarten、夏令营、Golf、Senior。' },
-    { label: '认证参考', value: '官网About页列DepEd、TESDA、DOT、Immigration Permit等；多语言页也提到CAESA正式会员。' },
-    { label: '位置与交通', value: '官网写Clark International Airport约25分钟，SM Telabastagan约10分钟车程。' },
+    { label: '认证', value: 'DepEd、TESDA、DOT、Immigration Permit等；CAESA正式会员。' },
+    { label: '位置与交通', value: '到Clark International Airport约25分钟，到SM Telabastagan约10分钟车程。' },
     { label: '设施', value: '宿舍、Hotel Dormitory、1:1教室、自习空间、餐厅、泳池、50米内Golf/Badminton、1km内健身房、周边咖啡餐厅超市。' },
   ];
 
@@ -224,7 +219,7 @@ export class HanaSchoolComponent {
     {
       image: this.galleryImages[2].src,
       title: '亲子、幼儿园和Senior路线完整',
-      text: '官网覆盖3-6岁Kindergarten、7-17岁Junior、Guardian家长课程和50+ Senior课程，适合家庭一站式比较。',
+      text: '课程覆盖3-6岁Kindergarten、7-17岁Junior、Guardian家长课程和50+ Senior课程，适合家庭一站式比较。',
     },
     {
       image: 'assets/philippines/clark-study-hero.webp',
@@ -237,7 +232,7 @@ export class HanaSchoolComponent {
     { title: '想在Clark练Native口语', text: 'Native ESL、Native Only、IELTS/TOEIC中的Native 1:1都适合重视发音、自然表达和口语纠正的人。' },
     { title: '亲子或多年龄同行', text: '幼儿园、Junior、Guardian、成人和Senior路线都能同时比较，适合家庭成员学习目标不同的情况。' },
     { title: '想要学习+高尔夫/生活体验', text: 'English + Golf、泳池、周边咖啡餐厅和Clark交通便利，让行程更像学习生活结合。' },
-    { title: '想看费用透明的官方表', text: '官网课程页公开4周课程费、住宿费、套餐价和PHP当地费用，适合先做预算初筛。' },
+    { title: '想先看清各项费用', text: '4周课程费、住宿费、套餐价和当地比索费用分项列明，适合先做预算初筛。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
@@ -261,7 +256,7 @@ export class HanaSchoolComponent {
       name: 'General ESL',
       type: 'Adult ESL',
       lessons: '5P 1:1 + 1PH Group + 1Native Group',
-      suitable: '官网标注为Most Popular，适合想提高一对一课时和稳定输出的人。',
+      suitable: '热门课程，适合想提高一对一课时和稳定输出的人。',
       tuition4w: 860,
     },
     {
@@ -293,7 +288,7 @@ export class HanaSchoolComponent {
       name: 'IELTS',
       type: 'Exam Prep',
       lessons: '3P 1:1 + 1Native 1:1 + 1PH Group + 1Native Group + weekly mock test',
-      suitable: '适合雅思听说读写备考，官网提到8周以上可关注保证项目。',
+      suitable: '适合雅思听说读写备考，8周以上可咨询保证项目。',
       tuition4w: 1025,
     },
     {
@@ -349,15 +344,15 @@ export class HanaSchoolComponent {
   readonly roomOptions: RoomOption[] = [
     { id: 'one-bed', name: '1 bed / 单人房', fee4w: 900, note: '普通房型4周住宿参考，隐私最高。' },
     { id: 'two-bed', name: '2 beds / 双人房', fee4w: 700, note: '多数成人课程常用预算房型，费用较平衡。' },
-    { id: 'three-bed', name: '3 beds / 三人房', fee4w: 600, note: '2026价目表备注为家庭房，需按同行人数和空房确认。' },
+    { id: 'three-bed', name: '3 beds / 三人房', fee4w: 600, note: '三人房为家庭房，需按同行人数和空房确认。' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'Registration Fee', amount: 'USD 100 / person（当前减免）', note: '2026价目表列标准注册费USD100，并注明注册费减免；最终以学校invoice为准。' },
+    { item: 'Registration Fee', amount: 'USD 100 / person（当前减免）', note: '标准注册费100美元，2026年减免；最终以学校invoice为准。' },
     { item: 'Visa Extension', amount: 'PHP 4,630 起', note: '1st extension到8周；之后2nd PHP5,900，后续每次PHP4,130参考。' },
-    { item: 'SSP', amount: 'PHP 7,500', note: '特别学习许可；官网表说明无ACR有效2个月，有ACR有效6个月。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,000', note: '官网当地费用表列示，有效期1年。' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '9周以上通常需要，官方表列有效期1年。' },
+    { item: 'SSP', amount: 'PHP 7,500', note: '特别学习许可；无ACR有效2个月，有ACR有效6个月。' },
+    { item: 'SSP E-Card', amount: 'PHP 4,000', note: '有效期1年。' },
+    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '9周以上通常需要，有效期1年。' },
     { item: 'Student ID', amount: 'PHP 200', note: '学生证办理参考。' },
     { item: 'Electricity', amount: 'PHP 450-600 / week base', note: '单人房低于20kw/周PHP450；2-5人房低于20kw/周/房PHP600，超额PHP22/kw。' },
     { item: 'Utility Fee', amount: 'PHP 2,000-3,000 / 4周', note: '水、洗衣、清洁等；单人PHP3,000，双人PHP2,500/人，三人PHP2,000/人参考。' },
@@ -368,7 +363,7 @@ export class HanaSchoolComponent {
   ];
 
   readonly schedule: ScheduleItem[] = [
-    { time: '07:00 - 08:30', title: '起床与早餐', text: '官网General ESL和Golf样例日程均从早餐后进入上午课程。' },
+    { time: '07:00 - 08:30', title: '起床与早餐', text: 'General ESL和Golf日程均在早餐后进入上午课程。' },
     { time: '08:30 - 12:35', title: '上午一对一课程', text: 'Adult General ESL通常安排Speaking、Reading、Writing、Grammar、Vocabulary等菲律宾老师一对一课程。' },
     { time: '12:40 - 13:25', title: '午餐', text: '学校餐厅用餐；Kindergarten半日课程通常到12:35结束。' },
     { time: '13:30 - 15:05', title: '团体课 / Native课 / Golf', text: '成人课程进入菲律宾团体课与Native团体课；Golf Intensive下午可能安排一对一高尔夫课和练习。' },
@@ -386,28 +381,28 @@ export class HanaSchoolComponent {
   ];
 
   readonly notes = [
-    'HANA 2026价目表价格为USD；课程费与住宿费分列，当地PHP费用另计。',
-    '2026价目表列标准注册费USD100，并注明注册费减免；本页估算器按减免后的USD0计算，最终以学校invoice为准。',
-    'Clark与Manila接机费不同；如自行前往，官网建议Grab搜索HARA AND HANAH INTERNATIONAL ACADEMY。',
+    'HANA 2026年价格以美元计；课程费与住宿费分列，当地比索费用另计。',
+    '标准注册费100美元，2026年减免；这里的估算器按减免后的0美元计算，最终以学校invoice为准。',
+    'Clark与Manila接机费不同；如自行前往，可用Grab搜索HARA AND HANAH INTERNATIONAL ACADEMY。',
     'Kindergarten、Junior和Senior课程有各自规则，年龄、监护、活动、接送和医疗支持要按当期确认。',
-    '官网列低季优惠、早鸟、团报和长期优惠，但是否适用要按入学日期、房型和学校回函确认。',
+    '学校有低季优惠、早鸟、团报和长期优惠，是否适用要按入学日期、房型和学校回函确认。',
   ];
 
   readonly faqs: FaqItem[] = [
     {
       question: 'HANA Academy在哪里？',
       answer:
-        'HANA Academy位于Lot 3-2a Cutcut, Friendship Highway, Angeles City, Pampanga，属于Clark/Angeles生活圈。官网写Clark机场约25分钟，SM Telabastagan约10分钟车程。',
+        'HANA Academy位于Pampanga省Angeles City，属于Clark/Angeles生活圈。到Clark机场约25分钟，到SM Telabastagan约10分钟车程。',
     },
     {
       question: 'HANA 4周最低大概多少钱？',
       answer:
-        '按2026价目表，Light ESL课程费USD730，双人房住宿USD700，4周课程住宿合计USD1,430；价目表注明原注册费USD100当前减免，PHP当地费用另算。',
+        '按2026年价格，Light ESL课程费USD730，双人房住宿USD700，4周课程住宿合计USD1,430；原注册费USD100当前减免，PHP当地费用另算。',
     },
     {
       question: 'HANA适合亲子吗？',
       answer:
-        '适合放进亲子候选。官网覆盖3-6岁Kindergarten、7-17岁Junior、Guardian家长课程、家庭房率和校内/周边设施。具体年龄、监护和空房需当期确认。',
+        '适合放进亲子候选。学校有3-6岁Kindergarten、7-17岁Junior、Guardian家长课程、家庭房和校内/周边设施。具体年龄、监护和空房需当期确认。',
     },
     {
       question: 'HANA和HELP Clark、CIP、EG怎么比较？',
@@ -417,7 +412,7 @@ export class HanaSchoolComponent {
     {
       question: '页面报价包含所有费用吗？',
       answer:
-        '不包含全部。报价器只估算USD课程费和住宿费，并按2026价目表应用注册费减免；SSP、签证、SSP E-Card、ACR、教材、电费、Utility、押金、接机、机票、保险和个人消费另算。',
+        '不包含全部。报价器只估算USD课程费和住宿费，并已计入2026年注册费减免；SSP、签证、SSP E-Card、ACR、教材、电费、Utility、押金、接机、机票、保险和个人消费另算。',
     },
   ];
 
@@ -427,7 +422,6 @@ export class HanaSchoolComponent {
     { label: '费用估算', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'payments' },
     { label: '服务流程', target: 'service-process', icon: 'task_alt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
@@ -438,18 +432,6 @@ export class HanaSchoolComponent {
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'HANA Academy官网', url: 'https://clarkhana.com/' },
-    { label: 'HANA课程与费用', url: 'https://clarkhana.com/courses' },
-    { label: 'HANA Adult Courses', url: 'https://clarkhana.com/courses/adult' },
-    { label: 'HANA Kindergarten', url: 'https://clarkhana.com/courses/kindergarten' },
-    { label: 'HANA Golf English', url: 'https://clarkhana.com/courses/golf' },
-    { label: 'HANA Senior Course', url: 'https://clarkhana.com/courses/senior' },
-    { label: 'HANA Admission Guide', url: 'https://clarkhana.com/admission' },
-    { label: 'HANA About / Accreditation', url: 'https://clarkhana.com/about-us' },
-    { label: 'HANA Gallery', url: 'https://clarkhana.com/gallery' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {

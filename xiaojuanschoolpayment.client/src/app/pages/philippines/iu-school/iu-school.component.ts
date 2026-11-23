@@ -113,11 +113,6 @@ interface SidaTrustBadge {
   label: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-iu-school',
   standalone: true,
@@ -203,7 +198,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       icon: 'apartment',
       label: '校区规模',
       value: '独立校园 / 140人容量',
-      note: '官方资料列出48间宿舍、70间一对一教室、15间小组教室',
+      note: '48间宿舍、70间一对一教室、15间小组教室',
     },
     {
       icon: 'school',
@@ -221,13 +216,13 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       icon: 'public',
       label: '学生支持',
       value: '20+语言国际支持',
-      note: '官方说明可用学生偏好语言沟通咨询和入学支持',
+      note: '可用学生偏好语言沟通咨询和入学支持',
     },
     {
       icon: 'workspace_premium',
       label: '认证资源',
       value: 'TESDA / IDP IELTS / TOEIC',
-      note: '官网首页展示TESDA、IDP IELTS、Cambridge和TOEIC标识',
+      note: '学校展示TESDA、IDP IELTS、Cambridge和TOEIC相关标识',
     },
   ];
 
@@ -243,42 +238,42 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       category: '设施',
       title: '屋顶泳池',
       description:
-        '官方资料列出Rooftop outdoor swimming pool，适合课后放松和城市景观体验。',
+        '学校设有屋顶露天泳池，适合课后放松和城市景观体验。',
       src: 'https://storage.googleapis.com/outto-strapi-cms-gcp/cms/LINE_ALBUM_2026415_260415_5_4ae1b58f48/LINE_ALBUM_2026415_260415_5_4ae1b58f48.jpg',
     },
     {
       category: '住宿',
       title: '宿舍双人房参考',
       description:
-        '宿舍公开配置包含空调、浴室、Wi-Fi、冰箱、桌子和感应门锁。',
+        '宿舍配置包含空调、浴室、Wi-Fi、冰箱、桌子和感应门锁。',
       src: 'https://cebu21.jp/include/schoolno2/iu/Room/850157_0.jpg',
     },
     {
       category: '住宿',
       title: '校内宿舍参考',
       description:
-        '官方资料列出单人、双人、三人和家庭房，适合不同预算和隐私需求。',
+        '宿舍有单人、双人、三人和家庭房，适合不同预算和隐私需求。',
       src: 'https://iuenglishacademy.org/wp-content/uploads/2024/11/Dormitory_01.webp',
     },
     {
       category: '教室',
       title: '一对一教室',
       description:
-        'IU公开资料列出70间一对一教室，适合Power Speaking和考试课程细分训练。',
+        'IU有70间一对一教室，适合Power Speaking和考试课程细分训练。',
       src: 'https://iuenglishacademy.org/wp-content/uploads/2024/11/Classroom_07.webp',
     },
     {
       category: '教室',
       title: '小组教室',
       description:
-        '官方资料列出15间小组教室，课程可搭配演讲、新闻、词汇语法和测试解析。',
+        '学校有15间小组教室，课程可搭配演讲、新闻、词汇语法和测试解析。',
       src: 'https://iuenglishacademy.org/wp-content/uploads/2024/11/Classroom_22.webp',
     },
     {
       category: '餐厅',
       title: '学校餐厅',
       description:
-        '官方资料说明餐厅每日提供三餐，并设有咖啡区和轻食饮品。',
+        '餐厅每日提供三餐，并设有咖啡区和轻食饮品。',
       src: 'https://iuenglishacademy.org/wp-content/uploads/2024/11/Caferteria_02.jpg',
     },
     {
@@ -333,7 +328,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
       image:
         'https://iuenglishacademy.org/wp-content/uploads/2024/11/Caferteria_02.jpg',
       title: '三餐和住宿在校内完成',
-      text: '公开资料说明餐厅提供三餐，宿舍位于2-5楼，适合希望学习、住宿和生活集中管理的学生。',
+      text: '餐厅提供三餐，宿舍位于2-5楼，适合希望学习、住宿和生活集中管理的学生。',
     },
   ];
 
@@ -348,7 +343,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     },
     {
       title: '亲子、青少年或家长同行',
-      text: '官方列出Kids、Teenagers和Parents课程，适合家庭按年龄段核对方案。',
+      text: '学校开设Kids、Teenagers和Parents课程，适合家庭按年龄段核对方案。',
     },
     {
       title: '重视运动和课后设施',
@@ -430,7 +425,7 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     { time: '12:00 - 13:00', title: '午餐', text: '餐厅和咖啡区让学生在校内完成用餐和休息。' },
     { time: '13:00 - 17:00', title: '下午课程 / 自习', text: 'Power Speaking、IELTS、TOEIC和Business会按目标分配不同课型。' },
     { time: '17:30 - 18:30', title: '晚餐', text: '长期学习时，三餐稳定度会明显影响状态。' },
-    { time: '19:00 - 21:00', title: '晚间运动 / Mock / 自习', text: '公开资料提到晚间运动课、IELTS/TOEIC Mock和自习安排。' },
+    { time: '19:00 - 21:00', title: '晚间运动 / Mock / 自习', text: '晚间有运动课、IELTS/TOEIC Mock和自习安排。' },
   ];
 
   get studentCount(): number { return this.requestedStudentCount; }
@@ -489,19 +484,6 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
   ];
 
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'IU English Academy官方首页', url: 'https://iuenglishacademy.org/' },
-    { label: 'IU官方About / 校区信息', url: 'https://iuenglishacademy.org/about/' },
-    { label: 'IU官方Campus设施页', url: 'https://iuenglishacademy.org/campus/' },
-    { label: 'IU官方Accommodation住宿页', url: 'https://iuenglishacademy.org/campus/accommodation/' },
-    { label: 'IU官方General / Power Speaking课程', url: 'https://iuenglishacademy.org/course/power-speaking/' },
-    { label: 'IU官方Academic / IELTS / TOEIC课程', url: 'https://iuenglishacademy.org/course/academy-courses/' },
-    { label: 'IU官方Kids / Teenagers / Parents课程', url: 'https://iuenglishacademy.org/course/kids-teenagers-parents-courses/' },
-    { label: 'IU官方报名与当地费用页', url: 'https://iuenglishacademy.org/enroll/' },
-    { label: 'IU 2026公开价格参考', url: 'https://asiabysaudi.com/en/packages/iu' },
-    { label: 'CEBU English IU公开费用资料', url: 'https://cebu-english.com/school/iu/' },
-  ];
-
   readonly schoolServices = [
     '机场接机',
     '入学测试',
@@ -533,8 +515,8 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     '健身和泳池放松',
   ];
   readonly notes = [
-    '本页费用使用学校2026价目表；1/2/3周按4周价格的40%/60%/80%计算，4周以上按比例计算。',
-    '淡季校方组合价海报有效期为2026/08/23–2027/01/09，学生须在2027/01/16前结业；按周日入住、周六退房规则，最后可计优惠的退房日为2027/01/09。',
+    '费用按学校2026年价格计算；1/2/3周按4周价格的40%/60%/80%计算，4周以上按比例计算。',
+    '淡季校方组合价有效期为2026/08/23–2027/01/09，学生须在2027/01/16前结业；按周日入住、周六退房规则，最后可计优惠的退房日为2027/01/09。',
     '淡季组合价不可叠加思达启航或其它中介优惠；走读、1–3周、校外住宿及价表未列课程按常规价。',
     'IELTS保证班有入学门槛、出勤、作业和Mock test规则，低龄课程需确认年龄和监护要求。',
     '当地费用通常包含SSP、E-Card、押金、电费、维护费、洗衣、教材和签证延长，不应只看课程住宿价。',
@@ -547,24 +529,24 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
         'CIA更偏Mactan半斯巴达综合新校区和考试资源；IU位于Cebu City，强调独立市区校区、运动设施、Fitness English、多语言支持和多课程路线。两者都可学习生活平衡，但位置和特色不同。',
     },
     {
-      question: '页面上的报价包含全部费用吗？',
+      question: '在线报价包含全部费用吗？',
       answer:
         '不包含全部。报价器主要估算所选周数的课程费、住宿费和注册费；到校后还要准备SSP、SSP E-Card、ACR I-Card、教材、押金、电费、维护费、洗衣、接机和签证延长等费用。',
     },
     {
       question: 'IU适合雅思学生吗？',
       answer:
-        '可以列入候选。官方列出IELTS和IELTS Guarantee课程、每周二/周四Mock test和保证班规则。若目标是高压备考，也建议同时比较SMEAG、EV、CPILS。',
+        '可以列入候选。学校开设IELTS和IELTS Guarantee课程，有每周二/周四Mock test和保证班规则。若目标是高压备考，也建议同时比较SMEAG、EV、CPILS。',
     },
     {
       question: 'IU适合亲子或青少年吗？',
       answer:
-        '适合比较。官网列出Kids、Teenagers和Parents课程，儿童课程适合7-12岁，青少年课程适合13-15岁。报名时需确认监护、房型、年龄和外出规则。',
+        '适合比较。学校开设Kids、Teenagers和Parents课程，儿童课程适合7-12岁，青少年课程适合13-15岁。报名时需确认监护、房型、年龄和外出规则。',
     },
     {
-      question: '为什么不同网站价格不同？',
+      question: '为什么不同渠道价格不同？',
       answer:
-        '不同资料会因更新时间、适用日期、房型和包含项目不同而出现差异。本页把常规价、校方淡季组合价和当地费分开展示，旺季常规课程与住宿享9折，淡季套餐不叠加9折。',
+        '不同渠道的价格会因更新时间、适用日期、房型和包含项目不同而有差异。这里把常规价、校方淡季组合价和当地费分开展示，旺季常规课程与住宿享9折，淡季套餐不叠加9折。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -572,7 +554,6 @@ export class IuSchoolComponent implements OnInit, AfterViewInit {
     { label: '课程与费用', target: 'course-fees', icon: 'menu_book' },
     { label: '费用快速报价', target: 'quote', icon: 'calculate' },
     { label: '到校费用', target: 'local-fees', icon: 'payments' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
     { label: '报名流程', target: 'service-process', icon: 'task_alt' },
     { label: '常见问题', target: 'faq', icon: 'help' },
   ];

@@ -196,7 +196,7 @@ export class GeniusSchoolComponent {
       icon: 'public',
       label: '学生氛围',
       value: '国际化学生比例',
-      note: '公开资料强调亚洲、中东、欧洲等多国籍学生环境',
+      note: '学生来自亚洲、中东、欧洲等多个国家和地区',
     },
   ];
 
@@ -226,7 +226,7 @@ export class GeniusSchoolComponent {
       category: '住宿',
       title: '双人房参考',
       description:
-        '公开资料显示住宿有Regular、Sea View和Deluxe等选择，房型会直接影响预算。',
+        '住宿有Regular、Sea View和Deluxe等选择，房型会直接影响预算。',
       src: 'https://cebu-navi.com/photo/school/24/f8cf63f6c9a67610704e621b3dff0430.jpg',
     },
     {
@@ -240,14 +240,14 @@ export class GeniusSchoolComponent {
       category: '教室',
       title: '一对一教室参考',
       description:
-        '官方资料强调教室干净、明亮、宽敞，并配有独立空调。',
+        '教室干净、明亮、宽敞，并配有独立空调。',
       src: 'https://cebu-navi.com/photo/school/24/74afb08cb43a371acbcb743f87b54a43.jpg',
     },
     {
       category: '餐厅',
       title: '餐厅与三餐',
       description:
-        '公开资料列出每日三餐，适合希望长期生活安排稳定的学生和家庭。',
+        '每日提供三餐，适合希望长期生活安排稳定的学生和家庭。',
       src: 'https://cebu-navi.com/photo/school/24/9c0db8a7ed504426ec9fbf060effed4b.jpg',
     },
     {
@@ -269,8 +269,8 @@ export class GeniusSchoolComponent {
       label: '所在地区',
       value: 'EGI Hotel Bldg. 1, Looc, Maribago, Lapu-Lapu City, Cebu',
     },
-    { label: '创校时间', value: '公开资料列出为2013年' },
-    { label: '学生规模', value: '公开资料参考约150名学生' },
+    { label: '创校时间', value: '2013年' },
+    { label: '学生规模', value: '约150名学生' },
     {
       label: '学校定位',
       value: 'Mactan海边度假型、多国籍、综合英语与考试/商务/亲子课程学校',
@@ -281,7 +281,7 @@ export class GeniusSchoolComponent {
     },
     {
       label: '费用参考',
-      value: '2025价目表淡季参考：ESL Course A三人房USD 1,400/4周，注册费USD 125',
+      value: '2025年淡季参考：ESL Course A三人房1,400美元/4周，注册费125美元',
     },
   ];
 
@@ -319,7 +319,7 @@ export class GeniusSchoolComponent {
     },
     {
       title: '重视多国籍学生环境',
-      text: '公开资料强调学生来源较国际化，适合希望练习跨文化沟通和英文社交的人。',
+      text: '学生来自多个国家和地区，适合希望练习跨文化沟通和英文社交的人。',
     },
     {
       title: '想要Native group class',
@@ -366,13 +366,13 @@ export class GeniusSchoolComponent {
     {
       name: 'Survival English A / B',
       type: '生活场景英语',
-      lessons: '除校内课程外，公开资料提到会结合超市、咖啡厅、药店等真实场景练习。',
+      lessons: '除校内课程外，还会结合超市、咖啡厅、药店等真实场景练习。',
       suitable: '适合出国生活、旅行、打工度假或想把英语用于具体场景的人。',
     },
     {
       name: 'IELTS / IELTS Guarantee',
       type: '雅思备考',
-      lessons: '常规IELTS A/B可选；IELTS Guarantee公开资料列为12周起。',
+      lessons: '常规IELTS A/B可选；IELTS Guarantee为12周起。',
       suitable: '适合有目标分数、升学或移民规划，并愿意接受更明确学习节奏的学生。',
     },
     {
@@ -400,7 +400,7 @@ export class GeniusSchoolComponent {
       id: 'general-english-a',
       name: 'ESL Course A',
       lessons: '4节1:1 + 2节小组课',
-      suitable: '价目表中的基础主线课程，适合稳步提升。',
+      suitable: '基础主线课程，适合稳步提升。',
     },
     {
       id: 'general-english-b',
@@ -531,7 +531,7 @@ export class GeniusSchoolComponent {
     {
       time: '07:00 - 09:00',
       title: '早餐 / 单词测试',
-      text: '公开日程参考中早餐约7:00-9:00，Semi-Sparta或Sparta学生可能有早间单词测试。',
+      text: '早餐约7:00-9:00，Semi-Sparta或Sparta学生可能有早间单词测试。',
     },
     {
       time: '08:00 - 12:00',
@@ -572,7 +572,7 @@ export class GeniusSchoolComponent {
     { item: 'Semi-Sparta附加费', amount: 'USD 50 / 4周', note: '选择Semi-Sparta规则时适用' },
     { item: 'Sparta附加费', amount: 'USD 70 / 4周', note: '选择Sparta规则时适用' },
     { item: '机场接机', amount: 'PHP 1,000', note: '宿务机场接机参考' },
-    { item: '洗衣费', amount: 'PHP 1,200', note: '公开资料参考，实际以学校为准' },
+    { item: '洗衣费', amount: 'PHP 1,200', note: '参考金额，实际以学校为准' },
     { item: '宿舍押金', amount: 'USD 100', note: '退房检查后按规则退还' },
     { item: '电费', amount: 'PHP 18 / kWh', note: '按实际使用量计算' },
     { item: '签证延长', amount: '按周数', note: '5周以上通常需要按停留时间确认' },
@@ -694,7 +694,7 @@ export class GeniusSchoolComponent {
     '宿务城市短途旅行',
   ];
   readonly notes = [
-    '本页课程住宿价格按提供的Genius 2025价目表录入；旺季、促销、房型和汇率可能改变最终报价。',
+    '课程住宿为Genius 2025年价格；旺季、促销、房型和汇率可能改变最终报价。',
     'General / Power Speaking / Survival / Business / IELTS / TOEIC / TOEFL的A/B强度不同，报名前需确认每天课程数量。',
     'Semi-Sparta与Sparta会影响平日外出、晚间自习、测试和门禁，建议按自律程度选择。',
     'Sea View、Deluxe、单人房和家庭房需要提前确认空位及附加费。',
@@ -714,7 +714,7 @@ export class GeniusSchoolComponent {
     {
       question: 'Genius适合雅思学生吗？',
       answer:
-        '可以列入候选。公开资料列出IELTS和IELTS Guarantee课程，但如果目标是高压备考和严格模考，也建议同时比较CIA、SMEAG、EV、CPILS等考试资源更强的学校。',
+        '可以列入候选。学校有IELTS和IELTS Guarantee课程，但如果目标是高压备考和严格模考，也建议同时比较CIA、SMEAG、EV、CPILS等考试资源更强的学校。',
     },
     {
       question: 'Genius适合亲子游学吗？',
@@ -724,7 +724,7 @@ export class GeniusSchoolComponent {
     {
       question: '为什么不同网站的Genius价格不一样？',
       answer:
-        '不同市场、币种、旺季、淡季、优惠、更新时间和房型口径都会造成差异。本页课程住宿价使用Genius 2025价目表，正式报名仍以学校当期确认报价为准。',
+        '不同渠道的价格会因市场、币种、淡旺季、优惠、更新时间和房型不同而有差异。这里使用Genius 2025年价格，正式报名以学校当期确认报价为准。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -887,14 +887,14 @@ export class GeniusSchoolComponent {
 
   get discountText(): string {
     return this.discount === 1
-      ? '公开参考价，优惠需顾问确认'
+      ? '参考价，优惠需顾问确认'
       : `${Math.round(this.discount * 100)} 折扣范围`;
   }
 
   get seasonNote(): string {
     return this.isPeakSeason
-      ? '入学日落在价目表旺季区间（1月5日至2月1日，或6月1日至8月30日），已自动使用旺季价。'
-      : '入学日不在价目表旺季区间内，已使用淡季价。正式报价仍需确认优惠和空房。';
+      ? '入学日落在旺季区间（1月5日至2月1日，或6月1日至8月30日），已自动使用旺季价。'
+      : '入学日不在旺季区间内，已使用淡季价。正式报价仍需确认优惠和空房。';
   }
 
   formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';

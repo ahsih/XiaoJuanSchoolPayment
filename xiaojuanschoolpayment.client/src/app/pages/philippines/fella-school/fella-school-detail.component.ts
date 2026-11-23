@@ -92,24 +92,24 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   readonly visaOptions = SCHOOL_VISA_OPTIONS;
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'park', label: '学校类型', value: '宿务老牌大校园', note: '2006年创立，官方称建有专属校园' },
+    { icon: 'park', label: '学校类型', value: '宿务老牌大校园', note: '2006年创立，建有专属校园' },
     { icon: 'groups', label: '适合人群', value: '成人 / 考试 / 亲子 / 长期', note: '从5岁儿童到成人和银发课程都有方向' },
     { icon: 'verified_user', label: '管理模式', value: '斯巴达 / 半斯巴达 / 自律', note: '第一校区斯巴达；第二校区自律型／半斯巴达' },
     { icon: 'school', label: '课程选项', value: 'PIC / IELTS / TOEIC / TOEFL', note: '另有EBC商务、JEC儿童、GEC家长和SSC乐龄课程' },
     { icon: 'bed', label: '住宿房型', value: '3A三人 / 2A双人 / 三种单人房', note: '1B、1A和Premium 1P单人间需核空房' },
-    { icon: 'local_activity', label: '校园资源', value: '泳池 / 运动 / CAFELLA', note: '官方设施页展示校园、餐厅、运动和休闲空间' },
+    { icon: 'local_activity', label: '校园资源', value: '泳池 / 运动 / CAFELLA', note: '校内有餐厅、运动和休闲空间' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
     { category: '校园', title: 'English Fella校园', description: '大校园和绿化空间，是Fella区别于市区型学校的重要特点。', src: 'assets/fella/campus-main.webp' },
-    { category: '校园', title: '校园泳池区域', description: '官方设施页展示泳池和户外活动空间。', src: 'assets/fella/campus-pool.webp' },
+    { category: '校园', title: '校园泳池区域', description: '校内泳池和户外活动空间。', src: 'assets/fella/campus-pool.webp' },
     { category: '校园', title: '校区环境', description: '适合希望学习、住宿、运动和休息集中在校园内的学生。', src: 'assets/fella/campus-view.webp' },
     { category: '教室', title: '一对一教室', description: 'PIC、考试、商务和口语课程都会使用一对一训练。', src: 'assets/fella/classroom-1.webp' },
     { category: '教室', title: '团体教室', description: '小团体、大团体和选修课程用于讨论、表达和综合训练。', src: 'assets/fella/classroom-2.webp' },
     { category: '住宿', title: '宿舍房间', description: '房间通常配有床、桌椅、收纳和空调，具体以校区房型为准。', src: 'assets/fella/dorm-1.webp' },
     { category: '住宿', title: '住宿空间参考', description: '3A三人间、2A双人间和三种单人间会明显影响总预算。', src: 'assets/fella/dorm-2.webp' },
     { category: '餐厅', title: '学生餐厅', description: '校内餐厅适合希望学习生活集中管理的学生。', src: 'assets/fella/cafeteria-2.webp' },
-    { category: '设施', title: '运动设施', description: '官方设施页展示运动空间，适合课后活动和校园交流。', src: 'assets/fella/sports-1.webp' },
+    { category: '设施', title: '运动设施', description: '校内运动空间，适合课后活动和校园交流。', src: 'assets/fella/sports-1.webp' },
     { category: '设施', title: '篮球与运动区', description: '课后运动和月度校园活动会用到这些公共空间。', src: 'assets/fella/sports-2.webp' },
     { category: '设施', title: '校内公共设施', description: 'CAFELLA、办公室、休闲和其他校内支持资源需按校区确认。', src: 'assets/fella/facility-1.webp' },
   ];
@@ -117,7 +117,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾宿务English Fella语言学校' },
     { label: '所在地区', value: 'Talamban, Cebu City；第一校区与第二校区' },
-    { label: '创立时间', value: '2006年，官方资料称为菲律宾第一批建有专属校园的学校之一' },
+    { label: '创立时间', value: '2006年，菲律宾较早建有专属校园的语言学校之一' },
     { label: '学校定位', value: '大校园、课程选择多、校区管理模式可选的老牌学校' },
     { label: '课程资源', value: 'PIC、PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC、GEC、SSC' },
     { label: '年龄要求', value: 'P-JEC为5–6岁；JEC为7–15岁；18岁以下单独到校按每周25美元计费' },
@@ -129,7 +129,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
     { image: 'assets/fella/campus-main.webp', title: '大校园与生活支持感', text: 'Fella适合希望学校空间更完整、学习和生活都在校内解决的学生。' },
     { image: 'assets/fella/classroom-1.webp', title: '课程方向很完整', text: '从PIC综合英语到PIFT/PIRC/PIGI、TOEIC、PPT/PTFT、EBC、JEC和GEC都可比较。' },
     { image: 'assets/fella/dorm-1.webp', title: '五种房型覆盖两个校区', text: '3A三人间住宿预算最低，Premium 1P、1A、1B’、2A和3A在两个校区均可选，需提前确认空房。' },
-    { image: 'assets/fella/sports-1.webp', title: '活动和运动资源多', text: '官方资料列出体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
+    { image: 'assets/fella/sports-1.webp', title: '活动和运动资源多', text: '学校有体育竞赛、Fun Friday、Fella Day、跳岛和城市游等活动。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -258,17 +258,17 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   readonly weekendActivities = ['跳岛活动', 'Cebu City Tour', 'Safari Park Tour', '志愿活动', '商场与餐厅', '学生自发聚会'];
   readonly notes = [
     'English Fella只有第一校区（斯巴达）和第二校区（自律型／半斯巴达）；课程和房型必须先按校区筛选。',
-    '当前只开放资料已确认的4／8／12／16／20／24周报价，不推算1／2／3周价格。',
+    '在线报价可选4／8／12／16／20／24周，暂不提供1／2／3周报价。',
     '优惠顺序为先减7月报名优惠，再对剩余课程费和住宿费计算95折，最后再减可叠加的圣诞优惠。',
-    '18岁以下单独到校由用户勾选未成年服务费，按每个课程周25美元计算。',
+    '18岁以下单独到校需勾选未成年服务费，按每个课程周25美元计算。',
     '30天或59天旅游签证由学生选择；4周通常推荐30天，8周及以上通常推荐59天，最终以移民局发放为准。',
-    '第二次及以后续签金额未提供，页面仅提示预计次数，不计入学杂费合计。',
+    '第二次及以后续签金额待确认，报价仅提示预计次数，不计入学杂费合计。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: 'English Fella适合第一次菲律宾游学吗？', answer: '适合，但要先确认校区和管理强度。若你希望有校园空间、生活支持和比较完整的课程选择，Fella值得放入候选。' },
     { question: 'English Fella是斯巴达学校吗？', answer: 'Fella有两个校区：第一校区为斯巴达，第二校区为自律型／半斯巴达。报价器会按所选校区过滤课程与房型。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '学校费用与到校学杂费会分开计算；房间押金、接机费和挂锁押金另列且不计入学杂费合计。第二次及以后签证续签金额因资料未明确而暂不计价。' },
+    { question: '在线报价包含全部费用吗？', answer: '学校费用与到校学杂费会分开计算；房间押金、接机费和挂锁押金另列且不计入学杂费合计。第二次及以后签证续签金额待确认，暂不计价。' },
     { question: 'English Fella适合亲子吗？', answer: '可以考虑。课程表包含P-JEC、JEC儿童课程和GEC家长课程，但要先确认孩子年龄、陪同家长、监护规则、房型和校区。' },
     { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名English Fella，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
   ];
@@ -414,7 +414,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
   get estimatedLocalFees() { return groupLocalFees(this.activeStudents); }
   get estimatedLocalFeeTotal(): number { return this.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0); }
   get estimatedLocalFeeCny(): number { return Math.round(this.estimatedLocalFeeTotal / this.phpPerCny); }
-  readonly localFeeIntro = '学杂费由学校及菲律宾相关部门到校收取；页面按每名学生的课程、住宿和签证选择独立估算。';
+  readonly localFeeIntro = '学杂费由学校及菲律宾相关部门到校收取；报价按每名学生的课程、住宿和签证选择独立估算。';
   get optionalFeeItems() {
     return this.activeStudents.flatMap((student, index) => {
       const prefix = this.quoteMode === 'group' ? `学生${index + 1} · ` : '';
@@ -470,7 +470,7 @@ export class FellaSchoolDetailComponent implements OnInit, AfterViewInit {
     ];
     const warnings = this.activeStudents.flatMap((student, index) => student.quotePlan.warning ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${student.quotePlan.warning}`] : []);
     const pendingVisa = this.activeStudents.flatMap((student, index) => student.touristExtensionCount > 1
-      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}第2次及以后签证续签金额未提供，当前合计只包含首次续签6,440比索。`]
+      ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}第2次及以后签证续签金额待确认，当前合计只包含首次续签6,440比索。`]
       : []);
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'FELLA',

@@ -264,7 +264,7 @@ export class JicStudentQuote {
           unitLabel: '按所选课程／每开始4周',
           quantity,
           total,
-          note: `${details || '按学校课程教材表计算。'}${missing.length ? `；${missing.join('、')}在最新表中未列教材金额，本次暂计0比索并需顾问确认。` : ''}`,
+          note: `${details || '按所选课程的教材费计算。'}${missing.length ? `；${missing.join('、')}暂无教材金额，本次暂计0比索并需顾问确认。` : ''}`,
         };
       }
       if (fee.id === 'challenger-elective') quantity = this.campus === 'challenger' && this.includeChallengerSpecialElective ? periodQuantity(this.courseWeeks) : 0;

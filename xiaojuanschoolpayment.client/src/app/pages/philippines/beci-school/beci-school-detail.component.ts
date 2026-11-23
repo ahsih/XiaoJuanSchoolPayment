@@ -224,29 +224,29 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
-    { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'APIBECI官网展示的EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.webp' },
-    { category: '校区', title: 'BECI校区建筑外观', description: '官方首页展示的BECI碧瑶校区建筑，用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.webp' },
-    { category: '校区', title: 'BECI碧瑶校区大楼', description: '官方首页展示的碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.webp' },
-    { category: '教室', title: 'EOP户外一对一学习区', description: 'EOP Campus页面展示的户外学习空间，体现English Only环境。', src: 'assets/philippines/beci-eop-outdoor-class.webp' },
-    { category: '教室', title: 'Sparta一对一课堂', description: 'Sparta Campus页面展示的一对一课堂，用于口语、考试和SP反馈训练。', src: 'assets/philippines/beci-one-to-one-class.webp' },
-    { category: '教室', title: 'Speaking Prescription辅导场景', description: '官方Sparta照片展示老师与学生进行针对性口语反馈。', src: 'assets/philippines/beci-speaking-prescription.webp' },
-    { category: '住宿', title: 'EOP Mansion单人房', description: 'EOP Campus Mansion页面展示的单人房型，适合重视隐私的学生。', src: 'assets/philippines/beci-eop-single-room.webp' },
-    { category: '住宿', title: 'EOP Mansion多人房', description: '官方Mansion房型照片展示多人房空间，报名需同步确认性别与空房。', src: 'assets/philippines/beci-eop-shared-room.webp' },
-    { category: '餐厅', title: 'EOP户外交流桌区', description: '官方EOP照片中的户外桌区，餐饮和活动安排以当期校区说明为准。', src: 'assets/philippines/beci-eop-outdoor-study.webp' },
-    { category: '设施', title: 'City Campus学习休息区', description: 'City Campus页面展示的成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.webp' },
-    { category: '设施', title: 'City Campus自习工作区', description: '官方City Campus页面展示的安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.webp' },
+    { category: '校区', title: 'BECI EOP Campus航拍环境', description: 'EOP Campus自然校区环境。', src: 'assets/philippines/beci-eop-campus.webp' },
+    { category: '校区', title: 'BECI校区建筑外观', description: 'BECI碧瑶校区建筑，可用于比较不同校区氛围。', src: 'assets/philippines/beci-campus-building.webp' },
+    { category: '校区', title: 'BECI碧瑶校区大楼', description: '碧瑶校区大楼，适合了解住宿与学习空间距离。', src: 'assets/philippines/beci-campus-blue-roof.webp' },
+    { category: '教室', title: 'EOP户外一对一学习区', description: 'EOP Campus户外学习空间，体现English Only环境。', src: 'assets/philippines/beci-eop-outdoor-class.webp' },
+    { category: '教室', title: 'Sparta一对一课堂', description: 'Sparta Campus一对一课堂，用于口语、考试和SP反馈训练。', src: 'assets/philippines/beci-one-to-one-class.webp' },
+    { category: '教室', title: 'Speaking Prescription辅导场景', description: 'Sparta Campus老师与学生进行针对性口语反馈。', src: 'assets/philippines/beci-speaking-prescription.webp' },
+    { category: '住宿', title: 'EOP Mansion单人房', description: 'EOP Campus Mansion单人房型，适合重视隐私的学生。', src: 'assets/philippines/beci-eop-single-room.webp' },
+    { category: '住宿', title: 'EOP Mansion多人房', description: 'EOP Mansion多人房空间，报名需同步确认性别与空房。', src: 'assets/philippines/beci-eop-shared-room.webp' },
+    { category: '餐厅', title: 'EOP户外交流桌区', description: 'EOP户外桌区，餐饮和活动安排以当期校区说明为准。', src: 'assets/philippines/beci-eop-outdoor-study.webp' },
+    { category: '设施', title: 'City Campus学习休息区', description: 'City Campus成人学习空间，适合工作者与弹性学习。', src: 'assets/philippines/beci-city-study-lounge.webp' },
+    { category: '设施', title: 'City Campus自习工作区', description: 'City Campus安静工作与自习座位。', src: 'assets/philippines/beci-city-workspace.webp' },
   ];
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾碧瑶BECI语言学校' },
     { label: '英文名称', value: 'BECI International Language Academy / API BECI' },
-    { label: '发展时间', value: '官方资料显示学校自2002年起在碧瑶发展ESL教育' },
+    { label: '发展时间', value: '自2002年起在碧瑶发展ESL教育' },
     { label: '碧瑶校区', value: 'EOP Campus、Sparta Campus、City Campus' },
     { label: '课程方向', value: 'Lite ESL、Speed ESL、Sparta ESL、24 ESL、IELTS、TOEIC、ESP、BizSpeak、Native ESL、Unlimited ESL' },
     { label: '核心系统', value: 'Educare System、Speaking Prescription、EOP English Only Policy、3+1 Buddy System' },
     { label: '适合人群', value: '需要沉浸口语、强管理冲刺、雅思/多益备考、成人商务英文或远程办公弹性学习的学生' },
-    { label: '报价币种', value: '公开2026费用表以USD列课程和住宿，菲律宾当地费用以PHP支付' },
+    { label: '报价币种', value: '课程和住宿以美元计价，菲律宾当地费用以比索支付' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -357,16 +357,16 @@ export class BeciSchoolDetailComponent implements OnInit, AfterViewInit, OnDestr
     'BECI必须先分EOP、Sparta、City校区，再决定课程和房型。',
     'Sparta校区有更强的晚间学习和测试要求，报名前要确认学生能否接受。',
     'City校区更适合成人和工作者，但热门Studio、单人房仍需提前确认空房。',
-    '中介优惠免USD 100注册费；1/2/3周课程费分别按4周价的40%/60%/80%计算。',
+    '通过思达启航报名免100美元注册费；1/2/3周课程费分别按4周价的40%/60%/80%计算。',
     '8/12/16/20/24周长期折扣分别为USD 50/100/200/300/400，并可与常规优惠叠加。',
-    '页面价格为2026年8月19日费用表参考，最终会随学校政策、优惠、房型空位和汇率变化。',
+    '价格更新时间为2026年8月19日，最终会随学校政策、优惠、房型空位和汇率变化。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶BECI语言学校适合零基础吗？', answer: '可以。零基础或怕开口的学生优先看EOP Lite ESL或EOP SPEED ESL，先用全英文环境建立开口习惯；如果自律弱，也可以让顾问评估是否适合Sparta。' },
     { question: 'BECI的EOP、Sparta、City怎么选？', answer: '想沉浸式口语和英语环境看EOP；想强管理、高学习量、短期冲刺看Sparta；成人、工作者、需要弹性和无宵禁看City。' },
     { question: 'BECI短期、淡季和长期优惠怎么计算？', answer: '思达启航优惠免USD 100注册费；1周、2周、3周课程费分别按4周课程价的40%、60%、80%计算。2026/9/6—12/27入学，课程费与住宿费按9折；8/12/16/20/24周再分别减USD 50/100/200/300/400，长期折扣可与淡季9折叠加。' },
-    { question: '页面报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含课程费和住宿费，并自动扣除免注册费、符合条件的2026淡季9折及长期折扣；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
+    { question: '这里的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含课程费和住宿费，并自动扣除免注册费、符合条件的2026淡季9折及长期折扣；到校后还需准备SSP、SSP E-Card、签证延签、ACR I-Card、教材、水电、押金、洗衣和接机等PHP费用。' },
     { question: 'BECI City Campus适合边工作边学习吗？', answer: '更适合。City Campus面向成人与工作者，有弹性安排、无宵禁和工作空间，但仍建议先按工作时间确认可选课程。' },
     { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名BECI，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];

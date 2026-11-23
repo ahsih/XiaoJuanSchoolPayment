@@ -32,7 +32,7 @@ const imageSettings = (): CiaQuoteImageSettings => ({
   alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
   noteSectionTitle: '报价说明',
   footerNotes: [
-    '课程、住宿、全包项目和优惠仅按English MINT已公布资料计算。',
+    '课程、住宿、全包项目和优惠按English MINT当前公布的价格和条件计算。',
     '当地费用、签证、教材、房型和优惠资格最终以学校正式账单确认为准。',
   ],
 });

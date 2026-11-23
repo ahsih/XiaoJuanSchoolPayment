@@ -12,7 +12,7 @@
             <h1>菲律宾宿务CIEC</h1>
             <p class="hero-lead">
               CIEC Global Education Center，也常写作 Cebu Ivy Education Center，是宿务Talamban地区的亲子与青少年英文学校。
-              页面以亲子游学、Junior Sparta、国际学校准备和陪读家长课程为主轴，适合需要学习管理、住宿照顾和学术英文规划的家庭。
+              学校以亲子游学、Junior Sparta、国际学校准备和陪读家长课程为主轴，适合需要学习管理、住宿照顾和学术英文规划的家庭。
             </p>
             <div class="hero-tags" aria-label="CIEC特点">
               <span><mat-icon>family_restroom</mat-icon>亲子与青少年专门校</span>
@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按学校提供的最新学费、住宿费和当地费用资料整理。正式报名仍需按入学日、是否旺季、孩子年龄、房型空位和学校当期报价确认。
+              费用为学校最新学费、住宿费和当地费用标准。正式报名仍需按入学日、是否旺季、孩子年龄、房型空位和学校当期报价确认。
             </p>
           </div>
 
@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片与费用参考自CIEC官方页面和公开留学资料页；最终以学校正式报价为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -198,7 +198,7 @@
 
         <section class="section-block" id="courses">
           <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
+            <span>课程 / 参考费用</span>
             <h2>CIEC 2026课程与4周主费用</h2>
             <p>
               套餐参考含四周课程、住宿95折和新生注册费100美元。CIDEC另含一次年级学费3000美元；家庭优惠按实际条件另算。
@@ -272,7 +272,7 @@
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>到校后还要准备的费用</h2>
-            <p>以下采用学校最新费用表，以到校结算为准。约2700人民币／四周／人（不含押金）仅为学校参考，并非固定合计。</p>
+            <p>以下为学校最新费用标准，以到校结算为准。约2700人民币／四周／人（不含押金）仅为学校参考，并非固定合计。</p>
           </div>
           <div class="local-fee-grid ciec-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -287,20 +287,6 @@
               <strong>{{ fee.amount }}</strong>
               <p>{{ fee.note }}</p>
             </article>
-          </div>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>CIEC页面公开资料来源</h2>
-            <p>费用与优惠采用学校提供且已确认的最新资料；下方链接用于学校背景参考。</p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
           </div>
         </section>
 

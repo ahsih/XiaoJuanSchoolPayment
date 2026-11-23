@@ -84,11 +84,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-boracay-coco-school',
   standalone: true,
@@ -135,31 +130,31 @@ export class BoracayCocoSchoolComponent {
       icon: 'location_on',
       label: '位置',
       value: 'Boracay / Manoc-Manoc',
-      note: '官网页脚列地址为Bantud, Manoc-Manoc, Boracay, Malay, Aklan 5608。',
+      note: '学校位于长滩岛Manoc-Manoc区（Aklan省Malay镇）。',
     },
     {
       icon: 'beach_access',
       label: '学校定位',
       value: 'Resort-style campus',
-      note: '官网强调在长滩岛度假型校园学习，适合把课程和海岛生活结合。',
+      note: '学校主打长滩岛度假型校园学习，适合把课程和海岛生活结合。',
     },
     {
       icon: 'menu_book',
       label: '课程',
       value: 'ESL / Business / IELTS / Junior',
-      note: '2026价目表列General、Power、Intensive、Super Intensive、Business、IELTS、Lite和儿童课程。',
+      note: '2026年开设General、Power、Intensive、Super Intensive、Business、IELTS、Lite和儿童课程。',
     },
     {
       icon: 'verified',
       label: '认证',
       value: 'TESDA / BI / IDP partner',
-      note: '官网About页写明学校受TESDA和移民局认证，并为IDP IELTS合作伙伴。',
+      note: '学校受TESDA和移民局认证，并为IDP IELTS合作伙伴。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: '单人 / 双人 / 亲子 / 家庭房',
-      note: '2026价目表按单人间、双人间、豪华亲子房和家庭房列价。',
+      note: '2026年住宿分单人间、双人间、豪华亲子房和家庭房。',
     },
     {
       icon: 'payments',
@@ -195,7 +190,7 @@ export class BoracayCocoSchoolComponent {
       category: '住宿',
       title: '家庭房参考',
       description:
-        '官网住宿页列校内宿舍单人、双人、家庭房，并说明房内设施和清洁安排。',
+        '校内宿舍分单人、双人和家庭房，房内设施和清洁按学校安排。',
       src: 'https://www.fujiyama-international.com/archives/004/202504/0ca9df0150ddc1d895b20790339c39f4389b778d6704dad57fa7e7369614e18b.jpg',
     },
     {
@@ -211,20 +206,20 @@ export class BoracayCocoSchoolComponent {
     { label: '学校名称', value: '菲律宾长滩岛Boracay Coco English Academy' },
     { label: '英文名称', value: 'Boracay Coco English Academy' },
     { label: '地址', value: 'Bantud, Manoc-Manoc, Boracay, Malay, Aklan 5608, Philippines' },
-    { label: '成立时间', value: '官网About页写明Established in 2018' },
+    { label: '成立时间', value: '2018年' },
     { label: '学校类型', value: '长滩岛度假型英语学校，主打学习 + 住宿 + 海岛生活' },
     { label: '主要课程', value: 'General ESL、Power ESL、Intensive ESL、Super Intensive ESL、Business English、IELTS、Lite ESL、Junior、Kinder、Nursery' },
     { label: '认证与合作', value: 'TESDA、Bureau of Immigration认证；IDP IELTS合作伙伴' },
     { label: '住宿选择', value: '单人间、双人间、豪华亲子房、家庭房' },
-    { label: '餐食', value: '官网住宿表写明平日三餐，周末brunch' },
-    { label: '本页费用口径', value: '按2026课程和食宿价目表整理，正式以学校invoice为准' },
+    { label: '餐食', value: '平日三餐，周末brunch' },
+    { label: '费用说明', value: '2026年价格，正式以学校invoice为准' },
   ];
 
   readonly highlights: Highlight[] = [
     {
       image: 'https://www.fujiyama-international.com/archives/004/202403/664ae5b29724da127bc48367f0943cca.jpg',
       title: '长滩岛度假型校园',
-      text: '官网把学校定位为resort-style campus，适合想把英语课程、泳池、海滩和家庭假期组合起来的学生。',
+      text: '学校定位为resort-style campus（度假型校园），适合想把英语课程、泳池、海滩和家庭假期组合起来的学生。',
     },
     {
       image: 'https://media.loveitopcdn.com/39882/classroom.jpg',
@@ -234,7 +229,7 @@ export class BoracayCocoSchoolComponent {
     {
       image: 'https://www.fujiyama-international.com/archives/004/202504/0ca9df0150ddc1d895b20790339c39f4389b778d6704dad57fa7e7369614e18b.jpg',
       title: '2026费用表清楚',
-      text: '2026价目表可拆分课程费、食宿费、注册费与到校PHP费用。',
+      text: '2026年课程费、食宿费、注册费与到校比索费用分开列明。',
     },
   ];
 
@@ -245,11 +240,11 @@ export class BoracayCocoSchoolComponent {
     },
     {
       title: '亲子、低龄或假期短期',
-      text: '官网列Junior、Kinder、Nursery课程，且住宿表有家庭房口径，适合家庭先放入候选。',
+      text: '开设Junior、Kinder、Nursery课程，并有家庭房，适合家庭先放入候选。',
     },
     {
       title: '成人短期ESL或雅思入门',
-      text: 'General、Power、Intensive和IELTS课程都按每周一开课、1-24周课程周期说明。',
+      text: 'General、Power、Intensive和IELTS课程每周一开课，可报1-24周。',
     },
     {
       title: '想提前拆清预算',
@@ -268,7 +263,7 @@ export class BoracayCocoSchoolComponent {
     },
     {
       title: '不想住学校指定住宿',
-      text: '官网报名页写明学校政策只接受study-and-stay学生，需住指定住宿。',
+      text: '学校只接受study-and-stay学生，需住学校指定住宿。',
     },
   ];
 
@@ -281,7 +276,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合第一次游学、日常口语和综合基础。',
       tuition: 800,
-      note: '2026价目表4周USD800。',
+      note: '2026年4周USD800。',
     },
     {
       id: 'power-esl',
@@ -291,7 +286,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合想提高一对一比例、快速练开口的人。',
       tuition: 860,
-      note: '2026价目表4周USD860。',
+      note: '2026年4周USD860。',
     },
     {
       id: 'intensive-esl',
@@ -301,7 +296,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合想同时保留小组互动和高一对一密度的成人学生。',
       tuition: 900,
-      note: '2026价目表4周USD900。',
+      note: '2026年4周USD900。',
     },
     {
       id: 'super-intensive-esl',
@@ -311,7 +306,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合短期内想最大化课时密度的人。',
       tuition: 1000,
-      note: '2026价目表4周USD1,000。',
+      note: '2026年4周USD1,000。',
     },
     {
       id: 'business-english',
@@ -321,7 +316,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合想提升职场沟通和商务英语表达的学员。',
       tuition: 1000,
-      note: '2026价目表4周USD1,000。',
+      note: '2026年4周USD1,000。',
     },
     {
       id: 'ielts',
@@ -331,7 +326,7 @@ export class BoracayCocoSchoolComponent {
       age: '15岁以上',
       suitable: '适合IELTS 3.0-6.0或同等水平，想在海岛环境中备考。',
       tuition: 1000,
-      note: '2026价目表4周USD1,000。',
+      note: '2026年4周USD1,000。',
     },
     {
       id: 'lite-esl',
@@ -341,7 +336,7 @@ export class BoracayCocoSchoolComponent {
       age: '20岁以上',
       suitable: '适合家长陪读、成人轻松口语和希望留更多自由时间的人。',
       tuition: 700,
-      note: '2026价目表4周USD700，价目表标注为监护人课程。',
+      note: '2026年4周USD700，监护人课程。',
     },
     {
       id: 'nursery',
@@ -351,7 +346,7 @@ export class BoracayCocoSchoolComponent {
       age: '3-4岁',
       suitable: '适合幼儿英语启蒙和亲子陪读家庭。',
       tuition: 1200,
-      note: '2026价目表4周USD1,200。',
+      note: '2026年4周USD1,200。',
     },
     {
       id: 'kinder',
@@ -361,7 +356,7 @@ export class BoracayCocoSchoolComponent {
       age: '5-6岁',
       suitable: '适合低龄儿童启蒙，年龄口径需按生日和学校确认。',
       tuition: 1200,
-      note: '2026价目表4周USD1,200。',
+      note: '2026年4周USD1,200。',
     },
     {
       id: 'junior',
@@ -371,7 +366,7 @@ export class BoracayCocoSchoolComponent {
       age: '7-14岁',
       suitable: '适合青少年英语、假期体验和亲子路线。',
       tuition: 1380,
-      note: '2026价目表4周USD1,380。',
+      note: '2026年4周USD1,380。',
     },
   ];
 
@@ -445,12 +440,12 @@ export class BoracayCocoSchoolComponent {
     { item: 'Registration fee', amount: 'USD 100', note: '一次性注册费；报价器已计入。' },
     { item: 'SSP', amount: 'PHP 7,800', note: 'Special Study Permit，到校支付。' },
     { item: 'SSP E-Card', amount: 'PHP 4,500', note: '菲律宾移民局签发，适用于在菲律宾学习的学生。' },
-    { item: 'Service Fee', amount: 'PHP 800 / 周', note: '官网说明含一般水电、维护、房间清洁和Wi-Fi。' },
+    { item: 'Service Fee', amount: 'PHP 800 / 周', note: '含一般水电、维护、房间清洁和Wi-Fi。' },
     { item: 'Electricity & Water Bill', amount: 'PHP 1,200 / 周单人房；PHP 800 / 周其他房', note: '超额用电另收PHP20/kwh。' },
     { item: 'Airport Pick-up', amount: 'PHP 1,200', note: 'Kalibo或Caticlan机场到学校接机。' },
     { item: 'Airport Drop-off', amount: 'PHP 1,000', note: '学校到Kalibo或Caticlan机场送机。' },
     { item: 'Deposit', amount: 'PHP 3,000', note: '退房无损坏时按学校规则退还。' },
-    { item: 'Textbooks', amount: 'PHP 300-500 / 本', note: '官网估算4周约PHP1,000-2,500。' },
+    { item: 'Textbooks', amount: 'PHP 300-500 / 本', note: '4周约1,000-2,500比索。' },
     { item: 'Student ID Card', amount: 'PHP 200', note: '学生证费用。' },
     { item: 'Laundry', amount: 'PHP 350 / 次', note: '每次最多8kg。' },
     { item: 'Visa Extension', amount: 'PHP 5,100 / 8周起', note: '12周PHP11,500；16周PHP15,900；20周PHP20,300；24周PHP24,700。' },
@@ -469,7 +464,7 @@ export class BoracayCocoSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'verified_user', label: '2026价目表整理' },
+    { icon: 'verified_user', label: '2026费用分项列明' },
     { icon: 'family_restroom', label: '亲子房型一起核对' },
     { icon: 'beach_access', label: '长滩岛行程提醒' },
     { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
@@ -497,9 +492,9 @@ export class BoracayCocoSchoolComponent {
   readonly campusActivities = ['泳池', '花园', '健身房', '海滩', '英语活动', '周边探索'];
   readonly weekendActivities = ['White Beach', 'Angol Beach', '跳岛', '水上活动', '咖啡厅', '日落沙滩'];
   readonly notes = [
-    '本页课程与食宿价格按COCO 2026价目表整理，正式报名仍以学校invoice为准。',
-    '价目表规定短周期费用为：1周按4周价的40%、2周60%、3周80%；4周以上报价器按4周价成倍试算。',
-    '官网报名页写明只接受study-and-stay学生，住宿需从学校指定住宿中选择。',
+    '课程与食宿为2026年价格，正式报名以学校invoice为准。',
+    '短周期费用：1周按4周价的40%、2周60%、3周80%；4周以上按4周价成倍试算。',
+    '学校只接受study-and-stay学生，住宿需从学校指定住宿中选择。',
     '低龄课程涉及生日、监护、保姆服务、家庭房和接送安排，报名前要逐项确认。',
     'SSP、SSP E-Card、服务费、水电、押金、教材、洗衣、签证延长和个人生活费不包含在课程与食宿主费中。',
   ];
@@ -518,12 +513,12 @@ export class BoracayCocoSchoolComponent {
     {
       question: '1至3周的短期课程怎么计费？',
       answer:
-        'COCO 2026价目表规定，1周按4周价的40%计算，2周按60%，3周按80%。页面报价器已按这一规则试算。',
+        '1周按4周价的40%计算，2周按60%，3周按80%。这里的报价器已按这一规则试算。',
     },
     {
       question: 'Boracay Coco适合雅思吗？',
       answer:
-        '可以作为雅思入门或综合提升候选。官网课程页列IELTS Course，适合IELTS 3.0-6.0或相近水平；如果目标是高压冲分，也建议同步比较碧瑶学校。',
+        '可以作为雅思入门或综合提升候选。学校开设IELTS Course，适合IELTS 3.0-6.0或相近水平；如果目标是高压冲分，也建议同步比较碧瑶学校。',
     },
   ];
 
@@ -542,16 +537,6 @@ export class BoracayCocoSchoolComponent {
     { label: '住宿', target: 'room-fees', icon: 'hotel' },
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Boracay Coco English Academy官网首页', url: 'https://boracayenglish.com/' },
-    { label: '官方2026价格页', url: 'https://boracayenglish.com/zh/2026-pricing-tw/' },
-    { label: '官方课程页', url: 'https://boracayenglish.com/courses/' },
-    { label: '官方About / Profile页', url: 'https://boracayenglish.com/profile/' },
-    { label: '官方Campus图库', url: 'https://boracayenglish.com/campus/' },
-    { label: '官方Dormitory图库', url: 'https://boracayenglish.com/dormitory/' },
-    { label: '官方报名页', url: 'https://boracayenglish.com/online-inquiry/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

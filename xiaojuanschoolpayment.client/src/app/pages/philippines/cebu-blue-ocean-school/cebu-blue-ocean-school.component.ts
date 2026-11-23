@@ -108,11 +108,6 @@ interface SidaTrustBadge {
   label: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-cebu-blue-ocean-school',
   standalone: true,
@@ -212,7 +207,7 @@ export class CebuBlueOceanSchoolComponent
       icon: 'history_edu',
       label: '学校背景',
       value: 'PINES姊妹校，2015年开校',
-      note: '公开资料强调沿用PINES教学体系、教材和师资管理经验',
+      note: '沿用PINES教学体系、教材和师资管理经验',
     },
     {
       icon: 'record_voice_over',
@@ -229,7 +224,7 @@ export class CebuBlueOceanSchoolComponent
     {
       icon: 'restaurant',
       label: '餐食安排',
-      value: '公开资料列三餐包含',
+      value: '三餐包含',
       note: '平日、周末和节假日均按学校规则提供餐食，最终以当期说明为准',
     },
     {
@@ -259,21 +254,21 @@ export class CebuBlueOceanSchoolComponent
       category: '教室',
       title: 'CBOA小组课堂',
       description:
-        '公开课程结构以一对一课为核心，并搭配小组课和选修/大团体课。',
+        '课程以一对一课为核心，并搭配小组课和选修/大团体课。',
       src: 'https://oecglobal.com/images/stories/PDF/CEBU_Blue_Ocean_Academy_2.jpg',
     },
     {
       category: '住宿',
       title: 'EGI Hotel三人房参考',
       description:
-        'EGI校内住宿公开房型包含海景双人房、市景双人房和海景三人房。',
+        'EGI校内住宿房型包含海景双人房、市景双人房和海景三人房。',
       src: 'https://ryugaku-hikaku-style.com/wp-content/uploads/pic_3-beds-EGI.jpg',
     },
     {
       category: '餐厅',
       title: 'CBOA餐厅参考',
       description:
-        '公开费用说明列课程住宿包含餐食，餐厅也是学生日常交流空间。',
+        '课程住宿费包含餐食，餐厅也是学生日常交流空间。',
       src: 'https://eas-ryugaku.com/wp/wp-content/uploads/2023/09/cafeteria-2.jpg',
     },
     {
@@ -287,7 +282,7 @@ export class CebuBlueOceanSchoolComponent
       category: '校园',
       title: 'CBOA前台与办公室',
       description:
-        '学校公开资料列有多国籍经理、Pines Portal和学生支持服务。',
+        '学校有多国籍经理、Pines Portal和学生支持服务。',
       src: 'https://michi-sensei.com/home/wp-content/uploads/2024/03/429667981_18388092922073318_6138110158565193426_n-1024x768.jpg',
     },
   ];
@@ -317,7 +312,7 @@ export class CebuBlueOceanSchoolComponent
       image:
         'https://storage.googleapis.com/studio-cms-assets/projects/JgqeXQQ9Ok/s-1200x800_v-fms_webp_b05503a5-81cb-4119-afec-e61f287a5ffe_middle.webp',
       title: 'PINES系统和学生Portal',
-      text: '官方页面强调Pines Portal、English Only Policy和国际经理协助管理校园生活。',
+      text: '学校通过Pines Portal、English Only Policy和国际经理协助管理校园生活。',
     },
     {
       image:
@@ -340,7 +335,7 @@ export class CebuBlueOceanSchoolComponent
     },
     {
       title: '重视PINES体系和师资稳定度',
-      text: '公开资料强调PINES姊妹校背景、教材体系和教师训练管理。',
+      text: 'PINES姊妹校背景，沿用其教材体系和教师训练管理。',
     },
     {
       title: '想要高比例一对一课程',
@@ -363,7 +358,7 @@ export class CebuBlueOceanSchoolComponent
     },
     {
       title: '预算只看学费',
-      text: 'CBOA公开价格把学费和住宿分开列，注册费和到校费用也要另外算清。',
+      text: 'CBOA的学费和住宿分开计价，注册费和到校费用也要另外算清。',
     },
     {
       title: '旺季才临时指定海景房',
@@ -489,7 +484,7 @@ export class CebuBlueOceanSchoolComponent
       id: 'ocean-suite-superior',
       name: '校外高级房型',
       baseFourWeek: 1250,
-      note: '外部单人住宿，公开资料提示18岁以上、60岁以上学生需选Ocean Suites。',
+      note: '外部单人住宿，需年满18岁；60岁以上学生需选Ocean Suites。',
       offCampus: true,
     },
     {
@@ -512,7 +507,7 @@ export class CebuBlueOceanSchoolComponent
     {
       time: '07:00 - 07:50',
       title: '早餐 / 早间Option',
-      text: '公开资料列有Morning Listening、Vocabulary等选修课，实际开课按学校安排。',
+      text: '早间有Morning Listening、Vocabulary等选修课，实际开课按学校安排。',
     },
     {
       time: '08:00 - 12:00',
@@ -522,7 +517,7 @@ export class CebuBlueOceanSchoolComponent
     {
       time: '12:00 - 13:00',
       title: '午餐',
-      text: '公开费用说明列三餐包含，餐食安排以当期校规为准。',
+      text: '三餐包含在住宿费中，餐食安排以当期校规为准。',
     },
     {
       time: '13:00 - 17:00',
@@ -537,7 +532,7 @@ export class CebuBlueOceanSchoolComponent
     {
       time: '19:00 - 19:50',
       title: '夜间Option / 自习',
-      text: '公开资料列有发音、语法、就业准备、吉他、Zumba等选项，是否开课需到校确认。',
+      text: '晚间有发音、语法、就业准备、吉他、Zumba等选项，是否开课需到校确认。',
     },
   ];
 
@@ -597,7 +592,7 @@ export class CebuBlueOceanSchoolComponent
     {
       number: '02',
       title: '学费和住宿分开核算',
-      text: 'CBOA公开价格不是单一套餐价，顾问会按课程、周数、EGI或Ocean Suites房型逐项算清。',
+      text: 'CBOA的价格不是单一套餐价，顾问会按课程、周数、EGI或Ocean Suites房型逐项算清。',
       image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问核算菲律宾语言学校费用',
     },
@@ -670,7 +665,7 @@ export class CebuBlueOceanSchoolComponent
   ];
   readonly notes = [
     '4周课程与住宿基准使用学校2025美元价目表；实际金额会按学校当期报价、汇率和政策调整。',
-    'CBOA公开价格中，学费和住宿费分开列出；报价器先按95折计算课程与住宿，再扣学校固定优惠，并免除思达启航学生注册费。',
+    'CBOA的学费和住宿费分开计价；报价先按95折计算课程与住宿，再扣学校固定优惠，并免除思达启航学生注册费。',
     '课程与住宿的1周、2周、3周费用分别按4周价格的40%、65%、85%计算。',
     '暑假旺季、Family Camp、海景房和Ocean Suites单人房需要提前确认空房和规则。',
     '到校后SSP、签证、押金、教材、水电、管理费和洗衣等费用需以学校Orientation说明为准。',
@@ -682,7 +677,7 @@ export class CebuBlueOceanSchoolComponent
         'CIA是Mactan半斯巴达综合型新校区，校区设施和考试资源都强；CBOA更偏EGI海边度假环境和PINES教学体系，适合想要海边、泳池、三餐和一对一课平衡的人。',
     },
     {
-      question: '页面上的CBOA报价包含全部费用吗？',
+      question: '在线CBOA报价包含全部费用吗？',
       answer:
         '学校费用和优惠会自动计算；到校学杂费按签证和停留跨度估算，押金、教材、水电、选修、洗衣和接机另列为4周参考项目。',
     },
@@ -694,12 +689,12 @@ export class CebuBlueOceanSchoolComponent
     {
       question: 'CBOA适合雅思或多益备考吗？',
       answer:
-        'CBOA官方课程包含IELTS和TOEIC，适合想在海边环境中进行目标型备考的学生。如果目标是高压保证班或更强封闭式备考，也建议同步比较SMEAG、EV、CPILS或碧瑶学校。',
+        'CBOA课程包含IELTS和TOEIC，适合想在海边环境中进行目标型备考的学生。如果目标是高压保证班或更强封闭式备考，也建议同步比较SMEAG、EV、CPILS或碧瑶学校。',
     },
     {
       question: 'Ocean Suites和EGI住宿怎么选？',
       answer:
-        'EGI更靠校区，双人/三人房预算较低；Ocean Suites是外部单人住宿，舒适度和隐私更高，公开资料提示18岁以上可选，60岁以上需选Ocean Suites，正式仍要按学校规则确认。',
+        'EGI更靠校区，双人/三人房预算较低；Ocean Suites是外部单人住宿，舒适度和隐私更高，18岁以上可选，60岁以上需选Ocean Suites，正式仍要按学校规则确认。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -717,17 +712,6 @@ export class CebuBlueOceanSchoolComponent
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'CBOA官网首页', url: 'https://www.cebublueocean.com/eng/index' },
-    { label: 'CBOA官方Light ESL课程', url: 'https://www.cebublueocean.com/eng/program_light_esl' },
-    { label: 'CBOA官方Intensive ESL课程', url: 'https://www.cebublueocean.com/eng/program_intensive_esl' },
-    { label: 'CBOA官方IELTS课程', url: 'https://www.cebublueocean.com/eng/program_ielts' },
-    { label: 'CBOA官方宿舍说明', url: 'https://www.cebublueocean.com/eng/campus_dorms' },
-    { label: 'CBOA官方设施图库', url: 'https://www.cebublueocean.com/eng/campus_facilities?nav=all' },
-    { label: '留学Thank You 2026费用表', url: 'https://world-study.com/school/804/charge/' },
-    { label: 'Fujiyama CBOA费用与当地费用', url: 'https://www.fujiyama-international.com/philippines/cebu-blue-ocean-academy.html' },
   ];
 
   ngOnInit(): void {

@@ -17,15 +17,6 @@
           免费咨询MONOL空位与报价
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a
-          class="secondary-action"
-          href="https://mymonol.com/en/"
-          target="_blank"
-          rel="noopener"
-        >
-          学校官网
-          <mat-icon>open_in_new</mat-icon>
-        </a>
       </div>
     </div>
 
@@ -37,8 +28,8 @@
       <figcaption>
         <strong>4周费用参考</strong>
         <span>
-          2025年价目表可从ESL 4学费USD 750 + 四人胶囊式上下铺USD 400初筛；
-          加注册费后4周约USD 1,250起，餐食和当地费用另计。
+          2025年ESL 4学费750美元 + 四人胶囊式上下铺400美元，
+          加注册费后4周约1,250美元起，餐食和当地费用另计。
         </span>
       </figcaption>
     </figure>
@@ -57,9 +48,7 @@
       <h2>MONOL的核心不是高压，而是稳定、弹性和生活舒适度</h2>
     </div>
     <p>
-      MONOL官方资料显示，学校位于Baguio City的Pinsao Proper区域，地址为20-B
-      Purok 9, Tacay
-      Road。公开资料把它描述为重视系统化课程、个别化学习支持和住宿生活品质的学校。
+      MONOL位于碧瑶Pinsao Proper区域，重视系统化课程、个别化学习支持和住宿生活品质。
       选MONOL时，建议把课程密度、房型、餐食模式、通勤半径和学生自律程度一起看，而不是只比较起价。
     </p>
   </section>
@@ -97,7 +86,7 @@
       <p>
         MONOL位于碧瑶Tacay
         Road一带，适合想减少外部娱乐干扰、把生活圈放在学校和宿舍周边的人。
-        顾问报价前应同步确认机场接送、周末外出交通、市区距离、医院和生活采购便利度，避免学生只看住宿照片做决定。
+        报名前建议一并了解机场接送、周末外出交通、市区距离、医院和生活采购便利度，不要只看住宿照片做决定。
       </p>
     </div>
   </section>
@@ -107,25 +96,23 @@
       <span class="section-kicker">费用</span>
       <h2>MONOL要用“课程费 + 房型 + 当地费 + 餐食”核总价</h2>
       <p>
-        以下为公开资料整理。官方页面以课程费、房费和当地费用拆分显示；中文代理页面也会用课程加房型套装价展示。
-        页面仅做预算初筛，最终仍需按入学日、周数、房型空位、优惠和学校invoice重新确认。
+        以下按课程费、房费和当地费用分项列出，可用于初步估算预算；
+        正式金额以入学日、周数、房型空位、优惠和学校invoice为准。
       </p>
     </div>
 
     <div class="fee-table" role="table" aria-label="MONOL费用参考">
-      <div class="fee-row fee-row--head" role="row">
+      <div class="fee-row fee-row--four fee-row--head" role="row">
         <span role="columnheader">项目</span>
-        <span role="columnheader">公开参考</span>
-        <span role="columnheader">预算初筛</span>
+        <span role="columnheader">参考</span>
+        <span role="columnheader">预算估算</span>
         <span role="columnheader">说明</span>
-        <span role="columnheader">来源</span>
       </div>
-      <div class="fee-row" role="row" *ngFor="let row of priceRows">
+      <div class="fee-row fee-row--four" role="row" *ngFor="let row of priceRows">
         <span role="cell">{{ row.item }}</span>
         <span role="cell">{{ row.reference }}</span>
         <span role="cell">{{ row.estimate }}</span>
         <span role="cell">{{ row.note }}</span>
-        <span role="cell">{{ row.basis }}</span>
       </div>
     </div>
 

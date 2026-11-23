@@ -201,13 +201,13 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       icon: 'record_voice_over',
       label: '课程特色',
       value: '口语强化 + Native Teacher',
-      note: '官方重点包括Focus on Speaking、Native Teacher、Best Location和Management',
+      note: '学校重点包括Focus on Speaking、Native Teacher、Best Location和Management',
     },
     {
       icon: 'groups',
       label: '学生比例',
       value: '多国籍混合',
-      note: '官方公开比例含日本、中国台湾、韩国、越南、中国大陆和其他国家和地区',
+      note: '学生来自日本、中国台湾、韩国、越南、中国大陆和其他国家和地区',
     },
     {
       icon: 'school',
@@ -225,7 +225,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       icon: 'pool',
       label: '校区设施',
       value: '泳池 / 餐厅 / 自习 / 宿舍',
-      note: '公开资料强调干净现代、位置便利、安全和舒适宿舍',
+      note: '校园干净现代、位置便利，宿舍安全舒适',
     },
   ];
 
@@ -241,7 +241,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       category: '餐厅',
       title: 'I.BREEZE餐厅',
       description:
-        '宽敞明亮的餐厅是I.BREEZE公开图片中最有辨识度的生活空间之一。',
+        '宽敞明亮的餐厅是I.BREEZE很有辨识度的生活空间之一。',
       src: 'https://cebu-navi.com/photo/school/120/2019bc435df89fc9beb8ad8fe651b30f.jpg',
     },
     {
@@ -276,7 +276,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       category: '餐厅',
       title: '餐厅用餐氛围',
       description:
-        '公开资料显示I.BREEZE餐厅可同时容纳大量学生，适合多国籍学生交流。',
+        'I.BREEZE餐厅可同时容纳大量学生，适合多国籍学生交流。',
       src: 'https://cebu21.jp/include/schoolno2/ibreeze/Meal/Meal%20%2836%29.jpg',
     },
     {
@@ -297,7 +297,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       value: 'Tres Borces Street, Mabolo, Cebu City',
     },
     { label: '学校定位', value: '宿务市区度假式综合英语学校，强调口语、外教、多国籍和生活便利度' },
-    { label: '学生比例', value: '官方公开比例：日本35%、中国台湾26%、韩国20%、越南9%、中国大陆2%、其他8%' },
+    { label: '学生比例', value: '日本35%、中国台湾26%、韩国20%、越南9%、中国大陆2%、其他8%（学校统计，随季节变化）' },
     {
       label: '课程方向',
       value: 'Power ESL、Intensive Beginner、Light ESL、Intensive Speaking、IELTS、TOEIC、Business、Junior ESL & YLE',
@@ -334,7 +334,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
       image:
         'https://cebu21.jp/include/schoolno2/ibreeze/Meal/Meal%20%2836%29.jpg',
       title: '多国籍餐厅和校园生活',
-      text: '官方公开国籍比例较分散，适合希望在宿务接触不同学生群体的人。',
+      text: '学生国籍比例较分散，适合希望在宿务接触不同学生群体的人。',
     },
   ];
 
@@ -353,7 +353,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     },
     {
       title: '想接触多国籍学生',
-      text: '官方生源比例显示日本、中国台湾、韩国、越南等地学生都有一定占比。',
+      text: '日本、中国台湾、韩国、越南等地学生都有一定占比。',
     },
   ];
 
@@ -364,7 +364,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     },
     {
       title: '临近入学才指定单人房或Prime房型',
-      text: '官方空房表按性别、房型、校区和日期列出，热门房型需要提前确认。',
+      text: '空房按性别、房型、校区和日期安排，热门房型需要提前确认。',
     },
     {
       title: '预算只看学费住宿套餐',
@@ -470,7 +470,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     {
       time: '07:00 - 07:50',
       title: '早餐 / Daily Test',
-      text: '官方样例日程列出早间早餐和每日测试，具体按课程和级别调整。',
+      text: '早间安排早餐和每日测试，具体按课程和级别调整。',
     },
     {
       time: '08:00 - 12:05',
@@ -490,7 +490,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     {
       time: '17:30 - 18:20',
       title: '晚餐',
-      text: '官方日程样例列出晚餐时段，实际安排以到校说明为准。',
+      text: '校内餐厅晚餐时段，实际安排以到校说明为准。',
     },
     {
       time: '18:30 - 19:15',
@@ -615,11 +615,11 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     '宿务城市短途活动',
   ];
   readonly notes = [
-    '本页保留2026及2027官方价目；2027年1月1日起报名使用2027价，房型和空房另行确认。',
+    '2026及2027年价格均已列出；2027年1月1日起报名使用2027价，房型和空房另行确认。',
     'IB2房型包含单人、双人和四人房；校外公寓另有单人、双人和3-5人家庭房。',
     '学校接受5-14岁青少年与家长参加；家长需选择成人常规课程。未满18岁按抵达日国际年龄判断，原则上按亲子/Junior课程规则报名。',
     '16–17岁可选择其他课程，但按青少年英语学费收取；无父母陪同的监护费为100美元／4周，包含接机及每4周一次的跳岛费用。',
-    '当地费用通常在第一天Orientation后一次性支付，官方也提示金额可能按情况调整。',
+    '当地费用通常在第一天Orientation后一次性支付，学校也提示金额可能按情况调整。',
     '如果目标是极强斯巴达备考，可同时比较SMEAG、EV、CPILS；如果想平衡环境和口语，I.BREEZE值得看。',
   ];
   readonly faqs: FaqItem[] = [
@@ -629,14 +629,14 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
         'CIA更偏Mactan半斯巴达综合型新校区，考试资源和校区规模更突出；I.BREEZE在宿务市区Mabolo，强调口语、外教、多国籍和泳池型校区生活。两者都适合学习生活平衡型学生，但定位和城市生活感不同。',
     },
     {
-      question: '页面上的报价包含全部费用吗？',
+      question: '在线报价包含全部费用吗？',
       answer:
-        '不包含全部。报价器主要估算课程住宿套餐和注册费；到校后还要准备SSP、SSP E-Card、ACR、签证延长、押金、教材、水电、ID、洗衣和接机等费用。',
+        '不包含全部。在线报价主要估算课程住宿套餐和注册费；到校后还要准备SSP、SSP E-Card、ACR、签证延长、押金、教材、水电、ID、洗衣和接机等费用。',
     },
     {
       question: 'I.BREEZE适合雅思学生吗？',
       answer:
-        '可以列入候选。官方列出IELTS Starter和IELTS Target课程，但如果目标是更强备考压力、模考和保证班，也建议同时比较CIA、SMEAG、EV、CPILS。',
+        '可以列入候选。学校开设IELTS Starter和IELTS Target课程，但如果目标是更强备考压力、模考和保证班，也建议同时比较CIA、SMEAG、EV、CPILS。',
     },
     {
       question: 'I.BREEZE适合亲子或青少年吗？',
@@ -646,7 +646,7 @@ export class IbreezeSchoolComponent implements OnInit, AfterViewInit, OnDestroy 
     {
       question: '为什么IB1和IB2价格不同？',
       answer:
-        '2026价目表分别列出IB1和IB2房价：IB1有单人、双人、三人和四人房，IB2有单人、双人和四人房。两者住宿楼和房型不同，最终要按空房和校区确认。',
+        '2026年IB1和IB2房价分开计算：IB1有单人、双人、三人和四人房，IB2有单人、双人和四人房。两者住宿楼和房型不同，最终要按空房和校区确认。',
     },
   ];
   readonly sideNav: SideNavItem[] = [

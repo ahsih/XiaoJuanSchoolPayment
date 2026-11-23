@@ -142,7 +142,7 @@ export class FellaStudentQuote {
     const lines: SchoolPaymentLine[] = [
       { icon: '注', label: '注册费', value: this.registrationCharge, note: this.returningStudent ? '老生返校免收注册费。' : '新生一次性收取100美元。' },
     ];
-    if (this.isMinor) lines.push({ icon: '未', label: '未成年学生单独到校服务费', value: this.minorServiceFee, note: `18岁以下由用户勾选，按${this.courseWeeks}个课程周 × 25美元计算。` });
+    if (this.isMinor) lines.push({ icon: '未', label: '未成年学生单独到校服务费', value: this.minorServiceFee, note: `18岁以下单独到校，按${this.courseWeeks}个课程周 × 25美元计算。` });
     if (this.registrationPromotionDiscount) lines.push({ icon: '报', label: '7月报名优惠', value: -this.registrationPromotionDiscount, note: this.registrationPromotionNote, promotionKey: 'fella-july-registration' });
     if (this.sidaDiscount) lines.push({ icon: '思', label: '思达启航95折', value: -this.sidaDiscount, note: this.sidaDiscountNote, promotionKey: 'fella-sida-95' });
     if (this.christmasDiscount) lines.push({ icon: '圣', label: '圣诞优惠', value: -this.christmasDiscount, note: this.christmasDiscountNote, promotionKey: 'fella-christmas' });
@@ -184,7 +184,7 @@ export class FellaStudentQuote {
           { item: 'ACR I-CARD 外国人身份证', unitLabel: '4,100 比索／次', quantity: extensions > 0 ? 1 : 0, total: extensions > 0 ? 4100 : 0, note: `移民局收取，第一次续签时办理；30天签证学习4周及以上、59天签证学习8周及以上需要。当前按${this.visaLabel}预估。` },
           { item: 'ARP外国人登记', unitLabel: '300 比索／次', quantity: extensions > 0 ? 1 : 0, total: extensions > 0 ? 300 : 0, note: '移民局收取，跟随第一次续签办理；学校统一带队拍摄照片及指纹录制。' },
           { item: '首次签证续签', unitLabel: '6,440 比索／次', quantity: extensions > 0 ? 1 : 0, total: extensions > 0 ? 6440 : 0, note: touristExtensionNote },
-          ...(extensions > 1 ? [{ item: '第2次及以后签证续签（待确认）', unitLabel: '金额待移民局确认', quantity: extensions - 1, total: 0, note: `预计还需${extensions - 1}次续签；附件未提供金额，未计入合计，不自行估价。${touristExtensionNote}` }] : []),
+          ...(extensions > 1 ? [{ item: '第2次及以后签证续签（待确认）', unitLabel: '金额待移民局确认', quantity: extensions - 1, total: 0, note: `预计还需${extensions - 1}次续签；金额待确认，未计入合计。${touristExtensionNote}` }] : []),
         ];
     return [
       ...visaRows,

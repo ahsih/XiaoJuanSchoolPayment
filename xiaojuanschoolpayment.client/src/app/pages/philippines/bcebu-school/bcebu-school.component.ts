@@ -96,7 +96,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly quotePlan = this.calculator.plan;
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'location_on', label: '地区', value: '宿务 / 麦克坦', note: '房型资料包含马克坦新城与校内花园方向' },
+    { icon: 'location_on', label: '地区', value: '宿务 / 麦克坦', note: '房型包括马克坦新城与校内花园方向' },
     { icon: 'school', label: '课程', value: 'ESL / IELTS / Business', note: '另有Junior、40岁以上轻量课与幼儿园' },
     { icon: 'rule', label: '学习强度', value: '弹性到斯巴达', note: "Speed ESL、Intensive、IELTS Sparta与B'SPARTA可选" },
     { icon: 'family_restroom', label: '年龄方向', value: '3岁起 / 成人 / 亲子', note: '课程与房型均需按年龄和同行关系确认' },
@@ -292,7 +292,7 @@ export class BCebuSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     const firstDeposit = this.activeStudents[0].calculator.optionalFees[1];
     return [
       { item: '宿务马克坦机场团体接机', total: pickupTotal, note: `${pickupCount ? `本次${pickupCount}人选择接机，按各自抵达条件计费` : '本次无人选择接机'}；学校团体接机，可能需在机场等候同批其他学生。` },
-      { item: '房间押金（参考）', total: firstDeposit.total, note: '1–4周3,000比索，5–24周5,000比索；现有资料未明确多人同住时按人或按房，暂只列一份参考金额，不自动乘人数；无损坏及无欠费时可退。' },
+      { item: '房间押金（参考）', total: firstDeposit.total, note: '1–4周3,000比索，5–24周5,000比索；多人同住时按人还是按房收取需向学校确认，这里只列一份参考金额；无损坏及无欠费时可退。' },
     ];
   }
   promotionRule(id: string) { return this.promotionRules.find(rule => rule.id === id && rule.enabled); }

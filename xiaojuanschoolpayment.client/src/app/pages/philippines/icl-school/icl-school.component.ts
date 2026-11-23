@@ -27,7 +27,6 @@ interface CourseFee { id: string; category: string; name: string; tuition4Weeks:
 interface RoomFee { id: string; name: string; fee4Weeks: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
-interface SourceLink { label: string; url: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 
 @Component({
@@ -70,10 +69,10 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
 
   readonly snapshotCards: SnapshotCard[] = [
     { icon: 'location_on', title: '宿务市中心位置', text: '学校位于110 Gorordo Avenue，Ayala Center Cebu生活圈附近，适合想兼顾学习和城市便利的学生。' },
-    { icon: 'school', title: '2025年改名为ICL', text: '公开资料显示学校由iCrazy更名为ICL English Academy，延续10级分班和口语强化路线。' },
+    { icon: 'school', title: '2025年改名为ICL', text: '学校由iCrazy更名为ICL English Academy，延续10级分班和口语强化路线。' },
     { icon: 'nightlife', title: '半斯巴达管理', text: '平日有门禁和夜间选修课，自律度比自由型学校更高，但比全斯巴达更保留生活弹性。' },
     { icon: 'record_voice_over', title: 'Power Speaking主打', text: 'Power Speaking 4/6/8按一对一课时数分级，适合想把预算花在开口练习上的学生。' },
-    { icon: 'task_alt', title: 'IELTS / TOEIC方向', text: '公开课程资料列有雅思、多益和保证班，适合需要考试目标与模拟测验节奏的人。' },
+    { icon: 'task_alt', title: 'IELTS / TOEIC方向', text: '学校开设雅思、多益和保证班，适合需要考试目标与模拟测验节奏的人。' },
     { icon: 'family_restroom', title: '亲子与Junior课程', text: '学校提供Junior、Parents和短期亲子方案，搭配儿童活动区和学生发表活动。' },
   ];
 
@@ -81,7 +80,7 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
     {
       category: '校区',
       title: 'ICL学校外观',
-      text: '城市型校舍，公开资料标注为2023年搬迁更新后的校区。',
+      text: '城市型校舍，2023年搬迁更新后的校区。',
       src: 'https://www.fujiyama-international.com/archives/004/202510/42e04b981aa040a4f845892a42da3625d94846d3614157b187c8f15b8a466688.jpg',
     },
     {
@@ -105,7 +104,7 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
     {
       category: '教室',
       title: '小组互动课',
-      text: '官方课程资料强调主题讨论、职场英文、时事英文、考试英文等教材。',
+      text: '课程教材涵盖主题讨论、职场英文、时事英文、考试英文等内容。',
       src: 'https://www.fujiyama-international.com/archives/004/202510/mode3_w640_h640-b88eb962f9d8c755aa5e23ed3f337ea3d365112839aafadd7d45b69c34315242.jpg',
     },
     {
@@ -117,7 +116,7 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
     {
       category: '生活',
       title: '学生休息区',
-      text: '公开资料列有桌球、台球、健身、儿童活动区和Wi-Fi等校内设施。',
+      text: '校内有桌球、台球、健身、儿童活动区和Wi-Fi等设施。',
       src: 'https://storage.googleapis.com/phl-2025b-wp/2026/01/lounge2.jpg',
     },
   ];
@@ -169,22 +168,13 @@ export class IclSchoolComponent implements OnInit, AfterViewInit {
     { title: '想在宿务市区读半斯巴达', text: 'ICL的位置和管理强度介于自由型小校与高压斯巴达之间，适合想要节奏但不想完全封闭的人。' },
     { title: '重视一对一口语课时', text: 'Power Speaking 4/6/8可以按预算和强度增加一对一比例，短期学习目标比较清晰。' },
     { title: '雅思、多益或亲子路线', text: '课程覆盖IELTS、TOEIC、Junior和Parents，适合多种游学目的放在同一所学校比较。' },
-    { title: '希望日本学生比例低一些', text: '公开代理资料提到日本学生比例较低，适合想提高英文环境浓度的学生，但实际国籍比例会随季节变化。' },
+    { title: '希望日本学生比例低一些', text: '日本学生比例相对较低，适合想提高英文环境浓度的学生，但实际国籍比例会随季节变化。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '追求大型度假村校区', text: 'ICL更像市区教学楼和宿舍结合的学校，不是CIA Mactan或CPI那类度假村式大校区。' },
     { title: '必须要全斯巴达强制管理', text: 'ICL是半斯巴达，适合需要一定纪律但仍想保留课后弹性的学生。' },
     { title: '只看最低总价的人', text: '课程食宿费以美元公布，但SSP、签证、教材、水电维护、押金和生活费要另行预留。' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'ICL / iCrazy官方首页', url: 'https://icrazy-english.com.tw/en/' },
-    { label: 'ICL / iCrazy官方课程教材页', url: 'https://icrazy-english.com.tw/en/course' },
-    { label: 'ICL English Academy官方Facebook', url: 'https://www.facebook.com/icrazyenglishacademy/' },
-    { label: 'ICL Facebook公开内容镜像', url: 'https://www.schoolandcollegelistings.com/PH/Cebu-City/105817508785603/ICL-English-Academy' },
-    { label: 'CEBU English ICL学校与费用表', url: 'https://cebu-english.com/school/icrazy/' },
-    { label: 'DEOW ICL 2025-2026费用参考', url: 'https://deow.jp/philippines/school/icl/' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [

@@ -106,7 +106,7 @@ export class CiecQuoteCalculatorComponent {
       layout: 'cia-detailed', fullFeeDetails: true, compactDetailedSections: true, localFeeTableLayout: 'web',
       fileName: 'CIEC报价.png', schoolCode: 'CIEC', title, headingText: title, subtitle: '',
       logoSrc: '/assets/sida-qihang-quote-header-logo-transparent.webp', heroSrc: '/assets/ciec/quote-banner.svg',
-      quoteDateText: new Date().toLocaleDateString('zh-CN'), updatedAtText: '价格与政策：用户确认资料；2026／2027淡季政策分别适用',
+      quoteDateText: new Date().toLocaleDateString('zh-CN'), updatedAtText: '价格与政策：2026／2027淡季政策分别适用',
       studentItems: this.active.flatMap((person, index) => [
         { icon: '人', label: this.label(index), value: `${person.role === 'student' ? '' : ({ guardian: '监护人', child: '子女' })[person.role] + ' · '}${person.ageMonths < 48 ? person.ageMonths + '个月' : this.money(person.age) + '岁'} · ${person.returning ? '老学员' : '新学员'} · ${person.visaLabel}` },
         { icon: '日', label: `${this.label(index)}日期`, value: `${person.plan.startDate} 至 ${person.plan.endDate} · ${person.plan.courseWeeks}周` },

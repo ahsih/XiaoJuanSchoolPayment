@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按ELSA 2026-2027课程、食宿价目表和公开学校资料整理。正式报名仍需按入学日、孩子年龄、房型空位和学校当期报价确认。
+              这里列出ELSA 2026-2027课程和食宿价格。正式报名仍需按入学日、孩子年龄、房型空位和学校当期报价确认。
             </p>
           </div>
 
@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">费用按ELSA 2026-2027价目表更新；图片与学校资料参考官方站和公开资料页，最终以学校正式报价为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -197,11 +197,11 @@
 
         <section class="section-block" id="courses">
           <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
+            <span>课程 / 参考费用</span>
             <h2>ELSA 2026-2027课程、食宿4周费用</h2>
             <p>
-              下方金额是价目表中的4周课程、餐食和住宿费，USD 100注册费另计；监护人不上课套餐例外，已含注册费和旺季附加费。
-              单人间按对应双人间价格额外加USD 500。菲律宾当地费用、活动、保险、机票和个人消费没有包含在内。
+              下方金额是4周课程、餐食和住宿费，100美元注册费另计；监护人不上课套餐例外，已含注册费和旺季附加费。
+              单人间按对应双人间价格额外加500美元。菲律宾当地费用、活动、保险、机票和个人消费没有包含在内。
             </p>
           </div>
 
@@ -283,9 +283,9 @@
         <section class="quote-panel" id="quote">
           <div class="section-heading">
             <span>费用快速报价</span>
-            <h2>用公开价目表先估算ELSA主费用</h2>
+            <h2>先估算ELSA主费用</h2>
             <p>
-              这个计算器用于比较价目表公布的4周课程与房型。正式报价还需要确认孩子年龄、家庭人数、入学日期、空房和学校最新规则。
+              这个计算器用于比较4周课程与房型的价格。正式报价还需要确认孩子年龄、家庭人数、入学日期、空房和学校最新规则。
             </p>
           </div>
           <div class="quote-form" aria-label="ELSA费用快速报价选项">
@@ -349,7 +349,7 @@
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>到校后还要准备的费用</h2>
-            <p>以下菲律宾当地费用沿用ELSA公开资料作预算参考。签证政策、教材数量、用电和服务安排会影响最终金额。</p>
+            <p>以下菲律宾当地费用供预算参考，签证政策、教材数量、用电和服务安排会影响最终金额。</p>
           </div>
           <div class="local-fee-grid elsa-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -364,20 +364,6 @@
               <strong>{{ fee.amount }}</strong>
               <p>{{ fee.note }}</p>
             </article>
-          </div>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>ELSA页面公开资料来源</h2>
-            <p>课程和主费用按最新提供的ELSA 2026-2027价目表更新；地址、设施与校园信息参考ELSA官方站、电子手册和公开资料。</p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
           </div>
         </section>
 

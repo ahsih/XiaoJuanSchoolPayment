@@ -319,7 +319,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
       category: '餐厅',
       title: '学生餐厅',
       description:
-        '公开资料显示SMEAG Capital提供周末和假日餐食，长期学习更稳定。',
+        'SMEAG Capital提供周末和假日餐食，长期学习更稳定。',
       src: 'https://storage.googleapis.com/world-study-prod/media/school_photo/866/57f253cf-ef5e-44c0-b52a-ec8c466147a4.jpg',
     },
     {
@@ -362,8 +362,8 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
       label: '所在地区',
       value: 'Emilio Osmeña cor. Bataan St., Guadalupe, Cebu City',
     },
-    { label: '创校时间', value: '公开资料列出SMEAG成立于2006年' },
-    { label: '学生规模', value: 'Capital校区公开资料约350名学生规模' },
+    { label: '创校时间', value: 'SMEAG成立于2006年' },
+    { label: '学生规模', value: 'Capital校区约350名学生规模' },
     {
       label: '学校定位',
       value: '宿务市区型英语学校，重点是ESL、考试课程、商务英语和Family项目',
@@ -374,7 +374,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     },
     {
       label: '费用参考',
-      value: '2026价目表参考：ESL常规840美元/4周，校内四人房780美元/4周，注册费100美元',
+      value: '2026年参考价：ESL常规840美元/4周，校内四人房780美元/4周，注册费100美元',
     },
   ];
 
@@ -519,7 +519,7 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
     {
       time: '06:40 - 08:00',
       title: 'Morning Sparta',
-      text: '官方资料列出晨间Sparta课程，方向可能包含语法、词汇、IELTS、TOEIC、TOEFL等。',
+      text: '学校安排晨间Sparta课程，方向可能包含语法、词汇、IELTS、TOEIC、TOEFL等。',
     },
     {
       time: '08:20 - 09:00',
@@ -666,8 +666,8 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
   readonly notes = [
     'SMEAG Capital更适合看重市区便利、考试课程和明确学习规则的学生。',
     'Sparta / Semi-Sparta、门禁、早晚课、模考和保证班规则需以学校当期说明为准。',
-    '本页费用使用公开2026参考价：Alpha Edu列出的4周学费、宿舍费和当地费用；正式报名仍需顾问向学校确认。',
-    '不同代理、币种、优惠和更新时间可能导致报价不同，最终以学校正式报价单、空房和付款节点为准。',
+    '费用为2026年参考价，包括4周学费、宿舍费和当地费用；正式报名仍需顾问向学校确认。',
+    '不同渠道、币种、优惠和更新时间可能导致报价不同，最终以学校正式报价单、空房和付款节点为准。',
     '如果是亲子或低龄学生，必须提前确认年龄、监护、房型、接送和校规。',
   ];
   readonly faqs: FaqItem[] = [
@@ -677,14 +677,14 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
         'CIA更偏麦克坦度假型新校区和半斯巴达舒适校园，SMEAG Capital更偏宿务市区、考试路线和Sparta/Semi-Sparta学习管理。两者都适合认真学习，但选校重点不同。',
     },
     {
-      question: '页面上的报价包含全部费用吗？',
+      question: '在线报价包含全部费用吗？',
       answer:
         '不包含全部。快速报价主要估算注册费、课程费和住宿费；到校后还要准备SSP、SSP-I Card、押金、水电、管理费、教材、接机和可能的签证延长费用。',
     },
     {
       question: 'SMEAG Capital适合雅思学生吗？',
       answer:
-        '适合列入候选。公开资料列出IELTS、IELTS Guarantee、TOEIC、TOEFL等考试课程，但是否适合还要看当前分数、目标分、学习周数和能否接受规则。',
+        '适合列入候选。学校开设IELTS、IELTS Guarantee、TOEIC、TOEFL等考试课程，但是否适合还要看当前分数、目标分、学习周数和能否接受规则。',
     },
     {
       question: 'SMEAG Capital适合亲子吗？',
@@ -692,9 +692,9 @@ export class SmeagCapitalSchoolComponent implements OnInit, AfterViewInit, OnDes
         '可以比较Family Program，但Capital不是纯度假型亲子校区。低龄、家庭房、监护和外出规则需要提前确认，也可以同时比较SMEAG Encanto、CIA、CPI等学校。',
     },
     {
-      question: '为什么不同网站价格不一样？',
+      question: '为什么不同渠道价格不一样？',
       answer:
-        '学校费用会受年份、国籍市场、汇率、优惠、房型和代理更新时间影响。本页使用2026公开参考信息建立报价逻辑，正式价格以学校确认报价为准。',
+        '学校费用会受年份、国籍市场、汇率、优惠、房型和更新时间影响，不同渠道的价格可能有差异；正式价格以学校确认报价为准。',
     },
   ];
   readonly sideNav: SideNavItem[] = [

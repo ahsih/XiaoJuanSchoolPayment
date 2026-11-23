@@ -107,25 +107,25 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: 'Pinsao Proper山城环境，适合稳定学习和长期生活。' },
     { icon: 'apartment', label: '学校定位', value: '半斯巴达 / 舒适住宿', note: '比传统高压斯巴达更弹性，住宿生活配套是重要卖点。' },
     { icon: 'school', label: '课程方向', value: 'ESL 4 / General ESL / IELTS / LEAP', note: '从轻量ESL到考试和客制课程，按一对一课时和学习目标选择。' },
-    { icon: 'bed', label: '住宿', value: 'Hotel-style dormitory', note: '2026价目表房型从四人胶囊式上下铺到高级单人间。' },
+    { icon: 'bed', label: '住宿', value: 'Hotel-style dormitory', note: '2026年房型从四人胶囊式上下铺到高级单人间。' },
     { icon: 'restaurant', label: '餐食', value: '餐费另计', note: 'Meal allowance separate，适合需要饮食弹性或长期控制预算的学生。' },
-    { icon: 'payments', label: '费用表', value: 'MONOL 2026年价目表', note: '注册费、4周课程费和不含餐费的4周住宿费均按价目表更新。' },
+    { icon: 'payments', label: '费用', value: 'MONOL 2026年价格', note: '注册费、4周课程费和不含餐费的4周住宿费均为2026年价格。' },
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
-    { category: '校区', title: 'MONOL校舍外观', description: 'MONOL官网首页展示的Baguio校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.webp' },
-    { category: '教室', title: 'MONOL官方课堂品牌照', description: '官网首页展示的MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.webp' },
-    { category: '教室', title: 'MONOL一对一课堂', description: 'Facility页面Classrooms照片展示的一对一辅导空间。', src: 'assets/philippines/monol-classroom.webp' },
-    { category: '教室', title: 'MONOL独立教室区', description: 'Facility页面展示的玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.webp' },
-    { category: '住宿', title: 'Single Room私密房型', description: '官方房型照片展示的单人房，含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.webp' },
-    { category: '住宿', title: 'MONOL住宿空间', description: '官方照片展示的住宿空间；实际房型、床位和设备需按当期空房确认。', src: 'assets/philippines/monol-dormitory-room.webp' },
-    { category: '住宿', title: 'Triple Room多人房', description: '官方照片展示的多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.webp' },
-    { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Facility页面Aqua Garden Cafe照片展示的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.webp' },
-    { category: '餐厅', title: 'MONOL餐点参考', description: '官方照片展示的餐点，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.webp' },
-    { category: '设施', title: 'Lounge学习休息区', description: 'Facility页面Lounge照片展示的自习、工作与交流空间。', src: 'assets/philippines/monol-lounge.webp' },
-    { category: '设施', title: 'Rooftop Gym', description: 'Facility页面Rooftop Gym照片展示可看山景的健身空间。', src: 'assets/philippines/monol-rooftop-gym.webp' },
-    { category: '设施', title: 'Golf Driving Range', description: 'Facility页面Golf Driving Range照片展示的校内高尔夫练习区。', src: 'assets/philippines/monol-golf-range.webp' },
-    { category: '设施', title: 'Rooftop Lounge', description: 'Facility页面屋顶休息区照片展示的夜间开放空间。', src: 'assets/philippines/monol-rooftop-lounge.webp' },
+    { category: '校区', title: 'MONOL校舍外观', description: 'MONOL在Baguio的校区建筑与山城环境。', src: 'assets/philippines/monol-campus-building.webp' },
+    { category: '教室', title: 'MONOL课堂场景', description: 'MONOL教师与学生课堂场景。', src: 'assets/philippines/home-school-monol.webp' },
+    { category: '教室', title: 'MONOL一对一课堂', description: '一对一辅导空间。', src: 'assets/philippines/monol-classroom.webp' },
+    { category: '教室', title: 'MONOL独立教室区', description: '玻璃隔间教室，适合一对一和集中学习。', src: 'assets/philippines/monol-classroom-group.webp' },
+    { category: '住宿', title: 'Single Room私密房型', description: '单人房含书桌、冰箱、微波炉等生活设备。', src: 'assets/philippines/monol-private-room.webp' },
+    { category: '住宿', title: 'MONOL住宿空间', description: '住宿空间参考；实际房型、床位和设备需按当期空房确认。', src: 'assets/philippines/monol-dormitory-room.webp' },
+    { category: '住宿', title: 'Triple Room多人房', description: '多人住宿空间，报价时需同步确认房型与空位。', src: 'assets/philippines/monol-dormitory-beds.webp' },
+    { category: '餐厅', title: 'Aqua Garden Cafe餐食', description: 'Aqua Garden Cafe的校内餐饮选择。', src: 'assets/philippines/monol-aqua-garden-cafe.webp' },
+    { category: '餐厅', title: 'MONOL餐点参考', description: '餐点参考，餐食预算需在总价外单独估算。', src: 'assets/philippines/monol-food-service.webp' },
+    { category: '设施', title: 'Lounge学习休息区', description: 'Lounge自习、工作与交流空间。', src: 'assets/philippines/monol-lounge.webp' },
+    { category: '设施', title: 'Rooftop Gym', description: '可看山景的屋顶健身空间。', src: 'assets/philippines/monol-rooftop-gym.webp' },
+    { category: '设施', title: 'Golf Driving Range', description: '校内高尔夫练习区。', src: 'assets/philippines/monol-golf-range.webp' },
+    { category: '设施', title: 'Rooftop Lounge', description: '夜间开放的屋顶休息空间。', src: 'assets/philippines/monol-rooftop-lounge.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -136,12 +136,12 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { label: '课程方向', value: 'ESL 4、General ESL、IELTS、LEAP English' },
     { label: '房型方向', value: '高级单人间、标准单人间、小单间、三人间、四人间（胶囊式上下铺）' },
     { label: '住宿服务', value: '与Misty Hills Hotel合作，提供24小时接待、每日房务、毛巾床品和房间清洁' },
-    { label: '报价说明', value: '2026年价目表除注册费外，课程费和住宿费以4周为单位；住宿不含餐费，到校费用多以比索支付' },
+    { label: '报价说明', value: '2026年价格除注册费外，课程费和住宿费以4周为单位；住宿不含餐费，到校费用多以比索支付' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/monol-campus-building.webp', title: '稳定学习，不是过度高压', text: 'MONOL适合认真学、但不想被全斯巴达制度压满日程的学生。学习效率更多来自课程结构、复习和学生自律。' },
-    { image: 'assets/philippines/monol-private-room.webp', title: 'Hotel-style宿舍管理', text: '官方资料强调Misty Hills Hotel合作、24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
+    { image: 'assets/philippines/monol-private-room.webp', title: 'Hotel-style宿舍管理', text: '与Misty Hills Hotel合作，提供24小时接待、每日房务、床品毛巾和房间清洁，适合长期住得稳定的人。' },
     { image: 'assets/philippines/monol-classroom.webp', title: '课程线清楚', text: 'ESL 4和General ESL按课时与预算补基础，IELTS面向考试目标，LEAP提供更客制化的学习安排。' },
     { image: 'assets/philippines/monol-rooftop-gym.webp', title: '生活设施更完整', text: '屋顶健身房、桑拿、高尔夫练习区、Lounge、咖啡厅和厨房让MONOL更像“学习生活型”学校。' },
   ];
@@ -163,7 +163,7 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly courses: CourseItem[] = [
     { name: 'ESL 4', type: '轻量综合英文', lessons: '4节一对一 + 4节团体选修课 + 健身选修课', suitable: '适合预算优先、希望保留复习和生活弹性，同时维持一对一训练的学生。' },
     { name: 'General ESL', type: '基础与综合英文', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '覆盖听说读写、语法和发音，适合打基础和系统提升。' },
-    { name: 'IELTS', type: '雅思备考', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '面向升学、海外就业或移民方向；代理价表注明每周五模拟考试，学校公开课程页按每期安排模拟考试。' },
+    { name: 'IELTS', type: '雅思备考', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '面向升学、海外就业或移民方向；定期安排模拟考试（通常为每周五），以学校当期安排为准。' },
     { name: 'LEAP English', type: '客制化英文', lessons: '5节一对一 + 4节团体选修课 + 健身选修课', suitable: '先做学习者画像和目标分析，再按General ESL、IELTS、TOEIC、Business或其他科目组合课程。' },
     { name: 'Junior ESL', type: '亲子与青少年规则', lessons: '支持5—15岁学生与父母同行学习', suitable: '寒暑假不接受Junior ESL单独报名；16—18岁可选成人课程，5—18岁独自在校学习另收100美元/4周管理费。课程价格需单独确认。' },
     { name: 'Additional One-on-One', type: '追加一对一', lessons: '按ESL / IELTS / LEAP不同价格追加', suitable: '适合到校后发现某一科目需要更多纠错或强化时再单独确认。' },
@@ -227,21 +227,20 @@ export class MonolSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
   readonly campusActivities = ['新生说明会', 'Fitness Classes', '英语口语活动', 'IELTS模拟考试', '学生交流活动'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Camp John Hay', 'Mines View Park'];
   readonly notes = [
-    'MONOL 2026年价目表说明除注册费外，课程费和住宿费以4周为单位列示。',
+    'MONOL 2026年价格除注册费外，课程费和住宿费以4周为单位列示。',
     '通过思达启航报名免100美元注册费；符合淡季条件时，每满4周课程费减100美元、住宿费减100美元。',
     'SNS仅限标准单人间及小单间；在指定任一社交平台发布一篇在校故事，活动可能提前关闭，需确认后勾选。',
     '餐费约14,000比索/4周，房间押金4,000比索，均不计入学杂费合计。',
-    '本页课程费按2026年价目表列示：ESL 4 / General ESL / IELTS / LEAP分别为750 / 900 / 1,000 / 1,150美元。',
-    '课程结构已与学校公开Program页核对；报价采用思达启航收到的2026价目表。',
+    '2026年4周课程费：ESL 4 / General ESL / IELTS / LEAP分别为750 / 900 / 1,000 / 1,150美元。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶MONOL语言学校是斯巴达学校吗？', answer: '更适合归类为半斯巴达或自律弹性型。它有高课时日课和学习支持，但不像典型高压斯巴达学校主要靠强制自习和门禁推动。' },
     { question: 'MONOL适合零基础学生吗？', answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、英语基础和是否需要先读ESL过渡。' },
-    { question: '页面报价包含餐费吗？', answer: '不包含。餐费按约14,000比索/4周单独准备，房间押金也单列且不计入学杂费合计。2027年12月31日前上课日提供免费早餐，周末及节假日除外。' },
+    { question: '这里的报价包含餐费吗？', answer: '不包含。餐费按约14,000比索/4周单独准备，房间押金也单列且不计入学杂费合计。2027年12月31日前上课日提供免费早餐，周末及节假日除外。' },
     { question: 'MONOL淡季优惠如何自动计算？', answer: '2026年12月31日或之前报名，在主校区学习及住宿，每完整4周分别减课程费和住宿费100美元；2027年6月27日至8月22日不适用。IELTS及LEAP学术费保留。' },
     { question: 'SNS活动优惠会自动计算吗？', answer: '确认活动开放并选择参加，且在2026年12月31日或之前报名才计算。仅标准单人间及小单间每完整4周减100美元；在指定任一平台发布一篇在校故事，2027年6月27日至8月22日不适用。' },
-    { question: '页面的课程和住宿价格按什么周期计算？', answer: '注册费为一次性100美元；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
+    { question: '这里的课程和住宿价格按什么周期计算？', answer: '注册费为一次性100美元；课程费和不含餐费的住宿费均按4周列示，其他周数由计算器按比例提供预算参考。' },
     { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名MONOL，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [

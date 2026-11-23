@@ -77,11 +77,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-anj-school',
   standalone: true,
@@ -167,7 +162,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'home_work',
       label: '住宿',
       value: 'Deluxe / Premium / Villa',
-      note: '公开资料列Deluxe、Premium、Premium Studio、Suite和Eco Villa等住宿类别。',
+      note: '住宿包括Deluxe、Premium、Premium Studio、Suite和Eco Villa等类别。',
     },
     {
       icon: 'forest',
@@ -177,9 +172,9 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       icon: 'paid',
-      label: '公开费用',
+      label: '费用参考',
       value: '2026年美元费用',
-      note: '本页按2026费用表估算，报名仍需以学校正式账单和空房回复为准。',
+      note: '按2026年价格估算，报名以学校正式账单和空房回复为准。',
     },
   ];
 
@@ -187,7 +182,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       category: '校园',
       title: 'A&J Admin Building',
-      description: '官方首页展示的Admin Building，是到校接待和学生服务中心。',
+      description: 'Admin Building是到校接待和学生服务中心。',
       src: 'https://www.anjedudc.com/assets/img/slider/Admin.jpg',
     },
     {
@@ -226,7 +221,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '学校名称', value: '菲律宾碧瑶A&J e-Edu English Academy' },
     { label: '英文名称', value: 'A&J e-Edu Academy / A&J e-Edu DC Academy ECO Campus' },
     { label: '地址', value: '001, BMI Compound, Purok 4 Irisan, Baguio, 2600 Benguet' },
-    { label: '认证与合作', value: '官网列BESA、DOT、British Council、Immigration、TESDA、PECA等认证与伙伴。' },
+    { label: '认证与合作', value: 'BESA、DOT、British Council、Immigration、TESDA、PECA等认证与合作伙伴。' },
     { label: '课程方向', value: 'ESL、IELTS、TOEIC、TOEFL、PTE、Guarantee Course、Junior、Working Holiday。' },
     { label: '设施', value: 'Admin Building、Main Building、Dining Hall、Cafe、Eco Mart、Fitness Gym、Golf Driving Range、Indoor Gymnasium、BBQ & Camping Zone。' },
     { label: '4周起价', value: '思达启航折后1,377.5美元起：Eco Relax Lite + Deluxe三人房，已免100美元注册费；当地比索费用另计。' },
@@ -235,7 +230,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly highlights: TextCard[] = [
     {
       title: 'ECO Campus，一体式生活学习环境',
-      text: '官网强调classes、dorms、dining和study spaces都在步行范围内，适合想把通勤和日常杂事压低的人。',
+      text: 'classes、dorms、dining和study spaces都在步行范围内，适合想把通勤和日常杂事压低的人。',
     },
     {
       title: '课程强度跨度大',
@@ -273,7 +268,7 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: '不想遵守门禁和校园规则',
-      text: '官网规则列出门禁、外宿/旅行申报、宿舍管理和违规则罚款，报名之前要确认自己能接受。',
+      text: '学校规则包括门禁、外宿/旅行申报、宿舍管理和违规罚款，报名之前要确认自己能接受。',
     },
   ];
 
@@ -303,10 +298,10 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly faqs: TextCard[] = [
     {
       title: 'A&J是在宿务还是碧瑶？',
-      text: 'A&J e-Edu Academy官网地址在Baguio, Benguet，本页放在碧瑶学校路线下。它适合和PINES、JIC、MONOL、WALES等碧瑶学校一起比较。',
+      text: 'A&J e-Edu Academy位于碧瑶Baguio, Benguet，不在宿务。它适合和PINES、JIC、MONOL、WALES等碧瑶学校一起比较。',
     },
     {
-      title: '页面报价包含所有费用吗？',
+      title: '这里的报价包含所有费用吗？',
       text: '不包含全部当地费用。美元报价已自动计入思达启航免注册费、95折、A&J适用优惠和按入学日判定的旺季附加费；SSP、签证、教材、水电、接机等比索费用在下方单独估算，押金和洗衣不计入学杂费合计。',
     },
     {
@@ -325,7 +320,6 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
     { label: '优惠规则', target: 'promotions', icon: 'sell' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -333,19 +327,6 @@ export class AnjSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'A&J官方首页', url: 'https://www.anjedudc.com/' },
-    { label: 'A&J官方ESL课程页', url: 'https://www.anjedudc.com/esl-course/' },
-    { label: 'A&J官方保证班页', url: 'https://www.anjedudc.com/guarantee-course/' },
-    { label: 'A&J官方TOEIC保证班页', url: 'https://www.anjedudc.com/toeic-guarantee/' },
-    { label: 'A&J官方Junior课程页', url: 'https://www.anjedudc.com/junior-course/' },
-    { label: 'A&J官方校园规则页', url: 'https://www.anjedudc.com/school-regulation/' },
-    { label: 'A&J官方学生宿舍页', url: 'https://www.anjedudc.com/facilities/dormitory-rooms/' },
-    { label: 'A&J官方其他费用与接机说明', url: 'https://www.anjedudc.com/additional-information/' },
-    { label: 'Fujiyama A&J ECO Campus 2026费用参考', url: 'https://www.fujiyama-international.com/philippines/anj-eco.html' },
-    { label: 'Cebu Buddy A&J ECO Campus费用参考', url: 'https://cebu-buddy.com/school/aj-eco/' },
   ];
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 

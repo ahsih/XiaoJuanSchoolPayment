@@ -26,7 +26,7 @@
     <ng-container *ngIf="localTotal !== null; else localPending">
       <table class="fee-table"><caption class="sr-only">当前报价当地费用明细</caption><thead><tr><th>项目</th><th>适用学员</th><th>金额（比索）</th></tr></thead><tbody><tr *ngFor="let fee of localRows"><th scope="row">{{ fee.label }}<small>{{ fee.note }}</small></th><td>{{ feeScope(fee.students) }}</td><td>{{ money(fee.amount) }}</td></tr><tr class="subtotal"><th scope="row">当地费用小计</th><td>不含押金</td><td data-testid="local-total">{{ money(localTotal!) }}</td></tr></tbody></table>
     </ng-container>
-    <ng-template #localPending><p class="issues">请完成所有学员的有效安排；没有完整当地费资料的周数需顾问确认。</p></ng-template>
+    <ng-template #localPending><p class="issues">请完成所有学员的有效安排；缺少当地费用金额的周数需顾问确认。</p></ng-template>
     <div class="local-extra" *ngFor="let student of activeStudents; let i = index"><p><strong>{{ person(i) }} · 可退宿舍押金：</strong>{{ student.local.deposit === null ? '需确认' : student.local.deposit === 0 ? '酒店不收此项' : money(student.local.deposit!) + '比索' }}</p><p class="issues" *ngFor="let issue of student.local.issues">{{ issue }}</p></div>
     <p class="small">{{ depositNote }}</p>
     <div class="pickup-fields"><label>接机安排<select aria-label="接机安排" [(ngModel)]="pickupAirport"><option value="none">暂不安排</option><option value="clark">克拉克机场</option><option value="manila">马尼拉机场</option></select></label><label *ngIf="pickupAirport !== 'none'">同航班接机人数<input type="number" min="1" step="1" aria-label="同航班接机人数" [(ngModel)]="pickupPeople"></label><p *ngIf="pickup !== null" data-testid="pickup-total"><strong>{{ money(pickup!) }}比索／组</strong><small>{{ pickupNote }}</small></p><p class="issues" *ngIf="pickupAirport !== 'none' && pickup === null">请填写有效的接机人数。</p></div>

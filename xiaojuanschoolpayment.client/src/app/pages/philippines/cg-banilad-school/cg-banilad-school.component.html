@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面费用按学校提供的美元课程、住宿与优惠资料核对，签证续签参考学校公开费用表。
+              课程、住宿与优惠按学校美元价格计算，签证续签按学校当地费用标准预估。
               正式报名仍需按入学日、房型空位、汇率和学校当期报价确认。
             </p>
           </div>
@@ -59,7 +59,7 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  4周主费用起价来自CG Banilad 2026官方价目表
+                  4周主费用按CG Banilad 2026年价格计算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片与费用参考自CG官方资料及公开留学代理页面；最终以学校当期正式报价为准。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -202,7 +202,7 @@
 
         <section class="section-block" id="courses" data-cia-preview-kind="section" data-cia-preview-id="course-fees" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'course-fees')">
           <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
+            <span>课程 / 参考费用</span>
             <h2>{{ courseTableTitle }}</h2>
             <p>{{ courseTableNote }}</p>
             <p>{{ groupClassNote }}</p>
@@ -331,20 +331,6 @@
               <span>{{ step.title }}</span>
               <p>{{ step.text }}</p>
             </article>
-          </div>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>CG Banilad页面公开资料来源</h2>
-            <p>美元课程费、住宿费及优惠按学校提供的资料核对；签证续签参考学校公开当地费用表。韩元版价格仅供资料查阅，不作为本页美元报价依据。</p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
           </div>
         </section>
 

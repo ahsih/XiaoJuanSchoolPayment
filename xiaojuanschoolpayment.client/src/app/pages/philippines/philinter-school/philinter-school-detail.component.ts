@@ -133,7 +133,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   set shortStayApproved(_approved: boolean) {}
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'school', label: '学校类型', value: '宿务老牌半斯巴达学校', note: '2003年成立，官方定位为Cebu领先的Semi-Sparta ESL学校' },
+    { icon: 'school', label: '学校类型', value: '宿务老牌半斯巴达学校', note: '2003年成立的宿务半斯巴达ESL学校' },
     { icon: 'groups', label: '适合人群', value: '成人 / 口语 / IELTS / 青少年', note: '适合重视师资、学习风气和麦克坦位置的学生' },
     { icon: 'verified_user', label: '管理模式', value: '半斯巴达 / 斯巴达课程可选', note: 'General偏半斯巴达，Intensive/IELTS方向学习强度更高' },
     { icon: 'record_voice_over', label: '核心课程', value: 'ESL / IPS / IELTS / Business', note: '另有TOEIC、Junior和行业英文' },
@@ -142,8 +142,8 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'Philinter校园楼体', description: '官方设施图片展示Philinter校内住宿与教学楼体。', src: 'assets/philinter/campus-main.webp' },
-    { category: '校园', title: '校园泳池', description: '官方设施页介绍泳池位于宿舍与咖啡厅之间，可供学生课后放松。', src: 'assets/philinter/campus-pool.webp' },
+    { category: '校园', title: 'Philinter校园楼体', description: 'Philinter校内住宿与教学楼体。', src: 'assets/philinter/campus-main.webp' },
+    { category: '校园', title: '校园泳池', description: '泳池位于宿舍与咖啡厅之间，可供学生课后放松。', src: 'assets/philinter/campus-pool.webp' },
     { category: '校园', title: '学校大厅', description: '学校大厅是学生报到、公告和日常沟通的中心区域。', src: 'assets/philinter/lobby.webp' },
     { category: '教室', title: '一对一/小班学习场景', description: 'Philinter课程强调个别化支持和进度追踪。', src: 'assets/philinter/one-on-one-room.webp' },
     { category: '教室', title: '团体教室', description: '用于讨论、表达、演示和综合训练。', src: 'assets/philinter/study-hall.webp' },
@@ -152,7 +152,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     { category: '住宿', title: '校内双人房', description: '预算与舒适度相对平衡，适合同伴同行。', src: 'assets/philinter/double-room.webp' },
     { category: '住宿', title: '校内三人房', description: '上下铺房型，按每人床位计费。', src: 'assets/philinter/triple-room.webp' },
     { category: '住宿', title: '校外公寓参考', description: 'Azon Condo方向更偏生活品质，需确认接送、门禁和空房。', src: 'assets/philinter/condo-room.webp' },
-    { category: '餐厅', title: '学生咖啡厅', description: '官方设施页展示咖啡厅与泳池相连的休息空间。', src: 'assets/philinter/cafeteria-1.webp' },
+    { category: '餐厅', title: '学生咖啡厅', description: '咖啡厅与泳池相连的休息空间。', src: 'assets/philinter/cafeteria-1.webp' },
     { category: '餐厅', title: '餐厅与用餐空间', description: '三餐和学生交流的重要生活区域。', src: 'assets/philinter/cafeteria-2.webp' },
     { category: '设施', title: '洗衣服务', description: '日常生活服务之一，具体规则以学校现场安排为准。', src: 'assets/philinter/laundry.webp' },
     { category: '设施', title: '学习大厅', description: '适合晚间自习、模考准备和课后复习。', src: 'assets/philinter/study-hall.webp' },
@@ -163,14 +163,14 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     { label: '所在地区', value: 'Lapu-Lapu City, Mactan Island, Cebu，距离宿务机场较近' },
     { label: '创立时间', value: '2003年' },
     { label: '学校定位', value: '老牌半斯巴达语言学校，重视师资、学习系统和多国籍环境' },
-    { label: '官方特色', value: 'Guaranteed Progress、Buddy Teacher System、IELTS 8.0 Teachers' },
-    { label: '考试资源', value: '官方资料显示Philinter是British Council IELTS官方考点' },
+    { label: '学校特色', value: 'Guaranteed Progress、Buddy Teacher System、IELTS 8.0 Teachers' },
+    { label: '考试资源', value: 'Philinter是British Council IELTS官方考点' },
     { label: '课程范围', value: 'Light ESL、General ESL、Intensive ESL、IPS、IELTS、TOEIC、Business、Junior' },
     { label: '住宿选择', value: '校内单人、双人、三人房；校外Azon Condo方向需顾问确认' },
   ];
 
   readonly highlights: Highlight[] = [
-    { image: 'assets/philinter/one-on-one-room.webp', title: 'Buddy Teacher和进度管理', text: '官方介绍Buddy Teacher System，适合希望学习过程有人跟进的学生。' },
+    { image: 'assets/philinter/one-on-one-room.webp', title: 'Buddy Teacher和进度管理', text: '学校采用Buddy Teacher System，适合希望学习过程有人跟进的学生。' },
     { image: 'assets/philinter/group-classroom.webp', title: '口语与考试课程都强', text: 'ESL、Intensive Power Speaking、IELTS、TOEIC和商务方向都可比较。' },
     { image: 'assets/philinter/campus-pool.webp', title: '麦克坦位置与校内生活', text: '距离机场较近，校内有泳池、咖啡厅、宿舍和学习空间。' },
     { image: 'assets/philinter/single-room.webp', title: '校内与校外住宿可选', text: '校内方便学习管理，校外公寓更适合重视生活品质的成人或家庭。' },
@@ -281,7 +281,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
     '校内宿舍和校外公寓在门禁、接送、生活便利度和预算上不同，报名时要一起确认。',
     PHILINTER_AGE_RULE, PHILINTER_FAMILY_RULE,
     '暑期和寒假最低学习周数暂不作为报价限制；暑期附加费按实际覆盖周数计收。',
-    '本页课程费与住宿费为4周参考；1周、2周、3周分别按4周价格的45%、65%、85%计算。',
+    '课程费与住宿费按4周列出；1周、2周、3周分别按4周价格的45%、65%、85%计算。',
     PHILINTER_PROMOTION,
     '到校支付费用会随学校政策、汇率和个人情况变化，最终以学校现场收费为准。',
   ];
@@ -289,7 +289,7 @@ export class PhilinterSchoolDetailComponent implements OnInit, AfterViewInit, On
   readonly faqs: FaqItem[] = [
     { question: 'Philinter适合第一次菲律宾游学吗？', answer: '适合。Philinter是宿务老牌学校，课程体系完整，适合想在稳定学习风气里提升英文的学生。' },
     { question: 'Philinter是斯巴达学校吗？', answer: 'Philinter整体更常被理解为半斯巴达学校，但Intensive、IELTS和保证班方向会有更强的学习安排和规则。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后通常还需支付SSP、SSP E-card、水电、教材、押金、接机、延签等当地费用。' },
+    { question: '这里的报价包含全部费用吗？', answer: '不包含全部。前期支付参考主要包含注册费、课程费和住宿费；到校后通常还需支付SSP、SSP E-card、水电、教材、押金、接机、延签等当地费用。' },
     { question: 'Philinter适合口说强化吗？', answer: '适合。Intensive Power Speaking是Philinter常被关注的口说方向，适合想提升流利度、准确度和表达自信的学生。' },
     { question: 'Philinter短期1至3周怎么计算？', answer: '课程费和住宿费均以4周价格为基准：1周按45%、2周按65%、3周按85%计算；注册费每人120美元另计。' },
     { question: '2026年下半年淡季优惠怎么计算？', answer: PHILINTER_PROMOTION },

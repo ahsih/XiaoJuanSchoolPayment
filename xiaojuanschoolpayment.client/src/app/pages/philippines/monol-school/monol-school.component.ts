@@ -19,7 +19,6 @@ interface PriceRow {
   reference: string;
   estimate: string;
   note: string;
-  basis: string;
 }
 
 interface LocalFee {
@@ -30,11 +29,6 @@ interface LocalFee {
 interface FaqItem {
   question: string;
   answer: string;
-}
-
-interface SourceLink {
-  label: string;
-  url: string;
 }
 
 @Component({
@@ -58,12 +52,12 @@ export class MonolSchoolComponent {
     {
       title: 'ESL 4',
       lessons: '4节一对一 + 4节团体选修课 + 健身选修课',
-      text: '2025年价目表中预算最低的课程，适合希望保留复习和生活弹性、同时维持一对一训练的学生。',
+      text: '2025年学费最低的课程，适合希望保留复习和生活弹性、同时维持一对一训练的学生。',
     },
     {
       title: 'General ESL',
       lessons: '5节一对一 + 4节团体课 / 天',
-      text: '官方课程强调螺旋式复习和沟通法，覆盖听说读写、语法和发音，适合想系统补基础并保持足够一对一密度的学生。',
+      text: '课程强调螺旋式复习和沟通法，覆盖听说读写、语法和发音，适合想系统补基础并保持足够一对一密度的学生。',
     },
     {
       title: 'Flexible ESL / Light ESL',
@@ -73,7 +67,7 @@ export class MonolSchoolComponent {
     {
       title: 'IELTS',
       lessons: '5节一对一 + 4节团体课 / 天',
-      text: '面向升学、就业或移民方向的雅思学生，官方建议中级以上基础；公开资料提到定期模考和考试科目训练。',
+      text: '面向升学、就业或移民方向的雅思学生，建议中级以上基础，课程包含定期模考和考试科目训练。',
     },
     {
       title: 'LEAP English',
@@ -97,67 +91,60 @@ export class MonolSchoolComponent {
       item: '注册费',
       reference: 'USD 100',
       estimate: '报名确认时支付',
-      note: '价目表列出的一次性注册费用。',
-      basis: '2025价目表',
+      note: '一次性注册费用。',
     },
     {
       item: 'ESL 4学费',
       reference: 'USD 750 / 4周',
       estimate: '含注册费、配四人间约USD 1,250 / 4周',
       note: '4节一对一 + 4节团体选修课 + 健身选修课。',
-      basis: '2025价目表',
     },
     {
       item: 'General ESL学费',
       reference: 'USD 900 / 4周',
       estimate: '含注册费、配四人间约USD 1,400 / 4周',
       note: '课程费、住宿费和注册费合计参考，餐食与到校费用另计。',
-      basis: '2025价目表',
     },
     {
       item: 'IELTS学费',
       reference: 'USD 1,000 / 4周',
       estimate: '含注册费、配四人间约USD 1,500 / 4周',
       note: '每周五安排模拟考试；需确认入学测验与当期开课安排。',
-      basis: '2025价目表',
     },
     {
       item: 'LEAP English学费',
       reference: 'USD 1,150 / 4周',
       estimate: '含注册费、配四人间约USD 1,650 / 4周',
       note: '客制化程度较高，报价前要先确认学习目标和科目组合。',
-      basis: '2025价目表',
     },
     {
       item: '宿舍房型',
       reference: 'USD 400-1,100 / 4周',
       estimate: '四人胶囊式上下铺至Premium Single',
-      note: '价目表列出Quad、Triple、Small Single、Standard Single和Premium Single房型。',
-      basis: '2025价目表',
+      note: '房型包括Quad、Triple、Small Single、Standard Single和Premium Single。',
     },
     {
       item: '餐食与生活费',
       reference: '餐食另计',
       estimate: '按学生实际选择预算',
       note: 'MONOL的餐食模式较弹性，可用学校餐盒、咖啡厅、外送或厨房，但总预算要额外估算。',
-      basis: '官方 / iOutback',
     },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'SSP特别学习许可', amount: '官方参考PHP 7,800' },
-    { item: 'SSP ACR I-Card', amount: '官方参考PHP 4,500' },
-    { item: 'TVV ACR I-Card', amount: '官方参考PHP 3,500，依周数和签证状况确认' },
+    { item: 'SSP特别学习许可', amount: '参考7,800比索' },
+    { item: 'SSP ACR I-Card', amount: '参考4,500比索' },
+    { item: 'TVV ACR I-Card', amount: '参考3,500比索，依周数和签证状况确认' },
     { item: '保证金', amount: 'USD 100或PHP 4,000，按学校规则退还' },
-    { item: '马尼拉团体接机', amount: '官方参考PHP 3,000' },
-    { item: '克拉克团体接机', amount: '官方参考PHP 2,500' },
+    { item: '马尼拉团体接机', amount: '参考3,000比索' },
+    { item: '克拉克团体接机', amount: '参考2,500比索' },
     { item: '签证延签', amount: '按4周以上学习周数递增，需以当期移民局规则确认' },
     { item: '教材 / 洗衣 / 个人消费', amount: '依课程教材、生活习惯和房型实际计算' },
   ];
 
   readonly accommodation = [
-    '官方资料显示，MONOL与Misty Hills Hotel合作提供住宿管理，强调24小时接待、每日房务、毛巾床品和清洁服务。',
-    '2025年价目表房型包括Premium Single、Standard Single、Small Single、Triple和Quad（胶囊式上下铺）。',
+    'MONOL与Misty Hills Hotel合作提供住宿管理，强调24小时接待、每日房务、毛巾床品和清洁服务。',
+    '2025年房型包括Premium Single、Standard Single、Small Single、Triple和Quad（胶囊式上下铺）。',
     '房间设备常见包含冰箱、微波炉、电热水壶、除湿机、保险箱、书桌、衣柜和干湿分离卫浴，细节需按实际房型核对。',
     '餐食不强制打包在学费住宿内，适合想控制饮食、素食或长期学习的人，但也代表学生需要自己规划餐费和日常采购。',
   ];
@@ -186,7 +173,7 @@ export class MonolSchoolComponent {
   ];
 
   readonly pros = [
-    '创校时间长，官方资料显示自2003年起运营，是碧瑶较有历史的语言学校之一',
+    '自2003年起运营，是碧瑶较有历史的语言学校之一',
     'ESL 4、General ESL、IELTS和LEAP四条课程线便于按课时、预算和目标筛选',
     '住宿舒适度和生活设施是明显卖点，适合不想牺牲居住品质的成人或长期学生',
     '餐食弹性高，学生可以用学校餐盒、外送、咖啡厅或共享厨房控制预算和饮食',
@@ -197,43 +184,30 @@ export class MonolSchoolComponent {
     '如果学生需要强制自习、严格门禁和高压推动，MONOL可能不如典型斯巴达学校直接',
     '餐食另计虽然弹性高，但总预算更容易被低估，报名时要把餐费和生活费单独列出',
     '位置在Pinsao Proper，日常外出和市区交通要提前确认接受度',
-    '公开价格有官方拆分价和代理套装价两种看法，必须按课程、房型、周数重新核总价',
+    '费用分为课程、房型、当地费用和餐费几部分，需按课程、房型和周数核算总价',
     'IELTS和LEAP更需要先确认英文程度、目标分数、老师配置和当期开课状态',
   ];
 
   readonly faqs: FaqItem[] = [
     {
       question: 'MONOL是斯巴达学校吗？',
-      answer: '更适合归类为半斯巴达或自律弹性型。公开资料强调一对一密度、可选团体课和学习支持，但不是只靠高压制度推动的学校。',
+      answer: '更适合归类为半斯巴达或自律弹性型。学校强调一对一密度、可选团体课和学习支持，但不是只靠高压制度推动的学校。',
     },
     {
       question: 'MONOL适合零基础学生吗？',
       answer: '可以优先比较ESL 4和General ESL。若目标是IELTS，建议先确认入学测验、基础程度和是否需要先补ESL。',
     },
     {
-      question: '费用为什么看起来有不同版本？',
-      answer: '官方页面把课程费、房费和当地费用拆开列；代理页面常用课程+房型套装价展示。实际报价要把注册费、学费、房费、当地费、餐费和接机一起核算。',
+      question: 'MONOL的费用怎么算？',
+      answer: '课程费、房费和当地费用分开计算。实际报价要把注册费、学费、房费、当地费、餐费和接机一起核算。',
     },
     {
       question: 'MONOL住宿是不是它的主要优势？',
-      answer: '是。公开资料反复强调Hotel-style住宿、房务、房内设备、健身房、桑拿、厨房和咖啡厅，适合重视长期生活稳定度的人。',
+      answer: '是。学校重点介绍Hotel-style住宿、房务、房内设备、健身房、桑拿、厨房和咖啡厅，适合重视长期生活稳定度的人。',
     },
     {
       question: '顾问会怎么建议MONOL？',
       answer: '如果学生目标是稳定提升英文、想住得舒服、能自己管理学习节奏，MONOL值得优先比较；如果自律弱或只靠制度推动，建议同时比较PINES、JIC或BECI Sparta。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '菲律宾碧瑶MONOL语言学校 官方网站', url: 'https://mymonol.com/en/' },
-    { label: 'MONOL About', url: 'https://mymonol.com/en/about-monol/' },
-    { label: 'MONOL Why MONOL', url: 'https://mymonol.com/en/why-monol-2/' },
-    { label: 'MONOL Program', url: 'https://mymonol.com/en/program/' },
-    { label: 'MONOL Facility', url: 'https://mymonol.com/en/facility/' },
-    { label: 'MONOL Admission', url: 'https://mymonol.com/en/admission-2/' },
-    { label: 'iOutback - MONOL', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/monol_detail' },
-    { label: 'Feifan - MONOL', url: 'https://feifanstudy.com/schools/30-monol' },
-    { label: 'Feifan - 碧瑶学校列表', url: 'https://feifanstudy.com/city/%E7%A2%A7%E7%91%A4' },
-    { label: 'Nanqi - MONOL', url: 'https://www.nanqi.org/school/monol.html' },
   ];
 }

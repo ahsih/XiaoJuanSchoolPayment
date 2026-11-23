@@ -31,11 +31,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-pines-school',
   standalone: true,
@@ -189,9 +184,9 @@ export class PinesSchoolComponent {
         '想提升基础口语、听说读写和学习习惯，优先看Main Campus；已有雅思目标分或升学/移民分数压力，再看IELTS Campus。',
     },
     {
-      question: '页面价格是最终价格吗？',
+      question: '这里的价格是最终价格吗？',
       answer:
-        '不是。这里是公开来源整理的参考价，最终仍要按入学日、课程、房型、周数、汇率、优惠和当地费用重新核算。',
+        '不是。这里是参考价，最终仍要按入学日、课程、房型、周数、汇率、优惠和当地费用重新核算。',
     },
     {
       question: 'PINES和宿务学校相比，最大差别是什么？',

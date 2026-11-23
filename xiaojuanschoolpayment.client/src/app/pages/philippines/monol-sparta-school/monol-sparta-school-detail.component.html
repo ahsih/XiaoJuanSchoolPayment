@@ -53,7 +53,7 @@
                 <figcaption>{{ image.title }}</figcaption>
               </figure>
             </div>
-            <p class="photo-source">图片与视频来源：本次提供的MONOL Sparta Campus资料包；课程、住宿、签证与活动分别按费用表、签证Excel和2026活动海报整理。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -128,7 +128,7 @@
                 <span class="section-eyebrow">{{ selectedGalleryImage.category }} · MONOL SPARTA CAMPUS</span>
                 <h3>{{ selectedGalleryImage.title }}</h3>
                 <p>{{ selectedGalleryImage.description }}</p>
-                <p class="environment-profile-note"><mat-icon>info</mat-icon>图片、视频、设备与开放安排以实际到校情况为准；视频为资料包原始音轨，播放后可在控制栏调节音量。</p>
+                <p class="environment-profile-note"><mat-icon>info</mat-icon>图片、视频、设备与开放安排以实际到校情况为准；视频为原声，播放后可在控制栏调节音量。</p>
               </div>
             </article>
           </div>
@@ -155,7 +155,7 @@
               <h2>MONOL斯巴达校区的关键是高密度学习与纪律管理</h2>
             </div>
             <p>
-              这不是主校区的延伸页面，而是一套独立的全斯巴达方案。学生需要能接受强制自习、EOP、每日测试、门禁和补自习制度，再从Booster ESL或Master IELTS中选择。
+              斯巴达校区不是主校区的延伸，而是一套独立的全斯巴达方案。学生需要能接受强制自习、EOP、每日测试、门禁和补自习制度，再从Booster ESL或Master IELTS中选择。
             </p>
             <div class="advisor-card">
               <div class="advisor-avatar">Ivy</div>
@@ -214,7 +214,7 @@
           <div class="section-heading">
             <span>课程类型介绍</span>
             <h2>Booster ESL 与 Master IELTS 两条课程线</h2>
-            <p>只展示资料明确确认的两种课程，不复制MONOL主校区的ESL 4、General ESL或LEAP。</p>
+            <p>斯巴达校区开设这两种课程，与MONOL主校区的ESL 4、General ESL和LEAP不同。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -330,7 +330,7 @@
                 <thead><tr><th scope="col">费用明细</th><th scope="col">计费参考</th><th scope="col">数量</th><th scope="col">预估小计</th><th scope="col">备注</th></tr></thead>
                 <tbody><tr *ngFor="let fee of estimatedLocalFees" data-cia-preview-kind="fee" [attr.data-cia-preview-id]="previewFeeId(fee.item)" [class.cia-preview-highlight]="isPreviewHighlighted('fee', previewFeeId(fee.item))"><th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td></tr></tbody>
                 <tfoot>
-                  <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含下方另行准备、条件收取及资料未列金额的待确认项目</td></tr>
+                  <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(localFeeTotal) }}</td><td>不含下方另行准备、条件收取及金额待确认的项目</td></tr>
                   <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(localFeeCny, 'zh-CN') }} 元</td><td>参考汇率：1元人民币≈{{ quoteCurrencyText(phpPerCny) }}比索；最终以实际兑换或支付汇率为准</td></tr>
                 </tfoot>
               </table>
@@ -345,8 +345,8 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页资料更新时间：2026年9月17日。课程与校规来自《MONOL Sparta校区手册》，美元价格、房型、餐食和接机来自《MONOL Sparta校区费用明细表》，签证按《MONOL签证及移民局相关费用算法》并结合本次确认的中国护照30天／59天旅游签证口径计算，优惠按《MONOL斯巴达校区优惠活动》海报录入。资料未提供的年龄限制、短期比例、水电费、教材费、Academic Admin Fee金额和SNS叠加规则不作推测。</p>
+            <h2>价格更新时间与说明</h2>
+            <p>价格更新时间：2026年9月17日。签证费用按所选护照地区和旅游签证天数计算。年龄限制、1–3周短期价格、水电费、教材费、Academic Admin Fee金额，以及SNS活动能否与其他优惠叠加，须由学校确认。</p>
           </div>
         </section>
 

@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：PINES官方网站Main Campus Facilities与首页公开资料；费用参考公开2026年费用表并由思达启航顾问整理</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -365,9 +365,9 @@
         <section class="section-block pines-room-availability" id="room-availability">
           <div class="room-availability-header">
             <div class="section-heading">
-              <span>PINES 公开房态查询</span>
+              <span>PINES 空房查询</span>
               <h2>按入学日期查看 Main 与 IELTS 校区房态</h2>
-              <p>这里仅展示学校公开的房态结果，不嵌入学校门户，也不会显示其他校区、内部资料或外部导航。</p>
+              <p>这里显示学校最近一次更新的空房情况，供你初步挑选入学日期和房型。</p>
             </div>
             <button type="button" class="room-refresh-button" (click)="loadRoomAvailability(true)" [disabled]="roomAvailabilityLoading">
               <mat-icon>refresh</mat-icon>{{ roomAvailabilityLoading ? '更新中' : '刷新房态' }}
@@ -384,7 +384,7 @@
           </div>
 
           <div class="room-availability-loading" *ngIf="roomAvailabilityLoading && !roomAvailability" aria-live="polite">
-            <mat-icon>sync</mat-icon><span>正在安全读取学校公开房态……</span>
+            <mat-icon>sync</mat-icon><span>正在读取学校房态……</span>
           </div>
 
           <div class="room-availability-error" *ngIf="roomAvailabilityError" role="alert">
@@ -397,7 +397,7 @@
             <div class="room-cache-notice" *ngIf="roomAvailability.isCached" role="status">
               <mat-icon>history</mat-icon>
               <div>
-                <strong>当前显示最近一次官方公开房态</strong>
+                <strong>当前显示学校最近一次更新的房态</strong>
                 <span>PINES 实时接口暂时限制自动读取，以下数据保存于 {{ roomAvailabilityUpdatedText }}。可先按校区、日期和性别筛选；连续住宿周期请联系顾问向学校确认。</span>
               </div>
             </div>
@@ -416,7 +416,7 @@
               <div class="room-search-heading">
                 <div>
                   <span>智能查房条件</span>
-                  <h3>{{ roomAvailability.isCached ? '选择学生情况，查看保存的公开房态' : '输入学生情况，先看能否全程住，再计算换房方案' }}</h3>
+                  <h3>{{ roomAvailability.isCached ? '选择学生情况，查看保存的房态' : '输入学生情况，先看能否全程住，再计算换房方案' }}</h3>
                 </div>
                 <small>学校目前公开到 {{ formatAvailabilityDate(availabilityLastDate) }}</small>
               </div>
@@ -475,7 +475,7 @@
                     <strong>{{ selectedDateBookableRooms.length ? selectedDateBookableRooms.length + '种房型可以报名' : '当天暂无可报名房型' }}</strong>
                     <span *ngIf="knownVacancyTotal(availabilityRow) > 0">学校已公开至少 {{ knownVacancyTotal(availabilityRow) }} 个剩余名额</span>
                     <span *ngIf="selectedDateBookableRooms.length && knownVacancyTotal(availabilityRow) === 0">房型可报名，但学校没有公布具体剩余数量</span>
-                    <span *ngIf="!selectedDateBookableRooms.length">学校页面显示“—”，这里不会推测为有房</span>
+                    <span *ngIf="!selectedDateBookableRooms.length">该日期暂无空房信息，不按有房计算</span>
                   </div>
                 </div>
 
@@ -539,15 +539,15 @@
               </div>
             </div>
 
-            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>{{ roomAvailability.isCached ? '当前为最近一次保存的公开房态，仅供初步筛选。学校房态变化较快，提交申请前请由思达启航顾问向学校确认最新房间。' : '页面与学校公开房态联动并缓存约5分钟。房态变化较快，自动方案用于筛选；提交申请前仍由思达启航顾问向学校确认最终房间与换房安排。' }}</p>
+            <p class="room-availability-disclaimer"><mat-icon>info</mat-icon>{{ roomAvailability.isCached ? '当前为最近一次保存的房态，仅供初步筛选。学校房态变化较快，提交申请前请由思达启航顾问向学校确认最新房间。' : '房态约每5分钟更新一次，变化较快，自动方案仅用于筛选；提交申请前仍由思达启航顾问向学校确认最终房间与换房安排。' }}</p>
           </ng-container>
         </section>
 
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页价格更新时间：2026年9月8日。课程安排参考PINES官方课程页面；2026课程费、住宿费、优惠和到校学杂费按思达启航顾问最新价目表逐项核对。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。</p>
+            <h2>价格更新时间与说明</h2>
+            <p>价格更新时间：2026年9月8日。学校价格、优惠、房型空位、当地费用和汇率可能调整，报名以思达启航顾问向学校确认后的正式报价为准。</p>
           </div>
         </section>
 

@@ -67,11 +67,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-elsa-school',
   standalone: true,
@@ -110,19 +105,19 @@ export class ElsaSchoolComponent {
       icon: 'family_restroom',
       label: '亲子优势',
       value: '幼儿园3-6岁，青少年7-14岁',
-      note: '2026-2027价目表列出Kindergarten、Junior ESL、全天/半天学校和陪读家长课程。',
+      note: '2026-2027课程包含Kindergarten、Junior ESL、全天/半天学校和陪读家长课程。',
     },
     {
       icon: 'groups',
-      label: '公开规模',
+      label: '学校规模',
       value: '定员约170名',
-      note: '资料显示韩国资本运营，学生宿舍A/B/C栋，家庭和低龄学生接待经验较多。',
+      note: '韩国资本运营，学生宿舍A/B/C栋，家庭和低龄学生接待经验较多。',
     },
     {
       icon: 'menu_book',
       label: '课程结构',
       value: '45-50分钟课节，一对一+小班',
-      note: '2026-2027价目表包含Guardian、成人ESL、青少年、学校衔接、幼儿园和Golf课程。',
+      note: '2026-2027课程包含Guardian、成人ESL、青少年、学校衔接、幼儿园和Golf课程。',
     },
     {
       icon: 'bed',
@@ -134,7 +129,7 @@ export class ElsaSchoolComponent {
       icon: 'pool',
       label: '设施',
       value: '泳池 / 草地 / 操场 / 食堂 / 小卖部',
-      note: '公开资料提到泳池、宽阔户外空间、散步路线、三餐、JC Mart和校内护士等支持。',
+      note: '校内有泳池、宽阔户外空间、散步路线、三餐、JC Mart和校内护士等支持。',
     },
   ];
 
@@ -148,7 +143,7 @@ export class ElsaSchoolComponent {
     {
       category: '校区',
       title: '自然感校园步道',
-      description: '公开资料将ELSA描述为度假村式自然校区，适合孩子活动量较高的家庭。',
+      description: 'ELSA是度假村式自然校区，适合孩子活动量较高的家庭。',
       src: 'https://www.fujiyama-international.com/archives/004/202210/ae1a462216924c428ba9fca7c1cac9b7.jpg',
     },
     {
@@ -160,13 +155,13 @@ export class ElsaSchoolComponent {
     {
       category: '住宿',
       title: '学生宿舍房间参考',
-      description: '公开资料显示宿舍A/B/C栋，房型按人数、家庭结构和空房情况安排。',
+      description: '宿舍分A/B/C栋，房型按人数、家庭结构和空房情况安排。',
       src: 'https://cebu-navi.com/photo/school/135/18f43835fe2a34a363e8834dfbd3e756.jpg',
     },
     {
       category: '住宿',
       title: 'C栋宿舍楼参考',
-      description: 'C栋为较新的宿舍选择之一，公开资料显示Wi-Fi覆盖和舒适度更好。',
+      description: 'C栋为较新的宿舍选择之一，Wi-Fi覆盖和舒适度更好。',
       src: 'https://www.ceburyugaku-master.com/school/img/elsa/dormitory-c_01.JPG',
     },
     {
@@ -188,7 +183,7 @@ export class ElsaSchoolComponent {
       label: '学校定位',
       value: '宿务郊区自然度假型英语学校，亲子、Junior、Kindergarten、Adult ESL和Golf ESL路线明显。',
     },
-    { label: '公开资料', value: '2004年设立，公开容量约170名，韩国资本，校内有A/B/C宿舍和三餐。' },
+    { label: '学校概况', value: '2004年设立，容量约170名，韩国资本，校内有A/B/C宿舍和三餐。' },
     { label: '主费币种', value: '2026-2027课程、食宿套餐费以美元USD列示，当地费用以菲律宾比索PHP支付。' },
     {
       label: '4周起价',
@@ -233,7 +228,7 @@ export class ElsaSchoolComponent {
     },
     {
       title: '最在意新式酒店感',
-      text: '公开顾问资料也提醒ELSA是自然/旧度假村型校区，若首要条件是硬件新、房间现代，要谨慎比较房型。',
+      text: 'ELSA是自然/旧度假村型校区，若首要条件是硬件新、房间现代，要谨慎比较房型。',
     },
     {
       title: '成人单独短期只想社交口语',
@@ -366,32 +361,32 @@ export class ElsaSchoolComponent {
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'five', name: '五人间', note: '价目表中的最低房型价格，适合家庭或多人同行，需确认房型资格和空房。' },
+    { id: 'five', name: '五人间', note: '价格最低的房型，适合家庭或多人同行，需确认房型资格和空房。' },
     { id: 'quad', name: '四人间', note: '预算型多人房，适合可接受共享空间的亲子或多人组合。' },
     { id: 'triple', name: '三人间', note: '亲子家庭常用房型，需按家庭人数和空房确认。' },
     { id: 'twin', name: '双人间', note: '适合两人同行或部分单独留学安排，需确认当期空房。' },
-    { id: 'single', name: '单人间', note: '2026-2027价目表注明：在双人间价格基础上额外加USD 500。' },
+    { id: 'single', name: '单人间', note: '在双人间价格基础上额外加500美元。' },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 100', note: '2026-2027价目表列示的一次性注册费。监护人不上课套餐已含此费用。' },
-    { item: 'SSP学习许可', amount: 'PHP 7,800', note: 'ESL学习许可，公开资料列示6个月内适用。' },
+    { item: '注册费', amount: 'USD 100', note: '一次性注册费。监护人不上课套餐已含此费用。' },
+    { item: 'SSP学习许可', amount: 'PHP 7,800', note: 'ESL学习许可，6个月内适用。' },
     { item: 'SSP E-Card', amount: 'PHP 4,500', note: '菲律宾学习许可相关卡证费用。' },
-    { item: 'Facility Usage Fee', amount: 'PHP 1,500 / 人 / 周', note: '公开手册说明包含水电与维护等基础费用。' },
-    { item: '空调费', amount: 'PHP 25 / KW', note: '按实际用量后付，公开资料常用约PHP 1,000/周作参考。' },
+    { item: 'Facility Usage Fee', amount: 'PHP 1,500 / 人 / 周', note: '包含水电与维护等基础费用。' },
+    { item: '空调费', amount: 'PHP 25 / KW', note: '按实际用量后付，可按约1,000比索/周预估。' },
     { item: '宿舍押金', amount: 'PHP 5,000', note: '退房时按宿舍检查和学校规则结算。' },
     { item: '教材费', amount: '约PHP 1,500-2,500 / 4周', note: '按课程和教材数量不同变动。' },
-    { item: '接机 / 送机', amount: 'PHP 1,000 / PHP 2,000-2,500', note: '接机按人，送机按车辆大小公开参考。' },
+    { item: '接机 / 送机', amount: 'PHP 1,000 / PHP 2,000-2,500', note: '接机按人计费，送机按车辆大小计费。' },
     { item: '签证延长', amount: 'PHP 5,160起', note: '31天以上停留按周数和延签次数递增。' },
-    { item: '保姆服务', amount: 'PHP 16,000 / 4周', note: '全日制公开参考；1-3周也有对应费用。' },
-    { item: 'Kindergarten Kit', amount: 'PHP 1,000', note: '幼儿园2周以下可选；3周以上公开资料显示含基本文具包。' },
+    { item: '保姆服务', amount: 'PHP 16,000 / 4周', note: '全日制参考价；1-3周也有对应费用。' },
+    { item: 'Kindergarten Kit', amount: 'PHP 1,000', note: '幼儿园2周以下可选；3周以上含基本文具包。' },
   ];
 
   readonly scheduleItems: ScheduleItem[] = [
     {
       time: 'Morning',
       title: '三餐与一对一 / 小班课程开始',
-      text: '公开资料显示校内每日三餐，课程按成人、Junior、Kindergarten或Guardian路线安排。',
+      text: '校内每日三餐，课程按成人、Junior、Kindergarten或Guardian路线安排。',
     },
     {
       time: 'Afternoon',
@@ -416,11 +411,11 @@ export class ElsaSchoolComponent {
     },
     {
       title: '为什么报价器只显示4周？',
-      text: '本次2026-2027价目表只提供4周USD价格，没有给出短期或长期折扣规则，因此本页不自行推算其他周数。',
+      text: '学校2026-2027年只公布4周价格，其他周数和长短期优惠需由顾问向学校确认。',
     },
     {
       title: '单人间如何计算？',
-      text: '价目表注明单人间在对应双人间价格上额外加USD 500；监护人不上课只公布三人间、四人间和五人间价格。',
+      text: '单人间在对应双人间价格上额外加500美元；监护人不上课只有三人间、四人间和五人间价格。',
     },
   ];
 
@@ -429,7 +424,6 @@ export class ElsaSchoolComponent {
     { label: '课程费用', target: 'courses', icon: 'payments' },
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -437,21 +431,6 @@ export class ElsaSchoolComponent {
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'ELSA官方学校网站', url: 'https://elsaschoolcebu.com/' },
-    {
-      label: 'ELSA 2026英文电子手册',
-      url: 'https://fliphtml5.com/sncvz/erbc/20260226_%5BENG%5D_2026_ELSA_Brochure/',
-    },
-    {
-      label: 'Fujiyama ELSA 2026费用与学校资料',
-      url: 'https://www.fujiyama-international.com/philippines/elsa-international-language-school.html',
-    },
-    { label: '菲律宾留学中心ELSA学校资料与2026费用', url: 'https://www.ph-ryugaku.com/school/elsa/' },
-    { label: 'Cebu Navi ELSA照片与学校介绍', url: 'https://cebu-navi.com/school/index/elsa_esl' },
-    { label: 'Cebu Ryugaku Master ELSA照片资料', url: 'https://www.ceburyugaku-master.com/school/elsa.html' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -505,7 +484,7 @@ export class ElsaSchoolComponent {
   get quoteNote(): string {
     return this.selectedCourse.priceIncludesRegistration
       ? '监护人不上课价格已含注册费和旺季附加费，不打折；PHP当地费用仍需另计。'
-      : '按2026-2027价目表的4周价格加USD 100注册费；PHP当地费用另计。';
+      : '按2026-2027年4周价格加100美元注册费；比索当地费用另计。';
   }
 
   get courseFeeRows() {

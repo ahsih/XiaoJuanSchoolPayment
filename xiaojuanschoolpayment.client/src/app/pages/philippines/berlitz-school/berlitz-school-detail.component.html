@@ -37,14 +37,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              本页根据 Berlitz Philippines 官网公开课程、Makati 地址、公开课排期、Starter Course公告和企业/测评服务整理；常规课程最终报价以学校正式回函为准。
+              课程、开班和价格以学校最新报价为准。
             </p>
           </div>
 
-          <div class="hero-media" aria-label="Berlitz官方图片展示">
+          <div class="hero-media" aria-label="Berlitz学校图片展示">
             <figure class="feature-photo">
-              <img src="assets/philippines/berlitz-hero.webp" alt="菲律宾马尼拉Berlitz语言学校官方语言学习图片" />
-              <figcaption>Berlitz Philippines 官网主视觉：语言学习、商务沟通和小组互动场景</figcaption>
+              <img src="assets/philippines/berlitz-hero.webp" alt="菲律宾马尼拉Berlitz语言学校语言学习场景" />
+              <figcaption>Berlitz Philippines：语言学习、商务沟通和小组互动场景</figcaption>
             </figure>
             <div class="media-strip" aria-label="Berlitz课程图片">
               <figure *ngFor="let image of galleryImages.slice(2, 5)">
@@ -57,12 +57,12 @@
               <strong>{{ quoteText }}</strong>
               <p>{{ selectedProgram.name }}</p>
               <ul>
-                <li><mat-icon>check_circle</mat-icon>Starter Course有官网公开PHP公告价</li>
+                <li><mat-icon>check_circle</mat-icon>Starter Course有固定入门价</li>
                 <li><mat-icon>info</mat-icon>常规私教、小组、企业和测评需当期报价</li>
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源：Berlitz Philippines官网公开品牌图、首页图片、成人/少儿/企业/测评课程图片；费用参考官网Starter Course公告和公开课程/服务页面。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -87,9 +87,9 @@
 
         <section class="section-block" id="gallery">
           <div class="section-heading">
-            <span>官方图片</span>
-            <h2>使用Berlitz官网图片呈现国际语言培训定位</h2>
-            <p>Berlitz不是宿舍制ESL学校，因此页面重点展示官网品牌、课堂、成人/少儿课程、企业文化培训和语言测评相关图片。</p>
+            <span>学校图片</span>
+            <h2>Berlitz的课堂、课程和服务</h2>
+            <p>Berlitz不是宿舍制ESL学校，这里主要展示品牌、课堂、成人/少儿课程、企业文化培训和语言测评。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="Berlitz图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -155,7 +155,7 @@
           <div class="section-heading">
             <span>课程方向</span>
             <h2>成人私教、小组课、自学平台、企业培训、商务沟通和测评</h2>
-            <p>Berlitz Philippines官网列出成人、Kids & Teens、Business Services、Testing and Assessment、TELC和公开课排期，本页按马尼拉学生最常比较的方向整理。</p>
+            <p>Berlitz Philippines开设成人、Kids & Teens、Business Services、Testing and Assessment、TELC和公开课，下面是马尼拉学生最常比较的方向。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -170,9 +170,9 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>官方费用参考</span>
-              <h2>仅公开Starter Course单项费用，常规课程以学校报价为准</h2>
-              <p>官网公开Berlitz Starter Course为Php 3,200；私教、小组、企业、测评和TELC等多数项目需按语言、级别、课时和当期排课确认。</p>
+              <span>费用参考</span>
+              <h2>仅Starter Course有固定费用，常规课程以学校报价为准</h2>
+              <p>Berlitz Starter Course为3,200比索；私教、小组、企业、测评和TELC等多数项目需按语言、级别、课时和当期排课确认。</p>
             </div>
             <div class="data-table berlitz-fee-table" role="table" aria-label="Berlitz课程费用">
               <div class="table-row table-head" role="row">
@@ -200,7 +200,7 @@
             <div class="section-heading">
               <span>Berlitz费用快速判断</span>
               <h2>默认参考：Berlitz Starter Course</h2>
-              <p>估算只展示已公开费用或提示需核价；住宿、通勤、餐食、签证停留、保险和个人费用另算。</p>
+              <p>有固定费用的项目直接显示金额，其他项目提示需核价；住宿、通勤、餐食、签证停留、保险和个人费用另算。</p>
             </div>
             <div class="quote-form" aria-label="Berlitz费用估算选项">
               <label>项目<select [(ngModel)]="selectedProgramId"><option *ngFor="let program of programFees" [value]="program.id">{{ program.name }}</option></select></label>
@@ -222,7 +222,7 @@
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">Berlitz官网多数常规课程为询价制。页面保留“需当期确认”是为了避免用旧价或非官方价格误导报名预算。</p>
+            <p class="fee-alert">Berlitz多数常规课程按需报价，标为“需当期确认”的项目以学校正式报价为准。</p>
           </section>
         </section>
 
@@ -245,7 +245,7 @@
           <div class="section-heading">
             <span>额外费用</span>
             <h2>课程费之外要单独确认的项目</h2>
-            <p>以下为官网说明和顾问预算拆分项目，最终金额以学校回函、课程选择和个人行程为准。</p>
+            <p>最终金额以学校回函、课程选择和个人行程为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
@@ -261,8 +261,8 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页参考Berlitz Philippines官网公开课程页面、Class Schedules、Starter Course公告、Business English公告、Corporate Language Training、Testing and Assessment和Contact页面。价格、开课日、名额和企业报价可能调整，报名以学校正式报价为准。</p>
+            <h2>价格说明</h2>
+            <p>价格、开课日、名额和企业报价可能调整，报名以学校正式报价为准。</p>
           </div>
         </section>
 
@@ -286,13 +286,6 @@
         <section class="section-block" id="enrollment-notes">
           <div class="section-heading"><span>报名注意事项</span><h2>确认Berlitz前建议先核对这些信息</h2></div>
           <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading"><span>资料来源</span><h2>Berlitz官方参考链接</h2></div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>{{ source.label }}</a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

@@ -117,11 +117,6 @@ interface SidaTrustBadge {
   label: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-cg-sparta-school',
   standalone: true,
@@ -241,7 +236,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       icon: 'history_edu',
       label: '学校背景',
       value: '2004年创立，韩资老牌学校',
-      note: 'CG Academy有斯巴达和Banilad两个校区，本页为斯巴达校区',
+      note: 'CG Academy有斯巴达和Banilad两个校区，这里介绍的是斯巴达校区',
     },
     {
       icon: 'schedule',
@@ -309,7 +304,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       category: '餐厅',
       title: 'CG Academy自助餐食',
       description:
-        '公开资料列三餐提供，餐食以自助形式为主，最终菜单以学校现场安排为准。',
+        '学校提供三餐，餐食以自助形式为主，最终菜单以学校现场安排为准。',
       src: 'https://cebu21.jp/include/schoolno2/cgcebu/Dining%20room/Dining%20room_4.jpg',
     },
     {
@@ -329,7 +324,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
       value: '1951-A-1 Uldog, Cansojong, Talisay City, Cebu, Philippines',
     },
     { label: '学校定位', value: '宿务斯巴达型英语学校，主打高强度ESL、TOEIC、IELTS和商务英语' },
-    { label: '学生规模', value: '公开资料显示约150-152名学生容量，国籍比例按月份变化' },
+    { label: '学生规模', value: '约150-152名学生容量，国籍比例按月份变化' },
     { label: '课程方向', value: '斯巴达、高阶斯巴达、TOEIC、IELTS Basic / Intensive / Guarantee、Business、Short-Term ESL' },
     { label: '住宿房型', value: '校内1人房、2人房、3人房、4人房；另有M&J Pension外部寮1人房参考' },
     { label: '4周起价', value: '原价1,550美元：斯巴达课程 + 4人房 + 注册费；思达启航9折后1,405美元，符合淡季活动再减150美元' },
@@ -372,7 +367,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     },
     {
       title: '中长期3-6个月学习',
-      text: '公开资料中CG斯巴达校区常被定位为适合认真长期学习的校区，长周期也有公开长期折扣。',
+      text: 'CG斯巴达校区适合认真长期学习，长周期也有长期折扣。',
     },
     {
       title: '想要校内设施完整的管理型学校',
@@ -491,7 +486,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     {
       time: '08:00 - 16:55',
       title: '正课时段 + EOP',
-      text: '一对一、小组课或空堂穿插进行，公开资料列8:00-17:00适用英语限定政策。',
+      text: '一对一、小组课或空堂穿插进行，8:00-17:00适用英语限定政策。',
     },
     {
       time: '17:05 - 17:50',
@@ -635,7 +630,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     'Island Hopping',
   ];
   readonly notes = [
-    '本页费用使用2026公开参考价；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
+    '费用为2026年参考价；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
     '课程住宿套餐通常不含注册费、旺季费、SSP、签证、押金、教材、水电、接机和个人生活费。',
     '斯巴达校区平日外出限制严格，报名之前一定要确认自己是否能接受校规。',
     'IELTS Guarantee、Business和Short-Term ESL有周期、入学门槛或开课规则限制，需要单独确认。',
@@ -648,9 +643,9 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
         'CIA更偏Mactan综合型半斯巴达新校区；CG斯巴达校区在Talisay，重点是严格管理、平日外出限制、EOP、单词作文和强制自习，更适合想集中学习的人。',
     },
     {
-      question: '页面上的报价包含全部费用吗？',
+      question: '在线报价包含全部费用吗？',
       answer:
-        '不包含全部。报价器主要估算课程住宿套餐和注册费；SSP、签证、押金、公共电费、冷气电费、教材、接机、旺季加价和个人生活费仍需另行确认。',
+        '不包含全部。在线报价主要估算课程住宿套餐和注册费；SSP、签证、押金、公共电费、冷气电费、教材、接机、旺季加价和个人生活费仍需另行确认。',
     },
     {
       question: 'CG斯巴达校区适合短期一两周吗？',
@@ -665,7 +660,7 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     {
       question: '平日真的不能外出吗？',
       answer:
-        '公开资料列斯巴达校区平日外出限制严格，通常周五课后和周末才可外出，门禁和外宿规则以学校当期说明为准。',
+        '斯巴达校区平日外出限制严格，通常周五课后和周末才可外出，门禁和外宿规则以学校当期说明为准。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -682,15 +677,6 @@ export class CgSpartaSchoolComponent implements OnInit, AfterViewInit, OnDestroy
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'CG Academy官网', url: 'https://www.cebucg.com/en/' },
-    { label: 'CG Academy 2026英文宣传册', url: 'https://www.cebucg.com/en/pdf/01.pdf' },
-    { label: 'CG斯巴达校区 2026官方价格表', url: 'https://cebucg.com/kr/pdf/07.pdf' },
-    { label: 'CG Academy官方当地费用表', url: 'https://cebucg.com/kr/pdf/06.pdf' },
-    { label: 'Fujiyama CG斯巴达校区 2026费用', url: 'https://www.fujiyama-international.com/philippines/cg-esl-center.html' },
-    { label: '澳贝客CG斯巴达校区中文费用', url: 'https://www.ioutback.com/study-abroad/philippines/SCHOOL/cg_detail' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

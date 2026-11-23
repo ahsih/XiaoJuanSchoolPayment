@@ -13,7 +13,6 @@
             <p class="hero-lead">
               <span>HANA Academy位于Clark-Angeles City，主打Native 1:1、成人ESL、IELTS/TOEIC、亲子、幼儿园、Golf和Senior课程。</span>
               <span>它更像舒适生活型Clark学校，适合想把英语、家庭同行、运动和便利生活放在一起比较的学生。</span>
-              <span>本页按HANA官网课程、费用、设施、Admission和About公开资料整理。</span>
             </p>
             <div class="hero-tags" aria-label="HANA Academy特点">
               <span><mat-icon>location_on</mat-icon>Clark / Angeles City</span>
@@ -27,7 +26,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
-                查看公开课程价格
+                查看课程价格
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -37,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              HANA官网公开课程费、住宿费、套餐价和PHP当地费用；正式报价仍需按入学日、房型空位、优惠和学校invoice确认。
+              课程费、住宿费、套餐价和当地比索费用分项列明；正式报价按入学日、房型空位、优惠和学校invoice确认。
             </p>
           </div>
 
@@ -61,7 +60,7 @@
                 <li><mat-icon>info</mat-icon>SSP、签证、电费、教材、接机等PHP费用另计</li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：HANA Academy公开页面与公开学校图片；正式环境、房型和空房以学校当期资料为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -202,7 +201,7 @@
           <div class="section-heading">
             <span>HANA 2026年4周课程住宿参考</span>
             <h2>课程费和住宿费分开列，套餐价才是USD预算</h2>
-            <p>下表按2026价目表整理。套餐参考为4周课程费 + 4周房型费；价目表注明原注册费USD100当前减免，菲律宾当地PHP费用另计。</p>
+            <p>套餐参考为4周课程费 + 4周房型费；2026年原注册费100美元当前减免，菲律宾当地比索费用另计。</p>
           </div>
 
           <div class="data-table hana-tuition-table" role="table" aria-label="HANA Academy 4周课程住宿套餐参考">
@@ -257,7 +256,7 @@
             <div class="section-heading">
               <span>HANA费用快速估算</span>
               <h2>默认参考：4周 Light ESL + 2 beds</h2>
-              <p>估算公式：课程费 + 宿舍费；2026价目表注明注册费减免，PHP当地费用不并入USD总额。</p>
+              <p>估算公式：课程费 + 宿舍费；2026年注册费减免，当地比索费用不并入美元总额。</p>
             </div>
             <div class="quote-form" aria-label="HANA费用估算选项">
               <label>学习周数<select [(ngModel)]="selectedWeeks"><option *ngFor="let weeks of weekOptions" [ngValue]="weeks">{{ weeks }} 周</option></select></label>
@@ -301,7 +300,7 @@
           <div class="section-heading">
             <span>到校支付费用</span>
             <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按HANA官网课程页的Payment in the Philippines表整理，金额可能随政府规则和学校政策调整。</p>
+            <p>以下金额可能随菲律宾政策和学校规则调整，以学校实际收取为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -355,19 +354,6 @@
           <ul class="note-list">
             <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
           </ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>HANA官方参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

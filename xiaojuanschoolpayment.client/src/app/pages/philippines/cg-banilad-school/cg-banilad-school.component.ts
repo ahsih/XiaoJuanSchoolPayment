@@ -94,11 +94,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-cg-banilad-school',
   standalone: true,
@@ -192,7 +187,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     {
       icon: 'groups',
       label: '学生规模',
-      value: '官方公开容量约275名',
+      value: '容量约275名',
       note: 'Banilad Campus主打多国籍ESL、考试、商务与亲子课程。',
     },
     {
@@ -211,13 +206,13 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       icon: 'pool',
       label: '校内设施',
       value: '泳池 / 自习室 / Cafe / Gym',
-      note: '自习室开放至24:00，Cafe和Gym按官方时段开放。',
+      note: '自习室开放至24:00，Cafe和Gym按学校规定时段开放。',
     },
     {
       icon: 'shopping_bag',
       label: '周边生活',
       value: 'IT Park / Ayala等市区资源便利',
-      note: '官方资料提到餐厅、按摩、超市等生活资源步行或短车程可达。',
+      note: '餐厅、按摩、超市等生活资源步行或短车程可达。',
     },
   ];
 
@@ -231,16 +226,16 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     },
     {
       category: '教室',
-      title: '官方Banilad一对一教室',
+      title: 'Banilad一对一教室',
       description:
-        'CG官方Banilad页面展示一对一教室，课程覆盖Light ESL、General ESL、Intensive、Power与考试方向。',
+        'Banilad校区设有一对一教室，课程覆盖Light ESL、General ESL、Intensive、Power与考试方向。',
       src: 'https://www.cebucg.com/en/img/school_08_b.jpg',
     },
     {
       category: '生活',
       title: 'Banilad Campus餐厅',
       description:
-        '官方资料列出可容纳约150人的Dining Area，适合想把学习、住宿和三餐集中在校区内完成的学生。',
+        '校内Dining Area可容纳约150人，适合想把学习、住宿和三餐集中在校区内完成的学生。',
       src: 'https://images.wegoedu.com.tw/2026/01/CG2-Banilad%E8%8F%B2%E5%BE%8B%E8%B3%93%E8%AA%9E%E8%A8%80%E5%AD%B8%E6%A0%A1-Cafeteria-2.jpg',
     },
     {
@@ -254,7 +249,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       category: '住宿',
       title: '宿舍房间参考',
       description:
-        '官方说明宿舍有单人、双人、三人、四人房，房内配备浴室、淋浴、热水和免费Wi-Fi。',
+        '宿舍有单人、双人、三人、四人房，房内配备浴室、淋浴、热水和免费Wi-Fi。',
       src: 'https://www.fujiyama-international.com/archives/004/202210/245545c4d64a30eba2906397ff111a0a.jpg',
     },
     {
@@ -277,7 +272,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
       label: '学校定位',
       value: '宿务市区半斯巴达型语言学校，覆盖ESL、IELTS、TOEIC、Business与Family课程。',
     },
-    { label: '公开容量', value: '官方Banilad页面列示学生容量约275名。' },
+    { label: '学生容量', value: 'Banilad校区学生容量约275名。' },
     {
       label: '住宿房型',
       value: '校内、Alicia校外、88th Avenue三类住宿，各有单人、双人、三人、四人房。',
@@ -317,7 +312,7 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     },
     {
       title: '正在比较亲子、商务或考试课程',
-      text: 'Family Junior、Guardian、IELTS Basic、TOEIC和Business都在公开价目表内，方便一次比较。',
+      text: 'Family Junior、Guardian、IELTS Basic、TOEIC和Business都有明确价格，方便一次比较。',
     },
   ];
 
@@ -490,14 +485,14 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
         '如果你想要更严格的全日制斯巴达管理，优先看CG斯巴达校区；如果想留在宿务市区，兼顾课程强度和生活便利，Banilad Campus更适合。',
     },
     {
-      question: '页面上的费用是否已经包含所有支出？',
+      question: '在线报价是否已经包含所有支出？',
       answer:
         '不是。学校费用包含注册费、课程费、住宿费及符合条件的优惠和暑假附加费；SSP、签证、水电、教材等到校学杂费另列预估明细，接机和可退押金不计入学杂费合计。最终以学校确认为准。',
     },
     {
       question: '亲子家庭可以选择Banilad Campus吗？',
       answer:
-        '可以。官方资料列出Family Junior和Guardian课程，适合小学、初中、高中学生与监护人同行；具体年龄、房型和开课日需要报名前确认。',
+        '可以。学校开设Family Junior和Guardian课程，适合小学、初中、高中学生与监护人同行；具体年龄、房型和开课日需要报名前确认。',
     },
     {
       question: '短期1-3周怎么计算？',
@@ -511,7 +506,6 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     { label: '课程费用', target: 'courses', icon: 'payments' },
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -519,15 +513,6 @@ export class CgBaniladSchoolComponent implements OnInit, AfterViewInit, OnDestro
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'CG Academy Banilad官方校区页', url: 'https://www.cebucg.com/en/school_b.html' },
-    { label: 'CG Academy Banilad官方课程页', url: 'https://cebucg.com/en/course_b.html' },
-    { label: 'CG Academy 2026英文电子手册', url: 'https://www.cebucg.com/en/pdf/01.pdf' },
-    { label: 'CG Academy 2025当地费用表', url: 'https://www.cebucg.com/kr/pdf/06.pdf' },
-    { label: 'CG Banilad 2026韩元版价目表（非本页美元定价依据）', url: 'https://www.cebucg.com/kr/pdf/08.pdf' },
-    { label: 'CG Academy官方学校介绍', url: 'https://www.cebucg.com/en/about.html' },
   ];
 
   ngOnInit(): void {

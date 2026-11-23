@@ -50,7 +50,7 @@ const local = (values: number[]) => Object.fromEntries(
 ) as Record<MintLocalFeeWeeks, number>;
 
 export const MINT_LOCAL_FEES: MintLocalFeeRow[] = [
-  { id: 'deposit', name: '房间押金（可退）', amounts: local([3000, 3000, 3000, 3000, 3000, 3000]), note: '无损坏、无欠费时按学校规则结算退还；官方当地费总额包含此项。' },
+  { id: 'deposit', name: '房间押金（可退）', amounts: local([3000, 3000, 3000, 3000, 3000, 3000]), note: '无损坏、无欠费时按学校规则结算退还；学校列明的当地费总额包含此项。' },
   { id: 'visa', name: '签证延期累计费用', amounts: local([0, 5140, 11550, 15990, 21030, 25470]), note: '按学校公布的对应周数累计金额估算，最终以移民局和学校实收为准。' },
   { id: 'ssp', name: 'SSP特殊学习许可证', amounts: local([7800, 7800, 7800, 7800, 7800, 7800]), note: '本次学习期间的一次性费用。' },
   { id: 'ssp-e-card', name: 'SSP E-Card', amounts: local([4500, 4500, 4500, 4500, 4500, 4500]), note: '与SSP相关的证件费用。' },

@@ -58,28 +58,28 @@ const mintGallerySeries = (
 }));
 
 const MINT_COMPLETE_GALLERY: GalleryImage[] = [
-  ...mintGallerySeries('校园', 'campus', 10, '校园实景', '学校文件中的校园实拍；教学、住宿与生活区域集中在邦劳校园。'),
-  ...mintGallerySeries('教室', 'classroom', 7, '教学空间', '学校文件中的教室实拍，包含一对一、团体、视听及MTM教学空间。'),
-  ...mintGallerySeries('公共区域', 'public-area', 4, '公共区域', '学校文件中的咖啡区、走廊及公共学习空间实拍。'),
+  ...mintGallerySeries('校园', 'campus', 10, '校园实景', '校园实拍；教学、住宿与生活区域集中在邦劳校园。'),
+  ...mintGallerySeries('教室', 'classroom', 7, '教学空间', '教室实拍，包含一对一、团体、视听及MTM教学空间。'),
+  ...mintGallerySeries('公共区域', 'public-area', 4, '公共区域', '咖啡区、走廊及公共学习空间实拍。'),
   ...mintGallerySeries('住宿', 'room-deluxe', 6, '标准双人间', 'Deluxe Twin房间多角度实拍；实际房间和空房以学校确认为准。', '标准双人间'),
   ...mintGallerySeries('住宿', 'room-deluxe-balcony', 4, '标准双人间阳台', 'Deluxe住宿楼阳台与户外空间实拍。', '标准双人间'),
   ...mintGallerySeries('住宿', 'room-deluxe-bathroom', 4, '标准双人间浴室', 'Deluxe Twin浴室细节实拍。', '标准双人间'),
   ...mintGallerySeries('住宿', 'room-premium-single', 17, '高级单人间', 'Premium Single房间及卫浴多角度实拍。', '高级单人间'),
   ...mintGallerySeries('住宿', 'room-premium-twin', 9, '高级双人间', 'Premium Twin房间多角度实拍。', '高级双人间'),
-  ...mintGallerySeries('餐食', 'meal-curry-beef', 2, '咖喱牛肉饭套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '咖喱牛肉饭'),
-  ...mintGallerySeries('餐食', 'meal-pork-cutlet', 2, '香酥炸猪排套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '香酥炸猪排'),
-  ...mintGallerySeries('餐食', 'meal-boiled-pork', 3, '白切肉与肉饼套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '白切肉与肉饼'),
-  ...mintGallerySeries('餐食', 'meal-western-breakfast', 2, '西式早餐套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '西式早餐'),
-  ...mintGallerySeries('餐食', 'meal-sweet-sour-ribs', 3, '甜辣排骨套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '甜辣排骨'),
-  ...mintGallerySeries('餐食', 'meal-seafood', 3, '蟹虾海鲜套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '蟹虾海鲜'),
-  ...mintGallerySeries('餐食', 'meal-chicken', 3, '酱汁鸡腿套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '酱汁鸡腿'),
-  ...mintGallerySeries('餐食', 'meal-korean-bbq', 2, '韩式烤肉套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '韩式烤肉'),
-  ...mintGallerySeries('餐食', 'meal-tofu-beef-soup', 3, '豆腐牛肉汤套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '豆腐牛肉汤'),
-  ...mintGallerySeries('餐食', 'meal-seafood-noodles', 3, '香辣海鲜炒面套餐', '学校提供的真实餐食照片；菜单按当期安排变化。', '香辣海鲜炒面'),
-  ...mintGallerySeries('餐食', 'meal-overview', 1, '学校套餐合照', '学校提供的五款套餐合照；实际菜单以到校安排为准。', '套餐合照'),
-  { category: '宣传资料', group: '官方项目海报', title: '2周成人及亲子全包项目', description: '学校提供的官方项目海报，不作为校园实景。', src: '/assets/english-mint/promo-two-week.webp' },
-  { category: '宣传资料', group: '官方项目海报', title: '冬季家庭项目', description: '学校提供的官方家庭项目海报，不作为校园实景。', src: '/assets/english-mint/promo-family.webp' },
-  { category: '宣传资料', group: '官方项目海报', title: '2026下半年淡季优惠', description: '学校提供的官方优惠海报，不作为校园实景。', src: '/assets/english-mint/promo-low-season.webp' },
+  ...mintGallerySeries('餐食', 'meal-curry-beef', 2, '咖喱牛肉饭套餐', '校内真实餐食照片；菜单按当期安排变化。', '咖喱牛肉饭'),
+  ...mintGallerySeries('餐食', 'meal-pork-cutlet', 2, '香酥炸猪排套餐', '校内真实餐食照片；菜单按当期安排变化。', '香酥炸猪排'),
+  ...mintGallerySeries('餐食', 'meal-boiled-pork', 3, '白切肉与肉饼套餐', '校内真实餐食照片；菜单按当期安排变化。', '白切肉与肉饼'),
+  ...mintGallerySeries('餐食', 'meal-western-breakfast', 2, '西式早餐套餐', '校内真实餐食照片；菜单按当期安排变化。', '西式早餐'),
+  ...mintGallerySeries('餐食', 'meal-sweet-sour-ribs', 3, '甜辣排骨套餐', '校内真实餐食照片；菜单按当期安排变化。', '甜辣排骨'),
+  ...mintGallerySeries('餐食', 'meal-seafood', 3, '蟹虾海鲜套餐', '校内真实餐食照片；菜单按当期安排变化。', '蟹虾海鲜'),
+  ...mintGallerySeries('餐食', 'meal-chicken', 3, '酱汁鸡腿套餐', '校内真实餐食照片；菜单按当期安排变化。', '酱汁鸡腿'),
+  ...mintGallerySeries('餐食', 'meal-korean-bbq', 2, '韩式烤肉套餐', '校内真实餐食照片；菜单按当期安排变化。', '韩式烤肉'),
+  ...mintGallerySeries('餐食', 'meal-tofu-beef-soup', 3, '豆腐牛肉汤套餐', '校内真实餐食照片；菜单按当期安排变化。', '豆腐牛肉汤'),
+  ...mintGallerySeries('餐食', 'meal-seafood-noodles', 3, '香辣海鲜炒面套餐', '校内真实餐食照片；菜单按当期安排变化。', '香辣海鲜炒面'),
+  ...mintGallerySeries('餐食', 'meal-overview', 1, '学校套餐合照', '五款套餐合照；实际菜单以到校安排为准。', '套餐合照'),
+  { category: '宣传资料', group: '学校项目海报', title: '2周成人及亲子全包项目', description: '学校项目海报，不代表校园实景。', src: '/assets/english-mint/promo-two-week.webp' },
+  { category: '宣传资料', group: '学校项目海报', title: '冬季家庭项目', description: '学校家庭项目海报，不代表校园实景。', src: '/assets/english-mint/promo-family.webp' },
+  { category: '宣传资料', group: '学校项目海报', title: '2026下半年淡季优惠', description: '学校优惠海报，不代表校园实景。', src: '/assets/english-mint/promo-low-season.webp' },
   ...Array.from({ length: 13 }, (_, index): GalleryImage => {
     const titles = ['Deluxe Twin宣传照', '宿舍走廊宣传图', '浴室宣传图', '餐厅宣传图', 'GC宣传照1', 'GC宣传照2', 'Gemini宣传图1', 'Gemini宣传图2', '图书馆宣传照', 'MTM宣传照', '前台宣传照', '房间宣传照1', '房间宣传照2'];
     const aiIndexes = new Set([1, 2, 3, 6, 7]);
@@ -88,7 +88,7 @@ const MINT_COMPLETE_GALLERY: GalleryImage[] = [
       category: '宣传资料',
       group: generated ? 'AI处理宣传图' : '学校宣传照片',
       title: titles[index],
-      description: generated ? '学校文件中的Firefly或Gemini处理宣传图，不作为校园实景。' : '学校文件中的宣传照片，与未修图校园实拍分开展示。',
+      description: generated ? '经AI处理的学校宣传图，不代表校园实景。' : '学校宣传照片，与未修图校园实拍分开展示。',
       src: `/assets/english-mint/gallery/promotional-${String(index + 1).padStart(2, '0')}.webp`,
     };
   }),
@@ -161,7 +161,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
 
   readonly quickInfo = [
     { icon: 'location_on', label: '学校位置', value: '薄荷岛邦劳', text: '距邦劳国际机场约10分钟、阿罗娜海滩约10分钟。' },
-    { icon: 'apartment', label: '校园面积', value: '约2,200㎡', text: '资料列有72间一对一教室与60间宿舍。' },
+    { icon: 'apartment', label: '校园面积', value: '约2,200㎡', text: '校内有72间一对一教室与60间宿舍。' },
     { icon: 'schedule', label: '单节时长', value: '45分钟', text: '课间5分钟，正式课程08:45开始，最晚18:00结束。' },
     { icon: 'family_restroom', label: '成人与青少年', value: 'A1-C2 / Pre-A1-B1', text: '成人及青少年使用不同级别体系。' },
     { icon: 'restaurant', label: '校内供餐', value: '每日三餐', text: '早餐7:45-9:00、午餐12:00-13:00、晚餐17:45-19:00。' },
@@ -177,11 +177,11 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   readonly suitableFor = [
     { title: '希望在薄荷岛集中学习', text: '校内教室、住宿、餐厅、泳池与自习空间集中，日常通勤较少。' },
     { title: '想兼顾口语输出和自由时间', text: '可在Adult ESL、Speaking Master与Lite ESL之间按课量选择。' },
-    { title: '亲子或家庭同行', text: '资料提供青少年课程、2周亲子全包及4至12周家庭项目。' },
+    { title: '亲子或家庭同行', text: '学校开设青少年课程、2周亲子全包及4至12周家庭项目。' },
   ];
 
   readonly lessSuitableFor = [
-    { title: '只想参加考试保证班', text: '现有资料没有提供IELTS、TOEIC等考试保证课程与完整价格，本页不展示。' },
+    { title: '只想参加考试保证班', text: '学校课程以综合英语和口语为主，暂未开设IELTS、TOEIC等考试保证课程。' },
     { title: '不接受住宿门禁', text: '成人门禁23:00；未成年人门禁22:00，18:00后外出须有成年人同行。' },
   ];
 
@@ -343,7 +343,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
         ...this.quotePlan.paymentItems().map(item => ({ ...item, label: item.label.replace('课程费', '课程名称').replace('住宿费', '住宿名称') })),
       ];
       if (this.cashDiscount) items.push({ icon: '惠', label: '2026下半年淡季现金优惠', amount: `−${this.formatMoney(this.cashDiscount)} 美元`, note: '双人房且报名、最迟入学日期符合，按当前周数档位扣减。', promotionKey: 'mint-low-season', accent: true });
-      if (this.benefitEligible) items.push({ icon: '礼', label: this.selectedBenefit === 'ssp' ? '首次SSP权益' : 'OW潜水课程权益', amount: '报名时确认', note: this.selectedBenefit === 'ssp' ? '官方学杂费表仍按原额展示；符合资格后的减免以学校账单为准。' : '年龄、健康、保险、监护与合作潜店条件须确认；不可折现或转让。', promotionKey: 'mint-ssp-benefit' });
+      if (this.benefitEligible) items.push({ icon: '礼', label: this.selectedBenefit === 'ssp' ? '首次SSP权益' : 'OW潜水课程权益', amount: '报名时确认', note: this.selectedBenefit === 'ssp' ? '学杂费表仍按原额展示；符合资格后的减免以学校账单为准。' : '年龄、健康、保险、监护与合作潜店条件须确认；不可折现或转让。', promotionKey: 'mint-ssp-benefit' });
     } else if (this.quoteMode === 'two-week-adult') {
       items = [
         { icon: '注', label: '注册费', amount: '100 美元', note: '成人1人。' },
@@ -355,7 +355,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
         { icon: '套', label: '亲子2周全包方案', amount: '1,850 美元', note: '孩子须满10岁；含两人课程、1间Deluxe双人间、餐食、当地费用和机场接机。' },
       ];
     } else {
-      items = [{ icon: '套', label: `${this.familyLabel}家庭套餐`, amount: `${this.formatMoney(this.familyBase)} 美元`, note: '已含海报列明的课程、住宿、餐食、签证当地费用、教材、接机和家庭活动。' }];
+      items = [{ icon: '套', label: `${this.familyLabel}家庭套餐`, amount: `${this.formatMoney(this.familyBase)} 美元`, note: '已含套餐列明的课程、住宿、餐食、签证当地费用、教材、接机和家庭活动。' }];
       if (this.familyUpgradeAmount) items.push({ icon: '宿', label: this.familyUpgrade === 'premium-twin' ? '升级高级双人间' : '升级高级单人间', amount: `${this.formatMoney(this.familyUpgradeAmount)} 美元`, note: '仅1位家长＋1位孩子组合可选。' });
       if (this.guardianDeduction) items.push({ icon: '减', label: '家长不参加课程减免', amount: `−${this.formatMoney(this.guardianDeduction)} 美元`, note: '须报名时确定，之后不可恢复、加回或转让课程。', accent: true });
     }
@@ -374,17 +374,17 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   get quoteImageData() {
     const localItems = this.quoteMode === 'standard'
       ? this.localFeeRows.map(row => ({ label: row.name, unit: '当前周数', quantity: '1', amount: `${this.formatMoney(row.amount)} 比索`, note: row.note }))
-      : [{ label: '套餐所列当地费用', unit: '套餐内', quantity: '1', amount: '已包含', note: '本页不重复加收；未列明的个人费用按实际发生。' }];
+      : [{ label: '套餐所列当地费用', unit: '套餐内', quantity: '1', amount: '已包含', note: '报价不重复加收；未列明的个人费用按实际发生。' }];
     const quote = buildPhilippinesDetailedQuote({
       schoolCode: 'MINT', schoolName: '菲律宾薄荷岛English MINT International Academy', filePrefix: 'English-MINT',
       heroSrc: '/assets/english-mint/campus-building.webp', weeks: this.activeWeeks, startDate: this.startDate,
       usdToCny: this.usdToCny, totalUsd: this.quoteUsd, paymentItems: this.paymentItems,
       localFeeItems: localItems, localFeeTotal: this.localFeeTotal, localCurrencyName: '比索', localFeeCny: this.localFeeCny,
-      localFeeNote: this.quoteMode === 'standard' ? '直接引用学校对应周数学杂费表；教材和超额用电另计。' : '套餐已包含海报列明的当地费用，本栏不重复计费。',
+      localFeeNote: this.quoteMode === 'standard' ? '直接引用学校对应周数学杂费表；教材和超额用电另计。' : '套餐已包含列明的当地费用，这里不重复计费。',
       optionalFeeItems: this.optionalFeeItems,
       ruleNotes: [
         `周日入住，周六离校；当前日期为${this.startDate.replaceAll('-', '/')}–${this.endDate.replaceAll('-', '/')}。`,
-        this.quoteMode === 'standard' ? '常规报价开放4、8、12、16、20、24周，学杂费直接使用学校对应周数表格金额。' : '全包价格只按学校海报列明的固定组合计算。',
+        this.quoteMode === 'standard' ? '常规报价开放4、8、12、16、20、24周，学杂费直接使用学校对应周数表格金额。' : '全包价格只按学校列明的固定组合计算。',
         ...(this.benefitEligible ? ['5周起权益为首次SSP减免或OW潜水课程二选一；须报名时确认，不能折现、转让或事后更改。'] : []),
       ], fullFeeDetails: true, localFeeTableLayout: 'web',
     });
@@ -413,7 +413,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
       公共区域: '餐厅、咖啡区与学习空间',
       住宿: '40张Deluxe与Premium房型细节',
       餐食: '27张真实餐食与菜单照片',
-      宣传资料: '官方海报、宣传照片与AI处理图',
+      宣传资料: '学校海报、宣传照片与AI处理图',
     };
     return descriptions[category];
   }

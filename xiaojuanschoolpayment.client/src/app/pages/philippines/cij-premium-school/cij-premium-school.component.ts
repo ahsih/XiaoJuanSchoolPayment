@@ -96,11 +96,6 @@ interface SidaTrustBadge {
   label: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -149,7 +144,7 @@ export class CijPremiumSchoolComponent {
       icon: 'apartment',
       label: '学校类型',
       value: 'Premium舒适型口语学校',
-      note: '公开资料定位为宿务市区Premium校区，强调1:1口语、住宿设施和多国籍环境',
+      note: '宿务市区Premium校区，强调1:1口语、住宿设施和多国籍环境',
     },
     {
       icon: 'record_voice_over',
@@ -161,25 +156,25 @@ export class CijPremiumSchoolComponent {
       icon: 'groups',
       label: '学生容量',
       value: '约100名学生参考',
-      note: '公开资料列1:1教室55间、1:4教室5间、1:8教室6间，适合小中型校区',
+      note: '1:1教室55间、1:4教室5间、1:8教室6间，适合小中型校区',
     },
     {
       icon: 'bed',
       label: '住宿房型',
       value: 'Superior / Premium / 2-4人房',
-      note: '旧版公开费用表按Superior单人、Premium单人、双人、三人、四人房区分',
+      note: '分Superior单人、Premium单人、双人、三人、四人房',
     },
     {
       icon: 'location_on',
       label: '位置提醒',
-      value: 'Mabolo / Kasambagan资料口径',
-      note: '近年CIJ资料也出现Liloan与Premium Dormitory口径，正式报名需向学校确认',
+      value: 'Mabolo / Kasambagan',
+      note: 'CIJ在Liloan另有校区，并有Premium Dormitory住宿；实际上课校区和住宿地址需报名时确认',
     },
     {
       icon: 'pool',
       label: '设施特色',
       value: '泳池 / 健身房 / 桑拿 / 厨房 / 洗衣',
-      note: 'Premium资料强调宿舍设施、泳池、健身房、桑拿、舞蹈厅和桌球等生活配置',
+      note: '宿舍有泳池、健身房、桑拿、舞蹈厅和桌球等生活配置',
     },
   ];
 
@@ -195,14 +190,14 @@ export class CijPremiumSchoolComponent {
       category: '住宿',
       title: 'CIJ外部宿舍双床房参考',
       description:
-        '公开近年宿舍资料显示CIJ有酒店式外部宿舍房型，实际使用校区与房型需按当期确认。',
+        'CIJ有酒店式外部宿舍房型，实际使用校区与房型需按当期确认。',
       src: 'https://www.fujiyama-international.com/archives/006/202410/a9ae42074be0473b.jpg',
     },
     {
       category: '住宿',
       title: 'CIJ Weber Hotel宿舍参考',
       description:
-        '近年公开资料中常见Weber Hotel / Premium Dormitory口径，适合重视住宿舒适度的学生。',
+        'Weber Hotel / Premium Dormitory住宿，适合重视住宿舒适度的学生。',
       src: 'https://www.philja.com/data/editor/2504/120b765c36358fc5ea0fdc020500ce1c_1745805738_1734.jpg',
     },
     {
@@ -216,7 +211,7 @@ export class CijPremiumSchoolComponent {
       category: '设施',
       title: 'Premium住宿与生活空间',
       description:
-        'Premium公开资料强调住宿设施、洗衣、厨房、泳池、健身房和桑拿等舒适配置。',
+        'Premium校区有洗衣、厨房、泳池、健身房和桑拿等舒适配置。',
       src: 'https://cebu-cij.com/english/wp-content/uploads/sites/7/2019/05/PREMIUM-3.jpg',
     },
     {
@@ -230,7 +225,7 @@ export class CijPremiumSchoolComponent {
       category: '校园',
       title: 'CIJ Academy学习生活环境',
       description:
-        'CIJ公开资料强调多国籍学生共同学习生活，在日常环境中增加英语使用机会。',
+        'CIJ多国籍学生共同学习生活，在日常环境中增加英语使用机会。',
       src: 'https://cebu-cij.com/english/wp-content/uploads/sites/7/2019/05/PREMIUM-1.jpg',
     },
   ];
@@ -239,13 +234,13 @@ export class CijPremiumSchoolComponent {
     { label: '学校名称', value: '菲律宾宿务CIJ Academy（Premium Campus）' },
     { label: '英文名称', value: 'CIJ Academy & School Premium Campus' },
     {
-      label: '地址口径',
-      value: '旧版Premium资料：Tancor1 Residential Suites, Abad Santos St., Villa Aurora Village, Kasambagan, Cebu City；近年资料需再次确认',
+      label: '所在区域',
+      value: 'Cebu City Kasambagan / Mabolo一带；实际上课校区需报名时确认',
     },
     { label: '学校定位', value: '宿务Premium舒适型英语学校，强调1:1口语、Native课程、商务与TOEIC方向' },
-    { label: '学生规模', value: '公开Premium资料列容量约100名，教师约54名菲律宾教师 + 3名Native教师参考' },
+    { label: '学生规模', value: '容量约100名，约54名菲律宾教师 + 3名Native教师' },
     { label: '课程方向', value: 'ESL4、Premium、Basic Speaking、Power Speaking、Power Native、Intensive Native、Basic Business、Power TOEIC' },
-    { label: '住宿房型', value: 'Superior单人、Premium单人、2人房、3人房、4人房；近年外部宿舍/Weber Hotel口径需确认' },
+    { label: '住宿房型', value: 'Superior单人、Premium单人、2人房、3人房、4人房；外部宿舍/Weber Hotel安排需确认' },
     { label: '4周起价', value: 'USD 1,300起：ESL4 + 4人房 + 注册费' },
   ];
 
@@ -254,7 +249,7 @@ export class CijPremiumSchoolComponent {
       image:
         'https://cebu-cij.com/english/wp-content/uploads/sites/7/2019/05/PREMIUM-8.jpg',
       title: 'Premium舒适型定位',
-      text: '公开资料强调宿舍设施、泳池、健身房、桑拿、厨房和洗衣配置，适合重视生活品质的学生。',
+      text: '宿舍有泳池、健身房、桑拿、厨房和洗衣配置，适合重视生活品质的学生。',
     },
     {
       image:
@@ -266,13 +261,13 @@ export class CijPremiumSchoolComponent {
       image:
         'https://www.fujiyama-international.com/archives/006/202410/a9ae42074be0473b.jpg',
       title: '成人与社会人友好',
-      text: '市区/酒店式住宿口径更适合想要舒适环境、兼顾自学和课后生活的成人学生。',
+      text: '市区/酒店式住宿更适合想要舒适环境、兼顾自学和课后生活的成人学生。',
     },
     {
       image:
         'https://storage.googleapis.com/world-study-prod/media/school_photo/813/ca44aa0e-38f2-46c2-bdb9-ecc8f4604385.jpg',
       title: '多课程可横向比较',
-      text: '口语、Native、商务和TOEIC路线都在公开课程体系中，方便按目标筛选。',
+      text: '口语、Native、商务和TOEIC路线都有开设，方便按目标筛选。',
     },
   ];
 
@@ -291,22 +286,22 @@ export class CijPremiumSchoolComponent {
     },
     {
       title: '希望半自由而不是高压斯巴达',
-      text: 'Premium公开资料列平日与周末可外出但有限制，适合比斯巴达更自由的学习节奏。',
+      text: 'Premium校区平日与周末可外出但有限制，适合比斯巴达更自由的学习节奏。',
     },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     {
-      title: '完全不能接受资料口径变化',
-      text: 'CIJ公开资料中Premium Campus、Premium Dormitory、Liloan和Mabolo/Kasambagan存在不同年份口径，报名必须核对最新校区。',
+      title: '不想确认校区和住宿',
+      text: 'CIJ有Premium Campus、Premium Dormitory和Liloan等不同校区与住宿，报名时必须确认实际上课校区和住宿地址。',
     },
     {
       title: '目标是强制高压备考',
       text: 'Premium更偏舒适与口语沟通；如果要严格管理，可比较CG斯巴达校区、EV、SMEAG或CIJ Sparta/Liloan路线。',
     },
     {
-      title: '只看最低公开价',
-      text: '公开费用表之外，注册费、SSP、签证、押金、教材、管理费、水电和接机都要另算。',
+      title: '只看最低套餐价',
+      text: '课程住宿套餐之外，注册费、SSP、签证、押金、教材、管理费、水电和接机都要另算。',
     },
     {
       title: '指定热门单人房且临时报名',
@@ -315,11 +310,11 @@ export class CijPremiumSchoolComponent {
   ];
 
   readonly roomOptions: RoomOption[] = [
-    { id: 'quad', name: '4人房', note: '公开Premium费用表最低房型，适合控制预算。' },
+    { id: 'quad', name: '4人房', note: '费用最低的房型，适合控制预算。' },
     { id: 'triple', name: '3人房', note: '比4人房更舒适，费用仍相对可控。' },
     { id: 'double', name: '2人房', note: '预算与隐私较平衡。' },
     { id: 'premium-single', name: 'Premium单人房', note: '独立空间更好，正式空房需按日期确认。' },
-    { id: 'superior-single', name: 'Superior单人房', note: '公开表最高房型，适合重视舒适度的人。' },
+    { id: 'superior-single', name: 'Superior单人房', note: '费用最高的房型，适合重视舒适度的人。' },
   ];
 
   readonly courseOptions: CourseOption[] = [
@@ -377,14 +372,14 @@ export class CijPremiumSchoolComponent {
     { label: 'Power Native', lessons: 'ESL 1:1五节 + Native小组两节 + 词汇课', four: 'USD 1,500起 / 4周4人房', note: '适合需要外师发音、听力和沟通经验的人' },
     { label: 'Power TOEIC Bridge', lessons: 'ESL 1:1二节 + TOEIC 1:1四节 + Native小组一节', four: 'USD 1,500起 / 4周4人房', note: '适合TOEIC入门与一般英语同步提升' },
     { label: 'Power TOEIC Guarantee', lessons: 'TOEIC 1:1为主 + Native/词汇训练', four: 'USD 1,620起 / 4周4人房', note: '保证班规则、入学门槛和考试安排需单独确认' },
-    { label: '追加课程', lessons: '1:1 / 菲籍团体 / 外师团体 / 外师1:1', four: 'USD 150-320 / 4周', note: '公开表列可加课，实际开放状况以学校确认为准' },
+    { label: '追加课程', lessons: '1:1 / 菲籍团体 / 外师团体 / 外师1:1', four: 'USD 150-320 / 4周', note: '可追加课程，实际开放状况以学校确认为准' },
   ];
 
   readonly schedule: ScheduleItem[] = [
     {
       time: '07:00 - 07:50',
       title: '早餐 / 课前准备',
-      text: 'Premium公开课表以三餐住校为基础，实际餐食和时段以学校到校说明为准。',
+      text: '以三餐住校为基础，实际餐食和时段以学校到校说明为准。',
     },
     {
       time: '08:00 - 12:30',
@@ -404,35 +399,35 @@ export class CijPremiumSchoolComponent {
     {
       time: '16:15 - 18:00',
       title: '空堂 / 特别课 / 自习',
-      text: '公开资料提到晚间Special Class和Saturday Special Class，需按当期安排确认。',
+      text: '学校有晚间Special Class和Saturday Special Class，需按当期安排确认。',
     },
     {
       time: '18:00 - 19:00',
       title: '晚餐 / 课后生活',
-      text: '公开资料列门禁与外出限制；具体校规、外宿和门禁以当期学生手册为准。',
+      text: '学校有门禁与外出限制；具体校规、外宿和门禁以当期学生手册为准。',
     },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 150', note: '公开规则列为不退还入学费，通常出发前支付' },
+    { item: '注册费', amount: 'USD 150', note: '不退还，通常出发前支付' },
     { item: 'SSP', amount: 'PHP 6,800', note: 'Special Study Permit，所有学习周期需确认' },
     { item: '签证延长', amount: 'PHP 4,130起', note: '8周起通常需第一次延签，12周另加第二次延签' },
-    { item: 'ACR I-Card', amount: 'PHP 3,500', note: '公开资料列停留超过8周需办理参考' },
+    { item: 'ACR I-Card', amount: 'PHP 3,500', note: '停留超过8周需办理' },
     { item: '宿舍押金', amount: 'PHP 4,000-14,000', note: '按周数递增，离校扣除教材、水电等后退还余额' },
     { item: '管理费', amount: 'PHP 1,200 / 4周', note: '按人计算参考' },
     { item: '教材费', amount: '约PHP 2,000 / 4周', note: '按课程、级别和实际用书调整' },
     { item: '学生ID', amount: 'PHP 250', note: '学生证费用参考' },
-    { item: '电费/水费', amount: '按实际使用', note: '公开资料列从押金中扣除' },
+    { item: '电费/水费', amount: '按实际使用', note: '从押金中扣除' },
     { item: '接机费', amount: '定期接机免费 / 其他日期PHP 1,000', note: '近年规则可能调整，需按到达日确认' },
-    { item: '换校区费', amount: 'PHP 1,000 / 次', note: '旧公开表列校区转换费用，且通常仅周日转换' },
-    { item: '名称/校区核对', amount: '需确认', note: 'CIEC、CIJ、Premium Dormitory等口径需报名时核实' },
+    { item: '换校区费', amount: 'PHP 1,000 / 次', note: '更换校区时收取，通常仅周日转换' },
+    { item: '校区/住宿确认', amount: '需确认', note: '实际上课校区和住宿地址需报名时确认' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
     {
       icon: 'person_search',
-      title: '先核对学校名称和校区',
-      text: '确认是CIJ Academy Premium Campus、Premium Dormitory还是CIEC Global相关项目。',
+      title: '先确认校区和住宿',
+      text: '确认实际上课的Premium Campus校区，以及校内宿舍或Premium Dormitory住宿安排。',
     },
     {
       icon: 'school',
@@ -441,7 +436,7 @@ export class CijPremiumSchoolComponent {
     },
     {
       icon: 'bed',
-      title: '确认房型和住宿口径',
+      title: '确认房型和入住地址',
       text: '核对Superior/Premium单人、多人房、外部宿舍和实际入住地址。',
     },
     {
@@ -464,8 +459,8 @@ export class CijPremiumSchoolComponent {
   readonly sidaReasons: SidaReason[] = [
     {
       number: '01',
-      title: '先把CIJ / CIEC名称核清',
-      text: '公开资料有不同域名与校区口径，顾问会先向学校确认当前招生名称、校区和住宿。',
+      title: '先确认校区和住宿',
+      text: '顾问会先向学校确认当前招生校区、住宿和房型。',
       image: 'assets/cia/sida-why-action-selection.webp',
       alt: '思达启航顾问帮助学生选择菲律宾宿务语言学校',
     },
@@ -507,7 +502,7 @@ export class CijPremiumSchoolComponent {
   ];
 
   readonly sidaTrustBadges: SidaTrustBadge[] = [
-    { icon: 'verified_user', label: '名称与校区先核验' },
+    { icon: 'verified_user', label: '校区与住宿先确认' },
     { icon: 'description', label: '正式报价逐项确认' },
     { icon: 'payments', label: '套餐与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
@@ -548,22 +543,22 @@ export class CijPremiumSchoolComponent {
     '宿务市区观光',
   ];
   readonly notes = [
-    '本页费用使用公开Premium Campus美元费用表；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
-    '你提供的CIEC Global网址与CIJ Premium Campus公开资料名称不同，报名之前必须确认学校主体、校区和住宿地址。',
+    '页面费用为Premium Campus美元参考价；正式报价会按学校当期价格、入学日期、房型和优惠调整。',
+    'CIJ有多个校区和住宿安排，报名之前必须确认实际上课校区和住宿地址。',
     '课程住宿套餐不含注册费、SSP、签证、押金、教材、水电、管理费、接机和个人生活费。',
     'Power TOEIC Guarantee、Native课程和追加课程的开课规则、级别门槛和老师配置需单独确认。',
-    '如果目标是严格斯巴达或低龄营队，应同步比较CIJ Sparta/Liloan、CG斯巴达校区、EV、SMEAG或CIEC相关项目。',
+    '如果目标是严格斯巴达或低龄营队，应同步比较CIJ Sparta/Liloan、CG斯巴达校区、EV、SMEAG或CIEC。',
   ];
   readonly faqs: FaqItem[] = [
     {
       question: 'CIJ Premium和CIA最大的区别是什么？',
       answer:
-        'CIA是Mactan大型半斯巴达综合型新校区；CIJ Premium公开资料更偏小中型Premium舒适住宿、一对一口语、Native/商务/TOEIC课程。两者正式空房和校区要按当期确认。',
+        'CIA是Mactan大型半斯巴达综合型新校区；CIJ Premium更偏小中型Premium舒适住宿、一对一口语、Native/商务/TOEIC课程。两者正式空房和校区要按当期确认。',
     },
     {
-      question: '用户给的CIEC Global网址和CIJ是同一个学校吗？',
+      question: 'CIJ Premium Campus和CIJ其他校区一样吗？',
       answer:
-        '公开搜索资料显示CIEC Global和CIJ Academy的域名、项目说明不同。为了避免误报，本页以“CIJ Academy Premium Campus”公开资料整理，并建议报名前由顾问向学校核验。',
+        '不一样。CIJ在Liloan等地另有校区和住宿，学习节奏和住宿安排不同。报名前由顾问向学校确认实际上课校区和住宿地址。',
     },
     {
       question: '页面上的报价包含全部费用吗？',
@@ -596,15 +591,6 @@ export class CijPremiumSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '用户提供：CIEC Global官网', url: 'https://ciecglobal.com/' },
-    { label: 'CIJ Premium Campus介绍与特色', url: 'https://cebu-cij.com/english/premium/english-school/' },
-    { label: 'CIJ Premium Campus课程列表', url: 'https://cebu-cij.com/english/premium/english-course/' },
-    { label: 'CIJ Premium Campus公开费用表', url: 'https://cebu-cij.com/chinese/cost/premium-campus/' },
-    { label: 'CIJ Academy 2026新版About页面', url: 'https://cebu-cij-academy.hsweb.pics/about' },
-    { label: 'CIJ Academy韩文费用/当地费用页', url: 'https://cijschool.com/academy/?pCode=1406253419' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -683,7 +669,7 @@ export class CijPremiumSchoolComponent {
   }
 
   get seasonalNote(): string {
-    return 'CIJ公开资料存在不同年份和域名口径，房型、校区和正式价格请以学校当期确认书为准';
+    return '房型、校区和正式价格以学校当期确认为准';
   }
 
   formatUsd(value: number): string { if (!Number.isFinite(value)) return '汇率待更新';

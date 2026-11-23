@@ -24,7 +24,6 @@ interface ScheduleItem { time: string; title: string; text: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
-interface SourceLink { label: string; url: string; }
 
 @Component({
   selector: 'app-help-school-detail',
@@ -71,8 +70,8 @@ export class HelpSchoolDetailComponent implements OnInit {
   readonly weekOptions = [4, 6, 8, 10, 12, 16, 20, 24];
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'location_on', label: '城市', value: 'Clark Freeport Zone', note: '官方地址为Building 5272 CM Recto Highway, Clark, Pampanga。' },
-    { icon: 'shield', label: '校区环境', value: '前美军基地 / 管制区', note: '官方强调24小时安全检查点与克拉克园区生活便利。' },
+    { icon: 'location_on', label: '城市', value: 'Clark Freeport Zone', note: '位于Clark Freeport Zone内CM Recto Highway一带。' },
+    { icon: 'shield', label: '校区环境', value: '前美军基地 / 管制区', note: '园区设有24小时安全检查点，生活便利。' },
     { icon: 'flight_takeoff', label: '机场距离', value: 'Clark约15分钟', note: '从马尼拉机场约1.5-2小时，适合重视抵达效率的学生。' },
     { icon: 'school', label: '课程', value: 'ESL / IELTS / TOEIC / Business', note: '另有Family、Junior和线上一对一课程方向。' },
     { icon: 'history_edu', label: '学习制度', value: 'Sparta + EOP', note: 'EOP时间为07:00-18:00，平日外出受限，晚自习和词汇测试更严格。' },
@@ -80,35 +79,34 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'HELP Clark主楼', description: 'HELP官网Clark Campus页面公开的校区主楼图片。', src: 'assets/philippines/help-clark-main-building.webp' },
-    { category: '校园', title: 'Clark校区入口环境', description: '同一官方主楼图片可用于核对校舍外观、道路和园区绿化。', src: 'assets/philippines/help-clark-main-building.webp' },
+    { category: '校园', title: 'HELP Clark主楼', description: 'HELP Clark校区主楼。', src: 'assets/philippines/help-clark-main-building.webp' },
+    { category: '校园', title: 'Clark校区入口环境', description: '校舍外观、道路和园区绿化。', src: 'assets/philippines/help-clark-main-building.webp' },
     { category: '课程', title: 'Sparta学习制度', description: 'HELP Clark采用HELP体系的斯巴达管理，EOP、晚自习和词汇测试需要重点确认。', src: 'assets/philippines/help-clark-main-building.webp' },
-    { category: '费用', title: 'HELP Clark当地费用表', description: 'HELP官方Tuition/Local Fee页面公开的Clark当地PHP费用图表。', src: 'assets/philippines/help-clark-local-fee.webp' },
+    { category: '费用', title: 'HELP Clark当地费用表', description: 'HELP Clark到校当地费用一览（比索）。', src: 'assets/philippines/help-clark-local-fee.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾克拉克HELP English语言学校' },
     { label: '英文名称', value: 'HELP Clark Campus / HELP English Academy' },
     { label: '品牌创立', value: 'HELP English创立于1996年；Clark校区2011年开放' },
-    { label: '地址', value: 'Building 5272 CM Recto Highway, Clark, Pampanga, Philippines' },
-    { label: '校区规模', value: '官方新页面写明Clark校区约10,000平方米' },
-    { label: '教室配置', value: '官方页面列出80间1:1教室、20间1:5小组教室、6间大讲堂' },
-    { label: '宿舍房型', value: 'Semi-Single、Double、Triple、Quad；费用表按Single/Double/Triple/Quadra计价' },
-    { label: '官方联系', value: 'baguiohelp@gmail.com / www.helpenglish.org' },
+    { label: '所在区域', value: 'Clark Freeport Zone, Pampanga（CM Recto Highway一带）' },
+    { label: '校区规模', value: 'Clark校区约10,000平方米' },
+    { label: '教室配置', value: '80间1:1教室、20间1:5小组教室、6间大讲堂' },
+    { label: '宿舍房型', value: 'Semi-Single、Double、Triple、Quad；按Single/Double/Triple/Quadra计价' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/help-clark-main-building.webp', title: '老牌HELP体系', text: 'HELP从1996年开始运营，适合想比较老牌Sparta体系、学习管理和考试路线的学生。' },
     { image: 'assets/philippines/help-clark-main-building.webp', title: 'Clark安全园区', text: 'Clark Freeport Zone交通和安全优势明显，离Clark机场近，也便于周末生活安排。' },
     { image: 'assets/philippines/help-clark-local-fee.webp', title: '费用拆分清楚', text: '课程住宿以USD计算，到校当地费用以PHP另列，报价时必须分开核对。' },
-    { image: 'assets/philippines/help-clark-main-building.webp', title: '考试课程选择', text: 'IELTS、TOEIC和Business English都在官方课程体系里，适合升学、求职和职场英语目标。' },
+    { image: 'assets/philippines/help-clark-main-building.webp', title: '考试课程选择', text: '学校开设IELTS、TOEIC和Business English，适合升学、求职和职场英语目标。' },
   ];
 
   readonly suitableFor: FitItem[] = [
     { title: '想要强管理学习节奏', text: 'HELP Clark有Sparta、EOP、晚自习和词汇测试，更适合需要外部纪律的人。' },
     { title: '目标是ESL打底后转考试', text: 'ESL可衔接IELTS、TOEIC或Business，适合8-12周以上逐步规划。' },
     { title: '重视Clark机场和园区安全', text: 'Clark校区离机场近，周边医院、商场和生活资源更好安排。' },
-    { title: '需要2026年USD价目表', text: '所附价目表列出4周课程和宿舍USD价格，便于先做基础预算。' },
+    { title: '想先做清楚的预算', text: '2026年4周课程和宿舍价格以美元列明，便于先做基础预算。' },
     { title: '想比较碧瑶与克拉克HELP体系', text: '同一HELP品牌下，Clark偏交通便利和现代设施，碧瑶偏安静山城学习环境。' },
   ];
 
@@ -121,7 +119,7 @@ export class HelpSchoolDetailComponent implements OnInit {
 
   readonly courses: CourseItem[] = [
     { name: 'ESL / ESL Intensive', type: '一般英语', lessons: 'ESL每日4节一对一，Intensive每日5节；另含小团体、大团体、词汇考试和晚自习', suitable: '适合基础打底、口语自信和第一次菲律宾游学。' },
-    { name: 'IELTS Basic & Intermediate / Advanced', type: '雅思备考', lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合升学、移民或工作目标；价目表另列定期模拟考。' },
+    { name: 'IELTS Basic & Intermediate / Advanced', type: '雅思备考', lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合升学、移民或工作目标；定期安排模拟考。' },
     { name: 'TOEIC Basic & Intermediate / Advanced', type: '多益备考', lessons: '每日4节一对一 + 2节小团体 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合求职、毕业门槛和职场英语证书目标。' },
     { name: 'Business English', type: '商务英语', lessons: '每日5节一对一 + 2节大团体 + 词汇考试 + 晚自习', suitable: '适合已有中级基础的职场人士或转商务路线学生。' },
     { name: 'Family Camp', type: '亲子课程', lessons: '监护人、幼儿园、Kid 1和Kid 2按年龄与课表分别计价', suitable: '适合亲子同行；Kid 1须满7岁，Kid 2须满10岁。' },
@@ -160,16 +158,16 @@ export class HelpSchoolDetailComponent implements OnInit {
 
   localFees: LocalFee[] = [
     { item: 'Deposit', amount: 'PHP 3,000', note: '退房检查后按罚款、损坏、电费或超额洗衣扣除后退还' },
-    { item: 'Visa Extension / 4周', amount: 'PHP 0', note: '4周参考；6周及以上按官方当地费用表递增' },
+    { item: 'Visa Extension / 4周', amount: 'PHP 0', note: '4周参考；6周及以上按周数递增' },
     { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，到校支付' },
     { item: 'Water', amount: 'PHP 600', note: '4周基础水费参考' },
     { item: 'Electricity Deposit', amount: 'PHP 1,000', note: '4周空调用电押金/预存，按实际规则扣除' },
     { item: 'Maintenance', amount: 'PHP 1,000', note: '4周设施维护费参考' },
     { item: 'Laundry', amount: 'PHP 1,000', note: '4周洗衣参考；超过16kg另收PHP35/kg' },
-    { item: 'E I Card / SSP E-Card', amount: 'PHP 4,500', note: '官方Clark当地费用表列示项目' },
+    { item: 'E I Card / SSP E-Card', amount: 'PHP 4,500', note: '学习许可电子卡，到校支付' },
     { item: 'Learning Materials', amount: 'PHP 1,700', note: '4周教材/学习材料参考' },
     { item: 'ID', amount: 'PHP 200', note: '学生证办理参考' },
-    { item: 'Local Fee Total / 4周', amount: 'PHP 20,800', note: 'HELP Clark官方当地费用表4周总额' },
+    { item: 'Local Fee Total / 4周', amount: 'PHP 20,800', note: 'HELP Clark 4周当地费用合计' },
     { item: 'Airport Pickup', amount: '需当期确认', note: '按Clark或Manila机场、指定接机日和学校LOA确认' },
   ];
 
@@ -182,19 +180,19 @@ export class HelpSchoolDetailComponent implements OnInit {
   ];
 
   readonly notes = [
-    'HELP 2026年价目表注册费为USD100；课程住宿按（课程费 + 宿舍费）x 学习周数 / 4估算，当地费用、签证、材料和接机另计。',
-    'Dormitory fee按4周计算，官方说明包含校内餐食和饮用水。',
+    'HELP 2026年注册费为100美元；课程住宿按（课程费 + 宿舍费）x 学习周数 / 4估算，当地费用、签证、材料和接机另计。',
+    'Dormitory fee按4周计算，包含校内餐食和饮用水。',
     'Clark当地费用4周总额为PHP20,800；6周、8周及以上会随签证、水电、维护、洗衣和教材递增。',
     'EOP时间为07:00-18:00，平日外出限制、晚自习和词汇测试对学生自律要求更高。',
-    '官方页面写明Clark校区可协助IELTS等考试相关安排，但具体考试日期、名额和报名费需按当期确认。',
+    'Clark校区可协助IELTS等考试相关安排，但具体考试日期、名额和报名费需按当期确认。',
   ];
 
   readonly faqs: FaqItem[] = [
-    { question: '菲律宾克拉克HELP English语言学校4周最低多少钱？', answer: '按2026年价目表，ESL课程USD900 + Quadra四人房USD600，4周课程住宿合计USD1,500起；加USD100注册费后，前期USD参考为USD1,600。PHP当地费用另算，4周Clark当地费用表总额为PHP20,800。' },
-    { question: 'HELP Clark适合雅思或多益吗？', answer: '适合放进候选。官方IELTS和TOEIC页面列出Basic、Intermediate、Advanced结构、1:1课程、模考和Sparta日程；最终仍需按入学成绩和开课档期确认。' },
-    { question: 'HELP Clark管理严格吗？', answer: '相对严格。官方Clark页面列出Sparta系统、EOP 07:00-18:00、平日外出限制、晚自习和词汇测试，更适合需要集中学习的人。' },
+    { question: '菲律宾克拉克HELP English语言学校4周最低多少钱？', answer: '按2026年价格，ESL课程900美元 + Quadra四人房600美元，4周课程住宿合计1,500美元起；加100美元注册费后，前期美元参考为1,600美元。比索当地费用另算，4周Clark当地费用合计为20,800比索。' },
+    { question: 'HELP Clark适合雅思或多益吗？', answer: '适合放进候选。IELTS和TOEIC课程分Basic、Intermediate、Advanced级别，有1:1课程、模考和Sparta日程；最终仍需按入学成绩和开课档期确认。' },
+    { question: 'HELP Clark管理严格吗？', answer: '相对严格。HELP Clark采用Sparta系统、EOP 07:00-18:00、平日外出限制、晚自习和词汇测试，更适合需要集中学习的人。' },
     { question: 'HELP Clark和WE Academy怎么选？', answer: 'HELP更偏老牌Sparta和考试路线，WE更偏亲子、Native Mix和度假式校园。若学生需要纪律和考试目标，HELP更值得看；若想自由舒适和低龄亲子，WE也应比较。' },
-    { question: '费用表会变化吗？', answer: '会。HELP官方Local Fee页面说明当地费用可能因菲律宾政府规则调整而变动，所以正式报价仍需以学校回函和顾问确认价目为准。' },
+    { question: '费用表会变化吗？', answer: '会。当地费用可能因菲律宾政府规则调整而变动，正式报价以顾问向学校确认的价格为准。' },
   ];
 
   readonly sideNav: SideNavItem[] = [
@@ -213,17 +211,6 @@ export class HelpSchoolDetailComponent implements OnInit {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'HELP Clark Campus官方页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
-    { label: 'HELP Tuition and Fees官方页面', url: 'https://www.helpenglish.org/p/tuition-and-fees.html' },
-    { label: 'HELP Local Fee官方页面', url: 'https://www.helpenglish.org/p/help-english-local-fee.html' },
-    { label: 'HELP ESL Program官方页面', url: 'https://www.helpenglish.org/p/esl-program.html' },
-    { label: 'HELP IELTS Program官方页面', url: 'https://www.helpenglish.org/p/ielts-program.html' },
-    { label: 'HELP TOEIC Program官方页面', url: 'https://www.helpenglish.org/p/toeic-program.html' },
-    { label: 'HELP Business English官方页面', url: 'https://www.helpenglish.org/p/business-english-program.html' },
-    { label: 'HELP About官方页面', url: 'https://www.helpenglish.org/p/about-us.html' },
   ];
 
   ngOnInit(): void {
@@ -328,7 +315,7 @@ export class HelpSchoolDetailComponent implements OnInit {
   get registrationForQuote(): number { return this.registrationCurrencyCode === this.quoteCurrencyCode ? this.registrationFee : 0; }
   get quoteAmount(): number { return this.registrationForQuote + this.tuitionForSelectedWeeks + this.roomFeeForSelectedWeeks; }
   get quoteText(): string { return `${this.formatMoney(this.quoteAmount, this.quoteCurrencyCode)} 起`; }
-  get registrationFeeText(): string { return this.registrationFee > 0 ? this.formatMoney(this.registrationFee, this.registrationCurrencyCode) : '未列入公开USD表'; }
+  get registrationFeeText(): string { return this.registrationFee > 0 ? this.formatMoney(this.registrationFee, this.registrationCurrencyCode) : '需当期确认'; }
   get formulaText(): string {
     return `${this.registrationFeeText} 注册费 + (${this.selectedCourse.name} + ${this.selectedRoom.name}) x ${this.selectedWeeks}周 / 4`;
   }

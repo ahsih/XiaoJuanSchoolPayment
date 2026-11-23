@@ -25,7 +25,7 @@
       <div class="calendar-grid"><article *ngFor="let month of monthsFor(year)"><h3>{{ year }} 年 {{ month.month }} 月</h3><div *ngFor="let date of month.dates" class="date-row" [class.past]="date < today" [class.upcoming]="date === nextDate"><time [attr.datetime]="date">{{ +date.slice(5,7) }}月{{ +date.slice(8) }}日（星期日）</time><span>{{ date < today ? '已结束' : date === nextDate ? '下一次' : '指定日' }}</span></div></article></div>
     </div>
   </section>
-  <section id="flight-times"><h2>买机票前，先核对班次</h2><p>马尼拉指定周日：01:00、08:00、14:00、20:00。克拉克指定周日：01:30、12:00、17:00；次日周一：01:30。</p><p><b>克拉克凌晨分组：</b>周日为 WALES、PINES、MONOL；周一为 JIC、BECI、A&amp;J。中午及下午班次请顾问确认所读学校。</p><p>建议计划落地与接机至少间隔 2 小时。这是本页出行建议，最终由学校确认航班适配。</p></section>
+  <section id="flight-times"><h2>买机票前，先核对班次</h2><p>马尼拉指定周日：01:00、08:00、14:00、20:00。克拉克指定周日：01:30、12:00、17:00；次日周一：01:30。</p><p><b>克拉克凌晨分组：</b>周日为 WALES、PINES、MONOL；周一为 JIC、BECI、A&amp;J。中午及下午班次请顾问确认所读学校。</p><p>建议计划落地与接机至少间隔 2 小时。这是思达启航的出行建议，最终由学校确认航班适配。</p></section>
   <section><h2>凌晨班次：日期别看错</h2><div class="notice"><p>2026 年 10 月 18 日周日 01:30，是 <b>10 月 17 日周六深夜过后</b>。</p><p>该轮周一 01:30，实际为 <b>10 月 19 日</b>。</p></div><div class="notice"><p>2027 年 1 月 10 日周日 01:00 / 01:30，是 <b>1 月 9 日周六深夜过后</b>。</p><p>该轮克拉克周一 01:30，实际为 <b>1 月 11 日</b>。</p></div><p>示例只解释日期，不代表可自行选择班次。转机机场的时间按机票当地时间核对。</p></section>
   <section id="prepare"><h2>预约接机与出发准备</h2><ul><li>核对机场、航站楼、航班号及实际落地日期，特别注意跨午夜航班。</li><li>落地还需入境、取行李、海关及走到集合点。</li><li>不默认延误后能自动改乘下一班。</li><li>家属陪同、儿童、未成年人独自出行、行动不便、大件或超量行李，提前报备安排及费用。</li></ul>
     <h3>请把这些信息发送给思达启航顾问</h3><p>护照英文姓名、学校及校区、航班号、抵达日期及当地时间、机场及航站楼、同行人数与陪同家属、行李数量及特殊行李、可联系到学生的通讯方式。发送行程后，请取得接机确认。</p>

@@ -67,11 +67,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-ciec-school',
   standalone: true,
@@ -102,13 +97,13 @@ export class CiecSchoolComponent {
       icon: 'location_city',
       label: '所在区域',
       value: 'Talamban / Cebu City',
-      note: '官方资料列出Cebu Center位于Minoza Street, Barangay Tigbao, Talamban。',
+      note: 'Cebu Center位于Talamban区Tigbao一带。',
     },
     {
       icon: 'groups',
       label: '适合年龄',
       value: '亲子4岁起，单独留学9岁起',
-      note: '公开资料显示Kindergarten主要面向48个月至6岁儿童。',
+      note: 'Kindergarten主要面向48个月至6岁儿童。',
     },
     {
       icon: 'menu_book',
@@ -126,7 +121,7 @@ export class CiecSchoolComponent {
       icon: 'pool',
       label: '设施',
       value: '泳池 / 自习室 / 食堂 / 宿舍',
-      note: '公开资料显示有泳池、自习室、校园宿舍、食堂和生活支持。',
+      note: '校内有泳池、自习室、校园宿舍、食堂和生活支持。',
     },
   ];
 
@@ -146,7 +141,7 @@ export class CiecSchoolComponent {
     {
       category: '住宿',
       title: '校内三人房参考',
-      description: '公开资料显示宿舍配备床、桌椅、空调、淋浴、厕所和储物空间。',
+      description: '宿舍配备床、桌椅、空调、淋浴、厕所和储物空间。',
       src: 'https://www.fujiyama-international.com/archives/004/202407/4a8392a52bff622fcc97a5c89277a35d.jpg',
     },
     {
@@ -174,7 +169,7 @@ export class CiecSchoolComponent {
     { label: '英文名称', value: 'CIEC Global Education Center / Cebu Ivy Education Center' },
     { label: '地址', value: 'Minoza Street, Barangay Tigbao, Talamban, Cebu City, Philippines' },
     { label: '学校定位', value: '青少年、亲子、国际学校准备、Junior Sparta与陪读家长英文课程。' },
-    { label: '公开规模', value: '公开资料显示学生定员约140名，韩资运营。' },
+    { label: '学校规模', value: '学生定员约140名，韩资运营。' },
     { label: '课节长度', value: '1节45分钟；课程组合按年龄、目标和是否陪读调整。' },
     { label: '4周起价', value: '幼儿园＋三人房＋新生注册费：1905美元／4周；淡季家庭优惠按条件另算。' },
   ];
@@ -245,7 +240,7 @@ export class CiecSchoolComponent {
     {
       time: 'Weekend',
       title: '周末：活动与生活适应',
-      text: '公开资料提到周末旅行、志愿活动和各类活动，实际安排以学校当期日程为准。',
+      text: '周末有旅行、志愿活动和各类活动，实际安排以学校当期日程为准。',
     },
   ];
 
@@ -255,7 +250,7 @@ export class CiecSchoolComponent {
       text: '不太是主力方向。CIEC最适合亲子、青少年、国际学校准备和陪读家庭；成人单独短期ESL建议同步比较其他成人学校。',
     },
     {
-      title: '页面报价是否包含所有费用？',
+      title: '在线报价是否包含所有费用？',
       text: '报价分别列示美元费用及比索本地费用；电费按实际用量、教材按实际购买结算，可退押金和个人消费另计。',
     },
     {
@@ -273,7 +268,6 @@ export class CiecSchoolComponent {
     { label: '课程费用', target: 'courses', icon: 'payments' },
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -281,15 +275,6 @@ export class CiecSchoolComponent {
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'CIEC官方首页', url: 'https://ciecglobal.com/' },
-    { label: 'CIEC官方FAQ', url: 'https://ciecglobal.com/community/faq/' },
-    { label: 'CIEC官方Junior Camp介绍', url: 'https://ciecglobal.com/managed-program/ciec-junior-camp/' },
-    { label: 'Fujiyama CIEC 2026费用与基本数据', url: 'https://www.fujiyama-international.com/philippines/ciec.html' },
-    { label: '菲律宾留学中心CIEC课程与宿舍资料', url: 'https://www.ph-ryugaku.com/school/ciec/' },
-    { label: 'Philippines留学PRO CIEC课程费用', url: 'https://www.pro-japan.jp/school/140/course/' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {

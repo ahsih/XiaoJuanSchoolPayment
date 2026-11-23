@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-help-school',
   standalone: true,
@@ -47,9 +42,9 @@ export class HelpSchoolComponent {
     { label: '学校名称', value: '菲律宾克拉克HELP English语言学校' },
     { label: '城市', value: 'Clark / Pampanga' },
     { label: '学校定位', value: '老牌HELP体系、ESL、IELTS、TOEIC、Business、Junior候选' },
-    { label: '资料状态', value: 'Clark校区当前资料、价目表和开放状态需当期确认' },
+    { label: '招生状态', value: 'Clark校区价格和开放状态需当期确认' },
     { label: '适合方向', value: '系统学习、考试路线、希望比较HELP体系管理风格的学生' },
-    { label: '关键提醒', value: '不要只凭旧资料报名，需以学校回函和顾问复核为准' },
+    { label: '关键提醒', value: '报名前需由顾问向学校确认当前招生状态和价格' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -84,7 +79,7 @@ export class HelpSchoolComponent {
     {
       item: '学费 + 住宿',
       amount: '需当期确认',
-      note: '公开资料不足以写死价格，需按课程、房型、周数和入学日期向学校确认。',
+      note: '按课程、房型、周数和入学日期向学校确认。',
     },
     {
       item: 'ESL / IELTS / TOEIC课程差价',
@@ -130,7 +125,7 @@ export class HelpSchoolComponent {
   ];
 
   readonly cons = [
-    'Clark校区公开资料不够稳定，不能只凭旧页面或二手资料报名',
+    'Clark校区当前招生状态需先确认，不能只凭旧介绍报名',
     '费用、房型、课程和校区开放状态必须当期确认',
     '如果目标是亲子舒适体验，WE或EG可能更容易先比较；如果目标是Native口语，CIP也应同时比较',
     '如果目标是高压备考，需把碧瑶学校一并纳入比较',
@@ -140,7 +135,7 @@ export class HelpSchoolComponent {
     {
       question: '菲律宾克拉克HELP English语言学校现在可以直接报名吗？',
       answer:
-        '不建议只看旧资料直接报名。应先确认当前Clark校区开放状态、价目表、课程、房型、接机和年龄规则，再决定是否报名。',
+        '建议先由顾问向学校确认当前Clark校区开放状态、价格、课程、房型、接机和年龄规则，再决定是否报名。',
     },
     {
       question: 'HELP适合什么学生？',
@@ -148,21 +143,14 @@ export class HelpSchoolComponent {
         '适合偏好老牌学校体系、想比较系统管理和考试路线的学生。若目标是亲子舒适或Native口语，应同时比较WE、EG和CIP。',
     },
     {
-      question: '为什么页面没有写具体学费？',
+      question: '为什么这里没有写具体学费？',
       answer:
-        '因为当前公开可读资料不足以可靠确认价格。为了避免误导，页面保留费用模块，但明确标注需以学校当期回函和顾问核价为准。',
+        'HELP Clark的价格会按课程、房型、周数和入学日期变化，报名前由顾问向学校确认当期价格。',
     },
     {
       question: 'HELP Clark和碧瑶HELP怎么比较？',
       answer:
         '重点看校区是否开放、课程强度、考试资源、住宿规则和交通成本。若想要更强学习氛围或考试管理，也应把碧瑶学校一起比较。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'HELP English 官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
-    { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
   ];
 }

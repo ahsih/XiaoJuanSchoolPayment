@@ -86,7 +86,7 @@ export class CiecPerson {
   get localIssues(): string[] {
     const issues: string[] = [];
     if (this.visa !== '30' && this.visa !== '59') issues.push(`${this.visaLabel}的证件及延期要求须学校确认。`);
-    if (this.extensionCount > 3 && (this.visa === '30' || this.visa === '59')) issues.push('第四次起签证延期金额未提供。');
+    if (this.extensionCount > 3 && (this.visa === '30' || this.visa === '59')) issues.push('第四次起签证延期金额待学校确认。');
     if (this.plan.roomWeeks !== 4) issues.push('非四周水费、管理费及教材周期金额须确认。');
     if (this.ageMonths < 48 || this.plan.courses.some(row => row.optionId === 'none')) issues.push('婴幼儿／不就读监护人的本地费用适用项目须确认。');
     if (this.kindergarten && this.plan.courses.some(row => row.optionId !== 'kindergarten')) issues.push('幼儿园与其他课程混合时，教材项目须学校确认。');

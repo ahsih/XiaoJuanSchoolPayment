@@ -32,11 +32,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-beci-school',
   standalone: true,
@@ -78,7 +73,7 @@ export class BeciSchoolComponent {
     {
       title: 'City Native / Unlimited / Junior ESL',
       lessons: '4至8节一对一，并按课程搭配团体、SP或选修课',
-      text: 'City Campus 2026费用表列出成人Native、Unlimited及Junior路线，适合按课量与年龄匹配。',
+      text: 'City Campus 2026年开设成人Native、Unlimited及Junior路线，适合按课量与年龄匹配。',
     },
     {
       title: 'SP / SC / REHAB Speaking',
@@ -93,7 +88,7 @@ export class BeciSchoolComponent {
       course: 'Lite ESL',
       fourWeeks: 'USD 1,240-1,770',
       room: '四人房至豪华单人房',
-      note: '2026年4周主费，中介优惠免注册费。',
+      note: '2026年4周主费，通过思达启航报名免注册费。',
     },
     {
       campus: 'EOP / Cafe',
@@ -128,19 +123,19 @@ export class BeciSchoolComponent {
       course: 'Lite / Native / Unlimited / Junior',
       fourWeeks: 'USD 1,270-2,550',
       room: 'Quad、Studio、Semi等房型',
-      note: '按2026费用表课程与房型组合。',
+      note: '按2026年课程与房型组合。',
     },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: '原价USD 100；当前中介优惠免收' },
+    { item: '注册费', amount: '原价100美元；通过思达启航报名免收' },
     { item: '短期比例', amount: '1/2/3周课程费按4周价的40%/60%/80%' },
     { item: '长期折扣', amount: '8/12/16/20/24周减USD 50/100/200/300/400' },
-    { item: '接机费', amount: '马尼拉约PHP 3,000；克拉克约PHP 2,500；EOP页面显示依距离/人数可变' },
+    { item: '接机费', amount: '马尼拉约PHP 3,000；克拉克约PHP 2,500；EOP校区依距离/人数可变' },
     { item: 'SSP / 学习许可', amount: '当地披索缴费，按学习周数和学校当期标准确认' },
     { item: '签证延签 / ACR I-Card', amount: '长期学习通常需要，依菲律宾移民规则确认' },
     { item: '教材 / 材料费', amount: '按课程和实际教材购买计算' },
-    { item: '水电 / 押金', amount: '未含在公开学费住宿价中，退房时按学校规则结算' },
+    { item: '水电 / 押金', amount: '未含在学费住宿价中，退房时按学校规则结算' },
     { item: '洗衣 / 打扫', amount: '部分校区有固定洗衣、清扫或床品更换安排' },
     { item: '附加课程', amount: 'SP、SC、REHAB等口语附加项目需确认是否另计' },
   ];
@@ -176,7 +171,7 @@ export class BeciSchoolComponent {
     'BECI不同校区差异很大，报名前必须先确认校区，不宜只看学校名报名',
     'Sparta校区四人房和3+1安排不一定适合重视隐私或安静休息的人',
     'City Campus更自由，若学生自律弱，可能不如Sparta或EOP有推动力',
-    '公开价格按校区、年份、房型和优惠变化，最终报价要重新核对',
+    '价格按校区、年份、房型和优惠变化，最终报价要再次确认',
     '碧瑶交通比宿务周折，从马尼拉或克拉克转车时间需要提前规划',
   ];
 
@@ -194,19 +189,8 @@ export class BeciSchoolComponent {
       answer: '它不只是课程名多，而是口语诊断和反馈机制明显，例如SP、SC、REHAB等项目，适合想精准改善发音和表达的人。',
     },
     {
-      question: '页面价格包含全部费用吗？',
-      answer: '不包含。当前中介优惠免注册费，但学费住宿之外仍需另算接机、SSP、签证延签、ACR I-Card、教材、水电、押金和个人生活费。',
+      question: '这里的价格包含全部费用吗？',
+      answer: '不包含。通过思达启航报名免注册费，但学费住宿之外仍需另算接机、SSP、签证延签、ACR I-Card、教材、水电、押金和个人生活费。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'APIBECI 官方网站', url: 'https://beciedu.com/' },
-    { label: 'APIBECI EOP Campus', url: 'https://beciedu.com/eop-campus/' },
-    { label: 'APIBECI Sparta Campus', url: 'https://beciedu.com/sparta-campus/' },
-    { label: 'APIBECI City Campus', url: 'https://beciedu.com/city-campus/' },
-    { label: 'Fujiyama - API BECI EOP Campus', url: 'https://www.fujiyama-international.com/philippines/beci-the-cafe.html' },
-    { label: 'Fujiyama - API BECI Sparta Campus', url: 'https://www.fujiyama-international.com/philippines/beci-sparta.html' },
-    { label: 'Fujiyama - API BECI City Campus', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
-    { label: '大洋游学', url: 'http://www.dayang101.com/' },
   ];
 }

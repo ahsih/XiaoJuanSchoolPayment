@@ -114,7 +114,7 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     '到校后学杂费由学校或相关部门直接收取，本报价仅作预算参考，具体以实际收取为准。',
     '课程与住宿日期按周日入住、周六离校计算；房型、名额及住宿安排需由学校最终确认。',
     'SNS活动要求每完整4周在指定SNS发布1条在校故事；活动会按报名人数随时结束，是否仍开放及能否叠加须由学校确认。',
-    '学校资料没有列出水电费、教材费与Academic Admin Fee的金额或计费方式，页面标为待确认且不计入合计。',
+    '水电费、教材费与Academic Admin Fee的金额和计费方式待学校确认，暂不计入合计。',
     '本报价根据当前选择生成，最终以MONOL斯巴达校区正式账单及思达启航顾问确认为准。',
   ];
   exchangeRateDate = '';
@@ -127,7 +127,7 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
     { icon: 'school', label: '课程方向', value: 'Booster ESL / Master IELTS', note: '每天至少10节学习安排，结合一对一、团体课、自习和测试。' },
     { icon: 'bed', label: '住宿', value: '5种校内房型', note: '高级单人间、标准单人间、单人雅房、双人间和三人间。' },
     { icon: 'restaurant', label: '餐食', value: '住宿费含餐', note: '包含平日三餐，以及周末和节假日一餐。' },
-    { icon: 'payments', label: '费用资料', value: '2026年9月最新资料', note: '课程、住宿、签证和活动分别来自校区费用表、签证表及活动海报。' },
+    { icon: 'payments', label: '费用说明', value: '2026年9月价格', note: '正式金额以学校invoice为准。' },
   ];
 
   private readonly builtInGalleryImages: GalleryImage[] = [
@@ -185,14 +185,14 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   readonly suitableFor: FitItem[] = [
     { title: '需要纪律推动学习', text: '适合希望由固定座位、现场巡查、补自习和每日测试帮助建立节奏的学生。' },
     { title: '能接受每天至少10节安排', text: '课程、自习与晚间测试密度高，适合短期集中强化或需要明确日程的人。' },
-    { title: '目标为综合英语或雅思', text: '当前资料只确认Booster ESL与Master IELTS两条课程线。' },
+    { title: '目标为综合英语或雅思', text: '斯巴达校区开设Booster ESL与Master IELTS两条课程线。' },
     { title: '希望校内解决住宿与餐食', text: '五种房型与餐厅、运动设施集中在校内，住宿费已包含规定餐次。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '需要自由安排大量私人时间', text: '周一至周四仅17:00–19:00可外出，选修课空档也必须强制自习。' },
     { title: '不接受补自习和纪律扣时', text: '迟到、缺席、违反EOP与非学习活动会产生25或50分钟补自习，严重违规可增加8小时或退学。' },
-    { title: '希望选择更多课程类型', text: '资料只确认Booster ESL与Master IELTS，其他课程不会从主校区复制。' },
+    { title: '希望选择更多课程类型', text: '斯巴达校区只开设Booster ESL与Master IELTS两种课程。' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -244,23 +244,23 @@ export class MonolSpartaSchoolDetailComponent implements OnInit, AfterViewInit, 
   readonly campusActivities = ['Booster ESL每4周评估', 'Master IELTS每2周评估', 'IELTS每日科目模拟考试', '晚间单词与句子测试', '周末补自习'];
   readonly weekendActivities = ['第1、3周San Juan冲浪', '第2、4周Vigan、Hundred Islands等一日游', '周末活动交通费约350–1,200比索', '实际行程以学校当期安排为准'];
   readonly notes = [
-    '课程与住宿资料只列完整4周价格；1–3周可由顾问向学校单独询价，页面不自动套用未公布的短期比例。',
+    '课程与住宿按完整4周计价；1–3周可由思达启航顾问向学校单独询价，这里不自动估算短期价格。',
     '平日选修团体课未参加时必须在固定座位自习；迟到、缺席、违反EOP或做非学习活动会增加补自习时间。',
     '离校前仍未完成的补自习按每25分钟25比索从押金扣除，未结清前不发结业证书。',
     '住宿费包含平日三餐，以及周末和节假日一餐。',
     '马尼拉与克拉克常规团体接机均为3,000比索；特别个人接机为整车价，须确认分摊与班次。',
     '2026课程及住宿活动的报名截止日为2026年12月31日；SNS活动每完整4周须在指定平台发布1条在校故事，活动可能随报名人数提前结束，叠加资格须由学校确认。',
-    '本次费用表与手册未列水电费、教材费和Academic Admin Fee金额，页面仅作待确认提示，不计入学杂费合计。',
+    '水电费、教材费和Academic Admin Fee金额待学校确认，暂不计入学杂费合计。',
     '最终报名以MONOL斯巴达校区正式录取、空房、账单、校规和移民局实收为准。',
   ];
   readonly faqs: FaqItem[] = [
-    { question: 'MONOL斯巴达校区与MONOL主校区相同吗？', answer: '不同。本页只介绍187 Naguilian Road的斯巴达校区，课程、房型、费用、优惠、签证计算和媒体均独立，不使用主校区资料。' },
+    { question: 'MONOL斯巴达校区与MONOL主校区相同吗？', answer: '不同。斯巴达校区位于碧瑶Naguilian Road，课程、房型、费用、优惠、签证计算和图片视频都与主校区分开。' },
     { question: '每天必须上满10节课吗？', answer: '学校保证每天至少10节学习安排。选修团体课可不参加，但对应时段必须在固定座位强制自习。' },
     { question: '课程和住宿费包含餐食吗？', answer: '住宿费包含平日三餐，以及周末和节假日一餐。课程费与住宿费分别计算。' },
-    { question: '可以只报1–3周吗？', answer: '可以联系思达启航顾问向学校单独询问可报名日期、课程、房型和短期价格。因资料没有公布1–3周比例，页面不自动估算，以学校书面回复为准。' },
+    { question: '可以只报1–3周吗？', answer: '可以联系思达启航顾问向学校单独询问可报名日期、课程、房型和短期价格。1–3周价格不在这里自动估算，以学校书面回复为准。' },
     { question: '2026课程与住宿优惠如何计算？', answer: '在2026年12月31日或之前报名，并在斯巴达校区同时学习与住宿时，每完整4周课程费减100美元、住宿费减100美元。' },
     { question: 'SNS活动的具体要求是什么？', answer: '须在2026年12月31日或之前报名并在MONOL斯巴达校区学习、住宿；每完整4周在小红书、TikTok、Facebook、Messenger、Instagram、Google Map、Threads等SNS发布1条在校故事，可减100美元，所有房型适用。活动会按报名人数随时结束且不另行通知；是否仍开放及能否与课程、住宿优惠叠加须学校确认。' },
-    { question: '签证延签为什么按护照地区不同？', answer: '中国护照可选择办理30天或59天旅游签证；香港特区护照按14天、澳门特区护照按7天入境停留参考。页面按选择与住宿周数套用学校签证表，最终以实际获签和移民局收费为准。' },
+    { question: '签证延签为什么按护照地区不同？', answer: '中国护照可选择办理30天或59天旅游签证；香港特区护照按14天、澳门特区护照按7天入境停留参考。这里按所选护照地区和住宿周数计算签证费用，最终以实际获签和移民局收费为准。' },
   ];
 
   readonly sideNav: SideNavItem[] = [

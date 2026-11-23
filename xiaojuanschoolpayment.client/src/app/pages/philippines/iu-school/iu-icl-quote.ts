@@ -336,8 +336,8 @@ export class IuIclQuote {
 
   get availabilityNote(): string {
     return this.campus === 'IU'
-      ? '淡季海报标注IU双人房、三人房自2026/09/13起开放名额；房间数量有限，须以学校确认为准。'
-      : '淡季海报标注ICL三人房、四人房自2026/10/04起开放名额；房间数量有限，须以学校确认为准。';
+      ? '校方淡季优惠的IU双人房、三人房自2026/09/13起开放名额；房间数量有限，须以学校确认为准。'
+      : '校方淡季优惠的ICL三人房、四人房自2026/10/04起开放名额；房间数量有限，须以学校确认为准。';
   }
 
   get schoolPaymentItems(): QuoteImagePaymentItem[] {
@@ -349,7 +349,7 @@ export class IuIclQuote {
       { icon: '注', label: '注册费', amount: `${quoteMoney(this.registrationFee)} 美元`, note: '一次性、不可退；仅符合本次校方淡季住宿组合价时免收。' },
       ...planItems,
       ...(this.intermediaryDiscount > 0 ? [{ icon: '惠', label: '思达启航9折优惠', amount: `− ${quoteMoney(this.intermediaryDiscount)} 美元`, note: '旺季常规课程与住宿享9折；校方淡季套餐、注册费及到校学杂费不参与。', accent: true }] : []),
-      ...(this.lowSeasonDiscount > 0 ? [{ icon: '惠', label: '校方淡季组合价调整', amount: `− ${quoteMoney(this.lowSeasonDiscount)} 美元`, note: '海报有效期为2026/08/23–2027/01/09，且须在2027/01/16前结业；同日期课程与校内住宿满4周，按校方组合价表计算；不与其它优惠叠加。', accent: true }] : []),
+      ...(this.lowSeasonDiscount > 0 ? [{ icon: '惠', label: '校方淡季组合价调整', amount: `− ${quoteMoney(this.lowSeasonDiscount)} 美元`, note: '校方淡季组合价有效期为2026/08/23–2027/01/09，且须在2027/01/16前结业；同日期课程与校内住宿满4周，按校方组合价表计算；不与其它优惠叠加。', accent: true }] : []),
       ...(this.registrationWaiver > 0 ? [{ icon: '免', label: '校方免注册费', amount: `− ${quoteMoney(this.registrationWaiver)} 美元`, note: '本次淡季住宿组合价已含免注册费；不再叠加思达启航或其它中介优惠。', accent: true }] : []),
     ];
   }
@@ -437,7 +437,7 @@ export class IuIclQuote {
     return [{ label: rule?.name ?? '额外住宿（每人）', amount: `${quoteMoney(rule?.amount ?? 1300)} 比索／晚`, note: rule?.note ?? '仅在超出标准周日入住、周六13:00退房安排时另计；需先确认空房。' }];
   }
   get localFeeIntro(): string {
-    return this.contentConfig?.quoteSettings.localFeeIntro ?? '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。本页及报价单按当前课程、住宿和停留周数提供预估，具体项目和金额以学校实际收取为准；宿舍押金已计入合计但通常符合条件可退，额外住宿另列且不计入学杂费及人民币预估合计。按现有价目表，4/8/12/16/24周校内住宿方案分别估算为22,900/33,200/49,000/59,300/79,900比索。';
+    return this.contentConfig?.quoteSettings.localFeeIntro ?? '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。网页及报价单按当前课程、住宿和停留周数提供预估，具体项目和金额以学校实际收取为准；宿舍押金已计入合计但通常符合条件可退，额外住宿另列且不计入学杂费及人民币预估合计。按现有价目表，4/8/12/16/24周校内住宿方案分别估算为22,900/33,200/49,000/59,300/79,900比索。';
   }
 
   get imageLocalFeeIntro(): string {

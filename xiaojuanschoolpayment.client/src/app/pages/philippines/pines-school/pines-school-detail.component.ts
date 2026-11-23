@@ -158,19 +158,19 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { icon: 'verified_user', label: '管理模式', value: '半斯巴达 / 强化可选', note: '可叠加EB PRO、晨间与晚间学习' },
     { icon: 'school', label: '课程选项', value: 'ESL / IELTS / TOEIC', note: '另有商务、亲子、青少年方向' },
     { icon: 'bed', label: '住宿房型', value: '单人到六人房', note: '5B Solo和热门房型需提前核房' },
-    { icon: 'event_available', label: '入学节奏', value: '双周入学为主', note: '官方表单列出2026-2028入学日' },
+    { icon: 'event_available', label: '入学节奏', value: '双周入学为主', note: '学校已排出2026-2028年入学日' },
   ];
 
   galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'PINES Main Campus外观', description: 'PINES官方Facilities页面展示的Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.webp' },
-    { category: '校园', title: 'PINES主校区楼体', description: '官方首页设施区展示的Main Campus Building，适合先判断校区环境。', src: 'assets/philippines/pines-campus-building.jpg' },
-    { category: '教室', title: '一对一教室', description: 'PINES官方Main Campus Facilities页面展示的一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.webp' },
-    { category: '教室', title: '4:1小团体教室', description: '官方教室照片展示的小团体课程空间，适合讨论、表达和综合训练。', src: 'assets/philippines/pines-group-classroom.webp' },
-    { category: '住宿', title: 'Main Campus单人房', description: 'PINES官方住宿页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/pines-dormitory-single.webp' },
-    { category: '住宿', title: 'Main Campus六人房', description: '官方多人房照片展示六人房空间，适合控制预算但需提前确认空房。', src: 'assets/philippines/pines-dormitory-sextuple.webp' },
-    { category: '餐厅', title: 'PINES Cafeteria', description: 'PINES官方2026餐厅照片，展示校内自助取餐和厨房区域。', src: 'assets/philippines/pines-cafeteria.webp' },
-    { category: '设施', title: 'Library Main', description: '官方Facilities页面展示的图书与学习资源空间。', src: 'assets/philippines/pines-library.webp' },
-    { category: '设施', title: 'Front Desk', description: '官方Facilities页面展示的前台与学生支持空间。', src: 'assets/philippines/pines-front-desk.webp' },
+    { category: '校园', title: 'PINES Main Campus外观', description: 'PINES Main Campus校区外观。', src: 'assets/philippines/pines-campus-hero.webp' },
+    { category: '校园', title: 'PINES主校区楼体', description: 'Main Campus Building，可以先了解校区环境。', src: 'assets/philippines/pines-campus-building.jpg' },
+    { category: '教室', title: '一对一教室', description: 'Main Campus一对一教室，用于口语和个别纠错。', src: 'assets/philippines/pines-one-to-one-classroom.webp' },
+    { category: '教室', title: '4:1小团体教室', description: '小团体课程空间，适合讨论、表达和综合训练。', src: 'assets/philippines/pines-group-classroom.webp' },
+    { category: '住宿', title: 'Main Campus单人房', description: '单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/pines-dormitory-single.webp' },
+    { category: '住宿', title: 'Main Campus六人房', description: '六人房空间，适合控制预算但需提前确认空房。', src: 'assets/philippines/pines-dormitory-sextuple.webp' },
+    { category: '餐厅', title: 'PINES Cafeteria', description: 'PINES 2026年餐厅，校内自助取餐和厨房区域。', src: 'assets/philippines/pines-cafeteria.webp' },
+    { category: '设施', title: 'Library Main', description: '图书与学习资源空间。', src: 'assets/philippines/pines-library.webp' },
+    { category: '设施', title: 'Front Desk', description: '前台与学生支持空间。', src: 'assets/philippines/pines-front-desk.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -181,14 +181,14 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     { label: 'IELTS Campus地址', value: '#49 Chapis Village, Marcos Highway, Baguio City' },
     { label: '课程方向', value: 'Power Speaking、Intensive ESL、Power ESL、TOEIC、Family、Pre-IELTS、IELTS、IELTS Guarantee' },
     { label: '住宿房型', value: '主校区与雅思校区的房型及价格相同；可选单人房、双人房、四人房、5B Solo、六人房及亲子房' },
-    { label: '官方资质', value: 'TESDA、Bureau of Immigration、Department of Tourism、SEC、Baguio City Hall等登记' },
+    { label: '学校资质', value: 'TESDA、Bureau of Immigration、Department of Tourism、SEC、Baguio City Hall等登记' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/pines-campus-hero.webp', title: '碧瑶老牌学习型学校', text: 'PINES自2001年创立，是碧瑶代表性英语学校之一，适合把学习放在第一位的学生。' },
     { image: 'assets/philippines/pines-campus-building.jpg', title: 'Main与IELTS校区分流', text: 'Main Campus更适合ESL、口语、TOEIC和亲子方向；IELTS Campus更适合雅思目标和保证班。' },
     { image: 'assets/philippines/pines-one-to-one-classroom.webp', title: '课程强度选择细', text: '从Light ESL 4到Power ESL 7、Intensive ESL和EB PRO，可按自律程度和目标调整强度。' },
-    { image: 'assets/philippines/pines-library.webp', title: '雅思保证班规则清晰', text: '官方雅思保证班强调每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
+    { image: 'assets/philippines/pines-library.webp', title: '雅思保证班规则清晰', text: '雅思保证班有每周六模考、咨询、入学分数门槛、95%出勤和官方考试安排。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -348,14 +348,14 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     'PINES要先分Main Campus和IELTS Campus，再决定课程，不建议只按学校名报名。',
     '雅思保证班有入学分数、出勤率、模考和校规要求，需逐项确认。',
     '5B Solo、六人房、单人房和寒暑假档期建议尽早确认空房。',
-    '费用表为2026年公开参考，最终会随学校政策、优惠、汇率和个人情况变化。',
+    '费用为2026年参考价，最终会随学校政策、优惠、汇率和个人情况变化。',
     '最终报名以学校正式录取、付款节点和顾问确认报价为准。',
   ];
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶PINES语言学校适合零基础吗？', answer: '可以先看Main Campus的Light ESL、Power Speaking或Intensive ESL。完全零基础不建议直接报名雅思保证班，因为保证班有入学分数门槛。' },
     { question: 'Main Campus和IELTS Campus怎么选？', answer: '想提升基础口语、综合英语、TOEIC或亲子方向，优先看Main Campus；已有雅思目标和一定基础，再考虑IELTS Campus。' },
-    { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。学校付款部分显示课程、住宿、附加费和优惠；到校后学杂费另列SSP、SSP-E Card、ACR-I Card、签证续签、水电和学生证，可选接机也会按当前选择计入。校内预存款、房间押金和洗衣服务需另行准备，不计入学杂费合计。' },
-    { question: 'PINES雅思保证班有什么要求？', answer: '官方资料列出8或12周、5.5到7.0目标分数、入学分数门槛、每周六模考、95%出勤、100%参加模考等规则，报名时需按目标分数逐项确认。' },
+    { question: '这里的报价包含全部费用吗？', answer: '不包含全部。学校付款部分显示课程、住宿、附加费和优惠；到校后学杂费另列SSP、SSP-E Card、ACR-I Card、签证续签、水电和学生证，可选接机也会按当前选择计入。校内预存款、房间押金和洗衣服务需另行准备，不计入学杂费合计。' },
+    { question: 'PINES雅思保证班有什么要求？', answer: '保证班为8或12周，目标分数5.5到7.0，有入学分数门槛、每周六模考、95%出勤、100%参加模考等规则，报名时需按目标分数逐项确认。' },
     { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名PINES，思达启航顾问会免费协助菲律宾入境及签证相关手续，并在出发前发送行前清单和费用提醒。' },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -453,7 +453,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
     this.http.get<PinesRoomAvailabilityResponse>(url).pipe(
       catchError(() => {
         this.roomAvailabilityLoading = false;
-        this.roomAvailabilityError = '学校公开房态暂时无法读取，请稍后再试或联系顾问确认。';
+        this.roomAvailabilityError = '学校房态暂时无法读取，请稍后再试或联系顾问确认。';
         return EMPTY;
       }),
     ).subscribe((availability) => {
@@ -554,7 +554,7 @@ export class PinesSchoolDetailComponent implements OnInit, AfterViewInit, OnDest
       this.roomPlans = [stablePlan, preferredPlan].filter((plan, index, all): plan is PinesRoomPlan =>
         !!plan && all.findIndex((item) => item && this.planKey(item) === this.planKey(plan)) === index);
       if (!this.roomPlans.length) {
-        this.roomPlanError = `当前公开房态暂时找不到覆盖${this.selectedAvailabilityWeeks}周的完整组合，建议调整入学日期或联系顾问向学校人工确认。`;
+        this.roomPlanError = `当前房态暂时找不到覆盖${this.selectedAvailabilityWeeks}周的完整组合，建议调整入学日期或联系顾问向学校人工确认。`;
       }
     });
   }

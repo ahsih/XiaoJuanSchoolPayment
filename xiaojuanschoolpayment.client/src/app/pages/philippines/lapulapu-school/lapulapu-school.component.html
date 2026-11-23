@@ -111,7 +111,7 @@
       <section class="cia-section" id="courses">
         <div class="section-heading">
           <h2>课程怎么理解？</h2>
-          <p>LCIC公开课表包含英语技能、Presentation、Hospitality、TOEIC S&W、SDGs、菲律宾文化和多语言选修；教师一对一是额外付费选项，Buddy System免费。</p>
+          <p>LCIC课表包含英语技能、Presentation、Hospitality、TOEIC S&W、SDGs、菲律宾文化和多语言选修；教师一对一是额外付费选项，Buddy System免费。</p>
         </div>
         <div class="course-choice-grid">
           <article *ngFor="let course of courses">
@@ -130,7 +130,7 @@
           <label>学习周数<input type="text" [value]="selectedProgramWeeks + '周'" readonly /></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-          <p>报价器按LCIC公开2026费用计算主项目费，并加入一次性入学金USD 200；教材、机票、保险和可选1:1另计。</p>
+          <p>报价器按LCIC 2026费用计算主项目费，并加入一次性入学金200美元；教材、机票、保险和可选1:1另计。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
@@ -159,9 +159,9 @@
 
       <section class="tables-section" id="fee-structure">
         <div>
-          <h2><mat-icon>receipt_long</mat-icon>LCIC 2026公开档期与费用</h2>
-          <p class="table-intro">LCIC费用不同于普通语言学校按课程和房型拆价，官方公开为项目打包价。主费用包含课程、宿舍、三餐和水电，另需一次性入学金USD 200。</p>
-          <div class="data-table lapulapu-fee-table" role="table" aria-label="LCIC 2026公开费用参考">
+          <h2><mat-icon>receipt_long</mat-icon>LCIC 2026档期与费用</h2>
+          <p class="table-intro">LCIC费用不同于普通语言学校按课程和房型拆价，而是项目打包价。主费用包含课程、宿舍、三餐和水电，另需一次性入学金200美元。</p>
+          <div class="data-table lapulapu-fee-table" role="table" aria-label="LCIC 2026费用参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">项目</span>
               <span role="columnheader">周数</span>
@@ -179,10 +179,10 @@
         <aside class="price-note">
           <h3>费用阅读重点</h3>
           <ul>
-            <li>4周短期项目公开价为USD 2,080，14周为USD 7,280，18周为USD 9,360。</li>
-            <li>入学金USD 200另计，官方说明包含机场校车、学生签证、ACR I-Card和SSP。</li>
+            <li>4周短期项目为2,080美元，14周为7,280美元，18周为9,360美元。</li>
+            <li>入学金200美元另计，包含机场校车、学生签证、ACR I-Card和SSP。</li>
             <li>教材、机票、保险、个人消费和额外一对一课程不含在主费用内。</li>
-            <li>2027费用公开为TBD，当前页面按2026公开费用呈现。</li>
+            <li>2027年费用尚未公布，这里按2026年费用列出。</li>
           </ul>
         </aside>
       </section>
@@ -201,12 +201,12 @@
           <article>
             <img [src]="galleryImages[0].src" alt="LCIC校园生活" />
             <h3><mat-icon>security</mat-icon>24小时宿舍支持</h3>
-            <p>官方宿舍页列出House Parents、安保、CCTV、ID access、24小时医护支持和宿舍服务柜台。</p>
+            <p>宿舍有House Parents、安保、CCTV、ID access、24小时医护支持和宿舍服务柜台。</p>
           </article>
           <article>
             <img [src]="galleryImages[5].src" alt="LCIC宿舍交流空间" />
             <h3><mat-icon>hot_tub</mat-icon>浴场、桑拿与学习室</h3>
-            <p>公开资料列有大浴场、露天浴、桑拿、学习室、活动室、洗衣区和宿舍内小商店。</p>
+            <p>宿舍有大浴场、露天浴、桑拿、学习室、活动室、洗衣区和宿舍内小商店。</p>
           </article>
         </div>
         <div class="daily-flow">
@@ -233,19 +233,6 @@
         </div>
       </section>
 
-      <section class="cia-section source-section">
-        <div class="section-heading">
-          <h2>资料来源</h2>
-          <p>本页根据LCIC官方学校网站、官方宿舍页、LCIC-CELS信息页、LCIC Japan英文档期费用页和Q&A整理。价格、档期、入学名额和规则可能更新，报名前以学校最新确认为准。</p>
-        </div>
-        <div class="source-links">
-          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
-            <mat-icon>open_in_new</mat-icon>
-            {{ source.label }}
-          </a>
-        </div>
-      </section>
-
       <app-sida-why-section
         [schoolName]="'菲律宾宿务Lapulapu'"
         [supportTitle]="'深圳总部 + 宿务驻点支持'"
@@ -264,11 +251,11 @@
         </details>
         <details>
           <summary>费用是否包含SSP和签证？</summary>
-          <p>公开说明写明一次性入学金USD 200包含机场校车、学生签证、ACR I-Card和SSP。实际政策可能随移民局和学校规则调整，报名前需要再次确认。</p>
+          <p>一次性入学金200美元包含机场校车、学生签证、ACR I-Card和SSP。实际政策可能随移民局和学校规则调整，报名前需要再次确认。</p>
         </details>
         <details>
           <summary>可以住校外酒店吗？</summary>
-          <p>公开Q&A说明国际学生需要住在LCIC校内宿舍，与菲律宾本地学生和其他国际学生共同生活。若有特殊情况，需要提前和学校确认。</p>
+          <p>国际学生需要住在LCIC校内宿舍，与菲律宾本地学生和其他国际学生共同生活。若有特殊情况，需要提前和学校确认。</p>
         </details>
       </section>
 

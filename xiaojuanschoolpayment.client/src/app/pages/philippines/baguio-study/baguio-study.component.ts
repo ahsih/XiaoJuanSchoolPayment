@@ -52,11 +52,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 const BAGUIO_SCHOOL_SHORT_NAMES: Record<string, string> = {
   '菲律宾碧瑶PINES语言学校': 'PINES',
   '菲律宾碧瑶JIC挑战校区': 'Baguio JIC 挑战校区',
@@ -185,7 +180,7 @@ export class BaguioStudyComponent {
       route: '/philippines-study/baguio/beci-sparta-campus',
       startingPrice: '报名按当期校区报价单与自动报价为准',
       courses: ['ESL', 'IELTS', 'TOEIC', 'Business English', 'Speaking Clinic'],
-      accommodation: '课程、住宿、餐食和晚间学习集中在校内，具体房型与管理规则以当期校区资料为准。',
+      accommodation: '课程、住宿、餐食和晚间学习集中在校内，具体房型与管理规则以当期校区安排为准。',
       facilities: '校区式学习环境、宿舍、餐厅、自习区和口语反馈系统是主要关注点。',
       bestFor: '想要严格管理、口语诊断、考试训练或更高强度学习节奏的学生。',
       consultantNote: '报名时要明确选择 BECI Sparta Campus；它与更弹性的 API BECI City Campus 定位不同。',
@@ -209,7 +204,7 @@ export class BaguioStudyComponent {
       location: 'Baguio City / City Campus',
       style: 'BECI成人弹性校区，Workcation / Non-Sparta / Coworking / Lite / Native / Unlimited / Junior ESL',
       route: '/philippines-study/baguio/api-beci-city-campus',
-      startingPrice: 'USD 1,270 / 4周起（Lite ESL + Studio Quad，中介优惠免注册费）',
+      startingPrice: 'USD 1,270 / 4周起（Lite ESL + Studio Quad，通过思达启航报名免注册费）',
       courses: [
         'Lite ESL',
         'Native ESL',
@@ -217,9 +212,9 @@ export class BaguioStudyComponent {
         'Junior ESL',
       ],
       accommodation:
-        '公开费用表按Studio Single、Studio Double、Studio Quad、Semi Master Single、Semi Single核价；Studio Double通常需确认同性朋友、家人或夫妻等使用规则。',
+        '房型分为Studio Single、Studio Double、Studio Quad、Semi Master Single、Semi Single；Studio Double通常需确认同性朋友、家人或夫妻等使用规则。',
       facilities:
-        '公开资料列卖店、Coworking Space、Online Meeting Room、Library、自习室、每日三餐、无门禁和免费外部健身房。',
+        '设施包括卖店、Coworking Space、Online Meeting Room、Library、自习室，提供每日三餐，无门禁，可免费使用外部健身房。',
       bestFor:
         '成人、专业人士、远程工作者、想要弹性ESL/商务/IELTS并接受Baguio城市环境的学生。',
       consultantNote:
@@ -233,7 +228,7 @@ export class BaguioStudyComponent {
       route: '/philippines-study/baguio/monol',
       startingPrice: 'USD 1,250 / 4周起（ESL 4 + 四人胶囊式上下铺 + 注册费）',
       courses: ['ESL 4', 'General ESL', 'IELTS', 'LEAP'],
-      accommodation: 'Hotel-style宿舍管理，2025价目表房型从四人胶囊式上下铺到Premium Single，餐食另计更弹性。',
+      accommodation: 'Hotel-style宿舍管理，2025年房型从四人胶囊式上下铺到Premium Single，餐食另计更弹性。',
       facilities: '屋顶健身房、桑拿、高尔夫练习区、咖啡厅、共享厨房、自助洗衣和自习空间。',
       bestFor: '计划 8 周以上长期学习、重视生活稳定度和住宿舒适度的成人学生。',
       consultantNote: '如果学生担心高压管理过重，MONOL 可作为“稳态学习型”候选；仍需核对房型、餐费和当地费用。',
@@ -285,10 +280,10 @@ export class BaguioStudyComponent {
       route: '/philippines-study/baguio/help-english-longlong-campus',
       startingPrice: '4周USD 1,580起（ESL + 双人间；注册费USD 100另计）',
       courses: ['ESL', 'ESL Intensive', 'Business English', 'IELTS Basic & Intermediate', 'IELTS Advanced', 'IELTS Guaranteed'],
-      accommodation: '2025年费用表列Single、Double与2+1房型；4周住宿费分别为USD 1,030、780与850。',
+      accommodation: '2025年有Single、Double与2+1房型；4周住宿费分别为USD 1,030、780与850。',
       facilities: '7层山景校园、1:1教室、小组教室、大讲堂、宿舍、餐厅、健身房、学生休息区、便利店、医务室和洗衣服务。',
       bestFor: '想要碧瑶安静山城、高强度Sparta、IELTS备考和严格日程的学生。',
-      consultantNote: 'HELP官网提示Longlong设施升级期间，活跃Sparta课程和资深教师目前整合在Clark；报名前必须先确认Longlong当期是否开放、是否由Clark承接。',
+      consultantNote: 'HELP Longlong设施升级期间，活跃Sparta课程和资深教师目前整合在Clark；报名前必须先确认Longlong当期是否开放、是否由Clark承接。',
     },
   ];
 
@@ -336,7 +331,7 @@ export class BaguioStudyComponent {
     },
     {
       title: '最新优惠',
-      text: '优惠需以学校当期邮件、价目表或代理通知为准。建议在确认入学日、周数和房型后再判断是否真的省钱。',
+      text: '优惠以学校当期通知为准。建议在确认入学日、周数和房型后再判断是否真的省钱。',
     },
   ];
 
@@ -364,22 +359,6 @@ export class BaguioStudyComponent {
       question: '报名前最应该核对什么？',
       answer: '先核对入学日、课程可开课状态、房型空位、校区、退改规则、优惠有效期和当地费用明细。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '菲律宾碧瑶PINES语言学校 官方网站', url: 'https://pinesacademy.com/' },
-    { label: '菲律宾碧瑶BECI斯巴达校区 官方网站', url: 'https://beciedu.com/sparta-campus/' },
-    { label: 'APIBECI City Campus官方介绍', url: 'https://beciedu.com/city-campus/' },
-    { label: 'API BECI City Campus公开费用与学校资料', url: 'https://global-click.jp/contents/school/api-beci-city-campus/' },
-    { label: 'API BECI City Campus 2026学校资料', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
-    { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
-    { label: 'MONOL主校区 官方网站', url: 'https://mymonol.com/en/' },
-    { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
-    { label: '菲律宾碧瑶A&J e-Edu语言学校 官方网站', url: 'https://www.anjedudc.com/' },
-    { label: 'HELP English Baguio / Longlong官方页面', url: 'https://www.helpenglish.org/p/baguio-campus.html' },
-    { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
   ];
 
   readonly page = createCityStudyPage({

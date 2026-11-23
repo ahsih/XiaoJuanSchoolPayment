@@ -14,8 +14,7 @@
               <span>位于Clark Freeport Zone的老牌HELP体系。</span>
               <span>主打Sparta管理、ESL、IELTS、TOEIC和Business。</span>
               <span>适合需要强管理节奏和考试路线的学生。</span>
-              <span>本页按HELP官网Clark校区、所附2026年</span>
-              <span>USD价目表与官网PHP当地费用整理。</span>
+              <span>课程住宿以美元计价，当地费用以比索另列。</span>
             </p>
             <div class="hero-tags" aria-label="HELP Clark特点">
               <span><mat-icon>location_on</mat-icon>Clark Freeport Zone</span>
@@ -29,7 +28,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
-                查看官方课程价格
+                查看课程价格
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -39,14 +38,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              HELP 2026年价目表课程住宿按USD计算，当地费用按PHP另列；正式报名仍需以学校回函、空房、签证规则和当期价目表为准。
+              HELP 2026年课程住宿以美元计价，当地费用以比索另列；正式报名以学校当期报价、空房和签证规则为准。
             </p>
           </div>
 
           <div class="hero-media" aria-label="HELP Clark校园图片展示">
             <figure class="feature-photo">
               <img src="assets/philippines/help-clark-main-building.webp" alt="菲律宾克拉克HELP English语言学校主楼" />
-              <figcaption>HELP官网图片：Clark Campus主楼</figcaption>
+              <figcaption>HELP Clark Campus主楼</figcaption>
             </figure>
             <div class="media-strip" aria-label="HELP Clark图片缩略图">
               <figure *ngFor="let image of galleryImages.slice(1, 4)">
@@ -61,16 +60,16 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  按官方USD课程费 + 宿舍费公式估算
+                  按美元课程费 + 宿舍费估算
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  4周PHP当地费用表参考总额为PHP20,800
+                  4周当地费用参考合计20,800比索
                 </li>
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源为HELP English官网Clark Campus页面；课程、注册和住宿费按所附2026年价目表，当地费用参考HELP官网费用页面。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -96,8 +95,8 @@
         <section class="section-block" id="gallery">
           <div class="section-heading">
             <span>校园图片</span>
-            <h2>使用HELP官方图片核对Clark校区和费用资料</h2>
-            <p>HELP官网公开的Clark实景图片不多，因此本页只使用官方主楼图和官方费用图，不混入第三方学校图片。</p>
+            <h2>HELP Clark校区与费用一览</h2>
+            <p>图片仅供参考，具体以学校实际安排为准。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="HELP Clark图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -212,7 +211,7 @@
             <div class="section-heading">
               <span>HELP 2026年4周课程费</span>
               <h2>课程费按USD列示，不含宿舍与当地费用</h2>
-              <p>以下按所附HELP Clark 2026年价目表整理，正式报价以学校当期文件为准。</p>
+              <p>以下为HELP Clark 2026年价格，正式报价以学校当期报价为准。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="HELP 2026年4周课程费">
               <div class="table-row table-head" role="row">
@@ -255,7 +254,7 @@
             <div class="section-heading">
               <span>HELP 2026年4周住宿费</span>
               <h2>宿舍费含餐食和校内饮用水</h2>
-              <p>以下按所附HELP Clark 2026年住宿费整理，房型空位要按入学日确认。</p>
+              <p>以下为HELP Clark 2026年住宿费，房型空位要按入学日确认。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="HELP 2026年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -301,14 +300,14 @@
               <span>前期USD参考</span>
               <strong>{{ quoteText }}</strong>
               <em>当地PHP费用、机票、保险、个人消费另算</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放、优惠和学校回函。</p>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">
-              注意：HELP官网当地费用表显示Clark 4周本地费用参考总额PHP20,800；签证延签、ACR、教材和长期停留费用会随周数变化。
+              注意：Clark 4周当地费用参考合计20,800比索；签证延签、ACR、教材和长期停留费用会随周数变化。
             </p>
           </section>
         </section>
@@ -317,7 +316,7 @@
           <div class="section-heading">
             <span>到校支付费用</span>
             <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按HELP官方Clark当地费用表整理，金额可能随菲律宾政府规则和学校政策调整。</p>
+            <p>以下金额可能随菲律宾政策、汇率和学校规则调整，以学校实际收取为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -341,9 +340,9 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
+            <h2>价格说明</h2>
             <p>
-              本页课程费、注册费和住宿费按所附HELP Clark 2026年价目表更新；当地费用与学校资料参考HELP English官网Local Fee、Clark Campus、ESL、IELTS、TOEIC、Business English和About页面。学校价格、当地费用、房型空位、考试安排和接机可能调整，报名以学校正式报价为准。
+              课程费、注册费和住宿费为HELP Clark 2026年价格。学校价格、当地费用、房型空位、考试安排和接机可能调整，报名以学校正式报价为准。
             </p>
           </div>
         </section>
@@ -383,19 +382,6 @@
           </ul>
         </section>
 
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>HELP官方参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
-        </section>
-
         <section class="faq-section" id="faq">
           <div class="section-heading"><span>常见问题</span><h2>报名HELP Clark前常被问到的问题</h2></div>
           <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
@@ -408,7 +394,7 @@
           <strong>{{ selectedWeeks }}周</strong>
           <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteText }}</div>
-          <small>4周Clark当地费用表参考PHP20,800</small>
+          <small>4周Clark当地费用参考20,800比索</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">计算费用<mat-icon>calculate</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>
