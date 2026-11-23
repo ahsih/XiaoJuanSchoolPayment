@@ -397,7 +397,7 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/cebu/ev-la-mer',
-        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school.component').then(m => m.LaMerSchoolComponent),
+        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school-page.component').then(m => m.LaMerSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/ev-academy',
@@ -412,7 +412,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/bcebu',
         loadComponent: () =>
-          import('./pages/philippines/bcebu-school/bcebu-school.component').then((m) => m.BCebuSchoolComponent),
+          import('./pages/philippines/bcebu-school/bcebu-school-page.component').then((m) => m.BCebuSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/cpils',
@@ -563,7 +563,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/hana-academy',
         loadComponent: () =>
-          import('./pages/philippines/hana-school/hana-school.component').then((m) => m.HanaSchoolComponent),
+          import('./pages/philippines/hana-school/hana-school-page.component').then((m) => m.HanaSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/gitc-college-international-language-center',

@@ -71,10 +71,33 @@ export interface PhPageCopy {
   studentCare?: CiaCopy['studentCare'];
   practicalGuide?: CiaCopy['practicalGuide'];
   studentTracks?: CiaCopy['studentTracks'];
-  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'>;
+  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'> & {
+    /** Line under the short text reviews (textReviews); HANA. */
+    textNote?: string;
+  };
+  /** School-only: heading of the offers section above the quote (profile.offers; CPILS). */
+  offers?: { eyebrow: string; title: string; intro: string; note?: string };
   sida: CiaCopy['sida'];
   faq: CiaCopy['faq'];
   finalCta: CiaCopy['finalCta'];
+}
+
+/**
+ * One card of the optional offers section above the quote (CPILS). It hides itself from `until`, or when
+ * none of its `promotionIds` is enabled in the applied content document, so an ended offer leaves the page.
+ */
+export interface PhOfferCard {
+  icon: string;
+  title: string;
+  /** The headline amount, e.g. 立减75美元. */
+  amount: string;
+  /** Who qualifies and when, one short line. */
+  text: string;
+  /** An optional second line, e.g. the week tiers. */
+  detail?: string;
+  /** Local date (YYYY-MM-DD) from which the card is hidden. */
+  until?: string;
+  promotionIds?: readonly string[];
 }
 
 /** One column of the daily timetable, e.g. 周一至周四 / 周五, or 半斯巴达 / 斯巴达. */
@@ -105,6 +128,12 @@ export type PhRoomProfile = Optional<
 > & { rateIds?: readonly string[] };
 
 export type PhAlbumCategory = Exclude<GalleryCategory, '全部'>;
+
+/** A short written review; `who` describes the reviewer without a name (e.g. 带孩子来读的家长). */
+export interface PhTextReview {
+  who: string;
+  text: string;
+}
 
 /** One video of the compact layout's hero album; 'tall' is a vertical phone clip. */
 export interface PhVideoItem {
@@ -146,6 +175,16 @@ export interface PhSchoolProfile {
    * type (user rule 2026-11-21); a video showing several room types stays in the hero album only.
    */
   roomVideos?: Readonly<Record<string, PhVideoItem>>;
+  /**
+   * School-only: peak seasons without a surcharge (HANA), marked on the calendar with `title` (e.g. 旺季不加价)
+   * instead of the surcharge line. CIA leaves it out and charges its surcharge from the content document.
+   */
+  peakSeasonsWithoutSurcharge?: { title: string; ranges: ReadonlyArray<{ start: string; end: string; label: string }> };
+  /**
+   * School-only: short written reviews without the reviewers' names, shown as cards in the reviews section
+   * (HANA; styles in ph-school-page-options.css). CIA uses studentReviews instead.
+   */
+  textReviews?: readonly PhTextReview[];
   /** schoolCode of the content document, e.g. 'CIA'. */
   code: string;
   /** Short school name in headings, labels and the comparison image, e.g. 'CIA'. */
@@ -206,6 +245,8 @@ export interface PhSchoolProfile {
   studentReviews: readonly CiaStudentReview[];
   /** Route of the full student stories; each review's slug is appended. */
   reviewPath: string;
+  /** School-only: current offers shown above the quote with copy.offers (CPILS; styles in ph-school-page-options.css). CIA leaves it out. */
+  offers?: readonly PhOfferCard[];
   holidayCalendars: readonly HolidayCalendar[];
   ieltsComputerExamDates2027: ReadonlyArray<{ month: number; days: number[] }>;
   studentCareServices: readonly StudentCareService[];
