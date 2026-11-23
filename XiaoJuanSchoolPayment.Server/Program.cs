@@ -113,6 +113,7 @@ builder.Services.AddOptions<TencentCosOptions>()
 builder.Services.AddSingleton<ISchoolMediaStorage, TencentCosSchoolMediaStorage>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
 builder.Services.AddAbuseRateLimits();
+builder.Services.AddSingleton<SchoolDataFreshness>();
 builder.Services.AddSingleton<SpaSeoHtmlRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient("TencentCosMedia", client =>
@@ -368,7 +369,7 @@ app.MapControllers();
 
 // SPA fallback with each route's own <title>/description/Open Graph/canonical tags in the HTML, for
 // crawlers and link previews (Baidu, WeChat) that do not run JavaScript. See SpaSeoHtmlRenderer.
-app.MapFallback((HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
+app.MapFallback(async (HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
 {
   var path = context.Request.Path.Value ?? "/";
 
@@ -387,7 +388,7 @@ app.MapFallback((HttpContext context, SpaSeoHtmlRenderer seoHtml) =>
     return Results.File(staticSiteIndex, "text/html; charset=utf-8");
   }
 
-  var html = seoHtml.Render(path, GetPublicOrigin(context.Request, app.Configuration));
+  var html = await seoHtml.RenderAsync(path, GetPublicOrigin(context.Request, app.Configuration), context.RequestAborted);
   if (html == null)
   {
     return Results.NotFound();

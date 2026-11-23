@@ -14,7 +14,6 @@ interface LibraryPage {
   title: string;
   englishTitle: string;
   intro: string;
-  audience: string;
   keywords: string;
   selectionFocus: string;
   cardsTitle: string;
@@ -28,7 +27,6 @@ const libraryPages: Record<string, LibraryPage> = {
     englishTitle: 'Find Schools By Course',
     intro:
       '菲律宾语言学校通常按学习目标设计课程。先确认你要提升口语、备考雅思/多益、学习商务英语，还是安排亲子或青少年项目，再筛选城市和学校会更有效。',
-    audience: '学校库筛选',
     keywords: '一般英语、雅思、多益、商务、亲子、青少年',
     selectionFocus: '课程目标、课时比例、一对一数量、老师反馈、模考体系和适合城市',
     cardsTitle: '常见课程类型',
@@ -137,7 +135,6 @@ const libraryPages: Record<string, LibraryPage> = {
     englishTitle: 'Find Schools By Management Style',
     intro:
       '菲律宾学校差异很大，管理模式会直接影响学习强度和生活自由度。自律较弱或冲刺考试可以选斯巴达，想兼顾学习和生活则更适合半斯巴达或自律型学校。',
-    audience: '学校库筛选',
     keywords: '斯巴达、半斯巴达、自律型、度假型、亲子管理',
     selectionFocus: '门禁时间、晚自习、单词测试、出勤规则、外出限制和宿舍管理',
     cardsTitle: '常见管理模式',
@@ -197,7 +194,6 @@ const libraryPages: Record<string, LibraryPage> = {
     englishTitle: 'Popular School Collection',
     intro:
       '这里整理适合放进学校列表页的热门学校方向，方便用户先快速扫一遍。具体学校是否适合，还要结合城市、预算、课程目标、房型和开课日期来判断。',
-    audience: '学校库筛选',
     keywords: '具体学校列表放页面内、不全部塞进顶部导航',
     selectionFocus: '城市、课程强度、住宿环境、预算、开课日期和适合人群',
     cardsTitle: '热门学校方向',

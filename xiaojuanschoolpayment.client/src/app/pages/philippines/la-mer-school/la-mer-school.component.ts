@@ -30,7 +30,7 @@ export class LaMerSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly subscriptions = new Subscription();
   private timer?: ReturnType<typeof setTimeout>;
   private previewReceived = false;
-  readonly isEditorPreview = window.parent !== window && new URLSearchParams(window.location.search).get('contentPreview') === '1';
+  readonly isEditorPreview = typeof window !== 'undefined' && window.parent !== window && new URLSearchParams(window.location.search).get('contentPreview') === '1';
   content = createDefaultLaMerContentConfig();
   rates: LaMerRates = { ...LA_MER_FALLBACK_RATES };
   mode: 'ordinary' | 'family' = 'ordinary';

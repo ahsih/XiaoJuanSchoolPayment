@@ -44,7 +44,6 @@ interface SourceLink {
 })
 export class AelcSchoolComponent {
   readonly quickFacts: QuickFact[] = [
-    { label: '页面定位', value: '菲律宾克拉克AELC语言学校 兼容页面' },
     { label: '城市', value: 'Clark / Angeles, Pampanga' },
     { label: '适合方向', value: 'Native口语、发音、家庭项目、商务沟通候选' },
     { label: '资料状态', value: 'AELC与同类外教型学校需逐校复核当前招生资料' },

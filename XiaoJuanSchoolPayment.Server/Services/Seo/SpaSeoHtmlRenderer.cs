@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -16,22 +17,30 @@ namespace XiaoJuanSchoolPayment.Server.Services.Seo;
 /// during in-app navigation, and Angular replaces the prerendered body when it starts. "/" is the
 /// prerendered index.html, served as a static file. Missing files fail safe: no index.csr.html or
 /// index.html → 404 (as before), no seo-pages.json → the original HTML.
+/// School pages are prerendered with the prices published when the site was built; each lists the
+/// schools whose data it shows, and is served only while <see cref="SchoolDataFreshness"/> reports that
+/// none of them has changed since. After a new publish the route gets the shell until the next build.
 /// </summary>
 public sealed partial class SpaSeoHtmlRenderer
 {
   private readonly IWebHostEnvironment _environment;
   private readonly ILogger<SpaSeoHtmlRenderer> _logger;
+  private readonly SchoolDataFreshness _freshness;
   private readonly Lazy<Template?> _template;
 
-  public SpaSeoHtmlRenderer(IWebHostEnvironment environment, ILogger<SpaSeoHtmlRenderer> logger)
+  public SpaSeoHtmlRenderer(
+    IWebHostEnvironment environment,
+    ILogger<SpaSeoHtmlRenderer> logger,
+    SchoolDataFreshness freshness)
   {
     _environment = environment;
     _logger = logger;
+    _freshness = freshness;
     _template = new Lazy<Template?>(LoadTemplate, LazyThreadSafetyMode.ExecutionAndPublication);
   }
 
   /// <summary>The HTML for <paramref name="requestPath"/>, or null when there is no built index.html.</summary>
-  public string? Render(string requestPath, string origin)
+  public async Task<string?> RenderAsync(string requestPath, string origin, CancellationToken cancellationToken)
   {
     var template = _template.Value;
     if (template == null)
@@ -48,7 +57,13 @@ public sealed partial class SpaSeoHtmlRenderer
     SeoEntry page = template.Data.Pages.GetValueOrDefault(path)
       ?? template.Data.Sections.FirstOrDefault(section => path.StartsWith(section.Prefix, StringComparison.Ordinal))
       ?? template.Data.Default!;
-    var html = template.Prerendered.GetValueOrDefault(path) ?? template.Shell;
+    var html = template.Shell;
+    if (template.Prerendered.TryGetValue(path, out var prerendered)
+      && (!template.SchoolSnapshots.TryGetValue(path, out var snapshot)
+        || await _freshness.IsUnchangedSinceAsync(snapshot.SchoolIds, snapshot.RenderedAtUtc, cancellationToken)))
+    {
+      html = prerendered;
+    }
 
     var canonical = origin + path;
     var image = page.Image.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
@@ -133,7 +148,9 @@ public sealed partial class SpaSeoHtmlRenderer
     {
       if (File.Exists(dataPath))
       {
-        data = JsonSerializer.Deserialize<SeoData>(File.ReadAllText(dataPath), new JsonSerializerOptions
+        // About 20 MB with the prerendered pages; read it as a stream rather than one big string.
+        using var stream = File.OpenRead(dataPath);
+        data = JsonSerializer.Deserialize<SeoData>(stream, new JsonSerializerOptions
         {
           PropertyNameCaseInsensitive = true,
         });
@@ -149,7 +166,7 @@ public sealed partial class SpaSeoHtmlRenderer
     if (data?.Default == null || shell == null)
     {
       _logger.LogWarning("Per-page SEO tags are disabled: seo-pages.json is missing or the page shell has no </head>.");
-      return new Template(originalHtml, null, new Html(originalHtml, string.Empty), new Dictionary<string, Html>());
+      return new Template(originalHtml, null, new Html(originalHtml, string.Empty), new Dictionary<string, Html>(), new Dictionary<string, SchoolSnapshot>());
     }
 
     data.Sections ??= [];
@@ -168,13 +185,41 @@ public sealed partial class SpaSeoHtmlRenderer
       prerendered[NormalizePath(route)] = page;
     }
 
+    // A school page whose snapshot data is unreadable is not served: it could show old prices.
+    var schoolSnapshots = new Dictionary<string, SchoolSnapshot>(StringComparer.Ordinal);
+    foreach (var (route, school) in data.PrerenderedSchools ?? new Dictionary<string, PrerenderedSchoolData>())
+    {
+      var normalized = NormalizePath(route);
+      var ids = (school?.Schools ?? []).Select(id => Guid.TryParse(id, out var value) ? value : (Guid?)null).ToList();
+      if (school == null
+        || ids.Any(id => id == null)
+        || !DateTime.TryParse(school.RenderedAt, CultureInfo.InvariantCulture,
+          DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out var renderedAtUtc))
+      {
+        _logger.LogWarning("The prerendered school page for {Route} has invalid snapshot data; serving the page shell instead.", route);
+        prerendered.Remove(normalized);
+        continue;
+      }
+
+      schoolSnapshots[normalized] = new SchoolSnapshot(ids.Select(id => id!.Value).ToList(), renderedAtUtc);
+    }
+
     data.Prerendered = null; // Each page is kept once, already split.
-    return new Template(originalHtml, data, shell, prerendered);
+    data.PrerenderedSchools = null;
+    return new Template(originalHtml, data, shell, prerendered, schoolSnapshots);
   }
 
   private sealed record Html(string BeforeHeadEnd, string FromHeadEnd);
 
-  private sealed record Template(string OriginalHtml, SeoData? Data, Html Shell, Dictionary<string, Html> Prerendered);
+  private sealed record Template(
+    string OriginalHtml,
+    SeoData? Data,
+    Html Shell,
+    Dictionary<string, Html> Prerendered,
+    Dictionary<string, SchoolSnapshot> SchoolSnapshots);
+
+  /// <summary>The schools a prerendered school page shows and when it was rendered.</summary>
+  private sealed record SchoolSnapshot(IReadOnlyCollection<Guid> SchoolIds, DateTime RenderedAtUtc);
 
   private sealed class SeoData
   {
@@ -183,6 +228,13 @@ public sealed partial class SpaSeoHtmlRenderer
     public Dictionary<string, SeoEntry> Pages { get; set; } = new(StringComparer.Ordinal);
     public List<SeoSection> Sections { get; set; } = [];
     public Dictionary<string, string>? Prerendered { get; set; }
+    public Dictionary<string, PrerenderedSchoolData>? PrerenderedSchools { get; set; }
+  }
+
+  private sealed class PrerenderedSchoolData
+  {
+    public List<string>? Schools { get; set; }
+    public string RenderedAt { get; set; } = string.Empty;
   }
 
   private class SeoEntry

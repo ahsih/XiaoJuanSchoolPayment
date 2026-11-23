@@ -16,7 +16,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'ireland-study',
     label: '爱尔兰留学',
     route: '/ireland-study/experience-ireland',
-    note: '品牌升级与留学申请主入口',
+    note: '本科、硕士、预科申请与签证、住宿指导',
     children: [
       {
         id: 'why-ireland',
@@ -704,7 +704,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'online-english',
     label: '线上英语',
     route: '/online-english/free-english-test',
-    note: '低门槛引流项目',
+    note: '免费英语测评与在线课程',
     children: [
       {
         id: 'english-test',
@@ -760,7 +760,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'overseas-study-tour',
     label: '海外游学',
     route: '/overseas-study-tour/offers',
-    note: '其他国家游学项目入口',
+    note: '英国等其他国家的游学项目',
     children: [
       {
         id: 'exclusive-offers',
@@ -846,7 +846,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'study-tour-guide',
     label: '游学指南',
     route: '/study-tour-guide/cost',
-    note: '游学 SEO 与决策内容',
+    note: '游学费用、准备和常见问题',
     children: [
       {
         id: 'tour-cost-guide',
@@ -939,7 +939,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'study-abroad-guide',
     label: '留学指南',
     route: '/study-abroad-guide/ireland-cost',
-    note: '爱尔兰留学 SEO 与申请内容',
+    note: '爱尔兰留学费用与申请攻略',
     children: [
       {
         id: 'ireland-study-cost',
@@ -1019,7 +1019,7 @@ export const mainNavigation: NavigationItem[] = [
     id: 'student-feedback',
     label: '学员反馈',
     route: '/student-feedback/study-tour',
-    note: '信任背书',
+    note: '学员的游学故事与反馈',
     children: [
       {
         id: 'youxue-feedback',

@@ -11,7 +11,6 @@ export class CanadaTourComponent {
   readonly page = {
     title: '加拿大游学',
     englishTitle: 'Canada Study Tour',
-    positioning: '国家页，北美英语环境',
     keywords: '加拿大英语、冬夏令营、校园体验、多元文化、自然体验',
     heroImage:
       'https://images.unsplash.com/photo-1517935706615-2717063c2225?auto=format&fit=crop&w=1200&q=80',

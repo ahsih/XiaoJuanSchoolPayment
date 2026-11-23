@@ -11,7 +11,6 @@ export class FranceTourComponent {
   readonly page = {
     title: '法国游学',
     englishTitle: 'France Study Tour',
-    positioning: '国家页，补充欧洲目的地',
     keywords: '法语、艺术文化、欧洲课堂、巴黎、设计',
     heroImage:
       'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80',

@@ -6,7 +6,6 @@ interface IrelandInfoPage {
   title: string;
   englishTitle: string;
   summary: string;
-  audience: string;
   keywords: string;
   heroImage: string;
   metrics: { value: string; label: string }[];
@@ -33,7 +32,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   experience: {
     title: '为什么选择爱尔兰留学',
     englishTitle: 'Why Study In Ireland',
-    audience: '爱尔兰留学入口页，先判断国家与申请路径是否匹配',
     keywords: '院校官网、官方招生、英语授课、欧盟背景、就业与生活',
     heroImage:
       'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1200&q=80',
@@ -113,7 +111,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   educationSystem: {
     title: '爱尔兰教育系统',
     englishTitle: 'Ireland Education System',
-    audience: '解释本科、硕士、预科、语言等体系',
     keywords: '本科、硕士、预科、语言课程、综合大学、理工大学、私立学院',
     heroImage:
       'https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=1200&q=80',
@@ -161,7 +158,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   working: {
     title: '在爱尔兰工作',
     englishTitle: 'Working In Ireland',
-    audience: '承接毕业后工作兴趣',
     keywords: '学生兼职、实习、毕业后工作、Stamp 1G、就业规划',
     heroImage:
       'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80',
@@ -195,9 +191,9 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
         text: '英文简历、LinkedIn、面试表达、专业技能证据和实习经历，比“到了当地再说”更能影响就业结果。',
       },
     ],
-    guideTitle: '内容定位建议',
+    guideTitle: '在爱尔兰工作分几个层次',
     guideText:
-      '这一页适合把“能不能工作”讲清楚，但不要承诺结果。更好的转化方式是把工作机会拆成学习期间兼职、课程实习、毕业后签证和长期职业规划四个层次。',
+      '在爱尔兰能不能工作，要分开看：学习期间兼职、课程实习、毕业后签证和长期职业规划，各有不同的条件。没有人能保证结果，最好按自己的情况提前规划。',
     checklist: [
       '申请前确认课程是否符合学生签证和毕业后工作路径要求。',
       '预算规划不要依赖兼职收入，生活费和学费应先准备充足。',
@@ -215,7 +211,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   economyCareers: {
     title: '爱尔兰经济与就业',
     englishTitle: 'Ireland Economy And Careers',
-    audience: '增强就业与未来发展吸引力',
     keywords: '科技、制药、金融、工程、跨国公司、欧洲总部',
     heroImage:
       'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
@@ -269,12 +264,11 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   workStudy: {
     title: '爱尔兰半工半读',
     englishTitle: 'Study And Work In Ireland',
-    audience: '吸引预算敏感、希望合法兼职的用户',
     keywords: '半工半读、学生兼职、语言提升、预算规划、毕业后工作',
     heroImage:
       'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=80',
     summary:
-      '爱尔兰半工半读页面适合承接预算敏感、希望在英语环境中边学习边积累工作认知的用户。页面重点不是承诺“靠打工覆盖全部费用”，而是帮助学生理解学习、兼职、签证规则、预算和长期就业规划之间的关系。',
+      '爱尔兰半工半读适合预算有限、希望在英语环境中边学习边积累工作经验的学生。它不是“靠打工覆盖全部费用”，关键是理解学习、兼职、签证规则、预算和长期就业规划之间的关系。',
     metrics: [
       { value: '学习', label: '先确保课程、出勤和签证合规' },
       { value: '兼职', label: '按官方工时和课程规则安排' },
@@ -285,7 +279,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
       {
         icon: 'school',
         title: '课程是核心',
-        text: '用户虽然关注兼职，但页面需要先说明课程类型、学习目标、出勤要求和英语提升路径。学习合规是后续兼职和签证稳定的基础。',
+        text: '很多学生最关心兼职，但要先弄清课程类型、学习目标、出勤要求和英语提升路径。学习合规是后续兼职和签证稳定的基础。',
       },
       {
         icon: 'schedule',
@@ -305,7 +299,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
     ],
     guideTitle: '适合哪些学生',
     guideText:
-      '这个页面适合给预算敏感但目标清晰的学生：他们希望控制成本，也愿意接受真实英语环境训练。页面语气要稳，不夸大兼职收入，把“合法合规、总预算、学习优先”放在前面。',
+      '这条路线适合预算有限但目标清晰的学生：既想控制成本，也愿意在真实英语环境里锻炼。不要高估兼职收入，合法合规、总预算和学习优先要放在前面。',
     checklist: [
       '先确认目标课程、学习周期、城市和住宿预算。',
       '确认签证与课程规则是否允许兼职，以及可工作的时间范围。',
@@ -323,7 +317,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   admissionInfo: {
     title: '爱尔兰院校招生信息',
     englishTitle: 'Ireland Admission Information',
-    audience: '参考爱尔兰教育官网的招生信息结构',
     keywords: '招生信息、入学要求、申请材料、截止日期、英语要求',
     heroImage:
       'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
@@ -357,9 +350,9 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
         text: '不要只看最低要求。真实录取还会受专业竞争、申请批次、材料完整度和学生背景匹配度影响。',
       },
     ],
-    guideTitle: '更适合做成院校聚合页',
+    guideTitle: '先读懂招生信息',
     guideText:
-      '这一页可以作为“院校库”的招生入口：先解释如何读懂招生信息，再引导用户按学校、专业、申请阶段或预算继续筛选。',
+      '先学会读懂学校的招生信息，再按学校、专业、申请阶段或预算继续筛选，选校会更有方向。',
     checklist: [
       '先确认申请本科、硕士、预科、语言课程还是中学项目。',
       '把学校要求和目标专业要求分开看，专业要求通常更关键。',
@@ -377,7 +370,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   scholarships: {
     title: '爱尔兰院校奖学金信息',
     englishTitle: 'Ireland Scholarships',
-    audience: '比单独放“奖学金”更自然',
     keywords: '奖学金、学费减免、申请条件、优秀学生、院校资助',
     heroImage:
       'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
@@ -413,7 +405,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
     ],
     guideTitle: '别把奖学金当成唯一预算方案',
     guideText:
-      '奖学金可以降低总费用，但不适合作为唯一资金来源。页面应帮助用户建立合理预期：先确认总预算，再评估可以争取哪些学校和专业的奖学金。',
+      '奖学金可以降低总费用，但不适合作为唯一资金来源。建议先确认总预算，再评估可以争取哪些学校和专业的奖学金。',
     checklist: [
       '确认奖学金是否需要单独申请，还是随课程申请自动评估。',
       '确认奖学金适用本科、硕士、预科还是特定学院或专业。',
@@ -431,12 +423,11 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   universities: {
     title: '爱尔兰综合性大学',
     englishTitle: 'Irish Universities',
-    audience: '院校分类页',
     keywords: '综合性大学、TCD、UCD、高威大学、科克大学、都柏林城市大学',
     heroImage:
       'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80',
     summary:
-      '爱尔兰综合性大学页面用于把重点大学集中放在一起，帮助用户理解大学类型、学位层级、专业覆盖和申请难度。相比单个学校页面，这一页更适合作为院校库的分类入口。',
+      '这里把爱尔兰的重点综合性大学放在一起，帮助你了解大学类型、学位层级、专业覆盖和申请难度，再进入单个学校详细比较。',
     metrics: [
       { value: 'NFQ', label: '爱尔兰国家资格框架帮助理解学位等级' },
       { value: 'Level 8', label: '荣誉学士通常用于衔接硕士申请' },
@@ -465,9 +456,9 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
         text: '综合大学通常对成绩、语言和专业背景要求更清晰，热门课程竞争更强，需要提前准备材料和备选方案。',
       },
     ],
-    guideTitle: '适合作为院校库分类页',
+    guideTitle: '先了解大学类别，再看单校',
     guideText:
-      '这一页不需要替代单校详情页，而是作为“综合性大学”入口，让用户先理解大学类别和筛选逻辑，再进入TCD、UCD、高威大学、科克大学、DCU等单校页面。',
+      '先理解综合性大学的类别和筛选方法，再进入TCD、UCD、高威大学、科克大学、DCU等单校页面比较。',
     checklist: [
       '先按专业方向筛学校，再看排名和城市偏好。',
       '确认课程对应的学位等级、授予机构和后续升学路径。',
@@ -485,12 +476,11 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   technologyUniversities: {
     title: '爱尔兰理工大学/理工学院',
     englishTitle: 'Irish Technological Universities',
-    audience: '兼容爱尔兰院校名称变化',
     keywords: '理工大学、理工学院、应用型课程、TUD、TUS、SETU、MTU、ATU',
     heroImage:
       'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80',
     summary:
-      '爱尔兰理工大学和理工学院适合重视应用型学习、实践项目和就业衔接的学生。随着院校整合升级，很多原理工学院已发展为Technological University，因此页面需要同时兼容“理工大学”和“理工学院”的叫法。',
+      '爱尔兰理工大学和理工学院适合重视应用型学习、实践项目和就业衔接的学生。随着院校整合升级，很多原理工学院已发展为Technological University，所以“理工大学”和“理工学院”两种叫法都会见到。',
     metrics: [
       { value: '应用型', label: '课程更强调项目、实验和职业能力' },
       { value: '多校区', label: '不少理工大学覆盖多个城市校区' },
@@ -501,7 +491,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
       {
         icon: 'engineering',
         title: '名称正在变化',
-        text: '爱尔兰院校体系中，一些原Institute of Technology已经整合或升级为Technological University，中文页面应同时保留理工大学和理工学院两种表达。',
+        text: '爱尔兰院校体系中，一些原Institute of Technology已经整合或升级为Technological University，中文资料里理工大学和理工学院两种说法都会出现。',
       },
       {
         icon: 'science',
@@ -539,7 +529,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   privateSchools: {
     title: '爱尔兰私立院校',
     englishTitle: 'Irish Private Colleges',
-    audience: '比“私立学院”覆盖更宽',
     keywords: '私立院校、独立学院、DBS、GCD、商科、会计、职业课程',
     heroImage:
       'https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1200&q=80',
@@ -593,12 +582,11 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   languageSchools: {
     title: '爱尔兰语言学校',
     englishTitle: 'Ireland Language Schools',
-    audience: '连接爱尔兰游学和半工半读',
     keywords: '语言学校、英语课程、短期游学、半工半读、住宿、活动',
     heroImage:
       'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80',
     summary:
-      '爱尔兰语言学校页面可以承接短期英语提升、长期语言课程、半工半读和留学前语言衔接需求。它和菲律宾游学不同，更适合强调欧洲英语环境、签证合规、住宿选择和后续升学规划。',
+      '爱尔兰语言学校适合短期英语提升、长期语言课程、半工半读和留学前语言衔接。它和菲律宾游学不同，更看重欧洲英语环境、签证合规、住宿选择和后续升学规划。',
     metrics: [
       { value: '短期', label: '适合体验英语环境和欧洲生活' },
       { value: '长期', label: '可衔接半工半读或升学准备' },
@@ -629,7 +617,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
     ],
     guideTitle: '和菲律宾游学怎么区分',
     guideText:
-      '菲律宾游学强调高密度一对一和性价比，爱尔兰语言学校更适合欧洲英语环境、长期适应、升学衔接和合法兼职规划。页面要把这两类需求清楚分开。',
+      '菲律宾游学强调高密度一对一和性价比，爱尔兰语言学校更适合欧洲英语环境、长期适应、升学衔接和合法兼职规划。先想清楚自己属于哪一类需求，再选目的地。',
     checklist: [
       '确认学习周期：2-4周体验、8-12周提升，还是半年以上长期课程。',
       '确认学校资质、课程强度、班级人数、国籍比例和出勤要求。',
@@ -647,7 +635,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   nci: {
     title: 'NCI 爱尔兰国家学院',
     englishTitle: 'National College Of Ireland',
-    audience: '重点合作/推荐院校',
     keywords: 'NCI、爱尔兰国家学院、都柏林、商科、计算机、金融服务、数据分析',
     heroImage:
       'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80',
@@ -705,7 +692,6 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   schm: {
     title: 'SCHM 爱尔兰香农酒店管理学院',
     englishTitle: 'Shannon College Of Hotel Management',
-    audience: '院校详情页，中英文并列',
     keywords: 'SCHM、Shannon College、酒店管理、University of Galway、带薪实习、国际酒店',
     heroImage:
       'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
@@ -731,7 +717,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
       {
         icon: 'work',
         title: '实习与就业导向',
-        text: '页面应强调工作实习、职业发展和国际酒店网络，帮助学生理解酒店管理不是单纯课堂专业，而是强实践路径。',
+        text: '这里的重点是工作实习、职业发展和国际酒店网络。酒店管理不是单纯的课堂专业，而是实践很强的路径。',
       },
       {
         icon: 'public',
@@ -741,7 +727,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
     ],
     guideTitle: '适合什么申请者',
     guideText:
-      'SCHM适合目标明确、愿意接受实习强度、喜欢与人沟通并希望进入国际酒店或服务管理行业的学生。页面中英文并列更利于用户识别英文校名和后续申请材料。',
+      'SCHM适合目标明确、愿意接受实习强度、喜欢与人沟通并希望进入国际酒店或服务管理行业的学生。申请材料使用英文校名，建议提前熟悉。',
     checklist: [
       '确认目标课程是本科、硕士、预科还是短期/继续教育方向。',
       '重点核对实习周期、实习地点、行业合作和就业支持。',
@@ -763,12 +749,11 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
   mic: {
     title: 'MIC 爱尔兰伊玛克特教育学院',
     englishTitle: 'Mary Immaculate College',
-    audience: '院校详情页，补充英文 Mary Immaculate College',
     keywords: 'MIC、Mary Immaculate College、教育、Limerick、Thurles、文学、人文、教师教育',
     heroImage:
       'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
     summary:
-      'MIC 爱尔兰伊玛克特教育学院（Mary Immaculate College）适合关注教育、教师培养、文学、人文社科和儿童/青少年发展方向的学生。页面需要明确补充英文校名 Mary Immaculate College，方便用户后续查校和准备申请材料。',
+      'MIC 爱尔兰伊玛克特教育学院（Mary Immaculate College）适合关注教育、教师培养、文学、人文社科和儿童/青少年发展方向的学生。查校和准备申请材料时请使用英文校名 Mary Immaculate College。',
     metrics: [
       { value: '1898', label: '公开资料显示学院创立年份' },
       { value: 'Limerick', label: '主校区位于利默里克' },
@@ -799,7 +784,7 @@ const irelandInfoPages: Record<string, IrelandInfoPage> = {
     ],
     guideTitle: '适合什么申请者',
     guideText:
-      'MIC适合目标专业集中在教育、文学、人文社科、心理或儿童相关方向的学生。它不是大而全的综合大学页面，更适合以“专业匹配”和“学习环境”作为核心卖点。',
+      'MIC适合目标专业集中在教育、文学、人文社科、心理或儿童相关方向的学生。它不是大而全的综合大学，选它主要看专业是否匹配、学习环境是否适合。',
     checklist: [
       '页面和申请材料中同时写清 MIC 与 Mary Immaculate College。',
       '确认课程属于教育、文学、人文、心理还是Thurles校区相关方向。',

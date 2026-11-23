@@ -11,7 +11,6 @@ export class AustraliaTourComponent {
   readonly page = {
     title: '澳大利亚游学',
     englishTitle: 'Australia Study Tour',
-    positioning: '国家页，适合长期规划和生活体验',
     keywords: '澳洲英语、ELICOS、自然课堂、亲子、升学体验',
     heroImage:
       'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class UndergraduateApplicationComponent {
   readonly page = {
     title: '爱尔兰本科申请',
     englishTitle: 'Ireland Undergraduate Application',
-    audience: '服务页',
     keywords: '本科申请、高中成绩、雅思、预科、直入本科、转学分',
     heroImage:
       'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80',
@@ -47,7 +46,7 @@ export class UndergraduateApplicationComponent {
     ],
     guideTitle: '适合什么学生',
     guideText:
-      '本科页适合作为低龄和家庭用户的主服务入口。重点不只是“能不能录取”，还要让家长看清预算、住宿、签证、专业选择和后续硕士/就业路径。',
+      '本科申请往往由学生和家长一起决定。重点不只是“能不能录取”，还要看清预算、住宿、签证、专业选择和后续硕士/就业路径。',
     checklist: [
       '确认学生当前课程体系：普高、A-Level、IB、预科、大专或本科在读。',
       '确认目标专业是否需要数学、作品集、面试、特定科目或更高英语分数。',

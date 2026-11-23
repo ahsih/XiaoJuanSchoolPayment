@@ -11,7 +11,6 @@ export class MajorSelectionGuideComponent {
   readonly page = {
     title: '专业选择指南',
     englishTitle: 'Major Selection Guide',
-    audience: 'SEO指南页',
     keywords: '爱尔兰专业选择、商科、计算机、工程、教育、就业方向',
     heroImage:
       'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',

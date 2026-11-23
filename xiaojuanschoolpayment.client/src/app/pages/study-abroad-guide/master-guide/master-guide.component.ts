@@ -11,7 +11,6 @@ export class MasterGuideComponent {
   readonly page = {
     title: '硕士申请指南',
     englishTitle: 'Master Application Guide',
-    audience: 'SEO指南页',
     keywords: '爱尔兰硕士申请、一年制硕士、跨专业、文书、推荐信',
     heroImage:
       'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80',

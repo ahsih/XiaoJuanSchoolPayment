@@ -11,7 +11,6 @@ export class IrelandTourComponent {
   readonly page = {
     title: '爱尔兰游学',
     englishTitle: 'Ireland Study Tour',
-    positioning: '国家页，可与爱尔兰留学业务形成衔接',
     keywords: '英语环境、欧洲文化、大学参访、短期体验、后续留学',
     heroImage:
       'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1200&q=80',
@@ -41,7 +40,7 @@ export class IrelandTourComponent {
       },
       {
         icon: 'route',
-        title: '后续转化自然',
+        title: '后续升学衔接',
         text: '对爱尔兰感兴趣的学生可继续咨询语言课程、本科申请、硕士申请或半工半读方向。',
       },
     ],

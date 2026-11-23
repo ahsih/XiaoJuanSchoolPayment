@@ -11,7 +11,6 @@ export class UkTourComponent {
   readonly page = {
     title: '英国游学',
     englishTitle: 'UK Study Tour',
-    positioning: '国家页，传统强需求目的地',
     keywords: '英国英语、名校参访、夏校、文化体验、升学认知',
     heroImage:
       'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80',

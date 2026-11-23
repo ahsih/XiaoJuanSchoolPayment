@@ -9,6 +9,10 @@
 //   folder with its own index.html as a separate static site (FindStaticSiteIndex in Program.cs). "/"
 //   stays as the prerendered index.html, which the server serves as a static file; index.csr.html is the
 //   empty shell for every other route.
+// - Prerendered school pages: scripts/prerender-school-pages.cjs renders the school pages with their
+//   latest published prices into prerendered-school-pages.json; they are added the same way, with the
+//   schools each one shows and when it was rendered (prerenderedSchools), so the server stops serving a
+//   page once one of its schools has newer data.
 // - seo-pages.json: each route's title, description, Open Graph data and schema.org JSON-LD, plus the
 //   prerendered pages. The ASP.NET host (SpaSeoHtmlRenderer) serves a route's prerendered page, or the
 //   shell, with that route's own tags.
@@ -30,6 +34,8 @@ const indexPath = path.join(outputDir, 'index.html');
 const shellPath = path.join(outputDir, 'index.csr.html');
 // Written by ng build next to the browser folder when it prerenders.
 const prerenderedRoutesPath = path.join(outputDir, '..', 'prerendered-routes.json');
+// Written by scripts/prerender-school-pages.cjs when it prerenders school pages.
+const prerenderedSchoolPagesPath = path.join(outputDir, '..', 'prerendered-school-pages.json');
 
 if (!fs.existsSync(indexPath)) {
   console.error(`export-seo-pages: ${outputDir} has no index.html; run ng build first.`);
@@ -172,6 +178,24 @@ for (const route of prerenderedRoutes) {
   }
 }
 
+// Checked by prerender-school-pages.cjs, which leaves out any page that failed.
+const prerenderedSchools = {};
+const schoolPages = fs.existsSync(prerenderedSchoolPagesPath)
+  ? JSON.parse(fs.readFileSync(prerenderedSchoolPagesPath, 'utf8')).pages || {}
+  : {};
+for (const [route, page] of Object.entries(schoolPages)) {
+  if (route === '/' || prerenderedRoutes.includes(route)) {
+    problems.push(`${route} is in both prerender-routes.txt and prerender-school-routes.txt`);
+    continue;
+  }
+  if (!page || typeof page.html !== 'string' || !Array.isArray(page.schools) || !page.renderedAt) {
+    problems.push(`${route} in prerendered-school-pages.json is incomplete; run npm run build again`);
+    continue;
+  }
+  prerendered[route] = page.html;
+  prerenderedSchools[route] = { schools: page.schools, renderedAt: page.renderedAt };
+}
+
 const pages = {};
 for (const [route, page] of Object.entries(SEO_PAGES)) {
   const entry = toEntry(page, route);
@@ -185,6 +209,7 @@ const data = {
   pages,
   sections: SECTION_SEO.map(({ prefix, page }) => ({ prefix, ...toEntry(page, `section ${prefix}`) })),
   prerendered,
+  prerenderedSchools,
 };
 
 checkForbidden('the 关于思达启航 page', renderBrandFactsHtml());
@@ -221,7 +246,7 @@ fs.writeFileSync(path.join(outputDir, 'llms.txt'), llmsTxt, 'utf8');
 
 console.log(
   `export-seo-pages: wrote ${Object.keys(pages).length} pages, ${data.sections.length} sections and `
-  + `${Object.keys(prerendered).length} prerendered pages to seo-pages.json`
+  + `${Object.keys(prerendered).length} prerendered pages (${Object.keys(prerenderedSchools).length} school pages) to seo-pages.json`
   + `${prerenderedRoutes.includes('/') ? ' (home page prerendered in index.html)' : ''}, `
   + `the home JSON-LD to index.html, and llms.txt (${Buffer.byteLength(llmsTxt)} bytes)`,
 );

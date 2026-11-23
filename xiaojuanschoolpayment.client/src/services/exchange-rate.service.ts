@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Observable, catchError, concat, map, of, shareReplay, switchMap, tap, timeout, timer } from 'rxjs';
 import {
   CnyExchangeRateSnapshot,
@@ -27,7 +28,9 @@ export type { CnyExchangeRateSnapshot, FrankfurterLatestResponse } from './excha
 @Injectable({ providedIn: 'root' })
 export class ExchangeRateService {
   private readonly http = inject(HttpClient);
-  private readonly request = timer(0, 60 * 60 * 1000).pipe(
+  // Hourly in the browser; once while the build prerenders a page, which must finish rendering.
+  private readonly refresh = isPlatformBrowser(inject(PLATFORM_ID)) ? timer(0, 60 * 60 * 1000) : of(0);
+  private readonly request = this.refresh.pipe(
     switchMap(() => {
       const cached = this.readCache();
       const latest = this.http.get<FrankfurterLatestResponse>(FRANKFURTER_CNY_URL).pipe(

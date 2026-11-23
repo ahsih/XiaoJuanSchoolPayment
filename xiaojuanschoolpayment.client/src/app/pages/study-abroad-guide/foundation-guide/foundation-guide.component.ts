@@ -11,7 +11,6 @@ export class FoundationGuideComponent {
   readonly page = {
     title: '预科申请指南',
     englishTitle: 'Foundation Application Guide',
-    audience: 'SEO指南页',
     keywords: '爱尔兰预科、国际预科、桥梁课程、本科衔接、语言要求',
     heroImage:
       'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',

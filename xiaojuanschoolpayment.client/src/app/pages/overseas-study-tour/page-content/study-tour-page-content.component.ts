@@ -8,7 +8,6 @@ interface StudyTourPageContent {
   title: string;
   englishTitle: string;
   intro: string;
-  positioning: string;
   keywords: string;
   heroImage: string;
   highlights: { value: string; label: string }[];

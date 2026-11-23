@@ -11,7 +11,6 @@ export class IeltsTourGuideComponent {
   readonly page = {
     title: '雅思备考游学指南',
     englishTitle: 'IELTS Study Tour Guide',
-    positioning: 'SEO指南页，考试用户入口',
     keywords: '雅思游学、雅思备考、菲律宾雅思、口语写作、保分班',
     heroImage:
       'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80',

@@ -11,7 +11,6 @@ export class FoundationApplicationComponent {
   readonly page = {
     title: '爱尔兰预科申请',
     englishTitle: 'Ireland Foundation Application',
-    audience: '服务页，适合条件暂未达标的学生',
     keywords: '预科申请、Foundation、桥梁课程、语言衔接、本科预科、硕士预科',
     heroImage:
       'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80',
@@ -47,7 +46,7 @@ export class FoundationApplicationComponent {
     ],
     guideTitle: '适合什么学生',
     guideText:
-      '预科页适合条件暂未达标但有明确升学目标的学生。页面要帮助用户看到“通过桥梁课程进入更合适学位”的价值，同时把升读要求和风险讲清楚。',
+      '预科适合成绩或语言暂未达标、但有明确升学目标的学生：先通过桥梁课程，再进入更合适的学位。报名前要把升读要求和风险了解清楚。',
     checklist: [
       '确认学生当前成绩、学历阶段、英语水平和目标学位课程。',
       '比较预科长度、开学时间、课程内容、升读标准和可衔接院校。',

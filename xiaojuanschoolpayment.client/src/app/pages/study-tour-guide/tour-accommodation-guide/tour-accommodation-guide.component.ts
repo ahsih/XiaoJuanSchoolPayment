@@ -11,7 +11,6 @@ export class TourAccommodationGuideComponent {
   readonly page = {
     title: '游学住宿指南',
     englishTitle: 'Study Tour Accommodation Guide',
-    positioning: 'SEO指南页，解决安全与生活疑虑',
     keywords: '游学住宿、寄宿家庭、学生宿舍、酒店、房型、安全',
     heroImage:
       'https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=1200&q=80',

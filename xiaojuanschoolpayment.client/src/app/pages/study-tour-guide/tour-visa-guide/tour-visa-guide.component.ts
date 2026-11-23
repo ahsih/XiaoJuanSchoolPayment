@@ -11,7 +11,6 @@ export class TourVisaGuideComponent {
   readonly page = {
     title: '游学签证指南',
     englishTitle: 'Study Tour Visa Guide',
-    positioning: 'SEO指南页，按国家补充签证内容',
     keywords: '游学签证、短期学习、学生签证、旅游签证、材料清单',
     heroImage:
       'https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&w=1200&q=80',

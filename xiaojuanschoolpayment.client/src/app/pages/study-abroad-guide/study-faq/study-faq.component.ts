@@ -11,7 +11,6 @@ export class StudyFaqComponent {
   readonly page = {
     title: '留学常见问题',
     englishTitle: 'Ireland Study FAQ',
-    audience: 'FAQ页',
     keywords: '爱尔兰留学常见问题、费用、签证、住宿、申请条件、打工、毕业工签',
     heroImage:
       'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',

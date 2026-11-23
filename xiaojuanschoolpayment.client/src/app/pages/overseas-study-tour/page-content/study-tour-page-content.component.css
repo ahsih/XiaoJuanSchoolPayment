@@ -47,7 +47,6 @@ h1 {
 
 p,
 li,
-.tour-panel span,
 .highlight-strip span {
   color: #465469;
   line-height: 1.72;
@@ -97,7 +96,7 @@ mat-icon {
 
 .tour-hero__visual {
   display: grid;
-  grid-template-rows: minmax(240px, 1fr) auto;
+  grid-template-rows: minmax(240px, 1fr);
   border: 1px solid #e1e8ee;
   border-radius: 8px;
   overflow: hidden;
@@ -107,18 +106,6 @@ mat-icon {
 .tour-photo {
   min-height: 260px;
   background: center / cover no-repeat;
-}
-
-.tour-panel {
-  display: grid;
-  gap: 0.35rem;
-  padding: 1.1rem;
-  background: #fbfcfd;
-}
-
-.tour-panel strong {
-  color: #07173a;
-  font-weight: 950;
 }
 
 .highlight-strip,

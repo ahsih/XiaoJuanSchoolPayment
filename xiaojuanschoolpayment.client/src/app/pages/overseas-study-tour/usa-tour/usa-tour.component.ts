@@ -11,7 +11,6 @@ export class UsaTourComponent {
   readonly page = {
     title: '美国游学',
     englishTitle: 'USA Study Tour',
-    positioning: '国家页，预算高，后期拓展空间大',
     keywords: '美国英语、校园参访、夏校、STEM、名校体验',
     heroImage:
       'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=1200&q=80',

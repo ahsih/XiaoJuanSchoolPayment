@@ -14,6 +14,11 @@ import { SchoolLessonFilter } from '../interfaces/filter/school-lesson-filter.dt
 import { SchoolPhotoFilter } from '../interfaces/filter/school-photo-filter.dto';
 import { SchoolPhotoDTO } from '../interfaces/school-photo.dto';
 
+/** The signed-in employee's token; there is none while the build prerenders pages (no localStorage). */
+function storedToken(): string | null {
+  return typeof localStorage === 'undefined' ? null : localStorage.getItem('token');
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,7 +26,7 @@ export class SchoolService {
   private apiUrl = '/school';
   constructor(private http: HttpClient) {}
   saveSchool(school: SchoolDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     return firstValueFrom(
       this.http.put<SchoolDTO>(`${this.apiUrl}/save`, school, {
         headers: {
@@ -32,7 +37,7 @@ export class SchoolService {
   }
 
   getSchools(filter?: SchoolFilter): Observable<SchoolDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.name) {
       params = params.set('name', filter.name);
@@ -46,7 +51,7 @@ export class SchoolService {
   }
 
   getSchoolLessons(filter?: SchoolLessonFilter): Observable<SchoolLessonDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.schoolId) {
       params = params.set('schoolId', filter.schoolId);
@@ -75,7 +80,7 @@ export class SchoolService {
   }
 
   getSchoolRooms(filter?: SchoolRoomFilter): Observable<SchoolRoomDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.schoolId) {
       params = params.set('schoolId', filter.schoolId);
@@ -95,7 +100,7 @@ export class SchoolService {
   }
 
   getSchoolFees(filter?: SchoolFeeFilter): Observable<SchoolFeeDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.schoolId) {
       params = params.set('schoolId', filter.schoolId);
@@ -121,7 +126,7 @@ export class SchoolService {
   }
 
   getSchoolNotes(filter?: SchoolNoteFilter): Observable<SchoolNoteDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.schoolId) {
       params = params.set('schoolId', filter.schoolId);
@@ -138,7 +143,7 @@ export class SchoolService {
   }
 
   getSchoolPhotos(filter?: SchoolPhotoFilter): Observable<SchoolPhotoDTO[]> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     let params = new HttpParams();
     if (filter?.schoolId) {
       params = params.set('schoolId', filter.schoolId);
@@ -166,7 +171,7 @@ export class SchoolService {
     displayOrder = 0,
     isActive = true
   ): Promise<SchoolPhotoDTO> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     const formData = new FormData();
     formData.append('schoolId', schoolId);
     formData.append('file', file);
@@ -193,7 +198,7 @@ export class SchoolService {
   }
 
   saveSchoolPhoto(photo: SchoolPhotoDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     return firstValueFrom(
       this.http.put<SchoolPhotoDTO>(`${this.apiUrl}/save-photo`, photo, {
         headers: {
@@ -204,7 +209,7 @@ export class SchoolService {
   }
 
   deleteSchoolPhoto(id: string): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     return firstValueFrom(
       this.http.delete(`${this.apiUrl}/delete-photo/${id}`, {
         headers: {
@@ -215,7 +220,7 @@ export class SchoolService {
   }
 
   saveSchoolLesson(schoolLesson: SchoolLessonDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     const body = { ...schoolLesson };
 
     return firstValueFrom(
@@ -229,7 +234,7 @@ export class SchoolService {
   }
 
   saveSchoolRooms(schoolRoom: SchoolRoomDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     const body = { ...schoolRoom };
 
     return firstValueFrom(
@@ -243,7 +248,7 @@ export class SchoolService {
   }
 
   saveSchoolFee(schoolFee: SchoolFeeDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     const body = { ...schoolFee };
 
     return firstValueFrom(
@@ -261,7 +266,7 @@ export class SchoolService {
   }
 
   saveSchoolNote(schoolNote: SchoolNoteDTO): Promise<any> {
-    const token = localStorage.getItem('token');
+    const token = storedToken();
     const body = { ...schoolNote };
 
     return firstValueFrom(
