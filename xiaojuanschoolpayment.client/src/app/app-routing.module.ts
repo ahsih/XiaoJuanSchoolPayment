@@ -412,7 +412,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/bcebu',
         loadComponent: () =>
-          import('./pages/philippines/bcebu-school/bcebu-school.component').then((m) => m.BCebuSchoolComponent),
+          import('./pages/philippines/bcebu-school/bcebu-school-page.component').then((m) => m.BCebuSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/cpils',
