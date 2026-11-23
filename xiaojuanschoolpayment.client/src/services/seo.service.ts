@@ -213,10 +213,10 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/anj-e-edu-english-academy': {
     title: '菲律宾碧瑶A&J e-Edu语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶A&J e-Edu English Academy页面，整理A&J ECO Campus、Eco Relax Lite/Plus、Eco Hub、Eco Sparta、IELTS/TOEIC、Junior课程、Deluxe/Premium/Eco Villa住宿、2026费用和当地费用。',
+      '菲律宾碧瑶A&J e-Edu Academy ECO校区：松林校园，Eco Relax、Eco Hub、Eco Sparta、雅思和托业保分班、雅思课程12周送官方考试、青少年课程，Deluxe到独栋别墅的住宿，2027课程住宿费用、在线报价和到校学杂费。',
     keywords:
       '菲律宾碧瑶A&J e-Edu语言学校, A&J e-Edu Academy, A&J ECO Campus, 碧瑶A&J, 菲律宾碧瑶语言学校, 菲律宾ESL学校, 菲律宾IELTS学校',
-    image: '/assets/philippines/baguio-study-hero.webp',
+    image: '/assets/anj/campus/main-building.webp',
   },
   '/philippines-study/baguio/help-english-longlong-campus': {
     title: 'HELP English（Longlong Campus） | 碧瑶Sparta课程费用住宿',

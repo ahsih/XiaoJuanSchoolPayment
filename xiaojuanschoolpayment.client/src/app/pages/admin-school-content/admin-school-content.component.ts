@@ -417,7 +417,7 @@ export class AdminSchoolContentComponent implements OnInit {
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
   get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
-  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
+  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isImsSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isMonolSpartaSelected && !this.isGlcSelected; }
   get usesAssociationPeakRatePolicy(): boolean { return isAssociationPeakSchool(this.schoolCode); }
   get currentPublicPath(): string {
