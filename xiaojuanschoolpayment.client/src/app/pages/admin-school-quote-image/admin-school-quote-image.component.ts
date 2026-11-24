@@ -99,7 +99,7 @@ import {
   createDefaultIclContentConfig,
   createDefaultIuContentConfig,
 } from '../philippines/iu-school/iu-icl-content-config';
-import { IuIclQuote } from '../philippines/iu-school/iu-icl-quote';
+import { iuIclPreviewQuoteImage } from '../philippines/iu-school/iu-icl-page-quote';
 import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
 import { JicCampus } from '../philippines/jic-school/jic-pricing';
 import { cloneCellaContentConfig, createDefaultCellaContentConfig } from '../philippines/cella-quote/cella-content-config';
@@ -436,9 +436,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
-      const quote = new IuIclQuote(campus, 'power-speaking-4', campus === 'IU' ? 'campus-triple' : 'campus-quad', campus === 'IU' ? '2026-09-13' : '2026-10-04');
-      quote.applyContentConfig(this.content);
-      return quote.imageData(this.usdToCny, this.phpPerCny, this.exchangeRateDate, campus === 'IU' ? '/assets/philippines/iu-campus-hero.webp' : '/assets/philippines/icl-campus-hero.webp');
+      return iuIclPreviewQuoteImage(this.content, campus, { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate });
     }
     const settings = this.content.quoteImageSettings;
     const schoolCode = this.content.schoolCode;
