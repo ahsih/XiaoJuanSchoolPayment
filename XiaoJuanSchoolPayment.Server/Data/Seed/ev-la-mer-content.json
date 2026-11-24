@@ -137,7 +137,7 @@
       "name": "ACR I-CARD",
       "currency": "PHP",
       "amount": 4000,
-      "note": "停留满9周（超过59天）时办理一次。",
+      "note": "第一次签证续签时办理（30天签证第5周起，59天签证第9周起），只收一次。",
       "sortOrder": 2,
       "enabled": true,
       "billingRule": "first-visa-extension",

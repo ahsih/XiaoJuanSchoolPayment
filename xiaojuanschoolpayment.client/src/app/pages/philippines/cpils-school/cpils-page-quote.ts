@@ -332,8 +332,8 @@ export class CpilsPageStudent implements PhPageStudent {
   private get longTermVisa(): boolean { return !['tourist30', 'tourist59'].includes(this.visaType); }
   /**
    * Immigration steps: a 30-day entry pays the first 29-day extension (5,130) and then the second
-   * (6,400, with ACR I-CARD and ARP); a 59-day entry already includes the first, so its first
-   * extension is the second step.
+   * (6,400, with ARP); a 59-day entry already includes the first, so its first extension is the
+   * second step. ACR I-CARD comes with the first extension of either visa (user rule 2026-11-24).
    */
   private get stepOffset(): number { return this.visaType === 'tourist59' ? 1 : 0; }
   private get extensionCount(): number {
@@ -344,7 +344,7 @@ export class CpilsPageStudent implements PhPageStudent {
     const start = this.quotePlan.date(this.quotePlan.startDate);
     return start === null ? '' : new Date(start + weeks * 7 * DAY).toISOString().slice(0, 10);
   }
-  /** Whether the stay reaches the extension that needs ACR I-CARD and ARP, and its date. */
+  /** Whether the stay reaches the extension that needs ARP, and its date. */
   private get secondStepDate(): string | undefined {
     const index = 1 - this.stepOffset;
     return this.extensionCount > index ? this.extensionDate(index) : undefined;
@@ -369,7 +369,7 @@ export class CpilsPageStudent implements PhPageStudent {
     for (const base of this.pricing.localFeeRules.filter(rule => rule.enabled && rule.includeInTotal)) {
       const extensionItem = EXTENSION_ITEMS.includes(base.id);
       const date = extensionItem && !longTerm
-        ? (base.id === 'visa-extension' ? this.extensionDate(0) : secondStep ?? plan.startDate)
+        ? (base.id === 'arp' ? secondStep ?? plan.startDate : this.extensionDate(0))
         : plan.startDate;
       const rule = cpilsDatedFee(base, date);
       let quantity = 1;
@@ -400,7 +400,7 @@ export class CpilsPageStudent implements PhPageStudent {
       if (base.id === 'ssp') quantity = longStay ? 2 : 1;
       if (base.id === 'crtv') quantity = longStay ? 1 : 0;
       if (base.id === 'acr-i-card') {
-        quantity = !longTerm && secondStep ? 1 : 0;
+        quantity = !longTerm && extensions > 0 ? 1 : 0;
         note = longTerm ? visaNote : `按${this.visaLabel}预估；${rule.note}`;
       }
       if (base.id === 'arp') {

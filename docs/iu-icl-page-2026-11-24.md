@@ -31,8 +31,8 @@ campus pages without mixing their content.
   off-campus clip shows both the double and the triple room, so it no longer opens either room album.
 - Vertical videos (user request 2026-11-24): on IU they are shown whole, centred over a blurred copy of their own
   poster, instead of being cropped to fill the frame; on phones the hero frame for them is 4:3. This is the template's
-  optional `tallVideoBackdrop` profile flag, tried on IU first; once the user approves it, it becomes every school's
-  default. ICL and the other schools still crop vertical clips.
+  `tallVideoBackdrop` profile flag, tried on IU first and made the default for every template school the same day
+  (ICL included); only CIA keeps cropping, because its page is locked (user answer: CIA 先不改).
 
 ## Rules in the quote
 
@@ -44,7 +44,7 @@ campus pages without mixing their content.
   with a note to ask the adviser.
 - 思达启航9折 on every course and room charge the package does not cover (off-campus rooms, other dates, other courses).
 - Local fees (per person): SSP 7,800, E-Card 4,500, visa extensions 5,500 / 6,500 / 5,500 from week 5 (30-day entry)
-  or 6,500 / 5,500 from week 9 (59-day entry), ACR I-Card 4,500 from week 9, textbooks about 2,000 per course type;
+  or 6,500 / 5,500 from week 9 (59-day entry), ACR I-Card 4,500 with the first visa extension (user rule 2026-11-24), textbooks about 2,000 per course type;
   pickup 800, deposit 3,000, maintenance 400, electricity 500 and laundry 300 per room week for students who stay at
   the school. Walk-in students pay no dormitory fees.
 

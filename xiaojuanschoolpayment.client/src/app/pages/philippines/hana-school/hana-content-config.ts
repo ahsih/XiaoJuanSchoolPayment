@@ -10,6 +10,7 @@ import {
   CiaPromotionRule,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 /** Deep copy of plain content data. Not structuredClone, which the WeChat mini program runtime lacks. */
 const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -157,7 +158,7 @@ const createRooms = (): CiaRoomContent[] => [
 const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'ssp', name: 'SSP特别学习许可', amount: 7500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '停留3周及以上办理；按申请的学习期间签发，最长24周。', sortOrder: 0 }),
   fee({ id: 'ssp-e-card', name: 'SSP E-Card', amount: 4000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '与SSP一起办理。', sortOrder: 1 }),
-  fee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记证', amount: 4000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '停留9周及以上办理一次。', sortOrder: 2 }),
+  fee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '第一次签证续签时办理一次（30天签证第5周起，59天签证第9周起）。', sortOrder: 2 }),
   fee({ id: 'visa-extension', name: '签证续签', amount: 4630, rates: [4630, 5900, 4130, 4130, 4130], tourist59Rates: [5900, 4130, 4130, 4130], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '30天签证：第5–8周4,630比索，第9–12周再加5,900比索，之后每4周4,130比索；59天签证从第9周起按5,900比索起估算。以实际办理为准。', sortOrder: 3 }),
   fee({ id: 'student-id', name: '学生证', amount: 200, billingRule: 'once', includeInTotal: true, note: '一次性费用；附近部分商家凭学生证有5–10%折扣。', sortOrder: 4 }),
   fee({ id: 'utility', name: '水电杂费', amount: 2500, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '含水费、清洁、洗衣、安保、饮用水、泳池和维护；按住宿周数计：单人间每4周3,000、双人间2,500、三人间2,000比索／人，家庭房每间4,500／5,500／6,500／7,500比索（2–5人），按人数平均。', sortOrder: 5 }),
@@ -255,6 +256,8 @@ export const cloneHanaContentConfig = (value: CiaContentConfig): CiaContentConfi
   clone.quoteImageSettings.localFeeNotes ??= {};
   clone.quoteImageSettings.benefits ??= copyJson(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
+  // ACR I-Card moved to the first visa extension (user rule 2026-11-24); an untouched old note follows once.
+  upgradeAcrNotes(clone, defaults, { 'acr-i-card': ['停留9周及以上办理一次。'] });
   clone.media ??= [];
   return clone;
 };

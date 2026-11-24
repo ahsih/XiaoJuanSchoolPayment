@@ -75,6 +75,12 @@ import type {
   PhVideoTab,
 } from './ph-school-profile';
 
+/**
+ * Schools whose vertical videos still fill (crop) the frame. Every other school shows them whole over a blurred
+ * poster (user decision 2026-11-24); CIA stays as it was because its page is locked (user answer the same day).
+ */
+const TALL_VIDEO_CROPPED_SCHOOLS: ReadonlySet<string> = new Set(['CIA']);
+
 /** Imports of every school page component that renders ph-school-page.component.html. */
 export const PH_SCHOOL_PAGE_IMPORTS = [
   SchoolQuotePlanComponent,
@@ -328,8 +334,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
-  /** Vertical videos shown whole over a blurred poster (profile.tallVideoBackdrop). */
-  readonly tallVideoBackdrop = !!this.profile.tallVideoBackdrop;
+  /** Vertical videos shown whole over a blurred poster (profile.tallVideoBackdrop, on unless the school is cropped). */
+  readonly tallVideoBackdrop = this.profile.tallVideoBackdrop ?? !TALL_VIDEO_CROPPED_SCHOOLS.has(this.profile.code);
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};
@@ -925,9 +931,30 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       .subscribe((photos) => this.applyGalleryPhotos(photos));
   }
 
+  /**
+   * Whether an uploaded school photo or video belongs on this page. Every upload by default; a school whose
+   * campus pages share one school record (JIC) keeps only its own campus.
+   */
+  protected acceptUploadedMedia(_photo: SchoolPhotoDTO): boolean {
+    return true;
+  }
+
+  private uploadedMediaSource: SchoolPhotoDTO[] | null = null;
+  private galleryBeforeUploads: GalleryImage[] | null = null;
+
+  /** Applies the loaded uploads again after acceptUploadedMedia changed its answer (JIC: content with campus tags arrived). */
+  protected refreshUploadedMedia(): void {
+    if (!this.uploadedMediaSource) return;
+    if (this.galleryBeforeUploads) this.galleryImages = this.galleryBeforeUploads;
+    this.uploadedVideoCards = [];
+    this.applyGalleryPhotos(this.uploadedMediaSource);
+  }
+
   private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    this.uploadedMediaSource = photos ?? [];
+    this.galleryBeforeUploads ??= this.galleryImages;
     const uploadedMedia = (photos ?? [])
-      .filter((photo) => Boolean(photo.url))
+      .filter((photo) => Boolean(photo.url) && this.acceptUploadedMedia(photo))
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
     if (uploadedMedia.length === 0) {
@@ -1090,8 +1117,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get selectedRoomGalleryCaptions(): string[] {
     const profile = this.selectedRoomProfile;
     const code = profile.bookingCode ? `${profile.bookingCode} ` : '';
+    // A room without a location (PINES) is named instead of saying 校内房型.
+    const name = profile.location ? `${profile.location}房型` : profile.label;
     return profile.gallery.map(
-      (_, index) => `${code}${profile.location}房型 · 第${index + 1}张实景`,
+      (_, index) => `${code}${name} · 第${index + 1}张实景`,
     );
   }
 

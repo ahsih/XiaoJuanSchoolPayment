@@ -182,9 +182,10 @@ export interface PhSchoolProfile {
   roomVideos?: Readonly<Record<string, PhVideoItem>>;
   /**
    * Compact layout: vertical videos in the hero album and room albums are shown whole (never cropped), centred over a
-   * blurred copy of their own poster; on phones the hero frame for them is 4:3 like the photos. User request
-   * 2026-11-24, tried on IU first; once approved it becomes the default for every school. Left out, vertical clips
-   * fill the frame as before (cropped, whole in fullscreen).
+   * blurred copy of their own poster; on phones the hero frame for them is 4:3 like the photos. User decision
+   * 2026-11-24 (tried on IU, then approved for every school): on by default for every school except CIA, whose locked
+   * page keeps cropping them (`TALL_VIDEO_CROPPED_SCHOOLS`). false crops vertical clips to fill the frame (whole in
+   * fullscreen).
    */
   tallVideoBackdrop?: boolean;
   /**

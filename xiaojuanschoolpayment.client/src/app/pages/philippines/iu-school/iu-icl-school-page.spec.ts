@@ -98,6 +98,16 @@ describe('IU page on the shared template', () => {
     expect(localFee('签证延期')?.total).toBe(6500);
   });
 
+  it('charges ACR I-Card with the first visa extension (user rule 2026-11-24)', () => {
+    student().visaType = 'tourist30';
+    page.selectedWeeks = 8;
+    expect(localFee('签证延期')?.quantity).toBe(1);
+    expect(localFee('ACR I-Card')?.quantity).toBe(1);
+    student().visaType = 'tourist59';
+    expect(localFee('签证延期')?.quantity).toBe(0);
+    expect(localFee('ACR I-Card')?.quantity).toBe(0);
+  });
+
   it('charges no dormitory fees to walk-in students', () => {
     page.selectedRoomId = 'walk-in';
     expect(localFee('维护费')?.quantity).toBe(0);

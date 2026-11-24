@@ -34,7 +34,8 @@ import {
   createDefaultMonolContentConfig,
 } from '../philippines/monol-school/monol-content-config';
 import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
-import { MonolSpartaStudentQuote } from '../philippines/monol-sparta-school/monol-sparta-student-quote';
+import { MonolSpartaQuote } from '../philippines/monol-sparta-school/monol-sparta-page-quote';
+import { createCiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import {
   cloneEvContentConfig,
   createDefaultEvContentConfig,
@@ -557,7 +558,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     });
     return applyEditableQuoteImageCopy({
       ...applySchoolQuoteImageLayout(base, schoolCode, 4, '2026-09-06', totalUsd, this.usdToCny),
-      headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE4周报价' : isBCebu ? "B'Cebu 4周报价" : isCgSparta ? 'CG斯巴达校区4周报价' : isCgBanilad ? 'CG Banilad4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
+      headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE4周报价' : isBCebu ? "B'Cebu 4周报价" : isCgSparta ? 'CG斯巴达校区 4周报价' : isCgBanilad ? 'CG Banilad 4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
       noteTitle: settings.noteSectionTitle, importantNotes: settings.footerNotes,
@@ -684,69 +685,21 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
   }
 
+  /** MONOL Sparta is on the shared Philippine template: preview the real page quote with this draft's content. */
   private buildMonolSpartaPreviewQuote(): QuoteImageCardData {
-    const settings = this.content.quoteImageSettings;
-    const student = new MonolSpartaStudentQuote({
-      courseFees: this.content.courses.filter(item => item.enabled).map(item => ({ id: item.id, name: item.name, tuition: item.tuition, suitable: item.schedule, note: item.note })),
-      roomFees: this.content.rooms.filter(item => item.enabled).map(item => ({ id: item.id, name: item.name, fee: item.fee, note: item.note })),
-      registrationFee: this.content.quoteSettings.registrationFee,
-      promotionRules: this.content.quoteSettings.promotions,
-      localFeeRules: this.content.localFees,
-    });
-    student.selectedRegistrationDate = '2026-09-17';
-    student.quotePlan.courses[0].startDate = '2026-09-20';
-    student.quotePlan.rooms[0].startDate = '2026-09-20';
-    student.pickup = 'manila-group';
-    const localFeeItems = student.localFees.map(fee => ({
-      label: fee.item,
-      unit: fee.unitLabel,
-      quantity: this.previewMoney(fee.quantity),
-      amount: `${this.previewMoney(fee.total)} 比索`,
-      note: fee.note,
-    }));
-    const localFeeTotal = student.localFees.reduce((sum, fee) => sum + fee.total, 0);
-    const deposit = this.content.localFees.find(item => item.id === 'security-deposit' && item.enabled);
-    const tvv = this.content.localFees.find(item => item.id === 'tvv-acr' && item.enabled);
-    const quote = buildPhilippinesDetailedQuote({
-      schoolCode: 'MONOL-SPARTA',
-      schoolName: '菲律宾碧瑶MONOL斯巴达校区',
-      filePrefix: 'MONOL-SPARTA',
-      heroSrc: '/assets/philippines/monol-sparta/campus-building.webp',
-      weeks: 4,
-      startDate: '2026-09-20',
+    const pricing = createCiaQuotePricing(this.content);
+    Object.assign(pricing, {
       usdToCny: this.usdToCny,
-      totalUsd: student.quoteUsd,
-      paymentItems: [
-        { icon: '注', label: '注册费', amount: `${this.previewMoney(student.registration)} 美元`, note: settings.paymentNotes.registration },
-        ...student.quotePlan.paymentItems().map(item => ({ ...item, label: item.icon === '课' ? item.label.replace('课程费', '课程名称') : item.label.replace('住宿费', '住宿名称') })),
-        ...student.paymentLines.map(line => ({ icon: line.icon, label: line.label, amount: `− ${this.previewMoney(Math.abs(line.value))} 美元`, note: line.note, promotionKey: line.promotionKey, accent: true })),
-      ],
-      localFeeItems,
-      localFeeTotal,
-      localCurrencyName: '比索',
-      localFeeCny: Math.round(localFeeTotal / this.phpPerCny),
-      localFeeNote: settings.localFeeIntro,
-      optionalFeeItems: [
-        ...(deposit ? [{ label: deposit.name, amount: `${this.previewMoney(deposit.amount)} 美元`, cnyAmount: `约人民币 ${Math.round(deposit.amount * this.usdToCny)} 元`, note: this.localFeeImageNote(deposit) }] : []),
-        ...(tvv ? [{ label: tvv.name, amount: `${this.previewMoney(tvv.amount)} 比索（条件恢复时）`, cnyAmount: `约人民币 ${Math.round(tvv.amount / this.phpPerCny)} 元`, note: this.localFeeImageNote(tvv) }] : []),
-      ],
-      ruleNotes: settings.footerNotes,
-      fullFeeDetails: true,
-      localFeeTableLayout: 'web',
+      phpPerCny: this.phpPerCny,
+      exchangeRateDate: this.exchangeRateDate,
+      usingLiveExchangeRates: Number.isFinite(this.usdToCny) && Number.isFinite(this.phpPerCny),
     });
-    return applyEditableQuoteImageCopy({
-      ...applySchoolQuoteImageLayout(quote, 'MONOL-SPARTA', 4, '2026-09-20', student.quoteUsd, this.usdToCny),
-      headingText: 'MONOL斯巴达校区 4周报价',
-      paymentSectionTitle: settings.paymentSectionTitle,
-      localFeeTitle: settings.localFeeSectionTitle,
-      serviceSectionTitle: settings.serviceSectionTitle,
-      benefitItems: settings.benefits,
-      serviceLocations: settings.serviceLocations,
-      alumniBenefitTitle: settings.alumniBenefitTitle,
-      alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
-      noteTitle: settings.noteSectionTitle,
-      importantNotes: settings.footerNotes,
-    }, settings, this.content.quoteSettings.promotions, this.content.localFees);
+    const quote = new MonolSpartaQuote(pricing);
+    const student = quote.students[0];
+    student.selectedRegistrationDate = '2026-11-24';
+    student.quotePlan.courses[0].startDate = '2026-11-29';
+    student.quotePlan.rooms[0].startDate = '2026-11-29';
+    return quote.quoteImageData;
   }
 
   private joinNotes(...parts: Array<string | undefined>): string {

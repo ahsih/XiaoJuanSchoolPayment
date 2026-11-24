@@ -727,7 +727,9 @@
             (click)="compactLayout && selectRateRoom(room, $event)"
             (keydown.enter)="compactLayout && selectRateRoom(room, $event)"
           >
+            <!-- A room without a location (PINES Condo, user answer 2026-11-24) shows no 校内/校外 badge. -->
             <span
+              *ngIf="room.location"
               class="room-location-badge"
               [class.room-location-badge--off-campus]="room.location === '校外'"
             >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
@@ -875,7 +877,7 @@
             </div>
             <div class="room-profile-badges">
               <b *ngIf="roomVariant?.code ?? selectedRoomProfile.bookingCode as code">{{ code }}</b>
-              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+              <em *ngIf="selectedRoomProfile.location" [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
             </div>
           </header>
 
@@ -1190,8 +1192,8 @@
                 <span class="compare-tag">{{ compareTags[i] }}</span>
                 <button type="button" class="compare-remove" *ngIf="comparison.canRemove()" (click)="comparison.removePlan(i)">{{ copy.quote.removePlanLabel }}</button>
               </header>
-              <label>课程<select [ngModel]="comparison.courseId(plan)" (ngModelChange)="comparison.setCourse(plan, $event)"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>住宿<select [ngModel]="comparison.roomId(plan)" (ngModelChange)="comparison.setRoom(plan, $event)"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>课程<select [ngModel]="comparison.courseId(plan)" (ngModelChange)="comparison.setCourse(plan, $event)"><option *ngFor="let course of comparison.courseOptions" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>住宿<select [ngModel]="comparison.roomId(plan)" (ngModelChange)="comparison.setRoom(plan, $event)"><option *ngFor="let room of comparison.roomOptions" [value]="room.id">{{ room.name }}</option></select></label>
               <div class="compare-plan-row">
                 <label>周数<select [ngModel]="comparison.weeks(plan)" (ngModelChange)="comparison.setWeeks(plan, $event)"><option *ngFor="let weeks of comparison.weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
                 <label>入学（周日）<input #compareDate type="date" step="7" [ngModel]="comparison.startDate(plan)" (ngModelChange)="setComparePlanDate(plan, $event, compareDate)" /></label>

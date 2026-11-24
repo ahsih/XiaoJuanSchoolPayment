@@ -51,6 +51,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/student-stories/mid-autumn/gift-bags.png',
     type: 'article',
   },
+  '/overseas-study-tour/ireland/atc-language-schools': {
+    title: '爱尔兰ATC语言学校｜布雷、都柏林校区课程住宿费用与在线报价',
+    description: 'ATC Language Schools 1973年创办，布雷海边校区和都柏林市中心校区，成人英语课程1周起报、每周一开课；查看2027年学费、寄宿家庭和学生公寓价格、25周半工半读，在线计算费用并保存报价图片。',
+    keywords: 'ATC Language Schools, ATC语言学校, 爱尔兰语言学校, 爱尔兰游学, 都柏林语言学校, 布雷语言学校, 爱尔兰半工半读, ATC报价',
+    image: '/assets/atc/bray-aerial.webp',
+  },
   '/overseas-study-tour/uk/burlington-school': {
     title: '英国伦敦Burlington School语言学校｜课程住宿费用与在线报价',
     description: '伦敦Burlington School介绍：青少年春夏秋冬季全包项目、成人英语课程、成人暑期公寓套餐、校内宿舍与寄宿家庭价格和巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
@@ -65,8 +71,8 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/philippines-study/cebu/cg-academy-sparta-campus': {
     title: 'CG斯巴达校区 | 宿务课程、住宿费用与报价',
-    description: '菲律宾宿务CG斯巴达校区介绍，查看斯巴达课程、高阶斯巴达、考试课程、住宿房型与费用报价，学杂费单独列示预估明细。',
-    keywords: 'CG斯巴达校区, CG斯巴达校区, 宿务CG语言学校, 斯巴达课程, CG费用, 菲律宾游学',
+    description: '菲律宾宿务CG斯巴达校区介绍：全斯巴达管理，斯巴达、托业、雅思保分班和雅思强化课程，校内宿舍实拍、2027假期和在线报价；学杂费单独列示。',
+    keywords: 'CG斯巴达校区, 宿务CG语言学校, CG雅思保分班, 斯巴达课程, CG费用, 菲律宾游学',
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
   },
   '/philippines-study/cebu/smeag-capital': {
@@ -76,9 +82,9 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/smeag-capital-building.webp',
   },
   '/philippines-study/cebu/smeag-encanto': {
-    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
-    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
-    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 寒暑假亲子营与成人ESL报价',
+    description: '宿务麦克坦岛SMEAG Encanto海滨校区：寒暑假全包亲子营、淡季亲子和成人ESL课程价格，每日作息、校园照片和在线报价。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, 菲律宾亲子营, SMEAG Family Camp, 宿务成人ESL',
     image: '/assets/philippines/smeag-encanto-campus-official.webp',
   },
   '/philippines-study/why-philippines': {
@@ -170,23 +176,16 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶API BECI City校区, BECI City Campus, API BECI课程费用, BECI夫妻房, 碧瑶语言学校',
     image: '/assets/philippines/beci-city-workspace.webp',
   },
-  '/philippines-study/baguio/baguio-jic': {
-    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
-    description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、2026课程费、住宿房型、优惠规则和报名注意事项。',
-    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/jic-campus-hero.webp',
-  },
   '/philippines-study/baguio/baguio-jic-challenger': {
     title: '菲律宾碧瑶JIC挑战校区 | Challenger课程住宿费用与报价',
-    description: 'JIC Challenger挑战校区独立页面，整理ESL与IELTS课程、每日课表、四种住宿、最新短期比例、学杂费、优惠和单人多人报价图片。',
-    keywords: 'JIC挑战校区, Baguio JIC Challenger Campus, JIC ESL, JIC IELTS, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Challenger挑战校区：雅思保分班和三种强度的雅思、一般英语课程，斯巴达或半斯巴达，四种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC挑战校区, 菲律宾碧瑶JIC语言学校, Baguio JIC Challenger Campus, JIC雅思保分班, JIC ESL, JIC IELTS, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-main-campus-overview.webp',
   },
   '/philippines-study/baguio/baguio-jic-premium': {
     title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
-    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior、六种住宿、最新学杂费、优惠和报价图片。',
-    keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Premium高级校区：口语、主题英语TEP、托业、商务、打工度假和银发课程，半斯巴达管理，六种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC高级校区, 菲律宾碧瑶JIC语言学校, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
   '/philippines-study/baguio/monol': {
@@ -500,7 +499,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/ims-academy', name: '菲律宾宿务IMS Academy语言学校', brand: 'IMS', quote: true },
   { path: '/philippines-study/cebu/cella-uni-sparta-campus', name: '菲律宾宿务CELLA Uni Sparta校区', brand: 'CELLA Uni Sparta', aliases: 'CELLA', quote: true },
   { path: '/philippines-study/cebu/cella-premium-campus', name: '菲律宾宿务CELLA Premium校区', brand: 'CELLA Premium', aliases: 'CELLA', quote: true },
-  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务Cebu Blue Ocean Academy', brand: 'Cebu Blue Ocean', quote: true },
+  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务蓝海语言学校（Cebu Blue Ocean Academy）', brand: '蓝海CBOA', aliases: 'Cebu Blue Ocean', quote: true, image: '/assets/cebu-blue-ocean/suites/pool.webp' },
   { path: '/philippines-study/cebu/target-global-english-academy', name: '菲律宾宿务TARGET Global English Academy', brand: 'TARGET', quote: true },
   { path: '/philippines-study/cebu/global-language-cebu', name: '菲律宾宿务GLC语言学校（Global Language Cebu）', brand: 'GLC', aliases: 'Global Language Cebu', quote: true },
   { path: '/philippines-study/cebu/ciec', name: '菲律宾宿务CIEC语言学校', brand: 'CIEC', quote: true },

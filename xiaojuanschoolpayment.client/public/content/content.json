@@ -386,6 +386,16 @@
       "desc": "伦敦南部的英国文化协会认证学校，上课、吃饭、住宿在同一栋楼，还有自己的巴斯城堡。",
       "image": "/assets/burlington/campus-courtyard.jpg",
       "path": "/overseas-study-tour/uk/burlington-school"
+    },
+    {
+      "id": "atc",
+      "name": "ATC Language Schools",
+      "country": "IE",
+      "city": "布雷／都柏林",
+      "tag": "成人英语课程",
+      "desc": "1973年创办的爱尔兰语言学校，海边小镇布雷和都柏林市中心两个校区，1周起报，25周课程可半工半读。",
+      "image": "/assets/atc/bray-aerial.webp",
+      "path": "/overseas-study-tour/ireland/atc-language-schools"
     }
   ],
   "tourGuides": [

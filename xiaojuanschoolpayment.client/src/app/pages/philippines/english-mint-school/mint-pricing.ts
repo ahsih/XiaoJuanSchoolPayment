@@ -49,12 +49,15 @@ const local = (values: number[]) => Object.fromEntries(
   MINT_LOCAL_FEE_WEEKS.map((weeks, index) => [weeks, values[index]]),
 ) as Record<MintLocalFeeWeeks, number>;
 
+export const MINT_ACR_NOTE = '第一次签证续签时（8周起）办理一次。';
+
 export const MINT_LOCAL_FEES: MintLocalFeeRow[] = [
   { id: 'deposit', name: '房间押金（可退）', amounts: local([3000, 3000, 3000, 3000, 3000, 3000]), note: '无损坏、无欠费时按学校规则结算退还；官方当地费总额包含此项。' },
   { id: 'visa', name: '签证延期累计费用', amounts: local([0, 5140, 11550, 15990, 21030, 25470]), note: '按学校公布的对应周数累计金额估算，最终以移民局和学校实收为准。' },
   { id: 'ssp', name: 'SSP特殊学习许可证', amounts: local([7800, 7800, 7800, 7800, 7800, 7800]), note: '本次学习期间的一次性费用。' },
   { id: 'ssp-e-card', name: 'SSP E-Card', amounts: local([4500, 4500, 4500, 4500, 4500, 4500]), note: '与SSP相关的证件费用。' },
-  { id: 'acr', name: 'ACR I-Card', amounts: local([0, 0, 4000, 4000, 4000, 4000]), note: '12周及以上按学校表格计入。' },
+  // ACR I-Card comes with the first visa extension (user rule 2026-11-24), so 8 weeks pays it too.
+  { id: 'acr', name: 'ACR I-Card', amounts: local([0, 4000, 4000, 4000, 4000, 4000]), note: MINT_ACR_NOTE },
   { id: 'pickup', name: '薄荷岛机场接机', amounts: local([500, 500, 500, 500, 500, 500]), note: '按薄荷岛邦劳国际机场（TAG）接机计算。' },
   { id: 'maintenance', name: '综合管理费', amounts: local([4000, 8000, 12000, 16000, 20000, 24000]), note: '按1,000比索／周计算。' },
   { id: 'water', name: '水费', amounts: local([1000, 2000, 3000, 4000, 5000, 6000]), note: '按250比索／周计算。' },
@@ -62,7 +65,7 @@ export const MINT_LOCAL_FEES: MintLocalFeeRow[] = [
 ];
 
 export const MINT_LOCAL_TOTALS: Record<MintLocalFeeWeeks, number> = {
-  4: 22800, 8: 34940, 12: 52350, 16: 63790, 20: 75830, 24: 87270,
+  4: 22800, 8: 38940, 12: 52350, 16: 63790, 20: 75830, 24: 87270,
 };
 
 export const MINT_REGISTRATION_FEE = 100;

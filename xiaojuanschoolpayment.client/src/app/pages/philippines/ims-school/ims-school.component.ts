@@ -116,7 +116,7 @@ export class ImsSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { title: '2+2是不是四周价格除以二？', text: '不是。必须分别使用所选课程明确2周课程价和所选房型明确2周住宿价；只能用于本次学习的首个连续4周，每名学生单次最多一次。' },
     { title: '第一段2+2，第二段减300美元可以吗？', text: '可以。首个淡季4周段可手动改选一次2+2；后续符合条件的淡季4周段会自动减300美元，不需要逐段手动选择。' },
     { title: '家长可以只陪读不上课吗？', text: '不能。亲子报名家长必须注册并购买Parents ESL；不想上3节一对一时，可按规则转给选择Junior ESL 6的孩子。' },
-    { title: '当地费用合计包含什么？', text: '官方TOTAL AMOUNT包含SSP、E-Card、教材、学生证、可退押金、水电空调、适用的签证延长、9周起ACR I-Card和一次接机；送机、走读午餐、超额用电与额外课程另列。' },
+    { title: '当地费用合计包含什么？', text: '官方TOTAL AMOUNT包含SSP、E-Card、教材、学生证、可退押金、水电空调、适用的签证延长、第一次续签时（第5周起）的ACR I-Card和一次接机；送机、走读午餐、超额用电与额外课程另列。' },
   ];
   private readonly builtInGallery: GalleryItem[] = [
     { category: '校园', title: 'IMS Banilad校园', description: '校园实拍视频中的泳池、校舍与IMS标识。', src: '/assets/ims/campus-video-cover.webp' },

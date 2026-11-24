@@ -308,7 +308,8 @@ export class IuIclPageStudent implements PhPageStudent {
       ...create('ssp', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
       ...create('ssp-e-card', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
       ...create('visa-extension', extensions, visaNote, visaTotal, visaRule ? `${formatPhp(sequence[0] ?? visaRule.amount)}起／次` : undefined),
-      ...create('acr-i-card', !longTerm && plan.stayWeeks >= 9 ? 1 : 0, longTerm ? longTermNote : undefined),
+      // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      ...create('acr-i-card', !longTerm && extensions >= 1 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('textbooks', courseTypes, undefined, undefined, `${formatPhp(this.rule('textbooks')?.amount ?? 0)}／种课程`),
       ...create('airport-pickup', staying),
       ...create('room-deposit', staying),

@@ -263,7 +263,8 @@ export class BtesStudentQuote {
   get localFees(): SchoolLocalFee[] {
     const stayDays = this.quotePlan.stayWeeks * 7;
     const sspCount = stayDays > 183 ? 2 : 1;
-    const acrCount = stayDays > 59 ? 1 : 0;
+    // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+    const acrCount = this.visaExtensionCount > 0 ? 1 : 0;
     const eccCount = stayDays > 183 ? 1 : 0;
     const campusRooms = this.quotePlan.rooms.filter((row) => !this.room(row.optionId)?.walkIn);
     const accommodationWeeks = campusRooms.reduce((sum, row) => sum + row.weeks, 0);
@@ -289,7 +290,7 @@ export class BtesStudentQuote {
       },
       {
         item: 'ACR I-Card外国人身份证', unitLabel: '4,000 比索／次', quantity: acrCount,
-        total: acrCount * 4000, note: `完整停留超过59天时预估办理；当前${acrCount ? '计入' : '无需计入'}。`,
+        total: acrCount * 4000, note: `第一次签证续签时预估办理（30天签证第5周起，59天签证第9周起）；当前${acrCount ? '计入' : '无需计入'}。`,
       },
       {
         item: '签证延期', unitLabel: '首延5,130；二延6,400；其后4,430 比索／次', quantity: this.visaExtensionCount,

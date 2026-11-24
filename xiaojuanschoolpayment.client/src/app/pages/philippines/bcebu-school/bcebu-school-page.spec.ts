@@ -132,7 +132,11 @@ describe("B'Cebu school page on the shared template", () => {
     page.selectedWeeks = 8;
     expect(localFee('签证续签')).toBe(5130);
     expect(localFee('ARP')).toBe(200);
+    // ACR I-CARD comes with the first extension (user rule 2026-11-24), so a 30-day visa pays it from week 5.
+    expect(localFee('ACR')).toBe(4000);
+    page.selectedWeeks = 4;
     expect(localFee('ACR')).toBe(0);
+    page.selectedWeeks = 8;
     page.selectedStartDate = '2027-01-03';
     expect(localFee('ARP')).toBe(700);
     student().visaType = 'tourist59';
@@ -140,6 +144,8 @@ describe("B'Cebu school page on the shared template", () => {
     expect(localFee('签证续签')).toBe(6400);
     expect(localFee('ACR')).toBe(4000);
     expect(student().dormDeposit).toBe(5000);
+    page.selectedWeeks = 8;
+    expect(localFee('ACR')).toBe(0);
   });
 
   it('upgrades a document saved before the 2026-11 pack once and keeps employee edits', () => {
@@ -159,6 +165,20 @@ describe("B'Cebu school page on the shared template", () => {
     expect(upgraded.quoteSettings.peakSeasonRanges.some(range => range.id === 'bcebu-summer-2027')).toBeTrue();
     const again = cloneBCebuContentConfig(upgraded);
     expect(again.courses.find(item => item.id === 'kindergarten')!.name).toBe('员工改过的名字');
+  });
+
+  it('moves an untouched over-59-days ACR note to the first-extension wording once', () => {
+    const saved = createDefaultBCebuContentConfig();
+    const oldNote = '在菲律宾停留超过59天（约第9周起）须办理，须本人到移民局拍照和录指纹，学校统一安排。';
+    saved.localFees.find(rule => rule.id === 'acr-i-card')!.note = oldNote;
+    saved.quoteImageSettings.localFeeNotes['acr-i-card'] = oldNote;
+    delete (saved.quoteSettings as { acrNoteVersion?: number }).acrNoteVersion;
+    const upgraded = cloneBCebuContentConfig(saved);
+    expect(upgraded.localFees.find(rule => rule.id === 'acr-i-card')!.note).toContain('第一次签证续签时办理');
+    expect(upgraded.quoteImageSettings.localFeeNotes['acr-i-card']).toContain('第一次签证续签时办理');
+    const edited = cloneBCebuContentConfig(upgraded);
+    edited.localFees.find(rule => rule.id === 'acr-i-card')!.note = oldNote;
+    expect(cloneBCebuContentConfig(edited).localFees.find(rule => rule.id === 'acr-i-card')!.note).toBe(oldNote);
   });
 
   it('lists every course in a group and every room in a room profile', () => {

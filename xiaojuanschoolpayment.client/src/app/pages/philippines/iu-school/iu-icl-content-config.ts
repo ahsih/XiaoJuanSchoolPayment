@@ -26,7 +26,7 @@ const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
  * Raised when saved documents must inherit a school notice once (cloneIuIclContentConfig):
  * 2 = the 2026-11-24 pack: the low-season window 2026/09/01–2027/01/16, room openings from 2026/11/29, the
  *     思达启航9折 and returning-student rules as offers, one visa-extension row with the 30-day and 59-day
- *     sequences, ACR I-Card from 9 weeks, course lines from the IU brochure and no agency payment rules.
+ *     sequences, ACR I-Card with the first visa extension, course lines from the IU brochure and no agency payment rules.
  */
 export const IU_ICL_POLICY_VERSION = 2;
 type IuIclQuoteSettings = CiaQuoteSettings & { iuIclPolicyVersion?: number };
@@ -171,7 +171,7 @@ const LOCAL_FEES = [
     rates: [5500, 6500, 5500], tourist59Rates: [6500, 5500],
     note: '30天签证：第1次延期5,500比索（读5–8周），第2次6,500比索（9–12周），之后每次5,500比索；59天签证从第9周起延期，首次6,500比索，之后每次5,500比索。',
   }),
-  fee({ id: 'acr-i-card', name: 'ACR I-Card', amount: 4500, billingRule: 'once', includeInTotal: true, note: '停留超过59天（9周或以上）时办理。' }),
+  fee({ id: 'acr-i-card', name: 'ACR I-Card', amount: 4500, billingRule: 'once', includeInTotal: true, note: '随第1次签证延期办理（30天签证第5周起，59天签证第9周起），只收一次。' }),
   fee({ id: 'textbooks', name: '教材费（预估）', amount: 2000, billingRule: 'once', includeInTotal: true, note: '每种课程预估2,000比索（每本250–600比索）；教材用完需另买。' }),
   fee({ id: 'airport-pickup', name: '机场接机', amount: 800, billingRule: 'once', includeInTotal: true, note: '一次性。' }),
   fee({ id: 'room-deposit', name: '宿舍押金', amount: 3000, billingRule: 'once', includeInTotal: true, note: '最后一周退还（无损坏、无欠费）。' }),

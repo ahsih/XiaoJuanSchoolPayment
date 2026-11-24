@@ -203,8 +203,6 @@ function buildProfile(campus: IuIclCampus): PhSchoolProfile {
     videoTabs,
     courseHighlights: page.courseHighlights,
     roomVideos,
-    // User request 2026-11-24: vertical videos shown whole, tried on IU before every school gets it.
-    tallVideoBackdrop: campus === 'IU',
     gallery: {
       categories: CIA_GALLERY_CATEGORIES,
       albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
