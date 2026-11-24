@@ -13,8 +13,9 @@ export const isLaMerSchool = (name: string): boolean => /\bev\b.*la\s*mer/i.test
 /**
  * 1 (2026-11-23): Chinese course names and lines from the 2026 course guide, rooms grouped into 单人间 and 多人间,
  * the ARP row, the company's quote-image lines, and the old page text (now in la-mer-page-content.ts) dropped.
+ * 2 (2026-11-25): family packages take neither the school offer nor the 思达启航 rate; untouched offer wording follows.
  */
-export const LA_MER_POLICY_VERSION = 1;
+export const LA_MER_POLICY_VERSION = 2;
 type LaMerQuoteSettings = CiaContentConfig['quoteSettings'] & { laMerPolicyVersion?: number };
 
 const familyPrice = (id: string, name: string, people: number, season: LaMerFamilyPrice['season'], values: number[]): LaMerFamilyPrice => ({
@@ -137,8 +138,8 @@ export function createDefaultLaMerContentConfig(): CiaContentConfig {
       peakSeasonFeePerWeek: 40,
       peakSeasonRanges: [{ id: 'summer-2026', label: '2026暑期旺季', start: '2026-07-05', end: '2026-08-29', enabled: true }],
       promotions: [
-        { id: 'lamer-school-2026', name: '学校优惠', description: '2026年8月24日至12月31日期间开课（以周一开课日计），每人每周减50美元；所有课程和住宿适用。', enabled: true, sortOrder: 0, priority: 1, stackable: true, newStudentsOnly: false, discountType: 'per-course-week', discountValue: 50, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 1, minimumAccommodationWeeks: 1, arrivalStart: '2026-08-24', arrivalEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'lamer-course-start' },
-        { id: 'lamer-sida', name: '思达启航折扣', description: '课程和住宿在学校优惠后享95折；亲子套餐在学校优惠后整包享95折。注册费、旺季附加费和到校学杂费不参与。', enabled: true, sortOrder: 1, priority: 2, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 1, minimumAccommodationWeeks: 1, coverageTarget: 'none', ruleKind: 'lamer-after-school' },
+        { id: 'lamer-school-2026', name: '学校优惠', description: '2026年8月24日至12月31日期间开课（以周一开课日计），每人每周减50美元；所有普通课程和住宿适用，亲子套餐不参与。', enabled: true, sortOrder: 0, priority: 1, stackable: true, newStudentsOnly: false, discountType: 'per-course-week', discountValue: 50, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 1, minimumAccommodationWeeks: 1, arrivalStart: '2026-08-24', arrivalEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'lamer-course-start' },
+        { id: 'lamer-sida', name: '思达启航折扣', description: '普通课程和住宿在学校优惠后享95折；亲子套餐、注册费、旺季附加费和到校学杂费不参与。', enabled: true, sortOrder: 1, priority: 2, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 1, minimumAccommodationWeeks: 1, coverageTarget: 'none', ruleKind: 'lamer-after-school' },
       ],
       localFeeIntro: LOCAL_FEE_INTRO,
       courseTableTitle: 'EV La Mer 4周课程费',
@@ -195,15 +196,38 @@ const OLD_SETTINGS_TEXT: Partial<Record<keyof CiaContentConfig['quoteSettings'],
   roomTableNote: '校内住宿含每日三餐和房间清洁；亲子家庭使用独立整包价。',
   stayPolicyTitle: '入住与退房',
 };
-const OLD_PROMOTIONS: Record<string, { name: string; description: string }> = {
-  'lamer-school-2026': { name: '学校优惠', description: '2026年8月24日至12月31日期间开课，每位学员每周减50美元；所有课程和住宿适用。' },
-  'lamer-sida': { name: '思达启航95折优惠', description: '普通课程住宿在学校优惠后享95折；亲子套餐在学校优惠后整体享95折。注册费及套餐外另付项目不参与。' },
+/** Untouched older offer names and descriptions: version 0, then version 1 (which still discounted family packages). */
+const OLD_PROMOTIONS: Record<string, { names: string[]; descriptions: string[] }> = {
+  'lamer-school-2026': {
+    names: ['学校优惠'],
+    descriptions: [
+      '2026年8月24日至12月31日期间开课，每位学员每周减50美元；所有课程和住宿适用。',
+      '2026年8月24日至12月31日期间开课（以周一开课日计），每人每周减50美元；所有课程和住宿适用。',
+    ],
+  },
+  'lamer-sida': {
+    names: ['思达启航95折优惠'],
+    descriptions: [
+      '普通课程住宿在学校优惠后享95折；亲子套餐在学校优惠后整体享95折。注册费及套餐外另付项目不参与。',
+      '课程和住宿在学校优惠后享95折；亲子套餐在学校优惠后整包享95折。注册费、旺季附加费和到校学杂费不参与。',
+    ],
+  },
 };
 
 /** Moves a document saved before LA_MER_POLICY_VERSION onto the current defaults, keeping what was edited. */
 function upgradeLaMerContent(clone: CiaContentConfig, defaults: CiaContentConfig): void {
   const settings = clone.quoteSettings as LaMerQuoteSettings;
-  if ((settings.laMerPolicyVersion ?? 0) >= LA_MER_POLICY_VERSION) return;
+  const version = settings.laMerPolicyVersion ?? 0;
+  if (version >= LA_MER_POLICY_VERSION) return;
+  for (const promotion of settings.promotions ?? []) {
+    const old = OLD_PROMOTIONS[promotion.id];
+    const fresh = defaults.quoteSettings.promotions.find(entry => entry.id === promotion.id);
+    if (!old || !fresh) continue;
+    if (old.names.includes(promotion.name)) promotion.name = fresh.name;
+    if (old.descriptions.includes(promotion.description)) promotion.description = fresh.description;
+  }
+  settings.laMerPolicyVersion = LA_MER_POLICY_VERSION;
+  if (version >= 1) return;
   for (const item of clone.courses) {
     const old = OLD_COURSES[item.id];
     const fresh = defaults.courses.find(entry => entry.id === item.id);
@@ -239,13 +263,6 @@ function upgradeLaMerContent(clone: CiaContentConfig, defaults: CiaContentConfig
   for (const range of settings.peakSeasonRanges ?? []) {
     if (range.id === 'summer-2026' && range.label === '2026普通课程暑期') range.label = '2026暑期旺季';
   }
-  for (const promotion of settings.promotions ?? []) {
-    const old = OLD_PROMOTIONS[promotion.id];
-    const fresh = defaults.quoteSettings.promotions.find(entry => entry.id === promotion.id);
-    if (!old || !fresh) continue;
-    if (promotion.name === old.name) promotion.name = fresh.name;
-    if (promotion.description === old.description) promotion.description = fresh.description;
-  }
   const image = clone.quoteImageSettings;
   const freshImage = defaults.quoteImageSettings;
   if (image.benefits.map(item => item.title).join() === OLD_IMAGE_BENEFITS.join()) {
@@ -258,7 +275,6 @@ function upgradeLaMerContent(clone: CiaContentConfig, defaults: CiaContentConfig
   if (image.paymentNotes.accommodation === '含每日三餐和房间清洁') image.paymentNotes.accommodation = '';
   if (image.footerNotes.includes('周日入住，最后一周周六中午12点前退房；房型与名额以学校确认为准。')) image.footerNotes = [...freshImage.footerNotes];
   delete clone.laMerPage;
-  settings.laMerPolicyVersion = LA_MER_POLICY_VERSION;
 }
 
 export function cloneLaMerContentConfig(value: CiaContentConfig): CiaContentConfig {

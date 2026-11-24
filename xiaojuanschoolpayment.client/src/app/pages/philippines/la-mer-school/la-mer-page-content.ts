@@ -12,7 +12,9 @@ import type {
   DailyScheduleRow,
   FaqItem,
   GalleryImage,
+  HolidayCalendar,
 } from '../cia-school/cia-page-content';
+import { EV_HOLIDAY_CALENDARS, EV_HOLIDAY_FOOTNOTE } from '../ev-school/ev-page-content';
 import type { PhAlbumCategory, PhRoomProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 
@@ -45,7 +47,7 @@ export const LA_MER_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string;
 
 export const LA_MER_QUICK_INFO: ReadonlyArray<{ icon: string; title: string; text: string }> = [
   { icon: 'location_on', title: '麦克坦岛 Cordova', text: '离机场约25分钟，周边安静' },
-  { icon: 'rule', title: '半斯巴达', text: '平日17:10下课后可外出' },
+  { icon: 'rule', title: '半斯巴达', text: '平日17:10以后可外出' },
   { icon: 'family_restroom', title: '亲子与熟龄', text: '孩子7岁起，熟龄课程50岁以上' },
   { icon: 'pool', title: '度假村式校园', text: '泳池、花园和屋顶草坪' },
 ];
@@ -73,7 +75,7 @@ export const LA_MER_NOT_SUITABLE_FOR: readonly string[] = [
 export const LA_MER_CAMPUS_BUILDINGS: readonly CampusBuildingCard[] = [
   { code: 'STUDY', title: '教学区', icon: 'school', facilities: ['一楼和二楼教室', '一对一教室和小组教室', '会议室'] },
   { code: 'DORM', title: '宿舍', icon: 'bed', facilities: ['一楼和二楼宿舍', '有直通泳池的房间', '宿舍有 Wi-Fi'] },
-  { code: 'LIFE', title: '休闲设施', icon: 'pool', facilities: ['泳池（06:00–22:00）', '健身房（15岁以上）', '瑜伽室、娱乐室', '篮球、乒乓球'] },
+  { code: 'LIFE', title: '休闲设施', icon: 'pool', facilities: ['泳池（06:00–22:00，上课时间禁用）', '健身房（15岁以上）', '瑜伽室、娱乐室', '篮球、乒乓球'] },
   { code: 'DINING', title: '餐饮', icon: 'restaurant', facilities: ['一楼学生餐厅，一日三餐，周末也有', '咖啡厅：咖啡、零食、电话卡'] },
 ];
 
@@ -128,7 +130,7 @@ export const LA_MER_GALLERY_IMAGES: readonly GalleryImage[] = [
   image('餐厅', '咖啡厅吧台', '咖啡厅', life('cafe-bar')),
   image('餐厅', '小卖部', '零食和日用品', life('shop-1')),
   image('餐厅', '小卖部货架', '零食和日用品', life('shop-2')),
-  image('设施', '泳池', '06:00–22:00 开放，上课时间除外', life('pool-1')),
+  image('设施', '泳池', '06:00–22:00 开放，上课时间禁止使用', life('pool-1')),
   image('设施', '泳池', '课后在泳池放松', life('pool-2')),
   image('设施', '夜晚的泳池', '晚上的泳池', life('pool-night')),
   image('设施', '水中尊巴', '每月一次的水中尊巴', life('aqua-zumba-1')),
@@ -246,17 +248,17 @@ export const LA_MER_COURSE_DETAIL_GUIDES: readonly CourseDetailGuide[] = [
     title: '亲子家庭套餐',
     subtitle: '监护人和7岁以上孩子同住',
     facts: [
-      { label: '孩子', value: '每天5节一对一：阅读、写作、听力、口语、词汇' },
+      { label: '孩子', value: '每天5节一对一（阅读、写作、听力、口语、词汇）＋2节选修课（英文歌曲、游戏、舞蹈、电影、写日记、演讲等）' },
       { label: '监护人', value: '每天3节一对一（阅读、写作、口语）＋2节团体课（语法、演讲、听力、口语）' },
       { label: '整包价含', value: '课程、住宿、三餐、清洁、SSP、SSP E-CARD、学生证、水电、管理费、教材和接机' },
       { label: '另付', value: '签证续签、ACR I-CARD 和可退押金按人另付；每周用电超过15度按每度20比索' },
     ],
     points: [
-      '至少1位监护人和1位孩子，2–4人一户；每期最多10个家庭，先到先得。',
-      '报名时每人付500美元订金（含在整包价里），余款在出发前4周付清；报名后不能改期或转让。',
+      '至少1位监护人和1位孩子，2–4人一户；每期全校最多招10组家庭（各国学员合计），先到先得。',
+      '报名时每人付500美元订金（含在整包价里），余款在出发前4周付清；报名后不能改期或转让，原则上也不能取消，出发前取消的订金不退。',
       '学校不提供保姆服务，课后由监护人照顾孩子，孩子外出须监护人陪同。',
     ],
-    notice: '亲子套餐在报价器的“课程”里选择，按入学日期自动套用淡季或旺季整包价。',
+    notice: '亲子套餐在报价器的“课程”里选择，按入学日期套用淡季或旺季整包价；整包价不打折，也不另收旺季附加费。',
   },
   {
     icon: 'quiz',
@@ -276,13 +278,13 @@ export const LA_MER_COURSE_DETAIL_GUIDES: readonly CourseDetailGuide[] = [
     title: '免费选修课',
     subtitle: '自愿参加',
     facts: [{ label: '科目', value: '语法、写作、口语、青少年活动课' }],
-    points: ['每天08:00–17:10之间可以免费上1节选修课，是否开课看报名人数。'],
+    points: ['每天08:00–16:20之间可以免费上1节选修课，是否开课看报名人数。'],
   },
 ];
 
 const row = (time: string, activity: string, kind: DailyScheduleRow['kind']): DailyScheduleRow => ({ time, activity, kind });
 
-/** Monday to Friday; 8 regular classes and one free elective among the ten periods. */
+/** Monday to Friday; 8 regular classes and one free elective among the nine periods, free time from 16:25 (orientation guide). */
 export const LA_MER_SCHEDULE: readonly DailyScheduleRow[] = [
   row('07:00–08:00', '早餐', 'meal'),
   row('08:00–08:45', '第1节', 'class'),
@@ -294,19 +296,98 @@ export const LA_MER_SCHEDULE: readonly DailyScheduleRow[] = [
   row('13:05–13:50', '第6节', 'class'),
   row('13:55–14:40', '第7节', 'class'),
   row('14:45–15:30', '第8节', 'class'),
-  row('15:35–16:20', '第9节', 'class'),
-  row('16:25–17:10', '第10节', 'class'),
-  row('17:15–18:00', '自由时间（尊巴、瑜伽等活动）', 'activity'),
+  row('15:35–16:20', '第9节（选修课或自由时间）', 'class'),
+  row('16:25–18:00', '自由时间（尊巴、瑜伽等活动）', 'activity'),
   row('18:00–19:00', '晚餐', 'meal'),
   row('19:00–', '自由时间', 'free'),
 ];
+
+/**
+ * EV's 2027 holiday poster covers both campuses; only 2/24 (Cebu City Charter Day) is marked main campus only, so
+ * La Mer leaves it out.
+ */
+export const LA_MER_HOLIDAY_CALENDARS: HolidayCalendar[] = EV_HOLIDAY_CALENDARS.map(calendar => ({
+  ...calendar,
+  months: calendar.months
+    .map(month => ({ ...month, holidays: month.holidays.filter(holiday => !holiday.name.includes('仅主校区')) }))
+    .filter(month => month.holidays.length > 0),
+}));
+export const LA_MER_HOLIDAY_FOOTNOTE = EV_HOLIDAY_FOOTNOTE;
+
+/** Family-package peak seasons (family sheet 2027): the package price follows the arrival date, with no surcharge. */
+export const LA_MER_FAMILY_PEAK_SEASONS = {
+  title: '亲子套餐旺季整包价（按入学日期，不另收附加费）',
+  ranges: [
+    { start: '2027-01-03', end: '2027-02-27', label: '2027冬季' },
+    { start: '2027-06-27', end: '2027-08-28', label: '2027暑期' },
+  ],
+};
+
+/**
+ * EV's refund rules (school pack 2026-11) with 思达启航's own deposit rules, plus the family-sheet rules
+ * (Regulation and Policies 1–4). The school's pre-entry penalties and agency rules stay off the page.
+ */
+export const LA_MER_REFUND_COPY = {
+  summaryTitle: 'La Mer 取消、改期与退款规定',
+  summaryHint: '报名定金、改期与尾款、到校后退款比例、亲子套餐、不退款的情况',
+  eyebrow: 'CANCELLATION & REFUND',
+  title: 'EV La Mer 取消与退款规定',
+  intro: '到校后按剩余周数退部分学费和住宿费；注册费不退，剩余不足4周不退。亲子套餐另有规定。',
+  alert: '报名前请确认',
+  groups: [
+    {
+      title: '报名与入学前',
+      note: '',
+      rules: [
+        { when: '报名定金', text: '通过思达启航报名时预收定金2,000元人民币，为学生向学校订位；定金交了以后不退。' },
+        { when: '改期与保留', text: '入学4周前告诉顾问，可以免费改入学日期，或申请把定金保留1年。' },
+        { when: '尾款', text: '入学前2周还没有给学校付清尾款的，学校会直接取消学位，已预付的报名定金全部扣除。' },
+      ],
+      footnote: '',
+    },
+    {
+      title: '到校以后',
+      note: '',
+      rules: [
+        { when: '只报4周', text: '报名4周及以下，到校后不退款。' },
+        { when: '到校4周内申请', text: '退剩余周数学费和住宿费的50%（例：12周课程第3周申请，退剩余9周费用的50%）。' },
+        { when: '到校4周后申请', text: '退剩余周数学费和住宿费的25%（例：12周课程第5周申请，退剩余7周费用的25%）。' },
+        { when: '剩余不足4周', text: '不退款。' },
+        { when: '已享优惠', text: '申请退款后，已享受的优惠折扣取消。' },
+        { when: '办理方式', text: '到校后填写退费申请单交到办公室才生效；学费和住宿费由思达启航退给学生，到校学杂费由学校退。' },
+      ],
+      footnote: '',
+    },
+    {
+      title: '亲子套餐',
+      note: '亲子套餐报名后不能改期，上面的“改期与保留”不适用。',
+      rules: [
+        { when: '确认名额', text: '报名时每人付500美元订金（含在整包价里），付了订金名额才确认。' },
+        { when: '尾款', text: '余款在出发前4周付清。' },
+        { when: '改期与转让', text: '报名后不能改期，也不能转让给别人。' },
+        { when: '取消', text: '原则上不能取消；出发前一定要取消的，订金不退，其余已付款项退还。' },
+      ],
+      footnote: '',
+    },
+    {
+      title: '不退款的情况',
+      note: '',
+      rules: [
+        { when: '晚到或缺席', text: '不在周六、周日入住，或晚到、缺席，学校都不退费；航班延误、取消或天气原因也一样。' },
+        { when: '违规退学', text: '扣分满被开除，或学校按校规开除，不退款。' },
+        { when: '假日与不可抗力', text: '国定假日停课不补课、不退费；自然灾害等不可抗力造成的延误或取消不退款。' },
+      ],
+      footnote: LA_MER_REFERENCE_NOTE,
+    },
+  ],
+};
 
 export const LA_MER_DORM_RULES: ReadonlyArray<{ title: string; text: string }> = [
   { title: '门禁', text: '周一至周四22:00，周五24:00，周六05:00–24:00，周日05:00–22:00；超时30分钟内扣2分，超过30分钟扣5分。' },
   { title: '未成年学生', text: '平日不能外出；周末须监护人陪同，门禁21:00。' },
   { title: '外宿与旅行', text: '外出旅行须提前一个工作日交旅行申请；未经学校同意不能在外过夜。' },
   { title: '宿舍', text: '不能进入异性房间（违者开除），也不能进别人的房间；校内禁酒，只能在指定区域吸烟，宿舍不能做饭。' },
-  { title: '泳池', text: '06:00–22:00 开放，上课时间除外；未成年人须在监护人看护下使用。' },
+  { title: '泳池', text: '06:00–22:00 开放，上课时间禁止使用；未成年人须在监护人看护下使用。' },
   { title: '扣分', text: '累计扣分超过上限会被开除且不退款：1–12周10分，13–18周15分，19周以上20分。' },
   { title: '换房与赔偿', text: '换房每次1,000比索；丢失学生证或钥匙各500比索。' },
   { title: '退房', text: '最后一周周六中午12点前退房，行李放到警卫室；离校当天领回护照、结业证书和押金。' },
@@ -405,7 +486,7 @@ export const LA_MER_FAQS: readonly FaqItem[] = [
   },
   {
     question: '平时可以外出吗？离市区远吗？',
-    answer: '可以。平日17:10下课后可外出，门禁周一至周四22:00、周五24:00。学校接驳车平日17:30去 SM Seaside 或 Shang’s Mall，21:00返校，须提前一天登记。',
+    answer: '可以。平日17:10以后可外出，门禁周一至周四22:00、周五24:00。学校接驳车平日17:30去 SM Seaside 或 Shang’s Mall，21:00返校，须提前一天登记。',
   },
   {
     question: '在 La Mer 能准备雅思吗？',
@@ -413,7 +494,7 @@ export const LA_MER_FAQS: readonly FaqItem[] = [
   },
   {
     question: '有哪些优惠？',
-    answer: '2026/08/24–12/31 开课（以周一开课日算），学校每人每周减50美元；思达启航学员在学校优惠后，课程和住宿再打95折，亲子套餐整包也打95折。报价器会按日期自动计算。',
+    answer: '2026/08/24–12/31 开课（以周一开课日算），学校每人每周减50美元；思达启航学员在学校优惠后，课程和住宿再打95折。亲子套餐整包价不打折，也不另收旺季附加费。报价器会按日期自动计算。',
   },
   ORDINARY_FEES_FAQ,
   {

@@ -302,7 +302,7 @@
       {
         "id": "lamer-school-2026",
         "name": "学校优惠",
-        "description": "2026年8月24日至12月31日期间开课（以周一开课日计），每人每周减50美元；所有课程和住宿适用。",
+        "description": "2026年8月24日至12月31日期间开课（以周一开课日计），每人每周减50美元；所有普通课程和住宿适用，亲子套餐不参与。",
         "enabled": true,
         "sortOrder": 0,
         "priority": 1,
@@ -322,7 +322,7 @@
       {
         "id": "lamer-sida",
         "name": "思达启航折扣",
-        "description": "课程和住宿在学校优惠后享95折；亲子套餐在学校优惠后整包享95折。注册费、旺季附加费和到校学杂费不参与。",
+        "description": "普通课程和住宿在学校优惠后享95折；亲子套餐、注册费、旺季附加费和到校学杂费不参与。",
         "enabled": true,
         "sortOrder": 1,
         "priority": 2,
@@ -368,7 +368,7 @@
         "amount": 2000
       }
     ],
-    "laMerPolicyVersion": 1,
+    "laMerPolicyVersion": 2,
     "laMer": {
       "familyDepositPerPerson": 500,
       "minimumChildAge": 7,
