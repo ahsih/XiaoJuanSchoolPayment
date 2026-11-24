@@ -28,6 +28,7 @@ import {
   CIA_PAGE_COPY,
   CIA_ROOM_COMPARISON_PROFILES,
   CIA_SIDA_REASONS,
+  CIA_SIDA_VIDEOS,
   CIA_SIDA_TRUST_BADGES,
   CIA_SNAPSHOT_CARDS,
   CIA_STUDENT_CARE_SERVICES,
@@ -333,24 +334,43 @@ const ciaShortVideo = (video: CiaShortVideo): PhVideoItem => ({
 const ciaShort = (list: readonly CiaShortVideo[], title: string): PhVideoItem =>
   ciaShortVideo(list.find(video => video.title === title) as CiaShortVideo);
 
-/** Videos in the hero album, one chip per topic; the campus tour opens the album. */
+const sida = (title: string): PhVideoItem => ciaShort(CIA_SIDA_VIDEOS, title);
+
+/**
+ * Videos in the hero album, one chip per topic; the campus tour opens the album. CIA's own clips come first in
+ * each chip, then the clips 思达启航 filmed at CIA; NUU is off campus, so it closes the campus chip. Activities stay in
+ * the campus chip: a fifth chip made the row wider than a 360px phone.
+ */
 const CIA_VIDEO_TABS: PhVideoTab[] = [
   {
     label: '校园视频',
     icon: 'videocam',
-    items: [ciaVideoCard('CAMPUS'), ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '食堂自助餐'), ciaShort(CIA_CAMPUS_LIFE_VIDEOS, 'NUU 咖啡厅（校外）')],
+    items: [
+      ciaVideoCard('CAMPUS'),
+      ...['校园环境', '课间休息'].map(sida),
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '食堂自助餐'),
+      ...['餐厅餐饮', '校园商超', '健身房', '图书馆自习室', '自助洗衣房', '医务室', '祈祷室', '服饰租赁', '课后活动', '篮球比赛', '羽毛球场'].map(sida),
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, 'NUU 咖啡厅（校外）'),
+    ],
   },
   {
     label: '宿舍视频',
     icon: 'videocam',
     items: [
       ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '宿舍房型总览'),
+      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '豪华单人间实拍'),
+      sida('豪华单人间 P-1'),
       ciaVideoCard('DORM'),
-      ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '单人间实拍'),
+      ...['校外单人间 PN-1', '标准单人间 S-1', '双人间 D-2'].map(sida),
       ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '三人间实拍'),
+      ...['三人间 D-3', '四人间 D-4', '四人间入住体验'].map(sida),
     ],
   },
-  { label: '课程视频', icon: 'videocam', items: ['ESL', 'IELTS', 'TOEIC', 'BUSINESS'].map(ciaVideoCard) },
+  {
+    label: '课程视频',
+    icon: 'videocam',
+    items: [...['ESL', 'IELTS', 'TOEIC', 'BUSINESS'].map(ciaVideoCard), ...['上课实拍', '瑜伽普拉提', '雅思官方考场'].map(sida)],
+  },
   { label: '学员访谈', icon: 'videocam', items: CIA_INTERVIEW_VIDEOS.map(ciaShortVideo) },
 ];
 
@@ -377,11 +397,15 @@ export const CIA_PAGE_PROFILE: PhSchoolProfile = {
   },
   // Checked frame by frame (2026-11-21): the single-room clip is the Premium Single P-1 (wall clock, two pillows,
   // slatted headboard, mosaic shower), the Building 4 video the off-campus PN-1, the triple clip D-3.
-  // 宿舍房型总览 shows several room types, so it stays in the hero album only.
+  // 宿舍房型总览 shows several room types, so it stays in the hero album only. S-1, D-2 and D-4 open with the clips
+  // 思达启航 filmed in those rooms (2026-11-24); the suites have no clip.
   roomVideos: {
-    'premium-single': ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '单人间实拍'),
+    'premium-single': ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '豪华单人间实拍'),
     'pinnacle-single': ciaVideoCard('DORM'),
+    'standard-single': sida('标准单人间 S-1'),
+    twin: sida('双人间 D-2'),
     triple: ciaShort(CIA_CAMPUS_LIFE_VIDEOS, '三人间实拍'),
+    quad: sida('四人间 D-4'),
   },
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
