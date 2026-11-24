@@ -1,5 +1,6 @@
 import { CiaContentConfig, CiaLocalFeeRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { MINT_COURSES, MINT_LOCAL_FEES, MINT_REGISTRATION_FEE, MINT_ROOMS } from './mint-pricing';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 const imageSettings = (): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
@@ -91,5 +92,6 @@ export const cloneMintContentConfig = (value: CiaContentConfig): CiaContentConfi
   result.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(result.quoteImageSettings.promotionNotes ?? {}) };
   result.quoteImageSettings.localFeeNotes = { ...defaults.quoteImageSettings.localFeeNotes, ...(result.quoteImageSettings.localFeeNotes ?? {}) };
   result.quoteImageSettings.supplementalFeeNotes = { ...defaults.quoteImageSettings.supplementalFeeNotes, ...(result.quoteImageSettings.supplementalFeeNotes ?? {}) };
+  upgradeAcrNotes(result, defaults, { acr: ['12周及以上按学校表格计入。'] });
   return result;
 };

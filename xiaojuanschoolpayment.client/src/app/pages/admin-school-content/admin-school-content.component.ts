@@ -199,8 +199,8 @@ export class AdminSchoolContentComponent implements OnInit {
     { id: 'junior', label: 'Junior' },
     { id: 'ielts', label: 'IELTS' },
     { id: 'toeic', label: 'TOEIC' },
-    { id: 'guarantee8', label: 'IELTS保证班 8周' },
-    { id: 'guarantee12', label: 'IELTS保证班 12周' },
+    { id: 'guarantee8', label: '雅思保分班 8周' },
+    { id: 'guarantee12', label: '雅思保分班 12周' },
   ];
   readonly iuIclPackageRooms = [
     { id: 'single', label: '单人房' },

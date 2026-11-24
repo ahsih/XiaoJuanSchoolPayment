@@ -45,12 +45,15 @@ combined rows (TOEFL / IELTS, ESL / Speaking Master) onto the separate course id
 - 思达启航折扣 10% applies to tuition and campus rooms only; partner-hotel rooms are not discounted.
 - The 25-dollar weekly offers count study weeks lying wholly inside the offer dates. The Christmas offer (100 dollars)
   needs at least 4 course weeks and any study week touching 2026/12/20–2027/01/02.
-- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 once the stay
-  reaches 60 days; utilities 3,000 per started 4 accommodation weeks; water and electricity 2,400 per started 4
-  campus weeks (none at the hotels); one textbook set per course type. Pickup (1,200) and the refundable deposit
+- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 with the first visa
+  extension (user rule 2026-11-24; the sheet lists it from 60 days); utilities 3,000 and water and electricity 2,400 per started 4
+  campus weeks; partner-hotel weeks pay only a management fee of 2,000 per started 4 weeks (user confirmation
+  2026-11-24, policy version 2, which adds the fee rule to saved documents); one textbook set per course type. Pickup (1,200) and the refundable deposit
   (2,000) are reference rows outside the total. Our totals equal the sheet's totals minus pickup and deposit, plus
   the textbook.
 - There is no peak-season surcharge.
+- The 2027 holiday table is on the page; the rest of the 2026 Capital holiday poster (11/27 and 12/30 holiday classes,
+  12/24, 12/25 and 12/31 closed) is one line under it.
 - The five-person room has no photos in the pack, so its price card has no photo button.
 - The partner-hotel videos are not used: their opening shows a booking banner and the hotel address.
 - Campus photos that show the flag of the Taiwan authorities are not used (photos 52, 53, 54 and 64 of the campus
@@ -62,8 +65,6 @@ combined rows (TOEFL / IELTS, ESL / Speaking Master) onto the separate course id
 ## Open questions for the school
 
 - The 59-day visa extension sequence (6,400, then 4,430) is an estimate; the sheet lists only the 30-day sequence.
-- The older hotel rule mentions a 2,000-peso maintenance fee; the 2027 sheet charges utilities of 3,000 per 4 weeks
-  for everyone. The quote uses the 2027 sheet.
 - Junior course schedules are not in the pack, so those rows say the schedule is confirmed at registration.
 
 ## Tests

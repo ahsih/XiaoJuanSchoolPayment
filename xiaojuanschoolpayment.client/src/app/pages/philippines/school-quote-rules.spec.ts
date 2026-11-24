@@ -1,7 +1,7 @@
 import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-download-button.component';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
-import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
-import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
+import { CgBaniladSchoolPageComponent } from './cg-banilad-school/cg-banilad-school-page.component';
+import { CgSpartaSchoolPageComponent } from './cg-sparta-school/cg-sparta-school-page.component';
 import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
@@ -12,7 +12,7 @@ import { MonolSpartaSchoolPageComponent } from './monol-sparta-school/monol-spar
 import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
 import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
 import { GlcSchoolComponent } from './glc-school/glc-school.component';
-import { IbreezeSchoolComponent } from './ibreeze-school/ibreeze-school.component';
+import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
 import { ImsSchoolComponent } from './ims-school/ims-school.component';
 import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
@@ -23,7 +23,7 @@ import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
 import { FellaSchoolDetailComponent } from './fella-school/fella-school-detail.component';
 import { BtesSchoolComponent } from './btes-school/btes-school.component';
-import { CebuBlueOceanSchoolComponent } from './cebu-blue-ocean-school/cebu-blue-ocean-school.component';
+import { CboaSchoolPageComponent } from './cebu-blue-ocean-school/cboa-school-page.component';
 import { WalesSchoolDetailComponent } from './wales-school/wales-school-detail.component';
 import { EnglishMintSchoolComponent } from './english-mint-school/english-mint-school.component';
 import { ElementRef } from '@angular/core';
@@ -47,8 +47,8 @@ const schools = [
   { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
-  { name: "CG Banilad", create: () => new CgBaniladSchoolComponent() },
-  { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
+  { name: "CG Banilad", create: () => new CgBaniladSchoolPageComponent() },
+  { name: "CG Sparta", create: () => new CgSpartaSchoolPageComponent() },
   { name: "SMEAG", create: () => new SmeagCapitalSchoolPageComponent() },
   { name: "CPI", create: () => new CpiSchoolPageComponent() },
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
@@ -59,7 +59,7 @@ const schools = [
   { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
   { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
   { name: "GLC", create: () => new GlcSchoolComponent() },
-  { name: "I.BREEZE", create: () => new IbreezeSchoolComponent() },
+  { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
   { name: "IMS", create: () => new ImsSchoolComponent() },
   { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
@@ -69,7 +69,7 @@ const schools = [
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },
   { name: "Fella", create: () => new FellaSchoolDetailComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
-  { name: "Blue Ocean", create: () => new CebuBlueOceanSchoolComponent() },
+  { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },
   { name: "MINT", create: () => new EnglishMintSchoolComponent() },
 ];
@@ -263,7 +263,7 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
     const codes = [
       'ANJ', 'BECI', 'MONOL', 'MONOL-SPARTA', 'PINES', 'JIC', 'WALES',
       'BLUE-OCEAN', 'BTES', 'CWA', 'CELLA-UNI', 'CELLA-PREMIUM', 'CG-BANILAD', 'CG-SPARTA',
-      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING', 'CPILS',
+      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING',
     ];
     for (const code of codes) {
       expect(associationPeakRateForWeek(code, '2027-07-04', 40)).withContext(code).toBe(60);
@@ -279,5 +279,7 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
 
   it('leaves non-association schools on their configured rate', () => {
     expect(calculateAssociationPeakSurcharge('CIA', [sunday('2027-07-04')], ranges, 47).total).toBe(47);
+    // CPILS is a CALA member but charges its own 40 dollars a week in 2027 (user decision 2026-11-24).
+    expect(calculateAssociationPeakSurcharge('CPILS', [sunday('2027-07-04')], ranges, 40).total).toBe(40);
   });
 });

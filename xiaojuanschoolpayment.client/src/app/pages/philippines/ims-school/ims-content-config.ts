@@ -1,3 +1,4 @@
+import { upgradeAcrNotes } from '../acr-first-extension';
 import { CiaContentConfig, CiaPromotionRule } from '../cia-school/cia-content-config';
 import {
   IMS_ADDITIONAL_CLASSES,
@@ -56,7 +57,7 @@ export const createDefaultImsContentConfig = (): CiaContentConfig => ({
     { id: 'electricity', name: '基础电费', currency: 'PHP', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional', includeInTotal: true, note: '500比索／住宿周。', enabled: true, sortOrder: 6 },
     { id: 'aircon', name: '空调费', currency: 'PHP', amount: 250, secondaryAmount: 30, secondaryLabel: '超额／kW', billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional', includeInTotal: true, note: '250比索／周，包含100kW／4周；超额30比索／kW。', enabled: true, sortOrder: 7 },
     { id: 'visa-extension', name: '签证延长累计费用', currency: 'PHP', amount: 5050, rates: [5050, 6800, 4450, 4450, 4450], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '5–8周累计5,050；9–12周11,850；13–16周16,300；17–20周20,750；21–24周25,200比索。', enabled: true, sortOrder: 8 },
-    { id: 'acr-i-card', name: 'ACR I-Card', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '从9周起计入一次。', enabled: true, sortOrder: 9 },
+    { id: 'acr-i-card', name: 'ACR I-Card', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: '第一次签证续签时（第5周起）计入一次。', enabled: true, sortOrder: 9 },
     { id: 'pickup', name: '宿务机场接机', currency: 'PHP', amount: 1000, billingRule: 'once', includeInTotal: true, note: '费用表TOTAL AMOUNT包含一次；如自行前往可取消。', enabled: true, sortOrder: 10 },
     { id: 'dropoff', name: '宿务机场送机', currency: 'PHP', amount: 1000, billingRule: 'optional', includeInTotal: false, note: '可选服务，不在费用表TOTAL AMOUNT内。', enabled: true, sortOrder: 11 },
     { id: 'walk-in-lunch', name: '走读午餐', currency: 'PHP', amount: 6000, billingRule: 'optional', periodWeeks: 4, includeInTotal: false, note: '走读学生可选；6,000比索／4周。', enabled: true, sortOrder: 12 },
@@ -145,5 +146,7 @@ export const cloneImsContentConfig = (value: CiaContentConfig): CiaContentConfig
   }
   if (!cloned.quoteImageSettings.localFeeNotes) cloned.quoteImageSettings.localFeeNotes = {};
   if (!cloned.media) cloned.media = [];
+  // ACR I-Card moved to the first visa extension (user rule 2026-11-24); untouched old notes follow once.
+  upgradeAcrNotes(cloned, createDefaultImsContentConfig(), { 'acr-i-card': ['从9周起计入一次。'] });
   return cloned;
 };

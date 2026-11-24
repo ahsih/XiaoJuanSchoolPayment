@@ -321,15 +321,15 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cg-academy-sparta-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-sparta-school/cg-sparta-school.component').then(
-            (m) => m.CgSpartaSchoolComponent,
+          import('./pages/philippines/cg-sparta-school/cg-sparta-school-page.component').then(
+            (m) => m.CgSpartaSchoolPageComponent,
           ),
       },
       {
         path: 'philippines-study/cebu/cg-academy-banilad-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-banilad-school/cg-banilad-school.component').then(
-            (m) => m.CgBaniladSchoolComponent,
+          import('./pages/philippines/cg-banilad-school/cg-banilad-school-page.component').then(
+            (m) => m.CgBaniladSchoolPageComponent,
           ),
       },
       {
@@ -363,8 +363,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ibreeze',
         loadComponent: () =>
-          import('./pages/philippines/ibreeze-school/ibreeze-school.component').then(
-            (m) => m.IbreezeSchoolComponent,
+          import('./pages/philippines/ibreeze-school/ibreeze-school-page.component').then(
+            (m) => m.IbreezeSchoolPageComponent,
           ),
       },
       {
@@ -384,8 +384,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cebu-blue-ocean-academy',
         loadComponent: () =>
-          import('./pages/philippines/cebu-blue-ocean-school/cebu-blue-ocean-school.component').then(
-            (m) => m.CebuBlueOceanSchoolComponent,
+          import('./pages/philippines/cebu-blue-ocean-school/cboa-school-page.component').then(
+            (m) => m.CboaSchoolPageComponent,
           ),
       },
       {

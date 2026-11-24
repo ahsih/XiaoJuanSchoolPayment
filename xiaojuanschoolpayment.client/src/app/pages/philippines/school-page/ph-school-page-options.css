@@ -277,3 +277,29 @@
   }
   :host .text-review-grid article { flex: 0 0 min(82%, 320px); scroll-snap-align: start; }
 }
+
+/* ---- Vertical videos shown whole over a blurred copy of their poster (profile.tallVideoBackdrop) ---- */
+:host .tall-video-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(22px) brightness(0.62) saturate(1.1);
+  transform: scale(1.15);
+  pointer-events: none;
+}
+
+:host .hero-album-stage.is-tall.has-tall-backdrop > video,
+:host .room-profile-photo.has-tall-backdrop > .room-album-video {
+  position: relative;
+  object-fit: contain;
+  background: transparent;
+}
+
+@media (max-width: 760px) {
+  /* Phones: a vertical video gets the photos' 4:3 frame instead of 16:9, so it is not tiny. */
+  :host .hero-album-stage.is-video.has-tall-backdrop {
+    aspect-ratio: 4 / 3;
+  }
+}

@@ -5,8 +5,10 @@ import { CellaStudentQuote } from './cella-quote/cella-student-quote';
 import { CELLA_COURSES, CELLA_ROOMS } from './cella-quote/cella-pricing';
 import { ImsStudentQuote } from './ims-school/ims-student-quote';
 import { textbookGroups, textbookPeriods } from './school-textbook-estimate';
-import { CgBaniladStudentQuote } from './cg-banilad-school/cg-banilad-student-quote';
-import { CgSpartaStudentQuote } from './cg-sparta-school/cg-sparta-student-quote';
+import { CgPageStudent } from './cg-page-quote';
+import { CG_BANILAD_RULES } from './cg-banilad-school/cg-banilad-page-quote';
+import { CG_SPARTA_RULES } from './cg-sparta-school/cg-sparta-page-quote';
+import { createCiaQuotePricing } from './cia-school/cia-quote-engine';
 import { createDefaultCgBaniladContentConfig, cloneCgBaniladContentConfig } from './cg-banilad-school/cg-banilad-content-config';
 import { createDefaultCgSpartaContentConfig, cloneCgSpartaContentConfig } from './cg-sparta-school/cg-sparta-content-config';
 import { FellaStudentQuote } from './fella-school/fella-student-quote';
@@ -22,25 +24,18 @@ describe('Course-type textbook budgets', () => {
   });
   for (const campus of ['banilad','sparta'] as const) {
     const config = () => campus === 'banilad' ? createDefaultCgBaniladContentConfig() : createDefaultCgSpartaContentConfig();
-    const quote = () => {
-      const c = config();
-      const courses = c.courses.map(x => ({id:x.id,name:x.name,lessons:x.schedule,tuitionUsd:x.tuition}));
-      const common = {roomOptions:c.rooms.map(x=>({id:x.id,name:x.name,feeUsd:x.fee})),weekOptions:[1,2,3,4,8,12,16,20,24],shortTermRatios:{1:.4,2:.6,3:.85},registrationFee:100,registrationFeeUsd:100,sidaDiscountRate:.9,offSeasonDiscountPerFourWeeks:150,summerFeePerWeek:40,promotionRules:c.quoteSettings.promotions,peakSeasonRanges:c.quoteSettings.peakSeasonRanges,localFeeRules:c.localFees};
-      return campus === 'banilad' ? new CgBaniladStudentQuote({...common,courses}) : new CgSpartaStudentQuote({...common,courseOptions:courses});
-    };
-    it(campus + ' estimates each course type independently and supports manual correction', () => {
+    const quote = () => new CgPageStudent(createCiaQuotePricing(config()), campus === 'banilad' ? CG_BANILAD_RULES : CG_SPARTA_RULES);
+    it(campus + ' estimates each course type independently', () => {
       const q = quote();
       q.quotePlan.courses = [row(1,campus==='banilad'?'general-esl':'sparta',8),row(2,'ielts-basic',4,'2027-04-11'),row(3,campus==='banilad'?'business':'business-english',4,'2027-05-09')];
-      expect(q.localFees.find(x=>x.id==='books')!.total).toBe(6000);
-      q.textbookCount=0; expect(q.localFees.find(x=>x.id==='books')!.total).toBe(0);
-      q.resetTextbookCount(); expect(q.localFees.find(x=>x.id==='books')!.total).toBe(6000);
-      const separate = quote(); expect(separate.localFees.find(x=>x.id==='books')!.total).toBe(2000);
+      expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(6000);
+      const separate = quote(); expect(separate.localFees.find(x=>x.item==='教材费')!.total).toBe(2000);
     });
     it(campus + ' does not lose a discount when a four-week course is split into 1+3 weeks', () => {
       const q=quote(); const id=campus==='banilad'?'general-esl':'sparta';
       q.quotePlan.courses=[row(1,id,1),row(2,id,3,'2027-02-21')];
       expect(q.offSeasonDiscount).toBe(150);
-      expect(q.localFees.find(x=>x.id==='books')!.total).toBe(2000);
+      expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(2000);
     });
     for (const [date,discount] of [['2027-02-07',0],['2027-02-14',450],['2027-05-23',450],['2027-05-30',0],['2026-08-30',450]] as const) {
       it(campus + ' discount boundary ' + date, () => {

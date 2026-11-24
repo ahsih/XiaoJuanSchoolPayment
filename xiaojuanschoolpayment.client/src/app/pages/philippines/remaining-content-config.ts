@@ -1,11 +1,15 @@
 import { CiaContentConfig, CiaLocalFeeRule, CiaPromotionRule, CiaQuoteImageSettings } from './cia-school/cia-content-config';
 import { BTES_COURSES, BTES_LOW_SEASON_PERIODS, BTES_REGISTRATION_FEE, BTES_ROOMS } from './btes-school/btes-pricing';
 import { TARGET_COURSES, TARGET_ROOMS, targetOfficialPackagePrice } from './target-school/target-pricing';
+import { upgradeAcrNotes } from './acr-first-extension';
 import { ASSOCIATION_PEAK_POLICY_VERSION } from './association-peak-surcharge';
 
 type SchoolCode = Extract<CiaContentConfig['schoolCode'], 'BTES' | 'BLUE-OCEAN' | 'TARGET' | 'WALES'>;
 type CourseSeed = { id: string; name: string; price: number; schedule: string; note: string };
 type RoomSeed = { id: string; name: string; price: number; note: string; location?: '校内' | '校外' };
+
+/** ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school). */
+const ACR_FIRST_EXTENSION_NOTE = '第一次签证续签时预估办理（30天签证第5周起，59天签证第9周起）。';
 
 const fee = (id: string, name: string, amount: number, rule: CiaLocalFeeRule['billingRule'], note: string, sortOrder: number, includeInTotal = true): CiaLocalFeeRule => ({
   id, name, amount, billingRule: rule, note, sortOrder, includeInTotal, currency: 'PHP', enabled: true,
@@ -75,7 +79,7 @@ export const createDefaultBtesContentConfig = (): CiaContentConfig => base(
   BTES_ROOMS.map(item => ({ id: item.id, name: item.name, price: item.fee4w, schedule: '', note: item.note } as RoomSeed)),
   [
     fee('ssp', 'SSP特殊学习许可证', 7800, 'once', '更换学校或超过许可期限时可能需要重新办理。', 0), fee('ssp-e-card', 'SSP E-Card', 4500, 'once', '入学时与SSP同时办理。', 1),
-    fee('acr', 'ACR I-Card外国人身份证', 4000, 'first-visa-extension', '完整停留超过59天时预估办理。', 2), fee('visa', '签证延期', 5130, 'visa-extension-schedule', '按签证类型和完整停留时间预估。', 3),
+    fee('acr', 'ACR I-Card外国人身份证', 4000, 'first-visa-extension', ACR_FIRST_EXTENSION_NOTE, 2), fee('visa', '签证延期', 5130, 'visa-extension-schedule', '按签证类型和完整停留时间预估。', 3),
     fee('student-id', '学生证', 300, 'once', '一次性费用。', 4), fee('books', '教材费', 2000, 'per-course-period', '按课程周数和实际购买教材结算。', 5), fee('water', '水费', 300, 'per-accommodation-period', '按住宿周数计算。', 6),
     fee('management', '宿舍管理费', 500, 'per-accommodation-period', '按住宿周数计算。', 7), fee('electricity', '宿舍电费', 200, 'per-accommodation-period', '按房型和住宿周数计算，超额用电另计。', 8), fee('pickup', '宿务机场接机', 1200, 'optional', '按所选接机时段计算。', 9), fee('ecc', 'ECC费用', 700, 'long-term-or-first-extension', '超过6个月时按规定办理。', 10),
   ],
@@ -87,6 +91,7 @@ export const createDefaultBtesContentConfig = (): CiaContentConfig => base(
 export const cloneBtesContentConfig = (value: CiaContentConfig) => {
   const defaults = createDefaultBtesContentConfig();
   const result = clone(value, defaults);
+  upgradeAcrNotes(result, defaults, { acr: ['完整停留超过59天时预估办理。'] });
   if ((result.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
     const confirmed = defaults.quoteSettings.peakSeasonRanges[0];
     const saved = result.quoteSettings.peakSeasonRanges?.find(range => range.id === confirmed.id || range.label.includes('2027'));
@@ -98,43 +103,8 @@ export const cloneBtesContentConfig = (value: CiaContentConfig) => {
   return result;
 };
 
-const blueCourses: CourseSeed[] = [
-  ['light-esl','Light ESL',870,'一对一4节','轻量口语综合'],['survival-esl','Survival ESL',1050,'一对一4节＋小组课2节','初学者生活英语'],['intensive-esl','Intensive ESL',970,'一对一5节＋小组课2节','标准综合英语'],['power-esl-5','Power ESL 5',930,'一对一5节','一对一强化'],['power-esl-7','Power ESL 7',1170,'一对一7节','高密度一对一'],['business','Business English',1200,'一对一5节＋小组课2节','商务英语'],['toeic','TOEIC',1050,'一对一5节＋小组课2节','多益备考'],['ielts','IELTS',1130,'一对一5节＋小组课2节','雅思备考'],['junior','青少年课程（未满15岁）',1500,'一对一5节＋小组课2节','青少年课程'],['parents','监护人课程',750,'一对一3节','亲子监护人课程'],['senior','Senior Course',1050,'一对一4节＋特色小组课','40岁以上特色课程'],
-].map(([id,name,price,schedule,note]) => ({ id: String(id), name: String(name), price: Number(price), schedule: String(schedule), note: String(note) }));
-const blueRooms: RoomSeed[] = [
-  ['egi-triple-ocean','校内三人间（海景）',850,'预算型海景三人房','校内'],['egi-twin-city','校内双人间（城景）',900,'市景双人房','校内'],['egi-twin-ocean','校内双人间（海景）',1120,'海景双人房','校内'],['ocean-suite-superior','校外高级房型',1250,'Ocean Suites单人住宿','校外'],['ocean-suite-deluxe','校外豪华房型',1400,'Ocean Suites豪华单人住宿','校外'],['ocean-suite-ocean','校外单人间（海景）',1600,'Ocean Suites海景单人住宿','校外'],
-].map(([id,name,price,note,location]) => ({ id:String(id), name:String(name), price:Number(price), note:String(note), location:location as '校内'|'校外' }));
-export const createDefaultBlueOceanContentConfig = (): CiaContentConfig => {
-  const settings = image('Cebu Blue Ocean', {'registration-waiver':'所有通过思达启航报名的学生免收100美元注册费。','sida-95':'课程与住宿先计算95折，再扣学校固定优惠。','off-season':'每满4个非旺季课程周优惠150美元。','twelve-week':'课程累计满12周额外优惠100美元。','long-stay':'16周起按当前长期优惠档位自动计算。'});
-  settings.footerNotes = [
-    '1、学费部分由游学机构代收或直接到校支付给学校，我们的报价单上就是最终价格，支付时按照建设银行最新参考汇率，把美元换算为人民币结算。',
-    '2、学杂费是到菲律宾当地需要交纳的费用，是学校直接收取的，我们的报价只作为参考，因菲律宾政策变动当地费用可能会有浮动，具体以到校后收取的为准。',
-  ];
-  const config = base('BLUE-OCEAN', blueCourses, blueRooms, [
-  fee('ssp','SSP特殊学习许可证',7800,'once','与本次学习时间对应，续费需重新办理。',0), fee('ssp-e-card','SSP-E CARD',4500,'once','入学时办理。',1), fee('acr','ACR-I CARD',4000,'first-visa-extension','按签证及停留时间办理。',2), fee('visa','签证续签费用',5140,'visa-extension-schedule','按累计续签档位计算。',3), fee('student-id','学生证',300,'once','一次性费用。',4), fee('management','管理费',500,'per-accommodation-period','按住宿周数计算。',5),
-], [promo('registration-waiver','思达启航免注册费','通过思达启航报名免100美元注册费。',0,'blue-registration-waiver',{waiveRegistration:true}), promo('sida-95','思达启航95折','课程与住宿先按95折计算。',1,'blue-sida-95',{discountType:'percentage',discountValue:5,appliesTo:'tuition-and-accommodation'}), promo('off-season','常规淡季优惠','每满4个合资格课程周优惠150美元。',2,'blue-off-season'), promo('twelve-week','12周额外优惠','课程累计满12周额外优惠100美元。',3,'blue-twelve-week'), promo('long-stay','长期优惠','16周起按长期档位优惠。',4,'blue-long-stay')], 100, {'1':.4,'2':.65,'3':.85}, 40, [{id:'2026',label:'2026旺季',start:'2026-06-28',end:'2026-08-22',enabled:true},{id:'2027',label:'2027旺季',start:'2027-07-04',end:'2027-08-28',enabled:true}], settings);
-  config.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
-  return config;
-};
-export const cloneBlueOceanContentConfig = (value:CiaContentConfig) => {
-  const needsPeakMigration = (value.quoteSettings?.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION;
-  const defaults = createDefaultBlueOceanContentConfig();
-  const result = clone(value, defaults);
-  result.quoteSettings.peakSeasonRanges ??= [];
-  if (needsPeakMigration) {
-    const official2027 = defaults.quoteSettings.peakSeasonRanges.find(range => range.id === '2027')!;
-    const saved2027 = result.quoteSettings.peakSeasonRanges.find(range => range.id === '2027' || range.label.includes('2027'));
-    if (saved2027) Object.assign(saved2027, { start: official2027.start, end: official2027.end, enabled: true });
-    else result.quoteSettings.peakSeasonRanges.push(structuredClone(official2027));
-    result.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
-  }
-  const savedPeakNote = result.quoteImageSettings.supplementalFeeNotes?.['payment:旺季附加费'];
-  if (savedPeakNote === '按每个重叠课程周40美元计算；Family Course除外。'
-    || savedPeakNote === '2026年40美元／周，2027年起60美元／周；同一周课程与住宿只计一次，不参与优惠；Family Course除外。') {
-    delete result.quoteImageSettings.supplementalFeeNotes!['payment:旺季附加费'];
-  }
-  return result;
-};
+// Cebu Blue Ocean has its own dated document (2026 and 2027 prices); see cebu-blue-ocean-school/cboa-content-config.ts.
+export { cloneBlueOceanContentConfig, createDefaultBlueOceanContentConfig } from './cebu-blue-ocean-school/cboa-content-config';
 
 export const createDefaultTargetContentConfig = (): CiaContentConfig => {
   const settings = image('TARGET',{'target-campaign':'按非旺季合资格学习周及当前档位自动计算。','sida-90-percent':'学校现金优惠后剩余套餐金额计算思达启航9折。','target-upgrade':'报名期限、入学日期、课程、房型和名额须由学校确认。'});
@@ -142,9 +112,13 @@ export const createDefaultTargetContentConfig = (): CiaContentConfig => {
     '学费部分需到校前2周交齐，可以交由思达启航代收或直接自行转美元给学校；报价以最终确认金额及付款时实际汇率为准。',
     '学杂费为到菲律宾当地需要缴纳的费用，由学校直接收取；报价仅供参考，具体以学校实际收取为准。',
   ];
-  return base('TARGET', TARGET_COURSES.map(item=>({id:item.id,name:item.name,price:targetOfficialPackagePrice(item.id,'six',4),schedule:item.arrangement,note:item.note})), TARGET_ROOMS.map(item=>({id:item.id,name:item.name,price:0,note:item.note})), [fee('ssp','SSP特殊学习许可证',7800,'once','不论学习时长均需办理。',0),fee('ssp-e-card','SSP E-CARD',4500,'once','入学时与SSP同时办理。',1),fee('acr','ACR I-CARD外国人身份证',4300,'first-visa-extension','9周及以上按当前资料预估办理。',2),fee('visa','签证续签',5140,'visa-extension-schedule','按学校累计档位计算。',3),fee('books','教材费',2000,'per-course-period','按学习周数及实际购买教材计算。',4),fee('electricity','电费',600,'per-accommodation-period','按套餐住宿周数计算。',5),fee('water','水费',200,'per-accommodation-period','按套餐住宿周数计算。',6),fee('common','共益费',500,'per-accommodation-period','按套餐住宿周数计算。',7)], [promo('target-campaign','学校现金优惠','按非旺季合资格学习周自动计算。',0,'target-campaign'),promo('sida-90-percent','思达启航9折','学校现金优惠后剩余套餐金额计算9折。',1,'target-sida-90',{discountType:'percentage',discountValue:10,appliesTo:'school-total'}),promo('target-upgrade','限时尊享升级计划','符合报名、入学、周数及课程条件时显示升级权益。',2,'target-upgrade')],150,{},0,[],settings);
+  return base('TARGET', TARGET_COURSES.map(item=>({id:item.id,name:item.name,price:targetOfficialPackagePrice(item.id,'six',4),schedule:item.arrangement,note:item.note})), TARGET_ROOMS.map(item=>({id:item.id,name:item.name,price:0,note:item.note})), [fee('ssp','SSP特殊学习许可证',7800,'once','不论学习时长均需办理。',0),fee('ssp-e-card','SSP E-CARD',4500,'once','入学时与SSP同时办理。',1),fee('acr','ACR I-CARD外国人身份证',4300,'first-visa-extension',ACR_FIRST_EXTENSION_NOTE,2),fee('visa','签证续签',5140,'visa-extension-schedule','按学校累计档位计算。',3),fee('books','教材费',2000,'per-course-period','按学习周数及实际购买教材计算。',4),fee('electricity','电费',600,'per-accommodation-period','按套餐住宿周数计算。',5),fee('water','水费',200,'per-accommodation-period','按套餐住宿周数计算。',6),fee('common','共益费',500,'per-accommodation-period','按套餐住宿周数计算。',7)], [promo('target-campaign','学校现金优惠','按非旺季合资格学习周自动计算。',0,'target-campaign'),promo('sida-90-percent','思达启航9折','学校现金优惠后剩余套餐金额计算9折。',1,'target-sida-90',{discountType:'percentage',discountValue:10,appliesTo:'school-total'}),promo('target-upgrade','限时尊享升级计划','符合报名、入学、周数及课程条件时显示升级权益。',2,'target-upgrade')],150,{},0,[],settings);
 };
-export const cloneTargetContentConfig=(value:CiaContentConfig)=>clone(value,createDefaultTargetContentConfig());
+export const cloneTargetContentConfig=(value:CiaContentConfig)=>{
+  const defaults=createDefaultTargetContentConfig(); const result=clone(value,defaults);
+  upgradeAcrNotes(result, defaults, { acr: ['9周及以上按当前资料预估办理。'] });
+  return result;
+};
 
 const walesCourses:CourseSeed[]=[['eep-lite','EEP Lite',650,'3节一对一','轻量生活沟通英文'],['eep','EEP',800,'4节一对一＋1节团体课','生活口语与基础沟通'],['infinity-lite','Infinity Lite',750,'3节一对一＋1节团体课','听说读写基础提升'],['infinity-standard','Infinity Standard',880,'4节一对一＋2节团体课','综合英文标准强度'],['infinity-intensive','Infinity Intensive',1000,'5节一对一＋3节团体课','综合英文高强度训练'],['infinity-pro','Infinity Pro',1200,'4节一对一＋3节团体课','高阶目标课程'],['pte','PTE',1200,'5节一对一＋2节团体课','仅开放4、8、12周'],['ielts','IELTS',1200,'5节一对一＋2节团体课','雅思课程'],['ielts-guarantee','IELTS Guarantee',1300,'6节一对一＋2节团体课','8周起'],['junior-esl','Junior ESL',1300,'5节一对一＋3节团体课','青少年课程'],['junior-ielts','Junior IELTS',1400,'5节一对一＋2节团体课','青少年雅思']].map(([id,name,price,schedule,note])=>({id:String(id),name:String(name),price:Number(price),schedule:String(schedule),note:String(note)}));
 const walesRooms:RoomSeed[]=[['lower-studio-single','Lower Studio｜单人房',1200],['lower-studio-family-2','Lower Studio｜家庭2人房',900],['upper-studio-single','Upper Studio｜单人房',1300],['upper-studio-family-2','Upper Studio｜家庭2人房',1000],['upper-premium-studio-single','Upper Premium Studio｜单人房',1700],['upper-premium-studio-double','Upper Premium Studio｜双人房',1200],['upper-premium-studio-family-3','Upper Premium Studio｜家庭3人房',1030],['condo-type-semi-single','Condo Type｜半单人房',1400],['condo-type-family-3','Condo Type｜家庭3人房',1080],['condo-type-family-4','Condo Type｜家庭4人房',1075],['share-type-single-veranda','Share Type｜单人房（露台）',1150],['share-type-single','Share Type｜单人房',1050],['share-type-double','Share Type｜双人房',950],['lower-premium-studio-single','Lower Premium Studio｜单人房',1600],['lower-premium-studio-double','Lower Premium Studio｜双人房',1100],['lower-premium-studio-family-3','Lower Premium Studio｜家庭3人房',930]].map(([id,name,price])=>({id:String(id),name:String(name),price:Number(price),note:'房型设施、床位和空房须由学校确认。'}));

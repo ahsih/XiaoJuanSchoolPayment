@@ -377,8 +377,8 @@ export class LaMerPageStudent implements PhPageStudent {
       };
     }
     if (rule.billingRule === 'first-visa-extension') {
-      // ACR I-CARD: once the stay passes 59 days (from week 9), whatever the entry visa.
-      const charged = stayWeeks >= 9;
+      // ACR I-CARD comes with the first visa extension (user rule 2026-11-24): week 5 on a 30-day visa, week 9 on a 59-day visa.
+      const charged = this.extensionNeeded(stayWeeks);
       return { item: rule.name, unitLabel: `${amount.toLocaleString('en-US')}比索／人`, quantity: charged ? 1 : 0, total: charged ? amount : 0, note: rule.note };
     }
     if (rule.billingRule === 'long-term-or-first-extension') {

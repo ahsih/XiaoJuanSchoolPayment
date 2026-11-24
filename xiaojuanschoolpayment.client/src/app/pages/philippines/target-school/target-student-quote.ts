@@ -274,11 +274,12 @@ export class TargetStudentQuote {
   }
 
   get localFees(): SchoolLocalFee[] {
-    const acrQuantity = this.stayWeeks >= 9 ? 1 : 0;
+    // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+    const acrQuantity = this.visaExtensionCount > 0 ? 1 : 0;
     return [
       { item: 'SSP特殊学习许可证', unitLabel: '7,800比索／次', quantity: 1, total: 7800, note: '由移民局收取，不论学习时长均需办理；转学时通常需要重新办理。' },
       { item: 'SSP E-CARD', unitLabel: '4,500比索／次', quantity: 1, total: 4500, note: '由移民局收取，入学时与SSP同时办理，只收一次。' },
-      { item: 'ACR I-CARD外国人身份证', unitLabel: '4,300比索／次', quantity: acrQuantity, total: 4300 * acrQuantity, note: `按${this.visaLabel}和${this.stayWeeks}周完整停留跨度估算；学校费用页列明9周及以上需要办理。` },
+      { item: 'ACR I-CARD外国人身份证', unitLabel: '4,300比索／次', quantity: acrQuantity, total: 4300 * acrQuantity, note: `按${this.visaLabel}和${this.stayWeeks}周完整停留跨度估算；第一次签证续签时办理（30天签证第5周起，59天签证第9周起）。` },
       { item: '签证续签', unitLabel: '学校累计档位', quantity: this.visaExtensionCount, total: this.visaExtensionTotal, note: this.visaExtensionNote },
       { item: '教材费', unitLabel: '按学习周数', quantity: 1, total: this.textbookTotal, note: `各课程类型分别按累计周数估算：1周500、2周1,000、3–4周2,000、5–8周3,000比索，之后每增加4周加1,000比索；实际按购买教材为准。` },
       { item: '电费', unitLabel: '600比索／周', quantity: this.packageWeeks, total: 600 * this.packageWeeks, note: '每周基本费用；超过学校规定用量时会追加收费。' },

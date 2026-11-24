@@ -1,15 +1,6 @@
-import { ElementRef } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { SchoolService } from '../../../../services/school.service';
-import { SchoolContentService } from '../../../../services/school-content.service';
-import { ExchangeRateService, chinaToday } from '../../../../services/exchange-rate.service';
-import { IbreezeSchoolComponent } from './ibreeze-school.component';
 import { IbreezeStudentQuote } from './ibreeze-student-quote';
 import { createDefaultIbreezeContentConfig, cloneIbreezeContentConfig } from './ibreeze-content-config';
 import { IBREEZE_COURSES, IBREEZE_ROOMS } from './ibreeze-catalog';
-import { QuoteImageDownloadButtonComponent } from '../../../components/quote-image-download-button.component';
 
 describe('I.BREEZE November 2026 policy and 2027 registration prices', () => {
   const make = (registration = '2026-11-10', arrival = '2026-11-15', weeks = 4, course = 'power-esl', room = 'twin-main') => {
@@ -47,13 +38,14 @@ describe('I.BREEZE November 2026 policy and 2027 registration prices', () => {
     expect(q.tuitionForSelectedWeeks).toBe(890); expect(q.roomFeeForSelectedWeeks).toBe(810);
     expect(q.quoteUsd).toBe(1765); expect(q.quoteError).toBe('');
   });
-  it('blocks unpublished short stays and unlisted long specialised courses', () => {
+  it('applies the school course lengths and prices 2026 short stays from the 2026 tables', () => {
     const {q} = make('2027-01-01', '2027-02-07', 2, 'ielts-starter');
-    expect(q.quoteError).toContain('未公布');
-    q.quotePlan.updateWeeks('course', 1, 3); q.quotePlan.courses[0].optionId = 'ielts-target'; expect(q.quoteError).toContain('未公布');
-    q.quotePlan.updateWeeks('course', 1, 12); q.quotePlan.courses[0].optionId = 'ielts-starter'; expect(q.quoteError).toContain('仅列至8周');
-    q.quotePlan.courses[0].optionId = 'general-business-and-bec'; expect(q.quoteError).toContain('仅列至4周');
-    q.selectedRegistrationDate = '2026-12-31'; q.quotePlan.updateWeeks('course', 1, 2); expect(q.quoteError).toContain('2026价目表');
+    expect(q.quoteError).toContain('雅思起步最少报名3周');
+    q.quotePlan.updateWeeks('course', 1, 3); q.quotePlan.courses[0].optionId = 'ielts-target'; expect(q.quoteError).toContain('雅思目标最少报名4周');
+    q.quotePlan.updateWeeks('course', 1, 12); q.quotePlan.courses[0].optionId = 'ielts-starter'; expect(q.quoteError).toContain('最长8周');
+    q.quotePlan.courses[0].optionId = 'general-business-and-bec'; expect(q.quoteError).toContain('最长4周');
+    q.selectedRegistrationDate = '2026-12-31'; q.quotePlan.updateWeeks('course', 1, 2);
+    expect(q.quoteError).toBe(''); expect(q.tuitionForSelectedWeeks).toBe(570); expect(q.roomFeeForSelectedWeeks).toBe(595);
   });
   it('prices one-week segments within a longer plan using the student total-course tier', () => {
     const {q} = make('2027-01-01', '2027-02-07');
@@ -109,7 +101,9 @@ describe('I.BREEZE November 2026 policy and 2027 registration prices', () => {
     old.quoteImageSettings.benefits[1]={title:'价格保护',text:'更低价退差价'};
     const next=cloneIbreezeContentConfig(old);
     expect(next.courses[0].tuition).toBe(777); expect(next.courses[0].tuition2027).toBe(770); expect(next.courses[0].note).toBe('员工课程说明');
-    expect(next.localFees[0].amount).toBe(8001); expect(next.quoteSettings.promotions.filter(p=>p.id.startsWith('november-')).length).toBe(2);
+    // The school's 2026-11 fee sheet replaces every built-in local-fee rule once.
+    expect(next.localFees[0].amount).toBe(createDefaultIbreezeContentConfig().localFees[0].amount);
+    expect(next.quoteSettings.promotions.filter(p=>p.id.startsWith('november-')).length).toBe(2);
     expect(next.quoteSettings.promotions.find(p=>p.id==='sida-discount')!.discountValue).toBe(5);
     expect(JSON.stringify(next.quoteImageSettings.benefits)).not.toContain('退差价');
     next.courses[0].tuition2027=780; expect(cloneIbreezeContentConfig(next).courses[0].tuition2027).toBe(780);
@@ -120,37 +114,5 @@ describe('I.BREEZE November 2026 policy and 2027 registration prices', () => {
     expect(q.tuitionForSelectedWeeks).toBe(1290); expect(q.minorManagementFee).toBe(100);
     expect(q.sidaDiscountAmount).toBe(112); expect(q.optionalFeeItems[0].amount).toBe('已含');
     q.selectedAgeGroup='adult'; expect(q.minorManagementFee).toBe(0);
-  });
-
-  describe('shared webpage and quote image', () => {
-    let c: IbreezeSchoolComponent;
-    beforeEach(()=>{
-      TestBed.configureTestingModule({providers:[
-        {provide:SchoolService,useValue:{getSchools:()=>of([])}}, {provide:SchoolContentService,useValue:{getPublished:()=>of(null)}},
-        {provide:ExchangeRateService,useValue:{getLatestCnyRates:()=>of({usdToCny:7,phpPerCny:9,date:chinaToday()})}},
-        {provide:ActivatedRoute,useValue:{snapshot:{queryParamMap:{get:()=>null}}}}, {provide:ElementRef,useValue:new ElementRef(document.createElement('div'))},
-      ]});
-      c=TestBed.runInInjectionContext(()=>new IbreezeSchoolComponent()); c.usdToCny=7; c.phpPerCny=9;
-    });
-    it('keeps mixed-year students independent and aggregates school offers from their numeric deductions',()=>{
-      c.setQuoteMode('group');
-      c.activeStudents.forEach((s,i)=>{s.selectedRegistrationDate=i?'2027-01-01':'2026-12-31';s.quotePlan.updateStartDate('course',1,'2027-02-07');s.quotePlan.courses[0].optionId='power-esl';s.quotePlan.rooms[0].optionId='twin-main';});
-      expect(c.activeStudents.map(s=>s.quoteUsd)).toEqual([1845.5,2040.5]); expect(c.quoteUsd).toBe(3886);
-      const image=c.quoteImageData;
-      expect(image.paymentItems.find(row=>row.label==='思达启航折扣')!.amount).toBe('− 194 美元');
-      expect(image.paymentItems.find(row=>row.label==='学生1 · 11月住宿优惠')!.amount).toBe('− 100 美元');
-      expect(image.paymentItems.filter(row=>row.icon==='课').map(row=>row.amount)).toEqual(['990 美元','1,040 美元']);
-      expect(JSON.stringify(image)).not.toContain('9折'); expect(JSON.stringify(image)).not.toContain('退差价');
-    });
-    it('renders a complete quote image with the current deduction and footer',async()=>{
-      const s=c.students[0];s.selectedRegistrationDate='2026-11-10';s.quotePlan.updateStartDate('course',1,'2026-12-20');s.quotePlan.updateWeeks('course',1,8);
-      const renderer=TestBed.runInInjectionContext(()=>new QuoteImageDownloadButtonComponent());renderer.quote=c.quoteImageData;
-      const paint:string[]=[];const original=CanvasRenderingContext2D.prototype.fillText;
-      spyOn(CanvasRenderingContext2D.prototype,'fillText').and.callFake(function(this:CanvasRenderingContext2D,text,x,y){paint.push(text);original.call(this,text,x,y);});
-      const blob=await renderer['createQuoteImageBlob'](1);
-      expect(blob.type).toBe('image/png');expect(blob.size).toBeGreaterThan(30000);
-      expect(paint).toContain('11月住宿优惠');expect(paint.some(text=>text.includes('报价说明'))).toBeTrue();
-      expect(paint.some(text=>text.includes('退差价'))).toBeFalse();
-    },30000);
   });
 });
