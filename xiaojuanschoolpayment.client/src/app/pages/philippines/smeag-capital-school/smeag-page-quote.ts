@@ -11,6 +11,7 @@ import { PhSchoolQuote } from '../school-page/ph-school-quote';
 import type { PhPageStudent } from '../school-page/ph-school-profile';
 import {
   SMEAG_CAMPUS_ROOM_IDS,
+  SMEAG_HOTEL_ROOM_IDS,
   SMEAG_RETURNING_RULE_ID,
   SMEAG_SIDA_RULE_ID,
   SMEAG_TEXTBOOK_BY_COURSE,
@@ -212,9 +213,16 @@ export class SmeagPageStudent implements PhPageStudent {
     return Array.from({ length: this.visaExtensionCount }, (_, index) => sequence[index] ?? sequence.at(-1) ?? rule.amount);
   }
 
-  /** Room weeks in the campus dormitory; the partner hotels charge no water and electricity. */
+  /**
+   * Room weeks in the campus dormitory. Only these pay utilities and water and electricity; the partner hotels pay
+   * a 2,000-peso management fee per 4 weeks instead (user confirmation 2026-11-24).
+   */
   private get campusRoomWeeks(): number {
     return this.quotePlan.rooms.filter(row => SMEAG_CAMPUS_ROOM_IDS.includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
+  }
+
+  private get hotelRoomWeeks(): number {
+    return this.quotePlan.rooms.filter(row => SMEAG_HOTEL_ROOM_IDS.includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
   }
 
   get localFees(): SchoolLocalFee[] {
@@ -243,8 +251,9 @@ export class SmeagPageStudent implements PhPageStudent {
       // VISA I-CARD (ACR) comes with the first visa extension (user rule 2026-11-24, every Philippine school).
       ...create('visa-i-card', !longTerm && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('arp', !longTerm && this.visaType === 'tourist59' && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
-      ...create('utilities', Math.ceil(plan.roomWeeks / 4)),
+      ...create('utilities', Math.ceil(this.campusRoomWeeks / 4)),
       ...create('water-electricity', Math.ceil(this.campusRoomWeeks / 4)),
+      ...create('hotel-management', Math.ceil(this.hotelRoomWeeks / 4)),
       ...books.flatMap(id => create(id, 1, undefined, undefined, `${formatPhp(this.rule(id)?.amount ?? 0)}／套`)),
     ].map(fee => longTerm && fee.quantity === 0 && fee.note === longTermNote ? { ...fee, waived: true } : fee);
   }

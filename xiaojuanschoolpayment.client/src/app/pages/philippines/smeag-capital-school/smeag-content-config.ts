@@ -20,8 +20,10 @@ const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
  * Raised when saved documents must inherit a school notice once (cloneSmeagContentConfig):
  * 1 = the 2026-11-23 school pack: Chinese course names and class lines from the 2026 orientation, separate
  *     IELTS and TOEFL rows, partner-hotel rooms, the 2027 local-fee sheet and the 2026/2027 offers.
+ * 2 = partner-hotel weeks pay a 2,000-peso management fee per 4 weeks instead of utilities and water and
+ *     electricity (user confirmation 2026-11-24).
  */
-export const SMEAG_POLICY_VERSION = 1;
+export const SMEAG_POLICY_VERSION = 2;
 type SmeagQuoteSettings = CiaQuoteSettings & { smeagPolicyVersion?: number };
 
 export const SMEAG_SIDA_RULE_ID = 'smeag-sida-90';
@@ -111,6 +113,8 @@ const createRooms = (): CiaRoomContent[] => [
   room('hotel-quad', '合作酒店四人间', 'H-4', '校外合作酒店', '校外', 1020, '仅S Hotel有四人间。', 8),
 ];
 
+const UTILITIES_NOTE = '住校内宿舍每4周收取，不足4周按4周预估；住合作酒店改收管理费。';
+const HOTEL_MANAGEMENT_NOTE = '住合作酒店每4周收取，不足4周按4周预估；住酒店不收设施使用费和水电费。';
 const TEXTBOOK_NOTE = '每套约用4–6周，按学习进度购买；同类课程先计1套，后续按实际购买另付。';
 
 const createLocalFees = (): CiaLocalFeeRule[] => [
@@ -119,17 +123,18 @@ const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'ssp-i-card', name: 'SSP I-CARD', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP一起办理，只收一次。', sortOrder: 2 }),
   fee({ id: 'visa-i-card', name: 'VISA I-CARD', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '第一次签证续签时办理一次（30天签证第5周起，59天签证第9周起）。', sortOrder: 3 }),
   fee({ id: 'arp', name: 'ARP外国人登记', amount: 300, billingRule: 'long-term-or-first-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '59天签证入境、需要续签时办理一次。', sortOrder: 4 }),
-  fee({ id: 'utilities', name: '设施使用费', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周收取，不足4周按4周预估。', sortOrder: 5 }),
+  fee({ id: 'utilities', name: '设施使用费', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: UTILITIES_NOTE, sortOrder: 5 }),
   fee({ id: 'water-electricity', name: '水电费', amount: 2400, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '校内宿舍每4周收取，超出用量另付；住合作酒店不收水电费。', sortOrder: 6 }),
-  fee({ id: 'book-esl', name: '教材费 · 综合英语', amount: 700, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 7 }),
-  fee({ id: 'book-speaking', name: '教材费 · 口语强化', amount: 1500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 8 }),
-  fee({ id: 'book-ielts', name: '教材费 · 雅思', amount: 2500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 9 }),
-  fee({ id: 'book-toefl', name: '教材费 · 托福', amount: 1500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 10 }),
-  fee({ id: 'book-toeic', name: '教材费 · 托业', amount: 1300, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 11 }),
-  fee({ id: 'book-business', name: '教材费 · 商务英语', amount: 400, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 12 }),
-  fee({ id: 'book-family', name: '教材费 · 亲子课程', amount: 2500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 13 }),
-  fee({ id: 'pickup', name: '宿务机场接机', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '学校接机，每人计费；也可以自己打车到校。', sortOrder: 14 }),
-  fee({ id: 'deposit', name: '押金（可退）', amount: 2000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '含房间押金1,500、钥匙300、电子钱包卡200比索；无损坏、无欠费时退还。', sortOrder: 15 }),
+  fee({ id: 'hotel-management', name: '管理费（合作酒店）', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: HOTEL_MANAGEMENT_NOTE, sortOrder: 7 }),
+  fee({ id: 'book-esl', name: '教材费 · 综合英语', amount: 700, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 8 }),
+  fee({ id: 'book-speaking', name: '教材费 · 口语强化', amount: 1500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 9 }),
+  fee({ id: 'book-ielts', name: '教材费 · 雅思', amount: 2500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 10 }),
+  fee({ id: 'book-toefl', name: '教材费 · 托福', amount: 1500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 11 }),
+  fee({ id: 'book-toeic', name: '教材费 · 托业', amount: 1300, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 12 }),
+  fee({ id: 'book-business', name: '教材费 · 商务英语', amount: 400, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 13 }),
+  fee({ id: 'book-family', name: '教材费 · 亲子课程', amount: 2500, billingRule: 'once', includeInTotal: true, note: TEXTBOOK_NOTE, sortOrder: 14 }),
+  fee({ id: 'pickup', name: '宿务机场接机', amount: 1200, billingRule: 'optional', includeInTotal: false, note: '学校接机，每人计费；也可以自己打车到校。', sortOrder: 15 }),
+  fee({ id: 'deposit', name: '押金（可退）', amount: 2000, billingRule: 'optional', includeInTotal: false, multiplyByStudents: true, note: '含房间押金1,500、钥匙300、电子钱包卡200比索；无损坏、无欠费时退还。', sortOrder: 16 }),
 ];
 
 const createPromotions = (): CiaPromotionRule[] => [
@@ -140,7 +145,8 @@ const createPromotions = (): CiaPromotionRule[] => [
   promotion({ id: SMEAG_RETURNING_RULE_ID, name: '老学员返校', description: '老学员返校免收一次性注册费。', sortOrder: 4, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: true, coverageTarget: 'none' }),
 ];
 
-const LOCAL_FEE_INTRO = '以下费用由学校及移民局收取，到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；设施使用费和水电费每4周收取，住合作酒店不收水电费；教材按课程类别各计1套。请准备1张2×2英寸（5.08厘米）照片和1张护照照片；读满24周离境前办理ECC，需4张2×2照片。';
+const HOTEL_FEE_NOTE = '合作酒店房费不打折；住酒店不收水电费，另收管理费每4周2,000比索。';
+const LOCAL_FEE_INTRO = '以下费用由学校及移民局收取，到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；校内宿舍每4周收取设施使用费和水电费，住合作酒店只收管理费；教材按课程类别各计1套。请准备1张2×2英寸（5.08厘米）照片和1张护照照片；读满24周离境前办理ECC，需4张2×2照片。';
 
 /** The company's own lines on the quote image, the same for every school (CIA's wording). */
 const ALUMNI_BENEFIT_TEXT = '老学员结业后可享线上一对一英语课程专属优惠，留学爱尔兰及欧美英语学校专属奖学金和优惠。';
@@ -162,7 +168,7 @@ export const createDefaultSmeagContentConfig = (): CiaContentConfig => ({
     courseTableNote: '以下为周一至周五的每日课程安排，课程费按4周计算；1–3周按4周价的45%、65%、85%计算。',
     groupClassNote: '小组课为1:4，团体课为1:8；每节课45分钟。',
     roomTableTitle: 'SMEAG Capital 4周住宿费',
-    roomTableNote: `${DORM_NOTE}合作酒店房费不打折，住酒店不收水电费。`,
+    roomTableNote: `${DORM_NOTE}${HOTEL_FEE_NOTE}`,
     stayPolicyTitle: 'SMEAG Capital 入住与退房提醒',
     stayPolicies: [
       { label: '入住日期', value: '周日入住', note: '课程与住宿按周日至周六的完整周计算。' },
@@ -207,6 +213,12 @@ const REPLACED_COURSE_IDS: Record<string, string[]> = {
   'toeic-regular-guarantee': ['toeic-regular'],
 };
 const OLD_ROOM_NOTES = new Set(['数量有限，热门档期需尽早确认。', '适合同伴同行或希望减少室友人数。', '预算与生活空间比较平衡。', '默认报价参考房型。', '校内住宿中预算最低。', '学校合作的校外酒店；校外住宿无折扣。']);
+/** Version 1 text that version 2 replaces when nobody has edited it since. */
+const V1_COPY = {
+  utilitiesNote: '每4周收取，不足4周按4周预估。',
+  localFeeIntro: '以下费用由学校及移民局收取，到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；设施使用费和水电费每4周收取，住合作酒店不收水电费；教材按课程类别各计1套。请准备1张2×2英寸（5.08厘米）照片和1张护照照片；读满24周离境前办理ECC，需4张2×2照片。',
+  roomTableNote: `${DORM_NOTE}合作酒店房费不打折，住酒店不收水电费。`,
+};
 const OLD_IMAGE_COPY = {
   paymentNotes: { course: '按所选课程、周数及日期计算', accommodation: '按所选房型、周数及日期计算', promotion: '优惠按当前有效规则自动计算' } as Record<string, string>,
   alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
@@ -214,14 +226,24 @@ const OLD_IMAGE_COPY = {
   localFeeIntro: '学杂费由学校及相关部门到校收取；页面按当前选择预估，最终以学校现场实收为准。',
 };
 
+/** Brings a saved document up to SMEAG_POLICY_VERSION, one step at a time; true when anything ran. */
+function upgradeSmeagPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): boolean {
+  const settings = clone.quoteSettings as SmeagQuoteSettings;
+  const version = settings.smeagPolicyVersion ?? 0;
+  if (version >= SMEAG_POLICY_VERSION) return false;
+  if (version < 1) upgradeToSchoolPack(clone, defaults);
+  if (version < 2) upgradeHotelFees(clone, defaults);
+  settings.smeagPolicyVersion = SMEAG_POLICY_VERSION;
+  return true;
+}
+
 /**
  * Version 1: brings a document saved before the 2026-11-23 pack onto it. Untouched course and room text is
  * replaced, the combined TOEFL/IELTS rows become separate rows at the saved price, local-fee rules keep their
  * saved amounts, and the price-table titles and notes take the new defaults.
  */
-function upgradeSmeagPolicy(clone: CiaContentConfig, defaults: CiaContentConfig): boolean {
+function upgradeToSchoolPack(clone: CiaContentConfig, defaults: CiaContentConfig): void {
   const settings = clone.quoteSettings as SmeagQuoteSettings;
-  if ((settings.smeagPolicyVersion ?? 0) >= SMEAG_POLICY_VERSION) return false;
   const defaultCourses = new Map(defaults.courses.map(item => [item.id, item]));
   const courses: CiaCourseContent[] = [];
   for (const item of clone.courses ?? []) {
@@ -269,8 +291,26 @@ function upgradeSmeagPolicy(clone: CiaContentConfig, defaults: CiaContentConfig)
     settings[key] = defaults.quoteSettings[key];
   }
   settings.stayPolicies = copyJson(defaults.quoteSettings.stayPolicies);
-  settings.smeagPolicyVersion = SMEAG_POLICY_VERSION;
-  return true;
+}
+
+/**
+ * Version 2: adds the partner-hotel management fee and moves untouched version-1 notes onto the new wording.
+ * Saved amounts and edited text stay.
+ */
+function upgradeHotelFees(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  const settings = clone.quoteSettings;
+  const defaultFees = new Map(defaults.localFees.map(item => [item.id, item]));
+  const hotelFee = defaultFees.get('hotel-management');
+  if (hotelFee && !clone.localFees.some(item => item.id === hotelFee.id)) clone.localFees.push(copyJson(hotelFee));
+  for (const rule of clone.localFees) {
+    const fresh = defaultFees.get(rule.id);
+    if (!fresh) continue;
+    rule.sortOrder = fresh.sortOrder;
+    if (rule.id === 'utilities' && rule.note === V1_COPY.utilitiesNote) rule.note = fresh.note;
+  }
+  clone.localFees.sort((a, b) => a.sortOrder - b.sortOrder);
+  if (settings.localFeeIntro === V1_COPY.localFeeIntro) settings.localFeeIntro = defaults.quoteSettings.localFeeIntro;
+  if (settings.roomTableNote === V1_COPY.roomTableNote) settings.roomTableNote = defaults.quoteSettings.roomTableNote;
 }
 
 /** Replaces only image lines nobody has edited since they were the defaults. */
@@ -281,7 +321,9 @@ function upgradeSmeagImageCopy(settings: CiaContentConfig['quoteImageSettings'])
   }
   if (settings.alumniBenefitText === OLD_IMAGE_COPY.alumniBenefitText) settings.alumniBenefitText = ALUMNI_BENEFIT_TEXT;
   settings.footerNotes = settings.footerNotes.filter(note => note !== OLD_IMAGE_COPY.footerNote);
-  if (settings.localFeeIntro === OLD_IMAGE_COPY.localFeeIntro) settings.localFeeIntro = LOCAL_FEE_INTRO;
+  if (settings.localFeeIntro === OLD_IMAGE_COPY.localFeeIntro || settings.localFeeIntro === V1_COPY.localFeeIntro) {
+    settings.localFeeIntro = LOCAL_FEE_INTRO;
+  }
 }
 
 /** A SMEAG Capital content document (default or published revision). */
