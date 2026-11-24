@@ -42,7 +42,7 @@ describe('A&J ECO Campus page on the shared template', () => {
   });
 
   it('uses the December regular tiers, the 2026 low season and the 2026 birthday rule', () => {
-    page.selectedStartDate = '2026-12-06';
+    page.selectedStartDate = '2026-12-20';
     page.selectedWeeks = 8;
     student().birthMonth = 5;
     student().birthDay = 15;
@@ -50,6 +50,39 @@ describe('A&J ECO Campus page on the shared template', () => {
     expect(page.quote.quoteUsd).toBe(2735);
     student().birthDay = 14;
     expect(page.quote.quoteUsd).toBe(2835);
+  });
+
+  it('adds the year-end 300 dollars only for 12/06 and 12/13 arrivals of at least four weeks', () => {
+    page.selectedStartDate = '2026-12-06';
+    // 1,650 − 82.5 (5%) − 0 regular (4 weeks in December) − 100 low season − 300 year-end
+    expect(page.quote.quoteUsd).toBe(1167.5);
+    expect(payment('年末限定优惠')?.amount).toBe('− 300 美元');
+    page.selectedStartDate = '2026-12-13';
+    expect(page.quote.quoteUsd).toBe(1167.5);
+    page.selectedStartDate = '2026-12-20';
+    expect(payment('年末限定优惠')).toBeUndefined();
+    page.selectedStartDate = '2026-12-13';
+    page.selectedWeeks = 3;
+    expect(payment('年末限定优惠')).toBeUndefined();
+  });
+
+  it('keeps 2027/02/28 arrivals on the regular offer; the 2027 low season starts with 03/07', () => {
+    page.selectedStartDate = '2027-02-28';
+    page.selectedWeeks = 8;
+    // 1,700 + 1,600 − 165 − 100 regular, no low season
+    expect(page.quote.quoteUsd).toBe(3035);
+    expect(payment('2027淡季优惠')).toBeUndefined();
+    page.selectedStartDate = '2027-03-07';
+    // − 165 − 600 low season, no regular offer
+    expect(page.quote.quoteUsd).toBe(2535);
+  });
+
+  it('shows an offer card only for rules of the content document', () => {
+    const ids = new Set(createDefaultAnjContentConfig().quoteSettings.promotions.map(rule => rule.id));
+    for (const card of ANJ_PAGE_PROFILE.offers ?? []) {
+      for (const id of card.promotionIds ?? []) expect(ids.has(id)).withContext(card.title).toBeTrue();
+    }
+    expect(ANJ_PAGE_PROFILE.mobileAnchors.map(anchor => anchor.label)).toContain('优惠');
   });
 
   it('gives 300 dollars per four weeks in the 2027 low season and the birthday offer for the arrival month', () => {

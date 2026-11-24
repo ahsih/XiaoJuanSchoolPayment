@@ -14,15 +14,15 @@ import type {
   GalleryImage,
   HolidayCalendar,
 } from '../cia-school/cia-page-content';
-import type { PhRoomProfile } from '../school-page/ph-school-profile';
+import type { PhOfferCard, PhRoomProfile } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 
 /** Closes every content section once; the same line as on every Philippine school page. */
 export const ANJ_REFERENCE_NOTE = SCHOOL_REFERENCE_NOTE;
 
 export const ANJ_PAGE_TEXT = {
-  heroLead: '碧瑶市郊的松林校园，一对一为主；Eco Sparta 斯巴达管理，其他课程半斯巴达。雅思课程报名12周以上送1次官方考试，另有雅思、托业保分班和4–16岁青少年课程。',
-  advisorText: 'A&J ECO 校区在碧瑶市郊的松林里，环境安静，适合想专心学习的学生。课程以一对一为主：想轻松学可以选 Eco Relax，想冲刺可以选 Eco Sparta；雅思课程报名12周以上送1次官方考试，需要分数的可以报雅思或托业保分班。住宿从 Deluxe 三人间到独栋别墅都有，Premium 公寓和别墅可以自己做饭，适合家庭一起来。',
+  heroLead: '碧瑶市郊的松林校园，一对一为主；Eco Sparta Plus 斯巴达管理，其他课程半斯巴达。雅思课程报名12周以上送1次官方考试，另有雅思、托业保分班和4–16岁青少年课程。',
+  advisorText: 'A&J ECO 校区在碧瑶市郊的松林里，环境安静，适合想专心学习的学生。课程以一对一为主：想轻松学可以选 Eco Relax，想冲刺可以选 Eco Sparta Plus；雅思课程报名12周以上送1次官方考试，需要分数的可以报雅思或托业保分班。住宿从 Deluxe 三人间到独栋别墅都有，Premium 公寓和别墅可以自己做饭，适合家庭一起来。',
   campusIntro: '校园约8,500平方米，可容纳约150名学生；宿舍、教学楼、餐厅和运动设施都在松林里，到碧瑶市区约15–20分钟。',
   galleryIntro: '按区域查看校园、教室、住宿、餐厅和设施；相册内用左右箭头或缩略图切换，点击主图可放大。',
   coursesIntro: '按学习目标分组，每门课下面是每天的课时；点开可看适合人群和说明。每节课50分钟。',
@@ -33,7 +33,7 @@ export const ANJ_PAGE_TEXT = {
 
 export const ANJ_QUICK_INFO = [
   { icon: 'forest', title: '碧瑶松林校园', text: '约8,500平方米，到市区约15–20分钟' },
-  { icon: 'rule', title: '半斯巴达／斯巴达', text: 'Eco Sparta 斯巴达管理，其他课程半斯巴达' },
+  { icon: 'rule', title: '半斯巴达／斯巴达', text: 'Eco Sparta Plus 斯巴达管理，其他课程半斯巴达' },
   { icon: 'workspace_premium', title: '雅思送考', text: '雅思课程报名12周以上送1次官方考试' },
   { icon: 'verified', title: '保分班', text: '雅思、托业保分班，没达标可减免学费续读' },
   { icon: 'bed', title: '多种房型', text: 'Deluxe、Premium、套房、Studio 和独栋别墅' },
@@ -43,7 +43,7 @@ export const ANJ_QUICK_INFO = [
 /** Key facts under the hero title (compact layout); what each area has is in ANJ_CAMPUS_AREAS. */
 export const ANJ_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string; value: string }> = [
   { icon: 'location_on', label: '位置', value: '菲律宾碧瑶市郊松林，到市区约15–20分钟' },
-  { icon: 'rule', label: '管理', value: 'Eco Sparta 周一至周四不能外出；其他课程周日至周四21:30宵禁' },
+  { icon: 'rule', label: '管理', value: 'Eco Sparta Plus 周一至周四不能外出；其他课程周日至周四21:30宵禁' },
   { icon: 'menu_book', label: '课程', value: 'ESL、雅思、托业、托福、PTE、保分班、打工度假和青少年课程' },
   { icon: 'workspace_premium', label: '考试', value: '雅思课程报名12周以上送1次官方考试；每两周考试、每月月考' },
   { icon: 'event', label: '入学', value: '每周日入住，周一开课；BESA 团体接机在指定周日' },
@@ -54,7 +54,7 @@ export const ANJ_BASIC_INFO: BasicInfoRow[] = [
   { label: '学校', value: 'A&J e-Edu Academy ECO 校区（2009年创办）' },
   { label: '位置', value: '菲律宾碧瑶市郊松林' },
   { label: '规模', value: '校园约8,500平方米，可容纳约150名学生' },
-  { label: '管理方式', value: 'Eco Sparta 斯巴达管理，其他课程半斯巴达' },
+  { label: '管理方式', value: 'Eco Sparta Plus 斯巴达管理，其他课程半斯巴达' },
   { label: '课程', value: 'ESL、考试课程、雅思和托业保分班、打工度假、青少年和亲子课程' },
   { label: '入学', value: '每周日入住，周一开课' },
 ];
@@ -235,7 +235,7 @@ export const ANJ_ROOM_PROFILES: PhRoomProfile[] = [
 ];
 
 export const ANJ_DORM_RULES = [
-  { title: '宵禁与外出', text: '半斯巴达课程周日至周四21:30宵禁检查，须在宿舍；Eco Sparta 周一至周四不能外出。外出旅行须先提交申请。' },
+  { title: '宵禁与外出', text: '半斯巴达课程周日至周四21:30宵禁检查，须在宿舍；Eco Sparta Plus 周一至周四不能外出。外出旅行须先提交申请。' },
   { title: '房间', text: '不能进入他人房间，同性也不行；进入异性房间会被没收押金或退学。房间和室友由学校安排。' },
   { title: '禁止事项', text: '校内禁止饮酒和吸烟：第一次没收押金，第二次退学。21:30–06:00校内禁止喧哗。' },
   { title: '做饭和洗衣', text: '只有 Premium 公寓、Studio 和别墅可以做饭；宿舍内禁止洗衣服，统一用学校的洗衣服务。' },
@@ -331,7 +331,7 @@ export const ANJ_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     subtitle: '所有课程',
     facts: [
       { label: '半斯巴达', value: '周日至周四21:30宵禁；前4周参加单词测试（Lite 课程可以不考）；不强制只说英语；选修课自由参加' },
-      { label: '斯巴达', value: 'Eco Sparta：周一至周四不能外出；全程单词测试，错的单词罚写20次；只说英语（EOP）；选修课必须参加' },
+      { label: '斯巴达', value: 'Eco Sparta Plus：周一至周四不能外出；全程单词测试，错的单词罚写20次；只说英语（EOP）；选修课必须参加' },
     ],
     points: [],
   },
@@ -513,11 +513,49 @@ export const ANJ_REFUND_COPY = {
   ],
 };
 
+/** Offers above the quote (PhOfferCard). A card hides from `until` or when none of its promotionIds is enabled.
+ *  The 2026-11-24 offer summary, the year-end poster (12/06 and 12/13 arrivals) and the IELTS poster. */
+export const ANJ_OFFERS: PhOfferCard[] = [
+  { icon: 'percent', title: '思达启航优惠', amount: '免注册费 + 95折', text: '通过思达启航报名免100美元注册费，课程费和住宿费先打95折，再减下面的学校优惠。', promotionIds: ['registration-waiver', 'sida-discount'] },
+  {
+    icon: 'celebration', title: '年末限定优惠', amount: '再减300美元', text: '2026/12/06或12/13入学、报名至少4周，一次性减300美元，可与其他优惠同时使用。',
+    until: '2026-12-14', promotionIds: ['anj-year-end-2026'],
+  },
+  {
+    icon: 'calendar_month', title: '11月入学优惠', amount: '最高减750美元', text: '2026/11/29入学，按课程周数减免。',
+    detail: '4周减50 · 8周150 · 12周300 · 16周450 · 20周600 · 24周750美元', until: '2026-11-30', promotionIds: ['anj-new-1'],
+  },
+  {
+    icon: 'calendar_month', title: '常规入学优惠', amount: '最高减500美元', text: '2026/12/01–2027/02/28入学，按课程周数减免。',
+    detail: '8周减100 · 12周200 · 16周300 · 20周400 · 24周500美元', until: '2027-03-01', promotionIds: ['anj-new-2'],
+  },
+  {
+    icon: 'eco', title: '淡季优惠', amount: '每满4周减100美元', text: '2027/01/09前入学，课程每满4周减100美元。',
+    until: '2027-01-10', promotionIds: ['anj-low-2026'],
+  },
+  {
+    icon: 'eco', title: '2027淡季优惠', amount: '每满4周减300美元', text: '2027/03/01–06/26或08/22–12/26入学，课程每满4周减300美元；2027/06/27–08/21入学不适用。',
+    until: '2027-12-27', promotionIds: ['anj-low-2027-1', 'anj-low-2027-2'],
+  },
+  {
+    icon: 'cake', title: '生日优惠', amount: '减100美元', text: '报名至少4周，入学时提交生日证明。2026年12月入学：出生日期尾数是0、1或5；2027年起：出生月份与入学月份相同。',
+    promotionIds: ['anj-birthday'],
+  },
+  {
+    icon: 'workspace_premium', title: '雅思送考', amount: '送1次官方雅思考试', text: '报名雅思课程12周以上（含12周），考点限碧瑶；已报名、符合条件的学生也能享受。',
+    promotionIds: ['anj-ielts-exam'],
+  },
+  {
+    icon: 'replay', title: '在校续读', amount: '最高减1,800美元', text: '已在A&J读书的学生续读：2027/02/28前续读按周数减免，2027/03/01–06/20续读每4周减300美元。',
+    detail: '2027/02/28前：4周减50 · 8周100 · 12周200 · 16周300 · 20周400 · 24周500美元', until: '2027-06-21',
+  },
+];
+
 export const ANJ_FAQS: FaqItem[] = [
-  { question: 'A&J ECO 校区是斯巴达学校吗？', answer: '看课程：Eco Sparta 是斯巴达管理，周一至周四不能外出，全程单词测试，只说英语，选修课必须参加。其他课程按半斯巴达管理：周日至周四21:30宵禁，前4周参加单词测试（Lite 课程可以不考），选修课自由参加。' },
+  { question: 'A&J ECO 校区是斯巴达学校吗？', answer: '看课程：Eco Sparta Plus 是斯巴达管理，周一至周四不能外出，全程单词测试，只说英语，选修课必须参加。其他课程按半斯巴达管理：周日至周四21:30宵禁，前4周参加单词测试（Lite 课程可以不考），选修课自由参加。' },
   { question: '读雅思送官方考试吗？', answer: '送。2026/11/29起入学、报名雅思课程12周以上，送1次雅思官方考试，已经报名的学生也适用，考点在碧瑶。入学考试和模拟考都是机考。' },
   { question: '保分班怎么报？', answer: '雅思保分班入学要达到4.0分，12周保证5.5分、20周6.0分、24周6.5分；托业保分班12周按入学分数保证提分，16周保证800分以上。两种都在毕业前送1次官方考试，没达标可以减免学费继续上课。只能按规定的周数报名。' },
-  { question: '2026–2027年有什么优惠？', answer: '2026/08/01–2027/02/28入学有常规优惠，按课程周数减50–750美元；2026/10/01–2027/01/09入学每满4周课程再减100美元，2027/02/28–06/26和08/22–12/26入学每满4周减300美元；课程至少4周、符合生日条件再减100美元。可以叠加，报价器会按你的日期自动计算。' },
+  { question: '2026–2027年有什么优惠？', answer: '2026/12/01–2027/02/28入学有常规优惠，按课程周数减100–500美元；2027/01/09前入学每满4周课程再减100美元，2027/03/01–06/26和08/22–12/26入学每满4周减300美元；2026/12/06或12/13入学、至少4周再减300美元；课程至少4周、符合生日条件再减100美元。可以叠加，报价器会按你的日期自动计算。' },
   { question: '暑期旺季要加钱吗？', answer: '要。2027/06/27–08/22期间每个上课周加60美元；在旺季上课的学生要报满4周以上。附加费不打折。' },
   { question: '可以带孩子一起去吗？', answer: '可以。孩子按年龄报 Junior Lite（4–6岁）、Junior ESL（7–15岁）或 Junior Test（12–16岁），家长报 Eco Relax Lite 或 Plus 一起上课，最多可以把2节一对一转给孩子。家庭可以住 Premium 公寓、Studio 或别墅，自己做饭。' },
   { question: '页面上的报价包含全部费用吗？', answer: '学校费用包含注册费、课程费和住宿费，并自动扣除优惠；到校学杂费单独列出，押金和洗衣费另外准备。两者分开显示，不相加。' },

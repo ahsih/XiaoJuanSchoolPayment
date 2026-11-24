@@ -259,6 +259,12 @@ export class AnjPageStudent implements PhPageStudent {
     return `${rule}；课程至少4周，入学时提交生日证明。${this.birthdayEligible ? '本次符合。' : ''}`;
   }
 
+  /** Year-end offer: arrival on 2026/12/06 or 12/13 (the only Sundays in its range), at least 4 course weeks, once. */
+  private get yearEnd(): CiaPromotionRule | undefined {
+    const rule = this.rule(ANJ_PROMOTION_IDS.yearEnd);
+    return rule && this.arrivalMatches(rule) && this.quotePlan.courseWeeks >= rule.minimumCourseWeeks ? rule : undefined;
+  }
+
   /** The IELTS course for 12 weeks or more brings one free official IELTS test (non-cash). */
   get ieltsExamGift(): CiaPromotionRule | undefined {
     const rule = this.rule(ANJ_PROMOTION_IDS.ieltsExam);
@@ -277,11 +283,13 @@ export class AnjPageStudent implements PhPageStudent {
     const regular = this.regular;
     const low = this.lowSeason;
     const birthday = this.birthdayEligible ? this.rule(ANJ_PROMOTION_IDS.birthday) : undefined;
+    const yearEnd = this.yearEnd;
     const withWeeks = (description: string, weeks: number) => `${description.replace(/[。；\s]+$/, '')}；本次按${weeks}周计算。`;
     return [
       ...(regular ? [{ ...regular, icon: '惠', note: withWeeks(regular.rule.description, this.quotePlan.courseWeeks) }] : []),
       ...(low ? [{ rule: low.rule, amount: low.amount, icon: '淡', note: withWeeks(low.rule.description, low.blocks * 4) }] : []),
       ...(birthday ? [{ rule: birthday, amount: birthday.discountValue, icon: '生', note: birthday.description }] : []),
+      ...(yearEnd ? [{ rule: yearEnd, amount: yearEnd.discountValue, icon: '限', note: yearEnd.description }] : []),
     ];
   }
 

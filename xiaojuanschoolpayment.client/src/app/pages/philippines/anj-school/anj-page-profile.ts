@@ -25,6 +25,7 @@ import {
   ANJ_HOLIDAY_CALENDARS,
   ANJ_HOLIDAY_FOOTNOTE,
   ANJ_NOT_SUITABLE_FOR,
+  ANJ_OFFERS,
   ANJ_OVERVIEW_FACTS,
   ANJ_PAGE_TEXT,
   ANJ_PRACTICAL_GUIDES,
@@ -127,7 +128,7 @@ const ANJ_COPY: PhPageCopy = {
     ...CIA_PAGE_COPY.quote,
     compareShortcuts: [
       { focus: 'room', label: '比房型', hint: '如 Deluxe 三人间、双人间和单人间' },
-      { focus: 'course', label: '比同类课程', hint: '如 Eco Relax、Eco Hub 和 Eco Sparta' },
+      { focus: 'course', label: '比同类课程', hint: '如 Eco Relax、Eco Hub 和 Eco Sparta Plus' },
       { focus: 'weeks', label: '比周数', hint: '如4周、8周、12周' },
     ],
   },
@@ -143,6 +144,12 @@ const ANJ_COPY: PhPageCopy = {
     title: brandAnj(CIA_PAGE_COPY.sida.title),
     photoAlt: brandAnj(CIA_PAGE_COPY.sida.photoAlt),
     photoCaption: brandAnj(CIA_PAGE_COPY.sida.photoCaption),
+  },
+  offers: {
+    eyebrow: 'OFFERS',
+    title: 'A&J 报名优惠',
+    intro: '思达启航优惠和学校优惠可以叠加；入学日按周日到校计算，每项优惠的日期和周数条件写在卡片上。',
+    note: '报价器会按入学日和课程周数自动算出能用的优惠；最终以学校确认为准。',
   },
   faq: CIA_PAGE_COPY.faq,
   finalCta: {
@@ -268,11 +275,13 @@ export const ANJ_PAGE_PROFILE: PhSchoolProfile = {
   sidaTrustBadges: CIA_SIDA_TRUST_BADGES,
   ctaBadges: ANJ_FINAL_CTA_BADGES,
   ctaConsultants: CIA_CTA_CONSULTANTS,
+  offers: ANJ_OFFERS,
   mobileAnchors: [
     { label: '视频', target: 'gallery', icon: 'smart_display' },
     { label: '概览', target: 'overview', icon: 'dashboard' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '住宿', target: 'rooms', icon: 'bed' },
+    { label: '优惠', target: 'offers', icon: 'local_offer' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ],

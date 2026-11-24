@@ -24,6 +24,8 @@ asked to update the Baguio A&J page from it.
   dining hall, meals. Their overlays name only 碧瑶A&J and the place; no other company, contact or end card. The hero
   album groups all clips as 校园／宿舍／设施／餐厅. The channel's 复式套房 clip is not used: it walks through a Premium
   apartment and then another unit, so it cannot be matched to one priced room.
+- The page has the optional 报名优惠 section above the quote (ANJ_OFFERS in anj-page-content.ts, 优惠 tab). Each
+  card hides itself after its last arrival date. The 在校续读 card (students already at A&J extending) is text only.
 - 15 room prices do not fit the template's one-row price table on wide screens, so `anj-school-page.component.css`
   (this page only) shows the five room groups in two rows. The shared template is unchanged.
 
@@ -40,16 +42,24 @@ asked to update the Baguio A&J page from it.
 | 退款规则 | Refunds after arrival (shown) |
 | 2027 假期表 | Weekday holidays in the 2027 calendar |
 | 新生手册 | Timetable, dorm rules, meals, cleaning and laundry, arrival and pickup, other fees |
+| A&J 优惠汇总 (2026 & 2027 优惠总览), 年末限定优惠 and IELTS posters, the school's WeChat note (received 2026-11-24, later the same day) | Offer dates and tiers, the year-end offer, 在校续读 card, IELTS test in Baguio, Eco Sparta renamed Eco Sparta Plus |
+
+The same WeChat batch had a 课程推荐指南 image with obvious errors ("适合学习周期: 10 周起", "听、说、读、读、写",
+Working Holiday "1–4 周" against its 4/8/12-week package). Its ages, study lengths, Eco Hub add-on options and the
+test-course exam gift were not used; only the Eco Sparta Plus rename, which the school's own message states, was.
 
 ## Decisions
 
 - 思达启航 waives the 100-dollar registration fee for every student and takes 5% off the full tuition and room
   price first; the school offers come off after it (A&J's files give no order). The peak surcharge is never discounted.
 - Regular offer: 2026/08/01–11/30 arrivals 50/150/300/450/600/750 dollars for 4–24 weeks; 2026/12/01–2027/02/28
-  arrivals 100/200/300/400/500 for 8–24 weeks. Low season: 100 dollars per 4 course weeks for 2026/10/01–2027/01/09
-  arrivals, 300 for 2027/02/28–06/26 and 2027/08/22–12/26 arrivals (peak weeks do not count). Birthday 100 dollars
-  with at least 4 weeks: 2026 by birth-day ending per arrival quarter, from 2027 birth month = arrival month.
-- IELTS course 12 weeks or more: one free official IELTS test (non-cash row). Guarantee courses are whole packages:
+  arrivals 100/200/300/400/500 for 8–24 weeks. Low season: 100 dollars per 4 course weeks for 2026/08/23–2027/01/09
+  arrivals, 300 for 2027/03/01–06/26 and 2027/08/22–12/26 arrivals (peak weeks do not count). The offer summary puts
+  2027/01/10–02/28 arrivals on the regular table and starts the low season on 03/01, so a Sunday 02/28 arrival keeps
+  the regular offer and the first 2027 low-season arrival is 03/07. Birthday 100 dollars with at least 4 weeks: 2026
+  by birth-day ending per arrival quarter, from 2027 birth month = arrival month.
+- Year-end offer: 2026/12/06 or 12/13 arrival with at least 4 course weeks, 300 dollars once, stacking with the others.
+- IELTS course 12 weeks or more: one free official IELTS test, taken in Baguio (non-cash row). Guarantee courses are whole packages:
   IELTS 12/20/24 weeks (3,150/5,250/6,300), TOEIC 12/16 weeks (2,850/3,800); the course list shows the 12-week price.
   Working Holiday runs 4, 8 or 12 weeks.
 - 1/2/3-week stays cost 40/65/90% of the 4-week price; longer stays are proportional.
@@ -70,4 +80,4 @@ asked to update the Baguio A&J page from it.
 ## Tests
 
 `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.anj-spec.json --include=src/app/pages/philippines/anj-school/anj-school-page.spec.ts --progress=false`
-(12 tests).
+(16 tests).

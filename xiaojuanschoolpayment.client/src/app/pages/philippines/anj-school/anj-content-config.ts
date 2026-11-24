@@ -30,6 +30,7 @@ export const ANJ_PROMOTION_IDS = {
   sida: 'sida-discount',
   birthday: 'anj-birthday',
   ieltsExam: 'anj-ielts-exam',
+  yearEnd: 'anj-year-end-2026',
 } as const;
 /** ruleKind of the regular offers (tiers by course weeks) and of the low-season offers (per complete 4 weeks). */
 export const ANJ_REGULAR_RULE_KIND = 'anj-new-period';
@@ -96,7 +97,7 @@ const createCourses = (): CiaCourseContent[] => [
   course('eco-relax-lite', 'Eco Relax Lite 轻松课程', 'ESL', 650, '每天3节一对一 + 1节选修课；单词测试自愿参加', '想轻松学习的成人、长者和陪读家长', '半斯巴达管理；16岁以上可报名。', 0),
   course('eco-relax-plus', 'Eco Relax Plus 轻松加强课程', 'ESL', 750, `每天3节一对一 + 2节小组课 + 1节选修课；${WORD_TEST_FIRST_4}`, '想轻松学习、也想和同学多练口语的成人和家长', '半斯巴达管理；16岁以上可报名。', 1),
   course('eco-hub', 'Eco Hub 主题课程（口语／商务／旅游）', 'ESL', 850, `每天5节一对一 + 2节小组课 + 1节选修课；${WORD_TEST_FIRST_4}`, '目标明确的学生：口语、商务英语或旅游英语三选一', '三个方向任选一个，小组课按方向分开上；半斯巴达管理，16岁以上可报名。', 2),
-  course('eco-sparta', 'Eco Sparta 斯巴达课程', 'ESL', 1150, '每天6节一对一 + 2节小组课 + 1节选修课；全程单词测试', '想在短时间内高强度提升的学生', '斯巴达管理：周一至周四不能外出，全程英语（EOP），选修课必须参加；16岁以上可报名。', 3),
+  course('eco-sparta', 'Eco Sparta Plus 斯巴达课程', 'ESL', 1150, '每天6节一对一 + 2节小组课 + 1节夜间自习（周一至周四）；全程单词测试', '想在短时间内高强度提升的学生', '由 Eco Sparta 升级而来，每天多2节小组课。斯巴达管理：周一至周四不能外出，全程英语（EOP），选修课必须参加；16岁以上可报名。', 3),
   course('test-ielts', '雅思课程 IELTS', '考试课程', 950, `每天5节一对一 + 2节小组课 + 1节选修课；${WORD_TEST_FIRST_4}；每月月考和双周考`, '准备雅思考试的17岁以上学生', '入学测试和模拟考都是机考；未满17岁请报青少年考试课程。', 4),
   course('test-course', '考试课程（托业／托福／PTE）', '考试课程', 950, `每天5节一对一 + 2节小组课 + 1节选修课；${WORD_TEST_FIRST_4}；每月月考和双周考`, '准备托业、托福或PTE考试的17岁以上学生', '报名时选托业、托福或PTE其中一门；未满17岁请报青少年考试课程。', 5),
   course('ielts-guarantee', '雅思保分班 IELTS Guarantee', '保分班', 3150, '每天5节一对一 + 2节小组课 + 1节选修课；全程单词测试；每周考试', '需要雅思成绩、入学达到4.0分的学生',
@@ -154,11 +155,12 @@ const createPromotions = (): CiaPromotionRule[] => [
   promotion({ id: ANJ_PROMOTION_IDS.sida, name: '思达启航95折', description: '课程费和住宿费按原价先打95折，再减学校优惠；旺季附加费不打折。', sortOrder: 1, discountType: 'percentage', discountValue: 5 }),
   promotion({ id: 'anj-new-1', name: '常规优惠', description: '2026/08/01–11/30入学，按课程周数：4周减50、8周150、12周300、16周450、20周600、24周750美元。', sortOrder: 2, ruleKind: ANJ_REGULAR_RULE_KIND, discountTiers: { 4: 50, 8: 150, 12: 300, 16: 450, 20: 600, 24: 750 }, arrivalStart: '2026-08-01', arrivalEnd: '2026-11-30' }),
   promotion({ id: 'anj-new-2', name: '常规优惠', description: '2026/12/01–2027/02/28入学，按课程周数：8周减100、12周200、16周300、20周400、24周500美元。', sortOrder: 3, ruleKind: ANJ_REGULAR_RULE_KIND, discountTiers: { 4: 0, 8: 100, 12: 200, 16: 300, 20: 400, 24: 500 }, arrivalStart: '2026-12-01', arrivalEnd: '2027-02-28' }),
-  promotion({ id: 'anj-low-2026', name: '淡季优惠', description: '2026/10/01–2027/01/09入学，每满4周课程减100美元。', sortOrder: 4, ruleKind: ANJ_LOW_SEASON_RULE_KIND, incrementWeeks: 4, incrementValue: 100, arrivalStart: '2026-10-01', arrivalEnd: '2027-01-09' }),
-  promotion({ id: 'anj-low-2027-1', name: '2027淡季优惠', description: '2027/02/28–06/26入学，每满4周课程减300美元；暑期旺季的课程周不计。', sortOrder: 5, ruleKind: ANJ_LOW_SEASON_RULE_KIND, incrementWeeks: 4, incrementValue: 300, arrivalStart: '2027-02-28', arrivalEnd: '2027-06-26' }),
+  promotion({ id: 'anj-low-2026', name: '淡季优惠', description: '2026/08/23–2027/01/09入学，每满4周课程减100美元。', sortOrder: 4, ruleKind: ANJ_LOW_SEASON_RULE_KIND, incrementWeeks: 4, incrementValue: 100, arrivalStart: '2026-08-23', arrivalEnd: '2027-01-09' }),
+  promotion({ id: 'anj-low-2027-1', name: '2027淡季优惠', description: '2027/03/01–06/26入学，每满4周课程减300美元；暑期旺季的课程周不计。', sortOrder: 5, ruleKind: ANJ_LOW_SEASON_RULE_KIND, incrementWeeks: 4, incrementValue: 300, arrivalStart: '2027-03-01', arrivalEnd: '2027-06-26' }),
   promotion({ id: 'anj-low-2027-2', name: '2027淡季优惠', description: '2027/08/22–12/26入学，每满4周课程减300美元。', sortOrder: 6, ruleKind: ANJ_LOW_SEASON_RULE_KIND, incrementWeeks: 4, incrementValue: 300, arrivalStart: '2027-08-22', arrivalEnd: '2027-12-26' }),
   promotion({ id: ANJ_PROMOTION_IDS.birthday, name: '生日优惠', description: '课程至少4周，入学时提交生日证明：2026年入学按入学季度看出生日期尾数，2027年起出生月份与入学月份相同。', sortOrder: 7, ruleKind: 'anj-birthday', discountValue: 100, minimumCourseWeeks: 4 }),
-  promotion({ id: ANJ_PROMOTION_IDS.ieltsExam, name: '送雅思官方考试', description: '报名雅思课程12周以上，送1次雅思官方考试（考点在碧瑶）。', sortOrder: 8, ruleKind: 'anj-ielts-exam', discountType: 'none', appliesTo: 'school-total', minimumCourseWeeks: 12, eligibleCourseIds: ['test-ielts'], arrivalStart: '2026-11-29' }),
+  promotion({ id: ANJ_PROMOTION_IDS.ieltsExam, name: '送雅思官方考试', description: '报名雅思课程12周以上（含12周），送1次雅思官方考试，考点限碧瑶。', sortOrder: 8, ruleKind: 'anj-ielts-exam', discountType: 'none', appliesTo: 'school-total', minimumCourseWeeks: 12, eligibleCourseIds: ['test-ielts'], arrivalStart: '2026-11-29' }),
+  promotion({ id: ANJ_PROMOTION_IDS.yearEnd, name: '年末限定优惠', description: '2026/12/06或12/13入学、课程至少4周，一次性再减300美元，可与其他优惠同时使用。', sortOrder: 9, ruleKind: 'anj-year-end', discountValue: 300, minimumCourseWeeks: 4, arrivalStart: '2026-12-06', arrivalEnd: '2026-12-13' }),
 ];
 
 const LOCAL_FEE_INTRO = '以下费用到校后用比索缴纳，按每位学生的签证、课程和住宿预估；押金和洗衣费另列，不计入合计。';
