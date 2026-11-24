@@ -284,10 +284,12 @@ describe('CellaStudentQuote', () => {
     eight.initialVisaDays = 30;
     expect(fee(eight, '签证续签')?.total).toBe(5140);
     expect(fee(eight, 'ARP加急费')?.total).toBe(300);
-    expect(fee(eight, '外国人身份证')?.total).toBe(0);
+    // ACR I-Card comes with the first extension (user rule 2026-11-24), so a 30-day visa pays it from week 5.
+    expect(fee(eight, '外国人身份证')?.total).toBe(4000);
     eight.initialVisaDays = 59;
     expect(fee(eight, '签证续签')?.total).toBe(0);
     expect(fee(eight, 'ARP加急费')?.total).toBe(0);
+    expect(fee(eight, '外国人身份证')?.total).toBe(0);
 
     const long = uniQuote(24, '2027-02-14');
     expect(fee(long, '签证续签')?.total).toBe(19730);

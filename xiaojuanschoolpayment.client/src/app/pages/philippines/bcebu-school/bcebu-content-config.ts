@@ -10,6 +10,7 @@ import type {
   CiaQuoteSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { upgradeAcrNotes } from '../acr-first-extension';
 import { copyContentData } from '../copy-content-data';
 import {
   BCEBU_COURSES,
@@ -29,6 +30,9 @@ import {
  */
 export const BCEBU_POLICY_VERSION = 2;
 type BCebuQuoteSettings = CiaQuoteSettings & { bcebuPolicyVersion?: number };
+/** ACR I-CARD comes with the first visa extension (user rule 2026-11-24, every Philippine school). */
+const BCEBU_ACR_NOTE = '第一次签证续签时办理（30天签证第5周起，59天签证第9周起），须本人到移民局拍照和录指纹，学校统一安排。';
+const BCEBU_OLD_ACR_NOTES = { 'acr-i-card': ['在菲律宾停留超过59天（约第9周起）须办理，须本人到移民局拍照和录指纹，学校统一安排。'] };
 
 export const BCEBU_SIDA_RULE_ID = 'bcebu-sida-90';
 export const BCEBU_LONG_STAY_RULE_ID = 'bcebu-long-stay';
@@ -91,7 +95,7 @@ const promotion = (value: Partial<CiaPromotionRule> & Pick<CiaPromotionRule, 'id
 const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'ssp', name: 'SSP特殊学习许可证', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '移民局收取；1–24周只办一次。', sortOrder: 0 }),
   fee({ id: 'ssp-e-card', name: 'SSP E-CARD', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '与SSP同时办理，每位学生都要办，只收一次。', sortOrder: 1 }),
-  fee({ id: 'acr-i-card', name: 'ACR I-CARD 外国人身份证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '在菲律宾停留超过59天（约第9周起）须办理，须本人到移民局拍照和录指纹，学校统一安排。', sortOrder: 2 }),
+  fee({ id: 'acr-i-card', name: 'ACR I-CARD 外国人身份证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: BCEBU_ACR_NOTE, sortOrder: 2 }),
   fee({ id: 'arp', name: 'ARP外国人登记', amount: 200, futureEffectiveStart: '2027-01-01', futureAmount: 700, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '首次续签前须本人到移民局登记；加急服务费200比索，2027年1月1日起入学另收ARP费500比索（共700比索）。', sortOrder: 3 }),
   fee({ id: 'management', name: '维护管理费', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '含清洁和公共设施维护；按住宿周数，每周500比索。', sortOrder: 4 }),
   fee({ id: 'electricity', name: '电费', amount: 500, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'ceil', includeInTotal: true, note: '每周含15千瓦时，超出部分每千瓦时20比索（多人间按人数均摊），从押金结算。', sortOrder: 5 }),
@@ -320,6 +324,7 @@ export const cloneBCebuContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteImageSettings.benefits ??= copyContentData(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= copyContentData(defaults.quoteImageSettings.footerNotes);
   if (upgrading) upgradeBCebuImageCopy(clone.quoteImageSettings);
+  upgradeAcrNotes(clone, defaults, BCEBU_OLD_ACR_NOTES);
   clone.media ??= [];
   return clone;
 };

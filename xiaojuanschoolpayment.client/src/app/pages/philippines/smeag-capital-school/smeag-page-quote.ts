@@ -213,7 +213,7 @@ export class SmeagPageStudent implements PhPageStudent {
     return Array.from({ length: this.visaExtensionCount }, (_, index) => sequence[index] ?? sequence.at(-1) ?? rule.amount);
   }
 
-/**
+  /**
    * Room weeks in the campus dormitory. Only these pay utilities and water and electricity; the partner hotels pay
    * a 2,000-peso management fee per 4 weeks instead (user confirmation 2026-11-24).
    */
@@ -243,13 +243,13 @@ export class SmeagPageStudent implements PhPageStudent {
       : '';
     const visaNote = longTerm ? longTermNote
       : `${extensions ? `按${this.visaLabel}预估，本次${extensions}次` : `按${this.visaLabel}预估，本次无需续签`}；${visaRule?.note ?? ''}`;
-    const longStay = plan.stayWeeks * 7 >= 60;
     const books = [...new Set(plan.courses.map(row => SMEAG_TEXTBOOK_BY_COURSE[row.optionId] ?? 'book-esl'))];
     return [
       ...create('visa-extension', extensions, visaNote, visaTotal, visaUnit),
       ...create('ssp', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
       ...create('ssp-i-card', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
-      ...create('visa-i-card', !longTerm && longStay ? 1 : 0, longTerm ? longTermNote : undefined),
+      // VISA I-CARD (ACR) comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      ...create('visa-i-card', !longTerm && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('arp', !longTerm && this.visaType === 'tourist59' && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('utilities', Math.ceil(this.campusRoomWeeks / 4)),
       ...create('water-electricity', Math.ceil(this.campusRoomWeeks / 4)),

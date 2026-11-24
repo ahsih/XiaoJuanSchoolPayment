@@ -28,6 +28,9 @@ export interface IuIclRoom {
   accommodation?: boolean;
 }
 
+/** ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school). */
+export const IU_ICL_ACR_NOTE = '随第1次签证延长办理（第5周起），只收一次。';
+
 export interface IuIclLocalFee {
   item: string;
   amount: string;
@@ -389,10 +392,13 @@ export class IuIclQuote {
         { item: '教材费预估', amount: '2,000 比索／人', quantity: textbookGroups(this.plan.courses).length, total: 2000 * textbookGroups(this.plan.courses).length, note: '各课程类型分别预估；按每本250–600比索估算，实际以领取教材为准。' },
       ]),
     ];
-    if (this.visaExtensionCount >= 1) fees.push({ item: '第1次签证延长', amount: '5,500 比索／次', quantity: 1, total: 5500, note: '5–8周参考，延长29天。' });
+    // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+    if (this.visaExtensionCount >= 1) {
+      fees.push({ item: '第1次签证延长', amount: '5,500 比索／次', quantity: 1, total: 5500, note: '5–8周参考，延长29天。' });
+      fees.push({ item: 'ACR I-Card', amount: '4,500 比索／次', quantity: 1, total: 4500, note: IU_ICL_ACR_NOTE });
+    }
     if (this.visaExtensionCount >= 2) {
       fees.push({ item: '第2次签证延长', amount: '6,500 比索／次', quantity: 1, total: 6500, note: '9–12周参考，延长1个月。' });
-      fees.push({ item: 'ACR I-Card', amount: '4,500 比索／次', quantity: 1, total: 4500, note: '停留超过59天时随第2次签证延长办理。' });
     }
     if (this.visaExtensionCount >= 3) {
       const quantity = this.visaExtensionCount - 2;
@@ -422,11 +428,11 @@ export class IuIclQuote {
     } else {
       add('textbooks', textbookGroups(this.plan.courses).length, `${quoteMoney(this.feeRule('textbooks')?.amount ?? 0)} 比索／人`);
     }
-    if (this.visaExtensionCount >= 1) add('visa-extension-1', 1, `${quoteMoney(this.feeRule('visa-extension-1')?.amount ?? 0)} 比索／次`);
-    if (this.visaExtensionCount >= 2) {
-      add('visa-extension-2', 1, `${quoteMoney(this.feeRule('visa-extension-2')?.amount ?? 0)} 比索／次`);
+    if (this.visaExtensionCount >= 1) {
+      add('visa-extension-1', 1, `${quoteMoney(this.feeRule('visa-extension-1')?.amount ?? 0)} 比索／次`);
       add('acr-i-card', 1, `${quoteMoney(this.feeRule('acr-i-card')?.amount ?? 0)} 比索／次`);
     }
+    if (this.visaExtensionCount >= 2) add('visa-extension-2', 1, `${quoteMoney(this.feeRule('visa-extension-2')?.amount ?? 0)} 比索／次`);
     if (this.visaExtensionCount >= 3) add('visa-extension-3-5', this.visaExtensionCount - 2, `${quoteMoney(this.feeRule('visa-extension-3-5')?.amount ?? 0)} 比索／次`);
     return result;
   }
@@ -437,7 +443,7 @@ export class IuIclQuote {
     return [{ label: rule?.name ?? '额外住宿（每人）', amount: `${quoteMoney(rule?.amount ?? 1300)} 比索／晚`, note: rule?.note ?? '仅在超出标准周日入住、周六13:00退房安排时另计；需先确认空房。' }];
   }
   get localFeeIntro(): string {
-    return this.contentConfig?.quoteSettings.localFeeIntro ?? '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。本页及报价单按当前课程、住宿和停留周数提供预估，具体项目和金额以学校实际收取为准；宿舍押金已计入合计但通常符合条件可退，额外住宿另列且不计入学杂费及人民币预估合计。按现有价目表，4/8/12/16/24周校内住宿方案分别估算为22,900/33,200/49,000/59,300/79,900比索。';
+    return this.contentConfig?.quoteSettings.localFeeIntro ?? '说明：学杂费是学生抵达菲律宾后直接向学校缴纳的当地费用。本页及报价单按当前课程、住宿和停留周数提供预估，具体项目和金额以学校实际收取为准；宿舍押金已计入合计但通常符合条件可退，额外住宿另列且不计入学杂费及人民币预估合计。按现有价目表，4/8/12/16/24周校内住宿方案分别估算为22,900/37,700/49,000/59,300/79,900比索。';
   }
 
   get imageLocalFeeIntro(): string {

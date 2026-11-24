@@ -1,6 +1,7 @@
 import { textbookGroups, textbookPeriods } from '../school-textbook-estimate';
 import {
   CELLA_2027_PROMOTION,
+  CELLA_ACR_NOTE,
   CELLA_CAMPUS_NAMES,
   CELLA_FAMILY_PACKAGE_WEEKS,
   CELLA_FAMILY_ROOM,
@@ -305,7 +306,8 @@ export class CellaStudentQuote {
       { item: 'SSP电子卡', unit: '4,500比索／次', quantity: '1', total: fees.sspECard, note: '入学时与SSP同时办理，只收一次。' },
       { item: '签证续签', unit: '5,140／6,410／4,440比索', quantity: `${extensions}次`, total: this.visaExtensionTotal, note: visaNote },
       { item: 'ARP加急费', unit: '300比索／次', quantity: extensions ? '1' : '0', total: extensions ? fees.arp : 0, note: '首次续签时与签证一起办理。' },
-      { item: '外国人身份证', unit: '4,000比索／次', quantity: this.visaStages >= 2 ? '1' : '0', total: this.visaStages >= 2 ? fees.acrICard : 0, note: '停留超过59天（第9周起）时办理。' },
+      // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      { item: '外国人身份证', unit: '4,000比索／次', quantity: extensions ? '1' : '0', total: extensions ? fees.acrICard : 0, note: CELLA_ACR_NOTE },
       { item: '管理费', unit: '1,000比索／周', quantity: `${weeks.length}周`, total: fees.maintenancePerWeek * weeks.length, note: '公共区域、设施维护等费用，按住宿周数计算。' },
       {
         item: '电费', unit: this.rateText(electricity), quantity: `${weeks.length}周`, total: electricity.reduce((sum, value) => sum + value, 0),

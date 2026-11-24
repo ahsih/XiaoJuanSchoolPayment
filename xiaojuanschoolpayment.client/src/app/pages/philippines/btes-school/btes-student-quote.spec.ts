@@ -99,6 +99,10 @@ describe('BtesStudentQuote', () => {
     eightWeeks.visaType = 'tourist30';
     expect(eightWeeks.visaExtensionCount).toBe(1);
     expect(eightWeeks.visaExtensionFee).toBe(5130);
+    // ACR I-Card comes with the first extension (user rule 2026-11-24).
+    expect(eightWeeks.localFees.find((fee) => fee.item.startsWith('ACR'))?.total).toBe(4000);
+    eightWeeks.visaType = 'tourist59';
+    expect(eightWeeks.localFees.find((fee) => fee.item.startsWith('ACR'))?.total).toBe(0);
 
     const twelveWeeks = quoteAt('2026-08-23', 12);
     twelveWeeks.visaType = 'tourist30';

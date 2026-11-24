@@ -1109,8 +1109,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get selectedRoomGalleryCaptions(): string[] {
     const profile = this.selectedRoomProfile;
     const code = profile.bookingCode ? `${profile.bookingCode} ` : '';
+    // A room without a location (PINES) is named instead of saying 校内房型.
+    const name = profile.location ? `${profile.location}房型` : profile.label;
     return profile.gallery.map(
-      (_, index) => `${code}${profile.location}房型 · 第${index + 1}张实景`,
+      (_, index) => `${code}${name} · 第${index + 1}张实景`,
     );
   }
 

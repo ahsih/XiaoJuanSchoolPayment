@@ -11,7 +11,8 @@ import { CpilsSchoolPageComponent } from './cpils-school-page.component';
 
 // The CPILS page on the shared Philippine school template. The price rules are the ones the former
 // CPILS page tested (September 2026 notice, 2027 prices and offers); the June 2026 handbook moved
-// ACR I-CARD and ARP to the second immigration extension and made ARP 200 pesos.
+// ARP to the second immigration extension and made it 200 pesos. ACR I-CARD comes with the first
+// extension (user rule 2026-11-24).
 describe('CPILS school page on the shared template', () => {
   let page: CpilsSchoolPageComponent;
   const schoolService = {
@@ -587,13 +588,14 @@ describe('CPILS school page on the shared template', () => {
     const acr = () => localFee('外国人身份证');
     const arp = () => localFee('ARP');
 
-    it('charges a 30-day visa 5,130 then 6,400 with ACR and ARP at the second extension', () => {
+    it('charges a 30-day visa 5,130 then 6,400, ACR at the first extension and ARP at the second', () => {
       student().visaType = 'tourist30';
       page.selectedWeeks = 4;
       expect(extension()).toBe(0);
+      expect(acr()?.quantity).toBe(0);
       page.selectedWeeks = 5;
       expect(extension()).toBe(5130);
-      expect(acr()?.quantity).toBe(0);
+      expect(acr()?.total).toBe(4000);
       expect(arp()?.total).toBe(0);
       page.selectedWeeks = 9;
       expect(extension()).toBe(11530);
@@ -677,6 +679,22 @@ describe('CPILS school page on the shared template', () => {
       expect(cloneCpilsContentConfig(migrated)).toEqual(migrated);
       page['applyContentConfig'](migrated);
       expect(student().tuition).toBe(1001);
+    });
+
+    it('moves untouched second-extension ACR and ARP notes to the first-extension wording once', () => {
+      const old = createDefaultCpilsContentConfig();
+      const acrNote = '第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。';
+      const arpNote = '与ACR I-CARD同时办理一次；长期签证另行确认。';
+      old.localFees.find(item => item.id === 'acr-i-card')!.note = acrNote;
+      old.localFees.find(item => item.id === 'arp')!.note = arpNote;
+      old.quoteImageSettings.localFeeNotes = { ...old.quoteImageSettings.localFeeNotes, 'acr-i-card': acrNote, arp: '员工写的ARP说明' };
+      const migrated = cloneCpilsContentConfig(old);
+      expect(migrated.localFees.find(item => item.id === 'acr-i-card')?.note).toContain('第一次续签时办理');
+      expect(migrated.localFees.find(item => item.id === 'arp')?.note).toContain('第二次续签时办理一次');
+      expect(migrated.quoteImageSettings.localFeeNotes!['acr-i-card']).toContain('第一次续签时办理');
+      expect(migrated.quoteImageSettings.localFeeNotes!['arp']).toBe('员工写的ARP说明');
+      migrated.localFees.find(item => item.id === 'acr-i-card')!.note = acrNote;
+      expect(cloneCpilsContentConfig(migrated).localFees.find(item => item.id === 'acr-i-card')?.note).toBe(acrNote);
     });
 
     it('keeps a course an employee already edited', () => {

@@ -36,7 +36,7 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
   visa extensions from week 5 are extra.
 - Senior course: local fees included except the deposit (one 已含 row).
 - Local fees: SSP 7,500 and E-Card 4,000 (stays of 3+ weeks; not for a non-studying parent, a low-season kindergarten
-  child, or a promotion stay of up to 4 weeks), ACR I-Card 4,000 (9+ weeks), visa extensions from 4,630, student ID
+  child, or a promotion stay of up to 4 weeks), ACR I-Card 4,000 (the sheet lists 9+ weeks; charged with the first visa extension by the user rule of 2026-11-24), visa extensions from 4,630, student ID
   200, utility and electricity by room type and accommodation week, unaccompanied-minor care 12,000 per 4 weeks.
   Pickup, deposit and textbooks are references outside the total.
 

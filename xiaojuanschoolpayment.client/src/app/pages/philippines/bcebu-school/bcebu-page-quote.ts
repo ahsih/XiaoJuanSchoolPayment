@@ -459,7 +459,7 @@ export class BCebuPageStudent implements PhPageStudent {
     return [
       ...waived('ssp', 1),
       ...waived('ssp-e-card', 1),
-      ...waived('acr-i-card', plan.stayWeeks >= 9 ? 1 : 0),
+      ...waived('acr-i-card', extensions > 0 ? 1 : 0),
       ...create('arp', arpQuantity, { total: arpAmount * arpQuantity, unit: `${formatPhp(arpAmount)}／次` }),
       ...create('management', plan.roomWeeks),
       ...create('electricity', plan.roomWeeks),

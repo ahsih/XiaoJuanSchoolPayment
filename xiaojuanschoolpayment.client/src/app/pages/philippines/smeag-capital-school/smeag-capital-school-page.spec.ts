@@ -84,6 +84,17 @@ describe('SMEAG Capital page on the shared template', () => {
     expect(localFee('签证续签')?.total).toBe(11530);
     expect(localFee('VISA I-CARD')?.total).toBe(4500);
     expect(page.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0)).toBe(47730 - 3200 + 700);
+    // VISA I-CARD comes with the first extension (user rule 2026-11-24): a 30-day visa pays it from week 5,
+    // a 59-day visa from week 9.
+    page.selectedWeeks = 6;
+    expect(localFee('VISA I-CARD')?.total).toBe(4500);
+    page.selectedWeeks = 4;
+    expect(localFee('VISA I-CARD')?.total).toBe(0);
+    student().visaType = 'tourist59';
+    page.selectedWeeks = 8;
+    expect(localFee('VISA I-CARD')?.total).toBe(0);
+    page.selectedWeeks = 9;
+    expect(localFee('VISA I-CARD')?.total).toBe(4500);
   });
 
   it('charges the partner hotels a management fee instead of utilities and water and electricity', () => {

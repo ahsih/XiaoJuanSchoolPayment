@@ -71,6 +71,9 @@ export const CELLA_2027_PROMOTION = {
   ] as ReadonlyArray<{ weeks: number; amount: number }>,
 } as const;
 
+/** ACR I-Card (外国人身份证) comes with the first visa extension (user rule 2026-11-24, every Philippine school). */
+export const CELLA_ACR_NOTE = '第一次签证续签时办理（30天签证第5周起，59天签证第9周起）。';
+
 /** 2027 local payment sheets; the STACIA and water changes apply from 2027-01-01. */
 export const CELLA_LOCAL_FEES_2027 = {
   effectiveFrom: '2027-01-01',
