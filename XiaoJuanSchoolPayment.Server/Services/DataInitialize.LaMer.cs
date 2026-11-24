@@ -6,6 +6,14 @@ namespace XiaoJuanSchoolPayment.Server.Services;
 
 public static partial class DataInitialize
 {
+    private static readonly Dictionary<string, string> LaMerLessonLookupNames = new()
+    {
+        ["esl-classic"] = "ESL Classic｜综合英语",
+        ["senior"] = "Senior｜熟龄英语",
+        ["power-speaking-6"] = "Power Speaking 6｜强化口语",
+        ["power-speaking-8"] = "Power Speaking 8｜密集口语",
+    };
+
     private static async Task SeedLaMerPricingAsync(AppDbContext context)
     {
         var baselineId = Guid.Parse("578d438f-2974-4cf9-872c-e67e8253e8da");
@@ -25,7 +33,8 @@ public static partial class DataInitialize
         var root = document.RootElement;
         foreach (var course in root.GetProperty("courses").EnumerateArray())
         {
-            var courseName = course.GetProperty("name").GetString()!;
+            // Lesson rows keep their first names as lookup keys, so renaming a course on the page never inserts a duplicate row.
+            var courseName = LaMerLessonLookupNames.GetValueOrDefault(course.GetProperty("id").GetString()!) ?? course.GetProperty("name").GetString()!;
             if (!context.SchoolLessons.Any(x => x.SchoolId == school.Id && x.Name == courseName && x.Week == 4))
                 UpsertLesson(context, school.Id, courseName, 4, course.GetProperty("tuition").GetDecimal(), course.GetProperty("schedule").GetString()!, now,
                     "La Mer 2025普通价目表继续有效；课程与住宿分列，注册费每人只计一次。已发布的版本化配置优先。");

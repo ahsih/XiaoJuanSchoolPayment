@@ -63,9 +63,9 @@ describe('JicStudentQuote', () => {
   it('keeps the latest Challenger class counts and guarantee supplement cadence', () => {
     const lite = JIC_COURSE_FEES.find((item) => item.id === 'challenger-esl-lite')!;
     const standard = JIC_COURSE_FEES.find((item) => item.id === 'challenger-ielts-standard')!;
-    expect(lite.suitable).toContain('每日共8节');
-    expect(standard.suitable).toContain('每日共10节');
-    expect(standard.suitable).toContain('半斯巴达每两周模考');
+    expect(lite.schedule).toBe('每天4节一对一＋2节团体课，共6节');
+    expect(standard.schedule).toBe('每天6节一对一＋2节团体课，共8节');
+    expect(JIC_COURSE_FEES.find((item) => item.id === 'challenger-ielts-guarantee')?.minimumWeeks).toBe(8);
 
     const student = quote();
     student.quotePlan.courses[0].optionId = 'challenger-ielts-guarantee';
@@ -95,6 +95,7 @@ describe('JicStudentQuote', () => {
     expect(student.localFees.find((item) => item.item === '水电费')?.quantity).toBe(1.5);
     expect(student.localFees.find((item) => item.item === '水电费')?.total).toBe(4500);
     expect(student.localFees.find((item) => item.item === '洗衣服务')?.total).toBe(1800);
+    expect(student.localFees.find((item) => item.item === '维护管理费')?.total).toBe(1800);
   });
 
   it('calculates the latest course-specific textbook amount every started four weeks', () => {
@@ -120,13 +121,19 @@ describe('JicStudentQuote', () => {
     setPlan(student, 6, '2026-09-06');
     expect(student.visaExtensionCount).toBe(0);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(0);
+    // A 59-day visa covers 8 weeks; each further 4 weeks needs one extension, starting at the school's second rate.
     setPlan(student, 8, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(1);
+    expect(student.visaExtensionCount).toBe(0);
+    expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(0);
     setPlan(student, 12, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(2);
+    expect(student.visaExtensionCount).toBe(1);
+    expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(6210);
     setPlan(student, 24, '2026-09-06');
-    expect(student.visaExtensionCount).toBe(5);
+    expect(student.visaExtensionCount).toBe(4);
     expect(student.localFees.find((item) => item.item.startsWith('ACR-I CARD'))?.quantity).toBe(1);
+    expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(18930);
+    student.visaType = 'tourist30';
+    expect(student.visaExtensionCount).toBe(5);
     expect(student.localFees.find((item) => item.item === '签证续签')?.total).toBe(23870);
   });
 
@@ -140,7 +147,7 @@ describe('JicStudentQuote', () => {
     expect(student.seasonalSurcharge).toBe(240);
   });
 
-  it('applies 2026 and 2027 low-season discounts by arrival date and room', () => {
+  it('applies 2026 and 2027 low-season discounts by study week and room', () => {
     const challenger = quote();
     setPlan(challenger, 4, '2026-08-23');
     expect(challenger.offSeasonDiscount).toBe(150);
@@ -155,6 +162,32 @@ describe('JicStudentQuote', () => {
     expect(premium.offSeasonDiscount).toBe(0);
     premium.quotePlan.rooms[0].optionId = 'premium-single-no-balcony';
     expect(premium.offSeasonDiscount).toBe(50);
+
+    // 2027 windows give Challenger singles nothing.
+    const single2027 = quote();
+    setPlan(single2027, 4, '2027-02-21', 'challenger-single');
+    expect(single2027.offSeasonDiscount).toBe(0);
+  });
+
+  it('counts only off-season study weeks inside a window and never peak weeks', () => {
+    const student = quote();
+    // 2027/01/10–03/06: only 02/21 and 02/28 fall in the 2027 window, so no complete four weeks.
+    setPlan(student, 8, '2027-01-10');
+    expect(student.offSeasonDiscount).toBe(0);
+    // 2027/08/08–10/02: 08/08–08/28 are peak weeks; 08/29–10/02 give one complete block for the quad room.
+    setPlan(student, 8, '2027-08-08');
+    expect(student.offSeasonDiscount).toBe(100);
+    expect(student.peakWeeks).toBe(3);
+  });
+
+  it('counts arrivals and departures off JIC term dates', () => {
+    const student = quote();
+    setPlan(student, 4, '2027-01-10');
+    expect(student.oddWeekEvents).toBe(0);
+    setPlan(student, 4, '2027-01-17');
+    expect(student.oddWeekEvents).toBe(2);
+    setPlan(student, 3, '2027-01-10');
+    expect(student.oddWeekEvents).toBe(1);
   });
 
   it('applies long-term tiers while keeping the Sida registration waiver', () => {
@@ -213,9 +246,13 @@ describe('JicStudentQuote', () => {
     student.selectedRegistrationDate = '2026-05-01';
     setPlan(student, 12, '2026-11-29', 'challenger-twin');
     expect(student.holidayDiscount).toBe(200);
-    expect(student.offSeasonDiscount).toBe(150);
+    // Six study weeks (11/29–01/09) fall in the 2026 window: one block at the twin-room rate.
+    expect(student.offSeasonDiscount).toBe(50);
     expect(student.longTermDiscount).toBe(300);
     expect(student.besaDiscount).toBe(300);
+    // Only term-start Sundays qualify.
+    setPlan(student, 12, '2026-12-06', 'challenger-twin');
+    expect(student.holidayDiscount).toBe(0);
   });
 
   it('includes only the selected airport pickup and keeps the room deposit outside local fees', () => {
@@ -224,7 +261,7 @@ describe('JicStudentQuote', () => {
     const manila = student.localFees.find((item) => item.item === '马尼拉机场接机');
     const clark = student.localFees.find((item) => item.item === '克拉克机场接机');
     expect(manila?.total).toBe(0);
-    expect(clark?.total).toBe(2500);
+    expect(clark?.total).toBe(3000);
     expect(student.localFees.some((item) => item.item.includes('押金'))).toBeFalse();
   });
 
@@ -282,8 +319,8 @@ describe('JicStudentQuote', () => {
     expect(upgradedRegistration.enabled).toBeTrue();
     expect(upgradedRegistration.minimumCourseWeeks).toBe(0);
     expect(upgradedRegistration.description).toContain('所有通过思达启航报名');
-    expect(upgraded.campusQuoteImageSettings?.['challenger']?.paymentNotes.registration).toContain('全额减免');
-    expect(upgraded.campusQuoteImageSettings?.['premium']?.paymentNotes.registration).toContain('全额减免');
+    expect(upgraded.campusQuoteImageSettings?.['challenger']?.paymentNotes.registration).toBe('一次性费用，老学员返校免费');
+    expect(upgraded.campusQuoteImageSettings?.['premium']?.paymentNotes.registration).toBe('一次性费用，老学员返校免费');
   });
 
   it('stops applying an offer after an employee disables it', () => {

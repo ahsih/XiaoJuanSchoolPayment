@@ -136,7 +136,7 @@ describe('CPILS school page on the shared template', () => {
       expect(page.quoteImageData.paymentItems.some(row => row.label.includes('考试'))).toBeFalse();
       page.selectedCourseId = 'ielts-course';
       page.selectedWeeks = 12;
-      expect(student().examBenefits.join('')).toContain('雅思课程12周及以上');
+      expect(student().examBenefits.join('')).toContain('雅思课程（含预备雅思）12周及以上');
       expect(page.quoteImageData.paymentItems.find(row => row.label.includes('考试'))?.amount).toBe('按课程赠送');
     });
 
@@ -423,6 +423,163 @@ describe('CPILS school page on the shared template', () => {
         expect(page.quoteUsd).toBe(cost);
       });
     }
+  });
+
+  describe('2027 poster offers (November 2026)', () => {
+    const rules = () => page.cpilsContent.quoteSettings.promotions;
+
+    it('gives 75 dollars for Easter to 4+ week stays registered in time that cover the Easter week', () => {
+      student().selectedRegistrationDate = '2026-11-22';
+      page.selectedStartDate = '2027-03-07';
+      const before = page.quoteUsd;
+      expect(student().holidayDiscount2027).toBe(0);
+      student().selectedRegistrationDate = '2026-11-23';
+      expect(student().holidayDiscount2027).toBe(75);
+      expect(payment('2027复活节优惠')?.amount).toBe('− 75 美元');
+      expect(page.quoteUsd).toBe(Math.round((before - 75) * 100) / 100);
+      student().selectedRegistrationDate = '2027-03-22';
+      expect(student().holidayDiscount2027).toBe(0);
+      student().selectedRegistrationDate = '2027-03-01';
+      page.selectedStartDate = '2027-03-28';
+      expect(student().holidayDiscount2027).toBe(0);
+      page.selectedStartDate = '2027-03-14';
+      page.selectedWeeks = 3;
+      expect(student().holidayDiscount2027).toBe(0);
+    });
+
+    it('gives the larger of the 2027 Christmas (50) and Christmas and New Year (100) offers', () => {
+      student().selectedRegistrationDate = '2027-06-01';
+      page.selectedStartDate = '2027-11-28';
+      expect(student().holidayDiscount2027).toBe(50);
+      expect(payment('2027圣诞优惠')?.amount).toBe('− 50 美元');
+      page.selectedWeeks = 5;
+      expect(student().holidayDiscount2027).toBe(100);
+      expect(payment('2027圣诞及新年优惠')?.amount).toBe('− 100 美元');
+      expect(payment('2027圣诞优惠')).toBeUndefined();
+      student().selectedRegistrationDate = '2027-12-27';
+      expect(student().holidayDiscount2027).toBe(0);
+    });
+
+    for (const [weeks, amount] of [[4, 50], [8, 100], [12, 150]]) {
+      it(`takes ${amount} dollars off ${weeks} weeks of a 2027 career course`, () => {
+        page.selectedCourseId = 'tesol';
+        page.selectedWeeks = weeks;
+        expect(page.quoteError).toBe('');
+        expect(student().careerDiscount).toBe(amount);
+        expect(payment('2027职业培训课程优惠')?.amount).toBe(`− ${amount} 美元`);
+      });
+    }
+
+    it('adds the weeks of several career courses and skips other courses and old-price registrations', () => {
+      page.selectedWeeks = 16;
+      split('course', [8, 8], ['tesol', 'medical-english']);
+      expect(student().careerWeeks).toBe(16);
+      expect(student().careerDiscount).toBe(200);
+      split('course', [8, 8], ['tesol', 'general-esl']);
+      expect(student().careerDiscount).toBe(100);
+      split('course', [16], ['general-esl']);
+      expect(student().careerDiscount).toBe(0);
+      expect(payment('2027职业培训课程优惠')).toBeUndefined();
+      page.selectedWeeks = 4;
+      page.selectedCourseId = 'tesol';
+      student().selectedRegistrationDate = '2026-09-28';
+      expect(student().careerDiscount).toBe(0);
+    });
+
+    it('gifts two weekend activities to 8+ week courses starting by May 29 without changing the price', () => {
+      page.selectedWeeks = 8;
+      expect(student().activityBenefits.length).toBe(1);
+      const gift = page.schoolPaymentItems.find(row => row.label === '2027周末活动赠送');
+      expect(gift?.note).toContain('奥斯洛布观鲸鲨1次');
+      expect(page.quoteImageData.paymentItems.some(row => row.label === '2027周末活动赠送')).toBeTrue();
+      const cost = page.quoteUsd;
+      const content = createDefaultCpilsContentConfig();
+      content.quoteSettings.promotions.find(rule => rule.id === 'cpils-weekend-2027')!.enabled = false;
+      page['applyContentConfig'](content);
+      expect(student().activityBenefits).toEqual([]);
+      expect(page.quoteUsd).toBe(cost);
+      page['applyContentConfig'](createDefaultCpilsContentConfig());
+      page.selectedWeeks = 4;
+      expect(student().activityBenefits).toEqual([]);
+      page.selectedWeeks = 8;
+      page.selectedStartDate = '2027-05-30';
+      expect(student().activityBenefits).toEqual([]);
+    });
+
+    it('hides an offer card when it ends or an employee turns its rule off', () => {
+      const easter = () => page.visibleOffers.some(card => card.title === '复活节优惠');
+      jasmine.clock().install();
+      try {
+        jasmine.clock().mockDate(new Date(2027, 2, 21));
+        expect(easter()).toBeTrue();
+        jasmine.clock().mockDate(new Date(2027, 2, 22));
+        expect(easter()).toBeFalse();
+        jasmine.clock().mockDate(new Date(2027, 0, 10));
+        const content = createDefaultCpilsContentConfig();
+        content.quoteSettings.promotions.find(rule => rule.id === 'cpils-easter-2027')!.enabled = false;
+        page['applyContentConfig'](content);
+        expect(easter()).toBeFalse();
+        expect(page.visibleOffers.some(card => card.title === '思达启航折扣')).toBeTrue();
+      } finally {
+        jasmine.clock().uninstall();
+      }
+    });
+
+    it('adds the five poster offers to version-2 content once and keeps an employee switch', () => {
+      const ids = ['cpils-easter-2027', 'cpils-christmas-2027', 'cpils-new-year-2027', 'cpils-career-2027', 'cpils-weekend-2027'];
+      expect(ids.every(id => rules().some(rule => rule.id === id && rule.enabled))).toBeTrue();
+      const old = createDefaultCpilsContentConfig();
+      old.quoteSettings.cpilsPolicy!.version = 2;
+      old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => !ids.includes(rule.id) || rule.id === 'cpils-career-2027');
+      old.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled = false;
+      const migrated = cloneCpilsContentConfig(old);
+      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(3);
+      expect(ids.map(id => migrated.quoteSettings.promotions.filter(rule => rule.id === id).length)).toEqual([1, 1, 1, 1, 1]);
+      expect(migrated.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled).toBeFalse();
+      expect(cloneCpilsContentConfig(migrated)).toEqual(migrated);
+    });
+
+    it('gives Pre-IELTS the official IELTS exam from 12 weeks, also added up with the IELTS course', () => {
+      page.selectedCourseId = 'pre-ielts-course';
+      page.selectedWeeks = 8;
+      expect(page.quoteError).toBe('');
+      expect(student().examBenefits).toEqual([]);
+      page.selectedWeeks = 16;
+      expect(student().examBenefits).toEqual(['雅思课程（含预备雅思）一次注册12周及以上：赠1次雅思官方考试']);
+      page.selectedWeeks = 12;
+      split('course', [4, 8], ['pre-ielts-course', 'ielts-course']);
+      expect(student().examBenefits.length).toBe(1);
+      split('course', [8, 4], ['pre-ielts-course', 'general-esl']);
+      expect(student().examBenefits).toEqual([]);
+      expect(page.courseHighlights['pre-ielts-course']?.text).toContain('含预备雅思');
+    });
+
+    it('gives the 8-week IELTS Guarantee one official IELTS exam, once, inside the 2027 exam terms', () => {
+      page.selectedCourseId = 'ielts-guarantee-8-weeks';
+      page.selectedWeeks = 8;
+      expect(page.quoteError).toBe('');
+      expect(student().examBenefits).toEqual(['雅思保分班（8周）：一次性注册8周送1次雅思官方考试']);
+      expect(page.quoteImageData.paymentItems.find(row => row.label.includes('考试'))?.amount).toBe('按课程赠送');
+      page.selectedWeeks = 12;
+      split('course', [8, 4], ['ielts-guarantee-8-weeks', 'ielts-course']);
+      expect(student().examBenefits).toEqual(['雅思课程（含预备雅思）一次注册12周及以上：赠1次雅思官方考试']);
+      page.selectedCourseId = 'ielts-guarantee-8-weeks';
+      page.selectedWeeks = 8;
+      page.selectedStartDate = '2027-06-06';
+      expect(student().examBenefits).toEqual([]);
+      expect(page.courseHighlights['ielts-guarantee-8-weeks']?.badge).toBe('注册8周送1次官方考试');
+    });
+
+    it('adds Pre-IELTS to the IELTS exam gift of version-2 content once', () => {
+      const old = createDefaultCpilsContentConfig();
+      old.quoteSettings.cpilsPolicy!.version = 2;
+      const exam = old.quoteSettings.promotions.find(rule => rule.id === 'cpils-ielts-exam-2027')!;
+      exam.eligibleCourseIds = ['ielts-course', 'ielts-guarantee-12-weeks'];
+      exam.description = '雅思课程一次注册12周及以上，赠1次官方考试，可与其他优惠同享。';
+      const migrated = cloneCpilsContentConfig(old).quoteSettings.promotions.find(rule => rule.id === 'cpils-ielts-exam-2027')!;
+      expect(migrated.eligibleCourseIds).toEqual(['ielts-course', 'ielts-guarantee-12-weeks', 'pre-ielts-course', 'ielts-guarantee-8-weeks']);
+      expect(migrated.description).toBe('雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，赠1次官方考试，可与其他优惠同享。');
+    });
   });
 
   describe('visa fees (June 2026 handbook)', () => {

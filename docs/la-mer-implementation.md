@@ -67,11 +67,11 @@
 ```text
 node scripts/generate-la-mer-seed.cjs
 node scripts/generate-la-mer-seed.cjs --check
-npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.la-mer.spec.json --include=src/app/pages/philippines/la-mer-school/la-mer-quote.spec.ts --progress=false
+npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.la-mer.spec.json --include=src/app/pages/philippines/la-mer-school/la-mer-page-quote.spec.ts --progress=false
 npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.quote-image-layout.spec.json --include=src/app/components/quote-image-layout.spec.ts --progress=false
 npx ng build --configuration production
 ```
 
-浏览器复查脚本为客户端 `scripts/verify-la-mer-page.cjs`，需要可用的Playwright与Chrome。`PLAYWRIGHT_MODULE`可指定现有Playwright模块位置，`LA_MER_BASE_URL`可覆盖默认本地地址；脚本不修改数据库，会更新文档目录的验收图片。
+2026-11-23起，La Mer页面改用菲律宾学校统一模板（与CIA相同的紧凑版式和第2版报价图），旧页面组件、旧计算器和浏览器复查脚本 `scripts/verify-la-mer-page.cjs` 已删除。页面文字在 `la-mer-page-content.ts`，报价计算在 `la-mer-page-quote.ts`；价格、优惠和亲子套餐规则不变，旧测试的金额已在新测试中逐项核对。
 
 完整来源见[资料与规则对照](la-mer-source-audit.md)、[源文件页数与摘要](la-mer-source-index.json)、[素材与PDF页码映射](la-mer-media-sources.json)。接口及浏览器验收明细在 `qa/ev-la-mer/` 的JSON报告中；没有将本地测试账号或凭据写入交付文件。

@@ -548,7 +548,7 @@ export class AdminSchoolContentComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-    if (tab === 'media') { if (this.isLaMerSelected) this.selectItem('section', 'lamer-gallery'); return; }
+    if (tab === 'media') return;
     const kind = { courses: 'course', rooms: 'room', fees: 'fee', rules: 'promotion' } as const;
     const id = { courses: this.selectedCourseId, rooms: this.selectedRoomId, fees: this.selectedFeeId, rules: this.selectedPromotionId }[tab];
     this.selectItem(id ? kind[tab] : 'section', id || this.tabs.find(item => item.id === tab)!.anchor);
@@ -735,7 +735,7 @@ export class AdminSchoolContentComponent implements OnInit {
     }
     if (this.isAnjSelected || this.isImsSelected) item.courseType = '英语课程';
     if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
-    if (this.isJicSelected) { item.campus = 'challenger'; item.courseType = 'Challenger 挑战校区'; item.minimumWeeks = 4; item.allowedWeeks = [4, 6, 8, 12, 16, 20, 24]; }
+    if (this.isJicSelected) { item.campus = this.jicCampus; item.courseType = this.jicCampus === 'premium' ? 'Premium 高级校区' : 'Challenger 挑战校区'; item.minimumWeeks = 1; item.allowedWeeks = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24]; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.courseType = `${this.beciCampus.toUpperCase()}课程`; }
     this.content.courses.push(item);
     this.selectedCourseId = item.id;
@@ -765,7 +765,7 @@ export class AdminSchoolContentComponent implements OnInit {
       item.deposit = 0;
     }
     if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
-    if (this.isJicSelected) { item.campus = 'challenger'; item.code = 'quad'; item.group = 'Challenger 挑战校区'; item.single = false; }
+    if (this.isJicSelected) { item.campus = this.jicCampus; item.code = 'quad'; item.group = '多人间'; item.single = false; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.single = false; item.coupleRate = undefined; item.code = this.beciCampus.toUpperCase(); }
     this.content.rooms.push(item);
     this.selectedRoomId = item.id;
@@ -776,6 +776,7 @@ export class AdminSchoolContentComponent implements OnInit {
   setJicRoomCategory(item: CiaRoomContent, category: 'single' | 'twin' | 'quad'): void {
     item.code = category;
     item.single = category === 'single';
+    item.group = category === 'single' ? '单人间' : '多人间';
     this.contentChanged();
   }
 

@@ -120,11 +120,13 @@ export const CPI_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A video from CPI's own YouTube channels (CPI Cebu and CPI's Japanese channel), never from an agency.
- * Transcoded to 720p H.264 in public/assets/cpi/videos/. School account end cards, an editing placeholder and
- * every shot showing another company (agency T-shirts, test-prep books, a water park, a CNN slide) were cut
- * out; check every frame of a new clip, including clothing and signs, for other companies or contact details.
- * Landscape clips are big cards ('tour'); vertical clips go in the short-clip row ('life').
+ * A video from CPI's own YouTube channels (CPI Cebu and CPI's Japanese channel), never from another agency,
+ * or one of the short campus clips the user supplied on 2026-11-23 (edited in October 2025), cut out of their
+ * vertical frame with the former brand watermark removed. Transcoded to H.264 in public/assets/cpi/videos/.
+ * School account end cards, an editing placeholder and every shot showing another company (agency T-shirts,
+ * test-prep books, a water park, a CNN slide) were cut out; check every frame of a new clip, including
+ * clothing and signs, for other companies or contact details.
+ * Big cards with the filming year are 'tour'; short clips, vertical or wide, are 'life'.
  */
 export interface CpiVideo {
   name: string;
@@ -168,6 +170,15 @@ export const CPI_VIDEOS: CpiVideo[] = [
     description: '校内夏日活动节的精选片段：白天乒乓球和泳池篮球，晚上泡沫派对。',
     details: ['校内节日活动', '2024年8月拍摄'],
   },
+  // Short campus clips (2026-11-23): one-to-one lost two seconds showing another company's staff T-shirt.
+  { name: 'campus-walk', title: '走进校园', duration: '0:10', orientation: 'landscape', section: 'life', description: '从入口走廊走进校园，看看宿舍楼和中间的广场。' },
+  { name: 'pool', title: '泳池', duration: '0:06', orientation: 'landscape', section: 'life', description: '校园中间的泳池和池边躺椅。' },
+  { name: 'gym', title: '健身房', duration: '0:13', orientation: 'landscape', section: 'life', description: '动感单车、跑步机、哑铃和乒乓球桌。' },
+  { name: 'room-a-double', title: 'A栋双人间', duration: '0:24', orientation: 'landscape', section: 'life', description: '两张单人床、长书桌、衣柜和小冰箱。' },
+  { name: 'class-one-to-one', title: '一对一课', duration: '0:04', orientation: 'landscape', section: 'life', description: '一对一小教室里，老师和学生面对面上课。' },
+  { name: 'class-group', title: '小组课', duration: '0:04', orientation: 'landscape', section: 'life', description: '老师和几位学生围坐一桌上课。' },
+  { name: 'exam-room', title: '考试教室', duration: '0:04', orientation: 'landscape', section: 'life', description: '宽敞明亮的大教室，学生在这里考试。' },
+  { name: 'dining', title: '学生餐厅', duration: '0:44', orientation: 'landscape', section: 'life', description: '自助餐台、厨房现做的菜和用餐区。' },
   { name: 'campus-night', title: '夜晚的校园', duration: '0:09', orientation: 'portrait', section: 'life', description: '晚上的泳池和宿舍楼。' },
   { name: 'teachers', title: '老师团队', duration: '0:45', orientation: 'portrait', section: 'life', description: 'CPI的老师们在校园里合影。' },
   { name: 'graduation', title: '每周毕业典礼', duration: '0:51', orientation: 'portrait', section: 'life', description: '结业学员上台发言、表演，大家一起祝贺。' },

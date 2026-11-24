@@ -1,0 +1,120 @@
+<div class="aq">
+  <div class="aq-programmes" role="radiogroup" aria-label="报价项目" *ngIf="renewalOpen">
+    <button type="button" *ngFor="let item of programmes" role="radio" [attr.aria-checked]="input.programme === item.id"
+      [class.active]="input.programme === item.id" (click)="selectProgramme(item.id)">
+      <strong>{{ item.name }}</strong><span>{{ item.note }}</span>
+    </button>
+  </div>
+
+  <div class="aq-grid aq-student">
+    <label>学生称呼（可选）
+      <input type="text" [(ngModel)]="input.studentName" maxlength="20" placeholder="例如：张同学" />
+    </label>
+    <label *ngIf="!renewal">开课时年龄
+      <select [ngModel]="input.age" (ngModelChange)="changeAge($event)">
+        <option ngValue="adult">18岁及以上</option>
+        <option ngValue="17">17岁</option>
+        <option ngValue="16">16岁（只能读布雷校区）</option>
+      </select>
+    </label>
+    <label class="check" *ngIf="renewal"><input type="checkbox" [(ngModel)]="input.returningStudent" />曾在或正在ATC学习（老学员减{{ returningDiscount }}欧元）</label>
+    <label>报价顾问
+      <select [(ngModel)]="consultantName"><option *ngFor="let item of consultants" [ngValue]="item.name">{{ item.name }} · {{ item.title }}</option></select>
+    </label>
+  </div>
+
+  <div class="aq-plans" [class.two]="input.plans.length > 1">
+    <section class="aq-plan" *ngFor="let plan of input.plans; let index = index; trackBy: trackIndex">
+      <header>
+        <strong>{{ input.plans.length > 1 ? planTags[index] : '报价方案' }}</strong>
+        <button type="button" class="aq-link" *ngIf="input.plans.length > 1" (click)="removePlan(index)">
+          <mat-icon>close</mat-icon>删除
+        </button>
+      </header>
+
+      <div class="aq-grid">
+        <label>校区
+          <select [ngModel]="plan.campus" (ngModelChange)="changeCampus(plan, $event)">
+            <option *ngFor="let campus of campuses" [ngValue]="campus.id">{{ campus.shortName }}</option>
+          </select>
+        </label>
+
+        <label *ngIf="!renewal">课程
+          <select [ngModel]="plan.course" (ngModelChange)="changeCourse(plan, $event)">
+            <option *ngFor="let course of courses" [ngValue]="course.id">{{ course.name }}</option>
+          </select>
+          <small>{{ courseNote(plan) }}</small>
+        </label>
+        <label *ngIf="renewal">续签套餐课程
+          <select [(ngModel)]="plan.renewalCourse">
+            <option *ngFor="let course of renewalCourses" [ngValue]="course.id">{{ course.name }} · {{ course.price | number }}欧元</option>
+          </select>
+        </label>
+
+        <label>开课日期（周一）
+          <select [ngModel]="plan.start" (ngModelChange)="changeStart(plan, $event)">
+            <option *ngFor="let date of startsFor(plan)" [ngValue]="date">{{ dateText(date) }}</option>
+          </select>
+        </label>
+
+        <label *ngIf="!renewal && plan.course !== 'cambridge'">课程周数
+          <select [ngModel]="plan.weeks" (ngModelChange)="changeWeeks(plan, $event)">
+            <option *ngFor="let weeks of weekOptions(plan)" [ngValue]="weeks">{{ weeks }}周</option>
+          </select>
+        </label>
+        <div class="aq-fixed" *ngIf="!renewal && plan.course === 'cambridge'"><span>课程周数</span><strong>{{ plan.weeks }}周（固定开课）</strong></div>
+
+        <label>住宿
+          <select [ngModel]="plan.stayType" (ngModelChange)="changeStayType(plan, $event)">
+            <option ngValue="homestay">寄宿家庭（含早晚餐）</option>
+            <option ngValue="self-catering">学校公寓（自己做饭，18岁以上）</option>
+            <option ngValue="none">不需要住宿</option>
+          </select>
+        </label>
+        <ng-container *ngIf="plan.stayType !== 'none'">
+          <label>房型
+            <select [(ngModel)]="plan.room">
+              <option *ngFor="let room of roomsFor(plan)" [ngValue]="room.room">{{ room.shortName }} · {{ room.price }}欧元／周</option>
+            </select>
+          </label>
+          <label>住宿周数（每周7晚）
+            <select [(ngModel)]="plan.stayWeeks"><option *ngFor="let weeks of stayWeekOptions" [ngValue]="weeks">{{ weeks }}周</option></select>
+          </label>
+        </ng-container>
+
+        <label *ngIf="!renewal">考试报名
+          <select [(ngModel)]="plan.exam">
+            <option ngValue="none">暂不报考</option>
+            <option *ngFor="let exam of exams" [ngValue]="exam.id">{{ exam.name }} · {{ exam.price }}欧元</option>
+          </select>
+        </label>
+        <label>一对一私教（小时）
+          <input type="number" min="0" step="1" [(ngModel)]="plan.privateHours" />
+        </label>
+        <label *ngIf="!renewal">都柏林机场接送
+          <select [(ngModel)]="plan.transfer">
+            <option ngValue="arrival">只接机</option>
+            <option ngValue="return">接机＋送机</option>
+            <option ngValue="none">不需要</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <button type="button" class="aq-add" *ngIf="input.plans.length < 2" (click)="addPlan()">
+      <mat-icon>add</mat-icon>添加方案二，并排对比（例如换个校区）
+    </button>
+  </div>
+
+  <label class="check aq-shared" *ngIf="!renewal && hasTransfer">
+    <input type="checkbox" [(ngModel)]="input.sharedTransfer" />2人同一航班一起接送（每人每程{{ fees.transferShared }}欧元）
+  </label>
+
+  <app-uk-quote-sheet [sheet]="sheet"></app-uk-quote-sheet>
+
+  <div class="aq-actions">
+    <app-quote-image-download-button [quote]="quoteImage" [disabled]="!canExport" [previewBeforeDownload]="true"
+      label="预览／保存报价图片" buttonClass="primary-action"></app-quote-image-download-button>
+    <p *ngIf="sheet.issues.length">请先按上面的提示修改，再保存报价图片。</p>
+  </div>
+</div>
