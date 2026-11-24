@@ -24,7 +24,7 @@
 | CALA | BTES | 07/04–08/28，60 美元／周 | `btes-school/btes-student-quote.ts` |
 | CALA | CWA | 07/04–08/28，60 美元／周 | `curious-world-school/curious-world-school.component.ts` quick quote |
 | CALA | CELLA Uni / Premium | 07/04–08/28，60 美元／周 | `cella-quote/cella-student-quote.ts` |
-| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-banilad-school/cg-banilad-student-quote.ts`、`cg-sparta-school/cg-sparta-student-quote.ts` |
+| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-page-quote.ts`（两校区共用，`CgCampusRules` 区分） |
 | CALA | EV Academy | 07/04–08/28，60 美元／周 | `ev-school/ev-quote.ts` |
 | CALA | Philinter | 07/04–08/28，60 美元／周 | `philinter-school/philinter-quote.ts` |
 | CALA | QQ English | 07/04–08/28，60 美元／周 | `qqenglish-beachfront-school/qqenglish-beachfront-school.component.ts` quick quote |

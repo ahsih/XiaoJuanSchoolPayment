@@ -321,15 +321,15 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cg-academy-sparta-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-sparta-school/cg-sparta-school.component').then(
-            (m) => m.CgSpartaSchoolComponent,
+          import('./pages/philippines/cg-sparta-school/cg-sparta-school-page.component').then(
+            (m) => m.CgSpartaSchoolPageComponent,
           ),
       },
       {
         path: 'philippines-study/cebu/cg-academy-banilad-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-banilad-school/cg-banilad-school.component').then(
-            (m) => m.CgBaniladSchoolComponent,
+          import('./pages/philippines/cg-banilad-school/cg-banilad-school-page.component').then(
+            (m) => m.CgBaniladSchoolPageComponent,
           ),
       },
       {
