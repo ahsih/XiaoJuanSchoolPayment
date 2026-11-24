@@ -33,14 +33,14 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 
 ## Price rules
 
-- **Which list applies.** Tuition, rooms and promotions follow the **registration date**: the 2026 list through 2027-01-31 and the 2027 list from 2027-02-01. Local fees follow the **arrival date**, with 2027 fees from 2027-02-01.
+- **Which list applies.** Tuition, rooms and promotions follow the **registration date**: the 2026 list through 2027-01-31 and the 2027 list from 2027-02-01. Local fees follow the **entry date**, the Monday class start after the Sunday arrival. The school's 2026-11-24 notice puts every entry from 2027-02-01 on 2027 fees, whenever the student registered, so a Sunday 2027-01-31 arrival already pays them.
 - **Registration through 2027-01-31:**
   - Sida registration waiver.
   - 150 dollars per four non-peak course weeks.
   - 100 dollars at 12 weeks.
   - 100 dollars at 16 weeks, plus 25 for every further two weeks.
 - **Registration 2027-02-01 to 06-30, arriving from 2027-02-01:**
-  - 25 dollars per non-peak course week, from four weeks.
+  - 25 dollars per non-peak course week, at any length (user answer 2026-11-24). The school's shortest study is 2 weeks, and it may refuse 2-week students in the summer peak; a 最短学习 stay-policy line says so.
   - 100 dollars at 12 weeks, plus 25 for every further week. Peak weeks count toward this length offer.
 - **Sida 95% rate.** Taken off the full tuition and room price first; the school offers are subtracted after it (user rule 2026-11-24: the school files give no order, so the order cheaper for the student).
 - **Peak surcharge.** 40 dollars per unique study/stay week for 2026/06/28–08/22, and 60 dollars for 2027/06/27–08/21. It is never discounted.
@@ -50,7 +50,7 @@ The Cebu Blue Ocean material in the same message was handled in another session.
   - The course list shows one package price per `/8周` or `/12周`.
 - **Junior and family courses** keep their price in the summer peak and pay the peak surcharge like everyone else (user answer 2026-11-24).
 - **Under-18 students** may take only:
-  - Global Youth IELTS: ages 13–17, in the youth 4BR room with 3 students and 1 Filipino teacher.
+  - Global Youth IELTS: ages 13–17, in the youth room. It is priced as a 4-bed room and holds at most 4 students in a 6-bed room, with a Filipino teacher (user answer 2026-11-24, as the Global Youth PDF says).
   - The junior family course: ages 7–15, with a parent on the Parents course.
 
 - **Price list display until 2027-02-01:**
@@ -58,7 +58,7 @@ The Cebu Blue Ocean material in the same message was handled in another session.
   - Each room price group carries one line with the changed 2027 room prices (`pinesRoomGroupNotes`).
   - From 2027-02-01 only the 2027 prices are shown.
 
-## 2027 local fees (arrival from 2027-02-01)
+## 2027 local fees (entry from 2027-02-01)
 
 **Included in the total:**
 
@@ -70,14 +70,14 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 | Electricity/water | 3,800 per four weeks |
 | Maintenance | 500 per week |
 | Visa extensions | 4,940 / 6,210 / 4,240… |
-| Textbooks | 1,500 / 1,900 per started 8 course weeks, IELTS 2,700 per started 12 weeks, by book tier (reference only) |
+| Textbooks | 1,500 (5 books) / 1,900 (6 books) per started 4 course weeks, IELTS 2,700 per started 12 weeks, by book tier (reference only) |
 | Student ID | 200 |
 
 **Reference rows, outside the total:**
 
 - Pickup: 3,000.
 - Points: 4,000 per four weeks.
-- Room deposit: 100 dollars.
+- Room deposit: 100 dollars (the 2027 list's Hotel Deposit, confirmed 2026-11-24).
 - Laundry.
 - EB Pro.
 
@@ -110,20 +110,21 @@ The Cebu Blue Ocean material in the same message was handled in another session.
 ## User answers (2026-11-24)
 
 - **ACR.** ACR is charged whenever a visa extension is needed, at every Philippine school: a 30-day visa studying 5 or 6 weeks already pays it.
-- **Textbooks.** Only a reference; students buy books at school as they progress. A 1,500 or 1,900 set lasts about 4–8 weeks (estimated as one per 8 weeks), an IELTS 2,700 set about 12 weeks.
+- **Textbooks.** Only a reference; students buy books at school as they progress. The 1,500 set has 5 books and the 1,900 set 6; books are changed every 4 weeks, so one set per started 4 course weeks. An IELTS 2,700 set lasts about 12 weeks.
 - **4-bed and 6-bed rooms.** Same beds, different room sizes.
 - **Eid holiday.** Keep it provisional.
 - **Discount order.** Use the order that is better for the student (思达启航 95% first).
 - **Exchange rate.** Keep the live rate; no ICBC markup.
-- `PINES_FEE_NOTE_VERSION` replaces the untouched ACR and textbook notes in documents saved before these answers.
+- **Condo.** It is the building behind the teaching building. Write neither 校内 nor 校外, so PINES rooms have no location badge; the template shows the badge only for rooms with a location.
+- **2027 regular offer.** 25 dollars for every non-peak week, with no minimum; the school's shortest study is 2 weeks, and the summer peak may not take 2-week students.
+- **Youth room.** Priced as a 4-bed room; at most 4 students, placed in a 6-bed room.
+- **Hotel Deposit.** Yes, the 100-dollar room deposit.
+- **2027 local fees.** The school's notice: they follow the actual entry date, 2026 fees before 2027-02-01 and 2027 fees from then, whenever the student registered. The quote reads the entry date as the Monday after the Sunday arrival. The notice's lines for agencies (updating quotes, free cancellation when the rise makes a student cancel) are not published.
+- `PINES_FEE_NOTE_VERSION` (20271125) applies these answers once to saved documents. It changes the untouched ACR and textbook notes, room badges, the youth-room and room-table notes, the 2027 regular offer, and adds the 最短学习 stay line.
 
 ## Open points to confirm with the school
 
-- **Condo location.** The Condo rooms (Single A/B/C, Twin A, Family 3BR) carry the 校内 badge because the school's campus illustration draws the Condo on campus.
-- **2027 regular offer start.** The offer was read as starting from four course weeks.
 - **Visa extension table.** It was read as for a 30-day entry; a 59-day entry starts one step later. The number of extensions follows the user rule of 2026-11-24: one per four weeks beyond the entry visa.
-- **Hotel Deposit.** It was treated as the 100-dollar room deposit.
-- **Youth room size.** The price list says 3 students + 1 teacher (used), but the Global Youth PDF says a 6-bed room with 4 + 1.
 - **Official exam schedule.** The 2023 IELTS Q&A's official-exam schedule is marked 以考试中心当期安排为准.
 - **Eid holiday.** The Eid date (2027-03-10) is provisional (kept so, user 2026-11-24).
 
