@@ -235,13 +235,13 @@ export class SmeagPageStudent implements PhPageStudent {
       : '';
     const visaNote = longTerm ? longTermNote
       : `${extensions ? `按${this.visaLabel}预估，本次${extensions}次` : `按${this.visaLabel}预估，本次无需续签`}；${visaRule?.note ?? ''}`;
-    const longStay = plan.stayWeeks * 7 >= 60;
     const books = [...new Set(plan.courses.map(row => SMEAG_TEXTBOOK_BY_COURSE[row.optionId] ?? 'book-esl'))];
     return [
       ...create('visa-extension', extensions, visaNote, visaTotal, visaUnit),
       ...create('ssp', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
       ...create('ssp-i-card', longTerm ? 0 : 1, longTerm ? longTermNote : undefined),
-      ...create('visa-i-card', !longTerm && longStay ? 1 : 0, longTerm ? longTermNote : undefined),
+      // VISA I-CARD (ACR) comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      ...create('visa-i-card', !longTerm && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('arp', !longTerm && this.visaType === 'tourist59' && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
       ...create('utilities', Math.ceil(plan.roomWeeks / 4)),
       ...create('water-electricity', Math.ceil(this.campusRoomWeeks / 4)),

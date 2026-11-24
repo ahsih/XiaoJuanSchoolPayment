@@ -45,8 +45,8 @@ combined rows (TOEFL / IELTS, ESL / Speaking Master) onto the separate course id
 - 思达启航折扣 10% applies to tuition and campus rooms only; partner-hotel rooms are not discounted.
 - The 25-dollar weekly offers count study weeks lying wholly inside the offer dates. The Christmas offer (100 dollars)
   needs at least 4 course weeks and any study week touching 2026/12/20–2027/01/02.
-- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 once the stay
-  reaches 60 days; utilities 3,000 per started 4 accommodation weeks; water and electricity 2,400 per started 4
+- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 with the first visa
+  extension (user rule 2026-11-24; the sheet lists it from 60 days); utilities 3,000 per started 4 accommodation weeks; water and electricity 2,400 per started 4
   campus weeks (none at the hotels); one textbook set per course type. Pickup (1,200) and the refundable deposit
   (2,000) are reference rows outside the total. Our totals equal the sheet's totals minus pickup and deposit, plus
   the textbook.

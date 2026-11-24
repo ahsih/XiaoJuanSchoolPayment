@@ -413,12 +413,13 @@ export class BlueOceanStudentQuote {
         total: fees.sspECard,
         note: '1年有效期。',
       },
+      // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
       {
         item: 'ACR-I CARD',
         unitLabel: `${fees.acrICard.toLocaleString('en-US')}比索／次`,
-        quantity: 1,
-        total: fees.acrICard,
-        note: '1年有效期。',
+        quantity: this.visaExtensionCount > 0 ? 1 : 0,
+        total: this.visaExtensionCount > 0 ? fees.acrICard : 0,
+        note: '第一次签证续签时办理（30天签证第5周起，59天签证第9周起），1年有效期。',
       },
       {
         item: '签证续签费用',

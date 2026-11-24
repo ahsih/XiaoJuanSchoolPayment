@@ -305,7 +305,8 @@ export class ImsStudentQuote {
       line('基础电费', `${electricity.toLocaleString()}比索／周`, weeks, electricity * weeks, '按住宿周数计算。'),
       line('空调费', `${aircon.toLocaleString()}比索／周`, weeks, aircon * weeks, '包含100kW／4周；超额部分另按30比索／kW实收。'),
       ...(this.visaExtensionFee ? [line('签证延长累计费用', '按停留周数阶梯', 1, this.visaExtensionFee, '按费用表累计金额估算，不自行推定其他签证类型或法律结论。')] : []),
-      ...(weeks >= 9 ? [line('ACR I-Card', `${acr.toLocaleString()}比索／次`, 1, acr, '从9周起按费用表计入一次。')] : []),
+      // ACR I-Card comes with the first visa extension, from week 5 (user rule 2026-11-24, every Philippine school).
+      ...(weeks > 4 ? [line('ACR I-Card', `${acr.toLocaleString()}比索／次`, 1, acr, '第一次签证续签时（第5周起）计入一次。')] : []),
       ...(this.includePickup ? [line('宿务机场接机', `${pickup.toLocaleString()}比索／次`, 1, pickup, '费用表TOTAL AMOUNT包含一次接机；如自行前往可取消并重新计算。')] : []),
       ...(this.includeDropoff ? [line('宿务机场送机（可选）', `${dropoff.toLocaleString()}比索／次`, 1, dropoff, '可选服务，不在官方TOTAL AMOUNT内。')] : []),
       ...(this.includeWalkInLunch ? [line('走读午餐（可选）', `${lunch.toLocaleString()}比索／4周`, Math.ceil(weeks / 4), lunch * Math.ceil(weeks / 4), '仅走读学生选购；按每4周向上计费。')] : []),

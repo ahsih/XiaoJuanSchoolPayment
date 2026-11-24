@@ -1468,7 +1468,7 @@ namespace XiaoJuanSchoolPayment.Server.Services
       UpsertFee(context, schoolId, "旺季附加费", 60m, UsdCurrencyId, "2027/07/04–08/28学习周按CALA联合通知收取60美元/周", now);
       UpsertFee(context, schoolId, "SSP特殊学习许可证", 7800m, PhpCurrencyId, "入学时办理；学习超过24周须重新办理，再交一次。", now);
       UpsertFee(context, schoolId, "SSP I-CARD", 4000m, PhpCurrencyId, "入学时与SSP同时办理，只收一次。", now);
-      UpsertFee(context, schoolId, "ACR-I CARD 外国人身份证", 4000m, PhpCurrencyId, "第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。", now);
+      UpsertFee(context, schoolId, "ACR-I CARD 外国人身份证", 4000m, PhpCurrencyId, "第一次续签时办理（30天签证第5周起，59天签证第9周起），学校统一带队到移民局。", now);
       UpsertFee(context, schoolId, "ARP外国人登记", 200m, PhpCurrencyId, "2027年ARP参考200比索；首次续签或长期签证按学校要求办理。", now);
       UpsertFee(context, schoolId, "管理费", 600m, PhpCurrencyId, "2027/01/01起每周600比索；跨年住宿按生效日期分段预估。", now);
       UpsertFee(context, schoolId, "水费", 800m, PhpCurrencyId, "每4周800比索。", now);

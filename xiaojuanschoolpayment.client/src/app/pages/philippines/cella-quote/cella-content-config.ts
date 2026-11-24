@@ -6,8 +6,10 @@ import {
   CiaQuoteSettings,
 } from '../cia-school/cia-content-config';
 import { ASSOCIATION_PEAK_POLICY_VERSION } from '../association-peak-surcharge';
+import { upgradeAcrNotes } from '../acr-first-extension';
 import {
   CELLA_2027_PROMOTION,
+  CELLA_ACR_NOTE,
   CELLA_CAMPUS_NAMES,
   CELLA_COURSES,
   CELLA_FAMILY_PACKAGE_WEEKS,
@@ -202,7 +204,7 @@ export const createDefaultCellaContentConfig = (campus: CellaCampus): CiaContent
     fee('ssp-e-card', 'SSP电子卡', CELLA_LOCAL_FEES_2027.sspECard, 'once', '入学时与SSP同时办理，只收一次。', 1),
     { ...fee('visa-extension', '签证续签', 5140, 'visa-extension-schedule', '30天签证第5周起续签，59天签证第9周起续签；以学校及移民局实收为准。', 2), rates: [...CELLA_LOCAL_FEES_2027.extensionStages] },
     fee('arp', 'ARP加急费', CELLA_LOCAL_FEES_2027.arp, 'long-term-or-first-extension', '首次续签时与签证一起办理。', 3),
-    fee('acr-i-card', '外国人身份证', CELLA_LOCAL_FEES_2027.acrICard, 'first-visa-extension', '停留超过59天（第9周起）时办理。', 4),
+    fee('acr-i-card', '外国人身份证', CELLA_LOCAL_FEES_2027.acrICard, 'first-visa-extension', CELLA_ACR_NOTE, 4),
     fee('management', '管理费', CELLA_LOCAL_FEES_2027.maintenancePerWeek, 'per-accommodation-period', '1,000比索／周，按住宿周数计算。', 5),
     fee('electricity', '电费', CELLA_LOCAL_FEES_2027.electricityPerWeek, 'per-accommodation-period', '500比索／周，每周含15度电，超出部分另收25比索／度；STACIA校外宿舍2027年起1,000比索／周。', 6),
     fee('water', '水费', CELLA_LOCAL_FEES_2027.waterPerWeek, 'per-accommodation-period', '2027/01/01起500比索／周，此前300比索／周。', 7),
@@ -279,6 +281,8 @@ export const cloneCellaContentConfig = (value: CiaContentConfig, campus: CellaCa
   if (upgrade) upgradeTo2027(clone, defaults);
   if (pageUpgrade) upgradePageCopy(clone, defaults, campus);
   if (familyUpgrade) upgradeFamilyPackages(clone, defaults);
+  // ACR I-Card moved to the first visa extension (user rule 2026-11-24); untouched old notes follow once.
+  upgradeAcrNotes(clone, defaults, { 'acr-i-card': ['停留超过59天（第9周起）时办理。'] });
   return clone;
 };
 
