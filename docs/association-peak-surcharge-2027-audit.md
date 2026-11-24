@@ -20,11 +20,11 @@
 | BESA | PINES Main / IELTS | 06/27–08/22，60 美元／周 | `pines-school/pines-student-quote.ts` |
 | BESA | JIC Challenger / Premium | 06/27–08/22，60 美元／周 | `jic-school/jic-student-quote.ts` |
 | BESA | WALES | 06/27–08/22，60 美元／周 | `wales-school/wales-student-quote.ts` |
-| CALA | Cebu Blue Ocean | 07/04–08/28，60 美元／周 | `cebu-blue-ocean-school/blue-ocean-student-quote.ts` |
+| CALA | Cebu Blue Ocean | 06/27–08/21（学校2027价目表自己的日期），60 美元／周 | `cebu-blue-ocean-school/cboa-page-quote.ts` |
 | CALA | BTES | 07/04–08/28，60 美元／周 | `btes-school/btes-student-quote.ts` |
 | CALA | CWA | 07/04–08/28，60 美元／周 | `curious-world-school/curious-world-school.component.ts` quick quote |
 | CALA | CELLA Uni / Premium | 07/04–08/28，60 美元／周 | `cella-quote/cella-student-quote.ts` |
-| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-banilad-school/cg-banilad-student-quote.ts`、`cg-sparta-school/cg-sparta-student-quote.ts` |
+| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-page-quote.ts`（两校区共用，`CgCampusRules` 区分） |
 | CALA | EV Academy | 07/04–08/28，60 美元／周 | `ev-school/ev-quote.ts` |
 | CALA | Philinter | 07/04–08/28，60 美元／周 | `philinter-school/philinter-quote.ts` |
 | CALA | QQ English | 07/04–08/28，60 美元／周 | `qqenglish-beachfront-school/qqenglish-beachfront-school.component.ts` quick quote |

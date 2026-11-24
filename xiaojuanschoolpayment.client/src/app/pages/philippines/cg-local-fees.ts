@@ -105,6 +105,8 @@ export function estimateCgLocalFees(
     (weeks !== accommodationWeeks ? `签证按${weeks}周停留跨度（含间隔）预估；管理费、电费和水费按${accommodationWeeks}周住宿预估。` : '') +
     (weeks > 24 ? '超过24周仅为延伸预估：后续签证按最近一档费用计算；SSP等许可本次先计一次，续办、更新及额外教材费用以学校确认为准。' : '');
   const ssp = ruleAmount('ssp', 7800), sspCard = ruleAmount('ssp-i-card', 4500);
+  // One SSP lasts at most 6 months: a registration of 25 weeks or more pays it twice (both orientation guides).
+  const sspCount = longTermVisa ? 0 : weeks >= 25 ? 2 : 1;
   const acr = ruleAmount('acr-i-card', 4500), arp = ruleAmount('arp', 300);
   const managementPeriods = periodQuantity('management'), electricityPeriods = periodQuantity('electricity'), waterPeriods = periodQuantity('water');
   const management = ruleAmount('management', 2000, 750), electricity = ruleAmount('electricity', 2000, 500), water = ruleAmount('water', 500, 300);
@@ -136,7 +138,7 @@ export function estimateCgLocalFees(
         : '首次旅游签证续签时计入一次300比索生物识别申请费；以学校实际办理为准。'
       : arpDefaultNote;
   const fees: CgLocalFee[] = [
-    { id: 'ssp', item: ruleName('ssp', 'SSP特殊学习许可证'), amount: `${ssp.toLocaleString('zh-CN')} 比索 / 次`, quantity: longTermVisa?0:1, total: longTermVisa?0:ssp, note: longTermVisa?`${ruleNote('ssp', confirmation)} ${confirmation}`:ruleNote('ssp', '移民局收取，按报名学习时长办理；续费或换校需重新办理') },
+    { id: 'ssp', item: ruleName('ssp', 'SSP特殊学习许可证'), amount: `${ssp.toLocaleString('zh-CN')} 比索 / 次`, quantity: sspCount, total: ssp * sspCount, note: longTermVisa?`${ruleNote('ssp', confirmation)} ${confirmation}`:ruleNote('ssp', '移民局收取，按报名学习时长办理；续费或换校需重新办理') },
     { id: 'ssp-i-card', item: ruleName('ssp-i-card', 'ACR E-CARD（SSP）'), amount: `${sspCard.toLocaleString('zh-CN')} 比索 / 次`, quantity: longTermVisa?0:1, total: longTermVisa?0:sspCard, note: longTermVisa?`${ruleNote('ssp-i-card', confirmation)} ${confirmation}`:ruleNote('ssp-i-card', '校方最新明细列4,500比索，与SSP同时办理；换学校需携带证明，否则需要重新办理。') },
     { id: 'acr-i-card', item: ruleName('acr-i-card', 'ACR I-CARD（旅游签证）'), amount: `${acr.toLocaleString('zh-CN')} 比索 / 次`, quantity: acrQuantity, total: acr * acrQuantity, note: longTermVisa?`${ruleNote('acr-i-card', confirmation)} ${confirmation}`:(configuredAcrNote && configuredAcrNote !== '按持59天签证预估，学习超过8周计入一次；若持30天签证，约第4周首次续签时可能提前产生，以实际办理为准' ? configuredAcrNote : acrDefaultNote) },
     { id: 'arp', item: ruleName('arp', '生物识别申请费'), amount: `${arp.toLocaleString('zh-CN')} 比索 / 次`, quantity: arpQuantity, total: arp * arpQuantity, note: arpNote },

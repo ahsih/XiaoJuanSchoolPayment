@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { chinaToday, ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolService } from '../../../services/school.service';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
-import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
+import { CgBaniladSchoolPageComponent } from './cg-banilad-school/cg-banilad-school-page.component';
 import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
@@ -30,7 +30,7 @@ describe('five-school multi-row quote rollout', () => {
   it('exports every course and room with registration charged once', () => {
     const schools = [
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
-      TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
+      TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
@@ -92,7 +92,7 @@ describe('five-school multi-row quote rollout', () => {
     // User rule 2026-09-18: short-stay and duration-tier algorithms stay internal.
     const schools = [
       { school: TestBed.runInInjectionContext(() => new CiaSchoolComponent()), ratio: '80%' },
-      { school: TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()), ratio: '85%' },
+      { school: TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent()), ratio: '85%' },
       { school: TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()), ratio: '85%' },
       { school: TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()), ratio: '90%' },
     ];
@@ -106,7 +106,8 @@ describe('five-school multi-row quote rollout', () => {
   });
 
   it('sorts image periods by date without moving the editable rows', () => {
-    const school = TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent());
+    const school = TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent());
+    school.selectedStartDate = '2026-09-06';
     school.quotePlan.add('course'); school.quotePlan.add('room');
     school.quotePlan.courses.reverse(); school.quotePlan.rooms.reverse();
     const firstEditableId = school.quotePlan.courses[0].id;
@@ -121,7 +122,7 @@ describe('five-school multi-row quote rollout', () => {
     it(`renders the approved complete layout for all five schools with ${courseCount} course and ${roomCount} room periods`, async () => {
       const factories = [
         { key: 'cia', create: () => new CiaSchoolComponent() },
-        { key: 'cg-banilad', create: () => new CgBaniladSchoolComponent() },
+        { key: 'cg-banilad', create: () => new CgBaniladSchoolPageComponent() },
         { key: 'smeag-capital', create: () => new SmeagCapitalSchoolPageComponent() },
         { key: 'cpi', create: () => new CpiSchoolPageComponent() },
         { key: 'cpils', create: () => new CpilsSchoolPageComponent() },
@@ -253,7 +254,7 @@ describe('five-school multi-row quote rollout', () => {
   it('renders every multi-row payment and local-fee row into complete PNG images', async () => {
     const schools = [
       TestBed.runInInjectionContext(() => new CiaSchoolComponent()),
-      TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent()),
+      TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new SmeagCapitalSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpiSchoolPageComponent()),
       TestBed.runInInjectionContext(() => new CpilsSchoolPageComponent()),
