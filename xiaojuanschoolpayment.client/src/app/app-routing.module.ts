@@ -504,7 +504,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/anj-e-edu-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/anj-school/anj-school.component').then((m) => m.AnjSchoolComponent),
+          import('./pages/philippines/anj-school/anj-school-page.component').then((m) => m.AnjSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/help-english-longlong-campus',
