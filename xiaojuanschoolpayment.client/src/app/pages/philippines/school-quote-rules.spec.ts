@@ -23,7 +23,7 @@ import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
 import { FellaSchoolDetailComponent } from './fella-school/fella-school-detail.component';
 import { BtesSchoolComponent } from './btes-school/btes-school.component';
-import { CebuBlueOceanSchoolComponent } from './cebu-blue-ocean-school/cebu-blue-ocean-school.component';
+import { CboaSchoolPageComponent } from './cebu-blue-ocean-school/cboa-school-page.component';
 import { WalesSchoolDetailComponent } from './wales-school/wales-school-detail.component';
 import { EnglishMintSchoolComponent } from './english-mint-school/english-mint-school.component';
 import { ElementRef } from '@angular/core';
@@ -69,7 +69,7 @@ const schools = [
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },
   { name: "Fella", create: () => new FellaSchoolDetailComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
-  { name: "Blue Ocean", create: () => new CebuBlueOceanSchoolComponent() },
+  { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },
   { name: "MINT", create: () => new EnglishMintSchoolComponent() },
 ];

@@ -20,7 +20,7 @@
 | BESA | PINES Main / IELTS | 06/27–08/22，60 美元／周 | `pines-school/pines-student-quote.ts` |
 | BESA | JIC Challenger / Premium | 06/27–08/22，60 美元／周 | `jic-school/jic-student-quote.ts` |
 | BESA | WALES | 06/27–08/22，60 美元／周 | `wales-school/wales-student-quote.ts` |
-| CALA | Cebu Blue Ocean | 07/04–08/28，60 美元／周 | `cebu-blue-ocean-school/blue-ocean-student-quote.ts` |
+| CALA | Cebu Blue Ocean | 06/27–08/21（学校2027价目表自己的日期），60 美元／周 | `cebu-blue-ocean-school/cboa-page-quote.ts` |
 | CALA | BTES | 07/04–08/28，60 美元／周 | `btes-school/btes-student-quote.ts` |
 | CALA | CWA | 07/04–08/28，60 美元／周 | `curious-world-school/curious-world-school.component.ts` quick quote |
 | CALA | CELLA Uni / Premium | 07/04–08/28，60 美元／周 | `cella-quote/cella-student-quote.ts` |

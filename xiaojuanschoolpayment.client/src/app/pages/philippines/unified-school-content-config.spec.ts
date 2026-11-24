@@ -111,8 +111,9 @@ describe('new unified employee school content configs', () => {
   });
 
   it('restores confirmed 2027 peak ranges in older published content', () => {
+    // Blue Ocean takes the school's own 2027 peak dates with its 2027 price list (cboaPolicyVersion 1).
     const blue = createDefaultBlueOceanContentConfig();
-    delete blue.quoteSettings.peakSeasonPolicyVersion;
+    (blue.quoteSettings as { cboaPolicyVersion?: number }).cboaPolicyVersion = 0;
     blue.quoteSettings.peakSeasonRanges = blue.quoteSettings.peakSeasonRanges.filter(range => range.id !== '2027');
     const cella = createDefaultCellaContentConfig('premium');
     delete cella.quoteSettings.peakSeasonPolicyVersion;
@@ -127,7 +128,7 @@ describe('new unified employee school content configs', () => {
     });
 
     expect(cloneBlueOceanContentConfig(blue).quoteSettings.peakSeasonRanges.find(range => range.id === '2027')).toEqual(
-      jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
+      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-21', enabled: true }),
     );
     expect(cloneCellaContentConfig(cella, 'premium').quoteSettings.peakSeasonRanges.find(range => range.id === 'cella-peak-2027')).toEqual(
       jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
