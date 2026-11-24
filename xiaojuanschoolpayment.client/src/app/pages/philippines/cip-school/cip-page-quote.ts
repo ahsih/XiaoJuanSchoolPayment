@@ -20,6 +20,7 @@ import {
   CIP_OFF_SEASON_RULE_ID,
   CIP_PEAK_MONTHS,
   CIP_RETURNING_RULE_ID,
+  CIP_SIDA_RULE_ID,
   CIP_USD_FROM,
   type CipMinorBand,
 } from './cip-content-config';
@@ -203,7 +204,20 @@ export class CipPageStudent implements PhPageStudent {
         : CIP_LONG_STAY_TIERS;
       return tiers.find(tier => weeks >= tier.weeks)?.amount ?? 0;
     }
+    if (rule.id === CIP_SIDA_RULE_ID) return this.sidaDiscount(rule.discountValue);
     return 0;
+  }
+
+  /**
+   * 思达启航 discount: a percentage of tuition and accommodation less the school's cash offers, rounded down to the
+   * cent so it never goes past the school's 5% limit.
+   */
+  private sidaDiscount(percent: number): number {
+    const schoolOffers = this.pricing.promotions
+      .filter(rule => rule.enabled && rule.id !== CIP_SIDA_RULE_ID)
+      .reduce((sum, rule) => sum + this.promotionAmount(rule), 0);
+    const cents = Math.round(Math.max(0, this.tuition + this.accommodation - schoolOffers) * 100);
+    return Math.floor(cents * Math.min(Math.max(percent, 0), 5) / 100) / 100;
   }
 
   private get appliedPromotions(): Array<{ rule: CiaPromotionRule; amount: number }> {
@@ -244,7 +258,7 @@ export class CipPageStudent implements PhPageStudent {
 
   get paymentLines(): SchoolPaymentLine[] {
     return this.appliedPromotions.map(({ rule, amount }) => ({
-      icon: '惠',
+      icon: rule.id === CIP_SIDA_RULE_ID ? '折' : '惠',
       label: rule.name,
       value: -amount,
       note: rule.id === CIP_OFF_SEASON_RULE_ID ? `${rule.description}；本次${this.offSeasonWeeks(rule)}周符合` : rule.description,

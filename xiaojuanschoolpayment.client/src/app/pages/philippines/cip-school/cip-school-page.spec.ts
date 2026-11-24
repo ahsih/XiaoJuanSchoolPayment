@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
-import { createDefaultCipContentConfig } from './cip-content-config';
+import { cloneCipContentConfig, createDefaultCipContentConfig } from './cip-content-config';
 import { cipDefaultStart } from './cip-page-quote';
 import { CIP_PAGE_PROFILE } from './cip-page-profile';
 import { CipSchoolPageComponent } from './cip-school-page.component';
@@ -36,12 +36,13 @@ describe('CIP page on the shared template', () => {
     expect(cipDefaultStart(new Date(2027, 2, 10))).toBe('2027-03-14');
   });
 
-  it('prices the default four-week plan with the off-season offer', () => {
+  it('prices the default four-week plan with the off-season offer and then the 思达启航 5%', () => {
     expect(page.selectedCourseId).toBe('regular-esl');
     expect(page.selectedRoomId).toBe('double');
-    // 100 registration + 820 + 780 − 50 off-season
-    expect(page.quote.quoteUsd).toBe(1650);
+    // 100 registration + 820 + 780 − 50 off-season − 5% of (1,600 − 50) = 77.5
+    expect(page.quote.quoteUsd).toBe(1572.5);
     expect(payment('2027淡季优惠')?.amount).toBe('− 50 美元');
+    expect(student().promotionAmount(page.promotions.find(rule => rule.id === 'cip-sida-95')!)).toBe(77.5);
     expect(payment('淡季福利')?.amount).toBe('任选1项');
     expect(page.quoteImageData.headingText).toContain('CIP 4周报价');
   });
@@ -52,10 +53,11 @@ describe('CIP page on the shared template', () => {
     page.selectedWeeks = 2;
     // Price list: Light ESL + Single A, 2 weeks 1,170; no full four weeks for the off-season offer.
     expect(student().tuition + student().accommodation).toBe(1170);
-    expect(page.quote.quoteUsd).toBe(1270);
+    // + 100 registration − 5% of 1,170 (58.5)
+    expect(page.quote.quoteUsd).toBe(1211.5);
     page.selectedWeeks = 16;
-    // Price list 16 weeks 7,150 (long-stay 50 off) − 4 × 50 off-season + 100 registration
-    expect(page.quote.quoteUsd).toBe(7050);
+    // Price list 16 weeks 7,150 (long-stay 50 off) − 4 × 50 off-season − 5% of 6,950 (347.5) + 100 registration
+    expect(page.quote.quoteUsd).toBe(6702.5);
     expect(payment('长期报名优惠')?.amount).toBe('− 50 美元');
   });
 
@@ -111,7 +113,24 @@ describe('CIP page on the shared template', () => {
 
   it('waives registration for returning students', () => {
     student().returningStudent = true;
-    expect(page.quote.quoteUsd).toBe(1550);
+    expect(page.quote.quoteUsd).toBe(1472.5);
+  });
+
+  it('never discounts registration and rounds the 5% down to the cent', () => {
+    page.selectedCourseId = 'light-esl';
+    page.selectedRoomId = 'hotel-king-double';
+    page.selectedWeeks = 1;
+    // Fee box: king room for two 1,326; one week is 40% of 720 + 1,326 = 818.4, so 5% is 40.92.
+    expect(student().tuition + student().accommodation).toBeCloseTo(818.4, 2);
+    expect(page.quote.quoteUsd).toBe(877.48);
+  });
+
+  it('adds the 思达启航 5% to a content document saved without it', () => {
+    const saved = createDefaultCipContentConfig();
+    saved.quoteSettings.promotions = saved.quoteSettings.promotions.filter(rule => rule.id !== 'cip-sida-95');
+    const upgraded = cloneCipContentConfig(saved);
+    expect(upgraded.quoteSettings.promotions.filter(rule => rule.id === 'cip-sida-95').length).toBe(1);
+    expect(cloneCipContentConfig(upgraded).quoteSettings.promotions.filter(rule => rule.id === 'cip-sida-95').length).toBe(1);
   });
 
   it('estimates local fees like the school sheet', () => {

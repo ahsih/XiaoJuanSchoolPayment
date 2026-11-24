@@ -27,6 +27,11 @@ export const CIP_USD_FROM = '2027-01-03';
 export const CIP_RETURNING_RULE_ID = 'cip-returning-registration';
 export const CIP_OFF_SEASON_RULE_ID = 'cip-off-season-2027';
 export const CIP_LONG_STAY_RULE_ID = 'cip-long-stay';
+/**
+ * 思达启航 5%: the school allows at most 5% (school message 2026-11-24), taken from tuition and accommodation after
+ * the school's own offers and never from registration, as its 2026 tuition discount policy orders it.
+ */
+export const CIP_SIDA_RULE_ID = 'cip-sida-95';
 
 /** Off-season offer: study days in June, July and August never count (2026–2027 poster). */
 export const CIP_PEAK_MONTHS: readonly number[] = [6, 7, 8];
@@ -134,7 +139,7 @@ const createCourses = (): CiaCourseContent[] => [
   course('ielts-intensive', 'IELTS Intensive 雅思强化', 1030, `4节菲律宾老师一对一 + 4节小组课；${EVENING_IELTS}`, '雅思3.5分以上、准备考试的学生', `入学须达到雅思3.5分并通过线上面试；周六下午雅思模考；最多报16周。${SPARTA_NOTE}`, 12),
   course('ielts-native', 'IELTS Native 雅思外教强化', 1200, `3节菲律宾老师一对一 + 1节外籍老师一对一 + 4节小组课；${EVENING_IELTS}`, '雅思3.5分以上、想跟外籍老师练口语和写作的学生', `入学须达到雅思3.5分并通过线上面试；最多报16周。${SPARTA_NOTE}`, 13),
   // The price list's fee box gives 1,320 per 4 weeks for 8 weeks and 1,200 for 12 weeks; its 12-week totals use
-  // 1,320, which looks like a formula slip, so 12 weeks are quoted at 1,200 (3,600 in all) until the school confirms.
+  // 1,320, but the school said to price from the fee box (2026-11-24), so 12 weeks cost 1,200 × 3 = 3,600.
   {
     ...course('ielts-guarantee', 'IELTS Guarantee 雅思保分班', 1320, `4节菲律宾老师一对一 + 4节小组课；${EVENING_IELTS}`, '有明确目标分数、能保证全勤的学生', `只能报8周或12周：8周按1,320美元／4周，12周按1,200美元／4周（共3,600美元）。按目标分数有入学要求，保分条件见下方说明。${SPARTA_NOTE}`, 14),
     feeByWeeks: { '12': 3600 },
@@ -156,7 +161,8 @@ const createRooms = (): CiaRoomContent[] => [
   room('triple', '三人间', 'T', DORM_GROUP, '校内', 670, '三张单人床，房内有卫生间。', 3),
   room('quad', '四人间', 'Q', DORM_GROUP, '校内', 570, '三张床加一张抽拉床，适合家庭或4人同行，床位安排以学校确认为准。', 4),
   room('hotel-king-single', '豪华大床房（1人住）', 'KS', HOTEL_GROUP, '校外', 2026, `约28平方米，一张大床。${HOTEL_NOTE}未成年学生不能单独入住。`, 5),
-  room('hotel-king-double', '豪华大床房（2人住）', 'KD', HOTEL_GROUP, '校外', 1325, `约28平方米，一张大床。${SHARED_HOTEL_NOTE}`, 6),
+  // Fee box price (school 2026-11-24: price from the fee box); the course totals use 1,325.
+  room('hotel-king-double', '豪华大床房（2人住）', 'KD', HOTEL_GROUP, '校外', 1326, `约28平方米，一张大床。${SHARED_HOTEL_NOTE}`, 6),
   room('hotel-twin-double', '豪华双床房（2人住）', 'TD', HOTEL_GROUP, '校外', 1430, `约28平方米，两张床。${SHARED_HOTEL_NOTE}`, 7),
   room('hotel-twin-triple', '豪华双床房（3人住）', 'TT', HOTEL_GROUP, '校外', 1149, `约28平方米，两张床。${SHARED_HOTEL_NOTE}`, 8),
   room('hotel-suite-triple', '行政套房（3人住）', 'ST', HOTEL_GROUP, '校外', 1535, `约63平方米，两间卧室、两个卫生间、厨房和沙发床。${SHARED_HOTEL_NOTE}`, 9),
@@ -200,7 +206,15 @@ const createPromotions = (): CiaPromotionRule[] => [
     id: CIP_RETURNING_RULE_ID, name: '老学员返校', sortOrder: 2, discountType: 'none', appliesTo: 'school-total',
     description: '老学员返校免收一次性注册费。', waiveRegistration: true,
   }),
+  createSidaPromotion(),
 ];
+
+function createSidaPromotion(): CiaPromotionRule {
+  return promotion({
+    id: CIP_SIDA_RULE_ID, name: '思达启航95折', sortOrder: 3, discountType: 'percentage', discountValue: 5,
+    description: '课程费和住宿费扣除学校优惠后再打95折，注册费不打折',
+  });
+}
 
 const LOCAL_FEE_INTRO = '以下费用到校后用比索缴纳，仅供准备现金参考。签证费用按每位学生选择的签证类型和停留时间预估；电费只在住校内宿舍时收，设施使用费按住宿周数收；教材按课程周数预估。押金、接机和洗衣另外准备。';
 
@@ -274,6 +288,10 @@ export const cloneCipContentConfig = (value: CiaContentConfig): CiaContentConfig
   clone.quoteSettings.shortStayRatios ??= { ...defaults.quoteSettings.shortStayRatios };
   clone.quoteSettings.peakSeasonRanges ??= [];
   clone.quoteSettings.promotions ??= copyJson(defaults.quoteSettings.promotions);
+  // Documents saved before the 5% was allowed get it once; an employee can still switch it off.
+  if (!clone.quoteSettings.promotions.some(rule => rule.id === CIP_SIDA_RULE_ID)) {
+    clone.quoteSettings.promotions.push(createSidaPromotion());
+  }
   clone.quoteSettings.stayPolicies ??= copyJson(defaults.quoteSettings.stayPolicies);
   clone.quoteSettings.extraNightRates ??= [];
   clone.quoteImageSettings ??= copyJson(defaults.quoteImageSettings);

@@ -17,7 +17,7 @@ import type {
 } from '../cia-school/cia-page-content';
 import type { PhOfferCard, PhRoomProfile } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
-import { CIP_LONG_STAY_RULE_ID, CIP_OFF_SEASON_RULE_ID, CIP_RETURNING_RULE_ID } from './cip-content-config';
+import { CIP_LONG_STAY_RULE_ID, CIP_OFF_SEASON_RULE_ID, CIP_RETURNING_RULE_ID, CIP_SIDA_RULE_ID } from './cip-content-config';
 
 /** Closes every content section once; the same line as on every Philippine school page. */
 export const CIP_REFERENCE_NOTE = SCHOOL_REFERENCE_NOTE;
@@ -530,6 +530,11 @@ export const CIP_REFUND_COPY = {
 
 /** CIP's offers; a card hides from `until`, or when none of its promotions is enabled in the content document. */
 export const CIP_OFFERS: PhOfferCard[] = [
+  {
+    icon: 'local_offer', title: '思达启航95折', amount: '再打95折',
+    text: '通过思达启航报名，课程费和住宿费在学校优惠之后再打95折。', detail: '注册费和到校学杂费不打折。',
+    promotionIds: [CIP_SIDA_RULE_ID],
+  },
   {
     icon: 'savings', title: '2027淡季优惠', amount: '每满4周减50美元',
     text: '2027/01/03–12/31入学，按报名周数每满4周减50美元；6–8月的学习周不计。',
