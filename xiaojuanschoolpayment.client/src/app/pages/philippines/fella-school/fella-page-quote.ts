@@ -135,7 +135,7 @@ export class FellaPageStudent implements PhPageStudent {
 
   get minorNote(): string {
     return this.campus === 'campus1'
-      ? '第一校区只收15岁以上学生；15–17岁单独就读另付未成年管理费，周六上午课必须参加，周五门禁22:00。带孩子来读书请看第二校区。'
+      ? '第一校区只收15岁以上学生；未成年学生周六上午课必须参加，周五门禁22:00。带孩子来读书请看第二校区。'
       : '第二校区收5岁以上学生：5–6岁读P-JEC，7–15岁读JEC，未满15岁须家长陪读；陪读家长可以报GEC家长课程。一家人可用多人报价一起算。';
   }
 

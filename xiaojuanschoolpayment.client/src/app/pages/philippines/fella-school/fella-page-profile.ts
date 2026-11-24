@@ -37,7 +37,8 @@ function fellaCopy(campus: FellaCampus): PhPageCopy {
       title: page.title,
       lead: page.heroLead,
       tags: page.heroTags.map(tag => ({ ...tag })),
-      quoteLabel: '获取 English Fella 最新报价',
+      // “获取 English Fella 最新报价” is cut off on a 375px phone.
+      quoteLabel: '获取 Fella 最新报价',
     },
     overview: { title: `30 秒看懂 ${page.shortName}` },
     advisorReview: {
