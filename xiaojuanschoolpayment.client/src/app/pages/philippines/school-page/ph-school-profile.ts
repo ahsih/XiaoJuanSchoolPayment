@@ -181,6 +181,14 @@ export interface PhSchoolProfile {
    */
   roomVideos?: Readonly<Record<string, PhVideoItem>>;
   /**
+   * Compact layout: vertical videos in the hero album and room albums are shown whole (never cropped), centred over a
+   * blurred copy of their own poster; on phones the hero frame for them is 4:3 like the photos. User decision
+   * 2026-11-24 (tried on IU, then approved for every school): on by default for every school except CIA, whose locked
+   * page keeps cropping them (`TALL_VIDEO_CROPPED_SCHOOLS`). false crops vertical clips to fill the frame (whole in
+   * fullscreen).
+   */
+  tallVideoBackdrop?: boolean;
+  /**
    * School-only: peak seasons without a surcharge (HANA), marked on the calendar with `title` (e.g. 旺季不加价)
    * instead of the surcharge line. CIA leaves it out and charges its surcharge from the content document.
    */

@@ -105,6 +105,8 @@ const SMEAG_COPY: PhPageCopy = {
     peakTitle: '',
     peakIntro: '',
     peakNote: '',
+    // The rest of the 2026 Capital holiday poster (user, 2026-11-24); the table above is 2027 only.
+    footnote: '2026年剩余假期：11/27、12/30有假日特别课；12/24、12/25、12/31停课。',
   },
   videos: {
     eyebrow: 'SCHOOL VIDEOS',

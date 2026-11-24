@@ -1,5 +1,6 @@
 import { CiaContentConfig, CiaCourseContent, CiaLocalFeeRule } from '../cia-school/cia-content-config';
-import { upgradeCpils2027 } from './cpils-pricing';
+import { CPILS_OLD_ACR_NOTES, upgradeCpils2027 } from './cpils-pricing';
+import { upgradeAcrNotes } from '../acr-first-extension';
 import { copyContentData } from '../copy-content-data';
 
 const course = (id: string, name: string, tuition: number, schedule: string, note: string, sortOrder: number): CiaCourseContent => ({
@@ -130,5 +131,6 @@ export const cloneCpilsContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteImageSettings.footerNotes ??= copyContentData(defaults.quoteImageSettings.footerNotes);
   clone.media ??= [];
   upgradeCpils2027(clone);
+  upgradeAcrNotes(clone, defaults, CPILS_OLD_ACR_NOTES);
   return clone;
 };

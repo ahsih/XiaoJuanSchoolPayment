@@ -83,11 +83,13 @@ describe('La Mer page quote', () => {
     expect(sum(student, 'ARP外国人登记')).toBe(0);
   });
 
-  it('uses the cumulative visa columns, ACR from week 9 and ARP at the first extension', () => {
+  it('uses the cumulative visa columns, with ACR and ARP at the first extension', () => {
     expect(sum(ordinary('2026-09-20', 8), '签证续签')).toBe(5430);
     expect(sum(ordinary('2026-09-20', 12), '签证续签')).toBe(11830);
     expect(sum(ordinary('2026-09-20', 8), 'ARP外国人登记')).toBe(300);
-    expect(sum(ordinary('2026-09-20', 8), 'ACR I-CARD')).toBe(0);
+    // ACR I-CARD comes with the first extension (user rule 2026-11-24), so a 30-day visa pays it from week 5.
+    expect(sum(ordinary('2026-09-20', 8), 'ACR I-CARD')).toBe(4000);
+    expect(sum(ordinary('2026-09-20', 4), 'ACR I-CARD')).toBe(0);
     const longer = ordinary('2026-09-20', 12);
     longer.visaType = 'tourist59';
     expect(sum(longer, '59天签证续签')).toBe(6700);
@@ -232,6 +234,19 @@ describe('La Mer content upgrade', () => {
     expect((upgraded.quoteSettings as { laMerPolicyVersion?: number }).laMerPolicyVersion).toBe(LA_MER_POLICY_VERSION);
     const again = cloneLaMerContentConfig({ ...upgraded, rooms: upgraded.rooms.map(room => ({ ...room, group: '校内住宿' })) });
     expect(again.rooms[0].group).toBe('校内住宿');
+  });
+
+  it('moves an untouched week-9 ACR note to the first-extension wording once', () => {
+    const saved = createDefaultLaMerContentConfig();
+    const oldNote = '停留满9周（超过59天）时办理一次。';
+    saved.localFees.find(fee => fee.id === 'acr-i-card')!.note = oldNote;
+    saved.quoteImageSettings.localFeeNotes['acr-i-card'] = oldNote;
+    const upgraded = cloneLaMerContentConfig(saved);
+    expect(upgraded.localFees.find(fee => fee.id === 'acr-i-card')!.note).toContain('第一次签证续签时办理');
+    expect(upgraded.quoteImageSettings.localFeeNotes['acr-i-card']).toContain('第一次签证续签时办理');
+    const edited = cloneLaMerContentConfig(upgraded);
+    edited.localFees.find(fee => fee.id === 'acr-i-card')!.note = oldNote;
+    expect(cloneLaMerContentConfig(edited).localFees.find(fee => fee.id === 'acr-i-card')!.note).toBe(oldNote);
   });
 
   it('ignores documents of other schools', () => {

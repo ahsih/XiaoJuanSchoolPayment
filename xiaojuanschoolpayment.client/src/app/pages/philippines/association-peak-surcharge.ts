@@ -6,6 +6,8 @@ export const ASSOCIATION_PEAK_POLICY_VERSION = 20271109;
 export const BESA_PEAK_RANGE_2027 = { start: '2027-06-27', end: '2027-08-22' } as const;
 export const CALA_PEAK_RANGE_2027 = { start: '2027-07-04', end: '2027-08-28' } as const;
 
+// CPILS belongs to CALA but is not listed: the school replied that it charges 40 dollars a week in 2027
+// (user decision 2026-11-24), so its content document's own rate applies.
 export const ASSOCIATION_PEAK_SCHOOL_CODES = [
   'ANJ',
   'BECI',
@@ -23,7 +25,6 @@ export const ASSOCIATION_PEAK_SCHOOL_CODES = [
   'EV',
   'PHILINTER',
   'CWA',
-  'CPILS',
   'QQ-ENGLISH',
   'WINNING',
 ] as const;

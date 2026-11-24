@@ -111,9 +111,26 @@ describe('PINES school page on the shared template', () => {
     expect(localFee('宿舍维护费')).toBe(6000);
     expect(localFee('ACR')).toBe(4000);
     expect(localFee('签证续签')).toBe(6210);
-    // One 1,900-peso set per started 8 weeks (user answer 2026-11-24).
-    expect(localFee('教材费')).toBe(3800);
-    expect(page.quote.estimatedLocalFeeTotal).toBe(7800 + 4500 + 4000 + 11400 + 6000 + 6210 + 3800 + 200);
+    // One 1,900-peso set (6 books) per started 4 weeks (user answer 2026-11-24).
+    expect(localFee('教材费')).toBe(5700);
+    expect(page.quote.estimatedLocalFeeTotal).toBe(7800 + 4500 + 4000 + 11400 + 6000 + 6210 + 5700 + 200);
+  });
+
+  it('switches to 2027 local fees by the Monday entry date, whatever the registration date', () => {
+    page.selectedStartDate = '2027-01-24';
+    expect(localFee('水电费')).toBe(3000);
+    // Arrives Sunday 2027-01-31 and starts class Monday 2027-02-01: 2027 fees, although registered in 2026.
+    page.selectedStartDate = '2027-01-31';
+    expect(student().uses2027LocalFees).toBeTrue();
+    expect(localFee('水电费')).toBe(3800);
+    expect(localFee('宿舍维护费')).toBe(2000);
+  });
+
+  it('gives the 2027 regular offer for every non-peak week, two weeks included', () => {
+    student().selectedRegistrationDate = '2027-02-15';
+    page.selectedStartDate = '2027-03-07';
+    page.selectedWeeks = 2;
+    expect(payment('2027常规优惠')?.amount).toBe('− 50 美元');
   });
 
   it('counts one visa extension per four weeks beyond the entry visa', () => {
@@ -192,6 +209,27 @@ describe('PINES school page on the shared template', () => {
     const upgraded = clonePinesContentConfig(saved);
     expect(upgraded.localFees.find(fee => fee.id === 'acr-i-card')!.note).toContain('第一次续签时办理');
     expect(upgraded.localFees.find(fee => fee.id === 'materials')!.futureNote).toBe('员工改过的教材说明');
+  });
+
+  it('applies the second batch of school answers to a document saved on 2026-11-24 once', () => {
+    const saved = createDefaultPinesContentConfig();
+    for (const room of saved.rooms) room.location = '校内';
+    saved.localFees.find(fee => fee.id === 'materials')!.futureNote =
+      '2027年2月1日起入学：参考价，按学习进度到校实际购买。5本以内1,500、6本以上1,900比索一套，约用4–8周（按8周预估）；雅思2,700比索一套，约用12周。';
+    const regular = saved.quoteSettings.promotions.find(rule => rule.id === 'pines-regular-2027')!;
+    regular.minimumCourseWeeks = 4;
+    regular.description += '（课程4周起）';
+    saved.quoteSettings.stayPolicies = saved.quoteSettings.stayPolicies.filter(policy => policy.label !== '最短学习');
+    saved.quoteSettings.roomTableNote = '员工改过的住宿说明';
+    (saved.quoteSettings as { pinesFeeNoteVersion?: number }).pinesFeeNoteVersion = 20271124;
+    const upgraded = clonePinesContentConfig(saved);
+    expect(upgraded.rooms.every(room => !room.location)).toBeTrue();
+    expect(upgraded.localFees.find(fee => fee.id === 'materials')!.futureNote).toContain('每4周换一套教材');
+    const upgradedRegular = upgraded.quoteSettings.promotions.find(rule => rule.id === 'pines-regular-2027')!;
+    expect(upgradedRegular.minimumCourseWeeks).toBe(0);
+    expect(upgradedRegular.description).not.toContain('4周起');
+    expect(upgraded.quoteSettings.stayPolicies.some(policy => policy.label === '最短学习')).toBeTrue();
+    expect(upgraded.quoteSettings.roomTableNote).toBe('员工改过的住宿说明');
   });
 
   it('links every price card to a room album and shows the school video', () => {

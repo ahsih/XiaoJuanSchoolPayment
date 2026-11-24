@@ -82,9 +82,9 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/smeag-capital-building.webp',
   },
   '/philippines-study/cebu/smeag-encanto': {
-    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
-    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
-    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 寒暑假亲子营与成人ESL报价',
+    description: '宿务麦克坦岛SMEAG Encanto海滨校区：寒暑假全包亲子营、淡季亲子和成人ESL课程价格，每日作息、校园照片和在线报价。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, 菲律宾亲子营, SMEAG Family Camp, 宿务成人ESL',
     image: '/assets/philippines/smeag-encanto-campus-official.webp',
   },
   '/philippines-study/why-philippines': {
