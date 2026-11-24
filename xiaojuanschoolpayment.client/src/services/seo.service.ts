@@ -499,7 +499,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/ims-academy', name: '菲律宾宿务IMS Academy语言学校', brand: 'IMS', quote: true },
   { path: '/philippines-study/cebu/cella-uni-sparta-campus', name: '菲律宾宿务CELLA Uni Sparta校区', brand: 'CELLA Uni Sparta', aliases: 'CELLA', quote: true },
   { path: '/philippines-study/cebu/cella-premium-campus', name: '菲律宾宿务CELLA Premium校区', brand: 'CELLA Premium', aliases: 'CELLA', quote: true },
-  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务Cebu Blue Ocean Academy', brand: 'Cebu Blue Ocean', quote: true },
+  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务蓝海语言学校（Cebu Blue Ocean Academy）', brand: '蓝海CBOA', aliases: 'Cebu Blue Ocean', quote: true, image: '/assets/cebu-blue-ocean/suites/pool.webp' },
   { path: '/philippines-study/cebu/target-global-english-academy', name: '菲律宾宿务TARGET Global English Academy', brand: 'TARGET', quote: true },
   { path: '/philippines-study/cebu/global-language-cebu', name: '菲律宾宿务GLC语言学校（Global Language Cebu）', brand: 'GLC', aliases: 'Global Language Cebu', quote: true },
   { path: '/philippines-study/cebu/ciec', name: '菲律宾宿务CIEC语言学校', brand: 'CIEC', quote: true },
