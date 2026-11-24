@@ -8,6 +8,7 @@ import { SchoolService } from '../../../../services/school.service';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import { cloneFellaContentConfig, createDefaultFellaContentConfig, fellaCampusContent } from './fella-content-config';
 import { FellaFirstCampusSchoolComponent } from './fella-first-campus-school.component';
+import { fellaPageProfile } from './fella-page-profile';
 import { FellaSecondCampusSchoolComponent } from './fella-second-campus-school.component';
 import type { FellaSchoolPageComponent } from './fella-school-page';
 
@@ -184,6 +185,21 @@ describe('English Fella campus pages on the shared template', () => {
       expect(first.rooms.map(room => room.id)).toContain('single-1b');
       expect(second.rooms.map(room => room.id)).not.toContain('single-1b');
       expect(second.quoteImageSettings.footerNotes[0]).toContain('第二校区');
+    });
+
+    it('shows each campus only its own photos and videos', () => {
+      for (const [campus, own, other] of [['campus1', 'assets/fella-1/', 'assets/fella-2/'], ['campus2', 'assets/fella-2/', 'assets/fella-1/']] as const) {
+        const profile = fellaPageProfile(campus);
+        const media = [
+          ...profile.gallery.images.map(image => image.src),
+          ...profile.roomProfiles.flatMap(room => [room.image, ...(room.gallery ?? [])]),
+          ...(profile.videoTabs ?? []).flatMap(tab => tab.items.flatMap(item => [item.src, item.poster ?? ''])),
+        ].map(src => src.replace(/^\//, ''));
+        expect(media.length).toBeGreaterThan(20);
+        expect(media.every(src => src.startsWith(own))).withContext(campus).toBeTrue();
+        expect(media.some(src => src.includes(other))).toBeFalse();
+        expect((profile.videoTabs ?? []).map(tab => tab.label)).toEqual(['校园视频', '学员访谈']);
+      }
     });
   });
 });

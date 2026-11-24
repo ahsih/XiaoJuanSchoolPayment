@@ -11,7 +11,7 @@ import {
   type RoomRateGroup,
 } from '../cia-school/cia-page-content';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
-import type { PhPageCopy, PhSchoolProfile } from '../school-page/ph-school-profile';
+import type { PhPageCopy, PhSchoolProfile, PhVideoTab } from '../school-page/ph-school-profile';
 import { createDefaultFellaContentConfig, fellaCampusContent } from './fella-content-config';
 import {
   FELLA_ALBUM_DESCRIPTIONS,
@@ -20,6 +20,9 @@ import {
   FELLA_PAGE_CONTENT,
   FELLA_REFERENCE_NOTE,
   FELLA_REFUND_COPY,
+  FELLA_VIDEOS,
+  fellaVideoPoster,
+  fellaVideoSrc,
 } from './fella-page-content';
 import type { FellaCampus } from './fella-pricing';
 
@@ -95,7 +98,7 @@ function fellaCopy(campus: FellaCampus): PhPageCopy {
     videos: {
       eyebrow: 'SCHOOL VIDEOS',
       title: `用视频了解 ${page.shortName}`,
-      intro: '学校视频整理中。',
+      intro: '学校官方频道2026年的校园导览和学员访谈。',
       badge: `${page.shortName} 视频`,
     },
     rooms: {
@@ -146,6 +149,22 @@ export function fellaPageProfile(campus: FellaCampus): PhSchoolProfile {
   const defaultContent = () => fellaCampusDefaults(campus);
   const defaults = defaultContent();
   const initialPricing = createCiaQuotePricing(defaults);
+  const videoTabs: PhVideoTab[] = (['校园视频', '学员访谈'] as const)
+    .map(topic => ({
+      label: topic,
+      icon: topic === '学员访谈' ? 'record_voice_over' : 'videocam',
+      items: FELLA_VIDEOS[campus]
+        .filter(video => video.topic === topic)
+        .map(video => ({
+          title: video.title,
+          text: video.description,
+          src: fellaVideoSrc(campus, video),
+          poster: fellaVideoPoster(campus, video),
+          duration: video.duration,
+          shape: 'wide' as const,
+        })),
+    }))
+    .filter(tab => tab.items.length > 0);
   const initialRoomRateGroups: RoomRateGroup[] = [...new Set(defaults.rooms.map(room => room.group))].map(title => ({
     title,
     rooms: defaults.rooms
@@ -160,6 +179,7 @@ export function fellaPageProfile(campus: FellaCampus): PhSchoolProfile {
     pricingSchoolName: FELLA_SCHOOL_NAME,
     copy: fellaCopy(campus),
     compactLayout: true,
+    videoTabs,
     overviewFacts: page.overviewFacts,
     courseHighlights: page.courseHighlights,
     gallery: {
@@ -203,7 +223,7 @@ export function fellaPageProfile(campus: FellaCampus): PhSchoolProfile {
     ctaBadges: FELLA_FINAL_CTA_BADGES,
     ctaConsultants: CIA_CTA_CONSULTANTS,
     mobileAnchors: [
-      { label: '照片', target: 'gallery', icon: 'photo_library' },
+      { label: '视频', target: 'gallery', icon: 'smart_display' },
       { label: '概览', target: 'overview', icon: 'dashboard' },
       { label: '课程', target: 'courses', icon: 'menu_book' },
       { label: '住宿', target: 'rooms', icon: 'bed' },

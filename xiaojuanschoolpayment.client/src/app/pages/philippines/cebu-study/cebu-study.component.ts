@@ -599,12 +599,12 @@ export class CebuStudyComponent {
     {
       name: 'English Fella 第一校区', route: '/philippines-study/cebu/english-fella-first-campus', tag: '斯巴达校区',
       location: 'Talamban · Cebu City', summary: '斯巴达管理，每天4–6节一对一，托业和雅思保分班只在这里开设。',
-      image: '/assets/fella-1/campus/main-building.webp', highlights: ['综合英语', '口语强化', '雅思 / 托业保分班', '托福'],
+      image: '/assets/fella-1/campus/aerial.webp', highlights: ['综合英语', '口语强化', '雅思 / 托业保分班', '托福'],
     },
     {
       name: 'English Fella 第二校区', route: '/philippines-study/cebu/english-fella-second-campus', tag: '自律型／半斯巴达',
       location: 'Talamban · Cebu City', summary: '校园更大，可选自律型或半斯巴达，有商务英语、40岁以上会话课和亲子课程。',
-      image: '/assets/fella-2/campus/entrance.webp', highlights: ['综合英语', '雅思 / 托业 / 托福', '商务英语', '40岁以上会话', '亲子课程'],
+      image: '/assets/fella-2/campus/aerial.webp', highlights: ['综合英语', '雅思 / 托业 / 托福', '商务英语', '40岁以上会话', '亲子课程'],
     },
     {
       name: 'Philinter', route: '/philippines-study/cebu/philinter-academy', tag: '老牌综合校',

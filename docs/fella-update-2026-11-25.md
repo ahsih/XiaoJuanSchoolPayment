@@ -30,8 +30,18 @@ Each page shows and quotes only its own campus; a quote never mixes the campuses
 - Removed: `fella-school.component.*`, `fella-school-detail.component.*` and `fella-student-quote.ts` with its spec.
 - Prices come only from the content document (`applyPricingData` is a no-op). `SeedFellaPricingAsync` stays the
   insert-only baseline and is not read by the pages.
-- Photos: `public/assets/fella-1/` (First Campus) and `public/assets/fella-2/` (Second Campus), WebP from the
-  school's pack at native size; two older shared photos in `public/assets/fella/` stay on the Second Campus page.
+- Media (user request 2026-11-25: the pack's photos looked old): photos and videos come from the school's official
+  YouTube channel (@CEBUENGLISHFELLA). The 2026 campus tour was split into one 720p H.264 clip per campus
+  (`public/assets/fella-1/videos/campus-tour-2026.mp4`, 2:42; `fella-2/videos/campus-tour-2026.mp4`, 2:20), and
+  every campus and room photo (`fella-1|2/campus/`, `fella-1|2/rooms/`, WebP) is a frame of that campus's part of
+  the tour, cropped above the subtitles and logo, each room from the shot the narration names. Interviews: TOEIC
+  (3:13), IELTS (2:27) and a 3-month student (1:29) on the First Campus, the 40+ SSC student (2:06) on the Second.
+  The IELTS student studied at the Second Campus before and now at the First, where the interview was filmed. Cuts:
+  IELTS / British Council / IDP signs and other companies' signs blurred or mosaicked (moving mosaics in the IELTS
+  interview), the IELTS test-centre shots and the closing "No.1" cards removed, and every "From Taiwan" name label
+  covered with a gray mosaic. Small café logos on coffee cups are ordinary items and stay. Posters are
+  `poster-<name>.jpg` beside each video. The hero album groups the videos as 校园 and 学员访谈; the tours show several
+  rooms, so no clip opens a room album.
 
 ## Rules
 
@@ -67,8 +77,7 @@ agency term (commission, partner discount rules, pre-arrival cancellation penalt
 
 ## Open
 
-- Only the First Campus 1B room has a sure photo; other room types show no photos until the school sends photos per
-  campus and room type. There are no videos yet.
+- The Second Campus tour shows no 1A or 1B room (those are First Campus only), so every listed room type has photos.
 - 2027 prices have not been published; quotes use the 2026 prices.
 - Corrections to the former page: 1A and 1B are First Campus rooms only, ARP is 500, short stays are 30/60/90%,
   the Christmas offer is capped at 200, the 思达启航 5% starts at four weeks and comes after Christmas, the guardian

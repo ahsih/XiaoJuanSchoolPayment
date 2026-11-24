@@ -64,17 +64,74 @@ export interface FellaCampusPage {
   faqs: readonly FaqItem[];
 }
 
+// Photos are frames of the school's own 2026 campus tour (YouTube @CEBUENGLISHFELLA, 2026-11-25), cropped above its
+// subtitles and logo; each campus's frames come only from that campus's part of the tour, and each room photo from the
+// shot the narration names (1P, 1A, 1B, twin, triple). The 2026 pack's older photos were replaced at the user's request.
 const f1 = (file: string) => `assets/fella-1/campus/${file}.webp`;
 const f2 = (file: string) => `assets/fella-2/campus/${file}.webp`;
-const shared = (file: string) => `assets/fella/${file}.webp`;
+const room1 = (file: string) => `assets/fella-1/rooms/${file}.webp`;
+const room2 = (file: string) => `assets/fella-2/rooms/${file}.webp`;
 
 export const FELLA_ALBUM_DESCRIPTIONS: Record<PhAlbumCategory, string> = {
-  校园: '校门、主楼与校园',
-  教室: '小组教室、自习室与电脑教室',
+  校园: '航拍、校门与宿舍楼',
+  教室: '一对一、小组课与自习室',
   住宿: '宿舍房型',
-  餐厅: '学生餐厅与Cafella小卖部',
+  餐厅: '学生餐厅与Cafella',
   设施: '游泳池、健身房与运动场',
 };
+
+/** A video in the hero album; the files are in assets/fella-1|2/videos with a poster-<name>.jpg beside each. */
+export interface FellaVideo {
+  name: string;
+  title: string;
+  description: string;
+  duration: string;
+  topic: '校园视频' | '学员访谈';
+}
+
+/**
+ * Videos from the school's official YouTube channel (@CEBUENGLISHFELLA), 720p H.264. The 2026 campus tour was split
+ * into one clip per campus; the IELTS / British Council / IDP signs on the First Campus front and other companies' signs
+ * were blurred or mosaicked (also in the IELTS interview), the computer-delivered IELTS test-centre shots and the closing
+ * "No.1" cards were cut. The interviews' "From Taiwan" name labels were covered with a gray mosaic (Taiwan wording rule).
+ * The IELTS student studied at the Second Campus before and now studies at the First Campus, where the interview was
+ * filmed, so it is on the First Campus page.
+ */
+export const FELLA_VIDEOS: Readonly<Record<FellaCampus, readonly FellaVideo[]>> = {
+  campus1: [
+    {
+      name: 'campus-tour-2026', title: '第一校区导览（2026）', duration: '2:42', topic: '校园视频',
+      description: '学校2026年拍的第一校区导览：教室、自习室、健身房、游泳池、餐厅、小卖部、洗衣房和各房型。英文原声。',
+    },
+    {
+      name: 'toeic-interview', title: '托业学员访谈', duration: '3:13', topic: '学员访谈',
+      description: '在第一校区读了16周的学员：先读8周综合英语，再转托业课程，讲为什么转课和老师怎么带。英文原声。',
+    },
+    {
+      name: 'ielts-interview', title: '雅思学员访谈', duration: '2:27', topic: '学员访谈',
+      description: '第二次来English Fella、这次选第一校区斯巴达备考雅思的学员，讲每天从早到晚的学习和单字测验。英文原声。',
+    },
+    {
+      name: 'landy-interview', title: '学员访谈：读了3个月', duration: '1:29', topic: '学员访谈',
+      description: '在第一校区读了3个月的学员，讲刚到宿务时的感受、第一次考试和之后的进步。英文原声。',
+    },
+  ],
+  campus2: [
+    {
+      name: 'campus-tour-2026', title: '第二校区导览（2026）', duration: '2:20', topic: '校园视频',
+      description: '学校2026年拍的第二校区导览：教室、自习室、健身房、室内运动馆、游泳池、餐厅和各房型。英文原声。',
+    },
+    {
+      name: 'ssc-interview', title: '40岁以上会话课学员访谈', duration: '2:06', topic: '学员访谈',
+      description: '72岁一个人来读SSC乐龄会话课的学员，讲为什么来、和不同年龄的同学一起上课的感受。原声，中英文字幕。',
+    },
+  ],
+};
+
+export const fellaVideoSrc = (campus: FellaCampus, video: FellaVideo) =>
+  `/assets/${campus === 'campus1' ? 'fella-1' : 'fella-2'}/videos/${video.name}.mp4`;
+export const fellaVideoPoster = (campus: FellaCampus, video: FellaVideo) =>
+  `/assets/${campus === 'campus1' ? 'fella-1' : 'fella-2'}/videos/poster-${video.name}.jpg`;
 
 /** Both campuses: Sunday arrival, Saturday departure; a room deposit and the pickup are paid at school. */
 const ARRIVAL_GUIDE: CampusPracticalGuide = {
@@ -122,31 +179,60 @@ const FIRST_CLASS_ROWS: DailyScheduleRow[] = [
 ];
 
 const FIRST_GALLERY: GalleryImage[] = [
-  { category: '校园', title: '第一校区主楼', description: '第一校区是斯巴达校区，2006年开办。', src: f1('main-building') },
-  { category: '校园', title: '学校接驳车', description: '学校自己的接驳车。', src: f1('van') },
+  { category: '校园', title: '第一校区航拍', description: '第一校区是斯巴达校区，2006年开办，校园约1,500坪。', src: f1('aerial') },
+  { category: '校园', title: '第一校区校门', description: '门口的保安室24小时有人值班。', src: f1('gate') },
+  { category: '校园', title: '宿舍楼', description: '宿舍楼前就是游泳池。', src: f1('dorm-pool') },
+  { category: '教室', title: '一对一课', description: '每天4–6节一对一。', src: f1('one-to-one') },
   { category: '教室', title: '小组课', description: '四人和八人小组课。', src: f1('group-class') },
-  { category: '教室', title: '自习室', description: '24小时开放，每人有固定座位。', src: f1('study-room') },
-  { category: '教室', title: '影视教室', description: '电影选修课在这里上。', src: f1('theatre') },
-  { category: '住宿', title: '单人雅房 1B', description: '一人一间卧室，和邻房共用客厅和卫生间。', src: 'assets/fella-1/rooms/single-1b.webp' },
+  { category: '教室', title: '英文演讲活动', description: '学校的英文演讲比赛。', src: f1('presentation') },
+  { category: '教室', title: '自习室', description: '24小时开放，每人有固定座位。', src: f1('study-hall') },
+  { category: '教室', title: '图书馆电脑区', description: '图书馆24小时开放。', src: f1('library') },
+  { category: '住宿', title: '豪华单人间 1P', description: '一人一间，房内有卫生间。', src: room1('1p') },
+  { category: '住宿', title: '标准单人间 1A', description: '一人一间，房内有卫生间。', src: room1('1a') },
+  { category: '住宿', title: '单人雅房 1B', description: '一人一间卧室，和邻房共用客厅和卫生间。', src: room1('1b') },
+  { category: '住宿', title: '双人间 2A', description: '两人一间。', src: room1('2a') },
+  { category: '住宿', title: '三人间 3A', description: '三人一间。', src: room1('3a') },
   { category: '餐厅', title: '学生餐厅', description: '一年365天供应一日三餐，有素食和清真餐。', src: f1('cafeteria') },
+  { category: '餐厅', title: '自助取餐', description: '每餐有多种菜色。', src: f1('buffet') },
   { category: '餐厅', title: 'Cafella小卖部', description: '咖啡、饮料、零食、电话卡和日用品。', src: f1('cafe') },
   { category: '设施', title: '游泳池', description: '水深1.5米；平日15:00–22:50，周末和假日09:00–22:50开放。', src: f1('pool') },
-  { category: '设施', title: '室内健身房', description: '2023年9月启用，05:00–22:50开放。', src: f1('gym') },
+  { category: '设施', title: '泳池边的竹屋', description: '下课后休息的地方。', src: f1('bamboo-hut') },
+  { category: '设施', title: '健身房', description: '05:00–22:50开放。', src: f1('gym') },
+  { category: '设施', title: '篮球场', description: '17:00–22:50开放。', src: f1('court') },
+  { category: '设施', title: '露台', description: '看得到游泳池的户外座位。', src: f1('terrace') },
+  { category: '设施', title: '自助洗衣房', description: '24小时开放，免费提供洗衣粉。', src: f1('laundry') },
 ];
 
 const SECOND_GALLERY: GalleryImage[] = [
-  { category: '校园', title: '第二校区入口', description: '第二校区2008年开办，约5,000坪。', src: f2('entrance') },
+  { category: '校园', title: '第二校区航拍', description: '第二校区2008年开办，校园约5,000坪。', src: f2('aerial') },
+  { category: '校园', title: '第二校区校门', description: '和第一校区步行约10分钟。', src: f2('gate') },
+  { category: '校园', title: '校训牌', description: '进校门就能看到。', src: f2('sign') },
+  { category: '教室', title: '一对一课', description: '老师和学生一对一上课。', src: f2('one-to-one') },
+  { category: '教室', title: '小组课', description: '四人和八人小组课。', src: f2('group-class') },
   { category: '教室', title: '自习室', description: '24小时开放，每人有固定座位。', src: f2('study-hall') },
-  { category: '教室', title: '电脑教室', description: '校内也是IDP机考雅思考场。', src: f2('computer') },
-  { category: '教室', title: '儿童课', description: '亲子课程的孩子在第二校区上课。', src: shared('classroom-2') },
-  { category: '餐厅', title: 'Cafella小卖部', description: '平日07:00–21:00，周末和假日08:00–17:00。', src: f2('shop') },
+  { category: '住宿', title: '豪华单人间 1P', description: '一人一间，房内有卫生间。', src: room2('1p') },
+  { category: '住宿', title: '豪华单人间 1P', description: '房内有书桌、小冰箱和衣架。', src: room2('1p-desk') },
+  { category: '住宿', title: '双人间 2A', description: '两人一间。', src: room2('2a') },
+  { category: '住宿', title: '三人间 3A', description: '三人一间。', src: room2('3a') },
+  { category: '住宿', title: '三人间 3A', description: '每人一张书桌和置物架。', src: room2('3a-desks') },
+  { category: '餐厅', title: '学生餐厅', description: '一年365天供应一日三餐，有素食和清真餐。', src: f2('cafeteria') },
+  { category: '餐厅', title: '自助取餐', description: '每餐有多种菜色。', src: f2('buffet') },
+  { category: '餐厅', title: 'Cafella咖啡座', description: '平日07:00–21:00，周末和假日08:00–17:00。', src: f2('cafe') },
   { category: '设施', title: '游泳池', description: '宿舍楼围着的游泳池。', src: f2('pool') },
+  { category: '设施', title: '泳池边的竹屋', description: '下课后休息的地方。', src: f2('bamboo-hut') },
   { category: '设施', title: '健身房', description: '有器械和自由重量区。', src: f2('gym') },
-  { category: '设施', title: '室内运动馆', description: '2024年11月启用，可以打篮球、羽毛球、匹克球和乒乓球。', src: shared('sports-1') },
-  { category: '设施', title: '户外篮球场', description: '17:00–22:50开放。', src: f2('basketball') },
-  { category: '设施', title: '匹克球', description: '运动馆里可以打匹克球。', src: f2('pickleball') },
+  { category: '设施', title: '室内运动馆', description: '2024年11月启用，可以打篮球、羽毛球、匹克球和乒乓球。', src: f2('sports-hall') },
+  { category: '设施', title: '户外篮球场', description: '17:00–22:50开放。', src: f2('court') },
   { category: '设施', title: '自助洗衣房', description: '24小时开放，免费提供洗衣粉。', src: f2('laundry') },
 ];
+
+const ROOM_SERVICE = '每周打扫2次，每周换床单1次';
+const room = (
+  campus: string, id: string, label: string, gallery: readonly string[], suitable: string, note: string, bed?: string,
+): PhRoomProfile => ({
+  id, rateIds: [id], label, location: '校内', ...(bed ? { bed } : {}), service: ROOM_SERVICE, suitable, note,
+  image: gallery[0], gallery: [...gallery], imageAlt: `English Fella${campus}${label}`,
+});
 
 const WARNING_RULE = { title: '警告上限', text: '可累计的警告次数是就读周数的一半（8周4次、12周6次）；达到上限禁止外出，超过上限退学且不退款。超过门禁1分钟也记警告。' };
 const FORBIDDEN_RULE = { title: '禁止事项', text: '邀请同学进自己宿舍、在房间煮食或存放易燃物品和刀具（只能用电热水壶烧水）、破坏设施、校内亲密举动都会记警告；校内涉及酒精的事，知情不报也一起处罚。' };
@@ -259,12 +345,12 @@ const FIRST: FellaCampusPage = {
   studyModesTitle: '斯巴达管理怎么管？',
   studyModesIntro: '第一校区所有学生都按斯巴达管理。',
   studyModesNote: '每两周的周三17:00–22:00也可外出。假日前一天按周五、公众假期按周日算；22:00后不能再出校。15–17岁学生周五门禁22:00。违反规定会记警告或罚款。',
-  roomsPhotoIntro: '目前只有单人雅房的照片，其他房型的实拍照片我们正在向学校索取。',
+  roomsPhotoIntro: '点选房型查看实景；各房型价格见上方住宿费表。',
   compareRoomHint: '如单人间、双人间和三人间',
   compareCourseHint: '如PIC-4、PIC-5和PIC-6',
   finalCtaTitle: '想确认 English Fella 第一校区的空房和优惠？',
   finalCtaText: '告诉顾问你的入学日期、周数、课程和想住的房型，我们帮你确认房间和保分班开课日，并做一份完整报价。',
-  quoteImageHero: '/assets/fella-1/campus/main-building.webp',
+  quoteImageHero: '/assets/fella-1/campus/aerial.webp',
   overviewFacts: [
     { icon: 'location_on', label: '位置', value: '宿务市Talamban区，步行4–5分钟到购物中心；离宿务机场约30–50分钟车程' },
     { icon: 'rule', label: '管理', value: '斯巴达：周一至周四不外出，每两周的周三晚上可外出；晚自习和单字测验必须参加' },
@@ -408,13 +494,11 @@ const FIRST: FellaCampusPage = {
     },
   ],
   roomProfiles: [
-    {
-      id: 'single-1b', rateIds: ['single-1b'], label: '单人雅房 1B', location: '校内', bed: '单人床',
-      service: '每周打扫2次，每周换床单1次', suitable: '想要自己的房间、又想省一点的学生',
-      note: '一人一间卧室，和邻房共用客厅和卫生间。',
-      image: 'assets/fella-1/rooms/single-1b.webp', gallery: ['assets/fella-1/rooms/single-1b.webp'],
-      imageAlt: 'English Fella第一校区单人雅房1B',
-    },
+    room('第一校区', 'premium-1p', '豪华单人间 1P', [room1('1p')], '想要宽敞单人间的学生', '一人一间，房内有卫生间。'),
+    room('第一校区', 'single-1a', '标准单人间 1A', [room1('1a')], '想要自己房间和卫生间的学生', '一人一间，房内有卫生间。', '单人床'),
+    room('第一校区', 'single-1b', '单人雅房 1B', [room1('1b')], '想要自己的房间、又想省一点的学生', '一人一间卧室，和邻房共用客厅和卫生间。', '单人床'),
+    room('第一校区', 'twin-2a', '双人间 2A', [room1('2a')], '想有室友、预算适中的学生', '两人一间。', '两张单人床'),
+    room('第一校区', 'triple-3a', '三人间 3A', [room1('3a')], '预算优先、想多认识同学的学生', '三人一间。', '三张单人床'),
   ],
   dormRules: [
     { title: '门禁', text: '周一至周四不可外出（每两周的周三17:00–22:00可外出）；周五和周六02:00前回校，周日19:00前回校；23:00熄灯。' },
@@ -482,12 +566,12 @@ const SECOND: FellaCampusPage = {
   studyModesTitle: '自律型还是半斯巴达？',
   studyModesIntro: '入学时选一种生活模式，两种的课程和费用一样，只是外出和晚自习的规定不同。',
   studyModesNote: '假日前一天按周五、公众假期按周日算；22:00后不能再出校。SSC乐龄会话课只有自律型。违反规定会记警告或罚款。',
-  roomsPhotoIntro: '第二校区各房型的实拍照片我们正在向学校索取，请先看住宿费表或问顾问。',
+  roomsPhotoIntro: '点选房型查看实景；各房型价格见上方住宿费表。',
   compareRoomHint: '如豪华单人间、双人间和三人间',
   compareCourseHint: '如PIC-4、PIC-5和PIC-6',
   finalCtaTitle: '想确认 English Fella 第二校区的空房和优惠？',
   finalCtaText: '告诉顾问你的入学日期、周数、课程和想住的房型（带孩子来的请说明孩子年龄），我们帮你确认房间并做一份完整报价。',
-  quoteImageHero: '/assets/fella-2/campus/entrance.webp',
+  quoteImageHero: '/assets/fella-2/campus/aerial.webp',
   overviewFacts: [
     { icon: 'location_on', label: '位置', value: '宿务市Talamban区，和第一校区步行约10分钟；离宿务机场约30–50分钟车程' },
     { icon: 'rule', label: '管理', value: '自律型（每天可外出）或半斯巴达（周一、二、四不外出，晚自习必须参加），入学时选' },
@@ -521,7 +605,7 @@ const SECOND: FellaCampusPage = {
     { code: 'SPORT', title: '运动', icon: 'pool', facilities: ['游泳池', '健身房', '室内运动馆', '户外篮球场'] },
   ],
   galleryImages: SECOND_GALLERY,
-  albumCategories: ['校园', '教室', '餐厅', '设施'],
+  albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
   heroCategories: ['校园', '设施', '教室'],
   courseGroups: [
     { icon: 'forum', title: '综合英语', text: '共9个级别，每4周测试一次', courseIds: ['pic-4', 'pic-5', 'pic-6', 'ssc'] },
@@ -633,7 +717,11 @@ const SECOND: FellaCampusPage = {
       ],
     },
   ],
-  roomProfiles: [],
+  roomProfiles: [
+    room('第二校区', 'premium-1p', '豪华单人间 1P', [room2('1p'), room2('1p-desk')], '想要宽敞单人间的学生', '一人一间，房内有卫生间、书桌和小冰箱。'),
+    room('第二校区', 'twin-2a', '双人间 2A', [room2('2a')], '想有室友、预算适中的学生', '两人一间。', '两张单人床'),
+    room('第二校区', 'triple-3a', '三人间 3A', [room2('3a'), room2('3a-desks')], '预算优先、想多认识同学的学生', '三人一间，每人一张书桌和置物架。', '三张单人床'),
+  ],
   dormRules: [
     { title: '门禁', text: '按所选生活模式；周五和周六02:00前回校，周日和公众假期22:00前回校；23:00熄灯。' },
     WARNING_RULE,
