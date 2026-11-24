@@ -51,12 +51,25 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
   The 2026 family brochure's 家庭房 photo carries Google Gemini's sparkle watermark (AI-made or AI-edited), so it is
   not used; no single-room photo is certain (the one-bed shots also show two desk chairs).
 - The partner hotel dormitories and the early-study-abroad programs are not quoted online (adviser quote).
-- Golf course price: the message says 1,000 for golf; the brochures say 700 (leisure) and 1,000 (intensive). Both are listed.
-- Brochure refund wording (200,000 won) differs from the message (200 dollars); the page uses 200 dollars.
-  Also unclear: which "deposit" the pre-arrival refund deducts (a booking deposit, or the 4,000-peso dormitory
-  deposit paid at school), and the no-refund minimum (orientation guide: 3 weeks; message: under 4 weeks left).
-  The page follows the message. English questions for the school were drafted on 2026-11-24.
 - The school film's narration was not checked word by word; its first seconds showed another company's logo and were cut.
+
+## School answers (2026-11-24) and the revised Chinese orientation (OT)
+
+- Golf: both courses run. Leisure 700 and Intensive 1,000 dollars per 4 weeks, both from 2 weeks (no 1 or 3 weeks).
+  Golf in the morning, classes in the afternoon (3 Filipino one-to-one + 1 group). Both include unlimited EG Golf
+  practice with balls; Intensive adds 16 private golf lessons per 4 weeks. School clubs are free to borrow but shared
+  and worn, so students should bring their own (especially a 7 iron). Real golf course play is not included.
+- Refund: the cancellation fee is 200 dollars (the won amount was a typo). The "deposit" is a new 400-dollar
+  non-refundable family peak-season booking deposit from summer 2027; the school says it is up to the agency whether to
+  collect it, so it is not on the page. The no-refund rule is "fewer than 4 weeks remain", and those weeks can be used
+  in a later low season.
+- Page refund section follows the 思达启航 rule for every school: the 2,000-yuan deposit and rescheduling rows, a
+  late-cancellation line without the school's pre-entry amounts, the post-entry 50% rule counted from the dorm check-in
+  day, the “付4周读8周” rule (counted on paid weeks: 8 weeks refundable within week 2, 12 weeks within week 3), illness
+  or family emergency 50% of the remaining tuition, the 100-dollar registration never refunded, and the no-refund cases
+  (expulsion, disaster or epidemic closure, absence through the student's own fault).
+- Added from the OT: extending a stay of 8 weeks or less past 59 days needs a new SSP and I-CARD, 9,700 pesos extra.
+- Not published from the OT: the school's mailing address, staff names, social accounts and the agency promotion note.
 
 ## Shared template additions (CIA unchanged)
 
