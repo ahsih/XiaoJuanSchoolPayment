@@ -99,7 +99,7 @@ export class CpilsPageStudent implements PhPageStudent {
   }
   private get startsIn2027(): boolean { return cpilsMonday(this.quotePlan.courses[0]?.startDate ?? '') >= '2027-01-01'; }
   private kindOf(row: QuotePlanRow): QuotePlanKind { return this.quotePlan.courses.includes(row) ? 'course' : 'room'; }
-  private get sidaRate(): number { return 1 - (this.rule('cpils-sida')?.discountValue ?? 0) / 100; }
+  private get sidaPercent(): number { return this.rule('cpils-sida')?.discountValue ?? 0; }
   private get base(): number { return this.tuition + this.accommodation; }
 
   /** The course row's schedule and the price year it was charged at. */
@@ -127,7 +127,20 @@ export class CpilsPageStudent implements PhPageStudent {
   get registration(): number { return this.returningStudent ? 0 : this.pricing.registrationFee; }
   get tuition(): number { return this.quotePlan.total('course'); }
   get accommodation(): number { return this.quotePlan.total('room'); }
-  get sidaDiscount(): number { return cpilsMoney(this.base * (1 - this.sidaRate)); }
+  /**
+   * CPILS's order (school offers first, user decision 2026-11-24): the school's fixed deductions come off
+   * the course and room price, then the school's 5% (off-season or 2027 scholarship), then 思达启航's 10%:
+   * (学费＋住宿费 − 定额优惠) × 0.95 × 0.9 ＋ 注册费. Registration and the peak surcharge are not discounted.
+   */
+  get fixedSchoolDiscount(): number {
+    return cpilsMoney(Math.min(this.base, this.noWindowDiscount + this.holidayDiscount + this.holidayDiscount2027 + this.careerDiscount));
+  }
+  /** The share of every row left after the fixed deductions; the percentages apply to that. */
+  private get afterFixedShare(): number { return this.base > 0 ? (this.base - this.fixedSchoolDiscount) / this.base : 0; }
+  get sidaDiscount(): number {
+    const after = cpilsMoney(this.base - this.fixedSchoolDiscount - this.offSeasonDiscount);
+    return cpilsMoney(after - cpilsMoney(after * (100 - this.sidaPercent) / 100));
+  }
 
   /** 2026 off-season 5% for a row of 4+ weeks starting in its window (2026 course starts only). */
   private offSeasonRule(row: QuotePlanRow): CiaPromotionRule | undefined {
@@ -141,14 +154,15 @@ export class CpilsPageStudent implements PhPageStudent {
     const rule = this.rule('cpils-scholarship-2027');
     return cpils2027Eligible(this.content, this, rule) ? rule : undefined;
   }
-  /** The 2027 scholarship (5% after Sida's rate), or the 2026 off-season 5% on qualifying rows. */
+  /** The 2027 scholarship, or the 2026 off-season 5% on qualifying rows; both after the fixed deductions. */
   get offSeasonDiscount(): number {
+    const share = this.afterFixedShare;
     const scholarship = this.scholarshipRule;
-    if (scholarship) return cpilsMoney(this.base * this.sidaRate * scholarship.discountValue / 100);
+    if (scholarship) return cpilsMoney(this.base * share * scholarship.discountValue / 100);
     if (this.startsIn2027) return 0;
     return cpilsMoney([...this.quotePlan.courses, ...this.quotePlan.rooms].reduce((sum, row) => {
       const rule = this.offSeasonRule(row);
-      return rule ? sum + this.quotePlan.price(this.kindOf(row), row) * this.sidaRate * rule.discountValue / 100 : sum;
+      return rule ? sum + this.quotePlan.price(this.kindOf(row), row) * share * rule.discountValue / 100 : sum;
     }, 0));
   }
   private get offSeasonAppliedRule(): CiaPromotionRule | undefined {
@@ -171,9 +185,11 @@ export class CpilsPageStudent implements PhPageStudent {
     }
     const rule = this.rule('cpils-no-window');
     if (!rule) return 0;
-    return this.quotePlan.rooms
+    const step = Math.max(1, rule.incrementWeeks ?? 4);
+    // Capped at the 24-week tier, 300 dollars (school answer 2026-11-24).
+    return Math.min(Math.floor(24 / step) * rule.discountValue, this.quotePlan.rooms
       .filter(row => !!this.offSeasonRule(row) && ['no-window-single', 'no-window-twin'].includes(row.optionId))
-      .reduce((sum, row) => sum + Math.floor(row.weeks / Math.max(1, rule.incrementWeeks ?? 4)) * rule.discountValue, 0);
+      .reduce((sum, row) => sum + Math.floor(row.weeks / step) * rule.discountValue, 0));
   }
 
   private get holidayRule(): CiaPromotionRule | undefined {
@@ -238,8 +254,8 @@ export class CpilsPageStudent implements PhPageStudent {
     return !this.quoteError && this.weekendRule ? [CPILS_WEEKEND_ACTIVITIES] : [];
   }
 
-  /** Course weeks touching an enabled peak range (CPILS charges study weeks only), at the CALA
-   *  joint-notice rate: 40 dollars a week through 2026, 60 from 2027. */
+  /** Course weeks touching an enabled peak range (CPILS charges study weeks only), at CPILS's own
+   *  rate from the content document: 40 dollars a week in 2026 and 2027 (school reply, user 2026-11-24). */
   private get peak() {
     return calculateAssociationPeakSurcharge('CPILS', this.quotePlan.weekStarts(this.quotePlan.courses),
       this.pricing.peakSeasonRanges.filter(range => range.enabled), this.pricing.seasonalFeePerWeek);
@@ -257,12 +273,12 @@ export class CpilsPageStudent implements PhPageStudent {
   get discountNames(): string {
     const sida = this.rule('cpils-sida');
     return [
-      this.sidaDiscount > 0 ? sida?.name : '',
-      this.offSeasonDiscount > 0 ? this.offSeasonAppliedRule?.name : '',
       this.noWindowDiscount > 0 ? this.noWindowRule?.name : '',
       this.holidayDiscount > 0 ? this.holidayRule?.name : '',
       ...this.holidayOffers2027.map(rule => rule.name),
       this.careerDiscount > 0 ? this.careerRule?.name : '',
+      this.offSeasonDiscount > 0 ? this.offSeasonAppliedRule?.name : '',
+      this.sidaDiscount > 0 ? sida?.name : '',
     ].filter(Boolean).join('、');
   }
 
@@ -276,9 +292,8 @@ export class CpilsPageStudent implements PhPageStudent {
       && noWindow.description.startsWith('报名2026/09/29–2027/12/27')
       ? '无对外窗单人／双人房，窗户面向走廊；符合2027年优惠报名及开课条件，可与其他优惠同享。'
       : noWindow?.description ?? '';
+    // In the order they are applied: fixed school deductions, the school's 5%, then 思达启航's 10%.
     return [
-      ...(sida && this.sidaDiscount ? [{ icon: '折', label: sida.name, value: -this.sidaDiscount, note: sida.description, promotionKey: sida.id }] : []),
-      ...(offSeason && this.offSeasonDiscount ? [{ icon: '淡', label: offSeason.name, value: -this.offSeasonDiscount, note: offSeason.description, promotionKey: offSeason.id }] : []),
       ...(noWindow && this.noWindowDiscount ? [{ icon: '房', label: noWindow.name, value: -this.noWindowDiscount, note: defaultNoWindow, promotionKey: noWindow.id }] : []),
       ...(holiday ? [{ icon: '节', label: holiday.name, value: -holiday.discountValue, note: holiday.description, promotionKey: holiday.id }] : []),
       ...this.holidayOffers2027.map(rule => ({ icon: '节', label: rule.name, value: -rule.discountValue, note: rule.description, promotionKey: rule.id })),
@@ -286,6 +301,8 @@ export class CpilsPageStudent implements PhPageStudent {
         icon: '职', label: career.name, value: -this.careerDiscount,
         note: `职业培训课程共${this.careerWeeks}周，2027年开课；不可折现或转让`, promotionKey: career.id,
       }] : []),
+      ...(offSeason && this.offSeasonDiscount ? [{ icon: '淡', label: offSeason.name, value: -this.offSeasonDiscount, note: offSeason.description, promotionKey: offSeason.id }] : []),
+      ...(sida && this.sidaDiscount ? [{ icon: '折', label: sida.name, value: -this.sidaDiscount, note: sida.description, promotionKey: sida.id }] : []),
       ...(this.seasonalSurcharge ? [{
         icon: '旺', label: '暑假附加费', value: this.seasonalSurcharge,
         note: `学习周与旺季重叠：${associationPeakBreakdownText(this.peak)}；不参与折扣`,

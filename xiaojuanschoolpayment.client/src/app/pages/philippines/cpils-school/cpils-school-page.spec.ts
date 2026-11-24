@@ -102,10 +102,54 @@ describe('CPILS school page on the shared template', () => {
     beforeEach(use2026);
 
     it('applies the Sida and off-season rules to the September plan', () => {
-      expect(student().sidaDiscount).toBe(163.5);
-      expect(student().offSeasonDiscount).toBe(73.58);
-      expect(page.quoteUsd).toBe(1522.92);
+      expect(student().sidaDiscount).toBe(155.32);
+      expect(student().offSeasonDiscount).toBe(81.75);
+      expect(page.quoteUsd).toBe(1522.93);
       expect(page.schoolPaymentItems.map(item => item.label)).toContain('下半年淡季优惠');
+    });
+
+    it('follows the school formula: fixed deductions, then the school 95%, then the Sida 90%', () => {
+      // (935 + 700 − 150) × 0.95 × 0.9 + 125 and (1,870 + 1,400 − 150) × 0.95 × 0.9 + 125 (school, 2026-11-24).
+      page.selectedStartDate = '2026-12-13';
+      expect(student().holidayDiscount).toBe(150);
+      expect(page.quoteUsd).toBe(1394.68);
+      const labels = page.schoolPaymentItems.map(item => item.label);
+      expect(labels.indexOf('圣诞／新年优惠')).toBeLessThan(labels.indexOf('下半年淡季优惠'));
+      expect(labels.indexOf('下半年淡季优惠')).toBeLessThan(labels.indexOf('思达启航折扣'));
+      page.selectedWeeks = 8;
+      expect(page.quoteUsd).toBe(2792.6);
+    });
+
+    it('uses the 2026 price list for 1-3 weeks and prices ESL Premium and the career courses', () => {
+      page.selectedCourseId = 'general-esl-light';
+      page.selectedRoomId = 'regular-twin';
+      for (const [weeks, tuition, room] of [[1, 246, 344], [2, 390, 546], [3, 510, 714]]) {
+        page.selectedWeeks = weeks;
+        expect(page.quoteError).toBe('');
+        expect(student().tuition).toBe(tuition);
+        expect(student().accommodation).toBe(room);
+      }
+      page.selectedWeeks = 1;
+      page.selectedRoomId = 'regular-quad';
+      expect(page.quoteError).toContain('短住');
+      page.selectedRoomId = 'premium-single';
+      page.selectedCourseId = 'toeic-course';
+      expect(student().tuition).toBe(426);
+      expect(student().accommodation).toBe(445);
+      page.selectedWeeks = 4;
+      page.selectedCourseId = 'esl-premium';
+      expect(student().tuition).toBe(1040);
+      page.selectedCourseId = 'tesol';
+      expect(page.quoteError).toBe('');
+      expect(student().tuition).toBe(1040);
+      page.selectedWeeks = 16;
+      expect(page.quoteError).toContain('4／8／12周');
+    });
+
+    it('caps the 2026 no-window deduction at 300 dollars', () => {
+      page.selectedRoomId = 'no-window-single';
+      page.selectedWeeks = 28;
+      expect(student().noWindowDiscount).toBe(300);
     });
 
     it('applies the no-window discount once per complete four-week room block', () => {
@@ -116,14 +160,15 @@ describe('CPILS school page on the shared template', () => {
       expect(payment('无对外窗房优惠')?.note).toContain('每满4周优惠50美元');
     });
 
-    it('charges the CALA rate of 40 dollars per study week in the 2026 summer, outside the discounts', () => {
+    it('charges its own 40 dollars per study week in the 2026 summer, outside the discounts', () => {
       page.selectedStartDate = '2026-07-05';
       expect(student().peakWeeks).toBe(4);
       expect(student().seasonalSurcharge).toBe(160);
+      // CPILS is not on the BESA/CALA fixed-rate list, so the content document's rate applies.
       const content = createDefaultCpilsContentConfig();
       content.quoteSettings.peakSeasonFeePerWeek = 45;
       page['applyContentConfig'](content);
-      expect(student().seasonalSurcharge).toBe(160);
+      expect(student().seasonalSurcharge).toBe(180);
     });
 
     it('selects only the larger Christmas or New Year benefit', () => {
@@ -152,9 +197,9 @@ describe('CPILS school page on the shared template', () => {
     it('uses the 2027 defaults and keeps local fees and image notes identical', () => {
       expect(student().tuition).toBe(982);
       expect(student().accommodation).toBe(735);
-      expect(student().sidaDiscount).toBe(171.7);
-      expect(student().offSeasonDiscount).toBe(77.27);
-      expect(page.quoteUsd).toBe(1593.03);
+      expect(student().sidaDiscount).toBe(163.11);
+      expect(student().offSeasonDiscount).toBe(85.85);
+      expect(page.quoteUsd).toBe(1593.04);
       expect(page.estimatedLocalFeeTotal).toBe(19600);
       expect(page.quoteError).toBe('');
       expect(page.quoteImageData.totalUsd).toBe(page.quoteUsdText);
@@ -221,10 +266,10 @@ describe('CPILS school page on the shared template', () => {
       page.selectedWeeks = 8;
       expect(page.quoteError).toBe('');
       expect(student().peakWeeks).toBe(8);
-      expect(student().seasonalSurcharge).toBe(480);
-      expect(payment('暑假附加费')?.note).toContain('60美元／周 × 8周');
+      expect(student().seasonalSurcharge).toBe(320);
+      expect(payment('暑假附加费')?.note).toContain('40美元／周 × 8周');
       expect(payment('暑假附加费')?.note).toContain('不参与折扣');
-      expect(page.peakRate2027).toBe(60);
+      expect(page.peakRate2027).toBe(40);
       page.selectedWeeks = 12;
       expect(student().peakWeeks).toBe(8);
       page.selectedStartDate = '2027-06-06';
@@ -238,7 +283,7 @@ describe('CPILS school page on the shared template', () => {
       page.selectedStartDate = '2027-07-04';
       student().selectedRegistrationDate = '2027-01-01';
       expect(page.quoteError).toBe('');
-      expect(student().seasonalSurcharge).toBe(240);
+      expect(student().seasonalSurcharge).toBe(160);
     });
 
     for (const [weeks, amount] of [[4, 50], [7, 50], [8, 100], [12, 150], [16, 200], [20, 250], [24, 300]]) {
@@ -335,7 +380,7 @@ describe('CPILS school page on the shared template', () => {
       // 06/20 and 06/27 are off-season; 07/04–08/08 are six peak weeks.
       expect(page.quoteError).toBe('');
       expect(student().tuition).toBe(1197 / 4 * 2 + 1092 / 4 * 6);
-      expect(student().seasonalSurcharge).toBe(360);
+      expect(student().seasonalSurcharge).toBe(240);
       student().selectedRegistrationDate = '2027-01-05';
       page.selectedStartDate = '2027-07-04';
       page.selectedWeeks = 2;
@@ -437,7 +482,8 @@ describe('CPILS school page on the shared template', () => {
       student().selectedRegistrationDate = '2026-11-23';
       expect(student().holidayDiscount2027).toBe(75);
       expect(payment('2027复活节优惠')?.amount).toBe('− 75 美元');
-      expect(page.quoteUsd).toBe(Math.round((before - 75) * 100) / 100);
+      // The deduction comes off before the school 95% and the Sida 90%.
+      expect(page.quoteUsd).toBeCloseTo(before - 75 * 0.95 * 0.9, 1);
       student().selectedRegistrationDate = '2027-03-22';
       expect(student().holidayDiscount2027).toBe(0);
       student().selectedRegistrationDate = '2027-03-01';
@@ -534,7 +580,7 @@ describe('CPILS school page on the shared template', () => {
       old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => !ids.includes(rule.id) || rule.id === 'cpils-career-2027');
       old.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled = false;
       const migrated = cloneCpilsContentConfig(old);
-      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(3);
+      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(4);
       expect(ids.map(id => migrated.quoteSettings.promotions.filter(rule => rule.id === id).length)).toEqual([1, 1, 1, 1, 1]);
       expect(migrated.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled).toBeFalse();
       expect(cloneCpilsContentConfig(migrated)).toEqual(migrated);
@@ -638,11 +684,11 @@ describe('CPILS school page on the shared template', () => {
       student(1).selectedRegistrationDate = '2026-09-28';
       student(1).quotePlan.updateStartDate('course', student(1).quotePlan.courses[0].id, '2027-01-03');
       student(1).returningStudent = true;
-      expect(page.quoteUsd).toBe(1593.03 + 1471.5);
+      expect(page.quoteUsd).toBeCloseTo(1593.04 + 1471.5, 2);
       expect(page.quoteHeading).toBe('CPILS 2人报价');
       expect(page.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
       page.setQuoteMode('single');
-      expect(page.quoteUsd).toBe(1593.03);
+      expect(page.quoteUsd).toBe(1593.04);
       page.setQuoteMode('group');
       expect(student(1).returningStudent).toBeTrue();
     });

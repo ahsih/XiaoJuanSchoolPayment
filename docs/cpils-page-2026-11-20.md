@@ -35,7 +35,7 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
 ## Content decisions
 
 - The page never shows school contacts, the website, social accounts, the street address, the dorm Wi-Fi password, staff or student names, agent commission, or source citations.
-- The 2027 peak surcharge is 60 dollars per study week for 2027-07-04 to 08-28, following the BESA/CALA joint notice (user decision 2026-11-21). CPILS is now in `ASSOCIATION_PEAK_SCHOOL_CODES`, so 2026 weeks stay at 40 dollars and a saved per-week fee cannot change either rate. Only study weeks count (accommodation-only weeks do not), and the surcharge is outside every discount.
+- The 2027 peak surcharge is 40 dollars per study week for 2027-07-04 to 08-28 (school reply, user decision 2026-11-24, replacing the 60-dollar BESA/CALA rate set on 2026-11-21). CPILS is not in `ASSOCIATION_PEAK_SCHOOL_CODES`, so the content document's `peakSeasonFeePerWeek` (40) applies in 2026 and 2027. Only study weeks count (accommodation-only weeks do not), and the surcharge is outside every discount.
 - Visa rules come from the June 2026 orientation handbook:
   - 30-day visa: the first extension is 5,130 pesos and the second is 6,400 pesos.
   - 59-day visa: the first extension counts as the second (6,400 pesos).
@@ -48,7 +48,7 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
 - Parent-child child course: CPILS's sheet did not date the off-season, so every week outside the peak surcharge dates (2027-07-04 to 08-28) is off-season.
   - Off-season (all one-to-one): 1,197 dollars per four weeks, 491/778/1,017 for 1/2/3 weeks.
   - Peak: 1,092, 448/710/928.
-  - A plan across both is priced week by week at the student's own duration tier, and the peak weeks also pay the 60-dollar surcharge.
+  - A plan across both is priced week by week at the student's own duration tier, and the peak weeks also pay the 40-dollar surcharge.
   - The parent course keeps one price all year.
 - The no-window room discount is capped at the supplied 24-week tier (300 dollars), so longer stays do not add more.
 - CPILS is the third school on `/price-compare`. Its page shows the 和其他学校比一比 link. The comparison applies the same course and room filters as the page (`cpilsVisibleCourses`, `cpilsRooms2027`, now in `cpils-pricing.ts`).
