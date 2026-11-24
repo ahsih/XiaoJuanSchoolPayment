@@ -80,7 +80,7 @@ const ENCANTO_COPY: PhPageCopy = {
     eyebrow: 'ACADEMIC CALENDAR',
     title: `${NAME} 2027年假期`,
     intro: '寒暑假亲子营：2027/01/03–02/27、06/27–08/28；淡季：3–6月、9–12月。Encanto 2027年只有元旦全天停课，其他列出的假日上午09:00–12:00、下午13:00–16:00有假日特别课程（Best Holiday Classes），自愿免费参加。',
-    footnote: '政府可能临时增加或调整假期，以学校当期通知为准。',
+    footnote: '假日特别课程的主题和教室可能调整；政府可能临时增加或调整假期，以学校当期通知为准。',
     peakEyebrow: '',
     peakTitle: '',
     peakIntro: '',
