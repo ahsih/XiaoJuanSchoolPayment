@@ -35,6 +35,7 @@ import {
 } from '../philippines/monol-school/monol-content-config';
 import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
 import { MonolSpartaQuote } from '../philippines/monol-sparta-school/monol-sparta-page-quote';
+import { MonolQuote } from '../philippines/monol-school/monol-page-quote';
 import { createCiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import {
   cloneEvContentConfig,
@@ -434,6 +435,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   private buildPreviewQuote(): QuoteImageCardData {
     if (this.isLaMerSelected) return buildLaMerPreviewQuote(this.content, this.laMerPreviewMode, { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, exchangeRateDate: this.exchangeRateDate });
     if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
+    if (this.isMonolSelected) return this.buildMonolPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
       return iuIclPreviewQuoteImage(this.content, campus, { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate });
@@ -697,6 +699,23 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     const quote = new MonolSpartaQuote(pricing);
     const student = quote.students[0];
     student.selectedRegistrationDate = '2026-11-24';
+    student.quotePlan.courses[0].startDate = '2026-11-29';
+    student.quotePlan.rooms[0].startDate = '2026-11-29';
+    return quote.quoteImageData;
+  }
+
+  /** The MONOL main campus is on the shared Philippine template too: preview the real page quote with this draft's content. */
+  private buildMonolPreviewQuote(): QuoteImageCardData {
+    const pricing = createCiaQuotePricing(this.content);
+    Object.assign(pricing, {
+      usdToCny: this.usdToCny,
+      phpPerCny: this.phpPerCny,
+      exchangeRateDate: this.exchangeRateDate,
+      usingLiveExchangeRates: Number.isFinite(this.usdToCny) && Number.isFinite(this.phpPerCny),
+    });
+    const quote = new MonolQuote(pricing);
+    const student = quote.students[0];
+    student.selectedRegistrationDate = '2026-11-25';
     student.quotePlan.courses[0].startDate = '2026-11-29';
     student.quotePlan.rooms[0].startDate = '2026-11-29';
     return quote.quoteImageData;
