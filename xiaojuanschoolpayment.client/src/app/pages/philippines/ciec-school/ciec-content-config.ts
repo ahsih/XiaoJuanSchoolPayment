@@ -9,6 +9,7 @@ import {
   CiaPromotionRule,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 /** Deep copy of plain content data. Not structuredClone, which the WeChat mini program runtime lacks. */
 const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -150,7 +151,7 @@ const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'ssp', name: 'SSP特殊学习许可证', amount: 8000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '上课的学生和家长都要办；不上课的家长和婴幼儿不用办。', sortOrder: 0 }),
   fee({ id: 'ssp-e-card', name: 'SSP E-CARD', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '与SSP同时办理，只收一次。', sortOrder: 1 }),
   fee({ id: 'cidec-ssp', name: 'CIDEC SSP + E-CARD', amount: 15000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: 'CIDEC学生的SSP和E-CARD合计，有效6个月。', sortOrder: 2 }),
-  fee({ id: 'i-card', name: 'I-CARD 外国人身份证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '停留超过59天时办理一次，婴幼儿也要办。', sortOrder: 3 }),
+  fee({ id: 'i-card', name: 'I-CARD 外国人身份证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '第一次签证续签时办理一次（30天签证第5周起，59天签证第9周起），婴幼儿也要办。', sortOrder: 3 }),
   fee({ id: 'utility', name: '综合管理费', amount: 2400, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每人每4周，婴幼儿也收；不足4周按4周估算。', sortOrder: 4 }),
   fee({ id: 'water', name: '水费', amount: 1200, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每人每4周，婴幼儿也收；不足4周按4周估算。', sortOrder: 5 }),
   fee({ id: 'visa-extension', name: '签证续签', amount: 4800, rates: VISA_RATES, tourist59Rates: VISA_RATES.slice(1), billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '按每次续30天预估：第1次4,800（续29天）、第2次5,800、第3次5,300、第4和第5次各5,500、第6次4,000比索；部分国籍每次另加500比索。', sortOrder: 6 }),
@@ -258,6 +259,8 @@ export const cloneCiecContentConfig = (value: CiaContentConfig): CiaContentConfi
   clone.quoteImageSettings.localFeeNotes ??= {};
   clone.quoteImageSettings.benefits ??= copyJson(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
+  // I-CARD (ACR) moved to the first visa extension (user rule 2026-11-24); untouched old notes follow once.
+  upgradeAcrNotes(clone, defaults, { 'i-card': ['停留超过59天时办理一次，婴幼儿也要办。'] });
   clone.media ??= [];
   return clone;
 };

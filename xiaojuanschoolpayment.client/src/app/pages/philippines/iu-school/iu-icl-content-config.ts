@@ -5,7 +5,8 @@ import {
   CiaQuoteImageSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
-import { ICL_COURSES, ICL_ROOMS, IU_COURSES, IU_ROOMS, IuIclCampus } from './iu-icl-quote';
+import { upgradeAcrNotes } from '../acr-first-extension';
+import { ICL_COURSES, ICL_ROOMS, IU_COURSES, IU_ICL_ACR_NOTE, IU_ROOMS, IuIclCampus } from './iu-icl-quote';
 
 const courseRows = (campus: IuIclCampus): CiaCourseContent[] =>
   (campus === 'IU' ? IU_COURSES : ICL_COURSES).map((item, sortOrder) => ({
@@ -38,7 +39,7 @@ const feeRows = (): CiaLocalFeeRule[] => [
   { id: 'laundry', name: '洗衣费', currency: 'PHP', amount: 300, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional', includeInTotal: true, note: '每周2次。', enabled: true, sortOrder: 7 },
   { id: 'visa-extension-1', name: '第1次签证延长', currency: 'PHP', amount: 5500, billingRule: 'first-visa-extension', includeInTotal: true, note: '5–8周参考，延长29天。', enabled: true, sortOrder: 8 },
   { id: 'visa-extension-2', name: '第2次签证延长', currency: 'PHP', amount: 6500, billingRule: 'visa-extension-schedule', includeInTotal: true, note: '9–12周参考，延长1个月。', enabled: true, sortOrder: 9 },
-  { id: 'acr-i-card', name: 'ACR I-Card', currency: 'PHP', amount: 4500, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '停留超过59天时随第2次签证延长办理。', enabled: true, sortOrder: 10 },
+  { id: 'acr-i-card', name: 'ACR I-Card', currency: 'PHP', amount: 4500, billingRule: 'first-visa-extension', includeInTotal: true, note: IU_ICL_ACR_NOTE, enabled: true, sortOrder: 10 },
   { id: 'visa-extension-3-5', name: '第3–5次签证延长', currency: 'PHP', amount: 5500, billingRule: 'visa-extension-schedule', includeInTotal: true, note: '每次延长1个月；24周内最多按3次估算。', enabled: true, sortOrder: 11 },
   { id: 'extra-night', name: '额外住宿（每人）', currency: 'PHP', amount: 1300, billingRule: 'optional', includeInTotal: false, note: '仅在超出标准周日入住、周六13:00退房安排时另计；需先确认空房。', enabled: true, sortOrder: 12 },
 ];
@@ -159,6 +160,8 @@ export const cloneIuIclContentConfig = (value: CiaContentConfig, campus: IuIclCa
       ...(savedImage?.localFeeNotes ?? {}),
     },
   };
+  // ACR I-Card moved to the first visa extension (user rule 2026-11-24); untouched old notes follow once.
+  upgradeAcrNotes(clone, defaults, { 'acr-i-card': ['停留超过59天时随第2次签证延长办理。'] });
   return clone;
 };
 

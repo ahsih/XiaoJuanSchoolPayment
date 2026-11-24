@@ -11,6 +11,7 @@ import {
   CiaQuoteSettings,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 /** Deep copy of plain content data. Not structuredClone, which the WeChat mini program runtime lacks. */
 const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -116,7 +117,7 @@ const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'visa-extension', name: '签证续签', amount: 5130, rates: [5130, 6400, 4430], tourist59Rates: [6400, 4430], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '30天签证依次5,130／6,400／4,430比索，之后每次4,430；59天签证暂按6,400比索起预估；以实际办理为准。', sortOrder: 0 }),
   fee({ id: 'ssp', name: 'SSP特殊学习许可证', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '移民局收取；学习超过6个月续期时须再缴一次。', sortOrder: 1 }),
   fee({ id: 'ssp-i-card', name: 'SSP I-CARD', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP一起办理，只收一次。', sortOrder: 2 }),
-  fee({ id: 'visa-i-card', name: 'VISA I-CARD', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '在菲停留60天及以上（第9周起）办理一次。', sortOrder: 3 }),
+  fee({ id: 'visa-i-card', name: 'VISA I-CARD', amount: 4500, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '第一次签证续签时办理一次（30天签证第5周起，59天签证第9周起）。', sortOrder: 3 }),
   fee({ id: 'arp', name: 'ARP外国人登记', amount: 300, billingRule: 'long-term-or-first-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '59天签证入境、需要续签时办理一次。', sortOrder: 4 }),
   fee({ id: 'utilities', name: '设施使用费', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '每4周收取，不足4周按4周预估。', sortOrder: 5 }),
   fee({ id: 'water-electricity', name: '水电费', amount: 2400, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '校内宿舍每4周收取，超出用量另付；住合作酒店不收水电费。', sortOrder: 6 }),
@@ -312,6 +313,8 @@ export const cloneSmeagContentConfig = (value: CiaContentConfig): CiaContentConf
   clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
   clone.quoteImageSettings.footerNotes = clone.quoteImageSettings.footerNotes.map(note => note.replace(/思达游学/g, '思达启航'));
   if (upgraded) upgradeSmeagImageCopy(clone.quoteImageSettings);
+  // VISA I-CARD (ACR) moved to the first visa extension (user rule 2026-11-24); untouched old notes follow once.
+  upgradeAcrNotes(clone, defaults, { 'visa-i-card': ['在菲停留60天及以上（第9周起）办理一次。'] });
   clone.media ??= [];
   return clone;
 };

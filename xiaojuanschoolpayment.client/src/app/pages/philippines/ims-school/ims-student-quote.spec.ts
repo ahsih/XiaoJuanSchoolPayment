@@ -129,7 +129,7 @@ describe('IMS 2026 price catalog and quote rules', () => {
     }
   });
 
-  it('matches every official 1–24 week local-fee total', () => {
+  it('matches every official 1–24 week local-fee total, plus ACR from the first extension', () => {
     expect(Object.values(IMS_OFFICIAL_LOCAL_TOTALS)).toEqual([
       20550, 21800, 23050, 24300, 30600, 31850, 33100, 34350,
       46400, 47650, 48900, 50150, 55850, 57100, 58350, 59600,
@@ -139,7 +139,11 @@ describe('IMS 2026 price catalog and quote rules', () => {
       const quote = new ImsStudentQuote();
       quote.quotePlan.courses[0].weeks = weeks;
       quote.quotePlan.rooms[0].weeks = weeks;
-      expect(quote.localFeeTotal).withContext(`${weeks}周`).toBe(IMS_OFFICIAL_LOCAL_TOTALS[weeks]);
+      // The school's TOTAL AMOUNT adds ACR I-Card from week 9; the user rule (2026-11-24) adds it with the
+      // first visa extension, so weeks 5–8 pay 4,000 pesos more than the school table.
+      const acrFromFirstExtension = weeks >= 5 && weeks <= 8 ? 4000 : 0;
+      expect(quote.localFeeTotal).withContext(`${weeks}周`).toBe(IMS_OFFICIAL_LOCAL_TOTALS[weeks] + acrFromFirstExtension);
+      expect(quote.localFees.some((fee) => fee.item === 'ACR I-Card')).withContext(`${weeks}周 ACR`).toBe(weeks >= 5);
     }
     expect(IMS_ADDITIONAL_CLASSES.map((item) => [item.name, item.price4w])).toEqual([
       ['ESL额外一对一', 150], ['ESL额外团体课', 120], ['ESL团体课转一对一', 100],

@@ -171,7 +171,9 @@ describe('IU and ICL 2026 quote rules', () => {
 
   it('matches every supplied local-fee checkpoint', () => {
     const quote = new IuIclQuote('IU', 'power-speaking-4', 'campus-triple', '2026-09-13');
-    const expected = new Map([[4, 22900], [8, 33200], [12, 49000], [16, 59300], [24, 79900]]);
+    // The school's 8-week checkpoint was 33,200 without ACR; ACR I-Card (4,500) now comes with the first
+    // visa extension (user rule 2026-11-24), so 8 weeks is 37,700.
+    const expected = new Map([[4, 22900], [8, 37700], [12, 49000], [16, 59300], [24, 79900]]);
     expected.forEach((total, weeks) => {
       align(quote, weeks, '2026-09-13');
       expect(quote.localFeeTotal).toBe(total);
@@ -246,6 +248,14 @@ describe('IU and ICL 2026 quote rules', () => {
     expect(fees.find(item => item.item === 'SSP特别学习许可')?.quantity).toBe(2);
     expect(fees.find(item => item.item === '学生2 · 第1次签证延长')?.total).toBe(5500);
     expect(fees.find(item => item.item === '学生2 · 第2次签证延长')?.total).toBe(6500);
+  });
+
+  it('charges ACR I-Card with the first visa extension (user rule 2026-11-24)', () => {
+    const quote = new IuIclQuote('ICL', 'power-speaking-4', 'campus-quad', '2026-10-04');
+    expect(quote.localFees.some(item => item.item === 'ACR I-Card')).toBeFalse();
+    align(quote, 8, '2026-10-04');
+    expect(quote.visaExtensionCount).toBe(1);
+    expect(quote.localFees.find(item => item.item === 'ACR I-Card')?.total).toBe(4500);
   });
 
   it('builds an IU/ICL group image with student-labelled rows and summed totals', () => {
