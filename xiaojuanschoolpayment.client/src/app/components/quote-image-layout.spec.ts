@@ -5,7 +5,7 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { ElementRef } from '@angular/core';
 import { EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
-import { CgBaniladSchoolComponent } from '../pages/philippines/cg-banilad-school/cg-banilad-school.component';
+import { CgBaniladSchoolPageComponent } from '../pages/philippines/cg-banilad-school/cg-banilad-school-page.component';
 import { QuoteImageDownloadButtonComponent } from './quote-image-download-button.component';
 
 describe('quote image visual hierarchy', () => {
@@ -16,7 +16,7 @@ describe('quote image visual hierarchy', () => {
       { provide: ElementRef, useValue: new ElementRef(document.createElement('div')) },
       { provide: ExchangeRateService, useValue: { getLatestCnyRates: () => EMPTY } },
     ] });
-    const component = TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent());
+    const component = TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent());
     // Reproduce the user's reference quote totals, independent of live exchange-rate requests.
     component.usdToCny = 14984 / 2230;
     component.phpPerCny = 23300 / 2504;
