@@ -80,7 +80,10 @@ jobs:
         run: |
           # "deploy" is a transport branch in the server's working repository;
           # the checked-out main branch is fast-forwarded in the next step.
-          git push --force "ssh://$SERVER_USER@$SERVER_HOST/opt/sida/app" "$GITHUB_SHA:refs/heads/deploy"
+          # New files go first in batches of about 50 MB, so a push that runs
+          # into GitHub's 6-hour job limit keeps the batches that arrived and
+          # the next run continues from there (see the script).
+          bash .github/scripts/push-in-batches.sh "ssh://$SERVER_USER@$SERVER_HOST/opt/sida/app" "$GITHUB_SHA"
 
       - name: Update production server
         env:
