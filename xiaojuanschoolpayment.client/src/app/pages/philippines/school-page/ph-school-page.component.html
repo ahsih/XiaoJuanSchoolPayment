@@ -726,7 +726,9 @@
             (click)="compactLayout && selectRateRoom(room, $event)"
             (keydown.enter)="compactLayout && selectRateRoom(room, $event)"
           >
+            <!-- A room without a location (PINES Condo, user answer 2026-11-24) shows no 校内/校外 badge. -->
             <span
+              *ngIf="room.location"
               class="room-location-badge"
               [class.room-location-badge--off-campus]="room.location === '校外'"
             >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
@@ -873,7 +875,7 @@
             </div>
             <div class="room-profile-badges">
               <b *ngIf="roomVariant?.code ?? selectedRoomProfile.bookingCode as code">{{ code }}</b>
-              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+              <em *ngIf="selectedRoomProfile.location" [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
             </div>
           </header>
 
