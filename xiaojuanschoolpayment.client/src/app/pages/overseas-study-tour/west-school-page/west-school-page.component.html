@@ -1,0 +1,441 @@
+<div class="ws">
+  <!-- Hero: who, why trust it, what it costs, what to do next -->
+  <header class="ws-hero" id="overview">
+    <div class="ws-wrap ws-hero-grid">
+      <div class="ws-hero-copy">
+        <p class="ws-eyebrow">{{ p.hero.eyebrow }}</p>
+        <h1>{{ p.hero.title }}<small>{{ p.hero.englishName }}</small></h1>
+        <p class="ws-hero-sub">{{ p.hero.subtitle }}</p>
+        <ul class="ws-badges">
+          <li *ngFor="let badge of p.hero.badges"><mat-icon>verified</mat-icon>{{ badge }}</li>
+        </ul>
+        <div class="ws-price-anchor">
+          <span>{{ p.hero.price.label }}</span>
+          <strong>{{ p.hero.price.value }}<em>{{ p.hero.price.unit }}</em></strong>
+          <small>{{ p.hero.price.note }}</small>
+        </div>
+        <div class="ws-hero-actions">
+          <a class="ws-btn ws-btn--primary" href="#quote" (click)="go('quote', $event)"><mat-icon>calculate</mat-icon>算一算我的费用</a>
+          <a class="ws-btn ws-btn--ghost" href="#consult" (click)="go('consult', $event)"><mat-icon>forum</mat-icon>加顾问微信咨询</a>
+        </div>
+      </div>
+      <div class="ws-hero-media">
+        <button type="button" class="ws-hero-main" (click)="openPhotos(heroPhotos, 0)" [attr.aria-label]="'查看照片：' + p.hero.image.alt">
+          <img [src]="p.hero.image.src" [alt]="p.hero.image.alt" fetchpriority="high" />
+          <span class="ws-photo-count"><mat-icon>photo_library</mat-icon>{{ heroPhotos.length }}张照片</span>
+        </button>
+        <div class="ws-hero-thumbs">
+          <button type="button" *ngFor="let photo of p.hero.photos; let index = index" (click)="openPhotos(heroPhotos, index + 1)"
+            [attr.aria-label]="'查看照片：' + photo.alt">
+            <img [src]="photo.src" [alt]="photo.alt" loading="lazy" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="ws-wrap">
+      <ul class="ws-stats">
+        <li *ngFor="let stat of p.hero.stats"><strong>{{ stat.value }}</strong><span>{{ stat.label }}</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <nav class="ws-anchors" aria-label="页面目录">
+    <div class="ws-wrap">
+      <a *ngFor="let anchor of p.anchors" [href]="'#' + anchor.id" (click)="go(anchor.id, $event)">
+        <mat-icon>{{ anchor.icon }}</mat-icon><span>{{ anchor.label }}</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Time-limited offers -->
+  <section class="ws-section ws-section--offers" id="offers" *ngIf="activePromos.length">
+    <div class="ws-wrap">
+      <div class="ws-promo-grid" [class.single]="activePromos.length === 1">
+        <article class="ws-promo" *ngFor="let promo of activePromos">
+          <div class="ws-promo-top">
+            <span class="ws-promo-tag">{{ promo.tag }}</span>
+            <span class="ws-promo-until"><mat-icon>schedule</mat-icon>{{ promo.untilText }}<b *ngIf="daysLeft(promo) <= 14">，还剩{{ daysLeft(promo) }}天</b></span>
+          </div>
+          <h2>{{ promo.title }}</h2>
+          <p>{{ promo.text }}</p>
+          <ul><li *ngFor="let point of promo.points">{{ point }}</li></ul>
+          <a class="ws-text-link" href="#consult" (click)="go('consult', $event)">找顾问确认能否享受<mat-icon>arrow_forward</mat-icon></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why this school -->
+  <section class="ws-section" id="why-school">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.trust.title }}</h2>
+        <p>{{ p.trust.intro }}</p>
+      </div>
+      <ul class="ws-accreditations">
+        <li *ngFor="let badge of p.trust.badges"><mat-icon>workspace_premium</mat-icon>{{ badge }}</li>
+      </ul>
+      <div class="ws-trust-grid">
+        <article *ngFor="let item of p.trust.items">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Campus choice -->
+  <section class="ws-section ws-section--tint" id="campuses" *ngIf="p.campuses?.items?.length">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.campuses!.title }}</h2>
+        <p>{{ p.campuses!.intro }}</p>
+      </div>
+      <div class="ws-campus-grid">
+        <article class="ws-campus" *ngFor="let campus of p.campuses!.items">
+          <button type="button" class="ws-campus-photo" (click)="openPhotos([campus.image].concat(campus.photos), 0)"
+            [attr.aria-label]="'查看' + campus.name + '照片'">
+            <img [src]="campus.image.src" [alt]="campus.image.alt" loading="lazy" />
+            <span class="ws-campus-tag">{{ campus.tag }}</span>
+            <span class="ws-photo-count"><mat-icon>photo_library</mat-icon>{{ campus.photos.length + 1 }}张照片</span>
+          </button>
+          <div class="ws-campus-body">
+            <h3>{{ campus.name }}<small>{{ campus.englishName }}</small></h3>
+            <p>{{ campus.summary }}</p>
+            <dl class="ws-facts">
+              <div *ngFor="let fact of campus.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+            </dl>
+            <div class="ws-suits">
+              <strong>适合</strong>
+              <ul><li *ngFor="let item of campus.suits"><mat-icon>check_circle</mat-icon>{{ item }}</li></ul>
+            </div>
+            <p class="ws-campus-price">{{ campus.priceFrom }}</p>
+          </div>
+        </article>
+      </div>
+      <p class="ws-ref">{{ p.referenceNote }}</p>
+    </div>
+  </section>
+
+  <!-- Videos -->
+  <section class="ws-section" id="videos" *ngIf="p.videos.items.length">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.videos.title }}</h2>
+        <p>{{ p.videos.intro }}</p>
+      </div>
+      <div class="ws-video-grid">
+        <figure class="ws-video" *ngFor="let video of p.videos.items">
+          <video [src]="video.src" [poster]="video.poster" controls preload="none" playsinline></video>
+          <figcaption>
+            <strong>{{ video.title }}<span>{{ video.duration }}</span></strong>
+            <p>{{ video.text }}</p>
+            <small *ngIf="video.note">{{ video.note }}</small>
+          </figcaption>
+        </figure>
+      </div>
+      <p class="ws-ref">{{ p.videos.note }}</p>
+    </div>
+  </section>
+
+  <!-- Courses and prices -->
+  <section class="ws-section ws-section--tint" id="courses">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.courses.title }}</h2>
+        <p>{{ p.courses.intro }}</p>
+      </div>
+      <div class="ws-course-grid">
+        <article class="ws-course" *ngFor="let course of p.courses.items">
+          <span class="ws-course-badge" *ngIf="course.badge">{{ course.badge }}</span>
+          <h3>{{ course.name }}</h3>
+          <p class="ws-course-en">{{ course.englishName }}</p>
+          <p>{{ course.text }}</p>
+          <dl class="ws-facts ws-facts--compact">
+            <div *ngFor="let fact of course.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+          </dl>
+          <ul class="ws-points" *ngIf="course.points.length"><li *ngFor="let point of course.points">{{ point }}</li></ul>
+          <p class="ws-course-price" *ngIf="course.priceFrom">{{ course.priceFrom }}</p>
+        </article>
+      </div>
+
+      <div class="ws-prices" id="prices">
+        <div class="ws-prices-head">
+          <div>
+            <h3>{{ p.courses.priceTitle }}</h3>
+            <p>{{ p.courses.priceIntro }}</p>
+          </div>
+          <div class="ws-tabs" role="tablist" *ngIf="p.courses.priceTables.length > 1">
+            <button type="button" role="tab" *ngFor="let table of p.courses.priceTables; let index = index"
+              [class.active]="priceTab === index" [attr.aria-selected]="priceTab === index" (click)="priceTab = index">{{ table.label }}</button>
+          </div>
+        </div>
+        <ng-container *ngIf="p.courses.priceTables[priceTab] as table">
+          <div class="ws-table-wrap">
+            <table class="ws-table">
+              <caption>{{ table.caption }}</caption>
+              <thead><tr><th *ngFor="let column of table.columns">{{ column }}</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let row of table.rows" [class.highlight]="row.highlight">
+                  <th scope="row">{{ row.label }}</th>
+                  <td *ngFor="let value of row.values">{{ value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ws-table-note">{{ table.note }}</p>
+        </ng-container>
+        <div class="ws-fixed" *ngIf="p.courses.fixed as fixed">
+          <h4>{{ fixed.title }}</h4>
+          <div class="ws-table-wrap">
+            <table class="ws-table ws-table--fixed">
+              <thead><tr><th *ngFor="let column of fixed.columns">{{ column }}</th></tr></thead>
+              <tbody><tr *ngFor="let row of fixed.rows"><td *ngFor="let cell of row">{{ cell }}</td></tr></tbody>
+            </table>
+          </div>
+          <p class="ws-table-note">{{ fixed.note }}</p>
+        </div>
+        <a class="ws-btn ws-btn--primary ws-prices-cta" href="#quote" (click)="go('quote', $event)"><mat-icon>calculate</mat-icon>按我的日期和住宿算总价</a>
+      </div>
+      <p class="ws-ref">{{ p.referenceNote }}</p>
+    </div>
+  </section>
+
+  <!-- Accommodation -->
+  <section class="ws-section" id="stay">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.stay.title }}</h2>
+        <p>{{ p.stay.intro }}</p>
+      </div>
+      <div class="ws-stay-grid">
+        <article class="ws-stay" *ngFor="let stay of p.stay.items">
+          <button type="button" class="ws-stay-photo" *ngIf="stay.image as image" (click)="openPhotos([image].concat(stay.photos), 0)" [attr.aria-label]="'查看' + stay.name + '照片'">
+            <img [src]="image.src" [alt]="image.alt" loading="lazy" />
+            <span class="ws-campus-tag">{{ stay.campus }}</span>
+            <span class="ws-photo-count" *ngIf="stay.photos.length"><mat-icon>photo_library</mat-icon>看照片（{{ stay.photos.length + 1 }}）</span>
+          </button>
+          <div class="ws-stay-icon" *ngIf="!stay.image">
+            <mat-icon>{{ stay.icon || 'hotel' }}</mat-icon>
+            <span class="ws-campus-tag">{{ stay.campus }}</span>
+          </div>
+          <div class="ws-stay-body">
+            <h3>{{ stay.name }}</h3>
+            <p class="ws-stay-price">{{ stay.price }}<small>{{ stay.priceNote }}</small></p>
+            <ul class="ws-tags"><li *ngFor="let tag of stay.tags">{{ tag }}</li></ul>
+            <ul class="ws-points"><li *ngFor="let point of stay.points">{{ point }}</li></ul>
+          </div>
+        </article>
+      </div>
+      <details class="ws-disclosure" *ngIf="p.stay.rules.length">
+        <summary>住宿规定<mat-icon>expand_more</mat-icon></summary>
+        <ul class="ws-points"><li *ngFor="let rule of p.stay.rules">{{ rule }}</li></ul>
+      </details>
+      <p class="ws-ref">{{ p.referenceNote }}</p>
+    </div>
+  </section>
+
+  <!-- Quote (projected by the school) -->
+  <section class="ws-section ws-section--quote" id="quote">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.quote.title }}</h2>
+        <p>{{ p.quote.intro }}</p>
+      </div>
+      <ul class="ws-quote-points"><li *ngFor="let point of p.quote.points"><mat-icon>task_alt</mat-icon>{{ point }}</li></ul>
+      <div class="ws-quote-card"><ng-content select="[quote]"></ng-content></div>
+    </div>
+  </section>
+
+  <!-- Other fees -->
+  <section class="ws-section" id="fees">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.fees.title }}</h2>
+        <p>{{ p.fees.intro }}</p>
+      </div>
+      <div class="ws-fee-list">
+        <div class="ws-fee" *ngFor="let fee of p.fees.rows">
+          <div><strong>{{ fee.label }}</strong><small *ngIf="fee.note">{{ fee.note }}</small></div>
+          <span>{{ fee.value }}</span>
+        </div>
+      </div>
+      <p class="ws-ref">{{ p.fees.note }}</p>
+    </div>
+  </section>
+
+  <!-- School-specific feature block -->
+  <section class="ws-section ws-section--feature" [id]="p.feature.id" *ngIf="p.feature">
+    <div class="ws-wrap ws-feature">
+      <div class="ws-feature-copy">
+        <p class="ws-eyebrow">{{ p.feature.eyebrow }}</p>
+        <h2>{{ p.feature.title }}</h2>
+        <p>{{ p.feature.intro }}</p>
+        <div class="ws-feature-points">
+          <div *ngFor="let point of p.feature.points"><strong>{{ point.title }}</strong><span>{{ point.text }}</span></div>
+        </div>
+        <p class="ws-feature-note">{{ p.feature.note }}</p>
+        <a class="ws-text-link ws-text-link--light" *ngIf="p.feature.link" [routerLink]="p.feature.link.route">{{ p.feature.link.label }}<mat-icon>arrow_forward</mat-icon></a>
+      </div>
+      <img *ngIf="p.feature.image" class="ws-feature-image" [src]="p.feature.image.src" [alt]="p.feature.image.alt" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- Student life -->
+  <section class="ws-section" id="life">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.life.title }}</h2>
+        <p>{{ p.life.intro }}</p>
+      </div>
+      <div class="ws-weekly">
+        <article *ngFor="let item of p.life.weekly">
+          <img *ngIf="item.image" [src]="item.image.src" [alt]="item.image.alt" loading="lazy" />
+          <div class="ws-act-icon" *ngIf="!item.image" aria-hidden="true"><mat-icon>{{ item.icon || 'event' }}</mat-icon></div>
+          <div><span>{{ item.label }}</span><strong>{{ item.title }}</strong><p *ngIf="item.text">{{ item.text }}</p></div>
+        </article>
+      </div>
+      <h3 class="ws-subhead" *ngIf="p.life.monthly.length">每月特色活动</h3>
+      <div class="ws-monthly">
+        <article *ngFor="let item of p.life.monthly">
+          <img *ngIf="item.image" [src]="item.image.src" [alt]="item.image.alt" loading="lazy" />
+          <div class="ws-act-icon" *ngIf="!item.image" aria-hidden="true"><mat-icon>{{ item.icon || 'event' }}</mat-icon></div>
+          <div><span>{{ item.label }}</span><strong>{{ item.title }}</strong></div>
+        </article>
+      </div>
+      <p class="ws-ref">{{ p.life.note }}</p>
+    </div>
+  </section>
+
+  <!-- Junior programmes -->
+  <section class="ws-section ws-section--tint" id="junior" *ngIf="p.junior">
+    <div class="ws-wrap ws-junior">
+      <div>
+        <h2>{{ p.junior.title }}</h2>
+        <p>{{ p.junior.intro }}</p>
+        <ul class="ws-points"><li *ngFor="let point of p.junior.points">{{ point }}</li></ul>
+        <p class="ws-ref">{{ p.junior.note }}</p>
+        <a class="ws-btn ws-btn--ghost" href="#consult" (click)="go('consult', $event)"><mat-icon>forum</mat-icon>咨询青少年项目</a>
+      </div>
+      <figure class="ws-video" *ngIf="p.junior.video as video">
+        <video [src]="video.src" [poster]="video.poster" controls preload="none" playsinline></video>
+        <figcaption>
+          <strong>{{ video.title }}<span>{{ video.duration }}</span></strong>
+          <p>{{ video.text }}</p>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Calendar -->
+  <section class="ws-section" id="calendar">
+    <div class="ws-wrap ws-calendar">
+      <div class="ws-head">
+        <h2>{{ p.calendar.title }}</h2>
+        <p>{{ p.calendar.intro }}</p>
+      </div>
+      <ul class="ws-dates">
+        <li *ngFor="let row of p.calendar.rows"><time>{{ row.date }}</time><div><strong>{{ row.name }}</strong><small *ngIf="row.note">{{ row.note }}</small></div></li>
+      </ul>
+      <p class="ws-ref">{{ p.calendar.note }}</p>
+    </div>
+  </section>
+
+  <!-- Who it suits -->
+  <section class="ws-section ws-section--tint" id="fit">
+    <div class="ws-wrap">
+      <div class="ws-head"><h2>{{ p.fit.title }}</h2></div>
+      <div class="ws-fit">
+        <div class="ws-fit-col ws-fit-col--good">
+          <h3><mat-icon>thumb_up</mat-icon>适合这些学生</h3>
+          <ul><li *ngFor="let item of p.fit.good">{{ item }}</li></ul>
+        </div>
+        <div class="ws-fit-col">
+          <h3><mat-icon>lightbulb</mat-icon>报名前想清楚</h3>
+          <ul><li *ngFor="let item of p.fit.consider">{{ item }}</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why 思达启航 -->
+  <section class="ws-section" id="why-sida">
+    <div class="ws-wrap">
+      <div class="ws-head">
+        <h2>{{ p.why.title }}</h2>
+        <p>{{ p.why.intro }}</p>
+      </div>
+      <div class="ws-why-grid">
+        <article *ngFor="let item of p.why.items; let index = index">
+          <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
+          <div><strong>{{ item.title }}</strong><p *ngIf="item.text">{{ item.text }}</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consultants -->
+  <section class="ws-section ws-section--consult" id="consult">
+    <div class="ws-wrap">
+      <div class="ws-head ws-head--light">
+        <h2>{{ p.consultants.title }}</h2>
+        <p>{{ p.consultants.intro }}</p>
+      </div>
+      <div class="ws-consultants">
+        <article class="ws-consultant" *ngFor="let consultant of consultants">
+          <div class="ws-consultant-top">
+            <img class="ws-avatar" [src]="consultant.avatarSrc" [alt]="consultant.name + '头像'" loading="lazy" />
+            <div><strong>{{ consultant.name }}</strong><span>{{ consultant.title }}</span></div>
+          </div>
+          <p>{{ consultant.description }}</p>
+          <img class="ws-qr" [src]="consultant.qrSrc" [alt]="consultant.name + '的微信二维码'" loading="lazy" />
+          <small>扫码加微信，备注想去的学校</small>
+          <a *ngIf="consultant.phoneHref" class="ws-phone" [href]="consultant.phoneHref"><mat-icon>call</mat-icon>{{ consultant.phone }}</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="ws-section" id="faq" *ngIf="p.faq.length">
+    <div class="ws-wrap ws-faq">
+      <div class="ws-head"><h2>常见问题</h2></div>
+      <details *ngFor="let item of p.faq">
+        <summary>{{ item.q }}<mat-icon>expand_more</mat-icon></summary>
+        <p>{{ item.a }}</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="ws-closing">
+    <div class="ws-wrap">
+      <h2>{{ p.closing.title }}</h2>
+      <p>{{ p.closing.text }}</p>
+      <div class="ws-hero-actions">
+        <a class="ws-btn ws-btn--primary" href="#quote" (click)="go('quote', $event)"><mat-icon>calculate</mat-icon>免费算报价</a>
+        <a class="ws-btn ws-btn--light" href="#consult" (click)="go('consult', $event)"><mat-icon>forum</mat-icon>加顾问微信</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Phone action bar -->
+  <div class="ws-mobile-bar">
+    <a *ngIf="callConsultant as caller" [href]="caller.phoneHref"><mat-icon>call</mat-icon>电话</a>
+    <a href="#consult" (click)="go('consult', $event)"><mat-icon>forum</mat-icon>微信咨询</a>
+    <a class="primary" href="#quote" (click)="go('quote', $event)"><mat-icon>calculate</mat-icon>免费报价</a>
+  </div>
+
+  <div class="ws-lightbox" *ngIf="lightbox as box" role="dialog" aria-modal="true" aria-label="照片" (click)="closePhotos()"
+    (touchstart)="touchStart($event)" (touchend)="touchEnd($event)">
+    <button type="button" class="ws-lightbox-close" (click)="closePhotos()" aria-label="关闭"><mat-icon>close</mat-icon></button>
+    <figure (click)="$event.stopPropagation()">
+      <img [src]="box.photos[box.index].src" [alt]="box.photos[box.index].alt" />
+      <figcaption>{{ box.photos[box.index].caption || box.photos[box.index].alt }}<span>{{ box.index + 1 }} / {{ box.photos.length }}</span></figcaption>
+    </figure>
+    <ng-container *ngIf="box.photos.length > 1">
+      <button type="button" class="ws-lightbox-nav prev" (click)="stepPhoto(-1, $event)" aria-label="上一张"><mat-icon>chevron_left</mat-icon></button>
+      <button type="button" class="ws-lightbox-nav next" (click)="stepPhoto(1, $event)" aria-label="下一张"><mat-icon>chevron_right</mat-icon></button>
+    </ng-container>
+  </div>
+</div>

@@ -234,3 +234,46 @@
   font-size: 20px;
   color: #f25518;
 }
+
+/* Peak seasons without a surcharge on the calendar (HANA). */
+:host .compact-peak.compact-peak--free { background: #eef8f3; }
+:host .compact-peak.compact-peak--free > mat-icon,
+:host .compact-peak.compact-peak--free strong { color: #187a5a; }
+
+/* Short written reviews without names (HANA): a grid on wide screens, a swipe row on phones. */
+:host .text-review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+:host .text-review-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid #dce4e7;
+  border-radius: 14px;
+  background: #fff;
+}
+:host .text-review-quote { color: #e94f16; width: 28px; height: 28px; font-size: 28px; }
+:host .text-review-grid blockquote {
+  flex: 1;
+  margin: 0;
+  color: #334155;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+:host .text-review-who { color: #64756d; font-size: 13px; font-weight: 700; }
+:host .text-review-note { display: block; margin-top: 10px; color: #7a8a84; font-size: 12.5px; }
+@media (max-width: 1040px) {
+  :host .text-review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  :host .text-review-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+  }
+  :host .text-review-grid article { flex: 0 0 min(82%, 320px); scroll-snap-align: start; }
+}

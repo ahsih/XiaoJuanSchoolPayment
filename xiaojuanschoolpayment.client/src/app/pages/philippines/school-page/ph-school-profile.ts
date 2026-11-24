@@ -71,7 +71,10 @@ export interface PhPageCopy {
   studentCare?: CiaCopy['studentCare'];
   practicalGuide?: CiaCopy['practicalGuide'];
   studentTracks?: CiaCopy['studentTracks'];
-  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'>;
+  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'> & {
+    /** Line under the short text reviews (textReviews); HANA. */
+    textNote?: string;
+  };
   /** School-only: heading of the offers section above the quote (profile.offers; CPILS). */
   offers?: { eyebrow: string; title: string; intro: string; note?: string };
   sida: CiaCopy['sida'];
@@ -126,6 +129,12 @@ export type PhRoomProfile = Optional<
 
 export type PhAlbumCategory = Exclude<GalleryCategory, '全部'>;
 
+/** A short written review; `who` describes the reviewer without a name (e.g. 带孩子来读的家长). */
+export interface PhTextReview {
+  who: string;
+  text: string;
+}
+
 /** One video of the compact layout's hero album; 'tall' is a vertical phone clip. */
 export interface PhVideoItem {
   title: string;
@@ -152,6 +161,11 @@ export interface PhSchoolProfile {
    * ph-school-page-compact.css and ph-school-page-compact-tools.css, which each such school lists.
    */
   compactLayout?: boolean;
+  /**
+   * Compact layout: end the overview (key facts, building list and advisor review) with `copy.referenceNote`
+   * too (PINES, user request 2026-11-24: every detail is for reference only). Off by default, so CIA is unchanged.
+   */
+  overviewReferenceNote?: boolean;
   /** Compact layout: the overview's key facts (location, size, management, courses …). */
   overviewFacts?: ReadonlyArray<{ icon: string; label: string; value: string }>;
   /** Compact layout: video groups, shown first in the hero album (the first video opens it). */
@@ -166,6 +180,16 @@ export interface PhSchoolProfile {
    * type (user rule 2026-11-21); a video showing several room types stays in the hero album only.
    */
   roomVideos?: Readonly<Record<string, PhVideoItem>>;
+  /**
+   * School-only: peak seasons without a surcharge (HANA), marked on the calendar with `title` (e.g. 旺季不加价)
+   * instead of the surcharge line. CIA leaves it out and charges its surcharge from the content document.
+   */
+  peakSeasonsWithoutSurcharge?: { title: string; ranges: ReadonlyArray<{ start: string; end: string; label: string }> };
+  /**
+   * School-only: short written reviews without the reviewers' names, shown as cards in the reviews section
+   * (HANA; styles in ph-school-page-options.css). CIA uses studentReviews instead.
+   */
+  textReviews?: readonly PhTextReview[];
   /** schoolCode of the content document, e.g. 'CIA'. */
   code: string;
   /** Short school name in headings, labels and the comparison image, e.g. 'CIA'. */

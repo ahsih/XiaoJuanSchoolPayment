@@ -329,6 +329,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
+  readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};
   readonly roomVideos = this.profile.roomVideos ?? {};
   /**
@@ -441,7 +442,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     const calendar = this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0];
     if (!calendar) return [];
     const year = calendar.year;
-    const ranges = this.peakSeasonCalendarRanges.filter(range => range.enabled !== false);
+    const ranges = [...this.peakSeasonCalendarRanges.filter(range => range.enabled !== false), ...this.calendarFreePeakRanges];
     return Array.from({ length: 12 }, (_, offset) => {
       const month = offset + 1;
       const first = `${year}-${String(month).padStart(2, '0')}-01`;
@@ -460,6 +461,14 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.peakSeasonCalendarRanges.filter(range =>
       range.enabled !== false && range.end >= `${year}-01-01` && range.start <= `${year}-12-31`);
   }
+  /** School-only peak ranges without a surcharge (HANA) that touch the calendar year; CIA has none. */
+  get calendarFreePeakRanges(): CiaPeakSeasonRange[] {
+    const year = this.calendarYear;
+    return (this.profile.peakSeasonsWithoutSurcharge?.ranges ?? [])
+      .filter(range => range.end >= `${year}-01-01` && range.start <= `${year}-12-31`)
+      .map(range => ({ id: range.start, label: range.label, start: range.start, end: range.end, enabled: true }));
+  }
+  readonly freePeakTitle = this.profile.peakSeasonsWithoutSurcharge?.title ?? '';
   get calendarYear(): number {
     return (this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0])?.year ?? 2027;
   }
@@ -472,9 +481,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     this.isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
   }
   roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
+    // An empty room code never matches: rooms without codes (PINES, HANA) link only through `rateIds`, and only
+    // HANA's double room has photos.
     return this.roomComparisonProfiles.find(profile =>
       profile.rateIds?.includes(room.id)
-      || (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+      || (!!room.code && (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code)));
+  }
+  /** False when some room cards have no photos (HANA), so the hint points at the 看照片 buttons instead. */
+  get everyRateRoomHasPhotos(): boolean {
+    return this.roomRateGroups.every(group => group.rooms.every(room => !!this.roomProfileForRate(room)));
   }
   get activeRateRoomId(): string {
     if (this.selectedRateRoomId) return this.selectedRateRoomId;
@@ -640,6 +655,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly studentTracks = this.profile.studentTracks;
 
   readonly officialStudentReviews = this.profile.studentReviews;
+  /** School-only short written reviews (HANA); CIA has none. */
+  readonly textReviews = this.profile.textReviews ?? [];
 
   readonly sidaCiaReasons = this.profile.sidaReasons;
 
@@ -906,9 +923,30 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       .subscribe((photos) => this.applyGalleryPhotos(photos));
   }
 
+  /**
+   * Whether an uploaded school photo or video belongs on this page. Every upload by default; a school whose
+   * campus pages share one school record (JIC) keeps only its own campus.
+   */
+  protected acceptUploadedMedia(_photo: SchoolPhotoDTO): boolean {
+    return true;
+  }
+
+  private uploadedMediaSource: SchoolPhotoDTO[] | null = null;
+  private galleryBeforeUploads: GalleryImage[] | null = null;
+
+  /** Applies the loaded uploads again after acceptUploadedMedia changed its answer (JIC: content with campus tags arrived). */
+  protected refreshUploadedMedia(): void {
+    if (!this.uploadedMediaSource) return;
+    if (this.galleryBeforeUploads) this.galleryImages = this.galleryBeforeUploads;
+    this.uploadedVideoCards = [];
+    this.applyGalleryPhotos(this.uploadedMediaSource);
+  }
+
   private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    this.uploadedMediaSource = photos ?? [];
+    this.galleryBeforeUploads ??= this.galleryImages;
     const uploadedMedia = (photos ?? [])
-      .filter((photo) => Boolean(photo.url))
+      .filter((photo) => Boolean(photo.url) && this.acceptUploadedMedia(photo))
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
     if (uploadedMedia.length === 0) {
