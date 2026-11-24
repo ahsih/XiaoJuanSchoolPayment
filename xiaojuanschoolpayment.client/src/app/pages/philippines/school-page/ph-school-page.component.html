@@ -90,8 +90,9 @@
 
       <!-- Compact layout: one album, every video by topic first, then every photo by area. -->
       <div class="hero-album" id="gallery" *ngIf="compactLayout && heroAlbumItem" [attr.aria-label]="schoolName + ' 校园视频与照片'">
-        <div class="hero-album-stage" [class.is-video]="heroAlbumItem.kind === 'video'" [class.is-tall]="heroAlbumItem.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'hero')">
+        <div class="hero-album-stage" [class.is-video]="heroAlbumItem.kind === 'video'" [class.is-tall]="heroAlbumItem.shape === 'tall'" [class.has-tall-backdrop]="tallVideoBackdrop && heroAlbumItem.kind === 'video' && heroAlbumItem.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'hero')">
           <ng-container *ngIf="heroAlbumItem.kind === 'video'">
+            <img *ngIf="tallVideoBackdrop && heroAlbumItem.shape === 'tall' && heroAlbumItem.poster" class="tall-video-backdrop" [src]="heroAlbumItem.poster" alt="" aria-hidden="true" />
             <video
               #heroPlayer
               controls
@@ -805,8 +806,9 @@
         <div class="room-profile-gallery">
           <!-- The room's own video (profile.roomVideos, only a video of exactly this room type) is the album's first item;
                the arrows, a swipe or a thumbnail move on to the photos. Same file as the hero album, so it is cached once. -->
-          <div class="room-profile-photo" [class.is-video]="roomVideoActive" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
+          <div class="room-profile-photo" [class.is-video]="roomVideoActive" [class.has-tall-backdrop]="tallVideoBackdrop && roomVideoActive && selectedRoomVideo?.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
             <ng-container *ngIf="roomVideoActive && selectedRoomVideo as video">
+              <img *ngIf="tallVideoBackdrop && video.shape === 'tall' && video.poster" class="tall-video-backdrop" [src]="video.poster" alt="" aria-hidden="true" />
               <video
                 #roomClip
                 class="room-album-video"
