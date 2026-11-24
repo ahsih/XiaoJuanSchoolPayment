@@ -86,10 +86,25 @@ describe('SMEAG Capital page on the shared template', () => {
     expect(page.estimatedLocalFees.reduce((sum, fee) => sum + fee.total, 0)).toBe(47730 - 3200 + 700);
   });
 
-  it('charges no water and electricity at the partner hotels', () => {
+  it('charges the partner hotels a management fee instead of utilities and water and electricity', () => {
+    expect(localFee('管理费')?.quantity).toBe(0);
     page.selectedRoomId = 'hotel-single';
+    page.selectedWeeks = 6;
     expect(localFee('水电费')?.quantity).toBe(0);
-    expect(localFee('设施使用费')?.total).toBe(3000);
+    expect(localFee('设施使用费')?.quantity).toBe(0);
+    expect(localFee('管理费')?.total).toBe(4000);
+  });
+
+  it('splits the room fees when a stay moves from the campus to a hotel', () => {
+    page.selectedWeeks = 8;
+    page.quotePlan.splitStay('room');
+    const rows = page.quotePlan.rooms;
+    expect(rows.length).toBe(2);
+    rows[1].optionId = 'hotel-twin';
+    const campusWeeks = rows[0].weeks;
+    expect(localFee('设施使用费')?.total).toBe(3000 * Math.ceil(campusWeeks / 4));
+    expect(localFee('水电费')?.total).toBe(2400 * Math.ceil(campusWeeks / 4));
+    expect(localFee('管理费')?.total).toBe(2000 * Math.ceil(rows[1].weeks / 4));
   });
 
   it('adds ARP and the 59-day sequence when a 59-day entry needs an extension', () => {
@@ -133,5 +148,21 @@ describe('SMEAG Capital page on the shared template', () => {
     expect(upgraded.courses.find(course => course.id === 'ielts-pre')?.tuition).toBe(1150);
     expect(upgraded.courses.find(course => course.id === 'toefl-pre')?.tuition).toBe(1150);
     expect(cloneSmeagContentConfig(upgraded)).toEqual(upgraded);
+    expect(upgraded.localFees.some(rule => rule.id === 'hotel-management')).toBeTrue();
+  });
+
+  it('adds the hotel management fee to a version-1 document and keeps its edits', () => {
+    const saved = createDefaultSmeagContentConfig();
+    (saved.quoteSettings as { smeagPolicyVersion?: number }).smeagPolicyVersion = 1;
+    saved.localFees = saved.localFees.filter(rule => rule.id !== 'hotel-management');
+    saved.localFees.find(rule => rule.id === 'utilities')!.note = '每4周收取，不足4周按4周预估。';
+    saved.localFees.find(rule => rule.id === 'ssp')!.amount = 8000;
+    saved.courses[0].name = '顾问改过的课程名';
+    const upgraded = cloneSmeagContentConfig(saved);
+    const fresh = createDefaultSmeagContentConfig();
+    expect(upgraded.localFees.map(rule => rule.id)).toEqual(fresh.localFees.map(rule => rule.id));
+    expect(upgraded.localFees.find(rule => rule.id === 'utilities')?.note).toBe(fresh.localFees.find(rule => rule.id === 'utilities')?.note);
+    expect(upgraded.localFees.find(rule => rule.id === 'ssp')?.amount).toBe(8000);
+    expect(upgraded.courses[0].name).toBe('顾问改过的课程名');
   });
 });
