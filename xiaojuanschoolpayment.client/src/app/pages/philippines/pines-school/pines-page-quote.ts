@@ -1,5 +1,5 @@
 // PINES on the shared Philippine school quote and plan comparison. Prices follow the registration date
-// (2026 prices and offers before 2027-02-01, 2027 ones from then on) and local fees the arrival date (2027 fees
+// (2026 prices and offers before 2027-02-01, 2027 ones from then on) and local fees the entry date, the Monday after the Sunday arrival (2027 fees
 // from 2027-02-01), as the school's 2026-11 notice says. The template's PhSchoolQuote and PhPlanComparison only
 // add students up and lay out the result. Keep this file free of Angular, DOM and storage access.
 import { SchoolLocalFee, SchoolPaymentLine } from '../../../components/school-group-quote';
@@ -17,7 +17,7 @@ import { PhOptionalFeeItem, PhSchoolQuote } from '../school-page/ph-school-quote
 import type { PhPageStudent } from '../school-page/ph-school-profile';
 import {
   createDefaultPinesContentConfig,
-  PINES_2027_LOCAL_FEE_ARRIVAL_START,
+  PINES_2027_LOCAL_FEE_ENTRY_START,
   PINES_2027_PRICE_REGISTRATION_START,
   PINES_FIXED_WEEK_COURSES,
   PINES_GLOBAL_YOUTH_COURSE_ID,
@@ -94,11 +94,19 @@ export class PinesPageStudent implements PhPageStudent {
   /** Registrations from 2027-02-01 pay the 2027 price list. */
   get uses2027Prices(): boolean { return this.selectedRegistrationDate >= PINES_2027_PRICE_REGISTRATION_START; }
 
-  /** First Sunday of the stay; local fees switch to the 2027 list for arrivals from 2027-02-01. */
+  /** First Sunday of the stay. */
   get arrivalDate(): string {
     return [...this.quotePlan.courses, ...this.quotePlan.rooms].map(row => row.startDate).sort()[0] ?? this.quotePlan.startDate;
   }
-  get uses2027LocalFees(): boolean { return this.arrivalDate >= PINES_2027_LOCAL_FEE_ARRIVAL_START; }
+  /**
+   * Entry date: the Monday class start after the Sunday arrival. Local fees follow it (school notice 2026-11-24:
+   * 2027 fees for entries from 2027-02-01, whenever the student registered), so a 2027-01-31 arrival pays 2027 fees.
+   */
+  get entryDate(): string {
+    const arrival = Date.parse(`${this.arrivalDate}T00:00:00Z`);
+    return Number.isNaN(arrival) ? this.arrivalDate : new Date(arrival + DAY).toISOString().slice(0, 10);
+  }
+  get uses2027LocalFees(): boolean { return this.entryDate >= PINES_2027_LOCAL_FEE_ENTRY_START; }
 
   private courseContent(id: string): CiaCourseContent | undefined {
     return (this.pricing.pinesCourses ?? DEFAULT_CONTENT.courses).find(item => item.id === id);
@@ -326,9 +334,9 @@ export class PinesPageStudent implements PhPageStudent {
     return this.pricing.localFeeRules.find(item => item.id === id && item.enabled);
   }
 
-  /** A rule's dated replacement applies when the stay starts on or after its effective date. */
+  /** A rule's dated replacement applies when the student enters (Monday class start) on or after its effective date. */
   private dated(rule: CiaLocalFeeRule): { amount: number; rates?: number[]; note: string } {
-    const future = !!rule.futureEffectiveStart && this.arrivalDate >= rule.futureEffectiveStart;
+    const future = !!rule.futureEffectiveStart && this.entryDate >= rule.futureEffectiveStart;
     return future
       ? { amount: rule.futureAmount ?? rule.amount, rates: rule.futureRates ?? rule.rates, note: rule.futureNote ?? rule.note }
       : { amount: rule.amount, rates: rule.rates, note: rule.note };

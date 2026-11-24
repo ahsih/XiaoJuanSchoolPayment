@@ -82,9 +82,9 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/smeag-capital-building.webp',
   },
   '/philippines-study/cebu/smeag-encanto': {
-    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
-    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
-    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 寒暑假亲子营与成人ESL报价',
+    description: '宿务麦克坦岛SMEAG Encanto海滨校区：寒暑假全包亲子营、淡季亲子和成人ESL课程价格，每日作息、校园照片和在线报价。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, 菲律宾亲子营, SMEAG Family Camp, 宿务成人ESL',
     image: '/assets/philippines/smeag-encanto-campus-official.webp',
   },
   '/philippines-study/why-philippines': {
@@ -499,7 +499,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/ims-academy', name: '菲律宾宿务IMS Academy语言学校', brand: 'IMS', quote: true },
   { path: '/philippines-study/cebu/cella-uni-sparta-campus', name: '菲律宾宿务CELLA Uni Sparta校区', brand: 'CELLA Uni Sparta', aliases: 'CELLA', quote: true },
   { path: '/philippines-study/cebu/cella-premium-campus', name: '菲律宾宿务CELLA Premium校区', brand: 'CELLA Premium', aliases: 'CELLA', quote: true },
-  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务Cebu Blue Ocean Academy', brand: 'Cebu Blue Ocean', quote: true },
+  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务蓝海语言学校（Cebu Blue Ocean Academy）', brand: '蓝海CBOA', aliases: 'Cebu Blue Ocean', quote: true, image: '/assets/cebu-blue-ocean/suites/pool.webp' },
   { path: '/philippines-study/cebu/target-global-english-academy', name: '菲律宾宿务TARGET Global English Academy', brand: 'TARGET', quote: true },
   { path: '/philippines-study/cebu/global-language-cebu', name: '菲律宾宿务GLC语言学校（Global Language Cebu）', brand: 'GLC', aliases: 'Global Language Cebu', quote: true },
   { path: '/philippines-study/cebu/ciec', name: '菲律宾宿务CIEC语言学校', brand: 'CIEC', quote: true },

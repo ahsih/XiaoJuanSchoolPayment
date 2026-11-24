@@ -1,7 +1,7 @@
 // PINES's versioned employee content document: courses, rooms, local fees, promotions and quote-image copy.
 // The school pack of 2026-11 (2027 price list, promotions, local fees) is applied once to older saved documents
 // through PINES_POLICY_VERSION. Prices follow the student's registration date (2026 prices before 2027-02-01,
-// 2027 prices from then on); local fees follow the arrival date (2027 fees from 2027-02-01). Keep this file free
+// 2027 prices from then on); local fees follow the entry date, the Monday class start (2027 fees from 2027-02-01). Keep this file free
 // of Angular, DOM and storage access.
 import {
   CiaContentConfig,
@@ -20,8 +20,8 @@ type PinesQuoteSettings = CiaQuoteSettings & { pinesPolicyVersion?: number; pine
 
 /** Registrations from this date pay 2027 tuition, rooms and promotions; earlier ones keep the 2026 policy. */
 export const PINES_2027_PRICE_REGISTRATION_START = '2027-02-01';
-/** Students arriving from this date pay 2027 local fees, whenever they registered. */
-export const PINES_2027_LOCAL_FEE_ARRIVAL_START = '2027-02-01';
+/** Students entering (first class, the Monday after the Sunday arrival) from this date pay 2027 local fees, whenever they registered (school notice 2026-11-24). */
+export const PINES_2027_LOCAL_FEE_ENTRY_START = '2027-02-01';
 
 export const PINES_GLOBAL_YOUTH_COURSE_ID = 'global-youth-ielts';
 export const PINES_GLOBAL_YOUTH_ROOM_ID = 'youth-4br';
@@ -57,8 +57,16 @@ export const PINES_MATERIAL_TIERS: Readonly<Record<string, 0 | 1 | 2>> = {
   'ielts-guarantee-12-weeks-6-5-7-0': 2,
   'global-youth-ielts': 2,
 };
-/** Weeks one textbook set lasts, by tier (user answer 2026-11-24: 1,500/1,900 sets about 4–8 weeks, IELTS about 12). */
-export const PINES_MATERIAL_SET_WEEKS: Readonly<Record<0 | 1 | 2, number>> = { 0: 8, 1: 8, 2: 12 };
+/**
+ * Weeks one textbook set lasts, by tier. User answers 2026-11-24: the 1,500 (5 books) and 1,900 (6 books) sets
+ * are changed every 4 weeks; an IELTS 2,700 set lasts about 12 weeks.
+ */
+export const PINES_MATERIAL_SET_WEEKS: Readonly<Record<0 | 1 | 2, number>> = { 0: 4, 1: 4, 2: 12 };
+/**
+ * PINES rooms carry no 校内/校外 badge. The Condo is the building behind the teaching building, and the school
+ * asked not to call it either (user answer 2026-11-24). The location union lives in the locked CIA files, hence the cast.
+ */
+export const PINES_ROOM_LOCATION = '' as CiaRoomContent['location'];
 
 const course = (
   id: string,
@@ -81,7 +89,7 @@ const room = (
   fee2027: number,
   note: string,
   sortOrder: number,
-): CiaRoomContent => ({ id, name, label, code: '', location: '校内', group, fee, fee2027, note, enabled: true, sortOrder });
+): CiaRoomContent => ({ id, name, label, code: '', location: PINES_ROOM_LOCATION, group, fee, fee2027, note, enabled: true, sortOrder });
 
 const localFee = (value: CiaLocalFeeRule): CiaLocalFeeRule => value;
 
@@ -89,14 +97,30 @@ const GUARANTEE_NOTE = '入学须达到学校要求的雅思分数并通过线�
 const LOCAL_FEE_INTRO = '以下费用到校后用比索直接交给学校，仅供准备现金参考。2027年2月1日起入学按2027年学杂费标准，之前入学按2026年标准；签证费用按所选签证和停留时间预估。接机、预存积分、房间押金和洗衣另列在下方，不计入合计。';
 const ALUMNI_BENEFIT_TEXT = '老学员结业后可享线上一对一英语课程专属优惠，留学爱尔兰及欧美英语学校专属奖学金和优惠。';
 const ACR_NOTE = '第一次续签时办理（30天签证第5周起，59天签证第9周起），只收一次。';
-const MATERIALS_NOTE_2027 = '2027年2月1日起入学：参考价，按学习进度到校实际购买。5本以内1,500、6本以上1,900比索一套，约用4–8周（按8周预估）；雅思2,700比索一套，约用12周。';
+const MATERIALS_NOTE_2027 = '2027年2月1日起入学：参考价，按学习进度到校实际购买。每4周换一套教材，5本一套1,500、6本一套1,900比索；雅思2,700比索一套，约用12周。';
+const ROOM_TABLE_NOTE = '单人间、Twin A和亲子房在教学楼后面的Condo公寓楼，其他房型在主楼；口语和雅思课程的学生都可以选。住宿含周一至周五三餐和周六早餐。';
+const YOUTH_ROOM_NOTE = '只限青少年雅思营：按四人间价格收费，每间最多4名学生（住六人间），有菲律宾老师同住管理。';
+const REGULAR_2027_DESCRIPTION = '2027年2月1日至6月30日报名、2月1日起入学：暑期旺季以外的每个学习周减25美元';
+const MINIMUM_STAY_POLICY = { label: '最短学习', value: '2周起', note: '暑期旺季学校可能不接受只读2周的学生，请先找顾问确认。' };
 
-/** 2026-11-24 user answers: ACR comes with the first visa extension; textbook sets last about 4–8 weeks (IELTS 12). */
-export const PINES_FEE_NOTE_VERSION = 20271124;
-const OLD_FEE_NOTES: Readonly<Record<string, { note?: string; futureNote: string }>> = {
-  'acr-i-card': { note: '停留超过59天时办理，只收一次。', futureNote: '2027年2月1日起入学：停留超过59天（第9周起）办理，只收一次。' },
-  materials: { futureNote:'2027年2月1日起入学：每4周按课程预估，5本以内1,500、6本以上1,900、雅思2,700比索；以实际购买为准。' },
+/**
+ * User answers to the school questions (2026-11-24). First batch: ACR comes with the first visa extension.
+ * Second batch: textbook sets change every 4 weeks; the Condo is behind the teaching building, with no 校内/校外
+ * badge; the 2027 regular offer counts every week (the school's shortest study is 2 weeks); the youth room is
+ * priced as a 4-bed room with at most 4 students in a 6-bed room.
+ */
+export const PINES_FEE_NOTE_VERSION = 20271125;
+/** Earlier default wording, replaced once where nobody edited it. */
+const OLD_FEE_NOTES: Readonly<Record<string, { note?: readonly string[]; futureNote: readonly string[] }>> = {
+  'acr-i-card': { note: ['停留超过59天时办理，只收一次。'], futureNote: ['2027年2月1日起入学：停留超过59天（第9周起）办理，只收一次。'] },
+  materials: { futureNote: [
+    '2027年2月1日起入学：每4周按课程预估，5本以内1,500、6本以上1,900、雅思2,700比索；以实际购买为准。',
+    '2027年2月1日起入学：参考价，按学习进度到校实际购买。5本以内1,500、6本以上1,900比索一套，约用4–8周（按8周预估）；雅思2,700比索一套，约用12周。',
+  ] },
 };
+const OLD_ROOM_TABLE_NOTE = '单人间、Twin A和亲子房在学校的Condo公寓楼，其他房型在主楼；口语和雅思课程的学生都可以选。住宿含周一至周五三餐和周六早餐。';
+const OLD_YOUTH_ROOM_NOTE = '只限青少年雅思营：学生和一位菲律宾老师同住。';
+const OLD_REGULAR_2027_DESCRIPTION = `${REGULAR_2027_DESCRIPTION}（课程4周起）`;
 
 const quoteImageSettings = (): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
@@ -137,7 +161,7 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
       { id: 'pines-off-season', name: '常规优惠', description: '2027年1月31日前报名：暑期旺季以外的课程每满4周减150美元', enabled: true, sortOrder: 1, priority: 20, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 150, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, registrationEnd: '2027-01-31', coverageTarget: 'none' },
       { id: 'pines-twelve-week', name: '12周优惠', description: '2027年1月31日前报名：课程满12周减100美元', enabled: true, sortOrder: 2, priority: 30, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 12, minimumAccommodationWeeks: 0, registrationEnd: '2027-01-31', coverageTarget: 'none' },
       { id: 'pines-long-stay', name: '长期优惠', description: '2027年1月31日前报名：课程满16周减100美元，之后每多2周再减25美元', enabled: true, sortOrder: 3, priority: 40, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, incrementWeeks: 2, incrementValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 16, minimumAccommodationWeeks: 0, registrationEnd: '2027-01-31', coverageTarget: 'none' },
-      { id: 'pines-regular-2027', name: '2027常规优惠', description: '2027年2月1日至6月30日报名、2月1日起入学：暑期旺季以外的每个学习周减25美元（课程4周起）', enabled: true, sortOrder: 4, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'per-course-week', discountValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 0, registrationStart: '2027-02-01', registrationEnd: '2027-06-30', arrivalStart: '2027-02-01', coverageTarget: 'none' },
+      { id: 'pines-regular-2027', name: '2027常规优惠', description: REGULAR_2027_DESCRIPTION, enabled: true, sortOrder: 4, priority: 50, stackable: true, newStudentsOnly: false, discountType: 'per-course-week', discountValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, registrationStart: '2027-02-01', registrationEnd: '2027-06-30', arrivalStart: '2027-02-01', coverageTarget: 'none' },
       { id: 'pines-long-term-2027', name: '2027长期优惠', description: '2027年2月1日至6月30日报名：课程满12周减100美元，之后每多1周再减25美元，旺季周也计入', enabled: true, sortOrder: 5, priority: 60, stackable: true, newStudentsOnly: false, discountType: 'fixed', discountValue: 100, incrementWeeks: 1, incrementValue: 25, appliesTo: 'tuition', waiveRegistration: false, minimumCourseWeeks: 12, minimumAccommodationWeeks: 0, registrationStart: '2027-02-01', registrationEnd: '2027-06-30', arrivalStart: '2027-02-01', coverageTarget: 'none' },
       { id: 'pines-sida-discount', name: '思达启航95折', description: '课程和住宿按原价95折，再减学校优惠', enabled: true, sortOrder: 6, priority: 70, stackable: true, newStudentsOnly: false, discountType: 'percentage', discountValue: 5, appliesTo: 'tuition-and-accommodation', waiveRegistration: false, minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none' },
     ],
@@ -146,11 +170,12 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
     courseTableNote: '2027年1月31日前报名按列表价格；2027年2月1日起报名按2027年价格，展开课程可见。',
     groupClassNote: '4:1小组课每班最多4人；没有同级别同学时，2节小组课改为1节一对一。',
     roomTableTitle: 'PINES住宿费 / 4周',
-    roomTableNote: '单人间、Twin A和亲子房在学校的Condo公寓楼，其他房型在主楼；口语和雅思课程的学生都可以选。住宿含周一至周五三餐和周六早餐。',
+    roomTableNote: ROOM_TABLE_NOTE,
     stayPolicyTitle: 'PINES入住与离校',
     stayPolicies: [
       { label: '入住日期', value: '周日入住', note: '按学校的周日入学日入住，并提前确认接机。' },
       { label: '离校日期', value: '课程结束后的周六', note: '每个学习周按周日至周六计算。' },
+      { ...MINIMUM_STAY_POLICY },
       { label: '餐食', value: '工作日三餐和周六早餐', note: '周六午餐、晚餐和周日餐食在系统里提前申请，每餐179比索（当天申请250比索）。' },
     ],
     extraNightRates: [
@@ -193,16 +218,16 @@ export const createDefaultPinesContentConfig = (): CiaContentConfig => {
       room('five-br-solo', '5-BR Solo 五人间（床位分隔）', '五人间（床位分隔）', '多人间', 650, 700, '主楼新房型：五人共用一套房，每人一个带门的小隔间（床在上层、书桌在下层），共用客厅和卫浴。', 7),
       room('quad', '4 Beds 四人间', '四人间', '多人间', 700, 700, '主楼四人间：床在上层、书桌在下层。', 8),
       room('sextuple', '6 Beds 六人间', '六人间', '多人间', 570, 570, '主楼六人间：床在上层、书桌在下层；价格最低。', 9),
-      room(PINES_GLOBAL_YOUTH_ROOM_ID, 'Global Youth 青少年宿舍', '青少年宿舍', '多人间', 700, 700, '只限青少年雅思营：学生和一位菲律宾老师同住。', 10),
+      room(PINES_GLOBAL_YOUTH_ROOM_ID, 'Global Youth 青少年宿舍', '青少年宿舍', '多人间', 700, 700, YOUTH_ROOM_NOTE, 10),
     ],
     localFees: [
       localFee({ id: 'ssp', name: 'SSP特殊学习许可', currency: 'PHP', amount: 7800, billingRule: 'once', includeInTotal: true, note: '移民局收取，有效6个月。', enabled: true, sortOrder: 0 }),
       localFee({ id: 'ssp-e-card', name: 'SSP I-Card', currency: 'PHP', amount: 4500, billingRule: 'once', includeInTotal: true, note: '与SSP一起办理，只收一次。', enabled: true, sortOrder: 1 }),
-      localFee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记卡', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: ACR_NOTE, enabled: true, sortOrder: 2, futureEffectiveStart: PINES_2027_LOCAL_FEE_ARRIVAL_START, futureAmount: 4000, futureNote: ACR_NOTE }),
-      localFee({ id: 'utilities', name: '水电费', currency: 'PHP', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '按住宿周数计算，每4周3,000比索。', enabled: true, sortOrder: 3, futureEffectiveStart: PINES_2027_LOCAL_FEE_ARRIVAL_START, futureAmount: 3800, futureNote: '2027年2月1日起入学：按住宿周数计算，每4周3,800比索。' }),
-      localFee({ id: 'maintenance', name: '宿舍维护费', currency: 'PHP', amount: 0, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional', includeInTotal: true, note: '2027年2月1日起入学收取。', enabled: true, sortOrder: 4, futureEffectiveStart: PINES_2027_LOCAL_FEE_ARRIVAL_START, futureAmount: 500, futureNote: '2027年2月1日起入学：按住宿周数，每周500比索。' }),
-      localFee({ id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 6210, rates: [6210], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '按所选签证和停留时间预估，每次6,210比索。', enabled: true, sortOrder: 5, futureEffectiveStart: PINES_2027_LOCAL_FEE_ARRIVAL_START, futureAmount: 4940, futureRates: [4940, 6210, 4240], futureNote: '2027年2月1日起入学：30天签证第5–8周累计4,940、第9–12周11,150、第13–16周15,390比索，之后每4周加4,240；59天签证从第9周起续签。' }),
-      localFee({ id: 'materials', name: '教材费', currency: 'PHP', amount: 0, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '2026年入学的教材从预存积分里按实际购买扣除。', enabled: true, sortOrder: 6, futureEffectiveStart: PINES_2027_LOCAL_FEE_ARRIVAL_START, futureAmount: 1500, futureRates: [1500, 1900, 2700], futureNote: MATERIALS_NOTE_2027 }),
+      localFee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记卡', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', includeInTotal: true, note: ACR_NOTE, enabled: true, sortOrder: 2, futureEffectiveStart: PINES_2027_LOCAL_FEE_ENTRY_START, futureAmount: 4000, futureNote: ACR_NOTE }),
+      localFee({ id: 'utilities', name: '水电费', currency: 'PHP', amount: 3000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '按住宿周数计算，每4周3,000比索。', enabled: true, sortOrder: 3, futureEffectiveStart: PINES_2027_LOCAL_FEE_ENTRY_START, futureAmount: 3800, futureNote: '2027年2月1日起入学：按住宿周数计算，每4周3,800比索。' }),
+      localFee({ id: 'maintenance', name: '宿舍维护费', currency: 'PHP', amount: 0, billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional', includeInTotal: true, note: '2027年2月1日起入学收取。', enabled: true, sortOrder: 4, futureEffectiveStart: PINES_2027_LOCAL_FEE_ENTRY_START, futureAmount: 500, futureNote: '2027年2月1日起入学：按住宿周数，每周500比索。' }),
+      localFee({ id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 6210, rates: [6210], billingRule: 'visa-extension-schedule', includeInTotal: true, note: '按所选签证和停留时间预估，每次6,210比索。', enabled: true, sortOrder: 5, futureEffectiveStart: PINES_2027_LOCAL_FEE_ENTRY_START, futureAmount: 4940, futureRates: [4940, 6210, 4240], futureNote: '2027年2月1日起入学：30天签证第5–8周累计4,940、第9–12周11,150、第13–16周15,390比索，之后每4周加4,240；59天签证从第9周起续签。' }),
+      localFee({ id: 'materials', name: '教材费', currency: 'PHP', amount: 0, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '2026年入学的教材从预存积分里按实际购买扣除。', enabled: true, sortOrder: 6, futureEffectiveStart: PINES_2027_LOCAL_FEE_ENTRY_START, futureAmount: 1500, futureRates: [1500, 1900, 2700], futureNote: MATERIALS_NOTE_2027 }),
       localFee({ id: 'student-id', name: '学生证', currency: 'PHP', amount: 200, billingRule: 'once', includeInTotal: true, note: '一次性费用。', enabled: true, sortOrder: 7 }),
       localFee({ id: 'pickup', name: '机场接机（马尼拉或克拉克）', currency: 'PHP', amount: 3000, billingRule: 'optional', includeInTotal: false, note: '学校周日团体接机，按需要选择；周日19:00以后到达的航班不接。', enabled: true, sortOrder: 8 }),
       localFee({ id: 'campus-deposit', name: 'Points 校内预存积分', currency: 'PHP', amount: 4000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: false, note: '每4周4,000比索，用于学生证、洗衣、咖啡厅、活动等；没用完的毕业时退还。', enabled: true, sortOrder: 9 }),
@@ -241,6 +266,33 @@ function upgradeToSchoolPack2027(clone: CiaContentConfig, defaults: CiaContentCo
   }
 }
 
+/** Applies the user's answers of 2026-11-24 once, changing only values that still read as an earlier default. */
+function upgradeToSchoolAnswers(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  for (const [id, old] of Object.entries(OLD_FEE_NOTES)) {
+    const saved = clone.localFees.find(fee => fee.id === id);
+    const fresh = defaults.localFees.find(fee => fee.id === id)!;
+    if (!saved) continue;
+    if (old.note?.includes(saved.note)) saved.note = fresh.note;
+    if (saved.futureNote !== undefined && old.futureNote.includes(saved.futureNote)) saved.futureNote = fresh.futureNote;
+    const imageNotes = clone.quoteImageSettings?.localFeeNotes;
+    if (imageNotes?.[id] !== undefined && old.note?.includes(imageNotes[id])) imageNotes[id] = fresh.note;
+  }
+  for (const room of clone.rooms) {
+    if (room.location === '校内') room.location = PINES_ROOM_LOCATION;
+    if (room.id === PINES_GLOBAL_YOUTH_ROOM_ID && room.note === OLD_YOUTH_ROOM_NOTE) room.note = YOUTH_ROOM_NOTE;
+  }
+  const settings = clone.quoteSettings as PinesQuoteSettings;
+  if (settings.roomTableNote === OLD_ROOM_TABLE_NOTE) settings.roomTableNote = ROOM_TABLE_NOTE;
+  const regular = settings.promotions?.find(rule => rule.id === 'pines-regular-2027');
+  if (regular?.description === OLD_REGULAR_2027_DESCRIPTION && regular.minimumCourseWeeks === 4) {
+    regular.description = REGULAR_2027_DESCRIPTION;
+    regular.minimumCourseWeeks = 0;
+  }
+  if (settings.stayPolicies && !settings.stayPolicies.some(policy => policy.label === MINIMUM_STAY_POLICY.label)) {
+    settings.stayPolicies.push({ ...MINIMUM_STAY_POLICY });
+  }
+}
+
 export const clonePinesContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const clone = copyJson(value);
   const defaults = createDefaultPinesContentConfig();
@@ -250,16 +302,7 @@ export const clonePinesContentConfig = (value: CiaContentConfig): CiaContentConf
   }
   const noteSettings = clone.quoteSettings as PinesQuoteSettings;
   if ((noteSettings.pinesFeeNoteVersion ?? 0) < PINES_FEE_NOTE_VERSION) {
-    // Replace only the ACR and textbook notes nobody edited since the school-pack release.
-    for (const [id, old] of Object.entries(OLD_FEE_NOTES)) {
-      const saved = clone.localFees.find(fee => fee.id === id);
-      const fresh = defaults.localFees.find(fee => fee.id === id)!;
-      if (!saved) continue;
-      if (old.note !== undefined && saved.note === old.note) saved.note = fresh.note;
-      if (saved.futureNote === old.futureNote) saved.futureNote = fresh.futureNote;
-      const imageNotes = clone.quoteImageSettings?.localFeeNotes;
-      if (old.note !== undefined && imageNotes?.[id] === old.note) imageNotes[id] = fresh.note;
-    }
+    upgradeToSchoolAnswers(clone, defaults);
     noteSettings.pinesFeeNoteVersion = PINES_FEE_NOTE_VERSION;
   }
   clone.quoteSettings.peakSeasonRanges ??= [];

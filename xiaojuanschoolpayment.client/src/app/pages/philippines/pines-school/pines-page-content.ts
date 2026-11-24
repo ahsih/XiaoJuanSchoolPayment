@@ -20,6 +20,7 @@ import {
   PINES_GLOBAL_YOUTH_COURSE_ID,
   PINES_JUNIOR_COURSE_ID,
   PINES_PARENTS_COURSE_ID,
+  PINES_ROOM_LOCATION,
 } from './pines-content-config';
 
 /** Closes every content section once; the same line as on every Philippine school page. */
@@ -35,8 +36,8 @@ const IELTS_REGULAR_IDS = ['pre-ielts', 'ielts-regular', 'ielts-intensive'];
 
 export const PINES_PAGE_TEXT = {
   heroLead: '碧瑶2001年创办的学习型语言学校，口语和雅思分区上课，校内有雅思和托业官方考点，适合想认真学英语、考雅思的学生。',
-  advisorText: 'PINES在菲律宾北部山城碧瑶，学习氛围浓。教室、宿舍、餐厅和健身房都在一栋主楼里，口语课程在2楼、雅思课程在4楼分区上课；单人间、Twin A和亲子房在学校的Condo公寓楼。校内有雅思和托业官方考点。成人课程只收18岁以上；13–17岁可报青少年雅思营，7–15岁可由家长陪同读亲子课程。想管得更严，可以加报EB Pro晚间管理。',
-  campusIntro: '一栋主楼按楼层分区：一楼是前台、考点和洗衣房，2楼口语区，3楼咖啡厅和学生服务台，4楼雅思区，5楼餐厅和健身房；单人间等房型在旁边的Condo公寓楼。',
+  advisorText: 'PINES在菲律宾北部山城碧瑶，学习氛围浓。教室、宿舍、餐厅和健身房都在一栋主楼里，口语课程在2楼、雅思课程在4楼分区上课；单人间、Twin A和亲子房在教学楼后面的Condo公寓楼。校内有雅思和托业官方考点。成人课程只收18岁以上；13–17岁可报青少年雅思营，7–15岁可由家长陪同读亲子课程。想管得更严，可以加报EB Pro晚间管理。',
+  campusIntro: '一栋主楼按楼层分区：一楼是前台、考点和洗衣房，2楼口语区，3楼咖啡厅和学生服务台，4楼雅思区，5楼餐厅和健身房；单人间等房型在教学楼后面的Condo公寓楼。',
   galleryIntro: '按区域查看校园、教室、住宿、餐厅和设施；相册内用左右箭头或缩略图切换，点击主图可放大。',
   coursesIntro: '按学习目标分组，每门课下面是每天的课时；点开可看适合人群和说明。',
   roomsPhotoIntro: '点选房型查看实景；各房型价格见上方住宿费表。',
@@ -93,7 +94,7 @@ export const PINES_CAMPUS_BUILDINGS: CampusBuildingCard[] = [
   { code: '3F', title: '3楼 咖啡厅与服务台', icon: 'local_cafe', facilities: ['咖啡厅、学生休息区', '国际学生服务台、财务室', '教室和宿舍'] },
   { code: '4F', title: '4楼 雅思区', icon: 'school', facilities: ['雅思教务台', '一对一和小组教室', '宿舍'] },
   { code: '5F', title: '5楼 餐厅与运动', icon: 'restaurant', facilities: ['学生餐厅', '健身房、瑜伽室', '乒乓球'] },
-  { code: 'CONDO', title: 'Condo公寓楼', icon: 'apartment', facilities: ['单人房A、B、C', '双人房A', '亲子房'] },
+  { code: 'CONDO', title: 'Condo公寓楼', icon: 'apartment', facilities: ['教学楼后面一栋', '单人房A、B、C和双人房A', '亲子房'] },
 ];
 
 const campus = (file: string) => `assets/pines/campus/${file}.webp`;
@@ -101,7 +102,7 @@ const rooms = (file: string) => `assets/pines/rooms/${file}.webp`;
 
 export const PINES_GALLERY_IMAGES: GalleryImage[] = [
   { category: '校园', title: 'PINES校园外观', description: '学校主楼和周围的松树林。', src: campus('exterior') },
-  { category: '校园', title: '校园楼层示意图', description: '学校提供的示意图：一楼到5楼的分区和旁边的Condo公寓楼。', src: campus('campus-floor-map') },
+  { category: '校园', title: '校园楼层示意图', description: '学校提供的示意图：一楼到5楼的分区和教学楼后面的Condo公寓楼。', src: campus('campus-floor-map') },
   { category: '校园', title: '一楼前台', description: '到校报到、问事情先到这里。', src: campus('welcome-desk') },
   { category: '校园', title: '一楼大厅', description: '主楼一楼大厅。', src: campus('ground-lobby') },
   { category: '校园', title: '一楼走廊', description: '落地玻璃走廊，外面是树林。', src: campus('ground-corridor') },
@@ -190,43 +191,43 @@ export const PINES_COURSE_VIDEOS: readonly PhVideoItem[] = [
 /** Photos come only from the school's own material and match the labelled room (see public/assets/pines). */
 export const PINES_ROOM_PROFILES: PhRoomProfile[] = [
   {
-    id: 'single-a', label: '单人房A', englishName: 'SINGLE A', location: '校内', bed: '1张床',
+    id: 'single-a', label: '单人房A', englishName: 'SINGLE A', location: PINES_ROOM_LOCATION, bed: '1张床',
     suitable: '想要独立卫浴、安静学习空间的学生', note: 'Condo公寓楼的独立单人房，房内有卫生间和淋浴。',
     image: rooms('single-a-1'), gallery: ['single-a-1', 'single-a-2', 'single-a-3', 'single-a-4', 'single-a-shower'].map(rooms),
     imageAlt: 'PINES单人房A实景', rateIds: ['single-a'],
   },
   {
-    id: 'single-b', label: '单人房B', englishName: 'SINGLE B', location: '校内', bed: '1张床',
+    id: 'single-b', label: '单人房B', englishName: 'SINGLE B', location: PINES_ROOM_LOCATION, bed: '1张床',
     suitable: '想住单人间、有自己卫生间的学生', note: 'Condo公寓楼套间：和C房共用客厅，B房有自己的卫生间。',
     image: rooms('single-b-1'), gallery: ['single-b-1', 'single-bc-common-1', 'single-bc-common-2'].map(rooms),
     imageAlt: 'PINES单人房B实景', rateIds: ['single-b'],
   },
   {
-    id: 'single-c', label: '单人房C', englishName: 'SINGLE C', location: '校内', bed: '1张床',
+    id: 'single-c', label: '单人房C', englishName: 'SINGLE C', location: PINES_ROOM_LOCATION, bed: '1张床',
     suitable: '想住单人间、预算有限的学生', note: 'Condo公寓楼套间：和B房共用客厅，用客厅的卫生间；价格最低的单人房。',
     image: rooms('single-c-1'), gallery: ['single-c-1', 'single-bc-common-1', 'single-bc-common-2'].map(rooms),
     imageAlt: 'PINES单人房C实景', rateIds: ['single-c'],
   },
   {
-    id: 'twin-a', label: '双人房A', englishName: 'TWIN A', location: '校内', bed: '2张单人床',
+    id: 'twin-a', label: '双人房A', englishName: 'TWIN A', location: PINES_ROOM_LOCATION, bed: '2张单人床',
     suitable: '朋友同行、想要房内卫浴的学生', note: 'Condo公寓楼的双人房，房内有卫生间和淋浴。',
     image: rooms('twin-a-1'), gallery: ['twin-a-1', 'twin-a-2', 'twin-a-3', 'twin-a-bathroom'].map(rooms),
     imageAlt: 'PINES双人房A实景', rateIds: ['twin-a'],
   },
   {
-    id: 'twin-b', label: '双人房B', englishName: 'TWIN B', location: '校内', bed: '2张单人床',
+    id: 'twin-b', label: '双人房B', englishName: 'TWIN B', location: PINES_ROOM_LOCATION, bed: '2张单人床',
     suitable: '想住双人间、离教室近的学生', note: '主楼双人房，两人同住。',
     image: rooms('twin-b-1'), gallery: ['twin-b-1', 'twin-b-2', 'twin-b-bathroom'].map(rooms),
     imageAlt: 'PINES双人房B实景', rateIds: ['twin-b'],
   },
   {
-    id: 'family-3br', label: '亲子房', englishName: 'FAMILY 3BR', location: '校内', bed: '3张床',
+    id: 'family-3br', label: '亲子房', englishName: 'FAMILY 3BR', location: PINES_ROOM_LOCATION, bed: '3张床',
     suitable: '家长和孩子同住', note: 'Condo公寓楼的三床房，按每人计价。',
     image: rooms('family-3br-1'), gallery: ['family-3br-1', 'family-3br-2', 'family-3br-3'].map(rooms),
     imageAlt: 'PINES亲子房实景', rateIds: ['family-3br'],
   },
   {
-    id: 'five-br-solo', label: '五人间（床位分隔）', englishName: '5-BR SOLO', location: '校内', bed: '每人一个带门的小隔间',
+    id: 'five-br-solo', label: '五人间（床位分隔）', englishName: '5-BR SOLO', location: PINES_ROOM_LOCATION, bed: '每人一个带门的小隔间',
     suitable: '想控制预算、又想要自己小空间的学生', note: '主楼新房型：五人共用一套房，床在上层、书桌在下层，共用客厅和卫浴。',
     image: rooms('five-br-solo-1'),
     gallery: ['five-br-solo-1', 'five-br-solo-2', 'five-br-solo-3', 'five-br-solo-common', 'five-br-solo-bathroom'].map(rooms),
@@ -235,13 +236,13 @@ export const PINES_ROOM_PROFILES: PhRoomProfile[] = [
   // Each opens with its own labelled video (roomVideos). Both rooms have the same beds and differ only in size (user
   // 2026-11-24), so both albums show the same photos and say so.
   {
-    id: 'dorm-4', label: '四人间', englishName: '4 BEDS', location: '校内', bed: '上床下桌',
+    id: 'dorm-4', label: '四人间', englishName: '4 BEDS', location: PINES_ROOM_LOCATION, bed: '上床下桌',
     suitable: '预算优先、喜欢热闹的学生', note: '主楼四人间，床在上层、书桌在下层。四人间和六人间床型一样，只是房间大小不同，照片是同款多人间。',
     image: rooms('dorm-4-6-1'), gallery: DORM_PHOTOS.map(rooms),
     imageAlt: 'PINES多人间实景', rateIds: ['quad'],
   },
   {
-    id: 'dorm-6', label: '六人间', englishName: '6 BEDS', location: '校内', bed: '上床下桌',
+    id: 'dorm-6', label: '六人间', englishName: '6 BEDS', location: PINES_ROOM_LOCATION, bed: '上床下桌',
     suitable: '预算最低、喜欢热闹的学生', note: '主楼六人间，床在上层、书桌在下层。四人间和六人间床型一样，只是房间大小不同，照片是同款多人间。',
     image: rooms('dorm-4-6-1'), gallery: DORM_PHOTOS.map(rooms),
     imageAlt: 'PINES多人间实景', rateIds: ['sextuple'],
@@ -300,7 +301,7 @@ export const PINES_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     courseIds: [PINES_GLOBAL_YOUTH_COURSE_ID],
     facts: [
       { label: '入学', value: '按常规入学日，每两周一次，至少读4周' },
-      { label: '宿舍', value: '4人房：3名学生和1位菲律宾老师同住' },
+      { label: '宿舍', value: '按四人间价格收费；每间最多4名学生，住六人间，有菲律宾老师同住管理' },
       { label: '管理', value: '工作日不能外出或外宿；周末不能外宿，晚上8点前回校' },
       { label: '每周六', value: '上午词汇测验或雅思模考，下午休息' },
       { label: '家长', value: '可在学校系统查看出勤和成绩，每4周收到一份生活报告' },
