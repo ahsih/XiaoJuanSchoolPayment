@@ -1,6 +1,6 @@
 /*
  * Styles every school page lists after the redesign file (the other stylesheets are at the 30 kB budget).
- * The first blocks are optional profile fields (copy.referenceNote, courseModes) that CIA leaves out;
+ * The first blocks are optional profile fields (copy.referenceNote, courseModes, offers) that CIA leaves out;
  * the photo arrow, room list and room comparison rules at the end apply to every school.
  */
 
@@ -25,6 +25,31 @@
 :host .course-mode-goal h4 small { color: #7a8a84; font-size: 12px; font-weight: 600; }
 :host .course-mode-missing { margin: 0; padding: 10px 18px 14px; border-top: 1px solid #eef2f0; color: #94a3b8; font-size: 13px; }
 :host .course-mode-compare-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; color: #0b5a40; font-size: 14px; font-weight: 800; text-decoration: none; }
+
+/* Offers above the quote (profile.offers, CPILS): one quiet card per offer, its amount in orange. */
+:host .school-offers .section-heading { margin-bottom: 14px; }
+:host .offer-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+:host .offer-card { display: flex; flex: 1 1 300px; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid #e5ebef; border-radius: 12px; background: #ffffff; box-shadow: 0 6px 18px rgba(21, 35, 52, 0.04); }
+:host .offer-icon { display: grid; flex: none; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #fff1e8; color: #e65d1d; }
+:host .offer-icon mat-icon { width: 22px; height: 22px; font-size: 22px; }
+:host .offer-card > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; }
+:host .offer-card h3 { margin: 0; color: #043f2d; font-size: 16px; font-weight: 900; line-height: 1.4; }
+:host .offer-amount { color: #e65d1d; font-size: 15px; font-weight: 900; }
+:host .offer-card p,
+:host .offer-card small { flex-basis: 100%; margin: 2px 0 0; color: #526176; font-size: 13.5px; line-height: 1.55; }
+:host .offer-card small { margin-top: 0; color: #74827c; font-size: 12.5px; }
+:host .offer-note { display: flex; gap: 6px; align-items: flex-start; margin: 12px 0 0; color: #526176; font-size: 13.5px; line-height: 1.6; }
+:host .offer-note mat-icon { flex: none; width: 18px; height: 18px; font-size: 18px; color: #0b5a40; }
+@media (max-width: 760px) {
+  :host .offer-grid { gap: 8px; }
+  :host .offer-card { flex-basis: 100%; gap: 10px; padding: 10px 12px; }
+  :host .offer-icon { width: 30px; height: 30px; }
+  :host .offer-icon mat-icon { width: 18px; height: 18px; font-size: 18px; }
+  :host .offer-card h3 { font-size: 15px; }
+  :host .offer-amount { font-size: 14px; }
+  :host .offer-card p { font-size: 13px; line-height: 1.5; }
+  :host .offer-card small { font-size: 12px; line-height: 1.5; }
+}
 
 /* Link from the quote to the cross-school comparison (profile.schoolCompareId). */
 :host .school-compare-link { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 14px 0 0; padding: 12px 14px; border-radius: 10px; background: #f3f8f5; color: #475569; font-size: 14px; }
@@ -208,4 +233,47 @@
   height: 20px;
   font-size: 20px;
   color: #f25518;
+}
+
+/* Peak seasons without a surcharge on the calendar (HANA). */
+:host .compact-peak.compact-peak--free { background: #eef8f3; }
+:host .compact-peak.compact-peak--free > mat-icon,
+:host .compact-peak.compact-peak--free strong { color: #187a5a; }
+
+/* Short written reviews without names (HANA): a grid on wide screens, a swipe row on phones. */
+:host .text-review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+:host .text-review-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid #dce4e7;
+  border-radius: 14px;
+  background: #fff;
+}
+:host .text-review-quote { color: #e94f16; width: 28px; height: 28px; font-size: 28px; }
+:host .text-review-grid blockquote {
+  flex: 1;
+  margin: 0;
+  color: #334155;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+:host .text-review-who { color: #64756d; font-size: 13px; font-weight: 700; }
+:host .text-review-note { display: block; margin-top: 10px; color: #7a8a84; font-size: 12.5px; }
+@media (max-width: 1040px) {
+  :host .text-review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  :host .text-review-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+  }
+  :host .text-review-grid article { flex: 0 0 min(82%, 320px); scroll-snap-align: start; }
 }

@@ -589,7 +589,7 @@ export class CebuStudyComponent {
     {
       name: "B'Cebu", route: '/philippines-study/cebu/bcebu', tag: '麦克坦新校区',
       location: 'Mactan · Lapu-Lapu', summary: '课程从轻量综合英语到雅思斯巴达，并提供丰富亲子与房型选择。',
-      image: 'https://assets.1000-island.com/schools/bcebu-academy/bcebu-academy-campus-01.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
+      image: '/assets/bcebu/campus-building.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
     },
     {
       name: 'CPILS', route: '/philippines-study/cebu/cpils', tag: '老牌综合校',

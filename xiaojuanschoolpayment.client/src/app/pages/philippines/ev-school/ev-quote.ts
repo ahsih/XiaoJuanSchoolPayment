@@ -131,8 +131,8 @@ export class EvStudentCalculator {
     return Array.from({ length: this.visaExtensionCount }, (_, index) => rates[Math.min(index, rates.length - 1)] ?? 0)
       .reduce((sum, amount) => sum + amount, 0);
   }
-  /** ACR I-Card is needed once a stay passes 59 days, whatever the entry visa. */
-  get needsAcr() { return !this.longTermVisa && this.plan.stayWeeks >= 9; }
+  /** ACR I-Card comes with the first tourist-visa extension (2026-10 orientation guide): week 5 or week 9. */
+  get needsAcr() { return !this.longTermVisa && this.visaExtensionCount > 0; }
   get roomDeposit() {
     const rule = this.rule('room-deposit');
     const tiers = rule?.rates?.length === 3 ? rule.rates : EV_DEPOSIT_TIERS;

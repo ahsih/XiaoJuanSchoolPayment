@@ -57,6 +57,10 @@ const today = () => {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 };
 const php = (value: number) => `${Math.round(value).toLocaleString('en-US')} 比索`;
+/** Whether an ISO date lies in an optional range. */
+const within = (date: string, start?: string, end?: string) => !!date && (!start || date >= start) && (!end || date <= end);
+/** The two free activities of the 2027 weekend offer. */
+export const CPILS_WEEKEND_ACTIVITIES = '奥斯洛布观鲸鲨1次、跳岛游1次（均含餐饮）';
 
 /** A local-fee rule as it applies on a date (2027 rows switch on their effective date). */
 export function cpilsDatedFee(rule: CiaLocalFeeRule, date: string): CiaLocalFeeRule {
@@ -184,6 +188,56 @@ export class CpilsPageStudent implements PhPageStudent {
   /** Christmas / New Year: the larger offer whose dates the whole stay covers. */
   get holidayDiscount(): number { return this.holidayRule?.discountValue ?? 0; }
 
+  /** A 2027 holiday offer: registered in its window, enough course weeks, and class days covering the whole holiday week. */
+  private holidayOffer(id: string): CiaPromotionRule | undefined {
+    const rule = this.rule(id);
+    const date = this.selectedRegistrationDate;
+    return rule && rule.coverageStart && rule.coverageEnd
+      && (!rule.registrationStart || date >= rule.registrationStart)
+      && (!rule.registrationEnd || date <= rule.registrationEnd)
+      && this.quotePlan.courseWeeks >= rule.minimumCourseWeeks
+      && this.quotePlan.covers(rule.coverageStart, rule.coverageEnd) ? rule : undefined;
+  }
+  /** Easter 2027, and the larger of Christmas or Christmas and New Year 2027; they stack with every other offer. */
+  get holidayOffers2027(): CiaPromotionRule[] {
+    const yearEnd = ['cpils-new-year-2027', 'cpils-christmas-2027'].map(id => this.holidayOffer(id))
+      .filter((rule): rule is CiaPromotionRule => !!rule).sort((a, b) => b.discountValue - a.discountValue)[0];
+    return [this.holidayOffer('cpils-easter-2027'), yearEnd].filter((rule): rule is CiaPromotionRule => !!rule);
+  }
+  get holidayDiscount2027(): number { return this.holidayOffers2027.reduce((sum, rule) => sum + rule.discountValue, 0); }
+
+  /** The 2027 offers from the November 2026 posters are not for grandfathered (2026-price) registrations. */
+  private get newPrices2027(): boolean { return cpilsPriceYear(this.content, this) === 2027; }
+  private get careerRule(): CiaPromotionRule | undefined { return this.newPrices2027 ? this.rule('cpils-career-2027') : undefined; }
+  /** Weeks of the career-training courses that start (Monday) in the offer's dates, added over the courses. */
+  get careerWeeks(): number {
+    const rule = this.careerRule;
+    if (!rule) return 0;
+    return cpilsMergedCourses(this.quotePlan).filter(row => {
+      const start = cpilsMonday(row.startDate);
+      return rule.eligibleCourseIds?.includes(row.optionId) && within(start, rule.arrivalStart, rule.arrivalEnd);
+    }).reduce((sum, row) => sum + row.weeks, 0);
+  }
+  /** Career courses: 4–7 weeks 50, 8–11 100, 12–15 150, 16 and more 200 dollars. */
+  get careerDiscount(): number {
+    const rule = this.careerRule;
+    const weeks = this.careerWeeks;
+    if (!rule || !weeks || weeks < rule.minimumCourseWeeks) return 0;
+    const reached = Object.entries(rule.discountTiers ?? {}).filter(([tier]) => weeks >= Number(tier)).map(([, amount]) => amount);
+    return reached.length ? Math.max(...reached) : rule.discountValue;
+  }
+
+  /** Two free weekend activities: first class day 2027/01/02–05/29 and at least eight course weeks. */
+  get weekendRule(): CiaPromotionRule | undefined {
+    const rule = this.newPrices2027 ? this.rule('cpils-weekend-2027') : undefined;
+    const start = cpilsMonday(this.quotePlan.courses[0]?.startDate ?? '');
+    return rule && start && within(start, rule.arrivalStart, rule.arrivalEnd) && this.quotePlan.courseWeeks >= rule.minimumCourseWeeks
+      ? rule : undefined;
+  }
+  get activityBenefits(): string[] {
+    return !this.quoteError && this.weekendRule ? [CPILS_WEEKEND_ACTIVITIES] : [];
+  }
+
   /** Course weeks touching an enabled peak range (CPILS charges study weeks only), at the CALA
    *  joint-notice rate: 40 dollars a week through 2026, 60 from 2027. */
   private get peak() {
@@ -194,7 +248,8 @@ export class CpilsPageStudent implements PhPageStudent {
   get seasonalSurcharge(): number { return this.peak.total; }
 
   get promotionDiscountTotal(): number {
-    return this.sidaDiscount + this.offSeasonDiscount + this.noWindowDiscount + this.holidayDiscount;
+    return this.sidaDiscount + this.offSeasonDiscount + this.noWindowDiscount + this.holidayDiscount
+      + this.holidayDiscount2027 + this.careerDiscount;
   }
   get quoteUsd(): number {
     return Math.max(0, cpilsMoney(this.registration + this.base - this.promotionDiscountTotal + this.seasonalSurcharge));
@@ -206,6 +261,8 @@ export class CpilsPageStudent implements PhPageStudent {
       this.offSeasonDiscount > 0 ? this.offSeasonAppliedRule?.name : '',
       this.noWindowDiscount > 0 ? this.noWindowRule?.name : '',
       this.holidayDiscount > 0 ? this.holidayRule?.name : '',
+      ...this.holidayOffers2027.map(rule => rule.name),
+      this.careerDiscount > 0 ? this.careerRule?.name : '',
     ].filter(Boolean).join('、');
   }
 
@@ -214,6 +271,7 @@ export class CpilsPageStudent implements PhPageStudent {
     const offSeason = this.offSeasonAppliedRule;
     const noWindow = this.noWindowRule;
     const holiday = this.holidayRule;
+    const career = this.careerRule;
     const defaultNoWindow = noWindow?.id === 'cpils-no-window-2027'
       && noWindow.description.startsWith('报名2026/09/29–2027/12/27')
       ? '无对外窗单人／双人房，窗户面向走廊；符合2027年优惠报名及开课条件，可与其他优惠同享。'
@@ -223,6 +281,11 @@ export class CpilsPageStudent implements PhPageStudent {
       ...(offSeason && this.offSeasonDiscount ? [{ icon: '淡', label: offSeason.name, value: -this.offSeasonDiscount, note: offSeason.description, promotionKey: offSeason.id }] : []),
       ...(noWindow && this.noWindowDiscount ? [{ icon: '房', label: noWindow.name, value: -this.noWindowDiscount, note: defaultNoWindow, promotionKey: noWindow.id }] : []),
       ...(holiday ? [{ icon: '节', label: holiday.name, value: -holiday.discountValue, note: holiday.description, promotionKey: holiday.id }] : []),
+      ...this.holidayOffers2027.map(rule => ({ icon: '节', label: rule.name, value: -rule.discountValue, note: rule.description, promotionKey: rule.id })),
+      ...(career && this.careerDiscount ? [{
+        icon: '职', label: career.name, value: -this.careerDiscount,
+        note: `职业培训课程共${this.careerWeeks}周，2027年开课；不可折现或转让`, promotionKey: career.id,
+      }] : []),
       ...(this.seasonalSurcharge ? [{
         icon: '旺', label: '暑假附加费', value: this.seasonalSurcharge,
         note: `学习周与旺季重叠：${associationPeakBreakdownText(this.peak)}；不参与折扣`,
@@ -238,24 +301,31 @@ export class CpilsPageStudent implements PhPageStudent {
     if (this.startsIn2027) {
       const ielts = this.rule('cpils-ielts-exam-2027');
       const toeic = this.rule('cpils-toeic-exam-2027');
-      const ieltsEligible = !!ielts && cpils2027Eligible(this.content, this, ielts)
-        && courses.some(row => ielts.eligibleCourseIds?.includes(row.optionId) && row.weeks >= ielts.minimumCourseWeeks);
+      // All IELTS courses of one registration count together, Pre-IELTS included, and the 8-week
+      // IELTS Guarantee gets the exam too (school answers 2026-11-23). One exam per student.
+      const ieltsRows = courses.filter(row => ielts?.eligibleCourseIds?.includes(row.optionId));
+      const ieltsWeeks = ieltsRows.reduce((sum, row) => sum + row.weeks, 0);
+      const ieltsLong = !!ielts && ieltsWeeks >= ielts.minimumCourseWeeks;
+      const ieltsGuarantee = ieltsRows.some(row => row.optionId.startsWith('ielts-guarantee-'));
+      // The week minimum is checked on the IELTS weeks above, so the date terms are checked without it.
+      const ieltsEligible = !!ielts && cpils2027Eligible(this.content, this, { ...ielts, minimumCourseWeeks: 0 }) && (ieltsLong || ieltsGuarantee);
       const toeicWeeks = courses.filter(row => toeic?.eligibleCourseIds?.includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
       const toeicEligible = !!toeic && cpils2027Eligible(this.content, this, toeic) && toeicWeeks >= toeic.minimumCourseWeeks;
       return [
-        ...(ieltsEligible ? [`雅思课程一次注册12周及以上：赠${ielts.discountValue}次雅思官方考试`] : []),
+        ...(ieltsEligible ? [`${ieltsLong ? `雅思课程（含预备雅思）一次注册12周及以上：赠${ielts.discountValue}次` : `雅思保分班（8周）：一次性注册8周送${ielts.discountValue}次`}雅思官方考试`] : []),
         ...(toeicEligible ? [`托业课程：赠${Math.min(6, Math.floor(toeicWeeks / Math.max(1, toeic.incrementWeeks ?? 4)) * toeic.discountValue)}次官方考试`] : []),
       ];
     }
-    return courses.flatMap(row => {
-      if (row.optionId === 'ielts-course' && row.weeks >= 12) return ['雅思课程12周及以上：赠1次雅思官方考试'];
+    const ieltsWeeks = courses.filter(row => ['pre-ielts-course', 'ielts-course'].includes(row.optionId)).reduce((sum, row) => sum + row.weeks, 0);
+    const ieltsGift = ieltsWeeks >= 12 ? ['雅思课程（含预备雅思）12周及以上：赠1次雅思官方考试'] : [];
+    return [...ieltsGift, ...courses.flatMap(row => {
       if (row.optionId.startsWith('ielts-guarantee-')) return ['雅思保分班：赠1次雅思机考'];
       if (['toeic-course', 'toeic-guarantee'].includes(row.optionId) && row.weeks >= 4) {
         const name = this.pricing.courseFees.find(course => course.id === row.optionId)?.name ?? '托业课程';
         return [`${name}：赠${Math.min(6, 1 + Math.floor((row.weeks - 4) / 4))}次官方考试`];
       }
       return [];
-    });
+    })];
   }
 
   get visaLabel(): string { return this.visaOptions.find(option => option.value === this.visaType)?.label ?? ''; }
@@ -401,20 +471,33 @@ export class CpilsQuote extends PhSchoolQuote<CpilsPageStudent> {
     return notes.length ? { icon: '赠', label: '官方考试赠送', amount: '按课程赠送', note: notes.join('；') } : undefined;
   }
 
+  /** The free weekend activities, once for the students who qualify (named in a group quote). */
+  private get activityItem(): QuoteImagePaymentItem | undefined {
+    const eligible = this.activeStudents.map((student, index) => ({ student, index })).filter(({ student }) => student.activityBenefits.length);
+    if (!eligible.length) return undefined;
+    const who = this.quoteMode === 'group' ? `${eligible.map(({ index }) => `学生${index + 1}`).join('、')}：` : '';
+    return {
+      icon: '赠', label: eligible[0].student.weekendRule?.name ?? '周末活动赠送', amount: `${this.quoteMode === 'group' ? '每人' : ''}免费2项`,
+      note: `${who}${CPILS_WEEKEND_ACTIVITIES}；不可折现或转让`,
+    };
+  }
+
+  /** Non-cash gifts after the money rows: official exams, then weekend activities. */
+  private get giftItems(): QuoteImagePaymentItem[] {
+    return [this.examItem, this.activityItem].filter((item): item is QuoteImagePaymentItem => !!item);
+  }
+
   override get schoolPaymentItems(): PhSchoolPaymentItem[] {
-    const items = super.schoolPaymentItems;
-    const exam = this.examItem;
-    return exam ? [...items, { ...exam, previewKind: 'section', previewId: 'quote-breakdown' }] : items;
+    return [...super.schoolPaymentItems, ...this.giftItems.map(item => ({ ...item, previewKind: 'section' as const, previewId: 'quote-breakdown' }))];
   }
 
   override get quoteImageData(): QuoteImageCardData {
     const data = super.quoteImageData;
-    const exam = this.examItem;
     const minors = this.activeStudents.flatMap((student, index) => student.selectedAgeGroup === 'minor'
       ? [`${this.quoteMode === 'group' ? `学生${index + 1}：` : ''}${MINOR_NOTE}`] : []);
     return {
       ...data,
-      paymentItems: exam ? [...data.paymentItems, exam] : data.paymentItems,
+      paymentItems: [...data.paymentItems, ...this.giftItems],
       importantNotes: [...minors, ...(data.importantNotes ?? [])],
     };
   }

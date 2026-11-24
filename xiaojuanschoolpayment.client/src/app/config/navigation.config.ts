@@ -773,6 +773,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '爱尔兰游学',
         route: '/overseas-study-tour/ireland',
         type: '国家页',
+        children: [
+          {
+            id: 'ireland-tour-overview',
+            label: '爱尔兰游学总览',
+            route: '/overseas-study-tour/ireland',
+          },
+          {
+            id: 'atc-language-schools',
+            label: 'ATC Language Schools（布雷／都柏林）',
+            route: '/overseas-study-tour/ireland/atc-language-schools',
+          },
+        ],
       },
       {
         id: 'uk-tour',
