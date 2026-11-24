@@ -40,7 +40,9 @@ asked to update the IMS page. Per the standing decision for Philippine schools, 
 - Order: 思达启航 5% on the full tuition and room first, except the four 2+2 weeks (the school notice says they take no
   95折); then 2+2, the off-season offer and the long-stay tier.
 - A week belongs to the month of its Wednesday; January, June, July and August are not off-season. The calendar marks
-  2027-01-03–01-30 and 2027-05-30–08-28 as weeks without the off-season offer (no peak surcharge).
+  2027-01-03–01-30 and 2027-05-30–08-28 as weeks without the off-season offer (no peak surcharge). For such
+  school-only ranges the template now marks a month only when a covered class week has its Wednesday in it, so May is
+  not marked; HANA's months are unchanged and ranges with a surcharge keep the old rule.
 - Ages: most courses 15+; TOEIC Speaking, OPIc, TESOL and Parents ESL 20+ (the course table; one detail page says 15+);
   Senior ESL 50+; Junior courses 7–14 with a parent on Parents ESL. Guardian Service (450 dollars per 4 weeks) only in
   the off-season; School Management (2,100) any time; both are optional choices under 学生情况.

@@ -76,6 +76,8 @@ describe('IMS Academy page on the shared template', () => {
     expect(payment('2+2达人活动')).toBeUndefined();
     expect(payment('淡季优惠')).toBeUndefined();
     expect(IMS_PAGE_PROFILE.peakSeasonsWithoutSurcharge?.ranges.map(range => range.start)).toEqual(['2027-01-03', '2027-05-30']);
+    // The week from 2027/05/30 belongs to June, so the calendar marks January and June to August, not May.
+    expect(page.calendarMonths.filter(row => row.peak).map(row => row.month)).toEqual([1, 6, 7, 8]);
   });
 
   it('charges registration to every student, returning students too', () => {
@@ -142,6 +144,7 @@ describe('IMS Academy page on the shared template', () => {
   });
 
   it('charges walk-in students no room, dormitory fees or deposit', () => {
+    expect(page.roomRateGroups.flatMap(group => group.rooms).find(room => room.id === 'walk-in')?.location as string).toBe('');
     page.quotePlan.rooms[0].optionId = 'walk-in';
     expect(student().accommodation).toBe(0);
     expect(localFee('水费')?.quantity).toBe(0);

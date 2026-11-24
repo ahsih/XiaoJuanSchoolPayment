@@ -112,6 +112,9 @@ const ROOM_TEXT: Readonly<Record<string, { name: string; group: string; note: st
   quadruple: { name: '四人间', group: '多人间', note: 'IMS最省钱的房型。' },
 };
 
+/** Walk-in students have no room, so their row carries no 校内／校外 badge (the union lives in the locked CIA files). */
+const NO_ROOM_LOCATION = '' as CiaRoomContent['location'];
+
 const createRooms = (): CiaRoomContent[] => [
   ...IMS_ROOMS.map((item, sortOrder): CiaRoomContent => ({
     id: item.id,
@@ -126,7 +129,7 @@ const createRooms = (): CiaRoomContent[] => [
     sortOrder,
   })),
   {
-    id: IMS_WALK_IN_ROOM_ID, name: '走读（不住宿）', label: '走读（不住宿）', code: IMS_WALK_IN_ROOM_ID, location: '校内', group: '走读',
+    id: IMS_WALK_IN_ROOM_ID, name: '走读（不住宿）', label: '走读（不住宿）', code: IMS_WALK_IN_ROOM_ID, location: NO_ROOM_LOCATION, group: '走读',
     fee: 0, accommodation: false, note: '只收课程费；到校只交签证、SSP、E-CARD、学生证和教材费。', enabled: true, sortOrder: IMS_ROOMS.length,
   },
 ];
