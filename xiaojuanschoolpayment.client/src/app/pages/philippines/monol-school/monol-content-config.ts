@@ -17,13 +17,19 @@ import { copyContentData } from '../copy-content-data';
  * 1 (2026-11-25): the school's November 2026 pack. Light ESL and the other Chinese course names and lines, 1/2/3
  * weeks at 40/60/80% of four weeks, Premium Single A and B as two rooms (same price), 单人雅房 and 胶囊四人间, the
  * fee sheet's local fees (SSP ACR I-CARD, visa extensions 6,210 then 4,240, no textbook or ID fee, deposit 100
- * dollars), the TVV ACR reference, individual pickups, and the poster's offers not counting 2027/06/27–08/21.
+ * dollars), the TVV ACR reference, individual pickups, the poster's offers not counting 2027/06/27–08/21, and the
+ * 2027 room prices (each room 50 dollars more per four weeks for registrations from 2027/01/01, user 2026-11-25).
  */
 export const MONOL_POLICY_VERSION = 1;
 type MonolQuoteSettings = CiaQuoteSettings & { monolPromotionPolicyVersion?: number; monolPolicyVersion?: number };
 
 /** Rows of the 2026 document that the fee sheet replaced; dropped once by the version-1 upgrade. */
 const RETIRED_FEE_IDS = ['ssp-e-card', 'acr-i-card', 'books', 'student-id', 'manila-pickup', 'clark-pickup', 'room-deposit'];
+
+/** Rooms cost this much more per four weeks for registrations from 2027/01/01 (user 2026-11-25); courses stay the same. */
+export const MONOL_2027_ROOM_INCREASE = 50;
+/** First registration day of the 2027 room prices; registrations up to 2026/12/31 keep the current prices. */
+export const MONOL_2027_PRICE_REGISTRATION_START = '2027-01-01';
 
 /** Extension amounts in order (fee sheet): the first 30-day extension 6,210, then 4,240 each, for both entry visas. */
 export const MONOL_VISA_RATES = [6210, 4240, 4240, 4240, 4240];
@@ -33,7 +39,7 @@ const course = (id: string, name: string, tuition: number, schedule: string, sui
 });
 
 const room = (id: string, name: string, code: string, group: string, fee: number, note: string, sortOrder: number): CiaRoomContent => ({
-  id, name, label: name, code, location: '校内', group, fee, note, enabled: true, sortOrder,
+  id, name, label: name, code, location: '校内', group, fee, fee2027: fee + MONOL_2027_ROOM_INCREASE, note, enabled: true, sortOrder,
 });
 
 const COURSES = (): CiaCourseContent[] => [
@@ -190,11 +196,16 @@ function upgradeToNovemberPack(clone: CiaContentConfig, defaults: CiaContentConf
     const saved = clone.rooms.find(item => item.id === fresh.id);
     if (!saved) {
       // Premium B is new: it costs what the saved Premium Single costs.
-      clone.rooms.push({ ...copyContentData(fresh), ...(fresh.id === 'premium-single-b' && premium ? { fee: premium.fee, enabled: premium.enabled } : {}) });
+      clone.rooms.push({
+        ...copyContentData(fresh),
+        ...(fresh.id === 'premium-single-b' && premium ? { fee: premium.fee, fee2027: premium.fee + MONOL_2027_ROOM_INCREASE, enabled: premium.enabled } : {}),
+      });
     } else if (saved.name === OLD_ROOM_NAMES[fresh.id]) {
       Object.assign(saved, { name: fresh.name, label: fresh.label, code: fresh.code, group: fresh.group, note: fresh.note });
     }
   }
+  // The 2027 price of every room: its saved price plus 50 dollars.
+  for (const room of clone.rooms) room.fee2027 ??= room.fee + MONOL_2027_ROOM_INCREASE;
   clone.localFees = [
     ...defaults.localFees.map(fee => copyContentData(fee)),
     ...clone.localFees.filter(fee => !RETIRED_FEE_IDS.includes(fee.id) && !defaults.localFees.some(item => item.id === fee.id)),

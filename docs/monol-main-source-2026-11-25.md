@@ -46,7 +46,8 @@ Not used:
 - **Courses** (dollars per 4 weeks): Light ESL 轻量ESL 750, General ESL 综合ESL 900, IELTS 雅思 1,000 (includes a
   100-dollar academic fee), LEAP English 客制化课程 1,150 (includes 250). 2027 prices equal 2026.
 - **Rooms** (dollars per 4 weeks, no meals): 高级单人间A型 1,100, 高级单人间B型 1,100, 标准单人间 750, 单人雅房 650,
-  三人间 500, 胶囊四人间 400. Premium A and B have two large beds and take 2–4 people; each extra person pays 200
+  三人间 500, 胶囊四人间 400 for registrations up to 2026/12/31. From 2027/01/01 every room costs 50 dollars more
+  (1,150 / 1,150 / 800 / 700 / 550 / 450), as the 2026-10-23 overview lists. Premium A and B have two large beds and take 2–4 people; each extra person pays 200
   dollars per 4 weeks (the 高级单人间同住 choice under 学生情况), and that part gets no room offer.
 - **Short stays:** 1/2/3 weeks are 40/60/80% of the four-week price; four weeks and more are proportional.
 - **Registration:** 100 dollars, waived for every 思达启航 student.
@@ -67,10 +68,13 @@ Not used:
 - The old textbook, student-ID and per-room-week rows are dropped by the upgrade: electronic textbooks, laundry,
   room cleaning, water and electricity are free.
 
-## Open question for the user
+## 2027 room prices (user decision 2026-11-25)
 
-The 2026-10-23 overview lists every room 50 dollars higher (1,150 / 800 / 700 / 550 / 450) than the 2026-09-07 fee
-sheet and the October handbook. The page uses the fee-sheet prices until the user confirms which list is current.
+The 2026-10-23 overview lists every room 50 dollars higher than the 2026-09-07 fee sheet and the October handbook.
+The user confirmed these are the 2027 prices: registrations up to 2026/12/31 pay the fee-sheet prices, registrations
+from 2027/01/01 pay 50 dollars more per room per four weeks. Courses and the 200-dollar Premium sharer fee do not
+change. Each room carries `fee2027`; the quote picks the price by the registration date, and the room list shows the
+current prices with each group's 2027 prices in a note until 2026/12/31, then the 2027 prices.
 
 ## Tests
 

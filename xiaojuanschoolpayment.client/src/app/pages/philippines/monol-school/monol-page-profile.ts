@@ -11,8 +11,9 @@ import {
   type CiaShortVideo,
   type RoomRateGroup,
 } from '../cia-school/cia-page-content';
+import type { CiaRoomContent } from '../cia-school/cia-content-config';
 import type { PhPageCopy, PhSchoolProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
-import { cloneMonolContentConfig, createDefaultMonolContentConfig } from './monol-content-config';
+import { cloneMonolContentConfig, createDefaultMonolContentConfig, MONOL_2027_PRICE_REGISTRATION_START } from './monol-content-config';
 import {
   MONOL_ALBUM_DESCRIPTIONS,
   MONOL_BASIC_INFO,
@@ -159,6 +160,31 @@ const MONOL_COPY: PhPageCopy = {
   },
 };
 
+/** Local date (YYYY-MM-DD). */
+const monolLocalToday = (): string => {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+};
+/** Until 2026/12/31 the room list shows the current prices; from 2027/01/01 it shows the 2027 ones. */
+export const monolListsCurrentRoomPrices = (): boolean => monolLocalToday() < MONOL_2027_PRICE_REGISTRATION_START;
+
+const PREMIUM_SHARE_NOTE = '高级单人间A型和B型有两张大床，最多4人同住，同住的每人每4周加200美元。';
+
+/** Notes under the room price groups: Premium sharing, and the 2027 prices while the list still shows the current ones. */
+export function monolRoomGroupNotes(rooms: readonly CiaRoomContent[], listsCurrent = monolListsCurrentRoomPrices()): Record<string, string> {
+  const notes: Record<string, string> = { 单人间: PREMIUM_SHARE_NOTE };
+  if (!listsCurrent) return notes;
+  for (const group of new Set(rooms.filter(room => room.enabled).map(room => room.group))) {
+    const changed = rooms
+      .filter(room => room.enabled && room.group === group && room.fee2027 !== undefined && room.fee2027 !== room.fee)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+    if (!changed.length) continue;
+    const line = `2026/12/31前报名按现价；2027/01/01起报名：${changed.map(room => `${room.label} ${(room.fee2027 as number).toLocaleString('en-US')}`).join('、')} 美元。`;
+    notes[group] = notes[group] ? notes[group] + line : line;
+  }
+  return notes;
+}
+
 const MONOL_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [...new Set(defaults.rooms.map(room => room.group))].map(title => ({
   title,
   rooms: defaults.rooms
@@ -233,9 +259,7 @@ export const MONOL_PAGE_PROFILE: PhSchoolProfile = {
   initialCourseFees: initialPricing.courseFees,
   initialRoomFees: initialPricing.roomFees,
   initialRoomRateGroups: MONOL_INITIAL_ROOM_RATE_GROUPS,
-  roomGroupNotes: {
-    单人间: '高级单人间A型和B型有两张大床，最多4人同住，同住的每人每4周加200美元。',
-  },
+  roomGroupNotes: monolRoomGroupNotes(defaults.rooms),
   showRoomCodes: false,
   dormRules: MONOL_DORM_RULES,
   roomProfiles: MONOL_ROOM_PROFILES,

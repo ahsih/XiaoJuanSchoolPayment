@@ -7,6 +7,7 @@ import { SchoolContentService } from '../../../../services/school-content.servic
 import { SchoolService } from '../../../../services/school.service';
 import { cloneMonolContentConfig, createDefaultMonolContentConfig, MONOL_POLICY_VERSION } from './monol-content-config';
 import { monolVisaExtensions } from './monol-page-quote';
+import { monolRoomGroupNotes } from './monol-page-profile';
 import { MonolSchoolPageComponent } from './monol-school-page.component';
 
 // MONOL main campus on the shared Philippine school template: the 2026-09-07 fee sheet, the October 2026 student
@@ -71,7 +72,33 @@ describe('MONOL main-campus page on the shared template', () => {
     expect(page.quote.quoteUsd).toBe(1250);
     student().selectedRegistrationDate = '2027-01-05';
     expect(choice('SNS活动').visible).toBeFalse();
-    expect(page.quote.quoteUsd).toBe(1550);
+    // 2027 registration: 900 + 800 (standard single 2027 price) − 100 Christmas
+    expect(page.quote.quoteUsd).toBe(1600);
+  });
+
+  it('charges every room 50 dollars more per four weeks for registrations from 2027/01/01', () => {
+    student().selectedRegistrationDate = '2026-12-31';
+    page.selectedStartDate = '2027-03-07';
+    // 900 + 500 − 100 course − 100 room
+    expect(page.quote.quoteUsd).toBe(1200);
+    student().selectedRegistrationDate = '2027-01-01';
+    // 900 + 550, no 2026 offers; courses cost the same
+    expect(page.quote.quoteUsd).toBe(1450);
+    page.quotePlan.rooms[0].optionId = 'premium-single-b';
+    expect(page.quote.quoteUsd).toBe(900 + 1150);
+    choice('高级单人间同住').value = true;
+    // A sharer still pays 200 per four weeks
+    expect(page.quote.quoteUsd).toBe(1100);
+  });
+
+  it('lists the 2027 room prices under each room group until the switch', () => {
+    const rooms = createDefaultMonolContentConfig().rooms;
+    const notes = monolRoomGroupNotes(rooms, true);
+    expect(notes['多人间']).toBe('2026/12/31前报名按现价；2027/01/01起报名：三人间 550、胶囊四人间 450 美元。');
+    expect(notes['单人间']).toContain('同住的每人每4周加200美元。2026/12/31前报名按现价；2027/01/01起报名：高级单人间A型 1,150、高级单人间B型 1,150、标准单人间 800、单人雅房 700 美元。');
+    const after = monolRoomGroupNotes(rooms, false);
+    expect(after['多人间']).toBeUndefined();
+    expect(after['单人间']).toBe('高级单人间A型和B型有两张大床，最多4人同住，同住的每人每4周加200美元。');
   });
 
   it('charges a second Premium Single sharer 200 dollars per four weeks without room offers', () => {
@@ -95,7 +122,8 @@ describe('MONOL main-campus page on the shared template', () => {
     page.selectedStartDate = '2027-06-27';
     page.selectedWeeks = 8;
     expect(student().seasonalSurcharge).toBe(480);
-    expect(page.quote.quoteUsd).toBe(1800 + 1000 + 480);
+    // 2027 registration: the triple room is 550 per four weeks
+    expect(page.quote.quoteUsd).toBe(1800 + 1100 + 480);
   });
 
   it('follows the fee sheet visa sequence for 30-day and 59-day visas', () => {
@@ -144,11 +172,15 @@ describe('MONOL main-campus page on the shared template', () => {
     old.rooms = old.rooms.filter(room => room.id !== 'premium-single-b');
     old.rooms[0].name = '高级单人间';
     old.rooms[0].fee = 1080;
+    old.rooms.forEach(room => delete room.fee2027);
     old.localFees.push({ id: 'books', name: '教材费', currency: 'PHP', amount: 2000, billingRule: 'once', includeInTotal: true, note: '', enabled: true, sortOrder: 9 });
     const upgraded = cloneMonolContentConfig(old);
     expect(upgraded.courses[0].name).toBe('Light ESL 轻量ESL');
     expect(upgraded.rooms.find(room => room.id === 'premium-single-room')?.name).toBe('高级单人间A型');
     expect(upgraded.rooms.find(room => room.id === 'premium-single-b')?.fee).toBe(1080);
+    expect(upgraded.rooms.find(room => room.id === 'premium-single-b')?.fee2027).toBe(1130);
+    expect(upgraded.rooms.find(room => room.id === 'premium-single-room')?.fee2027).toBe(1130);
+    expect(upgraded.rooms.find(room => room.id === 'triple-room')?.fee2027).toBe(550);
     expect(upgraded.localFees.some(fee => fee.id === 'books')).toBeFalse();
     expect((upgraded.quoteSettings as typeof settings).monolPolicyVersion).toBe(MONOL_POLICY_VERSION);
   });

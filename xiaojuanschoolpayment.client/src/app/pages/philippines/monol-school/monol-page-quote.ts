@@ -7,11 +7,12 @@ import type { QuoteImageCardData } from '../../../components/quote-image-types';
 import { nextQuoteSunday, QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 import { quoteCurrencyText } from '../../../../services/quote-currency-text';
 import { associationPeakBreakdownText, calculateAssociationPeakSurcharge } from '../association-peak-surcharge';
-import type { CiaLocalFeeRule, CiaPromotionRule } from '../cia-school/cia-content-config';
+import type { CiaLocalFeeRule, CiaPromotionRule, CiaRoomContent } from '../cia-school/cia-content-config';
 import type { CiaQuoteCourse, CiaQuoteRoom } from '../cia-school/cia-quote-engine';
 import { PhComparePricing, PhPlanComparison } from '../school-page/ph-plan-compare';
 import { PhOptionalFeeItem, PhSchoolQuote } from '../school-page/ph-school-quote';
 import type { PhExtraChoice, PhPageStudent } from '../school-page/ph-school-profile';
+import { MONOL_2027_PRICE_REGISTRATION_START } from './monol-content-config';
 import { MONOL_QUOTE_IMAGE_HERO } from './monol-page-content';
 
 /** Everything MONOL's quote reads; the page component is one. */
@@ -20,6 +21,13 @@ export interface MonolQuotePricing extends PhComparePricing {
   roomFees: CiaQuoteRoom[];
   /** 1/2/3 weeks as a share of the four-week price (the content document's shortStayRatios). */
   shortTermPriceRatios: Record<string, number>;
+  /** Four-week room prices for registrations from 2027/01/01, by room id; a room missing here keeps its current price. */
+  roomFees2027?: Readonly<Record<string, number>>;
+}
+
+/** The content document's 2027 room prices, by room id. */
+export function monolRoomFees2027(rooms: readonly CiaRoomContent[]): Record<string, number> {
+  return Object.fromEntries(rooms.map(room => [room.id, room.fee2027 ?? room.fee]));
 }
 
 export const MONOL_VISA_OPTIONS = [
@@ -152,12 +160,15 @@ export class MonolPageStudent implements PhPageStudent {
 
   // ---- prices ----------------------------------------------------------------------------------
 
+  /** Registrations from 2027/01/01 pay the 2027 room prices; courses cost the same in both years. */
+  get uses2027Prices(): boolean { return this.selectedRegistrationDate >= MONOL_2027_PRICE_REGISTRATION_START; }
+
   private rowPrice(kind: QuotePlanKind, row: QuotePlanRow): number {
     const multiplier = monolPriceMultiplier(row.weeks, this.pricing.shortTermPriceRatios);
     if (kind === 'room' && this.premiumSharer && MONOL_PREMIUM_ROOM_IDS.includes(row.optionId)) return MONOL_PREMIUM_SHARER_FEE * multiplier;
     const base = kind === 'course'
       ? this.pricing.courseFees.find(item => item.id === row.optionId)?.tuition2027
-      : this.pricing.roomFees.find(item => item.id === row.optionId)?.fee;
+      : (this.uses2027Prices ? this.pricing.roomFees2027?.[row.optionId] : undefined) ?? this.pricing.roomFees.find(item => item.id === row.optionId)?.fee;
     return (base ?? 0) * multiplier;
   }
 

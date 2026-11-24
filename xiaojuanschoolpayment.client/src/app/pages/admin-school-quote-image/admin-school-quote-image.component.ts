@@ -35,7 +35,7 @@ import {
 } from '../philippines/monol-school/monol-content-config';
 import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
 import { MonolSpartaQuote } from '../philippines/monol-sparta-school/monol-sparta-page-quote';
-import { MonolQuote } from '../philippines/monol-school/monol-page-quote';
+import { MonolQuote, monolRoomFees2027 } from '../philippines/monol-school/monol-page-quote';
 import { createCiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import {
   cloneEvContentConfig,
@@ -713,7 +713,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       exchangeRateDate: this.exchangeRateDate,
       usingLiveExchangeRates: Number.isFinite(this.usdToCny) && Number.isFinite(this.phpPerCny),
     });
-    const quote = new MonolQuote(pricing);
+    const quote = new MonolQuote(Object.assign(pricing, { roomFees2027: monolRoomFees2027(this.content.rooms) }));
     const student = quote.students[0];
     student.selectedRegistrationDate = '2026-11-25';
     student.quotePlan.courses[0].startDate = '2026-11-29';
