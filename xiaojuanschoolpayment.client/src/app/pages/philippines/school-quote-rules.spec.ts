@@ -262,7 +262,7 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
     const codes = [
       'ANJ', 'BECI', 'MONOL', 'MONOL-SPARTA', 'PINES', 'JIC', 'WALES',
       'BLUE-OCEAN', 'BTES', 'CWA', 'CELLA-UNI', 'CELLA-PREMIUM', 'CG-BANILAD', 'CG-SPARTA',
-      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING', 'CPILS',
+      'EV', 'PHILINTER', 'QQ-ENGLISH', 'WINNING',
     ];
     for (const code of codes) {
       expect(associationPeakRateForWeek(code, '2027-07-04', 40)).withContext(code).toBe(60);
@@ -278,5 +278,7 @@ describe('BESA/CALA 2027 peak-surcharge policy', () => {
 
   it('leaves non-association schools on their configured rate', () => {
     expect(calculateAssociationPeakSurcharge('CIA', [sunday('2027-07-04')], ranges, 47).total).toBe(47);
+    // CPILS is a CALA member but charges its own 40 dollars a week in 2027 (user decision 2026-11-24).
+    expect(calculateAssociationPeakSurcharge('CPILS', [sunday('2027-07-04')], ranges, 40).total).toBe(40);
   });
 });

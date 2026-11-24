@@ -2,7 +2,7 @@ import { CiaContentConfig, CiaCourseContent, CiaPromotionRule } from '../cia-sch
 import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 
 const DAY = 86400000;
-export const CPILS_POLICY_VERSION = 3;
+export const CPILS_POLICY_VERSION = 4;
 export const cpilsMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const cpilsMonday = (sunday: string) => {
   const time = Date.parse(`${sunday}T00:00:00Z`);
@@ -55,6 +55,64 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
   if (version < 1) addCpils2027Notice(config);
   if (version < 2) addCpilsVersion2(config);
   if (version < 3) addCpilsVersion3(config);
+  if (version < 4) addCpilsVersion4(config);
+}
+
+// The school's 2026 price list (received 2026-11-24): 1-3-week prices and the courses it prices for 2026.
+const course2026: Record<string, { price?: number; prices?: Record<string, number>; weeks?: number[] }> = {
+  'general-esl-light': { prices: short(246, 390, 510) },
+  'general-esl': { prices: short(383, 608, 795) },
+  'general-esl-plus': { prices: short(383, 608, 795) },
+  'esl-premium': { price: 1040, prices: short(426, 676, 884) },
+  'premier-sparta': { prices: short(426, 676, 884) },
+  'toeic-course': { prices: short(426, 676, 884) },
+  'toefl-course': { prices: short(426, 676, 884) },
+  'business-english': { weeks: [4, 8] },
+  'power-speaking-and-modern-communication': { weeks: [4, 8] },
+  ...Object.fromEntries(['medical-english', 'tesol', 'barista-beverage', 'hotel-hospitality', 'working-holiday']
+    .map(id => [id, { price: 1040, weeks: [4, 8, 12] }])),
+};
+const room2026: Record<string, [number | null, number, number]> = {
+  'regular-single': [408, 647, 846], 'regular-twin': [344, 546, 714],
+  'regular-triple': [318, 504, 659], 'regular-quad': [null, 455, 595],
+  'no-window-single': [408, 647, 846], 'no-window-twin': [344, 546, 714],
+  'premium-single': [445, 705, 922], 'premium-twin': [373, 592, 774],
+  'premium-triple': [348, 552, 722], 'premium-quad': [null, 507, 663],
+};
+const DISCOUNT_TEXT_V4: Record<string, [string, string]> = {
+  'cpils-sida': ['课程费和住宿费享9折。', '学校优惠之后，课程费和住宿费再享9折。'],
+  'cpils-off-season-spring': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-off-season-fall': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-no-window': ['淡季入住无对外窗单人房或双人房，每满4周优惠50美元。', '淡季入住无对外窗单人房或双人房，每满4周优惠50美元，最多300美元。'],
+};
+
+/**
+ * The school's 2026 price list and its formula (user 2026-11-24): 2026 short stays, the 2026 prices of
+ * ESL Premium and the career courses, weekly management, and wording for the order of the discounts
+ * (fixed school deductions, then the school's 95%, then 思达启航's 90%). Only untouched values change.
+ */
+function addCpilsVersion4(config: CiaContentConfig): void {
+  for (const item of config.courses) {
+    const next = course2026[item.id];
+    if (next?.price && !item.tuition) item.tuition = next.price;
+    if (next?.prices) item.feeByWeeks = { ...next.prices, ...(item.feeByWeeks ?? {}) };
+    if (next?.weeks && !item.allowedWeeks) item.allowedWeeks = [...next.weeks];
+    if (item.id === 'ielts-guarantee-12-weeks' && item.feeByWeeks?.['12'] === 3569.1) item.feeByWeeks['12'] = 3569;
+  }
+  for (const item of config.rooms) {
+    const next = room2026[item.id];
+    if (next && !Object.keys(item.feeByWeeks ?? {}).length) item.feeByWeeks = short(...next);
+  }
+  const management = config.localFees.find(item => item.id === 'management');
+  if (management?.amount === 2000 && management.periodWeeks === 4 && management.note === '每4周2,000比索。') {
+    Object.assign(management, { amount: 500, periodWeeks: 1, rounding: 'proportional', note: '每周500比索。' });
+    if (config.quoteImageSettings.localFeeNotes?.['management'] === '每4周2,000比索。') config.quoteImageSettings.localFeeNotes['management'] = management.note;
+  }
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V4[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 4 };
 }
 
 /**

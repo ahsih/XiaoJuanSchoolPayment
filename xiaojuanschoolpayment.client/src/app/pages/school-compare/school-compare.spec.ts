@@ -77,12 +77,6 @@ describe('Cross-school price comparison', () => {
         const quote = quoteOnPage(page, selection.plan.courseId, selection.plan.roomId, comparison.conditions);
         const result = results[index];
         const label = `${selection.school.tag} ${JSON.stringify(scenario)}`;
-        // CPILS has no 2026 short-stay prices; the comparison shows the same message as its page.
-        if (selection.school.id === 'cpils' && scenario.start < '2027-01-01' && scenario.weeks < 4) {
-          expect(result.error).withContext(label).toContain('暂无');
-          expect(result.error).withContext(label).toBe(quote.quoteError);
-          return;
-        }
         expect(result.error).withContext(label).toBe('');
         expect(result.schoolTotal).withContext(label).toBeGreaterThan(0);
         expect(result.localTotal).withContext(label).toBeGreaterThan(0);
