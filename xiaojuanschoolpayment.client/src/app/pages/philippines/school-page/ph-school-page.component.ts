@@ -289,7 +289,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return [
       student.visaLabel,
       student.selectedAgeGroup === 'minor' ? '未满18岁' : '18岁及以上',
-      student.returningStudent ? '老学员' : '新学员',
+      student.hideReturning ? '' : student.returningStudent ? '老学员' : '新学员',
       student.selectedRegistrationDate ? `报名日${student.selectedRegistrationDate.replace(/-/g, '/')}` : '',
     ].filter(Boolean).join(' · ');
   }
