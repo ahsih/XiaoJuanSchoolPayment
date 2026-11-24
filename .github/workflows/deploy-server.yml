@@ -5,6 +5,20 @@ on:
     branches:
       - main
   workflow_dispatch:
+    # A push to the mainland-China server can be very slow (about 1 MB a
+    # minute on some days), git push never resumes, and a job stops after six
+    # hours. A large backlog can therefore be deployed in steps: run this
+    # workflow on main with an older main commit, then a newer one.
+    inputs:
+      sha:
+        description: "Commit already in main to deploy (empty: the latest main)"
+        required: false
+        default: ""
+      push_only:
+        description: "Only send the commit's files to the server (no update or rebuild)"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -28,6 +42,19 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      # Manual runs may name an older commit; it must already be in main.
+      - name: Choose commit
+        env:
+          INPUT_SHA: ${{ github.event.inputs.sha }}
+        run: |
+          target="$(git rev-parse --verify "${INPUT_SHA:-$GITHUB_SHA}^{commit}")"
+          if ! git merge-base --is-ancestor "$target" "$GITHUB_SHA"; then
+            echo "$target is not part of main; nothing deployed." >&2
+            exit 1
+          fi
+          echo "Deploying $target"
+          echo "TARGET_SHA=$target" >> "$GITHUB_ENV"
 
       - name: Configure SSH
         env:
@@ -77,17 +104,23 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
           GIT_SSH_COMMAND: ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes
+          PUSH_ONLY: ${{ github.event.inputs.push_only == 'true' }}
         run: |
           # "deploy" is a transport branch in the server's working repository;
           # the checked-out main branch is fast-forwarded in the next step.
-          git push --force "ssh://$SERVER_USER@$SERVER_HOST/opt/sida/app" "$GITHUB_SHA:refs/heads/deploy"
+          # A push-only run parks the commit on "stage", so a later push skips
+          # the files it already sent.
+          ref=refs/heads/deploy
+          if [ "$PUSH_ONLY" = "true" ]; then ref=refs/heads/stage; fi
+          git push --force "ssh://$SERVER_USER@$SERVER_HOST/opt/sida/app" "$TARGET_SHA:$ref"
 
       - name: Update production server
+        if: github.event.inputs.push_only != 'true'
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER_USER@$SERVER_HOST" bash -se "$GITHUB_SHA" <<'REMOTE'
+          ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER_USER@$SERVER_HOST" bash -se "$TARGET_SHA" <<'REMOTE'
           set -Eeuo pipefail
           target_sha="$1"
           cd /opt/sida/app
