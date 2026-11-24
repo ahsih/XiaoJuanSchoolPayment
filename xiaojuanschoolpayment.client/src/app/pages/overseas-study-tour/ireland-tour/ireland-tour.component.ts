@@ -51,6 +51,15 @@ export class IrelandTourComponent {
       '家长希望通过游学观察孩子海外适应能力。',
       '后续可能衔接爱尔兰院校申请、语言课程或夏校项目。',
     ],
+    schools: [
+      {
+        name: 'ATC Language Schools（布雷／都柏林）',
+        route: '/overseas-study-tour/ireland/atc-language-schools',
+        image: '/assets/atc/bray-aerial.webp',
+        text: '1973年创办的爱尔兰语言学校，海边小镇布雷和都柏林市中心两个校区；成人英语课程1周起报、每周一开课，25周课程可半工半读。',
+        tags: ['成人16／17岁起', '1周起报', '寄宿家庭／学校公寓', '25周半工半读'],
+      },
+    ],
     sources: [
       { label: 'Education in Ireland', url: 'https://www.educationinireland.com/en/' },
       { label: 'Education in Ireland - Living in Ireland', url: 'https://www.educationinireland.com/en/living-in-ireland/' },

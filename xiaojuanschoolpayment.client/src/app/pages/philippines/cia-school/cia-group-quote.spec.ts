@@ -1,8 +1,8 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, of } from 'rxjs';
-import { ExchangeRateService } from '../../../../services/exchange-rate.service';
+import { of } from 'rxjs';
+import { chinaToday, ExchangeRateService } from '../../../../services/exchange-rate.service';
 import { SchoolService } from '../../../../services/school.service';
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { CiaSchoolComponent } from './cia-school.component';
@@ -22,7 +22,7 @@ describe('CIA per-person quote pilot', () => {
     TestBed.configureTestingModule({providers:[
       {provide:SchoolService,useValue:{getSchools:()=>of([])}},
       {provide:SchoolContentService,useValue:{getPublished:()=>of(null)}},
-      {provide:ExchangeRateService,useValue:{getLatestCnyRates:()=>EMPTY}},
+      {provide:ExchangeRateService,useValue:{getLatestCnyRates:()=>of({date:chinaToday(),usdToCny:7,phpPerCny:8.2})}},
       {provide:ElementRef,useValue:new ElementRef(document.createElement('div'))},
       {provide:ActivatedRoute,useValue:{snapshot:{queryParamMap:{get:()=>null}}}},
     ]});
@@ -131,8 +131,8 @@ describe('CIA per-person quote pilot', () => {
   });
   it('merges equal discounts in images but retains per-person webpage deductions', () => {
     c.setQuoteMode('group'); c.students.forEach(s=>configure(s));
-    expect(c.schoolPaymentItems.filter(x=>x.label.includes('思达折扣')).length).toBe(2);
-    const discounts=c.quoteImageData.paymentItems!.filter(x=>x.label.includes('思达折扣'));
+    expect(c.schoolPaymentItems.filter(x=>x.label.includes('思达启航折扣')).length).toBe(2);
+    const discounts=c.quoteImageData.paymentItems!.filter(x=>x.label.includes('思达启航折扣'));
     expect(discounts.length).toBe(1);
     expect(discounts[0].note).toBe('2人适用；课程费和住宿费享95折');
     expect(discounts[0].amount).toBe('− '+c.formatUsd(c.sidaDiscountAmount)+' 美元');
@@ -176,13 +176,13 @@ describe('CIA per-person quote pilot', () => {
     expect(c.estimatedLocalFees.find(x=>x.item.includes('学生2')&&x.item.includes('SSP特殊'))!.total).toBe(0);
     expect(c.quoteImageData.localFeeItems!.map(x=>x.note)).toEqual(c.estimatedLocalFees.map(x=>x.note));
   });
-  it('counts accommodation and textbooks from their own periods; visas include gaps', () => {
+  it('counts accommodation and textbooks from their own periods; visas include gaps, which block the quote', () => {
     const s=c.students[0]; configure(s,4);
     s.quotePlan.courses.push({id:3,optionId:'regular-esl',weeks:4,startDate:'2026-11-01'});
     expect(fee(s,'综合管理').total).toBe(4000);
     expect(fee(s,'教材').total).toBe(2000);
     expect(s.visaExtensionCount).toBe(1);
-    expect(s.quotePlan.warning).toBeTruthy();
+    expect(s.quotePlan.error).toContain('课程日期须连续');
   });
   it('allows equal dates across people but blocks overlaps within a person', () => {
     c.setQuoteMode('group'); c.students.forEach(s=>configure(s));
@@ -214,7 +214,10 @@ describe('CIA per-person quote pilot', () => {
   it('keeps names ahead of prices and one common template for 1/3/4 periods', () => {
     for(const count of [1,3,4]) {
       configure(c.students[0]);
-      while(c.quotePlan.courses.length<count){c.quotePlan.add('course');c.quotePlan.add('room');}
+      // One stay of count × 4 weeks, split the way the page's 中途换课程／中途换住宿 buttons do.
+      c.quotePlan.setStayWeeks(count*4);
+      while(c.quotePlan.courses.length<count){c.quotePlan.splitStay('course');c.quotePlan.splitStay('room');}
+      expect(c.quotePlan.error).toBe('');
       const image=c.quoteImageData, rows=image.paymentItems!.filter(x=>x.icon==='课'||x.icon==='宿');
       expect(rows.length).toBe(count*2);
       expect(rows.every(x=>!!x.detailTitle&&!!x.detailSubtitle)).toBeTrue();

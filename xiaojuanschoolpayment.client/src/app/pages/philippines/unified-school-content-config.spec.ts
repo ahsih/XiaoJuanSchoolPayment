@@ -20,9 +20,11 @@ import {
 
 describe('new unified employee school content configs', () => {
   it('removes the old per-row short-stay explanation from published CG Sparta content', () => {
+    // A revision saved before the 2026-11 school pack has no cgPolicyVersion and the old per-row explanation.
     const config = createDefaultCgSpartaContentConfig();
+    delete (config.quoteSettings as { cgPolicyVersion?: number }).cgPolicyVersion;
     config.quoteSettings.courseTableNote = '每行1/2/3周分别按4周价的40%/60%/85%预估；4周及以上按4周单价按周折算。';
-    expect(cloneCgSpartaContentConfig(config).quoteSettings.courseTableNote).toBe('');
+    expect(cloneCgSpartaContentConfig(config).quoteSettings.courseTableNote).toBe(createDefaultCgSpartaContentConfig().quoteSettings.courseTableNote);
   });
   it('removes only the legacy JIC image formula and preserves independent campus copy', () => {
     const config = createDefaultJicContentConfig();
@@ -135,7 +137,7 @@ describe('new unified employee school content configs', () => {
       jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),
     );
     expect(clonePinesContentConfig(pines).quoteSettings.peakSeasonRanges.find(range => range.id === 'pines-peak-2027')).toEqual(
-      jasmine.objectContaining({ label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-22', enabled: true }),
+      jasmine.objectContaining({ label: '2027暑期旺季', start: '2027-06-27', end: '2027-08-21', enabled: true }),
     );
   });
 
