@@ -30,6 +30,40 @@ export const IBREEZE_ROOMS_2027: Record<string, Record<string, number>> = {
   'off-campus-family': prices([370, 550, 740, 890, 1780, 2670, 3560, 5340]),
 };
 
-export const IBREEZE_POLICY_VERSION = 20261110;
+/** 2026 short stays from the school's 2026 price list (4 weeks and longer stay proportional). */
+const shortStay = (values: number[]): Record<string, number> => Object.fromEntries(
+  [1, 2, 3, 4].flatMap((weeks, index) => values[index] > 0 ? [[String(weeks), values[index]]] : []),
+);
+
+export const IBREEZE_TUITION_2026: Record<string, Record<string, number>> = {
+  'power-esl': shortStay([400, 650, 860, 990]),
+  'intensive-beginner': shortStay([400, 650, 860, 990]),
+  'light-esl': shortStay([340, 550, 720, 840]),
+  'intensive-speaking': shortStay([320, 520, 650, 770]),
+  'ielts-starter': shortStay([0, 0, 890, 990]),
+  'ielts-target': shortStay([0, 0, 0, 1190]),
+  'toeic-target': shortStay([0, 0, 900, 1020]),
+  'junior-english': shortStay([570, 850, 1090, 1290]),
+  'general-business-and-bec': shortStay([370, 570, 750, 890]),
+};
+
+export const IBREEZE_ROOMS_2026: Record<string, Record<string, number>> = {
+  'single-main': shortStay([550, 850, 1090, 1270]),
+  'twin-main': shortStay([370, 595, 770, 900]),
+  'triple-main': shortStay([330, 510, 680, 790]),
+  'quad-main': shortStay([300, 480, 620, 720]),
+  'single-ib2': shortStay([570, 870, 1120, 1320]),
+  'twin-ib2': shortStay([410, 640, 810, 950]),
+  'quad-ib2': shortStay([320, 500, 640, 750]),
+  'off-campus-standard-single': shortStay([590, 890, 1140, 1390]),
+  'off-campus-superior-single': shortStay([610, 910, 1170, 1420]),
+  'off-campus-standard-twin': shortStay([450, 680, 870, 1050]),
+  'off-campus-superior-twin': shortStay([470, 700, 890, 1070]),
+  'off-campus-family': shortStay([370, 550, 740, 890]),
+};
+
+/** 20261110: November offer and 2027 tables. 20261123: school pack of 2026-11-20 (weekly local fees, condo electricity, course text). */
+export const IBREEZE_NOVEMBER_POLICY_VERSION = 20261110;
+export const IBREEZE_POLICY_VERSION = 20261123;
 export const IBREEZE_PRICE_REGISTRATION_START = '2027-01-01';
 export const IBREEZE_PROMOTION_BLACKOUT = { start: '2027-01-03', end: '2027-01-23' };

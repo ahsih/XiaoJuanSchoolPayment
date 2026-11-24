@@ -363,8 +363,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ibreeze',
         loadComponent: () =>
-          import('./pages/philippines/ibreeze-school/ibreeze-school.component').then(
-            (m) => m.IbreezeSchoolComponent,
+          import('./pages/philippines/ibreeze-school/ibreeze-school-page.component').then(
+            (m) => m.IbreezeSchoolPageComponent,
           ),
       },
       {
