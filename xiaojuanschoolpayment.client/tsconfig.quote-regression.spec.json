@@ -9,7 +9,6 @@
     "src/app/pages/philippines/glc-school/*.spec.ts",
     "src/app/pages/philippines/philinter-school/*.spec.ts",
     "src/app/pages/philippines/cella-quote/cella-student-quote.spec.ts",
-    "src/app/pages/philippines/anj-school/anj-student-quote.spec.ts",
     "src/**/*.d.ts"
   ]
 }
