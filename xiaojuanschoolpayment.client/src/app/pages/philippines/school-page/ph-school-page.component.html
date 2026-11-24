@@ -90,8 +90,9 @@
 
       <!-- Compact layout: one album, every video by topic first, then every photo by area. -->
       <div class="hero-album" id="gallery" *ngIf="compactLayout && heroAlbumItem" [attr.aria-label]="schoolName + ' 校园视频与照片'">
-        <div class="hero-album-stage" [class.is-video]="heroAlbumItem.kind === 'video'" [class.is-tall]="heroAlbumItem.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'hero')">
+        <div class="hero-album-stage" [class.is-video]="heroAlbumItem.kind === 'video'" [class.is-tall]="heroAlbumItem.shape === 'tall'" [class.has-tall-backdrop]="tallVideoBackdrop && heroAlbumItem.kind === 'video' && heroAlbumItem.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'hero')">
           <ng-container *ngIf="heroAlbumItem.kind === 'video'">
+            <img *ngIf="tallVideoBackdrop && heroAlbumItem.shape === 'tall' && heroAlbumItem.poster" class="tall-video-backdrop" [src]="heroAlbumItem.poster" alt="" aria-hidden="true" />
             <video
               #heroPlayer
               controls
@@ -203,6 +204,7 @@
         </div>
         <small>{{ copy.license.note }}</small>
       </aside>
+      <p class="section-reference-note" *ngIf="overviewReferenceNote && copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
     <div class="decision-summary-grid" id="overview" *ngIf="!compactLayout">
@@ -682,7 +684,7 @@
         <div class="room-table-heading">
           <h2 data-cia-preview-kind="section" data-cia-preview-id="room-heading" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-heading')"><mat-icon>bed</mat-icon>{{ roomTableTitle }}</h2>
           <p data-cia-preview-kind="section" data-cia-preview-id="room-note" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'room-note')">{{ roomTableNote }}</p>
-          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>点任一房型，看它的实拍照片和介绍</span></p>
+          <p class="room-pick-hint" *ngIf="compactLayout && roomComparisonProfiles.length"><span><mat-icon>touch_app</mat-icon>{{ everyRateRoomHasPhotos ? '点任一房型，看它的实拍照片和介绍' : '点“看照片”，看该房型的实拍照片和介绍' }}</span></p>
         </div>
         <div class="room-price-matrix" [attr.aria-label]="roomTableTitle" [style.--room-matrix-columns]="roomMatrixColumns">
           <section *ngFor="let group of roomRateGroups">
@@ -725,7 +727,9 @@
             (click)="compactLayout && selectRateRoom(room, $event)"
             (keydown.enter)="compactLayout && selectRateRoom(room, $event)"
           >
+            <!-- A room without a location (PINES Condo, user answer 2026-11-24) shows no 校内/校外 badge. -->
             <span
+              *ngIf="room.location"
               class="room-location-badge"
               [class.room-location-badge--off-campus]="room.location === '校外'"
             >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
@@ -755,7 +759,7 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
-          <span><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
+          <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
         </div>
@@ -802,8 +806,9 @@
         <div class="room-profile-gallery">
           <!-- The room's own video (profile.roomVideos, only a video of exactly this room type) is the album's first item;
                the arrows, a swipe or a thumbnail move on to the photos. Same file as the hero album, so it is cached once. -->
-          <div class="room-profile-photo" [class.is-video]="roomVideoActive" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
+          <div class="room-profile-photo" [class.is-video]="roomVideoActive" [class.has-tall-backdrop]="tallVideoBackdrop && roomVideoActive && selectedRoomVideo?.shape === 'tall'" (touchstart)="photoSwipeStart($event)" (touchend)="photoSwipeEnd($event, 'room')">
             <ng-container *ngIf="roomVideoActive && selectedRoomVideo as video">
+              <img *ngIf="tallVideoBackdrop && video.shape === 'tall' && video.poster" class="tall-video-backdrop" [src]="video.poster" alt="" aria-hidden="true" />
               <video
                 #roomClip
                 class="room-album-video"
@@ -872,7 +877,7 @@
             </div>
             <div class="room-profile-badges">
               <b *ngIf="roomVariant?.code ?? selectedRoomProfile.bookingCode as code">{{ code }}</b>
-              <em [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
+              <em *ngIf="selectedRoomProfile.location" [class.off-campus]="selectedRoomProfile.location === '校外'">{{ selectedRoomProfile.location }}</em>
             </div>
           </header>
 
@@ -973,7 +978,7 @@
 
     <section
       class="cia-section official-student-reviews"
-      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length)"
+      *ngIf="copy.reviews && (ieltsResults.length || officialStudentReviews.length || textReviews.length)"
       id="student-reviews"
       aria-labelledby="student-reviews-title"
     >
@@ -1040,6 +1045,19 @@
           </div>
         </article>
       </div>
+      </ng-container>
+
+      <!-- School-only (HANA): short written reviews without names; styles in ph-school-page-options.css. -->
+      <ng-container *ngIf="textReviews.length">
+      <p class="swipe-hint"><mat-icon>swipe</mat-icon>{{ copy.swipeHint }} · 共{{ textReviews.length }}条</p>
+      <div class="text-review-grid" [attr.aria-label]="schoolName + '学员评价'">
+        <article *ngFor="let review of textReviews">
+          <mat-icon class="text-review-quote" aria-hidden="true">format_quote</mat-icon>
+          <blockquote>{{ review.text }}</blockquote>
+          <span class="text-review-who">— {{ review.who }}</span>
+        </article>
+      </div>
+      <small class="text-review-note" *ngIf="copy.reviews.textNote">{{ copy.reviews.textNote }}</small>
       </ng-container>
 
     </section>
@@ -1174,8 +1192,8 @@
                 <span class="compare-tag">{{ compareTags[i] }}</span>
                 <button type="button" class="compare-remove" *ngIf="comparison.canRemove()" (click)="comparison.removePlan(i)">{{ copy.quote.removePlanLabel }}</button>
               </header>
-              <label>课程<select [ngModel]="comparison.courseId(plan)" (ngModelChange)="comparison.setCourse(plan, $event)"><option *ngFor="let course of courseFees" [value]="course.id">{{ course.name }}</option></select></label>
-              <label>住宿<select [ngModel]="comparison.roomId(plan)" (ngModelChange)="comparison.setRoom(plan, $event)"><option *ngFor="let room of roomFees" [value]="room.id">{{ room.name }}</option></select></label>
+              <label>课程<select [ngModel]="comparison.courseId(plan)" (ngModelChange)="comparison.setCourse(plan, $event)"><option *ngFor="let course of comparison.courseOptions" [value]="course.id">{{ course.name }}</option></select></label>
+              <label>住宿<select [ngModel]="comparison.roomId(plan)" (ngModelChange)="comparison.setRoom(plan, $event)"><option *ngFor="let room of comparison.roomOptions" [value]="room.id">{{ room.name }}</option></select></label>
               <div class="compare-plan-row">
                 <label>周数<select [ngModel]="comparison.weeks(plan)" (ngModelChange)="comparison.setWeeks(plan, $event)"><option *ngFor="let weeks of comparison.weekOptions" [ngValue]="weeks">{{ weeks }}周</option></select></label>
                 <label>入学（周日）<input #compareDate type="date" step="7" [ngModel]="comparison.startDate(plan)" (ngModelChange)="setComparePlanDate(plan, $event, compareDate)" /></label>
@@ -1585,6 +1603,14 @@
             <strong>旺季附加费 {{ peakRate2027 }} 美元／人／周</strong>
             <span *ngFor="let range of calendarPeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
             <small>{{ copy.calendar.peakNote }}</small>
+          </div>
+        </div>
+        <!-- School-only (HANA): peak seasons without a surcharge. -->
+        <div class="compact-peak compact-peak--free" *ngIf="calendarFreePeakRanges.length">
+          <mat-icon>wb_sunny</mat-icon>
+          <div>
+            <strong>{{ freePeakTitle }}</strong>
+            <span *ngFor="let range of calendarFreePeakRanges">{{ range.label }}：{{ formatPeakSeasonRange(range) }}（{{ peakSeasonWeekCount(range) }}周）</span>
           </div>
         </div>
         <div class="compact-calendar-table" role="table" *ngIf="calendarMonths.length" [attr.aria-label]="calendarYear + '年' + schoolName + '日历'">

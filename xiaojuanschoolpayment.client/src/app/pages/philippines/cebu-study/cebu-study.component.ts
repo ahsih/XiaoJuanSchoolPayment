@@ -531,9 +531,9 @@ export class CebuStudyComponent {
     },
     {
       name: 'SMEAG Encanto 海滨校区', route: '/philippines-study/cebu/smeag-encanto', tag: '麦克坦海滨亲子校区',
-      location: 'Mactan · Lapu-Lapu', summary: '海滨度假型校区，亲子课程、Cambridge体系与家庭住宿是主要特色。',
-      image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['亲子营', '剑桥综合英语', '综合英语1 / 2', '商务英语'],
-      linkLabel: '查看学校假期与资料',
+      location: 'Mactan · Lapu-Lapu', summary: '麦克坦岛海滨度假村校区：寒暑假全包亲子营，淡季开亲子和成人ESL课程。',
+      image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['寒暑假亲子营', '淡季亲子', '成人ESL / ESL2', '海滨度假村校区'],
+      linkLabel: '查看课程与在线报价',
     },
     {
       name: 'Genius English', route: '/philippines-study/cebu/genius-english-academy', tag: '海边多国籍',
@@ -589,7 +589,7 @@ export class CebuStudyComponent {
     {
       name: "B'Cebu", route: '/philippines-study/cebu/bcebu', tag: '麦克坦新校区',
       location: 'Mactan · Lapu-Lapu', summary: '课程从轻量综合英语到雅思斯巴达，并提供丰富亲子与房型选择。',
-      image: 'https://assets.1000-island.com/schools/bcebu-academy/bcebu-academy-campus-01.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
+      image: '/assets/bcebu/campus-building.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
     },
     {
       name: 'CPILS', route: '/philippines-study/cebu/cpils', tag: '老牌综合校',

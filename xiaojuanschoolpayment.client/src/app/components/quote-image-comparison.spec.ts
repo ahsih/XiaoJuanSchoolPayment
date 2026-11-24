@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { EMPTY } from 'rxjs';
 import { ExchangeRateService } from '../../services/exchange-rate.service';
-import { CgBaniladSchoolComponent } from '../pages/philippines/cg-banilad-school/cg-banilad-school.component';
+import { CgBaniladSchoolPageComponent } from '../pages/philippines/cg-banilad-school/cg-banilad-school-page.component';
 import { QuoteImageDownloadButtonComponent } from './quote-image-download-button.component';
 
 describe('one, three and four course quote image comparison', () => {
@@ -20,7 +20,7 @@ describe('one, three and four course quote image comparison', () => {
       expect(response.ok).toBeTrue();
     };
     for (const scenario of scenarios) {
-      const school = TestBed.runInInjectionContext(() => new CgBaniladSchoolComponent());
+      const school = TestBed.runInInjectionContext(() => new CgBaniladSchoolPageComponent());
       // Fixed example rates reproduce the same reference convention as the approved preview.
       school.usdToCny = 14984 / 2230;
       school.phpPerCny = 23300 / 2504;

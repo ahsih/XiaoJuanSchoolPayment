@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.spec.json",
   "include": [
-    "src/app/pages/philippines/pines-school/pines-student-quote.spec.ts",
-    "src/app/pages/philippines/pines-school/pines-school-detail.component.spec.ts",
+    "src/app/pages/philippines/pines-school/pines-school-page.spec.ts",
     "src/**/*.d.ts"
   ]
 }

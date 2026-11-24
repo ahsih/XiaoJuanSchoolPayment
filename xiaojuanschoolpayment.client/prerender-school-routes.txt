@@ -6,6 +6,7 @@
 /philippines-study/cebu/cia-cebu-international-academy
 /philippines-study/cebu/ciec
 /overseas-study-tour/uk/burlington-school
+/overseas-study-tour/ireland/atc-language-schools
 /philippines-study/cebu/elsa-international-language-school
 /philippines-study/cebu/ethos-language-school
 /philippines-study/cebu/ims-academy
@@ -49,7 +50,6 @@
 /philippines-study/baguio/beci-eop-campus
 /philippines-study/baguio/beci-sparta-campus
 /philippines-study/baguio/api-beci-city-campus
-/philippines-study/baguio/baguio-jic
 /philippines-study/baguio/baguio-jic-challenger
 /philippines-study/baguio/baguio-jic-premium
 /philippines-study/baguio/monol

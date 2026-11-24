@@ -39,7 +39,7 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
 - Visa rules come from the June 2026 orientation handbook:
   - 30-day visa: the first extension is 5,130 pesos and the second is 6,400 pesos.
   - 59-day visa: the first extension counts as the second (6,400 pesos).
-  - ACR I-CARD and ARP (200 pesos) are added with the second extension.
+  - ARP (200 pesos) is added with the second extension. ACR I-CARD comes with the first extension (user rule 2026-11-24, replacing the handbook's second extension).
 
 ## Quote rules added 2026-11-21 (user decisions)
 

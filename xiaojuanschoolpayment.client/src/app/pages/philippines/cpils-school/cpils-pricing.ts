@@ -3,6 +3,15 @@ import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../component
 
 const DAY = 86400000;
 export const CPILS_POLICY_VERSION = 4;
+
+/** ACR I-CARD comes with the first tourist-visa extension (user rule 2026-11-24); ARP stays with the second. */
+export const CPILS_ACR_NOTE = '第一次续签时办理（30天签证第5周起，59天签证第9周起），学校统一带队到移民局。';
+export const CPILS_ARP_NOTE = '第二次续签时办理一次（59天签证的首次续签即为第二次）；长期签证另行确认。';
+/** The version-2 notes that said ACR I-CARD came with the second extension; untouched copies are replaced once. */
+export const CPILS_OLD_ACR_NOTES: Readonly<Record<string, readonly string[]>> = {
+  'acr-i-card': ['第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
+  arp: ['与ACR I-CARD同时办理一次；长期签证另行确认。'],
+};
 export const cpilsMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const cpilsMonday = (sunday: string) => {
   const time = Date.parse(`${sunday}T00:00:00Z`);
@@ -261,11 +270,12 @@ function addCpilsVersion2(config: CiaContentConfig): void {
   for (const rule of settings.stayPolicies ?? []) {
     if (rule.note === '斯巴达、保证班、未成年及考试要求以学校当期通知为准。') rule.note = '斯巴达、保分班、未成年及考试要求以学校当期通知为准。';
   }
-  // The June 2026 orientation handbook: ARP is 200 pesos, and ACR I-CARD and ARP come with the
-  // second immigration extension (the first one a 59-day visa needs). Only untouched defaults change.
+  // The June 2026 orientation handbook: ARP is 200 pesos and comes with the second immigration extension
+  // (the first one a 59-day visa needs). ACR I-CARD comes with the first extension of either visa (user rule
+  // 2026-11-24, replacing the handbook's second extension). Only untouched defaults change.
   const notes: Record<string, [string, string]> = {
-    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', '第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
-    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', '与ACR I-CARD同时办理一次；长期签证另行确认。'],
+    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', CPILS_ACR_NOTE],
+    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', CPILS_ARP_NOTE],
     'visa-extension': ['按所选签证和完整停留时间预估，最终以移民局收费为准。', '30天签证首次续签5,130比索，第二次6,400比索；59天签证首次续签按第二次计；之后每次4,440比索。最终以移民局收费为准。'],
   };
   for (const item of config.localFees) {

@@ -103,6 +103,8 @@ describe('TARGET 2026 package quote', () => {
     student.visaType = 'tourist30';
     expect(student.visaExtensionCount).toBe(1);
     expect(student.visaExtensionTotal).toBe(5140);
+    // ACR I-Card comes with the first extension (user rule 2026-11-24).
+    expect(student.localFees.find((fee) => fee.item.startsWith('ACR'))?.total).toBe(4300);
 
     const nineWeeks = quote(9);
     nineWeeks.visaType = 'tourist59';
@@ -157,7 +159,7 @@ describe('TARGET 2026 package quote', () => {
     const visa = image.localFeeItems?.find((item) => item.label === '签证续签');
     expect(acr?.quantity).toBe('0');
     expect(acr?.amount).toBe('0比索');
-    expect(acr?.note).toContain('9周及以上');
+    expect(acr?.note).toContain('第一次签证续签时办理');
     expect(visa?.quantity).toBe('0');
     expect(visa?.amount).toBe('0比索');
     expect(visa?.note).toContain('学校当前档位');

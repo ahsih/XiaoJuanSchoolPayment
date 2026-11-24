@@ -1,0 +1,28 @@
+# B'Cebu page update (2026-11-24)
+
+The user sent B'Cebu's 2026-11 pack: the 2026 price list, the SSP and business-permit notices, the 2026-10-19 Chinese orientation, the 2027 holiday poster, the 2027 off-season and summer notices, a local-fee table and the school's Google Drive media library. The route `/philippines-study/cebu/bcebu` now uses the shared Philippine school template (CIA's compact layout, `layoutVersion: 2` quote and comparison images). Rules and files are summarised in AGENTS.md, section "B'Cebu page and quote (2026-11-24)".
+
+## Source decisions
+
+- Prices: no 2027 price list was supplied, so the 2026 price list (registration basis from 2026-01-01) stays in use; tuition and room prices equal the existing catalogue. 1/2/3 weeks are 40/60/80% of four weeks (price-list columns).
+- Long stay: the price list shows 8–11 / 12–15 / 16–19 / 20–23 / 24–27 / 28+ weeks at 50 / 100 / 200 / 300 / 400 / 500 dollars. The old "then 100 per complete four weeks" rule is replaced by these tiers. Quotes stop at 24 weeks, so the 28-week tier is not reached online.
+- 2027 off-season (pink and blue notices): class starts 2027/2/15–6/21 and 8/23–12/27, 10% off tuition and accommodation for adults and families, stacking with long stay. The 2026 windows keep 15% (families 10%). The reporter offer is a 2026 offer and is not extended.
+- 2027 summer: surcharge 40 dollars a week for 2027/6/27–8/21 (same as 2026's 7/5–8/15); 2+1 dorm closed; under-16s only in the summer camp, not alone; family members at least 4 weeks and no course transfers between them.
+- Minor fees (price-list footnotes): high-school students 15–17 (and 18-year-olds still in high school) without a parent pay 50 dollars a week; elementary and middle-school students 100 a week; both include graduation drop-off. High-school students may take every course but Junior ESL, at the Junior ESL price.
+- Local fees follow the 2026-10-19 orientation: management, electricity and water 500 pesos a week each; ACR I-CARD 4,000 with the first visa extension (user rule 2026-11-24; the orientation lists it from about week 9); ARP 200 (700 for class starts from 2027-01-01); visa extensions 5,130 / 6,400 / 4,430 (30-day entry) or 6,400 / 4,430 (59-day entry); books about 2,000 per four course weeks; ID 200; deposit 3,000, or 5,000 from five weeks; pickup 1,000 at weekends (Saturday 16:00 to Monday 01:00), 1,500 at other times.
+- Holidays: the 2027 poster's calendar grid wins where its side list differs (Maundy Thursday is 4/9 on the grid). 3/25 and 3/26 are marked provisional, as on the poster.
+- The rooms have air conditioning and water heaters (orientation: power-cut notes and the repair form).
+
+## Not published
+
+The school's phone numbers, email, address, website, social accounts and Discord; the permit and SSP documents themselves (the page only says Sida checked them); floor and vicinity maps; the refund rules; internal agency terms.
+
+## Media
+
+Photos and videos are listed in `bcebu-page-media.ts`.
+
+- Source: B'Cebu's own Google Drive media library (received 2026-11-23). Drive's download quota was used up, so photos are Drive's 1600 px previews, encoded as WebP at 1400 px or less (`-q:v 76`); nothing was upscaled. 51 photos in `public/assets/bcebu/` (`campus-building.webp`, `campus/`, `classes/`, `dining/`, `facilities/`, `rooms/`).
+- Room photos come only from the school's single, twin, twin-with-living and triple folders. No room photo shows a bathroom; the room clips below do.
+- Left out or cropped: photos with shop, café, bar, hotel or brand signs (some pool, basketball, dining and gym shots, the whole boxing area), cartoon toys in the kids centre, blurred photos, extreme food close-ups, and every folder of other businesses in the building (laundry, convenience store, cafés, diving, restaurants, travel agency, robot coding, golf, B'Tral Park) plus the old-photo and graduation folders.
+- Videos: 9 clips in `public/assets/bcebu/videos/` (720p H.264 CRF 26, AAC 128k, faststart, about 140 MB with posters): school film, campus tour, one-to-one class and airport pickup (landscape), and meals, a student's day, island day, a teacher's self-introduction and teacher photos (vertical). Cuts removed café, shop and hotel signs, other companies' logos and uniforms, a QR-code poster, airline and food-court signs at the airport, a cartoon opening and "thanks for watching" end cards. Left out: the nationalities clip (it labels Taiwan as a country), the golf-range and B'Tral Park dance clips, a duplicate pickup clip, letterboxed clips and clips ending in sign-up cards.
+- The user's own 视频号 clips (17 vertical 1080p clips with the 宿务BCEBU caption, received 2026-11-24): 13 were added, re-encoded to 720p 30 fps with the original sound and a frame as poster (about 60 MB). They are the four room clips (single, twin, twin with living room, triple; each opens its room album and sits under the 宿舍 chip), classes, the dining hall, reception, library, second-floor lounge, pool, gym, courts and sky garden. The gym clip stops at 6.5 s, before the boxing room (KNUCK'LS sign and a string of national flags). Left out: campus surroundings (a street banner and the guard's visitor logbook), the golf range (another business), and the one-to-one class and airport pickup clips, which are the school's own videos already on the page, letterboxed.

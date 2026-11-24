@@ -42,6 +42,7 @@ import {
   EV_LICENSE,
   EV_QUICK_INFO,
   EV_REFERENCE_NOTE,
+  EV_REFUND_COPY,
   EV_SCHEDULE,
   EV_SCHOOL_SERVICES,
   EV_SERVICE_FACTS,
@@ -88,6 +89,7 @@ const EV_COPY: PhPageCopy = {
     ruleText: EV_PAGE_COPY.eopNote,
   },
   license: EV_LICENSE,
+  refund: EV_REFUND_COPY,
   gallery: {
     title: '按区域查看 EV 环境',
     intro: `${EV_PAGE_COPY.galleryLead}相册内用左右箭头或缩略图切换，点击主图可放大。`,
@@ -181,21 +183,30 @@ const EV_PAGE_GALLERY: GalleryImage[] = [
   ...EV_GALLERY_IMAGES.filter(image => !image.featured),
 ].map(({ category, title, description, src }) => ({ category, title, description, src }));
 
+/** Numbered like EV's campus map (校园导览图, the second campus photo). */
 const EV_CAMPUS_BUILDINGS: CampusBuildingCard[] = [
-  { code: 'STUDY', title: '教学区', icon: 'school', facilities: ['175间一对一教室', '小团体和大团体教室', 'Westudy学习区与雅思资源中心', '图书馆、大教室'] },
-  { code: 'EXAM', title: '雅思考点', icon: 'fact_check', facilities: ['校内IDP官方考点', '可考机考和纸笔考试'] },
-  { code: 'LIFE', title: '休闲设施', icon: 'pool', facilities: ['游泳池（06:00–23:00，上课时间除外）', '健身房', '台球、飞镖和投篮机娱乐室', '电影院'] },
-  { code: 'DINING', title: '餐饮', icon: 'restaurant', facilities: ['学生餐厅一日三餐自助，周末也有', 'EV Bucks咖啡店：咖啡、零食、电话卡和打印'] },
+  {
+    code: 'STUDY', title: '教学区域', icon: 'school',
+    facilities: ['①教学区（1–3楼，175间一对一教室和团体课教室）', '②Westudy学习区与雅思资源中心', '③IDP雅思官方机考中心（2楼）', '④办公室与医务室（1楼）'],
+  },
+  {
+    code: 'CAMPUS', title: '校园设施', icon: 'pool',
+    facilities: ['⑤户外花园', '⑥大堂', '⑦学生餐厅（一日三餐自助）', '⑧EV Bucks咖啡店（1楼）', '⑨EV Sports运动休闲区（3楼）', '⑩健身房（4楼）', '⑪游泳池'],
+  },
+  { code: 'DORM', title: '学生宿舍', icon: 'bed', facilities: ['⑫宿舍区（2–8楼，男生2–3楼，女生5–8楼）', '⑬洗衣房（4楼）'] },
 ];
 
+// Sparta-only blocks are full-width rows so their day ranges are never cut off on phones.
 const scheduleRow = (item: EvScheduleItem): DailyScheduleRow => ({
   time: item.time,
   activity: item.title,
-  kind: /午餐|晚餐/.test(item.title) ? 'meal'
-    : item.highlighted ? 'test'
+  kind: item.highlighted ? 'activity'
+    : /早餐|午餐|晚餐/.test(item.title) ? 'meal'
       : /选修|自由/.test(item.title) ? 'free'
         : 'class',
 });
+const scheduleFor = (mode: '半斯巴达' | '斯巴达') =>
+  EV_SCHEDULE.filter(item => item.appliesTo === '所有学生' || item.appliesTo === mode).map(scheduleRow);
 
 const videoCard = (video: EvVideo): CiaVideoCard => {
   const card = VIDEO_CARDS[video.src];
@@ -238,7 +249,7 @@ const VIDEO_CARDS: Record<string, { label: string; text: string; details: string
   '/assets/ev/videos/yoga-class.mp4': {
     label: 'YOGA CLASS',
     text: '学校免费瑜伽课的一节。',
-    details: ['每周两晚18:00–19:00', '自愿参加，不另收费'],
+    details: ['周二、周三18:00–18:30或18:30–19:00', '自愿参加，不另收费'],
   },
   '/assets/ev/videos/power-speaking.mp4': {
     label: 'STUDENT INTERVIEW',
@@ -261,13 +272,18 @@ const albumVideo = (src: string): PhVideoItem => {
   };
 };
 /**
- * Videos in the hero album, one chip per topic; the campus tour opens the album. No EV video shows only one
- * room type, so the room albums have photos only.
+ * Videos in the hero album, one chip per topic; the campus tour opens the album. The dormitory clip shows several
+ * room types, so it stays here; only the condo single-room clip also opens its room's photos.
  */
 const EV_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: ['campus-tour', 'promo-film', 'dinner-buffet'].map(albumVideo) },
-  { label: '生活视频', icon: 'videocam', items: ['yoga-class', 'dance-challenge', 'eop-tik-talk', 'graduation', 'oslob-tour'].map(albumVideo) },
-  { label: '学员访谈', icon: 'videocam', items: ['power-speaking', 'ielts-student', 'ielts-nili', 'tik-talk-student'].map(albumVideo) },
+  { label: '校园视频', icon: 'videocam', items: ['campus-tour', 'promo-film', 'campus-walk', 'office-windows', 'shop-pool', 'gym'].map(albumVideo) },
+  { label: '课堂视频', icon: 'videocam', items: ['classes', 'business-presentation', 'exam-hall', 'ielts-centre'].map(albumVideo) },
+  { label: '宿舍视频', icon: 'videocam', items: ['dorm-rooms', 'condo-single'].map(albumVideo) },
+  {
+    label: '生活视频', icon: 'videocam',
+    items: ['dinner-buffet', 'dining-hall', 'yoga-class', 'dance-challenge', 'eop-tik-talk', 'graduation', 'oslob-tour'].map(albumVideo),
+  },
+  { label: '访谈视频', icon: 'videocam', items: ['power-speaking', 'ielts-student', 'ielts-nili', 'tik-talk-student'].map(albumVideo) },
 ];
 
 /** 30 秒看懂 EV: the key facts under the hero title (compact layout). */
@@ -279,7 +295,7 @@ const EV_OVERVIEW_FACTS: ReadonlyArray<{ icon: string; label: string; value: str
   { icon: 'menu_book', label: '课程', value: '综合英语、口语、雅思、托业、商务、社交媒体英语' },
   { icon: 'workspace_premium', label: '考试', value: '校内IDP雅思官方考点，可考机考和纸笔考试' },
   { icon: 'bed', label: '住宿', value: '校内单人到四人间，含三餐和清洁；半斯巴达可选校外公寓' },
-  { icon: 'translate', label: '英语环境', value: '教学区English Only，说母语一次周五加1小时自习' },
+  { icon: 'translate', label: '英语环境', value: '教学区English Only，说母语每张罚单加1小时自习' },
 ];
 
 const guaranteePoint = (target: typeof EV_IELTS_GUARANTEE_TARGETS[number]): string => {
@@ -318,7 +334,7 @@ const EV_COURSE_DETAIL_GUIDES: CourseDetailGuide[] = [
     title: '免费选修课',
     subtitle: '所有学生都可参加，按兴趣自愿报名',
     facts: EV_ELECTIVE_GROUPS.map(group => ({ label: `${group.period}（${group.level}）`, value: group.courses.join('、') })),
-    points: ['周末和假日上午另有4节选修团体课，需提前报名。'],
+    points: ['周末和假日上午另有4节选修团体课，需提前报名。', '选修课按报名人数和实际情况安排，学校可能调整或取消。'],
   },
   {
     icon: 'quiz',
@@ -361,6 +377,8 @@ const roomGallery = (main: string, prefix: string, extraCount: number, shared: r
   [main, ...Array.from({ length: extraCount }, (_, index) => `rooms/${prefix}-0${index + 2}`), ...shared].map(roomPhoto);
 const DORM_BATHROOM = ['rooms/dorm-bathroom', 'rooms/dorm-shower'];
 const EV_DORM_HIGHLIGHTS = ['一日三餐，周末也供应', '空调、热水器和保险箱', '浴室干湿分离', '每周两次清洁、每周换床单'];
+const EV_CONDO_GALLERY = roomGallery('condo', 'condo', 7);
+const EV_CONDO_HIGHLIGHTS = ['无门禁，带小厨房和冰箱', '空调、保险箱和饮水机', '住户泳池06:00–22:00', '接驳车往返学校，周末班次较少'];
 /** rateIds: the room price cards (content room ids) that open this profile's photos. */
 const roomProfile = (
   id: string, label: string, location: '校内' | '校外', gallery: string[], suitable: string, note: string, highlights: string[],
@@ -376,14 +394,18 @@ const EV_ROOM_PROFILES: PhRoomProfile[] = [
   roomProfile('double', '双人间', '校内', roomGallery('double-room', 'double', 4, DORM_BATHROOM), '朋友同行或想兼顾预算的学生', '两人一间。', EV_DORM_HIGHLIGHTS),
   roomProfile('triple', '三人间', '校内', roomGallery('triple-room', 'triple', 4, DORM_BATHROOM), '想控制预算、又希望有独立书桌的学生', '三人一间，每人有独立书桌。', EV_DORM_HIGHLIGHTS),
   roomProfile('quad-bunk', '四人间（上下铺）', '校内', roomGallery('quad-room', 'quad', 4, DORM_BATHROOM), '预算优先、能接受上下铺的学生', '上下铺房型，费用最低。', EV_DORM_HIGHLIGHTS),
+  // The condo photos do not say whether they show a single or a double unit, so both rooms show them.
   roomProfile(
-    'off-campus', '校外公寓', '校外', roomGallery('condo', 'condo', 7), '选半斯巴达、喜欢独立生活的学生',
-    '仅限半斯巴达课程；每周清洁一次，到校管理费比校内宿舍高。',
-    ['无门禁，带小厨房和冰箱', '空调、保险箱和饮水机', '住户泳池06:00–22:00', '平日接驳车往返学校'],
-    // The condo photos do not say whether they show a single or a double unit, so both cards open them.
-    ['off-campus-single', 'off-campus-double'],
+    'off-campus-single', '校外公寓单人间', '校外', EV_CONDO_GALLERY, '选半斯巴达、喜欢独立生活的学生',
+    '仅限半斯巴达课程；一人一间，每周清洁一次，到校管理费比校内宿舍高。', EV_CONDO_HIGHLIGHTS,
+  ),
+  roomProfile(
+    'off-campus-double', '校外公寓双人间', '校外', EV_CONDO_GALLERY, '一起报名的夫妻或朋友',
+    '仅限半斯巴达课程；须两位学生同时报名入学、一起入住，例如夫妻或朋友；每周清洁一次，到校管理费比校内宿舍高。', EV_CONDO_HIGHLIGHTS,
   ),
 ];
+/** A room album starts with a video only when the video shows exactly that room type. */
+const EV_ROOM_VIDEOS: Record<string, PhVideoItem> = { 'off-campus-single': albumVideo('condo-single') };
 
 const EV_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [...new Set(defaults.rooms.map(room => room.group))].map(title => ({
   title,
@@ -408,6 +430,7 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
   compactLayout: true,
   overviewFacts: EV_OVERVIEW_FACTS,
   videoTabs: EV_VIDEO_TABS,
+  roomVideos: EV_ROOM_VIDEOS,
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],
@@ -451,14 +474,14 @@ export const EV_PAGE_PROFILE: PhSchoolProfile = {
     { icon: 'workspace_premium', title: '雅思', text: '保分班8周起', courseIds: ['sparta-ielts-regular', EV_IELTS_GUARANTEE_ID] },
   ],
   courseModes: [
-    { title: '半斯巴达', hint: '没有早晚课和晚自习，平日17:10后可外出', idPrefix: 'semi-sparta-' },
+    { title: '半斯巴达', hint: '没有早晚课和晚自习，周一至周四17:10后可外出', idPrefix: 'semi-sparta-' },
     { title: '斯巴达', hint: '加早晚课和晚自习，周一至周四不能外出', idPrefix: 'sparta-', strict: true },
   ],
   studyModes: EV_STUDY_PLANS,
   courseDetailGuides: EV_COURSE_DETAIL_GUIDES,
   scheduleColumns: [
-    { code: 'SEMI-SPARTA', title: '半斯巴达', rows: EV_SCHEDULE.filter(item => item.appliesTo === '所有学生').map(scheduleRow) },
-    { code: 'SPARTA', title: '斯巴达', rows: EV_SCHEDULE.map(scheduleRow) },
+    { code: 'SEMI-SPARTA', title: '半斯巴达', rows: scheduleFor('半斯巴达') },
+    { code: 'SPARTA', title: '斯巴达', rows: scheduleFor('斯巴达') },
   ],
   initialCourseFees: initialPricing.courseFees,
   initialRoomFees: initialPricing.roomFees,
