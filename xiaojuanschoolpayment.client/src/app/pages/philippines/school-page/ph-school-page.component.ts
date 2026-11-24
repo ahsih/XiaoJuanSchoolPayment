@@ -328,6 +328,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
+  /** Vertical videos shown whole over a blurred poster (profile.tallVideoBackdrop). */
+  readonly tallVideoBackdrop = !!this.profile.tallVideoBackdrop;
   readonly overviewFacts = this.profile.overviewFacts ?? [];
   readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};

@@ -20,8 +20,19 @@ campus pages without mixing their content.
   `iu-icl-quote-layout.css` and the promotion poster image. The employee quote-image preview now uses
   `iuIclPreviewQuoteImage`.
 - Photos: `public/assets/iu/campus|rooms` and `public/assets/icl/campus|rooms` (WebP, at most 1400 px, never upscaled).
-  Videos: `public/assets/iu/videos` (4) and `public/assets/icl/videos` (10), 720p H.264 with posters, about 50 MB each
-  school. The hero album groups them as 校园／宿舍／课程／餐厅; ICL's room clips open the matching room photos.
+  Videos: `public/assets/iu/videos` (14) and `public/assets/icl/videos` (16), 720p H.264 with posters, about 85 MB for
+  IU and 77 MB for ICL. The hero album groups them as 校园／宿舍／课程／餐厅; ICL's four landscape campus-room clips
+  open the matching room photos.
+- WeChat Channels clips (user zips 2026-11-24): 10 for IU (front desk, lounge and court, rooftop pool, AV room, gym,
+  classrooms, group class, double, family triple, family quad) and 6 for ICL (campus and classes, first floor, gym,
+  triple, quad, lawn barbecue), re-encoded to 720p H.264 with their burned-in captions kept. Left out: ICL's 3-minute official film
+  (repeats the intro), its dance clip (opens on a "5000+ Success Stories" banner) and three IU repeats. IU's three room
+  clips show carpeted rooms unlike IU's room photos, so they stay in the hero album and do not open a room album. ICL's
+  off-campus clip shows both the double and the triple room, so it no longer opens either room album.
+- Vertical videos (user request 2026-11-24): on IU they are shown whole, centred over a blurred copy of their own
+  poster, instead of being cropped to fill the frame; on phones the hero frame for them is 4:3. This is the template's
+  optional `tallVideoBackdrop` profile flag, tried on IU first; once the user approves it, it becomes every school's
+  default. ICL and the other schools still crop vertical clips.
 
 ## Rules in the quote
 

@@ -262,6 +262,16 @@ const IU_VIDEOS: IuIclVideo[] = [
   { name: 'iu-campus', title: 'IU校园一览', description: '教学楼、草坪、图书角和舞蹈课。', duration: '0:29', orientation: 'landscape', topic: '校园' },
   { name: 'iu-dining', title: 'IU学生餐厅', description: '餐厅和自助餐台。', duration: '0:18', orientation: 'landscape', topic: '餐厅' },
   { name: 'iu-meals', title: 'IU自助餐菜色', description: '每天的热菜、面食和沙拉。', duration: '0:24', orientation: 'portrait', topic: '餐厅' },
+  { name: 'iu-frontdesk', title: '前台区域', description: '一楼的前台和大厅。', duration: '0:14', orientation: 'portrait', topic: '校园' },
+  { name: 'iu-lounge-court', title: '休息区和运动场', description: '休息区和户外运动场。', duration: '0:11', orientation: 'portrait', topic: '校园' },
+  { name: 'iu-rooftop-pool', title: '楼顶休息区和泳池', description: '楼顶的休息区和泳池。', duration: '0:21', orientation: 'portrait', topic: '校园' },
+  { name: 'iu-av-room', title: '视听活动室', description: '有大电视和沙发的活动室。', duration: '0:16', orientation: 'portrait', topic: '校园' },
+  { name: 'iu-gym', title: '健身房', description: '健身器材和草坪训练区。', duration: '0:25', orientation: 'portrait', topic: '校园' },
+  { name: 'iu-classrooms', title: '教室区', description: '一对一小教室和走廊。', duration: '0:26', orientation: 'portrait', topic: '课程' },
+  { name: 'iu-group-class', title: '团体课教室和自习室', description: '团体课教室和自习室。', duration: '0:17', orientation: 'portrait', topic: '课程' },
+  { name: 'iu-double', title: '双人间', description: '学校视频号里的双人间，房间以学校安排为准。', duration: '0:27', orientation: 'portrait', topic: '宿舍' },
+  { name: 'iu-triple', title: '家庭房三人间', description: '学校视频号里的家庭房三人间，房间以学校安排为准。', duration: '0:16', orientation: 'portrait', topic: '宿舍' },
+  { name: 'iu-quad', title: '家庭房四人间', description: '学校视频号里的家庭房四人间，房间以学校安排为准。', duration: '0:18', orientation: 'portrait', topic: '宿舍' },
 ];
 
 const IU_ROOM_SERVICE = '每周打扫和洗衣各2次';
@@ -653,6 +663,12 @@ const ICL_VIDEOS: IuIclVideo[] = [
   { name: 'icl-offcampus', title: '校外双人间和三人间', description: '校外住宿的双人间，再到三人间。', duration: '0:17', orientation: 'portrait', topic: '宿舍' },
   { name: 'icl-classes', title: '一对一课', description: 'ICL的一对一课堂。', duration: '0:12', orientation: 'landscape', topic: '课程' },
   { name: 'icl-dining', title: '学生餐厅', description: '学生在餐厅用餐。', duration: '0:14', orientation: 'landscape', topic: '餐厅' },
+  { name: 'icl-overview', title: 'ICL校园和课堂', description: '教室、团体课和校园各处。', duration: '0:37', orientation: 'landscape', topic: '校园' },
+  { name: 'icl-floor1', title: '一楼环境', description: '一楼的大厅、会议桌和休息区。', duration: '0:46', orientation: 'portrait', topic: '校园' },
+  { name: 'icl-gym-room', title: '健身房', description: '健身器材和训练区。', duration: '0:13', orientation: 'portrait', topic: '校园' },
+  { name: 'icl-triple-tour', title: '三人间', description: '学校视频号里的三人间。', duration: '0:22', orientation: 'portrait', topic: '宿舍' },
+  { name: 'icl-quad-tour', title: '四人间', description: '学校视频号里的四人间。', duration: '0:17', orientation: 'portrait', topic: '宿舍' },
+  { name: 'icl-bbq', title: '草坪烧烤', description: '学生在校园草坪上吃烧烤。', duration: '0:30', orientation: 'portrait', topic: '餐厅' },
 ];
 
 const ICL_ROOM_SERVICE = '每周洗衣和打扫各2次';
@@ -862,8 +878,6 @@ const ICL_CONTENT: IuIclPageContent = {
     'campus-double': 'icl-double',
     'campus-triple': 'icl-triple',
     'campus-quad': 'icl-quad',
-    'off-campus-double': 'icl-offcampus',
-    'off-campus-triple': 'icl-offcampus',
   },
   roomProfiles: ICL_ROOM_PROFILES,
   dormRules: SHARED_RULES,
