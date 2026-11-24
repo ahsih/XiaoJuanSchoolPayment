@@ -125,8 +125,12 @@ export const SMEAG_ALBUM_DESCRIPTIONS = {
  * from SMEAG's own pack (09_capital宣传视频 and the room folders); the partner-hotel clips there are not used, because their
  * opening shows a booking banner and the hotel address. The other ten are SMEAG's own 主校区 WeChat Channels clips
  * (user folder 2026-11-24); its 单人间 and 四人间 clips repeat the pack's room clips and are left out. Clips filmed
- * landscape inside a vertical frame are cropped to their 16:9 picture, which also drops the added captions. Check every
- * frame of a new clip for other companies or contact details.
+ * landscape inside a vertical frame are cropped to their 16:9 picture, which also drops the added captions. The promo
+ * film, orientation, summer party, lunch and student interview (2026-11-25) come from SMEAG's own YouTube channels
+ * (@smeagedu and @smeagtv, whose videos are tagged Capital Campus); the promo film was cut without its logo intro, its
+ * QR-code posters, flag row (it includes the flag of the Taiwan authorities), Cebu map, test-centre award plaques and
+ * the website end card, and the party without its logo intro and end card. Check every frame of a new clip for other
+ * companies, contact details or flags.
  */
 export interface SmeagVideo {
   name: string;
@@ -135,16 +139,19 @@ export interface SmeagVideo {
   duration: string;
   orientation: 'landscape' | 'portrait';
   /** Hero album group. */
-  topic: '校园' | '宿舍' | '课程' | '餐厅';
+  topic: '校园' | '宿舍' | '课程' | '餐厅' | '访谈';
 }
 
 export const smeagVideoSrc = (video: SmeagVideo) => `/assets/smeag-capital/videos/${video.name}.mp4`;
 export const smeagVideoPoster = (video: SmeagVideo) => `/assets/smeag-capital/videos/poster-${video.name}.jpg`;
 
 export const SMEAG_VIDEOS: SmeagVideo[] = [
+  { name: 'capital-promo-2025', title: '2025年翻新后宣传片', description: '学校官方宣传片：大堂、一对一和小组课、礼堂、大教室、咖啡厅、学生照片墙和健身房。', duration: '2:08', orientation: 'landscape', topic: '校园' },
   { name: 'lobby', title: '1楼大堂', description: '从大堂走过1楼走廊。', duration: '0:17', orientation: 'landscape', topic: '校园' },
   { name: 'lounge', title: '课间休息', description: '课间的学生休息室。', duration: '0:18', orientation: 'landscape', topic: '校园' },
   { name: 'office', title: '学校办公室', description: '学生到办公室办事。', duration: '0:21', orientation: 'landscape', topic: '校园' },
+  { name: 'orientation', title: '新生入学说明会', description: '每周一新生在礼堂参加入学说明会。', duration: '0:29', orientation: 'portrait', topic: '校园' },
+  { name: 'summer-party', title: '校园夏日派对', description: '2025年的全校夏日主题派对，老师和学生一起参加。', duration: '1:19', orientation: 'landscape', topic: '校园' },
   { name: 'single-room', title: '校内单人间', description: '单人间的卧室。', duration: '0:10', orientation: 'portrait', topic: '宿舍' },
   { name: 'single-room-bath', title: '单人间的小厨房和卫生间', description: '两间单人卧室共用的小厨房和卫生间。', duration: '0:12', orientation: 'portrait', topic: '宿舍' },
   { name: 'twin-room', title: '校内双人间', description: '从门口走进双人间：冰箱、卫生间和两张床。', duration: '0:23', orientation: 'portrait', topic: '宿舍' },
@@ -155,7 +162,9 @@ export const SMEAG_VIDEOS: SmeagVideo[] = [
   { name: 'group-class', title: '团体课', description: '团体课上课的样子。', duration: '0:15', orientation: 'landscape', topic: '课程' },
   { name: 'classrooms', title: '教室区域', description: '教室走廊和服务台。', duration: '0:07', orientation: 'portrait', topic: '课程' },
   { name: 'dining', title: '学生餐厅', description: '自助取餐区和用餐区。', duration: '0:13', orientation: 'portrait', topic: '餐厅' },
+  { name: 'lunch-buffet', title: '自助午餐', description: '厨师现场备餐，学生在餐厅自助取餐。', duration: '0:29', orientation: 'portrait', topic: '餐厅' },
   { name: 'cafe', title: '咖啡厅', description: '1楼咖啡厅，有饮料和零食。', duration: '0:20', orientation: 'landscape', topic: '餐厅' },
+  { name: 'student-interview', title: '日本学员访谈', description: '日本学员用英语讲来之前的英语水平、为什么选首都校区和在这里的收获（英文字幕）。', duration: '1:16', orientation: 'landscape', topic: '访谈' },
 ];
 
 const DORM_SERVICE = '每周打扫1次并换床单；洗衣每天收送';
