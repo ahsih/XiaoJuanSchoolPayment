@@ -107,7 +107,7 @@ export class CebuStudyComponent {
         'SMEAG Capital',
         'CPILS',
         'Philinter',
-        'Fella',
+        'Fella 第一校区',
         'CELLA Uni',
         'CG斯巴达校区',
       ],
@@ -175,7 +175,7 @@ export class CebuStudyComponent {
         'ICL',
         'IU Academy',
         'CG Banilad',
-        'English Fella',
+        'English Fella 第二校区',
         'ELSA',
         'SMEAG Encanto 海滨校区',
         'Cebu Blue Ocean',
@@ -235,9 +235,9 @@ export class CebuStudyComponent {
       badge: '选择灵活',
       tone: 'orange',
       image: '/assets/fella/campus-main.webp',
-      route: '/philippines-study/cebu/english-fella',
-      description: '双校区选择，课程与管理方式灵活',
-      tags: ['半斯巴达', '环境舒适'],
+      route: '/philippines-study/cebu/english-fella-first-campus',
+      description: '两个校区：第一校区斯巴达，第二校区自律型或半斯巴达',
+      tags: ['斯巴达', '半斯巴达', '保分班'],
     },
   ];
 
@@ -397,14 +397,14 @@ export class CebuStudyComponent {
   schoolSearchQuery = '';
 
   readonly directoryCategorySchools: Record<Exclude<DirectoryCategory, '全部学校'>, string[]> = {
-    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella', 'CELLA Uni', 'CG斯巴达校区'],
-    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG斯巴达校区', 'Philinter', 'CELLA Uni', "B'Cebu", 'GLC', 'QQEnglish BFC'],
+    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella 第一校区', 'CELLA Uni', 'CG斯巴达校区'],
+    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG斯巴达校区', 'Philinter', 'CELLA Uni', 'English Fella 第一校区', "B'Cebu", 'GLC', 'QQEnglish BFC'],
     高性价比: ['CPI', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'CG斯巴达校区', 'ELSA', 'BTES', 'CELLA Uni', 'Winning 海滨校区', '3D Academy', 'CPILS'],
-    亲子友好: ['EV La Mer', 'CPI', 'CIEC', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'English Fella', 'ELSA', 'SMEAG Encanto 海滨校区', 'Cebu Blue Ocean', 'Philinter', 'Genius English', 'EMO', 'HLA', 'QQEnglish BFC', 'BTES', 'CELLA Premium', 'Winning 海滨校区', 'IMS Banilad', 'GLC'],
+    亲子友好: ['EV La Mer', 'CPI', 'CIEC', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'English Fella 第二校区', 'ELSA', 'SMEAG Encanto 海滨校区', 'Cebu Blue Ocean', 'Philinter', 'Genius English', 'EMO', 'HLA', 'QQEnglish BFC', 'BTES', 'CELLA Premium', 'Winning 海滨校区', 'IMS Banilad', 'GLC'],
   };
 
   readonly directoryPopularityOrder = [
-    'CIA', 'EV Academy', 'EV La Mer', 'CPI', 'CPILS', 'SMEAG Capital', 'SMEAG Encanto 海滨校区', 'English Fella', 'Philinter', "B'Cebu",
+    'CIA', 'EV Academy', 'EV La Mer', 'CPI', 'CPILS', 'SMEAG Capital', 'SMEAG Encanto 海滨校区', 'English Fella 第一校区', 'English Fella 第二校区', 'Philinter', "B'Cebu",
     'I.BREEZE', 'Cebu Blue Ocean', 'CELLA Uni', 'CG斯巴达校区', 'GLC', 'CELLA Premium', 'CG Banilad',
     'IU Academy', 'Winning 海滨校区', 'QQEnglish BFC', 'ELSA', '3D Academy', 'ICL', 'IMS Banilad',
     'TARGET', 'First English', 'CIEC', 'Genius English', 'STARGATE', 'BTES', 'CIJ Premium',
@@ -597,9 +597,14 @@ export class CebuStudyComponent {
       image: '/assets/cpils/campus-main.webp', highlights: ['常规综合英语', '强化口语', '雅思', '托业 / 托福', '商务英语', '亲子课程'],
     },
     {
-      name: 'English Fella', route: '/philippines-study/cebu/english-fella', tag: '双校区管理可选',
-      location: 'Talamban · Cebu City', summary: '斯巴达与半斯巴达校区可选，适合考试备考和长期学习。',
-      image: '/assets/fella/campus-main.webp', highlights: ['强化口语', '雅思保证班', '托业 / 托福', '商务英语', '青少年 / 家长英语'],
+      name: 'English Fella 第一校区', route: '/philippines-study/cebu/english-fella-first-campus', tag: '斯巴达校区',
+      location: 'Talamban · Cebu City', summary: '斯巴达管理，每天4–6节一对一，托业和雅思保分班只在这里开设。',
+      image: '/assets/fella-1/campus/main-building.webp', highlights: ['综合英语', '口语强化', '雅思 / 托业保分班', '托福'],
+    },
+    {
+      name: 'English Fella 第二校区', route: '/philippines-study/cebu/english-fella-second-campus', tag: '自律型／半斯巴达',
+      location: 'Talamban · Cebu City', summary: '校园更大，可选自律型或半斯巴达，有商务英语、40岁以上会话课和亲子课程。',
+      image: '/assets/fella-2/campus/entrance.webp', highlights: ['综合英语', '雅思 / 托业 / 托福', '商务英语', '40岁以上会话', '亲子课程'],
     },
     {
       name: 'Philinter', route: '/philippines-study/cebu/philinter-academy', tag: '老牌综合校',
