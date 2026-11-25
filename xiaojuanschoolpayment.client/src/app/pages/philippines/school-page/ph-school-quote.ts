@@ -26,6 +26,8 @@ export interface PhQuoteStudent {
   readonly paymentLines: SchoolPaymentLine[];
   readonly localFees: SchoolLocalFee[];
   returningStudent: boolean;
+  /** Hides the 新学员／老学员 choice for schools that charge returning students too (IMS). */
+  readonly hideReturning?: boolean;
   /** Name of the promotion that waived this student's registration fee, if one did. */
   readonly registrationWaiverName?: string;
   /** A single quote's registration note after the standard line (CELLA family packages: 整包价已含注册费). */
@@ -146,15 +148,18 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
     }
   }
 
+  /** The registration line every quote starts with; IMS charges returning students too and says so. */
+  protected get registrationBaseNote(): string { return PH_REGISTRATION_NOTE; }
+
   get registrationNote() {
     if (this.quoteMode === 'single') {
       const own = this.students[0].registrationNote;
-      if (own) return `${PH_REGISTRATION_NOTE}；${own}`;
+      if (own) return `${this.registrationBaseNote}；${own}`;
       const waiver = this.students[0].registrationWaiverName;
-      return PH_REGISTRATION_NOTE + (waiver !== undefined && !this.students[0].returningStudent ? `；本次${waiver}免收注册费` : '');
+      return this.registrationBaseNote + (waiver !== undefined && !this.students[0].returningStudent ? `；本次${waiver}免收注册费` : '');
     }
     const paid = this.activeStudents.filter(student => student.registration > 0).length;
-    return `${PH_REGISTRATION_NOTE}；本次计收${paid}人 × ${this.formatUsd(this.pricing.registrationFee)}美元${paid < this.activeStudents.length ? '，其余已免' : ''}`;
+    return `${this.registrationBaseNote}；本次计收${paid}人 × ${this.formatUsd(this.pricing.registrationFee)}美元${paid < this.activeStudents.length ? '，其余已免' : ''}`;
   }
   get schoolPaymentItems(): PhSchoolPaymentItem[] {
     const sources = this.activeStudents.flatMap(student => student.paymentLines);
@@ -352,7 +357,7 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
   /** One student's conditions, e.g. 新学员 · 18岁及以上 · 59天旅游签证 · 报名日 2026/11/21. */
   studentConditionText(student: S): string {
     return [
-      student.returningStudent ? '老学员' : '新学员',
+      student.hideReturning ? '' : student.returningStudent ? '老学员' : '新学员',
       student.selectedAgeGroup === 'minor' ? '未满18岁' : student.selectedAgeGroup === 'adult' ? '18岁及以上' : '',
       student.visaLabel ?? '',
       student.selectedRegistrationDate ? `报名日 ${student.selectedRegistrationDate.replace(/-/g, '/')}` : '',
@@ -408,8 +413,9 @@ export class PhSchoolQuote<S extends PhQuoteStudent> {
   }
 
   private quoteImageRegistrationNote(): string {
-    const dynamicText = this.registrationNote.startsWith(PH_REGISTRATION_NOTE)
-      ? this.registrationNote.slice(PH_REGISTRATION_NOTE.length).replace(/^；/, '')
+    const base = this.registrationBaseNote;
+    const dynamicText = this.registrationNote.startsWith(base)
+      ? this.registrationNote.slice(base.length).replace(/^；/, '')
       : this.registrationNote;
     return this.joinQuoteImageNotes(this.pricing.quoteImageSettings.paymentNotes.registration, dynamicText);
   }

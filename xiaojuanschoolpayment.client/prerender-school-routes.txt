@@ -19,7 +19,8 @@
 /philippines-study/cebu/bcebu
 /philippines-study/cebu/btes-english-academy
 /philippines-study/cebu/cpils
-/philippines-study/cebu/english-fella
+/philippines-study/cebu/english-fella-first-campus
+/philippines-study/cebu/english-fella-second-campus
 /philippines-study/cebu/philinter-academy
 /philippines-study/cebu/cg-academy-sparta-campus
 /philippines-study/cebu/smeag-capital

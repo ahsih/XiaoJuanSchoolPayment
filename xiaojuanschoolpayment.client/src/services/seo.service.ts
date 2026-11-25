@@ -142,11 +142,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: 'https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg',
   },
   '/philippines-study/cebu/elsa-international-language-school': {
-    title: '菲律宾宿务ELSA语言学校 | 2026-2027课程食宿费用',
+    title: '菲律宾宿务ELSA语言学校 | 课程食宿费用与报价',
     description:
-      '菲律宾宿务ELSA语言学校2026-2027费用页面，整理Guardian、成人ESL、青少年、全天/半天学校、幼儿园课程、2至5人间和单人间附加费。',
-    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用',
-    image: '/assets/study-hero-collage.webp',
+      '菲律宾宿务ELSA语言学校介绍：成人ESL、青少年、本地学校随班、幼儿园和家长陪读课程，课程价含食宿，可在线计算报价并保存报价图片；思达启航提供宿务游学选校与申请咨询。',
+    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用, ELSA报价',
+    image: '/assets/elsa/campus/aerial-01.webp',
   },
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
@@ -189,11 +189,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
   '/philippines-study/baguio/monol': {
-    title: '菲律宾碧瑶MONOL主校区 | 课程费用住宿与报名咨询',
+    title: '菲律宾碧瑶MONOL主校区 | 课程住宿费用与在线报价',
     description:
-      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的ESL 4、General ESL、IELTS、LEAP课程、Hotel-style住宿房型、课程住宿费用、餐费说明和当地费用。',
-    keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
-    image: '/assets/philippines/monol-campus-building.webp',
+      '菲律宾碧瑶MONOL主校区页面，整理Light ESL、General ESL、雅思和LEAP客制化课程、每天免费健身课、高级单人间到胶囊四人间六种房型、2026报名优惠、2027日历、到校学杂费、相册视频与单人多人报价。',
+    keywords: '菲律宾碧瑶MONOL语言学校, MONOL主校区, MONOL Baguio, 碧瑶MONOL, LEAP English, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
+    image: '/assets/philippines/monol-main/campus/building-aerial.webp',
   },
   '/philippines-study/baguio/monol-sparta-campus': {
     title: '菲律宾碧瑶MONOL斯巴达校区 | 2026课程住宿费用与报价',
@@ -492,7 +492,8 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/cpils', name: '菲律宾宿务CPILS语言学校', brand: 'CPILS', quote: true },
   { path: '/philippines-study/cebu/cg-academy-banilad-campus', name: '菲律宾宿务CG Academy Banilad校区', brand: 'CG Banilad', aliases: 'CG Academy', quote: true },
   { path: '/philippines-study/cebu/philinter-academy', name: '菲律宾宿务Philinter语言学校', brand: 'Philinter', quote: true },
-  { path: '/philippines-study/cebu/english-fella', name: '菲律宾宿务English Fella语言学校', brand: 'English Fella', quote: true },
+  { path: '/philippines-study/cebu/english-fella-first-campus', name: '菲律宾宿务English Fella第一校区', brand: 'English Fella 第一校区', aliases: 'English Fella', quote: true, image: '/assets/fella-1/campus/aerial.webp' },
+  { path: '/philippines-study/cebu/english-fella-second-campus', name: '菲律宾宿务English Fella第二校区', brand: 'English Fella 第二校区', aliases: 'English Fella', quote: true, image: '/assets/fella-2/campus/aerial.webp' },
   { path: '/philippines-study/cebu/ibreeze', name: '菲律宾宿务I.BREEZE语言学校', brand: 'I.BREEZE', quote: true },
   { path: '/philippines-study/cebu/iu-english-academy', name: '菲律宾宿务IU English Academy语言学校', brand: 'IU', quote: true },
   { path: '/philippines-study/cebu/icl', name: '菲律宾宿务ICL语言学校', brand: 'ICL', quote: true },
@@ -509,7 +510,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/curious-world-academy', name: '菲律宾宿务Curious World Academy', brand: 'Curious World', quote: false },
   { path: '/philippines-study/cebu/ethos-language-school', name: '菲律宾宿务ETHOS语言学校', brand: 'ETHOS', aliases: 'ETHOS Language School', quote: false },
   { path: '/philippines-study/cebu/first-english-global-college', name: '菲律宾宿务First English Global College', brand: 'First English', quote: false },
-  { path: '/philippines-study/cebu/genius-english-academy', name: '菲律宾宿务Genius English Academy语言学校', brand: 'Genius English', quote: false },
+  { path: '/philippines-study/cebu/genius-english-academy', name: '菲律宾宿务Genius English Academy语言学校', brand: 'Genius English', quote: true },
   { path: '/philippines-study/cebu/howdy-english-academy', name: '菲律宾宿务Howdy English Academy语言学校', brand: 'Howdy', quote: false },
   { path: '/philippines-study/cebu/lapulapu', name: '菲律宾宿务LCIC大学英语项目', brand: 'LCIC', aliases: 'Lapulapu-Cebu International College', quote: false },
   { path: '/philippines-study/cebu/qqenglish-beachfront-campus', name: '菲律宾宿务QQEnglish Beachfront校区', brand: 'QQEnglish', quote: false },

@@ -431,9 +431,14 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/cpils',
           },
           {
-            id: 'english-fella',
-            label: '菲律宾宿务English Fella语言学校',
-            route: '/philippines-study/cebu/english-fella',
+            id: 'english-fella-first-campus',
+            label: '菲律宾宿务English Fella第一校区（斯巴达）',
+            route: '/philippines-study/cebu/english-fella-first-campus',
+          },
+          {
+            id: 'english-fella-second-campus',
+            label: '菲律宾宿务English Fella第二校区（半斯巴达）',
+            route: '/philippines-study/cebu/english-fella-second-campus',
           },
           {
             id: 'philinter-academy',

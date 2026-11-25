@@ -63,3 +63,33 @@ December 2026 holiday notice and the BESA pickup poster.
   used only as a campus photo; the 单人雅房 uses its video poster).
 - Meals: described as mostly Korean with Japanese, Vietnamese and Filipino dishes at times; no vegetarian meals.
 - Not yet synced to the WeChat mini program; follow the mini-program workflow in AGENTS.md once the user confirms.
+
+## Videos from JIC's official YouTube channel (2026-11-25)
+
+The user asked for more trust-building videos from JIC's official YouTube channel ("Baguio JIC") and Facebook page
+(facebook.com/baguio.jic). Nine clips were added to the hero albums (720p H.264, CRF 27, AAC 128k, posters in
+`public/assets/philippines/jic-posters/`); the sources stay in `G:\Claude下载\jic-videos`.
+
+| File | YouTube id | Cuts |
+| --- | --- | --- |
+| `jic-challenger-class-observation` | xyPe7Q2_2lY | logo intro and outro cut; the café-brand tape on the left column blurred (src 40.15–41.75 s) |
+| `jic-challenger-taiwan-story` | 53sc_W51vSI | logo intro, the card with the student's full name (15.4–19.5 s) and the outro cut |
+| `jic-challenger-ielts-story` | 8mbsH1F1VbM | logo intro and outro cut |
+| `jic-challenger-speaking-story` | IRoVFGNjX5w | logo intro and outro cut |
+| `jic-premium-day-in-life` | DPhmbOaGtnw | whole |
+| `jic-premium-taiwan-story` | Hm4hFCr-HeU | whole |
+| `jic-premium-graduation` | PZUOce4bQyM | logo outro cut |
+| `jic-premium-sketching-class` | sHhyp_t4hmE | logo outro cut |
+| `jic-premium-zumba-class` | b7e8aPvB9lw | logo outro cut |
+
+Our titles never use a student's name. Checked frame by frame (every 3 s plus the last 16 s at 1 fps) and left out:
+
+- Another company's branding: the 2025 Challenger tour (dQtfSRS-9NA: IDP posters, the Terminal café, snack brands,
+  K-Mart and a bank ATM), the 2026 Premium 4K tour (r0lAC52nakE: an SM City logo, FamilyMart, the Terminal café, a
+  feature film on screen), "Why JIC IELTS" (U2sRJoznbs8: IDP and COMPANNA café), the teacher-hiring video
+  (zO96XW--XXc: IDP posters throughout), the movie class (QYoSSGX_40E: a feature film's title on screen) and the
+  weekends video (hnGc1JG1SUM: mall and surf-school signs).
+- Unsure campus or content: the English-only Challenger skit (maXgjeTo4TU, 2024: filmed in a dining hall that looks like
+  Premium's, and it mentions getting 500 back without saying what that is).
+- Lower value: interviews without captions (MANA, Justin, Suji), a long interview with a full name in the title
+  (Huw--9EgoUo) and a Facebook interview filmed in front of a laptop covered in stickers (Spencer).
