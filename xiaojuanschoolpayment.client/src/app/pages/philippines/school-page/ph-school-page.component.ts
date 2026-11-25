@@ -1240,6 +1240,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get exchangeRateSummary(): string { return this.quote.exchangeRateSummary; }
   get estimatedLocalFees(): LocalFeeEstimate[] { return this.quote.estimatedLocalFees; }
   get estimatedLocalFeeTotal(): number { return this.quote.estimatedLocalFeeTotal; }
+  /** A chosen group pickup counted in the total (BESA schools) must not be called excluded; CIA lists pickup apart. */
+  get localFeeTotalNote(): string {
+    return this.estimatedLocalFees.some(fee => fee.item.includes('接机') && fee.total > 0) ? '不含房间押金' : '不含接机及房间押金';
+  }
   get estimatedLocalFeeCny(): number { return this.quote.estimatedLocalFeeCny; }
   formatPhp(value: number): string { return this.quote.formatPhp(value); }
 
