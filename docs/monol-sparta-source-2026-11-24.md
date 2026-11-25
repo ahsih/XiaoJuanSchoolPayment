@@ -14,12 +14,20 @@ layout, `layoutVersion: 2` quote and 方案对比 images).
 | `MONOL簽證及移民局相關費用算法.xlsx` | Hong Kong and Macau visa-free stays |
 | `MONOL Sparta Campus/…` photo folders and the room, rooftop, cafeteria and discipline clips | Gallery, room albums, hero videos |
 | `only facilities.mov` | Facilities tour (cut at 1:55, before a 76-second black tail; ends on the MONOL logo) |
+| MONOL official YouTube Shorts (2026-11-25): Sparta mini tour, teacher interview, gym, study room, 1st semester moments | Hero album 校园／课堂／访谈 (`sparta-mini-tour`, `teacher-interview`, `gym-tour`, `study-room`, `semester-moments`) |
 
 Not used:
 
 - `w_ people.mov` (`campus-life.mp4`): the people in it look generated, so it may not show the real campus.
 - Two photos from the penalty-check folder, one double-room photo, and food photos 74–80: blurred, duplicated or unclear.
 - `MONOL Sparta LOGO.JPG`.
+
+YouTube cuts (2026-11-25, every frame checked):
+
+- Mini tour: the bulletin-board shot (28.9–32.45 s, bus-company QR codes and a Wi-Fi poster) and the closing poster (from 42.4 s: website and a generated person) were cut.
+- 1st semester moments: the group classroom whose glass still carries the former CNS school logo (10.4–12.2 s) was cut.
+- Teacher interview: the sentences naming CNS (3.1–12.07 s and 27.9–42.95 s) were cut; it keeps the welcome, the Main-versus-Sparta comparison and the closing message.
+- Not used: the 24-hour timelapse and “Main vs Sparta” videos (generated people), the “two campuses” logo animation, the Chinese campus guide (its Sparta part mixes generated shots and shows the CNS glass logo), and the IELTS mock-test student story (its description does not say Sparta). MONOL's Facebook page could not be browsed from here, so only YouTube was used.
 
 ## Prices and rules (content document `monol-sparta-content-config.ts`, policy version 1)
 
@@ -65,7 +73,7 @@ Not used:
 - `monol-sparta-page-quote.ts`: student calculation, quote and comparison. The quote image sets
   `compactDetailedSections`, so the short local-fee table leaves no empty space.
 - `monol-sparta-school-page.component.ts`: route component.
-- Videos: `public/assets/philippines/monol-sparta/videos/` (11 clips with posters, about 39 MB).
+- Videos: `public/assets/philippines/monol-sparta/videos/` (16 clips with posters, about 56 MB).
 - The old `monol-sparta-school-detail` component and `monol-sparta-student-quote.ts` were removed. The admin quote-image preview now uses `MonolSpartaQuote`.
 
 Tests:
