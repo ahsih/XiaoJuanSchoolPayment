@@ -189,11 +189,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
   '/philippines-study/baguio/monol': {
-    title: '菲律宾碧瑶MONOL主校区 | 课程费用住宿与报名咨询',
+    title: '菲律宾碧瑶MONOL主校区 | 课程住宿费用与在线报价',
     description:
-      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的ESL 4、General ESL、IELTS、LEAP课程、Hotel-style住宿房型、课程住宿费用、餐费说明和当地费用。',
-    keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
-    image: '/assets/philippines/monol-campus-building.webp',
+      '菲律宾碧瑶MONOL主校区页面，整理Light ESL、General ESL、雅思和LEAP客制化课程、每天免费健身课、高级单人间到胶囊四人间六种房型、2026报名优惠、2027日历、到校学杂费、相册视频与单人多人报价。',
+    keywords: '菲律宾碧瑶MONOL语言学校, MONOL主校区, MONOL Baguio, 碧瑶MONOL, LEAP English, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
+    image: '/assets/philippines/monol-main/campus/building-aerial.webp',
   },
   '/philippines-study/baguio/monol-sparta-campus': {
     title: '菲律宾碧瑶MONOL斯巴达校区 | 2026课程住宿费用与报价',
