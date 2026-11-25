@@ -188,6 +188,7 @@ describe('English Fella campus pages on the shared template', () => {
     });
 
     it('shows each campus only its own photos and videos', () => {
+      const tabs = { campus1: ['校园视频', '成绩提升', '学员访谈'], campus2: ['校园视频', '校园生活', '学员访谈'] };
       for (const [campus, own, other] of [['campus1', 'assets/fella-1/', 'assets/fella-2/'], ['campus2', 'assets/fella-2/', 'assets/fella-1/']] as const) {
         const profile = fellaPageProfile(campus);
         const media = [
@@ -198,7 +199,7 @@ describe('English Fella campus pages on the shared template', () => {
         expect(media.length).toBeGreaterThan(20);
         expect(media.every(src => src.startsWith(own))).withContext(campus).toBeTrue();
         expect(media.some(src => src.includes(other))).toBeFalse();
-        expect((profile.videoTabs ?? []).map(tab => tab.label)).toEqual(['校园视频', '学员访谈']);
+        expect((profile.videoTabs ?? []).map(tab => tab.label)).toEqual(tabs[campus]);
       }
     });
   });

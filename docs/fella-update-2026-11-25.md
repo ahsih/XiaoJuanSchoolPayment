@@ -40,8 +40,20 @@ Each page shows and quotes only its own campus; a quote never mixes the campuses
   IELTS / British Council / IDP signs and other companies' signs blurred or mosaicked (moving mosaics in the IELTS
   interview), the IELTS test-centre shots and the closing "No.1" cards removed, and every "From Taiwan" name label
   covered with a gray mosaic. Small café logos on coffee cups are ordinary items and stay. Posters are
-  `poster-<name>.jpg` beside each video. The hero album groups the videos as 校园 and 学员访谈; the tours show several
-  rooms, so no clip opens a room album.
+  `poster-<name>.jpg` beside each video. The tours show several rooms, so no clip opens a room album.
+- More videos (user request 2026-11-25: more clips that build trust). Eleven more clips from the same channel, each
+  campus checked against the tours (First Campus: the pool with the blue slide; Second Campus: the gray-roofed
+  bungalows round the court, the lane pool and the library shelves). First Campus: TOEIC 300 to 825 in 5 months
+  (3:10), IELTS 6.5 in 3 months (1:11), PIC Level 2 to 5 in 4 weeks (3:51), IELTS 7.5 to 8 after a 1-month review
+  (6:12), a 16-year-old studying alone (1:14) and a returning IELTS student (3:24). Second Campus: fire drill (0:51),
+  Fun Friday 2026 (1:00), SSC student life (1:02), EBC business English for 3 months (1:48) and a working mother
+  (2:52), about 150 MB in all. Cuts: the IELTS 6.5 score report showed the student's name and candidate numbers for
+  1.5 seconds, so those frames were dropped and the next score shot slowed to fill the gap (the speech runs on); the
+  TOEIC 825 interview's part comparing the two campuses was cut; a Market Leader textbook cover in the EBC interview
+  was replaced by the next desk shot, slowed; end cards removed. Left out: a Japanese-only video that mixes both
+  campuses and shows a QR code and an IDP backdrop, a comedy skit, an older Fun Friday film, vertical recuts of the
+  two tours, and an off-campus volunteer day with other organisations' logos. The hero album groups the videos as
+  校园／成绩提升／学员访谈 (First Campus) and 校园／校园生活／学员访谈 (Second Campus).
 
 ## Rules
 

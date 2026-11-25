@@ -98,7 +98,7 @@ function fellaCopy(campus: FellaCampus): PhPageCopy {
     videos: {
       eyebrow: 'SCHOOL VIDEOS',
       title: `用视频了解 ${page.shortName}`,
-      intro: '学校官方频道2026年的校园导览和学员访谈。',
+      intro: '学校官方频道的校园导览、学员成绩分享、校园活动和学员访谈。',
       badge: `${page.shortName} 视频`,
     },
     rooms: {
@@ -149,10 +149,11 @@ export function fellaPageProfile(campus: FellaCampus): PhSchoolProfile {
   const defaultContent = () => fellaCampusDefaults(campus);
   const defaults = defaultContent();
   const initialPricing = createCiaQuotePricing(defaults);
-  const videoTabs: PhVideoTab[] = (['校园视频', '学员访谈'] as const)
+  const videoIcons = { 校园视频: 'videocam', 成绩提升: 'workspace_premium', 校园生活: 'celebration', 学员访谈: 'record_voice_over' } as const;
+  const videoTabs: PhVideoTab[] = (['校园视频', '成绩提升', '校园生活', '学员访谈'] as const)
     .map(topic => ({
       label: topic,
-      icon: topic === '学员访谈' ? 'record_voice_over' : 'videocam',
+      icon: videoIcons[topic],
       items: FELLA_VIDEOS[campus]
         .filter(video => video.topic === topic)
         .map(video => ({

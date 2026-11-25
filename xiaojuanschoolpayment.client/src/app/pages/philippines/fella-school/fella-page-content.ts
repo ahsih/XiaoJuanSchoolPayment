@@ -86,7 +86,7 @@ export interface FellaVideo {
   title: string;
   description: string;
   duration: string;
-  topic: '校园视频' | '学员访谈';
+  topic: '校园视频' | '成绩提升' | '校园生活' | '学员访谈';
 }
 
 /**
@@ -96,12 +96,44 @@ export interface FellaVideo {
  * "No.1" cards were cut. The interviews' "From Taiwan" name labels were covered with a gray mosaic (Taiwan wording rule).
  * The IELTS student studied at the Second Campus before and now studies at the First Campus, where the interview was
  * filmed, so it is on the First Campus page.
+ *
+ * Second batch (2026-11-25): each clip's campus was checked against the tours (First Campus: the pool with the blue
+ * slide; Second Campus: the gray-roofed bungalows round the court, the lane pool and the library shelves). Cuts: the
+ * IELTS 6.5 score report's name and candidate numbers (frames dropped, the next score shot slowed to fill), the TOEIC
+ * 825 interview's part comparing the two campuses, a Market Leader textbook cover in the business-English interview
+ * (replaced by the next desk shot), and the end cards. Left out: a Japanese-only video mixing both campuses with a QR
+ * code and an IDP backdrop, a comedy skit, an older Fun Friday film, vertical recuts of the tours and an off-campus
+ * volunteer day with other organisations' logos.
  */
 export const FELLA_VIDEOS: Readonly<Record<FellaCampus, readonly FellaVideo[]>> = {
   campus1: [
     {
       name: 'campus-tour-2026', title: '第一校区导览（2026）', duration: '2:42', topic: '校园视频',
       description: '学校2026年拍的第一校区导览：教室、自习室、健身房、游泳池、餐厅、小卖部、洗衣房和各房型。英文原声。',
+    },
+    {
+      name: 'toeic-825-interview', title: '托业从300分到825分', duration: '3:10', topic: '成绩提升',
+      description: '在第一校区读了5个月托业的学员，讲分数怎么从300分提到825分、每天怎么学、刚来时听不懂老师的阶段，以及给新同学的建议。',
+    },
+    {
+      name: 'ielts-65-interview', title: '3个月雅思考到6.5分', duration: '1:11', topic: '成绩提升',
+      description: '越南学员在第一校区读了3个月雅思课程，考到总分6.5，讲在学校的学习和训练。',
+    },
+    {
+      name: 'level-up-interview', title: '4周从Level 2升到Level 5', duration: '3:51', topic: '成绩提升',
+      description: '韩国学员在第一校区读了4周PIC综合英语，级别从2升到5，讲每天的学习、单字测验和印象最深的老师。',
+    },
+    {
+      name: 'ielts-8-interview', title: '雅思7.5分再冲到8分', duration: '6:12', topic: '成绩提升',
+      description: '已有雅思7.5分的日本学员，在第一校区斯巴达读了1个月雅思复习课程，最后考到8分，讲每天怎么准备各个科目。',
+    },
+    {
+      name: 'minor-student-interview', title: '16岁学员独自来读3个月', duration: '1:14', topic: '学员访谈',
+      description: '16岁越南学员一个人在第一校区读了3个月，讲学校的严格管理、生病时的照顾和口语的进步。',
+    },
+    {
+      name: 'returning-student-interview', title: '为了雅思再次回来', duration: '3:24', topic: '学员访谈',
+      description: '越南学员第一次来读PIC综合英语，这次回到第一校区读雅思，讲老师、模拟考和周末出游。',
     },
     {
       name: 'toeic-interview', title: '托业学员访谈', duration: '3:13', topic: '学员访谈',
@@ -120,6 +152,26 @@ export const FELLA_VIDEOS: Readonly<Record<FellaCampus, readonly FellaVideo[]>> 
     {
       name: 'campus-tour-2026', title: '第二校区导览（2026）', duration: '2:20', topic: '校园视频',
       description: '学校2026年拍的第二校区导览：教室、自习室、健身房、室内运动馆、游泳池、餐厅和各房型。英文原声。',
+    },
+    {
+      name: 'fire-drill', title: '校园消防演练', duration: '0:51', topic: '校园视频',
+      description: '当地消防员到第二校区带学员和老师做消防演练，全校疏散到运动场集合。',
+    },
+    {
+      name: 'fun-friday', title: '周五趣味活动（2026）', duration: '1:00', topic: '校园生活',
+      description: '学校2026年拍的第二校区周五活动：学员和老师一起玩游戏、逛活动摊位。',
+    },
+    {
+      name: 'ssc-life', title: '40岁以上学员的校园生活', duration: '1:02', topic: '校园生活',
+      description: '第二校区SSC乐龄会话课学员的日常：上课、逛小卖部、在校园里放松。',
+    },
+    {
+      name: 'business-english-interview', title: 'EBC商务英语读了3个月', duration: '1:48', topic: '学员访谈',
+      description: '在第二校区读了3个月EBC商务英语的学员，讲写邮件、做演示，以及开会时说英语更有自信。',
+    },
+    {
+      name: 'mother-interview', title: '一位妈妈的学英语之旅', duration: '2:52', topic: '学员访谈',
+      description: '33岁、有工作的越南妈妈在第二校区读书，讲一对一和小组课、来自不同国家的同学，以及鼓起勇气出来学习的原因。原声，英文字幕。',
     },
     {
       name: 'ssc-interview', title: '40岁以上会话课学员访谈', duration: '2:06', topic: '学员访谈',
