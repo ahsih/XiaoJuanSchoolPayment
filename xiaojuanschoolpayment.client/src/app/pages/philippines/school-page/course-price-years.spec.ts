@@ -31,6 +31,7 @@ import { PinesSchoolPageComponent } from '../pines-school/pines-school-page.comp
 import { SmeagCapitalSchoolPageComponent } from '../smeag-capital-school/smeag-capital-school-page.component';
 import { SmeagEncantoSchoolComponent } from '../smeag-encanto-school/smeag-encanto-school.component';
 import { keepsTwoCoursePrices, syncSingleCoursePrices, TWO_COURSE_PRICE_SCHOOL_CODES } from './course-price-years';
+import { CONTENT_ONLY_PRICE_SCHOOL_CODES, usesDatabasePrices } from './database-prices';
 import type { PhSchoolPageComponent } from './ph-school-page.component';
 import type { PhSchoolProfile } from './ph-school-profile';
 
@@ -43,6 +44,7 @@ describe('one or two course prices on the shared Philippine template', () => {
   const internals = (page: Page) => page as unknown as {
     profile: PhSchoolProfile;
     applyContentConfig(value: CiaContentConfig): void;
+    applyPricingData(lessons: unknown[], rooms: unknown[], fees: unknown[]): void;
   };
 
   beforeEach(() => {
@@ -151,4 +153,22 @@ describe('one or two course prices on the shared Philippine template', () => {
       }
     });
   }
+
+  // The employee editor copies database prices into a school's first save only when its page reads them too.
+  it('lists exactly the template schools whose page ignores database prices', () => {
+    const contentOnly: string[] = [];
+    for (const [school, type] of [...ONE_PRICE_PAGES, ...TWO_PRICE_PAGES]) {
+      const page = create(type);
+      const code = internals(page).profile.defaultContent().schoolCode;
+      let read = false;
+      const watched = () => new Proxy([] as unknown[], {
+        get: (target, key, receiver) => { read = true; return Reflect.get(target, key, receiver); },
+      });
+      internals(page).applyPricingData(watched(), watched(), watched());
+      expect(usesDatabasePrices(code)).withContext(`${school} (${code})`).toBe(read);
+      if (!read) contentOnly.push(code);
+    }
+    expect([...new Set(contentOnly)].sort()).toEqual([...CONTENT_ONLY_PRICE_SCHOOL_CODES].sort());
+    expect(usesDatabasePrices(undefined)).toBeTrue();
+  });
 });

@@ -32,6 +32,7 @@ import {
 import { CIA_PREVIEW_SECTIONS, CiaPreviewKind, CiaPreviewTarget, isCiaPreviewTarget } from '../philippines/cia-school/cia-content-preview';
 import { isAssociationPeakSchool } from '../philippines/association-peak-surcharge';
 import { keepsTwoCoursePrices, syncSingleCoursePrices } from '../philippines/school-page/course-price-years';
+import { usesDatabasePrices } from '../philippines/school-page/database-prices';
 import {
   clonePinesContentConfig,
   createDefaultPinesContentConfig,
@@ -1098,9 +1099,9 @@ export class AdminSchoolContentComponent implements OnInit {
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       this.content = stored ? this.cloneSelectedContent(stored) : defaults;
       this.hasUnsavedChanges = false;
-      // JIC prices come only from its content document (the page ignores database prices), so a first save keeps
-      // the school-pack prices instead of older database rows.
-      if (!stored && !this.isJicSelected) {
+      // Schools whose page takes prices only from the content document (JIC, CG, PINES, …) keep their document's
+      // prices on a first save instead of older database rows.
+      if (!stored && usesDatabasePrices(this.schoolCode)) {
         for (const course of this.content.courses) {
           const row = lessons.find(item =>
             this.slug(item.name) === course.id ||
