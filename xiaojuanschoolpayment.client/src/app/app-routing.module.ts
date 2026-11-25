@@ -756,6 +756,13 @@ const routes: Routes = [
           import('./pages/school-compare/school-compare-page.component').then((m) => m.SchoolComparePageComponent),
       },
       {
+        path: 'philippines-study/service-process',
+        loadComponent: () =>
+          import('./pages/philippines/service-process/service-process.component').then(
+            (m) => m.PhilippinesServiceProcessComponent,
+          ),
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },
