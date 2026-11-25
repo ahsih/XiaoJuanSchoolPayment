@@ -51,3 +51,17 @@ the HELP Clark page, so only the Clark material is used; the Baguio permits and 
 
 `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.help.spec.json --include=src/app/pages/philippines/help-school/help-school-page.spec.ts --progress=false`
 (11 tests: offers and Sida order, registration waiver, short stays, minors, local fees, deposit and pickups, room links).
+
+## Videos from HELP's YouTube channels (2026-11-25)
+
+Searched HELP's two official YouTube channels ("HELP ENGLISH" and "HELP English Academy") for Clark footage. Agency
+channels (Phil English, DMM留学 and others) were not used.
+
+| Video | File | Notes |
+| --- | --- | --- |
+| A Daily Life in HELP Clark Campus (2024-11-28) | `student-day-2024.mp4`, 3:35 | Used whole: a Vietnamese student's day (classes, lunch, special class, self-study, vocabulary test, dorm). Vietnamese captions. |
+| HELP Junior Camp 2026 Recap (2026-10-05) | `junior-camp-2026.mp4`, 1:14 | Kept 0:05–0:19.5, 0:23.7–1:13.8, 1:20.5–1:25.3 and 1:35.8–1:41. Cut: airline wing (opening), a visiting group in orange uniform T-shirts with another organisation's logo (group photo, presentations, ending), water park and bowling alley (venue branding). |
+
+Not used: the 2019 teacher interviews (ESL, Business, Test; campus not identifiable, teachers may have left), the 2019
+Clark campus film (older than the 2024 tour), and the Baguio, online-course and Vietnamese-language promotional videos.
+The HELP Facebook page could not be reached from this PC, so nothing was taken from Facebook.
