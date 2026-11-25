@@ -49,6 +49,76 @@ export interface StudentPaymentSubmissionDTO {
   note?: string;
 }
 
+export interface StudentFeeItemDTO {
+  key: string;
+  name: string;
+  amount: number;
+  currencyCode: string;
+  dueDate?: string;
+  note?: string;
+}
+
+/** Computed by the server on every read: per currency, fees due, confirmed payments and what is left. */
+export interface StudentFeeSummaryDTO {
+  currencyCode: string;
+  totalDue: number;
+  paid: number;
+  remaining: number;
+  nextDueDate?: string;
+  nextDueAmount?: number;
+}
+
+export interface StudentRequestedDocumentDTO {
+  key: string;
+  documentType: string;
+  note?: string;
+  /** 未上传 / 待确认 / 已收到 / 需重新上传, computed by the server. */
+  uploadStatus?: string;
+}
+
+export type StudentSubmissionReviewStatus = 'PendingReview' | 'Accepted' | 'Returned';
+
+export interface StudentSubmissionDTO {
+  id: string;
+  studentApplicationId: string;
+  documentType: string;
+  studentNote?: string;
+  originalFileName: string;
+  sizeBytes: number;
+  reviewStatus: StudentSubmissionReviewStatus;
+  submittedAt: string;
+  reviewedByName?: string;
+  reviewedAt?: string;
+  reviewNote?: string;
+  downloadUrl: string;
+}
+
+/** What a student may upload and a consultant may ask for. Keep in step with the server and the mini program. */
+export const STUDENT_SUBMISSION_TYPES = ['护照首页', '证件照', '机票行程单', '签证材料', '付款截图', '保险资料', '其他'] as const;
+
+export const STUDENT_FEE_CURRENCIES = ['CNY', 'USD', 'PHP', 'EUR', 'GBP', 'MYR'] as const;
+
+/** Chinese currency names for every amount shown to people (codes stay in data). */
+export const STUDENT_CURRENCY_NAMES: Record<string, string> = {
+  CNY: '人民币',
+  RMB: '人民币',
+  USD: '美元',
+  PHP: '比索',
+  EUR: '欧元',
+  GBP: '英镑',
+  MYR: '马来西亚林吉特',
+};
+
+export function studentCurrencyName(code: string | undefined | null): string {
+  const upper = (code ?? '').toUpperCase();
+  return STUDENT_CURRENCY_NAMES[upper] ?? upper;
+}
+
+export function studentMoney(amount: number, code: string): string {
+  const value = (Number(amount) || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return `${value} ${studentCurrencyName(code)}`;
+}
+
 export type StudentEnrollmentType = '单人报名' | '亲子家庭' | '多人同行';
 
 export interface StudentApplicationMemberDTO {
@@ -102,6 +172,11 @@ export interface StudentApplicationDTO {
   publishedAt?: string;
   documents: StudentApplicationDocumentDTO[];
   payments: StudentPaymentDTO[];
+  feeItems?: StudentFeeItemDTO[];
+  feeSummaries?: StudentFeeSummaryDTO[];
+  requestedDocuments?: StudentRequestedDocumentDTO[];
+  consultantName?: string;
+  submissions?: StudentSubmissionDTO[];
 }
 
 export interface CreateStudentApplicationDTO {
@@ -123,6 +198,9 @@ export interface CreateStudentApplicationDTO {
   status: string;
   studentVisibleNotes?: string;
   internalNotes?: string;
+  feeItems: StudentFeeItemDTO[];
+  requestedDocuments: StudentRequestedDocumentDTO[];
+  consultantName?: string;
 }
 
 export interface UpdateStudentApplicationDTO {
@@ -144,6 +222,9 @@ export interface UpdateStudentApplicationDTO {
   status: string;
   studentVisibleNotes?: string;
   internalNotes?: string;
+  feeItems: StudentFeeItemDTO[];
+  requestedDocuments: StudentRequestedDocumentDTO[];
+  consultantName?: string;
 }
 
 export const STUDENT_APPLICATION_STATUSES = [

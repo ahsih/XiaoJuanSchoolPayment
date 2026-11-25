@@ -42,6 +42,9 @@ import {
   CIEC_SCHEDULE_COLUMNS,
   CIEC_SUITABLE_FOR,
   CIEC_TEST_RESULTS,
+  CIEC_LIFE_VIDEOS,
+  CIEC_VIDEO_CARDS,
+  CIEC_VIDEO_TABS,
 } from './ciec-page-content';
 
 const defaults = createDefaultCiecContentConfig();
@@ -114,8 +117,9 @@ const CIEC_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CIEC',
-    intro: '',
-    badge: '',
+    intro: '校园、课堂、夏令营和学生访谈的实拍视频。',
+    badge: 'CIEC 学校视频',
+    lifeTitle: '课堂与学员短片',
   },
   rooms: {
     photoTitle: '房型实景',
@@ -170,7 +174,7 @@ export const CIEC_PAGE_PROFILE: PhSchoolProfile = {
   copy: CIEC_COPY,
   compactLayout: true,
   overviewFacts: CIEC_OVERVIEW_FACTS,
-  videoTabs: [],
+  videoTabs: CIEC_VIDEO_TABS,
   courseHighlights: {
     [CIEC_CIDEC_ID]: { badge: `另收一次性年级学费${CIEC_CIDEC_GRADE_TUITION.toLocaleString('en-US')}美元`, icon: 'info' },
   },
@@ -189,8 +193,8 @@ export const CIEC_PAGE_PROFILE: PhSchoolProfile = {
   suitableFor: CIEC_SUITABLE_FOR.map(title => ({ title, text: '' })),
   notSuitableFor: CIEC_NOT_SUITABLE_FOR.map(title => ({ title, text: '' })),
   campusBuildings: CIEC_CAMPUS_BUILDINGS,
-  videoCards: [],
-  campusLifeVideos: [],
+  videoCards: CIEC_VIDEO_CARDS,
+  campusLifeVideos: CIEC_LIFE_VIDEOS,
   interviewVideos: [],
   courseGroups: [
     { icon: 'child_care', title: '幼儿园', text: '满4–6岁，须家长陪同', courseIds: [CIEC_KINDERGARTEN_ID] },
@@ -224,7 +228,7 @@ export const CIEC_PAGE_PROFILE: PhSchoolProfile = {
   ctaBadges: CIEC_FINAL_CTA_BADGES,
   ctaConsultants: CIA_CTA_CONSULTANTS,
   mobileAnchors: [
-    { label: '照片', target: 'gallery', icon: 'photo_library' },
+    { label: '视频', target: 'gallery', icon: 'smart_display' },
     { label: '概览', target: 'overview', icon: 'dashboard' },
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '住宿', target: 'rooms', icon: 'bed' },

@@ -1,10 +1,13 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ExchangeRateService, CnyExchangeRateSnapshot, isUsableExchangeRates, unavailableRates } from '../../services/exchange-rate.service';
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { QuoteImagePreviewComponent } from './quote-image-preview.component';
+import { SaveQuoteToStudentComponent } from './save-quote-to-student.component';
 import { downloadQuoteBlob, encodeQuoteCanvas, loadQuoteImage, quoteBlobDataUrl,
   quoteCanvasScale, quoteImageEnvironment, validateQuoteBlob } from './quote-image-export';
 import {
@@ -32,6 +35,10 @@ import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote/uk-quote-image-
 
 export type QuoteImageActionMode = 'download' | 'email';
 
+const EMPLOYEE_ROLES = new Set(['admin', 'manager', 'staff']);
+/** Pages where the employee 存到学员档案 button is not added (the CIA page is locked). */
+const STUDENT_SAVE_EXCLUDED_PATHS = ['/philippines-study/cebu/cia-cebu-international-academy'];
+
 import type {
   QuoteImageInfoItem,
   QuoteImagePaymentItem,
@@ -56,12 +63,14 @@ export type {
 @Component({
   selector: 'app-quote-image-download-button',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent, SaveQuoteToStudentComponent],
   template: `
     <p *ngIf="!ratesReady" role="status">最新参考汇率暂不可用，人民币金额待更新；汇率更新后可保存报价图片。</p>
     <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving || !ratesReady" (click)="handleButtonClick()">
       <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ !ratesReady ? '最新参考汇率待更新' : isSaving ? savingLabel : label }}
     </button>
+    <app-save-quote-to-student *ngIf="canSaveToStudent" [createBlob]="blobForStudent" [fileName]="quote.fileName"
+      [disabled]="disabled || isSaving || !ratesReady" />
 
     <p *ngIf="saveError && !isPreviewOpen" class="quote-email-message error" role="alert">{{ saveError }}</p>
     <app-quote-image-preview *ngIf="isPreviewOpen"
@@ -276,7 +285,7 @@ export type {
     `,
   ],
 })
-export class QuoteImageDownloadButtonComponent implements OnDestroy {
+export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
   private ratesSnapshot: CnyExchangeRateSnapshot = unavailableRates();
   protected get ratesReady(): boolean { return isUsableExchangeRates(this.ratesSnapshot); }
   private readonly rateSubscription = inject(ExchangeRateService).getLatestCnyRates().pipe(takeUntilDestroyed()).subscribe(r => {
@@ -307,6 +316,25 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   private previewFile?: File;
   private saveSequence = 0;
   private destroyed = false;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  /** Employees (Admin, Manager, Staff) may save a public-page quote straight into a student's file. */
+  protected canSaveToStudent = false;
+  protected readonly blobForStudent = () => this.createQuoteImageBlob();
+
+  ngOnInit(): void {
+    if (!this.isBrowser || this.mode !== 'download') return;
+    const path = this.router.url.split(/[?#]/)[0];
+    // The admin quote-image editor shows sample scenarios, and the CIA page is locked (user decision 2026-11-20).
+    if (path.startsWith('/admin') || STUDENT_SAVE_EXCLUDED_PATHS.some((excluded) => path.startsWith(excluded))) return;
+    try {
+      this.canSaveToStudent = this.authService.isAuthenticated()
+        && this.authService.getRoles().some((role) => EMPLOYEE_ROLES.has(role.toLowerCase()));
+    } catch {
+      this.canSaveToStudent = false;
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroyed = true;
