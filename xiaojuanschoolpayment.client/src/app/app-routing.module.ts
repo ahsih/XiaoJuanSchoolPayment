@@ -221,7 +221,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/elsa-international-language-school',
         loadComponent: () =>
-          import('./pages/philippines/elsa-school/elsa-school.component').then((m) => m.ElsaSchoolComponent),
+          import('./pages/philippines/elsa-school/elsa-school-page.component').then((m) => m.ElsaSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/ethos-language-school',
@@ -756,6 +756,13 @@ const routes: Routes = [
           import('./pages/school-compare/school-compare-page.component').then((m) => m.SchoolComparePageComponent),
       },
       {
+        path: 'philippines-study/service-process',
+        loadComponent: () =>
+          import('./pages/philippines/service-process/service-process.component').then(
+            (m) => m.PhilippinesServiceProcessComponent,
+          ),
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },
@@ -853,6 +860,13 @@ const routes: Routes = [
           import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(
             (m) => m.SingaporeTourComponent,
           ),
+      },
+      {
+        path: 'overseas-study-tour/singapore/canadian-education-college',
+        loadComponent: () =>
+          import(
+            './pages/overseas-study-tour/singapore-schools/canadian-education-college/canadian-education-college.component'
+          ).then((m) => m.CanadianEducationCollegeComponent),
       },
       {
         path: 'overseas-study-tour/malaysia',

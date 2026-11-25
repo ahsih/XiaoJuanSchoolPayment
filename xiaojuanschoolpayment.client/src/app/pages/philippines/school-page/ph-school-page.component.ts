@@ -1303,6 +1303,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
   }
 
+  /** A room card's price: “1,234 美元”, or for a school whose course price holds a base room “+50 美元” / its label. */
+  roomPriceText(id: string): string {
+    const fee = this.roomFeeFor(id);
+    const baseLabel = this.copy.rooms.supplementBaseLabel;
+    if (baseLabel === undefined) return `${this.formatUsd(fee)} 美元`;
+    return fee > 0 ? `+${this.formatUsd(fee)} 美元` : baseLabel;
+  }
+
+  /** The “/ 4周” after a room card's price; left out where the card shows the base-room label. */
+  roomPriceHasUnit(id: string): boolean {
+    return this.copy.rooms.supplementBaseLabel === undefined || this.roomFeeFor(id) > 0;
+  }
+
   /** Desktop room price table: each group is as wide as its number of rooms (CIA 3/3/4, EV 4/2). */
   get roomMatrixColumns(): string {
     return this.roomRateGroups.map(group => `${Math.max(1, group.rooms.length)}fr`).join(' ');

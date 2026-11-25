@@ -13,7 +13,6 @@
             <p class="hero-lead">
               <span>MK位于Iloilo Westwoods一带，是更安静、预算友好、适合长期ESL和亲子路线的小众城市学校。</span>
               <span>课程覆盖ESL Basic至Intensive、IELTS、TESOL附加、Business、Working Holiday、Junior和Internship，可按一对一课量、房型和周数拆分报价。</span>
-              <span>本页按公开学校资料、Iloilo公开报道和费用表整理；正式价格、空房和校规以学校invoice为准。</span>
             </p>
             <div class="hero-tags" aria-label="MK Language Training Center特点">
               <span><mat-icon>location_on</mat-icon>Iloilo / Westwoods</span>
@@ -27,7 +26,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
-                查看公开课程价格
+                查看课程价格
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -37,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面估算默认拆成USD课程住宿注册费 + PHP当地费用；mk-edu.net本次抓取不稳定，报名前需向学校核对正式invoice。
+              估算分为美元课程、住宿和注册费，加比索当地费用；正式价格、空房和校规以学校invoice为准。
             </p>
           </div>
 
@@ -57,11 +56,11 @@
               <strong>{{ fourWeekStartingText }}</strong>
               <p>ESL 1 + 4人房 + 注册费USD100</p>
               <ul>
-                <li><mat-icon>check_circle</mat-icon>宿舍公开费用含三餐等基础服务参考</li>
+                <li><mat-icon>check_circle</mat-icon>宿舍费含三餐等基础服务</li>
                 <li><mat-icon>info</mat-icon>SSP、签证、电水、押金、教材和接机另计</li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：MK相关公开学校页面；实际校区、房型和设施开放以学校当期资料为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -202,7 +201,7 @@
           <div class="section-heading">
             <span>MK 2025年4周课程住宿参考</span>
             <h2>先看课程费 + 房型费，再加注册费和当地PHP费用</h2>
-            <p>下表按MK 2025费用表整理。套餐参考为4周课程费 + 4周房型费，不含注册费和菲律宾当地PHP费用；1周按4周价40%、2周65%、3周85%换算。</p>
+            <p>套餐参考为4周课程费 + 4周房型费，不含注册费和菲律宾当地比索费用；1周按4周价40%、2周65%、3周85%换算。</p>
           </div>
 
           <div class="data-table mk-tuition-table" role="table" aria-label="MK Language Training Center 4周课程住宿套餐参考">
@@ -305,7 +304,7 @@
           <div class="section-heading">
             <span>到校支付费用</span>
             <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按公开费用表整理，金额可能随政府规则、学校政策、汇率和学习周数调整。</p>
+            <p>以下金额可能随菲律宾政策、汇率和学校规则调整，以学校实际收取为准。</p>
           </div>
           <div class="local-summary-grid" aria-label="MK当地费用按周数汇总">
             <article *ngFor="let fee of localFeeSummaries">
@@ -366,19 +365,6 @@
           <ul class="note-list">
             <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
           </ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>MK公开资料参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

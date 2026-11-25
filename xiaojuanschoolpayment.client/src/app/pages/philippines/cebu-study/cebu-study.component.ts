@@ -429,8 +429,8 @@ export class CebuStudyComponent {
     },
     {
       name: 'ELSA', route: '/philippines-study/cebu/elsa-international-language-school', tag: '自然度假校区',
-      location: 'Compostela · Cebu', summary: '大面积自然校园，成人英语、幼儿园、青少年和家长课程均有设置。',
-      image: 'https://www.fujiyama-international.com/archives/004/202505/414b2d68d20185f1c1ee5eb61c16eefeada06d16b761aeb08d33328ed32ae346.jpg', highlights: ['成人综合英语', '高尔夫英语', '青少年英语', '英语幼儿园', '家长英语'],
+      location: 'Compostela · Cebu', summary: '宿务北部的度假式校园，课程价含食宿；成人英语、青少年、本地学校随班、幼儿园和家长课程都有。',
+      image: '/assets/elsa/campus/aerial-01.webp', highlights: ['成人一对一英语', '本地学校随班', '青少年英语', '英语幼儿园', '家长陪读'],
     },
     {
       name: 'EMO', route: '/about-sida/contact', tag: '英语幼儿园·亲子型',

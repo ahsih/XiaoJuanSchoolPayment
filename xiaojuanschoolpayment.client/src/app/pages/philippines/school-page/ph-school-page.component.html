@@ -735,8 +735,8 @@
             >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
             <strong>{{ room.label }}</strong>
             <small *ngIf="showRoomCodes">{{ room.code }}</small>
-            <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
-            <em>/ 4周</em>
+            <b>{{ roomPriceText(room.id) }}</b>
+            <em *ngIf="roomPriceHasUnit(room.id)">/ 4周</em>
             <!-- Compact layout: every card says it opens that room's photos (user request 2026-11-21). -->
             <span class="room-card-cue" *ngIf="compactLayout && roomProfileForRate(room)">
               <ng-container *ngIf="(isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id; else roomCueIdle">
@@ -1155,8 +1155,8 @@
 
         <ng-template #quoteTotals>
         <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
-          <div class="quote-base-line"><span>课程费<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-          <div class="quote-base-line"><span>住宿费<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+          <div class="quote-base-line"><span>{{ copy.quote.courseFeeLabel || '课程费' }}<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+          <div class="quote-base-line"><span>{{ copy.quote.roomFeeLabel || '住宿费' }}<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
           <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
             <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
           </div>

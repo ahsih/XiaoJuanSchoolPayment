@@ -113,29 +113,29 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
     { category: '校园', title: '校园建筑与活动区', description: '市区一体校园，减少日常通勤，适合第一次独立海外学习。', src: '/assets/philippines/btes/campus-building.webp' },
     { category: '校园', title: '一楼大厅', description: '新生报到、学生服务和校内公告的主要公共区域。', src: '/assets/philippines/btes/campus-lobby.webp' },
     { category: '教室', title: '一对一课堂', description: '课程以客制化一对一训练为核心，按课程安排4至8节一对一。', src: '/assets/philippines/btes/one-to-one-class.webp' },
-    { category: '教室', title: '教学区', description: '学校资料列有120间一对一教室与12间团体教室。', src: '/assets/philippines/btes/classroom-hall.webp' },
+    { category: '教室', title: '教学区', description: '学校有120间一对一教室与12间团体教室。', src: '/assets/philippines/btes/classroom-hall.webp' },
     { category: '住宿', title: '单人房', description: '独立空间，住宿费1,000美元／4周。', src: '/assets/philippines/btes/single-room.webp' },
     { category: '住宿', title: '双人房', description: '住宿费800美元／4周；部分房间窗户朝走廊，须按实际空房确认。', src: '/assets/philippines/btes/double-room.webp' },
     { category: '住宿', title: '三人房', description: '住宿费750美元／4周；房内有一张上下铺。', src: '/assets/philippines/btes/triple-room.webp' },
-    { category: '住宿', title: '四人房', description: '住宿费650美元／4周，是2026价目表中最低的校内房型。', src: '/assets/philippines/btes/quad-room.webp' },
+    { category: '住宿', title: '四人房', description: '住宿费650美元／4周，是2026年价格最低的校内房型。', src: '/assets/philippines/btes/quad-room.webp' },
     { category: '生活', title: '室内游泳池', description: '学校设有两座室内游泳池，并有羽毛球、桌球和撞球等设施。', src: '/assets/philippines/btes/indoor-pool.webp' },
     { category: '生活', title: '健身房', description: '校内健身与休闲设施，让学习以外的生活更集中。', src: '/assets/philippines/btes/fitness-room.webp' },
-    { category: '生活', title: '教师团队', description: '学校资料说明教师需具备教师证照或教学相关背景，并接受持续培训。', src: '/assets/philippines/btes/teacher-team.webp' },
+    { category: '生活', title: '教师团队', description: '教师需具备教师证照或教学相关背景，并接受持续培训。', src: '/assets/philippines/btes/teacher-team.webp' },
   ];
 
   readonly quickInfo: InfoCard[] = [
-    { icon: 'location_city', label: '学校位置', value: '宿务市 Kasambagan', text: '市区独立校园，距机场约12公里，公开资料参考车程约30分钟。' },
+    { icon: 'location_city', label: '学校位置', value: '宿务市 Kasambagan', text: '市区独立校园，距机场约12公里，车程约30分钟。' },
     { icon: 'calendar_month', label: '创立年份', value: '2022年', text: '校舍面积约5,888平方米，教学与住宿区域约3,120平方米。' },
-    { icon: 'groups', label: '学校规模', value: '约220人', text: '学校资料列有120间一对一教室、12间团体教室及80间宿舍。' },
+    { icon: 'groups', label: '学校规模', value: '约220人', text: '学校有120间一对一教室、12间团体教室及80间宿舍。' },
     { icon: 'record_voice_over', label: '课程强度', value: '每日4-8节', text: '从Chill轻量课程到Talkative八节一对一，成人、考试和亲子路线齐全。' },
     { icon: 'family_restroom', label: '最低年龄', value: '5岁', text: '5-9岁与10-14岁分别使用Junior课程；低龄入学须同步确认监护安排。' },
-    { icon: 'payments', label: '2026公开价格', value: '美元＋比索', text: '课程住宿以美元计，当地费用以菲律宾比索计；走读按每周课程费计算。' },
+    { icon: 'payments', label: '2026年价格', value: '美元＋比索', text: '课程住宿以美元计，当地费用以菲律宾比索计；走读按每周课程费计算。' },
   ];
 
   readonly basicInfo = [
     { label: '学校名称', value: 'BTES English Academy / Brainy Tutelage English School' },
     { label: '位置', value: '菲律宾宿务市 Kasambagan' },
-    { label: '认证', value: '学校资料列TESDA、宿务政府商业许可、消防安全检查及市卫生许可。' },
+    { label: '认证', value: 'TESDA、宿务政府商业许可、消防安全检查及市卫生许可。' },
     { label: '课程', value: 'General ESL、Junior、Parents、TOEIC、IELTS、Business English及限时ALL IN ONE套餐。' },
     { label: '住宿', value: '单人、双人、三人及四人校内宿舍；也可选择走读（Walk-in）。' },
     { label: '设施', value: '食堂、健身房、桌球、撞球、羽毛球、篮球、室内游泳池、自习室、医护室及校区Wi-Fi。' },
@@ -150,13 +150,13 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   readonly suitableFor: InfoCard[] = [
     { title: '重视一对一课量与价格透明', text: '课程、住宿、短期比例和当地费用均有2026正式价目，可按周数拆分核算。' },
     { title: '希望住在宿务市区一体校园', text: '学习、住宿、餐厅和休闲设施集中，不需要每天跨区通勤。' },
-    { title: '亲子、青少年或家长同行', text: 'Junior和Parents课程可分别安排，报价器会按每位学生年龄和房型检查。' },
+    { title: '亲子、青少年或家长同行', text: 'Junior和Parents课程可分别安排，在线报价会按每位学生年龄和房型检查。' },
   ];
 
   readonly lessSuitableFor: InfoCard[] = [
     { title: '想住海边度假村型校园', text: 'BTES是宿务市区校，不是麦克坦海滨度假型学校。' },
     { title: '不想遵守门禁和外宿申报', text: '平日及周日门禁23:00，周五、周六及假日前一日01:00；外宿旅行须按校规申请。' },
-    { title: '要求节假日一定补课', text: '2026入学指南明确：按菲律宾政府公告的国定假日放假，不另行补课。' },
+    { title: '要求节假日一定补课', text: '学校按菲律宾政府公告的国定假日放假，不另行补课。' },
   ];
 
   readonly scheduleItems = [
@@ -173,11 +173,11 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
   ];
 
   readonly faqs: InfoCard[] = [
-    { title: 'Walk-in是什么意思？', text: 'Walk-in在本页统一翻译为“走读”：学生只到校上课，不住学校宿舍。走读课程按2026走读价目表的每周学费计算。' },
-    { title: '1、2、3周怎么收费？', text: '住宿型课程与住宿分别按对应4周价的40%、65%、85%计算；4周以上按4周价÷4×实际周数。走读按官方每周课程费×周数。' },
+    { title: 'Walk-in是什么意思？', text: 'Walk-in就是“走读”：学生只到校上课，不住学校宿舍。走读课程按2026年走读每周学费计算。' },
+    { title: '1、2、3周怎么收费？', text: '住宿型课程与住宿分别按对应4周价的40%、65%、85%计算；4周以上按4周价÷4×实际周数。走读按每周课程费×周数。' },
     { title: '淡季优惠怎样判断？', text: '课程和住宿须完整落在学校公布的淡季就学期间。个人3周减25%，个人4周及以上减30%；3人以上同时报名、同时入学及结业减40%，三档不叠加。' },
     { title: '思达启航95折会和淡季优惠一起计算吗？', text: '会。普通方案先计算BTES个人或团体淡季优惠，再对优惠后的课程费与住宿费计算思达启航95折；只有1,000美元ALL IN ONE套餐不再计算95折。' },
-    { title: '节假日停课会补课吗？', text: '学校2026入学指南写明，政府公告国定假日放假且不另行补课；临时调整以校内公告为准。' },
+    { title: '节假日停课会补课吗？', text: '政府公告的国定假日放假且不另行补课；临时调整以校内公告为准。' },
   ];
 
   readonly sideNavItems: SideNavItem[] = [
@@ -300,7 +300,7 @@ export class BtesSchoolComponent implements OnInit, AfterViewInit {
           amount: `${this.formatUsd(student.quotePlan.price('course', row))} 美元`,
           detailTitle: course ? `${course.name}｜${course.chineseName}` : '请选择课程',
           detailSubtitle: `${row.startDate.replace(/-/g, '/')}–${student.quotePlan.end(row).replace(/-/g, '/')} · ${row.weeks}周`,
-          note: course?.allInOne ? '固定四周1,000美元全包套餐；四人房及海报列明费用已包含。' : course?.lessons ?? '',
+          note: course?.allInOne ? '固定四周1,000美元全包套餐；四人房及套餐列明费用已包含。' : course?.lessons ?? '',
         };
       }));
 

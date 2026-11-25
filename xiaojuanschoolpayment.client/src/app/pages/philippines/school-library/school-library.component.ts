@@ -193,8 +193,8 @@ const libraryPages: Record<string, LibraryPage> = {
     title: '热门学校合集',
     englishTitle: 'Popular School Collection',
     intro:
-      '这里整理适合放进学校列表页的热门学校方向，方便用户先快速扫一遍。具体学校是否适合，还要结合城市、预算、课程目标、房型和开课日期来判断。',
-    keywords: '具体学校列表放页面内、不全部塞进顶部导航',
+      '这里列出学生最常比较的热门学校方向，方便先快速了解。具体学校是否适合，还要结合城市、预算、课程目标、房型和开课日期来判断。',
+    keywords: '热门学校、城市、课程强度、预算',
     selectionFocus: '城市、课程强度、住宿环境、预算、开课日期和适合人群',
     cardsTitle: '热门学校方向',
     cards: [

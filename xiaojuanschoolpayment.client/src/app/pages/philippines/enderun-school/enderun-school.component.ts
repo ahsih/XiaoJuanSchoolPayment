@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-enderun-school',
   standalone: true,
@@ -89,7 +84,7 @@ export class EnderunSchoolComponent {
     {
       item: '英语课程 / Short Courses',
       amount: '需当期确认',
-      note: '公开资料没有稳定完整的英语课程价目表，需按课程、开课日、课时和班型确认。',
+      note: '英语课程费用需按课程、开课日、课时和班型确认。',
     },
     {
       item: '企业培训 / Corporate Training',
@@ -138,7 +133,7 @@ export class EnderunSchoolComponent {
 
   readonly cons = [
     '不是宿舍制菲律宾语言学校，不适合想要校内住宿、三餐和全天管理的学生',
-    '公开可读价目表不完整，费用不能像宿务/碧瑶ESL套餐那样直接估算',
+    '费用需逐项核价，不能像宿务/碧瑶ESL套餐那样直接估算',
     '开课日期、班型、课时和名额需要逐项确认',
     '如果目标是高压雅思冲刺或斯巴达管理，碧瑶或宿务考试型学校通常更适合优先比较',
   ];
@@ -150,9 +145,9 @@ export class EnderunSchoolComponent {
         '不是。它更适合归类为Enderun Colleges体系下的城市短课、继续教育和培训项目，住宿、餐食和通勤需要另行安排。',
     },
     {
-      question: '页面为什么没有写固定学费？',
+      question: '为什么没有固定学费？',
       answer:
-        '因为公开资料没有稳定完整的英语课程价目表。为了避免误导，费用模块保留为“需当期确认”，报名时按课程、日期、课时和班型重新核价。',
+        '英语课程费用会随课程、日期、课时和班型变化，所以显示为“需当期确认”，报名时按这些条件重新核价。',
     },
     {
       question: 'Enderun Extension适合什么学生？',
@@ -164,12 +159,5 @@ export class EnderunSchoolComponent {
       answer:
         '如果想要城市短课、商务场景或马尼拉行程组合，可以看Enderun；如果想要住宿制、全天课程和学习管理，优先比较宿务、碧瑶或Clark。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Enderun Extension 官方入口', url: 'http://www.enderunextension.com/' },
-    { label: 'Enderun Colleges 官方网站', url: 'https://www.enderuncolleges.com/' },
-    { label: 'Enderun Colleges 背景资料', url: 'https://en.wikipedia.org/wiki/Enderun_Colleges' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
   ];
 }

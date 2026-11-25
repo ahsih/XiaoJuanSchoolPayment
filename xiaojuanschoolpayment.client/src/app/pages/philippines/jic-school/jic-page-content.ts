@@ -1,7 +1,8 @@
 // Text and data of the two JIC campus pages (Challenger and Premium, Baguio) on the shared Philippine school template.
 // Prices and offers come from jic-pricing.ts and the published content document, not from this file.
 // Facts come from JIC's 2026-09 orientation pack, its 2027 calendar, the December 2026 holiday notice and the BESA
-// pickup schedule. Photos and videos are JIC's own; each shows exactly the campus, room or facility it names.
+// pickup schedule. Photos and videos are JIC's own (its school pack and its official YouTube channel); each shows exactly the
+// campus, room, class or facility it names.
 // Keep this file pure data (no Angular, DOM or storage), so the WeChat mini program can reuse it later.
 import type {
   BasicInfoRow,
@@ -233,9 +234,15 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
     videoTabs: [
       { label: '校园视频', videos: ['jic-challenger-campus-intro'] },
       { label: '宿舍视频', videos: ['jic-challenger-room-tour', 'jic-challenger-double-room-video', 'jic-challenger-quad-bunk-room-video', 'jic-challenger-quad-duplex-room-video'] },
+      { label: '课程视频', videos: ['jic-challenger-class-observation'] },
+      { label: '学员访谈', videos: ['jic-challenger-taiwan-story', 'jic-challenger-ielts-story', 'jic-challenger-speaking-story'] },
     ],
     videos: {
       'jic-challenger-campus-intro': video('jic-challenger-campus-intro', 'JIC Challenger 校区介绍', '学校官方介绍片：课堂、宿舍和校园生活。', '2:10'),
+      'jic-challenger-class-observation': video('jic-challenger-class-observation', '老师听课评估', '学校安排专人进课堂听课，从教学方式、学生参与、课程结构和沟通四方面给老师反馈（英文字幕）。', '1:01'),
+      'jic-challenger-taiwan-story': video('jic-challenger-taiwan-story', '中国台湾学员：A1到A2+', '英语基础很弱的中国台湾学员，讲为什么选 JIC、每天8节课的节奏和只说英语的难处（英文字幕）。', '4:15'),
+      'jic-challenger-ielts-story': video('jic-challenger-ielts-story', '日本学员：雅思4.5到6.0', '在 Challenger 读雅思的日本学员，讲学习经历和出国工作的打算（英文字幕）。', '3:33'),
+      'jic-challenger-speaking-story': video('jic-challenger-speaking-story', '日本学员：A2到B1', '日本学员讲来学英语的原因、学术顾问怎样鼓励他，结尾是他的毕业英文演讲（英文字幕）。', '2:58'),
       'jic-challenger-room-tour': video('jic-challenger-room-tour', '单人间', '单人间实拍（原片无配音）。', '0:37'),
       'jic-challenger-double-room-video': video('jic-challenger-double-room-video', '双人间', '双人间实拍（原片无配音）。', '0:41'),
       'jic-challenger-quad-bunk-room-video': video('jic-challenger-quad-bunk-room-video', '四人间（上下铺）', '上下铺四人间实拍（原片无配音）。', '0:39'),
@@ -467,9 +474,16 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
           'jic-premium-twin-no-balcony-video', 'jic-premium-quad-balcony-video', 'jic-premium-quad-no-balcony-video',
         ],
       },
+      { label: '课程视频', videos: ['jic-premium-sketching-class', 'jic-premium-zumba-class'] },
+      { label: '学员视频', videos: ['jic-premium-day-in-life', 'jic-premium-taiwan-story', 'jic-premium-graduation'] },
     ],
     videos: {
       'jic-premium-campus-intro': video('jic-premium-campus-intro', 'JIC Premium 校区介绍', '学校官方介绍片：课堂、宿舍和校园生活。', '2:27'),
+      'jic-premium-sketching-class': video('jic-premium-sketching-class', '素描选修课', '每门课附带的选修课之一：学素描技巧、练观察，用画表达想法（英文字幕）。', '0:53'),
+      'jic-premium-zumba-class': video('jic-premium-zumba-class', '尊巴选修课', '跟着音乐跳舞和做有氧操，不同体能的学生都能参加（英文字幕）。', '1:05'),
+      'jic-premium-day-in-life': video('jic-premium-day-in-life', '日本学员的一天', '跟着 Premium 的日本学员过一天：宿舍、早餐、一对一和小组课、课后生活（英文字幕）。', '3:56'),
+      'jic-premium-taiwan-story': video('jic-premium-taiwan-story', '中国台湾学员：从想家到适应', '中国台湾学员讲刚来时想家、和老师同学变熟，以及慢慢敢用英语表达自己（英文字幕）。', '3:28'),
+      'jic-premium-graduation': video('jic-premium-graduation', '毕业证书颁发', 'Premium 校区的毕业日：颁发结业证书，和老师同学合影。', '0:53'),
       'jic-premium-single-balcony-video': video('jic-premium-single-balcony-video', '单人阳台房', '带阳台的单人房实拍（原片无配音）。', '2:36'),
       'jic-premium-room-tour': video('jic-premium-room-tour', '单人雅房', '第二宿舍单人雅房实拍（原片无配音）。', '1:41'),
       'jic-premium-twin-balcony-video': video('jic-premium-twin-balcony-video', '双人间（阳台）', '带阳台的双人房实拍（原片无配音）。', '2:06'),

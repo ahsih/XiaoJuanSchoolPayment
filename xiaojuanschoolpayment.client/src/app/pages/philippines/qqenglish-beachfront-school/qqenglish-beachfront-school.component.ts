@@ -84,11 +84,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -137,7 +132,7 @@ export class QqenglishBeachfrontSchoolComponent {
       icon: 'beach_access',
       label: '学校类型',
       value: 'Mactan Newtown海滨新校区',
-      note: '官方说明Beach Front Campus在2024年4月开放，位于麦克坦岛Mactan Newtown。',
+      note: 'Beach Front Campus于2024年4月开放，位于麦克坦岛Mactan Newtown。',
     },
     {
       icon: 'record_voice_over',
@@ -149,25 +144,25 @@ export class QqenglishBeachfrontSchoolComponent {
       icon: 'hotel',
       label: '住宿选择',
       value: '校内胶囊学生寮 / 自理住宿',
-      note: '官方公开表同时列出只上课价格，以及含胶囊宿舍和餐食的留学套餐。',
+      note: '可选只上课价格，或含胶囊宿舍和餐食的留学套餐。',
     },
     {
       icon: 'restaurant',
       label: '餐食',
       value: '校内餐厅 / 三餐可选',
-      note: '含住宿套餐通常含餐食；只上课方案可按官方餐食费口径另加。',
+      note: '含住宿套餐通常含餐食；只上课方案可按学校餐食费另加。',
     },
     {
       icon: 'schedule',
       label: '入学弹性',
       value: '短期1周到12周参考',
-      note: '官方价格表从短期到12周列示，长期或特殊日期需按学校当期确认。',
+      note: '价格从短期到12周都有，长期或特殊日期需按学校当期确认。',
     },
     {
       icon: 'waves',
       label: '校园设施',
       value: '海滩 / 健身房 / 自习区 / 游戏区',
-      note: '公开资料列Beach、Rooftop、Gym、Recreational Area、Capsule Dorm和Cafeteria。',
+      note: '有Beach、Rooftop、Gym、Recreational Area、Capsule Dorm和Cafeteria。',
     },
   ];
 
@@ -183,7 +178,7 @@ export class QqenglishBeachfrontSchoolComponent {
       category: '校园',
       title: 'Beach Front Campus海边环境',
       description:
-        '官方资料强调从校园走向海边的学习生活体验，适合短期体验和成人口语。',
+        '学校主打靠海的学习生活体验，适合短期体验和成人口语。',
       src: 'https://qqenglish.jp/assets/images/school/beachfront/beachfront-new1.jpg',
     },
     {
@@ -204,14 +199,14 @@ export class QqenglishBeachfrontSchoolComponent {
       category: '住宿',
       title: 'Campus Reception and Lounge',
       description:
-        '公开住宿资料显示内部寮在校内，适合把学习、休息和自习集中安排。',
+        '学生寮在校内，适合把学习、休息和自习集中安排。',
       src: 'https://qqenglish.jp/assets/images/school/beachfront/bfc-campus-00-2.jpg',
     },
     {
       category: '设施',
       title: 'Gym and Recreational Area',
       description:
-        '公开设施包含健身房、娱乐区、自习空间和屋顶区域，学习之外也有放松空间。',
+        '设施包含健身房、娱乐区、自习空间和屋顶区域，学习之外也有放松空间。',
       src: 'https://qqenglish.jp/assets/images/school/beachfront/beachfront-new4.jpg',
     },
   ];
@@ -220,11 +215,11 @@ export class QqenglishBeachfrontSchoolComponent {
     { label: '学校名称', value: '菲律宾宿务QQEnglish（Beachfront Campus）' },
     { label: '英文名称', value: 'QQEnglish Beach Front Campus' },
     { label: '位置', value: 'Mactan Newtown, Lapu-Lapu City, Cebu' },
-    { label: '开放时间', value: '官方资料列2024年4月开放的新校区' },
+    { label: '开放时间', value: '2024年4月开放的新校区' },
     { label: '学校定位', value: '海滨新校区、菲律宾外教一对一、成人/亲子短期友好' },
     { label: '主要课程', value: '4/6/8节一对一、Group Class、Callan、R.E.M.S.、Business、TOEIC、IELTS、Kids' },
     { label: '住宿', value: '胶囊学生寮；也可选择只上课并自行安排酒店、公寓或外部住宿' },
-    { label: '费用口径', value: '官方英文表列只上课价格；官方日文表列含学生寮与餐食的套餐价格' },
+    { label: '费用方式', value: '可选只上课价格，或含学生寮与餐食的套餐价格' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -241,7 +236,7 @@ export class QqenglishBeachfrontSchoolComponent {
     {
       image: 'https://qqenglish.jp/assets/images/school/beachfront/beachfront-new1.jpg',
       title: '短期体验友好',
-      text: '公开价格支持短周数查询，也可用只上课方案搭配自订酒店或公寓，适合短假期学生。',
+      text: '短周数也有价格，也可用只上课方案搭配自订酒店或公寓，适合短假期学生。',
     },
   ];
 
@@ -256,7 +251,7 @@ export class QqenglishBeachfrontSchoolComponent {
     },
     {
       title: '短期或弹性游学',
-      text: '公开价格表从短期到12周都有参考，适合1-4周短假期，也适合8-12周系统学习。',
+      text: '价格从短期到12周都有，适合1-4周短假期，也适合8-12周系统学习。',
     },
     {
       title: '愿意住胶囊宿舍或自理住宿',
@@ -267,15 +262,15 @@ export class QqenglishBeachfrontSchoolComponent {
   readonly notSuitableFor: FitItem[] = [
     {
       title: '需要传统单人房/双人房校园宿舍',
-      text: 'Beachfront公开住宿主打胶囊学生寮；若想要普通宿舍房型，可同步比较CIA、CBOA或CELLA。',
+      text: 'Beachfront住宿主打胶囊学生寮；若想要普通宿舍房型，可同步比较CIA、CBOA或CELLA。',
     },
     {
       title: '想要强制斯巴达管理',
       text: 'QQEnglish更偏弹性一对一和自律学习；强制晚自习、门禁和考试冲刺可看CG斯巴达校区、EV或SMEAG。',
     },
     {
-      title: '不想拆分费用口径',
-      text: 'QQEnglish有只上课、住宿、餐食、接机和当地费用等口径，正式报名需要逐项核价。',
+      title: '不想逐项核对费用',
+      text: 'QQEnglish的只上课、住宿、餐食、接机和当地费用分开计算，正式报名需要逐项核价。',
     },
   ];
 
@@ -283,12 +278,12 @@ export class QqenglishBeachfrontSchoolComponent {
     {
       id: 'capsule-meal',
       name: '胶囊学生寮 + 餐食套餐',
-      note: '采用官方公开“学生寮・食事付き”美元套餐表，适合想一站式安排的学生。',
+      note: '含胶囊学生寮和餐食的美元套餐，适合想一站式安排的学生。',
     },
     {
       id: 'lesson-only',
       name: '只上课，自理住宿/餐食',
-      note: '采用官方英文Lesson Plan价格，不含住宿、餐食、接机和当地费用。',
+      note: '只上课价格，不含住宿、餐食、接机和当地费用。',
     },
   ];
 
@@ -355,7 +350,7 @@ export class QqenglishBeachfrontSchoolComponent {
       label: '校内胶囊学生寮',
       lessons: '住宿单独加购口径',
       four: 'USD 13 x 住宿晚数参考',
-      note: '报价器默认使用官方含学生寮与餐食套餐表，单独加购需学校确认。',
+      note: '报价器默认使用含学生寮与餐食的套餐价，单独加购需学校确认。',
     },
     {
       label: '餐食',
@@ -373,13 +368,13 @@ export class QqenglishBeachfrontSchoolComponent {
       label: '假日开课费',
       lessons: '菲律宾假日上课',
       four: 'USD 35 / 天参考',
-      note: '官方英文费用页列为Holiday fee，假日是否上课需按校历确认。',
+      note: '即Holiday fee，假日是否上课需按校历确认。',
     },
     {
       label: '周末加课',
       lessons: '周六/周日课程',
       four: 'USD 35 / 天 + 课程费参考',
-      note: '官方日文资料列可选Weekend Lesson，老师与教室空位需确认。',
+      note: '可选Weekend Lesson，老师与教室空位需确认。',
     },
   ];
 
@@ -407,7 +402,7 @@ export class QqenglishBeachfrontSchoolComponent {
     {
       time: '18:00 - 20:00',
       title: '晚餐 / 健身 / 海边活动',
-      text: '公开资料列Gym、Recreational Area和Beach开放时段，实际以校内规则为准。',
+      text: 'Gym、Recreational Area和Beach有开放时段，实际以校内规则为准。',
     },
     {
       time: '20:00以后',
@@ -417,16 +412,16 @@ export class QqenglishBeachfrontSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 150', note: '官方英文费用页列示，报价器已计入' },
-    { item: '海外送金手续费', amount: 'USD 30', note: '官方日文费用页列示，是否适用需按报名渠道确认' },
-    { item: '机场接机', amount: 'USD 30', note: '官方英文费用页列示，按航班和抵达安排确认' },
+    { item: '注册费', amount: 'USD 150', note: '报价器已计入' },
+    { item: '海外送金手续费', amount: 'USD 30', note: '是否适用需按报名渠道确认' },
+    { item: '机场接机', amount: 'USD 30', note: '按航班和抵达安排确认' },
     { item: '假日开课费', amount: 'USD 35 / 天', note: '菲律宾假日上课时可能产生' },
     { item: 'SSP', amount: 'PHP 10,440', note: '6个月有效，菲律宾学习许可' },
     { item: '签证延长', amount: 'PHP 4,460起', note: '31天以上常见；60天以上费用更高' },
-    { item: 'ACR I-Card', amount: 'PHP 3,200', note: '60天以上公开费用参考' },
-    { item: '学生证', amount: 'PHP 300', note: '公开当地费用参考' },
+    { item: 'ACR I-Card', amount: 'PHP 3,200', note: '停留60天以上时需要' },
+    { item: '学生证', amount: 'PHP 300', note: '当地费用参考' },
     { item: '教材费', amount: 'PHP 1,000-2,000', note: '按课程与教材实际使用计算' },
-    { item: '宿舍电费', amount: 'PHP 100 / 天', note: '校内宿舍学生公开参考口径' },
+    { item: '宿舍电费', amount: 'PHP 100 / 天', note: '校内宿舍学生参考金额' },
     { item: '个人生活费', amount: 'USD 200-400 / 月', note: '餐饮、交通、通信、活动和购物因人而异' },
     { item: '机票 / 保险', amount: '自行安排', note: '报名报价通常不含国际机票和海外保险' },
   ];
@@ -465,7 +460,7 @@ export class QqenglishBeachfrontSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'description', label: '官方费用逐项整理' },
+    { icon: 'description', label: '2026费用分项列明' },
     { icon: 'verified_user', label: '课程与住宿提前确认' },
     { icon: 'payments', label: '主费与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
@@ -504,10 +499,10 @@ export class QqenglishBeachfrontSchoolComponent {
     '咖啡厅和按摩',
   ];
   readonly notes = [
-    '本页课程费用按QQEnglish官方公开美元价格整理；正式报价需按学校当期价格、入学日和方案确认。',
-    '“胶囊学生寮 + 餐食套餐”使用官方公开含学生寮与餐食的套餐表；“只上课”不含住宿、餐食、接机和当地费用。',
+    '课程费用为QQEnglish美元价格；正式报价需按学校当期价格、入学日和方案确认。',
+    '“胶囊学生寮 + 餐食套餐”为含学生寮与餐食的套餐价；“只上课”不含住宿、餐食、接机和当地费用。',
     'SSP、签证延长、ACR I-Card、教材、学生证、宿舍电费、假日开课和个人生活费通常另计。',
-    'Beachfront公开住宿主打胶囊学生寮；如需酒店、公寓或更私密房型，建议用只上课方案另行安排。',
+    'Beachfront住宿主打胶囊学生寮；如需酒店、公寓或更私密房型，建议用只上课方案另行安排。',
     '节假日、周末加课、课程教材、老师空位和校区容量都会影响最终安排。',
   ];
   readonly faqs: FaqItem[] = [
@@ -534,7 +529,7 @@ export class QqenglishBeachfrontSchoolComponent {
     {
       question: 'QQEnglish适合亲子或孩子吗？',
       answer:
-        '可以比较。官方课程包含Kids English和青少年相关教材，但需确认孩子年龄、家长是否同行、住宿方案和校区接收规则。',
+        '可以比较。课程包含Kids English和青少年相关教材，但需确认孩子年龄、家长是否同行、住宿方案和校区接收规则。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -552,15 +547,6 @@ export class QqenglishBeachfrontSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'QQEnglish官方英文网站', url: 'https://qqeng.net/' },
-    { label: 'QQEnglish Beach Front Campus官方介绍', url: 'https://qqeng.net/study-english-abroad/beach-front-campus/' },
-    { label: 'QQEnglish官方课程与价格', url: 'https://qqeng.net/study-english-abroad/plan-price/' },
-    { label: 'QQEnglish官方成人课程说明', url: 'https://qqeng.net/study-english-abroad/curriculum/adults/' },
-    { label: 'QQEnglish日文Beachfront费用表', url: 'https://qqenglish.jp/school/beachfront/' },
-    { label: 'QQEnglish Beachfront宿泊设施说明', url: 'https://qqenglish.jp/school/beachfront/stay.html' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

@@ -93,7 +93,11 @@ export class NavbarComponent {
 
   getPhilippinesNeedLinks(item: NavigationItem): NavigationItem[] {
     return (item.children ?? []).filter(
-      child => child.type === '需求页' || child.type === '项目页' || child.id === 'philippines-faq'
+      child =>
+        child.type === '需求页' ||
+        child.type === '项目页' ||
+        child.id === 'philippines-service-process' ||
+        child.id === 'philippines-faq'
     );
   }
 

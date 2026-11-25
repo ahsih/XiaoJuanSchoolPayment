@@ -83,11 +83,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -136,7 +131,7 @@ export class StargateSchoolComponent {
       icon: 'location_city',
       label: '学校类型',
       value: '日本资本 / Cebu City小规模全寮制',
-      note: '官方资料列学校和宿舍在Tancor 5同一栋建筑内，适合第一次海外游学和英语初学者。',
+      note: '学校和宿舍在Tancor 5同一栋建筑内，适合第一次海外游学和英语初学者。',
     },
     {
       icon: 'record_voice_over',
@@ -148,25 +143,25 @@ export class StargateSchoolComponent {
       icon: 'support_agent',
       label: '日语支持',
       value: '多名日本职员常驻',
-      note: '公开资料强调日本人职员常驻、初学者友好，以及文法可用日语视频重新打底。',
+      note: '日本人职员常驻、初学者友好，文法可用日语视频重新打底。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: 'Premium / Study Focus房型',
-      note: '公开2026费用按Premium 1/2人房、Study Focus 1/2/4人房等计算，费用含平日三餐和清扫。',
+      note: '2026费用按Premium 1/2人房、Study Focus 1/2/4人房等计算，费用含平日三餐和清扫。',
     },
     {
       icon: 'restaurant',
       label: '餐食',
       value: '平日3餐 / 周末节假日Brunch',
-      note: '官方说明平日提供早午晚餐，周末和节假日提供Brunch，并强调营养和长期菜单轮换。',
+      note: '平日提供早午晚餐，周末和节假日提供Brunch，菜单注重营养并长期轮换。',
     },
     {
       icon: 'pool',
       label: '设施',
       value: 'Tancor 5 / 屋顶泳池 / 健身房',
-      note: '公开设施页列24小时安保、屋顶泳池、健身房、学生休息区、食堂和稳定Wi-Fi。',
+      note: '有24小时安保、屋顶泳池、健身房、学生休息区、食堂和稳定Wi-Fi。',
     },
   ];
 
@@ -182,7 +177,7 @@ export class StargateSchoolComponent {
       category: '教室',
       title: '小组课教室',
       description:
-        '公开课程以一对一为核心，也有小组课、TOEIC、Business和Junior课程方向。',
+        '课程以一对一为核心，也有小组课、TOEIC、Business和Junior课程方向。',
       src: 'https://schoolaplus.com/img/school_photo/Stargate/125-1-10.jpg',
     },
     {
@@ -203,14 +198,14 @@ export class StargateSchoolComponent {
       category: '住宿',
       title: '大房型住宿参考',
       description:
-        '公开资料说明大房型主要按需求开放，正式报名需确认是否接收个人或团体学生。',
+        '大房型主要按需求开放，正式报名需确认是否接收个人或团体学生。',
       src: 'https://cebu21.jp/include/schoolno2/stargatecebu/Dormitory/Dormitory_88.jpg',
     },
     {
       category: '设施',
       title: '住宿与生活设施参考',
       description:
-        'Tancor 5公寓式生活环境，官方设施页强调24小时安保、Wi-Fi、热水和生活便利。',
+        'Tancor 5公寓式生活环境，有24小时安保、Wi-Fi、热水和生活便利。',
       src: 'https://pix10.agoda.net/hotelImages/agoda-homes/10603009/add7ea82b525a53df9fe8ecc75cff2a7.jpg?ca=9&ce=1&s=1024x768',
     },
   ];
@@ -219,18 +214,18 @@ export class StargateSchoolComponent {
     { label: '学校名称', value: '菲律宾宿务STARGATE Global Education' },
     { label: '英文名称', value: 'Star Gate Global Education, Inc. / Stargate' },
     { label: '位置', value: '3F, Tancor 5 Residential Suites, Kasambagan, Cebu City' },
-    { label: '设立 / 开校', value: '公司设立2016年12月；公开资料列2017年7月开校' },
-    { label: '学校规模', value: '小规模，公开资料列约50名；统计页也出现约65名口径' },
+    { label: '设立 / 开校', value: '公司设立2016年12月，2017年7月开校' },
+    { label: '学校规模', value: '小规模，约50-65名学生' },
     { label: '学校定位', value: '日本资本、初学者友好、学校宿舍同楼、低中价位、全寮制' },
     { label: '主要课程', value: 'Standard、Power Speaking、Man-to-Man、Enjoy、TOEIC、TOEIC Mix、Business、Junior' },
-    { label: '主要规则', value: '官方资料列平日23:00、休前日25:00门禁，馆内禁酒' },
+    { label: '主要规则', value: '平日23:00、休前日25:00门禁，馆内禁酒' },
   ];
 
   readonly highlights: Highlight[] = [
     {
       image: 'https://www.ryugaku-onebridge.com/api/pict/5350?s=750x500',
       title: '初学者和第一次海外友好',
-      text: '官方资料强调日本资本、多名日本职员、日语文法视频和小规模支持，降低第一次游学压力。',
+      text: '日本资本、多名日本职员、日语文法视频和小规模支持，降低第一次游学压力。',
     },
     {
       image: 'https://schoolaplus.com/img/school_photo/Stargate/125-1-10.jpg',
@@ -255,7 +250,7 @@ export class StargateSchoolComponent {
     },
     {
       title: '想控制预算',
-      text: 'Study Focus 4人房和Enjoy/Standard课程的公开价相对亲民，适合和3D、GLANT、CWA一起比较。',
+      text: 'Study Focus 4人房和Enjoy/Standard课程价格相对亲民，适合和3D、GLANT、CWA一起比较。',
     },
     {
       title: '想要住宿环境稳定',
@@ -283,7 +278,7 @@ export class StargateSchoolComponent {
     { id: 'premium-twin', name: 'Premium 2人房', note: '舒适度较高，适合同伴同行或希望住得更安静的学生。' },
     { id: 'study-single', name: 'Study Focus 1人房', note: '比Premium更偏学习集中，兼顾隐私和预算。' },
     { id: 'study-twin', name: 'Study Focus 2人房', note: '预算和舒适度折中，需按性别确认空位。' },
-    { id: 'study-quad', name: 'Study Focus 4人房', note: '本页默认最低常规房型，适合预算控制。' },
+    { id: 'study-quad', name: 'Study Focus 4人房', note: '默认报价房型，常规房型中价格最低，适合预算控制。' },
   ];
 
   readonly courseOptions: CourseOption[] = [
@@ -350,19 +345,19 @@ export class StargateSchoolComponent {
       label: 'TOEIC Course',
       lessons: '1:1六节 + 文法视频一节',
       four: 'USD 1,500 / 4周起',
-      note: '公开价格与Man-to-Man Course同额，适合TOEIC集中准备。',
+      note: '价格与Man-to-Man Course相同，适合TOEIC集中准备。',
     },
     {
       label: 'TOEIC Mix Course',
       lessons: '1:1五节 + 文法视频一节 + 小组两节',
       four: 'USD 1,430 / 4周起',
-      note: '公开价格与Power Speaking Course同额，适合口语和TOEIC兼顾。',
+      note: '价格与Power Speaking Course相同，适合口语和TOEIC兼顾。',
     },
     {
       label: 'Business Course',
       lessons: '商务英语中心',
       four: 'USD 1,500 / 4周起',
-      note: '公开价格与Man-to-Man Course同额，适合中级以上商务场景。',
+      note: '价格与Man-to-Man Course相同，适合中级以上商务场景。',
     },
     {
       label: 'Junior 4 / 5 / 6',
@@ -376,7 +371,7 @@ export class StargateSchoolComponent {
     {
       time: '周日',
       title: '抵达宿务 / 入寮',
-      text: '官方4周示例行程列周日抵达入寮；周六到达或前泊需提前确认。',
+      text: '4周示例行程为周日抵达入寮；周六到达或前泊需提前确认。',
     },
     {
       time: '周一',
@@ -391,7 +386,7 @@ export class StargateSchoolComponent {
     {
       time: '周五',
       title: '短缩课程 / 毕业式',
-      text: '官方示例列周五为40分钟短缩课程，最后一周周五举行毕业式。',
+      text: '周五通常为40分钟短缩课程，最后一周周五举行毕业式。',
     },
     {
       time: '周末',
@@ -401,11 +396,11 @@ export class StargateSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 120', note: '本页报价器已计入' },
+    { item: '入学金', amount: 'USD 120', note: '报价已计入' },
     { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，通常所有学生需办理' },
-    { item: 'SSP E-Card', amount: 'PHP 4,000', note: '官方费用表列SSP申请时需取得' },
+    { item: 'SSP E-Card', amount: 'PHP 4,000', note: 'SSP申请时需取得' },
     { item: '签证延长', amount: 'PHP 4,640起', note: '30天以上常见；9-12周参考PHP 11,060' },
-    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '官方表列9周以上学生需确认' },
+    { item: 'ACR I-Card', amount: 'PHP 4,000', note: '9周以上学生需确认' },
     { item: '宿舍押金', amount: 'PHP 2,500', note: '退房时无损坏通常退还' },
     { item: '电费水费', amount: 'PHP 1,000 / 周起', note: '超出基本额度按表计分摊精算' },
     { item: '机场接机', amount: 'PHP 1,500', note: '21:00-09:00深夜早朝可能加PHP 1,000' },
@@ -449,7 +444,7 @@ export class StargateSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'description', label: '2026费用逐项整理' },
+    { icon: 'description', label: '2026费用分项列明' },
     { icon: 'verified_user', label: '课程与房型提前确认' },
     { icon: 'payments', label: '主费与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
@@ -488,11 +483,11 @@ export class StargateSchoolComponent {
     'Mactan周末活动',
   ];
   readonly notes = [
-    '本页课程费用按STARGATE官方2026公开美元表整理，通常为授课费+宿舍费，并含平日三餐、周末节假日Brunch和清扫。',
-    '12周以上公开表已显示长期优惠后的价格；最终仍需按学校当期报价单确认。',
-    '大部屋主要面向团体或按需求开放，本页报价器暂不纳入大部屋，避免把非常规房型当作默认选择。',
+    '课程费用为STARGATE 2026美元价格，通常为授课费+宿舍费，并含平日三餐、周末节假日Brunch和清扫。',
+    '12周以上价格已含长期优惠；最终仍需按学校当期报价单确认。',
+    '大部屋主要面向团体或按需求开放，报价暂不包含大部屋。',
     'SSP、SSP E-Card、签证、ACR、押金、水电、教材、管理费、接机和延泊通常另计。',
-    '2026费用说明提到部分房型、管理费和ID费用调整，报名时需确认适用日期和是否仍有促销。',
+    '2026年部分房型、管理费和ID费用有调整，报名时需确认适用日期和是否仍有促销。',
   ];
   readonly faqs: FaqItem[] = [
     {
@@ -508,12 +503,12 @@ export class StargateSchoolComponent {
     {
       question: 'STARGATE适合英语零基础吗？',
       answer:
-        '适合列入候选。官方资料显示初级学生比例高，一对一为主，并有日语文法视频和日本职员支持。',
+        '适合列入候选。初级学生比例高，一对一为主，并有日语文法视频和日本职员支持。',
     },
     {
       question: 'STARGATE适合亲子或未成年吗？',
       answer:
-        '可以比较。官方资料提到亲子小学生6岁以上可咨询，高中生15岁以上在有监护同意等条件下可单独留学；具体名额和规则需确认。',
+        '可以比较。亲子小学生6岁以上可咨询，高中生15岁以上在有监护同意等条件下可单独留学；具体名额和规则需确认。',
     },
     {
       question: '住宿有什么要特别确认？',
@@ -536,14 +531,6 @@ export class StargateSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'STARGATE官方网站', url: 'https://stargate-cebu.com/' },
-    { label: 'STARGATE官方料金一覧', url: 'https://stargate-cebu.com/course/table/' },
-    { label: 'STARGATE官方料金シミュレーション', url: 'https://stargate-cebu.com/course/simulation/' },
-    { label: 'STARGATE官方设施与周边', url: 'https://stargate-cebu.com/facilities/' },
-    { label: 'STARGATE 2026新料金说明', url: 'https://stargate-cebu.com/news/pricetable2026/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -632,7 +619,7 @@ export class StargateSchoolComponent {
     }
 
     return this.selectedWeeks >= 12
-      ? '当前选择为12周以上，官方公开价格表已显示长期优惠后的金额，但正式报价仍需学校确认。'
+      ? '当前选择为12周以上，价格已含长期优惠，但正式报价仍需学校确认。'
       : '当前选择为短中期课程，需确认2026新价、促销、房型空位、接机和当地费用。';
   }
 

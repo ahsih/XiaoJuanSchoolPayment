@@ -32,11 +32,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-jic-school',
   standalone: true,
@@ -58,7 +53,7 @@ export class JicSchoolComponent {
     {
       title: 'Main / Challenger Campus',
       tag: 'IELTS / ESL / Intensive',
-      text: '推荐给想在更严谨环境下准备 IELTS、强化 ESL，或需要清晰学习指引的学生。官网列出校区容量约 130 人，最低年龄 18 岁，距离市区约 10 分钟车程。',
+      text: '推荐给想在更严谨环境下准备 IELTS、强化 ESL，或需要清晰学习指引的学生。校区容量约 130 人，最低年龄 18 岁，距离市区约 10 分钟车程。',
     },
     {
       title: 'Premium Campus',
@@ -71,7 +66,7 @@ export class JicSchoolComponent {
     {
       title: 'IELTS Lite / Standard',
       lessons: 'Main / Challenger Campus',
-      text: '面向雅思备考学生，适合需要写作批改、口说训练、模考复盘和阶段性目标管理的人。JIC FAQ 提到雅思教师具备较高资格门槛。',
+      text: '面向雅思备考学生，适合需要写作批改、口说训练、模考复盘和阶段性目标管理的人。雅思教师具备较高资格门槛。',
     },
     {
       title: 'IB / IA ESL',
@@ -105,31 +100,31 @@ export class JicSchoolComponent {
       item: 'Premium Campus 起价',
       campus: 'Premium',
       reference: '约 NTD 11,711 / 周起',
-      note: 'Feifan 碧瑶学校列表公开参考价，按周显示，最终以学校账单为准。',
+      note: '按周显示的参考起价，最终以学校账单为准。',
     },
     {
       item: 'Challenger Campus 起价',
       campus: 'Challenger',
       reference: '约 NTD 11,031 / 周起',
-      note: 'Feifan 碧瑶学校列表公开参考价，按周显示，适合先做预算初筛。',
+      note: '按周显示的参考起价，适合先做预算初筛。',
     },
     {
       item: '注册费',
       campus: '两个校区',
       reference: '常见为 USD 100',
-      note: 'iOutback JIC 费用计算器页面显示注册费项目；当地费用另计。',
+      note: '一次性注册费；当地费用另计。',
     },
     {
       item: '当地费用',
       campus: '两个校区',
       reference: 'SSP、延签、教材、水电、押金等',
-      note: '公开页面说明学费住宿不含披索当地费用，实际金额按周数、房型和当期学校规则确认。',
+      note: '学费住宿不含比索当地费用，实际金额按周数、房型和当期学校规则确认。',
     },
     {
       item: '2026 淡季优惠',
       campus: '两个校区',
       reference: '每4周 USD 50-150 折扣',
-      note: 'Feifan 页面列出 2026 JIC 淡季优惠，单/双人房与四人房折扣不同，需核对入学日期。',
+      note: '2026 JIC 淡季优惠中，单/双人房与四人房折扣不同，需核对入学日期。',
     },
     {
       item: '长周数优惠',
@@ -142,7 +137,7 @@ export class JicSchoolComponent {
   readonly accommodation = [
     'Main / Challenger 校区有 West Garden 与 East Field 宿舍方向，包含单人、双人、三人、四人或阁楼式房型。',
     'Premium 校区提供单人、双人和四人房，并区分有阳台 A 房与无阳台 B 房，房型会影响价格。',
-    '官网说明住宿与校内生活环境重视清洁维护，通常提供每周洗衣与房间清洁服务。',
+    '学校重视住宿与校内生活环境的清洁维护，通常提供每周洗衣与房间清洁服务。',
     '两个校区都要在报名时确认房型空位、是否可接受多人房，以及入学日是否对应可入住房间。',
   ];
 
@@ -174,7 +169,7 @@ export class JicSchoolComponent {
     '两校区定位清楚：Main / Challenger 偏备考与严谨，Premium 偏口语、职业和舒适生活。',
     '课程覆盖面广，从 IELTS、ESL 到 TOEIC、Business、Working Holiday 和 Senior ESL 都可比较。',
     'Premium 校区设施丰富，适合希望学习之外也有休息、咖啡、健身或远程工作空间的人。',
-    'JIC 官方资料强调自研教材和教师培训体系，对考试与主题课程的连续性有帮助。',
+    'JIC 强调自研教材和教师培训体系，对考试与主题课程的连续性有帮助。',
     '校区都在碧瑶，适合喜欢凉爽气候、减少外部干扰、把预算更多放在课程时数上的学生。',
   ];
 
@@ -182,7 +177,7 @@ export class JicSchoolComponent {
     'JIC 必须按校区比较，不能只看学校名称；Main 和 Premium 的学习节奏、适合人群和住宿体验不同。',
     'Premium 距离市区仍需车程，喜欢每天自由逛市区的学生要确认交通接受度。',
     'Main / Challenger 更适合目标明确的人，若只是轻松体验，学习制度可能显得偏紧。',
-    '公开价格多为参考起价或计算器，最终报价会受房型、汇率、优惠、周数和当地费用影响。',
+    '参考价格多为起价，最终报价会受房型、汇率、优惠、周数和当地费用影响。',
     '旺季、单人房、特定课程和长期住宿空位变化快，需要尽早核对。',
   ];
 
@@ -197,26 +192,15 @@ export class JicSchoolComponent {
     },
     {
       question: '18 岁以下学生可以读 JIC 吗？',
-      answer: '官网 FAQ 显示 UPC 青少年项目可接受 15-17 岁学生，但会有额外规则，例如活动、外出、自习和手机使用限制；普通课程年龄限制仍需按校区确认。',
+      answer: 'UPC 青少年项目可接受 15-17 岁学生，但会有额外规则，例如活动、外出、自习和手机使用限制；普通课程年龄限制仍需按校区确认。',
     },
     {
-      question: '页面价格包含所有费用吗？',
+      question: '这里的价格包含所有费用吗？',
       answer: '不包含。起价通常只适合做学费住宿初筛，报名还要核对注册费、SSP、签证延签、ACR I-Card、教材、水电、押金、接机、机票和个人生活费。',
     },
     {
       question: '顾问会怎么建议 JIC？',
       answer: '先问目标：分数、口语、商务、打工度假还是长期生活舒适度；再按校区、课程强度、房型和总预算筛选。JIC 最适合目标明确后做校区匹配。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '菲律宾碧瑶JIC语言学校 官方网站', url: 'https://baguio-jic.com/' },
-    { label: '菲律宾碧瑶JIC语言学校 关于 JIC', url: 'https://baguio-jic.com/about/' },
-    { label: '菲律宾碧瑶JIC语言学校 课程列表', url: 'https://baguio-jic.com/course/' },
-    { label: 'Baguio JIC Challenger Campus', url: 'https://baguio-jic.com/campuses/main-campus/' },
-    { label: 'Baguio JIC Premium Campus', url: 'https://baguio-jic.com/campuses/premium-campus/' },
-    { label: '菲律宾碧瑶JIC语言学校 2026价格页', url: 'https://baguio-jic.com/ja/price/' },
-    { label: 'Fujiyama - JIC Challenger Campus', url: 'https://www.fujiyama-international.com/philippines/jic-baguio.html' },
-    { label: 'Fujiyama - JIC Premium Campus', url: 'https://www.fujiyama-international.com/philippines/baguiojic-premium.html' },
   ];
 }

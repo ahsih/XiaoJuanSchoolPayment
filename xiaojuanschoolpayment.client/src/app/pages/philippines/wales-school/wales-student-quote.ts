@@ -87,7 +87,7 @@ export class WalesStudentQuote {
     if (!this.quotePlan.date(this.selectedRegistrationDate)) return '请选择有效的报名注册日期。';
     if (this.selectedRegistrationDate > this.quotePlan.startDate) return '报名注册日期不能晚于当前方案最早开始日期。';
     if (!this.visaOptions.some((option) => option.value === this.visaType)) return '请选择有效的签证类型。';
-    if (this.isLongTermVisa) return `${this.visaLabel}的SSP、SSP I-CARD、ACR及续签规则未在WALES资料中明确，须由顾问确认后才能生成报价图片。`;
+    if (this.isLongTermVisa) return `${this.visaLabel}的SSP、SSP I-CARD、ACR及续签规则尚未由WALES明确，须由顾问确认后才能生成报价图片。`;
     for (const row of this.quotePlan.courses) {
       if (row.optionId === 'pte' && ![4, 8, 12].includes(row.weeks)) return 'PTE每条课程仅开放4、8或12周。';
       if (row.optionId === 'ielts-guarantee' && ![8, 12, 16, 20, 24].includes(row.weeks)) return 'IELTS Guarantee每条课程仅开放8、12、16、20或24周。';
@@ -218,12 +218,12 @@ export class WalesStudentQuote {
       {
         item: 'SSP特殊学习许可证', unitLabel: visaUnconfirmed ? '待顾问确认' : '7,800比索／次',
         quantity: visaUnconfirmed ? 0 : 1, total: visaUnconfirmed ? 0 : 7800,
-        note: visaUnconfirmed ? `${this.visaLabel}规则未由WALES明确，暂不计入且不代表免收。` : '学校2026价表列示的一次性特别学习许可费用。',
+        note: visaUnconfirmed ? `${this.visaLabel}规则未由WALES明确，暂不计入且不代表免收。` : '一次性特别学习许可费用。',
       },
       {
         item: 'SSP I-CARD', unitLabel: visaUnconfirmed ? '待顾问确认' : '4,500比索／次',
         quantity: visaUnconfirmed ? 0 : 1, total: visaUnconfirmed ? 0 : 4500,
-        note: visaUnconfirmed ? `${this.visaLabel}规则未由WALES明确，暂不计入且不代表免收。` : '学校2026价表列示的一次性SSP身份卡费用。',
+        note: visaUnconfirmed ? `${this.visaLabel}规则未由WALES明确，暂不计入且不代表免收。` : '一次性SSP身份卡费用。',
       },
       {
         item: '签证续签', unitLabel: visaUnconfirmed ? '待顾问确认' : extensions > 1 ? '首次6,410；其后4,440比索／30天' : '首次6,410比索／30天',
@@ -270,7 +270,7 @@ export class WalesStudentQuote {
         rows.push({
           item: multiple ? `PTE模拟考试及当地费用 · 课程${index + 1}` : 'PTE模拟考试及当地费用',
           unitLabel: `${quoteMoney(amount)}比索／期`, quantity: amount > 0 ? 1 : 0, total: amount,
-          note: `${row.weeks}周PTE课程专属费用；学校价表4/8/12周分别列8,000/9,000/11,000比索。`,
+          note: `${row.weeks}周PTE课程专属费用；4/8/12周分别为8,000/9,000/11,000比索。`,
         });
       }
       if (row.optionId === 'ielts-guarantee') {
