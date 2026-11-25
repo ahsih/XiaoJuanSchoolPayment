@@ -142,11 +142,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: 'https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg',
   },
   '/philippines-study/cebu/elsa-international-language-school': {
-    title: '菲律宾宿务ELSA语言学校 | 2026-2027课程食宿费用',
+    title: '菲律宾宿务ELSA语言学校 | 课程食宿费用与报价',
     description:
-      '菲律宾宿务ELSA语言学校2026-2027费用页面，整理Guardian、成人ESL、青少年、全天/半天学校、幼儿园课程、2至5人间和单人间附加费。',
-    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用',
-    image: '/assets/study-hero-collage.webp',
+      '菲律宾宿务ELSA语言学校介绍：成人ESL、青少年、本地学校随班、幼儿园和家长陪读课程，课程价含食宿，可在线计算报价并保存报价图片；思达启航提供宿务游学选校与申请咨询。',
+    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用, ELSA报价',
+    image: '/assets/elsa/campus/aerial-01.webp',
   },
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',

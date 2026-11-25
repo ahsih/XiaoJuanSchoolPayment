@@ -221,7 +221,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/elsa-international-language-school',
         loadComponent: () =>
-          import('./pages/philippines/elsa-school/elsa-school.component').then((m) => m.ElsaSchoolComponent),
+          import('./pages/philippines/elsa-school/elsa-school-page.component').then((m) => m.ElsaSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/ethos-language-school',
