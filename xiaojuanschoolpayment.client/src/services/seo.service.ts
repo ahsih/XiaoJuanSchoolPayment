@@ -248,11 +248,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/eg-facility-001.webp',
   },
   '/philippines-study/clark/clark-we-academy': {
-    title: '菲律宾克拉克WE Academy语言学校 | 亲子Native Mix与活动费用咨询',
+    title: '菲律宾克拉克WE Academy语言学校 | 2027课程住宿费用与在线报价',
     description:
-      '菲律宾克拉克WE Academy语言学校页面，整理Clark WE Academy的ESL、Native Mix、Junior ESL、Junior Native、Guardian ESL、WE Kindergarten、solo junior high support、Golf、Swimming、校内宿舍和公开PHP活动费用说明。',
-    keywords: '菲律宾克拉克WE Academy语言学校, Clark WE Academy, WE Academy Clark, WE English Clark, 克拉克亲子游学, Native Mix, WE Kindergarten, Clark golf English',
-    image: '/assets/philippines/we-hero.webp',
+      '菲律宾克拉克WE Academy语言学校介绍：ESL、Native Mix外教课、雅思托业托福商务、青少年和幼儿园、高尔夫英语、家长陪读课程，宿舍、家庭房和WE公寓，2027淡季优惠，可在线计算报价并保存报价图片；思达启航提供克拉克亲子游学选校与申请咨询。',
+    keywords: '菲律宾克拉克WE Academy语言学校, Clark WE Academy, WE Academy Clark, 克拉克亲子游学, 菲律宾亲子游学, Native Mix, WE Kindergarten, 高尔夫英语, WE公寓',
+    image: '/assets/we/campus/building-1.webp',
   },
   '/philippines-study/clark/help-english-clark': {
     title: '菲律宾克拉克HELP English语言学校 | Sparta课程费用住宿与报名咨询',

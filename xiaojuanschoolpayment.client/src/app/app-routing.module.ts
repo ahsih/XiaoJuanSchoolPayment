@@ -541,7 +541,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/clark-we-academy',
         loadComponent: () =>
-          import('./pages/philippines/we-school/we-school-detail.component').then((m) => m.WeSchoolDetailComponent),
+          import('./pages/philippines/we-school/we-school-page.component').then((m) => m.WeSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/talk-academy',

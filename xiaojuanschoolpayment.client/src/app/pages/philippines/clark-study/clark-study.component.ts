@@ -173,27 +173,27 @@ export class ClarkStudyComponent {
     },
     {
       name: '菲律宾克拉克WE Academy语言学校',
-      image: '/assets/philippines/we-hero.webp',
-      location: 'Fil-Am Friendship Highway, Angeles City',
+      image: '/assets/we/campus/building-1.webp',
+      location: 'Clark / Angeles City',
       style: '度假式校区与亲子友好型',
       route: '/philippines-study/clark/clark-we-academy',
-      startingPrice: 'USD 1,500 / 4周起（ESL 4 + 四人间 + 注册费）',
+      startingPrice: '1,500美元／4周起（ESL 4 + 宿舍四人间 + 注册费）',
       courses: [
         'ESL',
         'Native Mix',
-        'Family Program',
-        'Kinder Course',
-        'Golf Lesson',
-        'Swimming',
+        '雅思／托业／托福／商务',
+        '青少年和幼儿园',
+        '高尔夫英语',
+        '家长陪读',
       ],
       accommodation:
-        '学校位于 farm resort 式环境，官网强调宿舍、教室、健身房、大型泳池和便利店集中在校园内。',
+        '宿舍、家庭房和新建的WE公寓都在校园里，教室、游泳池、健身房和小卖部也在校内。',
       facilities:
-        '官网介绍从 Clark International Airport 到学校约 25 分钟，并强调舒适、安全、自由的校园生活。',
+        '校内有游泳池、健身房、高尔夫练习场、篮球场和小卖部，另有幼儿园区。',
       bestFor:
         '亲子家庭、低龄学生、希望学习节奏较自由、也看重校内活动和生活舒适度的人群。',
       consultantNote:
-        '2026年价目表已列出4周USD课程与住宿费，注册费USD100另计。学校适合“学习 + 陪读 + 生活体验”组合；到校费用和其他周数仍需确认。',
+        '2027年课程和住宿价格已更新，2027年3月至6月入学有淡季优惠；学校页面可以在线计算报价，到校学杂费单独列出。',
     },
     {
       name: '菲律宾克拉克TALK Academy语言学校',
@@ -406,7 +406,6 @@ export class ClarkStudyComponent {
       label: 'EG Academy 官方Golf页面',
       url: 'https://www.egesl.com/study/golf/',
     },
-    { label: '菲律宾克拉克WE Academy语言学校官方网站', url: 'https://clarkweacademy.com/' },
     { label: '菲律宾克拉克TALK Academy语言学校官方网站', url: 'https://clarktalkacademy.com/' },
     { label: 'TALK Academy 2026费用表公开资料', url: 'https://www.ph-ryugaku.com/school/clark-talk-academy/' },
     { label: '菲律宾克拉克HELP English语言学校官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
