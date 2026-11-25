@@ -103,6 +103,11 @@ export const mainNavigation: NavigationItem[] = [
             label: 'MIC 爱尔兰伊玛克特教育学院',
             route: '/ireland-study/schools/mic',
           },
+          {
+            id: 'ireland-schools-babel',
+            label: 'Babel Academy of English 都柏林语言学校',
+            route: '/overseas-study-tour/ireland/babel-academy-of-english',
+          },
         ],
       },
       {
@@ -773,6 +778,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '爱尔兰游学',
         route: '/overseas-study-tour/ireland',
         type: '国家页',
+        children: [
+          {
+            id: 'ireland-tour-overview',
+            label: '爱尔兰游学总览',
+            route: '/overseas-study-tour/ireland',
+          },
+          {
+            id: 'babel-academy-of-english',
+            label: 'Babel Academy of English（都柏林）',
+            route: '/overseas-study-tour/ireland/babel-academy-of-english',
+          },
+        ],
       },
       {
         id: 'uk-tour',

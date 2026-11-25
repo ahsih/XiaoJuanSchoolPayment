@@ -57,6 +57,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
   },
+  '/overseas-study-tour/ireland/babel-academy-of-english': {
+    title: '爱尔兰都柏林Babel Academy of English语言学校｜课程、半工半读与在线报价',
+    description: '都柏林市中心Babel Academy of English介绍：成人短期英语课程（每周一开课，最短1周）、18岁以上25周半工半读、寄宿家庭与学生公寓价格，可在线计算费用并保存报价图片；思达启航提供爱尔兰游学选校与报名咨询。',
+    keywords: 'Babel Academy of English, 都柏林语言学校, 爱尔兰游学, 爱尔兰半工半读, 爱尔兰语言学校费用, Babel报价',
+    image: '/assets/babel/school-entrance.webp',
+  },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
     description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',

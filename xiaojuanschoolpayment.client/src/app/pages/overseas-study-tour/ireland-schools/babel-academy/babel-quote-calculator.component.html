@@ -1,0 +1,112 @@
+<div class="bq">
+  <p class="bq-offer" *ngIf="blackFriday"><mat-icon>local_offer</mat-icon>现在按黑五优惠价计算，2026年11月30日前报名有效。</p>
+
+  <div class="bq-programmes" role="radiogroup" aria-label="报价项目">
+    <button type="button" *ngFor="let item of programmes" role="radio" [attr.aria-checked]="input.programme === item.id"
+      [class.active]="input.programme === item.id" (click)="selectProgramme(item.id)">
+      <strong>{{ item.name }}</strong><span>{{ item.note }}</span>
+    </button>
+  </div>
+
+  <div class="bq-grid bq-student">
+    <label>学生称呼（可选）
+      <input type="text" [(ngModel)]="input.studentName" maxlength="20" placeholder="例如：张同学" />
+    </label>
+    <label>入学时年龄
+      <select [(ngModel)]="input.age">
+        <option ngValue="adult">18岁及以上</option>
+        <option ngValue="seventeen">17岁</option>
+      </select>
+    </label>
+    <label>报价顾问
+      <select [(ngModel)]="consultantName"><option *ngFor="let item of consultants" [ngValue]="item.name">{{ item.name }} · {{ item.title }}</option></select>
+    </label>
+  </div>
+
+  <div class="bq-plans" [class.two]="input.plans.length > 1">
+    <section class="bq-plan" *ngFor="let plan of input.plans; let index = index; trackBy: trackIndex">
+      <header>
+        <strong>{{ input.plans.length > 1 ? planTags[index] : '报价方案' }}</strong>
+        <button type="button" class="bq-link" *ngIf="input.plans.length > 1" (click)="removePlan(index)">
+          <mat-icon>close</mat-icon>删除
+        </button>
+      </header>
+
+      <div class="bq-grid">
+        <label *ngIf="input.programme === 'short'">课程
+          <select [(ngModel)]="plan.shortCourse">
+            <option *ngFor="let course of shortCourses" [ngValue]="course.id">{{ course.name }}（{{ course.hours }}）</option>
+          </select>
+        </label>
+        <label *ngIf="input.programme === 'work-study'">课程
+          <select [(ngModel)]="plan.workStudyCourse">
+            <option *ngFor="let course of workStudyCourses" [ngValue]="course.id">{{ course.name }}（{{ course.hours }}）</option>
+          </select>
+        </label>
+        <label>开课日期（周一）
+          <select [(ngModel)]="plan.start"><option *ngFor="let date of startOptions[input.programme]" [ngValue]="date">{{ startLabel(date) }}</option></select>
+        </label>
+        <label *ngIf="input.programme === 'short'">课程周数
+          <select [ngModel]="plan.weeks" (ngModelChange)="changeShortWeeks(plan, $event)"><option *ngFor="let weeks of shortWeeks" [ngValue]="weeks">{{ weeks }}周</option></select>
+        </label>
+        <label>住宿
+          <select [(ngModel)]="plan.accommodation">
+            <option *ngFor="let item of accommodations" [ngValue]="item.id">{{ item.name }} · {{ item.price }}欧元/周</option>
+            <option ngValue="none">不需要住宿</option>
+          </select>
+        </label>
+        <label *ngIf="plan.accommodation !== 'none'">住宿周数
+          <select [(ngModel)]="plan.accommodationWeeks">
+            <option *ngFor="let weeks of (input.programme === 'work-study' ? workStudyAccommodationWeeks : shortWeeks)" [ngValue]="weeks">{{ weeks }}周</option>
+          </select>
+        </label>
+        <label *ngIf="plan.accommodation === 'homestay-shared' || plan.accommodation === 'homestay-single'">饮食
+          <select [(ngModel)]="plan.diet">
+            <option *ngFor="let diet of diets" [ngValue]="diet.id">{{ diet.name }}{{ diet.price ? '（每周加' + diet.price + '欧元）' : '' }}</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <button type="button" class="bq-add" *ngIf="input.plans.length < 2" (click)="addPlan()">
+      <mat-icon>add</mat-icon>添加方案二，并排对比
+    </button>
+  </div>
+
+  <div class="bq-grid bq-extras">
+    <p class="bq-extras-title">附加服务（两个方案都计入）</p>
+    <label>机场接送
+      <select [(ngModel)]="input.transfer">
+        <option ngValue="none">不需要</option>
+        <option ngValue="one-way">单程接机 · {{ extras.transferOneWay }}欧元</option>
+        <option ngValue="return">往返接送 · {{ extras.transferReturn }}欧元</option>
+      </select>
+    </label>
+    <label>交通卡（公交、火车、电车）
+      <select [(ngModel)]="input.transportWeeks">
+        <option *ngFor="let weeks of transportWeeks" [ngValue]="weeks">{{ weeks ? weeks + '周 · ' + extras.transportAdult[weeks - 1] + '欧元' : '不需要' }}</option>
+      </select>
+    </label>
+    <label>社交活动套餐（每周{{ extras.socialPerWeek }}欧元）
+      <select [(ngModel)]="input.socialWeeks"><option *ngFor="let weeks of socialWeekOptions()" [ngValue]="weeks">{{ weeks ? weeks + '周' : '不需要' }}</option></select>
+    </label>
+    <label>一对一课时（每小时{{ extras.oneToOnePerHour }}欧元）
+      <input type="number" min="0" step="1" [(ngModel)]="input.oneToOneHours" />
+    </label>
+    <div class="bq-checks">
+      <label class="check"><input type="checkbox" [(ngModel)]="input.internship" />实习安排服务（无薪工作体验，{{ extras.internship }}欧元）</label>
+      <ng-container *ngIf="input.programme === 'work-study'">
+        <label class="check"><input type="checkbox" [(ngModel)]="input.insurance" />医疗保险（学校代办，{{ workStudyFees.insurance }}欧元）</label>
+        <label class="check"><input type="checkbox" [(ngModel)]="input.ieltsExam" />雅思考试（{{ workStudyFees.ieltsExam }}欧元）</label>
+      </ng-container>
+    </div>
+  </div>
+
+  <app-uk-quote-sheet [sheet]="sheet"></app-uk-quote-sheet>
+
+  <div class="bq-actions">
+    <app-quote-image-download-button [quote]="quoteImage" [disabled]="!canExport" [previewBeforeDownload]="true"
+      label="预览／保存报价图片" buttonClass="primary-action"></app-quote-image-download-button>
+    <p *ngIf="sheet.issues.length">请先按上面的提示修改，再保存报价图片。</p>
+  </div>
+</div>

@@ -51,6 +51,15 @@ export class IrelandTourComponent {
       '家长希望通过游学观察孩子海外适应能力。',
       '后续可能衔接爱尔兰院校申请、语言课程或夏校项目。',
     ],
+    schools: [
+      {
+        name: 'Babel Academy of English（都柏林）',
+        route: '/overseas-study-tour/ireland/babel-academy-of-english',
+        image: '/assets/babel/school-entrance.webp',
+        text: '都柏林市中心语言学校，每班最多16人；有每周一开课的成人短期课程和18岁以上25周半工半读。',
+        tags: ['成人17岁以上', '每周一开课', '半工半读', '在线报价'],
+      },
+    ],
     sources: [
       { label: 'Education in Ireland', url: 'https://www.educationinireland.com/en/' },
       { label: 'Education in Ireland - Living in Ireland', url: 'https://www.educationinireland.com/en/living-in-ireland/' },
