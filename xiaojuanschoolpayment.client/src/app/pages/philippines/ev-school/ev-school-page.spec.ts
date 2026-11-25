@@ -254,7 +254,8 @@ describe('EV school page on the shared template', () => {
     expect(page.roomProfileForRate(rooms.find(room => room.id === 'off-campus-double')!)?.id).toBe('off-campus-double');
     expect(Object.keys(EV_PAGE_PROFILE.roomVideos!)).toEqual(['off-campus-single']);
     expect(EV_PAGE_PROFILE.videoTabs!.map(tab => tab.label)).toEqual(['校园视频', '课堂视频', '宿舍视频', '生活视频', '访谈视频']);
-    expect(EV_PAGE_PROFILE.videoTabs!.flatMap(tab => tab.items).length).toBe(23);
+    expect(EV_PAGE_PROFILE.videoTabs!.flatMap(tab => tab.items).length).toBe(27);
+    expect(EV_PAGE_PROFILE.videoTabs![4].items[0].title).toBe('越南学员 James：雅思5.0到7.0');
     expect(page.guidesForCourse('sparta-social-media-english').map(guide => guide.title)).toEqual(['社交媒体英语']);
     expect(page.generalCourseGuides.map(guide => guide.title)).toEqual(['免费选修课', '测试、换课与教师培训日']);
     expect(page.quoteImageData.layoutVersion).toBe(2);

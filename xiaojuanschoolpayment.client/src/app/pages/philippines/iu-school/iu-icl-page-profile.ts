@@ -40,7 +40,7 @@ export const IU_ICL_DATABASE_NAMES: Record<IuIclCampus, string> = {
   ICL: '菲律宾宿务ICL English Academy',
 };
 
-const VIDEO_TOPICS: ReadonlyArray<IuIclVideo['topic']> = ['校园', '宿舍', '课程', '餐厅'];
+const VIDEO_TOPICS: ReadonlyArray<IuIclVideo['topic']> = ['校园', '宿舍', '课程', '餐厅', '学员'];
 
 function buildProfile(campus: IuIclCampus): PhSchoolProfile {
   const page = IU_ICL_PAGE_CONTENT[campus];
