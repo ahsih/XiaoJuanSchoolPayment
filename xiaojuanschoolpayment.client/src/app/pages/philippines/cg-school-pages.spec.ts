@@ -39,6 +39,7 @@ describe('CG campus pages on the shared template', () => {
     ...profile.gallery.images.map(image => image.src),
     ...profile.roomProfiles.flatMap(room => [room.image, ...(room.gallery ?? [])]),
     ...profile.campusLifeVideos.flatMap(video => [video.src, video.poster]),
+    ...(profile.videoTabs ?? []).flatMap(tab => tab.items.flatMap(video => [video.src, video.poster ?? ''])),
     ...profile.ieltsResults.map(result => result.image),
   ];
 

@@ -162,9 +162,11 @@ export const CG_SPARTA_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A clip in public/assets/cg-sparta/videos/ (720p H.264 with a poster each), from CG's own Google Drive folder.
- * The school film had its shots with another organisation's signage cut out. Check every frame of a new clip for
- * other companies, flags and contact details before adding it.
+ * A clip in public/assets/cg-sparta/videos/ (H.264 with a poster each), from CG's own Google Drive folder or CG's
+ * official YouTube channel (only clips whose title, caption or signs name the Sparta campus). Cuts made: the school
+ * film's shots with another organisation's signage; both interviews' opening cards, which showed the school
+ * website; the daily-life clip's black bars and its end cards. Johnson says he is from Taiwan; our text calls him a
+ * 中国台湾学员. Check every frame of a new clip for other companies, flags and contact details before adding it.
  */
 export interface CgSpartaVideo {
   name: string;
@@ -172,14 +174,19 @@ export interface CgSpartaVideo {
   description: string;
   duration: string;
   orientation: 'landscape' | 'portrait';
+  /** The hero album's video chip. */
+  topic: '校园' | '学员访谈' | '学员日常';
 }
 
 export const cgSpartaVideoSrc = (video: CgSpartaVideo) => `/assets/cg-sparta/videos/${video.name}.mp4`;
 export const cgSpartaVideoPoster = (video: CgSpartaVideo) => `/assets/cg-sparta/videos/poster-${video.name}.jpg`;
 
 export const CG_SPARTA_VIDEOS: CgSpartaVideo[] = [
-  { name: 'campus-film', title: 'CG斯巴达校区介绍', description: '校园、教室、宿舍、餐厅和泳池。', duration: '2:52', orientation: 'landscape' },
-  { name: 'student-day', title: '学员的一天', description: '一位学员在斯巴达校区的一天：上课、吃饭、晚自习。', duration: '1:17', orientation: 'portrait' },
+  { name: 'campus-film', title: 'CG斯巴达校区介绍', description: '校园、教室、宿舍、餐厅和泳池。', duration: '2:52', orientation: 'landscape', topic: '校园' },
+  { name: 'interview-hanni', title: '日本学员 Hanni 的分享', description: '2025年：读斯巴达课程24周，讲她为什么选 CG、遇到的困难和一步步的进步。', duration: '1:28', orientation: 'portrait', topic: '学员访谈' },
+  { name: 'interview-johnson', title: '中国台湾学员 Johnson 的分享', description: '2025年：讲他为什么学英语、在斯巴达校区交到的国际朋友和变得更自信。', duration: '1:20', orientation: 'portrait', topic: '学员访谈' },
+  { name: 'student-day', title: '学员的一天', description: '一位学员在斯巴达校区的一天：上课、吃饭、晚自习。', duration: '1:17', orientation: 'portrait', topic: '学员日常' },
+  { name: 'daily-life', title: '斯巴达校区的日常', description: '2024年：早餐、1:4小组课、一对一、单词测试、游泳、打球和乒乓球。', duration: '0:57', orientation: 'portrait', topic: '学员日常' },
 ];
 
 const DORM_SERVICE = '可申请打扫，每周最多2次（提前1天预约）；衣服交洗衣房洗';
