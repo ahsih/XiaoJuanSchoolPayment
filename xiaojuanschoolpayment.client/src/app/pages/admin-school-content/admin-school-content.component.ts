@@ -1098,7 +1098,9 @@ export class AdminSchoolContentComponent implements OnInit {
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       this.content = stored ? this.cloneSelectedContent(stored) : defaults;
       this.hasUnsavedChanges = false;
-      if (!stored) {
+      // JIC prices come only from its content document (the page ignores database prices), so a first save keeps
+      // the school-pack prices instead of older database rows.
+      if (!stored && !this.isJicSelected) {
         for (const course of this.content.courses) {
           const row = lessons.find(item =>
             this.slug(item.name) === course.id ||

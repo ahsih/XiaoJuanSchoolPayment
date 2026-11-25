@@ -23,6 +23,8 @@ import { HelpSchoolPageComponent } from '../help-school/help-school-page.compone
 import { IbreezeSchoolPageComponent } from '../ibreeze-school/ibreeze-school-page.component';
 import { IclSchoolComponent } from '../icl-school/icl-school.component';
 import { IuSchoolComponent } from '../iu-school/iu-school.component';
+import { JicChallengerSchoolComponent } from '../jic-school/jic-challenger-school.component';
+import { JicPremiumSchoolComponent } from '../jic-school/jic-premium-school.component';
 import { LaMerSchoolPageComponent } from '../la-mer-school/la-mer-school-page.component';
 import { MonolSpartaSchoolPageComponent } from '../monol-sparta-school/monol-sparta-school-page.component';
 import { PinesSchoolPageComponent } from '../pines-school/pines-school-page.component';
@@ -72,7 +74,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     expect(keepsTwoCoursePrices(undefined)).toBeFalse();
   });
 
-  // Schools with one course price. JIC is left out: its clone always restores the school-pack course prices.
+  // Schools with one course price (JIC since its school pack moves into a saved document only once).
   // A plan priced by a whole package is moved to an ordinary course price first: HANA's default Light ESL
   // plan is the fixed 付4周读8周 offer, and IU/ICL's low-season package replaces course and room until 2027/01/16.
   const ONE_PRICE_PAGES: Array<[string, Type<unknown>, ((page: Page) => void)?]> = [
@@ -89,6 +91,8 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['HELP Clark', HelpSchoolPageComponent],
     ['IU', IuSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
     ['ICL', IclSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
+    ['JIC Challenger', JicChallengerSchoolComponent],
+    ['JIC Premium', JicPremiumSchoolComponent],
     ['EV La Mer', LaMerSchoolPageComponent],
     ['MONOL Sparta', MonolSpartaSchoolPageComponent],
     ['SMEAG Capital', SmeagCapitalSchoolPageComponent],

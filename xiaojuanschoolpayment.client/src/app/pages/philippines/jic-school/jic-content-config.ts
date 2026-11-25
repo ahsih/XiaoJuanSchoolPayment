@@ -8,6 +8,7 @@ import {
   JIC_PROMOTION_COPY,
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
+  JIC_SCHOOL_PACK_VERSION,
   JicCampus,
 } from './jic-pricing';
 
@@ -114,7 +115,7 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(51, 'premium', 'Facility', 'Premium Student Center', '学生中心与休息空间。', '/assets/philippines/jic-premium-student-center.webp'),
 ];
 
-type JicQuoteSettings = CiaContentConfig['quoteSettings'] & { jicPolicyVersion?: number };
+type JicQuoteSettings = CiaContentConfig['quoteSettings'] & { jicPolicyVersion?: number; jicSchoolPackVersion?: number };
 
 export const createDefaultJicContentConfig = (): CiaContentConfig => {
   const content: CiaContentConfig = {
@@ -292,6 +293,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     media: structuredClone(JIC_DEFAULT_MEDIA),
   };
   (content.quoteSettings as JicQuoteSettings).jicPolicyVersion = JIC_POLICY_VERSION;
+  (content.quoteSettings as JicQuoteSettings).jicSchoolPackVersion = JIC_SCHOOL_PACK_VERSION;
   content.campusQuoteImageSettings = {
     challenger: structuredClone(content.quoteImageSettings),
     premium: structuredClone(content.quoteImageSettings),
@@ -302,11 +304,8 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
 export const jicQuoteImageSettings = (content: CiaContentConfig, campus: JicCampus): CiaQuoteImageSettings =>
   content.campusQuoteImageSettings?.[campus] ?? content.quoteImageSettings;
 
-export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig => {
-  const cloned = structuredClone(value);
-  const latest = createDefaultJicContentConfig();
-  // Published employee content may predate the September 2026 school files.
-  // Preserve editorial visibility/order, but always upgrade school-issued facts.
+/** The 2026-11 school pack's course, room and local-fee facts, written over a saved document (run once per pack). */
+function applyJicSchoolPack(cloned: CiaContentConfig, latest: CiaContentConfig): void {
   cloned.courses = latest.courses.map((fallback) => {
     const existing = cloned.courses.find(item => item.id === fallback.id);
     return existing ? {
@@ -349,13 +348,24 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
   });
   cloned.quoteSettings.shortStayRatios = { ...latest.quoteSettings.shortStayRatios };
   cloned.quoteSettings.courseTableNote = latest.quoteSettings.courseTableNote;
+}
+
+export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig => {
+  const cloned = structuredClone(value);
+  const latest = createDefaultJicContentConfig();
+  const settings = cloned.quoteSettings as JicQuoteSettings;
+  // Published employee content may predate the 2026-11 school pack: its facts move in once, keeping editorial
+  // visibility and order. After that the saved document wins, so prices edited in the content editor stay.
+  if ((settings.jicSchoolPackVersion ?? 0) < JIC_SCHOOL_PACK_VERSION) {
+    applyJicSchoolPack(cloned, latest);
+    settings.jicSchoolPackVersion = JIC_SCHOOL_PACK_VERSION;
+  }
   if ((cloned.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
     const confirmed = latest.quoteSettings.peakSeasonRanges.find(range => range.id === 'jic-peak-2027')!;
     const saved = cloned.quoteSettings.peakSeasonRanges.find(range => range.id === confirmed.id || range.label.includes('2027'));
     if (saved) Object.assign(saved, confirmed); else cloned.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
     cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
-  const settings = cloned.quoteSettings as JicQuoteSettings;
   if ((settings.jicPolicyVersion ?? 0) < JIC_POLICY_VERSION) upgradeJicPolicy(cloned, latest);
   const latestRegistration = latest.quoteSettings.promotions.find(rule => rule.ruleKind === 'jic-registration')!;
   const registrationIndex = cloned.quoteSettings.promotions.findIndex(rule => rule.ruleKind === 'jic-registration');
@@ -398,7 +408,7 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
 /**
  * The 2026-11 school pack (JIC_POLICY_VERSION): the off-season, long-term and holiday rules (now counted by study
  * week and exact term-start arrival dates) replace the saved ones, and the page and quote-image copy move to the
- * template's wording. Course and room facts always come from the defaults; employee prices and other edits stay.
+ * template's wording. Course, room and local-fee facts come from applyJicSchoolPack; other edits stay.
  */
 function upgradeJicPolicy(cloned: CiaContentConfig, latest: CiaContentConfig): void {
   const settings = cloned.quoteSettings as JicQuoteSettings;
