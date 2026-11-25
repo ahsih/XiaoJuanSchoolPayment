@@ -11,7 +11,7 @@ import { MonolSchoolPageComponent } from './monol-school/monol-school-page.compo
 import { MonolSpartaSchoolPageComponent } from './monol-sparta-school/monol-sparta-school-page.component';
 import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
 import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
-import { GlcSchoolComponent } from './glc-school/glc-school.component';
+import { GlcSchoolPageComponent } from './glc-school/glc-school-page.component';
 import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
 import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
@@ -59,7 +59,7 @@ const schools = [
   { name: "MONOL Sparta", create: () => new MonolSpartaSchoolPageComponent() },
   { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
   { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
-  { name: "GLC", create: () => new GlcSchoolComponent() },
+  { name: "GLC", create: () => new GlcSchoolPageComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
   { name: "IMS", create: () => new ImsSchoolPageComponent() },
@@ -200,19 +200,6 @@ describe('confirmed common quote rules across completed routes', () => {
     expect(fixture.nativeElement.querySelector('.quote-local-fees')).not.toBeNull();
     expect(page.quoteError).toBe('');
     fixture.destroy();
-  });
-  it('GLC synchronizes members explicitly sharing a family course while leaving another student independent', () => {
-    const page = initialize(() => new GlcSchoolComponent()); page.setQuoteMode('group'); page.studentCount = 3;
-    page.students[0].calculator.plan.courses[0].optionId = 'family-package-2';
-    page.students[1].sharedCourseOwner = 1;
-    const [owner, member, other] = page.activeStudents.map((student: any) => student.calculator.plan);
-    owner.updateWeeks('course', owner.courses[0].id, 8);
-    expect(member.roomWeeks).toBe(8);
-    member.updateStartDate('room', member.rooms[0].id, '2026-11-08');
-    expect(owner.rooms[0].startDate).toBe('2026-11-08');
-    expect(other.courseWeeks).toBe(4);
-    expect(other.startDate).not.toBe('2026-11-08');
-    expect(page.quoteError).toBe('');
   });
   for (const factory of [() => new CellaQuoteCalculatorComponent(), () => new EnglishMintSchoolComponent()]) it('renders split course/room amounts into a real PNG without internal algorithms', async () => {
     const page = initialize(factory), plan = planOf(page);

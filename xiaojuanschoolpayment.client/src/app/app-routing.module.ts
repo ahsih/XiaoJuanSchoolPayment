@@ -257,8 +257,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/global-language-cebu',
         loadComponent: () =>
-          import('./pages/philippines/glc-school/glc-school.component').then(
-            (m) => m.GlcSchoolComponent,
+          import('./pages/philippines/glc-school/glc-school-page.component').then(
+            (m) => m.GlcSchoolPageComponent,
           ),
       },
       {
