@@ -13,6 +13,7 @@ export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'CG-SPARTA',
   'CIEC',
   'CPILS',
+  'ELSA',
   'FELLA',
   'GENIUS',
   'HANA',
