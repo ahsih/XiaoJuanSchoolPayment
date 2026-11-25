@@ -31,6 +31,8 @@ import {
 } from '../philippines/cia-school/cia-content-config';
 import { CIA_PREVIEW_SECTIONS, CiaPreviewKind, CiaPreviewTarget, isCiaPreviewTarget } from '../philippines/cia-school/cia-content-preview';
 import { isAssociationPeakSchool } from '../philippines/association-peak-surcharge';
+import { keepsTwoCoursePrices, syncSingleCoursePrices } from '../philippines/school-page/course-price-years';
+import { usesDatabasePrices } from '../philippines/school-page/database-prices';
 import {
   clonePinesContentConfig,
   createDefaultPinesContentConfig,
@@ -413,7 +415,12 @@ export class AdminSchoolContentComponent implements OnInit {
       ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}`
       : this.schoolCode;
   }
-  get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
+  /** Schools with a separate 2027 course price (course-price-years.ts); every other school keeps one price in both fields. */
+  get usesFutureCoursePrices(): boolean { return this.isSupportedSchool && keepsTwoCoursePrices(this.schoolCode); }
+  /** Schools whose rooms also have a separate 2027 price. */
+  get usesFutureRoomPrices(): boolean { return this.isCpilsSelected || this.isIbreezeSelected || this.isBlueOceanSelected || this.isPinesSelected || this.isMonolSelected; }
+  /** Schools whose content document holds the dates the 2027 prices start on (Blue Ocean and PINES use fixed dates). */
+  get usesFuturePriceDates(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
   get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected || this.isImsSelected; }
   get coursePriceLabel(): string { return `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
   get roomPriceLabel(): string { return '4周价格（美元）'; }
@@ -590,6 +597,7 @@ export class AdminSchoolContentComponent implements OnInit {
 
   contentChanged(): void {
     this.hasUnsavedChanges = true;
+    syncSingleCoursePrices(this.content);
     this.normalizeSortOrders();
     this.persistPreview();
     this.sendPreview();
@@ -652,6 +660,11 @@ export class AdminSchoolContentComponent implements OnInit {
   updateCpilsFuturePrices(item: CiaCourseContent | CiaRoomContent, value: string): void {
     item.feeByWeeks2027 = this.parseNumberMap(value);
     this.contentChanged();
+  }
+
+  /** An emptied 2027 room price falls back to the 4-week price (PINES lists only rooms whose fee2027 is a number). */
+  setRoomFee2027(item: CiaRoomContent, value: number | string | null): void {
+    item.fee2027 = value === null || value === '' || !Number.isFinite(Number(value)) ? undefined : Number(value);
   }
 
   updateCpilsFutureWeeks(item: CiaCourseContent, value: string): void {
@@ -1075,7 +1088,9 @@ export class AdminSchoolContentComponent implements OnInit {
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       this.content = stored ? this.cloneSelectedContent(stored) : defaults;
       this.hasUnsavedChanges = false;
-      if (!stored) {
+      // Schools whose page takes prices only from the content document (JIC, CG, PINES, …) keep their document's
+      // prices on a first save instead of older database rows.
+      if (!stored && usesDatabasePrices(this.schoolCode)) {
         for (const course of this.content.courses) {
           const row = lessons.find(item =>
             this.slug(item.name) === course.id ||
@@ -1092,6 +1107,7 @@ export class AdminSchoolContentComponent implements OnInit {
         const peak = fees.find(item => item.name === '旺季附加费' || item.name === '暑期附加费');
         if (registration) this.content.quoteSettings.registrationFee = registration.fee;
         if (peak) this.content.quoteSettings.peakSeasonFeePerWeek = peak.fee;
+        syncSingleCoursePrices(this.content);
       }
       this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
       this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
@@ -1181,7 +1197,12 @@ export class AdminSchoolContentComponent implements OnInit {
     return createDefaultCiaContentConfig();
   }
 
+  /** The school's own clone; a one-price school's tuition2027 then equals tuition, as on the public page. */
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    return syncSingleCoursePrices(this.cloneSchoolContent(value));
+  }
+
+  private cloneSchoolContent(value: CiaContentConfig): CiaContentConfig {
     if (this.isMonolSpartaSelected) return cloneMonolSpartaContentConfig(value);
     if (this.isMintSelected) return cloneMintContentConfig(value);
     if (this.isWalesSelected) return cloneWalesContentConfig(value);
