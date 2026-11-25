@@ -472,7 +472,7 @@ export class CebuStudyComponent {
     {
       name: 'GLC', route: '/philippines-study/cebu/global-language-cebu', tag: '大型综合校',
       location: 'Mabolo · Cebu City', summary: '课程选择丰富、设施完整，覆盖成人考试、商务和亲子路线。',
-      image: 'https://cdn.prod.website-files.com/658a2c561b10d6e75c0e7e74/658a2c561b10d6e75c0e820d_GLC_Campus001.jpg', highlights: ['强化口语', '雅思 / 托业', '商务英语', '亲子 / 青少年英语', '英语 + 实习'],
+      image: '/assets/glc/campus-main.webp', highlights: ['强化口语', '雅思 / 托业', '商务英语', '斯巴达副楼', '亲子 / 青少年英语'],
     },
     {
       name: 'QQEnglish BFC', route: '/philippines-study/cebu/qqenglish-beachfront-campus', tag: '海滨校区',

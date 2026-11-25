@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig.spec.json",
-  "include": ["src/app/pages/philippines/glc-school/*.spec.ts", "src/app/pages/philippines/school-quote-rollout.spec.ts", "src/app/components/quote-image-layout.spec.ts", "src/**/*.d.ts"]
+  "include": [
+    "src/app/pages/philippines/glc-school/glc-school-page.spec.ts",
+    "src/**/*.d.ts"
+  ]
 }
