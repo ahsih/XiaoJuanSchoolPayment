@@ -57,3 +57,18 @@ The school sent a Google Drive folder with Pines and Cebu Blue Ocean material. T
 ```powershell
 npx ng test --watch=false --browsers=ChromeHeadlessNoGpu --karma-config=karma.blue-ocean.conf.js --ts-config=tsconfig.blue-ocean.spec.json --include=src/app/pages/philippines/cebu-blue-ocean-school/cboa-school-page.spec.ts
 ```
+
+## Official YouTube videos (2026-11-25)
+
+The user asked for more videos from the school's official YouTube and Facebook that build trust. Source: the school's own YouTube channel `@cebublueoceanacademy` (240 videos, 61 shorts). Facebook was not needed.
+
+| File | Source video | Kept | Cut out |
+| --- | --- | --- | --- |
+| `campus-tour.mp4` | School tour (2025-02) | 0:00–0:05, 0:08–2:25 | flag shot (one flag is the Taiwan authorities'), end logo |
+| `egi-rooms.mp4` | same tour | 1:56–2:02 | EGI twin and triple rooms only |
+| `pickup-first-day.mp4` | How CBOA welcomes you (2025) | 0:24–0:29, 0:37–2:17 | road shots, airport shop signs, end logo |
+| `textbooks-one-on-one.mp4` | Personalized English learning (2025) | 0:07–0:24, 0:26–0:39, 0:43–1:22 | intro logo, IELTS logo shot, PINES logo shot, end card |
+| `teacher-method.mp4` | Filipino teacher's method (2025) | 0:13–1:42 | intro and title card, end card |
+| `student-china.mp4` | Chinese student explains (2025) | 0:09–1:36 | intro and his self-introduction (name), end card |
+
+Not used: the activity films (rows of small national flags that cannot be checked one by one), the family-course interview (names two children), the brand film (shows a fast-food statue and a supermarket sign), and the Ocean Suites film (the page already has the pack's Ocean Suites tour).

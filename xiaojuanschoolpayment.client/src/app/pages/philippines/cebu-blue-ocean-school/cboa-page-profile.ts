@@ -118,7 +118,7 @@ const CBOA_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解蓝海CBOA',
-    intro: '视频来自蓝海CBOA官方资料：Ocean Suites公寓导览和三种单人间实拍。',
+    intro: '蓝海CBOA官方视频：校园导览、机场接机、教材和课堂、老师和学员访谈，以及宿舍实拍。',
     badge: '蓝海CBOA 官方视频',
   },
   rooms: {
@@ -169,9 +169,9 @@ const albumVideo = (name: string): PhVideoItem => {
   const item = video(name);
   return { title: item.title, text: item.description, src: cboaVideoSrc(item), poster: cboaVideoPoster(item), duration: item.duration, shape: 'wide' };
 };
-const videoCard = (item: CboaVideo): CiaVideoCard => ({
+const videoCard = (item: CboaVideo, label: string): CiaVideoCard => ({
   code: 'CBOA',
-  label: 'OCEAN SUITES',
+  label,
   title: item.title,
   text: item.description,
   poster: cboaVideoPoster(item),
@@ -180,10 +180,15 @@ const videoCard = (item: CboaVideo): CiaVideoCard => ({
   details: [`时长 ${item.duration}`],
 });
 
-/** Videos in the hero album; the Ocean Suites tour opens it. */
+/** Videos in the hero album; the school's own campus tour opens it. */
 const CBOA_VIDEO_TABS: PhVideoTab[] = [
-  { label: '公寓视频', icon: 'videocam', items: [albumVideo('ocean-suites-tour')] },
-  { label: '房型视频', icon: 'videocam', items: ['ocean-suites-ocean-view', 'ocean-suites-deluxe', 'ocean-suites-superior'].map(albumVideo) },
+  { label: '校园视频', icon: 'videocam', items: ['campus-tour', 'pickup-first-day'].map(albumVideo) },
+  { label: '课程视频', icon: 'videocam', items: ['textbooks-one-on-one', 'teacher-method'].map(albumVideo) },
+  { label: '学员访谈', icon: 'videocam', items: [albumVideo('student-china')] },
+  {
+    label: '宿舍视频', icon: 'videocam',
+    items: ['ocean-suites-tour', 'egi-rooms', 'ocean-suites-ocean-view', 'ocean-suites-deluxe', 'ocean-suites-superior'].map(albumVideo),
+  },
 ];
 
 export const CBOA_PAGE_PROFILE: PhSchoolProfile = {
@@ -198,8 +203,9 @@ export const CBOA_PAGE_PROFILE: PhSchoolProfile = {
   courseHighlights: {
     ebe: { badge: '2027年新课程', icon: 'fiber_new' },
   },
-  // Each Ocean Suites room clip shows exactly that room type.
+  // Each Ocean Suites room clip shows exactly that room type; the EGI clip shows its twin and triple rooms.
   roomVideos: {
+    egi: albumVideo('egi-rooms'),
     'ocean-view': albumVideo('ocean-suites-ocean-view'),
     deluxe: albumVideo('ocean-suites-deluxe'),
     superior: albumVideo('ocean-suites-superior'),
@@ -219,7 +225,7 @@ export const CBOA_PAGE_PROFILE: PhSchoolProfile = {
   suitableFor: CBOA_SUITABLE_FOR.map(title => ({ title, text: '' })),
   notSuitableFor: CBOA_NOT_SUITABLE_FOR.map(title => ({ title, text: '' })),
   campusBuildings: CBOA_CAMPUS_BUILDINGS,
-  videoCards: [videoCard(video('ocean-suites-tour'))],
+  videoCards: [videoCard(video('campus-tour'), 'CAMPUS TOUR'), videoCard(video('ocean-suites-tour'), 'OCEAN SUITES')],
   campusLifeVideos: [],
   interviewVideos: [],
   courseGroups: [

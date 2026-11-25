@@ -120,6 +120,13 @@ export const CBOA_ALBUM_DESCRIPTIONS = {
  * A video from the school's own pack (its Ocean Suites tour and room clips), transcoded to 720p H.264 in
  * public/assets/cebu-blue-ocean/videos/. The tour's room shots and its bank ATM shot were cut out; the room clips
  * are the tour's own room segments. Check every frame of a new clip for other companies or contact details.
+ *
+ * Five more are from the school's own YouTube channel (2026-11-25, user request for videos that build trust):
+ * the 2025 school tour (its flag shot was cut because one flag is the Taiwan authorities'), a Chinese student's
+ * interview (cut after his self-introduction, so no student name is shown), a teacher interview, the textbooks
+ * and classes film (the IELTS logo and the PINES logo shots were cut) and the airport pickup film (its road and
+ * airport shop shots were cut). The EGI room clip is the tour's own twin and triple room shots. Each clip ends
+ * before the school's end card.
  */
 export interface CboaVideo {
   name: string;
@@ -132,6 +139,27 @@ export const cboaVideoSrc = (video: CboaVideo) => `/assets/cebu-blue-ocean/video
 export const cboaVideoPoster = (video: CboaVideo) => `/assets/cebu-blue-ocean/videos/poster-${video.name}.jpg`;
 
 export const CBOA_VIDEOS: CboaVideo[] = [
+  {
+    name: 'campus-tour', title: '蓝海CBOA 校园导览', duration: '2:22',
+    description: '走一遍主校区：大堂、教室、一对一教室、自习室、餐厅、图书馆和诊所，再到EGI校内宿舍和泳池。',
+  },
+  {
+    name: 'pickup-first-day', title: '机场接机和入学报到', duration: '1:44',
+    description: '学校工作人员在宿务机场到达口举牌接机，坐校车到校，当天办理报到和入学说明。',
+  },
+  {
+    name: 'textbooks-one-on-one', title: '教材和课堂实况', duration: '1:10',
+    description: '蓝海CBOA的口语、语法、雅思和托业教材，以及一对一和小组课的上课实况。',
+  },
+  {
+    name: 'teacher-method', title: '老师谈上课方法', duration: '1:29',
+    description: '蓝海CBOA一位月度优秀教师讲她怎么上课：按学生的节奏走，鼓励开口，用活动练口语。英文访谈，带英文字幕。',
+  },
+  {
+    name: 'student-china', title: '中国学员分享', duration: '1:27',
+    description: '一位中国学员讲为什么选菲律宾和蓝海CBOA、每天的课表、一对一课的感受和口语进步。英文访谈，带英文字幕。',
+  },
+  { name: 'egi-rooms', title: 'EGI校内宿舍房间', duration: '0:06', description: 'EGI校内宿舍的双人间和三人间，取自学校的校园导览。' },
   {
     name: 'ocean-suites-tour', title: 'Ocean Suites 公寓导览', duration: '1:31',
     description: '走一遍校外单人公寓：大堂、中庭泳池、餐厅、健身房、空中休息室、自习室和屋顶露台。',
