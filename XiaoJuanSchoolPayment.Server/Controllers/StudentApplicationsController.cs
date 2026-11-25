@@ -3,11 +3,14 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using XiaoJuanSchoolPayment.Server.Data;
 using XiaoJuanSchoolPayment.Server.Data.DTO;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Interface;
+using XiaoJuanSchoolPayment.Server.Services;
+using XiaoJuanSchoolPayment.Server.Services.Security;
 
 namespace XiaoJuanSchoolPayment.Server.Controllers
 {
@@ -68,25 +71,47 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       [".jpeg"] = "image/jpeg",
       [".webp"] = "image/webp",
     };
+    private const string PendingSubmissionStatus = "PendingReview";
+    private const string AcceptedSubmissionStatus = "Accepted";
+    private const string ReturnedSubmissionStatus = "Returned";
+    private const int MaxSubmissionsPerApplication = 60;
+    private const int MaxPendingSubmissions = 20;
+    /// <summary>What a student may upload, and what a consultant may ask for. Keep in step with the website and mini program lists.</summary>
+    private static readonly HashSet<string> AllowedSubmissionTypes = new(StringComparer.Ordinal)
+    {
+      "护照首页", "证件照", "机票行程单", "签证材料", "付款截图", "保险资料", "其他",
+    };
+    private static readonly Dictionary<string, string> AllowedSubmissionFileTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+      [".pdf"] = "application/pdf",
+      [".png"] = "image/png",
+      [".jpg"] = "image/jpeg",
+      [".jpeg"] = "image/jpeg",
+      [".webp"] = "image/webp",
+      [".docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    };
 
     private readonly AppDbContext _context;
     private readonly UserManager<SchoolUser> _userManager;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
     private readonly IStaffPermissionService _permissions;
+    private readonly IStudentNotifications _notifications;
 
     public StudentApplicationsController(
       AppDbContext context,
       UserManager<SchoolUser> userManager,
       IWebHostEnvironment environment,
       IConfiguration configuration,
-      IStaffPermissionService permissions)
+      IStaffPermissionService permissions,
+      IStudentNotifications notifications)
     {
       _context = context;
       _userManager = userManager;
       _environment = environment;
       _configuration = configuration;
       _permissions = permissions;
+      _notifications = notifications;
     }
 
     [Authorize(Roles = "Admin,Manager,Staff")]
@@ -139,27 +164,206 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         .OrderByDescending(x => x.LastUpdated)
         .ToListAsync(cancellationToken);
 
-      var visibleApplications = new List<StudentApplicationDTO>();
-      foreach (var application in applications)
+      var visibleApplications = applications
+        .Select(StudentView)
+        .Where(view => view != null)
+        .Select(view => view!)
+        .ToList();
+      return Ok(visibleApplications);
+    }
+
+    /// <summary>
+    /// What the student sees: the last published version of the application, plus live confirmed payments, the
+    /// student's own uploads and the fee totals computed from both. Null while nothing has been published yet.
+    /// </summary>
+    internal static StudentApplicationDTO? StudentView(StudentApplication application)
+    {
+      StudentApplicationDTO? view = null;
+      if (!string.IsNullOrWhiteSpace(application.PublishedSnapshotJson))
       {
-        if (!string.IsNullOrWhiteSpace(application.PublishedSnapshotJson))
-        {
-          var snapshot = JsonSerializer.Deserialize<StudentApplicationDTO>(
-            application.PublishedSnapshotJson,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-          if (snapshot != null)
-          {
-            snapshot.Payments = ConfirmedPayments(application);
-            visibleApplications.Add(snapshot);
-          }
-        }
-        else if (application.ReviewStatus == PublishedReviewStatus)
-        {
-          visibleApplications.Add(ToDto(application, includeInternalNotes: false));
-        }
+        view = DeserializeSnapshot(application.PublishedSnapshotJson);
+      }
+      else if (application.ReviewStatus == PublishedReviewStatus)
+      {
+        view = ToDto(application, includeInternalNotes: false);
+      }
+      if (view == null) return null;
+
+      view.Payments = ConfirmedPayments(application);
+      view.Submissions = StudentSubmissions(application);
+      view.FeeSummaries = ComputeFeeSummaries(view.FeeItems, view.Payments);
+      ApplyUploadStatuses(view.RequestedDocuments, application.Submissions);
+      return view;
+    }
+
+    /// <summary>
+    /// The employees' current version (drafts included) with only confirmed payments, without internal notes.
+    /// Follow-up reminders to staff use it for a student who has no account or no published version yet.
+    /// </summary>
+    internal static StudentApplicationDTO WorkingView(StudentApplication application) =>
+      ToDto(application, includeInternalNotes: false);
+
+    private static StudentApplicationDTO? DeserializeSnapshot(string? json)
+    {
+      if (string.IsNullOrWhiteSpace(json)) return null;
+      try
+      {
+        return JsonSerializer.Deserialize<StudentApplicationDTO>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+      }
+      catch (JsonException)
+      {
+        return null;
+      }
+    }
+
+    [Authorize(Roles = "Student")]
+    [HttpPost("{id:guid}/submissions")]
+    [EnableRateLimiting(AbuseRateLimits.StudentUploadPolicy)]
+    [RequestSizeLimit(MaxDocumentSizeBytes + 1024 * 1024)]
+    public async Task<ActionResult<StudentSubmissionDTO>> UploadSubmission(
+      Guid id,
+      [FromForm] StudentSubmissionUploadDTO request,
+      CancellationToken cancellationToken)
+    {
+      var userId = await GetCurrentUserIdAsync();
+      if (userId == null) return Unauthorized();
+      var application = await BaseQuery().FirstOrDefaultAsync(item => item.Id == id && item.StudentUserId == userId, cancellationToken);
+      var view = application == null ? null : StudentView(application);
+      if (application == null || view == null) return NotFound("没有找到这份报名。");
+
+      var documentType = request.DocumentType?.Trim() ?? "";
+      if (!AllowedSubmissionTypes.Contains(documentType)) return BadRequest("请选择资料类型。");
+      if (application.Submissions.Count >= MaxSubmissionsPerApplication) return BadRequest("上传的文件已经很多了，请联系顾问处理。");
+      if (application.Submissions.Count(item => item.ReviewStatus == PendingSubmissionStatus) >= MaxPendingSubmissions)
+      {
+        return BadRequest("还有很多文件等待顾问确认，请稍后再上传。");
       }
 
-      return Ok(visibleApplications);
+      var submissionId = Guid.NewGuid();
+      var saved = await SaveSubmissionFileAsync(id, submissionId, request.File, request.FileName, cancellationToken);
+      if (saved.Error != null) return BadRequest(saved.Error);
+
+      var submission = new StudentSubmission
+      {
+        Id = submissionId,
+        StudentApplicationId = id,
+        DocumentType = documentType,
+        StudentNote = Limit(TrimToNull(request.Note), 300),
+        OriginalFileName = saved.OriginalFileName!,
+        StoredFileName = saved.StoredFileName!,
+        FilePath = saved.RelativePath!,
+        ContentType = saved.ContentType!,
+        SizeBytes = request.File.Length,
+        ReviewStatus = PendingSubmissionStatus,
+        SubmittedByUserId = userId,
+        SubmittedAt = DateTime.UtcNow,
+      };
+
+      try
+      {
+        _context.StudentSubmissions.Add(submission);
+        await _context.SaveChangesAsync(cancellationToken);
+      }
+      catch
+      {
+        DeletePrivateFile(saved.RelativePath!);
+        throw;
+      }
+
+      var dto = ToSubmissionDto(submission);
+      _notifications.SubmissionReceived(view, dto);
+      return Ok(dto);
+    }
+
+    [Authorize(Roles = "Student")]
+    [HttpDelete("{applicationId:guid}/submissions/{submissionId:guid}")]
+    public async Task<IActionResult> DeleteSubmission(Guid applicationId, Guid submissionId, CancellationToken cancellationToken)
+    {
+      var userId = await GetCurrentUserIdAsync();
+      if (userId == null) return Unauthorized();
+      var submission = await _context.StudentSubmissions
+        .Include(item => item.StudentApplication)
+        .FirstOrDefaultAsync(item => item.Id == submissionId && item.StudentApplicationId == applicationId, cancellationToken);
+      if (submission?.StudentApplication == null || submission.StudentApplication.StudentUserId != userId) return NotFound();
+      if (submission.ReviewStatus == AcceptedSubmissionStatus) return BadRequest("顾问已经确认收到这个文件，不能删除。如需更换，请重新上传或联系顾问。");
+
+      var path = submission.FilePath;
+      _context.StudentSubmissions.Remove(submission);
+      await _context.SaveChangesAsync(cancellationToken);
+      DeletePrivateFile(path);
+      return NoContent();
+    }
+
+    [HttpGet("{applicationId:guid}/submissions/{submissionId:guid}/file")]
+    public async Task<IActionResult> DownloadSubmission(Guid applicationId, Guid submissionId, CancellationToken cancellationToken)
+    {
+      var submission = await _context.StudentSubmissions.AsNoTracking()
+        .Include(item => item.StudentApplication)
+        .FirstOrDefaultAsync(item => item.Id == submissionId && item.StudentApplicationId == applicationId, cancellationToken);
+      if (submission?.StudentApplication == null) return NotFound();
+
+      if (User.IsInRole("Staff") || User.IsInRole("Manager"))
+      {
+        if (!await CanManageStudents(submission.StudentApplication.SchoolId, cancellationToken)) return Forbid();
+      }
+      else if (!User.IsInRole("Admin"))
+      {
+        var userId = await GetCurrentUserIdAsync();
+        if (!User.IsInRole("Student") || userId != submission.StudentApplication.StudentUserId) return Forbid();
+      }
+
+      var path = ResolvePrivateDocumentPath(submission.FilePath);
+      if (!System.IO.File.Exists(path)) return NotFound();
+      return PhysicalFile(path, submission.ContentType, submission.OriginalFileName, enableRangeProcessing: true);
+    }
+
+    [Authorize(Roles = "Admin,Manager,Staff")]
+    [HttpPost("{applicationId:guid}/submissions/{submissionId:guid}/accept")]
+    public async Task<ActionResult<StudentSubmissionDTO>> AcceptSubmission(Guid applicationId, Guid submissionId, CancellationToken cancellationToken)
+    {
+      var application = await BaseQuery().FirstOrDefaultAsync(item => item.Id == applicationId, cancellationToken);
+      if (application == null) return NotFound();
+      if (!await CanManageStudents(application.SchoolId, cancellationToken)) return Forbid();
+      var submission = application.Submissions.FirstOrDefault(item => item.Id == submissionId);
+      if (submission == null) return NotFound();
+      if (submission.ReviewStatus == AcceptedSubmissionStatus) return Ok(ToSubmissionDto(submission));
+
+      submission.ReviewStatus = AcceptedSubmissionStatus;
+      submission.ReviewedByUserId = await GetCurrentUserIdAsync();
+      submission.ReviewedByName = CurrentUserName();
+      submission.ReviewedAt = DateTime.UtcNow;
+      submission.ReviewNote = null;
+      await _context.SaveChangesAsync(cancellationToken);
+      return Ok(ToSubmissionDto(submission));
+    }
+
+    [Authorize(Roles = "Admin,Manager,Staff")]
+    [HttpPost("{applicationId:guid}/submissions/{submissionId:guid}/return")]
+    public async Task<ActionResult<StudentSubmissionDTO>> ReturnSubmission(
+      Guid applicationId,
+      Guid submissionId,
+      [FromBody] ReturnStudentSubmissionDTO request,
+      CancellationToken cancellationToken)
+    {
+      var application = await BaseQuery().FirstOrDefaultAsync(item => item.Id == applicationId, cancellationToken);
+      if (application == null) return NotFound();
+      if (!await CanManageStudents(application.SchoolId, cancellationToken)) return Forbid();
+      var submission = application.Submissions.FirstOrDefault(item => item.Id == submissionId);
+      if (submission == null) return NotFound();
+      var reason = TrimToNull(request.Reason);
+      if (reason == null) return BadRequest("请填写需要学员重新上传的原因。");
+
+      submission.ReviewStatus = ReturnedSubmissionStatus;
+      submission.ReviewedByUserId = await GetCurrentUserIdAsync();
+      submission.ReviewedByName = CurrentUserName();
+      submission.ReviewedAt = DateTime.UtcNow;
+      submission.ReviewNote = Limit(reason, 500);
+      await _context.SaveChangesAsync(cancellationToken);
+
+      var dto = ToSubmissionDto(submission);
+      var view = StudentView(application);
+      if (view != null) _notifications.SubmissionReturned(view, dto, application.StudentUser);
+      return Ok(dto);
     }
 
     [Authorize(Roles = "Admin,Manager,Staff")]
@@ -177,6 +381,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         request.EnrollmentType, request.Members, request.CoursePlans, request.AccommodationPlans,
         out var enrollmentType, out var members, out var coursePlans, out var accommodationPlans);
       if (structureError != null) return BadRequest(structureError);
+      var extrasError = PrepareExtras(request.FeeItems, request.RequestedDocuments, out var feeItems, out var requestedDocuments);
+      if (extrasError != null) return BadRequest(extrasError);
       var email = TrimToNull(request.Email)?.ToLowerInvariant();
       SchoolUser? student = null;
       if (email != null)
@@ -211,6 +417,9 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         Status = NormalizeStatus(request.Status),
         StudentVisibleNotes = TrimToNull(request.StudentVisibleNotes),
         InternalNotes = TrimToNull(request.InternalNotes),
+        FeeItemsJson = SerializeDetails(feeItems),
+        RequestedDocumentsJson = SerializeDetails(requestedDocuments),
+        ConsultantName = Limit(TrimToNull(request.ConsultantName), 50),
         CreatedAt = now,
         LastUpdated = now,
         ReviewStatus = DraftReviewStatus,
@@ -245,6 +454,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         request.EnrollmentType, request.Members, request.CoursePlans, request.AccommodationPlans,
         out var enrollmentType, out var members, out var coursePlans, out var accommodationPlans);
       if (structureError != null) return BadRequest(structureError);
+      var extrasError = PrepareExtras(request.FeeItems, request.RequestedDocuments, out var feeItems, out var requestedDocuments);
+      if (extrasError != null) return BadRequest(extrasError);
       var email = TrimToNull(request.Email)?.ToLowerInvariant();
       if (application.StudentUserId != null)
       {
@@ -286,6 +497,9 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       application.Status = NormalizeStatus(request.Status);
       application.StudentVisibleNotes = TrimToNull(request.StudentVisibleNotes);
       application.InternalNotes = TrimToNull(request.InternalNotes);
+      application.FeeItemsJson = SerializeDetails(feeItems);
+      application.RequestedDocumentsJson = SerializeDetails(requestedDocuments);
+      application.ConsultantName = Limit(TrimToNull(request.ConsultantName), 50);
       application.LastUpdated = DateTime.UtcNow;
       MarkDraft(application);
 
@@ -517,7 +731,11 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       payment.LastUpdated = now;
       application.LastUpdated = now;
       await _context.SaveChangesAsync(cancellationToken);
-      return Ok(ToPaymentDto(payment));
+
+      var paymentDto = ToPaymentDto(payment);
+      var view = StudentView(application);
+      if (view != null) _notifications.PaymentConfirmed(view, paymentDto, application.StudentUser);
+      return Ok(paymentDto);
     }
 
     [Authorize(Roles = "Admin,Manager")]
@@ -639,6 +857,7 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       }
 
       var now = DateTime.UtcNow;
+      var previousVersion = DeserializeSnapshot(application.PublishedSnapshotJson);
       application.PublishedByUserId = await GetCurrentUserIdAsync();
       application.PublishedByName = CurrentUserName();
       application.PublishedAt = now;
@@ -653,6 +872,12 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
       {
         var path = ResolvePrivateDocumentPath(document.FilePath);
         if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+      }
+
+      var publishedVersion = DeserializeSnapshot(application.PublishedSnapshotJson);
+      if (publishedVersion != null)
+      {
+        _notifications.ApplicationPublished(previousVersion, publishedVersion, application.StudentUser);
       }
 
       return Ok(ToDto(application, includeInternalNotes: true));
@@ -723,7 +948,8 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     }
 
     private IQueryable<StudentApplication> BaseQuery() => _context.StudentApplications
-      .Include(x => x.StudentUser).Include(x => x.School).Include(x => x.Documents).Include(x => x.Payments).AsSplitQuery();
+      .Include(x => x.StudentUser).Include(x => x.School).Include(x => x.Documents).Include(x => x.Payments)
+      .Include(x => x.Submissions).AsSplitQuery();
 
     private async Task<string?> GetCurrentUserIdAsync()
     {
@@ -780,9 +1006,18 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         });
       }
 
+      var feeItems = DeserializeDetails<StudentFeeItemDTO>(application.FeeItemsJson);
+      var requestedDocuments = DeserializeDetails<StudentRequestedDocumentDTO>(application.RequestedDocumentsJson);
+      ApplyUploadStatuses(requestedDocuments, application.Submissions);
+
       return new StudentApplicationDTO
       {
         Id = application.Id,
+        FeeItems = feeItems,
+        FeeSummaries = ComputeFeeSummaries(feeItems, ConfirmedPayments(application)),
+        RequestedDocuments = requestedDocuments,
+        ConsultantName = application.ConsultantName,
+        Submissions = StudentSubmissions(application),
         StudentFirstName = application.StudentFirstName ?? application.StudentUser?.FirstName ?? "",
         StudentLastName = application.StudentLastName ?? application.StudentUser?.LastName ?? "",
         StudentName = $"{application.StudentFirstName ?? application.StudentUser?.FirstName} {application.StudentLastName ?? application.StudentUser?.LastName}".Trim(),
@@ -875,6 +1110,228 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
         .ThenByDescending(payment => payment.SubmittedAt)
         .Select(ToPaymentDto)
         .ToList();
+
+    private static IList<StudentSubmissionDTO> StudentSubmissions(StudentApplication application) =>
+      application.Submissions
+        .OrderByDescending(submission => submission.SubmittedAt)
+        .Select(ToSubmissionDto)
+        .ToList();
+
+    private static StudentSubmissionDTO ToSubmissionDto(StudentSubmission submission) => new()
+    {
+      Id = submission.Id,
+      StudentApplicationId = submission.StudentApplicationId,
+      DocumentType = submission.DocumentType,
+      StudentNote = submission.StudentNote,
+      OriginalFileName = submission.OriginalFileName,
+      SizeBytes = submission.SizeBytes,
+      ReviewStatus = submission.ReviewStatus,
+      SubmittedAt = submission.SubmittedAt,
+      ReviewedByName = submission.ReviewedByName,
+      ReviewedAt = submission.ReviewedAt,
+      ReviewNote = submission.ReviewNote,
+      DownloadUrl = $"student-applications/{submission.StudentApplicationId}/submissions/{submission.Id}/file",
+    };
+
+    /// <summary>
+    /// Per currency: the fees due, the confirmed payments in that currency and what is left. Fees are covered in
+    /// due-date order, so the next deadline is the due date of the first fee the payments do not cover yet.
+    /// </summary>
+    private static IList<StudentFeeSummaryDTO> ComputeFeeSummaries(IList<StudentFeeItemDTO> feeItems, IList<StudentPaymentDTO> confirmedPayments)
+    {
+      var summaries = new List<StudentFeeSummaryDTO>();
+      foreach (var group in feeItems.GroupBy(item => item.CurrencyCode.ToUpperInvariant()))
+      {
+        var paid = confirmedPayments
+          .Where(payment => payment.CurrencyCode.ToUpperInvariant() == group.Key)
+          .Sum(payment => payment.Amount);
+        var totalDue = group.Sum(item => item.Amount);
+        var remaining = Math.Max(0, totalDue - paid);
+        DateTime? nextDueDate = null;
+        decimal? nextDueAmount = null;
+        if (remaining > 0)
+        {
+          decimal covered = 0;
+          foreach (var item in group.OrderBy(item => item.DueDate ?? DateTime.MaxValue))
+          {
+            covered += item.Amount;
+            if (covered <= paid) continue;
+            if (item.DueDate.HasValue)
+            {
+              nextDueDate = item.DueDate;
+              nextDueAmount = covered - paid;
+            }
+            break;
+          }
+        }
+
+        summaries.Add(new StudentFeeSummaryDTO
+        {
+          CurrencyCode = group.Key,
+          TotalDue = totalDue,
+          Paid = paid,
+          Remaining = remaining,
+          NextDueDate = nextDueDate,
+          NextDueAmount = nextDueAmount,
+        });
+      }
+      return summaries;
+    }
+
+    /// <summary>
+    /// The fee items that confirmed payments do not cover yet, with the uncovered part. Payments in a currency
+    /// cover that currency's fees in due-date order, as in <see cref="ComputeFeeSummaries"/>.
+    /// </summary>
+    internal static IList<UnpaidFeeItem> UnpaidFeeItems(IList<StudentFeeItemDTO> feeItems, IList<StudentPaymentDTO> confirmedPayments)
+    {
+      var unpaid = new List<UnpaidFeeItem>();
+      foreach (var group in feeItems.GroupBy(item => item.CurrencyCode.ToUpperInvariant()))
+      {
+        var paidLeft = confirmedPayments
+          .Where(payment => payment.CurrencyCode.ToUpperInvariant() == group.Key)
+          .Sum(payment => payment.Amount);
+        foreach (var item in group.OrderBy(item => item.DueDate ?? DateTime.MaxValue))
+        {
+          var covered = Math.Min(paidLeft, item.Amount);
+          paidLeft -= covered;
+          if (item.Amount - covered > 0) unpaid.Add(new UnpaidFeeItem(item, item.Amount - covered));
+        }
+      }
+      return unpaid;
+    }
+
+    private static void ApplyUploadStatuses(IList<StudentRequestedDocumentDTO> requests, IEnumerable<StudentSubmission> submissions)
+    {
+      foreach (var request in requests)
+      {
+        var latest = submissions
+          .Where(submission => submission.DocumentType == request.DocumentType)
+          .OrderByDescending(submission => submission.SubmittedAt)
+          .FirstOrDefault();
+        request.UploadStatus = latest?.ReviewStatus switch
+        {
+          null => "未上传",
+          AcceptedSubmissionStatus => "已收到",
+          ReturnedSubmissionStatus => "需重新上传",
+          _ => "待确认",
+        };
+      }
+    }
+
+    private static string? PrepareExtras(
+      IList<StudentFeeItemDTO>? requestedFees,
+      IList<StudentRequestedDocumentDTO>? requestedUploads,
+      out List<StudentFeeItemDTO> feeItems,
+      out List<StudentRequestedDocumentDTO> requestedDocuments)
+    {
+      feeItems = new List<StudentFeeItemDTO>();
+      requestedDocuments = new List<StudentRequestedDocumentDTO>();
+
+      foreach (var requested in requestedFees ?? Array.Empty<StudentFeeItemDTO>())
+      {
+        var name = TrimToNull(requested.Name);
+        if (name == null) return "请填写费用名称，或删除空白的费用。";
+        if (requested.Amount <= 0 || requested.Amount > 100_000_000) return $"「{name}」的金额必须大于 0。";
+        var currency = requested.CurrencyCode?.Trim().ToUpperInvariant() ?? "";
+        if (!AllowedPaymentCurrencies.Contains(currency)) return $"「{name}」的币种无效。";
+        var key = TrimToNull(requested.Key) ?? Guid.NewGuid().ToString("N");
+        feeItems.Add(new StudentFeeItemDTO
+        {
+          Key = key.Length <= 50 ? key : key[..50],
+          Name = name.Length <= 100 ? name : name[..100],
+          Amount = decimal.Round(requested.Amount, 2),
+          CurrencyCode = currency,
+          DueDate = requested.DueDate?.Date,
+          Note = Limit(TrimToNull(requested.Note), 200),
+        });
+      }
+      if (feeItems.Count > 20) return "每个档案最多登记 20 项费用。";
+
+      var types = new HashSet<string>(StringComparer.Ordinal);
+      foreach (var requested in requestedUploads ?? Array.Empty<StudentRequestedDocumentDTO>())
+      {
+        var documentType = TrimToNull(requested.DocumentType);
+        if (documentType == null || !AllowedSubmissionTypes.Contains(documentType)) return "需要学员上传的资料类型无效。";
+        if (!types.Add(documentType)) return $"「{documentType}」重复了，请只保留一条。";
+        var key = TrimToNull(requested.Key) ?? Guid.NewGuid().ToString("N");
+        requestedDocuments.Add(new StudentRequestedDocumentDTO
+        {
+          Key = key.Length <= 50 ? key : key[..50],
+          DocumentType = documentType,
+          Note = Limit(TrimToNull(requested.Note), 200),
+        });
+      }
+      return null;
+    }
+
+    private async Task<PaymentFileResult> SaveSubmissionFileAsync(
+      Guid applicationId,
+      Guid submissionId,
+      IFormFile? file,
+      string? displayFileName,
+      CancellationToken cancellationToken)
+    {
+      if (file == null || file.Length == 0 || file.Length > MaxDocumentSizeBytes)
+      {
+        return new PaymentFileResult("请选择文件，大小不能超过 15MB。", null, null, null, null);
+      }
+
+      var extension = Path.GetExtension(file.FileName);
+      if (!AllowedSubmissionFileTypes.TryGetValue(extension, out var safeContentType))
+      {
+        return new PaymentFileResult("只能上传 PDF、JPG、PNG、WebP 图片或 Word（DOCX）文件。", null, null, null, null);
+      }
+
+      await using (var head = file.OpenReadStream())
+      {
+        if (!await HasExpectedSignatureAsync(head, extension, cancellationToken))
+        {
+          return new PaymentFileResult("文件内容和扩展名不一致，请重新导出后再上传。", null, null, null, null);
+        }
+      }
+
+      var storedFileName = $"{submissionId:N}{extension.ToLowerInvariant()}";
+      var relativePath = Path.Combine(applicationId.ToString("N"), "student-uploads", storedFileName).Replace('\\', '/');
+      var targetPath = ResolvePrivateDocumentPath(relativePath);
+      Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+      await using (var stream = new FileStream(targetPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+      {
+        await file.CopyToAsync(stream, cancellationToken);
+      }
+
+      // The mini program uploads a temporary copy (tmp_xxx.pdf) and sends the real name separately;
+      // use that name only when it has the same extension as the file that was checked.
+      var givenName = TrimToNull(Path.GetFileName(displayFileName ?? ""));
+      var nameToKeep = givenName != null && string.Equals(Path.GetExtension(givenName), extension, StringComparison.OrdinalIgnoreCase)
+        ? givenName
+        : Path.GetFileName(file.FileName);
+      var originalFileName = Limit(nameToKeep, 255) ?? storedFileName;
+      return new PaymentFileResult(null, originalFileName, storedFileName, relativePath, safeContentType);
+    }
+
+    /// <summary>Checks the first bytes, so a renamed file of another kind is refused.</summary>
+    private static async Task<bool> HasExpectedSignatureAsync(Stream stream, string extension, CancellationToken cancellationToken)
+    {
+      var head = new byte[12];
+      var read = 0;
+      while (read < head.Length)
+      {
+        var count = await stream.ReadAsync(head.AsMemory(read, head.Length - read), cancellationToken);
+        if (count == 0) break;
+        read += count;
+      }
+
+      bool StartsWith(params byte[] bytes) => read >= bytes.Length && bytes.Select((value, index) => head[index] == value).All(match => match);
+      return extension.ToLowerInvariant() switch
+      {
+        ".pdf" => StartsWith(0x25, 0x50, 0x44, 0x46),
+        ".png" => StartsWith(0x89, 0x50, 0x4E, 0x47),
+        ".jpg" or ".jpeg" => StartsWith(0xFF, 0xD8, 0xFF),
+        ".webp" => StartsWith(0x52, 0x49, 0x46, 0x46) && read >= 12 && head[8] == 0x57 && head[9] == 0x45 && head[10] == 0x42 && head[11] == 0x50,
+        ".docx" => StartsWith(0x50, 0x4B, 0x03, 0x04),
+        _ => false,
+      };
+    }
 
     private static string? ValidatePayment(StudentPaymentSubmissionDTO request, bool requireFile)
     {
@@ -1092,7 +1549,11 @@ namespace XiaoJuanSchoolPayment.Server.Controllers
     private static string CreatePublishedSnapshot(StudentApplication application, DateTime publishedAt)
     {
       var snapshot = ToDto(application, includeInternalNotes: false);
+      // Payments, uploads and the fee totals are live data, added again on every read (StudentView).
       snapshot.Payments = new List<StudentPaymentDTO>();
+      snapshot.Submissions = new List<StudentSubmissionDTO>();
+      snapshot.FeeSummaries = new List<StudentFeeSummaryDTO>();
+      foreach (var request in snapshot.RequestedDocuments) request.UploadStatus = null;
       snapshot.ReviewStatus = PublishedReviewStatus;
       snapshot.ChangeSummary = null;
       snapshot.SubmittedByName = null;

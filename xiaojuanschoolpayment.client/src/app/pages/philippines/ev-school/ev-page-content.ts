@@ -135,6 +135,11 @@ export const EV_VIDEOS: EvVideo[] = [
   video('dinner-buffet', '餐厅自助晚餐', '校内餐厅的一顿晚饭。', '1:24', 'landscape', 'tour'),
   video('yoga-class', '晚间瑜伽课', '免费瑜伽课的一节。', '1:04', 'landscape', 'tour'),
   video('power-speaking', '口语强化课学员访谈', '学员聊一对一和小组课的收获（英文）。', '6:23', 'landscape', 'tour'),
+  // Student interviews from EV's own YouTube channel (2024) and Facebook page (2025), checked to the last frame.
+  video('student-james', '越南学员 James：雅思5.0到7.0', '17岁，在EV读雅思约8周，聊老师怎么帮他找错、改错（英文）。', '4:31', 'landscape', 'tour'),
+  video('student-ella', '韩国学员 Ella：商务英语', '回头学员，聊商务课的谈判模拟和每月演讲（英文字幕）。', '4:02', 'landscape', 'tour'),
+  video('student-martin', '越南学员 Martin 毕业', '毕业典礼上告别，再带大家看一圈校园（英文字幕）。', '2:35', 'landscape', 'tour'),
+  video('student-eunji', '蒙古学员 Eunji', '15岁，从听不懂老师到能用英语交流，还交到韩国和日本朋友（英文）。', '1:37', 'landscape', 'tour'),
   // Short clips from the 2026-11 EV collection, cut out of their vertical frames.
   video('campus-walk', '校门与大堂', '从校门走进大堂。', '0:21', 'landscape', 'tour'),
   video('office-windows', '办公室窗口', '大厅每个窗口办不同的事，后面是一楼教室走廊。', '0:08', 'landscape', 'tour'),
