@@ -28,7 +28,7 @@ export interface IuIclVideo {
   description: string;
   duration: string;
   orientation: 'landscape' | 'portrait';
-  topic: '校园' | '宿舍' | '课程' | '餐厅';
+  topic: '校园' | '宿舍' | '课程' | '餐厅' | '学员';
 }
 
 const folder = (campus: IuIclCampus) => campus.toLowerCase();
@@ -260,8 +260,10 @@ const IU_GALLERY: GalleryImage[] = [
 const IU_VIDEOS: IuIclVideo[] = [
   { name: 'iu-intro', title: '认识IU', description: 'IU的校园、教室、泳池、餐厅和学生生活。', duration: '3:12', orientation: 'landscape', topic: '校园' },
   { name: 'iu-campus', title: 'IU校园一览', description: '教学楼、草坪、图书角和舞蹈课。', duration: '0:29', orientation: 'landscape', topic: '校园' },
+  { name: 'iu-meals-talk', title: '校长讲伙食', description: '校长用中文介绍学生餐：每天有米饭、两样肉菜、四样配菜，还有饮料和热汤。', duration: '1:05', orientation: 'portrait', topic: '餐厅' },
   { name: 'iu-dining', title: 'IU学生餐厅', description: '餐厅和自助餐台。', duration: '0:18', orientation: 'landscape', topic: '餐厅' },
   { name: 'iu-meals', title: 'IU自助餐菜色', description: '每天的热菜、面食和沙拉。', duration: '0:24', orientation: 'portrait', topic: '餐厅' },
+  { name: 'iu-salad-bar', title: '沙拉吧', description: '餐厅的沙拉吧，蔬菜和水果自己取。', duration: '0:20', orientation: 'portrait', topic: '餐厅' },
   { name: 'iu-frontdesk', title: '前台区域', description: '一楼的前台和大厅。', duration: '0:14', orientation: 'portrait', topic: '校园' },
   { name: 'iu-lounge-court', title: '休息区和运动场', description: '休息区和户外运动场。', duration: '0:11', orientation: 'portrait', topic: '校园' },
   { name: 'iu-rooftop-pool', title: '楼顶休息区和泳池', description: '楼顶的休息区和泳池。', duration: '0:21', orientation: 'portrait', topic: '校园' },
@@ -269,9 +271,15 @@ const IU_VIDEOS: IuIclVideo[] = [
   { name: 'iu-gym', title: '健身房', description: '健身器材和草坪训练区。', duration: '0:25', orientation: 'portrait', topic: '校园' },
   { name: 'iu-classrooms', title: '教室区', description: '一对一小教室和走廊。', duration: '0:26', orientation: 'portrait', topic: '课程' },
   { name: 'iu-group-class', title: '团体课教室和自习室', description: '团体课教室和自习室。', duration: '0:17', orientation: 'portrait', topic: '课程' },
+  { name: 'iu-orientation', title: '新生说明会', description: '新生到校后参加的入学说明会。', duration: '0:19', orientation: 'portrait', topic: '课程' },
+  { name: 'iu-teacher-training', title: '老师培训', description: '老师们集中参加学校的培训。', duration: '0:49', orientation: 'portrait', topic: '课程' },
+  { name: 'iu-dorm-talk', title: '校长讲三人间', description: '校长用中文介绍三人间：吹风机、冰箱、空调、洗漱用品、密码门锁和卫浴。房间以学校安排为准。', duration: '1:52', orientation: 'portrait', topic: '宿舍' },
   { name: 'iu-double', title: '双人间', description: '学校视频号里的双人间，房间以学校安排为准。', duration: '0:27', orientation: 'portrait', topic: '宿舍' },
   { name: 'iu-triple', title: '家庭房三人间', description: '学校视频号里的家庭房三人间，房间以学校安排为准。', duration: '0:16', orientation: 'portrait', topic: '宿舍' },
   { name: 'iu-quad', title: '家庭房四人间', description: '学校视频号里的家庭房四人间，房间以学校安排为准。', duration: '0:18', orientation: 'portrait', topic: '宿舍' },
+  { name: 'iu-student-day', title: '学员的一天', description: '一位俄罗斯学员拍下他在IU的一天：一对一课、餐厅、健身房和校园。英文字幕。', duration: '1:33', orientation: 'portrait', topic: '学员' },
+  { name: 'iu-student-story-1', title: '学员访谈：在IU读了7个月', description: '一位沙特学员讲他在IU的学习和生活。英文字幕。', duration: '2:19', orientation: 'portrait', topic: '学员' },
+  { name: 'iu-student-story-2', title: '学员访谈：课堂和周末', description: '一位沙特学员讲他的课程、住宿和周末出游。英文字幕。', duration: '2:09', orientation: 'portrait', topic: '学员' },
 ];
 
 const IU_ROOM_SERVICE = '每周打扫和洗衣各2次';
@@ -656,19 +664,23 @@ const ICL_VIDEOS: IuIclVideo[] = [
   { name: 'icl-intro', title: '认识ICL', description: 'ICL的校园、教室、餐厅和课程。', duration: '3:06', orientation: 'landscape', topic: '校园' },
   { name: 'icl-campus', title: 'ICL校园一览', description: '大厅、走廊、休息区和户外空间。', duration: '0:32', orientation: 'landscape', topic: '校园' },
   { name: 'icl-gym', title: '地下室健身区', description: '学生在健身区练拳击。', duration: '0:12', orientation: 'portrait', topic: '校园' },
+  { name: 'icl-dorm-tour', title: '中文讲解四种房型', description: '学校用中文带你看校内单人间、双人间、三人间和四人间。', duration: '3:35', orientation: 'landscape', topic: '宿舍' },
   { name: 'icl-single', title: '校内单人间', description: '单人间的床、书桌和卫浴。', duration: '0:21', orientation: 'landscape', topic: '宿舍' },
   { name: 'icl-double', title: '校内双人间', description: '双人间的床和书桌。', duration: '0:16', orientation: 'landscape', topic: '宿舍' },
   { name: 'icl-triple', title: '校内三人间', description: '三人间的床和书桌。', duration: '0:15', orientation: 'landscape', topic: '宿舍' },
   { name: 'icl-quad', title: '校内四人间', description: '四人间的床。', duration: '0:13', orientation: 'landscape', topic: '宿舍' },
   { name: 'icl-offcampus', title: '校外双人间和三人间', description: '校外住宿的双人间，再到三人间。', duration: '0:17', orientation: 'portrait', topic: '宿舍' },
   { name: 'icl-classes', title: '一对一课', description: 'ICL的一对一课堂。', duration: '0:12', orientation: 'landscape', topic: '课程' },
+  { name: 'icl-entry-test', title: '入学分级测试', description: '新生到校先做分级测试，按水平开始上课。', duration: '0:12', orientation: 'portrait', topic: '课程' },
+  { name: 'icl-job-interview', title: '求职面试挑战', description: '学生用英文参加模拟求职面试。', duration: '0:32', orientation: 'portrait', topic: '课程' },
   { name: 'icl-dining', title: '学生餐厅', description: '学生在餐厅用餐。', duration: '0:14', orientation: 'landscape', topic: '餐厅' },
-  { name: 'icl-overview', title: 'ICL校园和课堂', description: '教室、团体课和校园各处。', duration: '0:37', orientation: 'landscape', topic: '校园' },
+  { name: 'icl-overview', title: 'ICL校园和课堂', description: '教室、团体课和校园各处。', duration: '0:35', orientation: 'landscape', topic: '校园' },
   { name: 'icl-floor1', title: '一楼环境', description: '一楼的大厅、会议桌和休息区。', duration: '0:46', orientation: 'portrait', topic: '校园' },
   { name: 'icl-gym-room', title: '健身房', description: '健身器材和训练区。', duration: '0:13', orientation: 'portrait', topic: '校园' },
   { name: 'icl-triple-tour', title: '三人间', description: '学校视频号里的三人间。', duration: '0:22', orientation: 'portrait', topic: '宿舍' },
   { name: 'icl-quad-tour', title: '四人间', description: '学校视频号里的四人间。', duration: '0:17', orientation: 'portrait', topic: '宿舍' },
   { name: 'icl-bbq', title: '草坪烧烤', description: '学生在校园草坪上吃烧烤。', duration: '0:30', orientation: 'portrait', topic: '餐厅' },
+  { name: 'icl-ielts-story', title: '雅思学员访谈', description: '一位越南学员的经历：入学测试3.5分，在ICL读雅思课程后，官方雅思考到了目标分数。英文字幕。', duration: '3:04', orientation: 'landscape', topic: '学员' },
 ];
 
 const ICL_ROOM_SERVICE = '每周洗衣和打扫各2次';
