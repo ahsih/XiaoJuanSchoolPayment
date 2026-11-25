@@ -283,7 +283,12 @@ const EV_VIDEO_TABS: PhVideoTab[] = [
     label: '生活视频', icon: 'videocam',
     items: ['dinner-buffet', 'dining-hall', 'yoga-class', 'dance-challenge', 'eop-tik-talk', 'graduation', 'oslob-tour'].map(albumVideo),
   },
-  { label: '访谈视频', icon: 'videocam', items: ['power-speaking', 'ielts-student', 'ielts-nili', 'tik-talk-student'].map(albumVideo) },
+  {
+    label: '访谈视频', icon: 'videocam',
+    items: [
+      'student-james', 'student-ella', 'power-speaking', 'ielts-student', 'ielts-nili', 'student-martin', 'student-eunji', 'tik-talk-student',
+    ].map(albumVideo),
+  },
 ];
 
 /** 30 秒看懂 EV: the key facts under the hero title (compact layout). */

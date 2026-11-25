@@ -121,7 +121,7 @@ const BCEBU_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: "用视频了解 B'Cebu",
-    intro: "视频都来自 B'Cebu 学校，可以看到校园、接机、餐厅、一对一课堂和校园生活。",
+    intro: "视频来自 B'Cebu 学校官方和思达启航实拍：校园、宿舍、真实课堂、中国学员访谈和校园生活。",
     badge: "B'Cebu 学校视频",
     lifeTitle: '校园生活短片',
   },

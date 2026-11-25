@@ -21,11 +21,20 @@ import {
   StudentEnrollmentType,
   StudentPaymentDTO,
   StudentPaymentSubmissionDTO,
+  STUDENT_FEE_CURRENCIES,
+  STUDENT_SUBMISSION_TYPES,
+  StudentFeeItemDTO,
+  StudentFeeSummaryDTO,
+  StudentRequestedDocumentDTO,
+  StudentSubmissionDTO,
   UpdateStudentApplicationDTO,
+  studentCurrencyName,
+  studentMoney,
 } from '../../../interfaces/student-application.dto';
 import { SchoolService } from '../../../services/school.service';
 import { StudentApplicationService } from '../../../services/student-application.service';
 import { AuthService } from '../../../services/auth.service';
+import { SIDA_PHILIPPINES_CONSULTANTS } from '../../components/sida-consultants';
 
 @Component({
   selector: 'app-admin-student-applications',
@@ -43,7 +52,7 @@ import { AuthService } from '../../../services/auth.service';
     MatSnackBarModule,
   ],
   templateUrl: './admin-student-applications.component.html',
-  styleUrl: './admin-student-applications.component.css',
+  styleUrls: ['./admin-student-applications.component.css', './admin-student-extras.css'],
 })
 export class AdminStudentApplicationsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -66,6 +75,12 @@ export class AdminStudentApplicationsComponent implements OnInit {
     { label: '签证资料', types: ['签证材料', '签证结果', '签证文件'] },
     { label: '机票', types: ['机票行程单'] },
   ];
+  readonly submissionTypes = STUDENT_SUBMISSION_TYPES;
+  readonly feeCurrencies = STUDENT_FEE_CURRENCIES;
+  readonly consultantNames = SIDA_PHILIPPINES_CONSULTANTS.map((consultant) => consultant.name);
+  readonly currencyName = studentCurrencyName;
+  readonly money = studentMoney;
+  submissionBusyId: string | null = null;
 
   schools: SchoolDTO[] = [];
   applications: StudentApplicationDTO[] = [];
@@ -84,6 +99,7 @@ export class AdminStudentApplicationsComponent implements OnInit {
   reviewNotes: Record<string, string> = {};
   targetApplicationId: string | null = null;
   targetPaymentId: string | null = null;
+  targetSubmissionId: string | null = null;
   targetHandled = false;
   editorOpen = false;
   editingHasStudentAccount = false;
@@ -108,6 +124,9 @@ export class AdminStudentApplicationsComponent implements OnInit {
     visaStatus: ['未确认', Validators.required],
     studentVisibleNotes: [''],
     internalNotes: [''],
+    consultantName: [''],
+    feeItems: new FormArray<StudentFeeFormGroup>([]),
+    requestedDocuments: new FormArray<StudentRequestFormGroup>([]),
   });
 
   readonly documentForm = this.fb.group({
@@ -148,6 +167,43 @@ export class AdminStudentApplicationsComponent implements OnInit {
     return this.applicationForm.controls.accommodationPlans;
   }
 
+  get feeItemsArray() {
+    return this.applicationForm.controls.feeItems;
+  }
+
+  get requestedDocumentsArray() {
+    return this.applicationForm.controls.requestedDocuments;
+  }
+
+  addFee(fee?: StudentFeeItemDTO): void {
+    this.feeItemsArray.push(this.fb.nonNullable.group({
+      key: [fee?.key ?? this.newKey('fee'), Validators.required],
+      name: fee?.name ?? '',
+      amount: [fee?.amount ?? (null as number | null), Validators.min(0.01)],
+      currencyCode: fee?.currencyCode ?? 'CNY',
+      dueDate: this.dateInput(fee?.dueDate),
+      note: fee?.note ?? '',
+    }));
+  }
+
+  removeFee(index: number): void {
+    this.feeItemsArray.removeAt(index);
+  }
+
+  addRequest(request?: StudentRequestedDocumentDTO): void {
+    const used = new Set(this.requestedDocumentsArray.controls.map((control) => control.controls.documentType.value));
+    const nextType = this.submissionTypes.find((type) => !used.has(type)) ?? '其他';
+    this.requestedDocumentsArray.push(this.fb.nonNullable.group({
+      key: [request?.key ?? this.newKey('request'), Validators.required],
+      documentType: request?.documentType ?? nextType,
+      note: request?.note ?? '',
+    }));
+  }
+
+  removeRequest(index: number): void {
+    this.requestedDocumentsArray.removeAt(index);
+  }
+
   get participantOptions(): Array<{ key: string; name: string }> {
     const primaryName = this.applicationForm.controls.firstName.value?.trim() || '主联系人／第一位学员';
     return [
@@ -158,6 +214,9 @@ export class AdminStudentApplicationsComponent implements OnInit {
       })),
     ];
   }
+
+  // The getter returns new objects on every check; tracking by key stops mat-select from rebuilding its options in a loop.
+  readonly trackParticipant = (_: number, person: { key: string }) => person.key;
 
   addMember(member?: StudentApplicationMemberDTO): void {
     this.membersArray.push(this.fb.nonNullable.group({
@@ -217,6 +276,7 @@ export class AdminStudentApplicationsComponent implements OnInit {
     this.canPublish = roles.includes('admin') || roles.includes('manager');
     this.targetApplicationId = this.route.snapshot.queryParamMap.get('applicationId');
     this.targetPaymentId = this.route.snapshot.queryParamMap.get('paymentId');
+    this.targetSubmissionId = this.route.snapshot.queryParamMap.get('submissionId');
     this.schoolService.getSchools().subscribe({
       next: (schools) => (this.schools = [...(schools ?? [])].sort((a, b) => a.name.localeCompare(b.name))),
       error: () => this.notify('学校列表加载失败'),
@@ -236,10 +296,12 @@ export class AdminStudentApplicationsComponent implements OnInit {
         if (this.targetApplicationId && !this.targetHandled) {
           this.targetHandled = true;
           const target = this.applications.find((application) => application.id === this.targetApplicationId);
-          if (target && this.targetPaymentId) this.selectApplication(target);
+          if (target && (this.targetPaymentId || this.targetSubmissionId)) this.selectApplication(target);
           window.setTimeout(() => document.getElementById(`application-${this.targetApplicationId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
           if (this.targetPaymentId) {
             window.setTimeout(() => document.getElementById(`payment-${this.targetPaymentId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+          } else if (this.targetSubmissionId) {
+            window.setTimeout(() => document.getElementById(`submission-${this.targetSubmissionId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
           }
         }
       },
@@ -258,6 +320,9 @@ export class AdminStudentApplicationsComponent implements OnInit {
       if (this.activeFilter === 'review' && application.reviewStatus !== 'PendingReview') return false;
       if (this.activeFilter === 'published' && application.reviewStatus !== 'Published') return false;
       if (this.activeFilter === 'payment-review' && !application.payments.some((payment) => payment.reviewStatus === 'PendingReview')) return false;
+      if (this.activeFilter === 'uploads' && this.pendingUploads(application) === 0) return false;
+      if (this.activeFilter === 'due-soon' && !this.isDueSoon(application)) return false;
+      if (this.activeFilter === 'departing' && !this.isDepartingUnready(application)) return false;
       if (!this.matchesRecordState(application, this.recordStateFilter)) return false;
       if (this.registrationMonthFilter && this.registrationMonth(application) !== this.registrationMonthFilter) return false;
       if (this.schoolFilter && application.schoolId !== this.schoolFilter) return false;
@@ -282,13 +347,21 @@ export class AdminStudentApplicationsComponent implements OnInit {
       .sort((a, b) => b.localeCompare(a));
   }
 
+  // Built once per loaded list: new option objects on every check make mat-select rebuild its options forever and freeze the page.
   get schoolFilterOptions(): Array<{ id: string; name: string }> {
-    const schools = new Map<string, string>();
-    this.applications.forEach((application) => schools.set(application.schoolId, application.schoolName));
-    return [...schools.entries()]
-      .map(([id, name]) => ({ id, name }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    if (this.schoolOptionsSource !== this.applications) {
+      const schools = new Map<string, string>();
+      this.applications.forEach((application) => schools.set(application.schoolId, application.schoolName));
+      this.schoolOptionsCache = [...schools.entries()]
+        .map(([id, name]) => ({ id, name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+      this.schoolOptionsSource = this.applications;
+    }
+    return this.schoolOptionsCache;
   }
+
+  private schoolOptionsSource: StudentApplicationDTO[] | null = null;
+  private schoolOptionsCache: Array<{ id: string; name: string }> = [];
 
   get hasRecordFilters(): boolean {
     return this.activeFilter !== 'all' || this.recordStateFilter !== 'all' || !!this.registrationMonthFilter || !!this.schoolFilter || this.visaFilter !== 'all' || !!this.search;
@@ -313,6 +386,125 @@ export class AdminStudentApplicationsComponent implements OnInit {
     );
   }
 
+  get pendingUploadCount(): number {
+    return this.applications.reduce((total, application) => total + this.pendingUploads(application), 0);
+  }
+
+  pendingUploads(application: StudentApplicationDTO): number {
+    return (application.submissions ?? []).filter((submission) => submission.reviewStatus === 'PendingReview').length;
+  }
+
+  feeSummaries(application: StudentApplicationDTO): StudentFeeSummaryDTO[] {
+    return application.feeSummaries ?? [];
+  }
+
+  get dueSoonCount(): number {
+    return this.applications.filter((application) => this.isDueSoon(application)).length;
+  }
+
+  get departingCount(): number {
+    return this.applications.filter((application) => this.isDepartingUnready(application)).length;
+  }
+
+  /**
+   * An unpaid fee is due within 7 days, or its due date has already passed. Cancelled and on-hold records are
+   * left out, as in the server's automatic reminders (StudentReminderService).
+   */
+  isDueSoon(application: StudentApplicationDTO): boolean {
+    return this.feesDueSoon(application).length > 0;
+  }
+
+  private feesDueSoon(application: StudentApplicationDTO): StudentFeeSummaryDTO[] {
+    if (['已取消', '保留/延期'].includes(application.status)) return [];
+    const limit = this.daysFromToday(7);
+    return this.feeSummaries(application)
+      .filter((summary) => summary.remaining > 0 && !!summary.nextDueDate && summary.nextDueDate.slice(0, 10) <= limit);
+  }
+
+  /** The course starts within 14 days and requested documents are missing or fees are unpaid. */
+  isDepartingUnready(application: StudentApplicationDTO): boolean {
+    if (['已取消', '已入学', '已完成', '保留/延期'].includes(application.status)) return false;
+    const start = application.startDate?.slice(0, 10);
+    if (!start || start < this.todayInput() || start > this.daysFromToday(14)) return false;
+    return this.missingRequests(application).length > 0 || this.feeSummaries(application).some((summary) => summary.remaining > 0);
+  }
+
+  /** Requested documents the student has not uploaded yet or must upload again. */
+  missingRequests(application: StudentApplicationDTO): string[] {
+    return (application.requestedDocuments ?? [])
+      .filter((request) => request.uploadStatus === '未上传' || request.uploadStatus === '需重新上传')
+      .map((request) => request.documentType);
+  }
+
+  /** Why the card needs follow-up (fee due soon, departure soon); empty when it does not. */
+  followUpNote(application: StudentApplicationDTO): string {
+    const parts: string[] = [];
+    const today = this.todayInput();
+    this.feesDueSoon(application).forEach((summary) => {
+      const due = summary.nextDueDate!.slice(0, 10);
+      const amount = this.money(summary.nextDueAmount ?? summary.remaining, summary.currencyCode);
+      parts.push(due < today ? `${due} 已过付款截止日期，还差 ${amount}` : `${due} 前要付 ${amount}`);
+    });
+    if (this.isDepartingUnready(application)) {
+      const missing = this.missingRequests(application);
+      parts.push(`${application.startDate!.slice(0, 10)} 开课` + (missing.length ? `，还差${missing.join('、')}` : '，还有费用未付'));
+    }
+    if (!parts.length) return '';
+    // The system reminds only students who have an account; the rest need a call or a message from the consultant.
+    return parts.join('；') + (application.hasStudentAccount ? '' : '。学员没有账号，系统不会提醒，请直接联系');
+  }
+
+  private daysFromToday(days: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return this.localDate(date);
+  }
+
+  submissionStatusLabel(submission: StudentSubmissionDTO): string {
+    if (submission.reviewStatus === 'Accepted') return '已确认收到';
+    if (submission.reviewStatus === 'Returned') return '已退回重传';
+    return '待确认';
+  }
+
+  downloadSubmission(submission: StudentSubmissionDTO): void {
+    if (!this.selectedApplication) return;
+    this.applicationService.downloadSubmission(this.selectedApplication.id, submission);
+  }
+
+  acceptSubmission(submission: StudentSubmissionDTO): void {
+    if (!this.selectedApplication || this.submissionBusyId) return;
+    this.submissionBusyId = submission.id;
+    this.applicationService.acceptSubmission(this.selectedApplication.id, submission.id).subscribe({
+      next: () => {
+        this.submissionBusyId = null;
+        this.notify('已确认收到，学员中心会显示“已收到”');
+        this.loadApplications();
+      },
+      error: (error) => {
+        this.submissionBusyId = null;
+        this.notify(this.errorMessage(error));
+      },
+    });
+  }
+
+  returnSubmission(submission: StudentSubmissionDTO): void {
+    if (!this.selectedApplication || this.submissionBusyId) return;
+    const reason = window.prompt('请写清需要重新上传的原因，学员会收到邮件，例如：照片太模糊，请拍清楚护照首页：')?.trim();
+    if (!reason) return;
+    this.submissionBusyId = submission.id;
+    this.applicationService.returnSubmission(this.selectedApplication.id, submission.id, reason).subscribe({
+      next: () => {
+        this.submissionBusyId = null;
+        this.notify('已退回，学员需要重新上传');
+        this.loadApplications();
+      },
+      error: (error) => {
+        this.submissionBusyId = null;
+        this.notify(this.errorMessage(error));
+      },
+    });
+  }
+
   get incompleteCount(): number {
     return this.applications.filter((application) => this.completion(application) < 100).length;
   }
@@ -325,6 +517,9 @@ export class AdminStudentApplicationsComponent implements OnInit {
       review: '待管理审核',
       published: '已同步学生',
       'payment-review': this.canPublish ? '待审核付款' : '付款审核中',
+      uploads: '学员上传待确认',
+      'due-soon': '7天内要付款',
+      departing: '14天内出发，资料或费用未齐',
     };
     return titles[this.activeFilter];
   }
@@ -377,7 +572,25 @@ export class AdminStudentApplicationsComponent implements OnInit {
     }));
     const coursePlans = this.planPayload(value.coursePlans ?? []);
     const accommodationPlans = this.planPayload(value.accommodationPlans ?? []);
+    const feeItems: StudentFeeItemDTO[] = (value.feeItems ?? [])
+      .filter((fee) => !!fee.name?.trim() || fee.amount != null)
+      .map((fee) => ({
+        key: fee.key || this.newKey('fee'),
+        name: fee.name?.trim() ?? '',
+        amount: Number(fee.amount ?? 0),
+        currencyCode: fee.currencyCode || 'CNY',
+        dueDate: fee.dueDate || undefined,
+        note: fee.note?.trim() || undefined,
+      }));
+    const requestedDocuments: StudentRequestedDocumentDTO[] = (value.requestedDocuments ?? []).map((request) => ({
+      key: request.key || this.newKey('request'),
+      documentType: request.documentType,
+      note: request.note?.trim() || undefined,
+    }));
     const common = {
+      feeItems,
+      requestedDocuments,
+      consultantName: value.consultantName || undefined,
       email: value.email || undefined,
       phoneNumber: value.phoneNumber || undefined,
       enrollmentType: value.enrollmentType!,
@@ -432,7 +645,12 @@ export class AdminStudentApplicationsComponent implements OnInit {
       visaStatus: application.visaStatus || '未确认',
       studentVisibleNotes: application.studentVisibleNotes ?? '',
       internalNotes: application.internalNotes ?? '',
+      consultantName: application.consultantName ?? '',
     });
+    this.feeItemsArray.clear();
+    (application.feeItems ?? []).forEach((fee) => this.addFee(fee));
+    this.requestedDocumentsArray.clear();
+    (application.requestedDocuments ?? []).forEach((request) => this.addRequest(request));
     this.membersArray.clear();
     application.members.forEach((member) => this.addMember(member));
     this.applicationForm.controls.enrollmentType.setValue(application.enrollmentType);
@@ -452,7 +670,10 @@ export class AdminStudentApplicationsComponent implements OnInit {
       enrollmentDate: this.todayInput(),
       status: '资料准备',
       visaStatus: '未确认',
+      consultantName: '',
     });
+    this.feeItemsArray.clear();
+    this.requestedDocumentsArray.clear();
     this.membersArray.clear();
     this.coursePlansArray.clear();
     this.accommodationPlansArray.clear();
@@ -851,7 +1072,22 @@ export class AdminStudentApplicationsComponent implements OnInit {
   }
 }
 
-type StudentWorkbenchFilter = 'all' | 'incomplete' | 'draft' | 'review' | 'published' | 'payment-review';
+type StudentWorkbenchFilter = 'all' | 'incomplete' | 'draft' | 'review' | 'published' | 'payment-review' | 'uploads' | 'due-soon' | 'departing';
+
+type StudentFeeFormGroup = FormGroup<{
+  key: FormControl<string>;
+  name: FormControl<string>;
+  amount: FormControl<number | null>;
+  currencyCode: FormControl<string>;
+  dueDate: FormControl<string>;
+  note: FormControl<string>;
+}>;
+
+type StudentRequestFormGroup = FormGroup<{
+  key: FormControl<string>;
+  documentType: FormControl<string>;
+  note: FormControl<string>;
+}>;
 type StudentRecordStateFilter = 'all' | 'not-enrolled' | 'enrolled' | 'on-hold' | 'cancelled';
 type StudentVisaFilter = 'all' | 'not-started' | 'in-progress' | 'approved' | 'not-required' | 'rework';
 

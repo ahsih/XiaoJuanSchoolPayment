@@ -231,7 +231,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ims-academy',
         loadComponent: () =>
-          import('./pages/philippines/ims-school/ims-school.component').then((m) => m.ImsSchoolComponent),
+          import('./pages/philippines/ims-school/ims-school-page.component').then((m) => m.ImsSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/target-global-english-academy',
@@ -349,8 +349,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/genius-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/genius-school/genius-school.component').then(
-            (m) => m.GeniusSchoolComponent,
+          import('./pages/philippines/genius-school/genius-school-page.component').then(
+            (m) => m.GeniusSchoolPageComponent,
           ),
       },
       {
@@ -420,9 +420,20 @@ const routes: Routes = [
           import('./pages/philippines/cpils-school/cpils-school-page.component').then((m) => m.CpilsSchoolPageComponent),
       },
       {
-        path: 'philippines-study/cebu/english-fella',
+        path: 'philippines-study/cebu/english-fella-first-campus',
         loadComponent: () =>
-          import('./pages/philippines/fella-school/fella-school-detail.component').then((m) => m.FellaSchoolDetailComponent),
+          import('./pages/philippines/fella-school/fella-first-campus-school.component').then((m) => m.FellaFirstCampusSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/english-fella-second-campus',
+        loadComponent: () =>
+          import('./pages/philippines/fella-school/fella-second-campus-school.component').then((m) => m.FellaSecondCampusSchoolComponent),
+      },
+      {
+        // The former combined page; each campus now has its own page.
+        path: 'philippines-study/cebu/english-fella',
+        redirectTo: '/philippines-study/cebu/english-fella-first-campus',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/cebu/philinter-academy',
@@ -487,7 +498,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/monol',
         loadComponent: () =>
-          import('./pages/philippines/monol-school/monol-school-detail.component').then((m) => m.MonolSchoolDetailComponent),
+          import('./pages/philippines/monol-school/monol-school-page.component').then((m) => m.MonolSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/monol-sparta-campus',

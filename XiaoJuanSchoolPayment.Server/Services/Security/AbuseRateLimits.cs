@@ -15,6 +15,7 @@ public static class AbuseRateLimits
   public const string QuoteEmailPolicy = "quote-email";
   public const string ContactFormPolicy = "contact-form";
   public const string AuthPolicy = "auth";
+  public const string StudentUploadPolicy = "student-upload";
 
   public const string RejectionMessage = "请求过于频繁，请稍后再试。";
 
@@ -37,6 +38,7 @@ public static class AbuseRateLimits
       options.AddPolicy(QuoteEmailPolicy, httpContext => PerClient(httpContext, 10, TimeSpan.FromMinutes(10)));
       options.AddPolicy(ContactFormPolicy, httpContext => PerClient(httpContext, 5, TimeSpan.FromMinutes(10)));
       options.AddPolicy(AuthPolicy, httpContext => PerClient(httpContext, 20, TimeSpan.FromMinutes(5)));
+      options.AddPolicy(StudentUploadPolicy, httpContext => PerClient(httpContext, 20, TimeSpan.FromMinutes(10)));
     });
   }
 

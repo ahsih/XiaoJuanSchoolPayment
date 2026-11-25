@@ -148,7 +148,8 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicIclPath = '/philippines-study/cebu/icl';
   private readonly publicCellaUniPath = '/philippines-study/cebu/cella-uni-sparta-campus';
   private readonly publicCellaPremiumPath = '/philippines-study/cebu/cella-premium-campus';
-  private readonly publicFellaPath = '/philippines-study/cebu/english-fella';
+  private readonly publicFellaFirstPath = '/philippines-study/cebu/english-fella-first-campus';
+  private readonly publicFellaSecondPath = '/philippines-study/cebu/english-fella-second-campus';
   private readonly publicBtesPath = '/philippines-study/cebu/btes-english-academy';
   private readonly publicBlueOceanPath = '/philippines-study/cebu/cebu-blue-ocean-academy';
   private readonly publicTargetPath = '/philippines-study/cebu/target-global-english-academy';
@@ -413,11 +414,11 @@ export class AdminSchoolContentComponent implements OnInit {
       : this.schoolCode;
   }
   get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
-  get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected; }
+  get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected || this.isImsSelected; }
   get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
   get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
   get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
-  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isImsSelected && !this.isJicSelected; }
+  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isMonolSpartaSelected && !this.isGlcSelected; }
   get usesAssociationPeakRatePolicy(): boolean { return isAssociationPeakSchool(this.schoolCode); }
   get currentPublicPath(): string {
@@ -428,7 +429,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isTargetSelected) return this.publicTargetPath;
     if (this.isBlueOceanSelected) return this.publicBlueOceanPath;
     if (this.isBtesSelected) return this.publicBtesPath;
-    if (this.isFellaSelected) return this.publicFellaPath;
+    if (this.isFellaSelected) return this.fellaCampus === 'campus2' ? this.publicFellaSecondPath : this.publicFellaFirstPath;
     if (this.isCellaPremiumSelected) return this.publicCellaPremiumPath;
     if (this.isCellaUniSelected) return this.publicCellaUniPath;
     if (this.isIclSelected) return this.publicIclPath;
@@ -734,7 +735,6 @@ export class AdminSchoolContentComponent implements OnInit {
       item.textbook = 'esl';
     }
     if (this.isAnjSelected || this.isImsSelected) item.courseType = '英语课程';
-    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
     if (this.isJicSelected) { item.campus = this.jicCampus; item.courseType = this.jicCampus === 'premium' ? 'Premium 高级校区' : 'Challenger 挑战校区'; item.minimumWeeks = 1; item.allowedWeeks = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24]; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.courseType = `${this.beciCampus.toUpperCase()}课程`; }
     this.content.courses.push(item);
@@ -764,7 +764,6 @@ export class AdminSchoolContentComponent implements OnInit {
       item.waterGroup = 'Premium / Villa';
       item.deposit = 0;
     }
-    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
     if (this.isJicSelected) { item.campus = this.jicCampus; item.code = 'quad'; item.group = '多人间'; item.single = false; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.single = false; item.coupleRate = undefined; item.code = this.beciCampus.toUpperCase(); }
     this.content.rooms.push(item);
