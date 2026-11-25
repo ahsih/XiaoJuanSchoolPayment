@@ -102,22 +102,23 @@ describe('CPILS school page on the shared template', () => {
     beforeEach(use2026);
 
     it('applies the Sida and off-season rules to the September plan', () => {
-      expect(student().sidaDiscount).toBe(155.32);
-      expect(student().offSeasonDiscount).toBe(81.75);
-      expect(page.quoteUsd).toBe(1522.93);
+      expect(student().sidaDiscount).toBe(163.5);
+      expect(student().offSeasonDiscount).toBe(73.58);
+      expect(page.quoteUsd).toBe(1522.92);
       expect(page.schoolPaymentItems.map(item => item.label)).toContain('下半年淡季优惠');
     });
 
-    it('follows the school formula: fixed deductions, then the school 95%, then the Sida 90%', () => {
-      // (935 + 700 − 150) × 0.95 × 0.9 + 125 and (1,870 + 1,400 − 150) × 0.95 × 0.9 + 125 (school, 2026-11-24).
+    it('uses the cheapest order: the Sida 90%, then the school 95%, then the fixed deductions', () => {
+      // (935 + 700) × 0.9 × 0.95 − 150 + 125 and (1,870 + 1,400) × 0.9 × 0.95 − 150 + 125 (user, 2026-11-24);
+      // the school's formula (A − 150) × 0.95 × 0.9 + 125 gave 1,394.68 and 2,792.6.
       page.selectedStartDate = '2026-12-13';
       expect(student().holidayDiscount).toBe(150);
-      expect(page.quoteUsd).toBe(1394.68);
+      expect(page.quoteUsd).toBe(1372.92);
       const labels = page.schoolPaymentItems.map(item => item.label);
-      expect(labels.indexOf('圣诞／新年优惠')).toBeLessThan(labels.indexOf('下半年淡季优惠'));
-      expect(labels.indexOf('下半年淡季优惠')).toBeLessThan(labels.indexOf('思达启航折扣'));
+      expect(labels.indexOf('思达启航折扣')).toBeLessThan(labels.indexOf('下半年淡季优惠'));
+      expect(labels.indexOf('下半年淡季优惠')).toBeLessThan(labels.indexOf('圣诞／新年优惠'));
       page.selectedWeeks = 8;
-      expect(page.quoteUsd).toBe(2792.6);
+      expect(page.quoteUsd).toBe(2770.85);
     });
 
     it('uses the 2026 price list for 1-3 weeks and prices ESL Premium and the career courses', () => {
@@ -197,9 +198,9 @@ describe('CPILS school page on the shared template', () => {
     it('uses the 2027 defaults and keeps local fees and image notes identical', () => {
       expect(student().tuition).toBe(982);
       expect(student().accommodation).toBe(735);
-      expect(student().sidaDiscount).toBe(163.11);
-      expect(student().offSeasonDiscount).toBe(85.85);
-      expect(page.quoteUsd).toBe(1593.04);
+      expect(student().sidaDiscount).toBe(171.7);
+      expect(student().offSeasonDiscount).toBe(77.27);
+      expect(page.quoteUsd).toBe(1593.03);
       expect(page.estimatedLocalFeeTotal).toBe(19600);
       expect(page.quoteError).toBe('');
       expect(page.quoteImageData.totalUsd).toBe(page.quoteUsdText);
@@ -482,8 +483,8 @@ describe('CPILS school page on the shared template', () => {
       student().selectedRegistrationDate = '2026-11-23';
       expect(student().holidayDiscount2027).toBe(75);
       expect(payment('2027复活节优惠')?.amount).toBe('− 75 美元');
-      // The deduction comes off before the school 95% and the Sida 90%.
-      expect(page.quoteUsd).toBeCloseTo(before - 75 * 0.95 * 0.9, 1);
+      // The deduction comes off in full, after the Sida 90% and the school 95%.
+      expect(page.quoteUsd).toBeCloseTo(before - 75, 2);
       student().selectedRegistrationDate = '2027-03-22';
       expect(student().holidayDiscount2027).toBe(0);
       student().selectedRegistrationDate = '2027-03-01';
@@ -580,10 +581,25 @@ describe('CPILS school page on the shared template', () => {
       old.quoteSettings.promotions = old.quoteSettings.promotions.filter(rule => !ids.includes(rule.id) || rule.id === 'cpils-career-2027');
       old.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled = false;
       const migrated = cloneCpilsContentConfig(old);
-      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(4);
+      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(5);
       expect(ids.map(id => migrated.quoteSettings.promotions.filter(rule => rule.id === id).length)).toEqual([1, 1, 1, 1, 1]);
       expect(migrated.quoteSettings.promotions.find(rule => rule.id === 'cpils-career-2027')!.enabled).toBeFalse();
       expect(cloneCpilsContentConfig(migrated)).toEqual(migrated);
+    });
+
+    it('rewrites untouched version-4 discount wording once for the cheapest order', () => {
+      const description = (config: ReturnType<typeof createDefaultCpilsContentConfig>, id: string) =>
+        config.quoteSettings.promotions.find(rule => rule.id === id)!.description;
+      expect(description(page.cpilsContent, 'cpils-sida')).toBe('课程费和住宿费按原价享9折，学校优惠在此之后叠加。');
+      expect(description(page.cpilsContent, 'cpils-off-season-fall')).toBe('思达启航9折后再享95折；单个课程或住宿项目须满4周。');
+      const old = cloneCpilsContentConfig(createDefaultCpilsContentConfig());
+      old.quoteSettings.cpilsPolicy!.version = 4;
+      old.quoteSettings.promotions.find(rule => rule.id === 'cpils-sida')!.description = '学校优惠之后，课程费和住宿费再享9折。';
+      old.quoteSettings.promotions.find(rule => rule.id === 'cpils-off-season-fall')!.description = '员工改过的说明。';
+      const migrated = cloneCpilsContentConfig(old);
+      expect(migrated.quoteSettings.cpilsPolicy!.version).toBe(5);
+      expect(description(migrated, 'cpils-sida')).toBe('课程费和住宿费按原价享9折，学校优惠在此之后叠加。');
+      expect(description(migrated, 'cpils-off-season-fall')).toBe('员工改过的说明。');
     });
 
     it('gives Pre-IELTS the official IELTS exam from 12 weeks, also added up with the IELTS course', () => {
@@ -684,11 +700,11 @@ describe('CPILS school page on the shared template', () => {
       student(1).selectedRegistrationDate = '2026-09-28';
       student(1).quotePlan.updateStartDate('course', student(1).quotePlan.courses[0].id, '2027-01-03');
       student(1).returningStudent = true;
-      expect(page.quoteUsd).toBeCloseTo(1593.04 + 1471.5, 2);
+      expect(page.quoteUsd).toBeCloseTo(1593.03 + 1471.5, 2);
       expect(page.quoteHeading).toBe('CPILS 2人报价');
       expect(page.quoteImageData.paymentItems.filter(row => row.label === '注册费').length).toBe(1);
       page.setQuoteMode('single');
-      expect(page.quoteUsd).toBe(1593.04);
+      expect(page.quoteUsd).toBe(1593.03);
       page.setQuoteMode('group');
       expect(student(1).returningStudent).toBeTrue();
     });
