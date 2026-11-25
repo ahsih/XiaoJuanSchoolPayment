@@ -6,6 +6,7 @@ import { chinaToday, ExchangeRateService } from '../../../../services/exchange-r
 import { SchoolContentService } from '../../../../services/school-content.service';
 import { SchoolService } from '../../../../services/school.service';
 import { cloneCipContentConfig, createDefaultCipContentConfig } from './cip-content-config';
+import { CIP_VIDEOS } from './cip-page-content';
 import { cipDefaultStart } from './cip-page-quote';
 import { CIP_PAGE_PROFILE } from './cip-page-profile';
 import { CipSchoolPageComponent } from './cip-school-page.component';
@@ -166,5 +167,15 @@ describe('CIP page on the shared template', () => {
     expect(grouped).toEqual(content.courses.map(course => course.id).sort());
     const profiles = new Set(CIP_PAGE_PROFILE.roomProfiles.map(profile => profile.id));
     expect(Object.keys(CIP_PAGE_PROFILE.roomVideos ?? {}).every(id => profiles.has(id))).toBeTrue();
+  });
+
+  it('puts every clip under one hero chip and writes Taiwan only as 中国台湾', () => {
+    const tabs = CIP_PAGE_PROFILE.videoTabs ?? [];
+    expect(tabs.map(tab => tab.label)).toEqual(['校园视频', '宿舍视频', '课程视频', '生活视频', '访谈视频']);
+    expect(tabs.reduce((count, tab) => count + tab.items.length, 0)).toBe(CIP_VIDEOS.length);
+    expect(CIP_PAGE_PROFILE.interviewVideos.length).toBe(5);
+    for (const item of CIP_VIDEOS) {
+      expect(`${item.title}${item.description}`.replace(/中国台湾/g, '')).withContext(item.name).not.toContain('台湾');
+    }
   });
 });

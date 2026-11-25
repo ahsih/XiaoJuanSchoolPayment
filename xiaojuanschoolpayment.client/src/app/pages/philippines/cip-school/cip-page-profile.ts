@@ -114,9 +114,10 @@ const CIP_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CIP',
-    intro: '校园、宿舍、外籍老师和学校活动的实拍视频。',
+    intro: '校园、开学第一天、宿舍、外籍老师、学校活动和学员访谈的实拍视频。',
     badge: 'CIP 学校视频',
     lifeTitle: '校园短片',
+    interviewTitle: '学员访谈（英文原声）',
   },
   rooms: {
     photoTitle: '房型实景',
@@ -189,7 +190,7 @@ const shortVideo = (item: CipVideo): CiaShortVideo => ({
   ...(item.orientation === 'landscape' ? { shape: 'wide' as const } : {}),
 });
 
-const CIP_VIDEO_TOPICS: ReadonlyArray<CipVideo['topic']> = ['校园', '宿舍', '课程', '餐厅与活动'];
+const CIP_VIDEO_TOPICS: ReadonlyArray<CipVideo['topic']> = ['校园', '宿舍', '课程', '生活', '访谈'];
 const CIP_VIDEO_TABS: PhVideoTab[] = CIP_VIDEO_TOPICS.map(topic => ({
   label: `${topic}视频`,
   icon: 'videocam',
@@ -231,8 +232,8 @@ export const CIP_PAGE_PROFILE: PhSchoolProfile = {
   notSuitableFor: CIP_NOT_SUITABLE_FOR.map(title => ({ title, text: '' })),
   campusBuildings: CIP_CAMPUS_AREAS,
   videoCards: [],
-  campusLifeVideos: CIP_VIDEOS.map(shortVideo),
-  interviewVideos: [],
+  campusLifeVideos: CIP_VIDEOS.filter(item => item.topic !== '访谈').map(shortVideo),
+  interviewVideos: CIP_VIDEOS.filter(item => item.topic === '访谈').map(shortVideo),
   courseGroups: [
     { icon: 'self_improvement', title: '轻量与短期', text: '课少，或只读1–2周', courseIds: ['light-esl', 'premium-native-light', 'speak-up'] },
     {

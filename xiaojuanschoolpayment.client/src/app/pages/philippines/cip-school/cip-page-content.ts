@@ -171,8 +171,11 @@ export const CIP_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A clip of CIP in public/assets/cip/videos/ (720p H.264 with a poster each), all from CIP's own video folders. The
- * campus film's shots of a flag were cut. Check every frame of a new clip for other companies or contact details.
+ * A clip of CIP in public/assets/cip/videos/ (720p H.264 with a poster each), from CIP's own video folders and its
+ * official YouTube channel (CIP ENGLISH KEPOS). The campus film's shots of a flag were cut; the YouTube clips lost
+ * their end cards with the school's social accounts, the parts where a student calls Taiwan a country, a student's
+ * answer about the shopping mall, and the @cipenglish handle on the question cards. Check every frame of a new clip
+ * for other companies, contact details or Taiwan shown as a country.
  */
 export interface CipVideo {
   name: string;
@@ -181,7 +184,7 @@ export interface CipVideo {
   duration: string;
   orientation: 'landscape' | 'portrait';
   /** Hero album group. */
-  topic: '校园' | '宿舍' | '课程' | '餐厅与活动';
+  topic: '校园' | '宿舍' | '课程' | '生活' | '访谈';
 }
 
 export const cipVideoSrc = (video: CipVideo) => `/assets/cip/videos/${video.name}.mp4`;
@@ -189,13 +192,20 @@ export const cipVideoPoster = (video: CipVideo) => `/assets/cip/videos/poster-${
 
 export const CIP_VIDEOS: CipVideo[] = [
   { name: 'campus-tour', title: 'CIP 校园介绍', description: '学校的校园介绍影片。', duration: '1:40', orientation: 'landscape', topic: '校园' },
+  { name: 'first-day', title: '开学第一天', description: '周一分班测试、入学说明和参观校园，交学杂费、领教材，周二开始上课。', duration: '1:03', orientation: 'landscape', topic: '校园' },
   { name: 'room-single-a', title: '单人间A', description: '单人间A的实拍。', duration: '0:30', orientation: 'portrait', topic: '宿舍' },
   { name: 'room-single-b', title: '单人间B', description: '单人间B的实拍。', duration: '0:40', orientation: 'portrait', topic: '宿舍' },
   { name: 'room-double', title: '双人间', description: '双人间的实拍。', duration: '0:49', orientation: 'portrait', topic: '宿舍' },
   { name: 'room-triple', title: '三人间', description: '三人间的实拍。', duration: '0:31', orientation: 'portrait', topic: '宿舍' },
   { name: 'native-teachers', title: '外籍老师', description: 'CIP 的外籍老师介绍自己。', duration: '0:17', orientation: 'landscape', topic: '课程' },
-  { name: 'dining', title: '学生餐厅', description: '餐厅的菜。', duration: '0:19', orientation: 'portrait', topic: '餐厅与活动' },
-  { name: 'english-day', title: 'English Day', description: '全校师生一起参加的活动日。', duration: '1:07', orientation: 'landscape', topic: '餐厅与活动' },
+  { name: 'native-teacher-david', title: '美国外教的一对一课', description: '来自美国的外籍老师介绍自己和一对一课。', duration: '2:10', orientation: 'landscape', topic: '课程' },
+  { name: 'dining', title: '学生餐厅', description: '餐厅的菜。', duration: '0:19', orientation: 'portrait', topic: '生活' },
+  { name: 'english-day', title: 'English Day', description: '全校师生一起参加的活动日。', duration: '1:07', orientation: 'landscape', topic: '生活' },
+  { name: 'review-native-light', title: '日本学员：PNL外教轻量课程读了17周', description: '谈老师的教法、最喜欢CIP的地方，以及为什么推荐CIP。', duration: '1:34', orientation: 'landscape', topic: '访谈' },
+  { name: 'review-toeic', title: '中国台湾学员：托业常规课读了4周', description: '最喜欢一对一课，有问题马上可以问老师；现在说得更流利了。', duration: '1:58', orientation: 'landscape', topic: '访谈' },
+  { name: 'review-intensive-esl', title: '日本学员：读了7周，从不敢开口到更自信', description: '最喜欢互动课堂和外教一对一，也在活动里认识了来自不同国家和地区的朋友。', duration: '0:55', orientation: 'landscape', topic: '访谈' },
+  { name: 'review-speaking-master', title: '越南学员：口语强化课读了1个月', description: '喜欢友好的氛围和专业的老师，口语和发音进步很多。', duration: '0:58', orientation: 'landscape', topic: '访谈' },
+  { name: 'review-junior', title: '日本高中生（17岁）：读了3周，口语和自信都进步了', description: '老师把语法讲得清楚、及时纠错，每天在真实场景里练英语。', duration: '1:29', orientation: 'landscape', topic: '访谈' },
 ];
 
 const DORM_SERVICE = '每周打扫2次，每1–2周换床单；外包洗衣周一至周五收送';
