@@ -13,7 +13,7 @@
             <p class="hero-lead">
               GITC（Green International Technological College Language Center）是Iloilo大学附属型语言中心，
               课程覆盖Basic、Regular、Power Speaking、Junior、TOEIC/IELTS入门和点数保证。
-              公开资料显示GITC位于Iloilo，并有Cebu Mactan新校区；未找到Clark校区资料。
+              主校区在Iloilo，2025年7月另开设Cebu Mactan新校区。
             </p>
             <div class="hero-tags" aria-label="GITC特点">
               <span><mat-icon>location_on</mat-icon>Iloilo校区</span>
@@ -37,7 +37,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              {{ cityNote }} 本页按GITC官方学校概要和费用页整理，避免把Iloilo学校误放成Clark学校。
+              课程、价格和住宿以学校最新报价为准。
             </p>
           </div>
 
@@ -59,7 +59,7 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  官方费用页列课程、住宿和学校往返移动费用
+                  主费含课程、住宿和学校往返交通
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片参考GITC官方图库和公开学校资料；费用参考GITC官方费用页，最终以学校正式报价为准。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -94,10 +94,10 @@
         <section class="notice-panel city-correction" id="city-correction">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>关于“克拉克GITC”的城市校正</h2>
+            <h2>GITC校区位置</h2>
             <p>
-              我查到的公开资料都把GITC列为Iloilo学校，官方页面列出Iloilo校址和One Spatial Iloilo学生寮，
-              另有Cebu Mactan新校区信息。为了避免误导用户，本页放在怡朗游学下；如果学生想找Clark学校，可以返回Clark学校列表比较。
+              GITC主校区在Iloilo（怡朗），学生宿舍在One Spatial Iloilo；2025年7月另开设Cebu Mactan新校区。
+              GITC不在Clark，想去Clark学习可以返回Clark学校列表比较。
             </p>
           </div>
         </section>
@@ -107,7 +107,7 @@
             <span>图片 / 环境展示</span>
             <h2>先看GITC的Iloilo校园和大学附属环境</h2>
             <p>
-              GITC更适合放在Iloilo小众城市和大学附属路线里比较，而不是Clark外教/机场便利路线。
+              GITC适合放在Iloilo小众城市和大学附属路线里比较。
             </p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="GITC图片分类">
@@ -159,7 +159,7 @@
               <div class="advisor-avatar">S</div>
               <div>
                 <strong>顾问建议</strong>
-                <span>如果你的目标其实是Clark，请不要直接按GITC报名；应先和CIP、EG、WE、TALK、HELP、HANA比较。</span>
+                <span>如果更看重机场便利和外教口语，可同时比较Clark的CIP、EG、WE、TALK、HELP、HANA。</span>
               </div>
             </div>
             <a class="primary-action full-action" routerLink="/about-sida/contact">
@@ -213,7 +213,7 @@
             <span>课程类型介绍</span>
             <h2>按一般英语、口语强化、Junior和考试方向选择</h2>
             <p>
-              GITC官方费用页列出每个课程的一对一和小组课数量，1课时为45分钟。
+              每门课程的一对一和小组课数量如下，1课时为45分钟。
             </p>
           </div>
           <div class="course-grid">
@@ -229,13 +229,13 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>GITC官方公开价格</span>
+              <span>GITC课程费用</span>
               <h2>按课程、房型和周数看Program费用</h2>
               <p>
-                以下按GITC官方费用页整理。Program费用通常含授课费、住宿费和学校往返移动费用；入学金和当地PHP费用另算。
+                Program费用通常含授课费、住宿费和学校往返交通费用；入学金和当地比索费用另算。
               </p>
             </div>
-            <div class="data-table gitc-fee-table" role="table" aria-label="GITC官方公开价格">
+            <div class="data-table gitc-fee-table" role="table" aria-label="GITC课程费用">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
                 <span role="columnheader">1周</span>
@@ -253,7 +253,7 @@
                 </div>
               </ng-container>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="GITC官方公开价格手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="GITC课程费用手机卡片">
               <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
@@ -308,7 +308,7 @@
             <ul class="check-list">
               <li>高中以下单独渡航、亲子、Junior和陪读安排必须确认监护规则。</li>
               <li>TOEIC/IELTS保证班要确认入学分数、目标分数和保证条件。</li>
-              <li>Cebu新校区不能直接套用Iloilo费用表。</li>
+              <li>Cebu新校区价格需另行确认，不能直接套用Iloilo价格。</li>
             </ul>
           </div>
 
@@ -376,7 +376,7 @@
             <span>到校支付费用参考</span>
             <h2>主费用之外，还要准备当地费用</h2>
             <p>
-              以下按GITC官方费用页整理，金额可能随菲律宾政策和学校账单更新。
+              以下金额可能随菲律宾政策和学校规则调整，以学校实际收取为准。
             </p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
@@ -419,28 +419,12 @@
           </a>
         </section>
 
-        <section class="source-panel" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>GITC页面公开资料来源</h2>
-            <p>
-              本页以GITC官方首页、学校概要、官方费用页和公开城市资料为主要来源。正式报名以前请以学校确认书和最新报价单为准。
-            </p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
-        </section>
-
         <section class="sida-ev-section" id="service-process">
           <div class="sida-ev-heading">
             <span>WHY SIDA QIHANG</span>
             <h2>为什么通过思达启航报名GITC?</h2>
             <p>
-              先把城市、校区和费用口径核准，再判断GITC是否真的比Clark学校更适合。
+              先确认城市、校区和费用，再判断GITC是否适合你。
             </p>
           </div>
 
@@ -552,9 +536,9 @@
 
     <section class="bottom-cta">
       <div>
-        <h2>想确认GITC是否比Clark学校更适合？</h2>
+        <h2>想确认GITC是否适合你？</h2>
         <p>
-          把入学日期、学习周数、目标分数、同行人数、房型、年龄和是否坚持Clark发给顾问，可以更快得到准确方案。
+          把入学日期、学习周数、目标分数、同行人数、房型、年龄和城市偏好发给顾问，可以更快得到准确方案。
         </p>
         <ul>
           <li>快速响应</li>

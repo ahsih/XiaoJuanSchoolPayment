@@ -13,11 +13,11 @@
             <h1>菲律宾碧瑶API BECI（City Campus）</h1>
             <p class="hero-lead">
               API BECI City Campus 是BECI校系面向成人、专业人士和Workcation学生的弹性学习校区，
-              官方资料显示校区位于Baguio City。它适合想要碧瑶凉爽城市环境、成人学习社群、工作空间和无门禁节奏的学生，
+              校区位于Baguio City。它适合想要碧瑶凉爽城市环境、成人学习社群、工作空间和无门禁节奏的学生，
               可和PINES、JIC、BECI Sparta、MONOL、WALES一起初筛比较。
             </p>
             <div class="hero-tags" aria-label="API BECI City Campus特点">
-              <span><mat-icon>location_city</mat-icon>官方地区：Baguio</span>
+              <span><mat-icon>location_city</mat-icon>所在地区：Baguio</span>
               <span><mat-icon>work</mat-icon>成人 / Workcation</span>
               <span><mat-icon>record_voice_over</mat-icon>Lite / Native / Unlimited / Junior</span>
               <span><mat-icon>laptop_mac</mat-icon>Coworking / 无门禁</span>
@@ -61,16 +61,16 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  公开主费通常含课程、住宿和每日三餐
+                  主费通常含课程、住宿和每日三餐
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
-                  中介优惠免注册费；SSP、签证、押金、水电、教材、维护费和接机需另行确认
+                  思达启航优惠免注册费；SSP、签证、押金、水电、教材、维护费和接机需另行确认
                 </li>
               </ul>
             </aside>
             <p class="photo-source">
-              图片参考API BECI公开图片与本地学校资料；费用参考City Campus公开费用表，最终以学校正式报价为准。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -98,7 +98,7 @@
           <div>
             <h2>位置提醒：City Campus属于碧瑶Baguio</h2>
             <p>
-              API BECI City Campus 已归入“碧瑶游学”。页面内容会保持准确，明确说明API BECI City Campus是碧瑶校区。
+              API BECI City Campus位于碧瑶Baguio，不在宿务。
               如果你原本想找API BECI在宿务方向的学校，通常需要比较B Cebu / B'Cebu。
             </p>
           </div>
@@ -235,14 +235,14 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>City Campus公开价格</span>
+              <span>City Campus价格</span>
               <h2>按课程、房型和周数看主费用</h2>
               <p>
-                以下按所附BECI 2026美元费用表整理。1/2/3周课程费按4周价的40%/60%/80%计算，住宿费按实际周数折算；
-                当前中介优惠免注册费，SSP、签证、押金、水电、教材、维护费和接机另计。
+                以下为2026年美元价格。1/2/3周课程费按4周价的40%/60%/80%计算，住宿费按实际周数折算；
+                通过思达启航报名免注册费，SSP、签证、押金、水电、教材、维护费和接机另计。
               </p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="API BECI City Campus公开价格">
+            <div class="data-table course-fee-table" role="table" aria-label="API BECI City Campus价格">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
                 <span role="columnheader">1周</span>
@@ -260,7 +260,7 @@
                 </div>
               </ng-container>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="API BECI City Campus公开价格手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="API BECI City Campus价格手机卡片">
               <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
@@ -298,7 +298,7 @@
               <span>特殊项目 / 注意规则</span>
               <h2>短期比例、长期折扣和旺季费要一起核算</h2>
               <p>
-                报价器已应用所附2026费用表的免注册费、短期课程比例和长期折扣；追加一对一和房型限制仍需报名时逐项核实。
+                报价器已计入免注册费、短期课程比例和长期折扣；追加一对一和房型限制需报名时逐项确认。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="API BECI City Campus特殊项目参考">
@@ -326,7 +326,7 @@
             <div class="section-heading">
               <span>API BECI City费用快速报价</span>
               <h2>默认参考：4周Lite ESL + Studio Quad 4人房</h2>
-              <p>前期支付参考 = 优惠后课程住宿主费 + 旺季附加费；当前中介优惠免注册费。</p>
+              <p>前期支付参考 = 优惠后课程住宿主费 + 旺季附加费；通过思达启航报名免注册费。</p>
             </div>
             <div class="quote-form" aria-label="API BECI City费用快速报价选项">
               <label>
@@ -353,7 +353,7 @@
               </label>
             </div>
             <div class="quote-breakdown">
-              <div><span>注册费（中介优惠免收）</span><strong>USD {{ payableRegistrationFee }}（原价 USD {{ registrationFee }}）</strong></div>
+              <div><span>注册费（思达启航优惠免收）</span><strong>USD {{ payableRegistrationFee }}（原价 USD {{ registrationFee }}）</strong></div>
               <div><span>优惠后课程住宿主费</span><strong>USD {{ formatUsd(selectedPackageFee) }}</strong></div>
               <div><span>长期折扣（已含在主费）</span><strong *ngIf="longStayDiscount > 0">- USD {{ formatUsd(longStayDiscount) }}</strong><strong *ngIf="longStayDiscount === 0">当前周数不适用</strong></div>
               <div><span>旺季附加费</span><strong>USD {{ formatUsd(seasonalSurcharge) }}</strong></div>
@@ -389,7 +389,7 @@
             <span>到校支付费用参考</span>
             <h2>主费用之外，还要准备当地费用</h2>
             <p>
-              以下费用参考现有BECI公开资料和学校页常见口径，不同周数、签证时长、房型和学校政策会影响最终金额。
+              不同周数、签证时长、房型和学校政策会影响最终金额，以学校实际收取为准。
             </p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
@@ -433,23 +433,6 @@
           <a class="primary-action" routerLink="/about-sida/contact">
             获取完整报价单<mat-icon>description</mat-icon>
           </a>
-        </section>
-
-        <section class="source-panel" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>API BECI City Campus页面公开资料来源</h2>
-            <p>
-              本页以API BECI官方网站、City Campus官方介绍、公开费用资料和2026学校资料为主要来源。
-              正式报名以前请以学校确认书和最新报价单为准。
-            </p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="sida-ev-section" id="service-process">

@@ -95,11 +95,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -165,9 +160,9 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
   readonly quickInfo: QuickInfo[] = [
     {
       icon: 'location_city',
-      label: '官方地区',
+      label: '所在地区',
       value: 'Baguio City / City Campus',
-      note: '官方与公开费用资料均将API BECI City Campus列为碧瑶校区，适合成人、工作者和弹性学习学生。',
+      note: 'API BECI City Campus位于碧瑶，适合成人、工作者和弹性学习学生。',
     },
     {
       icon: 'work',
@@ -179,25 +174,25 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
       icon: 'record_voice_over',
       label: '课程重点',
       value: 'Lite / Native / Unlimited / Junior',
-      note: '所附BECI 2026费用表列LITE ESL、Native ESL、Unlimited ESL和Junior ESL。',
+      note: '2026年开设LITE ESL、Native ESL、Unlimited ESL和Junior ESL。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: 'Studio / Semi Single / Quad',
-      note: '公开表按Studio Single、Studio Double、Studio Quad、Semi Master Single和Semi Single核价。',
+      note: '房型包括Studio Single、Studio Double、Studio Quad、Semi Master Single和Semi Single。',
     },
     {
       icon: 'restaurant',
       label: '餐食',
       value: '每日3餐',
-      note: '公开学校资料列每日三餐，课程住宿餐食主费以美元报价。',
+      note: '每日三餐，课程、住宿和餐食主费以美元报价。',
     },
     {
       icon: 'laptop_mac',
       label: '设施',
       value: 'Coworking / Library / Online meeting room',
-      note: '公开资料列卖店、共用工作空间、线上会议室、图书馆、自习室和免费外部健身房。',
+      note: '设有小卖店、共用工作空间、线上会议室、图书馆和自习室，并可免费使用外部健身房。',
     },
   ];
 
@@ -220,7 +215,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
       category: '设施',
       title: 'City Campus自习工作区',
       description:
-        '公开资料强调coworking、online meeting room和library，适合Workcation学生。',
+        '校区设有coworking、online meeting room和library，适合Workcation学生。',
       src: 'assets/philippines/beci-city-workspace.webp',
     },
     {
@@ -248,12 +243,12 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
   galleryImages: GalleryImage[] = this.builtInGalleryImages.map(item => ({ ...item }));
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '页面名称', value: '菲律宾碧瑶API BECI（City Campus）' },
-    { label: '官方英文名称', value: 'API BECI City Campus' },
-    { label: '官方地区', value: 'Baguio City / 碧瑶' },
-    { label: '设立 / 定位', value: '公开资料列2022年设立，成人、专业人士、Workcation和弹性ESL校区' },
-    { label: '学校规模', value: '公开资料列约45名学生容量，1节课50分钟' },
-    { label: '2026费用表课程', value: 'Lite ESL、Native ESL、Unlimited ESL、Junior ESL' },
+    { label: '中文名称', value: '菲律宾碧瑶API BECI（City Campus）' },
+    { label: '英文名称', value: 'API BECI City Campus' },
+    { label: '所在地区', value: 'Baguio City / 碧瑶' },
+    { label: '设立 / 定位', value: '2022年设立，面向成人、专业人士、Workcation和弹性ESL学习' },
+    { label: '学校规模', value: '约45名学生容量，1节课50分钟' },
+    { label: '2026年课程', value: 'Lite ESL、Native ESL、Unlimited ESL、Junior ESL' },
     { label: '住宿房型', value: 'Studio Single、Studio Double、Studio Quad、Semi Master Single、Semi Single' },
     { label: '主要规则', value: 'Non-Sparta、无门禁、每日三餐、周日入寮、周六退寮；未成年规则需单独确认' },
   ];
@@ -262,7 +257,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     {
       image: 'assets/philippines/beci-city-study-lounge.webp',
       title: '成人和工作者友好',
-      text: 'City Campus公开定位为成人英语教育中心，有弹性课程、工作空间和线上会议环境。',
+      text: 'City Campus定位为成人英语教育中心，有弹性课程、工作空间和线上会议环境。',
     },
     {
       image: 'assets/philippines/beci-city-workspace.webp',
@@ -291,14 +286,14 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     },
     {
       title: '想要碧瑶凉爽市区环境',
-      text: '官方资料强调Baguio城市、安全和学习氛围，适合不追求海岛度假感的人。',
+      text: '学校强调Baguio城市、安全和学习氛围，适合不追求海岛度假感的人。',
     },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     {
       title: '只想去宿务或海边校区',
-      text: 'API BECI City Campus官方地区是Baguio，不是Cebu；若只要宿务，可比较B Cebu、CIA、CBOA或QQEnglish。',
+      text: 'API BECI City Campus位于Baguio，不是Cebu；若只要宿务，可比较B Cebu、CIA、CBOA或QQEnglish。',
     },
     {
       title: '需要强斯巴达管理',
@@ -306,7 +301,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     },
     {
       title: '亲子低龄同行',
-      text: '公开资料显示City Campus更偏成人和专业人士，亲子或低龄学生需优先核对年龄与监护规则。',
+      text: 'City Campus更偏成人和专业人士，亲子或低龄学生需优先核对年龄与监护规则。',
     },
   ];
 
@@ -314,7 +309,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     { id: 'studio-single', name: 'Studio Single 1人房', fee: 1250, note: '隐私度最高，适合远程工作、会议和长期住宿。' },
     { id: 'semi-master-single', name: 'Semi Master Single 1人房', fee: 1050, note: '单人房预算折中，适合成人独立学习。' },
     { id: 'semi-single', name: 'Semi Single 1人房', fee: 900, note: '相对经济的单人房，正式报名需确认空房。' },
-    { id: 'studio-double', name: 'Studio Double 2人房', fee: 800, note: '公开说明通常限家人、夫妻、同性朋友等组合使用。' },
+    { id: 'studio-double', name: 'Studio Double 2人房', fee: 800, note: '通常限家人、夫妻、同性朋友等组合使用。' },
     { id: 'studio-double-couple', name: 'Studio Double 夫妻同行（每人）', fee: 750, note: '一对夫妇共同使用Studio Double时的每人价格。' },
     { id: 'studio-quad', name: 'Studio Quad 4人房', fee: 600, note: '预算最低房型，适合可接受多人房的成人学生。' },
   ];
@@ -360,7 +355,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
 
   readonly specialFees: SpecialCourseFee[] = [
     {
-      label: '中介优惠',
+      label: '思达启航优惠',
       lessons: '免注册费；1/2/3周课程费按40%/60%/80%',
       four: '注册费原价USD 100，优惠后USD 0',
       note: '短期比例以4周课程费为基准，住宿费按实际周数折算。',
@@ -369,7 +364,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
       label: '额外1:1课程',
       lessons: '日间或夜间一对一',
       four: 'PHP 7,000 / 4周参考',
-      note: '公开资料提到可追加一对一课程，适用时间和名额需确认。',
+      note: '可追加一对一课程，适用时间和名额需确认。',
     },
     {
       label: '长期折扣',
@@ -381,7 +376,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
       label: 'Peak Season Surcharge',
       lessons: '暑期旺季',
       four: 'USD 40 / 周',
-      note: '公开表列旺季期间需额外加收；本页报价器会按入学日自动计入。',
+      note: '旺季期间需额外加收；报价器会按入学日自动计入。',
     },
     {
       label: 'Studio Double限制',
@@ -400,7 +395,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     {
       time: '12:00 - 12:50',
       title: '午餐',
-      text: '公开资料列每日三餐，餐食规则以学校当期说明为准。',
+      text: '每日三餐，餐食规则以学校当期说明为准。',
     },
     {
       time: '13:00 - 16:50',
@@ -415,23 +410,23 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     {
       time: '晚间',
       title: 'Optional Night / 自习',
-      text: '可按课程与当期安排参加选修、复习或使用学习空间；City Campus公开资料列无门禁。',
+      text: '可按课程与当期安排参加选修、复习或使用学习空间；City Campus无门禁。',
     },
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 0（原价USD 100）', note: '当前中介优惠免注册费，本页报价器按USD 0计算' },
+    { item: '注册费', amount: 'USD 0（原价USD 100）', note: '通过思达启航报名免注册费，报价器按0美元计算' },
     { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，到校后办理' },
     { item: 'SSP E-Card', amount: 'PHP 4,500', note: '与SSP相关的电子卡申请费用' },
     { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
     { item: '签证延签', amount: 'PHP 4,940起', note: '8周以上常见，周数越长费用越高' },
     { item: '教材费', amount: 'PHP 1,000-2,000', note: '按课程和教材使用计算，考试课程可能更高' },
     { item: '宿舍保证金', amount: 'PHP 3,000', note: '退房检查后按学校规则退还' },
-    { item: '水电费', amount: 'PHP 3,000 / 4周参考', note: '公开资料口径；实际以学校账单为准' },
+    { item: '水电费', amount: 'PHP 3,000 / 4周参考', note: '参考金额，实际以学校账单为准' },
     { item: '维护费', amount: 'PHP 1,000 / 4周参考', note: '学校设施维护相关费用' },
-    { item: '洗衣费', amount: 'PHP 1,500-1,600 / 4周', note: 'City Campus公开资料提到洗衣按月收费，最低重量规则需确认' },
+    { item: '洗衣费', amount: 'PHP 1,500-1,600 / 4周', note: 'City Campus洗衣按月收费，最低重量规则需确认' },
     { item: '指定接机', amount: 'PHP 3,000参考', note: '马尼拉或克拉克指定接机日参考' },
-    { item: '前泊 / 延泊', amount: 'PHP 1,000 / 晚', note: '公开资料列前后1晚需按规则确认' },
+    { item: '前泊 / 延泊', amount: 'PHP 1,000 / 晚', note: '入学前或结课后加住，需按学校规则确认' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -468,7 +463,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
   ];
 
   readonly trustBadges = [
-    { icon: 'description', label: '2026 City费用整理' },
+    { icon: 'description', label: '2026费用分项列明' },
     { icon: 'verified_user', label: '校区位置先确认' },
     { icon: 'payments', label: '主费与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
@@ -505,8 +500,8 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     '外部健身房',
   ];
   readonly notes = [
-    'API BECI City Campus官方地区为Baguio，本页已归入碧瑶游学，页面内容按碧瑶校区定位整理。',
-    '本页费用按所附BECI 2026美元表整理，主费为课程和住宿；当前中介优惠免USD 100注册费。',
+    'API BECI City Campus位于碧瑶Baguio，不在宿务。',
+    '费用按2026年美元价格计算，主费为课程和住宿；通过思达启航报名免100美元注册费。',
     '1/2/3周课程费按4周价的40%/60%/80%计算，住宿费按实际周数折算。',
     '8/12/16/20/24周长期折扣为USD 50/100/200/300/400，可与常规优惠叠加。',
     'Studio Double标准价每人USD 800；夫妻同行共同使用时每人USD 750，其他情况需确认同行关系、性别和学校空房规则。',
@@ -516,7 +511,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     {
       question: 'API BECI City Campus是在宿务吗？',
       answer:
-        '不是。官方资料和公开学校资料均显示API BECI City Campus在Baguio City；本页已归入碧瑶游学。',
+        '不是。API BECI City Campus位于碧瑶Baguio City。',
     },
     {
       question: '如果我想找API BECI的宿务校区，应该看哪一所？',
@@ -524,14 +519,14 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
         '通常应看B Cebu或B\'Cebu相关资料，而不是API BECI City Campus。顾问可以帮你确认你想要的是碧瑶City Campus还是宿务B Cebu。',
     },
     {
-      question: '页面上的费用包含全部费用吗？',
+      question: '这里的费用包含全部费用吗？',
       answer:
-        '不包含全部。报价器估算优惠后的课程、住宿主费，并按当前中介优惠免注册费；SSP、签证、ACR、押金、水电、教材、维护费、洗衣和接机需另行准备，旺季费会按所选日期自动计入。',
+        '不包含全部。报价器估算优惠后的课程、住宿主费，并按思达启航优惠免注册费；SSP、签证、ACR、押金、水电、教材、维护费、洗衣和接机需另行准备，旺季费会按所选日期自动计入。',
     },
     {
       question: 'City Campus适合边工作边学习吗？',
       answer:
-        '适合列入候选。City Campus公开定位为成人、专业人士和工作者；当前2026费用表可从Lite、Native或Unlimited ESL中按课量选择，并使用Coworking和线上会议空间。',
+        '适合列入候选。City Campus定位为成人、专业人士和工作者；2026年可从Lite、Native或Unlimited ESL中按课量选择，并使用Coworking和线上会议空间。',
     },
     {
       question: 'City Campus和BECI Sparta怎么选？',
@@ -554,15 +549,6 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'APIBECI官方网站', url: 'https://beciedu.com/' },
-    { label: 'APIBECI City Campus官方介绍', url: 'https://beciedu.com/city-campus/' },
-    { label: 'APIBECI About官方说明', url: 'https://beciedu.com/about/' },
-    { label: 'API BECI City Campus公开费用与学校资料', url: 'https://global-click.jp/contents/school/api-beci-city-campus/' },
-    { label: 'API BECI City Campus 2026学校资料', url: 'https://www.fujiyama-international.com/philippines/beci-city.html' },
-    { label: 'API BECI课程调整与City Campus费用更新参考', url: 'https://philippines-university.jp/%E3%80%90api-beci%E3%80%912025%E5%B9%B45%E6%9C%88%E4%BB%A5%E9%99%8D%E3%81%AE%E3%82%B3%E3%83%BC%E3%82%B9%E5%90%8D%E5%A4%89%E6%9B%B4%EF%BC%86%E6%96%99%E9%87%91%E6%94%B9%E5%AE%9A%E3%81%AE%E3%81%8A/' },
   ];
 
   ngOnInit(): void {
@@ -854,7 +840,7 @@ export class ApiBeciCitySchoolComponent implements OnInit, AfterViewInit, OnDest
     const peakEnd = new Date('2026-08-22T23:59:59');
 
     if (start >= peakStart && start <= peakEnd) {
-      return '当前入学日期落在公开2026暑期旺季区间，报价器已按USD 40/周计入旺季附加费。';
+      return '当前入学日期落在2026暑期旺季区间，报价器已按USD 40/周计入旺季附加费。';
     }
     if (start >= new Date('2027-06-27T00:00:00') && start <= new Date('2027-08-22T23:59:59')) {
       return '当前方案覆盖2027/06/27–08/22暑期旺季，报价器已按每个实际重叠学习周USD 60计入旺季附加费。';

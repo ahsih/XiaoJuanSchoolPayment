@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-aelc-school',
   standalone: true,
@@ -46,7 +41,7 @@ export class AelcSchoolComponent {
   readonly quickFacts: QuickFact[] = [
     { label: '城市', value: 'Clark / Angeles, Pampanga' },
     { label: '适合方向', value: 'Native口语、发音、家庭项目、商务沟通候选' },
-    { label: '资料状态', value: 'AELC与同类外教型学校需逐校复核当前招生资料' },
+    { label: '报名提醒', value: '报名前由思达启航顾问向学校确认当前招生状态' },
     { label: '选校重点', value: '外教比例、实际授课老师、住宿、年龄规则、费用和接送' },
     { label: '费用', value: '需以当期学校报价和房型空位确认' },
   ];
@@ -129,7 +124,7 @@ export class AelcSchoolComponent {
   ];
 
   readonly cons = [
-    'AELC相关公开资料不够稳定，不能只凭旧介绍或二手资料报名',
+    'AELC当前招生和价格需先确认，不能只凭旧介绍报名',
     'Native-focused不等于所有课程都是外教授课，必须确认具体课表',
     '费用、房型和年龄规则差异较大，报价前需要逐校复核',
     '如果目标是IELTS高压冲刺，可能不如考试型或Sparta学校直接',
@@ -139,12 +134,12 @@ export class AelcSchoolComponent {
     {
       question: '菲律宾克拉克AELC语言学校现在可以直接报名吗？',
       answer:
-        '这里按候选池处理。由于AELC和同类Clark外教型学校的公开资料不够稳定，建议先作为“外教口语方向”候选，再由顾问逐校确认当前招生状态。',
+        '建议先把AELC作为“外教口语方向”候选，由顾问向学校确认当前招生状态后再报名。',
     },
     {
       question: '为什么不直接写具体学费？',
       answer:
-        '因为费用会随具体学校、Native课比例、房型、周数和入学日变化，而且公开资料不足以可靠确认。页面保留费用模块，但标注为当期确认。',
+        '因为费用会随具体学校、Native课比例、房型、周数和入学日变化，需要按学校当期报价确认。',
     },
     {
       question: 'Native-focused学校一定比一般ESL好吗？',
@@ -156,13 +151,5 @@ export class AelcSchoolComponent {
       answer:
         '建议同时比较CIP、EG、WE，以及AELC或其他Native-focused候选，重点看Native 1:1比例、实际老师、住宿、家庭规则、接机和总费用。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
-    { label: '南崎菲律宾游学参考入口', url: 'https://www.nanqi.org/' },
-    { label: '非凡游学菲律宾学校参考', url: 'https://feifanstudy.com/' },
   ];
 }

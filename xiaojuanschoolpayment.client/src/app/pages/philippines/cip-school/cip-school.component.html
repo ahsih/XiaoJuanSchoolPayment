@@ -45,12 +45,12 @@
       <div class="filter-bar" aria-label="住宿类别"><button type="button" [class.active]="!showHotelRooms" [attr.aria-pressed]="!showHotelRooms" (click)="showHotelRooms = false">校内宿舍</button><button type="button" [class.active]="showHotelRooms" [attr.aria-pressed]="showHotelRooms" (click)="showHotelRooms = true">校外酒店</button></div>
       <div class="room-gallery"><figure *ngFor="let room of displayedRoomPhotos"><app-expandable-image [src]="room.src" [alt]="room.title + '实景照片'" [title]="room.title" previewHeight="150px" previewFit="cover"/><figcaption>{{ room.title }}</figcaption></figure></div>
       <table class="comparison"><caption>四周住宿参考（人民币）</caption><thead><tr><th scope="col">房型</th><th scope="col">费用</th><th scope="col">入住说明</th></tr></thead><tbody><tr *ngFor="let room of displayedRooms"><th scope="row">{{ room.name }}</th><td data-label="四周费用" class="amount">{{ money(room.fee) }}元<span *ngIf="room.sharedHotel" class="subtext">原表参考，收费单位待确认</span></td><td data-label="说明">{{ room.detail }}</td></tr></tbody></table>
-      <p class="notice">校内住宿按每位学生列示。酒店多人入住须确认每人或整房费用及同住安排后再报价；斯巴达课程本期只提供校内住宿报价。房型照片为学校提供的样例，房号与配置可能不同。</p>
+      <p class="notice">校内住宿按每位学生列示。酒店多人入住须确认每人或整房费用及同住安排后再报价；斯巴达课程本期只提供校内住宿报价。房型照片仅供参考，房号与配置可能不同。</p>
       <details><summary>入住、离房与酒店安排</summary><p>酒店周日14:00入住、周六12:00退房；校内宿舍周六13:00离房。酒店未列宿舍门禁，但学生仍须遵守课表、出勤及未成年监护规定。超住须提前确认空房和费用。</p></details>
     </section>
 
     <section id="quote" class="section">
-      <div class="section-heading"><div><p class="eyebrow">04 / PLAN YOUR BUDGET</p><h2>把学习预算看清楚</h2></div><p>课程与住宿采用2026年9月人民币资料，当地费用采用2026年6月比索表。两种币种分开列示。</p></div>
+      <div class="section-heading"><div><p class="eyebrow">04 / PLAN YOUR BUDGET</p><h2>把学习预算看清楚</h2></div><p>课程与住宿为2026年9月人民币价格，当地费用为2026年6月比索价格，两种币种分开列示。</p></div>
       <div class="promotion-grid">
         <article class="promotion"><span class="tag">已计入适用报价</span><h3>长期学习优惠</h3><p>16 / 20 / 24周分别优惠<strong>300 / 600 / 900元</strong>。仅在课程可报名周数内适用，每位学生独立适用，只扣一次。</p></article>
         <article class="promotion pending"><span class="tag">适用条件需确认</span><h3>淡季现金优惠与学习权益</h3><p>海报列每4周<strong>50美元学费优惠</strong>；另有一节菲师一对一替换升级为母语外教一对一、克拉克免费接机，以及可申请25分钟免费体验课。</p><p class="small">海报写2026/12/31前，排除1、2、6、7、8月。日期按报名还是入学判断、跨季、人民币抵扣及叠加规则尚待确认，以下报价暂不扣减。升级为替换一节课。</p></article>
@@ -68,24 +68,24 @@
       <div class="holiday-block"><div class="section-heading compact"><div><h3>2026假期与学校课程安排</h3><p>默认显示后续日期。政府假日和学校是否上课分别标注，补课日期另依学校通知。</p></div><button type="button" class="text-button" (click)="showAllHolidays = !showAllHolidays" [attr.aria-expanded]="showAllHolidays">{{ showAllHolidays ? '仅看后续日期' : '查看全年' }}</button></div>
         <p class="notice"><strong>每自然月保证19天课程</strong>：因假期不足19天时安排补课，通常在周末；该自然月达到19天后不另补。个人原因或疾病缺课不补。每月最后一个周五上课日15:30—17:00全校活动不另补课。此规则不是任意连续4周保证19天。</p>
         <table class="comparison"><thead><tr><th scope="col">日期</th><th scope="col">节日 / 官方类型</th><th scope="col">学校安排</th></tr></thead><tbody><tr *ngFor="let day of holidays"><th scope="row">{{ day.date }}<span class="subtext">{{ weekday(day.date) }}</span></th><td data-label="节日">{{ day.name }}<span class="subtext">{{ day.official }}</span></td><td data-label="学校安排">{{ day.school }}</td></tr></tbody></table><p *ngIf="!holidays.length">本年度没有后续已列日期，可查看全年安排。下一年度待学校公布。</p>
-        <p class="fine-print">日期参照<a href="https://lawphil.net/executive/proc/proc2025/proc_1006_2025.html" target="_blank" rel="noopener noreferrer">2026假日公告</a>及后续官方公告核对。Speak Up手册另列节假日授课特色，须确认具体课表，不适用于所有课程。</p>
+        <p class="fine-print">节假日以菲律宾政府公告为准。部分节假日另有Speak Up特色授课，须确认具体课表，不适用于所有课程。</p>
       </div>
     </section>
 
     <section id="life" class="section">
       <div class="section-heading"><div><p class="eyebrow">06 / LIFE BEYOND THE CLASSROOM</p><h2>日常生活，也能过得从容</h2></div><p>课后休息、运动和交流，都是游学体验的一部分。活动与服务按当期安排开放。</p></div>
       <div class="life-grid"><article><h3>餐食与清洁</h3><p>周一至周六提供三餐；周日及假日为早午餐加晚餐。宿舍房间每周清洁两次，校园设Wi-Fi与自习空间。</p></article><article><h3>洗衣有两种选择</h3><p>免费使用自助洗衣机，自备洗衣液。可选付费送洗：5kg以内150比索、6—8kg 200比索、9—10kg 300比索，开放和取送时间依校方安排。</p></article><article><h3>运动与兴趣社团</h3><p>泳池、运动场，以及体育、阅读、音乐社团。English Day提供课堂外交流机会；周末短途活动的日期、成团及费用依当期公告，不包含在普通学费中。</p></article><article><h3>免费商场单程接驳</h3><p>平日17:05到Goals Gym / Nepo Mall；周六13:00到SM City Clark，周六须提前报名。<strong>仅送达，回程自理。</strong>平日法定假日停运；周六按公布安排，可能因司机情况调整。酒店往返学校班车为另一项服务。</p></article></div>
-      <div class="nearby"><h3>需要买东西、喝咖啡或就医时</h3><dl><div><dt>Coffee Cat</dt><dd>步行约2—3分钟</dd></div><div><dt>便利店</dt><dd>步行约3—5分钟</dd></div><div><dt>Nepo Mall</dt><dd>车程约5—7分钟</dd></div><div><dt>SM City Clark</dt><dd>车程约20—25分钟</dd></div><div><dt>St. Catherine医院</dt><dd>车程约10分钟</dd></div><div><dt>AUF医疗中心</dt><dd>车程约20分钟</dd></div></dl><p class="fine-print">以上为学校资料中的位置参考，实际路线、营业及车程会变化；不含商户消费和就医费用。</p></div>
+      <div class="nearby"><h3>需要买东西、喝咖啡或就医时</h3><dl><div><dt>Coffee Cat</dt><dd>步行约2—3分钟</dd></div><div><dt>便利店</dt><dd>步行约3—5分钟</dd></div><div><dt>Nepo Mall</dt><dd>车程约5—7分钟</dd></div><div><dt>SM City Clark</dt><dd>车程约20—25分钟</dd></div><div><dt>St. Catherine医院</dt><dd>车程约10分钟</dd></div><div><dt>AUF医疗中心</dt><dd>车程约20分钟</dd></div></dl><p class="fine-print">以上距离仅供参考，实际路线、营业及车程会变化；不含商户消费和就医费用。</p></div>
     </section>
 
     <section id="faq" class="section">
       <div class="section-heading"><div><p class="eyebrow">07 / BEFORE YOU DECIDE</p><h2>到校后退费与常见问题</h2></div></div>
-      <div class="refund-note"><h3>到校后需要提前结束学习</h3><p>请尽早通过顾问向学校提交书面申请，由学校核对剩余课程、住宿及已使用优惠后给出书面结果。现有资料的剩余周数门槛存在不同口径，可退金额、优惠扣回及办理时间须个案书面确认，本页不承诺固定退费比例。</p><p>走读、已开始的加课及课程降级适用各自规则，请在调整前确认。</p></div>
+      <div class="refund-note"><h3>到校后需要提前结束学习</h3><p>请尽早通过顾问向学校提交书面申请，由学校核对剩余课程、住宿及已使用优惠后给出书面结果。剩余周数门槛、可退金额、优惠扣回及办理时间以学校个案书面确认为准，不承诺固定退费比例。</p><p>走读、已开始的加课及课程降级适用各自规则，请在调整前确认。</p></div>
       <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
       <details><summary>加课、换课需要多少钱？</summary><p>下表为学校公布的额外项目参考价，单位为美元／4周；须确认当期人民币适用金额和空位，不直接计入上方人民币报价。加课开始后不退费，节假日亦不退加课费。</p><table class="comparison"><thead><tr><th scope="col">项目</th><th scope="col">参考费用</th></tr></thead><tbody><tr><th scope="row">新增母语外教一对一</th><td data-label="美元／4周">360</td></tr><tr><th scope="row">新增菲师ESL / Business / TOEIC一对一</th><td data-label="美元／4周">180</td></tr><tr><th scope="row">新增菲师IELTS / TOEFL一对一</th><td data-label="美元／4周">210</td></tr><tr><th scope="row">新增小组课</th><td data-label="美元／4周">100</td></tr><tr><th scope="row">菲师一对一转母语外教一对一</th><td data-label="美元／4周">250</td></tr><tr><th scope="row">小组课转母语外教一对一 / 菲师一对一</th><td data-label="美元／4周">260 / 120</td></tr></tbody></table></details>
     </section>
 
     <section class="contact-section"><div><p class="eyebrow">LET’S PLAN YOUR CIP STAY</p><h2>把目标、日期和预算告诉我们</h2><p>思达启航协助核对课程门槛、床位、家庭安排与适用优惠，再确认完整费用。</p></div><a class="primary-action" routerLink="/about-sida/contact">咨询思达启航 <span aria-hidden="true">↗</span></a></section>
-    <p class="page-footnote">资料核对：2026年9月20日。报价为所列项目参考，具体入学条件、床位与特殊组合以学校书面确认为准。</p>
+    <p class="page-footnote">价格更新时间：2026年9月20日。报价为所列项目参考，具体入学条件、床位与特殊组合以学校书面确认为准。</p>
   </main>
 </div>

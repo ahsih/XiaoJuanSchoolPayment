@@ -108,16 +108,16 @@ export const BTES_COURSES: readonly BtesCourse[] = [
   {
     id: 'all-in-one', name: 'BTES ESL ALL IN ONE', chineseName: '四周全包限时套餐', category: '限时套餐', fee4w: 1000, walkInFee1w: 0,
     lessons: '一对一4节＋团体课2节；固定4周',
-    suitable: '2026/08/23至2027/01/16完整就学、四人房；1,000美元包含课程、住宿、注册费及海报列明的当地费用。',
+    suitable: '2026/08/23至2027/01/16完整就学、四人房；1,000美元包含课程、住宿、注册费及套餐列明的当地费用。',
     minWeeks: 4, maxWeeks: 4, ageMin: 15, allInOne: true,
   },
 ] as const;
 
 export const BTES_ROOMS: readonly BtesRoom[] = [
   { id: 'single', name: '单人房 / Single', fee4w: 1000, electricityPerWeek: 500, note: '独立空间；每间宿舍均有卫浴、空调、个人衣柜、书桌、全身镜等基本设备。' },
-  { id: 'double', name: '双人房 / Twin', fee4w: 800, electricityPerWeek: 400, note: '双人入住；现有资料提示部分房间窗户朝向走廊，空房和实际采光须确认。' },
+  { id: 'double', name: '双人房 / Twin', fee4w: 800, electricityPerWeek: 400, note: '双人入住；部分房间窗户朝向走廊，空房和实际采光须确认。' },
   { id: 'triple', name: '三人房 / Triple', fee4w: 750, electricityPerWeek: 300, note: '三人入住；房内有一张上下铺，实际床位安排须以学校分房为准。' },
-  { id: 'quad', name: '四人房 / Quadruple', fee4w: 650, electricityPerWeek: 200, note: '四人入住，2026公开价中住宿成本最低的校内房型。' },
+  { id: 'quad', name: '四人房 / Quadruple', fee4w: 650, electricityPerWeek: 200, note: '四人入住，住宿成本最低的校内房型。' },
   { id: 'walk-in', name: '走读 / Walk-in（不住宿）', fee4w: 0, electricityPerWeek: 0, note: '只参加课程，不使用学校宿舍；按2026走读每周学费计算。', walkIn: true },
 ] as const;
 

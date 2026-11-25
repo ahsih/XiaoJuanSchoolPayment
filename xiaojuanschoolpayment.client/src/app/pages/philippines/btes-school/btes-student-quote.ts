@@ -106,8 +106,8 @@ export class BtesStudentQuote {
 
       const room = this.pairedRoom(row);
       const hasSingle = this.quotePlan.rooms.some(item => item.optionId === 'single' && this.overlap(row, item) > 0);
-      if (course.id === 'junior-5-9' && hasSingle) return 'Junior (5-9Y)官方价格表不提供校内单人房组合。';
-      if (course.id === 'parents' && hasSingle) return 'Parents / Guardian官方价格表不提供校内单人房组合。';
+      if (course.id === 'junior-5-9' && hasSingle) return 'Junior (5-9Y)课程不能搭配校内单人房。';
+      if (course.id === 'parents' && hasSingle) return 'Parents / Guardian课程不能搭配校内单人房。';
       if (course.allInOne) {
         if (this.quotePlan.courses.length !== 1 || this.quotePlan.rooms.length !== 1) return 'ALL IN ONE套餐不能与其他课程或住宿段混用。';
         if (row.weeks !== 4 || room?.id !== 'quad') return 'ALL IN ONE套餐固定4周并须选择四人房。';
@@ -286,7 +286,7 @@ export class BtesStudentQuote {
       },
       {
         item: 'SSP E-Card', unitLabel: '4,500 比索／次', quantity: 1,
-        total: included(4500, true), note: includedNote('按2026正式价目表列示。', true),
+        total: included(4500, true), note: includedNote('按2026年学校标准收取。', true),
       },
       {
         item: 'ACR I-Card外国人身份证', unitLabel: '4,000 比索／次', quantity: acrCount,
@@ -304,7 +304,7 @@ export class BtesStudentQuote {
       {
         item: '教材费', unitLabel: this.quotePlan.courseWeeks >= 5 ? '各课程类型前4周预算；后续教材实付' : `${books.toLocaleString('en-US')} 比索／本次`, quantity: 1,
         total: included(books, true),
-        note: includedNote(this.quotePlan.courseWeeks >= 5 ? '各课程类型分别按1/2/3/4周参考价预估首批教材；5周起新增教材按实际购买，每本约250–500比索。' : '官方表：1/2/3/4周分别为1,000/1,400/1,700/2,000比索。', true),
+        note: includedNote(this.quotePlan.courseWeeks >= 5 ? '各课程类型分别按1/2/3/4周参考价预估首批教材；5周起新增教材按实际购买，每本约250–500比索。' : '1/2/3/4周分别为1,000/1,400/1,700/2,000比索。', true),
       },
       {
         item: '水费', unitLabel: '300 比索／住宿周', quantity: accommodationWeeks,
@@ -317,7 +317,7 @@ export class BtesStudentQuote {
       {
         item: '宿舍电费', unitLabel: '按房型／住宿周', quantity: accommodationWeeks,
         total: electricity,
-        note: '单人/双人/三人/四人房每周分别500/400/300/200比索；每周超过20kW的部分另收25比索/kW。ALL IN ONE海报未列明包含电费，本页仍计入。',
+        note: '单人/双人/三人/四人房每周分别500/400/300/200比索；每周超过20kW的部分另收25比索/kW。ALL IN ONE套餐不含电费，报价已计入。',
       },
       {
         item: '宿务机场接机', unitLabel: this.pickupType === 'weekday' ? '1,500 比索／次' : '1,200 比索／周末次', quantity: pickup ? 1 : 0,
@@ -325,14 +325,14 @@ export class BtesStudentQuote {
       },
       {
         item: 'ECC费用', unitLabel: '700 比索／次', quantity: eccCount,
-        total: eccCount * 700, note: '超过6个月时按官方表预留；24周以内通常不触发，实际以移民局要求为准。',
+        total: eccCount * 700, note: '超过6个月时按学校标准预留；24周以内通常不触发，实际以移民局要求为准。',
       },
     ];
   }
 
   get priceYearWarning(): string {
     return this.lastCourseEnd > BTES_ALL_IN_ONE_END
-      ? '本页采用BTES 2026正式价目表；2027/01/16以后方案仅作暂估，须以学校后续价格确认。'
+      ? '报价按BTES 2026年价格计算；2027/01/16以后的方案仅作暂估，须以学校后续价格确认。'
       : '';
   }
 

@@ -97,11 +97,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -256,7 +251,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'location_city',
       label: '学校类型',
       value: '日系运营 / 宿务Mabolo大型综合校',
-      note: 'GLC前身为IDEA CEBU，2022年迁入现校区并更名，公开资料列定员约400人。',
+      note: 'GLC前身为IDEA CEBU，2022年迁入现校区并更名，定员约400人。',
     },
     {
       icon: 'record_voice_over',
@@ -268,25 +263,25 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'hotel',
       label: '住宿选择',
       value: '主楼 / 副楼校内宿舍',
-      note: '2026年价目表列主楼豪华单人、单人、双人、三人房及副楼单人、双人房。',
+      note: '2026年房型有主楼豪华单人、单人、双人、三人房及副楼单人、双人房。',
     },
     {
       icon: 'groups',
       label: '学生组成',
       value: '日本学生比例较高，多国籍环境',
-      note: '官方资料列日本、中国台湾、韩国、泰国、俄罗斯等学生来源，适合想要日系支持的人群。',
+      note: '学生来自日本、中国台湾、韩国、泰国、俄罗斯等国家和地区，适合想要日系支持的人群。',
     },
     {
       icon: 'restaurant',
       label: '费用包含',
       value: '学费 + 住宿 + 每日三餐',
-      note: '官方课程页说明套餐价包含授课、住宿和每日三餐；当地费用需另行准备。',
+      note: '套餐价包含授课、住宿和每日三餐；当地费用需另行准备。',
     },
     {
       icon: 'pool',
       label: '校园设施',
       value: '泳池 / 健身房 / 自习区 / 活动',
-      note: '公开资料列泳池、健身房、游戏室、桌球/乒乓、自习区、餐厅和高速Wi-Fi。',
+      note: '校内有泳池、健身房、游戏室、桌球/乒乓、自习区、餐厅和高速Wi-Fi。',
     },
   ];
 
@@ -323,7 +318,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
       category: '餐厅',
       title: '校内餐食',
       description:
-        '公开课程页说明套餐价含每日三餐，特殊餐食或过敏需求需提前确认。',
+        '套餐价含每日三餐，特殊餐食或过敏需求需提前确认。',
       src: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b823f1f8e88374dd30d2__D430834.webp',
     },
     {
@@ -341,7 +336,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '英文名称', value: 'Global Language Cebu（GLC）' },
     { label: '前身', value: 'IDEA CEBU，2022年11月迁入现校区并更名GLC' },
     { label: '位置', value: '2815 New Frontier St, Mabolo, Cebu City, Cebu 6000' },
-    { label: '学校规模', value: '公开资料列定员约400人' },
+    { label: '学校规模', value: '定员约400人' },
     { label: '学校定位', value: '日系运营、Mabolo市区大型综合型、半斯巴达/自律平衡' },
     { label: '主要课程', value: 'Power Speaking、IELTS、TOEIC、Business、Family、Kids / Junior、English + Internship' },
     { label: '房型', value: '主楼豪华单人、单人、双人、三人房；副楼单人、双人房' },
@@ -351,7 +346,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       image: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b82f95b2c14f958198a6__D431020.webp',
       title: 'Mabolo市区生活圈',
-      text: '校区在Cebu City Mabolo，官方资料提到Ayala、SM Cebu、超市、餐厅和医院等周边资源。',
+      text: '校区在Cebu City Mabolo，周边有Ayala、SM Cebu、超市、餐厅和医院等生活资源。',
     },
     {
       image: 'https://cdn.prod.website-files.com/61ffd9e1fcfb7e4bbc331940/6516b7f6af1e5a6d0af8e8dd__D430813.webp',
@@ -376,7 +371,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: '亲子或青少年英语',
-      text: '官方课程覆盖Family Package、Kids和Junior English，适合把GLC放进亲子候选名单。',
+      text: '课程覆盖Family Package、Kids和Junior English，适合把GLC放进亲子候选名单。',
     },
     {
       title: '想住市区且要设施完整',
@@ -415,7 +410,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       time: '07:00 - 08:00',
       title: '早餐 / 课前准备',
-      text: '公开资料列套餐含每日三餐，实际时段以到校说明为准。',
+      text: '套餐含每日三餐，实际时段以到校说明为准。',
     },
     {
       time: '08:00 - 11:50',
@@ -440,7 +435,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       time: '19:00以后',
       title: '自习 / 外出管理',
-      text: '18岁以上官方FAQ口径较自由，但建议23:00前返校；未成年规则更严格。',
+      text: '18岁以上外出规定较自由，但建议23:00前返校；未成年规则更严格。',
     },
   ];
 
@@ -612,7 +607,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   readonly trustBadges = [
-    { icon: 'description', label: '公开费用逐项核验' },
+    { icon: 'description', label: '费用逐项核验' },
     { icon: 'verified_user', label: '课程与房型提前确认' },
     { icon: 'payments', label: '套餐与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
@@ -651,7 +646,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     'Mactan周末行程',
   ];
   readonly notes = [
-    '本页2026年课程和住宿价格按GLC美元周价表整理，报价器按“每周学费 + 每周住宿费”乘以周数计算。',
+    '2026年课程和住宿按GLC美元周价计算，在线报价按“每周学费 + 每周住宿费”乘以周数计算。',
     '学校年度优惠按就读期间及课程条件计算；思达启航专属优惠每满4周50美元，所有学生免寒暑假附加费。',
     '亲子、Kids/Junior、IELTS、Business和斯巴达路线的年龄、入学条件、宿舍限制与开课安排需另行确认。',
     'SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机和押金通常不包含在课程住宿套餐内。',
@@ -663,9 +658,9 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
         'CIA更偏Mactan大型半斯巴达度假型校区；GLC更偏Cebu City Mabolo市区生活圈、日系运营、Power Speaking和亲子/考试多路线综合型。',
     },
     {
-      question: '页面上的费用包含全部费用吗？',
+      question: '在线报价包含全部费用吗？',
       answer:
-        '不包含全部。报价器主要估算课程住宿套餐和入学金；SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机、押金和个人生活费需另行准备。',
+        '不包含全部。在线报价主要估算课程住宿套餐和入学金；SSP、SSP I-Card、签证、ACR、管理费、电费、教材、接机、押金和个人生活费需另行准备。',
     },
     {
       question: 'GLC适合英语初学者吗？',
@@ -675,7 +670,7 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       question: 'GLC适合亲子或孩子游学吗？',
       answer:
-        '可以比较。官方公开课程包含Family Package、Kids English和Junior English，但需确认孩子年龄、课程、住宿、监护和当地费用。',
+        '可以比较。学校课程包含Family Package、Kids English和Junior English，但需确认孩子年龄、课程、住宿、监护和当地费用。',
     },
     {
       question: 'GLC住宿有什么要确认？',
@@ -698,12 +693,6 @@ export class GlcSchoolComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Global Language Cebu官方英文网站', url: 'https://www.glcenglish.com/' },
-    { label: 'GLC官方学校资料', url: 'https://www.glcenglish.com/about/school' },
-    { label: 'GLC Power Speaking官方课程资料', url: 'https://www.glcenglish.com/program/power-speaking' },
   ];
 
   ngOnInit(): void {

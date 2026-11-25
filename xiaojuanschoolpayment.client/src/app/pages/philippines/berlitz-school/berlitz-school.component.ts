@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-berlitz-school',
   standalone: true,
@@ -49,7 +44,7 @@ export class BerlitzSchoolComponent {
     { label: '学校定位', value: '国际语言培训品牌、成人课程、少儿课程、企业培训与测评服务' },
     { label: '课程形式', value: 'Private、Group、Self-paced、Kids & Teens、Business Services' },
     { label: '住宿', value: '非寄宿制，住宿、餐食和通勤需另行安排' },
-    { label: '费用', value: '官网未公开固定价目表，需按课程、级别、班型和当期排课报价' },
+    { label: '费用', value: '多数课程没有固定价目表，需按课程、级别、班型和当期排课报价' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -89,7 +84,7 @@ export class BerlitzSchoolComponent {
     {
       item: 'Private / One-on-One',
       amount: '需当期确认',
-      note: '官网说明可线上或面授、按目标定制，最终按语言、级别、课时包和排课方式报价。',
+      note: '可线上或面授、按目标定制，最终按语言、级别、课时包和排课方式报价。',
     },
     {
       item: 'Group Classes',
@@ -150,7 +145,7 @@ export class BerlitzSchoolComponent {
 
   readonly cons = [
     '不是宿舍制ESL学校，不适合想要校内住宿、三餐和全天管理的人',
-    '官网未公开固定完整价目表，费用必须按课程方案核价',
+    '多数课程没有固定价目表，费用必须按课程方案核价',
     '若目标是高强度雅思、多益或斯巴达管理，宿务/碧瑶考试型学校通常更适合优先比较',
     '多人小组课是否合适取决于级别匹配、开课日期和同班人数',
   ];
@@ -164,7 +159,7 @@ export class BerlitzSchoolComponent {
     {
       question: '为什么没有写固定学费？',
       answer:
-        'Berlitz Philippines官网没有公开完整固定价目表。不同语言、级别、课时、私教/小组、线上/面授和企业定制都会影响费用，所以必须当期核价。',
+        'Berlitz Philippines多数课程没有固定价目表。不同语言、级别、课时、私教/小组、线上/面授和企业定制都会影响费用，所以必须当期核价。',
     },
     {
       question: 'Berlitz适合孩子吗？',
@@ -176,16 +171,5 @@ export class BerlitzSchoolComponent {
       answer:
         'Berlitz更偏国际品牌、课程体系、测评和多语言服务；American English更偏成人口语、商务沟通和定制训练。最终看学习目标、预算、上课位置和排课。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Berlitz Philippines 官方网站', url: 'https://www.berlitzph.com/' },
-    { label: 'Berlitz Adults课程', url: 'https://www.berlitzph.com/adults/' },
-    { label: 'Berlitz Private课程', url: 'https://www.berlitzph.com/adults/private/' },
-    { label: 'Berlitz Group课程', url: 'https://www.berlitzph.com/adults/groups/' },
-    { label: 'Berlitz Kids & Teens', url: 'https://www.berlitzph.com/kids-teens/' },
-    { label: 'Berlitz Corporate Language Training', url: 'https://www.berlitzph.com/business-services/language-training/' },
-    { label: 'Berlitz Testing and Assessment', url: 'https://www.berlitzph.com/business-services/testing-and-assessment/' },
-    { label: 'Berlitz Philippines Contact / Makati', url: 'https://www.berlitzph.com/contact/' },
   ];
 }

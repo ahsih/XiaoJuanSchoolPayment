@@ -99,11 +99,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -152,19 +147,19 @@ export class ClarkTalkSchoolComponent {
       icon: 'location_on',
       label: '位置',
       value: 'Clark Freeport Zone',
-      note: '官方页面写明位于Pampanga的Clark Freeport Zone，距离Clark机场约10分钟。',
+      note: '位于Pampanga的Clark Freeport Zone，距离Clark机场约10分钟。',
     },
     {
       icon: 'record_voice_over',
       label: '课程重点',
       value: 'TALK4 / TALK6 / Hybrid',
-      note: '官方列出13个项目，包含ESL、Hybrid、Senior、Golf、Business、Internship、Barista、TOEIC和IELTS。',
+      note: '共13个项目，包含ESL、Hybrid、Senior、Golf、Business、Internship、Barista、TOEIC和IELTS。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: '校内宿舍 / 单人至家庭房',
-      note: '官方FAQ写明提供Single、Twin、Triple、Quad和Family房型；2026公开表另列3+1老师房。',
+      note: '提供Single、Twin、Triple、Quad和Family房型；2026年另有3+1老师房。',
     },
     {
       icon: 'groups',
@@ -176,13 +171,13 @@ export class ClarkTalkSchoolComponent {
       icon: 'schedule',
       label: '课堂长度',
       value: '40分钟 / 节',
-      note: '公开费用页列课程为40分钟一节，日程可从上午排到下午第10节。',
+      note: '每节课40分钟，日程可从上午排到下午第10节。',
     },
     {
       icon: 'payments',
-      label: '费用口径',
+      label: '费用说明',
       value: '2026年9月后USD参考',
-      note: '本页报价器按公开2026年9月1日起表格整理；8月31日前或优惠期需单独核价。',
+      note: '报价按2026年9月1日起的价格计算；8月31日前入学或优惠期需单独核价。',
     },
   ];
 
@@ -191,14 +186,14 @@ export class ClarkTalkSchoolComponent {
       category: '校园',
       title: 'TALK Academy Clark校舍外观',
       description:
-        '官方主图展示Clark Freeport Zone内的校园与宿舍楼，适合先判断学校环境和抵达动线。',
+        'Clark Freeport Zone内的校园与宿舍楼，适合先判断学校环境和抵达动线。',
       src: 'https://clarktalkacademy.com/assets/campus.jpg',
     },
     {
       category: '住宿',
       title: 'Dormitory房间参考',
       description:
-        '官方图库展示宿舍空间，公开资料强调房内生活设施和宿舍舒适度。',
+        '宿舍空间和房内生活设施，住得舒适是学校的特点之一。',
       src: 'https://clarktalkacademy.com/assets/blog/talk/dorm-room.jpg',
     },
     {
@@ -219,14 +214,14 @@ export class ClarkTalkSchoolComponent {
       category: '设施',
       title: 'Library / Study Lounge',
       description:
-        '官方页面列出学习休息区、图书馆、餐厅和学生支持服务，适合长期学生使用。',
+        '学校有学习休息区、图书馆、餐厅和学生支持服务，适合长期学生使用。',
       src: 'https://clarktalkacademy.com/assets/blog/talk/library-books.jpg',
     },
     {
       category: '餐厅',
       title: 'Dining Hall与日常餐食',
       description:
-        '2026年9月后的费用资料把餐食/清洁口径拆得更细，报价前要确认房型与餐食包含范围。',
+        '2026年9月后餐食和清洁分项计费更细，报价前要确认房型与餐食包含范围。',
       src: 'https://clarktalkacademy.com/assets/blog/talk/dining-hall.jpg',
     },
   ];
@@ -235,25 +230,25 @@ export class ClarkTalkSchoolComponent {
     { label: '学校名称', value: '菲律宾克拉克TALK Academy' },
     { label: '英文名称', value: 'Talk Academy Clark / Clark Talk Academy' },
     { label: '城市', value: 'Clark Freeport Zone, Pampanga' },
-    { label: '学校背景', value: '公开资料列2008年起源于Baguio，2023年在Clark重新开校；官方页面写明新校区2023年开放' },
+    { label: '学校背景', value: '2008年起源于Baguio，2023年在Clark开设新校区' },
     { label: '学校类型', value: '韩资、小规模、非斯巴达、实用英语与舒适住宿型' },
-    { label: '学生容量', value: '公开资料列最大约65名' },
-    { label: '最低年龄', value: '公开资料列7岁以上可上课；单独住宿、低龄儿童需另行确认' },
+    { label: '学生容量', value: '最多约65名' },
+    { label: '最低年龄', value: '7岁以上可上课；单独住宿、低龄儿童需另行确认' },
     { label: '主要课程', value: 'TALK4、TALK6、Hybrid A/J、Senior、Golf、Business、Internship、Barista、TOEIC、IELTS' },
-    { label: '住宿房型', value: 'Single、Twin、Triple、Quad、Family；2026表另列3+1老师房和4人房' },
-    { label: '本页费用口径', value: '按2026年9月1日后公开美元表整理；学校政策、优惠和房型空位会变动' },
+    { label: '住宿房型', value: 'Single、Twin、Triple、Quad、Family；2026年另有3+1老师房和4人房' },
+    { label: '费用说明', value: '2026年9月1日后的美元价格；学校政策、优惠和房型空位会变动' },
   ];
 
   readonly highlights: Highlight[] = [
     {
       image: 'https://clarktalkacademy.com/assets/campus.jpg',
       title: 'Clark Freeport Zone生活便利',
-      text: '官方强调机场、商场、医院、诊所和高尔夫资源都在较短车程内，适合重视抵达效率和生活舒适度的学生。',
+      text: '机场、商场、医院、诊所和高尔夫资源都在较短车程内，适合重视抵达效率和生活舒适度的学生。',
     },
     {
       image: 'https://clarktalkacademy.com/assets/blog/talk/dorm-room.jpg',
       title: '住宿舒适度是核心卖点',
-      text: '公开资料多次提到宿舍清洁、房内设施和校内住宿，适合亲子、成人长期和熟龄学生优先比较。',
+      text: '宿舍清洁、房内设施和校内住宿是学校的特点，适合亲子、成人长期和熟龄学生优先比较。',
     },
     {
       image: 'https://clarktalkacademy.com/assets/blog/talk/class-1to1.jpg',
@@ -273,11 +268,11 @@ export class ClarkTalkSchoolComponent {
     },
     {
       title: '亲子、熟龄或高尔夫英语',
-      text: '学校公开列Family房型、Senior、Golf和多种实践课程，适合不只追求考试分数的人。',
+      text: '学校有Family房型、Senior、Golf和多种实践课程，适合不只追求考试分数的人。',
     },
     {
       title: '希望小规模学校更容易照顾',
-      text: '公开资料列最大65名，整体更像小规模舒适型学校，适合偏好安静和沟通效率的人。',
+      text: '学生最多约65名，整体更像小规模舒适型学校，适合偏好安静和沟通效率的人。',
     },
   ];
 
@@ -292,16 +287,16 @@ export class ClarkTalkSchoolComponent {
     },
     {
       title: '需要明确Native课保证',
-      text: '官方有Hybrid方向，但第三方资料曾提醒Native师资状态会变动，报名时必须确认当前课程是否开放。',
+      text: '学校有Hybrid方向，但Native师资安排可能变动，报名时必须确认当前课程是否开放。',
     },
   ];
 
   readonly roomOptions: RoomOption[] = [
     {
       id: 'single',
-      name: '1人房（食事なし）',
+      name: '1人房（不含餐）',
       shortName: '1人房',
-      note: '适合成人单独住宿；餐食、清洁和床单规则需按当期表确认。',
+      note: '适合成人单独住宿；餐食、清洁和床单规则需按当期规则确认。',
       prices: { 1: 427.5, 2: 617.5, 3: 807.5, 4: 950, 5: 1187.5, 6: 1425, 7: 1662.5, 8: 1900, 12: 2850, 24: 5700 },
     },
     {
@@ -315,14 +310,14 @@ export class ClarkTalkSchoolComponent {
       id: 'three-plus-teacher',
       name: '3人+1老师房',
       shortName: '3+1房',
-      note: '2026年9月后公开表列出的预算型房型之一，1周是否开放需确认。',
+      note: '2026年9月后的预算型房型之一，1周是否开放需确认。',
       prices: { 2: 487.5, 3: 637.5, 4: 750, 5: 937.5, 6: 1125, 7: 1312.5, 8: 1500, 12: 2250, 24: 4500 },
     },
     {
       id: 'quad',
       name: '4人房',
       shortName: '4人房',
-      note: '4周费用最低的公开房型口径，实际空房、性别和年龄限制需确认。',
+      note: '4周费用最低的房型，实际空房、性别和年龄限制需确认。',
       prices: { 1: 270, 2: 390, 3: 510, 4: 600, 5: 750, 6: 900, 7: 1050, 8: 1200, 12: 1800, 24: 3600 },
     },
     {
@@ -342,7 +337,7 @@ export class ClarkTalkSchoolComponent {
       lessons: '1:1四节',
       suitable: '适合第一次Clark游学、基础口语、轻中强度学习和亲子家长。',
       tuition: { 1: 170, 2: 340, 3: 510, 4: 680, 5: 850, 6: 1020, 7: 1190, 8: 1360, 12: 2040, 24: 4080 },
-      note: '2026公开表列4周授课费USD680，房费另加。',
+      note: '2026年4周授课费680美元，房费另加。',
     },
     {
       id: 'talk6',
@@ -360,7 +355,7 @@ export class ClarkTalkSchoolComponent {
       lessons: '1:1四节 + Group两节',
       suitable: '适合想兼顾一对一和小组互动、发音或文法细节的学生。',
       tuition: { 2: 425, 3: 637.5, 4: 850, 5: 1062.5, 6: 1275, 7: 1487.5, 8: 1700, 12: 2550, 24: 5100 },
-      note: '1周未列公开价格，Hybrid课程需确认师资和开课状态。',
+      note: '暂无1周价格，Hybrid课程需确认师资和开课状态。',
     },
     {
       id: 'talk6-hybrid',
@@ -369,7 +364,7 @@ export class ClarkTalkSchoolComponent {
       lessons: '1:1六节 + Group两节',
       suitable: '适合想把一对一强度和互动课同时拉高的学生。',
       tuition: { 2: 595, 3: 892.5, 4: 1190, 5: 1487.5, 6: 1785, 7: 2082.5, 8: 2380, 12: 3570, 24: 7140 },
-      note: '公开表未列1周价格，需确认能否短期报名。',
+      note: '暂无1周价格，需确认能否短期报名。',
     },
     {
       id: 'senior',
@@ -378,7 +373,7 @@ export class ClarkTalkSchoolComponent {
       lessons: '1:1四节',
       suitable: '适合熟龄学习者、旅游英语、日常场景表达和轻压力学习。',
       tuition: { 1: 180, 2: 360, 3: 540, 4: 720, 5: 900, 6: 1080, 7: 1260, 8: 1440, 12: 2160, 24: 4320 },
-      note: '公开说明写明7岁以上均可报名，但实际适配要看年龄和目标。',
+      note: '7岁以上均可报名，但实际适配要看年龄和目标。',
     },
     {
       id: 'business',
@@ -405,7 +400,7 @@ export class ClarkTalkSchoolComponent {
       lessons: '1:1六节 + Group一节',
       suitable: '适合雅思基础备考、四科弱项补强和需要小规模照顾的学生。',
       tuition: { 2: 660, 3: 990, 4: 1320, 5: 1650, 6: 1980, 7: 2310, 8: 2640, 12: 3960, 24: 7920 },
-      note: '公开表未列1周价格，考试目标需先评估当前分数。',
+      note: '暂无1周价格，考试目标需先评估当前分数。',
     },
   ];
 
@@ -414,7 +409,7 @@ export class ClarkTalkSchoolComponent {
       label: 'TALK GOLF',
       lessons: '1:1两节 + 高尔夫',
       reference: '授课费4周USD340 + 房费',
-      note: '官方页面另列高尔夫课程、练习场和球具租赁参考，需按教练、场地和时段确认。',
+      note: '高尔夫课程、练习场和球具租赁需按教练、场地和时段确认。',
     },
     {
       label: 'TALK INTERNSHIP',
@@ -432,12 +427,12 @@ export class ClarkTalkSchoolComponent {
       label: 'Low Season Promo',
       lessons: '4周以上 + 学校宿舍',
       reference: '需当期确认',
-      note: '公开页面列有低旺季促销，但有效期、折扣金额和条件会变化，不直接写入报价器。',
+      note: '学校有低旺季促销，但有效期、折扣金额和条件会变化，报价器未计入。',
     },
   ];
 
   readonly schedule: ScheduleItem[] = [
-    { time: '07:15 - 08:00', title: '早餐', text: '官方日程列早餐时段；餐食口径需按房型和2026费用规则确认。' },
+    { time: '07:15 - 08:00', title: '早餐', text: '餐食安排需按房型和2026年费用规则确认。' },
     { time: '08:50 - 12:00', title: '上午课程', text: 'Class 1-4，可安排一对一、Hybrid小组或考试课程内容。' },
     { time: '12:00 - 13:00', title: '午餐', text: '午餐后进入下午课程，亲子和未成年学生需按学校规则行动。' },
     { time: '13:00 - 15:20', title: '下午前段', text: 'Class 5-7，TALK6和考试课程通常会使用更多下午时段。' },
@@ -446,29 +441,29 @@ export class ClarkTalkSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 100', note: '2026公开表列出发前费用，本页报价器已计入。' },
+    { item: '注册费', amount: 'USD 100', note: '出发前支付，报价已计入。' },
     { item: '机场接机', amount: 'Clark PHP1,000；Manila PHP5,500-7,000', note: '按机场、个人/家庭、抵达日和航班时间确认。' },
     { item: 'SSP申请费', amount: 'PHP 7,800', note: '到校当地费用，金额可能随政策调整。' },
     { item: '签证延长', amount: '5-8周PHP5,130起', note: '31天以上停留需办理，长周数费用逐段增加。' },
     { item: 'ACR I-Card', amount: 'PHP 4,500', note: '59天以上停留通常需要办理。' },
-    { item: '宿舍管理费&光热费', amount: 'PHP 4,000-5,500 / 4周参考', note: '按房型和周数不同而变动，2026表列每人计费。' },
+    { item: '宿舍管理费&光热费', amount: 'PHP 4,000-5,500 / 4周参考', note: '按房型和周数不同而变动，2026年按每人计费。' },
     { item: '押金', amount: 'PHP 5,000-10,000', note: '退房时扣除教材/损坏等费用后按学校规则退还。' },
     { item: '学生证', amount: 'PHP 500', note: '到校办理。' },
-    { item: '餐食选项', amount: 'PHP 10,000-15,000 / 4周参考', note: '公开表列1人房平日1餐或3餐选项；其他房型和9月后口径需确认。' },
+    { item: '餐食选项', amount: 'PHP 10,000-15,000 / 4周参考', note: '1人房可选平日1餐或3餐；其他房型和9月后安排需确认。' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'person_search', title: '先判断是否适合Clark', text: '比较TALK、CIP、EG、WE和HELP，先看学习目标、住宿偏好、外教需求和机场动线。' },
     { icon: 'menu_book', title: '确认课程强度', text: '按TALK4、TALK6、Hybrid、Senior、Golf、Business或考试方向确认每日课表。' },
-    { icon: 'hotel', title: '锁定房型空位', text: '2026年9月后房型口径变化较多，需先确认单人、双人、3+1、4人或家庭房是否可订。' },
+    { icon: 'hotel', title: '锁定房型空位', text: '2026年9月后房型变化较多，需先确认单人、双人、3+1、4人或家庭房是否可订。' },
     { icon: 'payments', title: '拆清主费和当地费', text: '把授课费、房费、注册费、接机、SSP、签证、押金、水电管理费和餐食分开列预算。' },
     { icon: 'description', title: '准备报名和入境资料', text: '协助整理护照、保险、eTravel、航班接机、现金清单和未成年/亲子资料。' },
     { icon: 'support_agent', title: '到校后继续协助', text: '课程、宿舍、账单、当地费用或生活问题，顾问可继续协助和学校沟通。' },
   ];
 
   readonly trustBadges = [
-    { icon: 'verified_user', label: '官方课程资料复核' },
-    { icon: 'payments', label: '2026公开费用整理' },
+    { icon: 'verified_user', label: '课程安排逐项确认' },
+    { icon: 'payments', label: '2026费用分项列明' },
     { icon: 'hotel', label: '房型与餐食分开确认' },
     { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
   ];
@@ -508,10 +503,10 @@ export class ClarkTalkSchoolComponent {
     '周边短途活动',
   ];
   readonly notes = [
-    '本页报价器按公开2026年9月1日后美元费用表整理，8月31日前、促销期或学校更新价目时需重新核对。',
-    '公开表把授课费和房费拆开；注册费、接机和到校PHP当地费用另计。',
-    'Hybrid、IELTS等部分课程未列1周价格，短期报名需先确认是否开放。',
-    '官方官网写明TALK4、TALK6、Hybrid、Senior、Golf、Business、Internship、Barista、TOEIC、IELTS等项目；具体老师、分班和开课日以学校回函为准。',
+    '报价器按2026年9月1日后的美元价格计算，8月31日前入学、促销期或学校调价时需重新核对。',
+    '授课费和房费分开计算；注册费、接机和到校比索当地费用另计。',
+    'Hybrid、IELTS等部分课程暂无1周价格，短期报名需先确认是否开放。',
+    '学校开设TALK4、TALK6、Hybrid、Senior、Golf、Business、Internship、Barista、TOEIC、IELTS等项目；具体老师、分班和开课日以学校确认为准。',
     '亲子、未成年、家庭房和Golf/OJT课程涉及年龄、监护、保险、空位和活动规则，不能只按成人ESL报价判断。',
   ];
 
@@ -524,7 +519,7 @@ export class ClarkTalkSchoolComponent {
     {
       question: '页面上的费用包含全部费用吗？',
       answer:
-        '不包含全部。报价器估算2026年9月后公开授课费+房费+注册费；SSP、签证、ACR、押金、宿舍管理费、光热费、餐食选项、接机和个人生活费另算。',
+        '不包含全部。报价器估算2026年9月后的授课费+房费+注册费；SSP、签证、ACR、押金、宿舍管理费、光热费、餐食选项、接机和个人生活费另算。',
     },
     {
       question: 'TALK4和TALK6怎么选？',
@@ -534,12 +529,12 @@ export class ClarkTalkSchoolComponent {
     {
       question: 'Hybrid、TOEIC、IELTS都能报名吗？',
       answer:
-        '可以放入候选，但要先确认当期开课、老师、程度要求和短期是否接受。公开表里Hybrid和IELTS未列1周价格，短期报名尤其要核实。',
+        '可以放入候选，但要先确认当期开课、老师、程度要求和短期是否接受。Hybrid和IELTS暂无1周价格，短期报名尤其要核实。',
     },
     {
       question: '为什么TALK页面强调费用确认？',
       answer:
-        '因为2026年9月后公开资料显示房型、餐食、管理费和当地费用有新口径；同时促销、空房和课程开放会变动，正式报价必须由学校确认。',
+        '因为2026年9月后房型、餐食、管理费和当地费用有新的计费方式；同时促销、空房和课程开放会变动，正式报价必须由学校确认。',
     },
   ];
 
@@ -558,14 +553,6 @@ export class ClarkTalkSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'TALK Academy Clark官方网站', url: 'https://clarktalkacademy.com/' },
-    { label: 'TALK Academy中文官方页面', url: 'https://clarktalkacademy.com/tw/' },
-    { label: '菲律宾留学中心TALK Academy 2026费用表', url: 'https://www.ph-ryugaku.com/school/clark-talk-academy/' },
-    { label: 'Matching English Clark Talk Academy学校资料', url: 'https://matchingenglish.com/ph/clark-talk-academy' },
-    { label: '菲律宾留学中心最新学校介绍PDF', url: 'https://www.ph-ryugaku.com/school/clark-talk-academy/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -677,12 +664,12 @@ export class ClarkTalkSchoolComponent {
     const newPriceStart = new Date('2026-09-01T00:00:00');
 
     if (start < newPriceStart) {
-      return '当前日期早于2026年9月1日，公开页面另有8月31日前费用口径和促销，需由顾问单独核价。';
+      return '当前日期早于2026年9月1日，8月31日前入学适用另一套价格和促销，需由顾问单独核价。';
     }
 
     return this.selectedWeeks >= 12
       ? '当前选择为12周以上，需确认长期签证、ACR、房型、餐食、管理费和促销是否适用。'
-      : '当前选择按2026年9月后公开表估算，正式报名仍需确认课程开放、房型空位、餐食和到校PHP费用。';
+      : '当前选择按2026年9月后的价格估算，正式报名仍需确认课程开放、房型空位、餐食和到校比索费用。';
   }
 
   formatUsd(amount: number): string {
