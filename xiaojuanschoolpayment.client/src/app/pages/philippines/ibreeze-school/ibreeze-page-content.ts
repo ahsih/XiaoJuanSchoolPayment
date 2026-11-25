@@ -124,9 +124,11 @@ export const IBREEZE_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * Videos from the school's own 2026 material (public/assets/ibreeze/videos/, 720p H.264 with poster frames).
- * The room clips each show exactly one room type and are cut from the school's room tours; the IB1 single room
- * has no clip. Check every frame of a new clip for other companies or the school's contact details.
+ * Videos from the school's own 2026 material and its official YouTube channel (public/assets/ibreeze/videos/,
+ * 720p H.264 with poster frames). The room clips each show exactly one room type and are cut from the school's
+ * room tours; the IB1 single room has no clip. Check every frame of a new clip for other companies or the
+ * school's contact details: the 2025 film is cut to open on the pool (no map of nearby businesses, gate,
+ * test-centre plaque or drinks machine) and to end before its social-media end card.
  */
 export interface IbreezeVideo {
   name: string;
@@ -135,6 +137,8 @@ export interface IbreezeVideo {
   duration: string;
   /** The room profile this clip shows; school-wide videos have none. */
   roomId?: string;
+  /** Hero album chip for school-wide videos; campus when left out. */
+  topic?: 'interview';
 }
 
 export const ibreezeVideoSrc = (video: IbreezeVideo) => `/assets/ibreeze/videos/${video.name}.mp4`;
@@ -142,6 +146,11 @@ export const ibreezeVideoPoster = (video: IbreezeVideo) => `/assets/ibreeze/vide
 
 export const IBREEZE_VIDEOS: IbreezeVideo[] = [
   { name: 'ibreeze-school-film', title: 'I.BREEZE 学校介绍片', duration: '3:36', description: '一支片子看完校园、教室、宿舍、餐厅和课后生活。' },
+  { name: 'ibreeze-prime-film', title: 'I.BREEZE 2025宣传片', duration: '3:48', description: '学校2025年官方宣传片：泳池、教室、一对一课、健身房、瑜伽、宿舍和餐厅。' },
+  {
+    name: 'ielts-story-jianna', title: '学员访谈：雅思5.0到7.0', duration: '1:50', topic: 'interview',
+    description: '越南学员在I.BREEZE读青少年雅思营，入学测试5.0，官方雅思考到7.0；英文字幕。',
+  },
   { name: 'ib1-twin', title: 'IB1双人间', duration: '0:12', description: '主校区A栋双人间。', roomId: 'ib1-twin' },
   { name: 'ib1-triple', title: 'IB1三人间', duration: '0:05', description: '主校区三人间。', roomId: 'ib1-triple' },
   { name: 'ib1-quad', title: 'IB1四人间', duration: '0:07', description: '主校区四人间，上下铺。', roomId: 'ib1-quad' },

@@ -759,9 +759,14 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
+          <ng-container *ngIf="shortStayRows.length; else shortStayRatios">
+            <span *ngFor="let row of shortStayRows"><b>{{ row.label }}</b><em>{{ row.text }}</em></span>
+          </ng-container>
+          <ng-template #shortStayRatios>
           <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
+          </ng-template>
         </div>
 
         <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
@@ -1226,7 +1231,7 @@
               <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
               <label *ngIf="!student.hideAgeGroup"><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
-              <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
+              <label class="cq-field-wide" *ngIf="!student.hideReturning"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label class="cq-field-wide" *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)"><span>{{ choice.label }}</span><select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
@@ -1249,7 +1254,7 @@
                 <label *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)">{{ choice.label }}<select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
-            <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <label class="option-check" *ngIf="!student.hideReturning"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
             <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup">{{ student.minorNote }}</p>
           </details>
           </ng-template>
@@ -1265,7 +1270,7 @@
               <th scope="row">{{ fee.item }}</th><td>{{ fee.unitLabel }}</td><td>{{ formatFeeQuantity(fee.quantity) }}</td><td class="fee-amount">{{ formatPhp(fee.total) }}</td><td>{{ fee.note }}</td>
             </tr></tbody>
             <tfoot>
-              <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>不含接机及房间押金</td></tr>
+              <tr><th colspan="3" scope="row">预计到校学杂费合计</th><td class="fee-amount">{{ formatPhp(estimatedLocalFeeTotal) }}</td><td>{{ localFeeTotalNote }}</td></tr>
               <tr><th colspan="3" scope="row">人民币预计金额</th><td class="fee-cny">约 {{ quoteCurrencyText(estimatedLocalFeeCny, "zh-CN") }} 元</td><td>参考汇率：1元人民币 ≈ {{ quoteCurrencyText(phpPerCny, 'zh-CN', { maximumFractionDigits: 6 }) }}比索；最终以实际兑换或支付汇率为准</td></tr>
             </tfoot>
           </table>
