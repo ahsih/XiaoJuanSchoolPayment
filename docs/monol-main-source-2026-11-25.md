@@ -14,7 +14,7 @@ schools: no price, rule or photo is shared.
 | `monol-school/monol-page-quote.ts` | Student calculation, quote and plan comparison |
 | `monol-school/monol-content-config.ts` | Versioned content document, `MONOL_POLICY_VERSION` 1 |
 | `monol-school/monol-school-page.component.ts` | Route component |
-| `public/assets/philippines/monol-main/` | `campus/` (31), `rooms/` (35) WebP photos, `videos/` (9 clips, 720p H.264, about 105 MB) |
+| `public/assets/philippines/monol-main/` | `campus/` (31), `rooms/` (35) WebP photos, `videos/` (16 clips, 720p H.264, about 185 MB) |
 
 Removed: `monol-school-detail.component.*`, the unused `monol-school.component.*`, `monol-student-quote.ts` and
 `scripts/verify-monol-promotions.cjs` (its cases are in `monol-school-page.spec.ts`). The older
@@ -79,3 +79,23 @@ current prices with each group's 2027 prices in a note until 2026/12/31, then th
 ## Tests
 
 `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.monol.spec.json --include=src/app/pages/philippines/monol-school/monol-school-page.spec.ts --progress=false`
+
+## Videos from MONOL's official YouTube channel (2026-11-25)
+
+The user asked for more videos that build trust. Facebook could not be browsed, so only the school's own YouTube
+channel was used. Seven clips were added (720p H.264 with WebP posters):
+
+| File | Source clip | Topic | Notes |
+| --- | --- | --- | --- |
+| `interview-ielts-speaking-8` | DSc0W_AaIco (2026-11-06, 10:39) | 访谈 | Cut to 3:21. Filmed in the main campus's B6 study cafe; the student lives in Misty Hills. Scores are mock tests, and the page says so |
+| `interview-japan-beginner` | ROeORY6vGkA (2026-05-26) | 访谈 | Vertical |
+| `interview-japan-campus` | r4fDQ52ewb8 (2026-05-27) | 访谈 | Vertical; "nursing room" is the clinic (医务室) |
+| `interview-russia-leap` | iRNdYPOZCBs (2026-05-06) | 访谈 | Vertical |
+| `group-class-discussion` | _7yixh9iVgo (2026-05-15) | 课堂 | Vertical |
+| `student-day-brazil` | WZ-3RFSZvJE (2026-05-06) | 课堂 | Vertical, 4:24 |
+| `essay-contest-family` | GxKEdhRLMY8 (2026-11-14) | 校园 | Vertical; the lounge's wood slats and green wall match the main campus |
+
+Clips from before August 2026 are main campus, because Sparta opened then. Left out: the Main & Sparta campus guide
+and the Main vs. Sparta clip (both campuses), later clips whose campus is not certain (gym series, boxing, welcome
+clip and others), the short version of the IELTS interview (duplicate), and the business-English vlog, which could not
+be downloaded whole. Sources are kept in `G:\Claude下载\monol-videos\src`.

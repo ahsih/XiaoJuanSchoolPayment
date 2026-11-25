@@ -141,10 +141,10 @@ export const MONOL_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A clip from MONOL's own Drive folders, in public/assets/philippines/monol-main/videos/ (720p H.264 with a WebP
- * poster each). The campus tour keeps its Chinese labels and its weekend-trip part. Interviews from other countries'
- * markets, old promos, summer-camp and street-interview clips were left out. Every frame was checked for other
- * companies and contact details; check every frame of a new clip the same way.
+ * A clip from MONOL's own Drive folders or its official YouTube channel, in public/assets/philippines/monol-main/videos/
+ * (720p H.264 with a WebP poster each). The campus tour keeps its Chinese labels and its weekend-trip part. Old promos,
+ * summer-camp, street-interview and Sparta clips were left out, and YouTube clips only after they surely show the main
+ * campus. Every frame was checked for other companies and contact details; check every frame of a new clip the same way.
  */
 export interface MonolVideo {
   name: string;
@@ -152,7 +152,9 @@ export interface MonolVideo {
   description: string;
   duration: string;
   /** Hero album group. */
-  topic: '校园' | '宿舍' | '设施' | '访谈';
+  topic: '校园' | '宿舍' | '课堂' | '设施' | '访谈';
+  /** A 720×1280 phone clip; every other clip is landscape 1280×720. */
+  vertical?: boolean;
 }
 
 export const monolVideoSrc = (video: MonolVideo) => `/${asset(`videos/${video.name}.mp4`)}`;
@@ -168,6 +170,13 @@ export const MONOL_VIDEOS: MonolVideo[] = [
   { name: 'golf-simulator', title: '室内高尔夫模拟器', description: 'MONOL+付费高尔夫课程使用的模拟器。', duration: '0:19', topic: '设施' },
   { name: 'interview-eddy', title: '中国学员 Eddy', description: '读 LEAP 课程的中国学员的英语访谈。', duration: '1:05', topic: '访谈' },
   { name: 'interview-jean', title: '中国学员 Jean', description: '读雅思课程的中国学员的英语访谈。', duration: '3:40', topic: '访谈' },
+  { name: 'interview-ielts-speaking-8', title: '雅思学员 Ida：模考口语8分', description: '来自俄罗斯的研究员，读雅思课程约两个月，每两周一次模考：写作从约5分到6.5分，最近一次模考口语8分。英文访谈。', duration: '3:21', topic: '访谈' },
+  { name: 'interview-japan-beginner', title: '日本学员：初学者开口说英语', description: '日本学员讲老师怎样耐心地带初学者开口说英语。', duration: '0:40', topic: '访谈', vertical: true },
+  { name: 'interview-japan-campus', title: '日本学员：专心学英语的环境', description: '同一位日本学员介绍咖啡厅、健身房、桑拿和医务室等设施。', duration: '0:50', topic: '访谈', vertical: true },
+  { name: 'interview-russia-leap', title: '俄罗斯学员谈 LEAP 课程', description: '来自莫斯科的学员讲读 LEAP 课程的感受。', duration: '0:47', topic: '访谈', vertical: true },
+  { name: 'group-class-discussion', title: '讨论小组课', description: '学校的四种免费小组课之一，学生围绕话题自由讨论。', duration: '1:10', topic: '课堂', vertical: true },
+  { name: 'student-day-brazil', title: '巴西学员的一天', description: '从一对一课、小组课到健身房，跟拍一位巴西学员在校的一天。', duration: '4:24', topic: '课堂', vertical: true },
+  { name: 'essay-contest-family', title: '校内英语作文比赛', description: '一起来读书的父女在校内英语作文比赛中获奖。', duration: '0:27', topic: '校园', vertical: true },
 ];
 
 const ROOM_SERVICE = '住宿费不含餐；洗衣、房间清洁和水电不另收费';
