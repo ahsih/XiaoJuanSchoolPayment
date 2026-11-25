@@ -16,15 +16,15 @@
 | --- | --- | --- | --- |
 | BESA | A&J | 06/27–08/22，60 美元／周 | `anj-school/anj-student-quote.ts` |
 | BESA | BECI EOP / Sparta / City | 06/27–08/22，60 美元／周 | `beci-quote/beci-student-quote.ts`、City 独立页 |
-| BESA | MONOL Main / Sparta | 06/27–08/22，60 美元／周 | `monol-school/monol-student-quote.ts`、`monol-sparta-school/monol-sparta-student-quote.ts` |
+| BESA | MONOL Main / Sparta | 06/27–08/22，60 美元／周 | `monol-school/monol-student-quote.ts`、`monol-sparta-school/monol-sparta-page-quote.ts` |
 | BESA | PINES Main / IELTS | 06/27–08/22，60 美元／周 | `pines-school/pines-student-quote.ts` |
 | BESA | JIC Challenger / Premium | 06/27–08/22，60 美元／周 | `jic-school/jic-student-quote.ts` |
 | BESA | WALES | 06/27–08/22，60 美元／周 | `wales-school/wales-student-quote.ts` |
-| CALA | Cebu Blue Ocean | 07/04–08/28，60 美元／周 | `cebu-blue-ocean-school/blue-ocean-student-quote.ts` |
+| CALA | Cebu Blue Ocean | 06/27–08/21（学校2027价目表自己的日期），60 美元／周 | `cebu-blue-ocean-school/cboa-page-quote.ts` |
 | CALA | BTES | 07/04–08/28，60 美元／周 | `btes-school/btes-student-quote.ts` |
 | CALA | CWA | 07/04–08/28，60 美元／周 | `curious-world-school/curious-world-school.component.ts` quick quote |
 | CALA | CELLA Uni / Premium | 07/04–08/28，60 美元／周 | `cella-quote/cella-student-quote.ts` |
-| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-banilad-school/cg-banilad-student-quote.ts`、`cg-sparta-school/cg-sparta-student-quote.ts` |
+| CALA | CG Banilad / Sparta | 07/04–08/28，60 美元／周 | `cg-page-quote.ts`（两校区共用，`CgCampusRules` 区分） |
 | CALA | EV Academy | 07/04–08/28，60 美元／周 | `ev-school/ev-quote.ts` |
 | CALA | Philinter | 07/04–08/28，60 美元／周 | `philinter-school/philinter-quote.ts` |
 | CALA | QQ English | 07/04–08/28，60 美元／周 | `qqenglish-beachfront-school/qqenglish-beachfront-school.component.ts` quick quote |
@@ -39,4 +39,4 @@
 
 ## 不在本次通知范围
 
-CIA、I.BREEZE、B'Cebu、EV La Mer 等不因本通知改变；它们继续使用各自已确认的旺季或套餐规则。CPILS 属于 CALA，用户于2026-11-21确认其2027年7月4日至8月28日的学习周按60美元／周收取（2026年仍为40美元），只计课程周。
+CIA、I.BREEZE、B'Cebu、EV La Mer 等不因本通知改变；它们继续使用各自已确认的旺季或套餐规则。CPILS 属于 CALA，但学校回复2027年仍收40美元／周；用户于2026-11-24决定其2027年7月4日至8月28日的学习周按40美元／周收取（取代2026-11-21定的60美元），只计课程周，因此 CPILS 不在 ASSOCIATION_PEAK_SCHOOL_CODES 里。

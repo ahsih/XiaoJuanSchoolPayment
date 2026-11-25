@@ -41,7 +41,7 @@ export const CPILS_FINAL_CTA_BADGES = ['快速响应', '专业顾问一对一', 
  */
 const SCHOLARSHIP_TERMS = '2027/01/01–12/27开课（05/31–08/29开课除外）';
 export const CPILS_OFFERS: PhOfferCard[] = [
-  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，可与下面的学校优惠叠加。', promotionIds: ['cpils-sida'] },
+  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，课程费和住宿费按原价先打9折，再叠加下面的学校优惠。', promotionIds: ['cpils-sida'] },
   {
     icon: 'school', title: '学校奖学金', amount: '课程费和住宿费再减5%', text: `${SCHOLARSHIP_TERMS}、至少报名4周。`,
     until: '2027-12-28', promotionIds: ['cpils-scholarship-2027'],
@@ -358,7 +358,7 @@ export const CPILS_FAQS: FaqItem[] = [
   },
   {
     question: '暑假有附加费吗？',
-    answer: '2027年7月5日至8月29日的学习周，每周加收60美元，不参与折扣。2026/12/31前报名2027年暑期的学生至少要报8周，4周名额等学校通知。',
+    answer: '2027年7月5日至8月29日的学习周，每周加收40美元，不参与折扣。2026/12/31前报名2027年暑期的学生至少要报8周，4周名额等学校通知。',
   },
   {
     question: '亲子课程怎么报？',

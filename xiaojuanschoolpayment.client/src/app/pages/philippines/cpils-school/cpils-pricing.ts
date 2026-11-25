@@ -2,7 +2,16 @@ import { CiaContentConfig, CiaCourseContent, CiaPromotionRule } from '../cia-sch
 import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 
 const DAY = 86400000;
-export const CPILS_POLICY_VERSION = 3;
+export const CPILS_POLICY_VERSION = 5;
+
+/** ACR I-CARD comes with the first tourist-visa extension (user rule 2026-11-24); ARP stays with the second. */
+export const CPILS_ACR_NOTE = '第一次续签时办理（30天签证第5周起，59天签证第9周起），学校统一带队到移民局。';
+export const CPILS_ARP_NOTE = '第二次续签时办理一次（59天签证的首次续签即为第二次）；长期签证另行确认。';
+/** The version-2 notes that said ACR I-CARD came with the second extension; untouched copies are replaced once. */
+export const CPILS_OLD_ACR_NOTES: Readonly<Record<string, readonly string[]>> = {
+  'acr-i-card': ['第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
+  arp: ['与ACR I-CARD同时办理一次；长期签证另行确认。'],
+};
 export const cpilsMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const cpilsMonday = (sunday: string) => {
   const time = Date.parse(`${sunday}T00:00:00Z`);
@@ -55,6 +64,84 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
   if (version < 1) addCpils2027Notice(config);
   if (version < 2) addCpilsVersion2(config);
   if (version < 3) addCpilsVersion3(config);
+  if (version < 4) addCpilsVersion4(config);
+  if (version < 5) addCpilsVersion5(config);
+}
+
+// The school's 2026 price list (received 2026-11-24): 1-3-week prices and the courses it prices for 2026.
+const course2026: Record<string, { price?: number; prices?: Record<string, number>; weeks?: number[] }> = {
+  'general-esl-light': { prices: short(246, 390, 510) },
+  'general-esl': { prices: short(383, 608, 795) },
+  'general-esl-plus': { prices: short(383, 608, 795) },
+  'esl-premium': { price: 1040, prices: short(426, 676, 884) },
+  'premier-sparta': { prices: short(426, 676, 884) },
+  'toeic-course': { prices: short(426, 676, 884) },
+  'toefl-course': { prices: short(426, 676, 884) },
+  'business-english': { weeks: [4, 8] },
+  'power-speaking-and-modern-communication': { weeks: [4, 8] },
+  ...Object.fromEntries(['medical-english', 'tesol', 'barista-beverage', 'hotel-hospitality', 'working-holiday']
+    .map(id => [id, { price: 1040, weeks: [4, 8, 12] }])),
+};
+const room2026: Record<string, [number | null, number, number]> = {
+  'regular-single': [408, 647, 846], 'regular-twin': [344, 546, 714],
+  'regular-triple': [318, 504, 659], 'regular-quad': [null, 455, 595],
+  'no-window-single': [408, 647, 846], 'no-window-twin': [344, 546, 714],
+  'premium-single': [445, 705, 922], 'premium-twin': [373, 592, 774],
+  'premium-triple': [348, 552, 722], 'premium-quad': [null, 507, 663],
+};
+const DISCOUNT_TEXT_V4: Record<string, [string, string]> = {
+  'cpils-sida': ['课程费和住宿费享9折。', '学校优惠之后，课程费和住宿费再享9折。'],
+  'cpils-off-season-spring': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-off-season-fall': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-no-window': ['淡季入住无对外窗单人房或双人房，每满4周优惠50美元。', '淡季入住无对外窗单人房或双人房，每满4周优惠50美元，最多300美元。'],
+};
+
+/**
+ * The school's 2026 price list and its formula (user 2026-11-24): 2026 short stays, the 2026 prices of
+ * ESL Premium and the career courses, weekly management, and wording for the school's order of the
+ * discounts, which version 5 replaced. Only untouched values change.
+ */
+function addCpilsVersion4(config: CiaContentConfig): void {
+  for (const item of config.courses) {
+    const next = course2026[item.id];
+    if (next?.price && !item.tuition) item.tuition = next.price;
+    if (next?.prices) item.feeByWeeks = { ...next.prices, ...(item.feeByWeeks ?? {}) };
+    if (next?.weeks && !item.allowedWeeks) item.allowedWeeks = [...next.weeks];
+    if (item.id === 'ielts-guarantee-12-weeks' && item.feeByWeeks?.['12'] === 3569.1) item.feeByWeeks['12'] = 3569;
+  }
+  for (const item of config.rooms) {
+    const next = room2026[item.id];
+    if (next && !Object.keys(item.feeByWeeks ?? {}).length) item.feeByWeeks = short(...next);
+  }
+  const management = config.localFees.find(item => item.id === 'management');
+  if (management?.amount === 2000 && management.periodWeeks === 4 && management.note === '每4周2,000比索。') {
+    Object.assign(management, { amount: 500, periodWeeks: 1, rounding: 'proportional', note: '每周500比索。' });
+    if (config.quoteImageSettings.localFeeNotes?.['management'] === '每4周2,000比索。') config.quoteImageSettings.localFeeNotes['management'] = management.note;
+  }
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V4[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 4 };
+}
+
+/** Version-4 wording and the wording of the order that costs the student least (user decision 2026-11-24). */
+const DISCOUNT_TEXT_V5: Record<string, [string, string]> = {
+  'cpils-sida': [DISCOUNT_TEXT_V4['cpils-sida'][1], '课程费和住宿费按原价享9折，学校优惠在此之后叠加。'],
+  'cpils-off-season-spring': [DISCOUNT_TEXT_V4['cpils-off-season-spring'][1], DISCOUNT_TEXT_V4['cpils-off-season-spring'][0]],
+  'cpils-off-season-fall': [DISCOUNT_TEXT_V4['cpils-off-season-fall'][1], DISCOUNT_TEXT_V4['cpils-off-season-fall'][0]],
+};
+
+/**
+ * The order that costs the student least (user decision 2026-11-24): 思达启航's 10% on the full price, then
+ * the school's 5%, then the fixed school deductions. Only untouched version-4 wording changes.
+ */
+function addCpilsVersion5(config: CiaContentConfig): void {
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V5[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 5 };
 }
 
 /**
@@ -203,11 +290,12 @@ function addCpilsVersion2(config: CiaContentConfig): void {
   for (const rule of settings.stayPolicies ?? []) {
     if (rule.note === '斯巴达、保证班、未成年及考试要求以学校当期通知为准。') rule.note = '斯巴达、保分班、未成年及考试要求以学校当期通知为准。';
   }
-  // The June 2026 orientation handbook: ARP is 200 pesos, and ACR I-CARD and ARP come with the
-  // second immigration extension (the first one a 59-day visa needs). Only untouched defaults change.
+  // The June 2026 orientation handbook: ARP is 200 pesos and comes with the second immigration extension
+  // (the first one a 59-day visa needs). ACR I-CARD comes with the first extension of either visa (user rule
+  // 2026-11-24, replacing the handbook's second extension). Only untouched defaults change.
   const notes: Record<string, [string, string]> = {
-    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', '第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
-    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', '与ACR I-CARD同时办理一次；长期签证另行确认。'],
+    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', CPILS_ACR_NOTE],
+    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', CPILS_ARP_NOTE],
     'visa-extension': ['按所选签证和完整停留时间预估，最终以移民局收费为准。', '30天签证首次续签5,130比索，第二次6,400比索；59天签证首次续签按第二次计；之后每次4,440比索。最终以移民局收费为准。'],
   };
   for (const item of config.localFees) {

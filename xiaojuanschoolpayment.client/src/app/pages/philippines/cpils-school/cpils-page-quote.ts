@@ -99,7 +99,7 @@ export class CpilsPageStudent implements PhPageStudent {
   }
   private get startsIn2027(): boolean { return cpilsMonday(this.quotePlan.courses[0]?.startDate ?? '') >= '2027-01-01'; }
   private kindOf(row: QuotePlanRow): QuotePlanKind { return this.quotePlan.courses.includes(row) ? 'course' : 'room'; }
-  private get sidaRate(): number { return 1 - (this.rule('cpils-sida')?.discountValue ?? 0) / 100; }
+  private get sidaPercent(): number { return this.rule('cpils-sida')?.discountValue ?? 0; }
   private get base(): number { return this.tuition + this.accommodation; }
 
   /** The course row's schedule and the price year it was charged at. */
@@ -127,7 +127,14 @@ export class CpilsPageStudent implements PhPageStudent {
   get registration(): number { return this.returningStudent ? 0 : this.pricing.registrationFee; }
   get tuition(): number { return this.quotePlan.total('course'); }
   get accommodation(): number { return this.quotePlan.total('room'); }
-  get sidaDiscount(): number { return cpilsMoney(this.base * (1 - this.sidaRate)); }
+  /**
+   * The order that costs the student least (user decision 2026-11-24, replacing the school's formula
+   * (学费＋住宿费 − 定额优惠) × 0.95 × 0.9): 思达启航's 10% on the full course and room price, then the
+   * school's 5% (off-season or 2027 scholarship) on the rest, then the school's fixed deductions in full:
+   * (学费＋住宿费) × 0.9 × 0.95 − 定额优惠 ＋ 注册费. Registration and the peak surcharge are not discounted.
+   */
+  get sidaDiscount(): number { return cpilsMoney(this.base * this.sidaPercent / 100); }
+  private get sidaRate(): number { return 1 - this.sidaPercent / 100; }
 
   /** 2026 off-season 5% for a row of 4+ weeks starting in its window (2026 course starts only). */
   private offSeasonRule(row: QuotePlanRow): CiaPromotionRule | undefined {
@@ -141,14 +148,15 @@ export class CpilsPageStudent implements PhPageStudent {
     const rule = this.rule('cpils-scholarship-2027');
     return cpils2027Eligible(this.content, this, rule) ? rule : undefined;
   }
-  /** The 2027 scholarship (5% after Sida's rate), or the 2026 off-season 5% on qualifying rows. */
+  /** The 2027 scholarship, or the 2026 off-season 5% on qualifying rows; both after 思达启航's 10%. */
   get offSeasonDiscount(): number {
+    const share = this.sidaRate;
     const scholarship = this.scholarshipRule;
-    if (scholarship) return cpilsMoney(this.base * this.sidaRate * scholarship.discountValue / 100);
+    if (scholarship) return cpilsMoney(this.base * share * scholarship.discountValue / 100);
     if (this.startsIn2027) return 0;
     return cpilsMoney([...this.quotePlan.courses, ...this.quotePlan.rooms].reduce((sum, row) => {
       const rule = this.offSeasonRule(row);
-      return rule ? sum + this.quotePlan.price(this.kindOf(row), row) * this.sidaRate * rule.discountValue / 100 : sum;
+      return rule ? sum + this.quotePlan.price(this.kindOf(row), row) * share * rule.discountValue / 100 : sum;
     }, 0));
   }
   private get offSeasonAppliedRule(): CiaPromotionRule | undefined {
@@ -171,9 +179,11 @@ export class CpilsPageStudent implements PhPageStudent {
     }
     const rule = this.rule('cpils-no-window');
     if (!rule) return 0;
-    return this.quotePlan.rooms
+    const step = Math.max(1, rule.incrementWeeks ?? 4);
+    // Capped at the 24-week tier, 300 dollars (school answer 2026-11-24).
+    return Math.min(Math.floor(24 / step) * rule.discountValue, this.quotePlan.rooms
       .filter(row => !!this.offSeasonRule(row) && ['no-window-single', 'no-window-twin'].includes(row.optionId))
-      .reduce((sum, row) => sum + Math.floor(row.weeks / Math.max(1, rule.incrementWeeks ?? 4)) * rule.discountValue, 0);
+      .reduce((sum, row) => sum + Math.floor(row.weeks / step) * rule.discountValue, 0));
   }
 
   private get holidayRule(): CiaPromotionRule | undefined {
@@ -238,8 +248,8 @@ export class CpilsPageStudent implements PhPageStudent {
     return !this.quoteError && this.weekendRule ? [CPILS_WEEKEND_ACTIVITIES] : [];
   }
 
-  /** Course weeks touching an enabled peak range (CPILS charges study weeks only), at the CALA
-   *  joint-notice rate: 40 dollars a week through 2026, 60 from 2027. */
+  /** Course weeks touching an enabled peak range (CPILS charges study weeks only), at CPILS's own
+   *  rate from the content document: 40 dollars a week in 2026 and 2027 (school reply, user 2026-11-24). */
   private get peak() {
     return calculateAssociationPeakSurcharge('CPILS', this.quotePlan.weekStarts(this.quotePlan.courses),
       this.pricing.peakSeasonRanges.filter(range => range.enabled), this.pricing.seasonalFeePerWeek);
@@ -276,6 +286,7 @@ export class CpilsPageStudent implements PhPageStudent {
       && noWindow.description.startsWith('报名2026/09/29–2027/12/27')
       ? '无对外窗单人／双人房，窗户面向走廊；符合2027年优惠报名及开课条件，可与其他优惠同享。'
       : noWindow?.description ?? '';
+    // In the order they are applied: 思达启航's 10%, the school's 5%, then the fixed school deductions.
     return [
       ...(sida && this.sidaDiscount ? [{ icon: '折', label: sida.name, value: -this.sidaDiscount, note: sida.description, promotionKey: sida.id }] : []),
       ...(offSeason && this.offSeasonDiscount ? [{ icon: '淡', label: offSeason.name, value: -this.offSeasonDiscount, note: offSeason.description, promotionKey: offSeason.id }] : []),
@@ -332,8 +343,8 @@ export class CpilsPageStudent implements PhPageStudent {
   private get longTermVisa(): boolean { return !['tourist30', 'tourist59'].includes(this.visaType); }
   /**
    * Immigration steps: a 30-day entry pays the first 29-day extension (5,130) and then the second
-   * (6,400, with ACR I-CARD and ARP); a 59-day entry already includes the first, so its first
-   * extension is the second step.
+   * (6,400, with ARP); a 59-day entry already includes the first, so its first extension is the
+   * second step. ACR I-CARD comes with the first extension of either visa (user rule 2026-11-24).
    */
   private get stepOffset(): number { return this.visaType === 'tourist59' ? 1 : 0; }
   private get extensionCount(): number {
@@ -344,7 +355,7 @@ export class CpilsPageStudent implements PhPageStudent {
     const start = this.quotePlan.date(this.quotePlan.startDate);
     return start === null ? '' : new Date(start + weeks * 7 * DAY).toISOString().slice(0, 10);
   }
-  /** Whether the stay reaches the extension that needs ACR I-CARD and ARP, and its date. */
+  /** Whether the stay reaches the extension that needs ARP, and its date. */
   private get secondStepDate(): string | undefined {
     const index = 1 - this.stepOffset;
     return this.extensionCount > index ? this.extensionDate(index) : undefined;
@@ -369,7 +380,7 @@ export class CpilsPageStudent implements PhPageStudent {
     for (const base of this.pricing.localFeeRules.filter(rule => rule.enabled && rule.includeInTotal)) {
       const extensionItem = EXTENSION_ITEMS.includes(base.id);
       const date = extensionItem && !longTerm
-        ? (base.id === 'visa-extension' ? this.extensionDate(0) : secondStep ?? plan.startDate)
+        ? (base.id === 'arp' ? secondStep ?? plan.startDate : this.extensionDate(0))
         : plan.startDate;
       const rule = cpilsDatedFee(base, date);
       let quantity = 1;
@@ -400,7 +411,7 @@ export class CpilsPageStudent implements PhPageStudent {
       if (base.id === 'ssp') quantity = longStay ? 2 : 1;
       if (base.id === 'crtv') quantity = longStay ? 1 : 0;
       if (base.id === 'acr-i-card') {
-        quantity = !longTerm && secondStep ? 1 : 0;
+        quantity = !longTerm && extensions > 0 ? 1 : 0;
         note = longTerm ? visaNote : `按${this.visaLabel}预估；${rule.note}`;
       }
       if (base.id === 'arp') {

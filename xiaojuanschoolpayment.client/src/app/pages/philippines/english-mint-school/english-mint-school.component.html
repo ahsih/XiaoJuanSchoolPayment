@@ -115,7 +115,7 @@
             </div>
           </section>
 
-          <section class="section-block" id="local-fee-reference"><div class="section-heading"><span>菲律宾当地费用</span><h2>学校公布的完整周数学杂费</h2><p>学校资料提供4、8、12、16、20、24周对应金额；网页报价与报价图片直接使用这里的同一份数据。</p></div><div class="mint-scroll-table local-reference"><table><thead><tr><th>费用项目</th><th *ngFor="let weeks of localFeeWeeks">{{ weeks }}周</th></tr></thead><tbody><tr *ngFor="let row of localFeeReferenceRows"><th>{{ row.name }}</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(row.amounts[weeks]) }}</td></tr><tr><th>官方学杂费合计</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(localFeeReferenceTotals[weeks]) }}</td></tr></tbody></table></div><p class="source-review-note">普通课程教材费未包含；每周基础电量20千瓦时，超出按20比索／千瓦时。超过24周另有学校资料列明的SSP、ECC与CRTV办理费用，本报价器暂不处理超过24周。</p></section>
+          <section class="section-block" id="local-fee-reference"><div class="section-heading"><span>菲律宾当地费用</span><h2>学校公布的完整周数学杂费</h2><p>学校资料提供4、8、12、16、20、24周对应金额；网页报价与报价图片直接使用这里的同一份数据。</p></div><div class="mint-scroll-table local-reference"><table><thead><tr><th>费用项目</th><th *ngFor="let weeks of localFeeWeeks">{{ weeks }}周</th></tr></thead><tbody><tr *ngFor="let row of localFeeReferenceRows"><th>{{ row.name }}</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(row.amounts[weeks]) }}</td></tr><tr><th>官方学杂费合计</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(localFeeReferenceTotals[weeks]) }}</td></tr></tbody></table></div><p class="source-review-note">ACR I-Card随第一次签证续签办理，8周起计入；普通课程教材费未包含；每周基础电量20千瓦时，超出按20比索／千瓦时。超过24周另有学校资料列明的SSP、ECC与CRTV办理费用，本报价器暂不处理超过24周。</p></section>
         </ng-container>
 
         <section class="quote-panel" id="quote">

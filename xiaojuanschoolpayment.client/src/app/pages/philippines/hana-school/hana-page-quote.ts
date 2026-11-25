@@ -444,7 +444,8 @@ export class HanaPageStudent implements PhPageStudent {
       : `按${this.visaLabel}预估，${extensions ? `本次${extensions}次` : '本次无需续签'}；${visaRule?.note ?? ''}`;
     const visaRows = [
       ...create('visa-extension', extensions, visaTotal, `${formatPhp(sequence[0] ?? 0)}起／次`, visaNote),
-      ...once('acr-i-card', !longTerm && plan.stayWeeks >= 9 ? 1 : 0, longTerm ? longTermNote : undefined),
+      // ACR I-Card comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      ...once('acr-i-card', !longTerm && extensions > 0 ? 1 : 0, longTerm ? longTermNote : undefined),
     ];
     if (longTerm) visaRows.forEach(row => { row.waived = true; });
 

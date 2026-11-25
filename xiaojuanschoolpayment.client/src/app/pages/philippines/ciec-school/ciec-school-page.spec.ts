@@ -175,15 +175,18 @@ describe('CIEC school page on the shared template', () => {
 
   it('estimates visa extensions and the I-Card from the stay', () => {
     expect(localFee('签证续签')).toBe(0);
-    page.selectedWeeks = 8;
-    // 56 days on a 30-day visa: one 29-day extension.
-    expect(localFee('签证续签')).toBe(4800);
     expect(localFee('I-CARD')).toBe(0);
+    page.selectedWeeks = 8;
+    // 56 days on a 30-day visa: one 29-day extension, with the I-Card (user rule 2026-11-24: ACR comes with the first extension).
+    expect(localFee('签证续签')).toBe(4800);
+    expect(localFee('I-CARD')).toBe(4000);
     page.selectedWeeks = 12;
     expect(localFee('签证续签')).toBe(10600);
     expect(localFee('I-CARD')).toBe(4000);
     student().visaType = 'tourist59';
     expect(localFee('签证续签')).toBe(5800);
+    page.selectedWeeks = 8;
+    expect(localFee('I-CARD')).toBe(0);
   });
 
   it('keeps the four-person room for four family members', () => {

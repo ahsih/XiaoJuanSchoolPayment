@@ -534,7 +534,8 @@ export class CiecPageStudent implements PhPageStudent {
     return [
       ...(studying && !cidec ? [...create('ssp', 1, { visa: true }), ...create('ssp-e-card', 1, { visa: true })] : []),
       ...(cidec ? create('cidec-ssp', 1, { visa: true }) : []),
-      ...create('i-card', this.stayDays > 59 ? 1 : 0, { visa: true }),
+      // I-CARD (ACR) comes with the first visa extension (user rule 2026-11-24, every Philippine school).
+      ...create('i-card', extensions > 0 ? 1 : 0, { visa: true }),
       ...create('visa-extension', extensions, {
         visa: true, note: visaNote, total: visaAmounts.reduce((sum, amount) => sum + amount, 0), unit: `${formatPhp(visaFirst)}起／次`,
       }),

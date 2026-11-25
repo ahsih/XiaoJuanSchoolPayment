@@ -10,6 +10,7 @@ import {
   CiaPromotionRule,
   CiaRoomContent,
 } from '../cia-school/cia-content-config';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 /** Deep copy of plain content data. Not structuredClone, which the WeChat mini program runtime lacks. */
 const copyJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -128,8 +129,8 @@ const createCourses = (): CiaCourseContent[] => [
   course('native-only', 'Native Only 外教一对一', 1260, '外教一对一4节 + 外教小班1节', '有一定基础、想全程跟外教学习的成人', '一对一全部由美国外教上。', 3),
   course('toeic', 'TOEIC 托业', 1050, '菲师一对一3节 + 外教一对一1节 + 菲师小班1节 + 外教小班1节（ESL）', '准备托业考试的学生', '每周一次模拟测试。', 4),
   course('ielts', 'IELTS 雅思', 1050, '菲师一对一3节 + 外教一对一1节 + 菲师小班1节 + 外教小班1节（ESL）', '准备雅思考试的学生', '每周一次模拟测试。', 5),
-  course('golf-leisure', '高尔夫休闲班', 700, '上午打高尔夫，下午上课：菲师一对一3节 + 菲师小班1节', '想学英语又想打高尔夫的成人', '含步行1分钟的EG GOLF练习场无限练球（平日6:00–22:00）；2周起，没有1周和3周。', 6),
-  course('golf-intensive', '高尔夫强化班', 1000, '上午打高尔夫，下午上课：菲师一对一3节 + 菲师小班1节 + 每4周16次高尔夫私教', '想系统练球的高尔夫爱好者', '在休闲班基础上每4周加16次私人教练课；2周起，没有1周和3周。', 7),
+  course('golf-leisure', '高尔夫休闲班', 700, '上午打高尔夫，下午上课：菲师一对一3节 + 菲师小班1节', '想学英语又想打高尔夫的成人', '含步行1分钟的EG GOLF练习场无限练球和练习球（平日6:00–22:00）；公用球杆可免费借，建议自带（尤其7号铁杆）；下场打球费用自理。2周起，没有1周和3周。', 6),
+  course('golf-intensive', '高尔夫强化班', 1000, '上午打高尔夫，下午上课：菲师一对一3节 + 菲师小班1节 + 每4周16次高尔夫私教', '想系统练球的高尔夫爱好者', '在休闲班基础上每4周加16次一对一高尔夫私教课；练习场、练习球和公用球杆同休闲班，下场打球费用自理。2周起，没有1周和3周。', 7),
   course(HANA_SENIOR_ID, '乐龄课程（50岁以上）', 900, '菲师一对一3节 + 菲师小班1节；周三、周五户外文化课；周六特别行程', '50岁以上、想边旅行边学实用英语的学员', '只在淡季开放，2周起。价格已含当地费用（SSP、水电杂费、电费80度内、接机等），只另付押金；周六行程满6人成行，可能另有费用。', 8, { minimumWeeks: 2 }),
   course('guardian', '家长陪读课程', 600, '菲师一对一3节 + 菲师小班1节', '陪孩子来、自己也想学的家长', '可把部分课程转给孩子上。', 9),
   course('guardian-light', '家长陪读 Light', 400, '菲师一对一2节', '想轻松学一点的陪读家长', '也可以全部转给孩子上。', 10),
@@ -157,7 +158,7 @@ const createRooms = (): CiaRoomContent[] => [
 const createLocalFees = (): CiaLocalFeeRule[] => [
   fee({ id: 'ssp', name: 'SSP特别学习许可', amount: 7500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '停留3周及以上办理；按申请的学习期间签发，最长24周。', sortOrder: 0 }),
   fee({ id: 'ssp-e-card', name: 'SSP E-Card', amount: 4000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '与SSP一起办理。', sortOrder: 1 }),
-  fee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记证', amount: 4000, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '停留9周及以上办理一次。', sortOrder: 2 }),
+  fee({ id: 'acr-i-card', name: 'ACR I-Card 外国人登记证', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '第一次签证续签时办理一次（30天签证第5周起，59天签证第9周起）。', sortOrder: 2 }),
   fee({ id: 'visa-extension', name: '签证续签', amount: 4630, rates: [4630, 5900, 4130, 4130, 4130], tourist59Rates: [5900, 4130, 4130, 4130], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '30天签证：第5–8周4,630比索，第9–12周再加5,900比索，之后每4周4,130比索；59天签证从第9周起按5,900比索起估算。以实际办理为准。', sortOrder: 3 }),
   fee({ id: 'student-id', name: '学生证', amount: 200, billingRule: 'once', includeInTotal: true, note: '一次性费用；附近部分商家凭学生证有5–10%折扣。', sortOrder: 4 }),
   fee({ id: 'utility', name: '水电杂费', amount: 2500, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'proportional', includeInTotal: true, note: '含水费、清洁、洗衣、安保、饮用水、泳池和维护；按住宿周数计：单人间每4周3,000、双人间2,500、三人间2,000比索／人，家庭房每间4,500／5,500／6,500／7,500比索（2–5人），按人数平均。', sortOrder: 5 }),
@@ -255,6 +256,8 @@ export const cloneHanaContentConfig = (value: CiaContentConfig): CiaContentConfi
   clone.quoteImageSettings.localFeeNotes ??= {};
   clone.quoteImageSettings.benefits ??= copyJson(defaults.quoteImageSettings.benefits);
   clone.quoteImageSettings.footerNotes ??= copyJson(defaults.quoteImageSettings.footerNotes);
+  // ACR I-Card moved to the first visa extension (user rule 2026-11-24); an untouched old note follows once.
+  upgradeAcrNotes(clone, defaults, { 'acr-i-card': ['停留9周及以上办理一次。'] });
   clone.media ??= [];
   return clone;
 };

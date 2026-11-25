@@ -87,7 +87,7 @@ const ARP_FEE = (): CiaLocalFeeRule =>
 const defaultLocalFees = (): CiaLocalFeeRule[] => [
   fee('ssp', 'SSP特殊学习许可证', 7800, '一次办理；学习延期时重新办理要求以学校确认为准。', 0),
   fee('ssp-e-card', 'SSP E-CARD', 4500, '学校费用表列为一次性费用。', 1),
-  fee('acr-i-card', 'ACR I-CARD', 4000, '停留满9周（超过59天）时办理一次。', 2, { billingRule: 'first-visa-extension' }),
+  fee('acr-i-card', 'ACR I-CARD', 4000, '第一次签证续签时办理（30天签证第5周起，59天签证第9周起），只收一次。', 2, { billingRule: 'first-visa-extension' }),
   ARP_FEE(),
   fee('student-id', '学生证', 500, '一次性费用。', 4),
   fee('electricity', '基础电费', 500, '每人每周含15度电，超出部分每度20比索，退房时从押金扣。', 5, { billingRule: 'per-accommodation-period', periodWeeks: 1, rounding: 'proportional' }),
@@ -275,5 +275,24 @@ export function cloneLaMerContentConfig(value: CiaContentConfig): CiaContentConf
     (clone.quoteSettings as LaMerQuoteSettings).laMerPolicyVersion = 0;
   }
   upgradeLaMerContent(clone, defaults);
+  upgradeLaMerAcrNote(clone, defaults);
   return clone;
+}
+
+/**
+ * ACR I-CARD moved to the first visa extension (user rule 2026-11-24); an untouched old note follows once.
+ * Same version stamp as `acr-first-extension.ts` (ACR_NOTE_VERSION), written out here because the server-seed
+ * script runs this file on its own, without other modules.
+ */
+const LA_MER_ACR_NOTE_VERSION = 20261124;
+const LA_MER_OLD_ACR_NOTE = '停留满9周（超过59天）时办理一次。';
+function upgradeLaMerAcrNote(clone: CiaContentConfig, defaults: CiaContentConfig): void {
+  const settings = clone.quoteSettings as LaMerQuoteSettings & { acrNoteVersion?: number };
+  if ((settings.acrNoteVersion ?? 0) >= LA_MER_ACR_NOTE_VERSION) return;
+  const fresh = defaults.localFees.find(fee => fee.id === 'acr-i-card')!.note;
+  const saved = clone.localFees.find(fee => fee.id === 'acr-i-card');
+  if (saved?.note === LA_MER_OLD_ACR_NOTE) saved.note = fresh;
+  const imageNotes = clone.quoteImageSettings.localFeeNotes;
+  if (imageNotes?.['acr-i-card'] === LA_MER_OLD_ACR_NOTE) imageNotes['acr-i-card'] = fresh;
+  settings.acrNoteVersion = LA_MER_ACR_NOTE_VERSION;
 }
