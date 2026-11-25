@@ -3,7 +3,8 @@ import { BECI_CAMPUS_PRICING } from './beci-quote/beci-pricing';
 import { createDefaultBeciContentConfig } from './beci-school/beci-content-config';
 import { CellaStudentQuote } from './cella-quote/cella-student-quote';
 import { CELLA_COURSES, CELLA_ROOMS } from './cella-quote/cella-pricing';
-import { ImsStudentQuote } from './ims-school/ims-student-quote';
+import { ImsPageStudent } from './ims-school/ims-page-quote';
+import { createDefaultImsContentConfig } from './ims-school/ims-content-config';
 import { textbookGroups, textbookPeriods } from './school-textbook-estimate';
 import { CgPageStudent } from './cg-page-quote';
 import { CG_BANILAD_RULES } from './cg-banilad-school/cg-banilad-page-quote';
@@ -69,10 +70,10 @@ describe('Course-type textbook budgets', () => {
 
 describe('IMS textbook course switches',()=>{
   it('retains its own 3000-peso price for each type and combines repeated rows',()=>{
-    const q=new ImsStudentQuote();
-    q.quotePlan.courses=[row(1,'esl',4),row(2,'esl',4)];
+    const q=new ImsPageStudent(createCiaQuotePricing(createDefaultImsContentConfig()) as any);
+    q.quotePlan.courses=[row(1,'essential-esl-4',4),row(2,'premium-esl',4)];
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(3000);
-    q.quotePlan.courses[1].optionId='business';
+    q.quotePlan.courses[1].optionId='business-english';
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(6000);
   });
 });

@@ -14,7 +14,7 @@ import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.compo
 import { GlcSchoolComponent } from './glc-school/glc-school.component';
 import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
-import { ImsSchoolComponent } from './ims-school/ims-school.component';
+import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
 import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
 import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
@@ -69,7 +69,7 @@ const schools = [
   { name: "GLC", create: () => new GlcSchoolComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
-  { name: "IMS", create: () => new ImsSchoolComponent() },
+  { name: "IMS", create: () => new ImsSchoolPageComponent() },
   { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
   { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
