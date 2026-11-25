@@ -43,6 +43,7 @@ export class PhCompareSchool<S extends PhCompareStudent> implements CompareSchoo
   get id(): string { return this.options.id; }
   get tag(): string { return this.options.tag; }
   get name(): string { return this.options.name; }
+  readonly country = '菲律宾';
   get city(): string { return this.options.city; }
   get location(): string { return this.options.location; }
   get pagePath(): string { return this.options.pagePath; }

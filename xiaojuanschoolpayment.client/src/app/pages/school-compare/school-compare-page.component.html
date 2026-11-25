@@ -2,22 +2,45 @@
   <header class="compare-hero">
     <nav class="crumbs" aria-label="面包屑"><a routerLink="/">首页</a> / <a routerLink="/philippines-study/why-philippines">菲律宾游学</a> / 学校价格对比</nav>
     <h1>学校价格对比</h1>
-    <p>选好学习目标、房型、周数和入学日期，每所学校按自己的最新价格和优惠同时算出费用。</p>
+    <p>先选国家和想比较的学校，再选学习目标、房型、周数和入学日期，每所学校按自己的最新价格和优惠同时算出费用。</p>
   </header>
 
-  <section class="compare-card" aria-labelledby="compare-setup-title">
-    <h2 id="compare-setup-title"><span class="step">1</span>选学校和条件</h2>
+  <section class="compare-card" aria-labelledby="compare-schools-title">
+    <h2 id="compare-schools-title"><span class="step">1</span>选择对比学校<small class="step-note">已选 {{ comparison.selections.length }}/{{ comparison.maxSchools }} 所</small></h2>
 
     <div class="field">
-      <span class="field-label">对比学校<small>{{ comparison.schools.length > comparison.minSchools ? '选' + comparison.minSchools + '–' + comparison.maxSchools + '所' : '更多学校陆续加入' }}</small></span>
-      <div class="chips" role="group" aria-label="对比学校">
-        <button type="button" class="chip school-chip" *ngFor="let school of comparison.schools"
+      <span class="field-label">国家<small *ngIf="comparison.countries.length < 2">更多国家陆续加入</small></span>
+      <div class="chips" role="group" aria-label="国家">
+        <button type="button" class="chip" *ngFor="let country of comparison.countries"
+          [class.active]="activeCountry === country" [attr.aria-pressed]="activeCountry === country"
+          (click)="activeCountry = country">{{ country }}</button>
+      </div>
+    </div>
+
+    <div class="field" *ngFor="let group of cityGroups; trackBy: trackCity">
+      <span class="field-label">{{ group.city }}</span>
+      <div class="chips" role="group" [attr.aria-label]="group.city + '学校'">
+        <button type="button" class="chip school-chip" *ngFor="let school of group.schools; trackBy: trackSchool"
           [class.active]="comparison.isSelected(school.id)" [attr.aria-pressed]="comparison.isSelected(school.id)"
-          [disabled]="!comparison.canToggle(school.id)" (click)="comparison.toggleSchool(school.id)">
+          [disabled]="!comparison.canToggle(school.id)" (click)="toggleSchool(school.id)">
           <strong>{{ school.tag }}</strong><small>{{ school.location }}</small>
         </button>
       </div>
     </div>
+
+    <div class="field" *ngIf="otherCountrySelections.length">
+      <span class="field-label">其他国家已选</span>
+      <div class="chips">
+        <button type="button" class="chip school-chip active" *ngFor="let selection of otherCountrySelections; trackBy: trackSelection" (click)="toggleSchool(selection.school.id)">
+          <strong>{{ selection.school.tag }}</strong><small>{{ selection.school.country }} · 点击移除</small>
+        </button>
+      </div>
+    </div>
+    <p class="hint pick-hint">最多选 {{ comparison.maxSchools }} 所；再点一次已选学校即可取消。</p>
+  </section>
+
+  <section class="compare-card" aria-labelledby="compare-setup-title">
+    <h2 id="compare-setup-title"><span class="step">2</span>选择学习条件</h2>
 
     <div class="field">
       <span class="field-label">学习目标</span>
@@ -71,8 +94,14 @@
     </details>
   </section>
 
+  <section class="compare-card compare-empty" *ngIf="missingSchools > 0">
+    <mat-icon>compare_arrows</mat-icon>
+    <p>{{ comparison.selections.length ? '再选 ' + missingSchools + ' 所学校，即可看到对比报价。' : '请在上方选择 2–' + comparison.maxSchools + ' 所学校进行对比。' }}</p>
+  </section>
+
+  <ng-container *ngIf="missingSchools === 0">
   <section class="compare-card" aria-labelledby="compare-plans-title">
-    <h2 id="compare-plans-title"><span class="step">2</span>核对各校课程和房型</h2>
+    <h2 id="compare-plans-title"><span class="step">3</span>核对各校课程和房型</h2>
     <p class="hint">已按学习目标和房型自动选好，也可以手动换。</p>
     <div class="school-plans" [class.school-plans--three]="comparison.selections.length > 2">
       <article class="school-plan" *ngFor="let selection of comparison.selections; trackBy: trackSelection">
@@ -97,7 +126,7 @@
   </section>
 
   <section class="compare-card" aria-labelledby="compare-result-title">
-    <h2 id="compare-result-title"><span class="step">3</span>{{ sheet.heading }}</h2>
+    <h2 id="compare-result-title"><span class="step">4</span>{{ sheet.heading }}</h2>
     <p class="conditions-line">{{ sheet.conditions }}</p>
     <app-plan-compare-table [sheet]="sheet"></app-plan-compare-table>
     <div class="compare-actions">
@@ -105,4 +134,5 @@
       <a class="secondary-action" routerLink="/about-sida/contact"><mat-icon>headset_mic</mat-icon>请顾问核对报价</a>
     </div>
   </section>
+  </ng-container>
 </main>

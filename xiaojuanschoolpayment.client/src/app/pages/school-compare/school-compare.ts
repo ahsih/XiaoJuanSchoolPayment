@@ -102,6 +102,8 @@ export interface CompareSchool {
   /** Short name on the column tag, for example “CIA”. */
   readonly tag: string;
   readonly name: string;
+  /** Country in Chinese, for example “菲律宾”; the page lists schools by country. */
+  readonly country: string;
   /** City, for example “宿务”; the sheet heading names it when every school shares it. */
   readonly city: string;
   /** City and area, for example “宿务市区 Talamban”. */
@@ -116,6 +118,15 @@ export interface CompareSchool {
   /** Shortest quotable length of a course (guarantee courses), 0 when free. */
   minimumWeeks(courseId: string): number;
   createPlan(courseId: string, roomId: string): CompareSchoolPlan;
+}
+
+/** A school as the comparison page loads it: the school plus how to find and apply its published revision. */
+export interface CompareSchoolSource {
+  readonly school: CompareSchool;
+  /** Database name of the school, used to find its published revision. */
+  readonly pricingSchoolName: string;
+  /** Applies a published revision; anything that is not this school's document is ignored. */
+  applyPublished(content: unknown): void;
 }
 
 export interface CompareSelection {
@@ -170,16 +181,28 @@ export class SchoolPriceComparison {
 
   get schools(): readonly CompareSchool[] { return this.catalog(); }
 
-  /** Selects the given schools (or the first ones in the catalogue) and matches their courses and rooms. */
+  /** Countries with at least one school, in catalogue order. */
+  get countries(): string[] {
+    return [...new Set(this.catalog().map(school => school.country))];
+  }
+
+  /** A country's schools grouped by city, in catalogue order. */
+  schoolsByCity(country: string): Array<{ city: string; schools: CompareSchool[] }> {
+    const groups: Array<{ city: string; schools: CompareSchool[] }> = [];
+    for (const school of this.catalog().filter(item => item.country === country)) {
+      const group = groups.find(item => item.city === school.city);
+      if (group) group.schools.push(school);
+      else groups.push({ city: school.city, schools: [school] });
+    }
+    return groups;
+  }
+
+  /** Selects exactly the given schools (the student picks the rest) and matches their courses and rooms. */
   start(schoolIds: readonly string[] = []): void {
     const catalog = this.catalog();
     const picked = schoolIds
       .map(id => catalog.find(school => school.id === id))
       .filter((school, index, list): school is CompareSchool => !!school && list.indexOf(school) === index);
-    for (const school of catalog) {
-      if (picked.length >= this.minSchools) break;
-      if (!picked.includes(school)) picked.push(school);
-    }
     this.selections.splice(0, this.selections.length,
       ...picked.slice(0, this.maxSchools).map(school => this.select(school)));
     this.respectMinimumWeeks();
@@ -189,8 +212,9 @@ export class SchoolPriceComparison {
     return this.selections.some(selection => selection.school.id === schoolId);
   }
 
+  /** A selected school can always be removed; another can be added while fewer than the maximum are chosen. */
   canToggle(schoolId: string): boolean {
-    return this.isSelected(schoolId) ? this.selections.length > this.minSchools : this.selections.length < this.maxSchools;
+    return this.isSelected(schoolId) || this.selections.length < this.maxSchools;
   }
 
   toggleSchool(schoolId: string): void {
@@ -337,7 +361,8 @@ export class SchoolPriceComparison {
     ];
 
     const cities = [...new Set(schools.map(school => school.city))];
-    const region = cities.length === 1 ? cities[0] : '';
+    const countries = [...new Set(schools.map(school => school.country))];
+    const region = cities.length === 1 ? cities[0] : countries.length === 1 ? countries[0] : '';
     const notes = [
       '学校费用与到校学杂费分开支付；到校学杂费在到校后当地缴纳，不含接机和可退押金。',
       '各校课程、优惠和学杂费按各自学校的最新规则计算；每日课程节数和班型不同，请结合课程内容比较。',

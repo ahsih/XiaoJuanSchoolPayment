@@ -20,7 +20,7 @@ describe('Cross-school price comparison', () => {
   const setup = () => {
     const sources = createCompareSchools();
     const comparison = new SchoolPriceComparison(() => sources.map(source => source.school), () => rates);
-    comparison.start();
+    comparison.start(['cia', 'ev']);
     comparison.conditions.registrationDate = '2026-11-20';
     comparison.setStartDate('2027-03-07');
     return { sources, comparison };
@@ -86,7 +86,8 @@ describe('Cross-school price comparison', () => {
   it('starts from the same prices as each page without a published revision', () => {
     pageProviders();
     const pages = { cia: TestBed.runInInjectionContext(() => new CiaSchoolComponent()), ev: TestBed.runInInjectionContext(() => new EvSchoolPageComponent()) };
-    for (const source of createCompareSchools()) {
+    // The other schools check this in their own specs (schools/*-compare.spec.ts).
+    for (const source of createCompareSchools().filter(item => item.school.id === 'cia' || item.school.id === 'ev')) {
       const page = pages[source.school.id as 'cia' | 'ev'];
       expect(source.school.rooms.map(room => `${room.id}:${room.fee}`).sort())
         .toEqual(page.roomFees.map(room => `${room.id}:${room.fee}`).sort());
@@ -134,6 +135,8 @@ describe('Cross-school price comparison', () => {
   it('opens with the plan a school page links with', () => {
     const { comparison } = setup();
     comparison.applyLink({ from: 'ev', course: 'sparta-ielts-regular', room: 'triple', weeks: '8', start: '2027-01-10' });
+    expect(comparison.selections.map(selection => selection.school.id)).toEqual(['ev']);
+    comparison.toggleSchool('cia');
     expect(comparison.selections.map(selection => selection.school.id)).toEqual(['ev', 'cia']);
     expect(comparison.goal).toBe('ielts');
     expect(comparison.beds).toBe(3);
@@ -147,7 +150,7 @@ describe('Cross-school price comparison', () => {
   it('applies a published revision and keeps the comparison valid', () => {
     const source = createEvCompareSource();
     const comparison = new SchoolPriceComparison(() => [source.school, ...createCompareSchools().map(item => item.school).filter(school => school.id !== 'ev')], () => rates);
-    comparison.start();
+    comparison.start(['ev']);
     const content = cloneEvContentConfig(createDefaultEvContentConfig());
     const double = content.rooms.find(room => room.id === 'double')!;
     double.fee = 1234;
@@ -169,7 +172,19 @@ describe('Cross-school price comparison', () => {
     expect(comparison.endDate).toBe('2027-04-03');
     comparison.setWeeks(40);
     expect(comparison.conditions.weeks).toBe(24);
+  });
+
+  it('lets the student pick and remove schools, starting with none', () => {
+    const comparison = new SchoolPriceComparison(() => createCompareSchools().map(source => source.school), () => rates);
+    comparison.start();
+    expect(comparison.selections.length).toBe(0);
+    expect(comparison.ready).toBeFalse();
+    expect(comparison.countries).toEqual(['菲律宾']);
+    comparison.toggleSchool('ev');
     comparison.toggleSchool('cia');
-    expect(comparison.selections.length).toBe(2);
+    expect(comparison.selections.map(selection => selection.school.id)).toEqual(['ev', 'cia']);
+    expect(comparison.canToggle('cia')).toBeTrue();
+    comparison.toggleSchool('cia');
+    expect(comparison.selections.map(selection => selection.school.id)).toEqual(['ev']);
   });
 });

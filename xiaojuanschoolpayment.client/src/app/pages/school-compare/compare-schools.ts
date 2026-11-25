@@ -10,15 +10,13 @@ import { CiaStudentQuote } from '../philippines/cia-school/cia-student-quote';
 import { cloneEvContentConfig, createDefaultEvContentConfig, EV_IELTS_GUARANTEE_ID } from '../philippines/ev-school/ev-content-config';
 import { EvPageStudent, type EvQuotePricing } from '../philippines/ev-school/ev-page-quote';
 import { PhCompareSchool } from './ph-compare-school';
-import type { CompareSchool } from './school-compare';
+import { createCgBaniladCompareSource } from './schools/cg-banilad-compare';
+import { createIbreezeCompareSource } from './schools/ibreeze-compare';
+import { createMonolCompareSource } from './schools/monol-compare';
+import { createPinesCompareSource } from './schools/pines-compare';
+import type { CompareSchoolSource } from './school-compare';
 
-export interface CompareSchoolSource {
-  readonly school: CompareSchool;
-  /** Database name of the school, used to find its published revision. */
-  readonly pricingSchoolName: string;
-  /** Applies a published revision; anything that is not this school's document is ignored. */
-  applyPublished(content: unknown): void;
-}
+export type { CompareSchoolSource } from './school-compare';
 
 const isContentFor = (code: string, value: unknown): value is CiaContentConfig => {
   const content = value as Partial<CiaContentConfig> | null;
@@ -104,7 +102,14 @@ export function createEvCompareSource(): CompareSchoolSource {
   };
 }
 
-/** Every school that can be compared, in the order the page lists them. */
+/** Every school that can be compared, in the order the page lists them (grouped by country, then city). */
 export function createCompareSchools(): CompareSchoolSource[] {
-  return [createCiaCompareSource(), createEvCompareSource()];
+  return [
+    createCiaCompareSource(),
+    createEvCompareSource(),
+    createCgBaniladCompareSource(),
+    createIbreezeCompareSource(),
+    createPinesCompareSource(),
+    createMonolCompareSource(),
+  ];
 }

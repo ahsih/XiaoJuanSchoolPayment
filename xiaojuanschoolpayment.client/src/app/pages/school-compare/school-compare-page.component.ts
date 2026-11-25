@@ -18,10 +18,14 @@ import { buildPhilippinesDetailedQuote } from '../../components/philippines-quot
 import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-download-button.component';
 import type { QuoteImageCardData } from '../../components/quote-image-types';
 import { createCompareSchools } from './compare-schools';
-import { COMPARE_GOALS, COMPARE_ROOM_SIZES, SchoolPriceComparison, type CompareSelection } from './school-compare';
+import { COMPARE_GOALS, COMPARE_ROOM_SIZES, SchoolPriceComparison, type CompareSchool, type CompareSelection } from './school-compare';
 
-/** Title-card photo of the comparison image. */
-const COMPARE_IMAGE_HERO = '/assets/philippines/cebu-city-view.webp';
+/** Title-card photo of the comparison image, by the first school's city. */
+const COMPARE_IMAGE_HEROES: Readonly<Record<string, string>> = {
+  宿务: '/assets/philippines/cebu-city-view.webp',
+  碧瑶: '/assets/philippines/baguio-cool-city.webp',
+};
+const DEFAULT_IMAGE_HERO = COMPARE_IMAGE_HEROES['宿务'];
 
 @Component({
   selector: 'app-school-compare-page',
@@ -53,6 +57,10 @@ export class SchoolComparePageComponent implements OnInit {
     () => ({ usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, date: this.exchangeRateDate, live: this.usingLiveExchangeRates }),
   );
 
+  /** Country whose schools are listed; schools already picked in another country stay selected. */
+  activeCountry = this.comparison.countries[0] ?? '';
+  private readonly loadedSources = new Set<string>();
+
   ngOnInit(): void {
     const params = this.route.snapshot.queryParamMap;
     const read = (name: string) => params.get(name) ?? undefined;
@@ -64,10 +72,27 @@ export class SchoolComparePageComponent implements OnInit {
       weeks: read('weeks'),
       start: read('start'),
     });
-    this.loadPublishedContent();
+    this.activeCountry = this.comparison.selections[0]?.school.country ?? this.activeCountry;
+    this.loadSelectedContent();
   }
 
   get sheet(): PlanCompareSheet { return this.comparison.sheet; }
+
+  get cityGroups() { return this.comparison.schoolsByCity(this.activeCountry); }
+
+  /** Picked schools outside the listed country, shown so they can still be removed. */
+  get otherCountrySelections(): CompareSelection[] {
+    return this.comparison.selections.filter(selection => selection.school.country !== this.activeCountry);
+  }
+
+  get missingSchools(): number {
+    return Math.max(0, this.comparison.minSchools - this.comparison.selections.length);
+  }
+
+  toggleSchool(schoolId: string): void {
+    this.comparison.toggleSchool(schoolId);
+    this.loadSelectedContent();
+  }
 
   get conditionsSummary(): string {
     const conditions = this.comparison.conditions;
@@ -88,12 +113,15 @@ export class SchoolComparePageComponent implements OnInit {
   }
 
   trackSelection(_index: number, selection: CompareSelection): string { return selection.school.id; }
+  trackCity(_index: number, group: { city: string }): string { return group.city; }
+  trackSchool(_index: number, school: CompareSchool): string { return school.id; }
 
   get compareImageData(): QuoteImageCardData {
     const sheet = this.sheet;
     const { weeks, startDate } = this.comparison.conditions;
+    const city = this.comparison.selections[0]?.school.city ?? '';
     const base = buildPhilippinesDetailedQuote({
-      schoolCode: '', schoolName: '各校', filePrefix: '学校对比', heroSrc: COMPARE_IMAGE_HERO,
+      schoolCode: '', schoolName: '各校', filePrefix: '学校对比', heroSrc: COMPARE_IMAGE_HEROES[city] ?? DEFAULT_IMAGE_HERO,
       weeks, startDate, usdToCny: this.usdToCny, totalUsd: 0, paymentItems: [], localFeeItems: [],
       localFeeTotal: 0, localFeeCny: 0, localFeeNote: '', ruleNotes: [],
     });
@@ -106,9 +134,11 @@ export class SchoolComparePageComponent implements OnInit {
     };
   }
 
-  /** A published employee revision overrides the defaults, as on each school page. */
-  private loadPublishedContent(): void {
+  /** A published employee revision overrides the defaults, as on each school page; loaded once a school is picked. */
+  private loadSelectedContent(): void {
     for (const source of this.sources) {
+      if (!this.comparison.isSelected(source.school.id) || this.loadedSources.has(source.school.id)) continue;
+      this.loadedSources.add(source.school.id);
       this.schoolService.getSchools({ name: source.pricingSchoolName }).pipe(
         switchMap(schools => {
           const school = schools.find(item => item.name === source.pricingSchoolName);
