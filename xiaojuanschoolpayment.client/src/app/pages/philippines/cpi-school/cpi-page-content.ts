@@ -170,6 +170,12 @@ export const CPI_VIDEOS: CpiVideo[] = [
     description: '校内夏日活动节的精选片段：白天乒乓球和泳池篮球，晚上泡沫派对。',
     details: ['校内节日活动', '2024年8月拍摄'],
   },
+  // 2026-11-26: highlights of CPI's own festival film, cut before the bingo host and the nationality food stalls and night shows.
+  {
+    name: 'coolture-festival', title: '校园文化节', duration: '1:28', orientation: 'landscape', section: 'tour', label: 'CAMPUS EVENT',
+    description: '全校师生一起过的文化节：小学员和成人游戏、韩服和旗袍等传统服装，晚上在餐厅吃自助晚宴。',
+    details: ['游戏、传统服装与晚宴', '2025年拍摄'],
+  },
   // Short campus clips (2026-11-23): one-to-one lost two seconds showing another company's staff T-shirt.
   { name: 'campus-walk', title: '走进校园', duration: '0:10', orientation: 'landscape', section: 'life', description: '从入口走廊走进校园，看看宿舍楼和中间的广场。' },
   { name: 'pool', title: '泳池', duration: '0:06', orientation: 'landscape', section: 'life', description: '校园中间的泳池和池边躺椅。' },
@@ -183,6 +189,15 @@ export const CPI_VIDEOS: CpiVideo[] = [
   { name: 'teachers', title: '老师团队', duration: '0:45', orientation: 'portrait', section: 'life', description: 'CPI的老师们在校园里合影。' },
   { name: 'graduation', title: '每周毕业典礼', duration: '0:51', orientation: 'portrait', section: 'life', description: '结业学员上台发言、表演，大家一起祝贺。' },
   { name: 'ukulele-class', title: '尤克里里课', duration: '0:49', orientation: 'portrait', section: 'life', description: '青少年营的学生在学校餐厅学尤克里里。' },
+  // From CPI's YouTube Shorts (2026-11-26), cut before each end card with the school's social accounts.
+  {
+    name: 'teachers-day', title: '教师节：学员给老师送感谢', duration: '2:56', orientation: 'portrait', section: 'life',
+    description: '2026年10月教师节，学员拿着写好的感谢纸条，在校园里找到自己的老师当面送上。',
+  },
+  {
+    name: 'new-students', title: '新生入学合影', duration: '0:21', orientation: 'portrait', section: 'life',
+    description: '2024年6月至10月几期新生入学当天，在教学楼台阶前的合影。',
+  },
 ];
 
 const A_SERVICE = '每周打扫2次、洗衣2次，每周换床单1次';
