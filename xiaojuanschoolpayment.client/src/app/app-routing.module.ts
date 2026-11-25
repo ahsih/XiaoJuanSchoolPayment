@@ -855,6 +855,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/uk/st-giles',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-hub.component').then((m) => m.StGilesHubComponent),
+      },
+      // One page per St Giles UK campus; the shared component reads the campus from the route data.
+      ...(['london-central', 'london-highgate', 'brighton', 'cambridge', 'eastbourne'] as const).map((campus) => ({
+        path: `overseas-study-tour/uk/st-giles/${campus}`,
+        data: { campus },
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-campus.component').then(
+            (m) => m.StGilesCampusComponent,
+          ),
+      })),
+      {
         path: 'overseas-study-tour/singapore',
         loadComponent: () =>
           import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(
