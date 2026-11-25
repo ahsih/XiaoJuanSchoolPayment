@@ -17,6 +17,7 @@ import { CgSpartaSchoolPageComponent } from '../cg-sparta-school/cg-sparta-schoo
 import { CiecSchoolPageComponent } from '../ciec-school/ciec-school-page.component';
 import { CpiSchoolPageComponent } from '../cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from '../cpils-school/cpils-school-page.component';
+import { ElsaSchoolPageComponent } from '../elsa-school/elsa-school-page.component';
 import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
 import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
 import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
@@ -93,6 +94,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['CG Sparta', CgSpartaSchoolPageComponent],
     ['CIEC', CiecSchoolPageComponent],
     ['CPI', CpiSchoolPageComponent],
+    ['ELSA', ElsaSchoolPageComponent],
     ['EV', EvSchoolPageComponent],
     ['English Fella First', FellaFirstCampusSchoolComponent],
     ['English Fella Second', FellaSecondCampusSchoolComponent],
