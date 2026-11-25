@@ -117,10 +117,15 @@ export const MONOL_SPARTA_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A clip from MONOL Sparta's own Drive folders, in public/assets/philippines/monol-sparta/videos/ (720p H.264 with
- * a poster each). The facilities tour is cut before its 76-second black tail. The school's “with people” promo is
- * left out: its people look generated, so it may not show the real campus. Every frame was checked for other
- * companies and contact details; check every frame of a new clip the same way.
+ * A clip from MONOL Sparta's own Drive folders or MONOL's official YouTube channel, in
+ * public/assets/philippines/monol-sparta/videos/ (720p H.264 with a poster each). The facilities tour is cut before
+ * its 76-second black tail. The five YouTube Shorts (2026-11-25: mini tour, teacher interview, gym, study room,
+ * first-semester moments) are cut as follows: the mini tour loses its bulletin-board shot (bus-company QR codes) and
+ * its closing poster (website, generated person); the moments clip loses the classroom whose glass still carries the
+ * former CNS school logo; the teacher interview loses the sentences naming CNS. Left out, because their people look
+ * generated: the school's “with people” promo, the 24-hour timelapse, the Main vs Sparta video and the AI shots that
+ * the Chinese campus guide mixes into its Sparta part. Every frame was checked for other companies and contact
+ * details; check every frame of a new clip the same way.
  */
 export interface MonolSpartaVideo {
   name: string;
@@ -129,7 +134,7 @@ export interface MonolSpartaVideo {
   duration: string;
   orientation: 'landscape' | 'portrait';
   /** Hero album group. */
-  topic: '校园' | '宿舍' | '餐厅';
+  topic: '校园' | '课堂' | '宿舍' | '餐厅' | '访谈';
 }
 
 export const monolSpartaVideoSrc = (video: MonolSpartaVideo) => `/${asset(`videos/${video.name}.mp4`)}`;
@@ -139,7 +144,11 @@ export const MONOL_SPARTA_VIDEOS: MonolSpartaVideo[] = [
   { name: 'facilities-tour', title: '校园设施导览', description: '一对一教室、餐厅、交谊厅、楼顶花园和各种房型。', duration: '1:55', orientation: 'landscape', topic: '校园' },
   { name: 'rooftop-tour-01', title: '楼顶空中花园', description: '草坪、步道和休息区。', duration: '0:28', orientation: 'landscape', topic: '校园' },
   { name: 'rooftop-tour-02', title: '空中花园看碧瑶', description: '从楼顶看碧瑶市区。', duration: '0:18', orientation: 'landscape', topic: '校园' },
-  { name: 'discipline-check', title: '自习巡查', description: '老师在宿舍楼层巡查。', duration: '0:09', orientation: 'portrait', topic: '校园' },
+  { name: 'sparta-mini-tour', title: '校区快速导览', description: '校门、前台、自习区、一对一和团体教室、餐厅和碧瑶市景。', duration: '0:39', orientation: 'portrait', topic: '校园' },
+  { name: 'gym-tour', title: '1楼健身房', description: '综合训练架、跑步机和动感单车。', duration: '0:11', orientation: 'portrait', topic: '校园' },
+  { name: 'semester-moments', title: '第一学期课堂片段', description: '一对一课、团体课和课间运动场。', duration: '0:14', orientation: 'portrait', topic: '课堂' },
+  { name: 'study-room', title: '自习室', description: '一人一格的隔间座位，带台灯和白板。', duration: '0:08', orientation: 'portrait', topic: '课堂' },
+  { name: 'discipline-check', title: '自习巡查', description: '老师在宿舍楼层巡查。', duration: '0:09', orientation: 'portrait', topic: '课堂' },
   { name: 'premium-single-room-tour', title: '豪华单人间', description: '卧室、阳台、书桌、衣柜和卫生间。', duration: '0:24', orientation: 'landscape', topic: '宿舍' },
   { name: 'standard-single-room-tour', title: '标准单人间', description: '床、书桌、小冰箱和卫生间。', duration: '0:24', orientation: 'landscape', topic: '宿舍' },
   { name: 'semi-single-room-tour', title: '单人雅房', description: '床、书桌、衣柜和卫生间。', duration: '0:24', orientation: 'landscape', topic: '宿舍' },
@@ -147,6 +156,7 @@ export const MONOL_SPARTA_VIDEOS: MonolSpartaVideo[] = [
   { name: 'triple-room-tour-01', title: '三人间', description: '三张床、书桌和卫生间。', duration: '0:24', orientation: 'landscape', topic: '宿舍' },
   { name: 'triple-room-tour-02', title: '三人间（另一间）', description: '三张床、书桌和卫生间。', duration: '0:24', orientation: 'landscape', topic: '宿舍' },
   { name: 'cafeteria-tour', title: '6楼餐厅和交谊厅', description: '用餐区和靠窗的自习座位。', duration: '0:12', orientation: 'landscape', topic: '餐厅' },
+  { name: 'teacher-interview', title: '老师谈斯巴达校区', description: '两位老师讲斯巴达校区的不同：管得更严，晚上还有词汇、发音和商务课。英文对话，带英文字幕。', duration: '1:10', orientation: 'portrait', topic: '访谈' },
 ];
 
 const ROOM_SERVICE = '住宿费含平日三餐，周末和假日一餐（早午餐）';

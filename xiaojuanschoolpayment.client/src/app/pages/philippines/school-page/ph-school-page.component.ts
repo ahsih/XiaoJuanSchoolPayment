@@ -289,7 +289,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return [
       student.visaLabel,
       student.selectedAgeGroup === 'minor' ? '未满18岁' : '18岁及以上',
-      student.returningStudent ? '老学员' : '新学员',
+      student.hideReturning ? '' : student.returningStudent ? '老学员' : '新学员',
       student.selectedRegistrationDate ? `报名日${student.selectedRegistrationDate.replace(/-/g, '/')}` : '',
     ].filter(Boolean).join(' · ');
   }
@@ -450,16 +450,23 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     const calendar = this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0];
     if (!calendar) return [];
     const year = calendar.year;
-    const ranges = [...this.peakSeasonCalendarRanges.filter(range => range.enabled !== false), ...this.calendarFreePeakRanges];
+    const ranges = this.peakSeasonCalendarRanges.filter(range => range.enabled !== false);
+    const freeRanges = this.calendarFreePeakRanges;
     return Array.from({ length: 12 }, (_, offset) => {
       const month = offset + 1;
       const first = `${year}-${String(month).padStart(2, '0')}-01`;
       const last = `${year}-${String(month).padStart(2, '0')}-31`;
+      // A school-only range (HANA, IMS) marks the months of its class weeks: a week belongs to the month of its
+      // Wednesday, so IMS's week from Sunday 2027/05/30 marks June, not May.
+      const wednesdays = Array.from({ length: 31 }, (_, index) => new Date(Date.UTC(year, offset, index + 1)))
+        .filter(day => day.getUTCMonth() === offset && day.getUTCDay() === 3)
+        .map(day => day.toISOString().slice(0, 10));
       return {
         month,
         holidays: calendar.months.find(item => item.month === month)?.holidays ?? [],
         exams: year === 2027 ? this.ieltsComputerExamDates2027.find(item => item.month === month)?.days ?? [] : [],
-        peak: ranges.some(range => range.start <= last && range.end >= first),
+        peak: ranges.some(range => range.start <= last && range.end >= first)
+          || freeRanges.some(range => wednesdays.some(day => range.start <= day && range.end >= day)),
       };
     });
   }
@@ -665,6 +672,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly officialStudentReviews = this.profile.studentReviews;
   /** School-only short written reviews (HANA); CIA has none. */
   readonly textReviews = this.profile.textReviews ?? [];
+  /** Short-stay lines replacing the price ratios (profile.shortStayRows; GLC). */
+  readonly shortStayRows = this.profile.shortStayRows ?? [];
 
   readonly sidaCiaReasons = this.profile.sidaReasons;
 
@@ -1290,6 +1299,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   roomFeeFor(id: string): number {
     return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
+  }
+
+  /** A room card's price: “1,234 美元”, or for a school whose course price holds a base room “+50 美元” / its label. */
+  roomPriceText(id: string): string {
+    const fee = this.roomFeeFor(id);
+    const baseLabel = this.copy.rooms.supplementBaseLabel;
+    if (baseLabel === undefined) return `${this.formatUsd(fee)} 美元`;
+    return fee > 0 ? `+${this.formatUsd(fee)} 美元` : baseLabel;
+  }
+
+  /** The “/ 4周” after a room card's price; left out where the card shows the base-room label. */
+  roomPriceHasUnit(id: string): boolean {
+    return this.copy.rooms.supplementBaseLabel === undefined || this.roomFeeFor(id) > 0;
   }
 
   /** Desktop room price table: each group is as wide as its number of rooms (CIA 3/3/4, EV 4/2). */

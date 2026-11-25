@@ -14,14 +14,15 @@ import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.compo
 import { GlcSchoolComponent } from './glc-school/glc-school.component';
 import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
-import { ImsSchoolComponent } from './ims-school/ims-school.component';
+import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
 import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
 import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
 import { IuSchoolComponent } from './iu-school/iu-school.component';
 import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
-import { FellaSchoolDetailComponent } from './fella-school/fella-school-detail.component';
+import { FellaFirstCampusSchoolComponent } from './fella-school/fella-first-campus-school.component';
+import { FellaSecondCampusSchoolComponent } from './fella-school/fella-second-campus-school.component';
 import { BtesSchoolComponent } from './btes-school/btes-school.component';
 import { CboaSchoolPageComponent } from './cebu-blue-ocean-school/cboa-school-page.component';
 import { WalesSchoolDetailComponent } from './wales-school/wales-school-detail.component';
@@ -44,7 +45,7 @@ const schools = [
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
   { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
   { name: 'JIC Premium', create: () => new JicPremiumSchoolComponent() },
-  { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
+  { name: 'Fella Second', create: () => new FellaSecondCampusSchoolComponent() },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
   { name: "CG Banilad", create: () => new CgBaniladSchoolPageComponent() },
@@ -61,13 +62,13 @@ const schools = [
   { name: "GLC", create: () => new GlcSchoolComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
-  { name: "IMS", create: () => new ImsSchoolComponent() },
+  { name: "IMS", create: () => new ImsSchoolPageComponent() },
   { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
   { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
   { name: "ICL", create: () => new IclSchoolComponent() },
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },
-  { name: "Fella", create: () => new FellaSchoolDetailComponent() },
+  { name: "Fella", create: () => new FellaFirstCampusSchoolComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
   { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },

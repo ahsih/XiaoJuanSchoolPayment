@@ -131,6 +131,46 @@ export const BCEBU_VIDEOS: BCebuVideo[] = [
   { name: 'gym', title: '健身房', duration: '0:07', orientation: 'portrait', section: 'life', description: '健身房的器械区。' },
   { name: 'courts', title: '篮球场与乒乓球', duration: '0:14', orientation: 'portrait', section: 'life', description: '户外篮球场和室内乒乓球区。' },
   { name: 'sky-garden', title: '空中花园', duration: '0:20', orientation: 'portrait', section: 'life', description: '宿舍楼之间的空中花园，有草坪和桌椅。' },
+  // From B'Cebu's official YouTube channel and Facebook page (2026-11-25). The four interviews are cut after each
+  // student's self-introduction and name card (full name, age) and before the end card with the school's social
+  // accounts; titles never name the student. Left out: a Korean student's clip (restaurants and bars off campus), the
+  // academic-programs and course-guide films (Korean, coding and TOEIC classes and class counts that differ from the
+  // school's price list), the activities film (golf range and boxing gym), a letterboxed graduation clip and a
+  // man-to-man class video that repeats the one-to-one class above.
+  {
+    name: 'dorm-tour', title: '宿舍房型全览', duration: '1:53', orientation: 'landscape', section: 'tour', label: 'DORM TOUR',
+    description: '学校官方的宿舍介绍：单人间、双人间、双人间+客厅和三人间逐一看，最后是阳台外的景色。',
+    details: ['单人间、双人间、双人间+客厅、三人间', '学校官方视频'],
+  },
+  {
+    name: 'group-class', title: '小组课实录', duration: '1:29', orientation: 'landscape', section: 'tour', label: 'GROUP CLASS',
+    description: '一节真实的小组课：老师带四名学生学英语习语，每人轮流用新学的说法造句。',
+    details: ['真实课堂片段', '英文原声，英文字幕'],
+  },
+  {
+    name: 'seven-classes', title: '一天上7节课', duration: '1:15', orientation: 'portrait', section: 'life',
+    description: '跟着一位学生上完一天：4节一对一（口语、写作、阅读、听力）、1节小组课、1节外教课和1节演讲辩论选修课，每节45分钟。',
+  },
+  {
+    name: 'student-feedback-returnee', title: '中国学员访谈：回来再读', duration: '1:33', orientation: 'landscape', section: 'tour', label: 'STUDENT FEEDBACK',
+    description: "在菲律宾学了4个月的中国学员：先在B'Cebu读了两个月，转去别的学校后又回来，因为这里学习氛围更好；最喜欢口语课。",
+    details: ['学校官方访谈', '英文原声，英文字幕'],
+  },
+  {
+    name: 'student-feedback-speaking', title: '中国学员访谈：爱上口语课', duration: '1:11', orientation: 'landscape', section: 'tour', label: 'STUDENT FEEDBACK',
+    description: '朋友推荐来宿务的中国学员：最喜欢口语课，能练发音、学会和外国人交流；觉得老师专业、课堂有意思。',
+    details: ['学校官方访谈', '英文原声，英文字幕'],
+  },
+  {
+    name: 'student-feedback-confidence', title: '中国学员访谈：大胆开口', duration: '2:05', orientation: 'landscape', section: 'tour', label: 'STUDENT FEEDBACK',
+    description: '想边度假边学习的中国学员：阅读课学的新词能用到其他课上，老师常鼓励他、帮他建立信心；给新同学的建议是别怕犯错、大胆开口。',
+    details: ['学校官方访谈', '英文原声，英文字幕'],
+  },
+  {
+    name: 'student-feedback-volunteer', title: '中国学员访谈：课堂与志愿活动', duration: '2:20', orientation: 'landscape', section: 'tour', label: 'STUDENT FEEDBACK',
+    description: '最喜欢小组课的中国学员：课堂氛围轻松，老师帮她改发音、建立信心；她还参加了学校的志愿者活动。',
+    details: ['学校官方访谈', '英文原声，英文字幕'],
+  },
 ];
 
 const videoCard = (video: BCebuVideo): CiaVideoCard => ({
@@ -168,16 +208,20 @@ export const BCEBU_VIDEO_CARDS: CiaVideoCard[] = videosIn('tour').map(videoCard)
 export const BCEBU_CAMPUS_LIFE_VIDEOS: CiaShortVideo[] = videosIn('life').map(shortVideo);
 
 /**
- * Videos in the hero album, one chip per topic; the school film opens the album. Four short chip names, so the
- * video chips stay on one row on a 360px phone.
+ * Videos in the hero album, one chip per topic; the school film opens the album. Five two-character chip names (the
+ * 视频 suffix is dropped), so the video chips stay on one row on a 360px phone, as on the EV page.
  */
 export const BCEBU_VIDEO_TABS: PhVideoTab[] = [
   {
     label: '校园视频',
     names: ['school-intro', 'campus-tour', 'reception', 'library', 'lounge', 'pool', 'gym', 'courts', 'sky-garden', 'teacher-poses'],
   },
-  { label: '宿舍视频', names: ['room-single', 'room-twin', 'room-twin-living', 'room-triple'] },
-  { label: '课程视频', names: ['one-to-one-class', 'classes', 'ace-teacher'] },
+  { label: '宿舍视频', names: ['dorm-tour', 'room-single', 'room-twin', 'room-twin-living', 'room-triple'] },
+  { label: '课程视频', names: ['seven-classes', 'one-to-one-class', 'group-class', 'classes', 'ace-teacher'] },
+  {
+    label: '访谈视频',
+    names: ['student-feedback-returnee', 'student-feedback-speaking', 'student-feedback-confidence', 'student-feedback-volunteer'],
+  },
   { label: '生活视频', names: ['meals', 'dining-hall', 'student-vlog', 'island-day', 'airport-pickup'] },
 ].map(tab => ({ label: tab.label, icon: 'videocam', items: tab.names.map(albumVideo) }));
 

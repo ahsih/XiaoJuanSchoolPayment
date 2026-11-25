@@ -96,7 +96,7 @@ const MONOL_SPARTA_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 MONOL 斯巴达校区',
-    intro: '校园、宿舍和餐厅的实拍视频。',
+    intro: '校园、课堂、宿舍和餐厅的实拍视频，还有老师访谈。',
     badge: 'MONOL 学校视频',
     lifeTitle: '校园短片',
   },
@@ -165,7 +165,7 @@ const shortVideo = (item: MonolSpartaVideo): CiaShortVideo => ({
   ...(item.orientation === 'landscape' ? { shape: 'wide' as const } : {}),
 });
 
-const MONOL_SPARTA_VIDEO_TOPICS: ReadonlyArray<MonolSpartaVideo['topic']> = ['校园', '宿舍', '餐厅'];
+const MONOL_SPARTA_VIDEO_TOPICS: ReadonlyArray<MonolSpartaVideo['topic']> = ['校园', '课堂', '宿舍', '餐厅', '访谈'];
 const MONOL_SPARTA_VIDEO_TABS: PhVideoTab[] = MONOL_SPARTA_VIDEO_TOPICS.map(topic => ({
   label: `${topic}视频`,
   icon: 'videocam',

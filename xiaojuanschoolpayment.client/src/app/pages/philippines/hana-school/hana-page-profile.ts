@@ -8,6 +8,7 @@ import {
   CIA_PAGE_COPY,
   CIA_SIDA_REASONS,
   CIA_SIDA_TRUST_BADGES,
+  type CiaShortVideo,
   type CiaVideoCard,
   type RoomRateGroup,
 } from '../cia-school/cia-page-content';
@@ -45,9 +46,12 @@ import {
   HANA_SCHEDULE,
   HANA_SUITABLE_FOR,
   HANA_TEXT_REVIEWS,
+  HANA_ROOM_VIDEOS,
   HANA_VIDEOS,
+  HANA_VIDEO_TOPICS,
   hanaVideoPoster,
   hanaVideoSrc,
+  type HanaRoomVideo,
   type HanaVideo,
 } from './hana-page-content';
 
@@ -122,7 +126,7 @@ const HANA_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 HANA',
-    intro: '学校介绍片和美国外教采访，可以看到教室、宿舍、泳池和花园。',
+    intro: '学校介绍片、2026校园和宿舍导览、外教采访、孩子的烹饪课和学员访谈。',
     badge: 'HANA 学校视频',
   },
   rooms: {
@@ -187,21 +191,36 @@ const videoCard = (video: HanaVideo): CiaVideoCard => ({
   details: [...video.details, `时长 ${video.duration}`],
 });
 
-const albumVideo = (video: HanaVideo): PhVideoItem => ({
+const albumVideo = (video: HanaRoomVideo, portrait: boolean): PhVideoItem => ({
   title: video.title,
   text: video.description,
   src: hanaVideoSrc(video),
   poster: hanaVideoPoster(video),
   duration: video.duration,
-  shape: 'wide',
+  shape: portrait ? 'tall' : 'wide',
 });
-const videoNamed = (name: string) => albumVideo(HANA_VIDEOS.find(item => item.name === name) as HanaVideo);
+const shortVideo = (video: HanaVideo): CiaShortVideo => ({
+  title: video.title,
+  text: video.description,
+  src: hanaVideoSrc(video),
+  poster: hanaVideoPoster(video),
+  duration: video.duration,
+});
+const portraitVideos = HANA_VIDEOS.filter(video => video.portrait);
 
-/** Videos in the hero album; the school film opens the album. */
-const HANA_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: [videoNamed('school-film')] },
-  { label: '外教视频', icon: 'videocam', items: [videoNamed('teacher-interview')] },
-];
+/** Videos in the hero album by topic; the school film opens the album. */
+const HANA_VIDEO_TABS: PhVideoTab[] = HANA_VIDEO_TOPICS
+  .map(topic => ({
+    label: `${topic}视频`,
+    icon: 'videocam',
+    items: HANA_VIDEOS.filter(video => video.topic === topic).map(video => albumVideo(video, !!video.portrait)),
+  }))
+  .filter(tab => tab.items.length > 0);
+
+/** Each room album opens with the part of the school's dormitory tour that shows that room type. */
+const HANA_ROOM_ALBUM_VIDEOS: Record<string, PhVideoItem> = Object.fromEntries(
+  Object.entries(HANA_ROOM_VIDEOS).map(([roomId, video]) => [roomId, albumVideo(video, true)]),
+);
 
 export const HANA_PAGE_PROFILE: PhSchoolProfile = {
   code: 'HANA',
@@ -236,9 +255,10 @@ export const HANA_PAGE_PROFILE: PhSchoolProfile = {
   suitableFor: HANA_SUITABLE_FOR.map(title => ({ title, text: '' })),
   notSuitableFor: HANA_NOT_SUITABLE_FOR.map(title => ({ title, text: '' })),
   campusBuildings: HANA_CAMPUS_BUILDINGS,
-  videoCards: HANA_VIDEOS.map(videoCard),
-  campusLifeVideos: [],
-  interviewVideos: [],
+  videoCards: HANA_VIDEOS.filter(video => !video.portrait).map(videoCard),
+  campusLifeVideos: portraitVideos.filter(video => video.topic !== '访谈').map(shortVideo),
+  interviewVideos: portraitVideos.filter(video => video.topic === '访谈').map(shortVideo),
+  roomVideos: HANA_ROOM_ALBUM_VIDEOS,
   courseGroups: [
     { icon: 'forum', title: '成人英语 ESL', text: '菲师一对一为主，都有外教小班', courseIds: [HANA_LIGHT_ESL_ID, 'general-esl', 'native-esl', 'native-only'] },
     { icon: 'quiz', title: '托业和雅思', text: '每周一次模拟测试', courseIds: ['toeic', 'ielts'] },

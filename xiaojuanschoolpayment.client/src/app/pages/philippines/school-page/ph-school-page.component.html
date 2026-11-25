@@ -735,8 +735,8 @@
             >{{ room.location === '校外' ? '校外住宿' : '校内宿舍' }}</span>
             <strong>{{ room.label }}</strong>
             <small *ngIf="showRoomCodes">{{ room.code }}</small>
-            <b>{{ formatUsd(roomFeeFor(room.id)) }} 美元</b>
-            <em>/ 4周</em>
+            <b>{{ roomPriceText(room.id) }}</b>
+            <em *ngIf="roomPriceHasUnit(room.id)">/ 4周</em>
             <!-- Compact layout: every card says it opens that room's photos (user request 2026-11-21). -->
             <span class="room-card-cue" *ngIf="compactLayout && roomProfileForRate(room)">
               <ng-container *ngIf="(isNarrowViewport ? selectedRateRoomId : activeRateRoomId) === room.id; else roomCueIdle">
@@ -759,9 +759,14 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
+          <ng-container *ngIf="shortStayRows.length; else shortStayRatios">
+            <span *ngFor="let row of shortStayRows"><b>{{ row.label }}</b><em>{{ row.text }}</em></span>
+          </ng-container>
+          <ng-template #shortStayRatios>
           <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
+          </ng-template>
         </div>
 
         <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
@@ -1150,8 +1155,8 @@
 
         <ng-template #quoteTotals>
         <div class="quote-breakdown" data-cia-preview-kind="section" data-cia-preview-id="quote-breakdown" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'quote-breakdown')">
-          <div class="quote-base-line"><span>课程费<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
-          <div class="quote-base-line"><span>住宿费<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
+          <div class="quote-base-line"><span>{{ copy.quote.courseFeeLabel || '课程费' }}<small>{{ quoteMode === 'group' ? '全部学生合计' : selectedWeeks + '周' }}</small></span><strong>{{ formatUsd(tuitionForSelectedWeeks) }} 美元</strong></div>
+          <div class="quote-base-line"><span>{{ copy.quote.roomFeeLabel || '住宿费' }}<small>{{ quoteMode === 'group' ? '全部学生合计' : quotePlan.roomWeeks + '周' }}</small></span><strong>{{ formatUsd(roomFeeForSelectedWeeks) }} 美元</strong></div>
           <div *ngFor="let item of schoolPaymentItems; trackBy: trackPreviewRow" [class.discount-line]="item.amount.startsWith('−')" [attr.data-cia-preview-kind]="item.previewKind" [attr.data-cia-preview-id]="item.previewId" [class.cia-preview-highlight]="isPreviewHighlighted(item.previewKind, item.previewId)">
             <span>{{ item.label }}<small>{{ item.note }}</small></span><strong>{{ item.amount }}</strong>
           </div>
@@ -1226,7 +1231,7 @@
               <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
               <label *ngIf="!student.hideAgeGroup"><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
-              <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
+              <label class="cq-field-wide" *ngIf="!student.hideReturning"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label class="cq-field-wide" *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)"><span>{{ choice.label }}</span><select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
@@ -1249,7 +1254,7 @@
                 <label *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)">{{ choice.label }}<select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
-            <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <label class="option-check" *ngIf="!student.hideReturning"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
             <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup">{{ student.minorNote }}</p>
           </details>
           </ng-template>

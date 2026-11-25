@@ -35,6 +35,7 @@ import {
 } from '../philippines/monol-school/monol-content-config';
 import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
 import { MonolSpartaQuote } from '../philippines/monol-sparta-school/monol-sparta-page-quote';
+import { ImsQuote } from '../philippines/ims-school/ims-page-quote';
 import { MonolQuote, monolRoomFees2027 } from '../philippines/monol-school/monol-page-quote';
 import { createCiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import {
@@ -435,6 +436,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
   private buildPreviewQuote(): QuoteImageCardData {
     if (this.isLaMerSelected) return buildLaMerPreviewQuote(this.content, this.laMerPreviewMode, { usdToCny: this.usdToCny, phpPerCny: this.phpPerCny, exchangeRateDate: this.exchangeRateDate });
     if (this.isMonolSpartaSelected) return this.buildMonolSpartaPreviewQuote();
+    if (this.isImsSelected) return this.buildImsPreviewQuote();
     if (this.isMonolSelected) return this.buildMonolPreviewQuote();
     if (this.isIuSelected || this.isIclSelected) {
       const campus = this.isIuSelected ? 'IU' : 'ICL';
@@ -468,7 +470,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     const isMint = schoolCode === 'MINT';
     const beciName = this.beciCampus === 'eop' ? '菲律宾碧瑶BECI EOP校区' : this.beciCampus === 'sparta' ? '菲律宾碧瑶BECI斯巴达校区' : '菲律宾碧瑶API BECI City校区';
     const schoolName = isMint ? '菲律宾薄荷岛English MINT International Academy' : isWales ? '菲律宾碧瑶WALES语言学校' : isTarget ? '菲律宾宿务TARGET Global English Academy' : isBlueOcean ? '菲律宾宿务Cebu Blue Ocean Academy' : isBtes ? '菲律宾宿务BTES语言学校' : isFella ? `菲律宾宿务English Fella${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}` : isCellaPremium ? '菲律宾宿务CELLA Premium Campus' : isCellaUni ? '菲律宾宿务CELLA Uni Sparta Campus' : isJic ? `菲律宾碧瑶JIC${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}` : isBeci ? beciName : isIms ? '菲律宾宿务IMS Academy' : isAnj ? '菲律宾碧瑶A&J语言学校' : isIbreeze ? '菲律宾宿务I.BREEZE语言学校' : isGlc ? '菲律宾宿务Global Language Cebu' : isCpils ? '菲律宾宿务CPILS语言学校' : isBCebu ? "菲律宾宿务B'Cebu语言学校" : isCpi ? '菲律宾宿务CPI语言学校' : isCgSparta ? '菲律宾宿务CG Academy斯巴达校区' : isCgBanilad ? '菲律宾宿务CG Academy Banilad校区' : isPhilinter ? '菲律宾宿务Philinter语言学校' : isSmeag ? '菲律宾宿务SMEAG Capital语言学校' : isEv ? '菲律宾宿务EV Academy' : isMonol ? '菲律宾碧瑶MONOL语言学校' : isPines ? '菲律宾碧瑶PINES语言学校' : 'CIA';
-    const heroSrc = isMint ? '/assets/english-mint/campus-building.webp' : isWales ? '/assets/philippines/wales-school-building.webp' : isTarget ? '/assets/philippines/target-campus-hero.webp' : isBlueOcean ? '/assets/philippines/cebu-study-hero.webp' : isBtes ? '/assets/philippines/btes/campus-gate.webp' : isFella ? '/assets/fella/campus-main.webp' : (isCellaUni || isCellaPremium) ? '/assets/philippines/cebu-study-hero.webp' : isJic ? (this.jicCampus === 'premium' ? '/assets/philippines/jic-premium-campus-overview.jpg' : '/assets/philippines/jic-main-campus-overview.webp') : isBeci ? (this.beciCampus === 'eop' ? '/assets/philippines/beci-eop-campus.webp' : this.beciCampus === 'sparta' ? '/assets/philippines/beci-campus-blue-roof.webp' : '/assets/philippines/beci-city-study-lounge.webp') : isIms ? '/assets/ims/campus-hero.webp' : isAnj ? '/assets/anj/campus/main-building.webp' : isIbreeze ? '/assets/ibreeze/campus/prime-campus.webp' : isGlc ? '/assets/glc/campus-main.webp' : isCpils ? '/assets/cpils/campus-main.webp' : isBCebu ? '/assets/bcebu/campus-building.webp' : isCpi ? '/assets/cpi/campus-exterior.webp' : isCgSparta ? '/assets/philippines/cg-sparta-campus-hero.webp' : isCgBanilad ? '/assets/philippines/cg-banilad-campus-hero.webp' : isPhilinter ? '/assets/philinter/campus-main.webp' : isSmeag ? '/assets/philippines/smeag-capital-building.webp' : isEv ? '/assets/ev/campus-exterior.webp' : isMonol ? '/assets/philippines/monol-campus-building.webp' : isPines ? '/assets/philippines/pines-campus-hero.webp' : '/assets/cia/campus-building.webp';
+    const heroSrc = isMint ? '/assets/english-mint/campus-building.webp' : isWales ? '/assets/philippines/wales-school-building.webp' : isTarget ? '/assets/philippines/target-campus-hero.webp' : isBlueOcean ? '/assets/philippines/cebu-study-hero.webp' : isBtes ? '/assets/philippines/btes/campus-gate.webp' : isFella ? (this.fellaCampus === 'campus2' ? '/assets/fella-2/campus/aerial.webp' : '/assets/fella-1/campus/aerial.webp') : (isCellaUni || isCellaPremium) ? '/assets/philippines/cebu-study-hero.webp' : isJic ? (this.jicCampus === 'premium' ? '/assets/philippines/jic-premium-campus-overview.jpg' : '/assets/philippines/jic-main-campus-overview.webp') : isBeci ? (this.beciCampus === 'eop' ? '/assets/philippines/beci-eop-campus.webp' : this.beciCampus === 'sparta' ? '/assets/philippines/beci-campus-blue-roof.webp' : '/assets/philippines/beci-city-study-lounge.webp') : isIms ? '/assets/ims/campus/building.webp' : isAnj ? '/assets/anj/campus/main-building.webp' : isIbreeze ? '/assets/ibreeze/campus/prime-campus.webp' : isGlc ? '/assets/glc/campus-main.webp' : isCpils ? '/assets/cpils/campus-main.webp' : isBCebu ? '/assets/bcebu/campus-building.webp' : isCpi ? '/assets/cpi/campus-exterior.webp' : isCgSparta ? '/assets/philippines/cg-sparta-campus-hero.webp' : isCgBanilad ? '/assets/philippines/cg-banilad-campus-hero.webp' : isPhilinter ? '/assets/philinter/campus-main.webp' : isSmeag ? '/assets/philippines/smeag-capital-building.webp' : isEv ? '/assets/ev/campus-exterior.webp' : isMonol ? '/assets/philippines/monol-campus-building.webp' : isPines ? '/assets/philippines/pines-campus-hero.webp' : '/assets/cia/campus-building.webp';
     const courseId = isMint ? 'lite-esl' : isJic ? (this.jicCampus === 'premium' ? 'premium-speaking-starter-7' : 'challenger-esl-lite') : isBeci ? (this.beciCampus === 'eop' ? 'eop-lite-esl' : this.beciCampus === 'sparta' ? 'sparta-24-esl' : 'city-lite-esl') : isIms ? 'essential-esl-4' : isAnj ? 'eco-relax-lite' : isIbreeze ? 'intensive-speaking' : isGlc ? 'power-speaking' : isCpils ? 'general-esl' : isBCebu ? 'speed-esl' : isCpi ? 'esl-general-15' : isCgSparta ? 'sparta' : isCgBanilad ? 'general-esl' : isPhilinter ? 'light-esl' : isSmeag ? 'esl-regular-ket-pet-fce' : isEv ? 'semi-sparta-esl' : isMonol ? 'esl-4' : isPines ? 'light-esl-4' : 'regular-esl';
     const roomId = isMint ? 'deluxe-twin' : isJic ? (this.jicCampus === 'premium' ? 'premium-quad-no-balcony' : 'challenger-quad-bunk') : isBeci ? (this.beciCampus === 'eop' ? 'eop-quad-female' : this.beciCampus === 'sparta' ? 'sparta-quad' : 'city-studio-quad') : isIms ? 'quadruple' : isAnj ? 'deluxe-triple' : isIbreeze ? 'quad-main' : isGlc ? 'annex-double' : isCpils ? 'regular-quad' : isBCebu ? 'triple-bunk' : isCpi ? 'building-a-quad' : isCgSparta ? 'quad' : isCgBanilad ? 'quad' : isPhilinter ? 'in-campus-triple' : isSmeag ? 'campus-quad' : isEv ? 'quad-bunk' : isMonol ? 'quad-room' : isPines ? 'main-sextuple' : 'd4';
     const course = this.content.courses.find(item => item.id === courseId) ?? this.content.courses[0];
@@ -560,7 +562,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     });
     return applyEditableQuoteImageCopy({
       ...applySchoolQuoteImageLayout(base, schoolCode, 4, '2026-09-06', totalUsd, this.usdToCny),
-      headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'}4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE 4周报价' : isBCebu ? "B'Cebu 4周报价" : isCgSparta ? 'CG斯巴达校区 4周报价' : isCgBanilad ? 'CG Banilad 4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
+      headingText: isMint ? 'English MINT 4周报价' : isWales ? 'WALES 4周报价' : isTarget ? 'TARGET 4周报价' : isBlueOcean ? 'Cebu Blue Ocean 4周报价' : isBtes ? 'BTES 4周报价' : isFella ? `English Fella ${this.fellaCampus === 'campus1' ? '第一校区' : '第二校区'} 4周报价` : isCellaPremium ? 'CELLA Premium 4周报价' : isCellaUni ? 'CELLA Uni Sparta 4周报价' : isJic ? `JIC ${this.jicCampus === 'challenger' ? '挑战校区' : '高级校区'}4周报价` : isBeci ? `BECI ${this.beciCampus === 'eop' ? 'EOP' : this.beciCampus === 'sparta' ? 'Sparta' : 'City'} 4周报价` : isIms ? 'IMS 4周报价' : isAnj ? 'A&J 4周报价' : isIbreeze ? 'I.BREEZE 4周报价' : isBCebu ? "B'Cebu 4周报价" : isCgSparta ? 'CG斯巴达校区 4周报价' : isCgBanilad ? 'CG Banilad 4周报价' : isEv ? 'EV主校区4周报价' : isSmeag ? 'SMEAG Capital4周报价' : `${schoolCode}${isMonol ? ' ' : ''}4周报价`, paymentSectionTitle: settings.paymentSectionTitle, localFeeTitle: settings.localFeeSectionTitle,
       serviceSectionTitle: settings.serviceSectionTitle, benefitItems: settings.benefits, serviceLocations: settings.serviceLocations,
       alumniBenefitTitle: settings.alumniBenefitTitle, alumniBenefitItems: [{ title: settings.alumniBenefitTitle, subtitle: '', text: settings.alumniBenefitText }],
       noteTitle: settings.noteSectionTitle, importantNotes: settings.footerNotes,
@@ -623,11 +625,6 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
     const rows: Array<{ id: string; label: string; fallback: string; section: '学校费用' | '参考费用' }> = (paymentLabels[this.content.schoolCode] ?? []).map(label => ({
       id: quoteImageSupplementalKey('payment', label), label, fallback, section: '学校费用' as const,
     }));
-    if (this.content.schoolCode === 'IMS') {
-      rows.push(...['超额空调用电', '免费晚间托管', 'Guardian Service', '国际学生学校管理服务'].map(label => ({
-        id: quoteImageSupplementalKey('optional', label), label, fallback, section: '参考费用' as const,
-      })));
-    }
     if (this.content.schoolCode === 'SMEAG') {
       rows.push({ id: 'optional:教材价格参考', label: '教材价格参考', fallback: '价格参考，不重复计入上方学杂费合计。', section: '参考费用' });
     }
@@ -637,7 +634,7 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       })));
     }
     if (this.content.schoolCode === 'FELLA') {
-      rows.push(...['房间押金（可退）', '挂锁押金（可退）', '周日宿务机场接机', '其他时间宿务机场接机'].map(label => ({
+      rows.push(...['房间押金（可退）', '挂锁押金（可退）', '宿务机场接机'].map(label => ({
         id: quoteImageSupplementalKey('optional', label), label, fallback, section: '参考费用' as const,
       })));
     }
@@ -685,6 +682,18 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
 
   private previewMoney(value: number): string {
     return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  }
+
+  /** IMS is on the shared Philippine template: preview the real page quote with this draft's content. */
+  private buildImsPreviewQuote(): QuoteImageCardData {
+    const pricing = createCiaQuotePricing(this.content);
+    Object.assign(pricing, {
+      usdToCny: this.usdToCny,
+      phpPerCny: this.phpPerCny,
+      exchangeRateDate: this.exchangeRateDate,
+      usingLiveExchangeRates: Number.isFinite(this.usdToCny) && Number.isFinite(this.phpPerCny),
+    });
+    return new ImsQuote(pricing).quoteImageData;
   }
 
   /** MONOL Sparta is on the shared Philippine template: preview the real page quote with this draft's content. */
