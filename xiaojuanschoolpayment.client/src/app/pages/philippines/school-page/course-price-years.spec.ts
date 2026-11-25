@@ -22,6 +22,7 @@ import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
 import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
 import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
 import { GeniusSchoolPageComponent } from '../genius-school/genius-school-page.component';
+import { GlcSchoolPageComponent } from '../glc-school/glc-school-page.component';
 import { HanaSchoolPageComponent } from '../hana-school/hana-school-page.component';
 import { HelpSchoolPageComponent } from '../help-school/help-school-page.component';
 import { IbreezeSchoolPageComponent } from '../ibreeze-school/ibreeze-school-page.component';
@@ -99,6 +100,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['English Fella First', FellaFirstCampusSchoolComponent],
     ['English Fella Second', FellaSecondCampusSchoolComponent],
     ['Genius', GeniusSchoolPageComponent],
+    ['GLC', GlcSchoolPageComponent],
     ['HANA', HanaSchoolPageComponent, page => { page.selectedCourseId = 'general-esl'; }],
     ['HELP Clark', HelpSchoolPageComponent],
     ['IU', IuSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
