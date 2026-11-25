@@ -15,6 +15,8 @@ public static class AbuseRateLimits
   public const string QuoteEmailPolicy = "quote-email";
   public const string ContactFormPolicy = "contact-form";
   public const string AuthPolicy = "auth";
+  public const string BrowseViewPolicy = "browse-view";
+  public const string WeComSidebarPolicy = "wecom-sidebar";
 
   public const string RejectionMessage = "请求过于频繁，请稍后再试。";
 
@@ -37,6 +39,10 @@ public static class AbuseRateLimits
       options.AddPolicy(QuoteEmailPolicy, httpContext => PerClient(httpContext, 10, TimeSpan.FromMinutes(10)));
       options.AddPolicy(ContactFormPolicy, httpContext => PerClient(httpContext, 5, TimeSpan.FromMinutes(10)));
       options.AddPolicy(AuthPolicy, httpContext => PerClient(httpContext, 20, TimeSpan.FromMinutes(5)));
+      // The website reports each page a student with a personal link opens (see BrowseAlertsController).
+      options.AddPolicy(BrowseViewPolicy, httpContext => PerClient(httpContext, 60, TimeSpan.FromMinutes(1)));
+      // The WeCom chat sidebar (BrowseAlertSidebarController): sign-in, signatures and sending links.
+      options.AddPolicy(WeComSidebarPolicy, httpContext => PerClient(httpContext, 120, TimeSpan.FromMinutes(1)));
     });
   }
 

@@ -1,0 +1,83 @@
+<div class="sidebar">
+  <ng-container [ngSwitch]="stage">
+    <p *ngSwitchCase="'loading'" class="state">正在打开…</p>
+
+    <div *ngSwitchCase="'outside'" class="state">
+      <strong>请在企业微信里打开</strong>
+      <p>这个页面是企业微信聊天窗口右上角的侧边栏工具，在和学生的单聊里点开使用。</p>
+    </div>
+
+    <div *ngSwitchCase="'not-configured'" class="state">
+      <strong>还没设置好</strong>
+      <p>企业微信应用还没在员工后台设置，请联系管理员。</p>
+    </div>
+
+    <div *ngSwitchCase="'unlinked'" class="state">
+      <strong>你的企业微信账号还没绑定顾问</strong>
+      <p>请管理员在员工后台“学生浏览提醒 → 提醒设置”里，把下面这个账号填到你那一行，然后重新打开侧边栏。</p>
+      <code>{{ unlinkedAccount }}</code>
+    </div>
+
+    <div *ngSwitchCase="'no-contact'" class="state">
+      <strong>请在和学生的单聊里打开</strong>
+      <p>群聊里不能确定是哪位学生，请打开和这位学生的单聊，再点侧边栏。</p>
+    </div>
+
+    <div *ngSwitchCase="'error'" class="state">
+      <strong>打开失败</strong>
+      <p>{{ errorText }}</p>
+      <button type="button" class="ghost" (click)="reload()">重新打开</button>
+    </div>
+
+    <ng-container *ngSwitchCase="'ready'">
+      <section class="student">
+        <div class="student-name" *ngIf="!editingName; else nameEditor">
+          <strong>{{ studentName }}</strong>
+          <button type="button" class="link" (click)="editingName = true">改名</button>
+        </div>
+        <ng-template #nameEditor>
+          <div class="name-editor">
+            <input type="text" [(ngModel)]="studentName" maxlength="60" (keyup.enter)="saveName()" aria-label="学生名字" />
+            <button type="button" class="link" (click)="saveName()">好</button>
+          </div>
+        </ng-template>
+        <p class="status" *ngIf="contact?.hasLink && contact?.linkActive">
+          已打开 {{ contact?.viewCount }} 次学校页面，打开时会提醒你
+        </p>
+        <p class="status" *ngIf="!contact?.hasLink">还没发过学校页面，发出后学生每打开一次都会提醒你</p>
+        <p class="status off" *ngIf="contact?.hasLink && !contact?.linkActive">这位学生的提醒已在后台停用</p>
+
+        <details class="history" *ngIf="recentViews.length">
+          <summary>最近看了</summary>
+          <ul>
+            <li *ngFor="let view of recentViews">
+              <span>{{ view.pageName }}</span>
+              <span class="time">{{ ago(view.viewedAt) }}</span>
+            </li>
+          </ul>
+        </details>
+      </section>
+
+      <input class="search" type="search" [(ngModel)]="search" placeholder="搜索学校，例如 CIA、宿务、碧瑶" aria-label="搜索学校" />
+
+      <ul class="pages">
+        <li *ngFor="let page of filteredPages">
+          <span class="page-name">{{ page.name }}</span>
+          <button
+            type="button"
+            [class.sent]="sentPaths.has(page.path)"
+            [disabled]="!!sendingPath"
+            (click)="send(page)"
+          >
+            {{ sendingPath === page.path ? '发送中' : (sentPaths.has(page.path) ? '再发' : '发送') }}
+          </button>
+        </li>
+        <li *ngIf="!filteredPages.length" class="empty">没有找到这个学校</li>
+      </ul>
+
+      <p class="foot">发出的是这位学生的专属链接；学生打开任何学校页面，你的企业微信都会收到提醒。</p>
+    </ng-container>
+  </ng-container>
+
+  <div class="toast" *ngIf="toast" [class.error]="toastIsError" role="status">{{ toast }}</div>
+</div>

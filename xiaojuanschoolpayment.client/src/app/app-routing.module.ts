@@ -1148,6 +1148,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'browse-alerts',
+        loadComponent: () =>
+          import('./pages/admin-browse-alerts/admin-browse-alerts.component').then(
+            (m) => m.AdminBrowseAlertsComponent,
+          ),
+      },
+      {
         path: 'reviews',
         data: { roles: ['admin', 'manager'] },
         canActivate: [RoleGuard],
@@ -1189,6 +1196,12 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     loadComponent: () =>
       import('./pages/student-portal/student-portal.component').then((m) => m.StudentPortalComponent),
+  },
+  {
+    // The WeCom chat sidebar (sign-in through WeCom, not the back office); see BrowseAlertSidebarController.
+    path: 'wecom-sidebar',
+    loadComponent: () =>
+      import('./pages/wecom-sidebar/wecom-sidebar.component').then((m) => m.WeComSidebarComponent),
   },
   { path: '**', redirectTo: '' },
 ];

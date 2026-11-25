@@ -11,6 +11,7 @@ using XiaoJuanSchoolPayment.Server.Data.Config;
 using XiaoJuanSchoolPayment.Server.Data.Models;
 using XiaoJuanSchoolPayment.Server.Interface;
 using XiaoJuanSchoolPayment.Server.Services;
+using XiaoJuanSchoolPayment.Server.Services.BrowseAlerts;
 using XiaoJuanSchoolPayment.Server.Services.Currency;
 using XiaoJuanSchoolPayment.Server.Services.School;
 using XiaoJuanSchoolPayment.Server.Services.Security;
@@ -116,6 +117,18 @@ builder.Services.AddAbuseRateLimits();
 builder.Services.AddSingleton<SchoolDataFreshness>();
 builder.Services.AddSingleton<SpaSeoHtmlRenderer>();
 builder.Services.AddMemoryCache();
+// Student browse reminders (BrowseAlertsController, BrowseAlertSidebarController): personal links, page views,
+// WeCom robot and app messages, and the WeCom chat sidebar.
+builder.Services.AddSingleton<BrowsePageCatalog>();
+builder.Services.AddSingleton<BrowseAlertQueue>();
+builder.Services.AddSingleton<WeComWebhook>();
+builder.Services.AddSingleton<WeComApp>();
+builder.Services.AddSingleton<WeComSidebarSessions>();
+builder.Services.AddHostedService<BrowseAlertSender>();
+builder.Services.AddHttpClient(WeComWebhook.HttpClientName, client =>
+{
+  client.Timeout = TimeSpan.FromSeconds(8);
+});
 builder.Services.AddHttpClient("TencentCosMedia", client =>
 {
   client.Timeout = TimeSpan.FromMinutes(30);
@@ -344,6 +357,7 @@ app.MapGet("/robots.txt", (HttpRequest request) =>
     "Disallow: /login",
     "Disallow: /register",
     "Disallow: /reset-password",
+    "Disallow: /wecom-sidebar",
     $"Sitemap: {origin}/sitemap.xml",
     string.Empty,
   });

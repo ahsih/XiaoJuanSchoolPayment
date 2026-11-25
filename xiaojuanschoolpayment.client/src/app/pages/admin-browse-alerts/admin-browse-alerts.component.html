@@ -1,0 +1,212 @@
+<div class="browse-page">
+  <header class="page-heading">
+    <span class="eyebrow">学生跟进</span>
+    <h1>学生浏览提醒</h1>
+    <p>
+      学生每打开一个学校页面，顾问的企业微信就会收到提醒，方便及时跟进。用个人微信的顾问在这里生成专属链接发给学生；
+      用企业微信的顾问可以直接在聊天窗口的侧边栏一键发送。
+    </p>
+  </header>
+
+  <p *ngIf="loadError" class="message error">{{ loadError }}</p>
+  <p *ngIf="isAdmin && remindersOff" class="message warn">
+    还没有设置企业微信应用或群机器人，提醒暂时发不出去。请先在页面下方“企业微信提醒设置”里填写。
+  </p>
+
+  <section class="card create-card">
+    <h2>生成专属链接</h2>
+    <div class="form-grid">
+      <label>
+        <span>学生名字</span>
+        <input type="text" [(ngModel)]="studentName" maxlength="60" placeholder="例如：张三（宿务4周）" />
+      </label>
+      <label>
+        <span>顾问</span>
+        <select [(ngModel)]="consultantName">
+          <option *ngFor="let name of consultants" [value]="name">{{ name }}</option>
+        </select>
+      </label>
+      <label class="wide">
+        <span>发给学生的学校页面</span>
+        <select [(ngModel)]="landingPath">
+          <option *ngFor="let page of pages" [value]="page.path">{{ page.name }}</option>
+        </select>
+      </label>
+      <label class="wide">
+        <span>备注（选填，提醒里会显示）</span>
+        <input type="text" [(ngModel)]="note" maxlength="300" placeholder="例如：预算2万，想去宿务，7月出发" />
+      </label>
+    </div>
+    <p *ngIf="createError" class="inline-error">{{ createError }}</p>
+    <button type="button" class="primary" (click)="create()" [disabled]="creating">
+      <mat-icon>link</mat-icon>{{ creating ? '正在生成…' : '生成链接' }}
+    </button>
+
+    <div *ngIf="created" class="created">
+      <p><strong>{{ created.studentName }}</strong> 的专属链接：</p>
+      <code>{{ linkUrl(created) }}</code>
+      <button type="button" class="primary" (click)="copy(created)"><mat-icon>content_copy</mat-icon>复制链接</button>
+      <p class="hint">把链接发给学生。学生在网站上再点开别的学校，也会提醒顾问。请不要自己点开这个链接，否则会算成学生在看。</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="list-heading">
+      <h2>已发出的链接</h2>
+      <div class="filters">
+        <select [(ngModel)]="filterConsultant" aria-label="按顾问筛选">
+          <option value="all">全部顾问</option>
+          <option *ngFor="let name of consultants" [value]="name">{{ name }}</option>
+        </select>
+        <input type="search" [(ngModel)]="search" placeholder="搜索学生" aria-label="搜索学生" />
+        <button type="button" class="icon-button" (click)="loadLinks()" [disabled]="isLoading" aria-label="刷新">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <p *ngIf="isLoading" class="muted">正在读取…</p>
+    <p *ngIf="!isLoading && !filteredLinks.length" class="muted">还没有链接。</p>
+
+    <article *ngFor="let link of filteredLinks" class="link-row" [class.inactive]="!link.active">
+      <div class="link-main">
+        <div class="who">
+          <strong>{{ link.studentName }}</strong>
+          <span class="tag">{{ link.consultantName }}</span>
+          <span *ngIf="link.fromWeCom" class="tag wecom">企业微信</span>
+          <span *ngIf="!link.active" class="tag off">已停用</span>
+        </div>
+        <p class="last" *ngIf="link.lastViewedAt; else notOpened">
+          {{ ago(link.lastViewedAt) }}看了 {{ link.lastPageName || '学校页面' }} · 共 {{ link.viewCount }} 次
+        </p>
+        <ng-template #notOpened><p class="last muted">还没打开 · 发的是 {{ link.landingPageName || link.landingPath }}</p></ng-template>
+        <p *ngIf="link.note" class="note">{{ link.note }}</p>
+      </div>
+      <div class="link-actions">
+        <button type="button" (click)="copy(link)"><mat-icon>content_copy</mat-icon>复制</button>
+        <button type="button" (click)="toggleHistory(link)">
+          <mat-icon>history</mat-icon>{{ expandedId === link.id ? '收起' : '记录' }}
+        </button>
+        <button type="button" *ngIf="link.active" (click)="setActive(link, false)"><mat-icon>notifications_off</mat-icon>停用</button>
+        <button type="button" *ngIf="!link.active" (click)="setActive(link, true)"><mat-icon>notifications_active</mat-icon>启用</button>
+        <button type="button" class="danger" (click)="remove(link)"><mat-icon>delete</mat-icon>删除</button>
+      </div>
+
+      <div *ngIf="expandedId === link.id" class="history">
+        <p *ngIf="views[link.id] === 'loading'" class="muted">正在读取…</p>
+        <p *ngIf="views[link.id] === 'error'" class="inline-error">记录加载失败。</p>
+        <p *ngIf="viewsOf(link)?.length === 0" class="muted">还没有浏览记录。</p>
+        <ul *ngIf="viewsOf(link)?.length">
+          <li *ngFor="let view of viewsOf(link)">
+            <span class="time">{{ view.viewedAt | date: 'MM/dd HH:mm' }}</span>
+            <span>{{ view.pageName }}</span>
+            <span *ngIf="!view.notified" class="muted">（刚看过，未重复提醒）</span>
+          </li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <section *ngIf="isAdmin" class="card settings">
+    <div class="app-heading">
+      <h2>企业微信应用</h2>
+      <span class="tag" [class.off]="!weComApp?.complete">{{ weComApp?.complete ? '已启用' : '未设置' }}</span>
+    </div>
+    <p class="section-intro">设置后，提醒直接发给顾问本人（不发到群里），用企业微信的顾问还能在聊天侧边栏一键发学校页面。</p>
+    <details class="steps">
+      <summary>在企业微信管理后台怎么设置</summary>
+      <ol>
+        <li>“应用管理” → “自建” → “创建应用”，名称如“思达启航助手”，可见范围选全部顾问。</li>
+        <li>在应用详情页复制 AgentId 和 Secret（Secret 要在企业微信手机端查看）；在“我的企业”页面最下面复制企业ID。填到下面保存。</li>
+        <li>应用详情页 → “网页授权及JS-SDK” → 设置可信域名 sidaqihang.com：下载页面上的校验文件，发给技术放到网站上再验证。</li>
+        <li>应用详情页 → “企业可信IP” → 填网站服务器的IP。不知道IP时，先在下面顾问那一行点“发测试消息”，提示里会写出来。</li>
+        <li>“客户与上下游” → “客户联系” → “API” → “可调用接口的应用”，选这个应用。</li>
+        <li>“客户联系” → “聊天工具栏管理” → “配置应用页面”，选这个应用，名称填“发学校页面”，页面地址填下面的侧边栏地址。</li>
+        <li>在下面每位顾问那一行填企业微信账号（通讯录 → 成员详情里的“账号”），保存后点“发测试消息”。</li>
+      </ol>
+    </details>
+    <div class="app-fields">
+      <label>
+        <span>企业ID（CorpID）</span>
+        <input type="text" [(ngModel)]="corpIdInput" maxlength="64" placeholder="ww 开头" />
+      </label>
+      <label>
+        <span>AgentId</span>
+        <input type="text" inputmode="numeric" [(ngModel)]="agentIdInput" maxlength="12" placeholder="例如 1000002" />
+      </label>
+      <label class="wide">
+        <span>Secret</span>
+        <input
+          type="password"
+          autocomplete="off"
+          [(ngModel)]="secretInput"
+          maxlength="128"
+          [placeholder]="weComApp?.hasSecret ? '已保存 ' + (weComApp?.secretHint || '') + '，要换时粘贴新的' : '粘贴应用的 Secret'"
+        />
+      </label>
+    </div>
+    <div class="channel-buttons">
+      <button type="button" class="primary" (click)="saveWeComApp()" [disabled]="appBusy">保存</button>
+      <button type="button" class="danger" *ngIf="weComApp?.hasSecret" (click)="saveWeComApp(true)" [disabled]="appBusy">删除 Secret</button>
+    </div>
+    <p *ngIf="appMessage" class="app-message" [class.inline-error]="appMessageIsError" [class.ok]="!appMessageIsError">{{ appMessage }}</p>
+    <div class="sidebar-url">
+      <span>侧边栏地址</span>
+      <code>{{ sidebarUrl }}</code>
+      <button type="button" (click)="copySidebarUrl()"><mat-icon>content_copy</mat-icon>复制</button>
+    </div>
+  </section>
+
+  <section *ngIf="isAdmin" class="card settings">
+    <h2>企业微信提醒设置</h2>
+    <p class="section-intro">
+      填了企业微信账号、并且上面的应用已启用的顾问，提醒直接发给本人；其他顾问的提醒发到群机器人。
+    </p>
+    <details class="steps">
+      <summary>怎么拿到群机器人地址</summary>
+      <ol>
+        <li>在企业微信里建一个内部群，比如“学生浏览提醒”，把顾问都拉进来。</li>
+        <li>打开群聊右上角“…” → “群机器人” → “添加机器人”，新建后复制它的 Webhook 地址。</li>
+        <li>粘贴到下面“共用群机器人”里保存，再给每位顾问填企业微信绑定的手机号，提醒时会&#64;这位顾问。</li>
+        <li>想让某位顾问单独收提醒，就单独建群和机器人，填在这位顾问那一行；没填的顾问都发到共用群。</li>
+      </ol>
+    </details>
+    <p *ngIf="channelsError" class="inline-error">{{ channelsError }}</p>
+
+    <div *ngFor="let row of channelRows" class="channel-row" [class.shared]="isShared(row)">
+      <div class="channel-name">
+        <strong>{{ row.label }}</strong>
+        <span class="status" *ngIf="row.saved?.hasWebhook; else noRobot">已设置机器人 {{ row.saved?.webhookHint }}</span>
+        <ng-template #noRobot>
+          <span class="status muted">{{ isShared(row) ? '未设置' : '用共用群机器人' }}</span>
+        </ng-template>
+      </div>
+      <div class="channel-fields">
+        <label *ngIf="!isShared(row)">
+          <span>企业微信账号（提醒发给本人）</span>
+          <input type="text" [(ngModel)]="row.weComUserIdInput" maxlength="64" placeholder="通讯录里的“账号”" />
+        </label>
+        <label *ngIf="!isShared(row)">
+          <span>手机号（群里&#64;用，选填）</span>
+          <input type="text" [(ngModel)]="row.mentionInput" maxlength="64" placeholder="企业微信绑定的手机号" />
+        </label>
+        <label>
+          <span>{{ isShared(row) ? '群机器人地址' : '单独的群机器人（选填）' }}</span>
+          <input
+            type="url"
+            [(ngModel)]="row.webhookInput"
+            [placeholder]="row.saved?.hasWebhook ? '要换机器人时粘贴新地址' : '粘贴群机器人 Webhook 地址'"
+          />
+        </label>
+        <div class="channel-buttons">
+          <button type="button" class="primary" (click)="saveChannel(row)" [disabled]="row.busy">保存</button>
+          <button type="button" (click)="testChannel(row)" [disabled]="row.busy">发测试消息</button>
+          <button type="button" class="danger" *ngIf="row.saved?.hasWebhook" (click)="saveChannel(row, true)" [disabled]="row.busy">
+            删除机器人
+          </button>
+        </div>
+      </div>
+      <p *ngIf="row.message" [class.inline-error]="row.messageIsError" [class.ok]="!row.messageIsError">{{ row.message }}</p>
+    </div>
+  </section>
+</div>

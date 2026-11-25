@@ -199,6 +199,133 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.ToTable("AccountVerificationCodes");
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertChannel", b =>
+                {
+                    b.Property<string>("ConsultantName")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Mention")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("WeComUserId")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("WebhookUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.HasKey("ConsultantName");
+
+                    b.ToTable("BrowseAlertChannels");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertLink", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("varchar(16)");
+
+                    b.Property<string>("ConsultantName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<string>("LandingPath")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<DateTime?>("LastViewedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WeComExternalUserId")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("ConsultantName", "WeComExternalUserId");
+
+                    b.ToTable("BrowseAlertLinks");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertView", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("BrowseAlertLinkId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("Notified")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("PageName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ViewedAt");
+
+                    b.HasIndex("BrowseAlertLinkId", "ViewedAt");
+
+                    b.ToTable("BrowseAlertViews");
+                });
+
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.Currency", b =>
                 {
                     b.Property<int>("Id")
@@ -1022,6 +1149,35 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.ToTable("StudentPayments");
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.WeComAppSetting", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int?>("AgentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CorpId")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<string>("Secret")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UpdatedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WeComAppSettings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1071,6 +1227,17 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertView", b =>
+                {
+                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertLink", "BrowseAlertLink")
+                        .WithMany("Views")
+                        .HasForeignKey("BrowseAlertLinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BrowseAlertLink");
                 });
 
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.SchoolCommissionPolicy", b =>
@@ -1223,6 +1390,11 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("StudentApplication");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.BrowseAlertLink", b =>
+                {
+                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.School", b =>

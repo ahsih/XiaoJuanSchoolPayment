@@ -24,6 +24,10 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<SchoolContentRevision> SchoolContentRevisions { get; set; }
     public DbSet<SchoolCommissionPolicy> SchoolCommissionPolicies { get; set; }
     public DbSet<SchoolCommissionRoomBasis> SchoolCommissionRoomBases { get; set; }
+    public DbSet<BrowseAlertLink> BrowseAlertLinks { get; set; }
+    public DbSet<BrowseAlertView> BrowseAlertViews { get; set; }
+    public DbSet<BrowseAlertChannel> BrowseAlertChannels { get; set; }
+    public DbSet<WeComAppSetting> WeComAppSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -102,6 +106,28 @@ namespace XiaoJuanSchoolPayment.Server.Data
         .WithMany(x => x.RoomBases)
         .HasForeignKey(x => x.SchoolCommissionPolicyId)
         .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<BrowseAlertLink>()
+        .HasIndex(x => x.Code)
+        .IsUnique();
+
+      builder.Entity<BrowseAlertLink>()
+        .HasIndex(x => x.CreatedAt);
+
+      builder.Entity<BrowseAlertLink>()
+        .HasIndex(x => new { x.ConsultantName, x.WeComExternalUserId });
+
+      builder.Entity<BrowseAlertView>()
+        .HasOne(x => x.BrowseAlertLink)
+        .WithMany(x => x.Views)
+        .HasForeignKey(x => x.BrowseAlertLinkId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<BrowseAlertView>()
+        .HasIndex(x => new { x.BrowseAlertLinkId, x.ViewedAt });
+
+      builder.Entity<BrowseAlertView>()
+        .HasIndex(x => x.ViewedAt);
     }
   }
 }

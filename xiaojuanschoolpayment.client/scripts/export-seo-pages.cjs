@@ -215,6 +215,29 @@ const data = {
   prerenderedSchools,
 };
 
+// The pages that send a consultant a student browse reminder (BrowsePageCatalog in the server) and the
+// short name the reminder shows: every school page in prerender-school-routes.txt, named by its SEO title
+// up to the first "|". Its SEO image goes on the link card the WeCom chat sidebar sends.
+const browsePages = {};
+const browseImages = {};
+const schoolRoutes = fs
+  .readFileSync(path.join(clientDir, 'prerender-school-routes.txt'), 'utf8')
+  .split(/\r?\n/)
+  .map((line) => line.trim())
+  .filter(Boolean);
+for (const route of schoolRoutes) {
+  const name = (SEO_PAGES[route]?.title || '').split(/\s*[|｜]\s*/)[0].trim();
+  if (!name) {
+    problems.push(`${route} in prerender-school-routes.txt has no SEO_PAGES title, which browse reminders use as its name`);
+    continue;
+  }
+  browsePages[route] = name;
+  const image = SEO_PAGES[route]?.image || DEFAULT_IMAGE;
+  if (image) {
+    browseImages[route] = image;
+  }
+}
+
 checkForbidden('the 关于思达启航 page', renderBrandFactsHtml());
 const llmsTxt = renderBrandLlmsTxt(BRAND_SITE_ORIGIN);
 checkForbidden('llms.txt', llmsTxt);
@@ -246,10 +269,12 @@ if (headEnd < 0) {
 fs.writeFileSync(indexPath, `${indexHtml.slice(0, headEnd)}${homeScript}\n${indexHtml.slice(headEnd)}`, 'utf8');
 
 fs.writeFileSync(path.join(outputDir, 'llms.txt'), llmsTxt, 'utf8');
+fs.writeFileSync(path.join(outputDir, 'browse-pages.json'), JSON.stringify({ pages: browsePages, images: browseImages }, null, 2) + '\n', 'utf8');
 
 console.log(
   `export-seo-pages: wrote ${Object.keys(pages).length} pages, ${data.sections.length} sections and `
   + `${Object.keys(prerendered).length} prerendered pages (${Object.keys(prerenderedSchools).length} school pages) to seo-pages.json`
   + `${prerenderedRoutes.includes('/') ? ' (home page prerendered in index.html)' : ''}, `
-  + `the home JSON-LD to index.html, and llms.txt (${Buffer.byteLength(llmsTxt)} bytes)`,
+  + `the home JSON-LD to index.html, llms.txt (${Buffer.byteLength(llmsTxt)} bytes) `
+  + `and ${Object.keys(browsePages).length} browse-reminder pages to browse-pages.json`,
 );
