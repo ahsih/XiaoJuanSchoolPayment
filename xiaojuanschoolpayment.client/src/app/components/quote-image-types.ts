@@ -3,6 +3,7 @@
 // Keep this file free of Angular and DOM types.
 import type { PlanCompareSheet } from './plan-compare/plan-compare-sheet';
 import type { UkQuoteSheet } from './uk-quote/uk-quote-sheet';
+import type { UkQuoteSheet as UkQuoteSheetV2 } from './uk-quote-v2/uk-quote-sheet';
 
 export interface QuoteImageInfoItem {
   icon: string;
@@ -78,6 +79,8 @@ export interface QuoteImageCardData {
   layout?: 'standard' | 'cia-detailed' | 'plan-compare' | 'uk-package';
   planCompare?: PlanCompareSheet;
   ukSheet?: UkQuoteSheet;
+  /** St Giles: the newer sheet (uk-quote-v2: up to three plans, several consultants), also drawn for `uk-package`. */
+  ukSheetV2?: UkQuoteSheetV2;
   /** Preserve every payment/local/optional fee and size the detailed image to its contents. */
   fullFeeDetails?: boolean;
   /** Size shorter package fee sections to their content without changing other schools. */
