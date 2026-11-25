@@ -148,7 +148,8 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicIclPath = '/philippines-study/cebu/icl';
   private readonly publicCellaUniPath = '/philippines-study/cebu/cella-uni-sparta-campus';
   private readonly publicCellaPremiumPath = '/philippines-study/cebu/cella-premium-campus';
-  private readonly publicFellaPath = '/philippines-study/cebu/english-fella';
+  private readonly publicFellaFirstPath = '/philippines-study/cebu/english-fella-first-campus';
+  private readonly publicFellaSecondPath = '/philippines-study/cebu/english-fella-second-campus';
   private readonly publicBtesPath = '/philippines-study/cebu/btes-english-academy';
   private readonly publicBlueOceanPath = '/philippines-study/cebu/cebu-blue-ocean-academy';
   private readonly publicTargetPath = '/philippines-study/cebu/target-global-english-academy';
@@ -428,7 +429,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isTargetSelected) return this.publicTargetPath;
     if (this.isBlueOceanSelected) return this.publicBlueOceanPath;
     if (this.isBtesSelected) return this.publicBtesPath;
-    if (this.isFellaSelected) return this.publicFellaPath;
+    if (this.isFellaSelected) return this.fellaCampus === 'campus2' ? this.publicFellaSecondPath : this.publicFellaFirstPath;
     if (this.isCellaPremiumSelected) return this.publicCellaPremiumPath;
     if (this.isCellaUniSelected) return this.publicCellaUniPath;
     if (this.isIclSelected) return this.publicIclPath;
