@@ -52,6 +52,7 @@ import {
 } from '../cia-school/cia-content-preview';
 import { applyCiaQuoteContent } from '../cia-school/cia-quote-engine';
 import { associationPeakRateForWeek } from '../association-peak-surcharge';
+import { syncSingleCoursePrices } from './course-price-years';
 import type {
   CiaVideoCard,
   CourseDetailGuide,
@@ -870,7 +871,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     if (value?.schemaVersion !== 1 || value.schoolCode !== this.profile.code) {
       return;
     }
-    const content = this.profile.cloneContent(value);
+    // One-price schools keep tuition2027 equal to the price the editor edits; CIA and other two-price schools are unchanged.
+    const content = syncSingleCoursePrices(this.profile.cloneContent(value));
     this.previewContent = content;
     // Prices and rules for the calculator; the mini program applies the same function.
     applyCiaQuoteContent(this, content);

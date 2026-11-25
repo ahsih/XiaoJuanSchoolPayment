@@ -35,6 +35,7 @@ import {
 } from '../philippines/monol-school/monol-content-config';
 import { cloneMonolSpartaContentConfig, createDefaultMonolSpartaContentConfig } from '../philippines/monol-sparta-school/monol-sparta-content-config';
 import { MonolSpartaQuote } from '../philippines/monol-sparta-school/monol-sparta-page-quote';
+import { syncSingleCoursePrices } from '../philippines/school-page/course-price-years';
 import { createCiaQuotePricing } from '../philippines/cia-school/cia-quote-engine';
 import {
   cloneEvContentConfig,
@@ -423,7 +424,8 @@ export class AdminSchoolQuoteImageComponent implements OnInit, OnDestroy {
       this.editor = editor ?? undefined;
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       const defaults = this.createSelectedDefaults();
-      this.content = this.cloneSelectedContent(stored ?? defaults);
+      // One-price schools: the preview prices courses as the public page does (tuition2027 = tuition).
+      this.content = syncSingleCoursePrices(this.cloneSelectedContent(stored ?? defaults));
       this.hasUnsavedChanges = false;
       this.refreshPreview();
       this.isLoading = false;
