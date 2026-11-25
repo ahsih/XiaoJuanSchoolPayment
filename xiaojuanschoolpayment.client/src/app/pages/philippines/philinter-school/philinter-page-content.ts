@@ -145,8 +145,9 @@ export const PHILINTER_ALBUM_DESCRIPTIONS = {
 
 /**
  * A Philinter clip in public/assets/philinter/videos/ (H.264, poster `<name>-poster.webp`), from the school's own
- * pack and channels. Clips were cut before social-media handles, a website card, shop signs and an email address;
- * the 中国台湾 bar in the pronunciation interview is covered with a gray mosaic. Check every frame of a new clip for
+ * pack and channels. Clips were cut before social-media handles, a website card, shop signs and an email address,
+ * or the handles were removed with ffmpeg delogo (IELTS course, Timmy); Sunny's interview ends before its outreach
+ * scene with local children; the 中国台湾 bar in the pronunciation interview is covered with a gray mosaic. Check every frame of a new clip for
  * other companies, contact details and the Taiwan wording rule.
  */
 export interface PhilinterVideo {
@@ -163,6 +164,18 @@ export interface PhilinterVideo {
 
 export const PHILINTER_VIDEOS: PhilinterVideo[] = [
   {
+    name: 'campus-tour-2026', title: '2026校园航拍导览', topic: '校园', duration: '1:10', orientation: 'landscape',
+    description: '2026年航拍：教学楼、宿舍楼、泳池和 CBT 楼（一楼咖啡厅和洗衣店，楼上是雅思官方考点）。',
+  },
+  {
+    name: 'school-overview-2026', title: '学校全览：课程、老师与住宿', topic: '校园', duration: '2:06', orientation: 'landscape',
+    description: '2026年：一对一和小组课、晚自习、商务演讲、雅思和托业模考，再看老师团队、校内宿舍和 Azon 公寓。',
+  },
+  {
+    name: 'international-staff', title: '国际管理团队', topic: '校园', duration: '1:57', orientation: 'landscape',
+    description: '2026年：有负责中国学员的经理，也有越南、日本、蒙古和泰国学员的工作人员，从接机到日常咨询都有人帮忙。',
+  },
+  {
     name: 'campus-facilities', title: '校园设施速览', topic: '校园', duration: '0:20', orientation: 'landscape',
     description: '泳池、大小班教室、一对一教室、视听教室、自习室、休息区、宿舍、餐厅和咖啡厅。',
   },
@@ -173,6 +186,10 @@ export const PHILINTER_VIDEOS: PhilinterVideo[] = [
   {
     name: 'azon-condo-portrait', title: 'Azon 公寓（竖版）', topic: '宿舍', duration: '0:45', orientation: 'portrait',
     description: '房间、厨房、卫生间、两种床型、二楼健身房和接送车。',
+  },
+  {
+    name: 'ielts-course', title: '雅思课程介绍', topic: '课程', duration: '1:30', orientation: 'landscape',
+    description: '2025年，雅思课负责人 Goen 老师介绍：35位老师雅思7.5–8.0分；一对一练阅读和口语，小组课练听力、词汇和语法；每周模考后有学习咨询。',
   },
   {
     name: 'sgc-speech-and-sound', title: '精品小组课：发音', topic: '课程', duration: '0:33', orientation: 'landscape',
@@ -195,8 +212,24 @@ export const PHILINTER_VIDEOS: PhilinterVideo[] = [
     description: '2024年9月 English Day，学员分队参加问答比赛。',
   },
   {
+    name: 'review-serena', title: '学员访谈：Serena', topic: '学员访谈', duration: '1:58', orientation: 'landscape',
+    description: '2026年，越南学员 Serena 说说进阶商务英语课的演讲练习，她在学校做完演讲后收到另一家公司的讲师邀请。',
+  },
+  {
+    name: 'review-timmy', title: '学员访谈：Timmy', topic: '学员访谈', duration: '1:11', orientation: 'landscape',
+    description: '2026年，中国大陆学员 Timmy 学了两周，说说口语的进步，以及他喜欢的自习室、泳池边学习区和自助餐。',
+  },
+  {
+    name: 'review-sunny-hayoon', title: '学员访谈：老学员带女儿回来', topic: '学员访谈', duration: '1:52', orientation: 'landscape',
+    description: '2024年，15年前在这里读过书的妈妈 Sunny 带女儿 Hayoon 回来上课，说说老师怎样按需求安排重点，以及为什么再次选这里。',
+  },
+  {
+    name: 'review-olivia-luna', title: '学员访谈：亲子家庭', topic: '学员访谈', duration: '1:41', orientation: 'landscape',
+    description: '2024年，妈妈 Olivia 带女儿 Luna 一起来上课，两人分别说说上课和校园生活的感受。',
+  },
+  {
     name: 'review-amy', title: '学员访谈：Amy', topic: '学员访谈', duration: '1:09', orientation: 'landscape',
-    description: '2024年，学员 Amy 说说在校学习的感受，穿插上课画面。',
+    description: '2024年，中国大陆学员 Amy 说说在校学习的感受，穿插上课画面。',
   },
   {
     name: 'review-sand', title: '学员访谈：Sand', topic: '学员访谈', duration: '0:48', orientation: 'landscape',

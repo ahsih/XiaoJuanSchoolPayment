@@ -21,6 +21,25 @@ The user asked to update the Philinter (Cebu) page and supplied the school's Goo
 - 61 photos from the pack's photo folders and 12 clips from its video folders and the school's own channels, each viewed before use. Photos are WebP at most 1,400 px wide, never upscaled: rooms in `public/assets/philinter/rooms/` (校内单人间 4 + bathroom, 双人间 2, 三人间 2, Azon single 3, twin 1, triple 1, Azon kitchen, bathroom and shower), everything else in `gallery/`. The two outreach photos were removed again (local children, faces already blurred), leaving 59.
 - Videos are 720p H.264 (two 540p sources stay 540p) with a poster frame each, about 104 MB. Cuts: the Azon clips end before shop signs, a mall and an email address; two interviews end before social-media handles; the “From Taiwan” bar in the pronunciation interview is covered with a gray mosaic.
 - Left out: a 中国台湾 student video and review cards showing the Taiwan authorities' flag; a business review with “TAIWAN” and the school website on screen; clips with subscribe badges, a stock-photo URL, another company's slide, a streaming-service parody; the outreach video (close-ups of local children); photos with store logos, brand packaging, a contact line, lyrics, an unknown logo, masks, unclear room types or low resolution.
+- Added 2026-11-25 (user request: more trust-building videos from the school's official YouTube and Facebook): eight clips from the official YouTube channel @PhilinterAcademy. Its Facebook page carries the same videos. Every clip was checked at one frame per second, corners and endings included.
+  - `campus-tour-2026`: 2026-07 drone tour.
+  - `school-overview-2026`: 2026-05 academics and facilities.
+  - `international-staff`: 2026-03 international staff. The desk flags are the PRC, Laos and the Philippines.
+  - `ielts-course`: 2025-02 IELTS course with the IELTS coordinator. The cycling YouTube/Facebook/Instagram/TikTok badges in the top right during 0:00–0:12 were removed with ffmpeg delogo.
+  - `review-serena`: 2026-05, Vietnamese student, Advanced Business.
+  - `review-timmy`: 2026-05, mainland-China student, two weeks. The opening montage of other students was cut, and the social badges at 1:02–1:14 were removed with delogo.
+  - `review-olivia-luna`: 2024-12, mother and daughter.
+  - `review-sunny-hayoon`: 2024-12, "Family Learning". The mother studied at Philinter 15 years earlier and came back with her daughter. The clip ends at 1:52 with a fade, before an outreach scene with local children.
+  - `review-amy` is the channel's 2024-10 "Overcoming Fear" video; Amy is labelled CHINA there, so the page now says 中国大陆学员.
+- Not used from the channel:
+  - Student reviews labelled Taiwan: Shawn, Jerry, Andy, Eric's TOEIC review.
+  - Reviews with social handles throughout or on the end card: Yumi, Theo (Theo's Booster Speaking is also a 2027-only course).
+  - The ESL and TOEIC course videos (cycling handles in the corners).
+  - The small-group video (website watermark throughout, email on the end card).
+  - "Living and Learning" (TikTok handle).
+  - "Discover Life at Philinter", which repeats the campus clips.
+  - The Shorts (English tips and travel clips).
+- The videos folder now holds 20 clips, about 212 MB.
 - The older top-level photos `lobby` (a night pool), `one-on-one-room` (a large study room), `single-room`, `double-room`, `triple-room`, `study-hall`, `cafeteria-1/2`, `laundry` and the old holiday poster were deleted because they were unused or did not show what their names said. `condo-room` is the Azon tower and is labelled so.
 
 Not published: the nationality chart, Wi-Fi passwords, the handbook's sensitive-topic list, agency rules (extensions only through the original agency, commission), the school's contacts and address, extra-class prices.
