@@ -404,7 +404,7 @@ const libraryPages: Record<string, LibraryPage> = {
       {
         icon: 'school',
         title: 'MK Language Training Center',
-        tag: '伊洛伊洛 / Semi-Sparta',
+        tag: '伊洛伊洛 / ESL / 亲子',
         text: '适合想在Iloilo安静环境中控制预算，比较ESL、IELTS、TESOL、Internship和亲子课程的学生。',
         route: '/philippines-study/iloilo/mk-language-training-center',
       },
