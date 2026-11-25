@@ -19,6 +19,7 @@ import {
   IMS_CAMPUS_VIDEOS,
   IMS_COURSE_DETAIL_GUIDES,
   IMS_COURSE_VIDEOS,
+  IMS_INTERVIEW_VIDEOS,
   IMS_DORM_RULES,
   IMS_FAQS,
   IMS_FINAL_CTA_BADGES,
@@ -177,6 +178,7 @@ export const IMS_PAGE_PROFILE: PhSchoolProfile = {
   overviewFacts: IMS_OVERVIEW_FACTS,
   videoTabs: [
     { label: '校园视频', icon: 'videocam', items: IMS_CAMPUS_VIDEOS },
+    { label: '学员访谈', icon: 'videocam', items: IMS_INTERVIEW_VIDEOS },
     { label: '课程视频', icon: 'videocam', items: IMS_COURSE_VIDEOS },
   ],
   courseHighlights: {

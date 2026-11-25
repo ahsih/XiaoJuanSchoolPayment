@@ -152,16 +152,32 @@ const poster = (name: string) => `/assets/ims/videos/${name}-poster.jpg`;
  * IMS's own clips (Drive pack 2026-11-25), 720p H.264 in public/assets/ims/videos/. The school film was cut before
  * its airport opening (another company's adverts), the flags and student counter, the score wall and its sign-off; the
  * pool-party clip ends before the school's website; the presentation clip lost a student's name caption. The student
- * manager's pickup video was not used (shop and advert signs at the airport).
+ * manager's pickup video was not used (shop and advert signs at the airport). On 2026-11-25 the school film also lost
+ * its study-room shot, whose wall shows the flag of the Taiwan authorities, and its ESL/IELTS/ETS TOEIC logo card.
+ *
+ * From IMS's official YouTube channel (@IMSAcademy, 2025–2026 uploads, user request 2026-11-25): three student
+ * interviews and the Senior ESL class. The Korean interview and the Vietnamese ESL interview end before the website card;
+ * the ESL interview's classroom shot under the flag row has a gray mosaic over the flags, and its sentence listing
+ * "Chinese, Taiwan" among countries (with flag stickers) was cut. The Senior ESL clip keeps only its title card, group
+ * class and one-to-one class: its class tables (other class counts than the 2026 price list) and every shot of a door
+ * with an unknown logo sign were left out. Promo films repeating the school film, camp videos, the Ayala-campus and
+ * pre-2024 uploads, a city-tour clip full of shop signs and the Working Holiday talk (Vietnamese subtitles) were not used.
  */
 export const IMS_CAMPUS_VIDEOS: readonly PhVideoItem[] = [
-  { title: '校园宣传片', text: '学校拍的校园、课堂和泳池。', src: video('campus-film'), poster: poster('campus-film'), duration: '1:16', shape: 'wide' },
+  { title: '校园宣传片', text: '学校拍的校园、课堂和泳池。', src: video('campus-film'), poster: poster('campus-film'), duration: '1:12', shape: 'wide' },
   { title: '泳池派对', text: '学校在泳池办的派对。', src: video('pool-party'), poster: poster('pool-party'), duration: '0:59', shape: 'wide' },
+];
+
+export const IMS_INTERVIEW_VIDEOS: readonly PhVideoItem[] = [
+  { title: '雅思学员访谈（韩国）', text: '读雅思8周的韩国学员，聊口语进步、老师、自习室和泳池（英文字幕）。', src: video('student-ielts-korea'), poster: poster('student-ielts-korea'), duration: '1:58', shape: 'wide' },
+  { title: 'ESL学员访谈（越南）', text: '读Premium ESL 4周的越南学员，聊老师、各国同学和在学校的生活（英文字幕）。', src: video('student-esl-vietnam'), poster: poster('student-esl-vietnam'), duration: '2:56', shape: 'tall' },
+  { title: '雅思学员访谈（越南）', text: '在IMS读雅思的越南学员，聊老师、课堂和一起学习的同学（英文字幕）。', src: video('student-ielts-vietnam'), poster: poster('student-ielts-vietnam'), duration: '1:31', shape: 'wide' },
 ];
 
 export const IMS_COURSE_VIDEOS: readonly PhVideoItem[] = [
   { title: '商务英语课堂展示', text: '商务英语学生上台做汇报。', src: video('business-presentation'), poster: poster('business-presentation'), duration: '0:36', shape: 'wide' },
   { title: '口语课演讲', text: 'Power Speaking 学生的演讲课。', src: video('power-speaking'), poster: poster('power-speaking'), duration: '0:56', shape: 'tall' },
+  { title: 'Senior ESL课堂', text: 'Senior ESL（50岁以上）的小组课角色扮演和一对一课。', src: video('senior-esl-class'), poster: poster('senior-esl-class'), duration: '0:57', shape: 'wide' },
 ];
 
 const ROOM_SERVICE = '每周最多2次打扫（扫码预约），每周3次免费洗衣';

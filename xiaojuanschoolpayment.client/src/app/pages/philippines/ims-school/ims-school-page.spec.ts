@@ -164,6 +164,16 @@ describe('IMS Academy page on the shared template', () => {
     }
   });
 
+  it('groups the school videos as campus, student interviews and courses, each with its own poster', () => {
+    const tabs = IMS_PAGE_PROFILE.videoTabs ?? [];
+    expect(tabs.map(tab => tab.label)).toEqual(['校园视频', '学员访谈', '课程视频']);
+    expect(tabs[1].items.length).toBe(3);
+    for (const item of tabs.flatMap(tab => tab.items)) {
+      expect(item.poster).withContext(item.title).toBe(item.src.replace(/\.mp4$/, '-poster.jpg'));
+      expect(item.text).withContext(item.title).not.toMatch(/台湾|Taiwan/);
+    }
+  });
+
   it('keeps a saved document unchanged when cloned and follows the editor price', () => {
     const saved = createDefaultImsContentConfig();
     expect(cloneImsContentConfig(saved)).toEqual(saved);

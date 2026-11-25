@@ -16,9 +16,12 @@ asked to update the IMS page. Per the standing decision for Philippine schools, 
   walk-in choice, local fees and offers; saved prices and switches are kept. Because IMS has one price year and the
   employee editor edits only `tuition`, `cloneImsContentConfig` keeps `tuition2027` equal to it (guarantee courses use
   their 12-week package price). The editor now shows the 1/2/3-week ratio fields for IMS.
-- Media: 32 campus and 9 room photos (WebP) in `public/assets/ims/campus/` and `rooms/`, and four school videos
-  (campus film, pool party, business presentation, Power Speaking speech; 720p H.264 with posters, about 55 MB) in
-  `videos/`. The old top-level `public/assets/ims/*.webp` files and `ims-campus-tour.mp4` were removed.
+- Media: 32 campus and 9 room photos (WebP) in `public/assets/ims/campus/` and `rooms/`, and eight school videos in
+  `videos/` (720p H.264 with posters, about 128 MB): from the Drive pack the campus film, pool party, business
+  presentation and Power Speaking speech; from IMS's official YouTube channel (@IMSAcademy, user request: videos that
+  build trust) three student interviews (Korean IELTS student, Vietnamese Premium ESL student, Vietnamese IELTS student)
+  in a new 学员访谈 album group, and the Senior ESL class among the course videos. The old top-level
+  `public/assets/ims/*.webp` files and `ims-campus-tour.mp4` were removed.
 - Template additions used by IMS (optional, other schools unchanged): `PhPageStudent.hideReturning` hides the
   new/returning choice, and `PhSchoolQuote.registrationBaseNote` lets a school replace the registration-row note.
 
@@ -37,6 +40,16 @@ asked to update the IMS page. Per the standing decision for Philippine schools, 
 
 ## Decisions
 
+- Videos (2026-11-25 check): the campus film's study-room shot shows the flag of the Taiwan authorities on a wall,
+  so it was cut, together with its ESL/IELTS/ETS TOEIC logo card (72 s now). The Vietnamese ESL interview has the
+  same wall: its classroom shot keeps a gray mosaic over the flag row, and the sentence listing "Chinese, Taiwan" among
+  countries, with flag stickers, was cut. Both interviews from YouTube end before the ims7.com card. The Senior ESL
+  clip keeps its title card, group class and one-to-one class only: its class tables (Senior ESL 4 with only one-to-one
+  classes) differ from the 2026 price list, and a door in the other shots carries a logo sign we could not identify.
+  Not used: promo films repeating the campus film (and opening with an airport and a flag fountain), camp videos,
+  Ayala-campus and pre-2024 uploads, the city day tour (shop signs) and the Working Holiday talk (Vietnamese subtitles).
+  The Facebook page needs a login and its public video tab shows only 2019 clips. Card texts follow the videos' own
+  captions and never name the students.
 - Order: 思达启航 5% on the full tuition and room first, except the four 2+2 weeks (the school notice says they take no
   95折); then 2+2, the off-season offer and the long-stay tier.
 - A week belongs to the month of its Wednesday; January, June, July and August are not off-season. The calendar marks
@@ -56,7 +69,7 @@ asked to update the IMS page. Per the standing decision for Philippine schools, 
 
 ## Verification
 
-- `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.ims.spec.json --include=src/app/pages/philippines/ims-school/ims-school-page.spec.ts --progress=false`: 15 passed.
+- `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.ims.spec.json --include=src/app/pages/philippines/ims-school/ims-school-page.spec.ts --progress=false`: 16 passed.
 - `tsconfig.quote-rules.spec.json` (`school-quote-rules.spec.ts`): 138 passed. `node scripts/verify-textbook-estimates.cjs`: 85 passed.
 - `school-textbook-integration.spec.ts`: 49 passed, 35 failed; every school (IMS included) fails the same
   "production PNG renderer" test with NG0203 for `ExchangeRateService`, a known harness problem, not this change.
