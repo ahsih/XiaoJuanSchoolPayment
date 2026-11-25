@@ -20,8 +20,8 @@ campus pages without mixing their content.
   `iu-icl-quote-layout.css` and the promotion poster image. The employee quote-image preview now uses
   `iuIclPreviewQuoteImage`.
 - Photos: `public/assets/iu/campus|rooms` and `public/assets/icl/campus|rooms` (WebP, at most 1400 px, never upscaled).
-  Videos: `public/assets/iu/videos` (14) and `public/assets/icl/videos` (16), 720p H.264 with posters, about 85 MB for
-  IU and 77 MB for ICL. The hero album groups them as 校园／宿舍／课程／餐厅; ICL's four landscape campus-room clips
+  Videos: `public/assets/iu/videos` (22) and `public/assets/icl/videos` (20), 720p H.264 with posters, about 180 MB
+  for IU and 130 MB for ICL (since 2026-11-25). The hero album groups them as 校园／宿舍／课程／餐厅 (and 学员 since 2026-11-25); ICL's four landscape campus-room clips
   open the matching room photos.
 - WeChat Channels clips (user zips 2026-11-24): 10 for IU (front desk, lounge and court, rooftop pool, AV room, gym,
   classrooms, group class, double, family triple, family quad) and 6 for ICL (campus and classes, first floor, gym,
@@ -33,6 +33,29 @@ campus pages without mixing their content.
   poster, instead of being cropped to fill the frame; on phones the hero frame for them is 4:3. This is the template's
   `tallVideoBackdrop` profile flag, tried on IU first and made the default for every template school the same day
   (ICL included); only CIA keeps cropping, because its page is locked (user answer: CIA 先不改).
+
+## Official YouTube and Facebook clips (2026-11-25)
+
+User request: add more of the schools' own videos that build trust. Sources are only the schools' official channels:
+YouTube "IU ENGLISH ACADEMY" (it also posts ICL videos) and "ICL English Academy", plus the one video each Facebook
+page shows without a login. Each clip was checked frame by frame, its burned-in captions read, and its opening and
+end card looked at. A new 学员 chip in both hero albums holds the student stories.
+
+- IU (8): the principal's two Chinese-narrated clips on the dormitory and the meals (cut before the opening reply to
+  online complaints and before the end card with social accounts; the dormitory clip shows carpeted rooms, so it
+  opens no room album), the salad bar, new-student orientation, teacher training, a Russian student's day at IU
+  (the name card in the first seconds and a milk-carton brand cut, the portrait part cropped out of the
+  landscape frame), and two Saudi
+  students' stories (Facebook and YouTube; the second one's full-name card cut).
+- ICL (4 new): a Chinese-narrated tour of the four room types (end card cut), a Vietnamese student's IELTS story (her
+  full name card cut, the entry-test sheet that shows her full name blurred twice, her official report and the end
+  card cut), the entry level test and the job-interview class. `icl-overview` is the "Step Inside ICL" film; it was
+  re-cut without the two seconds of corridor that show a QR code.
+- Left out: the principal's pre-departure series, camp and "Inside IU" videos (Taiwan passport, Taiwan named beside
+  countries), the lunch review (a low rating and a Taiwan remark), the schedule-change apology, a fitness story and
+  gym tour whose end cards carry a gym brand (IU already has a gym clip), the ICL year-in-review (many national flags,
+  a restaurant sign), the coffee shop (a milk brand), a second IELTS story (one is enough) and short photo
+  slideshows. Two videos were no longer available. Facebook needs a login to list more videos.
 
 ## Rules in the quote
 
@@ -58,5 +81,5 @@ campus pages without mixing their content.
 ## Tests
 
 `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.iu-icl.spec.json --include=src/app/pages/philippines/iu-school/iu-icl-school-page.spec.ts --progress=false`
-(13 tests). `school-quote-rules.spec.ts` passes; in `school-textbook-integration.spec.ts` every school's
+(14 tests). `school-quote-rules.spec.ts` passes; in `school-textbook-integration.spec.ts` every school's
 "production PNG renderer" test fails with NG0203 on unchanged code too.

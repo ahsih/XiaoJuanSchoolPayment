@@ -498,7 +498,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/monol',
         loadComponent: () =>
-          import('./pages/philippines/monol-school/monol-school-detail.component').then((m) => m.MonolSchoolDetailComponent),
+          import('./pages/philippines/monol-school/monol-school-page.component').then((m) => m.MonolSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/monol-sparta-campus',

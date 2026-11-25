@@ -2,7 +2,7 @@ import { CiaContentConfig, CiaCourseContent, CiaPromotionRule } from '../cia-sch
 import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 
 const DAY = 86400000;
-export const CPILS_POLICY_VERSION = 4;
+export const CPILS_POLICY_VERSION = 5;
 
 /** ACR I-CARD comes with the first tourist-visa extension (user rule 2026-11-24); ARP stays with the second. */
 export const CPILS_ACR_NOTE = '第一次续签时办理（30天签证第5周起，59天签证第9周起），学校统一带队到移民局。';
@@ -65,6 +65,7 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
   if (version < 2) addCpilsVersion2(config);
   if (version < 3) addCpilsVersion3(config);
   if (version < 4) addCpilsVersion4(config);
+  if (version < 5) addCpilsVersion5(config);
 }
 
 // The school's 2026 price list (received 2026-11-24): 1-3-week prices and the courses it prices for 2026.
@@ -97,8 +98,8 @@ const DISCOUNT_TEXT_V4: Record<string, [string, string]> = {
 
 /**
  * The school's 2026 price list and its formula (user 2026-11-24): 2026 short stays, the 2026 prices of
- * ESL Premium and the career courses, weekly management, and wording for the order of the discounts
- * (fixed school deductions, then the school's 95%, then 思达启航's 90%). Only untouched values change.
+ * ESL Premium and the career courses, weekly management, and wording for the school's order of the
+ * discounts, which version 5 replaced. Only untouched values change.
  */
 function addCpilsVersion4(config: CiaContentConfig): void {
   for (const item of config.courses) {
@@ -122,6 +123,25 @@ function addCpilsVersion4(config: CiaContentConfig): void {
     if (text && rule.description === text[0]) rule.description = text[1];
   }
   config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 4 };
+}
+
+/** Version-4 wording and the wording of the order that costs the student least (user decision 2026-11-24). */
+const DISCOUNT_TEXT_V5: Record<string, [string, string]> = {
+  'cpils-sida': [DISCOUNT_TEXT_V4['cpils-sida'][1], '课程费和住宿费按原价享9折，学校优惠在此之后叠加。'],
+  'cpils-off-season-spring': [DISCOUNT_TEXT_V4['cpils-off-season-spring'][1], DISCOUNT_TEXT_V4['cpils-off-season-spring'][0]],
+  'cpils-off-season-fall': [DISCOUNT_TEXT_V4['cpils-off-season-fall'][1], DISCOUNT_TEXT_V4['cpils-off-season-fall'][0]],
+};
+
+/**
+ * The order that costs the student least (user decision 2026-11-24): 思达启航's 10% on the full price, then
+ * the school's 5%, then the fixed school deductions. Only untouched version-4 wording changes.
+ */
+function addCpilsVersion5(config: CiaContentConfig): void {
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V5[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 5 };
 }
 
 /**

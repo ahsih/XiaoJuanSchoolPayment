@@ -103,7 +103,7 @@ const IBREEZE_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 I.BREEZE',
-    intro: '视频来自I.BREEZE学校，可以看到校园、各类宿舍和校外公寓。',
+    intro: '视频来自I.BREEZE学校，可以看到校园、各类宿舍、校外公寓和学员访谈。',
     badge: 'I.BREEZE 学校视频',
   },
   rooms: {
@@ -169,12 +169,15 @@ const videoCard = (item: IbreezeVideo): CiaVideoCard => ({
   details: ['校园、教室与宿舍', '餐厅与课后生活', `时长 ${item.duration}`],
 });
 const roomClips = (prefix: string) => IBREEZE_VIDEOS.filter(item => item.roomId?.startsWith(prefix)).map(albumVideo);
+const schoolClips = (topic?: IbreezeVideo['topic']) =>
+  IBREEZE_VIDEOS.filter(item => !item.roomId && item.topic === topic).map(albumVideo);
 
 /** Videos in the hero album, one chip per topic; the school film opens the album. */
 const IBREEZE_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: [albumVideo(video('ibreeze-school-film'))] },
+  { label: '校园视频', icon: 'videocam', items: schoolClips() },
   { label: '宿舍视频', icon: 'videocam', items: [...roomClips('ib1-'), ...roomClips('ib2-')] },
   { label: '校外公寓视频', icon: 'videocam', items: roomClips('condo-') },
+  { label: '访谈视频', icon: 'videocam', items: schoolClips('interview') },
 ];
 
 /** Each room clip shows exactly one room type, so it opens that room's photo album. */

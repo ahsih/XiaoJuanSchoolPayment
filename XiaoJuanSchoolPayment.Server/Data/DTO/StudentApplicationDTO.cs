@@ -37,6 +37,85 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public DateTime? PublishedAt { get; set; }
     public IList<StudentApplicationDocumentDTO> Documents { get; set; } = new List<StudentApplicationDocumentDTO>();
     public IList<StudentPaymentDTO> Payments { get; set; } = new List<StudentPaymentDTO>();
+    public IList<StudentFeeItemDTO> FeeItems { get; set; } = new List<StudentFeeItemDTO>();
+    /// <summary>Computed on every read: per currency, the fees due, the confirmed payments and what is left.</summary>
+    public IList<StudentFeeSummaryDTO> FeeSummaries { get; set; } = new List<StudentFeeSummaryDTO>();
+    public IList<StudentRequestedDocumentDTO> RequestedDocuments { get; set; } = new List<StudentRequestedDocumentDTO>();
+    public string? ConsultantName { get; set; }
+    /// <summary>Files the student uploaded; live data, never part of the published snapshot.</summary>
+    public IList<StudentSubmissionDTO> Submissions { get; set; } = new List<StudentSubmissionDTO>();
+  }
+
+  public class StudentFeeItemDTO
+  {
+    [Required, MaxLength(50)]
+    public required string Key { get; set; }
+    [Required, MaxLength(100)]
+    public required string Name { get; set; }
+    public decimal Amount { get; set; }
+    [Required, MaxLength(10)]
+    public required string CurrencyCode { get; set; }
+    public DateTime? DueDate { get; set; }
+    [MaxLength(200)]
+    public string? Note { get; set; }
+  }
+
+  public class StudentFeeSummaryDTO
+  {
+    public required string CurrencyCode { get; set; }
+    public decimal TotalDue { get; set; }
+    public decimal Paid { get; set; }
+    public decimal Remaining { get; set; }
+    /// <summary>Due date of the first fee that confirmed payments do not cover yet.</summary>
+    public DateTime? NextDueDate { get; set; }
+    /// <summary>What is still owed up to and including that fee.</summary>
+    public decimal? NextDueAmount { get; set; }
+  }
+
+  public class StudentRequestedDocumentDTO
+  {
+    [Required, MaxLength(50)]
+    public required string Key { get; set; }
+    [Required, MaxLength(50)]
+    public required string DocumentType { get; set; }
+    [MaxLength(200)]
+    public string? Note { get; set; }
+    /// <summary>Computed on read from the student's latest upload of this type: 未上传, 待确认, 已收到 or 需重新上传.</summary>
+    public string? UploadStatus { get; set; }
+  }
+
+  public class StudentSubmissionDTO
+  {
+    public Guid Id { get; set; }
+    public Guid StudentApplicationId { get; set; }
+    public required string DocumentType { get; set; }
+    public string? StudentNote { get; set; }
+    public required string OriginalFileName { get; set; }
+    public long SizeBytes { get; set; }
+    public required string ReviewStatus { get; set; }
+    public DateTime SubmittedAt { get; set; }
+    public string? ReviewedByName { get; set; }
+    public DateTime? ReviewedAt { get; set; }
+    public string? ReviewNote { get; set; }
+    public required string DownloadUrl { get; set; }
+  }
+
+  public class StudentSubmissionUploadDTO
+  {
+    public required IFormFile File { get; set; }
+    [Required, MaxLength(50)]
+    public required string DocumentType { get; set; }
+    [MaxLength(300)]
+    public string? Note { get; set; }
+    /// <summary>The file's own name. The mini program uploads a temporary file, so it sends the real name here.</summary>
+    [MaxLength(255)]
+    public string? FileName { get; set; }
+  }
+
+  public class ReturnStudentSubmissionDTO
+  {
+    [Required, MaxLength(500)]
+    public required string Reason { get; set; }
   }
 
   public class StudentApplicationMemberDTO
@@ -110,6 +189,10 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string? StudentVisibleNotes { get; set; }
     [MaxLength(2000)]
     public string? InternalNotes { get; set; }
+    public IList<StudentFeeItemDTO> FeeItems { get; set; } = new List<StudentFeeItemDTO>();
+    public IList<StudentRequestedDocumentDTO> RequestedDocuments { get; set; } = new List<StudentRequestedDocumentDTO>();
+    [MaxLength(50)]
+    public string? ConsultantName { get; set; }
   }
 
   public class UpdateStudentApplicationDTO
@@ -143,6 +226,10 @@ namespace XiaoJuanSchoolPayment.Server.Data.DTO
     public string? StudentVisibleNotes { get; set; }
     [MaxLength(2000)]
     public string? InternalNotes { get; set; }
+    public IList<StudentFeeItemDTO> FeeItems { get; set; } = new List<StudentFeeItemDTO>();
+    public IList<StudentRequestedDocumentDTO> RequestedDocuments { get; set; } = new List<StudentRequestedDocumentDTO>();
+    [MaxLength(50)]
+    public string? ConsultantName { get; set; }
   }
 
   public class StudentDocumentUploadDTO
