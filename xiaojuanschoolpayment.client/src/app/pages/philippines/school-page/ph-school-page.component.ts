@@ -672,6 +672,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly officialStudentReviews = this.profile.studentReviews;
   /** School-only short written reviews (HANA); CIA has none. */
   readonly textReviews = this.profile.textReviews ?? [];
+  /** Short-stay lines replacing the price ratios (profile.shortStayRows; GLC). */
+  readonly shortStayRows = this.profile.shortStayRows ?? [];
 
   readonly sidaCiaReasons = this.profile.sidaReasons;
 

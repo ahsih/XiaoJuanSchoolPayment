@@ -759,9 +759,14 @@
           <div class="collapsible-panel-body">
         <div class="short-stay-rate" [attr.aria-label]="schoolName + '短期住宿费率'" data-cia-preview-kind="section" data-cia-preview-id="short-stay" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'short-stay')">
           <strong>{{ copy.fees.shortStayTitle }}</strong>
+          <ng-container *ngIf="shortStayRows.length; else shortStayRatios">
+            <span *ngFor="let row of shortStayRows"><b>{{ row.label }}</b><em>{{ row.text }}</em></span>
+          </ng-container>
+          <ng-template #shortStayRatios>
           <span *ngIf="shortTermPriceRatios['1'] !== undefined"><b>1周</b><em>4周费用的{{ shortStayPercent(1) }}</em></span>
           <span><b>2周</b><em>4周费用的{{ shortStayPercent(2) }}</em></span>
           <span><b>3周</b><em>4周费用的{{ shortStayPercent(3) }}</em></span>
+          </ng-template>
         </div>
 
         <aside class="check-in-out-policy" aria-labelledby="check-in-out-title" data-cia-preview-kind="section" data-cia-preview-id="stay-policy" [class.cia-preview-highlight]="isPreviewHighlighted('section', 'stay-policy')">
