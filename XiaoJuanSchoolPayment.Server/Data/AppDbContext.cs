@@ -19,6 +19,8 @@ namespace XiaoJuanSchoolPayment.Server.Data
     public DbSet<StudentApplication> StudentApplications { get; set; }
     public DbSet<StudentApplicationDocument> StudentApplicationDocuments { get; set; }
     public DbSet<StudentPayment> StudentPayments { get; set; }
+    public DbSet<StudentSubmission> StudentSubmissions { get; set; }
+    public DbSet<StudentReminderLog> StudentReminderLogs { get; set; }
     public DbSet<InvitationCode> InvitationCodes { get; set; }
     public DbSet<AccountVerificationCode> AccountVerificationCodes { get; set; }
     public DbSet<SchoolContentRevision> SchoolContentRevisions { get; set; }
@@ -55,6 +57,25 @@ namespace XiaoJuanSchoolPayment.Server.Data
 
       builder.Entity<StudentPayment>()
         .HasIndex(x => new { x.ReviewStatus, x.SubmittedAt });
+
+      builder.Entity<StudentSubmission>()
+        .HasOne(x => x.StudentApplication)
+        .WithMany(x => x.Submissions)
+        .HasForeignKey(x => x.StudentApplicationId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<StudentSubmission>()
+        .HasIndex(x => new { x.ReviewStatus, x.SubmittedAt });
+
+      builder.Entity<StudentReminderLog>()
+        .HasOne(x => x.StudentApplication)
+        .WithMany()
+        .HasForeignKey(x => x.StudentApplicationId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      builder.Entity<StudentReminderLog>()
+        .HasIndex(x => new { x.StudentApplicationId, x.Kind, x.ReminderKey })
+        .IsUnique();
 
       builder.Entity<InvitationCode>()
         .HasIndex(x => x.CodeHash)

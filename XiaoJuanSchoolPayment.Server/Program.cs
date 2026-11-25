@@ -16,6 +16,7 @@ using XiaoJuanSchoolPayment.Server.Services.School;
 using XiaoJuanSchoolPayment.Server.Services.Security;
 using XiaoJuanSchoolPayment.Server.Services.Seo;
 using XiaoJuanSchoolPayment.Server.Services.Storage;
+using XiaoJuanSchoolPayment.Server.Services.WeChat;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSigningKey = JwtSigningKey.FromConfiguration(builder.Configuration);
@@ -112,6 +113,21 @@ builder.Services.AddOptions<TencentCosOptions>()
   .ValidateOnStart();
 builder.Services.AddSingleton<ISchoolMediaStorage, TencentCosSchoolMediaStorage>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
+builder.Services.AddSingleton<StudentEmailQueue>();
+builder.Services.AddSingleton<IStudentNotifications, StudentNotifications>();
+builder.Services.AddHostedService<StudentEmailSender>();
+// WeChat subscribe messages for the mini program 学员中心; off until WeChatMiniProgram__AppSecret and the
+// template ids are configured.
+builder.Services.Configure<WeChatMiniProgramOptions>(builder.Configuration.GetSection("WeChatMiniProgram"));
+builder.Services.AddSingleton<WeChatMessageQueue>();
+builder.Services.AddSingleton<WeChatApiClient>();
+builder.Services.AddHostedService<WeChatMessageSender>();
+builder.Services.AddHttpClient("WeChat", client =>
+{
+  client.BaseAddress = new Uri("https://api.weixin.qq.com/");
+  client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddHostedService<StudentReminderService>();
 builder.Services.AddAbuseRateLimits();
 builder.Services.AddSingleton<SchoolDataFreshness>();
 builder.Services.AddSingleton<SpaSeoHtmlRenderer>();
