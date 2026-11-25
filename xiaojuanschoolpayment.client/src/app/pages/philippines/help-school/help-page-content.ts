@@ -146,6 +146,21 @@ export const HELP_CAMPUS_TOUR: PhVideoItem = {
   src: video('campus-tour-2024'), poster: poster('campus-tour-2024'), duration: '1:37', shape: 'wide',
 };
 
+/**
+ * From HELP's own YouTube channels (2026-11-25), Clark campus only. The student-day vlog is whole; the junior-camp
+ * recap lost its airline-wing opening, the shots of a visiting group in orange uniform T-shirts with another
+ * organisation's logo, the water-park and bowling-alley shots (venue branding) and its uniform-group ending.
+ */
+export const HELP_STUDENT_DAY: PhVideoItem = {
+  title: '学员的一天（2024年）', text: '一位越南学员拍的一天：一对一和小组课、午餐、特别课、自习、单词测试和宿舍；字幕是越南语。',
+  src: video('student-day-2024'), poster: poster('student-day-2024'), duration: '3:35', shape: 'wide',
+};
+
+export const HELP_JUNIOR_CAMP: PhVideoItem = {
+  title: '青少年营回顾（2026年）', text: '2026年青少年营：上课、体育和游泳、英语演讲、户外活动和结业；每年的营期安排以学校当年通知为准。',
+  src: video('junior-camp-2026'), poster: poster('junior-camp-2026'), duration: '1:14', shape: 'wide',
+};
+
 export const HELP_ROOM_VIDEOS: Readonly<Record<string, PhVideoItem>> = {
   'room-2': { title: '双人间', text: '2026年的新双人间。', src: video('room-2'), poster: poster('room-2'), duration: '0:58', shape: 'wide' },
   'room-3': { title: '三人间', text: '2026年的新三人间。', src: video('room-3'), poster: poster('room-3'), duration: '0:59', shape: 'wide' },

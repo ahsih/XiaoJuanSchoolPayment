@@ -17,6 +17,8 @@ import {
   HELP_BASIC_INFO,
   HELP_CAMPUS_FLOORS,
   HELP_CAMPUS_TOUR,
+  HELP_JUNIOR_CAMP,
+  HELP_STUDENT_DAY,
   HELP_COURSE_DETAIL_GUIDES,
   HELP_DORM_RULES,
   HELP_FAQS,
@@ -95,7 +97,7 @@ const HELP_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 HELP 克拉克',
-    intro: '校园导览和2026年新房间的实拍视频。',
+    intro: '校园导览、学员的一天、2026年新房间和青少年营视频。',
     badge: 'HELP 学校视频',
   },
   rooms: {
@@ -152,7 +154,9 @@ export const HELP_PAGE_PROFILE: PhSchoolProfile = {
   overviewFacts: HELP_OVERVIEW_FACTS,
   videoTabs: [
     { label: '校园视频', icon: 'videocam', items: [HELP_CAMPUS_TOUR] },
+    { label: '学员一日视频', icon: 'videocam', items: [HELP_STUDENT_DAY] },
     { label: '宿舍视频', icon: 'videocam', items: Object.values(HELP_ROOM_VIDEOS) },
+    { label: '青少年营视频', icon: 'videocam', items: [HELP_JUNIOR_CAMP] },
   ],
   roomVideos: HELP_ROOM_VIDEOS,
   gallery: {

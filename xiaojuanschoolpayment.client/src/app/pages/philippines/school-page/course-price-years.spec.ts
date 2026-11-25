@@ -18,14 +18,19 @@ import { CiecSchoolPageComponent } from '../ciec-school/ciec-school-page.compone
 import { CpiSchoolPageComponent } from '../cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from '../cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
+import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
+import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
+import { GeniusSchoolPageComponent } from '../genius-school/genius-school-page.component';
 import { HanaSchoolPageComponent } from '../hana-school/hana-school-page.component';
 import { HelpSchoolPageComponent } from '../help-school/help-school-page.component';
 import { IbreezeSchoolPageComponent } from '../ibreeze-school/ibreeze-school-page.component';
 import { IclSchoolComponent } from '../icl-school/icl-school.component';
+import { ImsSchoolPageComponent } from '../ims-school/ims-school-page.component';
 import { IuSchoolComponent } from '../iu-school/iu-school.component';
 import { JicChallengerSchoolComponent } from '../jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from '../jic-school/jic-premium-school.component';
 import { LaMerSchoolPageComponent } from '../la-mer-school/la-mer-school-page.component';
+import { MonolSchoolPageComponent } from '../monol-school/monol-school-page.component';
 import { MonolSpartaSchoolPageComponent } from '../monol-sparta-school/monol-sparta-school-page.component';
 import { PinesSchoolPageComponent } from '../pines-school/pines-school-page.component';
 import { SmeagCapitalSchoolPageComponent } from '../smeag-capital-school/smeag-capital-school-page.component';
@@ -89,12 +94,17 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['CIEC', CiecSchoolPageComponent],
     ['CPI', CpiSchoolPageComponent],
     ['EV', EvSchoolPageComponent],
+    ['English Fella First', FellaFirstCampusSchoolComponent],
+    ['English Fella Second', FellaSecondCampusSchoolComponent],
+    ['Genius', GeniusSchoolPageComponent],
     ['HANA', HanaSchoolPageComponent, page => { page.selectedCourseId = 'general-esl'; }],
     ['HELP Clark', HelpSchoolPageComponent],
     ['IU', IuSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
     ['ICL', IclSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
     ['JIC Challenger', JicChallengerSchoolComponent],
     ['JIC Premium', JicPremiumSchoolComponent],
+    ['IMS', ImsSchoolPageComponent],
+    ['MONOL', MonolSchoolPageComponent],
     ['EV La Mer', LaMerSchoolPageComponent],
     ['MONOL Sparta', MonolSpartaSchoolPageComponent],
     ['SMEAG Capital', SmeagCapitalSchoolPageComponent],
